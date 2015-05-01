@@ -1,0 +1,33 @@
+{ reuse L42.is/nanoBase2
+
+Deploy:{ (S node, S fileName)
+  type method type Outer0 #begin() Outer0
+  type method Outer0 #add(S that, S fileName) Outer0(node:that, fileName:fileName)
+  method Outer0 #end() this
+  method Library <(Library that){
+    adapter=IntrospectionPlugin.adapter(nameDest:this.node(),nameSrc:S"Template")
+    code=IntrospectionPlugin.adaptLib(l1:that,l2:adapter)
+    Outer0(fileName:this.fileName(),code:code,node:this.node())    
+    'code=that
+    'Outer0(fileName:this.fileName(),code:code,node:S"Outer0")    
+    return ExitCode.normal()
+    }
+    
+  'deploy mini contains new Deploy and Generalize, and some form of Adapt
+  ' and templateBNS only BNS
+  'Main:Deploy[S"Top::Exported", fileName:S"examples/Gui.L42"]<{reuse L42.is/templateBNS
+  'Top:Generalize[]<{reuse L42.is/miniBase
+
+  
+  type method
+  S _get(Library that,S node) 
+    S.#stringParser(
+      using IntrospectionPlugin check get(that,node:node.binaryRepr()) error {getThatNode()}
+      )
+
+  type method
+  Void (S fileName, Library code, S node)
+    Debug(fileName:fileName, content:Outer0._get(code,node:node) )
+  }
+  
+}

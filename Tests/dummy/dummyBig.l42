@@ -1,0 +1,33 @@
+{reuse L42.is/microBase
+SList:Collections.list(S)' if I do adapter:S I get a line unknown, but I have a mCall in context... ?
+
+S2List:{
+  return Collections.list(
+    'can not work, but why the error msg is so bad? Introspection({()<:S}).getIfExists(interfaceNum:0N)
+    adapter:Introspection({foo()<:Bool}).getIfExists(interfaceNum:0N)
+    
+    )
+  catch exception (on Void error S"fail")
+  }
+
+'Concat:Accumulate(SList)<{ method S (S a,S b) a++b }
+
+Util:{()
+  type method S max(SList that){
+    if that.isEmpty() (error S"Empty lists have no max")
+    var S candidate=S""
+    with ei in that.vals() (
+      if ei.size()>candidate.size() (candidate:=ei)
+      )
+    return candidate    
+    }
+  }
+C:{
+  list=SList[S"a";S"bb";S"ccc";S"dd";]
+  if Util.max(list)!=S"ccc" (return ExitCode.failure())
+  top=S"ccc"(0N)
+  if top!=S"c" (return ExitCode.failure())  
+  return ExitCode.normal()
+  }
+}
+

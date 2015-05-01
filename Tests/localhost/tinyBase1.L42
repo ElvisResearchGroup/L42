@@ -1,0 +1,155 @@
+{ reuse L42.is/tinyBase0
+
+Load:{
+  type method Outer0 #begin()'constructor
+  method Outer0 #end() this
+  method Library < (Library that) {
+    'assume that have abstract Bool N and S
+    return Adapt[
+      Name"N" into:Name(N);
+      Name"S" into:Name(S);
+      Name"S::ToS" into:Name(S::ToS);
+      Name"Bool" into:Name(Bool);
+      Name"Debug" into:Name(Debug);
+    ]<that
+    }
+}
+
+Opt:{unused()
+  type method Library (type Any that) 
+    Adapt[Name"T" into:Name(that);]<{#new(TOpt that)
+      T:{}
+      TOpt:{interface method T get() }
+      TEmpty:{()<:TOpt method get() error S"Value not present" }
+      TOf:{(T that)<:TOpt method get() this.that()}
+      method T !() this.that().get()
+      method Bool isPresent(){
+        aux=!this
+        return Bool.true()
+        catch error (on Any return Bool.false())
+        }
+      type method Outer0 () Outer0.#new(TEmpty())
+      type method Outer0 (T that) Outer0.#new(TOf(that))
+      }
+  }
+
+Use:{ (Resolver resolver,Libs myLibs)
+  Resolver: Opt(Library)
+  Libs: Collections.list(Library)
+  type method Outer0 () Outer0(resolver:Resolver(), myLibs:Libs[])
+  method Outer0 #add(Library that) (
+    ls=this.myLibs().#add(that)
+    Outer0(resolver:this.resolver(),myLibs:ls)
+    )
+  method Outer0 #add(Library resolver)
+    Outer0(resolver:Resolver(resolver),myLibs:this.myLibs())
+  type method
+  Outer0 #begin() Outer0()
+  method Outer0 #end() this 
+  
+  
+  
+  method Library < (Library that) {
+    it=this.myLibs().vals()
+    it.#next()
+    catch exception ( on Void return that)
+    var result=it.#inner()
+    with libi in it (
+      result:=this.accumulate(l1:result,l2:libi)
+      )
+    return this.accumulate(l1:result,l2:that)
+    }
+
+  method Library accumulate(Library l1,Library l2) {
+    return IntrospectionPlugin.sumLib(l1:l1,l2:l2)
+    catch error x (on Any (
+      if !this.resolver().isPresent() (error x)
+      ms=Introspection(!this.resolver()).methods()
+      S _name=ms.pop().pop().top().name()
+      S _nameLeft=ms.pop().top().name()
+      S _nameRight=ms.top().name()
+      'Debug(S"name is: "++_name)
+      'Debug(S"nameLeft is: "++_nameLeft)
+      'Debug(S"nameRight is: "++_nameRight)
+      Name name=Name.#stringParser(_name.binaryRepr())
+      Name nameLeft=Name.#stringParser(_nameLeft.binaryRepr())
+      Name nameRight=Name.#stringParser(_nameRight.binaryRepr())
+      l1A=Adapt[name into:nameLeft;]<l1
+      l2A=Adapt[name into:nameRight;]<l2
+      lRes=IntrospectionPlugin.sumLib(l1:l1A,l2:l2A)
+      return Adapt[makePrivate:nameLeft;makePrivate:nameRight;]<
+        IntrospectionPlugin.sumLib(l1:!this.resolver(),l2:lRes)
+      ))
+    }
+  method Outer0 ++ (Outer0 that) {
+    list=this.myLibs()++that.myLibs()
+    Resolver res={
+      if that.resolver().isPresent() (return that.resolver())
+      return this.resolver()
+      }
+    return Outer0(resolver:res, myLibs:list)
+    }
+  }
+Adapt:{(Library adapter)
+  type method Outer0 () Outer0(adapter:{})
+  method Outer0 #add(Name that, Name into) {
+    if that.isExternal() (error S"start name must be internal")
+    if !that.isInternalPath() (return this.#add(that,of:Name"Outer0",into:into))
+    map=IntrospectionPlugin.adaptLib(
+      l1:into.adapter(), l2:that.adapter())
+    lib=IntrospectionPlugin.sumLib(l1:this.adapter(), l2:map)
+    return Outer0(adapter:lib)
+    }
+  method Outer0 #add(Name that, Name of, Name into) {
+    map1=IntrospectionPlugin.adaptLib(
+      l1:into.adapter(), l2:that.adapter())
+    map2=IntrospectionPlugin.adaptLib(
+      l1:map1, l2:of.adapter())
+    lib=IntrospectionPlugin.sumLib(l1:this.adapter(), l2:map2)
+    return Outer0(adapter:lib)
+    }
+  method Outer0 #add(Name makePrivate){
+    fName=Name(isExternal:Bool.false(),adapter:IntrospectionPlugin.getFreshName(makePrivate.adapter()))
+    return this.#add(makePrivate into:fName)
+    }
+  type method Outer0 #begin() Outer0()
+  method Outer0 #end() this
+  method Outer0 ++ (Outer0 that) (
+    lib=IntrospectionPlugin.sumLib(l1:this.adapter(), l2:that.adapter())
+    Outer0(adapter:lib)
+    )
+  method Library < (Library that) IntrospectionPlugin.adaptLib(
+      l1:that, l2:this.adapter())
+  }
+
+Data:{()
+  type method Outer0 #begin() Outer0()
+  method Outer0 #end() this
+  method Library < (Library that) Use[this.addEquals(l:that);]<that
+  method Library equalsOnField(Name c,Name n)
+    Adapt[Name"T" into: c; Name"f" into:n;]<{
+      T:{ method Bool ==(Any that)}
+      read method T f()
+      method Bool current(Outer0 that) this.f()==that.f()
+      }
+  method Library addEquals(Library l){
+    var decorator=Use[ with field in Introspection(l).fields().vals() (
+      this.equalsOnField(c:field.class(), n:Name.#stringParser(field.name().binaryRepr()))
+      )]
+    decorator++=Use[resolver:{
+      method Bool current(Outer0 that) this.left(that) & this.right(that)
+      method Bool left(Outer0 that)
+      method Bool right(Outer0 that)
+      };]
+    result=decorator<{
+      method Bool current(Outer0 that)
+      method Bool ==(Any that){
+        with that (
+          on Outer0 return this.current(that)
+          default return Bool.false()
+          )}
+      }
+    return Adapt[makePrivate:Name"current(that)";]<result
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{reuse L42.is/miniBase
+
+SList:Collections.list(S)
+
+C:{
+  list=SList[S"L.png";S"A.jpg";S"N.jpg";S"h.jpg";S"h.jpg";]
+  var msg=S"<div id='Alpha'>"
+  Gui gui=Gui(id:S"a1")
+  gui.open(
+    title:S"FIRST!"
+    basePath:S"file:///C:/Users/marco/Desktop/latexHelper/disiFiles/marco/L42_2015/Tests/dummy/"
+    body:S"
+      '<div id="Alpha"> </div>
+      '<font size="3" color="blue">Press the button to make stuff happens! (slowly)</font>
+      '<button type="button" onclick="event42('Pressed!')">Click Me!</button>
+      "
+    x:600N
+    y:400N
+    )
+  with event in gui.events(), h in list.valsCut() (
+    msg++=S"<img src='"++h++S"' height='100' width='100'/>"
+    gui.set(msg++S"</div>", id:S"Alpha")
+    )
+  gui.close() 
+  return ExitCode.normal()
+  }
+}

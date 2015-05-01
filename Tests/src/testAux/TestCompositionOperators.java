@@ -1,0 +1,229 @@
+package testAux;
+
+import java.util.function.Function;
+
+import introspection.IntrospectionAdapt;
+import introspection.IntrospectionSum;
+import is.L42.connected.withItself.Plugin;
+import helpers.TestHelper;
+
+import org.testng.Assert;
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
+
+import platformSpecific.javaTranslation.Resources;
+import platformSpecific.javaTranslation.Resources.Revertable;
+import sugarVisitors.Desugar;
+import sugarVisitors.InjectionOnCore;
+import ast.Ast;
+import ast.ExpCore;
+import ast.Ast.Path;
+import ast.ExpCore.*;
+import auxiliaryGrammar.Program;
+import coreVisitors.ExtractThrow;
+import facade.Parser;
+
+public class TestCompositionOperators {
+  @Test(singleThreaded=true, timeOut = 500)
+  public class TestSum {
+      @DataProvider(name = "cb,cb,cb")
+      public Object[][] createData1() {
+       return new Object[][] {
+      {"{}","{}","{}"
+    },{"{()}","{}","{()}"
+    },{"{}","{()}","{()}"
+    },{"{()A:{()}}","{B:{()}}","{() A:{()} B:{()}}"
+    },{"{() method Void a() void }","{ method Void a() }","{() method Void a() void }"
+    },{"{ method Void a() }","{ method Void b() }","{ method Void a()  method Void b() }"
+  }};}
+
+    @Test(dataProvider="cb,cb,cb")
+  public void test(String e1,String e2,String e3) {
+    ClassB cb1=getClassB(e1);
+    ClassB cb2=getClassB(e2);
+    ClassB cb3=getClassB(e3);
+    ClassB res=(ClassB)IntrospectionSum.sum(cb1,cb2,Path.outer(0));
+    TestHelper.assertEqualExp(res,cb3);
+    }
+  }
+  @Test(singleThreaded=true, timeOut = 500)
+  public class TestAdapt {
+      @DataProvider(name = "cb,cb,cb")
+      public Object[][] createData1() {
+       return new Object[][] {
+//fails correctly?      {"{}","{ A:{(B that)} B:{}}","{}"
+      {"{A:{}}","{ A:{'@B\n} B:{}}","{B:{}}"
+    },{"{A:{ type method type A m() A}}","{ A:{'@B\n} B:{}}","{B:{type method type B m() B}}"
+    },{"{A:{ type method type A m() {return A}}}","{ A:{'@B\n} B:{}}","{B:{type method type B m() {return B}}}"
+    },{"{A:{ method A ()} B:{foo()}}",
+      "{ A:{'@B\n} B:{}}",
+      "{B:{ type method Outer0 foo()  method B ()}}"//TODO: is it the expected outcome ordering?, same for the next 3
+    },{"{C:{A:{ method A ()}} B:{foo()}}",
+      "{ C:{A:{'@B\n}} B:{}}",
+      "{C:{} B:{ type method Outer0 foo() method B ()  }}"
+    },{"{D:{C:{A:{ method A ()}}} B:{foo()}}",
+      "{ D:{C:{A:{'@B\n}}} B:{}}",
+      "{D:{C:{}} B:{ type method Outer0 foo()  method B ()}}"
+    },{"{A:{ method A ()} C:{B:{foo()}}}",
+      "{ A:{'@C::B\n} C:{B:{}}}",
+      "{C:{B:{ type method Outer0 foo() method C::B () }}}"
+    },{"{A:{ method A ()} D:{C:{B:{foo()}}}}",
+      "{ A:{'@D::C::B\n} D:{C:{B:{}}}}",
+      "{D:{C:{B:{  type method Outer0 foo()  method D::C::B ()}}}}"
+      
+    },{"{A:{}}","{ A:{'@Outer2::Ext\n} }","{}"
+    },{"{A:{} method A(A a) a}","{ A:{'@Outer2::Ext\n} }","{ method Outer1::Ext(Outer1::Ext a) a}"
+    },{"{A:{} B:{method A(A a) a}}","{ A:{'@Outer2::Ext\n} }","{B:{method Outer2::Ext(Outer2::Ext a) a}}"
+    },{"{A:{} C:{B:{method A(A a) a}}}","{ A:{'@Outer2::Ext\n} }","{C:{B:{method Outer3::Ext(Outer3::Ext a) a}}}"
+    },{"{B:{A:{}} method B::A(B::A a) a}","{ B:{A:{'@Outer3::Ext\n}} }","{B:{} method Outer1::Ext(Outer1::Ext a) a}"
+    //umm...},{"{B:{A:{}} method B::A(B::A a) a}","{ B:{(Outer2::Ext that)} }","{ method Outer1::Ext::A(Outer1::Ext::A a) a}"
+    },{"{A:{ method A(A a) a } }", "{ A:{ method Void (Void a) this.foo(b:a) method Void foo(Void b)} }",   "{A:{ method A foo(A b) b } }"
+    },{"{A:{ method A(A a) a method A foo(A b) A()} }",
+      "{ A:{ method Void (Void a) this.foo(b:a) method Void foo(Void b) this(a:b)} }",
+      "{A:{ method A foo(A b) b  method A(A a) A()} }"
+    },{"{A:{() method A(A a) a method A foo(A b) A()} }",
+      "{ A:{ method Void (Void a) this.foo(b:a) method Void foo(Void b) this(a:b)} }",
+      "{A:{() method A foo(A b) b method A (A a) A()} }" 
+      }};}
+
+    @Test(dataProvider="cb,cb,cb")
+  public void test(String e1,String e2,String e3) {
+    TestHelper.configureForTest();
+    ClassB cb1=getClassB(e1);
+    ClassB cb2=getClassB(e2);
+    ClassB cb3=getClassB(e3);
+    ClassB res=(ClassB)IntrospectionAdapt.adapt(getProgram(),cb1,cb2);
+    TestHelper.assertEqualExp(res,cb3);
+    }
+  }
+  //----------------------------------------------------------
+  @Test(singleThreaded=true, timeOut = 500)public class Test_Mget£that£node {@DataProvider(name = "cb,cb,cb")public Object[][] createData1() {return new Object[][] {
+    {"{A:{}}","Outer0","{\nA:{}}"
+  },{"{A:{}}","A","{}"
+    }};}
+  @Test(dataProvider="cb,cb,cb")public void test(String e1,String e2,String e3) {
+    ClassB cb1=getClassB(e1);
+    String res=(String)getWI(wi->wi.Mget£that£node(cb1,e2));
+    Assert.assertEquals(res,e3);}}
+  //----------------------------------------------------------
+  @Test(singleThreaded=true, timeOut = 500)public class Test_MgetOrElse£that£interfaceNum£node {@DataProvider(name = "cb,cb,cb")public Object[][] createData1() {return new Object[][] {
+    {"{<:Foo A:{} Foo:{interface}}",0,"Outer0","{ Foo:{} %o_0%:{'@Outer1::Foo\n}}"
+  },{"{A:{<:Bar} Bar:{interface}}",0,"A","{Bar:{} %o_0%:{'@Outer1::Bar\n}}"
+    }};}
+  @Test(dataProvider="cb,cb,cb")public void test(String e1,int e2,String e3,String e4) {
+    ClassB cb1=getClassB(e1);
+    ClassB cb4=getClassB(e4);
+    ClassB res=(ClassB)getWI(wi->wi.MgetOrElse£that£interfaceNum£node(cb1,e2,e3));
+    TestHelper.assertEqualExp(res,cb4);}}
+  //----------------------------------------------------------
+  @Test(singleThreaded=true, timeOut = 500)public class Test_MgetOrElse£that£methodNum£exceptionNum£node {@DataProvider(name = "cb,cb,cb")public Object[][] createData1() {return new Object[][] {
+    {"{ A:{} method A m()exception A }",0,0,"Outer0",
+      "{A:{}%o_0%:{ '@Outer1::A\n}}"
+  },{"{ A:{} B:{} method A m()exception A method A ()exception A A B}",1,2,"Outer0",
+    "{B:{}%o_0%:{ '@Outer1::B\n}}"
+  //ok under: one extra method generated in ct as constructor
+  },{"{ A:{} B:{} C:{foo() method A m()exception A method A ()exception A A B}}",2,2,"C",
+    "{B:{}%o_0%:{ '@Outer1::B\n}}"
+    }};}
+  @Test(dataProvider="cb,cb,cb")public void test(String e1,int e2,int e3,String e4,String _expected) {
+    ClassB cb1=getClassB(e1);
+    ClassB expected=getClassB(_expected);
+    ClassB res=(ClassB)getWI(wi->wi.MgetOrElse£that£methodNum£exceptionNum£node(cb1,e2,e3,e4));
+    TestHelper.assertEqualExp(res,expected);}}
+  
+  //----------------------------------------------------------
+  @Test(singleThreaded=true, timeOut = 500)public class Test_MnameToAdapter£that {@DataProvider(name = "cb,cb,cb")public Object[][] createData1() {return new Object[][] {
+    {"foo(a,b)",
+     "{%o_0%:{method Void #o_0#(Void _0, Void _1) this.foo(a:_0, b:_1)\n"
+   + "        method Void foo(Void a, Void b)}}"
+  },{"()","{%o_0%:{method Void #o_0#() this()  method Void #apply() }}"
+  },{"A","{A:{} %o_0%:{'@Outer1::A\n}}"
+  },{"A::B","{A:{B:{}} %o_0%:{'@Outer1::A::B\n}}"
+  },{"Outer0","{ %o_0%:{'@Outer1\n}}"
+  //ok it is invalid},{"Outer0::A","{ %o_0%:{ #apply(Outer1 that)}}"
+    }};}
+  @Test(dataProvider="cb,cb,cb")public void test(String e1,String _expected) {
+    ClassB expected=getClassB(_expected);
+    ClassB res=(ClassB)getWI(wi->wi.MnameToAdapter£that(e1));
+    TestHelper.assertEqualExp(res,expected);}}
+  //----------------------------------------------------------
+  @Test(singleThreaded=true, timeOut = 500)public class Test_MtypeNameToAdapter£that {@DataProvider(name = "cb,cb,cb")public Object[][] createData1() {return new Object[][] {
+    {Path.parse("Outer0::Ext"),"{%o_0%:{'@Outer2::Ext\n}}"
+//  },{Path.parse("Outer2"),"{%o_0%:{ #apply(Outer4 that)}}"
+    }};}
+  @Test(dataProvider="cb,cb,cb")public void test(Ast.Path e1,String _expected) {
+    ClassB expected=getClassB(_expected);
+    ClassB res=(ClassB)getWI(wi->wi.MtypeNameToAdapter£that(e1));
+    TestHelper.assertEqualExp(res,expected);}}
+  //----------------------------------------------------------
+  @Test(singleThreaded=true, timeOut = 500)public class Test_MgetOrElse£that£methodNum£node {@DataProvider(name = "cb,cb,cb")public Object[][] createData1() {return new Object[][] {
+    {"{ A:{} method A m()exception A this.m() }",0,"Outer0",
+      "method \nOuter0::A m() exception Outer0::A this.m()"
+    }};}
+  @Test(dataProvider="cb,cb,cb")public void test(String e1,int e2,String e3,String expected) {
+    ClassB cb1=getClassB(e1);
+    String res=(String)getWI(wi->wi.MgetOrElse£that£methodNum£node(cb1,e2,e3));
+    Assert.assertEquals(res.trim(),expected);}}
+  //----------------------------------------------------------
+  @Test(singleThreaded=true, timeOut = 500)public class Test_MgetNameOrElse£that£methodNum£node {@DataProvider(name = "cb,cb,cb")public Object[][] createData1() {return new Object[][] {
+    {"{ A:{} method A m()exception A this.m() }",0,"Outer0",
+      "m"
+  },{"{ A:{} method A m(A a)exception A  }",0,"Outer0",
+      "m(a)"
+  },{"{ A:{} method A m(A a,A b)exception A  }",0,"Outer0",
+    "m(a,b)"
+  },{"{ A:{} method A (A a,A b)exception A  }",0,"Outer0",
+    "#apply(a,b)"
+  },{"{ A:{} method A ()exception A  }",0,"Outer0",
+    "#apply"
+    }};}
+  @Test(dataProvider="cb,cb,cb")public void test(String e1,int e2,String e3,String expected) {
+    ClassB cb1=getClassB(e1);
+    String res=(String)getWI(wi->wi.MgetNameOrElse£that£methodNum£node(cb1,e2,e3));
+    Assert.assertEquals(res,expected);}}
+  //----------------------------------------------------------
+  @Test(singleThreaded=true, timeOut = 500)public class Test_MgetTypePathOrElse£that£methodNum£node {@DataProvider(name = "cb,cb,cb")public Object[][] createData1() {return new Object[][] {
+      {"{ A:{} method A m()exception A this.m() }",0,"Outer0",
+        "{A:{}%o_0%:{'@Outer1::A\n}}"
+    },{"{ A:{ method A m(A a)exception A  }}",0,"A",
+      "{A:{}%o_0%:{'@Outer1::A\n}}"
+    },{"{ B:{A:{ method B m()  }}}",0,"B::A",
+      "{B:{}%o_0%:{'@Outer1::B\n}}"
+    },{"{ B:{A:{ method A m(A a)exception A  }}}",0,"B::A",
+      "{B:{A:{}}%o_0%:{ '@Outer1::B::A\n}}"
+      }};}
+  @Test(dataProvider="cb,cb,cb")public void test(String _lib,int num,String path, String _expected) {
+    ClassB lib=getClassB(_lib);
+    ClassB expected=getClassB(_expected);
+    ClassB res=(ClassB)getWI(wi->wi.MgetTypePathOrElse£that£methodNum£node(lib,num,path));
+    TestHelper.assertEqualExp(res,expected);}}
+  //----------------------------------------------------------
+  @Test(singleThreaded=true, timeOut = 500)public class Test_MgetOrElse£that£methodNum£parameterNum£node {@DataProvider(name = "cb,cb,cb")public Object[][] createData1() {return new Object[][] {
+      {"{ A:{} method A m( A a )this.m() }",0,0,"Outer0",
+        "Outer0::A a"
+      },{"{ A:{} method A m( A a A b'foo\n  'bar\n)this.m() }",0,1,"Outer0",
+        "Outer0::A b'foo\n'bar\n"
+
+      }};}
+  @Test(dataProvider="cb,cb,cb")public void test(String _lib,int num,int pNum,String path, String expected) {
+    ClassB lib=getClassB(_lib);
+    String res=(String)getWI(wi->wi.MgetOrElse£that£methodNum£parameterNum£node(lib,num,pNum,path));
+    Assert.assertEquals(res,expected);}}
+  
+  
+  public static <T> T getWI(Function<Plugin,T> action) {
+    Plugin w=new Plugin();
+    //w.setProgram(getProgram());
+    T res= Resources.withPDo(getProgram(), ()->action.apply(w));
+    assert Resources.isValid(getProgram(), res, new Object[0]);
+    return res;
+  }  
+  public static ClassB getClassB(String e1) {
+    return (ClassB)Desugar.of(Parser.parse(null," "+e1)).accept(new InjectionOnCore());
+  }
+  public static Program getProgram() {
+    ClassB empty=(ClassB)Parser.parse(null," {Ext:{}}").accept(new InjectionOnCore());
+    Program p=Program.empty().addAtTop(empty);
+    return p;
+  }
+}

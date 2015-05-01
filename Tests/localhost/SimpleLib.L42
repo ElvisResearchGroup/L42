@@ -1,0 +1,68 @@
+{
+type method 
+Void printHelloWorld() Outer0::Debug.#apply(that:Outer0::S.#stringParser(that:{'@stringU
+'Hello World 
+}).#plusplus(that:Outer0::N.#numberParser(that:{'@stringU
+'42
+})))
+Bool:{<:Outer1::S::ToS
+method 
+Void #checkTrue() exception Void 
+type method 
+Outer0 true() 
+type method 
+Outer0 false() 
+method 
+Outer0 #and(Outer0 that) 
+method 
+Outer0 #or(Outer0 that) 
+method 
+Outer0 #bang() }
+N:{<:Outer1::S::ToS
+type method 
+Outer0 #numberParser(Library that) 
+method 
+Outer0 #plus(Outer0 that) 
+method 
+Outer0 #less(Outer0 that) 
+method 
+Outer0 #times(Outer0 that) 
+method 
+Outer0 #divide(Outer0 that) 
+method 
+Outer1::Bool #equalequal(Outer0 that) 
+method 
+Outer1::Bool #left(Outer0 that) 
+method 
+Outer1::Bool #leftequal(Outer0 that) 
+method 
+Outer1::Bool #bangequal(Outer0 that) 
+method 
+Outer1::Bool #right(Outer0 that) 
+method 
+Outer1::Bool #rightequal(Outer0 that) }
+S:{<:Outer0::ToS
+type method 
+Outer0 #stringParser(Library that) 
+method 
+Library binaryRepr() 
+ToS:{interface 
+method 
+Outer1 toS() }
+method 
+Outer0 #plusplus(Outer0::ToS that) 
+method 
+Outer1::Bool #bangequal(Outer0 that) 
+method 
+Outer1::Bool #equalequal(Outer0 that) 
+method 
+Outer0 #apply(Outer1::N that) 
+method 
+Outer1::N size() 
+type method 
+Outer0 doubleQuote() 
+method 
+Outer0 replace(Outer0 that, Outer0 into) }
+Debug:{
+type method 
+Void #apply(Outer1::S that) }}

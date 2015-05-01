@@ -1,0 +1,253 @@
+package testAux;
+
+import helpers.TestHelper;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import org.testng.Assert;
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
+import facade.Parser;
+import sugarVisitors.Desugar;
+import sugarVisitors.InjectionOnCore;
+import typeSystem.TypeExtraction;
+import ast.Ast.Mdf;
+import ast.Ast.Stage;
+import ast.ExpCore;
+import ast.ExpCore.ClassB.MethodWithType;
+import ast.Expression;
+import ast.Ast.Path;
+import ast.ExpCore.ClassB;
+import auxiliaryGrammar.Functions;
+import auxiliaryGrammar.Norm;
+import auxiliaryGrammar.Program;
+
+public class TestTypeExtraction {
+  @Test(singleThreaded=true, timeOut = 500)
+  public class Test1 {
+      @DataProvider(name = "classB1,classB2,p")
+      public String[][] createData1() {
+       return new String[][] {
+       {"{a( Outer0::A a)}",
+         "{a( Outer0::A a)}##star ^##"
+       },{"{a( Outer0::A a, var Outer0::B b)}",
+         "{"
+        +" type method Outer0 a( Outer0::A^ a'@consistent\n, Outer0::B^ b'@consistent\n) "
+        +" mut method'@consistent\n Outer0::A #a() "
+        +" read method'@consistent\n Outer0::A a()"
+        +" mut method'@consistent\n Void b(Outer0::B that)"
+        +" mut method'@consistent\n Outer0::B #b()"
+        +" read method'@consistent\n Outer0::B b()"
+        +" }##star ^##"    //mostly testing desugar now...     
+       },{"{interface method Void m() A:{interface <:Outer1}}",
+          "{interface method Void m() A:{interface <:Outer1 }}##star ^##",
+          "{C:##walkBy}"
+       //interface inside
+       },{"{interface method Void m() A:{interface <:Outer1}}##star ^##",
+         "{interface method Void m() A:{interface  <:Outer1 method Void m()}##star ^## }##star ^##"
+       //check normal from
+       },{"{interface method Outer0::A m() A:{interface <:Outer1}}##less ^##",
+         "{interface method Outer0::A m() A:{interface  <:Outer1 method Outer1::A m()}##star ^## }##less ^##"
+       //interface outside
+       },{"{interface <: Outer0::A A:{interface method Outer0 m() }##plus ^##}",
+          "{interface  <: Outer0::A method Outer0::A m()  A:{interface method Outer0 m() }##plus ^##}##star ^##", 
+        
+       },{"{'foo\ninterface <: Outer0::A A:{interface method Outer0 m() }}",
+         "{'foo\ninterface <: Outer0::A A:{interface method Outer0 m() }##star ^##}"
+
+         //propagation of plus
+         },{"{  B:{ }##plus ^##}##star ^##",
+           "{  B:{ }##plus ^##}##plus ^##"
+           //propagation of less
+           },{"{  B:{ }##less ^##}##star ^##",
+             "{  B:{ }##less ^##}##less ^##"
+             //propagation of less better than plus
+             },{"{  B:{ }##less ^## C:{}##plus ^##}##star ^##",
+               "{  B:{ }##less ^## C:{}##plus ^##}##less ^##"
+               //propagation of plus by use
+             },{"{  B:{ }##plus ^## C:{ method B() Outer0()}##star ^##}##plus ^##",
+               "{  B:{ }##plus ^## C:{ method B() Outer0()}##plus ^##}##plus ^##"
+               //propagation of less by use
+             },{"{  B:{ }##less ^## C:{ method B() Outer0()}##star ^##}##less ^##",
+               "{  B:{ }##less ^## C:{ method B() Outer0()}##less ^##}##less ^##"
+               //propagation of less by undefinition
+             },{"{  B:{A:void }##star ^## C:{ method B::A() Outer0()}##star ^##}##less ^##",
+               "{  B:{ A:void}##star ^## C:{ method B::A() Outer0()}##less ^##}##less ^##"
+         }};}
+
+    @Test(dataProvider="classB1,classB2,p")
+    public void testStep(String... in) {
+      ClassB cb1=(ClassB)(Desugar.of(Parser.parse(null,in[0])).accept(new InjectionOnCore()));
+      ClassB cb2=(ClassB)(Desugar.of(Parser.parse(null,in[1])).accept(new InjectionOnCore()));
+      Program p=Program.empty();
+      List<String>inp=Arrays.asList(in).subList(2,in.length);
+      inp=new ArrayList<String>(inp);
+      Collections.reverse(inp);
+      for(String s: inp){
+        Expression e=Parser.parse(null,s);
+        ExpCore ec=e.accept(new InjectionOnCore());
+        assert ec instanceof ClassB;
+        p=p.addAtTop((ClassB)ec);
+      }
+      //Assert.assertEquals(ExtractTypeStep.etDispatch(Stage.Star,new ArrayList<Path>(), p, cb1),cb2);
+      cb1=TypeExtraction.etDispatch(p, cb1);
+      //cb1.equals(cb2);
+      TestHelper.assertEqualExp(cb1,cb2);
+    }
+      
+    } 
+
+  
+  @Test(singleThreaded=true, timeOut = 500)
+  public class Test2 {
+      @DataProvider(name = "classB1,classB2,p")
+      public String[][] createData1() {
+       return new String[][] {
+         {"{}","{}##star^##"
+       },{"{()}","{type method Outer0 ()}##star ^##"
+       },{"{()}","{() }##star ^##","{C:{}}"
+       },{"{D:{method Void foo()}}","{D:{method Void foo()}##plus^##}##plus^##","{C:{}}"
+       },{"{a( Outer0::A a)}",
+          "{"
+         +" type method Outer0 a( Outer0::A^ a '@consistent\n) "
+         +" mut method  '@consistent\nOuter0::A #a()"
+         +" read method  '@consistent\nOuter0::A a()"
+         //+" mut method Void a(Outer0::A that) ##field"
+         +" }##star^##"
+       },{"{a(var  Outer0::A a)}",
+         "{"
+        +" type method Outer0 a( Outer0::A^ a '@consistent\n)"
+        +" mut method '@consistent\nVoid a(Outer0::A that)"
+        +" mut method '@consistent\nOuter0::A #a() "
+        +" read method '@consistent\nOuter0::A a() "
+        +" }##star^##"
+       },{"{a( Outer0::A a, var Outer0::B b)}",
+         "{"
+        +" type method Outer0 a( Outer0::A^ a'@consistent\n, Outer0::B^ b'@consistent\n)"
+        +" mut method '@consistent\nOuter0::A #a()"
+        +" read method '@consistent\nOuter0::A a() "
+        +" mut method '@consistent\nVoid b(Outer0::B that)"
+        +" mut method '@consistent\nOuter0::B #b()"
+        +" read method '@consistent\nOuter0::B b() "
+        +" }##star^##"         
+       },{"{interface method Void m() A:{interface <:Outer1}}",
+          "{interface method Void m() A:{interface<:Outer1 method Void m()  }##star^## }##star^##"
+       //interface inside
+       },{"{interface method Void m() A:{interface <:Outer1}}",
+          "{interface method Void m() A:{interface <:Outer1 method Void m()} ##star^## }##star^##"
+       //check normal from
+       },{"{interface method Outer0::A m() A:{interface <:Outer1}}",
+         "{interface method Outer0::A m() A:{interface <:Outer1 method Outer1::A m()} ##star^## }##star^##"
+       //interface outside
+       },{"{interface <: Outer0::A A:{interface method Outer0 m() }}",
+          "{interface <:Outer0::A method Outer0::A m() A:{interface method Outer0 m()} ##star^##}##star^##"
+
+       //two interfaces implemented
+       },{"{interface <: Outer0::A, Outer0::B A:{interface method Outer0 ma() }##less ^## B:{interface method Outer0 mb() }}",
+           "{interface <: Outer0::A, Outer0::B method Outer0::A ma() method Outer0::B mb() A:{interface method Outer0 ma()}##less ^## B:{interface method Outer0 mb() }##star^##} ##less^##"
+         //two interfaces implemented nested simple
+         },{"{interface <: Outer0::A, Outer0::A::B A:{interface method Outer0 ma()  B:{interface method Outer0 mb() }}}",
+             "{interface <: Outer0::A, Outer0::A::B method Outer0::A ma() method Outer0::A::B mb() A:{interface method Outer0 ma() B:{interface method Outer0 mb() }##star^##}##star^##} ##star^##"
+           //two interfaces implemented nested transitive
+           },{"{interface <: Outer0::A A:{interface<: Outer0::B method Outer0 ma()  B:{interface method Outer0 mb() }}}",
+               "{interface <: Outer0::A, Outer0::A::B method Outer0::A::B mb() method Outer0::A ma() A:{interface <: Outer0::B method Outer0::B mb() method Outer0 ma() B:{interface method Outer0 mb() }##star^##} ##star^##}##star^##"
+         //good self diamond
+       },{"{interface <: Outer0::B, Outer0::B B:{interface method Outer0 mb()}}",
+          "{interface <: Outer0::B, Outer0::B method Outer0::B mb() B:{interface method Outer0 mb()}##star^##}##star^## "
+         //good standard diamond
+       },{"{interface <: Outer0::A, Outer0::B A:{interface <:Outer1::C } B:{interface <:Outer1::C } C:{interface method Outer0 mc()}}",       
+          "{interface  <: Outer0::A, Outer0::B, Outer0::C, Outer0::C method Outer0::C mc() A:{interface <:Outer1::C method Outer1::C mc() }##star^##  B:{interface <:Outer1::C method Outer1::C mc() }##star^##  C:{interface method Outer0 mc()}##star^## }##star^##  "
+       },{"{A:{ T:{method Void ()} Cell:{interface  method Void #inner(Outer1::T a, Outer1::Cell b)  } } }",
+          "{A:{ "
+        + " T:{method Void()}##plus ^##"
+        + " Cell:{interface method Void #inner(Outer1::T a, Outer1::Cell b)"
+        + "  }##plus ^##}##plus ^##"
+        + "}##plus ^##"
+       }};}
+ 
+    @Test(dataProvider="classB1,classB2,p")
+    public void testAllSteps(String... in) {
+      ClassB cb1=(ClassB)(Desugar.of(Parser.parse(null,in[0])).accept(new InjectionOnCore()));
+      ClassB cb2=(ClassB)(Desugar.of(Parser.parse(null,in[1])).accept(new InjectionOnCore()));
+      Program p=Program.empty();
+      List<String>inp=Arrays.asList(in).subList(2,in.length);
+      inp=new ArrayList<String>(inp);
+      Collections.reverse(inp);
+      for(String s: inp){
+        Expression e=Parser.parse(null,s);
+        ExpCore ec=e.accept(new InjectionOnCore());
+        assert ec instanceof ClassB;
+        p=p.addAtTop((ClassB)ec);
+      }
+      //Assert.assertEquals(ExtractTypeStep.etDispatch(Stage.Star,new ArrayList<Path>(), p, cb1),cb2);
+      cb1=TypeExtraction.etFull(p, cb1);
+      //cb1.equals(cb2);
+      TestHelper.assertEqualExp(cb1,cb2);
+    }
+    } 
+  @Test(singleThreaded=true, timeOut = 500)
+  public class Test3 {
+      @DataProvider(name = "ok/ko")
+      public Object[][] createData() {
+       return new Object[][] {
+           //a
+         {Mdf.Immutable,Path.Any(),"{method Any foo()}",true
+      },{Mdf.Immutable,Path.Any(),"{method Void foo()}",false
+      },{Mdf.Type,Path.Void(),"{method type Void foo()}",true
+      },{Mdf.Readable,Path.Void(),"{method read Void foo()}",true
+        //b
+      },{Mdf.Immutable,Path.Void(),"{mut method  Void foo( Void that)}",true
+      },{Mdf.Immutable,Path.Void(),"{mut method  Void foo( Void that0)}",false
+      },{Mdf.Immutable,Path.Void(),"{mut method  Void foo( Void that0, Any any)}",false
+      },{Mdf.Immutable,Path.Void(),"{mut method  Void foo( read Void that)}",false
+      },{Mdf.Immutable,Path.Void(),"{read method  Void foo( Void that)}",false
+      },{Mdf.Immutable,Path.Void(),"{lent method  Void foo( Void that)}",true
+      //c
+      },{Mdf.Mutable,Path.Void(),"{lent method  mut Void foo()}",false
+      },{Mdf.Mutable,Path.Void(),"{mut method  mut Void foo()}",true
+      },{Mdf.Mutable,Path.Void(),"{lent method  lent Void foo()}",true
+      },{Mdf.Lent,Path.Void(),"{lent method  mut Void foo()}",false
+      //d
+      },{Mdf.Mutable,Path.Void(),"{lent method  read Void foo()}",true
+      },{Mdf.Mutable,Path.Void(),"{read method  read Void foo()}",true
+      },{Mdf.Mutable,Path.Void(),"{read method  lent Void foo()}",false
+      },{Mdf.Lent,Path.Void(),"{lent method  read Void foo()}",true
+      },{Mdf.Lent,Path.Void(),"{read method  read Void foo()}",true
+      },{Mdf.Lent,Path.Void(),"{read method  lent Void foo()}",false
+       //e//pass
+      },{Mdf.Mutable,Path.Void(),"{mut method  Void foo(mut Void that)}",true
+      },{Mdf.Lent,Path.Void(),"{mut method  Void foo(mut Void that)}",true
+      },{Mdf.Lent,Path.Void(),"{mut method  Void foo(lent Void that)}",true
+      },{Mdf.Mutable,Path.Void(),"{mut method  Void foo(lent Void that)}",false
+      },{Mdf.Mutable,Path.Void(),"{mut method  Void foo(read Void that)}",false
+       //f
+      },{Mdf.Mutable,Path.Void(),"{lent method  Void foo(capsule Void that)}",true
+      },{Mdf.Lent,Path.Void(),"{lent method  Void foo(capsule Void that)}",true
+      },{Mdf.Lent,Path.Void(),"{lent method  Void foo( Void that)}",false
+        //g
+      },{Mdf.Capsule,Path.Void(),"{read method  read Void foo()}",true
+      },{Mdf.Capsule,Path.Void(),"{lent method  read Void foo()}",true
+      },{Mdf.Capsule,Path.Void(),"{lent method  lent Void foo()}",true
+      },{Mdf.Capsule,Path.Void(),"{capsule method  capsule Void foo()}",true
+      },{Mdf.Capsule,Path.Void(),"{mut method  capsule Void foo()}",false
+      },{Mdf.Capsule,Path.Void(),"{mut method  mut Void foo()}",true
+        //h
+      },{Mdf.Capsule,Path.Void(),"{mut method  Void foo(mut Void that)}",true
+      },{Mdf.Capsule,Path.Void(),"{mut method  Void foo(capsule Void that)}",true
+      },{Mdf.Capsule,Path.Void(),"{mut method  Void foo(lent Void that)}",false
+       }};}
+ 
+    @Test(dataProvider="ok/ko")
+    public void testCoherence(Object... in) {
+      Mdf mdf=(Mdf)in[0];
+      Path path=(Path)in[1];
+      ClassB cb1=(ClassB)(Parser.parse(null,(String)in[2]).accept(new InjectionOnCore()));
+      boolean ok=(Boolean)in[3];
+      Program p=Program.empty();
+      MethodWithType mwt=(MethodWithType)cb1.getMs().get(0);
+      boolean res=Functions.coherent(p, mdf, path, mwt);
+      Assert.assertEquals(res,ok);
+      }
+    } 
+}

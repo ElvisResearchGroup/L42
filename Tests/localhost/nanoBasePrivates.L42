@@ -1,0 +1,19 @@
+{
+I:{interface
+  method '@private
+  Void seal()
+  }
+Foo:{()<:I
+  type method'@private
+  Void bar() this.seal()
+  method seal() this.seal()
+  }
+Bar:{()
+  Beer:{()
+    type method'@private
+    Void bar() void
+    }
+  Bit:'@private
+    {()}
+  }
+}

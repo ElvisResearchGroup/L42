@@ -1,0 +1,188 @@
+{reuse L42.is/nanoBase2
+
+Name:{(Bool isExternal, Library adapter)
+'external is "pointing out"
+'internal is " A::B::C"
+'not external and not internal is a method name
+  type method
+  Name #stringParser(Library that) 
+    Name(isExternal:Bool.false(),adapter:
+      using IntrospectionPlugin 
+        check nameToAdapter(that)
+        error {nameToAdapter()}
+    )
+    
+  type method
+  Name (type Any that) 
+    Name(isExternal:Bool.true(),adapter:
+      using IntrospectionPlugin
+        check typeNameToAdapter(that)
+        error {typeNameToAdapter()}
+    )
+    
+  method
+  Bool isInternalPath() {
+    ms=Introspection(this.adapter(),node:S"%o_0%").methods()
+    return ms.isEmpty()
+    }
+  }
+  
+Introspection:{
+  (Library that, S node)
+  
+  type method
+  Outer0(Library that) Outer0(that,node:S"Outer0")
+  
+  method
+  S get() 
+    S.#stringParser(
+      using IntrospectionPlugin
+        check get(this.that(),node:this.node().binaryRepr())
+        error {getThatNode()}
+      )
+      
+  method
+  Library getIfExists(N interfaceNum)exception Void 
+    using IntrospectionPlugin
+      check getOrElse(
+        this.that(),
+        interfaceNum:interfaceNum.binaryRepr(),
+        node:this.node().binaryRepr()
+        )
+      exception void
+      
+  method
+  Method get(N methodNum)exception Void {
+    Library name= using IntrospectionPlugin 
+        check getNameOrElse(
+          this.that(),
+          methodNum:methodNum.binaryRepr(),
+          node:this.node().binaryRepr())
+        exception void
+    return Method(myClass:this,num:methodNum,name:S.#stringParser(name))
+    }
+    
+  Method:{(Outer1 myClass, N num, S name)
+    method
+    S get() 
+      S.#stringParser( using IntrospectionPlugin 
+        check getOrElse(
+          this.myClass().that(),
+          methodNum:this.num().binaryRepr(),
+          node:this.myClass().node().binaryRepr())
+        error {invalidMethodNumber()}
+      )
+      
+    method S getMdf() 
+      S.#stringParser( using IntrospectionPlugin 
+        check getMdfOrElse(
+          this.myClass().that(),
+          methodNum:this.num().binaryRepr(),
+          node:this.myClass().node().binaryRepr())
+        error {invalidMethodNumber()}
+      )
+      
+    method
+    Name returnClass()
+      Name(
+        isExternal:Bool.true(),'TODO: this is a bug, should be computed
+        adapter: using IntrospectionPlugin 
+          check  getTypePathOrElse(
+            this.myClass().that(),
+            methodNum:this.num().binaryRepr(),
+            node:this.myClass().node().binaryRepr())
+          error {invalidMethodNumber()}
+        )
+        
+    method
+    Name getName()
+      Name.#stringParser('get name? unuseful!
+        using IntrospectionPlugin 
+          check getNameOrElse(
+            this.myClass().that(),
+            methodNum:this.num().binaryRepr(),
+            node:this.myClass().node().binaryRepr())
+          error {invalidMethodNumber()}
+        )
+        
+    method
+    Bool isField() {
+      using IntrospectionPlugin 
+        check ifIsFieldDo(
+          this.myClass().that(),
+          methodNum:this.num().binaryRepr(),
+          node:this.myClass().node().binaryRepr())
+        return Bool.true()
+      return Bool.false()
+      }
+      
+    method
+    Parameter get(N parameterNum)exception Void {
+      Library name= using IntrospectionPlugin 
+        check getNameOrElse(
+          this.myClass().that(),
+          methodNum:this.num().binaryRepr(),
+          parameterNum:parameterNum.binaryRepr()
+          node:this.myClass().node().binaryRepr())
+        exception void
+      return Parameter(myMethod:this,num:parameterNum,name:S.#stringParser(name))
+      }
+      
+    method
+    Parameters parameters(){
+      var ps=Parameters[]
+      var pNum=0N
+      while Bool.true() (
+        ps:=ps.#add(this.get(parameterNum:pNum))
+        pNum+=1N
+        )
+      return ps
+      }
+    }
+    
+  Parameter:{(Method myMethod, N num, S name)
+    method
+    Name class() 
+      Name(
+        isExternal:Bool.true(),'TODO: this is a bug, should be computed
+        adapter: using IntrospectionPlugin 
+          check  getTypePathOrElse(
+            this.myMethod().myClass().that(),
+            methodNum:this.myMethod().num().binaryRepr(),
+            parameterNum:this.num().binaryRepr()
+            node:this.myMethod().myClass().node().binaryRepr())
+          error {invalidMethodNumber()}
+      )
+    }
+    
+  Parameters:Collections.list(Parameter)
+  
+  Methods:Collections.list(Method)
+  
+  method
+  Methods methods(){
+    var Methods ms=Methods[]
+    var N mNum=0N
+    while Bool.true() (
+      ms:=ms.#add(this.get(methodNum:mNum))
+      mNum+=1N
+      )
+    return ms
+    }
+    
+  method
+  Parameters fields(){
+    ms=this.methods()
+    Method ctor= {
+      with m in ms.vals() (
+        case m.isField() & (m.getMdf()==S"Type") return m 'still problems with precedence?
+        )
+      error S"Not a concrete class"
+      }
+    return ctor.parameters()
+    }
+  }
+  
+
+
+}

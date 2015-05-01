@@ -1,0 +1,269 @@
+package platformSpecific.javaTranslation;
+
+import facade.Configuration;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.function.Supplier;
+
+import coreVisitors.CollectClassBs0;
+import coreVisitors.CollectPaths0;
+import platformSpecific.fakeInternet.PluginType;
+import sugarVisitors.ToFormattedText;
+import tools.Assertions;
+import ast.Ast;
+import ast.ErrorMessage;
+import ast.ExpCore;
+import ast.Ast.Path;
+import ast.Ast.SignalKind;
+import ast.Ast.Stage;
+import ast.ExpCore.ClassB;
+import auxiliaryGrammar.EncodingHelper;
+import auxiliaryGrammar.Functions;
+import auxiliaryGrammar.Program;
+
+public class Resources {
+  public static final ErrorMessage.PluginActionUndefined notAct=new ErrorMessage.PluginActionUndefined(-2);
+  public static final ErrorMessage.PluginActionUndefined actInEnd=new ErrorMessage.PluginActionUndefined(-1);
+  private static final HashMap<String,Object> usedRes=new HashMap<>();
+  public static String submitRes(Object cb){
+    HashSet<String> hs=new HashSet<>(usedRes.keySet());
+    String newK=Functions.freshName("key", hs);
+    usedRes.put(newK,cb);
+    return newK;
+    }
+  private static Program p;
+  public static Program getP(){
+    assert p!=null;
+    return p;
+    }
+  public static <T> T withPDo(Program _p,Supplier<T> action){
+    if(p!=null){throw new IllegalAccessError();}
+    try{
+      p=_p;
+      return action.get();
+      }
+    finally{p=null;}
+    }
+  public static Object getRes(String key){
+    Object o=usedRes.get(key);
+    if(o==null){throw new Error("Invalid resource"+key+" Valid resources are: "+usedRes.keySet());}
+    return o;
+    }
+  public static void clearRes() {
+    usedRes.clear();    
+  }
+
+  @SuppressWarnings("serial")
+  public static class Error extends RuntimeException{
+    public String toString() {return "Error["+ unbox +"]";}
+    public final Object unbox; public Error(Object u){
+      //assert !u.getClass().getName().startsWith("generated.Program42$");
+      unbox=u;}
+    }
+  @SuppressWarnings("serial")
+  public static class Exception extends RuntimeException{
+    public String toString() {return "Exception["+ unbox +"]";}
+    public final Object unbox; public Exception(Object u){unbox=u;}
+    }
+  @SuppressWarnings("serial")
+  public static class Return extends RuntimeException{
+    public String toString() {return "Return["+ unbox +"]";}
+    public final Object unbox; public Return(Object u){unbox=u;}
+    }
+  public static class Void{
+    public static final Void instance=new Void();
+    public static final Void type=new Void();
+    }
+  public static class Any{public static final Any type=new Any();}
+  public static class Library{public static final Library type=new Library();}
+  public static interface PhI<T>{
+    public void commit(T t);
+    public void addAction(java.util.function.Consumer<T> r);
+    }
+  public static interface Revertable{
+    public static ast.ExpCore doRevert(Object o){
+      if (o instanceof Revertable){return ((Revertable)o).revert();}
+      return EncodingHelper.wrapResource(o);
+    }
+    public ast.ExpCore revert();
+  }
+  public static boolean isValid(Program p,Object res, Object[] xs) {
+    ExpCore ec0=Revertable.doRevert(res);
+    List<ExpCore> es=new ArrayList<>();
+    for(Object o:xs){
+      es.add(Revertable.doRevert(o));
+    }
+    boolean strict=true;
+    for(ExpCore ec:es){
+      List<ClassB> cbs = CollectClassBs0.of(ec);
+      List<Path> ps = CollectPaths0.of(ec);
+      for(ClassB cb:cbs){
+        ClassB ct1= Configuration.typeSystem.typeExtraction(p,cb);
+        if(ct1.getStage()==Stage.Less ||ct1.getStage()==Stage.None  ){strict=false;}
+        }
+      for(Path path:ps){
+        if(path.isPrimitive()){continue;}
+        Stage extracted=p.extract(path).getStage();
+        if(extracted==Stage.Less || extracted==Stage.None){strict=false;}
+        }
+      }
+    List<ClassB> cbs = CollectClassBs0.of(ec0);
+    for(ClassB cb:cbs){
+      ClassB ct= Configuration.typeSystem.typeExtraction(p,cb);
+      try{Configuration.typeSystem.checkCt( p, ct);}
+      catch(ErrorMessage msg){
+        throw Assertions.codeNotReachable("try to make this happen, is it possible? it should mean bug in plugin code\n"+ToFormattedText.of(ct)+"\n\n"+msg+"\n---------------\n");
+      }
+      if(strict && (ct.getStage()==Stage.Less || ct.getStage()==Stage.None)){
+        throw Assertions.codeNotReachable("try to make this happen, is it possible? it should mean bug in plugin code\n"+ToFormattedText.of(ct));
+      }
+    }      
+    //confer method under to be in this form; remove cals from method under, be sure that small step use
+    //same stuff as compiled step -- dispatching
+    return true;
+  }
+  public static ExpCore validateResult(Program p, ExpCore result,ClassB l1,ClassB l2,Path path) {
+    if(!(result instanceof ClassB)){return result;}
+    boolean strict=true;
+    if(l1!=null){
+      ClassB ct1= Configuration.typeSystem.typeExtraction(p,l1);
+      if(ct1.getStage()==Stage.Less){strict=false;}
+    }
+    if(l2!=null){
+      ClassB ct2= Configuration.typeSystem.typeExtraction(p,l2);
+      if(ct2.getStage()==Stage.Less){strict=false;}
+    }
+    if(path!=null && path.isCore()){
+      if(p.extract(path).getStage()==Stage.Less){strict=false;}
+    }
+    ClassB ct= Configuration.typeSystem.typeExtraction(p,(ClassB)result);
+    try{Configuration.typeSystem.checkCt( p, ct);}
+    catch(ErrorMessage msg){
+      throw Assertions.codeNotReachable("try to make this happen, is it possible? it should mean bug in plugin code\n"+ToFormattedText.of(ct)+"\n\n"+msg+"\n---------------\n");
+    }
+    if(strict && ct.getStage()==Stage.Less){
+      throw Assertions.codeNotReachable("try to make this happen, is it possible? it should mean bug in plugin code\n"+ToFormattedText.of(ct));
+    }
+    return result;
+  }
+ 
+  public static ExecutorService pluginThreads=Executors.newCachedThreadPool(); 
+  public static <T> T block(java.util.function.Supplier<T> p){return p.get();}
+  public static platformSpecific.javaTranslation.Resources.Void unused=null;
+  
+  public static interface PlgClosure<Pt extends PluginType,T>{
+    T apply(Pt plg,Object[] xs);
+  }
+  /**
+   * @param plg plugin instance
+   * @param cls plugin executor
+   * @param xs parameters
+   * @return a safe result, or a safe error, or an non-action exception
+   */
+  public static <Pt extends PluginType,T> T plgExecuteSafe(Program p,Pt plg,PlgClosure<Pt,T> cls,Object ... xs){
+    try{
+      T res=cls.apply(plg, xs);
+      if(Resources.isValid(p,res,xs)){return res;}
+      else{throw Resources.notAct;}
+      }
+    catch(Resources.Error errF){
+      if(Resources.isValid(p,errF.unbox,xs)){throw errF;}
+      else{throw Resources.notAct;}
+      }
+    catch(ErrorMessage.PluginActionUndefined undF){throw undF;}
+    catch(java.lang.Error |RuntimeException propagate){
+        //throw Resources.notAct;//will be
+        throw propagate;
+      }
+    catch(Throwable tF){
+      //throw Resources.notAct;//will be
+      throw new Error(tF);//To debug
+      }
+    }
+  /*public Object bar(Plugin plg,Object e1, Object e2,Callable<Object> conclE){
+    return plgExecutor("dbgInfo",null,new Plugin(),
+        (plF,xsF)->plF.MsumInt32£n1£n2(xsF[0],xsF[1]),
+        conclE,e1,e2);  
+  }*/
+  public static <Pt extends PluginType,T> T plgExecutor(String plgCall,Program p,Pt plg,PlgClosure<Pt,T> cls,Callable<T> concl, Object ... es){
+    //System.err.println("Executing now::"+plgCall);
+    Future<T> exe=null;
+    try{//for finally
+      while(true){//cycle on another plugin supervision
+        try{return plgExecuteSafe(p,plg,cls,es);}//call plg
+        catch(ErrorMessage.PluginActionUndefined und){
+          int wait=und.getWait();
+          if(wait<-1){//not call me again: wait until the end and return the result
+            return justGetResult(concl, exe);
+            }
+          //else, we are supervisionating an expression and plg will be called again
+          if(exe==null){exe=pluginThreads.submit(concl);}
+          justWait(exe, wait);
+          }
+        }
+    }finally{if(exe!=null){exe.cancel(true);}}
+  }
+  public static <T> void justWait(Future<T> exe, int wait){
+    try{
+      if(wait!=-1){//timeout
+        try{exe.get(wait, TimeUnit.MILLISECONDS);}
+        catch(TimeoutException e){}//loop again  
+        }
+      else {exe.get();}
+      }
+    catch (InterruptedException ie){
+      Thread.currentThread().interrupt();
+      throw new Error(ie);
+      }
+    catch (ExecutionException ee){
+      if(ee.getCause() instanceof RuntimeException){
+        return;
+        //DO Nothing, just wait//throw (RuntimeException)ee.getCause(); 
+        }
+      throw new Error(ee);
+      }
+    }
+  public static <T> T justGetResult(Callable<T> concl, Future<T> exe){
+    try{
+      if(exe!=null){return exe.get();}
+      return concl.call();
+      }
+    catch (InterruptedException ie){
+      Thread.currentThread().interrupt();
+      throw new Error(ie);
+      }
+    catch (ExecutionException ee){
+      if(ee.getCause() instanceof RuntimeException){
+        throw (RuntimeException)ee.getCause(); 
+        }
+      throw new Error(ee);
+      }
+    catch (java.lang.Exception exc){
+      if(exc instanceof RuntimeException){
+        throw (RuntimeException)exc; 
+        }
+      throw new Error(exc);
+      }
+    }
+}
+
+
+
+
+    
+    
+    
+
+
+

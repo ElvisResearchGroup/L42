@@ -1,0 +1,13 @@
+name: Suite1
+tests:
+  - name: AllShorts
+    packages:
+      - testAux
+  - name: Slow
+    classes:
+      - testSlow.TestL42Slow
+
+  - name: SuperSlow
+    classes:
+      - testSlow.TestL42SuperSlow
+

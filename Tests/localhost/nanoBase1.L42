@@ -1,0 +1,186 @@
+{
+
+Bool:{(Library binaryRepr)<:S::ToS '@private
+  method Void #checkTrue() exception Void 
+    using Alu
+      check ifInt32EqualDo(n1:this.binaryRepr() n2:0N.binaryRepr())
+      exception void
+  type method Outer0 true() Outer0(binaryRepr:1N.binaryRepr())
+  type method Outer0 false() Outer0(binaryRepr:0N.binaryRepr())
+
+  method Outer0 &(Outer0 that){
+    if this (return that)
+    return this
+    }
+  method Outer0 |(Outer0 that){
+    if this (return this)
+    return that
+    }
+  method Outer0 !(){
+    if this (return Outer0.false())
+    return Outer0.true()
+    }
+  method toS(){
+    if this (return S"true")
+    return S"false"
+    }
+  }
+  
+
+ExitCode:{
+  type method
+  Library normal() {'@exitStatus
+     '0
+    }
+  type method
+  Library failure() {'@exitStatus
+     '42000
+    }
+  }
+
+Alu:{'@plugin
+  'L42.is/connected/withAlu
+  _private()'@private
+  }
+  
+N:{(Library binaryRepr)<:S::ToS
+
+  type method
+  N #numberParser(Library that) 
+    N(binaryRepr:using Alu
+      check stringToInt32(that)
+      error void)
+      
+  method
+  toS() S.#stringParser(using Alu
+      check int32ToString(this.binaryRepr())
+      error void)
+      
+  method
+  N +(N that) 
+    N(binaryRepr:using Alu
+      check sumInt32(n1:this.binaryRepr() n2:that.binaryRepr())
+      error void)
+      
+  method
+  N -(N that) 
+    N(binaryRepr:using Alu
+      check subInt32(n1:this.binaryRepr() n2:that.binaryRepr())
+      error void)
+      
+  method
+  N *(N that) 
+    N(binaryRepr:using Alu
+      check mulInt32(n1:this.binaryRepr() n2:that.binaryRepr())
+      error void)
+      
+  method
+  N /(N that) 
+    N(binaryRepr:using Alu
+      check divInt32(n1:this.binaryRepr() n2:that.binaryRepr())
+      error void)
+
+  method
+  Bool ==(N that) {
+    using Alu
+      check ifInt32EqualDo(n1:this.binaryRepr() n2:that.binaryRepr())
+      return Bool.true()
+    return Bool.false()
+    }
+    
+  method
+  Bool <(N that) {
+    using Alu
+      check ifInt32GrtDo(n1:this.binaryRepr() n2:that.binaryRepr())
+      return Bool.true()
+    return Bool.false()
+    }
+    
+  method
+  Bool <=(N that) {
+    using Alu
+      check ifInt32GEqDo(n1:this.binaryRepr() n2:that.binaryRepr())
+      return Bool.true()
+    return Bool.false()
+    }
+    
+  method Bool !=(N that) !(this==that)
+  
+  method Bool >(N that)  !(this<=that)
+  
+  
+  method Bool >=(N that) !(this<that)
+  }
+
+S:{ _private(Library _binaryRepr)<: ToS '@private
+  
+  type method Outer0 #stringParser(Library that) Outer0._private(_binaryRepr:that)
+    
+  method Library binaryRepr() this._binaryRepr()
+  
+  ToS:{interface method S toS()}
+  
+  method toS() this
+  
+  method
+  S ++ (ToS that) S.#stringParser(using Alu
+      check stringConcat(s1:this.binaryRepr(),s2:that.toS().binaryRepr())
+      error void)
+      
+  method Bool != (S that) !(this==that)
+  
+  method
+  Bool == (S that) {
+    using Alu
+      check ifStringEqualDo(s1:this.binaryRepr(),s2:that.binaryRepr())
+      return Bool.true()
+    return Bool.false()
+    }
+    
+  method
+  S (N that)
+    S.#stringParser(using Alu
+      check stringCharAt(this.binaryRepr(),pos:that.binaryRepr())
+      error void )
+ 
+  method N size () 
+    N(binaryRepr:using Alu
+      check stringSize(this.binaryRepr())
+      error void) 
+      
+  type method
+  S doubleQuote()
+    S"
+    '"
+    "(0N)
+    
+  method
+  S replace(S that, S into){'that must be of size 1
+    var N i=0N
+    var S result=S""
+    while i<this.size() (
+      if this(i)==that (result++=into )
+      else (result++=this(i))
+      i+=1N
+      )
+    return result
+    }
+  }
+  
+Debug:{_private() '@private
+  type method
+  Void (S that)
+    using Alu
+      check stringDebug(that.binaryRepr())
+      void
+      
+  type method
+  Void (S fileName, S content)
+    using Alu
+      check fileDebug(
+        fileName:fileName.binaryRepr(),
+        content:content.binaryRepr()
+        )
+      void
+  }
+}
