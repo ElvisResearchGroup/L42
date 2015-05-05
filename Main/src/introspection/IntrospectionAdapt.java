@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+
 import sugarVisitors.Desugar;
 import sugarVisitors.ToFormattedText;
 import tools.Assertions;
@@ -15,6 +16,7 @@ import tools.Map;
 import coreVisitors.CloneVisitor;
 import coreVisitors.CloneVisitorWithProgram;
 import coreVisitors.From;
+import coreVisitors.FromInClass;
 import coreVisitors.RemoveMethod;
 import coreVisitors.RetainOnlyAndRenameAs;
 import coreVisitors.Visitor;
@@ -168,11 +170,36 @@ public class IntrospectionAdapt {
     assert pp.getPath2().isCore();
     if(pp.getPath2().outerNumber()>0){return;}
     List<String> cBar1 = pp.getPath1().getCBar();
+    assert !cBar1.isEmpty();
     List<String> cBar2 = pp.getPath2().getCBar();
     Path toFrom = computeSquareTo(cBar1, cBar2);
     Doc[] docCb=new Doc[]{Doc.empty()};
     ClassB cb=Program.extractCBar(cBar1, lprime,docCb);
-    cb=(ClassB)From.from(cb, toFrom);//TODO: may need the -1 instead?
+    //from works so that an internal path stay the same,
+    //and an external path change to another external path.
+    //for into:Name"Outer0" we need external paths to become internal
+    if(toFrom.outerNumber()>0){
+      assert toFrom.outerNumber()>0;
+      toFrom=toFrom.setNewOuter(toFrom.outerNumber()-1);
+      assert toFrom.getCBar().size()!=0;
+      toFrom=toFrom.popC();
+      cb=(ClassB)FromInClass.of(cb, toFrom);
+    }
+    else{
+        //remove outerN where N is toFrom.getCBar().size()
+        int n=toFrom.getCBar().size();
+        if(n!=0){
+          cb=(ClassB)cb.accept(new CloneVisitor(){
+            public ExpCore visit(Path p){
+                if(p.isPrimitive()){return p;}
+                assert p.outerNumber()>=n;
+                p=p.setNewOuter(p.outerNumber()-n);
+                return p;
+            }
+          });
+        }
+    }
+    
     if(cBar2.isEmpty()){results.add(cb);return;}
     List<Member>ms=new ArrayList<>();
     ms.add(encapsulateIn(cBar2, cb,docCb[0]));
@@ -193,12 +220,15 @@ public class IntrospectionAdapt {
   }
   private static Path computeSquareTo(List<String> cBar1, List<String> cBar2) {
     if(cBar2.isEmpty()){return Path.outer(0,cBar1);}
-    Path p=recComputeSquareTo(cBar1, cBar2.subList(0,cBar2.size()-1));
-    List<String> cBar = p.getCBar();
-    p=Path.outer(p.outerNumber(),cBar.subList(0, cBar.size()-1));
-    return p;
+    if(cBar1.isEmpty()){return Path.outer(cBar2.size(),cBar1);}//otherwise
+    if(!cBar1.get(0).equals(cBar2.get(0))){return Path.outer(cBar2.size(),cBar1);}//otherwise
+    return computeSquareTo(cBar1.subList(1, cBar1.size()), cBar2.subList(1, cBar2.size()));
+    //Path p=recComputeSquareTo(cBar1, cBar2.subList(0,cBar2.size()-1));
+    //List<String> cBar = p.getCBar();
+    //p=Path.outer(p.outerNumber(),cBar.subList(0, cBar.size()-1));
+    //return p;
   }
-  private static Path recComputeSquareTo(List<String> cBar1, List<String> cBar2) {
+/*private static Path recComputeSquareTo(List<String> cBar1, List<String> cBar2) {
     if(cBar2.isEmpty()){return Path.outer(0,cBar1);}
     assert !cBar1.isEmpty();
     String firstCBar1=cBar1.get(0);
@@ -207,7 +237,7 @@ public class IntrospectionAdapt {
       return recComputeSquareTo(cBar1.subList(1,cBar1.size()),cBar2.subList(1,cBar2.size()));
       }
     return Path.outer(cBar2.size(),cBar1);
-  }
+  }*/
   private static ClassB remove(Path path1, ClassB l) {
     return (ClassB)l.accept(new CloneVisitor(){
       List<String> cs=path1.getCBar();
@@ -258,8 +288,16 @@ public class IntrospectionAdapt {
         for(PathPath pp:map){
           Path p1n=Norm.of(this.p,pp.getPath1());
           Path p2n=Norm.of(this.p,pp.getPath2());
-          if(p0n.equals(p1n)){return p2n;}
-          if(isSuperPath(p1n,p0n)){return superPathAdapt(p1n,p2n,p0n);}
+          if(p0n.equals(p1n)){
+              return p2n;
+              }
+          }
+        for(PathPath pp:map){//we need two for, to be sure to use exact match if possible
+          Path p1n=Norm.of(this.p,pp.getPath1());
+          Path p2n=Norm.of(this.p,pp.getPath2());
+          if(isSuperPath(p1n,p0n)){
+            return superPathAdapt(p1n,p2n,p0n);
+            }
           }
         return s;
         }

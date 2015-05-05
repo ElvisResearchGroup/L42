@@ -151,6 +151,9 @@ public interface Ast {
     List<String> rowData=Arrays.asList(path.split("::"));
     for(String s:rowData){
       assert isValidPathStart(s.charAt(0));
+      for(int i=1;i<s.length();i++){
+        assert isValidPathChar(s.charAt(i));    
+      }
     }
     return new Path(rowData);
   }}
@@ -159,6 +162,18 @@ public interface Ast {
     if(c=='$'){return true;}
     return Character.isUpperCase(c);
   }
+  public static boolean isValidPathChar(char c){
+      if(c=='%'){return true;}
+      if(c=='$'){return true;}
+      if(c=='_'){return true;}
+      return 
+              Character.isUpperCase(c) 
+              ||
+              Character.isLowerCase(c)
+              ||
+              Character.isDigit(c)
+              ;
+    }
   @Value @Wither public static class Doc{
     String s;
     List<Path>paths;

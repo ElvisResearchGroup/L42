@@ -3,8 +3,10 @@ package helpers;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.testng.Assert;
+
 import reduction.Executor;
 import sugarVisitors.Desugar;
 import sugarVisitors.InjectionOnCore;
@@ -18,6 +20,7 @@ import ast.ExpCore.ClassB.NestedClass;
 import ast.Expression;
 import auxiliaryGrammar.Program;
 import facade.Configuration;
+import facade.L42;
 import facade.Parser;
 
 public class TestHelper {
@@ -149,6 +152,7 @@ public class TestHelper {
   public static void configureForTest() {
     Configuration.reduction=new reduction.Facade();
     Configuration.typeSystem=new typeSystem.Facade();
+    L42.record=new StringBuilder();
   }
   public static void reportError(ErrorMessage e){
   if(Executor.last1==null||Executor.last2==null){throw e;}

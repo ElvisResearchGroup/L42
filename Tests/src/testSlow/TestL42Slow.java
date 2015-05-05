@@ -1,13 +1,16 @@
 package testSlow;
 
 import helpers.TestHelper;
+
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.Set;
+
 import org.testng.Assert;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
+
 import reduction.SmallStep;
 import sugarVisitors.Desugar;
 import sugarVisitors.InjectionOnCore;
@@ -845,6 +848,8 @@ public void test17() throws IOException{
 ,"}"
 )).getErrCode(),0);}
 
+
+
 @Test(singleThreaded=false)
 public void test17Old() throws IOException{
   TestHelper.configureForTest();
@@ -901,6 +906,80 @@ public void test18() throws IOException{
 ,"}"
 )).getErrCode(),0);}
 
+
+@Test(singleThreaded=false)
+public void testDeepMakePrivate() throws IOException{
+  TestHelper.configureForTest();
+  Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
+,"{reuse L42.is/miniBase"
+,"C:Adapt[Name\"Bar\", into:Name\"Outer0\";makePrivate:Name\"Bar::Foo\"]<{type method N top() Bar::Foo.foo() Bar:{Foo:{ type method N foo() 42N }}}"  
+,""
+,"Main:{"
+,"  if C.top()==42N ("
+,"    return ExitCode.normal()"
+,"    )"
+,"  return ExitCode.failure()"
+,"  }" 
+,"}"
+)).getErrCode(),0);}
+
+
+@Test(singleThreaded=false, expectedExceptions=AssertionError.class)
+public void testDeepMakePrivate2() throws IOException{
+  TestHelper.configureForTest();
+  Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
+,"{reuse L42.is/miniBase"
+,"Vector:{"
+,"  type method Library vector(type Any that)"
+,"    Adapt["
+,"      Name\"Elem\" into: Name(that);"
+,"      Name\"VectorStruct\" into:Name\"Outer0\";"
+,"      makePrivate:Name\"VectorStruct::Cell2\";"//should cause an error not of type TypeError
+,"      ]<{"
+,"      Elem:{interface}"
+,"      Kind:{ type method Elem elem() error S\"InternalUseOnly\" }"
+,"      VectorStruct:{ Cell:{type method N foo() 42N}}"
+,"      }"
+,"  }"
+,""
+,"ListArray:("
+,"  Debug(S\"InListArray\")"
+,"  x=Vector.vector(S)"
+,"  Debug(S\"computed\")"
+,"  ExitCode.normal()"
+,"  )" 
+,"}"
+)).getErrCode(),0);}
+
+
+@Test(singleThreaded=false)
+public void testDeepMakePrivate3() throws IOException{
+  TestHelper.configureForTest();
+  Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
+,"{reuse L42.is/miniBase"
+,"Vector:{"
+,"  type method Library vector(type Any that)"
+,"    Adapt["
+,"      Name\"Elem\" into: Name(that);"
+,"      Name\"VectorStruct\" into:Name\"Outer0\";"
+//,"      makePrivate:Name\"VectorStruct::Cell\";"
+,"      ]<{"
+,"      Elem:{interface}"
+,"      Kind:{ type method Elem elem() error S\"InternalUseOnly\" }"
+,"      VectorStruct:{ type method Kind::elem() fuffa() this.fuffa() "
+        //+ "Cell:{type method N foo() 42N}"
+        + "}"
+,"      }"
+,"  }"
+,""
+,"ListArray:("
+,"  Debug(S\"InListArray\")"
+,"  x=Vector.vector(S)"
+,"  Debug(S\"computed\")"
+,"  ExitCode.normal()"
+,"  )" 
+,"}"
+)).getErrCode(),0);}
 
 
 @Test(singleThreaded=false)

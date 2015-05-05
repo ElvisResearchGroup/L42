@@ -34,9 +34,8 @@ public class Program {//mutable object now!
     }
   public ClassB get(int num){
     //assert this.classB!=null;
-    if(this.classB==null){
-      assert false;//TO PUT the break
-    }
+    assert this.classB!=null:
+      "empty program reached";
     if(num==0){return this.classB;}
     return this.next.get(num-1);
     }

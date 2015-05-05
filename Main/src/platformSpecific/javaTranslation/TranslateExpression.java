@@ -94,7 +94,7 @@ public class TranslateExpression implements coreVisitors.Visitor<Void>{
     res.append("platformSpecific.javaTranslation.Resources.getP(), ");
     res.append("new "+plgName+"(), ");
     res.append("("+plF+","+xsF+")->"+plF+".");
-    //MsumInt32£n1£n2(xsF[0],xsF[1]),
+    //MsumInt32£xn1£xn2(xsF[0],xsF[1]),
     res.append(Translator.nameOf(s.getName(),s.getXs()));
     res.append("(");
     StringBuilders.formatSequence(res,

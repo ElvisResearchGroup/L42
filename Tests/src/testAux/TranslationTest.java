@@ -69,7 +69,7 @@ public class TranslationTest {
       ,"      check sumInt32(n1:this.that() n2:that.that())"
       ,"      error void))"
       ,"}}"),
-      " 5N+3N","generated.Program42$Outer0£N");}
+      " 5N+3N","generated.Program42$Outer0£_N");}
   
   @Test public void t10b(){tester(
       TestHelper.multiLine("{"
@@ -86,7 +86,7 @@ public class TranslationTest {
       ,"      check sumInt32(n1:this.that() n2:that.that())"
       ,"      error void))"
       ,"}}"),
-      " 5N+3N+80N","generated.Program42$Outer0£N");}
+      " 5N+3N+80N","generated.Program42$Outer0£_N");}
 
   
   @Test public void t11(){tester(

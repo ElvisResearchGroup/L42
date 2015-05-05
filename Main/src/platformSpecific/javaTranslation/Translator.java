@@ -121,7 +121,7 @@ public class Translator {
         mt->ms.add(From.from(mt, p))
         );
       }
-    List<Path> sup = tools.Map.of(pi->(Path)From.from(pi,p),ct.getSupertypes());
+    List<Path> sup = tools.Map.of(pi->(Path)From.fromP(pi,p),ct.getSupertypes());
     return ct.withMs(ms).withSupertypes(sup);
   }
   private static ClassB normalizeClass(Program p,ClassB ct) {
@@ -138,8 +138,8 @@ public class Translator {
     }
   public static String nameOf(String name, List<String> names) {
     String result="M"+name;
-    for(String x:names){result+="£"+x;}
-    return result.replace('#', '¢');    
+    for(String x:names){result+="£x"+x;}
+    return nameOf(result);    
     }
   public static String nameOf(Path p) {
     if (p.equals(Path.Any())){return "Object";}
@@ -149,7 +149,20 @@ public class Translator {
   }
   public static String nameOf(int level, List<String> cs) {
     String res="Outer"+level;
-    for(String s:cs){res+="£"+s;}
-    return res;
+    for(String s:cs){res+="::"+s;}
+    return nameOf(res);
+  }
+  public static String nameOf(String s){
+      s=s.replace("::","£_");
+      s=s.replace("%","£p");
+      s=s.replace("#","£h");
+      return s;
+  }
+  public static String name42Of(String javaName){
+      String s=javaName;
+      s=s.replace("£_","::");
+      s=s.replace("£p","%");
+      s=s.replace("£h","#");
+      return s;      
   }
 }

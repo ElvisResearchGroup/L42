@@ -50,7 +50,7 @@ public class Plugin implements PluginType{
 
 
   @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
-  public Object Mget£that£node(Object _lib,Object _path){
+  public Object Mget£xthat£xnode(Object _lib,Object _path){
     ClassB lib=ensureExtractClassB(_lib);
     Path path=ensureExtractInternalPath(_path);
     //ClassB target = getTarget(lib, path);
@@ -66,7 +66,7 @@ public class Plugin implements PluginType{
     return ToFormattedText.of(cb);}
 
   @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
-  public Object MgetOrElse£that£interfaceNum£node(Object _lib,Object _num,Object _path){
+  public Object MgetOrElse£xthat£xinterfaceNum£xnode(Object _lib,Object _num,Object _path){
     ClassB lib=ensureExtractCt(_lib,Resources.getP());
     Path path=ensureExtractInternalPath(_path);
     Integer num=ensureExtractInt32(_num);
@@ -79,7 +79,7 @@ public class Plugin implements PluginType{
 
   //getOrElse(that:ClassB  methodNum:num exceptionNum:num node:Path)  -> ClassAdaptForm    
   @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
-  public Object MgetOrElse£that£methodNum£exceptionNum£node(Object _lib,Object _mNum,Object _eNum,Object _path){
+  public Object MgetOrElse£xthat£xmethodNum£xexceptionNum£xnode(Object _lib,Object _mNum,Object _eNum,Object _path){
     MethodWithType m = extractMethod(_lib, _mNum, _path);
     Integer eNum=ensureExtractInt32(_eNum);
     Path result=ifExists(()->m.getMt().getExceptions().get(eNum));
@@ -90,41 +90,41 @@ public class Plugin implements PluginType{
   //% -getXXXOrElse(that:ClassB methodNum:num node:Path )
   //%[9]NameSuffixesMethod:{}/Name/Mdf/Type/TypePath/TypeMdf/TypePh/Doc/DocExceptions
   @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
-  public Object MgetOrElse£that£methodNum£node(Object _lib,Object _mNum,Object _path){
+  public Object MgetOrElse£xthat£xmethodNum£xnode(Object _lib,Object _mNum,Object _path){
     return ToFormattedText.of(extractMethod(_lib, _mNum, _path));}
 //%2-9
   //% -getXXXOrElse(that:ClassB methodNum:num node:Path )
   //%[9]NameSuffixesMethod:{}/Name/Mdf/Type/TypePath/TypeMdf/TypePh/Doc/DocExceptions
   @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
-  public Object MgetNameOrElse£that£methodNum£node(Object _lib,Object _mNum,Object _path){
+  public Object MgetNameOrElse£xthat£xmethodNum£xnode(Object _lib,Object _mNum,Object _path){
     MethodWithType result = extractMethod(_lib, _mNum, _path);
     return result.getMs().toString();}
   //%3-9
   //% -getXXXOrElse(that:ClassB methodNum:num node:Path )
   //%[9]NameSuffixesMethod:{}/Name/Mdf/Type/TypePath/TypeMdf/TypePh/Doc/DocExceptions
   @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
-  public Object MgetMdfOrElse£that£methodNum£node(Object _lib,Object _mNum,Object _path){
+  public Object MgetMdfOrElse£xthat£xmethodNum£xnode(Object _lib,Object _mNum,Object _path){
     MethodWithType result = extractMethod(_lib, _mNum, _path);
     return result.getMt().getMdf().name();}
   //%4-9
   //% -getXXXOrElse(that:ClassB methodNum:num node:Path )
   //%[9]NameSuffixesMethod:{}/Name/Mdf/Type/TypePath/TypeMdf/TypePh/Doc/DocExceptions
   @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
-  public Object MgetTypeOrElse£that£methodNum£node(Object _lib,Object _mNum,Object _path){
+  public Object MgetTypeOrElse£xthat£xmethodNum£xnode(Object _lib,Object _mNum,Object _path){
     MethodWithType result = extractMethod(_lib, _mNum, _path);
     return ToFormattedText.of(result.getMt().getReturnType());}
   //%5-9
   //% -getXXXOrElse(that:ClassB methodNum:num node:Path )
   //%[9]NameSuffixesMethod:{}/Name/Mdf/Type/TypePath/TypeMdf/TypePh/Doc/DocExceptions
   @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
-  public Object MgetTypePathOrElse£that£methodNum£node(Object _lib,Object _mNum,Object _path){
+  public Object MgetTypePathOrElse£xthat£xmethodNum£xnode(Object _lib,Object _mNum,Object _path){
     MethodWithType result = extractMethod(_lib, _mNum, _path);
     return buildTypePathAdapter(result.getMt().getReturnType());}
     
   //%10-9
   //% -ifIsFieldDo(that:ClassB methodNum:num node:Path )
   @ActionType({ActionType.Type.Void,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
-  public Resources.Void MifIsFieldDo£that£methodNum£node(Object _lib,Object _mNum,Object _path){
+  public Resources.Void MifIsFieldDo£xthat£xmethodNum£xnode(Object _lib,Object _mNum,Object _path){
     MethodWithType result = extractMethod(_lib, _mNum, _path);
     boolean isAbstract=!result.getInner().isPresent();
     if(!isAbstract){return Resources.Void.instance;}
@@ -134,7 +134,7 @@ public class Plugin implements PluginType{
   //% -getXXXOrElse(that:ClassB methodNum:num parameterNum:num node:Path )
   //%[7]NameSuffixesMethodParameter:{}/Name/Mdf/Type/TypePath/TypeMdf/TypePh/Doc
   @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
-  public Object MgetOrElse£that£methodNum£parameterNum£node(Object _lib,Object _mNum,Object _pNum,Object _path){
+  public Object MgetOrElse£xthat£xmethodNum£xparameterNum£xnode(Object _lib,Object _mNum,Object _pNum,Object _path){
     StringBuilder b=new StringBuilder();
     extractField(_lib,_mNum,_pNum,_path,(n,t,doc)->{
       b.append(ToFormattedText.of(t));
@@ -147,7 +147,7 @@ public class Plugin implements PluginType{
   //% -getXXXOrElse(that:ClassB methodNum:num parameterNum:num node:Path )
   //%[7]NameSuffixesMethodParameter:{}/Name/Mdf/Type/TypePath/TypeMdf/TypePh/Doc
   @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
-  public Object MgetNameOrElse£that£methodNum£parameterNum£node(Object _lib,Object _mNum,Object _pNum,Object _path){
+  public Object MgetNameOrElse£xthat£xmethodNum£xparameterNum£xnode(Object _lib,Object _mNum,Object _pNum,Object _path){
     StringBuilder b=new StringBuilder();
     extractField(_lib,_mNum,_pNum,_path,(n,t,doc)->{
       b.append(n);
@@ -157,7 +157,7 @@ public class Plugin implements PluginType{
   //% -getXXXOrElse(that:ClassB methodNum:num parameterNum:num node:Path )
   //%[7]NameSuffixesMethodParameter:{}/Name/Type/TypePath/TypeMdf/TypePh/Doc
   @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
-  public Object MgetTypeOrElse£that£methodNum£parameterNum£node(Object _lib,Object _mNum,Object _pNum,Object _path){
+  public Object MgetTypeOrElse£xthat£xmethodNum£xparameterNum£xnode(Object _lib,Object _mNum,Object _pNum,Object _path){
     StringBuilder b=new StringBuilder();
     extractField(_lib,_mNum,_pNum,_path,(n,t,doc)->{
       b.append(ToFormattedText.of(t));
@@ -167,7 +167,7 @@ public class Plugin implements PluginType{
   //% -getXXXOrElse(that:ClassB methodNum:num parameterNum:num node:Path )
   //%[7]NameSuffixesMethodParameter:{}/Name/Type/TypePath/TypeMdf/TypePh/Doc
   @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
-  public Object MgetTypePathOrElse£that£methodNum£parameterNum£node(Object _lib,Object _mNum,Object _pNum,Object _path){
+  public Object MgetTypePathOrElse£xthat£xmethodNum£xparameterNum£xnode(Object _lib,Object _mNum,Object _pNum,Object _path){
     Type[]ts=new Type[1];
     extractField(_lib,_mNum,_pNum,_path,(n,t,doc)->{ts[0]=t;});
     return buildTypePathAdapter(ts[0]);}
@@ -175,7 +175,7 @@ public class Plugin implements PluginType{
   //% -getXXXOrElse(that:ClassB methodNum:num parameterNum:num node:Path )
   //%[7]NameSuffixesMethodParameter:{}/Name/Type/TypePath/TypeMdf/TypePh/Doc
   @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
-  public Object MgetTypeMdfOrElse£that£methodNum£parameterNum£node(Object _lib,Object _mNum,Object _pNum,Object _path){
+  public Object MgetTypeMdfOrElse£xthat£xmethodNum£xparameterNum£xnode(Object _lib,Object _mNum,Object _pNum,Object _path){
     Type[]ts=new Type[1];
     extractField(_lib,_mNum,_pNum,_path,(n,t,doc)->{ts[0]=t;});
     return buildTypeMdf(ts[0]);}
@@ -183,7 +183,7 @@ public class Plugin implements PluginType{
   //% -getXXXOrElse(that:ClassB methodNum:num parameterNum:num node:Path )
   //%[7]NameSuffixesMethodParameter:{}/Name/Type/TypePath/TypeMdf/TypePh/Doc
   @ActionType({ActionType.Type.Void,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
-  public Resources.Void MifTypePhDo£that£methodNum£parameterNum£node(Object _lib,Object _mNum,Object _pNum,Object _path){
+  public Resources.Void MifTypePhDo£xthat£xmethodNum£xparameterNum£xnode(Object _lib,Object _mNum,Object _pNum,Object _path){
     Type[]ts=new Type[1];
     extractField(_lib,_mNum,_pNum,_path,(n,t,doc)->{ts[0]=t;});
     boolean b=buildTypePh(ts[0]);
@@ -193,7 +193,7 @@ public class Plugin implements PluginType{
   //% -getXXXOrElse(that:ClassB methodNum:num parameterNum:num node:Path )
   //%[7]NameSuffixesMethodParameter:{}/Name/Mdf/Type/TypePath/TypeMdf/TypePh/Doc
   @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
-  public Object MgetDocOrElse£that£methodNum£parameterNum£node(Object _lib,Object _mNum,Object _pNum,Object _path){
+  public Object MgetDocOrElse£xthat£xmethodNum£xparameterNum£xnode(Object _lib,Object _mNum,Object _pNum,Object _path){
     StringBuilder b=new StringBuilder();
     extractField(_lib,_mNum,_pNum,_path,(n,t,doc)->{
       b.append(doc);
@@ -308,55 +308,64 @@ public class Plugin implements PluginType{
     }
   // sum
   @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
-  public Object MsumLib£l1£l2(Object cb1,Object cb2){
+  public Object MsumLib£xl1£xl2(Object cb1,Object cb2){
     ClassB l1=extractClassB(cb1);
     ClassB l2=extractClassB(cb2);
     if (l1==null ||l2==null){throw new Resources.Error("InvalidClassB");}
-    ExpCore result=IntrospectionSum.sum(l1, l2,Path.outer(0));
-    //return validateResult(pInternal, result,l1,l2,null);
+    
+    //try{
+      ExpCore result=IntrospectionSum.sum(l1, l2,Path.outer(0));
+    //  return validateResult(Resources.getP(), result,l1,l2,null);
+    //}
+    //catch(Throwable msg){
+    //  throw Assertions.codeNotReachable("try to make this happen, is it possible? it should mean bug in plugin code\n"+msg+"\n---------------\n");  
+    //}
     return result;
   }
-  /*public static ExpCore validateResult(Program p, ExpCore result,ClassB l1,ClassB l2,Path path) {
+  public static ExpCore validateResult(Program p, ExpCore result,ClassB l1,ClassB l2,Path path) {
     if(!(result instanceof ClassB)){return result;}
     boolean strict=true;
     if(l1!=null){
-      ClassB ct1= Configuration.typeExtraction.of(p,l1);
+      ClassB ct1= Configuration.typeSystem.typeExtraction(p,l1);
       if(ct1.getStage()==Stage.Less){strict=false;}
     }
     if(l2!=null){
-      ClassB ct2= Configuration.typeExtraction.of(p,l2);
+      ClassB ct2= Configuration.typeSystem.typeExtraction(p,l2);
       if(ct2.getStage()==Stage.Less){strict=false;}
     }
     if(path!=null && path.isCore()){
       if(p.extract(path).getStage()==Stage.Less){strict=false;}
     }
-    ClassB ct= Configuration.typeExtraction.of(p,(ClassB)result);
+    ClassB ct= Configuration.typeSystem.typeExtraction(p,(ClassB)result);
     try{Configuration.typeSystem.checkCt( p, ct);}
     catch(ErrorMessage msg){
       throw Assertions.codeNotReachable("try to make this happen, is it possible? it should mean bug in plugin code\n"+ToFormattedText.of(ct)+"\n\n"+msg+"\n---------------\n");
     }
-    if(strict && ct.getStage()==Stage.Less){
+    if(strict && (ct.getStage()==Stage.Less || ct.getStage()==Stage.None)){
       throw Assertions.codeNotReachable("try to make this happen, is it possible? it should mean bug in plugin code\n"+ToFormattedText.of(ct));
     }
     return result;
-  }*/
+  }
  
   
   // adapt
-  //private static Ast.MethodType MadaptLib£l1£l2=mt(Path.Library(),Path.Library(),Path.Library());
   @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
-  public Object MadaptLib£l1£l2(Object cb1,Object cb2){
+  public Object MadaptLib£xl1£xl2(Object cb1,Object cb2){
     ClassB l1=extractClassB(cb1);
     ClassB l2=extractClassB(cb2);
     if (l1==null ||l2==null){throw new Resources.Error("InvalidClassB");}
+  //try{//TODO: no, should be pluginexecuteSafe
     ExpCore result=IntrospectionAdapt.adapt(Resources.getP(),l1, l2);
-    //return validateResult(pInternal,result,l1,l2,null);
-    return result;
+  //  return validateResult(Resources.getP(),result,l1,l2,null);
+  //}
+  //catch(Throwable msg){
+  //  throw Assertions.codeNotReachable("try to make this happen, is it possible? it should mean bug in plugin code\n"+msg+"\n---------------\n");  
+  //}
+
+  return result;
   }
-  //case "nameToAdapter that ":return t?nameToAdapter:nameToAdapter(p,_1,_2);
-  //??case "adapterToName that ":return t?adaptLib:adaptLib(p,_1,_2);
   @ActionType({ActionType.Type.Library,ActionType.Type.Library})
-  public Object MnameToAdapter£that(Object cb1){
+  public Object MnameToAdapter£xthat(Object cb1){
     String s1=extractStringU(cb1);
     if (s1==null){throw new Resources.Error("InvalidStringU");}
     L42.usedNames.add(s1);
@@ -376,7 +385,7 @@ public class Plugin implements PluginType{
   }
     
   @ActionType({ActionType.Type.Library,ActionType.Type.TypeAny})
-  public Object MtypeNameToAdapter£that(Object o){
+  public Object MtypeNameToAdapter£xthat(Object o){
     Path path=extractPathFromJava(o);
     if (path==null){throw new Resources.Error("ShouldNotHappen::InvalidPath");}
     //return validateResult(pInternal,IntrospectionAdapt.buildPathAdapterOut(path),null,null,path);
@@ -384,7 +393,7 @@ public class Plugin implements PluginType{
   }
   
   @ActionType({ActionType.Type.Library,ActionType.Type.Library})
-  public Object MgetFreshName£that(Object o){
+  public Object MgetFreshName£xthat(Object o){
     ClassB cb=ensureExtractClassB(o);
     Optional<Member> memberOpt = Program.getIfInDom(cb.getMs(),"%o_0%");
     if(!memberOpt.isPresent()){throw new  Resources.Error("Invalid adapter: "+ToFormattedText.of(cb));}
@@ -401,7 +410,7 @@ public class Plugin implements PluginType{
   public Object freshNestedClassNameAdapter(ClassB cb, NestedClass nc,ClassB face) {
     if(face.isInterface()){throw new  Resources.Error("Invalid adapter: "+ToFormattedText.of(cb));}
     //throw Assertions.codeNotReachable();
-    //dhdhhdd//TODO:enable again
+    //TODO:enable again
     assert !face.isInterface();
     Path seed=face.getDoc1().getPaths().get(0);
     String fresh="%"+Functions.freshName(seed, L42.usedNames);

@@ -21,7 +21,7 @@ public class Facade implements Reduction{
     return (ClassB)Executor.stepStar(
         getExecutor(),
         //new CompiledStep(),
-       // new BigStep(),
+        //new BigStep(),
         //new SmallStep(),
         topLevel);
   }  

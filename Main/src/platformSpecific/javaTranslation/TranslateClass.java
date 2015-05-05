@@ -50,19 +50,21 @@ public class TranslateClass {
   }
 
   private static void getTypeForNotInstantiableClass(String s, StringBuilder res) {
+      assert !s.contains("%"):
+          "break";
     res.append("public static final "+s+" type=new "+s+"();");    
   }
 
   private static void getITReverter(String s,StringBuilder res) {
     res.append("public ast.ExpCore revert(){\n");
     res.append("return ast.Ast.Path.parse(\"");
-    res.append(s.replace("£","::"));
+    res.append(Translator.name42Of(s));
     res.append("\");}\n");
     }
   private static void getReverterForNotInstantiableClass(String s,StringBuilder res) {
     res.append("public ast.ExpCore revert(){\n");
     res.append("ast.Ast.Path receiver=ast.Ast.Path.parse(\"");
-    res.append(s.replace("£","::"));
+    res.append(Translator.name42Of(s));
     res.append("\");\n");
     res.append("if(this==type){return receiver;}\n");
     res.append("throw new Error(\"Impossible to revert an instance of a not instantiable class, how you get this instance?\");");
@@ -72,7 +74,7 @@ public class TranslateClass {
   private static void getReverter(String s, MethodWithType ctor,StringBuilder res) {
     res.append("public ast.ExpCore revert(){\n");
     res.append("ast.Ast.Path receiver=ast.Ast.Path.parse(\"");
-    res.append(s.replace("£","::"));
+    res.append(Translator.name42Of(s));
     res.append("\");\n");
     res.append("if(this==type){return receiver;}\n");
     res.append("java.util.ArrayList<String> xs=new java.util.ArrayList<>(java.util.Arrays.asList(");

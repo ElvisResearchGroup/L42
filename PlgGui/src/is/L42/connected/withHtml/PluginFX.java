@@ -32,21 +32,7 @@ try to learn to use ACE for the IDE?
  */
 
 public class PluginFX implements PluginType {
-  /*@Override
-  public Object dispatch(boolean t,Program p, Using u) {
-    ExpCore _1=u.getEs().size()<1?null:u.getEs().get(0);
-    ExpCore _2=u.getEs().size()<2?null:u.getEs().get(1);
-    //ExpCore _3=u.getEs().size()<3?null:u.getEs().get(2);
-    switch(composedName(u)){
-      case "open that title ":return t?Mopen£that£title:Mopen£that£title(_1,_2);
-      //case "get id ":return t?getId:getId(_1,_2);
-      case "set that id ":return t?Mset£that£id:Mset£that£id(_1,_2);
-  //    case "update that id ":return t?subInt32:subInt32(_1,_2);
-      case "eventPending ":return t?MeventPending:MeventPending();
-      default:throw new ErrorMessage.PluginMethodUndefined(u, p.getInnerData());
-    }
-  }*/
-
+//OLD, unused.
   private static Ast.MethodType Mopen£that£title=mt(Path.Void(),Path.Library(),Path.Library());
   @ActionType({ActionType.Type.Void,ActionType.Type.Library,ActionType.Type.Library})
   public Resources.Void Mopen£that£title(Object cb1,Object cb2){

@@ -35,6 +35,8 @@ public class TestCompositionOperators {
     },{"{()A:{()}}","{B:{()}}","{() A:{()} B:{()}}"
     },{"{() method Void a() void }","{ method Void a() }","{() method Void a() void }"
     },{"{ method Void a() }","{ method Void b() }","{ method Void a()  method Void b() }"
+
+    
   }};}
 
     @Test(dataProvider="cb,cb,cb")
@@ -83,8 +85,31 @@ public class TestCompositionOperators {
       "{A:{ method A foo(A b) b  method A(A a) A()} }"
     },{"{A:{() method A(A a) a method A foo(A b) A()} }",
       "{ A:{ method Void (Void a) this.foo(b:a) method Void foo(Void b) this(a:b)} }",
-      "{A:{() method A foo(A b) b method A (A a) A()} }" 
-      }};}
+      "{A:{() method A foo(A b) b method A (A a) A()} }"
+    },{//
+     "{ A:{ type method Outer1::B () } B:{ }}",
+     "{ A:{'@Outer1\n}}",
+     "{ B:{ } type method Outer0::B ()  }"
+     },{
+     "{ A:{ type method Outer1::B () } B:{ }}",
+     "{ A:{'@Outer1::C\n}}",
+     "{ B:{ }  C:{type method Outer1::B () }}"
+     },{
+     "{ A1:{ A2:{ type method B () }} B:{ }}",
+     "{ A1:{A2:{'@Outer1\n}}}",
+     "{ A1:{ type method B () } B:{ }}",
+     },{
+     "{ A1:{ A2:{ type method B () }} B:{ }}",
+     "{ A1:{A2:{'@Outer2\n}}}",
+     "{ A1:{ } B:{ } type method B () }",
+     //Outer1::A1::B
+     },{
+     "{ A1:{ A2:{ type method B () } B:{ } }}",
+     "{ A1:{A2:{'@Outer1\n}}}",
+     "{ A1:{B:{ } type method B () }}",
+     //Outer1::A1::B
+
+    }};}
 
     @Test(dataProvider="cb,cb,cb")
   public void test(String e1,String e2,String e3) {
@@ -103,7 +128,7 @@ public class TestCompositionOperators {
     }};}
   @Test(dataProvider="cb,cb,cb")public void test(String e1,String e2,String e3) {
     ClassB cb1=getClassB(e1);
-    String res=(String)getWI(wi->wi.Mget£that£node(cb1,e2));
+    String res=(String)getWI(wi->wi.Mget£xthat£xnode(cb1,e2));
     Assert.assertEquals(res,e3);}}
   //----------------------------------------------------------
   @Test(singleThreaded=true, timeOut = 500)public class Test_MgetOrElse£that£interfaceNum£node {@DataProvider(name = "cb,cb,cb")public Object[][] createData1() {return new Object[][] {
@@ -113,7 +138,7 @@ public class TestCompositionOperators {
   @Test(dataProvider="cb,cb,cb")public void test(String e1,int e2,String e3,String e4) {
     ClassB cb1=getClassB(e1);
     ClassB cb4=getClassB(e4);
-    ClassB res=(ClassB)getWI(wi->wi.MgetOrElse£that£interfaceNum£node(cb1,e2,e3));
+    ClassB res=(ClassB)getWI(wi->wi.MgetOrElse£xthat£xinterfaceNum£xnode(cb1,e2,e3));
     TestHelper.assertEqualExp(res,cb4);}}
   //----------------------------------------------------------
   @Test(singleThreaded=true, timeOut = 500)public class Test_MgetOrElse£that£methodNum£exceptionNum£node {@DataProvider(name = "cb,cb,cb")public Object[][] createData1() {return new Object[][] {
@@ -128,7 +153,7 @@ public class TestCompositionOperators {
   @Test(dataProvider="cb,cb,cb")public void test(String e1,int e2,int e3,String e4,String _expected) {
     ClassB cb1=getClassB(e1);
     ClassB expected=getClassB(_expected);
-    ClassB res=(ClassB)getWI(wi->wi.MgetOrElse£that£methodNum£exceptionNum£node(cb1,e2,e3,e4));
+    ClassB res=(ClassB)getWI(wi->wi.MgetOrElse£xthat£xmethodNum£xexceptionNum£xnode(cb1,e2,e3,e4));
     TestHelper.assertEqualExp(res,expected);}}
   
   //----------------------------------------------------------
@@ -144,28 +169,28 @@ public class TestCompositionOperators {
     }};}
   @Test(dataProvider="cb,cb,cb")public void test(String e1,String _expected) {
     ClassB expected=getClassB(_expected);
-    ClassB res=(ClassB)getWI(wi->wi.MnameToAdapter£that(e1));
+    ClassB res=(ClassB)getWI(wi->wi.MnameToAdapter£xthat(e1));
     TestHelper.assertEqualExp(res,expected);}}
   //----------------------------------------------------------
-  @Test(singleThreaded=true, timeOut = 500)public class Test_MtypeNameToAdapter£that {@DataProvider(name = "cb,cb,cb")public Object[][] createData1() {return new Object[][] {
+  @Test(singleThreaded=true, timeOut = 500)public class Test_MtypeNameToAdapter£xthat {@DataProvider(name = "cb,cb,cb")public Object[][] createData1() {return new Object[][] {
     {Path.parse("Outer0::Ext"),"{%o_0%:{'@Outer2::Ext\n}}"
 //  },{Path.parse("Outer2"),"{%o_0%:{ #apply(Outer4 that)}}"
     }};}
   @Test(dataProvider="cb,cb,cb")public void test(Ast.Path e1,String _expected) {
     ClassB expected=getClassB(_expected);
-    ClassB res=(ClassB)getWI(wi->wi.MtypeNameToAdapter£that(e1));
+    ClassB res=(ClassB)getWI(wi->wi.MtypeNameToAdapter£xthat(e1));
     TestHelper.assertEqualExp(res,expected);}}
   //----------------------------------------------------------
-  @Test(singleThreaded=true, timeOut = 500)public class Test_MgetOrElse£that£methodNum£node {@DataProvider(name = "cb,cb,cb")public Object[][] createData1() {return new Object[][] {
+  @Test(singleThreaded=true, timeOut = 500)public class Test_MgetOrElse£xthat£xmethodNum£xnode {@DataProvider(name = "cb,cb,cb")public Object[][] createData1() {return new Object[][] {
     {"{ A:{} method A m()exception A this.m() }",0,"Outer0",
       "method \nOuter0::A m() exception Outer0::A this.m()"
     }};}
   @Test(dataProvider="cb,cb,cb")public void test(String e1,int e2,String e3,String expected) {
     ClassB cb1=getClassB(e1);
-    String res=(String)getWI(wi->wi.MgetOrElse£that£methodNum£node(cb1,e2,e3));
+    String res=(String)getWI(wi->wi.MgetOrElse£xthat£xmethodNum£xnode(cb1,e2,e3));
     Assert.assertEquals(res.trim(),expected);}}
   //----------------------------------------------------------
-  @Test(singleThreaded=true, timeOut = 500)public class Test_MgetNameOrElse£that£methodNum£node {@DataProvider(name = "cb,cb,cb")public Object[][] createData1() {return new Object[][] {
+  @Test(singleThreaded=true, timeOut = 500)public class Test_MgetNameOrElse£xthat£xmethodNum£xnode {@DataProvider(name = "cb,cb,cb")public Object[][] createData1() {return new Object[][] {
     {"{ A:{} method A m()exception A this.m() }",0,"Outer0",
       "m"
   },{"{ A:{} method A m(A a)exception A  }",0,"Outer0",
@@ -179,10 +204,10 @@ public class TestCompositionOperators {
     }};}
   @Test(dataProvider="cb,cb,cb")public void test(String e1,int e2,String e3,String expected) {
     ClassB cb1=getClassB(e1);
-    String res=(String)getWI(wi->wi.MgetNameOrElse£that£methodNum£node(cb1,e2,e3));
+    String res=(String)getWI(wi->wi.MgetNameOrElse£xthat£xmethodNum£xnode(cb1,e2,e3));
     Assert.assertEquals(res,expected);}}
   //----------------------------------------------------------
-  @Test(singleThreaded=true, timeOut = 500)public class Test_MgetTypePathOrElse£that£methodNum£node {@DataProvider(name = "cb,cb,cb")public Object[][] createData1() {return new Object[][] {
+  @Test(singleThreaded=true, timeOut = 500)public class Test_MgetTypePathOrElse£xthat£xmethodNum£xnode {@DataProvider(name = "cb,cb,cb")public Object[][] createData1() {return new Object[][] {
       {"{ A:{} method A m()exception A this.m() }",0,"Outer0",
         "{A:{}%o_0%:{'@Outer1::A\n}}"
     },{"{ A:{ method A m(A a)exception A  }}",0,"A",
@@ -195,10 +220,10 @@ public class TestCompositionOperators {
   @Test(dataProvider="cb,cb,cb")public void test(String _lib,int num,String path, String _expected) {
     ClassB lib=getClassB(_lib);
     ClassB expected=getClassB(_expected);
-    ClassB res=(ClassB)getWI(wi->wi.MgetTypePathOrElse£that£methodNum£node(lib,num,path));
+    ClassB res=(ClassB)getWI(wi->wi.MgetTypePathOrElse£xthat£xmethodNum£xnode(lib,num,path));
     TestHelper.assertEqualExp(res,expected);}}
   //----------------------------------------------------------
-  @Test(singleThreaded=true, timeOut = 500)public class Test_MgetOrElse£that£methodNum£parameterNum£node {@DataProvider(name = "cb,cb,cb")public Object[][] createData1() {return new Object[][] {
+  @Test(singleThreaded=true, timeOut = 500)public class Test_MgetOrElse£xthat£xmethodNum£xparameterNum£xnode {@DataProvider(name = "cb,cb,cb")public Object[][] createData1() {return new Object[][] {
       {"{ A:{} method A m( A a )this.m() }",0,0,"Outer0",
         "Outer0::A a"
       },{"{ A:{} method A m( A a A b'foo\n  'bar\n)this.m() }",0,1,"Outer0",
@@ -207,7 +232,7 @@ public class TestCompositionOperators {
       }};}
   @Test(dataProvider="cb,cb,cb")public void test(String _lib,int num,int pNum,String path, String expected) {
     ClassB lib=getClassB(_lib);
-    String res=(String)getWI(wi->wi.MgetOrElse£that£methodNum£parameterNum£node(lib,num,pNum,path));
+    String res=(String)getWI(wi->wi.MgetOrElse£xthat£xmethodNum£xparameterNum£xnode(lib,num,pNum,path));
     Assert.assertEquals(res,expected);}}
   
   

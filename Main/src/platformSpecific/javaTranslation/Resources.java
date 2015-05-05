@@ -182,9 +182,17 @@ public class Resources {
       else{throw Resources.notAct;}
       }
     catch(ErrorMessage.PluginActionUndefined undF){throw undF;}
-    catch(java.lang.Error |RuntimeException propagate){
-        //throw Resources.notAct;//will be
-        throw propagate;
+   //catch(java.lang.Error |RuntimeException msg){//eclipse debugger can not hande it
+    catch(AssertionError msg){ throw msg;}
+    catch(RuntimeException msg){
+      //throw Resources.notAct;//will be
+      System.out.println("F!!");        
+      throw Assertions.codeNotReachable("try to make this happen, is it possible? it should mean bug in plugin code\n"+msg+"\n---------------\n");        
+      }
+    catch(java.lang.Error msg){
+      //throw Resources.notAct;//will be
+      System.out.println("F!!");        
+      throw Assertions.codeNotReachable("try to make this happen, is it possible? it should mean bug in plugin code\n"+msg+"\n---------------\n");
       }
     catch(Throwable tF){
       //throw Resources.notAct;//will be
@@ -193,7 +201,7 @@ public class Resources {
     }
   /*public Object bar(Plugin plg,Object e1, Object e2,Callable<Object> conclE){
     return plgExecutor("dbgInfo",null,new Plugin(),
-        (plF,xsF)->plF.MsumInt32£n1£n2(xsF[0],xsF[1]),
+        (plF,xsF)->plF.MsumInt32£xn1£xn2(xsF[0],xsF[1]),
         conclE,e1,e2);  
   }*/
   public static <Pt extends PluginType,T> T plgExecutor(String plgCall,Program p,Pt plg,PlgClosure<Pt,T> cls,Callable<T> concl, Object ... es){

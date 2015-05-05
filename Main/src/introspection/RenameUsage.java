@@ -124,7 +124,7 @@ class RenameUsage extends CloneVisitorWithProgram {
    if(guessed.equals(path)){return true;}
    ClassB ct=p.extract(guessed);
    List<Path> sup = ct.getSupertypes();
-   sup=Map.of(pi->(Path)From.from(pi,guessed),sup);
+   sup=Map.of(pi->(Path)From.fromP(pi,guessed),sup);
    if(sup.contains(path)){return true;}
     return false;
   }
