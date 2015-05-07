@@ -84,14 +84,21 @@ public class ToFormattedText implements Visitor<Void>{
     return of(e.accept(new InjectionOnSugar()));
   }
   public static String of(ExpCore.ClassB.Member m){
-    List<ExpCore.ClassB.Member> ms=new ArrayList<ExpCore.ClassB.Member>();
+    List<ExpCore.ClassB.Member> ms=new ArrayList<>();
     ms.add(m);
     ExpCore e=new ExpCore.ClassB(Doc.empty(),Doc.empty(),false,Collections.emptyList(),ms, ast.Ast.Stage.None);
     Expression.ClassB es=(ClassB) e.accept(new InjectionOnSugar());
     ToFormattedText tft=new ToFormattedText();
-    tft.formatMembers(es.getMs());
+    tft.formatMembers(es.getMs());//for the injection
     return tft.result.toString();
   }
+  public static String of(Expression.ClassB.Member m){
+      List<Expression.ClassB.Member> ms=new ArrayList<>();
+      ms.add(m);
+      ToFormattedText tft=new ToFormattedText();
+      tft.formatMembers(ms);
+      return tft.result.toString();
+    }
   //String atomIndent="  ";
   protected Void c(String s){result.append(s);return null;}
   private Void c(StringBuilder s){result.append(s);return null;}

@@ -145,11 +145,13 @@ import ast.ExpCore.ClassB;
     String token;
   }
 
-  @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class DotDotDotCanNotBeResolved extends ErrorMessage {
+  @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true)
+  public static class DotDotDotCanNotBeResolved extends ErrorMessage {
     public int getErrCode() {
       return 1013;
     }
     String reason;
+    //java.nio.file.Path orignFileName;
     Expression.ClassB.NestedClass hasDotDotDot;
     java.nio.file.Path path;
   }

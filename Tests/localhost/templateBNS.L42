@@ -1,8 +1,16 @@
-{reuse L42.is/nanoBase2
-Generalize:{
-  type method type Outer0 #begin() Outer0
-  type method type Outer0 #end() Outer0
+{reuse L42.is/miniBase
+NameList:Collections.list(Name)
+Generalize:{(NameList internals)
+  type method Outer0 #begin() Outer0(internals:NameList())
+  method Outer0 #add(Name that) Outer0(internals:this.internals.#add(that))
+  method Outer0 #end() this
   type method Library <(Library that){
+    i=Introspection(that)
+    'NEED TODO:
+    'Name == using     == for libraries using string
+    'Introspection nested classes?
+    ' Collections.contains
+    NameList externals=
     'if Bool.true() (return that)
     boolA=IntrospectionPlugin.adapter(Template::Bool,name:S"Bool")
     nA=IntrospectionPlugin.adapter(Template::N,name:S"N")

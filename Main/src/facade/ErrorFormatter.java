@@ -1,9 +1,11 @@
 package facade;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
+
 import sugarVisitors.CollapsePositions;
 import sugarVisitors.ToFormattedText;
 import tools.Assertions;
@@ -22,6 +24,7 @@ import ast.Expression;
 import ast.Ast.Position;
 import ast.ExpCore.ClassB.MethodWithType;
 import auxiliaryGrammar.Program;
+import coreVisitors.InjectionOnSugar;
 import coreVisitors.IsCompiled;
 import coreVisitors.RecoverStoredSugar;
 import facade.L42.ExecutionStage;
@@ -47,6 +50,10 @@ public class ErrorFormatter {
     }
     catch(NoSuchFieldException ignored){}
     Position p=positionsFilter(ps);
+    if(c==ErrorMessage.DotDotDotCanNotBeResolved.class){
+        ErrorMessage.DotDotDotCanNotBeResolved ddd=(ErrorMessage.DotDotDotCanNotBeResolved)msg;
+        
+    }
     errorTxt="Error kind: "+c.getSimpleName()+"\nPosition:"+
     ((p==null)?"unknown":p.toString())+"\n"+errorTxt;
     //ps+"\n"+errorTxt;
@@ -170,7 +177,8 @@ public class ErrorFormatter {
       }
     if(obj instanceof ExpCore){//thanks to Path, this have to be after Expression
       ExpCore exp=(ExpCore)obj;
-      Expression expression=exp.accept(new RecoverStoredSugar());
+      //Expression expression=exp.accept(new RecoverStoredSugar());
+      Expression expression=exp.accept(new InjectionOnSugar());
       return errorFormat(expression,ps);
       }
     if(obj instanceof Ast.MethodSelector){
@@ -197,7 +205,9 @@ public class ErrorFormatter {
     if(obj instanceof Ast.Type){return ToFormattedText.of((Ast.Type)obj);}
     
     if(obj instanceof ClassB.Member){return ToFormattedText.of((ClassB.Member)obj);}
-     
+    if(obj instanceof Expression){return ToFormattedText.of((Expression)obj);}
+    if(obj instanceof Expression.ClassB.Member){return ToFormattedText.of((Expression.ClassB.Member)obj);}
+    if(obj instanceof java.nio.file.Path){return obj.toString();} 
     return "unknown kind "+obj.getClass().getCanonicalName();
   }
   public static String formatSelectorCompact(Ast.MethodSelector ms) {

@@ -21,6 +21,7 @@ import ast.Ast.Path;
 import ast.ExpCore.*;
 import auxiliaryGrammar.Program;
 import coreVisitors.ExtractThrow;
+import facade.Configuration;
 import facade.Parser;
 
 public class TestCompositionOperators {
@@ -108,6 +109,65 @@ public class TestCompositionOperators {
      "{ A1:{A2:{'@Outer1\n}}}",
      "{ A1:{B:{ } type method B () }}",
      //Outer1::A1::B
+     },{
+    "{ A:{ D:{ method Outer0 d() Outer0.d() } type method Outer1::B foo ()Outer0.foo() } B:{ }}",
+    "{ A:{'@Outer1\n}}",
+    "{ B:{ } D:{ method Outer0 d() Outer0.d() } type method Outer0::B foo ()Outer0.foo()  }"
+},{helpers.TestHelper.multiLine(""    
+,"{ A:{"
+,"  OptMax:{"
+,"    TOpt:{interface}" 
+,"    TEmpty:{<:Outer1::TOpt}"
+,"    }"
+,"  }}"),
+"{ A:{'@Outer1\n}}",    
+helpers.TestHelper.multiLine(""
+,"{"
+,"OptMax:{"
+,"  TOpt:{interface }"
+,"  TEmpty:{<:Outer1::TOpt}"
+,"}}")    
+/*},{helpers.TestHelper.multiLine(""    
+,"{N:{} S:{} Elem:{} Kind:{type method Elem elem() error void type method Elem elemRead() error void } A:{mut(var mut Cell head)"
+,"  Cell:{interface}"
+,"  CellNext:{mut (Kind::elem() val,mut Cell next)<:Cell}"
+,"  CellEnd:{mut ()<:Cell}"
+,"  OptMax:{(Outer0::TOpt that)"
+,"    TOpt:{interface}" 
+,"    TEmpty:{<:Outer1::TOpt}"
+,"    }"
+,"  read method lent Iterator vals()"
+,"  Iterator(this,min:-1N,ok:this.size(), max:OptMax())"
+,"  Iterator:{lent (read Outer1 that, var N min, N ok, OptMax max)}"
+,"  }}"),
+"{ A:{'@Outer1\n}}",    
+helpers.TestHelper.multiLine(""
+,"{"
+,"}") */
+
+},{helpers.TestHelper.multiLine(""    
+,"{ A:{mut(var mut Cell head)"
+,"  Cell:{interface}"
+,"  CellEnd:{<:Cell}"
+//,"  read method lent Iterator vals() Iterator(this)"
+//,"  Iterator:{lent (read Outer1 that)}"
+,"  }}"),
+"{ A:{'@Outer1\n }}",//"{ A:{'@Outer1\n Cell:{'@Outer2::PCell\n}}}",//invalid for now//TODO:    
+helpers.TestHelper.multiLine(""
+,"{"
+,"type method "
+,"mut Outer0 #apply(mut Outer0::Cell^head'@consistent"
+,") "
+,"mut method '@consistent"
+,"Void head(mut Outer0::Cell that)" 
+,"mut method '@consistent"
+,"mut Outer0::Cell #head()" 
+,"read method '@consistent"
+,"read Outer0::Cell head()" 
+,"Cell:{interface }"
+,"CellEnd:{<:Outer1::Cell}"
+,"}")    
+
 
     }};}
 
@@ -118,6 +178,7 @@ public class TestCompositionOperators {
     ClassB cb2=getClassB(e2);
     ClassB cb3=getClassB(e3);
     ClassB res=(ClassB)IntrospectionAdapt.adapt(getProgram(),cb1,cb2);
+    //ClassB ct= Configuration.typeSystem.typeExtraction(Program.empty(),res);
     TestHelper.assertEqualExp(res,cb3);
     }
   }

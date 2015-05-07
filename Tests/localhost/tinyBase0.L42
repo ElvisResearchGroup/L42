@@ -25,6 +25,14 @@ Name:{(Bool isExternal, Library adapter)
     ms=Introspection(this.adapter(),node:S"%o_0%").methods()
     return ms.isEmpty()
     }
+  method
+  Bool ==(Any that){
+    with that (on Outer0 return this.innerEquals(that))
+    return Bool.false()
+    }
+  method
+  Bool innerEquals(Outer0 that)
+    Introspection(this.adapter()).get()==Introspection(that.adapter()).get()
   }
   
 Introspection:{
@@ -54,12 +62,22 @@ Introspection:{
   method
   Method get(N methodNum)exception Void {
     Library name= using IntrospectionPlugin 
-        check getNameOrElse(
-          this.that(),
-          methodNum:methodNum.binaryRepr(),
-          node:this.node().binaryRepr())
-        exception void
+      check getNameOrElse(
+        this.that(),
+        methodNum:methodNum.binaryRepr(),
+        node:this.node().binaryRepr())
+      exception void
     return Method(myClass:this,num:methodNum,name:S.#stringParser(name))
+    }
+  method
+  Name get(N nestedClassNum)exception Void {
+    Library name= using IntrospectionPlugin 
+      check getNameOrElse(
+        this.that(),
+        nestedClassNum:nestedClassNum.binaryRepr(),
+        node:this.node().binaryRepr())
+      exception void
+    return Name.#stringParser(name)
     }
     
   Method:{(Outer1 myClass, N num, S name)
@@ -106,9 +124,9 @@ Introspection:{
         )
         
     method
-    Bool isField() {
+    Bool isAbstract() {
       using IntrospectionPlugin 
-        check ifIsFieldDo(
+        check ifIsAbstractDo(
           this.myClass().that(),
           methodNum:this.num().binaryRepr(),
           node:this.myClass().node().binaryRepr())
@@ -158,7 +176,18 @@ Introspection:{
   Parameters:Collections.list(Parameter)
   
   Methods:Collections.list(Method)
+  Names:Collections.list(Name)
   
+  method
+  Names nestedClasses(){
+    var Names ns=Names[]
+    var N nNum=0N
+    while Bool.true() (
+      ns:=ns.#add(this.get(nestedClassNum:nNum))
+      nNum+=1N
+      )
+    return ns
+    }
   method
   Methods methods(){
     var Methods ms=Methods[]
@@ -175,9 +204,9 @@ Introspection:{
     ms=this.methods()
     Method ctor= {
       with m in ms.vals() (
-        case m.isField() & (m.getMdf()==S"Type") return m 'still problems with precedence?
+        case m.isAbstract() & (m.getMdf()==S"Type") return m 'still problems with precedence?
         )
-      error S"Not a concrete class"
+      error S"Not an instantiable class"
       }
     return ctor.parameters()
     }

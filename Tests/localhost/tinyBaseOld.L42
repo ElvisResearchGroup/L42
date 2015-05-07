@@ -283,9 +283,9 @@ Introspection:{
         node:this.myClass().node().that())
       error {invalidMethodNumber()}
       ))
-    method Bool isField() {
+    method Bool isAbstract() {
       using IntrospectionPlugin 
-      check ifIsFieldDo(
+      check ifIsAbstractDo(
         this.myClass().that(),
         methodNum:this.num().that(),
         node:this.myClass().node().that())
@@ -337,7 +337,7 @@ Introspection:{
   method Parameters fields(){
     ms=this.methods()
     Method ctor= { with m in ms.vals() (
-      if m.isField() & (m.getMdf()==S"Type") (return m)
+      if m.isAbstract() & (m.getMdf()==S"Type") (return m)
       ) error S"Not a concrete class"}
     return ctor.parameters()
     }

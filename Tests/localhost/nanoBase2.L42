@@ -1,41 +1,5 @@
 { reuse L42.is/nanoBase1
 
-IntrospectionPlugin:{'@plugin
-  'L42.is/connected/withItself
-  _private()'@private
-  
-  type method
-  Library sumLib(Library l1,Library l2)
-    using Outer0 check sumLib(l1:l1,l2:l2) error {sumLib()}
-    
-  type method
-  Library adaptLib(Library l1 Library l2)
-    using Outer0 check adaptLib(l1:l1,l2:l2) error {adaptLib()}
-    
-  type method
-  Library nameToAdapter(Library that)
-    using Outer0 check nameToAdapter(that) error {nameToAdapter()}
-    
-  type method
-  Library typeNameToAdapter(type Any that)
-    using Outer0 check typeNameToAdapter(that) error {typeNameToAdapter()}
-    
-  type method
-  Library getFreshName(Library that)
-    using Outer0 check getFreshName(that) error{getFreshName()}
-  
-  type method Library adapter(type Any that, S name) {
-    name1=IntrospectionPlugin.typeNameToAdapter(that)
-    name2=IntrospectionPlugin.nameToAdapter(name.binaryRepr())
-    return IntrospectionPlugin.adaptLib(l1:name1,l2:name2)
-    }
-    type method Library adapter(S nameDest, S nameSrc) {
-    name1=IntrospectionPlugin.nameToAdapter(nameDest.binaryRepr())
-    name2=IntrospectionPlugin.nameToAdapter(nameSrc.binaryRepr())
-    return IntrospectionPlugin.adaptLib(l1:name1,l2:name2)
-    }
-
-  }
   
 Collections:{_private()'@private
 

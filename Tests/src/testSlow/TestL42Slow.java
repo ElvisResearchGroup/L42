@@ -1073,4 +1073,43 @@ public void testMissingMethod() throws IOException{
 }
 
 
+@Test(singleThreaded=false)
+public void testVectorStruct() throws IOException{
+TestHelper.configureForTest();
+Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
+,"{reuse L42.is/miniBase"
+,"Vector:{"
+,"  type method Library vector(type Any that)"
+,"    Adapt["
+//      Name"Elem" into: Name(that);"
+,"      Name\"VectorStruct\" into:Name\"Outer0\";"
+//      makePrivate:Name"VectorStruct::Cell";"
+//      makePrivate:Name"VectorStruct::CellNext";"
+//      makePrivate:Name"VectorStruct::CellEnd";"
+//      makePrivate:Name"VectorStruct::Iterator";"
+//      makePrivate:Name"VectorStruct::VarIterator";"
+,"      ]<{"
+,"      Elem:{interface}"
+,"      Kind:'@private"
+,"      {"
+,"      type method"
+,"      Elem elem() error void"
+,"      type method"
+,"      Elem elemRead() error void"
+,"      }"
+,"      VectorStruct:..."
+,"      }"
+,"  }"
+,"ListArray:("
+,"  Debug(S\"InListArray\")"
+,"  x=Vector.vector(S)"
+,"  Debug(S\"computed\")"
+,"  x"
+,"  )"
+,"C:ExitCode.normal()"
+,"}"
+)).getErrCode(),0);
+}
+
+
 }

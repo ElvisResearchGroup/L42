@@ -100,14 +100,14 @@ public interface Ast {
     return true;
     }
   public Path popC(){
-    assert outerNumber()==0;
+    //assert outerNumber()==0;
     List<String> s=new ArrayList<String>(this.rowData);
     //s.remove(1);
     s.remove(s.size()-1);
     return new Path(n,s);
   }
   public Path pushC(String c){
-    assert outerNumber()==0;
+    //assert outerNumber()==0;
     List<String> s=new ArrayList<String>(this.rowData);
     s.add(c);
     return new Path(n,s);

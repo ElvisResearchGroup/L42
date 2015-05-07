@@ -66,6 +66,28 @@ public class Plugin implements PluginType{
     return ToFormattedText.of(cb);}
 
   @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+  public Object MgetNameOrElse£xthat£xnestedClassNum£xnode(Object _lib,Object _num,Object _path){
+    ClassB lib=ensureExtractCt(_lib,Resources.getP());
+    Path path=ensureExtractInternalPath(_path);
+    Integer num=ensureExtractInt32(_num);
+    ClassB target = getTarget(lib, path);
+    if(!path.isCore()){path=Path.outer(0,path.getRowData());}
+    NestedClass nc=null;
+    int i=0;
+    for(Member mi:target.getMs()){
+      if(mi instanceof NestedClass){
+        i+=1;
+        if(i==num){nc=(NestedClass)mi;break;}
+        }
+    }
+    if(i!=num){throw Resources.notAct;}
+    assert nc!=null;
+    path=path.pushC(nc.getName());
+    return path;
+  }
+
+  
+  @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
   public Object MgetOrElse£xthat£xinterfaceNum£xnode(Object _lib,Object _num,Object _path){
     ClassB lib=ensureExtractCt(_lib,Resources.getP());
     Path path=ensureExtractInternalPath(_path);
@@ -122,9 +144,9 @@ public class Plugin implements PluginType{
     return buildTypePathAdapter(result.getMt().getReturnType());}
     
   //%10-9
-  //% -ifIsFieldDo(that:ClassB methodNum:num node:Path )
+  //% -ifIsAbstractDo(that:ClassB methodNum:num node:Path )
   @ActionType({ActionType.Type.Void,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
-  public Resources.Void MifIsFieldDo£xthat£xmethodNum£xnode(Object _lib,Object _mNum,Object _path){
+  public Resources.Void MifIsAbstractDo£xthat£xmethodNum£xnode(Object _lib,Object _mNum,Object _path){
     MethodWithType result = extractMethod(_lib, _mNum, _path);
     boolean isAbstract=!result.getInner().isPresent();
     if(!isAbstract){return Resources.Void.instance;}
@@ -268,8 +290,8 @@ public class Plugin implements PluginType{
     return adapter;
   }   
     
-  private static MethodWithType extractM(ClassB target,int mNum){
-    for(Member m:target.getMs()){
+  private static MethodWithType extractM(ClassB target,int mNum){//TODO: this is done in a different style w.r.t. getNestedClass.
+    for(Member m:target.getMs()){                                //chose a style and follow it.
       if(m instanceof MethodWithType){
         if(mNum==0){return (MethodWithType)m;}
         mNum--;

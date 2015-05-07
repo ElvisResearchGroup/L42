@@ -187,14 +187,20 @@ public class IntrospectionAdapt {
     }
     else{
         //remove outerN where N is toFrom.getCBar().size()
-        int n=toFrom.getCBar().size();
-        if(n!=0){
+        int _n=toFrom.getCBar().size();
+        if(_n!=0){
           cb=(ClassB)cb.accept(new CloneVisitor(){
+            int n=_n-1;
+            public ExpCore visit(ClassB cb){
+              int oldN=n;n+=1;
+              try{return super.visit(cb);}
+              finally{n=oldN;}
+              }
             public ExpCore visit(Path p){
-                if(p.isPrimitive()){return p;}
-                assert p.outerNumber()>=n;
-                p=p.setNewOuter(p.outerNumber()-n);
-                return p;
+              if(p.isPrimitive()){return p;}
+              if(p.outerNumber()<n){return p;}//T ODO: is it right?
+              p=p.setNewOuter(p.outerNumber()-_n);//_n used on purpose
+              return p;
             }
           });
         }
