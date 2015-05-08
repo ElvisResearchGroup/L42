@@ -9,9 +9,11 @@ import java.util.Set;
 
 
 
-import org.testng.Assert;
-import org.testng.annotations.BeforeSuite;
-import org.testng.annotations.Test;
+
+
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 import reduction.Executor;
 import sugarVisitors.Desugar;
@@ -29,8 +31,8 @@ import facade.Parser;
 
 public class TestL42SuperSlow {
 
-@BeforeSuite public void config() {TestHelper.configureForTest();}
-@Test(singleThreaded=false)
+@Before public void config() {TestHelper.configureForTest();}
+@Test
 public void test7() throws IOException{
     Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
 ,"{reuse L42.is/microBase"
@@ -43,13 +45,13 @@ public void test7() throws IOException{
 ,"  t6=5N+3N==8N"
 ,"  t7=5N-3N==2N"
 ,"  t8=5N*3N==15N"
-,"  t9=5N/3N==1N"  
+,"  t9=5N/3N==1N"
 ,"  if t1 & t2 & t3 & t4 & t5 &t6 &t7 &t8 &t9  (return ExitCode.normal())"
 ,"  return ExitCode.failure()"
 ,"  }}"
 )).getErrCode(),0);}
 
-@Test(singleThreaded=false)
+@Test
 public void testList1() throws IOException{
   L42.record=new StringBuilder();
   Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
@@ -68,7 +70,7 @@ public void testList1() throws IOException{
   L42.record=new StringBuilder();
   }
 
-@Test(singleThreaded=false)
+@Test
 public void testList2() throws IOException{
   L42.record=new StringBuilder();
   Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
@@ -89,7 +91,7 @@ public void testList2() throws IOException{
   }
 
 
-@Test(singleThreaded=false)
+@Test
 public void testData() throws IOException{
   L42.record=new StringBuilder();
   Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
@@ -111,7 +113,7 @@ L42.record=new StringBuilder();
 }
 
 
-@Test(singleThreaded=false)
+@Test
 public void testMethods() throws IOException{
   L42.record=new StringBuilder();
   Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
@@ -131,7 +133,7 @@ public void testMethods() throws IOException{
   Assert.assertEquals(L42.record.toString(),"bb(a)\naa\n#apply\n");
   L42.record=new StringBuilder();
   }
-@Test(singleThreaded=false)
+@Test
 public void testOpt() throws IOException{
   L42.record=new StringBuilder();
   Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
@@ -151,7 +153,7 @@ Assert.assertEquals(L42.record.toString(),"");
 L42.record=new StringBuilder();
 }
 
-@Test(singleThreaded=false)
+@Test
 public void testFields() throws IOException{
   L42.record=new StringBuilder();
   Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
@@ -162,9 +164,9 @@ public void testFields() throws IOException{
 ,"   method Void bb(Outer0 a) void"
 ,"   method Void cc(Outer0 b Outer0 c) void"
 ,"   }"
-," i=Introspection(a)" 
+," i=Introspection(a)"
 ," with f in i.fields().vals() ("
-,"   Debug(f.name())" 
+,"   Debug(f.name())"
 ,"   )"
 ," return ExitCode.normal()"
 ," }"
@@ -175,7 +177,7 @@ L42.record=new StringBuilder();
 }
 
 
-@Test(singleThreaded=false)
+@Test
 public void testParameters() throws IOException{
   L42.record=new StringBuilder();
   Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
@@ -186,10 +188,10 @@ public void testParameters() throws IOException{
 ,"   method Void bb(Outer0 a) void"
 ,"   method Void cc(Outer0 b Outer0 c) void"
 ,"   }"
-," i=Introspection(a)" 
+," i=Introspection(a)"
 ," ms=i.methods()"
 ," with m in ms.vals() ("
-,"   Debug(m.name())" 
+,"   Debug(m.name())"
 ,"   with p in m.parameters().vals() ( Debug(p.name()) )"
 ,"   )"
 ,"return ExitCode.normal()"
@@ -200,7 +202,7 @@ Assert.assertEquals(L42.record.toString(),"cc(b,c)\nc\nb\nbb(a)\na\naa\n#apply\n
 L42.record=new StringBuilder();
 }
 
-@Test(singleThreaded=false)
+@Test
 public void testResolver() throws IOException{
   L42.record=new StringBuilder();
   Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
@@ -227,7 +229,7 @@ L42.record=new StringBuilder();
 }
 
 
-@Test(singleThreaded=false)
+@Test
 public void testAdapt() throws IOException{
   L42.record=new StringBuilder();
   Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
@@ -238,15 +240,15 @@ public void testAdapt() throws IOException{
 ,"    method Void bb(Outer0 a) void"
 ,"    D:{()}"
 ,"    }"
-,"  i=Introspection(a)" 
+,"  i=Introspection(a)"
 ,"  ms=i.methods()"
 ,"  with m in ms.vals() ("
-,"    Debug(m.name())" 
+,"    Debug(m.name())"
 ,"    )"
-,"  i2=Introspection(a,node:S\"%d\")" 
+,"  i2=Introspection(a,node:S\"%d\")"
 ,"  ms2=i2.methods()"
 ,"  with m2 in ms2.vals() ("
-,"    Debug(m2.name())" 
+,"    Debug(m2.name())"
 ,"    )"
 ,"  return ExitCode.normal()"
 ,"  }"
@@ -257,7 +259,7 @@ L42.record=new StringBuilder();
 }
 
 
-@Test(singleThreaded=false)
+@Test
 public void test14() throws IOException{
   String s=TestHelper.multiLine(""
 ,"{reuse L42.is/microBase"
@@ -293,7 +295,7 @@ public void test14() throws IOException{
 
 
 
-@Test(singleThreaded=false)
+@Test
 public void test15() throws IOException{
   String s=TestHelper.multiLine(""
 ,"{reuse L42.is/microBase"
@@ -309,7 +311,7 @@ public void test15() throws IOException{
 //,"      if ei>candidate (candidate:=ei)"
 ,"      )"
 //,"    return candidate"
-,"    return A()"    
+,"    return A()"
 ,"    }"
 ,"  }"
 ,"C:{"
@@ -334,7 +336,7 @@ public void test15() throws IOException{
     }
   }
 
-@Test(singleThreaded=false)
+@Test
 public void test16() throws IOException{
   String s=TestHelper.multiLine(""
 ,"{reuse L42.is/microBase"
@@ -372,7 +374,7 @@ public void test16() throws IOException{
   }
 
 
-@Test(singleThreaded=false)
+@Test
 public void test17() throws IOException{
   String s=TestHelper.multiLine(""
 ,"{reuse L42.is/microBase"
@@ -411,7 +413,7 @@ public void test17() throws IOException{
 
 
 
-@Test(singleThreaded=false)
+@Test
 public void test18() throws IOException{
   String s=TestHelper.multiLine(""
 ,"{reuse L42.is/microBase"
@@ -423,14 +425,14 @@ public void test18() throws IOException{
 ,"    with ei in that.vals() ("
 ,"      if ei.size()>candidate.size() (candidate:=ei)"
 ,"      )"
-,"    return candidate"    
+,"    return candidate"
 ,"    }"
 ,"  }"
 ,"C:{"
 ,"  list=SList[S\"a\";S\"bb\";S\"ccc\";S\"dd\";]"
 ,"  if Util.max(list)!=S\"ccc\" (return ExitCode.failure())"
 ,"  top=S\"ccc\"(0N)"
-,"  if top!=S\"c\" (return ExitCode.failure())"  
+,"  if top!=S\"c\" (return ExitCode.failure())"
 ,"  return ExitCode.normal()"
 ,"  }"
 ,"}"

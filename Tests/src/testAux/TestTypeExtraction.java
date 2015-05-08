@@ -1,13 +1,18 @@
 package testAux;
 
 import helpers.TestHelper;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import org.testng.Assert;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameter;
+
 import facade.Parser;
 import sugarVisitors.Desugar;
 import sugarVisitors.InjectionOnCore;
@@ -24,12 +29,14 @@ import auxiliaryGrammar.Norm;
 import auxiliaryGrammar.Program;
 
 public class TestTypeExtraction {
-  @Test(singleThreaded=true, timeOut = 500)
-  public class Test1 {
-      @DataProvider(name = "classB1,classB2,p")
-      public String[][] createData1() {
-       return new String[][] {
-       {"{a( Outer0::A a)}",
+  @RunWith(Parameterized.class)
+  public static class Test1 {
+    @Parameter(0) public String e1;
+    @Parameter(1) public String e2;
+    @Parameterized.Parameters
+    public static List<Object[]> createData() {
+      return Arrays.asList(new Object[][] {
+          {"{a( Outer0::A a)}",
          "{a( Outer0::A a)}##star ^##"
        },{"{a( Outer0::A a, var Outer0::B b)}",
          "{"
@@ -39,10 +46,10 @@ public class TestTypeExtraction {
         +" mut method'@consistent\n Void b(Outer0::B that)"
         +" mut method'@consistent\n Outer0::B #b()"
         +" read method'@consistent\n Outer0::B b()"
-        +" }##star ^##"    //mostly testing desugar now...     
+        +" }##star ^##"    //mostly testing desugar now...
        },{"{interface method Void m() A:{interface <:Outer1}}",
-          "{interface method Void m() A:{interface <:Outer1 }}##star ^##",
-          "{C:##walkBy}"
+          "{interface method Void m() A:{interface <:Outer1 }}##star ^##"
+
        //interface inside
        },{"{interface method Void m() A:{interface <:Outer1}}##star ^##",
          "{interface method Void m() A:{interface  <:Outer1 method Void m()}##star ^## }##star ^##"
@@ -51,8 +58,8 @@ public class TestTypeExtraction {
          "{interface method Outer0::A m() A:{interface  <:Outer1 method Outer1::A m()}##star ^## }##less ^##"
        //interface outside
        },{"{interface <: Outer0::A A:{interface method Outer0 m() }##plus ^##}",
-          "{interface  <: Outer0::A method Outer0::A m()  A:{interface method Outer0 m() }##plus ^##}##star ^##", 
-        
+          "{interface  <: Outer0::A method Outer0::A m()  A:{interface method Outer0 m() }##plus ^##}##star ^##",
+
        },{"{'foo\ninterface <: Outer0::A A:{interface method Outer0 m() }}",
          "{'foo\ninterface <: Outer0::A A:{interface method Outer0 m() }##star ^##}"
 
@@ -74,40 +81,41 @@ public class TestTypeExtraction {
                //propagation of less by undefinition
              },{"{  B:{A:void }##star ^## C:{ method B::A() Outer0()}##star ^##}##less ^##",
                "{  B:{ A:void}##star ^## C:{ method B::A() Outer0()}##less ^##}##less ^##"
-         }};}
+         }});}
 
-    @Test(dataProvider="classB1,classB2,p")
-    public void testStep(String... in) {
-      ClassB cb1=(ClassB)(Desugar.of(Parser.parse(null,in[0])).accept(new InjectionOnCore()));
-      ClassB cb2=(ClassB)(Desugar.of(Parser.parse(null,in[1])).accept(new InjectionOnCore()));
+    @Test
+    public void testStep() {
+      ClassB cb1=(ClassB)(Desugar.of(Parser.parse(null,e1)).accept(new InjectionOnCore()));
+      ClassB cb2=(ClassB)(Desugar.of(Parser.parse(null,e2)).accept(new InjectionOnCore()));
       Program p=Program.empty();
-      List<String>inp=Arrays.asList(in).subList(2,in.length);
-      inp=new ArrayList<String>(inp);
-      Collections.reverse(inp);
-      for(String s: inp){
-        Expression e=Parser.parse(null,s);
-        ExpCore ec=e.accept(new InjectionOnCore());
-        assert ec instanceof ClassB;
-        p=p.addAtTop((ClassB)ec);
-      }
+//      List<String>inp=Arrays.asList(in).subList(2,in.length);
+//      inp=new ArrayList<String>(inp);
+//      Collections.reverse(inp);
+//      for(String s: inp){
+//        Expression e=Parser.parse(null,s);
+//        ExpCore ec=e.accept(new InjectionOnCore());
+//        assert ec instanceof ClassB;
+//        p=p.addAtTop((ClassB)ec);
+//      }
       //Assert.assertEquals(ExtractTypeStep.etDispatch(Stage.Star,new ArrayList<Path>(), p, cb1),cb2);
       cb1=TypeExtraction.etDispatch(p, cb1);
       //cb1.equals(cb2);
       TestHelper.assertEqualExp(cb1,cb2);
     }
-      
-    } 
 
-  
-  @Test(singleThreaded=true, timeOut = 500)
-  public class Test2 {
-      @DataProvider(name = "classB1,classB2,p")
-      public String[][] createData1() {
-       return new String[][] {
+    }
+
+@RunWith(Parameterized.class)
+public static class Test2 {
+  @Parameter(0) public String e1;
+  @Parameter(1) public String e2;
+  @Parameterized.Parameters
+  public static List<Object[]> createData() {
+    return Arrays.asList(new Object[][] {
          {"{}","{}##star^##"
        },{"{()}","{type method Outer0 ()}##star ^##"
-       },{"{()}","{() }##star ^##","{C:{}}"
-       },{"{D:{method Void foo()}}","{D:{method Void foo()}##plus^##}##plus^##","{C:{}}"
+       },{"{()}","{() }##star ^##"//,"{C:{}}"
+       },{"{D:{method Void foo()}}","{D:{method Void foo()}##plus^##}##plus^##"//,"{C:{}}"
        },{"{a( Outer0::A a)}",
           "{"
          +" type method Outer0 a( Outer0::A^ a '@consistent\n) "
@@ -130,7 +138,7 @@ public class TestTypeExtraction {
         +" mut method '@consistent\nVoid b(Outer0::B that)"
         +" mut method '@consistent\nOuter0::B #b()"
         +" read method '@consistent\nOuter0::B b() "
-        +" }##star^##"         
+        +" }##star^##"
        },{"{interface method Void m() A:{interface <:Outer1}}",
           "{interface method Void m() A:{interface<:Outer1 method Void m()  }##star^## }##star^##"
        //interface inside
@@ -156,7 +164,7 @@ public class TestTypeExtraction {
        },{"{interface <: Outer0::B, Outer0::B B:{interface method Outer0 mb()}}",
           "{interface <: Outer0::B, Outer0::B method Outer0::B mb() B:{interface method Outer0 mb()}##star^##}##star^## "
          //good standard diamond
-       },{"{interface <: Outer0::A, Outer0::B A:{interface <:Outer1::C } B:{interface <:Outer1::C } C:{interface method Outer0 mc()}}",       
+       },{"{interface <: Outer0::A, Outer0::B A:{interface <:Outer1::C } B:{interface <:Outer1::C } C:{interface method Outer0 mc()}}",
           "{interface  <: Outer0::A, Outer0::B, Outer0::C, Outer0::C method Outer0::C mc() A:{interface <:Outer1::C method Outer1::C mc() }##star^##  B:{interface <:Outer1::C method Outer1::C mc() }##star^##  C:{interface method Outer0 mc()}##star^## }##star^##  "
        },{"{A:{ T:{method Void ()} Cell:{interface  method Void #inner(Outer1::T a, Outer1::Cell b)  } } }",
           "{A:{ "
@@ -164,34 +172,27 @@ public class TestTypeExtraction {
         + " Cell:{interface method Void #inner(Outer1::T a, Outer1::Cell b)"
         + "  }##plus ^##}##plus ^##"
         + "}##plus ^##"
-       }};}
- 
-    @Test(dataProvider="classB1,classB2,p")
-    public void testAllSteps(String... in) {
-      ClassB cb1=(ClassB)(Desugar.of(Parser.parse(null,in[0])).accept(new InjectionOnCore()));
-      ClassB cb2=(ClassB)(Desugar.of(Parser.parse(null,in[1])).accept(new InjectionOnCore()));
+       }});}
+    @Test
+    public void testAllSteps() {
+      ClassB cb1=(ClassB)(Desugar.of(Parser.parse(null,e1)).accept(new InjectionOnCore()));
+      ClassB cb2=(ClassB)(Desugar.of(Parser.parse(null,e2)).accept(new InjectionOnCore()));
       Program p=Program.empty();
-      List<String>inp=Arrays.asList(in).subList(2,in.length);
-      inp=new ArrayList<String>(inp);
-      Collections.reverse(inp);
-      for(String s: inp){
-        Expression e=Parser.parse(null,s);
-        ExpCore ec=e.accept(new InjectionOnCore());
-        assert ec instanceof ClassB;
-        p=p.addAtTop((ClassB)ec);
-      }
-      //Assert.assertEquals(ExtractTypeStep.etDispatch(Stage.Star,new ArrayList<Path>(), p, cb1),cb2);
       cb1=TypeExtraction.etFull(p, cb1);
       //cb1.equals(cb2);
       TestHelper.assertEqualExp(cb1,cb2);
     }
-    } 
-  @Test(singleThreaded=true, timeOut = 500)
-  public class Test3 {
-      @DataProvider(name = "ok/ko")
-      public Object[][] createData() {
-       return new Object[][] {
-           //a
+    }
+
+@RunWith(Parameterized.class)
+public static class Test3 {
+  @Parameter(0) public Mdf mdf;
+  @Parameter(1) public Path path;
+  @Parameter(2) public String e;
+  @Parameter(3) public boolean ok;
+  @Parameterized.Parameters
+  public static List<Object[]> createData() {
+    return Arrays.asList(new Object[][] {           //a
          {Mdf.Immutable,Path.Any(),"{method Any foo()}",true
       },{Mdf.Immutable,Path.Any(),"{method Void foo()}",false
       },{Mdf.Type,Path.Void(),"{method type Void foo()}",true
@@ -236,18 +237,15 @@ public class TestTypeExtraction {
       },{Mdf.Capsule,Path.Void(),"{mut method  Void foo(mut Void that)}",true
       },{Mdf.Capsule,Path.Void(),"{mut method  Void foo(capsule Void that)}",true
       },{Mdf.Capsule,Path.Void(),"{mut method  Void foo(lent Void that)}",false
-       }};}
- 
-    @Test(dataProvider="ok/ko")
-    public void testCoherence(Object... in) {
-      Mdf mdf=(Mdf)in[0];
-      Path path=(Path)in[1];
-      ClassB cb1=(ClassB)(Parser.parse(null,(String)in[2]).accept(new InjectionOnCore()));
-      boolean ok=(Boolean)in[3];
+       }});}
+
+    @Test
+    public void testCoherence() {
+      ClassB cb1=(ClassB)(Parser.parse(null,e).accept(new InjectionOnCore()));
       Program p=Program.empty();
       MethodWithType mwt=(MethodWithType)cb1.getMs().get(0);
       boolean res=Functions.coherent(p, mdf, path, mwt);
       Assert.assertEquals(res,ok);
       }
-    } 
+    }
 }

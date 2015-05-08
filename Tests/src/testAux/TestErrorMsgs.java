@@ -4,8 +4,9 @@ import helpers.TestHelper;
 
 import java.io.IOException;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
+
+
+import org.junit.Assert;
 
 import ast.ErrorMessage;
 import ast.ErrorMessage.UserLevelError;
@@ -28,12 +29,12 @@ public class TestErrorMsgs {
   public void test1() throws IOException{
    assert false;
     //testCode("a/b/c",TypeError,10,
-        
-        
-        
-        
+
+
+
+
       //  );
-  }  
-  
-  
+  }
+
+
 }

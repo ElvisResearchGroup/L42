@@ -1,8 +1,9 @@
-package testSlow;
+package testSpecial;
+
+import org.junit.Test;
 
 import is.L42.connected.withHtml.Frame;
 
-import org.testng.annotations.Test;
 
 public class FrameTest {
   private static final String simpleHTML=

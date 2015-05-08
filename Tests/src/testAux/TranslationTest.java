@@ -1,13 +1,16 @@
 package testAux;
 
 import helpers.TestHelper;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.List;
+
+import org.junit.Assert;
+import org.junit.Test;
+
 import facade.L42;
 import facade.Parser;
-import org.testng.Assert;
-import org.testng.annotations.Test;
 import platformSpecific.inMemoryCompiler.InMemoryJavaCompiler;
 import platformSpecific.inMemoryCompiler.RunningUtils;
 import platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.CompilationError;
@@ -26,13 +29,13 @@ import auxiliaryGrammar.Program;
 public class TranslationTest {
   @Test public void t1(){tester(
     "{  }"," void","platformSpecific.javaTranslation.Resources$Void");}
-  
+
   @Test public void t2a(){tester(
       "{ C:{ type method Void foo() void } }"," C.foo()","platformSpecific.javaTranslation.Resources$Void");}
-  
+
   @Test public void t2b(){tester(
       "{ C:{k() type method Void foo() void } }"," C.foo()","platformSpecific.javaTranslation.Resources$Void");}
-  
+
   @Test public void t3(){tester(
       "{ C:{k() method Void foo() void } }"," C.k().foo()","platformSpecific.javaTranslation.Resources$Void");}
 
@@ -70,7 +73,7 @@ public class TranslationTest {
       ,"      error void))"
       ,"}}"),
       " 5N+3N","generated.Program42$Outer0£_N");}
-  
+
   @Test public void t10b(){tester(
       TestHelper.multiLine("{"
       ,"Alu:{'@plugin"
@@ -88,7 +91,7 @@ public class TranslationTest {
       ,"}}"),
       " 5N+3N+80N","generated.Program42$Outer0£_N");}
 
-  
+
   @Test public void t11(){tester(
       TestHelper.multiLine("{"
       ,"Alu:{'@plugin"
@@ -120,7 +123,7 @@ public class TranslationTest {
   Assert.assertEquals(L42.record.toString(),"foobar\n");
   L42.record=new StringBuilder();
   }
-  
+
   public void tester(String cbStr,String eStr,String nameRes) {
     TestHelper.configureForTest();
     Program p=runTypeSystem(cbStr);

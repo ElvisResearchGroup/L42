@@ -4,8 +4,9 @@ package helpers;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Assert;
+
 import org.antlr.v4.runtime.misc.ParseCancellationException;
-import org.testng.Assert;
 
 import reduction.Executor;
 import sugarVisitors.Desugar;
@@ -34,7 +35,7 @@ public class TestHelper {
       String s1A="ToTextEqual,AstIs:"+e1;
       String s2A="ToTextEqual,AstIs:"+e2;
       if(s1A.equals(s2A)){
-        Assert.assertEquals("EqualText and ast, as:"+s1+" : "+e1,"");        
+        Assert.assertEquals("EqualText and ast, as:"+s1+" : "+e1,"");
         }
       Assert.assertEquals(s1+" : "+s1A,s2+" : "+s2A);
       }
@@ -50,7 +51,7 @@ public class TestHelper {
       String s1A="ToTextEqual,AstIs:"+e1;
       String s2A="ToTextEqual,AstIs:"+e2;
       if(s1A.equals(s2A)){
-        Assert.assertEquals("EqualText and ast, as:"+s1+" : "+e1,"");        
+        Assert.assertEquals("EqualText and ast, as:"+s1+" : "+e1,"");
         }
       Assert.assertEquals(s1+" : "+s1A,s2+" : "+s2A);
       }
@@ -74,7 +75,7 @@ public class TestHelper {
     catch(IllegalArgumentException e){}
     }
 
-  
+
  /* public static Expression _testParseString(String s){
     LoggedPrintStream lpsErr = LoggedPrintStream.create(System.err);
     System.setErr(lpsErr);
@@ -95,7 +96,7 @@ public class TestHelper {
     paths.add(Path.parse("Outer0::D"));
     return getProgram(paths,new String[]{"{C:{new() type method Outer1::C foo(type Outer1::C bar) (bar.foo(bar:this))}, D:{new(var Outer1::C x)}}"});
   }
-  
+
   public static Program getProgram(List<Path> paths,String[] code){
     Program p0=Program.empty();
     for(String s:code){
@@ -135,7 +136,7 @@ public class TestHelper {
     catch (NoSuchFieldException|IllegalArgumentException |IllegalAccessException e) {
       throw Assertions.codeNotReachable();
       }}}*/
-  
+
   public static void _dbgCompact(ExpCore e){
     assert e instanceof ClassB;
     ClassB cb=(ClassB)e;
@@ -170,5 +171,5 @@ public class TestHelper {
   c2=c2.withMs(ms2);
   //TestHelper.assertEqualExp(c1, c2);
   }
-  
+
 }

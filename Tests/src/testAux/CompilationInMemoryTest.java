@@ -1,6 +1,5 @@
 package testAux;
 
-import org.testng.annotations.Test;
 
 import platformSpecific.inMemoryCompiler.InMemoryJavaCompiler;
 import platformSpecific.inMemoryCompiler.RunningUtils;
@@ -8,6 +7,8 @@ import platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.SourceFile;
 
 import java.util.Arrays;
 import java.util.List;
+
+import org.junit.Test;
 
 public class CompilationInMemoryTest {
 

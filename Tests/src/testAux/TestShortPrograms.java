@@ -1,9 +1,8 @@
 package testAux;
 
+import org.junit.Test;
+
 import helpers.TestHelper;
-
-import org.testng.annotations.Test;
-
 import facade.Configuration;
 import facade.Parser;
 import sugarVisitors.Desugar;
@@ -34,7 +33,7 @@ public class TestShortPrograms {
     TestHelper.assertEqualExp(nc.getInner(),ee2);
   }
 
-  
+
 @Test public void test1(){tp(""
 ,"{() C:{'@exitStatus\n'0\n"
 ,"}}"
@@ -140,7 +139,7 @@ public class TestShortPrograms {
 ,"    lent Box box=Box.k(f:box)"
 ,"    Any z1=box.f(AI.k())"
 ,"    Any z2=error box.f()"//plus, even commenting thos lines, still seen as readonly??
-,"    catch error x ("//fixed, it was a huge deal: DISASTER: splittando il blocco vado a richiedere che bx sia readable sotto la dichiarazione! 
+,"    catch error x ("//fixed, it was a huge deal: DISASTER: splittando il blocco vado a richiedere che bx sia readable sotto la dichiarazione!
 ,"      on I C.ok()"
 ,"      )"
 ,"    C.ko()"
@@ -153,14 +152,14 @@ public class TestShortPrograms {
   ," E: {'@exitStatus\n'0\n\n}"
   ,"}");}
 
-@Test(expectedExceptions=ErrorMessage.PathsNotSubtype.class)
+@Test(expected=ErrorMessage.PathsNotSubtype.class)
 public void test8b(){tp("{()"
     ," D: {() type method Library id(Library that) (that)}"
     ," C: {()  method Void foo() (D x= this void)} "
     ," E: {'@exitStatus\n'0\n\n}"
     ,"}");}
 
-@Test(expectedExceptions=ErrorMessage.PathsNotSubtype.class)
+@Test(expected=ErrorMessage.PathsNotSubtype.class)
 public void test8c(){tp("{()"
     ," D: {() type method Library id(Library that) (that)}"
     ," C: D.id({() method Void foo() (D x= this void)}) "
@@ -168,7 +167,7 @@ public void test8c(){tp("{()"
     ,"}");}
 
 
-@Test(expectedExceptions=ErrorMessage.PathsNotSubtype.class/*PathNonExistant.class*/)
+@Test(expected=ErrorMessage.PathsNotSubtype.class/*PathNonExistant.class*/)
 public void test9b(){tp("{()"
     ," D: {() type method Library id(Library that) (that)}"
     ," C: {()  H:{() method Void foo() (Outer2::C::E x= this void)}}"
@@ -176,7 +175,7 @@ public void test9b(){tp("{()"
     ,"}");}
 
 
-@Test(expectedExceptions=ErrorMessage.PathsNotSubtype.class/*PathNonExistant.class*/)
+@Test(expected=ErrorMessage.PathsNotSubtype.class/*PathNonExistant.class*/)
 public void test9c(){tp("{()"
     //dsgdsgs//TODO:here, it pass if you put C::H, is this coherent?
     ," D: {() type method Library id(Library that) (that)}"
@@ -184,7 +183,7 @@ public void test9c(){tp("{()"
     ," F: {'@exitStatus\n'0\n\n}"
     ,"}");}
 
-@Test(expectedExceptions=ErrorMessage.PathsNotSubtype.class/*PathNonExistant.class*/)
+@Test(expected=ErrorMessage.PathsNotSubtype.class/*PathNonExistant.class*/)
 public void test9d(){tp("{()"
     ," D: {() type method Library trash(Library that) ({()})}"
     ," C: D.trash({()  H:{() method Void foo() (Outer2::C::E x= this void)}}) "
@@ -198,7 +197,7 @@ public void test9d(){tp("{()"
     ," E: {'@exitStatus\n'0\n\n}"
     ,"}");}
 
-@Test(expectedExceptions=ErrorMessage.MethodNotPresent.class)
+@Test(expected=ErrorMessage.MethodNotPresent.class)
 public void test10(){tp("{()"
     ," D: {() type method Library id(Library that) (that)}"
     ," C: D.id({()  method Void foo(D x) ( x.foo(x))}) "
@@ -211,18 +210,18 @@ public void test11(){tp("{()"
     ," E: {'@exitStatus\n'0\n\n}"
     ,"}");}
 
-@Test(expectedExceptions=ErrorMessage.PathNonExistant.class)
+@Test(expected=ErrorMessage.PathNonExistant.class)
 public void test12(){tp("{()"
 ,"LibList:{ #apply()"
 ,"  T:{() }"
-,"  type method" 
+,"  type method"
 ,"  Outer0::GenericId::T id(Outer0::GenericId::T that) (that)}"
 ,"E: {'@exitStatus\n'0\n\n}"
 ,"}"
 );}
 
 
-@Test(expectedExceptions=ErrorMessage.PathsNotSubtype.class)
+@Test(expected=ErrorMessage.PathsNotSubtype.class)
 public void testPlusNotStar(){tp("{"
 ,"A:{ () method Library foo() }"
 ,"E: A().foo()"

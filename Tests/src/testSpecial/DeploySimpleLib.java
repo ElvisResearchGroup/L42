@@ -1,4 +1,4 @@
-package testSlow;
+package testSpecial;
 
 import helpers.TestHelper;
 
@@ -6,9 +6,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-
-import org.testng.Assert;
-import org.testng.annotations.Test;
 
 import ast.ErrorMessage;
 import ast.ErrorMessage.FinalResult;
@@ -31,7 +28,7 @@ public class DeploySimpleLib {
 ,"            Main:Deploy[S\"Top::Exported\", fileName:S\"localhost/SimpleLib.L42\"]<{reuse L42.is/templateBNS"
 ,"              Top:Outer0::Generalize[]<{reuse L42.is/miniBase"
 ,"                Exported:{"
-,"                  type method Void printHelloWorld()" 
+,"                  type method Void printHelloWorld()"
 ,"                    Debug(S\"Hello World \"++42N)"
 ,"                  }"
 ,"                }"
@@ -48,7 +45,7 @@ public class DeploySimpleLib {
       System.out.println(ErrorFormatter.formatError(msg).getErrorTxt());
       }
   }
-  
+
   private static void testLibUse() {
     try{
       FinalResult res = L42.runSlow(null,TestHelper.multiLine(""
@@ -94,15 +91,15 @@ public class DeploySimpleLib {
 ,"                      error void"
 ,"                "
 ,"                  method"
-,"                  Void open(S html, N x, N y)" 
+,"                  Void open(S html, N x, N y)"
 ,"                    using GuiPlugin"
 ,"                      check open("
 ,"                        wName:this.id().binaryRepr()"
 ,"                        html:html.binaryRepr()"
 ,"                        x:x.binaryRepr()"
-,"                        y:y.binaryRepr()" 
+,"                        y:y.binaryRepr()"
 ,"                        )"
-,"                      error void"  
+,"                      error void"
 ,"                      "
 ,"                  method"
 ,"                  Void set(S that,S id) {"
@@ -135,7 +132,7 @@ public class DeploySimpleLib {
 ,"                      }"
 ,"                      "
 ,"                    mut method"
-,"                    Void #next() exception Void {" 
+,"                    Void #next() exception Void {"
 ,"                      s=Iterator.auxFetchEvent(id:this.id())"
 ,"                      return this.current(s)"
 ,"                      }"
@@ -145,16 +142,16 @@ public class DeploySimpleLib {
 ,"                    "
 ,"                    read method"
 ,"                    S #inner() (this.current())"
-,""                    
+,""
 ,"                    read method"
 ,"                    Void #close() void"
 ,"                    }"
-,"            '----------------------"     
+,"            '----------------------"
 ,"                  }"
 ,"                }"
 ,"              }"
 ,"            }"
-          
+
           ));
       System.out.println("------------------------------");
       System.out.println("END: "+res.getErrCode());
@@ -166,5 +163,5 @@ public class DeploySimpleLib {
       System.out.println(ErrorFormatter.formatError(msg).getErrorTxt());
       }
   }
-  
+
 }

@@ -2,15 +2,17 @@ package testAux;
 
 
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
 
 import helpers.TestHelper;
 
 import org.antlr.v4.runtime.misc.ParseCancellationException;
-import org.testng.Assert;
-import org.testng.annotations.AfterSuite;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
-import org.testng.asserts.Assertion;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameter;
 
 import facade.L42;
 import facade.Parser;
@@ -18,11 +20,15 @@ import sugarVisitors.Desugar;
 import sugarVisitors.InjectionOnCore;
 import ast.Expression;
 
-@Test(singleThreaded=true, timeOut = 500)
 public class TestParseAndDesugar {
-    @DataProvider(name = "termsOk")
-    public Object[][] createData1() {
-     return new Object[][] {
+
+  @RunWith(Parameterized.class)
+  public static class Test1 {
+    @Parameter(0) public String _p1;
+    @Parameter(1) public String _p2;
+    @Parameterized.Parameters
+    public static List<Object[]> createData() {
+      return Arrays.asList(new Object[][] {
    {"a","a"
   },{" ( void catch exception x ( default x) void )",
  " ("
@@ -72,7 +78,7 @@ public class TestParseAndDesugar {
    +"   mut Outer0::Varx varx=Outer0::Varx.#apply(inner:x)"
    +"   varx.inner(that:void) )"
 //},{"with var x in void ( x:=void)",
-//},{"with var x in {a()}, y in {b()} ( x+=y+y)",//why y++y do not work? 
+//},{"with var x in {a()}, y in {b()} ( x+=y+y)",//why y++y do not work?
 },{"with x=void (on Void void)",
    " ( Void x=void ("
    + " Void x0=("
@@ -80,7 +86,7 @@ public class TestParseAndDesugar {
    + "   catch return casted ( on Void casted on Any exception void )"
    + "   error {'@stringU\n'CastT-Should be unreachable code\n } )"
    + " catch exception unused0 ( on Void void )"
-   +" ( Void unused1=void void ) ) )"  
+   +" ( Void unused1=void void ) ) )"
 },{"with x=void (on Library loop void)",
   " ( Void x=void ("
   + " Library x0=("
@@ -260,7 +266,7 @@ public class TestParseAndDesugar {
 },{"{ <(T bar) }'bla\n"," ('bla\n{ type method Outer0 #left(Outer0::T^bar'@consistent\n)mut method '@consistent\nOuter0::T #bar()read method '@consistent\nOuter0::T bar()})"
 },{"{ (T bar) }"," {type method Outer0 #apply(Outer0::T^bar'@consistent\n) mut method '@consistent\nOuter0::T #bar() read method '@consistent\nOuter0::T bar() }"
 },{" (T x={ if A (return B) return C } x)",
-   " (Outer0::T x=( Void unused=( Void unused0=( Void unused2=Outer0::A.#checkTrue() catch exception unused3 ( on Void  void ) (return Outer0::B)) Void unused1=return Outer0::C void ) catch return result ( on Outer0::T result ) error  {'@stringU\n'CurlyBlock-Should be unreachable code\n } )x )"  
+   " (Outer0::T x=( Void unused=( Void unused0=( Void unused2=Outer0::A.#checkTrue() catch exception unused3 ( on Void  void ) (return Outer0::B)) Void unused1=return Outer0::C void ) catch return result ( on Outer0::T result ) error  {'@stringU\n'CurlyBlock-Should be unreachable code\n } )x )"
 },{"{ Vara: {} method a() (var T a=a+c c=a Fuffa(a:=a(a)) c ) }",
   " {Vara0:{type method \n"
 +"mut Outer0 #apply(Outer1::T^inner'@consistent\n"
@@ -274,9 +280,9 @@ public class TestParseAndDesugar {
 },{"{ method Void () Outer0[with b in Outer0 (b)]}","{"
 +"Varaccumulator:{type method \n"
 +"mut Outer0 #apply(Outer1::#begin() ^inner'@consistent\n"
-+")\n" 
++")\n"
 +"mut method '@consistent\n"
-+"Void inner(Outer1::#begin() that)\n" 
++"Void inner(Outer1::#begin() that)\n"
 +"mut method '@consistent\n"
 +"Outer1::#begin() #inner()}"
 +"method Void #apply() ("
@@ -297,20 +303,20 @@ public class TestParseAndDesugar {
 },{
   "{reuse L42.is/nanoBasePrivates\n method Void seal() void }",
   "{\n"
-+"  I:{interface\n" 
++"  I:{interface\n"
 +"    method '@private\n"
 +"    Void seal0() }\n"
 +"    Foo:{<:Outer1::I\n"
-+"    type method\n" 
-+"    Outer0 #apply()\n" 
++"    type method\n"
++"    Outer0 #apply()\n"
 +"    method seal0() this.seal0()\n"
 +"    type method '@private\n"
 +"    Void bar0() this.seal0()}\n"
 +"    Bar:{\n"
-+"    type method\n" 
-+"    Outer0 #apply()\n" 
++"    type method\n"
++"    Outer0 #apply()\n"
 +"    Beer:{\n"
-+"    type method\n" 
++"    type method\n"
 +"    Outer0 #apply() \n"
 +"    type method '@private\n"
 +"    Void bar1() void}\n"
@@ -323,8 +329,8 @@ public class TestParseAndDesugar {
 },{
   "{reuse L42.is/nanoBasePrivates2\n   method  Void gg() void}",
 " {\n"
-+"type method\n" 
-+"Outer0 #apply()\n" 
++"type method\n"
++"Outer0 #apply()\n"
 +"Foo:{\n"
 +"type method '@private\n"
 +"Outer0 new0() }\n"
@@ -339,28 +345,28 @@ public class TestParseAndDesugar {
 +", Outer1::Foo^b0'@consistent\n"
 +") \n"
 +"mut method '@consistent\n"
-+"Outer1::Foo #a0()\n" 
++"Outer1::Foo #a0()\n"
 +"read method '@consistent\n"
-+"Outer1::Foo a0()\n" 
++"Outer1::Foo a0()\n"
 +"mut method '@consistent\n"
-+"Void b0(Outer1::Foo that)\n" 
++"Void b0(Outer1::Foo that)\n"
 +"mut method '@consistent\n"
 +"Outer1::Foo #b0() \n"
 +"read method '@consistent\n"
 +"Outer1::Foo b0() }\n"
-+"method\n" 
++"method\n"
 +"Void gg() void}\n"
-}};}
+}});}
 
-  @Test(dataProvider="termsOk")
-  public void testOk(String s1,String s2) {
+  @Test
+  public void testOk() {
     TestHelper.configureForTest();
     L42.setRootPath(Paths.get("dummy"));
     L42.usedNames.clear();
-    Expression es1=Parser.parse(null,s1);
-    Expression es2=Parser.parse(null,s2);
+    Expression es1=Parser.parse(null,_p1);
+    Expression es2=Parser.parse(null,_p2);
     Expression result=Desugar.of(es1);
     TestHelper.assertEqualExp(result,es2);
   }
-
+  }
 }

@@ -1,23 +1,29 @@
 package testAux;
 
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.antlr.v4.runtime.misc.ParseCancellationException;
-import org.testng.Assert;
-import org.testng.annotations.AfterSuite;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
-import org.testng.asserts.Assertion;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameter;
 
 import facade.Parser;
 import sugarVisitors.Desugar;
 import sugarVisitors.InjectionOnCore;
 import ast.Expression;
 
-@Test(singleThreaded=true, timeOut = 500)
 public class TestParseAndDoAst {
-    @DataProvider(name = "termsOk")
-    public Object[][] createData1() {
-     return new Object[][] {
+
+  @RunWith(Parameterized.class)
+  public static class Test1 {
+    @Parameter(0) public String s;
+    @Parameterized.Parameters
+    public static List<Object[]> createData() {
+      return Arrays.asList(new Object[][] {
   {"a"
 },{"a*b"
 },{"a*b+c==d&k+a+b*c>g|e"
@@ -119,22 +125,26 @@ public class TestParseAndDoAst {
 },{"using Foo::BAr check time('bla bla \n limit:soFoo) b+a"
 },{"Foo\"bla\""
   //},{"(a+b)'bla\n"
-}};}
+}});}
 
-  @Test(dataProvider="termsOk")
-  public void testOk(String s) {
+  @Test
+  public void testOk() {
     //Object o=new ast.ExpCore.Signal();
     Parser.parse(null,s);
   }
-
-  @DataProvider(name = "termsToString")
-  public Object[][] createData2() {
-   return new Object[][] {
+  }
+  @RunWith(Parameterized.class)
+  public static class Test2 {
+    @Parameter(0) public String s;
+    @Parameter(1) public String expected;
+    @Parameterized.Parameters
+    public static List<Object[]> createData() {
+      return Arrays.asList(new Object[][] {
 {"a","a"
 },{"5N","Expression.Literal(receiver=Ast.Path(rowData=[N]), inner=5, isNumber=true)"
 },{"+5-5N","Expression.Literal(receiver=Ast.Path(rowData=[N]), inner=+5-5, isNumber=true)"
 },{"a-5N","(a-Expression.Literal(receiver=Ast.Path(rowData=[N]), inner=5, isNumber=true))"
-},{" (a (-5N) e)","Expression.RoundBlock(doc=, inner=e, contents=[Ast.BlockContent(decs=[Ast.VarDecE(inner=a), Ast.VarDecE(inner=Expression.RoundBlock(doc=, inner=Expression.Literal(receiver=Ast.Path(rowData=[N]), inner=-5, isNumber=true), contents=[]))], _catch=Optional.empty)])"  
+},{" (a (-5N) e)","Expression.RoundBlock(doc=, inner=e, contents=[Ast.BlockContent(decs=[Ast.VarDecE(inner=a), Ast.VarDecE(inner=Expression.RoundBlock(doc=, inner=Expression.Literal(receiver=Ast.Path(rowData=[N]), inner=-5, isNumber=true), contents=[]))], _catch=Optional.empty)])"
 },{"a*b","(a*b)"
 },{" (a=b c)","Expression.RoundBlock(doc=, inner=c, contents=[Ast.BlockContent(decs=[Ast.VarDecXE(isVar=false, t=Optional.empty, x=a, inner=b)], _catch=Optional.empty)])"
 },{" (var a=b c)","Expression.RoundBlock(doc=, inner=c, contents=[Ast.BlockContent(decs=[Ast.VarDecXE(isVar=true, t=Optional.empty, x=a, inner=b)], _catch=Optional.empty)])"
@@ -167,23 +177,27 @@ public class TestParseAndDoAst {
 },{" a 'bar\n ","Expression.DocE(inner=a, doc=bar\n)"
 },{"with x in a var y in b+c() z=t (on T y)","Expression.With(xs=[], is=[Ast.VarDecXE(isVar=false, t=Optional.empty, x=x, inner=a), Ast.VarDecXE(isVar=true, t=Optional.empty, x=y, inner=(b+Expression.FCall(receiver=c, doc=, ps=Ast.Parameters(e=Optional.empty, xs=[], es=[]))))], decs=[Ast.VarDecXE(isVar=false, t=Optional.empty, x=z, inner=t)], ons=[Ast.On(ts=[Immutable[T]], _if=Optional.empty, inner=y)], defaultE=Optional.empty)"
 },{"S\"a'bla\"\n","Expression.Literal(receiver=Ast.Path(rowData=[S]), inner=a'bla, isNumber=false)"
-}};}
-  @Test(dataProvider="termsToString")
-  public void testOkToString(String s,String expected) {
+}});}
+  @Test
+  public void testOkToString() {
     Expression x = Parser.parse(null,s);
     //x.accept(new Desugar()).accept(new InjectionOnCore());
     Assert.assertEquals(x.toString(), expected);
     }
-  @DataProvider(name = "termsNotOk")
-  public Object[][] createData3() {
-   return new Object[][] {
+  }
+  @RunWith(Parameterized.class)
+  public static class Test3 {
+    @Parameter(0) public String s;
+    @Parameterized.Parameters
+    public static List<Object[]> createData() {
+      return Arrays.asList(new Object[][] {
   {"a '@bla"
   },{"a \"ff"
   },{"a b"
   },{" ( )"
-}};}
-  @Test(dataProvider="termsNotOk")
-  public void testNotOk(String s) {
+}});}
+  @Test
+  public void testNotOk() {
     try{
       Expression e1 = Parser.parse(null,s);
       String rep=e1.toString();
@@ -192,25 +206,24 @@ public class TestParseAndDoAst {
     catch(ParseCancellationException e){}
     catch(IllegalArgumentException e){}
     }
-  
-  @DataProvider(name = "termsToCore")
-  public Object[][] createData4() {
-   return new Object[][] {
+
+  }
+  @RunWith(Parameterized.class)
+  public static class Test4_TermsToCore {
+    @Parameter(0) public String s;
+    @Parameterized.Parameters
+    public static List<Object[]> createData() {
+      return Arrays.asList(new Object[][] {
   {"a"
 },{"a.m(x:a)"
-  
+
 //},{"a.m(a)"ok to be wrong
-}};}
-  @Test(dataProvider="termsToCore")
-  public void testOkToCore(String s) {
+}});}
+  @Test
+  public void testOkToCore() {
      Expression x = Parser.parse(null,s);
     ast.ExpCore y=x.accept(new InjectionOnCore());
     Assert.assertEquals(y.toString(),y.toString());
   }
-
-  
-  @AfterSuite public void endTest(){
-    //assert false;
   }
-  
 }

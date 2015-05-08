@@ -1,17 +1,23 @@
 package testAux;
 
 import helpers.TestHelper;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 
 
 
 import java.util.List;
-import org.testng.Assert;
-import org.testng.annotations.BeforeSuite;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameter;
+
 import coreVisitors.CollectPaths0;
 import facade.Configuration;
 import facade.Parser;
@@ -34,17 +40,22 @@ import ast.ExpCore.ClassB;
 import auxiliaryGrammar.Program;
 
 public class TestTypeStage1 {
-  @BeforeSuite public void config() {TestHelper.configureForTest();}
-  @Test(singleThreaded=true, timeOut = 500)
-  public class TestStage1 {
-      @DataProvider(name = "e,typeSugg,typeExpected,stage,program")
-      public Object[][] createData1() {
-       return new Object[][] {
+  @Before public void config() {TestHelper.configureForTest();}
+
+    @RunWith(Parameterized.class)
+    public static class TestStage1 {
+      @Parameter(0) public String _e;
+      @Parameter(1) public Type typeSugg;
+      @Parameter(2) public Type typeExpected;
+      @Parameter(3) public String[] program;
+      @Parameterized.Parameters
+      public static List<Object[]> createData() {
+        return Arrays.asList(new Object[][] {
          {"void",
            new NormType(Mdf.Immutable,Path.Void(),Ph.None),
            new NormType(Mdf.Capsule,Path.Void(),Ph.None),
            new String[]{"{ C:{k()}}"}
-         
+
          },{"( exception void catch exception x (on Void void) void)",
            new Ast.FreeType(),
            new NormType(Mdf.Capsule,Path.Void(),Ph.None),
@@ -80,12 +91,12 @@ public class TestTypeStage1 {
          new NormType(Mdf.Mutable,Path.parse("Outer0::C"),Ph.None),
          new NormType(Mdf.Mutable,Path.parse("Outer0::C"),Ph.None),
          new String[]{"{ C:{mut k(var D f, type D ft)}, D:{k()}}"}
-       
+
        },{"error D.k()",
          new Ast.FreeType(),
          new Ast.FreeType(),
          new String[]{"{ D:{k()}}"}
-       
+
        },{"( D x=D.k(f:x), x)",
          new Ast.FreeType(),
          new NormType(Mdf.Immutable,Path.parse("Outer0::D"),Ph.None),
@@ -118,7 +129,7 @@ public class TestTypeStage1 {
            new Ast.FreeType(),
            new NormType(Mdf.Immutable,Path.parse("Outer0::D"),Ph.Ph),
            new String[]{"{ D:{k(var Any f)} }"}
-           
+
          },{"( D^ x=D.k(f:void), D.k(f:x))",
            new Ast.FreeType(),
            new NormType(Mdf.Immutable,Path.parse("Outer0::D"),Ph.Partial),
@@ -142,11 +153,11 @@ public class TestTypeStage1 {
 new Ast.FreeType(),
 new NormType(Mdf.Immutable,Path.Library(),Ph.None),
 new String[]{"{ C:{ k()}, D:{k()}}"}
-        
-}};}
+
+}});}
       //TODO: before ts after desugaring, do well formedness check!
-      
-String listExample=TestHelper.multiLine(
+
+static String listExample=TestHelper.multiLine(
     "{N:{k() method Void checkZero() (void) method N lessOne() (this)}"
     ,"List:{k(List next, N elem)"
     ,"  type method List factory(N that) ("
@@ -160,25 +171,30 @@ String listExample=TestHelper.multiLine(
     ,"       next:List.factoryAux(that.lessOne(),top:top),"
     ,"       elem:that))"
     ,"   List.k(next:top,elem:N.k()) )"
-    ,"}}");     
-      
-    @Test(dataProvider="e,typeSugg,typeExpected,stage,program")
-    public void testType(String es,Type sugg,Type expected,String []program) {
-      ExpCore e=Desugar.of(Parser.parse(null," "+es)).accept(new InjectionOnCore());
+    ,"}}");
+
+    @Test
+    public void testType() {
+      TestHelper.configureForTest();
+      ExpCore e=Desugar.of(Parser.parse(null," "+_e)).accept(new InjectionOnCore());
       List<Path> paths = CollectPaths0.of(e);//TODO: is it usefull?
       Program p=TestHelper.getProgram(paths, program);
-      Type t2=TypeSystem.typecheckSure(false,p, new HashMap<>(),SealEnv.empty(),new ThrowEnv(), sugg, e);
-      Assert.assertEquals(t2,expected);
+      Type t2=TypeSystem.typecheckSure(false,p, new HashMap<>(),SealEnv.empty(),new ThrowEnv(), this.typeSugg, e);
+      Assert.assertEquals(t2,typeExpected);
       //TestHelper.assertEqualExp(eRed,ee2);
     }
-      
+
     }
 
-  @Test(singleThreaded=true, timeOut = 500)
-  public class TestStage2 {
-    @DataProvider(name = "e,typeSugg,typeExpected,stage,program")
-    public Object[][] createData1() {
-      return new Object[][] {
+@RunWith(Parameterized.class)
+public static class TestStage2 {
+  @Parameter(0) public String _e;
+  @Parameter(1) public Type typeSugg;
+  @Parameter(2) public Type typeExpected;
+  @Parameter(3) public String[] program;
+  @Parameterized.Parameters
+  public static List<Object[]> createData() {
+    return Arrays.asList(new Object[][] {
       {"void",
       new NormType(Mdf.Immutable,Path.Void(),Ph.None),
       new NormType(Mdf.Capsule,Path.Void(),Ph.None),
@@ -218,7 +234,7 @@ String listExample=TestHelper.multiLine(
       new NormType(Mdf.Immutable,Path.parse("Outer0::A"),Ph.None),
       new NormType(Mdf.Immutable,Path.parse("Outer0::A"),Ph.None),
       new String[]{cloneExample}
-   
+
     },{" ( B bi=A.k(f:(read B b=B.k(N.k()) b).clone()).f() bi)",
       new NormType(Mdf.Immutable,Path.parse("Outer0::B"),Ph.None),
       new NormType(Mdf.Immutable,Path.parse("Outer0::B"),Ph.None),
@@ -232,7 +248,7 @@ String listExample=TestHelper.multiLine(
     new NormType(Mdf.Immutable,Path.parse("Outer0::AI"),Ph.None),
     new NormType(Mdf.Immutable,Path.parse("Outer0::AI"),Ph.None),
     new String[]{"{ AI:{mut k()} }"}
-    
+
     },{"error D.k()",//get capsule promoted
       new Ast.FreeType(),
       new Ast.FreeType(),
@@ -245,7 +261,7 @@ String listExample=TestHelper.multiLine(
       new Ast.FreeType(),
       new NormType(Mdf.Immutable,Path.Void(),Ph.None),
       new String[]{"{() D:{ mut () mut method Void m(mut D that) error void }}"}
-    },{"( lent D x=D() mut D y=D() x.m(y)  )",//Deceiving, but it should pass! as for ( lent D x=D() ( mut D y=D() x.m(y) ) ) 
+    },{"( lent D x=D() mut D y=D() x.m(y)  )",//Deceiving, but it should pass! as for ( lent D x=D() ( mut D y=D() x.m(y) ) )
       new Ast.FreeType(),
       new NormType(Mdf.Immutable,Path.Void(),Ph.None),
       new String[]{"{() D:{ mut () mut method Void m(mut D that) error void }}"}
@@ -285,32 +301,31 @@ String listExample=TestHelper.multiLine(
       +"   mut Customer c=Customer()\n"
       +"   return c 'ok, capsule promotion here\n"
       +" }}}"}
-    }};}
-    
-    String cloneExample=TestHelper.multiLine("{"
-        ,"  N:{k()}"
-        ,"  B:{mut k(var N that)"
-        ,"    read method"
-        ,"    capsule B clone() (B.k(this.that()))"
-        ,"    }"
-        ,"  A:{mut k(mut B f)}"
-        ,"  Vector:{mut k() mut method Void add(mut B that) (void)}"
-        ,"}");
+    }});}
 
-      @Test(dataProvider="e,typeSugg,typeExpected,stage,program")
-      public void testType(String es,Type sugg,Type expected,String []program) {
+
+
+      @Test
+      public void testType() {
         TestHelper.configureForTest();
-        ExpCore e=Desugar.of(Parser.parse(null," "+es)).accept(new InjectionOnCore());
+        ExpCore e=Desugar.of(Parser.parse(null," "+_e)).accept(new InjectionOnCore());
         List<Path> paths = CollectPaths0.of(e);
         Program p=TestHelper.getProgram(paths,program);
         Configuration.typeSystem.checkAll(p);
-        Type t2=TypeSystem.typecheckSure(false,p, new HashMap<>(),SealEnv.empty(),new ThrowEnv(), sugg, e);
-        Assert.assertEquals(t2,expected);
+        Type t2=TypeSystem.typecheckSure(false,p, new HashMap<>(),SealEnv.empty(),new ThrowEnv(), typeSugg, e);
+        Assert.assertEquals(t2,typeExpected);
         //TestHelper.assertEqualExp(eRed,ee2);
       }
-      @DataProvider(name = "!e,typeSugg,typeExpected,stage,program")
-      public Object[][] createData2() {
-        return new Object[][] {
+}
+@RunWith(Parameterized.class)
+public static class TestStage3_notOk {
+  @Parameter(0) public String _e;
+  @Parameter(1) public Type typeSugg;
+  @Parameter(2) public Type typeExpected;
+  @Parameter(3) public String[] program;
+  @Parameterized.Parameters
+  public static List<Object[]> createData() {
+    return Arrays.asList(new Object[][] {
         {" (mut C x=C(x) x)",
         new NormType(Mdf.Immutable,Path.Void(),Ph.None),
         new NormType(Mdf.Capsule,Path.Void(),Ph.None),
@@ -319,7 +334,7 @@ String listExample=TestHelper.multiLine(
           new NormType(Mdf.Capsule,Path.parse("Outer0::C"),Ph.None),
           new NormType(Mdf.Capsule,Path.parse("Outer0::C"),Ph.None),
           new String[]{"{ C:{mut (mut C that)}}"}
-      
+
       },{" (mut C x=C(x) (capsule C y=x.#that() y))",
         new NormType(Mdf.Capsule,Path.parse("Outer0::C"),Ph.None),
         new NormType(Mdf.Capsule,Path.parse("Outer0::C"),Ph.None),
@@ -328,7 +343,7 @@ String listExample=TestHelper.multiLine(
         new NormType(Mdf.Immutable,Path.parse("Outer0::A"),Ph.None),
         new NormType(Mdf.Immutable,Path.parse("Outer0::A"),Ph.None),
         new String[]{cloneExample}
-      
+
       },{"error D.k()",
         new Ast.FreeType(),
         new Ast.FreeType(),
@@ -337,7 +352,7 @@ String listExample=TestHelper.multiLine(
         new Ast.FreeType(),
         new Ast.FreeType(),
         new String[]{"{ D:{ mut k()}}"}
-      
+
       },{"using A check sumInt32(n1:void n2:{}) error void",
           new Ast.FreeType(),
           new Ast.FreeType(),
@@ -369,32 +384,42 @@ String listExample=TestHelper.multiLine(
               new NormType(Mdf.Immutable,Path.Void(),Ph.None),
               new NormType(Mdf.Capsule,Path.Void(),Ph.None),
               new String[]{"{ D:{k() method Void m() (void)}}"}
-            },{"( mut D x=D() lent D y=D() x.m(y)  )",//must fail//ok 
+            },{"( mut D x=D() lent D y=D() x.m(y)  )",//must fail//ok
               new Ast.FreeType(),
               new NormType(Mdf.Immutable,Path.Void(),Ph.None),
               new String[]{"{() D:{ mut () mut method Void m(mut D that) error void }}"}
-            },{"( mut D y=D() lent D x=D() x.m(y)  )",//must fail//ok 
+            },{"( mut D y=D() lent D x=D() x.m(y)  )",//must fail//ok
               new Ast.FreeType(),
               new NormType(Mdf.Immutable,Path.Void(),Ph.None),
               new String[]{"{() D:{ mut () mut method Void m(mut D that) error void }}"}
 
 
 
-      }};}
-      @Test(dataProvider="!e,typeSugg,typeExpected,stage,program",expectedExceptions=ErrorMessage.TypeError.class)
-      public void testFail(String es,Type sugg,Type expected,String []program) {
-        ExpCore e=Desugar.of(Parser.parse(null," "+es)).accept(new InjectionOnCore());
+      }});}
+      @Test(expected=ErrorMessage.TypeError.class)
+      public void testFail() {
+        ExpCore e=Desugar.of(Parser.parse(null," "+_e)).accept(new InjectionOnCore());
         List<Path> paths = CollectPaths0.of(e);
         Program p=TestHelper.getProgram(paths,program);
-        Type t2=TypeSystem.typecheckSure(false,p, new HashMap<>(),SealEnv.empty(),new ThrowEnv(), sugg, e);
+        Type t2=TypeSystem.typecheckSure(false,p, new HashMap<>(),SealEnv.empty(),new ThrowEnv(), typeSugg, e);
         //Assert.assertEquals(t2,expected);
         //TestHelper.assertEqualExp(eRed,ee2);
       }
-        
-      } 
 
- 
+      }
+
+
+
+static String cloneExample=TestHelper.multiLine("{"
+    ,"  N:{k()}"
+    ,"  B:{mut k(var N that)"
+    ,"    read method"
+    ,"    capsule B clone() (B.k(this.that()))"
+    ,"    }"
+    ,"  A:{mut k(mut B f)}"
+    ,"  Vector:{mut k() mut method Void add(mut B that) (void)}"
+    ,"}");
+
+
 }
-
-
 

@@ -1,4 +1,4 @@
-package testSlow;
+package testSpecial;
 
 import helpers.TestHelper;
 
@@ -6,10 +6,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-
-
-import org.testng.Assert;
-import org.testng.annotations.Test;
 
 import ast.ErrorMessage;
 import ast.ErrorMessage.FinalResult;

@@ -1,4 +1,4 @@
-package testSlow;
+package testSpecial;
 
 import helpers.TestHelper;
 
@@ -9,8 +9,11 @@ import java.util.Set;
 
 
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
+
+
+
+import org.junit.Assert;
+import org.junit.Test;
 
 import sugarVisitors.Desugar;
 import sugarVisitors.InjectionOnCore;
@@ -25,8 +28,8 @@ import facade.Parser;
 
 public class TestL42Interactive {
 
-  
-@Test(singleThreaded=false)
+
+@Test
 public void test1() throws IOException{
     TestHelper.configureForTest();
     L42.setRootPath(Paths.get("dummy"));
@@ -53,13 +56,13 @@ public void test1() throws IOException{
 ,"        \"++count++S\"</div>\""
 ,"      using Gui check set(current.that(),id:S\"Alpha\".that()) error void"
 ,"      count++=S\"|\""
-,"      )" 
+,"      )"
 ,"    return ExitCode.normal()"
 ,"    }"
 ,"  }"
 )).getErrCode(),0);}
 
-@Test(singleThreaded=false)
+@Test
 public void test2() throws IOException{
     TestHelper.configureForTest();
     L42.setRootPath(Paths.get("dummy"));
@@ -72,7 +75,7 @@ public void test2() throws IOException{
 ,"            'L42.is/connected/withHtml"
 ,"            ()"
 ,"            type method Void open(S title S body) "
-,"              using Gui check open(body.that(), title:title.that())error void"  
+,"              using Gui check open(body.that(), title:title.that())error void"
 ,"            type method Void set(S that,S id) ("
 //,"              using Gui check set(that.that(),id:id.that()) error void"
 ,"              cmd=S\"$(\'#\"++id++S\"').replaceWith('\"++that++S\"');\""
@@ -129,10 +132,10 @@ public void test2() throws IOException{
 //,"              Debug(x)"
 ,"              gui.set(msg++S\"</div>\", id:S\"Alpha\")"
 //,"              z=gui.executeJs(S\"alert('HelloDoneDone')\")"
-,"              void )" 
+,"              void )"
 ,"            return ExitCode.normal()"
 ,"            }"
 ,"          }"
-        
+
         )).getErrCode(),0);}
 }

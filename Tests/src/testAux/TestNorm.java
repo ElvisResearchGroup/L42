@@ -5,9 +5,13 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.testng.Assert;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+
+
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameter;
 
 import coreVisitors.From;
 import facade.Parser;
@@ -20,26 +24,30 @@ import auxiliaryGrammar.Norm;
 import auxiliaryGrammar.Program;
 
 public class TestNorm {
-  @Test(singleThreaded=true, timeOut = 500)
-  public class Test1 {
-      @DataProvider(name = "p,paths2")
-      public String[][] createData1() {
-       return new String[][] {
-       {"Outer0::A","Outer0::A"
-       },{"Outer0::A","Outer0::A","{C:{}}"
-       },{"Outer0::A","Outer0::A","{C:##walkBy}"
-       },{"Outer1::A","Outer1::A","{A:{}}","{C:{}}"
-       },{"Outer1::C","Outer1::C","{A:{}}","{C:{}}"
-       },{"Outer1::C","Outer0","{A:{}}","{C:##walkBy}"
-       },{"Outer2::D::C","Outer0","{A:{}}","{C:##walkBy}","{D:##walkBy}"
-       },{"Outer2::D::C","Outer1::C","{A:{}}","{C:{}}","{D:##walkBy}"  }};}
+  @RunWith(Parameterized.class)
+  public static class Test1 {
+    @Parameter(0) public String _p1;
+    @Parameter(1) public String _p2;
+    @Parameter(2) public String[] prog;
+    @Parameterized.Parameters
+    public static List<Object[]> createData() {
+      return Arrays.asList(new Object[][] {
+         {"Outer0::A","Outer0::A",new String[]{}
+       },{"Outer0::A","Outer0::A",new String[]{"{C:{}}"}
+       },{"Outer0::A","Outer0::A",new String[]{"{C:##walkBy}"}
+       },{"Outer1::A","Outer1::A",new String[]{"{A:{}}","{C:{}}"}
+       },{"Outer1::C","Outer1::C",new String[]{"{A:{}}","{C:{}}"}
+       },{"Outer1::C","Outer0",new String[]{"{A:{}}","{C:##walkBy}"}
+       },{"Outer2::D::C","Outer0",new String[]{"{A:{}}","{C:##walkBy}","{D:##walkBy}"}
+       },{"Outer2::D::C","Outer1::C",new String[]{"{A:{}}","{C:{}}","{D:##walkBy}"}
+       }});}
 
-    @Test(dataProvider="p,paths2")
-    public void testOk(String... in) {
-      Path pp1=Path.parse(in[0]);
-      Path pp2=Path.parse(in[1]);
+    @Test
+    public void testOk() {
+      Path pp1=Path.parse(_p1);
+      Path pp2=Path.parse(_p2);
       Program p=Program.empty();
-      List<String>inp=Arrays.asList(in).subList(2,in.length);
+      List<String>inp=Arrays.asList(prog);
       inp=new ArrayList<String>(inp);
       Collections.reverse(inp);
       for(String s: inp){
@@ -48,10 +56,10 @@ public class TestNorm {
         assert ec instanceof ClassB;
         p=p.addAtTop((ClassB)ec);
       }
-      
+
       Assert.assertEquals(Norm.of(p,pp1),pp2);
     }
-      
+
     }
 
 }

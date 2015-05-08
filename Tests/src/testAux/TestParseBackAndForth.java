@@ -1,8 +1,14 @@
 package testAux;
 
-import org.testng.Assert;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+
+import java.util.Arrays;
+import java.util.List;
+
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameter;
 
 import facade.Parser;
 import sugarVisitors.InjectionOnCore;
@@ -11,9 +17,15 @@ import ast.ExpCore;
 import ast.Expression;
 
 public class TestParseBackAndForth {
-  @DataProvider(name = "termsToString")
-  public Object[][] createData1() {
-   return new Object[][] {
+
+
+  @RunWith(Parameterized.class)
+  public static class Test1 {
+    @Parameter(0) public String s;
+    @Parameter(1) public String expected;
+    @Parameterized.Parameters
+    public static List<Object[]> createData() {
+      return Arrays.asList(new Object[][] {
 {"a","a"
 },{"a*b","a * b"
 },{" (a=b c)","(\n  a=b\n  c\n  )"
@@ -36,7 +48,7 @@ public class TestParseBackAndForth {
 },{" {()}","{ ()}"
 },{" {interface}","{interface }"
 },{" {<: A::B, C}","{<:A::B, C}"
-  
+
 },{" a 'bar\n ","a'bar\n"
 },{"!a","!a"
 },{"~(a+b)","~(a + b)"
@@ -49,13 +61,14 @@ public class TestParseBackAndForth {
    "with x in a, var y in b + c() z= t, var T w= t (\non T y\n)"
 },{"with x in a (on T y on T T z+y on A case e() b )",
    "with x in a (\non T y\non T, T z + y\non A case e() b\n)"
-}};}
-  @Test(dataProvider="termsToString")
-  public void testOkToString(String s,String expected) {
+}});}
+  @Test
+  public void testOkToString() {
      Expression x = Parser.parse(null,s);
      //InjectionOnCore c=new InjectionOnCore();
      //ExpCore e2 = x.accept(c);
      Assert.assertEquals(ToFormattedText.of(x), expected);
   }
 
+}
 }

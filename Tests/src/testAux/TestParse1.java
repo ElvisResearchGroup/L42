@@ -1,17 +1,25 @@
 package testAux;
 
+import java.util.Arrays;
+import java.util.List;
+
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameter;
+
 import helpers.TestHelper;
 
-import org.testng.annotations.AfterSuite;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
 
-
-@Test(singleThreaded=true, timeOut = 500)
 public class TestParse1 {
-  @DataProvider(name = "termsOk")
-  public Object[][] createData1() {
-   return new Object[][] {
+
+  @RunWith(Parameterized.class)
+  public static class Test1 {
+    @Parameter(0) public String s;
+    @Parameterized.Parameters
+    public static List<Object[]> createData() {
+      return Arrays.asList(new Object[][] {
   {"a"
   },{" (Outer0::that() ::#next() x=this.that().#next() x)"
 //},{"{'@ExpectedClass :( \n}"//TODO: the ( is turned in \t, and \t is not accepted in comments.
@@ -76,7 +84,7 @@ public class TestParse1 {
 },{"a .foo(a:b ).bar()"
 },{"a .foo(a:b ) .bar( )"
 },{"a '.foo(a$$:b ) .bar( )\n"
-},{"a 'b\n 'c\n "  
+},{"a 'b\n 'c\n "
 },{"a[]"
 },{"a []"
 },{"a [ ]"
@@ -99,7 +107,7 @@ public class TestParse1 {
 },{"a [ ;;a;;; b ]"
 },{"a [ ;;a;;; b;;; ]"
 
-},{"a(a, b:c)"  
+},{"a(a, b:c)"
 },{"C"
 },{" ( C a = b a)"
 },{" ( a = b a)"
@@ -121,7 +129,7 @@ public class TestParse1 {
     +" mut method Outer0::A a() ##field"
     +" read method Outer0::A #a() ##field"
     +" mut method Void a(Outer0::A that) ##field"
-    +" }" 
+    +" }"
 },{"a'bla\n"//test that is not ok without newline
 },{" S\"aaa\""
 },{" S\"a'aa\""
@@ -131,12 +139,16 @@ public class TestParse1 {
 },{" { method Foo foo()(this)[x:this();]}"
 },{" { method Foo foo()(this)[]()()'bla\n}"
 //No more ok},{" {'bla bla \n shared 'blue blue \n foo()}"
-}};}
-  @Test(dataProvider="termsOk") public void termsOk(String s) {TestHelper.isETop(s);}
-  
-  @DataProvider(name = "termsNotOk")
-  public Object[][] createData2() {
-   return new Object[][] {
+}});}
+  @Test public void termsOk(){TestHelper.isETop(s);}
+  }
+
+  @RunWith(Parameterized.class)
+  public static class Test2 {
+    @Parameter(0) public String s;
+    @Parameterized.Parameters
+    public static List<Object[]> createData() {
+      return Arrays.asList(new Object[][] {
   {"a ['foo ]"
 },{"a .foo (a:b ) .bar( )"
 //??notETop("12 a+b<c-d|h");
@@ -153,10 +165,8 @@ public class TestParse1 {
 },{"a'bla"
 //},{"a+b*c" is ok, is captured as a well formedness
   //now is fine instead//"a + ((b < (c))) - d |, h");}//space is required before parenthesis
-}};}
-  @Test(dataProvider="termsNotOk") public void termsNotOk(String s) {TestHelper.notETop(s);}
+}});}
+  @Test public void termsNotOk() {TestHelper.notETop(s);}
 
-  @AfterSuite public void endTest(){
-    //assert false;
-  }
+}
 }

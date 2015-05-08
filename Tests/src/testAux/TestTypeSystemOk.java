@@ -1,16 +1,19 @@
 package testAux;
 
 import helpers.TestHelper;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.testng.Assert;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
-import org.testng.asserts.Assertion;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameter;
+
 import facade.Parser;
 import sugarVisitors.Desugar;
 import sugarVisitors.InjectionOnCore;
@@ -25,11 +28,14 @@ import auxiliaryGrammar.Norm;
 import auxiliaryGrammar.Program;
 
 public class TestTypeSystemOk {
-  @Test(singleThreaded=true, timeOut = 500)
-  public class TestOk {
-      @DataProvider(name = "needed,classB1,classB2")
-      public String[][] createData1() {
-       return new String[][] {
+  @RunWith(Parameterized.class)
+  public static class TestOk {
+    @Parameter(0) public String s1;
+    @Parameter(1) public String s2;
+    @Parameter(2) public String s3;
+    @Parameterized.Parameters
+    public static List<Object[]> createData() {
+      return Arrays.asList(new Object[][] {
  {"Outer0::C","{C:{method Void()}}","{C:{method Void()}##plus^##}##plus^##"
 },{"Outer0::C","{C:{method Void()} D:{}}","{C:{method Void()}##plus^## D:{}##star ^##}##plus^##"
 },{"Outer0::C",
@@ -40,24 +46,24 @@ public class TestTypeSystemOk {
   "{C:{type method Void foo() (D.foo())}##plus^## D:{method Void()type method Void foo() (void)}##plus ^##}##plus^##"
 },{"Outer0::C",
   "{C:{E:{type method Void foo() (Outer1.foo())} type method Void foo() (D.foo())} D:{type method Void foo() (C::E.foo())}}",
-  "{C:{E:{type method Void foo() (Outer1.foo())}##star^## type method Void foo() (D.foo())}##star^## D:{type method Void foo() (C::E.foo())}##star^##}##star^##"  
+  "{C:{E:{type method Void foo() (Outer1.foo())}##star^## type method Void foo() (D.foo())}##star^## D:{type method Void foo() (C::E.foo())}##star^##}##star^##"
 },{"Outer0::C",
   "{C:{E:{type method Void foo() (Outer1.foo())} type method Void foo() (D.foo())} D:{method Void() type method Void foo() (C::E.foo())}}",
   "{C:{E:{type method Void foo() (Outer1.foo())}##plus^## type method Void foo() (D.foo())}##plus^## D:{method Void()  type method Void foo() (C::E.foo())}##plus^##}##plus^##"
-  
+
 },{"Outer0::C",
   "{K:{E:{type method Void foo() (Outer2::C.foo())}} C:{type method Void foo() (D.foo())} D:{type method Void foo() (K::E.foo())}}",
-  "{K:{E:{type method Void foo() (Outer2::C.foo())}##star^##}##star ^## C:{type method Void foo() (D.foo())}##star^## D:{type method Void foo() (K::E.foo())}##star^##}##star^##"  
+  "{K:{E:{type method Void foo() (Outer2::C.foo())}##star^##}##star ^## C:{type method Void foo() (D.foo())}##star^## D:{type method Void foo() (K::E.foo())}##star^##}##star^##"
 },{"Outer0::C",
   "{K:{method Void() E:{type method C foo() (C.foo())}} C:{type method C foo() (D.foo())} D:{type method C foo() (K::E.foo())}}",
   "{K:{method Void() E:{type method C foo() (C.foo())}##star^##}##plus ^## C:{type method C foo() (D.foo())}##star^## D:{type method C foo() (K::E.foo())}##star^##}##plus^##"
   //norm//NO, Norm is executed only in the extracted method
 //},{"Outer0::C",
 //  "{K:{E:{type method C::foo() foo() (C.foo())}} C:{type method C foo() (D.foo())} D:{type method C foo() (K::E.foo())}}",
-//  "{K:{E:{type method C foo() (C.foo())}##plus^##}##plus ^## C:{type method C foo() (D.foo())}##plus^## D:{type method C foo() (K::E.foo())}##plus^##}##plus^##"  
+//  "{K:{E:{type method C foo() (C.foo())}##plus^##}##plus ^## C:{type method C foo() (D.foo())}##plus^## D:{type method C foo() (K::E.foo())}##plus^##}##plus^##"
 //},{"Outer0::C",
 //  "{K:{E:{type method C::foo()::foo() foo() (C.foo())}} C:{type method C foo() (D.foo())} D:{type method C foo() (K::E.foo())}}",
-//  "{K:{E:{type method C foo() (C.foo())}##plus^##}##plus^## C:{type method C foo() (D.foo())}##plus^## D:{type method C foo() (K::E.foo())}##plus^##}##plus^##"  
+//  "{K:{E:{type method C foo() (C.foo())}##plus^##}##plus^## C:{type method C foo() (D.foo())}##plus^## D:{type method C foo() (K::E.foo())}##plus^##}##plus^##"
 },{"Outer0::C",
   "{C:{ method Void foo() (Outer0 x= this void)} }",
   "{C:{ method Void foo() (Outer0 x= this void)}##star^## }##star^##"
@@ -66,40 +72,44 @@ public class TestTypeSystemOk {
   "{C:{ method Void foo() (C x= this void)}##star^## }##star^##"
 
 
-}};}
+}});}
 
-@Test(dataProvider="needed,classB1,classB2")//needed unused
-public void testAllSteps(String sp,String scb1,String scb2) {
-  ClassB cb1=runTypeSystem(scb1);
-  ClassB cb2=(ClassB)Desugar.of(Parser.parse(null,scb2)).accept(new InjectionOnCore());
+@Test()
+public void testAllSteps() {//s1 unused :(
+  ClassB cb1=runTypeSystem(s2);
+  ClassB cb2=(ClassB)Desugar.of(Parser.parse(null,s3)).accept(new InjectionOnCore());
   TestHelper.assertEqualExp(cb1,cb2);
   }
 }
-@Test(singleThreaded=true, timeOut = 500)
-    public class TestFail {
-        @DataProvider(name = "needed,classB1")
-        public String[][] createData1() {
-         return new String[][] {
+
+
+@RunWith(Parameterized.class)
+public static class TesFail {
+  @Parameter(0) public String s1;
+  @Parameter(1) public String s2;
+  @Parameterized.Parameters
+  public static List<Object[]> createData() {
+    return Arrays.asList(new Object[][] {
     {"Outer0::C",
     "{C:{type method Void foo() (D.foo())} D:{type method Void bar() (void)}}"
   },{"Outer0::C",
-   "{C:{E:{type method Void foo() (Outer1.foo())} type method Library foo() (D.foo())} D:{type method Void foo() (C::E.foo())}}"  
+   "{C:{E:{type method Void foo() (Outer1.foo())} type method Library foo() (D.foo())} D:{type method Void foo() (C::E.foo())}}"
   },{"Outer0::C",
-    "{C:{E:{type method Void foo() (Outer1.foo())} type method Library foo() (D.foo())} D:{type method Void foo() (C::E.foo())}}"  
+    "{C:{E:{type method Void foo() (Outer1.foo())} type method Library foo() (D.foo())} D:{type method Void foo() (C::E.foo())}}"
  },{"Outer0::C",
-  "{K:{E:{type method Any  foo() (Outer1.foo())}} C:{type method Void foo() (D.foo())} D:{type method Library foo() (K::E.foo())}}"  
-           
-       }};}
-   
-      @Test(dataProvider="needed,classB1", expectedExceptions=ErrorMessage.TypeError.class)
-      public void testAllSteps(String sp,String scb1) {//needed unused
-        runTypeSystem(scb1);
+  "{K:{E:{type method Any  foo() (Outer1.foo())}} C:{type method Void foo() (D.foo())} D:{type method Library foo() (K::E.foo())}}"
+
+       }});}
+
+      @Test(expected=ErrorMessage.TypeError.class)
+      public void testAllSteps() {//s1 unused :(
+        runTypeSystem(s2);
         assert false;
       }
-        
+
       }
 
-  private static ClassB runTypeSystem(String scb1) {
+   static ClassB runTypeSystem(String scb1) {
         ClassB cb1=(ClassB)Desugar.of(Parser.parse(null,scb1)).accept(new InjectionOnCore());
         Program p=Program.empty();
         cb1=TypeExtraction.etFull(p,cb1);
@@ -107,6 +117,6 @@ public void testAllSteps(String sp,String scb1,String scb2) {
         //assert p.checkComplete():cb1;//Not in this test?
         TypeSystemOK.checkAll(p);
         return cb1;
-      } 
+      }
 }
 

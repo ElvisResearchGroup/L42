@@ -4,13 +4,19 @@ import helpers.TestHelper;
 
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
+
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameter;
 
 import sugarVisitors.Desugar;
 import sugarVisitors.InjectionOnCore;
@@ -25,8 +31,8 @@ import facade.Parser;
 
 public class TestL42Limitations {
 //TODO: in loop on big step on11/04/2015
-  
-//@Test(singleThreaded=false)
+
+@Test
 public void test1() throws IOException{
     TestHelper.configureForTest();
     //L42.setRootPath(Paths.get("dummy"));

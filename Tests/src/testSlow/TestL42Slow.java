@@ -7,9 +7,13 @@ import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.testng.Assert;
-import org.testng.annotations.BeforeSuite;
-import org.testng.annotations.Test;
+
+
+
+
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 import reduction.SmallStep;
 import sugarVisitors.Desugar;
@@ -28,12 +32,12 @@ import facade.Parser;
 
 public class TestL42Slow {
 
-@BeforeSuite public void configure(){
+@Before public void configure(){
   TestHelper.configureForTest();
   L42.setRootPath(Paths.get("dummy"));
   }
-  
-@Test(singleThreaded=false)
+
+@Test
 public void testIntrospectionPlugin() throws IOException{
     TestHelper.configureForTest();
     Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
@@ -45,9 +49,9 @@ public void testIntrospectionPlugin() throws IOException{
 ,"  return ExitCode.normal()"
 ,"  }}"
 )).getErrCode(),0);}
-  
 
-@Test(singleThreaded=false)
+
+@Test
 public void test0() throws IOException{
     TestHelper.configureForTest();
     Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
@@ -59,7 +63,7 @@ public void test0() throws IOException{
 ,"return ExitCode.normal()}}"
 )).getErrCode(),0);}
 
-@Test(singleThreaded=false)
+@Test
 public void test1() throws IOException{
     TestHelper.configureForTest();
     Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
@@ -67,7 +71,7 @@ public void test1() throws IOException{
 ,"C:ExitCode.normal()}"
 )).getErrCode(),0);}
 
-@Test(singleThreaded=false)
+@Test
 public void test2() throws IOException{
     TestHelper.configureForTest();
     Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
@@ -77,7 +81,7 @@ public void test2() throws IOException{
 ,"C: ExitCode.normal()}"
 )).getErrCode(),0);}
 
-  @Test(singleThreaded=false)
+  @Test
   public void test2a() throws IOException{
     TestHelper.configureForTest();
     Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
@@ -101,7 +105,7 @@ public void test2() throws IOException{
 ,"      return ExitCode.normal()}}"
 )).getErrCode(),0);}
 
-  @Test(singleThreaded=false)
+  @Test
   public void testOuter0ToOuter1C_1() throws IOException{
     TestHelper.configureForTest();
     Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
@@ -114,8 +118,8 @@ public void test2() throws IOException{
 ,"}"
 )).getErrCode(),0);}
 
-  
-   @Test(singleThreaded=false)
+
+   @Test
   public void testOuter0ToOuter1C() throws IOException{
     TestHelper.configureForTest();
     Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
@@ -127,17 +131,17 @@ public void test2() throws IOException{
 ,"C:ExitCode.normal()"
 ,"}"
 )).getErrCode(),0);}
-  
+
 
 /*public  static final String codeLong=
-  TestHelper.multiLine(""  
+  TestHelper.multiLine(""
 ,"    {"
-,"    Bool:{interface" 
-,"    type method" 
-,"    Outer0 #apply()" 
-,"    method" 
+,"    Bool:{interface"
+,"    type method"
+,"    Outer0 #apply()"
+,"    method"
 ,"    Void #checkTrue() exception Void"
-,"    method" 
+,"    method"
 ,"    Outer0 #and(Outer0 that) }"
 ,"    True:{ _private()<:Outer1::Bool"
 ,"    method #apply() (this._private())"
@@ -148,7 +152,7 @@ public void test2() throws IOException{
 ,"    method #checkTrue() (exception void)"
 ,"    method #and(that ) (this)}"
 ,"    ExitCode:{"
-,"    type method" 
+,"    type method"
 ,"    Library normal() ("
 ,"      Void unused=("
 ,"        Void unused0=return {'@exitStatus"
@@ -161,7 +165,7 @@ public void test2() throws IOException{
 ,"        )"
 ,"      error void"
 ,"      )"
-,"    type method" 
+,"    type method"
 ,"    Library failure() ("
 ,"      Void unused=("
 ,"        Void unused0=return {'@exitStatus"
@@ -175,17 +179,17 @@ public void test2() throws IOException{
 ,"      error void"
 ,"      )}"
 ,"    List:{ _new(Outer0::Cell head)"
-,"    type method" 
+,"    type method"
 ,"    Outer1::List #apply() (Outer1::List._new(head:Outer0::CellEnd.#apply()))"
-,"    method" 
+,"    method"
 ,"    Outer1::List #add(Library that) (Outer1::List._new(head:Outer0::CellNext.#apply(elem:that, next:this.head())))"
-,"    method" 
+,"    method"
 ,"    Library top() ("
 ,"      Void unused=("
 ,"        Void unused0=exception this.head()"
 ,"        catch exception x ("
 ,"          on Outer0::CellNext return x.elem()"
-,""          
+,""
 ,"          on Outer0::Cell error void"
 ,"          )"
 ,"        void"
@@ -195,13 +199,13 @@ public void test2() throws IOException{
 ,"        )"
 ,"      error void"
 ,"      )"
-,"    method" 
+,"    method"
 ,"    Outer1::List pop() ("
 ,"      Void unused=("
 ,"        Void unused0=exception this.head()"
 ,"        catch exception x ("
 ,"          on Outer0::CellNext return Outer1::List._new(head:x.next())"
-,""          
+,""
 ,"          on Outer0::Cell error void"
 ,"          )"
 ,"        void"
@@ -309,13 +313,13 @@ public void test2() throws IOException{
 ,"        )"
 ,"      error void"
 ,"      )}"
-);   
+);
 */
 
 
 /*
   @Test()
-  public void testStress() {  
+  public void testStress() {
     TestHelper.configureForTest();
     System.out.println("Start");
     Expression parsed = Parser.parse(null,this.codeLong);
@@ -339,7 +343,7 @@ public void test2() throws IOException{
     }
 */
 
-  @Test(singleThreaded=false)
+  @Test
     public void test3() throws IOException{
       TestHelper.configureForTest();
       Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
@@ -378,7 +382,7 @@ public void test2() throws IOException{
 ,"}"
 )).getErrCode(),0);}
 
-  @Test(singleThreaded=false)
+  @Test
   public void test4() throws IOException{
     TestHelper.configureForTest();
     Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
@@ -416,8 +420,8 @@ public void test2() throws IOException{
 ,"  }"
 ,"}"
 )).getErrCode(),0);}
-  
-  @Test(singleThreaded=false)
+
+  @Test
   public void test5() throws IOException{
     TestHelper.configureForTest();
     Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
@@ -464,10 +468,10 @@ public void test2() throws IOException{
 ,"}"
 )).getErrCode(),0);}
 
-  
-  
-  
-  @Test(singleThreaded=false)
+
+
+
+  @Test
   public void test6() throws IOException{
     TestHelper.configureForTest();
     Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
@@ -479,9 +483,9 @@ public void test2() throws IOException{
 ,"    }"
 )).getErrCode(),0);}
 
-  
+
 //in superSlow
-  //@Test(singleThreaded=false)
+  //@Test
   public void test7() throws IOException{
     TestHelper.configureForTest();
     Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
@@ -495,13 +499,13 @@ public void test2() throws IOException{
 ,"  t6=5N+3N==8N"
 ,"  t7=5N-3N==2N"
 ,"  t8=5N*3N==15N"
-,"  t9=5N/3N==1N"  
+,"  t9=5N/3N==1N"
 ,"  if t1 & t2 & t3 & t4 & t5 &t6 &t7 &t8 &t9  (return ExitCode.normal())"
 ,"  return ExitCode.failure()"
 ,"  }}"
 )).getErrCode(),0);}
 
-  @Test(singleThreaded=false)
+  @Test
   public void test8() throws IOException{
     TestHelper.configureForTest();
     Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
@@ -523,9 +527,9 @@ public void test2() throws IOException{
   Assert.assertEquals(L42.record.toString(),"foobar\n");
   L42.record=new StringBuilder();
   }
-  
-  
-  @Test(singleThreaded=false)
+
+
+  @Test
   public void test9() throws IOException{
     TestHelper.configureForTest();
     Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
@@ -547,7 +551,7 @@ public void test2() throws IOException{
 ,"    }"
 )).getErrCode(),0);}
 
-@Test(singleThreaded=false)
+@Test
 public void test10() throws IOException{
   TestHelper.configureForTest();
   Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
@@ -562,13 +566,13 @@ public void test10() throws IOException{
 ,"    T:{'@Library\n}"
 ,"    }"
 ,"  ) error void"
-,"C: D.id(ExitCode.normal())" 
+,"C: D.id(ExitCode.normal())"
 ,"}"
 )).getErrCode(),0);}
 
 
 
-@Test(singleThreaded=false)
+@Test
 public void test11() throws IOException{
   TestHelper.configureForTest();
   Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
@@ -581,18 +585,18 @@ public void test11() throws IOException{
 ,"    type method T id(T that, Foo foo) (that)"
 ,"    })}"
 ,"D: A.foo()"
-,"C: ExitCode.normal()" 
+,"C: ExitCode.normal()"
 ,"}"
 )).getErrCode(),0);}
 
 
-@Test(singleThreaded=false)
+@Test
 public void test12() throws IOException{
   TestHelper.configureForTest();
   Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
 ,"{reuse L42.is/microBase"
 ,"LibList: Collections.list(Library)"
-//,"Lib2:Collections.list(LibList)" 
+//,"Lib2:Collections.list(LibList)"
 ,"C:{"
 //,"  l=Lib2[LibList[{a()};{b()};];LibList[];]"
 //,"  l=LibList[{a()};{b()};]"
@@ -603,13 +607,13 @@ public void test12() throws IOException{
 )).getErrCode(),0);}
 
 
-@Test(singleThreaded=false)
+@Test
 public void test12a() throws IOException{
   TestHelper.configureForTest();
   Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
 ,"{reuse L42.is/microBase"
 ,"LibList: Collections.list(Library)"
-,"Lib2:Collections.list(LibList)" 
+,"Lib2:Collections.list(LibList)"
 ,"C:{"
 ,"  l=Lib2[LibList[{a()};{b()};];LibList[];]"
 ,"  if False() (return ExitCode.failure())"
@@ -619,7 +623,7 @@ public void test12a() throws IOException{
 )).getErrCode(),0);}
 
 
-@Test(singleThreaded=false)
+@Test
 public void test14() throws IOException{
   TestHelper.configureForTest();
   Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
@@ -627,7 +631,7 @@ public void test14() throws IOException{
 ,"A: using IntrospectionPlugin check adaptLib("
 ,"    l1:{() B:{() type method Bool foo(Bool x) !x}}"
 ,"    l2:{B:{ method Void foo(Void x) this.bar(y:x) method Void bar(Void y)}}"
-,"    ) error void" 
+,"    ) error void"
 ,"C:{"
 ,"  if A::B.bar(y:False()) ( return ExitCode.normal()  )"
 ,"  return ExitCode.failure()"
@@ -635,7 +639,7 @@ public void test14() throws IOException{
 ,"}"
 )).getErrCode(),0);}
 /*
-@Test(singleThreaded=false)
+@Test
 public void test15() throws IOException{
   TestHelper.configureForTest();
   Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
@@ -646,7 +650,7 @@ public void test15() throws IOException{
 ,"}"
 )).getErrCode(),0);}
 */
-@Test(singleThreaded=false,expectedExceptions=ErrorMessage.ProgramExtractOnWalkBy.class)
+@Test(expected=ErrorMessage.ProgramExtractOnWalkBy.class)
 //need to be handled and explained in error reporting...
 public void testAttemptUseCircular() throws IOException{
   TestHelper.configureForTest();
@@ -658,17 +662,17 @@ public void testAttemptUseCircular() throws IOException{
 ,"}"
 )).getErrCode(),0);}
 
-@Test(singleThreaded=false)
+@Test
 public void testTinyBase0() throws IOException{
   TestHelper.configureForTest();
   Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
 ,"{reuse L42.is/tinyBase0"
-,"C:( x=Name\"T\".isInternalPath()    ExitCode.normal())" 
+,"C:( x=Name\"T\".isInternalPath()    ExitCode.normal())"
 ,"}"
 )).getErrCode(),0);}
 
 
-@Test(singleThreaded=false)
+@Test
 public void testTinyBase1() throws IOException{
   TestHelper.configureForTest();
   Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
@@ -678,7 +682,7 @@ public void testTinyBase1() throws IOException{
 )).getErrCode(),0);}
 
 
-@Test(singleThreaded=false)
+@Test
 public void testMiniBase() throws IOException{
   TestHelper.configureForTest();
   Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
@@ -687,7 +691,7 @@ public void testMiniBase() throws IOException{
 ,"}"
 )).getErrCode(),0);}
 
-@Test(singleThreaded=false)
+@Test
 public void testOnCase1() throws IOException{
   TestHelper.configureForTest();
   Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
@@ -705,7 +709,7 @@ public void testOnCase1() throws IOException{
 ,"}"
       )).getErrCode(),0);}
 
-@Test(singleThreaded=false)
+@Test
 public void testOnCase0a() throws IOException{
   TestHelper.configureForTest();
   Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
@@ -715,7 +719,7 @@ public void testOnCase0a() throws IOException{
 ,"}"
       )).getErrCode(),0);}
 
-@Test(singleThreaded=false)
+@Test
 public void testOnCase0b() throws IOException{
   TestHelper.configureForTest();
   Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
@@ -726,7 +730,7 @@ public void testOnCase0b() throws IOException{
       )).getErrCode(),0);}
 
 
-@Test(singleThreaded=false)
+@Test
 public void testOnCase0() throws IOException{
   TestHelper.configureForTest();
   Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
@@ -738,7 +742,7 @@ public void testOnCase0() throws IOException{
       )).getErrCode(),0);}
 
 
-@Test(singleThreaded=false)
+@Test
 public void testOnCase1a() throws IOException{
   TestHelper.configureForTest();
   Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
@@ -755,7 +759,7 @@ public void testOnCase1a() throws IOException{
 ,"}"
       )).getErrCode(),0);}
 
-@Test(singleThreaded=false)
+@Test
 public void testOnCase1b() throws IOException{
   TestHelper.configureForTest();
   Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
@@ -770,7 +774,7 @@ public void testOnCase1b() throws IOException{
       )).getErrCode(),0);}
 
 
-@Test(singleThreaded=false)
+@Test
 public void testOnCase1c() throws IOException{
   TestHelper.configureForTest();
   Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
@@ -789,7 +793,7 @@ public void testOnCase1c() throws IOException{
       )).getErrCode(),0);}
 
 
-@Test(singleThreaded=false)
+@Test
 public void testOnCase2() throws IOException{
   TestHelper.configureForTest();
   Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
@@ -806,7 +810,7 @@ public void testOnCase2() throws IOException{
 ,"}"
       )).getErrCode(),0);}
 
-@Test(singleThreaded=false)
+@Test
 public void testOnCase2a() throws IOException{
   TestHelper.configureForTest();
   Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
@@ -821,7 +825,7 @@ public void testOnCase2a() throws IOException{
 ,")}"
 )).getErrCode(),0);}
 
-@Test(singleThreaded=false)
+@Test
 public void test17() throws IOException{
   TestHelper.configureForTest();
   Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
@@ -839,18 +843,18 @@ public void test17() throws IOException{
 ,"  return Use[succ;pred;]<{()  method N one() 1N}"
 ,"  }"
 ,"Main:{"
-,"  c=C()" 
+,"  c=C()"
 ,"  if c.succ(3N)==4N ("
 ,"    return ExitCode.normal()"
 ,"    )"
 ,"  return ExitCode.failure()"
-,"  }" 
+,"  }"
 ,"}"
 )).getErrCode(),0);}
 
 
 
-@Test(singleThreaded=false)
+@Test
 public void test17Old() throws IOException{
   TestHelper.configureForTest();
   Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
@@ -868,16 +872,16 @@ public void test17Old() throws IOException{
 ,"  return Use[succ;pred;]<{()  method N one() 1N}"
 ,"  }"
 ,"Main:{"
-,"  c=C()" 
+,"  c=C()"
 ,"  if c.succ(3N)==4N ("
 ,"    return ExitCode.normal()"
 ,"    )"
 ,"  return ExitCode.failure()"
-,"  }" 
+,"  }"
 ,"}"
 )).getErrCode(),0);}
 
-@Test(singleThreaded=false)
+@Test
 public void test17mini() throws IOException{
   TestHelper.configureForTest();
   Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
@@ -889,42 +893,42 @@ public void test17mini() throws IOException{
 )).getErrCode(),0);}
 
 
-@Test(singleThreaded=false)
+@Test
 public void test18() throws IOException{
   TestHelper.configureForTest();
   Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
 ,"{reuse L42.is/miniBase"
-,"'C:Adapt[Name\"foo\", of:Name\"Outer0\", into:Name\"bar\";]<{() method N foo() 42N }"  
-,"C:Adapt[Name\"foo\", into:Name\"bar\";]<{() method N foo() 42N }"  
+,"'C:Adapt[Name\"foo\", of:Name\"Outer0\", into:Name\"bar\";]<{() method N foo() 42N }"
+,"C:Adapt[Name\"foo\", into:Name\"bar\";]<{() method N foo() 42N }"
 ,""
 ,"Main:{"
 ,"  if C().bar()==42N ("
 ,"    return ExitCode.normal()"
 ,"    )"
 ,"  return ExitCode.failure()"
-,"  }" 
+,"  }"
 ,"}"
 )).getErrCode(),0);}
 
 
-@Test(singleThreaded=false)
+@Test
 public void testDeepMakePrivate() throws IOException{
   TestHelper.configureForTest();
   Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
 ,"{reuse L42.is/miniBase"
-,"C:Adapt[Name\"Bar\", into:Name\"Outer0\";makePrivate:Name\"Bar::Foo\"]<{type method N top() Bar::Foo.foo() Bar:{Foo:{ type method N foo() 42N }}}"  
+,"C:Adapt[Name\"Bar\", into:Name\"Outer0\";makePrivate:Name\"Bar::Foo\"]<{type method N top() Bar::Foo.foo() Bar:{Foo:{ type method N foo() 42N }}}"
 ,""
 ,"Main:{"
 ,"  if C.top()==42N ("
 ,"    return ExitCode.normal()"
 ,"    )"
 ,"  return ExitCode.failure()"
-,"  }" 
+,"  }"
 ,"}"
 )).getErrCode(),0);}
 
 
-@Test(singleThreaded=false, expectedExceptions=AssertionError.class)
+@Test(expected=AssertionError.class)
 public void testDeepMakePrivate2() throws IOException{
   TestHelper.configureForTest();
   Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
@@ -947,12 +951,12 @@ public void testDeepMakePrivate2() throws IOException{
 ,"  x=Vector.vector(S)"
 ,"  Debug(S\"computed\")"
 ,"  ExitCode.normal()"
-,"  )" 
+,"  )"
 ,"}"
 )).getErrCode(),0);}
 
 
-@Test(singleThreaded=false)
+@Test
 public void testDeepMakePrivate3() throws IOException{
   TestHelper.configureForTest();
   Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
@@ -977,12 +981,12 @@ public void testDeepMakePrivate3() throws IOException{
 ,"  x=Vector.vector(S)"
 ,"  Debug(S\"computed\")"
 ,"  ExitCode.normal()"
-,"  )" 
+,"  )"
 ,"}"
 )).getErrCode(),0);}
 
 
-@Test(singleThreaded=false)
+@Test
 public void testMiniBaseExists() throws IOException{
   TestHelper.configureForTest();
   Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
@@ -991,7 +995,7 @@ public void testMiniBaseExists() throws IOException{
 )).getErrCode(),0);}
 
 
-@Test(singleThreaded=false)
+@Test
 public void testStringConcat1() throws IOException{
   TestHelper.configureForTest();
   Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
@@ -1009,7 +1013,7 @@ Assert.assertEquals(L42.record.toString(),"foofoofoofoo\n");
 L42.record=new StringBuilder();
 }
 
-@Test(singleThreaded=false)
+@Test
 public void testStringConcat2() throws IOException{
   TestHelper.configureForTest();
   Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
@@ -1030,7 +1034,7 @@ L42.record=new StringBuilder();
 }
 
 
-@Test(singleThreaded=false)
+@Test
 public void testAccumulator1() throws IOException{
   TestHelper.configureForTest();
   Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
@@ -1055,7 +1059,7 @@ public void testAccumulator1() throws IOException{
 )).getErrCode(),0);
 }
 
-@Test(singleThreaded=false, expectedExceptions=ErrorMessage.PathsNotSubtype.class)
+@Test(expected=ErrorMessage.PathsNotSubtype.class)
 //TODO: it would be then wrapped as IncompleteClassRequired in the error reporting
 public void testMissingMethod() throws IOException{
   TestHelper.configureForTest();
@@ -1073,7 +1077,7 @@ public void testMissingMethod() throws IOException{
 }
 
 
-@Test(singleThreaded=false)
+@Test
 public void testVectorStruct() throws IOException{
 TestHelper.configureForTest();
 Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
