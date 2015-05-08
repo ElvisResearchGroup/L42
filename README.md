@@ -1,9 +1,8 @@
 # L42
 
-Here I will try t explain how to set up
-L42 in eclipse.
-Install testNG for tests. http://testng.org/doc/download.html
-under help/install new software
+Here I will try t explain how to set up L42 in eclipse.
+There may be some reference to TestNG still around.
+  There is no need to install TestNg, now we use JUnit4
 Instal EGit
 
 Do import ->git-> projects->clone uri
