@@ -54,6 +54,7 @@ public class EncodingHelper{
     for(int i=0;i<s.length();i++){
       char c=s.charAt(i);
       if(c=='\\'){addAsUnicode(result,c);continue;}
+      if(c=='@'){addAsUnicode(result,c);continue;}//otherwise, the special meaning of @ in comments mess up with string encoding
       if(isValid42Char(c)){result.append(c);continue;}
       addAsUnicode(result,c);
       }

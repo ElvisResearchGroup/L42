@@ -93,8 +93,8 @@ Use:{ (Resolver resolver,Libs myLibs)
 Adapt:{(Library adapter)
   type method Outer0 () Outer0(adapter:{})
   method Outer0 #add(Name that, Name into) {
-    if that.isExternal() (error S"start name must be internal")
-    if !that.isInternalPath() (return this.#add(that,of:Name"Outer0",into:into))
+    if that.isExternalPathName() (error S"start name must be internal")
+    if !that.isInternalPathName() (return this.#add(that,of:Name"Outer0",into:into))
     map=IntrospectionPlugin.adaptLib(
       l1:into.adapter(), l2:that.adapter())
     lib=IntrospectionPlugin.sumLib(l1:this.adapter(), l2:map)
@@ -109,7 +109,7 @@ Adapt:{(Library adapter)
     return Outer0(adapter:lib)
     }
   method Outer0 #add(Name makePrivate){
-    fName=Name(isExternal:Bool.false(),adapter:IntrospectionPlugin.getFreshName(makePrivate.adapter()))
+    fName=Name(adapter:IntrospectionPlugin.getFreshName(makePrivate.adapter()))
     return this.#add(makePrivate into:fName)
     }
   type method Outer0 #begin() Outer0()

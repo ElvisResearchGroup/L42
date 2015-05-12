@@ -7,6 +7,7 @@ Deploy:{ (S node, S fileName)
   method Library <(Library that){
     adapter=IntrospectionPlugin.adapter(nameDest:this.node(),nameSrc:S"Template")
     code=IntrospectionPlugin.adaptLib(l1:that,l2:adapter)
+    'equivalent to code=Adapt[Name"Template" into Name.#stringParser(this.node().binaryRep())]<that
     Outer0(fileName:this.fileName(),code:code,node:this.node())    
     'code=that
     'Outer0(fileName:this.fileName(),code:code,node:S"Outer0")    

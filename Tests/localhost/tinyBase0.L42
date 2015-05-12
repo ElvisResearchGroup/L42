@@ -1,35 +1,73 @@
 {reuse L42.is/nanoBase2
 
-Name:{(Bool isExternal, Library adapter)
+Name:{
+'(Bool isExternal, Library adapter)
 'external is "pointing out"
 'internal is " A::B::C"
 'not external and not internal is a method name
+
+  new(Bool externalPath, Bool internalPath,S repr, Library adapter)'@private
+  method Bool isExternalPathName() this.externalPath()
+  method Bool isInternalPathName() this.internalPath()
+  method Bool isMethodName() !this.externalPath()  & !this.internalPath()
+  
   type method
-  Name #stringParser(Library that) 
-    Name(isExternal:Bool.false(),adapter:
-      using IntrospectionPlugin 
-        check nameToAdapter(that)
-        error {nameToAdapter()}
-    )
-    
+  Name #stringParser(Library that) {
+    Library adapter=using IntrospectionPlugin 
+      check nameToAdapter(that)
+      error {nameToAdapter()}
+    return Name.new(
+      externalPath: Bool.false()
+      internalPath: Outer0.computeIsInternalPath(adapter:adapter)
+      repr:S.#stringParser(that)
+      adapter: adapter
+      )
+    }
   type method
-  Name (type Any that) 
-    Name(isExternal:Bool.true(),adapter:
-      using IntrospectionPlugin
-        check typeNameToAdapter(that)
-        error {typeNameToAdapter()}
-    )
+  Name (type Any that) {
+    Library adapter=using IntrospectionPlugin 
+      check typeNameToAdapter(that)
+      error {typeNameToAdapter()}
+    return Name.new(
+      externalPath:Bool.true()
+      internalPath:Bool.false()
+      repr:S"ExternalPathName about "++Introspection(adapter).get()
+      adapter:adapter
+      )
+    }
+  type method Outer0 (Library adapter){
+    internalName=Outer0.getInternalAdapterStringOrEmpty(adapter:adapter)
+      isExternal=internalName.size()==0N
+      S repr={
+          if isExternal (return S"ExternalPathName about "++Introspection(adapter).get())
+          return internalName
+          }
+      return Outer0.new(
+        externalPath:isExternal
+        internalPath:!isExternal 'can not be a methodName
+        repr:repr 'try to put repr definition here
+        adapter:adapter
+        )}
+  type method
+    S getInternalAdapterStringOrEmpty(Library adapter){'TODO: put this method private
+      Library result= using IntrospectionPlugin 
+        check getInternalAdapterPathOrElse(adapter)
+        return S""
+      return S.#stringParser(result)
+      }
     
-  method
-  Bool isInternalPath() {
-    ms=Introspection(this.adapter(),node:S"%o_0%").methods()
+  type method '@private
+  Bool computeIsInternalPath(Library adapter) {
+    ms=Introspection(adapter,node:S"%o_0%").methods()
     return ms.isEmpty()
     }
+    
   method
   Bool ==(Any that){
     with that (on Outer0 return this.innerEquals(that))
     return Bool.false()
     }
+    
   method
   Bool innerEquals(Outer0 that)
     Introspection(this.adapter()).get()==Introspection(that.adapter()).get()
@@ -79,7 +117,6 @@ Introspection:{
       exception void
     return Name.#stringParser(name)
     }
-    
   Method:{(Outer1 myClass, N num, S name)
     method
     S get() 
@@ -99,22 +136,19 @@ Introspection:{
           node:this.myClass().node().binaryRepr())
         error {invalidMethodNumber()}
       )
-      
     method
-    Name returnClass()
-      Name(
-        isExternal:Bool.true(),'TODO: this is a bug, should be computed
-        adapter: using IntrospectionPlugin 
-          check  getTypePathOrElse(
-            this.myClass().that(),
-            methodNum:this.num().binaryRepr(),
-            node:this.myClass().node().binaryRepr())
-          error {invalidMethodNumber()}
-        )
-        
+    Name returnClass() {
+      Library adapter= using IntrospectionPlugin 
+        check  getTypePathOrElse(
+          this.myClass().that(),
+          methodNum:this.num().binaryRepr(),
+          node:this.myClass().node().binaryRepr())
+        error {invalidMethodNumber()}
+      return Name(adapter:adapter)
+      }   
     method
     Name getName()
-      Name.#stringParser('get name? unuseful!
+      Name.#stringParser('get name? unuseful! -- why unuseful?
         using IntrospectionPlugin 
           check getNameOrElse(
             this.myClass().that(),
@@ -160,17 +194,16 @@ Introspection:{
     
   Parameter:{(Method myMethod, N num, S name)
     method
-    Name class() 
-      Name(
-        isExternal:Bool.true(),'TODO: this is a bug, should be computed
-        adapter: using IntrospectionPlugin 
-          check  getTypePathOrElse(
-            this.myMethod().myClass().that(),
-            methodNum:this.myMethod().num().binaryRepr(),
-            parameterNum:this.num().binaryRepr()
-            node:this.myMethod().myClass().node().binaryRepr())
-          error {invalidMethodNumber()}
-      )
+    Name class() {
+      Library adapter= using IntrospectionPlugin 
+        check  getTypePathOrElse(
+          this.myMethod().myClass().that(),
+          methodNum:this.myMethod().num().binaryRepr(),
+          parameterNum:this.num().binaryRepr()
+          node:this.myMethod().myClass().node().binaryRepr())
+        error {invalidMethodNumber()}
+      return Name(adapter:adapter)
+      }
     }
     
   Parameters:Collections.list(Parameter)
@@ -211,7 +244,4 @@ Introspection:{
     return ctor.parameters()
     }
   }
-  
-
-
 }

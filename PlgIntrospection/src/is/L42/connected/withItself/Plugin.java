@@ -152,6 +152,21 @@ public class Plugin implements PluginType{
     if(!isAbstract){return Resources.Void.instance;}
     throw Resources.notAct;//allows action from 42
     }
+  @ActionType({ActionType.Type.Library,ActionType.Type.Library})
+  public Object MgetInternalAdapterPathOrElse£xthat(Object _lib){
+    Optional<Member> nc = Program.getIfInDom(ensureExtractClassB(_lib).getMs(), "%o_0%");
+    if(!nc.isPresent()){throw Resources.notAct;}//orElse
+    ExpCore e = ((NestedClass)nc.get()).getInner();
+    if(!(e instanceof ClassB)){throw Resources.notAct;}//orElse
+    ClassB lib=(ClassB)e;
+    List<Path> ps = lib.getDoc1().getPaths();
+    if(ps.size()!=1){throw Resources.notAct;}//orElse
+    Path p0=ps.get(0);
+    if(p0.outerNumber()!=1){throw Resources.notAct;}//orElse
+    String result= String.join("::", p0.getCBar());
+    if(result.isEmpty()){return "Outer0";}
+    return result;
+    }
   //%1-7
   //% -getXXXOrElse(that:ClassB methodNum:num parameterNum:num node:Path )
   //%[7]NameSuffixesMethodParameter:{}/Name/Mdf/Type/TypePath/TypeMdf/TypePh/Doc

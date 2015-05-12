@@ -170,7 +170,8 @@ public class IntrospectionAdapt {
     assert pp.getPath2().isCore();
     if(pp.getPath2().outerNumber()>0){return;}
     List<String> cBar1 = pp.getPath1().getCBar();
-    assert !cBar1.isEmpty();
+    //if(cBar1.isEmpty()){return;}
+    //assert !cBar1.isEmpty();
     List<String> cBar2 = pp.getPath2().getCBar();
     Path toFrom = computeSquareTo(cBar1, cBar2);
     Doc[] docCb=new Doc[]{Doc.empty()};
@@ -178,17 +179,22 @@ public class IntrospectionAdapt {
     //from works so that an internal path stay the same,
     //and an external path change to another external path.
     //for into:Name"Outer0" we need external paths to become internal
-    if(toFrom.outerNumber()>0){
-      assert toFrom.outerNumber()>0;
+    
+    if(toFrom.outerNumber()>0 && toFrom.getCBar().size()>0){
       toFrom=toFrom.setNewOuter(toFrom.outerNumber()-1);
-      assert toFrom.getCBar().size()!=0;
       toFrom=toFrom.popC();
       cb=(ClassB)FromInClass.of(cb, toFrom);
     }
-    else{
+    else {
+        if(toFrom.outerNumber()>0 /*&&toFrom.getCBar().size()==0*/){
+          assert toFrom.getCBar().size()==0;
+          cb=(ClassB)FromInClass.of(cb, toFrom);
+        }
+      else {
+        assert toFrom.outerNumber()==0;      
         //remove outerN where N is toFrom.getCBar().size()
         int _n=toFrom.getCBar().size();
-        if(_n!=0){
+        if(_n!=0){//TODO: test case _n==0
           cb=(ClassB)cb.accept(new CloneVisitor(){
             int n=_n-1;
             public ExpCore visit(ClassB cb){
@@ -204,7 +210,7 @@ public class IntrospectionAdapt {
             }
           });
         }
-    }
+    }}
     
     if(cBar2.isEmpty()){results.add(cb);return;}
     List<Member>ms=new ArrayList<>();
@@ -245,6 +251,9 @@ public class IntrospectionAdapt {
     return Path.outer(cBar2.size(),cBar1);
   }*/
   private static ClassB remove(Path path1, ClassB l) {
+    if(path1.equals(Path.outer(0))){
+      return new ClassB(Doc.empty(),Doc.empty(),false,Collections.emptyList(),Collections.emptyList(),Stage.None);  
+      }
     return (ClassB)l.accept(new CloneVisitor(){
       List<String> cs=path1.getCBar();
       public List<Member> liftMembers(List<Member> s) {
@@ -261,10 +270,10 @@ public class IntrospectionAdapt {
         String top=cs.get(0);
         if(!top.equals(nc.getName())){return result.add(nc);}//out of path
         if(cs.size()==1){return true;}
-        {List<String> csLocal=cs;
-        cs=csLocal.subList(1,cs.size());
+        List<String> csLocal=cs;
+        cs=cs.subList(1,cs.size());
         try{return result.add(this.visit(nc));}
-        finally{cs=csLocal;}}
+        finally{cs=csLocal;}
       }
     });
   }
@@ -288,7 +297,7 @@ public class IntrospectionAdapt {
     }
   private static ClassB renameUsage(Program _p, List<PathPath> _map, ClassB l) {
     return new CloneVisitorWithProgram(_p){
-      List<PathPath> map=_map;
+      List<PathPath> map=removePathInsideSubPath(_map);
       public ExpCore visit(Path s) {
         Path p0n=Norm.of(this.p,s);
         for(PathPath pp:map){
@@ -315,7 +324,23 @@ public class IntrospectionAdapt {
         }
     }.startVisit(l);
   }
-  static Path add1Outer(Path p) {
+  private static List<PathPath> removePathInsideSubPath(List<PathPath> map) {
+    List<PathPath> result=new ArrayList<PathPath>();
+    for(PathPath pp:map){
+        if(isPathInsideSubPath(pp)){continue;}
+        result.add(pp);
+    }
+    return result;
+}
+private static boolean isPathInsideSubPath(PathPath pp) {
+  assert pp.getPath1().isCore();
+  assert pp.getPath1().outerNumber()==0;
+  if(pp.getPath2().isPrimitive()){return false;}
+  assert pp.getPath2().isCore():pp.getPath2();
+  if(pp.getPath2().outerNumber()!=0){return false;}
+  return 0==Collections.indexOfSubList(pp.getPath2().getRowData(),pp.getPath1().getRowData());
+ }
+static Path add1Outer(Path p) {
     if( p.isPrimitive()){return p;}
     return p.setNewOuter(p.outerNumber()+1);
   }

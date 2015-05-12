@@ -667,7 +667,7 @@ public void testTinyBase0() throws IOException{
   TestHelper.configureForTest();
   Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
 ,"{reuse L42.is/tinyBase0"
-,"C:( x=Name\"T\".isInternalPath()    ExitCode.normal())"
+,"C:( x=Name\"T\".isInternalPathName()    ExitCode.normal())"
 ,"}"
 )).getErrCode(),0);}
 

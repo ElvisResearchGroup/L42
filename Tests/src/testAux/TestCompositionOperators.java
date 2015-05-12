@@ -20,6 +20,7 @@ import platformSpecific.javaTranslation.Resources.Revertable;
 import sugarVisitors.Desugar;
 import sugarVisitors.InjectionOnCore;
 import ast.Ast;
+import ast.ErrorMessage;
 import ast.ExpCore;
 import ast.Ast.Path;
 import ast.ExpCore.*;
@@ -137,24 +138,6 @@ helpers.TestHelper.multiLine(""
 ,"  TOpt:{interface }"
 ,"  TEmpty:{<:Outer1::TOpt}"
 ,"}}")
-/*},{helpers.TestHelper.multiLine(""
-,"{N:{} S:{} Elem:{} Kind:{type method Elem elem() error void type method Elem elemRead() error void } A:{mut(var mut Cell head)"
-,"  Cell:{interface}"
-,"  CellNext:{mut (Kind::elem() val,mut Cell next)<:Cell}"
-,"  CellEnd:{mut ()<:Cell}"
-,"  OptMax:{(Outer0::TOpt that)"
-,"    TOpt:{interface}"
-,"    TEmpty:{<:Outer1::TOpt}"
-,"    }"
-,"  read method lent Iterator vals()"
-,"  Iterator(this,min:-1N,ok:this.size(), max:OptMax())"
-,"  Iterator:{lent (read Outer1 that, var N min, N ok, OptMax max)}"
-,"  }}"),
-"{ A:{'@Outer1\n}}",
-helpers.TestHelper.multiLine(""
-,"{"
-,"}") */
-
 },{helpers.TestHelper.multiLine(""
 ,"{ A:{mut(var mut Cell head)"
 ,"  Cell:{interface}"
@@ -179,7 +162,23 @@ helpers.TestHelper.multiLine(""
 ,"}")
 
 
-    }});}
+},{
+ "{ A:{type method Outer1::B ()}  B:{ }}",
+ "{ A:{'@Outer0::C\n C:{} }}",
+ "{ B:{} A:{ C:{type method Outer2::B #apply() }}}"
+
+},{
+  "{ A:{type method Outer0::B ()  B:{ }}}",
+  "{ A:{'@Outer0::C\n C:{} }}",
+  "{ A:{ C:{type method Outer0::B #apply() B:{} }}}"
+
+},{
+  "{ type method Outer0::B ()  B:{ }}",
+  "{ '@Outer0::C\n C:{} }",
+  "{ C:{ type method Outer0::B #apply() B:{}}}"
+
+  
+}});}
   @Test
   public void test() {
     TestHelper.configureForTest();
@@ -336,7 +335,38 @@ helpers.TestHelper.multiLine(""
     ClassB cb1=getClassB(e1);
     String res=(String)getWI(wi->wi.MgetNameOrElse£xthat£xmethodNum£xnode(cb1,e2,e3));
     Assert.assertEquals(res,_expected);}}
-  //----------------------------------------------------------
+
+	  //----------------------------------------------------------
+    @RunWith(Parameterized.class)
+    public static class Test_MgetInternalAdapterPathOrElse£xthat {
+    @Parameter(0) public String e1;
+    @Parameter(1) public String expected;//can be null
+    @Parameterized.Parameters
+    public static List<Object[]> createData() {
+      return Arrays.asList(new Object[][] {
+    {"{A:{} %o_0%:{'@Outer1::A\n}}","A"
+  },{"{A:{B:{}} %o_0%:{'@Outer1::A::B\n}}","A::B"
+  },{"{ %o_0%:{'@Outer2::A::B\n}}",null
+  },{"{ %o_0%:{'@Outer2\n}}",null
+  },{"{ %o_0%:{'@Outer1\n}}","Outer0"
+  },{"{ %o_0%:{'@Outer0\n}}",null
+  
+    }});}
+  @Test public void test() {
+    TestHelper.configureForTest();
+    ClassB cb1=getClassB(e1);
+    try{
+      String s=(String)getWI(wi->wi.MgetInternalAdapterPathOrElse£xthat(cb1));
+      Assert.assertNotNull(this.expected);
+      Assert.assertEquals(this.expected,s);
+      }
+    catch(ErrorMessage.PluginActionUndefined isExternal){
+      Assert.assertNull(this.expected);
+      }
+    }
+    }
+
+	//----------------------------------------------------------
 	@RunWith(Parameterized.class)
 	public static class Test_MgetTypePathOrElse£xthat£xmethodNum£xnode {
 	  @Parameter(0) public String _lib;
@@ -356,6 +386,7 @@ helpers.TestHelper.multiLine(""
       "{B:{A:{}}%o_0%:{ '@Outer1::B::A\n}}"
       }});}
   @Test public void test() {
+    TestHelper.configureForTest();
     ClassB lib=getClassB(_lib);
     ClassB expected=getClassB(_expected);
     ClassB res=(ClassB)getWI(wi->wi.MgetTypePathOrElse£xthat£xmethodNum£xnode(lib,num,path));
@@ -378,6 +409,7 @@ helpers.TestHelper.multiLine(""
 
       }});}
   @Test public void test() {
+    TestHelper.configureForTest();
     ClassB lib=getClassB(_lib);
     String res=(String)getWI(wi->wi.MgetOrElse£xthat£xmethodNum£xparameterNum£xnode(lib,num,pNum,path));
     Assert.assertEquals(res,_expected);

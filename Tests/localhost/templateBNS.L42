@@ -1,40 +1,25 @@
 {reuse L42.is/miniBase
-NameList:Collections.list(Name)
-Generalize:{(NameList internals)
-  type method Outer0 #begin() Outer0(internals:NameList())
-  method Outer0 #add(Name that) Outer0(internals:this.internals.#add(that))
+'NameList:Collections.list(Name)
+'Generalize:{(NameList internals)
+'  type method Outer0 #begin() Outer0(internals:NameList())
+'  method Outer0 #add(Name that) Outer0(internals:this.internals.#add(that))
+'  method Outer0 #end() this
+  
+Generalize:{()
+  type method Outer0 #begin() Outer0()
   method Outer0 #end() this
-  type method Library <(Library that){
-    i=Introspection(that)
-    'NEED TODO:
-    'Name == using     == for libraries using string
-    'Introspection nested classes?
-    ' Collections.contains
-    NameList externals=
-    'if Bool.true() (return that)
-    boolA=IntrospectionPlugin.adapter(Template::Bool,name:S"Bool")
-    nA=IntrospectionPlugin.adapter(Template::N,name:S"N")
-    sA=IntrospectionPlugin.adapter(Template::S,name:S"S")
-    toSA=IntrospectionPlugin.adapter(Template::S::ToS,name:S"S::ToS")
-    debugA=IntrospectionPlugin.adapter(Template::Debug,name:S"Debug")
-    var map=IntrospectionPlugin.sumLib(l1:boolA,l2:nA)
-    map:=IntrospectionPlugin.sumLib(l1:map,l2:sA)
-    map:=IntrospectionPlugin.sumLib(l1:map,l2:toSA)
-    map:=IntrospectionPlugin.sumLib(l1:map,l2:debugA)
-
-    map:=IntrospectionPlugin.sumLib(l1:map,l2:IntrospectionPlugin.adapter(Any,name:S"ExitCode"))
-    map:=IntrospectionPlugin.sumLib(l1:map,l2:IntrospectionPlugin.adapter(Any,name:S"Alu"))
-    map:=IntrospectionPlugin.sumLib(l1:map,l2:IntrospectionPlugin.adapter(Any,name:S"IntrospectionPlugin"))
-    map:=IntrospectionPlugin.sumLib(l1:map,l2:IntrospectionPlugin.adapter(Any,name:S"Collections"))
-    map:=IntrospectionPlugin.sumLib(l1:map,l2:IntrospectionPlugin.adapter(Any,name:S"Name"))
-    map:=IntrospectionPlugin.sumLib(l1:map,l2:IntrospectionPlugin.adapter(Any,name:S"Introspection"))
-    map:=IntrospectionPlugin.sumLib(l1:map,l2:IntrospectionPlugin.adapter(Any,name:S"Load"))
-    map:=IntrospectionPlugin.sumLib(l1:map,l2:IntrospectionPlugin.adapter(Any,name:S"Opt"))
-    map:=IntrospectionPlugin.sumLib(l1:map,l2:IntrospectionPlugin.adapter(Any,name:S"Use"))
-    map:=IntrospectionPlugin.sumLib(l1:map,l2:IntrospectionPlugin.adapter(Any,name:S"Adapt"))
-    map:=IntrospectionPlugin.sumLib(l1:map,l2:IntrospectionPlugin.adapter(Any,name:S"Data"))
-    
-    return IntrospectionPlugin.adaptLib(l1:that,l2:map)
+  method Library <(Library that){
+    var result=that
+    result:=Adapt[
+      Name"Bool" into:Name(Template::Bool);
+      Name"N" into:Name(Template::N);
+      Name"S" into:Name(Template::S);
+      Name"Debug" into:Name(Template::Debug);
+      ]<result
+    result:=Adapt[Name"Outer0" into:Name"PrivateImpl"]<result
+    result:=Adapt[Name"PrivateImpl::Exported" into:Name"Outer0"]<result
+    result:=Adapt[makePrivate:Name"PrivateImpl"]<result
+    return result
     }  
   }
 

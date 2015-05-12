@@ -16,17 +16,17 @@ public class DeploySimpleLib {
   public static void main(String [] arg) throws IOException{
     L42.setRootPath(Paths.get("dummy"));
     TestHelper.configureForTest();
-    testLibCreationGui();
+    //testLibCreationGui();
     //testLibCreation();
-    //testLibUse();
+    testLibUse();
   }
 
   private static void testLibCreation() {
     try{
       FinalResult res = L42.runSlow(null,TestHelper.multiLine(""
 ,"          {reuse L42.is/deployMini"
-,"            Main:Deploy[S\"Top::Exported\", fileName:S\"localhost/SimpleLib.L42\"]<{reuse L42.is/templateBNS"
-,"              Top:Outer0::Generalize[]<{reuse L42.is/miniBase"
+,"            Main:Deploy[S\"Top\", fileName:S\"localhost/SimpleLib.L42\"]<{reuse L42.is/templateBNS"
+,"              Top:Generalize[]<{reuse L42.is/miniBase"
 ,"                Exported:{"
 ,"                  type method Void printHelloWorld()"
 ,"                    Debug(S\"Hello World \"++42N)"
