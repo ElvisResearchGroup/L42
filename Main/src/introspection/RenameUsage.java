@@ -1,10 +1,14 @@
 package introspection;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+
 import tools.Map;
+import ast.Ast;
+import ast.Ast.MethodSelectorX;
 import ast.ExpCore;
 import ast.Ast.MethodSelector;
 import ast.Ast.NormType;
@@ -102,22 +106,44 @@ class RenameUsage extends CloneVisitorWithProgram {
       }
     finally{this.varEnv=aux;}
     }
+  public Ast.Type liftT(Ast.Type t){
+      if(!(t instanceof Ast.HistoricType)){return super.liftT(t);}
+      Ast.HistoricType ht=(Ast.HistoricType)t;
+      Path last=ht.getPath();
+      List<MethodSelectorX>sels=new ArrayList<>();
+      for(MethodSelectorX sel:ht.getSelectors()){
+        MethodSelector ms2=renamedMS(sel.getMs(),last);
+        if(ms2.equals(sel.getMs())){sels.add(sel);}
+        else{sels.add(new MethodSelectorX(ms2,sel.getX()));}
+        Ast.HistoricType hti=new Ast.HistoricType(last,Collections.singletonList(sel),false);
+        NormType nt=Norm.of(p,hti);
+        last=nt.getPath();
+        }
+      Ast.HistoricType ht2=ht.withSelectors(sels);
+      return ht2;
+      }
+  private MethodSelector renamedMS(MethodSelector original,Path src){
+      assert src!=null;
+      List<PathMxMx> filtered=new ArrayList<>();
+      for(PathMxMx pMx:pMxs){
+        if(original.equals(pMx.getMs1())){filtered.add(pMx);}
+      }
+      if(filtered.isEmpty()){return original;}
+      for(PathMxMx pMx:filtered){
+          Path path=Norm.of(p,pMx.getPath());
+          if(!equalOrSubtype(src,path)){continue;}
+          return pMx.getMs2();
+          }
+        return original;
+    }
   public ExpCore visit(MCall s) {
     MethodSelector ms=new MethodSelector(s.getName(),s.getXs());
-    List<PathMxMx> filtered=new ArrayList<>();
-    for(PathMxMx pMx:pMxs){
-      if(ms.equals(pMx.getMs1())){filtered.add(pMx);}
-    }
-    if(filtered.isEmpty()){return super.visit(s);}
     Path guessed=GuessTypeCore.of(p,varEnv,s.getReceiver());
     if(guessed==null){return super.visit(s);}
     guessed=Norm.of(p, guessed);
-    for(PathMxMx pMx:filtered){
-      Path path=Norm.of(p,pMx.getPath());
-      if(!equalOrSubtype(guessed,path)){continue;}
-      s=new MCall(s.getSource(),s.getReceiver(),pMx.getMs2().getName(),s.getDoc(),pMx.getMs2().getNames(),s.getEs());
-      return super.visit(s);
-      }
+    MethodSelector ms2=renamedMS(ms,guessed);
+    if(ms2.equals(ms)){return super.visit(s);}
+    s=new MCall(s.getSource(),s.getReceiver(),ms2.getName(),s.getDoc(),ms2.getNames(),s.getEs());
     return super.visit(s);
     }
   private boolean equalOrSubtype(Path guessed, Path path) {

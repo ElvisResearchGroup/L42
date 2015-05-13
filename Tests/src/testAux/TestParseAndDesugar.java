@@ -356,6 +356,17 @@ public class TestParseAndDesugar {
 +"Outer1::Foo b0() }\n"
 +"method\n"
 +"Void gg() void}\n"
+},{
+    "{reuse L42.is/nanoBasePrivates3\n   C:{method  Void foo() void}}",
+  "{"
++" type method "
++" Outer0::foo0() bar() Outer0.foo0()"
++" type method '@private\n"
++" Void foo0() void"
++" C:{"
++" method" 
++" Void foo() void}}"
+
 }});}
 
   @Test

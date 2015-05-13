@@ -48,8 +48,8 @@ Name:{
         repr:repr 'try to put repr definition here
         adapter:adapter
         )}
-  type method
-    S getInternalAdapterStringOrEmpty(Library adapter){'TODO: put this method private
+  type method '@private
+    S getInternalAdapterStringOrEmpty(Library adapter){
       Library result= using IntrospectionPlugin 
         check getInternalAdapterPathOrElse(adapter)
         return S""

@@ -662,6 +662,17 @@ public void testAttemptUseCircular() throws IOException{
 ,"}"
 )).getErrCode(),0);}
 
+//unuseful
+/*@Test
+public void testMiniBase_() throws IOException{
+  TestHelper.configureForTest();
+  Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
+,"{reuse L42.is/miniBase_"
+,"C:( x=Name\"T\".isInternalPathName()    ExitCode.normal())"
+,"}"
+)).getErrCode(),0);}
+*/
+
 @Test
 public void testTinyBase0() throws IOException{
   TestHelper.configureForTest();
@@ -670,7 +681,6 @@ public void testTinyBase0() throws IOException{
 ,"C:( x=Name\"T\".isInternalPathName()    ExitCode.normal())"
 ,"}"
 )).getErrCode(),0);}
-
 
 @Test
 public void testTinyBase1() throws IOException{

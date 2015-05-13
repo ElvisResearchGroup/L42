@@ -820,7 +820,7 @@ Outer0 #apply(Library adapter) (
   'CurlyBlock-Should be unreachable code
   }
   )
-type method 
+type method '@private
 Outer1::S getInternalAdapterStringOrEmpty(Library adapter) (
   Void unused=(
     Library result=using Outer1::IntrospectionPlugin check getInternalAdapterPathOrElse(that:adapter) return Outer1::S.#stringParser(that:{'@stringU

@@ -94,8 +94,9 @@ public interface Ast {
   private static boolean isOutern(String start){
     if(!start.startsWith("Outer")){return false;}
     start=start.substring("Outer".length());
+    if(start.isEmpty()){return false;}
     for(char c: start.toCharArray()){
-      if(!Character.isDigit(c))return false;
+      if(!Character.isDigit(c)){return false;}
       }
     return true;
     }
