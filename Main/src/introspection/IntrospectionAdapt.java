@@ -219,7 +219,7 @@ public class IntrospectionAdapt {
     return;
   }
   //C1:{ ...{ .. .Cn:{} }}
-  public static Member encapsulateIn(List<String> cBar,ClassB elem,Doc doc) {
+  public static ClassB.NestedClass encapsulateIn(List<String> cBar,ClassB elem,Doc doc) {
     //Notice: encapsulation do not do the from. It must be done
     //on the call side as in "redirectDefinition"
     assert !cBar.isEmpty();

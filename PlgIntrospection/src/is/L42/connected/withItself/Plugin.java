@@ -2,6 +2,7 @@ package is.L42.connected.withItself;
 
 import introspection.IntrospectionAdapt;
 import introspection.IntrospectionSum;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
+
 import coreVisitors.CloneVisitorWithProgram;
 import coreVisitors.From;
 import platformSpecific.fakeInternet.ActionType;
@@ -40,6 +42,8 @@ import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodWithType;
 import ast.ExpCore.ClassB.NestedClass;
 import ast.ExpCore.*;
+import ast.Util.PathMxMx;
+import ast.Util.PathPath;
 import static auxiliaryGrammar.EncodingHelper.*;
 import auxiliaryGrammar.EncodingHelper;
 import auxiliaryGrammar.Functions;
@@ -229,14 +233,16 @@ public class Plugin implements PluginType{
   //%7-7
   //% -getXXXOrElse(that:ClassB methodNum:num parameterNum:num node:Path )
   //%[7]NameSuffixesMethodParameter:{}/Name/Mdf/Type/TypePath/TypeMdf/TypePh/Doc
-  @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+  /*@ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
   public Object MgetDocOrElse£xthat£xmethodNum£xparameterNum£xnode(Object _lib,Object _mNum,Object _pNum,Object _path){
     StringBuilder b=new StringBuilder();
     extractField(_lib,_mNum,_pNum,_path,(n,t,doc)->{
       b.append(doc);
     });
     return b.toString();}
-
+    //TODO: docs should not be a string, but a class with a single doc, and
+     * we need an API to access the ith path in the docs.
+*/
   
   public void extractField(Object _lib, Object _mNum,Object _pNum, Object _path,
       StringBuilders.TriConsumer<String,Type,Doc> consumer) {  
@@ -349,14 +355,7 @@ public class Plugin implements PluginType{
     ClassB l1=extractClassB(cb1);
     ClassB l2=extractClassB(cb2);
     if (l1==null ||l2==null){throw new Resources.Error("InvalidClassB");}
-    
-    //try{
       ExpCore result=IntrospectionSum.sum(l1, l2,Path.outer(0));
-    //  return validateResult(Resources.getP(), result,l1,l2,null);
-    //}
-    //catch(Throwable msg){
-    //  throw Assertions.codeNotReachable("try to make this happen, is it possible? it should mean bug in plugin code\n"+msg+"\n---------------\n");  
-    //}
     return result;
   }
   public static ExpCore validateResult(Program p, ExpCore result,ClassB l1,ClassB l2,Path path) {
@@ -391,16 +390,49 @@ public class Plugin implements PluginType{
     ClassB l1=extractClassB(cb1);
     ClassB l2=extractClassB(cb2);
     if (l1==null ||l2==null){throw new Resources.Error("InvalidClassB");}
-  //try{//TODO: no, should be pluginexecuteSafe
     ExpCore result=IntrospectionAdapt.adapt(Resources.getP(),l1, l2);
-  //  return validateResult(Resources.getP(),result,l1,l2,null);
-  //}
-  //catch(Throwable msg){
-  //  throw Assertions.codeNotReachable("try to make this happen, is it possible? it should mean bug in plugin code\n"+msg+"\n---------------\n");  
-  //}
-
   return result;
   }
+ @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+ public Object MsumComment£xthat£xcomment£xadapter(Object _that,Object _comment,Object _adapter){
+   ClassB that=ensureExtractClassB(_that);
+   ClassB comment=ensureExtractClassB(_comment);
+   ClassB adapter=ensureExtractClassB(_adapter);
+   List<PathMxMx> mapMx = IntrospectionAdapt.mapMx(adapter);
+   List<PathPath> mapPath = IntrospectionAdapt.mapPath(adapter);
+   Member inner=null;
+   if(mapMx.isEmpty()){
+     assert mapPath.size()==1;
+     Path path=mapPath.get(0).getPath1();//or 2?
+     assert path.isCore();
+     inner=IntrospectionAdapt.encapsulateIn(path.getCBar(),new ClassB(Doc.empty(),Doc.empty(),true,Collections.emptyList(),Collections.emptyList(),Stage.None),comment.getDoc1());
+     }
+   if(mapPath.isEmpty()){
+     assert mapMx.size()==1;
+     Path path=mapMx.get(0).getPath();
+     MethodSelector ms = mapMx.get(0).getMs1();//or2?
+     //extract the method from path ms
+     ClassB src=that;
+     if(!path.equals(Path.outer(0))){
+       src=Program.extractCBar(path.getCBar(), that);
+       }
+     Optional<Member> mOpt = Program.getIfInDom(src.getMs(), ms);
+     assert mOpt.isPresent();
+     assert mOpt.get() instanceof ClassB.MethodWithType;
+     //it must be with type
+     ClassB.MethodWithType mwt=(ClassB.MethodWithType) mOpt.get();    
+     //remove body and add comment
+     mwt.withInner(Optional.empty()).withDoc(that.getDoc1());
+     inner=mwt;
+     //if outer0, there it is, else, use encapsulate
+     if(!path.equals(Path.outer(0))){
+       inner=IntrospectionAdapt.encapsulateIn(path.getCBar(),new ClassB(Doc.empty(),Doc.empty(),true,Collections.emptyList(),Collections.singletonList(mwt),Stage.None),Doc.empty());
+       }
+     }
+   ClassB innerC=new ClassB(Doc.empty(),Doc.empty(),true,Collections.emptyList(),Collections.singletonList(inner),Stage.None);
+   that=IntrospectionSum.sum(that, innerC, Path.outer(0));     
+   return that;
+ }
   @ActionType({ActionType.Type.Library,ActionType.Type.Library})
   public Object MnameToAdapter£xthat(Object cb1){
     String s1=extractStringU(cb1);
@@ -446,8 +478,6 @@ public class Plugin implements PluginType{
   }
   public Object freshNestedClassNameAdapter(ClassB cb, NestedClass nc,ClassB face) {
     if(face.isInterface()){throw new  Resources.Error("Invalid adapter: "+ToFormattedText.of(cb));}
-    //throw Assertions.codeNotReachable();
-    //TODO:enable again
     assert !face.isInterface();
     Path seed=face.getDoc1().getPaths().get(0);
     String fresh="%"+Functions.freshName(seed, L42.usedNames);
