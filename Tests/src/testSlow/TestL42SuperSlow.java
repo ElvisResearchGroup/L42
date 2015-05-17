@@ -235,7 +235,7 @@ public void testAdapt() throws IOException{
   Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
 ,"{reuse L42.is/miniBase"
 ,"C:{"
-,"  Library a=Adapt[makePrivate:Name\"aa\";makePrivate:Name\"bb(a)\";makePrivate:Name\"D\";]<{()"
+,"  Library a=Adapt[Name\"aa\" into:Name\"aa1\";Name\"bb(a)\" into:Name\"bb1(a)\";Name\"D\" into :Name\"%d\"]<{()"
 ,"    method Void aa() void"
 ,"    method Void bb(Outer0 a) void"
 ,"    D:{()}"

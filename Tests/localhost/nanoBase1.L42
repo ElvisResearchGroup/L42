@@ -197,6 +197,9 @@ Debug:{_private() '@private
     using Outer0 check adaptLib(l1:l1,l2:l2) error {adaptLib()}
     
   type method
+  Library sumComment(Library that,Library comment,Library adapter)
+    using Outer0 check sumComment(that, comment:comment, adapter:adapter) error{sumComment()}
+  type method
   Library nameToAdapter(Library that)
     using Outer0 check nameToAdapter(that) error {nameToAdapter()}
     
@@ -213,7 +216,7 @@ Debug:{_private() '@private
     name2=IntrospectionPlugin.nameToAdapter(name.binaryRepr())
     return IntrospectionPlugin.adaptLib(l1:name1,l2:name2)
     }
-    type method Library adapter(S nameDest, S nameSrc) {
+  type method Library adapter(S nameDest, S nameSrc) {
     name1=IntrospectionPlugin.nameToAdapter(nameDest.binaryRepr())
     name2=IntrospectionPlugin.nameToAdapter(nameSrc.binaryRepr())
     return IntrospectionPlugin.adaptLib(l1:name1,l2:name2)

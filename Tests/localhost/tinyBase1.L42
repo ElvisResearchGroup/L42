@@ -32,12 +32,15 @@ Opt:{unused()
       type method Outer0 (T that) Outer0.#new(TOf(that))
       }
   }
-
 Use:{ (Resolver resolver,Libs myLibs)
   Resolver: Opt(Library)
-  Libs: Collections.list(Library)
-  type method Outer0 () Outer0(resolver:Resolver(), myLibs:Libs[])
-  method Outer0 #add(Library that) (
+  Libs:'@private
+    Collections.list(Library)
+  type method
+  Outer0 () Outer0(resolver:Resolver(), myLibs:Libs[])
+  
+  method
+  Outer0 #add(Library that) (
     ls=this.myLibs().#add(that)
     Outer0(resolver:this.resolver(),myLibs:ls)
     )
@@ -45,11 +48,12 @@ Use:{ (Resolver resolver,Libs myLibs)
     Outer0(resolver:Resolver(resolver),myLibs:this.myLibs())
   type method
   Outer0 #begin() Outer0()
-  method Outer0 #end() this 
   
+  method
+  Outer0 #end() this  
   
-  
-  method Library < (Library that) {
+  method
+  Library < (Library that) {
     it=this.myLibs().vals()
     it.#next()
     catch exception ( on Void return that)
@@ -76,9 +80,11 @@ Use:{ (Resolver resolver,Libs myLibs)
       Name nameRight=Name.#stringParser(_nameRight.binaryRepr())
       l1A=Adapt[name into:nameLeft;]<l1
       l2A=Adapt[name into:nameRight;]<l2
-      lRes=IntrospectionPlugin.sumLib(l1:l1A,l2:l2A)
-      return Adapt[makePrivate:nameLeft;makePrivate:nameRight;]<
-        IntrospectionPlugin.sumLib(l1:!this.resolver(),l2:lRes)
+      var result=IntrospectionPlugin.sumLib(l1:l1A,l2:l2A)
+      result:=IntrospectionPlugin.sumLib(l1:!this.resolver(),l2:result)
+      result:=MakePrivate(nameLeft into:result)
+      result:=MakePrivate(nameRight into:result)
+      return result
       ))
     }
   method Outer0 ++ (Outer0 that) {
@@ -90,9 +96,13 @@ Use:{ (Resolver resolver,Libs myLibs)
     return Outer0(resolver:res, myLibs:list)
     }
   }
-Adapt:{(Library adapter)
-  type method Outer0 () Outer0(adapter:{})
-  method Outer0 #add(Name that, Name into) {
+Adapt:{(Library adapter)'@private
+
+  type method
+  Outer0 () Outer0(adapter:{})
+  
+  method
+  Outer0 #add(Name that, Name into) {
     if that.isExternalPathName() (error S"start name must be internal")
     if !that.isInternalPathName() (return this.#add(that,of:Name"Outer0",into:into))
     map=IntrospectionPlugin.adaptLib(
@@ -100,7 +110,8 @@ Adapt:{(Library adapter)
     lib=IntrospectionPlugin.sumLib(l1:this.adapter(), l2:map)
     return Outer0(adapter:lib)
     }
-  method Outer0 #add(Name that, Name of, Name into) {
+  method
+  Outer0 #add(Name that, Name of, Name into) {
     map1=IntrospectionPlugin.adaptLib(
       l1:into.adapter(), l2:that.adapter())
     map2=IntrospectionPlugin.adaptLib(
@@ -108,18 +119,40 @@ Adapt:{(Library adapter)
     lib=IntrospectionPlugin.sumLib(l1:this.adapter(), l2:map2)
     return Outer0(adapter:lib)
     }
-  method Outer0 #add(Name makePrivate){
-    fName=Name(adapter:IntrospectionPlugin.getFreshName(makePrivate.adapter()))
-    return this.#add(makePrivate into:fName)
-    }
-  type method Outer0 #begin() Outer0()
-  method Outer0 #end() this
-  method Outer0 ++ (Outer0 that) (
+  type method
+  Outer0 #begin() Outer0()
+  
+  method
+  Outer0 #end() this
+  
+  method
+  Outer0 ++ (Outer0 that) (
     lib=IntrospectionPlugin.sumLib(l1:this.adapter(), l2:that.adapter())
     Outer0(adapter:lib)
     )
-  method Library < (Library that) IntrospectionPlugin.adaptLib(
-      l1:that, l2:this.adapter())
+  method
+  Library < (Library that)
+    IntrospectionPlugin.adaptLib(l1:that, l2:this.adapter())
+  }
+MakePrivate:{
+type method
+  Library (Name that, Library into){
+    if that.isExternalPathName() (error S"start name must be internal")
+    if !that.isInternalPathName() (return Outer0(that:that,of:Name"Outer0", into:into))
+    res=IntrospectionPlugin.sumComment(into, comment:{'@private      
+      },adapter:that.adapter())
+    fName=Name(adapter:IntrospectionPlugin.getFreshName(that.adapter()))
+    return Adapt[that into:fName]<res
+    }
+  type method
+    Library (Name that, Name of, Library into){
+    pName=IntrospectionPlugin.adaptLib(
+      l1:that.adapter(), l2:of.adapter())
+    res=IntrospectionPlugin.sumComment(into,comment:{'@private      
+      },adapter:pName)
+    fName=Name(adapter:IntrospectionPlugin.getFreshName(that.adapter()))
+    return Adapt[that of:of into:fName]<res
+    }
   }
 
 Data:{()
@@ -149,7 +182,7 @@ Data:{()
           default return Bool.false()
           )}
       }
-    return Adapt[makePrivate:Name"current(that)";]<result
+    return MakePrivate(Name"current(that)" into:result)
     }
   }
 }

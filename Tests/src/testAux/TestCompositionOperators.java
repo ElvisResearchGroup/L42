@@ -190,6 +190,41 @@ helpers.TestHelper.multiLine(""
     TestHelper.assertEqualExp(res,cb3);
     }
   }
+	
+  //----------------------------------------------------------
+  @RunWith(Parameterized.class)
+  public static class Test_MsumComment£xthat£xcomment£xadapter {
+    @Parameter(0) public String that;
+    @Parameter(1) public String comment;
+    @Parameter(2) public String adapter;
+    @Parameter(3) public String expected;
+    @Parameterized.Parameters
+    public static List<Object[]> createData() {
+      return Arrays.asList(new Object[][] {
+    {"{ A:{}}","{'fuffa\n}","{A:{} %o_0%:{'@Outer1::A\n}}","{ A:'fuffa\n{}}"
+  },{"{ A:{B:{}}}","{'@private\n}","{A:{B:{}} %o_0%:{'@Outer1::A::B\n}}","{ A:{B:'@private\n{}}}"
+  },{"{ A:{B:{}}}","{'@private\n}","{A:{B:{}} %o_0%:{'@Outer1::A::B\n}}","{ A:{B:'@private\n{}}}"      
+//boh, I think it can work only on comments with zero paths?
+//},{"{ A:{B:{}}}","{'@Outer1::N\n}","{A:{B:{}} %o_0%:{'@Outer1::A::B\n}}","{ A:{B:'@private\n{}}}"
+  },{"{ A:{method Void foo(Any a)}}","{'fuffa\n}",      
+      "{A:{method Void #o_0#(Void _0) this.foo(a:_0)  method Void foo(Void a)}}",
+      "{ A:{method'fuffa\n Void foo(Any a)}}"
+  },{"{ method Void foo(Any a) void}","{'fuffa\n}",      
+      "{method Void #o_0#(Void _0) this.foo(a:_0)  method Void foo(Void a)}",
+      "{ method'fuffa\n Void foo(Any a)void }"
+
+    }});}
+  @Test public void test() {
+    TestHelper.configureForTest();
+    ClassB _that=getClassB(that);
+    ClassB _comment=getClassB(comment);
+    ClassB _adapter=getClassB(adapter);
+    ClassB _expected=getClassB(expected);
+    ClassB cb=(ClassB)getWI(wi->wi.MsumComment£xthat£xcomment£xadapter(_that, _comment, _adapter));
+    TestHelper.assertEqualExp(_expected,cb);
+    }
+  }
+
   //----------------------------------------------------------
 	@RunWith(Parameterized.class)
   public static class Test_Mget£that£node {
@@ -336,7 +371,7 @@ helpers.TestHelper.multiLine(""
     String res=(String)getWI(wi->wi.MgetNameOrElse£xthat£xmethodNum£xnode(cb1,e2,e3));
     Assert.assertEquals(res,_expected);}}
 
-	  //----------------------------------------------------------
+    //----------------------------------------------------------
     @RunWith(Parameterized.class)
     public static class Test_MgetInternalAdapterPathOrElse£xthat {
     @Parameter(0) public String e1;

@@ -86,15 +86,16 @@ class OnLineCodeHelper{
       }*/
     }
   static Expression.ClassB getL42Code(String url){
-    Expression data=load(url);//can be classB or classBReuse
-    data=Desugar.of(data);//TODO: can be removed later, but now allows librares to be real source code
-    //    Configuration.reduction.of((ClassB) data.accept(new InjectionOnCore()));
-    return (Expression.ClassB)data;
-    /*switch (url){
-      case "nanoBase": return new NanoBase().code();
-      case "microBase": return new MicroBase().code();
-      default: throw new ErrorMessage.InvalidURL("L42.is/"+url);
-      }*/
+    try{
+      Expression data=load(url);//can be classB or classBReuse
+      data=Desugar.of(data);//TODO: can be removed later, but now allows librares to be real source code
+      //    Configuration.reduction.of((ClassB) data.accept(new InjectionOnCore()));
+      return (Expression.ClassB)data;
+      }
+    catch( org.antlr.v4.runtime.misc.ParseCancellationException pce){
+      System.err.println("Url is: "+url);
+      throw pce;
+      }
     }
   private static Expression load(String name) {
     //URL res = OnLineCode.class.getResource(name+".L42");

@@ -18,7 +18,7 @@ Generalize:{()
       ]<result
     result:=Adapt[Name"Outer0" into:Name"PrivateImpl"]<result
     result:=Adapt[Name"PrivateImpl::Exported" into:Name"Outer0"]<result
-    result:=Adapt[makePrivate:Name"PrivateImpl"]<result
+    result:=MakePrivate(Name"PrivateImpl" into:result)
     return result
     }  
   }

@@ -926,7 +926,7 @@ public void testDeepMakePrivate() throws IOException{
   TestHelper.configureForTest();
   Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
 ,"{reuse L42.is/miniBase"
-,"C:Adapt[Name\"Bar\", into:Name\"Outer0\";makePrivate:Name\"Bar::Foo\"]<{type method N top() Bar::Foo.foo() Bar:{Foo:{ type method N foo() 42N }}}"
+,"C:Adapt[Name\"Bar\", into:Name\"Outer0\";Name\"Bar::Foo\" into:Name\"Bar::Foo1\"]<{type method N top() Bar::Foo.foo() Bar:{Foo:{ type method N foo() 42N }}}"
 ,""
 ,"Main:{"
 ,"  if C.top()==42N ("
@@ -934,34 +934,6 @@ public void testDeepMakePrivate() throws IOException{
 ,"    )"
 ,"  return ExitCode.failure()"
 ,"  }"
-,"}"
-)).getErrCode(),0);}
-
-
-@Test(expected=AssertionError.class)
-public void testDeepMakePrivate2() throws IOException{
-  TestHelper.configureForTest();
-  Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
-,"{reuse L42.is/miniBase"
-,"Vector:{"
-,"  type method Library vector(type Any that)"
-,"    Adapt["
-,"      Name\"Elem\" into: Name(that);"
-,"      Name\"VectorStruct\" into:Name\"Outer0\";"
-,"      makePrivate:Name\"VectorStruct::Cell2\";"//should cause an error not of type TypeError
-,"      ]<{"
-,"      Elem:{interface}"
-,"      Kind:{ type method Elem elem() error S\"InternalUseOnly\" }"
-,"      VectorStruct:{ Cell:{type method N foo() 42N}}"
-,"      }"
-,"  }"
-,""
-,"ListArray:("
-,"  Debug(S\"InListArray\")"
-,"  x=Vector.vector(S)"
-,"  Debug(S\"computed\")"
-,"  ExitCode.normal()"
-,"  )"
 ,"}"
 )).getErrCode(),0);}
 

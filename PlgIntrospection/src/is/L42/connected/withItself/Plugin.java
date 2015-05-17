@@ -402,31 +402,30 @@ public class Plugin implements PluginType{
    List<PathPath> mapPath = IntrospectionAdapt.mapPath(adapter);
    Member inner=null;
    if(mapMx.isEmpty()){
-     assert mapPath.size()==1;
-     Path path=mapPath.get(0).getPath1();//or 2?
+     assert mapPath.size()==1:mapPath.size();
+     Path path=mapPath.get(0).getPath2();
      assert path.isCore();
      inner=IntrospectionAdapt.encapsulateIn(path.getCBar(),new ClassB(Doc.empty(),Doc.empty(),true,Collections.emptyList(),Collections.emptyList(),Stage.None),comment.getDoc1());
      }
    if(mapPath.isEmpty()){
-     assert mapMx.size()==1;
+     assert mapMx.size()==1:mapMx.size();
      Path path=mapMx.get(0).getPath();
-     MethodSelector ms = mapMx.get(0).getMs1();//or2?
+     MethodSelector ms = mapMx.get(0).getMs2();
      //extract the method from path ms
      ClassB src=that;
      if(!path.equals(Path.outer(0))){
        src=Program.extractCBar(path.getCBar(), that);
        }
      Optional<Member> mOpt = Program.getIfInDom(src.getMs(), ms);
-     assert mOpt.isPresent();
+     assert mOpt.isPresent():ms;
      assert mOpt.get() instanceof ClassB.MethodWithType;
      //it must be with type
      ClassB.MethodWithType mwt=(ClassB.MethodWithType) mOpt.get();    
      //remove body and add comment
-     mwt.withInner(Optional.empty()).withDoc(that.getDoc1());
-     inner=mwt;
+     inner=mwt.withInner(Optional.empty()).withDoc(comment.getDoc1());
      //if outer0, there it is, else, use encapsulate
      if(!path.equals(Path.outer(0))){
-       inner=IntrospectionAdapt.encapsulateIn(path.getCBar(),new ClassB(Doc.empty(),Doc.empty(),true,Collections.emptyList(),Collections.singletonList(mwt),Stage.None),Doc.empty());
+       inner=IntrospectionAdapt.encapsulateIn(path.getCBar(),new ClassB(Doc.empty(),Doc.empty(),true,Collections.emptyList(),Collections.singletonList(inner),Stage.None),Doc.empty());
        }
      }
    ClassB innerC=new ClassB(Doc.empty(),Doc.empty(),true,Collections.emptyList(),Collections.singletonList(inner),Stage.None);
@@ -499,6 +498,19 @@ public class Plugin implements PluginType{
     fresh=Functions.freshName(seed, L42.usedNames);
     MethodSelector newMs = mt.getMs().withName(fresh);
     return (ClassB)IntrospectionAdapt.buildMethodNameAdapter(newMs);
+  }
+  
+  @ActionType({ActionType.Type.Library,ActionType.Type.Library})
+  public Object MpurgePrivates£xthat(Object o){
+    ClassB cb=ensureExtractClassB(o);
+    //colect all private/nonprivate names
+    //for each name, collect used paths
+    //do fix point: bring public any private used by public.
+    //remove all names still private
+    //be careful, some names may have to be removed, but
+    //their nested may need to stay
+    //TODO:
+    return cb;
   }
   
   }

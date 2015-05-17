@@ -311,6 +311,10 @@ Library adaptLib(Library l1, Library l2) using Outer0 check adaptLib(l1:l1, l2:l
 type method 
 Outer0 adaptLib() }
 type method 
+Library sumComment(Library that, Library comment, Library adapter) using Outer0 check sumComment(that:that, comment:comment, adapter:adapter) error {
+type method 
+Outer0 sumComment() }
+type method 
 Library nameToAdapter(Library that) using Outer0 check nameToAdapter(that:that) error {
 type method 
 Outer0 nameToAdapter() }
@@ -2382,6 +2386,14 @@ mut method '@consistent
 Void inner(Outer1::myLibs() ::vals() ::#inner() that) 
 mut method '@consistent
 Outer1::myLibs() ::vals() ::#inner() #inner() }
+Varresult2:{
+type method 
+mut Outer0 #apply(Outer2::IntrospectionPlugin::sumLib(l1 l2 ) ^inner'@consistent
+) 
+mut method '@consistent
+Void inner(Outer2::IntrospectionPlugin::sumLib(l1 l2 ) that) 
+mut method '@consistent
+Outer2::IntrospectionPlugin::sumLib(l1 l2 ) #inner() }
 type method 
 Outer0 #apply(Outer0::Resolver^resolver'@consistent
 , Outer0::Libs^myLibs'@consistent
@@ -2443,7 +2455,8 @@ type method
 Outer0 #apply() Outer0.#new(that:Outer0::TEmpty.#apply())
 type method 
 Outer0 #apply(Library that) Outer0.#new(that:Outer0::TOf.#apply(that:that))}
-Libs:{' generic linked list class, elements of type Elem
+Libs:'@private
+{' generic linked list class, elements of type Elem
 
 Varres:{
 type method 
@@ -2864,8 +2877,8 @@ Library accumulate(Library l1, Library l2) (
         Void unused1=(
           Outer0::resolver() ::isPresent() ::#bang() cond=this.resolver().isPresent().#bang()
           (
-            Void unused2=cond.#checkTrue()
-            catch exception unused3 (
+            Void unused5=cond.#checkTrue()
+            catch exception unused6 (
               on Void void
               )
             error x
@@ -2880,14 +2893,18 @@ Library accumulate(Library l1, Library l2) (
         Outer1::Name nameRight=Outer1::Name.#stringParser(that:_nameRight.binaryRepr())
         Outer1::Adapt::#begin() ::#add(that into ) ::#end() ::#left(that ) l1A=Outer1::Adapt.#begin().#add(that:name, into:nameLeft).#end().#left(that:l1)
         Outer1::Adapt::#begin() ::#add(that into ) ::#end() ::#left(that ) l2A=Outer1::Adapt.#begin().#add(that:name, into:nameRight).#end().#left(that:l2)
-        Outer1::IntrospectionPlugin::sumLib(l1 l2 ) lRes=Outer1::IntrospectionPlugin.sumLib(l1:l1A, l2:l2A)
-        return Outer1::Adapt.#begin().#add(makePrivate:nameLeft).#add(makePrivate:nameRight).#end().#left(that:Outer1::IntrospectionPlugin.sumLib(l1:this.resolver().#bang(), l2:lRes))
+        Outer1::IntrospectionPlugin::sumLib(l1 l2 ) result=Outer1::IntrospectionPlugin.sumLib(l1:l1A, l2:l2A)
+        mut Outer0::Varresult2 varresult=Outer0::Varresult2.#apply(inner:result)
+        Void unused2=varresult.inner(that:Outer1::IntrospectionPlugin.sumLib(l1:this.resolver().#bang(), l2:varresult.#inner()))
+        Void unused3=varresult.inner(that:Outer1::MakePrivate.#apply(that:nameLeft, into:varresult.#inner()))
+        Void unused4=varresult.inner(that:Outer1::MakePrivate.#apply(that:nameRight, into:varresult.#inner()))
+        return varresult.#inner()
         )
       )
     void
     )
-  catch return result (
-    on Library result
+  catch return result0 (
+    on Library result0
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
@@ -2930,7 +2947,7 @@ Outer0 #plusplus(Outer0 that) (
   }
   )}
 Adapt:{
-type method 
+type method '@private
 Outer0 #apply(Library^adapter'@consistent
 ) 
 mut method '@consistent
@@ -2994,20 +3011,6 @@ Outer0 #add(Outer1::Name that, Outer1::Name of, Outer1::Name into) (
   'CurlyBlock-Should be unreachable code
   }
   )
-method 
-Outer0 #add(Outer1::Name makePrivate) (
-  Void unused=(
-    Outer1::Name::#apply(adapter ) fName=Outer1::Name.#apply(adapter:Outer1::IntrospectionPlugin.getFreshName(that:makePrivate.adapter()))
-    Void unused0=return this.#add(that:makePrivate, into:fName)
-    void
-    )
-  catch return result (
-    on Outer0 result
-    )
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
-  }
-  )
 type method 
 Outer0 #begin() Outer0.#apply()
 method 
@@ -3019,6 +3022,64 @@ Outer0 #plusplus(Outer0 that) (
   )
 method 
 Library #left(Library that) Outer1::IntrospectionPlugin.adaptLib(l1:that, l2:this.adapter())}
+MakePrivate:{
+type method 
+Library #apply(Outer1::Name that, Library into) (
+  Void unused=(
+    Void unused0=(
+      Outer1::Name::isExternalPathName() cond=that.isExternalPathName()
+      (
+        Void unused3=cond.#checkTrue()
+        catch exception unused4 (
+          on Void void
+          )
+        error Outer1::S.#stringParser(that:{'@stringU
+        'start name must be internal
+        })
+        )
+      )
+    Void unused1=(
+      Outer1::Name::isInternalPathName() ::#bang() cond0=that.isInternalPathName().#bang()
+      (
+        Void unused5=cond0.#checkTrue()
+        catch exception unused6 (
+          on Void void
+          )
+        return Outer0.#apply(that:that, of:Outer1::Name.#stringParser(that:{'@stringU
+        'Outer0
+        }), into:into)
+        )
+      )
+    Outer1::IntrospectionPlugin::sumComment(that comment adapter ) res=Outer1::IntrospectionPlugin.sumComment(that:into, comment:{'@private      
+    }, adapter:that.adapter())
+    Outer1::Name::#apply(adapter ) fName=Outer1::Name.#apply(adapter:Outer1::IntrospectionPlugin.getFreshName(that:that.adapter()))
+    Void unused2=return Outer1::Adapt.#begin().#add(that:that, into:fName).#end().#left(that:res)
+    void
+    )
+  catch return result (
+    on Library result
+    )
+  error {'@stringU
+  'CurlyBlock-Should be unreachable code
+  }
+  )
+type method 
+Library #apply(Outer1::Name that, Outer1::Name of, Library into) (
+  Void unused=(
+    Outer1::IntrospectionPlugin::adaptLib(l1 l2 ) pName=Outer1::IntrospectionPlugin.adaptLib(l1:that.adapter(), l2:of.adapter())
+    Outer1::IntrospectionPlugin::sumComment(that comment adapter ) res=Outer1::IntrospectionPlugin.sumComment(that:into, comment:{'@private      
+    }, adapter:pName)
+    Outer1::Name::#apply(adapter ) fName=Outer1::Name.#apply(adapter:Outer1::IntrospectionPlugin.getFreshName(that:that.adapter()))
+    Void unused0=return Outer1::Adapt.#begin().#add(that:that, of:of, into:fName).#end().#left(that:res)
+    void
+    )
+  catch return result (
+    on Library result
+    )
+  error {'@stringU
+  'CurlyBlock-Should be unreachable code
+  }
+  )}
 Data:{
 Vardecorator:{
 type method 
@@ -3151,9 +3212,9 @@ Library addEquals(Library l) (
       'CurlyBlock-Should be unreachable code
       }
       )})
-    Void unused1=return Outer1::Adapt.#begin().#add(makePrivate:Outer1::Name.#stringParser(that:{'@stringU
+    Void unused1=return Outer1::MakePrivate.#apply(that:Outer1::Name.#stringParser(that:{'@stringU
     'current(that)
-    })).#end().#left(that:result)
+    }), into:result)
     void
     )
   catch return result0 (
