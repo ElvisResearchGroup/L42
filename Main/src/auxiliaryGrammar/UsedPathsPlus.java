@@ -18,7 +18,7 @@ import ast.ExpCore.*;
 import ast.ExpCore.ClassB.*;
 
 public class UsedPathsPlus {
-  public Set<Path> of(ClassB cb){
+  public List<Path> of(ClassB cb){
     List<Path> result=new ArrayList<Path>();        
     result.addAll(cb.getSupertypes());
     result.addAll(cb.getDoc1().getPaths());
@@ -28,8 +28,8 @@ public class UsedPathsPlus {
       mi->collectPaths(result,mi),
       mt->collectPaths(result,mt)
       );}
-    Set<Path> result2=Functions.remove1OuterAndPrimitives(result);
-    return result2;
+    //Set<Path> result2=Functions.remove1OuterAndPrimitives(result);
+    return result;
   }
   Void collectPaths(List<Path> ps,ExpCore e){
     class CollectReceiversPaths extends CloneVisitor{
@@ -50,7 +50,7 @@ public class UsedPathsPlus {
     assert IsCompiled.of(cb);
     //assert Configuration.typeExtraction.isCt(cb);
     ps.addAll(nc.getDoc().getPaths());
-    ps.addAll(of(cb));
+    ps.addAll(Functions.remove1OuterAndPrimitives(of(cb)));
     return null;
   }
   /*Void collectPaths(List<Path> ps,Ast.Type t){

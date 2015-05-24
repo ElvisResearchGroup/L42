@@ -25,7 +25,6 @@ import ast.ExpCore.ClassB.Member;
 import auxiliaryGrammar.Functions;
 import auxiliaryGrammar.Norm;
 import auxiliaryGrammar.Program;
-import auxiliaryGrammar.UsedPaths;
 import auxiliaryGrammar.UsedPathsPlus;
 
 public class TypeExtraction {
@@ -66,11 +65,13 @@ public class TypeExtraction {
     return classB.withStage(stage);
   }
   private static List<ClassB> collectEs(Program p, ClassB classB) {
-    List<Path> usedPlus = new ArrayList<>(new UsedPathsPlus().of(classB));
-    usedPlus=Map.of( pi->From.fromP(pi, Path.outer(1)),usedPlus);
+    List<Path> usedPlus = new UsedPathsPlus().of(classB);
+    //usedPlus=Functions.remove1OuterAndPrimitives(usedPlus);
+    //usedPlus=Map.of( pi->From.fromP(pi, Path.outer(1)),usedPlus);
     Program p1=p.addAtTop(classB);
     List<ClassB> es=new ArrayList<>();//null represents a meta expression
     for(Path pi:usedPlus){
+      if(!pi.isCore()){continue;}
       try{es.add(p1.extract(pi));}
       catch(ErrorMessage.ProgramExtractOnMetaExpression meta){es.add(null);}
       catch(ErrorMessage.ProgramExtractOnWalkBy walk){ }

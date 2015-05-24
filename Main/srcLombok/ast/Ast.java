@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
+import ast.Ast.Doc;
 import lombok.ToString;
 import lombok.Value;
 import lombok.experimental.Wither;
@@ -127,7 +128,7 @@ public interface Ast {
     return new Path(n,s);
   }
   public int outerNumber(){
-    assert isCore();
+    assert isCore():this;
     return this.n;
     }
   private static final Path _Outer0=new Path(0,Arrays.asList("Outer0"));
@@ -178,6 +179,11 @@ public interface Ast {
   @Value @Wither public static class Doc{
     String s;
     List<Path>paths;
+    public boolean isPrivate(){
+        if(this.toString().startsWith("@private")){return true;}
+        //TODO: parsing required for more precision
+        return false;
+      }
     public static Doc factory(String s){
       List<Path> paths=new ArrayList<>();
       StringBuilder sb=new StringBuilder();

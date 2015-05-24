@@ -12,6 +12,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
 
+import coreVisitors.CloneVisitor;
 import coreVisitors.CloneVisitorWithProgram;
 import coreVisitors.From;
 import platformSpecific.fakeInternet.ActionType;
@@ -22,6 +23,7 @@ import facade.L42;
 import sugarVisitors.Desugar;
 import sugarVisitors.ToFormattedText;
 import tools.Assertions;
+import tools.Map;
 import tools.StringBuilders;
 import ast.Ast.Doc;
 import ast.Ast.FieldDec;
@@ -49,6 +51,7 @@ import auxiliaryGrammar.EncodingHelper;
 import auxiliaryGrammar.Functions;
 import auxiliaryGrammar.Norm;
 import auxiliaryGrammar.Program;
+import auxiliaryGrammar.UsedPaths;
 
 public class Plugin implements PluginType{
 
@@ -502,7 +505,17 @@ public class Plugin implements PluginType{
   
   @ActionType({ActionType.Type.Library,ActionType.Type.Library})
   public Object MpurgePrivates£xthat(Object o){
-    ClassB cb=ensureExtractClassB(o);
+    ClassB originalCb=ensureExtractClassB(o);
+    ClassB newCb=removeAllPrivates(originalCb);
+    ClassB oldCb=newCb;
+    do{
+      oldCb=newCb;
+      //for all nested in newCb
+      newCb=collectDepNested(originalCb,newCb,newCb,Collections.emptyList());
+      //take all dependencies
+      //add them from originalCb to newCb in newCb
+    }while(!newCb.equals(oldCb));
+    
     //colect all private/nonprivate names
     //for each name, collect used paths
     //do fix point: bring public any private used by public.
@@ -510,7 +523,111 @@ public class Plugin implements PluginType{
     //be careful, some names may have to be removed, but
     //their nested may need to stay
     //TODO:
-    return cb;
+    /*
+      
+     new rule for type extraction:
+     L-p->error void
+     if neverLess_p(L)
+     neverLess_p({<:I1..In ..}^_)
+     iff(p(Ii))=e, e not of form L  
+     
+     neverLess_p(L)
+     L={_ h ctx[e.m(xes)] _}^something
+     Outer0=guessType(varEnv^{h,ctx},e)
+     L(m(xs)) not defined
+     //this is actually a discovered error? should go in checking?
+     same for nesteds? how? keep track of nesting level?
+     
+     the top level class should not become error void..?
+     
+     so, only for missing interfaces become error void?
+     and add checks in check ct1? is that check just normal method checks?
+     just enrich method unknown? add that subtype is always fine?
+     
+     
+     
+     for getting only the public:
+     create a copy where you delete all the privates
+     then, with fixpoint:
+     for all the classes that are in newL, if Cs is used, add Cs from oldL
+     done
+     
+     test: 
+     A:{method B id(B that) that.foo() method Library m(){}}
+     C:Bla.m(A) //or A().m()
+     B:{<:I}
+     I:expr
+     */
+    return newCb;
   }
+private ClassB collectDepNested(ClassB originalCb,ClassB accumulator,ClassB depSource,List<String> origin){
+  List<List<String>> dep=collectDep(depSource,origin);
+  for(List<String> pi:dep){
+    accumulator=addDep(accumulator,pi,originalCb);
+  }
+  assert dep!=null:"to break";
+  for(Member m:depSource.getMs()){
+    if(!(m instanceof NestedClass)){continue;}
+    NestedClass nc=(NestedClass)m;
+    ClassB cbi=(ClassB)nc.getInner();
+    List<String> newOrigin=new ArrayList<>(origin);
+    newOrigin.add(nc.getName());
+    accumulator=collectDepNested(originalCb, accumulator,cbi,newOrigin);
+    }
+  return accumulator;
+  }
+private ClassB addDep(ClassB accumulator, List<String> pi, ClassB originalCb) {
+  Doc[] commentRef=new Doc[]{Doc.empty()};
+  ClassB cb = extractClassBNoNesteds(pi, originalCb,commentRef);
+  Doc comment=commentRef[0];
+  assert cb!=null;
+  try{
+    ClassB cbAcc = extractClassBNoNesteds(pi, accumulator,commentRef);
+    if(cb.equals(cbAcc)){return accumulator;}
+    }
+  catch(ErrorMessage.PathNonExistant e){}
+  ClassB innerC=cb;
+  if(!pi.isEmpty()){
+    Member inner=IntrospectionAdapt.encapsulateIn(pi,cb,comment);
+    innerC=new ClassB(Doc.empty(),Doc.empty(),true,Collections.emptyList(),Collections.singletonList(inner),Stage.None);
+    }
+  return IntrospectionSum.sum(accumulator, innerC, Path.outer(0));
+  }
+
+private ClassB extractClassBNoNesteds(List<String> pi, ClassB originalCb,Doc[] commentRef) {
+  ClassB cb=Program.extractCBar(pi, originalCb,commentRef);
+  List<Member> ms2 = new ArrayList<>();
+  for(Member m:cb.getMs()){
+    if(m instanceof NestedClass){continue;}
+    ms2.add(m);
+    }
+  cb=cb.withMs(ms2);
+  return cb;
+}
+
+private List<List<String>> collectDep(ClassB depSource, List<String> origin) {
+  List<Path> dep = new UsedPaths().of(depSource);
+  List<List<String>>result=new ArrayList<>();
+  for(Path pi:new HashSet<>(dep)){
+    Path piF=From.fromP(pi, Path.outer(0, origin));
+    if(piF.outerNumber()==0){result.add(piF.getCBar());}
+    }
+  return result;
+}
+
+private ClassB removeAllPrivates(ClassB cb) {
+  return (ClassB)cb.accept(new CloneVisitor(){
+    public List<Member> liftMembers(List<Member> ms1) {
+      List<Member>ms2=new ArrayList<>();
+      for(Member m:ms1){
+        if(!(m instanceof NestedClass)){ms2.add(m);continue;}
+        NestedClass ns=(NestedClass)m;
+        if(!ns.getDoc().isPrivate()){ms2.add(m);continue;}
+        //otherwise, not add
+        }
+      return super.liftMembers(ms2);
+      }
+    });
+}
   
   }

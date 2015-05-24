@@ -1,0 +1,9 @@
+{reuse L42.is/deployMini
+Main:{
+  Deploy(
+    fileName:S"localhost/miniBase.L42",
+    code:{reuse L42.is/tinyBase1},
+    node:S"Outer0")
+  return ExitCode.normal()
+  }
+}

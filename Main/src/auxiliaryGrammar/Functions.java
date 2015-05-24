@@ -219,8 +219,8 @@ public static Member firstIncomplete(ClassB cb){
   throw Assertions.codeNotReachable();
 }
 
-public static Set<Path> remove1OuterAndPrimitives(Collection<Path> paths){
-  Set<Path> result=new HashSet<Path>();
+public static List<Path> remove1OuterAndPrimitives(Collection<Path> paths){
+  List<Path> result=new ArrayList<>();
   for(Path p:paths){
     if(p.isPrimitive()){continue;}
     int n=p.outerNumber();

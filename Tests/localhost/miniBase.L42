@@ -315,6 +315,10 @@ Library sumComment(Library that, Library comment, Library adapter) using Outer0 
 type method 
 Outer0 sumComment() }
 type method 
+Library purgePrivates(Library that) using Outer0 check purgePrivates(that:that) error {
+type method 
+Outer0 purgePrivates() }
+type method 
 Library nameToAdapter(Library that) using Outer0 check nameToAdapter(that:that) error {
 type method 
 Outer0 nameToAdapter() }

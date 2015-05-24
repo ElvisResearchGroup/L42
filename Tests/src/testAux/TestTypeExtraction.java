@@ -116,21 +116,21 @@ public static class Test2 {
        },{"{()}","{type method Outer0 ()}##star ^##"
        },{"{()}","{() }##star ^##"//,"{C:{}}"
        },{"{D:{method Void foo()}}","{D:{method Void foo()}##plus^##}##plus^##"//,"{C:{}}"
-       },{"{a( Outer0::A a)}",
+       },{"{a( Outer0::A a) A:{}}",
           "{"
          +" type method Outer0 a( Outer0::A^ a '@consistent\n) "
          +" mut method  '@consistent\nOuter0::A #a()"
          +" read method  '@consistent\nOuter0::A a()"
          //+" mut method Void a(Outer0::A that) ##field"
-         +" }##star^##"
-       },{"{a(var  Outer0::A a)}",
+         +" A:{}##star ^##}##star^##"
+       },{"{a(var  Outer0::A a)  A:{}}",
          "{"
         +" type method Outer0 a( Outer0::A^ a '@consistent\n)"
         +" mut method '@consistent\nVoid a(Outer0::A that)"
         +" mut method '@consistent\nOuter0::A #a() "
         +" read method '@consistent\nOuter0::A a() "
-        +" }##star^##"
-       },{"{a( Outer0::A a, var Outer0::B b)}",
+        +" A:{}##star ^##}##star^##"
+       },{"{a( Outer0::A a, var Outer0::B b) A:{}  B:{}}",
          "{"
         +" type method Outer0 a( Outer0::A^ a'@consistent\n, Outer0::B^ b'@consistent\n)"
         +" mut method '@consistent\nOuter0::A #a()"
@@ -138,7 +138,7 @@ public static class Test2 {
         +" mut method '@consistent\nVoid b(Outer0::B that)"
         +" mut method '@consistent\nOuter0::B #b()"
         +" read method '@consistent\nOuter0::B b() "
-        +" }##star^##"
+        +" A:{}##star ^## B:{}##star ^##}##star^##"
        },{"{interface method Void m() A:{interface <:Outer1}}",
           "{interface method Void m() A:{interface<:Outer1 method Void m()  }##star^## }##star^##"
        //interface inside

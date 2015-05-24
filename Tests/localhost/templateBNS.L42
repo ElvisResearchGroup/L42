@@ -19,6 +19,10 @@ Generalize:{()
     result:=Adapt[Name"Outer0" into:Name"PrivateImpl"]<result
     result:=Adapt[Name"PrivateImpl::Exported" into:Name"Outer0"]<result
     result:=MakePrivate(Name"PrivateImpl" into:result)
+    result:=IntrospectionPlugin.purgePrivates(result)
+    Debug(S"###############---Generating")
+    Debug(Introspection(result).get())
+    Debug(S"###############---End")
     return result
     }  
   }

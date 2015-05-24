@@ -1,0 +1,32 @@
+{ reuse L42.is/miniBase
+
+InputStream:{ mut () mut method N nextNum() 42N }
+Scanner:{mut (var mut InputStream stream)
+  read method Bool hasNextNum() { return Bool.false()}
+  mut method N nextNum(){ return this.#stream().nextNum()}
+  mut method Void setInput(mut InputStream that){
+    return this.stream(that)
+    }
+  }
+Customer:{ mut() 
+mut method Void addShopHistory(N that) void}
+Reader :{()
+  type method
+  capsule Customer readCustomer(lent Scanner s) {
+    mut Customer c=Customer()
+    while s.hasNextNum() (
+      c.addShopHistory(s.nextNum())
+      )
+    return c 'ok, capsule promotion here
+    }
+  }
+  
+Main:{
+  mut InputStream stream=InputStream()
+  lent Scanner s=Scanner(stream:InputStream())
+  's.setInput(stream) 'wrong
+  N n=s.nextNum() 'ok, lent viewpoint adaptation 
+  s.setInput(InputStream()) 'ok, lent viewpoint adaptation
+  return ExitCode.normal() 
+  }
+}

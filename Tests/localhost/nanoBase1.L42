@@ -200,6 +200,9 @@ Debug:{_private() '@private
   Library sumComment(Library that,Library comment,Library adapter)
     using Outer0 check sumComment(that, comment:comment, adapter:adapter) error{sumComment()}
   type method
+  Library purgePrivates(Library that)
+    using Outer0 check purgePrivates(that) error{purgePrivates()}
+  type method
   Library nameToAdapter(Library that)
     using Outer0 check nameToAdapter(that) error {nameToAdapter()}
     

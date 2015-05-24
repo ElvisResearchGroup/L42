@@ -1,0 +1,59 @@
+{reuse L42.is/miniBase
+NList:Collections.list(N)
+
+Exercise1:{()
+  type method N max1( NList that) {
+    if that.isEmpty() (error S"Max undefined on empty lists")
+    var result=that.top()
+    with current in that.vals() ( case current>result  result:=current )
+    return result
+    }
+  type method N max2( NList that) {
+    if that.isEmpty() (error S"Max undefined on empty lists")
+    var result=that.top()
+    with current in that.vals() ( on Any case current>result  result:=current )
+    return result
+    }
+  type method N max3( NList that) {
+    if that.isEmpty() (error S"Max undefined on empty lists")
+    var result=that.top()
+    with current in that.vals() ( if current>result  (result:=current ))
+    return result
+    }
+  type method N max4( NList that) {
+    if that.isEmpty() (error S"Max undefined on empty lists")
+    if that.pop().isEmpty() ( return that.top())
+    result=Outer0.max4(that.pop())
+    if result <that.top() ( return that.top())
+    return result
+    }
+  type method N max5( NList that) {
+    if that.isEmpty() (error S"Max undefined on empty lists")
+    var list=that
+    var result=that.top()
+    while !list.isEmpty() (
+      if result<list.top() (result:=list.top())
+      list:=list.pop()
+      )
+    return result
+    }
+  Accumulator:...
+  Accumulate:Accumulator(itType:NList::Iterator,elemType:N,
+    better:{
+      type  method
+      N (N a, N b){ if b>a (return b) return a }})
+  type method N max6(NList that){    
+    return Accumulate(that.vals())
+    }
+  }
+
+RunExercise1:{
+  Debug(S"max is "++Exercise1.max1(NList[10N;20N;100N]))
+  Debug(S"max is "++Exercise1.max2(NList[10N;20N;100N]))
+  Debug(S"max is "++Exercise1.max3(NList[10N;20N;100N]))
+  Debug(S"max is "++Exercise1.max4(NList[10N;20N;100N]))
+  Debug(S"max is "++Exercise1.max5(NList[10N;20N;100N]))
+  Debug(S"max is "++Exercise1.max6(NList[10N;20N;100N]))
+  return ExitCode.normal()
+  }
+}

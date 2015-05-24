@@ -1,0 +1,67 @@
+{
+  type method Void t1(){
+    l=ListArray[S"hello";S"world"]
+    Debug(S"size is "++l.size()++S" "++l(0N)++S" "++l(1N))
+    with x in l.vals() (
+      Debug(x)
+      )    
+    l1=ListArray[S"hello";S"world"]
+    l2=ListArray[S"a";S"b";S"c"]
+    'with e1 in l1.vals(), e2 in l2.vals() ( fails properly
+    with e1 in l1.vals(), e2 in l2.vals(ok:1N) (
+      Debug(e1++S"   "++e2)
+      )
+    with e01 in l1.vals(fill:S"extra"), e02 in l2.vals() (
+      Debug(e01++S"   "++e02)
+      )    
+    with e11 in l1.vals(), e12 in l2.vals(max:2N) (
+      Debug(e11++S"   "++e12)
+      )
+    with e21 in l1.vals(ok:0N), e22 in l2.vals(max:2N) (
+      Debug(e21++S"   "++e22)
+      ) 
+    Debug(S"nothing printed here")
+    with e31 in l1.vals(ok:0N), e32 in l2.vals(max:0N) (
+      Debug(e31++S"   "++e32)
+      ) 
+    return void
+    }
+    '*******************
+  type method Void t2(){
+    l=ListArray[S"hello";S"world"]
+    Debug(S"size is "++l.size()++S" "++l(0N)++S" "++l(1N))
+    with var x in l.vars() (
+      Debug(x)
+      )    
+    l1=ListArray[S"hello";S"world"]
+    l2=ListArray[S"a";S"b";S"c"]
+    with var e1 in l1.vars(), var e2 in l2.vars(ok:1N) (
+      Debug(e1++S"   "++e2)
+      e1:=e1++S"!"
+      e2:=e2++S"!"
+      )
+    with var e01 in l1.vars(fill:S"extra"), var e02 in l2.vars() (
+      Debug(e01++S"   "++e02)
+      'e01:=e01++S"!" 'no, we can not write on extra cells
+      e02:=e02++S"!"
+      )    
+    with var e11 in l1.vars(), var e12 in l2.vars(max:2N) (
+      Debug(e11++S"   "++e12)
+      e11++=S"!"
+      e12++=S"!"
+      )
+    with var e21 in l1.vars(ok:0N), var e22 in l2.vars(max:2N) (
+      Debug(e21++S"   "++e22)
+      e21++=S"!"
+      e22++=S"!"
+      ) 
+    Debug(S"nothing printed here")
+    with var e31 in l1.vars(ok:0N), var e32 in l2.vars(max:0N) (
+      Debug(e31++S"   "++e32)
+      e31++=S"!"
+      e32++=S"!"
+      ) 
+    return void
+    }
+    
+  }

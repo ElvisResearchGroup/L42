@@ -73,7 +73,7 @@ public class CollectPrivateNames extends CloneVisitor{
   public NestedClass visit(NestedClass nc){
     cs.add(nc.getName());
     try{
-      if(isPrivate(nc.getDoc())){
+      if(nc.getDoc().isPrivate()){
         Path name=Path.outer(0, cs);
         Path privateName=Functions.freshPathName(name,L42.usedNames);
         //Path privateName=name.popC().pushC(_privateName);
@@ -86,7 +86,7 @@ public class CollectPrivateNames extends CloneVisitor{
       }
     }
   public ClassB.MethodWithType visit(ClassB.MethodWithType mt){
-    if(!isPrivate(mt.getDoc())){ return super.visit(mt);}
+    if(!mt.getDoc().isPrivate()){ return super.visit(mt);}
     mapMx.add(new PathMxMx(Path.outer(0, cs),mt.getMs(),usePrivateNames(mt.getMs())));
     return super.visit(mt);    
     }
@@ -98,9 +98,5 @@ public class CollectPrivateNames extends CloneVisitor{
     return new MethodSelector(privateName,ns);
   }
   //TODO: case for contructor  
-  public static boolean isPrivate(Doc doc){
-    if(doc.toString().startsWith("@private")){return true;}
-    //TODO: parsing required for more precision
-    return false;
-  }
+  
 }

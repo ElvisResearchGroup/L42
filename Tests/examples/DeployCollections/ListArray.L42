@@ -1,0 +1,220 @@
+{mut(var mut Cell head,var N size)
+  Elem:{interface}
+  Cell:{interface}
+  CellNext:{mut (Elem val,mut Cell next)<:Cell}
+  'CellNextMut:{mut (mut Elem val,mut Cell next)<:Cell}
+  CellEnd:{mut ()<:Cell}
+  read method Void reportError(N that)
+    error S"IndexOutOfBound: max is "++this.size()++S" proposed is "++that
+  read method Void reportUnexpected(N that)
+    error S"Unexpected failure like IndexOutOfBound: max is "++this.size()++S" proposed is "++that
+  'GETTING
+  read method 
+  Elem (N that) (
+    if that>=this.size() (this.reportError(that))
+    Outer0.auxGet(that,cell:this.head())
+    )
+  type method
+  Elem auxGet(N that,read Cell cell){
+    with cell (
+      on read CellNext case that==0N return cell.val()
+      on read CellNext return Outer0.auxGet(that-1N,cell:cell.next())
+      )
+    error S"Unreachable"
+    }
+  'SETTING
+  mut method 
+  Void (N that,Elem val) (
+    if that>=this.size() (this.reportError(that))
+    this.head(Outer0.auxSet(that,val:val,cell:this.#head()))
+    )
+  type method
+  mut CellNext auxSet(N that,Elem val,mut Cell cell){
+    with cell (
+      on mut CellNext case that==0N return CellNext(val:val,next:cell.#next())
+      on mut CellNext return CellNext(val:cell.val(),next:Outer0.auxSet(that-1N,val:val,cell:cell.#next()))
+      )
+    error S"Unreachable"
+    }
+  'EMPTY
+  type method 
+  mut Outer0 () Outer0(head:CellEnd(),size:0N)
+  'ADDING
+  mut method
+  mut Outer0 add(Elem that) (
+    this.size(this.size()+1N)
+    this.head(Outer0.auxAdd(that,cell:this.#head()))
+    this
+    )
+  type method
+  mut Cell auxAdd(Elem that,mut Cell cell){
+    with cell (
+      on mut CellEnd return CellNext(val:that,next:cell)
+      on mut CellNext return CellNext(
+        val:cell.val(),
+        next:Outer0.auxAdd(that,cell:cell.#next())
+        )
+      )
+    error S"Unreachable"
+    }
+    
+  '*******************  
+  '*******************
+    
+  type method 
+  mut Outer0 #begin() Outer0()
+  mut method
+  mut Outer0 #end() this
+  mut method
+  mut Outer0 #add(Elem that) this.add(that)
+  
+  
+  
+  'read method N validateMin(N that) ??
+  
+  OptMax:Opt(N)
+  OptFill:Opt(S)
+
+  
+  read method lent Iterator vals(N min, N ok, N max, Elem fill) '0
+    Iterator(this,min:min-1N,ok:ok, max:OptMax(max),fill:OptFill(fill))
+  read method lent Iterator vals(N min, N ok, N max) '1
+    Iterator(this,min:min-1N,ok:ok, max:OptMax(max),fill:OptFill())
+  read method lent Iterator vals(N min, N ok, Elem fill)'2
+    Iterator(this,min:min-1N,ok:ok, max:OptMax(),fill:OptFill(fill))
+  read method lent Iterator vals(N min, N ok)'3
+    Iterator(this,min:min-1N,ok:ok, max:OptMax(),fill:OptFill())
+
+  read method lent Iterator vals(N min, N max, Elem fill) '4
+    Iterator(this,min:min-1N,ok:max, max:OptMax(max),fill:OptFill(fill))
+  read method lent Iterator vals(N min, N max) '5
+    Iterator(this,min:min-1N,ok:max, max:OptMax(max),fill:OptFill())
+  read method lent Iterator vals(N min, Elem fill)'6
+    Iterator(this,min:min-1N,ok:this.size(), max:OptMax(),fill:OptFill(fill))
+  read method lent Iterator vals(N min)'7
+    Iterator(this,min:min-1N,ok:this.size(), max:OptMax(),fill:OptFill())
+    
+
+  read method lent Iterator vals(N ok, N max, Elem fill) '9
+    Iterator(this,min:-1N,ok:ok, max:OptMax(max),fill:OptFill(fill))
+  read method lent Iterator vals(N ok, N max) '9
+    Iterator(this,min:-1N,ok:ok, max:OptMax(max),fill:OptFill())
+  read method lent Iterator vals(N ok, Elem fill)'10
+    Iterator(this,min:-1N,ok:ok, max:OptMax(),fill:OptFill(fill))
+  read method lent Iterator vals(N ok)'11
+    Iterator(this,min:-1N,ok:ok, max:OptMax(),fill:OptFill())
+
+  read method lent Iterator vals(N max, Elem fill) '12
+    Iterator(this,min:-1N,ok:max, max:OptMax(max),fill:OptFill(fill))
+  read method lent Iterator vals(N max) '13
+    Iterator(this,min:-1N,ok:max, max:OptMax(max),fill:OptFill())
+  read method lent Iterator vals(Elem fill)'14
+    Iterator(this,min:-1N,ok:this.size(), max:OptMax(),fill:OptFill(fill))
+  read method lent Iterator vals()'15
+    Iterator(this,min:-1N,ok:this.size(), max:OptMax(),fill:OptFill())
+
+  
+  Iterator:{lent (read Outer1 that, var N min, N ok, OptMax max, OptFill fill)
+    mut method
+    Void #next() exception Void {
+      this.min(this.min()+1N)
+      if this.fill().isPresent() (
+        if !this.max().isPresent() (return void)
+        if this.min()>= !this.max() (exception void)
+        return void
+        )
+      if this.max().isPresent() (
+          if this.min()>=!this.max() (exception void)
+          )
+      if this.min()>=this.that().size() (exception void)
+      return void
+      }
+    
+    read method
+    Void #checkEnd()
+      if this.min()<this.ok() ( error S"Unexpected termination of iteration, reached "++this.min()++S" instead of "++this.ok() )
+    
+    read method
+    Elem #inner() {
+      if !this.fill().isPresent() (return this.that()(this.min()))
+      if this.min()<this.that().size() (return this.that()(this.min()))
+      return !this.fill()
+      }
+    read method
+    Void #close() void
+    }
+  '*************************************
+  '*************************************
+  mut method mut VarIterator vars(N min, N ok, N max, Elem fill) '0
+    VarIterator(this,min:min-1N,ok:ok, max:OptMax(max),fill:OptFill(fill))
+  mut method mut VarIterator vars(N min, N ok, N max) '1
+    VarIterator(this,min:min-1N,ok:ok, max:OptMax(max),fill:OptFill())
+  mut method mut VarIterator vars(N min, N ok, Elem fill)'2
+    VarIterator(this,min:min-1N,ok:ok, max:OptMax(),fill:OptFill(fill))
+  mut method mut VarIterator vars(N min, N ok)'3
+    VarIterator(this,min:min-1N,ok:ok, max:OptMax(),fill:OptFill())
+
+  mut method mut VarIterator vars(N min, N max, Elem fill) '4
+    VarIterator(this,min:min-1N,ok:max, max:OptMax(max),fill:OptFill(fill))
+  mut method mut VarIterator vars(N min, N max) '5
+    VarIterator(this,min:min-1N,ok:max, max:OptMax(max),fill:OptFill())
+  mut method mut VarIterator vars(N min, Elem fill)'6
+    VarIterator(this,min:min-1N,ok:this.size(), max:OptMax(),fill:OptFill(fill))
+  mut method mut VarIterator vars(N min)'7
+    VarIterator(this,min:min-1N,ok:this.size(), max:OptMax(),fill:OptFill())
+    
+
+  mut method mut VarIterator vars(N ok, N max, Elem fill) '9
+    VarIterator(this,min:-1N,ok:ok, max:OptMax(max),fill:OptFill(fill))
+  mut method mut VarIterator vars(N ok, N max) '9
+    VarIterator(this,min:-1N,ok:ok, max:OptMax(max),fill:OptFill())
+  mut method mut VarIterator vars(N ok, Elem fill)'10
+    VarIterator(this,min:-1N,ok:ok, max:OptMax(),fill:OptFill(fill))
+  mut method mut VarIterator vars(N ok)'11
+    VarIterator(this,min:-1N,ok:ok, max:OptMax(),fill:OptFill())
+
+  mut method mut VarIterator vars(N max, Elem fill) '12
+    VarIterator(this,min:-1N,ok:max, max:OptMax(max),fill:OptFill(fill))
+  mut method mut VarIterator vars(N max) '13
+    VarIterator(this,min:-1N,ok:max, max:OptMax(max),fill:OptFill())
+  mut method mut VarIterator vars(Elem fill)'14
+    VarIterator(this,min:-1N,ok:this.size(), max:OptMax(),fill:OptFill(fill))
+  mut method mut VarIterator vars()'15
+    VarIterator(this,min:-1N,ok:this.size(), max:OptMax(),fill:OptFill())
+
+  
+  VarIterator:{mut (mut Outer1 that, var N min, N ok, OptMax max, OptFill fill)
+    mut method
+    Void inner(Elem that) this.#that()(this.min(), val:that)
+
+    'all here is the same?
+    mut method
+    Void #next() exception Void {
+      this.min(this.min()+1N)
+      if this.fill().isPresent() (
+        if !this.max().isPresent() (return void)
+        if this.min()>= !this.max() (exception void)
+        return void
+        )
+      if this.max().isPresent() (
+          if this.min()>=!this.max() (exception void)
+          )
+      if this.min()>=this.that().size() (exception void)
+      return void
+      }
+    
+    read method
+    Void #checkEnd()
+      if this.min()<this.ok() ( error S"Unexpected termination of iteration, reached "++this.min()++S" instead of "++this.ok() )
+    
+    read method
+    Elem #inner() {
+      if !this.fill().isPresent() (return this.that()(this.min()))
+      if this.min()<this.that().size() (return this.that()(this.min()))
+      return !this.fill()
+      }
+    read method
+    Void #close() void
+    }
+  
+  }

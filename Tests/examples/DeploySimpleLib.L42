@@ -1,0 +1,10 @@
+{reuse L42.is/deployMini
+Main:Deploy[S"Top", fileName:S"localhost/SimpleLib.L42"]<{reuse L42.is/templateBNS
+  Top:Outer0::Generalize[]<{reuse L42.is/miniBase
+    Exported:{
+      type method Void printHelloWorld()
+        Outer1::Debug(Outer1::S"Hello World "++42Outer1::N)
+        }
+      }
+    }
+  }
