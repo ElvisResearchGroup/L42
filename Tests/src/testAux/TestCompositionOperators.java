@@ -119,6 +119,10 @@ public class TestCompositionOperators {
      "{ A1:{ A2:{ type method B () } B:{ } }}",
      "{ A1:{A2:{'@Outer1\n}}}",
      "{ A1:{B:{ } type method B () }}",
+     },{
+     "{ A1:{ A2:{ type method Outer1::B () } B:{ } }}",
+     "{ A1:{A2:{'@Outer2\n}}}",
+     "{ A1:{B:{ }} type method Outer0::A1::B () }",
      //Outer1::A1::B
      },{
     "{ A:{ D:{ method Outer0 d() Outer0.d() } type method Outer1::B foo ()Outer0.foo() } B:{ }}",
