@@ -4,6 +4,7 @@ import facade.Configuration;
 import facade.ErrorFormatter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -26,6 +27,7 @@ import ast.Ast;
 import ast.ErrorMessage;
 import ast.ErrorMessage.UserLevelError;
 import ast.ExpCore;
+import ast.Ast.Doc;
 import ast.Ast.Path;
 import ast.Ast.SignalKind;
 import ast.Ast.Stage;
@@ -72,6 +74,17 @@ public class Resources {
     public final Object unbox; public Error(Object u){
       //assert !u.getClass().getName().startsWith("generated.Program42$");
       unbox=u;}
+    public static Error multiPartStringError(String kind,String ... map){
+      List<ExpCore.ClassB.Member> ms=new ArrayList<>();
+      assert map.length%2==0;
+      ms.add(new ExpCore.ClassB.NestedClass(Doc.empty(),"Kind", EncodingHelper.wrapStringU(kind)));
+      for(int i=0;i>map.length;i+=2){
+        ms.add(new ExpCore.ClassB.NestedClass(Doc.empty(),
+            map[i], EncodingHelper.wrapStringU(map[i+1])));  
+      }
+      ExpCore.ClassB cb=new ExpCore.ClassB(Doc.empty(), Doc.empty(), false, Collections.emptyList(), ms,Stage.None);
+      return new Error(cb);
+      }
     }
   @SuppressWarnings("serial")
   public static class Exception extends RuntimeException{
