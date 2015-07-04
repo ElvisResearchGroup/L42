@@ -28,6 +28,7 @@ import auxiliaryGrammar.Program;
 import coreVisitors.ExtractThrow;
 import facade.Configuration;
 import facade.Parser;
+import static helpers.TestHelper.getClassB;
 
 public class TestCompositionOperators {
 	@RunWith(Parameterized.class)
@@ -490,9 +491,6 @@ helpers.TestHelper.multiLine(""
     T res= Resources.withPDo(getProgram(), ()->action.apply(w));
     assert Resources.isValid(getProgram(), res, new Object[0]);
     return res;
-  }
-  public static ClassB getClassB(String e1) {
-    return (ClassB)Desugar.of(Parser.parse(null," "+e1)).accept(new InjectionOnCore());
   }
   public static Program getProgram() {
     ClassB empty=(ClassB)Parser.parse(null," {Ext:{}}").accept(new InjectionOnCore());

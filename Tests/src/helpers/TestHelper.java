@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Assert;
-
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 
 import reduction.Executor;
@@ -95,6 +94,10 @@ public class TestHelper {
     paths.add(Path.parse("Outer0::C"));
     paths.add(Path.parse("Outer0::D"));
     return getProgram(paths,new String[]{"{C:{new() type method Outer1::C foo(type Outer1::C bar) (bar.foo(bar:this))}, D:{new(var Outer1::C x)}}"});
+  }
+
+  public static ClassB getClassB(String e1) {
+    return (ClassB)Desugar.of(Parser.parse(null," "+e1)).accept(new InjectionOnCore());
   }
 
   public static Program getProgram(List<Path> paths,String[] code){
