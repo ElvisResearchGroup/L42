@@ -157,6 +157,7 @@ public class TestHelper {
     Configuration.reduction=new reduction.Facade();
     Configuration.typeSystem=new typeSystem.Facade();
     L42.record=new StringBuilder();
+    L42.usedNames.clear();
   }
   public static void reportError(ErrorMessage e){
   if(Executor.last1==null||Executor.last2==null){throw e;}
