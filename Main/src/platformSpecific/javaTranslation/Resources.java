@@ -78,7 +78,7 @@ public class Resources {
       List<ExpCore.ClassB.Member> ms=new ArrayList<>();
       assert map.length%2==0;
       ms.add(new ExpCore.ClassB.NestedClass(Doc.empty(),"Kind", EncodingHelper.wrapStringU(kind)));
-      for(int i=0;i>map.length;i+=2){
+      for(int i=0;i<map.length;i+=2){
         ms.add(new ExpCore.ClassB.NestedClass(Doc.empty(),
             map[i], EncodingHelper.wrapStringU(map[i+1])));  
       }

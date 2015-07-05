@@ -64,7 +64,7 @@ public interface Ast {
   @Value @Wither public class MethodType{
   Doc docExceptions;Mdf mdf; List<Type> ts;List<Doc> tDocs; Type returnType; List<Path> exceptions;}
 
-  @Value @ToString(exclude="n") public class Path implements Expression, ExpCore, Atom{
+  @Value /*@ToString(exclude="n")*/ public class Path implements Expression, ExpCore, Atom{
     int n;List<String> rowData;
     private Path(int n,List<String> rowData){
       rowData=Collections.unmodifiableList(rowData);
@@ -92,6 +92,9 @@ public interface Ast {
   public boolean isCore(){
     return n!=-1;
     }
+  public String toString(){
+    return sugarVisitors.ToFormattedText.of(this); 
+  }
   private static boolean isOutern(String start){
     if(!start.startsWith("Outer")){return false;}
     start=start.substring("Outer".length());

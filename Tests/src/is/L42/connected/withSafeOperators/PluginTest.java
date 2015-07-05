@@ -61,7 +61,10 @@ public class PluginTest {
     },{"{B:{(Outer0::C a,Outer1::B::C b,Outer2::C c ) C:{}}}",
       "{(Outer0::C a,Outer0::C b,Outer1::C c ) C:{}}",false
     },{"{B:{(Outer0::C a,Outer1 b,Outer2::C c ) C:{}}}",
-      "{Kind:{'@stringU\n'NotBox\n}}",true//FALSE, should have more stuff
+      "{Kind:{'@stringU\n'NotBox\n}"
+      +"UsedBy:{'@stringU\n'[Outer0::B]\n}"
+      +"ContainsMethods:{'@stringU\n'[]\n}"
+      +"IsInterface:{'@stringU\n'false\n}}",true
   }});}
   @Test  public void test() {
     ClassB cb1=getClassB(_cb1);

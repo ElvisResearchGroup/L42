@@ -41,6 +41,6 @@ public class ExtractInfo {
     throw Resources.Error.multiPartStringError("NotBox",
         "UsedBy",""+used,
         "ContainsMethods",""+meth,
-        "isInterface",""+cb.isInterface());
+        "IsInterface",""+cb.isInterface());
   }
 }
