@@ -51,9 +51,11 @@ public class PluginTest {
       return Arrays.asList(new Object[][] {
       {"{B:{}}","{}"
     },{"{B:{()}}","{()}"
-    },{"{B:{(C a) C:{}}}","{(C a) C:{}}}"
-    },{"{B:{(Outer0::C a,Outer1::B::C b,Outer0::C c ) C:{}}}",
-      "{(C a) C:{}}}"
+    },{"{B:{(C a) C:{}}}","{(C a) C:{}}"
+    },{"{B:{method Outer1::B b()}}",
+      "{method Outer0 b()}"
+    },{"{B:{(Outer0::C a,Outer1::B::C b,Outer2::C c ) C:{}}}",
+      "{(Outer0::C a,Outer0::C b,Outer1::C c ) C:{}}"
   }});}
   @Test  public void test() {
     ClassB cb1=getClassB(_cb1);

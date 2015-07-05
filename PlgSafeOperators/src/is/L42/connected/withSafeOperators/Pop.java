@@ -1,9 +1,16 @@
 package is.L42.connected.withSafeOperators;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import ast.ExpCore;
 import ast.Ast.Path;
 import ast.ExpCore.*;
 import ast.ExpCore.ClassB.Member;
+import coreVisitors.CloneWithPath;
+import coreVisitors.From;
 import coreVisitors.FromInClass;
+import is.L42.connected.withSafeOperators.ExtractInfo.IsUsed;
 import platformSpecific.javaTranslation.Resources;
 
 class Pop {
@@ -17,10 +24,23 @@ class Pop {
         "AmbiguousPop",
         "numberOfNestedClasses",""+cb.getMs().size());
     }
+    cb=(ClassB)new Pop1From().visit(cb);
     ClassB.NestedClass nc = (ClassB.NestedClass)cb.getMs().get(0);
-    Path p=Path.outer(0).pushC(nc.getName());
     ClassB res=(ClassB)nc.getInner();
-    res=(ClassB)FromInClass.of(res, p);
     return res;
+  }
+  static class Pop1From extends CloneWithPath{
+    public ExpCore visit(Path s) {
+      int nLessK=s.outerNumber() - getPath().getCBar().size();
+      if(nLessK>0){//is looking out
+        return s.setNewOuter(s.outerNumber()-1);
+      }
+      if(nLessK<0){//is looking in
+        return s;
+      }
+      //is extacly looking at top level
+      assert !s.getCBar().isEmpty();
+      return Path.outer(s.outerNumber()-1,s.getCBar().subList(1, s.getCBar().size()));
+      }
   }
 }
