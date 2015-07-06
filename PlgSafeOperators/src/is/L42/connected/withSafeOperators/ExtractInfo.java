@@ -4,6 +4,7 @@ import ast.Ast.MethodType;
 import ast.ExpCore;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodWithType;
+import auxiliaryGrammar.Program;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -21,9 +22,28 @@ public class ExtractInfo {
     Path target;IsUsed(Path target){this.target=target;}
     Set<Path> whereUsed=new HashSet<>();
     public ExpCore visit(Path s) {
-      if(From.fromP(s, getPath()).equals(target)){
-        whereUsed.add(getPath());
+      Path localP=Path.outer(0,getPath());
+      if(From.fromP(s, localP).equals(target)){
+        whereUsed.add(localP);
         }
+      return super.visit(s);
+      }
+  public static Set<Path> of(ClassB cb,Path path){
+    IsUsed iu=new IsUsed(path);
+    cb.accept(iu);
+    return iu.whereUsed;
+    }
+  }
+  static class IsImplemented extends CloneWithPath{
+    Path target;IsImplemented(Path target){this.target=target;}
+    Set<Path> whereUsed=new HashSet<>();
+    public ExpCore visit(ClassB s) {
+      Path localP=Path.outer(0,getPath());
+      for(Path ip:s.getSupertypes()){
+      if(From.fromP(ip, localP).equals(target)){
+        whereUsed.add(localP);
+        }
+      }
       return super.visit(s);
       }
   public static Set<Path> of(ClassB cb,Path path){
@@ -34,18 +54,30 @@ public class ExtractInfo {
   }
   //path member is not a nestedclass
   //path is used
-  public static void checkBox(ClassB cb,Path path) throws Resources.Error/*NotBox*/{
+  public static boolean checkBox(ClassB topCb,List<String> path,boolean justFalse) throws Resources.Error/*NotBox*/{
+    ClassB cb=Program.extractCBar(path, topCb);
     List<String> meth=new ArrayList<>();
     for(ClassB.Member m:cb.getMs()){
       m.match(nc->false, mi->meth.add(mi.getS().toString()), mt->meth.add(mt.getMs().toString()));
       }
-    Set<Path> used = ExtractInfo.IsUsed.of(cb,Path.outer(0));
-    if(meth.isEmpty()&& used.isEmpty() && !cb.isInterface()){return;}
+    Set<Path> used = ExtractInfo.IsUsed.of(cb,Path.outer(0,path));
+    if(meth.isEmpty()&& used.isEmpty() && !cb.isInterface()){return true;}
+    if(justFalse){return false;}
     throw Resources.Error.multiPartStringError("NotBox",
         "UsedBy",""+used,
         "ContainsMethods",""+meth,
         "IsInterface",""+cb.isInterface());
   }
+  public static void checkBox(ClassB cb,List<String> path) throws Resources.Error/*NotBox*/{ checkBox(cb, path,false);}
+  public static boolean isBox(ClassB cb,List<String> path){return checkBox(cb, path,true);}
+  public static boolean isVirginInterface(ClassB topCb,List<String> path){
+    ClassB cb=Program.extractCBar(path, topCb);
+    if(!cb.isInterface()){return false;}
+    Set<Path> used = ExtractInfo.IsImplemented.of(cb,Path.outer(0,path));
+    if(used.isEmpty()){ return true;}
+    return false;
+  }
+  
   public static String memberKind(Member m){
     return m.match(
       nc->"NestedClass",

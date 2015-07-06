@@ -1,14 +1,18 @@
 package coreVisitors;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import ast.Ast.Path;
 import ast.ExpCore.ClassB;
 
 public class CloneWithPath extends CloneVisitor{
-  Path path=Path.outer(0);
-  public Path getPath(){return path;}
+  List<String> path=new ArrayList<>();
+  public List<String> getPath(){return path;}
   public ClassB.NestedClass visit(ClassB.NestedClass nc){
-    Path old=path;
-    path=path.pushC(nc.getName());
+    List<String> old=path;
+    path=new ArrayList<>(path);
+    path.add(nc.getName());
     try{return super.visit(nc);}
     finally{path=old;}
     }  
