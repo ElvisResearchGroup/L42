@@ -411,27 +411,29 @@ private static List<MethodWithType> collectAbstractMethods(ClassB cb) {
     }
   return mwts;
 }
+public static Set<MethodSelector> originalMethOf(Program p, ClassB cb) {
+  return originalMethOf(p,cb.getSupertypes(),cb.getMs());
+}
 public static Set<MethodSelector> originalMethOf(Program p, List<Path> paths,List<Member> ms0) {
   Set<MethodSelector> result=new HashSet<>();
   for(Member m:ms0){
     m.match(
         nc->false, 
         mi->{throw Assertions.codeNotReachable();}, 
-        mt->result.add(mt.getMs()));}
-        return originalMethOf(p,paths,result);
+        mt->result.add(mt.getMs()));
+    }
+  retainOnlyOriginalMethOf(p,paths,result);
+  return result;
 }
-/**have the right to modify the set*/
-public static Set<MethodSelector> originalMethOf(Program p, List<Path> paths,Set<MethodSelector> ms0) {
-  Set<MethodSelector> result=ms0;
-  for(Path pi:paths){
+private static void retainOnlyOriginalMethOf(Program p, List<Path> paths,Set<MethodSelector> ms0) {
+   for(Path pi:paths){
     for(Member mi:p.extract(pi).getMs()){
       mi.match(
           nc->false, 
           mim->{throw Assertions.codeNotReachable();}, 
-          mt->result.remove(mt.getMs()));
+          mt->ms0.remove(mt.getMs()));
       }
   }
-  return result;
 }
 
 }

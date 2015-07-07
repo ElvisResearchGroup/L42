@@ -17,6 +17,7 @@ import platformSpecific.javaTranslation.Resources;
 import static helpers.TestHelper.getClassB;
 import ast.Ast.Path;
 import ast.ExpCore.ClassB;
+import auxiliaryGrammar.Program;
 
 public class PluginTest {
 
@@ -113,7 +114,7 @@ public class PluginTest {
     ClassB cb2=getClassB(_cb2);
     ClassB expected=getClassB(_expected);
     L42.usedNames.clear();
-    ClassB res=Sum.sum(cb1,cb2);
+    ClassB res=Sum.sum(Program.empty(),cb1,cb2);
     //System.out.println(L42.usedNames);
     //important that is after, otherwise it enters in the used names
     TestHelper.assertEqualExp(expected,res);

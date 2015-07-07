@@ -1,5 +1,6 @@
 package is.L42.connected.withSafeOperators;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -19,7 +20,7 @@ class Pop {
   //there is  not exactly 1 member
   static ClassB pop(ClassB cb) throws Resources.Error/*BoxError,AmbiguousPop*/{
     boolean rightSize=cb.getMs().size()==1;
-    ExtractInfo.checkBox(cb,Path.outer(0));
+    ExtractInfo.checkBox(cb,Collections.emptyList());
     if(!rightSize){throw Resources.Error.multiPartStringError(
         "AmbiguousPop",
         "numberOfNestedClasses",""+cb.getMs().size());
@@ -31,7 +32,7 @@ class Pop {
   }
   static class Pop1From extends CloneWithPath{
     public ExpCore visit(Path s) {
-      int nLessK=s.outerNumber() - getPath().getCBar().size();
+      int nLessK=s.outerNumber() - getPath().size();
       if(nLessK>0){//is looking out
         return s.setNewOuter(s.outerNumber()-1);
       }

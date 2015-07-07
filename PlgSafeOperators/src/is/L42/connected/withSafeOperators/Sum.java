@@ -13,6 +13,7 @@ import java.util.Set;
 
 import platformSpecific.javaTranslation.Resources;
 import coreVisitors.CollectPrivateNames;
+import facade.Configuration;
 import ast.Ast.Doc;
 import ast.Ast.MethodType;
 import ast.Ast.Path;
@@ -27,7 +28,7 @@ import ast.Util.PathMxMx;
 import auxiliaryGrammar.Program;
 
 public class Sum {
-  static ClassB sum(ClassB a,ClassB b){
+  static ClassB sum(Program p,ClassB a,ClassB b){
     List<ClassB.Member> ms=new ArrayList<>();
     ms.add(new ClassB.NestedClass(Doc.empty(),"A",a));
     ms.add(new ClassB.NestedClass(Doc.empty(),"B",b));
@@ -36,9 +37,11 @@ public class Sum {
     a=(ClassB)((ClassB.NestedClass)ab.getMs().get(0)).getInner();
     b=(ClassB)((ClassB.NestedClass)ab.getMs().get(1)).getInner();
     //return IntrospectionSum.sum(a, b, Path.outer(0));
-    return normalizedTopSum(a,b);
+    ClassB typeA=Configuration.typeSystem.typeExtraction(p,a);
+    ClassB typeB=Configuration.typeSystem.typeExtraction(p,b);
+    return normalizedTopSum(p,a,b,typeA,typeB);
   }
-  private static ClassB normalizedTopSum(ClassB topA, ClassB topB) {
+  private static ClassB normalizedTopSum(Program p,ClassB topA, ClassB topB,ClassB typeA,ClassB typeB) {
     return new Object(){
       ClassB normalizedSum(ClassB a, ClassB b,List<String> current) {
         List<Member> ms=new ArrayList<>();
@@ -47,26 +50,14 @@ public class Sum {
         superT.addAll(b.getSupertypes());
         Doc doc1 = a.getDoc1().sum(b.getDoc1());
         Doc doc2=a.getDoc2().sum(b.getDoc2());
-        boolean isInterface=isInterface(a,b,current);
+        boolean isInterface=ExtractInfo.checkClassClashAndReturnIsInterface(p, current, topA, topB, typeA, typeB, a,b);
         //*sum of class with non compatible interfaces (same method, different signature)
         //doh, this requires the program!!
         //*sum of two classes with private state
         //*sum class/interface invalid
         return new ClassB(doc1,doc2,isInterface,superT,ms,Stage.None);
         }
-      private boolean isInterface(ClassB a,ClassB b,List<String>current){
-        if(a.isInterface() ==b.isInterface()){return a.isInterface();}
-        if(a.isInterface()){
-          boolean bBox=ExtractInfo.isBox(b,current);  
-          if(bBox){return true;}
-          boolean aVirginI=ExtractInfo.isVirginInterface(a,current);
-          if(aVirginI){return false;}
-        }
-        boolean aBox=ExtractInfo.isBox(a,current);
-        boolean bBox=ExtractInfo.isBox(b,current);
-        boolean aVirginI=ExtractInfo.isVirginInterface(a,current);
-        boolean bVirginI=ExtractInfo.isVirginInterface(b,current);
-      }
+      
       private void doubleSimetricalMatch(ClassB a, ClassB b, List<Member> ms,List<String> current) {
         for(Member m:a.getMs()){//add from a+b
           Optional<Member> oms = Program.getIfInDom(b.getMs(),m);
@@ -110,11 +101,14 @@ public class Sum {
     }
     Doc docExc=ma.getMt().getDocExceptions().sum(mb.getMt().getDocExceptions());
     MethodType mt=ma.getMt().withDocExceptions(docExc).withTDocs(tDocs);
+    ArrayList<Path> opc = new ArrayList<>(pc);
+    Collections.sort(opc, (p1,p2)->p1.toString().compareTo(p2.toString()));
+    mt=mt.withExceptions(opc);
     MethodWithType mwt=ma.withMt(mt).withDoc(doc);
     assert !ma.getInner().isPresent() ||!mb.getInner().isPresent(); 
     if(mb.getInner().isPresent()){
       mwt=mwt.withInner(mb.getInner());
-    }//eccezioni, ordine?
+    }
     return mwt;
   }
   static ClassB normalize(ClassB cb){
