@@ -21,6 +21,7 @@ import ast.ExpCore.*;
 import coreVisitors.CloneWithPath;
 import coreVisitors.From;
 import platformSpecific.javaTranslation.Resources;
+import platformSpecific.javaTranslation.Resources.Error;
 import tools.Map;
 
 public class ExtractInfo {
@@ -90,6 +91,13 @@ public class ExtractInfo {
       mi->"InterfaceImplementedMethod",
       mt->(mt.getInner().isPresent())?"ImplementedMethod":"AbstractMethod");
   }
+  public static String classKind(boolean isBox,boolean isPrivateState,boolean isInterface,boolean isVirginI){
+    if(isBox){return "BoxClass";}
+    if(isPrivateState){return"PrivateStateClass";}
+    if(isVirginI){return "VirginInterface";}
+    if(isInterface){return "Interface";}
+    return "Class";
+  }
   public static boolean checkClassClashAndReturnIsInterface(
       Program p,List<String>current,
       ClassB topA,ClassB topB,
@@ -98,27 +106,23 @@ public class ExtractInfo {
    List<Path> confl=conflictingImplementedInterfaces(p, current, typeA, typeB);
    //*sum of two classes with private state
    //*sum class/interface invalid
-   boolean twoPrivateState=hasPrivateState(currentA) &&hasPrivateState(currentB);
+   boolean privateA=hasPrivateState(currentA);
+   boolean privateB=hasPrivateState(currentB);
+   boolean twoPrivateState=privateA &&privateB;
    boolean isAllOk=confl.isEmpty() && !twoPrivateState && currentA.isInterface()==currentB.isInterface();
    if (isAllOk){return currentA.isInterface();}//code under is slow
-   boolean aBox=ExtractInfo.isBox(topA,current);
-   boolean bBox=ExtractInfo.isBox(topB,current);
+   boolean aBox=ExtractInfo.isBox(topA,current);//!privateA && would make it faster, but harder to test
+   boolean bBox=ExtractInfo.isBox(topB,current);//same for the rest
    boolean aVirginI=ExtractInfo.isVirginInterface(topA,current);
    boolean bVirginI=ExtractInfo.isVirginInterface(topB,current);
    boolean isClassInterfaceSumOk=aBox||bBox ||aVirginI ||bVirginI;
    isAllOk=confl.isEmpty() && !twoPrivateState && isClassInterfaceSumOk;
    if (isAllOk){return aBox  || bBox;}
    throw Resources.Error.multiPartStringError("ClassClash",
-//     "left",sugarVisitors.ToFormattedText.of(mta),//boh
-//     "right",sugarVisitors.ToFormattedText.of(mtb),
+     "Path",""+Path.outer(0,current),
      "ConflictingImplementedInterfaces",""+confl,
-     "TwoPrivateState",""+twoPrivateState,
-     "IsClassInterfaceSum",""+(currentA.isInterface()==currentB.isInterface()),
-     "IsClassInterfaceSumOk",""+isClassInterfaceSumOk,
-     "leftIsBox",""+ aBox,
-     "RightIsBox",""+ bBox,
-     "LeftIsVirginInterface",""+ aVirginI,
-     "RightIsVirginInterface",""+ bVirginI
+     "LeftKind",classKind(aBox,privateA,currentA.isInterface(),aVirginI),
+     "RightKind",classKind(bBox,privateB,currentB.isInterface(),bVirginI)
       );
   }
    public static boolean hasPrivateState(ClassB cb) {
@@ -161,7 +165,7 @@ public class ExtractInfo {
       }
      return conflicts;
   }
-  public static void checkMethodClash(MethodWithType mta, MethodWithType mtb){
+  public static void checkMethodClash(List<String>pathForError,MethodWithType mta, MethodWithType mtb){
     boolean implClash=mta.getInner().isPresent() && mtb.getInner().isPresent();
     boolean exc=isExceptionOk(mta,mtb);
     List<Integer> pars=isParTypeOk(mta,mtb);
@@ -170,28 +174,20 @@ public class ExtractInfo {
     if(!implClash && exc && pars.isEmpty() && retType && thisMdf){return;}
     if(mta.getInner().isPresent()){mta=mta.withInner(Optional.of(new ExpCore.X("implementation")));}
     if(mtb.getInner().isPresent()){mtb=mtb.withInner(Optional.of(new ExpCore.X("implementation")));}
-    throw Resources.Error.multiPartStringError("MethodClash",
+    throw errorMehtodClash(pathForError, mta, mtb, exc, pars, retType, thisMdf);
+  }
+  static Error errorMehtodClash(List<String> pathForError, Member mta, Member mtb, boolean exc, List<Integer> pars, boolean retType, boolean thisMdf) {
+    return Resources.Error.multiPartStringError("MethodClash",
+     "Path",""+Path.outer(0,pathForError),
     "Left",sugarVisitors.ToFormattedText.of(mta),
     "Right",sugarVisitors.ToFormattedText.of(mtb),
     "LeftKind",memberKind(mta),
     "RightKind",memberKind(mtb),
-    "IncompatibleHeader",""+(!exc||!pars.isEmpty() || !retType || !thisMdf),
+//deducible    "IncompatibleHeader",""+(!exc||!pars.isEmpty() || !retType || !thisMdf),
     "DifferentParameters",""+ pars,
     "DifferentReturnType",""+ !retType,
     "DifferentThisMdf",""+ !thisMdf,
     "IncompatibleException",""+!exc);
-  }
-  static Resources.Error clashImpl(Member ma, Member mb) {
-    throw Resources.Error.multiPartStringError("MethodClash",
-        "left",sugarVisitors.ToFormattedText.of(ma),
-        "right",sugarVisitors.ToFormattedText.of(mb),
-        "leftKind",memberKind(ma),
-        "rightKind",memberKind(mb),
-        "incompatibleHeader",""+false,//ok to have all at false to keep a single kind of error?
-        "differentParameters",""+ false,
-        "differentReturnType",""+ false,
-        "differentThisMdf",""+ false,
-        "incompatibleException",""+false);
   }
   private static List<Integer> isParTypeOk(MethodWithType mta, MethodWithType mtb) {
     List<Integer>res=new ArrayList<>();

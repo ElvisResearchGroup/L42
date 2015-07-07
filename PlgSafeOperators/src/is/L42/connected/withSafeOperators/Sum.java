@@ -62,21 +62,23 @@ public class Sum {
         for(Member m:a.getMs()){//add from a+b
           Optional<Member> oms = Program.getIfInDom(b.getMs(),m);
           if(!oms.isPresent()){ms.add(m);}
-          else {m.match(nc->matchNC(nc,ms,(NestedClass)oms.get(),current), mi->matchMi(mi,ms,oms.get()), mt->matchMt(mt,ms,oms.get()));}
+          else {m.match(nc->matchNC(nc,ms,(NestedClass)oms.get(),current), mi->matchMi(current,mi,ms,oms.get()), mt->matchMt(current,mt,ms,oms.get()));}
           }
         for(Member m:b.getMs()){//add the rest
           if(!Program.getIfInDom(ms,m).isPresent()){ms.add(m);}
           }
         }
-      private Void matchMt(MethodWithType mwta, List<Member> ms, Member mb) {
-        if(mb instanceof MethodImplemented){throw ExtractInfo.clashImpl(mb,mwta);}
+      private Void matchMt(List<String>pathForError,MethodWithType mwta, List<Member> ms, Member mb) {
+        if(mb instanceof MethodImplemented){
+          throw ExtractInfo.errorMehtodClash(pathForError,mwta,mb,false,Collections.emptyList(), false,false) ;
+          }
         MethodWithType mwtb=(MethodWithType)mb;
-        ExtractInfo.checkMethodClash(mwta,mwtb);
+        ExtractInfo.checkMethodClash(pathForError,mwta,mwtb);
         ms.add( Sum.sumMethod(mwta,mwtb));
         return null;
         }
-      private Void matchMi(MethodImplemented mia, List<Member> ms, Member mb) {
-        throw ExtractInfo.clashImpl(mia,mb);
+      private Void matchMi(List<String> pathForError,MethodImplemented mia, List<Member> ms, Member mb) {
+        throw ExtractInfo.errorMehtodClash(pathForError,mia,mb,false,Collections.emptyList(), false,false) ;
         }
     private Void matchNC(NestedClass nca, List<Member> ms, NestedClass ncb,List<String> current) {
       List<String> innerCurrent=new ArrayList<>(current);

@@ -91,14 +91,28 @@ public class PluginTest {
     @Parameter(0) public String _cb1;
     @Parameter(1) public String _cb2;
     @Parameter(2) public String _expected;
+    @Parameter(3) public boolean isError;
     @Parameterized.Parameters
     public static List<Object[]> createData() {
       return Arrays.asList(new Object[][] {
-      {"{B:{}}","{C:{}}","{B:{} C:{}}"
-    },{"{()}","{B:{()}}","{() B:{()} }"
-    },{"{B:'@private\n{}}","{}","{B:'@private\n{}}"
-    },{"{B:'@private\n{}}","{}","{B:'@private\n{}}"//twice the same, to test that we clear the used names
-    },{"{B:'@private\n{}}","{B:'@private\n{}}","{B:'@private\n{} B0:'@private\n{} }"
+      {"{B:{}}","{C:{}}","{B:{} C:{}}",false
+    },{"{()}","{B:{()}}","{() B:{()} }",false
+    },{"{B:'@private\n{}}","{}","{B:'@private\n{}}",false
+    },{"{B:'@private\n{}}","{}","{B:'@private\n{}}",false//twice the same, to test that we clear the used names
+    },{"{B:'@private\n{}}","{B:'@private\n{}}","{B:'@private\n{} B0:'@private\n{} }",false
+    },{"{B:{method Void m()}}","{B:{method B m()}}",
+      "{Kind:{'@stringU\n'MethodClash\n}"
+      +"Path:{'@stringU\n'Outer0::B\n}"
+      +"Left:{'@stringU\n'\\u000amethod \\u000aVoid m() \n}"
+      +"Right:{'@stringU\n'\\u000amethod \\u000aOuter1::B m() \n}"
+      +"LeftKind:{'@stringU\n'AbstractMethod\n}"
+      +"RightKind:{'@stringU\n'AbstractMethod\n}"
+      +"DifferentParameters:{'@stringU\n'[]\n}"
+      +"DifferentReturnType:{'@stringU\n'true\n}"
+      +"DifferentThisMdf:{'@stringU\n'false\n}"
+      +"IncompatibleException:{'@stringU\n'false\n}}",
+      true      
+      
     //test the following:
     //sum of Box with Box =Box
     //sum of interface with interface =interface
@@ -114,11 +128,17 @@ public class PluginTest {
     ClassB cb2=getClassB(_cb2);
     ClassB expected=getClassB(_expected);
     L42.usedNames.clear();
-    ClassB res=Sum.sum(Program.empty(),cb1,cb2);
-    //System.out.println(L42.usedNames);
-    //important that is after, otherwise it enters in the used names
-    TestHelper.assertEqualExp(expected,res);
+    if(!isError){
+      ClassB res=Sum.sum(Program.empty(),cb1,cb2);
+      TestHelper.assertEqualExp(expected,res);
+      }
+    else{
+      try{Sum.sum(Program.empty(),cb1,cb2);fail("error expected");}
+      catch(Resources.Error err){
+        ClassB res=(ClassB)err.unbox;
+        TestHelper.assertEqualExp(expected,res);
+      }
     }
   }
-
+  }
 }
