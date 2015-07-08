@@ -224,8 +224,10 @@ public class ExtractInfo {
   public static void checkPrivacyCoupuled(ClassB cbFull,ClassB cbClear, List<String> path) {
     //start from a already cleared out of private states
     //check if all private nested classes are USED using IsUsed on cbClear
-    //reusing something from rename method, check if PublicClass.privateMethod is
-    //renamed in cbClear
+    //this also verify that no private nested classes are used as
+    //type in public methods of public classes.
+    //collect all PublicPath.privateMethod
+    //use main->introspection.FindUsage 
 
   }
 }

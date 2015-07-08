@@ -30,7 +30,7 @@ import auxiliaryGrammar.Program;
 import coreVisitors.CloneVisitorWithProgram;
 import coreVisitors.From;
 import coreVisitors.GuessTypeCore;
-/*
+
 public class RenameUsage extends MethodPathCloneVisitor {
   List<PathMxMx> pMxs;
   RenameUsage(Program p,List<PathMxMx> pMxs) {
@@ -48,20 +48,6 @@ public class RenameUsage extends MethodPathCloneVisitor {
       return mi.withS(pMx.getMs2());
       }
     return mi;
-  }
-  private HashMap<String, NormType> getVarEnvOf(MethodSelector s) {
-    Optional<Member> mOpt = Program.getIfInDom(p.top().getMs(),s);
-    assert mOpt.isPresent();
-    assert mOpt.get() instanceof MethodWithType:
-      mOpt.get().getClass();
-    MethodWithType m=(MethodWithType)mOpt.get();
-    HashMap<String, NormType> result=new HashMap<>();
-    {int i=-1;for(String n:s.getNames()){i+=1;
-      NormType nt=Norm.of(p,m.getMt().getTs().get(i));
-      result.put(n,nt);
-    }}
-    result.put("this",new NormType(m.getMt().getMdf(),Path.outer(0),Ph.None));
-    return result;
   }
   @Override public MethodSelector visitMS(MethodSelector original,Path src){
       assert src!=null;
@@ -85,11 +71,19 @@ public class RenameUsage extends MethodPathCloneVisitor {
    if(sup.contains(path)){return true;}
     return false;
   }
+  public ExpCore visit(ClassB s) {
+    List<PathMxMx> newPs=Map.of(pi->
+      pi.withPath(IntrospectionAdapt.add1Outer(pi.getPath())),pMxs);
+    List<PathMxMx> oldPs=pMxs;
+    pMxs=newPs;
+    try{return super.visit(s);}
+    finally{pMxs=oldPs;}
+    }
   public static ClassB of(Program p, List<PathMxMx> mapMx, ClassB cb) {
     return new RenameUsage(p, mapMx).startVisit(cb);
   }
-}*/
-
+}
+/*
 public class RenameUsage extends CloneVisitorWithProgram {
   List<PathMxMx> pMxs;
   HashMap<String, NormType> varEnv=new HashMap<>();
@@ -224,4 +218,4 @@ public class RenameUsage extends CloneVisitorWithProgram {
   public static ClassB of(Program p, List<PathMxMx> mapMx, ClassB cb) {
     return new RenameUsage(p, mapMx).startVisit(cb);
   }
-}
+}*/

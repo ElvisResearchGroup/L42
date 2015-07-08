@@ -19,13 +19,33 @@ public class Abstract {
   public static ClassB toAbstract(ClassB cb, List<String> path){
     ExtractInfo.checkExistsPathMethod(cb, path, Optional.empty());
     //check privacy coupled
-    ExtractInfo.checkPrivacyCoupuled(cb,path);
-    return auxToAbstract(cb,path);
+    ClassB cbClear=clear(cb,path);
+    ExtractInfo.checkPrivacyCoupuled(cb,cbClear, path);
+    return cbClear;
   }
 
-  private static ClassB auxToAbstract(ClassB cb, List<String> path) {
-    // TODO Auto-generated method stub
-    return null;
+  private static ClassB clear(ClassB cb, List<String> path) {
+    //TODO:if there is an implemented private interface, remove it (need top level?)
+    //public method return private type implementing public inteface?
+    //public method takes private interface but was used outside providing public implementing nested?
+    //what happens for exceptions?
+    if(!path.isEmpty()){
+      List<Member> newMs=new ArrayList<>(cb.getMs());
+      NestedClass nc=(NestedClass)Program.getIfInDom(newMs, path.get(0)).get();
+      nc=nc.withInner(clear((ClassB)nc.getInner(),path.subList(1,path.size())));
+      Program.replaceIfInDom(newMs, nc);
+      return cb.withMs(newMs);
+    }
+    //it is empty, cut it down!
+    List<Member> newMs=new ArrayList<>();
+    for(Member m:cb.getMs()){
+      m.match(
+          nc->{ return null;},
+          mi->{return null;},//ok, since there are no private interfaces implemented
+          mt->{return null;}
+      );}
+    //create new class
+    return cb.withMs(newMs);
   }
 
   public static ClassB toAbstract(ClassB cb, List<String> path,MethodSelector ms){

@@ -440,10 +440,9 @@ public class Plugin implements PluginType{
     String s1=extractStringU(cb1);
     if (s1==null){throw new Resources.Error("InvalidStringU");}
     L42.usedNames.add(s1);
-    MethodSelector ms=MethodSelector.parse(s1);
-    if(ms!=null){
+    if(!Character.isUpperCase(s1.charAt(0))){//TODO: too simplistic
+      MethodSelector ms=MethodSelector.parse(s1);
       ClassB adapter=(ClassB)IntrospectionAdapt.buildMethodNameAdapter(ms);
-      //return validateResult(pInternal,adapter,null,null,null);
       return adapter;
       }
     Path path=IntrospectionAdapt.extractPath(s1);
