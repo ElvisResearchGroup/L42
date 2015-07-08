@@ -93,7 +93,7 @@ public class Plugin implements PluginType{
     return path;
   }
 
-  
+
   @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
   public Object MgetOrElse£xthat£xinterfaceNum£xnode(Object _lib,Object _num,Object _path){
     ClassB lib=ensureExtractCt(_lib,Resources.getP());
@@ -106,7 +106,7 @@ public class Plugin implements PluginType{
     return buildAdapterIn_or_AdapterOut(result);
   }
 
-  //getOrElse(that:ClassB  methodNum:num exceptionNum:num node:Path)  -> ClassAdaptForm    
+  //getOrElse(that:ClassB  methodNum:num exceptionNum:num node:Path)  -> ClassAdaptForm
   @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
   public Object MgetOrElse£xthat£xmethodNum£xexceptionNum£xnode(Object _lib,Object _mNum,Object _eNum,Object _path){
     MethodWithType m = extractMethod(_lib, _mNum, _path);
@@ -114,7 +114,7 @@ public class Plugin implements PluginType{
     Path result=ifExists(()->m.getMt().getExceptions().get(eNum));
     return buildAdapterIn_or_AdapterOut(result);
   }
-  
+
   //%1-9
   //% -getXXXOrElse(that:ClassB methodNum:num node:Path )
   //%[9]NameSuffixesMethod:{}/Name/Mdf/Type/TypePath/TypeMdf/TypePh/Doc/DocExceptions
@@ -149,7 +149,7 @@ public class Plugin implements PluginType{
   public Object MgetTypePathOrElse£xthat£xmethodNum£xnode(Object _lib,Object _mNum,Object _path){
     MethodWithType result = extractMethod(_lib, _mNum, _path);
     return buildTypePathAdapter(result.getMt().getReturnType());}
-    
+
   //%10-9
   //% -ifIsAbstractDo(that:ClassB methodNum:num node:Path )
   @ActionType({ActionType.Type.Void,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
@@ -232,7 +232,7 @@ public class Plugin implements PluginType{
     extractField(_lib,_mNum,_pNum,_path,(n,t,doc)->{ts[0]=t;});
     boolean b=buildTypePh(ts[0]);
     if(b){return Resources.Void.instance;}
-    throw Resources.notAct;}  
+    throw Resources.notAct;}
   //%7-7
   //% -getXXXOrElse(that:ClassB methodNum:num parameterNum:num node:Path )
   //%[7]NameSuffixesMethodParameter:{}/Name/Mdf/Type/TypePath/TypeMdf/TypePh/Doc
@@ -246,9 +246,9 @@ public class Plugin implements PluginType{
     //TODO: docs should not be a string, but a class with a single doc, and
      * we need an API to access the ith path in the docs.
 */
-  
+
   public void extractField(Object _lib, Object _mNum,Object _pNum, Object _path,
-      StringBuilders.TriConsumer<String,Type,Doc> consumer) {  
+      StringBuilders.TriConsumer<String,Type,Doc> consumer) {
     MethodWithType m = extractMethod(_lib, _mNum, _path);
     Integer pNum=ensureExtractInt32(_pNum);
     String n=ifExists(()->m.getMs().getNames().get(pNum));
@@ -256,7 +256,7 @@ public class Plugin implements PluginType{
     Doc tDoc = ifExists(()->m.getMt().getTDocs().get(pNum));
     consumer.accept(n, t, tDoc);
     }
-  
+
   private Object buildTypePathAdapter(Type t) {
     NormType nt=null;
     if(t instanceof NormType){  nt = (NormType)t; }
@@ -264,7 +264,7 @@ public class Plugin implements PluginType{
       assert false:" fix it, now is unlikly to work since the type t refers to the wrong scope";
       //TODO: fixme, either do a from a priori, and then check the buildAdapterIn_or_AdapterOut
      //method, or just append to getP() the originating class of t
-      try{ nt=Norm.of(Resources.getP(), t);}   
+      try{ nt=Norm.of(Resources.getP(), t);}
       catch(ErrorMessage err){throw Resources.notAct;}
     }
     return buildAdapterIn_or_AdapterOut(nt.getPath());
@@ -283,7 +283,7 @@ public class Plugin implements PluginType{
     catch(ErrorMessage err){throw Resources.notAct;}
     return nt.getPh()==Ph.Ph;
   }
-  
+
   public MethodWithType extractMethod(Object _lib, Object _mNum, Object _path) {
     ClassB lib=ensureExtractCt(_lib,Resources.getP());
     Path path=ensureExtractInternalPath(_path);
@@ -294,9 +294,9 @@ public class Plugin implements PluginType{
     result=From.from(result, path);
     return result;
   }
-  
-  
-  
+
+
+
   public Object buildAdapterIn_or_AdapterOut(Path result) {
 
     if(result.outerNumber()==0){
@@ -312,8 +312,8 @@ public class Plugin implements PluginType{
     result=Path.outer(result.getN()-1,result.getCBar());
     ClassB adapter= (ClassB) IntrospectionAdapt.buildPathAdapterOut(result);
     return adapter;
-  }   
-    
+  }
+
   private static MethodWithType extractM(ClassB target,int mNum){//TODO: this is done in a different style w.r.t. getNestedClass.
     for(Member m:target.getMs()){                                //chose a style and follow it.
       if(m instanceof MethodWithType){
@@ -324,10 +324,10 @@ public class Plugin implements PluginType{
     throw new IndexOutOfBoundsException();
   }
   private static <T> T ifExists(Supplier<T> f){
-    try{ return f.get();}    
+    try{ return f.get();}
     catch(IndexOutOfBoundsException err){throw Resources.notAct;}
     }
-  
+
   public static ClassB getTarget(ClassB lib, Path path) {
     ClassB target=lib;
     if(!path.equals(Path.outer(0))){
@@ -335,10 +335,10 @@ public class Plugin implements PluginType{
         target=Program.extractCBar(path.getRowData(), lib);
       }catch(ErrorMessage err){throw new Resources.Error(err);}}
     return target;
-  }  
+  }
   public static Program getProgramTarget(Program p,ClassB lib, Path path) {
     return getProgramTarget(p,lib,path.getCBar());
-  }    
+  }
   public static Program getProgramTarget(Program p,ClassB lib, List<String>path) {
     if(path.isEmpty()){   return p.addAtTop(lib);  }
     Optional<Member> optNc = Program.getIfInDom(lib.getMs(),path.get(0));
@@ -385,8 +385,8 @@ public class Plugin implements PluginType{
     }
     return result;
   }
- 
-  
+
+
   // adapt
   @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
   public Object MadaptLib£xl1£xl2(Object cb1,Object cb2){
@@ -423,7 +423,7 @@ public class Plugin implements PluginType{
      assert mOpt.isPresent():ms;
      assert mOpt.get() instanceof ClassB.MethodWithType;
      //it must be with type
-     ClassB.MethodWithType mwt=(ClassB.MethodWithType) mOpt.get();    
+     ClassB.MethodWithType mwt=(ClassB.MethodWithType) mOpt.get();
      //remove body and add comment
      inner=mwt.withInner(Optional.empty()).withDoc(comment.getDoc1());
      //if outer0, there it is, else, use encapsulate
@@ -432,7 +432,7 @@ public class Plugin implements PluginType{
        }
      }
    ClassB innerC=new ClassB(Doc.empty(),Doc.empty(),true,Collections.emptyList(),Collections.singletonList(inner),Stage.None);
-   that=IntrospectionSum.sum(that, innerC, Path.outer(0));     
+   that=IntrospectionSum.sum(that, innerC, Path.outer(0));
    return that;
  }
   @ActionType({ActionType.Type.Library,ActionType.Type.Library})
@@ -440,7 +440,7 @@ public class Plugin implements PluginType{
     String s1=extractStringU(cb1);
     if (s1==null){throw new Resources.Error("InvalidStringU");}
     L42.usedNames.add(s1);
-    MethodSelector ms=IntrospectionAdapt.extractMS(s1);
+    MethodSelector ms=MethodSelector.parse(s1);
     if(ms!=null){
       ClassB adapter=(ClassB)IntrospectionAdapt.buildMethodNameAdapter(ms);
       //return validateResult(pInternal,adapter,null,null,null);
@@ -454,7 +454,7 @@ public class Plugin implements PluginType{
       }
     throw new Resources.Error("Invalid name or path: "+s1);
   }
-    
+
   @ActionType({ActionType.Type.Library,ActionType.Type.TypeAny})
   public Object MtypeNameToAdapter£xthat(Object o){
     Path path=extractPathFromJava(o);
@@ -462,7 +462,7 @@ public class Plugin implements PluginType{
     //return validateResult(pInternal,IntrospectionAdapt.buildPathAdapterOut(path),null,null,path);
     return IntrospectionAdapt.buildPathAdapterOut(path);
   }
-  
+
   @ActionType({ActionType.Type.Library,ActionType.Type.Library})
   public Object MgetFreshName£xthat(Object o){
     ClassB cb=ensureExtractClassB(o);
@@ -502,7 +502,7 @@ public class Plugin implements PluginType{
     MethodSelector newMs = mt.getMs().withName(fresh);
     return (ClassB)IntrospectionAdapt.buildMethodNameAdapter(newMs);
   }
-  
+
   @ActionType({ActionType.Type.Library,ActionType.Type.Library})
   public Object MpurgePrivates£xthat(Object o){
     ClassB originalCb=ensureExtractClassB(o);
@@ -515,7 +515,7 @@ public class Plugin implements PluginType{
       //take all dependencies
       //add them from originalCb to newCb in newCb
     }while(!newCb.equals(oldCb));
-    
+
     //colect all private/nonprivate names
     //for each name, collect used paths
     //do fix point: bring public any private used by public.
@@ -524,35 +524,35 @@ public class Plugin implements PluginType{
     //their nested may need to stay
     //TODO:
     /*
-      
+
      new rule for type extraction:
      L-p->error void
      if neverLess_p(L)
      neverLess_p({<:I1..In ..}^_)
-     iff(p(Ii))=e, e not of form L  
-     
+     iff(p(Ii))=e, e not of form L
+
      neverLess_p(L)
      L={_ h ctx[e.m(xes)] _}^something
      Outer0=guessType(varEnv^{h,ctx},e)
      L(m(xs)) not defined
      //this is actually a discovered error? should go in checking?
      same for nesteds? how? keep track of nesting level?
-     
+
      the top level class should not become error void..?
-     
+
      so, only for missing interfaces become error void?
      and add checks in check ct1? is that check just normal method checks?
      just enrich method unknown? add that subtype is always fine?
-     
-     
-     
+
+
+
      for getting only the public:
      create a copy where you delete all the privates
      then, with fixpoint:
      for all the classes that are in newL, if Cs is used, add Cs from oldL
      done
-     
-     test: 
+
+     test:
      A:{method B id(B that) that.foo() method Library m(){}}
      C:Bla.m(A) //or A().m()
      B:{<:I}
@@ -629,5 +629,5 @@ private ClassB removeAllPrivates(ClassB cb) {
       }
     });
 }
-  
+
   }

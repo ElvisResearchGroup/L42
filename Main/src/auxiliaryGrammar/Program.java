@@ -39,7 +39,7 @@ public class Program {//mutable object now!
     if(num==0){return this.classB;}
     return this.next.get(num-1);
     }
-  
+
   private static final Program regularEmpty=new Program(null,null){
     public void updateTop(ClassB cb){throw Assertions.codeNotReachable();}
     };
@@ -61,7 +61,7 @@ public class Program {//mutable object now!
     if (this==executableStarEmpty){return regularEmpty;}
     return new Program(this.pop().removeExecutableStar(),this.top());
   }
-  
+
   public Stage getStage(){
     if(classB==null){Assertions.codeNotReachable();}
     return classB.getStage();
@@ -76,27 +76,27 @@ public class Program {//mutable object now!
     return this.pop().pop(n-1);
     }
   public boolean isEmpty(){return this.next==null;}
-  
+
   public ClassB top(){
     assert this.classB!=null;
     return this.classB;
     }
-  
+
   public void updateTop(ClassB cb){this.classB=cb;}
-  
+
   public boolean executablePlus(){
     assert !this.isEmpty();
     return this.classB.getStage()!=Stage.Less;
   }
-  
+
   public boolean executablePlus(Path p){
     return this.extract(p).getStage()!=Stage.Less;
   }
   public boolean executable(Path p){
     return this.extract(p).getStage()==Stage.None;
   }
-  
-    
+
+
   /*public void checkClassIn(Path p){
     checkClassIn(p.outerNumber(),p.getCBar(),new ErrorMessage.ProgramExtractOnMetaExpression(p,this.getInnerData()));
   }
@@ -211,9 +211,9 @@ public class Program {//mutable object now!
     mwt=From.from(mwt, path);
     mwt=Norm.of(this,mwt,isOnlyType);
     return mwt;
-    
+
   }
-  
+
   public static Optional<NestedClass> findWalkBy(ClassB classB) {
     for(Member m:classB.getMs()){
       if(m.match(nc->nc.getInner() instanceof ExpCore.WalkBy, c2->false, c3->false)){
@@ -238,6 +238,24 @@ public class Program {//mutable object now!
   public static Optional<Member> getIfInDom(List<ExpCore.ClassB.Member> map, ExpCore.ClassB.Member elem){
     return elem.match(nc->getIfInDom(map,nc.getName()), mi->getIfInDom(map,mi.getS()),mt->getIfInDom(map,mt.getMs()));
   }
+  public static void removeIfInDom(List<Member> ms,MethodSelector sel){
+    for(Member memi:ms){
+      boolean res=memi.match(
+          nc->false,
+          mi->{if(mi.getS().equals(sel)){ms.remove(mi);return true;}return false;},
+          mt->{if(mt.getMs().equals(sel)){ms.remove(mt);return true;}return false;});
+      if(res){break;}
+    }
+  }
+  public static void removeIfInDom(List<Member> ms,String sel){
+    for(Member memi:ms){
+      boolean res=memi.match(
+          nc->{if(nc.getName().equals(sel)){ms.remove(nc);return true;}return false;},
+          mi->false,
+          mt->false);
+      if(res){break;}
+    }
+  }
   public static void replaceIfInDom(List<Member> ms,Member m){
     Object matchRes=m.match(
         nc->{for(Member mi:ms){if (!(mi instanceof NestedClass)){continue;}
@@ -255,7 +273,7 @@ public class Program {//mutable object now!
     if(matchRes==null){ms.add(m);}
   }
 
-  
+
   public List<ExpCore.ClassB> getInnerData() {
     List<ExpCore.ClassB> result=new ArrayList<ExpCore.ClassB>();
     Program p=this;
@@ -281,7 +299,7 @@ public class Program {//mutable object now!
   public boolean checkFullyNormalized(){
     if(this.isEmpty()){return true;}
     checkFullyNormalized(this.top());
-    return this.pop().checkFullyNormalized();    
+    return this.pop().checkFullyNormalized();
   }
   public static ClassB replaceWalkByWith(ClassB cb, ExpCore newExp) {
     ClassB ct=cb;
@@ -318,7 +336,7 @@ public class Program {//mutable object now!
         assert on.getT()instanceof NormType;
       }
       return false;
-    });    
+    });
   }
   private static void checkFullyNormalized(MethodType mt) {
     assert mt.getReturnType() instanceof NormType;
@@ -332,7 +350,7 @@ public class Program {//mutable object now!
       if(nt.getPath().isPrimitive()){continue;}
       if(this.getStage(nt.getPath())!=Stage.Less){continue;}
       throw new ErrorMessage.PathNonStar(nt.getPath(),varEnv);
-    }    
+    }
   }
   public boolean checkComplete(){
     if(this.isEmpty()){return true;}
@@ -346,6 +364,6 @@ public class Program {//mutable object now!
       ClassB cb=this.get(path.outerNumber());
       extractCBarAllInto(path.getCBar(), cb,es);
     }*/
-    
-  
+
+
 }

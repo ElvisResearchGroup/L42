@@ -61,7 +61,7 @@ public class IntrospectionAdapt {
           mi->null,
           mt->collectSinglePathMxMx(list,candidate,mt)
           );
-    }    
+    }
   }
   private static Void collectSinglePathMxMx(List<PathMxMx> list,Path p,MethodWithType mt) {
     if(!mt.getInner().isPresent()){return null;}
@@ -77,7 +77,7 @@ public class IntrospectionAdapt {
   private static void collectMapPathMxMxNc(Path candidate, NestedClass nc, List<PathMxMx> list) {
     assert nc.getInner() instanceof ClassB;
     candidate=candidate.pushC(nc.getName());
-    collectMapPathMxMx(candidate,(ClassB)nc.getInner(),list);    
+    collectMapPathMxMx(candidate,(ClassB)nc.getInner(),list);
     }
   public static List<ast.Util.PathPath> mapPath(ClassB l){
     Path candidate=Path.outer(0);
@@ -115,7 +115,7 @@ public class IntrospectionAdapt {
     //System.out.println("adapted result is:\n"+ToFormattedText.of(l1));
     return l1;
   }
-  
+
 //TODO: using a different order of operations wrt pg 7
   public static ClassB applyMapPath(Program p,ClassB l, List<PathPath> mapPath) {
     List<ClassB> results=new ArrayList<ClassB>();
@@ -131,8 +131,8 @@ public class IntrospectionAdapt {
       redirectDefinition(pp,lprime,results);
     }
     return accumulate(results,Path.outer(0));
-    
-    /*   
+
+    /*
     List<ClassB> results=new ArrayList<ClassB>();
     ClassB l0=l;
     for(PathPath pp:mapPath){
@@ -179,7 +179,7 @@ public class IntrospectionAdapt {
     //from works so that an internal path stay the same,
     //and an external path change to another external path.
     //for into:Name"Outer0" we need external paths to become internal
-    
+
     if(toFrom.outerNumber()>0 && toFrom.getCBar().size()>0){
       toFrom=toFrom.setNewOuter(toFrom.outerNumber()-1);
       toFrom=toFrom.popC();
@@ -191,7 +191,7 @@ public class IntrospectionAdapt {
           cb=(ClassB)FromInClass.of(cb, toFrom);
         }
       else {
-        assert toFrom.outerNumber()==0;      
+        assert toFrom.outerNumber()==0;
         //remove outerN where N is toFrom.getCBar().size()
         int _n=toFrom.getCBar().size();
         if(_n!=0){//TODO: test case _n==0
@@ -211,7 +211,7 @@ public class IntrospectionAdapt {
           });
         }
     }}
-    
+
     if(cBar2.isEmpty()){results.add(cb);return;}
     List<Member>ms=new ArrayList<>();
     ms.add(encapsulateIn(cBar2, cb,docCb[0]));
@@ -252,7 +252,7 @@ public class IntrospectionAdapt {
   }*/
   private static ClassB remove(Path path1, ClassB l) {
     if(path1.equals(Path.outer(0))){
-      return new ClassB(Doc.empty(),Doc.empty(),false,Collections.emptyList(),Collections.emptyList(),Stage.None);  
+      return new ClassB(Doc.empty(),Doc.empty(),false,Collections.emptyList(),Collections.emptyList(),Stage.None);
       }
     return (ClassB)l.accept(new CloneVisitor(){
       List<String> cs=path1.getCBar();
@@ -362,22 +362,22 @@ static Path add1Outer(Path p) {
   /*private static ClassB renameUsage(Program _p, PathMxMx _pMx, ClassB l) {
     return new RenameUsage(_p,_pMx).startVisit(l);
   }*/
-  
+
   private static ClassB accumulate(List<ClassB> results,Path current) {
     ClassB res=results.get(0);
     for(ClassB cbi:results.subList(1, results.size())){
-      res=IntrospectionSum.sum(res,cbi,current);      
+      res=IntrospectionSum.sum(res,cbi,current);
     }
     return res;
   }
-  
+
   public static Path extractPath(String s1) {
     if(s1.equals("Outer0")){return Path.outer(0);}
     List<String> unchecked = Arrays.asList(s1.split("::"));
     List<String> rowData=new ArrayList<String>();
     for(String s:unchecked){
       if(!checkC(s)){return null;}
-      rowData.add(s);      
+      rowData.add(s);
       }
     Path p= new Path(rowData);
     if(p.isPrimitive()){
@@ -398,46 +398,8 @@ static Path add1Outer(Path p) {
     char c=s.charAt(0);
     return c=='%' || (c>='A' && c<='Z');
   }
-  public static MethodSelector extractMS(String s) {
-    if(s.equals("()")){return new MethodSelector(Desugar.desugarName(""),Collections.emptyList());}
-    String name=s;
-    List<String> xs=new ArrayList<String>();
-    if(s.isEmpty()){return null;}
-    char last=s.charAt(s.length()-1);
-    if(last==')'){
-      int i=s.indexOf('(');
-      if(i==-1){return null;}
-      name=s.substring(0,i);
-      String[] names=s.substring(i+1,s.length()-1).split(",");//single representation required
-      for(String si:names){
-        if(!checkX(si,false)){return null;}
-        xs.add(si);
-        }
-      }
-    name=Desugar.desugarName(name);
-    if(!checkX(name,true)){return null;}
-    return new MethodSelector(name,xs);
-  }
-  private static boolean checkX(String s,boolean allowHash) {
-    if(s.isEmpty()){return false;}
-    char c0=s.charAt(0);
-    if(allowHash && c0=='#'){
-      if(s.length()==1){return false;}
-      char c1=s.charAt(1);
-      if(c1=='#'){return false;}
-      return checkX(s.substring(1),allowHash);
-    }
-    for(char c:s.toCharArray()){
-      if(allowHash && c=='#'){continue;}
-      if(c=='%'){continue;}
-      if(c=='_'){continue;}
-      if(c>='A' && c<='Z'){continue;}
-      if(c>='a' && c<='z'){continue;}
-      if(c>='0' && c<='9'){continue;}
-      }
-    return c0=='_' || (c0>='a' && c0<='z');
-  }
-  
+
+
   //{ %o_0%:{ method Void m(Void x1 ... Void xn)
   //method Void #o_0#(Void _1...Void _n) (this.lowercase(x1:_1.. xn:_n)}}
   public static ExpCore buildMethodNameAdapter(MethodSelector s) {
@@ -458,15 +420,15 @@ static Path add1Outer(Path p) {
       ts.add(tVoid);
       es1.add(new X("_"+i));
       }}
-    MethodSelector s1=new MethodSelector("#o_0#",xs1);    
+    MethodSelector s1=new MethodSelector("#o_0#",xs1);
     MethodType mt1=new MethodType(Doc.empty(),Mdf.Immutable,ts,tsDocs,tVoid,Collections.emptyList());
-    MethodSelector s2=s;    
+    MethodSelector s2=s;
     MethodType mt2=new MethodType(Doc.empty(),Mdf.Immutable,ts,tsDocs,tVoid,Collections.emptyList());
     ExpCore e1=new MCall(null,new X("this"),s.getName(),Doc.empty(),s.getNames(),es1);
     List<Member> ms=new ArrayList<>();
     ms.add(new MethodWithType(Doc.empty(),s1,mt1,Optional.of(e1)));
     ms.add(new MethodWithType(Doc.empty(),s2,mt2,Optional.empty()));
-    
+
     ClassB inner=new ClassB(Doc.empty(),Doc.empty(),false,Collections.emptyList(),ms,Stage.None);
 
     return inner;
@@ -525,12 +487,12 @@ static Path add1Outer(Path p) {
     List<PathMxMx> mapMxOfInterface=new ArrayList<>();
     for(PathMxMx px : mapMx){
       ClassB cbi=Program.extractCBar(px.getPath().getCBar(),classB);
-      if(cbi.isInterface()){mapMxOfInterface.add(px);}      
+      if(cbi.isInterface()){mapMxOfInterface.add(px);}
     }
     if(mapMxOfInterface.isEmpty()){return mapMx;}
     ClassB ct=Configuration.typeSystem.typeExtraction(p,classB);
     Visitor v=new CloneVisitor(){
-      
+
     };
     //find all paths pathi that implement path internally (hard?)
     //NO!!! sob, it can be that there is a class internal of a method body...

@@ -3,6 +3,7 @@ package is.L42.connected.withSafeOperators;
 import ast.Ast.MethodSelector;
 import ast.Ast.MethodType;
 import ast.ExpCore;
+import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodWithType;
 import auxiliaryGrammar.Functions;
@@ -84,7 +85,7 @@ public class ExtractInfo {
     if(used.isEmpty()){ return true;}
     return false;
   }
-  
+
   public static String memberKind(Member m){
     return m.match(
       nc->"NestedClass",
@@ -189,6 +190,21 @@ public class ExtractInfo {
     "DifferentThisMdf",""+ !thisMdf,
     "IncompatibleException",""+!exc);
   }
+  static void checkExistsPathMethod(ClassB cb, List<String> path,Optional<MethodSelector>ms){
+    try{
+      ClassB cbi=Program.extractCBar(path, cb);
+      if(!ms.isPresent()){return;}
+      Optional<Member> meth=Program.getIfInDom(cbi.getMs(),ms.get());
+      if(meth.isPresent()){return;}
+      throw Resources.Error.multiPartStringError("InexistentMethod",
+          "Path",""+Path.outer(0,path),
+          "Selector",""+ms);
+      }
+    catch(ast.ErrorMessage.PathNonExistant e){
+      throw Resources.Error.multiPartStringError("InexistentPath",
+          "Path",""+Path.outer(0,path));
+    }
+  }
   private static List<Integer> isParTypeOk(MethodWithType mta, MethodWithType mtb) {
     List<Integer>res=new ArrayList<>();
     for(int i=0;i<mta.getMt().getTs().size();i++){
@@ -204,5 +220,12 @@ public class ExtractInfo {
     if(mta.getInner().isPresent() && !pc.containsAll(pa)){return false;}
     if(mtb.getInner().isPresent() && !pc.containsAll(pb)){return false;}
     return true;
+  }
+  public static void checkPrivacyCoupuled(ClassB cbFull,ClassB cbClear, List<String> path) {
+    //start from a already cleared out of private states
+    //check if all private nested classes are USED using IsUsed on cbClear
+    //reusing something from rename method, check if PublicClass.privateMethod is
+    //renamed in cbClear
+
   }
 }

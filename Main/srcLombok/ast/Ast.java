@@ -7,13 +7,15 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
+import sugarVisitors.Desugar;
 import ast.Ast.Doc;
+import ast.Ast.MethodSelector;
 import lombok.ToString;
 import lombok.Value;
 import lombok.experimental.Wither;
 
 public interface Ast {
-//Alpha
+
   public interface Atom {}
   @Value public class Parameters {Optional<Expression> e; List<String> xs; List<Expression>es;}
   @Value public class BlockContent {List<VarDec> decs; Optional<Catch> _catch; }
@@ -60,7 +62,47 @@ public interface Ast {
       tools.StringBuilders.formatSequence(result,names.iterator(),",",result::append);
       result.append(")");
       return result.toString();
-    }}
+    }
+    public static MethodSelector parse(String s) {
+      if(s.equals("()")){return new MethodSelector(Desugar.desugarName(""),Collections.emptyList());}
+      String name=s;
+      List<String> xs=new ArrayList<String>();
+      if(s.isEmpty()){return null;}
+      char last=s.charAt(s.length()-1);
+      if(last==')'){
+        int i=s.indexOf('(');
+        if(i==-1){return null;}
+        name=s.substring(0,i);
+        String[] names=s.substring(i+1,s.length()-1).split(",");//single representation required
+        for(String si:names){
+          if(!checkX(si,false)){return null;}
+          xs.add(si);
+          }
+        }
+      name=Desugar.desugarName(name);
+      if(!checkX(name,true)){return null;}
+      return new MethodSelector(name,xs);
+    }
+    private static boolean checkX(String s,boolean allowHash) {
+      if(s.isEmpty()){return false;}
+      char c0=s.charAt(0);
+      if(allowHash && c0=='#'){
+        if(s.length()==1){return false;}
+        char c1=s.charAt(1);
+        if(c1=='#'){return false;}
+        return checkX(s.substring(1),allowHash);
+      }
+      for(char c:s.toCharArray()){
+        if(allowHash && c=='#'){continue;}
+        if(c=='%'){continue;}
+        if(c=='_'){continue;}
+        if(c>='A' && c<='Z'){continue;}
+        if(c>='a' && c<='z'){continue;}
+        if(c>='0' && c<='9'){continue;}
+        }
+      return c0=='_' || (c0>='a' && c0<='z');
+    }
+  }
   @Value @Wither public class MethodType{
   Doc docExceptions;Mdf mdf; List<Type> ts;List<Doc> tDocs; Type returnType; List<Path> exceptions;}
 
@@ -93,7 +135,7 @@ public interface Ast {
     return n!=-1;
     }
   public String toString(){
-    return sugarVisitors.ToFormattedText.of(this); 
+    return sugarVisitors.ToFormattedText.of(this);
   }
   private static boolean isOutern(String start){
     if(!start.startsWith("Outer")){return false;}
@@ -157,7 +199,7 @@ public interface Ast {
     for(String s:rowData){
       assert isValidPathStart(s.charAt(0));
       for(int i=1;i<s.length();i++){
-        assert isValidPathChar(s.charAt(i));    
+        assert isValidPathChar(s.charAt(i));
       }
     }
     return new Path(rowData);
@@ -171,8 +213,8 @@ public interface Ast {
       if(c=='%'){return true;}
       if(c=='$'){return true;}
       if(c=='_'){return true;}
-      return 
-              Character.isUpperCase(c) 
+      return
+              Character.isUpperCase(c)
               ||
               Character.isLowerCase(c)
               ||
@@ -210,7 +252,7 @@ public interface Ast {
       for(Path pi:this.paths){
         paths.add("@"+sugarVisitors.ToFormattedText.of(pi));
       }
-      
+
       return String.format(this.s,paths.toArray());
     }
     public boolean isEmpty(){return this.s.isEmpty();}
