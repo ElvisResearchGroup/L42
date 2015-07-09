@@ -233,15 +233,20 @@ public class ExtractInfo {
     //use main->introspection.FindUsage
     List<Path>prPath=collectPrivatePathsAndSubpaths(cbFull,path);
     List<PathMx>prMeth=collectPrivateMethodsOfPublicPaths(cbFull,path);
+    List<Path>coupuledPaths=new ArrayList<>();
     for(Path pi:prPath){
       Set<Path> used = IsUsed.of(cbClear,pi);
       if(used.isEmpty()){continue;}
-      throw new AssertionError();//TODO: we are privacy coupled... what error we give?
+      coupuledPaths.add(pi);
     }
     Set<PathMx> usedPrMeth = FindUsage.of(Program.empty(),prMeth, cbClear);
-    if(usedPrMeth.isEmpty()){return;}
-    throw new AssertionError();//TODO: we are privacy coupled... what error we give?
-  }
+    if(coupuledPaths.isEmpty() && usedPrMeth.isEmpty()){return;}
+    List<PathMx> ordered=new ArrayList<>(usedPrMeth);
+    Collections.sort(ordered,(px1,px2)->px1.toString().compareTo(px2.toString()));
+    throw Resources.Error.multiPartStringError("PrivacyCoupuled",
+       "CoupuledPath",""+coupuledPaths,
+      "CoupuledMethods",""+ordered);
+    }
   private static List<PathMx> collectPrivateMethodsOfPublicPaths(ClassB cb, List<String> path) {
     List<PathMx> result=new ArrayList<>();
     cb=Program.extractCBar(path, cb);
