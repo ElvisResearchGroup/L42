@@ -25,10 +25,10 @@ public class Abstract {
   }
 
   private static ClassB clear(ClassB cb, List<String> path) {
-    //TODO:if there is an implemented private interface, remove it (need top level?)
-    //public method return private type implementing public inteface?
-    //public method takes private interface but was used outside providing public implementing nested?
-    //what happens for exceptions?
+    //note: it would be wrong to remove implementation of private interfaces:
+    //otherwise a use could rely on methods (the interface-implemented ones) that do not
+    //exists any more.
+    //we choose to not remove private trown exceptions just for coherence.
     if(!path.isEmpty()){
       List<Member> newMs=new ArrayList<>(cb.getMs());
       NestedClass nc=(NestedClass)Program.getIfInDom(newMs, path.get(0)).get();
@@ -40,9 +40,14 @@ public class Abstract {
     List<Member> newMs=new ArrayList<>();
     for(Member m:cb.getMs()){
       m.match(
-          nc->{ return null;},
-          mi->{return null;},//ok, since there are no private interfaces implemented
-          mt->{return null;}
+          nc->{
+            if(nc.getDoc().isPrivate()){return null;}
+            newMs.add(nc.withInner(clear((ClassB)nc.getInner(),path)));return null;
+            },
+          mi->{return null;},//just implementation
+          mt->{
+            if(mt.getDoc().isPrivate()){return null;}
+            newMs.add(mt.withInner(Optional.empty()));return null;}
       );}
     //create new class
     return cb.withMs(newMs);

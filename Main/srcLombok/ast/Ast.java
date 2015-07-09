@@ -67,16 +67,19 @@ public interface Ast {
       if(s.equals("()")){return new MethodSelector(Desugar.desugarName(""),Collections.emptyList());}
       String name=s;
       List<String> xs=new ArrayList<String>();
-      if(s.isEmpty()){return null;}
+      assert !s.isEmpty();
       char last=s.charAt(s.length()-1);
       if(last==')'){
         int i=s.indexOf('(');
-        if(i==-1){return null;}
+        assert i!=-1;
         name=s.substring(0,i);
-        String[] names=s.substring(i+1,s.length()-1).split(",");//single representation required
-        for(String si:names){
-          if(!checkX(si,false)){return null;}
-          xs.add(si);
+        String parenthesis=s.substring(i+1,s.length()-1).trim();
+        if(!parenthesis.isEmpty()){
+          String[] names=parenthesis.split(",");//single representation required
+          for(String si:names){
+            assert checkX(si,false);
+            xs.add(si);
+            }
           }
         }
       name=Desugar.desugarName(name);

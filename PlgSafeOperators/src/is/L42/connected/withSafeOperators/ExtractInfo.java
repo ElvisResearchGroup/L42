@@ -6,11 +6,14 @@ import ast.ExpCore;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodWithType;
+import ast.Util.PathMx;
 import auxiliaryGrammar.Functions;
 import auxiliaryGrammar.Norm;
 import auxiliaryGrammar.Program;
+import introspection.FindUsage;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -227,7 +230,53 @@ public class ExtractInfo {
     //this also verify that no private nested classes are used as
     //type in public methods of public classes.
     //collect all PublicPath.privateMethod
-    //use main->introspection.FindUsage 
-
+    //use main->introspection.FindUsage
+    List<Path>prPath=collectPrivatePathsAndSubpaths(cbFull,path);
+    List<PathMx>prMeth=collectPrivateMethodsOfPublicPaths(cbFull,path);
+    for(Path pi:prPath){
+      Set<Path> used = IsUsed.of(cbClear,pi);
+      if(used.isEmpty()){continue;}
+      throw new AssertionError();//TODO: we are privacy coupled... what error we give?
+    }
+    Set<PathMx> usedPrMeth = FindUsage.of(Program.empty(),prMeth, cbClear);
+    if(usedPrMeth.isEmpty()){return;}
+    throw new AssertionError();//TODO: we are privacy coupled... what error we give?
+  }
+  private static List<PathMx> collectPrivateMethodsOfPublicPaths(ClassB cb, List<String> path) {
+    List<PathMx> result=new ArrayList<>();
+    cb=Program.extractCBar(path, cb);
+    auxCollectPrivateMethodsOfPublicPaths(cb,result,path);
+    return result;
+  }
+  private static void auxCollectPrivateMethodsOfPublicPaths(ClassB cb,List<PathMx> accumulator, List<String> prefix) {
+    for(Member m:cb.getMs()){m.match(
+      nc->{
+        if(nc.getDoc().isPrivate()){return null;}
+        List<String> newPrefix=new ArrayList<>(prefix);
+        newPrefix.add(nc.getName());
+        auxCollectPrivateMethodsOfPublicPaths(cb,accumulator,newPrefix);
+        return null;
+      },mi->null,
+      mt->{
+        if (!mt.getDoc().isPrivate()){return null;}
+        accumulator.add(new PathMx(Path.outer(0,prefix),mt.getMs()));
+        return null;
+      });}
+  }
+  private static void auxCollectPrivatePathsAndSubpaths(ClassB cb,List<Path> accumulator, List<String> prefix, boolean collectAll) {
+    for(Member m:cb.getMs()){m.match(
+      nc->{
+        List<String> newPrefix=new ArrayList<>(prefix);
+        newPrefix.add(nc.getName());
+        auxCollectPrivatePathsAndSubpaths(cb,accumulator,newPrefix,collectAll || nc.getDoc().isPrivate());
+        if(collectAll || nc.getDoc().isPrivate()){accumulator.add(Path.outer(0,newPrefix));}
+        return null;
+      },mi->null, mt->null);}
+  }
+  private static List<Path> collectPrivatePathsAndSubpaths(ClassB cb, List<String> path) {
+    List<Path> result=new ArrayList<>();
+    cb=Program.extractCBar(path, cb);
+    auxCollectPrivatePathsAndSubpaths(cb,result,path ,false);
+    return result;
   }
 }
