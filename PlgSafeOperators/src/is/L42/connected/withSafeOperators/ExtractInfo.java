@@ -284,4 +284,22 @@ public class ExtractInfo {
     auxCollectPrivatePathsAndSubpaths(cb,result,path ,false);
     return result;
   }
+  public static void checkPrefix(List<String> a, List<String> b) {
+    List<String> la=a;
+    List<String> lb=b;
+    while (!la.isEmpty() && !lb.isEmpty()){
+      String ai=la.get(0);
+      String bi=lb.get(0);
+      if(!ai.equals(bi)){return;}
+      la=la.subList(1, la.size());
+      lb=lb.subList(1, lb.size());
+    }
+    if(la.isEmpty() || lb.isEmpty()){
+      List<String> shorter=la.isEmpty()?a:b;
+      List<String> longer=la.isEmpty()?b:a;
+      throw Resources.Error.multiPartStringError("PathClash",
+         "Prefix",""+shorter,
+         "Clashing",""+longer);}
+  }
+
 }

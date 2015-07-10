@@ -33,7 +33,7 @@ public class Sum {
     ms.add(new ClassB.NestedClass(Doc.empty(),"A",a));
     ms.add(new ClassB.NestedClass(Doc.empty(),"B",b));
     ClassB ab=new ClassB(Doc.empty(),Doc.empty(),false,Collections.emptyList(),ms,Stage.None);
-    ab=normalize(ab);
+    ab=Sum.normalize(ab);
     a=(ClassB)((ClassB.NestedClass)ab.getMs().get(0)).getInner();
     b=(ClassB)((ClassB.NestedClass)ab.getMs().get(1)).getInner();
     //return IntrospectionSum.sum(a, b, Path.outer(0));
@@ -57,7 +57,7 @@ public class Sum {
         //*sum class/interface invalid
         return new ClassB(doc1,doc2,isInterface,superT,ms,Stage.None);
         }
-      
+
       private void doubleSimetricalMatch(ClassB a, ClassB b, List<Member> ms,List<String> current) {
         for(Member m:a.getMs()){//add from a+b
           Optional<Member> oms = Program.getIfInDom(b.getMs(),m);
@@ -107,7 +107,7 @@ public class Sum {
     Collections.sort(opc, (p1,p2)->p1.toString().compareTo(p2.toString()));
     mt=mt.withExceptions(opc);
     MethodWithType mwt=ma.withMt(mt).withDoc(doc);
-    assert !ma.getInner().isPresent() ||!mb.getInner().isPresent(); 
+    assert !ma.getInner().isPresent() ||!mb.getInner().isPresent();
     if(mb.getInner().isPresent()){
       mwt=mwt.withInner(mb.getInner());
     }

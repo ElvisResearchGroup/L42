@@ -250,7 +250,7 @@ public class IntrospectionAdapt {
       }
     return Path.outer(cBar2.size(),cBar1);
   }*/
-  private static ClassB remove(Path path1, ClassB l) {
+  public static ClassB remove(Path path1, ClassB l) {
     if(path1.equals(Path.outer(0))){
       return new ClassB(Doc.empty(),Doc.empty(),false,Collections.emptyList(),Collections.emptyList(),Stage.None);
       }
@@ -295,7 +295,7 @@ public class IntrospectionAdapt {
     }}
     return  true;
     }
-  private static ClassB renameUsage(Program _p, List<PathPath> _map, ClassB l) {
+  public static ClassB renameUsage(Program _p, List<PathPath> _map, ClassB l) {
     return new CloneVisitorWithProgram(_p){
       List<PathPath> map=removePathInsideSubPath(_map);
       public ExpCore visit(Path s) {
