@@ -67,6 +67,11 @@ public static class TestAbstractClass {//add more test for error cases
   },{"{ method Void m(Any x) void}","Outer0","{ method Void m(Any x)}",false
   },{"{C:{B:{ method Void m(Any x) void}}}","C::B","{C:{B:{ method Void m(Any x)}}}",false
   },{"{C:{B:{ method Void m(Any x) void  method '@private\nVoid foo() void }}}","C::B","{C:{B:{ method Void m(Any x)}}}",false
+  },{"{C:{B:{ method Void m(Any x) void  method '@private\nVoid foo() void } D:{ method Void bar() B.foo() }}}",
+	  "C::B",
+	  "{Kind:{'@stringU\n'PrivacyCoupuled\n}"+
+	  "CoupuledPath:{'@stringU\n'[]\n}"+
+	  "CoupuledMethods:{'@stringU\n'[Outer2::C::B.foo]\n}}",true  
 }});}
 @Test  public void test() {
   TestHelper.configureForTest();
@@ -89,3 +94,8 @@ public static class TestAbstractClass {//add more test for error cases
 
 
 }
+
+
+
+
+
