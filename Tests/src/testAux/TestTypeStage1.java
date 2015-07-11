@@ -177,8 +177,7 @@ static String listExample=TestHelper.multiLine(
     public void testType() {
       TestHelper.configureForTest();
       ExpCore e=Desugar.of(Parser.parse(null," "+_e)).accept(new InjectionOnCore());
-      List<Path> paths = CollectPaths0.of(e);//TODO: is it usefull?
-      Program p=TestHelper.getProgram(paths, program);
+      Program p=TestHelper.getProgram( program);
       Type t2=TypeSystem.typecheckSure(false,p, new HashMap<>(),SealEnv.empty(),new ThrowEnv(), this.typeSugg, e);
       Assert.assertEquals(t2,typeExpected);
       //TestHelper.assertEqualExp(eRed,ee2);
@@ -309,8 +308,7 @@ public static class TestStage2 {
       public void testType() {
         TestHelper.configureForTest();
         ExpCore e=Desugar.of(Parser.parse(null," "+_e)).accept(new InjectionOnCore());
-        List<Path> paths = CollectPaths0.of(e);
-        Program p=TestHelper.getProgram(paths,program);
+        Program p=TestHelper.getProgram(program);
         Configuration.typeSystem.checkAll(p);
         Type t2=TypeSystem.typecheckSure(false,p, new HashMap<>(),SealEnv.empty(),new ThrowEnv(), typeSugg, e);
         Assert.assertEquals(t2,typeExpected);
@@ -399,8 +397,7 @@ public static class TestStage3_notOk {
       @Test(expected=ErrorMessage.TypeError.class)
       public void testFail() {
         ExpCore e=Desugar.of(Parser.parse(null," "+_e)).accept(new InjectionOnCore());
-        List<Path> paths = CollectPaths0.of(e);
-        Program p=TestHelper.getProgram(paths,program);
+        Program p=TestHelper.getProgram(program);
         Type t2=TypeSystem.typecheckSure(false,p, new HashMap<>(),SealEnv.empty(),new ThrowEnv(), typeSugg, e);
         //Assert.assertEquals(t2,expected);
         //TestHelper.assertEqualExp(eRed,ee2);

@@ -2,6 +2,8 @@ package helpers;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Assert;
@@ -90,17 +92,14 @@ public class TestHelper {
     }finally{System.setErr(lpsErr.underlying);}
     }*/
   public static Program getProgramCD(){
-    ArrayList<Path> paths=new ArrayList<Path>();
-    paths.add(Path.parse("Outer0::C"));
-    paths.add(Path.parse("Outer0::D"));
-    return getProgram(paths,new String[]{"{C:{new() type method Outer1::C foo(type Outer1::C bar) (bar.foo(bar:this))}, D:{new(var Outer1::C x)}}"});
+    return getProgram(new String[]{"{C:{new() type method Outer1::C foo(type Outer1::C bar) (bar.foo(bar:this))}, D:{new(var Outer1::C x)}}"});
   }
 
   public static ClassB getClassB(String e1) {
     return (ClassB)Desugar.of(Parser.parse(null," "+e1)).accept(new InjectionOnCore());
   }
 
-  public static Program getProgram(List<Path> paths,String[] code){
+   public static Program getProgram(/*List<Path> paths,*/String[] code){
     Program p0=Program.empty();
     for(String s:code){
       Expression e=Parser.parse(null,s);

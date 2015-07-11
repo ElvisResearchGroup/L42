@@ -333,8 +333,8 @@ public class IntrospectionAdapt {
     return result;
 }
 private static boolean isPathInsideSubPath(PathPath pp) {
-  assert pp.getPath1().isCore();
-  assert pp.getPath1().outerNumber()==0;
+  assert pp.getPath1().isCore():pp;
+  assert pp.getPath1().outerNumber()==0:pp;
   if(pp.getPath2().isPrimitive()){return false;}
   assert pp.getPath2().isCore():pp.getPath2();
   if(pp.getPath2().outerNumber()!=0){return false;}
