@@ -6,11 +6,17 @@ import java.util.List;
 import java.util.Optional;
 
 import coreVisitors.FromInClass;
+import tools.Assertions;
 import ast.ErrorMessage;
 import ast.ExpCore.*;
+import ast.Ast.NormType;
+import ast.Ast.HistoricType;
 import ast.Ast.Path;
+import ast.Ast.Type;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
+import ast.ExpCore.ClassB.MethodWithType;
+import ast.ExpCore.ClassB.NestedClass;
 import ast.Util.PathPath;
 import auxiliaryGrammar.Program;
 public class Redirect {
@@ -55,9 +61,53 @@ public class Redirect {
     }
     return result;
   }
-  private static void redirectOk(List<PathPath> s, Program p, ClassB l, Member mi, Optional<Member> ifInDom, PathPath currentPP, List<PathPath> result) {
+  private static void redirectOk(List<PathPath> s, Program p, ClassB l, Member mi, Optional<Member> _miPrime, PathPath currentPP, List<PathPath> result) {
+    if(!_miPrime.isPresent()){throw new AssertionError("GETAMESSAGE");}
+    Member miPrime=_miPrime.get();
+    //if the member is not of the same type is an error
+    if(!mi.getClass().equals(miPrime.getClass())){throw new AssertionError("GETAMESSAGE");}
+    mi.match(
+      nc->redirectOkNc(s,p,l,nc,(NestedClass)miPrime,currentPP,result),
+      errMi->{throw Assertions.codeNotReachable("Should be catched before as in fully abstract source");},
+      mt->redirectOkMt(s,p,l,mt,(MethodWithType)miPrime,currentPP,result));    
+  }
+  private static Void redirectOkMt(List<PathPath> s, Program p, ClassB l, MethodWithType mt, MethodWithType mtPrime, PathPath currentPP, List<PathPath> result) {
+    redirectOkType(s,p,l,mt.getMt().getReturnType(),mtPrime.getMt().getReturnType(),result);
+    for(int i=0;i<mt.getMt().getTs().size();i+=1){
+      redirectOkType(s,p,l,mt.getMt().getTs().get(i),mtPrime.getMt().getTs().get(i),result);
+    }
+    redirectOkExceptions(s,p,l,mt.getMt().getExceptions(),mtPrime.getMt().getExceptions(),result);
+    return null;
+  }
+  private static void redirectOkExceptions(List<PathPath> s, Program p, ClassB l, List<Path> exceptions, List<Path> exceptions2, List<PathPath> result) {
     // TODO Auto-generated method stub
-
+    
+  }
+  private static void redirectOkType(List<PathPath> s, Program p, ClassB l, Type t, Type tPrime, List<PathPath> result) {
+    if(!t.getClass().equals(tPrime.getClass())){throw new AssertionError("GETAMESSAGE");}
+    t.match(
+      normType->{
+        NormType ntP=(NormType)tPrime;
+        if(!normType.getMdf().equals(ntP.getMdf())){throw new AssertionError("GETAMESSAGE");}
+        if(!normType.getPh().equals(ntP.getPh())){throw new AssertionError("GETAMESSAGE");}
+        redirectOkPath(s,p,normType.getPath(),ntP.getPath(),result);
+        return null;
+      },
+      hType->{
+        HistoricType htP=(HistoricType)tPrime;
+        if(!hType.getSelectors().equals(htP.getSelectors())){throw new AssertionError("GETAMESSAGE");}
+        if(hType.isForcePlaceholder()!=htP.isForcePlaceholder()){throw new AssertionError("GETAMESSAGE");}
+        redirectOkPath(s,p,hType.getPath(),htP.getPath(),result);
+        return null;
+      });
+  }
+  private static void redirectOkPath(List<PathPath> s, Program p, Path path, Path path2, List<PathPath> result) {
+    // TODO Auto-generated method stub
+    
+  }
+  private static Void redirectOkNc(List<PathPath> s, Program p, ClassB l, NestedClass nc, ClassB.NestedClass miPrime, PathPath currentPP, List<PathPath> result) {
+    // TODO Auto-generated method stub
+    return null;
   }
 
 }
