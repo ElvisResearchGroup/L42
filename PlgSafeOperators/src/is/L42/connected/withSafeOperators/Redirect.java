@@ -2,8 +2,10 @@ package is.L42.connected.withSafeOperators;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import coreVisitors.FromInClass;
 import tools.Assertions;
@@ -72,15 +74,23 @@ public class Redirect {
       mt->redirectOkMt(s,p,l,mt,(MethodWithType)miPrime,currentPP,result));    
   }
   private static Void redirectOkMt(List<PathPath> s, Program p, ClassB l, MethodWithType mt, MethodWithType mtPrime, PathPath currentPP, List<PathPath> result) {
-    redirectOkType(s,p,l,mt.getMt().getReturnType(),mtPrime.getMt().getReturnType(),result);
+    List<PathPath> sPrime=new ArrayList<>(s);
+    sPrime.add(currentPP);
+    redirectOkType(sPrime,p,l,mt.getMt().getReturnType(),mtPrime.getMt().getReturnType(),result);
     for(int i=0;i<mt.getMt().getTs().size();i+=1){
-      redirectOkType(s,p,l,mt.getMt().getTs().get(i),mtPrime.getMt().getTs().get(i),result);
+      redirectOkType(sPrime,p,l,mt.getMt().getTs().get(i),mtPrime.getMt().getTs().get(i),result);
     }
-    redirectOkExceptions(s,p,l,mt.getMt().getExceptions(),mtPrime.getMt().getExceptions(),result);
+    redirectOkExceptions(sPrime,p,l,mt.getMt().getExceptions(),mtPrime.getMt().getExceptions(),result);
     return null;
   }
-  private static void redirectOkExceptions(List<PathPath> s, Program p, ClassB l, List<Path> exceptions, List<Path> exceptions2, List<PathPath> result) {
-    // TODO Auto-generated method stub
+  private static void redirectOkExceptions(List<PathPath> s, Program p, ClassB l, List<Path> exceptions, List<Path> exceptionsPrime, List<PathPath> result) {
+    if(exceptionsPrime.isEmpty()){return;}
+    Set<Path> exc=new HashSet<>(exceptions);
+    Set<Path> excPrime=new HashSet<>(exceptionsPrime);
+    if(exc.containsAll(excPrime)){return;}
+    if(exceptions.size()!=1){throw new AssertionError("GETAMESSAGE");}
+    if(exceptionsPrime.size()!=1){throw new AssertionError("GETAMESSAGE");}
+    redirectOkPath(s, p, l, exceptions.get(0),exceptionsPrime.get(0), result);
     
   }
   private static void redirectOkType(List<PathPath> s, Program p, ClassB l, Type t, Type tPrime, List<PathPath> result) {
@@ -90,23 +100,36 @@ public class Redirect {
         NormType ntP=(NormType)tPrime;
         if(!normType.getMdf().equals(ntP.getMdf())){throw new AssertionError("GETAMESSAGE");}
         if(!normType.getPh().equals(ntP.getPh())){throw new AssertionError("GETAMESSAGE");}
-        redirectOkPath(s,p,normType.getPath(),ntP.getPath(),result);
+        redirectOkPath(s,p,l,normType.getPath(),ntP.getPath(),result);
         return null;
       },
       hType->{
         HistoricType htP=(HistoricType)tPrime;
         if(!hType.getSelectors().equals(htP.getSelectors())){throw new AssertionError("GETAMESSAGE");}
         if(hType.isForcePlaceholder()!=htP.isForcePlaceholder()){throw new AssertionError("GETAMESSAGE");}
-        redirectOkPath(s,p,hType.getPath(),htP.getPath(),result);
+        redirectOkPath(s,p,l,hType.getPath(),htP.getPath(),result);
         return null;
       });
   }
-  private static void redirectOkPath(List<PathPath> s, Program p, Path path, Path path2, List<PathPath> result) {
-    // TODO Auto-generated method stub
-    
+  private static void redirectOkPath(List<PathPath> s, Program p, ClassB l,Path cs, Path path, List<PathPath> result) {
+    //S;p|-L[Outern::Cs =~Outern::Cs]:emptyset  holds with n>0
+    if(cs.outerNumber()>0){
+      if(!cs.equals(path)){throw new AssertionError("GETAMESSAGE");}
+      return;
+    }
+    //otherwise
+    //S;p|-L[Outer0::Cs =~ Path ]: S'
+    //if S;p|-L[redirect Cs->Path]:S'
+    List<PathPath> res = redirectOk(s,p,l,cs,path);
+    result.addAll(res);
   }
   private static Void redirectOkNc(List<PathPath> s, Program p, ClassB l, NestedClass nc, ClassB.NestedClass miPrime, PathPath currentPP, List<PathPath> result) {
-    // TODO Auto-generated method stub
+    //S;p|-L[C:L1=~C:L1' Cs->Path]:S'
+    //if S,Cs->Path;p|-L[redirect Cs::C->Path::C]:S'
+    Path src=currentPP.getPath1().pushC(nc.getName());
+    Path dest=currentPP.getPath2().pushC(nc.getName());
+    List<PathPath> res = redirectOk(s,p,l,src,dest);
+    result.addAll(res);
     return null;
   }
 
