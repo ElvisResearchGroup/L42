@@ -1,9 +1,8 @@
 # L42
 
 Here I will try t explain how to set up L42 in eclipse.
-There may be some reference to TestNG still around.
-  There is no need to install TestNg, now we use JUnit4
-Instal EGit
+On Eclipse Luna, you may need to install EGit
+On Eclipse Mars EGit installation is not needed.
 
 Do import ->git-> projects->clone uri
 You should get all the projects already  setted up with the right dependencies.
