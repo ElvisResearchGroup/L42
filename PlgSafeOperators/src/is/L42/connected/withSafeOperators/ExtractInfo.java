@@ -1,5 +1,6 @@
 package is.L42.connected.withSafeOperators;
 
+import ast.Ast.Mdf;
 import ast.Ast.MethodSelector;
 import ast.Ast.MethodType;
 import ast.ExpCore;
@@ -81,7 +82,7 @@ public class ExtractInfo {
   }
   public static void checkBox(ClassB cb,List<String> path) throws Resources.Error/*NotBox*/{ checkBox(cb, path,false);}
   public static boolean isBox(ClassB cb,List<String> path){return checkBox(cb, path,true);}
-  public static boolean isVirginInterface(ClassB topCb,List<String> path){
+  public static boolean isFreeInterface(ClassB topCb,List<String> path){
     ClassB cb=Program.extractCBar(path, topCb);
     if(!cb.isInterface()){return false;}
     Set<Path> used = ExtractInfo.IsImplemented.of(cb,Path.outer(0,path));
@@ -95,10 +96,29 @@ public class ExtractInfo {
       mi->"InterfaceImplementedMethod",
       mt->(mt.getInner().isPresent())?"ImplementedMethod":"AbstractMethod");
   }
-  public static String classKind(boolean isBox,boolean isPrivateState,boolean isInterface,boolean isVirginI){
+
+  private static enum ClassKinds{Box,Interface,FreeInterface,CloseClass,OpenClass,Template,PureRecord,Module,TemplateModule;}
+  public static String classKind(ClassB top, List<String> current,ClassB cb,Boolean isBox,Boolean isPrivateState,
+      Boolean isFreeI){//9 options
+    if(cb.isInterface()){
+      if(isFreeI==null){isFreeI=ExtractInfo.isFreeInterface(top,current);}
+      if(isFreeI){return ClassKinds.FreeInterface.name();}
+      return ClassKinds.Interface.name();
+    }//not interface, 7 options left
+    if(isBox!=null &&isBox){return ClassKinds.Box.name();}//fast exit
+
+    if(isPrivateState==null){isPrivateState=hasPrivateState(cb);}
+    if(isPrivateState){return ClassKinds.CloseClass.name();}//6 options left
+
+    if(isBox){return "BoxClass";}
+    if(isFreeI){return "FreeInterface";}
+    if(isInterface){return "Interface";}
+    return "Class";
+  }
+  public static String oldClassKind(boolean isBox,boolean isPrivateState,boolean isInterface,boolean isFreeI){
     if(isBox){return "BoxClass";}
     if(isPrivateState){return"PrivateStateClass";}
-    if(isVirginI){return "VirginInterface";}
+    if(isFreeI){return "FreeInterface";}
     if(isInterface){return "Interface";}
     return "Class";
   }
@@ -117,19 +137,19 @@ public class ExtractInfo {
    if (isAllOk){return currentA.isInterface();}//code under is slow
    boolean aBox=ExtractInfo.isBox(topA,current);//!privateA && would make it faster, but harder to test
    boolean bBox=ExtractInfo.isBox(topB,current);//same for the rest
-   boolean aVirginI=ExtractInfo.isVirginInterface(topA,current);
-   boolean bVirginI=ExtractInfo.isVirginInterface(topB,current);
-   boolean isClassInterfaceSumOk=aBox||bBox ||aVirginI ||bVirginI;
+   boolean aFreeI=ExtractInfo.isFreeInterface(topA,current);
+   boolean bFreeI=ExtractInfo.isFreeInterface(topB,current);
+   boolean isClassInterfaceSumOk=aBox||bBox ||aFreeI ||bFreeI;
    isAllOk=confl.isEmpty() && !twoPrivateState && isClassInterfaceSumOk;
    if (isAllOk){return aBox  || bBox;}
-   throw errorClassClash(current, currentA, currentB, confl, privateA, privateB, aBox, bBox, aVirginI, bVirginI);
+   throw errorClassClash(current, currentA, currentB, confl, privateA, privateB, aBox, bBox, aFreeI, bFreeI);
   }
-  private static Error errorClassClash(List<String> current, ClassB currentA, ClassB currentB, List<Path> confl, boolean privateA, boolean privateB, boolean aBox, boolean bBox, boolean aVirginI, boolean bVirginI) {
+  private static Error errorClassClash(List<String> current, ClassB currentA, ClassB currentB, List<Path> confl, boolean privateA, boolean privateB, boolean aBox, boolean bBox, boolean aFreeI, boolean bFreeI) {
     return Resources.Error.multiPartStringError("ClassClash",
        "Path",""+Path.outer(0,current),
        "ConflictingImplementedInterfaces",""+confl,
-       "LeftKind",classKind(aBox,privateA,currentA.isInterface(),aVirginI),
-       "RightKind",classKind(bBox,privateB,currentB.isInterface(),bVirginI)
+       "LeftKind",classKind(aBox,privateA,currentA.isInterface(),aFreeI),
+       "RightKind",classKind(bBox,privateB,currentB.isInterface(),bFreeI)
         );
   }
   public static Error errorSourceUnfit(List<String> current,List<Member>unexpected,boolean headerOk,List<Path>unexpectedIntefaces,boolean isPrivate,boolean isAbstract){
@@ -155,6 +175,15 @@ public class ExtractInfo {
        MethodWithType mwt=(MethodWithType)m;
        if(mwt.getInner().isPresent()){continue;}
        if(mwt.getDoc().isPrivate()){return true;}
+     }
+    return false;
+   }
+   public static boolean isModule(ClassB cb) {
+     for(Member m:cb.getMs()){
+       if(!(m instanceof MethodWithType)){continue;}
+       MethodWithType mwt=(MethodWithType)m;
+       if(mwt.getMt().getMdf()!=Mdf.Type){continue;}
+       if(mwt.getMt().getReturnType().equals(new Norm)){return true;}
      }
     return false;
    }

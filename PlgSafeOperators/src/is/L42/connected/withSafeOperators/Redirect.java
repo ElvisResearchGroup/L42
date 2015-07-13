@@ -42,8 +42,8 @@ public class Redirect {
     //(a)Cs is public in L, and Cs have no private state;
     boolean isPrivate=csComm[0].isPrivate();
     boolean privateState=ExtractInfo.hasPrivateState(l0);
-    boolean fullyAbstract=//boh, e se computo anche is box e ti do il class kind? e aggiungo essere fully abstract as a kind?
     if(privateState){throw new AssertionError("GETAMESSAGE");}//src not fully abstract
+    boolean fullyAbstract=//boh, e se computo anche is box e ti do il class kind? e aggiungo essere fully abstract as a kind?
     //all its methods have no implementation, that is:
     //for all Mi,i=0..n: Mi is of form h or Mi is of form C:_
     for(Member m:l0.getMs()){
@@ -56,7 +56,7 @@ public class Redirect {
     //(b) L[H=~H'] holds
     boolean headerOk=l0.isInterface()==l0Dest.isInterface();
     if(!headerOk || l0.isInterface()){
-      if(ExtractInfo.isVirginInterface(l, cs)){headerOk=true;}
+      if(ExtractInfo.isFreeInterface(l, cs)){headerOk=true;}
     }
     //(c) S,Cs->Path;p|-L[Paths=~Paths']:S'
     //(d) S;p|-L[M0=~M0' Cs->Path]:S0 ... S;p|-L[Mn=~Mn' Cs->Path]:Sn
@@ -81,7 +81,7 @@ public class Redirect {
     //(paths ok)//and I can not use it for exceptions since opposite subset relation
     //S;p|-L[Paths=~Paths']:S'
     //Path subsetof Path'
-    //or Paths=Path, Paths'=Path' and S;p|-L[Path=~Path']:S'  
+    //or Paths=Path, Paths'=Path' and S;p|-L[Path=~Path']:S'
     List<PathPath> sPrime=new ArrayList<>(s);
     sPrime.add(currentPP);
     if(paths.isEmpty()){return Collections.emptySet();}
@@ -101,7 +101,7 @@ public class Redirect {
     mi.match(
       nc->redirectOkNc(s,p,l,nc,(NestedClass)miPrime,currentPP,result),
       errMi->{throw Assertions.codeNotReachable("Should be catched before as in fully abstract source");},
-      mt->redirectOkMt(s,p,l,mt,(MethodWithType)miPrime,currentPP,result));    
+      mt->redirectOkMt(s,p,l,mt,(MethodWithType)miPrime,currentPP,result));
   }
   private static Void redirectOkMt(List<PathPath> s, Program p, ClassB l, MethodWithType mt, MethodWithType mtPrime, PathPath currentPP, List<PathPath> result) {
     List<PathPath> sPrime=new ArrayList<>(s);
@@ -129,7 +129,7 @@ public class Redirect {
     if(exc.size()!=1){return exc;}
     if(excPrime.size()!=1){return exc;}//ok not excPrime
     redirectOkPath(s, p, l, exc.iterator().next(),exceptionsPrime.iterator().next(), result);
-    return Collections.emptySet();   
+    return Collections.emptySet();
   }
   private static boolean redirectOkType(List<PathPath> s, Program p, ClassB l, Type t, Type tPrime, List<PathPath> result) {
     if(!t.getClass().equals(tPrime.getClass())){return false;}//incompatible internal/external types t1 t2

@@ -52,7 +52,7 @@ public class ErrorFormatter {
     Position p=positionsFilter(ps);
     if(c==ErrorMessage.DotDotDotCanNotBeResolved.class){
         ErrorMessage.DotDotDotCanNotBeResolved ddd=(ErrorMessage.DotDotDotCanNotBeResolved)msg;
-        
+
     }
     errorTxt="Error kind: "+c.getSimpleName()+"\nPosition:"+
     ((p==null)?"unknown":p.toString())+"\n"+errorTxt;
@@ -68,7 +68,7 @@ public class ErrorFormatter {
       default:
         break;
       }
-    
+
     Throwable cause=null;
     if(msg.getCause()!=null){
       if(msg.getCause() instanceof ErrorMessage){
@@ -81,9 +81,9 @@ public class ErrorFormatter {
     ErrorMessage.UserLevelError result= new ErrorMessage.UserLevelError(kind,p,msg,errorTxt);
     result.initCause(cause);
     return result;
-    
+
   }
-  
+
   private static String reportPlaceOfMetaError(ErrorMessage msg) {
     ErrorMessage.MalformedFinalResult _msg=(ErrorMessage.MalformedFinalResult)msg;
     ClassB cb=_msg.getFinalRes();
@@ -100,8 +100,20 @@ public class ErrorFormatter {
         mt->formatSelectorCompact(mt.getMs())+"::"+isItErrorPlace(mt.getInner().get())
         );
       }
-    //return "it should be a nested somewhere";//TODO: improve//
-    throw Assertions.codeNotReachable();
+    for(Member m:cb.getMs()){
+      String err=m.match(nc->{
+        ClassB ncb=(ClassB)nc.getInner();
+        if(ncb.getStage()!=Stage.Star){
+          return nc.getName()+"::"+isItErrorPlace(nc.getInner());
+          }
+        return null;
+        }, mi->null, mt->null);
+      if(err!=null){
+        return "NotStarOf "+err;
+        }
+    }
+    return "it should be a nested somewhere";//TODO: improve//
+    //throw Assertions.codeNotReachable();
   }
   private static String isItErrorPlace(ExpCore inner) {
     if(inner instanceof ClassB){return reportPlaceOfMetaError((ClassB)inner);}
@@ -119,7 +131,7 @@ public class ErrorFormatter {
     if(msg instanceof ErrorMessage.TypeError){return Kind.TypeError;}
     if(msg instanceof ErrorMessage.MalformedFinalResult){return Kind.MetaError;}
     return Kind.Unclassified;
-    
+
   }
   private static Position positionsFilter(ArrayList<Position> ps) {
     if(ps.isEmpty()){return null;}
@@ -143,7 +155,7 @@ public class ErrorFormatter {
   public static String ctxP(ErrorMessage msg, Class<?> c,ArrayList<Ast.Position>ps)
       throws NoSuchFieldException, IllegalAccessException {
     String errorTxt="";
-    Field f=c.getDeclaredField("p");    
+    Field f=c.getDeclaredField("p");
     f.setAccessible(true);
     Collection<?> envs=(Collection<?>)f.get(msg);
     for(Object o:envs){
@@ -151,7 +163,7 @@ public class ErrorFormatter {
     }
     return errorTxt;
   }
-  
+
   public static String infoFields(ErrorMessage msg, Class<?> c,ArrayList<Ast.Position>ps)
       throws IllegalAccessException {
     String errorTxt="";
@@ -203,11 +215,11 @@ public class ErrorFormatter {
       return res+"  ]\n";
     }
     if(obj instanceof Ast.Type){return ToFormattedText.of((Ast.Type)obj);}
-    
+
     if(obj instanceof ClassB.Member){return ToFormattedText.of((ClassB.Member)obj);}
     if(obj instanceof Expression){return ToFormattedText.of((Expression)obj);}
     if(obj instanceof Expression.ClassB.Member){return ToFormattedText.of((Expression.ClassB.Member)obj);}
-    if(obj instanceof java.nio.file.Path){return obj.toString();} 
+    if(obj instanceof java.nio.file.Path){return obj.toString();}
     return "unknown kind "+obj.getClass().getCanonicalName();
   }
   public static String formatSelectorCompact(Ast.MethodSelector ms) {
@@ -226,7 +238,7 @@ public class ErrorFormatter {
     if(p.isEmpty()){return;}
     printType(i,"",p.top());
     printType(i+1,p.pop());
-    
+
   }
   private static void printType(int i,String prefix, ClassB top) {
     System.out.print("Outer"+i+prefix+" :{\n");
@@ -239,7 +251,7 @@ public class ErrorFormatter {
         printType(i,"::"+nc.getName(),(ClassB)nc.getInner());
       }
     }
-    
+
   }
   private static void printMembers(ClassB top) {
     for(Member m:top.getMs()){
@@ -256,12 +268,12 @@ public class ErrorFormatter {
       System.out.print(" "+mwt.getMs().getName());
       System.out.print("(");
       {int i=-1;for(String n:mwt.getMs().getNames()){i+=1;
-      System.out.print(mwt.getMt().getTs()  
+      System.out.print(mwt.getMt().getTs()
       }}
       System.out.print(")\n");
-  */    
+  */
     }
-    
+
   }
   private static String whyIsNotExecutable(ClassB cb) {
     /*if(cb.getH() instanceof Ast.TraitHeader){
@@ -278,7 +290,7 @@ public class ErrorFormatter {
       if(!(m instanceof NestedClass)){continue;}
       NestedClass nc=(NestedClass)m;
       if (!(nc.getInner() instanceof ClassB)){
-        return "\n  The nested class "+nc.getName()+" of the requested path is not compiled yet"; 
+        return "\n  The nested class "+nc.getName()+" of the requested path is not compiled yet";
       }
       String nestedRes=whyIsNotExecutable((ClassB)nc.getInner());
       if(nestedRes!=null){

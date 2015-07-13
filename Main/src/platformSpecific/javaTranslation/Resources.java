@@ -65,7 +65,7 @@ public class Resources {
     return o;
     }
   public static void clearRes() {
-    usedRes.clear();    
+    usedRes.clear();
   }
 
   @SuppressWarnings("serial")
@@ -80,7 +80,7 @@ public class Resources {
       ms.add(new ExpCore.ClassB.NestedClass(Doc.empty(),"Kind", EncodingHelper.wrapStringU(kind)));
       for(int i=0;i<map.length;i+=2){
         ms.add(new ExpCore.ClassB.NestedClass(Doc.empty(),
-            map[i], EncodingHelper.wrapStringU(map[i+1])));  
+            map[i], EncodingHelper.wrapStringU(map[i+1])));
       }
       ExpCore.ClassB cb=new ExpCore.ClassB(Doc.empty(), Doc.empty(), false, Collections.emptyList(), ms,Stage.None);
       return new Error(cb);
@@ -144,7 +144,7 @@ public class Resources {
       if(strict && (ct.getStage()==Stage.Less || ct.getStage()==Stage.None)){
         throw Assertions.codeNotReachable("try to make this happen, is it possible? it should mean bug in plugin code\n"/*+ToFormattedText.of(ct)*/);
       }
-    }      
+    }
     //confer method under to be in this form; remove cals from method under, be sure that small step use
     //same stuff as compiled step -- dispatching
     return true;
@@ -174,11 +174,11 @@ public class Resources {
     }
     return result;
   }
- 
-  public static ExecutorService pluginThreads=Executors.newCachedThreadPool(); 
+
+  public static ExecutorService pluginThreads=Executors.newCachedThreadPool();
   public static <T> T block(java.util.function.Supplier<T> p){return p.get();}
   public static platformSpecific.javaTranslation.Resources.Void unused=null;
-  
+
   public static interface PlgClosure<Pt extends PluginType,T>{
     T apply(Pt plg,Object[] xs);
   }
@@ -205,9 +205,10 @@ public class Resources {
       UserLevelError err = ErrorFormatter.formatError(msg);
       throw Assertions.codeNotReachable("try to make this happen, is it possible? it should mean bug in plugin code\n"+err+"\n---------------\n");
     }
+    catch(NullPointerException msg){throw msg;}
     catch(RuntimeException msg){
       //throw Resources.notAct;//will be
-      throw Assertions.codeNotReachable("try to make this happen, is it possible? it should mean bug in plugin code\n"+msg+"\n---------------\n");        
+      throw Assertions.codeNotReachable("try to make this happen, is it possible? it should mean bug in plugin code\n"+msg+"\n---------------\n");
       }
     catch(java.lang.Error msg){
       //throw Resources.notAct;//will be
@@ -221,7 +222,7 @@ public class Resources {
   /*public Object bar(Plugin plg,Object e1, Object e2,Callable<Object> conclE){
     return plgExecutor("dbgInfo",null,new Plugin(),
         (plF,xsF)->plF.MsumInt32£xn1£xn2(xsF[0],xsF[1]),
-        conclE,e1,e2);  
+        conclE,e1,e2);
   }*/
   public static <Pt extends PluginType,T> T plgExecutor(String plgCall,Program p,Pt plg,PlgClosure<Pt,T> cls,Callable<T> concl, Object ... es){
     //System.err.println("Executing now::"+plgCall);
@@ -245,7 +246,7 @@ public class Resources {
     try{
       if(wait!=-1){//timeout
         try{exe.get(wait, TimeUnit.MILLISECONDS);}
-        catch(TimeoutException e){}//loop again  
+        catch(TimeoutException e){}//loop again
         }
       else {exe.get();}
       }
@@ -256,7 +257,7 @@ public class Resources {
     catch (ExecutionException ee){
       if(ee.getCause() instanceof RuntimeException){
         return;
-        //DO Nothing, just wait//throw (RuntimeException)ee.getCause(); 
+        //DO Nothing, just wait//throw (RuntimeException)ee.getCause();
         }
       throw new Error(ee);
       }
@@ -272,13 +273,13 @@ public class Resources {
       }
     catch (ExecutionException ee){
       if(ee.getCause() instanceof RuntimeException){
-        throw (RuntimeException)ee.getCause(); 
+        throw (RuntimeException)ee.getCause();
         }
       throw new Error(ee);
       }
     catch (java.lang.Exception exc){
       if(exc instanceof RuntimeException){
-        throw (RuntimeException)exc; 
+        throw (RuntimeException)exc;
         }
       throw new Error(exc);
       }
@@ -288,9 +289,9 @@ public class Resources {
 
 
 
-    
-    
-    
+
+
+
 
 
 

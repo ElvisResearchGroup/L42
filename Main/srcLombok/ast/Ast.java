@@ -206,7 +206,7 @@ public interface Ast {
       }
     }
     return new Path(rowData);
-  }}
+  }
   public static boolean isValidPathStart(char c){
     if(c=='%'){return true;}
     if(c=='$'){return true;}
@@ -224,6 +224,7 @@ public interface Ast {
               Character.isDigit(c)
               ;
     }
+  }
   @Value @Wither public static class Doc{
     String s;
     List<Path>paths;
@@ -239,10 +240,10 @@ public interface Ast {
         char ci=s.charAt(i);
         if(ci=='%'){sb.append('%');sb.append('%');continue;}
         if(ci!='@'){sb.append(ci);continue;}
-        else{
+        else{//ci=='@'
           char next='\n';
           if(i+1<s.length()){next=s.charAt(i+1);}
-          if(!Character.isUpperCase(next)){sb.append(ci);continue;}
+          if(!Path.isValidPathStart(next)){sb.append(ci);continue;}
           sb.append("%s");i=readPath(s,i+1,paths);
           }
         }
@@ -268,8 +269,7 @@ public interface Ast {
       StringBuilder sb=new StringBuilder();
       for(int i=start;i<s.length();i++){
         char ci=s.charAt(i);
-        //missing % _ and $
-        if(ci==':' ||Character.isAlphabetic(ci) || Character.isDigit(ci)){sb.append(ci);}
+        if(ci==':' ||Path.isValidPathChar(ci)){sb.append(ci);}
         else{
           paths.add(Path.parse(sb.toString()));
           return start+i;

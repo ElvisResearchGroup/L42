@@ -111,16 +111,16 @@ public class PluginTest {
       +"DifferentReturnType:{'@stringU\n'true\n}"
       +"DifferentThisMdf:{'@stringU\n'false\n}"
       +"IncompatibleException:{'@stringU\n'false\n}}",
-      true      
-      
+      true
+
     //test the following:
     //sum of Box with Box =Box
     //sum of interface with interface =interface
     //sum of Box with interface=interface
-    //sum of Box with virgin interface=virgin interface
-    //sum of Class with virgin interface=class
+    //sum of Box with free interface=free interface
+    //sum of Class with free interface=class
     //sum of Box with class=class
-    //sum of class with non virgin interface is error
+    //sum of class with non free interface is error
   }});}
   @Test  public void test() {
     TestHelper.configureForTest();

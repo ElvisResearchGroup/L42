@@ -299,6 +299,9 @@ public class IntrospectionAdapt {
     return new CloneVisitorWithProgram(_p){
       List<PathPath> map=removePathInsideSubPath(_map);
       public ExpCore visit(Path s) {
+        //TODO: NOT GOOD BUGFIX HERE, but whole class should eventually die.
+        //sometimes Outer0 get renamed. That is wrong, and probably more stuff than needed is still renamed :(
+        if(s.equals(Path.outer(0))){return s;}
         Path p0n=Norm.of(this.p,s);
         for(PathPath pp:map){
           Path p1n=Norm.of(this.p,pp.getPath1());
@@ -386,17 +389,19 @@ static Path add1Outer(Path p) {
     if(p.isCore()){return null;}
     return p;
   }
-  private static boolean checkC(String s) {
+  public static boolean checkC(String s) {
     if(s.isEmpty()){return false;}
     for(char c:s.toCharArray()){
       if(c=='%'){continue;}
+      if(c=='$'){continue;}
       if(c=='_'){continue;}
       if(c>='A' && c<='Z'){continue;}
       if(c>='a' && c<='z'){continue;}
       if(c>='0' && c<='9'){continue;}
+      return false;
       }
     char c=s.charAt(0);
-    return c=='%' || (c>='A' && c<='Z');
+    return c=='%' ||c=='$' || (c>='A' && c<='Z');
   }
 
 
@@ -409,6 +414,7 @@ static Path add1Outer(Path p) {
     return outer;
   }
   private static ExpCore buildMethodNameAdapterInner(MethodSelector s) {
+    assert s!=null;
     List<String> xs1=new ArrayList<>();
     List<ExpCore> es1=new ArrayList<>();
     List<Doc> tsDocs=new ArrayList<>();

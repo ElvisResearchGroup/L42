@@ -323,7 +323,7 @@ public class TestParseAndDesugar {
 +"    Bit0:'@private\n"
 +"    {\n"
 +"    type method \n"
-+"    Outer1::Bit0 #apply() }}\n"
++"    Outer0 #apply() }}\n"//+"    Outer1::Bit0 #apply() }}\n"//Ok, there was a time this looked ok to me... :(
 +"    method \n"
 +"    Void seal() void}\n"
 },{
@@ -364,7 +364,7 @@ public class TestParseAndDesugar {
 +" type method '@private\n"
 +" Void foo0() void"
 +" C:{"
-+" method" 
++" method"
 +" Void foo() void}}"
 
 }});}

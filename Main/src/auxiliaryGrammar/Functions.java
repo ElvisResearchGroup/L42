@@ -47,22 +47,22 @@ public static Path classOf(Program p,ExpCore ctxVal,ExpCore val){
       .add(X.class,t->{
         ExpCore e=Dec.of(ctxVal, t.getInner(), false);
         if(e instanceof Block){return classOf(p,ctxVal,e);}
-        assert e instanceof MCall:ToFormattedText.of(ctxVal)+" ["+ToFormattedText.of(val)+"]"; 
+        assert e instanceof MCall:ToFormattedText.of(ctxVal)+" ["+ToFormattedText.of(val)+"]";
         return (Path)((MCall)e).getReceiver();
         })
       .add(MCall.class,t->{
         assert t.getReceiver() instanceof Path;
         return (Path)t.getReceiver();
-        })  
+        })
       .end();
   return res;
-  
+
 }
 public static boolean isSubtype(Program p,NormType t1,NormType t2){
   return isSubtype(t1.getMdf(),t2.getMdf())
       && isSubtype(p,t1.getPath(),t2.getPath())
       && isSubtype(t1.getPh(),t2.getPh());
-  
+
 }
 private static boolean isSubtype(Ph ph, Ph ph2) {
   if(ph==ph2){return true;}
@@ -77,8 +77,8 @@ public static boolean isSubtype(Program p, Path path1, Path path2) {
   Path path2N=Norm.of(p,path2);
   Path path1N=Norm.of(p,path1);
   if(path1N.equals(path2N)){return true;}
-  
-  ClassB cp1=p.extract(path1);  
+
+  ClassB cp1=p.extract(path1);
   for(Path pathi:cp1.getSupertypes()){
     Path pathiFrom=From.fromP(pathi, path1);
     Path pathiN=Norm.of(p,pathiFrom);//or not norm?
@@ -93,7 +93,7 @@ public static boolean isSubtype(Mdf mdf1, Mdf mdf2) {
   if(mdf1==Mdf.Capsule){return true;}
   //mdf1 not type, capsule
   //mdf2 not type, readable
-  if(mdf1==Mdf.Mutable && mdf2==Mdf.Lent){return true;}  
+  if(mdf1==Mdf.Mutable && mdf2==Mdf.Lent){return true;}
   return false;
 }
 public static NormType sharedAndLentToReadable(NormType that){
@@ -165,7 +165,7 @@ public static Path freshPathName(Path pathR, Set<String> usedNames) {
 
 public static String freshName(Path pathR, Set<String> usedNames) {
   String p=pathR.getRowData().get(pathR.getRowData().size()-1);
-  p=p.substring(0,1).toLowerCase() +p.substring(1);  
+  p=p.substring(0,1).toLowerCase() +p.substring(1);
   return freshName(p,usedNames);
 }
 public static final HashSet<String>keywords=new HashSet<String>();
@@ -252,25 +252,25 @@ public static HashMap<String, NormType> complete(HashMap<String, NormType> varEn
   for(String s: varEnv.keySet()){
     if(varEnv.get(s).getPh()==Ph.None){result.put(s,varEnv.get(s));}
     }
-  return result;  
+  return result;
 }
 public static HashMap<String, NormType> nonComplete(HashMap<String, NormType> varEnv) {
   HashMap<String, NormType> result= new HashMap<String, NormType>();
   for(String s: varEnv.keySet()){
     if(varEnv.get(s).getPh()!=Ph.None){result.put(s,varEnv.get(s));}
     }
-  return result;  
+  return result;
 }
 
 public static HashMap<String, NormType> toPh(HashMap<String, NormType> varEnv) {
   HashMap<String, NormType> result= new HashMap<String, NormType>();
   for(String s: varEnv.keySet()){result.put(s,toPh(varEnv.get(s)));}
-  return result;  
+  return result;
 }
 public static HashMap<String, NormType> toPartial(HashMap<String, NormType> varEnv) {
   HashMap<String, NormType> result= new HashMap<String, NormType>();
   for(String s: varEnv.keySet()){result.put(s,toPartial(varEnv.get(s)));}
-  return result;  
+  return result;
 }
 public static NormType sharedToLent(NormType nt) {
   if(nt.getMdf()!=Mdf.Mutable){return nt;}
@@ -314,7 +314,7 @@ public static boolean isAbstract(Program p, ClassB cb) {
     if(isAbstract(p.addAtTop(cb),(ClassB)nc.getInner())){return true;}
   }
   return false;
-} 
+}
 public static boolean coherent(Program p, ClassB cb) {
   Program p1=p.addAtTop(cb);
   if( cb.isInterface()){ return true;}
@@ -326,17 +326,46 @@ public static boolean coherent(Program p, ClassB cb) {
   MethodWithType constr=typeMethods.get(0);
   mwts.remove(constr);
   constr=Norm.of(p1, constr,true);
+  NormType retType=(NormType)constr.getMt().getReturnType();
+  if(!retType.getPath().equals(Path.outer(0))){
+    return false;
+    }
+  if(retType.getPh()!=Ph.None){
+    return false;
+  }
+  boolean mustBeLentRead=false;
+  boolean canBeImmCaps=true;
   for(Type t:constr.getMt().getTs()){
-    if(((NormType)t).getPh()!=Ast.Ph.Ph){return false;}
+    Mdf tMdf=((NormType)t).getMdf();
+    if(tMdf!=Mdf.Capsule && tMdf!=Mdf.Immutable){canBeImmCaps=false;}
+    if(tMdf==Mdf.Lent ||tMdf==Mdf.Readable){mustBeLentRead=true;}
+    if(((NormType)t).getPh()!=Ast.Ph.Ph){
+      return false;
+      }
+  }
+  Mdf retMdf=retType.getMdf();
+  if(mustBeLentRead){
+    if(retMdf!=Mdf.Lent && retMdf!=Mdf.Readable){
+      return false;
+      }
+  }
+  if(!canBeImmCaps){
+    if(retMdf==Mdf.Immutable || retMdf==Mdf.Capsule){
+      return false;
+      }
   }
   //now we have a fully normalized constr with all ph types.
-  for(MethodWithType mwt:mwts){
+  for(MethodWithType mwt:mwts){//for all the other h
     String name=mwt.getMs().getName();
     if(name.startsWith("#")){name=name.substring(1);}
     //select satisfying parameter
     NormType nt=selectCorrespondingFieldType(constr,  name);
-    if(nt==null){return false;}
-    if(!coherent(p1, nt.getMdf(),nt.getPath(),mwt)){return false;}
+    if(nt==null){
+      return false;
+      }
+    if(!coherent(p1, nt.getMdf(),nt.getPath(),mwt)){
+      return false;
+      }
     }
   return true;
   }
@@ -354,7 +383,7 @@ public static boolean coherent(Program p, Mdf mdf, Path path, MethodWithType mwt
   //group1
   if(mdf==Mdf.Type || mdf==Mdf.Immutable || mdf==Mdf.Readable){
   //case a
-    if(mwt.getMt().getTs().isEmpty()){ return okSubtypeGet(p, mdf, path, mwt); }    
+    if(mwt.getMt().getTs().isEmpty()){ return okSubtypeGet(p, mdf, path, mwt); }
     //case b
     if(mwt.getMt().getMdf()==Mdf.Mutable || mwt.getMt().getMdf()==Mdf.Lent){
       return okSubtypeSet(p, mdf, path, mwt);
@@ -418,8 +447,8 @@ public static Set<MethodSelector> originalMethOf(Program p, List<Path> paths,Lis
   Set<MethodSelector> result=new HashSet<>();
   for(Member m:ms0){
     m.match(
-        nc->false, 
-        mi->{throw Assertions.codeNotReachable();}, 
+        nc->false,
+        mi->{throw Assertions.codeNotReachable();},
         mt->result.add(mt.getMs()));
     }
   retainOnlyOriginalMethOf(p,paths,result);
@@ -429,8 +458,8 @@ private static void retainOnlyOriginalMethOf(Program p, List<Path> paths,Set<Met
    for(Path pi:paths){
     for(Member mi:p.extract(pi).getMs()){
       mi.match(
-          nc->false, 
-          mim->{throw Assertions.codeNotReachable();}, 
+          nc->false,
+          mim->{throw Assertions.codeNotReachable();},
           mt->ms0.remove(mt.getMs()));
       }
   }

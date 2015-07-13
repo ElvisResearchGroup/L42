@@ -72,7 +72,7 @@ public static ExpCore stepStar(Executor executer,ExpCore e){
     ClassB ct= Configuration.typeSystem.typeExtraction(emptyP,(ClassB)e);
     Program p1=emptyP.addAtTop(ct);
     Configuration.typeSystem.checkCt( emptyP, ct);
-    if(!p1.checkComplete()){
+    if(!p1.checkComplete()){//also check is star
       p1.checkComplete();//to let debugger enter
       throw new ErrorMessage.MalformedFinalResult(ct,
         "Some class can not be completely typed as is still incomplete or refers to incomplete classes"
@@ -116,14 +116,14 @@ private static ExpCore loopR(ExpCore ctxVal, LoopR r) {
   HashSet<String> forbidden = new HashSet<String>(usedSomewhere);
   forbidden.addAll(usedAround);
   String x=Functions.freshName(Path.Void(), forbidden);
-  ExpCore newInner=r.getThat().getInner();   
+  ExpCore newInner=r.getThat().getInner();
   HashMap<String,String> renames=new HashMap<String,String>();
   for(String s:usedSomewhere){
     String s2=Functions.freshName(s,forbidden);
     renames.put(s, s2);
   }
   newInner=RenameVars.of(newInner,renames);
-  assert checkSuccessRename(usedSomewhere, newInner);  
+  assert checkSuccessRename(usedSomewhere, newInner);
   Block.Dec xDec=new Block.Dec(new NormType(Mdf.Immutable,Path.Void(),Ph.None),x,newInner);
   Block result=new Block(null,Doc.empty(),xDec,r.getThat());
   return ReplaceCtx.of(ctxVal, result);
@@ -249,7 +249,7 @@ private ExpCore fieldA(ExpCore ctxVal, MCall mc, MethodWithType mwt,HashSet<Stri
     //this may throw errors on purpose
     //fieldABlock
     Set<String> around = new HashSet<String>(HB.of(ctxVal, false));
-    return ReplaceCtx.of(ctxVal,fieldABlock(around,mc, mwt, usedNames, (Block)decRec)); 
+    return ReplaceCtx.of(ctxVal,fieldABlock(around,mc, mwt, usedNames, (Block)decRec));
     }
   //fieldAObj
   log("---meth fieldA obj--");
@@ -276,7 +276,7 @@ private Block fieldABlock(Set<String> around,MCall mc, MethodWithType mwt,HashSe
     renames.put(s, s2);
   }
   decRec=(Block)RenameVars.of(decRec,renames);
-  assert checkSuccessRename(around, decRec);  
+  assert checkSuccessRename(around, decRec);
   Path path1=((NormType)mwt.getMt().getReturnType()).getPath();
   Type tz=new NormType(Mdf.Immutable,path1,Ast.Ph.None);
   String z=Functions.freshName(path1, forbidden);
@@ -344,7 +344,7 @@ private ExpCore normalMeth(Path pathR,MethodWithType mwt, ExpCore ctxVal, MCall 
       new NormType(mwt.getMt().getMdf(),pathR,Ast.Ph.None),
       renames.get("this"),
       mc.getReceiver()));
-  
+
   for(int i=0;i<mc.getEs().size();i++){
     decs.add(new Block.Dec(
       mwt.getMt().getTs().get(i),
@@ -367,7 +367,7 @@ private static boolean checkSuccessRename(Set<String> around, ExpCore e) {
 }
 
 private static ExpCore garbage(ExpCore ctxVal,Redex.Garbage r){
-  return ReplaceCtx.of(ctxVal,r.getThatLessGarbage());  
+  return ReplaceCtx.of(ctxVal,r.getThatLessGarbage());
 }
 private static ExpCore captureOrNot(Program p,ExpCore ctxVal,Redex.CaptureOrNot r){
   Block e1=r.getThat();
@@ -389,11 +389,11 @@ private static ExpCore captureOrNot(Program p,ExpCore ctxVal,Redex.CaptureOrNot 
     decs.add(new Block.Dec(
       onT,catch_.getX(),s.getInner()));
     Block e2=new Block(e1.getSource(),e1.getDoc(),decs,catch_.getOns().get(0).getInner());
-    return ReplaceCtx.of(ctxVal,e2);  
+    return ReplaceCtx.of(ctxVal,e2);
     }
   //case notCapture
   decs.add(e1.getDecs().get(i).withE(s));
-  return ReplaceCtx.of(ctxVal,rOnMiss(decs,e1));  
+  return ReplaceCtx.of(ctxVal,rOnMiss(decs,e1));
 }
 private static ExpCore rOnMiss(ArrayList<Block.Dec> ds,Block b) {
   Block result=removeOneOn(b);
@@ -406,8 +406,8 @@ private static Block removeOneOn(Block e1){
     ArrayList<On> oneOnLess = new ArrayList<On>(k.getOns().subList(1, k.getOns().size()));
     k2=Optional.of(k.withOns(oneOnLess));
     }
-  return e1.with_catch(k2);  
-  
+  return e1.with_catch(k2);
+
 }
 
 private ExpCore blockElim(ExpCore ctxVal,Redex.BlockElim r){
@@ -422,7 +422,7 @@ private ExpCore blockElim(ExpCore ctxVal,Redex.BlockElim r){
   decs.addAll(ii, eInner.getDecs());
   //Note: we lose the docs on eInner, is it ok?
   Block result=e1.withDecs(decs);
-  return ReplaceCtx.of(ctxVal,result);  
+  return ReplaceCtx.of(ctxVal,result);
 }
 public static ExpCore subst(ExpCore ctxVal,Redex.Subst r){
   Block e1=r.getThat();
@@ -433,7 +433,7 @@ public static ExpCore subst(ExpCore ctxVal,Redex.Subst r){
   decs.remove(i);
   Block e2=new Block(e1.getSource(),e1.getDoc(),decs,e1.getInner(),e1.get_catch());
   ExpCore result=ReplaceX.of(e2,val,x);
-  return ReplaceCtx.of(ctxVal,result);  
+  return ReplaceCtx.of(ctxVal,result);
 }
 private static ExpCore ph(Program p,ExpCore ctxVal,Redex.Ph r){
   Block b=r.getThat();
@@ -443,6 +443,6 @@ private static ExpCore ph(Program p,ExpCore ctxVal,Redex.Ph r){
   Path path=Functions.classOf(p, ctxVal, deci.getE());
   ti=ti.withPh(Ph.None).withPath(path);
   decs.set(r.getPhIndex(),deci.withT(ti));
-  return ReplaceCtx.of(ctxVal,b.withDecs(decs));  
+  return ReplaceCtx.of(ctxVal,b.withDecs(decs));
 }
 }
