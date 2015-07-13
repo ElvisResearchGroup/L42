@@ -40,8 +40,9 @@ public class Redirect {
     //path exists by construction.
     ClassB l0Dest=(ClassB)FromInClass.of(p.extract(path),path);//p(Path)[from Path]=L0'={H' M0' ... Mn', _}//reordering of Ms allowed here
     //(a)Cs is public in L, and Cs have no private state;
-    if(csComm[0].isPrivate()){throw new AssertionError("GETAMESSAGE");}//could disappear with pre-normalization
+    boolean isPrivate=csComm[0].isPrivate();
     boolean privateState=ExtractInfo.hasPrivateState(l0);
+    boolean fullyAbstract=//boh, e se computo anche is box e ti do il class kind? e aggiungo essere fully abstract as a kind?
     if(privateState){throw new AssertionError("GETAMESSAGE");}//src not fully abstract
     //all its methods have no implementation, that is:
     //for all Mi,i=0..n: Mi is of form h or Mi is of form C:_
@@ -57,19 +58,44 @@ public class Redirect {
     if(!headerOk || l0.isInterface()){
       if(ExtractInfo.isVirginInterface(l, cs)){headerOk=true;}
     }
-    if(!headerOk){throw new AssertionError("GETAMESSAGE");}//classClash?
-    //(c) S;p|-L[M0=~M0' Cs->Path]:S0 ... S;p|-L[Mn=~Mn' Cs->Path]:Sn
-    //(d) S'=Cs->Path,S0..Sn
+    //(c) S,Cs->Path;p|-L[Paths=~Paths']:S'
+    //(d) S;p|-L[M0=~M0' Cs->Path]:S0 ... S;p|-L[Mn=~Mn' Cs->Path]:Sn
+    //(e) S'=Cs->Path,S0..Sn
     List<PathPath>result=new ArrayList<PathPath>();
     result.add(currentPP);
+    Set<Path>unexpectedI=redirectOkImpl(s,currentPP,p,l,l0.getSupertypes(),l0Dest.getSupertypes(),result);
+    List<Member> unexpected=new ArrayList<>();
     for(Member mi:l0.getMs()){
-      redirectOk(s,p,l,mi,Program.getIfInDom(l0Dest.getMs(),mi),currentPP,result);
+      Optional<Member> miPrime = Program.getIfInDom(l0Dest.getMs(),mi);
+      if(miPrime.isPresent()){
+        redirectOk(s,p,l,mi,miPrime.get(),currentPP,result);
+      }
+      else{unexpected.add(mi);}
     }
+    List<Path>unexpectedInterfaces=new ArrayList<>(unexpectedI);
+    Collections.sort(unexpectedInterfaces,(pa,pb)->pa.toString().compareTo(pb.toString()));
+    throw ExtractInfo.errorSourceUnfit(currentPP.getPath1().getCBar(), unexpected, headerOk, unexpectedIntefaces, isPrivate, isAbstract);
     return result;
   }
-  private static void redirectOk(List<PathPath> s, Program p, ClassB l, Member mi, Optional<Member> _miPrime, PathPath currentPP, List<PathPath> result) {
-    if(!_miPrime.isPresent()){throw new AssertionError("GETAMESSAGE");}//incompatibleSrcDest, method not found
-    Member miPrime=_miPrime.get();
+  private static Set<Path> redirectOkImpl(List<PathPath> s, PathPath currentPP, Program p, ClassB l, List<Path> paths, List<Path> pathsPrime, List<PathPath> result) {
+    //(paths ok)//and I can not use it for exceptions since opposite subset relation
+    //S;p|-L[Paths=~Paths']:S'
+    //Path subsetof Path'
+    //or Paths=Path, Paths'=Path' and S;p|-L[Path=~Path']:S'  
+    List<PathPath> sPrime=new ArrayList<>(s);
+    sPrime.add(currentPP);
+    if(paths.isEmpty()){return Collections.emptySet();}
+    Set<Path> ps=new HashSet<>(paths);
+    Set<Path> psPrime=new HashSet<>(pathsPrime);
+    ps.removeAll(pathsPrime);
+    psPrime.removeAll(paths);
+    if(ps.isEmpty()){return Collections.emptySet();}
+    if(ps.size()!=1){return ps;}
+    if(psPrime.size()!=1){return ps;}
+    redirectOkPath(sPrime, p, l,ps.iterator().next(),psPrime.iterator().next(), result);
+    return Collections.emptySet();
+    }
+  private static void redirectOk(List<PathPath> s, Program p, ClassB l, Member mi, Member miPrime, PathPath currentPP, List<PathPath> result) {
     //if the member is not of the same type is an error
     if(!mi.getClass().equals(miPrime.getClass())){throw new AssertionError("GETAMESSAGE");}//incompatibleSrcDest or MethodClash?
     mi.match(
@@ -80,49 +106,49 @@ public class Redirect {
   private static Void redirectOkMt(List<PathPath> s, Program p, ClassB l, MethodWithType mt, MethodWithType mtPrime, PathPath currentPP, List<PathPath> result) {
     List<PathPath> sPrime=new ArrayList<>(s);
     sPrime.add(currentPP);
-    redirectOkType(sPrime,p,l,mt.getMt().getReturnType(),mtPrime.getMt().getReturnType(),result);
+    boolean isMdfOk=mt.getMt().getMdf()==mtPrime.getMt().getMdf();
+    boolean isRetTypeOk=redirectOkType(sPrime,p,l,mt.getMt().getReturnType(),mtPrime.getMt().getReturnType(),result);
+    List<Integer> wrongTypes=new ArrayList<>();
     for(int i=0;i<mt.getMt().getTs().size();i+=1){
-      redirectOkType(sPrime,p,l,mt.getMt().getTs().get(i),mtPrime.getMt().getTs().get(i),result);
+      boolean isOkType=redirectOkType(sPrime,p,l,mt.getMt().getTs().get(i),mtPrime.getMt().getTs().get(i),result);
+      if(!isOkType){wrongTypes.add(i);}
     }
-    redirectOkExceptions(sPrime,p,l,mt.getMt().getExceptions(),mtPrime.getMt().getExceptions(),result);
+    Set<Path> badExc=redirectOkExceptions(sPrime,p,l,mt.getMt().getExceptions(),mtPrime.getMt().getExceptions(),result);
+    if(!badExc.isEmpty() || !wrongTypes.isEmpty()|| !isRetTypeOk ||!isMdfOk){
+      throw ExtractInfo.errorMehtodClash(currentPP.getPath1().getCBar(),mt,mtPrime, badExc.isEmpty(), wrongTypes, isRetTypeOk, isMdfOk);
+    }
     return null;
   }
-  private static void redirectOkExceptions(List<PathPath> s, Program p, ClassB l, List<Path> exceptions, List<Path> exceptionsPrime, List<PathPath> result) {
-    if(exceptionsPrime.isEmpty()){return;}
+  private static Set<Path> redirectOkExceptions(List<PathPath> s, Program p, ClassB l, List<Path> exceptions, List<Path> exceptionsPrime, List<PathPath> result) {
+    if(exceptionsPrime.isEmpty()){return Collections.emptySet();}
     Set<Path> exc=new HashSet<>(exceptions);
     Set<Path> excPrime=new HashSet<>(exceptionsPrime);
-    if(exc.containsAll(excPrime)){return;}
-    if(exceptions.size()!=1){
-      int numInternal=0; for(Path pi:exceptions){if (pi.outerNumber()==0){numInternal+=1;}}
-      if(numInternal==0){//if all external, then is
-        throw new AssertionError("GETAMESSAGE");//incompatible srcDest: more exceptions are thrown then expected
-        }
-      if(numInternal==1){//and there are externals, 
-        throw new AssertionError("GETAMESSAGE");//incompatible srcDest: internal/external exceptions can not cooperate in satisfy external requirements
-      }//else, more then 1 internal
-      throw new AssertionError("GETAMESSAGE");//incompatible srcDest:  only one internal exception allowed to satisfy external requirements
-      }
-    if(exceptionsPrime.size()!=1){throw new AssertionError("GETAMESSAGE");}//incompatible srcDest: more exceptions are thrown then expected
-    redirectOkPath(s, p, l, exceptions.get(0),exceptionsPrime.get(0), result);
-    
+    excPrime.removeAll(exceptions);
+    if(excPrime.isEmpty()){return  Collections.emptySet();}
+    exc.removeAll(exceptionsPrime);
+    if(exc.size()!=1){return exc;}
+    if(excPrime.size()!=1){return exc;}//ok not excPrime
+    redirectOkPath(s, p, l, exc.iterator().next(),exceptionsPrime.iterator().next(), result);
+    return Collections.emptySet();   
   }
-  private static void redirectOkType(List<PathPath> s, Program p, ClassB l, Type t, Type tPrime, List<PathPath> result) {
-    if(!t.getClass().equals(tPrime.getClass())){throw new AssertionError("GETAMESSAGE");}//incompatible internal/external types t1 t2
+  private static boolean redirectOkType(List<PathPath> s, Program p, ClassB l, Type t, Type tPrime, List<PathPath> result) {
+    if(!t.getClass().equals(tPrime.getClass())){return false;}//incompatible internal/external types t1 t2
     t.match(
       normType->{
         NormType ntP=(NormType)tPrime;
-        if(!normType.getMdf().equals(ntP.getMdf())){throw new AssertionError("GETAMESSAGE");}//incompatible internal/external types t1 t2
-        if(!normType.getPh().equals(ntP.getPh())){throw new AssertionError("GETAMESSAGE");}//incompatible internal/external types t1 t2
+        if(!normType.getMdf().equals(ntP.getMdf())){return false;}//incompatible internal/external types t1 t2
+        if(!normType.getPh().equals(ntP.getPh())){return false;}//incompatible internal/external types t1 t2
         redirectOkPath(s,p,l,normType.getPath(),ntP.getPath(),result);
         return null;
       },
       hType->{
         HistoricType htP=(HistoricType)tPrime;
-        if(!hType.getSelectors().equals(htP.getSelectors())){throw new AssertionError("GETAMESSAGE");}//incompatible internal/external types t1 t2
-        if(hType.isForcePlaceholder()!=htP.isForcePlaceholder()){throw new AssertionError("GETAMESSAGE");}//incompatible internal/external types t1 t2
+        if(!hType.getSelectors().equals(htP.getSelectors())){return false;}//incompatible internal/external types t1 t2
+        if(hType.isForcePlaceholder()!=htP.isForcePlaceholder()){return false;}//incompatible internal/external types t1 t2
         redirectOkPath(s,p,l,hType.getPath(),htP.getPath(),result);
         return null;
       });
+    return true;
   }
   private static void redirectOkPath(List<PathPath> s, Program p, ClassB l,Path cs, Path path, List<PathPath> result) {
     //S;p|-L[Outern::Cs =~Outern::Cs]:emptyset  holds with n>0

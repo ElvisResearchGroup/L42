@@ -122,12 +122,32 @@ public class ExtractInfo {
    boolean isClassInterfaceSumOk=aBox||bBox ||aVirginI ||bVirginI;
    isAllOk=confl.isEmpty() && !twoPrivateState && isClassInterfaceSumOk;
    if (isAllOk){return aBox  || bBox;}
-   throw Resources.Error.multiPartStringError("ClassClash",
-     "Path",""+Path.outer(0,current),
-     "ConflictingImplementedInterfaces",""+confl,
-     "LeftKind",classKind(aBox,privateA,currentA.isInterface(),aVirginI),
-     "RightKind",classKind(bBox,privateB,currentB.isInterface(),bVirginI)
-      );
+   throw errorClassClash(current, currentA, currentB, confl, privateA, privateB, aBox, bBox, aVirginI, bVirginI);
+  }
+  private static Error errorClassClash(List<String> current, ClassB currentA, ClassB currentB, List<Path> confl, boolean privateA, boolean privateB, boolean aBox, boolean bBox, boolean aVirginI, boolean bVirginI) {
+    return Resources.Error.multiPartStringError("ClassClash",
+       "Path",""+Path.outer(0,current),
+       "ConflictingImplementedInterfaces",""+confl,
+       "LeftKind",classKind(aBox,privateA,currentA.isInterface(),aVirginI),
+       "RightKind",classKind(bBox,privateB,currentB.isInterface(),bVirginI)
+        );
+  }
+  public static Error errorSourceUnfit(List<String> current,List<Member>unexpected,boolean headerOk,List<Path>unexpectedIntefaces,boolean isPrivate,boolean isAbstract){
+      return Resources.Error.multiPartStringError("SourceUnfit",
+          "Path",""+Path.outer(0,current),
+          "UnexpectedMethods",""+showMembers(unexpected),
+          "IncompatibleHeaders",""+!headerOk,
+          "UnexpectedImplementednterfaces",""+unexpectedIntefaces,
+          "PrivatePath",""+isPrivate,
+          "FullyAbstractPath",""+isAbstract
+           );
+  }
+  private static List<String> showMembers(List<Member> ms){
+    List<String>result=new ArrayList<>();
+    for(Member m:ms){
+      result.add(""+m.match(nc->nc.getName(), mi->mi.getS(), mt->mt.getMs()));
+    }
+    return result;
   }
    public static boolean hasPrivateState(ClassB cb) {
      for(Member m:cb.getMs()){
