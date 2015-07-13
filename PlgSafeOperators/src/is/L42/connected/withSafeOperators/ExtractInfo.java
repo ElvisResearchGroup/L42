@@ -1,5 +1,6 @@
 package is.L42.connected.withSafeOperators;
 
+import ast.Ast;
 import ast.Ast.Mdf;
 import ast.Ast.MethodSelector;
 import ast.Ast.MethodType;
@@ -21,6 +22,8 @@ import java.util.Optional;
 import java.util.Set;
 
 import ast.Ast.Path;
+import ast.Ast.Type;
+import ast.Ast.NormType;
 import ast.ErrorMessage.TwoDifferentImplementedInterfacesDeclareMethod;
 import ast.ExpCore.*;
 import coreVisitors.CloneWithPath;
@@ -97,23 +100,26 @@ public class ExtractInfo {
       mt->(mt.getInner().isPresent())?"ImplementedMethod":"AbstractMethod");
   }
 
-  private static enum ClassKinds{Box,Interface,FreeInterface,CloseClass,OpenClass,Template,PureRecord,Module,TemplateModule;}
-  public static String classKind(ClassB top, List<String> current,ClassB cb,Boolean isBox,Boolean isPrivateState,
-      Boolean isFreeI){//9 options
+  public static enum ClassKind{Box,Interface,FreeInterface,CloseClass,OpenClass,Template/*,PureRecord*/,Module,TemplateModule;}
+  public static ClassKind classKind(ClassB top, List<String> current,ClassB cb,Boolean isBox,Boolean isFreeI,Boolean isPrivateState,Boolean isNoImplementation){//9 options
     if(cb.isInterface()){
       if(isFreeI==null){isFreeI=ExtractInfo.isFreeInterface(top,current);}
-      if(isFreeI){return ClassKinds.FreeInterface.name();}
-      return ClassKinds.Interface.name();
+      if(isFreeI){return ClassKind.FreeInterface;}
+      return ClassKind.Interface;
     }//not interface, 7 options left
-    if(isBox!=null &&isBox){return ClassKinds.Box.name();}//fast exit
-
+    //if(isBox!=null &&isBox){return ClassKinds.Box.name();}//fast exit
     if(isPrivateState==null){isPrivateState=hasPrivateState(cb);}
-    if(isPrivateState){return ClassKinds.CloseClass.name();}//6 options left
-
-    if(isBox){return "BoxClass";}
-    if(isFreeI){return "FreeInterface";}
-    if(isInterface){return "Interface";}
-    return "Class";
+    if(isPrivateState){return ClassKind.CloseClass;}//6 options left
+    if(isNoImplementation==null){isNoImplementation=isNoImplementation(cb);}
+    if(isBox==null){isBox=isBox(top,current);}
+    if(isBox){return ClassKind.Box;}//5 options left
+    if(isModule(cb)){
+      if(isNoImplementation){return ClassKind.TemplateModule;}
+      return ClassKind.Module;
+      }//3 options left template, openclass and pure record left
+    if(!isNoImplementation){return ClassKind.OpenClass;}
+    //if noImplementation and consistent is pure record (or box, sob)//pure reocord merged with template now :(
+    return ClassKind.Template;
   }
   public static String oldClassKind(boolean isBox,boolean isPrivateState,boolean isInterface,boolean isFreeI){
     if(isBox){return "BoxClass";}
@@ -135,31 +141,33 @@ public class ExtractInfo {
    boolean twoPrivateState=privateA &&privateB;
    boolean isAllOk=confl.isEmpty() && !twoPrivateState && currentA.isInterface()==currentB.isInterface();
    if (isAllOk){return currentA.isInterface();}//code under is slow
-   boolean aBox=ExtractInfo.isBox(topA,current);//!privateA && would make it faster, but harder to test
-   boolean bBox=ExtractInfo.isBox(topB,current);//same for the rest
-   boolean aFreeI=ExtractInfo.isFreeInterface(topA,current);
-   boolean bFreeI=ExtractInfo.isFreeInterface(topB,current);
-   boolean isClassInterfaceSumOk=aBox||bBox ||aFreeI ||bFreeI;
+   boolean boxA=ExtractInfo.isBox(topA,current);//!privateA && would make it faster, but harder to test
+   boolean boxB=ExtractInfo.isBox(topB,current);//same for the rest
+   boolean freeInterfA=ExtractInfo.isFreeInterface(topA,current);
+   boolean freeInterfB=ExtractInfo.isFreeInterface(topB,current);
+   boolean isClassInterfaceSumOk=boxA||boxB ||freeInterfA ||freeInterfB;
    isAllOk=confl.isEmpty() && !twoPrivateState && isClassInterfaceSumOk;
-   if (isAllOk){return aBox  || bBox;}
-   throw errorClassClash(current, currentA, currentB, confl, privateA, privateB, aBox, bBox, aFreeI, bFreeI);
+   if (isAllOk){return boxA  || boxB;}
+   ClassKind kindA=classKind(topA,current,currentA,boxA,freeInterfA,privateA,null);
+   ClassKind kindB=classKind(topB,current,currentB,boxB,freeInterfB,privateB,null);
+   throw errorClassClash(current, confl,kindA,kindB);
   }
-  private static Error errorClassClash(List<String> current, ClassB currentA, ClassB currentB, List<Path> confl, boolean privateA, boolean privateB, boolean aBox, boolean bBox, boolean aFreeI, boolean bFreeI) {
+  private static Error errorClassClash(List<String> current,  List<Path> confl,ClassKind kindA,ClassKind kindB) {
     return Resources.Error.multiPartStringError("ClassClash",
        "Path",""+Path.outer(0,current),
-       "ConflictingImplementedInterfaces",""+confl,
-       "LeftKind",classKind(aBox,privateA,currentA.isInterface(),aFreeI),
-       "RightKind",classKind(bBox,privateB,currentB.isInterface(),bFreeI)
+       "LeftKind",kindA.name(),
+       "RightKind",kindB.name(),
+       "ConflictingImplementedInterfaces",""+confl
         );
   }
-  public static Error errorSourceUnfit(List<String> current,List<Member>unexpected,boolean headerOk,List<Path>unexpectedIntefaces,boolean isPrivate,boolean isAbstract){
+  public static Error errorSourceUnfit(List<String> current,ClassKind kind,List<Member>unexpected,boolean headerOk,List<Path>unexpectedInterfaces,boolean isPrivate){
       return Resources.Error.multiPartStringError("SourceUnfit",
           "Path",""+Path.outer(0,current),
+          "Kind",kind.name(),
           "UnexpectedMethods",""+showMembers(unexpected),
           "IncompatibleHeaders",""+!headerOk,
-          "UnexpectedImplementednterfaces",""+unexpectedIntefaces,
-          "PrivatePath",""+isPrivate,
-          "FullyAbstractPath",""+isAbstract
+          "UnexpectedImplementednterfaces",""+unexpectedInterfaces,
+          "PrivatePath",""+isPrivate
            );
   }
   private static List<String> showMembers(List<Member> ms){
@@ -178,14 +186,28 @@ public class ExtractInfo {
      }
     return false;
    }
+   public static boolean isNoImplementation(ClassB cb){
+     for(Member m:cb.getMs()){
+       boolean isImpl=m.match(
+         nc->false,
+         mi->true,
+         mt->mt.getInner().isPresent()
+         );
+       if(isImpl){return false;}
+     }
+     return true;
+   }   
    public static boolean isModule(ClassB cb) {
      for(Member m:cb.getMs()){
        if(!(m instanceof MethodWithType)){continue;}
        MethodWithType mwt=(MethodWithType)m;
-       if(mwt.getMt().getMdf()!=Mdf.Type){continue;}
-       if(mwt.getMt().getReturnType().equals(new Norm)){return true;}
+       if(mwt.getMt().getMdf()!=Mdf.Type){return false;}
+       Type rt = mwt.getMt().getReturnType();
+       if(!(rt instanceof NormType)){continue;}
+       NormType nt=(NormType)rt;
+       if(nt.getPath().equals(Path.outer(0))){return false;}       
      }
-    return false;
+    return true;
    }
 
     public static List<Path> conflictingImplementedInterfaces(

@@ -9,6 +9,7 @@ import java.util.Set;
 
 import coreVisitors.FromInClass;
 import introspection.IntrospectionAdapt;
+import is.L42.connected.withSafeOperators.ExtractInfo.ClassKind;
 import tools.Assertions;
 import ast.ErrorMessage;
 import ast.ExpCore.*;
@@ -41,22 +42,21 @@ public class Redirect {
     ClassB l0Dest=(ClassB)FromInClass.of(p.extract(path),path);//p(Path)[from Path]=L0'={H' M0' ... Mn', _}//reordering of Ms allowed here
     //(a)Cs is public in L, and Cs have no private state;
     boolean isPrivate=csComm[0].isPrivate();
-    boolean privateState=ExtractInfo.hasPrivateState(l0);
-    if(privateState){throw new AssertionError("GETAMESSAGE");}//src not fully abstract
-    boolean fullyAbstract=//boh, e se computo anche is box e ti do il class kind? e aggiungo essere fully abstract as a kind?
+    boolean isPrivateState=ExtractInfo.hasPrivateState(l0);
     //all its methods have no implementation, that is:
     //for all Mi,i=0..n: Mi is of form h or Mi is of form C:_
-    for(Member m:l0.getMs()){
-      m.match(
-        nc->null,
-        mi->{throw new AssertionError("GETAMESSAGE");},//src not fully abstract
-        mt->{if(mt.getInner().isPresent()){throw new AssertionError("GETAMESSAGE");}return null;}//src not fully abstract
-        );
-    }
+   boolean isNoImplementation=ExtractInfo.isNoImplementation(l0);
     //(b) L[H=~H'] holds
     boolean headerOk=l0.isInterface()==l0Dest.isInterface();
-    if(!headerOk || l0.isInterface()){
-      if(ExtractInfo.isFreeInterface(l, cs)){headerOk=true;}
+    Boolean isFreeInterface=null;
+    Boolean isBox=null;
+    if(!headerOk && l0.isInterface()){
+      isFreeInterface=ExtractInfo.isFreeInterface(l, cs);
+      if(isFreeInterface){headerOk=true;}
+    }
+    if(!headerOk && !l0.isInterface()){
+      isBox=ExtractInfo.isBox(l, cs);
+      if(isBox){headerOk=true;}
     }
     //(c) S,Cs->Path;p|-L[Paths=~Paths']:S'
     //(d) S;p|-L[M0=~M0' Cs->Path]:S0 ... S;p|-L[Mn=~Mn' Cs->Path]:Sn
@@ -64,18 +64,24 @@ public class Redirect {
     List<PathPath>result=new ArrayList<PathPath>();
     result.add(currentPP);
     Set<Path>unexpectedI=redirectOkImpl(s,currentPP,p,l,l0.getSupertypes(),l0Dest.getSupertypes(),result);
-    List<Member> unexpected=new ArrayList<>();
+    List<Member> unexpectedMembers=new ArrayList<>();
     for(Member mi:l0.getMs()){
       Optional<Member> miPrime = Program.getIfInDom(l0Dest.getMs(),mi);
       if(miPrime.isPresent()){
         redirectOk(s,p,l,mi,miPrime.get(),currentPP,result);
       }
-      else{unexpected.add(mi);}
+      else{unexpectedMembers.add(mi);}
     }
+    boolean isOk=true;
+    if(!unexpectedMembers.isEmpty()){isOk=false;}
+    if(!unexpectedI.isEmpty()){isOk=false;}
+    if(!headerOk){isOk=false;}
+    if(isPrivate){isOk=false;}
+    if(isOk){return result;}
     List<Path>unexpectedInterfaces=new ArrayList<>(unexpectedI);
     Collections.sort(unexpectedInterfaces,(pa,pb)->pa.toString().compareTo(pb.toString()));
-    throw ExtractInfo.errorSourceUnfit(currentPP.getPath1().getCBar(), unexpected, headerOk, unexpectedIntefaces, isPrivate, isAbstract);
-    return result;
+    ClassKind kind = ExtractInfo.classKind(l,cs,l0, isBox, isFreeInterface, isPrivateState, isNoImplementation);
+    throw ExtractInfo.errorSourceUnfit(currentPP.getPath1().getCBar(), kind,unexpectedMembers, headerOk, unexpectedInterfaces, isPrivate);
   }
   private static Set<Path> redirectOkImpl(List<PathPath> s, PathPath currentPP, Program p, ClassB l, List<Path> paths, List<Path> pathsPrime, List<PathPath> result) {
     //(paths ok)//and I can not use it for exceptions since opposite subset relation
