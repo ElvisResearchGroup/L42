@@ -15,7 +15,7 @@ import ast.Ast.*;
 
 public interface ExpCore {
   <T> T accept(coreVisitors.Visitor<T> v);
-  
+
   @Value @EqualsAndHashCode(exclude = "source") @ToString(exclude = "source") @Wither public static class MCall implements ExpCore {
     Expression source;
     ExpCore receiver;
@@ -37,7 +37,7 @@ public interface ExpCore {
       return v.visit(this);
     }
   }
-  
+
   @Value public static class X implements ExpCore, Ast.Atom {
     String inner;
     public String toString() {
@@ -47,7 +47,7 @@ public interface ExpCore {
       return v.visit(this);
     }
   }
-  
+
   @Value @EqualsAndHashCode(exclude = "source") @ToString(exclude = "source") @Wither public static class Block implements ExpCore {
     Expression source;
     Doc doc;
@@ -99,7 +99,7 @@ public interface ExpCore {
       ExpCore inner;
     }
   }
-  
+
   @Value @Wither public static class ClassB implements ExpCore, Ast.Atom {
     public ClassB(Doc doc1, Doc doc2, boolean isInterface, List<Path> supertypes, List<Member> ms, Stage stage) {
       this.doc1 = doc1;
@@ -128,7 +128,7 @@ public interface ExpCore {
           String key = mwt.getMs().toString();
           assert !keys.contains(key);
           keys.add(key);
-          
+
           assert mwt.mt.getTDocs().size() == mwt.mt.getTs().size();
         }
         if (m instanceof NestedClass) {
@@ -136,7 +136,7 @@ public interface ExpCore {
           String key = nc.getName();
           assert !keys.contains(key);
           keys.add(key);
-          
+
           if (nc.inner instanceof WalkBy) {
             countWalkBy += 1;
           }
@@ -201,7 +201,7 @@ public interface ExpCore {
       }
     }
   }
-  
+
   @Value public static class _void implements ExpCore, Ast.Atom {
     @Override public <T> T accept(coreVisitors.Visitor<T> v) {
       return v.visit(this);
@@ -212,7 +212,7 @@ public interface ExpCore {
       return v.visit(this);
     }
   }
-  
+
   @Value @Wither public static class Using implements ExpCore {
     Path path;
     String name;
@@ -224,7 +224,7 @@ public interface ExpCore {
       return v.visit(this);
     }
   }
-  
+
   @Value @Wither public static class Signal implements ExpCore {
     SignalKind kind;
     ExpCore inner;
@@ -232,12 +232,12 @@ public interface ExpCore {
       return v.visit(this);
     }
   }
-  
+
   @Value @Wither public static class Loop implements ExpCore {
     ExpCore inner;
     @Override public <T> T accept(coreVisitors.Visitor<T> v) {
       return v.visit(this);
     }
   }
-  
+
 }

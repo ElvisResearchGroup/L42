@@ -70,9 +70,9 @@ public class Norm {
     if(!isOnlyType){eInner = Map.of(e->of(p,e),mt.getInner());}
     return new MethodWithType(mt.getDoc(),mt.getMs(),mt2,eInner);
   }
-  private static final ClassB forOnlyType=new ClassB(Doc.factory("Only the type was asked"),Doc.empty(),false,Collections.emptyList(),Collections.emptyList(),Stage.None);
+  private static final ClassB forOnlyType=new ClassB(Doc.factory("Only the type was asked\n"),Doc.empty(),false,Collections.emptyList(),Collections.emptyList(),Stage.None);
 
-  
+
   public static NormType of(Program p, Type t) {
     try{
       NormType result= t.match(nt->nt, ht->resolve(p,ht));
@@ -87,7 +87,7 @@ public class Norm {
   if(t.getSelectors().size()==1){return resolvePh(resolveOne(p,t),t.isForcePlaceholder());}
   assert t.getSelectors().size()>1;
   return resolvePh(resolveMany(p,t),t.isForcePlaceholder());
-  } 
+  }
   private static NormType resolvePh(NormType nt,boolean forcePh){
     if(!forcePh){return nt;}
     return nt.withPh(Ph.Ph);
@@ -142,7 +142,7 @@ public class Norm {
   }
   /*public static void ctorOkAndAllCanBeNormalized(Program p,ClassB ct){
     //also check that all the members can be normalized!
-    
+
     if(ct.getStage()==Stage.Less){throw new ErrorMessage.NotOkToStar(ct,null,"Is still StageLess");}
     if(!Configuration.typeExtraction.isCt(ct)){throw new ErrorMessage.NotOkToStar(ct,null,"Full type can not  be extracted yet");}
     if(!IsCompiled.of(ct)){throw new ErrorMessage.NotOkToStar(ct,null,"Not fully compiled");}
@@ -156,10 +156,10 @@ public class Norm {
     if(domCt.size()!=ct.getMs().size()){
       throw new ErrorMessage.NotWellFormed(ct.accept(new InjectionOnSugar()),null,"repetition in nested class name or method selectors");
       }
-    
+
     //All nested class names $\C$ in a class must be unique.
 //All methods in a given class must be uniquely identified by their name $\m$ and the sequence of their parameter names $\xMany$.
-    checkCtorAndThatAllCanBeNormalized(p, ct);  
+    checkCtorAndThatAllCanBeNormalized(p, ct);
   }*/
   /*public static void checkCtorAndThatAllCanBeNormalized(Program p, ClassB ct) {
     MethodWithType ctor=null;
@@ -172,7 +172,7 @@ public class Norm {
       if(!mt.isFieldGenerated()){continue;}
       ctor=mt;
       }
-    if(ctor==null){return;}    
+    if(ctor==null){return;}
     //ctor = normMethodOrRetrow(ct, ctor, p2);
     boolean haveNotImmOrType=false;
     boolean haveLentRead=false;
@@ -209,5 +209,5 @@ public class Norm {
     }
     return mt;
   }
-  
+
 }

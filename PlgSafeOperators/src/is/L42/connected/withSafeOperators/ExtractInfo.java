@@ -196,7 +196,7 @@ public class ExtractInfo {
        if(isImpl){return false;}
      }
      return true;
-   }   
+   }
    public static boolean isModule(ClassB cb) {
      for(Member m:cb.getMs()){
        if(!(m instanceof MethodWithType)){continue;}
@@ -205,7 +205,7 @@ public class ExtractInfo {
        Type rt = mwt.getMt().getReturnType();
        if(!(rt instanceof NormType)){continue;}
        NormType nt=(NormType)rt;
-       if(nt.getPath().equals(Path.outer(0))){return false;}       
+       if(nt.getPath().equals(Path.outer(0))){return false;}
      }
     return true;
    }
@@ -263,6 +263,9 @@ public class ExtractInfo {
     "DifferentReturnType",""+ !retType,
     "DifferentThisMdf",""+ !thisMdf,
     "IncompatibleException",""+!exc);
+  }
+  static Error errorInvalidOnTopLevel() {
+    return Resources.Error.multiPartStringError("InvalidOnTopLevel");
   }
   static void checkExistsPathMethod(ClassB cb, List<String> path,Optional<MethodSelector>ms){
     try{

@@ -234,6 +234,7 @@ public interface Ast {
         return false;
       }
     public static Doc factory(String s){
+      assert s.endsWith("\n");
       List<Path> paths=new ArrayList<>();
       StringBuilder sb=new StringBuilder();
       for(int i=0;i<s.length();i++){
