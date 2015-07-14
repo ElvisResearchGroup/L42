@@ -114,6 +114,7 @@ public class Sum {
     return mwt;
   }
   static ClassB normalize(ClassB cb){
+    //TODO: move to another class
     //collect private names
     CollectPrivateNames cpn=CollectPrivateNames.of(cb);
     //rename all
@@ -121,6 +122,7 @@ public class Sum {
     List<PathMxMx> mapMx = ConsistentRenaming.makeMapMxConsistent(cb,cpn.mapMx);
     cb=IntrospectionAdapt.applyMapMx(emptyP,cb,mapMx);
     cb=IntrospectionAdapt.applyMapPath(emptyP,cb,cpn.mapPath);
+    //TODO: make normalization for paths to top level or to smaller level?
     return cb;
   }
 }

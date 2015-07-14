@@ -63,8 +63,14 @@ public class Norm {
     MethodType t=mt.getMt();
     List<Type> ts=new ArrayList<Type>();
       for(Type tt:t.getTs()){ts.add(of(p,tt));}
-    MethodType mt2=new MethodType(t.getDocExceptions(),t.getMdf(),ts,t.getTDocs(),
-       of(p,t.getReturnType()),t.getExceptions());
+    MethodType mt2=new MethodType(
+        t.getDocExceptions(),
+        t.getMdf(),
+        ts,//already normalized before
+        t.getTDocs(),
+       of(p,t.getReturnType()),
+       Map.of(pi->of(p,pi),t.getExceptions())
+       );
     Optional<ExpCore> eInner =mt.getInner();
     if(isOnlyType && eInner.isPresent()){Optional.of((ExpCore)forOnlyType);}
     if(!isOnlyType){eInner = Map.of(e->of(p,e),mt.getInner());}

@@ -112,7 +112,7 @@ public class PluginTest {
       +"DifferentThisMdf:{'@stringU\n'false\n}"
       +"IncompatibleException:{'@stringU\n'false\n}}",
       true
-
+    },{"{B:{method Outer0 m()}}","{B:{method B m()}}","{B:{method B m()} }",false
     //test the following:
     //sum of Box with Box =Box
     //sum of interface with interface =interface
