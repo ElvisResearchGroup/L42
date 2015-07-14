@@ -35,6 +35,7 @@ public class Redirect {
     PathPath currentPP=new PathPath(csPath,path);
     if(s.contains(currentPP)){return Collections.emptyList();}
     List<String>cs=csPath.getCBar();
+    if(cs.isEmpty()){throw ExtractInfo.errorInvalidOnTopLevel();}
     ExtractInfo.checkExistsPathMethod(l, cs, Optional.empty());
     ast.Ast.Doc[] csComm=new ast.Ast.Doc[]{null};
     ClassB l0=(ClassB)FromInClass.of(Program.extractCBar(cs,l,csComm),csPath);//L(Cs)[from Cs]=L0={H M0 ... Mn}

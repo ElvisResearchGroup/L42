@@ -41,7 +41,7 @@ public class Sum {
     ClassB typeB=Configuration.typeSystem.typeExtraction(p,b);
     return normalizedTopSum(p,a,b,typeA,typeB);
   }
-  private static ClassB normalizedTopSum(Program p,ClassB topA, ClassB topB,ClassB typeA,ClassB typeB) {
+  public static ClassB normalizedTopSum(Program p,ClassB topA, ClassB topB,ClassB typeA,ClassB typeB) {
     return new Object(){
       ClassB normalizedSum(ClassB a, ClassB b,List<String> current) {
         List<Member> ms=new ArrayList<>();

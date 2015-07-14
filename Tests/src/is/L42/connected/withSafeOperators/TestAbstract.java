@@ -44,7 +44,7 @@ public static class TestAbstractMeth {//add more test for error cases
     TestHelper.assertEqualExp(expected,res);
     }
   else{
-    try{Abstract.toAbstract(cb1, path.getCBar(), ms);;fail("error expected");}
+    try{Abstract.toAbstract(cb1, path.getCBar(), ms);fail("error expected");}
     catch(Resources.Error err){
       ClassB res=(ClassB)err.unbox;
       TestHelper.assertEqualExp(expected,res);
@@ -71,7 +71,7 @@ public static class TestAbstractClass {//add more test for error cases
 	  "C::B",
 	  "{Kind:{'@stringU\n'PrivacyCoupuled\n}"+
 	  "CoupuledPath:{'@stringU\n'[]\n}"+
-	  "CoupuledMethods:{'@stringU\n'[Outer2::C::B.foo]\n}}",true  
+	  "CoupuledMethods:{'@stringU\n'[Outer2::C::B.foo]\n}}",true
 }});}
 @Test  public void test() {
   TestHelper.configureForTest();
