@@ -103,6 +103,7 @@ public class Redirect {
     }
   private static void redirectOk(List<PathPath> s, Program p, ClassB l, Member mi, Member miPrime, PathPath currentPP, List<PathPath> result) {
     //if the member is not of the same type is an error
+    //TODO: fix this too, may be before?
     if(!mi.getClass().equals(miPrime.getClass())){throw new AssertionError("GETAMESSAGE");}//incompatibleSrcDest or MethodClash?
     mi.match(
       nc->redirectOkNc(s,p,l,nc,(NestedClass)miPrime,currentPP,result),
