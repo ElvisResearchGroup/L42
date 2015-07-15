@@ -68,6 +68,7 @@ public class TestCompositionOperators {
         return Arrays.asList(new String[][] {
 //fails correctly?      {"{}","{ A:{(B that)} B:{}}","{}"
       {"{A:{}}","{ A:{'@B\n} B:{}}","{B:{}}"
+    //A->B
     },{"{A:{ type method type A m() A}}","{ A:{'@B\n} B:{}}","{B:{type method type B m() B}}"
     },{"{A:{ type method type A m() {return A}}}","{ A:{'@B\n} B:{}}","{B:{type method type B m() {return B}}}"
     },{"{A:{ method A ()} B:{foo()}}",
@@ -182,7 +183,7 @@ helpers.TestHelper.multiLine(""
   "{ '@Outer0::C\n C:{} }",
   "{ C:{ type method Outer0::B #apply() B:{}}}"
 
-  
+
 }});}
   @Test
   public void test() {
@@ -195,7 +196,7 @@ helpers.TestHelper.multiLine(""
     TestHelper.assertEqualExp(res,cb3);
     }
   }
-	
+
   //----------------------------------------------------------
   @RunWith(Parameterized.class)
   public static class Test_MsumComment£xthat£xcomment£xadapter {
@@ -208,13 +209,13 @@ helpers.TestHelper.multiLine(""
       return Arrays.asList(new Object[][] {
     {"{ A:{}}","{'fuffa\n}","{A:{} %o_0%:{'@Outer1::A\n}}","{ A:'fuffa\n{}}"
   },{"{ A:{B:{}}}","{'@private\n}","{A:{B:{}} %o_0%:{'@Outer1::A::B\n}}","{ A:{B:'@private\n{}}}"
-  },{"{ A:{B:{}}}","{'@private\n}","{A:{B:{}} %o_0%:{'@Outer1::A::B\n}}","{ A:{B:'@private\n{}}}"      
+  },{"{ A:{B:{}}}","{'@private\n}","{A:{B:{}} %o_0%:{'@Outer1::A::B\n}}","{ A:{B:'@private\n{}}}"
 //boh, I think it can work only on comments with zero paths?
 //},{"{ A:{B:{}}}","{'@Outer1::N\n}","{A:{B:{}} %o_0%:{'@Outer1::A::B\n}}","{ A:{B:'@private\n{}}}"
-  },{"{ A:{method Void foo(Any a)}}","{'fuffa\n}",      
+  },{"{ A:{method Void foo(Any a)}}","{'fuffa\n}",
       "{A:{method Void #o_0#(Void _0) this.foo(a:_0)  method Void foo(Void a)}}",
       "{ A:{method'fuffa\n Void foo(Any a)}}"
-  },{"{ method Void foo(Any a) void}","{'fuffa\n}",      
+  },{"{ method Void foo(Any a) void}","{'fuffa\n}",
       "{method Void #o_0#(Void _0) this.foo(a:_0)  method Void foo(Void a)}",
       "{ method'fuffa\n Void foo(Any a)void }"
 
@@ -316,8 +317,8 @@ helpers.TestHelper.multiLine(""
     ClassB expected=getClassB(_expected);
     ClassB res=(ClassB)getWI(wi->wi.MnameToAdapter£xthat(e1));
     TestHelper.assertEqualExp(res,expected);}}
-	
-	
+
+
   //----------------------------------------------------------
   @RunWith(Parameterized.class)
   public static class Test_MpurgePrivates£xthat {
@@ -343,9 +344,9 @@ helpers.TestHelper.multiLine(""
     ClassB expected=getClassB(_expected);
     ClassB res=(ClassB)getWI(wi->wi.MpurgePrivates£xthat(e1));
     TestHelper.assertEqualExp(res,expected);}}
-	
-	
-	
+
+
+
   //----------------------------------------------------------
 	@RunWith(Parameterized.class)
 	public static class Test_MtypeNameToAdapter£xthat {
@@ -420,7 +421,7 @@ helpers.TestHelper.multiLine(""
   },{"{ %o_0%:{'@Outer2\n}}",null
   },{"{ %o_0%:{'@Outer1\n}}","Outer0"
   },{"{ %o_0%:{'@Outer0\n}}",null
-  
+
     }});}
   @Test public void test() {
     TestHelper.configureForTest();

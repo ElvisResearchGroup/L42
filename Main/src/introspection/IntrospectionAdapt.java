@@ -166,20 +166,22 @@ public class IntrospectionAdapt {
     assert pp.getPath1().isCore();
     assert pp.getPath1().outerNumber()==0;
     //assert !pp.getPath1().isPrimitive();implied from above  }
+
     if(pp.getPath2().isPrimitive()){return;}
     assert pp.getPath2().isCore();
     if(pp.getPath2().outerNumber()>0){return;}
     List<String> cBar1 = pp.getPath1().getCBar();
-    //if(cBar1.isEmpty()){return;}
-    //assert !cBar1.isEmpty();
     List<String> cBar2 = pp.getPath2().getCBar();
     Path toFrom = computeSquareTo(cBar1, cBar2);
     Doc[] docCb=new Doc[]{Doc.empty()};
     ClassB cb=Program.extractCBar(cBar1, lprime,docCb);
-    //from works so that an internal path stay the same,
-    //and an external path change to another external path.
-    //for into:Name"Outer0" we need external paths to become internal
 
+    if(true){//ok for disjoint tails?
+    toFrom=toFrom.setNewOuter(toFrom.outerNumber()-1);
+    toFrom=toFrom.popC();
+    cb=(ClassB)FromInClass.of(cb, toFrom);
+    }
+    if(false){//is the block over agans this block
     if(toFrom.outerNumber()>0 && toFrom.getCBar().size()>0){
       toFrom=toFrom.setNewOuter(toFrom.outerNumber()-1);
       toFrom=toFrom.popC();
@@ -210,7 +212,7 @@ public class IntrospectionAdapt {
             }
           });
         }
-    }}
+    }}}
 
     if(cBar2.isEmpty()){results.add(cb);return;}
     List<Member>ms=new ArrayList<>();

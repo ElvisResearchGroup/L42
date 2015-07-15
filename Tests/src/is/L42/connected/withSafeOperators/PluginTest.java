@@ -104,7 +104,7 @@ public class PluginTest {
       "{Kind:{'@stringU\n'MethodClash\n}"
       +"Path:{'@stringU\n'Outer0::B\n}"
       +"Left:{'@stringU\n'\\u000amethod \\u000aVoid m() \n}"
-      +"Right:{'@stringU\n'\\u000amethod \\u000aOuter1::B m() \n}"
+      +"Right:{'@stringU\n'\\u000amethod \\u000aOuter0 m() \n}"
       +"LeftKind:{'@stringU\n'AbstractMethod\n}"
       +"RightKind:{'@stringU\n'AbstractMethod\n}"
       +"DifferentParameters:{'@stringU\n'[]\n}"
@@ -112,7 +112,7 @@ public class PluginTest {
       +"DifferentThisMdf:{'@stringU\n'false\n}"
       +"IncompatibleException:{'@stringU\n'false\n}}",
       true
-    },{"{B:{method Outer0 m()}}","{B:{method B m()}}","{B:{method B m()} }",false
+    },{"{B:{method Outer0 m()}}","{B:{method B m()}}","{B:{method Outer0 m()} }",false
     //test the following:
     //sum of Box with Box =Box
     //sum of interface with interface =interface

@@ -12,13 +12,10 @@ import ast.Util.PathMx;
 import auxiliaryGrammar.Functions;
 import auxiliaryGrammar.Norm;
 import auxiliaryGrammar.Program;
-import introspection.FindUsage;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 import ast.Ast.Path;
@@ -29,7 +26,6 @@ import ast.ExpCore.*;
 import coreVisitors.CloneWithPath;
 import coreVisitors.From;
 import platformSpecific.javaTranslation.Resources;
-import platformSpecific.javaTranslation.Resources.Error;
 import tools.Map;
 
 public class ExtractInfo {
@@ -121,13 +117,7 @@ public class ExtractInfo {
     //if noImplementation and consistent is pure record (or box, sob)//pure reocord merged with template now :(
     return ClassKind.Template;
   }
-  public static String oldClassKind(boolean isBox,boolean isPrivateState,boolean isInterface,boolean isFreeI){
-    if(isBox){return "BoxClass";}
-    if(isPrivateState){return"PrivateStateClass";}
-    if(isFreeI){return "FreeInterface";}
-    if(isInterface){return "Interface";}
-    return "Class";
-  }
+
   public static boolean checkClassClashAndReturnIsInterface(
       Program p,List<String>current,
       ClassB topA,ClassB topB,
@@ -150,27 +140,9 @@ public class ExtractInfo {
    if (isAllOk){return boxA  || boxB;}
    ClassKind kindA=classKind(topA,current,currentA,boxA,freeInterfA,privateA,null);
    ClassKind kindB=classKind(topB,current,currentB,boxB,freeInterfB,privateB,null);
-   throw errorClassClash(current, confl,kindA,kindB);
+   throw Errors42.errorClassClash(current, confl,kindA,kindB);
   }
-  private static Error errorClassClash(List<String> current,  List<Path> confl,ClassKind kindA,ClassKind kindB) {
-    return Resources.Error.multiPartStringError("ClassClash",
-       "Path",""+Path.outer(0,current),
-       "LeftKind",kindA.name(),
-       "RightKind",kindB.name(),
-       "ConflictingImplementedInterfaces",""+confl
-        );
-  }
-  public static Error errorSourceUnfit(List<String> current,ClassKind kind,List<Member>unexpected,boolean headerOk,List<Path>unexpectedInterfaces,boolean isPrivate){
-      return Resources.Error.multiPartStringError("SourceUnfit",
-          "Path",""+Path.outer(0,current),
-          "Kind",kind.name(),
-          "UnexpectedMethods",""+showMembers(unexpected),
-          "IncompatibleHeaders",""+!headerOk,
-          "UnexpectedImplementednterfaces",""+unexpectedInterfaces,
-          "PrivatePath",""+isPrivate
-           );
-  }
-  private static List<String> showMembers(List<Member> ms){
+  static List<String> showMembers(List<Member> ms){
     List<String>result=new ArrayList<>();
     for(Member m:ms){
       result.add(""+m.match(nc->nc.getName(), mi->mi.getS(), mt->mt.getMs()));
@@ -240,56 +212,14 @@ public class ExtractInfo {
       }
      return conflicts;
   }
-  public static void checkMethodClash(List<String>pathForError,MethodWithType mta, MethodWithType mtb){
-    boolean implClash=mta.getInner().isPresent() && mtb.getInner().isPresent();
-    boolean exc=isExceptionOk(mta,mtb);
-    List<Integer> pars=isParTypeOk(mta,mtb);
-    boolean retType=mta.getMt().getReturnType().equals(mtb.getMt().getReturnType());
-    boolean thisMdf=mta.getMt().getMdf().equals(mtb.getMt().getMdf());
-    if(!implClash && exc && pars.isEmpty() && retType && thisMdf){return;}
-    if(mta.getInner().isPresent()){mta=mta.withInner(Optional.of(new ExpCore.X("implementation")));}
-    if(mtb.getInner().isPresent()){mtb=mtb.withInner(Optional.of(new ExpCore.X("implementation")));}
-    throw errorMehtodClash(pathForError, mta, mtb, exc, pars, retType, thisMdf);
-  }
-  static Error errorMehtodClash(List<String> pathForError, Member mta, Member mtb, boolean exc, List<Integer> pars, boolean retType, boolean thisMdf) {
-    return Resources.Error.multiPartStringError("MethodClash",
-     "Path",""+Path.outer(0,pathForError),
-    "Left",sugarVisitors.ToFormattedText.of(mta),
-    "Right",sugarVisitors.ToFormattedText.of(mtb),
-    "LeftKind",memberKind(mta),
-    "RightKind",memberKind(mtb),
-//deducible    "IncompatibleHeader",""+(!exc||!pars.isEmpty() || !retType || !thisMdf),
-    "DifferentParameters",""+ pars,
-    "DifferentReturnType",""+ !retType,
-    "DifferentThisMdf",""+ !thisMdf,
-    "IncompatibleException",""+!exc);
-  }
-  static Error errorInvalidOnTopLevel() {
-    return Resources.Error.multiPartStringError("InvalidOnTopLevel");
-  }
-  static void checkExistsPathMethod(ClassB cb, List<String> path,Optional<MethodSelector>ms){
-    try{
-      ClassB cbi=Program.extractCBar(path, cb);
-      if(!ms.isPresent()){return;}
-      Optional<Member> meth=Program.getIfInDom(cbi.getMs(),ms.get());
-      if(meth.isPresent()){return;}
-      throw Resources.Error.multiPartStringError("InexistentMethod",
-          "Path",""+Path.outer(0,path),
-          "Selector",""+ms);
-      }
-    catch(ast.ErrorMessage.PathNonExistant e){
-      throw Resources.Error.multiPartStringError("InexistentPath",
-          "Path",""+Path.outer(0,path));
-    }
-  }
-  private static List<Integer> isParTypeOk(MethodWithType mta, MethodWithType mtb) {
+  static List<Integer> isParTypeOk(MethodWithType mta, MethodWithType mtb) {
     List<Integer>res=new ArrayList<>();
     for(int i=0;i<mta.getMt().getTs().size();i++){
       if(!mta.getMt().getTs().get(i).equals(mtb.getMt().getTs().get(i))){res.add(i);}
     }
     return res;
   }
-  private static boolean isExceptionOk(MethodWithType mta, MethodWithType mtb) {
+  static boolean isExceptionOk(MethodWithType mta, MethodWithType mtb) {
     Set<Path> pa=new HashSet<>(mta.getMt().getExceptions());
     Set<Path> pb=new HashSet<>(mtb.getMt().getExceptions());
     Set<Path> pc=new HashSet<>(pa);
@@ -298,30 +228,7 @@ public class ExtractInfo {
     if(mtb.getInner().isPresent() && !pc.containsAll(pb)){return false;}
     return true;
   }
-  public static void checkPrivacyCoupuled(ClassB cbFull,ClassB cbClear, List<String> path) {
-    //start from a already cleared out of private states
-    //check if all private nested classes are USED using IsUsed on cbClear
-    //this also verify that no private nested classes are used as
-    //type in public methods of public classes.
-    //collect all PublicPath.privateMethod
-    //use main->introspection.FindUsage
-    List<Path>prPath=collectPrivatePathsAndSubpaths(cbFull,path);
-    List<PathMx>prMeth=collectPrivateMethodsOfPublicPaths(cbFull,path);
-    List<Path>coupuledPaths=new ArrayList<>();
-    for(Path pi:prPath){
-      Set<Path> used = IsUsed.of(cbClear,pi);
-      if(used.isEmpty()){continue;}
-      coupuledPaths.add(pi);
-    }
-    Set<PathMx> usedPrMeth = FindUsage.of(Program.empty(),prMeth, cbClear);
-    if(coupuledPaths.isEmpty() && usedPrMeth.isEmpty()){return;}
-    List<PathMx> ordered=new ArrayList<>(usedPrMeth);
-    Collections.sort(ordered,(px1,px2)->px1.toString().compareTo(px2.toString()));
-    throw Resources.Error.multiPartStringError("PrivacyCoupuled",
-       "CoupuledPath",""+coupuledPaths,
-      "CoupuledMethods",""+ordered);
-    }
-  private static List<PathMx> collectPrivateMethodsOfPublicPaths(ClassB cb, List<String> path) {
+  static List<PathMx> collectPrivateMethodsOfPublicPaths(ClassB cb, List<String> path) {
     List<PathMx> result=new ArrayList<>();
     cb=Program.extractCBar(path, cb);
     auxCollectPrivateMethodsOfPublicPaths(cb,result,path);
@@ -352,7 +259,7 @@ public class ExtractInfo {
         return null;
       },mi->null, mt->null);}
   }
-  private static List<Path> collectPrivatePathsAndSubpaths(ClassB cb, List<String> path) {
+  static List<Path> collectPrivatePathsAndSubpaths(ClassB cb, List<String> path) {
     List<Path> result=new ArrayList<>();
     cb=Program.extractCBar(path, cb);
     auxCollectPrivatePathsAndSubpaths(cb,result,path ,false);
@@ -372,12 +279,5 @@ public class ExtractInfo {
     assert la.isEmpty() || lb.isEmpty();
     return true;
     }
-  public static Resources.Error errorPrefix(List<String> a, List<String> b) {
-      boolean aIsLonger=a.size()>b.size();
-      List<String> shorter=aIsLonger?b:a;
-      List<String> longer=aIsLonger?a:b;
-      return Resources.Error.multiPartStringError("PathClash",
-         "Prefix",""+shorter,
-         "Clashing",""+longer);}
   }
 

@@ -7,6 +7,8 @@ import ast.Ast.Path;
 import ast.ExpCore.ClassB;
 
 public class CloneWithPath extends CloneVisitor{
+  public CloneWithPath(){path=new ArrayList<>();}
+  public CloneWithPath(List<String>path){this.path=path;}
   List<String> path=new ArrayList<>();
   public List<String> getPath(){return path;}
   public ClassB.NestedClass visit(ClassB.NestedClass nc){
@@ -15,5 +17,5 @@ public class CloneWithPath extends CloneVisitor{
     path.add(nc.getName());
     try{return super.visit(nc);}
     finally{path=old;}
-    }  
+    }
 }

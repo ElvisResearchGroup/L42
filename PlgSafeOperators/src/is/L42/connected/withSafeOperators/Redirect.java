@@ -35,8 +35,8 @@ public class Redirect {
     PathPath currentPP=new PathPath(csPath,path);
     if(s.contains(currentPP)){return Collections.emptyList();}
     List<String>cs=csPath.getCBar();
-    if(cs.isEmpty()){throw ExtractInfo.errorInvalidOnTopLevel();}
-    ExtractInfo.checkExistsPathMethod(l, cs, Optional.empty());
+    if(cs.isEmpty()){throw Errors42.errorInvalidOnTopLevel();}
+    Errors42.checkExistsPathMethod(l, cs, Optional.empty());
     ast.Ast.Doc[] csComm=new ast.Ast.Doc[]{null};
     ClassB l0=(ClassB)FromInClass.of(Program.extractCBar(cs,l,csComm),csPath);//L(Cs)[from Cs]=L0={H M0 ... Mn}
     //path exists by construction.
@@ -82,7 +82,7 @@ public class Redirect {
     List<Path>unexpectedInterfaces=new ArrayList<>(unexpectedI);
     Collections.sort(unexpectedInterfaces,(pa,pb)->pa.toString().compareTo(pb.toString()));
     ClassKind kind = ExtractInfo.classKind(l,cs,l0, isBox, isFreeInterface, isPrivateState, isNoImplementation);
-    throw ExtractInfo.errorSourceUnfit(currentPP.getPath1().getCBar(), kind,unexpectedMembers, headerOk, unexpectedInterfaces, isPrivate);
+    throw Errors42.errorSourceUnfit(currentPP.getPath1().getCBar(), kind,unexpectedMembers, headerOk, unexpectedInterfaces, isPrivate);
   }
   private static Set<Path> redirectOkImpl(List<PathPath> s, PathPath currentPP, Program p, ClassB l, List<Path> paths, List<Path> pathsPrime, List<PathPath> result) {
     //(paths ok)//and I can not use it for exceptions since opposite subset relation
@@ -123,7 +123,7 @@ public class Redirect {
     }
     Set<Path> badExc=redirectOkExceptions(sPrime,p,l,mt.getMt().getExceptions(),mtPrime.getMt().getExceptions(),result);
     if(!badExc.isEmpty() || !wrongTypes.isEmpty()|| !isRetTypeOk ||!isMdfOk){
-      throw ExtractInfo.errorMehtodClash(currentPP.getPath1().getCBar(),mt,mtPrime, badExc.isEmpty(), wrongTypes, isRetTypeOk, isMdfOk);
+      throw Errors42.errorMehtodClash(currentPP.getPath1().getCBar(),mt,mtPrime, badExc.isEmpty(), wrongTypes, isRetTypeOk, isMdfOk);
     }
     return null;
   }
