@@ -27,13 +27,27 @@ public class Rename {
   public static ClassB renameClass(Program p,ClassB cb,List<String> src,List<String> dest){
     Errors42.checkExistsPathMethod(cb, src, Optional.empty());
     if(src.equals(dest)){return cb;}
-    if(src.equals(Path.outer(0))){//push is asked
+    if(src.isEmpty()){//push is asked
       return Push.pushMany(cb, dest);
+    }
+    if(dest.isEmpty() && src.size()==1){//pop is asked
+      boolean rightSize=cb.getMs().size()==1;
+      if(rightSize && ExtractInfo.isBox(cb,Collections.emptyList())){
+        return Pop.pop(cb);
+        }//otherwise, proceed with encoding
     }
     cb=ClassOperations.normalizePrivates(cb);
     if(!ExtractInfo.isPrefix(src, dest)){ return directRename(p,cb,src,dest);}
-    //encoding: push result, rename tmp, rename dest, pop
-    return null;//TODO: finish, but normalization issues have precendence here
+    src=new ArrayList<>(src);
+    dest=new ArrayList<>(dest);
+    src.add(0,"Result");
+    dest.add(0,"Result");
+    cb=Push.pushOne(cb,"Result");
+    List<String> tmp = Collections.singletonList("Tmp");
+    cb=directRename(p,cb,src,tmp);
+    cb=directRename(p,cb,tmp,dest);
+    cb=Pop.directPop(cb);
+    return cb;
   }
   public static ClassB renameClassStrict(Program p,ClassB cb,List<String> src,List<String> dest){
   /*

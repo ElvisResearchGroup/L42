@@ -171,6 +171,7 @@ public class Program {//mutable object now!
     //path=Norm.of(this,path);
     ClassB cb=this.get(path.outerNumber());
     cb = extractCBar(path.getCBar(), cb);
+    assert cb!=null;
     return cb;
   }
   private static final Doc[] _trashCommentRef=new Doc[]{Doc.empty()};
@@ -178,6 +179,7 @@ public class Program {//mutable object now!
     return extractCBar(list, cb,_trashCommentRef);
   }
   public static ClassB extractCBar(List<String> list, ClassB cb,Doc[] commentRef) {
+    assert cb!=null;
     for(String s:list){
       Optional<Member> optNc = Program.getIfInDom(cb.getMs(),s);
       if(!optNc.isPresent()){

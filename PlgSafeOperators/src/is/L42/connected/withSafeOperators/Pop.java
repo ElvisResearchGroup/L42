@@ -21,8 +21,11 @@ class Pop {
   static ClassB pop(ClassB cb) throws Resources.Error/*BoxError,AmbiguousPop*/{
     boolean rightSize=cb.getMs().size()==1;
     ExtractInfo.checkBox(cb,Collections.emptyList());
-    if(!rightSize){throw Errors42.errorAmbiguousPop(cb);
-    }
+    if(!rightSize){throw Errors42.errorAmbiguousPop(cb); }
+    return directPop(cb);
+  }
+
+  static ClassB directPop(ClassB cb) {
     cb=(ClassB)new Pop1From().visit(cb);
     ClassB.NestedClass nc = (ClassB.NestedClass)cb.getMs().get(0);
     ClassB res=(ClassB)nc.getInner();

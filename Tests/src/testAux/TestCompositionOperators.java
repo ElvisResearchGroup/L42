@@ -151,7 +151,7 @@ helpers.TestHelper.multiLine(""
 //,"  read method lent Iterator vals() Iterator(this)"
 //,"  Iterator:{lent (read Outer1 that)}"
 ,"  }}"),
-"{ A:{'@Outer1\n }}",//"{ A:{'@Outer1\n Cell:{'@Outer2::PCell\n}}}",//invalid for now//TODO:
+"{ A:{'@Outer1\n }}",
 helpers.TestHelper.multiLine(""
 ,"{"
 ,"type method "
