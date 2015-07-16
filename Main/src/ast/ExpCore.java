@@ -657,7 +657,7 @@ public interface ExpCore {
         if (m instanceof NestedClass) {
           NestedClass nc = (NestedClass)m;
           String key = nc.getName();
-          assert !keys.contains(key);
+          assert !keys.contains(key):""+ keys+" "+key;
           keys.add(key);
           if (nc.inner instanceof WalkBy) {
             countWalkBy += 1;

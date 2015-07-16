@@ -1,11 +1,8 @@
 package is.L42.connected.withSafeOperators;
 
-import introspection.FindUsage;
 import is.L42.connected.withSafeOperators.ExtractInfo.ClassKind;
 import is.L42.connected.withSafeOperators.ExtractInfo.IsUsed;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -27,56 +24,51 @@ import auxiliaryGrammar.Program;
 
 public class Errors42 {
 
-  public static Error errorSourceUnfit(List<String> current,ExtractInfo.ClassKind kind,List<Member>unexpected,boolean headerOk,List<Path>unexpectedInterfaces,boolean isPrivate){
+  //"SourceUnfit", caused by redirect
+  public static Error errorSourceUnfit(List<String> current,ExtractInfo.ClassKind kindSrc,List<Member>unexpected,boolean headerOk,List<Path>unexpectedInterfaces,boolean isPrivate){
       return Resources.Error.multiPartStringError("SourceUnfit",
-          "Path",""+Path.outer(0,current),
-          "Kind",kind.name(),
-          "UnexpectedMethods",""+ExtractInfo.showMembers(unexpected),
-          "IncompatibleHeaders",""+!headerOk,
-          "UnexpectedImplementednterfaces",""+unexpectedInterfaces,
-          "PrivatePath",""+isPrivate
+          "Path",""+Path.outer(0,current), //the path of the class that can not be redirected
+          "PrivatePath",""+isPrivate,//the path can not be redirected since is private
+          "SrcKind",kindSrc.name(),//the kind of the class at path
+          //"DestKind",kind.name(),//the kind of the class at dest//TODO: I do not know how to get it :(
+          "IncompatibleClassKind",""+!headerOk,//if the path can not be redirected because of their respective kinds.//TODO: This information would make no sense if I can get the kind for dest!
+          "UnexpectedMethods",""+ExtractInfo.showMembers(unexpected),//methods that are not present in dest (or present but with different declared vs Interface implemented status)
+          "UnexpectedImplementednterfaces",""+unexpectedInterfaces//interfaces implemented in path but not in dest
+          //TODO: I would like to give also the destination path, but by being an external path I'm troubled.
+          //should I use a @Path in a doc?
+          //also, what happens if destination is private, caused by example by a private type of a public method??
+          //also if the original destination is private?
            );
   }
-
+  //"ClassClash" caused by sum, renameClass, renameClassStrict, renameClass
   static Error errorClassClash(List<String> current,  List<Path> confl,ExtractInfo.ClassKind kindA,ExtractInfo.ClassKind kindB) {
     return Resources.Error.multiPartStringError("ClassClash",
-       "Path",""+Path.outer(0,current),
-       "LeftKind",kindA.name(),
-       "RightKind",kindB.name(),
-       "ConflictingImplementedInterfaces",""+confl
+       "Path",""+Path.outer(0,current),//the path of the clash, in the rename is the path of the destination clash
+       "LeftKind",kindA.name(),//kind of left and right classes
+       "RightKind",kindB.name(),//this allows to infer if the class kinds was compatible
+       "ConflictingImplementedInterfaces",""+confl//the list of interface that define methods with same name
+       //TODO:test how this is checked, what order we get what exactly?
         );
   }
-
+  //"MethodClash" caused by sum, renameMethod, renameClassStrict, renameClass
   static Error errorMehtodClash(List<String> pathForError, Member mta, Member mtb, boolean exc, List<Integer> pars, boolean retType, boolean thisMdf) {
       return Resources.Error.multiPartStringError("MethodClash",
-       "Path",""+Path.outer(0,pathForError),
-      "Left",sugarVisitors.ToFormattedText.of(mta),
+       "Path",""+Path.outer(0,pathForError),//the path of the clash (that own  the method), in the rename is the path of the destination clash
+      "Left",sugarVisitors.ToFormattedText.of(mta),//implementation dependend print of the left and right methods
       "Right",sugarVisitors.ToFormattedText.of(mtb),
-      "LeftKind",ExtractInfo.memberKind(mta),
+      "LeftKind",ExtractInfo.memberKind(mta),//kind of the left/right methods
       "RightKind",ExtractInfo.memberKind(mtb),
-  //deducible    "IncompatibleHeader",""+(!exc||!pars.isEmpty() || !retType || !thisMdf),
-      "DifferentParameters",""+ pars,
-      "DifferentReturnType",""+ !retType,
-      "DifferentThisMdf",""+ !thisMdf,
-      "IncompatibleException",""+!exc);
+      "DifferentParameters",""+ pars,//number of parameters with different types
+      "DifferentReturnType",""+ !retType,//if the return types are different
+      "DifferentThisMdf",""+ !thisMdf,//if the modifier for "this" is different
+      "IncompatibleException",""+!exc);//if they have an incompatible exception list
     }
 
-  public static void checkMethodClash(List<String>pathForError,MethodWithType mta, MethodWithType mtb){
-    boolean implClash=mta.getInner().isPresent() && mtb.getInner().isPresent();
-    boolean exc=ExtractInfo.isExceptionOk(mta,mtb);
-    List<Integer> pars=ExtractInfo.isParTypeOk(mta,mtb);
-    boolean retType=mta.getMt().getReturnType().equals(mtb.getMt().getReturnType());
-    boolean thisMdf=mta.getMt().getMdf().equals(mtb.getMt().getMdf());
-    if(!implClash && exc && pars.isEmpty() && retType && thisMdf){return;}
-    if(mta.getInner().isPresent()){mta=mta.withInner(Optional.of(new ExpCore.X("implementation")));}
-    if(mtb.getInner().isPresent()){mtb=mtb.withInner(Optional.of(new ExpCore.X("implementation")));}
-    throw errorMehtodClash(pathForError, mta, mtb, exc, pars, retType, thisMdf);
-  }
-
+  //"InvalidOnTopLevel", caused by redirect and addDocumentationOnNestedClass
   static Error errorInvalidOnTopLevel() {
     return Resources.Error.multiPartStringError("InvalidOnTopLevel");
   }
-
+  //"InexistentMethod","InexistentPath", caused by most operations referring to paths and methods
   static void checkExistsPathMethod(ClassB cb, List<String> path,Optional<MethodSelector>ms){
     try{
       ClassB cbi=Program.extractCBar(path, cb);
@@ -93,6 +85,14 @@ public class Errors42 {
     }
   }
 
+  //"PrivacyCoupuled", caused by redirect
+  static Error errorPrivacyCoupuled(List<Path> coupuledPaths, List<PathMx> ordered) {
+    return Resources.Error.multiPartStringError("PrivacyCoupuled",
+       "CoupuledPath",""+coupuledPaths,//private paths that are still used
+      "CoupuledMethods",""+ordered);//private methods that are still used
+  }
+
+  //"PathClash", caused by renameClassStrict, if two paths are prefix of one other
   public static Resources.Error errorPrefix(List<String> a, List<String> b) {
   boolean aIsLonger=a.size()>b.size();
   List<String> shorter=aIsLonger?b:a;
@@ -101,28 +101,29 @@ public class Errors42 {
      "Prefix",""+shorter,
      "Clashing",""+longer);}
 
-  public static void checkPrivacyCoupuled(ClassB cbFull,ClassB cbClear, List<String> path) {
-  //start from a already cleared out of private states
-  //check if all private nested classes are USED using IsUsed on cbClear
-  //this also verify that no private nested classes are used as
-  //type in public methods of public classes.
-  //collect all PublicPath.privateMethod
-  //use main->introspection.FindUsage
-  List<Path>prPath=ExtractInfo.collectPrivatePathsAndSubpaths(cbFull,path);
-  List<PathMx>prMeth=ExtractInfo.collectPrivateMethodsOfPublicPaths(cbFull,path);
-  List<Path>coupuledPaths=new ArrayList<>();
-  for(Path pi:prPath){
-    Set<Path> used = ExtractInfo.IsUsed.of(cbClear,pi);
-    if(used.isEmpty()){continue;}
-    coupuledPaths.add(pi);
+  //"AmbiguousPop", caused by pop if there is more then one nested class
+  static Error errorAmbiguousPop(ClassB cb) {
+    return Resources.Error.multiPartStringError("AmbiguousPop",
+        "numberOfNestedClasses",""+cb.getMs().size());
   }
-  Set<PathMx> usedPrMeth = FindUsage.of(Program.empty(),prMeth, cbClear);
-  if(coupuledPaths.isEmpty() && usedPrMeth.isEmpty()){return;}
-  List<PathMx> ordered=new ArrayList<>(usedPrMeth);
-  Collections.sort(ordered,(px1,px2)->px1.toString().compareTo(px2.toString()));
-  throw Resources.Error.multiPartStringError("PrivacyCoupuled",
-     "CoupuledPath",""+coupuledPaths,
-    "CoupuledMethods",""+ordered);
+  //"NotBox", caused by pop if the top level is not of box kind
+  static Error errorNotBox(ClassB cb, List<String> meth, Set<Path> used,ExtractInfo.ClassKind kind) {
+    return Resources.Error.multiPartStringError("NotBox",
+        "UsedBy",""+used,
+        "ContainsMethods",""+meth,
+        "ActualKind",""+kind.name());
   }
+  public static void checkMethodClash(List<String>pathForError,MethodWithType mta, MethodWithType mtb){
+    boolean implClash=mta.getInner().isPresent() && mtb.getInner().isPresent();
+    boolean exc=ExtractInfo.isExceptionOk(mta,mtb);
+    List<Integer> pars=ExtractInfo.isParTypeOk(mta,mtb);
+    boolean retType=mta.getMt().getReturnType().equals(mtb.getMt().getReturnType());
+    boolean thisMdf=mta.getMt().getMdf().equals(mtb.getMt().getMdf());
+    if(!implClash && exc && pars.isEmpty() && retType && thisMdf){return;}
+    if(mta.getInner().isPresent()){mta=mta.withInner(Optional.of(new ExpCore.X("implementation")));}
+    if(mtb.getInner().isPresent()){mtb=mtb.withInner(Optional.of(new ExpCore.X("implementation")));}
+    throw errorMehtodClash(pathForError, mta, mtb, exc, pars, retType, thisMdf);
+  }
+
 
 }

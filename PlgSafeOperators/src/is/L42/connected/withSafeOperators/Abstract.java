@@ -20,7 +20,7 @@ public class Abstract {
     Errors42.checkExistsPathMethod(cb, path, Optional.empty());
     //check privacy coupled
     ClassB cbClear=ClassOperations.onClassNavigateToPathAndDo(cb, path, cbi->clear(cbi));
-    Errors42.checkPrivacyCoupuled(cb,cbClear, path);
+    Redirect.checkPrivacyCoupuled(cb,cbClear, path);
     return cbClear;
   }
 

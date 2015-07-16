@@ -8,8 +8,10 @@ import java.util.Optional;
 import java.util.Set;
 
 import coreVisitors.FromInClass;
+import introspection.FindUsage;
 import introspection.IntrospectionAdapt;
 import is.L42.connected.withSafeOperators.ExtractInfo.ClassKind;
+import is.L42.connected.withSafeOperators.ExtractInfo.IsUsed;
 import tools.Assertions;
 import ast.ErrorMessage;
 import ast.ExpCore.*;
@@ -21,6 +23,7 @@ import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodWithType;
 import ast.ExpCore.ClassB.NestedClass;
+import ast.Util.PathMx;
 import ast.Util.PathPath;
 import auxiliaryGrammar.Program;
 public class Redirect {
@@ -178,6 +181,27 @@ public class Redirect {
     List<PathPath> res = redirectOk(s,p,l,src,dest);
     result.addAll(res);
     return null;
+  }
+  static void checkPrivacyCoupuled(ClassB cbFull,ClassB cbClear, List<String> path) {
+  //start from a already cleared out of private states
+  //check if all private nested classes are USED using IsUsed on cbClear
+  //this also verify that no private nested classes are used as
+  //type in public methods of public classes.
+  //collect all PublicPath.privateMethod
+  //use main->introspection.FindUsage
+  List<Path>prPath=ExtractInfo.collectPrivatePathsAndSubpaths(cbFull,path);
+  List<PathMx>prMeth=ExtractInfo.collectPrivateMethodsOfPublicPaths(cbFull,path);
+  List<Path>coupuledPaths=new ArrayList<>();
+  for(Path pi:prPath){
+    Set<Path> used = ExtractInfo.IsUsed.of(cbClear,pi);
+    if(used.isEmpty()){continue;}
+    coupuledPaths.add(pi);
+  }
+  Set<PathMx> usedPrMeth = FindUsage.of(Program.empty(),prMeth, cbClear);
+  if(coupuledPaths.isEmpty() && usedPrMeth.isEmpty()){return;}
+  List<PathMx> ordered=new ArrayList<>(usedPrMeth);
+  Collections.sort(ordered,(px1,px2)->px1.toString().compareTo(px2.toString()));
+  throw Errors42.errorPrivacyCoupuled(coupuledPaths, ordered);
   }
 
 }
