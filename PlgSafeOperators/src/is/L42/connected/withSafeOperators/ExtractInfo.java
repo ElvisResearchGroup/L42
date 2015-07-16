@@ -14,6 +14,7 @@ import auxiliaryGrammar.Norm;
 import auxiliaryGrammar.Program;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -74,11 +75,9 @@ public class ExtractInfo {
     Set<Path> used = ExtractInfo.IsUsed.of(cb,Path.outer(0,path));
     if(meth.isEmpty()&& used.isEmpty() && !cb.isInterface()){return true;}
     if(justFalse){return false;}
-    throw Resources.Error.multiPartStringError("NotBox",
-        "UsedBy",""+used,
-        "ContainsMethods",""+meth,
-        "IsInterface",""+cb.isInterface());
+    throw Errors42.errorNotBox(cb, meth, used,classKind(cb,Collections.emptyList(),cb,false,null,null,null));
   }
+
   public static void checkBox(ClassB cb,List<String> path) throws Resources.Error/*NotBox*/{ checkBox(cb, path,false);}
   public static boolean isBox(ClassB cb,List<String> path){return checkBox(cb, path,true);}
   public static boolean isFreeInterface(ClassB topCb,List<String> path){
@@ -240,7 +239,7 @@ public class ExtractInfo {
         if(nc.getDoc().isPrivate()){return null;}
         List<String> newPrefix=new ArrayList<>(prefix);
         newPrefix.add(nc.getName());
-        auxCollectPrivateMethodsOfPublicPaths(cb,accumulator,newPrefix);
+        auxCollectPrivateMethodsOfPublicPaths((ClassB)nc.getInner(),accumulator,newPrefix);
         return null;
       },mi->null,
       mt->{
@@ -254,8 +253,9 @@ public class ExtractInfo {
       nc->{
         List<String> newPrefix=new ArrayList<>(prefix);
         newPrefix.add(nc.getName());
-        auxCollectPrivatePathsAndSubpaths(cb,accumulator,newPrefix,collectAll || nc.getDoc().isPrivate());
-        if(collectAll || nc.getDoc().isPrivate()){accumulator.add(Path.outer(0,newPrefix));}
+        boolean newCollectAll=collectAll || nc.getDoc().isPrivate();
+        auxCollectPrivatePathsAndSubpaths((ClassB)nc.getInner(),accumulator,newPrefix,newCollectAll);
+        if(newCollectAll){accumulator.add(Path.outer(0,newPrefix));}
         return null;
       },mi->null, mt->null);}
   }

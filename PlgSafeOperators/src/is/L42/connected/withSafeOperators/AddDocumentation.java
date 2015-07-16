@@ -9,15 +9,15 @@ import ast.Ast.MethodSelector;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
 import auxiliaryGrammar.Program;
-public class AddComment {
+public class AddDocumentation {
 
-  public static ClassB addCommentMethod (ClassB cb, List<String> cs,MethodSelector sel,Doc doc){
+  public static ClassB addDocumentationOnMethod (ClassB cb, List<String> cs,MethodSelector sel,Doc doc){
     Errors42.checkExistsPathMethod(cb, cs, Optional.of(sel));
-    if(cs.isEmpty()){return auxAddComment(cb,sel,doc);}
-    return ClassOperations.onClassNavigateToPathAndDo(cb,cs,cbi->auxAddComment(cbi,sel,doc));
+    if(cs.isEmpty()){return auxAddDocOnMethod(cb,sel,doc);}
+    return ClassOperations.onClassNavigateToPathAndDo(cb,cs,cbi->auxAddDocOnMethod(cbi,sel,doc));
   }
 
-  private static ClassB auxAddComment(ClassB cb, MethodSelector sel, Doc doc) {
+  private static ClassB auxAddDocOnMethod(ClassB cb, MethodSelector sel, Doc doc) {
     List<Member> newMs=new ArrayList<>(cb.getMs());
     Member m=Program.getIfInDom(newMs, sel).get();
     //add comment
@@ -36,7 +36,7 @@ public class AddComment {
     return cb.withMs(newMs);
   }
 
-  public static ClassB addComment (ClassB cb, List<String> cs,Doc doc){
+  public static ClassB addDocumentationOnNestedClass (ClassB cb, List<String> cs,Doc doc){
     if(cs.isEmpty()){throw Errors42.errorInvalidOnTopLevel();}
     Errors42.checkExistsPathMethod(cb, cs, Optional.empty());
     return ClassOperations.onNestedNavigateToPathAndDo(cb, cs, nc->Optional.of(nc.withDoc(nc.getDoc().sum(doc))));

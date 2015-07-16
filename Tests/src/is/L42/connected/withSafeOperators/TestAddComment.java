@@ -42,11 +42,11 @@ public class TestAddComment {
     assert ms!=null;
     ClassB expected=getClassB(_expected);
     if(!isError){
-      ClassB res=AddComment.addCommentMethod(cb1, path.getCBar(), ms,doc);
+      ClassB res=AddDocumentation.addDocumentationOnMethod(cb1, path.getCBar(), ms,doc);
       TestHelper.assertEqualExp(expected,res);
       }
     else{
-      try{AddComment.addCommentMethod(cb1, path.getCBar(), ms,doc);fail("error expected");}
+      try{AddDocumentation.addDocumentationOnMethod(cb1, path.getCBar(), ms,doc);fail("error expected");}
       catch(Resources.Error err){
         ClassB res=(ClassB)err.unbox;
         TestHelper.assertEqualExp(expected,res);
@@ -75,11 +75,11 @@ public class TestAddComment {
     Doc doc=Doc.factory(_doc);
     ClassB expected=getClassB(_expected);
     if(!isError){
-      ClassB res=AddComment.addComment(cb1, path.getCBar(),doc);
+      ClassB res=AddDocumentation.addDocumentationOnNestedClass(cb1, path.getCBar(),doc);
       TestHelper.assertEqualExp(expected,res);
       }
     else{
-      try{AddComment.addComment(cb1, path.getCBar(),doc);fail("error expected");}
+      try{AddDocumentation.addDocumentationOnNestedClass(cb1, path.getCBar(),doc);fail("error expected");}
       catch(Resources.Error err){
         ClassB res=(ClassB)err.unbox;
         TestHelper.assertEqualExp(expected,res);

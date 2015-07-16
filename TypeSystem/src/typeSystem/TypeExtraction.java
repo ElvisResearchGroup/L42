@@ -57,7 +57,7 @@ public class TypeExtraction {
       if(cb==null){continue;}
       if(cb.getStage()==Stage.None && IsCompiled.of(cb)){esNone.add(cb);}
     }
-    if(!esNone.isEmpty()){return null;}//esNone exists solely to simpler testing, 
+    if(!esNone.isEmpty()){return null;}//esNone exists solely to simpler testing,
     Stage stage=stage(p,classB,es);
     assert stage!=Stage.Star;
     assert stage!=Stage.None;
@@ -75,7 +75,11 @@ public class TypeExtraction {
       try{es.add(p1.extract(pi));}
       catch(ErrorMessage.ProgramExtractOnMetaExpression meta){es.add(null);}
       catch(ErrorMessage.ProgramExtractOnWalkBy walk){ }
-      } 
+      catch(ErrorMessage.PathNonExistant incomplete){
+        //TODO: booh what here? not throw error to allows more flexible composition
+        //operators on incomplete code
+      }
+      }
     collectInnerClasses(classB,es);
     return es;
   }
@@ -90,7 +94,7 @@ public class TypeExtraction {
         throw new ErrorMessage.InvalidMethodImplemented(inh.getMs(),(MethodImplemented)m,classB,p.getInnerData());
         }
       }
-    
+
     ClassB result=new ClassB(classB.getDoc1(),classB.getDoc2(),classB.isInterface(),sup,members,Stage.Star);
     return result;
   }
@@ -109,8 +113,8 @@ public class TypeExtraction {
     }
     throw new InternalError.ETDeepNotApplicable();
   }
-  
-  
+
+
   /**return null for impossible to compute*/
   static Ast.Stage stage(Program p,ClassB cb,List<ClassB>es/*can have nulls*/){
     assert IsCompiled.of(cb);
@@ -125,7 +129,7 @@ public class TypeExtraction {
       if(cbi.getStage()==Stage.Plus){return Stage.Plus;}
     }
     return null;//can not be computed
-   }  
+   }
   /**return null for impossible to compute*/
   static ClassB inherited(Program p,ClassB cb){
     assert IsCompiled.of(cb);
@@ -140,7 +144,7 @@ public class TypeExtraction {
         boolean failFast=inheritedSinglePath(p, cb, paths, members, original,p2, pi);
         if(failFast){return null;}
       }
-      catch( ErrorMessage.ProgramExtractOnMetaExpression ignored){return null;}      
+      catch( ErrorMessage.ProgramExtractOnMetaExpression ignored){return null;}
     }
     checkOriginals(p, cb, original);
     return new ClassB(Doc.empty(),Doc.empty(),false,paths,members,Ast.Stage.Star);
@@ -184,7 +188,7 @@ public class TypeExtraction {
   }
 
   //static boolean isCt(ClassB cb);
-  
+
   //--------------------
   //--------------------
   public static List<ExpCore.ClassB.Member> composeComma(List<ExpCore.ClassB.Member> a,List<ExpCore.ClassB.Member> b){
@@ -193,7 +197,7 @@ public class TypeExtraction {
       if(Program.getIfInDom(b,m).isPresent()){throw new ast.ErrorMessage.ImpossibleToCompose(a,b);}
       result.add(m);
     }
-    return result;    
+    return result;
   }
   public static List<ExpCore.ClassB.Member> composeUnion(List<ExpCore.ClassB.Member> a,List<ExpCore.ClassB.Member> b){
     List<ExpCore.ClassB.Member> result=new  ArrayList<ExpCore.ClassB.Member>();
@@ -218,10 +222,10 @@ public class TypeExtraction {
       if(other.isPresent()){continue;}
       result.add(m);
       }
-    return result;    
+    return result;
   }
-  
-  
+
+
   /*public static List<ClassB> collectInnerClasses(ClassB cb) {
     List<ClassB>result=new ArrayList<>();
     collectInnerClasses(cb,result);

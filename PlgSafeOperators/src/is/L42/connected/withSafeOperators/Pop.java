@@ -21,15 +21,14 @@ class Pop {
   static ClassB pop(ClassB cb) throws Resources.Error/*BoxError,AmbiguousPop*/{
     boolean rightSize=cb.getMs().size()==1;
     ExtractInfo.checkBox(cb,Collections.emptyList());
-    if(!rightSize){throw Resources.Error.multiPartStringError(
-        "AmbiguousPop",
-        "numberOfNestedClasses",""+cb.getMs().size());
+    if(!rightSize){throw Errors42.errorAmbiguousPop(cb);
     }
     cb=(ClassB)new Pop1From().visit(cb);
     ClassB.NestedClass nc = (ClassB.NestedClass)cb.getMs().get(0);
     ClassB res=(ClassB)nc.getInner();
     return res;
   }
+
   static class Pop1From extends CloneWithPath{
     public ExpCore visit(Path s) {
       int nLessK=s.outerNumber() - getPath().size();

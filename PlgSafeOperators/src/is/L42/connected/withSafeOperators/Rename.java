@@ -24,7 +24,7 @@ import auxiliaryGrammar.Norm;
 import auxiliaryGrammar.Program;
 
 public class Rename {
-  static ClassB fullRenameClass(Program p,ClassB cb,List<String> src,List<String> dest){
+  public static ClassB renameClass(Program p,ClassB cb,List<String> src,List<String> dest){
     Errors42.checkExistsPathMethod(cb, src, Optional.empty());
     if(src.equals(dest)){return cb;}
     if(src.equals(Path.outer(0))){//push is asked
@@ -35,7 +35,7 @@ public class Rename {
     //encoding: push result, rename tmp, rename dest, pop
     return null;//TODO: finish, but normalization issues have precendence here
   }
-  static ClassB renameClass(Program p,ClassB cb,List<String> src,List<String> dest){
+  public static ClassB renameClassStrict(Program p,ClassB cb,List<String> src,List<String> dest){
   /*
   errors:
   src is prefix of dest
@@ -56,7 +56,7 @@ public class Rename {
     newCb=ClassOperations.normalizePaths(newCb,Collections.emptyList());
     return Sum.normalizedTopSum(p, clearCb, newCb);
   }
-  static ClassB renameMethod(Program p,ClassB cb,List<String> path,MethodSelector src,MethodSelector dest){
+  public static ClassB renameMethod(Program p,ClassB cb,List<String> path,MethodSelector src,MethodSelector dest){
     /*
     errors:
     path.src does not exists
@@ -81,7 +81,7 @@ public class Rename {
     ms.add(IntrospectionAdapt.encapsulateIn(dest, cb,docCb[0]));
     return new ClassB(Doc.empty(),Doc.empty(),false,Collections.emptyList(),ms,Stage.None);
   }
-  public static ClassB renameUsage(List<String>src,List<String>dest, ClassB cb) {
+  static ClassB renameUsage(List<String>src,List<String>dest, ClassB cb) {
     return (ClassB)cb.accept(new coreVisitors.CloneWithPath(){
       public ExpCore visit(Path s) {
         if(s.isPrimitive()){return s;}
