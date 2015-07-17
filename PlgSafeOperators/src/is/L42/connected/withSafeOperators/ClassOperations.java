@@ -64,7 +64,6 @@ public class ClassOperations {
     List<PathMxMx> mapMx = ConsistentRenaming.makeMapMxConsistent(cb,cpn.mapMx);
     cb=IntrospectionAdapt.applyMapMx(emptyP,cb,mapMx);
     cb=IntrospectionAdapt.applyMapPath(emptyP,cb,cpn.mapPath);
-    //TODO: make normalization for paths to top level or to smaller level?
     return cb;
   }
   static ClassB normalizePaths(ClassB cb,List<String> outer){
@@ -79,17 +78,17 @@ public class ClassOperations {
     assert !s.isPrimitive();
     assert s.outerNumber()<=path.size();
     List<String>result=new ArrayList<>();
-    result.addAll(path.subList(0,s.outerNumber()));
+    result.addAll(path.subList(0,path.size()-s.outerNumber()));
     result.addAll(s.getCBar());
     return result;
   }
   static Path normalizePath(List<String>whereWeAre,int outerN,List<String>cs){
-    whereWeAre=whereWeAre.subList(outerN, whereWeAre.size());
+    List<String> whereWeAreLoc=whereWeAre.subList(whereWeAre.size()-outerN, whereWeAre.size());
     int i=0;
     while(true){
       if(i>=cs.size()){break;}
-      if(i>=whereWeAre.size()){break;}
-      if(!cs.get(i).equals(whereWeAre.get(i))){break;}
+      if(i>=whereWeAreLoc.size()){break;}
+      if(!cs.get(i).equals(whereWeAreLoc.get(i))){break;}
       i+=1;
     }
     return Path.outer(outerN-i,cs.subList(i,cs.size()));

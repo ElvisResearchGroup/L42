@@ -89,7 +89,7 @@ public class Rename {
     assert !dest.isEmpty();
     Doc[] docCb=new Doc[]{Doc.empty()};
     ClassB cb=Program.extractCBar(src, lprime,docCb);
-    Path toFrom=Path.outer(src.size()-1,dest.subList(0,dest.size()-1));
+    Path toFrom=Path.outer(dest.size()-1,src.subList(0,src.size()-1));
     cb=(ClassB)FromInClass.of(cb, toFrom);
     List<Member>ms=new ArrayList<>();
     ms.add(IntrospectionAdapt.encapsulateIn(dest, cb,docCb[0]));
@@ -102,7 +102,7 @@ public class Rename {
         assert s.isCore();
         if(s.outerNumber()>getPath().size()){return s;}
         List<String>topView=ClassOperations.toTop(getPath(),s);
-        if(topView.equals(src)){return ClassOperations.normalizePath(getPath(),0,dest);}
+        if(topView.equals(src)){return ClassOperations.normalizePath(getPath(),getPath().size(),dest);}
         return s;
         }
        });

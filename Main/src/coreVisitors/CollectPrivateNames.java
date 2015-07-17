@@ -27,57 +27,16 @@ public class CollectPrivateNames extends CloneVisitor{
     CollectPrivateNames cdv=new CollectPrivateNames();
     e.accept(cdv);
     return cdv;
-  }
-  /*public ExpCore visit(ClassB s) {
-    if(isPrivate(s.getDoc2())){
-      if(!(s.getH() instanceof Ast.ConcreteHeader)){return super.visit(s);}
-      Ast.ConcreteHeader h=(Ast.ConcreteHeader)s.getH();
-      
-      List<String>names=new ArrayList<>();
-      List<String>namesPr=new ArrayList<>();
-     for(FieldDec f:h.getFs()){
-       names.add(f.getName());
-       namesPr.add(Functions.freshName(f.getName(),L42.usedNames));
-       }
-      String name=h.getName();
-      String namePr=Functions.freshName(h.getName(),L42.usedNames);
-      //constructor
-      mapMx.add(new PathMxMx(Path.outer(0, cs),
-          new MethodSelector(name,names),
-          new MethodSelector(namePr,namesPr)
-          ));
-      {int i=-1;for(String ni:names){i+=1;
-        String npi=namesPr.get(i);
-        boolean isVari=h.getFs().get(i).isVar();
-        //getter
-        mapMx.add(new PathMxMx(Path.outer(0, cs),
-            new MethodSelector(ni,Collections.emptyList()),
-            new MethodSelector(npi,Collections.emptyList())
-            ));
-        //exposer
-        mapMx.add(new PathMxMx(Path.outer(0, cs),
-            new MethodSelector("#"+ni,Collections.emptyList()),
-            new MethodSelector("#"+npi,Collections.emptyList())
-            ));
-        //setter
-        if(isVari){
-          mapMx.add(new PathMxMx(Path.outer(0, cs),
-              new MethodSelector(ni,new ArrayList<>(Arrays.asList("that"))),
-              new MethodSelector(npi,new ArrayList<>(Arrays.asList("that")))
-              ));
-        }
-      }}      
-      }
-    return super.visit(s);
-  }*/
+  } 
   public NestedClass visit(NestedClass nc){
     cs.add(nc.getName());
     try{
       if(nc.getDoc().isPrivate()){
         Path name=Path.outer(0, cs);
         Path privateName=Functions.freshPathName(name,L42.usedNames);
-        //Path privateName=name.popC().pushC(_privateName);
-        mapPath.add(new PathPath(name,privateName));
+        if(!name.equals(privateName)){//depending on how we clean up private names, == can happens
+          mapPath.add(new PathPath(name,privateName));
+        }
       }
       return  super.visit(nc);
       }
@@ -87,7 +46,10 @@ public class CollectPrivateNames extends CloneVisitor{
     }
   public ClassB.MethodWithType visit(ClassB.MethodWithType mt){
     if(!mt.getDoc().isPrivate()){ return super.visit(mt);}
-    mapMx.add(new PathMxMx(Path.outer(0, cs),mt.getMs(),usePrivateNames(mt.getMs())));
+    MethodSelector msPr = usePrivateNames(mt.getMs());
+    if(!msPr.equals(mt.getMs())){//depending on how we clean up private names, == can happens
+      mapMx.add(new PathMxMx(Path.outer(0, cs),mt.getMs(),msPr));
+    }
     return super.visit(mt);    
     }
   private MethodSelector usePrivateNames(MethodSelector ms) {

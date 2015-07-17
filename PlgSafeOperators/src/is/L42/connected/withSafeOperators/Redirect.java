@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import coreVisitors.FromInClass;
+import facade.Configuration;
 import introspection.FindUsage;
 import introspection.IntrospectionAdapt;
 import is.L42.connected.withSafeOperators.ExtractInfo.ClassKind;
@@ -30,7 +31,7 @@ public class Redirect {
   public static ClassB redirect(Program p,ClassB cb, Path internal,Path external){
     //call redirectOk, if that is ok, no other errors?
     //should cb be normalized first?
-    p=p.addAtTop(cb);//TODO: is it ok? if so add in docs
+    p=p.addAtTop(Configuration.typeSystem.typeExtraction(p, cb));//TODO: is it ok? if so add in docs
     List<PathPath>toRedirect=redirectOk(Collections.emptyList(),p,cb,internal,external);
     return IntrospectionAdapt.applyMapPath(p,cb,toRedirect);
   }

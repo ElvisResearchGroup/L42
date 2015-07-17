@@ -112,10 +112,12 @@ public interface Ast {
   @Value /*@ToString(exclude="n")*/ public class Path implements Expression, ExpCore, Atom{
     int n;List<String> rowData;
     private Path(int n,List<String> rowData){
+      assert !rowData.get(0).contains("-"):rowData;//as in Outer-1 :-(
       rowData=Collections.unmodifiableList(rowData);
       this.n=n;this.rowData=rowData;
     }
     public Path(List<String> rowData){
+      assert !rowData.get(0).contains("-"):rowData;//as in Outer-1 :-(
       rowData=Collections.unmodifiableList(rowData);
       this.rowData=rowData;
       String start=this.rowData.get(0);

@@ -34,6 +34,7 @@ class Pop {
 
   static class Pop1From extends CloneWithPath{
     public ExpCore visit(Path s) {
+      if(s.isPrimitive()){return s;}
       int nLessK=s.outerNumber() - getPath().size();
       if(nLessK>0){//is looking out
         return s.setNewOuter(s.outerNumber()-1);

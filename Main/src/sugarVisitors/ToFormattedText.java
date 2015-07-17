@@ -538,6 +538,9 @@ public class ToFormattedText implements Visitor<Void>{
 
   @Override
   public Void visit(Path path) {
+    if(Path.Any()==path){return c("Any");}
+    if(Path.Library()==path){return c("Library");}
+    if(Path.Void()==path){return c("Void");}
     StringBuilders.formatSequence(this.result,path.getRowData().iterator(),
         "::",s->c(s));
     return null;

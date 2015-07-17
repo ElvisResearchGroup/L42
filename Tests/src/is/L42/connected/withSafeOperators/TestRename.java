@@ -7,6 +7,7 @@ import helpers.TestHelper;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -94,6 +95,27 @@ public class TestRename {
   }
   
   //-----
+  @Test
+  public void testToTop() {
+    List<String> res = ClassOperations.toTop(Arrays.asList(),Path.parse("Outer0::A"));
+    Assert.assertEquals(res,Arrays.asList("A"));
+    res = ClassOperations.toTop(Arrays.asList(),Path.parse("Outer0::A::B"));
+    Assert.assertEquals(res,Arrays.asList("A","B"));
+    res = ClassOperations.toTop(Arrays.asList("C"),Path.parse("Outer1::A::B"));
+    Assert.assertEquals(res,Arrays.asList("A","B"));
+    res = ClassOperations.toTop(Arrays.asList("C"),Path.parse("Outer0::A::B"));
+    Assert.assertEquals(res,Arrays.asList("C","A","B"));
+  }
+  @Test
+  public void testNormalizePath() {
+    Path res = ClassOperations.normalizePath(Arrays.asList(),0,Arrays.asList());
+    Assert.assertEquals(res,Path.outer(0));
+    res = ClassOperations.normalizePath(Arrays.asList("A"),1,Arrays.asList("B"));
+    Assert.assertEquals(res,Path.parse("Outer1::B"));
+    res = ClassOperations.normalizePath(Arrays.asList("B"),1,Arrays.asList("B"));
+    Assert.assertEquals(res,Path.parse("Outer0"));
+    
+  }
   @RunWith(Parameterized.class) public static class TestRenameClass {//add more test for error cases
     @Parameter(0) public String _cb1;
     @Parameter(1) public String _path1;
@@ -109,19 +131,19 @@ public class TestRename {
         }, {//        
         "{A:{}}","A","B","{B:{}}",false//
         }, {//        
-          "{A:{ type method type A m() A}}","A","B", "{B:{type method type B m() B}}"    ,false//
+          "{A:{ type method type A m() A}}","A","B", "{B:{type method type Outer0 m() Outer0}}"    ,false//
         }, {//        
-          "{A:{ type method type A m() {return A}}}","A","B", "{B:{type method type B m() {return B}}}"    ,false//
+          "{A:{ type method type A m() {return A}}}","A","B", "{B:{type method type Outer0 m() {return Outer0}}}"    ,false//
         }, {//        
-          "{A:{ method A ()} B:{foo()}}","A","B",  "{B:{ type method Outer0 foo()  method B ()}}"   ,false//
+          "{A:{ method A ()} B:{foo()}}","A","B",  "{B:{ type method Outer0 foo()  method Outer0 ()}}"   ,false//
         }, {//        
-          "{C:{A:{ method A ()}} B:{foo()}}","C::A","C::B",  "{C:{} B:{ type method Outer0 foo() method B ()  }}"    ,false//
+          "{C:{A:{ method A ()}} B:{foo()}}","C::A","B",  "{C:{} B:{ type method Outer0 foo() method Outer0 ()  }}"    ,false//
         }, {//        
-          "{D:{C:{A:{ method A ()}}} B:{foo()}}","D::C::A","B",  "{D:{C:{}} B:{ type method Outer0 foo()  method B ()}}"   ,false//
+          "{D:{C:{A:{ method A ()}}} B:{foo()}}","D::C::A","B",  "{D:{C:{}} B:{ type method Outer0 foo()  method Outer0 ()}}"   ,false//
         }, {//        
-          "{A:{ method A ()} C:{B:{foo()}}}","A","C::B",  "{C:{B:{ type method Outer0 foo() method C::B () }}}"   ,false//
+          "{A:{ method A ()} C:{B:{foo()}}}","A","C::B",  "{C:{B:{ type method Outer0 foo() method Outer0 () }}}"   ,false//
         }, {//        
-          "{A:{ method A ()} D:{C:{B:{foo()}}}}","A","D::C::B",  "{D:{C:{B:{  type method Outer0 foo()  method D::C::B ()}}}}"   ,false//
+          "{A:{ method A ()} D:{C:{B:{foo()}}}}","A","D::C::B",  "{D:{C:{B:{  type method Outer0 foo()  method Outer0 ()}}}}"   ,false//
         }, {//        ////
           "{ A:{ type method Outer1::B () } B:{ }}","A","Outer0", "{ B:{ } type method Outer0::B ()  }"    ,false//
         }, {//        
@@ -130,8 +152,6 @@ public class TestRename {
           "{ A1:{ A2:{ type method B () }} B:{ }}","A1::A2","A1",   "{ A1:{ type method B () } B:{ }}"   ,false//
         }, {//        
           "{ A1:{ A2:{ type method B () }} B:{ }}" ,"A1::A2","Outer0",  "{ A1:{ } B:{ } type method B () }"   ,false//
-        }, {//        
-          "{ A1:{ A2:{ type method B () } B:{ } }}","A","B",   "{ A1:{B:{ } type method B () }}"  ,false//
         }, {//        
           "{ A1:{ A2:{ type method B () } B:{ } }}","A1::A2","A1",  "{ A1:{B:{ } type method B () }}"   ,false//
         }, {//        
@@ -155,7 +175,7 @@ public class TestRename {
               ,"  TOpt:{interface }"
               ,"  TEmpty:{<:Outer1::TOpt}"
               ,"}}")    ,false//
-        }, {//        
+        }, {//        ////18
           helpers.TestHelper.multiLine(""
               ,"{ A:{mut(var mut Cell head)"
               ,"  Cell:{interface}"
