@@ -92,7 +92,8 @@ public class L42 {
       System.out.println("END (zero for success): "+res.getErrCode());
     }
     catch(ErrorMessage msg){
-      System.out.println(ErrorFormatter.formatError(msg).getErrorTxt());
+      //System.out.println(ErrorFormatter.formatError(msg).getErrorTxt());
+    	L42.printDebug(ErrorFormatter.formatError(msg).getErrorTxt());
       }
   }
 
