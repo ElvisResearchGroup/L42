@@ -1,0 +1,78 @@
+{'@plugin
+  'L42.is/connected/withSafeOperators
+  
+  type method '@private
+  S mkError(S that) S"Plugin SafeOperators not responsive: "++that
+  
+  type method
+  Library compose(Library left,Library right)
+    using Outer0
+      check compose(left:left,right:right)
+      error Outer0.mkError(S"compose")
+      
+  type method
+  Library renameClass(Library that,Path src, Path dest)
+    using Outer0
+      check renameClass(that
+        src:src.binaryRepr()
+        dest:dest.binaryRepr()
+        )
+      error Outer0.mkError(S"renameClass")
+  
+  type method
+  Library renameMethod(Library that,Path path,Selector src,Selector dest)
+    using Outer0
+      check renameMethod(that
+        path:path.binaryRepr()
+        src:src.binaryRepr()
+        dest:dest.binaryRepr()
+        )
+      error Outer0.mkError(S"renameMethod")
+  
+  type method
+  Library redirect(Library that,Path src, type Any dest)
+    using Outer0
+      check redirect(that
+        src:src.binaryRepr()
+        dest:dest
+        )
+      error Outer0.mkError(S"redirect")
+  
+  type method
+  Library removeImplementation(Library that,Path path)
+    using Outer0
+      check removeImplementation(that
+        path:path.binaryRepr()
+        )
+      error Outer0.mkError(S"removeImplementation(path)")
+  
+  type method
+  Library removeImplementation(Library that,Path path,Selector selector)
+    using Outer0
+      check removeImplementation(that
+        path:path.binaryRepr()
+        selector:selector.binaryRepr()
+        )
+      error Outer0.mkError(S"removeImplementation(path,selector)")
+    
+  type method
+  Library addDocumentation(Library that,Path path,Doc doc)
+    using Outer0
+      check addDocumentation(that
+        path:path.binaryRepr()
+        doc:doc.binaryRepr()
+        )
+      error Outer0.mkError(S"addDocumentation(path)")
+  
+  type method
+  Library addDocumentation(Library that,Path path,Selector selector,Doc doc)
+    using Outer0
+      check addDocumentation(that
+        path:path.binaryRepr()
+        selector:selector.binaryRepr()
+        doc:doc.binaryRepr()
+        )
+      error Outer0.mkError(S"addDocumentation(path,selector)")
+    
+  }
+  

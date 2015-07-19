@@ -225,7 +225,7 @@ public class WellFormedness {
       m.match(
         nc->{
           if(usedNestedClassNames.contains(nc.getName())){
-            throw new ErrorMessage.NotWellFormed(s,null, "Some nested class name is repeated");
+            throw new ErrorMessage.NotWellFormed(s,null, "Some nested class name is repeated: "+nc.getName()+" "+usedNestedClassNames);
             }
           //All nested class names $\C$ in a class must be unique.
           usedNestedClassNames.add(nc.getName());

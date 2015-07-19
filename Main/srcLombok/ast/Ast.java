@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import sugarVisitors.Desugar;
+import tools.Assertions;
 import ast.Ast.Doc;
 import ast.Ast.MethodSelector;
 import lombok.ToString;
@@ -199,13 +200,26 @@ public interface Ast {
   public static Path Void(){return _Void;}
   public static Path Any(){return _Any;}
   public static Path Library(){return _Library;}
+  public static List<String> parseValidCs(String cs){
+   if(cs.equals("Outer0")){return Collections.emptyList();}
+   List<String> rowData=Collections.unmodifiableList(Arrays.asList(cs.split("::")));
+   for(String s:rowData){
+     if(s.startsWith("Outer")){throw Assertions.codeNotReachable("Invalid Path shape:"+cs);}
+     if(!isValidClassName(s)){throw Assertions.codeNotReachable("Invalid Path shape:"+cs);}
+     }
+    return rowData;
+  }
+  public static boolean isValidClassName(String name){
+    if(!isValidPathStart(name.charAt(0))){return false;}
+    for(int i=1;i<name.length();i++){
+      if(!isValidPathChar(name.charAt(i))){return false;}
+    }
+    return true;
+  }
   public static Path parse(String path) {
     List<String> rowData=Arrays.asList(path.split("::"));
     for(String s:rowData){
-      assert isValidPathStart(s.charAt(0));
-      for(int i=1;i<s.length();i++){
-        assert isValidPathChar(s.charAt(i));
-      }
+      assert isValidClassName(s);
     }
     return new Path(rowData);
   }

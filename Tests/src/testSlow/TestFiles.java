@@ -24,7 +24,12 @@ public class TestFiles {
 	}
 	@Test
 	public void testWithMissingMethod() throws InstantiationException, IllegalAccessException, ClassNotFoundException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IOException{
-		 L42.main(new String[]{"examples/WithMissingMethod.L42"});
+		 L42.main(new String[]{"dummy/WithMissingMethod.L42"});
 		 Assert.assertFalse(L42.record.toString().contains("line:-"));
 	}
+	 @Test
+	  public void testMissingReceiver() throws InstantiationException, IllegalAccessException, ClassNotFoundException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IOException{
+	     L42.main(new String[]{"dummy/UnknownVariableDotDotDot"});
+	     //Assert.assertFalse(L42.record.toString().contains("line:-"));
+	  }
 }

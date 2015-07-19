@@ -88,7 +88,17 @@ public class EncodingHelper{
     ClassB res = Configuration.typeSystem.typeExtraction(p,cb);
     return res;
     }
-  
+ 
+  public static Doc ensureExtractDoc(Object e) {
+    Doc res=extractDoc(e);
+    if (res==null ){throw new Resources.Error("InvalidClassB");}
+    return res;
+    }
+  public static Doc extractDoc(Object e) {
+    if(e instanceof Doc){return (Doc)e;}
+    if(e instanceof ClassB){return ((ClassB)e).getDoc1();}
+    return null;
+    }
   public static ClassB ensureExtractClassB(Object e) {
     ClassB res=extractClassB(e);
     if (res==null ){throw new Resources.Error("InvalidClassB");}
@@ -115,6 +125,11 @@ public class EncodingHelper{
     catch(NumberFormatException nfe){return null;}
     }
   
+  public static Path ensureExtractPathFromJava(Object e) {
+    Path res=extractPathFromJava(e);
+    if (res==null ){throw new Resources.Error("InvalidPath");}
+    return res;
+    }
   public static Ast.Path extractPathFromJava(Object e) {
     if(e instanceof Ast.Path){return (Ast.Path)e;}
     if(e instanceof Resources.Any){return Path.Any();}

@@ -1,0 +1,16 @@
+{_private() '@private
+  type method
+  Void (S that)
+    using Alu
+      check stringDebug(that.binaryRepr())
+      void
+      
+  type method
+  Void (S fileName, S content)
+    using Alu
+      check fileDebug(
+        fileName:fileName.binaryRepr(),
+        content:content.binaryRepr()
+        )
+      void
+  }

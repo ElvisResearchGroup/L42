@@ -1,0 +1,22 @@
+{ _private(Library _binaryRepr)<: S::ToS '@private
+  
+  type method Outer0 #stringParser(Library that) Outer0._private(_binaryRepr:that)
+    
+  method Library binaryRepr() this._binaryRepr()
+  
+  
+  method toS() S.#stringParser(this._binaryRepr())
+  
+      
+  method Bool != (S that) !(this==that)
+  
+  method
+  Bool == (S that) {
+    using Alu
+      check ifStringEqualDo(s1:this.binaryRepr(),s2:that.binaryRepr())
+      return Bool.true()
+    return Bool.false()
+    }
+  'we still need to add check validity, and fields name, list parameters, bool isOperator
+  'and ways to add/remove parameters
+  }
