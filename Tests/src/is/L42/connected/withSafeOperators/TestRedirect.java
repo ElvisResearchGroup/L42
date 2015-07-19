@@ -34,9 +34,28 @@ public static class TestRedirect1 {//add more test for error cases
       "{InnerA:{} B:{ method InnerA m(InnerA a) a}}","Outer0::InnerA","Outer1::A","{B:{ method Outer2::A m(Outer2::A a) a}}",false
     },{new String[]{"{A:{}}"},
         "{InnerA:{}  method InnerA m(InnerA a) a}","Outer0::InnerA","Outer1::A","{ method Outer1::A m(Outer1::A a) a}",false
+    },{new String[]{"{A2:{  }}","{A1:{  }}"}, // redirecting into one of multiple outer scopes
+        "{InnerA:{}  method InnerA m(InnerA a) a}","Outer0::InnerA","Outer1::A1","{ method Outer1::A1 m(Outer1::A1 a) a}",false
+    },{new String[]{"{A2:{  }}","{A1:{  }}"}, // redirecting into one of multiple outer scopes
+        "{InnerA:{}  method InnerA m(InnerA a) a}","Outer0::InnerA","Outer2::A2","{ method Outer2::A2 m(Outer2::A2 a) a}",false
 
-}});}
+    // the errors have variable portions.
+	// try to explore the cardinality space of the variable portions
+	//   for each error.
+    // the cardinality, or option space, of each parameter is listed in parentheses.
+    
+    // SourceUnfit: Path(1), PrivatePath(t/f), SrcKind(enum(9)), IncompatibleClasskind(t/f),
+    //   UnexpectedMethods(0..), UnexpectedImplementedInterfaces(0..)
+//    },
+ //   		{new String[]{"{A:{}}"},  // from private empty box
+  //    "{@Private InnerA:{}","Outer0::InnerA","Outer1::A","{errorSourceUnfit}",true
+    }
+    
+});}
+
 //},{"Outer2::D::C","Outer1::C",new String[]{"{A:{}}","{C:{}}","{D:##walkBy}"}
+
+  
 @Test  public void test() {
   TestHelper.configureForTest();
   Program p=TestHelper.getProgram(_p);
