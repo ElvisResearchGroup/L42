@@ -30,7 +30,7 @@
       error void )
  
   method N size () 
-    N(binaryRepr:using Alu
+    N(binaryRepr: using Alu
       check stringSize(this.binaryRepr())
       error void) 
       
@@ -41,14 +41,11 @@
     "(0N)
     
   method
-  S replace(S that, S into){'that must be of size 1
-    var N i=0N
-    var S result=S""
-    while i<this.size() (
-      if this(i)==that (result++=into )
-      else (result++=this(i))
-      i+=1N
-      )
-    return result
-    }
+  S replace(S that, S into)
+    S.#stringParser(using Alu
+      check stringReplace(this.binaryRepr(),
+        src:that.binaryRepr()
+        dest:into.binaryRepr())
+      error void)
+    
   }

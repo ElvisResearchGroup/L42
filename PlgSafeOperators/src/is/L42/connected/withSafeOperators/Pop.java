@@ -20,7 +20,7 @@ class Pop {
   //there is  not exactly 1 member
   static ClassB pop(ClassB cb) throws Resources.Error/*BoxError,AmbiguousPop*/{
     boolean rightSize=cb.getMs().size()==1;
-    ExtractInfo.checkBox(cb,Collections.emptyList());
+    ExtractInfo.checkBox(cb,cb,Collections.emptyList());
     if(!rightSize){throw Errors42.errorAmbiguousPop(cb); }
     return directPop(cb);
   }

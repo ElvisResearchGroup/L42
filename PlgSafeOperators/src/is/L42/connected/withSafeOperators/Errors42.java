@@ -25,13 +25,13 @@ import auxiliaryGrammar.Program;
 public class Errors42 {
 
   //"SourceUnfit", caused by redirect
-  public static Error errorSourceUnfit(List<String> current,ExtractInfo.ClassKind kindSrc,List<Member>unexpected,boolean headerOk,List<Path>unexpectedInterfaces,boolean isPrivate){
+  public static Error errorSourceUnfit(List<String> current,ExtractInfo.ClassKind kindSrc,ExtractInfo.ClassKind kindDest,List<Member>unexpected,boolean headerOk,List<Path>unexpectedInterfaces,boolean isPrivate){
       return Resources.Error.multiPartStringError("SourceUnfit",
           "Path",""+Path.outer(0,current), //the path of the class that can not be redirected
           "PrivatePath",""+isPrivate,//the path can not be redirected since is private
           "SrcKind",kindSrc.name(),//the kind of the class at path
-          //"DestKind",kind.name(),//the kind of the class at dest//TODO: I do not know how to get it :(
-          "IncompatibleClassKind",""+!headerOk,//if the path can not be redirected because of their respective kinds.//TODO: This information would make no sense if I can get the kind for dest!
+          "DestKind",kindDest.name(),
+          //"IncompatibleClassKind",""+!headerOk,//if the path can not be redirected because of their respective kinds. This information would make no sense if I can get the kind for dest!
           "UnexpectedMethods",""+ExtractInfo.showMembers(unexpected),//methods that are not present in dest (or present but with different declared vs Interface implemented status)
           "UnexpectedImplementednterfaces",""+unexpectedInterfaces//interfaces implemented in path but not in dest
           //TODO: I would like to give also the destination path, but by being an external path I'm troubled.
@@ -107,9 +107,10 @@ public class Errors42 {
         "numberOfNestedClasses",""+cb.getMs().size());
   }
   //"NotBox", caused by pop if the top level is not of box kind
-  static Error errorNotBox(ClassB cb, List<String> meth, Set<Path> used,ExtractInfo.ClassKind kind) {
+  static Error errorNotBox(ClassB cb, List<MethodSelector> meth, Set<Path> used,ExtractInfo.ClassKind kind) {
     return Resources.Error.multiPartStringError("NotBox",
         "UsedBy",""+used,
+        "Supertypes",""+cb.getSupertypes(),
         "ContainsMethods",""+meth,
         "ActualKind",""+kind.name());
   }

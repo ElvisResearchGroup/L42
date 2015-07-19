@@ -32,7 +32,7 @@ public class Rename {
     }
     if(dest.isEmpty() && src.size()==1){//pop is asked
       boolean rightSize=cb.getMs().size()==1;
-      if(rightSize && ExtractInfo.isBox(cb,Collections.emptyList())){
+      if(rightSize && ExtractInfo.isBox(cb,cb,Collections.emptyList())){
         return Pop.pop(cb);
         }//otherwise, proceed with encoding
     }

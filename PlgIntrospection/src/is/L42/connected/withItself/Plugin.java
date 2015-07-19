@@ -361,7 +361,7 @@ public class Plugin implements PluginType{
       ExpCore result=IntrospectionSum.sum(l1, l2,Path.outer(0));
     return result;
   }
-  public static ExpCore validateResult(Program p, ExpCore result,ClassB l1,ClassB l2,Path path) {
+  public static ExpCore _validateResult(Program p, ExpCore result,ClassB l1,ClassB l2,Path path) {
     if(!(result instanceof ClassB)){return result;}
     boolean strict=true;
     if(l1!=null){

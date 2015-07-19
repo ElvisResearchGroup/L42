@@ -33,6 +33,7 @@ public class TestPop {//add more test for error cases
   },{"{B:{(Outer0::C a,Outer1 b,Outer2::C c ) C:{}}}",
     "{Kind:{'@stringU\n'NotBox\n}"
     +"UsedBy:{'@stringU\n'[Outer0::B]\n}"
+    +"Supertypes:{'@stringU\n'[]\n}"
     +"ContainsMethods:{'@stringU\n'[]\n}"
     +"ActualKind:{'@stringU\n'TemplateModule\n}}",true
 }});}

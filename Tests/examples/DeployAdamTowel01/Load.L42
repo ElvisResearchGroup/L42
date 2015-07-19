@@ -1,0 +1,11 @@
+{
+  type method Outer0 #begin()'constructor
+  method Outer0 #end() this
+  method Library < (Library that) {
+    'assume that have abstract Bool N and S
+    return Adapt[
+      Path"S" into:S;' this should cause redirect of N, ToS, Bool
+      Path"Debug" into:Debug;
+    ]<that
+    }
+}

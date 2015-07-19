@@ -52,6 +52,7 @@ public class Plugin implements PluginType{
       ClassB that=ensureExtractClassB(_that);
       List<String> src=Path.parseValidCs(ensureExtractStringU(_src));
       Path dest=ensureExtractPathFromJava(_dest);
+      dest=dest.setNewOuter(dest.outerNumber()+1);//TODO: see if extractPath should be changed
       return Redirect.redirect(Resources.getP(),that,Path.outer(0,src),dest);      
       }
     @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})

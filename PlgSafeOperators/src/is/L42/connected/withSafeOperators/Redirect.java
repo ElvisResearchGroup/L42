@@ -31,6 +31,7 @@ public class Redirect {
   public static ClassB redirect(Program p,ClassB cb, Path internal,Path external){
     //call redirectOk, if that is ok, no other errors?
     //should cb be normalized first?
+    assert external.outerNumber()>0;
     p=p.addAtTop(Configuration.typeSystem.typeExtraction(p, cb));//TODO: is it ok? if so add in docs
     List<PathPath>toRedirect=redirectOk(Collections.emptyList(),p,cb,internal,external);
     return IntrospectionAdapt.applyMapPath(p,cb,toRedirect);
@@ -56,11 +57,11 @@ public class Redirect {
     Boolean isFreeInterface=null;
     Boolean isBox=null;
     if(!headerOk && l0.isInterface()){
-      isFreeInterface=ExtractInfo.isFreeInterface(l, cs);
+      isFreeInterface=ExtractInfo.isFreeInterface(l,l0, cs);
       if(isFreeInterface){headerOk=true;}
     }
     if(!headerOk && !l0.isInterface()){
-      isBox=ExtractInfo.isBox(l, cs);
+      isBox=ExtractInfo.isBox(l,l0, cs);
       if(isBox){headerOk=true;}
     }
     //(c) S,Cs->Path;p|-L[Paths=~Paths']:S'
@@ -85,8 +86,10 @@ public class Redirect {
     if(isOk){return result;}
     List<Path>unexpectedInterfaces=new ArrayList<>(unexpectedI);
     Collections.sort(unexpectedInterfaces,(pa,pb)->pa.toString().compareTo(pb.toString()));
-    ClassKind kind = ExtractInfo.classKind(l,cs,l0, isBox, isFreeInterface, isPrivateState, isNoImplementation);
-    throw Errors42.errorSourceUnfit(currentPP.getPath1().getCBar(), kind,unexpectedMembers, headerOk, unexpectedInterfaces, isPrivate);
+    ClassKind kindSrc = ExtractInfo.classKind(l,cs,l0, isBox, isFreeInterface, isPrivateState, isNoImplementation);
+    ClassKind kindDest = ExtractInfo.classKind(null,null,l0Dest,null,null,null,null);
+    throw Errors42.errorSourceUnfit(currentPP.getPath1().getCBar(),
+        kindSrc,kindDest,unexpectedMembers, headerOk, unexpectedInterfaces, isPrivate);
   }
   private static Set<Path> redirectOkImpl(List<PathPath> s, PathPath currentPP, Program p, ClassB l, List<Path> paths, List<Path> pathsPrime, List<PathPath> result) {
     //(paths ok)//and I can not use it for exceptions since opposite subset relation

@@ -182,26 +182,6 @@ Outer1::Bool #right(Outer0 that) this.#leftequal(that:that).#bang()
 method 
 Outer1::Bool #rightequal(Outer0 that) this.#left(that:that).#bang()}
 S:{<:Outer0::ToS
-Varresult0:{
-type method 
-mut Outer0 #apply(Outer1^inner'@consistent
-) 
-mut method '@consistent
-Void inner(Outer1 that) 
-mut method '@consistent
-Outer1 #inner() 
-read method '@consistent
-Outer1 inner() }
-Vari0:{
-type method 
-mut Outer0 #apply(Outer2::N^inner'@consistent
-) 
-mut method '@consistent
-Void inner(Outer2::N that) 
-mut method '@consistent
-Outer2::N #inner() 
-read method '@consistent
-Outer2::N inner() }
 type method '@private
 Outer0 _private(Library^_binaryRepr'@consistent
 ) 
@@ -246,50 +226,7 @@ Outer0 doubleQuote() Outer0.#stringParser(that:{'@stringU
 '0
 }))
 method 
-Outer0 replace(Outer0 that, Outer0 into) (
-  Void unused=('that must be of size 1
-  
-    Outer1::N i=Outer1::N.#numberParser(that:{'@stringU
-    '0
-    })
-    Outer0 result=Outer0.#stringParser(that:{'@stringU
-    })
-    mut Outer0::Vari0 vari=Outer0::Vari0.#apply(inner:i)
-    mut Outer0::Varresult0 varresult=Outer0::Varresult0.#apply(inner:result)
-    Void unused0=(
-      Void unused2=loop (
-        Void unused3=vari.#inner().#left(that:this.size()).#checkTrue()
-        (
-          Void unused4=(
-            Outer0::#apply(that ) ::#equalequal(that ) cond=this.#apply(that:vari.#inner()).#equalequal(that:that)
-            (
-              Void unused5=cond.#checkTrue()
-              catch exception unused6 (
-                on Void varresult.inner(that:varresult.#inner().#plusplus(that:this.#apply(that:vari.#inner())))
-                )
-              varresult.inner(that:varresult.#inner().#plusplus(that:into))
-              )
-            )
-          vari.inner(that:vari.#inner().#plus(that:Outer1::N.#numberParser(that:{'@stringU
-          '1
-          })))
-          )
-        )
-      catch exception unused7 (
-        on Void void
-        )
-      void
-      )
-    Void unused1=return varresult.#inner()
-    void
-    )
-  catch return result0 (
-    on Outer0 result0
-    )
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
-  }
-  )}
+Outer0 replace(Outer0 that, Outer0 into) Outer0.#stringParser(that:using Outer1::Alu check stringReplace(that:this.binaryRepr(), src:that.binaryRepr(), dest:into.binaryRepr()) error void)}
 IntrospectionPlugin:{'@plugin
 'L42.is/connected/withItself
 
@@ -353,8 +290,6 @@ Library adapter(Outer1::S nameDest, Outer1::S nameSrc) (
   )}
 LinkedList:{
 ListCode:{
-type method '@private
-Outer0 _private() 
 type method 
 Library #apply() {' generic linked list class, elements of type Elem
 
@@ -692,27 +627,16 @@ Outer1::Elem #inner() this.that().#inner()
 read method 
 Void #close() void}}}
 type method 
-Library list(type Any that) (
-  Void unused=(
-    Outer1::IntrospectionPlugin::typeNameToAdapter(that ) map=Outer1::IntrospectionPlugin.typeNameToAdapter(that:that)
-    Outer1::IntrospectionPlugin::nameToAdapter(that ) tRen=Outer1::IntrospectionPlugin.nameToAdapter(that:Outer1::S.#stringParser(that:{'@stringU
-    'Elem
-    }).binaryRepr())
-    Void unused0=return this.list(adapter:Outer1::IntrospectionPlugin.adaptLib(l1:map, l2:tRen))
-    void
-    )
-  catch return result (
-    on Library result
-    )
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
-  }
-  )
-type method 
-Library list(Library adapter) Outer1::IntrospectionPlugin.adaptLib(l1:Outer0::ListCode.#apply(), l2:adapter)}
+Library list(type Any that) using Outer0::SafeOperatorsAccess check redirect(that:Outer0::ListCode.#apply(), src:Outer1::S.#stringParser(that:{'@stringU
+'Elem
+}).binaryRepr(), dest:that) error Outer1::S.#stringParser(that:{'@stringU
+'redirectNotResponsiveInsideLinkedList
+})
+SafeOperatorsAccess:'@private
+{'@plugin
+'L42.is/connected/withSafeOperators
+}}
 Debug:{
-type method '@private
-Outer0 _private() 
 type method 
 Void #apply(Outer1::S that) using Outer1::Alu check stringDebug(that:that.binaryRepr()) void
 type method 
@@ -826,4 +750,33 @@ Library addDocumentation(Library that, Outer1::Path path, Outer1::Doc doc) using
 type method 
 Library addDocumentation(Library that, Outer1::Path path, Outer1::Selector selector, Outer1::Doc doc) using Outer0 check addDocumentation(that:that, path:path.binaryRepr(), selector:selector.binaryRepr(), doc:doc.binaryRepr()) error Outer0.mkError(that:Outer1::S.#stringParser(that:{'@stringU
 'addDocumentation(path,selector)
-}))}}
+}))}
+Introspection:{
+type method ' 1 path -> printable
+' 2 path -> kind
+' 3 path, n -> give subPath n
+' 4 path, n -> give selector n
+' 5 path, n-> give interfacePath if internal
+' 6 path, n-> give interfacePath type Any if external
+' 7 path,sel-> kind
+' 8 path,sel-> printable
+' 9 path, sel, n->give         mdf //-1..-k for exceptions, 0 for return, 1-n for parameters
+'10 path, sel, n->give         path if internal
+'11 path, sel, n->give         type Any if external
+'12 path, sel, n->give         ph
+'13 path, sel, n->give         historic pedex
+'docs stuff?    
+'docs have their own repr, should type have a repr? (repr of internal historicalT?)
+'Operator that resolve a specific scheletal type: path, methodselector, parNumber 0..n
+'or solving all that can be solved? errors hell here?
+Outer0 #apply(Library^that'@consistent
+, Outer1::S^node'@consistent
+) 
+mut method '@consistent
+Library #that() 
+read method '@consistent
+Library that() 
+mut method '@consistent
+Outer1::S #node() 
+read method '@consistent
+Outer1::S node() }}

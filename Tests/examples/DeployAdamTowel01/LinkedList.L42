@@ -1,19 +1,13 @@
 {
-  ListCode: {
-   _private()'@private
-   type method Library () ...
-   }
+  ListCode: { type method Library () ... }
    
   type method
-  Library list(type Any that){ 
-    map=IntrospectionPlugin.typeNameToAdapter(that) 'TODO: use IntrospectionPlugin.adapt
-    tRen=IntrospectionPlugin.nameToAdapter(S"Elem".binaryRepr())
-    'If I remove this. from under, I get a stupid error msg
-    ' vars MUST have positions too :(
-    return this.list(adapter:IntrospectionPlugin.adaptLib(l1:map,l2:tRen))
+  Library list(type Any that)
+    using SafeOperatorsAccess
+      check redirect(ListCode(),src:S"Elem".binaryRepr(),dest:that)  
+      error S"redirectNotResponsiveInsideLinkedList"
+  SafeOperatorsAccess:'@private
+    {'@plugin
+    'L42.is/connected/withSafeOperators
     }
-    
-  type method
-  Library list(Library adapter)
-    IntrospectionPlugin.adaptLib(l1:ListCode(),l2:adapter)
   }

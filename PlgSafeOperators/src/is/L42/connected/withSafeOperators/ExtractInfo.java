@@ -66,24 +66,27 @@ public class ExtractInfo {
   }
   //path member is not a nestedclass
   //path is used
-  public static boolean checkBox(ClassB topCb,List<String> path,boolean justFalse) throws Resources.Error/*NotBox*/{
-    ClassB cb=Program.extractCBar(path, topCb);
-    List<String> meth=new ArrayList<>();
-    for(ClassB.Member m:cb.getMs()){
-      m.match(nc->false, mi->meth.add(mi.getS().toString()), mt->meth.add(mt.getMs().toString()));
-      }
-    Set<Path> used = ExtractInfo.IsUsed.of(cb,Path.outer(0,path));
-    if(meth.isEmpty()&& used.isEmpty() && !cb.isInterface()){return true;}
+  public static boolean checkBox(ClassB top,ClassB cb,List<String> path,boolean justFalse) throws Resources.Error/*NotBox*/{
+    List<MethodSelector> meth = collectDeclaredMethods(cb);
+    Set<Path> used = ExtractInfo.IsUsed.of(top,Path.outer(0,path));
+    if(meth.isEmpty()&& used.isEmpty() && !cb.isInterface() && cb.getSupertypes().isEmpty()){return true;}
     if(justFalse){return false;}
     throw Errors42.errorNotBox(cb, meth, used,classKind(cb,Collections.emptyList(),cb,false,null,null,null));
   }
 
-  public static void checkBox(ClassB cb,List<String> path) throws Resources.Error/*NotBox*/{ checkBox(cb, path,false);}
-  public static boolean isBox(ClassB cb,List<String> path){return checkBox(cb, path,true);}
-  public static boolean isFreeInterface(ClassB topCb,List<String> path){
-    ClassB cb=Program.extractCBar(path, topCb);
+  private static List<MethodSelector> collectDeclaredMethods(ClassB cb) {
+    List<MethodSelector> meth=new ArrayList<>();
+    for(ClassB.Member m:cb.getMs()){
+      m.match(nc->false, mi->meth.add(mi.getS()), mt->meth.add(mt.getMs()));
+      }
+    return meth;
+  }
+
+  public static void checkBox(ClassB top,ClassB cb,List<String> path) throws Resources.Error/*NotBox*/{ checkBox(top,cb, path,false);}
+  public static boolean isBox(ClassB top,ClassB cb,List<String> path){return checkBox(top, cb,path,true);}
+  public static boolean isFreeInterface(ClassB top,ClassB cb,List<String> path){
     if(!cb.isInterface()){return false;}
-    Set<Path> used = ExtractInfo.IsImplemented.of(cb,Path.outer(0,path));
+    Set<Path> used = ExtractInfo.IsImplemented.of(top,Path.outer(0,path));
     if(used.isEmpty()){ return true;}
     return false;
   }
@@ -95,10 +98,24 @@ public class ExtractInfo {
       mt->(mt.getInner().isPresent())?"ImplementedMethod":"AbstractMethod");
   }
 
-  public static enum ClassKind{Box,Interface,FreeInterface,CloseClass,OpenClass,Template/*,PureRecord*/,Module,TemplateModule;}
+  public static enum ClassKind{
+    Box,
+    Interface,
+    FreeInterface,
+    CloseClass,
+    OpenClass,
+    Template/*,PureRecord*/,
+    Module,
+    TemplateModule,
+    Interface_FreeInterface,
+    Box_TemplateModule
+    ;}
+  //top can be null, in this case we can return the mixed kinds
   public static ClassKind classKind(ClassB top, List<String> current,ClassB cb,Boolean isBox,Boolean isFreeI,Boolean isPrivateState,Boolean isNoImplementation){//9 options
+   assert (top==null)==(current==null);
     if(cb.isInterface()){
-      if(isFreeI==null){isFreeI=ExtractInfo.isFreeInterface(top,current);}
+      if(isFreeI==null && top==null){return ClassKind.Interface_FreeInterface;}
+      if(isFreeI==null){isFreeI=ExtractInfo.isFreeInterface(top,cb,current);}
       if(isFreeI){return ClassKind.FreeInterface;}
       return ClassKind.Interface;
     }//not interface, 7 options left
@@ -106,10 +123,15 @@ public class ExtractInfo {
     if(isPrivateState==null){isPrivateState=hasPrivateState(cb);}
     if(isPrivateState){return ClassKind.CloseClass;}//6 options left
     if(isNoImplementation==null){isNoImplementation=isNoImplementation(cb);}
-    if(isBox==null){isBox=isBox(top,current);}
-    if(isBox){return ClassKind.Box;}//5 options left
+    if(isBox==null && top!=null){isBox=isBox(top,cb,current);}
+    if(isBox!=null &&isBox){return ClassKind.Box;}//5 options left
     if(isModule(cb)){
-      if(isNoImplementation){return ClassKind.TemplateModule;}
+      if(isNoImplementation){
+        if(top==null && collectDeclaredMethods(cb).isEmpty()){
+          return ClassKind.Box_TemplateModule;
+          }
+        return ClassKind.TemplateModule;
+        }
       return ClassKind.Module;
       }//3 options left template, openclass and pure record left
     if(!isNoImplementation){return ClassKind.OpenClass;}
@@ -130,10 +152,10 @@ public class ExtractInfo {
    boolean twoPrivateState=privateA &&privateB;
    boolean isAllOk=confl.isEmpty() && !twoPrivateState && currentA.isInterface()==currentB.isInterface();
    if (isAllOk){return currentA.isInterface();}//code under is slow
-   boolean boxA=ExtractInfo.isBox(topA,current);//!privateA && would make it faster, but harder to test
-   boolean boxB=ExtractInfo.isBox(topB,current);//same for the rest
-   boolean freeInterfA=ExtractInfo.isFreeInterface(topA,current);
-   boolean freeInterfB=ExtractInfo.isFreeInterface(topB,current);
+   boolean boxA=ExtractInfo.isBox(topA,currentA,current);//!privateA && would make it faster, but harder to test
+   boolean boxB=ExtractInfo.isBox(topB,currentB,current);//same for the rest
+   boolean freeInterfA=ExtractInfo.isFreeInterface(topA,currentA,current);
+   boolean freeInterfB=ExtractInfo.isFreeInterface(topB,currentB,current);
    boolean isClassInterfaceSumOk=boxA||boxB ||freeInterfA ||freeInterfB;
    isAllOk=confl.isEmpty() && !twoPrivateState && isClassInterfaceSumOk;
    if (isAllOk){return boxA  || boxB;}

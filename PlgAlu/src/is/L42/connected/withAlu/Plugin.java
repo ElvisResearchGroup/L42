@@ -131,4 +131,11 @@ public class Plugin implements PluginType {
     if(!s1.equals(s2)){return Resources.Void.instance;}
     throw Resources.notAct;
   }
+  @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+  public Object MstringReplace£xthat£xsrc£xdest(Object _that,Object _src,Object _dest){
+    String that=ensureExtractStringU(_that);
+    String src=ensureExtractStringU(_src);
+    String dest=ensureExtractStringU(_dest);
+    return that.replace(src, dest);    
+  }
 }
