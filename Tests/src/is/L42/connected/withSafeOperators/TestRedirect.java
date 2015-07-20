@@ -38,6 +38,10 @@ public static class TestRedirect1 {//add more test for error cases
         "{InnerA:{}  method InnerA m(InnerA a) a}","Outer0::InnerA","Outer1::A1","{ method Outer1::A1 m(Outer1::A1 a) a}",false
     },{new String[]{"{A2:{  }}","{A1:{  }}"}, // redirecting into one of multiple outer scopes
         "{InnerA:{}  method InnerA m(InnerA a) a}","Outer0::InnerA","Outer2::A2","{ method Outer2::A2 m(Outer2::A2 a) a}",false
+    },{new String[]{"{A2:{ A2n:{}  }}","{A1:{ A1n:{}  }}"}, // redirecting into nested classes
+        "{InnerA:{}  method InnerA m(InnerA a) a}","Outer0::InnerA","Outer1::A1::A1n","{ method Outer1::A1::A1n m(Outer1::A1::A1n a) a}",false
+    },{new String[]{"{A2:{ A2n:{}  }}","{A1:{ A1n:{}  }}"}, // redirecting into nested classes
+        "{InnerA:{}  method InnerA m(InnerA a) a}","Outer0::InnerA","Outer2::A2::A2n","{ method Outer2::A2::A2n m(Outer2::A2::A2n a) a}",false
 
     // the errors have variable portions.
 	// try to explore the cardinality space of the variable portions
@@ -46,9 +50,17 @@ public static class TestRedirect1 {//add more test for error cases
     
     // SourceUnfit: Path(1), PrivatePath(t/f), SrcKind(enum(9)), IncompatibleClasskind(t/f),
     //   UnexpectedMethods(0..), UnexpectedImplementedInterfaces(0..)
-//    },
- //   		{new String[]{"{A:{}}"},  // from private empty box
-  //    "{@Private InnerA:{}","Outer0::InnerA","Outer1::A","{errorSourceUnfit}",true
+
+    },{new String[]{"{A:{ }}"},  // from private empty box
+        "{InnerA:'@private\n{} }","Outer0::InnerA","Outer1::A",
+        "{"+"Kind:{'@stringU\n'SourceUnfit\n}"
+           +"Path:{'@stringU\n'Outer0::InnerA\n}"
+           +"PrivatePath:{'@stringU\n'true\n}"
+           +"SrcKind:{'@stringU\n'Box\n}"
+           +"DestKind:{'@stringU\n'Box_TemplateModule\n}"
+           +"UnexpectedMethods:{'@stringU\n'[]\n}"
+           +"UnexpectedImplementednterfaces:{'@stringU\n'[]\n}"
+        + "}",true
     }
     
 });}
