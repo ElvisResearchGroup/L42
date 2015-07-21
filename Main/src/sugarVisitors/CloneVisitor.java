@@ -58,7 +58,9 @@ public class CloneVisitor implements Visitor<Expression>{
     return new FieldDec(f.isVar(),liftT(f.getT()),f.getName(),liftDoc(f.getDoc()));
   }
   protected Doc liftDoc(Doc doc) {
-    return doc.withPaths(Map.of(pi->(Path)this.visit(pi),doc.getPaths()));
+    return doc.withAnnotations(Map.of(ann->{
+      if(ann instanceof Path){return this.visit((Path)ann);}
+      return ann;},doc.getAnnotations()));
   }
   protected ast.Ast.BlockContent liftBC(ast.Ast.BlockContent c) {
     List<VarDec> liftVarDecs = liftVarDecs(c.getDecs());

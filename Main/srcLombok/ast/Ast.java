@@ -243,15 +243,23 @@ public interface Ast {
   }
   @Value @Wither public static class Doc{
     String s;
-    List<Path>paths;
+    List<Object>annotations;
+    public List<Path>getPaths(){
+      List<Path> result=new ArrayList<>();
+      for(Object o:annotations){if(o instanceof Path){result.add((Path)o);}}
+      return result;
+    }
     public boolean isPrivate(){
         if(this.toString().startsWith("@private")){return true;}
         //TODO: parsing required for more precision
         return false;
       }
+    public static Doc factory(Path single){
+      return new Doc("%s",Collections.singletonList((Object)single));
+    }
     public static Doc factory(String s){
       if(!s.endsWith("\n")){s+="\n";}
-      List<Path> paths=new ArrayList<>();
+      List<Object> annotations=new ArrayList<>();
       StringBuilder sb=new StringBuilder();
       for(int i=0;i<s.length();i++){
         char ci=s.charAt(i);
@@ -260,35 +268,41 @@ public interface Ast {
         else{//ci=='@'
           char next='\n';
           if(i+1<s.length()){next=s.charAt(i+1);}
-          if(!Path.isValidPathStart(next)){sb.append(ci);continue;}
-          sb.append("%s");i=readPath(s,i+1,paths);
+          if(next==':' ||Path.isValidPathChar(next)){ sb.append("%s");i=readPath(s,i+1,annotations); }
+          else{throw Assertions.codeNotReachable("invalid use of @ in |"+next+"| "+s);}//if(!Path.isValidPathStart(next)){sb.append(ci);continue;}
           }
         }
-      return new Doc(sb.toString(),paths);
+      return new Doc(sb.toString(),annotations);
     }
     private static final Doc empty=new Doc("",Collections.emptyList());
     public static Doc empty(){return empty;}
     public String toString(){
-      List<String> paths=new ArrayList<>();
-      for(Path pi:this.paths){
-        paths.add("@"+sugarVisitors.ToFormattedText.of(pi));
+      List<Object> paths=new ArrayList<>();
+      for(Object pi:this.annotations){
+        if(pi instanceof Path){
+          paths.add("@"+sugarVisitors.ToFormattedText.of((Path)pi));
+          }
+        else{paths.add("@"+(String)pi);}
       }
 
       return String.format(this.s,paths.toArray());
     }
     public boolean isEmpty(){return this.s.isEmpty();}
     public Doc sum(Doc that){
-      List<Path>ps=new ArrayList<>(this.paths);
-      ps.addAll(that.paths);
+      List<Object>ps=new ArrayList<>(this.annotations);
+      ps.addAll(that.annotations);
       return new Doc(this.s+that.s,ps);
     }
-    private static int readPath(String s,int start,List<Path>paths){
+    private static int readPath(String s,int start,List<Object>paths){
       StringBuilder sb=new StringBuilder();
       for(int i=start;i<s.length();i++){
         char ci=s.charAt(i);
         if(ci==':' ||Path.isValidPathChar(ci)){sb.append(ci);}
         else{
-          paths.add(Path.parse(sb.toString()));
+          if(Path.isValidPathStart(s.charAt(start))){
+            paths.add(Path.parse(sb.toString()));
+            }
+          else { paths.add(sb.toString());}
           return start+i;
         }
       }
