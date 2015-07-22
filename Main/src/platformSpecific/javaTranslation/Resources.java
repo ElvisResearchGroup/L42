@@ -75,6 +75,10 @@ public class Resources {
       //assert !u.getClass().getName().startsWith("generated.Program42$");
       unbox=u;}
     public static Error multiPartStringError(String kind,Object ... map){
+      ExpCore.ClassB cb = multiPartStringClassB(kind, map);
+      return new Error(cb);
+      }
+    public static ExpCore.ClassB multiPartStringClassB(String kind, Object... map) throws java.lang.Error {
       List<ExpCore.ClassB.Member> ms=new ArrayList<>();
       assert map.length%2==0;
       ms.add(new ExpCore.ClassB.NestedClass(Doc.empty(),"Kind", EncodingHelper.wrapStringU(kind)));
@@ -89,8 +93,8 @@ public class Resources {
         ms.add(new ExpCore.ClassB.NestedClass(Doc.empty(), cName, inner));
       }
       ExpCore.ClassB cb=new ExpCore.ClassB(Doc.empty(), Doc.empty(), false, Collections.emptyList(), ms,Stage.None);
-      return new Error(cb);
-      }
+      return cb;
+    }
     }
   @SuppressWarnings("serial")
   public static class Exception extends RuntimeException{
