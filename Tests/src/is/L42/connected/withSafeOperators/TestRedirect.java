@@ -53,27 +53,34 @@ public static class TestRedirect1 {//add more test for error cases
     
     // SourceUnfit: Path(1), PrivatePath(t/f), SrcKind(enum(9)), IncompatibleClasskind(t/f),
     //   UnexpectedMethods(0..), UnexpectedImplementedInterfaces(0..)
-
-    },{new String[]{"{A:{ }}"},  // from private empty box
-        "{InnerA:'@private\n{} }","Outer0::InnerA","Outer1::A",
+    },{new String[]{"{A:{ }}"},  // from module with an unexpected function
+        "{InnerA:{type method Void fun()} }","Outer0::InnerA","Outer1::A",
         "{"+"Kind:{'@stringU\n'SourceUnfit\n}"
-           +"Path:{'@stringU\n'Outer0::InnerA\n}"
-           +"PrivatePath:{'@stringU\n'true\n}"//TODO: we have to discuss about what should be the error here
-           +"SrcKind:{'@stringU\n'Box\n}"
+           +"SrcPath:{'@stringU\n'Outer0::InnerA\n}"
+           +"DestExternalPath:{'@stringU\n" +
+               "'NEED ANOTHER FACTORY METHOD" + "\\u000a" + "\n}" //TODO: we have to discuss about what should be the error here
+           +"PrivatePath:{'@stringU\n'false\n}"
+           +"SrcKind:{'@stringU\n'TemplateModule\n}"
            +"DestKind:{'@stringU\n'Box_TemplateModule\n}"
-           +"UnexpectedMethods:{'@stringU\n'[]\n}"
+           +"UnexpectedMethods:{'@stringU\n'[fun]\n}"
            +"UnexpectedImplementednterfaces:{'@stringU\n'[]\n}"
         + "}",true
     },{new String[]{"{A:{ }}"},  // same test as above, using new mechanism
-        "{InnerA:'@private\n{} }","Outer0::InnerA","Outer1::A",
-        ec.load("SourceUnfit", "Path", "### must be changed ###",
-                "PrivatePath", "true", "SrcKind", "Box",
+        "{InnerA:{type method Void fun()} }","Outer0::InnerA","Outer1::A",
+        ec.load("SourceUnfit",
+                "SrcPath", "### must be changed ###",
+                "DestExternalPath", "### anything sensible please #####",
+                "PrivatePath", "false",
+                "SrcKind", "TemplateModule",
                 "DestKind", "Box_TemplateModule",
-                "UnexpectedMethods", "[]",
+                "UnexpectedMethods", "[fun]",
 //                "UnexpectedImplementedInterfaces", "[]"
                   "UnexpectedImplementednterfaces", "[]"
                 )
-          .set("Path", "Outer0::InnerA").str(), true
+          .set("SrcPath", "Outer0::InnerA",
+               "DestExternalPath", "NEED ANOTHER FACTORY METHOD\\u000a"
+)
+          .str(), true
     }
 });}
 

@@ -232,14 +232,20 @@ public class TestHelper {
       while (setItr.hasNext() && parmItr.hasNext()) {
         String nextSet = setItr.next();
         String nextVal = setItr.next();
-        
+
+        //System.out.println("looking for '"+nextSet+"'");
         while (parmItr.hasNext()) {
           Boolean match = (nextSet.equals(parmItr.next()));
           parmItr.next();
-          if (match)
+          if (match) {
+            //System.out.println("Putting '"+nextVal+"' in '"+nextSet+"'");
             parmItr.set(nextVal);
+            break;
+          }
         }
       }
+      
+      assert(!setItr.hasNext());  // some element was out of order or didn't match at all
       return this;
     }
   }
