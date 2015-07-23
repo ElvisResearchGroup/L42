@@ -32,6 +32,21 @@ public static class TestAbstractMeth {//add more test for error cases
   },{"{B:{ method Void m(Any x) void}}","B","m(x)","{B:{ method Void m(Any x)}}",false
   },{"{ method Void m(Any x) void}","Outer0","m(x)","{ method Void m(Any x)}",false
   },{"{C:{B:{ method Void m(Any x) void}}}","C::B","m(x)","{C:{B:{ method Void m(Any x)}}}",false
+  },{"{ method Void m()}","Outer0","m()","{ method Void m()}",false
+  },{"{B:{ method Void m(Any x) void}}", "C", "m(x)",
+	  "{Kind:{'@stringU\n'InexistentPath\n}"+
+	  "Path:{'@stringU\n'Outer0::C\n}}",
+	  true
+  },{"{B:{ method Void m(Any x) void}}", "B", "k()",
+	  "{Kind:{'@stringU\n'InexistentMethod\n}"+
+	  "Path:{'@stringU\n'Outer0::B\n}"+
+	  "Selector:{'@stringU\n'k()\n}}",
+	  true
+  },{"{B:{ method Void m(Any x) void}}", "B", "m()",
+	  "{Kind:{'@stringU\n'InexistentMethod\n}"+
+	  "Path:{'@stringU\n'Outer0::B\n}"+
+	  "Selector:{'@stringU\n'm()\n}}",
+	  true
 }});}
 @Test  public void test() {
   ClassB cb1=getClassB(_cb1);
@@ -63,10 +78,10 @@ public static class TestAbstractClass {//add more test for error cases
   public static List<Object[]> createData() {
     return Arrays.asList(new Object[][] {
     {"{B:{ method Void m() void}}","B","{B:{ method Void m()}}",false
-  },{"{B:{ method '@private\n Void m() void}}","B","{B:{}}",false 
+  },{"{B:{ method '@private\n Void m() void}}","B","{B:{}}",false
   },{"{B:{ method Void m(Any x) void}}","B","{B:{ method Void m(Any x)}}",false
   },{"{ method Void m(Any x) void}","Outer0","{ method Void m(Any x)}",false
-  },{"{B:{ method '@private\n Void m() void method Void n() void}}","B","{B:{ method Void n()}}",false 
+  },{"{B:{ method '@private\n Void m() void method Void n() void}}","B","{B:{ method Void n()}}",false
   },{"{ method '@private\n Void m(Any x) void}","Outer0","{}",false
   },{"{C:{B:{ method Void m(Any x) void}}}","C::B","{C:{B:{ method Void m(Any x)}}}",false
   },{"{C:{B:{ method '@private\n  Void m(Any x) void}}}","C::B","{C:{B:{}}}",false
@@ -74,7 +89,9 @@ public static class TestAbstractClass {//add more test for error cases
 	  "C::B",
 	  "{C:{B:{ method Void m(Any x)}}}",
 	  false
-	  
+
+  },{"{B:{interface method Void m()}}","B","{B:{interface method Void m()}}",false
+  },{"{B:{interface method Void m() void}}","B","{B:{interface method Void m()}}",false
   },{"{C:{B:{ A:'@private\n{} }}}","C","{C:{B:{}}}",false
   },{"{C:{B:{ A:'@private\n{} }}}","C::B","{C:{B:{}}}",false
   },{"{C:{B:'@private\n{}}}","C","{C:{}}",false
