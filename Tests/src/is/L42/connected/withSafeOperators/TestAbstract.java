@@ -63,21 +63,58 @@ public static class TestAbstractClass {//add more test for error cases
   public static List<Object[]> createData() {
     return Arrays.asList(new Object[][] {
     {"{B:{ method Void m() void}}","B","{B:{ method Void m()}}",false
+  },{"{B:{ method '@private\n Void m() void}}","B","{B:{}}",false 
   },{"{B:{ method Void m(Any x) void}}","B","{B:{ method Void m(Any x)}}",false
   },{"{ method Void m(Any x) void}","Outer0","{ method Void m(Any x)}",false
+  },{"{B:{ method '@private\n Void m() void method Void n() void}}","B","{B:{ method Void n()}}",false 
+  },{"{ method '@private\n Void m(Any x) void}","Outer0","{}",false
   },{"{C:{B:{ method Void m(Any x) void}}}","C::B","{C:{B:{ method Void m(Any x)}}}",false
-  },{"{C:{B:{ method Void m(Any x) void  method '@private\nVoid foo() void }}}","C::B","{C:{B:{ method Void m(Any x)}}}",false
+  },{"{C:{B:{ method '@private\n  Void m(Any x) void}}}","C::B","{C:{B:{}}}",false
+  },{"{C:{B:{ method Void m(Any x) void  method '@private\nVoid foo() void }}}",
+	  "C::B",
+	  "{C:{B:{ method Void m(Any x)}}}",
+	  false
+	  
+  },{"{C:{B:{ A:'@private\n{} }}}","C","{C:{B:{}}}",false
+  },{"{C:{B:{ A:'@private\n{} }}}","C::B","{C:{B:{}}}",false
+  },{"{C:{B:'@private\n{}}}","C","{C:{}}",false
+  },{"{C:{B:'@private\n{} D:{}}}","C","{C:{D:{}}}",false
+  },{"{C:{B:'@private\n{} D:{E:'@private\n{} }}}","C::D","{C:{B:'@private\n{} D:{}}}",false
+  },{"{C:{ method '@private\n Void m() void D:{E:'@private\n{} }}}",
+	  "C::D",
+	  "{C:{ method '@private\n Void m() void D:{}}}",
+	  false
+  },{"{C:{ method '@private\n Void m() void D:{method '@private\n Void m() void}}}",
+	  "C::D",
+	  "{C:{ method '@private\n Void m() void D:{}}}",
+	  false
+  
+  },{"{C:{ B:'@private\n{}}}","C::B",
+	  "{Kind:{'@stringU\n'PrivatePath\n}"+
+	  "Path:{'@stringU\n'Outer0::C::B\n}}",
+	  true
+	  
+  },{"{C:{}}","C::B",
+	  "{Kind:{'@stringU\n'InexistentPath\n}"+
+	  "Path:{'@stringU\n'Outer0::C::B\n}}",
+	  true
+  },{"{C:{}}","B",
+	  "{Kind:{'@stringU\n'InexistentPath\n}"+
+	  "Path:{'@stringU\n'Outer0::B\n}}",
+	  true
+	  
   },{"{C:{B:{ method Void m(Any x) void  method '@private\nVoid foo() void } D:{ method Void bar() B.foo() }}}",
 	  "C::B",
 	  "{Kind:{'@stringU\n'PrivacyCoupuled\n}"+
 	  "CoupuledPath:{'@stringU\n'[]\n}"+
-	  "CoupuledMethods:{'@stringU\n'[Outer2::C::B.foo]\n}}",true
+	  "CoupuledMethods:{'@stringU\n'[Outer2::C::B.foo]\n}}",
+	  true
   },{"{C:{B:'@private\n{} D:{ method B bar() void }}}",
 	  "C",
 	  "{Kind:{'@stringU\n'PrivacyCoupuled\n}"+
 	   "CoupuledPath:{'@stringU\n'[Outer0::C::B]\n}"+
-	   "CoupuledMethods:{'@stringU\n'[]\n}}"
-	  ,true
+	   "CoupuledMethods:{'@stringU\n'[]\n}}",
+	   true
 }});}
 @Test  public void test() {
   TestHelper.configureForTest();
