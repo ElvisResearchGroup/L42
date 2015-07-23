@@ -398,9 +398,7 @@ public static class TestStage3_notOk {
       public void testFail() {
         ExpCore e=Desugar.of(Parser.parse(null," "+_e)).accept(new InjectionOnCore());
         Program p=TestHelper.getProgram(program);
-        Type t2=TypeSystem.typecheckSure(false,p, new HashMap<>(),SealEnv.empty(),new ThrowEnv(), typeSugg, e);
-        //Assert.assertEquals(t2,expected);
-        //TestHelper.assertEqualExp(eRed,ee2);
+        TypeSystem.typecheckSure(false,p, new HashMap<>(),SealEnv.empty(),new ThrowEnv(), typeSugg, e);
       }
 
       }

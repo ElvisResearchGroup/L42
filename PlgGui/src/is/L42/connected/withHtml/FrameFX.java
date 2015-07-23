@@ -83,6 +83,7 @@ public class FrameFX {
     //executeScript *is syncronus*
     synchronized(dumbLock){dumbLock.notifyAll();}
   }
+  @SuppressWarnings("serial")
   public static class ApplicationDead extends Exception{}
   public static String getEventString() throws ApplicationDead{
     synchronized(eventCollector){

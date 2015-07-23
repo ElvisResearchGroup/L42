@@ -33,7 +33,7 @@ try to learn to use ACE for the IDE?
 
 public class PluginFX implements PluginType {
 //OLD, unused.
-  private static Ast.MethodType Mopen£that£title=mt(Path.Void(),Path.Library(),Path.Library());
+  public static Ast.MethodType Mopen£that£title=mt(Path.Void(),Path.Library(),Path.Library());
   @ActionType({ActionType.Type.Void,ActionType.Type.Library,ActionType.Type.Library})
   public Resources.Void Mopen£that£title(Object cb1,Object cb2){
     String s1=extractStringU(cb1);
@@ -42,7 +42,7 @@ public class PluginFX implements PluginType {
     FrameFX.open(s2,s1);
     return Resources.Void.instance;
   }
-  private static Ast.MethodType Mset£that£id=mt(Path.Void(),Path.Library(),Path.Library());
+  public static Ast.MethodType Mset£that£id=mt(Path.Void(),Path.Library(),Path.Library());
   @ActionType({ActionType.Type.Void,ActionType.Type.Library,ActionType.Type.Library})
   public  Resources.Void Mset£that£id(Object cb1,Object cb2){
     String s1=extractStringU(cb1);
@@ -59,7 +59,7 @@ public class PluginFX implements PluginType {
     assert res!=null;
     return res;
   }
-  private static Ast.MethodType MeventPending=mt(Path.Library());
+  public static Ast.MethodType MeventPending=mt(Path.Library());
   @ActionType({ActionType.Type.Library})
   public Object MeventPending(){
     try { return FrameFX.getEventString(); } 

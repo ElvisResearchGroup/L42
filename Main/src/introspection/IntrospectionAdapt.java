@@ -356,7 +356,7 @@ static Path add1Outer(Path p) {
     lprime=RenameUsage.of(pPrime,mapMx,lprime);
     ClassB l0=lprime;
     for(PathMxMx pp:mapMx){
-      l0=RemoveMethod.of(l0, pp.getPath(), pp.getMs1(),pp.getMs2());
+      l0=RemoveMethod.of(l0, pp.getPath(), pp.getMs1());
     }
     results.add(l0);
     for(PathMxMx pp:mapMx){

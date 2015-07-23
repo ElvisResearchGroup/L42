@@ -21,7 +21,7 @@ public class DeploySimpleLib {
     testLibUse();
   }
 
-  private static void testLibCreation() {
+  public static void testLibCreation() {
     try{
       FinalResult res = L42.runSlow(null,TestHelper.multiLine(""
 ,"          {reuse L42.is/deployMini"
@@ -67,7 +67,7 @@ public class DeploySimpleLib {
       System.out.println(ErrorFormatter.formatError(msg).getErrorTxt());
       }
   }
-  private static void testLibCreationGui() {
+  public static void testLibCreationGui() {
     try{
       FinalResult res = L42.runSlow(null,TestHelper.multiLine(""
 ,"          {reuse L42.is/deployMini"

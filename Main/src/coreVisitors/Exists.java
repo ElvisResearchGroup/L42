@@ -7,6 +7,7 @@ import ast.ExpCore;
 
 public class Exists extends CloneVisitor{
   Predicate<ExpCore> pred;
+  @SuppressWarnings("serial")
   private static class Found extends RuntimeException{}
   Exists(Predicate<ExpCore> pred){this.pred=pred;}
   public static boolean of(ExpCore e,Predicate<ExpCore>pred){

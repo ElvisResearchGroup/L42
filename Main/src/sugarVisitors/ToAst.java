@@ -79,11 +79,8 @@ public class ToAst extends AbstractVisitor<Expression>{
       MethodSelector s=new MethodSelector(name, names);
       List<Path> exceptions=new ArrayList<Path>();
       for(TerminalNode p:h.Path()){exceptions.add(Path.parse(p.getText()));}
-      Optional<Path> source=Optional.empty();
-      if(ctx.Path()!=null){source=Optional.of(Path.parse(ctx.Path().getText()));}//TODO: should eventually disappear
       Optional<Expression> inner=Optional.empty();
       if(ctx.eTopForMethod()!=null){inner=Optional.of(ctx.eTopForMethod().accept(ToAst.this));}
-      boolean isFieldGenerated=ctx.FieldSpecial()!=null;//TODO: should eventually disappear
       MethodType mt=new MethodType(doc2,mdf,ts,tdocs,returnType,exceptions);
       return new MethodWithType(doc1,s, mt, inner);
     }

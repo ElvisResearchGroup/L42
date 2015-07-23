@@ -320,7 +320,7 @@ public class Program {//mutable object now!
     return ct;
   }
   private static boolean checkFullyNormalized(ClassB cb) {
-    Stage s=cb.getStage();
+    //Stage s=cb.getStage();
     //if(s!=Stage.Star){return true;}
     for(Member m:cb.getMs()){
       m.match(

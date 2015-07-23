@@ -5,6 +5,7 @@ import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
 
 public class IsCtx extends CloneVisitor{
+  @SuppressWarnings("serial")
   private static class Found extends RuntimeException{}
   private IsCtx(){}
   public ExpCore visit(ClassB s) {return s;}

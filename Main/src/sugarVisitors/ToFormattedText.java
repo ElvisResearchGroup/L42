@@ -101,6 +101,7 @@ public class ToFormattedText implements Visitor<Void>{
     }
   //String atomIndent="  ";
   protected Void c(String s){result.append(s);return null;}
+  @SuppressWarnings("unused")
   private Void c(StringBuilder s){result.append(s);return null;}
   private Void sp(){result.append(" ");return null;}
   private Void separeFromChar(){

@@ -6,6 +6,7 @@ import ast.Expression;
 
 public class Exists extends CloneVisitor{
   Predicate<Expression> pred;
+  @SuppressWarnings("serial")
   private static class Found extends RuntimeException{}
   private Exists(Predicate<Expression> pred){this.pred=pred;}
   public static boolean of(Expression e,Predicate<Expression>pred){

@@ -28,7 +28,7 @@ public class CompiledStep extends SmallStep{
       ExpCore e1=_e1;
       e1=NormalizeBlocks.of(e1);
       if(e1 instanceof ExpCore.Signal){
-        ExpCore.Signal s=(ExpCore.Signal)e1;
+        //ExpCore.Signal s=(ExpCore.Signal)e1;
         //TODO: if(IsValue.of(p1,s.getInner())){//too hard to give great error here!
         throw new ErrorMessage.CtxExtractImpossible(e1,p1.getInnerData());
         //}

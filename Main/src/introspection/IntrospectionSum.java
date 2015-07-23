@@ -69,7 +69,6 @@ public class IntrospectionSum {
     throw fail("InvalidSumPerformed, interface can not become concrete since is internaly implemented");
     }
   private static List<Path> implementedInterfaces=null;//TODO: compute at the very start
-  private Path currentPath=null;//TODO: keep up to date while traversing
   public static void doubleSimmetricalMatch(List<Member> ms, Member m1,  Member m2,Path current) {
     m1.match(//match on the pre existing one
       nc1->{

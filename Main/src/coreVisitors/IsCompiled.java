@@ -5,6 +5,7 @@ import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
 
 public class IsCompiled extends CloneVisitor{
+  @SuppressWarnings("serial")
   private static class Found extends RuntimeException{}
   public ClassB.NestedClass visit(ClassB.NestedClass nc){
     if(nc.getInner() instanceof ClassB){
