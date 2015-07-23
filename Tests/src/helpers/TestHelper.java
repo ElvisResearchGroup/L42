@@ -5,6 +5,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Iterator;
+import java.util.ListIterator;
+
+import javax.print.DocFlavor.STRING;
 
 import org.junit.Assert;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
@@ -173,6 +177,71 @@ public class TestHelper {
   c1=c1.withMs(ms1);
   c2=c2.withMs(ms2);
   //TestHelper.assertEqualExp(c1, c2);
+  }
+  
+  public static class ErrorCarry {
+    /* When testing for errors,
+     * when the errors have many parameters,
+     * and adjacent errors share most of them,
+     * this class carries those parameters
+     * from test to test,
+     * and gives each test a formatted error string.
+     * 
+     * Because the presenting problem is the verbosity
+     * of typing all of the error parameters repeatedly,
+     * function names in this class put a premium on brevity.
+     */
+     
+    ArrayList<String> _parameters = null;
+    // invariant: even number of entries; category first then details
+     
+    public String str() {
+      StringBuffer result = new StringBuffer();
+      Iterator<String> itr = this._parameters.iterator();
+       
+      result.append("{");
+      while (itr.hasNext()) {
+        result.append(itr.next());
+        result.append(":{'@stringU\n'");
+        result.append(itr.next());
+        result.append("\n}");
+      }
+      result.append("}");
+      //System.out.println(result);
+      return result.toString();
+    }
+     
+    public ErrorCarry load(String kind, String ... parameters) {
+      assert(parameters.length %2 == 0);
+      _parameters = new ArrayList<String>();
+      _parameters.add("Kind");
+      _parameters.add(kind);
+      _parameters.addAll(Arrays.asList(parameters));
+      
+      return this;
+    }
+    
+    public ErrorCarry set(String ... parameters) {
+      /* set the values of some loaded parameters,
+       * which must be supplied in the same order as in the load().
+       */
+      assert(parameters.length %2 == 0);
+      Iterator<String> setItr = Arrays.asList(parameters).iterator();
+      
+      ListIterator<String> parmItr = _parameters.listIterator();
+      while (setItr.hasNext() && parmItr.hasNext()) {
+        String nextSet = setItr.next();
+        String nextVal = setItr.next();
+        
+        while (parmItr.hasNext()) {
+          Boolean match = (nextSet.equals(parmItr.next()));
+          parmItr.next();
+          if (match)
+            parmItr.set(nextVal);
+        }
+      }
+      return this;
+    }
   }
 
 }

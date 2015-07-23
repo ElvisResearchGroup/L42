@@ -1,6 +1,7 @@
 package is.L42.connected.withSafeOperators;
 
 import static helpers.TestHelper.getClassB;
+import helpers.TestHelper.ErrorCarry;
 import static org.junit.Assert.fail;
 import helpers.TestHelper;
 
@@ -29,6 +30,8 @@ public static class TestRedirect1 {//add more test for error cases
   @Parameter(5) public boolean isError;
   @Parameterized.Parameters
   public static List<Object[]> createData() {
+    ErrorCarry ec = new ErrorCarry();
+    
     return Arrays.asList(new Object[][] {
     {new String[]{"{A:{}}"},
       "{InnerA:{} B:{ method InnerA m(InnerA a) a}}","Outer0::InnerA","Outer1::A","{B:{ method Outer2::A m(Outer2::A a) a}}",false
@@ -61,8 +64,17 @@ public static class TestRedirect1 {//add more test for error cases
            +"UnexpectedMethods:{'@stringU\n'[]\n}"
            +"UnexpectedImplementednterfaces:{'@stringU\n'[]\n}"
         + "}",true
+    },{new String[]{"{A:{ }}"},  // same test as above, using new mechanism
+        "{InnerA:'@private\n{} }","Outer0::InnerA","Outer1::A",
+        ec.load("SourceUnfit", "Path", "### must be changed ###",
+                "PrivatePath", "true", "SrcKind", "Box",
+                "DestKind", "Box_TemplateModule",
+                "UnexpectedMethods", "[]",
+//                "UnexpectedImplementedInterfaces", "[]"
+                  "UnexpectedImplementednterfaces", "[]"
+                )
+          .set("Path", "Outer0::InnerA").str(), true
     }
-    
 });}
 
 //},{"Outer2::D::C","Outer1::C",new String[]{"{A:{}}","{C:{}}","{D:##walkBy}"}
