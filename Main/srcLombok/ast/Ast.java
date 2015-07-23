@@ -255,7 +255,7 @@ public interface Ast {
         return false;
       }
     public static Doc factory(Path single){
-      return new Doc("%s",Collections.singletonList((Object)single));
+      return new Doc("%s\n",Collections.singletonList((Object)single));
     }
     public static Doc factory(String s){
       if(!s.endsWith("\n")){s+="\n";}
@@ -268,7 +268,7 @@ public interface Ast {
         else{//ci=='@'
           char next='\n';
           if(i+1<s.length()){next=s.charAt(i+1);}
-          if(next==':' ||Path.isValidPathChar(next)){ sb.append("%s");i=readPath(s,i+1,annotations); }
+          if(next==':' ||Path.isValidPathChar(next)){ sb.append("%s");i=readAnnotation(s,i+1,annotations); }
           else{throw Assertions.codeNotReachable("invalid use of @ in |"+next+"| "+s);}//if(!Path.isValidPathStart(next)){sb.append(ci);continue;}
           }
         }
@@ -293,7 +293,7 @@ public interface Ast {
       ps.addAll(that.annotations);
       return new Doc(this.s+that.s,ps);
     }
-    private static int readPath(String s,int start,List<Object>paths){
+    private static int readAnnotation(String s,int start,List<Object>paths){
       StringBuilder sb=new StringBuilder();
       for(int i=start;i<s.length();i++){
         char ci=s.charAt(i);
@@ -303,7 +303,7 @@ public interface Ast {
             paths.add(Path.parse(sb.toString()));
             }
           else { paths.add(sb.toString());}
-          return start+i;
+          return i-1;
         }
       }
       paths.add(Path.parse(sb.toString()));

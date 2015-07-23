@@ -1,6 +1,7 @@
 package is.L42.connected.withSafeOperators;
 
 import platformSpecific.javaTranslation.Resources;
+import platformSpecific.javaTranslation.Translator;
 import sugarVisitors.ToFormattedText;
 import ast.Ast;
 import ast.ErrorMessage;
@@ -72,7 +73,7 @@ public class Introspection {
       });
     //TODO: doc exceptions should become a doc for each exception
     return Resources.Error.multiPartStringClassB("MemberInfo",
-      "Doc",liftDoc(path,doc[0]),
+      "Doc",liftDoc(path,doc[0],1),
       "ThisMdf",thisMdf[0],
       "key",key[0],//Selector/Path
       "ExceptionNumber",excNum[0],
@@ -96,9 +97,6 @@ public class Introspection {
     }
     assert memberN>0;
     Member mi = current.getMs().get(memberN-1);
-    //mi.match(
-    //   nc->{throw Resources.notAct;},//TODO: is this a good idea?
-    //   mi->{throw Resources.notAct;},//TODO: is this a good idea?make only parameters?
     if(!(mi instanceof MethodWithType)){throw Resources.notAct;}
     MethodWithType mwt=(MethodWithType)mi;
      Type ti = mwt.getMt().getReturnType();
@@ -126,32 +124,83 @@ public class Introspection {
       }
 
   private static String selectorsToString(List<MethodSelectorX> selectors) {
-    // TODO Auto-generated method stub
-    return null;
+    String result="";
+    for(MethodSelectorX msx:selectors){
+      result+="::"+msx.getMs().toString();
+      if(!msx.getX().isEmpty()){result+="::"+msx.getX();}
+    } 
+    return result;
   }
 
   private static ClassB typeReport(List<String> path, TypeKind kind, Mdf mdf, Mdf resMdf, Doc pi, Doc resPi, boolean ph, boolean resPh, String suffix, String parName, Doc doc, String allAsString) throws Error {
     return Resources.Error.multiPartStringClassB("TypeInfo",
-      "Kind",""+kind,//:Normal, Alias, AliasUnresolvable
+      "TypeKind",""+kind,//:Normal, Alias, AliasUnresolvable
       "Mdf",""+mdf,//:String
       "ResolvedMdf",""+resMdf,//:String
-      "Path",""+liftDoc(path,pi),//:Doc with one annotation, can be typeAny or not
-      "ResolvedPath",""+liftDoc(path,resPi),//:Doc with one annotation, can be typeAny or not
+      "Path",liftDoc(path,pi,1),//:Doc with one annotation, can be typeAny or not
+      "ResolvedPath",liftDoc(path,resPi,1),//:Doc with one annotation, can be typeAny or not
       "Ph",""+ph,//:Boolean
       "ResolvedPh",""+resPh,//:Boolean
       "Suffix",""+suffix,//:String (may be empty for not alias type)
       "ParName",""+parName,//String (empty for 0 ... -n)
-      "Doc",""+liftDoc(path,doc),//Doc
+      "Doc",liftDoc(path,doc,1),//Doc
       "AllAsString",""+allAsString//String
       );
-  }/*
-  4)extractDocAsString:Lib*,path,pathNumber,boolean_hardWrap->Library:String //error for number bigger than possible
-  //for type any generate some str repr, with 0 just gives you the whole doc
+  }
+  /*
+   Hard wrap: just wrap the content of the comment in @stringU
+   Soft wrap: if the content is already wrapped in @stringU, leave it as it is.
+   What should we do for @int32 and similar?
+    */
+  String extractDocAsString(ClassB that,List<String>path,int annNumber,boolean hardWrap){
+    Errors42.checkExistsPathMethod(that, path,Optional.empty());
+    ClassB current = Program.extractCBar(path, that);
+    Doc d=current.getDoc1();
+    d=liftDoc(path,d,0);
+    if(annNumber==0){
+      String result=d.toString();
+      if(hardWrap || !result.startsWith("@stringU\n")){result="@stringU\n"+result;}
+      return result;
+      }
+    if(d.getAnnotations().size()<annNumber){throw Resources.notAct;}
+    Object o=d.getAnnotations().get(annNumber-1);
+    return o.toString();
+  }
+  Path extractDocPath(ClassB that,List<String>path,int annNumber,boolean hardWrap){
+    Errors42.checkExistsPathMethod(that, path,Optional.empty());
+    ClassB current = Program.extractCBar(path, that);
+    Doc d=current.getDoc1();
+    d=liftDoc(path,d,0);
+    if(d.getAnnotations().size()<annNumber){throw Resources.notAct;}
+    Object o=d.getAnnotations().get(annNumber-1);
+    if(!(o instanceof Path)){throw Resources.notAct;}
+    //TODO: after is wrong, we need to use this kind of stuff.String s=Translator.nameOf((Path)o);
+    //test returning paths and then throw catch them,
+    //test especially difference between Library and Any.    
+    return (Path)o;
+  }
+  /*
   5)extractDocPath:Lib*,path, pathNumber ->typeAny //error for internal paths or number bigger than possible.
 */
+  //TODO: composition errors should be exceptions. This mean that <<, >>, ++, ** have to become right associative
 
-  private static Object liftDoc(List<String> path, Doc doc) {
-    // TODO Auto-generated method stub
-    return null;
+  private static Doc liftDoc(List<String> path, Doc doc,int newNested) {
+    //for all external paths (pi.outern>path.size) new outern=oldOutern-size+newNested
+    //for all internal paths(otherwise) becomes a ::string, normalized in path,
+    List<Object> ann=new ArrayList<>();
+    for(Object o:doc.getAnnotations()){
+      if(o instanceof String){ann.add(o);continue;}
+      assert o instanceof Path:o.getClass().getCanonicalName();
+      Path pi=(Path)o;
+      if(pi.isPrimitive()){ann.add(o);continue;}
+      if(pi.outerNumber()>path.size()){
+          o=pi.setNewOuter((pi.outerNumber()-path.size())+newNested);
+          ann.add(o);continue;
+          }
+      List<String>topPi=ClassOperations.toTop(path, pi);
+      o="::"+String.join("::",topPi);
+      ann.add(o);//continue;      
+    }
+    return doc.withAnnotations(ann);
   }
 }
