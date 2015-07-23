@@ -58,7 +58,7 @@ public static class TestRedirect1 {//add more test for error cases
         "{InnerA:'@private\n{} }","Outer0::InnerA","Outer1::A",
         "{"+"Kind:{'@stringU\n'SourceUnfit\n}"
            +"Path:{'@stringU\n'Outer0::InnerA\n}"
-           +"PrivatePath:{'@stringU\n'true\n}"
+           +"PrivatePath:{'@stringU\n'true\n}"//TODO: we have to discuss about what should be the error here
            +"SrcKind:{'@stringU\n'Box\n}"
            +"DestKind:{'@stringU\n'Box_TemplateModule\n}"
            +"UnexpectedMethods:{'@stringU\n'[]\n}"

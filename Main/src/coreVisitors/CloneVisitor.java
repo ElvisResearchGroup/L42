@@ -48,7 +48,9 @@ public class CloneVisitor implements Visitor<ExpCore>{
     return new Block.Dec(liftT(f.getT()),f.getX(),lift(f.getE()));
   }
   protected Doc liftDoc(Doc doc) {
-    return doc.withPaths(Map.of(pi->(Path)this.visit(pi),doc.getPaths()));
+    return doc.withAnnotations(Map.of(ann->{
+      if(ann instanceof Path){return this.visit((Path)ann);}
+      return ann;},doc.getAnnotations()));
   }
   protected Member liftM(Member m) {
     return m.match(

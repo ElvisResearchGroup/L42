@@ -175,10 +175,17 @@ public class Program {//mutable object now!
     return cb;
   }
   private static final Doc[] _trashCommentRef=new Doc[]{Doc.empty()};
+  private static final Boolean[] _trashIsPrivateRef=new Boolean[]{false};
   public static ClassB extractCBar(List<String> list, ClassB cb) {
-    return extractCBar(list, cb,_trashCommentRef);
+    return extractCBar(list, cb,_trashCommentRef,_trashIsPrivateRef);
   }
   public static ClassB extractCBar(List<String> list, ClassB cb,Doc[] commentRef) {
+    return extractCBar(list, cb,commentRef,_trashIsPrivateRef);
+  }
+  public static ClassB extractCBar(List<String> list, ClassB cb,Boolean[] isPrivateRef) {
+    return extractCBar(list, cb,_trashCommentRef,isPrivateRef);
+  }
+  public static ClassB extractCBar(List<String> list, ClassB cb,Doc[] commentRef,Boolean[]isPrivateRef) {
     assert cb!=null;
     for(String s:list){
       Optional<Member> optNc = Program.getIfInDom(cb.getMs(),s);
@@ -188,6 +195,7 @@ public class Program {//mutable object now!
       NestedClass nc=(NestedClass)optNc.get();
       ExpCore ec=nc.getInner();
       commentRef[0]=nc.getDoc();
+      isPrivateRef[0]|=nc.getDoc().isPrivate();
       if(ec instanceof ExpCore.WalkBy){
         throw new ErrorMessage.ProgramExtractOnWalkBy(null,new ArrayList<>(Arrays.asList(cb)));
         }

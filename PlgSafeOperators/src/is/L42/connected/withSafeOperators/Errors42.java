@@ -10,6 +10,7 @@ import java.util.Set;
 import platformSpecific.javaTranslation.Resources;
 import platformSpecific.javaTranslation.Resources.Error;
 import sugarVisitors.ToFormattedText;
+import ast.Ast.Doc;
 import ast.Ast.MethodSelector;
 import ast.Ast.Path;
 import ast.ErrorMessage;
@@ -25,10 +26,11 @@ import auxiliaryGrammar.Program;
 public class Errors42 {
 
   //"SourceUnfit", caused by redirect
-  public static Error errorSourceUnfit(List<String> current,ExtractInfo.ClassKind kindSrc,ExtractInfo.ClassKind kindDest,List<Member>unexpected,boolean headerOk,List<Path>unexpectedInterfaces,boolean isPrivate){
+  public static Error errorSourceUnfit(List<String> current,Path destExternalPath,ExtractInfo.ClassKind kindSrc,ExtractInfo.ClassKind kindDest,List<Member>unexpected,boolean headerOk,List<Path>unexpectedInterfaces,boolean isPrivate){
       return Resources.Error.multiPartStringError("SourceUnfit",
-          "Path",""+Path.outer(0,current), //the path of the class that can not be redirected
-          "PrivatePath",""+isPrivate,//the path can not be redirected since is private
+          "SrcPath",""+Path.outer(0,current), //the path of the class that can not be redirected
+          "DestExternalPath",""+Doc.factory("NEED ANOTHER FACTORY METHOD"), //the path of the class that can not be redirected
+          "PrivatePath",""+isPrivate,//the path can not be redirected since is private//TODO: should this be a "PrivatePath" error instead?
           "SrcKind",kindSrc.name(),//the kind of the class at path
           "DestKind",kindDest.name(),
           //"IncompatibleClassKind",""+!headerOk,//if the path can not be redirected because of their respective kinds. This information would make no sense if I can get the kind for dest!
@@ -68,10 +70,16 @@ public class Errors42 {
   static Error errorInvalidOnTopLevel() {
     return Resources.Error.multiPartStringError("InvalidOnTopLevel");
   }
-  //"InexistentMethod","InexistentPath", caused by most operations referring to paths and methods
+  //"InexistentMethod","InexistentPath", "PrivatePath", caused by most operations referring to paths and methods
   static void checkExistsPathMethod(ClassB cb, List<String> path,Optional<MethodSelector>ms){
     try{
-      ClassB cbi=Program.extractCBar(path, cb);
+      Boolean[] isPrivateRef=new Boolean[]{false};
+      ClassB cbi=Program.extractCBar(path, cb,isPrivateRef);
+      if(isPrivateRef[0]){
+        throw Resources.Error.multiPartStringError("PrivatePath",
+            "Path",""+Path.outer(0,path));
+        
+      }
       if(!ms.isPresent()){return;}
       Optional<Member> meth=Program.getIfInDom(cbi.getMs(),ms.get());
       if(meth.isPresent()){return;}

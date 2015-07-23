@@ -47,7 +47,7 @@ public class Redirect {
     //path exists by construction.
     ClassB l0Dest=(ClassB)FromInClass.of(p.extract(path),path);//p(Path)[from Path]=L0'={H' M0' ... Mn', _}//reordering of Ms allowed here
     //(a)Cs is public in L, and Cs have no private state;
-    boolean isPrivate=csComm[0].isPrivate();
+    boolean isPrivate=csComm[0].isPrivate();///TODO: BUG no, this only check privatness of last level
     boolean isPrivateState=ExtractInfo.hasPrivateState(l0);
     //all its methods have no implementation, that is:
     //for all Mi,i=0..n: Mi is of form h or Mi is of form C:_
@@ -88,7 +88,7 @@ public class Redirect {
     Collections.sort(unexpectedInterfaces,(pa,pb)->pa.toString().compareTo(pb.toString()));
     ClassKind kindSrc = ExtractInfo.classKind(l,cs,l0, isBox, isFreeInterface, isPrivateState, isNoImplementation);
     ClassKind kindDest = ExtractInfo.classKind(null,null,l0Dest,null,null,null,null);
-    throw Errors42.errorSourceUnfit(currentPP.getPath1().getCBar(),
+    throw Errors42.errorSourceUnfit(currentPP.getPath1().getCBar(),path,
         kindSrc,kindDest,unexpectedMembers, headerOk, unexpectedInterfaces, isPrivate);
   }
   private static Set<Path> redirectOkImpl(List<PathPath> s, PathPath currentPP, Program p, ClassB l, List<Path> paths, List<Path> pathsPrime, List<PathPath> result) {
