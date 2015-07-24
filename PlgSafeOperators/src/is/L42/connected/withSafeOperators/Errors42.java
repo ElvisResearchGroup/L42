@@ -85,7 +85,7 @@ public class Errors42 {
       if(meth.isPresent()){return;}
       throw Resources.Error.multiPartStringError("InexistentMethod",
           "Path",""+Path.outer(0,path),
-          "Selector",""+ms);
+          "Selector",""+ms.get());
       }
     catch(ast.ErrorMessage.PathNonExistant e){
       throw Resources.Error.multiPartStringError("InexistentPath",

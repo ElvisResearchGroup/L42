@@ -124,7 +124,7 @@ public static class TestAbstractClass {//add more test for error cases
 	  "C::B",
 	  "{Kind:{'@stringU\n'PrivacyCoupuled\n}"+
 	  "CoupuledPath:{'@stringU\n'[]\n}"+
-	  "CoupuledMethods:{'@stringU\n'[Outer2::C::B.foo]\n}}",
+	  "CoupuledMethods:{'@stringU\n'[Outer2::C::B.foo()]\n}}",
 	  true
   },{"{C:{B:'@private\n{} D:{ method B bar() void }}}",
 	  "C",

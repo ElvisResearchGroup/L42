@@ -57,7 +57,7 @@ public interface Ast {
   @Value @Wither public class MethodSelector{String name;List<String>names;
     public String toString(){
       if(name.isEmpty() && names.isEmpty()){return "()";}
-      if(names.isEmpty()){return name;}
+      if(names.isEmpty()){return name+"()";}
       StringBuilder result=new StringBuilder();
       result.append(name+"(");
       tools.StringBuilders.formatSequence(result,names.iterator(),",",result::append);
@@ -250,8 +250,8 @@ public interface Ast {
       return result;
     }
     public boolean isPrivate(){
-        if(this.toString().startsWith("@private")){return true;}
-        //TODO: parsing required for more precision
+      if(this.annotations.contains("private")){return true;}
+        //if(this.toString().startsWith("@private")){return true;}
         return false;
       }
     public static Doc factory(Path single){
