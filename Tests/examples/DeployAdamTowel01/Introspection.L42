@@ -1,21 +1,4 @@
-{(Library that, S node)
- ' 1 path -> printable
- ' 2 path -> kind
- ' 3 path, n -> give subPath n
- ' 4 path, n -> give selector n
- ' 5 path, n-> give interfacePath if internal
- ' 6 path, n-> give interfacePath type Any if external
- ' 7 path,sel-> kind
- ' 8 path,sel-> printable
- ' 9 path, sel, n->give         mdf //-1..-k for exceptions, 0 for return, 1-n for parameters
- '10 path, sel, n->give         path if internal
- '11 path, sel, n->give         type Any if external
- '12 path, sel, n->give         ph
- '13 path, sel, n->give         historic pedex
+{
+Mirror :{interface }
 
- 'docs stuff?    
- 'docs have their own repr, should type have a repr? (repr of internal historicalT?)
- 'Operator that resolve a specific scheletal type: path, methodselector, parNumber 0..n
- 'or solving all that can be solved? errors hell here?
-  
-  }
+}

@@ -48,6 +48,7 @@ public class TypeExtraction {
     }
   private static ClassB etStage(Program p, ClassB classB) {
     assert classB.getStage()==Stage.Star;
+    //classB.getSupertypes().size()==1;
     //collect es
     List<ClassB> es;
     try{es=collectEs(p, classB);}

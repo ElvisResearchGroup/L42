@@ -481,7 +481,7 @@ static Path add1Outer(Path p) {
   //%o_0%:{(Outer1::C1::Cn that)}
   private static Member buildPathAdapterInner(Path path) {
     //throw Assertions.codeNotReachable();
-    ClassB cb= new ClassB(new Doc("%s",Collections.singletonList(path)),Doc.empty(),false,Collections.emptyList(),Collections.emptyList(),Stage.None);
+    ClassB cb= new ClassB(Doc.factory(path),Doc.empty(),false,Collections.emptyList(),Collections.emptyList(),Stage.None);
     return new ClassB.NestedClass(Doc.empty(),"%o_0%",cb);
   }
   /*public static ast.ExpCore.ClassB sealConstructors(Program emptyP, ast.ExpCore.ClassB classB, List<Path> mapConstructors) {
