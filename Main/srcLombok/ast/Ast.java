@@ -250,8 +250,8 @@ public interface Ast {
       return result;
     }
     public boolean isPrivate(){
-        if(this.toString().startsWith("@private")){return true;}
-        //TODO: parsing required for more precision
+      if(this.annotations.contains("private")){return true;}
+        //if(this.toString().startsWith("@private")){return true;}
         return false;
       }
     public static Doc factory(Path single){

@@ -101,7 +101,7 @@ public class ConsistentRenaming{
     }}
   }
   private static boolean isAnnotatedConsistent(Doc doc) {
-    return doc.getS().contains("@consistent");
+    return doc.getAnnotations().contains("consistent");
   }
 
 
