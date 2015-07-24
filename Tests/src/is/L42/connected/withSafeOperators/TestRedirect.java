@@ -88,7 +88,7 @@ public static class TestRedirect1 {//add more test for error cases
         + "method Void mostFun(Void that, Library other) method Void notSoFun() } }",
         "Outer0::InnerA","Outer1::A",
         ec.set("SrcKind", "Template", "DestKind", "Template",
-               "UnexpectedMethods", "[moreFun(that),notSoFun]").str(), true
+               "UnexpectedMethods", "[moreFun(that), notSoFun()]").str(), true
     }
 });}
 

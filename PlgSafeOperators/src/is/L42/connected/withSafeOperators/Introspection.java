@@ -148,25 +148,26 @@ public class Introspection {
       );
   }
   /*
+   annotationN==-1 is HardWrap
    Hard wrap: just wrap the content of the comment in @stringU
    Soft wrap: if the content is already wrapped in @stringU, leave it as it is.
    What should we do for @int32 and similar?
     */
-  String extractDocAsString(ClassB that,List<String>path,int annNumber,boolean hardWrap){
+  public static String extractDocAsString(ClassB that,List<String>path,int annotationN){
     Errors42.checkExistsPathMethod(that, path,Optional.empty());
     ClassB current = Program.extractCBar(path, that);
     Doc d=current.getDoc1();
     d=liftDoc(path,d,0);
-    if(annNumber==0){
+    if(annotationN<=0){
       String result=d.toString();
-      if(hardWrap || !result.startsWith("@stringU\n")){result="@stringU\n"+result;}
+      if(annotationN==-1 || !result.startsWith("@stringU\n")){result="@stringU\n"+result;}
       return result;
       }
-    if(d.getAnnotations().size()<annNumber){throw Resources.notAct;}
-    Object o=d.getAnnotations().get(annNumber-1);
+    if(d.getAnnotations().size()<annotationN){throw Resources.notAct;}
+    Object o=d.getAnnotations().get(annotationN-1);
     return o.toString();
   }
-  Path extractDocPath(ClassB that,List<String>path,int annNumber,boolean hardWrap){
+  public static Path extractDocPath(ClassB that,List<String>path,int annNumber){
     Errors42.checkExistsPathMethod(that, path,Optional.empty());
     ClassB current = Program.extractCBar(path, that);
     Doc d=current.getDoc1();

@@ -130,7 +130,7 @@ public void testMethods() throws IOException{
 ," }"
 ,"}"
 )).getErrCode(),0);
-  Assert.assertEquals(L42.record.toString(),"bb(a)\naa\n#apply\n");
+  Assert.assertEquals(L42.record.toString(),"bb(a)\naa()\n#apply()\n");
   L42.record=new StringBuilder();
   }
 @Test
@@ -198,7 +198,7 @@ public void testParameters() throws IOException{
 ," }"
 ,"}"
 )).getErrCode(),0);
-Assert.assertEquals(L42.record.toString(),"cc(b,c)\nc\nb\nbb(a)\na\naa\n#apply\n");
+Assert.assertEquals(L42.record.toString(),"cc(b,c)\nc\nb\nbb(a)\na\naa()\n#apply()\n");
 L42.record=new StringBuilder();
 }
 

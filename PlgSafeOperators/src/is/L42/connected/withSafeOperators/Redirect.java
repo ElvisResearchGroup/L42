@@ -73,7 +73,7 @@ public class Redirect {
     List<Member> unexpectedMembers=new ArrayList<>();
     for(Member mi:l0.getMs()){
       Optional<Member> miPrime = Program.getIfInDom(l0Dest.getMs(),mi);
-      if(miPrime.isPresent() && miPrime.get().getClass().equals(mi)){
+      if(miPrime.isPresent() && miPrime.get().getClass().equals(mi.getClass())){
           redirectOk(s,p,l,mi,miPrime.get(),currentPP,result);
       }
       else{unexpectedMembers.add(mi);}
@@ -165,8 +165,8 @@ public class Redirect {
   }
   private static void redirectOkPath(List<PathPath> s, Program p, ClassB l,Path cs, Path path, List<PathPath> result) {
     //S;p|-L[Outern::Cs =~Outern::Cs]:emptyset  holds with n>0
-    if(cs.outerNumber()>0){
-      if(!cs.equals(path)){throw new AssertionError("GETAMESSAGE");}//incompatible external types t1 t2
+    if(cs.isPrimitive() ||cs.outerNumber()>0){
+      if(!cs.equals(path)){throw new AssertionError("GETAMESSAGE");}//TODO:incompatible external types t1 t2
       return;
     }
     //otherwise

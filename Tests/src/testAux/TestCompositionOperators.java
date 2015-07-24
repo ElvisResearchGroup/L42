@@ -392,7 +392,7 @@ helpers.TestHelper.multiLine(""
     public static List<Object[]> createData() {
       return Arrays.asList(new Object[][] {
     {"{ A:{} method A m()exception A this.m() }",0,"Outer0",
-      "m"
+      "m()"
   },{"{ A:{} method A m(A a)exception A  }",0,"Outer0",
       "m(a)"
   },{"{ A:{} method A m(A a,A b)exception A  }",0,"Outer0",
@@ -400,7 +400,7 @@ helpers.TestHelper.multiLine(""
   },{"{ A:{} method A (A a,A b)exception A  }",0,"Outer0",
     "#apply(a,b)"
   },{"{ A:{} method A ()exception A  }",0,"Outer0",
-    "#apply"
+    "#apply()"
     }});}
   @Test public void test() {
     ClassB cb1=getClassB(e1);

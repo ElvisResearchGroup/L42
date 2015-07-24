@@ -83,6 +83,43 @@ public class Plugin implements PluginType{
       Doc doc=ensureExtractDoc(_doc);
       return AddDocumentation.addDocumentationOnMethod(that,path,sel,doc);      
       }
-    //toabstract good name could be removeImplementation, and then add comment. still to add purge privates
+    //-----5 +5 introspections
+    @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+    public Object MintrospectionGiveInfo£xthat£xpath(Object _that,Object _path){
+      ClassB that=ensureExtractClassB(_that);
+      List<String> path=Path.parseValidCs(ensureExtractStringU(_path));
+      return Introspection.giveInfo(that, path);
+    }
+    @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+    public Object MintrospectionGiveInfoMember£xthat£xpath£xmemberN(Object _that,Object _path,Object _memberN){
+      ClassB that=ensureExtractClassB(_that);
+      List<String> path=Path.parseValidCs(ensureExtractStringU(_path));
+      int memberN=ensureExtractInt32(_memberN);
+      return Introspection.giveInfoMember(that, path,memberN);
+    }
+    @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+    public Object MintrospectionGiveInfoType£xthat£xpath£xmemberN£xtypeN(Object _that,Object _path,Object _memberN,Object _typeN){
+      ClassB that=ensureExtractClassB(_that);
+      List<String> path=Path.parseValidCs(ensureExtractStringU(_path));
+      int memberN=ensureExtractInt32(_memberN);
+      int typeN=ensureExtractInt32(_typeN);
+      return Introspection.giveInfoType(Resources.getP(), that, path, memberN, typeN);
+    }
+    
+    @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+    public Object MintrospectionDocAsString£xthat£xpath£xannotationN(Object _that,Object _path,Object _annotationN){
+      ClassB that=ensureExtractClassB(_that);
+      List<String> path=Path.parseValidCs(ensureExtractStringU(_path));
+      int annotationN=ensureExtractInt32(_annotationN);
+      return Introspection.extractDocAsString(that, path, annotationN);
+    }
+    @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+    public Object MintrospectionDocPath£xthat£xpath£xannotationN(Object _that,Object _path,Object _annotationN){
+      ClassB that=ensureExtractClassB(_that);
+      List<String> path=Path.parseValidCs(ensureExtractStringU(_path));
+      int annotationN=ensureExtractInt32(_annotationN);
+      return Introspection.extractDocPath(that, path, annotationN);
+    }
+    //still to add purge privates
    
 }

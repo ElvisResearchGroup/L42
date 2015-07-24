@@ -1,4 +1,37 @@
 {
-Mirror :{interface }
-
+Mirror :{interface 
+  method NodeReport introspectionGiveInfo(Path path)
+  method MemberReport introspectionGiveInfoMember(Path path, N memberN)
+  method TypeReport introspectionGiveInfoType(Path path, N memberN, N typeN)
+  method S introspectionDocAsString(Path path, N annotationN)
+  method type Any introspectionDocPath(Path path, N annotationN)
+  }
+MirrorLibrary:{(Library lib)<:Mirror
+  method introspectionGiveInfo(path)
+    NodeReport(report: using SafeOperators
+      check introspectionGivenfo(lib, path:path.binaryRepr())
+      error SafeOperators.mkError(S"introspectionGiveInfo"))
+      
+  method introspectionGiveInfoMember(path,memberN)
+    Outer1.dispatchReport(using SafeOperators
+      check introspectionGivenfo(lib, path:path.binaryRepr())
+      error SafeOperators.mkError(S"introspectionGiveInfo"))
+  
+  method introspectionGiveInfoType(path,memberN,typeN)
+  method introspectionDocAsString(path,annotationN)
+  method introspectionDocPath(path,annotationN)  
+  }
+'MirrorClass:{(type Any lib)<:Mirror
+'  method introspectionGiveInfo(path)
+'  method introspectionGiveInfoMember(path,memberN)
+'  method introspectionGiveInfoType(path,memberN,typeN)
+'  method introspectionDocAsString(path,annotationN)
+'  method introspectionDocPath(path,annotationN)  
+'  }
+NodeReport:{(Library report)}
+TypeReport:{(Library report)}
+MemberReport:{interface}
+MethodReport:{<:MemberReport}
+NestedClassReport:{<:MemberReport}
+type method MemberReport dispatchReport(Library that)
 }
