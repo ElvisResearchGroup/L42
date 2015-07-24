@@ -57,7 +57,7 @@ public interface Ast {
   @Value @Wither public class MethodSelector{String name;List<String>names;
     public String toString(){
       if(name.isEmpty() && names.isEmpty()){return "()";}
-      if(names.isEmpty()){return name;}
+      if(names.isEmpty()){return name+"()";}
       StringBuilder result=new StringBuilder();
       result.append(name+"(");
       tools.StringBuilders.formatSequence(result,names.iterator(),",",result::append);
