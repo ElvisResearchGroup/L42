@@ -65,15 +65,15 @@ public static class TestRedirect1 {//add more test for error cases
            +"UnexpectedMethods:{'@stringU\n'[fun]\n}"
            +"UnexpectedImplementednterfaces:{'@stringU\n'[]\n}"
         + "}",true
-    },{new String[]{"{A:{ }}"},  // same test as above, using new mechanism
-        "{InnerA:{type method Void fun()} }","Outer0::InnerA","Outer1::A",
+    },{new String[]{"{A:{ }}"},  // same test, but with an argument, using new mechanism
+        "{InnerA:{type method Void fun(Void that)} }","Outer0::InnerA","Outer1::A",
         ec.load("SourceUnfit",
                 "SrcPath", "### must be changed ###",
                 "DestExternalPath", "### anything sensible please #####",
                 "PrivatePath", "false",
                 "SrcKind", "TemplateModule",
                 "DestKind", "Box_TemplateModule",
-                "UnexpectedMethods", "[fun]",
+                "UnexpectedMethods", "[fun(that)]",
 //                "UnexpectedImplementedInterfaces", "[]"
                   "UnexpectedImplementednterfaces", "[]"
                 )
@@ -81,6 +81,14 @@ public static class TestRedirect1 {//add more test for error cases
                "DestExternalPath", "NEED ANOTHER FACTORY METHOD\\u000a"
 )
           .str(), true
+    },{new String[]{  // with some matching methods
+        "{A:{type method Void fun(Void that)  method Void mostFun(Void that, Library other) }}"
+        },
+        "{InnerA:{type method Void fun(Void that) type method Void moreFun(Void that)"
+        + "method Void mostFun(Void that, Library other) method Void notSoFun() } }",
+        "Outer0::InnerA","Outer1::A",
+        ec.set("SrcKind", "Template", "DestKind", "Template",
+               "UnexpectedMethods", "[moreFun(that),notSoFun]").str(), true
     }
 });}
 
