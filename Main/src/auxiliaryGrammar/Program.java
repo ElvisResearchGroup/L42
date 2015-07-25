@@ -27,7 +27,7 @@ import ast.Ast.*;
 //TODO: does program still need to be mutable?
 public class Program {//mutable object now!
   private final Program next;
-  private ClassB classB;
+  private final ClassB classB;
   private Program(Program next,ClassB classB){
     assert this.getClass()!=Program.class || (next!=null && classB!=null);
     this.next=next;this.classB=classB;
@@ -82,7 +82,7 @@ public class Program {//mutable object now!
     return this.classB;
     }
 
-  public void updateTop(ClassB cb){this.classB=cb;}
+  //public void updateTop(ClassB cb){this.classB=cb;}
 
   public boolean executablePlus(){
     assert !this.isEmpty();
@@ -124,7 +124,7 @@ public class Program {//mutable object now!
       in=in.collapseOne();
       }
   }*/
-  public Program dupHead(){return new Program(this.next,this.classB);}
+  //public Program dupHead(){return new Program(this.next,this.classB);}
   public Program collapse(int n){
     if(n==0){return this;}
     return this.collapseOne().collapse(n-1);
@@ -132,7 +132,9 @@ public class Program {//mutable object now!
   public Program collapseOne(){
     ClassB cb=this.top();
     Program result=this.next;
-    result.updateTop(replaceWalkByWith(result.top(),cb));
+    //result.updateTop(replaceWalkByWith(result.top(),cb));
+    ClassB cbNext=replaceWalkByWith(result.top(),cb);
+    result=result.next.addAtTop(cbNext);
     return result;
   }
   public Program navigateInTo(String c){
@@ -142,8 +144,10 @@ public class Program {//mutable object now!
       throw new ErrorMessage.PathNonExistant(Arrays.asList(c),this.top());
     }
     Member m=mOpt.get();
-    this.updateTop(this.top().withMember(m.withBody(new ExpCore.WalkBy())));
-    return this.addAtTop((ClassB)((NestedClass)m).getInner());
+    //this.updateTop(this.top().withMember(m.withBody(new ExpCore.WalkBy())));
+    ClassB newTop=this.top().withMember(m.withBody(new ExpCore.WalkBy()));
+    Program result=this.next.addAtTop(newTop);
+    return result.addAtTop((ClassB)((NestedClass)m).getInner());
   }
   public Program navigateInTo(List<String> paths){
     if(paths.isEmpty()){return this;}

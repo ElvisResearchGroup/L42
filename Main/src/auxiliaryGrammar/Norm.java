@@ -40,7 +40,7 @@ public class Norm {
     return mi.withInner(of(p,mi.getInner()));
   }
   public static NestedClass of(Program p,NestedClass nc) {
-    Program p2=p.dupHead();
+    Program p2=p;
     p2=p2.navigateInTo(nc.getName());
     return nc.withInner(of(p2,nc.getInner()));
   }

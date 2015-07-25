@@ -1,26 +1,63 @@
-{
+{(Mirror mirror)
+type method Outer0(Library lib) Outer0(mirror:MirrorLibrary(lib:lib))
+'type method Outer0(Library cls) Outer0(mirror:MirrorClass(cls:cls))
+method NodeReport query(Path that)exception SourceInvalid this.mirror().introspectionGiveInfo(path:that)
+
+MemberReports:LinkedList.list(MemberReport)
+'MethodReports:LinkedList.list(MethodReport)
+'NestedClassReports:LinkedList.list(NestedClassReport)
+'method MemberReports members(Path that) (
+'  var result=MemberReports[]
+'  var mN=1N
+'  while Bool.true() (' to be able to break
+'    result:=result.#add(this.mirror()
+'      .introspectionGiveInfoMember(path:that,memberN:mN))
+'    mN+=1N
+'    )
+'  result)
+  
+
+'design other methods to put here
 Mirror :{interface 
-  method NodeReport introspectionGiveInfo(Path path)
-  method MemberReport introspectionGiveInfoMember(Path path, N memberN)
-  method TypeReport introspectionGiveInfoType(Path path, N memberN, N typeN)
-  method S introspectionDocAsString(Path path, N annotationN)
-  method type Any introspectionDocPath(Path path, N annotationN)
+  method NodeReport introspectionGiveInfo(Path path) exception SourceInvalid 
+  method MemberReport introspectionGiveInfoMember(Path path, N memberN) exception SourceInvalid,Void
+  method TypeReport introspectionGiveInfoType(Path path, N memberN, N typeN) exception SourceInvalid,Void
+  method S introspectionDocAsString(Path path) exception SourceInvalid
+  method S introspectionDocAsString(Path path, N annotationN) exception SourceInvalid,Void
+  method type Any introspectionDocPath(Path path, N annotationN) exception SourceInvalid,Void
   }
 MirrorLibrary:{(Library lib)<:Mirror
   method introspectionGiveInfo(path)
-    NodeReport(report: using SafeOperators
-      check introspectionGivenfo(lib, path:path.binaryRepr())
-      error SafeOperators.mkError(S"introspectionGiveInfo"))
+    NodeReport(report: MirrorLibrary(lib: using SafeOperators
+      check introspectionGiveInfo(this.lib(), path:path.binaryRepr())
+      error SafeOperators.mkError(S"introspectionGiveInfo")))
       
   method introspectionGiveInfoMember(path,memberN)
     Outer1.dispatchReport(using SafeOperators
-      check introspectionGivenfo(lib, path:path.binaryRepr())
-      error SafeOperators.mkError(S"introspectionGiveInfo"))
+      check introspectionGiveInfoMember(this.lib(), path:path.binaryRepr(),memberN:memberN.binaryRepr())
+      exception void)
   
   method introspectionGiveInfoType(path,memberN,typeN)
+    TypeReport(report: MirrorLibrary(lib: using SafeOperators
+      check introspectionGiveInfoType(this.lib(), path:path.binaryRepr(),memberN:memberN.binaryRepr(),typeN:typeN.binaryRepr())
+      exception void))
+  
   method introspectionDocAsString(path,annotationN)
-  method introspectionDocPath(path,annotationN)  
+    S.#stringParser(using SafeOperators
+      check introspectionDocAsString(this.lib(), path:path.binaryRepr(),annotationN:(1N+annotationN).binaryRepr())
+      exception void)
+  method introspectionDocAsString(path)
+    S.#stringParser(using SafeOperators
+      check introspectionDocAsString(this.lib(), path:path.binaryRepr(),annotationN:0N.binaryRepr())
+      error SafeOperators.mkError(S"introspectionDocAsString"))
+  
+  method introspectionDocPath(path,annotationN)
+    using SafeOperators
+      check introspectionDocPath(this.lib(), path:path.binaryRepr(),annotationN:annotationN.binaryRepr())
+      error SafeOperators.mkError(S"introspectionDocPath")
+  
   }
+'make program hosting pairs cb,ct, then do this part
 'MirrorClass:{(type Any lib)<:Mirror
 '  method introspectionGiveInfo(path)
 '  method introspectionGiveInfoMember(path,memberN)
@@ -28,10 +65,18 @@ MirrorLibrary:{(Library lib)<:Mirror
 '  method introspectionDocAsString(path,annotationN)
 '  method introspectionDocPath(path,annotationN)  
 '  }
-NodeReport:{(Library report)}
-TypeReport:{(Library report)}
+NodeReport:{(Mirror report)
+  method S classKind()Outer1(this.report(),p:Path"ClassKind")
+  }
+TypeReport:{(Mirror report)}
 MemberReport:{interface}
-MethodReport:{<:MemberReport}
-NestedClassReport:{<:MemberReport}
+MethodReport:{(Mirror report)<:MemberReport}
+NestedClassReport:{(Mirror report)<:MemberReport}
 type method MemberReport dispatchReport(Library that)
+  MethodReport(report:MirrorLibrary(lib:that))'add cases
+type method S (Mirror that,Path p) (
+  result=that.introspectionDocAsString(path:p)
+  catch exception x (on SourceInvalid error x )
+  result 
+  )
 }

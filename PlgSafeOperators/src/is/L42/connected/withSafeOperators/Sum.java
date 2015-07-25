@@ -84,7 +84,7 @@ public class Sum {
   }
 
   private static Void matchMt(List<String> pathForError, MethodWithType mwta, List<Member> ms, Member mb) {
-    if (mb instanceof MethodImplemented) { throw Errors42.errorMehtodClash(pathForError, mwta, mb, false, Collections.emptyList(), false, false); }
+    if (mb instanceof MethodImplemented) { throw Errors42.errorMethodClash(pathForError, mwta, mb, false, Collections.emptyList(), false, false); }
     MethodWithType mwtb = (MethodWithType) mb;
     Errors42.checkMethodClash(pathForError, mwta, mwtb);
     ms.add(Sum.sumMethod(mwta, mwtb));
@@ -92,7 +92,7 @@ public class Sum {
   }
 
   private static Void matchMi(List<String> pathForError, MethodImplemented mia, List<Member> ms, Member mb) {
-    throw Errors42.errorMehtodClash(pathForError, mia, mb, false, Collections.emptyList(), false, false);
+    throw Errors42.errorMethodClash(pathForError, mia, mb, false, Collections.emptyList(), false, false);
   }
 
   static MethodWithType sumMethod(MethodWithType ma, MethodWithType mb) {

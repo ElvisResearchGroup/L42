@@ -3,6 +3,7 @@ package is.L42.connected.withSafeOperators;
 import is.L42.connected.withSafeOperators.ExtractInfo.ClassKind;
 import is.L42.connected.withSafeOperators.ExtractInfo.IsUsed;
 
+import tools.Assertions;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -53,7 +54,7 @@ public class Errors42 {
         );
   }
   //"MethodClash" caused by sum, renameMethod, renameClassStrict, renameClass
-  static Error errorMehtodClash(List<String> pathForError, Member mta, Member mtb, boolean exc, List<Integer> pars, boolean retType, boolean thisMdf) {
+  static Error errorMethodClash(List<String> pathForError, Member mta, Member mtb, boolean exc, List<Integer> pars, boolean retType, boolean thisMdf) {
       return Resources.Error.multiPartStringError("MethodClash",
        "Path",""+Path.outer(0,pathForError),//the path of the clash (that own  the method), in the rename is the path of the destination clash
       "Left",sugarVisitors.ToFormattedText.of(mta),//implementation dependend print of the left and right methods
@@ -70,26 +71,40 @@ public class Errors42 {
   static Error errorInvalidOnTopLevel() {
     return Resources.Error.multiPartStringError("InvalidOnTopLevel");
   }
-  //"InexistentMethod","InexistentPath", "PrivatePath", caused by most operations referring to paths and methods
+  //"InvalidSrc", caused by most operations referring to paths and methods
+  static enum SourceInvalid{PrivatePath,PrivateMethod,InexistentPath,InexistentMethod}
   static void checkExistsPathMethod(ClassB cb, List<String> path,Optional<MethodSelector>ms){
     try{
       Boolean[] isPrivateRef=new Boolean[]{false};
       ClassB cbi=Program.extractCBar(path, cb,isPrivateRef);
-      if(isPrivateRef[0]){
-        throw Resources.Error.multiPartStringError("PrivatePath",
-            "Path",""+Path.outer(0,path));
-        
-      }
-      if(!ms.isPresent()){return;}
-      Optional<Member> meth=Program.getIfInDom(cbi.getMs(),ms.get());
-      if(meth.isPresent()){return;}
-      throw Resources.Error.multiPartStringError("InexistentMethod",
+      Boolean[] isPrivateMeth=new Boolean[]{false};
+      boolean absentMeth=false;
+      if(ms.isPresent()){
+        Optional<Member> meth=Program.getIfInDom(cbi.getMs(),ms.get());
+        absentMeth=!meth.isPresent();
+        if(meth.isPresent()){
+          meth.get().match(
+            nc->{throw Assertions.codeNotReachable();},
+            mi->{return null;},
+            mt->{if(mt.getDoc().isPrivate()){isPrivateMeth[0]=true;}return null;}
+            );
+          }
+        } 
+      SourceInvalid kind=null;
+      if(absentMeth){kind=SourceInvalid.InexistentMethod;}
+      if(isPrivateMeth[0]){kind=SourceInvalid.PrivateMethod;}
+      if(isPrivateRef[0]){kind=SourceInvalid.PrivatePath;}
+      if(kind==null){return;}
+      throw Resources.Error.multiPartStringError("SourceInvalid",
           "Path",""+Path.outer(0,path),
-          "Selector",""+ms.get());
+          "Selector",""+((ms.isPresent())?ms.get():""),
+          "InvalidKind",""+kind.name());
       }
     catch(ast.ErrorMessage.PathNonExistant e){
-      throw Resources.Error.multiPartStringError("InexistentPath",
-          "Path",""+Path.outer(0,path));
+      throw Resources.Error.multiPartStringError("SourceInvalid",
+          "Path",""+Path.outer(0,path),
+          "Selector",""+((ms.isPresent())?ms.get():""),
+          "InvalidKind",""+SourceInvalid.InexistentPath);
     }
   }
 
@@ -131,7 +146,7 @@ public class Errors42 {
     if(!implClash && exc && pars.isEmpty() && retType && thisMdf){return;}
     if(mta.getInner().isPresent()){mta=mta.withInner(Optional.of(new ExpCore.X("implementation")));}
     if(mtb.getInner().isPresent()){mtb=mtb.withInner(Optional.of(new ExpCore.X("implementation")));}
-    throw errorMehtodClash(pathForError, mta, mtb, exc, pars, retType, thisMdf);
+    throw errorMethodClash(pathForError, mta, mtb, exc, pars, retType, thisMdf);
   }
 
 

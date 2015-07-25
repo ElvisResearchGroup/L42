@@ -1,9 +1,13 @@
 {reuse L42.is/adamTowel01
 
-NList:LinkedList.list(N)
+'NList:LinkedList.list(N)
 Main:{
-  zero=NList[0N]
-  Debug(S"Hello Adam "++zero.top())
+  i=Introspection(lib:{Bar:{method Void()}})
+  Introspection::NodeReport ni=i.query(Path"Bar")
+  Debug(ni.classKind())
+  Debug(i.query(Path"Outer0").classKind())
+  'zero=NList[0N]
+  'Debug(S"Hello Adam "++zero.top())
   return ExitCode.normal()
   }
 }

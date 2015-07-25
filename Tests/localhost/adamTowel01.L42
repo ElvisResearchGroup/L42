@@ -227,67 +227,6 @@ Outer0 doubleQuote() Outer0.#stringParser(that:{'@stringU
 }))
 method 
 Outer0 replace(Outer0 that, Outer0 into) Outer0.#stringParser(that:using Outer1::Alu check stringReplace(that:this.binaryRepr(), src:that.binaryRepr(), dest:into.binaryRepr()) error void)}
-IntrospectionPlugin:{'@plugin
-'L42.is/connected/withItself
-
-type method 
-Library sumLib(Library l1, Library l2) using Outer0 check sumLib(l1:l1, l2:l2) error {
-type method 
-Outer0 sumLib() }
-type method 
-Library adaptLib(Library l1, Library l2) using Outer0 check adaptLib(l1:l1, l2:l2) error {
-type method 
-Outer0 adaptLib() }
-type method 
-Library sumComment(Library that, Library comment, Library adapter) using Outer0 check sumComment(that:that, comment:comment, adapter:adapter) error {
-type method 
-Outer0 sumComment() }
-type method 
-Library purgePrivates(Library that) using Outer0 check purgePrivates(that:that) error {
-type method 
-Outer0 purgePrivates() }
-type method 
-Library nameToAdapter(Library that) using Outer0 check nameToAdapter(that:that) error {
-type method 
-Outer0 nameToAdapter() }
-type method 
-Library typeNameToAdapter(type Any that) using Outer0 check typeNameToAdapter(that:that) error {
-type method 
-Outer0 typeNameToAdapter() }
-type method 
-Library getFreshName(Library that) using Outer0 check getFreshName(that:that) error {
-type method 
-Outer0 getFreshName() }
-type method 
-Library adapter(type Any that, Outer1::S name) (
-  Void unused=(
-    Outer0::typeNameToAdapter(that ) name1=Outer0.typeNameToAdapter(that:that)
-    Outer0::nameToAdapter(that ) name2=Outer0.nameToAdapter(that:name.binaryRepr())
-    Void unused0=return Outer0.adaptLib(l1:name1, l2:name2)
-    void
-    )
-  catch return result (
-    on Library result
-    )
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
-  }
-  )
-type method 
-Library adapter(Outer1::S nameDest, Outer1::S nameSrc) (
-  Void unused=(
-    Outer0::nameToAdapter(that ) name1=Outer0.nameToAdapter(that:nameDest.binaryRepr())
-    Outer0::nameToAdapter(that ) name2=Outer0.nameToAdapter(that:nameSrc.binaryRepr())
-    Void unused0=return Outer0.adaptLib(l1:name1, l2:name2)
-    void
-    )
-  catch return result (
-    on Library result
-    )
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
-  }
-  )}
 LinkedList:{
 ListCode:{
 type method 
@@ -751,32 +690,147 @@ type method
 Library addDocumentation(Library that, Outer1::Path path, Outer1::Selector selector, Outer1::Doc doc) using Outer0 check addDocumentation(that:that, path:path.binaryRepr(), selector:selector.binaryRepr(), doc:doc.binaryRepr()) error Outer0.mkError(that:Outer1::S.#stringParser(that:{'@stringU
 'addDocumentation(path,selector)
 }))}
-Introspection:{
-type method ' 1 path -> printable
-' 2 path -> kind
-' 3 path, n -> give subPath n
-' 4 path, n -> give selector n
-' 5 path, n-> give interfacePath if internal
-' 6 path, n-> give interfacePath type Any if external
-' 7 path,sel-> kind
-' 8 path,sel-> printable
-' 9 path, sel, n->give         mdf //-1..-k for exceptions, 0 for return, 1-n for parameters
-'10 path, sel, n->give         path if internal
-'11 path, sel, n->give         type Any if external
-'12 path, sel, n->give         ph
-'13 path, sel, n->give         historic pedex
-'docs stuff?    
-'docs have their own repr, should type have a repr? (repr of internal historicalT?)
-'Operator that resolve a specific scheletal type: path, methodselector, parNumber 0..n
-'or solving all that can be solved? errors hell here?
-Outer0 #apply(Library^that'@consistent
-, Outer1::S^node'@consistent
+SourceUnfit:{
+type method 
+Outer0 #apply(Outer1::Introspection::Mirror^mirror'@consistent
 ) 
 mut method '@consistent
-Library #that() 
+Outer1::Introspection::Mirror #mirror() 
 read method '@consistent
-Library that() 
+Outer1::Introspection::Mirror mirror() }
+ClassClash:{
+type method 
+Outer0 #apply(Outer1::Introspection::Mirror^mirror'@consistent
+) 
 mut method '@consistent
-Outer1::S #node() 
+Outer1::Introspection::Mirror #mirror() 
 read method '@consistent
-Outer1::S node() }}
+Outer1::Introspection::Mirror mirror() }
+MethodClash:{
+type method 
+Outer0 #apply(Outer1::Introspection::Mirror^mirror'@consistent
+) 
+mut method '@consistent
+Outer1::Introspection::Mirror #mirror() 
+read method '@consistent
+Outer1::Introspection::Mirror mirror() }
+InvalidOnTopLevel:{
+type method 
+Outer0 #apply(Outer1::Introspection::Mirror^mirror'@consistent
+) 
+mut method '@consistent
+Outer1::Introspection::Mirror #mirror() 
+read method '@consistent
+Outer1::Introspection::Mirror mirror() }
+SourceInvalid:{
+type method 
+Outer0 #apply(Outer1::Introspection::Mirror^mirror'@consistent
+) 
+mut method '@consistent
+Outer1::Introspection::Mirror #mirror() 
+read method '@consistent
+Outer1::Introspection::Mirror mirror() }
+PrivacyCoupuled:{
+type method 
+Outer0 #apply(Outer1::Introspection::Mirror^mirror'@consistent
+) 
+mut method '@consistent
+Outer1::Introspection::Mirror #mirror() 
+read method '@consistent
+Outer1::Introspection::Mirror mirror() }
+Introspection:{
+type method 
+Outer0 #apply(Outer0::Mirror^mirror'@consistent
+) 
+mut method '@consistent
+Outer0::Mirror #mirror() 
+read method '@consistent
+Outer0::Mirror mirror() 
+type method 
+Outer0 #apply(Library lib) Outer0.#apply(mirror:Outer0::MirrorLibrary.#apply(lib:lib))
+method 
+Outer0::NodeReport query(Outer1::Path that) exception Outer1::SourceInvalid this.mirror().introspectionGiveInfo(path:that)
+Mirror:{interface 
+method 
+Outer1::NodeReport introspectionGiveInfo(Outer2::Path path) exception Outer2::SourceInvalid 
+method 
+Outer1::MemberReport introspectionGiveInfoMember(Outer2::Path path, Outer2::N memberN) exception Outer2::SourceInvalid, Void 
+method 
+Outer1::TypeReport introspectionGiveInfoType(Outer2::Path path, Outer2::N memberN, Outer2::N typeN) exception Outer2::SourceInvalid, Void 
+method 
+Outer2::S introspectionDocAsString(Outer2::Path path) exception Outer2::SourceInvalid 
+method 
+Outer2::S introspectionDocAsString(Outer2::Path path, Outer2::N annotationN) exception Outer2::SourceInvalid, Void 
+method 
+type Any introspectionDocPath(Outer2::Path path, Outer2::N annotationN) exception Outer2::SourceInvalid, Void }
+MirrorLibrary:{<:Outer1::Mirror
+type method 
+Outer0 #apply(Library^lib'@consistent
+) 
+mut method '@consistent
+Library #lib() 
+read method '@consistent
+Library lib() 
+method introspectionGiveInfo(path ) Outer1::NodeReport.#apply(report:Outer0.#apply(lib:using Outer2::SafeOperators check introspectionGiveInfo(that:this.lib(), path:path.binaryRepr()) error Outer2::SafeOperators.mkError(that:Outer2::S.#stringParser(that:{'@stringU
+'introspectionGiveInfo
+}))))
+method introspectionGiveInfoMember(path memberN ) Outer1.dispatchReport(that:using Outer2::SafeOperators check introspectionGiveInfoMember(that:this.lib(), path:path.binaryRepr(), memberN:memberN.binaryRepr()) exception void)
+method introspectionGiveInfoType(path memberN typeN ) Outer1::TypeReport.#apply(report:Outer0.#apply(lib:using Outer2::SafeOperators check introspectionGiveInfoType(that:this.lib(), path:path.binaryRepr(), memberN:memberN.binaryRepr(), typeN:typeN.binaryRepr()) exception void))
+method introspectionDocAsString(path annotationN ) Outer2::S.#stringParser(that:using Outer2::SafeOperators check introspectionDocAsString(that:this.lib(), path:path.binaryRepr(), annotationN:Outer2::N.#numberParser(that:{'@stringU
+'1
+}).#plus(that:annotationN).binaryRepr()) exception void)
+method introspectionDocAsString(path ) Outer2::S.#stringParser(that:using Outer2::SafeOperators check introspectionDocAsString(that:this.lib(), path:path.binaryRepr(), annotationN:Outer2::N.#numberParser(that:{'@stringU
+'0
+}).binaryRepr()) error Outer2::SafeOperators.mkError(that:Outer2::S.#stringParser(that:{'@stringU
+'introspectionDocAsString
+})))
+method introspectionDocPath(path annotationN ) using Outer2::SafeOperators check introspectionDocPath(that:this.lib(), path:path.binaryRepr(), annotationN:annotationN.binaryRepr()) error Outer2::SafeOperators.mkError(that:Outer2::S.#stringParser(that:{'@stringU
+'introspectionDocPath
+}))}
+NodeReport:{
+type method 
+Outer0 #apply(Outer1::Mirror^report'@consistent
+) 
+mut method '@consistent
+Outer1::Mirror #report() 
+read method '@consistent
+Outer1::Mirror report() 
+method 
+Outer2::S classKind() Outer1.#apply(that:this.report(), p:Outer2::Path.#stringParser(that:{'@stringU
+'ClassKind
+}))}
+TypeReport:{
+type method 
+Outer0 #apply(Outer1::Mirror^report'@consistent
+) 
+mut method '@consistent
+Outer1::Mirror #report() 
+read method '@consistent
+Outer1::Mirror report() }
+MemberReport:{interface }
+MethodReport:{<:Outer1::MemberReport
+type method 
+Outer0 #apply(Outer1::Mirror^report'@consistent
+) 
+mut method '@consistent
+Outer1::Mirror #report() 
+read method '@consistent
+Outer1::Mirror report() }
+NestedClassReport:{<:Outer1::MemberReport
+type method 
+Outer0 #apply(Outer1::Mirror^report'@consistent
+) 
+mut method '@consistent
+Outer1::Mirror #report() 
+read method '@consistent
+Outer1::Mirror report() }
+type method 
+Outer0::MemberReport dispatchReport(Library that) Outer0::MethodReport.#apply(report:Outer0::MirrorLibrary.#apply(lib:that))
+type method 
+Outer1::S #apply(Outer0::Mirror that, Outer1::Path p) (
+  Outer0::Mirror::introspectionDocAsString(path ) result=that.introspectionDocAsString(path:p)
+  catch exception x (
+    on Outer1::SourceInvalid error x
+    )
+  result
+  )}}

@@ -154,11 +154,11 @@ public class IntrospectionAdapt {
   }
   public static Program removeTopLevelWalkBy(Program p) {
     if(p.isEmpty()){return p;}
-    Program pPrime=p.dupHead();
+    Program pPrime=p;
     Optional<NestedClass> wb = Program.findWalkBy(p.top());
     if(wb.isPresent()){
       ClassB newTop=p.top().withMember(wb.get().withBody(new Signal(SignalKind.Error,new _void())));
-      pPrime.updateTop(newTop);
+      pPrime=pPrime.pop().addAtTop(newTop);
     }
     return pPrime;
   }

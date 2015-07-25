@@ -1,0 +1,39 @@
+{(Library adapter)'@private
+  'LinkedList.list(
+  type method
+  Outer0 () Outer0(adapter:{})
+  
+  method
+  Outer0 #add(Name that, Name into) {
+    if that.isExternalPathName() (error S"start name must be internal")
+    if !that.isInternalPathName() (return this.#add(that,of:Name"Outer0",into:into))
+    map=IntrospectionPlugin.adaptLib(
+      l1:into.adapter(), l2:that.adapter())
+    lib=IntrospectionPlugin.sumLib(l1:this.adapter(), l2:map)
+    return Outer0(adapter:lib)
+    }
+  method
+  Outer0 #add(Name that, Name of, Name into) {
+    map1=IntrospectionPlugin.adaptLib(
+      l1:into.adapter(), l2:that.adapter())
+    map2=IntrospectionPlugin.adaptLib(
+      l1:map1, l2:of.adapter())
+    lib=IntrospectionPlugin.sumLib(l1:this.adapter(), l2:map2)
+    return Outer0(adapter:lib)
+    }
+  type method
+  Outer0 #begin() Outer0()
+  
+  method
+  Outer0 #end() this
+  
+  method
+  Outer0 ++ (Outer0 that) (
+    lib=IntrospectionPlugin.sumLib(l1:this.adapter(), l2:that.adapter())
+    Outer0(adapter:lib)
+    )
+  method
+  Library < (Library that)
+    IntrospectionPlugin.adaptLib(l1:that, l2:this.adapter())
+  
+}

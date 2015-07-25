@@ -32,7 +32,7 @@ public class Introspection {
     ClassB current = Program.extractCBar(path, that);
     Errors42.checkExistsPathMethod(that, path,Optional.empty());
     return Resources.Error.multiPartStringClassB("PathInfo",
-      "Kind",ExtractInfo.classKind(that, path, current,null,null, null,null).name(),
+      "ClassKind",ExtractInfo.classKind(that, path, current,null,null, null,null).name(),
       "MemberNumber",""+current.getMs().size(),
       "ImplementedNumber",""+current.getSupertypes().size(),
       "AllAsString",""+ToFormattedText.of(current)
@@ -160,9 +160,14 @@ public class Introspection {
     d=liftDoc(path,d,0);
     if(annotationN<=0){
       String result=d.toString();
-      if(annotationN==-1 || !result.startsWith("@stringU\n")){result="@stringU\n"+result;}
+      if(annotationN==-1 || !result.startsWith("@stringU\n")){
+        return result;// extra @stringU will be added since we return "String"
+        }
+      assert result.endsWith("\n");
+      if(result.startsWith("@stringU\n")){result=result.substring("@stringU\n".length(),result.length()-1);}
+      
       return result;
-      }
+    }
     if(d.getAnnotations().size()<annotationN){throw Resources.notAct;}
     Object o=d.getAnnotations().get(annotationN-1);
     return o.toString();

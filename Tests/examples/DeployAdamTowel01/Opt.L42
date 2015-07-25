@@ -1,0 +1,17 @@
+{
+  type method Library (type Any that) 
+    SafeOperators.redirect({#new(TOpt that)
+      T:{}
+      TOpt:{interface method T get() }
+      TEmpty:{()<:TOpt method get() error S"Value not present" }
+      TOf:{(T that)<:TOpt method get() this.that()}
+      method T ~() this.that().get()
+      method Bool isPresent(){
+        aux=~this
+        return Bool.true()
+        catch error (on Any return Bool.false())
+        }
+      type method Outer0 () Outer0.#new(TEmpty())
+      type method Outer0 (T that) Outer0.#new(TOf(that))
+      },src:Path"T",dest:that)
+  }

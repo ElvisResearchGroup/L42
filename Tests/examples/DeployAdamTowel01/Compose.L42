@@ -1,0 +1,64 @@
+{ (Resolver resolver,Libs myLibs)
+  Resolver: Opt(Library)
+  Libs:'@private
+    LinkedList.list(Library)
+  type method
+  Outer0 () Outer0(resolver:Resolver(), myLibs:Libs[])
+  
+  method
+  Outer0 #add(Library that) (
+    ls=this.myLibs().#add(that)
+    Outer0(resolver:this.resolver(),myLibs:ls)
+    )
+  method Outer0 #add(Library resolver)
+    Outer0(resolver:Resolver(resolver),myLibs:this.myLibs())
+  type method
+  Outer0 #begin() Outer0()
+  
+  method
+  Outer0 #end() this  
+  
+  method
+  Library < (Library that) {
+    it=this.myLibs().vals()
+    it.#next()
+    catch exception ( on Void return that)
+    var result=it.#inner()
+    with libi in it (
+      result:=this.accumulate(l1:result,l2:libi)
+      )
+    return this.accumulate(l1:result,l2:that)
+    }
+
+  method Library accumulate(Library l1,Library l2) {
+    return SafeOperators.compose(left:l1,right:l2)
+    catch error x (on Any (
+      if !this.resolver().isPresent() (error x)
+      ms=Introspection(lib:~this.resolver()).methods()
+      S _name=ms.pop().pop().top().name()
+      S _nameLeft=ms.pop().top().name()
+      S _nameRight=ms.top().name()
+      'Debug(S"name is: "++_name)
+      'Debug(S"nameLeft is: "++_nameLeft)
+      'Debug(S"nameRight is: "++_nameRight)
+      Name name=Name.#stringParser(_name.binaryRepr())
+      Name nameLeft=Name.#stringParser(_nameLeft.binaryRepr())
+      Name nameRight=Name.#stringParser(_nameRight.binaryRepr())
+      l1A=Adapt[name into:nameLeft;]<l1
+      l2A=Adapt[name into:nameRight;]<l2
+      var result=IntrospectionPlugin.sumLib(l1:l1A,l2:l2A)
+      result:=IntrospectionPlugin.sumLib(l1:!this.resolver(),l2:result)
+      result:=MakePrivate(nameLeft into:result)
+      result:=MakePrivate(nameRight into:result)
+      return result
+      ))
+    }
+  method Outer0 ++ (Outer0 that) {
+    list=this.myLibs()++that.myLibs()
+    Resolver res={
+      if that.resolver().isPresent() (return that.resolver())
+      return this.resolver()
+      }
+    return Outer0(resolver:res, myLibs:list)
+    }
+  }

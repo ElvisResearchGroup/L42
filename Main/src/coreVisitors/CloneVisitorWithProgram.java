@@ -12,8 +12,7 @@ public class CloneVisitorWithProgram extends CloneVisitor{
   protected Program p;
   public ClassB.NestedClass visit(ClassB.NestedClass nc){
     Program aux=p;
-    p=p.dupHead();
-    p.updateTop(p.top().withMember(nc.withInner(new WalkBy())));
+    p=p.pop().addAtTop(p.top().withMember(nc.withInner(new WalkBy())));
     try{return super.visit(nc);}
     finally{p=aux;}
     }

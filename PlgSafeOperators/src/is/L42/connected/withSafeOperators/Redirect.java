@@ -17,8 +17,10 @@ import tools.Assertions;
 import ast.ErrorMessage;
 import ast.ExpCore.*;
 import ast.Ast.NormType;
+import ast.Ast.Doc;
 import ast.Ast.HistoricType;
 import ast.Ast.Path;
+import ast.Ast.Stage;
 import ast.Ast.Type;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
@@ -31,7 +33,7 @@ public class Redirect {
   public static ClassB redirect(Program p,ClassB cb, Path internal,Path external){
     //call redirectOk, if that is ok, no other errors?
     //should cb be normalized first?
-    assert external.outerNumber()>0;
+    assert external.isPrimitive() || external.outerNumber()>0;
     p=p.addAtTop(Configuration.typeSystem.typeExtraction(p, cb));//TODO: is it ok? if so add in docs
     List<PathPath>toRedirect=redirectOk(Collections.emptyList(),p,cb,internal,external);
     return IntrospectionAdapt.applyMapPath(p,cb,toRedirect);
@@ -45,7 +47,12 @@ public class Redirect {
     ast.Ast.Doc[] csComm=new ast.Ast.Doc[]{null};
     ClassB l0=(ClassB)FromInClass.of(Program.extractCBar(cs,l,csComm),csPath);//L(Cs)[from Cs]=L0={H M0 ... Mn}
     //path exists by construction.
-    ClassB l0Dest=(ClassB)FromInClass.of(p.extract(path),path);//p(Path)[from Path]=L0'={H' M0' ... Mn', _}//reordering of Ms allowed here
+    ClassB l0Dest;
+    if(path.isCore()){l0Dest=(ClassB)FromInClass.of(p.extract(path),path);}//p(Path)[from Path]=L0'={H' M0' ... Mn', _}//reordering of Ms allowed here
+    else{
+      assert path.isPrimitive();
+      l0Dest=new ClassB(Doc.empty(),Doc.empty(),path.equals(Path.Any()),Collections.emptyList(),Collections.emptyList(),Stage.None);
+    }
     //(a)Cs is public in L, and Cs have no private state;
     boolean isPrivate=csComm[0].isPrivate();///TODO: BUG no, this only check privatness of last level
     boolean isPrivateState=ExtractInfo.hasPrivateState(l0);
@@ -128,7 +135,7 @@ public class Redirect {
     }
     Set<Path> badExc=redirectOkExceptions(sPrime,p,l,mt.getMt().getExceptions(),mtPrime.getMt().getExceptions(),result);
     if(!badExc.isEmpty() || !wrongTypes.isEmpty()|| !isRetTypeOk ||!isMdfOk){
-      throw Errors42.errorMehtodClash(currentPP.getPath1().getCBar(),mt,mtPrime, badExc.isEmpty(), wrongTypes, isRetTypeOk, isMdfOk);
+      throw Errors42.errorMethodClash(currentPP.getPath1().getCBar(),mt,mtPrime, badExc.isEmpty(), wrongTypes, isRetTypeOk, isMdfOk);
     }
     return null;
   }
