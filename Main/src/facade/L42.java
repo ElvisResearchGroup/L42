@@ -34,6 +34,7 @@ import ast.ErrorMessage.FinalResult;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodWithType;
+import auxiliaryGrammar.Program;
 import ast.Expression;
 
 public class L42 {
@@ -93,7 +94,7 @@ public class L42 {
     }
     catch(ErrorMessage msg){
       //System.out.println(ErrorFormatter.formatError(msg).getErrorTxt());
-    	L42.printDebug(ErrorFormatter.formatError(msg).getErrorTxt());
+    	L42.printDebug(ErrorFormatter.formatError(Program.empty(),msg).getErrorTxt());
       }
   }
 

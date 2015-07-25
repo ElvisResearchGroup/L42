@@ -9,6 +9,7 @@ import java.nio.file.Paths;
 
 import ast.ErrorMessage;
 import ast.ErrorMessage.FinalResult;
+import auxiliaryGrammar.Program;
 import facade.ErrorFormatter;
 import facade.L42;
 
@@ -27,7 +28,7 @@ public class TestDummyCode {
       //System.out.println(L42.record.toString());
       msg.printStackTrace();
      //Executor.reportError(msg);
-      System.out.println(ErrorFormatter.formatError(msg).getErrorTxt());
+      System.out.println(ErrorFormatter.formatError(Program.empty(),msg).getErrorTxt());
       }
 /*    try{
       FinalResult res = L42.runSlow(L42.pathToString(Paths.get("dummy","dummy.l42")));

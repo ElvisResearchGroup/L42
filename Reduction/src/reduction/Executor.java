@@ -76,7 +76,7 @@ public static ExpCore stepStar(Executor executer,ExpCore e){
       p1.checkComplete();//to let debugger enter
       throw new ErrorMessage.MalformedFinalResult(ct,
         "Some class can not be completely typed as is still incomplete or refers to incomplete classes"
-          +ErrorFormatter.reportPlaceOfMetaError(ct)
+          +ErrorFormatter.reportPlaceOfMetaError(p1,ct)
           );
       };
     return e;}

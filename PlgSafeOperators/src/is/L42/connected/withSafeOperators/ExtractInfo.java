@@ -59,7 +59,7 @@ public class ExtractInfo {
       return super.visit(s);
       }
   public static Set<Path> of(ClassB cb,Path path){
-    IsUsed iu=new IsUsed(path);
+    IsImplemented iu=new IsImplemented(path);
     cb.accept(iu);
     return iu.whereUsed;
     }

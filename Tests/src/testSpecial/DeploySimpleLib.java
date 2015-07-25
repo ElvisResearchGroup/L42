@@ -9,6 +9,7 @@ import java.nio.file.Paths;
 
 import ast.ErrorMessage;
 import ast.ErrorMessage.FinalResult;
+import auxiliaryGrammar.Program;
 import facade.ErrorFormatter;
 import facade.L42;
 
@@ -42,7 +43,7 @@ public class DeploySimpleLib {
       //System.out.println(L42.record.toString());
       msg.printStackTrace();
      //Executor.reportError(msg);
-      System.out.println(ErrorFormatter.formatError(msg).getErrorTxt());
+      System.out.println(ErrorFormatter.formatError(Program.empty(),msg).getErrorTxt());
       }
   }
 
@@ -64,7 +65,7 @@ public class DeploySimpleLib {
       //System.out.println(L42.record.toString());
       msg.printStackTrace();
      //Executor.reportError(msg);
-      System.out.println(ErrorFormatter.formatError(msg).getErrorTxt());
+      System.out.println(ErrorFormatter.formatError(Program.empty(),msg).getErrorTxt());
       }
   }
   public static void testLibCreationGui() {
@@ -160,7 +161,7 @@ public class DeploySimpleLib {
       //System.out.println(L42.record.toString());
       msg.printStackTrace();
      //Executor.reportError(msg);
-      System.out.println(ErrorFormatter.formatError(msg).getErrorTxt());
+      System.out.println(ErrorFormatter.formatError(Program.empty(),msg).getErrorTxt());
       }
   }
 

@@ -10,6 +10,8 @@ import org.junit.Assert;
 
 import ast.ErrorMessage;
 import ast.ErrorMessage.UserLevelError;
+import auxiliaryGrammar.Program;
+
 import static ast.ErrorMessage.UserLevelError.Kind.*;
 import facade.ErrorFormatter;
 import facade.L42;
@@ -19,7 +21,7 @@ public class TestErrorMsgs {
     String code=TestHelper.multiLine(src);
     try{L42.runSlow(fileName,code);}
     catch(ErrorMessage msg){
-      UserLevelError err = ErrorFormatter.formatError(msg);
+      UserLevelError err = ErrorFormatter.formatError(Program.empty(),msg);
       Assert.assertEquals(err.getKind(), expectedKind);
       Assert.assertEquals(err.getP().getFile(),fileName);
       Assert.assertEquals(err.getP().getLine1(),expectedLine);

@@ -1,30 +1,33 @@
 {(Mirror mirror)
 type method Outer0(Library lib) Outer0(mirror:MirrorLibrary(lib:lib))
 'type method Outer0(Library cls) Outer0(mirror:MirrorClass(cls:cls))
-method NodeReport query(Path that)exception SourceInvalid this.mirror().introspectionGiveInfo(path:that)
+method NodeReport query(Path that)exception SourceUnavailable this.mirror().introspectionGiveInfo(path:that)
 
 MemberReports:LinkedList.list(MemberReport)
-'MethodReports:LinkedList.list(MethodReport)
-'NestedClassReports:LinkedList.list(NestedClassReport)
-'method MemberReports members(Path that) (
-'  var result=MemberReports[]
-'  var mN=1N
-'  while Bool.true() (' to be able to break
-'    result:=result.#add(this.mirror()
-'      .introspectionGiveInfoMember(path:that,memberN:mN))
-'    mN+=1N
-'    )
-'  result)
-  
+MethodReports:LinkedList.list(MethodReport)
+NestedClassReports:LinkedList.list(NestedClassReport)
+method MemberReports members(Path that) exception SourceUnavailable(
+  var result=MemberReports[]
+  var mN=1N
+  while Bool.true() (' to be able to break
+    result:=result.#add(this.mirror()
+      .introspectionGiveInfoMember(path:that,memberN:mN))
+    mN+=1N
+    )
+  result)
+method MethodReports methods(Path that) exception SourceUnavailable
+  MethodReports[with m in this.members(that) ( on MethodReport m)]
+method NestedClassReports nestedClasses(Path that) exception SourceUnavailable
+  NestedClassReports[with m in this.members(that) ( on NestedClassReport m)]
 
 'design other methods to put here
 Mirror :{interface 
-  method NodeReport introspectionGiveInfo(Path path) exception SourceInvalid 
-  method MemberReport introspectionGiveInfoMember(Path path, N memberN) exception SourceInvalid,Void
-  method TypeReport introspectionGiveInfoType(Path path, N memberN, N typeN) exception SourceInvalid,Void
-  method S introspectionDocAsString(Path path) exception SourceInvalid
-  method S introspectionDocAsString(Path path, N annotationN) exception SourceInvalid,Void
-  method type Any introspectionDocPath(Path path, N annotationN) exception SourceInvalid,Void
+  method NodeReport introspectionGiveInfo(Path path) exception SourceUnavailable 
+  method MemberReport introspectionGiveInfoMember(Path path, N memberN) exception SourceUnavailable,Void
+  method TypeReport introspectionGiveInfoType(Path path, N memberN, N typeN) exception SourceUnavailable,Void
+  method S introspectionDocAsString(Path path) exception SourceUnavailable
+  method S introspectionDocAsString(Path path, N annotationN) exception SourceUnavailable,Void
+  method type Any introspectionDocPath(Path path, N annotationN) exception SourceUnavailable,Void
   }
 MirrorLibrary:{(Library lib)<:Mirror
   method introspectionGiveInfo(path)
@@ -76,7 +79,7 @@ type method MemberReport dispatchReport(Library that)
   MethodReport(report:MirrorLibrary(lib:that))'add cases
 type method S (Mirror that,Path p) (
   result=that.introspectionDocAsString(path:p)
-  catch exception x (on SourceInvalid error x )
+  catch exception x (on SourceUnavailable error x )
   result 
   )
 }

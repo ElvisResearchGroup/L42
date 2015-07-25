@@ -148,7 +148,7 @@ public class Resources {
       ClassB ct= Configuration.typeSystem.typeExtraction(p,cb);
       try{Configuration.typeSystem.checkCt( p, ct);}
       catch(ErrorMessage msg){
-        UserLevelError err = ErrorFormatter.formatError(msg);
+        UserLevelError err = ErrorFormatter.formatError(p,msg);
         throw Assertions.codeNotReachable("try to make this happen, is it possible? it should mean bug in plugin code\n"/*+ToFormattedText.of(ct)*/+"\n\n"+err+"\n---------------\n");
       }
       if(strict && (ct.getStage()==Stage.Less || ct.getStage()==Stage.None)){
@@ -176,7 +176,7 @@ public class Resources {
     ClassB ct= Configuration.typeSystem.typeExtraction(p,(ClassB)result);
     try{Configuration.typeSystem.checkCt( p, ct);}
     catch(ErrorMessage msg){
-        UserLevelError err = ErrorFormatter.formatError(msg);
+        UserLevelError err = ErrorFormatter.formatError(p,msg);
       throw Assertions.codeNotReachable("try to make this happen, is it possible? it should mean bug in plugin code\n"/*+ToFormattedText.of(ct)*/+"\n\n"+err+"\n---------------\n");
     }
     if(strict && ct.getStage()==Stage.Less){
@@ -212,7 +212,7 @@ public class Resources {
    //catch(java.lang.Error |RuntimeException msg){//eclipse debugger can not hande it
     catch(AssertionError msg){ throw msg;}
     catch(ErrorMessage msg){
-      UserLevelError err = ErrorFormatter.formatError(msg);
+      UserLevelError err = ErrorFormatter.formatError(p,msg);
       throw Assertions.codeNotReachable("try to make this happen, is it possible? it should mean bug in plugin code\n"+err+"\n---------------\n");
     }
     catch(NullPointerException msg){throw msg;}

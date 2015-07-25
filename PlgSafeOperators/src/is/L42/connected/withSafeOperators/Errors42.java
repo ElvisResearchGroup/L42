@@ -72,7 +72,7 @@ public class Errors42 {
     return Resources.Error.multiPartStringError("InvalidOnTopLevel");
   }
   //"InvalidSrc", caused by most operations referring to paths and methods
-  static enum SourceInvalid{PrivatePath,PrivateMethod,InexistentPath,InexistentMethod}
+  static enum SourceUnavailable{PrivatePath,PrivateMethod,InexistentPath,InexistentMethod}
   static void checkExistsPathMethod(ClassB cb, List<String> path,Optional<MethodSelector>ms){
     try{
       Boolean[] isPrivateRef=new Boolean[]{false};
@@ -90,21 +90,21 @@ public class Errors42 {
             );
           }
         } 
-      SourceInvalid kind=null;
-      if(absentMeth){kind=SourceInvalid.InexistentMethod;}
-      if(isPrivateMeth[0]){kind=SourceInvalid.PrivateMethod;}
-      if(isPrivateRef[0]){kind=SourceInvalid.PrivatePath;}
+      SourceUnavailable kind=null;
+      if(absentMeth){kind=SourceUnavailable.InexistentMethod;}
+      if(isPrivateMeth[0]){kind=SourceUnavailable.PrivateMethod;}
+      if(isPrivateRef[0]){kind=SourceUnavailable.PrivatePath;}
       if(kind==null){return;}
-      throw Resources.Error.multiPartStringError("SourceInvalid",
+      throw Resources.Error.multiPartStringError("SourceUnavailable",
           "Path",""+Path.outer(0,path),
           "Selector",""+((ms.isPresent())?ms.get():""),
           "InvalidKind",""+kind.name());
       }
     catch(ast.ErrorMessage.PathNonExistant e){
-      throw Resources.Error.multiPartStringError("SourceInvalid",
+      throw Resources.Error.multiPartStringError("SourceUnavailable",
           "Path",""+Path.outer(0,path),
           "Selector",""+((ms.isPresent())?ms.get():""),
-          "InvalidKind",""+SourceInvalid.InexistentPath);
+          "InvalidKind",""+SourceUnavailable.InexistentPath);
     }
   }
 

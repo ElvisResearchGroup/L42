@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import sugarVisitors.CollapsePositions;
@@ -28,15 +29,16 @@ import coreVisitors.InjectionOnSugar;
 import coreVisitors.IsCompiled;
 import coreVisitors.RecoverStoredSugar;
 import facade.L42.ExecutionStage;
+import platformSpecific.javaTranslation.Resources;
 
 public class ErrorFormatter {
   public interface Reporter{ String toReport(ArrayList<Ast.Position>ps);}
-  public static ErrorMessage.UserLevelError formatError(ErrorMessage msg) {
+  public static ErrorMessage.UserLevelError formatError(Program p,ErrorMessage msg) {
     Class<?> c=msg.getClass();
-    try {return formatError(msg, c);}
+    try {return formatError(p,msg, c);}
     catch (IllegalAccessException | NoSuchFieldException | SecurityException e) {throw new Error(e);}
   }
-  public static ErrorMessage.UserLevelError formatError(ErrorMessage msg, Class<?> c) throws IllegalAccessException, NoSuchFieldException, SecurityException {
+  public static ErrorMessage.UserLevelError formatError(Program p,ErrorMessage msg, Class<?> c) throws IllegalAccessException, NoSuchFieldException, SecurityException {
     String errorStart="\n\n\n------------------------------------\n";
     ArrayList<Ast.Position> ps=new ArrayList<Ast.Position>();
     String errorTxt="";
@@ -49,7 +51,7 @@ public class ErrorFormatter {
       try{errorTxt+= ctxP(msg, c,ps2);}catch(NoSuchFieldException ignored){}
     }
     catch(NoSuchFieldException ignored){}
-    Position p=positionsFilter(ps);
+    Position pos=positionsFilter(ps);
     if(c==ErrorMessage.DotDotDotCanNotBeResolved.class){
         ErrorMessage.DotDotDotCanNotBeResolved ddd=(ErrorMessage.DotDotDotCanNotBeResolved)msg;
 
@@ -64,7 +66,8 @@ public class ErrorFormatter {
         break;
       case MetaError:
         errorTxt=errorStart+"runStatus: "+kind.name()+"\n"+
-        "Error in generating the following class: "+reportPlaceOfMetaError(msg).replace("::\n","\n")+errorTxt;
+        "Error in generating the following class: \n"
+            +reportPlaceOfMetaError(p,msg).replace("::\n","\n")+"\n----------\n"+errorTxt;
       default:
         break;
       }
@@ -72,39 +75,39 @@ public class ErrorFormatter {
     Throwable cause=null;
     if(msg.getCause()!=null){
       if(msg.getCause() instanceof ErrorMessage){
-        ErrorMessage.UserLevelError uleCause=formatError((ErrorMessage)msg.getCause());
+        ErrorMessage.UserLevelError uleCause=formatError(p,(ErrorMessage)msg.getCause());
         cause=uleCause;
         errorTxt+="\n-------- caused by -----\n"+uleCause.getErrorTxt();
         }
       else {cause=msg.getCause();}
       }
-    ErrorMessage.UserLevelError result= new ErrorMessage.UserLevelError(kind,p,msg,errorTxt);
+    ErrorMessage.UserLevelError result= new ErrorMessage.UserLevelError(kind,pos,msg,errorTxt);
     result.initCause(cause);
     return result;
 
   }
 
-  private static String reportPlaceOfMetaError(ErrorMessage msg) {
+  private static String reportPlaceOfMetaError(Program p,ErrorMessage msg) {
     ErrorMessage.MalformedFinalResult _msg=(ErrorMessage.MalformedFinalResult)msg;
     ClassB cb=_msg.getFinalRes();
-    String path=_msg.getReason();
-    //String path=reportPlaceOfMetaError(cb);
-    return path+"\n";
+    //String path=_msg.getReason();
+    String path=reportPlaceOfMetaError(p,cb);
+    return path+"\n-----\n"+_msg.getReason();
   }
-  public static String reportPlaceOfMetaError(ClassB cb) {
+  public static String reportPlaceOfMetaError(Program p,ClassB cb) {
     for(Member m:cb.getMs()){
       if(IsCompiled.of(m)){continue;}
       return m.match(
-        nc->nc.getName()+"::"+isItErrorPlace(nc.getInner()),
-        mi->formatSelectorCompact(mi.getS())+"::"+isItErrorPlace(mi.getInner()),
-        mt->formatSelectorCompact(mt.getMs())+"::"+isItErrorPlace(mt.getInner().get())
+        nc->nc.getName()+"\n---\n"+isItErrorPlace(p,nc.getInner()),
+        mi->formatSelectorCompact(mi.getS())+"::"+isItErrorPlace(p,mi.getInner()),
+        mt->formatSelectorCompact(mt.getMs())+"::"+isItErrorPlace(p,mt.getInner().get())
         );
       }
     for(Member m:cb.getMs()){
       String err=m.match(nc->{
         ClassB ncb=(ClassB)nc.getInner();
         if(ncb.getStage()!=Stage.Star){
-          return nc.getName()+"::"+isItErrorPlace(nc.getInner());
+          return nc.getName()+"::"+isItErrorPlace(p,nc.getInner());
           }
         return null;
         }, mi->null, mt->null);
@@ -115,12 +118,28 @@ public class ErrorFormatter {
     return "it should be a nested somewhere";//TODO: improve//
     //throw Assertions.codeNotReachable();
   }
-  private static String isItErrorPlace(ExpCore inner) {
-    if(inner instanceof ClassB){return reportPlaceOfMetaError((ClassB)inner);}
-    return "\n    "+reportMetaError(inner);
+  private static String isItErrorPlace(Program p,ExpCore inner) {
+    if(inner instanceof ClassB){return reportPlaceOfMetaError(p,(ClassB)inner);}
+    return "\n    "+reportMetaError(p,inner);
   }
-  public static String reportMetaError(ExpCore inner) {
-    String str1=ToFormattedText.of(inner).replace("\n"," ");
+  private static class ReportThrow extends coreVisitors.CloneWithPath{
+    List<String> collectedPath=null;
+    ExpCore.Signal collectedErr=null;
+    public ClassB.NestedClass visit(ClassB.NestedClass nc){
+      if(nc.getInner() instanceof ExpCore.Signal){
+        collectedPath=this.getPath();
+        collectedErr=(ExpCore.Signal )nc.getInner();
+      }
+      return super.visit(nc);}
+  }
+  public static String reportMetaError(Program p,ExpCore inner) {
+    ReportThrow rt=new ReportThrow();
+    inner.accept(rt);
+    String str1="";
+    if(rt.collectedErr!=null){
+      str1=ToFormattedText.of(rt.collectedErr)+"\nContained inside:"+Path.outer(0, rt.collectedPath)+"\n";
+      }
+    str1+=ToFormattedText.of(inner).replace("\n"," ");
     String str2=ToFormattedText.of(inner.accept(new RecoverStoredSugar())).replace("\n"," ");
     String str =str1+" \nwas:\n "+str2;
     return str;
