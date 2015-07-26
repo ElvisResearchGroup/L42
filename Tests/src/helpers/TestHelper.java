@@ -194,20 +194,39 @@ public class TestHelper {
      
     ArrayList<String> _parameters = null;
     // invariant: even number of entries; category first then details
+    
+    static String valueFormat(String value) {
+      /* If the string is already formatted as an annotation,
+       * (begins with '@ )
+       * output it as formatted,
+       * otherwise annotate it as a unicode string
+       */
+      if (value.startsWith("'@"))
+        return  value;
+      else
+        return "'@stringU\n'" + value;
+    }
      
     public String str() {
+      return this.str(null);
+    }
+    
+    public String str(java.io.PrintStream debugTo) {
       StringBuffer result = new StringBuffer();
       Iterator<String> itr = this._parameters.iterator();
-       
+      
       result.append("{");
       while (itr.hasNext()) {
         result.append(itr.next());
-        result.append(":{'@stringU\n'");
-        result.append(itr.next());
+        result.append(":{");
+        result.append(valueFormat(itr.next()));
         result.append("\n}");
       }
       result.append("}");
-      //System.out.println(result);
+
+      if (null != debugTo)
+        debugTo.println(result.toString());
+
       return result.toString();
     }
      
@@ -248,6 +267,28 @@ public class TestHelper {
       assert(!setItr.hasNext());  // some element was out of order or didn't match at all
       return this;
     }
-  }
 
+    public ErrorCarry rename(String oldLabel, String newLabel) {
+      /* this function is an allowance for errors in the spelling
+       * of kinds or parameter labels.
+       * It changes one label to the new spelling,
+       * enabling a test of the old spelling to fail
+       * without breaking all subsequent tests.
+       * 
+       * Could be abused to update parameter values;
+       * not intended for this purpose.
+       */
+      ListIterator<String> parmItr = _parameters.listIterator();
+      while (parmItr.hasNext()) {
+        Boolean match = (oldLabel.equals(parmItr.next()));
+        if (match) {
+          parmItr.set(newLabel);
+          return this;
+        }
+      }
+      assert(false);  // the rename didn't match, so something is broken
+      return this;
+    }
+  }
+  
 }
