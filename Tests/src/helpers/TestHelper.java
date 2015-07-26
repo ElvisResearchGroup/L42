@@ -250,14 +250,14 @@ public class TestHelper {
       ListIterator<String> parmItr = _parameters.listIterator();
       while (setItr.hasNext() && parmItr.hasNext()) {
         String nextSet = setItr.next();
-        String nextVal = setItr.next();
-
+     
         //System.out.println("looking for '"+nextSet+"'");
         while (parmItr.hasNext()) {
           Boolean match = (nextSet.equals(parmItr.next()));
           parmItr.next();
           if (match) {
             //System.out.println("Putting '"+nextVal+"' in '"+nextSet+"'");
+            String nextVal = setItr.next();
             parmItr.set(nextVal);
             break;
           }
