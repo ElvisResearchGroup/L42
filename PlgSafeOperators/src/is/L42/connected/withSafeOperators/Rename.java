@@ -36,7 +36,7 @@ public class Rename {
         return Pop.pop(cb);
         }//otherwise, proceed with encoding
     }
-    cb=ClassOperations.normalizePrivates(cb);
+    cb=ClassOperations.normalizePrivates(p,cb);
     if(!ExtractInfo.isPrefix(src, dest)){ return directRename(p,cb,src,dest);}
     src=new ArrayList<>(src);
     dest=new ArrayList<>(dest);
@@ -59,7 +59,7 @@ public class Rename {
   */
     Errors42.checkExistsPathMethod(cb, src, Optional.empty());
     if(ExtractInfo.isPrefix(src,dest)){throw Errors42.errorPrefix(src,dest);}
-    cb=ClassOperations.normalizePrivates(cb);
+    cb=ClassOperations.normalizePrivates(p,cb);
     cb=ClassOperations.normalizePaths(cb,Collections.emptyList());//TODO: for perfomance could be merged with renameUsage later
     return directRename(p, cb, src, dest);
   }
@@ -77,7 +77,7 @@ public class Rename {
     dest+src is wrong
     */
       Errors42.checkExistsPathMethod(cb, path, Optional.of(src));
-      cb=ClassOperations.normalizePrivates(cb);
+      cb=ClassOperations.normalizePrivates(p,cb);
       PathMxMx pmx=new PathMxMx(Path.outer(0,path),src,dest);
       return IntrospectionAdapt.applyMapMx(p, cb, Collections.singletonList(pmx));
       //TODO: this still calls the old sum... to fix eventually

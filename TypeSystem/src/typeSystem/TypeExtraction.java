@@ -69,7 +69,7 @@ public class TypeExtraction {
     List<Path> usedPlus = new UsedPathsPlus().of(classB);
     //usedPlus=Functions.remove1OuterAndPrimitives(usedPlus);
     //usedPlus=Map.of( pi->From.fromP(pi, Path.outer(1)),usedPlus);
-    Program p1=p.addAtTop(classB);
+   Program p1=p.addAtTop(classB);//TODO: is ok? is not a ct?
     List<ClassB> es=new ArrayList<>();//null represents a meta expression
     for(Path pi:usedPlus){
       if(!pi.isCore()){continue;}

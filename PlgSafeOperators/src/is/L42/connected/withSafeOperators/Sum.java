@@ -26,10 +26,10 @@ import auxiliaryGrammar.Program;
 public class Sum {
   static ClassB sum(Program p, ClassB a, ClassB b) {
     List<ClassB.Member> ms = new ArrayList<>();
-    ms.add(new ClassB.NestedClass(Doc.empty(), "A", a));
+    ms.add(new ClassB.NestedClass(Doc.empty(), "A", a));//TODO: no, we do not add 1 outer to external paths
     ms.add(new ClassB.NestedClass(Doc.empty(), "B", b));
     ClassB ab = new ClassB(Doc.empty(), Doc.empty(), false, Collections.emptyList(), ms, Stage.None);
-    ab = ClassOperations.normalizePrivates(ab);
+    ab = ClassOperations.normalizePrivates(p,ab);
     ab = ClassOperations.normalizePaths(ab,Collections.emptyList());
     a = (ClassB) ((ClassB.NestedClass) ab.getMs().get(0)).getInner();
     b = (ClassB) ((ClassB.NestedClass) ab.getMs().get(1)).getInner();

@@ -56,14 +56,14 @@ public class ClassOperations {
     return cb.withMs(newMs);
   }
 
-  static ClassB normalizePrivates(ClassB cb){
+  static ClassB normalizePrivates(Program p,ClassB cb){
     //collect private names
     CollectPrivateNames cpn=CollectPrivateNames.of(cb);
     //rename all
     Program emptyP=Program.empty();
     List<PathMxMx> mapMx = ConsistentRenaming.makeMapMxConsistent(cb,cpn.mapMx);
-    cb=IntrospectionAdapt.applyMapMx(emptyP,cb,mapMx);
-    cb=IntrospectionAdapt.applyMapPath(emptyP,cb,cpn.mapPath);
+    cb=IntrospectionAdapt.applyMapMx(p,cb,mapMx);
+    cb=IntrospectionAdapt.applyMapPath(p,cb,cpn.mapPath);
     return cb;
   }
   static ClassB normalizePaths(ClassB cb,List<String> outer){

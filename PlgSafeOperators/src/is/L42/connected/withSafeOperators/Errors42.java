@@ -71,8 +71,8 @@ public class Errors42 {
   static Error errorInvalidOnTopLevel() {
     return Resources.Error.multiPartStringError("InvalidOnTopLevel");
   }
-  //"InvalidSrc", caused by most operations referring to paths and methods
-  static enum SourceUnavailable{PrivatePath,PrivateMethod,InexistentPath,InexistentMethod}
+  //"TargetUnavailable", caused by most operations referring to paths and methods
+  static enum TargetUnavailable{PrivatePath,PrivateMethod,InexistentPath,InexistentMethod}
   static void checkExistsPathMethod(ClassB cb, List<String> path,Optional<MethodSelector>ms){
     try{
       Boolean[] isPrivateRef=new Boolean[]{false};
@@ -90,25 +90,25 @@ public class Errors42 {
             );
           }
         } 
-      SourceUnavailable kind=null;
-      if(absentMeth){kind=SourceUnavailable.InexistentMethod;}
-      if(isPrivateMeth[0]){kind=SourceUnavailable.PrivateMethod;}
-      if(isPrivateRef[0]){kind=SourceUnavailable.PrivatePath;}
+      TargetUnavailable kind=null;
+      if(absentMeth){kind=TargetUnavailable.InexistentMethod;}
+      if(isPrivateMeth[0]){kind=TargetUnavailable.PrivateMethod;}
+      if(isPrivateRef[0]){kind=TargetUnavailable.PrivatePath;}
       if(kind==null){return;}
-      throw Resources.Error.multiPartStringError("SourceUnavailable",
+      throw Resources.Error.multiPartStringError("TargetUnavailable",
           "Path",""+Path.outer(0,path),
           "Selector",""+((ms.isPresent())?ms.get():""),
           "InvalidKind",""+kind.name());
       }
     catch(ast.ErrorMessage.PathNonExistant e){
-      throw Resources.Error.multiPartStringError("SourceUnavailable",
+      throw Resources.Error.multiPartStringError("TargetUnavailable",
           "Path",""+Path.outer(0,path),
           "Selector",""+((ms.isPresent())?ms.get():""),
-          "InvalidKind",""+SourceUnavailable.InexistentPath);
+          "InvalidKind",""+TargetUnavailable.InexistentPath);
     }
   }
 
-  //"PrivacyCoupuled", caused by redirect
+  //"PrivacyCoupuled", caused by removeImplementation
   static Error errorPrivacyCoupuled(List<Path> coupuledPaths, List<PathMx> ordered) {
     return Resources.Error.multiPartStringError("PrivacyCoupuled",
        "CoupuledPath",""+coupuledPaths,//private paths that are still used

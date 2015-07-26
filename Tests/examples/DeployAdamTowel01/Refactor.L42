@@ -1,39 +1,27 @@
-{(Library adapter)'@private
-  'LinkedList.list(
-  type method
-  Outer0 () Outer0(adapter:{})
-  
-  method
-  Outer0 #add(Name that, Name into) {
-    if that.isExternalPathName() (error S"start name must be internal")
-    if !that.isInternalPathName() (return this.#add(that,of:Name"Outer0",into:into))
-    map=IntrospectionPlugin.adaptLib(
-      l1:into.adapter(), l2:that.adapter())
-    lib=IntrospectionPlugin.sumLib(l1:this.adapter(), l2:map)
-    return Outer0(adapter:lib)
+{
+  Squares:'@private
+    {type method
+    Library < (Library that) exception MethodClash,ClassClash
+      Compose[that]<{
+        type method
+        type Outer0 begin() Outer0
+        method
+        Outer0 end() this
+        }
     }
-  method
-  Outer0 #add(Name that, Name of, Name into) {
-    map1=IntrospectionPlugin.adaptLib(
-      l1:into.adapter(), l2:that.adapter())
-    map2=IntrospectionPlugin.adaptLib(
-      l1:map1, l2:of.adapter())
-    lib=IntrospectionPlugin.sumLib(l1:this.adapter(), l2:map2)
-    return Outer0(adapter:lib)
+  Redirect:Squares<{#add(Path that, type Any to)
+    method
+    Library < (Library that)exception TargetUnavailable,InvalidOnTopLevel,SourceUnfit,MethodClash{
+      return SafeOperators.redirect(that,src:this.that(),dest:this.to())
+      catch error err (on Library (
+        mirror=Introspection::MirrorLibrary(lib:err)
+        with x=Introspection(mirror,p:Path"Kind") (
+          case x== S"TargetUnavailable"  (exception TargetUnavailable(mirror:mirror))
+          case x== S"InvalidOnTopLevel"  (exception InvalidOnTopLevel(mirror:mirror))
+          case x== S"MethodClash"  (exception MethodClash(mirror:mirror))
+          case x== S"SourceUnfit"  (exception SourceUnfit(mirror:mirror))
+          default error err)))
+      }
     }
-  type method
-  Outer0 #begin() Outer0()
-  
-  method
-  Outer0 #end() this
-  
-  method
-  Outer0 ++ (Outer0 that) (
-    lib=IntrospectionPlugin.sumLib(l1:this.adapter(), l2:that.adapter())
-    Outer0(adapter:lib)
-    )
-  method
-  Library < (Library that)
-    IntrospectionPlugin.adaptLib(l1:that, l2:this.adapter())
   
 }

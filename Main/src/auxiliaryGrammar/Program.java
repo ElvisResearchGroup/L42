@@ -24,8 +24,7 @@ import ast.ExpCore._void;
 import ast.ExpCore.ClassB.*;
 import ast.Ast.*;
 
-//TODO: does program still need to be mutable?
-public class Program {//mutable object now!
+public class Program {
   private final Program next;
   private final ClassB classB;
   private Program(Program next,ClassB classB){
@@ -40,12 +39,9 @@ public class Program {//mutable object now!
     return this.next.get(num-1);
     }
 
-  private static final Program regularEmpty=new Program(null,null){
-    public void updateTop(ClassB cb){throw Assertions.codeNotReachable();}
-    };
-  private static final Program executableStarEmpty=new Program(null,null){
-    public void updateTop(ClassB cb){throw Assertions.codeNotReachable();}
-    };
+  private static final Program regularEmpty=new Program(null,null){ };
+  private static final Program executableStarEmpty=new Program(null,null){};
+   
   public static Program empty(){return regularEmpty;}
   public boolean isExecutableStar(){
     if (this.isEmpty()){return this==executableStarEmpty;}
@@ -97,42 +93,13 @@ public class Program {//mutable object now!
   }
 
 
-  /*public void checkClassIn(Path p){
-    checkClassIn(p.outerNumber(),p.getCBar(),new ErrorMessage.ProgramExtractOnMetaExpression(p,this.getInnerData()));
-  }
-  public void checkClassIn(int n,List<String>cBar,ErrorMessage.ProgramExtractOnMetaExpression forErr){
-    if(n==0){checkClassIn(cBar,forErr);return;}
-    assert next.classB!=null:n;
-    Optional<NestedClass> wb=findWalkBy(next.classB);
-    String wbName=null;//"my" name
-    if(wb.isPresent()){wbName=wb.get().getName();}
-    Program collapsed=this.collapseOne();
-    assert collapsed==next;
-    collapsed.checkClassIn(n-1,cBar,forErr);
-    if(wbName==null){return;}
-    //at this point, collapsed.classB may have in wbName a update version for this.classB
-    Optional<Member> _newMe = getIfInDom(collapsed.classB.getMs(),wbName);
-    NestedClass newMe=(NestedClass)_newMe.get();
-    this.classB=(ClassB) newMe.getInner();
-    collapsed.classB=collapsed.classB.withMember(newMe.withInner(new ExpCore.WalkBy()));
-    }
-  */
- /* public void checkClassIn(List<String>cBar,ErrorMessage.ProgramExtractOnMetaExpression forErr){
-    Program in=this.navigateInTo(cBar,forErr);
-    TypeSystemOK.checkTop(in);
-    while(this!=in){
-      in=in.collapseOne();
-      }
-  }*/
-  //public Program dupHead(){return new Program(this.next,this.classB);}
-  public Program collapse(int n){
+    public Program collapse(int n){
     if(n==0){return this;}
     return this.collapseOne().collapse(n-1);
   }
   public Program collapseOne(){
     ClassB cb=this.top();
     Program result=this.next;
-    //result.updateTop(replaceWalkByWith(result.top(),cb));
     ClassB cbNext=replaceWalkByWith(result.top(),cb);
     result=result.next.addAtTop(cbNext);
     return result;
@@ -144,7 +111,6 @@ public class Program {//mutable object now!
       throw new ErrorMessage.PathNonExistant(Arrays.asList(c),this.top());
     }
     Member m=mOpt.get();
-    //this.updateTop(this.top().withMember(m.withBody(new ExpCore.WalkBy())));
     ClassB newTop=this.top().withMember(m.withBody(new ExpCore.WalkBy()));
     Program result=this.next.addAtTop(newTop);
     return result.addAtTop((ClassB)((NestedClass)m).getInner());
@@ -153,26 +119,7 @@ public class Program {//mutable object now!
     if(paths.isEmpty()){return this;}
     return this.navigateInTo(paths.get(0)).navigateInTo(paths.subList(1,paths.size()));
     }
-/*  public Program navigateInTo(List<String> path,ErrorMessage.ProgramExtractOnMetaExpression forErr){
-    Program result=this;
-    for(String s:path){
-      Optional<Member> nc = Program.getIfInDom(result.classB.getMs(),s);
-      assert nc.isPresent():path+" "+this.getInnerData();
-      ExpCore ec=((NestedClass)nc.get()).getInner();
-      if(ec instanceof ExpCore.WalkBy){
-        forErr.fillInStackTrace();throw forErr;
-        }
-      if(ec instanceof ClassB){
-        ClassB cb=(ClassB)((NestedClass)nc.get()).getInner();
-        result.updateTop(result.top().withMember(nc.get().withBody(new ExpCore.WalkBy())));
-        result=result.addAtTop(cb);
-        }
-      else {forErr.fillInStackTrace();throw forErr;}
-    }
-    return result;
-  }*/
   public ClassB extract(Path path){
-    //path=Norm.of(this,path);
     ClassB cb=this.get(path.outerNumber());
     cb = extractCBar(path.getCBar(), cb);
     assert cb!=null;
@@ -294,12 +241,7 @@ public class Program {//mutable object now!
     while(p.next!=null){result.add(p.classB);p=p.next;}
     return result;
   }
-  /*public static boolean hasNoFieldGen(ClassB classB) {
-    for(Member m:classB.getMs()){
-      if(m.match(nc->false, mi->false, mt->mt.isFieldGenerated())){return false;}
-    }
-    return true;
-  }*/
+  
   public boolean isNotClassB(Path path) {
     assert !path.isPrimitive():"method isNotClassB is not defined over primitive paths";
     try{//like extract but no normalize
@@ -324,8 +266,6 @@ public class Program {//mutable object now!
     return ct;
   }
   private static boolean checkFullyNormalized(ClassB cb) {
-    //Stage s=cb.getStage();
-    //if(s!=Stage.Star){return true;}
     for(Member m:cb.getMs()){
       m.match(
         nc->checkFullyNormalized((ClassB)nc.getInner()),
@@ -369,15 +309,8 @@ public class Program {//mutable object now!
   public boolean checkComplete(){
     if(this.isEmpty()){return true;}
     if(this.top().getStage()!=Stage.Star){return false;}
-    //Stage s=Functions.collectInnerStage(this.top());
-    //if(s!=Stage.Star){return false;}
     return this.pop().checkComplete();
   }
-  /*public void extractAllInto(Path path, List<ExpCore> es) {
-      //NO!?path=Norm.of(this,path);
-      ClassB cb=this.get(path.outerNumber());
-      extractCBarAllInto(path.getCBar(), cb,es);
-    }*/
 
 
 }
