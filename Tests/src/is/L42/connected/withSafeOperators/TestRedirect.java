@@ -51,7 +51,7 @@ public static class TestRedirect1 {//add more test for error cases
 	//   for each error.
     // the cardinality, or option space, of each parameter is listed in parentheses.
 
-    // SourceUnfit: Path(1), PrivatePath(t/f), SrcKind(enum(9)), DestKind(enum(9)), 
+    // SourceUnfit: SrcPath(1), DestExternalPath(1) PrivatePath(t/f), SrcKind(enum(9)), DestKind(enum(9)), 
     //   UnexpectedMethods(0..), UnexpectedImplementedInterfaces(0..)
     },{new String[]{"{A:{ }}"},  // from module with an unexpected function
         "{InnerA:{type method Void fun()} }","Outer0::InnerA","Outer1::A",
@@ -72,7 +72,7 @@ public static class TestRedirect1 {//add more test for error cases
                 "PrivatePath", "false",
                 "SrcKind", "TemplateModule",
                 "DestKind", "Box_TemplateModule",
-                "UnexpectedMethods", "[fun(that)]",
+                "UnexpectedMembers", "[fun(that)]",
                 "UnexpectedImplementedInterfaces", "[]"
                 )
           .str(), true
@@ -86,17 +86,52 @@ public static class TestRedirect1 {//add more test for error cases
           .rename("UnexpectedImplementedInterfaces", // TODO: remove this when the test before passes
                   "UnexpectedImplementednterfaces")
           .set("SrcKind", "Template", "DestKind", "Template",
-               "UnexpectedMethods", "[moreFun(that), notSoFun()]")
+               "UnexpectedMembers", "[moreFun(that), notSoFun()]")
           .str(), true
     },{new String[]{  // with a mismatch on parameter names in the method selector
-        "{InnerA:{type method Void fun(Void that) type method Void moreFun()"
+        "{A:{type method Void fun(Void that) type method Void moreFun()"
         + "method Void mostFun(Void that, Library mineAllMine) method Void notSoFun() } }",
         },
         "{InnerA:{type method Void fun(Void that) type method Void moreFun(Void that)"
         + "method Void mostFun(Void that, Library other) method Void notSoFun() } }",
         "Outer0::InnerA","Outer1::A",
         ec
-          .set("UnexpectedMethods", "[moreFun(that), mostFun(that,other)]")
+          .set("UnexpectedMembers", "[moreFun(that), mostFun(that,other)]")
+          .str(), true
+    },{new String[]{  // Box -> OpenClass (because I can) with missing subclass
+        "{A:{ method Void ignoreMe() void " +
+        "     B:{ method Void ignoreMe() void} } }",
+        },
+        "{InnerA:{ C:{} }}",
+        "Outer0::InnerA","Outer1::A",
+        ec
+          .set("SrcKind", "Box", "DestKind", "OpenClass",
+               "UnexpectedMembers", "[C]")
+          .str(), true
+    },{new String[]{  // OpenClass -> ClosedClass (because I can) with missing subclass
+        "{A:{ method Void ignoreMe() void " +
+        "     method '@private \n Void ignoreMeMore() " +
+        "     B:{ method Void ignoreMe() void} } }",
+        },
+        "{InnerA:{ method Void ignoreMe() void C:{} }}",
+        "Outer0::InnerA","Outer1::A",
+        ec
+          .set("SrcKind", "OpenClass", "DestKind", "ClosedClass",
+               "UnexpectedMembers", "[C]")
+          .str(), true
+    },{new String[]{  // ClosedClass -> ClosedClass (because I can) with missing subclass
+        "{A:{ method Void ignoreMe() void " +
+        "     method '@private \n Void ignoreMeMore() " +
+        "     B:{ method Void ignoreMe() void} } }",
+        },
+        "{InnerA:{ method Void ignoreMe() void "+
+        "     method '@private \n Void ignoreMeMore() " +
+        "C:{} " +
+        " }}",
+        "Outer0::InnerA","Outer1::A",
+        ec
+          .set("SrcKind", "ClosedClass", "DestKind", "ClosedClass",
+               "UnexpectedMembers", "[C]")
           .str(), true
 /* TODO: this test, when I get to method clashes
     },{new String[]{ // mismatches in type vs instance method
