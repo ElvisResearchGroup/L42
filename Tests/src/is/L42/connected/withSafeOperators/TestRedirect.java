@@ -51,7 +51,7 @@ public static class TestRedirect1 {//add more test for error cases
 	//   for each error.
     // the cardinality, or option space, of each parameter is listed in parentheses.
 
-    // SourceUnfit: Path(1), PrivatePath(t/f), SrcKind(enum(9)), IncompatibleClasskind(t/f),
+    // SourceUnfit: Path(1), PrivatePath(t/f), SrcKind(enum(9)), DestKind(enum(9)), 
     //   UnexpectedMethods(0..), UnexpectedImplementedInterfaces(0..)
     },{new String[]{"{A:{ }}"},  // from module with an unexpected function
         "{InnerA:{type method Void fun()} }","Outer0::InnerA","Outer1::A",
@@ -67,18 +67,14 @@ public static class TestRedirect1 {//add more test for error cases
     },{new String[]{"{A:{ }}"},  // same test, but with an argument, using new mechanism
         "{InnerA:{type method Void fun(Void that)} }","Outer0::InnerA","Outer1::A",
         ec.load("SourceUnfit",
-                "SrcPath", "### must be changed ###",
-                "DestExternalPath", "### anything sensible please #####",
+                "SrcPath", "Outer0::InnerA",
+                "DestExternalPath", "'@Outer1::A",
                 "PrivatePath", "false",
                 "SrcKind", "TemplateModule",
                 "DestKind", "Box_TemplateModule",
                 "UnexpectedMethods", "[fun(that)]",
-//                "UnexpectedImplementedInterfaces", "[]"
-                  "UnexpectedImplementednterfaces", "[]"
+                "UnexpectedImplementedInterfaces", "[]"
                 )
-          .set("SrcPath", "Outer0::InnerA",
-               "DestExternalPath","'@Outer1::A\n"
-)
           .str(), true
     },{new String[]{  // with some matching methods
         "{A:{type method Void fun(Void that)  method Void mostFun(Void that, Library other) }}"
@@ -86,8 +82,34 @@ public static class TestRedirect1 {//add more test for error cases
         "{InnerA:{type method Void fun(Void that) type method Void moreFun(Void that)"
         + "method Void mostFun(Void that, Library other) method Void notSoFun() } }",
         "Outer0::InnerA","Outer1::A",
-        ec.set("SrcKind", "Template", "DestKind", "Template",
-               "UnexpectedMethods", "[moreFun(that), notSoFun()]").str(), true
+        ec
+          .rename("UnexpectedImplementedInterfaces", // TODO: remove this when the test before passes
+                  "UnexpectedImplementednterfaces")
+          .set("SrcKind", "Template", "DestKind", "Template",
+               "UnexpectedMethods", "[moreFun(that), notSoFun()]")
+          .str(), true
+    },{new String[]{  // with a mismatch on parameter names in the method selector
+        "{InnerA:{type method Void fun(Void that) type method Void moreFun()"
+        + "method Void mostFun(Void that, Library mineAllMine) method Void notSoFun() } }",
+        },
+        "{InnerA:{type method Void fun(Void that) type method Void moreFun(Void that)"
+        + "method Void mostFun(Void that, Library other) method Void notSoFun() } }",
+        "Outer0::InnerA","Outer1::A",
+        ec
+          .set("UnexpectedMethods", "[moreFun(that), mostFun(that,other)]")
+          .str(), true
+/* TODO: this test, when I get to method clashes
+    },{new String[]{ // mismatches in type vs instance method
+        "{A:{type method Void fun(Void that) method Void moreFun(Void that)"
+        + "type method Void mostFun(Void that, Library other) method Void notSoFun() } }",
+        },
+        "{InnerA:{type method Void fun(Void that) type method Void moreFun(Void that)"
+        + "method Void mostFun(Void that, Library other) method Void notSoFun() } }",
+        "Outer0::InnerA","Outer1::A",
+        ec
+          .set("UnexpectedMethods", "[moreFun(that), mostFun()]").str(), true
+          */
+    
     }
 });}
 
