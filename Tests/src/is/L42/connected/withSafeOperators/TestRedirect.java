@@ -45,6 +45,9 @@ public static class TestRedirect1 {//add more test for error cases
         "{InnerA:{}  method InnerA m(InnerA a) a}","Outer0::InnerA","Outer1::A1::A1n","{ method Outer1::A1::A1n m(Outer1::A1::A1n a) a}",false
     },{new String[]{"{A2:{ A2n:{}  }}","{A1:{ A1n:{}  }}"}, // redirecting into nested classes
         "{InnerA:{}  method InnerA m(InnerA a) a}","Outer0::InnerA","Outer2::A2::A2n","{ method Outer2::A2::A2n m(Outer2::A2::A2n a) a}",false
+    },{new String[]{"{A:{method B getB()} B:{}}"}, // cascade: a return value in A redirects B
+        "{InnerA:{method InnerB getB()} InnerB:{} method InnerB getB()}",
+        "Outer0::InnerA","Outer1::A","{ method B getB()}",false
 
     // the errors have variable portions.
 	// try to explore the cardinality space of the variable portions
@@ -61,7 +64,7 @@ public static class TestRedirect1 {//add more test for error cases
            +"PrivatePath:{'@stringU\n'false\n}"
            +"SrcKind:{'@stringU\n'TemplateModule\n}"
            +"DestKind:{'@stringU\n'Box_TemplateModule\n}"
-           +"UnexpectedMethods:{'@stringU\n'[fun()]\n}"
+           +"UnexpectedMembers:{'@stringU\n'[fun()]\n}"
            +"UnexpectedImplementednterfaces:{'@stringU\n'[]\n}"
         + "}",true
     },{new String[]{"{A:{ }}"},  // same test, but with an argument, using new mechanism
@@ -133,6 +136,7 @@ public static class TestRedirect1 {//add more test for error cases
           .set("SrcKind", "ClosedClass", "DestKind", "ClosedClass",
                "UnexpectedMembers", "[C]")
           .str(), true
+// TODO: exercise UnexpectedImplementedInterfaces
 /* TODO: this test, when I get to method clashes
     },{new String[]{ // mismatches in type vs instance method
         "{A:{type method Void fun(Void that) method Void moreFun(Void that)"
