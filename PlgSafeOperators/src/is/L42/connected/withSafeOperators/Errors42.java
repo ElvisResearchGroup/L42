@@ -30,8 +30,8 @@ public class Errors42 {
   public static Error errorSourceUnfit(List<String> current,Path destExternalPath,ExtractInfo.ClassKind kindSrc,ExtractInfo.ClassKind kindDest,List<Member>unexpected,boolean headerOk,List<Path>unexpectedInterfaces,boolean isPrivate){
       return Resources.Error.multiPartStringError("SourceUnfit",
           "SrcPath",""+Path.outer(0,current), //the path of the class that can not be redirected
-          "DestExternalPath",""+Doc.factory("NEED ANOTHER FACTORY METHOD"), //the path of the class that can not be redirected
-          "PrivatePath",""+isPrivate,//the path can not be redirected since is private//TODO: should this be a "PrivatePath" error instead?
+          "DestExternalPath",Doc.factory(destExternalPath), //the path of the class that can not be redirected
+          "PrivatePath",""+isPrivate,//the path can not be redirected since is private
           "SrcKind",kindSrc.name(),//the kind of the class at path
           "DestKind",kindDest.name(),
           //"IncompatibleClassKind",""+!headerOk,//if the path can not be redirected because of their respective kinds. This information would make no sense if I can get the kind for dest!
@@ -89,7 +89,7 @@ public class Errors42 {
             mt->{if(mt.getDoc().isPrivate()){isPrivateMeth[0]=true;}return null;}
             );
           }
-        } 
+        }
       TargetUnavailable kind=null;
       if(absentMeth){kind=TargetUnavailable.InexistentMethod;}
       if(isPrivateMeth[0]){kind=TargetUnavailable.PrivateMethod;}

@@ -2812,4 +2812,98 @@ Outer0 #plusplus(Outer0 that) (
   error {'@stringU
   'CurlyBlock-Should be unreachable code
   }
-  )}}
+  )}
+Refactor:{
+Squares:'@private
+{
+type method 
+Library #left(Library that) exception Outer2::MethodClash, Outer2::ClassClash Outer2::Compose.#begin().#add(that:that).#end().#left(that:{
+type method 
+type Outer0 begin() Outer0
+method 
+Outer0 end() this})}
+Redirect:{
+type method 
+Outer0 #add(Outer2::Path^that'@consistent
+, type Any^to'@consistent
+) 
+mut method '@consistent
+Outer2::Path #that() 
+read method '@consistent
+Outer2::Path that() 
+mut method '@consistent
+type Any #to() 
+read method '@consistent
+type Any to() 
+method 
+Library #left(Library that) exception Outer2::TargetUnavailable, Outer2::InvalidOnTopLevel, Outer2::SourceUnfit, Outer2::MethodClash (
+  Void unused=(
+    Void unused0=return Outer2::SafeOperators.redirect(that:that, src:this.that(), dest:this.to())
+    catch error err (
+      on Library (
+        Outer2::Introspection::MirrorLibrary::#apply(lib ) mirror=Outer2::Introspection::MirrorLibrary.#apply(lib:err)
+        (
+          Outer2::Introspection::#apply(that p ) x=Outer2::Introspection.#apply(that:mirror, p:Outer2::Path.#stringParser(that:{'@stringU
+          'Kind
+          }))
+          (
+            Outer2::Introspection::#apply(that p ) ::#equalequal(that ) cond=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
+            'TargetUnavailable
+            }))
+            (
+              Void unused1=cond.#checkTrue()
+              catch exception unused2 (
+                on Void (
+                  Outer2::Introspection::#apply(that p ) ::#equalequal(that ) cond0=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
+                  'InvalidOnTopLevel
+                  }))
+                  (
+                    Void unused3=cond0.#checkTrue()
+                    catch exception unused4 (
+                      on Void (
+                        Outer2::Introspection::#apply(that p ) ::#equalequal(that ) cond1=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
+                        'MethodClash
+                        }))
+                        (
+                          Void unused5=cond1.#checkTrue()
+                          catch exception unused6 (
+                            on Void (
+                              Outer2::Introspection::#apply(that p ) ::#equalequal(that ) cond2=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
+                              'SourceUnfit
+                              }))
+                              (
+                                Void unused7=cond2.#checkTrue()
+                                catch exception unused8 (
+                                  on Void error err
+                                  )
+                                exception Outer2::SourceUnfit.#apply(mirror:mirror)
+                                )
+                              )
+                            )
+                          exception Outer2::MethodClash.#apply(mirror:mirror)
+                          )
+                        )
+                      )
+                    exception Outer2::InvalidOnTopLevel.#apply(mirror:mirror)
+                    )
+                  )
+                )
+              exception Outer2::TargetUnavailable.#apply(mirror:mirror)
+              )
+            )
+          )
+        )
+      )
+    void
+    )
+  catch return result (
+    on Library result
+    )
+  error {'@stringU
+  'CurlyBlock-Should be unreachable code
+  }
+  )
+type method 
+type Outer0 begin() Outer0
+method 
+Outer0 end() this}}}

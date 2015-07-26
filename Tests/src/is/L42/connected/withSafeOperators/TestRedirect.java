@@ -31,7 +31,7 @@ public static class TestRedirect1 {//add more test for error cases
   @Parameterized.Parameters
   public static List<Object[]> createData() {
     ErrorCarry ec = new ErrorCarry();
-    
+
     return Arrays.asList(new Object[][] {
     {new String[]{"{A:{}}"},
       "{InnerA:{} B:{ method InnerA m(InnerA a) a}}","Outer0::InnerA","Outer1::A","{B:{ method Outer2::A m(Outer2::A a) a}}",false
@@ -50,19 +50,18 @@ public static class TestRedirect1 {//add more test for error cases
 	// try to explore the cardinality space of the variable portions
 	//   for each error.
     // the cardinality, or option space, of each parameter is listed in parentheses.
-    
+
     // SourceUnfit: Path(1), PrivatePath(t/f), SrcKind(enum(9)), IncompatibleClasskind(t/f),
     //   UnexpectedMethods(0..), UnexpectedImplementedInterfaces(0..)
     },{new String[]{"{A:{ }}"},  // from module with an unexpected function
         "{InnerA:{type method Void fun()} }","Outer0::InnerA","Outer1::A",
         "{"+"Kind:{'@stringU\n'SourceUnfit\n}"
            +"SrcPath:{'@stringU\n'Outer0::InnerA\n}"
-           +"DestExternalPath:{'@stringU\n" +
-               "'NEED ANOTHER FACTORY METHOD" + "\\u000a" + "\n}" //TODO: we have to discuss about what should be the error here
+           +"DestExternalPath:{'@Outer1::A\n}"
            +"PrivatePath:{'@stringU\n'false\n}"
            +"SrcKind:{'@stringU\n'TemplateModule\n}"
            +"DestKind:{'@stringU\n'Box_TemplateModule\n}"
-           +"UnexpectedMethods:{'@stringU\n'[fun]\n}"
+           +"UnexpectedMethods:{'@stringU\n'[fun()]\n}"
            +"UnexpectedImplementednterfaces:{'@stringU\n'[]\n}"
         + "}",true
     },{new String[]{"{A:{ }}"},  // same test, but with an argument, using new mechanism
@@ -78,7 +77,7 @@ public static class TestRedirect1 {//add more test for error cases
                   "UnexpectedImplementednterfaces", "[]"
                 )
           .set("SrcPath", "Outer0::InnerA",
-               "DestExternalPath", "NEED ANOTHER FACTORY METHOD\\u000a"
+               "DestExternalPath","'@Outer1::A\n"
 )
           .str(), true
     },{new String[]{  // with some matching methods
@@ -94,7 +93,7 @@ public static class TestRedirect1 {//add more test for error cases
 
 //},{"Outer2::D::C","Outer1::C",new String[]{"{A:{}}","{C:{}}","{D:##walkBy}"}
 
-  
+
 @Test  public void test() {
   TestHelper.configureForTest();
   Program p=TestHelper.getProgram(_p);

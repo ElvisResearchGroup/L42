@@ -44,8 +44,8 @@ public class Redirect {
     List<String>cs=csPath.getCBar();
     if(cs.isEmpty()){throw Errors42.errorInvalidOnTopLevel();}
     Errors42.checkExistsPathMethod(l, cs, Optional.empty());
-    ast.Ast.Doc[] csComm=new ast.Ast.Doc[]{null};
-    ClassB l0=(ClassB)FromInClass.of(Program.extractCBar(cs,l,csComm),csPath);//L(Cs)[from Cs]=L0={H M0 ... Mn}
+    Boolean[] csPrivate=new Boolean[]{false};
+    ClassB l0=(ClassB)FromInClass.of(Program.extractCBar(cs,l,csPrivate),csPath);//L(Cs)[from Cs]=L0={H M0 ... Mn}
     //path exists by construction.
     ClassB l0Dest;
     if(path.isCore()){l0Dest=(ClassB)FromInClass.of(p.extract(path),path);}//p(Path)[from Path]=L0'={H' M0' ... Mn', _}//reordering of Ms allowed here
@@ -54,7 +54,7 @@ public class Redirect {
       l0Dest=new ClassB(Doc.empty(),Doc.empty(),path.equals(Path.Any()),Collections.emptyList(),Collections.emptyList(),Stage.None);
     }
     //(a)Cs is public in L, and Cs have no private state;
-    boolean isPrivate=csComm[0].isPrivate();///TODO: BUG no, this only check privatness of last level
+    boolean isPrivate=csPrivate[0];
     boolean isPrivateState=ExtractInfo.hasPrivateState(l0);
     //all its methods have no implementation, that is:
     //for all Mi,i=0..n: Mi is of form h or Mi is of form C:_

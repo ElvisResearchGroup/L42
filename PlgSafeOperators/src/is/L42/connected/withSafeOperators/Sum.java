@@ -28,12 +28,15 @@ public class Sum {
     List<ClassB.Member> ms = new ArrayList<>();
     ms.add(new ClassB.NestedClass(Doc.empty(), "A", a));//TODO: no, we do not add 1 outer to external paths
     ms.add(new ClassB.NestedClass(Doc.empty(), "B", b));
-    ClassB ab = new ClassB(Doc.empty(), Doc.empty(), false, Collections.emptyList(), ms, Stage.None);
-    ab = ClassOperations.normalizePrivates(p,ab);
-    ab = ClassOperations.normalizePaths(ab,Collections.emptyList());
-    a = (ClassB) ((ClassB.NestedClass) ab.getMs().get(0)).getInner();
-    b = (ClassB) ((ClassB.NestedClass) ab.getMs().get(1)).getInner();
-    //return IntrospectionSum.sum(a, b, Path.outer(0));
+    //ClassB ab = new ClassB(Doc.empty(), Doc.empty(), false, Collections.emptyList(), ms, Stage.None);
+    //ab = ClassOperations.normalizePrivates(p,ab);
+    //ab = ClassOperations.normalizePaths(ab,Collections.emptyList());
+    //a = (ClassB) ((ClassB.NestedClass) ab.getMs().get(0)).getInner();
+    //b = (ClassB) ((ClassB.NestedClass) ab.getMs().get(1)).getInner();
+    a = ClassOperations.normalizePrivates(p,a);
+    b = ClassOperations.normalizePrivates(p,b);
+    a=ClassOperations.normalizePaths(a,Collections.emptyList());
+    b=ClassOperations.normalizePaths(b,Collections.emptyList());
     return normalizedTopSum(p, a, b);
   }
 
