@@ -13,6 +13,7 @@ import introspection.FindUsage;
 import introspection.IntrospectionAdapt;
 import is.L42.connected.withSafeOperators.ExtractInfo.ClassKind;
 import is.L42.connected.withSafeOperators.ExtractInfo.IsUsed;
+import is.L42.connected.withSafeOperators.Pop.PopNFrom;
 import tools.Assertions;
 import ast.ErrorMessage;
 import ast.ExpCore.*;
@@ -45,10 +46,16 @@ public class Redirect {
     if(cs.isEmpty()){throw Errors42.errorInvalidOnTopLevel();}
     Errors42.checkExistsPathMethod(l, cs, Optional.empty());
     Boolean[] csPrivate=new Boolean[]{false};
-    ClassB l0=(ClassB)FromInClass.of(Program.extractCBar(cs,l,csPrivate),csPath);//L(Cs)[from Cs]=L0={H M0 ... Mn}
+    ClassB l0=Program.extractCBar(cs,l,csPrivate);//L(Cs)[from Cs]=L0={H M0 ... Mn}//No, from does not work here
+    l0=(ClassB)new PopNFrom(cs.size()).visit(l0);
     //path exists by construction.
     ClassB l0Dest;
-    if(path.isCore()){l0Dest=(ClassB)FromInClass.of(p.extract(path),path);}//p(Path)[from Path]=L0'={H' M0' ... Mn', _}//reordering of Ms allowed here
+    if(path.isCore()){
+      ClassB l0Raw = p.extract(path);
+      Path toFrom=path.setNewOuter(path.outerNumber()-1);
+      toFrom=toFrom.popC();//as in IntrospectionAdapt
+      l0Dest=(ClassB)FromInClass.of(l0Raw,toFrom);
+      }//p(Path)[from Path]=L0'={H' M0' ... Mn', _}//reordering of Ms allowed here
     else{
       assert path.isPrimitive();
       l0Dest=new ClassB(Doc.empty(),Doc.empty(),path.equals(Path.Any()),Collections.emptyList(),Collections.emptyList(),Stage.None);
@@ -113,8 +120,9 @@ public class Redirect {
     if(ps.isEmpty()){return Collections.emptySet();}
     if(ps.size()!=1){return ps;}
     if(psPrime.size()!=1){return ps;}
-    redirectOkPath(sPrime, p, l,ps.iterator().next(),psPrime.iterator().next(), result);
-    return Collections.emptySet();
+    boolean pathOk=redirectOkPath(sPrime, p, l,ps.iterator().next(),psPrime.iterator().next(), result);
+    if(pathOk){return Collections.emptySet();}
+    return ps;
     }
   private static void redirectOk(List<PathPath> s, Program p, ClassB l, Member mi, Member miPrime, PathPath currentPP, List<PathPath> result) {
     //from before I know the members mi, miPrime are of the same class.
@@ -148,39 +156,42 @@ public class Redirect {
     exc.removeAll(exceptionsPrime);
     if(exc.size()!=1){return exc;}
     if(excPrime.size()!=1){return exc;}//ok not excPrime
-    redirectOkPath(s, p, l, exc.iterator().next(),exceptionsPrime.iterator().next(), result);
-    return Collections.emptySet();
+    boolean pathOk=redirectOkPath(s, p, l, exc.iterator().next(),exceptionsPrime.iterator().next(), result);
+    if(pathOk){ return Collections.emptySet();}
+    return exc;
   }
   private static boolean redirectOkType(List<PathPath> s, Program p, ClassB l, Type t, Type tPrime, List<PathPath> result) {
     if(!t.getClass().equals(tPrime.getClass())){return false;}//incompatible internal/external types t1 t2
+    Boolean[] pathOk={true};
     t.match(
       normType->{
         NormType ntP=(NormType)tPrime;
         if(!normType.getMdf().equals(ntP.getMdf())){return false;}//incompatible internal/external types t1 t2
         if(!normType.getPh().equals(ntP.getPh())){return false;}//incompatible internal/external types t1 t2
-        redirectOkPath(s,p,l,normType.getPath(),ntP.getPath(),result);
+        pathOk[0]=redirectOkPath(s,p,l,normType.getPath(),ntP.getPath(),result);
         return null;
       },
       hType->{
         HistoricType htP=(HistoricType)tPrime;
         if(!hType.getSelectors().equals(htP.getSelectors())){return false;}//incompatible internal/external types t1 t2
         if(hType.isForcePlaceholder()!=htP.isForcePlaceholder()){return false;}//incompatible internal/external types t1 t2
-        redirectOkPath(s,p,l,hType.getPath(),htP.getPath(),result);
+        pathOk[0]=redirectOkPath(s,p,l,hType.getPath(),htP.getPath(),result);
         return null;
       });
-    return true;
+    return pathOk[0];
   }
-  private static void redirectOkPath(List<PathPath> s, Program p, ClassB l,Path cs, Path path, List<PathPath> result) {
+  private static boolean redirectOkPath(List<PathPath> s, Program p, ClassB l,Path cs, Path path, List<PathPath> result) {
     //S;p|-L[Outern::Cs =~Outern::Cs]:emptyset  holds with n>0
     if(cs.isPrimitive() ||cs.outerNumber()>0){
-      if(!cs.equals(path)){throw new AssertionError("GETAMESSAGE");}//TODO:incompatible external types t1 t2
-      return;
+      if(!cs.equals(path)){return false;}
+      return true;
     }
     //otherwise
     //S;p|-L[Outer0::Cs =~ Path ]: S'
     //if S;p|-L[redirect Cs->Path]:S'
     List<PathPath> res = redirectOk(s,p,l,cs,path);
     result.addAll(res);
+    return true;
   }
   private static Void redirectOkNc(List<PathPath> s, Program p, ClassB l, NestedClass nc, ClassB.NestedClass miPrime, PathPath currentPP, List<PathPath> result) {
     //S;p|-L[C:L1=~C:L1' Cs->Path]:S'

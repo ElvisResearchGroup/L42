@@ -26,25 +26,33 @@ class Pop {
   }
 
   static ClassB directPop(ClassB cb) {
-    cb=(ClassB)new Pop1From().visit(cb);
+    cb=(ClassB)new PopNFrom(1).visit(cb);
     ClassB.NestedClass nc = (ClassB.NestedClass)cb.getMs().get(0);
     ClassB res=(ClassB)nc.getInner();
     return res;
   }
 
-  static class Pop1From extends CloneWithPath{
+  static class PopNFrom extends CloneWithPath{
+    public PopNFrom(int n){this.n=n;}
+    public final int n;
     public ExpCore visit(Path s) {
       if(s.isPrimitive()){return s;}
+      return popN(n,s);
+      }
+
+    private ExpCore popN(int n,Path s) {
+      assert n>=0;
+      if (n==0){return s;}
       int nLessK=s.outerNumber() - getPath().size();
       if(nLessK>0){//is looking out
-        return s.setNewOuter(s.outerNumber()-1);
+        return popN(n-1,s.setNewOuter(s.outerNumber()-1));
       }
       if(nLessK<0){//is looking in
-        return s;
+        return popN(n-1,s);
       }
       //is extacly looking at top level
       assert !s.getCBar().isEmpty();
-      return Path.outer(s.outerNumber()-1,s.getCBar().subList(1, s.getCBar().size()));
-      }
+      return popN(n-1,Path.outer(s.outerNumber()-1,s.getCBar().subList(1, s.getCBar().size())));
+    }
   }
 }

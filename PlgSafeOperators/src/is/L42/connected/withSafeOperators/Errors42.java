@@ -35,8 +35,8 @@ public class Errors42 {
           "SrcKind",kindSrc.name(),//the kind of the class at path
           "DestKind",kindDest.name(),
           //"IncompatibleClassKind",""+!headerOk,//if the path can not be redirected because of their respective kinds. This information would make no sense if I can get the kind for dest!
-          "UnexpectedMethods",""+ExtractInfo.showMembers(unexpected),//methods that are not present in dest (or present but with different declared vs Interface implemented status)
-          "UnexpectedImplementednterfaces",""+unexpectedInterfaces//interfaces implemented in path but not in dest
+          "UnexpectedMembers",""+ExtractInfo.showMembers(unexpected),//methods that are not present in dest (or present but with different declared vs Interface implemented status)
+          "UnexpectedImplementedInterfaces",""+unexpectedInterfaces//interfaces implemented in path but not in dest
           //TODO: I would like to give also the destination path, but by being an external path I'm troubled.
           //should I use a @Path in a doc?
           //also, what happens if destination is private, caused by example by a private type of a public method??

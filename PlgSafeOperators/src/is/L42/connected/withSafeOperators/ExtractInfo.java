@@ -102,7 +102,7 @@ public class ExtractInfo {
     Box,
     Interface,
     FreeInterface,
-    CloseClass,
+    ClosedClass,
     OpenClass,
     Template/*,PureRecord*/,
     Module,
@@ -121,7 +121,7 @@ public class ExtractInfo {
     }//not interface, 7 options left
     //if(isBox!=null &&isBox){return ClassKinds.Box.name();}//fast exit
     if(isPrivateState==null){isPrivateState=hasPrivateState(cb);}
-    if(isPrivateState){return ClassKind.CloseClass;}//6 options left
+    if(isPrivateState){return ClassKind.ClosedClass;}//6 options left
     if(isNoImplementation==null){isNoImplementation=isNoImplementation(cb);}
     if(isBox==null && top!=null){isBox=isBox(top,cb,current);}
     if(isBox!=null &&isBox){return ClassKind.Box;}//5 options left

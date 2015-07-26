@@ -132,25 +132,6 @@ public class IntrospectionAdapt {
     }
     return accumulate(results,Path.outer(0));
 
-    /*
-    List<ClassB> results=new ArrayList<ClassB>();
-    ClassB l0=l;
-    for(PathPath pp:mapPath){
-      l0=remove(pp.getPath1(),l0);
-    }
-    results.add(l0);
-    for(PathPath pp:mapPath){
-      redirectDefinition(pp,l,results);
-    }
-   l0=accumulate(results,Path.outer(0));
-
-    Program pPrime=removeTopLevelWalkBy(p);
-    for(PathPath pp:mapPath){
-      l0=renameUsage(pPrime,pp,l0);//TODO: this do rename usages as a sequence, is there any point where we would need
-      //consistent "instantanius" multiple rename usage?
-    }
-    return l0;
-    */
   }
   public static Program removeTopLevelWalkBy(Program p) {
     if(p.isEmpty()){return p;}
@@ -181,39 +162,6 @@ public class IntrospectionAdapt {
     toFrom=toFrom.popC();
     cb=(ClassB)FromInClass.of(cb, toFrom);
     }
-    if(false){//is the block over agans this block
-    if(toFrom.outerNumber()>0 && toFrom.getCBar().size()>0){
-      toFrom=toFrom.setNewOuter(toFrom.outerNumber()-1);
-      toFrom=toFrom.popC();
-      cb=(ClassB)FromInClass.of(cb, toFrom);
-    }
-    else {
-        if(toFrom.outerNumber()>0 /*&&toFrom.getCBar().size()==0*/){
-          assert toFrom.getCBar().size()==0;
-          cb=(ClassB)FromInClass.of(cb, toFrom);
-        }
-      else {
-        assert toFrom.outerNumber()==0;
-        //remove outerN where N is toFrom.getCBar().size()
-        int _n=toFrom.getCBar().size();
-        if(_n!=0){//TODO: test case _n==0
-          cb=(ClassB)cb.accept(new CloneVisitor(){
-            int n=_n-1;
-            public ExpCore visit(ClassB cb){
-              int oldN=n;n+=1;
-              try{return super.visit(cb);}
-              finally{n=oldN;}
-              }
-            public ExpCore visit(Path p){
-              if(p.isPrimitive()){return p;}
-              if(p.outerNumber()<n){return p;}//T ODO: is it right?
-              p=p.setNewOuter(p.outerNumber()-_n);//_n used on purpose
-              return p;
-            }
-          });
-        }
-    }}}
-
     if(cBar2.isEmpty()){results.add(cb);return;}
     List<Member>ms=new ArrayList<>();
     ms.add(encapsulateIn(cBar2, cb,docCb[0]));
@@ -484,10 +432,6 @@ static Path add1Outer(Path p) {
     ClassB cb= new ClassB(Doc.factory(path),Doc.empty(),false,Collections.emptyList(),Collections.emptyList(),Stage.None);
     return new ClassB.NestedClass(Doc.empty(),"%o_0%",cb);
   }
-  /*public static ast.ExpCore.ClassB sealConstructors(Program emptyP, ast.ExpCore.ClassB classB, List<Path> mapConstructors) {
-    // TODO Auto-generated method stub
-    return null;
-  }*/
   /**Expands a map to include also the implemented versions of methods*/
   public static List<PathMxMx> expandMapMx(Program p, ast.ExpCore.ClassB classB, List<PathMxMx> mapMx) {
     //compute ct

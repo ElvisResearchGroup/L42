@@ -47,7 +47,7 @@ public static class TestRedirect1 {//add more test for error cases
         "{InnerA:{}  method InnerA m(InnerA a) a}","Outer0::InnerA","Outer2::A2::A2n","{ method Outer2::A2::A2n m(Outer2::A2::A2n a) a}",false
     },{new String[]{"{A:{method B getB()} B:{}}"}, // cascade: a return value in A redirects B
         "{InnerA:{method InnerB getB()} InnerB:{} method InnerB getB()}",
-        "Outer0::InnerA","Outer1::A","{ method B getB()}",false
+        "Outer0::InnerA","Outer1::A","{ method Outer1::B getB()}",false
 
     // the errors have variable portions.
 	// try to explore the cardinality space of the variable portions
@@ -65,7 +65,7 @@ public static class TestRedirect1 {//add more test for error cases
            +"SrcKind:{'@stringU\n'TemplateModule\n}"
            +"DestKind:{'@stringU\n'Box_TemplateModule\n}"
            +"UnexpectedMembers:{'@stringU\n'[fun()]\n}"
-           +"UnexpectedImplementednterfaces:{'@stringU\n'[]\n}"
+           +"UnexpectedImplementedInterfaces:{'@stringU\n'[]\n}"
         + "}",true
     },{new String[]{"{A:{ }}"},  // same test, but with an argument, using new mechanism
         "{InnerA:{type method Void fun(Void that)} }","Outer0::InnerA","Outer1::A",
@@ -86,8 +86,6 @@ public static class TestRedirect1 {//add more test for error cases
         + "method Void mostFun(Void that, Library other) method Void notSoFun() } }",
         "Outer0::InnerA","Outer1::A",
         ec
-          .rename("UnexpectedImplementedInterfaces", // TODO: remove this when the test before passes
-                  "UnexpectedImplementednterfaces")
           .set("SrcKind", "Template", "DestKind", "Template",
                "UnexpectedMembers", "[moreFun(that), notSoFun()]")
           .str(), true
