@@ -48,6 +48,20 @@ public static class TestRedirect1 {//add more test for error cases
     },{new String[]{"{A:{method B getB()} B:{}}"}, // cascade: a return value in A redirects B
         "{InnerA:{method InnerB getB()} InnerB:{} method InnerB getB()}",
         "Outer0::InnerA","Outer1::A","{ method Outer1::B getB()}",false
+    },{new String[]{"{A:{method Void useB(B that)} B:{}}"}, // cascade: a parameter in A redirects B
+        "{InnerA:{method Void useB(InnerB that)} InnerB:{} method Void useB(InnerB that)}",
+        "Outer0::InnerA","Outer1::A","{ method Void useB(Outer1::B that)}",false
+    },{new String[]{"{A:{method Void do() exception B} B:{}}"}, // cascade: an exception in A redirects B
+        "{InnerA:{method Void do() exception InnerB} InnerB:{} method Void useB(InnerB that)}",
+        "Outer0::InnerA","Outer1::A","{ method Void useB(Outer1::B that)}",false
+    },{new String[]{      // serial cascade: return ~> parameter ~> exception
+                    "{D:{method D ident(D that)}}",
+                    "{C:{method do() exception D}}",
+                    "{B:{method useC(C that)}}",
+                    "{A:{method B getB()}}"},
+        "{InnerA:{method InnerB getB()} InnerB:{method useC(InnerC that)} "
+        + "InnerC:{method do() exception InnerD} InnerD:{ method InnerD ident(InnerD that)}}",
+        "Outer0::InnerA","Outer1::A","{ method Outer4:D ident(Outer4:D that)}",false
 
     // the errors have variable portions.
 	// try to explore the cardinality space of the variable portions
@@ -156,10 +170,10 @@ public static class TestRedirect1 {//add more test for error cases
 @Test  public void test() {
   TestHelper.configureForTest();
   Program p=TestHelper.getProgram(_p);
-  ClassB cb1=getClassB(_cb1);
+  ClassB cb1=getClassB("cb1", _cb1);
   Path path1=Path.parse(_path1);
   Path path2=Path.parse(_path2);
-  ClassB expected=getClassB(_expected);
+  ClassB expected=getClassB("expected", _expected);
   if(!isError){
     ClassB res=Redirect.redirect(p, cb1,path1,path2);
     TestHelper.assertEqualExp(expected,res);
