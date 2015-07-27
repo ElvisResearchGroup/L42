@@ -99,14 +99,19 @@ public class TestHelper {
     return getProgram(new String[]{"{C:{new() type method Outer1::C foo(type Outer1::C bar) (bar.foo(bar:this))}, D:{new(var Outer1::C x)}}"});
   }
 
-  public static ClassB getClassB(String e1) {
-    return (ClassB)Desugar.of(Parser.parse(null," "+e1)).accept(new InjectionOnCore());
+  public static ClassB getClassB(String source, String e1) {
+    return (ClassB)Desugar.of(Parser.parse(source," "+e1)).accept(new InjectionOnCore());
   }
-
+  public static ClassB getClassB(String e1) {
+    return getClassB(null, e1);
+  }
+  
    public static Program getProgram(/*List<Path> paths,*/String[] code){
     Program p0=Program.empty();
+    Integer outerCount = code.length;
     for(String s:code){
-      Expression e=Parser.parse(null,s);
+      Expression e=Parser.parse("Outer"+outerCount,s);
+      --outerCount;
       ClassB ec=(ClassB)Desugar.of(e).accept(new InjectionOnCore());
       ec=Configuration.typeSystem.typeExtraction(p0, ec);
       p0=p0.addAtTop((ClassB)ec);
