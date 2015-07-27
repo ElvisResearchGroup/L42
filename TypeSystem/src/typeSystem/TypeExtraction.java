@@ -124,10 +124,14 @@ public class TypeExtraction {
       if(cbi.getStage()==Stage.Less){return Stage.Less;}
       if(!IsCompiled.of(cbi)){return Stage.Less;}
     }
-    if(Functions.isAbstract(p,cb)){return Stage.Plus;}
+    if(Functions.isAbstract(p,cb)){
+      return Stage.Plus;
+      }
     for(ClassB cbi: es){
       assert cbi!=null;
-      if(cbi.getStage()==Stage.Plus){return Stage.Plus;}
+      if(cbi.getStage()==Stage.Plus){
+        return Stage.Plus;
+        }
     }
     return null;//can not be computed
    }

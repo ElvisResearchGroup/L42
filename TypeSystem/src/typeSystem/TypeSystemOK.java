@@ -99,9 +99,13 @@ public class TypeSystemOK {
     //I do not get the error under! 
     catch(ErrorMessage prop){checkCt1(p,cb);return;}
     checkCt2(p,cb);
+    //TODO: now 27/07/2015 I still get trouble for not normalizable stuff
     */
-    if(cb.getStage()==Stage.Star || cb.getStage()==Stage.Plus){checkCt2(p,cb);}
-    else{checkCt1(p,cb);}
+    if(cb.getStage()==Stage.Star || cb.getStage()==Stage.Plus){
+      try{checkCt2(p,cb);return;}
+      catch(ErrorMessage.NormImpossible __){checkCt1(p,cb);return;}  
+    }
+    else{checkCt1(p,cb);return;}
     }
   private static void checkCt1(Program p, ClassB cb) {
     for(Member m:cb.getMs()){

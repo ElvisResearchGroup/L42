@@ -337,7 +337,7 @@ public static boolean coherent(Program p, ClassB cb) {
   boolean canBeImmCaps=true;
   for(Type t:constr.getMt().getTs()){
     Mdf tMdf=((NormType)t).getMdf();
-    if(tMdf!=Mdf.Capsule && tMdf!=Mdf.Immutable){canBeImmCaps=false;}
+    if(tMdf!=Mdf.Capsule && tMdf!=Mdf.Immutable  && tMdf!=Mdf.Type){canBeImmCaps=false;}
     if(tMdf==Mdf.Lent ||tMdf==Mdf.Readable){mustBeLentRead=true;}
     if(((NormType)t).getPh()!=Ast.Ph.Ph){
       return false;

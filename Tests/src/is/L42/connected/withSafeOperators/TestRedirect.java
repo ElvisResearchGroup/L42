@@ -56,12 +56,12 @@ public static class TestRedirect1 {//add more test for error cases
         "Outer0::InnerA","Outer1::A","{ method Void useB(Outer1::B that)}",false
     },{new String[]{      // serial cascade: return ~> parameter ~> exception
                     "{D:{method D ident(D that)}}",
-                    "{C:{method do() exception D}}",
-                    "{B:{method useC(C that)}}",
-                    "{A:{method B getB()}}"},
-        "{InnerA:{method InnerB getB()} InnerB:{method useC(InnerC that)} "
-        + "InnerC:{method do() exception InnerD} InnerD:{ method InnerD ident(InnerD that)}}",
-        "Outer0::InnerA","Outer1::A","{ method Outer4:D ident(Outer4:D that)}",false
+                    "{C:{ method Void do() exception Outer2::D}}",//TODO: @james, delete when you read it, for the program, you need explicit outers
+                    "{B:{ method Void useC(Outer2::C that)}}",
+                    "{A:{method Outer2::B getB()}}"},
+        "{InnerA:{method InnerB getB()} InnerB:{method Void useC(InnerC that)} "
+        + "InnerC:{method Void do() exception InnerD} InnerD:{ method InnerD ident(InnerD that)}}",
+        "Outer0::InnerA","Outer1::A","{ method Outer4::D ident(Outer4::D that)}",false
 
     // the errors have variable portions.
 	// try to explore the cardinality space of the variable portions
