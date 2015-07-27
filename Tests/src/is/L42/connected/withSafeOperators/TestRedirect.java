@@ -131,8 +131,7 @@ public static class TestRedirect1 {//add more test for error cases
         "{InnerA:{ method Void ignoreMe() void C:{} }}",
         "Outer0::InnerA","Outer1::A",
         ec
-          .set("SrcKind", "OpenClass", "DestKind", "ClosedClass",
-               "UnexpectedMembers", "[C]")
+          .set("SrcKind", "OpenClass", "DestKind", "ClosedClass")
           .str(), true
     },{new String[]{  // ClosedClass -> ClosedClass (because I can) with missing subclass
         "{A:{ method Void ignoreMe() void " +
@@ -140,13 +139,79 @@ public static class TestRedirect1 {//add more test for error cases
         "     B:{ method Void ignoreMe() void} } }",
         },
         "{InnerA:{ method Void ignoreMe() void "+
-        "     method '@private \n Void ignoreMeMore() " +
+        "     method '@private \n Void ignoreMeMost() " +  // TODO: understand why toTemplate may have stopped removing this
         "C:{} " +
         " }}",
         "Outer0::InnerA","Outer1::A",
         ec
           .set("SrcKind", "ClosedClass", "DestKind", "ClosedClass",
                "UnexpectedMembers", "[C]")
+          .str(), true
+    },{new String[]{  // Interface with extra method
+        "{A:{interface type method Void fun(Void that)  method Void moreFun(Void that, Library other) }}"
+        },
+        "{InnerA:{interface type method Void fun(Void that)  method Void moreFun(Void that, Library other) "
+        + "method Void mostFun(Void that, Library other) method Void notSoFun() } }",
+        "Outer0::InnerA","Outer1::A",
+        ec
+          .set("SrcKind", "FreeInterface", "DestKind", "FreeInterface",  // James doesn't know what an Interface_FreeInterface is
+               "UnexpectedMembers", "[mostFun(that,other), notSoFun()]")
+          .str(), true
+    },{new String[]{  // Interface with inner class
+        "{A:{interface type method Void fun(Void that)  method Void moreFun(Void that, Library other) }}"
+        },
+        "{InnerA:{interface type method Void fun(Void that)  method Void moreFun(Void that, Library other) "
+        + "C:{} } }",
+        "Outer0::InnerA","Outer1::A",
+        ec
+          .set("DestKind", "Interface_FreeInterface")   // TODO: remove this when the test above passes
+          .set("UnexpectedMembers", "[C]")
+          .str(), true
+    },{new String[]{  // Interface with inner interface
+        "{A:{interface type method Void fun(Void that)  method Void moreFun(Void that, Library other) }}"
+        },
+        "{InnerA:{interface type method Void fun(Void that)  method Void moreFun(Void that, Library other) "
+        + "C:{interface} } }",
+        "Outer0::InnerA","Outer1::A",
+        ec
+          .set("SrcKind", "FreeInterface")   // TODO: remove this when the test above passes
+          .str(), true
+    },{new String[]{  // Interface with implemented inner interface; BUG: unexpected trumps implemented
+        "{A:{interface type method Void fun(Void that)  method Void moreFun(Void that, Library other) }}"
+        },
+        "{InnerA:{interface type method Void fun(Void that)  method Void moreFun(Void that, Library other)\n"
+        + "InnerC:{interface method Void mostFun() } } \n"
+        + "C_impl:{<:InnerA::InnerC} "
+        + "}",
+        "Outer0::InnerA","Outer1::A",
+        ec
+          .set("SrcKind", "Interface")
+          .str(), true
+    },{new String[]{  // Matched inner interface shows as non-free 
+        "{A:{interface type method Void fun(Void that)  method Void moreFun(Void that, Library other) \n"
+        + " C:{interface}}}"
+        },
+        "{InnerA:{interface type method Void fun(Void that)  method Void moreFun(Void that, Library other)\n"
+        + "C:{interface method Void mostFun() } } \n"
+        + "C_impl:{<:InnerA::C} "
+        + "}",
+        "Outer0::InnerA","Outer1::A",
+        ec
+          .set("SrcPath", "Outer0::InnerA::C", "DestExternalPath", "'@Outer1::A::C",
+               "UnexpectedMembers", "[mostFun()]")
+          .str(), true
+    },{new String[]{  // When a cascade redirect renames an inner interface, what source path in the unexpected error?
+        "{A:{interface type method C fun(Void that)  method Void moreFun(Void that, Library other) \n"
+        + " C:{interface}}}"
+        },
+        "{InnerA:{interface type method InnerC fun(Void that)  method Void moreFun(Void that, Library other)\n"
+        + "InnerC:{interface method Void mostFun() } } \n"
+        + "C_impl:{<:InnerA::InnerC} "
+        + "}",
+        "Outer0::InnerA","Outer1::A",
+        ec
+          .set("SrcPath", "Outer0::InnerA::C", "DestExternalPath", "'@Outer1::A::C",
+               "UnexpectedMembers", "[mostFun()]")
           .str(), true
 // TODO: exercise UnexpectedImplementedInterfaces
 /* TODO: this test, when I get to method clashes
