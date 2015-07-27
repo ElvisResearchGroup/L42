@@ -1447,7 +1447,8 @@ public interface Ast {
     private final List<String> rowData;
 
     private Path(int n, List<String> rowData) {
-      assert !rowData.get(0).contains("-") : rowData;//as in Outer-1 :-(
+      assert !rowData.get(0).contains("-") 
+      : rowData;//as in Outer-1 :-(
       rowData = Collections.unmodifiableList(rowData);
       this.n = n;
       this.rowData = rowData;

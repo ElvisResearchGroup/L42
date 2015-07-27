@@ -43,6 +43,7 @@ class Pop {
     private ExpCore popN(int n,Path s) {
       assert n>=0;
       if (n==0){return s;}
+      if (s.outerNumber()==0){return s;}
       int nLessK=s.outerNumber() - getPath().size();
       if(nLessK>0){//is looking out
         return popN(n-1,s.setNewOuter(s.outerNumber()-1));
