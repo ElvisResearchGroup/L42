@@ -4,6 +4,7 @@ import static helpers.TestHelper.getClassB;
 import helpers.TestHelper.ErrorCarry;
 import static org.junit.Assert.fail;
 import helpers.TestHelper;
+import static helpers.TestHelper.lineNumber;
 
 import java.util.Arrays;
 import java.util.List;
@@ -12,6 +13,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
+import org.junit.runners.Parameterized.Parameters;
 
 import platformSpecific.javaTranslation.Resources;
 import ast.Ast.MethodSelector;
@@ -21,40 +23,42 @@ import auxiliaryGrammar.Program;
 
 public class TestRedirect{
 @RunWith(Parameterized.class)
+
 public static class TestRedirect1 {//add more test for error cases
-  @Parameter(0) public String[] _p;
-  @Parameter(1) public String _cb1;
-  @Parameter(2) public String _path1;
-  @Parameter(3) public String _path2;
-  @Parameter(4) public String _expected;
-  @Parameter(5) public boolean isError;
-  @Parameterized.Parameters
+  @Parameter(0) public int _lineNumber;
+  @Parameter(1) public String[] _p;
+  @Parameter(2) public String _cb1;
+  @Parameter(3) public String _path1;
+  @Parameter(4) public String _path2;
+  @Parameter(5) public String _expected;
+  @Parameter(6) public boolean isError;
+  @Parameters(name = "{index}: line {0}")
   public static List<Object[]> createData() {
     ErrorCarry ec = new ErrorCarry();
 
     return Arrays.asList(new Object[][] {
-    {new String[]{"{A:{}}"},
+    {lineNumber(), new String[]{"{A:{}}"},
       "{InnerA:{} B:{ method InnerA m(InnerA a) a}}","Outer0::InnerA","Outer1::A","{B:{ method Outer2::A m(Outer2::A a) a}}",false
-    },{new String[]{"{A:{}}"},
+    },{lineNumber(), new String[]{"{A:{}}"},
         "{InnerA:{}  method InnerA m(InnerA a) a}","Outer0::InnerA","Outer1::A","{ method Outer1::A m(Outer1::A a) a}",false
-    },{new String[]{"{A2:{  }}","{A1:{  }}"}, // redirecting into one of multiple outer scopes
+    },{lineNumber(), new String[]{"{A2:{  }}","{A1:{  }}"}, // redirecting into one of multiple outer scopes
         "{InnerA:{}  method InnerA m(InnerA a) a}","Outer0::InnerA","Outer1::A1","{ method Outer1::A1 m(Outer1::A1 a) a}",false
-    },{new String[]{"{A2:{  }}","{A1:{  }}"}, // redirecting into one of multiple outer scopes
+    },{lineNumber(), new String[]{"{A2:{  }}","{A1:{  }}"}, // redirecting into one of multiple outer scopes
         "{InnerA:{}  method InnerA m(InnerA a) a}","Outer0::InnerA","Outer2::A2","{ method Outer2::A2 m(Outer2::A2 a) a}",false
-    },{new String[]{"{A2:{ A2n:{}  }}","{A1:{ A1n:{}  }}"}, // redirecting into nested classes
+    },{lineNumber(), new String[]{"{A2:{ A2n:{}  }}","{A1:{ A1n:{}  }}"}, // redirecting into nested classes
         "{InnerA:{}  method InnerA m(InnerA a) a}","Outer0::InnerA","Outer1::A1::A1n","{ method Outer1::A1::A1n m(Outer1::A1::A1n a) a}",false
-    },{new String[]{"{A2:{ A2n:{}  }}","{A1:{ A1n:{}  }}"}, // redirecting into nested classes
+    },{lineNumber(), new String[]{"{A2:{ A2n:{}  }}","{A1:{ A1n:{}  }}"}, // redirecting into nested classes
         "{InnerA:{}  method InnerA m(InnerA a) a}","Outer0::InnerA","Outer2::A2::A2n","{ method Outer2::A2::A2n m(Outer2::A2::A2n a) a}",false
-    },{new String[]{"{A:{method B getB()} B:{}}"}, // cascade: a return value in A redirects B
+    },{lineNumber(), new String[]{"{A:{method B getB()} B:{}}"}, // cascade: a return value in A redirects B
         "{InnerA:{method InnerB getB()} InnerB:{} method InnerB getB()}",
         "Outer0::InnerA","Outer1::A","{ method Outer1::B getB()}",false
-    },{new String[]{"{A:{method Void useB(B that)} B:{}}"}, // cascade: a parameter in A redirects B
+    },{lineNumber(), new String[]{"{A:{method Void useB(B that)} B:{}}"}, // cascade: a parameter in A redirects B
         "{InnerA:{method Void useB(InnerB that)} InnerB:{} method Void useB(InnerB that)}",
         "Outer0::InnerA","Outer1::A","{ method Void useB(Outer1::B that)}",false
-    },{new String[]{"{A:{method Void do() exception B} B:{}}"}, // cascade: an exception in A redirects B
+    },{lineNumber(), new String[]{"{A:{method Void do() exception B} B:{}}"}, // cascade: an exception in A redirects B
         "{InnerA:{method Void do() exception InnerB} InnerB:{} method Void useB(InnerB that)}",
         "Outer0::InnerA","Outer1::A","{ method Void useB(Outer1::B that)}",false
-    },{new String[]{      // serial cascade: return ~> parameter ~> exception
+    },{lineNumber(), new String[]{      // serial cascade: return ~> parameter ~> exception
                     "{D:{}}",
                     "{C:{ method Void do() exception Outer2::D}}",
                     "{B:{ method Void useC(Outer2::C that)}}",
@@ -63,7 +67,7 @@ public static class TestRedirect1 {//add more test for error cases
         + "InnerC:{method Void do() exception InnerD} InnerD:{} method InnerD freeIdent(InnerD that)}",
         "Outer0::InnerA","Outer1::A","{ method Outer4::D freeIdent(Outer4::D that)}",false
         /* TODO: @james: new tests now that more redirecting works
-    },{new String[]{      // parallel cascade: return, parameter & exception address the same class
+    },{lineNumber(), new String[]{      // parallel cascade: return, parameter & exception address the same class
                     "{B:{method B ident(B that)}}",
                     "{A:{method Outer2::B getB() method Void useB(Outer2::B that) method Void do() exception Outer2::B}}"},
         "{InnerA:{method InnerX getB() method Void useB(InnerY) method Void do() exception InnerZ} "
@@ -80,7 +84,7 @@ public static class TestRedirect1 {//add more test for error cases
 
     // SourceUnfit: SrcPath(1), DestExternalPath(1) PrivatePath(t/f), SrcKind(enum(9)), DestKind(enum(9)), 
     //   UnexpectedMethods(0..), UnexpectedImplementedInterfaces(0..)
-    },{new String[]{"{A:{ }}"},  // from module with an unexpected function
+    },{lineNumber(), new String[]{"{A:{ }}"},  // from module with an unexpected function
         "{InnerA:{type method Void fun()} }","Outer0::InnerA","Outer1::A",
         "{"+"Kind:{'@stringU\n'SourceUnfit\n}"
            +"SrcPath:{'@stringU\n'Outer0::InnerA\n}"
@@ -91,7 +95,7 @@ public static class TestRedirect1 {//add more test for error cases
            +"UnexpectedMembers:{'@stringU\n'[fun()]\n}"
            +"UnexpectedImplementedInterfaces:{'@stringU\n'[]\n}"
         + "}",true
-    },{new String[]{"{A:{ }}"},  // same test, but with an argument, using new mechanism
+    },{lineNumber(), new String[]{"{A:{ }}"},  // same test, but with an argument, using new mechanism
         "{InnerA:{type method Void fun(Void that)} }","Outer0::InnerA","Outer1::A",
         ec.load("SourceUnfit",
                 "SrcPath", "Outer0::InnerA",
@@ -103,7 +107,7 @@ public static class TestRedirect1 {//add more test for error cases
                 "UnexpectedImplementedInterfaces", "[]"
                 )
           .str(), true
-    },{new String[]{  // with some matching methods
+    },{lineNumber(), new String[]{  // with some matching methods
         "{A:{type method Void fun(Void that)  method Void mostFun(Void that, Library other) }}"
         },
         "{InnerA:{type method Void fun(Void that) type method Void moreFun(Void that)"
@@ -113,7 +117,7 @@ public static class TestRedirect1 {//add more test for error cases
           .set("SrcKind", "Template", "DestKind", "Template",
                "UnexpectedMembers", "[moreFun(that), notSoFun()]")
           .str(), true
-    },{new String[]{  // with a mismatch on parameter names in the method selector
+    },{lineNumber(), new String[]{  // with a mismatch on parameter names in the method selector
         "{A:{type method Void fun(Void that) type method Void moreFun()"
         + "method Void mostFun(Void that, Library mineAllMine) method Void notSoFun() } }",
         },
@@ -123,7 +127,7 @@ public static class TestRedirect1 {//add more test for error cases
         ec
           .set("UnexpectedMembers", "[moreFun(that), mostFun(that,other)]")
           .str(), true
-    },{new String[]{  // Box -> OpenClass (because I can) with missing subclass
+    },{lineNumber(), new String[]{  // Box -> OpenClass (because I can) with missing subclass
         "{A:{ method Void ignoreMe() void " +
         "     B:{ method Void ignoreMe() void} } }",
         },
@@ -133,7 +137,7 @@ public static class TestRedirect1 {//add more test for error cases
           .set("SrcKind", "Box", "DestKind", "OpenClass",
                "UnexpectedMembers", "[C]")
           .str(), true
-    },{new String[]{  // OpenClass -> ClosedClass (because I can) with missing subclass
+    },{lineNumber(), new String[]{  // OpenClass -> ClosedClass (because I can) with missing subclass
         "{A:{ method Void ignoreMe() void " +
         "     method '@private \n Void ignoreMeMore() " +
         "     B:{ method Void ignoreMe() void} } }",
@@ -143,7 +147,7 @@ public static class TestRedirect1 {//add more test for error cases
         ec
           .set("SrcKind", "OpenClass", "DestKind", "ClosedClass")
           .str(), true
-    },{new String[]{  // ClosedClass -> ClosedClass (because I can) with missing subclass
+    },{lineNumber(), new String[]{  // ClosedClass -> ClosedClass (because I can) with missing subclass
         "{A:{ method Void ignoreMe() void " +
         "     method '@private \n Void ignoreMeMore() " +
         "     B:{ method Void ignoreMe() void} } }",
@@ -157,7 +161,7 @@ public static class TestRedirect1 {//add more test for error cases
           .set("SrcKind", "ClosedClass", "DestKind", "ClosedClass",
                "UnexpectedMembers", "[ignoreMeMost(), C]")
           .str(), true
-    },{new String[]{  // Interface with extra method
+    },{lineNumber(), new String[]{  // Interface with extra method
         "{A:{interface type method Void fun(Void that)  method Void moreFun(Void that, Library other) }}"
         },
         "{InnerA:{interface type method Void fun(Void that)  method Void moreFun(Void that, Library other) "
@@ -167,7 +171,7 @@ public static class TestRedirect1 {//add more test for error cases
           .set("SrcKind", "FreeInterface", "DestKind", "Interface_FreeInterface",
                "UnexpectedMembers", "[mostFun(that,other), notSoFun()]")
           .str(), true
-    },{new String[]{  // Interface with inner class
+    },{lineNumber(), new String[]{  // Interface with inner class
         "{A:{interface type method Void fun(Void that)  method Void moreFun(Void that, Library other) }}"
         },
         "{InnerA:{interface type method Void fun(Void that)  method Void moreFun(Void that, Library other) "
@@ -176,7 +180,7 @@ public static class TestRedirect1 {//add more test for error cases
         ec
           .set("UnexpectedMembers", "[C]")
           .str(), true
-    },{new String[]{  // Interface with inner interface
+    },{lineNumber(), new String[]{  // Interface with inner interface
         "{A:{interface type method Void fun(Void that)  method Void moreFun(Void that, Library other) }}"
         },
         "{InnerA:{interface type method Void fun(Void that)  method Void moreFun(Void that, Library other) "
@@ -184,7 +188,7 @@ public static class TestRedirect1 {//add more test for error cases
         "Outer0::InnerA","Outer1::A",
         ec
           .str(), true
-    },{new String[]{  // Interface with implemented inner interface
+    },{lineNumber(), new String[]{  // Interface with implemented inner interface
         "{A:{interface type method Void fun(Void that)  method Void moreFun(Void that, Library other) }}"
         },
         "{InnerA:{interface type method Void fun(Void that)  method Void moreFun(Void that, Library other)\n"
@@ -194,7 +198,7 @@ public static class TestRedirect1 {//add more test for error cases
         "Outer0::InnerA","Outer1::A",
         ec
           .str(), true
-    },{new String[]{  // Matched inner interface shows as non-free 
+    },{lineNumber(), new String[]{  // Matched inner interface shows as non-free 
         "{A:{interface type method Void fun(Void that)  method Void moreFun(Void that, Library other) \n"
         + " C:{interface}}}"
         },
@@ -210,8 +214,8 @@ public static class TestRedirect1 {//add more test for error cases
                "SrcKind", "Interface",
                "UnexpectedMembers", "[mostFun()]")
           .str(), true
-    },{new String[]{  // When a cascade redirect renames another interface, what source path in the unexpected error?
-        "{A:{interface type method C fun(Void that)  method Void moreFun(Void that, Library other) }\n"
+    },{lineNumber(), new String[]{  // When a cascade redirect renames another interface, what source path in the unexpected error?
+        "{  A:{interface type method C fun(Void that)  method Void moreFun(Void that, Library other) }\n"
         + " C:{interface}}"
         },
         "{InnerA:{interface type method InnerC fun(Void that)  method Void moreFun(Void that, Library other) }\n"
@@ -229,7 +233,7 @@ public static class TestRedirect1 {//add more test for error cases
           .str(), true
 // TODO: exercise UnexpectedImplementedInterfaces
 /* TODO: this test, when I get to method clashes
-    },{new String[]{ // mismatches in type vs instance method
+    },{lineNumber(), new String[]{ // mismatches in type vs instance method
         "{A:{type method Void fun(Void that) method Void moreFun(Void that)"
         + "type method Void mostFun(Void that, Library other) method Void notSoFun() } }",
         },
@@ -241,7 +245,7 @@ public static class TestRedirect1 {//add more test for error cases
           */
           
           /* TODO: @James: with this test, I get TargetUnavailable, which I don't understand yet
-    },{new String[]{  // Matched inner interface shows as non-free 
+    },{lineNumber(), new String[]{  // Matched inner interface shows as non-free 
         "{A:{interface type method Void fun(Void that)  method Void moreFun(Void that, Library other) \n"
         + " C:{interface}}}"
         },
