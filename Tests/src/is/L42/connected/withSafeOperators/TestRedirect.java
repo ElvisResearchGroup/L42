@@ -66,17 +66,51 @@ public static class TestRedirect1 {//add more test for error cases
         "{InnerA:{method InnerB getB()} InnerB:{method Void useC(InnerC that)} "
         + "InnerC:{method Void do() exception InnerD} InnerD:{} method InnerD freeIdent(InnerD that)}",
         "Outer0::InnerA","Outer1::A","{ method Outer4::D freeIdent(Outer4::D that)}",false
-        /* TODO: @james: new tests now that more redirecting works
     },{lineNumber(), new String[]{      // parallel cascade: return, parameter & exception address the same class
                     "{B:{method B ident(B that)}}",
                     "{A:{method Outer2::B getB() method Void useB(Outer2::B that) method Void do() exception Outer2::B}}"},
-        "{InnerA:{method InnerX getB() method Void useB(InnerY) method Void do() exception InnerZ} "
+        "{InnerA:{method InnerX getB()"
+        + "       method Void useB(InnerY that)"
+        + "       method Void do() exception InnerZ"
+        + "} "
         + "InnerX:{method InnerX ident(InnerX that)} "
-        + "InnerY:{method InnerY ident(InnerY that)} "
+        + "InnerY:{} "
         + "InnerZ:{method InnerZ ident(InnerZ that)} "
         + "method Void multiUse(InnerX x, InnerY y, InnerZ z) }",
         "Outer0::InnerA","Outer1::A","{ method Void multiUse(Outer2::B x, Outer2::B y, Outer2::B z)}",false
-*/
+    },{lineNumber(), new String[]{      // redirection vs binding a returned library at the same nesting depth
+                    "{A:{()}}" },
+        "{InnerA:{()} M:{type method Library defA_maker() {type method InnerA beA_maker() InnerA()}}"
+        + "B:{C: M.defA_maker() }"
+        + "}",
+        "Outer0::InnerA","Outer1::A","{B:{C:{D:{type method Outer4::A beA_maker() Outer4::A()}}}}",false
+    },{lineNumber(), new String[]{      // redirection vs binding a returned library at a different nesting depth
+                    "{A:{()}}" },
+        "{InnerA:{()} M:{type method Library defA_maker() {type method InnerA beA_maker() InnerA()}}"
+        + "B:{C:{D: M.defA_maker()}}"
+        + "}",
+        "Outer0::InnerA","Outer1::A","{B:{C:{D:{type method Outer4::A beA_maker() Outer4::A()}}}}",false
+    },{lineNumber(), new String[]{      // redirection vs binding a returned library at a different nesting depth
+                    "{A:{()}}" },
+        "{InnerA:{()} "
+        + "M:{N:{type method Library defA_maker() {type method InnerA beA_maker() InnerA()}}}"
+        + "B:{C:{D: M::N.defA_maker()}}"
+        + "}",
+        "Outer0::InnerA","Outer1::A","{B:{C:{D:{type method Outer4::A beA_maker() Outer4::A()}}}}",false
+    },{lineNumber(), new String[]{      // redirection vs binding a returned library at a different nesting depth
+                    "{A:{An:{()}}}" },
+        "{InnerA:{An:{()}} "
+        + "M:{N:{type method Library defA_maker() {type method InnerA::An beA_maker() InnerA::An()}}}"
+        + "B:{C:{D: M::N.defA_maker()}}"
+        + "}",
+        "Outer0::InnerA","Outer1::A","{B:{C:{D:{type method Outer4::A::An beA_maker() Outer4::A::An()}}}}",false
+    },{lineNumber(), new String[]{      // redirection vs binding a returned library at a different nesting depth
+                    "{A:{An:{()}}}" },
+        "{InnerA:{InnerAn:{()}} "
+        + "M:{N:{type method Library defA_maker() {type method InnerA::InnerAn beA_maker() InnerA::InnerAn()}}}"
+        + "B:{C:{D: M::N.defA_maker()}}"
+        + "}",
+        "Outer0::InnerA::InnerAn","Outer1::A::An","{B:{C:{D:{type method Outer4::A::An beA_maker() Outer4::A::An()}}}}",false
     // the errors have variable portions.
 	// try to explore the cardinality space of the variable portions
 	//   for each error.
@@ -231,6 +265,18 @@ public static class TestRedirect1 {//add more test for error cases
           .set("SrcPath", "Outer0::InnerA::InnerC"
                )
           .str(), true
+
+    },{lineNumber(), new String[]{      // This test is not in the right test file, but it was so frustrating that I'm dumping it here.
+                                        // Explicitly specified types with insane outers do not cause parse/type errors
+                                        // before the start of the redirect test.
+                    "{A:{()}}" },
+        "{InnerA:{()} M:{type method Library defA_maker() {type method Outer7::InnerA beA_maker() InnerA()}}"
+        + "B:{C: M.defA_maker() }"
+        + "F:{G:{H:{type method Void insane(Outer1::InnerA that)}}}"
+        + "}",
+        "Outer0::InnerA","Outer1::A","{B:{C:{D:{type method Outer4::A beA_maker() Outer4::A()}}}}",false
+
+
 // TODO: exercise UnexpectedImplementedInterfaces
 /* TODO: this test, when I get to method clashes
     },{lineNumber(), new String[]{ // mismatches in type vs instance method
