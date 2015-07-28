@@ -52,7 +52,8 @@ class Pop {
         return popN(n-1,s);
       }
       //is extacly looking at top level
-      assert !s.getCBar().isEmpty();
+      assert !s.getCBar().isEmpty():
+        s;
       return popN(n-1,Path.outer(s.outerNumber()-1,s.getCBar().subList(1, s.getCBar().size())));
     }
   }

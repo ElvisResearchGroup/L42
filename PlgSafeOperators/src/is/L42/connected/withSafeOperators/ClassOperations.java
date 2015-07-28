@@ -76,7 +76,7 @@ public class ClassOperations {
       }});}
   static List<String>toTop(List<String>path,Path s){
     assert !s.isPrimitive();
-    assert s.outerNumber()<=path.size();
+    assert s.outerNumber()<=path.size(): s+" "+path;
     List<String>result=new ArrayList<>();
     result.addAll(path.subList(0,path.size()-s.outerNumber()));
     result.addAll(s.getCBar());

@@ -202,7 +202,7 @@ public static class TestRedirect1 {//add more test for error cases
           .str(), true
     },{new String[]{  // When a cascade redirect renames an inner interface, what source path in the unexpected error?
         "{A:{interface type method C fun(Void that)  method Void moreFun(Void that, Library other) \n"
-        + " C:{interface}}}"
+        + " C:{interface}}}"//TODO: no, nesteds should be called with the same name when multiple redirect happens.
         },
         "{InnerA:{interface type method InnerC fun(Void that)  method Void moreFun(Void that, Library other)\n"
         + "InnerC:{interface method Void mostFun() } } \n"
