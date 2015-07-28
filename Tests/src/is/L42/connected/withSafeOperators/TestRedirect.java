@@ -164,7 +164,7 @@ public static class TestRedirect1 {//add more test for error cases
         + "method Void mostFun(Void that, Library other) method Void notSoFun() } }",
         "Outer0::InnerA","Outer1::A",
         ec
-          .set("SrcKind", "FreeInterface", "DestKind", "Interface_FreeInterface",  // James doesn't know what an Interface_FreeInterface is
+          .set("SrcKind", "FreeInterface", "DestKind", "Interface_FreeInterface",
                "UnexpectedMembers", "[mostFun(that,other), notSoFun()]")
           .str(), true
     },{new String[]{  // Interface with inner class

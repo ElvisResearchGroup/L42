@@ -4,9 +4,9 @@
     Library < (Library that) exception MethodClash,ClassClash
       Compose[that]<{
         type method
-        type Outer0 begin() Outer0
+        type Outer0 #begin() Outer0
         method
-        Outer0 end() this
+        Outer0 #end() this
         }
     }
   Redirect:Squares<{#add(Path that, type Any to)
@@ -23,77 +23,77 @@
           default error err)))
       }
     }
-  RenameSelector:Squares<{#add(Selector that, Path of, Selector to)
-    method
-    Library < (Library that)exception TargetUnavailable,MethodClash{
-      return SafeOperators.renameMethod(that,path:this.of() src:this.that(),dest:this.to())
-      catch error err (on Library (
-        mirror=Introspection::MirrorLibrary(lib:err)
-        with x=Introspection(mirror,p:Path"Kind") (
-          case x== S"TargetUnavailable"  (exception TargetUnavailable(mirror:mirror))
-          case x== S"MethodClash"  (exception MethodClash(mirror:mirror))
-          default error err)))
-      }
-    }
-  RenamePath:Squares<{#add(Path that, Path to)
-    method
-    Library < (Library that)exception TargetUnavailable,MethodClash,ClassClash{
-      return SafeOperators.renameClass(that,src:this.that(),dest:this.to())
-      catch error err (on Library (
-        mirror=Introspection::MirrorLibrary(lib:err)
-        with x=Introspection(mirror,p:Path"Kind") (
-          case x== S"TargetUnavailable"  (exception TargetUnavailable(mirror:mirror))
-          case x== S"MethodClash"  (exception MethodClash(mirror:mirror))
-          case x== S"ClassClash"  (exception ClassClash(mirror:mirror))
-          default error err)))
-      }
-    }
-  RemoveImplementationSelector:Squares<{#add(Selector that, Path of)
-    method
-    Library < (Library that)exception TargetUnavailable{
-      return SafeOperators.removeImplementation(that,path:this.of(),selector:this.that())
-      catch error err (on Library (
-        mirror=Introspection::MirrorLibrary(lib:err)
-        with x=Introspection(mirror,p:Path"Kind") (
-          case x== S"TargetUnavailable"  (exception TargetUnavailable(mirror:mirror))
-          default error err)))
-      }
-    }
-  RemoveImplementationPath:Squares<{#add(Path that)
-    method
-    Library < (Library that)exception TargetUnavailable,PrivacyCoupuled{
-      return SafeOperators.removeImplementation(that,path:this.that())
-      catch error err (on Library (
-        mirror=Introspection::MirrorLibrary(lib:err)
-        with x=Introspection(mirror,p:Path"Kind") (
-          case x== S"TargetUnavailable"  (exception TargetUnavailable(mirror:mirror))
-          case x== S"PrivacyCoupuled"  (exception PrivacyCoupuled(mirror:mirror))
-          default error err)))
-      }
-    }
-  AddDocumentationSelector:Squares<{#add(Selector that, Path of,Doc doc)
-    method
-    Library < (Library that)exception TargetUnavailable{
-      return SafeOperators.addDocumentation(that,path:this.of() selector:this.that(),doc:this.doc())
-      catch error err (on Library (
-        mirror=Introspection::MirrorLibrary(lib:err)
-        with x=Introspection(mirror,p:Path"Kind") (
-          case x== S"TargetUnavailable"  (exception TargetUnavailable(mirror:mirror))
-          default error err)))
-      }
-    }
-  AddDocumentationPath:Squares<{#add(Path that,Doc doc)
-    method
-    Library < (Library that)exception TargetUnavailable,InvalidOnTopLevel{
-      return SafeOperators.addDocumentation(that,path:this.that(),doc:this.doc())
-      catch error err (on Library (
-        mirror=Introspection::MirrorLibrary(lib:err)
-        with x=Introspection(mirror,p:Path"Kind") (
-          case x== S"TargetUnavailable"  (exception TargetUnavailable(mirror:mirror))
-          case x== S"InvalidOnTopLevel"  (exception InvalidOnTopLevel(mirror:mirror))
-          default error err)))
-      }
-    }
+'  RenameSelector:Squares<{#add(Selector that, Path of, Selector to)
+'    method
+'    Library < (Library that)exception TargetUnavailable,MethodClash{
+'      return SafeOperators.renameMethod(that,path:this.of() src:this.that(),dest:this.to())
+'      catch error err (on Library (
+'        mirror=Introspection::MirrorLibrary(lib:err)
+'        with x=Introspection(mirror,p:Path"Kind") (
+'          case x== S"TargetUnavailable"  (exception TargetUnavailable(mirror:mirror))
+'          case x== S"MethodClash"  (exception MethodClash(mirror:mirror))
+'          default error err)))
+'      }
+'    }
+'  RenamePath:Squares<{#add(Path that, Path to)
+'    method
+'    Library < (Library that)exception TargetUnavailable,MethodClash,ClassClash{
+'      return SafeOperators.renameClass(that,src:this.that(),dest:this.to())
+'      catch error err (on Library (
+'        mirror=Introspection::MirrorLibrary(lib:err)
+'        with x=Introspection(mirror,p:Path"Kind") (
+'          case x== S"TargetUnavailable"  (exception TargetUnavailable(mirror:mirror))
+'          case x== S"MethodClash"  (exception MethodClash(mirror:mirror))
+'          case x== S"ClassClash"  (exception ClassClash(mirror:mirror))
+'          default error err)))
+'      }
+'    }
+'  RemoveImplementationSelector:Squares<{#add(Selector that, Path of)
+'    method
+'    Library < (Library that)exception TargetUnavailable{
+'      return SafeOperators.removeImplementation(that,path:this.of(),selector:this.that())
+'      catch error err (on Library (
+'        mirror=Introspection::MirrorLibrary(lib:err)
+'        with x=Introspection(mirror,p:Path"Kind") (
+'          case x== S"TargetUnavailable"  (exception TargetUnavailable(mirror:mirror))
+'          default error err)))
+'      }
+'    }
+'  RemoveImplementationPath:Squares<{#add(Path that)
+'    method
+'    Library < (Library that)exception TargetUnavailable,PrivacyCoupuled{
+'      return SafeOperators.removeImplementation(that,path:this.that())
+'      catch error err (on Library (
+'        mirror=Introspection::MirrorLibrary(lib:err)
+'        with x=Introspection(mirror,p:Path"Kind") (
+'          case x== S"TargetUnavailable"  (exception TargetUnavailable(mirror:mirror))
+'          case x== S"PrivacyCoupuled"  (exception PrivacyCoupuled(mirror:mirror))
+'          default error err)))
+'      }
+'    }
+'  AddDocumentationSelector:Squares<{#add(Selector that, Path of,Doc doc)
+'    method
+'    Library < (Library that)exception TargetUnavailable{
+'      return SafeOperators.addDocumentation(that,path:this.of() selector:this.that(),doc:this.doc())
+'      catch error err (on Library (
+'        mirror=Introspection::MirrorLibrary(lib:err)
+'        with x=Introspection(mirror,p:Path"Kind") (
+'          case x== S"TargetUnavailable"  (exception TargetUnavailable(mirror:mirror))
+'          default error err)))
+'      }
+'    }
+'  AddDocumentationPath:Squares<{#add(Path that,Doc doc)
+'    method
+'    Library < (Library that)exception TargetUnavailable,InvalidOnTopLevel{
+'      return SafeOperators.addDocumentation(that,path:this.that(),doc:this.doc())
+'      catch error err (on Library (
+'        mirror=Introspection::MirrorLibrary(lib:err)
+'        with x=Introspection(mirror,p:Path"Kind") (
+'          case x== S"TargetUnavailable"  (exception TargetUnavailable(mirror:mirror))
+'          case x== S"InvalidOnTopLevel"  (exception InvalidOnTopLevel(mirror:mirror))
+'          default error err)))
+'      }
+'    }
 
 
   

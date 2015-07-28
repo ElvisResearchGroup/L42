@@ -1,10 +1,16 @@
 {
   type method Outer0 #begin()'constructor
   method Outer0 #end() this
-  method Library < (Library that) {
+  method Library < (Library that) exception TargetUnavailable,InvalidOnTopLevel, SourceUnfit,MethodClash{
     'assume that have abstract Bool N and S
     return Refactor::Redirect[
       Path"S" to:S]' this should cause redirect of N, ToS, Bool
       <(Refactor::Redirect[Path"Debug" to:Debug]<that)
+    'catch err (
+    '  on TargetUnavailable exception LibraryCreatedWithIncompatibleTowel() 
+    '  on SourceUnfit exception LibraryCreatedWithIncompatibleTowel() 
+    '  on MethodClash exception LibraryCreatedWithIncompatibleTowel() 
+    '  on InvalidOnTopLevel error CodeNotReachable() 
+    '  )
     }
 }

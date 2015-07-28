@@ -16,6 +16,7 @@ import is.L42.connected.withSafeOperators.ExtractInfo.IsUsed;
 import is.L42.connected.withSafeOperators.Pop.PopNFrom;
 import tools.Assertions;
 import ast.ErrorMessage;
+import ast.ExpCore;
 import ast.ExpCore.*;
 import ast.Ast.NormType;
 import ast.Ast.Doc;
@@ -47,7 +48,18 @@ public class Redirect {
     Errors42.checkExistsPathMethod(l, cs, Optional.empty());
     Boolean[] csPrivate=new Boolean[]{false};
     ClassB l0=Program.extractCBar(cs,l,csPrivate);//L(Cs)[from Cs]=L0={H M0 ... Mn}//No, from does not work here
-    l0=(ClassB)new PopNFrom(cs.size()).visit(l0);
+    l0=(ClassB)new PopNFrom(cs.size()){
+      public ExpCore visit(Path s) {
+        if(s.isPrimitive()){return super.visit(s);}
+        List<String>csInner=getPath();
+        int dept=csInner.size()+cs.size();
+        if(s.outerNumber()>dept){return super.visit(s);}
+        //if(s.outerNumber()==dept){return Path.outer(0);}//TODO: :'-?
+        List<String> combo=new ArrayList<>(cs);
+        combo.addAll(csInner);
+        s=Path.outer(dept,ClassOperations.toTop(combo,s));
+        return super.visit(s);
+      }}.visit(l0);
     //path exists by construction.
     ClassB l0Dest;
     if(path.isCore()){
