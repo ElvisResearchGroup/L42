@@ -296,4 +296,7 @@ public class TestHelper {
     }
   }
   
+  public static int lineNumber() {
+    return Thread.currentThread().getStackTrace()[2].getLineNumber();
+  }
 }
