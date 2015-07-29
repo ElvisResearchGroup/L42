@@ -89,34 +89,9 @@ public static class TestRedirect1 {//add more test for error cases
         + "B:{C: M.defA_maker() }"//TODO:No, you can not do operations on not compiled classes
         + "}",
         "Outer0::InnerA","Outer1::A",
-        "{B:{C:{D:{type method Outer4::A beA_maker() Outer4::A()}}}}",false//TODO:D?
-    },{lineNumber(), new String[]{      // redirection vs binding a returned library at a different nesting depth
-                    "{A:{()}}" },
-        "{InnerA:{()} M:{type method Library defA_maker() {type method InnerA beA_maker() InnerA()}}"
-        + "B:{C:{D: M.defA_maker()}}"
-        + "}",
-        "Outer0::InnerA","Outer1::A","{B:{C:{D:{type method Outer4::A beA_maker() Outer4::A()}}}}",false
-    },{lineNumber(), new String[]{      // redirection vs binding a returned library at a different nesting depth
-                    "{A:{()}}" },
-        "{InnerA:{()} "
-        + "M:{N:{type method Library defA_maker() {type method InnerA beA_maker() InnerA()}}}"
-        + "B:{C:{D: M::N.defA_maker()}}"
-        + "}",
-        "Outer0::InnerA","Outer1::A","{B:{C:{D:{type method Outer4::A beA_maker() Outer4::A()}}}}",false
-    },{lineNumber(), new String[]{      // redirection vs binding a returned library at a different nesting depth
-                    "{A:{An:{()}}}" },
-        "{InnerA:{An:{()}} "
-        + "M:{N:{type method Library defA_maker() {type method InnerA::An beA_maker() InnerA::An()}}}"
-        + "B:{C:{D: M::N.defA_maker()}}"
-        + "}",
-        "Outer0::InnerA","Outer1::A","{B:{C:{D:{type method Outer4::A::An beA_maker() Outer4::A::An()}}}}",false
-    },{lineNumber(), new String[]{      // redirection vs binding a returned library at a different nesting depth
-                    "{A:{An:{()}}}" },
-        "{InnerA:{InnerAn:{()}} "
-        + "M:{N:{type method Library defA_maker() {type method InnerA::InnerAn beA_maker() InnerA::InnerAn()}}}"
-        + "B:{C:{D: M::N.defA_maker()}}"
-        + "}",
-        "Outer0::InnerA::InnerAn","Outer1::A::An","{B:{C:{D:{type method Outer4::A::An beA_maker() Outer4::A::An()}}}}",false
+        "{M:{type method Library defA_maker() {type method Outer3::A beA_maker() Outer3::A.#apply()}} "
+        + "B:{C:Outer1::M.defA_maker()}}",false
+
     // the errors have variable portions.
 	// try to explore the cardinality space of the variable portions
 	//   for each error.
@@ -262,27 +237,16 @@ public static class TestRedirect1 {//add more test for error cases
         + "InnerC:{interface"
         + "            method Void mostFun() "
         + "       }  \n"
-        + "C_impl:{<:InnerA::InnerC"//TODO: InnerA::InnerC is inexistent, test is invalid, source not well formed.
+        + "C_impl:{<:InnerC"
+        + "            method Void mostFun() "
         + "       } "
         + "}"
         + "",
         "Outer0::InnerA","Outer1::A",
         ec
-          .set("SrcPath", "Outer0::InnerA::InnerC"
+          .set("SrcPath", "Outer0::InnerC", "DestExternalPath", "'@Outer1::C"
                )
           .str(), true
-
-    },{lineNumber(), new String[]{      // This test is not in the right test file, but it was so frustrating that I'm dumping it here.
-                                        // Explicitly specified types with insane outers do not cause parse/type errors
-                                        // before the start of the redirect test.
-                    "{A:{()}}" },
-        "{InnerA:{()} M:{type method Library defA_maker() {type method Outer7::InnerA beA_maker() InnerA()}}"
-        + "B:{C: M.defA_maker() }"
-        + "F:{G:{H:{type method Void insane(Outer1::InnerA that)}}}"
-        + "}",
-        "Outer0::InnerA","Outer1::A","{B:{C:{D:{type method Outer4::A beA_maker() Outer4::A()}}}}",false
-//TODO: @James: yes, it does not cause parse error since it is a valid syntactic program. It does not cause type errors
-        //since we are not doing type checking here. It does not cause well formedess errors either!
 
 // TODO: exercise UnexpectedImplementedInterfaces
 /* TODO: this test, when I get to method clashes
