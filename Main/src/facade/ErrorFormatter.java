@@ -67,7 +67,7 @@ public class ErrorFormatter {
       case MetaError:
         errorTxt=errorStart+"runStatus: "+kind.name()+"\n"+
         "Error in generating the following class: \n"
-            +reportPlaceOfMetaError(p,msg).replace("::\n","\n")+"\n----------\n"+errorTxt;
+            +reportPlaceOfMetaError(p,msg)/*.replace("::\n","\n")*/+"\n----------\n"+errorTxt;
       default:
         break;
       }
@@ -98,7 +98,7 @@ public class ErrorFormatter {
     for(Member m:cb.getMs()){
       if(IsCompiled.of(m)){continue;}
       return m.match(
-        nc->nc.getName()+"\n---\n"+isItErrorPlace(p,nc.getInner()),
+        nc->nc.getName()+"\nError is:\n"+isItErrorPlace(p,nc.getInner()),
         mi->formatSelectorCompact(mi.getS())+"::"+isItErrorPlace(p,mi.getInner()),
         mt->formatSelectorCompact(mt.getMs())+"::"+isItErrorPlace(p,mt.getInner().get())
         );
@@ -118,7 +118,7 @@ public class ErrorFormatter {
     return "it should be a nested somewhere";//TODO: improve//
     //throw Assertions.codeNotReachable();
   }
-  private static String isItErrorPlace(Program p,ExpCore inner) {
+  private static String isItErrorPlace(Program p,ExpCore inner) {//TODO: rename method in giveErrorText?
     if(inner instanceof ClassB){return reportPlaceOfMetaError(p,(ClassB)inner);}
     return "\n    "+reportMetaError(p,inner);
   }

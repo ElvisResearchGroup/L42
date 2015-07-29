@@ -1,37 +1,40 @@
-{(Library binaryRepr)<:S::ToS
+{(Library _binaryRepr)<:S::ToS
+
+  method
+  Library binaryRepr() this._binaryRepr()
 
   type method
-  N #numberParser(Library that) 
-    N(binaryRepr:using Alu
+  N #numberParser(Library that)
+    N(_binaryRepr:using Alu
       check stringToInt32(that)
       error void)
-      
+
   method
   toS() S.#stringParser(using Alu
       check int32ToString(this.binaryRepr())
       error void)
-      
+
   method
-  N +(N that) 
-    N(binaryRepr:using Alu
+  N +(N that)
+    N(_binaryRepr:using Alu
       check sumInt32(n1:this.binaryRepr() n2:that.binaryRepr())
       error void)
-      
+
   method
-  N -(N that) 
-    N(binaryRepr:using Alu
+  N -(N that)
+    N(_binaryRepr:using Alu
       check subInt32(n1:this.binaryRepr() n2:that.binaryRepr())
       error void)
-      
+
   method
-  N *(N that) 
-    N(binaryRepr:using Alu
+  N *(N that)
+    N(_binaryRepr:using Alu
       check mulInt32(n1:this.binaryRepr() n2:that.binaryRepr())
       error void)
-      
+
   method
-  N /(N that) 
-    N(binaryRepr:using Alu
+  N /(N that)
+    N(_binaryRepr:using Alu
       check divInt32(n1:this.binaryRepr() n2:that.binaryRepr())
       error void)
 
@@ -42,7 +45,7 @@
       return Bool.true()
     return Bool.false()
     }
-    
+
   method
   Bool <(N that) {
     using Alu
@@ -50,7 +53,7 @@
       return Bool.true()
     return Bool.false()
     }
-    
+
   method
   Bool <=(N that) {
     using Alu
@@ -58,11 +61,11 @@
       return Bool.true()
     return Bool.false()
     }
-    
+
   method Bool !=(N that) !(this==that)
-  
+
   method Bool >(N that)  !(this<=that)
-  
-  
+
+
   method Bool >=(N that) !(this<that)
   }

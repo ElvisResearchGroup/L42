@@ -116,23 +116,25 @@ method toS() (
   )}
 N:{<:Outer1::S::ToS
 type method 
-Outer0 #apply(Library^binaryRepr'@consistent
+Outer0 #apply(Library^_binaryRepr'@consistent
 ) 
 mut method '@consistent
-Library #binaryRepr() 
+Library #_binaryRepr() 
 read method '@consistent
-Library binaryRepr() 
+Library _binaryRepr() 
+method 
+Library binaryRepr() this._binaryRepr()
 type method 
-Outer0 #numberParser(Library that) Outer0.#apply(binaryRepr:using Outer1::Alu check stringToInt32(that:that) error void)
+Outer0 #numberParser(Library that) Outer0.#apply(_binaryRepr:using Outer1::Alu check stringToInt32(that:that) error void)
 method toS() Outer1::S.#stringParser(that:using Outer1::Alu check int32ToString(that:this.binaryRepr()) error void)
 method 
-Outer0 #plus(Outer0 that) Outer0.#apply(binaryRepr:using Outer1::Alu check sumInt32(n1:this.binaryRepr(), n2:that.binaryRepr()) error void)
+Outer0 #plus(Outer0 that) Outer0.#apply(_binaryRepr:using Outer1::Alu check sumInt32(n1:this.binaryRepr(), n2:that.binaryRepr()) error void)
 method 
-Outer0 #less(Outer0 that) Outer0.#apply(binaryRepr:using Outer1::Alu check subInt32(n1:this.binaryRepr(), n2:that.binaryRepr()) error void)
+Outer0 #less(Outer0 that) Outer0.#apply(_binaryRepr:using Outer1::Alu check subInt32(n1:this.binaryRepr(), n2:that.binaryRepr()) error void)
 method 
-Outer0 #times(Outer0 that) Outer0.#apply(binaryRepr:using Outer1::Alu check mulInt32(n1:this.binaryRepr(), n2:that.binaryRepr()) error void)
+Outer0 #times(Outer0 that) Outer0.#apply(_binaryRepr:using Outer1::Alu check mulInt32(n1:this.binaryRepr(), n2:that.binaryRepr()) error void)
 method 
-Outer0 #divide(Outer0 that) Outer0.#apply(binaryRepr:using Outer1::Alu check divInt32(n1:this.binaryRepr(), n2:that.binaryRepr()) error void)
+Outer0 #divide(Outer0 that) Outer0.#apply(_binaryRepr:using Outer1::Alu check divInt32(n1:this.binaryRepr(), n2:that.binaryRepr()) error void)
 method 
 Outer1::Bool #equalequal(Outer0 that) (
   Void unused=(
@@ -218,7 +220,7 @@ Outer1::Bool #equalequal(Outer0 that) (
 method 
 Outer0 #apply(Outer1::N that) Outer0.#stringParser(that:using Outer1::Alu check stringCharAt(that:this.binaryRepr(), pos:that.binaryRepr()) error void)
 method 
-Outer1::N size() Outer1::N.#apply(binaryRepr:using Outer1::Alu check stringSize(that:this.binaryRepr()) error void)
+Outer1::N size() Outer1::N.#apply(_binaryRepr:using Outer1::Alu check stringSize(that:this.binaryRepr()) error void)
 type method 
 Outer0 doubleQuote() Outer0.#stringParser(that:{'@stringU
 '"\u000a

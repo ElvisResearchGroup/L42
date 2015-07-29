@@ -1,20 +1,20 @@
 { _private(Library _binaryRepr)<: ToS '@private
-  
+
   type method Outer0 #stringParser(Library that) Outer0._private(_binaryRepr:that)
-    
+
   method Library binaryRepr() this._binaryRepr()
-  
+
   ToS:{interface method S toS()}
-  
+
   method toS() this
-  
+
   method
   S ++ (ToS that) S.#stringParser(using Alu
       check stringConcat(s1:this.binaryRepr(),s2:that.toS().binaryRepr())
       error void)
-      
+
   method Bool != (S that) !(this==that)
-  
+
   method
   Bool == (S that) {
     using Alu
@@ -22,24 +22,24 @@
       return Bool.true()
     return Bool.false()
     }
-    
+
   method
   S (N that)
     S.#stringParser(using Alu
       check stringCharAt(this.binaryRepr(),pos:that.binaryRepr())
       error void )
- 
-  method N size () 
-    N(binaryRepr: using Alu
+
+  method N size ()
+    N(_binaryRepr: using Alu
       check stringSize(this.binaryRepr())
-      error void) 
-      
+      error void)
+
   type method
   S doubleQuote()
     S"
     '"
     "(0N)
-    
+
   method
   S replace(S that, S into)
     S.#stringParser(using Alu
@@ -47,5 +47,5 @@
         src:that.binaryRepr()
         dest:into.binaryRepr())
       error void)
-    
+
   }
