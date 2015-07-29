@@ -64,6 +64,24 @@ public class ExtractInfo {
     return iu.whereUsed;
     }
   }
+  static class IsUsedAsPath extends CloneWithPath{
+    Path target;IsUsedAsPath(Path target){this.target=target;}
+    Set<Path> whereUsed=new HashSet<>();
+    protected List<Path> liftSup(List<Path> supertypes) {return supertypes;}
+    protected Type liftT(Type t){return t;}
+    public ExpCore visit(Path s) {
+      Path localP=Path.outer(0,getPath());
+      if(From.fromP(s, localP).equals(target)){
+        whereUsed.add(localP);
+        }
+      return super.visit(s);
+      }
+  public static Set<Path> of(ClassB cb,Path path){
+    IsUsedAsPath iu=new IsUsedAsPath(path);
+    cb.accept(iu);
+    return iu.whereUsed;
+    }
+  }
   //path member is not a nestedclass
   //path is used
   public static boolean checkBox(ClassB top,ClassB cb,List<String> path,boolean justFalse) throws Resources.Error/*NotBox*/{
@@ -71,7 +89,7 @@ public class ExtractInfo {
     Set<Path> used = ExtractInfo.IsUsed.of(top,Path.outer(0,path));
     if(meth.isEmpty()&& used.isEmpty() && !cb.isInterface() && cb.getSupertypes().isEmpty()){return true;}
     if(justFalse){return false;}
-    throw Errors42.errorNotBox(cb, meth, used,classKind(cb,Collections.emptyList(),cb,false,null,null,null));
+    throw Errors42.errorNotBox(cb, meth, used,classKind(cb,Collections.emptyList(),cb,false,null,null));
   }
 
   private static List<MethodSelector> collectDeclaredMethods(ClassB cb) {
@@ -85,7 +103,6 @@ public class ExtractInfo {
   public static void checkBox(ClassB top,ClassB cb,List<String> path) throws Resources.Error/*NotBox*/{ checkBox(top,cb, path,false);}
   public static boolean isBox(ClassB top,ClassB cb,List<String> path){return checkBox(top, cb,path,true);}
   public static boolean isNeverImplemented(ClassB top,List<String> path){
-    //if(!cb.isInterface()){return false;}
     Set<Path> used = ExtractInfo.IsImplemented.of(top,Path.outer(0,path));
     if(used.isEmpty()){ return true;}
     return false;
@@ -99,47 +116,39 @@ public class ExtractInfo {
   }
 
   public static enum ClassKind{
-    Box,
+    //Box,
     Interface,
-    FreeInterface,
+    //FreeInterface,
     ClosedClass,
     OpenClass,
     Template/*,PureRecord*/,
-    Module,
-    TemplateModule,
-    Interface_FreeInterface,
-    Box_TemplateModule
+    FreeTemplate
+    //Module,
+    //TemplateModule,
+    //Interface_FreeInterface,
+    //Box_TemplateModule
     ;}
   //top can be null, in this case we can return the mixed kinds
-  public static ClassKind classKind(ClassB top, List<String> current,ClassB cb,Boolean isBox,Boolean isFreeI,Boolean isPrivateState,Boolean isNoImplementation){//9 options
+  public static ClassKind classKind(ClassB top, List<String> current,ClassB cb,Boolean isFree,Boolean isPrivateState,Boolean isNoImplementation){//9 options
    assert (top==null)==(current==null);
-    if(cb.isInterface()){
-      if(isFreeI==null && top==null){return ClassKind.Interface_FreeInterface;}
-      if(isFreeI==null){isFreeI=ExtractInfo.isNeverImplemented(top,current);}
-      if(isFreeI){return ClassKind.FreeInterface;}
-      return ClassKind.Interface;
-    }//not interface, 7 options left
-    //if(isBox!=null &&isBox){return ClassKinds.Box.name();}//fast exit
+    if(cb.isInterface()){  return ClassKind.Interface; }
     if(isPrivateState==null){isPrivateState=hasPrivateState(cb);}
-    if(isPrivateState){return ClassKind.ClosedClass;}//6 options left
+    if(isPrivateState){return ClassKind.ClosedClass;}
     if(isNoImplementation==null){isNoImplementation=isNoImplementation(cb);}
-    if(isBox==null && top!=null){isBox=isBox(top,cb,current);}
-    if(isBox!=null &&isBox){return ClassKind.Box;}//5 options left
-    if(isModule(cb)){
-      if(isNoImplementation){
-        if(top==null && collectDeclaredMethods(cb).isEmpty()){
-          return ClassKind.Box_TemplateModule;
-          }
-        return ClassKind.TemplateModule;
-        }
-      return ClassKind.Module;
-      }//3 options left template, openclass and pure record left
     if(!isNoImplementation){return ClassKind.OpenClass;}
-    //if noImplementation and consistent is pure record (or box, sob)//pure reocord merged with template now :(
+    if(isFree==null && current!=null ){isFree=ExtractInfo.isFree(top,current);}
+    if(isFree!=null &&isFree){return ClassKind.FreeTemplate;}
     return ClassKind.Template;
   }
 
-  public static boolean checkClassClashAndReturnIsInterface(
+  public static boolean isFree(ClassB top, List<String> current) {
+    assert current!=null;
+    Set<Path> used = ExtractInfo.IsUsedAsPath.of(top,Path.outer(0,current));
+    if(used.isEmpty()){ return true;}
+    return false;
+  }
+
+  public static void checkClassClash(
       Program p,List<String>current,
       ClassB topA,ClassB topB,
       ClassB typeA,ClassB typeB,
@@ -151,16 +160,15 @@ public class ExtractInfo {
    boolean privateB=hasPrivateState(currentB);
    boolean twoPrivateState=privateA &&privateB;
    boolean isAllOk=confl.isEmpty() && !twoPrivateState && currentA.isInterface()==currentB.isInterface();
-   if (isAllOk){return currentA.isInterface();}//code under is slow
-   boolean boxA=ExtractInfo.isBox(topA,currentA,current);//!privateA && would make it faster, but harder to test
-   boolean boxB=ExtractInfo.isBox(topB,currentB,current);//same for the rest
-   boolean freeInterfA=currentA.isInterface() && ExtractInfo.isNeverImplemented(topA,current);
-   boolean freeInterfB=currentB.isInterface() &&ExtractInfo.isNeverImplemented(topB,current);
-   boolean isClassInterfaceSumOk=boxA||boxB ||freeInterfA ||freeInterfB;
+   if (isAllOk){return;}
+   ClassKind kindA=classKind(topA,current,currentA,null,privateA,null);
+   ClassKind kindB=classKind(topB,current,currentB,null,privateB,null);
+   boolean isClassInterfaceSumOk=currentA.isInterface()==currentB.isInterface();
+   if(!isClassInterfaceSumOk){
+     isClassInterfaceSumOk=kindA==ClassKind.FreeTemplate||kindB==ClassKind.FreeTemplate;
+     }
    isAllOk=confl.isEmpty() && !twoPrivateState && isClassInterfaceSumOk;
-   if (isAllOk){return boxA  || boxB;}
-   ClassKind kindA=classKind(topA,current,currentA,boxA,freeInterfA,privateA,null);
-   ClassKind kindB=classKind(topB,current,currentB,boxB,freeInterfB,privateB,null);
+   if (isAllOk){return;}
    throw Errors42.errorClassClash(current, confl,kindA,kindB);
   }
   static List<String> showMembers(List<Member> ms){

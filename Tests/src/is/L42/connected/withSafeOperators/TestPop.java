@@ -35,7 +35,7 @@ public class TestPop {//add more test for error cases
     +"UsedBy:{'@stringU\n'[Outer0::B]\n}"
     +"Supertypes:{'@stringU\n'[]\n}"
     +"ContainsMethods:{'@stringU\n'[]\n}"
-    +"ActualKind:{'@stringU\n'TemplateModule\n}}",true
+    +"ActualKind:{'@stringU\n'Template\n}}",true
 }});}
 @Test  public void test() {
   ClassB cb1=getClassB(_cb1);

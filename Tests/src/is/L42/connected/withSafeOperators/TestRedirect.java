@@ -105,8 +105,8 @@ public static class TestRedirect1 {//add more test for error cases
            +"SrcPath:{'@stringU\n'Outer0::InnerA\n}"
            +"DestExternalPath:{'@Outer1::A\n}"
            +"PrivatePath:{'@stringU\n'false\n}"
-           +"SrcKind:{'@stringU\n'TemplateModule\n}"
-           +"DestKind:{'@stringU\n'Box_TemplateModule\n}"
+           +"SrcKind:{'@stringU\n'FreeTemplate\n}"
+           +"DestKind:{'@stringU\n'Template\n}"
            +"UnexpectedMembers:{'@stringU\n'[fun()]\n}"
            +"UnexpectedImplementedInterfaces:{'@stringU\n'[]\n}"
         + "}",true
@@ -116,8 +116,8 @@ public static class TestRedirect1 {//add more test for error cases
                 "SrcPath", "Outer0::InnerA",
                 "DestExternalPath", "'@Outer1::A",
                 "PrivatePath", "false",
-                "SrcKind", "TemplateModule",
-                "DestKind", "Box_TemplateModule",
+                "SrcKind", "FreeTemplate",
+                "DestKind", "Template",
                 "UnexpectedMembers", "[fun(that)]",
                 "UnexpectedImplementedInterfaces", "[]"
                 )
@@ -129,7 +129,7 @@ public static class TestRedirect1 {//add more test for error cases
         + "method Void mostFun(Void that, Library other) method Void notSoFun() } }",
         "Outer0::InnerA","Outer1::A",
         ec
-          .set("SrcKind", "Template", "DestKind", "Template",
+          .set("SrcKind", "FreeTemplate", "DestKind", "Template",
                "UnexpectedMembers", "[moreFun(that), notSoFun()]")
           .str(), true
     },{lineNumber(), new String[]{  // with a mismatch on parameter names in the method selector
@@ -149,7 +149,7 @@ public static class TestRedirect1 {//add more test for error cases
         "{InnerA:{ C:{} }}",
         "Outer0::InnerA","Outer1::A",
         ec
-          .set("SrcKind", "Box", "DestKind", "OpenClass",
+          .set( "DestKind", "OpenClass",
                "UnexpectedMembers", "[C]")
           .str(), true
     },{lineNumber(), new String[]{  // OpenClass -> ClosedClass (because I can) with missing subclass
@@ -183,7 +183,7 @@ public static class TestRedirect1 {//add more test for error cases
         + "method Void mostFun(Void that, Library other) method Void notSoFun() } }",
         "Outer0::InnerA","Outer1::A",
         ec
-          .set("SrcKind", "FreeInterface", "DestKind", "Interface_FreeInterface",
+          .set("SrcKind", "Interface", "DestKind", "Interface",
                "UnexpectedMembers", "[mostFun(that,other), notSoFun()]")
           .str(), true
     },{lineNumber(), new String[]{  // Interface with inner class

@@ -32,7 +32,7 @@ public class Introspection {
     ClassB current = Program.extractCBar(path, that);
     Errors42.checkExistsPathMethod(that, path,Optional.empty());
     return Resources.Error.multiPartStringClassB("PathInfo",
-      "ClassKind",ExtractInfo.classKind(that, path, current,null,null, null,null).name(),
+      "ClassKind",ExtractInfo.classKind(that, path, current,null, null,null).name(),
       "MemberNumber",""+current.getMs().size(),
       "ImplementedNumber",""+current.getSupertypes().size(),
       "AllAsString",""+ToFormattedText.of(current)

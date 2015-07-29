@@ -70,15 +70,10 @@ public class Redirect {
    boolean isNoImplementation=ExtractInfo.isNoImplementation(l0NoFrom);
     //(b) L[H=~H'] holds
     boolean headerOk=l0NoFrom.isInterface()==l0DestNoFrom.isInterface();
-    Boolean isFreeInterface=null;
-    Boolean isBox=null;
-    if(!headerOk && l0NoFrom.isInterface()){
-      isFreeInterface=ExtractInfo.isNeverImplemented(l, cs);
-      if(isFreeInterface){headerOk=true;}
-    }
+    ClassKind kindSrc=null;
     if(!headerOk && !l0NoFrom.isInterface()){
-      isBox=ExtractInfo.isBox(l,l0NoFrom, cs);
-      if(isBox){headerOk=true;}
+      kindSrc=ExtractInfo.classKind(l,cs,l0NoFrom,null,isPrivateState, isNoImplementation);
+      if(kindSrc==ClassKind.FreeTemplate){headerOk=true;}
     }
     //(c) S,Cs->Path;p|-L[Paths=~Paths']:S'
     //(d) S;p|-L[M0=~M0' Cs->Path]:S0 ... S;p|-L[Mn=~Mn' Cs->Path]:Sn
@@ -111,8 +106,8 @@ public class Redirect {
     if(isOk){return result;}
     List<Path>unexpectedInterfaces=new ArrayList<>(unexpectedI);
     Collections.sort(unexpectedInterfaces,(pa,pb)->pa.toString().compareTo(pb.toString()));
-    ClassKind kindSrc = ExtractInfo.classKind(l,cs,l0NoFrom, isBox, isFreeInterface, isPrivateState, isNoImplementation);
-    ClassKind kindDest = ExtractInfo.classKind(null,null,l0DestNoFrom,null,null,null,null);
+    if(kindSrc==null){kindSrc = ExtractInfo.classKind(l,cs,l0NoFrom, null, isPrivateState, isNoImplementation);}
+    ClassKind kindDest = ExtractInfo.classKind(null,null,l0DestNoFrom,null,null,null);
     throw Errors42.errorSourceUnfit(currentPP.getPath1().getCBar(),path,
         kindSrc,kindDest,unexpectedMembers, headerOk, unexpectedInterfaces, isPrivate);
   }

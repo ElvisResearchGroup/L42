@@ -51,7 +51,8 @@ public class Sum {
         superT.addAll(b.getSupertypes());
         Doc doc1 = a.getDoc1().sum(b.getDoc1());
         Doc doc2 = a.getDoc2().sum(b.getDoc2());
-        boolean isInterface = ExtractInfo.checkClassClashAndReturnIsInterface(p, current, topA, topB, typeA, typeB, a, b);
+        ExtractInfo.checkClassClash(p, current, topA, topB, typeA, typeB, a, b);
+        boolean isInterface =a.isInterface() || b.isInterface(); 
         //*sum of class with non compatible interfaces (same method, different signature)
         //doh, this requires the program!!
         //*sum of two classes with private state
