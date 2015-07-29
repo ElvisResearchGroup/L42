@@ -84,8 +84,8 @@ public class ExtractInfo {
 
   public static void checkBox(ClassB top,ClassB cb,List<String> path) throws Resources.Error/*NotBox*/{ checkBox(top,cb, path,false);}
   public static boolean isBox(ClassB top,ClassB cb,List<String> path){return checkBox(top, cb,path,true);}
-  public static boolean isFreeInterface(ClassB top,ClassB cb,List<String> path){
-    if(!cb.isInterface()){return false;}
+  public static boolean isNeverImplemented(ClassB top,List<String> path){
+    //if(!cb.isInterface()){return false;}
     Set<Path> used = ExtractInfo.IsImplemented.of(top,Path.outer(0,path));
     if(used.isEmpty()){ return true;}
     return false;
@@ -115,7 +115,7 @@ public class ExtractInfo {
    assert (top==null)==(current==null);
     if(cb.isInterface()){
       if(isFreeI==null && top==null){return ClassKind.Interface_FreeInterface;}
-      if(isFreeI==null){isFreeI=ExtractInfo.isFreeInterface(top,cb,current);}
+      if(isFreeI==null){isFreeI=ExtractInfo.isNeverImplemented(top,current);}
       if(isFreeI){return ClassKind.FreeInterface;}
       return ClassKind.Interface;
     }//not interface, 7 options left
@@ -154,8 +154,8 @@ public class ExtractInfo {
    if (isAllOk){return currentA.isInterface();}//code under is slow
    boolean boxA=ExtractInfo.isBox(topA,currentA,current);//!privateA && would make it faster, but harder to test
    boolean boxB=ExtractInfo.isBox(topB,currentB,current);//same for the rest
-   boolean freeInterfA=ExtractInfo.isFreeInterface(topA,currentA,current);
-   boolean freeInterfB=ExtractInfo.isFreeInterface(topB,currentB,current);
+   boolean freeInterfA=currentA.isInterface() && ExtractInfo.isNeverImplemented(topA,current);
+   boolean freeInterfB=currentB.isInterface() &&ExtractInfo.isNeverImplemented(topB,current);
    boolean isClassInterfaceSumOk=boxA||boxB ||freeInterfA ||freeInterfB;
    isAllOk=confl.isEmpty() && !twoPrivateState && isClassInterfaceSumOk;
    if (isAllOk){return boxA  || boxB;}

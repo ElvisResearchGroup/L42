@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import coreVisitors.From;
 import coreVisitors.FromInClass;
 import facade.Configuration;
 import introspection.FindUsage;
@@ -15,6 +16,7 @@ import is.L42.connected.withSafeOperators.ExtractInfo.ClassKind;
 import is.L42.connected.withSafeOperators.ExtractInfo.IsUsed;
 import is.L42.connected.withSafeOperators.Pop.PopNFrom;
 import tools.Assertions;
+import tools.Map;
 import ast.ErrorMessage;
 import ast.ExpCore;
 import ast.ExpCore.*;
@@ -30,6 +32,7 @@ import ast.ExpCore.ClassB.MethodWithType;
 import ast.ExpCore.ClassB.NestedClass;
 import ast.Util.PathMx;
 import ast.Util.PathPath;
+import auxiliaryGrammar.Norm;
 import auxiliaryGrammar.Program;
 public class Redirect {
   public static ClassB redirect(Program p,ClassB cb, Path internal,Path external){
@@ -47,47 +50,34 @@ public class Redirect {
     if(cs.isEmpty()){throw Errors42.errorInvalidOnTopLevel();}
     Errors42.checkExistsPathMethod(l, cs, Optional.empty());
     Boolean[] csPrivate=new Boolean[]{false};
-    ClassB l0=Program.extractCBar(cs,l,csPrivate);//L(Cs)[from Cs]=L0={H M0 ... Mn}//No, from does not work here
-    l0=(ClassB)new PopNFrom(cs.size()){
-      public ExpCore visit(Path s) {
-        if(s.isPrimitive()){return super.visit(s);}
-        List<String>csInner=getPath();
-        int dept=csInner.size()+cs.size();
-        if(s.outerNumber()>dept){return super.visit(s);}
-        //if(s.outerNumber()==dept){return Path.outer(0);}//TODO: :'-?
-        List<String> combo=new ArrayList<>(cs);
-        combo.addAll(csInner);
-        s=Path.outer(dept,ClassOperations.toTop(combo,s));
-        return super.visit(s);
-      }}.visit(l0);
+    ClassB l0NoFrom=Program.extractCBar(cs,l,csPrivate);//L(Cs)[from Cs]=L0={H M0 ... Mn}//No, from does not work here
     //path exists by construction.
-    ClassB l0Dest;
+    ClassB l0DestNoFrom;
     if(path.isCore()){
-      ClassB l0Raw = p.extract(path);
-      Path toFrom=path.setNewOuter(path.outerNumber()-1);
-      toFrom=toFrom.popC();//as in IntrospectionAdapt
-      l0Dest=(ClassB)FromInClass.of(l0Raw,toFrom);
+      assert path.outerNumber()>0:
+        path;
+      l0DestNoFrom= p.extract(path);
       }//p(Path)[from Path]=L0'={H' M0' ... Mn', _}//reordering of Ms allowed here
     else{
       assert path.isPrimitive();
-      l0Dest=new ClassB(Doc.empty(),Doc.empty(),path.equals(Path.Any()),Collections.emptyList(),Collections.emptyList(),Stage.None);
+      l0DestNoFrom=new ClassB(Doc.empty(),Doc.empty(),path.equals(Path.Any()),Collections.emptyList(),Collections.emptyList(),Stage.None);
     }
     //(a)Cs is public in L, and Cs have no private state;
     boolean isPrivate=csPrivate[0];
-    boolean isPrivateState=ExtractInfo.hasPrivateState(l0);
+    boolean isPrivateState=ExtractInfo.hasPrivateState(l0NoFrom);
     //all its methods have no implementation, that is:
     //for all Mi,i=0..n: Mi is of form h or Mi is of form C:_
-   boolean isNoImplementation=ExtractInfo.isNoImplementation(l0);
+   boolean isNoImplementation=ExtractInfo.isNoImplementation(l0NoFrom);
     //(b) L[H=~H'] holds
-    boolean headerOk=l0.isInterface()==l0Dest.isInterface();
+    boolean headerOk=l0NoFrom.isInterface()==l0DestNoFrom.isInterface();
     Boolean isFreeInterface=null;
     Boolean isBox=null;
-    if(!headerOk && l0.isInterface()){
-      isFreeInterface=ExtractInfo.isFreeInterface(l,l0, cs);
+    if(!headerOk && l0NoFrom.isInterface()){
+      isFreeInterface=ExtractInfo.isNeverImplemented(l, cs);
       if(isFreeInterface){headerOk=true;}
     }
-    if(!headerOk && !l0.isInterface()){
-      isBox=ExtractInfo.isBox(l,l0, cs);
+    if(!headerOk && !l0NoFrom.isInterface()){
+      isBox=ExtractInfo.isBox(l,l0NoFrom, cs);
       if(isBox){headerOk=true;}
     }
     //(c) S,Cs->Path;p|-L[Paths=~Paths']:S'
@@ -95,12 +85,21 @@ public class Redirect {
     //(e) S'=Cs->Path,S0..Sn
     List<PathPath>result=new ArrayList<PathPath>();
     result.add(currentPP);
-    Set<Path>unexpectedI=redirectOkImpl(s,currentPP,p,l,l0.getSupertypes(),l0Dest.getSupertypes(),result);
+    Set<Path>unexpectedI=redirectOkImpl(s,currentPP,p,l,
+        Map.of(pi->From.fromP(pi,csPath), l0NoFrom.getSupertypes()),
+        Map.of(pi->From.fromP(pi,path),l0DestNoFrom.getSupertypes()),result);
     List<Member> unexpectedMembers=new ArrayList<>();
-    for(Member mi:l0.getMs()){
-      Optional<Member> miPrime = Program.getIfInDom(l0Dest.getMs(),mi);
+    for(Member mi:l0NoFrom.getMs()){
+      Optional<Member> miPrime = Program.getIfInDom(l0DestNoFrom.getMs(),mi);
       if(miPrime.isPresent() && miPrime.get().getClass().equals(mi.getClass())){
-          redirectOk(s,p,l,mi,miPrime.get(),currentPP,result);
+        Member miGet=miPrime.get();
+        if(miGet instanceof MethodWithType){
+          MethodWithType mwt=(MethodWithType)miGet;
+          mwt=From.from(mwt, path);//this is what happens in p.method
+          //mwt=Norm.of(p,mwt,true);
+          miGet=mwt;
+        }
+          redirectOk(s,p,l,From.from(mi,csPath),miGet,currentPP,result);
       }
       else{unexpectedMembers.add(mi);}
     }
@@ -112,8 +111,8 @@ public class Redirect {
     if(isOk){return result;}
     List<Path>unexpectedInterfaces=new ArrayList<>(unexpectedI);
     Collections.sort(unexpectedInterfaces,(pa,pb)->pa.toString().compareTo(pb.toString()));
-    ClassKind kindSrc = ExtractInfo.classKind(l,cs,l0, isBox, isFreeInterface, isPrivateState, isNoImplementation);
-    ClassKind kindDest = ExtractInfo.classKind(null,null,l0Dest,null,null,null,null);
+    ClassKind kindSrc = ExtractInfo.classKind(l,cs,l0NoFrom, isBox, isFreeInterface, isPrivateState, isNoImplementation);
+    ClassKind kindDest = ExtractInfo.classKind(null,null,l0DestNoFrom,null,null,null,null);
     throw Errors42.errorSourceUnfit(currentPP.getPath1().getCBar(),path,
         kindSrc,kindDest,unexpectedMembers, headerOk, unexpectedInterfaces, isPrivate);
   }

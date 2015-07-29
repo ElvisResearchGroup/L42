@@ -79,11 +79,17 @@ public static class TestRedirect1 {//add more test for error cases
         + "method Void multiUse(InnerX x, InnerY y, InnerZ z) }",
         "Outer0::InnerA","Outer1::A","{ method Void multiUse(Outer2::B x, Outer2::B y, Outer2::B z)}",false
     },{lineNumber(), new String[]{      // redirection vs binding a returned library at the same nesting depth
+    "{A:{()}}" },
+    "{InnerA:{()} M:{type method Library defA_maker() {type method InnerA beA_maker() InnerA()}}}",
+    "Outer0::InnerA","Outer1::A",
+    "{M:{type method Library defA_maker() {type method Outer3::A beA_maker() Outer3::A()}}}",false
+    },{lineNumber(), new String[]{      // redirection vs binding a returned library at the same nesting depth
                     "{A:{()}}" },
         "{InnerA:{()} M:{type method Library defA_maker() {type method InnerA beA_maker() InnerA()}}"
-        + "B:{C: M.defA_maker() }"
+        + "B:{C: M.defA_maker() }"//TODO:No, you can not do operations on not compiled classes
         + "}",
-        "Outer0::InnerA","Outer1::A","{B:{C:{D:{type method Outer4::A beA_maker() Outer4::A()}}}}",false
+        "Outer0::InnerA","Outer1::A",
+        "{B:{C:{D:{type method Outer4::A beA_maker() Outer4::A()}}}}",false//TODO:D?
     },{lineNumber(), new String[]{      // redirection vs binding a returned library at a different nesting depth
                     "{A:{()}}" },
         "{InnerA:{()} M:{type method Library defA_maker() {type method InnerA beA_maker() InnerA()}}"
@@ -116,7 +122,7 @@ public static class TestRedirect1 {//add more test for error cases
 	//   for each error.
     // the cardinality, or option space, of each parameter is listed in parentheses.
 
-    // SourceUnfit: SrcPath(1), DestExternalPath(1) PrivatePath(t/f), SrcKind(enum(9)), DestKind(enum(9)), 
+    // SourceUnfit: SrcPath(1), DestExternalPath(1) PrivatePath(t/f), SrcKind(enum(9)), DestKind(enum(9)),
     //   UnexpectedMethods(0..), UnexpectedImplementedInterfaces(0..)
     },{lineNumber(), new String[]{"{A:{ }}"},  // from module with an unexpected function
         "{InnerA:{type method Void fun()} }","Outer0::InnerA","Outer1::A",
@@ -232,7 +238,7 @@ public static class TestRedirect1 {//add more test for error cases
         "Outer0::InnerA","Outer1::A",
         ec
           .str(), true
-    },{lineNumber(), new String[]{  // Matched inner interface shows as non-free 
+    },{lineNumber(), new String[]{  // Matched inner interface shows as non-free
         "{A:{interface type method Void fun(Void that)  method Void moreFun(Void that, Library other) \n"
         + " C:{interface}}}"
         },
@@ -252,11 +258,11 @@ public static class TestRedirect1 {//add more test for error cases
         "{  A:{interface type method C fun(Void that)  method Void moreFun(Void that, Library other) }\n"
         + " C:{interface}}"
         },
-        "{InnerA:{interface type method InnerC fun(Void that)  method Void moreFun(Void that, Library other) }\n"
+        "{ InnerA:{interface type method InnerC fun(Void that)  method Void moreFun(Void that, Library other) }\n"
         + "InnerC:{interface"
         + "            method Void mostFun() "
         + "       }  \n"
-        + "C_impl:{<:InnerA::InnerC"
+        + "C_impl:{<:InnerA::InnerC"//TODO: InnerA::InnerC is inexistent, test is invalid, source not well formed.
         + "       } "
         + "}"
         + "",
@@ -275,7 +281,8 @@ public static class TestRedirect1 {//add more test for error cases
         + "F:{G:{H:{type method Void insane(Outer1::InnerA that)}}}"
         + "}",
         "Outer0::InnerA","Outer1::A","{B:{C:{D:{type method Outer4::A beA_maker() Outer4::A()}}}}",false
-
+//TODO: @James: yes, it does not cause parse error since it is a valid syntactic program. It does not cause type errors
+        //since we are not doing type checking here. It does not cause well formedess errors either!
 
 // TODO: exercise UnexpectedImplementedInterfaces
 /* TODO: this test, when I get to method clashes
@@ -289,9 +296,9 @@ public static class TestRedirect1 {//add more test for error cases
         ec
           .set("UnexpectedMethods", "[moreFun(that), mostFun()]").str(), true
           */
-          
+
           /* TODO: @James: with this test, I get TargetUnavailable, which I don't understand yet
-    },{lineNumber(), new String[]{  // Matched inner interface shows as non-free 
+    },{lineNumber(), new String[]{  // Matched inner interface shows as non-free
         "{A:{interface type method Void fun(Void that)  method Void moreFun(Void that, Library other) \n"
         + " C:{interface}}}"
         },
@@ -308,7 +315,7 @@ public static class TestRedirect1 {//add more test for error cases
                "UnexpectedMembers", "[mostFun()]")
           .str(), true
            */
-    
+
     }
 });}
 
