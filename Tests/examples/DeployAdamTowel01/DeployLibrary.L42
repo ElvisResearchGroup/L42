@@ -1,0 +1,14 @@
+{(Path path,URL url)
+
+type method type Outer0 #begin() Outer0
+method Outer0 #end() this
+type method Outer0 #add(Path that,URL url) Outer0(path:that,url:url)
+
+method
+Library <<(Library that) exception TargetUnavailable,PrivacyCoupuled,NSBMissing {
+  var res=that
+  res:=Refactor::ExposeAsLibrary[this.path()]<<res
+  res:=Optimize::RemoveUnreachableCode[]<<res
+  return DeployTowel[fileName:this.url().binaryRepr()]<<res
+  }
+}

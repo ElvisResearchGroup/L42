@@ -18,6 +18,7 @@ import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodWithType;
 import ast.ExpCore.ClassB.NestedClass;
 import ast.ExpCore.*;
+import auxiliaryGrammar.EncodingHelper;
 import auxiliaryGrammar.Norm;
 import auxiliaryGrammar.Program;
 
@@ -93,7 +94,7 @@ public class Introspection {
       Path implN = current.getSupertypes().get(typeN-1);
       Doc dImplN=Doc.factory(implN);
       return typeReport(path, TypeKind.Normal,Mdf.Immutable,Mdf.Immutable,
-          dImplN,dImplN, false,false,"","",current.getDoc2(),ToFormattedText.of(implN));  
+          dImplN,dImplN, false,false,"","",current.getDoc2(),ToFormattedText.of(implN));
     }
     assert memberN>0;
     Member mi = current.getMs().get(memberN-1);
@@ -108,7 +109,7 @@ public class Introspection {
     NormType resolvedTi=null;
     try{resolvedTi=Norm.of(p, ti);}catch(ErrorMessage.NormImpossible ni){}
     TypeKind tk=(ti instanceof NormType)?TypeKind.Normal:(resolvedTi==null)?TypeKind.AliasUnresolvable:TypeKind.Alias;
-    Mdf mdf=(normTi!=null)?normTi.getMdf():Mdf.Immutable;    
+    Mdf mdf=(normTi!=null)?normTi.getMdf():Mdf.Immutable;
     Mdf resMdf=(resolvedTi!=null)?resolvedTi.getMdf():Mdf.Immutable;
     Path pi=(normTi!=null)?normTi.getPath():((Ast.HistoricType)ti).getPath();
     Path resPi=(resolvedTi!=null)?resolvedTi.getPath():pi;
@@ -128,7 +129,7 @@ public class Introspection {
     for(MethodSelectorX msx:selectors){
       result+="::"+msx.getMs().toString();
       if(!msx.getX().isEmpty()){result+="::"+msx.getX();}
-    } 
+    }
     return result;
   }
 
@@ -165,8 +166,8 @@ public class Introspection {
         }
       assert result.endsWith("\n");
       if(result.startsWith("@stringU\n")){result=result.substring("@stringU\n".length(),result.length()-1);}
-      
-      return result;
+
+      return EncodingHelper.parseStringUnicode(result);
     }
     if(d.getAnnotations().size()<annotationN){throw Resources.notAct;}
     Object o=d.getAnnotations().get(annotationN-1);
@@ -182,7 +183,7 @@ public class Introspection {
     if(!(o instanceof Path)){throw Resources.notAct;}
     //TODO: after is wrong, we need to use this kind of stuff.String s=Translator.nameOf((Path)o);
     //test returning paths and then throw catch them,
-    //test especially difference between Library and Any.    
+    //test especially difference between Library and Any.
     return (Path)o;
   }
   /*
@@ -205,7 +206,7 @@ public class Introspection {
           }
       List<String>topPi=ClassOperations.toTop(path, pi);
       o="::"+String.join("::",topPi);
-      ann.add(o);//continue;      
+      ann.add(o);//continue;
     }
     return doc.withAnnotations(ann);
   }

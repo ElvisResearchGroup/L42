@@ -24,9 +24,9 @@ public class TestBase {
   @Test
   public  void testDeploySimpleLib() throws Throwable{
     TestHelper.configureForTest();
-    //L42.main(new String[]{"examples/DeployAdamTowel01"});
-    //L42.main(new String[]{"examples/testsForAdamTowel01/UseSimpleLib.L42"});
-    //Assert.assertEquals(L42.record.toString(),"Hello World 42\n");
+    TestHelper.configureForTest();
+    L42.main(new String[]{"examples/testsForAdamTowel01/DeploySimpleLib.L42"});
+    //how to check success?
     }
 }
 

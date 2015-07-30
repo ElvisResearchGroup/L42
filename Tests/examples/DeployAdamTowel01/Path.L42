@@ -1,21 +1,29 @@
 { _private(Library _binaryRepr)<: S::ToS '@private
-  
+
   type method Outer0 #stringParser(Library that) Outer0._private(_binaryRepr:that)
-    
+
   method Library binaryRepr() this._binaryRepr()
-  
-  
+
+
   method toS() S.#stringParser(this._binaryRepr())
-  
-      
-  method Bool != (S that) !(this==that)
-  
+
+
+  method Bool != (Path that) !(this==that)
+
   method
-  Bool == (S that) {
+  Bool == (Path that) {
     using Alu
       check ifStringEqualDo(s1:this.binaryRepr(),s2:that.binaryRepr())
       return Bool.true()
     return Bool.false()
+    }
+  method
+  Path ++(Path that){
+    if this==Path"Outer0" (return that)
+    if that==Path"Outer0" (return this)
+    return Path.#stringParser(
+      (this.toS()++S"::"++that.toS()).binaryRepr()
+      )
     }
   'we still need to add check validity,list of classNames
   'and ways to concatenate two paths ++

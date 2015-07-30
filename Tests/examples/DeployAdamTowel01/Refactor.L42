@@ -1,17 +1,17 @@
 {
   Squares:'@private
     {type method
-    Library < (Library that) exception MethodClash,ClassClash
-      Compose[that]<{
+    Library << (Library that) exception MethodClash,ClassClash
+      Compose[that]<<{
         type method
         type Outer0 #begin() Outer0
         method
         Outer0 #end() this
         }
     }
-  Redirect:Squares<{#add(Path that, type Any to)
+  Redirect:Squares<<{#add(Path that, type Any to)
     method
-    Library < (Library that)exception TargetUnavailable,InvalidOnTopLevel,SourceUnfit,MethodClash{
+    Library << (Library that)exception TargetUnavailable,InvalidOnTopLevel,SourceUnfit,MethodClash{
       return SafeOperators.redirect(that,src:this.that(),dest:this.to())
       catch error err (on Library (
         mirror=Introspection::MirrorLibrary(lib:err)
@@ -23,9 +23,9 @@
           default error err)))
       }
     }
-  RenameSelector:Squares<{#add(Selector that, Path of, Selector to)
+  RenameSelector:Squares<<{#add(Selector that, Path of, Selector to)
     method
-    Library < (Library that)exception TargetUnavailable,MethodClash{
+    Library << (Library that)exception TargetUnavailable,MethodClash{
       return SafeOperators.renameMethod(that,path:this.of() src:this.that(),dest:this.to())
       catch error err (on Library (
         mirror=Introspection::MirrorLibrary(lib:err)
@@ -35,9 +35,9 @@
           default error err)))
       }
     }
-  RenamePath:Squares<{#add(Path that, Path to)
+  RenamePath:Squares<<{#add(Path that, Path to)
     method
-    Library < (Library that)exception TargetUnavailable,MethodClash,ClassClash{
+    Library << (Library that)exception TargetUnavailable,MethodClash,ClassClash{
       return SafeOperators.renameClass(that,src:this.that(),dest:this.to())
       catch error err (on Library (
         mirror=Introspection::MirrorLibrary(lib:err)
@@ -48,9 +48,9 @@
           default error err)))
       }
     }
-  RemoveImplementationSelector:Squares<{#add(Selector that, Path of)
+  RemoveImplementationSelector:Squares<<{#add(Selector that, Path of)
     method
-    Library < (Library that)exception TargetUnavailable{
+    Library << (Library that)exception TargetUnavailable{
       return SafeOperators.removeImplementation(that,path:this.of(),selector:this.that())
       catch error err (on Library (
         mirror=Introspection::MirrorLibrary(lib:err)
@@ -59,9 +59,9 @@
           default error err)))
       }
     }
-  RemoveImplementationPath:Squares<{#add(Path that)
+  RemoveImplementationPath:Squares<<{#add(Path that)
     method
-    Library < (Library that)exception TargetUnavailable,PrivacyCoupuled{
+    Library << (Library that)exception TargetUnavailable,PrivacyCoupuled{
       return SafeOperators.removeImplementation(that,path:this.that())
       catch error err (on Library (
         mirror=Introspection::MirrorLibrary(lib:err)
@@ -71,9 +71,9 @@
           default error err)))
       }
     }
-  AddDocumentationSelector:Squares<{#add(Selector that, Path of,Doc doc)
+  AddDocumentationSelector:Squares<<{#add(Selector that, Path of,Doc doc)
     method
-    Library < (Library that)exception TargetUnavailable{
+    Library << (Library that)exception TargetUnavailable{
       return SafeOperators.addDocumentation(that,path:this.of() selector:this.that(),doc:this.doc())
       catch error err (on Library (
         mirror=Introspection::MirrorLibrary(lib:err)
@@ -82,9 +82,9 @@
           default error err)))
       }
     }
-  AddDocumentationPath:Squares<{#add(Path that,Doc doc)
+  AddDocumentationPath:Squares<<{#add(Path that,Doc doc)
     method
-    Library < (Library that)exception TargetUnavailable,InvalidOnTopLevel{
+    Library << (Library that)exception TargetUnavailable,InvalidOnTopLevel{
       return SafeOperators.addDocumentation(that,path:this.that(),doc:this.doc())
       catch error err (on Library (
         mirror=Introspection::MirrorLibrary(lib:err)
@@ -94,5 +94,46 @@
           default error err)))
       }
     }
-  
-}
+  MakePrivatePath:Squares<<{#add(Path that)
+    method
+    Library << (Library that)exception TargetUnavailable,InvalidOnTopLevel
+      AddDocumentationPath[this.that(),doc:Doc.#stringParser({'@private
+        })]<<that'string parser works, but we can not use the sugar, that would add @stringU
+    }
+  MakePrivateSelector:Squares<<{#add(Selector that, Path of,)
+    method
+    Library << (Library that)exception TargetUnavailable,InvalidOnTopLevel
+      AddDocumentationSelector[this.that() of:this.of() doc:Doc.#stringParser({'@private
+        })]<<that
+    }
+  ExposeAsLibrary:Squares<<{#add(Path that)
+    method
+    Library << (Library that)exception TargetUnavailable,PrivacyCoupuled,NSBMissing {
+      if this.that()==Path"Outer0" (return that)
+      this.checkTargetExists(that)'throws TargetUnavailable
+      var res=that
+      res:=RenamePath[Path"Outer0" to:Path"PrImpl"]<<res'TargetUnavailable,MethodClash,ClassClash can not happen on Outer0
+      catch exception (on Report error S"CodeNotReachable")
+      res:=RenamePath[Path"PrImpl::N" to:Path"BNS::N"]<<res'fails here
+      res:=RenamePath[Path"PrImpl::S" to:Path"BNS::S"]<<res
+      res:=RenamePath[Path"PrImpl::Bool" to:Path"BNS::Bool"]<<res
+      res:=RenamePath[Path"PrImpl::Debug" to:Path"BNS::Debug"]<<res
+      catch exception r (on Report exception NSBMissing(report:r))
+      res:=RemoveImplementationPath[Path"BNS"]<<res'leak PrivacyCoupuled
+      catch exception (on TargetUnavailable error S"CodeNotReachable")
+      res:=RenamePath[Path"PrImpl"++this.that() to:Path"Outer0"]<<res
+      res:=RenamePath[Path"BNS" to:Path"Outer0"]<<res
+      res:=MakePrivatePath[Path"PrImpl"]<<res
+      catch exception (on Report error S"CodeNotReachable")
+      return res
+      }
+    method
+    Void checkTargetExists(Library that) exception TargetUnavailable (
+      unused=AddDocumentationPath[this.that() doc:Doc"JustToSeeIfItIsThere"]<<that
+      catch exception x (
+        on InvalidOnTopLevel error S"CodeNotReachable"
+        )
+      void
+      )
+    }
+  }

@@ -1,0 +1,36 @@
+{(Library fileName)
+
+type method type Outer0 #begin() Outer0
+type method Outer0 #add(Library fileName) Outer0(fileName:fileName)
+method Outer0 #end()this
+
+method
+Library <<(Library that) (
+  Library report=using SafeOperatorsAccess
+    check introspectionGiveInfo(that, path:Outer0"Outer0")
+    error Outer0"introspectionGiveInfo"
+  Library text=using SafeOperatorsAccess
+    check introspectionDocAsString(report, path:Outer0"AllAsString",annotationN:0Outer0)
+    error Outer0"introspectionDocAsString"
+  using Alu
+    check fileDebug(fileName:this.fileName(), content:text)
+    error Outer0"fileDebug"
+  ExitCode.normal()
+  )
+
+SafeOperatorsAccess:'@private
+  {'@plugin
+   'L42.is/connected/withSafeOperators
+  }
+Alu:'@private
+  {'@plugin
+   'L42.is/connected/withAlu
+  }
+  type method Library #stringParser(Library that) that
+type method Library #numberParser(Library that)
+  using Alu
+    check stringToInt32(that)
+    error Outer0"stringToInt32"
+
+
+}

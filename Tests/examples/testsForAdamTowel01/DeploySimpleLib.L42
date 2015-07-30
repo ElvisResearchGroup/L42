@@ -1,0 +1,9 @@
+{reuse L42.is/adamTowel01
+Task:DeployLibrary[Path"MyLib",url:URL"localhost/DeployedSimpleLib.L42"]<<{
+  reuse L42.is/adamTowel01
+  MyLib:{'could be in another file
+    type method
+    Void printHelloWorld() Debug(S"Hello World Deployed")
+    }
+  }
+}

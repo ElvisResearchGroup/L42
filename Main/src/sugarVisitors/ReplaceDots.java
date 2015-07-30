@@ -21,7 +21,7 @@ public class ReplaceDots extends CloneVisitor{
     this.currentFolder=currentFolder;
     this.currentNested=currentNested;
     }
-  
+
   private Error fail(String msg){
     throw new ErrorMessage.DotDotDotCanNotBeResolved(
         msg,this.currentNested,this.currentFolder);
@@ -36,6 +36,7 @@ public class ReplaceDots extends CloneVisitor{
     if(pathF!=null){//put in subfunction
       String code=L42.pathToString(pathF);
       Expression e=Parser.parse(pathF.toString(), code);
+      auxiliaryGrammar.WellFormedness.checkAll(e);
       return ReplaceDots.of(this.currentFolder,e );
       }
     assert pathD!=null;
@@ -45,7 +46,7 @@ public class ReplaceDots extends CloneVisitor{
     return ReplaceDots.of(pathD,e );
   }
   //Decisions: is ok if there is a text file that have no extension?
-  //or if the folder have extension? or if there are both? or 
+  //or if the folder have extension? or if there are both? or
   //one is valid and the other one is rubbish?
   public Path pathToFile(){
     Path fileP=this.currentFolder.resolve(this.currentNested.getName()+".L42");
@@ -63,7 +64,7 @@ public class ReplaceDots extends CloneVisitor{
       }
     if(Files.exists(fileP)){fail("File exists but is not a directory");}
     return null;
-    
+
   }
   public NestedClass visit(NestedClass nc){
     this.currentNested=nc;

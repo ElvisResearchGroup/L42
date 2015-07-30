@@ -1,0 +1,13 @@
+{
+RemoveUnreachableCode:{()
+  type method
+  Outer0 #begin() Outer0()
+  method
+  Outer0 #end() this
+  method
+  Library << (Library that)
+    using SafeOperators
+      check removeUnreachableCode(that)
+      error SafeOperators.mkError(S"removeUnreachableCode")
+  }
+}

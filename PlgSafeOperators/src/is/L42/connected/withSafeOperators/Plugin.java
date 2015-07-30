@@ -30,14 +30,14 @@ public class Plugin implements PluginType{
     public Object Mcompose£xleft£xright(Object _left,Object _right){
       ClassB left=ensureExtractClassB(_left);
       ClassB right=ensureExtractClassB(_right);
-      return Sum.sum(Resources.getP(),left,right);      
+      return Sum.sum(Resources.getP(),left,right);
       }
     @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
     public Object MrenameClass£xthat£xsrc£xdest(Object _that,Object _src,Object _dest){
       ClassB that=ensureExtractClassB(_that);
       List<String> src=Path.parseValidCs(ensureExtractStringU(_src));
       List<String> dest=Path.parseValidCs(ensureExtractStringU(_dest));
-      return Rename.renameClass(Resources.getP(),that,src,dest);      
+      return Rename.renameClass(Resources.getP(),that,src,dest);
       }
     @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
     public Object MrenameMethod£xthat£xpath£xsrc£xdest(Object _that,Object _path,Object _src,Object _dest){
@@ -45,7 +45,7 @@ public class Plugin implements PluginType{
       List<String> path=Path.parseValidCs(ensureExtractStringU(_path));
        MethodSelector src = MethodSelector.parse(ensureExtractStringU(_src));
        MethodSelector dest = MethodSelector.parse(ensureExtractStringU(_dest));
-      return Rename.renameMethod(Resources.getP(),that,path,src,dest);      
+      return Rename.renameMethod(Resources.getP(),that,path,src,dest);
       }
     @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.TypeAny})
     public Object Mredirect£xthat£xsrc£xdest(Object _that,Object _src,Object _dest){
@@ -54,27 +54,27 @@ public class Plugin implements PluginType{
       Path dest=ensureExtractPathFromJava(_dest);
       assert dest.isCore() || dest.isPrimitive();
       if(dest.isCore()){dest=dest.setNewOuter(dest.outerNumber()+1);}//TODO: see if extractPath should be changed
-      return Redirect.redirect(Resources.getP(),that,Path.outer(0,src),dest);      
+      return Redirect.redirect(Resources.getP(),that,Path.outer(0,src),dest);
       }
     @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
     public Object MremoveImplementation£xthat£xpath(Object _that,Object _path){
       ClassB that=ensureExtractClassB(_that);
       List<String> path=Path.parseValidCs(ensureExtractStringU(_path));
-      return Abstract.toAbstract(that,path);      
+      return Abstract.toAbstract(that,path);
       }
     @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
     public Object MremoveImplementation£xthat£xpath£xselector(Object _that,Object _path,Object _sel){
       ClassB that=ensureExtractClassB(_that);
       List<String> path=Path.parseValidCs(ensureExtractStringU(_path));
       MethodSelector sel = MethodSelector.parse(ensureExtractStringU(_sel));
-      return Abstract.toAbstract(that,path,sel);      
+      return Abstract.toAbstract(that,path,sel);
       }
     @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
     public Object MaddDocumentation£xthat£xpath£xdoc(Object _that,Object _path,Object _doc){
       ClassB that=ensureExtractClassB(_that);
       List<String> path=Path.parseValidCs(ensureExtractStringU(_path));
       Doc doc=ensureExtractDoc(_doc);
-      return AddDocumentation.addDocumentationOnNestedClass(that,path,doc);      
+      return AddDocumentation.addDocumentationOnNestedClass(that,path,doc);
       }
     @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
     public Object MaddDocumentation£xthat£xpath£xselector£xdoc(Object _that,Object _path,Object _sel,Object _doc){
@@ -82,7 +82,7 @@ public class Plugin implements PluginType{
       List<String> path=Path.parseValidCs(ensureExtractStringU(_path));
       MethodSelector sel = MethodSelector.parse(ensureExtractStringU(_sel));
       Doc doc=ensureExtractDoc(_doc);
-      return AddDocumentation.addDocumentationOnMethod(that,path,sel,doc);      
+      return AddDocumentation.addDocumentationOnMethod(that,path,sel,doc);
       }
     //-----5 +5 introspections
     @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
@@ -106,7 +106,7 @@ public class Plugin implements PluginType{
       int typeN=ensureExtractInt32(_typeN);
       return Introspection.giveInfoType(Resources.getP(), that, path, memberN, typeN);
     }
-    
+
     @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
     public Object MintrospectionDocAsString£xthat£xpath£xannotationN(Object _that,Object _path,Object _annotationN){
       ClassB that=ensureExtractClassB(_that);
@@ -121,6 +121,10 @@ public class Plugin implements PluginType{
       int annotationN=ensureExtractInt32(_annotationN);
       return Introspection.extractDocPath(that, path, annotationN);
     }
-    //still to add purge privates
-   
+    @ActionType({ActionType.Type.Library,ActionType.Type.Library})
+    public Object MremoveUnreachableCode£xthat(Object _that){
+      ClassB that=ensureExtractClassB(_that);
+      return RemoveCode.removeUnreachableCode(that);
+    }
+
 }

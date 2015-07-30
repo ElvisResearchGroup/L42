@@ -319,32 +319,6 @@ helpers.TestHelper.multiLine(""
     TestHelper.assertEqualExp(res,expected);}}
 
 
-  //----------------------------------------------------------
-  @RunWith(Parameterized.class)
-  public static class Test_MpurgePrivates£xthat {
-      @Parameter(0) public String _e1;
-      @Parameter(1) public String _expected;
-      @Parameterized.Parameters
-      public static List<Object[]> createData() {
-        return Arrays.asList(new Object[][] {
-
-    {"{}","{}"
-  },{"{()}","{()}"
-  },{"{C:{}}","{C:{}}"
-  },{"{ C:'@private\n{}}","{}"
-  },{"{(C x) C:'@private\n{}}","{(C x) C:'@private\n{}}"
-  },{"{(C x) C:'@private\n{(D y)} D:'@private\n{(D y)}}","{(C x) C:'@private\n{(D y)} D:'@private\n{(D y)}}"
-  },{"{(C x) C:'@private\n{(D y)} D:'@private\n{(D y)} E:{} F:'@private\n{}}","{(C x) E:{} C:'@private\n{(D y)} D:'@private\n{(D y)} }"
-  },{"{method C::m() foo() C:'@private\n{method Void m()}}","{method C::m() foo() C:'@private\n{method Void m()}}"
-  },{"{D:{method C::m() foo()} C:'@private\n{method Void m()}}","{D:{method C::m() foo()} C:'@private\n{method Void m()}}"
-  }});}
-  @Test public void test() {
-    TestHelper.configureForTest();
-    ClassB e1=getClassB(_e1);
-    ClassB expected=getClassB(_expected);
-    ClassB res=(ClassB)getWI(wi->wi.MpurgePrivates£xthat(e1));
-    TestHelper.assertEqualExp(res,expected);}}
-
 
 
   //----------------------------------------------------------
