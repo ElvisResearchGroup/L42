@@ -147,42 +147,15 @@ public class Resources {
     for(ClassB cb:cbs){
       ClassB ct= Configuration.typeSystem.typeExtraction(p,cb);
       try{Configuration.typeSystem.checkCt( p, ct);}
-      catch(ErrorMessage msg){
-        UserLevelError err = ErrorFormatter.formatError(p,msg);
-        throw Assertions.codeNotReachable("try to make this happen, is it possible? it should mean bug in plugin code\n"/*+ToFormattedText.of(ct)*/+"\n\n"+err+"\n---------------\n");
-      }
+      catch(ErrorMessage msg){ 
+        throw msg;//to breakpoint here   
+        }
       if(strict && (ct.getStage()==Stage.Less || ct.getStage()==Stage.None)){
-        throw Assertions.codeNotReachable("try to make this happen, is it possible? it should mean bug in plugin code\n"/*+ToFormattedText.of(ct)*/);
+        return false;
+        //throw Assertions.codeNotReachable("try to make this happen, is it possible? it should mean bug in plugin code\n"/*+ToFormattedText.of(ct)*/);
       }
     }
-    //confer method under to be in this form; remove cals from method under, be sure that small step use
-    //same stuff as compiled step -- dispatching
     return true;
-  }
-  public static ExpCore validateResult(Program p, ExpCore result,ClassB l1,ClassB l2,Path path) {
-    if(!(result instanceof ClassB)){return result;}
-    boolean strict=true;
-    if(l1!=null){
-      ClassB ct1= Configuration.typeSystem.typeExtraction(p,l1);
-      if(ct1.getStage()==Stage.Less){strict=false;}
-    }
-    if(l2!=null){
-      ClassB ct2= Configuration.typeSystem.typeExtraction(p,l2);
-      if(ct2.getStage()==Stage.Less){strict=false;}
-    }
-    if(path!=null && path.isCore()){
-      if(p.extract(path).getStage()==Stage.Less){strict=false;}
-    }
-    ClassB ct= Configuration.typeSystem.typeExtraction(p,(ClassB)result);
-    try{Configuration.typeSystem.checkCt( p, ct);}
-    catch(ErrorMessage msg){
-        UserLevelError err = ErrorFormatter.formatError(p,msg);
-      throw Assertions.codeNotReachable("try to make this happen, is it possible? it should mean bug in plugin code\n"/*+ToFormattedText.of(ct)*/+"\n\n"+err+"\n---------------\n");
-    }
-    if(strict && ct.getStage()==Stage.Less){
-      throw Assertions.codeNotReachable("try to make this happen, is it possible? it should mean bug in plugin code\n"/*+ToFormattedText.of(ct)*/);
-    }
-    return result;
   }
 
   public static ExecutorService pluginThreads=Executors.newCachedThreadPool();

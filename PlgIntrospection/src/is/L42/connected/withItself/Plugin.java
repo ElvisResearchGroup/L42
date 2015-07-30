@@ -361,31 +361,7 @@ public class Plugin implements PluginType{
       ExpCore result=IntrospectionSum.sum(l1, l2,Path.outer(0));
     return result;
   }
-  public static ExpCore _validateResult(Program p, ExpCore result,ClassB l1,ClassB l2,Path path) {
-    if(!(result instanceof ClassB)){return result;}
-    boolean strict=true;
-    if(l1!=null){
-      ClassB ct1= Configuration.typeSystem.typeExtraction(p,l1);
-      if(ct1.getStage()==Stage.Less){strict=false;}
-    }
-    if(l2!=null){
-      ClassB ct2= Configuration.typeSystem.typeExtraction(p,l2);
-      if(ct2.getStage()==Stage.Less){strict=false;}
-    }
-    if(path!=null && path.isCore()){
-      if(p.extract(path).getStage()==Stage.Less){strict=false;}
-    }
-    ClassB ct= Configuration.typeSystem.typeExtraction(p,(ClassB)result);
-    try{Configuration.typeSystem.checkCt( p, ct);}
-    catch(ErrorMessage msg){
-      throw Assertions.codeNotReachable("try to make this happen, is it possible? it should mean bug in plugin code\n"+ToFormattedText.of(ct)+"\n\n"+msg+"\n---------------\n");
-    }
-    if(strict && (ct.getStage()==Stage.Less || ct.getStage()==Stage.None)){
-      throw Assertions.codeNotReachable("try to make this happen, is it possible? it should mean bug in plugin code\n"+ToFormattedText.of(ct));
-    }
-    return result;
-  }
-
+ 
 
   // adapt
   @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})

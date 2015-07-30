@@ -208,6 +208,10 @@ public class TestRename {
           "{ type method Outer0::B ()  B:{ }}"
           ,"Outer0","C",  
           "{ C:{ type method Outer0::B #apply() B:{}}}",false//
+        }, {//  
+          "{ A:{B:{ method A m(B x)}} }"
+          ,"A::B","C::B",  
+          "{ A:{ } C:{B:{ method A m(Outer0 x)}} }",false//
      
         } });
     }
