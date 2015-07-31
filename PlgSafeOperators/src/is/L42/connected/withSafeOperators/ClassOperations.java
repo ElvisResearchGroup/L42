@@ -21,6 +21,7 @@ public class ClassOperations {
 
   public static ClassB onNestedNavigateToPathAndDo(ClassB cb,List<String>cs,Function<NestedClass,Optional<NestedClass>>op){
     assert !cs.isEmpty();
+    assert cb!=null;
     List<Member> newMs=new ArrayList<>(cb.getMs());
     if(cs.size()>1){
       NestedClass nc=(NestedClass)Program.getIfInDom(newMs, cs.get(0)).get();

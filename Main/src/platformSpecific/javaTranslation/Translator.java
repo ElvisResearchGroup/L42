@@ -33,7 +33,7 @@ import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.NestedClass;
 import ast.ExpCore.*;
-public class Translator {  
+public class Translator {
   public static Object runString(String s){
     try{return runStringExc(s);}
     catch (InvocationTargetException ex) {
@@ -41,7 +41,7 @@ public class Translator {
       if (ex.getCause() instanceof Error) throw (Error)ex.getCause();
       throw new Error(ex.getCause());
       }
-    catch(CompilationError| IllegalAccessException| IllegalArgumentException| NoSuchMethodException| SecurityException| ClassNotFoundException e){ throw new Error(e);} 
+    catch(CompilationError| IllegalAccessException| IllegalArgumentException| NoSuchMethodException| SecurityException| ClassNotFoundException e){ throw new Error(e);}
     }
   public static Object runStringExc(String s) throws CompilationError, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, ClassNotFoundException {
     String fileName="generated.Program42";
@@ -55,10 +55,10 @@ public class Translator {
     Method m0 = cl0.getDeclaredMethod("execute0");
     //System.out.println("Compilation Iteration ready to execute");
     assert Resources.getP()!=null;
-    Object result = m0.invoke(null);   
+    Object result = m0.invoke(null);
     //System.out.println("Compilation Iteration execution complete");
     return result;
-    
+
   }
   public static String translateProgram(Program p,ExpCore e){
     Resources.clearRes();
@@ -86,8 +86,8 @@ public class Translator {
     }
   public static void addP(int level,Program p,Map<String,ClassB> map){
     if(p.isEmpty()){return;}
-    
-    add(level,Collections.emptyList(),p.top(),map);
+
+    add(level,Collections.emptyList(),p.topCt(),map);
     addP(level+1,p.pop(),map);
   }
 
@@ -134,12 +134,12 @@ public class Translator {
     return Translator.nameOf(p);
     }
   public static String nameOf(Ast.MethodSelector ms) {
-    return nameOf(ms.getName(),ms.getNames());    
+    return nameOf(ms.getName(),ms.getNames());
     }
   public static String nameOf(String name, List<String> names) {
     String result="M"+name;
     for(String x:names){result+="£x"+x;}
-    return nameOf(result);    
+    return nameOf(result);
     }
   public static String nameOf(Path p) {
     if (p.equals(Path.Any())){return "Object";}
@@ -163,6 +163,6 @@ public class Translator {
       s=s.replace("£_","::");
       s=s.replace("£p","%");
       s=s.replace("£h","#");
-      return s;      
+      return s;
   }
 }

@@ -70,7 +70,7 @@ public static ExpCore stepStar(Executor executer,ExpCore e){
   catch(ErrorMessage.CtxExtractImpossible mess){
     assert e instanceof ClassB;
     ClassB ct= Configuration.typeSystem.typeExtraction(emptyP,(ClassB)e);
-    Program p1=emptyP.addAtTop(ct);
+    Program p1=emptyP.addAtTop((ClassB)e,ct);
     Configuration.typeSystem.checkCt( emptyP, ct);
     if(!p1.checkComplete()){//also check is star
       p1.checkComplete();//to let debugger enter
@@ -147,7 +147,7 @@ protected ClassB meta1Prop(Program p, ClassB cb, NestedClass m) {
   ClassB ct= Configuration.typeSystem.typeExtraction(p,cb);
   ct=ct.withMember(m.withBody(new WalkBy()));
   //get p'
-  Program p1=p.addAtTop(ct);
+  Program p1=p.addAtTop(cb,ct);
   //extract e
   ExpCore e=m.match(
       nc->nc.getInner(),
@@ -168,7 +168,7 @@ protected ClassB metaMethod(Program p, ClassB cb, Member m) {
   //get cb-->ct
   ClassB ct= Configuration.typeSystem.typeExtraction(p,cb);
   //get p'
-  Program p1=p.addAtTop(ct);
+  Program p1=p.addAtTop(cb,ct);
   //extract e
   ExpCore e=m.match(
       nc->nc.getInner(),

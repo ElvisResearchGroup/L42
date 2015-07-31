@@ -60,7 +60,7 @@ public class TypeSystem implements Visitor<Type>, Reporter{
   public ThrowEnv throwEnv;
   public Type suggested;
   public ExpCore submittedExp;
-  
+
   //public static NormType of(ExpCore e)
   @Override
   public Type visit(WalkBy s) {
@@ -117,12 +117,12 @@ public class TypeSystem implements Visitor<Type>, Reporter{
   public Type visit(Path s) {
     return collectEnvs(()->{
       if( s.isPrimitive()){return new NormType(Mdf.Type,s,Ph.None);}
-      ClassB cb=p.extract(s);
-      if(cb.isInterface()){
+      ClassB ct=p.extractCt(s);
+      if(ct.isInterface()){
         return new NormType(Mdf.Type,Path.Any(),Ph.None);
         }
-      if(isPathPath(p,cb)){
-        return new NormType(Mdf.Type,s,Ph.None);  
+      if(isPathPath(p,ct)){
+        return new NormType(Mdf.Type,s,Ph.None);
         }
       return new NormType(Mdf.Type,Path.Any(),Ph.None);
       });
@@ -138,7 +138,7 @@ public class TypeSystem implements Visitor<Type>, Reporter{
   @Override
   public Type visit(Signal s) {
     return collectEnvs(()->{
-      Mdf suggestedMdf=Mdf.Immutable; 
+      Mdf suggestedMdf=Mdf.Immutable;
       if(s.getKind()==SignalKind.Return){
         suggestedMdf=throwEnv.mdfOfRes();
       }
@@ -168,7 +168,7 @@ public class TypeSystem implements Visitor<Type>, Reporter{
       });
     }
 
-  
+
 
 /*
   public static Type __typecheckSure(Program p,HashMap<String, NormType> varEnv, SealEnv sealEnv, ThrowEnv throwEnv, Type suggested,ExpCore inner) {
@@ -231,7 +231,7 @@ public class TypeSystem implements Visitor<Type>, Reporter{
       }
     throw new ErrorMessage.TypesNotSubtype(nt,nts,inner,null);
     }
-    
+
   public static Type typecheckSure(boolean unlocking,Program p,HashMap<String, NormType> varEnv, SealEnv sealEnv, ThrowEnv throwEnv, Type suggested,ExpCore inner) {
     sealEnv=SealEnv.addLentSingletons(varEnv,sealEnv);
     varEnv=removeLents(varEnv);
@@ -301,14 +301,14 @@ public class TypeSystem implements Visitor<Type>, Reporter{
     TypeSystem newTs=new TypeSystem(p, varEnv, sealEnv, throwEnv, suggested,inner);
     return inner.accept(newTs);
   }
-  
+
 /*
   public static Type __typecheckTollerant(Program p,HashMap<String, NormType> varEnv, SealEnv sealEnv, ThrowEnv throwEnv, Type suggested,ExpCore inner) {
     sealEnv=SealEnv.addLentSingletons(varEnv,sealEnv);
     varEnv=removeLents(varEnv);
     TypeSystem newTs=new TypeSystem(p, varEnv, sealEnv, throwEnv, suggested,inner);
     NormType nts=null;
-    
+
         try{
       Type t= inner.accept(newTs);
       if(t instanceof Ast.FreeType){return t;}
@@ -351,7 +351,7 @@ public class TypeSystem implements Visitor<Type>, Reporter{
       SealEnv newSealEnv=new SealEnv(sealEnv);
       newSealEnv.xs.clear();
       if(nts!=null && Functions.isSuperTypeOfMut(nts.getMdf())){
-        v.fillInStackTrace();throw v;        
+        v.fillInStackTrace();throw v;
       }
       Type tProm= typecheckTollerant(p,varEnv, newSealEnv,throwEnv,suggested,inner);
       NormType tPromNoMut=Functions.sharedToLent((NormType)tProm);
@@ -414,7 +414,7 @@ public class TypeSystem implements Visitor<Type>, Reporter{
     HashMap<String,NormType> result=new HashMap<String,NormType>();
     for(String s:fv){
       if(!varEnv.containsKey(s)){continue;}
-      //is it ok for the former to happen for newly introduced vars 
+      //is it ok for the former to happen for newly introduced vars
       result.put(s,varEnv.get(s));
       }
     return result;
@@ -438,7 +438,7 @@ public class TypeSystem implements Visitor<Type>, Reporter{
         }
       }
   }
-    
+
   public static boolean noFreeVar(List<ExpCore> es, List<HashMap<String, NormType>> varEnvs,HashMap<String, NormType> original) {
     {int i=-1;for(ExpCore ei:es){i+=1;
      if(varEnvs.get(i).keySet().containsAll(FreeVariables.of(ei))){continue;}
@@ -458,7 +458,7 @@ public class TypeSystem implements Visitor<Type>, Reporter{
       List<HashMap<String, NormType>> varEnvs = TypeCheckMethod.splitAllVarEnvForMethod(s.getReceiver(), s.getEs(),varEnv);
       //Type recTOpt = _typecheckTollerant(p,varEnvs.get(0),sealEnv,throwEnv,new Ast.FreeType(),s.getReceiver());
       Path recOpt=null;
-      if(!p.executablePlus() && !p.isExecutableStar()){//Note: guesstype can return null as a form of free type      
+      if(!p.executablePlus() && !p.isExecutableStar()){//Note: guesstype can return null as a form of free type
         try{recOpt=GuessTypeCore.of(p, varEnv, s.getReceiver());}
         catch(ErrorMessage.NormImpossible ni){return methodUnknownT(varEnvs,s);}
         if(recOpt==null){return methodUnknownT(varEnvs,s);}
@@ -509,7 +509,7 @@ public class TypeSystem implements Visitor<Type>, Reporter{
       return mt.getReturnType();
       });
     }
-  
+
   @Override
   public Type visit(Loop s) {
     return collectEnvs(()->{

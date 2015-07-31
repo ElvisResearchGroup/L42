@@ -14,6 +14,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
+import org.junit.runners.Parameterized.Parameters;
 
 import platformSpecific.javaTranslation.Resources;
 import platformSpecific.javaTranslation.Resources.Revertable;
@@ -29,7 +30,7 @@ import coreVisitors.ExtractThrow;
 import facade.Configuration;
 import facade.Parser;
 import static helpers.TestHelper.getClassB;
-
+import static helpers.TestHelper.lineNumber;
 public class TestCompositionOperators {
 	@RunWith(Parameterized.class)
   public static class TestSum {
@@ -58,134 +59,56 @@ public class TestCompositionOperators {
     TestHelper.assertEqualExp(res,cb3);
     }
   }
-	//TODO: re enable those tests @RunWith(Parameterized.class)
+	@RunWith(Parameterized.class)
   public static class TestAdapt {
-	    @Parameter(0) public String e1;
-	    @Parameter(1) public String e2;
-	    @Parameter(2) public String e3;
-	    @Parameterized.Parameters
-      public static List<String[]> createData() {
-        return Arrays.asList(new String[][] {
+	    @Parameter(0) public int _lineNumber;
+	    @Parameter(1) public String e1;
+	    @Parameter(2) public String e2;
+	    @Parameter(3) public String e3;
+	    @Parameters(name = "{index}: line {0}")
+      public static List<Object[]> createData() {
+        return Arrays.asList(new Object[][] {
 //fails correctly?      {"{}","{ A:{(B that)} B:{}}","{}"
-      {"{A:{}}","{ A:{'@B\n} B:{}}","{B:{}}"
+      {lineNumber(),"{A:{}}","{ A:{'@B\n} B:{}}","{B:{}}"
     //A->B
-    },{"{A:{ type method type A m() A}}","{ A:{'@B\n} B:{}}","{B:{type method type B m() B}}"
-    },{"{A:{ type method type A m() {return A}}}","{ A:{'@B\n} B:{}}","{B:{type method type B m() {return B}}}"
-    },{"{A:{ method A ()} B:{foo()}}",
+    },{lineNumber(),"{A:{ type method type A m() A}}","{ A:{'@B\n} B:{}}","{B:{type method type B m() B}}"
+    },{lineNumber(),"{A:{ type method type A m() {return A}}}","{ A:{'@B\n} B:{}}","{B:{type method type B m() {return B}}}"
+    },{lineNumber(),"{A:{ method A ()} B:{foo()}}",
       "{ A:{'@B\n} B:{}}",
       "{B:{ type method Outer0 foo()  method B ()}}"//TODO: is it the expected outcome ordering?, same for the next 3
-    },{"{C:{A:{ method A ()}} B:{foo()}}",
+    },{lineNumber(),"{C:{A:{ method A ()}} B:{foo()}}",
       "{ C:{A:{'@B\n}} B:{}}",
       "{C:{} B:{ type method Outer0 foo() method B ()  }}"
-    },{"{D:{C:{A:{ method A ()}}} B:{foo()}}",
+    },{lineNumber(),"{D:{C:{A:{ method A ()}}} B:{foo()}}",
       "{ D:{C:{A:{'@B\n}}} B:{}}",
       "{D:{C:{}} B:{ type method Outer0 foo()  method B ()}}"
-    },{"{A:{ method A ()} C:{B:{foo()}}}",
+    },{lineNumber(),"{A:{ method A ()} C:{B:{foo()}}}",
       "{ A:{'@C::B\n} C:{B:{}}}",
       "{C:{B:{ type method Outer0 foo() method C::B () }}}"
-    },{"{A:{ method A ()} D:{C:{B:{foo()}}}}",
+    },{lineNumber(),"{A:{ method A ()} D:{C:{B:{foo()}}}}",
       "{ A:{'@D::C::B\n} D:{C:{B:{}}}}",
       "{D:{C:{B:{  type method Outer0 foo()  method D::C::B ()}}}}"
 
-    },{"{A:{}}","{ A:{'@Outer2::Ext\n} }","{}"
-    },{"{A:{} method A(A a) a}","{ A:{'@Outer2::Ext\n} }","{ method Outer1::Ext(Outer1::Ext a) a}"
-    },{"{A:{} B:{method A(A a) a}}","{ A:{'@Outer2::Ext\n} }","{B:{method Outer2::Ext(Outer2::Ext a) a}}"
-    },{"{A:{} C:{B:{method A(A a) a}}}","{ A:{'@Outer2::Ext\n} }","{C:{B:{method Outer3::Ext(Outer3::Ext a) a}}}"
-    },{"{B:{A:{}} method B::A(B::A a) a}","{ B:{A:{'@Outer3::Ext\n}} }","{B:{} method Outer1::Ext(Outer1::Ext a) a}"
+    },{lineNumber(),"{A:{}}","{ A:{'@Outer2::Ext\n} }","{}"
+    },{lineNumber(),"{A:{} method A(A a) a}","{ A:{'@Outer2::Ext\n} }","{ method Outer1::Ext(Outer1::Ext a) a}"
+    },{lineNumber(),"{A:{} B:{method A(A a) a}}","{ A:{'@Outer2::Ext\n} }","{B:{method Outer2::Ext(Outer2::Ext a) a}}"
+    },{lineNumber(),"{A:{} C:{B:{method A(A a) a}}}","{ A:{'@Outer2::Ext\n} }","{C:{B:{method Outer3::Ext(Outer3::Ext a) a}}}"
+    },{lineNumber(),"{B:{A:{}} method B::A(B::A a) a}","{ B:{A:{'@Outer3::Ext\n}} }","{B:{} method Outer1::Ext(Outer1::Ext a) a}"
     //umm...},{"{B:{A:{}} method B::A(B::A a) a}","{ B:{(Outer2::Ext that)} }","{ method Outer1::Ext::A(Outer1::Ext::A a) a}"
-    },{"{A:{ method A(A a) a } }", "{ A:{ method Void (Void a) this.foo(b:a) method Void foo(Void b)} }",   "{A:{ method A foo(A b) b } }"
-    },{"{A:{ method A(A a) a method A foo(A b) A()} }",
+    },{lineNumber(),"{A:{ method A(A a) a } }", "{ A:{ method Void (Void a) this.foo(b:a) method Void foo(Void b)} }",   "{A:{ method A foo(A b) b } }"
+    },{lineNumber(),"{A:{ method A(A a) a method A foo(A b) A()} }",
       "{ A:{ method Void (Void a) this.foo(b:a) method Void foo(Void b) this(a:b)} }",
       "{A:{ method A foo(A b) b  method A(A a) A()} }"
-    },{"{A:{() method A(A a) a method A foo(A b) A()} }",
+    },{lineNumber(),"{A:{() method A(A a) a method A foo(A b) A()} }",
       "{ A:{ method Void (Void a) this.foo(b:a) method Void foo(Void b) this(a:b)} }",
       "{A:{() method A foo(A b) b method A (A a) A()} }"
-    },{//
-     "{ A:{ type method Outer1::B () } B:{ }}",
-     "{ A:{'@Outer1\n}}",
-     "{ B:{ } type method Outer0::B ()  }"
-     },{
+     },{lineNumber(),
      "{ A:{ type method Outer1::B () } B:{ }}",
      "{ A:{'@Outer1::C\n}}",
      "{ B:{ }  C:{type method Outer1::B () }}"
-     },{
-     "{ A1:{ A2:{ type method B () }} B:{ }}",
-     "{ A1:{A2:{'@Outer1\n}}}",
-     "{ A1:{ type method B () } B:{ }}",
-     },{
-     "{ A1:{ A2:{ type method B () }} B:{ }}",
-     "{ A1:{A2:{'@Outer2\n}}}",
-     "{ A1:{ } B:{ } type method B () }",
-     //Outer1::A1::B
-     },{
-     "{ A1:{ A2:{ type method B () } B:{ } }}",
-     "{ A1:{A2:{'@Outer1\n}}}",
-     "{ A1:{B:{ } type method B () }}",
-     },{
-     "{ A1:{ A2:{ type method Outer1::B () } B:{ } }}",
-     "{ A1:{A2:{'@Outer2\n}}}",
-     "{ A1:{B:{ }} type method Outer0::A1::B () }",
-     //Outer1::A1::B
-     },{
-    "{ A:{ D:{ method Outer0 d() Outer0.d() } type method Outer1::B foo ()Outer0.foo() } B:{ }}",
-    "{ A:{'@Outer1\n}}",
-    "{ B:{ } D:{ method Outer0 d() Outer0.d() } type method Outer0::B foo ()Outer0.foo()  }"
-},{helpers.TestHelper.multiLine(""
-,"{ A:{"
-,"  OptMax:{"
-,"    TOpt:{interface}"
-,"    TEmpty:{<:Outer1::TOpt}"
-,"    }"
-,"  }}"),
-"{ A:{'@Outer1\n}}",
-helpers.TestHelper.multiLine(""
-,"{"
-,"OptMax:{"
-,"  TOpt:{interface }"
-,"  TEmpty:{<:Outer1::TOpt}"
-,"}}")
-},{helpers.TestHelper.multiLine(""
-,"{ A:{mut(var mut Cell head)"
-,"  Cell:{interface}"
-,"  CellEnd:{<:Cell}"
-//,"  read method lent Iterator vals() Iterator(this)"
-//,"  Iterator:{lent (read Outer1 that)}"
-,"  }}"),
-"{ A:{'@Outer1\n }}",
-helpers.TestHelper.multiLine(""
-,"{"
-,"type method "
-,"mut Outer0 #apply(mut Outer0::Cell^head'@consistent"
-,") "
-,"mut method '@consistent"
-,"Void head(mut Outer0::Cell that)"
-,"mut method '@consistent"
-,"mut Outer0::Cell #head()"
-,"read method '@consistent"
-,"read Outer0::Cell head()"
-,"Cell:{interface }"
-,"CellEnd:{<:Outer1::Cell}"
-,"}")
-
-
-},{
- "{ A:{type method Outer1::B ()}  B:{ }}",
- "{ A:{'@Outer0::C\n C:{} }}",
- "{ B:{} A:{ C:{type method Outer2::B #apply() }}}"
-
-},{
-  "{ A:{type method Outer0::B ()  B:{ }}}",
-  "{ A:{'@Outer0::C\n C:{} }}",
-  "{ A:{ C:{type method Outer0::B #apply() B:{} }}}"
-
-},{
-  "{ type method Outer0::B ()  B:{ }}",
-  "{ '@Outer0::C\n C:{} }",
-  "{ C:{ type method Outer0::B #apply() B:{}}}"
-
 
 }});}
-  //TODO: re enamble, as for before @Test
+  @Test
   public void test() {
     TestHelper.configureForTest();
     ClassB cb1=getClassB(e1);
@@ -469,7 +392,7 @@ helpers.TestHelper.multiLine(""
   }
   public static Program getProgram() {
     ClassB empty=(ClassB)Parser.parse(null," {Ext:{}}").accept(new InjectionOnCore());
-    Program p=Program.empty().addAtTop(empty);
+    Program p=Program.empty().addAtTop(empty,empty);
     return p;
   }
 }

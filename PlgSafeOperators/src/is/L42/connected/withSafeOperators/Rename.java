@@ -102,7 +102,14 @@ public class Rename {
         assert s.isCore();
         if(s.outerNumber()>getPath().size()){return s;}
         List<String>topView=ClassOperations.toTop(getPath(),s);
+        if(topView.size()<src.size()){return s;}
         if(topView.equals(src)){return ClassOperations.normalizePath(getPath(),getPath().size(),dest);}
+        List<String>trimmedTop=topView.subList(0, src.size());
+        if(trimmedTop.equals(src)){
+          List<String>elongatedDest=new ArrayList<>(dest);
+          elongatedDest.addAll(topView.subList(src.size(),topView.size()));
+          return ClassOperations.normalizePath(getPath(),getPath().size(),elongatedDest);
+          }
         return s;
         }
        });

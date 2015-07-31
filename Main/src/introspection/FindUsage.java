@@ -56,7 +56,7 @@ public class FindUsage extends MethodPathCloneVisitor {
     }
   private boolean equalOrSubtype(Path guessed, Path path) {
    if(guessed.equals(path)){return true;}
-   ClassB ct=p.extract(guessed);
+   ClassB ct=p.extractCt(guessed);
    List<Path> sup = ct.getSupertypes();
    sup=Map.of(pi->(Path)From.fromP(pi,guessed),sup);
    if(sup.contains(path)){return true;}

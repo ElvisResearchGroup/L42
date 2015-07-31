@@ -1,10 +1,13 @@
 package coreVisitors;
 
+import introspection.ConsistentRenaming;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+
 import tools.Map;
 import facade.L42;
 import ast.Ast;
@@ -27,7 +30,7 @@ public class CollectPrivateNames extends CloneVisitor{
     CollectPrivateNames cdv=new CollectPrivateNames();
     e.accept(cdv);
     return cdv;
-  } 
+  }
   public NestedClass visit(NestedClass nc){
     cs.add(nc.getName());
     try{
@@ -45,12 +48,13 @@ public class CollectPrivateNames extends CloneVisitor{
       }
     }
   public ClassB.MethodWithType visit(ClassB.MethodWithType mt){
-    if(!mt.getDoc().isPrivate()){ return super.visit(mt);}
+    // consistent names are collected later
+    if(!mt.getDoc().isPrivate() || ConsistentRenaming.isAnnotatedConsistent(mt.getDoc())){ return super.visit(mt);}
     MethodSelector msPr = usePrivateNames(mt.getMs());
     if(!msPr.equals(mt.getMs())){//depending on how we clean up private names, == can happens
       mapMx.add(new PathMxMx(Path.outer(0, cs),mt.getMs(),msPr));
     }
-    return super.visit(mt);    
+    return super.visit(mt);
     }
   private MethodSelector usePrivateNames(MethodSelector ms) {
     String name=ms.getName();
@@ -59,6 +63,6 @@ public class CollectPrivateNames extends CloneVisitor{
     for( String ni:ms.getNames()){ns.add(Functions.freshName(ni,L42.usedNames));}
     return new MethodSelector(privateName,ns);
   }
-  //TODO: case for contructor  
-  
+  //TODO: case for contructor
+
 }

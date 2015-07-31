@@ -62,15 +62,15 @@ public class Plugin implements PluginType{
     Path path=ensureExtractInternalPath(_path);
     //ClassB target = getTarget(lib, path);
     Program target = getProgramTarget(Resources.getP(),lib, path);
-    ClassB cb=target.top();
+    ClassB ct=target.topCt();
     target=target.pop();
-    cb=(ClassB)cb.accept(new CloneVisitorWithProgram(target){
+    ct=(ClassB)ct.accept(new CloneVisitorWithProgram(target){
       public ExpCore visit(Path s) {
         Path s1= Norm.of(this.p, s);
         return s1;//toDebug
         }
     });
-    return ToFormattedText.of(cb);}
+    return ToFormattedText.of(ct);}
 
   @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
   public Object MgetNameOrElse£xthat£xnestedClassNum£xnode(Object _lib,Object _num,Object _path){
@@ -336,12 +336,12 @@ public class Plugin implements PluginType{
       }catch(ErrorMessage err){throw new Resources.Error(err);}}
     return target;
   }
-  public static Program getProgramTarget(Program p,ClassB lib, Path path) {
-    return getProgramTarget(p,lib,path.getCBar());
+  public static Program getProgramTarget(Program p,ClassB libCt, Path path) {
+    return getProgramTarget(p,libCt,path.getCBar());
   }
-  public static Program getProgramTarget(Program p,ClassB lib, List<String>path) {
-    if(path.isEmpty()){   return p.addAtTop(lib);  }
-    Optional<Member> optNc = Program.getIfInDom(lib.getMs(),path.get(0));
+  public static Program getProgramTarget(Program p,ClassB libCt, List<String>path) {
+    if(path.isEmpty()){   return p.addAtTop(null,libCt);  }
+    Optional<Member> optNc = Program.getIfInDom(libCt.getMs(),path.get(0));
     if(!optNc.isPresent()){
       throw new Resources.Error("PathNotExistant:"+path);
       }
@@ -350,7 +350,7 @@ public class Plugin implements PluginType{
     if(ec instanceof ExpCore.WalkBy){throw new Resources.Error("ProgramExtractOnWalkBy");}
     if(!(ec instanceof ClassB)){throw new Resources.Error("ProgramExtractOnMetaExpression");}
     ClassB cb=(ClassB)nc.getInner();
-    return getProgramTarget(p.addAtTop(lib.withMember(nc.withInner(new WalkBy()))),cb,path.subList(1,path.size()));
+    return getProgramTarget(p.addAtTop(null,libCt.withMember(nc.withInner(new WalkBy()))),cb,path.subList(1,path.size()));
     }
   // sum
   @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
@@ -361,7 +361,7 @@ public class Plugin implements PluginType{
       ExpCore result=IntrospectionSum.sum(l1, l2,Path.outer(0));
     return result;
   }
- 
+
 
   // adapt
   @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})

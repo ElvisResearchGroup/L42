@@ -114,8 +114,8 @@
       var res=that
       res:=RenamePath[Path"Outer0" to:Path"PrImpl"]<<res'TargetUnavailable,MethodClash,ClassClash can not happen on Outer0
       catch exception (on Report error S"CodeNotReachable")
-      res:=RenamePath[Path"PrImpl::N" to:Path"BNS::N"]<<res'fails here
-      res:=RenamePath[Path"PrImpl::S" to:Path"BNS::S"]<<res
+      res:=RenamePath[Path"PrImpl::N" to:Path"BNS::N"]<<res
+      res:=RenamePath[Path"PrImpl::S" to:Path"BNS::S"]<<res'fails here
       res:=RenamePath[Path"PrImpl::Bool" to:Path"BNS::Bool"]<<res
       res:=RenamePath[Path"PrImpl::Debug" to:Path"BNS::Debug"]<<res
       catch exception r (on Report exception NSBMissing(report:r))

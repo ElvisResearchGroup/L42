@@ -138,8 +138,8 @@ public class TranslationTest {
   private static Program runTypeSystem(String scb1) {
     ClassB cb1=(ClassB)Desugar.of(Parser.parse(null,scb1)).accept(new InjectionOnCore());
     Program p=Program.empty();
-    cb1=TypeExtraction.etFull(p,cb1);
-    p=p.addAtTop(cb1);
+    ClassB cb1t=TypeExtraction.etFull(p,cb1);
+    p=p.addAtTop(cb1,cb1t);
     TypeSystemOK.checkAll(p);
     return p;
   }

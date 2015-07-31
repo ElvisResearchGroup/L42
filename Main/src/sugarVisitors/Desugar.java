@@ -79,7 +79,7 @@ public class Desugar extends CloneVisitor{
     Desugar d=new Desugar();
     //understand what is the current folder
     //replace ... recursively
-    //replaceDots(currentFolder,e)-> clone visitor    
+    //replaceDots(currentFolder,e)-> clone visitor
     d.collectAllUsedLibs(e);//collect all classBreuse in a map url->core version
     L42.usedNames.addAll(CollectDeclaredClassNamesAndMethodNames.of(e));
     d.usedVars.addAll(CollectDeclaredVarsAndCheckNoDeclaredTwice.of(e));
@@ -92,7 +92,7 @@ public class Desugar extends CloneVisitor{
     for(String s: this.importedLibs.keySet()){
       this.importedLibs.put(s,renameAllPrivatesInUsedLibs(this.importedLibs.get(s)));
     }
-    
+
   }
   private ast.ExpCore.ClassB renameAllPrivatesInUsedLibs(ExpCore.ClassB classB) {
     if(!IsCompiled.of(classB)){return classB;}//TODO: just to make test easier, should be an error in production
@@ -116,16 +116,16 @@ public class Desugar extends CloneVisitor{
         ast.ExpCore.ClassB dataCore=(ast.ExpCore.ClassB) data.accept(new InjectionOnCore());
         Desugar.this.importedLibs.put(s.getUrl(),dataCore);
         return super.visit(s);
-      }      
+      }
     });
   }
-  
+
   HashMap<String,ast.ExpCore.ClassB> importedLibs=new HashMap<>();
   Set<String> usedVars=new HashSet<String>();
   ArrayList<ClassB> p=new ArrayList<ClassB>();
   Type t=new NormType(Mdf.Immutable,Path.Void(),Ph.None);
   HashMap<String,Type> varEnv=new HashMap<String,Type>();
- 
+
   public Expression visit(RoundBlock s) {
     //assert L42.checkWellFormedness(s);
     s=blockContentSepare(s);
@@ -173,7 +173,7 @@ public class Desugar extends CloneVisitor{
     //assert L42.checkWellFormedness(result);
     return result;
   }
-  
+
   private RoundBlock blockWithDec(RoundBlock s, List<VarDec> decs) {
     assert s.getContents().size()==1: s.getContents().size();
     List<BlockContent> ctx = new ArrayList<>();
@@ -215,7 +215,7 @@ public class Desugar extends CloneVisitor{
     else{trueDecs.addAll(varDecs);}
     trueDecs.add(d);
     trueDecs.addAll(fake.getContents().get(0).getDecs());
-    List<BlockContent> trueContent=new ArrayList<BlockContent>();    
+    List<BlockContent> trueContent=new ArrayList<BlockContent>();
     trueContent.add(new BlockContent(trueDecs,fake.getContents().get(0).get_catch()));
     return fake.withContents(trueContent);
     }
@@ -269,7 +269,7 @@ public class Desugar extends CloneVisitor{
     t=t.match(
       nt->nt.withPath(computeTypeForClassBForVar(nt.getPath())),
       h -> h.withPath(computeTypeForClassBForVar(h.getPath()))
-      );      
+      );
     return t;
   }
   private Path computeTypeForClassBForVar(Path path) {
@@ -337,7 +337,7 @@ public class Desugar extends CloneVisitor{
     return reused2.withMs(ms);//.accept(this);
   }
 
-  
+
   public Expression visit(Path s) {
     if(s.isCore()|| s.isPrimitive()){return s;}
     List<String> rd = new ArrayList<String>(s.getRowData());
@@ -345,7 +345,7 @@ public class Desugar extends CloneVisitor{
     int index = searchForScope(key);
     if (index==-1){index=0;}//to simplify testing
     rd.add(0,"Outer"+index);
-    return new Path(rd);    
+    return new Path(rd);
     }
 
   private int searchForScope(String key) {
@@ -499,7 +499,7 @@ public class Desugar extends CloneVisitor{
     }
     return visit(visit1Step(s));
   }
-  static public MCall visit1Step(BinOp s) {    
+  static public MCall visit1Step(BinOp s) {
     return getMCall(s,s.getP(),s.getLeft(),desugarName(s.getOp().inner),getPs(s.getRight()));
   }
   public Expression visit(UnOp s) {
@@ -604,7 +604,7 @@ public class Desugar extends CloneVisitor{
       }
     return true;
   }
-  
+
   //---------
   protected Header liftH(Header h) {
     if(!(h instanceof Ast.ConcreteHeader)){return super.liftH(h);}
@@ -668,12 +668,12 @@ public class Desugar extends CloneVisitor{
     for(String name:mi.getS().getNames()){
       usedVars.add(name);
       List<Ast.MethodSelectorX> msxsi=new ArrayList<>();
-      msxsi.add(new Ast.MethodSelectorX(mi.getS(),name));      
+      msxsi.add(new Ast.MethodSelectorX(mi.getS(),name));
       varEnv.put(name,new Ast.HistoricType(Path.outer(0),msxsi,false));
     }
     usedVars.add("this");
     List<Ast.MethodSelectorX> msxsi=new ArrayList<>();
-    msxsi.add(new Ast.MethodSelectorX(mi.getS(),"this"));      
+    msxsi.add(new Ast.MethodSelectorX(mi.getS(),"this"));
     varEnv.put("this",new Ast.HistoricType(Path.outer(0),msxsi,false));
     List<Ast.MethodSelectorX> msxs=new ArrayList<>();
     msxs.add(new Ast.MethodSelectorX(mi.getS(),""));
@@ -721,7 +721,7 @@ public class Desugar extends CloneVisitor{
     ExpCore core=EncodingHelper.wrapError(msg);
     return core.accept(new InjectionOnSugar());
   }
-  private static final Doc consistentDoc=Doc.factory("@consistent\n");
+  private static final Doc consistentDoc=Doc.factory("@private @consistent\n");
   public static List<Member> cfType(ConcreteHeader h,Doc doc){
     //doc=Doc.factory("@private");
     List<Member> result=new  ArrayList<Member>();
@@ -763,6 +763,6 @@ public class Desugar extends CloneVisitor{
     fieldNt=Functions.sharedAndLentToReadable(fieldNt);
     MethodType mti=new MethodType(Doc.empty(),Mdf.Readable,Collections.emptyList(),Collections.emptyList(),fieldNt,Collections.emptyList());
     MethodSelector msi=new MethodSelector(f.getName(),Collections.emptyList());
-    result.add(new MethodWithType(doc, msi, mti, Optional.empty()));  
+    result.add(new MethodWithType(doc, msi, mti, Optional.empty()));
     }
 }

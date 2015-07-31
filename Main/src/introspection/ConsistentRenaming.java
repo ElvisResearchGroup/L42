@@ -37,8 +37,8 @@ public class ConsistentRenaming{
       result.add(new PathMxMx(pi,mwt.getMs(),adapted));
     }
   }
- 
-  
+
+
   private static HashMap<String, String> collectConsistentRenaming(List<PathMxMx> divided,  ClassB cti) {
     HashMap<String,String> consistentNames=new HashMap<>();
     for(PathMxMx pmxi:divided){
@@ -72,7 +72,7 @@ public class ConsistentRenaming{
         assert ni!=null;
       }
     }
-    names.add(ni);  
+    names.add(ni);
     }}
     return new MethodSelector(name,names);
   }
@@ -96,11 +96,11 @@ public class ConsistentRenaming{
     }
     {int i=-1;for(String ni:mwt.getMs().getNames()){i+=1;
       if(isAnnotatedConsistent(mwt.getMt().getTDocs().get(i))){
-        addConsistentName(consistentNames, ni,pmxi.getMs2().getNames().get(i));  
+        addConsistentName(consistentNames, ni,pmxi.getMs2().getNames().get(i));
       }
     }}
   }
-  private static boolean isAnnotatedConsistent(Doc doc) {
+  public static boolean isAnnotatedConsistent(Doc doc) {
     return doc.getAnnotations().contains("consistent");
   }
 

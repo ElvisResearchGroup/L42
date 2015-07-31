@@ -37,7 +37,7 @@ public interface OnLineCode {
     throw Assertions.codeNotReachable();
   }
   public static PluginType plugin(Program p,ExpCore.Using u){
-    String url=p.extract(u.getPath()).getDoc1().toString();
+    String url=p.extractCt(u.getPath()).getDoc1().toString();
     if(!url.startsWith("@plugin\n")){throw new ErrorMessage.InvalidURL(url);}
     url=url.substring("@plugin\n".length());
     url=url.trim();

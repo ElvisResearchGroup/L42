@@ -41,51 +41,46 @@ public class Sum {
   }
 
   public static ClassB normalizedTopSum(Program p, ClassB topA, ClassB topB) {
-    ClassB typeA = Configuration.typeSystem.typeExtraction(p, topA);
-    ClassB typeB = Configuration.typeSystem.typeExtraction(p, topB);
-    return new Object() {
-      ClassB normalizedSum(ClassB a, ClassB b, List<String> current) {
-        List<Member> ms = new ArrayList<>();
-        doubleSimetricalMatch(a, b, ms, current);
-        List<Path> superT = new ArrayList<Path>(a.getSupertypes());
-        superT.addAll(b.getSupertypes());
-        Doc doc1 = a.getDoc1().sum(b.getDoc1());
-        Doc doc2 = a.getDoc2().sum(b.getDoc2());
-        ExtractInfo.checkClassClash(p, current, topA, topB, typeA, typeB, a, b);
-        boolean isInterface =a.isInterface() || b.isInterface(); 
-        //*sum of class with non compatible interfaces (same method, different signature)
-        //doh, this requires the program!!
-        //*sum of two classes with private state
-        //*sum class/interface invalid
-        return new ClassB(doc1, doc2, isInterface, superT, ms, Stage.None);
-      }
+    return normalizedSum(p,topA, topB,topA, topB, Collections.emptyList());
+    }
 
-      private void doubleSimetricalMatch(ClassB a, ClassB b, List<Member> ms, List<String> current) {
-        for (Member m : a.getMs()) {//add from a+b
-          Optional<Member> oms = Program.getIfInDom(b.getMs(), m);
-          if (!oms.isPresent()) {
-            ms.add(m);
-          } else {
-            m.match(nc -> matchNC(nc, ms, (NestedClass) oms.get(), current), mi -> matchMi(current, mi, ms, oms.get()), mt -> matchMt(current, mt, ms, oms.get()));
-          }
+  static ClassB normalizedSum(Program p, ClassB topA, ClassB topB,ClassB a, ClassB b, List<String> current) {
+    List<Member> ms = new ArrayList<>();
+    doubleSimetricalMatch(p,topA,topB,a, b, ms, current);
+    List<Path> superT = new ArrayList<Path>(a.getSupertypes());
+    superT.addAll(b.getSupertypes());
+    Doc doc1 = a.getDoc1().sum(b.getDoc1());
+    Doc doc2 = a.getDoc2().sum(b.getDoc2());
+    ExtractInfo.checkClassClash(p, current, topA, topB, a, b);
+    boolean isInterface =a.isInterface() || b.isInterface();
+    return new ClassB(doc1, doc2, isInterface, superT, ms, Stage.None);
+    }
+  private static void doubleSimetricalMatch(Program p, ClassB topA, ClassB topB,ClassB a, ClassB b, List<Member> ms, List<String> current) {
+    for (Member m : a.getMs()) {//add from a+b
+      Optional<Member> oms = Program.getIfInDom(b.getMs(), m);
+      if (!oms.isPresent()) {
+        ms.add(m);
         }
-        for (Member m : b.getMs()) {//add the rest
-          if (!Program.getIfInDom(ms, m).isPresent()) {
-            ms.add(m);
-          }
+      else {
+        m.match(nc -> matchNC(p,topA,topB,nc, ms, (NestedClass) oms.get(), current), mi -> matchMi(current, mi, ms, oms.get()), mt -> matchMt(current, mt, ms, oms.get()));
         }
       }
-
-      private Void matchNC(NestedClass nca, List<Member> ms, NestedClass ncb, List<String> current) {
-        List<String> innerCurrent = new ArrayList<>(current);
-        innerCurrent.add(nca.getName());
-        ClassB newInner = normalizedSum((ClassB) nca.getInner(), (ClassB) ncb.getInner(), innerCurrent);
-        Doc doc = nca.getDoc().sum(ncb.getDoc());
-        ms.add(nca.withInner(newInner).withDoc(doc));
-        return null;
+    for (Member m : b.getMs()) {//add the rest
+      if (!Program.getIfInDom(ms, m).isPresent()) {
+        ms.add(m);
+        }
       }
-    }.normalizedSum(topA, topB, Collections.emptyList());
-  }
+    }
+
+  private static Void matchNC(Program p, ClassB topA, ClassB topB,NestedClass nca, List<Member> ms, NestedClass ncb, List<String> current) {
+    List<String> innerCurrent = new ArrayList<>(current);
+    innerCurrent.add(nca.getName());
+    ClassB newInner = normalizedSum(p,topA,topB,(ClassB) nca.getInner(), (ClassB) ncb.getInner(), innerCurrent);
+    Doc doc = nca.getDoc().sum(ncb.getDoc());
+    ms.add(nca.withInner(newInner).withDoc(doc));
+    return null;
+    }
+
 
   private static Void matchMt(List<String> pathForError, MethodWithType mwta, List<Member> ms, Member mb) {
     if (mb instanceof MethodImplemented) { throw Errors42.errorMethodClash(pathForError, mwta, mb, false, Collections.emptyList(), false, false); }

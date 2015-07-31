@@ -56,7 +56,7 @@ abstract class MethodPathCloneVisitor extends CloneVisitorWithProgram {
     finally{this.varEnv=aux;}
     }
   private HashMap<String, NormType> getVarEnvOf(MethodSelector s) {
-    Optional<Member> mOpt = Program.getIfInDom(p.top().getMs(),s);
+    Optional<Member> mOpt = Program.getIfInDom(p.topCt().getMs(),s);
     assert mOpt.isPresent();
     assert mOpt.get() instanceof MethodWithType:
       mOpt.get().getClass();

@@ -105,7 +105,7 @@ public class TestHelper {
   public static ClassB getClassB(String e1) {
     return getClassB(null, e1);
   }
-  
+
    public static Program getProgram(/*List<Path> paths,*/String[] code){
     Program p0=Program.empty();
     Integer outerCount = code.length;
@@ -113,8 +113,8 @@ public class TestHelper {
       Expression e=Parser.parse("Outer"+outerCount,s);
       --outerCount;
       ClassB ec=(ClassB)Desugar.of(e).accept(new InjectionOnCore());
-      ec=Configuration.typeSystem.typeExtraction(p0, ec);
-      p0=p0.addAtTop((ClassB)ec);
+      ClassB ect=Configuration.typeSystem.typeExtraction(p0, ec);
+      p0=p0.addAtTop(ec,ect);
       }
     return p0;
   }
@@ -183,7 +183,7 @@ public class TestHelper {
   c2=c2.withMs(ms2);
   //TestHelper.assertEqualExp(c1, c2);
   }
-  
+
   public static class ErrorCarry {
     /* When testing for errors,
      * when the errors have many parameters,
@@ -191,15 +191,15 @@ public class TestHelper {
      * this class carries those parameters
      * from test to test,
      * and gives each test a formatted error string.
-     * 
+     *
      * Because the presenting problem is the verbosity
      * of typing all of the error parameters repeatedly,
      * function names in this class put a premium on brevity.
      */
-     
+
     ArrayList<String> _parameters = null;
     // invariant: even number of entries; category first then details
-    
+
     static String valueFormat(String value) {
       /* If the string is already formatted as an annotation,
        * (begins with '@ )
@@ -211,15 +211,15 @@ public class TestHelper {
       else
         return "'@stringU\n'" + value;
     }
-     
+
     public String str() {
       return this.str(null);
     }
-    
+
     public String str(java.io.PrintStream debugTo) {
       StringBuffer result = new StringBuffer();
       Iterator<String> itr = this._parameters.iterator();
-      
+
       result.append("{");
       while (itr.hasNext()) {
         result.append(itr.next());
@@ -234,28 +234,28 @@ public class TestHelper {
 
       return result.toString();
     }
-     
+
     public ErrorCarry load(String kind, String ... parameters) {
       assert(parameters.length %2 == 0);
       _parameters = new ArrayList<String>();
       _parameters.add("Kind");
       _parameters.add(kind);
       _parameters.addAll(Arrays.asList(parameters));
-      
+
       return this;
     }
-    
+
     public ErrorCarry set(String ... parameters) {
       /* set the values of some loaded parameters,
        * which must be supplied in the same order as in the load().
        */
       assert(parameters.length %2 == 0);
       Iterator<String> setItr = Arrays.asList(parameters).iterator();
-      
+
       ListIterator<String> parmItr = _parameters.listIterator();
       while (setItr.hasNext() && parmItr.hasNext()) {
         String nextSet = setItr.next();
-     
+
         //System.out.println("looking for '"+nextSet+"'");
         while (parmItr.hasNext()) {
           Boolean match = (nextSet.equals(parmItr.next()));
@@ -268,7 +268,7 @@ public class TestHelper {
           }
         }
       }
-      
+
       assert(!setItr.hasNext());  // some element was out of order or didn't match at all
       return this;
     }
@@ -279,7 +279,7 @@ public class TestHelper {
        * It changes one label to the new spelling,
        * enabling a test of the old spelling to fail
        * without breaking all subsequent tests.
-       * 
+       *
        * Could be abused to update parameter values;
        * not intended for this purpose.
        */
@@ -295,7 +295,7 @@ public class TestHelper {
       return this;
     }
   }
-  
+
   public static int lineNumber() {
     return Thread.currentThread().getStackTrace()[2].getLineNumber();
   }

@@ -39,7 +39,7 @@ public class Redirect {
     //call redirectOk, if that is ok, no other errors?
     //should cb be normalized first?
     assert external.isPrimitive() || external.outerNumber()>0;
-    p=p.addAtTop(Configuration.typeSystem.typeExtraction(p, cb));//TODO: is it ok? if so add in docs
+    p=p.addAtTop(cb,Configuration.typeSystem.typeExtraction(p, cb));//TODO: is it ok? if so add in docs
     List<PathPath>toRedirect=redirectOk(Collections.emptyList(),p,cb,internal,external);
     return IntrospectionAdapt.applyMapPath(p,cb,toRedirect);
   }
@@ -56,7 +56,7 @@ public class Redirect {
     if(path.isCore()){
       assert path.outerNumber()>0:
         path;
-      l0DestNoFrom= p.extract(path);
+      l0DestNoFrom= p.extractCt(path);
       }//p(Path)[from Path]=L0'={H' M0' ... Mn', _}//reordering of Ms allowed here
     else{
       assert path.isPrimitive();

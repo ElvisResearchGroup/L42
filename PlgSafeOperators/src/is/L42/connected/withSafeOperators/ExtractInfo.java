@@ -15,6 +15,7 @@ import auxiliaryGrammar.Program;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -151,9 +152,8 @@ public class ExtractInfo {
   public static void checkClassClash(
       Program p,List<String>current,
       ClassB topA,ClassB topB,
-      ClassB typeA,ClassB typeB,
       ClassB currentA,ClassB currentB){
-   List<Path> confl=conflictingImplementedInterfaces(p, current, typeA, typeB);
+   List<Path> confl=conflictingImplementedInterfaces(p, current,topA,topB);
    //*sum of two classes with private state
    //*sum class/interface invalid
    boolean privateA=hasPrivateState(currentA);
@@ -212,35 +212,55 @@ public class ExtractInfo {
    }
 
     public static List<Path> conflictingImplementedInterfaces(
-        Program p,List<String>current,ClassB typeA,ClassB typeB){
+        Program p,List<String>current,ClassB a,ClassB b){
       //*sum of class with non compatible interfaces (same method, different signature)
       //the implemented interfaces in typeA,typeB (transitive already done!)
       //implA=typeA.impl()//with normalization
       //implB=typeB.impl()//with normalization
-      ClassB typeACurrent=Program.extractCBar(current,typeA);
-      ClassB typeBCurrent=Program.extractCBar(current,typeA);
-      List<Path> implA = Map.of(pi->Norm.of(p,pi), typeACurrent.getSupertypes());
-      List<Path> implB = Map.of(pi->Norm.of(p,pi), typeBCurrent.getSupertypes());
+      java.util.Map<Path,List<MethodSelector>> implA=implementedInterfacesMethods(p.addAtTop(a, null),Path.outer(0,current));
+      java.util.Map<Path,List<MethodSelector>> implB=implementedInterfacesMethods(p.addAtTop(b, null),Path.outer(0,current));
       //implA0=implA-implB
       //implB0=implB-implA
-      Set<Path> implA0=new HashSet<Path>(implA);
-      implA0.removeAll(implB);
-      Set<Path> implB0=new HashSet<Path>(implB);
+      Set<Path> implA0=new HashSet<Path>(implA.keySet());
+      implA0.removeAll(implB.keySet());
+      Set<Path> implB0=new HashSet<Path>(implB.keySet());
+      implB0.removeAll(implA.keySet());
       List<Path> conflicts=new ArrayList<>();
-      implB0.removeAll(implA);
-    //for all implA api, for all the originalMethods amij in pi Functions.originalMethOf(p, a)
-    //for all implB bpi, for all the originalMethods bmij in pi
       for(Path api:implA0)for(Path bpi:implB0){
-        ClassB aci=p.extract(api);
-        ClassB bci=p.extract(bpi);
-        Set<MethodSelector> amis = Functions.originalMethOf(p, aci);
-        Set<MethodSelector> bmis = Functions.originalMethOf(p, bci);
+        Set<MethodSelector> amis = new HashSet<>(implA.get(api));
+        Set<MethodSelector> bmis = new HashSet<>(implA.get(bpi));
         //amij!=bmij as selectors
         amis.retainAll(bmis);//intersection
         if(!amis.isEmpty()){conflicts.add(api);conflicts.add(bpi);}
       }
      return conflicts;
   }
+  static void accumulateCb(java.util.Map<Path,List<MethodSelector>> accumulator,Path path,ClassB cb){
+    assert cb.isInterface();
+    if(accumulator.containsKey(path)){return;}
+    List<MethodSelector> defined=new ArrayList<>();
+    for(Member m:cb.getMs()){
+      if(!(m instanceof MethodWithType)){continue;}
+      defined.add(((MethodWithType)m).getMs());
+      }
+    accumulator.put(path, defined);
+    }
+
+  static java.util.Map<Path,List<MethodSelector>> implementedInterfacesMethods(Program p,Path path){
+    java.util.Map<Path,List<MethodSelector>> accumulator=new HashMap<>();
+    fillImplementedInterfacesMethods(accumulator,p,path);
+    return accumulator;
+  }
+  static void fillImplementedInterfacesMethods(java.util.Map<Path,List<MethodSelector>> accumulator,Program p,Path path){
+    //assume p have all the cb present,we do not use ct here
+    ClassB cb=p.extractCb(path);
+    if(cb.isInterface()){accumulateCb(accumulator,path,cb);}
+    for(Path pi:cb.getSupertypes()){
+      pi=From.fromP(pi,path);
+      fillImplementedInterfacesMethods(accumulator, p, pi);
+    }
+  }
+
   static List<Integer> isParTypeOk(MethodWithType mta, MethodWithType mtb) {
     List<Integer>res=new ArrayList<>();
     for(int i=0;i<mta.getMt().getTs().size();i++){

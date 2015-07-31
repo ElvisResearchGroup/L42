@@ -78,7 +78,7 @@ public static boolean isSubtype(Program p, Path path1, Path path2) {
   Path path1N=Norm.of(p,path1);
   if(path1N.equals(path2N)){return true;}
 
-  ClassB cp1=p.extract(path1);
+  ClassB cp1=p.extractCt(path1);
   for(Path pathi:cp1.getSupertypes()){
     Path pathiFrom=From.fromP(pathi, path1);
     Path pathiN=Norm.of(p,pathiFrom);//or not norm?
@@ -284,7 +284,7 @@ public static boolean isSuperTypeOfMut(Mdf mdf){
 public static boolean isInterface(Program p, Path path) {
   if (path.equals(Path.Any())){return true;}
   if(path.isPrimitive()){return false;}
-  return p.extract(path).isInterface();
+  return p.extractCt(path).isInterface();//in typing, this is guaranteed to be there
 }
 public static boolean checkCore(Expression result) {
     result.accept(new CloneVisitor(){
@@ -305,20 +305,20 @@ public static NormType forceNormType(ExpCore inner, Type preciseTOpt) {
   NormType preciseT=(NormType)preciseTOpt;
   return preciseT;
 }
-public static boolean isAbstract(Program p, ClassB cb) {
-  if(!coherent(p,cb)){return true;}
-  for(Member m:cb.getMs()){
+public static boolean isAbstract(Program p, ClassB ct) {
+  if(!coherent(p,ct)){return true;}
+  for(Member m:ct.getMs()){
     if(!(m instanceof NestedClass)){continue;}
     NestedClass nc=(NestedClass)m;
     assert nc.getInner() instanceof ClassB;
-    if(isAbstract(p.addAtTop(cb),(ClassB)nc.getInner())){return true;}
+    if(isAbstract(p.addAtTop(null,ct),(ClassB)nc.getInner())){return true;}
   }
   return false;
 }
-public static boolean coherent(Program p, ClassB cb) {
-  Program p1=p.addAtTop(cb);
-  if( cb.isInterface()){ return true;}
-  List<MethodWithType> mwts= collectAbstractMethods(cb);
+public static boolean coherent(Program p, ClassB ct) {
+  Program p1=p.addAtTop(null,ct);
+  if( ct.isInterface()){ return true;}
+  List<MethodWithType> mwts= collectAbstractMethods(ct);
   if(mwts.isEmpty()){return true;}
   List<MethodWithType> typeMethods=new ArrayList<>();
   for(MethodWithType mwt:mwts){if(mwt.getMt().getMdf()==Ast.Mdf.Type){typeMethods.add(mwt);}}
@@ -456,7 +456,7 @@ public static Set<MethodSelector> originalMethOf(Program p, List<Path> paths,Lis
 }
 private static void retainOnlyOriginalMethOf(Program p, List<Path> paths,Set<MethodSelector> ms0) {
    for(Path pi:paths){
-    for(Member mi:p.extract(pi).getMs()){
+    for(Member mi:p.extractCt(pi).getMs()){
       mi.match(
           nc->false,
           mim->{throw Assertions.codeNotReachable();},

@@ -46,12 +46,12 @@ public class TypeExtraction {
     assert !result.equals(classB);
     return result;
     }
-  private static ClassB etStage(Program p, ClassB classB) {
-    assert classB.getStage()==Stage.Star;
+  private static ClassB etStage(Program p, ClassB ct) {
+    assert ct.getStage()==Stage.Star;
     //classB.getSupertypes().size()==1;
     //collect es
     List<ClassB> es;
-    try{es=collectEs(p, classB);}
+    try{es=collectEs(p, ct);}
     catch(ast.InternalError.InterfaceNotFullyProcessed notReadyYet){return null;}
     List<ClassB> esNone=new ArrayList<>();
     for(ClassB cb:es){
@@ -59,21 +59,21 @@ public class TypeExtraction {
       if(cb.getStage()==Stage.None && IsCompiled.of(cb)){esNone.add(cb);}
     }
     if(!esNone.isEmpty()){return null;}//esNone exists solely to simpler testing,
-    Stage stage=stage(p,classB,es);
+    Stage stage=stage(p,ct,es);
     assert stage!=Stage.Star;
     assert stage!=Stage.None;
     if(stage==null){return null;}
-    return classB.withStage(stage);
+    return ct.withStage(stage);
   }
-  private static List<ClassB> collectEs(Program p, ClassB classB) {
-    List<Path> usedPlus = new UsedPathsPlus().of(classB);
+  private static List<ClassB> collectEs(Program p, ClassB ct) {
+    List<Path> usedPlus = new UsedPathsPlus().of(ct);
     //usedPlus=Functions.remove1OuterAndPrimitives(usedPlus);
     //usedPlus=Map.of( pi->From.fromP(pi, Path.outer(1)),usedPlus);
-   Program p1=p.addAtTop(classB);//TODO: is ok? is not a ct?
+   Program p1=p.addAtTop(null,ct);
     List<ClassB> es=new ArrayList<>();//null represents a meta expression
     for(Path pi:usedPlus){
       if(!pi.isCore()){continue;}
-      try{es.add(p1.extract(pi));}
+      try{es.add(p1.extractCt(pi));}
       catch(ErrorMessage.ProgramExtractOnMetaExpression meta){es.add(null);}
       catch(ErrorMessage.ProgramExtractOnWalkBy walk){ }
       catch(ErrorMessage.PathNonExistant incomplete){
@@ -81,7 +81,7 @@ public class TypeExtraction {
         //operators on incomplete code
       }
       }
-    collectInnerClasses(classB,es);
+    collectInnerClasses(ct,es);
     return es;
   }
   static ClassB etSub(Program p, ClassB classB) {
@@ -99,15 +99,15 @@ public class TypeExtraction {
     ClassB result=new ClassB(classB.getDoc1(),classB.getDoc2(),classB.isInterface(),sup,members,Stage.Star);
     return result;
   }
-  static ClassB etDeep(Program p,ClassB classB){
-    for(Member m:classB.getMs()){
+  static ClassB etDeep(Program p,ClassB ct){
+    for(Member m:ct.getMs()){
       try{
         if(!(m instanceof NestedClass)){continue;}
         NestedClass nc=(NestedClass)m;
           if(!(nc.getInner() instanceof ClassB)){continue;}
           ClassB inner=(ClassB)nc.getInner();
-          ClassB outer=classB;
-          Program p2=p.addAtTop(outer);
+          ClassB outer=ct;
+          Program p2=p.addAtTop(null,outer);
           return outer.withMember(nc.withInner(etDispatch(p2,inner)));
       }
       catch(InternalError.ETDeepNotApplicable ignored){}
@@ -136,22 +136,22 @@ public class TypeExtraction {
     return null;//can not be computed
    }
   /**return null for impossible to compute*/
-  static ClassB inherited(Program p,ClassB cb){
-    assert IsCompiled.of(cb);
+  static ClassB inherited(Program p,ClassB ct){
+    assert IsCompiled.of(ct);
     List<Path> paths=new ArrayList<>();
     List<Member> members=new ArrayList<>();
     List<Set<Ast.MethodSelector>> original=new ArrayList<>();
-    Program p2=p.addAtTop(cb);
-    List<Path> supers = cb.getSupertypes();
+    Program p2=p.addAtTop(null,ct);
+    List<Path> supers = ct.getSupertypes();
     supers=Map.of(pi->Norm.of(p2,pi),supers);
     for(Path pi:new LinkedHashSet<>(supers)){
       try{
-        boolean failFast=inheritedSinglePath(p, cb, paths, members, original,p2, pi);
+        boolean failFast=inheritedSinglePath(p, ct, paths, members, original,p2, pi);
         if(failFast){return null;}
       }
       catch( ErrorMessage.ProgramExtractOnMetaExpression ignored){return null;}
     }
-    checkOriginals(p, cb, original);
+    checkOriginals(p, ct, original);
     return new ClassB(Doc.empty(),Doc.empty(),false,paths,members,Ast.Stage.Star);
   }
   private static void checkOriginals(Program p, ClassB cb, List<Set<Ast.MethodSelector>> original) {
@@ -167,7 +167,7 @@ public class TypeExtraction {
       }
   }
   private static boolean inheritedSinglePath(Program p, ClassB cb, List<Path> paths, List<Member> members, List<Set<Ast.MethodSelector>> original,Program p2, Path pi) {
-    ClassB cbi=p2.extract(pi);
+    ClassB cbi=p2.extractCt(pi);
     if(!cbi.isInterface()){
       throw new ErrorMessage.MalformedSubtypeDeclaration(cb,cbi,pi,p.getInnerData());
       }

@@ -255,7 +255,7 @@ public class ErrorFormatter {
     }
   private static void printType(int i, Program p) {
     if(p.isEmpty()){return;}
-    printType(i,"",p.top());
+    printType(i,"",p.topCt());
     printType(i+1,p.pop());
 
   }
@@ -320,7 +320,7 @@ public class ErrorFormatter {
   }
 
   public static String whyIsNotExecutable(Path path, Program p1) {
-    ClassB cb=p1.extract(path);
+    ClassB cb=p1.extractCt(path);
     String whyNot=whyIsNotExecutable(cb);
     if (whyNot!=null){
       return "The requested path is incomplete.\n  "

@@ -26,7 +26,7 @@ import facade.Configuration;
 import facade.ErrorFormatter;
 
 public class SmallStep extends Executor{
-  
+
   protected ClassB meta1(Program p, ClassB cb, NestedClass m) {
     log("---meta1--");
     ExpCore e1=m.getInner();
@@ -34,7 +34,7 @@ public class SmallStep extends Executor{
     ClassB ct=Configuration.typeSystem.typeExtraction(p,cb);
     ct=ct.withMember(m.withBody(new WalkBy()));
     //get p'
-    Program p1=p.addAtTop(ct.withStage(Stage.Less));
+    Program p1=p.addAtTop(cb,ct.withStage(Stage.Less));
     //assert ct.getStage()==Stage.Less;
     //Program p1=p.addAtTop(ct);
     ErrorFormatter.printType(p1);
@@ -48,7 +48,7 @@ public class SmallStep extends Executor{
      // if(p1.executable(path)){continue;}
      // String reason=ErrorFormatter.whyIsNotExecutable(path,p1);// should be in the final error reporting
       //TODO: throw new ErrorMessage.IncompleteClassIsRequired(reason, e1, path, p1.getInnerData());
-      //}    
+      //}
     //run m.e1-->e2
     ExpCore e2=executeAtomicStep(p1,e1);
     Configuration.typeSystem.checkMetaExpr(p1.getExecutableStar(),e2);//as assert

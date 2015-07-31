@@ -132,7 +132,7 @@ public class Norm {
     //String outern=path.getRowData().get(0);
     if(path.getRowData().size()==1){return path;}
     String c=path.getRowData().get(1);
-    ClassB myLib=p.get(n);
+    ClassB myLib=p.getCt(n);//need types on interface implemented methods
     List<Member> ms=myLib.getMs();
     Optional<Member> om=Program.getIfInDom(ms, c);
     boolean isPass=false;

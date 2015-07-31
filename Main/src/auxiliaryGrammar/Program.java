@@ -26,22 +26,31 @@ import ast.Ast.*;
 
 public class Program {
   private final Program next;
-  private final ClassB classB;
-  private Program(Program next,ClassB classB){
-    assert this.getClass()!=Program.class || (next!=null && classB!=null);
-    this.next=next;this.classB=classB;
+  private final ClassB cb;//cb is like the source, with no walkby
+  private final ClassB ct;//ct is the annotated one, with collected interface types and walkby
+  //nullable cb or ct, not both
+  private Program(Program next,ClassB cb,ClassB ct){
+    assert this.getClass()!=Program.class || (next!=null  && (cb!=null || ct!=null));
+    this.next=next;this.cb=cb;this.ct=ct;
     }
-  public ClassB get(int num){
+  public ClassB getCt(int num){
     //assert this.classB!=null;
-    assert this.classB!=null:
+    assert !this.isEmpty():
       "empty program reached";
-    if(num==0){return this.classB;}
-    return this.next.get(num-1);
+    if(num==0){return this.ct;}
+    return this.next.getCt(num-1);
+    }
+  public ClassB getCb(int num){
+    //assert this.classB!=null;
+    assert !this.isEmpty():
+      "empty program reached";
+    if(num==0){return this.cb;}
+    return this.next.getCb(num-1);
     }
 
-  private static final Program regularEmpty=new Program(null,null){ };
-  private static final Program executableStarEmpty=new Program(null,null){};
-   
+  private static final Program regularEmpty=new Program(null,null,null){ };
+  private static final Program executableStarEmpty=new Program(null,null,null){};
+
   public static Program empty(){return regularEmpty;}
   public boolean isExecutableStar(){
     if (this.isEmpty()){return this==executableStarEmpty;}
@@ -50,22 +59,23 @@ public class Program {
   public Program getExecutableStar(){
     assert this!=executableStarEmpty;//may be not needed
     if (this==regularEmpty){return executableStarEmpty;}
-    return new Program(this.pop().getExecutableStar(),this.top());
+    return new Program(this.pop().getExecutableStar(),this.topCb(),this.topCt());
   }
   public Program removeExecutableStar() {
     assert this!=regularEmpty;//may be not needed
     if (this==executableStarEmpty){return regularEmpty;}
-    return new Program(this.pop().removeExecutableStar(),this.top());
+    return new Program(this.pop().removeExecutableStar(),this.topCb(),this.topCt());
   }
 
   public Stage getStage(){
-    if(classB==null){Assertions.codeNotReachable();}
-    return classB.getStage();
+    if(ct==null){Assertions.codeNotReachable();}
+    return ct.getStage();
     }
-  public Stage getStage(Path p){return this.extract(p).getStage();};
+  public Stage getStage(Path p){return this.extractCt(p).getStage();};
   //public void __addAtTop(ClassB cb){this.inner.add(0,cb);}
-  public Program addAtTop(ClassB cb){return new Program(this,cb);}
-  public Program pop(){assert this.next!=null;return this.next;}
+
+  public Program addAtTop(ClassB cb,ClassB ct){return new Program(this,cb,ct);}
+  public Program pop(){assert !this.isEmpty();return this.next;}
   public Program pop(int n){
     assert n>=0;
     if(n==0){return this;}
@@ -73,26 +83,28 @@ public class Program {
     }
   public boolean isEmpty(){return this.next==null;}
 
-  public ClassB top(){
-    assert this.classB!=null;
-    return this.classB;
+  public ClassB topCb(){
+    assert this.cb!=null;
+    return this.cb;
     }
-
-  //public void updateTop(ClassB cb){this.classB=cb;}
+  public ClassB topCt(){
+    assert this.ct!=null;
+    return this.ct;
+    }
 
   public boolean executablePlus(){
     assert !this.isEmpty();
-    return this.classB.getStage()!=Stage.Less;
+    return this.ct.getStage()!=Stage.Less;
   }
 
   public boolean executablePlus(Path p){
-    return this.extract(p).getStage()!=Stage.Less;
+    return this.extractCt(p).getStage()!=Stage.Less;
   }
   public boolean executable(Path p){
-    return this.extract(p).getStage()==Stage.None;
+    return this.extractCt(p).getStage()==Stage.None;
   }
 
-
+/*
     public Program collapse(int n){
     if(n==0){return this;}
     return this.collapseOne().collapse(n-1);
@@ -103,27 +115,34 @@ public class Program {
     ClassB cbNext=replaceWalkByWith(result.top(),cb);
     result=result.next.addAtTop(cbNext);
     return result;
-  }
+  }*/
   public Program navigateInTo(String c){
     assert !this.isEmpty();
-    Optional<Member> mOpt=getIfInDom(this.top().getMs(),c);
+    Optional<Member> mOpt=getIfInDom(this.topCt().getMs(),c);
     if(!mOpt.isPresent()){
-      throw new ErrorMessage.PathNonExistant(Arrays.asList(c),this.top());
+      throw new ErrorMessage.PathNonExistant(Arrays.asList(c),this.topCt());
     }
     Member m=mOpt.get();
-    ClassB newTop=this.top().withMember(m.withBody(new ExpCore.WalkBy()));
-    Program result=this.next.addAtTop(newTop);
-    return result.addAtTop((ClassB)((NestedClass)m).getInner());
+    ClassB newTop=this.topCt().withMember(m.withBody(new ExpCore.WalkBy()));
+    Program result=this.next.addAtTop(null,newTop);
+    return result.addAtTop(null,(ClassB)((NestedClass)m).getInner());
   }
   public Program navigateInTo(List<String> paths){
     if(paths.isEmpty()){return this;}
     return this.navigateInTo(paths.get(0)).navigateInTo(paths.subList(1,paths.size()));
     }
-  public ClassB extract(Path path){
-    ClassB cb=this.get(path.outerNumber());
+
+  public ClassB extractCb(Path path){
+    ClassB cb=this.getCb(path.outerNumber());
     cb = extractCBar(path.getCBar(), cb);
     assert cb!=null;
     return cb;
+  }
+  public ClassB extractCt(Path path){
+    ClassB ct=this.getCt(path.outerNumber());
+    ct = extractCBar(path.getCBar(), ct);
+    assert ct!=null;
+    return ct;
   }
   private static final Doc[] _trashCommentRef=new Doc[]{Doc.empty()};
   private static final Boolean[] _trashIsPrivateRef=new Boolean[]{false};
@@ -161,7 +180,7 @@ public class Program {
     if(path.isPrimitive()){
       throw new ErrorMessage.MethodNotPresent(path,ms,this.getInnerData());
       }
-    ClassB classB=extract(path);
+    ClassB classB=extractCt(path);
 //    path=Path.parse("Outer0::C::C");
     //classB=(ClassB)From.from(classB,path);
     Optional<Member> result = getIfInDom(classB.getMs(),ms);
@@ -238,14 +257,14 @@ public class Program {
   public List<ExpCore.ClassB> getInnerData() {
     List<ExpCore.ClassB> result=new ArrayList<ExpCore.ClassB>();
     Program p=this;
-    while(p.next!=null){result.add(p.classB);p=p.next;}
+    while(p.next!=null){result.add(p.ct);p=p.next;}
     return result;
   }
-  
+
   public boolean isNotClassB(Path path) {
     assert !path.isPrimitive():"method isNotClassB is not defined over primitive paths";
     try{//like extract but no normalize
-      ClassB cb=this.get(path.outerNumber());
+      ClassB cb=this.getCt(path.outerNumber());
       cb = extractCBar(path.getCBar(), cb);
       }
     catch(ErrorMessage.ProgramExtractOnMetaExpression found){return true;}
@@ -254,7 +273,7 @@ public class Program {
   }
   public boolean checkFullyNormalized(){
     if(this.isEmpty()){return true;}
-    checkFullyNormalized(this.top());
+    checkFullyNormalized(this.topCt());
     return this.pop().checkFullyNormalized();
   }
   public static ClassB replaceWalkByWith(ClassB cb, ExpCore newExp) {
@@ -308,7 +327,7 @@ public class Program {
   }
   public boolean checkComplete(){
     if(this.isEmpty()){return true;}
-    if(this.top().getStage()!=Stage.Star){return false;}
+    if(this.topCt().getStage()!=Stage.Star){return false;}
     return this.pop().checkComplete();
   }
 
