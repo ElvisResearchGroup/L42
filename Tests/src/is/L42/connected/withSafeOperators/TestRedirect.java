@@ -80,24 +80,67 @@ public static class TestRedirect1 {//add more test for error cases
         "Outer0::InnerA","Outer1::A","{ method Void multiUse(Outer2::B x, Outer2::B y, Outer2::B z)}",false
     },{lineNumber(), new String[]{      // redirection vs binding a returned library at the same nesting depth
     "{A:{()}}" },
-    "{InnerA:{()} M:{type method Library defA_maker() {type method InnerA beA_maker() InnerA()}}}",
+    "{InnerA:{()} M:{type method Library defA_maker() {type method InnerA beA_maker() InnerA()}} "
+    + "B:M.defA_Maker() }",
     "Outer0::InnerA","Outer1::A",
-    "{M:{type method Library defA_maker() {type method Outer3::A beA_maker() Outer3::A()}}}",false
-    },{lineNumber(), new String[]{      // redirection vs binding a returned library at the same nesting depth
+    "{M:{type method Library defA_maker() {type method Outer3::A beA_maker() Outer3::A.#apply()}}"
+    + "B:Outer0::M.defA_Maker() }",false
+    },{lineNumber(), new String[]{      // redirection vs binding a returned library at a different nesting depth
                     "{A:{()}}" },
         "{InnerA:{()} M:{type method Library defA_maker() {type method InnerA beA_maker() InnerA()}}"
-        + "B:{C: M.defA_maker() }"//TODO:No, you can not do operations on not compiled classes
+        + "B:{C: M.defA_maker() }"  //  So this call to get a library value is imaginary, as shown below
         + "}",
         "Outer0::InnerA","Outer1::A",
         "{M:{type method Library defA_maker() {type method Outer3::A beA_maker() Outer3::A.#apply()}} "
         + "B:{C:Outer1::M.defA_maker()}}",false
+    },{lineNumber(), new String[]{      // redirecting a nested library, into a differently nested target
+                    "{X:{Y:{A:{()  type method A fun()}}}}" },
+        "{InnerZ:{InnerA:{()  type method Outer0 fun()}}"
+        + " M:{type method Library defA_maker() {type method InnerZ::InnerA beA_maker() InnerZ::InnerA()}}"
+        + "B:{C: M.defA_maker() }"  //  So this call to get a library value is imaginary, as shown below
+        + "}",
+        "Outer0::InnerZ::InnerA","Outer1::X::Y::A",
+        "{InnerZ:{}"
+        + "M:{type method Library defA_maker() {type method Outer3::X::Y::A beA_maker() Outer3::X::Y::A.#apply()}} "
+        + "B:{C:Outer1::M.defA_maker()}}",false
+    },{lineNumber(), new String[]{      // same, with opposite type relation on fun()
+                    "{X:{Y:{A:{()  type method Outer0 fun()}}}}" },
+        "{InnerZ:{InnerA:{()  type method InnerA fun()}}"
+        + " M:{type method Library defA_maker() {type method InnerZ::InnerA beA_maker() InnerZ::InnerA()}}"
+        + "B:{C: M.defA_maker() }"  //  So this call to get a library value is imaginary, as shown below
+        + "}",
+        "Outer0::InnerZ::InnerA","Outer1::X::Y::A",
+        "{InnerZ:{}"
+        + "M:{type method Library defA_maker() {type method Outer3::X::Y::A beA_maker() Outer3::X::Y::A.#apply()}} "
+        + "B:{C:Outer1::M.defA_maker()}}",false
+    },{lineNumber(), new String[]{      // same, with two explicit classes on fun()
+                    "{X:{Y:{A:{()  type method A fun()}}}}" },
+        "{InnerZ:{InnerA:{()  type method InnerA fun()}}"
+        + " M:{type method Library defA_maker() {type method InnerZ::InnerA beA_maker() InnerZ::InnerA()}}"
+        + "B:{C: M.defA_maker() }"  //  So this call to get a library value is imaginary, as shown below
+        + "}",
+        "Outer0::InnerZ::InnerA","Outer1::X::Y::A",
+        "{InnerZ:{}"
+        + "M:{type method Library defA_maker() {type method Outer3::X::Y::A beA_maker() Outer3::X::Y::A.#apply()}} "
+        + "B:{C:Outer1::M.defA_maker()}}",false
+    },{lineNumber(), new String[]{      // same, with two outers on fun()
+                    "{X:{Y:{A:{()  type method Outer0 fun()}}}}" },
+        "{InnerZ:{InnerA:{()  type method Outer0 fun()}}"
+        + " M:{type method Library defA_maker() {type method InnerZ::InnerA beA_maker() InnerZ::InnerA()}}"
+        + "B:{C: M.defA_maker() }"  //  So this call to get a library value is imaginary, as shown below
+        + "}",
+        "Outer0::InnerZ::InnerA","Outer1::X::Y::A",
+        "{InnerZ:{}"
+        + "M:{type method Library defA_maker() {type method Outer3::X::Y::A beA_maker() Outer3::X::Y::A.#apply()}} "
+        + "B:{C:Outer1::M.defA_maker()}}",false
+        
 
     // the errors have variable portions.
 	// try to explore the cardinality space of the variable portions
 	//   for each error.
     // the cardinality, or option space, of each parameter is listed in parentheses.
 
-    // SourceUnfit: SrcPath(1), DestExternalPath(1) PrivatePath(t/f), SrcKind(enum(9)), DestKind(enum(9)),
+    // SourceUnfit: SrcPath(1), DestExternalPath(1), PrivatePath(t/f), SrcKind(enum(5)), DestKind(enum(5)),
     //   UnexpectedMethods(0..), UnexpectedImplementedInterfaces(0..)
     },{lineNumber(), new String[]{"{A:{ }}"},  // from module with an unexpected function
         "{InnerA:{type method Void fun()} }","Outer0::InnerA","Outer1::A",
@@ -110,7 +153,7 @@ public static class TestRedirect1 {//add more test for error cases
            +"UnexpectedMembers:{'@stringU\n'[fun()]\n}"
            +"UnexpectedImplementedInterfaces:{'@stringU\n'[]\n}"
         + "}",true
-    },{lineNumber(), new String[]{"{A:{ }}"},  // same test, but with an argument, using new mechanism
+    },{lineNumber(), new String[]{"{A:{ }}"},  // same test, but with a method argument, using new mechanism
         "{InnerA:{type method Void fun(Void that)} }","Outer0::InnerA","Outer1::A",
         ec.load("SourceUnfit",
                 "SrcPath", "Outer0::InnerA",
@@ -122,35 +165,51 @@ public static class TestRedirect1 {//add more test for error cases
                 "UnexpectedImplementedInterfaces", "[]"
                 )
           .str(), true
-    },{lineNumber(), new String[]{  // with some matching methods
-        "{A:{type method Void fun(Void that)  method Void mostFun(Void that, Library other) }}"
+    },{lineNumber(), new String[]{  // FreeTemplate -> Interface, with some matching methods
+        "{A:{interface type method Void fun(Void that)  method Void mostFun(Void that, Library other) }}"
         },
         "{InnerA:{type method Void fun(Void that) type method Void moreFun(Void that)"
         + "method Void mostFun(Void that, Library other) method Void notSoFun() } }",
         "Outer0::InnerA","Outer1::A",
         ec
-          .set("SrcKind", "FreeTemplate", "DestKind", "Template",
+          .set("SrcKind", "FreeTemplate", "DestKind", "Interface",
                "UnexpectedMembers", "[moreFun(that), notSoFun()]")
           .str(), true
     },{lineNumber(), new String[]{  // with a mismatch on parameter names in the method selector
-        "{A:{type method Void fun(Void that) type method Void moreFun()"
+                                    // Also Template (by return value) -> Interface, which is infeasible
+        "{A:{interface type method Void fun(Void that) type method Void moreFun()"
         + "method Void mostFun(Void that, Library mineAllMine) method Void notSoFun() } }",
         },
         "{InnerA:{type method Void fun(Void that) type method Void moreFun(Void that)"
-        + "method Void mostFun(Void that, Library other) method Void notSoFun() } }",
+        + "method Void mostFun(Void that, Library other) method Void notSoFun() } "
+        + "D:{method Outer1::InnerA makeA() InnerA.fun(void)} "
+        + "}",
         "Outer0::InnerA","Outer1::A",
         ec
-          .set("UnexpectedMembers", "[moreFun(that), mostFun(that,other)]")
+          .set("SrcKind", "Template", "UnexpectedMembers", "[moreFun(that), mostFun(that,other)]")
           .str(), true
-    },{lineNumber(), new String[]{  // Box -> OpenClass (because I can) with missing subclass
+    },{lineNumber(), new String[]{  // Template (by parameter value) -> OpenClass extra subclass
         "{A:{ method Void ignoreMe() void " +
         "     B:{ method Void ignoreMe() void} } }",
         },
-        "{InnerA:{ C:{} }}",
+        "{InnerA:{ C:{} } "
+        + "D:{type method Void useType(type Any that) void"
+        + "   type method Void useA() D.useType(InnerA) } "
+        + "}",
         "Outer0::InnerA","Outer1::A",
         ec
           .set( "DestKind", "OpenClass",
                "UnexpectedMembers", "[C]")
+          .str(), true
+    },{lineNumber(), new String[]{  // Template (by exception) -> OpenClass extra subclass
+        "{A:{ type method Void ignoreMe() void " +
+        "     B:{ method Void ignoreMe() void} } }",
+        },
+        "{InnerA:{ type method Void ignoreMe() C:{} } "
+        + "D:{type method Void doWithoutA() exception Void  exception InnerA.ignoreMe() } "
+        + "}",
+        "Outer0::InnerA","Outer1::A",
+        ec
           .str(), true
     },{lineNumber(), new String[]{  // OpenClass -> ClosedClass (because I can) with missing subclass
         "{A:{ method Void ignoreMe() void " +
@@ -249,6 +308,33 @@ public static class TestRedirect1 {//add more test for error cases
           .str(), true
 
 // TODO: exercise UnexpectedImplementedInterfaces
+
+    },{lineNumber(), new String[]{      // referring outside the redirect causes an unfriendly error
+                                        // Only with both M and B in place
+                    "{X:{Y:{A:{()  type method A fun()}}}}" },
+        "{InnerZ:{InnerA:{()  type method Outer1 fun()}}"
+        + " M:{type method Library defA_maker() {type method InnerZ::InnerA beA_maker() InnerZ::InnerA()}}"
+        + "B:{C: M.defA_maker() }"  //  So this call to get a library value is imaginary, as shown below
+        + "}",
+        "Outer0::InnerZ::InnerA","Outer1::X::Y::A",
+        "{InnerZ:{}"
+        + "M:{type method Library defA_maker() {type method Outer3::X::Y::A beA_maker() Outer3::X::Y::A.#apply()}} "
+        + "B:{C:Outer1::M.defA_maker()}"
+        + "}",false
+    },{lineNumber(), new String[]{      // referring outside the target causes the same unfriendly error
+                                      // also only with both B and M
+                    "{X:{Y:{A:{()  type method Outer1 fun()}}}}" },
+        "{InnerZ:{InnerA:{()  type method Outer0 fun()}}"
+        + " M:{type method Library defA_maker() {type method InnerZ::InnerA beA_maker() InnerZ::InnerA()}}"
+        + "B:{C: M.defA_maker() }"  //  So this call to get a library value is imaginary, as shown below
+        + "}",
+        "Outer0::InnerZ::InnerA","Outer1::X::Y::A",
+        "{InnerZ:{}"
+        + "M:{type method Library defA_maker() {type method Outer3::X::Y::A beA_maker() Outer3::X::Y::A.#apply()}} "
+        + "B:{C:Outer1::M.defA_maker()}"
+        + "}",false
+
+
 /* TODO: this test, when I get to method clashes
     },{lineNumber(), new String[]{ // mismatches in type vs instance method
         "{A:{type method Void fun(Void that) method Void moreFun(Void that)"
