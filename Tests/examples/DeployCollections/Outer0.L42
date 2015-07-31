@@ -1,28 +1,6 @@
-{reuse L42.is/deployMini
-Main:Deploy[S"Top", fileName:S"localhost/VectorLib.L42"]<{reuse L42.is/templateBNS
-  Top:Outer0::Generalize[]<{reuse L42.is/miniBase
-    Exported:{
-      type method
-      Library vector(type Any that) Adapt[
-        Name"Elem" into: Name(that);
-        Name"VectorStruct" into:Name"Outer0";
-'      makePrivate:Name"VectorStruct::Cell";
-'      makePrivate:Name"VectorStruct::CellNext";
-'      makePrivate:Name"VectorStruct::CellEnd";
-'      makePrivate:Name"VectorStruct::Iterator";
-'      makePrivate:Name"VectorStruct::VarIterator";
-        ]<{
-          Elem:{interface}
-          Kind:' put it as private
-            {
-            type method
-            'read/lent/mut/type/capsule/
-            Elem elem() error S"InternalUseOnly"
-            type method
-            'read/lent/mut/type/capsule/
-            Elem elemRead() error S"InternalUseOnly"
-            }
-          VectorStruct:...
-          }
-      }
-}}}
+{reuse L42.is/adamTowel01
+Task:DeployLibrary[Path"Collections",url:URL"localhost/Collections.L42"]<<{
+  reuse L42.is/adamTowel01
+  Collections:...
+  }
+}

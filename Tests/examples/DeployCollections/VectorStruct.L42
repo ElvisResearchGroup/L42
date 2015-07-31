@@ -97,7 +97,7 @@
     Iterator(this,min:min-1N,ok:this.size(), max:OptMax(),fill:OptFill())
     
 
-  read method lent Iterator vals(N ok, N max, Kind::elem() fill) '9
+  read method lent Iterator vals(N ok, N max, Kind::elem() fill) '8
     Iterator(this,min:-1N,ok:ok, max:OptMax(max),fill:OptFill(fill))
   read method lent Iterator vals(N ok, N max) '9
     Iterator(this,min:-1N,ok:ok, max:OptMax(max),fill:OptFill())
@@ -122,7 +122,7 @@
       this.min(this.min()+1N)
       if this.fill().isPresent() (
         if !this.max().isPresent() (return void)
-        if this.min()>= !this.max() (exception void)
+        if this.min()>= ~this.max() (exception void)
         return void
         )
       if this.max().isPresent() (
@@ -140,7 +140,7 @@
     Kind::elem() #inner() {
       if !this.fill().isPresent() (return this.that()(this.min()))
       if this.min()<this.that().size() (return this.that()(this.min()))
-      return !this.fill()
+      return ~this.fill()
       }
     read method
     Void #close() void
@@ -166,7 +166,7 @@
     VarIterator(this,min:min-1N,ok:this.size(), max:OptMax(),fill:OptFill())
     
 
-  mut method mut VarIterator vars(N ok, N max, Kind::elem() fill) '9
+  mut method mut VarIterator vars(N ok, N max, Kind::elem() fill) '8
     VarIterator(this,min:-1N,ok:ok, max:OptMax(max),fill:OptFill(fill))
   mut method mut VarIterator vars(N ok, N max) '9
     VarIterator(this,min:-1N,ok:ok, max:OptMax(max),fill:OptFill())
@@ -195,7 +195,7 @@
       this.min(this.min()+1N)
       if this.fill().isPresent() (
         if !this.max().isPresent() (return void)
-        if this.min()>= !this.max() (exception void)
+        if this.min()>= ~this.max() (exception void)
         return void
         )
       if this.max().isPresent() (
@@ -213,7 +213,7 @@
     Kind::elem() #inner() {
       if !this.fill().isPresent() (return this.that()(this.min()))
       if this.min()<this.that().size() (return this.that()(this.min()))
-      return !this.fill()
+      return ~this.fill()
       }
     read method
     Void #close() void

@@ -33,6 +33,18 @@ public class TestBase {
     L42.main(new String[]{"examples/testsForAdamTowel01/UseDeployedSimpleLib.L42"});
     Assert.assertEquals(L42.record.toString(),"Hello World Deployed\n");
     }
+  @Test
+  public  void testDeployCollections() throws Throwable{
+    TestHelper.configureForTest();
+    L42.main(new String[]{"examples/DeployCollections"});
+    //how to check success?
+    }
+  @Test
+  public  void testUseCollections() throws Throwable{
+    TestHelper.configureForTest();
+    L42.main(new String[]{"examples/testsForAdamTowel01/UseCollections.L42"});
+    Assert.assertEquals(L42.record.toString(),"Hello World Deployed\n");
+    }
 }
 
 //  Kind:MethodClash

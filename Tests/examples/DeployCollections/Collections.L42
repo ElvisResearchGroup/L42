@@ -1,0 +1,28 @@
+{
+type method Library generateVector(type Any that, Library lib){
+  var res=lib
+  res:=Refactor::RenamePath[Path"VectorStruct" to:Path"Outer0"]<<res
+  res:=Refactor::Redirect[Path"Elem" to: that]<<res
+  '      makePrivate:Name"VectorStruct::Cell";
+  '      makePrivate:Name"VectorStruct::CellNext";
+  '      makePrivate:Name"VectorStruct::CellEnd";
+  '      makePrivate:Name"VectorStruct::Iterator";
+  '      makePrivate:Name"VectorStruct::VarIterator";
+  return res
+  catch exception err (on Report error err)
+  }
+type method
+Library vector(type Any that) Outer0.generateVector(that,lib:{
+    Elem:{}
+    Kind:' put it as private
+      {
+      type method
+      'read/lent/mut/type/capsule/
+      Elem elem() error S"InternalUseOnly"
+      type method
+      'read/lent/mut/type/capsule/
+      Elem elemRead() error S"InternalUseOnly"
+      }
+    VectorStruct:...
+    })
+}
