@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.function.Function;
 
 import coreVisitors.CloneVisitor;
 import coreVisitors.From;
@@ -71,10 +72,26 @@ public class RemoveCode {
     catch(ErrorMessage.PathNonExistant e){}
     ClassB innerC=cb;
     if(!pi.isEmpty()){
+      //Push.pushMany(in, cs)
       Member inner=IntrospectionAdapt.encapsulateIn(pi,cb,comment);
       innerC=new ClassB(Doc.empty(),Doc.empty(),true,Collections.emptyList(),Collections.singletonList(inner),Stage.None);
       }
-    return IntrospectionSum.sum(accumulator, innerC, Path.outer(0));
+    assert !pi.isEmpty();
+    String className=pi.get(pi.size()-1);
+    Function<ClassB, ClassB> fun=container->{
+      List<Member> ms = new ArrayList<>();
+      ms.addAll(container.getMs());
+      //ms.add(new NestedClass(className,))
+      //e se non e' a top level? e se e' privata perche una delle classi nella chain era privata?
+      //questo era un bug anche prima.
+      //devo fare una funzione ricorsiva che esplora sia accumulator che original sul path pi,
+      // finche c'e roba in acc, procedere ricorsivamente,
+      //quando trova un punto dove acc non ha, copia i commenti dele classi nested e le aggiunge,
+      //quando finisce, incolla il risultato. E asserta che il risultato non c'era "gia"
+      return null;//contaner.withMs()
+    };
+    //return ClassOperations.onClassNavigateToPathAndDo(accumulator,pi.subList(0, pi.size()-1),fun);
+    return Sum.normalizedTopSum(Program.empty(),accumulator, innerC);//can be much more efficient
     }
 
   private static ClassB extractClassBNoNesteds(List<String> pi, ClassB originalCb,Doc[] commentRef) {

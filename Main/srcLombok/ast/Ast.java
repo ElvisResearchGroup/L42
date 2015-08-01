@@ -114,6 +114,8 @@ public interface Ast {
     int n;List<String> rowData;
     private Path(int n,List<String> rowData){
       assert !rowData.get(0).contains("-"):rowData;//as in Outer-1 :-(
+      assert !rowData.contains(null)://comment to force new line an put break
+        rowData;
       rowData=Collections.unmodifiableList(rowData);
       this.n=n;this.rowData=rowData;
     }

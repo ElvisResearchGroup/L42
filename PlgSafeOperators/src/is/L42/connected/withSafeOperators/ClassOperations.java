@@ -84,11 +84,14 @@ public class ClassOperations {
     return result;
   }
   static Path normalizePath(List<String>whereWeAre,int outerN,List<String>cs){
+    assert cs!=null;
     List<String> whereWeAreLoc=whereWeAre.subList(whereWeAre.size()-outerN, whereWeAre.size());
     int i=0;
     while(true){
       if(i>=cs.size()){break;}
       if(i>=whereWeAreLoc.size()){break;}
+      assert cs.get(i)!=null:
+        cs;
       if(!cs.get(i).equals(whereWeAreLoc.get(i))){break;}
       i+=1;
     }

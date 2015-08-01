@@ -120,11 +120,11 @@ ListArray:{mut(var mut Cell head,var N size)
       this.min(this.min()+1N)
       if this.fill().isPresent() (
         if !this.max().isPresent() (return void)
-        if this.min()>= !this.max() (exception void)
+        if this.min()>= ~this.max() (exception void)
         return void
         )
       if this.max().isPresent() (
-          if this.min()>=!this.max() (exception void)
+          if this.min()>=~this.max() (exception void)
           )
       if this.min()>=this.that().size() (exception void)
       return void
@@ -193,11 +193,11 @@ ListArray:{mut(var mut Cell head,var N size)
       this.min(this.min()+1N)
       if this.fill().isPresent() (
         if !this.max().isPresent() (return void)
-        if this.min()>= !this.max() (exception void)
+        if this.min()>= ~this.max() (exception void)
         return void
         )
       if this.max().isPresent() (
-          if this.min()>=!this.max() (exception void)
+          if this.min()>=~this.max() (exception void)
           )
       if this.min()>=this.that().size() (exception void)
       return void

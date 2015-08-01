@@ -314,24 +314,25 @@ public static class TestRedirect1 {//add more test for error cases
                     "{X:{Y:{A:{()  type method A fun()}}}}" },
         "{InnerZ:{InnerA:{()  type method Outer1 fun()}}"
         + " M:{type method Library defA_maker() {type method InnerZ::InnerA beA_maker() InnerZ::InnerA()}}"
-        + "B:{C: M.defA_maker() }"  //  So this call to get a library value is imaginary, as shown below
+        + "B:{C: {} }"  //  So this call to get a library value is imaginary, as shown below, @FromMarcoToJames, now a meta expresion there would cause errors, so I remove it.
         + "}",
         "Outer0::InnerZ::InnerA","Outer1::X::Y::A",
         "{InnerZ:{}"
         + "M:{type method Library defA_maker() {type method Outer3::X::Y::A beA_maker() Outer3::X::Y::A.#apply()}} "
-        + "B:{C:Outer1::M.defA_maker()}"
+        + "B:{C:{}}"
         + "}",false
     },{lineNumber(), new String[]{      // referring outside the target causes the same unfriendly error
                                       // also only with both B and M
                     "{X:{Y:{A:{()  type method Outer1 fun()}}}}" },
-        "{InnerZ:{InnerA:{()  type method Outer0 fun()}}"
+        "{InnerZ:{InnerA:{()  type method Outer0 fun()}}"//TODO: we need to discuss about this error:
+      //it see that InnerA.fun return Outer0, so it tries to map outer0 with the corresponding (X::Y from outside...)
         + " M:{type method Library defA_maker() {type method InnerZ::InnerA beA_maker() InnerZ::InnerA()}}"
-        + "B:{C: M.defA_maker() }"  //  So this call to get a library value is imaginary, as shown below
+        + "B:{C: {} }"  //  So this call to get a library value is imaginary, as shown below
         + "}",
         "Outer0::InnerZ::InnerA","Outer1::X::Y::A",
         "{InnerZ:{}"
         + "M:{type method Library defA_maker() {type method Outer3::X::Y::A beA_maker() Outer3::X::Y::A.#apply()}} "
-        + "B:{C:Outer1::M.defA_maker()}"
+        + "B:{C:{}}"
         + "}",false
 
 

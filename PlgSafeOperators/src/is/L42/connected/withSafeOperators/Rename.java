@@ -100,15 +100,19 @@ public class Rename {
       public ExpCore visit(Path s) {
         if(s.isPrimitive()){return s;}
         assert s.isCore();
-        if(s.outerNumber()>getPath().size()){return s;}
-        List<String>topView=ClassOperations.toTop(getPath(),s);
+        List<String> path = getPath();
+        if(s.outerNumber()>path.size()){return s;}
+        List<String> unexploredPath=path.subList(0,path.size()-s.outerNumber());
+        if(unexploredPath.contains(null)){return s;}//we are in a class literal in a method and we look inside
+        if(s.outerNumber()>path.size()){return s;}
+        List<String>topView=ClassOperations.toTop(path,s);
         if(topView.size()<src.size()){return s;}
-        if(topView.equals(src)){return ClassOperations.normalizePath(getPath(),getPath().size(),dest);}
+        if(topView.equals(src)){return ClassOperations.normalizePath(path,path.size(),dest);}
         List<String>trimmedTop=topView.subList(0, src.size());
         if(trimmedTop.equals(src)){
           List<String>elongatedDest=new ArrayList<>(dest);
           elongatedDest.addAll(topView.subList(src.size(),topView.size()));
-          return ClassOperations.normalizePath(getPath(),getPath().size(),elongatedDest);
+          return ClassOperations.normalizePath(path,path.size(),elongatedDest);
           }
         return s;
         }

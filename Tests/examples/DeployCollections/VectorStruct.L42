@@ -126,7 +126,7 @@
         return void
         )
       if this.max().isPresent() (
-          if this.min()>=!this.max() (exception void)
+          if this.min()>=~this.max() (exception void)
           )
       if this.min()>=this.that().size() (exception void)
       return void
@@ -199,7 +199,7 @@
         return void
         )
       if this.max().isPresent() (
-          if this.min()>=!this.max() (exception void)
+          if this.min()>=~this.max() (exception void)
           )
       if this.min()>=this.that().size() (exception void)
       return void
