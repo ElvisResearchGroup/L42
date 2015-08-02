@@ -108,14 +108,15 @@ public class Rename {
         List<String>topView=ClassOperations.toTop(path,s);
         for(PathPath pp:mapPath){
           List<String>src=pp.getPath1().getCBar();
-          if(topView.size()<src.size()){return s;}
+          if(topView.size()<src.size()){continue;}
           if(topView.equals(src)){
+            if(pp.getPath2().isPrimitive()){
+              return pp.getPath2();
+              }
             if(pp.getPath2().outerNumber()==0){
               return ClassOperations.normalizePath(path,path.size(),pp.getPath2().getCBar());
               }
-            else{
-              return pp.getPath2().setNewOuter(pp.getPath2().outerNumber()+path.size());
-              }
+            return pp.getPath2().setNewOuter(pp.getPath2().outerNumber()+path.size());
             }
           List<String>trimmedTop=topView.subList(0, src.size());
           if(trimmedTop.equals(src)){

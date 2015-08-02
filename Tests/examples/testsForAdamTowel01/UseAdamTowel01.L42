@@ -3,7 +3,7 @@
 'NList:LinkedList.list(N)
 Main:{
   i=Introspection(lib:{Bar:{method Void()}})
-  Introspection::NodeReport ni=i.query(Path"Bar")
+  Introspection::PathReport ni=i.query(Path"Bar")
   Debug(ni.classKind())
   Debug(i.query(Path"Outer0").classKind())
   'zero=NList[0N]

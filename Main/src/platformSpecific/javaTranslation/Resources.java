@@ -269,3 +269,15 @@ public class Resources {
       }
     }
 }
+
+/*
+{
+type method 
+Void printHelloWorld() 
+  Outer0::Debug.#apply(that:Outer1::S"Hello World"++Outer0::N"42"
+Debug:{
+type method 
+Void #apply(Outer2::S that)
+ }}
+
+*/

@@ -41,22 +41,26 @@ public class Redirect {
     //call redirectOk, if that is ok, no other errors?
     //should cb be normalized first?
     assert external.isPrimitive() || external.outerNumber()>0;
-    //p=p.addAtTop(cb,Configuration.typeSystem.typeExtraction(p, cb));//TODO: is it ok? if so add in docs
     p=p.addAtTop(cb,null);
-    List<PathPath>toRedirect=redirectOk(Collections.emptyList(),p,cb,internal,external);
+    List<PathPath>toRedirect=redirectOk(p,cb,internal,external);
     return applyMapPath(p,cb,toRedirect);
   }
   public static ClassB applyMapPath(Program p,ClassB cb, List<PathPath> mapPath) {
-    List<ClassB> results=new ArrayList<ClassB>();
     cb=Rename.renameUsage(mapPath,cb);
     for(PathPath pp:mapPath){
       cb=IntrospectionAdapt.remove(pp.getPath1(),cb);
     }
     return cb;
   }
-  public static List<PathPath> redirectOk(List<PathPath>s,Program p,ClassB l, Path csPath,Path path){
+  public static List<PathPath> redirectOk(Program p,ClassB l, Path csPath,Path path){
+    List<PathPath>setVisited=new ArrayList<>();
+    redirectOk(setVisited,p,l,csPath,path);
+    return setVisited;
+  }
+  public static void redirectOk(List<PathPath>setVisited,Program p,ClassB l, Path csPath,Path path){
     PathPath currentPP=new PathPath(csPath,path);
-    if(s.contains(currentPP)){return Collections.emptyList();}
+    if(setVisited.contains(currentPP)){return;}
+    setVisited.add(currentPP);
     List<String>cs=csPath.getCBar();
     if(cs.isEmpty()){throw Errors42.errorInvalidOnTopLevel();}
     Errors42.checkExistsPathMethod(l, cs, Optional.empty());
@@ -89,11 +93,9 @@ public class Redirect {
     //(c) S,Cs->Path;p|-L[Paths=~Paths']:S'
     //(d) S;p|-L[M0=~M0' Cs->Path]:S0 ... S;p|-L[Mn=~Mn' Cs->Path]:Sn
     //(e) S'=Cs->Path,S0..Sn
-    List<PathPath>result=new ArrayList<PathPath>();
-    result.add(currentPP);
-    Set<Path>unexpectedI=redirectOkImpl(s,currentPP,p,l,
+    Set<Path>unexpectedI=redirectOkImpl(setVisited,currentPP,p,l,
         Map.of(pi->From.fromP(pi,csPath), l0NoFrom.getSupertypes()),
-        Map.of(pi->From.fromP(pi,path),l0DestNoFrom.getSupertypes()),result);
+        Map.of(pi->From.fromP(pi,path),l0DestNoFrom.getSupertypes()));
     List<Member> unexpectedMembers=new ArrayList<>();
     for(Member mi:l0NoFrom.getMs()){
       Optional<Member> miPrime = Program.getIfInDom(l0DestNoFrom.getMs(),mi);
@@ -105,7 +107,7 @@ public class Redirect {
           //mwt=Norm.of(p,mwt,true);
           miGet=mwt;
         }
-          redirectOk(s,p,l,From.from(mi,csPath),miGet,currentPP,result);
+          redirectOk(setVisited,p,l,From.from(mi,csPath),miGet,currentPP);
       }
       else{unexpectedMembers.add(mi);}
     }
@@ -114,7 +116,7 @@ public class Redirect {
     if(!unexpectedI.isEmpty()){isOk=false;}
     if(!headerOk){isOk=false;}
     if(isPrivate){isOk=false;}
-    if(isOk){return result;}
+    if(isOk){return;}
     List<Path>unexpectedInterfaces=new ArrayList<>(unexpectedI);
     Collections.sort(unexpectedInterfaces,(pa,pb)->pa.toString().compareTo(pb.toString()));
     if(kindSrc==null){kindSrc = ExtractInfo.classKind(l,cs,l0NoFrom, null, isPrivateState, isNoImplementation);}
@@ -122,13 +124,11 @@ public class Redirect {
     throw Errors42.errorSourceUnfit(currentPP.getPath1().getCBar(),path,
         kindSrc,kindDest,unexpectedMembers, headerOk, unexpectedInterfaces, isPrivate);
   }
-  private static Set<Path> redirectOkImpl(List<PathPath> s, PathPath currentPP, Program p, ClassB l, List<Path> paths, List<Path> pathsPrime, List<PathPath> result) {
+  private static Set<Path> redirectOkImpl(List<PathPath> s, PathPath currentPP, Program p, ClassB l, List<Path> paths, List<Path> pathsPrime) {
     //(paths ok)//and I can not use it for exceptions since opposite subset relation
     //S;p|-L[Paths=~Paths']:S'
     //Path subsetof Path'
     //or Paths=Path, Paths'=Path' and S;p|-L[Path=~Path']:S'
-    List<PathPath> sPrime=new ArrayList<>(s);
-    sPrime.add(currentPP);
     if(paths.isEmpty()){return Collections.emptySet();}
     Set<Path> ps=new HashSet<>(paths);
     Set<Path> psPrime=new HashSet<>(pathsPrime);
@@ -137,34 +137,32 @@ public class Redirect {
     if(ps.isEmpty()){return Collections.emptySet();}
     if(ps.size()!=1){return ps;}
     if(psPrime.size()!=1){return ps;}
-    boolean pathOk=redirectOkPath(sPrime, p, l,ps.iterator().next(),psPrime.iterator().next(), result);
+    boolean pathOk=redirectOkPath(s, p, l,ps.iterator().next(),psPrime.iterator().next());
     if(pathOk){return Collections.emptySet();}
     return ps;
     }
-  private static void redirectOk(List<PathPath> s, Program p, ClassB l, Member mi, Member miPrime, PathPath currentPP, List<PathPath> result) {
+  private static void redirectOk(List<PathPath> s, Program p, ClassB l, Member mi, Member miPrime, PathPath currentPP) {
     //from before I know the members mi, miPrime are of the same class.
     mi.match(
-      nc->redirectOkNc(s,p,l,nc,(NestedClass)miPrime,currentPP,result),
+      nc->redirectOkNc(s,p,l,nc,(NestedClass)miPrime,currentPP),
       errMi->{throw Assertions.codeNotReachable("Should be catched before as in fully abstract source");},
-      mt->redirectOkMt(s,p,l,mt,(MethodWithType)miPrime,currentPP,result));
+      mt->redirectOkMt(s,p,l,mt,(MethodWithType)miPrime,currentPP));
   }
-  private static Void redirectOkMt(List<PathPath> s, Program p, ClassB l, MethodWithType mt, MethodWithType mtPrime, PathPath currentPP, List<PathPath> result) {
-    List<PathPath> sPrime=new ArrayList<>(s);
-    sPrime.add(currentPP);
+  private static Void redirectOkMt(List<PathPath> s, Program p, ClassB l, MethodWithType mt, MethodWithType mtPrime, PathPath currentPP) {
     boolean isMdfOk=mt.getMt().getMdf()==mtPrime.getMt().getMdf();
-    boolean isRetTypeOk=redirectOkType(sPrime,p,l,mt.getMt().getReturnType(),mtPrime.getMt().getReturnType(),result);
+    boolean isRetTypeOk=redirectOkType(s,p,l,mt.getMt().getReturnType(),mtPrime.getMt().getReturnType());
     List<Integer> wrongTypes=new ArrayList<>();
     for(int i=0;i<mt.getMt().getTs().size();i+=1){
-      boolean isOkType=redirectOkType(sPrime,p,l,mt.getMt().getTs().get(i),mtPrime.getMt().getTs().get(i),result);
+      boolean isOkType=redirectOkType(s,p,l,mt.getMt().getTs().get(i),mtPrime.getMt().getTs().get(i));
       if(!isOkType){wrongTypes.add(i);}
     }
-    Set<Path> badExc=redirectOkExceptions(sPrime,p,l,mt.getMt().getExceptions(),mtPrime.getMt().getExceptions(),result);
+    Set<Path> badExc=redirectOkExceptions(s,p,l,mt.getMt().getExceptions(),mtPrime.getMt().getExceptions());
     if(!badExc.isEmpty() || !wrongTypes.isEmpty()|| !isRetTypeOk ||!isMdfOk){
       throw Errors42.errorMethodClash(currentPP.getPath1().getCBar(),mt,mtPrime, badExc.isEmpty(), wrongTypes, isRetTypeOk, isMdfOk);
     }
     return null;
   }
-  private static Set<Path> redirectOkExceptions(List<PathPath> s, Program p, ClassB l, List<Path> exceptions, List<Path> exceptionsPrime, List<PathPath> result) {
+  private static Set<Path> redirectOkExceptions(List<PathPath> s, Program p, ClassB l, List<Path> exceptions, List<Path> exceptionsPrime) {
     if(exceptionsPrime.isEmpty()){return Collections.emptySet();}
     Set<Path> exc=new HashSet<>(exceptions);
     Set<Path> excPrime=new HashSet<>(exceptionsPrime);
@@ -173,11 +171,11 @@ public class Redirect {
     exc.removeAll(exceptionsPrime);
     if(exc.size()!=1){return exc;}
     if(excPrime.size()!=1){return exc;}//ok not excPrime
-    boolean pathOk=redirectOkPath(s, p, l, exc.iterator().next(),exceptionsPrime.iterator().next(), result);
+    boolean pathOk=redirectOkPath(s, p, l, exc.iterator().next(),exceptionsPrime.iterator().next());
     if(pathOk){ return Collections.emptySet();}
     return exc;
   }
-  private static boolean redirectOkType(List<PathPath> s, Program p, ClassB l, Type t, Type tPrime, List<PathPath> result) {
+  private static boolean redirectOkType(List<PathPath> s, Program p, ClassB l, Type t, Type tPrime) {
     if(!t.getClass().equals(tPrime.getClass())){return false;}//incompatible internal/external types t1 t2
     Boolean[] pathOk={true};
     t.match(
@@ -185,19 +183,19 @@ public class Redirect {
         NormType ntP=(NormType)tPrime;
         if(!normType.getMdf().equals(ntP.getMdf())){return false;}//incompatible internal/external types t1 t2
         if(!normType.getPh().equals(ntP.getPh())){return false;}//incompatible internal/external types t1 t2
-        pathOk[0]=redirectOkPath(s,p,l,normType.getPath(),ntP.getPath(),result);
+        pathOk[0]=redirectOkPath(s,p,l,normType.getPath(),ntP.getPath());
         return null;
       },
       hType->{
         HistoricType htP=(HistoricType)tPrime;
         if(!hType.getSelectors().equals(htP.getSelectors())){return false;}//incompatible internal/external types t1 t2
         if(hType.isForcePlaceholder()!=htP.isForcePlaceholder()){return false;}//incompatible internal/external types t1 t2
-        pathOk[0]=redirectOkPath(s,p,l,hType.getPath(),htP.getPath(),result);
+        pathOk[0]=redirectOkPath(s,p,l,hType.getPath(),htP.getPath());
         return null;
       });
     return pathOk[0];
   }
-  private static boolean redirectOkPath(List<PathPath> s, Program p, ClassB l,Path cs, Path path, List<PathPath> result) {
+  private static boolean redirectOkPath(List<PathPath> s, Program p, ClassB l,Path cs, Path path) {
     //S;p|-L[Outern::Cs =~Outern::Cs]:emptyset  holds with n>0
     if(cs.isPrimitive() ||cs.outerNumber()>0){
       if(!cs.equals(path)){return false;}
@@ -206,17 +204,15 @@ public class Redirect {
     //otherwise
     //S;p|-L[Outer0::Cs =~ Path ]: S'
     //if S;p|-L[redirect Cs->Path]:S'
-    List<PathPath> res = redirectOk(s,p,l,cs,path);
-    result.addAll(res);
+    redirectOk(s,p,l,cs,path);
     return true;
   }
-  private static Void redirectOkNc(List<PathPath> s, Program p, ClassB l, NestedClass nc, ClassB.NestedClass miPrime, PathPath currentPP, List<PathPath> result) {
+  private static Void redirectOkNc(List<PathPath> s, Program p, ClassB l, NestedClass nc, ClassB.NestedClass miPrime, PathPath currentPP) {
     //S;p|-L[C:L1=~C:L1' Cs->Path]:S'
     //if S,Cs->Path;p|-L[redirect Cs::C->Path::C]:S'
     Path src=currentPP.getPath1().pushC(nc.getName());
     Path dest=currentPP.getPath2().pushC(nc.getName());
-    List<PathPath> res = redirectOk(s,p,l,src,dest);
-    result.addAll(res);
+    redirectOk(s,p,l,src,dest);
     return null;
   }
   static void checkPrivacyCoupuled(ClassB cbFull,ClassB cbClear, List<String> path) {

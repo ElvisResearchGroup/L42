@@ -32,13 +32,18 @@ import tools.Map;
 
 public class ExtractInfo {
   static class IsUsed extends CloneWithPath{
-    Path target;IsUsed(Path target){this.target=target;}
+    Path target;IsUsed(Path target){
+      assert target.outerNumber()==0:"only for used internal paths";
+      this.target=target;
+      }
     Set<Path> whereUsed=new HashSet<>();
     public ExpCore visit(Path s) {
       List<String> path = getPath();
       if(s.isPrimitive()){return s;}
-      List<String> unexploredPath=path.subList(0,path.size()-s.outerNumber());
-      if(unexploredPath.contains(null)){return super.visit(s);}
+      if(path.size()<s.outerNumber()){return s;}
+      //List<String> unexploredPath=path.subList(0,path.size()-s.outerNumber());
+      //if(unexploredPath.contains(null)){return super.visit(s);}
+      if(path.contains(null)){return super.visit(s);}
       Path localP=Path.outer(0,path);
       boolean isSame=From.fromP(s, localP).equals(target);
       if(isSame){

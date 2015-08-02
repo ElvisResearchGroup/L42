@@ -43,7 +43,7 @@ public class TestBase {
   public  void testUseCollections() throws Throwable{
     TestHelper.configureForTest();
     L42.main(new String[]{"examples/testsForAdamTowel01/UseCollections.L42"});
-    Assert.assertEquals(L42.record.toString(),"Hello World Deployed\n");
+    Assert.assertEquals(L42.record.toString(),"size is 2 hello world\nhello\nworld\n");
     }
 }
 

@@ -81,58 +81,58 @@ public static class TestRedirect1 {//add more test for error cases
     },{lineNumber(), new String[]{      // redirection vs binding a returned library at the same nesting depth
     "{A:{()}}" },
     "{InnerA:{()} M:{type method Library defA_maker() {type method InnerA beA_maker() InnerA()}} "
-    + "B:M.defA_Maker() }",
+    + "B:{} }",
     "Outer0::InnerA","Outer1::A",
     "{M:{type method Library defA_maker() {type method Outer3::A beA_maker() Outer3::A.#apply()}}"
-    + "B:Outer0::M.defA_Maker() }",false
+    + "B:{} }",false
     },{lineNumber(), new String[]{      // redirection vs binding a returned library at a different nesting depth
                     "{A:{()}}" },
         "{InnerA:{()} M:{type method Library defA_maker() {type method InnerA beA_maker() InnerA()}}"
-        + "B:{C: M.defA_maker() }"  //  So this call to get a library value is imaginary, as shown below
+        + "B:{C: {} }"  //  So this call to get a library value is imaginary, as shown below
         + "}",
         "Outer0::InnerA","Outer1::A",
         "{M:{type method Library defA_maker() {type method Outer3::A beA_maker() Outer3::A.#apply()}} "
-        + "B:{C:Outer1::M.defA_maker()}}",false
+        + "B:{C:{}}}",false
     },{lineNumber(), new String[]{      // redirecting a nested library, into a differently nested target
                     "{X:{Y:{A:{()  type method A fun()}}}}" },
         "{InnerZ:{InnerA:{()  type method Outer0 fun()}}"
         + " M:{type method Library defA_maker() {type method InnerZ::InnerA beA_maker() InnerZ::InnerA()}}"
-        + "B:{C: M.defA_maker() }"  //  So this call to get a library value is imaginary, as shown below
+        + "B:{C: {} }"  //  So this call to get a library value is imaginary, as shown below
         + "}",
         "Outer0::InnerZ::InnerA","Outer1::X::Y::A",
         "{InnerZ:{}"
         + "M:{type method Library defA_maker() {type method Outer3::X::Y::A beA_maker() Outer3::X::Y::A.#apply()}} "
-        + "B:{C:Outer1::M.defA_maker()}}",false
+        + "B:{C:{} }}",false
     },{lineNumber(), new String[]{      // same, with opposite type relation on fun()
                     "{X:{Y:{A:{()  type method Outer0 fun()}}}}" },
         "{InnerZ:{InnerA:{()  type method InnerA fun()}}"
         + " M:{type method Library defA_maker() {type method InnerZ::InnerA beA_maker() InnerZ::InnerA()}}"
-        + "B:{C: M.defA_maker() }"  //  So this call to get a library value is imaginary, as shown below
+        + "B:{C: {} }"  //  So this call to get a library value is imaginary, as shown below
         + "}",
         "Outer0::InnerZ::InnerA","Outer1::X::Y::A",
         "{InnerZ:{}"
         + "M:{type method Library defA_maker() {type method Outer3::X::Y::A beA_maker() Outer3::X::Y::A.#apply()}} "
-        + "B:{C:Outer1::M.defA_maker()}}",false
+        + "B:{C:{}}}",false
     },{lineNumber(), new String[]{      // same, with two explicit classes on fun()
                     "{X:{Y:{A:{()  type method A fun()}}}}" },
         "{InnerZ:{InnerA:{()  type method InnerA fun()}}"
         + " M:{type method Library defA_maker() {type method InnerZ::InnerA beA_maker() InnerZ::InnerA()}}"
-        + "B:{C: M.defA_maker() }"  //  So this call to get a library value is imaginary, as shown below
+        + "B:{C: {} }"  //  So this call to get a library value is imaginary, as shown below
         + "}",
         "Outer0::InnerZ::InnerA","Outer1::X::Y::A",
         "{InnerZ:{}"
         + "M:{type method Library defA_maker() {type method Outer3::X::Y::A beA_maker() Outer3::X::Y::A.#apply()}} "
-        + "B:{C:Outer1::M.defA_maker()}}",false
+        + "B:{C:{}}}",false
     },{lineNumber(), new String[]{      // same, with two outers on fun()
                     "{X:{Y:{A:{()  type method Outer0 fun()}}}}" },
         "{InnerZ:{InnerA:{()  type method Outer0 fun()}}"
         + " M:{type method Library defA_maker() {type method InnerZ::InnerA beA_maker() InnerZ::InnerA()}}"
-        + "B:{C: M.defA_maker() }"  //  So this call to get a library value is imaginary, as shown below
+        + "B:{C: {} }"  //  So this call to get a library value is imaginary, as shown below
         + "}",
         "Outer0::InnerZ::InnerA","Outer1::X::Y::A",
         "{InnerZ:{}"
         + "M:{type method Library defA_maker() {type method Outer3::X::Y::A beA_maker() Outer3::X::Y::A.#apply()}} "
-        + "B:{C:Outer1::M.defA_maker()}}",false
+        + "B:{C:{}}}",false
         
 
     // the errors have variable portions.

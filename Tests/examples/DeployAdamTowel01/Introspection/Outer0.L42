@@ -1,0 +1,48 @@
+{(Mirror mirror)
+type method
+Outer0(Library lib) Outer0(mirror:Mirror::Lib(lib:lib))
+'type method Outer0(type Any cls) Outer0(mirror:Mirror::Class(cls:cls))
+
+method
+ PathReport query(Path that)exception TargetUnavailable
+   this.mirror().introspectionGiveInfo(path:that)
+
+method
+MemberReports members(Path that) exception TargetUnavailable(
+  var result=MemberReports[]
+  var mN=1N
+  while Bool.true() (' to be able to break
+    result:=result.#add(this.mirror()
+      .introspectionGiveInfoMember(path:that,memberN:mN))
+    mN+=1N
+    )
+  result)
+method
+MethodReports methods(Path that) exception TargetUnavailable
+  MethodReports[with m in this.members(that).vals() ( on MethodReport m)]
+method
+NestedClassReports nestedClasses(Path that) exception TargetUnavailable
+  NestedClassReports[with m in this.members(that).vals() ( on NestedClassReport m)]
+
+method MethodReports methods() {
+  return this.methods(Path"Outer0")
+  catch exception x (on TargetUnavailable error x )
+  }
+method NestedClassReports nestedClasses() {
+  return this.nestedClasses(Path"Outer0")
+  catch exception x (on TargetUnavailable error x )
+  }
+method MemberReports members(){
+  return this.members(Path"Outer0")
+  catch exception x (on TargetUnavailable error x )
+  }
+
+'design other methods to put here
+PathReport:{(Mirror report)
+  method
+  S classKind()
+    Outer1(this.report(),p:Path"ClassKind")
+  }
+Report:...
+Mirror:...
+}

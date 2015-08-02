@@ -1,0 +1,34 @@
+{
+Type:{(Outer2 root,Path path, N memberN, N typeN,Mirror report)}
+
+Parameter:{(Outer2 root,Path path, N memberN, N typeN,Mirror report)}
+
+Method:{(Outer1 root,Path path, N memberN,Mirror report)<:Member
+  method
+  Selector key()
+    Selector.#stringParser(Outer1(this.report(),p:Path"Key").binaryRepr())
+  method'need to be called only on methodWithType
+  ParameterReports parameters()
+  }
+NestedClass:{(Outer1 root,Path path, N memberN,Mirror report)<:Member}
+type method Member dispatch(Outer1 root,Path path, N memberN,Library that) {
+  mirror=MirrorLibrary(lib:that)
+  with x=Outer0(mirror,p:Path"MemberKind") (
+    case x== S"NestedClass"  (return NestedClassReport(root:root,path:path,memberN:memberN,report:mirror))
+    case x== S"InterfaceImplementedMethod" (return MethodReport(root:root,path:path,memberN:memberN,report:mirror))
+    case x== S"ImplementedMethod" (return MethodReport(root:root,path:path,memberN:memberN,report:mirror))
+    case x== S"AbstractMethod" (return MethodReport(root:root,path:path,memberN:memberN,report:mirror))
+    default error S"invalid member kind "++x
+    )
+  }
+type method S (Mirror that,Path p) (
+  result=that.introspectionDocAsString(path:p)
+  catch exception x (on TargetUnavailable error x )
+  result 
+  )
+  
+Member:{interface}
+Members:LinkedList.list(Member)
+Methods:LinkedList.list(Method)
+NestedClasses:LinkedList.list(NestedClass)
+Parameters:LinkedList.list(Parameter)

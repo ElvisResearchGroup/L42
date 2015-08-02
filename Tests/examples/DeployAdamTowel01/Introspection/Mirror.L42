@@ -1,0 +1,64 @@
+Mirror :{interface 
+  method
+  Report::Path introspectionGiveInfo(Outer1 root,Path path) exception TargetUnavailable 
+  method
+  Report::Member introspectionGiveInfoMember(Outer1 root,Path path, N memberN) exception TargetUnavailable,Void
+  method
+  Report::Type introspectionGiveInfoType(Outer1 root,Path path, N memberN, N typeN) exception TargetUnavailable,Void
+  method
+  S introspectionDocAsString(Path path) exception TargetUnavailable
+  method
+  S introspectionDocAsString(Path path, N annotationN) exception TargetUnavailable,Void
+  method
+  type Any introspectionDocPath(Path path, N annotationN) exception TargetUnavailable,Void
+
+  Lib:{(Library lib)<:Mirror
+    method
+    introspectionGiveInfo(root, path)
+      Report::Path(root:root,path:path report: MirrorLibrary(lib:
+        using SafeOperators
+          check introspectionGiveInfo(this.lib(), path:path.binaryRepr())
+          error SafeOperators.mkError(S"introspectionGiveInfo")))
+      
+    method
+    introspectionGiveInfoMember(root,path,memberN)
+      Outer2::Report::dispatch(root:root,path:path,memberN:memberN,
+        using SafeOperators
+          check introspectionGiveInfoMember(this.lib(), path:path.binaryRepr(),memberN:memberN.binaryRepr())
+          exception void)
+  
+    method
+    introspectionGiveInfoType(root,path,memberN,typeN)
+      TypeReport(root:root,path:path,memberN:memberN,typeN:typeN,report: MirrorLibrary(lib:
+        using SafeOperators
+          check introspectionGiveInfoType(this.lib(), path:path.binaryRepr(),memberN:memberN.binaryRepr(),typeN:typeN.binaryRepr())
+          exception void))
+  
+    method
+    introspectionDocAsString(path,annotationN)
+      S.#stringParser(using SafeOperators
+        check introspectionDocAsString(this.lib(), path:path.binaryRepr(),annotationN:(1N+annotationN).binaryRepr())
+        exception void)
+        
+    method
+    introspectionDocAsString(path)
+      S.#stringParser(using SafeOperators
+        check introspectionDocAsString(this.lib(), path:path.binaryRepr(),annotationN:0N.binaryRepr())
+        error SafeOperators.mkError(S"introspectionDocAsString"))
+  
+    method
+    introspectionDocPath(path,annotationN)
+      using SafeOperators
+        check introspectionDocPath(this.lib(), path:path.binaryRepr(),annotationN:annotationN.binaryRepr())
+        error SafeOperators.mkError(S"introspectionDocPath")
+  
+    }
+'make program hosting pairs cb,ct, then do this part
+'MirrorClass:{(type Any lib)<:Mirror
+'  method introspectionGiveInfo(path)
+'  method introspectionGiveInfoMember(path,memberN)
+'  method introspectionGiveInfoType(path,memberN,typeN)
+'  method introspectionDocAsString(path,annotationN)
+'  method introspectionDocPath(path,annotationN)  
+'  }
+}

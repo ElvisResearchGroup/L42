@@ -36,6 +36,7 @@ public class ExtractInfoTest {
   @Test  public void test() {
     ClassB classInput=getClassB(_classInput);
     Path path=Path.parse(_path);
+    path=Path.outer(0,path.getCBar());//normalize, put Outer0 on top.
     ExtractInfo.IsUsed iu=new ExtractInfo.IsUsed(path);
     classInput.accept(iu);
     assertEquals(iu.whereUsed.size(),(int)count);//cast to avoid overloading ambiguity :(

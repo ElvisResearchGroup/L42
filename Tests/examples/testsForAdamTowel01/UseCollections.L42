@@ -1,7 +1,19 @@
 {reuse L42.is/adamTowel01
-Lib:Load[]<<{reuse L42.is/Collections}
+Collections:Load[]<<{reuse L42.is/Collections}
+Ss:Collections.vector(S)
+Tests:{
+  type method Void t1(){
+    l=Ss[S"hello";S"world"]
+    Debug(S"size is "++l.size()++S" "++l(0N)++S" "++l(1N))
+    with x in l.vals() (
+      Debug(x)
+      )
+    return void
+    }
+  }
 Main:{
-  Lib.printHelloWorld()
+  Tests.t1()
   return ExitCode.normal()
   }
+  
 }
