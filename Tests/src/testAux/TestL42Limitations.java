@@ -37,19 +37,19 @@ public void test1() throws IOException{
     TestHelper.configureForTest();
     //L42.setRootPath(Paths.get("dummy"));
     Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
-,"{reuse L42.is/microBase"
+,"{reuse L42.is/nanoBase1"
 ,"  Time:{'@plugin"
 ,"    'L42.is/connected/withLimitations"
 ,"    ()}"
 ,"  Main:{"
-,"    using Time check executionTime(lessThan:200N.that()) ("
+,"    using Time check executionTime(lessThan:200N.binaryRepr()) ("
 //err1: operator precedence over 2000N.that()
 //err2: 2000(N.that()) cause err in typechecking since library is not core
 //!ms.pop().pop().isEmpty()
 //==!(ms.pop().pop().isEmpty())
 //200N.that()==(200N).that()
-,"      while True() ("
-,"        using Alu check stringDebug(S\"Foo\".that()) void ))"
+,"      while Bool.true() ("
+,"        using Alu check stringDebug(S\"Foo\".binaryRepr()) void ))"
 ,"    return ExitCode.normal()"
 ,"    }"
 ,"  }"

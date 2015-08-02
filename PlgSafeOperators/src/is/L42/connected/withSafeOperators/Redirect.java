@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import coreVisitors.CloneVisitorWithProgram;
+import coreVisitors.CloneWithPath;
 import coreVisitors.From;
 import coreVisitors.FromInClass;
 import facade.Configuration;
@@ -39,9 +41,18 @@ public class Redirect {
     //call redirectOk, if that is ok, no other errors?
     //should cb be normalized first?
     assert external.isPrimitive() || external.outerNumber()>0;
-    p=p.addAtTop(cb,Configuration.typeSystem.typeExtraction(p, cb));//TODO: is it ok? if so add in docs
+    //p=p.addAtTop(cb,Configuration.typeSystem.typeExtraction(p, cb));//TODO: is it ok? if so add in docs
+    p=p.addAtTop(cb,null);
     List<PathPath>toRedirect=redirectOk(Collections.emptyList(),p,cb,internal,external);
-    return IntrospectionAdapt.applyMapPath(p,cb,toRedirect);
+    return applyMapPath(p,cb,toRedirect);
+  }
+  public static ClassB applyMapPath(Program p,ClassB cb, List<PathPath> mapPath) {
+    List<ClassB> results=new ArrayList<ClassB>();
+    cb=Rename.renameUsage(mapPath,cb);
+    for(PathPath pp:mapPath){
+      cb=IntrospectionAdapt.remove(pp.getPath1(),cb);
+    }
+    return cb;
   }
   public static List<PathPath> redirectOk(List<PathPath>s,Program p,ClassB l, Path csPath,Path path){
     PathPath currentPP=new PathPath(csPath,path);
@@ -56,7 +67,7 @@ public class Redirect {
     if(path.isCore()){
       assert path.outerNumber()>0:
         path;
-      l0DestNoFrom= p.extractCt(path);
+      l0DestNoFrom= p.extractCb(path);
       }//p(Path)[from Path]=L0'={H' M0' ... Mn', _}//reordering of Ms allowed here
     else{
       assert path.isPrimitive();

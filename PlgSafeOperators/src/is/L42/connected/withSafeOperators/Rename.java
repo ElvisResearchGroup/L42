@@ -64,7 +64,7 @@ public class Rename {
     return directRename(p, cb, src, dest);
   }
   private static ClassB directRename(Program p, ClassB cb, List<String> src, List<String> dest) {
-    ClassB renamedCb=renameUsage(src,dest,cb);//cb, renamedCb are normalized
+    ClassB renamedCb=renameUsage(Collections.singletonList(new PathPath(Path.outer(0,src),Path.outer(0,dest))),cb);//cb, renamedCb are normalized
     ClassB clearCb=ClassOperations.onNestedNavigateToPathAndDo(renamedCb,src,nc->Optional.empty());
     ClassB newCb=redirectDefinition(src,dest,renamedCb);
     newCb=ClassOperations.normalizePaths(newCb,Collections.emptyList());
@@ -95,25 +95,38 @@ public class Rename {
     ms.add(IntrospectionAdapt.encapsulateIn(dest, cb,docCb[0]));
     return new ClassB(Doc.empty(),Doc.empty(),false,Collections.emptyList(),ms,Stage.None);
   }
-  static ClassB renameUsage(List<String>src,List<String>dest, ClassB cb) {
+  static ClassB renameUsage(List<PathPath> mapPath, ClassB cb) {
     return (ClassB)cb.accept(new coreVisitors.CloneWithPath(){
       public ExpCore visit(Path s) {
         if(s.isPrimitive()){return s;}
         assert s.isCore();
         List<String> path = getPath();
         if(s.outerNumber()>path.size()){return s;}
-        List<String> unexploredPath=path.subList(0,path.size()-s.outerNumber());
+        List<String> unexploredPath=path.subList(0,path.size()-s.outerNumber());//in usedPath similar thing.
         if(unexploredPath.contains(null)){return s;}//we are in a class literal in a method and we look inside
         if(s.outerNumber()>path.size()){return s;}
         List<String>topView=ClassOperations.toTop(path,s);
-        if(topView.size()<src.size()){return s;}
-        if(topView.equals(src)){return ClassOperations.normalizePath(path,path.size(),dest);}
-        List<String>trimmedTop=topView.subList(0, src.size());
-        if(trimmedTop.equals(src)){
-          List<String>elongatedDest=new ArrayList<>(dest);
-          elongatedDest.addAll(topView.subList(src.size(),topView.size()));
-          return ClassOperations.normalizePath(path,path.size(),elongatedDest);
-          }
+        for(PathPath pp:mapPath){
+          List<String>src=pp.getPath1().getCBar();
+          if(topView.size()<src.size()){return s;}
+          if(topView.equals(src)){
+            if(pp.getPath2().outerNumber()==0){
+              return ClassOperations.normalizePath(path,path.size(),pp.getPath2().getCBar());
+              }
+            else{
+              return pp.getPath2().setNewOuter(pp.getPath2().outerNumber()+path.size());
+              }
+            }
+          List<String>trimmedTop=topView.subList(0, src.size());
+          if(trimmedTop.equals(src)){
+            List<String>elongatedDest=new ArrayList<>(pp.getPath2().getCBar());
+            elongatedDest.addAll(topView.subList(src.size(),topView.size()));
+            if(pp.getPath2().outerNumber()==0){
+              return ClassOperations.normalizePath(path,path.size(),elongatedDest);
+              }
+            else{
+              return Path.outer(pp.getPath2().outerNumber()+path.size(),elongatedDest);
+            }}}
         return s;
         }
        });

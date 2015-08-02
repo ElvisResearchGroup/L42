@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 
 import coreVisitors.CloneVisitor;
@@ -25,10 +27,11 @@ public class RemoveCode {
   public static ClassB removeUnreachableCode(ClassB originalCb){
     ClassB newCb=removeAllPrivates(originalCb);
     ClassB oldCb=newCb;
+    Set<List<String>> justAdded = paths(newCb);
     do{
       oldCb=newCb;
       //for all nested in newCb
-      newCb=collectDepNested(originalCb,newCb,newCb,Collections.emptyList());
+      newCb=collectDepNested(justAdded,originalCb,newCb,newCb,Collections.emptyList());
       //take all dependencies
       //add them from originalCb to newCb in newCb
     }while(!newCb.equals(oldCb));
@@ -44,9 +47,26 @@ public class RemoveCode {
     //then, with fixpoint:
     //for all the classes that are in newL, if Cs is used, add Cs from oldL
   }
-  private static ClassB collectDepNested(ClassB originalCb,ClassB accumulator,ClassB depSource,List<String> origin){
+  private static Set<List<String>>  paths(ClassB cb) {
+    Set<List<String>> result=new HashSet<>();
+    collectPaths(result,Collections.emptyList(),cb);
+    return result;
+  }
+  private static void collectPaths(Set<List<String>> accumulator,List<String> path,ClassB cb) {
+    accumulator.add(path);
+    for(Member m:cb.getMs()){
+      if(!(m instanceof NestedClass)){continue;}
+      NestedClass nc=(NestedClass)m;
+      List<String> pathi=new ArrayList<>(path);
+      pathi.add(nc.getName());
+      collectPaths(accumulator,pathi,(ClassB)nc.getInner());
+    }
+  }
+  private static ClassB collectDepNested(Set<List<String>> justAdded,ClassB originalCb,ClassB accumulator,ClassB depSource,List<String> origin){
     List<List<String>> dep=collectDep(depSource,origin);
     for(List<String> pi:dep){
+      if(justAdded.contains(pi)){continue;}
+      justAdded.add(pi);
       accumulator=addDep(accumulator,pi,originalCb);
     }
     assert dep!=null:"to break";
@@ -56,53 +76,68 @@ public class RemoveCode {
       ClassB cbi=(ClassB)nc.getInner();
       List<String> newOrigin=new ArrayList<>(origin);
       newOrigin.add(nc.getName());
-      accumulator=collectDepNested(originalCb, accumulator,cbi,newOrigin);
+      accumulator=collectDepNested(justAdded,originalCb, accumulator,cbi,newOrigin);
       }
     return accumulator;
     }
-  private static ClassB addDep(ClassB accumulator, List<String> pi, ClassB originalCb) {
-    Doc[] commentRef=new Doc[]{Doc.empty()};
-    ClassB cb = extractClassBNoNesteds(pi, originalCb,commentRef);
-    Doc comment=commentRef[0];
-    assert cb!=null;
-    try{
-      ClassB cbAcc = extractClassBNoNesteds(pi, accumulator,commentRef);
-      if(cb.equals(cbAcc)){return accumulator;}
+  private static ClassB addDep(ClassB accumulator, List<String> path, ClassB originalCb) {
+    if(path.isEmpty()){
+      return mergeNestedHolderWithDep(accumulator, originalCb);
       }
-    catch(ErrorMessage.PathNonExistant e){}
-    ClassB innerC=cb;
-    if(!pi.isEmpty()){
-      //Push.pushMany(in, cs)
-      Member inner=IntrospectionAdapt.encapsulateIn(pi,cb,comment);
-      innerC=new ClassB(Doc.empty(),Doc.empty(),true,Collections.emptyList(),Collections.singletonList(inner),Stage.None);
+    String firstName=path.get(0);
+    //either fistName does not exist in accumulator, and we call removeAllButPath
+    //or we have to continue recursivelly.
+    Optional<Member> optM = Program.getIfInDom(accumulator.getMs(), firstName);
+    NestedClass originalNc =(NestedClass) Program.getIfInDom(originalCb.getMs(), firstName).get();
+    ClassB newInner;
+    if(!optM.isPresent()){
+      newInner=removeAllButPath(path.subList(1, path.size()),(ClassB)originalNc.getInner());
       }
-    assert !pi.isEmpty();
-    String className=pi.get(pi.size()-1);
-    Function<ClassB, ClassB> fun=container->{
-      List<Member> ms = new ArrayList<>();
-      ms.addAll(container.getMs());
-      //ms.add(new NestedClass(className,))
-      //e se non e' a top level? e se e' privata perche una delle classi nella chain era privata?
-      //questo era un bug anche prima.
-      //devo fare una funzione ricorsiva che esplora sia accumulator che original sul path pi,
-      // finche c'e roba in acc, procedere ricorsivamente,
-      //quando trova un punto dove acc non ha, copia i commenti dele classi nested e le aggiunge,
-      //quando finisce, incolla il risultato. E asserta che il risultato non c'era "gia"
-      return null;//contaner.withMs()
-    };
-    //return ClassOperations.onClassNavigateToPathAndDo(accumulator,pi.subList(0, pi.size()-1),fun);
-    return Sum.normalizedTopSum(Program.empty(),accumulator, innerC);//can be much more efficient
+    else{
+      NestedClass accumulatorNc =(NestedClass)optM.get();
+      newInner=addDep((ClassB)accumulatorNc.getInner(),path.subList(1, path.size()),(ClassB)originalNc.getInner());
     }
-
-  private static ClassB extractClassBNoNesteds(List<String> pi, ClassB originalCb,Doc[] commentRef) {
-    ClassB cb=Program.extractCBar(pi, originalCb,commentRef);
-    List<Member> ms2 = new ArrayList<>();
-    for(Member m:cb.getMs()){
+    NestedClass nc=originalNc.withInner(newInner);
+    List<Member> ms = new ArrayList<>(accumulator.getMs());
+    Program.replaceIfInDom(ms,nc);
+    return accumulator.withMs(ms);
+  }
+  private static ClassB mergeNestedHolderWithDep(ClassB accumulator, ClassB originalCb) {
+    assert !accumulator.isInterface();
+    assert accumulator.getSupertypes().isEmpty();
+    assert accumulator.getDoc1().isEmpty();
+    assert accumulator.getDoc2().isEmpty();
+    List<Member> ms = new ArrayList<>();
+    for(Member m:accumulator.getMs()){
+      assert m instanceof NestedClass:
+        m;
+      ms.add(m);
+    }
+    for(Member m:originalCb.getMs()){
       if(m instanceof NestedClass){continue;}
-      ms2.add(m);
+      ms.add(m);
       }
-    cb=cb.withMs(ms2);
-    return cb;
+    return originalCb.withMs(ms);
+    }
+  private static ClassB removeAllButPath(List<String> path, ClassB originalCb) {
+    if(path.isEmpty()){
+      List<Member> ms = new ArrayList<>();
+      for(Member m:originalCb.getMs()){
+        if(m instanceof NestedClass){continue;}
+        ms.add(m);
+        }
+      return originalCb.withMs(ms);
+      }
+    String firstName=path.get(0);
+    List<Member> ms = new ArrayList<>();
+    for(Member m:originalCb.getMs()){
+      if(!(m instanceof NestedClass)){continue;}
+      NestedClass nc=(NestedClass)m;
+      if(!nc.getName().equals(firstName)){continue;}
+      ClassB newInner=removeAllButPath(path.subList(1, path.size()),(ClassB)nc.getInner());
+      ms.add(nc.withInner(newInner));
+      }
+    return originalCb.withMs(ms);
   }
 
   private static List<List<String>> collectDep(ClassB depSource, List<String> origin) {

@@ -35,14 +35,28 @@ public class ExtractInfo {
     Path target;IsUsed(Path target){this.target=target;}
     Set<Path> whereUsed=new HashSet<>();
     public ExpCore visit(Path s) {
-      Path localP=Path.outer(0,getPath());
-      if(From.fromP(s, localP).equals(target)){
+      List<String> path = getPath();
+      if(s.isPrimitive()){return s;}
+      List<String> unexploredPath=path.subList(0,path.size()-s.outerNumber());
+      if(unexploredPath.contains(null)){return super.visit(s);}
+      Path localP=Path.outer(0,path);
+      boolean isSame=From.fromP(s, localP).equals(target);
+      if(isSame){
         whereUsed.add(localP);
         }
       return super.visit(s);
       }
   public static Set<Path> of(ClassB cb,Path path){
     IsUsed iu=new IsUsed(path);
+    cb.accept(iu);
+    return iu.whereUsed;
+    }  }
+  static class IsUsedAsPath extends IsUsed{
+    IsUsedAsPath(Path target){super(target);}
+    protected List<Path> liftSup(List<Path> supertypes) {return supertypes;}
+    protected Type liftT(Type t){return t;}
+  public static Set<Path> of(ClassB cb,Path path){
+    IsUsedAsPath iu=new IsUsedAsPath(path);
     cb.accept(iu);
     return iu.whereUsed;
     }
@@ -61,24 +75,6 @@ public class ExtractInfo {
       }
   public static Set<Path> of(ClassB cb,Path path){
     IsImplemented iu=new IsImplemented(path);
-    cb.accept(iu);
-    return iu.whereUsed;
-    }
-  }
-  static class IsUsedAsPath extends CloneWithPath{
-    Path target;IsUsedAsPath(Path target){this.target=target;}
-    Set<Path> whereUsed=new HashSet<>();
-    protected List<Path> liftSup(List<Path> supertypes) {return supertypes;}
-    protected Type liftT(Type t){return t;}
-    public ExpCore visit(Path s) {
-      Path localP=Path.outer(0,getPath());
-      if(From.fromP(s, localP).equals(target)){
-        whereUsed.add(localP);
-        }
-      return super.visit(s);
-      }
-  public static Set<Path> of(ClassB cb,Path path){
-    IsUsedAsPath iu=new IsUsedAsPath(path);
     cb.accept(iu);
     return iu.whereUsed;
     }

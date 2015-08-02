@@ -2,8 +2,10 @@ package sugarVisitors;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import tools.Map;
 import ast.Expression;
+import ast.Ast.Doc;
 import ast.Ast.VarDec;
 import ast.Expression.ClassB.*;
 import ast.Expression.ClassB;
@@ -15,7 +17,7 @@ public class FlatFirstLevelLocalNestedClasses extends CloneVisitor{
     ClassB result=v.start(s);//to manage super
     List<Member> ms2=new ArrayList<>();
     for(NestedClass nc:v.collected){
-      ms2.add(nc.withInner(nc.getInner().accept(step)));
+      ms2.add(nc.withInner(nc.getInner().accept(step))/*.withDoc(Doc.factory("@private").sum(nc.getDoc()))*/);
     }
     ms2.addAll(result.getMs());
     return result.withMs(ms2);
@@ -36,7 +38,7 @@ public class FlatFirstLevelLocalNestedClasses extends CloneVisitor{
       NestedClass nc=((ast.Ast.VarDecCE)d).getInner();
       collected.add(nc);
     }
-    return super.liftVarDecs(result);    
+    return super.liftVarDecs(result);
   }
- 
+
 }

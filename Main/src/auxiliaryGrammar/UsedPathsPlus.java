@@ -19,7 +19,7 @@ import ast.ExpCore.ClassB.*;
 
 public class UsedPathsPlus {
   public List<Path> of(ClassB cb){
-    List<Path> result=new ArrayList<Path>();        
+    List<Path> result=new ArrayList<Path>();
     result.addAll(cb.getSupertypes());
     result.addAll(cb.getDoc1().getPaths());
     result.addAll(cb.getDoc2().getPaths());
@@ -32,18 +32,25 @@ public class UsedPathsPlus {
     return result;
   }
   Void collectPaths(List<Path> ps,ExpCore e){
-    class CollectReceiversPaths extends CloneVisitor{
-      public ExpCore visit(ClassB s) {return s;}   
+    //class CollectReceiversPaths extends CloneVisitor{
+    class CollectPaths extends CloneVisitor{
+      public ExpCore visit(ClassB s) {return s;}
+      /*boh, why i needed this? why collect only receivers? why allowing type Any in star classes?
       public ExpCore visit(ExpCore.MCall s) {//otherwise, we could not use paths+ as Any in star classes.
-        if(!(s.getReceiver() instanceof Path)){return super.visit(s);}
+         if(!(s.getReceiver() instanceof Path)){return super.visit(s);}
         Path p=(Path)s.getReceiver();
         if(!p.isPrimitive()){ps.add(p);}
         return super.visit(s);
-      }    }
-    e.accept(new CollectReceiversPaths());
+      }*/
+      public ExpCore visit(Path s){
+        if(!s.isPrimitive()){ps.add(s);}
+        return super.visit(s);
+        }
+      }
+    e.accept(new CollectPaths());
     return null;
   }
-  
+
   Void collectPaths(List<Path> ps,NestedClass nc){
     assert nc.getInner() instanceof ClassB;
     ClassB cb=(ClassB)nc.getInner();

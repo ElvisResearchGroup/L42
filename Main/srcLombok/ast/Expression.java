@@ -3,6 +3,7 @@ package ast;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
+
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import lombok.ToString;
@@ -216,6 +217,10 @@ public interface Expression extends Ast {
       assert countWalkBy <= 1 : this;
       return true;
     }
+    public String toString() {
+      return sugarVisitors.ToFormattedText.of(this);
+    }
+
     public interface Member {
       <T> T match(Function<NestedClass, T> nc, Function<MethodImplemented, T> mi, Function<MethodWithType, T> mt);
     }

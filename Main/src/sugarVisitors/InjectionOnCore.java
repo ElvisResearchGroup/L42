@@ -129,7 +129,8 @@ public class InjectionOnCore implements Visitor<ExpCore> {
   public ExpCore visit(Expression.SquareCall s){throw Assertions.codeNotReachable();}
   public ExpCore visit(Expression.SquareWithCall s){throw Assertions.codeNotReachable();}
   public ExpCore visit(Expression.CurlyBlock s){throw Assertions.codeNotReachable();}
-  public ExpCore visit(Expression.DotDotDot s){throw Assertions.codeNotReachable();}
+  public ExpCore visit(Expression.DotDotDot s){
+    throw Assertions.codeNotReachable();}
   public ExpCore visit(Expression.Literal s){throw Assertions.codeNotReachable();}
   public ExpCore visit(ClassReuse s) {throw Assertions.codeNotReachable();}
 }
