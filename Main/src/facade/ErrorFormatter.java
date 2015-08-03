@@ -57,7 +57,7 @@ public class ErrorFormatter {
 
     }
     errorTxt="Error kind: "+c.getSimpleName()+"\nPosition:"+
-    ((p==null)?"unknown":p.toString())+"\n"+errorTxt;
+    ((pos==null)?"unknown":pos.toString())+"\n"+errorTxt;
     //ps+"\n"+errorTxt;
     ErrorMessage.UserLevelError.Kind kind=findKind(msg);
     switch (kind){

@@ -144,6 +144,13 @@ public class TypeSystemOK {
     //check all types of parameters exists
     //check all types of local var exists
     mt=Norm.of(p, mt,false);
+    checkExists(p,mt.getMt().getReturnType());
+    for(Type t:mt.getMt().getTs() ){
+      checkExists(p,t);
+      }
+    for(Path pi:mt.getMt().getExceptions()){
+      checkExists(p,pi);
+    }
     if(!mt.getInner().isPresent()){return;}
     HashMap<String,NormType> varEnv=new HashMap<>();
     varEnv.put("this",new NormType(mt.getMt().getMdf(),Path.outer(0),Ph.None));
@@ -165,5 +172,18 @@ public class TypeSystemOK {
       throwEnv,
       suggested,
       mt.getInner().get());
+  }
+
+  private static Void checkExists(Program p,Path pi) {
+    if(pi.isPrimitive()){return null;}
+    try{p.extractCt(pi);}
+    catch(ErrorMessage.ProgramExtractOnMetaExpression err){
+      throw new ErrorMessage.PathNonExistant(pi.getCBar(),null);
+    }
+    return null;
+  }
+
+  private static void checkExists(Program p,Type returnType) {
+    returnType.match(nt->checkExists(p,nt.getPath()), hType->checkExists(p,hType.getPath()));
   }
 }

@@ -16,6 +16,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.antlr.v4.runtime.misc.ParseCancellationException;
+
 import coreVisitors.InjectionOnSugar;
 import coreVisitors.RecoverStoredSugar;
 import sugarVisitors.CollapsePositions;
@@ -50,7 +52,7 @@ public class L42 {
     record.append("\n");
     System.err.println(s);
   }
-  
+
   private static void setClassPath(Path p) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException{
    assert Files.isDirectory(p);
    List<URL> fileNames = new ArrayList<>();
@@ -71,14 +73,14 @@ public class L42 {
      method.invoke(loader, new Object[] { url });
      }
    }
-    
+
   public static void main(String [] arg) throws IOException, InstantiationException, IllegalAccessException, ClassNotFoundException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException{
     setClassPath(Paths.get("Plugins"));
     L42.programArgs=arg;
     try{
       Configuration.loadAll();
       Path path = Paths.get(arg[arg.length-1]);
-      
+
       String code=null;
       if(Files.isDirectory(path)){
         L42.setRootPath(path);
@@ -87,18 +89,22 @@ public class L42 {
       else {
         L42.setRootPath(path.getParent());
         code=L42.pathToString(path);
-        }      
+        }
       FinalResult res = L42.runSlow(path.toString(),code);
       System.out.println("------------------------------");
       System.out.println("END (zero for success): "+res.getErrCode());
     }
+    catch(ParseCancellationException parser){
+      System.out.println(parser.getMessage());
+      //parser.printStackTrace(System.out);
+      }
     catch(ErrorMessage msg){
       //System.out.println(ErrorFormatter.formatError(msg).getErrorTxt());
     	L42.printDebug(ErrorFormatter.formatError(Program.empty(),msg).getErrorTxt());
       }
   }
 
-    
+
   public static String pathToString(Path p) {
     StringBuffer b=new StringBuffer();
     try {
@@ -153,11 +159,11 @@ public class L42 {
     //System.out.println("--------------------------");
     //System.out.println(ToFormattedText.of(result));
     //System.out.println("--------------------------");
-    return checkFinalError(result);   
+    return checkFinalError(result);
   }
-  
+
   public static Path path;
   public static void setRootPath(Path path) {
-    L42.path=path;    
+    L42.path=path;
   }
 }

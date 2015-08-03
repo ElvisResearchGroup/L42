@@ -19,8 +19,8 @@ public class Facade implements Reduction{
   @Override
   public ClassB of(ClassB topLevel) {
     return (ClassB)Executor.stepStar(
-        getExecutor(),
-        //new CompiledStep(),
+        //getExecutor(),
+        new CompiledStep(),
         //new BigStep(),
         //new SmallStep(),
         topLevel);

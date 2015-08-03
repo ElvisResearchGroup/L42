@@ -30,7 +30,7 @@ public class CollapsePositions extends CloneVisitor{
         Integer.max(p1.getPos2(),p2.getPos2())
         );
       }
-    if(genericity(p1)>genericity(p2)){return p2;}
+    //if(genericity(p1)>genericity(p2)){return p2;}//mess up with file names?
     return p1;
     }
   private static int genericity(Position p) {
@@ -38,5 +38,5 @@ public class CollapsePositions extends CloneVisitor{
     +
     (p.getPos2()-p.getPos1());
   }
-  
+
 }

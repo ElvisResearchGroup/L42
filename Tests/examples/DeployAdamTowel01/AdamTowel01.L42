@@ -16,22 +16,22 @@ SafeOperators:...
 
 'where they should go? top level or inside Report? or inside another thing?
 Report:{interface<:S::ToS} 'there will be a MakeReport decorator
-SourceUnfit:{(Introspection::Mirror mirror) <:Report
+SourceUnfit:{(Introspection report) <:Report
   method toS() S"SourceUnfit"
   }
-ClassClash:{(Introspection::Mirror mirror) <:Report
+ClassClash:{(Introspection report) <:Report
   method toS() S"ClassClash"
   }
-MethodClash:{(Introspection::Mirror mirror) <:Report
+MethodClash:{(Introspection report) <:Report
   method toS() S"MethodClash"
   }
-InvalidOnTopLevel:{(Introspection::Mirror mirror) <:Report
+InvalidOnTopLevel:{(Introspection report) <:Report
   method toS() S"InvalidOnTopLevel"
   }
-TargetUnavailable:{(Introspection::Mirror mirror) <:Report
+TargetUnavailable:{(Introspection report) <:Report
   method toS() S"TargetUnavailable"
   }
-PrivacyCoupuled:{(Introspection::Mirror mirror) <:Report
+PrivacyCoupuled:{(Introspection report) <:Report
   method toS() S"PrivacyCoupuled"
   }
 NSBMissing:{(Report report) <:Report
@@ -43,11 +43,8 @@ Introspection:...
 Opt:...
 Compose:...
 Refactor:...
-Load:...
-Optimize:...
-DeployTowel:...
-DeployLibrary:...
-
-'should with be for?
-
+'Load:...
+'Optimize:...
+'DeployTowel:...
+'DeployLibrary:...
 }

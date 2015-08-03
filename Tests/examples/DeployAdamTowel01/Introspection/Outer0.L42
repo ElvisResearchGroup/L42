@@ -1,48 +1,49 @@
-{(Mirror mirror)
+{(MirrorPr mirror)
 type method
-Outer0(Library lib) Outer0(mirror:Mirror::Lib(lib:lib))
-'type method Outer0(type Any cls) Outer0(mirror:Mirror::Class(cls:cls))
+Outer0(Library lib) Outer0(mirror:MirrorPr::Lib(lib:lib))
+'type method Outer0(type Any cls) Outer0(mirror:MirrorPr::Class(cls:cls))
 
 method
- PathReport query(Path that)exception TargetUnavailable
-   this.mirror().introspectionGiveInfo(path:that)
+ Report::Path query(Path that)exception TargetUnavailable
+   this.mirror().introspectionGiveInfo(root:this,path:that)
 
 method
-MemberReports members(Path that) exception TargetUnavailable(
-  var result=MemberReports[]
+Report::Members members(Path that) exception TargetUnavailable(
+  var result=Report::Members[]
   var mN=1N
   while Bool.true() (' to be able to break
     result:=result.#add(this.mirror()
-      .introspectionGiveInfoMember(path:that,memberN:mN))
+      .introspectionGiveInfoMember(root:this,path:that,memberN:mN))
     mN+=1N
     )
   result)
 method
-MethodReports methods(Path that) exception TargetUnavailable
-  MethodReports[with m in this.members(that).vals() ( on MethodReport m)]
+Report::Methods methods(Path that) exception TargetUnavailable
+  Report::Methods[with m in this.members(that).vals() ( on Report::Method m)]
 method
-NestedClassReports nestedClasses(Path that) exception TargetUnavailable
-  NestedClassReports[with m in this.members(that).vals() ( on NestedClassReport m)]
+Report::NestedClasses nestedClasses(Path that) exception TargetUnavailable
+  Report::NestedClasses[with m in this.members(that).vals() ( on Report::NestedClass m)]
 
-method MethodReports methods() {
+method Report::Methods methods() {
   return this.methods(Path"Outer0")
   catch exception x (on TargetUnavailable error x )
   }
-method NestedClassReports nestedClasses() {
+method Report::NestedClasses nestedClasses() {
   return this.nestedClasses(Path"Outer0")
   catch exception x (on TargetUnavailable error x )
   }
-method MemberReports members(){
+method Report::Members members(){
   return this.members(Path"Outer0")
   catch exception x (on TargetUnavailable error x )
   }
 
-'design other methods to put here
-PathReport:{(Mirror report)
-  method
-  S classKind()
-    Outer1(this.report(),p:Path"ClassKind")
+method S #stringParser(Library that) {
+  path=Path.#stringParser(that)
+  return this.mirror().introspectionDocAsString(path:path)
+  catch exception x (on TargetUnavailable error x )
   }
+
+'design other methods to put here
 Report:...
-Mirror:...
+MirrorPr:... 'remove Pr later.
 }

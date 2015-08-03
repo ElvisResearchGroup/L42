@@ -170,20 +170,7 @@ public class TypeSystem implements Visitor<Type>, Reporter{
 
 
 
-/*
-  public static Type __typecheckSure(Program p,HashMap<String, NormType> varEnv, SealEnv sealEnv, ThrowEnv throwEnv, Type suggested,ExpCore inner) {
-    Type result=typecheckTollerant( p,varEnv, sealEnv, throwEnv, suggested, inner);
-    if(result instanceof Ast.FreeType){return result;}
-    if(suggested instanceof Ast.FreeType){return result;}
-    NormType nts=forceNormType( inner,suggested);
-    NormType nt=forceNormType( inner,result);
-    if(!Functions.isSubtype(p, nt.getPath(),nts.getPath())){
-      throw new ErrorMessage.PathsNotSubtype(nt,nts,inner);
-      }
-    if(Functions.isSubtype(p, nt,nts)){return result;}
-    throw new ErrorMessage.TypesNotSubtype(nt,nts,inner,null);
-  }
-  */
+
   private static Type suggestedAllowPromotions(Type suggested) {
     if(suggested instanceof FreeType){return suggested;}
     NormType nt=(NormType)suggested;
@@ -302,86 +289,6 @@ public class TypeSystem implements Visitor<Type>, Reporter{
     return inner.accept(newTs);
   }
 
-/*
-  public static Type __typecheckTollerant(Program p,HashMap<String, NormType> varEnv, SealEnv sealEnv, ThrowEnv throwEnv, Type suggested,ExpCore inner) {
-    sealEnv=SealEnv.addLentSingletons(varEnv,sealEnv);
-    varEnv=removeLents(varEnv);
-    TypeSystem newTs=new TypeSystem(p, varEnv, sealEnv, throwEnv, suggested,inner);
-    NormType nts=null;
-
-        try{
-      Type t= inner.accept(newTs);
-      if(t instanceof Ast.FreeType){return t;}
-      if(suggested instanceof Ast.FreeType){return t;}
-      nts=forceNormType( inner,suggested);
-      NormType nt=forceNormType( inner,t);
-      if(!Functions.isSubtype(p, nt.getPath(),nts.getPath())){
-        //hopeless, get a serious error
-        throw new ErrorMessage.PathsNotSubtype(nt,nts,inner);
-        }
-      if(Functions.isSubtype(p, nt,nts)){return t;}
-//      assert false:nt+" "+nts+" "+inner+" "+varEnv;
-      //request for promotions here
-      if(nt.getMdf()==Mdf.Mutable && (nts.getMdf()==Mdf.Capsule ||nts.getMdf()==Mdf.Immutable)){
-        SealEnv newSealEnv=new SealEnv(sealEnv);
-        //TODO: either delete comment or apply:newSealEnv.xs//stay empty, implicit unlock!
-        newSealEnv.addLayer(varEnv);
-        try{
-          return typecheckPromotion(p, varEnv, throwEnv, inner, nts.withMdf(Mdf.Mutable), nt,newSealEnv,sealEnv).withMdf(nts.getMdf());
-        }catch(ErrorMessage.TypeError e){
-          throw new ErrorMessage.TypesNotSubtype(nt,nts,inner,e);
-        }
-      }
-      if(nt.getMdf()==Mdf.Readable && nts.getMdf()==Mdf.Immutable){
-        SealEnv newSealEnv=new SealEnv(sealEnv);
-        newSealEnv.addStrongLock(varEnv);
-        newSealEnv.addLayer(varEnv);
-        try{
-        return typecheckPromotion(p, varEnv, throwEnv, inner, nts.withMdf(Mdf.Readable), nt,newSealEnv,sealEnv).withMdf(Mdf.Immutable);
-        }catch(ErrorMessage.TypeError e){
-          throw new ErrorMessage.TypesNotSubtype(nt,nts,inner,e);
-        }
-      }
-      if(inner instanceof ExpCore.X && nt.getMdf()==Mdf.Lent && nts.getMdf()==Mdf.Mutable){
-        throw new ErrorMessage.LentShuldBeMutable((ExpCore.X)inner);
-        }
-      throw new ErrorMessage.TypesNotSubtype(nt,nts,inner,null);
-    }
-    catch(ErrorMessage.VariableSealed v){
-      SealEnv newSealEnv=new SealEnv(sealEnv);
-      newSealEnv.xs.clear();
-      if(nts!=null && Functions.isSuperTypeOfMut(nts.getMdf())){
-        v.fillInStackTrace();throw v;
-      }
-      Type tProm= typecheckTollerant(p,varEnv, newSealEnv,throwEnv,suggested,inner);
-      NormType tPromNoMut=Functions.sharedToLent((NormType)tProm);
-      if(nts==null){return tPromNoMut;}
-      if(Functions.isSubtype(p, tPromNoMut,nts)){return tPromNoMut;}
-      throw new ErrorMessage.TypesNotSubtype(tPromNoMut,nts,inner,null);
-      }
-    catch(ErrorMessage.LentShuldBeMutable v){
-      String x=v.getVar().getInner();
-      if(!sealEnv.xInXss(x)){
-        //we are out of the scope of capsule promotion that made x lent.
-        //No swap is possible, give a good error
-        v.fillInStackTrace();throw v;
-      }
-      assert sealEnv.xInXss(x): x+" "+sealEnv.xss;
-      if(nts!=null && nts.getMdf()==Mdf.Mutable){v.fillInStackTrace();throw v;}
-      SealEnv newSealEnv=new SealEnv(sealEnv);
-      newSealEnv.swapLayer(x,varEnv);
-      Type tProm= typecheckTollerant(p,varEnv, newSealEnv,throwEnv,suggested,inner);
-      NormType tPromNoMut=Functions.sharedToLent((NormType)tProm);
-      if(nts==null){return tPromNoMut;}
-      if(Functions.isSubtype(p, tPromNoMut,nts)){return tPromNoMut;}
-      throw new ErrorMessage.TypesNotSubtype(tPromNoMut,nts,inner,null);
-      }
-    catch(ErrorMessage.TypeError typeE){
-      typeE.envs.add(newTs);
-      throw typeE;
-    }
-    }
-*/
   private static NormType typecheckPromotion(
       boolean unlocking,Program p,HashMap<String, NormType> varEnv,
       ThrowEnv throwEnv,ExpCore inner, NormType nts, NormType nt,

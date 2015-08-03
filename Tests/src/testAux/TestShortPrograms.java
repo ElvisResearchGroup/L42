@@ -9,6 +9,7 @@ import sugarVisitors.Desugar;
 import sugarVisitors.InjectionOnCore;
 import ast.ErrorMessage;
 import ast.ErrorMessage.FinalResult;
+import ast.ErrorMessage.PathNonExistant;
 import ast.ExpCore;
 import ast.ExpCore.ClassB;
 
@@ -165,6 +166,34 @@ public void test8c(){tp("{()"
     ," C: D.id({() method Void foo() (D x= this void)}) "
     ," E: {'@exitStatus\n'0\n\n}"
     ,"}");}
+
+@Test(expected=ErrorMessage.PathNonExistant.class)
+public void test8d(){tp("{()"
+    ," A: {Bla:{}}"
+    ," D: {() type method Void wrongParameter(A::BlaWrong that)void type method Library id(Library that) that}"
+    ," C: D.id({()  method Void foo() void} )"
+    ," E: {'@exitStatus\n'0\n\n}"
+    ,"}");}
+
+@Test(expected=ErrorMessage.PathNonExistant.class)
+public void test8e(){tp("{"
+    ," A:{"
+    ," B:{(C::D d) }"
+    ," C:{ DPr:{}  }"
+    ," }"
+    ," Main:{'@exitStatus"
+    ," '0"
+    ," }}");}
+@Test(expected=ErrorMessage.PathNonExistant.class)
+public void test8f(){tp("{"
+    ," A:{"
+    ," B:{method Void foo() (type Any unused=C::Dpr void)}"
+    ," C:{ DPr:{}  }"
+    ," }"
+    ," Main:{'@exitStatus"
+    ," '0"
+    ," }}");}
+
 
 
 @Test(expected=ErrorMessage.PathsNotSubtype.class/*PathNonExistant.class*/)

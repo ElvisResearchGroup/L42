@@ -1,34 +1,37 @@
 {
-Type:{(Outer2 root,Path path, N memberN, N typeN,Mirror report)}
+Type:{(Introspection root,Outer3::Path path, N memberN, N typeN,Introspection report)}
 
-Parameter:{(Outer2 root,Path path, N memberN, N typeN,Mirror report)}
+Parameter:{(Introspection root,Outer3::Path path, N memberN, N typeN,Introspection report)}
 
-Method:{(Outer1 root,Path path, N memberN,Mirror report)<:Member
+Path:{(Introspection root,Outer3::Path path,Introspection report)
+  method S classKind() this.report()"ClassKind"
+  }
+
+Method:{(Introspection root,Outer3::Path path, N memberN,Introspection report)<:Member
   method
   Selector key()
-    Selector.#stringParser(Outer1(this.report(),p:Path"Key").binaryRepr())
+    Selector.#stringParser(this.report()"Key".binaryRepr())
   method'need to be called only on methodWithType
-  ParameterReports parameters()
+  Parameters parameters()
   }
-NestedClass:{(Outer1 root,Path path, N memberN,Mirror report)<:Member}
-type method Member dispatch(Outer1 root,Path path, N memberN,Library that) {
-  mirror=MirrorLibrary(lib:that)
-  with x=Outer0(mirror,p:Path"MemberKind") (
-    case x== S"NestedClass"  (return NestedClassReport(root:root,path:path,memberN:memberN,report:mirror))
-    case x== S"InterfaceImplementedMethod" (return MethodReport(root:root,path:path,memberN:memberN,report:mirror))
-    case x== S"ImplementedMethod" (return MethodReport(root:root,path:path,memberN:memberN,report:mirror))
-    case x== S"AbstractMethod" (return MethodReport(root:root,path:path,memberN:memberN,report:mirror))
+
+NestedClass:{(Introspection root,Outer3::Path path, N memberN,Introspection report)<:Member
+  }
+
+type method Member dispatch(Introspection root,Outer2::Path path, N memberN,Library report) {
+  _report =Introspection(lib:report)
+  with x=_report"MemberKind" (
+    case x== S"NestedClass"  (return NestedClass(root:root,path:path,memberN:memberN,report:_report))
+    case x== S"InterfaceImplementedMethod" (return Method(root:root,path:path,memberN:memberN,report:_report))
+    case x== S"ImplementedMethod" (return Method(root:root,path:path,memberN:memberN,report:_report))
+    case x== S"AbstractMethod" (return Method(root:root,path:path,memberN:memberN,report:_report))
     default error S"invalid member kind "++x
     )
   }
-type method S (Mirror that,Path p) (
-  result=that.introspectionDocAsString(path:p)
-  catch exception x (on TargetUnavailable error x )
-  result 
-  )
-  
+
 Member:{interface}
 Members:LinkedList.list(Member)
 Methods:LinkedList.list(Method)
 NestedClasses:LinkedList.list(NestedClass)
 Parameters:LinkedList.list(Parameter)
+}
