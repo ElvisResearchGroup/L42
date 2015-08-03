@@ -50,8 +50,8 @@ public class TypeExtraction {
     assert ct.getStage()==Stage.Star;
     //classB.getSupertypes().size()==1;
     //collect es
-    List<ClassB> es;
-    try{es=collectEs(p, ct);}
+    Set<ClassB> es;
+    try{es=new HashSet<>(collectEs(p, ct));}
     catch(ast.InternalError.InterfaceNotFullyProcessed notReadyYet){return null;}
     List<ClassB> esNone=new ArrayList<>();
     for(ClassB cb:es){
@@ -75,7 +75,7 @@ public class TypeExtraction {
       if(!pi.isCore()){continue;}
       try{es.add(p1.extractCt(pi));}
       catch(ErrorMessage.ProgramExtractOnMetaExpression meta){es.add(null);}
-      catch(ErrorMessage.ProgramExtractOnWalkBy walk){ }
+      catch(ErrorMessage.ProgramExtractOnWalkBy walk){ es.add(null);}
       catch(ErrorMessage.PathNonExistant incomplete){
         //TODO: booh what here? not throw error to allows more flexible composition
         //operators on incomplete code
@@ -117,7 +117,7 @@ public class TypeExtraction {
 
 
   /**return null for impossible to compute*/
-  static Ast.Stage stage(Program p,ClassB cb,List<ClassB>es/*can have nulls*/){
+  static Ast.Stage stage(Program p,ClassB cb,Set<ClassB>es/*can have nulls*/){
     assert IsCompiled.of(cb);
     for(ClassB cbi: es){
       if(cbi==null){return Stage.Less;}

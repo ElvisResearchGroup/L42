@@ -140,7 +140,9 @@ public class EncodingHelper{
     }
   public static String ensureExtractStringU(Object e) {
     String res=extractStringU(e);
-    if (res==null ){throw new Resources.Error("InvalidStringU");}
+    if (res==null ){
+      throw new Resources.Error("InvalidStringU");
+      }
     return res;
     }
   public static String extractStringU(Object e) {

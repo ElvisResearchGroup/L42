@@ -95,7 +95,10 @@ public class TranslateClass {
   private static boolean getClassOpen(String s, ClassB ct, StringBuilder res) {
     boolean isInterface=ct.isInterface();
     res.append("public static ");
-    if(isInterface){res.append("interface ");}
+    if(isInterface){
+      res.append("interface ");
+      if(!ct.getDoc1().isEmpty()){res.append("/*"+ct.getDoc1().toString()+"*/");}
+      }
     else{res.append("class ");}
     res.append(s);
     if(isInterface){res.append(" extends ");}

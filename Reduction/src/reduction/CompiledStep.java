@@ -36,7 +36,7 @@ public class CompiledStep extends SmallStep{
       String code=Translator.translateProgram(p1, e1);
       //System.out.println(code);
       //TODO: for testng only
-      //try {Files.write(Paths.get("C:\\Users\\marco\\Desktop\\WorkspaceLuglio2014\\Test42ToJava\\src\\generated\\Program42.java"), code.getBytes());}catch (IOException e) {throw new Error(e);}
+      //try {Files.write(Paths.get("C:\\Users\\marco\\Desktop\\eclipseMars\\L42Local\\Tests\\src\\generated\\Program42.java"), code.getBytes());}catch (IOException e) {throw new Error(e);}
       try{
         rounds++;
         System.out.println("Compilation Iteration: "+rounds+ "");
