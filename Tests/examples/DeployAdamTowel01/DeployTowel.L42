@@ -7,11 +7,11 @@ method Outer0 #end()this
 method
 Library <<(Library that) (
   Library report=using SafeOperatorsAccess
-    check introspectionGiveInfo(that, path:Outer0"Outer0")
-    error Outer0"introspectionGiveInfo"
+    check introspectLibraryReport(that, path:Outer0"Outer0")
+    error Outer0"introspectLibraryReport"
   Library text=using SafeOperatorsAccess
-    check introspectionDocAsString(report, path:Outer0"AllAsString",annotationN:0Outer0)
-    error Outer0"introspectionDocAsString"
+    check introspectLibraryDocAsString(report, path:Outer0"AllAsString",annotationN:0Outer0)
+    error Outer0"introspectLibraryDocAsString"
   using Alu
     check fileDebug(fileName:this.fileName(), content:text)
     error Outer0"fileDebug"

@@ -233,8 +233,8 @@ public interface Ast {
   }
   public static Path parse(String path) {
     List<String> rowData=Arrays.asList(path.split("::"));
-    for(String s:rowData){
-      assert isValidClassName(s);
+    for(String s:rowData){//TODO: make it more precise, throw real error?
+      assert isValidOuter(s)||isValidClassName(s): path;
     }
     return new Path(rowData);
   }

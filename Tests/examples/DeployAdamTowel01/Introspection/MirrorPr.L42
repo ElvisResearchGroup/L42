@@ -1,64 +1,64 @@
 {interface
   method
-  Report::Path introspectionGiveInfo(Outer1 root,Path path) exception TargetUnavailable
+  Report::Path introspectReport(Outer1 root,Path path) exception TargetUnavailable
   method
-  Report::Member introspectionGiveInfoMember(Outer1 root,Path path, N memberN) exception TargetUnavailable,Void
+  Report::Member introspectReportMember(Outer1 root,Path path, N memberN) exception TargetUnavailable,Void
   method
-  Report::Type introspectionGiveInfoType(Outer1 root,Path path, N memberN, N typeN) exception TargetUnavailable,Void
+  Report::Type introspectReportType(Outer1 root,Path path, N memberN, N typeN) exception TargetUnavailable,Void
   method
-  S introspectionDocAsString(Path path) exception TargetUnavailable
+  S introspectDocAsString(Path path) exception TargetUnavailable
   method
-  S introspectionDocAsString(Path path, N annotationN) exception TargetUnavailable,Void
+  S introspectDocAsString(Path path, N annotationN) exception TargetUnavailable,Void
   method
-  type Any introspectionDocPath(Path path, N annotationN) exception TargetUnavailable,Void
+  type Any introspectDocPath(Path path, N annotationN) exception TargetUnavailable,Void
 
   Lib:{(Library lib)<:Outer1
     method
-    introspectionGiveInfo(root, path)
+    introspectReport(root, path)
       Report::Path(root:root,path:path report: Introspection(lib:
         using SafeOperators
-          check introspectionGiveInfo(this.lib(), path:path.binaryRepr())
-          error SafeOperators.mkError(S"introspectionGiveInfo")))
+          check introspectLibraryReport(this.lib(), path:path.binaryRepr())
+          error SafeOperators.mkError(S"introspectReport")))
 
     method
-    introspectionGiveInfoMember(root,path,memberN)
+    introspectReportMember(root,path,memberN)
       Report.dispatch(root:root,path:path,memberN:memberN,report:
         using SafeOperators
-          check introspectionGiveInfoMember(this.lib(), path:path.binaryRepr(),memberN:memberN.binaryRepr())
+          check introspectLibraryReportMember(this.lib(), path:path.binaryRepr(),memberN:memberN.binaryRepr())
           exception void)
 
     method
-    introspectionGiveInfoType(root,path,memberN,typeN)
+    introspectReportType(root,path,memberN,typeN)
       Report::Type(root:root,path:path,memberN:memberN,typeN:typeN,report: Introspection(lib:
         using SafeOperators
-          check introspectionGiveInfoType(this.lib(), path:path.binaryRepr(),memberN:memberN.binaryRepr(),typeN:typeN.binaryRepr())
+          check introspectLibraryReportType(this.lib(), path:path.binaryRepr(),memberN:memberN.binaryRepr(),typeN:typeN.binaryRepr())
           exception void))
 
     method
-    introspectionDocAsString(path,annotationN)
+    introspectDocAsString(path,annotationN)
       S.#stringParser(using SafeOperators
-        check introspectionDocAsString(this.lib(), path:path.binaryRepr(),annotationN:(1N+annotationN).binaryRepr())
+        check introspectLibraryDocAsString(this.lib(), path:path.binaryRepr(),annotationN:(1N+annotationN).binaryRepr())
         exception void)
 
     method
-    introspectionDocAsString(path)
+    introspectDocAsString(path)
       S.#stringParser(using SafeOperators
-        check introspectionDocAsString(this.lib(), path:path.binaryRepr(),annotationN:0N.binaryRepr())
-        error SafeOperators.mkError(S"introspectionDocAsString"))
+        check introspectLibraryDocAsString(this.lib(), path:path.binaryRepr(),annotationN:0N.binaryRepr())
+        error SafeOperators.mkError(S"introspectLibraryDocAsString"))
 
     method
-    introspectionDocPath(path,annotationN)
+    introspectDocPath(path,annotationN)
       using SafeOperators
-        check introspectionDocPath(this.lib(), path:path.binaryRepr(),annotationN:annotationN.binaryRepr())
-        error SafeOperators.mkError(S"introspectionDocPath")
+        check introspectLibraryDocPath(this.lib(), path:path.binaryRepr(),annotationN:annotationN.binaryRepr())
+        error SafeOperators.mkError(S"introspectLibraryDocPath")
 
     }
 'make program hosting pairs cb,ct, then do this part
 'Class:{(type Any lib)<:Outer1
-'  method introspectionGiveInfo(path)
-'  method introspectionGiveInfoMember(path,memberN)
-'  method introspectionGiveInfoType(path,memberN,typeN)
-'  method introspectionDocAsString(path,annotationN)
-'  method introspectionDocPath(path,annotationN)
+'  method introspectReport(path)
+'  method introspectReportMember(path,memberN)
+'  method introspectReportType(path,memberN,typeN)
+'  method introspectDocAsString(path,annotationN)
+'  method introspectDocPath(path,annotationN)
 '  }
 }

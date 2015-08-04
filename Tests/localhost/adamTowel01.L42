@@ -1028,7 +1028,18 @@ Library #_binaryRepr()
 read method '@private @consistent
 Library _binaryRepr() 
 type method 
-Outer0 #stringParser(Library that) Outer0._private(_binaryRepr:that)
+Outer0 #stringParser(Library that) (
+  Void unused=using Outer1::SafeOperators check ifInvalidDo(selector:that) error Outer0::InvalidFormat.#apply(that:Outer1::S.#stringParser(that:that))
+  Outer0._private(_binaryRepr:that)
+  )
+InvalidFormat:{
+type method 
+Outer0 #apply(Outer2::S^that'@private @consistent
+) 
+mut method '@private @consistent
+Outer2::S #that() 
+read method '@private @consistent
+Outer2::S that() }
 method 
 Library binaryRepr() this._binaryRepr()
 method toS() Outer1::S.#stringParser(that:this._binaryRepr())
@@ -1112,7 +1123,18 @@ Library #_binaryRepr()
 read method '@private @consistent
 Library _binaryRepr() 
 type method 
-Outer0 #stringParser(Library that) Outer0._private(_binaryRepr:that)
+Outer0 #stringParser(Library that) (
+  Void unused=using Outer1::SafeOperators check ifInvalidDo(path:that) error Outer0::InvalidFormat.#apply(that:Outer1::S.#stringParser(that:that))
+  Outer0._private(_binaryRepr:that)
+  )
+InvalidFormat:{
+type method 
+Outer0 #apply(Outer2::S^that'@private @consistent
+) 
+mut method '@private @consistent
+Outer2::S #that() 
+read method '@private @consistent
+Outer2::S that() }
 method 
 Library binaryRepr() this._binaryRepr()
 method toS() Outer1::S.#stringParser(that:this._binaryRepr())
@@ -1353,7 +1375,7 @@ Outer0::MirrorPr mirror()
 type method 
 Outer0 #apply(Library lib) Outer0.#apply(mirror:Outer0::MirrorPr::Lib.#apply(lib:lib))
 method 
-Outer0::Report::Path query(Outer1::Path that) exception Outer1::TargetUnavailable this.mirror().introspectionGiveInfo(root:this, path:that)
+Outer0::Report::Path query(Outer1::Path that) exception Outer1::TargetUnavailable this.mirror().introspectReport(root:this, path:that)
 method 
 Outer0::Report::Members members(Outer1::Path that) exception Outer1::TargetUnavailable (
   Outer0::Report::Members::#begin() ::#end() result=Outer0::Report::Members.#begin().#end()
@@ -1367,7 +1389,7 @@ Outer0::Report::Members members(Outer1::Path that) exception Outer1::TargetUnava
       Void unused1=Outer1::Bool.true().#checkTrue()
       (' to be able to break
       
-        Void unused2=varresult.inner(that:varresult.#inner().#add(that:this.mirror().introspectionGiveInfoMember(root:this, path:that, memberN:varmN.#inner())))
+        Void unused2=varresult.inner(that:varresult.#inner().#add(that:this.mirror().introspectReportMember(root:this, path:that, memberN:varmN.#inner())))
         varmN.inner(that:varmN.#inner().#plus(that:Outer1::N.#numberParser(that:{'@stringU
         '1
         })))
@@ -1574,7 +1596,7 @@ method
 Outer1::S #stringParser(Library that) (
   Void unused=(
     Outer1::Path::#stringParser(that ) path=Outer1::Path.#stringParser(that:that)
-    Void unused0=return this.mirror().introspectionDocAsString(path:path)
+    Void unused0=return this.mirror().introspectDocAsString(path:path)
     catch exception x (
       on Outer1::TargetUnavailable error x
       )
@@ -1722,7 +1744,7 @@ Outer1::Parameters parameters() (
         Void unused3=Outer3::Bool.true().#checkTrue()
         (' to be able to break
         
-          Outer1::Type ti=this.root().mirror().introspectionGiveInfoType(root:this.root(), path:this.path(), memberN:this.memberN(), typeN:varpN.#inner())
+          Outer1::Type ti=this.root().mirror().introspectReportType(root:this.root(), path:this.path(), memberN:this.memberN(), typeN:varpN.#inner())
           Void unused4=varresult.inner(that:varresult.#inner().#add(that:Outer1::Parameter.#apply(_type:ti, name:ti.root().#stringParser(that:{'@stringU
           'ParName
           }))))
@@ -3176,17 +3198,17 @@ read method
 Void #close() void}}}
 MirrorPr:{interface 
 method 
-Outer1::Report::Path introspectionGiveInfo(Outer1 root, Outer2::Path path) exception Outer2::TargetUnavailable 
+Outer1::Report::Path introspectReport(Outer1 root, Outer2::Path path) exception Outer2::TargetUnavailable 
 method 
-Outer1::Report::Member introspectionGiveInfoMember(Outer1 root, Outer2::Path path, Outer2::N memberN) exception Outer2::TargetUnavailable, Void 
+Outer1::Report::Member introspectReportMember(Outer1 root, Outer2::Path path, Outer2::N memberN) exception Outer2::TargetUnavailable, Void 
 method 
-Outer1::Report::Type introspectionGiveInfoType(Outer1 root, Outer2::Path path, Outer2::N memberN, Outer2::N typeN) exception Outer2::TargetUnavailable, Void 
+Outer1::Report::Type introspectReportType(Outer1 root, Outer2::Path path, Outer2::N memberN, Outer2::N typeN) exception Outer2::TargetUnavailable, Void 
 method 
-Outer2::S introspectionDocAsString(Outer2::Path path) exception Outer2::TargetUnavailable 
+Outer2::S introspectDocAsString(Outer2::Path path) exception Outer2::TargetUnavailable 
 method 
-Outer2::S introspectionDocAsString(Outer2::Path path, Outer2::N annotationN) exception Outer2::TargetUnavailable, Void 
+Outer2::S introspectDocAsString(Outer2::Path path, Outer2::N annotationN) exception Outer2::TargetUnavailable, Void 
 method 
-type Any introspectionDocPath(Outer2::Path path, Outer2::N annotationN) exception Outer2::TargetUnavailable, Void 
+type Any introspectDocPath(Outer2::Path path, Outer2::N annotationN) exception Outer2::TargetUnavailable, Void 
 Lib:{<:Outer1
 type method 
 Outer0 #apply(Library^lib'@private @consistent
@@ -3195,21 +3217,21 @@ mut method '@private @consistent
 Library #lib() 
 read method '@private @consistent
 Library lib() 
-method introspectionGiveInfo(root path ) Outer2::Report::Path.#apply(root:root, path:path, report:Outer3::Introspection.#apply(lib:using Outer3::SafeOperators check introspectionGiveInfo(that:this.lib(), path:path.binaryRepr()) error Outer3::SafeOperators.mkError(that:Outer3::S.#stringParser(that:{'@stringU
-'introspectionGiveInfo
+method introspectReport(root path ) Outer2::Report::Path.#apply(root:root, path:path, report:Outer3::Introspection.#apply(lib:using Outer3::SafeOperators check introspectLibraryReport(that:this.lib(), path:path.binaryRepr()) error Outer3::SafeOperators.mkError(that:Outer3::S.#stringParser(that:{'@stringU
+'introspectReport
 }))))
-method introspectionGiveInfoMember(root path memberN ) Outer2::Report.dispatch(root:root, path:path, memberN:memberN, report:using Outer3::SafeOperators check introspectionGiveInfoMember(that:this.lib(), path:path.binaryRepr(), memberN:memberN.binaryRepr()) exception void)
-method introspectionGiveInfoType(root path memberN typeN ) Outer2::Report::Type.#apply(root:root, path:path, memberN:memberN, typeN:typeN, report:Outer3::Introspection.#apply(lib:using Outer3::SafeOperators check introspectionGiveInfoType(that:this.lib(), path:path.binaryRepr(), memberN:memberN.binaryRepr(), typeN:typeN.binaryRepr()) exception void))
-method introspectionDocAsString(path annotationN ) Outer3::S.#stringParser(that:using Outer3::SafeOperators check introspectionDocAsString(that:this.lib(), path:path.binaryRepr(), annotationN:Outer3::N.#numberParser(that:{'@stringU
+method introspectReportMember(root path memberN ) Outer2::Report.dispatch(root:root, path:path, memberN:memberN, report:using Outer3::SafeOperators check introspectLibraryReportMember(that:this.lib(), path:path.binaryRepr(), memberN:memberN.binaryRepr()) exception void)
+method introspectReportType(root path memberN typeN ) Outer2::Report::Type.#apply(root:root, path:path, memberN:memberN, typeN:typeN, report:Outer3::Introspection.#apply(lib:using Outer3::SafeOperators check introspectLibraryReportType(that:this.lib(), path:path.binaryRepr(), memberN:memberN.binaryRepr(), typeN:typeN.binaryRepr()) exception void))
+method introspectDocAsString(path annotationN ) Outer3::S.#stringParser(that:using Outer3::SafeOperators check introspectLibraryDocAsString(that:this.lib(), path:path.binaryRepr(), annotationN:Outer3::N.#numberParser(that:{'@stringU
 '1
 }).#plus(that:annotationN).binaryRepr()) exception void)
-method introspectionDocAsString(path ) Outer3::S.#stringParser(that:using Outer3::SafeOperators check introspectionDocAsString(that:this.lib(), path:path.binaryRepr(), annotationN:Outer3::N.#numberParser(that:{'@stringU
+method introspectDocAsString(path ) Outer3::S.#stringParser(that:using Outer3::SafeOperators check introspectLibraryDocAsString(that:this.lib(), path:path.binaryRepr(), annotationN:Outer3::N.#numberParser(that:{'@stringU
 '0
 }).binaryRepr()) error Outer3::SafeOperators.mkError(that:Outer3::S.#stringParser(that:{'@stringU
-'introspectionDocAsString
+'introspectLibraryDocAsString
 })))
-method introspectionDocPath(path annotationN ) using Outer3::SafeOperators check introspectionDocPath(that:this.lib(), path:path.binaryRepr(), annotationN:annotationN.binaryRepr()) error Outer3::SafeOperators.mkError(that:Outer3::S.#stringParser(that:{'@stringU
-'introspectionDocPath
+method introspectDocPath(path annotationN ) using Outer3::SafeOperators check introspectLibraryDocPath(that:this.lib(), path:path.binaryRepr(), annotationN:annotationN.binaryRepr()) error Outer3::SafeOperators.mkError(that:Outer3::S.#stringParser(that:{'@stringU
+'introspectLibraryDocPath
 }))}}}
 Opt:{
 type method 
@@ -4555,17 +4577,17 @@ method
 Outer0 #end() this
 method 
 Library #leftleft(Library that) (
-  Library report=using Outer0::SafeOperatorsAccess check introspectionGiveInfo(that:that, path:Outer0.#stringParser(that:{'@stringU
+  Library report=using Outer0::SafeOperatorsAccess check introspectLibraryReport(that:that, path:Outer0.#stringParser(that:{'@stringU
   'Outer0
   })) error Outer0.#stringParser(that:{'@stringU
-  'introspectionGiveInfo
+  'introspectLibraryReport
   })
-  Library text=using Outer0::SafeOperatorsAccess check introspectionDocAsString(that:report, path:Outer0.#stringParser(that:{'@stringU
+  Library text=using Outer0::SafeOperatorsAccess check introspectLibraryDocAsString(that:report, path:Outer0.#stringParser(that:{'@stringU
   'AllAsString
   }), annotationN:Outer0.#numberParser(that:{'@stringU
   '0
   })) error Outer0.#stringParser(that:{'@stringU
-  'introspectionDocAsString
+  'introspectLibraryDocAsString
   })
   Void unused=using Outer0::Alu check fileDebug(fileName:this.fileName(), content:text) error Outer0.#stringParser(that:{'@stringU
   'fileDebug

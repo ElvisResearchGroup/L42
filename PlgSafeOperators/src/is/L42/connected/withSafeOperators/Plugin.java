@@ -23,6 +23,7 @@ import coreVisitors.CloneVisitorWithProgram;
 import platformSpecific.fakeInternet.ActionType;
 import platformSpecific.fakeInternet.PluginType;
 import platformSpecific.javaTranslation.Resources;
+import platformSpecific.javaTranslation.Resources.Revertable;
 import sugarVisitors.ToFormattedText;
 
 //empty scheleton
@@ -86,43 +87,7 @@ public class Plugin implements PluginType{
       Doc doc=ensureExtractDoc(_doc);
       return AddDocumentation.addDocumentationOnMethod(that,path,sel,doc);
       }
-    //-----5 +5 introspections
-    @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
-    public Object MintrospectionGiveInfo£xthat£xpath(Object _that,Object _path){
-      ClassB that=ensureExtractClassB(_that);
-      List<String> path=Path.parseValidCs(ensureExtractStringU(_path));
-      return Introspection.giveInfo(that, path);
-    }
-    @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
-    public Object MintrospectionGiveInfoMember£xthat£xpath£xmemberN(Object _that,Object _path,Object _memberN){
-      ClassB that=ensureExtractClassB(_that);
-      List<String> path=Path.parseValidCs(ensureExtractStringU(_path));
-      int memberN=ensureExtractInt32(_memberN);
-      return Introspection.giveInfoMember(that, path,memberN);
-    }
-    @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
-    public Object MintrospectionGiveInfoType£xthat£xpath£xmemberN£xtypeN(Object _that,Object _path,Object _memberN,Object _typeN){
-      ClassB that=ensureExtractClassB(_that);
-      List<String> path=Path.parseValidCs(ensureExtractStringU(_path));
-      int memberN=ensureExtractInt32(_memberN);
-      int typeN=ensureExtractInt32(_typeN);
-      return Introspection.giveInfoType(Resources.getP(), that, path, memberN, typeN);
-    }
-
-    @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
-    public Object MintrospectionDocAsString£xthat£xpath£xannotationN(Object _that,Object _path,Object _annotationN){
-      ClassB that=ensureExtractClassB(_that);
-      List<String> path=Path.parseValidCs(ensureExtractStringU(_path));
-      int annotationN=ensureExtractInt32(_annotationN);
-      return Introspection.extractDocAsString(that, path, annotationN);
-    }
-    @ActionType({ActionType.Type.TypeAny,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
-    public Object MintrospectionDocPath£xthat£xpath£xannotationN(Object _that,Object _path,Object _annotationN){
-      ClassB that=ensureExtractClassB(_that);
-      List<String> path=Path.parseValidCs(ensureExtractStringU(_path));
-      int annotationN=ensureExtractInt32(_annotationN);
-      return Introspection.extractDocPath(that, path, annotationN);
-    }
+    
     @ActionType({ActionType.Type.Library,ActionType.Type.Library})
     public Object MremoveUnreachableCode£xthat(Object _that){
       ClassB that=ensureExtractClassB(_that);
@@ -142,5 +107,88 @@ public class Plugin implements PluginType{
      catch(Resources.Error err){return Resources.Void.instance;}
       throw Resources.notAct;
     }
+    
+//--------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------    
+    //-----5 +5 introspections //lib
+    @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+    public Object MintrospectLibraryReport£xthat£xpath(Object _that,Object _path){
+      ClassB that=ensureExtractClassB(_that);
+      List<String> path=Path.parseValidCs(ensureExtractStringU(_path));
+      return Introspection.giveInfo(that, path);
+    }
+    @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+    public Object MintrospectLibraryReportMember£xthat£xpath£xmemberN(Object _that,Object _path,Object _memberN){
+      ClassB that=ensureExtractClassB(_that);
+      List<String> path=Path.parseValidCs(ensureExtractStringU(_path));
+      int memberN=ensureExtractInt32(_memberN);
+      return Introspection.giveInfoMember(that, path,memberN);
+    }
+    @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+    public Object MintrospectLibraryReportType£xthat£xpath£xmemberN£xtypeN(Object _that,Object _path,Object _memberN,Object _typeN){
+      ClassB that=ensureExtractClassB(_that);
+      List<String> path=Path.parseValidCs(ensureExtractStringU(_path));
+      int memberN=ensureExtractInt32(_memberN);
+      int typeN=ensureExtractInt32(_typeN);
+      return Introspection.giveInfoType(Resources.getP(), that, path, memberN, typeN);
+    }
 
+    @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+    public Object MintrospectLibraryDocAsString£xthat£xpath£xannotationN(Object _that,Object _path,Object _annotationN){
+      ClassB that=ensureExtractClassB(_that);
+      List<String> path=Path.parseValidCs(ensureExtractStringU(_path));
+      int annotationN=ensureExtractInt32(_annotationN);
+      return Introspection.extractDocAsString(that, path, annotationN);
+    }
+    @ActionType({ActionType.Type.TypeAny,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+    public Object MintrospectLibraryDocPath£xthat£xpath£xannotationN(Object _that,Object _path,Object _annotationN){
+      ClassB that=ensureExtractClassB(_that);
+      List<String> path=Path.parseValidCs(ensureExtractStringU(_path));
+      int annotationN=ensureExtractInt32(_annotationN);
+      return Introspection.extractDocPath(that, path, annotationN);
+    }
+    
+    //-----5 +5 introspections //type
+    @ActionType({ActionType.Type.Library,ActionType.Type.TypeAny,ActionType.Type.Library})
+    public Object MintrospectTypeReport£xthat£xpath(Object _that,Object _path){
+      Path iPath=(_that instanceof Path)?(Path)_that:(Path)((Revertable)_that).revert();
+      ClassB that=Resources.getP().extractCb(iPath);
+      List<String> path=Path.parseValidCs(ensureExtractStringU(_path));
+      return Introspection.giveInfo(that, path);
+    }
+    @ActionType({ActionType.Type.Library,ActionType.Type.TypeAny,ActionType.Type.Library,ActionType.Type.Library})
+    public Object MintrospectTypeReportMember£xthat£xpath£xmemberN(Object _that,Object _path,Object _memberN){
+      Path iPath=(_that instanceof Path)?(Path)_that:(Path)((Revertable)_that).revert();
+      ClassB that=Resources.getP().extractCb(iPath);
+      List<String> path=Path.parseValidCs(ensureExtractStringU(_path));
+      int memberN=ensureExtractInt32(_memberN);
+      return Introspection.giveInfoMember(that, path,memberN);
+    }
+    @ActionType({ActionType.Type.Library,ActionType.Type.TypeAny,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+    public Object MintrospectTypeReportType£xthat£xpath£xmemberN£xtypeN(Object _that,Object _path,Object _memberN,Object _typeN){
+      Path iPath=(_that instanceof Path)?(Path)_that:(Path)((Revertable)_that).revert();
+      ClassB that=Resources.getP().extractCb(iPath);
+      List<String> path=Path.parseValidCs(ensureExtractStringU(_path));
+      int memberN=ensureExtractInt32(_memberN);
+      int typeN=ensureExtractInt32(_typeN);
+      return Introspection.giveInfoType(Resources.getP(), that, path, memberN, typeN);
+    }
+
+    @ActionType({ActionType.Type.Library,ActionType.Type.TypeAny,ActionType.Type.Library,ActionType.Type.Library})
+    public Object MintrospectTypeDocAsString£xthat£xpath£xannotationN(Object _that,Object _path,Object _annotationN){
+      Path iPath=(_that instanceof Path)?(Path)_that:(Path)((Revertable)_that).revert();
+      ClassB that=Resources.getP().extractCb(iPath);
+      List<String> path=Path.parseValidCs(ensureExtractStringU(_path));
+      int annotationN=ensureExtractInt32(_annotationN);
+      return Introspection.extractDocAsString(that, path, annotationN);
+    }
+    @ActionType({ActionType.Type.TypeAny,ActionType.Type.TypeAny,ActionType.Type.Library,ActionType.Type.Library})
+    public Object MintrospectTypeDocPath£xthat£xpath£xannotationN(Object _that,Object _path,Object _annotationN){
+      Path iPath=(_that instanceof Path)?(Path)_that:(Path)((Revertable)_that).revert();
+      ClassB that=Resources.getP().extractCb(iPath);
+      List<String> path=Path.parseValidCs(ensureExtractStringU(_path));
+      int annotationN=ensureExtractInt32(_annotationN);
+      return Introspection.extractDocPath(that, path, annotationN);
+    }
 }
