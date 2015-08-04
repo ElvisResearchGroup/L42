@@ -1,6 +1,12 @@
 { _private(Library _binaryRepr)<: S::ToS '@private
 
-  type method Outer0 #stringParser(Library that) Outer0._private(_binaryRepr:that)
+  type method Outer0 #stringParser(Library that) (
+    using SafeOperators 
+      check ifInvalidDo(selector:that)
+      error InvalidFormat(S.#stringParser(that))
+    Outer0._private(_binaryRepr:that)
+    )
+  InvalidFormat:{(S that)}
 
   method Library binaryRepr() this._binaryRepr()
 

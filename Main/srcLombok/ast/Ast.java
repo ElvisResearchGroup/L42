@@ -14,6 +14,7 @@ import ast.Ast.MethodSelector;
 import lombok.ToString;
 import lombok.Value;
 import lombok.experimental.Wither;
+import platformSpecific.javaTranslation.Resources;
 
 public interface Ast {
 
@@ -70,22 +71,21 @@ public interface Ast {
       List<String> xs=new ArrayList<String>();
       assert !s.isEmpty();
       char last=s.charAt(s.length()-1);
-      if(last==')'){
-        int i=s.indexOf('(');
-        assert i!=-1;
-        name=s.substring(0,i);
-        String parenthesis=s.substring(i+1,s.length()-1).trim();
-        if(!parenthesis.isEmpty()){
-          String[] names=parenthesis.split(",");//single representation required
-          for(String si:names){
-            assert checkX(si,false);
-            xs.add(si);
-            }
-          }
+      if(last!=')'){throw new Resources.Error("InvalidSelector: "+s);}
+      int i=s.indexOf('(');
+      if(i==-1){throw new Resources.Error("InvalidSelector: "+s);}
+      name=s.substring(0,i);
+      String parenthesis=s.substring(i+1,s.length()-1).trim();
+      if(!parenthesis.isEmpty()){
+      String[] names=parenthesis.split(",");//single representation required
+      for(String si:names){
+        if(!checkX(si,false)){throw new Resources.Error("InvalidSelector: "+s);}
+        xs.add(si);
         }
-      name=Desugar.desugarName(name);
-      if(!checkX(name,true)){return null;}
-      return new MethodSelector(name,xs);
+      }
+    name=Desugar.desugarName(name);
+    if(!checkX(name,true)){throw new Resources.Error("InvalidSelector: "+s);}
+    return new MethodSelector(name,xs);
     }
     private static boolean checkX(String s,boolean allowHash) {
       if(s.isEmpty()){return false;}
@@ -206,12 +206,25 @@ public interface Ast {
    if(cs.equals("Outer0")){return Collections.emptyList();}
    List<String> rowData=Collections.unmodifiableList(Arrays.asList(cs.split("::")));
    for(String s:rowData){
-     if(s.startsWith("Outer")){throw Assertions.codeNotReachable("Invalid Path shape:"+cs);}
-     if(!isValidClassName(s)){throw Assertions.codeNotReachable("Invalid Path shape:"+cs);}
+     if(!isValidClassName(s)){throw new Resources.Error("InvalidPath: "+cs);}
      }
     return rowData;
   }
+  public static boolean isValidOuter(String name){//thus invalid as pathName
+    if(name.equals("Outer")){return true;}
+    if(name.equals("Outer0")){return true;}
+    if(!name.startsWith("Outer")){return false;}
+    int firstN="Outer".length();
+    char c=name.charAt(firstN);
+    //first is 1--9 and all rest is 0-9
+    if("123456789".indexOf(c)!=-1){return false;}
+    for(int i=firstN+1;i<name.length();i++){
+      if("0123456789".indexOf(name.charAt(i))==-1){return false;}  
+      }
+    return true;
+    }
   public static boolean isValidClassName(String name){
+    if(isValidOuter(name)){return false;}
     if(!isValidPathStart(name.charAt(0))){return false;}
     for(int i=1;i<name.length();i++){
       if(!isValidPathChar(name.charAt(i))){return false;}

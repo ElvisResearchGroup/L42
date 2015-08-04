@@ -2,6 +2,7 @@ package is.L42.connected.withSafeOperators;
 
 import static auxiliaryGrammar.EncodingHelper.ensureExtractClassB;
 import static auxiliaryGrammar.EncodingHelper.ensureExtractStringU;
+import static auxiliaryGrammar.EncodingHelper.extractInt32;
 import static auxiliaryGrammar.EncodingHelper.ensureExtractPathFromJava;
 import static auxiliaryGrammar.EncodingHelper.ensureExtractDoc;
 
@@ -10,6 +11,7 @@ import java.util.List;
 import static auxiliaryGrammar.EncodingHelper.ensureExtractInt32;
 import static auxiliaryGrammar.EncodingHelper.ensureExtractInternalPath;
 
+import ast.Ast;
 import ast.Ast.Doc;
 import ast.ExpCore;
 import ast.Ast.MethodSelector;
@@ -125,6 +127,20 @@ public class Plugin implements PluginType{
     public Object MremoveUnreachableCode£xthat(Object _that){
       ClassB that=ensureExtractClassB(_that);
       return RemoveCode.removeUnreachableCode(that);
+    }
+    @ActionType({ActionType.Type.Void,ActionType.Type.Library})
+    public  Resources.Void MifInvalidDo£xselector(Object _selector){
+      String s=ensureExtractStringU(_selector);
+     try{Ast.MethodSelector.parse(s);}
+     catch(Resources.Error err){return Resources.Void.instance;}
+      throw Resources.notAct;
+    }
+    @ActionType({ActionType.Type.Void,ActionType.Type.Library})
+    public  Resources.Void MifInvalidDo£xpath(Object _path){
+      String s=ensureExtractStringU(_path);
+     try{Ast.Path.parseValidCs(s);}
+     catch(Resources.Error err){return Resources.Void.instance;}
+      throw Resources.notAct;
     }
 
 }
