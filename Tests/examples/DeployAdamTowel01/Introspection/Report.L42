@@ -1,19 +1,34 @@
 {'findMeReport
 Type:{(Introspection root,Outer3::Path path, N memberN, N typeN,Introspection report)}
 
-Parameter:{(Introspection root,Outer3::Path path, N memberN, N typeN,Introspection report)}
+Parameter:{(Type _type, S name)}
 
 Path:{'findMePath
   (Introspection root,Outer3::Path path,Introspection report)
   method S classKind() this.report()"ClassKind"
+  method S memberNumber() this.report()"MemberNumber"
+  method S implementedNumber() this.report()"ImplementedNumber"
+  method S allAsString() this.report()"AllAsString"
   }
 
 Method:{(Introspection root,Outer3::Path path, N memberN,Introspection report)<:Member
   method
   Selector key()
     Selector.#stringParser(this.report()"Key".binaryRepr())
-  method'need to be called only on methodWithType
-  Parameters parameters()
+
+  method 'need to be called only on methodWithType
+  Parameters parameters() {
+    var result=Parameters[]
+    var pN=1N
+    while Bool.true() (' to be able to break
+      Type ti=this.root().mirror()
+        .introspectionGiveInfoType(root:this.root(),path:this.path(),memberN:this.memberN(),typeN:pN)
+      result:=result.#add(Parameter(_type:ti,name:ti.root()"ParName"))
+      pN+=1N
+      )
+    return result
+    catch exception err (on TargetUnavailable error err)
+    }
   }
 
 NestedClass:{(Introspection root,Outer3::Path path, N memberN,Introspection report)<:Member

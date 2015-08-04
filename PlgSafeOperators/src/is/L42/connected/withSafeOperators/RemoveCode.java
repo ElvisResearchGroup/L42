@@ -103,10 +103,14 @@ public class RemoveCode {
     return accumulator.withMs(ms);
   }
   private static ClassB mergeNestedHolderWithDep(ClassB accumulator, ClassB originalCb) {
-    assert !accumulator.isInterface();
-    assert accumulator.getSupertypes().isEmpty();
-    assert accumulator.getDoc1().isEmpty();
-    assert accumulator.getDoc2().isEmpty();
+    assert !accumulator.isInterface()
+      :accumulator;
+    assert accumulator.getSupertypes().isEmpty()
+      :accumulator;
+    assert accumulator.getDoc1().isEmpty()
+      :accumulator;
+    assert accumulator.getDoc2().isEmpty()
+      :accumulator;
     List<Member> ms = new ArrayList<>();
     for(Member m:accumulator.getMs()){
       assert m instanceof NestedClass:
@@ -137,7 +141,7 @@ public class RemoveCode {
       ClassB newInner=removeAllButPath(path.subList(1, path.size()),(ClassB)nc.getInner());
       ms.add(nc.withInner(newInner));
       }
-    return originalCb.withMs(ms);
+    return new ClassB(Doc.empty(),Doc.empty(),false,Collections.emptyList(),ms,Stage.None);
   }
 
   private static List<List<String>> collectDep(ClassB depSource, List<String> origin) {

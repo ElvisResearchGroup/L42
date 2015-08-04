@@ -1,0 +1,28 @@
+l=Intro(lib)
+
+1  Report::Path l.query(path:)
+2  Report::Method l.query(path: methodNum:)
+3  Report::Type l.queryParameterType(path: methodNum: parameterNum:)
+4  Report::Type l.query(path: methodNum: exceptionNum:)
+5  Report::Type l.queryReturnType(path: methodNum: )
+
+1  Report::Method l.query(path: selector:)
+2  Report::Type l.queryParameterType(path: selector: parameterName:)
+3  Report::Type l.queryParameterType(path: selector: parameterNum:)
+4  Report::Type l.query(path: selector: exceptionNum:)
+5  Report::Type l.queryReturnType(path: selector: )
+
+1  Report::Members l.query(path: )
+2  Report::Methods l.queryMethods(path: )
+3  Report::Paths l.queryNestedClasses(path: )
+4  Report::Types l.queryExceptions(path: methodNum:)
+5  Report::Types l.queryParameterTypes(path: methodNum:)
+
+16  Report::Method l.queryConstructor(path:)
+
+
+2*  Selector s s.name(N), s.names()
+
+iterare sui campi -> meth name+ names(), and parameterTypes
+
+Plugin: isValidPath, isValidSelector

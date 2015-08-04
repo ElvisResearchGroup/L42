@@ -1,15 +1,15 @@
 { _private(Library _binaryRepr)<: S::ToS '@private
-  
+
   type method Outer0 #stringParser(Library that) Outer0._private(_binaryRepr:that)
-    
+
   method Library binaryRepr() this._binaryRepr()
-  
-  
+
+
   method toS() S.#stringParser(this._binaryRepr())
-  
-      
+
+
   method Bool != (S that) !(this==that)
-  
+
   method
   Bool == (S that) {
     using Alu
@@ -17,6 +17,20 @@
       return Bool.true()
     return Bool.false()
     }
+
+  method
+  Strings names(){
+    var str=this.toS()
+    str:=str(start:str.firstIndexOf(S"(")+1N, end:str.size()-1N)++S","
+    ' from foo(a,b,c) to a,b,c,
+    var result=Strings[]
+    while str!=S"" (
+      pos=str.firstIndexOf(S",")
+      result:=result.#add(str(end:pos))
+      str:=str(start:pos+1N)
+      )
+    return result.#end()'reverse the linked list
+  }
   'we still need to add check validity, and fields name, list parameters, bool isOperator
   'and ways to add/remove parameters
   }

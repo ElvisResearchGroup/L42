@@ -24,10 +24,33 @@
     }
 
   method
-  S (N that)
+  S (N start, N end)
     S.#stringParser(using Alu
-      check stringCharAt(this.binaryRepr(),pos:that.binaryRepr())
+      check stringSubstring(this.binaryRepr(),start:start.binaryRepr(),end:end.binaryRepr())
       error void )
+
+  method
+  S (N that) this(start:that, end:that+1N)
+
+  method
+  S (N start) this(start:start, end:this.size())
+
+  method
+  S (N end) this(start:0N, end:end)
+
+  method
+  Bool beginsWith(S that) this(end:that.size())==that
+
+  method
+  N firstIndexOf(S that) {
+    var current=0N
+    while current<this.size() (
+      if this(start:current).beginsWith(that) (return current)
+      current+=1N
+      )
+    error SubstringNotPresent(string:this,subString:that)
+    }
+  SubstringNotPresent:{(S string, S subString)}
 
   method N size ()
     N(_binaryRepr: using Alu

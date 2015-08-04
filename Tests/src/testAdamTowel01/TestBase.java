@@ -12,7 +12,7 @@ public class TestBase {
     TestHelper.configureForTest();
     //L42.main(new String[]{"examples/DeployAdamTowel01"});
     L42.main(new String[]{"examples/testsForAdamTowel01/UseAdamTowel01.L42"});
-    Assert.assertEquals(L42.record.toString(),"FreeTemplate\nFreeTemplate\n");
+    Assert.assertEquals(L42.record.toString(),"FreeTemplate\nFreeTemplate\nHello Adam 0\nazz\nbzz\nczz\n");
     }
   @Test
   public  void testLoadSimpleLib() throws Throwable{

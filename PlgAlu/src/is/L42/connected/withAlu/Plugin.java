@@ -78,7 +78,7 @@ public class Plugin implements PluginType {
     try{return new Integer(s);}
     catch(NumberFormatException nfe){throw new Resources.Error("InvalidEncodingForI32: "+s);    }
   }
-  
+
   @ActionType({ActionType.Type.Library,ActionType.Type.Library})
   public  Object Mint32ToString£xthat(Object cb){
     Integer i=extractInt32(cb);
@@ -114,13 +114,15 @@ public class Plugin implements PluginType {
     if (s1==null){throw new Resources.Error("InvalidStringU");}
     return s1.length();
   }
-  @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
-  public  Object MstringCharAt£xthat£xpos(Object cb1,Object cb2){
-    String s1=extractStringU(cb1);
-    Integer pos=extractInt32(cb2);
-    if (s1==null||pos==null){throw new Resources.Error("InvalidStringU");}
-    if(pos<0||s1.length()<=pos){throw new Resources.Error("InvalidIndexForStringCharAt:"+pos+" max acceptable is:"+s1.length());}
-    String r = s1.substring(pos, pos+1);
+  @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+  public  Object MstringSubstring£xthat£xstart£xend(Object cb1,Object _start,Object _end){
+    String s1=ensureExtractStringU(cb1);
+    int start=ensureExtractInt32(_start);
+    int end=ensureExtractInt32(_end);
+    if(start<0||end<0){throw new Resources.Error("NegativeIndexNotAllowed:"+start+","+end);}
+    end=Math.min(end,s1.length());
+    if(start>=s1.length()){return "";}
+    String r = s1.substring(start, end);
     return r;
   }
   @ActionType({ActionType.Type.Void,ActionType.Type.Library,ActionType.Type.Library})
@@ -136,6 +138,6 @@ public class Plugin implements PluginType {
     String that=ensureExtractStringU(_that);
     String src=ensureExtractStringU(_src);
     String dest=ensureExtractStringU(_dest);
-    return that.replace(src, dest);    
+    return that.replace(src, dest);
   }
 }
