@@ -1,22 +1,21 @@
-l=Intro(lib)
+constructor: Introspection(Library lib)  and Introspection(type Any cls) 
 
 1  method Report::Path query(Path path)
-2  method Report::Method query(Path path, N methodNum)
-3  method Report::Type queryParameterType(Path path, N methodNum, N parameterNum)
-4  method Report::Type query(Path path, N methodNum, N exceptionNum)
-5  method Report::Type queryReturnType(Path path, N methodNum, N)
+2  method Report::Member query(Path path, N memberNum)
+3  method Report::Type queryParameterType(Path path, N memberNum, N parameterNum)
+4  method Report::Type query(Path path, N memberNum, N exceptionNum)
+5  method Report::Type queryReturnType(Path path, N memberNum)
 
-1  method Report::Method query(Path path, N selector)
-2  method Report::Type queryParameterType(Path path, N selector, N parameterName)
-3  method Report::Type queryParameterType(Path path, N selector, N parameterNum)
-4  method Report::Type query(Path path, N selector, N exceptionNum)
-5  method Report::Type Path queryReturnType(Path path, N selector)
+1  method Report::Method query(Path path, Selector selector)
+2  method Report::Type queryParameterType(Path path, Selector selector, N parameterName)
+3  method Report::Type query(Path path, Selector selector, N exceptionNum)
+4  method Report::Type Path queryReturnType(Path path, Selector selector)
 
-1  method Report::Members query(Path path)
+1  method Report::Members queryMembers(Path path)
 2  method Report::Methods queryMethods(Path path)
 3  method Report::Paths Path queryNestedClasses(Path path)
-4  method Report::Types Path queryExceptions(Path path, N methodNum)
-5  method Report::Types Path queryParameterTypes(Path path, N methodNum)
+4  method Report::Types Path queryExceptions(Path path, N memberNum)//or selector?
+5  method Report::Types Path queryParameterTypes(Path path, N memberNum)//or selector?
 
 16  method Report::Method Path queryConstructor(Path path)
 
