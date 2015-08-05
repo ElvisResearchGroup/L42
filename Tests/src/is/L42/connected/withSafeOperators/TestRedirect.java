@@ -78,32 +78,22 @@ public static class TestRedirect1 {//add more test for error cases
         + "InnerZ:{method InnerZ ident(InnerZ that)} "
         + "method Void multiUse(InnerX x, InnerY y, InnerZ z) }",
         "Outer0::InnerA","Outer1::A","{ method Void multiUse(Outer2::B x, Outer2::B y, Outer2::B z)}",false
-    },{lineNumber(), new String[]{      // redirection vs binding a returned library at the same nesting depth
+    },{lineNumber(), new String[]{      // redirection of a method containing a library literal
     "{A:{()}}" },
-    "{InnerA:{()} M:{type method Library defA_maker() {type method InnerA beA_maker() InnerA()}} "
-    + "B:{} }",
+    "{InnerA:{()} M:{type method Library defA_maker() {type method InnerA beA_maker() InnerA()}}}",
     "Outer0::InnerA","Outer1::A",
-    "{M:{type method Library defA_maker() {type method Outer3::A beA_maker() Outer3::A.#apply()}}"
-    + "B:{} }",false
-    },{lineNumber(), new String[]{      // redirection vs binding a returned library at a different nesting depth
-                    "{A:{()}}" },
-        "{InnerA:{()} M:{type method Library defA_maker() {type method InnerA beA_maker() InnerA()}}"
-        + "B:{C: {} }"  //  So this call to get a library value is imaginary, as shown below
-        + "}",
-        "Outer0::InnerA","Outer1::A",
-        "{M:{type method Library defA_maker() {type method Outer3::A beA_maker() Outer3::A.#apply()}} "
-        + "B:{C:{}}}",false
+    "{M:{type method Library defA_maker() {type method Outer3::A beA_maker() Outer3::A.#apply()}}}",false
     },{lineNumber(), new String[]{      // redirecting a nested library, into a differently nested target
+                                        // Outer0 vs explicit type
                     "{X:{Y:{A:{()  type method A fun()}}}}" },
         "{InnerZ:{InnerA:{()  type method Outer0 fun()}}"
         + " M:{type method Library defA_maker() {type method InnerZ::InnerA beA_maker() InnerZ::InnerA()}}"
-        + "B:{C: {} }"  //  So this call to get a library value is imaginary, as shown below
         + "}",
         "Outer0::InnerZ::InnerA","Outer1::X::Y::A",
         "{InnerZ:{}"
         + "M:{type method Library defA_maker() {type method Outer3::X::Y::A beA_maker() Outer3::X::Y::A.#apply()}} "
-        + "B:{C:{} }}",false
-    },{lineNumber(), new String[]{      // same, with opposite type relation on fun()
+        + "}",false
+    },{lineNumber(), new String[]{      // same, but swapping the Outer0 on fun()
                     "{X:{Y:{A:{()  type method Outer0 fun()}}}}" },
         "{InnerZ:{InnerA:{()  type method InnerA fun()}}"
         + " M:{type method Library defA_maker() {type method InnerZ::InnerA beA_maker() InnerZ::InnerA()}}"
@@ -309,32 +299,33 @@ public static class TestRedirect1 {//add more test for error cases
 
 // TODO: exercise UnexpectedImplementedInterfaces
 
-    },{lineNumber(), new String[]{      // referring outside the redirect causes an unfriendly error
-                                        // Only with both M and B in place
-                    "{X:{Y:{A:{()  type method A fun()}}}}" },
-        "{InnerZ:{InnerA:{()  type method Outer1 fun()}}"
-        + " M:{type method Library defA_maker() {type method InnerZ::InnerA beA_maker() InnerZ::InnerA()}}"
-        + "B:{C: {} }"  //  So this call to get a library value is imaginary, as shown below, @FromMarcoToJames, now a meta expresion there would cause errors, so I remove it.
+    },{lineNumber(), new String[]{      // Cascade redirect of surrounding class
+                    "{X:{Y:{A:{ type method Outer1 fun()}"
+                    + "     InnerA:{type method Outer1 fun()}"  // To get the actual result, this is required, even though apparently nothing redirects to it
+                    + "}}}" },
+        "{InnerZ:{InnerA:{ type method Outer1 fun()}}"
+        + "B:{method InnerZ moreFun() InnerZ::InnerA.fun()"
+        + "   method InnerZ::InnerA mostFun()}"
         + "}",
         "Outer0::InnerZ::InnerA","Outer1::X::Y::A",
-        "{InnerZ:{}"
-        + "M:{type method Library defA_maker() {type method Outer3::X::Y::A beA_maker() Outer3::X::Y::A.#apply()}} "
-        + "B:{C:{}}"
-        + "}",false
+//        "{B:{method Outer2::X::Y moreFun() Outer2::X::Y::A.fun() method Outer2::X::Y::A mostFun()}}",false  // This is the actual result
+        ec.load("OverlappingRedirect",  "FromList", "[InnerZ::InnerA, InnerZ]", "ToList", "[X::Y::A, X::Y]").str(), true
+
+/* related to previous test, but currently in limbo
     },{lineNumber(), new String[]{      // referring outside the target causes the same unfriendly error
                                       // also only with both B and M
                     "{X:{Y:{A:{()  type method Outer1 fun()}}}}" },
         "{InnerZ:{InnerA:{()  type method Outer0 fun()}}"//TODO: we need to discuss about this error:
       //it see that InnerA.fun return Outer0, so it tries to map outer0 with the corresponding (X::Y from outside...)
         + " M:{type method Library defA_maker() {type method InnerZ::InnerA beA_maker() InnerZ::InnerA()}}"
-        + "B:{C: {} }"  //  So this call to get a library value is imaginary, as shown below
+        + "B:{C: M.defA_maker() }"  //  So this call to get a library value is imaginary, as shown below
         + "}",
         "Outer0::InnerZ::InnerA","Outer1::X::Y::A",
         "{InnerZ:{}"
         + "M:{type method Library defA_maker() {type method Outer3::X::Y::A beA_maker() Outer3::X::Y::A.#apply()}} "
         + "B:{C:{}}"
         + "}",false
-
+*/
 
 /* TODO: this test, when I get to method clashes
     },{lineNumber(), new String[]{ // mismatches in type vs instance method
