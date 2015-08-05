@@ -155,10 +155,11 @@ public class Introspection {
   }
 
   private static ClassB typeReport(List<String> path, TypeKind kind, Mdf mdf, Mdf resMdf, Doc pi, Doc resPi, boolean ph, boolean resPh, String suffix, String parName, Doc doc, String allAsString) throws Error {
+    assert mdf!=null && resMdf!=null;
     return Resources.Error.multiPartStringClassB("TypeReport",
       "TypeKind",""+kind,//:Normal, Alias, AliasUnresolvable
-      "Mdf",""+mdf,//:String
-      "ResolvedMdf",""+resMdf,//:String
+      "Mdf",""+((mdf==Mdf.Immutable)?resMdf:mdf),//:String
+      //"ResolvedMdf",""+resMdf,//:String
       "Path",liftDoc(path,pi,1),//:Doc with one annotation, can be typeAny or not
       "ResolvedPath",liftDoc(path,resPi,1),//:Doc with one annotation, can be typeAny or not
       "Ph",""+ph,//:Boolean
