@@ -33,6 +33,10 @@ Outer1::Bool #right(Outer0 that)
 method 
 Outer1::Bool #rightequal(Outer0 that) }
 S:{<:Outer0::ToS
+Varcurrent:{
+type method 
+mut Outer0 #apply(Outer2::N::#numberParser(that ) ^inner'@private @consistent
+) }
 type method 
 Outer0 #stringParser(Library that) 
 method 
@@ -47,7 +51,22 @@ Outer1::Bool #bangequal(Outer0 that)
 method 
 Outer1::Bool #equalequal(Outer0 that) 
 method 
+Outer0 #apply(Outer1::N start, Outer1::N end) 
+method 
 Outer0 #apply(Outer1::N that) 
+method 
+Outer0 #apply(Outer1::N start) 
+method 
+Outer0 #apply(Outer1::N end) 
+method 
+Outer1::Bool beginsWith(Outer0 that) 
+method 
+Outer1::N firstIndexOf(Outer0 that) 
+SubstringNotPresent:{
+type method 
+Outer0 #apply(Outer1^string'@private @consistent
+, Outer1^subString'@private @consistent
+) }
 method 
 Outer1::N size() 
 type method 

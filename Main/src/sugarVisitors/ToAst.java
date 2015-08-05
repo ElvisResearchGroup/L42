@@ -53,11 +53,11 @@ import ast.Expression._void;
 import ast.Expression.ClassB.*;
 
 public class ToAst extends AbstractVisitor<Expression>{
-  
+
   private final class ToAstForMembers extends AbstractVisitor<Member> {
     @Override public Member visitMember(MemberContext ctx) {
       return ctx.children.get(0).accept(this);}
-    
+
     @Override public Member visitMethodWithType(MethodWithTypeContext ctx) {
       MhtContext h = ctx.mht();
       Doc doc1=(h.docsOpt().get(0)==null)?Doc.empty():comm(h.docsOpt().get(0));
@@ -84,7 +84,7 @@ public class ToAst extends AbstractVisitor<Expression>{
       MethodType mt=new MethodType(doc2,mdf,ts,tdocs,returnType,exceptions);
       return new MethodWithType(doc1,s, mt, inner);
     }
-    
+
     @Override public Member visitNestedClass(NestedClassContext ctx) {
       Doc doc=comm(ctx.docsOpt());
       if(ctx.Path().getText().contains("::")){throw Assertions.userErrorAssert("no ::");}//TODO:improve
@@ -92,7 +92,7 @@ public class ToAst extends AbstractVisitor<Expression>{
       Expression inner=ctx.eTop().accept(ToAst.this);
       return new NestedClass(doc, name, inner);
     }
-    
+
     @Override public Member visitMethodImplemented(MethodImplementedContext ctx) {
       Doc doc=(ctx.mhs().docsOpt()==null)?Doc.empty():comm(ctx.mhs().docsOpt());
       return new MethodImplemented(doc,parseMethSelector(ctx.mhs().methSelector()),ctx.eTopForMethod().accept(ToAst.this));
@@ -130,14 +130,14 @@ public class ToAst extends AbstractVisitor<Expression>{
     return new Expression.With(position(ctx),xs, is, decs, ons, defaultE);
   }
 
-  
+
   public static String nameK(TerminalNode s){
     return nameK(s.getText());
   }
   public static String nameK(String c){
     return c;
   }
- 
+
   public static String nameL(ParseTree s){
     return nameL(s.getText());
   }
@@ -155,7 +155,7 @@ public class ToAst extends AbstractVisitor<Expression>{
   }
   public static Doc comm(ParseTree s){
     if(s==null){return Doc.empty();}//as for empty comment string
-    return comm(s.getText());    
+    return comm(s.getText());
   }
   public static Doc comm(String c){
     if(c.isEmpty()){return Doc.empty();}
@@ -172,7 +172,7 @@ public class ToAst extends AbstractVisitor<Expression>{
 //    res.append("\n");
     return Doc.factory(res.toString());
   }
-  
+
   //TODO: check if is needed
   @Override public Expression visitTerminal(TerminalNode arg0) {
     Token t=(Token)arg0.getPayload();
@@ -206,7 +206,7 @@ public class ToAst extends AbstractVisitor<Expression>{
       Optional<Catch> _catch=Optional.empty();
       for(DContext d:b.d()){decs.add(parseVDec(d));}
       if(b.k()!=null)_catch=Optional.of(parseK(b.k()));
-      contents.add(new Ast.BlockContent(decs,_catch));      
+      contents.add(new Ast.BlockContent(decs,_catch));
     }
     Expression inner=eTop.accept(this);
     return new Expression.RoundBlock(position(ctx),doc, inner, contents);
@@ -232,7 +232,7 @@ public class ToAst extends AbstractVisitor<Expression>{
       Optional.of(on.eTop(0).accept(this));
     Expression inner=on.eTop((on.Case()==null)?0:1).accept(this);
     return new On(Collections.singletonList(t),_if,inner);
-  }  
+  }
   private On parseOnPlus(OnPlusContext on) {
     List<Type> ts=new ArrayList<Type>();
     for(TContext t: on.t()){ts.add(parseType(t));}
@@ -292,22 +292,22 @@ public class ToAst extends AbstractVisitor<Expression>{
     if(nameK(ctx.X()).equals("void")){return new Expression._void();}
     return new Expression.X(nameL(ctx.X()));
     }
-  
+
   @Override public Expression visitEAtom(EAtomContext ctx) {
     if(ctx.Path()!=null){
-      return addNumParse(ctx,Ast.Path.parse(nameU(ctx.Path())));  
+      return addNumParse(ctx,Ast.Path.parse(nameU(ctx.Path())));
         }
     if(ctx.DotDotDot()!=null){
-      return new Expression.DotDotDot();  
+      return new Expression.DotDotDot();
         }
     if(ctx.WalkBy()!=null){
-      return new Expression.WalkBy();  
+      return new Expression.WalkBy();
         }
     int i=0;
     if(ctx.numParse()!=null){i=1;}
     return addNumParse(ctx,ctx.children.get(i).accept(this));
     }
-  
+
   @Override public Expression visitClassBReuse(ClassBReuseContext ctx) {
     Doc doc1=Doc.empty();
     if(ctx.docsOpt().size()>=1){doc1=comm(ctx.docsOpt().get(0));}
@@ -341,7 +341,7 @@ public class ToAst extends AbstractVisitor<Expression>{
     List<Member> members=new ArrayList<Member>();
     for(MemberContext m:ctxms){members.add(m.accept(
       new ToAstForMembers()));}
-    return members;   
+    return members;
   }
   private MethodSelector parseMethSelector(MethSelectorContext ctx) {
     List<String> xs=new ArrayList<String>();
@@ -365,13 +365,13 @@ public class ToAst extends AbstractVisitor<Expression>{
   @Override public Expression visitSignalExpr(SignalExprContext ctx) {
     Expression inner=ctx.eTop().accept(this);
     SignalKind kind=SignalKind.fromString(nameK(ctx.S()));
-    return new Expression.Signal(kind, inner);    
+    return new Expression.Signal(kind, inner);
     }
   @Override public Expression visitLoopExpr(LoopExprContext ctx) {
     Expression inner=ctx.eTop().accept(this);
-    return new Expression.Loop(inner);    
+    return new Expression.Loop(inner);
     }
-  
+
   @Override public Expression visitIfExpr(IfExprContext ctx) {
     Expression cond=ctx.eTop(0).accept(this);
     Expression then=ctx.block().accept(this);
@@ -384,7 +384,7 @@ public class ToAst extends AbstractVisitor<Expression>{
     Expression cond=ctx.eTop().accept(this);
     Expression then=ctx.block().accept(this);
     return new Expression.While(position(ctx),cond, then);
-    
+
   }
 
   private Expression addNumParse(EAtomContext ctx,Expression e){
@@ -420,34 +420,24 @@ public class ToAst extends AbstractVisitor<Expression>{
     return visitBinOp(ctx);
   }
   private Expression visitBinOp(ParserRuleContext ctx) {
-    //assert ctx.children.size()%2!=0: ctx.children.size();
     LinkedList<ParseTree> stack=this.getStack(ctx);
-    /*stack.removeIf(e->{
-      if(!(e instanceof TerminalNode))return false;
-      val t=(Token)((TerminalNode)e).getPayload();
-      return t.getType()==L42Lexer.WS;
-      });  */           
     Expression current=stack.pop().accept(this);
     while(!stack.isEmpty()){
       current=new Expression.BinOp(position(ctx),current,
         Op.fromString(stack.pop().getText()),
         stack.pop().accept(this));
       }
+    if(current instanceof Expression.BinOp){
+      current=onNeedMakeRightAssociative((Expression.BinOp)current);
+      }
     return current;
     }
-  /*private boolean isTerminal(ParserRuleContext ctx,int childNum, int kind){
-    try{
-      Token t=(Token)((TerminalNode)ctx.children.get(childNum)).getPayload();
-      return t.getType()==kind;
-    }catch(ClassCastException e){return false;}
+  private Expression onNeedMakeRightAssociative(Expression.BinOp bop){
+    if(bop.getOp().leftAssociative){return bop;}
+    if(!(bop.getLeft() instanceof Expression.BinOp)){return bop;}
+    Expression.BinOp left=(Expression.BinOp)bop.getLeft();
+    return left.withRight(bop.withLeft(left.getRight()));
   }
-
-  private boolean isTerminal(ParserRuleContext ctx,int childNum){
-    try{
-      return ((TerminalNode)ctx.children.get(childNum)).getPayload() instanceof Token; 
-    }catch(ClassCastException e){return false;}
-  }
-  */
   private LinkedList<ParseTree> getStack(ParserRuleContext ctx){
       return (ctx.children!=null)?new LinkedList<ParseTree>(ctx.children):new LinkedList<ParseTree>();
   }
@@ -471,7 +461,7 @@ public class ToAst extends AbstractVisitor<Expression>{
       @Override public Expression visitDocs(DocsContext ctx) {
         return new Expression.DocE(e0,comm(ctx.Doc()));
       }
-      @Override public Expression visitSquare(SquareContext ctx) {        
+      @Override public Expression visitSquare(SquareContext ctx) {
       Doc doc=comm(ctx.docsOpt(0));
       List<Doc> docs=new ArrayList<>();
       List<Parameters> parameterss=new ArrayList<>();
@@ -489,7 +479,7 @@ public class ToAst extends AbstractVisitor<Expression>{
       return new Expression.SquareCall(position(ctx),e0, doc, docs, parameterss);
       }
       @Override public Expression visitSquareW(SquareWContext ctx) {
-        return new Expression.SquareWithCall(position(ctx),e0, (With)ctx.w().accept(ToAst.this));        
+        return new Expression.SquareWithCall(position(ctx),e0, (With)ctx.w().accept(ToAst.this));
       }
 
       @Override public Expression visitRound(RoundContext ctx) {
@@ -497,7 +487,7 @@ public class ToAst extends AbstractVisitor<Expression>{
         return new Expression.FCall(position(ctx),this.e0,doc,
             parseMParameters(ctx.ps()));
       }
-      
+
       @Override public Expression visitMCall(MCallContext ctx) {
         Expression.FCall f0=(Expression.FCall)ctx.round().accept(this);
         return new Expression.MCall(null,position(ctx),this.e0,
@@ -535,7 +525,7 @@ public class ToAst extends AbstractVisitor<Expression>{
     LinkedList<ParseTree> stack = this.getStack(ctx);
     //TODO: first can be comment
     if(!stack.isEmpty()&& !(stack.getFirst()instanceof TerminalNode)){
-      e0=Optional.of(stack.pop().accept(this));  
+      e0=Optional.of(stack.pop().accept(this));
       }
     while(!stack.isEmpty()){
       xs.add(nameL(stack.pop()));

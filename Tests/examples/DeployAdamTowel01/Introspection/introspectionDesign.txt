@@ -21,6 +21,52 @@ l=Intro(lib)
 16  method Report::Method Path queryConstructor(Path path)
 
 
+Report:{
+
+  Path:{(
+    S classKind
+    N memberNumber
+    N implementedNumber
+    S allAsString
+    )}
+
+  Member:{interface}
+
+  Method:{(
+    Doc doc
+    S thisMdf
+    Selector key
+    N exceptionNumber
+    N parameterNumber
+    S memberKind
+    S allAsString
+    )<:Member}
+
+  NestedClass:{(
+    Doc doc
+    Path key
+    S allAsString
+    )<:Member}
+
+  Type:{(
+    S typeKind '{InternalNormal,ExternalNormal,InternalAlias,ExternalAlias, InternalAliasUnresolvable,ExternalAliasUnresolvable,InternalExternalAlias}
+    S mdf
+    S resolvedMdf ' "" on *Normal
+    Path iPath 'error on External*
+    type Any ePath 'error on Internal*
+    Path iResolvedPath 'error on ExternalAlias, InternalExternalAlias
+    type Any eResolvedPath' error on InternalAlias
+    Bool partial
+    Bool resolvedPartial 'false on *Normal and *Unresolvable
+    S suffix' "" on *Normal
+    Doc doc
+    S allAsString
+    )}
+  }
+
+
+
+
 2*  Selector s s.name(N), s.names()
 
 iterare sui campi -> meth name+ names(), and parameterTypes

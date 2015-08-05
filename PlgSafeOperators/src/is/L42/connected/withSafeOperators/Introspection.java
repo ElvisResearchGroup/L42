@@ -25,14 +25,14 @@ import auxiliaryGrammar.Program;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Optional;
-//TODO: modify Program so that it contains pairs of classB,ct!
-//BIG THING!
+
+import coreVisitors.From;
 
 public class Introspection {
   public static ClassB giveInfo(ClassB that,List<String> path){
     ClassB current = Program.extractCBar(path, that);
     Errors42.checkExistsPathMethod(that, path,Optional.empty());
-    return Resources.Error.multiPartStringClassB("PathInfo",
+    return Resources.Error.multiPartStringClassB("PathReport",
       "ClassKind",ExtractInfo.classKind(that, path, current,null, null,null).name(),
       "MemberNumber",""+current.getMs().size(),
       "ImplementedNumber",""+current.getSupertypes().size(),
@@ -73,7 +73,7 @@ public class Introspection {
         return null;
       });
     //TODO: doc exceptions should become a doc for each exception
-    return Resources.Error.multiPartStringClassB("MemberInfo",
+    return Resources.Error.multiPartStringClassB("MemberReport",
       "Doc",liftDoc(path,doc[0],1),
       "ThisMdf",thisMdf[0],
       "key",key[0],//Selector/Path
@@ -83,7 +83,7 @@ public class Introspection {
       "AllAsString",ToFormattedText.of(mN)
       );
     }
-  static enum TypeKind{Normal, Alias, AliasUnresolvable}
+  static enum TypeKind{InternalNormal,ExternalNormal,InternalAlias,ExternalAlias, InternalAliasUnresolvable,ExternalAliasUnresolvable,InternalExternalAlias}
   //if member ==0, talk about implemented interfaces, nested classes have no types
   public static ClassB giveInfoType(Program p,ClassB that,List<String> path,int memberN,int typeN){
     Errors42.checkExistsPathMethod(that, path,Optional.empty());
@@ -92,8 +92,10 @@ public class Introspection {
     if(memberN<0){throw Resources.notAct;}//TODO: is this a good idea?
     if(memberN==0){
       Path implN = current.getSupertypes().get(typeN-1);
-      Doc dImplN=Doc.factory(implN);
-      return typeReport(path, TypeKind.Normal,Mdf.Immutable,Mdf.Immutable,
+      boolean isExternal=false;
+      if(implN.isPrimitive() ||implN.outerNumber()>path.size()){isExternal=true;}
+      Doc dImplN=Doc.factory(implN);//is ok since I have liftDoc
+      return typeReport(path, isExternal?TypeKind.ExternalNormal:TypeKind.InternalNormal,Mdf.Immutable,Mdf.Immutable,
           dImplN,dImplN, false,false,"","",current.getDoc2(),ToFormattedText.of(implN));
     }
     assert memberN>0;
@@ -108,7 +110,7 @@ public class Introspection {
     NormType normTi=(ti instanceof NormType)?(NormType)ti:null;
     NormType resolvedTi=null;
     try{resolvedTi=Norm.of(p, ti);}catch(ErrorMessage.NormImpossible ni){}
-    TypeKind tk=(ti instanceof NormType)?TypeKind.Normal:(resolvedTi==null)?TypeKind.AliasUnresolvable:TypeKind.Alias;
+    TypeKind tk = getTypeKind(path,ti, resolvedTi);
     Mdf mdf=(normTi!=null)?normTi.getMdf():Mdf.Immutable;
     Mdf resMdf=(resolvedTi!=null)?resolvedTi.getMdf():Mdf.Immutable;
     Path pi=(normTi!=null)?normTi.getPath():((Ast.HistoricType)ti).getPath();
@@ -122,7 +124,26 @@ public class Introspection {
     Doc doc=mwt.getDoc();
     String allAsString=ToFormattedText.of(mwt);
     return typeReport(path, tk, mdf, resMdf, dPi, dResPi, ph, resPh, suffix, parName, doc, allAsString);
-      }
+    }
+
+  private static boolean isExternal(List<String>path,Path pi){
+    return pi.outerNumber()>path.size();
+    }
+
+  private static TypeKind getTypeKind(List<String>path,Type ti, NormType resolvedTi) {
+    if(ti instanceof NormType){
+      NormType nt=(NormType)ti;
+      if(isExternal(path,nt.getPath())){return TypeKind.ExternalNormal;}
+      return TypeKind.InternalNormal;
+    }
+    Ast.HistoricType ht=(Ast.HistoricType)ti;
+    boolean tiExt=isExternal(path,ht.getPath());
+    if(resolvedTi==null && tiExt){return TypeKind.ExternalAliasUnresolvable;}
+    if(resolvedTi==null){return TypeKind.InternalAliasUnresolvable;}
+    if(tiExt){return TypeKind.ExternalAlias;}
+    if(isExternal(path,resolvedTi.getPath())){return TypeKind.InternalExternalAlias;}
+    return TypeKind.InternalExternalAlias;
+  }
 
   private static String selectorsToString(List<MethodSelectorX> selectors) {
     String result="";
@@ -134,7 +155,7 @@ public class Introspection {
   }
 
   private static ClassB typeReport(List<String> path, TypeKind kind, Mdf mdf, Mdf resMdf, Doc pi, Doc resPi, boolean ph, boolean resPh, String suffix, String parName, Doc doc, String allAsString) throws Error {
-    return Resources.Error.multiPartStringClassB("TypeInfo",
+    return Resources.Error.multiPartStringClassB("TypeReport",
       "TypeKind",""+kind,//:Normal, Alias, AliasUnresolvable
       "Mdf",""+mdf,//:String
       "ResolvedMdf",""+resMdf,//:String
@@ -143,7 +164,6 @@ public class Introspection {
       "Ph",""+ph,//:Boolean
       "ResolvedPh",""+resPh,//:Boolean
       "Suffix",""+suffix,//:String (may be empty for not alias type)
-      "ParName",""+parName,//String (empty for 0 ... -n)
       "Doc",liftDoc(path,doc,1),//Doc
       "AllAsString",""+allAsString//String
       );

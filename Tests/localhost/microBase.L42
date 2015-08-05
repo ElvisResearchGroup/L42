@@ -105,16 +105,19 @@ S:{#stringParser(Library that)
       check ifStringEqualDo(s1:this.that(),s2:that.that())
       return True()
     return False()}
-  method S (N that) (
+  method
+  S (N start, N end)
     S.#stringParser(using Alu
-      check stringCharAt(this.that(),pos:that.that())
-      error void ))
-  method N size () (
+      check stringSubstring(this.that(),start:start.that(),end:end.that())
+      error void )
+
+  method
+  S (N that) this(start:that, end:that+1N)  method N size () (
     N(using Alu
       check stringSize(this.that())
       error void) )
   }
-  
+
 IntrospectionPlugin:{'@plugin
   'L42.is/connected/withItself
   ()
@@ -122,12 +125,12 @@ IntrospectionPlugin:{'@plugin
   type method Library adaptLib(Library l1 Library l2) using Outer0 check adaptLib(l1:l1,l2:l2) error {adaptLib()}
   type method Library nameToAdapter(Library that) using Outer0 check nameToAdapter(that) error {nameToAdapter()}
   type method Library typeNameToAdapter(type Any that) using Outer0 check typeNameToAdapter(that) error {typeNameToAdapter()}
-  }  
+  }
 Collections:{()
   type method Library listRow() { _new(Cell head)
    T:{}
     Cell:{interface
-      method mut Iterator #vals(Bool that) 
+      method mut Iterator #vals(Bool that)
       method Cell #next() exception Void
       method Void checkEmpty() exception Void
       method T #inner()
@@ -175,8 +178,8 @@ Collections:{()
     method
     mut Iterator valsCut() ( this.head().#vals(False()))
     method Outer0 pop() {
-      return Outer0._new(head:this.head().#next()) 
-      catch exception (on Void error {popOnEmpyList()})}    
+      return Outer0._new(head:this.head().#next())
+      catch exception (on Void error {popOnEmpyList()})}
     Iterator:{mut (var Cell that,Bool terminate)
       mut method Void #next() exception Void ( x=this.that().#next(),x.checkEmpty() this.that(x) )
       read method Void #checkEnd() (if this.terminate() (this.that().#checkEnd()))
@@ -184,7 +187,7 @@ Collections:{()
       read method Void #close() (void)
       }
     }
-type method Library list(type Any that){ 
+type method Library list(type Any that){
   map=IntrospectionPlugin.typeNameToAdapter(that)
   tRen=IntrospectionPlugin.nameToAdapter(S"T".that())
   'If I remove this. from under, I get a stupid error msg
@@ -195,7 +198,7 @@ type method Library list(Library adapter){
   return IntrospectionPlugin.adaptLib(l1:this.listRow(),l2:adapter)
   }
 }
-  
+
 Name:{(Library adapter)
   type method Name #stringParser(Library that) (Name(adapter:
     using IntrospectionPlugin check nameToAdapter(that) error {nameToAdapter()}

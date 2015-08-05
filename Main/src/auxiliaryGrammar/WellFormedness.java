@@ -41,15 +41,15 @@ public class WellFormedness {
     WellFormedness.classCheck(e);
     return true;
   }
-  //operators at the same level of precedence must be identical, 
+  //operators at the same level of precedence must be identical,
   // i.e. a+b+c is ok, but a+b*c is not
   public static void operatorPrecedenceCheck(Expression _e){
     _e.accept(new CloneVisitor(){
       public Expression visit(BinOp s) {
         if(s.getRight() instanceof BinOp){
           Ast.Op op=((BinOp)s.getRight()).getOp();
-          if(s.getOp().kind==op.kind){
-            throw new AssertionError("parsing strange stuff for "+s);
+          if(s.getOp().kind==op.kind && s.getOp()!=op){
+            throw new ErrorMessage.NotWellFormed(s,_e, "Here parenthesis are needed to disambiguate operator precedence.");
             }
           }
         if(s.getLeft() instanceof BinOp){
@@ -67,7 +67,7 @@ public class WellFormedness {
   public static void returnCheck(Expression _e){
     _e.accept(new CloneVisitor(){
       Expression outerDanger=null;
-      
+
       public Expression visit(ClassB s) {
         Expression aux=this.outerDanger;
         this.outerDanger=null;
@@ -107,12 +107,12 @@ public class WellFormedness {
       public Expression visit(Signal s) {
         if(this.outerDanger==null){return super.visit(s);}
         if(s.getKind()!=SignalKind.Return){return super.visit(s);}
-        throw new ErrorMessage.NotWellFormed(s, outerDanger, "A return is not allowed here");        
+        throw new ErrorMessage.NotWellFormed(s, outerDanger, "A return is not allowed here");
       }
     });
   }
-  
-  
+
+
 
   public static boolean blockCheck(Expression _e){
     _e.accept(new CloneVisitor(){
@@ -149,8 +149,8 @@ public class WellFormedness {
     return true;
   }
 
-  
-  
+
+
   static void withVarCheck(List<String>notEqOp,With w){
     w.accept(new CloneVisitor(){
       public Expression visit(ClassB s) {return s;}
@@ -165,7 +165,7 @@ public class WellFormedness {
     });
     }
   static void withVarCheckNotReadAfterAssign(List<String>notEqOp,Ast.On on){
-    //TODO: much much harder than what expected. will call terminating inside? can not be a clone visitor! 
+    //TODO: much much harder than what expected. will call terminating inside? can not be a clone visitor!
     }
   public static void withCheck(Expression _e){
     _e.accept(new CloneVisitor(){
@@ -189,11 +189,11 @@ public class WellFormedness {
           if(!is.isVar()){notEqOp.add(is.getX());}
           }
         withVarCheck(notEqOp,s);
-        
-        //In a $\onWith$ body, variables whose type have been made more specific can still beeing updated using the more general type, thus 
+
+        //In a $\onWith$ body, variables whose type have been made more specific can still beeing updated using the more general type, thus
         //a well formed $\onWith$ body can not read a variable after updating it.
         //TODO: missing, see up!
-        return super.visit(s);}      
+        return super.visit(s);}
     });
   }
   static void checkHeader(ClassB cb,ConcreteHeader h) {
@@ -264,12 +264,12 @@ public class WellFormedness {
     return coreVisitors.CheckNoVarDeclaredTwice.of(cb);
 
   }
-  
- 
+
+
 
   //paths:
   //well formedness "post": every used path could be present in the future.
-  
 
-  
+
+
 }

@@ -1,7 +1,7 @@
 {
 
 Bool:{(Library binaryRepr)<:S::ToS '@private
-  method Void #checkTrue() exception Void 
+  method Void #checkTrue() exception Void
     using Alu
       check ifInt32EqualDo(n1:this.binaryRepr() n2:0N.binaryRepr())
       exception void
@@ -25,7 +25,7 @@ Bool:{(Library binaryRepr)<:S::ToS '@private
     return S"false"
     }
   }
-  
+
 
 ExitCode:{
   type method
@@ -42,40 +42,40 @@ Alu:{'@plugin
   'L42.is/connected/withAlu
   _private()'@private
   }
-  
+
 N:{(Library binaryRepr)<:S::ToS
 
   type method
-  N #numberParser(Library that) 
+  N #numberParser(Library that)
     N(binaryRepr:using Alu
       check stringToInt32(that)
       error void)
-      
+
   method
   toS() S.#stringParser(using Alu
       check int32ToString(this.binaryRepr())
       error void)
-      
+
   method
-  N +(N that) 
+  N +(N that)
     N(binaryRepr:using Alu
       check sumInt32(n1:this.binaryRepr() n2:that.binaryRepr())
       error void)
-      
+
   method
-  N -(N that) 
+  N -(N that)
     N(binaryRepr:using Alu
       check subInt32(n1:this.binaryRepr() n2:that.binaryRepr())
       error void)
-      
+
   method
-  N *(N that) 
+  N *(N that)
     N(binaryRepr:using Alu
       check mulInt32(n1:this.binaryRepr() n2:that.binaryRepr())
       error void)
-      
+
   method
-  N /(N that) 
+  N /(N that)
     N(binaryRepr:using Alu
       check divInt32(n1:this.binaryRepr() n2:that.binaryRepr())
       error void)
@@ -87,7 +87,7 @@ N:{(Library binaryRepr)<:S::ToS
       return Bool.true()
     return Bool.false()
     }
-    
+
   method
   Bool <(N that) {
     using Alu
@@ -95,7 +95,7 @@ N:{(Library binaryRepr)<:S::ToS
       return Bool.true()
     return Bool.false()
     }
-    
+
   method
   Bool <=(N that) {
     using Alu
@@ -103,32 +103,32 @@ N:{(Library binaryRepr)<:S::ToS
       return Bool.true()
     return Bool.false()
     }
-    
+
   method Bool !=(N that) !(this==that)
-  
+
   method Bool >(N that)  !(this<=that)
-  
-  
+
+
   method Bool >=(N that) !(this<that)
   }
 
 S:{ _private(Library _binaryRepr)<: ToS '@private
-  
+
   type method Outer0 #stringParser(Library that) Outer0._private(_binaryRepr:that)
-    
+
   method Library binaryRepr() this._binaryRepr()
-  
+
   ToS:{interface method S toS()}
-  
+
   method toS() this
-  
+
   method
   S ++ (ToS that) S.#stringParser(using Alu
       check stringConcat(s1:this.binaryRepr(),s2:that.toS().binaryRepr())
       error void)
-      
+
   method Bool != (S that) !(this==that)
-  
+
   method
   Bool == (S that) {
     using Alu
@@ -136,24 +136,27 @@ S:{ _private(Library _binaryRepr)<: ToS '@private
       return Bool.true()
     return Bool.false()
     }
-    
+
   method
-  S (N that)
+  S (N start, N end)
     S.#stringParser(using Alu
-      check stringCharAt(this.binaryRepr(),pos:that.binaryRepr())
+      check stringSubstring(this.binaryRepr(),start:start.binaryRepr(),end:end.binaryRepr())
       error void )
- 
-  method N size () 
+
+  method
+  S (N that) this(start:that, end:that+1N)
+
+  method N size ()
     N(binaryRepr:using Alu
       check stringSize(this.binaryRepr())
-      error void) 
-      
+      error void)
+
   type method
   S doubleQuote()
     S"
     '"
     "(0N)
-    
+
   method
   S replace(S that, S into){'that must be of size 1
     var N i=0N
@@ -166,14 +169,14 @@ S:{ _private(Library _binaryRepr)<: ToS '@private
     return result
     }
   }
-  
+
 Debug:{_private() '@private
   type method
   Void (S that)
     using Alu
       check stringDebug(that.binaryRepr())
       void
-      
+
   type method
   Void (S fileName, S content)
     using Alu
@@ -183,19 +186,19 @@ Debug:{_private() '@private
         )
       void
   }
-  
+
   IntrospectionPlugin:{'@plugin
   'L42.is/connected/withItself
   _private()'@private
-  
+
   type method
   Library sumLib(Library l1,Library l2)
     using Outer0 check sumLib(l1:l1,l2:l2) error {sumLib()}
-    
+
   type method
   Library adaptLib(Library l1 Library l2)
     using Outer0 check adaptLib(l1:l1,l2:l2) error {adaptLib()}
-    
+
   type method
   Library sumComment(Library that,Library comment,Library adapter)
     using Outer0 check sumComment(that, comment:comment, adapter:adapter) error{sumComment()}
@@ -205,15 +208,15 @@ Debug:{_private() '@private
   type method
   Library nameToAdapter(Library that)
     using Outer0 check nameToAdapter(that) error {nameToAdapter()}
-    
+
   type method
   Library typeNameToAdapter(type Any that)
     using Outer0 check typeNameToAdapter(that) error {typeNameToAdapter()}
-    
+
   type method
   Library getFreshName(Library that)
     using Outer0 check getFreshName(that) error{getFreshName()}
-  
+
   type method Library adapter(type Any that, S name) {
     name1=IntrospectionPlugin.typeNameToAdapter(that)
     name2=IntrospectionPlugin.nameToAdapter(name.binaryRepr())
@@ -226,5 +229,5 @@ Debug:{_private() '@private
     }
 
   }
-  
+
 }

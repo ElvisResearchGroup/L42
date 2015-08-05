@@ -112,10 +112,14 @@ S:{#stringParser(Library that)<: ToS
       check ifStringEqualDo(s1:this.that(),s2:that.that())
       return True()
     return False()}
-  method S (N that) (
+  method
+  S (N start, N end)
     S.#stringParser(using Alu
-      check stringCharAt(this.that(),pos:that.that())
-      error void ))
+      check stringSubstring(this.binaryRepr(),start:start.that(),end:end.that())
+      error void )
+
+  method
+  S (N that) this(start:that, end:that+1N)
   method N size () (
     N(using Alu
       check stringSize(this.that())
@@ -147,12 +151,12 @@ IntrospectionPlugin:{'@plugin
   type method Library nameToAdapter(Library that) using Outer0 check nameToAdapter(that) error {nameToAdapter()}
   type method Library typeNameToAdapter(type Any that) using Outer0 check typeNameToAdapter(that) error {typeNameToAdapter()}
   type method Library getFreshName(Library that) using Outer0 check getFreshName(that) error{getFreshName()}
-  }  
+  }
 Collections:{()
   type method Library listRow() { _new(Cell head)
    T:{}
     Cell:{interface
-      method mut Iterator #vals(Bool that) 
+      method mut Iterator #vals(Bool that)
       method Cell #next() exception Void
       method Void checkEmpty() exception Void
       method T #inner()
@@ -203,8 +207,8 @@ Collections:{()
       }
     method mut Iterator valsCut() ( this.head().#vals(False()))
     method Outer0 pop() {
-      return Outer0._new(head:this.head().#next()) 
-      catch exception (on Void error {popOnEmpyList()})}    
+      return Outer0._new(head:this.head().#next())
+      catch exception (on Void error {popOnEmpyList()})}
     Iterator:{mut (var Cell that,Bool terminate)
       mut method Void #next() exception Void ( x=this.that().#next(),x.checkEmpty() this.that(x) )
       read method Void #checkEnd() (if this.terminate() (this.that().#checkEnd()))
@@ -212,7 +216,7 @@ Collections:{()
       read method Void #close() (void)
       }
     }
-  type method Library list(type Any that){ 
+  type method Library list(type Any that){
     map=IntrospectionPlugin.typeNameToAdapter(that)
     tRen=IntrospectionPlugin.nameToAdapter(S"T".that())
     'If I remove this. from under, I get a stupid error msg
@@ -223,7 +227,7 @@ Collections:{()
     return IntrospectionPlugin.adaptLib(l1:this.listRow(),l2:adapter)
     }
   }
-    
+
 Name:{(Bool isExternal, Library adapter)
   type method Name #stringParser(Library that) (Name(isExternal:False(),adapter:
     using IntrospectionPlugin check nameToAdapter(that) error {nameToAdapter()}
@@ -242,7 +246,7 @@ Introspection:{
   method S get() (S.#stringParser(using IntrospectionPlugin check get(this.that(),node:this.node().that()) error {getThatNode()}))
   method Library getIfExists(N interfaceNum)exception Void (using IntrospectionPlugin check getOrElse(this.that(),interfaceNum:interfaceNum.that(),node:this.node().that()) exception void)
   method Method get(N methodNum)exception Void (
-    Library name=using IntrospectionPlugin 
+    Library name=using IntrospectionPlugin
       check getNameOrElse(
         this.that(),
         methodNum:methodNum.that(),
@@ -252,7 +256,7 @@ Introspection:{
     )
   Method:{(Outer1 myClass, N num, S name)
     method S get() (S.#stringParser(
-      using IntrospectionPlugin 
+      using IntrospectionPlugin
       check getOrElse(
         this.myClass().that(),
         methodNum:this.num().that(),
@@ -260,7 +264,7 @@ Introspection:{
       error {invalidMethodNumber()}
       ))
     method S getMdf() (S.#stringParser(
-      using IntrospectionPlugin 
+      using IntrospectionPlugin
       check getMdfOrElse(
         this.myClass().that(),
         methodNum:this.num().that(),
@@ -268,7 +272,7 @@ Introspection:{
       error {invalidMethodNumber()}
       ))
     method Name returnClass() (Name(isExternal:True(),'TODO: this is a bug, should be computed
-      adapter: using IntrospectionPlugin 
+      adapter: using IntrospectionPlugin
       check  getTypePathOrElse(
         this.myClass().that(),
         methodNum:this.num().that(),
@@ -276,7 +280,7 @@ Introspection:{
       error {invalidMethodNumber()}
       ))
     method Name getName() (Name.#stringParser('get name? unuseful!
-      using IntrospectionPlugin 
+      using IntrospectionPlugin
       check getNameOrElse(
         this.myClass().that(),
         methodNum:this.num().that(),
@@ -284,7 +288,7 @@ Introspection:{
       error {invalidMethodNumber()}
       ))
     method Bool isAbstract() {
-      using IntrospectionPlugin 
+      using IntrospectionPlugin
       check ifIsAbstractDo(
         this.myClass().that(),
         methodNum:this.num().that(),
@@ -293,7 +297,7 @@ Introspection:{
       return False()
       }
     method Parameter get(N parameterNum)exception Void (
-      Library name=using IntrospectionPlugin 
+      Library name=using IntrospectionPlugin
       check getNameOrElse(
         this.myClass().that(),
         methodNum:this.num().that(),
@@ -314,7 +318,7 @@ Introspection:{
     }
   Parameter:{(Method myMethod, N num, S name)
     method Name class() (Name(isExternal:True(),'TODO: this is a bug, should be computed
-      adapter: using IntrospectionPlugin 
+      adapter: using IntrospectionPlugin
       check  getTypePathOrElse(
         this.myMethod().myClass().that(),
         methodNum:this.myMethod().num().that(),
@@ -342,9 +346,9 @@ Introspection:{
     return ctor.parameters()
     }
   }
-  
+
 Opt:{unused()
-  type method Library (type Any that) 
+  type method Library (type Any that)
     Adapt[Name"T" into:Name(that);]<{#new(TOpt that)
       T:{}
       TOpt:{interface method T get() }
@@ -360,7 +364,7 @@ Opt:{unused()
       type method Outer0 (T that) Outer0.#new(TOf(that))
       }
   }
-  
+
   '-------------------------------------------
   '--------------DECORATORS-------------------
 Use:{ (Resolver resolver,Libs myLibs)
@@ -375,7 +379,7 @@ Use:{ (Resolver resolver,Libs myLibs)
     Outer0(resolver:Resolver(resolver),myLibs:this.myLibs())
   type method
   Outer0 #begin() Outer0()
-  method Outer0 #end() this 
+  method Outer0 #end() this
   method Library < (Library that) {
     var result=that
     with libi in this.myLibs().vals() (
@@ -502,9 +506,9 @@ Gui:{'@plugin
         ++S"</TITLE>"++S"<base href='"++basePath++S"' /></HTML><BODY>"++body++S"</BODY></HTML>"
       x:x
       y:y)
-    
-  method Void open(S html, N x, N y) 
-    using Gui check open(wName:this.id().that() html:html.that() x:x.that(), y:y.that() )error void  
+
+  method Void open(S html, N x, N y)
+    using Gui check open(wName:this.id().that() html:html.that() x:x.that(), y:y.that() )error void
   method Void set(S that,S id) (
     cmd=S"$('#"++Gui.jsEscape(id)
       ++S"').replaceWith('"++Gui.jsEscape(that)++S"');"
@@ -515,14 +519,14 @@ Gui:{'@plugin
   method S executeJs(S that)
     S.#stringParser(using Gui check executeJs(wName:this.id().that(),command:that.that()) error void)
   method mut Iterator events() Iterator(id: this.id(), current:S"")
-  
+
   Iterator:{mut(S id, var S current)
     type method S auxFetchEvent(S id) exception Void {
       Library s=using Gui check eventPending(wName:id.that()) exception void
       catch error x (on Library exception void)
       return S.#stringParser(s)
       }
-    mut method Void #next() exception Void { 
+    mut method Void #next() exception Void {
       s=Iterator.auxFetchEvent(id:this.id())
       return this.current(s)
       }

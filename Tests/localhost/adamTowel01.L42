@@ -1088,7 +1088,7 @@ Outer1::Path #plusplus(Outer1::Path that) (
       )
     Void unused2=return Outer1::Path.#stringParser(that:this.toS().#plusplus(that:Outer1::S.#stringParser(that:{'@stringU
     '::
-    })).#plusplus(that:that.toS()).binaryRepr())
+    }).#plusplus(that:that.toS())).binaryRepr())
     void
     )
   catch return result (
@@ -1153,6 +1153,13 @@ Outer1::Bool #equalequal(Outer1::S that) (
   error {'@stringU
   'CurlyBlock-Should be unreachable code
   }
+  )
+method 
+Outer1::S name() (
+  Outer0::toS() str=this.toS()
+  str.#apply(end:str.firstIndexOf(that:Outer1::S.#stringParser(that:{'@stringU
+  '(
+  })))
   )
 method 
 Outer1::Strings names() (
@@ -1374,6 +1381,8 @@ read method '@private @consistent
 Outer0::MirrorPr mirror() 
 type method 
 Outer0 #apply(Library lib) Outer0.#apply(mirror:Outer0::MirrorPr::Lib.#apply(lib:lib))
+type method 
+Outer0 #apply(type Any cls) Outer0.#apply(mirror:Outer0::MirrorPr::Class.#apply(lib:cls))
 method 
 Outer0::Report::Path query(Outer1::Path that) exception Outer1::TargetUnavailable this.mirror().introspectReport(root:this, path:that)
 method 
@@ -3231,6 +3240,30 @@ method introspectDocAsString(path ) Outer3::S.#stringParser(that:using Outer3::S
 'introspectLibraryDocAsString
 })))
 method introspectDocPath(path annotationN ) using Outer3::SafeOperators check introspectLibraryDocPath(that:this.lib(), path:path.binaryRepr(), annotationN:annotationN.binaryRepr()) error Outer3::SafeOperators.mkError(that:Outer3::S.#stringParser(that:{'@stringU
+'introspectLibraryDocPath
+}))}
+Class:{<:Outer1
+type method 
+Outer0 #apply(type Any^lib'@private @consistent
+) 
+mut method '@private @consistent
+type Any #lib() 
+read method '@private @consistent
+type Any lib() 
+method introspectReport(root path ) Outer2::Report::Path.#apply(root:root, path:path, report:Outer3::Introspection.#apply(lib:using Outer3::SafeOperators check introspectTypeReport(that:this.lib(), path:path.binaryRepr()) error Outer3::SafeOperators.mkError(that:Outer3::S.#stringParser(that:{'@stringU
+'introspectReport
+}))))
+method introspectReportMember(root path memberN ) Outer2::Report.dispatch(root:root, path:path, memberN:memberN, report:using Outer3::SafeOperators check introspectTypeReportMember(that:this.lib(), path:path.binaryRepr(), memberN:memberN.binaryRepr()) exception void)
+method introspectReportType(root path memberN typeN ) Outer2::Report::Type.#apply(root:root, path:path, memberN:memberN, typeN:typeN, report:Outer3::Introspection.#apply(lib:using Outer3::SafeOperators check introspectTypeReportType(that:this.lib(), path:path.binaryRepr(), memberN:memberN.binaryRepr(), typeN:typeN.binaryRepr()) exception void))
+method introspectDocAsString(path annotationN ) Outer3::S.#stringParser(that:using Outer3::SafeOperators check introspectTypeDocAsString(that:this.lib(), path:path.binaryRepr(), annotationN:Outer3::N.#numberParser(that:{'@stringU
+'1
+}).#plus(that:annotationN).binaryRepr()) exception void)
+method introspectDocAsString(path ) Outer3::S.#stringParser(that:using Outer3::SafeOperators check introspectTypeDocAsString(that:this.lib(), path:path.binaryRepr(), annotationN:Outer3::N.#numberParser(that:{'@stringU
+'0
+}).binaryRepr()) error Outer3::SafeOperators.mkError(that:Outer3::S.#stringParser(that:{'@stringU
+'introspectLibraryDocAsString
+})))
+method introspectDocPath(path annotationN ) using Outer3::SafeOperators check introspectTypeDocPath(that:this.lib(), path:path.binaryRepr(), annotationN:annotationN.binaryRepr()) error Outer3::SafeOperators.mkError(that:Outer3::S.#stringParser(that:{'@stringU
 'introspectLibraryDocPath
 }))}}}
 Opt:{

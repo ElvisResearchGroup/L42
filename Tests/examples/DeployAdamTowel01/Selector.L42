@@ -1,7 +1,7 @@
 { _private(Library _binaryRepr)<: S::ToS '@private
 
   type method Outer0 #stringParser(Library that) (
-    using SafeOperators 
+    using SafeOperators
       check ifInvalidDo(path:that)
       error InvalidFormat(S.#stringParser(that))
     Outer0._private(_binaryRepr:that)
@@ -22,6 +22,12 @@
       return Bool.true()
     return Bool.false()
     }
+
+  method
+  S name() (
+    str=this.toS()
+    str(end:str.firstIndexOf(S"("))
+    )
 
   method
   Strings names(){

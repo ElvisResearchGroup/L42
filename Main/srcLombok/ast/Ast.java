@@ -219,7 +219,7 @@ public interface Ast {
     //first is 1--9 and all rest is 0-9
     if("123456789".indexOf(c)!=-1){return false;}
     for(int i=firstN+1;i<name.length();i++){
-      if("0123456789".indexOf(name.charAt(i))==-1){return false;}  
+      if("0123456789".indexOf(name.charAt(i))==-1){return false;}
       }
     return true;
     }
@@ -353,41 +353,45 @@ public interface Ast {
   }
   public static enum OpKind{Unary,BoolOp,RelationalOp,DataOp,EqOp}
   public static enum Op{
-    Tilde("~",OpKind.Unary),
-    Bang("!",OpKind.Unary),
-    And("&",OpKind.BoolOp),
-    Or("|",OpKind.BoolOp),
-    LTEqual("<=",OpKind.RelationalOp),
-    GTEqual(">=",OpKind.RelationalOp),
-    LT("<",OpKind.RelationalOp),
-    GT(">",OpKind.RelationalOp),
-    EqualEqual("==",OpKind.RelationalOp),
-    BangEqual("!=",OpKind.RelationalOp),
-    Plus("+",OpKind.DataOp),
-    Minus("-",OpKind.DataOp),
-    Times("*",OpKind.DataOp),
-    Divide("/",OpKind.DataOp),
-    LTLT("<<",OpKind.DataOp),
-    GTGT(">>",OpKind.DataOp),
-    PlusPlus("++",OpKind.DataOp),
-    TimesTimes("**",OpKind.DataOp),
-    PlusEqual("+=",OpKind.EqOp),
-    MinusEqual("-=",OpKind.EqOp),
-    TimesEqual("*=",OpKind.EqOp),
-    DivideEqual("/=",OpKind.EqOp),
-    AndEqual("&=",OpKind.EqOp),
-    OrEqual("|=",OpKind.EqOp),
-    LTLTEqual("<<=",OpKind.EqOp),
-    GTGTEqual(">>=",OpKind.EqOp),
-    PlusPlusEqual("++=",OpKind.EqOp),
-    TimesTimesEqual("**=",OpKind.EqOp),
-    ColonEqual(":=",OpKind.EqOp);
+    Tilde("~",OpKind.Unary,true,true),
+    Bang("!",OpKind.Unary,true,true),
+    And("&",OpKind.BoolOp,true,true),
+    Or("|",OpKind.BoolOp,true,true),
+    LTEqual("<=",OpKind.RelationalOp,false,true),
+    GTEqual(">=",OpKind.RelationalOp,true,true),
+    LT("<",OpKind.RelationalOp,false,true),
+    GT(">",OpKind.RelationalOp,true,true),
+    EqualEqual("==",OpKind.RelationalOp,true,false),
+    BangEqual("!=",OpKind.RelationalOp,true,true),
+    Plus("+",OpKind.DataOp,true,true),
+    Minus("-",OpKind.DataOp,true,true),
+    Times("*",OpKind.DataOp,true,true),
+    Divide("/",OpKind.DataOp,true,true),
+    LTLT("<<",OpKind.DataOp,false,false),
+    GTGT(">>",OpKind.DataOp,true,false),
+    PlusPlus("++",OpKind.DataOp,true,false),
+    TimesTimes("**",OpKind.DataOp,true,false),
+    PlusEqual("+=",OpKind.EqOp,true,true),
+    MinusEqual("-=",OpKind.EqOp,true,true),
+    TimesEqual("*=",OpKind.EqOp,true,true),
+    DivideEqual("/=",OpKind.EqOp,true,true),
+    AndEqual("&=",OpKind.EqOp,true,true),
+    OrEqual("|=",OpKind.EqOp,true,true),
+    LTLTEqual("<<=",OpKind.EqOp,true,true),
+    GTGTEqual(">>=",OpKind.EqOp,true,true),
+    PlusPlusEqual("++=",OpKind.EqOp,true,true),
+    TimesTimesEqual("**=",OpKind.EqOp,true,true),
+    ColonEqual(":=",OpKind.EqOp,true,true);
 
     public final String inner;
     public final OpKind kind;
-    Op(String inner, OpKind kind) {
+    public final boolean normalized;//false for <<,<, <=
+    public final boolean leftAssociative;//false for ++ << >> ** ==
+    Op(String inner, OpKind kind, boolean normalized,boolean leftAssociative) {
       this.inner=inner;
       this.kind=kind;
+      this.normalized=normalized;
+      this.leftAssociative=leftAssociative;
       }
     public static Op fromString(String s){
       for(Op op:Op.values()){if (op.inner.equals(s))return op;}

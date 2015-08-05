@@ -217,9 +217,9 @@ public interface Expression extends Ast {
       assert countWalkBy <= 1 : this;
       return true;
     }
-    public String toString() {
-      return sugarVisitors.ToFormattedText.of(this);
-    }
+    //public String toString() {
+    //  return sugarVisitors.ToFormattedText.of(this);
+    //}
 
     public interface Member {
       <T> T match(Function<NestedClass, T> nc, Function<MethodImplemented, T> mi, Function<MethodWithType, T> mt);

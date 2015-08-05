@@ -206,13 +206,13 @@ public void test9b(){tp("{()"
 
 @Test(expected=ErrorMessage.PathsNotSubtype.class/*PathNonExistant.class*/)
 public void test9c(){tp("{()"
-    //dsgdsgs//TODO:here, it pass if you put C::H, is this coherent?
+    //TODO:here, it pass if you put C::H, is this coherent?
     ," D: {() type method Library id(Library that) (that)}"
-    ," C: D.id({()  H:{method Void foo() (Outer2::C::E x= this void)}}) "
+    ," C: D.id({()  H:{() method Void foo() (Outer2::C::E x= this void)}}) "
     ," F: {'@exitStatus\n'0\n\n}"
     ,"}");}
 
-@Test(expected=ErrorMessage.PathsNotSubtype.class/*PathNonExistant.class*/)
+@Test(/*expected=ErrorMessage.PathsNotSubtype.class/*PathNonExistant.class*/)//correctly no error for trashing the error.
 public void test9d(){tp("{()"
     ," D: {() type method Library trash(Library that) ({()})}"
     ," C: D.trash({()  H:{() method Void foo() (Outer2::C::E x= this void)}}) "
