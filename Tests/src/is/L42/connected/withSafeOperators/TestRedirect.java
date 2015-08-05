@@ -300,16 +300,16 @@ public static class TestRedirect1 {//add more test for error cases
 // TODO: exercise UnexpectedImplementedInterfaces
 
     },{lineNumber(), new String[]{      // Cascade redirect of surrounding class
-                    "{X:{Y:{A:{ type method Outer1 fun()}"
+                    "{X:{Y:{A:{ type method Outer2 fun()}}"
                     + "     InnerA:{type method Outer1 fun()}"  // To get the actual result, this is required, even though apparently nothing redirects to it
-                    + "}}}" },
+                    + "}}" },
         "{InnerZ:{InnerA:{ type method Outer1 fun()}}"
         + "B:{method InnerZ moreFun() InnerZ::InnerA.fun()"
         + "   method InnerZ::InnerA mostFun()}"
         + "}",
         "Outer0::InnerZ::InnerA","Outer1::X::Y::A",
-//        "{B:{method Outer2::X::Y moreFun() Outer2::X::Y::A.fun() method Outer2::X::Y::A mostFun()}}",false  // This is the actual result
-        ec.load("OverlappingRedirect",  "FromList", "[InnerZ::InnerA, InnerZ]", "ToList", "[X::Y::A, X::Y]").str(), true
+//        "{B:{method Outer2::X moreFun() Outer2::X::Y::A.fun() method Outer2::X::Y::A mostFun()}}",false  // This is the actual result
+        ec.load("OverlappingRedirect",  "FromList", "[InnerZ::InnerA, InnerZ]", "ToList", "[X::Y::A, X]").str(), true
 
 /* related to previous test, but currently in limbo
     },{lineNumber(), new String[]{      // referring outside the target causes the same unfriendly error
