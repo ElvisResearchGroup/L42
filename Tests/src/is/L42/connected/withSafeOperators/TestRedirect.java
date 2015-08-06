@@ -123,6 +123,15 @@ public static class TestRedirect1 {//add more test for error cases
         "{InnerZ:{}"
         + "M:{type method Library defA_maker() {type method Outer3::X::Y::A beA_maker() Outer3::X::Y::A.#apply()}} "
         + "B:{C:{}}}",false
+    },{lineNumber(), new String[]{      // writing methods and type methods that presume the surrounding program
+                    "{X:{Y:{A:{()  type method Outer1 fun(Outer2 that)}}}}" },
+        "{InnerZ:{InnerA:{()  type method Outer3::X::Y fun(Outer3::X that)}}"
+        + "InnerB:{type method Library makeLib() {type method InnerZ::InnerA fred(Outer3::X::Y that)}}"
+        + "}",
+        "Outer0::InnerZ::InnerA","Outer1::X::Y::A",
+        "{InnerZ:{}"
+        + "InnerB:{type method Library makeLib() {type method Outer3::X::Y::A fred(Outer3::X::Y that)}}"
+        + "}",false
         
 
     // the errors have variable portions.
