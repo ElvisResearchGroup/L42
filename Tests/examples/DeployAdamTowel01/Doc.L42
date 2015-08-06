@@ -1,12 +1,13 @@
 { _private(Library _binaryRepr)<: S::ToS '@private
   
+  type method Outer0 (Library that) Outer0._private(_binaryRepr:that)
   type method Outer0 #stringParser(Library that) Outer0._private(_binaryRepr:that)
     
   method Library binaryRepr() this._binaryRepr()
   
   
   method toS() S.#stringParser(this._binaryRepr())
-  
+  'add methods for reading stuff out of docs (use Mirror::Lib)
       
   'we still need to generate docs using introspection
   }

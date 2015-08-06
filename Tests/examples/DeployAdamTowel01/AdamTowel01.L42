@@ -17,6 +17,16 @@ SafeOperators:...
 
 'where they should go? top level or inside Report? or inside another thing?
 Report:{interface<:S::ToS} 'there will be a MakeReport decorator
+
+UnsupportedOperation:{(Any target,Selector selector, S reason)<:Report
+  method
+  toS()
+    S"UnsupportedOperation "++selector++S"
+      '
+      'reason:
+      "++reason
+  }
+
 SourceUnfit:{(Introspection report) <:Report
   method toS() S"SourceUnfit"
   }

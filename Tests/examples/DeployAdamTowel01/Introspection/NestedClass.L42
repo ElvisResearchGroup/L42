@@ -1,0 +1,81 @@
+{'findMeNestedClass
+(NestedClass root,MirrorPr mirror, Path path,NestedClass nestedClassReport, NestedClass pathReport)<:Member
+
+method 'empty for Outer0
+Doc nestedDoc()(
+  if this.path()==Path"Outer0" (
+    error UnsupportedOperation(target:this,
+      selector:Selector"nestedDoc()", reason:S"The NestedClass Object refers to Outer0"
+    )
+  this.nestedClassReport().docOf(path:path)
+  )
+method 'of the library literal
+Doc doc() this.pathReport().docOf(path:path)
+
+method Path pathFromRoot() this.path() ' invariant NestedClass(...).nestedClassFromRoot(path).pathFromRoot()==path
+method type Any externalType() ' explanation to improve if the corresponding library litera is binded, it is the corresponding metaclass.
+
+    method S classKind()
+    method S allAsString()  'just the library literal 
+    method S preamble() ' nested name, colon and documentation, error if Outer0    
+    method Members members()
+    method Methods methods()
+    method NestedClasses nestedClasses()
+    method Types implementedInterfaces()
+    method Method constructor()    
+    method Method method(Selector that) exception TargetUnavailable 
+    method NestedClass nestedClassFromRoot(Path that) exception TargetUnavailable
+
+
+method S classKind() this.report()"ClassKind"
+method S memberNumber() this.report()"MemberNumber"
+method S implementedNumber() this.report()"ImplementedNumber"
+method S allAsString() this.report()"AllAsString"
+
+method
+ Report::Path query(Path that)exception TargetUnavailable
+   this.mirror().introspectReport(root:this,path:that)
+
+method
+Report::Members members(Path that) exception TargetUnavailable(
+  var result=Report::Members[]
+  var mN=1N
+  while Bool.true() (' to be able to break
+    result:=result.#add(this.mirror()
+      .introspectReportMember(root:this,path:that,memberN:mN))
+    mN+=1N
+    )
+  result)
+method
+Report::Methods methods(Path that) exception TargetUnavailable
+  Report::Methods[with m in this.members(that).vals() ( on Report::Method m)]
+method
+Report::NestedClasses nestedClasses(Path that) exception TargetUnavailable
+  Report::NestedClasses[with m in this.members(that).vals() ( on Report::NestedClass m)]
+
+method Report::Methods methods() {
+  return this.methods(Path"Outer0")
+  catch exception x (on TargetUnavailable error x )
+  }
+method Report::NestedClasses nestedClasses() {
+  return this.nestedClasses(Path"Outer0")
+  catch exception x (on TargetUnavailable error x )
+  }
+method Report::Members members(){
+  return this.members(Path"Outer0")
+  catch exception x (on TargetUnavailable error x )
+  }
+method S #stringParser(Library that) {
+  path=Path.#stringParser(that)
+  return this.mirror().introspectDocAsString(path:path)
+  catch exception x (on TargetUnavailable error x )
+  }
+method
+Doc docOf(Path path){
+  with mirror=this.mirror() (
+    on Mirror::Lib return Doc(Refactor::RenamePath[path to:Path"Outer0"]<<mirror.lib())
+    )
+  error S"UnreachableCode"
+  }
+  
+}
