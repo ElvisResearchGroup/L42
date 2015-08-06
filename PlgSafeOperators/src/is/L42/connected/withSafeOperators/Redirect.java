@@ -61,6 +61,7 @@ public class Redirect {
     PathPath currentPP=new PathPath(csPath,path);
     if(setVisited.contains(currentPP)){return;}
     setVisited.add(currentPP);
+    if(!coherentMapping(setVisited)){throw Assertions.codeNotReachable();}
     List<String>cs=csPath.getCBar();
     if(cs.isEmpty()){throw Errors42.errorInvalidOnTopLevel();}
     Errors42.checkExistsPathMethod(l, cs, Optional.empty());
@@ -123,6 +124,16 @@ public class Redirect {
     ClassKind kindDest = ExtractInfo.classKind(null,null,l0DestNoFrom,null,null,null);
     throw Errors42.errorSourceUnfit(currentPP.getPath1().getCBar(),path,
         kindSrc,kindDest,unexpectedMembers, headerOk, unexpectedInterfaces, isPrivate);
+  }
+  private static boolean coherentMapping(List<PathPath> setVisited) {
+    for(PathPath p1:setVisited){
+      for(PathPath p2:setVisited){
+        if(p1.equals(p2)){continue;}
+        if(p1.getPath1().equals(p2.getPath1())){return false;}
+        if(p1.getPath2().equals(p2.getPath2())){return false;}
+      }
+    }
+    return true;
   }
   private static Set<Path> redirectOkImpl(List<PathPath> s, PathPath currentPP, Program p, ClassB l, List<Path> paths, List<Path> pathsPrime) {
     //(paths ok)//and I can not use it for exceptions since opposite subset relation

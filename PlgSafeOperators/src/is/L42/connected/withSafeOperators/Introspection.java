@@ -127,7 +127,7 @@ public class Introspection {
     }
 
   private static boolean isExternal(List<String>path,Path pi){
-    return pi.outerNumber()>path.size();
+    return pi.isPrimitive()||pi.outerNumber()>path.size();
     }
 
   private static TypeKind getTypeKind(List<String>path,Type ti, NormType resolvedTi) {
