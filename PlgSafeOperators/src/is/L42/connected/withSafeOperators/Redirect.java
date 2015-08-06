@@ -61,7 +61,7 @@ public class Redirect {
     PathPath currentPP=new PathPath(csPath,path);
     if(setVisited.contains(currentPP)){return;}
     setVisited.add(currentPP);
-    if(!coherentMapping(setVisited)){throw Assertions.codeNotReachable();}
+    Errors42.checkCoherentMapping(setVisited);
     List<String>cs=csPath.getCBar();
     if(cs.isEmpty()){throw Errors42.errorInvalidOnTopLevel();}
     Errors42.checkExistsPathMethod(l, cs, Optional.empty());
@@ -125,21 +125,7 @@ public class Redirect {
     throw Errors42.errorSourceUnfit(currentPP.getPath1().getCBar(),path,
         kindSrc,kindDest,unexpectedMembers, headerOk, unexpectedInterfaces, isPrivate);
   }
-  private static boolean coherentMapping(List<PathPath> setVisited) {
-    // setVisited is a set of individual redirected classes,
-    // created by walking the sub-tree under each cascade redirect.
-    // getPath1() is the path in the library before redirecting.
-    // getPath2() is the proposed path in the redirected library.
-    // We will allow many paths to be redirected into a single new path,
-    // but not vice-versa. 
-    for(PathPath p1:setVisited){
-      for(PathPath p2:setVisited){
-        if(p1.equals(p2)){continue;}
-        if(p1.getPath1().equals(p2.getPath1())){return false;}
-      }
-    }
-    return true;
-  }
+  
   private static Set<Path> redirectOkImpl(List<PathPath> s, PathPath currentPP, Program p, ClassB l, List<Path> paths, List<Path> pathsPrime) {
     //(paths ok)//and I can not use it for exceptions since opposite subset relation
     //S;p|-L[Paths=~Paths']:S'

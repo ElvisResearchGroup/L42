@@ -22,6 +22,7 @@ import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodWithType;
 import ast.ExpCore.X;
 import ast.Util.PathMx;
+import ast.Util.PathPath;
 import auxiliaryGrammar.Program;
 
 public class Errors42 {
@@ -147,6 +148,31 @@ public class Errors42 {
     if(mta.getInner().isPresent()){mta=mta.withInner(Optional.of(new ExpCore.X("implementation")));}
     if(mtb.getInner().isPresent()){mtb=mtb.withInner(Optional.of(new ExpCore.X("implementation")));}
     throw errorMethodClash(pathForError, mta, mtb, exc, pars, retType, thisMdf);
+  }
+  static void checkCoherentMapping(List<PathPath> setVisited) {
+    // setVisited is a set of individual redirected classes,
+    // created by walking the sub-tree under each cascade redirect.
+    // getPath1() is the path in the library before redirecting.
+    // getPath2() is the proposed path in the redirected library.
+    // We will allow many paths to be redirected into a single new path,
+    // but not vice-versa. 
+    for(PathPath p1:setVisited){
+      for(PathPath p2:setVisited){
+        if(p1.equals(p2)){continue;}
+        if(p1.getPath1().equals(p2.getPath1())){
+          throw errorIncoherentRedirectMapping(setVisited, p1.getPath1(),p1.getPath2(),p2.getPath2());
+          }
+      }
+    }
+    return;
+  }
+  static Error errorIncoherentRedirectMapping(List<PathPath>map,Path src, Path dest1,Path dest2) {
+    return Resources.Error.multiPartStringError("IncoherentRedirectMapping",
+        "Mapping",""+map,
+        "SplitSrc",""+src,
+        "Dest1",""+dest1,
+        "Dest2",""+dest2
+        );
   }
 /*
  
