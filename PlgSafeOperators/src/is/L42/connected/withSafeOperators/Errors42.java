@@ -148,6 +148,17 @@ public class Errors42 {
     if(mtb.getInner().isPresent()){mtb=mtb.withInner(Optional.of(new ExpCore.X("implementation")));}
     throw errorMethodClash(pathForError, mta, mtb, exc, pars, retType, thisMdf);
   }
-
+/*
+ 
+ IncoherentRedirect
+   srcRoot1
+   srcRoot2
+   splitclass: path
+   dest1:
+   dest2:
+ 
+ 
+ 
+ * */
 
 }

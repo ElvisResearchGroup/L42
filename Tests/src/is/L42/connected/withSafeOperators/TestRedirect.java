@@ -308,17 +308,26 @@ public static class TestRedirect1 {//add more test for error cases
 
 // TODO: exercise UnexpectedImplementedInterfaces
 
-    },{lineNumber(), new String[]{      // Cascade redirect of surrounding class
-                    "{X:{Y:{A:{ type method Outer2 fun()}}"
-                    + "     InnerA:{type method Outer1 fun()}"  // To get the actual result, this is required, even though apparently nothing redirects to it
-                    + "}}" },
+    },{lineNumber(), new String[]{      // Inconsistent redirect, forcing InnerAB to be split into both A and B
+                    "{A:{} B:{}"
+                    + "C:{ method A fun() method B moreFun()}"
+                    + "}" },
+        "{InnerAB:{} "
+        + "InnerC:{method InnerAB fun() method InnerAB moreFun() } "
+        + "}",
+        "Outer0::InnerC","Outer1::C",
+        ec.load("OverlappingRedirect",  "FromList", "[InnerZ::InnerA, InnerZ]", "ToList", "[X::Y::A, X]").str(), true
+
+    },{lineNumber(), new String[]{      // Cascade redirect of surrounding class, equivalent to a nested redirect of the outer-most redirected class
+                    "{X:{Y:{A:{ type method Outer1 fun()}"  // Can't redirect into here
+                    + "     InnerA:{type method Outer1 fun()}" 
+                    + "}}}" },
         "{InnerZ:{InnerA:{ type method Outer1 fun()}}"
         + "B:{method InnerZ moreFun() InnerZ::InnerA.fun()"
         + "   method InnerZ::InnerA mostFun()}"
         + "}",
-        "Outer0::InnerZ::InnerA","Outer1::X::Y::A",
-//        "{B:{method Outer2::X moreFun() Outer2::X::Y::A.fun() method Outer2::X::Y::A mostFun()}}",false  // This is the actual result
-        ec.load("OverlappingRedirect",  "FromList", "[InnerZ::InnerA, InnerZ]", "ToList", "[X::Y::A, X]").str(), true
+        "Outer0::InnerZ::InnerA","Outer1::X::Y::InnerA",
+        "{B:{method Outer2::X::Y moreFun() Outer2::X::Y::InnerA.fun() method Outer2::X::Y::InnerA mostFun()}}",false  // This is the actual result
 
 /* related to previous test, but currently in limbo
     },{lineNumber(), new String[]{      // referring outside the target causes the same unfriendly error

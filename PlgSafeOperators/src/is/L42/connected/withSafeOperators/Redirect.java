@@ -126,11 +126,16 @@ public class Redirect {
         kindSrc,kindDest,unexpectedMembers, headerOk, unexpectedInterfaces, isPrivate);
   }
   private static boolean coherentMapping(List<PathPath> setVisited) {
+    // setVisited is a set of individual redirected classes,
+    // created by walking the sub-tree under each cascade redirect.
+    // getPath1() is the path in the library before redirecting.
+    // getPath2() is the proposed path in the redirected library.
+    // We will allow many paths to be redirected into a single new path,
+    // but not vice-versa. 
     for(PathPath p1:setVisited){
       for(PathPath p2:setVisited){
         if(p1.equals(p2)){continue;}
         if(p1.getPath1().equals(p2.getPath1())){return false;}
-        if(p1.getPath2().equals(p2.getPath2())){return false;}
       }
     }
     return true;
