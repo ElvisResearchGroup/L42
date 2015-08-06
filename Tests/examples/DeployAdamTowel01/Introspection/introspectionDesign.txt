@@ -96,13 +96,15 @@ Plugin: isValidPath, isValidSelector
 
 ------------
 Or, with reports as internal pointers:
+----------
 Introspection:{
   Member:{interface}
   NestedClass:{<:Member
     method NestedClass root()
     method Doc nestedDoc()'empty for Outer0
     method Doc doc() 'of the library literal
-    method Path pathFromRoot() 'what for introspection on type Any?
+    method Path pathFromRoot() ' invariant NestedClass(...).nestedClassFromRoot(path).pathFromRoot()==path
+    method type Any externalType() 'if the corresponding library litera is binded, it is the corresponding metaclass.
     method S classKind()
     method S allAsString()  'equal to libraryLiteralAsString for Outer0 
     method S libraryLiteralAsString()    
@@ -115,8 +117,7 @@ Introspection:{
     method Types implementedInterfaces()
     method Method constructor()    
     method Method method(Selector that) exception TargetUnavailable 
-    method NestedClass nestedClassFromRoot(Path that) exception TargetUnavailable 'not convincing
-    'also what should happen for introspection from type Any?    
+    method NestedClass nestedClassFromRoot(Path that) exception TargetUnavailable 
     }
     
   Method:{<:Member
@@ -134,15 +135,13 @@ Introspection:{
   
   Type:{
     method NestedClass root()
-    method S typeKind() '{InternalNormal,ExternalNormal,InternalAlias,ExternalAlias, InternalAliasUnresolvable,ExternalAliasUnresolvable,InternalExternalAlias}
-    method S mdf() 'does it exists for aliases? merge this field with the next?
-    method NestedClass iPath() 'error on External*
-    method type Any ePath() 'error on Internal*
-    method NestedClass iResolvedPath() 'error on ExternalAlias, InternalExternalAlias
-    method type Any eResolvedPath()' error on InternalAlias
+    method S typeKind() '{Normal,Alias,AliasUnresolvable}
+    method S mdf()
+    method NestedClass referencedPath()
+    method NestedClass resolvedReferencedPath() 'error on AliasUnresolvable
     method Bool partial()
-    method Bool resolvedPartial() 'false on *Normal and *Unresolvable
-    method S suffix()' "" on *Normal
+    method Bool resolvedPartial() 'error on Normal
+    method S suffix()  'error on Normal
     method Doc doc()
     method S allAsString()
     }
