@@ -116,7 +116,7 @@ public class ExtractInfo {
       mi->"InterfaceImplementedMethod",
       mt->(mt.getInner().isPresent())?"ImplementedMethod":"AbstractMethod");
   }
-
+  
   public static enum ClassKind{
     //Box,
     Interface,

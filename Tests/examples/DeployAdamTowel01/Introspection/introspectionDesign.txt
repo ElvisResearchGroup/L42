@@ -1,7 +1,7 @@
 Introspection:{
-  type method Outer0 (Library lib)
-  type method Outer0 (Library lib,Path path) exception TargetUnavailable
-  type method Outer0 (type Any cls)    
+  type method NestedClass (Library lib)
+  type method NestedClass (Library lib,Path path) exception TargetUnavailable
+  type method NestedClass (type Any cls)    
 
   Member:{interface}
   NestedClass:{<:Member
@@ -38,11 +38,11 @@ Introspection:{
   Type:{
     method NestedClass root()
     method S typeKind() '{Normal,Alias,AliasUnresolvable}
-    method S mdf()
+    method S mdf()'error on AliasUnresolvable
     method NestedClass referencedPath()
     method NestedClass resolvedReferencedPath() 'error on AliasUnresolvable
     method Bool partial()
-    method Bool resolvedPartial() 'error on Normal
+    method Bool resolvedPartial() 'error on Normal? or the same of partial()
     method S suffix()  'error on Normal
     method Doc doc()
     method S allAsString()
