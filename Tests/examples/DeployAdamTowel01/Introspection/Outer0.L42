@@ -1,9 +1,9 @@
 {'findMeIntrospection
 
 type method
-Outer0(Library lib) NestedClass(mirror:MirrorPr::Lib(lib:lib))
+NestedClass(Library lib) NestedClass(mirror:MirrorPr::Lib(lib:lib))
 type method
-Outer0(type Any cls) NestedClass(mirror:MirrorPr::Class(lib:cls))
+NestedClass(type Any cls) NestedClass(mirror:MirrorPr::Class(lib:cls))
 
 MirrorPr:... 'remove Pr later.
 
@@ -19,6 +19,21 @@ type method Member dispatch(Introspection root,Outer2::Path path, N memberN,Libr
     )
   }
 
+Record:'@private
+  {(Mirror that)
+  method S #stringParser(Library that) {
+  path=Path.#stringParser(that)
+  return this.mirror().introspectDocAsString(path:path)
+  catch exception x (on TargetUnavailable error x )
+  }
+  method
+  Doc docOf(Path path){
+    with mirror=this.mirror() (
+      on Mirror::Lib return Doc(Refactor::RenamePath[path to:Path"Outer0"]<<mirror.lib())
+      )
+    error S"UnreachableCode"
+    }
+  }
 Member:{interface}
 Members:LinkedList.list(Member)
 Method:...

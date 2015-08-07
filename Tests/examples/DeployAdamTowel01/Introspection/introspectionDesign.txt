@@ -9,7 +9,7 @@ Introspection:{
     method Doc nestedDoc()' error  for Outer0
     method Doc doc() 'of the library literal
     method Path pathFromRoot() ' invariant NestedClass(...).nestedClassFromRoot(path).pathFromRoot()==path
-    method type Any externalType() ' explanation to improve if the corresponding library litera is binded, it is the corresponding metaclass.
+    method type Any externalType() 'error if  root()!=this or root() is literal, otherwise contains the type Any used to initialize root/this.  
     method S classKind()
     method S allAsString()  'just the library literal 
     method S preamble() ' nested name, colon and documentation, error if Outer0    
@@ -24,6 +24,7 @@ Introspection:{
     
   Method:{<:Member
     method NestedClass root()
+    method NestedClass nestedClass()
     method Doc doc()
     method S thisMdf()
     method Path pathFromRoot()' invariant NestedClass(...).nestedClassFromRoot(path).pathFromRoot()==path

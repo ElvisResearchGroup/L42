@@ -1,4 +1,27 @@
-{(Introspection root,Outer3::Path path, N memberN,Introspection report)<:Member
+{(NestedClass nestedClass,N memberN,Record report)<:Member
+
+method
+NestedClass root()
+  this.myNested().root()
+
+method
+Doc doc()
+  this.report().docOf(path:Path"Doc")
+
+method
+S thisMdf()
+  this.report()"ThisMdf"
+
+method ' invariant NestedClass(...).nestedClassFromRoot(path).pathFromRoot()==path
+Path pathFromRoot()
+  this.nestedClass().pathFromRoot()
+    method Selector selector()
+    method S memberKind()
+    method S allAsString()
+    method Type returnType()
+    method Types exceptions()
+    method Types parameterTypes()    
+ 
   method
   Selector key()
     Selector.#stringParser(this.report()"Key".binaryRepr())

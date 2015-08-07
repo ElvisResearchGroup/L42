@@ -83,7 +83,8 @@ public class Introspection {
       "AllAsString",ToFormattedText.of(mN)
       );
     }
-  static enum TypeKind{InternalNormal,ExternalNormal,InternalAlias,ExternalAlias, InternalAliasUnresolvable,ExternalAliasUnresolvable,InternalExternalAlias}
+  //static enum TypeKind{InternalNormal,ExternalNormal,InternalAlias,ExternalAlias, InternalAliasUnresolvable,ExternalAliasUnresolvable,InternalExternalAlias}
+  static enum TypeKind{Normal,Alias,AliasUnresolvable}
   //if member ==0, talk about implemented interfaces, nested classes have no types
   public static ClassB giveInfoType(Program p,ClassB that,List<String> path,int memberN,int typeN){
     Errors42.checkExistsPathMethod(that, path,Optional.empty());
@@ -95,7 +96,9 @@ public class Introspection {
       boolean isExternal=false;
       if(implN.isPrimitive() ||implN.outerNumber()>path.size()){isExternal=true;}
       Doc dImplN=Doc.factory(implN);//is ok since I have liftDoc
-      return typeReport(path, isExternal?TypeKind.ExternalNormal:TypeKind.InternalNormal,Mdf.Immutable,Mdf.Immutable,
+      return typeReport(path, 
+          TypeKind.Normal,//isExternal?TypeKind.ExternalNormal:TypeKind.InternalNormal,
+          Mdf.Immutable,Mdf.Immutable,
           dImplN,dImplN, false,false,"","",current.getDoc2(),ToFormattedText.of(implN));
     }
     assert memberN>0;
@@ -126,23 +129,22 @@ public class Introspection {
     return typeReport(path, tk, mdf, resMdf, dPi, dResPi, ph, resPh, suffix, parName, doc, allAsString);
     }
 
-  private static boolean isExternal(List<String>path,Path pi){
-    return pi.isPrimitive()||pi.outerNumber()>path.size();
-    }
-
+  //private static boolean isExternal(List<String>path,Path pi){return pi.isPrimitive()||pi.outerNumber()>path.size(); }
   private static TypeKind getTypeKind(List<String>path,Type ti, NormType resolvedTi) {
-    if(ti instanceof NormType){
-      NormType nt=(NormType)ti;
-      if(isExternal(path,nt.getPath())){return TypeKind.ExternalNormal;}
-      return TypeKind.InternalNormal;
+    if(ti instanceof NormType){return TypeKind.Normal;      
+      //NormType nt=(NormType)ti;
+      //if(isExternal(path,nt.getPath())){return TypeKind.ExternalNormal;}
+      //return TypeKind.InternalNormal;
     }
-    Ast.HistoricType ht=(Ast.HistoricType)ti;
-    boolean tiExt=isExternal(path,ht.getPath());
-    if(resolvedTi==null && tiExt){return TypeKind.ExternalAliasUnresolvable;}
-    if(resolvedTi==null){return TypeKind.InternalAliasUnresolvable;}
-    if(tiExt){return TypeKind.ExternalAlias;}
-    if(isExternal(path,resolvedTi.getPath())){return TypeKind.InternalExternalAlias;}
-    return TypeKind.InternalExternalAlias;
+    if(resolvedTi==null){return TypeKind.AliasUnresolvable;}
+    return TypeKind.Alias;
+    //Ast.HistoricType ht=(Ast.HistoricType)ti;
+    //boolean tiExt=isExternal(path,ht.getPath());
+    //if(resolvedTi==null && tiExt){return TypeKind.ExternalAliasUnresolvable;}
+    //if(resolvedTi==null){return TypeKind.InternalAliasUnresolvable;}
+    //if(tiExt){return TypeKind.ExternalAlias;}
+    //if(isExternal(path,resolvedTi.getPath())){return TypeKind.InternalExternalAlias;}
+    //return TypeKind.InternalExternalAlias;
   }
 
   private static String selectorsToString(List<MethodSelectorX> selectors) {
