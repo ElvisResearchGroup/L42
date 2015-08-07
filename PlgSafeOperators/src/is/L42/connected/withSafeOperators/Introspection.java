@@ -28,7 +28,7 @@ import java.util.Optional;
 
 import coreVisitors.From;
 
-public class Introspection {
+public class Introspection {//TODO: we keep 5 methods, but we merge the PathReport and MemberReport content.
   public static ClassB giveInfo(ClassB that,List<String> path){
     ClassB current = Program.extractCBar(path, that);
     Errors42.checkExistsPathMethod(that, path,Optional.empty());
