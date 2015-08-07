@@ -16,7 +16,10 @@
     method 'TODO: why is not throwing the exception?
     introspectReport(root, path)
       NestedClass(root:root,path:path
-        nestedClassReport:
+        nestedClassReport:Record(Lib(lib:
+        using SafeOperators
+          check introspectLibraryReportMember(this.lib(), path:path.binaryRepr())
+          error SafeOperators.mkError(S"introspectReport")))
         pathReport: Record(Lib(lib:
         using SafeOperators
           check introspectLibraryReport(this.lib(), path:path.binaryRepr())
