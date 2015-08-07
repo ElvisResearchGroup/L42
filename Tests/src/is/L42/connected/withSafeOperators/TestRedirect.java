@@ -132,6 +132,17 @@ public static class TestRedirect1 {//add more test for error cases
         "{InnerZ:{}"
         + "InnerB:{type method Library makeLib() {type method Outer3::X::Y::A fred(Outer3::X::Y that)}}"
         + "}",false
+    },{lineNumber(), new String[]{   // Cascade coherently from a class to its surrounding class.
+                                     // Requires matching subtrees of names, except at the root.
+                    "{X:{Y:{FluffyA:{ type method Outer1 fun()}"
+                    + "}}}" },
+        "{InnerZ:{FluffyA:{ type method Outer1 fun()}}"
+        + "B:{method InnerZ moreFun() "
+        + "   method InnerZ::FluffyA mostFun() InnerZ::FluffyA.fun()}"
+        + "}",
+        "Outer0::InnerZ::FluffyA","Outer1::X::Y::FluffyA",
+        "{B:{method Outer2::X::Y moreFun() "
+        + "method Outer2::X::Y::FluffyA mostFun() Outer2::X::Y::FluffyA.fun()}}",false
         
 
     // the errors have variable portions.
@@ -308,7 +319,7 @@ public static class TestRedirect1 {//add more test for error cases
 
 // TODO: exercise UnexpectedImplementedInterfaces
 
-    },{lineNumber(), new String[]{      // Inconsistent redirect, forcing InnerAB to be split into both A and B
+    },{lineNumber(), new String[]{      // Incoherent redirect, forcing InnerAB to be split into both A and B
                     "{A:{} B:{}"
                     + "C:{ method A fun() method B moreFun()}"
                     + "}" },
@@ -316,18 +327,22 @@ public static class TestRedirect1 {//add more test for error cases
         + "InnerC:{method InnerAB fun() method InnerAB moreFun() } "
         + "}",
         "Outer0::InnerC","Outer1::C",
-        ec.load("OverlappingRedirect",  "FromList", "[InnerZ::InnerA, InnerZ]", "ToList", "[X::Y::A, X]").str(), true
+        ec.load("IncoherentRedirectMapping",
+                "Mapping", "[Outer0::InnerC->Outer1::C, Outer0::InnerAB->Outer1::A, Outer0::InnerAB->Outer1::B]",
+                "SplitSrc", "Outer0::InnerAB",
+                "Dest1", "Outer1::A", "Dest2", "Outer1::B").str(), true
 
-    },{lineNumber(), new String[]{      // Cascade redirect of surrounding class, equivalent to a nested redirect of the outer-most redirected class
-                    "{X:{Y:{A:{ type method Outer1 fun()}"  // Can't redirect into here
-                    + "     InnerA:{type method Outer1 fun()}" 
+    },{lineNumber(), new String[]{   // Incoherent redirect: // TODO @James; different depths of parent in a subtree
+                                     // Requires matching subtrees of names, except at the root.
+                    "{X:{Y:{FluffyA:{ type method Outer1 fun()}"
                     + "}}}" },
-        "{InnerZ:{InnerA:{ type method Outer1 fun()}}"
-        + "B:{method InnerZ moreFun() InnerZ::InnerA.fun()"
-        + "   method InnerZ::InnerA mostFun()}"
+        "{InnerZ:{FluffyA:{ type method Outer1 fun()}}"
+        + "B:{method InnerZ moreFun() "
+        + "   method InnerZ::FluffyA mostFun() InnerZ::FluffyA.fun()}"
         + "}",
-        "Outer0::InnerZ::InnerA","Outer1::X::Y::InnerA",
-        "{B:{method Outer2::X::Y moreFun() Outer2::X::Y::InnerA.fun() method Outer2::X::Y::InnerA mostFun()}}",false  // This is the actual result
+        "Outer0::InnerZ::FluffyA","Outer1::X::Y::FluffyA",
+        "{B:{method Outer2::X::Y moreFun() "
+        + "method Outer2::X::Y::FluffyA mostFun() Outer2::X::Y::FluffyA.fun()}}",false
 
 /* related to previous test, but currently in limbo
     },{lineNumber(), new String[]{      // referring outside the target causes the same unfriendly error
