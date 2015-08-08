@@ -289,7 +289,7 @@ public static class TestRedirect1 {//add more test for error cases
         "{InnerA:{interface type method Void fun(Void that)  method Void moreFun(Void that, Library other)\n"
         + "C:{interface method Void mostFun() } } \n"
         + "C_impl:{<:InnerA::C"
-//        + "         method Void mostFun()"    //
+        + "         method Void mostFun()"    //
         + "       } "
         + "}",
         "Outer0::InnerA","Outer1::A",
@@ -298,14 +298,71 @@ public static class TestRedirect1 {//add more test for error cases
                "SrcKind", "Interface",
                "UnexpectedMembers", "[mostFun()]")
           .str(), true
-    },{lineNumber(), new String[]{  // When a cascade redirect renames another interface, what source path in the unexpected error?
-        "{  A:{interface type method C fun(Void that)  method Void moreFun(Void that, Library other) }\n"
-        + " C:{interface}}"
+    },{lineNumber(), new String[]{  // One unimplemented interface; no unexpected members
+        "{A:{interface type method Void fun(Void that)  method Void moreFun(Void that, Library other) \n"
+        + " C:{interface}}}"
         },
-        "{ InnerA:{interface type method InnerC fun(Void that)  method Void moreFun(Void that, Library other) }\n"
-        + "InnerC:{interface"
+        "{BlockingInterface1:{interface} "
+        + "InnerA:{interface type method Void fun(Void that)  method Void moreFun(Void that, Library other)\n"
+        + "C:{interface <:BlockingInterface1 } } \n"
+        + "C_impl:{<:InnerA::C"
+        + "       } "
+        + "}",
+        "Outer0::InnerA","Outer1::A",
+        ec
+          .set(
+               "UnexpectedMembers", "[]",
+               "UnexpectedImplementedInterfaces", "[Outer0::BlockingInterface1]"
+               )
+          .str(), true
+    },{lineNumber(), new String[]{  // Three unimplemented interfaces, one of which is external
+                                    // See below for a slightly different test that succeeds.
+        "{A:{interface type method Void fun(Void that)  method Void moreFun(Void that, Library other) \n"
+        + " C:{interface}}}"
+        },
+        "{BlockingInterface1:{interface} \n"
+        + "BlockingInterface2:{interface} \n"
+        + "InnerA:{interface type method Void fun(Void that)  method Void moreFun(Void that, Library other)\n"
+        + "C:{interface <:BlockingInterface1 Outer2::BlockingInterface2 "
+        + "               A::C"  // Should refer to external A::C because it's created in a library with an InnerA
+        + "  } } \n"
+        + "C_impl:{<:InnerA::C"
+        + "         method Void mostFun()"    //
+        + "       } "
+        + "}",
+        "Outer0::InnerA","Outer1::A",
+        ec
+          .set("UnexpectedImplementedInterfaces", "[Outer1::A::C, Outer0::BlockingInterface1, Outer0::BlockingInterface2]"
+               )
+          .str(), true
+    },{lineNumber(), new String[]{  // Same test as above, but specifying outer of A::C gets a plausible error
+        "{A:{interface type method Void fun(Void that)  method Void moreFun(Void that, Library other) \n"
+        + " C:{interface}}}"
+        },
+        "{BlockingInterface1:{interface} \n"
+        + "BlockingInterface2:{interface} \n"
+        + "InnerA:{interface type method Void fun(Void that)  method Void moreFun(Void that, Library other)\n"
+        + "C:{interface <:BlockingInterface1 Outer2::BlockingInterface2 Outer3::A::C"
+        + "  } } \n"
+        + "C_impl:{<:InnerA::C"
+        + "         method Void mostFun()"    //
+        + "       } "
+        + "}",
+        "Outer0::InnerA","Outer1::A",
+        ec
+          .set("UnexpectedImplementedInterfaces", "[Outer0::BlockingInterface1, Outer0::BlockingInterface2, Outer1::A::C]"
+               )
+          .str(), true
+
+/* TODO @James: need to un-nest this, so it can have a cascade redirect 
+    },{lineNumber(), new String[]{  // When a cascade redirect renames another interface, what source path in the unexpected error?
+        "{  A:{interface type method C fun(Void that)  method Void moreFun(Void that, Library other) \n"
+        + " C:{interface}} }"
+        },
+        "{ InnerA:{interface type method InnerC fun(Void that)  method Void moreFun(Void that, Library other) "
+        + "        InnerC:{interface <:InnerA"
         + "            method Void mostFun() "
-        + "       }  \n"
+        + "       }}  \n"
         + "C_impl:{<:InnerC"
         + "            method Void mostFun() "
         + "       } "
@@ -313,11 +370,10 @@ public static class TestRedirect1 {//add more test for error cases
         + "",
         "Outer0::InnerA","Outer1::A",
         ec
-          .set("SrcPath", "Outer0::InnerC", "DestExternalPath", "'@Outer1::C"
+          .set("UnexpectedImplementedInterfaces", "[Outer0::InnerA]"
                )
           .str(), true
-
-// TODO: exercise UnexpectedImplementedInterfaces
+*/
 
     },{lineNumber(), new String[]{      // Incoherent redirect, forcing InnerAB to be split into both A and B
                     "{A:{} B:{}"
@@ -333,7 +389,8 @@ public static class TestRedirect1 {//add more test for error cases
                 "Dest1", "Outer1::A", "Dest2", "Outer1::B").str(), true
 
     },{lineNumber(), new String[]{   // Incoherent redirect: Matching functions (FluffyA::fun()) disagree about the position of their return value
-                                     // TODO @Marco: I want the mapping to be the roots only; if it's mixed roots and subtrees then I think that in many real cases, it will be too verbose to think about
+                                     // TODO @Marco: I want the mapping to be the roots only; if it's mixed roots and subtrees then
+                                     //              I think that in many real cases, it will be too verbose to think about
                     "{X:{Y:{FluffyA:{ type method Outer2 fun()}" // Target of original redirect
                     + "    }"
                     + "FluffyA:{type method Outer1 fun()}"  // The phantom required for the redirect to avoid SourceUnfit.
