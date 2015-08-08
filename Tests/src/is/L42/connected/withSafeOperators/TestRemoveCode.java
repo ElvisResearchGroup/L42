@@ -34,6 +34,7 @@ public class TestRemoveCode {
   },{"{(C x) C:'@private\n{(D y)} D:'@private\n{(D y)} E:{} F:'@private\n{}}","{(C x) E:{} C:'@private\n{(D y)} D:'@private\n{(D y)} }"
   },{"{method C::m() foo() C:'@private\n{method Void m()}}","{method C::m() foo() C:'@private\n{method Void m()}}"
   },{"{D:{method C::m() foo()} C:'@private\n{method Void m()}}","{D:{method C::m() foo()} C:'@private\n{method Void m()}}"
+  },{"{D:{method Any foo() A()} A:'@private\n{()<:I} I:'@private\n{interface}}","{D:{method Any foo() A()} A:'@private\n{()<:I} I:'@private\n{interface}}"
   }});}
   @Test public void test() {
     TestHelper.configureForTest();

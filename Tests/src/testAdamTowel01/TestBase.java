@@ -58,6 +58,12 @@ public class TestBase {
     L42.main(new String[]{"examples/testsForAdamTowel01/UseCollections.L42"});
     Assert.assertEquals(L42.record.toString(),"size is 2 hello world\nhello\nworld\n");
     }
+  @Test
+  public  void _07introspection() throws Throwable{
+    TestHelper.configureForTest();
+    L42.main(new String[]{"examples/testsForAdamTowel01/UseIntrospectionAdamTowel.L42"});
+    Assert.assertEquals(L42.record.toString(),"FreeTemplate\nFreeTemplate\nHello Adam 0\nazz\nbzz\nczz\n");
+    }
 }
 
 //  Kind:MethodClash

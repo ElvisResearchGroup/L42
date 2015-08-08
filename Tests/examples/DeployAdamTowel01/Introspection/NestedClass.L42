@@ -1,5 +1,5 @@
 {'findMeNestedClass
-(NestedClass root,Path path,Record report)<:Member
+(NestedClass root,Path path,MirrorPr mirror, Record report)<:Member
 
 method 'empty for Outer0
 Doc nestedDoc()(
@@ -63,6 +63,8 @@ method Types implementedInterfaces() (
 
 method Method constructor()  error S"NotImplementedYet"
 method Method methodFromSelector(Selector that) exception TargetUnavailable  error S"NotImplementedYet"
-method NestedClass nestedClassFromRoot(Path that) exception TargetUnavailable  error S"NotImplementedYet"
+method NestedClass nestedClassFromRoot(Path that) exception TargetUnavailable
+  this.mirror().introspectReport(root:this.root(),path:that)
+ 
 
 }

@@ -1,10 +1,10 @@
 {interface
   method
-  NestedClass introspectReport(NestedClass root,Path path) exception TargetUnavailable
+  NestedClass introspectReport(NestedClass^ root,Path path) exception TargetUnavailable
   method
-  Member introspectReportMember(NestedClass root,Path path, N memberN) exception TargetUnavailable,Void
+  Member introspectReportMember(NestedClass^ root,Path path, N memberN) exception TargetUnavailable,Void
   method
-  Type introspectReportType(NestedClass root,Path path, N memberN, N typeN) exception TargetUnavailable,Void
+  Type introspectReportType(NestedClass^ root,Path path, N memberN, N typeN) exception TargetUnavailable,Void
   method
   S introspectDocAsString(Path path) exception TargetUnavailable
   method
@@ -15,14 +15,14 @@
   Lib:{(Library lib)<:Outer1
     method 'TODO: why is not throwing the exception?
     introspectReport(root, path)
-      NestedClass(root:root,path:path,report:Record(Lib(lib:
+      NestedClass(root:root,path:path,mirror:this,report:Record(Lib(lib:
         using SafeOperators
           check introspectLibraryReport(this.lib(), path:path.binaryRepr())
           error SafeOperators.mkError(S"introspectReport"))))
 
     method
     introspectReportMember(root,path,memberN)
-      Record.dispatch(root:root,path:path,memberN:memberN,report:
+      Record.dispatch(root:root,path:path,mirror:this,memberN:memberN,report:
         using SafeOperators
           check introspectLibraryReportMember(this.lib(), path:path.binaryRepr(),memberN:memberN.binaryRepr())
           exception void)

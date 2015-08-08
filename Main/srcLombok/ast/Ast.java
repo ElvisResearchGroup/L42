@@ -428,6 +428,7 @@ public interface Ast {
       String fileName=null;
       //if(file!=null){fileName="..."+file.substring(file.lastIndexOf("\\"));}
       int pos=file.lastIndexOf("\\");
+      if(pos!=-1){pos=file.substring(0,pos).lastIndexOf("\\");}
       fileName = "..." + ((pos==-1)?file:file.substring(pos));
       return "file: "+fileName+"; "+res;
     }

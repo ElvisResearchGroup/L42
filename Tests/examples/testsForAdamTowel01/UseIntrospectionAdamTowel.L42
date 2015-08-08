@@ -1,0 +1,13 @@
+{reuse L42.is/adamTowel01
+
+Main:{
+
+  i=Introspection(lib:{Bar:{method Void()}},path:Path"Bar")
+  Debug(i.allAsString())
+  Debug(i.classKind())
+  Debug(i.root().allAsString())
+  Debug(i.root().classKind())
+
+  return ExitCode.normal()
+  }
+}

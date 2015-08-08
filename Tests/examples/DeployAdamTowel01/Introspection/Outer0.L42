@@ -2,7 +2,8 @@
 
 type method
 NestedClass(Library lib)(
-  root=NestedClass(root:root,path:Path"Outer0",report:Record(MirrorPr::Lib(lib:lib)))
+  root=MirrorPr::Lib(lib:lib).introspectReport(root:root,path:Path"Outer0")
+  catch exception x (on TargetUnavailable error S"UnreachableCode")
   root
   )
 
@@ -29,16 +30,45 @@ Record:'@private
       )
     error S"UnreachableCode"
     }
-  type method Member dispatch(NestedClass root,Path path, N memberN,Library report) {
+  'this is how I would like it to be
+  'type method Member dispatch(NestedClass^ root,Path path,MirrorPr mirror, N memberN,Library report) {
+  '  _report =Introspection(lib:report).report()
+  '  with x=_report"MemberKind" (
+  '    case x== S"NestedClass"  (return NestedClass(root:root,path:path,mirror:mirror,report:_report))
+  '    case x== S"InterfaceImplementedMethod" (return Method(root:root,path:path,memberN:memberN,report:_report))
+  '    case x== S"ImplementedMethod" (return Method(root:root,path:path,memberN:memberN,report:_report))
+  '    case x== S"AbstractMethod" (return Method(root:root,path:path,memberN:memberN,report:_report))
+  '    default error S"invalid member kind "++x
+  '    )
+  '  }
+  'instead, I have to write this :-(
+  RootForMember:'@private
+    {interface method Member (NestedClass^ root)}
+  NestedForMember:'@private
+    {(Path path,MirrorPr mirror,Record _report)<:RootForMember
+      method(root)NestedClass(root:root,path:this.path(),mirror:this.mirror(),report:this._report())}
+  MethodForMember:'@private
+    {(Path path,N memberN,Record _report)<:RootForMember
+      method(root)Method(root:root,path:this.path(),memberN:this.memberN(),report:this._report())}
+  type method Member dispatch(NestedClass^ root,Path path,MirrorPr mirror, N memberN,Library report) (
     _report =Introspection(lib:report).report()
-    with x=_report"MemberKind" (
-      case x== S"NestedClass"  (return NestedClass(root:root,path:path,report:_report))
-      case x== S"InterfaceImplementedMethod" (return Method(root:root,path:path,memberN:memberN,report:_report))
-      case x== S"ImplementedMethod" (return Method(root:root,path:path,memberN:memberN,report:_report))
-      case x== S"AbstractMethod" (return Method(root:root,path:path,memberN:memberN,report:_report))
+    RootForMember result={ with x=_report"MemberKind" (
+      case x== S"NestedClass" (
+        return NestedForMember(path:path,mirror:mirror,_report:_report)
+        )
+      case x== S"InterfaceImplementedMethod" (
+        return MethodForMember(path:path,memberN:memberN,_report:_report)
+        )
+      case x== S"ImplementedMethod" (
+        return MethodForMember(path:path,memberN:memberN,_report:_report)
+        )
+      case x== S"AbstractMethod" (
+        return MethodForMember(path:path,memberN:memberN,_report:_report)
+        )
       default error S"invalid member kind "++x
-      )
-    }
+      )}
+    result(root:root)
+    )
   }
 Member:{interface}
 Members:LinkedList.list(Member)

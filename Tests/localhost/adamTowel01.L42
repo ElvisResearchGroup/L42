@@ -1366,18 +1366,23 @@ Introspection:{'findMeIntrospection
 
 type method 
 Outer0::NestedClass #apply(Library lib) (
-  Outer0::NestedClass::#apply(root path report ) root=Outer0::NestedClass.#apply(root:root, path:Outer1::Path.#stringParser(that:{'@stringU
+  Outer0::MirrorPr::Lib::#apply(lib ) ::introspectReport(root path ) root=Outer0::MirrorPr::Lib.#apply(lib:lib).introspectReport(root:root, path:Outer1::Path.#stringParser(that:{'@stringU
   'Outer0
-  }), report:Outer0::Record.#apply(that:Outer0::MirrorPr::Lib.#apply(lib:lib)))
+  }))
+  catch exception x (
+    on Outer1::TargetUnavailable error Outer1::S.#stringParser(that:{'@stringU
+    'UnreachableCode
+    })
+    )
   root
   )
 MirrorPr:{interface 
 method 
-Outer1::NestedClass introspectReport(Outer1::NestedClass root, Outer2::Path path) exception Outer2::TargetUnavailable 
+Outer1::NestedClass introspectReport(Outer1::NestedClass^root, Outer2::Path path) exception Outer2::TargetUnavailable 
 method 
-Outer1::Member introspectReportMember(Outer1::NestedClass root, Outer2::Path path, Outer2::N memberN) exception Outer2::TargetUnavailable, Void 
+Outer1::Member introspectReportMember(Outer1::NestedClass^root, Outer2::Path path, Outer2::N memberN) exception Outer2::TargetUnavailable, Void 
 method 
-Outer1::Type introspectReportType(Outer1::NestedClass root, Outer2::Path path, Outer2::N memberN, Outer2::N typeN) exception Outer2::TargetUnavailable, Void 
+Outer1::Type introspectReportType(Outer1::NestedClass^root, Outer2::Path path, Outer2::N memberN, Outer2::N typeN) exception Outer2::TargetUnavailable, Void 
 method 
 Outer2::S introspectDocAsString(Outer2::Path path) exception Outer2::TargetUnavailable 
 method 
@@ -1392,10 +1397,10 @@ mut method '@private @consistent
 Library #lib() 
 read method '@private @consistent
 Library lib() 
-method introspectReport(root path ) Outer2::NestedClass.#apply(root:root, path:path, report:Outer2::Record.#apply(that:Outer1::Lib.#apply(lib:using Outer3::SafeOperators check introspectLibraryReport(that:this.lib(), path:path.binaryRepr()) error Outer3::SafeOperators.mkError(that:Outer3::S.#stringParser(that:{'@stringU
+method introspectReport(root path ) Outer2::NestedClass.#apply(root:root, path:path, mirror:this, report:Outer2::Record.#apply(that:Outer1::Lib.#apply(lib:using Outer3::SafeOperators check introspectLibraryReport(that:this.lib(), path:path.binaryRepr()) error Outer3::SafeOperators.mkError(that:Outer3::S.#stringParser(that:{'@stringU
 'introspectReport
 })))))
-method introspectReportMember(root path memberN ) Outer2::Record.dispatch(root:root, path:path, memberN:memberN, report:using Outer3::SafeOperators check introspectLibraryReportMember(that:this.lib(), path:path.binaryRepr(), memberN:memberN.binaryRepr()) exception void)
+method introspectReportMember(root path memberN ) Outer2::Record.dispatch(root:root, path:path, mirror:this, memberN:memberN, report:using Outer3::SafeOperators check introspectLibraryReportMember(that:this.lib(), path:path.binaryRepr(), memberN:memberN.binaryRepr()) exception void)
 method introspectReportType(root path memberN typeN ) Outer2::Type.#apply(root:root, path:path, memberN:memberN, typeN:typeN, report:Outer2::Record.#apply(that:Outer1::Lib.#apply(lib:using Outer3::SafeOperators check introspectLibraryReportType(that:this.lib(), path:path.binaryRepr(), memberN:memberN.binaryRepr(), typeN:typeN.binaryRepr()) exception void)))
 method introspectDocAsString(path annotationN ) Outer3::S.#stringParser(that:using Outer3::SafeOperators check introspectLibraryDocAsString(that:this.lib(), path:path.binaryRepr(), annotationN:Outer3::N.#numberParser(that:{'@stringU
 '1
@@ -1500,70 +1505,117 @@ Outer2::Doc docOf(Outer2::Path path) (
   'CurlyBlock-Should be unreachable code
   }
   )
+RootForMember:'@private
+{interface 
+method 
+Outer2::Member #apply(Outer2::NestedClass^root) }
+NestedForMember:'@private
+{<:Outer1::RootForMember
 type method 
-Outer1::Member dispatch(Outer1::NestedClass root, Outer2::Path path, Outer2::N memberN, Library report) (
-  Void unused=(
-    Outer2::Introspection::#apply(lib ) ::report() _report=Outer2::Introspection.#apply(lib:report).report()
-    Void unused0=(
-      Outer2::Introspection::#apply(lib ) ::report() ::#stringParser(that ) x=_report.#stringParser(that:{'@stringU
-      'MemberKind
-      })
-      (
-        Outer2::Introspection::#apply(lib ) ::report() ::#stringParser(that ) ::#equalequal(that ) cond=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
-        'NestedClass
-        }))
+Outer0 #apply(Outer3::Path^path'@private @consistent
+, Outer2::MirrorPr^mirror'@private @consistent
+, Outer2::Record^_report'@private @consistent
+) 
+mut method '@private @consistent
+Outer3::Path #path() 
+read method '@private @consistent
+Outer3::Path path() 
+mut method '@private @consistent
+Outer2::MirrorPr #mirror() 
+read method '@private @consistent
+Outer2::MirrorPr mirror() 
+mut method '@private @consistent
+Outer2::Record #_report() 
+read method '@private @consistent
+Outer2::Record _report() 
+method #apply(root ) Outer2::NestedClass.#apply(root:root, path:this.path(), mirror:this.mirror(), report:this._report())}
+MethodForMember:'@private
+{<:Outer1::RootForMember
+type method 
+Outer0 #apply(Outer3::Path^path'@private @consistent
+, Outer3::N^memberN'@private @consistent
+, Outer2::Record^_report'@private @consistent
+) 
+mut method '@private @consistent
+Outer3::Path #path() 
+read method '@private @consistent
+Outer3::Path path() 
+mut method '@private @consistent
+Outer3::N #memberN() 
+read method '@private @consistent
+Outer3::N memberN() 
+mut method '@private @consistent
+Outer2::Record #_report() 
+read method '@private @consistent
+Outer2::Record _report() 
+method #apply(root ) Outer2::Method.#apply(root:root, path:this.path(), memberN:this.memberN(), report:this._report())}
+type method 
+Outer1::Member dispatch(Outer1::NestedClass^root, Outer2::Path path, Outer1::MirrorPr mirror, Outer2::N memberN, Library report) (
+  Outer2::Introspection::#apply(lib ) ::report() _report=Outer2::Introspection.#apply(lib:report).report()
+  Outer0::RootForMember result=(
+    Void unused=(
+      Void unused0=(
+        Outer2::Introspection::#apply(lib ) ::report() ::#stringParser(that ) x=_report.#stringParser(that:{'@stringU
+        'MemberKind
+        })
         (
-          Void unused1=cond.#checkTrue()
-          catch exception unused2 (
-            on Void (
-              Outer2::Introspection::#apply(lib ) ::report() ::#stringParser(that ) ::#equalequal(that ) cond0=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
-              'InterfaceImplementedMethod
-              }))
-              (
-                Void unused3=cond0.#checkTrue()
-                catch exception unused4 (
-                  on Void (
-                    Outer2::Introspection::#apply(lib ) ::report() ::#stringParser(that ) ::#equalequal(that ) cond1=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
-                    'ImplementedMethod
-                    }))
-                    (
-                      Void unused5=cond1.#checkTrue()
-                      catch exception unused6 (
-                        on Void (
-                          Outer2::Introspection::#apply(lib ) ::report() ::#stringParser(that ) ::#equalequal(that ) cond2=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
-                          'AbstractMethod
-                          }))
-                          (
-                            Void unused7=cond2.#checkTrue()
-                            catch exception unused8 (
-                              on Void error Outer2::S.#stringParser(that:{'@stringU
-                              'invalid member kind 
-                              }).#plusplus(that:x)
+          Outer2::Introspection::#apply(lib ) ::report() ::#stringParser(that ) ::#equalequal(that ) cond=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
+          'NestedClass
+          }))
+          (
+            Void unused1=cond.#checkTrue()
+            catch exception unused2 (
+              on Void (
+                Outer2::Introspection::#apply(lib ) ::report() ::#stringParser(that ) ::#equalequal(that ) cond0=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
+                'InterfaceImplementedMethod
+                }))
+                (
+                  Void unused3=cond0.#checkTrue()
+                  catch exception unused4 (
+                    on Void (
+                      Outer2::Introspection::#apply(lib ) ::report() ::#stringParser(that ) ::#equalequal(that ) cond1=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
+                      'ImplementedMethod
+                      }))
+                      (
+                        Void unused5=cond1.#checkTrue()
+                        catch exception unused6 (
+                          on Void (
+                            Outer2::Introspection::#apply(lib ) ::report() ::#stringParser(that ) ::#equalequal(that ) cond2=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
+                            'AbstractMethod
+                            }))
+                            (
+                              Void unused7=cond2.#checkTrue()
+                              catch exception unused8 (
+                                on Void error Outer2::S.#stringParser(that:{'@stringU
+                                'invalid member kind 
+                                }).#plusplus(that:x)
+                                )
+                              return Outer0::MethodForMember.#apply(path:path, memberN:memberN, _report:_report)
                               )
-                            return Outer1::Method.#apply(root:root, path:path, memberN:memberN, report:_report)
                             )
                           )
+                        return Outer0::MethodForMember.#apply(path:path, memberN:memberN, _report:_report)
                         )
-                      return Outer1::Method.#apply(root:root, path:path, memberN:memberN, report:_report)
                       )
                     )
+                  return Outer0::MethodForMember.#apply(path:path, memberN:memberN, _report:_report)
                   )
-                return Outer1::Method.#apply(root:root, path:path, memberN:memberN, report:_report)
                 )
               )
+            return Outer0::NestedForMember.#apply(path:path, mirror:mirror, _report:_report)
             )
-          return Outer1::NestedClass.#apply(root:root, path:path, report:_report)
           )
         )
+      void
       )
-    void
+    catch return result0 (
+      on Outer0::RootForMember result0
+      )
+    error {'@stringU
+    'CurlyBlock-Should be unreachable code
+    }
     )
-  catch return result (
-    on Outer1::Member result
-    )
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
-  }
+  result.#apply(root:root)
   )}
 Member:{interface }
 Members:{' generic linked list class, elements of type Elem
@@ -2395,6 +2447,7 @@ Outer2::Types::#begin() ::#end() #inner() }
 type method 
 Outer0 #apply(Outer1::NestedClass^root'@private @consistent
 , Outer2::Path^path'@private @consistent
+, Outer1::MirrorPr^mirror'@private @consistent
 , Outer1::Record^report'@private @consistent
 ) 
 mut method '@private @consistent
@@ -2405,6 +2458,10 @@ mut method '@private @consistent
 Outer2::Path #path() 
 read method '@private @consistent
 Outer2::Path path() 
+mut method '@private @consistent
+Outer1::MirrorPr #mirror() 
+read method '@private @consistent
+Outer1::MirrorPr mirror() 
 mut method '@private @consistent
 Outer1::Record #report() 
 read method '@private @consistent
@@ -2709,9 +2766,7 @@ Outer1::Method methodFromSelector(Outer2::Selector that) exception Outer2::Targe
 'NotImplementedYet
 })
 method 
-Outer1::NestedClass nestedClassFromRoot(Outer2::Path that) exception Outer2::TargetUnavailable error Outer2::S.#stringParser(that:{'@stringU
-'NotImplementedYet
-})}
+Outer1::NestedClass nestedClassFromRoot(Outer2::Path that) exception Outer2::TargetUnavailable this.mirror().introspectReport(root:this.root(), path:that)}
 NestedClasses:{' generic linked list class, elements of type Elem
 
 Varres:{

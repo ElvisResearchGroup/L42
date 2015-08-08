@@ -162,7 +162,7 @@ public class TypeSystemOK {
     sealEnv.xssK.add(new HashSet<>(varEnv.keySet()));
     ThrowEnv throwEnv=new ThrowEnv();
     throwEnv.exceptions.addAll(mt.getMt().getExceptions());
-    NormType suggested=(NormType)mt.getMt().getReturnType();
+    NormType suggested=Functions.toPartial((NormType)mt.getMt().getReturnType());
     p.exePlusOk(varEnv);
     TypeSystem.typecheckSure(
       false,

@@ -249,7 +249,19 @@ public void test12(){tp("{()"
 ,"}"
 );}
 
-
+@Test public void testPlaceHolder(){tp(""
+,"{"
+,"A:{(A x)}"
+," C:( A myA=A(x:myA)  {'@exitStatus\n'0\n})"
+,"}"
+);}
+@Test public void testPlaceHolderFactory(){tp(""
+,"{"
+,"A:{(A x)}"
+,"Factory:{ type method A (A^ a) A(x:a)}"
+/*,"C: {'@exitStatus\n'0\n\n}"*/," C:( A myA=Factory(a:myA)  {'@exitStatus\n'0\n})"
+,"}"
+);}
 @Test(expected=ErrorMessage.PathsNotSubtype.class)
 public void testPlusNotStar(){tp("{"
 ,"A:{ () method Library foo() }"
