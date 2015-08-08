@@ -100,8 +100,18 @@ public class L42 {
       }
     catch(ErrorMessage msg){
       //System.out.println(ErrorFormatter.formatError(msg).getErrorTxt());
-    	L42.printDebug(ErrorFormatter.formatError(Program.empty(),msg).getErrorTxt());
+    	L42.printDebug(
+    	    ErrorFormatter.formatError(Program.empty(),msg).getErrorTxt()
+    	    );
+    	for(Field f:msg.getClass().getDeclaredFields()){
+        f.setAccessible(true);
+        if(!f.getName().equals("p")){continue;}
+        List<ClassB>program=(List<ClassB>)f.get(msg);
+    	  for(ClassB cb:program){
+    	    L42.printDebug(ErrorFormatter.displayAbstractMethods(cb));
+    	  }
       }
+    }
   }
 
 

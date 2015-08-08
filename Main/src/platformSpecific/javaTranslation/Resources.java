@@ -89,7 +89,7 @@ public class Resources {
         else{//for now, just doc.
           inner=new ClassB((Doc)map[i+1],Doc.empty(),false,Collections.emptyList(),Collections.emptyList(),Stage.None);
           }
-        if(!Path.isValidClassName(cName)){throw Assertions.codeNotReachable("Invalid name in multiPartStringError");}
+        if(!Path.isValidClassName(cName)){throw Assertions.codeNotReachable("Invalid name in multiPartStringError:"+cName);}
         ms.add(new ExpCore.ClassB.NestedClass(Doc.empty(), cName, inner));
       }
       ExpCore.ClassB cb=new ExpCore.ClassB(Doc.empty(), Doc.empty(), false, Collections.emptyList(), ms,Stage.None);
@@ -272,11 +272,11 @@ public class Resources {
 
 /*
 {
-type method 
-Void printHelloWorld() 
+type method
+Void printHelloWorld()
   Outer0::Debug.#apply(that:Outer1::S"Hello World"++Outer0::N"42"
 Debug:{
-type method 
+type method
 Void #apply(Outer2::S that)
  }}
 

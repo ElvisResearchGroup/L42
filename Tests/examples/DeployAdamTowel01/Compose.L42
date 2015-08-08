@@ -31,10 +31,10 @@
     }
 
   method '@private
-  Library liftErrorsCompose(Library left,Library right)exception ClassClash,MethodClash{
+  Library liftErrorsCompose(Library left,Library right) exception ClassClash,MethodClash {
     return SafeOperators.compose(left:left,right:right)
     catch error err (on Library (
-      report=Introspection(lib:err)
+      report=Introspection(lib:err).report()
       with x=report"Kind" (
         case x== S"ClassClash"  (exception ClassClash(report:report))
         case x== S"MethodClash"  (exception MethodClash(report:report))
@@ -46,9 +46,9 @@
     catch exception x (on Any (
       if !this.resolver().isPresent() (error x) 'boh, why is not working? with exception
       ms=Introspection(lib:~this.resolver()).methods()
-      Selector name=ms.pop().pop().top().key()
-      Selector nameLeft=ms.pop().top().key()
-      Selector nameRight=ms.top().key()
+      Selector name=ms.pop().pop().top().selector()
+      Selector nameLeft=ms.pop().top().selector()
+      Selector nameRight=ms.top().selector()
       Debug(S"name is: "++name)
       Debug(S"nameLeft is: "++nameLeft)
       Debug(S"nameRight is: "++nameRight)

@@ -176,16 +176,16 @@ public class Program {
     }
     return cb;
   }
-  public MethodWithType method(Path path,MethodSelector ms,boolean isOnlyType){
+  public MethodWithType method(Path path,MethodSelector ms,ExpCore.MCall forError,boolean isOnlyType){
     if(path.isPrimitive()){
-      throw new ErrorMessage.MethodNotPresent(path,ms,this.getInnerData());
+      throw new ErrorMessage.MethodNotPresent(path,ms,forError,null,this.getInnerData());
       }
     ClassB classB=extractCt(path);
 //    path=Path.parse("Outer0::C::C");
     //classB=(ClassB)From.from(classB,path);
     Optional<Member> result = getIfInDom(classB.getMs(),ms);
     if(!result.isPresent()){
-      throw new ErrorMessage.MethodNotPresent(path,ms,this.getInnerData());
+      throw new ErrorMessage.MethodNotPresent(path,ms,forError,null,this.getInnerData());
       }
     MethodWithType mwt=(MethodWithType)result.get();
     mwt=From.from(mwt, path);

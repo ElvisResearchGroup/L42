@@ -1,8 +1,5 @@
-{(NestedClass nestedClass,N memberN,Record report)<:Member
+{(NestedClass root,Path path,N memberN,Record report)<:Member
 
-method
-NestedClass root()
-  this.myNested().root()
 
 method
 Doc doc()
@@ -14,7 +11,8 @@ S thisMdf()
 
 method ' invariant NestedClass(...).nestedClassFromRoot(path).pathFromRoot()==path
 Path pathFromRoot()
-  this.nestedClass().pathFromRoot()
+  this.path()
+
 
 method
 Selector selector()
@@ -27,20 +25,20 @@ S methodKind()
 method
 S allAsString()
   this.report()"AllAsString"
-  
+
 method
-Type returnType() this.root().mirror()
-      .introspectReportType(
+Type returnType() error S"NotImplementedYet" 'TODO:this.root().mirror()
+
 
 method
 Types exceptions() error S"NotImplementedYet"
 
 method
-Types parameterTypes()    
+Types parameterTypes() {
   var result=Types[]
   var pN=1N
   while Bool.true() (' to be able to break
-    Type ti=this.root().mirror()
+    Type ti=this.root().report().that()
       .introspectReportType(root:this.root(),'TODO: no, we need a mirror?
       path:this.pathFromRoot(),memberN:this.memberN(),typeN:pN)
     result:=result.#add(ti)
@@ -49,10 +47,5 @@ Types parameterTypes()
   return result
   catch exception err (on TargetUnavailable error err)
   }
- 
-  method
-  Selector key()
-    Selector.#stringParser(this.report()"Key".binaryRepr())
-
 }
 

@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+
+import sugarVisitors.CollapsePositions;
 import tools.Assertions;
 import tools.Map;
 import ast.Ast.ConcreteHeader;
@@ -60,6 +62,15 @@ public class Norm {
     return cb.withMs(ms);
   }
   public static MethodWithType of(Program p,MethodWithType mt,boolean isOnlyType) {
+    try{return auxOf(p,mt,isOnlyType);}
+    catch(ErrorMessage.MethodNotPresent mnp){
+      if(mt.getInner().isPresent()){
+        throw new ErrorMessage.MethodNotPresent(mnp.getPath(),mnp.getMs(),mnp.getCall(),CollapsePositions.of(mt.getInner().get().accept(new InjectionOnSugar())), mnp.getP());
+      }
+      throw mnp;
+    }
+  }
+  private static MethodWithType auxOf(Program p,MethodWithType mt,boolean isOnlyType) {
     MethodType t=mt.getMt();
     List<Type> ts=new ArrayList<Type>();
       for(Type tt:t.getTs()){ts.add(of(p,tt));}
@@ -109,7 +120,7 @@ public class Norm {
   //ClassB cb=p.extract(t.getPath());
    Path pt=t.getPath();
    pt=Norm.of(p, pt);
-  MethodWithType mt = p.method(pt, t.getSelectors().get(0).getMs(),true);
+  MethodWithType mt = p.method(pt, t.getSelectors().get(0).getMs(),null,true);
   String x=t.getSelectors().get(0).getX();
   if(x.isEmpty()){
     return of(p,mt.getMt().getReturnType());

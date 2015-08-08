@@ -25,13 +25,13 @@ public class IsValue extends TestShapeVisitor{
     return e instanceof Path ||e instanceof X
         || e instanceof _void||e instanceof ClassB;
   }
-  
+
   public static Redex.Garbage nestedGarbage(ExpCore e){
     if(!(e instanceof Block)){return null;}
     return nestedGarbage((Block)e);
   }
-  
-  
+
+
   public static Redex.Garbage nestedGarbage(Block b) {
     //b is a right value!
     Block b2=Functions.garbage(b,b.getDecs().size());
@@ -50,11 +50,11 @@ public class IsValue extends TestShapeVisitor{
     Block bIn=(Block)b.getInner();
     Redex.Garbage ngIn=nestedGarbage(bIn);
     if(ngIn==null){return null;}
-    return new Redex.Garbage(b.withInner(ngIn.getThatLessGarbage()));    
-    
+    return new Redex.Garbage(b.withInner(ngIn.getThatLessGarbage()));
+
   }
-  
-  
+
+
   public Boolean visit(Path s) {return true;}
   public Boolean visit(X s) {return true;}
   public Boolean visit(_void s)  {return true;}
@@ -91,7 +91,7 @@ public class IsValue extends TestShapeVisitor{
     MCall s=(MCall)ec;
     if(!(s.getReceiver() instanceof Path)){return false;}
     MethodSelector ms=new MethodSelector(s.getName(),s.getXs());
-    MethodWithType mwt=p.method((Path)s.getReceiver(),ms,true);
+    MethodWithType mwt=p.method((Path)s.getReceiver(),ms,s,true);
     if(mwt.getInner().isPresent()){return false;}
     if(mwt.getMt().getMdf()!=ast.Ast.Mdf.Type){return false;}
     for(ExpCore ei:s.getEs()){
@@ -103,5 +103,5 @@ public class IsValue extends TestShapeVisitor{
     if (!(inner instanceof Signal)){return false;}
     return IsValue.of(p,((Signal)inner).getInner());
   }*/
-  
+
 }

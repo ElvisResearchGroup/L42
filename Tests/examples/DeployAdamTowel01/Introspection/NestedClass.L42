@@ -1,16 +1,17 @@
 {'findMeNestedClass
-(NestedClass root,Path path,Record nestedClassReport, Record pathReport)<:Member
+(NestedClass root,Path path,Record report)<:Member
 
 method 'empty for Outer0
 Doc nestedDoc()(
   if this.path()==Path"Outer0" (
     error UnsupportedOperation(target:this,
       selector:Selector"nestedDoc()", reason:S"The NestedClass Object refers to Outer0"
+      )
     )
-  this.nestedClassReport().docOf(path:Path"Doc")
+  this.report().docOf(path:Path"Doc")
   )
 method 'of the library literal
-Doc doc() this.pathReport().docOf(path:Path"Doc")
+Doc doc() this.report().docOf(path:Path"Doc")
 
 method Path pathFromRoot() this.path() ' invariant NestedClass(...).nestedClassFromRoot(path).pathFromRoot()==path
 method type Any externalType(){
@@ -18,48 +19,50 @@ method type Any externalType(){
     error UnsupportedOperation(target:this,
       selector:Selector"externalType()",reason:S"The NestedClass Object refers to "++this.path()
       )
-  with mirror=this.mirror() (
-    on Mirror::Class return mirror.lib()
+    )
+  with mirror=this.report() (
+    on MirrorPr::Class return mirror.lib()
     default error UnsupportedOperation(target:this,
       selector:Selector"externalType()",reason:S"The NestedClass Object is unbound"
       )
     )
   }
 
-method S classKind() this.pathReport()"ClassKind"
-method S allAsString() this.pathReport()"AllAsString"  'just the library literal 
-method S preamble() this.nestedClassReport()"AllAsString"' nested name, colon and documentation, error if Outer0    
+method S classKind() this.report()"ClassKind"
+method S allAsString() this.report()"AllAsString"  'just the library literal
 method
 Members members() (
   var result=Members[]
   var mN=1N
   while Bool.true() (' to be able to break
-    result:=result.#add(this.mirror()
-      .introspectReportMember(root:this,path:that,memberN:mN))
+    result:=result.#add(this.report().that()
+      .introspectReportMember(root:this,path:this.path(),memberN:mN))
     mN+=1N
     )
+  catch exception x (on TargetUnavailable error S"UnreachableCode")
   result)
-  
-method
-Methods methods()
-  Methods[with m in this.members(that).vals() ( on Method m)]
 
 method
-NestedClasses nestedClasses(Path that)
-  NestedClasses[with m in this.members(that).vals() ( on NestedClass m)]
+Methods methods()
+  Methods[with m in this.members().vals() ( on Method m)]
+
+method
+NestedClasses nestedClasses()
+  NestedClasses[with m in this.members().vals() ( on NestedClass m)]
 
 method Types implementedInterfaces() (
   var result=Types[]
   var tN=-1N
   while Bool.true() (' to be able to break
-    result:=result.#add(this.mirror()
-      .introspectReportType(root:this,path:that,memberN:0N,typeN:tN))
+    result:=result.#add(this.report().that()
+      .introspectReportType(root:this,path:this.path(),memberN:0N,typeN:tN))
     tN-=1N
     )
+  catch exception x (on TargetUnavailable error S"CodeUnreachable")
   result)
 
 method Method constructor()  error S"NotImplementedYet"
-method Method method(Selector that) exception TargetUnavailable  error S"NotImplementedYet"
+method Method methodFromSelector(Selector that) exception TargetUnavailable  error S"NotImplementedYet"
 method NestedClass nestedClassFromRoot(Path that) exception TargetUnavailable  error S"NotImplementedYet"
 
 }

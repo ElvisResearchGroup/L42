@@ -30,13 +30,19 @@ import coreVisitors.From;
 
 public class Introspection {//TODO: we keep 5 methods, but we merge the PathReport and MemberReport content.
   public static ClassB giveInfo(ClassB that,List<String> path){
-    ClassB current = Program.extractCBar(path, that);
+    Doc[] docRef={null};
+    ClassB current = Program.extractCBar(path, that,docRef);
     Errors42.checkExistsPathMethod(that, path,Optional.empty());
-    return Resources.Error.multiPartStringClassB("PathReport",
+    return Resources.Error.multiPartStringClassB("MemberReport",
+      "MemberKind","NestedClass",
+      "MemberDoc",(docRef[0]==null)?"":liftDoc(path.subList(0,path.size()-1),docRef[0],1),
+      "Key",""+String.join("::",path),
+      "AllAsString",ToFormattedText.of(current),
+
       "ClassKind",ExtractInfo.classKind(that, path, current,null, null,null).name(),
+      "LibraryDoc",liftDoc(path,current.getDoc1(),1),
       "MemberNumber",""+current.getMs().size(),
-      "ImplementedNumber",""+current.getSupertypes().size(),
-      "AllAsString",""+ToFormattedText.of(current)
+      "ImplementedNumber",""+current.getSupertypes().size()
     );}
 
   public static ClassB giveInfoMember(ClassB that,List<String> path,int memberN){
@@ -45,43 +51,46 @@ public class Introspection {//TODO: we keep 5 methods, but we merge the PathRepo
     ClassB current = Program.extractCBar(path, that);
     if(current.getMs().size()<memberN){throw Resources.notAct;}
     Member mN=current.getMs().get(memberN-1);
-    String[] thisMdf={""};//java limitations on closures
-    int[] excNum={0};
-    int[] parNum={0};
-    String[] key={null};
-    Ast.Doc[] doc={null};
+    ClassB[] result={null};
     mN.match(
       nc->{
-        doc[0]=nc.getDoc();
-        key[0]=String.join("::",path);
-        if(key[0].isEmpty()){key[0]="::"+nc.getName();}
-        else{key[0]="::"+key[0]+"::"+nc.getName();}
+        List<String> fullPath=new ArrayList<>(path);
+        fullPath.add(nc.getName());
+        result[0]=Resources.Error.multiPartStringClassB("MemberReport",
+          "MemberKind","NestedClass",
+          "MemberDoc",liftDoc(path,nc.getDoc(),1),
+          "Key",String.join("::",fullPath),
+          "AllAsString",ToFormattedText.of(nc.getInner()),
+          "ClassKind",ExtractInfo.classKind(that, path,(ClassB) nc.getInner(),null, null,null).name(),
+          "LibraryDoc",liftDoc(path,current.getDoc1(),1),
+          "MemberNumber",""+current.getMs().size(),
+          "ImplementedNumber",""+current.getSupertypes().size()
+          );
         return null;
           },
       mi->{//we want to use mi instead of mt of ct: even the number of members may change.
-        doc[0]=mi.getDoc();
-        key[0]=mi.getS().toString();
-        parNum[0]=mi.getS().getNames().size();
+        result[0]=Resources.Error.multiPartStringClassB("MemberReport",
+          "MemberKind",ExtractInfo.memberKind(mN),
+          "MemberDoc",liftDoc(path,mi.getDoc(),1),
+          "Key",""+mi.getS(),//Selector/Path
+          "AllAsString",ToFormattedText.of(mi),
+          "ParameterNumber",""+mi.getS().getNames().size()
+            );
         return null;
       },
       mt->{
-        doc[0]=mt.getDoc();
-        key[0]=mt.getMs().toString();
-        parNum[0]=mt.getMs().getNames().size();
-        excNum[0]=mt.getMt().getExceptions().size();
-        thisMdf[0]=mt.getMt().getMdf().toString();
+        result[0]=Resources.Error.multiPartStringClassB("MemberReport",
+          "MemberKind",ExtractInfo.memberKind(mN),
+          "MemberDoc",liftDoc(path,mt.getDoc(),1),
+          "ThisMdf",""+mt.getMt().getMdf(),
+          "Key",""+mt.getMs(),//Selector/Path
+          "AllAsString",ToFormattedText.of(mt),
+          "ExceptionNumber",""+mt.getMt().getExceptions().size(),
+          "ParameterNumber",""+mt.getMs().getNames().size()
+          );
         return null;
-      });
-    //TODO: doc exceptions should become a doc for each exception
-    return Resources.Error.multiPartStringClassB("MemberReport",
-      "Doc",liftDoc(path,doc[0],1),
-      "ThisMdf",thisMdf[0],
-      "key",key[0],//Selector/Path
-      "ExceptionNumber",excNum[0],
-      "ParameterNumber",parNum[0],
-      "MemberKind",ExtractInfo.memberKind(mN),
-      "AllAsString",ToFormattedText.of(mN)
-      );
+      });    //TODO: doc exceptions should become a doc for each exception
+    return result[0];
     }
   //static enum TypeKind{InternalNormal,ExternalNormal,InternalAlias,ExternalAlias, InternalAliasUnresolvable,ExternalAliasUnresolvable,InternalExternalAlias}
   static enum TypeKind{Normal,Alias,AliasUnresolvable}
@@ -96,7 +105,7 @@ public class Introspection {//TODO: we keep 5 methods, but we merge the PathRepo
       boolean isExternal=false;
       if(implN.isPrimitive() ||implN.outerNumber()>path.size()){isExternal=true;}
       Doc dImplN=Doc.factory(implN);//is ok since I have liftDoc
-      return typeReport(path, 
+      return typeReport(path,
           TypeKind.Normal,//isExternal?TypeKind.ExternalNormal:TypeKind.InternalNormal,
           Mdf.Immutable,Mdf.Immutable,
           dImplN,dImplN, false,false,"","",current.getDoc2(),ToFormattedText.of(implN));
@@ -131,7 +140,7 @@ public class Introspection {//TODO: we keep 5 methods, but we merge the PathRepo
 
   //private static boolean isExternal(List<String>path,Path pi){return pi.isPrimitive()||pi.outerNumber()>path.size(); }
   private static TypeKind getTypeKind(List<String>path,Type ti, NormType resolvedTi) {
-    if(ti instanceof NormType){return TypeKind.Normal;      
+    if(ti instanceof NormType){return TypeKind.Normal;
       //NormType nt=(NormType)ti;
       //if(isExternal(path,nt.getPath())){return TypeKind.ExternalNormal;}
       //return TypeKind.InternalNormal;

@@ -21,29 +21,28 @@ Report:{interface<:S::ToS} 'there will be a MakeReport decorator
 UnsupportedOperation:{(Any target,Selector selector, S reason)<:Report
   method
   toS()
-    S"UnsupportedOperation "++selector++S"
+    S"UnsupportedOperation "++this.selector().toS()++S"
       '
       'reason:
-      "++reason
+      "++this.reason()
   }
 
-SourceUnfit:{(Introspection report) <:Report
+SourceUnfit:{(Introspection::Record report) <:Report
   method toS() S"SourceUnfit"
   }
-ClassClash:{(Introspection report) <:Report
+ClassClash:{(Introspection::Record report) <:Report
   method toS() S"ClassClash"
   }
-MethodClash:{'findMeMethodClash
-(Introspection report) <:Report
+MethodClash:{(Introspection::Record report) <:Report
   method toS() S"MethodClash"
   }
-InvalidOnTopLevel:{(Introspection report) <:Report
+InvalidOnTopLevel:{(Introspection::Record report) <:Report
   method toS() S"InvalidOnTopLevel"
   }
-TargetUnavailable:{(Introspection report) <:Report
+TargetUnavailable:{(Introspection::Record report) <:Report
   method toS() S"TargetUnavailable"
   }
-PrivacyCoupuled:{(Introspection report) <:Report
+PrivacyCoupuled:{(Introspection::Record report) <:Report
   method toS() S"PrivacyCoupuled"
   }
 NSBMissing:{(Report report) <:Report

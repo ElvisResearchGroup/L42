@@ -1,10 +1,10 @@
 {interface
   method
-  Report::Path introspectReport(NestedClass root,Path path) exception TargetUnavailable
+  NestedClass introspectReport(NestedClass root,Path path) exception TargetUnavailable
   method
-  Report::Member introspectReportMember(NestedClass root,Path path, N memberN) exception TargetUnavailable,Void
+  Member introspectReportMember(NestedClass root,Path path, N memberN) exception TargetUnavailable,Void
   method
-  Report::Type introspectReportType(NestedClass root,Path path, N memberN, N typeN) exception TargetUnavailable,Void
+  Type introspectReportType(NestedClass root,Path path, N memberN, N typeN) exception TargetUnavailable,Void
   method
   S introspectDocAsString(Path path) exception TargetUnavailable
   method
@@ -15,29 +15,27 @@
   Lib:{(Library lib)<:Outer1
     method 'TODO: why is not throwing the exception?
     introspectReport(root, path)
-      NestedClass(root:root,path:path
-        nestedClassReport:Record(Lib(lib:
-        using SafeOperators
-          check introspectLibraryReportMember(this.lib(), path:path.binaryRepr())
-          error SafeOperators.mkError(S"introspectReport")))
-        pathReport: Record(Lib(lib:
+      NestedClass(root:root,path:path,report:Record(Lib(lib:
         using SafeOperators
           check introspectLibraryReport(this.lib(), path:path.binaryRepr())
-          error SafeOperators.mkError(S"introspectReport")))
+          error SafeOperators.mkError(S"introspectReport"))))
 
     method
     introspectReportMember(root,path,memberN)
-      Report.dispatch(root:root,path:path,memberN:memberN,report:
+      Record.dispatch(root:root,path:path,memberN:memberN,report:
         using SafeOperators
           check introspectLibraryReportMember(this.lib(), path:path.binaryRepr(),memberN:memberN.binaryRepr())
           exception void)
 
     method
     introspectReportType(root,path,memberN,typeN)
-      Report::Type(root:root,path:path,memberN:memberN,typeN:typeN,report: Introspection(lib:
+      Type(root:root,path:path,memberN:memberN,typeN:typeN,report: Record(Lib(lib:
         using SafeOperators
-          check introspectLibraryReportType(this.lib(), path:path.binaryRepr(),memberN:memberN.binaryRepr(),typeN:typeN.binaryRepr())
-          exception void))
+          check introspectLibraryReportType(this.lib()
+            path:path.binaryRepr()
+            memberN:memberN.binaryRepr()
+            typeN:typeN.binaryRepr())
+          exception void)))
 
     method
     introspectDocAsString(path,annotationN)
@@ -60,45 +58,18 @@
     }
 
 
-  Class:{(type Any lib)<:Outer1
-    method
-    introspectReport(root, path)
-      Report::Path(root:root,path:path report: Introspection(lib:
-        using SafeOperators
-          check introspectTypeReport(this.lib(), path:path.binaryRepr())
-          error SafeOperators.mkError(S"introspectReport")))
-
-    method
-    introspectReportMember(root,path,memberN)
-      Report.dispatch(root:root,path:path,memberN:memberN,report:
-        using SafeOperators
-          check introspectTypeReportMember(this.lib(), path:path.binaryRepr(),memberN:memberN.binaryRepr())
-          exception void)
-
-    method
-    introspectReportType(root,path,memberN,typeN)
-      Report::Type(root:root,path:path,memberN:memberN,typeN:typeN,report: Introspection(lib:
-        using SafeOperators
-          check introspectTypeReportType(this.lib(), path:path.binaryRepr(),memberN:memberN.binaryRepr(),typeN:typeN.binaryRepr())
-          exception void))
-
-    method
-    introspectDocAsString(path,annotationN)
-      S.#stringParser(using SafeOperators
-        check introspectTypeDocAsString(this.lib(), path:path.binaryRepr(),annotationN:(1N+annotationN).binaryRepr())
-        exception void)
-
-    method
-    introspectDocAsString(path)
-      S.#stringParser(using SafeOperators
-        check introspectTypeDocAsString(this.lib(), path:path.binaryRepr(),annotationN:0N.binaryRepr())
-        error SafeOperators.mkError(S"introspectLibraryDocAsString"))
-
-    method
-    introspectDocPath(path,annotationN)
-      using SafeOperators
-        check introspectTypeDocPath(this.lib(), path:path.binaryRepr(),annotationN:annotationN.binaryRepr())
-        error SafeOperators.mkError(S"introspectLibraryDocPath")
-
-    }
+Class:{(type Any lib)<:Outer1
+  method
+  introspectReport(root,path) error S"NotImplementedYet"
+  method
+  introspectReportMember(root, path, memberN) error S"NotImplementedYet"
+  method
+  introspectReportType(root,path, memberN, typeN) error S"NotImplementedYet"
+  method
+  introspectDocAsString(path) error S"NotImplementedYet"
+  method
+  introspectDocAsString(path,annotationN) error S"NotImplementedYet"
+  method
+  introspectDocPath(path,annotationN) error S"NotImplementedYet"
+  }
   }

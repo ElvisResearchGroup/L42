@@ -189,7 +189,7 @@ public class TypeSystem implements Visitor<Type>, Reporter{
     NormType nts=Functions.forceNormType( inner,suggested);
     NormType nt=Functions.forceNormType( inner,result);
     if(!Functions.isSubtype(p, nt.getPath(),nts.getPath())){
-      throw new ErrorMessage.PathsNotSubtype(nt,nts,inner);
+      throw new ErrorMessage.PathsNotSubtype(nt,nts,inner,p.getInnerData());
       }
     if(Functions.isSubtype(p, nt,nts)){return result;}
 
@@ -370,14 +370,14 @@ public class TypeSystem implements Visitor<Type>, Reporter{
         catch(ErrorMessage.NormImpossible ni){return methodUnknownT(varEnvs,s);}
         if(recOpt==null){return methodUnknownT(varEnvs,s);}
         if(recOpt.isPrimitive()){
-          throw new ErrorMessage.MethodNotPresent(recOpt,new MethodSelector(s.getName(),s.getXs()),p.getInnerData());}
+          throw new ErrorMessage.MethodNotPresent(recOpt,new MethodSelector(s.getName(),s.getXs()),s,null,p.getInnerData());}
         if(p.isNotClassB(recOpt)){return methodUnknownT(varEnvs,s);}
         }
       if(recOpt==null){recOpt=GuessTypeCore.of(p, varEnv, s.getReceiver());}
       if(recOpt==null){return methodUnknownT(varEnvs,s);}
       if(recOpt.isPrimitive()){//TODO: method not present thrown only for primitives?
-        throw new ErrorMessage.MethodNotPresent(recOpt,new MethodSelector(s.getName(),s.getXs()),p.getInnerData());}
-      MethodWithType mwt = p.method(recOpt,new MethodSelector(s.getName(),s.getXs()),true);
+        throw new ErrorMessage.MethodNotPresent(recOpt,new MethodSelector(s.getName(),s.getXs()),s,null,p.getInnerData());}
+      MethodWithType mwt = p.method(recOpt,new MethodSelector(s.getName(),s.getXs()),s,true);
       NormType recExpected=new NormType(mwt.getMt().getMdf(),recOpt,Ph.None);
       return TypeCheckMethod.methCallT(this,varEnvs,s,recExpected,mwt);
     });

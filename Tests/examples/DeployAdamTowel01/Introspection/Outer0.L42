@@ -1,37 +1,43 @@
 {'findMeIntrospection
 
 type method
-NestedClass(Library lib) NestedClass(mirror:MirrorPr::Lib(lib:lib))
-type method
-NestedClass(type Any cls) NestedClass(mirror:MirrorPr::Class(lib:cls))
+NestedClass(Library lib)(
+  root=NestedClass(root:root,path:Path"Outer0",report:Record(MirrorPr::Lib(lib:lib)))
+  root
+  )
 
-MirrorPr:... 'remove Pr later.
+'type method
+'NestedClass(type Any cls) NestedClass(mirror:MirrorPr::Class(lib:cls))
 
+MirrorPr:... 'Todo:remove Pr later.
 
-type method Member dispatch(Introspection root,Outer2::Path path, N memberN,Library report) {
-  _report =Introspection(lib:report)
-  with x=_report"MemberKind" (
-    case x== S"NestedClass"  (return NestedClass(root:root,path:path,memberN:memberN,report:_report))
-    case x== S"InterfaceImplementedMethod" (return Method(root:root,path:path,memberN:memberN,report:_report))
-    case x== S"ImplementedMethod" (return Method(root:root,path:path,memberN:memberN,report:_report))
-    case x== S"AbstractMethod" (return Method(root:root,path:path,memberN:memberN,report:_report))
-    default error S"invalid member kind "++x
-    )
-  }
 
 Record:'@private
-  {(Mirror that)
+  {(MirrorPr that)
   method S #stringParser(Library that) {
-  path=Path.#stringParser(that)
-  return this.mirror().introspectDocAsString(path:path)
-  catch exception x (on TargetUnavailable error x )
-  }
+    path=Path.#stringParser(that)
+    return this.that().introspectDocAsString(path:path)
+    catch exception x (on TargetUnavailable error x )
+    }
   method
   Doc docOf(Path path){
-    with mirror=this.mirror() (
-      on Mirror::Lib return Doc(Refactor::RenamePath[path to:Path"Outer0"]<<mirror.lib())
+    with mirror=this.that() (
+      on MirrorPr::Lib return Doc(
+        SafeOperators.renameClass(mirror.lib(), src:path, dest:Path"Outer0")
+        'This can not be done for circular reference Refactor::RenamePath[path to:Path"Outer0"]<<mirror.lib()
+        )
       )
     error S"UnreachableCode"
+    }
+  type method Member dispatch(NestedClass root,Path path, N memberN,Library report) {
+    _report =Introspection(lib:report).report()
+    with x=_report"MemberKind" (
+      case x== S"NestedClass"  (return NestedClass(root:root,path:path,report:_report))
+      case x== S"InterfaceImplementedMethod" (return Method(root:root,path:path,memberN:memberN,report:_report))
+      case x== S"ImplementedMethod" (return Method(root:root,path:path,memberN:memberN,report:_report))
+      case x== S"AbstractMethod" (return Method(root:root,path:path,memberN:memberN,report:_report))
+      default error S"invalid member kind "++x
+      )
     }
   }
 Member:{interface}

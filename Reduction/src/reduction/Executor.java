@@ -190,7 +190,7 @@ private static ExpCore removeCatch(ExpCore ctxVal, NoThrowRemoveOn r) {
 private ExpCore methCall(Program p, ExpCore ctxVal, MethCall r) {
   MCall mc = r.getThat();
   Path pathR=Functions.classOf(p, ctxVal, mc.getReceiver());
-  MethodWithType mwt = p.method(pathR,new MethodSelector(mc.getName(), mc.getXs()),false);
+  MethodWithType mwt = p.method(pathR,new MethodSelector(mc.getName(), mc.getXs()),mc,false);
   if(mwt.getInner().isPresent()){
     return normalMeth(pathR,mwt,ctxVal,mc);
   }

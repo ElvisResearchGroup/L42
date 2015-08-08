@@ -1,7 +1,7 @@
 Introspection:{
   type method NestedClass (Library lib)
   type method NestedClass (Library lib,Path path) exception TargetUnavailable
-  type method NestedClass (type Any cls)    
+  type method NestedClass (type Any cls)
 
   Member:{interface}
   NestedClass:{<:Member
@@ -9,19 +9,18 @@ Introspection:{
     method Doc nestedDoc()' error  for Outer0
     method Doc doc() 'of the library literal
     method Path pathFromRoot() ' invariant NestedClass(...).nestedClassFromRoot(path).pathFromRoot()==path
-    method type Any externalType() 'error if  root()!=this or root() is literal, otherwise contains the type Any used to initialize root/this.  
+    method type Any externalType() 'error if  root()!=this or root() is literal, otherwise contains the type Any used to initialize root/this.
     method S classKind()
-    method S allAsString()  'just the library literal 
-    method S preamble() ' nested name, colon and documentation, error if Outer0    
+    method S allAsString()  'just the library literal
     method Members members()
     method Methods methods()
     method NestedClasses nestedClasses()
     method Types implementedInterfaces()
-    method Method constructor()    
-    method Method method(Selector that) exception TargetUnavailable 
-    method NestedClass nestedClassFromRoot(Path that) exception TargetUnavailable 
+    method Method constructor()
+    method Method method(Selector that) exception TargetUnavailable
+    method NestedClass nestedClassFromRoot(Path that) exception TargetUnavailable
     }
-    
+
   Method:{<:Member
     method NestedClass root()
     method NestedClass nestedClass()
@@ -33,9 +32,9 @@ Introspection:{
     method S allAsString()
     method Type returnType()
     method Types exceptions()
-    method Types parameterTypes()    
+    method Types parameterTypes()
     }
-  
+
   Type:{
     method NestedClass root()
     method S typeKind() '{Normal,Alias,AliasUnresolvable}

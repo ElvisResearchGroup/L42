@@ -18,19 +18,25 @@ import ast.Expression.ClassB.Member;
 
 
 public class CheckVarUsedAreInScope extends CloneVisitor{
+  private static Expression ctx=null;
   public static boolean of(Expression e){
     of(e,Collections.emptyList());
     return true;
   }
   public static void of(Expression e,List<String>names){
-    CheckVarUsedAreInScope cdv=new CheckVarUsedAreInScope();
-    cdv.xs.addAll(names);
-    e.accept(cdv);
+    Expression old=ctx;
+    ctx=e;
+    try{
+      CheckVarUsedAreInScope cdv=new CheckVarUsedAreInScope();
+      cdv.xs.addAll(names);
+      e.accept(cdv);
+      }
+    finally{ctx=old;}
   }
   Set<String> xs=new HashSet<String>();
   public Expression visit(Expression.X s){
     if(this.xs.contains(s.getInner())){return super.visit(s);}
-    throw new ErrorMessage.NotWellFormed(s, null,"Variable used not in scope");
+    throw new ErrorMessage.NotWellFormed(s, ctx,"Variable used not in scope");
     }
   protected ast.Ast.BlockContent liftBC(ast.Ast.BlockContent c) {
     Set<String> aux = this.xs;
@@ -54,14 +60,14 @@ public class CheckVarUsedAreInScope extends CloneVisitor{
     try{return super.liftK(k);}
     finally{this.xs=aux;}
     }
-  
+
   public Expression visit(CurlyBlock s) {
     Set<String> aux = this.xs;
     this.xs=new HashSet<String>(aux);
     try{return super.visit(s);}
     finally{this.xs=aux;}
     }
-  
+
   public Expression visit(RoundBlock s) {
     Set<String> aux = this.xs;
     this.xs=new HashSet<String>(aux);
@@ -102,5 +108,5 @@ public class CheckVarUsedAreInScope extends CloneVisitor{
         );
       }
     return s;
-    }  
+    }
   }

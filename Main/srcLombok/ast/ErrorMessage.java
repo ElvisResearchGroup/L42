@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.Value;
+import ast.ExpCore;
 import ast.Ast.HistoricType;
 import ast.Ast.MethodSelector;
 import ast.Ast.Path;
@@ -63,7 +65,7 @@ import ast.ExpCore.ClassB;
     ClassB.MethodWithType mFromInterface;
     ClassB.MethodWithType mFromClass;
   }
-  
+
   @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class  TwoDifferentImplementedInterfacesDeclareMethod extends ErrorMessage {
     public int getErrCode() {
       return 1002;
@@ -72,7 +74,7 @@ import ast.ExpCore.ClassB;
     ClassB cb;
     List<ClassB> p;
   }
-  
+
   @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class InvalidMethodImplemented extends ErrorMessage {
     public int getErrCode() {
       return 1002;
@@ -367,6 +369,7 @@ import ast.ExpCore.ClassB;
     Type tActual;
     Type tExpected;
     ExpCore e;
+    List<ClassB> p;
   }
 
   @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class TypesNotSubtype extends TypeError {
@@ -385,6 +388,8 @@ import ast.ExpCore.ClassB;
     }
     Path path;
     MethodSelector ms;
+    ExpCore.MCall call;
+    Ast.Position pos;
     List<ClassB> p;
   }
 

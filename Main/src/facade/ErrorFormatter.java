@@ -13,6 +13,7 @@ import tools.Assertions;
 import tools.StringBuilders;
 import ast.Ast;
 import ast.Ast.Doc;
+import ast.Ast.Mdf;
 import ast.Ast.Path;
 import ast.Ast.Stage;
 import ast.ErrorMessage;
@@ -32,6 +33,45 @@ import facade.L42.ExecutionStage;
 import platformSpecific.javaTranslation.Resources;
 
 public class ErrorFormatter {
+  //TODO: in future, not display for coherent classes
+  public static String displayAbstractMethods(ClassB cb){
+    StringBuilder result=new StringBuilder();
+    result.append("Abstract methods:\n");
+    displayAbstractMethods(cb,result,"");
+    return result.toString();
+  }
+  private static void displayAbstractMethods(ClassB cb,StringBuilder result,String nesting){
+
+    result.append("{\n");
+    for(Member m:cb.getMs()){
+      m.match(nc->{
+        if(!(nc.getInner() instanceof ClassB)){return null;}
+        if(((ClassB)nc.getInner()).isInterface()){return null;}
+        StringBuilder inner=new StringBuilder();
+        displayAbstractMethods((ClassB)nc.getInner(),inner,nesting+"  ");
+        String innerStr=inner.toString();
+        if(!innerStr.contains("method")){return null;}
+        result.append(nesting);
+        result.append(nc.getName());
+        result.append(":");
+        result.append(innerStr);
+        return null;
+        },
+      mi->{
+        return null;
+        },
+      mt->{
+        if(mt.getInner().isPresent()){return null;}
+        if(introspection.ConsistentRenaming.isAnnotatedConsistent(mt.getDoc())){return null;}
+        if(mt.getMt().getMdf()==Mdf.Type){return null;}
+        result.append(nesting);
+        result.append(ToFormattedText.of(mt).replace("\n", "\n"+nesting));
+        result.append("\n");
+        return null;
+        });
+    }
+    result.append("}\n");
+  }
   public interface Reporter{ String toReport(ArrayList<Ast.Position>ps);}
   public static ErrorMessage.UserLevelError formatError(Program p,ErrorMessage msg) {
     Class<?> c=msg.getClass();
@@ -51,6 +91,7 @@ public class ErrorFormatter {
       try{errorTxt+= ctxP(msg, c,ps2);}catch(NoSuchFieldException ignored){}
     }
     catch(NoSuchFieldException ignored){}
+    pos(msg,c,ps);
     Position pos=positionsFilter(ps);
     if(c==ErrorMessage.DotDotDotCanNotBeResolved.class){
         ErrorMessage.DotDotDotCanNotBeResolved ddd=(ErrorMessage.DotDotDotCanNotBeResolved)msg;
@@ -171,6 +212,16 @@ public class ErrorFormatter {
     }
     return errorTxt;
   }
+  public static void pos(ErrorMessage msg, Class<?> c,ArrayList<Ast.Position> ps)
+      throws IllegalAccessException {
+    try{
+      Field f=c.getDeclaredField("pos");
+      f.setAccessible(true);
+      Ast.Position pos=(Ast.Position)f.get(msg);
+      ps.add(pos);
+    }
+    catch(NoSuchFieldException ignored){}
+  }
   public static String ctxP(ErrorMessage msg, Class<?> c,ArrayList<Ast.Position>ps)
       throws NoSuchFieldException, IllegalAccessException {
     String errorTxt="";
@@ -239,6 +290,8 @@ public class ErrorFormatter {
     if(obj instanceof Expression){return ToFormattedText.of((Expression)obj);}
     if(obj instanceof Expression.ClassB.Member){return ToFormattedText.of((Expression.ClassB.Member)obj);}
     if(obj instanceof java.nio.file.Path){return obj.toString();}
+    if(obj instanceof Ast.Position){
+      return obj.toString();}
     return "unknown kind "+obj.getClass().getCanonicalName();
   }
   public static String formatSelectorCompact(Ast.MethodSelector ms) {
