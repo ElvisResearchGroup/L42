@@ -354,26 +354,24 @@ public static class TestRedirect1 {//add more test for error cases
                )
           .str(), true
 
-/* TODO @James: need to un-nest this, so it can have a cascade redirect 
-    },{lineNumber(), new String[]{  // When a cascade redirect renames another interface, what source path in the unexpected error?
-        "{  A:{interface type method C fun(Void that)  method Void moreFun(Void that, Library other) \n"
-        + " C:{interface}} }"
+    },{lineNumber(), new String[]{  // When a cascade redirect renames another interface, the reported unexpected interface is the name before the rename.
+        "{  A:{interface type method C fun(Void that)  method Void moreFun(Void that, Library other)} \n"
+        + " C:{interface}"
+        + " }"
         },
-        "{ InnerA:{interface type method InnerC fun(Void that)  method Void moreFun(Void that, Library other) "
-        + "        InnerC:{interface <:InnerA"
-        + "            method Void mostFun() "
-        + "       }}  \n"
+        "{ InnerA:{interface type method InnerC fun(Void that)  method Void moreFun(Void that, Library other)} \n"
+        + "InnerC:{interface <:InnerA"
+        + "       }  \n"
         + "C_impl:{<:InnerC"
-        + "            method Void mostFun() "
         + "       } "
         + "}"
         + "",
         "Outer0::InnerA","Outer1::A",
         ec
-          .set("UnexpectedImplementedInterfaces", "[Outer0::InnerA]"
+          .set("SrcPath", "Outer0::InnerC", "DestExternalPath", "'@Outer1::C",
+               "UnexpectedImplementedInterfaces", "[Outer0::InnerA]"
                )
           .str(), true
-*/
 
     },{lineNumber(), new String[]{      // Incoherent redirect, forcing InnerAB to be split into both A and B
                     "{A:{} B:{}"
