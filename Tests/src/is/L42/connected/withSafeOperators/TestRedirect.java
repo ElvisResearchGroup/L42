@@ -332,33 +332,20 @@ public static class TestRedirect1 {//add more test for error cases
                 "SplitSrc", "Outer0::InnerAB",
                 "Dest1", "Outer1::A", "Dest2", "Outer1::B").str(), true
 
-    },{lineNumber(), new String[]{   // Incoherent redirect: // TODO @James; different depths of parent in a subtree
-                                     // Requires matching subtrees of names, except at the root.
-                    "{X:{Y:{FluffyA:{ type method Outer1 fun()}"
-                    + "}}}" },
+    },{lineNumber(), new String[]{   // Incoherent redirect: Matching functions (FluffyA::fun()) disagree about the position of their return value
+                                     // TODO @Marco: I want the mapping to be the roots only; if it's mixed roots and subtrees then I think that in many real cases, it will be too verbose to think about
+                    "{X:{Y:{FluffyA:{ type method Outer2 fun()}" // Target of original redirect
+                    + "    }"
+                    + "FluffyA:{type method Outer1 fun()}"  // The phantom required for the redirect to avoid SourceUnfit.
+                    + "}}" },
         "{InnerZ:{FluffyA:{ type method Outer1 fun()}}"
-        + "B:{method InnerZ moreFun() "
-        + "   method InnerZ::FluffyA mostFun() InnerZ::FluffyA.fun()}"
         + "}",
         "Outer0::InnerZ::FluffyA","Outer1::X::Y::FluffyA",
-        "{B:{method Outer2::X::Y moreFun() "
-        + "method Outer2::X::Y::FluffyA mostFun() Outer2::X::Y::FluffyA.fun()}}",false
+        ec.set("Mapping", "[Outer0::InnerZ::FluffyA->Outer1::X::Y::FluffyA, "
+        		         + "Outer0::InnerZ->Outer1::X]",
+        	   "SplitSrc", "Outer0::InnerZ::FluffyA",
+        	   "Dest1", "Outer1::X::Y::FluffyA", "Dest2", "Outer1::X::FluffyA" ).str(), true
 
-/* related to previous test, but currently in limbo
-    },{lineNumber(), new String[]{      // referring outside the target causes the same unfriendly error
-                                      // also only with both B and M
-                    "{X:{Y:{A:{()  type method Outer1 fun()}}}}" },
-        "{InnerZ:{InnerA:{()  type method Outer0 fun()}}"//TODO: we need to discuss about this error:
-      //it see that InnerA.fun return Outer0, so it tries to map outer0 with the corresponding (X::Y from outside...)
-        + " M:{type method Library defA_maker() {type method InnerZ::InnerA beA_maker() InnerZ::InnerA()}}"
-        + "B:{C: M.defA_maker() }"  //  So this call to get a library value is imaginary, as shown below
-        + "}",
-        "Outer0::InnerZ::InnerA","Outer1::X::Y::A",
-        "{InnerZ:{}"
-        + "M:{type method Library defA_maker() {type method Outer3::X::Y::A beA_maker() Outer3::X::Y::A.#apply()}} "
-        + "B:{C:{}}"
-        + "}",false
-*/
 
 /* TODO: this test, when I get to method clashes
     },{lineNumber(), new String[]{ // mismatches in type vs instance method
