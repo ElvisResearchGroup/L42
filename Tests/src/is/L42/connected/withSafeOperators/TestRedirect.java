@@ -143,6 +143,37 @@ public static class TestRedirect1 {//add more test for error cases
         "Outer0::InnerZ::FluffyA","Outer1::X::Y::FluffyA",
         "{B:{method Outer2::X::Y moreFun() "
         + "method Outer2::X::Y::FluffyA mostFun() Outer2::X::Y::FluffyA.fun()}}",false
+    },{lineNumber(), new String[]{  // Redirect a FreeTemplate to an Interface
+        "{A:{interface type method Void fun(Void that)}}"
+        },
+        "{InnerA:{type method Void fun(Void that)}"
+        + "TestB:{method InnerA moreFun()}"
+        + "}",
+        "Outer0::InnerA","Outer1::A",
+        "{TestB:{method Outer2::A moreFun()}}", false
+    },{lineNumber(), new String[]{   // Cascade redirect an interface, via the one-inner-interface rule
+                    "{I1:{interface method Void fun()}\n"
+                    + "I2:{interface method Void moreFun()}\n"
+                    + "A:{<:I1 I2 method Void fun() method Void moreFun()}"
+                    + "}"},
+        "{InnerI2{interface method Void moreFun()}\n"
+        + "InnerA{<:I1 InnerI2 method Void fun() method Void moreFun()}"
+        + "TestB:{<:InnerI2 method Void moreFun()}\n"
+        + "}",
+        "Outer0::InnerA","Outer1::A",
+        "{TestB:{<:I2 method Void moreFun()}}",false
+    },{lineNumber(), new String[]{   // Cascade redirect an interface, via the one-inner-interface rule
+                                     // Same test as above, with the order of implementation swapped
+                    "{I1:{interface method Void fun()}\n"
+                    + "I2:{interface method Void moreFun()}\n"
+                    + "A:{<:I2 I1 method Void fun() method Void moreFun()}"
+                    + "}"},
+        "{InnerI2{interface method Void moreFun()}\n"
+        + "InnerA{<:InnerI2 I1 method Void fun() method Void moreFun()}"
+        + "TestB:{<:InnerI2 method Void moreFun()}\n"
+        + "}",
+        "Outer0::InnerA","Outer1::A",
+        "{TestB:{<:I2 method Void moreFun()}}",false
         
 
     // the errors have variable portions.
@@ -400,6 +431,19 @@ public static class TestRedirect1 {//add more test for error cases
         		         + "Outer0::InnerZ->Outer1::X]",
         	   "SplitSrc", "Outer0::InnerZ::FluffyA",
         	   "Dest1", "Outer1::X::Y::FluffyA", "Dest2", "Outer1::X::FluffyA" ).str(), true
+    },{lineNumber(), new String[]{   // Try cascading two interfaces on one class, which should fail because
+                                     // disambiguating it turned out to be prohibitive.
+                    "{I1:{interface method Void fun()}\n"
+                    + "I2:{interface method Void moreFun()}\n"
+                    + "A:{<:I1 I2 method Void fun() method Void moreFun()}"
+                    + "}"},
+        "{InnerI1{interface method Void fun()}\n"
+        + "InnerI2{interface method Void moreFun()}\n"
+        + "InnerA{<:InnerI1 InnerI2 method Void fun() method Void moreFun()}"
+        + "TestB:{<:InnerI1 InnerI2 method Void moreFun()}\n"
+        + "}",
+        "Outer0::InnerA","Outer1::A",
+        "{TestB:{<:I2 method Void moreFun()}}",false
 
 
 /* TODO: this test, when I get to method clashes
