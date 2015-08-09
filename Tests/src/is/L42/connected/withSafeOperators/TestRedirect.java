@@ -151,29 +151,33 @@ public static class TestRedirect1 {//add more test for error cases
         + "}",
         "Outer0::InnerA","Outer1::A",
         "{TestB:{method Outer2::A moreFun()}}", false
-    },{lineNumber(), new String[]{   // Cascade redirect an interface, via the one-inner-interface rule
+    },{lineNumber(), new String[]{   // Cascade redirect an interface, via a redirect-my-pile-of-stuff class
                     "{I1:{interface method Void fun()}\n"
                     + "I2:{interface method Void moreFun()}\n"
-                    + "A:{<:I1 I2 method Void fun() method Void moreFun()}"
+                    + "A:{<:I1 I2 method fun() void method moreFun() void}"
+                    + "D_Target:{D_I1:{<:I1} D_I2:{<:I2} method A d_A()}"
                     + "}"},
-        "{InnerI2{interface method Void moreFun()}\n"
-        + "InnerA{<:I1 InnerI2 method Void fun() method Void moreFun()}"
-        + "TestB:{<:InnerI2 method Void moreFun()}\n"
+        "{InnerI2:{interface method Void moreFun()}\n"
+        + "InnerA:{<:Outer2::I1 InnerI2} "  // redirected class can't have implementation, so it can't mention methods
+        + "D_Source:{D_I2:{<:InnerI2} method InnerA d_A()}"
+        + "TestB:{<:InnerI2 method moreFun() void}\n"
         + "}",
-        "Outer0::InnerA","Outer1::A",
-        "{TestB:{<:I2 method Void moreFun()}}",false
-    },{lineNumber(), new String[]{   // Cascade redirect an interface, via the one-inner-interface rule
-                                     // Same test as above, with the order of implementation swapped
-                    "{I1:{interface method Void fun()}\n"
-                    + "I2:{interface method Void moreFun()}\n"
-                    + "A:{<:I2 I1 method Void fun() method Void moreFun()}"
+        "Outer0::D_Source","Outer1::D_Target",
+        "{TestB:{<:Outer2::I2 method moreFun() void}}",false
+    },{lineNumber(), new String[]{   // Same test as above, with more interesting method selectors and trivial order changes
+                    "{"
+                    + "I1:{interface method Void fun(Void that)}\n"
+                    + "I2:{interface method Void moreFun(Library that, Void other)}\n"
+                    + "A:{<:I1 I2 method fun(that) that method moreFun(that, other) other}"
+                    + "D_Target:{D_I1:{<:I1} D_I2:{<:I2} method A d_A()}"
                     + "}"},
-        "{InnerI2{interface method Void moreFun()}\n"
-        + "InnerA{<:InnerI2 I1 method Void fun() method Void moreFun()}"
-        + "TestB:{<:InnerI2 method Void moreFun()}\n"
+        "{InnerI2:{interface method Void moreFun(Library that, Void other)}\n"
+        + "InnerA:{<:InnerI2 Outer2::I1} \n"  // again, no implementation
+        + "D_Source:{D_I2:{<:InnerI2} method InnerA d_A()}"
+        + "TestB:{<:InnerI2 method moreFun(that, other) void}\n"
         + "}",
-        "Outer0::InnerA","Outer1::A",
-        "{TestB:{<:I2 method Void moreFun()}}",false
+        "Outer0::D_Source","Outer1::D_Target",
+        "{TestB:{<:Outer2::I2 method moreFun(that, other) void}}",false
         
 
     // the errors have variable portions.
@@ -252,6 +256,23 @@ public static class TestRedirect1 {//add more test for error cases
         "Outer0::InnerA","Outer1::A",
         ec
           .str(), true
+    },{lineNumber(), new String[]{   // Redirect a class (InnerA) which implements interface methods
+                                     // ie OpenClass->OpenClass
+                                     // TODO @James: maybe cut this down to a minimal test of that redirect
+                    "{I1:{interface method Void fun()}\n"
+                    + "I2:{interface method Void moreFun()}\n"
+                    + "A:{<:I1 I2 method fun() void method moreFun() void}"
+                    + "D_Target:{D_I1:{<:I1} D_I2:{<:I2} method A d_A()}"
+                    + "}"},
+        "{InnerI2:{interface method Void moreFun()}\n"
+        + "InnerA:{<:I1 InnerI2 method fun() void  method moreFun() void}"
+        + "D_Source:{D_I2:{<:InnerI2} method InnerA d_A()}"
+        + "TestB:{<:InnerI2 method moreFun() void}\n"
+        + "}",
+        "Outer0::D_Source","Outer1::D_Target",
+        ec
+          .set("SrcKind", "OpenClass", "UnexpectedMembers", "[moreFun()]")
+          .str(), false
     },{lineNumber(), new String[]{  // OpenClass -> ClosedClass (because I can) with missing subclass
         "{A:{ method Void ignoreMe() void " +
         "     method '@private \n Void ignoreMeMore() " +
@@ -260,7 +281,7 @@ public static class TestRedirect1 {//add more test for error cases
         "{InnerA:{ method Void ignoreMe() void C:{} }}",
         "Outer0::InnerA","Outer1::A",
         ec
-          .set("SrcKind", "OpenClass", "DestKind", "ClosedClass")
+          .set("SrcKind", "OpenClass", "DestKind", "ClosedClass", "UnexpectedMembers", "[C]")
           .str(), true
     },{lineNumber(), new String[]{  // ClosedClass -> ClosedClass (because I can) with missing subclass
         "{A:{ method Void ignoreMe() void " +
@@ -346,26 +367,6 @@ public static class TestRedirect1 {//add more test for error cases
                "UnexpectedImplementedInterfaces", "[Outer0::BlockingInterface1]"
                )
           .str(), true
-    },{lineNumber(), new String[]{  // Three unimplemented interfaces, one of which is external
-                                    // See below for a slightly different test that succeeds.
-        "{A:{interface type method Void fun(Void that)  method Void moreFun(Void that, Library other) \n"
-        + " C:{interface}}}"
-        },
-        "{BlockingInterface1:{interface} \n"
-        + "BlockingInterface2:{interface} \n"
-        + "InnerA:{interface type method Void fun(Void that)  method Void moreFun(Void that, Library other)\n"
-        + "C:{interface <:BlockingInterface1 Outer2::BlockingInterface2 "
-        + "               A::C"  // Should refer to external A::C because it's created in a library with an InnerA
-        + "  } } \n"
-        + "C_impl:{<:InnerA::C"
-        + "         method Void mostFun()"    //
-        + "       } "
-        + "}",
-        "Outer0::InnerA","Outer1::A",
-        ec
-          .set("UnexpectedImplementedInterfaces", "[Outer1::A::C, Outer0::BlockingInterface1, Outer0::BlockingInterface2]"
-               )
-          .str(), true
     },{lineNumber(), new String[]{  // Same test as above, but specifying outer of A::C gets a plausible error
         "{A:{interface type method Void fun(Void that)  method Void moreFun(Void that, Library other) \n"
         + " C:{interface}}}"
@@ -444,6 +445,7 @@ public static class TestRedirect1 {//add more test for error cases
         + "}",
         "Outer0::InnerA","Outer1::A",
         "{TestB:{<:I2 method Void moreFun()}}",false
+
 
 
 /* TODO: this test, when I get to method clashes
