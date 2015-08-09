@@ -1,6 +1,6 @@
 {'findMeNestedClass
 (NestedClass root,Path path,MirrorPr mirror, Record report)<:Member
-
+method toS() S"NestedClass"++this.allAsString()
 method 'empty for Outer0
 Doc nestedDoc()(
   if this.path()==Path"Outer0" (
@@ -35,7 +35,7 @@ Members members() (
   var result=Members[]
   var mN=1N
   while Bool.true() (' to be able to break
-    result:=result.#add(this.report().that()
+    result:=result.#add(this.mirror()
       .introspectReportMember(root:this,path:this.path(),memberN:mN))
     mN+=1N
     )

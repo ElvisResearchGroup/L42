@@ -2,12 +2,15 @@
 
 Main:{
 
-  i=Introspection(lib:{Bar:{method Void()}},path:Path"Bar")
+  i=Introspection(lib:{Bar:{method Void foo()}},path:Path"Bar")
   Debug(i.allAsString())
   Debug(i.classKind())
   Debug(i.root().allAsString())
   Debug(i.root().classKind())
-
+  members=i.members()
+  with element in members.vals() ( Debug(S"Elem!"++element))
+  ms=i.methods()
+  with m in ms.vals() ( Debug(m.selector()) )
   return ExitCode.normal()
   }
 }

@@ -30,9 +30,9 @@ import coreVisitors.From;
 
 public class Introspection {//TODO: we keep 5 methods, but we merge the PathReport and MemberReport content.
   public static ClassB giveInfo(ClassB that,List<String> path){
+    Errors42.checkExistsPathMethod(that, path,Optional.empty());
     Doc[] docRef={null};
     ClassB current = Program.extractCBar(path, that,docRef);
-    Errors42.checkExistsPathMethod(that, path,Optional.empty());
     return Resources.Error.multiPartStringClassB("MemberReport",
       "MemberKind","NestedClass",
       "MemberDoc",(docRef[0]==null)?"":liftDoc(path.subList(0,path.size()-1),docRef[0],1),

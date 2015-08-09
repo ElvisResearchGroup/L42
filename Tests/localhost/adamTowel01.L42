@@ -1016,9 +1016,9 @@ read method
 Void #close() void}}
 Debug:{
 type method 
-Void #apply(Outer1::S that) using Outer1::Alu check stringDebug(that:that.binaryRepr()) void
+Void #apply(Outer1::S::ToS that) using Outer1::Alu check stringDebug(that:that.toS().binaryRepr()) void
 type method 
-Void #apply(Outer1::S fileName, Outer1::S content) using Outer1::Alu check fileDebug(fileName:fileName.binaryRepr(), content:content.binaryRepr()) void}
+Void #apply(Outer1::S::ToS fileName, Outer1::S::ToS content) using Outer1::Alu check fileDebug(fileName:fileName.toS().binaryRepr(), content:content.toS().binaryRepr()) void}
 Path:{<:Outer1::S::ToS
 type method '@private
 Outer0 _private(Library^_binaryRepr'@private @consistent
@@ -1510,7 +1510,7 @@ RootForMember:'@private
 {interface 
 method 
 Outer2::Member #apply(Outer2::NestedClass^root) }
-NestedForMember:'@private
+RootForNested:'@private
 {<:Outer1::RootForMember
 type method 
 Outer0 #apply(Outer3::Path^path'@private @consistent
@@ -1530,7 +1530,7 @@ Outer2::Record #_report()
 read method '@private @consistent
 Outer2::Record _report() 
 method #apply(root ) Outer2::NestedClass.#apply(root:root, path:this.path(), mirror:this.mirror(), report:this._report())}
-MethodForMember:'@private
+RootForMethod:'@private
 {<:Outer1::RootForMember
 type method 
 Outer0 #apply(Outer3::Path^path'@private @consistent
@@ -1591,19 +1591,19 @@ Outer1::Member dispatch(Outer1::NestedClass^root, Outer2::Path path, Outer1::Mir
                                 'invalid member kind 
                                 }).#plusplus(that:x)
                                 )
-                              return Outer0::MethodForMember.#apply(path:path, memberN:memberN, _report:_report)
+                              return Outer0::RootForMethod.#apply(path:path, memberN:memberN, _report:_report)
                               )
                             )
                           )
-                        return Outer0::MethodForMember.#apply(path:path, memberN:memberN, _report:_report)
+                        return Outer0::RootForMethod.#apply(path:path, memberN:memberN, _report:_report)
                         )
                       )
                     )
-                  return Outer0::MethodForMember.#apply(path:path, memberN:memberN, _report:_report)
+                  return Outer0::RootForMethod.#apply(path:path, memberN:memberN, _report:_report)
                   )
                 )
               )
-            return Outer0::NestedForMember.#apply(path:path, mirror:mirror, _report:_report)
+            return Outer0::RootForNested.#apply(path:path, mirror:mirror, _report:_report)
             )
           )
         )
@@ -1618,7 +1618,7 @@ Outer1::Member dispatch(Outer1::NestedClass^root, Outer2::Path path, Outer1::Mir
     )
   result.#apply(root:root)
   )}
-Member:{interface }
+Member:{interface <:Outer2::S::ToS}
 Members:{' generic linked list class, elements of type Elem
 
 Varres:{
@@ -1992,6 +1992,9 @@ mut method '@private @consistent
 Outer1::Record #report() 
 read method '@private @consistent
 Outer1::Record report() 
+method toS() Outer2::S.#stringParser(that:{'@stringU
+'Method
+}).#plusplus(that:this.allAsString())
 method 
 Outer2::Doc doc() this.report().docOf(path:Outer2::Path.#stringParser(that:{'@stringU
 'Doc
@@ -2467,6 +2470,9 @@ mut method '@private @consistent
 Outer1::Record #report() 
 read method '@private @consistent
 Outer1::Record report() 
+method toS() Outer2::S.#stringParser(that:{'@stringU
+'NestedClass
+}).#plusplus(that:this.allAsString())
 method 'empty for Outer0
 Outer2::Doc nestedDoc() (
   Void unused=(
@@ -2571,7 +2577,7 @@ Outer1::Members members() (
       Void unused1=Outer2::Bool.true().#checkTrue()
       (' to be able to break
       
-        Void unused2=varresult.inner(that:varresult.#inner().#add(that:this.report().that().introspectReportMember(root:this, path:this.path(), memberN:varmN.#inner())))
+        Void unused2=varresult.inner(that:varresult.#inner().#add(that:this.mirror().introspectReportMember(root:this, path:this.path(), memberN:varmN.#inner())))
         varmN.inner(that:varmN.#inner().#plus(that:Outer2::N.#numberParser(that:{'@stringU
         '1
         })))
