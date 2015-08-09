@@ -1,16 +1,16 @@
 {
   type method
-  Void (S that)
+  Void (S::ToS that)
     using Alu
-      check stringDebug(that.binaryRepr())
+      check stringDebug(that.toS().binaryRepr())
       void
       
   type method
-  Void (S fileName, S content)
+  Void (S::ToS fileName, S::ToS content)
     using Alu
       check fileDebug(
-        fileName:fileName.binaryRepr(),
-        content:content.binaryRepr()
+        fileName:fileName.toS().binaryRepr(),
+        content:content.toS().binaryRepr()
         )
       void
   }

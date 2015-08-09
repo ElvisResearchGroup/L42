@@ -47,33 +47,33 @@ Record:
   'instead, I have to write this :-(
   RootForMember:'@private
     {interface method Member (NestedClass^ root)}
-  NestedForMember:'@private
+  RootForNested:'@private
     {(Path path,MirrorPr mirror,Record _report)<:RootForMember
       method(root)NestedClass(root:root,path:this.path(),mirror:this.mirror(),report:this._report())}
-  MethodForMember:'@private
+  RootForMethod:'@private
     {(Path path,N memberN,Record _report)<:RootForMember
       method(root)Method(root:root,path:this.path(),memberN:this.memberN(),report:this._report())}
   type method Member dispatch(NestedClass^ root,Path path,MirrorPr mirror, N memberN,Library report) (
     _report =Introspection(lib:report).report()
     RootForMember result={ with x=_report"MemberKind" (
       case x== S"NestedClass" (
-        return NestedForMember(path:path,mirror:mirror,_report:_report)
+        return RootForNested(path:path,mirror:mirror,_report:_report)
         )
       case x== S"InterfaceImplementedMethod" (
-        return MethodForMember(path:path,memberN:memberN,_report:_report)
+        return RootForMethod(path:path,memberN:memberN,_report:_report)
         )
       case x== S"ImplementedMethod" (
-        return MethodForMember(path:path,memberN:memberN,_report:_report)
+        return RootForMethod(path:path,memberN:memberN,_report:_report)
         )
       case x== S"AbstractMethod" (
-        return MethodForMember(path:path,memberN:memberN,_report:_report)
+        return RootForMethod(path:path,memberN:memberN,_report:_report)
         )
       default error S"invalid member kind "++x
       )}
     result(root:root)
     )
   }
-Member:{interface}
+Member:{interface<:S::ToS}
 Members:LinkedList.list(Member)
 Method:...
 Methods:LinkedList.list(Method)
