@@ -62,7 +62,12 @@ public class TestBase {
   public  void _07introspection() throws Throwable{
     TestHelper.configureForTest();
     L42.main(new String[]{"examples/testsForAdamTowel01/UseIntrospectionAdamTowel.L42"});
-    Assert.assertEquals(L42.record.toString(),"FreeTemplate\nFreeTemplate\nHello Adam 0\nazz\nbzz\nczz\n");
+    Assert.assertEquals(L42.record.toString(),
+       "{\nmethod \nVoid #apply() }\n"
+    + "FreeTemplate\n"
+    + "{\nBar:{\nmethod \nVoid #apply() }}\n"
+    + "FreeTemplate\n"
+        );
     }
 }
 

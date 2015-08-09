@@ -6,6 +6,9 @@ NestedClass(Library lib)(
   catch exception x (on TargetUnavailable error S"UnreachableCode")
   root
   )
+type method
+NestedClass(Library lib,Path path) exception TargetUnavailable
+  Outer0(lib:lib).nestedClassFromRoot(path)
 
 'type method
 'NestedClass(type Any cls) NestedClass(mirror:MirrorPr::Class(lib:cls))
@@ -13,7 +16,7 @@ NestedClass(Library lib)(
 MirrorPr:... 'Todo:remove Pr later.
 
 
-Record:'@private
+Record:
   {(MirrorPr that)
   method S #stringParser(Library that) {
     path=Path.#stringParser(that)

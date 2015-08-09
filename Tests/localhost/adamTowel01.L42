@@ -1376,6 +1376,8 @@ Outer0::NestedClass #apply(Library lib) (
     )
   root
   )
+type method 
+Outer0::NestedClass #apply(Library lib, Outer1::Path path) exception Outer1::TargetUnavailable Outer0.#apply(lib:lib).nestedClassFromRoot(that:path)
 MirrorPr:{interface 
 method 
 Outer1::NestedClass introspectReport(Outer1::NestedClass^root, Outer2::Path path) exception Outer2::TargetUnavailable 
@@ -1439,8 +1441,7 @@ method introspectDocAsString(path annotationN ) error Outer3::S.#stringParser(th
 method introspectDocPath(path annotationN ) error Outer3::S.#stringParser(that:{'@stringU
 'NotImplementedYet
 })}}
-Record:'@private
-{
+Record:{
 type method 
 Outer0 #apply(Outer1::MirrorPr^that'@private @consistent
 ) 
