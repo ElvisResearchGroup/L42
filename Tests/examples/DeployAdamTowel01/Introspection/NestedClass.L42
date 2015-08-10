@@ -1,10 +1,10 @@
 {'findMeNestedClass
 (NestedClass root,Path path,MirrorPr mirror, Record report)<:Member
-method toS() S"NestedClass"++this.allAsString()
+method toS() S"NestedClass["++this.allAsString()++S"]"
 method 'empty for Outer0
 Doc nestedDoc()(
   if this.path()==Path"Outer0" (
-    error UnsupportedOperation(target:this,
+    error Report::UnsupportedOperation(target:this,
       selector:Selector"nestedDoc()", reason:S"The NestedClass Object refers to Outer0"
       )
     )
@@ -16,13 +16,13 @@ Doc doc() this.report().docOf(path:Path"Doc")
 method Path pathFromRoot() this.path() ' invariant NestedClass(...).nestedClassFromRoot(path).pathFromRoot()==path
 method type Any externalType(){
   if this.path()!=Path"Outer0" (
-    error UnsupportedOperation(target:this,
+    error Report::UnsupportedOperation(target:this,
       selector:Selector"externalType()",reason:S"The NestedClass Object refers to "++this.path()
       )
     )
   with mirror=this.report() (
     on MirrorPr::Class return mirror.lib()
-    default error UnsupportedOperation(target:this,
+    default error Report::UnsupportedOperation(target:this,
       selector:Selector"externalType()",reason:S"The NestedClass Object is unbound"
       )
     )
@@ -39,7 +39,7 @@ Members members() (
       .introspectReportMember(root:this,path:this.path(),memberN:mN))
     mN+=1N
     )
-  catch exception x (on TargetUnavailable error S"UnreachableCode")
+  catch exception x (on Report::TargetUnavailable error Report::CodeNotReachable())
   result)
 
 method
@@ -58,13 +58,13 @@ method Types implementedInterfaces() (
       .introspectReportType(root:this,path:this.path(),memberN:0N,typeN:tN))
     tN-=1N
     )
-  catch exception x (on TargetUnavailable error S"CodeUnreachable")
+  catch exception x (on Report::TargetUnavailable error Report::CodeNotReachable())
   result)
 
-method Method constructor()  error S"NotImplementedYet"
-method Method methodFromSelector(Selector that) exception TargetUnavailable  error S"NotImplementedYet"
-method NestedClass nestedClassFromRoot(Path that) exception TargetUnavailable
+method Method constructor()  error Report::NotImplementedYet()
+method Method methodFromSelector(Selector that) exception Report::TargetUnavailable  error Report::NotImplementedYet()
+method NestedClass nestedClassFromRoot(Path that) exception Report::TargetUnavailable
   this.mirror().introspectReport(root:this.root(),path:that)
- 
+
 
 }

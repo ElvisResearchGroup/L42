@@ -1,11 +1,11 @@
 {
   ListCode: { type method Library () ... }
-   
+
   type method
   Library list(type Any that)
     using SafeOperatorsAccess
-      check redirect(ListCode(),src:S"Elem".binaryRepr(),dest:that)  
-      error S"redirectNotResponsiveInsideLinkedList"
+      check redirect(ListCode(),src:S"Elem".binaryRepr(),dest:that)
+      error Report::PluginFailure"SafeOperators.redirect -- inside LinkedList"
   SafeOperatorsAccess:'@private
     {'@plugin
     'L42.is/connected/withSafeOperators

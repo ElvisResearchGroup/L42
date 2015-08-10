@@ -1,0 +1,79 @@
+{interface<:S::ToS
+ObservedBug:
+'if this happens, then the programmer had wrong assumption on the code behaviour.
+{(S reason)<:S::ToS
+  type method Outer0 #stringParser(Library that) Outer0(reason:S.#stringParser(that))
+  type method Outer0 () Outer0(S"")
+  type method Outer0 (S that) Outer0(reason:that)
+  method toS()  S"ObservedBug["++this.reason()++S"]"
+  }
+Misuse:
+'If this happens, then the library client is calling a function with wrong parameters or in a wrong way.
+'It is a shorter name for Precondition Violation
+'If the violation is because the "this" parameter is not suitable to perform the requested operation,
+'consider using UnsupportedOperation instead
+{(S reason)<:S::ToS
+  type method Outer0 #stringParser(Library that) Outer0(reason:S.#stringParser(that))
+  type method Outer0 () Outer0(S"")
+  type method Outer0 (S that) Outer0(reason:that)
+  method toS()  S"Misuse["++this.reason()++S"]"
+  }
+UnsupportedOperation:
+'to report that a target do not support a certain selector.
+'to be used when a class have a method available only on certain instances.
+'For example, getting the element out of an optional type that is not present.
+{(read Any target,Selector selector, S reason)<:Report
+  method
+  toS()
+    S"UnsupportedOperation["++this.selector().toS()++S"
+      '
+      'reason:
+      "++this.reason()++S"]"
+  }
+
+PluginFailure:
+'to report the inability of a plugin to act
+  {(S reason)<:S::ToS
+  type method Outer0 #stringParser(Library that) Outer0(reason:S.#stringParser(that))
+  type method Outer0 () Outer0(S"")
+  type method Outer0 (S that) Outer0(reason:that)
+  method toS()  S"PluginFailure["++this.reason()++S"]"
+  }
+CodeNotReachable:{(S reason)<:S::ToS
+  type method Outer0 #stringParser(Library that) Outer0(reason:S.#stringParser(that))
+  type method Outer0 () Outer0(S"")
+  type method Outer0 (S that) Outer0(reason:that)
+  method toS()  S"CodeNotReachable["++this.reason()++S"]"
+  }
+NotImplementedYet:{(S reason)<:S::ToS
+  type method Outer0 #stringParser(Library that) Outer0(reason:S.#stringParser(that))
+  type method Outer0 () Outer0(S"")
+  type method Outer0 (S that) Outer0(reason:that)
+  method toS()  S"CodeNotReachable["++this.reason()++S"]"
+  }
+'in the following, a set of reports for composition operators
+
+SourceUnfit:{(Introspection::Record report) <:Report 'TODO: here, when typechecking introspection, for bug introspection can not see itself back. fix tomorrow.
+  method toS() S"SourceUnfit"
+  }
+ClassClash:{(Introspection::Record report) <:Report
+  method toS() S"ClassClash"
+  }
+MethodClash:{(Introspection::Record report) <:Report
+  method toS() S"MethodClash"
+  }
+InvalidOnTopLevel:{(Introspection::Record report) <:Report
+  method toS() S"InvalidOnTopLevel"
+  }
+TargetUnavailable:{(Introspection::Record report) <:Report
+  method toS() S"TargetUnavailable"
+  }
+PrivacyCoupuled:{(Introspection::Record report) <:Report
+  method toS() S"PrivacyCoupuled"
+  }
+NSBMissing:{(Report report) <:Report
+  method toS() S"NSBMissing "++this.report()
+  }
+
+
+}

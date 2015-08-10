@@ -174,11 +174,11 @@ public class IntrospectionAdapt {
     //on the call side as in "redirectDefinition"
     assert !cBar.isEmpty();
     List<String> cBar2 = cBar.subList(1,cBar.size());
-    if(cBar2.isEmpty()){return new ClassB.NestedClass(doc,cBar.get(0),elem);}
+    if(cBar2.isEmpty()){return new ClassB.NestedClass(doc,cBar.get(0),elem,null);}
     List<Member> ms=new ArrayList<>();
     ms.add(encapsulateIn(cBar2,elem,doc));
     ClassB cb= new ClassB(Doc.empty(),Doc.empty(),false,Collections.emptyList(),ms,Stage.None);
-    return new ClassB.NestedClass(Doc.empty(),cBar.get(0),cb);
+    return new ClassB.NestedClass(Doc.empty(),cBar.get(0),cb,null);
   }
   private static Path computeSquareTo(List<String> cBar1, List<String> cBar2) {
     if(cBar2.isEmpty()){return Path.outer(0,cBar1);}
@@ -359,7 +359,7 @@ static Path add1Outer(Path p) {
   //method Void #o_0#(Void _1...Void _n) (this.lowercase(x1:_1.. xn:_n)}}
   public static ExpCore buildMethodNameAdapter(MethodSelector s) {
     List<Member> ms=new ArrayList<>();
-    ms.add(new ClassB.NestedClass(Doc.empty(),"%o_0%",buildMethodNameAdapterInner(s)));
+    ms.add(new ClassB.NestedClass(Doc.empty(),"%o_0%",buildMethodNameAdapterInner(s),null));
     ClassB outer=new ClassB(Doc.empty(),Doc.empty(),false,Collections.emptyList(),ms,Stage.None);
     return outer;
   }
@@ -380,10 +380,10 @@ static Path add1Outer(Path p) {
     MethodType mt1=new MethodType(Doc.empty(),Mdf.Immutable,ts,tsDocs,tVoid,Collections.emptyList());
     MethodSelector s2=s;
     MethodType mt2=new MethodType(Doc.empty(),Mdf.Immutable,ts,tsDocs,tVoid,Collections.emptyList());
-    ExpCore e1=new MCall(null,new X("this"),s.getName(),Doc.empty(),s.getNames(),es1);
+    ExpCore e1=new MCall(new X("this"),s.getName(),Doc.empty(),s.getNames(),es1,null);
     List<Member> ms=new ArrayList<>();
-    ms.add(new MethodWithType(Doc.empty(),s1,mt1,Optional.of(e1)));
-    ms.add(new MethodWithType(Doc.empty(),s2,mt2,Optional.empty()));
+    ms.add(new MethodWithType(Doc.empty(),s1,mt1,Optional.of(e1),null));
+    ms.add(new MethodWithType(Doc.empty(),s2,mt2,Optional.empty(),null));
 
     ClassB inner=new ClassB(Doc.empty(),Doc.empty(),false,Collections.emptyList(),ms,Stage.None);
 
@@ -430,7 +430,7 @@ static Path add1Outer(Path p) {
   private static Member buildPathAdapterInner(Path path) {
     //throw Assertions.codeNotReachable();
     ClassB cb= new ClassB(Doc.factory(path),Doc.empty(),false,Collections.emptyList(),Collections.emptyList(),Stage.None);
-    return new ClassB.NestedClass(Doc.empty(),"%o_0%",cb);
+    return new ClassB.NestedClass(Doc.empty(),"%o_0%",cb,null);
   }
   /**Expands a map to include also the implemented versions of methods*/
   public static List<PathMxMx> expandMapMx(Program p, ast.ExpCore.ClassB classB, List<PathMxMx> mapMx) {

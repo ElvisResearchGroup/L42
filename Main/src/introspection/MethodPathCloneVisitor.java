@@ -92,7 +92,7 @@ abstract class MethodPathCloneVisitor extends CloneVisitorWithProgram {
         this.varEnv.remove(k.getX());
         kOpt=Optional.of(k.withOns(newOns));
         }
-      return new Block(s.getSource(),s.getDoc(),newDecs,lift(s.getInner()),kOpt);
+      return new Block(s.getDoc(),newDecs,lift(s.getInner()),kOpt,s.getP());
       }
     finally{this.varEnv=aux;}
     }
@@ -121,7 +121,7 @@ abstract class MethodPathCloneVisitor extends CloneVisitorWithProgram {
     guessed=Norm.of(p, guessed);
     MethodSelector ms2=visitMS(ms,guessed);
     if(ms2.equals(ms)){return super.visit(s);}
-    s=new MCall(s.getSource(),s.getReceiver(),ms2.getName(),s.getDoc(),ms2.getNames(),s.getEs());
+    s=new MCall(s.getReceiver(),ms2.getName(),s.getDoc(),ms2.getNames(),s.getEs(),s.getP());
     return super.visit(s);
     }
 }

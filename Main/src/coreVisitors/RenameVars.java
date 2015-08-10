@@ -15,7 +15,7 @@ import ast.ExpCore.X;
 public class RenameVars extends CloneVisitor{
   HashMap<String,String> toRename;
   RenameVars(HashMap<String,String> toRename){this.toRename=toRename;}
-  
+
   public ExpCore visit(WalkBy s) {throw Assertions.codeNotReachable();}
   public ExpCore visit(ExpCore.ClassB s) {return s;}
   public static ExpCore of(ExpCore e,HashMap<String,String> toRename){
@@ -38,10 +38,10 @@ public class RenameVars extends CloneVisitor{
       if(altxi==null){decs.add(dec);}
       else {decs.add(dec.withX(altxi));}
     }
-    
-    return new Block(s.getSource(),s.getDoc(),Map.of(this::liftDec,decs),lift(s.getInner()),k);
-  }
-  
 
-  
+    return new Block(s.getDoc(),Map.of(this::liftDec,decs),lift(s.getInner()),k,s.getP());
+  }
+
+
+
 }

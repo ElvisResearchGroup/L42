@@ -63,7 +63,7 @@ public class InjectionOnCore implements Visitor<ExpCore> {
       _catch=Optional.of(new Catch(kind,x,ons));
       }
     }
-    return new Block(s,doc,decs,inner,_catch);
+    return new Block(doc,decs,inner,_catch,s.getP());
   }
   public ExpCore visit(Expression.ClassB s){
     Doc doc1=s.getDoc1();
@@ -75,12 +75,12 @@ public class InjectionOnCore implements Visitor<ExpCore> {
     List<Member> members=new ArrayList<>();
     for(ast.Expression.ClassB.Member mi: s.getMs()){
       members.add(mi.match(
-      m-> new ClassB.NestedClass(m.getDoc(),m.getName(),lift(m.getInner())),
-      m-> new ClassB.MethodImplemented(m.getDoc(),m.getS(),lift(m.getInner())),
+      m-> new ClassB.NestedClass(m.getDoc(),m.getName(),lift(m.getInner()),m.getP()),
+      m-> new ClassB.MethodImplemented(m.getDoc(),m.getS(),lift(m.getInner()),m.getP()),
       m->{  Doc mdoc=m.getDoc();
             Ast.MethodSelector ms=m.getMs();
             MethodType mt=m.getMt();
-            return new ClassB.MethodWithType(mdoc,ms,mt,lift(m.getInner()));
+            return new ClassB.MethodWithType(mdoc,ms,mt,lift(m.getInner()),m.getP());
           })
        );
     }
@@ -92,15 +92,9 @@ public class InjectionOnCore implements Visitor<ExpCore> {
     String name=s.getName();
     Doc doc=s.getDoc();
     List<String> xs=s.getPs().getXs();
-    List<ExpCore>es=new ArrayList<>(); 
+    List<ExpCore>es=new ArrayList<>();
     for(Expression e:s.getPs().getEs()){es.add(e.accept(this));}
-    return new MCall(alphaSource(s),receiver, name,doc,xs,es);
-  }
-  private Expression alphaSource(ast.Expression.MCall s) {
-    Expression as=s.getSource();
-    if (as==null){return s;}
-    if(as instanceof ast.Expression.MCall){return alphaSource((ast.Expression.MCall)as);}
-    return as;
+    return new MCall(receiver, name,doc,xs,es,s.getP());
   }
   public ExpCore visit(Expression.Using s){
     assert !s.getPs().getE().isPresent();
@@ -118,7 +112,7 @@ public class InjectionOnCore implements Visitor<ExpCore> {
     if(e.isPresent()){return Optional.of(e.get().accept(this));}
     return Optional.empty();
     }
-  
+
   public ExpCore visit(Expression.If s){throw Assertions.codeNotReachable();}
   public ExpCore visit(Expression.While s){throw Assertions.codeNotReachable();}
   public ExpCore visit(Expression.With s){throw Assertions.codeNotReachable();}

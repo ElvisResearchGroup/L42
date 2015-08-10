@@ -4,7 +4,13 @@
     using Alu
       check stringDebug(that.toS().binaryRepr())
       void
-      
+  type method
+  Void (Library lib)
+    using Alu
+      check stringDebug(DeployTowel.binaryReprFrom(lib:lib))
+      void
+
+
   type method
   Void (S::ToS fileName, S::ToS content)
     using Alu

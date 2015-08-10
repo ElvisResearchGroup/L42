@@ -49,7 +49,6 @@ import ast.Expression.ClassReuse;
 import ast.Expression.CurlyBlock;
 import ast.Expression.DocE;
 import ast.Expression.FCall;
-import ast.Expression.HasPos;
 import ast.Expression.If;
 import ast.Expression.Literal;
 import ast.Expression.Loop;
@@ -259,10 +258,10 @@ public class Desugar extends CloneVisitor{
   private VarDecCE getClassBForVar(VarDecXE varDec) {
     List<FieldDec> fs=new ArrayList<FieldDec>();
     fs.add(new FieldDec(true,_computeTypeForClassBForVar(varDec),"inner",Doc.empty()));
-    ClassB cb=new ClassB(Doc.empty(),Doc.empty(),new Ast.ConcreteHeader(Mdf.Mutable, "",fs),Collections.emptyList(),Collections.emptyList(),Stage.None);
+    ClassB cb=new ClassB(Doc.empty(),Doc.empty(),new Ast.ConcreteHeader(Mdf.Mutable, "",fs,Position.noInfo),Collections.emptyList(),Collections.emptyList(),Stage.None);
     String nameC=Functions.freshName("Var"+varDec.getX(), L42.usedNames);
     //usedCnames.add(nameC);
-    return new VarDecCE(new NestedClass(Doc.empty(),nameC,cb));
+    return new VarDecCE(new NestedClass(Doc.empty(),nameC,cb,null));
   }
   public Type _computeTypeForClassBForVar(VarDecXE varDec) {
     Type t=varDec.getT().get();
@@ -425,11 +424,12 @@ public class Desugar extends CloneVisitor{
     return new Parameters(Optional.empty(), ps,es);
   }
   static Position getPosition(Expression src){
-    if(src instanceof HasPos){return ((HasPos)src).getP();}
+    if(src instanceof Ast.HasPos){return ((Ast.HasPos)src).getP();}
     else{return CollapsePositions.of(src);}
   }
   static MCall getMCall(Expression src,Position p,Expression rec,String name,Parameters ps){
-    return new MCall(src,p,rec,name,Doc.empty(),ps);
+    assert src==null || src instanceof Expression.HasPos: src.getClass();
+    return new MCall(rec,name,Doc.empty(),ps,p);
   }
   static RoundBlock getBlock(Position p,String x,Expression xe,Expression inner){
     List<Ast.BlockContent> bc=new ArrayList<Ast.BlockContent>();
@@ -527,7 +527,7 @@ public class Desugar extends CloneVisitor{
     return (MCall)appendEndMethod(s.getP(),result,s);
   }
   public static Expression appendEndMethod(Position pos,Expression x,Expression inner) {
-    MCall result=new MCall(inner,pos,x,"#end",Doc.empty(),Desugar.getPs());
+    MCall result=new MCall(x,"#end",Doc.empty(),Desugar.getPs(),pos);
     return result;
     //return x;
   }
@@ -641,8 +641,8 @@ public class Desugar extends CloneVisitor{
           }
         );
     //Type tt=new Ast.HistoricType();
-    return new MCall(s,s.getP(),lift(s.getReceiver()),s.getName(),s.getDoc(),
-      withExpectedType(tt,()->liftPs(s.getPs()))
+    return new MCall(lift(s.getReceiver()),s.getName(),s.getDoc(),
+      withExpectedType(tt,()->liftPs(s.getPs())),s.getP()
       );
     }
   public Expression visit(Using s) {
@@ -727,9 +727,9 @@ public class Desugar extends CloneVisitor{
     List<Member> result=new  ArrayList<Member>();
     cfType1(h,doc, result);
     for(FieldDec f:h.getFs()){
-      cfType2(f,consistentDoc,result);
-      cfType3(f,consistentDoc,result);
-      cfType4(f,consistentDoc,result);
+      cfType2(h.getP(),f,consistentDoc,result);
+      cfType3(h.getP(),f,consistentDoc,result);
+      cfType4(h.getP(),f,consistentDoc,result);
     }
     return result;
   }
@@ -744,25 +744,25 @@ public class Desugar extends CloneVisitor{
       }
     MethodType mt=new MethodType(Doc.empty(),ast.Ast.Mdf.Type,ts,tDocss,new ast.Ast.NormType(h.getMdf(),ast.Ast.Path.outer(0),Ph.None),Collections.emptyList());
     MethodSelector ms=new MethodSelector(h.getName(),names);
-    result.add(new MethodWithType(doc, ms,mt, Optional.empty()));
+    result.add(new MethodWithType(doc, ms,mt, Optional.empty(),h.getP()));
   }
-  static private void cfType2(ast.Ast.FieldDec f, Doc doc,List<Member> result) {
+  static private void cfType2(Expression.Position pos,ast.Ast.FieldDec f, Doc doc,List<Member> result) {
     if(!f.isVar()){return;}
     MethodType mti=new MethodType(Doc.empty(),Mdf.Mutable,Collections.singletonList(f.getT()),Collections.singletonList(Doc.empty()),new ast.Ast.NormType(Mdf.Immutable,Path.Void(),Ph.None),Collections.emptyList());
     MethodSelector msi=new MethodSelector(f.getName(),Collections.singletonList("that"));
-    result.add(new MethodWithType(doc, msi, mti, Optional.empty()));
+    result.add(new MethodWithType(doc, msi, mti, Optional.empty(),pos));
   }
-  static private void cfType3(FieldDec f,Doc doc, List<Member> result) {
+  static private void cfType3(Expression.Position pos,FieldDec f,Doc doc, List<Member> result) {
     MethodType mti=new MethodType(Doc.empty(),Mdf.Mutable,Collections.emptyList(),Collections.emptyList(),f.getT(),Collections.emptyList());
     MethodSelector msi=new MethodSelector("#"+f.getName(),Collections.emptyList());
-    result.add(new MethodWithType(doc, msi, mti, Optional.empty()));
+    result.add(new MethodWithType(doc, msi, mti, Optional.empty(),pos));
   }
-  static private void cfType4(FieldDec f,Doc doc, List<Member> result) {
+  static private void cfType4(Expression.Position pos,FieldDec f,Doc doc, List<Member> result) {
     if(!( f.getT() instanceof NormType)){return;}
     NormType fieldNt=(NormType)f.getT();
     fieldNt=Functions.sharedAndLentToReadable(fieldNt);
     MethodType mti=new MethodType(Doc.empty(),Mdf.Readable,Collections.emptyList(),Collections.emptyList(),fieldNt,Collections.emptyList());
     MethodSelector msi=new MethodSelector(f.getName(),Collections.emptyList());
-    result.add(new MethodWithType(doc, msi, mti, Optional.empty()));
+    result.add(new MethodWithType(doc, msi, mti, Optional.empty(),pos));
     }
 }

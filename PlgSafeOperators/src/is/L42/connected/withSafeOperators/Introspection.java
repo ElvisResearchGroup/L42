@@ -134,7 +134,7 @@ public class Introspection {//TODO: we keep 5 methods, but we merge the PathRepo
     String suffix=(ti instanceof Ast.HistoricType)?selectorsToString(((Ast.HistoricType)ti).getSelectors()):"";
     String parName=(typeN>0)?mwt.getMs().getNames().get(typeN-1):"";
     Doc doc=mwt.getDoc();
-    String allAsString=ToFormattedText.of(mwt);
+    String allAsString=ToFormattedText.of(ti);
     return typeReport(path, tk, mdf, resMdf, dPi, dResPi, ph, resPh, suffix, parName, doc, allAsString);
     }
 

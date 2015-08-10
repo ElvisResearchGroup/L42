@@ -3,11 +3,11 @@
 type method
 NestedClass(Library lib)(
   root=MirrorPr::Lib(lib:lib).introspectReport(root:root,path:Path"Outer0")
-  catch exception x (on TargetUnavailable error S"UnreachableCode")
+  catch exception x (on Report::TargetUnavailable error Report::CodeNotReachable())
   root
   )
 type method
-NestedClass(Library lib,Path path) exception TargetUnavailable
+NestedClass(Library lib,Path path) exception Report::TargetUnavailable
   Outer0(lib:lib).nestedClassFromRoot(path)
 
 'type method
@@ -18,10 +18,20 @@ MirrorPr:... 'Todo:remove Pr later.
 
 Record:
   {(MirrorPr that)
+
+  type method
+  Outer0 (Library lib)
+    Outer0(Introspection(lib:lib).mirror())
+  method Void dbg()
+    with x=this.that() (
+      on MirrorPr::Lib Debug(lib:x.lib())
+      default Debug(S"Sorry, can not print class mirrors")
+      )
+
   method S #stringParser(Library that) {
     path=Path.#stringParser(that)
     return this.that().introspectDocAsString(path:path)
-    catch exception x (on TargetUnavailable error x )
+    catch exception x (on Report::TargetUnavailable error x )
     }
   method
   Doc docOf(Path path){
@@ -31,7 +41,7 @@ Record:
         'This can not be done for circular reference Refactor::RenamePath[path to:Path"Outer0"]<<mirror.lib()
         )
       )
-    error S"UnreachableCode"
+    error Report::CodeNotReachable()
     }
   'this is how I would like it to be
   'type method Member dispatch(NestedClass^ root,Path path,MirrorPr mirror, N memberN,Library report) {
@@ -41,7 +51,7 @@ Record:
   '    case x== S"InterfaceImplementedMethod" (return Method(root:root,path:path,memberN:memberN,report:_report))
   '    case x== S"ImplementedMethod" (return Method(root:root,path:path,memberN:memberN,report:_report))
   '    case x== S"AbstractMethod" (return Method(root:root,path:path,memberN:memberN,report:_report))
-  '    default error S"invalid member kind "++x
+  '    default error Report::ObservedBug(S"invalid member kind "++x)
   '    )
   '  }
   'instead, I have to write this :-(
@@ -49,16 +59,22 @@ Record:
     {interface method Member (NestedClass^ root)}
   RootForNested:'@private
     {(Path path,MirrorPr mirror,Record _report)<:RootForMember
-      method(root)NestedClass(root:root,path:this.path(),mirror:this.mirror(),report:this._report())}
+      method(root) (
+      'Debug(S"logRootForNested")
+      NestedClass(root:root,path:this.path(),mirror:this.mirror(),report:this._report())
+      )}
   RootForMethod:'@private
     {(Path path,N memberN,Record _report)<:RootForMember
-      method(root)Method(root:root,path:this.path(),memberN:this.memberN(),report:this._report())}
+      method(root) (
+        'Debug(S"logRootForMethod")
+        Method(root:root,path:this.path(),memberN:this.memberN(),report:this._report())
+        )}
   type method Member dispatch(NestedClass^ root,Path path,MirrorPr mirror, N memberN,Library report) (
-    _report =Introspection(lib:report).report()
+    _report =Record(lib:report)
+    'Debug(S"MemberKind(in dispatch) is"++_report"MemberKind")
+    'Debug(S"ReportAsString is ")
+    'Debug(lib:report)
     RootForMember result={ with x=_report"MemberKind" (
-      case x== S"NestedClass" (
-        return RootForNested(path:path,mirror:mirror,_report:_report)
-        )
       case x== S"InterfaceImplementedMethod" (
         return RootForMethod(path:path,memberN:memberN,_report:_report)
         )
@@ -68,7 +84,11 @@ Record:
       case x== S"AbstractMethod" (
         return RootForMethod(path:path,memberN:memberN,_report:_report)
         )
-      default error S"invalid member kind "++x
+      case x== S"NestedClass" (
+        return RootForNested(path:path,mirror:mirror,_report:_report)
+        )
+
+      default error Report::ObservedBug(S"invalid member kind "++x)
       )}
     result(root:root)
     )

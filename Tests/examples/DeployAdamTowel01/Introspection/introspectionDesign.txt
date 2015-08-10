@@ -5,6 +5,7 @@ Introspection:{
 
   Member:{interface}
   NestedClass:{<:Member
+    (NestedClass root, Path path,Mirror mainMirror, Record report)'@private
     method NestedClass root()
     method Doc nestedDoc()' error  for Outer0
     method Doc doc() 'of the library literal

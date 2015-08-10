@@ -42,7 +42,7 @@ public class ExtractThrow implements Visitor<ExpCore>{
       if(IsValue.isAtom(ei)){continue;}
       return ei.accept(this);
         }
-    return new ExpCore.WalkBy(); 
+    return new ExpCore.WalkBy();
     }
 
   public ExpCore visit(Block s) {
@@ -54,7 +54,7 @@ public class ExtractThrow implements Visitor<ExpCore>{
       if(res instanceof ExpCore.WalkBy){return res;}
       Signal res_=(Signal)res;
       List<Block.Dec> decs = s.getDecs().subList(0, i);
-      Block newInner=new Block(s.getSource(),s.getDoc(),decs,res_.getInner(),Optional.empty());
+      Block newInner=new Block(s.getDoc(),decs,res_.getInner(),Optional.empty(),s.getP());
       newInner=Functions.garbage(newInner,i);
       return res_.withInner(newInner);
       }

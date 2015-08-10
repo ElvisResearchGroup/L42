@@ -19,7 +19,7 @@
   Outer0 #end() this
 
   method
-  Library << (Library that) exception ClassClash,MethodClash{
+  Library << (Library that) exception Report::ClassClash,Report::MethodClash{
     it=this.myLibs().vals()
     it.#next()
     catch exception ( on Void return that)
@@ -31,17 +31,17 @@
     }
 
   method '@private
-  Library liftErrorsCompose(Library left,Library right) exception ClassClash,MethodClash {
+  Library liftErrorsCompose(Library left,Library right) exception Report::ClassClash, Report::MethodClash {
     return SafeOperators.compose(left:left,right:right)
     catch error err (on Library (
-      report=Introspection(lib:err).report()
+      report=Introspection::Record(lib:err) 'Introspection(lib:err).report()
       with x=report"Kind" (
-        case x== S"ClassClash"  (exception ClassClash(report:report))
-        case x== S"MethodClash"  (exception MethodClash(report:report))
+        case x== S"ClassClash"  (exception Report::ClassClash(report:report))
+        case x== S"MethodClash"  (exception Report::MethodClash(report:report))
         default error err)))
     }
   method
-  Library accumulate(Library l1,Library l2) exception ClassClash,MethodClash{
+  Library accumulate(Library l1,Library l2) exception Report::ClassClash,Report::MethodClash{
     return this.liftErrorsCompose(left:l1,right:l2)
     catch exception x (on Any (
       if !this.resolver().isPresent() (error x) 'boh, why is not working? with exception
@@ -52,7 +52,7 @@
       Debug(S"name is: "++name)
       Debug(S"nameLeft is: "++nameLeft)
       Debug(S"nameRight is: "++nameRight)
-      error S"DO ADAPTER"
+      error Report::NotImplementedYet"DO ADAPTER"
       'Name name=Name.#stringParser(_name.binaryRepr())
       'Name nameLeft=Name.#stringParser(_nameLeft.binaryRepr())
       'Name nameRight=Name.#stringParser(_nameRight.binaryRepr())

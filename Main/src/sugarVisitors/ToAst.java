@@ -82,7 +82,7 @@ public class ToAst extends AbstractVisitor<Expression>{
       Optional<Expression> inner=Optional.empty();
       if(ctx.eTopForMethod()!=null){inner=Optional.of(ctx.eTopForMethod().accept(ToAst.this));}
       MethodType mt=new MethodType(doc2,mdf,ts,tdocs,returnType,exceptions);
-      return new MethodWithType(doc1,s, mt, inner);
+      return new MethodWithType(doc1,s, mt, inner,position(ctx));
     }
 
     @Override public Member visitNestedClass(NestedClassContext ctx) {
@@ -90,12 +90,12 @@ public class ToAst extends AbstractVisitor<Expression>{
       if(ctx.Path().getText().contains("::")){throw Assertions.userErrorAssert("no ::");}//TODO:improve
       String name=ctx.Path().getText();
       Expression inner=ctx.eTop().accept(ToAst.this);
-      return new NestedClass(doc, name, inner);
+      return new NestedClass(doc, name, inner,position(ctx));
     }
 
     @Override public Member visitMethodImplemented(MethodImplementedContext ctx) {
       Doc doc=(ctx.mhs().docsOpt()==null)?Doc.empty():comm(ctx.mhs().docsOpt());
-      return new MethodImplemented(doc,parseMethSelector(ctx.mhs().methSelector()),ctx.eTopForMethod().accept(ToAst.this));
+      return new MethodImplemented(doc,parseMethSelector(ctx.mhs().methSelector()),ctx.eTopForMethod().accept(ToAst.this),position(ctx));
       }
   }
   @Override public Expression visitW(WContext ctx) {
@@ -357,7 +357,7 @@ public class ToAst extends AbstractVisitor<Expression>{
     String name=(header.mDec()==null)?"":nameL(header.mDec());
     List<FieldDec> fields=new ArrayList<FieldDec>();
     for( FieldDecContext f:header.fieldDec()){fields.add(parseFieldDec(f));}
-    return new Ast.ConcreteHeader(mdf,name, fields);
+    return new Ast.ConcreteHeader(mdf,name, fields,position(header));
   }
   private FieldDec parseFieldDec(FieldDecContext f) {
     return new Ast.FieldDec(f.Var()!=null, parseType(f.t()),nameL(f.x()),comm(f.docsOpt()));
@@ -490,8 +490,8 @@ public class ToAst extends AbstractVisitor<Expression>{
 
       @Override public Expression visitMCall(MCallContext ctx) {
         Expression.FCall f0=(Expression.FCall)ctx.round().accept(this);
-        return new Expression.MCall(null,position(ctx),this.e0,
-          nameL(ctx.m()),f0.getDoc(),f0.getPs());
+        return new Expression.MCall(this.e0,
+          nameL(ctx.m()),f0.getDoc(),f0.getPs(),position(ctx));
       }
       @Override public Expression visitStringParse(StringParseContext ctx) {
         String s=ctx.StringQuote().getText();

@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+
 import tools.Assertions;
 import coreVisitors.Exists;
 import coreVisitors.From;
@@ -21,6 +22,7 @@ import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.NestedClass;
 import ast.ExpCore.Signal;
 import ast.ExpCore._void;
+import ast.Expression;
 import ast.ExpCore.ClassB.*;
 import ast.Ast.*;
 
@@ -120,7 +122,7 @@ public class Program {
     assert !this.isEmpty();
     Optional<Member> mOpt=getIfInDom(this.topCt().getMs(),c);
     if(!mOpt.isPresent()){
-      throw new ErrorMessage.PathNonExistant(Arrays.asList(c),this.topCt());
+      throw new ErrorMessage.PathNonExistant(Arrays.asList(c),this.topCt(),null);
     }
     Member m=mOpt.get();
     ClassB newTop=this.topCt().withMember(m.withBody(new ExpCore.WalkBy()));
@@ -157,12 +159,14 @@ public class Program {
   }
   public static ClassB extractCBar(List<String> list, ClassB cb,Doc[] commentRef,Boolean[]isPrivateRef) {
     assert cb!=null;
+    Position pos=null;
     for(String s:list){
       Optional<Member> optNc = Program.getIfInDom(cb.getMs(),s);
       if(!optNc.isPresent()){
-        throw new ErrorMessage.PathNonExistant(list,cb);
+        throw new ErrorMessage.PathNonExistant(list,cb,pos);
         }
       NestedClass nc=(NestedClass)optNc.get();
+      pos=nc.getP();
       ExpCore ec=nc.getInner();
       commentRef[0]=nc.getDoc();
       isPrivateRef[0]|=nc.getDoc().isPrivate();

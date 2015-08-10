@@ -8,6 +8,7 @@ import java.util.List;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.Value;
+import ast.Ast;
 import ast.ExpCore;
 import ast.Ast.HistoricType;
 import ast.Ast.MethodSelector;
@@ -219,6 +220,7 @@ import ast.ExpCore.ClassB;
     }
     List<String> listOfNodeNames;
     ClassB cb;
+    Ast.Position pos;
   }
   @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class PathNonStar extends TypeError {
     public int getErrCode() {

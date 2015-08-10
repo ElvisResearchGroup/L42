@@ -102,13 +102,12 @@ public interface Expression extends Ast {
     }
   }
 
-  @Value @EqualsAndHashCode(exclude = {"p", "source"}) @ToString(exclude = {"p", "source"}) public static class MCall implements Expression, HasPos {
-    Expression source;
-    Position p;
+  @Value @EqualsAndHashCode(exclude = {"p"}) @ToString(exclude = {"p"}) public static class MCall implements Expression, HasPos {
     Expression receiver;
     String name;
     Doc doc;
     Parameters ps;
+    Position p;
     @Override public <T> T accept(sugarVisitors.Visitor<T> v) {
       return v.visit(this);
     }
@@ -221,30 +220,33 @@ public interface Expression extends Ast {
     //  return sugarVisitors.ToFormattedText.of(this);
     //}
 
-    public interface Member {
+    public interface Member extends HasPos{
       <T> T match(Function<NestedClass, T> nc, Function<MethodImplemented, T> mi, Function<MethodWithType, T> mt);
     }
-    @Value @Wither public static class NestedClass implements Member {
+    @Value @Wither @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p")public static class NestedClass implements Member {
       Doc doc;
       String name;
       Expression inner;
+      Ast.Position p;
       public <T> T match(Function<NestedClass, T> nc, Function<MethodImplemented, T> mi, Function<MethodWithType, T> mt) {
         return nc.apply(this);
       }
     }
-    @Value @Wither public static class MethodImplemented implements Member {
+    @Value @Wither @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p")public static class MethodImplemented implements Member {
       Doc doc;
       MethodSelector s;
       Expression inner;
+      Ast.Position p;
       public <T> T match(Function<NestedClass, T> nc, Function<MethodImplemented, T> mi, Function<MethodWithType, T> mt) {
         return mi.apply(this);
       }
     }
-    @Value @Wither public static class MethodWithType implements Member {
+    @Value @Wither @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p")public static class MethodWithType implements Member {
       Doc doc;
       MethodSelector ms;
       MethodType mt;
       Optional<Expression> inner;
+      Ast.Position p;
       public <T> T match(Function<NestedClass, T> nc, Function<MethodImplemented, T> mi, Function<MethodWithType, T> mt) {
         return mt.apply(this);
       }
@@ -279,9 +281,4 @@ public interface Expression extends Ast {
       return v.visit(this);
     }
   }
-
-  public static interface HasPos {
-    Position getP();
-  }
-
 }

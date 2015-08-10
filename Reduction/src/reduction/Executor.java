@@ -125,7 +125,8 @@ private static ExpCore loopR(ExpCore ctxVal, LoopR r) {
   newInner=RenameVars.of(newInner,renames);
   assert checkSuccessRename(usedSomewhere, newInner);
   Block.Dec xDec=new Block.Dec(new NormType(Mdf.Immutable,Path.Void(),Ph.None),x,newInner);
-  Block result=new Block(null,Doc.empty(),xDec,r.getThat());
+  Ast.Position pos=null; if(r.getThat().getInner() instanceof Ast.HasPos){pos=((Ast.HasPos)r.getThat().getInner()).getP();}
+  Block result=new Block(Doc.empty(),xDec,r.getThat(),pos);
   return ReplaceCtx.of(ctxVal, result);
 }
 //NO! the ctc could no be extracted//.end(new ErrorMessage.NormalForm(e,p.getInnerData()));}
@@ -282,15 +283,15 @@ private Block fieldABlock(Set<String> around,MCall mc, MethodWithType mwt,HashSe
   String z=Functions.freshName(path1, forbidden);
   MCall mcz=mc.withReceiver(decRec.getInner());
   ExpCore ez=decRec.withInner(mcz);
-  Block result=new Block(mc.getSource(),Doc.empty(),new Block.Dec(tz,z,ez),new ExpCore.X(z));
+  Block result=new Block(Doc.empty(),new Block.Dec(tz,z,ez),new ExpCore.X(z),mc.getP());
   return result;
 }
 private ExpCore rNew(MCall mc, MethodWithType mwt,HashSet<String> usedNames) {
   log("---method rNew--");
   NormType t0=(NormType)mwt.getMt().getReturnType();
   String x0=Functions.freshName(t0.getPath(), usedNames);
-  return new Block(null,Doc.empty(),new Block.Dec(t0,x0,mc),
-    new ExpCore.X(x0));
+  return new Block(Doc.empty(),new Block.Dec(t0,x0,mc),
+    new ExpCore.X(x0),mc.getP());
 }
 private ExpCore primCallArg(MCall mc, int i, MethodWithType mwt, HashSet<String> usedNames) {
   //String xRole=ms.getXs().get(i);
@@ -302,15 +303,15 @@ private ExpCore primCallArg(MCall mc, int i, MethodWithType mwt, HashSet<String>
   ExpCore ei=mc.getEs().get(i);
   ArrayList<ExpCore> es = new ArrayList<ExpCore>(mc.getEs());
   es.set(i, new ExpCore.X(xi));
-  return new Block(mc.getSource(),Doc.empty(),new Block.Dec(ti,xi,ei),
-      mc.withEs(es));
+  return new Block(Doc.empty(),new Block.Dec(ti,xi,ei),
+      mc.withEs(es),mc.getP());
 }
 private ExpCore primCallRec(MCall mc, Path pathR,MethodWithType mwt, HashSet<String> usedNames) {  NormType t1=new NormType(mwt.getMt().getMdf(),pathR,Ast.Ph.None);
   log("---primCallRec--");
   String x1=Functions.freshName(pathR,usedNames);
   ExpCore e1=mc.getReceiver();
-  return new Block(mc.getSource(),Doc.empty(),new Block.Dec(t1,x1,e1),
-      mc.withReceiver(new ExpCore.X(x1)));
+  return new Block(Doc.empty(),new Block.Dec(t1,x1,e1),
+      mc.withReceiver(new ExpCore.X(x1)),mc.getP());
 }
 private ExpCore normalMeth(Path pathR,MethodWithType mwt, ExpCore ctxVal, MCall mc) {
   log("---normalMeth--");
@@ -351,7 +352,7 @@ private ExpCore normalMeth(Path pathR,MethodWithType mwt, ExpCore ctxVal, MCall 
       renames.get(mwt.getMs().getNames().get(i)),
       mc.getEs().get(i)));
   }
-  Block e2=new Block(mc.getSource(),mc.getDoc(),decs,e);
+  Block e2=new Block(mc.getDoc(),decs,e,mc.getP());
   //System.out.println(aroundAndParameters+"\n"+ToFormattedText.of(e2)+"\n@@\n@@\n"+ToFormattedText.of(mc));
   assert checkSuccessRename(around, e2);
   ExpCore result= ReplaceCtx.of(ctxVal,e2);
@@ -388,7 +389,7 @@ private static ExpCore captureOrNot(Program p,ExpCore ctxVal,Redex.CaptureOrNot 
   if(s.getKind()==catch_.getKind() && Functions.isSubtype(p, c, onT.getPath())){
     decs.add(new Block.Dec(
       onT,catch_.getX(),s.getInner()));
-    Block e2=new Block(e1.getSource(),e1.getDoc(),decs,catch_.getOns().get(0).getInner());
+    Block e2=new Block(e1.getDoc(),decs,catch_.getOns().get(0).getInner(),e1.getP());
     return ReplaceCtx.of(ctxVal,e2);
     }
   //case notCapture
@@ -431,7 +432,7 @@ public static ExpCore subst(ExpCore ctxVal,Redex.Subst r){
   String x=e1.getDecs().get(i).getX();
   ArrayList<Block.Dec> decs = new ArrayList<Block.Dec>(e1.getDecs());
   decs.remove(i);
-  Block e2=new Block(e1.getSource(),e1.getDoc(),decs,e1.getInner(),e1.get_catch());
+  Block e2=new Block(e1.getDoc(),decs,e1.getInner(),e1.get_catch(),e1.getP());
   ExpCore result=ReplaceX.of(e2,val,x);
   return ReplaceCtx.of(ctxVal,result);
 }

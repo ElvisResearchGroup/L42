@@ -36,14 +36,14 @@ public class GuessType implements Visitor<Type> {
 
   public Type visit(DocE s) {return s.getInner().accept(this);}
   public Type visit(Using s) {return s.getInner().accept(this); }
-  
+
   public Type visit(X s) {
     assert (this.varEnv.containsKey(s.getInner())):s;
     assert this.varEnv.get(s.getInner())!=null;
-    return this.varEnv.get(s.getInner()); 
-    }  
+    return this.varEnv.get(s.getInner());
+    }
   public Type visit(Path s) { return new NormType(Mdf.Type,s,Ph.None); }
-  
+
   public Type visit(RoundBlock s) {
     HashMap<String, Type> tmpVarEnv = this.varEnv;
     this.varEnv=new HashMap<String, Type>(this.varEnv);
@@ -77,17 +77,17 @@ public class GuessType implements Visitor<Type> {
     HistoricType ht=(HistoricType)t;
     List<Ast.MethodSelectorX> selectors = new ArrayList<>(ht.getSelectors());
     selectors.add(new Ast.MethodSelectorX(getMS(s),""));
-    return ht.withSelectors(selectors);    
+    return ht.withSelectors(selectors);
   }
-  
+
   MethodSelector getMS(MCall mc){
     List<String> xs=new ArrayList<String>();
     if(mc.getPs().getE().isPresent()){xs.add("that");}
     xs.addAll(mc.getPs().getXs());
     return new MethodSelector(mc.getName(),xs);
-  } 
-  
-  
+  }
+
+
   public Type visit(UnOp s) { return visit(Desugar.visit1Step(s));}
   public Type visit(FCall s) { return visit(Desugar.visit1Step(s));}
   public Type visit(SquareCall s) { return visit(Desugar.visit1Step(s));}
@@ -97,7 +97,7 @@ public class GuessType implements Visitor<Type> {
     return visit(Desugar.visit1Step(s));
     }
   public Type visit(SquareWithCall s) {
-    return visit(new MCall(s,null,s.getReceiver(),"#apply",Doc.empty(),Desugar.getPs()));
+    return visit(new MCall(s.getReceiver(),"#apply",Doc.empty(),Desugar.getPs(),s.getP()));
   }
   public Type visit(DotDotDot s)  {throw Assertions.codeNotReachable();}
   public Type visit(WalkBy s) {throw Assertions.codeNotReachable();}
@@ -105,5 +105,5 @@ public class GuessType implements Visitor<Type> {
 
   public Type visit(ClassReuse s){return new NormType(Mdf.Immutable,Path.Library(),Ph.None);}
   public Type visit(ClassB s) {return new NormType(Mdf.Immutable,Path.Library(),Ph.None);}
-  
+
 }

@@ -51,7 +51,7 @@ public class CloneVisitor implements Visitor<Expression>{
     }
   protected Header liftH(Header h) {
     return h.match(ch->new ConcreteHeader(
-        ch.getMdf(),ch.getName(), Map.of(this::liftF,ch.getFs())        
+        ch.getMdf(),ch.getName(), Map.of(this::liftF,ch.getFs()),ch.getP()
         ), th->th, ih->ih);
   }
   protected FieldDec liftF(FieldDec f) {
@@ -92,14 +92,14 @@ public class CloneVisitor implements Visitor<Expression>{
       mt->visit(mt)
       );
   }
-  public NestedClass visit(NestedClass nc){return new NestedClass(liftDoc(nc.getDoc()),nc.getName(),lift(nc.getInner()));}
-  public MethodImplemented visit(MethodImplemented mi){return new ClassB.MethodImplemented(liftDoc(mi.getDoc()), liftMs(mi.getS()), lift(mi.getInner()));}
+  public NestedClass visit(NestedClass nc){return new NestedClass(liftDoc(nc.getDoc()),nc.getName(),lift(nc.getInner()),null);}
+  public MethodImplemented visit(MethodImplemented mi){return new ClassB.MethodImplemented(liftDoc(mi.getDoc()), liftMs(mi.getS()), lift(mi.getInner()),null);}
   public MethodWithType visit(MethodWithType mt){
     return new ClassB.MethodWithType(liftDoc(mt.getDoc()),
       liftMs(mt.getMs()),
       liftMT(mt.getMt()),
-      Map.of(this::lift,mt.getInner()));}
-  
+      Map.of(this::lift,mt.getInner()),mt.getP());}
+
   protected MethodSelector liftMs(MethodSelector ms) {
     return ms;
   }
@@ -133,7 +133,7 @@ public class CloneVisitor implements Visitor<Expression>{
     return new Loop(lift(s.getInner()));
   }
   public Expression visit(MCall s) {
-    return new MCall(s.getSource(),s.getP(),lift(s.getReceiver()),s.getName(),liftDoc(s.getDoc()),liftPs(s.getPs()));
+    return new MCall(lift(s.getReceiver()),s.getName(),liftDoc(s.getDoc()),liftPs(s.getPs()),s.getP());
   }
   public Expression visit(ClassB s) {
     Header h = liftH(s.getH());
@@ -205,6 +205,6 @@ public class CloneVisitor implements Visitor<Expression>{
   public Expression visit(ClassReuse s) {
     return new ClassReuse(lift(s.getInner()),s.getUrl());
   }
-  
+
 }
 

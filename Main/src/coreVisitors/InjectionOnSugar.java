@@ -71,12 +71,8 @@ public class InjectionOnSugar implements Visitor<ast.Expression> {
     List<ast.Expression> es=new ArrayList<ast.Expression>();
     for( ast.ExpCore e : es1){es.add(lift(e));}
     ast.Ast.Parameters ps=new ast.Ast.Parameters(Optional.<ast.Expression>empty(), xs, es);
-    Expression src=s.getSource();
-    Ast.Position p=null;
-    if (src!=null && src instanceof Expression.HasPos){
-      p=((Expression.HasPos)src).getP();
-    }
-    return new Expression.MCall(src,p,receiver,name,docs,ps);
+    Position pos=s.getP();
+    return new Expression.MCall(receiver,name,docs,ps,pos);
   }
 
   @Override public Expression visit(Block s) {
@@ -94,15 +90,7 @@ public class InjectionOnSugar implements Visitor<ast.Expression> {
     if(!decs.isEmpty() || _catch.isPresent()){
       contents.add(new BlockContent(decs,_catch));
       }
-    Expression.Position pos=null;
-    if(s.getSource()!=null){
-      if(s.getSource()instanceof ast.Expression.HasPos){
-        pos=((ast.Expression.HasPos)s.getSource()).getP();
-        }
-      else{
-        pos=Position.noInfo;
-        }
-      }
+    Expression.Position pos=s.getP();
     Expression.RoundBlock result=new Expression.RoundBlock(pos,docs,inner,contents);
     //assert WellFormedness.blockCheck(result);, no it can actually get wrong?
     return result;
@@ -129,15 +117,14 @@ public class InjectionOnSugar implements Visitor<ast.Expression> {
     List<Path>supertypes=s.getSupertypes();
     List<Member> members=new ArrayList<>();
     for(ast.ExpCore.ClassB.Member mi:s.getMs()){
-      //TODO:use new matching
-      members.add(mi.<Member>match(
-          (ast.ExpCore.ClassB.NestedClass m)->new Expression.ClassB.NestedClass(m.getDoc(),m.getName(),lift(m.getInner())),
-        m->new Expression.ClassB.MethodImplemented(m.getDoc(),m.getS(),lift(m.getInner())),
-        m->{
-         Doc idoc=m.getDoc();
-         MethodSelector is=m.getMs();
-         MethodType mt=m.getMt();
-         return new Expression.ClassB.MethodWithType(idoc, is, mt, lift(m.getInner()));
+      members.add(mi.match(
+        nc->new Expression.ClassB.NestedClass(nc.getDoc(),nc.getName(),lift(nc.getInner()),nc.getP()),
+        mimpl->new Expression.ClassB.MethodImplemented(mimpl.getDoc(),mimpl.getS(),lift(mimpl.getInner()),mimpl.getP()),
+        mwt->{
+         Doc idoc=mwt.getDoc();
+         MethodSelector is=mwt.getMs();
+         MethodType mt=mwt.getMt();
+         return new Expression.ClassB.MethodWithType(idoc, is, mt, lift(mwt.getInner()),mwt.getP());
          }
         ));    }
     return new Expression.ClassB(doc1,doc2, h, supertypes, members,s.getStage());

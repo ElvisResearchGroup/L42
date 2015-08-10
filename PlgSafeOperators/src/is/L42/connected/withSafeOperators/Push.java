@@ -18,7 +18,7 @@ class Push {
   static ClassB pushOne(ClassB in,String s){
     Path p=Path.outer(1);
     ClassB cb=(ClassB)FromInClass.of(in, p);
-    List<Member> ms=Collections.singletonList(new ClassB.NestedClass(Doc.empty(),s,cb));
+    List<Member> ms=Collections.singletonList(new ClassB.NestedClass(Doc.empty(),s,cb,null));
     return new ClassB(Doc.empty(),Doc.empty(),false,Collections.emptyList(),ms,Stage.None);
   }
   //could be more efficient if directly implemented

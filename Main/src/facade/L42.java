@@ -19,7 +19,6 @@ import java.util.Set;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 
 import coreVisitors.InjectionOnSugar;
-import coreVisitors.RecoverStoredSugar;
 import sugarVisitors.CollapsePositions;
 import sugarVisitors.CollectDeclaredClassNamesAndMethodNames;
 import sugarVisitors.CollectDeclaredVarsAndCheckNoDeclaredTwice;

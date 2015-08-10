@@ -9,6 +9,7 @@ import coreVisitors.IsCompiled;
 import facade.Configuration;
 import facade.L42;
 import tools.Assertions;
+import ast.Ast;
 import ast.ErrorMessage;
 import ast.Ast.SignalKind;
 import ast.Ast.Stage;
@@ -144,12 +145,12 @@ public class TypeSystemOK {
     //check all types of parameters exists
     //check all types of local var exists
     mt=Norm.of(p, mt,false);
-    checkExists(p,mt.getMt().getReturnType());
+    checkExists(p,mt.getMt().getReturnType(),mt.getP());
     for(Type t:mt.getMt().getTs() ){
-      checkExists(p,t);
+      checkExists(p,t,mt.getP());
       }
     for(Path pi:mt.getMt().getExceptions()){
-      checkExists(p,pi);
+      checkExists(p,pi,mt.getP());
     }
     if(!mt.getInner().isPresent()){return;}
     HashMap<String,NormType> varEnv=new HashMap<>();
@@ -174,16 +175,16 @@ public class TypeSystemOK {
       mt.getInner().get());
   }
 
-  private static Void checkExists(Program p,Path pi) {
+  private static Void checkExists(Program p,Path pi,Ast.Position pos) {
     if(pi.isPrimitive()){return null;}
     try{p.extractCt(pi);}
     catch(ErrorMessage.ProgramExtractOnMetaExpression err){
-      throw new ErrorMessage.PathNonExistant(pi.getCBar(),null);
+      throw new ErrorMessage.PathNonExistant(pi.getCBar(),null,pos);
     }
     return null;
   }
 
-  private static void checkExists(Program p,Type returnType) {
-    returnType.match(nt->checkExists(p,nt.getPath()), hType->checkExists(p,hType.getPath()));
+  private static void checkExists(Program p,Type returnType,Ast.Position pos) {
+    returnType.match(nt->checkExists(p,nt.getPath(),pos), hType->checkExists(p,hType.getPath(),pos));
   }
 }

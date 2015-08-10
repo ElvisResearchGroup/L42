@@ -6,33 +6,25 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.function.Function;
+
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import lombok.ToString;
 import lombok.Value;
 import lombok.experimental.Wither;
+import ast.Expression;
 import ast.Ast.*;
 
 public interface ExpCore {
   <T> T accept(coreVisitors.Visitor<T> v);
 
-  @Value @EqualsAndHashCode(exclude = "source") @ToString(exclude = "source") @Wither public static class MCall implements ExpCore {
-    Expression source;
+  @Value @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") @Wither public static class MCall implements ExpCore,HasPos {
     ExpCore receiver;
     String name;
     Doc doc;
     List<String> xs;
     List<ExpCore> es;
-    public MCall(Expression source, ExpCore receiver, String name, Doc doc, List<String> xs, List<ExpCore> es) {
-      this.source = source;
-      this.receiver = receiver;
-      this.name = name;
-      this.doc = doc;
-      this.xs = xs;
-      this.es = es;
-      //assert ((Expression.HasPos)source).getP()!=null;
-      //assert !(source instanceof Expression.HasPos) || ((Expression.HasPos)source).getP() != null:source;
-    }
+    Position p;
     @Override public <T> T accept(coreVisitors.Visitor<T> v) {
       return v.visit(this);
     }
@@ -48,12 +40,12 @@ public interface ExpCore {
     }
   }
 
-  @Value @EqualsAndHashCode(exclude = "source") @ToString(exclude = "source") @Wither public static class Block implements ExpCore {
-    Expression source;
+  @Value @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") @Wither public static class Block implements ExpCore,HasPos {
     Doc doc;
     List<Dec> decs;
     ExpCore inner;
     Optional<Catch> _catch;
+    Position p;
     @Override public <T> T accept(coreVisitors.Visitor<T> v) {
       return v.visit(this);
     }
@@ -73,21 +65,21 @@ public interface ExpCore {
       }
       return dom;
     }
-    public Block(Expression src, Doc doc, ExpCore inner) {
-      this(src, doc, Collections.emptyList(), inner, Optional.<Catch> empty());
+    public Block(Doc doc, ExpCore inner,Position p) {
+      this(doc, Collections.emptyList(), inner, Optional.<Catch> empty(),p);
     }
-    public Block(Expression src, Doc doc, Dec dec, ExpCore inner) {
-      this(src, doc, Collections.singletonList(dec), inner, Optional.<Catch> empty());
+    public Block(Doc doc, Dec dec, ExpCore inner,Position p) {
+      this(doc, Collections.singletonList(dec), inner, Optional.<Catch> empty(),p);
     }
-    public Block(Expression src, Doc doc, List<Dec> decs, ExpCore inner) {
-      this(src, doc, decs, inner, Optional.<Catch> empty());
+    public Block(Doc doc, List<Dec> decs, ExpCore inner,Position p) {
+      this(doc, decs, inner, Optional.<Catch> empty(),p);
     }
-    public Block(Expression src, Doc doc, List<Dec> decs, ExpCore inner, Optional<Catch> _catch) {
-      this.source = src;
+    public Block(Doc doc, List<Dec> decs, ExpCore inner, Optional<Catch> _catch,Position p) {
       this.doc = doc;
       this.decs = decs;
       this.inner = inner;
       this._catch = _catch;
+      this.p=p;
     }
     @Value @Wither public static class Catch {
       SignalKind kind;
@@ -116,9 +108,9 @@ public interface ExpCore {
     List<Ast.Path> supertypes;
     List<Member> ms;
     Stage stage;
-    public String toString() {
+    /*public String toString() {
       return sugarVisitors.ToFormattedText.of(this);
-    }
+    }*/
     public boolean isConsistent() {
       int countWalkBy = 0;
       HashSet<String> keys = new HashSet<String>();
@@ -162,14 +154,15 @@ public interface ExpCore {
     @Override public <T> T accept(coreVisitors.Visitor<T> v) {
       return v.visit(this);
     }
-    public interface Member {
+    public interface Member extends HasPos {
       public Member withBody(ExpCore e);
       <T> T match(Function<NestedClass, T> nc, Function<MethodImplemented, T> mi, Function<MethodWithType, T> mt);
     }
-    @Value @Wither public static class NestedClass implements Member {
+    @Value @Wither @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p")public static class NestedClass implements Member {
       @NonNull Doc doc;
       @NonNull String name;
       @NonNull ExpCore inner;
+      Position p;
       public Member withBody(ExpCore e) {
         return this.withInner(e);
       }
@@ -177,10 +170,11 @@ public interface ExpCore {
         return nc.apply(this);
       }
     }
-    @Value @Wither public static class MethodImplemented implements Member {
+    @Value @Wither @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p")public static class MethodImplemented implements Member {
       @NonNull Doc doc;
       @NonNull MethodSelector s;
       @NonNull ExpCore inner;
+      Position p;
       public Member withBody(ExpCore e) {
         return this.withInner(e);
       }
@@ -188,11 +182,12 @@ public interface ExpCore {
         return mi.apply(this);
       }
     }
-    @Value @Wither public static class MethodWithType implements Member {
+    @Value @Wither @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p")public static class MethodWithType implements Member {
       @NonNull Doc doc;
       @NonNull MethodSelector ms;
       @NonNull MethodType mt;
       @NonNull Optional<ExpCore> inner;
+      Position p;
       public Member withBody(ExpCore e) {
         return this.withInner(Optional.of(e));
       }

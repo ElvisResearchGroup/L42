@@ -61,7 +61,7 @@ public class TypecheckBlock {
         onsRead.add(k.getOns().get(0).withT(nt.withMdf(Mdf.Readable)));
         Block sRead=s.with_catch(Optional.of(k.withOns(onsRead)));
         try{return typeCheckMinimalBlock(that,sRead);}catch(ErrorMessage e3){throw e;}
-        }      
+        }
     }
   }
   private static Type typeCheckMinimalBlock(TypeSystem that, Block s) {
@@ -114,7 +114,7 @@ public class TypecheckBlock {
     return TypeSystem.typecheckSure(false,that.p,varEnv,newSealEnv,that.throwEnv,that.suggested,block.getInner());
   }
   private static Type checkCatch(Program p, HashMap<String, NormType> varEnv2, SealEnv sealEnv2,ThrowEnv throwEnv2, Type newSuggested, List<Dec> decs, Optional<Catch> k) {
-    if(!k.isPresent()){return new FreeType();}    
+    if(!k.isPresent()){return new FreeType();}
     if(k.get().getOns().size()==0){return new FreeType();}
     varEnv2=new HashMap<String, NormType>(varEnv2);
     for(Dec d:decs){varEnv2.remove(d.getX());}
@@ -167,7 +167,7 @@ public class TypecheckBlock {
       trAlt.resAddAll(throwEnv2.res());
       }
     else{
-      trAlt.resAddAll(ThrowEnv.accResult(throwEnv2.res(),Arrays.asList(on))); 
+      trAlt.resAddAll(ThrowEnv.accResult(throwEnv2.res(),Arrays.asList(on)));
       }
     HashMap<String, NormType> varEnvi=new HashMap<String, NormType>(varEnv2);
     varEnvi.put(x,Functions.forceNormType(on.getInner(), on.getT()));
@@ -185,7 +185,7 @@ public class TypecheckBlock {
     List<ExpCore> es=new ArrayList<ExpCore>();
     ExpCore ek=s.getInner();
     if(s.get_catch().isPresent()){
-      ek=new Block(s.getSource(),Doc.empty(),new ArrayList<>(),ek,s.get_catch());
+      ek=new Block(Doc.empty(),new ArrayList<>(),ek,s.get_catch(),s.getP());
     }
     es.add(ek);
     for(Block.Dec dec:s.getDecs()){
@@ -228,7 +228,7 @@ public class TypecheckBlock {
       if(minUse>=candidate){return candidate;}
       candidate=minUse;
       if(candidate==0){return -1;}
-      } 
+      }
   }
 
   private static int getMinUse(int candidate, List<Dec> decs) {
@@ -238,7 +238,7 @@ public class TypecheckBlock {
       if(FreeVariables.of(decs.get(i).getE()).contains(x)){
         minUse=i;break;
       }
-    }    
+    }
     if(candidate==decs.size()-1){return minUse;}
     return Math.min(minUse, getMinUse(candidate+1,decs));
   }
@@ -288,9 +288,9 @@ public class TypecheckBlock {
     return false;
   }
 
- 
+
   private static  ThrowEnv catchExtentions(ThrowEnv throwEnv, Optional<Catch> k) {
-  if(!k.isPresent()){return throwEnv;} 
+  if(!k.isPresent()){return throwEnv;}
   Catch c=k.get();
   if(c.getKind()==SignalKind.Error){return throwEnv;}
   ThrowEnv result=new ThrowEnv();
@@ -317,5 +317,5 @@ public class TypecheckBlock {
     for(NormType nt:res){if(nt.getMdf()!=mdf0){return false;}}
     return true;
   }
-  
+
 }

@@ -14,41 +14,7 @@ Path:...
 Selector:...
 Doc:...
 SafeOperators:...
-
-'where they should go? top level or inside Report? or inside another thing?
-Report:{interface<:S::ToS} 'there will be a MakeReport decorator
-
-UnsupportedOperation:{(Any target,Selector selector, S reason)<:Report
-  method
-  toS()
-    S"UnsupportedOperation "++this.selector().toS()++S"
-      '
-      'reason:
-      "++this.reason()
-  }
-
-SourceUnfit:{(Introspection::Record report) <:Report
-  method toS() S"SourceUnfit"
-  }
-ClassClash:{(Introspection::Record report) <:Report
-  method toS() S"ClassClash"
-  }
-MethodClash:{(Introspection::Record report) <:Report
-  method toS() S"MethodClash"
-  }
-InvalidOnTopLevel:{(Introspection::Record report) <:Report
-  method toS() S"InvalidOnTopLevel"
-  }
-TargetUnavailable:{(Introspection::Record report) <:Report
-  method toS() S"TargetUnavailable"
-  }
-PrivacyCoupuled:{(Introspection::Record report) <:Report
-  method toS() S"PrivacyCoupuled"
-  }
-NSBMissing:{(Report report) <:Report
-  method toS() S"NSBMissing "++this.report()
-  }
-
+Report:...
 
 Introspection:...
 Opt:...

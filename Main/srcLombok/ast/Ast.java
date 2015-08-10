@@ -11,6 +11,7 @@ import sugarVisitors.Desugar;
 import tools.Assertions;
 import ast.Ast.Doc;
 import ast.Ast.MethodSelector;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.Value;
 import lombok.experimental.Wither;
@@ -36,7 +37,7 @@ public interface Ast {
   public interface Header{
     <T> T match(Function<ConcreteHeader, T> concreteH,Function<TraitHeader, T> traitH,Function<InterfaceHeader, T> interfH);
     }
-  @Value @Wither public class ConcreteHeader implements Header{Mdf mdf;String name;List<FieldDec> fs;
+  @Value @Wither @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p")public class ConcreteHeader implements Header,Expression.HasPos{Mdf mdf;String name;List<FieldDec> fs;Position p;
     public<T> T match(Function<ConcreteHeader, T> concreteH,Function<TraitHeader, T> traitH,Function<InterfaceHeader, T> interfH){return  concreteH.apply(this);}}
   @Value public class TraitHeader implements Header{
     public<T> T match(Function<ConcreteHeader, T> concreteH,Function<TraitHeader, T> traitH,Function<InterfaceHeader, T> interfH){return  traitH.apply(this);}}
@@ -433,4 +434,7 @@ public interface Ast {
       return "file: "+fileName+"; "+res;
     }
     }
+  public static interface HasPos {
+    Position getP();
+  }
 }

@@ -4,16 +4,18 @@ type method type Outer0 #begin() Outer0
 type method Outer0 #add(Library fileName) Outer0(fileName:fileName)
 method Outer0 #end()this
 
-method
-Library <<(Library that) (
+type method Library binaryReprFrom(Library lib)(
   Library report=using SafeOperatorsAccess
-    check introspectLibraryReport(that, path:Outer0"Outer0")
+    check introspectLibraryReport(lib, path:Outer0"Outer0")
     error Outer0"introspectLibraryReport"
-  Library text=using SafeOperatorsAccess
+  using SafeOperatorsAccess
     check introspectLibraryDocAsString(report, path:Outer0"AllAsString",annotationN:0Outer0)
     error Outer0"introspectLibraryDocAsString"
+  )
+method
+Library <<(Library that) (
   using Alu
-    check fileDebug(fileName:this.fileName(), content:text)
+    check fileDebug(fileName:this.fileName(), content:Outer0.binaryReprFrom(lib:that))
     error Outer0"fileDebug"
   ExitCode.normal()
   )

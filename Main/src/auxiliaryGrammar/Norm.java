@@ -85,7 +85,7 @@ public class Norm {
     Optional<ExpCore> eInner =mt.getInner();
     if(isOnlyType && eInner.isPresent()){Optional.of((ExpCore)forOnlyType);}
     if(!isOnlyType){eInner = Map.of(e->of(p,e),mt.getInner());}
-    return new MethodWithType(mt.getDoc(),mt.getMs(),mt2,eInner);
+    return new MethodWithType(mt.getDoc(),mt.getMs(),mt2,eInner,mt.getP());
   }
   private static final ClassB forOnlyType=new ClassB(Doc.factory("Only the type was asked\n"),Doc.empty(),false,Collections.emptyList(),Collections.emptyList(),Stage.None);
 

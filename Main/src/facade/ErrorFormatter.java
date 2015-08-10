@@ -28,7 +28,6 @@ import ast.ExpCore.ClassB.MethodWithType;
 import auxiliaryGrammar.Program;
 import coreVisitors.InjectionOnSugar;
 import coreVisitors.IsCompiled;
-import coreVisitors.RecoverStoredSugar;
 import facade.L42.ExecutionStage;
 import platformSpecific.javaTranslation.Resources;
 
@@ -181,9 +180,7 @@ public class ErrorFormatter {
       str1=ToFormattedText.of(rt.collectedErr)+"\nContained inside:"+Path.outer(0, rt.collectedPath)+"\n";
       }
     str1+=ToFormattedText.of(inner).replace("\n"," ");
-    String str2=ToFormattedText.of(inner.accept(new RecoverStoredSugar())).replace("\n"," ");
-    String str =str1+" \nwas:\n "+str2;
-    return str;
+    return str1;
   }
   private static Kind findKind(ErrorMessage msg) {
     if (L42.getStage()==ExecutionStage.CheckingWellFormedness){

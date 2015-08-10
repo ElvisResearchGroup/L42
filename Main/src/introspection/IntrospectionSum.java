@@ -116,7 +116,7 @@ public class IntrospectionSum {
     Optional<ExpCore>inner=mt1.getInner();
     if(!inner.isPresent()){inner=mt2.getInner();}
     MethodWithType mwt=new MethodWithType(mt1.getDoc().sum(mt2.getDoc()),
-        mt1.getMs(), mt, inner);
+        mt1.getMs(), mt, inner,null);
     Program.replaceIfInDom(ms, mwt);
     return null;
   }

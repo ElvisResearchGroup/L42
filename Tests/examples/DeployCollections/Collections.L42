@@ -18,10 +18,10 @@ Library vector(type Any that) Outer0.generateVector(that,lib:{
       {
       type method
       'read/lent/mut/type/capsule/
-      Elem elem() error S"InternalUseOnly"
+      Elem elem() error Report::UnsupportedOperation"make it an interface?"
       type method
       'read/lent/mut/type/capsule/
-      Elem elemRead() error S"InternalUseOnly"
+      Elem elemRead() error Report::UnsupportedOperation"make it an interface?"
       }
     VectorStruct:...
     })

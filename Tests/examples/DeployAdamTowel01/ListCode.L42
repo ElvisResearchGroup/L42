@@ -8,7 +8,7 @@ method
 Bool isEmpty() {
   with x=this.head() (
     on CellEnd  return Bool.true()
-    default return Bool.false() 
+    default return Bool.false()
     )
   }
 
@@ -23,12 +23,12 @@ mut Iterator vals()
 method
 mut Iterator valsCut()
   this.head().vals(terminate:Bool.false())
- 
+
 method
 Outer0 pop() {
-  return Outer0._new(head:this.head().#next()) 
-  catch exception (on Void error S"PopOnEmpyList")
-  }    
+  return Outer0._new(head:this.head().#next())
+  catch exception (on Void error Report::Misuse"PopOnEmpyList")
+  }
 
 method
 Outer0 ++(Outer0 that) {
@@ -42,11 +42,11 @@ Outer0 #begin()
   Outer0()
 
 method
-Outer0 #add(Elem that) 
+Outer0 #add(Elem that)
   Outer0._new(
     head:CellNext(elem:that,nextCell:this.head())
     )
-    
+
 method
 Outer0 #end() (
   var res=Outer0()
@@ -59,20 +59,20 @@ Outer0 #end() (
 Elem:{}
 
 Cell:{interface
-    
+
   method
   mut Iterator vals(Bool terminate)
-   
+
   method
   Cell #next() exception Void
-    
+
   method
   Elem #inner()
-  
+
   method
   Void #checkEnd()
   }
-  
+
 CellEnd:{()<:Cell
   method
   vals(terminate)
@@ -81,59 +81,59 @@ CellEnd:{()<:Cell
   method
   #next()
     exception void
-    
+
   method
   #inner()
-    error S"InnerOnCellEnd, should not happen"
-    
+    error Report::ObservedBug"InnerOnCellEnd"
+
   method
-  #checkEnd() 
+  #checkEnd()
     void 'ok, is the end
   }
-  
+
 CellNext:{(Elem elem, Cell nextCell)<:Cell
-  
+
   method
   vals(terminate) {
     startPoint=CellNext(elem:this.elem(), nextCell:this), 'needed, at the start needs to be in "-1"
     return Iterator(startPoint,terminate:terminate)
     }
-    
+
   method
   #next()
     this.nextCell()
-    
+
   method
-  #inner() 
+  #inner()
     this.elem()
-    
+
   method
   #checkEnd()
     with cell=this.nextCell() (
-      on CellNext error S"
+      on CellNext error Report::Misuse"
       'IterationNotComplete,
       '  use valsCut() to allows incomplete iterations
       "
       )
   }
-  
+
 Iterator:{mut (var Cell that,Bool terminate)
 
   mut method
   Void #next() exception Void {
     x=this.that().#next()
     with x ( on CellEnd exception void ) 'it is already over
-    return this.that(x) 
+    return this.that(x)
     }
-  
+
   read method
   Void #checkEnd()
     if this.terminate() ( this.that().#checkEnd() )
-  
+
   read method
   Elem #inner()
     this.that().#inner()' we never call this on CellEnd, #next prevents it
-  
+
   read method
   Void #close()
     void
