@@ -88,7 +88,7 @@ public class TranslateClass {
           "platformSpecific.javaTranslation.Resources.Revertable.doRevert(this.F"+n+")"
           ));
     res.append("));\n");
-    res.append("return new ast.ExpCore.MCall(null,receiver,\""+ctor.getMs().getName()+"\",ast.Ast.Doc.empty(),xs,es);\n");
+    res.append("return new ast.ExpCore.MCall(receiver,\""+ctor.getMs().getName()+"\",ast.Ast.Doc.empty(),xs,es,null);\n");
     res.append("}\n");
   }
 

@@ -206,22 +206,22 @@ public class Parser {
           //TODO: hack to put back the "(" that was replaced with tab
           if(lastIsSlash && b=='\\'){
             lastIsSlash=false;
-            //super.write(b);
+            super.write(b);
             sb.append((char) b);
             return;
           }
           if(lastIsSlash && b=='t'){
             lastIsSlash=false;
-            //super.write('(');
+            super.write('(');
             sb.append((char) '(');
             return;}
           if(lastIsSlash){
-            //super.write('\\');
+            super.write('\\');
             sb.append((char) '\\');
             }
           lastIsSlash=b=='\\';
           if(!lastIsSlash){
-            //super.write(b);
+            super.write(b);
             sb.append((char) b);
             }
           }
