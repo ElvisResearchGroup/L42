@@ -8,6 +8,7 @@ import is.L42.connected.withSafeOperators.NormalizePrivates.CollectedPrivates;
 import static helpers.TestHelper.lineNumber;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Assert;
@@ -41,6 +42,12 @@ public static class TestCollectPrivates {
   },{
     lineNumber(),"{method'@private\n Void foo__42()method'@private\n Void foo__43()}",
     "[42, 43]\n[Outer0.foo__42(), Outer0.foo__43()]\n[]\ntrue"
+  },{
+    lineNumber(),
+    "{method'@private\n Void foo__42()"
+    + " this({ method '@private\n Void bla__33()  }, second:{})"
+    + "}",
+    "[42]\n[Outer0.foo__42(),null.bla__33()]\n[]\ntrue"
   }});}
 
 
@@ -51,6 +58,4 @@ public static class TestCollectPrivates {
   Assert.assertEquals(expected, result.toString());
   }
 }
-
-
 }

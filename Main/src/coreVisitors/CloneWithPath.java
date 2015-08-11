@@ -41,7 +41,7 @@ public class CloneWithPath extends CloneVisitor{
     try{return super.visit(mi);}
     finally{path=old;}
   }
-  protected List<Path> liftSup(List<Path> supertypes) {//SOB... to sincronize the last null
+  protected List<Path> liftSup(List<Path> supertypes) {//SOB... to synchronise the last null
     List<String> old=path;
     path=new ArrayList<>(path);
     path.add(null);
