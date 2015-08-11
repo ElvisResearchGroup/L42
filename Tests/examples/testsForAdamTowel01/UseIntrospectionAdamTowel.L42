@@ -2,21 +2,21 @@
 
 Main:{
 
-  i=Introspection(lib:{Bar:{method Void foo()}},path:Path"Bar")
-  Debug(S"classkind of Bar is "++i.classKind())
-  Debug(S"Bas as string: "++i.allAsString())
-  Debug(S"--------------------------")
-  Debug(S"classkind of Outer0 is "++i.root().classKind())
-  Debug(S"Outer0 as string: "++i.root().allAsString())
-  Debug(S"--------------------------")
-  Debug(S"for all the methods of Bar:")
-  ms=i.methods()
-  with m in ms.vals() (
-   Debug(S"selector is: "++m.selector())
-   ti=m.returnType()
-   Debug(S"return type is:"++ti)
-   'ti.report().dbg()
-   )
+'  i=Introspection(lib:{Bar:{method Void foo()}},path:Path"Bar")
+'  Debug(S"classkind of Bar is "++i.classKind())
+'  Debug(S"Bas as string: "++i.allAsString())
+'  Debug(S"--------------------------")
+'  Debug(S"classkind of Outer0 is "++i.root().classKind())
+'  Debug(S"Outer0 as string: "++i.root().allAsString())
+'  Debug(S"--------------------------")
+'  Debug(S"for all the methods of Bar:")
+'  ms=i.methods()
+'  with m in ms.vals() (
+'   Debug(S"selector is: "++m.selector())
+'   ti=m.returnType()
+'   Debug(S"return type is:"++ti)
+'   'ti.report().dbg()
+'   )
   return ExitCode.normal()
   }
 }

@@ -27,9 +27,15 @@ public class TestFiles {
 		 L42.main(new String[]{"dummy/WithMissingMethod.L42"});
 		 Assert.assertFalse(L42.record.toString().contains("line:-"));
 	}
-	 @Test
-	  public void testMissingReceiver() throws InstantiationException, IllegalAccessException, ClassNotFoundException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IOException{
-	     L42.main(new String[]{"dummy/UnknownVariableDotDotDot"});
-	     //Assert.assertFalse(L42.record.toString().contains("line:-"));
-	  }
+  @Test
+	public void testMissingReceiver() throws InstantiationException, IllegalAccessException, ClassNotFoundException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IOException{
+	   L42.main(new String[]{"dummy/UnknownVariableDotDotDot"});
+	   //Assert.assertFalse(L42.record.toString().contains("line:-"));
+	}
+  @Test
+  public void testReadMakeItNotCoherent() throws InstantiationException, IllegalAccessException, ClassNotFoundException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IOException{
+     L42.main(new String[]{"dummy/ReadIncoherent.L42"});
+     Assert.assertFalse(L42.record.toString().contains("PathsNotSubtype"));
+     //TODO: we want a better error here, something like runaway incoherence/abstractness cause all to be unusuable.
+  }
 }

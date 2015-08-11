@@ -4,9 +4,7 @@ method toS() S"NestedClass["++this.allAsString()++S"]"
 method 'empty for Outer0
 Doc nestedDoc()(
   if this.path()==Path"Outer0" (
-    error Report::UnsupportedOperation(target:this,
-      selector:Selector"nestedDoc()", reason:S"The NestedClass Object refers to Outer0"
-      )
+    error Report::UnsupportedOperation"NestedClass.nestedDoc()  The NestedClass Object refers to Outer0"
     )
   this.report().docOf(path:Path"Doc")
   )
@@ -16,15 +14,11 @@ Doc doc() this.report().docOf(path:Path"Doc")
 method Path pathFromRoot() this.path() ' invariant NestedClass(...).nestedClassFromRoot(path).pathFromRoot()==path
 method type Any externalType(){
   if this.path()!=Path"Outer0" (
-    error Report::UnsupportedOperation(target:this,
-      selector:Selector"externalType()",reason:S"The NestedClass Object refers to "++this.path()
-      )
+    error Report::UnsupportedOperation(S"NestedClass.externalType() The NestedClass Object refers to "++this.path())
     )
   with mirror=this.report() (
     on MirrorPr::Class return mirror.lib()
-    default error Report::UnsupportedOperation(target:this,
-      selector:Selector"externalType()",reason:S"The NestedClass Object is unbound"
-      )
+    default error Report::UnsupportedOperation"NestedClass.externalType() The NestedClass Object is unbound"
     )
   }
 

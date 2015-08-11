@@ -12,6 +12,7 @@ public class CloneWithPath extends CloneVisitor{
   List<String> path=new ArrayList<>();
   public List<String> getPath(){
     //assert path.get(path.size()-1)==null;
+    if(path.isEmpty()){return path;}
     if(path.get(path.size()-1)==null){
       return path.subList(0, path.size()-1);
     }

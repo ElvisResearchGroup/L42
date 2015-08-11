@@ -42,6 +42,7 @@ public class L42 {
   public static enum ExecutionStage{None,Reading,Parsing,CheckingWellFormedness,Desugaring,MetaExecution,Closing;}
   private static ExecutionStage stage=ExecutionStage.None;
   public static ExecutionStage getStage(){return stage;}
+  public static int compilationRounds=0;
   public static StringBuilder record=new StringBuilder();
   public static String[] programArgs=null;
   public static List<URL> pluginPaths=null;

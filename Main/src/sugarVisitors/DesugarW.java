@@ -98,7 +98,7 @@ class DesugarW extends CloneVisitor{
     X xX=new X(x);
     //var dec
     VarDecXE xe=new VarDecXE(true,Optional.empty(),x,
-        Desugar.getMCall(s,s.getP(),s.getReceiver(),"#begin",Desugar.getPs())
+        Desugar.getMCall(s.getP(),s.getReceiver(),"#begin",Desugar.getPs())
         );
     //new with
     List<On> ons = s.getWith().getOns();
@@ -223,7 +223,7 @@ class DesugarW extends CloneVisitor{
     for(int i=0;i<xs.size();i++){bc.add(withNext(pos,i,xs));}
     //inner =di ki s b[xs:=xs.#inner()]
     for(String xi:xs){
-      b=XInE.of(new X(xi),Desugar.getMCall(null,pos,new X(xi),"#inner", Desugar.getPs()),b);
+      b=XInE.of(new X(xi),Desugar.getMCall(pos,new X(xi),"#inner", Desugar.getPs()),b);
       }
     RoundBlock inner=new RoundBlock(pos,Doc.empty(),b,bc);
     Catch k=Desugar.getK(SignalKind.Exception, "",
@@ -247,7 +247,7 @@ class DesugarW extends CloneVisitor{
 
   private RoundBlock withDeclareItsNestedBlock(RoundBlock inner, VarDecXE i0, List<VarDecXE> is2) {
     Expression recursive=withDeclareIts(is2,inner);
-    Expression eClose=Desugar.getMCall(null,inner.getP(),new X(i0.getX()),"#close",Desugar.getPs());
+    Expression eClose=Desugar.getMCall(inner.getP(),new X(i0.getX()),"#close",Desugar.getPs());
     Catch k1 = withDesugarGetDefaultCatch(inner.getP(),SignalKind.Exception,eClose);
     Catch k2 = withDesugarGetDefaultCatch(inner.getP(),SignalKind.Return,eClose);
     RoundBlock conclusive1=Desugar.getBlock(inner.getP(),recursive, k1, new _void());
@@ -271,15 +271,15 @@ class DesugarW extends CloneVisitor{
 
 
   private static BlockContent withNext(Position pos,int index,List<String> xs) {
-    Expression eStart=Desugar.getMCall(null,pos,new X(xs.get(index)),"#next",Desugar.getPs());
+    Expression eStart=Desugar.getMCall(pos,new X(xs.get(index)),"#next",Desugar.getPs());
     List<VarDec> decs=new ArrayList<>();
     for(String x:xs.subList(index+1, xs.size())){
-      Expression ei=Desugar.getMCall(new X(x),pos,new X(x),"#next",Desugar.getPs());
+      Expression ei=Desugar.getMCall(pos,new X(x),"#next",Desugar.getPs());
       ei=withE1CatchExceptionOnVoidE2elseE3(pos,ei,new _void(),new _void());
       decs.add(new VarDecE(ei));
     }
     for(String x:xs){
-      Expression ei=Desugar.getMCall(null,pos,new X(x),"#checkEnd",Desugar.getPs());
+      Expression ei=Desugar.getMCall(pos,new X(x),"#checkEnd",Desugar.getPs());
       ei=withE1CatchExceptionOnVoidE2elseE3(pos,ei,new _void(),new _void());
       decs.add(new VarDecE(ei));
     }

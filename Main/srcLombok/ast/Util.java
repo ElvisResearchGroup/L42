@@ -7,6 +7,13 @@ import ast.Ast.MethodSelector;
 import ast.Ast.Path;
 
 public class Util {
+  @Value @Wither public static class CsMx{
+    @NonNull java.util.List<String> cs;@NonNull MethodSelector ms;
+    public String toString(){
+      String prefix="Outer0";
+      if(!cs.isEmpty()){prefix=String.join("::",cs);}
+      return prefix+"."+ms;}
+    }
   @Value @Wither public static class PathMx{
     @NonNull Path path;@NonNull MethodSelector ms;
     public String toString(){return ""+path+"."+ms;}}
@@ -16,5 +23,5 @@ public class Util {
     @NonNull Path path1; @NonNull Path path2;
     public String toString(){return ""+path1+"->"+path2;}
     }
-  
+
 }

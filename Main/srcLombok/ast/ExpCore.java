@@ -108,9 +108,9 @@ public interface ExpCore {
     List<Ast.Path> supertypes;
     List<Member> ms;
     Stage stage;
-    /*public String toString() {
+    public String toString() {
       return sugarVisitors.ToFormattedText.of(this);
-    }*/
+    }
     public boolean isConsistent() {
       int countWalkBy = 0;
       HashSet<String> keys = new HashSet<String>();

@@ -10,6 +10,7 @@ import sugarVisitors.ToFormattedText;
 import coreVisitors.IsCompiled;
 import coreVisitors.IsValue;
 import coreVisitors.NormalizeBlocks;
+import facade.L42;
 import ast.ErrorMessage;
 import ast.ExpCore;
 import ast.ExpCore.ClassB;
@@ -19,9 +20,7 @@ import auxiliaryGrammar.EncodingHelper;
 import auxiliaryGrammar.Program;
 
 public class CompiledStep extends SmallStep{
-
   @Override protected void log(String s) { }
-  private static int rounds=0;
   protected ExpCore executeAtomicStep(Program p1, ExpCore _e1) {
     if(!IsCompiled.of(_e1)){return step(p1, _e1);}
     return Resources.withPDo(p1,()->{
@@ -38,8 +37,8 @@ public class CompiledStep extends SmallStep{
       //TODO: for testng only
       //try {Files.write(Paths.get("C:\\Users\\marco\\Desktop\\eclipseMars\\L42Local\\Tests\\src\\generated\\Program42.java"), code.getBytes());}catch (IOException e) {throw new Error(e);}
       try{
-        rounds++;
-        System.out.println("Compilation Iteration: "+rounds+ "");
+        L42.compilationRounds++;
+        System.out.println("Compilation Iteration: "+L42.compilationRounds+ "");
         Object o=Translator.runString(code);
         //System.out.println("Compilation Iteration complete: "+rounds);
         assert o instanceof ClassB;

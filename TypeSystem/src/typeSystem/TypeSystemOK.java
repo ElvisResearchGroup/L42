@@ -105,6 +105,8 @@ public class TypeSystemOK {
     if(cb.getStage()==Stage.Star || cb.getStage()==Stage.Plus){
       try{checkCt2(p,cb);return;}
       catch(ErrorMessage.NormImpossible __){checkCt1(p,cb);return;}
+      catch(ErrorMessage.PathNonExistant __){checkCt1(p,cb);return;}//this happens when
+      //a class would require the current metaprogrammed computed class to be already completed.
     }
     else{checkCt1(p,cb);return;}
     }

@@ -228,7 +228,7 @@ public class Desugar extends CloneVisitor{
     fakeContent.add(new BlockContent(fakeDecs,s.getContents().get(0).get_catch()));
     RoundBlock fake=new RoundBlock(s.getP(),s.getDoc(),s.getInner(),fakeContent);
     fake=(RoundBlock) XEqOpInZEqOp.of(x, z, fake);
-    fake=(RoundBlock) XInE.of(x,getMCall(src,getPosition(src),z,"#inner", getPs()),fake);
+    fake=(RoundBlock) XInE.of(x,getMCall(getPosition(src),z,"#inner", getPs()),fake);
     return fake;
   }
 
@@ -388,7 +388,7 @@ public class Desugar extends CloneVisitor{
   }
   public Expression visit(While s) {
     Position p=getPosition(s.getThen());
-    Expression cond=Desugar.getMCall(s,p,s.getCond(), "#checkTrue",Desugar.getPs());
+    Expression cond=Desugar.getMCall(p,s.getCond(), "#checkTrue",Desugar.getPs());
     RoundBlock b=Desugar.getBlock(p,cond,s.getThen());
     Loop l=new Loop(b);
     NormType _void=new NormType(Mdf.Immutable,Path.Void(),Ph.None);
@@ -406,7 +406,7 @@ public class Desugar extends CloneVisitor{
       //usedVars.add(x);
       return visit(getBlock(p,x, s.getCond(),s.withCond(new X(x))));
     }
-    MCall check=getMCall(s,p,s.getCond(),"#checkTrue", getPs());
+    MCall check=getMCall(p,s.getCond(),"#checkTrue", getPs());
     return visit(getBlock(p,check,getK(SignalKind.Exception,"",new NormType(Mdf.Immutable,Path.Void(),Ph.None),s.get_else().get()),s.getThen()));
   }
 
@@ -427,8 +427,7 @@ public class Desugar extends CloneVisitor{
     if(src instanceof Ast.HasPos){return ((Ast.HasPos)src).getP();}
     else{return CollapsePositions.of(src);}
   }
-  static MCall getMCall(Expression src,Position p,Expression rec,String name,Parameters ps){
-    assert src==null || src instanceof Expression.HasPos: src.getClass();
+  static MCall getMCall(Position p,Expression rec,String name,Parameters ps){
     return new MCall(rec,name,Doc.empty(),ps,p);
   }
   static RoundBlock getBlock(Position p,String x,Expression xe,Expression inner){
@@ -489,40 +488,40 @@ public class Desugar extends CloneVisitor{
   public Expression visit(BinOp s) {
     if(s.getOp()==Op.ColonEqual){
       assert s.getLeft() instanceof X:s.getLeft();
-      return visit(getMCall(s,s.getP(),s.getLeft(),"inner",getPs(lift(s.getRight()))));
+      return visit(getMCall(s.getP(),s.getLeft(),"inner",getPs(lift(s.getRight()))));
     }
     if(s.getOp().kind==Ast.OpKind.EqOp){
       Op op2=Op.fromString(s.getOp().inner.substring(0,s.getOp().inner.length()-1));
       BinOp s2=s.withOp(op2);
-      s2=s2.withLeft(getMCall(s,s.getP(),s.getLeft(),"#inner",getPs()));
+      s2=s2.withLeft(getMCall(s.getP(),s.getLeft(),"#inner",getPs()));
       return visit(new BinOp(s.getP(),s.getLeft(),Op.ColonEqual,visit1Step(s2)));
     }
     return visit(visit1Step(s));
   }
   static public MCall visit1Step(BinOp s) {
-    return getMCall(s,s.getP(),s.getLeft(),desugarName(s.getOp().inner),getPs(s.getRight()));
+    return getMCall(s.getP(),s.getLeft(),desugarName(s.getOp().inner),getPs(s.getRight()));
   }
   public Expression visit(UnOp s) {
     return visit(visit1Step(s));
   }
   static public MCall visit1Step(UnOp s) {
-    return getMCall(s,s.getP(),s.getInner(),desugarName(s.getOp().inner),getPs());
+    return getMCall(s.getP(),s.getInner(),desugarName(s.getOp().inner),getPs());
   }
 
   public Expression visit(FCall s) {
     return visit(visit1Step(s));
   }
   static public MCall visit1Step(FCall s) {
-    return getMCall(s,s.getP(),s.getReceiver(),"#apply",s.getPs());
+    return getMCall(s.getP(),s.getReceiver(),"#apply",s.getPs());
   }
 
   public Expression visit(SquareCall s) {
     return visit(visit1Step(s));
   }
   static public MCall visit1Step(SquareCall s) {
-    MCall result=getMCall(s,s.getP(),s.getReceiver(),"#begin",getPs());
+    MCall result=getMCall(s.getP(),s.getReceiver(),"#begin",getPs());
     for(Parameters ps: s.getPss()){
-      result=getMCall(s,s.getP(),result,"#add",ps);
+      result=getMCall(s.getP(),result,"#add",ps);
     }
     return (MCall)appendEndMethod(s.getP(),result,s);
   }
@@ -537,7 +536,7 @@ public class Desugar extends CloneVisitor{
   static public MCall visit1Step(Literal s) {
     String name="#stringParser";
     if(s.isNumber()){name="#numberParser";}
-    return getMCall(s,s.getP(),s.getReceiver(),name,getPs(encodePrimitiveString(s.getInner())));
+    return getMCall(s.getP(),s.getReceiver(),name,getPs(encodePrimitiveString(s.getInner())));
   }
   protected ast.Ast.Catch liftK(ast.Ast.Catch k){
     if(!k.getX().isEmpty()){
