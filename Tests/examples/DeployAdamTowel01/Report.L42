@@ -7,6 +7,7 @@ ObservedBug:
   type method Outer0 (S that) Outer0(reason:that)
   method toS()  S"ObservedBug["++this.reason()++S"]"
   }
+  
 Misuse:
 'If this happens, then the library client is calling a function with wrong parameters or in a wrong way.
 'It is a shorter name for Precondition Violation
