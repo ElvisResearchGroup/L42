@@ -178,6 +178,28 @@ public static class TestRedirect1 {//add more test for error cases
         + "}",
         "Outer0::D_Source","Outer1::D_Target",
         "{TestB:{<:Outer2::I2 method moreFun(that, other) void}}",false
+    },{lineNumber(), new String[]{   // Redirect, via a pile, when the underlying types are used in aliases
+                    "{"   // TODO @James: make this actually test the thing that I set out to.
+                    + "I1:{interface method Void fun(Void that)}\n"
+                    + "I2:{interface method Void moreFun(Library that, Void other)}\n"
+                    + "A:{<:I1 I2 method fun(that) that method moreFun(that, other) other}"
+                    + "D_Target:{D_I1:{<:I1} D_I2:{<:I2} method A d_A()}"
+                    + "}"},
+        "{InnerI2:{interface method Void moreFun(Library that, Void other)}\n"
+        + "InnerA:{<:InnerI2 Outer2::I1} \n"  // again, no implementation
+        + "D_Source:{D_I2:{<:InnerI2} method InnerA d_A()}\n"
+        + "TestB:{<:InnerI2 method moreFun(that, other) void \n"
+        + "       type method Library () {} }\n"
+        + "TestC:{method Outer1::TestB::() notSoFun() {} }\n"
+        + "TestD:{method Outer1::TestB::moreFun(that,other)::other mostFun() {} }\n"
+        + "}",
+        "Outer0::D_Source","Outer1::D_Target",
+        "{TestB:{<:Outer2::I2 method moreFun(that, other) void\n"
+        + "      type method Library () {}}\n"
+        + "TestC:{method Outer1::TestB::() notSoFun() {}}\n"
+        + "TestD:{method Outer1::TestB::moreFun(that,other)::other mostFun() {} }\n"
+ //       + "      Outer2::D_Target::d_A() mostFun() \n"
+        + "}",false
         
 
     // the errors have variable portions.

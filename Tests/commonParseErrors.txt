@@ -1,0 +1,7 @@
+Writing a class body and leaving out a method keyword
+- causes a parse failure near the close-parenthesis on the method name
+- often with requests for colons, possibly because the parser expects the path to extend further
+
+Confusion between curly brackets for class literals and expressions
+- a perfect parser should search for the keyword 'return'
+- the current parser is probably searching for 'method' keywords
