@@ -8,6 +8,7 @@ public class TestExamples {
     //L42.main(new String[]{"examples/UseCollections.L42"});
     L42.main(new String[]{"examples/DeployAdamTowel01"});
     //L42.main(new String[]{"examples/UseAdamTowel01.L42"});
-
     }
 }
+
+
