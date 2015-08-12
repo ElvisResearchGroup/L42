@@ -294,7 +294,7 @@ public static class TestRedirect1 {//add more test for error cases
         "Outer0::D_Source","Outer1::D_Target",
         ec
           .set("SrcKind", "OpenClass", "UnexpectedMembers", "[moreFun()]")
-          .str(), false
+          .str(), true
     },{lineNumber(), new String[]{  // OpenClass -> ClosedClass (because I can) with missing subclass
         "{A:{ method Void ignoreMe() void " +
         "     method '@private \n Void ignoreMeMore() " +
@@ -460,13 +460,13 @@ public static class TestRedirect1 {//add more test for error cases
                     + "I2:{interface method Void moreFun()}\n"
                     + "A:{<:I1 I2 method Void fun() method Void moreFun()}"
                     + "}"},
-        "{InnerI1{interface method Void fun()}\n"
-        + "InnerI2{interface method Void moreFun()}\n"
-        + "InnerA{<:InnerI1 InnerI2 method Void fun() method Void moreFun()}"
+        "{InnerI1:{interface method Void fun()}\n"
+        + "InnerI2:{interface method Void moreFun()}\n"
+        + "InnerA:{<:InnerI1 InnerI2 method Void fun() method Void moreFun()}"
         + "TestB:{<:InnerI1 InnerI2 method Void moreFun()}\n"
         + "}",
         "Outer0::InnerA","Outer1::A",
-        "{TestB:{<:I2 method Void moreFun()}}",false
+        "{TestB:{<:I2 method Void moreFun()}}",true
 
 
 

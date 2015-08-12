@@ -55,15 +55,15 @@ Record:
   '    )
   '  }
   'instead, I have to write this :-(
-  RootForMember:'@private
+  RootForMember:' toPutAs private
     {interface method Member (NestedClass^ root)}
-  RootForNested:'@private
+  RootForNested:' toPutAs private
     {(Path path,MirrorPr mirror,Record _report)<:RootForMember
       method(root) (
       'Debug(S"logRootForNested")
       NestedClass(root:root,path:this.path(),mirror:this.mirror(),report:this._report())
       )}
-  RootForMethod:'@private
+  RootForMethod:' toPutAs private
     {(Path path,N memberN,Record _report)<:RootForMember
       method(root) (
         'Debug(S"logRootForMethod")

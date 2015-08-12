@@ -94,9 +94,21 @@ public class Redirect {
     //(c) S,Cs->Path;p|-L[Paths=~Paths']:S'
     //(d) S;p|-L[M0=~M0' Cs->Path]:S0 ... S;p|-L[Mn=~Mn' Cs->Path]:Sn
     //(e) S'=Cs->Path,S0..Sn
+    if(!isNoImplementation){//unexpectedMembers stay empty if there is implementation
+      if(kindSrc==null){kindSrc = ExtractInfo.classKind(l,cs,l0NoFrom, null, isPrivateState, isNoImplementation);}
+      ClassKind kindDest = ExtractInfo.classKind(null,null,l0DestNoFrom,null,null,null);
+      assert kindSrc!=ClassKind.FreeTemplate 
+          || kindSrc!=ClassKind.Template
+          || kindSrc!=ClassKind.Interface:
+            kindSrc;
+      throw Errors42.errorSourceUnfit(currentPP.getPath1().getCBar(),path,  
+        kindSrc,kindDest,Collections.emptyList(), headerOk, Collections.emptyList(), isPrivate);
+    }
     Set<Path>unexpectedI=redirectOkImpl(setVisited,currentPP,p,l,
         Map.of(pi->From.fromP(pi,csPath), l0NoFrom.getSupertypes()),
         Map.of(pi->From.fromP(pi,path),l0DestNoFrom.getSupertypes()));
+    List<Path>unexpectedInterfaces=new ArrayList<>(unexpectedI);
+    Collections.sort(unexpectedInterfaces,(pa,pb)->pa.toString().compareTo(pb.toString()));
     List<Member> unexpectedMembers=new ArrayList<>();
     for(Member mi:l0NoFrom.getMs()){
       Optional<Member> miPrime = Program.getIfInDom(l0DestNoFrom.getMs(),mi);
@@ -118,8 +130,6 @@ public class Redirect {
     if(!headerOk){isOk=false;}
     if(isPrivate){isOk=false;}
     if(isOk){return;}
-    List<Path>unexpectedInterfaces=new ArrayList<>(unexpectedI);
-    Collections.sort(unexpectedInterfaces,(pa,pb)->pa.toString().compareTo(pb.toString()));
     if(kindSrc==null){kindSrc = ExtractInfo.classKind(l,cs,l0NoFrom, null, isPrivateState, isNoImplementation);}
     ClassKind kindDest = ExtractInfo.classKind(null,null,l0DestNoFrom,null,null,null);
     throw Errors42.errorSourceUnfit(currentPP.getPath1().getCBar(),path,
@@ -143,11 +153,13 @@ public class Redirect {
     if(pathOk){return Collections.emptySet();}
     return ps;
     }
-  private static void redirectOk(List<PathPath> s, Program p, ClassB l, Member mi, Member miPrime, PathPath currentPP) {
+  public static void redirectOk(List<PathPath> s, Program p, ClassB l, Member mi, Member miPrime, PathPath currentPP) {
     //from before I know the members mi, miPrime are of the same class.
     mi.match(
       nc->redirectOkNc(s,p,l,nc,(NestedClass)miPrime,currentPP),
-      errMi->{throw Assertions.codeNotReachable("Should be catched before as in fully abstract source");},
+      errMi->{
+        throw Assertions.codeNotReachable("Should be catched before as in fully abstract source");
+        },
       mt->redirectOkMt(s,p,l,mt,(MethodWithType)miPrime,currentPP));
   }
   private static Void redirectOkMt(List<PathPath> s, Program p, ClassB l, MethodWithType mt, MethodWithType mtPrime, PathPath currentPP) {

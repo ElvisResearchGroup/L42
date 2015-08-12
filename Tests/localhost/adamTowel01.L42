@@ -12,7 +12,7 @@ Library failure() {'@exitStatus
 '42000
 }}
 Bool:{<:Outer1::S::ToS
-type method '@private
+type method '  toPutAs private
 Outer0 #apply(Library^binaryRepr'@private @consistent
 ) 
 mut method '@private @consistent
@@ -192,7 +192,7 @@ mut method '@private @consistent
 Void inner(Outer2::N::#numberParser(that ) that) 
 mut method '@private @consistent
 Outer2::N::#numberParser(that ) #inner() }
-type method '@private
+type method '  toPutAs private
 Outer0 _private(Library^_binaryRepr'@private @consistent
 ) 
 mut method '@private @consistent
@@ -304,7 +304,7 @@ Outer1::S doubleQuote() Outer1::S.#stringParser(that:{'@stringU
 method 
 Outer1::S replace(Outer1::S that, Outer1::S into) Outer1::S.#stringParser(that:using Outer1::Alu check stringReplace(that:this.binaryRepr(), src:that.binaryRepr(), dest:into.binaryRepr()) error void)}
 URL:{<:Outer1::S::ToS
-type method '@private
+type method '  toPutAs private
 Outer0 _private(Library^_binaryRepr'@private @consistent
 ) 
 mut method '@private @consistent
@@ -676,7 +676,7 @@ Library list(type Any that) using Outer0::SafeOperatorsAccess check redirect(tha
 }).binaryRepr(), dest:that) error Outer1::Report::PluginFailure.#stringParser(that:{'@stringU
 'SafeOperators.redirect -- inside LinkedList
 })
-SafeOperatorsAccess:'@private
+SafeOperatorsAccess:'  toPutAs private
 {'@plugin
 'L42.is/connected/withSafeOperators
 }}
@@ -1022,7 +1022,7 @@ Void #apply(Library lib) using Outer1::Alu check stringDebug(that:Outer1::Deploy
 type method 
 Void #apply(Outer1::S::ToS fileName, Outer1::S::ToS content) using Outer1::Alu check fileDebug(fileName:fileName.toS().binaryRepr(), content:content.toS().binaryRepr()) void}
 Path:{<:Outer1::S::ToS
-type method '@private
+type method '  toPutAs private
 Outer0 _private(Library^_binaryRepr'@private @consistent
 ) 
 mut method '@private @consistent
@@ -1117,7 +1117,7 @@ mut method '@private @consistent
 Void inner(Outer1::toS() that) 
 mut method '@private @consistent
 Outer1::toS() #inner() }
-type method '@private
+type method '  toPutAs private
 Outer0 _private(Library^_binaryRepr'@private @consistent
 ) 
 mut method '@private @consistent
@@ -1210,7 +1210,7 @@ Outer1::Strings names() (
   }
   )}
 Doc:{<:Outer1::S::ToS
-type method '@private
+type method '  toPutAs private
 Outer0 _private(Library^_binaryRepr'@private @consistent
 ) 
 mut method '@private @consistent
@@ -1665,11 +1665,11 @@ Outer2::Doc docOf(Outer2::Path path) (
   'CurlyBlock-Should be unreachable code
   }
   )
-RootForMember:'@private
+RootForMember:' toPutAs private
 {interface 
 method 
 Outer2::Member #apply(Outer2::NestedClass^root) }
-RootForNested:'@private
+RootForNested:' toPutAs private
 {<:Outer1::RootForMember
 type method 
 Outer0 #apply(Outer3::Path^path'@private @consistent
@@ -1689,7 +1689,7 @@ Outer2::Record #_report()
 read method '@private @consistent
 Outer2::Record _report() 
 method #apply(root ) Outer2::NestedClass.#apply(root:root, path:this.path(), mirror:this.mirror(), report:this._report())}
-RootForMethod:'@private
+RootForMethod:' toPutAs private
 {<:Outer1::RootForMember
 type method 
 Outer0 #apply(Outer3::Path^path'@private @consistent
@@ -3766,7 +3766,7 @@ type method
 Outer0 #apply() Outer0.#new(that:Outer0::TEmpty.#apply())
 type method 
 Outer0 #apply(Library that) Outer0.#new(that:Outer0::TOf.#apply(that:that))}
-Libs:'@private
+Libs:'  toPutAs private
 {' generic linked list class, elements of type Elem
 
 Varres:{
@@ -4179,7 +4179,7 @@ Library #leftleft(Library that) exception Outer1::Report::ClassClash, Outer1::Re
   'CurlyBlock-Should be unreachable code
   }
   )
-method '@private
+method '  toPutAs private
 Library liftErrorsCompose(Library left, Library right) exception Outer1::Report::ClassClash, Outer1::Report::MethodClash (
   Void unused=(
     Void unused0=return Outer1::SafeOperators.compose(left:left, right:right)
@@ -4305,7 +4305,7 @@ Outer0 #plusplus(Outer0 that) (
   }
   )}
 Refactor:{
-Squares:'@private
+Squares:'  toPutAs private
 {'findMeSquares
 
 type method 
@@ -4998,11 +4998,11 @@ Library #leftleft(Library that) (
   })
   Outer1::ExitCode.normal()
   )
-SafeOperatorsAccess:'@private
+SafeOperatorsAccess:'  toPutAs private
 {'@plugin
 'L42.is/connected/withSafeOperators
 }
-Alu:'@private
+Alu:'  toPutAs private
 {'@plugin
 'L42.is/connected/withAlu
 }

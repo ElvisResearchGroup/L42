@@ -5,3 +5,7 @@ Writing a class body and leaving out a method keyword
 Confusion between curly brackets for class literals and expressions
 - a perfect parser should search for the keyword 'return'
 - the current parser is probably searching for 'method' keywords
+
+-C:{  } declares a nested class, but many ends up writing C{ }, this cause weird parser errors.
+
+also, for parameter passing: should be "name:expr" but is very easy to write "name expr" or "name=expr"  

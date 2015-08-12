@@ -1,4 +1,4 @@
-{(Library binaryRepr)<:S::ToS '@private
+{(Library binaryRepr)<:S::ToS '  toPutAs private
   method Void #checkTrue() exception Void 
     using Alu
       check ifInt32EqualDo(n1:this.binaryRepr() n2:0N.binaryRepr())

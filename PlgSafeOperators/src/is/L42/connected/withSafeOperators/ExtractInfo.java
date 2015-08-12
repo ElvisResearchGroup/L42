@@ -192,7 +192,9 @@ public class ExtractInfo {
      for(Member m:cb.getMs()){
        boolean isImpl=m.match(
          nc->false,
-         mi->true,
+         mi->{
+         return true
+         ;},
          mt->mt.getInner().isPresent()
          );
        if(isImpl){return false;}

@@ -294,7 +294,10 @@ public static boolean checkCore(Expression result) {
       public Expression visit(Path p){assert p.isCore() || p.isPrimitive():p;return p;}
       protected <T extends Expression>T lift(T e){
         try{return super.lift(e);}
-        catch(AssertionError err){throw new AssertionError(ToFormattedText.of(e),err);}
+        catch(AssertionError err){
+          throw err;
+          //throw new AssertionError(ToFormattedText.of(e),err);
+          }
       }});
   return true;
 }

@@ -1,6 +1,6 @@
 { (Resolver resolver,Libs myLibs)
   Resolver: Opt(Library)
-  Libs:'@private
+  Libs:'  toPutAs private
     LinkedList.list(Library)
   type method
   Outer0 () Outer0(resolver:Resolver(), myLibs:Libs[])
@@ -30,7 +30,7 @@
     return this.accumulate(l1:result,l2:that)
     }
 
-  method '@private
+  method '  toPutAs private
   Library liftErrorsCompose(Library left,Library right) exception Report::ClassClash, Report::MethodClash {
     return SafeOperators.compose(left:left,right:right)
     catch error err (on Library (
