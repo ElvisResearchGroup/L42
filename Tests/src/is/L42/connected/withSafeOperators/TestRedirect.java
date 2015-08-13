@@ -169,37 +169,56 @@ public static class TestRedirect1 {//add more test for error cases
                     + "I1:{interface method Void fun(Void that)}\n"
                     + "I2:{interface method Void moreFun(Library that, Void other)}\n"
                     + "A:{<:I1 I2 method fun(that) that method moreFun(that, other) other}"
-                    + "D_Target:{D_I1:{<:I1} D_I2:{<:I2} method A d_A()}"
+                    + "%Redirect:{D_I1:{<:I1} D_I2:{<:I2} method A d_A()}"
                     + "}"},
         "{InnerI2:{interface method Void moreFun(Library that, Void other)}\n"
         + "InnerA:{<:InnerI2 Outer2::I1} \n"  // again, no implementation
-        + "D_Source:{D_I2:{<:InnerI2} method InnerA d_A()}"
+        + "%Redirect:{D_I2:{<:InnerI2} method InnerA d_A()}"
         + "TestB:{<:InnerI2 method moreFun(that, other) void}\n"
         + "}",
-        "Outer0::D_Source","Outer1::D_Target",
+        "Outer0::%Redirect","Outer1::%Redirect",
         "{TestB:{<:Outer2::I2 method moreFun(that, other) void}}",false
     },{lineNumber(), new String[]{   // Redirect, via a pile, when the underlying types are used in aliases
-                    "{"   // TODO @James: make this actually test the thing that I set out to.
+                    "{"
                     + "I1:{interface method Void fun(Void that)}\n"
                     + "I2:{interface method Void moreFun(Library that, Void other)}\n"
                     + "A:{<:I1 I2 method fun(that) that method moreFun(that, other) other}"
-                    + "D_Target:{D_I1:{<:I1} D_I2:{<:I2} method A d_A()}"
+                    + "D_Target:{method I1 _I1() method I2 _I2() method A _A()}"
                     + "}"},
         "{InnerI2:{interface method Void moreFun(Library that, Void other)}\n"
         + "InnerA:{<:InnerI2 Outer2::I1} \n"  // again, no implementation
-        + "D_Source:{D_I2:{<:InnerI2} method InnerA d_A()}\n"
+        + "D_Source:{method InnerI2 _I2() method InnerA _A()}\n"
         + "TestB:{<:InnerI2 method moreFun(that, other) void \n"
         + "       type method Library () {} }\n"
-        + "TestC:{method Outer1::TestB::() notSoFun() {} }\n"
-        + "TestD:{method Outer1::TestB::moreFun(that,other)::other mostFun() {} }\n"
+        + "TestC:{method Outer1::D_Source::_I2() notSoFun() {} }\n"
+        + "TestD:{method Outer1::D_Source::_I2()::moreFun(that,other)::other mostFun() {} }\n"
         + "}",
         "Outer0::D_Source","Outer1::D_Target",
         "{TestB:{<:Outer2::I2 method moreFun(that, other) void\n"
         + "      type method Library () {}}\n"
-        + "TestC:{method Outer1::TestB::() notSoFun() {}}\n"
-        + "TestD:{method Outer1::TestB::moreFun(that,other)::other mostFun() {} }\n"
- //       + "      Outer2::D_Target::d_A() mostFun() \n"
+        + "TestC:{method Outer2::D_Target::_I2() notSoFun() {}}\n"
+        + "TestD:{method Outer2::D_Target::_I2()::moreFun(that,other)::other mostFun() {} }\n"
         + "}",false
+    },{lineNumber(), new String[]{   // Try redirecting a class that implements two internal interfaces, via a pile
+                    "{I1:{interface method Void fun()}\n"
+                    + "I2:{interface method Void moreFun()}\n"
+                    + "A:{<:I1 I2 method Void fun() method Void moreFun()}\n"
+                    + "%Redirect:{method I1 _I1() method I2 _I2() method A _A()}\n"
+                    + "}"},
+        "{InnerI1:{interface method Void fun()}\n"
+        + "InnerI2:{interface method Void moreFun()}\n"
+        + "InnerA:{<:InnerI1 InnerI2}\n"
+        + "%Redirect:{method InnerI1 _I1() method InnerI2 _I2() method InnerA _A()}\n"
+        + "TestA:{method InnerA aFun()}"
+        + "TestB:{<:InnerI1 InnerI2  method fun() void method moreFun() void}\n"
+        + "}",
+        "Outer0::%Redirect","Outer1::%Redirect",
+        "{"
+        + "TestA:{method Outer2::A aFun()}"
+        + "TestB:{<:I1 I2 method fun() void method moreFun() void}"
+        + "}",false
+
+        // TODO@James: redirect via a pile, where the types in the pile are aliases to a mix of internal, internal->external and external
         
 
     // the errors have variable portions.
@@ -280,20 +299,24 @@ public static class TestRedirect1 {//add more test for error cases
           .str(), true
     },{lineNumber(), new String[]{   // Redirect a class (InnerA) which implements interface methods
                                      // ie OpenClass->OpenClass
-                                     // TODO @James: maybe cut this down to a minimal test of that redirect
-                    "{I1:{interface method Void fun()}\n"
-                    + "I2:{interface method Void moreFun()}\n"
-                    + "A:{<:I1 I2 method fun() void method moreFun() void}"
-                    + "D_Target:{D_I1:{<:I1} D_I2:{<:I2} method A d_A()}"
+                                     // NB: for classes of incompatible kinds, unexpected members and interfaces are not shown.
+                    "{"
+                    + "I1:{interface method Void fun(Void that)}\n"
+                    + "I2:{interface method Void moreFun(Library that, Void other)}\n"
+                    + "A:{<:I1 I2 method fun(that) that method moreFun(that, other) other}"
+                    + "D_Target:{method I1 _I1() method I2 _I2() method A _A()}"
                     + "}"},
-        "{InnerI2:{interface method Void moreFun()}\n"
-        + "InnerA:{<:I1 InnerI2 method fun() void  method moreFun() void}"
-        + "D_Source:{D_I2:{<:InnerI2} method InnerA d_A()}"
-        + "TestB:{<:InnerI2 method moreFun() void}\n"
+        "{InnerI2:{interface method Void moreFun(Library that, Void other)}\n"
+        + "InnerA:{<:InnerI2 Outer2::I1 method fun(that) void} \n"
+        + "D_Source:{method InnerI2 _I2() method InnerA _A()}\n"
+        + "TestB:{<:InnerI2 method moreFun(that, other) void \n"
+        + "       type method Library () {} }\n"
+        + "TestC:{method Outer1::D_Source::_I2() notSoFun() {} }\n"
+        + "TestD:{method Outer1::D_Source::_I2()::moreFun(that,other)::other mostFun() {} }\n"
         + "}",
         "Outer0::D_Source","Outer1::D_Target",
         ec
-          .set("SrcKind", "OpenClass", "UnexpectedMembers", "[moreFun()]")
+          .set("SrcKind", "OpenClass", "UnexpectedMembers", "[]")
           .str(), true
     },{lineNumber(), new String[]{  // OpenClass -> ClosedClass (because I can) with missing subclass
         "{A:{ method Void ignoreMe() void " +
@@ -303,7 +326,7 @@ public static class TestRedirect1 {//add more test for error cases
         "{InnerA:{ method Void ignoreMe() void C:{} }}",
         "Outer0::InnerA","Outer1::A",
         ec
-          .set("SrcKind", "OpenClass", "DestKind", "ClosedClass", "UnexpectedMembers", "[C]")
+          .set("SrcKind", "OpenClass", "DestKind", "ClosedClass")
           .str(), true
     },{lineNumber(), new String[]{  // ClosedClass -> ClosedClass (because I can) with missing subclass
         "{A:{ method Void ignoreMe() void " +
@@ -316,8 +339,7 @@ public static class TestRedirect1 {//add more test for error cases
         " }}",
         "Outer0::InnerA","Outer1::A",
         ec
-          .set("SrcKind", "ClosedClass", "DestKind", "ClosedClass",
-               "UnexpectedMembers", "[ignoreMeMost(), C]")
+          .set("SrcKind", "ClosedClass", "DestKind", "ClosedClass")
           .str(), true
     },{lineNumber(), new String[]{  // Interface with extra method
         "{A:{interface type method Void fun(Void that)  method Void moreFun(Void that, Library other) }}"
@@ -441,8 +463,7 @@ public static class TestRedirect1 {//add more test for error cases
                 "Dest1", "Outer1::A", "Dest2", "Outer1::B").str(), true
 
     },{lineNumber(), new String[]{   // Incoherent redirect: Matching functions (FluffyA::fun()) disagree about the position of their return value
-                                     // TODO @Marco: I want the mapping to be the roots only; if it's mixed roots and subtrees then
-                                     //              I think that in many real cases, it will be too verbose to think about
+                                     // NB: There is no reliable theory to filter out only nested redirects, so all redirects up to the failure are include in the error.
                     "{X:{Y:{FluffyA:{ type method Outer2 fun()}" // Target of original redirect
                     + "    }"
                     + "FluffyA:{type method Outer1 fun()}"  // The phantom required for the redirect to avoid SourceUnfit.
@@ -451,7 +472,8 @@ public static class TestRedirect1 {//add more test for error cases
         + "}",
         "Outer0::InnerZ::FluffyA","Outer1::X::Y::FluffyA",
         ec.set("Mapping", "[Outer0::InnerZ::FluffyA->Outer1::X::Y::FluffyA, "
-        		         + "Outer0::InnerZ->Outer1::X]",
+        		         + "Outer0::InnerZ->Outer1::X, "
+        		         + "Outer0::InnerZ::FluffyA->Outer1::X::FluffyA]",
         	   "SplitSrc", "Outer0::InnerZ::FluffyA",
         	   "Dest1", "Outer1::X::Y::FluffyA", "Dest2", "Outer1::X::FluffyA" ).str(), true
     },{lineNumber(), new String[]{   // Try cascading two interfaces on one class, which should fail because
@@ -462,11 +484,11 @@ public static class TestRedirect1 {//add more test for error cases
                     + "}"},
         "{InnerI1:{interface method Void fun()}\n"
         + "InnerI2:{interface method Void moreFun()}\n"
-        + "InnerA:{<:InnerI1 InnerI2 method Void fun() method Void moreFun()}"
-        + "TestB:{<:InnerI1 InnerI2 method Void moreFun()}\n"
+        + "InnerA:{<:InnerI1 InnerI2}"
+        + "TestB:{<:InnerI1 InnerI2  method fun() void method Void moreFun() void}\n"
         + "}",
         "Outer0::InnerA","Outer1::A",
-        "{TestB:{<:I2 method Void moreFun()}}",true
+        "{'@stringu\n'Some specific error which says that InnerA violates the one-internal-interface rule\n}",true
 
 
 
