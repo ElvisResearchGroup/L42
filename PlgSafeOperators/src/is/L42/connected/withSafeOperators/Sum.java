@@ -35,8 +35,8 @@ public class Sum {
     //b = (ClassB) ((ClassB.NestedClass) ab.getMs().get(1)).getInner();
     a = ClassOperations.normalizePrivates(p,a);
     b = ClassOperations.normalizePrivates(p,b);
-    a=ClassOperations.normalizePaths(a,Collections.emptyList());
-    b=ClassOperations.normalizePaths(b,Collections.emptyList());
+    a=ClassOperations.normalizePaths(a);
+    b=ClassOperations.normalizePaths(b);
     return normalizedTopSum(p, a, b);
   }
 

@@ -60,14 +60,14 @@ public class Rename {
     Errors42.checkExistsPathMethod(cb, src, Optional.empty());
     if(ExtractInfo.isPrefix(src,dest)){throw Errors42.errorPrefix(src,dest);}
     cb=ClassOperations.normalizePrivates(p,cb);
-    cb=ClassOperations.normalizePaths(cb,Collections.emptyList());//TODO: for perfomance could be merged with renameUsage later
+    cb=ClassOperations.normalizePaths(cb);//TODO: for perfomance could be merged with renameUsage later
     return directRename(p, cb, src, dest);
   }
   private static ClassB directRename(Program p, ClassB cb, List<String> src, List<String> dest) {
     ClassB renamedCb=renameUsage(Collections.singletonList(new PathPath(Path.outer(0,src),Path.outer(0,dest))),cb);//cb, renamedCb are normalized
     ClassB clearCb=ClassOperations.onNestedNavigateToPathAndDo(renamedCb,src,nc->Optional.empty());
     ClassB newCb=redirectDefinition(src,dest,renamedCb);
-    newCb=ClassOperations.normalizePaths(newCb,Collections.emptyList());
+    newCb=ClassOperations.normalizePaths(newCb);
     return Sum.normalizedTopSum(p, clearCb, newCb);
   }
   public static ClassB renameMethod(Program p,ClassB cb,List<String> path,MethodSelector src,MethodSelector dest){
@@ -100,7 +100,7 @@ public class Rename {
       public ExpCore visit(Path s) {
         if(s.isPrimitive()){return s;}
         assert s.isCore();
-        List<String> path = getPath();
+        List<String> path = getClassNamesPath();
         if(s.outerNumber()>path.size()){return s;}
         List<String> unexploredPath=path.subList(0,path.size()-s.outerNumber());//in usedPath similar thing.
         if(unexploredPath.contains(null)){return s;}//we are in a class literal in a method and we look inside

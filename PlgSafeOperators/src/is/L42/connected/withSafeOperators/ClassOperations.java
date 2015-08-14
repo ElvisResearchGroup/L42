@@ -67,13 +67,13 @@ public class ClassOperations {
     cb=IntrospectionAdapt.applyMapPath(p,cb,cpn.mapPath);
     return cb;
   }
-  static ClassB normalizePaths(ClassB cb,List<String> outer){
-    return (ClassB)cb.accept(new CloneWithPath(outer){
+  static ClassB normalizePaths(ClassB cb){
+    return (ClassB)cb.accept(new CloneWithPath(){
       public ast.ExpCore visit(ast.Ast.Path s) {
         if(s.isPrimitive()){return s;}
         assert s.isCore();
-        if(s.outerNumber()>getPath().size()){return s;}
-        return normalizePath(getPath(),s.outerNumber(),s.getCBar());
+        if(s.outerNumber()>getClassNamesPath().size()){return s;}
+        return normalizePath(getClassNamesPath(),s.outerNumber(),s.getCBar());
       }});}
   static List<String>toTop(List<String>path,Path s){
     assert !s.isPrimitive();

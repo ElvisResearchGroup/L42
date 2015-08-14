@@ -4,48 +4,75 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ast.Ast.Path;
+import ast.ExpCore;
 import ast.ExpCore.ClassB;
+import ast.ExpCore.ClassB.Member;
 
 public class CloneWithPath extends CloneVisitor{
   public CloneWithPath(){path=new ArrayList<>();}
-  public CloneWithPath(List<String>path){this.path=path;}
-  List<String> path=new ArrayList<>();
-  public List<String> getPath(){
+  /*public CloneWithPath(List<String>path){
+    this.path=path;
+    }*/
+  List<ClassB.Member> path=new ArrayList<>();
+  List<Integer> pathNums=new ArrayList<>();
+  public List<ClassB.Member> getAstNodesPath(){return null;}
+  public List<Integer> getAstIndexesPath(){return null;}
+  public List<String> getClassNamesPath(){
     //assert path.get(path.size()-1)==null;
-    if(path.isEmpty()){return path;}
-    if(path.get(path.size()-1)==null){
-      return path.subList(0, path.size()-1);
+    List<String> sPath=new ArrayList<>();
+    for(Member m:this.path){
+      m.match(nc->sPath.add(nc.getName()), mi->sPath.add(null), mt->sPath.add(null));
     }
-    return path;
+    if(!pathNums.isEmpty() && pathNums.get(pathNums.size()-1)==0){
+      sPath.remove(sPath.size()-1);
+    }
+    return sPath;
     }
   public ClassB.NestedClass visit(ClassB.NestedClass nc){
-    List<String> old=path;
-    path=new ArrayList<>(path);
-    path.add(nc.getName());
-    //assert nc.getInner() instanceof ClassB:"CloneWithPath works only for compiled classes, to deal with paths + class literals in methods";
-    if(!(nc.getInner() instanceof ClassB)){return nc;}
+    int pathSize=path.size();
+    assert pathSize==pathNums.size();
+    path.add(nc);
+    pathNums.add(0);
     try{return super.visit(nc);}
-    finally{path=old;}
-    }
+    finally{
+      assert pathSize+1==path.size();
+      assert pathSize+1==pathNums.size();
+      path.remove(pathSize);
+      pathNums.remove(pathSize);
+      }
+  }
   public ClassB.MethodWithType visit(ClassB.MethodWithType mt){
-    List<String> old=path;
-    path=new ArrayList<>(path);
-    path.add(null);
+    int pathSize=path.size();
+    assert pathSize==pathNums.size();
+    path.add(mt);
+    pathNums.add(0);
     try{return super.visit(mt);}
-    finally{path=old;}
-  }
+    finally{
+      assert pathSize+1==path.size();
+      assert pathSize+1==pathNums.size();
+      path.remove(pathSize);
+      pathNums.remove(pathSize);
+      }
+  }  
   public ClassB.MethodImplemented visit(ClassB.MethodImplemented mi){
-    List<String> old=path;
-    path=new ArrayList<>(path);
-    path.add(null);
+    int pathSize=path.size();
+    assert pathSize==pathNums.size();
+    path.add(mi);
+    pathNums.add(0);
     try{return super.visit(mi);}
-    finally{path=old;}
+    finally{
+      assert pathSize+1==path.size();
+      assert pathSize+1==pathNums.size();
+      path.remove(pathSize);
+      pathNums.remove(pathSize);
+      }
   }
-  protected List<Path> liftSup(List<Path> supertypes) {//SOB... to synchronise the last null
-    List<String> old=path;
-    path=new ArrayList<>(path);
-    path.add(null);
-    try{return super.liftSup(supertypes);}
-    finally{path=old;}
+  public ExpCore visit(ClassB cb){
+    int last=pathNums.size()-1;
+    if(last!=-1){pathNums.set(last,pathNums.get(last)+1);}
+    return super.visit(cb);
   }
+    
+  //protected List<Path> liftSup(List<Path> supertypes) {//SOB... to synchronise the last null
+   
 }

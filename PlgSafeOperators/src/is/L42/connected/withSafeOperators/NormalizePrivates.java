@@ -25,7 +25,7 @@ public class NormalizePrivates {
     CollectedPrivates result=new CollectedPrivates();
     cb.accept(new CloneWithPath(){
       public ExpCore visit(ClassB cb){
-        result.normalized=result.normalized&& allMembersNormalized(result,this.getPath(),cb);
+        result.normalized=result.normalized&& allMembersNormalized(result,this.getClassNamesPath(),cb);
         return super.visit(cb);
         }});
     return result;
