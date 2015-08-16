@@ -151,18 +151,36 @@ public static class TestRedirect1 {//add more test for error cases
         + "}",
         "Outer0::InnerA","Outer1::A",
         "{TestB:{method Outer2::A moreFun()}}", false
+    },{lineNumber(), new String[]{  // Redirect a FreeTemplate with two interfaces to an OpenClass with one.
+                                    // Under the just-one-target-is-unambiguous rule,
+                                    // which is a logical consequence of the intersecting-to-one-target-is-unambiguous rule,
+                                    // this should combine the two interfaces
+        "{I:{interface}\n"
+        + "A:{<:I method Void fun(Void that) void}}"
+        },
+        "{InnerI1:{interface} InnerI2:{interface}"
+        + "InnerA:{<:InnerI1 InnerI2\n"
+        + "method Void fun(Void that)\n"
+        + "}"
+        + "TestB:{method InnerI1 fun() method InnerI2 moreFun()}"
+        + "}",
+        "Outer0::InnerA","Outer1::A",
+        "{TestB:{method Outer2::I fun() method Outer2::I moreFun()}}", false
+        
+        // TODO@James: when the test above passes, add some methods, and set up implementing classes for the inner interfaces that don't each have enough methods for the outer interface
+
     },{lineNumber(), new String[]{   // Cascade redirect an interface, via a redirect-my-pile-of-stuff class
                     "{I1:{interface method Void fun()}\n"
                     + "I2:{interface method Void moreFun()}\n"
                     + "A:{<:I1 I2 method fun() void method moreFun() void}"
-                    + "D_Target:{D_I1:{<:I1} D_I2:{<:I2} method A d_A()}"
+                    + "%Redirect:{D_I1:{<:I1} D_I2:{<:I2} method A d_A()}"
                     + "}"},
         "{InnerI2:{interface method Void moreFun()}\n"
         + "InnerA:{<:Outer2::I1 InnerI2} "  // redirected class can't have implementation, so it can't mention methods
-        + "D_Source:{D_I2:{<:InnerI2} method InnerA d_A()}"
+        + "%Redirect:{D_I2:{<:InnerI2} method InnerA d_A()}"
         + "TestB:{<:InnerI2 method moreFun() void}\n"
         + "}",
-        "Outer0::D_Source","Outer1::D_Target",
+        "Outer0::%Redirect","Outer1::%Redirect",
         "{TestB:{<:Outer2::I2 method moreFun() void}}",false
     },{lineNumber(), new String[]{   // Same test as above, with more interesting method selectors and trivial order changes
                     "{"
@@ -177,29 +195,75 @@ public static class TestRedirect1 {//add more test for error cases
         + "TestB:{<:InnerI2 method moreFun(that, other) void}\n"
         + "}",
         "Outer0::%Redirect","Outer1::%Redirect",
-        "{TestB:{<:Outer2::I2 method moreFun(that, other) void}}",false
+        "{TestB:{<:Outer2::I2 method moreFun(that, other) void}}",false        
     },{lineNumber(), new String[]{   // Redirect, via a pile, when the underlying types are used in aliases
                     "{"
                     + "I1:{interface method Void fun(Void that)}\n"
                     + "I2:{interface method Void moreFun(Library that, Void other)}\n"
                     + "A:{<:I1 I2 method fun(that) that method moreFun(that, other) other}"
-                    + "D_Target:{method I1 _I1() method I2 _I2() method A _A()}"
+                    + "%Redirect:{method I1 _I1() method I2 _I2() method A _A()}"
                     + "}"},
         "{InnerI2:{interface method Void moreFun(Library that, Void other)}\n"
         + "InnerA:{<:InnerI2 Outer2::I1} \n"  // again, no implementation
-        + "D_Source:{method InnerI2 _I2() method InnerA _A()}\n"
+        + "%Redirect:{method InnerI2 _I2() method InnerA _A()}\n"
         + "TestB:{<:InnerI2 method moreFun(that, other) void \n"
         + "       type method Library () {} }\n"
-        + "TestC:{method Outer1::D_Source::_I2() notSoFun() {} }\n"
-        + "TestD:{method Outer1::D_Source::_I2()::moreFun(that,other)::other mostFun() {} }\n"
+        + "TestC:{method Outer1::%Redirect::_I2() notSoFun() {} }\n"
+        + "TestD:{method Outer1::%Redirect::_I2()::moreFun(that,other)::other mostFun() {} }\n"
         + "}",
-        "Outer0::D_Source","Outer1::D_Target",
+        "Outer0::%Redirect","Outer1::%Redirect",
         "{TestB:{<:Outer2::I2 method moreFun(that, other) void\n"
         + "      type method Library () {}}\n"
-        + "TestC:{method Outer2::D_Target::_I2() notSoFun() {}}\n"
-        + "TestD:{method Outer2::D_Target::_I2()::moreFun(that,other)::other mostFun() {} }\n"
+        + "TestC:{method Outer2::%Redirect::_I2() notSoFun() {}}\n"
+        + "TestD:{method Outer2::%Redirect::_I2()::moreFun(that,other)::other mostFun() {} }\n"
         + "}",false
-    },{lineNumber(), new String[]{   // Try redirecting a class that implements two internal interfaces, via a pile
+    },{lineNumber(), new String[]{   // Redirect, via a source pile that contains aliases to internal types
+                    "{"
+                    + "I1:{interface method Void fun(Void that)}\n"
+                    + "I2:{interface method Void moreFun(Library that, Void other)}\n"
+                    + "A:{<:I1 I2 method fun(that) that method moreFun(that, other) other}"
+                    + "%Redirect:{method I1 _I1() method I2 _I2() method A _A()}"
+                    + "}"},
+        "{InnerI2:{interface method Void moreFun(Library that, Void other)}\n"
+        + "InnerA:{<:InnerI2 Outer2::I1} \n"  // again, no implementation
+        + "AliasTarget:{method InnerI2 _makeInnerI2() method InnerA _makeInnerA()}\n"
+        + "%Redirect:{method AliasTarget::_makeInnerI2() _I2()\n"
+        + "           method AliasTarget::_makeInnerA() _A()}\n"
+        + "TestB:{<:InnerI2 method moreFun(that, other) void \n"
+        + "       type method Library () {} }\n"
+        + "TestC:{method Outer1::%Redirect::_I2() notSoFun() {} }\n"
+        + "TestD:{method Outer1::%Redirect::_I2()::moreFun(that,other)::other mostFun() {} }\n"
+        + "}",
+        "Outer0::%Redirect","Outer1::%Redirect",
+        "{TestB:{<:Outer2::I2 method moreFun(that, other) void\n"
+        + "      type method Library () {}}\n"
+        + "TestC:{method Outer2::%Redirect::_I2() notSoFun() {}}\n"
+        + "TestD:{method Outer2::%Redirect::_I2()::moreFun(that,other)::other mostFun() {} }\n"
+        + "}",false
+
+        // TODO@James: when the test above passes, redirect via a pile, where the types in the internal pile are aliases to a mix of internal, internal->external and external
+
+        // TODO@James: play with aliases to parameters vs aliases to return values
+        
+    },{lineNumber(), new String[]{   // Pile redirect, where the types in the external pile are aliases to return values
+                    "{I1:{interface method Void fun()}\n"
+                    + "I2:{interface method Void moreFun()}\n"
+                    + "A:{<:I1 I2 method fun() void method moreFun() void}\n"
+                    + "AliasTarget:{method I1 _I1a() method I2 _I2a() method Void _Aa(A that) }\n"
+                    + "%Redirect:{method AliasTarget::_I1a() _I1()\n"
+                    + "           method AliasTarget::_I2a() _I2()\n"
+                    + "           method AliasTarget::_Aa(that)::that _A()}"
+                    + "}"},
+        "{InnerI2:{interface method Void moreFun()}\n"
+        + "InnerA:{<:Outer2::I1 InnerI2} "  // redirected class can't have implementation, so it can't mention methods
+        + "%Redirect:{method Inner2 _I2() method InnerA _A()}"
+        + "TestB:{<:InnerI2 method moreFun() void}\n"
+        + "}",
+        "Outer0::%Redirect","Outer1::%Redirect",
+        "{TestB:{<:Outer2::I2 method moreFun() void}}", false
+
+    },{lineNumber(), new String[]{   // Try redirecting a class that implements two internal interfaces,
+                                     // via a pile that explicitly directs both
                     "{I1:{interface method Void fun()}\n"
                     + "I2:{interface method Void moreFun()}\n"
                     + "A:{<:I1 I2 method Void fun() method Void moreFun()}\n"
@@ -217,9 +281,36 @@ public static class TestRedirect1 {//add more test for error cases
         + "TestA:{method Outer2::A aFun()}"
         + "TestB:{<:I1 I2 method fun() void method moreFun() void}"
         + "}",false
-
-        // TODO@James: redirect via a pile, where the types in the pile are aliases to a mix of internal, internal->external and external
+    },{lineNumber(), new String[]{   // Redirect three classes, via a pile, so that the
+                                     // intersection-of-ambiguity rule makes the 
+                                     // implemented interfaces and method errors unambiguous
+                    "{Iab:{interface} Ibc:{interface} Ica:{interface}\n"
+                    + "Eab:{} Ebc:{} Eca:{}\n"
+                    + "A:{<:Ica Iab method Void fun() error Eca Eab}\n"
+                    + "B:{<:Iab Ibc method Void fun() error Eab Ebc}\n"
+                    + "C:{<:Ibc Ica method Void fun() error Ebc Eca}\n"
+                    + "%Redirect:{method A _A() method B _B() method C _C() }\n"
+                    + "}"},
+        "{InnerIab:{interface} InnerIbc:{interface} InnerIca:{interface}\n"
+        + "InnerEab:{} InnerEbc:{} InnerEca:{}\n"
+        // same order, then interfaces swapped, then errors swapped, just in case it matters
+        + "InnerA:{<:InnerIca InnerIab method Void fun() error InnerEca InnerEab}\n"
+        + "InnerB:{<:InnerIbc InnerIab method Void fun() error InnerEab InnerEbc}\n"
+        + "InnerC:{<:InnerIbc InnerIca method Void fun() error InnerEca InnerEbc}\n"
+        + "%Redirect:{method InnerA _A() method InnerB _B() method InnerC _C()}\n"
+        + "TestX:{method InnerIab abFun() error InnerEab\n"
+        + "       method InnerIbc bcFun() error InnerEbc\n"
+        + "       method InnerIca caFun() error InnerEca}\n"
+        + "}",
+        "Outer0::%Redirect","Outer1::%Redirect",
+        "{"
+        + "TestX:{method Iab abFun() error Eab\n"
+        + "       method Ibc bcFun() error Ebc\n"
+        + "       method Ica caFun() error Eca}\n"
+        + "}",false
         
+        // TODO@James do something with piles containing alias types that refer to the library return values of methods
+        // but this might not be possible in a unit-test without metaprogramming capability
 
     // the errors have variable portions.
 	// try to explore the cardinality space of the variable portions
@@ -239,7 +330,7 @@ public static class TestRedirect1 {//add more test for error cases
            +"UnexpectedMembers:{'@stringU\n'[fun()]\n}"
            +"UnexpectedImplementedInterfaces:{'@stringU\n'[]\n}"
         + "}",true
-    },{lineNumber(), new String[]{"{A:{ }}"},  // same test, but with a method argument, using new mechanism
+    },{lineNumber(), new String[]{"{A:{ }}"},  // same test, but with a method argument, using the new mechanism
         "{InnerA:{type method Void fun(Void that)} }","Outer0::InnerA","Outer1::A",
         ec.load("SourceUnfit",
                 "SrcPath", "Outer0::InnerA",
@@ -251,6 +342,25 @@ public static class TestRedirect1 {//add more test for error cases
                 "UnexpectedImplementedInterfaces", "[]"
                 )
           .str(), true
+    },{lineNumber(), new String[]{"{A:{ }}"},  // same test, but with InnerA private; 
+                                               // @Marco, I'm getting TargetUnavailable for this test.
+                                               // NB the target is fine but the source is bad
+                                               // @Marco, You could generalise the error to PathUnavailable,
+                                               // and tell us whether it's the source or the target,
+                                               // but that's misleading, because PathUnavailable(Target, InexistentPath) is a prerequisite violation,
+                                               // not a TargetUnavailable error.
+        "{InnerA:'@private\n {type method Void fun(Void that)} }","Outer0::InnerA","Outer1::A",
+        ec.set("PrivatePath", "true"
+                )
+          .str(), true
+    },{lineNumber(),      // add a matching method to A, and make the InnerA method only private
+                          // @Marco, if 'path' always means a specifically situated class,
+                          // then this test is a mistake, and please email or skype me, rather than editing this file.
+       new String[]{"{A:{type method Void fun(Void that) }}"},
+        "{InnerA:{type method '@private\n Void fun(Void that)} }","Outer0::InnerA","Outer1::A",
+        ec.set("PrivatePath", "true"
+                )
+          .str(), true
     },{lineNumber(), new String[]{  // FreeTemplate -> Interface, with some matching methods
         "{A:{interface type method Void fun(Void that)  method Void mostFun(Void that, Library other) }}"
         },
@@ -258,7 +368,8 @@ public static class TestRedirect1 {//add more test for error cases
         + "method Void mostFun(Void that, Library other) method Void notSoFun() } }",
         "Outer0::InnerA","Outer1::A",
         ec
-          .set("SrcKind", "FreeTemplate", "DestKind", "Interface",
+          .set("PrivatePath", "false",
+               "SrcKind", "FreeTemplate", "DestKind", "Interface",
                "UnexpectedMembers", "[moreFun(that), notSoFun()]")
           .str(), true
     },{lineNumber(), new String[]{  // with a mismatch on parameter names in the method selector
@@ -411,7 +522,8 @@ public static class TestRedirect1 {//add more test for error cases
                "UnexpectedImplementedInterfaces", "[Outer0::BlockingInterface1]"
                )
           .str(), true
-    },{lineNumber(), new String[]{  // Same test as above, but specifying outer of A::C gets a plausible error
+    },{lineNumber(), new String[]{  // Two blocking and one resolved/outer interface.
+                                    // NB: in the test harness, must specify outer numbers for outers.
         "{A:{interface type method Void fun(Void that)  method Void moreFun(Void that, Library other) \n"
         + " C:{interface}}}"
         },
@@ -488,11 +600,13 @@ public static class TestRedirect1 {//add more test for error cases
         + "TestB:{<:InnerI1 InnerI2  method fun() void method Void moreFun() void}\n"
         + "}",
         "Outer0::InnerA","Outer1::A",
-        "{'@stringu\n'Some specific error which says that InnerA violates the one-internal-interface rule\n}",true
+        "{'@stringu\n'Some specific error which says that A violates the one-target-interface rule\n}",true
 
-
-
-/* TODO: this test, when I get to method clashes
+    // TODO@James: when the error for the test above has settled, do a pile redirect of two classes,
+    // where one uses two interfaces and the other uses only one of them, to confirm that the disambiguation
+    // of one interface on a class does not disambiguate the other
+    
+/* TODO@James : try this test, when I get to method clashes
     },{lineNumber(), new String[]{ // mismatches in type vs instance method
         "{A:{type method Void fun(Void that) method Void moreFun(Void that)"
         + "type method Void mostFun(Void that, Library other) method Void notSoFun() } }",
@@ -504,7 +618,7 @@ public static class TestRedirect1 {//add more test for error cases
           .set("UnexpectedMethods", "[moreFun(that), mostFun()]").str(), true
           */
 
-          /* TODO: @James: with this test, I get TargetUnavailable, which I don't understand yet
+          /* TODO@James: with this test, I get TargetUnavailable, which I don't understand yet
     },{lineNumber(), new String[]{  // Matched inner interface shows as non-free
         "{A:{interface type method Void fun(Void that)  method Void moreFun(Void that, Library other) \n"
         + " C:{interface}}}"
@@ -530,6 +644,16 @@ public static class TestRedirect1 {//add more test for error cases
 
 
 @Test  public void test() {
+
+  // TODO@James: find a way of skipping failing tests that produces clearer feedback than auto-passing them
+  // TODO@James: consider making a git hook to block commits unless startLine=0 is enabled
+  
+  Integer lineNum = _lineNumber;
+//  Integer startLine = 249;        // All tests before this succeed without trying
+  Integer startLine = 0;        // TODO@James: re-enable this before committing.
+  if (lineNum < startLine)
+    return;
+    
   TestHelper.configureForTest();
   Program p=TestHelper.getProgram(_p);
   ClassB cb1=getClassB("cb1", _cb1);
