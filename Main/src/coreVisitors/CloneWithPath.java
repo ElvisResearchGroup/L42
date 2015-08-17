@@ -9,14 +9,10 @@ import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
 
 public class CloneWithPath extends CloneVisitor{
-  public CloneWithPath(){path=new ArrayList<>();}
-  /*public CloneWithPath(List<String>path){
-    this.path=path;
-    }*/
-  List<ClassB.Member> path=new ArrayList<>();
-  List<Integer> pathNums=new ArrayList<>();
-  public List<ClassB.Member> getAstNodesPath(){return null;}
-  public List<Integer> getAstIndexesPath(){return null;}
+  private final List<ClassB.Member> path=new ArrayList<>();
+  private final List<Integer> pathNums=new ArrayList<>();
+  public List<ClassB.Member> getAstNodesPath(){return path;}
+  public List<Integer> getAstIndexesPath(){return pathNums;}
   public List<String> getClassNamesPath(){
     //assert path.get(path.size()-1)==null;
     List<String> sPath=new ArrayList<>();

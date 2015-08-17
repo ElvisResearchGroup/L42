@@ -27,6 +27,8 @@ public class Util {
     public String toString(){return ""+path1+"->"+path2;}
     }
   
-  @Data @AllArgsConstructor public static class MethodLocator{@NonNull java.util.List<ClassB.Member> mTail; @NonNull java.util.List<Integer> mPos; ClassB.MethodWithType that; MethodSelector newName;}
-  @Data public static class NestedLocator{@NonNull java.util.List<ClassB.Member> mTail; @NonNull java.util.List<Integer> mPos;  @NonNull String that; String newName;}
+  @Data @AllArgsConstructor public static class MethodLocator{@NonNull java.util.List<ClassB.Member> mTail; @NonNull java.util.List<Integer> mPos; ClassB.MethodWithType that; MethodSelector newName;
+    public String toString(){return coreVisitors.PathAnnotateClass.computeComment(mTail, mPos)+that.getMs()+newName;}}
+  @Data public static class NestedLocator{@NonNull java.util.List<ClassB.Member> mTail; @NonNull java.util.List<Integer> mPos;  @NonNull String that; String newName;
+    public String toString(){return coreVisitors.PathAnnotateClass.computeComment(mTail, mPos)+that+newName;}}
 }

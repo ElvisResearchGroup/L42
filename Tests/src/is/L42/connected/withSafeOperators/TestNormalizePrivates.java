@@ -36,25 +36,45 @@ public static class TestCollectPrivates {
   },{
     lineNumber(),"{method Void foo()}","[]\n[]\n[]\ntrue"
   },{
-    lineNumber(),"{method'@private\n Void foo()}","[]\n[Outer0.foo()]\n[]\nfalse"
+    lineNumber(),"{method'@private\n Void foo()}","[]\n[Outer0::foo()foo__0_0()]\n[]\nfalse"
   },{
-    lineNumber(),"{method'@private\n Void foo__42()}","[42]\n[Outer0.foo__42()]\n[]\ntrue"
+    lineNumber(),"{method'@private\n Void foo__42()}","[42]\n[Outer0::foo__42()null]\n[]\ntrue"
   },{
     lineNumber(),"{method'@private\n Void foo__42()method'@private\n Void foo__43()}",
-    "[42, 43]\n[Outer0.foo__42(), Outer0.foo__43()]\n[]\ntrue"
+    "[42, 43]\n[Outer0::foo__42()null, Outer0::foo__43()null]\n[]\ntrue"
   },{
     lineNumber(),
     "{method'@private\n Void foo__42()"
     + " this({ method '@private\n Void bla__33()  }, second:{})"
     + "}",
-    "[42]\n[Outer0.foo__42(),null.bla__33()]\n[]\ntrue"
+    "[33, 42]\n[Outer0::foo__42()null, Outer0::foo__42()[1]bla__33()null]\n[]\ntrue"
+  },{
+    lineNumber(),
+    "{ make(Foo f)'@private\n method'@private\n Void foo()"
+    + " this({ method '@private\n Void bla() void }, second:{mut kame(mut Hame ha)'@private\n})"
+    + "}",
+    "[]\n"
+    + "[Outer0::make(f)make__0_0(f__0_0),"
+    + " Outer0::#f()#f__0_0(),"
+    + " Outer0::f()f__0_0(),"
+    + " Outer0::foo()foo__1_0(),"
+    + " Outer0::foo()[1]bla()bla__2_0(),"
+    + " Outer0::foo()[2]kame(ha)kame__3_0(ha__3_0),"
+    + " Outer0::foo()[2]#ha()#ha__3_0(),"
+    + " Outer0::foo()[2]ha()ha__3_0()]\n[]\nfalse"
+
   }});}
 
 
 @Test  public void test() {
   TestHelper.configureForTest();
+  NormalizePrivates.countFamilies=0;
+  NormalizePrivates.countPrivates=0;
   ClassB cb1=getClassB("cb1", _cb1);
   CollectedPrivates result = NormalizePrivates.collectPrivates(cb1);
+  if (result.pedexes.size()==0){
+    result.computeNewNames();
+  }
   Assert.assertEquals(expected, result.toString());
   }
 }

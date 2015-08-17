@@ -21,13 +21,18 @@ public class NormalizePrivates {
   public static int countPrivates=0;
   public static int countFamilies=0;
   public static String freshName(String name){
-    assert !name.contains("__");//we can relax this somehow?
-    return name+"__"+countPrivates++ +"_"+countFamilies;
+   return freshName(name,"__"+countPrivates++ +"_"+countFamilies);
+  }
+  public static String freshName(String name,String newPedex){
+    assert !name.contains("__");//TODO:we can relax this somehow?
+    //if(name.contains("__")){      name=name.substring(0, name.indexOf("__"));      }
+    //this would be wrong, multiple methods would get different names, but multiple getters would be merged together
+    return name+newPedex;
   }
   public static class CollectedPrivates{
-    Set<String> pedexes=new HashSet<>();
-    List<MethodLocator>privateSelectors=new ArrayList<>();
-    List<NestedLocator>privatePaths=new ArrayList<>();
+    final Set<String> pedexes=new HashSet<>();
+    final List<MethodLocator>privateSelectors=new ArrayList<>();
+    final List<NestedLocator>privatePaths=new ArrayList<>();
     boolean normalized=true;
     public String toString(){
       return""+pedexes+"\n"+privateSelectors+"\n"+privatePaths+"\n"+normalized;
@@ -40,6 +45,7 @@ public class NormalizePrivates {
     private void computeNewName(HashMap<MethodLocator, String> map, MethodLocator mL) {
       if(mL.getThat().getInner().isPresent()){
         mL.setNewName(mL.getThat().getMs().withName(freshName(mL.getThat().getMs().getName())));
+        return;
       }
       //it must be state!
       MethodLocator stardizedMethodLocator=new MethodLocator(mL.getMTail(),mL.getMPos(),null,null);
@@ -49,9 +55,9 @@ public class NormalizePrivates {
         map.put(stardizedMethodLocator,s);
       }
       String newPedex=s;
-      List<String> names = (mL.getThat().getMt().getMdf()==Mdf.Type)?mL.getThat().getMs().getNames():Map.of(si->si+newPedex,mL.getThat().getMs().getNames());
+      List<String> names = (mL.getThat().getMt().getMdf()!=Mdf.Type)?mL.getThat().getMs().getNames():Map.of(si->freshName(si,newPedex),mL.getThat().getMs().getNames());
       ast.Ast.MethodSelector ms=new ast.Ast.MethodSelector(
-          mL.getThat().getMs().getName()+newPedex,names);
+          freshName(mL.getThat().getMs().getName(),newPedex),names);
       mL.setNewName(ms);
       }
     }
@@ -71,7 +77,10 @@ public class NormalizePrivates {
         boolean hasValidUniquePexed=collectPedex(result.pedexes,name);
         if(!mwt.getDoc().isPrivate()){return super.visit(mwt);}
         if(!hasValidUniquePexed){result.normalized=false;}
-        result.privateSelectors.add(new MethodLocator(new ArrayList<>(this.getAstNodesPath()),new ArrayList<>(this.getAstIndexesPath()) ,mwt,null));
+        result.privateSelectors.add(new MethodLocator(
+            new ArrayList<>(this.getAstNodesPath()),
+            new ArrayList<>(this.getAstIndexesPath()) ,
+            mwt,null));
         return super.visit(mwt);
         }
       });
@@ -87,6 +96,11 @@ public class NormalizePrivates {
   
   public static ClassB normalize(CollectedPrivates privates,ClassB cb){
     return cb;
+    //renameMethod still use old introspection
+    //write a rename usage from data of collected privates for both paths and methods.
+    //then write a simple rename declarations.
+    //the rename declarations for methods, for renameMethod have to keep method sum in account.
+    
     }
   public static ClassB importWithReuseNormalizedClass(int round,ClassB cb){return cb;}
 }
