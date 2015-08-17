@@ -1,0 +1,74 @@
+-RedirectOk needs to follow another plan:
+  R=required redirects Set of int Path->ext Path functional
+  A= ambiguities, Set of int Path-> set ext Path
+  V= verified redirects Set of int Path->ext Path functional
+    so that for all v of them redirectOk(p,v, cb) = R;A is well defined for some A
+ Exc=Set of ( Set of Path->Set of extPath)
+    then, starting from r1, R'={r1}, A'=empty, V=empty, Exc'=empty
+  take an element r from R',    
+    if redirectOk(p,r,cb)=R;A;Exc, then 
+    V+=r,
+    R'+=R
+    A'+=A//if intPath in A already mapped in A', do the intersection of the ambiguities. Error if the empty set is produced.
+    Exc'+=Exc//implementation can just add on the same object for all 3
+    R'+=unambiguos(A')//that is, A' contains some intPath->{extPath}, single possiblity, not ambigus
+    A'+=ambiguos(A')
+    if R'+V is not a functional relation, ambiguity error
+    R'-=V
+  When r' is empty,  
+    check that for all ps->ps' in Exc, V(ps) superset of ps'
+    check that A' is empty
+   and return V
+   
+   define redirectOk(p,intPath->extPath,cb,R;A;Exc)
+   intCb=cb(intPath)
+   extCb=p,cb(extPath)
+   if there is any implementation in intCb error
+   with ps, ps' is implemented interfaces of intCb,extCb A+=ps[from intPath]->ps'[from extPath]
+   for all the nested c of intCb, add intPaht::c->extPath::c to R
+   for all the mwt in intCb, check that there is a corresponding mwt' in extCb,
+   then redirectOkMwt(p,mwt[from intPath],mwt'.withNoBody()[from extPath],R,A,Exc)
+   
+   redirectOkMwt(p, T0 (T1..Tn) ps,T0' (T1'..Tn')ps',R,A,Exc)
+     redirectOkT(p,Ti,T'i,R,A,Exc)
+     Exc+=ps->ps'
+     A+=ps->ps'
+  
+  redirectOkT(p,.. extPath .. ,..extPath..,R,A,Exc)  is ok
+  redirectOkT(p,.. intPath .. ,..extPath..,R,A,Exc)  R+=intPaht->extPath
+   
+   Other tasks
+   
+    -private rename normalization
+    collect privates: 
+     MethodLocator:{List<Member> mTail; List<Integer> mPos; Ms that, Ms newName}
+     NestedLocator:{List<Member> mTail; List<Integer> mPos; String that, String newName}
+     collectPrivates(cb)->set of MethodLocator,NestedLocator
+     since no sum will be triggered, we can do all the rename together
+     collectPrivates(cb) first collect the names, then compute the rename, keeping in account private state consistency
+       that is, constructors get the same pedex appended to name AND fields, and field get the same pedex
+     renamePrivates(collectPrivates(cb))
+       clone with path:
+         on nested, if collected rename
+         on mwt if collected rename
+         on mi nothing, never private
+         on path, if collected rename, will need to explore only a "pure nested" part of the tail
+         on meth call, same idea. Reuse guess receiver type from rename method.
+    reuse of lower case, trust private normalized and desugared.
+       replace all the name__N_0 in name__N'_redirectIndex
+    normalizePrivates(newIndex) rename all the name__N_K in name__N'_index
+    reuse on Uppercase, do desugar and do not do private renaming at all.// just for testing
+         
+    -enhance classB/program so that they can be annotated for:
+    -is private normalized
+    -get the set of used families
+    -if ct is needed, here is all the annotations
+    -program/extract type start working only when annotation is required in actual type system but not available
+      like p.requireStage(path)? p.requireAllMethodSignatures(path)? 
+       
+    -db plugin
+      design of resources: make connection string "is" resource handler?
+    -put Outer without number in the sugar
+    - put << normalization in the sugar
+    
+    

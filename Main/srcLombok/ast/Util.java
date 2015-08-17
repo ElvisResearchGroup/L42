@@ -2,9 +2,12 @@ package ast;
 
 import lombok.NonNull;
 import lombok.Value;
+import lombok.Data;
+import lombok.AllArgsConstructor;
 import lombok.experimental.Wither;
 import ast.Ast.MethodSelector;
 import ast.Ast.Path;
+import ast.ExpCore.*;
 
 public class Util {
   @Value @Wither public static class CsMx{
@@ -23,5 +26,7 @@ public class Util {
     @NonNull Path path1; @NonNull Path path2;
     public String toString(){return ""+path1+"->"+path2;}
     }
-
+  
+  @Data @AllArgsConstructor public static class MethodLocator{@NonNull java.util.List<ClassB.Member> mTail; @NonNull java.util.List<Integer> mPos; ClassB.MethodWithType that; MethodSelector newName;}
+  @Data public static class NestedLocator{@NonNull java.util.List<ClassB.Member> mTail; @NonNull java.util.List<Integer> mPos;  @NonNull String that; String newName;}
 }
