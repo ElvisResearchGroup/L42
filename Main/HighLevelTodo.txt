@@ -37,7 +37,9 @@
   
   redirectOkT(p, T,T,R,A,Exc)  is ok //same exact T
   redirectOkT(p,.. intPath .. ,..extPath..,R,A,Exc)  R+=intPaht->extPath//two T different only for the path.
-   
+  
+  -when this is ok, we need to reorganize the errors, method clash may stop happening in redirect, and we need to add the ambigus redirect.
+  
    Other tasks
    
     -private rename normalization
@@ -71,5 +73,27 @@
       design of resources: make connection string "is" resource handler?
     -put Outer without number in the sugar
     - put << normalization in the sugar
-    
-    
+    -put keywords/behaviour for circular and entangled. 
+    -put outer keyword, to skip the first in scope
+    -put partial, mut partial and so on instead of ^ in parser
+    -run coverage (emma eclipse tool?)
+    -remove @consistent?
+    -use @as default? instead of #?
+     so Map[
+       @[a;b;c];
+       @[a;b;c];
+       ]
+    options[isVisible:@]   vs  options[isVisible:Bool.true()]
+    Car(weels:@[....] doors:@[])
+    RenamePath[@"Bar" to:@"Beer"]
+    -operators <-  ->   \/ /\ ?? may be not?
+    -usually ~ is give me internal, so rename all .binary repr?
+    -make opt have checktrue, ! & and | ?
+    -for collections, error S" still report stuff that should be done better.
+
+-for concatenating strings, use S[a;b;c] where a,b,c should be ToS,
+and ++ should take only strings in input.
+
+-rethink typeextraction. use caching of info somehow.
+-if runaway abstractness/incoherence causes plus, plus should keep
+track of why it exists.
