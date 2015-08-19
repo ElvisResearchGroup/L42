@@ -37,7 +37,7 @@ public class Rename {
         }//otherwise, proceed with encoding
     }
     cb=ClassOperations.normalizePrivates(p,cb);
-    if(!ExtractInfo.isPrefix(src, dest)){ return directRename(p,cb,src,dest);}
+    if(!ExtractInfo.isPrefix(src, dest)){ return ClassOperations.normalizePaths(directRename(p,cb,src,dest));}
     src=new ArrayList<>(src);
     dest=new ArrayList<>(dest);
     src.add(0,"Result");
@@ -47,7 +47,7 @@ public class Rename {
     cb=directRename(p,cb,src,tmp);
     cb=directRename(p,cb,tmp,dest);
     cb=Pop.directPop(cb);
-    return cb;
+    return ClassOperations.normalizePaths(cb);
   }
   public static ClassB renameClassStrict(Program p,ClassB cb,List<String> src,List<String> dest){
   /*
@@ -60,11 +60,12 @@ public class Rename {
     Errors42.checkExistsPathMethod(cb, src, Optional.empty());
     if(ExtractInfo.isPrefix(src,dest)){throw Errors42.errorPrefix(src,dest);}
     cb=ClassOperations.normalizePrivates(p,cb);
-    cb=ClassOperations.normalizePaths(cb);//TODO: for perfomance could be merged with renameUsage later
-    return directRename(p, cb, src, dest);
+    return ClassOperations.normalizePaths(directRename(p, cb, src, dest));
   }
   private static ClassB directRename(Program p, ClassB cb, List<String> src, List<String> dest) {
-    ClassB renamedCb=renameUsage(Collections.singletonList(new PathPath(Path.outer(0,src),Path.outer(0,dest))),cb);//cb, renamedCb are normalized
+    //ClassB renamedCb=renameUsage(Collections.singletonList(new PathPath(Path.outer(0,src),Path.outer(0,dest))),cb);//cb, renamedCb are normalized
+    ClassB renamedCb=RenameMembers.of(Path.outer(0,src),Path.outer(0,dest),cb);
+    //cb, renamedCb are normalized   
     ClassB clearCb=ClassOperations.onNestedNavigateToPathAndDo(renamedCb,src,nc->Optional.empty());
     ClassB newCb=redirectDefinition(src,dest,renamedCb);
     newCb=ClassOperations.normalizePaths(newCb);
@@ -95,6 +96,7 @@ public class Rename {
     ms.add(IntrospectionAdapt.encapsulateIn(dest, cb,docCb[0]));
     return new ClassB(Doc.empty(),Doc.empty(),false,Collections.emptyList(),ms,Stage.None);
   }
+  /*
   static ClassB renameUsage(List<PathPath> mapPath, ClassB cb) {
     return (ClassB)cb.accept(new coreVisitors.CloneWithPath(){
       public ExpCore visit(Path s) {
@@ -131,4 +133,5 @@ public class Rename {
         return s;
         }
        });
-}}
+}*/
+  }

@@ -1,20 +1,15 @@
 package is.L42.connected.withSafeOperators;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import coreVisitors.CloneWithPath;
 import coreVisitors.Exists;
-import tools.Map;
 import ast.ExpCore;
 import ast.ExpCore.ClassB.Member;
 import ast.Util;
 import ast.ExpCore.*;
 import ast.Util.*;
-import ast.Ast.Mdf;
 import ast.Ast.Path;
 //this file may be moved in L42_Main
 public class NormalizePrivates {
@@ -43,38 +38,6 @@ public class NormalizePrivates {
     
     return name+newPedex;
   }
-  public static class CollectedPrivates{
-    final Set<String> pedexes=new HashSet<>();
-    final List<MethodLocator>privateSelectors=new ArrayList<>();
-    final List<NestedLocator>privatePaths=new ArrayList<>();
-    boolean normalized=true;
-    public String toString(){
-      return""+pedexes+"\n"+privateSelectors+"\n"+privatePaths+"\n"+normalized;
-      }
-    public void computeNewNames(){
-      HashMap<MethodLocator,String> map=new HashMap<>();
-      for(MethodLocator mL:privateSelectors){computeNewName(map,mL);}
-      for(NestedLocator nL:privatePaths){nL.setNewName(freshName(nL.getThat()));}
-    }
-    private void computeNewName(HashMap<MethodLocator, String> map, MethodLocator mL) {
-      if(mL.getThat().getInner().isPresent()){
-        mL.setNewName(mL.getThat().getMs().withName(freshName(mL.getThat().getMs().getName())));
-        return;
-      }
-      //it must be state!
-      MethodLocator stardizedMethodLocator=new MethodLocator(mL.getMTail(),mL.getMPos(),null,null);
-      String s=map.get(stardizedMethodLocator);
-      if(s==null){
-        s="__"+countPrivates++ +"_"+countFamilies;//may be turn in method?
-        map.put(stardizedMethodLocator,s);
-      }
-      String newPedex=s;
-      List<String> names = (mL.getThat().getMt().getMdf()!=Mdf.Type)?mL.getThat().getMs().getNames():Map.of(si->freshName(si,newPedex),mL.getThat().getMs().getNames());
-      ast.Ast.MethodSelector ms=new ast.Ast.MethodSelector(
-          freshName(mL.getThat().getMs().getName(),newPedex),names);
-      mL.setNewName(ms);
-      }
-    }
   public static CollectedPrivates collectPrivates(ClassB cb){
     CollectedPrivates result=new CollectedPrivates();
     cb.accept(new CloneWithPath(){

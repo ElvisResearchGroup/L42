@@ -208,6 +208,18 @@ public class TestRename {
           "{ A:{type method Outer0::B ()  B:{ }}}"
           ,"A","A::C",
           "{ A:{ C:{type method Outer0::B #apply() B:{} }}}",false//
+          
+       },{lineNumber(),////the sub parts of test above
+        "{ Result:{ A:{ type method Outer0::B #apply() B:{}}}}",
+       "Result::A","Tmp",
+       "{Result:{} Tmp:{ type method Outer0::B #apply() B:{}}}",false
+/*
+          "{  Result:{}
+            Tmp:{
+            type method 
+            Outer2::Tmp #apply() 
+            B:{}}}
+        "Tmp","Result::A::C",false*/
         }, {lineNumber(),//
           "{ type method Outer0::B ()  B:{ }}"
           ,"Outer0","C",
@@ -219,11 +231,23 @@ public class TestRename {
         }, {lineNumber(),//
           "{ A:{B:{ method A mab(B x)} method A ma(B x)} method A m(A::B x) }"
           ,"A::B","C::D",
-          "{ A:{method Outer1::A ma(Outer1::C::D x)} method A m(C::D x) C:{D:{ method Outer2::A mab(Outer0 x)}}}",false//
+          "{ A:{method Outer0 ma(Outer1::C::D x)} method A m(C::D x) C:{D:{ method Outer2::A mab(Outer0 x)}}}",false//
         }, {lineNumber(),//
           "{ A:{B:{ method A mab(B x)} method A ma(B x)} method A m(A::B x) }"
           ,"A","C::D",
           "{ method C::D m(C::D::B x) C:{D:{B:{ method Outer1 mab(Outer0 x)} method Outer0 ma(B x)}} }",false//
+        }, {lineNumber(),//simplified method from before
+          "{ A:{B:{}} method Void m(A::B x) }"
+          ,"A","C::D",
+          "{ method Void m(C::D::B x) C:{D:{B:{}}} }",false//
+        }, {lineNumber(),//simplified method from before2
+          "{ A:{B:{}} method A m() }"
+          ,"A","C::D",
+          "{ method C::D m() C:{D:{B:{}}} }",false//
+        }, {lineNumber(),//nested method from before
+          "{ A:{B:{method A m()}}  }"
+          ,"A","C::D",
+          "{  C:{D:{B:{method Outer1 m() }}} }",false//
         }, {lineNumber(),//
           "{ A:{method Library m() {method A k()}} }"
           ,"A","B",

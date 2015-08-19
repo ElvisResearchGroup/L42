@@ -46,7 +46,8 @@ public class Redirect {
     return applyMapPath(p,cb,toRedirect);
   }
   public static ClassB applyMapPath(Program p,ClassB cb, List<PathPath> mapPath) {
-    cb=Rename.renameUsage(mapPath,cb);
+    cb=//Rename.renameUsage(mapPath,cb);
+        RenameMembers.of(mapPath, cb);
     for(PathPath pp:mapPath){
       cb=IntrospectionAdapt.remove(pp.getPath1(),cb);
     }

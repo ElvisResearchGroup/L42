@@ -19,7 +19,7 @@ public class CloneWithPath extends CloneVisitor{
     for(Member m:this.path){
       m.match(nc->sPath.add(nc.getName()), mi->sPath.add(null), mt->sPath.add(null));
     }
-    if(!pathNums.isEmpty() && pathNums.get(pathNums.size()-1)==0){
+    if(!pathNums.isEmpty() && pathNums.get(pathNums.size()-1)<=0){
       sPath.remove(sPath.size()-1);
     }
     return sPath;
@@ -65,8 +65,9 @@ public class CloneWithPath extends CloneVisitor{
   }
   public ExpCore visit(ClassB cb){
     int last=pathNums.size()-1;
-    if(last!=-1){pathNums.set(last,pathNums.get(last)+1);}
-    return super.visit(cb);
+    if(last!=-1){pathNums.set(last,pathNums.get(last)*-1+1);}//positives for inside class,
+    try{return super.visit(cb);}
+    finally{ if(last!=-1){pathNums.set(last,pathNums.get(last)*-1);}}//negatives for outside
   }
     
   //protected List<Path> liftSup(List<Path> supertypes) {//SOB... to synchronise the last null

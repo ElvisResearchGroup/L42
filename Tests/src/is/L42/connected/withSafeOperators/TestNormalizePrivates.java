@@ -4,7 +4,7 @@ import static helpers.TestHelper.getClassB;
 import helpers.TestHelper.ErrorCarry;
 import static org.junit.Assert.fail;
 import helpers.TestHelper;
-import is.L42.connected.withSafeOperators.NormalizePrivates.CollectedPrivates;
+
 import static helpers.TestHelper.lineNumber;
 
 import java.util.Arrays;
