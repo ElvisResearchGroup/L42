@@ -357,7 +357,9 @@ public static class TestRedirect1 {//add more test for error cases
                           // @Marco, if 'path' always means a specifically situated class,
                           // then this test is a mistake, and please email or skype me, rather than editing this file.
        new String[]{"{A:{type method Void fun(Void that) }}"},
-        "{InnerA:{type method '@private\n Void fun(Void that)} }","Outer0::InnerA","Outer1::A",
+        "{InnerA:{type method '@private\n Void fun(Void that)} "
+        + "TestB:{<:InnerA method notSoFun() InnerA.fun() }"
+        + "}","Outer0::InnerA","Outer1::A",
         ec.set("PrivatePath", "true"
                 )
           .str(), true
@@ -604,8 +606,15 @@ public static class TestRedirect1 {//add more test for error cases
 
     // TODO@James: when the error for the test above has settled, do a pile redirect of two classes,
     // where one uses two interfaces and the other uses only one of them, to confirm that the disambiguation
-    // of one interface on a class does not disambiguate the other
+    // of one internal interface on a class does not disambiguate the other
     
+    // next error with variable portions.
+    // ClassClash can't happen on a redirect
+
+    // MethodClash: Path(1), Left(1), Right(1), LeftKind(enum(4)), RightKind(enum(4)),
+    // DifferentParameters(0..), DifferentReturnType(t/f), DifferentThisMdf(t/f), IncompatibleException(t/f)
+
+
 /* TODO@James : try this test, when I get to method clashes
     },{lineNumber(), new String[]{ // mismatches in type vs instance method
         "{A:{type method Void fun(Void that) method Void moreFun(Void that)"
