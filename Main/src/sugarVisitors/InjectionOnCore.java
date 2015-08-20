@@ -85,7 +85,9 @@ public class InjectionOnCore implements Visitor<ExpCore> {
           })
        );
     }
-    return new ClassB(doc1,doc2,isInterface,supertypes,members,s.getStage());
+    ClassB result=new ClassB(doc1,doc2,isInterface,supertypes,members);
+    result.getStage().setStage(s.getStage());
+    return result;
     }
   public ExpCore visit(Expression.MCall s){
     assert !s.getPs().getE().isPresent():s;

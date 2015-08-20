@@ -165,7 +165,7 @@ public class IntrospectionAdapt {
     if(cBar2.isEmpty()){results.add(cb);return;}
     List<Member>ms=new ArrayList<>();
     ms.add(encapsulateIn(cBar2, cb,docCb[0]));
-    results.add(new ClassB(Doc.empty(),Doc.empty(),false,Collections.emptyList(),ms,Stage.None));
+    results.add(new ClassB(Doc.empty(),Doc.empty(),false,Collections.emptyList(),ms));
     return;
   }
   //C1:{ ...{ .. .Cn:{} }}
@@ -177,7 +177,7 @@ public class IntrospectionAdapt {
     if(cBar2.isEmpty()){return new ClassB.NestedClass(doc,cBar.get(0),elem,null);}
     List<Member> ms=new ArrayList<>();
     ms.add(encapsulateIn(cBar2,elem,doc));
-    ClassB cb= new ClassB(Doc.empty(),Doc.empty(),false,Collections.emptyList(),ms,Stage.None);
+    ClassB cb= new ClassB(Doc.empty(),Doc.empty(),false,Collections.emptyList(),ms);
     return new ClassB.NestedClass(Doc.empty(),cBar.get(0),cb,null);
   }
   private static Path computeSquareTo(List<String> cBar1, List<String> cBar2) {
@@ -202,7 +202,7 @@ public class IntrospectionAdapt {
   }*/
   public static ClassB remove(Path path1, ClassB l) {
     if(path1.equals(Path.outer(0))){
-      return new ClassB(Doc.empty(),Doc.empty(),false,Collections.emptyList(),Collections.emptyList(),Stage.None);
+      return new ClassB(Doc.empty(),Doc.empty(),false,Collections.emptyList(),Collections.emptyList());
       }
     return (ClassB)l.accept(new CloneVisitor(){
       List<String> cs=path1.getCBar();
@@ -360,7 +360,7 @@ static Path add1Outer(Path p) {
   public static ExpCore buildMethodNameAdapter(MethodSelector s) {
     List<Member> ms=new ArrayList<>();
     ms.add(new ClassB.NestedClass(Doc.empty(),"%o_0%",buildMethodNameAdapterInner(s),null));
-    ClassB outer=new ClassB(Doc.empty(),Doc.empty(),false,Collections.emptyList(),ms,Stage.None);
+    ClassB outer=new ClassB(Doc.empty(),Doc.empty(),false,Collections.emptyList(),ms);
     return outer;
   }
   private static ExpCore buildMethodNameAdapterInner(MethodSelector s) {
@@ -385,7 +385,7 @@ static Path add1Outer(Path p) {
     ms.add(new MethodWithType(Doc.empty(),s1,mt1,Optional.of(e1),null));
     ms.add(new MethodWithType(Doc.empty(),s2,mt2,Optional.empty(),null));
 
-    ClassB inner=new ClassB(Doc.empty(),Doc.empty(),false,Collections.emptyList(),ms,Stage.None);
+    ClassB inner=new ClassB(Doc.empty(),Doc.empty(),false,Collections.emptyList(),ms);
 
     return inner;
   }
@@ -394,7 +394,7 @@ static Path add1Outer(Path p) {
   public static ExpCore buildPathAdapterOut(Path path) {
     List<Member> ms=new ArrayList<>();
     ms.add(buildPathAdapterInner(pathExternToInner(path)));
-    ClassB outer=new ClassB(Doc.empty(),Doc.empty(),false,Collections.emptyList(),ms,Stage.None);
+    ClassB outer=new ClassB(Doc.empty(),Doc.empty(),false,Collections.emptyList(),ms);
     return outer;
   }
   public static ExpCore buildPathAdapterIn(Path path) {
@@ -403,12 +403,12 @@ static Path add1Outer(Path p) {
     if(!path.equals(Path.outer(0))){
       assert !path.isCore();
       ms.add(IntrospectionAdapt.encapsulateIn(path.getRowData(),
-        new ClassB(Doc.empty(),Doc.empty(),false,Collections.emptyList(),Collections.emptyList(),Stage.None),
+        new ClassB(Doc.empty(),Doc.empty(),false,Collections.emptyList(),Collections.emptyList()),
         Doc.empty()
         ));
       }
     ms.add(buildPathAdapterInner(reprToInner(path)));
-    ClassB outer=new ClassB(Doc.empty(),Doc.empty(),false,Collections.emptyList(),ms,Stage.None);
+    ClassB outer=new ClassB(Doc.empty(),Doc.empty(),false,Collections.emptyList(),ms);
     return outer;
   }
   private static Path reprToInner(Path path){
@@ -429,7 +429,7 @@ static Path add1Outer(Path p) {
   //%o_0%:{(Outer1::C1::Cn that)}
   private static Member buildPathAdapterInner(Path path) {
     //throw Assertions.codeNotReachable();
-    ClassB cb= new ClassB(Doc.factory(path),Doc.empty(),false,Collections.emptyList(),Collections.emptyList(),Stage.None);
+    ClassB cb= new ClassB(Doc.factory(path),Doc.empty(),false,Collections.emptyList(),Collections.emptyList());
     return new ClassB.NestedClass(Doc.empty(),"%o_0%",cb,null);
   }
   /**Expands a map to include also the implemented versions of methods*/

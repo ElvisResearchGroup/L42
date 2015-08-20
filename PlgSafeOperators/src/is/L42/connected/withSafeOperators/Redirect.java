@@ -46,8 +46,8 @@ public class Redirect {
     return applyMapPath(p,cb,toRedirect);
   }
   public static ClassB applyMapPath(Program p,ClassB cb, List<PathPath> mapPath) {
-    cb=//Rename.renameUsage(mapPath,cb);
-        RenameMembers.of(mapPath, cb);
+    cb=Rename.renameUsage(mapPath,cb);
+       //TODO: use this when ready RenameMembers.of(mapPath, cb);
     for(PathPath pp:mapPath){
       cb=IntrospectionAdapt.remove(pp.getPath1(),cb);
     }
@@ -77,7 +77,7 @@ public class Redirect {
       }//p(Path)[from Path]=L0'={H' M0' ... Mn', _}//reordering of Ms allowed here
     else{
       assert path.isPrimitive();
-      l0DestNoFrom=new ClassB(Doc.empty(),Doc.empty(),path.equals(Path.Any()),Collections.emptyList(),Collections.emptyList(),Stage.None);
+      l0DestNoFrom=new ClassB(Doc.empty(),Doc.empty(),path.equals(Path.Any()),Collections.emptyList(),Collections.emptyList());
     }
     //(a)Cs is public in L, and Cs have no private state;
     boolean isPrivate=csPrivate[0];

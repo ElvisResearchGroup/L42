@@ -53,7 +53,7 @@ public class Sum {
     Doc doc2 = a.getDoc2().sum(b.getDoc2());
     ExtractInfo.checkClassClash(p, current, topA, topB, a, b);
     boolean isInterface =a.isInterface() || b.isInterface();
-    return new ClassB(doc1, doc2, isInterface, superT, ms, Stage.None);
+    return new ClassB(doc1, doc2, isInterface, superT, ms);
     }
   private static void doubleSimetricalMatch(Program p, ClassB topA, ClassB topB,ClassB a, ClassB b, List<Member> ms, List<String> current) {
     for (Member m : a.getMs()) {//add from a+b

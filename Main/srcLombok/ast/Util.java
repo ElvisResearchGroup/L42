@@ -1,12 +1,10 @@
 package ast;
 
-import lombok.NonNull;
-import lombok.Value;
-import lombok.Data;
-import lombok.AllArgsConstructor;
+import lombok.*;
 import lombok.experimental.Wither;
 import ast.Ast.MethodSelector;
 import ast.Ast.Path;
+import ast.Ast.Stage;
 import ast.ExpCore.*;
 
 public class Util {
@@ -27,8 +25,37 @@ public class Util {
     public String toString(){return ""+path1+"->"+path2;}
     }
   
-  @Data @AllArgsConstructor public static class MethodLocator{@NonNull java.util.List<ClassB.Member> mTail; @NonNull java.util.List<Integer> mPos; ClassB.MethodWithType that; MethodSelector newName;
+
+  public interface Locator{
+	java.util.List<ClassB.Member> getMTail();
+	java.util.List<Integer> getMPos();
+	java.util.List<ClassB> getMOuters();
+  }
+  
+  @Data public static class MethodLocator implements Locator{
+    @NonNull java.util.List<ClassB.Member> mTail;
+	@NonNull java.util.List<Integer> mPos;
+	@NonNull java.util.List<ClassB> mOuters;
+    @NonNull ClassB.MethodWithType that;
+	MethodSelector newName;
     public String toString(){return coreVisitors.PathAnnotateClass.computeComment(mTail, mPos)+that.getMs()+newName;}}
-  @Data public static class NestedLocator{@NonNull java.util.List<ClassB.Member> mTail; @NonNull java.util.List<Integer> mPos;  @NonNull String that; String newName;Path newPath;//either newName or newPath always null
+  
+  @Data public static class NestedLocator implements Locator{
+    @NonNull java.util.List<ClassB.Member> mTail;
+	@NonNull java.util.List<Integer> mPos;
+	@NonNull java.util.List<ClassB> mOuters;
+	@NonNull String that;
+	String newName;
+	Path newPath;//either newName or newPath always null
     public String toString(){return coreVisitors.PathAnnotateClass.computeComment(mTail, mPos)+that+newName;}}
+
+  @Data public static class CachedStage{
+	@NonNull ast.Ast.Stage stage=Stage.None;
+	final java.util.Map<Path,ClassB>dependencies=new java.util.HashMap<>();
+	boolean verified=false;	  
+    }
+  @Data public static class CachedMt{
+	  ast.Ast.MethodType mt;
+	  Path path;
+  }
 }

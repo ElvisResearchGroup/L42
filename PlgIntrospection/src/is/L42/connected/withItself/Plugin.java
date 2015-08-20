@@ -384,7 +384,7 @@ public class Plugin implements PluginType{
      assert mapPath.size()==1:mapPath.size();
      Path path=mapPath.get(0).getPath2();
      assert path.isCore();
-     inner=IntrospectionAdapt.encapsulateIn(path.getCBar(),new ClassB(Doc.empty(),Doc.empty(),true,Collections.emptyList(),Collections.emptyList(),Stage.None),comment.getDoc1());
+     inner=IntrospectionAdapt.encapsulateIn(path.getCBar(),new ClassB(Doc.empty(),Doc.empty(),true,Collections.emptyList(),Collections.emptyList()),comment.getDoc1());
      }
    if(mapPath.isEmpty()){
      assert mapMx.size()==1:mapMx.size();
@@ -404,10 +404,10 @@ public class Plugin implements PluginType{
      inner=mwt.withInner(Optional.empty()).withDoc(comment.getDoc1());
      //if outer0, there it is, else, use encapsulate
      if(!path.equals(Path.outer(0))){
-       inner=IntrospectionAdapt.encapsulateIn(path.getCBar(),new ClassB(Doc.empty(),Doc.empty(),true,Collections.emptyList(),Collections.singletonList(inner),Stage.None),Doc.empty());
+       inner=IntrospectionAdapt.encapsulateIn(path.getCBar(),new ClassB(Doc.empty(),Doc.empty(),true,Collections.emptyList(),Collections.singletonList(inner)),Doc.empty());
        }
      }
-   ClassB innerC=new ClassB(Doc.empty(),Doc.empty(),true,Collections.emptyList(),Collections.singletonList(inner),Stage.None);
+   ClassB innerC=new ClassB(Doc.empty(),Doc.empty(),true,Collections.emptyList(),Collections.singletonList(inner));
    that=IntrospectionSum.sum(that, innerC, Path.outer(0));
    return that;
  }

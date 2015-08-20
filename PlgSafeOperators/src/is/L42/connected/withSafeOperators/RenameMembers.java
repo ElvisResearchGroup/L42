@@ -55,12 +55,13 @@ public class RenameMembers extends coreVisitors.CloneWithPath{
     List<String> cs = src.getCBar();
     List<Member> mTail=new ArrayList<>();
     List<Integer> mPos=new ArrayList<>();
-    addCs(cs.subList(0, cs.size()-1), mTail, mPos);
-    NestedLocator nl=new NestedLocator(mTail, mPos, cs.get(cs.size()-1));
+    List<ClassB> mOuters=new ArrayList<>();
+    addCs(cs.subList(0, cs.size()-1), mTail, mPos,mOuters);
+    NestedLocator nl=new NestedLocator(mTail, mPos,mOuters, cs.get(cs.size()-1));
     nl.setNewPath(dest);
     return nl;
   }
-  private static void addCs(List<String> cs, List<Member> mTail, List<Integer> mPos) {
+  private static void addCs(List<String> cs, List<Member> mTail, List<Integer> mPos,List<ClassB> mOuters) {
     for(String s:cs){
       mTail.add(new ClassB.NestedClass(ast.Ast.Doc.empty(),s,new ExpCore.WalkBy(), null));
       mPos.add(1);

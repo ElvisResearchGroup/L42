@@ -77,10 +77,10 @@ public class EncodingHelper{
     return wrapInt32(""+i);
   }
   public static ClassB wrapInt32(String i) {
-    return new ClassB(Doc.factory("@int32\n"+i+"\n"),Doc.empty(),false,Collections.emptyList(),Collections.emptyList(),Stage.None);
+    return new ClassB(Doc.factory("@int32\n"+i+"\n"),Doc.empty(),false,Collections.emptyList(),Collections.emptyList());
   }
   public static ClassB wrapStringU(String s) {
-    return new ClassB(Doc.factory("@stringU\n"+produceStringUnicode(s)+"\n"),Doc.empty(),false,Collections.emptyList(),Collections.emptyList(),Stage.None);
+    return new ClassB(Doc.factory("@stringU\n"+produceStringUnicode(s)+"\n"),Doc.empty(),false,Collections.emptyList(),Collections.emptyList());
   }
 
   public static ClassB ensureExtractCt(Object e,Program p) {

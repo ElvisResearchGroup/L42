@@ -146,7 +146,7 @@ public class ErrorFormatter {
     for(Member m:cb.getMs()){
       String err=m.match(nc->{
         ClassB ncb=(ClassB)nc.getInner();
-        if(ncb.getStage()!=Stage.Star){
+        if(ncb.getStage().getStage()!=Stage.Star){
           return nc.getName()+"::"+isItErrorPlace(p,nc.getInner());
           }
         return null;

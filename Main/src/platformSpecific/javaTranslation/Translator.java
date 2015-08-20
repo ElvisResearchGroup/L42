@@ -93,14 +93,14 @@ public class Translator {
 
   public static void add(int level,List<String> cs,ClassB cb, Map<String,ClassB> map){
     Ast.Path p=Ast.Path.outer(level, cs);
-    if(cb.getStage()==Stage.Star  && IsCompiled.of(cb)){//otherwise is "meta"
+    if(cb.getStage().getStage()==Stage.Star  && IsCompiled.of(cb)){//otherwise is "meta"
       map.put(nameOf(level,cs),useFrom(cb,p));
       }
     else{//generate only for metaprogramming
       map.put(nameOf(level,cs),new ExpCore.ClassB(
           Doc.factory("DebugInfo: is interface since (cb.getStage()!=Stage.Star :"
-            +(cb.getStage()!=Stage.Star)+") or since !IsCompiled.of(cb) :"+!IsCompiled.of(cb)+")"
-          ),Doc.empty(),true,Collections.emptyList(),Collections.emptyList(),Stage.None));
+            +(cb.getStage().getStage()!=Stage.Star)+") or since !IsCompiled.of(cb) :"+!IsCompiled.of(cb)+")"
+          ),Doc.empty(),true,Collections.emptyList(),Collections.emptyList()));
       }
     for(Member m:cb.getMs()){
       if (!(m instanceof NestedClass)){continue;}

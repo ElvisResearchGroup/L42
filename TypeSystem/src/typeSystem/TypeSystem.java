@@ -103,7 +103,7 @@ public class TypeSystem implements Visitor<Type>, Reporter{
         //assert Configuration.typeExtraction.isCt(ct);
         assert IsCompiled.of(ct);
         if(p.executablePlus()){
-          if(ct.getStage()==Stage.Less){
+          if(ct.getStage().getStage()==Stage.Less){
             throw new ErrorMessage.LibraryRefersToIncompleteClasses(p.getInnerData(), ct);
             }
           }
@@ -128,9 +128,9 @@ public class TypeSystem implements Visitor<Type>, Reporter{
       });
     }
  private boolean isPathPath(Program p,ClassB cb) {
-   if(p.isExecutableStar()){return cb.getStage()==Stage.Star;}
+   if(p.isExecutableStar()){return cb.getStage().getStage()==Stage.Star;}
     if(p.executablePlus()){
-      return cb.getStage()==Stage.Plus || cb.getStage()==Stage.Star;
+      return cb.getStage().getStage()==Stage.Plus || cb.getStage().getStage()==Stage.Star;
     }
     return true;
   }

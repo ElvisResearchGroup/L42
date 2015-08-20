@@ -29,8 +29,8 @@ public class IntrospectionSum {
     }
   public static ClassB sum(ClassB l1,ClassB l2,Path current){
     boolean isInterface=isNewHeaderInterface(l1,l2,current);
-    assert l1.getStage()==Stage.None;
-    assert l2.getStage()==Stage.None;
+    assert l1.getStage().getStage()==Stage.None;
+    assert l2.getStage().getStage()==Stage.None;
     List<Path> superT = new ArrayList<Path> (l1.getSupertypes());
     superT.addAll(l2.getSupertypes());
     List<Member> ms1 = new ArrayList<Member>(l1.getMs());
@@ -43,7 +43,7 @@ public class IntrospectionSum {
     Doc doc1 = l1.getDoc1().sum(l2.getDoc1());
     Doc doc2=l1.getDoc2().sum(l2.getDoc2());
     //if(h instanceof Ast.ConcreteHeader){purge(ms,(Ast.ConcreteHeader)h);}
-    return new ClassB(doc1,doc2,isInterface,superT,ms1,Stage.None);
+    return new ClassB(doc1,doc2,isInterface,superT,ms1);
   }
 /*private static void purge(List<Member> ms, ConcreteHeader h) {
     List<Member> ms2 = Configuration.typeExtraction.cfType(h);

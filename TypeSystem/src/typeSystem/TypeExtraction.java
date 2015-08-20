@@ -38,16 +38,16 @@ public class TypeExtraction {
   public static ClassB etDispatch(Program p,ClassB classB){
     ClassB result=null;
     if(IsCompiled.of(classB)){
-      if(classB.getStage()==Stage.None){result= etSub(p,classB);}
-      if(classB.getStage()==Stage.Star){result=etStage(p,classB);}
+      if(classB.getStage().getStage()==Stage.None){result= etSub(p,classB);}
+      if(classB.getStage().getStage()==Stage.Star){result=etStage(p,classB);}
       }
     if(result!=null){return result;}
     result=etDeep(p,classB);
-    assert !result.equals(classB);
+    //assert !result.equals(classB);
     return result;
     }
   private static ClassB etStage(Program p, ClassB ct) {
-    assert ct.getStage()==Stage.Star;
+    assert ct.getStage().getStage()==Stage.Star;
     //classB.getSupertypes().size()==1;
     //collect es
     Set<ClassB> es;
@@ -56,14 +56,15 @@ public class TypeExtraction {
     List<ClassB> esNone=new ArrayList<>();
     for(ClassB cb:es){
       if(cb==null){continue;}
-      if(cb.getStage()==Stage.None && IsCompiled.of(cb)){esNone.add(cb);}
+      if(cb.getStage().getStage()==Stage.None && IsCompiled.of(cb)){esNone.add(cb);}
     }
     if(!esNone.isEmpty()){return null;}//esNone exists solely to simpler testing,
     Stage stage=stage(p,ct,es);
     assert stage!=Stage.Star;
     assert stage!=Stage.None;
     if(stage==null){return null;}
-    return ct.withStage(stage);
+    ct.getStage().setStage(stage);
+    return ct;
   }
   private static List<ClassB> collectEs(Program p, ClassB ct) {
     List<Path> usedPlus = new UsedPathsPlus().of(ct);
@@ -96,7 +97,8 @@ public class TypeExtraction {
         }
       }
 
-    ClassB result=new ClassB(classB.getDoc1(),classB.getDoc2(),classB.isInterface(),sup,members,Stage.Star);
+    ClassB result=new ClassB(classB.getDoc1(),classB.getDoc2(),classB.isInterface(),sup,members);
+    result.getStage().setStage(Stage.Star);
     return result;
   }
   static ClassB etDeep(Program p,ClassB ct){
@@ -121,7 +123,7 @@ public class TypeExtraction {
     assert IsCompiled.of(cb);
     for(ClassB cbi: es){
       if(cbi==null){return Stage.Less;}
-      if(cbi.getStage()==Stage.Less){return Stage.Less;}
+      if(cbi.getStage().getStage()==Stage.Less){return Stage.Less;}
       if(!IsCompiled.of(cbi)){return Stage.Less;}
     }
     if(Functions.isAbstract(p,cb)){
@@ -129,7 +131,7 @@ public class TypeExtraction {
       }
     for(ClassB cbi: es){
       assert cbi!=null;
-      if(cbi.getStage()==Stage.Plus){
+      if(cbi.getStage().getStage()==Stage.Plus){
         return Stage.Plus;
         }
     }
@@ -152,7 +154,9 @@ public class TypeExtraction {
       catch( ErrorMessage.ProgramExtractOnMetaExpression ignored){return null;}
     }
     checkOriginals(p, ct, original);
-    return new ClassB(Doc.empty(),Doc.empty(),false,paths,members,Ast.Stage.Star);
+    ClassB result=new ClassB(Doc.empty(),Doc.empty(),false,paths,members);
+    result.getStage().setStage(Stage.Star);
+    return result;
   }
   private static void checkOriginals(Program p, ClassB cb, List<Set<Ast.MethodSelector>> original) {
     //if there is an element repeated in originals
@@ -171,7 +175,7 @@ public class TypeExtraction {
     if(!cbi.isInterface()){
       throw new ErrorMessage.MalformedSubtypeDeclaration(cb,cbi,pi,p.getInnerData());
       }
-    if(cbi.getStage()==Stage.None){return true;}
+    if(cbi.getStage().getStage()==Stage.None){return true;}
     List<Path> pathsi = Map.of(pii->From.fromP(pii,pi), cbi.getSupertypes());
     paths.addAll(pathsi);
     original.add(Functions.originalMethOf(p2,pathsi,cbi.getMs()));

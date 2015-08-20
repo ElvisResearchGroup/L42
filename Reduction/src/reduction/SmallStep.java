@@ -34,7 +34,8 @@ public class SmallStep extends Executor{
     ClassB ct=Configuration.typeSystem.typeExtraction(p,cb);
     ct=ct.withMember(m.withBody(new WalkBy()));
     //get p'
-    Program p1=p.addAtTop(cb,ct.withStage(Stage.Less));
+    ct.getStage().setStage(Stage.Less);//TODO: boh? still ok?
+    Program p1=p.addAtTop(cb,ct);
     //assert ct.getStage()==Stage.Less;
     //Program p1=p.addAtTop(ct);
     ErrorFormatter.printType(p1);

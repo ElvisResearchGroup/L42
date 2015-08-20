@@ -91,14 +91,13 @@ public interface ExpCore {
     }
   }
 
-  @Value @Wither public static class ClassB implements ExpCore, Ast.Atom {
-    public ClassB(Doc doc1, Doc doc2, boolean isInterface, List<Path> supertypes, List<Member> ms, Stage stage) {
+  @Value @Wither @EqualsAndHashCode(exclude = "stage") public static class ClassB implements ExpCore, Ast.Atom {
+    public ClassB(Doc doc1, Doc doc2, boolean isInterface, List<Path> supertypes, List<Member> ms) {
       this.doc1 = doc1;
       this.doc2 = doc2;
       this.isInterface = isInterface;
       this.supertypes = supertypes;
       this.ms = ms;
-      this.stage = stage;
       isConsistent();
     }//lombock fails me here :-(
     Doc doc1;
@@ -106,7 +105,7 @@ public interface ExpCore {
     boolean isInterface;
     List<Ast.Path> supertypes;
     List<Member> ms;
-    Stage stage;
+    ast.Util.CachedStage stage=new ast.Util.CachedStage();
     public String toString() {
       return sugarVisitors.ToFormattedText.of(this);
     }
@@ -169,10 +168,11 @@ public interface ExpCore {
         return nc.apply(this);
       }
     }
-    @Value @Wither @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p")public static class MethodImplemented implements Member {
+    @Value @Wither @EqualsAndHashCode(exclude = {"p","mt"}) @ToString(exclude = {"p","mt"})public static class MethodImplemented implements Member {
       @NonNull Doc doc;
       @NonNull MethodSelector s;
       @NonNull ExpCore inner;
+      ast.Util.CachedMt mt=new ast.Util.CachedMt();
       Position p;
       public Member withBody(ExpCore e) {
         return this.withInner(e);

@@ -63,8 +63,8 @@ public class Rename {
     return ClassOperations.normalizePaths(directRename(p, cb, src, dest));
   }
   private static ClassB directRename(Program p, ClassB cb, List<String> src, List<String> dest) {
-    //ClassB renamedCb=renameUsage(Collections.singletonList(new PathPath(Path.outer(0,src),Path.outer(0,dest))),cb);//cb, renamedCb are normalized
-    ClassB renamedCb=RenameMembers.of(Path.outer(0,src),Path.outer(0,dest),cb);
+    ClassB renamedCb=renameUsage(Collections.singletonList(new PathPath(Path.outer(0,src),Path.outer(0,dest))),cb);//cb, renamedCb are normalized
+    //TODO: reenable ClassB renamedCb=RenameMembers.of(Path.outer(0,src),Path.outer(0,dest),cb);
     //cb, renamedCb are normalized   
     ClassB clearCb=ClassOperations.onNestedNavigateToPathAndDo(renamedCb,src,nc->Optional.empty());
     ClassB newCb=redirectDefinition(src,dest,renamedCb);
@@ -94,9 +94,10 @@ public class Rename {
     cb=(ClassB)FromInClass.of(cb, toFrom);
     List<Member>ms=new ArrayList<>();
     ms.add(IntrospectionAdapt.encapsulateIn(dest, cb,docCb[0]));
-    return new ClassB(Doc.empty(),Doc.empty(),false,Collections.emptyList(),ms,Stage.None);
+    return new ClassB(Doc.empty(),Doc.empty(),false,Collections.emptyList(),ms);
   }
-  /*
+ 
+  //TODO: replace with same mechanism of private normalization when is completed
   static ClassB renameUsage(List<PathPath> mapPath, ClassB cb) {
     return (ClassB)cb.accept(new coreVisitors.CloneWithPath(){
       public ExpCore visit(Path s) {
@@ -133,5 +134,5 @@ public class Rename {
         return s;
         }
        });
-}*/
+}
   }

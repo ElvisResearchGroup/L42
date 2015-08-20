@@ -87,7 +87,7 @@ public class TypeSystemOK {
    * @throws typechecking error
    */
   public static boolean isExePlus(ClassB cb){
-    if(cb.getStage()==Stage.Less){return false;}
+    if(cb.getStage().getStage()==Stage.Less){return false;}
     if(!IsCompiled.of(cb)){return false;}
     return true;
   }
@@ -102,7 +102,7 @@ public class TypeSystemOK {
     checkCt2(p,cb);
     //TODO: now 27/07/2015 I still get trouble for not normalizable stuff
     */
-    if(cb.getStage()==Stage.Star || cb.getStage()==Stage.Plus){
+    if(cb.getStage().getStage()==Stage.Star || cb.getStage().getStage()==Stage.Plus){
       try{checkCt2(p,cb);return;}
       catch(ErrorMessage.NormImpossible __){checkCt1(p,cb);return;}
       catch(ErrorMessage.PathNonExistant __){checkCt1(p,cb);return;}//this happens when

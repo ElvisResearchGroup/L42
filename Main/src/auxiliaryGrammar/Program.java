@@ -71,9 +71,9 @@ public class Program {
 
   public Stage getStage(){
     if(ct==null){Assertions.codeNotReachable();}
-    return ct.getStage();
+    return ct.getStage().getStage();
     }
-  public Stage getStage(Path p){return this.extractCt(p).getStage();};
+  public Stage getStage(Path p){return this.extractCt(p).getStage().getStage();};
   //public void __addAtTop(ClassB cb){this.inner.add(0,cb);}
 
   public Program addAtTop(ClassB cb,ClassB ct){return new Program(this,cb,ct);}
@@ -96,14 +96,14 @@ public class Program {
 
   public boolean executablePlus(){
     assert !this.isEmpty();
-    return this.ct.getStage()!=Stage.Less;
+    return this.ct.getStage().getStage()!=Stage.Less;
   }
 
   public boolean executablePlus(Path p){
-    return this.extractCt(p).getStage()!=Stage.Less;
+    return this.extractCt(p).getStage().getStage()!=Stage.Less;
   }
   public boolean executable(Path p){
-    return this.extractCt(p).getStage()==Stage.None;
+    return this.extractCt(p).getStage().getStage()==Stage.None;
   }
 
 /*
@@ -331,7 +331,7 @@ public class Program {
   }
   public boolean checkComplete(){
     if(this.isEmpty()){return true;}
-    if(this.topCt().getStage()!=Stage.Star){return false;}
+    if(this.topCt().getStage().getStage()!=Stage.Star){return false;}
     return this.pop().checkComplete();
   }
 

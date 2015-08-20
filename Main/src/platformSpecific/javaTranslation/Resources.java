@@ -87,12 +87,12 @@ public class Resources {
         ClassB inner;
         if(map[i+1] instanceof String){inner=EncodingHelper.wrapStringU((String)map[i+1]);}
         else{//for now, just doc.
-          inner=new ClassB((Doc)map[i+1],Doc.empty(),false,Collections.emptyList(),Collections.emptyList(),Stage.None);
+          inner=new ClassB((Doc)map[i+1],Doc.empty(),false,Collections.emptyList(),Collections.emptyList());
           }
         if(!Path.isValidClassName(cName)){throw Assertions.codeNotReachable("Invalid name in multiPartStringError:"+cName);}
         ms.add(new ExpCore.ClassB.NestedClass(Doc.empty(), cName, inner,null));
       }
-      ExpCore.ClassB cb=new ExpCore.ClassB(Doc.empty(), Doc.empty(), false, Collections.emptyList(), ms,Stage.None);
+      ExpCore.ClassB cb=new ExpCore.ClassB(Doc.empty(), Doc.empty(), false, Collections.emptyList(), ms);
       return cb;
     }
     }
@@ -135,11 +135,11 @@ public class Resources {
       List<Path> ps = CollectPaths0.of(ec);
       for(ClassB cb:cbs){
         ClassB ct1= Configuration.typeSystem.typeExtraction(p,cb);
-        if(ct1.getStage()==Stage.Less ||ct1.getStage()==Stage.None  ){strict=false;}
+        if(ct1.getStage().getStage()==Stage.Less ||ct1.getStage().getStage()==Stage.None  ){strict=false;}
         }
       for(Path path:ps){
         if(path.isPrimitive()){continue;}
-        Stage extracted=p.extractCt(path).getStage();
+        Stage extracted=p.extractCt(path).getStage().getStage();
         if(extracted==Stage.Less || extracted==Stage.None){strict=false;}
         }
       }
@@ -151,7 +151,7 @@ public class Resources {
         msg.printStackTrace();
         throw msg;//to breakpoint here
         }
-      if(strict && (ct.getStage()==Stage.Less || ct.getStage()==Stage.None)){
+      if(strict && (ct.getStage().getStage()==Stage.Less || ct.getStage().getStage()==Stage.None)){
         return false;
         //throw Assertions.codeNotReachable("try to make this happen, is it possible? it should mean bug in plugin code\n"/*+ToFormattedText.of(ct)*/);
       }
