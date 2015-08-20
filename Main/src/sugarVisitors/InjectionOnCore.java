@@ -9,6 +9,7 @@ import tools.Match;
 import ast.Ast;
 import ast.Ast.BlockContent;
 import ast.Ast.Doc;
+import ast.Ast.MethodSelector;
 import ast.Ast.MethodType;
 import ast.Ast.On;
 import ast.ExpCore;
@@ -94,14 +95,14 @@ public class InjectionOnCore implements Visitor<ExpCore> {
     List<String> xs=s.getPs().getXs();
     List<ExpCore>es=new ArrayList<>();
     for(Expression e:s.getPs().getEs()){es.add(e.accept(this));}
-    return new MCall(receiver, name,doc,xs,es,s.getP());
+    return new MCall(receiver, new MethodSelector(name,xs),doc,es,s.getP());
   }
   public ExpCore visit(Expression.Using s){
     assert !s.getPs().getE().isPresent();
     List<String>xs=s.getPs().getXs();
     List<ExpCore>es=new ArrayList<>();
     for(Expression e : s.getPs().getEs()){es.add(e.accept(this));}
-    return new Using(s.getPath(),s.getName(),s.getDocs(),xs,es,s.getInner().accept(this));
+    return new Using(s.getPath(),new MethodSelector(s.getName(),xs),s.getDocs(),es,s.getInner().accept(this));
     }
   public ExpCore visit(WalkBy s) {
     return new ExpCore.WalkBy();

@@ -69,8 +69,8 @@ public class IntrospectionAdapt {
     if(!(e instanceof MCall)){return null;}
     MCall mc=(MCall)e;
     if(!mc.getReceiver().equals(new X("this"))){return null;}
-    if(mc.getXs().size()!=mt.getMs().getNames().size()){return null;}
-    MethodSelector ms=new MethodSelector(mc.getName(),mc.getXs());
+    if(mc.getS().getNames().size()!=mt.getMs().getNames().size()){return null;}
+    MethodSelector ms=mc.getS();
     list.add(new PathMxMx(p,mt.getMs(),ms));
     return null;
   }
@@ -380,7 +380,7 @@ static Path add1Outer(Path p) {
     MethodType mt1=new MethodType(Doc.empty(),Mdf.Immutable,ts,tsDocs,tVoid,Collections.emptyList());
     MethodSelector s2=s;
     MethodType mt2=new MethodType(Doc.empty(),Mdf.Immutable,ts,tsDocs,tVoid,Collections.emptyList());
-    ExpCore e1=new MCall(new X("this"),s.getName(),Doc.empty(),s.getNames(),es1,null);
+    ExpCore e1=new MCall(new X("this"),s,Doc.empty(),es1,null);
     List<Member> ms=new ArrayList<>();
     ms.add(new MethodWithType(Doc.empty(),s1,mt1,Optional.of(e1),null));
     ms.add(new MethodWithType(Doc.empty(),s2,mt2,Optional.empty(),null));

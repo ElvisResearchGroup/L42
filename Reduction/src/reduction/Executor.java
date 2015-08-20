@@ -191,7 +191,7 @@ private static ExpCore removeCatch(ExpCore ctxVal, NoThrowRemoveOn r) {
 private ExpCore methCall(Program p, ExpCore ctxVal, MethCall r) {
   MCall mc = r.getThat();
   Path pathR=Functions.classOf(p, ctxVal, mc.getReceiver());
-  MethodWithType mwt = p.method(pathR,new MethodSelector(mc.getName(), mc.getXs()),mc,false);
+  MethodWithType mwt = p.method(pathR,mc.getS(),mc,false);
   if(mwt.getInner().isPresent()){
     return normalMeth(pathR,mwt,ctxVal,mc);
   }
@@ -254,12 +254,12 @@ private ExpCore fieldA(ExpCore ctxVal, MCall mc, MethodWithType mwt,HashSet<Stri
     }
   //fieldAObj
   log("---meth fieldA obj--");
-  String fName=mc.getName();
+  String fName=mc.getS().getName();
   if(fName.startsWith("#")){fName=fName.substring(1);}
   MCall decRec2=(MCall)decRec;
   //assert IsValue.of(Resources.getP(),decRec2);
-  for(int i=0;i<decRec2.getXs().size();i++){
-    if(!decRec2.getXs().get(i).equals(fName)){continue;}
+  for(int i=0;i<decRec2.getS().getNames().size();i++){
+    if(!decRec2.getS().getNames().get(i).equals(fName)){continue;}
     return ReplaceCtx.of(ctxVal, decRec2.getEs().get(i));
   }
   throw Assertions.codeNotReachable();

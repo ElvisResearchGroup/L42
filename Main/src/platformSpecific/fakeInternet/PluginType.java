@@ -18,8 +18,8 @@ import auxiliaryGrammar.Program;
 public interface PluginType {
   //Object dispatch(boolean t,Program p, Using u);
   static Method getMethod(PluginType that,Program p,Using u){
-    String mName=Translator.nameOf(u.getName(),u.getXs());
-    Class<?>[] parameterTypes=new Class<?>[u.getXs().size()];
+    String mName=Translator.nameOf(u.getS().getName(),u.getS().getNames());
+    Class<?>[] parameterTypes=new Class<?>[u.getS().getNames().size()];
     Arrays.fill(parameterTypes, Object.class);
     try {return that.getClass().getMethod(mName, parameterTypes);}
     catch (NoSuchMethodException e) {
@@ -37,7 +37,7 @@ public interface PluginType {
     ActionType ann = m.getAnnotation(ActionType.class);
     assert ann!=null;
     MethodType mt = ActionType.Type.mt(ann.mdf(),ann.value());
-    assert mt.getTs().size()==u.getXs().size(): m.getName()+" "+mt.getTs().size()+"::"+u.getXs().size();
+    assert mt.getTs().size()==u.getS().getNames().size(): m.getName()+" "+mt.getTs().size()+"::"+u.getS().getNames().size();
     return mt;
     };
   default Object execute(Program p, Using u){//return  dispatch(false,p,u);}

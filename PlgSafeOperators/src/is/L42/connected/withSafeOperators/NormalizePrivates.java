@@ -1,10 +1,13 @@
 package is.L42.connected.withSafeOperators;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
+import coreVisitors.CloneVisitor;
 import coreVisitors.CloneWithPath;
 import coreVisitors.Exists;
+import tools.Map;
 import ast.ExpCore;
 import ast.ExpCore.ClassB.Member;
 import ast.Util;
@@ -31,9 +34,9 @@ public class NormalizePrivates {
    return freshName(name,"__"+countPrivates++ +"_"+countFamilies);
   }
   public static String freshName(String name,String newPedex){
-    //assert !name.contains("__");//TODO:we can relax this somehow?
-    if(name.contains("__")){
-      name=name.replace("__", "_"+NormalizePrivates.doubleUnderscoreReplacement);      }
+    assert !name.contains("__");//should have been removed before
+    //if(name.contains("__")){
+    //  name=name.replace("__", "_"+NormalizePrivates.doubleUnderscoreReplacement);      }
     //just removing __ would be wrong, multiple methods would get different names, but multiple getters would be merged together
     
     return name+newPedex;
@@ -73,8 +76,62 @@ public class NormalizePrivates {
     boolean wasAdded=collected.add(pedex);
     return wasAdded;
   }
+  private static String replace__(String s){
+    String ss=s.replace("__", "_"+NormalizePrivates.doubleUnderscoreReplacement);
+    if(s.equals(ss)){return ss;}
+    return replace__(ss);
+  }
+  public static ClassB normalize(ClassB cb){
+    CollectedPrivates result = NormalizePrivates.collectPrivates(cb);
+    if (result.normalized && result.pedexes.isEmpty()){return cb;}
+    cb=replace__ifPresent(cb, result);
+    if(!result.pedexes.isEmpty()){
+      result=NormalizePrivates.collectPrivates(cb);//could be made faster, but not important here
+      }
+    result.computeNewNames();
+    cb=NormalizePrivates.normalize(result, cb);
+    return cb;
   
+    }
+  private static ClassB replace__ifPresent(ClassB cb, CollectedPrivates result) {
+    if(result.pedexes.isEmpty()){return cb;}
+    return (ClassB)cb.accept(new CloneVisitor(){
+        public ExpCore visit(Path s){
+          if(s.isPrimitive()){return s;}
+          List<String> cs=s.getCBar();
+          List<String>newCs=new ArrayList<>();
+          for(String si:cs){newCs.add(replace__(si));}
+          if(newCs.equals(cs)){return s;}
+          return Path.outer(s.outerNumber(),newCs);
+        }
+        public ast.Ast.MethodSelector liftMs(ast.Ast.MethodSelector ms){
+          return super.liftMs(ms.withName(replace__(ms.getName())).withNames(
+              Map.of(ni->replace__(ni),ms.getNames())));
+        }
+        public ClassB.NestedClass visit(ClassB.NestedClass nc){
+          return super.visit(nc.withName(replace__(nc.getName())));
+        }
+      }) ;
+  }
+   
+  static class RenameAlsoDefinition extends RenameMembers{
+    public RenameAlsoDefinition(CollectedPrivates maps) { super(maps);}
+    public static  ClassB of(CollectedPrivates maps,ClassB cb){
+      return (ClassB)cb.accept(new RenameAlsoDefinition(maps));
+    }
+    public ClassB.NestedClass visit(ClassB.NestedClass nc){
+      for(NestedLocator nl:maps.privatePaths){
+        if(!nl.getMPos().equals(this.getAstIndexesPath())){continue;}
+        if(!nl.getMTail().equals(this.getAstNodesPath())){continue;}
+        if(!nc.getName().equals(nl.getThat())){continue;}
+        assert nl.getNewName()!=null;
+        return super.visit(nc.withName(nl.getNewName()));
+      }
+      return super.visit(nc);
+    }
+  }
   public static ClassB normalize(CollectedPrivates privates,ClassB cb){
+    cb=RenameAlsoDefinition.of(privates, cb);
     return cb;
     //renameMethod still use old introspection
     //write a rename usage from data of collected privates for both paths and methods.

@@ -48,12 +48,12 @@ public class InjectionOnSugar implements Visitor<ast.Expression> {
   }
 
   @Override public Expression visit(Using s) {
-    List<String> xs=s.getXs();
+    List<String> xs=s.getS().getNames();
     List<ast.ExpCore> es1=s.getEs();
     List<ast.Expression> es=new ArrayList<ast.Expression>();
     for( ast.ExpCore e : es1){es.add(lift(e));}
     ast.Ast.Parameters ps=new ast.Ast.Parameters(Optional.<ast.Expression>empty(), xs, es);
-    return new Expression.Using(s.getPath(),s.getName(),s.getDoc(),ps,lift(s.getInner()));
+    return new Expression.Using(s.getPath(),s.getS().getName(),s.getDoc(),ps,lift(s.getInner()));
   }
 
   @Override public Expression visit(Signal s) {
@@ -64,9 +64,9 @@ public class InjectionOnSugar implements Visitor<ast.Expression> {
   }
   @Override public Expression visit(MCall s) {
     ast.Expression receiver=lift(s.getReceiver());
-    String name=s.getName();
+    String name=s.getS().getName();
      Doc docs = s.getDoc();
-    List<String> xs=s.getXs();
+    List<String> xs=s.getS().getNames();
     List<ast.ExpCore> es1=s.getEs();
     List<ast.Expression> es=new ArrayList<ast.Expression>();
     for( ast.ExpCore e : es1){es.add(lift(e));}

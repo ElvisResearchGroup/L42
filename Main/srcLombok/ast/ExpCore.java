@@ -20,9 +20,8 @@ public interface ExpCore {
 
   @Value @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") @Wither public static class MCall implements ExpCore,HasPos {
     ExpCore receiver;
-    String name;
+    MethodSelector s;
     Doc doc;
-    List<String> xs;
     List<ExpCore> es;
     Position p;
     @Override public <T> T accept(coreVisitors.Visitor<T> v) {
@@ -210,9 +209,8 @@ public interface ExpCore {
 
   @Value @Wither public static class Using implements ExpCore {
     Path path;
-    String name;
+    MethodSelector s;
     Doc doc;
-    List<String> xs;
     List<ExpCore> es;
     ExpCore inner;
     @Override public <T> T accept(coreVisitors.Visitor<T> v) {

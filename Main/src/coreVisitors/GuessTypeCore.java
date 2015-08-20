@@ -71,7 +71,7 @@ public class GuessTypeCore implements Visitor<Path>{
     Path path=s.getReceiver().accept(this);
     if(path==null){return null;}
     List<MethodSelectorX> msl=new ArrayList<>();
-    MethodSelectorX msx=new MethodSelectorX(new MethodSelector(s.getName(),s.getXs()), "");
+    MethodSelectorX msx=new MethodSelectorX(s.getS(), "");
     msl.add(msx); 
     Type t=new Ast.HistoricType(path,msl,false);
     t=Norm.of(p,t);

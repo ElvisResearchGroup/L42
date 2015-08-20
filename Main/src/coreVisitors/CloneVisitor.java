@@ -30,6 +30,7 @@ public class CloneVisitor implements Visitor<ExpCore>{
         ht->(Type)new HistoricType(lift(ht.getPath()),ht.getSelectors(),ht.isForcePlaceholder())
         );
     }
+  protected MethodSelector liftMs(MethodSelector ms){return ms;}
   protected ExpCore.Block.Catch liftK(ExpCore.Block.Catch k){
     return new ExpCore.Block.Catch(k.getKind(),k.getX(),Map.of(this::liftO,k.getOns()));
     }
@@ -61,10 +62,10 @@ public class CloneVisitor implements Visitor<ExpCore>{
   }
   public ClassB.NestedClass visit(ClassB.NestedClass nc){return new ClassB.NestedClass(liftDoc(nc.getDoc()),nc.getName(),lift(nc.getInner()),nc.getP());}
   public ClassB.MethodImplemented visit(ClassB.MethodImplemented mi){
-    return new ClassB.MethodImplemented(liftDoc(mi.getDoc()), mi.getS(), lift(mi.getInner()),mi.getP());
+    return new ClassB.MethodImplemented(liftDoc(mi.getDoc()), liftMs(mi.getS()), lift(mi.getInner()),mi.getP());
     }
   public ClassB.MethodWithType visit(ClassB.MethodWithType mt){
-    return new ClassB.MethodWithType(liftDoc(mt.getDoc()),mt.getMs(),liftMT(mt.getMt()), Map.of(this::lift,mt.getInner()),mt.getP());
+    return new ClassB.MethodWithType(liftDoc(mt.getDoc()),liftMs(mt.getMs()),liftMT(mt.getMt()), Map.of(this::lift,mt.getInner()),mt.getP());
     }
 
   protected MethodType liftMT(MethodType mt) {
@@ -75,13 +76,13 @@ public class CloneVisitor implements Visitor<ExpCore>{
   public ExpCore visit(_void s) {return s;}
   public ExpCore visit(WalkBy s) {return s;}
   public ExpCore visit(Using s) {
-    return new Using(lift(s.getPath()),s.getName(),liftDoc(s.getDoc()),s.getXs(),Map.of(this::lift,s.getEs()),lift(s.getInner()));
+    return new Using(lift(s.getPath()),liftMs(s.getS()),liftDoc(s.getDoc()),Map.of(this::lift,s.getEs()),lift(s.getInner()));
   }
   public ExpCore visit(Signal s) {
     return new Signal(s.getKind(),lift(s.getInner()));
   }
   public ExpCore visit(MCall s) {
-    return new MCall(lift(s.getReceiver()),s.getName(),liftDoc(s.getDoc()),s.getXs(),Map.of(this::lift,s.getEs()),s.getP());
+    return new MCall(lift(s.getReceiver()),liftMs(s.getS()),liftDoc(s.getDoc()),Map.of(this::lift,s.getEs()),s.getP());
   }
   public ExpCore visit(Block s) {
     return new Block(liftDoc(s.getDoc()),liftDecs(s.getDecs()),lift(s.getInner()),Map.of(this::liftK,s.get_catch()),s.getP());

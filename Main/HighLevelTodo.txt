@@ -97,3 +97,9 @@ and ++ should take only strings in input.
 -rethink typeextraction. use caching of info somehow.
 -if runaway abstractness/incoherence causes plus, plus should keep
 track of why it exists.
+
+
+**current problems:
+rename private methods need to rename also private methods in library literals,
+those mcalls can be in interface implemented methods.
+to get the types, I need the program? but I do not want to use clone with program.

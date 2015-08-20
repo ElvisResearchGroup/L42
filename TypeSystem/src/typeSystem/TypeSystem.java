@@ -370,14 +370,14 @@ public class TypeSystem implements Visitor<Type>, Reporter{
         catch(ErrorMessage.NormImpossible ni){return methodUnknownT(varEnvs,s);}
         if(recOpt==null){return methodUnknownT(varEnvs,s);}
         if(recOpt.isPrimitive()){
-          throw new ErrorMessage.MethodNotPresent(recOpt,new MethodSelector(s.getName(),s.getXs()),s,null,p.getInnerData());}
+          throw new ErrorMessage.MethodNotPresent(recOpt,s.getS(),s,null,p.getInnerData());}
         if(p.isNotClassB(recOpt)){return methodUnknownT(varEnvs,s);}
         }
       if(recOpt==null){recOpt=GuessTypeCore.of(p, varEnv, s.getReceiver());}
       if(recOpt==null){return methodUnknownT(varEnvs,s);}
       if(recOpt.isPrimitive()){//TODO: method not present thrown only for primitives?
-        throw new ErrorMessage.MethodNotPresent(recOpt,new MethodSelector(s.getName(),s.getXs()),s,null,p.getInnerData());}
-      MethodWithType mwt = p.method(recOpt,new MethodSelector(s.getName(),s.getXs()),s,true);
+        throw new ErrorMessage.MethodNotPresent(recOpt,s.getS(),s,null,p.getInnerData());}
+      MethodWithType mwt = p.method(recOpt,s.getS(),s,true);
       NormType recExpected=new NormType(mwt.getMt().getMdf(),recOpt,Ph.None);
       return TypeCheckMethod.methCallT(this,varEnvs,s,recExpected,mwt);
     });

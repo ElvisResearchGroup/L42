@@ -115,13 +115,13 @@ abstract class MethodPathCloneVisitor extends CloneVisitorWithProgram {
 
 
   public ExpCore visit(MCall s) {
-    MethodSelector ms=new MethodSelector(s.getName(),s.getXs());
+    MethodSelector ms=s.getS();
     Path guessed=GuessTypeCore.of(p,varEnv,s.getReceiver());
     if(guessed==null){return super.visit(s);}
     guessed=Norm.of(p, guessed);
     MethodSelector ms2=visitMS(ms,guessed);
     if(ms2.equals(ms)){return super.visit(s);}
-    s=new MCall(s.getReceiver(),ms2.getName(),s.getDoc(),ms2.getNames(),s.getEs(),s.getP());
+    s=new MCall(s.getReceiver(),ms2,s.getDoc(),s.getEs(),s.getP());
     return super.visit(s);
     }
 }

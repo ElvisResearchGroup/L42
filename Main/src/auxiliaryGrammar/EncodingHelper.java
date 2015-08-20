@@ -66,8 +66,8 @@ public class EncodingHelper{
     result.append(String.format("%04x", (int) c));
   }
   public static String composedName(Using u) {
-    String result=u.getName()+" ";
-    for(String s:u.getXs()){result+=s+" ";}
+    String result=u.getS().getName()+" ";
+    for(String s:u.getS().getNames()){result+=s+" ";}
     return result;
   }
   public static ExpCore wrapError(String err) {

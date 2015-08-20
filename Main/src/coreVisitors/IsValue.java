@@ -90,7 +90,7 @@ public class IsValue extends TestShapeVisitor{
     if(!(ec instanceof MCall))return false;
     MCall s=(MCall)ec;
     if(!(s.getReceiver() instanceof Path)){return false;}
-    MethodSelector ms=new MethodSelector(s.getName(),s.getXs());
+    MethodSelector ms=s.getS();
     MethodWithType mwt=p.method((Path)s.getReceiver(),ms,s,true);
     if(mwt.getInner().isPresent()){return false;}
     if(mwt.getMt().getMdf()!=ast.Ast.Mdf.Type){return false;}

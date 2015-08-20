@@ -203,8 +203,8 @@ public static List<Block.Dec> replace(List<Block.Dec> dvs,MCall mc){
   for(Block.Dec dv: dvs){
     if(!dv.getX().equals(x)){result.add(dv);continue;}
     MCall inner=(MCall)dv.getE();
-    String fieldName=mc.getName();
-    int mIndex=inner.getXs().indexOf(fieldName);
+    String fieldName=mc.getS().getName();
+    int mIndex=inner.getS().getNames().indexOf(fieldName);
     assert mIndex!=-1 :fieldName+" / "+ToFormattedText.of(inner);
     List<ExpCore> es2 = new ArrayList<>(inner.getEs());
     ExpCore parameterAtom = mc.getEs().get(0);

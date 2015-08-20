@@ -90,12 +90,12 @@ public class TranslateExpression implements coreVisitors.Visitor<Void>{
     String xsF="L"+Functions.freshName("xs",TranslateExpression.labels);
     //String k=Resources.submitRes(pt);
     res.append("platformSpecific.javaTranslation.Resources.plgExecutor(");
-    res.append("\""+s.getName()+"\",");
+    res.append("\""+s.getS().getName()+"\",");
     res.append("platformSpecific.javaTranslation.Resources.getP(), ");
     res.append("new "+plgName+"(), ");
     res.append("("+plF+","+xsF+")->"+plF+".");
     //MsumInt32£xn1£xn2(xsF[0],xsF[1]),
-    res.append(Translator.nameOf(s.getName(),s.getXs()));
+    res.append(Translator.nameOf(s.getS().getName(),s.getS().getNames()));
     res.append("(");
     StringBuilders.formatSequence(res,
         IntStream.range(0, s.getEs().size()).iterator(),
@@ -143,7 +143,7 @@ public class TranslateExpression implements coreVisitors.Visitor<Void>{
   public Void visit(MCall s) {
     res.append("(");
     s.getReceiver().accept(this);
-    res.append(")."+Translator.nameOf(s.getName(),s.getXs())+"(");
+    res.append(")."+Translator.nameOf(s.getS().getName(),s.getS().getNames())+"(");
     StringBuilders.formatSequence(res,s.getEs().iterator(),
       ", ", ei->ei.accept(this));
     res.append(")");

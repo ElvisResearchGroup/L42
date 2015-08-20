@@ -77,18 +77,18 @@ public class TranslateClass {
     res.append(Translator.name42Of(s));
     res.append("\");\n");
     res.append("if(this==type){return receiver;}\n");
-    res.append("java.util.ArrayList<String> xs=new java.util.ArrayList<>(java.util.Arrays.asList(");
+    //res.append("java.util.ArrayList<String> xs=new java.util.ArrayList<>(java.util.Arrays.asList(");
     List<String> ns = ctor.getMs().getNames();
-    StringBuilders.formatSequence(res,ns.iterator(),
-      ", ",n->res.append("\""+n+"\""));
-    res.append("));\n");
+    //StringBuilders.formatSequence(res,ns.iterator(),
+    //  ", ",n->res.append("\""+n+"\""));
+    //res.append("));\n");
     res.append("java.util.ArrayList<ast.ExpCore> es=new java.util.ArrayList<>(java.util.Arrays.asList(");
     StringBuilders.formatSequence(res,ns.iterator(),
       ", ",n->res.append(
           "platformSpecific.javaTranslation.Resources.Revertable.doRevert(this.F"+n+")"
           ));
     res.append("));\n");
-    res.append("return new ast.ExpCore.MCall(receiver,\""+ctor.getMs().getName()+"\",ast.Ast.Doc.empty(),xs,es,null);\n");
+    res.append("return new ast.ExpCore.MCall(receiver,"+ctor.getMs().toSrcEquivalent()+",ast.Ast.Doc.empty(),es,null);\n");
     res.append("}\n");
   }
 

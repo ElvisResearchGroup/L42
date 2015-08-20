@@ -83,4 +83,52 @@ public static class TestCollectPrivates {
   Assert.assertEquals(expected, result.toString());
   }
 }
+@RunWith(Parameterized.class)
+public static class TestNormalizePrivates1 {
+  @Parameter(0) public int _lineNumber;
+  @Parameter(1) public String _cb1;
+  @Parameter(2) public String _expected;
+  @Parameters(name = "{index}: line {0}")
+  public static List<Object[]> createData() {return Arrays.asList(new Object[][] {{
+    lineNumber(),"{}","{}"
+  },{
+    lineNumber(),"{method Void foo()}","{method Void foo()}"
+  },{
+    lineNumber(),"{method Void fo__o()}","{method Void fo_$%o()}"
+  },{
+    lineNumber(),"{method Void foo___a()}","{method Void foo_$%_a()}"
+  },{
+    lineNumber(),"{method Void foo____a()}","{method Void foo_$%_$%a()}"
+  },{
+    lineNumber(),"{method Void foo_____a()}","{method Void foo_$%_$%_a()}"
+  },{
+    lineNumber(),"{method Void fo$%$%o__a()}","{method Void fo$%$%o_$%$%$%a()}"
+  },{
+    lineNumber(),"{ C__A:{ <:C__A }}","{ C_$%A:{ <:C_$%A }}"                                                           
+  
+  },{
+    lineNumber(),"{ C:'@private\n{ <:C }}","{ C__0_0:'@private\n{ <:C__0_0 }}"                                                           
+  },{
+    lineNumber(),"{ C:'@private\n{ D:{<:C} }}","{ C__0_0:'@private\n{ D:{<:C__0_0} }}"
+  },{
+    lineNumber(),"{ C:'@private\n{ A:{B:{<:C }}}}","{ C__0_0:'@private\n{ A:{B:{<:C__0_0 }}}}"   
+  },{
+    lineNumber(),"{ D:{<:C} C:'@private\n{ <:C }}","{ D:{<:C__0_0 } C__0_0:'@private\n{ <:C__0_0 }}" 
+  },{
+    lineNumber(),"{ D:{<:A::C} A:{C:'@private\n{ <:C }}}","{ D:{<:A::C__0_0 } A:{C__0_0:'@private\n{ <:C__0_0 }}}" 
+  },{
+    lineNumber(),"{ D:{<:A::C, A::C::D} A:{C:'@private\n{ <:C D:{}}}}","{ D:{<:A::C__0_0,A::C__0_0::D } A:{C__0_0:'@private\n{ <:C__0_0 D:{}}}}" 
+     
+  }});}
+
+
+@Test  public void test() {
+  TestHelper.configureForTest();
+  NormalizePrivates.reset();
+  ClassB cb1=getClassB("cb1", _cb1);
+  ClassB expected=getClassB("expected", _expected);
+  cb1=NormalizePrivates.normalize(cb1);
+  TestHelper.assertEqualExp(expected,cb1);
+  }
+}
 }

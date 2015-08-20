@@ -9,6 +9,7 @@ import java.util.function.Function;
 
 import sugarVisitors.Desugar;
 import tools.Assertions;
+import tools.StringBuilders;
 import ast.Ast.Doc;
 import ast.Ast.MethodSelector;
 import lombok.EqualsAndHashCode;
@@ -57,6 +58,11 @@ public interface Ast {
     public <T> T match(Function<NormType, T> normType,Function<HistoricType, T> hType){throw tools.Assertions.codeNotReachable();}}
 
   @Value @Wither public class MethodSelector{String name;List<String>names;
+    public String toSrcEquivalent(){
+      String result= "new ast.Ast.MethodSelector(\""+name+"\",java.util.Arrays.asList(";
+      result+=String.join(",",tools.Map.of(ni->"\""+ni+"\"",names));
+      return result+ "))";
+    }
     public String toString(){
       if(name.isEmpty() && names.isEmpty()){return "()";}
       if(names.isEmpty()){return name+"()";}
