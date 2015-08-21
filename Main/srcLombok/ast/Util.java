@@ -30,8 +30,12 @@ public class Util {
 	java.util.List<ClassB.Member> getMTail();
 	java.util.List<Integer> getMPos();
 	java.util.List<ClassB> getMOuters();
+  @Data public static class ImplLocator implements Locator{
+    @NonNull java.util.List<ClassB.Member> mTail;
+  @NonNull java.util.List<Integer> mPos;
+  @NonNull java.util.List<ClassB> mOuters;
+    }
   }
-  
   @Data public static class MethodLocator implements Locator{
     @NonNull java.util.List<ClassB.Member> mTail;
 	@NonNull java.util.List<Integer> mPos;
@@ -52,6 +56,7 @@ public class Util {
   @Data public static class CachedStage{
 	@NonNull ast.Ast.Stage stage=Stage.None;
 	final java.util.Map<Path,ClassB>dependencies=new java.util.HashMap<>();
+	final java.util.List<Path> allSupertypes=new java.util.ArrayList<>();
 	boolean verified=false;	  
     }
   @Data public static class CachedMt{

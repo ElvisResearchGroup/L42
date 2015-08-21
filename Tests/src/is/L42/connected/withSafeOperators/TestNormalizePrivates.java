@@ -67,7 +67,7 @@ public static class TestCollectPrivates {
     "{method'@private\n Void foo__42()"
     + " this({ method '@private\n Void bla()  }, second:{})"
     + "}",
-    "[42]\n[Outer0::foo__42()foo_$%42__0_0(), Outer0::foo__42()[1]bla()bla__1_0()]\n[]\nfalse"
+    "[42]\n[Outer0::foo__42()null, Outer0::foo__42()[1]bla()null]\n[]\nfalse"
   
   }});}
 
@@ -77,7 +77,7 @@ public static class TestCollectPrivates {
   NormalizePrivates.reset();
   ClassB cb1=getClassB("cb1", _cb1);
   CollectedPrivates result = NormalizePrivates.collectPrivates(cb1);
-  if (result.pedexes.size()==0 || !result.normalized){
+  if (result.pedexes.size()==0){
     result.computeNewNames();
   }
   Assert.assertEquals(expected, result.toString());

@@ -63,8 +63,8 @@ public class Rename {
     return ClassOperations.normalizePaths(directRename(p, cb, src, dest));
   }
   private static ClassB directRename(Program p, ClassB cb, List<String> src, List<String> dest) {
-    ClassB renamedCb=renameUsage(Collections.singletonList(new PathPath(Path.outer(0,src),Path.outer(0,dest))),cb);//cb, renamedCb are normalized
-    //TODO: reenable ClassB renamedCb=RenameMembers.of(Path.outer(0,src),Path.outer(0,dest),cb);
+    //ClassB renamedCb=renameUsage(Collections.singletonList(new PathPath(Path.outer(0,src),Path.outer(0,dest))),cb);//cb, renamedCb are normalized
+    ClassB renamedCb=RenameMembers.of(Path.outer(0,src),Path.outer(0,dest),cb);
     //cb, renamedCb are normalized   
     ClassB clearCb=ClassOperations.onNestedNavigateToPathAndDo(renamedCb,src,nc->Optional.empty());
     ClassB newCb=redirectDefinition(src,dest,renamedCb);

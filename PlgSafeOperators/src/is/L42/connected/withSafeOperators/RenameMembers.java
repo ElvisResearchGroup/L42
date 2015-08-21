@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import ast.Ast;
 import ast.ExpCore;
+import ast.Ast.Doc;
 import ast.Ast.MethodSelector;
 import ast.Ast.MethodSelectorX;
 import ast.Ast.NormType;
@@ -65,8 +66,10 @@ public class RenameMembers extends coreVisitors.CloneWithPath{
     for(String s:cs){
       mTail.add(new ClassB.NestedClass(ast.Ast.Doc.empty(),s,new ExpCore.WalkBy(), null));
       mPos.add(1);
+      mOuters.add(dumbCb);
       }
   }  
+  private static final ClassB dumbCb=new ClassB(Doc.empty(),Doc.empty(),false,Collections.emptyList(),Collections.emptyList());
   
   
       public ExpCore visit(Path s) {
@@ -76,16 +79,17 @@ public class RenameMembers extends coreVisitors.CloneWithPath{
         if(cs.isEmpty()){return s;}//no need to rename outers
         List<Member> current = new ArrayList<>(this.getAstNodesPath());
         List<Integer> currentIndexes = new ArrayList<>(this.getAstIndexesPath());
-        boolean canCut=cutUpTo(s.outerNumber(),current,currentIndexes);
+        List<ClassB> currentCb = new ArrayList<>(this.getAstCbPath());
+        boolean canCut=cutUpTo(s.outerNumber(),current,currentIndexes,currentCb);
         if(!canCut){return s;}
         int whereImSize=current.size();
-        addCs(s.getCBar(),current,currentIndexes);
+        addCs(s.getCBar(),current,currentIndexes,currentCb);
         for(NestedLocator nl:maps.privatePaths){
           if(whereImSize>nl.getMPos().size()){continue;}
           //situation: rename: s1 c1->path   current path locator is:  whereIm c cs
           //check #whereIm<=#s1 and  whereIm c cs =s1 _ 
-          assert isFullyPositive(nl.getMPos()):nl.getMPos();
-          boolean compatible= compatible(current, currentIndexes, nl);
+          //assert isFullyPositive(nl.getMPos()):nl.getMPos();
+          boolean compatible= compatible(current, currentIndexes,currentCb, nl);
           if(!compatible){continue;}
           int extraCs=(current.size()-nl.getMPos().size())-1;//the class name in nl.that
           Path pi=getDestPath(this.getClassNamesPath().size(),nl,s,extraCs);//TODO:can be made more efficient without creating the listPaths
@@ -93,25 +97,22 @@ public class RenameMembers extends coreVisitors.CloneWithPath{
           }
         return s;
         }
-      private boolean cutUpTo(int outerNumber, List<Member> current, List<Integer> currentIndexes) {
+      private boolean cutUpTo(int outerNumber, List<Member> current, List<Integer> currentIndexes,List<ClassB>currentCb) {
         int size=current.size();
         assert size==currentIndexes.size();
         if(size==0 && outerNumber>0){return false;}
         if(size==0){return true;}        
-        if(currentIndexes.get(size-1)<=0){
+        if(currentCb.get(size-1)==null){
           current.remove(size-1);
           currentIndexes.remove(size-1);
-          return cutUpTo(outerNumber,current,currentIndexes);
+          return cutUpTo(outerNumber,current,currentIndexes,currentCb);
         }
         if(outerNumber==0){return true;}
         current.remove(size-1);
         currentIndexes.remove(size-1);
-        return cutUpTo(outerNumber-1,current,currentIndexes);
+        return cutUpTo(outerNumber-1,current,currentIndexes,currentCb);
         }
-      private boolean isFullyPositive(List<Integer>indexes){
-        for(int i:indexes){if(i<=0)return false;}
-        return true;
-      }
+
       private Path getDestPath(int myDept,NestedLocator nl, Path s, int extraCs) {
         assert extraCs>=0:extraCs;
         Path result=nl.getNewPath();
@@ -128,7 +129,7 @@ public class RenameMembers extends coreVisitors.CloneWithPath{
         }
         return result.setNewOuter(result.outerNumber()+myDept);
       }
-      private static boolean compatible(List<Member> current,  List<Integer> currentIndexes, NestedLocator nl) {
+      private static boolean compatible(List<Member> current,  List<Integer> currentIndexes,List<ClassB>currentCb, NestedLocator nl) {
         int size=nl.getMPos().size();
         assert currentIndexes.size()==current.size();
         assert size==nl.getMTail().size();
@@ -136,7 +137,7 @@ public class RenameMembers extends coreVisitors.CloneWithPath{
         for(int i=0;i<size;i++){
           int indexC=currentIndexes.get(i);
           int indexPos=nl.getMPos().get(i);
-          if(indexC>0 && indexPos>0 && indexC!=indexPos){return false;}
+          if(currentCb.get(i)!=null && nl.getMOuters().get(i)!=null && indexC!=indexPos){return false;}
           Member ci = current.get(i);
           Member nli = nl.getMTail().get(i);
           if(ci==nli){continue;}

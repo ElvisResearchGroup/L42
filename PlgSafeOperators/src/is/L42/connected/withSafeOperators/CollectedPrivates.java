@@ -9,6 +9,7 @@ import java.util.Set;
 import ast.Ast.Mdf;
 import ast.Util.MethodLocator;
 import ast.Util.NestedLocator;
+import ast.Util.Locator;
 import tools.Map;
 
 public class CollectedPrivates{
@@ -20,21 +21,21 @@ public String toString(){
   return""+pedexes+"\n"+privateSelectors+"\n"+privatePaths+"\n"+normalized;
   }
 public void computeNewNames(){
-  HashMap<MethodLocator,String> map=new HashMap<>();
+  HashMap<Locator,String> map=new HashMap<>();
   for(MethodLocator mL:privateSelectors){computeNewName(map,mL);}
   for(NestedLocator nL:privatePaths){nL.setNewName(NormalizePrivates.freshName(nL.getThat()));}
 }
-private void computeNewName(HashMap<MethodLocator, String> map, MethodLocator mL) {
+private void computeNewName(HashMap<Locator, String> map, MethodLocator mL) {
   if(mL.getThat().getInner().isPresent()){
     mL.setNewName(mL.getThat().getMs().withName(NormalizePrivates.freshName(mL.getThat().getMs().getName())));
     return;
   }
   //it must be state!
-  MethodLocator stardizedMethodLocator=new MethodLocator(mL.getMTail(),mL.getMPos(),null,null);
-  String s=map.get(stardizedMethodLocator);
+  Locator stardizedLocator=new Locator.ImplLocator(mL.getMTail(),mL.getMPos(),mL.getMOuters());
+  String s=map.get(stardizedLocator);
   if(s==null){
     s="__"+NormalizePrivates.countPrivates++ +"_"+NormalizePrivates.countFamilies;//may be turn in method?
-    map.put(stardizedMethodLocator,s);
+    map.put(stardizedLocator,s);
   }
   String newPedex=s;
   List<String> names = (mL.getThat().getMt().getMdf()!=Mdf.Type)?mL.getThat().getMs().getNames():Map.of(si->NormalizePrivates.freshName(si,newPedex),mL.getThat().getMs().getNames());

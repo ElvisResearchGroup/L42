@@ -49,7 +49,11 @@ public class NormalizePrivates {
         boolean hasValidUniquePexed=processNameAndReturnHasUnseenPedex(result.pedexes,name);
         if(!nc.getDoc().isPrivate()){return super.visit(nc);}
         if(!hasValidUniquePexed){result.normalized=false;}
-        result.privatePaths.add(new NestedLocator(new ArrayList<>(this.getAstNodesPath()),new ArrayList<>(this.getAstIndexesPath()) ,name));
+        result.privatePaths.add(new NestedLocator(
+            new ArrayList<>(this.getAstNodesPath()),
+            new ArrayList<>(this.getAstIndexesPath()) ,
+            new ArrayList<>(this.getAstCbPath()) ,
+            name));
         return super.visit(nc);
         }
       @Override public ClassB.MethodWithType visit(ClassB.MethodWithType mwt){
@@ -60,7 +64,8 @@ public class NormalizePrivates {
         result.privateSelectors.add(new MethodLocator(
             new ArrayList<>(this.getAstNodesPath()),
             new ArrayList<>(this.getAstIndexesPath()) ,
-            mwt,null));
+            new ArrayList<>(this.getAstCbPath()) ,
+            mwt));
         return super.visit(mwt);
         }
       });
