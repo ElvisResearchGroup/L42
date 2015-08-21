@@ -33,11 +33,11 @@ import ast.Ast.Type;
 
 public class GuessTypeCore implements Visitor<Path>{
   Program p;
-  HashMap<String, NormType> varEnv;
-  private GuessTypeCore(Program p, HashMap<String, NormType> varEnv) {
+  HashMap<String, Type> varEnv;
+  private GuessTypeCore(Program p, HashMap<String, Type> varEnv) {
     this.p = p; this.varEnv = varEnv;
   }
-  public static Path of(Program p, HashMap<String, NormType> varEnv,ExpCore e) {
+  public static Path of(Program p, HashMap<String, Type> varEnv,ExpCore e) {
     return e.accept(new GuessTypeCore(p,varEnv));
   }
   @Override
@@ -47,8 +47,8 @@ public class GuessTypeCore implements Visitor<Path>{
   @Override
   public Path visit(X s) {
     assert varEnv.containsKey(s.getInner());
-    NormType nt= varEnv.get(s.getInner());
-    return nt.getPath();
+    Type t= varEnv.get(s.getInner());
+    return Norm.of(p,t ).getPath();
   }
   @Override
   public Path visit(_void s) {
@@ -81,10 +81,10 @@ public class GuessTypeCore implements Visitor<Path>{
   }
   @Override
   public Path visit(Block s) {
-    HashMap<String, NormType> aux = new HashMap<>(this.varEnv);
+    HashMap<String,Type> aux = new HashMap<>(this.varEnv);
     try{
       for(Dec d:s.getDecs()){
-        this.varEnv.put(d.getX(),Functions.forceNormType(s,d.getT()));
+        this.varEnv.put(d.getX(),d.getT());
         }
       HashSet<Path> ps=new HashSet<>();
       if(s.get_catch().isPresent()){

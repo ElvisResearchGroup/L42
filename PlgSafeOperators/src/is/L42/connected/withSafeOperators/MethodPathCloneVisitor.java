@@ -1,4 +1,4 @@
-package introspection;
+package is.L42.connected.withSafeOperators;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -6,76 +6,77 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
-import tools.Map;
 import ast.Ast;
-import ast.Ast.MethodSelectorX;
 import ast.ExpCore;
 import ast.Ast.MethodSelector;
+import ast.Ast.MethodSelectorX;
 import ast.Ast.NormType;
 import ast.Ast.Path;
 import ast.Ast.Ph;
+import ast.Ast.Type;
 import ast.ExpCore.Block;
 import ast.ExpCore.ClassB;
-import ast.ExpCore.ClassB.MethodImplemented;
 import ast.ExpCore.MCall;
 import ast.ExpCore.Block.Catch;
 import ast.ExpCore.Block.Dec;
 import ast.ExpCore.Block.On;
 import ast.ExpCore.ClassB.Member;
+import ast.ExpCore.ClassB.MethodImplemented;
 import ast.ExpCore.ClassB.MethodWithType;
-import ast.Util.PathMxMx;
-import auxiliaryGrammar.Functions;
 import auxiliaryGrammar.Norm;
 import auxiliaryGrammar.Program;
-import coreVisitors.CloneVisitorWithProgram;
 import coreVisitors.From;
 import coreVisitors.GuessTypeCore;
+import tools.Assertions;
+import tools.Map;
 
-abstract class MethodPathCloneVisitor extends CloneVisitorWithProgram {
-  private HashMap<String, NormType> varEnv=new HashMap<>();
-  MethodPathCloneVisitor(Program p) {
-    super(p);
-  }
+abstract public class MethodPathCloneVisitor extends RenameMembers {
+  public HashMap<String, Type> varEnv=new HashMap<>();
+  public Program _p;
+  public MethodPathCloneVisitor(Program p,CollectedPrivates maps) {  super(maps); this._p=p; }
   public abstract MethodSelector visitMS(MethodSelector original,Path src);
   public ClassB.NestedClass visit(ClassB.NestedClass nc){
-    HashMap<String, NormType> aux =this.varEnv;
+    HashMap<String, Ast.Type> aux =this.varEnv;
     this.varEnv=new HashMap<>();
     try{return super.visit(nc);}
     finally{this.varEnv=aux;}
     }
   public ClassB.MethodImplemented visit(ClassB.MethodImplemented mi){
-    HashMap<String, NormType> aux =this.varEnv;
-    this.varEnv=getVarEnvOf(mi.getS());
+    HashMap<String, Ast.Type> aux =this.varEnv;
+    this.varEnv=getVarEnvOf(mi.getS(),this.getAstCbPath().get(this.getAstCbPath().size()-1));
     try{return super.visit(mi);}
     finally{this.varEnv=aux;}
   }
   public ClassB.MethodWithType visit(ClassB.MethodWithType mt){
-    HashMap<String, NormType> aux =this.varEnv;
-    this.varEnv=getVarEnvOf(mt.getMs());
+    HashMap<String, Ast.Type> aux =this.varEnv;
+    this.varEnv=getVarEnvOf(mt.getMs(),this.getAstCbPath().get(this.getAstCbPath().size()-1));
     try{return super.visit(mt);}
     finally{this.varEnv=aux;}
     }
-  private HashMap<String, NormType> getVarEnvOf(MethodSelector s) {
-    Optional<Member> mOpt = Program.getIfInDom(p.topCt().getMs(),s);
+  private Ast.MethodType getMt(MethodSelector s,ClassB cb){
+    Optional<Member> mOpt = Program.getIfInDom(cb.getMs(),s);
     assert mOpt.isPresent();
-    assert mOpt.get() instanceof MethodWithType:
-      mOpt.get().getClass();
-    MethodWithType m=(MethodWithType)mOpt.get();
-    HashMap<String, NormType> result=new HashMap<>();
+    if(mOpt.get() instanceof MethodWithType){return ((MethodWithType)mOpt.get()).getMt();}
+    assert mOpt.get() instanceof MethodImplemented;
+    return getMT(_p, s, cb);
+  }
+  private HashMap<String, Ast.Type> getVarEnvOf(MethodSelector s,ClassB cb) {
+    Ast.MethodType mt=getMt(s,cb);
+    HashMap<String, Ast.Type> result=new HashMap<>();
     {int i=-1;for(String n:s.getNames()){i+=1;
-      NormType nt=Norm.of(p,m.getMt().getTs().get(i));
-      result.put(n,nt);
+      //NormType nt=Norm.of(p,mt.getTs().get(i));
+      result.put(n,mt.getTs().get(i));
     }}
-    result.put("this",new NormType(m.getMt().getMdf(),Path.outer(0),Ph.None));
+    result.put("this",new NormType(mt.getMdf(),Path.outer(0),Ph.None));
     return result;
   }
   public ExpCore visit(Block s) {
-    HashMap<String, NormType> aux = new HashMap<>(this.varEnv);
+    HashMap<String, Ast.Type> aux = new HashMap<>(this.varEnv);
     try{
       for(Dec d:s.getDecs()){
-        this.varEnv.put(d.getX(),
+        this.varEnv.put(d.getX(),d.getT()
             //Functions.forceNormType(s,d.getT())
-            Norm.of(p, d.getT())
+            //Norm.of(p, d.getT())
             );
         }
       List<Dec> newDecs = liftDecs(s.getDecs());
@@ -85,8 +86,8 @@ abstract class MethodPathCloneVisitor extends CloneVisitorWithProgram {
         List<On> newOns=new ArrayList<>();
         for(On on:k.getOns()){
           //NormType nti=Functions.forceNormType(s,on.getT());
-          NormType nti=Norm.of(p,on.getT());
-          this.varEnv.put(k.getX(),nti);
+          //NormType nti=Norm.of(p,on.getT());
+          this.varEnv.put(k.getX(),on.getT());
           newOns.add(liftO(on));
           }
         this.varEnv.remove(k.getX());
@@ -106,7 +107,8 @@ abstract class MethodPathCloneVisitor extends CloneVisitorWithProgram {
         if(ms2.equals(sel.getMs())){sels.add(sel);}
         else{sels.add(new MethodSelectorX(ms2,sel.getX()));}
         Ast.HistoricType hti=new Ast.HistoricType(last,Collections.singletonList(sel),false);
-        NormType nt=Norm.of(p,hti);
+        NormType nt=Norm.of(//this norm have to stay
+           getExtendedProgram(_p,this.getAstCbPath()),hti);
         last=nt.getPath();
         }
       Ast.HistoricType ht2=ht.withSelectors(sels);
@@ -115,14 +117,45 @@ abstract class MethodPathCloneVisitor extends CloneVisitorWithProgram {
 
 
   public ExpCore visit(MCall s) {
+    Program ep=getExtendedProgram(_p,this.getAstCbPath());
     MethodSelector ms=s.getS();
-    Path guessed=GuessTypeCore.of(p,new HashMap<String,Ast.Type>(varEnv),s.getReceiver());
+    Path guessed=GuessTypeCore.of( ep, varEnv,s.getReceiver());
     if(guessed==null){return super.visit(s);}
-    guessed=Norm.of(p, guessed);
+    guessed=Norm.of(ep, guessed);
     MethodSelector ms2=visitMS(ms,guessed);
     if(ms2.equals(ms)){return super.visit(s);}
     s=new MCall(s.getReceiver(),ms2,s.getDoc(),s.getEs(),s.getP());
     return super.visit(s);
     }
-  
+  public static Program getExtendedProgram(Program p,List<ClassB>extension){
+    for(ClassB cb:extension){
+      assert cb!=null;
+      p=p.addAtTop(cb, null);
+    }
+    return p;
+  }
+  public static void accumulateAllSupertypes(List<Path> ps,Program p,Path pi){
+    ps.add(pi);
+    ClassB cbi=p.extractCb(pi);
+    for(Path pj:cbi.getSupertypes()){
+      pj=From.fromP(pj,pi);
+      accumulateAllSupertypes(ps, p, pj);
+    }
+  }
+
+  public static List<Path> getAllSupertypes(Program p,ClassB cb){
+    List<Path> result=new ArrayList<>();
+    for(Path pi:cb.getSupertypes()){
+      accumulateAllSupertypes(result, p, pi);     
+      }
+    return result;
+  }
+  public static Ast.MethodType getMT(Program p,MethodSelector ms, ClassB cb){
+    for(Path pi:getAllSupertypes(p,cb)){
+      ClassB candidate=p.extractCb(pi);
+      Optional<Member> opt = Program.getIfInDom(candidate.getMs(),ms);
+      if(opt.isPresent()){return From.from(((MethodWithType)opt.get()),pi).getMt();}
+    }
+    throw Assertions.codeNotReachable();
+    }
 }

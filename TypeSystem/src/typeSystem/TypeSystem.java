@@ -366,14 +366,14 @@ public class TypeSystem implements Visitor<Type>, Reporter{
       //Type recTOpt = _typecheckTollerant(p,varEnvs.get(0),sealEnv,throwEnv,new Ast.FreeType(),s.getReceiver());
       Path recOpt=null;
       if(!p.executablePlus() && !p.isExecutableStar()){//Note: guesstype can return null as a form of free type
-        try{recOpt=GuessTypeCore.of(p, varEnv, s.getReceiver());}
+        try{recOpt=GuessTypeCore.of(p, new HashMap<String,Ast.Type>(varEnv), s.getReceiver());}
         catch(ErrorMessage.NormImpossible ni){return methodUnknownT(varEnvs,s);}
         if(recOpt==null){return methodUnknownT(varEnvs,s);}
         if(recOpt.isPrimitive()){
           throw new ErrorMessage.MethodNotPresent(recOpt,s.getS(),s,null,p.getInnerData());}
         if(p.isNotClassB(recOpt)){return methodUnknownT(varEnvs,s);}
         }
-      if(recOpt==null){recOpt=GuessTypeCore.of(p, varEnv, s.getReceiver());}
+      if(recOpt==null){recOpt=GuessTypeCore.of(p, new HashMap<String,Ast.Type>(varEnv), s.getReceiver());}
       if(recOpt==null){return methodUnknownT(varEnvs,s);}
       if(recOpt.isPrimitive()){//TODO: method not present thrown only for primitives?
         throw new ErrorMessage.MethodNotPresent(recOpt,s.getS(),s,null,p.getInnerData());}
