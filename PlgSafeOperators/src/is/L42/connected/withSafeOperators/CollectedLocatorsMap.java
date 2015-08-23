@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import ast.Ast.Mdf;
+import ast.Ast.Path;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodWithType;
@@ -14,6 +15,7 @@ import ast.Util;
 import ast.Util.*;
 import auxiliaryGrammar.Locator;
 import tools.Map;
+import ast.Ast.MethodSelector;
 
 public class CollectedLocatorsMap{
 final Set<String> pedexes=new HashSet<>();
@@ -50,4 +52,34 @@ private void computeNewName(HashMap<Locator, String> map, Locator mL) {
       NormalizePrivates.freshName(mwt.getMs().getName(),newPedex),names);
   mL.setAnnotation(ms);
   }
+public static  CollectedLocatorsMap from(Path src,Path dest){
+  Locator nl = pathPathToLocator(src,dest);
+  CollectedLocatorsMap maps=new CollectedLocatorsMap();
+  maps.nesteds.add(nl);
+  return maps;
+}
+public static  CollectedLocatorsMap from(Path src,MethodWithType mwt,MethodSelector ms2){
+  Locator result=new Locator();
+  result.addCsAndMember(src.getCBar(),mwt);
+  result.setAnnotation(ms2);
+  CollectedLocatorsMap maps=new CollectedLocatorsMap();
+  maps.selectors.add(result);
+  return maps;
+}
+public static CollectedLocatorsMap from(List<PathPath> pp){
+  CollectedLocatorsMap maps=new CollectedLocatorsMap();
+  for(PathPath ppi:pp){
+    Locator nl = pathPathToLocator(ppi.getPath1(),ppi.getPath2());
+    maps.nesteds.add(nl);
+  }
+  return maps;
+}
+
+private static Locator pathPathToLocator(Path src, Path dest) {
+  Locator result=new Locator();
+  result.addCs(src.getCBar());
+  assert src.outerNumber()==0;
+  result.setAnnotation(dest);
+  return result;
+}
 }

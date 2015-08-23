@@ -42,30 +42,6 @@ public class RenameMembers extends coreVisitors.CloneWithPath{
   private static  ClassB of(CollectedLocatorsMap maps,ClassB cb){
     return (ClassB)cb.accept(new RenameMembers(maps));
   }
-  public static  ClassB of(Path src,Path dest,ClassB cb){
-    Locator nl = pathPathToLocator(src,dest);
-    CollectedLocatorsMap maps=new CollectedLocatorsMap();
-    maps.nesteds.add(nl);
-    return of(maps,cb);
-  }
-  public static  ClassB of(List<PathPath> pp,ClassB cb){
-    CollectedLocatorsMap maps=new CollectedLocatorsMap();
-    for(PathPath ppi:pp){
-      Locator nl = pathPathToLocator(ppi.getPath1(),ppi.getPath2());
-      maps.nesteds.add(nl);
-    }
-    return of(maps,cb);
-  }
-  
-  private static Locator pathPathToLocator(Path src, Path dest) {
-    Locator result=new Locator();
-    result.addCs(src.getCBar());
-    assert src.outerNumber()==0;
-    result.setAnnotation(dest);
-    return result;
-  }
-
-  
       public ExpCore visit(Path s) {
         if(s.isPrimitive()){return s;}
         assert s.isCore();

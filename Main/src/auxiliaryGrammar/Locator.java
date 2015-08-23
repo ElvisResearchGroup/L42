@@ -64,8 +64,19 @@ public class Locator {
     this.addCs(path.getCBar());
     return true;
   }
-  
+  public void addCsAndMember(List<String> cs,Member m) {
+    auxAddCs(cs);
+    this.cbs.add(null);
+    this.indexes.add(0);
+    this.ms.add(m);
+    }
   public void addCs(List<String> cs) {
+    auxAddCs(cs);
+    assert !cbs.contains(null) : cbs;
+    this.cbs.set(this.cbs.size() - 1, null);
+    this.indexes.set(this.cbs.size()-1, 0);
+  }
+  private void auxAddCs(List<String> cs) {
     int size=this.size();
     if(size>0 && this.cbs.get(size-1)==null){
       assert this.indexes.get(size-1)==0;
@@ -77,9 +88,6 @@ public class Locator {
       this.indexes.add(1);
       this.cbs.add(LocatorSupport.dumbCb);
     }
-    assert !cbs.contains(null) : cbs;
-    this.cbs.set(this.cbs.size() - 1, null);
-    this.indexes.set(this.cbs.size()-1, 0);
   }
   public void toFormerNodeLocator(){
     int size=this.size();

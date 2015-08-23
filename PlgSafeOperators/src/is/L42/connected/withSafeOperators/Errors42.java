@@ -74,7 +74,7 @@ public class Errors42 {
   }
   //"TargetUnavailable", caused by most operations referring to paths and methods
   static enum TargetUnavailable{PrivatePath,PrivateMethod,InexistentPath,InexistentMethod}
-  static void checkExistsPathMethod(ClassB cb, List<String> path,Optional<MethodSelector>ms){
+  static Member checkExistsPathMethod(ClassB cb, List<String> path,Optional<MethodSelector>ms){
     try{
       Boolean[] isPrivateRef=new Boolean[]{false};
       ClassB cbi=Program.extractCBar(path, cb,isPrivateRef);
@@ -89,13 +89,14 @@ public class Errors42 {
             mi->{return null;},
             mt->{if(mt.getDoc().isPrivate()){isPrivateMeth[0]=true;}return null;}
             );
+          if(!isPrivateMeth[0]){return meth.get();}
           }
         }
       TargetUnavailable kind=null;
       if(absentMeth){kind=TargetUnavailable.InexistentMethod;}
       if(isPrivateMeth[0]){kind=TargetUnavailable.PrivateMethod;}
       if(isPrivateRef[0]){kind=TargetUnavailable.PrivatePath;}
-      if(kind==null){return;}
+      if(kind==null){return null;}
       throw Resources.Error.multiPartStringError("TargetUnavailable",
           "Path",""+Path.outer(0,path),
           "Selector",""+((ms.isPresent())?ms.get():""),

@@ -25,14 +25,6 @@ import auxiliaryGrammar.Program;
 
 public class Sum {
   static ClassB sum(Program p, ClassB a, ClassB b) {
-    //List<ClassB.Member> ms = new ArrayList<>();
-    //ms.add(new ClassB.NestedClass(Doc.empty(), "A", a));//TODO: no, we do not add 1 outer to external paths
-    //ms.add(new ClassB.NestedClass(Doc.empty(), "B", b));
-    //ClassB ab = new ClassB(Doc.empty(), Doc.empty(), false, Collections.emptyList(), ms, Stage.None);
-    //ab = ClassOperations.normalizePrivates(p,ab);
-    //ab = ClassOperations.normalizePaths(ab,Collections.emptyList());
-    //a = (ClassB) ((ClassB.NestedClass) ab.getMs().get(0)).getInner();
-    //b = (ClassB) ((ClassB.NestedClass) ab.getMs().get(1)).getInner();
     a = ClassOperations.normalizePrivates(p,a);
     b = ClassOperations.normalizePrivates(p,b);
     a=ClassOperations.normalizePaths(a);
@@ -62,7 +54,7 @@ public class Sum {
         ms.add(m);
         }
       else {
-        m.match(nc -> matchNC(p,topA,topB,nc, ms, (NestedClass) oms.get(), current), mi -> matchMi(current, mi, ms, oms.get()), mt -> matchMt(current, mt, ms, oms.get()));
+        doubleSimmetricalMatch(p, topA, topB, ms, current, m, oms.get());
         }
       }
     for (Member m : b.getMs()) {//add the rest
@@ -71,6 +63,10 @@ public class Sum {
         }
       }
     }
+
+  public static void doubleSimmetricalMatch(Program p, ClassB topA, ClassB topB, List<Member> ms, List<String> current, Member m, Member oms) {
+    m.match(nc -> matchNC(p,topA,topB,nc, ms, (NestedClass) oms, current), mi -> matchMi(current, mi, ms, oms), mt -> matchMt(current, mt, ms, oms));
+  }
 
   private static Void matchNC(Program p, ClassB topA, ClassB topB,NestedClass nca, List<Member> ms, NestedClass ncb, List<String> current) {
     List<String> innerCurrent = new ArrayList<>(current);

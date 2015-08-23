@@ -334,9 +334,9 @@ public class Program {
   }
   public static Program getExtendedProgram(Program p,List<ClassB>extension){
     for(ClassB cb:extension){
-      assert cb!=null;
-      p=p.addAtTop(cb, null);
-    }
+      if(cb!=null){
+        p=p.addAtTop(cb, null);
+    }}
     return p;
   }
   private static void accumulateAllSupertypes(List<Path> ps,Program p,Path pi){
