@@ -121,6 +121,13 @@ public static class TestNormalizePrivates1 {
   },{
     lineNumber(),"{ D:{<:A::C, A::C::D} A:{C:'@private\n{ <:C D:{}}}}","{ D:{<:A::C__0_0,A::C__0_0::D } A:{C__0_0:'@private\n{ <:C__0_0 D:{}}}}" 
   
+  },{
+    lineNumber(),"{ A:{ method '@private\n Void foo() void}}","{ A:{ method '@private\n Void foo__0_0() void}}" 
+  },{
+    lineNumber(),"{  method '@private\n Void foo() void}","{  method '@private\n Void foo__0_0() void}" 
+  },{
+    lineNumber(),"{ method Library bar() {  method '@private\n Void foo() void}}","{ method Library bar() {  method '@private\n Void foo__0_0() void}}" 
+    
   }});}
 
 
