@@ -43,13 +43,13 @@ abstract public class MethodPathCloneVisitor extends RenameMembers {
     }
   public ClassB.MethodImplemented visit(ClassB.MethodImplemented mi){
     HashMap<String, Ast.Type> aux =this.varEnv;
-    this.varEnv=getVarEnvOf(mi.getS(),this.getAstCbPath().get(this.getAstCbPath().size()-1));
+    this.varEnv=getVarEnvOf(mi.getS(),this.getLocator().getLastCb());
     try{return super.visit(mi);}
     finally{this.varEnv=aux;}
   }
   public ClassB.MethodWithType visit(ClassB.MethodWithType mt){
     HashMap<String, Ast.Type> aux =this.varEnv;
-    this.varEnv=getVarEnvOf(mt.getMs(),this.getAstCbPath().get(this.getAstCbPath().size()-1));
+    this.varEnv=getVarEnvOf(mt.getMs(),this.getLocator().getLastCb());
     try{return super.visit(mt);}
     finally{this.varEnv=aux;}
     }
@@ -58,7 +58,7 @@ abstract public class MethodPathCloneVisitor extends RenameMembers {
     assert mOpt.isPresent();
     if(mOpt.get() instanceof MethodWithType){return ((MethodWithType)mOpt.get()).getMt();}
     assert mOpt.get() instanceof MethodImplemented;
-    return getMT(_p, s, cb);
+    return Program.getMT(_p, s, cb);
   }
   private HashMap<String, Ast.Type> getVarEnvOf(MethodSelector s,ClassB cb) {
     Ast.MethodType mt=getMt(s,cb);
@@ -108,7 +108,7 @@ abstract public class MethodPathCloneVisitor extends RenameMembers {
         else{sels.add(new MethodSelectorX(ms2,sel.getX()));}
         Ast.HistoricType hti=new Ast.HistoricType(last,Collections.singletonList(sel),false);
         NormType nt=Norm.of(//this norm have to stay
-           getExtendedProgram(_p,this.getAstCbPath()),hti);
+           Program.getExtendedProgram(_p,this.getLocator().getCbs()),hti);
         last=nt.getPath();
         }
       Ast.HistoricType ht2=ht.withSelectors(sels);
@@ -117,7 +117,7 @@ abstract public class MethodPathCloneVisitor extends RenameMembers {
 
 
   public ExpCore visit(MCall s) {
-    Program ep=getExtendedProgram(_p,this.getAstCbPath());
+    Program ep=Program.getExtendedProgram(_p,this.getLocator().getCbs());
     MethodSelector ms=s.getS();
     Path guessed=GuessTypeCore.of( ep, varEnv,s.getReceiver());
     if(guessed==null){return super.visit(s);}
@@ -127,35 +127,5 @@ abstract public class MethodPathCloneVisitor extends RenameMembers {
     s=new MCall(s.getReceiver(),ms2,s.getDoc(),s.getEs(),s.getP());
     return super.visit(s);
     }
-  public static Program getExtendedProgram(Program p,List<ClassB>extension){
-    for(ClassB cb:extension){
-      assert cb!=null;
-      p=p.addAtTop(cb, null);
-    }
-    return p;
-  }
-  public static void accumulateAllSupertypes(List<Path> ps,Program p,Path pi){
-    ps.add(pi);
-    ClassB cbi=p.extractCb(pi);
-    for(Path pj:cbi.getSupertypes()){
-      pj=From.fromP(pj,pi);
-      accumulateAllSupertypes(ps, p, pj);
-    }
-  }
-
-  public static List<Path> getAllSupertypes(Program p,ClassB cb){
-    List<Path> result=new ArrayList<>();
-    for(Path pi:cb.getSupertypes()){
-      accumulateAllSupertypes(result, p, pi);     
-      }
-    return result;
-  }
-  public static Ast.MethodType getMT(Program p,MethodSelector ms, ClassB cb){
-    for(Path pi:getAllSupertypes(p,cb)){
-      ClassB candidate=p.extractCb(pi);
-      Optional<Member> opt = Program.getIfInDom(candidate.getMs(),ms);
-      if(opt.isPresent()){return From.from(((MethodWithType)opt.get()),pi).getMt();}
-    }
-    throw Assertions.codeNotReachable();
-    }
+ 
 }

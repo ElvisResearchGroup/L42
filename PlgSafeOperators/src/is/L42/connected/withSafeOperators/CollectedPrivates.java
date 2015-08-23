@@ -7,40 +7,47 @@ import java.util.List;
 import java.util.Set;
 
 import ast.Ast.Mdf;
-import ast.Util.MethodLocator;
-import ast.Util.NestedLocator;
-import ast.Util.Locator;
+import ast.ExpCore.ClassB;
+import ast.ExpCore.ClassB.Member;
+import ast.ExpCore.ClassB.MethodWithType;
+import ast.Util;
+import ast.Util.*;
+import auxiliaryGrammar.Locator;
 import tools.Map;
 
 public class CollectedPrivates{
 final Set<String> pedexes=new HashSet<>();
-final List<MethodLocator>privateSelectors=new ArrayList<>();
-final List<NestedLocator>privatePaths=new ArrayList<>();
+final List<Locator>privateSelectors=new ArrayList<>();
+final List<Locator>privatePaths=new ArrayList<>();
 boolean normalized=true;
 public String toString(){
   return""+pedexes+"\n"+privateSelectors+"\n"+privatePaths+"\n"+normalized;
   }
 public void computeNewNames(){
   HashMap<Locator,String> map=new HashMap<>();
-  for(MethodLocator mL:privateSelectors){computeNewName(map,mL);}
-  for(NestedLocator nL:privatePaths){nL.setNewName(NormalizePrivates.freshName(nL.getThat()));}
+  for(Locator mL:privateSelectors){computeNewName(map,mL);}
+  for(Locator nL:privatePaths){nL.setAnnotation(NormalizePrivates.freshName(nL.getLastName()));}
 }
-private void computeNewName(HashMap<Locator, String> map, MethodLocator mL) {
-  if(mL.getThat().getInner().isPresent()){
-    mL.setNewName(mL.getThat().getMs().withName(NormalizePrivates.freshName(mL.getThat().getMs().getName())));
+private void computeNewName(HashMap<Locator, String> map, Locator mL) {
+  Member m=mL.getLastMember();
+  assert m instanceof MethodWithType;
+  MethodWithType mwt=(MethodWithType)m;
+  if( mwt.getInner().isPresent()){
+    mL.setAnnotation(mwt.getMs().withName(NormalizePrivates.freshName(mwt.getMs().getName())));
     return;
   }
-  //it must be state!
-  Locator stardizedLocator=new Locator.ImplLocator(mL.getMTail(),mL.getMPos(),mL.getMOuters());
-  String s=map.get(stardizedLocator);
+  //private and abstract, it must be state!
+  Locator locator=mL.copy();
+  locator.toFormerNodeLocator();
+  String s=map.get(locator);
   if(s==null){
     s="__"+NormalizePrivates.countPrivates++ +"_"+NormalizePrivates.countFamilies;//may be turn in method?
-    map.put(stardizedLocator,s);
+    map.put(locator,s);
   }
   String newPedex=s;
-  List<String> names = (mL.getThat().getMt().getMdf()!=Mdf.Type)?mL.getThat().getMs().getNames():Map.of(si->NormalizePrivates.freshName(si,newPedex),mL.getThat().getMs().getNames());
+  List<String> names = (mwt.getMt().getMdf()!=Mdf.Type)?mwt.getMs().getNames():Map.of(si->NormalizePrivates.freshName(si,newPedex),mwt.getMs().getNames());
   ast.Ast.MethodSelector ms=new ast.Ast.MethodSelector(
-      NormalizePrivates.freshName(mL.getThat().getMs().getName(),newPedex),names);
-  mL.setNewName(ms);
+      NormalizePrivates.freshName(mwt.getMs().getName(),newPedex),names);
+  mL.setAnnotation(ms);
   }
 }

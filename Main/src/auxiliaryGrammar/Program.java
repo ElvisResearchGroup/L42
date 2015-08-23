@@ -11,15 +11,11 @@ import tools.Assertions;
 import coreVisitors.Exists;
 import coreVisitors.From;
 import facade.Configuration;
-import ast.Ast.MethodType;
-import ast.Ast.NormType;
-import ast.Ast.Path;
-import ast.Ast.SignalKind;
+import ast.Ast;
 import ast.ErrorMessage;
 import ast.ExpCore;
 import ast.ExpCore.Block.Dec;
 import ast.ExpCore.ClassB;
-import ast.ExpCore.ClassB.NestedClass;
 import ast.ExpCore.Signal;
 import ast.ExpCore._void;
 import ast.Expression;
@@ -334,6 +330,36 @@ public class Program {
     if(this.topCt().getStage().getStage()!=Stage.Star){return false;}
     return this.pop().checkComplete();
   }
-
+  public static Program getExtendedProgram(Program p,List<ClassB>extension){
+    for(ClassB cb:extension){
+      assert cb!=null;
+      p=p.addAtTop(cb, null);
+    }
+    return p;
+  }
+  private static void accumulateAllSupertypes(List<Path> ps,Program p,Path pi){
+    ps.add(pi);
+    ClassB cbi=p.extractCb(pi);
+    for(Path pj:cbi.getSupertypes()){
+      pj=From.fromP(pj,pi);
+      accumulateAllSupertypes(ps, p, pj);
+    }
+  }
+  /**cb must be frommed so that is like it is the top of p*/
+  public static List<Path> getAllSupertypes(Program p,ClassB cb){
+    List<Path> result=new ArrayList<>();
+    for(Path pi:cb.getSupertypes()){
+      accumulateAllSupertypes(result, p, pi);     
+      }
+    return result;
+  }
+  public static Ast.MethodType getMT(Program p,MethodSelector ms, ClassB cb){
+    for(Path pi:getAllSupertypes(p,cb)){
+      ClassB candidate=p.extractCb(pi);
+      Optional<Member> opt = Program.getIfInDom(candidate.getMs(),ms);
+      if(opt.isPresent()){return From.from(((MethodWithType)opt.get()),pi).getMt();}
+    }
+    throw Assertions.codeNotReachable();
+    }
 
 }

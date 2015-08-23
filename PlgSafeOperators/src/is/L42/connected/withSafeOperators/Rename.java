@@ -103,7 +103,7 @@ public class Rename {
       public ExpCore visit(Path s) {
         if(s.isPrimitive()){return s;}
         assert s.isCore();
-        List<String> path = getClassNamesPath();
+        List<String> path = this.getLocator().getClassNamesPath();
         if(s.outerNumber()>path.size()){return s;}
         List<String> unexploredPath=path.subList(0,path.size()-s.outerNumber());//in usedPath similar thing.
         if(unexploredPath.contains(null)){return s;}//we are in a class literal in a method and we look inside
