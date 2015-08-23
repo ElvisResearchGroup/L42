@@ -25,6 +25,13 @@ public class TestRedirect{
 @RunWith(Parameterized.class)
 
 public static class TestRedirect1 {//add more test for error cases
+
+  // TODO@James: consider making a git hook to block commits unless startLine=0 is enabled
+  
+  // Skip failing, but uninteresting tests here
+//  static int startLine=599;
+  static int startLine=0;
+
   @Parameter(0) public int _lineNumber;
   @Parameter(1) public String[] _p;
   @Parameter(2) public String _cb1;
@@ -35,8 +42,8 @@ public static class TestRedirect1 {//add more test for error cases
   @Parameters(name = "{index}: line {0}")
   public static List<Object[]> createData() {
     ErrorCarry ec = new ErrorCarry();
-
-    return Arrays.asList(new Object[][] {
+    
+    List<Object[]> tests= Arrays.asList(new Object[][] {
     {lineNumber(), new String[]{"{A:{}}"},
       "{InnerA:{} B:{ method InnerA m(InnerA a) a}}","Outer0::InnerA","Outer1::A","{B:{ method Outer2::A m(Outer2::A a) a}}",false
     },{lineNumber(), new String[]{"{A:{}}"},
@@ -217,7 +224,7 @@ public static class TestRedirect1 {//add more test for error cases
         + "TestC:{method Outer2::%Redirect::_I2() notSoFun() {}}\n"
         + "TestD:{method Outer2::%Redirect::_I2()::moreFun(that,other)::other mostFun() {} }\n"
         + "}",false
-    },{lineNumber(), new String[]{   // Redirect, via a source pile that contains aliases to internal types
+    },{lineNumber(), new String[]{   // Redirect, via a pile, using the things that will disappear as aliases
                     "{"
                     + "I1:{interface method Void fun(Void that)}\n"
                     + "I2:{interface method Void moreFun(Library that, Void other)}\n"
@@ -226,20 +233,33 @@ public static class TestRedirect1 {//add more test for error cases
                     + "}"},
         "{InnerI2:{interface method Void moreFun(Library that, Void other)}\n"
         + "InnerA:{<:InnerI2 Outer2::I1} \n"  // again, no implementation
-        + "AliasTarget:{method InnerI2 _makeInnerI2() method InnerA _makeInnerA()}\n"
-        + "%Redirect:{method AliasTarget::_makeInnerI2() _I2()\n"
-        + "           method AliasTarget::_makeInnerA() _A()}\n"
+        + "%Redirect:{method InnerI2 _I2() method InnerA _A()}\n"
         + "TestB:{<:InnerI2 method moreFun(that, other) void \n"
         + "       type method Library () {} }\n"
-        + "TestC:{method Outer1::%Redirect::_I2() notSoFun() {} }\n"
-        + "TestD:{method Outer1::%Redirect::_I2()::moreFun(that,other)::other mostFun() {} }\n"
+        + "TestC:{method Outer1::InnerI2::moreFun() notSoFun() {} }\n"
         + "}",
         "Outer0::%Redirect","Outer1::%Redirect",
         "{TestB:{<:Outer2::I2 method moreFun(that, other) void\n"
         + "      type method Library () {}}\n"
-        + "TestC:{method Outer2::%Redirect::_I2() notSoFun() {}}\n"
-        + "TestD:{method Outer2::%Redirect::_I2()::moreFun(that,other)::other mostFun() {} }\n"
+        + "TestC:{method Outer2::I2::moreFun() notSoFun() {}}\n"
         + "}",false
+    },{lineNumber(), new String[]{   // Redirect, via aliases,
+                                     // trying to exploit a rumour that
+                                     // identically shaped aliases can be redirected onto one-another
+                    "{"
+                    + "X:{Y:{\n"
+                    + "       FluffyA:{method Outer1 fun(Void that)}\n"
+                    + "       Aliases:{method FluffyA::fun() notSoFun()}\n"
+                    + "}}"
+                    + "}"},
+        "{Z:{\n"
+        + "   FluffyA:{method Outer1 fun(Void that)} \n"
+        + "   Aliases:{method FluffyA::fun() notSoFun()}\n"
+        + "}\n"
+        + "TestA:{method Z::FluffyA fun()}"
+        + "}",
+        "Outer0::Z::Aliases","Outer1::X::Y::Aliases",
+        "{TestA:{method Outer2::X::Y::FluffyA fun()}}",false
 
         // TODO@James: when the test above passes, redirect via a pile, where the types in the internal pile are aliases to a mix of internal, internal->external and external
 
@@ -614,6 +634,64 @@ public static class TestRedirect1 {//add more test for error cases
     // MethodClash: Path(1), Left(1), Right(1), LeftKind(enum(4)), RightKind(enum(4)),
     // DifferentParameters(0..), DifferentReturnType(t/f), DifferentThisMdf(t/f), IncompatibleException(t/f)
 
+    },{lineNumber(), new String[]{   // Redirect, using the matching-alias rule, to a class with an incompatible method
+                                     // @Marco, I protest against tabs in method specs in these errors
+                    "{"
+                    + "X:{Y:{\n"
+                    + "       FluffyA:{method Library fun(Void that)}\n"
+                    + "       Aliases:{method FluffyA::fun() notSoFun()}\n"
+                    + "}}"
+                    + "}"},
+        "{Z:{\n"
+        + "   FluffyA:{method Void fun(Void that)} \n"
+        + "   Aliases:{method FluffyA::fun() notSoFun()}\n"
+        + "}\n"
+        + "TestA:{method Z::FluffyA fun()}"
+        + "}",
+        "Outer0::Z::Aliases","Outer1::X::Y::Aliases",
+        ec.load("MethodClash",
+                "Path", "Outer0::Z::FluffyA",
+                "Left", "method Void fun(Void that)",
+                "Right", "method Library fun(Void that)",
+                "LeftKind", "AbstractMethod",
+                "RightKind", "AbstractMethod",
+                "DifferentParameters", "[]",
+                "DifferentReturnType", "true",
+                "DifferentThisMdf", "false",
+                "IncompatibleException", "false").str(), true
+    },{lineNumber(), new String[]{   // Redirect to, but not from, incompatible which is a path
+                    "{"
+                    + "X:{Y:{\n"
+                    + "       FluffyA:{method Outer1 fun(Void that)}\n"
+                    + "       Aliases:{method FluffyA::fun() notSoFun()}\n"
+                    + "}}"
+                    + "}"},
+        "{Z:{\n"
+        + "   FluffyA:{method Void fun(Void that)} \n"
+        + "   Aliases:{method FluffyA::fun() notSoFun()}\n"
+        + "}\n"
+        + "TestA:{method Z::FluffyA fun()}"
+        + "}",
+        "Outer0::Z::Aliases","Outer1::X::Y::Aliases",
+        ec.set("Right", "method Outer1 fun(Void that)").str(), true
+    },{lineNumber(), new String[]{   // Redirect from, but not to, incompatible which is a path
+                                     // @Marco, I think that we should keep getting MethodClash here, because Void is not a source-created path to add to the cascade
+                    "{"
+                    + "X:{Y:{\n"
+                    + "       FluffyA:{method Void fun(Void that)}\n"
+                    + "       Aliases:{method FluffyA::fun() notSoFun()}\n"
+                    + "}}"
+                    + "}"},
+        "{Z:{\n"
+        + "   FluffyA:{method Outer1 fun(Void that)} \n"
+        + "   Aliases:{method FluffyA::fun() notSoFun()}\n"
+        + "}\n"
+        + "TestA:{method Z::FluffyA fun()}"
+        + "}",
+        "Outer0::Z::Aliases","Outer1::X::Y::Aliases",
+        ec.set("Left", "method Outer1 fun(Void that)",
+               "Right", "method Void fun(Void that)").str(), true
+
 
 /* TODO@James : try this test, when I get to method clashes
     },{lineNumber(), new String[]{ // mismatches in type vs instance method
@@ -646,23 +724,15 @@ public static class TestRedirect1 {//add more test for error cases
           .str(), true
            */
 
-    }
-});}
+    }});
+    return TestHelper.skipUntilLine(tests, startLine);
+}
 
 //},{"Outer2::D::C","Outer1::C",new String[]{"{A:{}}","{C:{}}","{D:##walkBy}"}
 
 
 @Test  public void test() {
 
-  // TODO@James: find a way of skipping failing tests that produces clearer feedback than auto-passing them
-  // TODO@James: consider making a git hook to block commits unless startLine=0 is enabled
-  
-  Integer lineNum = _lineNumber;
-//  Integer startLine = 249;        // All tests before this succeed without trying
-  Integer startLine = 0;        // TODO@James: re-enable this before committing.
-  if (lineNum < startLine)
-    return;
-    
   TestHelper.configureForTest();
   Program p=TestHelper.getProgram(_p);
   ClassB cb1=getClassB("cb1", _cb1);

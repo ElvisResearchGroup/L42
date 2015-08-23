@@ -299,4 +299,20 @@ public class TestHelper {
   public static int lineNumber() {
     return Thread.currentThread().getStackTrace()[2].getLineNumber();
   }
+  
+  public static List<Object[]> skipUntilLine(List<Object[]> tests, int startLine) {
+    // Element 0 of each test must be an int,
+    // being the line number in the test file at which the test starts.
+    // These will be assumed to be in ascending order.
+    // Find the first one >= startLine, and return the remainder of the list.
+    // Attempting to return no tests is an error.
+    ListIterator<Object[]> t = tests.listIterator();
+    while (t.hasNext()) {
+      if (startLine <= (int)(t.next()[0])) {
+        return tests.subList(t.previousIndex() ,tests.size());
+      }
+    }
+    assert(false);  // no tests left, so something is broken
+    return null;
+  }
 }
