@@ -34,25 +34,25 @@ import coreVisitors.GuessTypeCore;
 import tools.Map;
 
 public class RenameMembers extends coreVisitors.CloneWithPath{
-  CollectedPrivates maps;//ClassB start;
-  public RenameMembers(CollectedPrivates maps) {
+  CollectedLocatorsMap maps;//ClassB start;
+  public RenameMembers(CollectedLocatorsMap maps) {
     super();
     this.maps = maps;
   }
-  public static  ClassB of(CollectedPrivates maps,ClassB cb){
+  private static  ClassB of(CollectedLocatorsMap maps,ClassB cb){
     return (ClassB)cb.accept(new RenameMembers(maps));
   }
   public static  ClassB of(Path src,Path dest,ClassB cb){
     Locator nl = pathPathToLocator(src,dest);
-    CollectedPrivates maps=new CollectedPrivates();
-    maps.privatePaths.add(nl);
+    CollectedLocatorsMap maps=new CollectedLocatorsMap();
+    maps.nesteds.add(nl);
     return of(maps,cb);
   }
   public static  ClassB of(List<PathPath> pp,ClassB cb){
-    CollectedPrivates maps=new CollectedPrivates();
+    CollectedLocatorsMap maps=new CollectedLocatorsMap();
     for(PathPath ppi:pp){
       Locator nl = pathPathToLocator(ppi.getPath1(),ppi.getPath2());
-      maps.privatePaths.add(nl);
+      maps.nesteds.add(nl);
     }
     return of(maps,cb);
   }
@@ -78,7 +78,7 @@ public class RenameMembers extends coreVisitors.CloneWithPath{
         int whereImSize=current.size();
         current.addCs(s.getCBar());
         
-        for(Locator nl:maps.privatePaths){
+        for(Locator nl:maps.nesteds){
           if(whereImSize>nl.size()){continue;}
           //situation: rename: s1 c1->path   current path locator is:  whereIm c cs
           //check whereImSize<=s1Size and  whereIm c cs =s1 _ 

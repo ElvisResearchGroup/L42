@@ -19,6 +19,8 @@ import ast.ExpCore.ClassB;
 import ast.ExpCore.Signal;
 import ast.ExpCore._void;
 import ast.Expression;
+import ast.Util;
+import ast.Util.InfoAboutMs;
 import ast.ExpCore.ClassB.*;
 import ast.Ast.*;
 
@@ -353,11 +355,15 @@ public class Program {
       }
     return result;
   }
-  public static Ast.MethodType getMT(Program p,MethodSelector ms, ClassB cb){
-    for(Path pi:getAllSupertypes(p,cb)){
+  public static InfoAboutMs getMT(Program p,MethodSelector ms, ClassB cb){
+    List<Path> ps = getAllSupertypes(p,cb);
+    for(Path pi:ps){
       ClassB candidate=p.extractCb(pi);
       Optional<Member> opt = Program.getIfInDom(candidate.getMs(),ms);
-      if(opt.isPresent()){return From.from(((MethodWithType)opt.get()),pi).getMt();}
+      if(opt.isPresent()){
+        Ast.MethodType mt=From.from(((MethodWithType)opt.get()),pi).getMt();
+        return new InfoAboutMs(ps, pi, mt);
+        }
     }
     throw Assertions.codeNotReachable();
     }

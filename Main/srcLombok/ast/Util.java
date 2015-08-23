@@ -16,6 +16,11 @@ import ast.ExpCore.ClassB.Member;
 
 
 public class Util {
+  @Value public static class InfoAboutMs{
+    @NonNull java.util.List<Path> allSuper;
+    @NonNull Path original;
+    @NonNull ast.Ast.MethodType mt;
+  }
   @Value @Wither public static class CsMx{
     @NonNull java.util.List<String> cs;@NonNull MethodSelector ms;
     public String toString(){

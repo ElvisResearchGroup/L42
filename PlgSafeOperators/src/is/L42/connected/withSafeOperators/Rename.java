@@ -83,6 +83,10 @@ public class Rename {
       return IntrospectionAdapt.applyMapMx(p, cb, Collections.singletonList(pmx));
       //TODO: this still calls the old sum... to fix eventually
       //test it so that it fail for it!
+      //get the locator rename map size 1
+      // rename all usages, exends the class, 
+      //so that a method header can be summed with something.
+      // 
     }
 
   private static ClassB redirectDefinition(List<String>src,List<String>dest, ClassB lprime) {

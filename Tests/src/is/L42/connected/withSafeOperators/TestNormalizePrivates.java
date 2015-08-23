@@ -76,7 +76,7 @@ public static class TestCollectPrivates {
   TestHelper.configureForTest();
   NormalizePrivates.reset();
   ClassB cb1=getClassB("cb1", _cb1);
-  CollectedPrivates result = NormalizePrivates.collectPrivates(cb1);
+  CollectedLocatorsMap result = NormalizePrivates.collectPrivates(cb1);
   if (result.pedexes.size()==0){
     result.computeNewNames();
   }

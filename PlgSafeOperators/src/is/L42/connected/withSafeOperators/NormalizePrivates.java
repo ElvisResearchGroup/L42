@@ -7,13 +7,19 @@ import java.util.Set;
 import coreVisitors.CloneVisitor;
 import coreVisitors.CloneWithPath;
 import coreVisitors.Exists;
+import tools.Assertions;
 import tools.Map;
 import ast.ExpCore;
 import ast.ExpCore.ClassB.Member;
+import ast.ExpCore.ClassB.MethodImplemented;
+import ast.ExpCore.ClassB.MethodWithType;
 import ast.Util;
 import ast.ExpCore.*;
 import ast.Util.*;
 import auxiliaryGrammar.Locator;
+import auxiliaryGrammar.Program;
+import auxiliaryGrammar.Locator.Kind;
+import ast.Ast.MethodSelector;
 import ast.Ast.Path;
 //this file may be moved in L42_Main
 public class NormalizePrivates {
@@ -42,8 +48,8 @@ public class NormalizePrivates {
     
     return name+newPedex;
   }
-  public static CollectedPrivates collectPrivates(ClassB cb){
-    CollectedPrivates result=new CollectedPrivates();
+  public static CollectedLocatorsMap collectPrivates(ClassB cb){
+    CollectedLocatorsMap result=new CollectedLocatorsMap();
     cb.accept(new CloneWithPath(){
       @Override public ClassB.NestedClass visit(ClassB.NestedClass nc){
         String name=nc.getName();
@@ -52,7 +58,7 @@ public class NormalizePrivates {
         if(!hasValidUniquePexed){result.normalized=false;}
         Locator nl=this.getLocator().copy();
         nl.pushMember(nc);
-        result.privatePaths.add(nl);
+        result.nesteds.add(nl);
         return super.visit(nc);
         }
       @Override public ClassB.MethodWithType visit(ClassB.MethodWithType mwt){
@@ -62,7 +68,7 @@ public class NormalizePrivates {
         if(!hasValidUniquePexed){result.normalized=false;}
         Locator ml=this.getLocator().copy();
         ml.pushMember(mwt);
-        result.privateSelectors.add(ml);
+        result.selectors.add(ml);
         return super.visit(mwt);
         }
       });
@@ -84,7 +90,7 @@ public class NormalizePrivates {
     return replace__(ss);
   }
   public static ClassB normalize(ClassB cb){
-    CollectedPrivates result = NormalizePrivates.collectPrivates(cb);
+    CollectedLocatorsMap result = NormalizePrivates.collectPrivates(cb);
     if (result.normalized && result.pedexes.isEmpty()){return cb;}
     cb=replace__ifPresent(cb, result);
     if(!result.pedexes.isEmpty()){
@@ -95,7 +101,7 @@ public class NormalizePrivates {
     return cb;
   
     }
-  private static ClassB replace__ifPresent(ClassB cb, CollectedPrivates result) {
+  private static ClassB replace__ifPresent(ClassB cb, CollectedLocatorsMap result) {
     if(result.pedexes.isEmpty()){return cb;}
     return (ClassB)cb.accept(new CloneVisitor(){
         public ExpCore visit(Path s){
@@ -116,15 +122,57 @@ public class NormalizePrivates {
       }) ;
   }
    
-  static class RenameAlsoDefinition extends RenameMembers{
-    public RenameAlsoDefinition(CollectedPrivates maps) { super(maps);}
-    public static  ClassB of(CollectedPrivates maps,ClassB cb){
-      return (ClassB)cb.accept(new RenameAlsoDefinition(maps));
+  static class RenameAlsoDefinition extends RenameUsage{
+    public RenameAlsoDefinition(ClassB visitStart,CollectedLocatorsMap maps) { super(visitStart,maps);}
+
+    public List<Member> liftMembers(List<Member> s) {
+      List<Member>result=super.liftMembers(s);
+      //remove clashes here
+      return result;
+      }
+    //it may clash against something
+    public MethodWithType visit(MethodWithType mwt){
+      MethodWithType result=super.visit(mwt);
+      Locator current=this.getLocator().copy();
+      current.pushMember(mwt);
+      for(Locator l:this.maps.selectors){
+        if(!l.equals(current)){continue;}
+        return result.withMs((MethodSelector) l.getAnnotation());
+      }
+      return result;
     }
+    public ClassB.MethodImplemented visit(ClassB.MethodImplemented mi){
+      return potentiallyRenameMethodImplementedHeader(super.visit(mi));
+    }
+    private MethodImplemented potentiallyRenameMethodImplementedHeader(MethodImplemented mi) {
+      ClassB currentCb=this.getLocator().getLastCb();
+      Program ep=Program.getExtendedProgram(Program.empty(), this.getLocator().getCbs());
+      //List<Path> supers = Program.getAllSupertypes(ep, currentCb);
+      InfoAboutMs info = Program.getMT(ep, mi.getS(),currentCb);
+      assert !info.getAllSuper().isEmpty();
+      Locator original=this.getLocator().copy();
+      boolean isOut=original.moveInPath(info.getOriginal());
+      if(isOut){return mi;}
+      for(Locator pMx :maps.selectors){
+        assert pMx.kind()==Kind.Method;
+        MethodSelector s=pMx.getLastMember().match(
+            nc->{throw Assertions.codeNotReachable();},
+            mimpl->mimpl.getS(),
+            mt->mt.getMs());
+        if(!mi.getS().equals(s)){continue;}
+        Locator renamed =pMx.copy();
+        renamed.toFormerNodeLocator();
+        if(!original.equals(renamed)){return mi;}
+        MethodSelector ms2=(MethodSelector) pMx.getAnnotation();
+        return mi.withS(ms2);
+        }
+      return mi;
+    }
+    
     public ClassB.NestedClass visit(ClassB.NestedClass nc){
       Locator current=this.getLocator().copy();
       current.pushMember(nc);
-      for(Locator nl:maps.privatePaths){
+      for(Locator nl:maps.nesteds){
         if(!nl.equals(current)){continue;}
         assert nl.getAnnotation() instanceof String;
         return super.visit(nc.withName((String)nl.getAnnotation()));
@@ -132,8 +180,8 @@ public class NormalizePrivates {
       return super.visit(nc);
     }
   }
-  public static ClassB normalize(CollectedPrivates privates,ClassB cb){
-    cb=RenameAlsoDefinition.of(privates, cb);
+  public static ClassB normalize(CollectedLocatorsMap privates,ClassB cb){
+    cb=(ClassB)new RenameAlsoDefinition(cb,privates).visit(cb);
     return cb;
     //renameMethod still use old introspection
     //write a rename usage from data of collected privates for both paths and methods.

@@ -15,18 +15,18 @@ import ast.Util.*;
 import auxiliaryGrammar.Locator;
 import tools.Map;
 
-public class CollectedPrivates{
+public class CollectedLocatorsMap{
 final Set<String> pedexes=new HashSet<>();
-final List<Locator>privateSelectors=new ArrayList<>();
-final List<Locator>privatePaths=new ArrayList<>();
+final List<Locator>selectors=new ArrayList<>();
+final List<Locator>nesteds=new ArrayList<>();
 boolean normalized=true;
 public String toString(){
-  return""+pedexes+"\n"+privateSelectors+"\n"+privatePaths+"\n"+normalized;
+  return""+pedexes+"\n"+selectors+"\n"+nesteds+"\n"+normalized;
   }
 public void computeNewNames(){
   HashMap<Locator,String> map=new HashMap<>();
-  for(Locator mL:privateSelectors){computeNewName(map,mL);}
-  for(Locator nL:privatePaths){nL.setAnnotation(NormalizePrivates.freshName(nL.getLastName()));}
+  for(Locator mL:selectors){computeNewName(map,mL);}
+  for(Locator nL:nesteds){nL.setAnnotation(NormalizePrivates.freshName(nL.getLastName()));}
 }
 private void computeNewName(HashMap<Locator, String> map, Locator mL) {
   Member m=mL.getLastMember();

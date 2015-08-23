@@ -36,7 +36,7 @@ public class Locator {
     Member m=this.ms.get(this.ms.size()-1);
     return m.match(nc->nc.getName(), mi->mi.getS().getName(), mt->mt.getMs().getName());
   }
-  Kind kind() {
+  public Kind kind() {
     int size = this.size();
     if (cbs.get(size - 1) != null) { return Kind.Node; }
     if (ms.get(size - 1) instanceof ClassB.NestedClass) { return Kind.Nested; }

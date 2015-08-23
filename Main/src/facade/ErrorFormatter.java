@@ -167,7 +167,7 @@ public class ErrorFormatter {
     ExpCore.Signal collectedErr=null;
     public ClassB.NestedClass visit(ClassB.NestedClass nc){
       if(nc.getInner() instanceof ExpCore.Signal){
-        collectedPath=this.getClassNamesPath();
+        collectedPath=this.getLocator().getClassNamesPath();
         collectedErr=(ExpCore.Signal )nc.getInner();
       }
       return super.visit(nc);}
