@@ -38,7 +38,7 @@ public class ExtractInfo {
       }
     Set<Path> whereUsed=new HashSet<>();
     public ExpCore visit(Path s) {
-      List<String> path = getClassNamesPath();
+      List<String> path = this.getLocator().getClassNamesPath();
       if(s.isPrimitive()){return s;}
       if(path.size()<s.outerNumber()){return s;}
       //List<String> unexploredPath=path.subList(0,path.size()-s.outerNumber());
@@ -70,7 +70,7 @@ public class ExtractInfo {
     Path target;IsImplemented(Path target){this.target=target;}
     Set<Path> whereUsed=new HashSet<>();
     public ExpCore visit(ClassB s) {
-      Path localP=Path.outer(0,getClassNamesPath());
+      Path localP=Path.outer(0,this.getLocator().getClassNamesPath());
       for(Path ip:s.getSupertypes()){
       if(From.fromP(ip, localP).equals(target)){
         whereUsed.add(localP);

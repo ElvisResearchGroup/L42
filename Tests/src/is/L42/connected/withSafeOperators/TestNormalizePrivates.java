@@ -36,38 +36,38 @@ public static class TestCollectPrivates {
   },{
     lineNumber(),"{method Void foo()}","[]\n[]\n[]\ntrue"
   },{
-    lineNumber(),"{method'@private\n Void foo()}","[]\n[Outer0::foo()foo__0_0()]\n[]\nfalse"
+    lineNumber(),"{method'@private\n Void foo()}","[]\n[Outer0::foo()[0]foo__0_0()]\n[]\nfalse"
   },{
-    lineNumber(),"{method'@private\n Void foo__42()}","[42]\n[Outer0::foo__42()null]\n[]\ntrue"
+    lineNumber(),"{method'@private\n Void foo__42()}","[42]\n[Outer0::foo__42()[0]null]\n[]\ntrue"
   },{
     lineNumber(),"{method'@private\n Void foo__42()method'@private\n Void foo__43()}",
-    "[42, 43]\n[Outer0::foo__42()null, Outer0::foo__43()null]\n[]\ntrue"
+    "[42, 43]\n[Outer0::foo__42()[0]null, Outer0::foo__43()[0]null]\n[]\ntrue"
   },{
     lineNumber(),
     "{method'@private\n Void foo__42()"
     + " this({ method '@private\n Void bla__33()  }, second:{})"
     + "}",
-    "[33, 42]\n[Outer0::foo__42()null, Outer0::foo__42()[1]bla__33()null]\n[]\ntrue"
+    "[33, 42]\n[Outer0::foo__42()[0]null, Outer0::foo__42()[1]bla__33()[0]null]\n[]\ntrue"
   },{
     lineNumber(),
     "{ make(Foo f)'@private\n method'@private\n Void foo()"
     + " this({ method '@private\n Void bla() void }, second:{mut kame(mut Hame ha)'@private\n})"
     + "}",
     "[]\n"
-    + "[Outer0::make(f)make__0_0(f__0_0),"
-    + " Outer0::#f()#f__0_0(),"
-    + " Outer0::f()f__0_0(),"
-    + " Outer0::foo()foo__1_0(),"
-    + " Outer0::foo()[1]bla()bla__2_0(),"
-    + " Outer0::foo()[2]kame(ha)kame__3_0(ha__3_0),"
-    + " Outer0::foo()[2]#ha()#ha__3_0(),"
-    + " Outer0::foo()[2]ha()ha__3_0()]\n[]\nfalse"
+    + "[Outer0::make(f)[0]make__0_0(f__0_0),"
+    + " Outer0::#f()[0]#f__0_0(),"
+    + " Outer0::f()[0]f__0_0(),"
+    + " Outer0::foo()[0]foo__1_0(),"
+    + " Outer0::foo()[1]bla()[0]bla__2_0(),"
+    + " Outer0::foo()[2]kame(ha)[0]kame__3_0(ha__3_0),"
+    + " Outer0::foo()[2]#ha()[0]#ha__3_0(),"
+    + " Outer0::foo()[2]ha()[0]ha__3_0()]\n[]\nfalse"
   },{
     lineNumber(),
     "{method'@private\n Void foo__42()"
     + " this({ method '@private\n Void bla()  }, second:{})"
     + "}",
-    "[42]\n[Outer0::foo__42()null, Outer0::foo__42()[1]bla()null]\n[]\nfalse"
+    "[42]\n[Outer0::foo__42()[0]null, Outer0::foo__42()[1]bla()[0]null]\n[]\nfalse"
   
   }});}
 
@@ -117,8 +117,10 @@ public static class TestNormalizePrivates1 {
   },{
     lineNumber(),"{ D:{<:A::C} A:{C:'@private\n{ <:C }}}","{ D:{<:A::C__0_0 } A:{C__0_0:'@private\n{ <:C__0_0 }}}" 
   },{
+    lineNumber(),"{ D:{<: A::C::D} A:{C:'@private\n{ D:{}}}}","{ D:{<:A::C__0_0::D } A:{C__0_0:'@private\n{ D:{}}}}" 
+  },{
     lineNumber(),"{ D:{<:A::C, A::C::D} A:{C:'@private\n{ <:C D:{}}}}","{ D:{<:A::C__0_0,A::C__0_0::D } A:{C__0_0:'@private\n{ <:C__0_0 D:{}}}}" 
-     
+  
   }});}
 
 

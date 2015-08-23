@@ -229,9 +229,14 @@ public class TestRename {
           ,"A::B","C::B",
           "{ A:{ } C:{B:{ method A m(Outer0 x)}} }",false//
         }, {lineNumber(),//
+          "{ A:{B:{ } method Void ma(B x)}  }"
+          ,"A::B","C::D",
+          "{ A:{method Void ma(Outer1::C::D x)}  C:{D:{ }}}",false//
+        }, {lineNumber(),//
           "{ A:{B:{ method A mab(B x)} method A ma(B x)} method A m(A::B x) }"
           ,"A::B","C::D",
           "{ A:{method Outer0 ma(Outer1::C::D x)} method A m(C::D x) C:{D:{ method Outer2::A mab(Outer0 x)}}}",false//
+       
         }, {lineNumber(),//
           "{ A:{B:{ method A mab(B x)} method A ma(B x)} method A m(A::B x) }"
           ,"A","C::D",

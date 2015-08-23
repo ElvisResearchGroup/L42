@@ -18,13 +18,12 @@ import ast.ExpCore.Block;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.MethodImplemented;
 import ast.ExpCore.MCall;
+import ast.Util;
 import ast.ExpCore.Block.Catch;
 import ast.ExpCore.Block.Dec;
 import ast.ExpCore.Block.On;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodWithType;
-import ast.Util.Locator;
-import ast.Util.MethodLocator;
 import ast.Util.PathMxMx;
 import auxiliaryGrammar.Functions;
 import auxiliaryGrammar.Norm;
@@ -42,9 +41,17 @@ public class RenameUsage extends MethodPathCloneVisitor {
   }
 
   private MethodImplemented potentiallyRenameMethodImplementedHeader(MethodImplemented mi) {
+    ClassB currentCb=this.getAstCbPath().get(this.getAstCbPath().size()-1);
+    Program ep=Program.getExtendedProgram(this._p, this.getAstCbPath());
+    List<Path> supers = Program.getAllSupertypes(ep, currentCb);
+    assert !supers.isEmpty();
     for(MethodLocator pMx :maps.privateSelectors){
       if(!mi.getS().equals(pMx.getThat().getMs())){continue;}
-      Path renamedP = Norm.of(p,pMx.getPath());
+      int cutSize=pMx.getMTail().size()-1;
+      NodeLocator mloc = new NodeLocator(
+          pMx.getMTail().subList(0,cutSize),
+          pMx.getMPos().subList(0,cutSize),
+          pMx.getMOuters().subList(0,cutSize));
       if(!equalOrSubtype(Path.outer(0),renamedP)){continue;}
       return mi.withS(pMx.getMs2());
       }
@@ -64,7 +71,7 @@ public class RenameUsage extends MethodPathCloneVisitor {
           }
         return original;
     }
-  private boolean equalOrSubtype(Path guessed, Path path) {
+  private boolean compatibleNodeLocator(Path guessed, Path path) {
    if(guessed.equals(path)){return true;}
    ClassB ct=p.extractCt(guessed);
    List<Path> sup = ct.getSupertypes();

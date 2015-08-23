@@ -13,6 +13,7 @@ import ast.ExpCore.ClassB.Member;
 import ast.Util;
 import ast.ExpCore.*;
 import ast.Util.*;
+import auxiliaryGrammar.Locator;
 import ast.Ast.Path;
 //this file may be moved in L42_Main
 public class NormalizePrivates {
@@ -49,11 +50,9 @@ public class NormalizePrivates {
         boolean hasValidUniquePexed=processNameAndReturnHasUnseenPedex(result.pedexes,name);
         if(!nc.getDoc().isPrivate()){return super.visit(nc);}
         if(!hasValidUniquePexed){result.normalized=false;}
-        result.privatePaths.add(new NestedLocator(
-            new ArrayList<>(this.getAstNodesPath()),
-            new ArrayList<>(this.getAstIndexesPath()) ,
-            new ArrayList<>(this.getAstCbPath()) ,
-            name));
+        Locator nl=this.getLocator().copy();
+        nl.pushMember(nc);
+        result.privatePaths.add(nl);
         return super.visit(nc);
         }
       @Override public ClassB.MethodWithType visit(ClassB.MethodWithType mwt){
@@ -61,11 +60,9 @@ public class NormalizePrivates {
         boolean hasValidUniquePexed=processNameAndReturnHasUnseenPedex(result.pedexes,name);
         if(!mwt.getDoc().isPrivate()){return super.visit(mwt);}
         if(!hasValidUniquePexed){result.normalized=false;}
-        result.privateSelectors.add(new MethodLocator(
-            new ArrayList<>(this.getAstNodesPath()),
-            new ArrayList<>(this.getAstIndexesPath()) ,
-            new ArrayList<>(this.getAstCbPath()) ,
-            mwt));
+        Locator ml=this.getLocator().copy();
+        ml.pushMember(mwt);
+        result.privateSelectors.add(ml);
         return super.visit(mwt);
         }
       });
@@ -125,12 +122,12 @@ public class NormalizePrivates {
       return (ClassB)cb.accept(new RenameAlsoDefinition(maps));
     }
     public ClassB.NestedClass visit(ClassB.NestedClass nc){
-      for(NestedLocator nl:maps.privatePaths){
-        if(!nl.getMPos().equals(this.getAstIndexesPath())){continue;}
-        if(!nl.getMTail().equals(this.getAstNodesPath())){continue;}
-        if(!nc.getName().equals(nl.getThat())){continue;}
-        assert nl.getNewName()!=null;
-        return super.visit(nc.withName(nl.getNewName()));
+      Locator current=this.getLocator().copy();
+      current.pushMember(nc);
+      for(Locator nl:maps.privatePaths){
+        if(!nl.equals(current)){continue;}
+        assert nl.getAnnotation() instanceof String;
+        return super.visit(nc.withName((String)nl.getAnnotation()));
       }
       return super.visit(nc);
     }
