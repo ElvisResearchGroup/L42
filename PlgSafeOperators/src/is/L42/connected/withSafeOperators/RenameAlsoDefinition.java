@@ -25,6 +25,7 @@ class RenameAlsoDefinition extends RenameUsage{
       Optional<Member> optM = Program.getIfInDom(result2,m);
       if (!optM.isPresent()){result2.add(m);continue;}
       Member m2=optM.get();
+      result2.remove(m2);
       Sum.doubleSimmetricalMatch(null/*boh, null program, does it breaks?*/,
           visitStart,visitStart,result2,this.getLocator().getClassNamesPath(),m,m2);
     //remove clashes here

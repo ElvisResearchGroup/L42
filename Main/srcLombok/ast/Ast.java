@@ -51,7 +51,7 @@ public interface Ast {
   @Value @Wither public class NormType implements Type{Mdf mdf; Path path; Ph ph;
   public String toString(){return ""+mdf.name()+""+this.path.rowData+((ph==Ph.Ph)?"^":(ph==Ph.None)?"":"%");}
     public <T> T match(Function<NormType, T> normType,Function<HistoricType, T> hType){return normType.apply(this);}}
-  @Value public class MethodSelectorX{MethodSelector ms;String x;}
+  @Value  @Wither public class MethodSelectorX{MethodSelector ms;String x;}
   @Value @Wither public class HistoricType implements Type{Path path; List<MethodSelectorX> selectors;boolean forcePlaceholder;
     public <T> T match(Function<NormType, T> normType,Function<HistoricType, T> hType){return hType.apply(this);}}
   @Value public class FreeType implements Type{

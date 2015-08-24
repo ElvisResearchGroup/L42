@@ -5,6 +5,9 @@ type method Outer0 #add(Library fileName) Outer0(fileName:fileName)
 method Outer0 #end()this
 
 type method Library binaryReprFrom(Library lib)(
+  Library norm=using SafeOperatorsAccess
+    check privateNormalize(lib)
+    error Outer0"privateNormalize"
   Library report=using SafeOperatorsAccess
     check introspectLibraryReport(lib, path:Outer0"Outer0")
     error Outer0"introspectLibraryReport"

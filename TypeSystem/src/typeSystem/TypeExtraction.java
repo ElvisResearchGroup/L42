@@ -221,7 +221,8 @@ public class TypeExtraction {
       other.get().match(nc->{throw Assertions.codeNotReachable();},
           mi->{return result.add(mt.withInner(Optional.of(mi.getInner())).withDoc(mt.getDoc().sum(mi.getDoc())));},
           mt2->{
-            if (mt2.equals(mt)){return true;}//ecco perche avevo la sorgente, per il diamante, sono uguali, con sorgente solo per diamante!
+            //TODO: unsure about  Optional.empty(), does it prefents wrong diamond discovery?
+            if (mt2.withInner(Optional.empty()).equals(mt)){return true;}//ecco perche avevo la sorgente, per il diamante, sono uguali, con sorgente solo per diamante!
             throw new ast.ErrorMessage.MalformedUnionOfMembers(mt, mt2);
             }
           );

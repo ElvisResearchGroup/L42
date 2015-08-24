@@ -4,10 +4,6 @@ package coreVisitors;
 import java.util.ArrayList;
 import java.util.List;
 import tools.Map;
-import ast.Ast.FieldDec;
-import ast.Ast.Header;
-import ast.Ast.MethodType;
-import ast.Ast.Path;
 import ast.ExpCore;
 import ast.ExpCore.Block.Dec;
 import ast.ExpCore.ClassB.Member;
@@ -27,8 +23,19 @@ public class CloneVisitor implements Visitor<ExpCore>{
   protected Type liftT(Type t){
     return t.match(
         nt->(Type)new NormType(nt.getMdf(),lift(nt.getPath()),nt.getPh()),
-        ht->(Type)new HistoricType(lift(ht.getPath()),ht.getSelectors(),ht.isForcePlaceholder())
+        ht->(Type)new HistoricType(lift(ht.getPath()),liftSXs(ht.getSelectors()),ht.isForcePlaceholder())
         );
+    }
+  protected List<MethodSelectorX> liftSXs(List<MethodSelectorX> selectors) {
+    return Map.of(this::liftSX,selectors);
+  }
+  protected MethodSelectorX liftSX(MethodSelectorX selector) {
+    MethodSelector ms1=selector.getMs();
+    MethodSelector ms2=liftMs(ms1);
+    if(selector.getX().isEmpty() || selector.getX().equals("this")){return selector.withMs(ms2);}
+    int pos=ms1.getNames().indexOf(selector.getX());
+    assert pos!=-1:selector;
+    return selector.withMs(ms2).withX(ms2.getNames().get(pos));
     }
   protected MethodSelector liftMs(MethodSelector ms){return ms;}
   protected ExpCore.Block.Catch liftK(ExpCore.Block.Catch k){

@@ -43,7 +43,9 @@ public class Util {
 	@NonNull ast.Ast.Stage stage=Stage.None;
 	final java.util.Map<Path,ClassB>dependencies=new java.util.HashMap<>();
 	final java.util.List<Path> allSupertypes=new java.util.ArrayList<>();
-	boolean verified=false;	  
+	boolean verified=false;	 
+	boolean privateNormalized=false;
+	final java.util.List<Integer> families=new java.util.ArrayList<>();
     }
   @Data public static class CachedMt{
 	  ast.Ast.MethodType mt;

@@ -14,6 +14,7 @@ import ast.ExpCore.ClassB.MethodWithType;
 import ast.Util;
 import ast.Util.*;
 import auxiliaryGrammar.Locator;
+import privateMangling.PrivateHelper;
 import tools.Map;
 import ast.Ast.MethodSelector;
 
@@ -43,7 +44,7 @@ private void computeNewName(HashMap<Locator, String> map, Locator mL) {
   locator.toFormerNodeLocator();
   String s=map.get(locator);
   if(s==null){
-    s="__"+NormalizePrivates.countPrivates++ +"_"+NormalizePrivates.countFamilies;//may be turn in method?
+    s="__"+NormalizePrivates.countPrivates++ +"_"+PrivateHelper.countFamilies;//may be turn in method?
     map.put(locator,s);
   }
   String newPedex=s;

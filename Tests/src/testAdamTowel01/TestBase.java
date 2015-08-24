@@ -21,9 +21,9 @@ public class TestBase {
   @Test
   public  void _00DeployAdamTowel01() throws Throwable{
     TestHelper.configureForTest();
-    Paths.get("localhost","adamTowel01.L42").toFile().delete();
+    Paths.get("localhost","AdamTowel01.L42").toFile().delete();
     L42.main(new String[]{"examples/DeployAdamTowel01"});
-    Assert.assertTrue(Paths.get("localhost","adamTowel01.L42").toFile().exists());
+    Assert.assertTrue(Paths.get("localhost","AdamTowel01.L42").toFile().exists());
   }
   //@Test
   public  void _01basicTest() throws Throwable{

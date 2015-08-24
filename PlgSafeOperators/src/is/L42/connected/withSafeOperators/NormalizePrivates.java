@@ -7,6 +7,7 @@ import java.util.Set;
 import coreVisitors.CloneVisitor;
 import coreVisitors.CloneWithPath;
 import coreVisitors.Exists;
+import privateMangling.PrivateHelper;
 import tools.Map;
 import ast.ExpCore;
 import ast.Util;
@@ -17,12 +18,11 @@ import ast.Ast.Path;
 //this file may be moved in L42_Main
 public class NormalizePrivates {
   public static int countPrivates;
-  public static int countFamilies;
   public static String doubleUnderscoreReplacement;
   static{reset();}
   public static void reset(){
     countPrivates=0;
-    countFamilies=0;
+    PrivateHelper.countFamilies=0;
     doubleUnderscoreReplacement="$%";
     }
   public static void updateDoubleUnderscoreReplacement(String name){
@@ -31,7 +31,7 @@ public class NormalizePrivates {
     updateDoubleUnderscoreReplacement(name);
   }
   public static String freshName(String name){
-   return freshName(name,"__"+countPrivates++ +"_"+countFamilies);
+   return freshName(name,"__"+countPrivates++ +"_"+PrivateHelper.countFamilies);
   }
   public static String freshName(String name,String newPedex){
     assert !name.contains("__");//should have been removed before
@@ -91,6 +91,7 @@ public class NormalizePrivates {
       }
     result.computeNewNames();
     cb=NormalizePrivates.normalize(result, cb);
+    cb.getStage().setPrivateNormalized(true);
     return cb;
   
     }

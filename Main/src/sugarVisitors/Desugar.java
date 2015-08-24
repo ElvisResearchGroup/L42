@@ -11,6 +11,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
 import platformSpecific.fakeInternet.OnLineCode;
+import privateMangling.PrivateHelper;
 import tools.Assertions;
 import ast.Ast;
 import ast.Ast.BlockContent;
@@ -89,12 +90,18 @@ public class Desugar extends CloneVisitor{
   }
   private void renameAllPrivatesInUsedLibs() {
     for(String s: this.importedLibs.keySet()){
-      this.importedLibs.put(s,renameAllPrivatesInUsedLibs(this.importedLibs.get(s)));
+      this.importedLibs.put(s,renameAllPrivatesInUsedLibs(s,this.importedLibs.get(s)));
     }
 
   }
-  private ast.ExpCore.ClassB renameAllPrivatesInUsedLibs(ExpCore.ClassB classB) {
+  private ast.ExpCore.ClassB renameAllPrivatesInUsedLibs(String libName,ExpCore.ClassB classB) {
+    int cutPoint=libName.lastIndexOf("/");
+    assert cutPoint!=-1;
+    char first=libName.charAt(cutPoint+1);
+    if(Path.isValidPathStart(first)){return PrivateHelper.updatePrivateFamilies(classB);}//we assume is going to be
+    // -desugared, well typed and with private names normalized //TODO: do we want to check?
     if(!IsCompiled.of(classB)){return classB;}//TODO: just to make test easier, should be an error in production
+   //else, use the old, buggy name rename, to remove later
     //collect private names
     CollectPrivateNames cpn=CollectPrivateNames.of(classB);
     //rename all

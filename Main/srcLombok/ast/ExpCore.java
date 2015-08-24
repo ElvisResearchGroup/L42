@@ -168,11 +168,11 @@ public interface ExpCore {
         return nc.apply(this);
       }
     }
-    @Value @Wither @EqualsAndHashCode(exclude = {"p","mt"}) @ToString(exclude = {"p","mt"})public static class MethodImplemented implements Member {
+    @Value @Wither @EqualsAndHashCode(exclude = {"p"/*,"mt"*/}) @ToString(exclude = {"p"/*,"mt"*/})public static class MethodImplemented implements Member {
       @NonNull Doc doc;
       @NonNull MethodSelector s;
       @NonNull ExpCore inner;
-      ast.Util.CachedMt mt=new ast.Util.CachedMt();
+      //ast.Util.CachedMt mt=new ast.Util.CachedMt();
       Position p;
       public Member withBody(ExpCore e) {
         return this.withInner(e);

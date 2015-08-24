@@ -1,0 +1,42 @@
+package privateMangling;
+
+import ast.ExpCore;
+
+import java.util.List;
+
+import ast.Ast.MethodSelector;
+import ast.Ast.Path;
+import ast.ExpCore.ClassB;
+import coreVisitors.CloneVisitor;
+import tools.Map;
+
+public class PrivateHelper {
+  public static int countFamilies=0;
+  static String updateSingleName(String x){
+    int isPr=x.lastIndexOf("__");
+    if(isPr==-1){return x;}
+    int pos=x.lastIndexOf("_");
+    assert pos!=-1;
+    assert isPr+2<pos && isPr!=-1;
+    x=x.substring(0,pos+1)+countFamilies;
+    return x;
+  }
+  public static ClassB updatePrivateFamilies(ClassB cb){
+    countFamilies+=1;
+    return (ClassB)cb.accept(new CloneVisitor(){
+      protected MethodSelector liftMs(MethodSelector ms){
+        return ms.withName(updateSingleName(ms.getName()))
+            .withNames(Map.of(PrivateHelper::updateSingleName, ms.getNames()));
+        }
+      public ClassB.NestedClass visit(ClassB.NestedClass nc){
+        return super.visit(nc.withName(updateSingleName(nc.getName())));
+        }
+      public ExpCore visit(Path s) {
+        if(s.isPrimitive()){return super.visit(s);}
+        List<String> cs = s.getCBar();
+        cs=Map.of(PrivateHelper::updateSingleName,cs);
+        return super.visit(Path.outer(s.outerNumber(),cs));
+        }
+    });
+  }
+}
