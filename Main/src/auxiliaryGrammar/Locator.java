@@ -79,7 +79,6 @@ public class Locator {
   private void auxAddCs(List<String> cs) {
     int size=this.size();
     if(size>0 && this.cbs.get(size-1)==null){
-      assert this.indexes.get(size-1)==0;
       this.indexes.set(size-1,1);
       this.cbs.set(size-1,LocatorSupport.dumbCb);
     }

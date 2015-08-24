@@ -132,7 +132,7 @@
     Void checkTargetExists(Library that) exception Report::TargetUnavailable (
       unused=AddDocumentationPath[this.that() doc:Doc"JustToSeeIfItIsThere"]<<that
       catch exception x (
-        on Report::InvalidOnTopLevel error CodeNotReachable()
+        on Report::InvalidOnTopLevel error Report::CodeNotReachable() 'TODO: if you omit Report:: the error reporting is horrible
         )
       void
       )

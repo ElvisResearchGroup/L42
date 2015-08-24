@@ -14,6 +14,7 @@ import ast.Util;
 import ast.ExpCore.*;
 import ast.Util.*;
 import auxiliaryGrammar.Locator;
+import auxiliaryGrammar.Program;
 import ast.Ast.Path;
 //this file may be moved in L42_Main
 public class NormalizePrivates {
@@ -82,7 +83,7 @@ public class NormalizePrivates {
     if(s.equals(ss)){return ss;}
     return replace__(ss);
   }
-  public static ClassB normalize(ClassB cb){
+  public static ClassB normalize(Program p,ClassB cb){
     CollectedLocatorsMap result = NormalizePrivates.collectPrivates(cb);
     if (result.normalized && result.pedexes.isEmpty()){return cb;}
     cb=replace__ifPresent(cb, result);
@@ -90,7 +91,7 @@ public class NormalizePrivates {
       result=NormalizePrivates.collectPrivates(cb);//could be made faster, but not important here
       }
     result.computeNewNames();
-    cb=NormalizePrivates.normalize(result, cb);
+    cb=NormalizePrivates.normalize(p,result, cb);
     cb.getStage().setPrivateNormalized(true);
     return cb;
   
@@ -116,8 +117,8 @@ public class NormalizePrivates {
       }) ;
   }
    
-  public static ClassB normalize(CollectedLocatorsMap privates,ClassB cb){
-    cb=(ClassB)new RenameAlsoDefinition(cb,privates).visit(cb);
+  public static ClassB normalize(Program p,CollectedLocatorsMap privates,ClassB cb){
+    cb=(ClassB)new RenameAlsoDefinition(cb,privates,p).visit(cb);
     return cb;
     //renameMethod still use old introspection
     //write a rename usage from data of collected privates for both paths and methods.

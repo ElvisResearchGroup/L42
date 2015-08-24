@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -16,6 +17,7 @@ import ast.Ast.Path;
 import ast.Ast.Type;
 import ast.ExpCore.Block;
 import ast.ExpCore.ClassB;
+import ast.Util.CachedStage;
 
 @SuppressWarnings("serial") public abstract class ErrorMessage extends RuntimeException {
   public abstract int getErrCode();
@@ -372,6 +374,7 @@ import ast.ExpCore.ClassB;
     Type tExpected;
     ExpCore e;
     List<ClassB> p;
+    CachedStage cachedInfo;
   }
 
   @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class TypesNotSubtype extends TypeError {

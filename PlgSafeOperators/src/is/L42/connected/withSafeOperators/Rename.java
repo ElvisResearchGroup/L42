@@ -66,7 +66,7 @@ public class Rename {
   private static ClassB directRename(Program p, ClassB cb, List<String> src, List<String> dest) {
     //ClassB renamedCb=renameUsage(Collections.singletonList(new PathPath(Path.outer(0,src),Path.outer(0,dest))),cb);//cb, renamedCb are normalized
    CollectedLocatorsMap clm=CollectedLocatorsMap.from(Path.outer(0,src), Path.outer(0,dest));
-    ClassB renamedCb=(ClassB)new RenameAlsoDefinition(cb,clm).visit(cb);
+    ClassB renamedCb=(ClassB)new RenameAlsoDefinition(cb,clm,p).visit(cb);
     //cb, renamedCb are normalized   
     ClassB clearCb=ClassOperations.onNestedNavigateToPathAndDo(renamedCb,src,nc->Optional.empty());
     ClassB newCb=redirectDefinition(src,dest,renamedCb);
@@ -84,7 +84,7 @@ public class Rename {
       cb=ClassOperations.normalizePrivates(p,cb);
       //PathMxMx pmx=new PathMxMx(Path.outer(0,path),src,dest);
       CollectedLocatorsMap maps=CollectedLocatorsMap.from(Path.outer(0,path),(MethodWithType) mem,dest);
-      RenameAlsoDefinition ren=new RenameAlsoDefinition(cb, maps);
+      RenameAlsoDefinition ren=new RenameAlsoDefinition(cb, maps,p);
       //return IntrospectionAdapt.applyMapMx(p, cb, Collections.singletonList(pmx));
      return (ClassB) ren.visit(cb);
     }

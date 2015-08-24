@@ -13,6 +13,7 @@ import ast.Ast.Ph;
 import ast.Ast.Stage;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.WalkBy;
+import ast.Util.CachedStage;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.NestedClass;
 import auxiliaryGrammar.Ctx;
@@ -34,6 +35,7 @@ public class SmallStep extends Executor{
     ClassB ct=Configuration.typeSystem.typeExtraction(p,cb);
     ct=ct.withMember(m.withBody(new WalkBy()));
     //get p'
+    ct=ct.withStage(new CachedStage());
     ct.getStage().setStage(Stage.Less);//TODO: boh? still ok?
     Program p1=p.addAtTop(cb,ct);
     //assert ct.getStage()==Stage.Less;

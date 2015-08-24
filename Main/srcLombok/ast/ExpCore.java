@@ -92,12 +92,16 @@ public interface ExpCore {
   }
 
   @Value @Wither @EqualsAndHashCode(exclude = "stage") public static class ClassB implements ExpCore, Ast.Atom {
-    public ClassB(Doc doc1, Doc doc2, boolean isInterface, List<Path> supertypes, List<Member> ms) {
+	  public ClassB(Doc doc1, Doc doc2, boolean isInterface, List<Path> supertypes, List<Member> ms) {
+		  this(doc1,doc2,isInterface,supertypes,ms,new ast.Util.CachedStage());
+		  }
+	  public ClassB(Doc doc1, Doc doc2, boolean isInterface, List<Path> supertypes, List<Member> ms,ast.Util.CachedStage stage) {
       this.doc1 = doc1;
       this.doc2 = doc2;
       this.isInterface = isInterface;
       this.supertypes = supertypes;
       this.ms = ms;
+      this.stage=stage;
       isConsistent();
     }//lombock fails me here :-(
     Doc doc1;
@@ -105,7 +109,7 @@ public interface ExpCore {
     boolean isInterface;
     List<Ast.Path> supertypes;
     List<Member> ms;
-    ast.Util.CachedStage stage=new ast.Util.CachedStage();
+    ast.Util.CachedStage stage;
     public String toString() {
       return sugarVisitors.ToFormattedText.of(this);
     }

@@ -17,6 +17,7 @@ import ast.ExpCore;
 import ast.ExpCore.ClassB.MethodImplemented;
 import ast.ExpCore.ClassB.NestedClass;
 import ast.InternalError;
+import ast.Util.CachedStage;
 import ast.Ast.Doc;
 import ast.Ast.Path;
 import ast.Ast.Stage;
@@ -30,6 +31,7 @@ import auxiliaryGrammar.UsedPathsPlus;
 public class TypeExtraction {
 
   public static ClassB etFull(Program p, ClassB cb) {
+	cb=cb.withStage(new CachedStage());
     try{while(true){ //Java deadcode detection sucks, if erased in compilation
       cb=etDispatch(p,cb);
     }}
@@ -48,6 +50,7 @@ public class TypeExtraction {
     }
   private static ClassB etStage(Program p, ClassB ct) {
     assert ct.getStage().getStage()==Stage.Star;
+    assert !ct.getMs().stream().anyMatch(e-> e instanceof MethodImplemented);
     //classB.getSupertypes().size()==1;
     //collect es
     Set<ClassB> es;
@@ -64,6 +67,7 @@ public class TypeExtraction {
     assert stage!=Stage.None;
     if(stage==null){return null;}
     ct.getStage().setStage(stage);
+    assert !ct.getMs().stream().anyMatch(e-> e instanceof MethodImplemented);
     return ct;
   }
   private static List<ClassB> collectEs(Program p, ClassB ct) {
@@ -96,8 +100,9 @@ public class TypeExtraction {
         throw new ErrorMessage.InvalidMethodImplemented(inh.getMs(),(MethodImplemented)m,classB,p.getInnerData());
         }
       }
-
     ClassB result=new ClassB(classB.getDoc1(),classB.getDoc2(),classB.isInterface(),sup,members);
+    //use new stage, since new members, the old one can not become star
+    assert !result.getMs().stream().anyMatch(e-> e instanceof MethodImplemented);
     result.getStage().setStage(Stage.Star);
     return result;
   }
@@ -108,6 +113,7 @@ public class TypeExtraction {
         NestedClass nc=(NestedClass)m;
           if(!(nc.getInner() instanceof ClassB)){continue;}
           ClassB inner=(ClassB)nc.getInner();
+          inner.getStage().setGivenName(nc.getName());
           ClassB outer=ct;
           Program p2=p.addAtTop(null,outer);
           return outer.withMember(nc.withInner(etDispatch(p2,inner)));
@@ -127,11 +133,13 @@ public class TypeExtraction {
       if(!IsCompiled.of(cbi)){return Stage.Less;}
     }
     if(Functions.isAbstract(p,cb)){
+    	cb.getStage().setCoherent(false);
       return Stage.Plus;
       }
     for(ClassB cbi: es){
       assert cbi!=null;
       if(cbi.getStage().getStage()==Stage.Plus){
+    	cb.getStage().getDependencies().add(cbi);
         return Stage.Plus;
         }
     }
@@ -155,6 +163,7 @@ public class TypeExtraction {
     }
     checkOriginals(p, ct, original);
     ClassB result=new ClassB(Doc.empty(),Doc.empty(),false,paths,members);
+    assert !result.getMs().stream().anyMatch(e-> e instanceof MethodImplemented);
     result.getStage().setStage(Stage.Star);
     return result;
   }

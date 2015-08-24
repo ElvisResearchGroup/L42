@@ -136,7 +136,7 @@ public static class TestNormalizePrivates1 {
   NormalizePrivates.reset();
   ClassB cb1=getClassB("cb1", _cb1);
   ClassB expected=getClassB("expected", _expected);
-  cb1=NormalizePrivates.normalize(cb1);
+  cb1=NormalizePrivates.normalize(Program.empty(),cb1);
   TestHelper.assertEqualExp(expected,cb1);
   }
 }

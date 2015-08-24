@@ -37,7 +37,6 @@ import coreVisitors.NormE;
 import facade.Configuration;
 
 public class Norm {
-
     public static MethodImplemented of(Program p,MethodImplemented mi) {
     return mi.withInner(of(p,mi.getInner()));
   }
@@ -143,7 +142,10 @@ public class Norm {
     //String outern=path.getRowData().get(0);
     if(path.getRowData().size()==1){return path;}
     String c=path.getRowData().get(1);
+	//if(path.outerNumber()>=p.getInnerData().size()){throw External.external;}
     ClassB myLib=p.getCt(n);//need types on interface implemented methods
+    if(myLib==null){myLib=p.getCb(n);}
+    assert myLib!=null;//TODO: should get better with cached annotationss
     List<Member> ms=myLib.getMs();
     Optional<Member> om=Program.getIfInDom(ms, c);
     boolean isPass=false;

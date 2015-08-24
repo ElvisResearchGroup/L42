@@ -23,6 +23,7 @@ import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.NestedClass;
 import ast.Expression;
+import ast.Util.CachedStage;
 import ast.Ast.Position;
 import ast.ExpCore.ClassB.MethodWithType;
 import auxiliaryGrammar.Program;
@@ -287,8 +288,8 @@ public class ErrorFormatter {
     if(obj instanceof Expression){return ToFormattedText.of((Expression)obj);}
     if(obj instanceof Expression.ClassB.Member){return ToFormattedText.of((Expression.ClassB.Member)obj);}
     if(obj instanceof java.nio.file.Path){return obj.toString();}
-    if(obj instanceof Ast.Position){
-      return obj.toString();}
+    if(obj instanceof CachedStage){return obj.toString();}
+    if(obj instanceof Ast.Position){ return obj.toString();}
     return "unknown kind "+obj.getClass().getCanonicalName();
   }
   public static String formatSelectorCompact(Ast.MethodSelector ms) {

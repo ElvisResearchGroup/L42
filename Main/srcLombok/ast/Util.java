@@ -41,9 +41,11 @@ public class Util {
 
   @Data public static class CachedStage{
 	@NonNull ast.Ast.Stage stage=Stage.None;
-	final java.util.Map<Path,ClassB>dependencies=new java.util.HashMap<>();
+	final java.util.List<ClassB>dependencies=new java.util.ArrayList<>();
 	final java.util.List<Path> allSupertypes=new java.util.ArrayList<>();
-	boolean verified=false;	 
+	boolean verified=false;
+	boolean coherent=true;
+	String givenName="";
 	boolean privateNormalized=false;
 	final java.util.List<Integer> families=new java.util.ArrayList<>();
     }

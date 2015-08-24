@@ -140,8 +140,9 @@ public class Program {
   }
   public ClassB extractCt(Path path){
     ClassB ct=this.getCt(path.outerNumber());
+    if(ct==null){return null;}
     ct = extractCBar(path.getCBar(), ct);
-    assert ct!=null;
+    //if(ct==null){return null;}
     return ct;
   }
   private static final Doc[] _trashCommentRef=new Doc[]{Doc.empty()};
@@ -183,6 +184,7 @@ public class Program {
       throw new ErrorMessage.MethodNotPresent(path,ms,forError,null,this.getInnerData());
       }
     ClassB classB=extractCt(path);
+    if(classB==null){classB=extractCb(path);}
 //    path=Path.parse("Outer0::C::C");
     //classB=(ClassB)From.from(classB,path);
     Optional<Member> result = getIfInDom(classB.getMs(),ms);
@@ -335,7 +337,7 @@ public class Program {
   public static Program getExtendedProgram(Program p,List<ClassB>extension){
     for(ClassB cb:extension){
       if(cb!=null){
-        p=p.addAtTop(cb, null);
+        p=p.addAtTop(cb, Configuration.typeSystem.typeExtraction(p, cb));
     }}
     return p;
   }
@@ -356,6 +358,7 @@ public class Program {
     return result;
   }
   public static InfoAboutMs getMT(Program p,MethodSelector ms, ClassB cb){
+    assert p.getCb(0)==cb;
     List<Path> ps = getAllSupertypes(p,cb);
     for(Path pi:ps){
       ClassB candidate=p.extractCb(pi);

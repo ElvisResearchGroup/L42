@@ -3,6 +3,7 @@ package typeSystem;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
 
@@ -39,6 +40,8 @@ import ast.ExpCore.Using;
 import ast.ExpCore.WalkBy;
 import ast.ExpCore.X;
 import ast.ExpCore._void;
+import ast.Util;
+import ast.Util.CachedStage;
 import ast.Ast.NormType;
 import auxiliaryGrammar.*;
 
@@ -189,7 +192,13 @@ public class TypeSystem implements Visitor<Type>, Reporter{
     NormType nts=Functions.forceNormType( inner,suggested);
     NormType nt=Functions.forceNormType( inner,result);
     if(!Functions.isSubtype(p, nt.getPath(),nts.getPath())){
-      throw new ErrorMessage.PathsNotSubtype(nt,nts,inner,p.getInnerData());
+      CachedStage cs = new CachedStage();
+      Path iPath=null;
+      if(inner instanceof Path){iPath=(Path)inner;}
+      if(iPath!=null &&!iPath.isPrimitive()){
+    	  cs=p.extractCt(iPath).getStage();
+    	  }
+	  throw new ErrorMessage.PathsNotSubtype(nt,nts,inner,p.getInnerData(),cs);
       }
     if(Functions.isSubtype(p, nt,nts)){return result;}
 

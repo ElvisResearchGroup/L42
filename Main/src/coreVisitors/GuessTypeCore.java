@@ -34,6 +34,7 @@ import ast.Ast.Type;
 public class GuessTypeCore implements Visitor<Path>{
   Program p;
   HashMap<String, Type> varEnv;
+  
   private GuessTypeCore(Program p, HashMap<String, Type> varEnv) {
     this.p = p; this.varEnv = varEnv;
   }

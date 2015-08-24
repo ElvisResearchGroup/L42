@@ -16,7 +16,7 @@ import auxiliaryGrammar.Locator.Kind;
 import tools.Assertions;
 
 class RenameAlsoDefinition extends RenameUsage{
-  public RenameAlsoDefinition(ClassB visitStart,CollectedLocatorsMap maps) { super(visitStart,maps);}
+  public RenameAlsoDefinition(ClassB visitStart,CollectedLocatorsMap maps,Program p) { super(visitStart,maps,p);}
 
   public List<Member> liftMembers(List<Member> s) {
     List<Member>result1=super.liftMembers(s);
@@ -48,7 +48,7 @@ class RenameAlsoDefinition extends RenameUsage{
   }
   private MethodImplemented potentiallyRenameMethodImplementedHeader(MethodImplemented mi) {
     ClassB currentCb=this.getLocator().getLastCb();
-    Program ep=Program.getExtendedProgram(Program.empty(), this.getLocator().getCbs());
+    Program ep=Program.getExtendedProgram(p, this.getLocator().getCbs());
     //List<Path> supers = Program.getAllSupertypes(ep, currentCb);
     InfoAboutMs info = Program.getMT(ep, mi.getS(),currentCb);
     assert !info.getAllSuper().isEmpty();

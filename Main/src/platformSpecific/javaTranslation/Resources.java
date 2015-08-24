@@ -25,6 +25,7 @@ import sugarVisitors.ToFormattedText;
 import tools.Assertions;
 import ast.Ast;
 import ast.ErrorMessage;
+import ast.ErrorMessage.PathNonExistant;
 import ast.ErrorMessage.UserLevelError;
 import ast.ExpCore;
 import ast.Ast.Doc;
@@ -185,11 +186,13 @@ public class Resources {
     catch(ErrorMessage.PluginActionUndefined undF){throw undF;}
    //catch(java.lang.Error |RuntimeException msg){//eclipse debugger can not hande it
     catch(AssertionError msg){ throw msg;}
+    catch(PathNonExistant msg){throw msg;}//comment this line after testing
     catch(ErrorMessage msg){
       UserLevelError err = ErrorFormatter.formatError(p,msg);
       throw Assertions.codeNotReachable("try to make this happen, is it possible? it should mean bug in plugin code\n"+err+"\n---------------\n");
     }
     catch(NullPointerException msg){throw msg;}
+    catch(ClassCastException msg){throw msg;}
     catch(RuntimeException msg){
       //throw Resources.notAct;//will be
       throw Assertions.codeNotReachable("try to make this happen, is it possible? it should mean bug in plugin code\n"+msg+"\n---------------\n");

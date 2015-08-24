@@ -195,6 +195,6 @@ public class Plugin implements PluginType{
     public Object MprivateNormalize£xthat(Object _that){
       ClassB that=ensureExtractClassB(_that);
       if(that.getStage().isPrivateNormalized()){return that;}
-      return NormalizePrivates.normalize(that);
+      return NormalizePrivates.normalize(Resources.getP(),that);
     }
   }

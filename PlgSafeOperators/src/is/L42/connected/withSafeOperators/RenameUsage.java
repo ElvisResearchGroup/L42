@@ -37,8 +37,8 @@ import coreVisitors.From;
 import coreVisitors.GuessTypeCore;
 
 public class RenameUsage extends MethodPathCloneVisitor {
-  RenameUsage(ClassB visitStart,CollectedLocatorsMap maps) {
-    super(visitStart,maps);
+  RenameUsage(ClassB visitStart,CollectedLocatorsMap maps,Program p) {
+    super(visitStart,maps,p);
   }
   
   @Override public MethodSelector visitMS(MethodSelector original,Path src){
@@ -54,7 +54,7 @@ public class RenameUsage extends MethodPathCloneVisitor {
       if(filtered.isEmpty()){return original;}
       Locator pathOriginal=this.getLocator().copy();
       boolean isOut=pathOriginal.moveInPath(src);
-      assert !isOut;
+      if(isOut){return original;}
       for(Locator pMx:filtered){
           Locator pathDef=pMx;
           pathDef.toFormerNodeLocator();
