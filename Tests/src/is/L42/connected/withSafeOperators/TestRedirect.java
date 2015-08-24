@@ -265,23 +265,6 @@ public static class TestRedirect1 {//add more test for error cases
 
         // TODO@James: play with aliases to parameters vs aliases to return values
         
-    },{lineNumber(), new String[]{   // Pile redirect, where the types in the external pile are aliases to return values
-                    "{I1:{interface method Void fun()}\n"
-                    + "I2:{interface method Void moreFun()}\n"
-                    + "A:{<:I1 I2 method fun() void method moreFun() void}\n"
-                    + "AliasTarget:{method I1 _I1a() method I2 _I2a() method Void _Aa(A that) }\n"
-                    + "%Redirect:{method AliasTarget::_I1a() _I1()\n"
-                    + "           method AliasTarget::_I2a() _I2()\n"
-                    + "           method AliasTarget::_Aa(that)::that _A()}"
-                    + "}"},
-        "{InnerI2:{interface method Void moreFun()}\n"
-        + "InnerA:{<:Outer2::I1 InnerI2} "  // redirected class can't have implementation, so it can't mention methods
-        + "%Redirect:{method Inner2 _I2() method InnerA _A()}"
-        + "TestB:{<:InnerI2 method moreFun() void}\n"
-        + "}",
-        "Outer0::%Redirect","Outer1::%Redirect",
-        "{TestB:{<:Outer2::I2 method moreFun() void}}", false
-
     },{lineNumber(), new String[]{   // Try redirecting a class that implements two internal interfaces,
                                      // via a pile that explicitly directs both
                     "{I1:{interface method Void fun()}\n"
@@ -291,7 +274,7 @@ public static class TestRedirect1 {//add more test for error cases
                     + "}"},
         "{InnerI1:{interface method Void fun()}\n"
         + "InnerI2:{interface method Void moreFun()}\n"
-        + "InnerA:{<:InnerI1 InnerI2}\n"
+        + "InnerA:{<:InnerI1 InnerI2}\n"  // redirected class can't have implementation, so it can't mention methods
         + "%Redirect:{method InnerI1 _I1() method InnerI2 _I2() method InnerA _A()}\n"
         + "TestA:{method InnerA aFun()}"
         + "TestB:{<:InnerI1 InnerI2  method fun() void method moreFun() void}\n"
@@ -301,6 +284,7 @@ public static class TestRedirect1 {//add more test for error cases
         + "TestA:{method Outer2::A aFun()}"
         + "TestB:{<:I1 I2 method fun() void method moreFun() void}"
         + "}",false
+        
     },{lineNumber(), new String[]{   // Redirect three classes, via a pile, so that the
                                      // intersection-of-ambiguity rule makes the 
                                      // implemented interfaces and method errors unambiguous
