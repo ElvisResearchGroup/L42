@@ -34,7 +34,7 @@ class RenameAlsoDefinition extends RenameUsage{
     }
   //it may clash against something
   public MethodWithType visit(MethodWithType mwt){
-    System.out.println("visitMethodWithType "+mwt.getMs());
+    //System.out.println("visitMethodWithType "+mwt.getMs());
     MethodWithType result=super.visit(mwt);
     Locator current=this.getLocator().copy();
     current.pushMember(mwt);
@@ -45,7 +45,7 @@ class RenameAlsoDefinition extends RenameUsage{
     return result;
   }
   public ClassB.MethodImplemented visit(ClassB.MethodImplemented mi){
-    System.out.println("visitMethodImplemented "+mi.getS());
+    //System.out.println("visitMethodImplemented "+mi.getS());
     return potentiallyRenameMethodImplementedHeader(super.visit(mi));
   }
   private MethodImplemented potentiallyRenameMethodImplementedHeader(MethodImplemented mi) {
@@ -74,7 +74,7 @@ class RenameAlsoDefinition extends RenameUsage{
   }
   
   public ClassB.NestedClass visit(ClassB.NestedClass nc){
-    System.out.println("visitNestedClass "+nc.getName());
+    //System.out.println("visitNestedClass "+nc.getName());
     Locator current=this.getLocator().copy();
     current.pushMember(nc);
     for(Locator nl:maps.nesteds){

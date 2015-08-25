@@ -727,7 +727,7 @@ public class Desugar extends CloneVisitor{
     ExpCore core=EncodingHelper.wrapError(msg);
     return core.accept(new InjectionOnSugar());
   }
-  private static final Doc consistentDoc=Doc.factory("@private @consistent\n");
+  private static final Doc consistentDoc=Doc.factory("@consistent\n");
   public static List<Member> cfType(ConcreteHeader h,Doc doc){
     //doc=Doc.factory("@private");
     List<Member> result=new  ArrayList<Member>();

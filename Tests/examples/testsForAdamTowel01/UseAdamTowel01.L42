@@ -4,10 +4,10 @@ NList:LinkedList.list(N)
 Main:{
 
   i=Introspection(lib:{Bar:{method Void()}})
-  Introspection::Report::Path ni=i.query(Path"Bar")
+  Introspection::NestedClass ni=i.nestedClassFromRoot(Path"Bar")
 
   Debug(ni.classKind())
-  Debug(i.query(Path"Outer0").classKind())
+  Debug(i.classKind())
 
   zero=NList[0N]
   Debug(S"Hello Adam "++zero.top())

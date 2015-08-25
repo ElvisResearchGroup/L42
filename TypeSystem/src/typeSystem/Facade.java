@@ -49,7 +49,7 @@ public class Facade implements facade.TypeSystem{
     Par par=new Par(p,cb);
     ClassB old=cache.get(par);
     if(old!=null){
-      System.out.println("cached result returned");
+      //System.out.println("cached result returned");
       return old;
       }
     old=TypeExtraction.etFull(p, cb);

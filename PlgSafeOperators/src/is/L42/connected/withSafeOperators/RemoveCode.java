@@ -25,6 +25,7 @@ import auxiliaryGrammar.Program;
 import auxiliaryGrammar.UsedPaths;
 public class RemoveCode {
   public static ClassB removeUnreachableCode(ClassB originalCb){
+	System.out.println("removeUnreachableCode");
     ClassB newCb=removeAllPrivates(originalCb);
     ClassB oldCb=newCb;
     Set<List<String>> justAdded = paths(newCb);

@@ -18,7 +18,7 @@ public class TestBase {
   //@Before public void initialize() {  TestHelper.configureForTest();}
   //not run when single test executed?
 
-  @Test
+  //@Test
   public  void _00DeployAdamTowel01() throws Throwable{
     TestHelper.configureForTest();
     Paths.get("localhost","AdamTowel01.L42").toFile().delete();
@@ -26,23 +26,23 @@ public class TestBase {
     Assert.assertTrue(Paths.get("localhost","AdamTowel01.L42").toFile().exists());
   }
   //@Test
-  public  void _01basicTest() throws Throwable{
+  public  void _01UseAdamTowel01() throws Throwable{
     TestHelper.configureForTest();
     L42.main(new String[]{"examples/testsForAdamTowel01/UseAdamTowel01.L42"});
     Assert.assertEquals(L42.record.toString(),"FreeTemplate\nFreeTemplate\nHello Adam 0\nazz\nbzz\nczz\n");
     }
   //@Test
-  public  void _02LoadSimpleLib() throws Throwable{
+  public  void _02UseSimpleLib() throws Throwable{
     TestHelper.configureForTest();
     L42.main(new String[]{"examples/testsForAdamTowel01/UseSimpleLib.L42"});
     Assert.assertEquals(L42.record.toString(),"Hello World 42\n");
     }
-  //@Test
+  @Test
   public  void _03DeploySimpleLib() throws Throwable{
     TestHelper.configureForTest();
-    //TODO: remove file localhost/DeployedSimpleLib.L42
+    Paths.get("localhost","DeployedSimpleLib.L42").toFile().delete();
     L42.main(new String[]{"examples/testsForAdamTowel01/DeploySimpleLib.L42"});
-    //check now is there
+    Assert.assertTrue(Paths.get("localhost","DeployedSimpleLib.L42").toFile().exists());
     }
   //@Test
   public  void _04LoadDeployedSimpleLib() throws Throwable{
@@ -61,7 +61,7 @@ public class TestBase {
     L42.main(new String[]{"examples/testsForAdamTowel01/UseCollections.L42"});
     Assert.assertEquals(L42.record.toString(),"size is 2 hello world\nhello\nworld\n");
     }
-  @Test
+  //@Test
   public  void _07introspection() throws Throwable{
     TestHelper.configureForTest();
     L42.main(new String[]{"examples/testsForAdamTowel01/UseIntrospectionAdamTowel.L42"});

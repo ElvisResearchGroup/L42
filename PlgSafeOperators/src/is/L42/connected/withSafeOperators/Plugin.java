@@ -40,6 +40,7 @@ public class Plugin implements PluginType{
       ClassB that=ensureExtractClassB(_that);
       List<String> src=Path.parseValidCs(ensureExtractStringU(_src));
       List<String> dest=Path.parseValidCs(ensureExtractStringU(_dest));
+      System.out.println("####################RENAMECLASS:"+src+"   "+dest);
       return Rename.renameClass(Resources.getP(),that,src,dest);
       }
     @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
