@@ -42,6 +42,7 @@ public class RenameUsage extends MethodPathCloneVisitor {
   }
   
   @Override public MethodSelector visitMS(MethodSelector original,Path src){
+     // System.out.println("visitMethodSelector "+original+" of "+ src);
       assert src!=null;
       List<Locator> filtered=new ArrayList<>();
       for(Locator pMx:maps.selectors){

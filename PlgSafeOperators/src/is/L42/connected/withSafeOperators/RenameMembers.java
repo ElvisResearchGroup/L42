@@ -44,6 +44,7 @@ public class RenameMembers extends coreVisitors.CloneWithPath{
   }
       public ExpCore visit(Path s) {
         if(s.isPrimitive()){return s;}
+        //System.out.print("     "+s);
         assert s.isCore();
         List<String>cs=s.getCBar();
         if(cs.isEmpty()){return s;}//no need to rename outers

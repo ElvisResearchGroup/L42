@@ -1,21 +1,17 @@
 -RedirectOk needs to follow another plan:
-  R=required redirects Set of int Path->ext Path functional
-  A= ambiguities, Set of (int Path-> (set ext Path))
+  A= ambiguities, Set of (int Path-> (set ext Path)) functional
   V= verified redirects Set of int Path->ext Path functional
     so that for all v of them redirectOk(p,v, cb,R,A,Exc)  is well defined for some R,A,Exc
  Exc=Set of ( (Set of Path )-> (Set of extPath))
-    then, starting from r1, R={r1}, A=empty, V=empty, Exc=empty
-  take an element r from R,    
+    then, starting from r1,  A={R1}, V=empty, Exc=empty
+  take an element r from (unambiguos(A) less V),    
     if redirectOk(p,r,cb,R,A,Exc), then 
-    V+=r,
-    R'+=unambiguos(A)//that is, A' contains some intPath->{extPath}, single possiblity, not ambigus
-    Amb=ambiguos(A)
-    A.clear(); A+=Amb
-    if R+V is not a functional relation, ambiguity error
-    R-=V
-  When R is empty,  
+    V+=r, //this can throw amibuity error
+    A+=V //this can throw ambiguty error //plus equal do the intersection of codomains
+    A-=V //this remove all the dom(V) from dom(A), is safe since A+=V worked before
+  When (unambiguos(A) less V) is empty,  
     check that for all ps->ps' in Exc, V(ps) superset of ps'
-    check that A is empty
+    check that dom(A) =dom(unambiguos(A))
    and return V
    
    define redirectOk(p,intPath->extPath,cb,R;A;Exc)
@@ -122,3 +118,4 @@ Now:
 
 
 
+-TargetUnavable become MemberUnavable

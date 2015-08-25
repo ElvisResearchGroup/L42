@@ -174,8 +174,9 @@ public class Resources {
    * @return a safe result, or a safe error, or an non-action exception
    */
   public static <Pt extends PluginType,T> T plgExecuteSafe(Program p,Pt plg,PlgClosure<Pt,T> cls,Object ... xs){
+    T res=null;
     try{
-      T res=cls.apply(plg, xs);
+      res=cls.apply(plg, xs);
       if(Resources.isValid(p,res,xs)){return res;}
       else{throw Resources.notAct;}
       }
@@ -188,6 +189,9 @@ public class Resources {
     catch(AssertionError msg){ throw msg;}
     catch(PathNonExistant msg){throw msg;}//comment this line after testing
     catch(ErrorMessage msg){
+      System.out.println("###################RES#############");
+      System.out.println(res);
+      System.out.println("################################");
       UserLevelError err = ErrorFormatter.formatError(p,msg);
       throw Assertions.codeNotReachable("try to make this happen, is it possible? it should mean bug in plugin code\n"+err+"\n---------------\n");
     }
