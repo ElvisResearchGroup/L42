@@ -315,6 +315,8 @@ public static class TestRedirect1 {//add more test for error cases
         
         // TODO@James do something with piles containing alias types that refer to the library return values of methods
         // but this might not be possible in a unit-test without metaprogramming capability
+        
+        // TODO@James play with throwing interfaces that implement classes
 
     // the errors have variable portions.
 	// try to explore the cardinality space of the variable portions
@@ -361,7 +363,7 @@ public static class TestRedirect1 {//add more test for error cases
                           // @Marco, if 'path' always means a specifically situated class,
                           // then this test is a mistake, and please email or skype me, rather than editing this file.
        new String[]{"{A:{type method Void fun(Void that) }}"},
-        "{InnerA:{type method '@private\n Void fun(Void that)} "
+        "{InnerA:{type method '@private\n Void fun(Void that) that} "
         + "TestB:{<:InnerA method notSoFun() InnerA.fun() }"
         + "}","Outer0::InnerA","Outer1::A",
         ec.set("PrivatePath", "true"
