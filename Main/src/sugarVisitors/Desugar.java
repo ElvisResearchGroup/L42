@@ -727,15 +727,16 @@ public class Desugar extends CloneVisitor{
     ExpCore core=EncodingHelper.wrapError(msg);
     return core.accept(new InjectionOnSugar());
   }
-  private static final Doc consistentDoc=Doc.factory("@consistent\n");
+  //private static final Doc consistentDoc=Doc.factory("@consistent\n");
   public static List<Member> cfType(ConcreteHeader h,Doc doc){
     //doc=Doc.factory("@private");
     List<Member> result=new  ArrayList<Member>();
     cfType1(h,doc, result);
     for(FieldDec f:h.getFs()){
-      cfType2(h.getP(),f,consistentDoc,result);
-      cfType3(h.getP(),f,consistentDoc,result);
-      cfType4(h.getP(),f,consistentDoc,result);
+      Doc fDoc=doc.sum(f.getDoc());
+      cfType2(h.getP(),f,fDoc,result);
+      cfType3(h.getP(),f,fDoc,result);
+      cfType4(h.getP(),f,fDoc,result);
     }
     return result;
   }
@@ -744,7 +745,7 @@ public class Desugar extends CloneVisitor{
     List<Type> ts=new ArrayList<Type>();
     List<String> names= new ArrayList<String>();
     for(FieldDec f:h.getFs()){
-      tDocss.add(consistentDoc);
+      tDocss.add(f.getDoc());
       ts.add(Functions.toPh(f.getT()));
       names.add(f.getName());
       }

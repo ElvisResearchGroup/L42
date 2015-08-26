@@ -2,6 +2,8 @@ package testAux;
 
 import helpers.TestHelper;
 
+import static helpers.TestHelper.lineNumber;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -12,6 +14,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
+import org.junit.runners.Parameterized.Parameters;
 
 import facade.Parser;
 import sugarVisitors.Desugar;
@@ -31,55 +34,66 @@ import auxiliaryGrammar.Program;
 public class TestTypeExtraction {
   @RunWith(Parameterized.class)
   public static class Test1 {
-    @Parameter(0) public String e1;
-    @Parameter(1) public String e2;
-    @Parameterized.Parameters
+	@Parameter(0) public int _lineNumber;
+    @Parameter(1) public String e1;
+    @Parameter(2) public String e2;
+    @Parameters(name = "{index}: line {0}")
     public static List<Object[]> createData() {
       return Arrays.asList(new Object[][] {
-          {"{a( Outer0::A a)}",
+          {lineNumber(),"{a( Outer0::A a)}",
          "{a( Outer0::A a)}##star ^##"
-       },{"{a( Outer0::A a, var Outer0::B b)}",
+       },{lineNumber(),"{a( Outer0::A a, var Outer0::B b)}",
          "{"
-        +" type method Outer0 a( Outer0::A^ a'@private @consistent\n, Outer0::B^ b'@private @consistent\n) "
-        +" mut method'@private @consistent\n Outer0::A #a() "
-        +" read method'@private @consistent\n Outer0::A a()"
-        +" mut method'@private @consistent\n Void b(Outer0::B that)"
-        +" mut method'@private @consistent\n Outer0::B #b()"
-        +" read method'@private @consistent\n Outer0::B b()"
+        +" type method Outer0 a( Outer0::A^ a, Outer0::B^ b) "
+        +" mut method Outer0::A #a() "
+        +" read method Outer0::A a()"
+        +" mut method Void b(Outer0::B that)"
+        +" mut method Outer0::B #b()"
+        +" read method Outer0::B b()"
         +" }##star ^##"    //mostly testing desugar now...
-       },{"{interface method Void m() A:{interface <:Outer1}}",
+       },{lineNumber(),"{a( Outer0::A a, var Outer0::B b)'@private\n}",
+           "{"
+          +" type method'@private\n Outer0 a( Outer0::A^ a, Outer0::B^ b) "
+          +" mut method'@private\n Outer0::A #a() "
+          +" read method'@private\n Outer0::A a()"
+          +" mut method'@private\n Void b(Outer0::B that)"
+          +" mut method'@private\n Outer0::B #b()"
+          +" read method'@private\n Outer0::B b()"
+          +" }##star ^##"    //mostly testing desugar now...
+
+       },{lineNumber(),"{interface method Void m() A:{interface <:Outer1}}",
           "{interface method Void m() A:{interface <:Outer1 }}##star ^##"
 
        //interface inside
-       },{"{interface method Void m() A:{interface <:Outer1}}##star ^##",
+       },{lineNumber(),"{interface method Void m() A:{interface <:Outer1}}##star ^##",
          "{interface method Void m() A:{interface  <:Outer1 method Void m()}##star ^## }##star ^##"
        //check normal from
-       },{"{interface method Outer0::A m() A:{interface <:Outer1}}##less ^##",
+       },{lineNumber(),"{interface method Outer0::A m() A:{interface <:Outer1}}##less ^##",
          "{interface method Outer0::A m() A:{interface  <:Outer1 method Outer1::A m()}##star ^## }##less ^##"
        //interface outside
-       },{"{interface <: Outer0::A A:{interface method Outer0 m() }##plus ^##}",
+       },{lineNumber(),"{interface <: Outer0::A A:{interface method Outer0 m() }##plus ^##}",
           "{interface  <: Outer0::A method Outer0::A m()  A:{interface method Outer0 m() }##plus ^##}##star ^##",
 
-       },{"{'foo\ninterface <: Outer0::A A:{interface method Outer0 m() }}",
+       },{lineNumber(),"{'foo\ninterface <: Outer0::A A:{interface method Outer0 m() }}",
          "{'foo\ninterface <: Outer0::A A:{interface method Outer0 m() }##star ^##}"
 
          //propagation of plus
-         },{"{  B:{ }##plus ^##}##star ^##",
+         },{lineNumber(),"{  B:{ }##plus ^##}##star ^##",
            "{  B:{ }##plus ^##}##plus ^##"
            //propagation of less
-           },{"{  B:{ }##less ^##}##star ^##",
+           },{lineNumber(),"{  B:{ }##less ^##}##star ^##",
              "{  B:{ }##less ^##}##less ^##"
              //propagation of less better than plus
-             },{"{  B:{ }##less ^## C:{}##plus ^##}##star ^##",
+             },{lineNumber(),"{  B:{ }##less ^## C:{}##plus ^##}##star ^##",
                "{  B:{ }##less ^## C:{}##plus ^##}##less ^##"
                //propagation of plus by use
-             },{"{  B:{ }##plus ^## C:{ method B() Outer0()}##star ^##}##plus ^##",
+             },{lineNumber(),"{  B:{ }##plus ^## C:{ method B() Outer0()}##star ^##}##plus ^##",
                "{  B:{ }##plus ^## C:{ method B() Outer0()}##plus ^##}##plus ^##"
                //propagation of less by use
-             },{"{  B:{ }##less ^## C:{ method B() Outer0()}##star ^##}##less ^##",
+             },{lineNumber(),"{  B:{ }##less ^## C:{ method B() Outer0()}##star ^##}##less ^##",
                "{  B:{ }##less ^## C:{ method B() Outer0()}##less ^##}##less ^##"
                //propagation of less by undefinition
-             },{"{  B:{A:void }##star ^## C:{ method B::A() Outer0()}##star ^##}##less ^##",
+             },{lineNumber(),"{  B:{A:void }##star ^## C:{ method B::A() Outer0()}##star ^##}##less ^##",
                "{  B:{ A:void}##star ^## C:{ method B::A() Outer0()}##less ^##}##less ^##"
          }});}
 
@@ -118,26 +132,26 @@ public static class Test2 {
        },{"{D:{method Void foo()}}","{D:{method Void foo()}##plus^##}##plus^##"//,"{C:{}}"
        },{"{a( Outer0::A a) A:{}}",
           "{"
-         +" type method Outer0 a( Outer0::A^ a '@private @consistent\n) "
-         +" mut method  '@private @consistent\nOuter0::A #a()"
-         +" read method  '@private @consistent\nOuter0::A a()"
+         +" type method Outer0 a( Outer0::A^ a '@private\n) "
+         +" mut method  '@private\nOuter0::A #a()"
+         +" read method  '@private\nOuter0::A a()"
          //+" mut method Void a(Outer0::A that) ##field"
          +" A:{}##star ^##}##star^##"
        },{"{a(var  Outer0::A a)  A:{}}",
          "{"
-        +" type method Outer0 a( Outer0::A^ a '@private @consistent\n)"
-        +" mut method '@private @consistent\nVoid a(Outer0::A that)"
-        +" mut method '@private @consistent\nOuter0::A #a() "
-        +" read method '@private @consistent\nOuter0::A a() "
+        +" type method Outer0 a( Outer0::A^ a '@private\n)"
+        +" mut method '@private\nVoid a(Outer0::A that)"
+        +" mut method '@private\nOuter0::A #a() "
+        +" read method '@private\nOuter0::A a() "
         +" A:{}##star ^##}##star^##"
        },{"{a( Outer0::A a, var Outer0::B b) A:{}  B:{}}",
          "{"
-        +" type method Outer0 a( Outer0::A^ a'@private @consistent\n, Outer0::B^ b'@private @consistent\n)"
-        +" mut method '@private @consistent\nOuter0::A #a()"
-        +" read method '@private @consistent\nOuter0::A a() "
-        +" mut method '@private @consistent\nVoid b(Outer0::B that)"
-        +" mut method '@private @consistent\nOuter0::B #b()"
-        +" read method '@private @consistent\nOuter0::B b() "
+        +" type method Outer0 a( Outer0::A^ a'@private\n, Outer0::B^ b'@private\n)"
+        +" mut method '@private\nOuter0::A #a()"
+        +" read method '@private\nOuter0::A a() "
+        +" mut method '@private\nVoid b(Outer0::B that)"
+        +" mut method '@private\nOuter0::B #b()"
+        +" read method '@private\nOuter0::B b() "
         +" A:{}##star ^## B:{}##star ^##}##star^##"
        },{"{interface method Void m() A:{interface <:Outer1}}",
           "{interface method Void m() A:{interface<:Outer1 method Void m()  }##star^## }##star^##"
