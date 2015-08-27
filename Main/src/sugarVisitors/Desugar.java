@@ -98,9 +98,11 @@ public class Desugar extends CloneVisitor{
     int cutPoint=libName.lastIndexOf("/");
     assert cutPoint!=-1;
     char first=libName.charAt(cutPoint+1);
-    if(Path.isValidPathStart(first)){return PrivateHelper.updatePrivateFamilies(classB);}//we assume is going to be
+    if(Path.isValidPathStart(first)){
+    	return PrivateHelper.updatePrivateFamilies(classB);
+    	}//we assume is going to be
     // -desugared, well typed and with private names normalized //TODO: do we want to check?
-    if(!IsCompiled.of(classB)){return classB;}//TODO: just to make test easier, should be an error in production
+    /*if(!IsCompiled.of(classB)){return classB;}//TODO: just to make test easier, should be an error in production
    //else, use the old, buggy name rename, to remove later
     //collect private names
     CollectPrivateNames cpn=CollectPrivateNames.of(classB);
@@ -111,7 +113,7 @@ public class Desugar extends CloneVisitor{
     List<PathMxMx> mapMx = ConsistentRenaming.makeMapMxConsistent(classB,cpn.mapMx);
     classB=IntrospectionAdapt.applyMapMx(emptyP,classB,mapMx);
     classB=IntrospectionAdapt.applyMapPath(emptyP,classB,cpn.mapPath);
-    return classB;
+    */return classB;
   }
   private void collectAllUsedLibs(Expression e) {
     e.accept(new CloneVisitor(){
@@ -268,7 +270,7 @@ public class Desugar extends CloneVisitor{
     ClassB cb=new ClassB(Doc.empty(),Doc.empty(),new Ast.ConcreteHeader(Mdf.Mutable, "",fs,Position.noInfo),Collections.emptyList(),Collections.emptyList(),Stage.None);
     String nameC=Functions.freshName("Var"+varDec.getX(), L42.usedNames);
     //usedCnames.add(nameC);
-    return new VarDecCE(new NestedClass(Doc.empty(),nameC,cb,null));
+    return new VarDecCE(new NestedClass(Doc.getPrivate(),nameC,cb,null));
   }
   public Type _computeTypeForClassBForVar(VarDecXE varDec) {
     Type t=varDec.getT().get();

@@ -81,10 +81,10 @@ public class TypeExtraction {
       try{es.add(p1.extractCt(pi));}
       catch(ErrorMessage.ProgramExtractOnMetaExpression meta){es.add(null);}
       catch(ErrorMessage.ProgramExtractOnWalkBy walk){ es.add(null);}
-      catch(ErrorMessage.PathNonExistant incomplete){
+      /*catch(ErrorMessage.PathNonExistant incomplete){
         //TODO: booh what here? not throw error to allows more flexible composition
         //operators on incomplete code
-      }
+      }*/
       }
     collectInnerClasses(ct,es);
     return es;

@@ -343,7 +343,7 @@ public class Plugin implements PluginType{
     if(path.isEmpty()){   return p.addAtTop(null,libCt);  }
     Optional<Member> optNc = Program.getIfInDom(libCt.getMs(),path.get(0));
     if(!optNc.isPresent()){
-      throw new Resources.Error("PathNotExistant:"+path);
+      throw new Resources.Error("PathNonExistant:"+path);
       }
     NestedClass nc=(NestedClass)optNc.get();
     ExpCore ec=nc.getInner();

@@ -20,6 +20,7 @@ import is.L42.connected.withSafeOperators.Pop.PopNFrom;
 import tools.Assertions;
 import tools.Map;
 import ast.ErrorMessage;
+import ast.ErrorMessage.PathNonExistant;
 import ast.ExpCore;
 import ast.ExpCore.*;
 import ast.Ast.NormType;
@@ -245,9 +246,15 @@ public class Redirect {
     if(used.isEmpty()){continue;}
     coupuledPaths.add(pi);
   }
-  Set<PathMx> usedPrMeth = FindUsage.of(Program.empty(),prMeth, cbClear);
-  if(coupuledPaths.isEmpty() && usedPrMeth.isEmpty()){return;}
-  List<PathMx> ordered=new ArrayList<>(usedPrMeth);
+  List<PathMx> ordered=new ArrayList<>();
+  try{
+    Set<PathMx> usedPrMeth = FindUsage.of(Program.empty(),prMeth, cbClear);
+    if(coupuledPaths.isEmpty() && usedPrMeth.isEmpty()){return;}
+    ordered.addAll(usedPrMeth);
+    }
+  catch(PathNonExistant pne){
+	  assert !coupuledPaths.isEmpty();
+	  }
   Collections.sort(ordered,(px1,px2)->px1.toString().compareTo(px2.toString()));
   throw Errors42.errorPrivacyCoupuled(coupuledPaths, ordered);
   }

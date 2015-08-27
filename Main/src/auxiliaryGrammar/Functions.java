@@ -312,7 +312,9 @@ public static NormType forceNormType(ExpCore inner, Type preciseTOpt) {
   return preciseT;
 }
 public static boolean isAbstract(Program p, ClassB ct) {
-  if(!coherent(p,ct)){return true;}
+  if(!coherent(p,ct)){
+	  return true;
+	  }
   for(Member m:ct.getMs()){
     if(!(m instanceof NestedClass)){continue;}
     NestedClass nc=(NestedClass)m;
