@@ -1,8 +1,10 @@
 package is.L42.connected.withSafeOperators;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -12,7 +14,6 @@ import coreVisitors.CloneWithPath;
 import coreVisitors.From;
 import coreVisitors.FromInClass;
 import facade.Configuration;
-import introspection.FindUsage;
 import introspection.IntrospectionAdapt;
 import is.L42.connected.withSafeOperators.ExtractInfo.ClassKind;
 import is.L42.connected.withSafeOperators.ExtractInfo.IsUsed;
@@ -20,7 +21,6 @@ import is.L42.connected.withSafeOperators.Pop.PopNFrom;
 import tools.Assertions;
 import tools.Map;
 import ast.ErrorMessage;
-import ast.ErrorMessage.PathNonExistant;
 import ast.ExpCore;
 import ast.ExpCore.*;
 import ast.Ast.NormType;
@@ -33,8 +33,9 @@ import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodWithType;
 import ast.ExpCore.ClassB.NestedClass;
-import ast.Util.PathMx;
 import ast.Util.PathPath;
+import ast.Util.PathSPath;
+import ast.Util.SPathSPath;
 import auxiliaryGrammar.Norm;
 import auxiliaryGrammar.Program;
 public class Redirect {
@@ -54,6 +55,211 @@ public class Redirect {
     }
     return cb;
   }
+  
+  public static List<PathPath> redirectOk(Program p,ClassB cbTop,Path internal,Path external){
+    List<PathPath> verified=new ArrayList<>();
+    List<PathSPath> ambiguities=new ArrayList<>();
+    List<SPathSPath> exceptions=new ArrayList<>();
+    ambiguities.add(new PathSPath(internal,Arrays.asList(external)));
+    for(PathSPath current=choseUnabigus(ambiguities); current!=null;current=choseUnabigus(ambiguities)){
+      redirectOkAux(p,current,cbTop,ambiguities,exceptions);
+      assert current.getPaths().size()==1;
+      PathSPath _current=current;
+      assert verified.stream().allMatch(pp->!pp.getPath1().equals(_current.getPath()));
+      verified.add(new PathPath(current.getPath(),current.getPaths().get(0)));
+      accumulateVerified(ambiguities,verified);
+    }
+    assert choseUnabigus(ambiguities)==null;
+    if(!ambiguities.isEmpty()){
+      throw new Error("ambiguities");
+      }
+    checkExceptionOk(exceptions,verified);
+    return verified;
+    }
+  private static void checkExceptionOk(List<SPathSPath> exceptions, List<PathPath> verified) {
+    for(SPathSPath exc:exceptions){
+     List<Path> src = exc.getPaths1(); 
+     src=Map.of(pi->traspose(verified,pi),src);
+     if(!src.containsAll(exc.getPaths2())){throw new Error("SrcUnfit");}
+    }
+  }
+  private static Path traspose(List<PathPath> verified, Path pi) {
+    if (pi.isPrimitive()){return pi;}
+    if(pi.outerNumber()>0){return pi;}
+    PathPath selectPP = selectPP(verified,pi);
+    assert selectPP!=null:verified+"  "+pi;
+    pi=selectPP.getPath2();
+    return pi;
+  }
+  /*private static void lessEqual(List<PathSPath> ambiguities, List<PathPath> verified) {
+    Iterator<PathSPath> it = ambiguities.iterator();
+    while(it.hasNext()){
+      Path pi=it.next().getPath();
+      for(PathPath pp:verified){if(pp.getPath1().equals(pi)){it.remove();}}
+    }
+  }*/
+  private static void accumulateVerified(List<PathSPath> ambiguities, List<PathPath> verified) {
+    for(PathPath pp:verified){
+      PathSPath psp=selectPSP(ambiguities,pp.getPath1());
+      if(psp==null){continue;}
+      //ambiguities.add(new PathSPath(pp.getPath1(),Arrays.asList(pp.getPath2())));
+      if(psp.getPaths().contains(pp.getPath2())){ambiguities.remove(psp);}
+      else{ throw new Error("AmbiguityError");}
+    }
+  }
+  private static PathSPath selectPSP(List<PathSPath> set,Path key){
+    for(PathSPath elem:set){if(elem.getPath().equals(key)){return elem;}}
+    return null;
+  }
+  private static PathPath selectPP(List<PathPath> set,Path key){
+    for(PathPath elem:set){if(elem.getPath1().equals(key)){return elem;}}
+    return null;
+  }
+  private static void redirectOkAux(Program p, PathSPath current, ClassB cbTop, List<PathSPath> ambiguities, List<SPathSPath> exceptions) {
+    assert current.getPaths().size()==1;
+    List<String>cs=current.getPath().getCBar();
+    if(cs.isEmpty()){throw Errors42.errorInvalidOnTopLevel();}
+    Errors42.checkExistsPathMethod(cbTop, cs, Optional.empty());
+    Boolean[] csPrivate=new Boolean[]{false};
+    ClassB currentIntCb=Program.extractCBar(cs,cbTop,csPrivate);
+    //path exists by construction.
+    Path path=current.getPaths().get(0);
+    ClassB currentExtCb;
+    if(path.isCore()){
+      assert path.outerNumber()>0:
+        path;
+      currentExtCb= p.extractCb(path);
+      }
+    else{
+      assert path.isPrimitive();
+      currentExtCb=new ClassB(Doc.empty(),Doc.empty(),path.equals(Path.Any()),Collections.emptyList(),Collections.emptyList());
+    }
+    assert !csPrivate[0];
+    boolean isPrivateState=ExtractInfo.hasPrivateState(currentIntCb);
+    boolean isNoImplementation=ExtractInfo.isNoImplementation(currentIntCb);
+    boolean headerOk=currentIntCb.isInterface()==currentExtCb.isInterface();
+    ClassKind kindSrc=null;
+    if(!headerOk && !currentIntCb.isInterface()){
+      kindSrc=ExtractInfo.classKind(cbTop,cs,currentIntCb,null,isPrivateState, isNoImplementation);
+      if(kindSrc==ClassKind.FreeTemplate){headerOk=true;}
+    }
+    if(!isNoImplementation){//unexpectedMembers stay empty if there is implementation
+      if(kindSrc==null){kindSrc = ExtractInfo.classKind(cbTop,cs,currentIntCb, null, isPrivateState, isNoImplementation);}
+      ClassKind kindDest = ExtractInfo.classKind(null,null,currentExtCb,null,null,null);
+      assert kindSrc!=ClassKind.FreeTemplate 
+          || kindSrc!=ClassKind.Template
+          || kindSrc!=ClassKind.Interface:
+            kindSrc;
+      throw Errors42.errorSourceUnfit(current.getPath().getCBar(),path,  
+        kindSrc,kindDest,Collections.emptyList(), headerOk, Collections.emptyList());
+    }
+    redirectOkImpl(ambiguities,current,currentIntCb,currentExtCb);
+    List<Member> unexpectedMembers=new ArrayList<>();
+    for(Member mi:currentIntCb.getMs()){
+      Optional<Member> miPrime = Program.getIfInDom(currentExtCb.getMs(),mi);
+      if(miPrime.isPresent() && miPrime.get().getClass().equals(mi.getClass())){
+        Member miGet=miPrime.get();
+        redirectOkMember(ambiguities,exceptions, mi,miGet,current);
+      }
+      else{unexpectedMembers.add(mi);}
+    }
+    if(unexpectedMembers.isEmpty() && headerOk){return;}
+    if(kindSrc==null){kindSrc = ExtractInfo.classKind(cbTop,cs,currentIntCb, null, isPrivateState, isNoImplementation);}
+    ClassKind kindDest = ExtractInfo.classKind(null,null,currentExtCb,null,null,null);
+    throw Errors42.errorSourceUnfit(cs,path,
+        kindSrc,kindDest,unexpectedMembers, headerOk, Collections.emptyList());
+    
+  }
+  private static void redirectOkMember(List<PathSPath> ambiguities,List<SPathSPath>exceptions, Member mi, Member miGet, PathSPath current) {
+    if(mi instanceof NestedClass){
+      assert miGet instanceof NestedClass;
+      assert ((NestedClass)mi).getName().equals(((NestedClass)miGet).getName());
+      Path src=current.getPath().pushC(((NestedClass)mi).getName());
+      Path dest=current.getPaths().get(0).pushC(((NestedClass)mi).getName());
+      ambiguities.add(new PathSPath(src,Arrays.asList(dest)));
+      return;
+    }    
+    assert mi.getClass().equals( miGet.getClass());
+    assert mi instanceof MethodWithType:mi;
+    MethodWithType mwtSrc=(MethodWithType)mi;
+    MethodWithType mwtDest=(MethodWithType)miGet;
+    mwtSrc=From.from(mwtSrc, current.getPath());//this is what happens in p.method
+    mwtDest=From.from(mwtDest, current.getPaths().get(0));
+    assert mwtSrc.getMs().equals(mwtDest.getMs());
+    redirectOkT(ambiguities,mwtSrc.getMt().getReturnType(),mwtDest.getMt().getReturnType());
+    {int i=-1;for(Type tSrc:mwtSrc.getMt().getTs()){i+=1;Type tDest=mwtDest.getMt().getTs().get(i);
+      redirectOkT(ambiguities,tSrc,tDest);
+    }}
+    plusEqualAndExc(ambiguities,exceptions,mwtSrc.getMt().getExceptions(), mwtDest.getMt().getExceptions());
+    }
+  private static void plusEqualAndExc(List<PathSPath> ambiguities, List<SPathSPath> exceptions, List<Path> src, List<Path> dest) {
+    exceptions.add(new SPathSPath(src,dest));
+    for(Path pi:src){
+      if(pi.isPrimitive() || pi.outerNumber()>0){continue;}
+      plusEqual(ambiguities,pi,dest);
+    }
+    
+  }
+  private static void redirectOkT(List<PathSPath> ambiguities, Type tSrc, Type tDest) {
+    if(!tSrc.getClass().equals(tDest.getClass())){throw new Error("method clash");}//incompatible internal/external types t1 t2
+    Boolean[] pathOk={true};
+    tSrc.match(
+      normType->{
+        NormType ntP=(NormType)tDest;
+        if(!normType.getMdf().equals(ntP.getMdf())){throw new Error("method clash");}//incompatible internal/external types t1 t2
+        if(!normType.getPh().equals(ntP.getPh())){throw new Error("method clash");}//incompatible internal/external types t1 t2
+         plusEqualCheckExt(ambiguities,normType.getPath(),Arrays.asList(ntP.getPath()));
+        return null;
+      },
+      hType->{
+        HistoricType htP=(HistoricType)tDest;
+        if(!hType.getSelectors().equals(htP.getSelectors())){throw new Error("method clash");}//incompatible internal/external types t1 t2
+        if(hType.isForcePlaceholder()!=htP.isForcePlaceholder()){throw new Error("method clash");}//incompatible internal/external types t1 t2
+        plusEqualCheckExt(ambiguities,hType.getPath(),Arrays.asList(htP.getPath()));
+        return null;
+      });
+  }
+  private static void plusEqualCheckExt(List<PathSPath> ambiguities, Path path, List<Path> paths) {
+    if(!path.isPrimitive() && path.outerNumber()==0){
+      plusEqual(ambiguities,path,paths);
+      return;
+      }
+    assert paths.size()==1;
+    if(path.equals(paths.get(0))){return;}
+    throw new Error("method clash");
+  }
+  private static void redirectOkImpl(List<PathSPath> ambiguities, PathSPath current, ClassB currentIntCb, ClassB currentExtCb) {
+   // List<Path>unexpectedInterfaces=new ArrayList<>(unexpectedI);
+   // Collections.sort(unexpectedInterfaces,(pa,pb)->pa.toString().compareTo(pb.toString()));
+    List<Path>extPs=currentExtCb.getSupertypes();
+    Path destP=current.getPaths().get(0);
+    extPs=Map.of(pi->From.fromP(pi,destP), extPs);
+    //extPs.add(Path.Any()); no also TODO: make not well formed Any in <: or in exceptions
+    for(Path pi:currentIntCb.getSupertypes()){
+      Path pif=From.fromP(pi, current.getPath());
+      if(pif.isPrimitive() || pif.outerNumber()>0){
+        if(!extPs.contains(pif)){throw new Error("srcUnfit unexped interface pif");}
+      }
+      else{
+        plusEqual(ambiguities,pif,extPs);
+      }
+    }
+  }
+  private static void plusEqual(List<PathSPath> ambiguities, Path pif, List<Path> extPs) {
+    assert !pif.isPrimitive() && pif.outerNumber()==0;
+    for(PathSPath psp:ambiguities){
+      if(psp.getPath().equals(pif)){
+        psp.getPaths().retainAll(extPs);
+        if(psp.getPaths().isEmpty()){throw new Error("Ambigus? no destination possible");}
+        return;
+      }}
+    ambiguities.add(new PathSPath(pif,extPs));
+  }
+  static PathSPath choseUnabigus(List<PathSPath> ambiguities){
+    for(PathSPath psp:ambiguities){if (psp.getPaths().size()==1){return psp;}}
+    return null;
+  }
+  /*
   public static List<PathPath> redirectOk(Program p,ClassB l, Path csPath,Path path){
     List<PathPath>setVisited=new ArrayList<>();
     redirectOk(setVisited,p,l,csPath,path);
@@ -231,32 +437,5 @@ public class Redirect {
     redirectOk(s,p,l,src,dest);
     return null;
   }
-  static void checkPrivacyCoupuled(ClassB cbFull,ClassB cbClear, List<String> path) {
-  //start from a already cleared out of private states
-  //check if all private nested classes are USED using IsUsed on cbClear
-  //this also verify that no private nested classes are used as
-  //type in public methods of public classes.
-  //collect all PublicPath.privateMethod
-  //use main->introspection.FindUsage
-  List<Path>prPath=ExtractInfo.collectPrivatePathsAndSubpaths(cbFull,path);
-  List<PathMx>prMeth=ExtractInfo.collectPrivateMethodsOfPublicPaths(cbFull,path);
-  List<Path>coupuledPaths=new ArrayList<>();
-  for(Path pi:prPath){
-    Set<Path> used = ExtractInfo.IsUsed.of(cbClear,pi);
-    if(used.isEmpty()){continue;}
-    coupuledPaths.add(pi);
-  }
-  List<PathMx> ordered=new ArrayList<>();
-  try{
-    Set<PathMx> usedPrMeth = FindUsage.of(Program.empty(),prMeth, cbClear);
-    if(coupuledPaths.isEmpty() && usedPrMeth.isEmpty()){return;}
-    ordered.addAll(usedPrMeth);
-    }
-  catch(PathNonExistant pne){
-	  assert !coupuledPaths.isEmpty();
-	  }
-  Collections.sort(ordered,(px1,px2)->px1.toString().compareTo(px2.toString()));
-  throw Errors42.errorPrivacyCoupuled(coupuledPaths, ordered);
-  }
-
+*/
 }

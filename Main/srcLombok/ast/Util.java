@@ -37,7 +37,14 @@ public class Util {
     @NonNull Path path1; @NonNull Path path2;
     public String toString(){return ""+path1+"->"+path2;}
     }
-  
+  @Data @Wither public static class PathSPath{
+    @NonNull Path path; @NonNull List<Path> paths;
+    public String toString(){return ""+path+"->"+paths;}
+    }
+  @Data @Wither public static class SPathSPath{
+    @NonNull List<Path> paths1; @NonNull List<Path> paths2;
+    public String toString(){return ""+paths1+"->"+paths2;}
+    }  
 
   @Data public static class CachedStage{
 	@NonNull ast.Ast.Stage stage=Stage.None;

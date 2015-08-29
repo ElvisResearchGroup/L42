@@ -1,11 +1,14 @@
 package is.L42.connected.withSafeOperators;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import platformSpecific.javaTranslation.Resources;
 import ast.ErrorMessage;
+import ast.ErrorMessage.PathNonExistant;
 import ast.ExpCore.*;
 import ast.Ast.MethodSelector;
 import ast.Ast.Path;
@@ -14,13 +17,16 @@ import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodImplemented;
 import ast.ExpCore.ClassB.MethodWithType;
 import ast.ExpCore.ClassB.NestedClass;
+import ast.Util.PathMx;
 import auxiliaryGrammar.Program;
+import introspection.FindUsage;
+import is.L42.connected.withSafeOperators.ExtractInfo.IsUsed;
 public class Abstract {
   public static ClassB toAbstract(ClassB cb, List<String> path){
     Errors42.checkExistsPathMethod(cb, path, Optional.empty());
     //check privacy coupled
     ClassB cbClear=ClassOperations.onClassNavigateToPathAndDo(cb, path, cbi->clear(cbi));
-    Redirect.checkPrivacyCoupuled(cb,cbClear, path);
+    Abstract.checkPrivacyCoupuled(cb,cbClear, path);
     return cbClear;
   }
 
@@ -65,6 +71,34 @@ public class Abstract {
       }
     //create new class
     return cb.withMs(newMs);
+  }
+
+  static void checkPrivacyCoupuled(ClassB cbFull,ClassB cbClear, List<String> path) {
+  //start from a already cleared out of private states
+  //check if all private nested classes are USED using IsUsed on cbClear
+  //this also verify that no private nested classes are used as
+  //type in public methods of public classes.
+  //collect all PublicPath.privateMethod
+  //use main->introspection.FindUsage
+  List<Path>prPath=ExtractInfo.collectPrivatePathsAndSubpaths(cbFull,path);
+  List<PathMx>prMeth=ExtractInfo.collectPrivateMethodsOfPublicPaths(cbFull,path);
+  List<Path>coupuledPaths=new ArrayList<>();
+  for(Path pi:prPath){
+    Set<Path> used = ExtractInfo.IsUsed.of(cbClear,pi);
+    if(used.isEmpty()){continue;}
+    coupuledPaths.add(pi);
+  }
+  List<PathMx> ordered=new ArrayList<>();
+  try{
+    Set<PathMx> usedPrMeth = FindUsage.of(Program.empty(),prMeth, cbClear);
+    if(coupuledPaths.isEmpty() && usedPrMeth.isEmpty()){return;}
+    ordered.addAll(usedPrMeth);
+    }
+  catch(PathNonExistant pne){
+    assert !coupuledPaths.isEmpty();
+    }
+  Collections.sort(ordered,(px1,px2)->px1.toString().compareTo(px2.toString()));
+  throw Errors42.errorPrivacyCoupuled(coupuledPaths, ordered);
   }
 
 }

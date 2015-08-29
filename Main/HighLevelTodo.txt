@@ -5,36 +5,41 @@
  Exc=Set of ( (Set of Path )-> (Set of extPath))
     then, starting from r1,  A={R1}, V=empty, Exc=empty
   take an element r from (unambiguos(A) less V),    
-    if redirectOk(p,r,cb,R,A,Exc), then 
+    if redirectOk(p,r,cb,A,Exc), then 
     V+=r, //this can throw amibuity error
     A+=V //this can throw ambiguty error //plus equal do the intersection of codomains
     A-=V //this remove all the dom(V) from dom(A), is safe since A+=V worked before
-  When (unambiguos(A) less V) is empty,  
+  When unambiguos(A)  is empty,  
     check that for all ps->ps' in Exc, V(ps) superset of ps'
-    check that dom(A) =dom(unambiguos(A))
+    check that A is empty
    and return V
    
    define redirectOk(p,intPath->extPath,cb,R;A;Exc)
    intCb=cb(intPath)
    extCb=p,cb(extPath)
    if there is any implementation in intCb is an error src unfit
+   if there is any private in intCb is error src unfit
    with ps, ps' is implemented interfaces of intCb,extCb
-      A+=ps[from intPath]->ps'[from extPath]//if intPath in A already mapped in A, do the intersection of the ambiguities. Error if the empty set is produced.
+      ps=intPs,extPs
+      extPs subset of ps' or srcUnfitError?
+      A+=intPs[from intPath]->ps'[from extPath] U Any//if intPath in A already mapped in A, do the intersection of the ambiguities. Error if the empty set is produced.
+      //should give ambiguity error is interface in one set is empty on h other? redirect to Any?
    for all the nested c of intCb,
-      R+= intPaht::c->extPath::c
+      A+= intPaht::c->extPath::c
    for all the mwt in intCb, check that there is a corresponding mwt' in extCb,
-   then redirectOkMwt(p,mwt[from intPath],mwt'.withNoBody()[from extPath],R,A,Exc)
+   if not error srcUnfit unextped member
+   then redirectOkMwt(p,mwt[from intPath],mwt'.withNoBody()[from extPath],A,Exc)
    
-   redirectOkMwt(p, T0 (T1..Tn) ps,T0' (T1'..Tn')ps',R,A,Exc)
-     redirectOkT(p,Ti,T'i,R,A,Exc)
+   redirectOkMwt(p, T0 (T1..Tn) ps,T0' (T1'..Tn')ps',A,Exc)
+     redirectOkT(p,Ti,T'i,A,Exc)
      Exc+=ps->ps'
      A+=ps->ps'//if intPath in A already mapped in A, do the intersection of the ambiguities. Error if the empty set is produced.
      
   
-  redirectOkT(p, T,T,R,A,Exc)  is ok //same exact T
-  redirectOkT(p,.. intPath .. ,..extPath..,R,A,Exc)  R+=intPaht->extPath//two T different only for the path.
+  redirectOkT(p, T,T,A,Exc)  is ok //same exact T, method clash if the two T are external but different.
+  redirectOkT(p,.. intPath .. ,..extPath..,A,Exc)  A+=intPaht->extPath//two T different only for the path.
   
-  -when this is ok, we need to reorganize the errors, method clash may stop happening in redirect, and we need to add the ambigus redirect.
+  -when this is ok, we need to reorganize the errors, we need to add the ambigus redirect.
   
    Other tasks
    

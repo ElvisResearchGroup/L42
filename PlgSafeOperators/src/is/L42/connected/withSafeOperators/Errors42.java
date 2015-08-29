@@ -28,11 +28,11 @@ import auxiliaryGrammar.Program;
 public class Errors42 {
 
   //"SourceUnfit", caused by redirect
-  public static Error errorSourceUnfit(List<String> current,Path destExternalPath,ExtractInfo.ClassKind kindSrc,ExtractInfo.ClassKind kindDest,List<Member>unexpected,boolean headerOk,List<Path>unexpectedInterfaces,boolean isPrivate){
+  public static Error errorSourceUnfit(List<String> current,Path destExternalPath,ExtractInfo.ClassKind kindSrc,ExtractInfo.ClassKind kindDest,List<Member>unexpected,boolean headerOk,List<Path>unexpectedInterfaces){
       return Resources.Error.multiPartStringError("SourceUnfit",
           "SrcPath",""+Path.outer(0,current), //the path of the class that can not be redirected
           "DestExternalPath",Doc.factory(destExternalPath), //the path of the class that can not be redirected
-          "PrivatePath",""+isPrivate,//the path can not be redirected since is private
+         // "PrivatePath",""+isPrivate,//the path can not be redirected since is private
           "SrcKind",kindSrc.name(),//the kind of the class at path
           "DestKind",kindDest.name(),
           //"IncompatibleClassKind",""+!headerOk,//if the path can not be redirected because of their respective kinds. This information would make no sense if I can get the kind for dest!
