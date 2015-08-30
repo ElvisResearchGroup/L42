@@ -22,7 +22,7 @@
    with ps, ps' is implemented interfaces of intCb,extCb
       ps=intPs,extPs
       extPs subset of ps' or srcUnfitError?
-      A+=intPs[from intPath]->ps'[from extPath] U Any//if intPath in A already mapped in A, do the intersection of the ambiguities. Error if the empty set is produced.
+      A+=intPs[from intPath]->ps'[from extPath]//if intPath in A already mapped in A, do the intersection of the ambiguities. Error if the empty set is produced.
       //should give ambiguity error is interface in one set is empty on h other? redirect to Any?
    for all the nested c of intCb,
       A+= intPaht::c->extPath::c
@@ -127,3 +127,5 @@ Now:
 
 -well formedness, state must be all private or all public.
 This is also connected with removing @consistent from desugaring
+well formedness: implemented or exceptions must be with no repetition, and with no Any.
+Operators should preserve this

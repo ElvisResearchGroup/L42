@@ -23,6 +23,7 @@ import ast.ExpCore.ClassB.MethodWithType;
 import ast.ExpCore.X;
 import ast.Util.PathMx;
 import ast.Util.PathPath;
+import ast.Util.PathSPath;
 import auxiliaryGrammar.Program;
 
 public class Errors42 {
@@ -30,7 +31,7 @@ public class Errors42 {
   //"SourceUnfit", caused by redirect
   public static Error errorSourceUnfit(List<String> current,Path destExternalPath,ExtractInfo.ClassKind kindSrc,ExtractInfo.ClassKind kindDest,List<Member>unexpected,boolean headerOk,List<Path>unexpectedInterfaces){
       return Resources.Error.multiPartStringError("SourceUnfit",
-          "SrcPath",""+Path.outer(0,current), //the path of the class that can not be redirected
+          "SrcPath",formatPathIn(current), //the path of the class that can not be redirected
           "DestExternalPath",Doc.factory(destExternalPath), //the path of the class that can not be redirected
          // "PrivatePath",""+isPrivate,//the path can not be redirected since is private
           "SrcKind",kindSrc.name(),//the kind of the class at path
@@ -150,7 +151,7 @@ public class Errors42 {
     if(mtb.getInner().isPresent()){mtb=mtb.withInner(Optional.of(new ExpCore.X("implementation")));}
     throw errorMethodClash(pathForError, mta, mtb, exc, pars, retType, thisMdf);
   }
-  static void checkCoherentMapping(List<PathPath> setVisited) {
+ /* static void checkCoherentMapping(List<PathPath> setVisited) {
     // setVisited is a set of individual redirected classes,
     // created by walking the sub-tree under each cascade redirect.
     // getPath1() is the path in the library before redirecting.
@@ -166,26 +167,33 @@ public class Errors42 {
       }
     }
     return;
-  }
-  static Error errorIncoherentRedirectMapping(List<PathPath>map,Path src, Path dest1,Path dest2) {
+  }*/
+  static Error errorIncoherentRedirectMapping(List<PathPath>verified,List<PathSPath>ambiguities) {
+    Doc src=Doc.empty();
+    Doc dest=Doc.empty();
+    Doc ambig=Doc.empty();
+    for(PathPath v:verified){
+      src=src.sum(formatPathIn(v.getPath1().getCBar()));
+      dest=dest.sum(Doc.factory(v.getPath2()));
+    }
+    for(PathSPath a:ambiguities){
+      ambig=ambig.sum(formatPathIn(a.getPath().getCBar()));
+      ambig=ambig.sum(Doc.factory("@"+a.getPaths().size()));
+      Doc srci=formatPathIn(a.getPath().getCBar());
+      for(Path pij:a.getPaths()){
+        src=src.sum(srci);
+        dest=dest.sum(Doc.factory(pij));
+      }
+    }
     return Resources.Error.multiPartStringError("IncoherentRedirectMapping",
-        "Mapping",""+map,
-        "SplitSrc",""+src,
-        "Dest1",""+dest1,
-        "Dest2",""+dest2
+        "Src",src.formatNewLinesAsList(),
+        "Dest",dest.formatNewLinesAsList(),
+        "Ambiguities",ambig.formatNewLinesAsList()
         );
   }
-/*
+  static Doc formatPathIn(List<String> path){
+    if(path.isEmpty()){return Doc.factory(Path.outer(0));}
+    return Doc.factory("@::"+String.join("::", path));
+  }
  
- IncoherentRedirect
-   srcRoot1
-   srcRoot2
-   splitclass: path
-   dest1:
-   dest2:
- 
- 
- 
- * */
-
 }

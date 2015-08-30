@@ -599,7 +599,12 @@ public interface Ast {
 			ps.addAll(that.annotations);
 			return new Doc(this.s + that.s, ps);
 		}
-
+		public Doc formatNewLinesAsList() {
+		  String newS=this.s;
+		  newS=newS.replace("\n", ", ");
+		  newS="["+newS+"]";
+      return this.withS(newS);
+    }
 		private static int readAnnotation(String s, int start, List<Object> paths) {
 			StringBuilder sb = new StringBuilder();
 			for (int i = start; i < s.length(); i++) {

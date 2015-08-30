@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Supplier;
 
 import coreVisitors.CloneVisitorWithProgram;
 import coreVisitors.CloneWithPath;
@@ -39,6 +40,7 @@ import ast.Util.SPathSPath;
 import auxiliaryGrammar.Norm;
 import auxiliaryGrammar.Program;
 public class Redirect {
+  private static List<PathPath> verifiedForErrorMsg;
   public static ClassB redirect(Program p,ClassB cb, Path internal,Path external){
     //call redirectOk, if that is ok, no other errors?
     //should cb be normalized first?
@@ -58,6 +60,7 @@ public class Redirect {
   
   public static List<PathPath> redirectOk(Program p,ClassB cbTop,Path internal,Path external){
     List<PathPath> verified=new ArrayList<>();
+    verifiedForErrorMsg=verified;
     List<PathSPath> ambiguities=new ArrayList<>();
     List<SPathSPath> exceptions=new ArrayList<>();
     ambiguities.add(new PathSPath(internal,Arrays.asList(external)));
@@ -71,16 +74,19 @@ public class Redirect {
     }
     assert choseUnabigus(ambiguities)==null;
     if(!ambiguities.isEmpty()){
-      throw new Error("ambiguities");
+      throw Errors42.errorIncoherentRedirectMapping(verified, ambiguities);
       }
     checkExceptionOk(exceptions,verified);
     return verified;
     }
   private static void checkExceptionOk(List<SPathSPath> exceptions, List<PathPath> verified) {
     for(SPathSPath exc:exceptions){
-     List<Path> src = exc.getPaths1(); 
+     List<Path> src = exc.getMwt1().getMt().getExceptions(); 
      src=Map.of(pi->traspose(verified,pi),src);
-     if(!src.containsAll(exc.getPaths2())){throw new Error("SrcUnfit");}
+     if(!src.containsAll(exc.getMwt2().getMt().getExceptions())){
+       throw Errors42.errorMethodClash(exc.getSrc().getCBar(), exc.getMwt1(),exc.getMwt2(),true,
+           Collections.emptyList(),false,false);
+       }
     }
   }
   private static Path traspose(List<PathPath> verified, Path pi) {
@@ -104,7 +110,7 @@ public class Redirect {
       if(psp==null){continue;}
       //ambiguities.add(new PathSPath(pp.getPath1(),Arrays.asList(pp.getPath2())));
       if(psp.getPaths().contains(pp.getPath2())){ambiguities.remove(psp);}
-      else{ throw new Error("AmbiguityError");}
+      else{ throw Errors42.errorIncoherentRedirectMapping(verified, ambiguities);}
     }
   }
   private static PathSPath selectPSP(List<PathSPath> set,Path key){
@@ -143,9 +149,9 @@ public class Redirect {
       kindSrc=ExtractInfo.classKind(cbTop,cs,currentIntCb,null,isPrivateState, isNoImplementation);
       if(kindSrc==ClassKind.FreeTemplate){headerOk=true;}
     }
+    if(kindSrc==null){kindSrc = ExtractInfo.classKind(cbTop,cs,currentIntCb, null, isPrivateState, isNoImplementation);}
+    ClassKind kindDest = ExtractInfo.classKind(null,null,currentExtCb,null,null,null);
     if(!isNoImplementation){//unexpectedMembers stay empty if there is implementation
-      if(kindSrc==null){kindSrc = ExtractInfo.classKind(cbTop,cs,currentIntCb, null, isPrivateState, isNoImplementation);}
-      ClassKind kindDest = ExtractInfo.classKind(null,null,currentExtCb,null,null,null);
       assert kindSrc!=ClassKind.FreeTemplate 
           || kindSrc!=ClassKind.Template
           || kindSrc!=ClassKind.Interface:
@@ -153,7 +159,7 @@ public class Redirect {
       throw Errors42.errorSourceUnfit(current.getPath().getCBar(),path,  
         kindSrc,kindDest,Collections.emptyList(), headerOk, Collections.emptyList());
     }
-    redirectOkImpl(ambiguities,current,currentIntCb,currentExtCb);
+    redirectOkImpl(kindSrc,kindDest,ambiguities,current,currentIntCb,currentExtCb);
     List<Member> unexpectedMembers=new ArrayList<>();
     for(Member mi:currentIntCb.getMs()){
       Optional<Member> miPrime = Program.getIfInDom(currentExtCb.getMs(),mi);
@@ -165,7 +171,7 @@ public class Redirect {
     }
     if(unexpectedMembers.isEmpty() && headerOk){return;}
     if(kindSrc==null){kindSrc = ExtractInfo.classKind(cbTop,cs,currentIntCb, null, isPrivateState, isNoImplementation);}
-    ClassKind kindDest = ExtractInfo.classKind(null,null,currentExtCb,null,null,null);
+    if(kindDest==null){kindDest = ExtractInfo.classKind(null,null,currentExtCb,null,null,null);}
     throw Errors42.errorSourceUnfit(cs,path,
         kindSrc,kindDest,unexpectedMembers, headerOk, Collections.emptyList());
     
@@ -186,71 +192,87 @@ public class Redirect {
     mwtSrc=From.from(mwtSrc, current.getPath());//this is what happens in p.method
     mwtDest=From.from(mwtDest, current.getPaths().get(0));
     assert mwtSrc.getMs().equals(mwtDest.getMs());
-    redirectOkT(ambiguities,mwtSrc.getMt().getReturnType(),mwtDest.getMt().getReturnType());
+    boolean thisMdfOk=mwtSrc.getMt().getMdf().equals(mwtDest.getMt().getMdf());
+    boolean retOk=redirectOkT(ambiguities,mwtSrc.getMt().getReturnType(),mwtDest.getMt().getReturnType());
+    List<Integer>  parWrong=new ArrayList<Integer>();
     {int i=-1;for(Type tSrc:mwtSrc.getMt().getTs()){i+=1;Type tDest=mwtDest.getMt().getTs().get(i);
-      redirectOkT(ambiguities,tSrc,tDest);
+      if(!redirectOkT(ambiguities,tSrc,tDest)){parWrong.add(i);};
     }}
-    plusEqualAndExc(ambiguities,exceptions,mwtSrc.getMt().getExceptions(), mwtDest.getMt().getExceptions());
+    boolean excOk=plusEqualAndExc(ambiguities,exceptions,current.getPath(),mwtSrc, mwtDest);
+    if(thisMdfOk && retOk && excOk && parWrong.isEmpty()){return;}
+    throw Errors42.errorMethodClash(current.getPath().getCBar(),mwtSrc,mwtDest,excOk,parWrong,retOk, thisMdfOk);
     }
-  private static void plusEqualAndExc(List<PathSPath> ambiguities, List<SPathSPath> exceptions, List<Path> src, List<Path> dest) {
-    exceptions.add(new SPathSPath(src,dest));
-    for(Path pi:src){
-      if(pi.isPrimitive() || pi.outerNumber()>0){continue;}
-      plusEqual(ambiguities,pi,dest);
+  private static boolean plusEqualAndExc(List<PathSPath> ambiguities, List<SPathSPath> exceptions, Path src,MethodWithType mwtSrc, MethodWithType mwtDest) {
+    int countExternal=0;
+    int countExternalSatisfied=0;
+    exceptions.add(new SPathSPath(src,mwtSrc,mwtDest));
+    for(Path pi:mwtSrc.getMt().getExceptions()){
+      if(pi.isPrimitive() || pi.outerNumber()>0){
+        countExternal+=1;
+        if(mwtDest.getMt().getExceptions().contains(pi)){countExternalSatisfied+=1;}
+        continue;}
+      plusEqual(ambiguities,pi,mwtDest.getMt().getExceptions());
     }
-    
+    int countInternal=mwtSrc.getMt().getExceptions().size()-countExternal;
+    return countInternal+countExternalSatisfied>=mwtDest.getMt().getExceptions().size();
   }
-  private static void redirectOkT(List<PathSPath> ambiguities, Type tSrc, Type tDest) {
-    if(!tSrc.getClass().equals(tDest.getClass())){throw new Error("method clash");}//incompatible internal/external types t1 t2
-    Boolean[] pathOk={true};
-    tSrc.match(
+  private static boolean redirectOkT(List<PathSPath> ambiguities, Type tSrc, Type tDest) {
+    if(!tSrc.getClass().equals(tDest.getClass())){
+      return false;
+      }//incompatible internal/external types t1 t2
+    //Boolean[] pathOk={true};
+    return tSrc.match(
       normType->{
         NormType ntP=(NormType)tDest;
-        if(!normType.getMdf().equals(ntP.getMdf())){throw new Error("method clash");}//incompatible internal/external types t1 t2
-        if(!normType.getPh().equals(ntP.getPh())){throw new Error("method clash");}//incompatible internal/external types t1 t2
-         plusEqualCheckExt(ambiguities,normType.getPath(),Arrays.asList(ntP.getPath()));
-        return null;
+        if(!normType.getMdf().equals(ntP.getMdf())){return false;}//incompatible internal/external types t1 t2
+        if(!normType.getPh().equals(ntP.getPh())){return false;}//incompatible internal/external types t1 t2
+         return plusEqualCheckExt(ambiguities,normType.getPath(),Arrays.asList(ntP.getPath()));
       },
       hType->{
         HistoricType htP=(HistoricType)tDest;
-        if(!hType.getSelectors().equals(htP.getSelectors())){throw new Error("method clash");}//incompatible internal/external types t1 t2
-        if(hType.isForcePlaceholder()!=htP.isForcePlaceholder()){throw new Error("method clash");}//incompatible internal/external types t1 t2
-        plusEqualCheckExt(ambiguities,hType.getPath(),Arrays.asList(htP.getPath()));
-        return null;
+        if(!hType.getSelectors().equals(htP.getSelectors())){return false;}//incompatible internal/external types t1 t2
+        if(hType.isForcePlaceholder()!=htP.isForcePlaceholder()){return false;}//incompatible internal/external types t1 t2
+        return plusEqualCheckExt(ambiguities,hType.getPath(),Arrays.asList(htP.getPath()));
       });
   }
-  private static void plusEqualCheckExt(List<PathSPath> ambiguities, Path path, List<Path> paths) {
+  private static boolean plusEqualCheckExt(List<PathSPath> ambiguities, Path path, List<Path> paths) {
     if(!path.isPrimitive() && path.outerNumber()==0){
       plusEqual(ambiguities,path,paths);
-      return;
+      return true;
       }
     assert paths.size()==1;
-    if(path.equals(paths.get(0))){return;}
-    throw new Error("method clash");
+    return path.equals(paths.get(0));
   }
-  private static void redirectOkImpl(List<PathSPath> ambiguities, PathSPath current, ClassB currentIntCb, ClassB currentExtCb) {
+  private static void redirectOkImpl(ClassKind kindSrc,ClassKind kindDest,List<PathSPath> ambiguities, PathSPath current, ClassB currentIntCb, ClassB currentExtCb) {
    // List<Path>unexpectedInterfaces=new ArrayList<>(unexpectedI);
    // Collections.sort(unexpectedInterfaces,(pa,pb)->pa.toString().compareTo(pb.toString()));
     List<Path>extPs=currentExtCb.getSupertypes();
     Path destP=current.getPaths().get(0);
     extPs=Map.of(pi->From.fromP(pi,destP), extPs);
-    //extPs.add(Path.Any()); no also TODO: make not well formed Any in <: or in exceptions
+    List<Path> unexpectedInterfaces=new ArrayList<>();
     for(Path pi:currentIntCb.getSupertypes()){
       Path pif=From.fromP(pi, current.getPath());
       if(pif.isPrimitive() || pif.outerNumber()>0){
-        if(!extPs.contains(pif)){throw new Error("srcUnfit unexped interface pif");}
+        if(!extPs.contains(pif)){
+          unexpectedInterfaces.add(pif);
+          }
       }
       else{
         plusEqual(ambiguities,pif,extPs);
       }
+      if(!unexpectedInterfaces.isEmpty()){throw Errors42.errorSourceUnfit(current.getPath().getCBar(),current.getPaths().get(0),
+          kindSrc,kindDest,Collections.emptyList(), true, unexpectedInterfaces);}
     }
   }
   private static void plusEqual(List<PathSPath> ambiguities, Path pif, List<Path> extPs) {
     assert !pif.isPrimitive() && pif.outerNumber()==0;
     for(PathSPath psp:ambiguities){
       if(psp.getPath().equals(pif)){
+        psp.setPaths(new ArrayList<>(psp.getPaths()));
         psp.getPaths().retainAll(extPs);
-        if(psp.getPaths().isEmpty()){throw new Error("Ambigus? no destination possible");}
+        if(psp.getPaths().isEmpty()){
+          throw Errors42.errorIncoherentRedirectMapping(Redirect.verifiedForErrorMsg,ambiguities);
+          }
         return;
       }}
     ambiguities.add(new PathSPath(pif,extPs));

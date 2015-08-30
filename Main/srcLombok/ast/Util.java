@@ -42,8 +42,9 @@ public class Util {
     public String toString(){return ""+path+"->"+paths;}
     }
   @Data @Wither public static class SPathSPath{
-    @NonNull List<Path> paths1; @NonNull List<Path> paths2;
-    public String toString(){return ""+paths1+"->"+paths2;}
+    @NonNull Path src; @NonNull ClassB.MethodWithType mwt1;@NonNull ClassB.MethodWithType mwt2;
+    //@NonNull List<Path> paths1; @NonNull List<Path> paths2;
+    //public String toString(){return ""+paths1+"->"+paths2;}
     }  
 
   @Data public static class CachedStage{
