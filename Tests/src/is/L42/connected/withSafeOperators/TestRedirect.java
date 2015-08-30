@@ -282,7 +282,7 @@ public static class TestRedirect1 {//add more test for error cases
         "Outer0::%Redirect","Outer1::%Redirect",
         "{"
         + "TestA:{method Outer2::A aFun()}"
-        + "TestB:{<:I1 I2 method fun() void method moreFun() void}"
+        + "TestB:{<:Outer2::I1 Outer2::I2 method fun() void method moreFun() void}"
         + "}",false
         
     },{lineNumber(), new String[]{   // Redirect three classes, via a pile, so that the
@@ -308,9 +308,9 @@ public static class TestRedirect1 {//add more test for error cases
         + "}",
         "Outer0::%Redirect","Outer1::%Redirect",
         "{"
-        + "TestX:{method Iab abFun() error Eab\n"
-        + "       method Ibc bcFun() error Ebc\n"
-        + "       method Ica caFun() error Eca}\n"
+        + "TestX:{method Outer2::Iab abFun() error Outer2::Eab\n"
+        + "       method Outer2::Ibc bcFun() error Outer2::Ebc\n"
+        + "       method Outer2::Ica caFun() error Outer2::Eca}\n"
         + "}",false
         
         // TODO@James do something with piles containing alias types that refer to the library return values of methods
@@ -328,9 +328,8 @@ public static class TestRedirect1 {//add more test for error cases
     },{lineNumber(), new String[]{"{A:{ }}"},  // from module with an unexpected function
         "{InnerA:{type method Void fun()} }","Outer0::InnerA","Outer1::A",
         "{"+"Kind:{'@stringU\n'SourceUnfit\n}"
-           +"SrcPath:{'@stringU\n'Outer0::InnerA\n}"
-           +"DestExternalPath:{'@Outer1::A\n}"
-           +"PrivatePath:{'@stringU\n'false\n}"
+           +"SrcPath:{'@::InnerA\n}"
+           +"DestExternalPath:{'@Outer2::A\n}"
            +"SrcKind:{'@stringU\n'FreeTemplate\n}"
            +"DestKind:{'@stringU\n'Template\n}"
            +"UnexpectedMembers:{'@stringU\n'[fun()]\n}"
@@ -339,9 +338,8 @@ public static class TestRedirect1 {//add more test for error cases
     },{lineNumber(), new String[]{"{A:{ }}"},  // same test, but with a method argument, using the new mechanism
         "{InnerA:{type method Void fun(Void that)} }","Outer0::InnerA","Outer1::A",
         ec.load("SourceUnfit",
-                "SrcPath", "Outer0::InnerA",
-                "DestExternalPath", "'@Outer1::A",
-                "PrivatePath", "false",
+                "SrcPath", "'@::InnerA",
+                "DestExternalPath", "'@Outer2::A",
                 "SrcKind", "FreeTemplate",
                 "DestKind", "Template",
                 "UnexpectedMembers", "[fun(that)]",
@@ -355,11 +353,14 @@ public static class TestRedirect1 {//add more test for error cases
                                                // and tell us whether it's the source or the target,
                                                // but that's misleading, because PathUnavailable(Target, InexistentPath) is a prerequisite violation,
                                                // not a TargetUnavailable error.
-        "{InnerA:'@private\n {type method Void fun(Void that)} }","Outer0::InnerA","Outer1::A",
-        ec.set("PrivatePath", "true"
-                )
-          .str(), true
-    },{lineNumber(),      // add a matching method to A, and make the InnerA method only private
+        "{InnerA:'@private\n {type method Void fun(Void that)} }",
+        "Outer0::InnerA","Outer1::A",
+        "{"
+          +"Kind:{'@stringU\n'MemberUnavailable\n}"
+          +"Path:{'@::InnerA\n}"
+          +"Selector:{'@stringU\n'\n}"
+          +"InvalidKind:{'@stringU\n'PrivatePath\n}}", true
+    /*},{lineNumber(),      // add a matching method to A, and make the InnerA method only private
                           // @Marco, if 'path' always means a specifically situated class,
                           // then this test is a mistake, and please email or skype me, rather than editing this file.
        new String[]{"{A:{type method Void fun(Void that) }}"},
@@ -368,7 +369,7 @@ public static class TestRedirect1 {//add more test for error cases
         + "}","Outer0::InnerA","Outer1::A",
         ec.set("PrivatePath", "true"
                 )
-          .str(), true
+          .str(), true*///TODO: commented test I had trouble understand. the issue is that PrivatePath do not exists anymore.
     },{lineNumber(), new String[]{  // FreeTemplate -> Interface, with some matching methods
         "{A:{interface type method Void fun(Void that)  method Void mostFun(Void that, Library other) }}"
         },
@@ -376,8 +377,7 @@ public static class TestRedirect1 {//add more test for error cases
         + "method Void mostFun(Void that, Library other) method Void notSoFun() } }",
         "Outer0::InnerA","Outer1::A",
         ec
-          .set("PrivatePath", "false",
-               "SrcKind", "FreeTemplate", "DestKind", "Interface",
+          .set("SrcKind", "FreeTemplate", "DestKind", "Interface",
                "UnexpectedMembers", "[moreFun(that), notSoFun()]")
           .str(), true
     },{lineNumber(), new String[]{  // with a mismatch on parameter names in the method selector
@@ -509,7 +509,7 @@ public static class TestRedirect1 {//add more test for error cases
         + "}",
         "Outer0::InnerA","Outer1::A",
         ec
-          .set("SrcPath", "Outer0::InnerA::C", "DestExternalPath", "'@Outer1::A::C",
+          .set("SrcPath", "'@::InnerA::C", "DestExternalPath", "'@Outer2::A::C",
                "SrcKind", "Interface",
                "UnexpectedMembers", "[mostFun()]")
           .str(), true
@@ -564,7 +564,7 @@ public static class TestRedirect1 {//add more test for error cases
         + "",
         "Outer0::InnerA","Outer1::A",
         ec
-          .set("SrcPath", "Outer0::InnerC", "DestExternalPath", "'@Outer1::C",
+          .set("SrcPath", "'@::InnerC", "DestExternalPath", "'@Outer2::C",
                "UnexpectedImplementedInterfaces", "[Outer0::InnerA]"
                )
           .str(), true
@@ -659,9 +659,10 @@ public static class TestRedirect1 {//add more test for error cases
         + "TestA:{method Z::FluffyA fun()}"
         + "}",
         "Outer0::Z::Aliases","Outer1::X::Y::Aliases",
-        ec.set("Right", "method Outer1 fun(Void that)").str(), true
+        ec.set("Right", "method Outer1::X::Y fun(Void that)").str(), true
     },{lineNumber(), new String[]{   // Redirect from, but not to, incompatible which is a path
                                      // @Marco, I think that we should keep getting MethodClash here, because Void is not a source-created path to add to the cascade
+                                     //TODO: @James, I think it should be src unfit instrad. We *can* redirect stuff to Void, Any or Library. For example we can have collections of Libraries.
                     "{"
                     + "X:{Y:{\n"
                     + "       FluffyA:{method Void fun(Void that)}\n"

@@ -252,7 +252,8 @@ public class Redirect {
     List<Path> unexpectedInterfaces=new ArrayList<>();
     for(Path pi:currentIntCb.getSupertypes()){
       Path pif=From.fromP(pi, current.getPath());
-      if(pif.isPrimitive() || pif.outerNumber()>0){
+      if(extPs.isEmpty()){unexpectedInterfaces.add(pif);}
+      else if(pif.isPrimitive() || pif.outerNumber()>0){
         if(!extPs.contains(pif)){
           unexpectedInterfaces.add(pif);
           }
@@ -260,9 +261,10 @@ public class Redirect {
       else{
         plusEqual(ambiguities,pif,extPs);
       }
-      if(!unexpectedInterfaces.isEmpty()){throw Errors42.errorSourceUnfit(current.getPath().getCBar(),current.getPaths().get(0),
-          kindSrc,kindDest,Collections.emptyList(), true, unexpectedInterfaces);}
     }
+    if(unexpectedInterfaces.isEmpty()){return;}
+    throw Errors42.errorSourceUnfit(current.getPath().getCBar(),current.getPaths().get(0),
+          kindSrc,kindDest,Collections.emptyList(), true, unexpectedInterfaces);
   }
   private static void plusEqual(List<PathSPath> ambiguities, Path pif, List<Path> extPs) {
     assert !pif.isPrimitive() && pif.outerNumber()==0;

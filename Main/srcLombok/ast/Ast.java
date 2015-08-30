@@ -602,7 +602,7 @@ public interface Ast {
 		public Doc formatNewLinesAsList() {
 		  String newS=this.s;
 		  newS=newS.replace("\n", ", ");
-		  newS="["+newS+"]";
+		  newS="["+newS+"]\n";
       return this.withS(newS);
     }
 		private static int readAnnotation(String s, int start, List<Object> paths) {

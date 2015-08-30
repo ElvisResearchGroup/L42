@@ -32,7 +32,7 @@ public class Errors42 {
   public static Error errorSourceUnfit(List<String> current,Path destExternalPath,ExtractInfo.ClassKind kindSrc,ExtractInfo.ClassKind kindDest,List<Member>unexpected,boolean headerOk,List<Path>unexpectedInterfaces){
       return Resources.Error.multiPartStringError("SourceUnfit",
           "SrcPath",formatPathIn(current), //the path of the class that can not be redirected
-          "DestExternalPath",Doc.factory(destExternalPath), //the path of the class that can not be redirected
+          "DestExternalPath",formatPathOut(destExternalPath), //the path of the class that can not be redirected
          // "PrivatePath",""+isPrivate,//the path can not be redirected since is private
           "SrcKind",kindSrc.name(),//the kind of the class at path
           "DestKind",kindDest.name(),
@@ -59,8 +59,8 @@ public class Errors42 {
   static Error errorMethodClash(List<String> pathForError, Member mta, Member mtb, boolean exc, List<Integer> pars, boolean retType, boolean thisMdf) {
       return Resources.Error.multiPartStringError("MethodClash",
        "Path",""+Path.outer(0,pathForError),//the path of the clash (that own  the method), in the rename is the path of the destination clash
-      "Left",sugarVisitors.ToFormattedText.of(mta),//implementation dependend print of the left and right methods
-      "Right",sugarVisitors.ToFormattedText.of(mtb),
+      "Left",sugarVisitors.ToFormattedText.of(mta).replace("\n","").trim(),//implementation dependend print of the left and right methods
+      "Right",sugarVisitors.ToFormattedText.of(mtb).replace("\n","").trim(),
       "LeftKind",ExtractInfo.memberKind(mta),//kind of the left/right methods
       "RightKind",ExtractInfo.memberKind(mtb),
       "DifferentParameters",""+ pars,//number of parameters with different types
@@ -98,14 +98,14 @@ public class Errors42 {
       if(isPrivateMeth[0]){kind=TargetUnavailable.PrivateMethod;}
       if(isPrivateRef[0]){kind=TargetUnavailable.PrivatePath;}
       if(kind==null){return null;}
-      throw Resources.Error.multiPartStringError("TargetUnavailable",
-          "Path",""+Path.outer(0,path),
+      throw Resources.Error.multiPartStringError("MemberUnavailable",
+          "Path",formatPathIn(path),
           "Selector",""+((ms.isPresent())?ms.get():""),
           "InvalidKind",""+kind.name());
       }
     catch(ast.ErrorMessage.PathNonExistant e){
-      throw Resources.Error.multiPartStringError("TargetUnavailable",
-          "Path",""+Path.outer(0,path),
+      throw Resources.Error.multiPartStringError("MemberUnavailable",
+          "Path",""+formatPathIn(path),
           "Selector",""+((ms.isPresent())?ms.get():""),
           "InvalidKind",""+TargetUnavailable.InexistentPath);
     }
@@ -195,5 +195,8 @@ public class Errors42 {
     if(path.isEmpty()){return Doc.factory(Path.outer(0));}
     return Doc.factory("@::"+String.join("::", path));
   }
- 
+  static Doc formatPathOut(Path path){
+    if(path.isPrimitive()){return Doc.factory(path);}
+    return Doc.factory(Path.outer(path.outerNumber()+1,path.getCBar()));
+  }
 }
