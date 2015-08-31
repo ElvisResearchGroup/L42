@@ -1,9 +1,9 @@
 -RedirectOk needs to follow another plan:
   A= ambiguities, Set of (int Path-> (set ext Path)) functional
   V= verified redirects Set of int Path->ext Path functional
-    so that for all v of them redirectOk(p,v, cb,R,A,Exc)  is well defined for some R,A,Exc
+    so that for all v of them redirectOk(p,v, cb,A,Exc)  is well defined for some R,A,Exc
  Exc=Set of ( (Set of Path )-> (Set of extPath))
-    then, starting from r1,  A={R1}, V=empty, Exc=empty
+    then, starting from r1,  A={r1}, V=empty, Exc=empty
   take an element r from (unambiguos(A) less V),    
     if redirectOk(p,r,cb,A,Exc), then 
     V+=r, //this can throw amibuity error
