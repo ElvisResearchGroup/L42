@@ -168,27 +168,33 @@ public class Errors42 {
     }
     return;
   }*/
-  static Error errorIncoherentRedirectMapping(List<PathPath>verified,List<PathSPath>ambiguities) {
+  static Error errorIncoherentRedirectMapping(List<PathPath>verified,List<PathSPath>ambiguities,Path incoSrc,List<Path> _incoDest) {
     Doc src=Doc.empty();
     Doc dest=Doc.empty();
-    Doc ambig=Doc.empty();
+    //Doc ambig=Doc.empty();
     for(PathPath v:verified){
       src=src.sum(formatPathIn(v.getPath1().getCBar()));
       dest=dest.sum(Doc.factory(v.getPath2()));
     }
     for(PathSPath a:ambiguities){
-      ambig=ambig.sum(formatPathIn(a.getPath().getCBar()));
-      ambig=ambig.sum(Doc.factory("@"+a.getPaths().size()));
+      //if(a.getPaths().size()!=1){
+      //  ambig=ambig.sum(formatPathIn(a.getPath().getCBar()));
+      //  ambig=ambig.sum(Doc.factory("@"+a.getPaths().size()));
+      //  }
       Doc srci=formatPathIn(a.getPath().getCBar());
       for(Path pij:a.getPaths()){
         src=src.sum(srci);
-        dest=dest.sum(Doc.factory(pij));
+        dest=dest.sum(formatPathOut(pij));
       }
     }
+    Doc incoDest=Doc.empty();
+    for(Path pi:_incoDest){incoDest=incoDest.sum(formatPathOut(pi));}
     return Resources.Error.multiPartStringError("IncoherentRedirectMapping",
         "Src",src.formatNewLinesAsList(),
         "Dest",dest.formatNewLinesAsList(),
-        "Ambiguities",ambig.formatNewLinesAsList()
+        //"Ambiguities",ambig.formatNewLinesAsList(),
+        "IncoherentSrc",incoSrc==null?Doc.empty():formatPathIn(incoSrc.getCBar()),
+        "IncoherentDests",incoDest.formatNewLinesAsList()
         );
   }
   static Doc formatPathIn(List<String> path){

@@ -74,7 +74,7 @@ public class Redirect {
     }
     assert choseUnabigus(ambiguities)==null;
     if(!ambiguities.isEmpty()){
-      throw Errors42.errorIncoherentRedirectMapping(verified, ambiguities);
+      throw Errors42.errorIncoherentRedirectMapping(verified, ambiguities,null,Collections.emptyList());
       }
     checkExceptionOk(exceptions,verified);
     return verified;
@@ -110,7 +110,11 @@ public class Redirect {
       if(psp==null){continue;}
       //ambiguities.add(new PathSPath(pp.getPath1(),Arrays.asList(pp.getPath2())));
       if(psp.getPaths().contains(pp.getPath2())){ambiguities.remove(psp);}
-      else{ throw Errors42.errorIncoherentRedirectMapping(verified, ambiguities);}
+      else{
+        List<Path> ps=new ArrayList<>(psp.getPaths());
+        ps.add(pp.getPath2());
+        throw Errors42.errorIncoherentRedirectMapping(verified, ambiguities,psp.getPath(),ps);
+        }
     }
   }
   private static PathSPath selectPSP(List<PathSPath> set,Path key){
@@ -267,13 +271,18 @@ public class Redirect {
           kindSrc,kindDest,Collections.emptyList(), true, unexpectedInterfaces);
   }
   private static void plusEqual(List<PathSPath> ambiguities, Path pif, List<Path> extPs) {
+    assert !extPs.isEmpty();
+    assert !extPs.contains(null);
     assert !pif.isPrimitive() && pif.outerNumber()==0;
     for(PathSPath psp:ambiguities){
       if(psp.getPath().equals(pif)){
         psp.setPaths(new ArrayList<>(psp.getPaths()));
+        assert !psp.getPaths().isEmpty();
+        Path forErr=psp.getPaths().get(0);
         psp.getPaths().retainAll(extPs);
         if(psp.getPaths().isEmpty()){
-          throw Errors42.errorIncoherentRedirectMapping(Redirect.verifiedForErrorMsg,ambiguities);
+          List<Path>psErr=Arrays.asList(forErr,extPs.get(0));
+          throw Errors42.errorIncoherentRedirectMapping(Redirect.verifiedForErrorMsg,ambiguities,psp.getPath(),psErr);
           }
         return;
       }}

@@ -600,7 +600,7 @@ public interface Ast {
 			return new Doc(this.s + that.s, ps);
 		}
 		public Doc formatNewLinesAsList() {
-		  String newS=this.s;
+		  String newS=this.s.trim();
 		  newS=newS.replace("\n", ", ");
 		  newS="["+newS+"]\n";
       return this.withS(newS);
