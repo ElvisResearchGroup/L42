@@ -578,9 +578,9 @@ public static class TestRedirect1 {//add more test for error cases
         "Outer0::InnerZ::FluffyA","Outer1::X::Y::FluffyA",
         ec.set(
                "Src", "'[@::InnerZ::FluffyA, @::InnerZ, @::InnerZ, @::InnerZ::FluffyA]",
-               "Dest","'[@Outer1::X::Y::FluffyA, @Outer1::X, @Outer1::X, @Outer1::X::FluffyA]",
+               "Dest","'[@Outer2::X::Y::FluffyA, @Outer2::X, @Outer2::X, @Outer2::X::FluffyA]",
         	   "IncoherentSrc", "'@::InnerZ::FluffyA",
-        	   "IncoherentDest", "'[@Outer1::X::FluffyA, @Outer1::X::Y::FluffyA]"
+        	   "IncoherentDest", "'[@Outer2::X::FluffyA, @Outer2::X::Y::FluffyA]"
         	   ).str(), true
     },{lineNumber(), new String[]{   // Try cascading two interfaces on one class, which should fail because
                                      // disambiguating it turned out to be prohibitive.

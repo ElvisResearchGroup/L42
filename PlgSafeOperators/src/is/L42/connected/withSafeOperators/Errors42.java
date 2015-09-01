@@ -174,7 +174,7 @@ public class Errors42 {
     //Doc ambig=Doc.empty();
     for(PathPath v:verified){
       src=src.sum(formatPathIn(v.getPath1().getCBar()));
-      dest=dest.sum(Doc.factory(v.getPath2()));
+      dest=dest.sum(formatPathOut(v.getPath2()));
     }
     for(PathSPath a:ambiguities){
       //if(a.getPaths().size()!=1){
@@ -194,7 +194,7 @@ public class Errors42 {
         "Dest",dest.formatNewLinesAsList(),
         //"Ambiguities",ambig.formatNewLinesAsList(),
         "IncoherentSrc",incoSrc==null?Doc.empty():formatPathIn(incoSrc.getCBar()),
-        "IncoherentDests",incoDest.formatNewLinesAsList()
+        "IncoherentDest",incoDest.formatNewLinesAsList()
         );
   }
   static Doc formatPathIn(List<String> path){

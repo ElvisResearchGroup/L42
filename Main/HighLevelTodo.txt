@@ -95,20 +95,18 @@
 -for concatenating strings, use S[a;b;c] where a,b,c should be ToS,
 and ++ should take only strings in input.
 
+
 -rethink typeextraction. use caching of info somehow.
 -if runaway abstractness/incoherence causes plus, plus should keep
 track of why it exists.
 
-
-**current problems:
-rename private methods need to rename also private methods in library literals,
-those mcalls can be in interface implemented methods.
-to get the types, I need the program? but I do not want to use clone with program.
-if in addition to member and index I was to have current classB,
-locators would be sort of like programs
-also, I could use null for classB and avoid negative indexes
-class caching:
-one objects? many objects?
+may be: cache only in cb.
+cache contains ct, at the start is equal to cb.
+then, if extractType(p,cb) is asked,
+ cb.stage.ct is improved.
+ when no further ann is possible, is saved.
+ when etdeep is called, it first restore the one in the cached nested.
+ Sharing the pointer, it get the same pointer in the nested in ct and in the nested in cb?
 
 method implemented keep type
 CachedMT{ OptMt, OptPath }
