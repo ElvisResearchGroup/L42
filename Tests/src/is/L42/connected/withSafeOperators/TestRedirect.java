@@ -29,7 +29,7 @@ public static class TestRedirect1 {//add more test for error cases
   // TODO@James: consider making a git hook to block commits unless startLine=0 is enabled
   
   // Skip failing, but uninteresting tests here
-//  static int startLine=599;
+//  static int startLine=580;
   static int startLine=0;
 
   @Parameter(0) public int _lineNumber;
@@ -45,17 +45,23 @@ public static class TestRedirect1 {//add more test for error cases
     
     List<Object[]> tests= Arrays.asList(new Object[][] {
     {lineNumber(), new String[]{"{A:{}}"},
-      "{InnerA:{} B:{ method InnerA m(InnerA a) a}}","Outer0::InnerA","Outer1::A","{B:{ method Outer2::A m(Outer2::A a) a}}",false
+      "{InnerA:{} B:{ method InnerA m(InnerA a) a}}","Outer0::InnerA","Outer1::A",
+      "{B:{ method Outer2::A m(Outer2::A a) a}}",false
     },{lineNumber(), new String[]{"{A:{}}"},
-        "{InnerA:{}  method InnerA m(InnerA a) a}","Outer0::InnerA","Outer1::A","{ method Outer1::A m(Outer1::A a) a}",false
+        "{InnerA:{}  method InnerA m(InnerA a) a}","Outer0::InnerA","Outer1::A",
+        "{ method Outer1::A m(Outer1::A a) a}",false
     },{lineNumber(), new String[]{"{A2:{  }}","{A1:{  }}"}, // redirecting into one of multiple outer scopes
-        "{InnerA:{}  method InnerA m(InnerA a) a}","Outer0::InnerA","Outer1::A1","{ method Outer1::A1 m(Outer1::A1 a) a}",false
+        "{InnerA:{}  method InnerA m(InnerA a) a}","Outer0::InnerA","Outer1::A1",
+        "{ method Outer1::A1 m(Outer1::A1 a) a}",false
     },{lineNumber(), new String[]{"{A2:{  }}","{A1:{  }}"}, // redirecting into one of multiple outer scopes
-        "{InnerA:{}  method InnerA m(InnerA a) a}","Outer0::InnerA","Outer2::A2","{ method Outer2::A2 m(Outer2::A2 a) a}",false
+        "{InnerA:{}  method InnerA m(InnerA a) a}","Outer0::InnerA","Outer2::A2",
+        "{ method Outer2::A2 m(Outer2::A2 a) a}",false
     },{lineNumber(), new String[]{"{A2:{ A2n:{}  }}","{A1:{ A1n:{}  }}"}, // redirecting into nested classes
-        "{InnerA:{}  method InnerA m(InnerA a) a}","Outer0::InnerA","Outer1::A1::A1n","{ method Outer1::A1::A1n m(Outer1::A1::A1n a) a}",false
-    },{lineNumber(), new String[]{"{A2:{ A2n:{}  }}","{A1:{ A1n:{}  }}"}, // redirecting into nested classes
-        "{InnerA:{}  method InnerA m(InnerA a) a}","Outer0::InnerA","Outer2::A2::A2n","{ method Outer2::A2::A2n m(Outer2::A2::A2n a) a}",false
+        "{InnerA:{}  method InnerA m(InnerA a) a}","Outer0::InnerA",
+        "Outer1::A1::A1n","{ method Outer1::A1::A1n m(Outer1::A1::A1n a) a}",false
+    },{lineNumber(), new String[]{"{A2:{ A2n:{}  }}","{A1:{ A1n:{}  }}"}, // redirecting into nested classes in further out scope
+        "{InnerA:{}  method InnerA m(InnerA a) a}","Outer0::InnerA","Outer2::A2::A2n",
+        "{ method Outer2::A2::A2n m(Outer2::A2::A2n a) a}",false
     },{lineNumber(), new String[]{"{A:{method B getB()} B:{}}"}, // cascade: a return value in A redirects B
         "{InnerA:{method InnerB getB()} InnerB:{} method InnerB getB()}",
         "Outer0::InnerA","Outer1::A","{ method Outer1::B getB()}",false
@@ -114,7 +120,7 @@ public static class TestRedirect1 {//add more test for error cases
                     "{X:{Y:{A:{()  type method A fun()}}}}" },
         "{InnerZ:{InnerA:{()  type method InnerA fun()}}"
         + " M:{type method Library defA_maker() {type method InnerZ::InnerA beA_maker() InnerZ::InnerA()}}"
-        + "B:{C: {} }"  //  So this call to get a library value is imaginary, as shown below
+        + "B:{C: {} }"  
         + "}",
         "Outer0::InnerZ::InnerA","Outer1::X::Y::A",
         "{InnerZ:{}"
@@ -124,7 +130,7 @@ public static class TestRedirect1 {//add more test for error cases
                     "{X:{Y:{A:{()  type method Outer0 fun()}}}}" },
         "{InnerZ:{InnerA:{()  type method Outer0 fun()}}"
         + " M:{type method Library defA_maker() {type method InnerZ::InnerA beA_maker() InnerZ::InnerA()}}"
-        + "B:{C: {} }"  //  So this call to get a library value is imaginary, as shown below
+        + "B:{C: {} }" 
         + "}",
         "Outer0::InnerZ::InnerA","Outer1::X::Y::A",
         "{InnerZ:{}"
@@ -174,7 +180,7 @@ public static class TestRedirect1 {//add more test for error cases
         "Outer0::InnerA","Outer1::A",
         "{TestB:{method Outer2::I fun() method Outer2::I moreFun()}}", false
         
-        // TODO@James: when the test above passes, add some methods, and set up implementing classes for the inner interfaces that don't each have enough methods for the outer interface
+        // TODO@James: (NOW) when the test above passes, add some methods, and set up implementing classes for the inner interfaces that don't each have enough methods for the outer interface
 
     },{lineNumber(), new String[]{   // Cascade redirect an interface, via a redirect-my-pile-of-stuff class
                     "{I1:{interface method Void fun()}\n"
@@ -261,9 +267,9 @@ public static class TestRedirect1 {//add more test for error cases
         "Outer0::Z::Aliases","Outer1::X::Y::Aliases",
         "{TestA:{method Outer2::X::Y::FluffyA fun()}}",false
 
-        // TODO@James: when the test above passes, redirect via a pile, where the types in the internal pile are aliases to a mix of internal, internal->external and external
+        // TODO@James: (NOW) when the test above passes, redirect via a pile, where the types in the internal pile are aliases to a mix of internal, internal->external and external
 
-        // TODO@James: play with aliases to parameters vs aliases to return values
+        // TODO@James: (NOW) play with aliases to parameters vs aliases to return values
         
     },{lineNumber(), new String[]{   // Try redirecting a class that implements two internal interfaces,
                                      // via a pile that explicitly directs both
@@ -316,7 +322,7 @@ public static class TestRedirect1 {//add more test for error cases
         // TODO@James do something with piles containing alias types that refer to the library return values of methods
         // but this might not be possible in a unit-test without metaprogramming capability
         
-        // TODO@James play with throwing interfaces that implement classes
+        // TODO@James (NOW; might be a dup) play with throwing interfaces that implement classes
 
     // the errors have variable portions.
 	// try to explore the cardinality space of the variable portions
@@ -346,30 +352,6 @@ public static class TestRedirect1 {//add more test for error cases
                 "UnexpectedImplementedInterfaces", "[]"
                 )
           .str(), true
-    },{lineNumber(), new String[]{"{A:{ }}"},  // same test, but with InnerA private; 
-                                               // @Marco, I'm getting TargetUnavailable for this test.
-                                               // NB the target is fine but the source is bad
-                                               // @Marco, You could generalise the error to PathUnavailable,
-                                               // and tell us whether it's the source or the target,
-                                               // but that's misleading, because PathUnavailable(Target, InexistentPath) is a prerequisite violation,
-                                               // not a TargetUnavailable error.
-        "{InnerA:'@private\n {type method Void fun(Void that)} }",
-        "Outer0::InnerA","Outer1::A",
-        "{"
-          +"Kind:{'@stringU\n'MemberUnavailable\n}"
-          +"Path:{'@::InnerA\n}"
-          +"Selector:{'@stringU\n'\n}"
-          +"InvalidKind:{'@stringU\n'PrivatePath\n}}", true
-    /*},{lineNumber(),      // add a matching method to A, and make the InnerA method only private
-                          // @Marco, if 'path' always means a specifically situated class,
-                          // then this test is a mistake, and please email or skype me, rather than editing this file.
-       new String[]{"{A:{type method Void fun(Void that) }}"},
-        "{InnerA:{type method '@private\n Void fun(Void that) that} "
-        + "TestB:{<:InnerA method notSoFun() InnerA.fun() }"
-        + "}","Outer0::InnerA","Outer1::A",
-        ec.set("PrivatePath", "true"
-                )
-          .str(), true*///TODO: commented test I had trouble understand. the issue is that PrivatePath do not exists anymore.
     },{lineNumber(), new String[]{  // FreeTemplate -> Interface, with some matching methods
         "{A:{interface type method Void fun(Void that)  method Void mostFun(Void that, Library other) }}"
         },
@@ -479,7 +461,7 @@ public static class TestRedirect1 {//add more test for error cases
         ec
           .set("UnexpectedMembers", "[C]")
           .str(), true
-    },{lineNumber(), new String[]{  // Interface with inner interface
+    },{lineNumber(), new String[]{  // Interface with unexpected inner interface
         "{A:{interface type method Void fun(Void that)  method Void moreFun(Void that, Library other) }}"
         },
         "{InnerA:{interface type method Void fun(Void that)  method Void moreFun(Void that, Library other) "
@@ -487,7 +469,7 @@ public static class TestRedirect1 {//add more test for error cases
         "Outer0::InnerA","Outer1::A",
         ec
           .str(), true
-    },{lineNumber(), new String[]{  // Interface with implemented inner interface
+    },{lineNumber(), new String[]{  // Implementing the interface does not change the error
         "{A:{interface type method Void fun(Void that)  method Void moreFun(Void that, Library other) }}"
         },
         "{InnerA:{interface type method Void fun(Void that)  method Void moreFun(Void that, Library other)\n"
@@ -497,20 +479,19 @@ public static class TestRedirect1 {//add more test for error cases
         "Outer0::InnerA","Outer1::A",
         ec
           .str(), true
-    },{lineNumber(), new String[]{  // Matched inner interface shows as non-free
+     },{lineNumber(), new String[]{  // Expected interface, with unexpected method, implemented in implementing class
         "{A:{interface type method Void fun(Void that)  method Void moreFun(Void that, Library other) \n"
         + " C:{interface}}}"
         },
         "{InnerA:{interface type method Void fun(Void that)  method Void moreFun(Void that, Library other)\n"
         + "C:{interface method Void mostFun() } } \n"
         + "C_impl:{<:InnerA::C"
-        + "         method Void mostFun()"    //
+        + "         method mostFun() void"    // With implementation and without respecified types
         + "       } "
         + "}",
         "Outer0::InnerA","Outer1::A",
         ec
           .set("SrcPath", "'@::InnerA::C", "DestExternalPath", "'@Outer2::A::C",
-               "SrcKind", "Interface",
                "UnexpectedMembers", "[mostFun()]")
           .str(), true
     },{lineNumber(), new String[]{  // One unimplemented interface; no unexpected members
@@ -530,7 +511,7 @@ public static class TestRedirect1 {//add more test for error cases
                "UnexpectedImplementedInterfaces", "[Outer0::BlockingInterface1]"
                )
           .str(), true
-    },{lineNumber(), new String[]{  // Two blocking and one resolved/outer interface.
+    },{lineNumber(), new String[]{  // Matching nested interfaces, the inner of which implements two internal and one external blocking interfaces
                                     // NB: in the test harness, must specify outer numbers for outers.
         "{A:{interface type method Void fun(Void that)  method Void moreFun(Void that, Library other) \n"
         + " C:{interface}}}"
@@ -569,7 +550,11 @@ public static class TestRedirect1 {//add more test for error cases
                )
           .str(), true
 
+    // IncoherentRedirectMapping
+    // TODO@James: enumerate the parameters and explore them thoroughly
+    // TODO@James: explore the relationship between intersection unambiguity and forced split
     },{lineNumber(), new String[]{      // Incoherent redirect, forcing InnerAB to be split into both A and B
+                                        // @Marco, I protest against "IncoherentDests"; the trailing s is unnecessary, and isn't present on "Dest"
                     "{A:{} B:{}"
                     + "C:{ method A fun() method B moreFun()}"
                     + "}" },
@@ -578,10 +563,10 @@ public static class TestRedirect1 {//add more test for error cases
         + "}",
         "Outer0::InnerC","Outer1::C",
         ec.load("IncoherentRedirectMapping",
-                "Mapping", "[Outer0::InnerC->Outer1::C, Outer0::InnerAB->Outer1::A, Outer0::InnerAB->Outer1::B]",
-                "SplitSrc", "Outer0::InnerAB",
-                "Dest1", "Outer1::A", "Dest2", "Outer1::B").str(), true
-
+                "Src", "'[@::InnerC]",
+                "Dest", "'[@Outer1::C]",
+                "IncoherentSrc", "'@::InnerAB",
+                "IncoherentDest", "'[@Outer1::A,Outer1::B]").str(), true
     },{lineNumber(), new String[]{   // Incoherent redirect: Matching functions (FluffyA::fun()) disagree about the position of their return value
                                      // NB: There is no reliable theory to filter out only nested redirects, so all redirects up to the failure are include in the error.
                     "{X:{Y:{FluffyA:{ type method Outer2 fun()}" // Target of original redirect
@@ -591,13 +576,16 @@ public static class TestRedirect1 {//add more test for error cases
         "{InnerZ:{FluffyA:{ type method Outer1 fun()}}"
         + "}",
         "Outer0::InnerZ::FluffyA","Outer1::X::Y::FluffyA",
-        ec.set("Mapping", "[Outer0::InnerZ::FluffyA->Outer1::X::Y::FluffyA, "
-        		         + "Outer0::InnerZ->Outer1::X, "
-        		         + "Outer0::InnerZ::FluffyA->Outer1::X::FluffyA]",
-        	   "SplitSrc", "Outer0::InnerZ::FluffyA",
-        	   "Dest1", "Outer1::X::Y::FluffyA", "Dest2", "Outer1::X::FluffyA" ).str(), true
+        ec.set(
+               "Src", "'[@::InnerZ::FluffyA, @::InnerZ, @::InnerZ, @::InnerZ::FluffyA]",
+               "Dest","'[@Outer1::X::Y::FluffyA, @Outer1::X, @Outer1::X, @Outer1::X::FluffyA]",
+        	   "IncoherentSrc", "'@::InnerZ::FluffyA",
+        	   "IncoherentDest", "'[@Outer1::X::FluffyA, @Outer1::X::Y::FluffyA]"
+        	   ).str(), true
     },{lineNumber(), new String[]{   // Try cascading two interfaces on one class, which should fail because
                                      // disambiguating it turned out to be prohibitive.
+                                     // @Marco, the mapping list would be shorter if IncoherentSrc was a list, so that the two sets could be put into the Incoherent parameters
+                                     // @Marco, I am going to write the error that I want, knowing that the test will fail, and that changing the system to fix this one would break the one above
                     "{I1:{interface method Void fun()}\n"
                     + "I2:{interface method Void moreFun()}\n"
                     + "A:{<:I1 I2 method Void fun() method Void moreFun()}"
@@ -608,7 +596,12 @@ public static class TestRedirect1 {//add more test for error cases
         + "TestB:{<:InnerI1 InnerI2  method fun() void method Void moreFun() void}\n"
         + "}",
         "Outer0::InnerA","Outer1::A",
-        "{'@stringu\n'Some specific error which says that A violates the one-target-interface rule\n}",true
+        ec.set(
+               "Src", "'[@::InnerA]",
+               "Dest","'[@Outer1::A]",
+        	   "IncoherentSrc", "'[@::InnerI1, @InnerI2]",
+        	   "IncoherentDest", "'[@Outer1::I1, @Outer1::I2]"
+        ).str(), true
 
     // TODO@James: when the error for the test above has settled, do a pile redirect of two classes,
     // where one uses two interfaces and the other uses only one of them, to confirm that the disambiguation
@@ -660,6 +653,7 @@ public static class TestRedirect1 {//add more test for error cases
         + "}",
         "Outer0::Z::Aliases","Outer1::X::Y::Aliases",
         ec.set("Right", "method Outer1::X::Y fun(Void that)").str(), true
+/* TODO@James: play properly with redirects and primitive types        
     },{lineNumber(), new String[]{   // Redirect from, but not to, incompatible which is a path
                                      // @Marco, I think that we should keep getting MethodClash here, because Void is not a source-created path to add to the cascade
                                      //TODO: @James, I think it should be src unfit instrad. We *can* redirect stuff to Void, Any or Library. For example we can have collections of Libraries.
@@ -678,7 +672,7 @@ public static class TestRedirect1 {//add more test for error cases
         "Outer0::Z::Aliases","Outer1::X::Y::Aliases",
         ec.set("Left", "method Outer1 fun(Void that)",
                "Right", "method Void fun(Void that)").str(), true
-
+*/
 
 /* TODO@James : try this test, when I get to method clashes
     },{lineNumber(), new String[]{ // mismatches in type vs instance method
@@ -710,6 +704,31 @@ public static class TestRedirect1 {//add more test for error cases
                "UnexpectedMembers", "[mostFun()]")
           .str(), true
            */
+
+    // MemberUnavailable:
+    // TODO@James: set up these tests properly; this is a temporary job to keep errors i found by accident 
+    // Path(1), Left(1), Right(1), LeftKind(enum(4)), RightKind(enum(4)),
+    // DifferentParameters(0..), DifferentReturnType(t/f), DifferentThisMdf(t/f), IncompatibleException(t/f)
+
+
+    },{lineNumber(),   // Redirect a private class
+        new String[]{"{A:{ }}"},
+        "{InnerA:'@private\n {type method Void fun(Void that)} }",
+        "Outer0::InnerA","Outer1::A",
+        ec.load("MemberUnavailable",
+                "Path", "'@::InnerA",
+                "Selector", "",
+                "InvalidKind", "PrivatePath"
+               ).str(), true
+    },{lineNumber(),      // Redirect a class with a private method, for which the target has a matching method
+       new String[]{"{A:{type method Void fun(Void that) }}"},
+        "{InnerA:{type method '@private\n Void fun(Void that)} "
+        + "InnerB:{type method Void moreFun(Void that) InnerA.fun(that)}"
+        + "}",
+        "Outer0::InnerA","Outer1::A",
+        ec.set("Selector", "fun(that)"
+                )
+          .str(), true
 
     }});
     return TestHelper.skipUntilLine(tests, startLine);

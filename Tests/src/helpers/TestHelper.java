@@ -202,11 +202,11 @@ public class TestHelper {
 
     static String valueFormat(String value) {
       /* If the string is already formatted as an annotation,
-       * (begins with '@ )
+       * (begins with '@ or '[@ )
        * output it as formatted,
        * otherwise annotate it as a unicode string
        */
-      if (value.startsWith("'@"))
+      if (value.startsWith("'@") || value.startsWith("'[@"))
         return  value;
       else
         return "'@stringU\n'" + value;
