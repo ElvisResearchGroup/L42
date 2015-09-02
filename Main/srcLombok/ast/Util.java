@@ -21,6 +21,10 @@ public class Util {
     @NonNull Path original;
     @NonNull ast.Ast.MethodType mt;
   }
+  @Value public static class PathMwt{
+    @NonNull Path original;
+    @NonNull ast.ExpCore.ClassB.MethodWithType mwt;
+  }
   @Value @Wither public static class CsMx{
     @NonNull java.util.List<String> cs;@NonNull MethodSelector ms;
     public String toString(){
@@ -50,7 +54,8 @@ public class Util {
   @Data public static class CachedStage{
 	@NonNull ast.Ast.Stage stage=Stage.None;
 	final java.util.List<ClassB>dependencies=new java.util.ArrayList<>();
-	final java.util.List<Path> allSupertypes=new java.util.ArrayList<>();
+	//final java.util.List<Path> allSupertypes=new java.util.ArrayList<>();
+	java.util.ListIterator<PathMwt> inherited=null;
 	boolean verified=false;
 	boolean coherent=true;
 	String givenName="";

@@ -101,6 +101,17 @@ and ++ should take only strings in input.
 track of why it exists.
 
 may be: cache only in cb.
+cacheStage contains
+stage+
+inherited:list of triple path, mt, ms
+if inherited==null,
+then interfaces not computed.
+computeInherited(p,cb)
+computeStage(p,cb) //requires inherited
+
+todo: do PathMwt in util
+update cache,
+
 cache contains ct, at the start is equal to cb.
 then, if extractType(p,cb) is asked,
  cb.stage.ct is improved.
