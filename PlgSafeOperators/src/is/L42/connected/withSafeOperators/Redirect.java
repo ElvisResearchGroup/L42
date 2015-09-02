@@ -148,14 +148,12 @@ public class Redirect {
     boolean isPrivateState=ExtractInfo.hasPrivateState(currentIntCb);
     boolean isNoImplementation=ExtractInfo.isNoImplementation(currentIntCb);
     boolean headerOk=currentIntCb.isInterface()==currentExtCb.isInterface();
-    ClassKind kindSrc=null;
+    ClassKind kindSrc= ExtractInfo.classKind(cbTop,cs,currentIntCb, null, isPrivateState, isNoImplementation);
     if(!headerOk && !currentIntCb.isInterface()){
-      kindSrc=ExtractInfo.classKind(cbTop,cs,currentIntCb,null,isPrivateState, isNoImplementation);
       if(kindSrc==ClassKind.FreeTemplate){headerOk=true;}
     }
-    if(kindSrc==null){kindSrc = ExtractInfo.classKind(cbTop,cs,currentIntCb, null, isPrivateState, isNoImplementation);}
     ClassKind kindDest = ExtractInfo.classKind(null,null,currentExtCb,null,null,null);
-    if(!isNoImplementation){//unexpectedMembers stay empty if there is implementation
+    if(isPrivateState || !isNoImplementation){//unexpectedMembers stay empty if there is implementation
       assert kindSrc!=ClassKind.FreeTemplate 
           || kindSrc!=ClassKind.Template
           || kindSrc!=ClassKind.Interface:

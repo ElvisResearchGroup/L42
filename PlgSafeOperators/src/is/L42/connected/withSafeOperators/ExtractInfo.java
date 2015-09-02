@@ -1,6 +1,7 @@
 package is.L42.connected.withSafeOperators;
 
 import ast.Ast;
+import ast.Ast.Doc;
 import ast.Ast.Mdf;
 import ast.Ast.MethodSelector;
 import ast.Ast.MethodType;
@@ -178,6 +179,13 @@ public class ExtractInfo {
       result.add(""+m.match(nc->nc.getName(), mi->mi.getS(), mt->mt.getMs()));
     }
     return result;
+  }
+  static Ast.Doc showPaths(List<Path> ps){
+    Ast.Doc result=Doc.empty();
+    for(Path pi:ps){
+      result=result.sum(Errors42.formatPath(pi));
+    }
+    return result.formatNewLinesAsList();
   }
    public static boolean hasPrivateState(ClassB cb) {
      for(Member m:cb.getMs()){

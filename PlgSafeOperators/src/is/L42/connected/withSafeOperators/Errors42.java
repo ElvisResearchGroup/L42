@@ -38,11 +38,7 @@ public class Errors42 {
           "DestKind",kindDest.name(),
           //"IncompatibleClassKind",""+!headerOk,//if the path can not be redirected because of their respective kinds. This information would make no sense if I can get the kind for dest!
           "UnexpectedMembers",""+ExtractInfo.showMembers(unexpected),//methods that are not present in dest (or present but with different declared vs Interface implemented status)
-          "UnexpectedImplementedInterfaces",""+unexpectedInterfaces//interfaces implemented in path but not in dest
-          //TODO: I would like to give also the destination path, but by being an external path I'm troubled.
-          //should I use a @Path in a doc?
-          //also, what happens if destination is private, caused by example by a private type of a public method??
-          //also if the original destination is private?
+          "UnexpectedImplementedInterfaces",ExtractInfo.showPaths(unexpectedInterfaces)//sort of interfaces implemented in path but not in dest, more complex for ambiguities
            );
   }
   //"ClassClash" caused by sum, renameClass, renameClassStrict, renameClass
@@ -58,7 +54,7 @@ public class Errors42 {
   //"MethodClash" caused by sum, renameMethod, renameClassStrict, renameClass
   static Error errorMethodClash(List<String> pathForError, Member mta, Member mtb, boolean exc, List<Integer> pars, boolean retType, boolean thisMdf) {
       return Resources.Error.multiPartStringError("MethodClash",
-       "Path",""+Path.outer(0,pathForError),//the path of the clash (that own  the method), in the rename is the path of the destination clash
+       "Path",formatPathIn(pathForError),//the path of the clash (that own  the method), in the rename is the path of the destination clash
       "Left",sugarVisitors.ToFormattedText.of(mta).replace("\n","").trim(),//implementation dependend print of the left and right methods
       "Right",sugarVisitors.ToFormattedText.of(mtb).replace("\n","").trim(),
       "LeftKind",ExtractInfo.memberKind(mta),//kind of the left/right methods
@@ -202,7 +198,13 @@ public class Errors42 {
     return Doc.factory("@::"+String.join("::", path));
   }
   static Doc formatPathOut(Path path){
+    assert path.outerNumber()>0;
     if(path.isPrimitive()){return Doc.factory(path);}
     return Doc.factory(Path.outer(path.outerNumber()+1,path.getCBar()));
+  }
+  static Doc formatPath(Path path){
+    if(path.isPrimitive()){return Doc.factory(path);}
+    if(path.outerNumber()==0){return formatPathIn(path.getCBar());}
+    return formatPathOut(path);
   }
 }

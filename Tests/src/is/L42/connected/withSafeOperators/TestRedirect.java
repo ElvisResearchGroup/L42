@@ -339,7 +339,7 @@ public static class TestRedirect1 {//add more test for error cases
            +"SrcKind:{'@stringU\n'FreeTemplate\n}"
            +"DestKind:{'@stringU\n'Template\n}"
            +"UnexpectedMembers:{'@stringU\n'[fun()]\n}"
-           +"UnexpectedImplementedInterfaces:{'@stringU\n'[]\n}"
+           +"UnexpectedImplementedInterfaces:{'[]\n}"
         + "}",true
     },{lineNumber(), new String[]{"{A:{ }}"},  // same test, but with a method argument, using the new mechanism
         "{InnerA:{type method Void fun(Void that)} }","Outer0::InnerA","Outer1::A",
@@ -349,7 +349,7 @@ public static class TestRedirect1 {//add more test for error cases
                 "SrcKind", "FreeTemplate",
                 "DestKind", "Template",
                 "UnexpectedMembers", "[fun(that)]",
-                "UnexpectedImplementedInterfaces", "[]"
+                "UnexpectedImplementedInterfaces", "'[]"
                 )
           .str(), true
     },{lineNumber(), new String[]{  // FreeTemplate -> Interface, with some matching methods
@@ -508,7 +508,7 @@ public static class TestRedirect1 {//add more test for error cases
         ec
           .set(
                "UnexpectedMembers", "[]",
-               "UnexpectedImplementedInterfaces", "[Outer0::BlockingInterface1]"
+               "UnexpectedImplementedInterfaces", "'[@::BlockingInterface1]"
                )
           .str(), true
     },{lineNumber(), new String[]{  // Matching nested interfaces, the inner of which implements two internal and one external blocking interfaces
@@ -527,7 +527,7 @@ public static class TestRedirect1 {//add more test for error cases
         + "}",
         "Outer0::InnerA","Outer1::A",
         ec
-          .set("UnexpectedImplementedInterfaces", "[Outer0::BlockingInterface1, Outer0::BlockingInterface2, Outer1::A::C]"
+          .set("UnexpectedImplementedInterfaces", "'[@::BlockingInterface1, @::BlockingInterface2, @Outer2::A::C]"
                )
           .str(), true
 

@@ -206,7 +206,7 @@ public class TestHelper {
        * output it as formatted,
        * otherwise annotate it as a unicode string
        */
-      if (value.startsWith("'@") || value.startsWith("'[@"))
+      if (value.startsWith("'@") || value.startsWith("'[@")  || value.startsWith("'[]"))
         return  value;
       else
         return "'@stringU\n'" + value;
