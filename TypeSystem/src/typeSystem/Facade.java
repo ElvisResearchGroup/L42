@@ -45,6 +45,14 @@ public class Facade implements facade.TypeSystem{
   public Par(Program p, ClassB cb) {this.p = p;this.cb = cb;    }
     Program p; ClassB cb;
     }
+  
+  public @Override void computeInherited(Program p,ClassB cb){
+    FillCache.computeInherited(p, cb);
+  }
+  public @Override void computeStage(Program p,ClassB cb) {//requires inherited
+    FillCache.computeStage(p, cb);
+  }
+  
   @Override public ClassB typeExtraction(Program p, ClassB cb) {
     Par par=new Par(p,cb);
     ClassB old=cache.get(par);

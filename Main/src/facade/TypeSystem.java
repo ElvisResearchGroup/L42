@@ -15,5 +15,9 @@ public interface TypeSystem {
   void checkAll(Program p);//TODO: check who use it and why
 
   void checkMetaExpr(Program p, ExpCore e);
+
+  void computeInherited(Program p, ClassB cb);
+
+  void computeStage(Program p, ClassB cb);
   
 }

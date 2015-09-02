@@ -55,7 +55,7 @@ public class Util {
 	@NonNull ast.Ast.Stage stage=Stage.None;
 	final java.util.List<ClassB>dependencies=new java.util.ArrayList<>();
 	//final java.util.List<Path> allSupertypes=new java.util.ArrayList<>();
-	java.util.ListIterator<PathMwt> inherited=null;
+	java.util.List<PathMwt> inherited=null;
 	boolean verified=false;
 	boolean coherent=true;
 	String givenName="";
