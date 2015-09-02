@@ -546,7 +546,7 @@ public static class TestRedirect1 {//add more test for error cases
         "Outer0::InnerA","Outer1::A",
         ec
           .set("SrcPath", "'@::InnerC", "DestExternalPath", "'@Outer2::C",
-               "UnexpectedImplementedInterfaces", "[Outer0::InnerA]"
+               "UnexpectedImplementedInterfaces", "'[@::InnerA]"
                )
           .str(), true
 
@@ -564,9 +564,9 @@ public static class TestRedirect1 {//add more test for error cases
         "Outer0::InnerC","Outer1::C",
         ec.load("IncoherentRedirectMapping",
                 "Src", "'[@::InnerC]",
-                "Dest", "'[@Outer1::C]",
+                "Dest", "'[@Outer2::C]",
                 "IncoherentSrc", "'@::InnerAB",
-                "IncoherentDest", "'[@Outer1::A,Outer1::B]").str(), true
+                "IncoherentDest", "'[@Outer2::A, @Outer2::B]").str(), true
     },{lineNumber(), new String[]{   // Incoherent redirect: Matching functions (FluffyA::fun()) disagree about the position of their return value
                                      // NB: There is no reliable theory to filter out only nested redirects, so all redirects up to the failure are include in the error.
                     "{X:{Y:{FluffyA:{ type method Outer2 fun()}" // Target of original redirect
@@ -598,9 +598,9 @@ public static class TestRedirect1 {//add more test for error cases
         "Outer0::InnerA","Outer1::A",
         ec.set(
                "Src", "'[@::InnerA]",
-               "Dest","'[@Outer1::A]",
-        	   "IncoherentSrc", "'[@::InnerI1, @InnerI2]",
-        	   "IncoherentDest", "'[@Outer1::I1, @Outer1::I2]"
+               "Dest","'[@Outer2::A]",
+        	   "IncoherentSrc", "'[@::InnerI1, @::InnerI2]",
+        	   "IncoherentDest", "'[@Outer2::I1, @Outer2::I2]"
         ).str(), true
 
     // TODO@James: when the error for the test above has settled, do a pile redirect of two classes,
@@ -629,7 +629,7 @@ public static class TestRedirect1 {//add more test for error cases
         + "}",
         "Outer0::Z::Aliases","Outer1::X::Y::Aliases",
         ec.load("MethodClash",
-                "Path", "Outer0::Z::FluffyA",
+                "Path", "'@::Z::FluffyA",
                 "Left", "method Void fun(Void that)",
                 "Right", "method Library fun(Void that)",
                 "LeftKind", "AbstractMethod",
