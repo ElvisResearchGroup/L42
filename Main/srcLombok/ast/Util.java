@@ -24,6 +24,10 @@ public class Util {
   @Value public static class PathMwt{
     @NonNull Path original;
     @NonNull ast.ExpCore.ClassB.MethodWithType mwt;
+    public String toString(){
+      return ""+this.original+"::"
+        +sugarVisitors.ToFormattedText.of(this.mwt).trim().replace("\n","");
+      }
   }
   @Value @Wither public static class CsMx{
     @NonNull java.util.List<String> cs;@NonNull MethodSelector ms;

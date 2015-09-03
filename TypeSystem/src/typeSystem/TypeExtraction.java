@@ -1,6 +1,7 @@
 package typeSystem;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -70,7 +71,7 @@ public class TypeExtraction {
     assert !ct.getMs().stream().anyMatch(e-> e instanceof MethodImplemented);
     return ct;
   }
-  private static List<ClassB> collectEs(Program p, ClassB ct) {
+  static List<ClassB> collectEs(Program p, ClassB ct) {
     List<Path> usedPlus = new UsedPathsPlus().of(ct);
     //usedPlus=Functions.remove1OuterAndPrimitives(usedPlus);
     //usedPlus=Map.of( pi->From.fromP(pi, Path.outer(1)),usedPlus);
@@ -125,7 +126,7 @@ public class TypeExtraction {
 
 
   /**return null for impossible to compute*/
-  static Ast.Stage stage(Program p,ClassB cb,Set<ClassB>es/*can have nulls*/){
+  static Ast.Stage stage(Program p,ClassB cb,Collection<ClassB>es/*can have nulls*/){
     assert IsCompiled.of(cb);
     for(ClassB cbi: es){
       if(cbi==null){return Stage.Less;}
