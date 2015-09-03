@@ -129,7 +129,12 @@ public class L42 {
       stage=ExecutionStage.Reading;
       String code=pathToString(p);
       throw runSlow(p.toString(),code);}
-    catch(ErrorMessage e){return e.getErrCode();}
+    catch(ErrorMessage.FinalResult e){return e.getErrCode();}
+    catch(ErrorMessage e){
+      int result= -1*e.getClass().getCanonicalName().hashCode();
+      assert result<0;
+      return result;
+      }
   }
   public static void finalErr(ClassB result,String s){
     throw new ErrorMessage.MalformedFinalResult(result, s);

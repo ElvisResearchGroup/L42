@@ -38,6 +38,9 @@ import ast.Util.PathMwt;
   @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class FinalResult extends ErrorMessage {
     int result;
     ClassB topLevelProgram;
+    public int getErrCode() {
+          return result;
+         }
   }
 
   @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class MalformedFinalResult extends ErrorMessage {

@@ -17,6 +17,7 @@ import ast.ExpCore.ClassB.NestedClass;
 import ast.Util.PathMwt;
 import auxiliaryGrammar.Program;
 import auxiliaryGrammar.UsedPathsPlus;
+import coreVisitors.From;
 
 public class FillCache {
  public static void computeInheritedDeep(Program p,ClassB cb){
@@ -72,7 +73,7 @@ private static  List<PathMwt> computeMwts(Program p, List<Path> allSup) {
     for(Member mij:cbi.getMs()){
       if (mij instanceof ClassB.NestedClass){continue;}
       MethodWithType mwt=(MethodWithType) mij;
-      mwts.add(new PathMwt(pi,mwt));
+      mwts.add(new PathMwt(pi,From.from(mwt,pi)));
     }
   }
   return mwts;
