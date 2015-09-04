@@ -201,11 +201,15 @@ public class TestHelper {
     // invariant: even number of entries; category first then details
 
     static String valueFormat(String value) {
-      /* If the string is already formatted as an annotation,
-       * (begins with '@ or '[@ )
+      /* If value is null, then no string should go into the error representation.
+       * If the string is already formatted as an annotation,
+       * (begins with '@ or '[@ or '[] )
        * output it as formatted,
        * otherwise annotate it as a unicode string
        */
+      if (null == value)
+        return "";
+        
       if (value.startsWith("'@") || value.startsWith("'[@")  || value.startsWith("'[]"))
         return  value;
       else

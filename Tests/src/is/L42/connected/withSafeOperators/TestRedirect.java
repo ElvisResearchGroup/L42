@@ -584,8 +584,6 @@ public static class TestRedirect1 {//add more test for error cases
         	   ).str(), true
     },{lineNumber(), new String[]{   // Try cascading two interfaces on one class, which should fail because
                                      // disambiguating it turned out to be prohibitive.
-                                     // @Marco, the mapping list would be shorter if IncoherentSrc was a list, so that the two sets could be put into the Incoherent parameters
-                                     // @Marco, I am going to write the error that I want, knowing that the test will fail, and that changing the system to fix this one would break the one above
                     "{I1:{interface method Void fun()}\n"
                     + "I2:{interface method Void moreFun()}\n"
                     + "A:{<:I1 I2 method Void fun() method Void moreFun()}"
@@ -597,10 +595,10 @@ public static class TestRedirect1 {//add more test for error cases
         + "}",
         "Outer0::InnerA","Outer1::A",
         ec.set(
-               "Src", "'[@::InnerA]",
-               "Dest","'[@Outer2::A]",
-        	   "IncoherentSrc", "'[@::InnerI1, @::InnerI2]",
-        	   "IncoherentDest", "'[@Outer2::I1, @Outer2::I2]"
+               "Src", "'[@::InnerA, @::InnerI1, @::InnerI1, @::InnerI2, @::InnerI2]",
+               "Dest","'[@Outer2::A, @Outer2::I1, @Outer2::I2, @Outer2::I1, @Outer2::I2]",
+        	   "IncoherentSrc", null,
+        	   "IncoherentDest", "'[]"
         ).str(), true
 
     // TODO@James: when the error for the test above has settled, do a pile redirect of two classes,
@@ -722,7 +720,7 @@ public static class TestRedirect1 {//add more test for error cases
                ).str(), true
     },{lineNumber(),      // Redirect a class with a private method, for which the target has a matching method
        new String[]{"{A:{type method Void fun(Void that) }}"},
-        "{InnerA:{type method '@private\n Void fun(Void that)} "
+        "{InnerA:{() type method '@private\n Void fun(Void that)} "
         + "InnerB:{type method Void moreFun(Void that) InnerA.fun(that)}"
         + "}",
         "Outer0::InnerA","Outer1::A",
