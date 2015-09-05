@@ -14,6 +14,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 
+import facade.Configuration;
 import facade.Parser;
 import sugarVisitors.Desugar;
 import sugarVisitors.InjectionOnCore;
@@ -110,13 +111,15 @@ public static class TesFail {
       }
 
    static ClassB runTypeSystem(String scb1) {
+        TestHelper.configureForTest();
         ClassB cb1=(ClassB)Desugar.of(Parser.parse(null,scb1)).accept(new InjectionOnCore());
         Program p=Program.empty();
-        ClassB cb1t=TypeExtraction.etFull(p,cb1);
-        p=p.addAtTop(cb1,cb1t);
+        Configuration.typeSystem.computeStage(p,cb1);
+        //ClassB cb1t=TypeExtraction.etFull(p,cb1);
+        p=p.addAtTop(cb1);
         //assert p.checkComplete():cb1;//Not in this test?
         TypeSystemOK.checkAll(p);
-        return cb1t;
+        return cb1;
       }
 }
 

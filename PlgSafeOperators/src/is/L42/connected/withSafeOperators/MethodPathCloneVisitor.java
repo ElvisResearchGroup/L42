@@ -35,7 +35,12 @@ abstract public class MethodPathCloneVisitor extends RenameMembers {
   public HashMap<String, Type> varEnv=new HashMap<>();
   public final ClassB visitStart;
   public final Program p;
-  public MethodPathCloneVisitor(ClassB visitStart,CollectedLocatorsMap maps,Program p) {  super(maps);this.visitStart=visitStart; this.p=p.addAtTop(visitStart, Configuration.typeSystem.typeExtraction(p, visitStart));}
+  public MethodPathCloneVisitor(ClassB visitStart,CollectedLocatorsMap maps,Program p) { 
+    super(maps);
+    this.visitStart=visitStart;
+    Configuration.typeSystem.computeStage(p,visitStart);
+    this.p=p.addAtTop(visitStart);
+    }
   ClassB getLastCb(){
     if(this.getLocator().size()==0){return visitStart;}
     return this.getLocator().getLastCb();

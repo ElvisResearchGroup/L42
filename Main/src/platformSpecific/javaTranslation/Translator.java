@@ -87,7 +87,7 @@ public class Translator {
   public static void addP(int level,Program p,Map<String,ClassB> map){
     if(p.isEmpty()){return;}
 
-    add(level,Collections.emptyList(),p.topCt(),map);
+    add(level,Collections.emptyList(),p.topCb(),map);
     addP(level+1,p.pop(),map);
   }
 
@@ -117,7 +117,7 @@ public class Translator {
     ArrayList<Member> ms=new ArrayList<Member>();
     for(Member m:ct.getMs()){
       m.match(nc->null,
-        mi->{throw Assertions.codeNotReachable();},
+        mi->ms.add(From.from(Program.extractMwt(mi, ct),p)),
         mt->ms.add(From.from(mt, p))
         );
       }

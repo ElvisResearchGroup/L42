@@ -52,7 +52,7 @@ public class UsedPathsPlus {
   }
 
   Void collectPaths(List<Path> ps,NestedClass nc){
-    assert nc.getInner() instanceof ClassB;
+    if(! (nc.getInner() instanceof ClassB)){return null;}
     ClassB cb=(ClassB)nc.getInner();
     assert IsCompiled.of(cb);
     //assert Configuration.typeExtraction.isCt(cb);
@@ -87,7 +87,9 @@ public class UsedPathsPlus {
     return null;
   }*/
   Void collectPaths(List<Path> ps,MethodImplemented mi){
-    throw new ast.InternalError.InterfaceNotFullyProcessed();
+    //not true any more throw new ast.InternalError.InterfaceNotFullyProcessed();
     //never invoked in base class? - invoked in extended version?
-}
+    collectPaths(ps,mi.getInner());
+    return null;
+    }
 }

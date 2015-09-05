@@ -392,7 +392,7 @@ public class TestCompositionOperators {
   }
   public static Program getProgram() {
     ClassB empty=(ClassB)Parser.parse(null," {Ext:{}}").accept(new InjectionOnCore());
-    Program p=Program.empty().addAtTop(empty,empty);
+    Program p=Program.empty().addAtTop(empty);
     return p;
   }
 }

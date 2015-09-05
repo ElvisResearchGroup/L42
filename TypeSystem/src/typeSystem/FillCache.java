@@ -27,11 +27,12 @@ public class FillCache {
      if(!(m instanceof NestedClass)){continue;}
      NestedClass nc=(NestedClass)m;
      assert nc.getInner() instanceof ClassB;
-     computeInheritedDeep(p.addAtTop(cb, null), (ClassB)nc.getInner());
+     computeInheritedDeep(p.addAtTop(cb), (ClassB)nc.getInner());
    }
  }
  public static void computeInherited(Program p,ClassB cb){
-    p=p.addAtTop(cb, null);
+    if(cb.getStage().isInheritedComputed()){return;}
+    p=p.addAtTop(cb);
     List<Path> allSup = Program.getAllSupertypes(p, cb);
     List<PathMwt> mwts=computeMwts(p, allSup);
     checkCoherent(mwts,cb);
@@ -81,11 +82,11 @@ private static  List<PathMwt> computeMwts(Program p, List<Path> allSup) {
 
 public static void collectInnerClasses(Program p,ClassB cb,List<ClassB>result) {
   result.add(cb);
-  p=p.addAtTop(cb,null);
+  p=p.addAtTop(cb);
   for(Member m:cb.getMs()){
     if(!(m instanceof NestedClass)){continue;}
     NestedClass nc=(NestedClass)m;
-    if (!(nc.getInner() instanceof ClassB)){result.add(null);}
+    if (!(nc.getInner() instanceof ClassB)){result.add(null);continue;}
     ClassB cbi=(ClassB)nc.getInner();
     if(cbi.getStage().getStage()==Stage.None){
       computeStage(p,cbi);
@@ -94,22 +95,24 @@ public static void collectInnerClasses(Program p,ClassB cb,List<ClassB>result) {
     }
 }
   public static void computeStage(Program p,ClassB cb) {//requires inherited
+    if(cb.getStage().getStage()!=Stage.None){return;}
+    computeInherited(p, cb);
     assert cb.getStage().getInherited()!=null;
     List<ClassB> inner = new ArrayList<>();
     collectInnerClasses(p,cb,inner);
     List<ClassB> es = extractUsedCb(p, cb);
     Stage stage = TypeExtraction.stage(p, cb, es);
-    if(stage==null){stage=Stage.Star;}//TODO: whe type extraction dies, fix stage.
+    if(stage==null){stage=Stage.Star;}//TODO: when type extraction dies, fix stage.
     assert stage!=null;
     cb.getStage().setStage(stage);
-    for(ClassB cbni:inner){//includes current class
+    /*for(ClassB cbni:inner){//includes current class
       assert cbni.getStage().getStage()!=Stage.None:
-        cbni;
-    }
+        cbni;//I'm putting none for not compiled yet
+    }*/
   }
   private static List<ClassB> extractUsedCb(Program p, ClassB cb) {
     List<Path> usedPlus = new UsedPathsPlus().of(cb);
-    Program p1=p.addAtTop(cb,null);
+    Program p1=p.addAtTop(cb);
     List<ClassB> es=new ArrayList<>();//null represents a meta expression
     for(Path pi:usedPlus){
       if(!pi.isCore()){continue;}

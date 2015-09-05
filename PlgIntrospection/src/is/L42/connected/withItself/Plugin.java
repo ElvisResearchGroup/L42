@@ -62,7 +62,7 @@ public class Plugin implements PluginType{
     Path path=ensureExtractInternalPath(_path);
     //ClassB target = getTarget(lib, path);
     Program target = getProgramTarget(Resources.getP(),lib, path);
-    ClassB ct=target.topCt();
+    ClassB ct=target.topCb();
     target=target.pop();
     ct=(ClassB)ct.accept(new CloneVisitorWithProgram(target){
       public ExpCore visit(Path s) {
@@ -340,7 +340,7 @@ public class Plugin implements PluginType{
     return getProgramTarget(p,libCt,path.getCBar());
   }
   public static Program getProgramTarget(Program p,ClassB libCt, List<String>path) {
-    if(path.isEmpty()){   return p.addAtTop(null,libCt);  }
+    if(path.isEmpty()){   return p.addAtTop(libCt);  }
     Optional<Member> optNc = Program.getIfInDom(libCt.getMs(),path.get(0));
     if(!optNc.isPresent()){
       throw new Resources.Error("PathNonExistant:"+path);
@@ -350,7 +350,7 @@ public class Plugin implements PluginType{
     if(ec instanceof ExpCore.WalkBy){throw new Resources.Error("ProgramExtractOnWalkBy");}
     if(!(ec instanceof ClassB)){throw new Resources.Error("ProgramExtractOnMetaExpression");}
     ClassB cb=(ClassB)nc.getInner();
-    return getProgramTarget(p.addAtTop(null,libCt.withMember(nc.withInner(new WalkBy()))),cb,path.subList(1,path.size()));
+    return getProgramTarget(p.addAtTop(libCt.withMember(nc.withInner(new WalkBy()))),cb,path.subList(1,path.size()));
     }
   // sum
   @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})

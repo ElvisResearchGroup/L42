@@ -75,11 +75,11 @@ public class TypeExtraction {
     List<Path> usedPlus = new UsedPathsPlus().of(ct);
     //usedPlus=Functions.remove1OuterAndPrimitives(usedPlus);
     //usedPlus=Map.of( pi->From.fromP(pi, Path.outer(1)),usedPlus);
-   Program p1=p.addAtTop(null,ct);
+   Program p1=p.addAtTop(ct);
     List<ClassB> es=new ArrayList<>();//null represents a meta expression
     for(Path pi:usedPlus){
       if(!pi.isCore()){continue;}
-      try{es.add(p1.extractCt(pi));}
+      try{es.add(p1.extractCb(pi));}
       catch(ErrorMessage.ProgramExtractOnMetaExpression meta){es.add(null);}
       catch(ErrorMessage.ProgramExtractOnWalkBy walk){ es.add(null);}
       /*catch(ErrorMessage.PathNonExistant incomplete){
@@ -116,7 +116,7 @@ public class TypeExtraction {
           ClassB inner=(ClassB)nc.getInner();
           inner.getStage().setGivenName(nc.getName());
           ClassB outer=ct;
-          Program p2=p.addAtTop(null,outer);
+          Program p2=p.addAtTop(outer);
           return outer.withMember(nc.withInner(etDispatch(p2,inner)));
       }
       catch(InternalError.ETDeepNotApplicable ignored){}
@@ -127,7 +127,7 @@ public class TypeExtraction {
 
   /**return null for impossible to compute*/
   static Ast.Stage stage(Program p,ClassB cb,Collection<ClassB>es/*can have nulls*/){
-    assert IsCompiled.of(cb);
+    if(!IsCompiled.of(cb)){return Stage.None;}
     for(ClassB cbi: es){
       if(cbi==null){return Stage.Less;}
       if(cbi.getStage().getStage()==Stage.Less){return Stage.Less;}
@@ -152,7 +152,7 @@ public class TypeExtraction {
     List<Path> paths=new ArrayList<>();
     List<Member> members=new ArrayList<>();
     List<Set<Ast.MethodSelector>> original=new ArrayList<>();
-    Program p2=p.addAtTop(null,ct);
+    Program p2=p.addAtTop(ct);
     List<Path> supers = ct.getSupertypes();
     supers=Map.of(pi->Norm.of(p2,pi),supers);
     for(Path pi:new LinkedHashSet<>(supers)){
@@ -181,7 +181,7 @@ public class TypeExtraction {
       }
   }
   private static boolean inheritedSinglePath(Program p, ClassB cb, List<Path> paths, List<Member> members, List<Set<Ast.MethodSelector>> original,Program p2, Path pi) {
-    ClassB cbi=p2.extractCt(pi);
+    ClassB cbi=p2.extractCb(pi);
     if(!cbi.isInterface()){
       throw new ErrorMessage.MalformedSubtypeDeclaration(cb,cbi,pi,p.getInnerData());
       }

@@ -120,7 +120,7 @@ public class TypeSystem implements Visitor<Type>, Reporter{
   public Type visit(Path s) {
     return collectEnvs(()->{
       if( s.isPrimitive()){return new NormType(Mdf.Type,s,Ph.None);}
-      ClassB ct=p.extractCt(s);
+      ClassB ct=p.extractCb(s);
       if(ct.isInterface()){
         return new NormType(Mdf.Type,Path.Any(),Ph.None);
         }
@@ -196,7 +196,7 @@ public class TypeSystem implements Visitor<Type>, Reporter{
       Path iPath=null;
       if(inner instanceof Path){iPath=(Path)inner;}
       if(iPath!=null &&!iPath.isPrimitive()){
-    	  cs=p.extractCt(iPath).getStage();
+    	  cs=p.extractCb(iPath).getStage();
     	  }
 	  throw new ErrorMessage.PathsNotSubtype(nt,nts,inner,p.getInnerData(),cs);
       }

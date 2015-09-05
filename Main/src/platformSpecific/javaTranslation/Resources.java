@@ -45,6 +45,7 @@ public class Resources {
   public static String submitRes(Object cb){
     HashSet<String> hs=new HashSet<>(usedRes.keySet());
     String newK=Functions.freshName("key", hs);
+    assert !usedRes.containsKey(newK);
     usedRes.put(newK,cb);
     return newK;
     }
@@ -63,7 +64,7 @@ public class Resources {
     }
   public static Object getRes(String key){
     Object o=usedRes.get(key);
-    if(o==null){throw new Error("Invalid resource"+key+" Valid resources are: "+usedRes.keySet());}
+    if(o==null){throw new Error("Invalid resource "+key+" Valid resources are: "+usedRes.keySet());}
     return o;
     }
   public static void clearRes() {
@@ -141,7 +142,7 @@ public class Resources {
         }
       for(Path path:ps){
         if(path.isPrimitive()){continue;}
-        Stage extracted=p.extractCt(path).getStage().getStage();
+        Stage extracted=p.extractCb(path).getStage().getStage();
         if(extracted==Stage.Less || extracted==Stage.None){strict=false;}
         }
       }

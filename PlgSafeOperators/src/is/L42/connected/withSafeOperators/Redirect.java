@@ -45,7 +45,7 @@ public class Redirect {
     //call redirectOk, if that is ok, no other errors?
     //should cb be normalized first?
     assert external.isPrimitive() || external.outerNumber()>0;
-    p=p.addAtTop(cb,null);
+    p=p.addAtTop(cb);
     List<PathPath>toRedirect=redirectOk(p,cb,internal,external);
     return applyMapPath(p,cb,toRedirect);
   }

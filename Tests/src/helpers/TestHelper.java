@@ -113,8 +113,8 @@ public class TestHelper {
       Expression e=Parser.parse("Outer"+outerCount,s);
       --outerCount;
       ClassB ec=(ClassB)Desugar.of(e).accept(new InjectionOnCore());
-      ClassB ect=Configuration.typeSystem.typeExtraction(p0, ec);
-      p0=p0.addAtTop(ec,ect);
+      Configuration.typeSystem.computeStage(p0, ec);
+      p0=p0.addAtTop(ec);
       }
     return p0;
   }

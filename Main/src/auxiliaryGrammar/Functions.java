@@ -80,7 +80,7 @@ public static boolean isSubtype(Program p, Path path1, Path path2) {
   Path path1N=Norm.of(p,path1);
   if(path1N.equals(path2N)){return true;}
 
-  ClassB cp1=p.extractCt(path1);
+  ClassB cp1=p.extractCb(path1);
   for(Path pathi:cp1.getSupertypes()){
     Path pathiFrom=From.fromP(pathi, path1);
     Path pathiN=Norm.of(p,pathiFrom);//or not norm?
@@ -287,7 +287,7 @@ public static boolean isSuperTypeOfMut(Mdf mdf){
 public static boolean isInterface(Program p, Path path) {
   if (path.equals(Path.Any())){return true;}
   if(path.isPrimitive()){return false;}
-  return p.extractCt(path).isInterface();//in typing, this is guaranteed to be there
+  return p.extractCb(path).isInterface();//in typing, this is guaranteed to be there
 }
 public static boolean checkCore(Expression result) {
     result.accept(new CloneVisitor(){
@@ -319,12 +319,12 @@ public static boolean isAbstract(Program p, ClassB ct) {
     if(!(m instanceof NestedClass)){continue;}
     NestedClass nc=(NestedClass)m;
     assert nc.getInner() instanceof ClassB;
-    if(isAbstract(p.addAtTop(null,ct),(ClassB)nc.getInner())){return true;}
+    if(isAbstract(p.addAtTop(ct),(ClassB)nc.getInner())){return true;}
   }
   return false;
 }
 public static boolean coherent(Program p, ClassB ct) {
-  Program p1=p.addAtTop(null,ct);
+  Program p1=p.addAtTop(ct);
   if( ct.isInterface()){ return true;}
   List<MethodWithType> mwts= collectAbstractMethods(ct);
   if(mwts.isEmpty()){return true;}
@@ -464,7 +464,7 @@ public static Set<MethodSelector> originalMethOf(Program p, List<Path> paths,Lis
 }
 private static void retainOnlyOriginalMethOf(Program p, List<Path> paths,Set<MethodSelector> ms0) {
    for(Path pi:paths){
-    for(Member mi:p.extractCt(pi).getMs()){
+    for(Member mi:p.extractCb(pi).getMs()){
       mi.match(
           nc->false,
           mim->{throw Assertions.codeNotReachable();},

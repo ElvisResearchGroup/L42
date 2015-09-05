@@ -32,12 +32,12 @@ public class SmallStep extends Executor{
     log("---meta1--");
     ExpCore e1=m.getInner();
     //get cb-->ct
-    ClassB ct=Configuration.typeSystem.typeExtraction(p,cb);
-    ct=ct.withMember(m.withBody(new WalkBy()));
+    Configuration.typeSystem.computeStage(p,cb);
+    //ct=ct.withMember(m.withBody(new WalkBy()));
     //get p'
-    ct=ct.withStage(new CachedStage());
-    ct.getStage().setStage(Stage.Less);//TODO: boh? still ok?
-    Program p1=p.addAtTop(cb,ct);
+    //ct=ct.withStage(new CachedStage());
+    //ct.getStage().setStage(Stage.Less);//TODO: boh? still ok?
+    Program p1=p.addAtTop(cb);
     //assert ct.getStage()==Stage.Less;
     //Program p1=p.addAtTop(ct);
     ErrorFormatter.printType(p1);

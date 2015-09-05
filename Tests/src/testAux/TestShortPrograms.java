@@ -26,7 +26,7 @@ public class TestShortPrograms {
       }*/
     //ClassB res=(ClassB)res1;
     ClassB.NestedClass nc=(ClassB.NestedClass)res.getMs().get(res.getMs().size()-1);
-    ExpCore ee2=Desugar.of(Parser.parse(null,"{'@exitStatus\n'0\n\n}")).accept(new InjectionOnCore());
+    ExpCore ee2=Desugar.of(Parser.parse(null,"{'@exitStatus\n'0\n\n}##star ^##")).accept(new InjectionOnCore());
     /*if(!nc.getInner().equals(ee2)){
       ExpCore ee3=Parser.parse("{'@something around a OK\n}").accept(new InjectionOnCore());
       TestHelper.assertEqualExp(res,ee3);

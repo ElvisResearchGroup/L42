@@ -65,6 +65,7 @@ public class Util {
 	String givenName="";
 	boolean privateNormalized=false;
 	final java.util.List<Integer> families=new java.util.ArrayList<>();
+	public boolean isInheritedComputed(){return inherited!=null;}
     }
   @Data public static class CachedMt{
 	  ast.Ast.MethodType mt;

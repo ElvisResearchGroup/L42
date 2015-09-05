@@ -43,11 +43,6 @@ public void test1() throws IOException{
 ,"    ()}"
 ,"  Main:{"
 ,"    using Time check executionTime(lessThan:200N.binaryRepr()) ("
-//err1: operator precedence over 2000N.that()
-//err2: 2000(N.that()) cause err in typechecking since library is not core
-//!ms.pop().pop().isEmpty()
-//==!(ms.pop().pop().isEmpty())
-//200N.that()==(200N).that()
 ,"      while Bool.true() ("
 ,"        using Alu check stringDebug(S\"Foo\".binaryRepr()) void ))"
 ,"    return ExitCode.normal()"
