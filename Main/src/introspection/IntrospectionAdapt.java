@@ -442,7 +442,7 @@ static Path add1Outer(Path p) {
       if(cbi.isInterface()){mapMxOfInterface.add(px);}
     }
     if(mapMxOfInterface.isEmpty()){return mapMx;}
-    ClassB ct=Configuration.typeSystem.typeExtraction(p,classB);
+    Configuration.typeSystem.computeStage(p,classB);
     Visitor v=new CloneVisitor(){
 
     };

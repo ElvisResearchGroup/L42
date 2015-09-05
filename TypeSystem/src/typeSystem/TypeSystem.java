@@ -102,15 +102,13 @@ public class TypeSystem implements Visitor<Type>, Reporter{
     Program pOld=this.p;
     try{if (this.p.isExecutableStar()){this.p=p.removeExecutableStar();}
       return collectEnvs(()->{
-        ClassB ct= TypeExtraction.etFull(p,s);
-        //assert Configuration.typeExtraction.isCt(ct);
-        assert IsCompiled.of(ct);
+        assert IsCompiled.of(s);
         if(p.executablePlus()){
-          if(ct.getStage().getStage()==Stage.Less){
-            throw new ErrorMessage.LibraryRefersToIncompleteClasses(p.getInnerData(), ct);
+          if(s.getStage().getStage()==Stage.Less){
+            throw new ErrorMessage.LibraryRefersToIncompleteClasses(p.getInnerData(), s);
             }
           }
-        TypeSystemOK.checkCt(p, ct);
+        TypeSystemOK.checkCt(p, s);
         return new NormType(Mdf.Immutable,Path.Library(),Ph.None);
       });
     }

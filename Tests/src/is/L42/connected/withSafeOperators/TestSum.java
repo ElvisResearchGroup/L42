@@ -33,9 +33,9 @@ import auxiliaryGrammar.Program;
     },{"{B:'@private\n{}}","{B:'@private\n{}}","{B:'@private\n{} B0:'@private\n{} }",false
     },{"{B:{method Void m()}}","{B:{method B m()}}",
       "{Kind:{'@stringU\n'MethodClash\n}"
-      +"Path:{'@stringU\n'Outer0::B\n}"
-      +"Left:{'@stringU\n'\\u000amethod \\u000aVoid m() \n}"
-      +"Right:{'@stringU\n'\\u000amethod \\u000aOuter0 m() \n}"
+      +"Path:{'@::B\n}"
+      +"Left:{'@stringU\n'method Void m()\n}"
+      +"Right:{'@stringU\n'method Outer0 m()\n}"
       +"LeftKind:{'@stringU\n'AbstractMethod\n}"
       +"RightKind:{'@stringU\n'AbstractMethod\n}"
       +"DifferentParameters:{'@stringU\n'[]\n}"

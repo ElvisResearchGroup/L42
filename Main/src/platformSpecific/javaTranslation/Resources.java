@@ -137,8 +137,8 @@ public class Resources {
       List<ClassB> cbs = CollectClassBs0.of(ec);
       List<Path> ps = CollectPaths0.of(ec);
       for(ClassB cb:cbs){
-        ClassB ct1= Configuration.typeSystem.typeExtraction(p,cb);
-        if(ct1.getStage().getStage()==Stage.Less ||ct1.getStage().getStage()==Stage.None  ){strict=false;}
+        Configuration.typeSystem.computeInherited(p,cb);
+        if(cb.getStage().getStage()==Stage.Less ||cb.getStage().getStage()==Stage.None  ){strict=false;}
         }
       for(Path path:ps){
         if(path.isPrimitive()){continue;}
@@ -148,13 +148,13 @@ public class Resources {
       }
     List<ClassB> cbs = CollectClassBs0.of(ec0);
     for(ClassB cb:cbs){
-      ClassB ct= Configuration.typeSystem.typeExtraction(p,cb);
-      try{Configuration.typeSystem.checkCt( p, ct);}
+      Configuration.typeSystem.computeStage(p,cb);
+      try{Configuration.typeSystem.checkCt( p, cb);}
       catch(ErrorMessage msg){
         msg.printStackTrace();
         throw msg;//to breakpoint here
         }
-      if(strict && (ct.getStage().getStage()==Stage.Less || ct.getStage().getStage()==Stage.None)){
+      if(strict && (cb.getStage().getStage()==Stage.Less || cb.getStage().getStage()==Stage.None)){
         return false;
         //throw Assertions.codeNotReachable("try to make this happen, is it possible? it should mean bug in plugin code\n"/*+ToFormattedText.of(ct)*/);
       }

@@ -1,7 +1,6 @@
 package facade;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -35,7 +34,6 @@ import ast.ErrorMessage.FinalResult;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodWithType;
-import auxiliaryGrammar.Program;
 import ast.Expression;
 
 public class L42 {
@@ -99,21 +97,9 @@ public class L42 {
       //parser.printStackTrace(System.out);
       }
     catch(ErrorMessage msg){
-      //System.out.println(ErrorFormatter.formatError(msg).getErrorTxt());
-    	L42.printDebug(
-    	    ErrorFormatter.formatError(Program.empty(),msg).getErrorTxt()
-    	    );
-    	for(Field f:msg.getClass().getDeclaredFields()){
-        f.setAccessible(true);
-        if(!f.getName().equals("p")){continue;}
-        List<ClassB>program=(List<ClassB>)f.get(msg);
-    	  for(ClassB cb:program){
-    	    L42.printDebug(ErrorFormatter.displayAbstractMethods(cb));
-    	  }
-      }
+      ErrorFormatter.topFormatErrorMessage(msg);
     }
   }
-
 
   public static String pathToString(Path p) {
     StringBuffer b=new StringBuffer();

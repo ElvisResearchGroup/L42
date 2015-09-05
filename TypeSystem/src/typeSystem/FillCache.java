@@ -1,6 +1,7 @@
 package typeSystem;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -14,10 +15,13 @@ import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodWithType;
 import ast.ExpCore.ClassB.NestedClass;
+import ast.Util.CachedStage;
 import ast.Util.PathMwt;
+import auxiliaryGrammar.Functions;
 import auxiliaryGrammar.Program;
 import auxiliaryGrammar.UsedPathsPlus;
 import coreVisitors.From;
+import coreVisitors.IsCompiled;
 
 public class FillCache {
  public static void computeInheritedDeep(Program p,ClassB cb){
@@ -26,8 +30,9 @@ public class FillCache {
    for(Member m:cb.getMs()){
      if(!(m instanceof NestedClass)){continue;}
      NestedClass nc=(NestedClass)m;
-     assert nc.getInner() instanceof ClassB;
-     computeInheritedDeep(p.addAtTop(cb), (ClassB)nc.getInner());
+     if( nc.getInner() instanceof ClassB){
+       computeInheritedDeep(p.addAtTop(cb), (ClassB)nc.getInner());
+     }
    }
  }
  public static void computeInherited(Program p,ClassB cb){
@@ -80,7 +85,7 @@ private static  List<PathMwt> computeMwts(Program p, List<Path> allSup) {
   return mwts;
 }
 
-public static void collectInnerClasses(Program p,ClassB cb,List<ClassB>result) {
+public static void collectInnerClasses(List<CachedStage>again,Program p,ClassB cb,List<ClassB>result) {
   result.add(cb);
   p=p.addAtTop(cb);
   for(Member m:cb.getMs()){
@@ -88,27 +93,42 @@ public static void collectInnerClasses(Program p,ClassB cb,List<ClassB>result) {
     NestedClass nc=(NestedClass)m;
     if (!(nc.getInner() instanceof ClassB)){result.add(null);continue;}
     ClassB cbi=(ClassB)nc.getInner();
+    cbi.getStage().setGivenName(nc.getName());
     if(cbi.getStage().getStage()==Stage.None){
-      computeStage(p,cbi);
+      computeStageFirst(again,p,cbi);
     }
-    collectInnerClasses(p,cbi,result);
+    collectInnerClasses(again,p,cbi,result);
     }
 }
-  public static void computeStage(Program p,ClassB cb) {//requires inherited
-    if(cb.getStage().getStage()!=Stage.None){return;}
-    computeInherited(p, cb);
-    assert cb.getStage().getInherited()!=null;
+public static void computeStage(Program p,ClassB cb) {
+  if(cb.getStage().getStage()!=Stage.None){return;}
+  computeInheritedDeep(p, cb);
+  assert cb.getStage().getInherited()!=null;
+  List<CachedStage>again=new ArrayList<>();
+  computeStageFirst(again,p,cb);
+  while(true){ if(!progress(again)){break;}}
+  for(CachedStage st:again){st.setStage(Stage.Star);}
+}
+
+public static boolean progress(List<CachedStage>again){
+  for(CachedStage st:again){
+    for(ClassB cbi:st.getDependencies()){
+      if (cbi.getStage().getStage()==Stage.Less||cbi.getStage().getStage()==Stage.Plus){
+        st.setStage(cbi.getStage().getStage());
+        again.remove(st);return true;
+        }
+      }
+    }
+    return false;
+  }
+  public static void computeStageFirst(List<CachedStage>again,Program p,ClassB cb) {
     List<ClassB> inner = new ArrayList<>();
-    collectInnerClasses(p,cb,inner);
+    collectInnerClasses(again,p,cb,inner);
     List<ClassB> es = extractUsedCb(p, cb);
-    Stage stage = TypeExtraction.stage(p, cb, es);
-    if(stage==null){stage=Stage.Star;}//TODO: when type extraction dies, fix stage.
+    Stage stage = stage(p, cb, es);
+    if(stage==Stage.ToIterate){again.add(cb.getStage());}
     assert stage!=null;
     cb.getStage().setStage(stage);
-    /*for(ClassB cbni:inner){//includes current class
-      assert cbni.getStage().getStage()!=Stage.None:
-        cbni;//I'm putting none for not compiled yet
-    }*/
   }
   private static List<ClassB> extractUsedCb(Program p, ClassB cb) {
     List<Path> usedPlus = new UsedPathsPlus().of(cb);
@@ -125,4 +145,28 @@ public static void collectInnerClasses(Program p,ClassB cb,List<ClassB>result) {
       }
     return es;
   }
+ 
+  static Ast.Stage stage(Program p,ClassB cb,Collection<ClassB>es/*can have nulls*/){
+    if(!IsCompiled.of(cb)){return Stage.None;}
+    for(ClassB cbi: es){
+      if(cbi==null){return Stage.Less;}
+      if(cbi.getStage().getStage()==Stage.Less){return Stage.Less;}
+      if(!IsCompiled.of(cbi)){return Stage.Less;}
+    }
+    if(Functions.isAbstract(p,cb)){
+      cb.getStage().setCoherent(false);
+      return Stage.Plus;
+      }
+    for(ClassB cbi: es){
+      assert cbi!=null;
+      if(cbi.getStage().getStage()==Stage.Plus || cbi.getStage().getStage()==Stage.None|| cbi.getStage().getStage()==Stage.ToIterate){
+        cb.getStage().getDependencies().add(cbi);
+      }
+    }
+    for(ClassB cbi:cb.getStage().getDependencies()){
+      if(cbi.getStage().getStage()==Stage.Plus){return Stage.Plus;}
+    }
+    if(cb.getStage().getDependencies().isEmpty()){return Stage.Star;}
+    return Stage.ToIterate;
+   }
 }

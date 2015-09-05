@@ -740,6 +740,7 @@ public interface Ast {
 
 	public static enum Stage {
 		None(""), Less("##less"),
+		ToIterate("##toIterateTemp"),
 		// Meta("##meta"),
 		Plus("##plus"), Star("##star");
 		// Needed("##needed"),

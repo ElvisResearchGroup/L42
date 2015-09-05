@@ -121,7 +121,7 @@ public class TestCompositionOperators {
   }
 
   //----------------------------------------------------------
-  @RunWith(Parameterized.class)
+//test dead@RunWith(Parameterized.class)
   public static class Test_MsumComment£xthat£xcomment£xadapter {
     @Parameter(0) public String that;
     @Parameter(1) public String comment;
@@ -143,7 +143,8 @@ public class TestCompositionOperators {
       "{ method'fuffa\n Void foo(Any a)void }"
 
     }});}
-  @Test public void test() {
+  //@Test
+  public void test() {
     TestHelper.configureForTest();
     ClassB _that=getClassB(that);
     ClassB _comment=getClassB(comment);
@@ -174,7 +175,7 @@ public class TestCompositionOperators {
     String res=(String)getWI(wi->wi.Mget£xthat£xnode(cb1,e2));
     Assert.assertEquals(res,e3);}}
   //----------------------------------------------------------
-	@RunWith(Parameterized.class)
+//test dead@RunWith(Parameterized.class)
 	public static class Test_MgetOrElse£that£interfaceNum£node {
 	  @Parameter(0) public String e1;
     @Parameter(1) public int e2;
@@ -186,14 +187,14 @@ public class TestCompositionOperators {
     {"{<:Foo A:{} Foo:{interface}}",0,"Outer0","{ Foo:{} %o_0%:{'@Outer1::Foo\n}}"
   },{"{A:{<:Bar} Bar:{interface}}",0,"A","{Bar:{} %o_0%:{'@Outer1::Bar\n}}"
     }});}
-  @Test
+  //@Test
   public void test() {
     ClassB cb1=getClassB(e1);
     ClassB cb4=getClassB(e4);
     ClassB res=(ClassB)getWI(wi->wi.MgetOrElse£xthat£xinterfaceNum£xnode(cb1,e2,e3));
     TestHelper.assertEqualExp(res,cb4);}}
   //----------------------------------------------------------
-	@RunWith(Parameterized.class)
+	//test dead @RunWith(Parameterized.class)
 	public static class Test_MgetOrElse£that£methodNum£exceptionNum£node {
 	  @Parameter(0) public String e1;
     @Parameter(1) public int e2;
@@ -211,7 +212,8 @@ public class TestCompositionOperators {
   },{"{ A:{} B:{} C:{foo() method A m()exception A method A ()exception A A B}}",2,2,"C",
     "{B:{}%o_0%:{ '@Outer1::B\n}}"
     }});}
-  @Test public void test() {
+  //@Test
+  public void test() {
     TestHelper.configureForTest();
     ClassB cb1=getClassB(e1);
     ClassB expected=getClassB(_expected);
@@ -219,7 +221,7 @@ public class TestCompositionOperators {
     TestHelper.assertEqualExp(res,expected);}}
 
   //----------------------------------------------------------
-	@RunWith(Parameterized.class)
+	//test dead @RunWith(Parameterized.class)
 	public static class Test_MnameToAdapter£that {
       @Parameter(0) public String e1;
 	    @Parameter(1) public String _expected;
@@ -236,7 +238,7 @@ public class TestCompositionOperators {
   },{"Outer0","{ %o_0%:{'@Outer1\n}}"
   //ok it is invalid},{"Outer0::A","{ %o_0%:{ #apply(Outer1 that)}}"
     }});}
-  @Test public void test() {
+   public void test() {//test dead
     ClassB expected=getClassB(_expected);
     ClassB res=(ClassB)getWI(wi->wi.MnameToAdapter£xthat(e1));
     TestHelper.assertEqualExp(res,expected);}}
@@ -245,7 +247,7 @@ public class TestCompositionOperators {
 
 
   //----------------------------------------------------------
-	@RunWith(Parameterized.class)
+	//test dead@RunWith(Parameterized.class)
 	public static class Test_MtypeNameToAdapter£xthat {
     @Parameter(0) public Ast.Path e1;
     @Parameter(1) public String _expected;
@@ -256,7 +258,8 @@ public class TestCompositionOperators {
     {Path.parse("Outer0::Ext"),"{%o_0%:{'@Outer2::Ext\n}}"
 //  },{Path.parse("Outer2"),"{%o_0%:{ #apply(Outer4 that)}}"
     }});}
-	@Test public void test() {
+	//@Test
+	public void test() {
     ClassB expected=getClassB(_expected);
     ClassB res=(ClassB)getWI(wi->wi.MtypeNameToAdapter£xthat(e1));
     TestHelper.assertEqualExp(res,expected);}}
@@ -335,7 +338,7 @@ public class TestCompositionOperators {
     }
 
 	//----------------------------------------------------------
-	@RunWith(Parameterized.class)
+  //test dead@RunWith(Parameterized.class)
 	public static class Test_MgetTypePathOrElse£xthat£xmethodNum£xnode {
 	  @Parameter(0) public String _lib;
     @Parameter(1) public int num;
@@ -353,7 +356,8 @@ public class TestCompositionOperators {
     },{"{ B:{A:{ method A m(A a)exception A  }}}",0,"B::A",
       "{B:{A:{}}%o_0%:{ '@Outer1::B::A\n}}"
       }});}
-  @Test public void test() {
+  //@Test
+  public void test() {
     TestHelper.configureForTest();
     ClassB lib=getClassB(_lib);
     ClassB expected=getClassB(_expected);

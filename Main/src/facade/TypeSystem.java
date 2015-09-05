@@ -8,7 +8,7 @@ import auxiliaryGrammar.Program;
 
 public interface TypeSystem {
   
-  ClassB typeExtraction(Program p, ClassB cb);
+  //ClassB typeExtraction(Program p, ClassB cb);
   
   void checkCt(Program p, ClassB ct);
 

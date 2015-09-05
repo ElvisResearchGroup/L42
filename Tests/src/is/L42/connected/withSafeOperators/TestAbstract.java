@@ -34,20 +34,20 @@ public static class TestAbstractMeth {//add more test for error cases
   },{"{C:{B:{ method Void m(Any x) void}}}","C::B","m(x)","{C:{B:{ method Void m(Any x)}}}",false
   },{"{ method Void m()}","Outer0","m()","{ method Void m()}",false
   },{"{B:{ method Void m(Any x) void}}", "C", "m(x)",
-    "{Kind:{'@stringU\n'TargetUnavailable\n}"+
-    "Path:{'@stringU\n'Outer0::C\n}"+
+    "{Kind:{'@stringU\n'MemberUnavailable\n}"+
+    "Path:{'@::C\n}"+
     "Selector:{'@stringU\n'm(x)\n}"+
     "InvalidKind:{'@stringU\n'InexistentPath\n}}",
 	  true
   },{"{B:{ method Void m(Any x) void}}", "B", "k()",
-    "{Kind:{'@stringU\n'TargetUnavailable\n}"+
-	  "Path:{'@stringU\n'Outer0::B\n}"+
+    "{Kind:{'@stringU\n'MemberUnavailable\n}"+
+	  "Path:{'@::B\n}"+
 	  "Selector:{'@stringU\n'k()\n}"+
     "InvalidKind:{'@stringU\n'InexistentMethod\n}}",
 	  true
   },{"{B:{ method Void m(Any x) void}}", "B", "m()",
-    "{Kind:{'@stringU\n'TargetUnavailable\n}"+
-	  "Path:{'@stringU\n'Outer0::B\n}"+
+    "{Kind:{'@stringU\n'MemberUnavailable\n}"+
+	  "Path:{'@::B\n}"+
 	  "Selector:{'@stringU\n'm()\n}"+
     "InvalidKind:{'@stringU\n'InexistentMethod\n}}",
 	  true
@@ -111,21 +111,21 @@ public static class TestAbstractClass {//add more test for error cases
 	  false
 
   },{"{C:{ B:'@private\n{}}}","C::B",
-    "{Kind:{'@stringU\n'TargetUnavailable\n}"+
-    "Path:{'@stringU\n'Outer0::C::B\n}"+
+    "{Kind:{'@stringU\n'MemberUnavailable\n}"+
+    "Path:{'@::C::B\n}"+
     "Selector:{'@stringU\n'\n}"+
     "InvalidKind:{'@stringU\n'PrivatePath\n}}",
 	  true
 
   },{"{C:{}}","C::B",
-    "{Kind:{'@stringU\n'TargetUnavailable\n}"+
-    "Path:{'@stringU\n'Outer0::C::B\n}"+
+    "{Kind:{'@stringU\n'MemberUnavailable\n}"+
+    "Path:{'@::C::B\n}"+
     "Selector:{'@stringU\n'\n}"+
     "InvalidKind:{'@stringU\n'InexistentPath\n}}",
 	  true
   },{"{C:{}}","B",
-    "{Kind:{'@stringU\n'TargetUnavailable\n}"+
-    "Path:{'@stringU\n'Outer0::B\n}"+
+    "{Kind:{'@stringU\n'MemberUnavailable\n}"+
+    "Path:{'@::B\n}"+
     "Selector:{'@stringU\n'\n}"+
     "InvalidKind:{'@stringU\n'InexistentPath\n}}",
 	  true

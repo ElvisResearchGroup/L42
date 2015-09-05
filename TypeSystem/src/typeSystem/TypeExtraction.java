@@ -29,7 +29,7 @@ import auxiliaryGrammar.Norm;
 import auxiliaryGrammar.Program;
 import auxiliaryGrammar.UsedPathsPlus;
 
-public class TypeExtraction {
+ class _TypeExtraction {
 
   public static ClassB etFull(Program p, ClassB cb) {
 	cb=cb.withStage(new CachedStage());

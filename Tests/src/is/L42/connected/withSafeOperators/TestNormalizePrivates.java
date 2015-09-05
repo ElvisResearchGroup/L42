@@ -104,8 +104,7 @@ public static class TestNormalizePrivates1 {
   },{
     lineNumber(),"{method Void fo$%$%o__a()}","{method Void fo$%$%o_$%$%$%a()}"
   },{
-    lineNumber(),"{ C__A:{interface <:C__A }}","{ C_$%A:{interface <:C_$%A }}"                                                           
-  
+    lineNumber(),"{ C__A:{interface <:C__A }}","{ C_$%A:{interface <:C_$%A }}"      
   },{
     lineNumber(),"{ C:'@private\n{interface <:C }}","{ C__0_0:'@private\n{interface <:C__0_0 }}"                                                           
   },{

@@ -20,7 +20,6 @@ import platformSpecific.javaTranslation.Resources;
 import platformSpecific.javaTranslation.Translator;
 import sugarVisitors.Desugar;
 import sugarVisitors.InjectionOnCore;
-import typeSystem.TypeExtraction;
 import typeSystem.TypeSystemOK;
 import ast.ExpCore;
 import ast.ExpCore.ClassB;

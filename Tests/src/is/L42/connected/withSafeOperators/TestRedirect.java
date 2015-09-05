@@ -686,7 +686,7 @@ public static class TestRedirect1 {//add more test for error cases
           .set("UnexpectedMethods", "[moreFun(that), mostFun()]").str(), true
           */
 
-          /* TODO@James: with this test, I get TargetUnavailable, which I don't understand yet
+          /* TODO@James: with this test, I get MemberUnavailable, which I don't understand yet
     },{lineNumber(), new String[]{  // Matched inner interface shows as non-free
         "{A:{interface type method Void fun(Void that)  method Void moreFun(Void that, Library other) \n"
         + " C:{interface}}}"
@@ -694,7 +694,7 @@ public static class TestRedirect1 {//add more test for error cases
         "{InnerA:{interface type method Void fun(Void that)  method Void moreFun(Void that, Library other)\n"
         + "C:{interface method Void mostFun() } } \n"
         + "C_impl:{<:InnerA::C"
-        + "         method Void mostFun()"    // Uncommenting this line changes from SourceUnfit to TargetUnavailable
+        + "         method Void mostFun()"    // Uncommenting this line changes from SourceUnfit to MemberUnavailable
         + "       } "
         + "}",
         "Outer0::InnerA","Outer1::A",

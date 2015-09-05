@@ -354,9 +354,8 @@ public class Program {
     return p;
   }
   private static void accumulateAllSupertypes(List<Path> ps,Program p,Path pi){
-    if(!ps.contains(pi)){
-      ps.add(pi);
-      }
+    if(ps.contains(pi)){return;}
+    ps.add(pi);
     ClassB cbi=p.extractCb(pi);
     for(Path pj:cbi.getSupertypes()){
       pj=From.fromP(pj,pi);

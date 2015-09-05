@@ -17,7 +17,7 @@ public class CloneVisitorWithProgram extends CloneVisitor{
     finally{p=aux;}
     }
   public ExpCore visit(ClassB s) {
-    Configuration.typeSystem.computeStage(p, s);
+    //Configuration.typeSystem.computeStage(p, s);//TODO:is it needed?
     Program aux=p;
     p=p.addAtTop(s);
     try{return super.visit(s);}
@@ -25,7 +25,7 @@ public class CloneVisitorWithProgram extends CloneVisitor{
   }
   public ClassB startVisit(ClassB s) {
     //so that visitClassB can be overridden independently
-    Configuration.typeSystem.computeStage(p,s);
+    //Configuration.typeSystem.computeStage(p,s);//TODO: is it needed?
     Program aux=p;
     p=p.addAtTop(s);
     try{return (ClassB)super.visit(s);}

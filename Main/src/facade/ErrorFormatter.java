@@ -259,7 +259,9 @@ public class ErrorFormatter {
       ExpCore exp=(ExpCore)obj;
       //Expression expression=exp.accept(new RecoverStoredSugar());
       Expression expression=exp.accept(new InjectionOnSugar());
-      return errorFormat(expression,ps);
+      String cachedInfo="";
+      if(exp instanceof ClassB){cachedInfo="["+((ClassB)exp).getStage().getGivenName()+"]";}
+      return cachedInfo+errorFormat(expression,ps);
       }
     if(obj instanceof Ast.MethodSelector){
       return formatSelectorCompact((Ast.MethodSelector)obj);
@@ -285,7 +287,7 @@ public class ErrorFormatter {
     if(obj instanceof Ast.Type){return ToFormattedText.of((Ast.Type)obj);}
 
     if(obj instanceof ClassB.Member){return ToFormattedText.of((ClassB.Member)obj);}
-    if(obj instanceof Expression){return ToFormattedText.of((Expression)obj);}
+    //if(obj instanceof Expression){return ToFormattedText.of((Expression)obj);}
     if(obj instanceof Expression.ClassB.Member){return ToFormattedText.of((Expression.ClassB.Member)obj);}
     if(obj instanceof java.nio.file.Path){return obj.toString();}
     if(obj instanceof CachedStage){return obj.toString();}
@@ -378,5 +380,21 @@ public class ErrorFormatter {
           +ToFormattedText.of(path)+whyNot;
     }
     return "The requested path is incomplete since it refers to other incomplete classes in the program";
+  }
+  public static void topFormatErrorMessage(ErrorMessage msg) {
+    //System.out.println(ErrorFormatter.formatError(msg).getErrorTxt());
+    L42.printDebug(
+        formatError(Program.empty(),msg).getErrorTxt()
+        );
+    for(Field f:msg.getClass().getDeclaredFields()){
+      f.setAccessible(true);
+      if(!f.getName().equals("p")){continue;}
+      List<ClassB> program;
+      try { program = (List<ClassB>)f.get(msg);}
+      catch (IllegalArgumentException | IllegalAccessException e) { throw new Error(e);}
+      for(ClassB cb:program){
+        L42.printDebug(displayAbstractMethods(cb));
+      }
+    }
   }
 }
