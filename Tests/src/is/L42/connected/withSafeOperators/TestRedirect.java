@@ -275,7 +275,7 @@ public static class TestRedirect1 {//add more test for error cases
                                      // via a pile that explicitly directs both
                     "{I1:{interface method Void fun()}\n"
                     + "I2:{interface method Void moreFun()}\n"
-                    + "A:{<:I1 I2 method Void fun() method Void moreFun()}\n"
+                    + "A:{<:I1 I2 }\n"
                     + "%Redirect:{method I1 _I1() method I2 _I2() method A _A()}\n"
                     + "}"},
         "{InnerI1:{interface method Void fun()}\n"
@@ -588,7 +588,7 @@ public static class TestRedirect1 {//add more test for error cases
                                      // @Marco, I am going to write the error that I want, knowing that the test will fail, and that changing the system to fix this one would break the one above
                     "{I1:{interface method Void fun()}\n"
                     + "I2:{interface method Void moreFun()}\n"
-                    + "A:{<:I1 I2 method Void fun() method Void moreFun()}"
+                    + "A:{<:I1 I2 }"
                     + "}"},
         "{InnerI1:{interface method Void fun()}\n"
         + "InnerI2:{interface method Void moreFun()}\n"

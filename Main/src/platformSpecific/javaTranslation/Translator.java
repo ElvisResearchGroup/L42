@@ -32,6 +32,7 @@ import ast.ExpCore;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.NestedClass;
+import ast.Util.PathMwt;
 import ast.ExpCore.*;
 public class Translator {
   public static Object runString(String s){
@@ -64,7 +65,7 @@ public class Translator {
     Resources.clearRes();
     Map<String,ClassB> map=new LinkedHashMap<String,ClassB>();
     Map<String,ClassB> mapNorm=new LinkedHashMap<String,ClassB>();
-    addP(0,p,map);
+    addP(0,p,map,p);
     StringBuilder res=new StringBuilder();
     res.append("package generated;");
     res.append("@SuppressWarnings(\"all\")");
@@ -84,14 +85,14 @@ public class Translator {
     res.append("}");
     return res.toString();
     }
-  public static void addP(int level,Program p,Map<String,ClassB> map){
+  public static void addP(int level,Program p,Map<String,ClassB> map,Program original){
     if(p.isEmpty()){return;}
 
-    add(level,Collections.emptyList(),p.topCb(),map);
-    addP(level+1,p.pop(),map);
+    add(level,Collections.emptyList(),p.topCb(),map,original);
+    addP(level+1,p.pop(),map,original);
   }
 
-  public static void add(int level,List<String> cs,ClassB cb, Map<String,ClassB> map){
+  public static void add(int level,List<String> cs,ClassB cb, Map<String,ClassB> map,Program original){
     Ast.Path p=Ast.Path.outer(level, cs);
     if(cb.getStage().getStage()==Stage.Star  && IsCompiled.of(cb)){//otherwise is "meta"
       map.put(nameOf(level,cs),useFrom(cb,p));
@@ -106,10 +107,13 @@ public class Translator {
       if (!(m instanceof NestedClass)){continue;}
       NestedClass nc=(NestedClass)m;
       if(!(nc.getInner() instanceof ClassB)){continue;}
-      //ignore walkby and metaexpressions
+      if(cs.isEmpty() &&level>0){
+        if(nc.getInner()==original.getCb(level-1)){continue;}
+        //avoid generation of multiple versions of the same thing
+      }
       ArrayList<String> newCs=new ArrayList<>(cs);
       newCs.add(nc.getName());
-      add(level,newCs,(ClassB) nc.getInner(),map);
+      add(level,newCs,(ClassB) nc.getInner(),map,original);
     }
   }
 
@@ -121,6 +125,10 @@ public class Translator {
         mt->ms.add(From.from(mt, p))
         );
       }
+    for(PathMwt pmwt:ct.getStage().getInherited()){
+      if(Program.getIfInDom(ms,pmwt.getMwt().getMs()).isPresent()){continue;}
+      ms.add(From.from(pmwt.getMwt(), p));
+    }
     List<Path> sup = tools.Map.of(pi->(Path)From.fromP(pi,p),ct.getSupertypes());
     return ct.withMs(ms).withSupertypes(sup);
   }

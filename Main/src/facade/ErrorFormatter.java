@@ -260,7 +260,23 @@ public class ErrorFormatter {
       //Expression expression=exp.accept(new RecoverStoredSugar());
       Expression expression=exp.accept(new InjectionOnSugar());
       String cachedInfo="";
-      if(exp instanceof ClassB){cachedInfo="["+((ClassB)exp).getStage().getGivenName()+"]";}
+      if(exp instanceof ClassB){
+        CachedStage stg = ((ClassB)exp).getStage();
+        if(stg.getGivenName().isEmpty()){
+          cachedInfo+="anonimus";
+        }
+        else{ cachedInfo+="name: "+stg.getGivenName();}
+        cachedInfo+=  " depends:[";
+        //cachedInfo+=//can be circular errorFormat(stg.getDependencies(),new ArrayList<>());
+        for(ClassB cbd:stg.getDependencies()){
+          if(cbd.getStage().getGivenName().isEmpty()){
+            cachedInfo+="anonimus";
+          }
+          else {cachedInfo+=cbd.getStage().getGivenName();}
+          cachedInfo  +="{"+cbd.getStage().getStage().name()+"}, ";
+        }
+        cachedInfo+="]";
+        }
       return cachedInfo+errorFormat(expression,ps);
       }
     if(obj instanceof Ast.MethodSelector){

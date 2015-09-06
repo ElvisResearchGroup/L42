@@ -13,6 +13,7 @@ import tools.Assertions;
 import tools.Match;
 import ast.Ast;
 import ast.Ast.Doc;
+import ast.Ast.HistoricType;
 import ast.Ast.Mdf;
 import ast.Ast.MethodSelector;
 import ast.Ast.NormType;
@@ -302,11 +303,11 @@ public static boolean checkCore(Expression result) {
   return true;
 }
 
-public static NormType forceNormType(ExpCore inner, Type preciseTOpt) {
+public static NormType forceNormType(Program p,ExpCore inner, Type preciseTOpt) {
   assert preciseTOpt!=null;
-  //TODO: unclear: now it is used also if the unresolved type is the expected one...
   if (preciseTOpt instanceof Ast.HistoricType){
-    throw new ErrorMessage.UnresolvedType((Ast.HistoricType)preciseTOpt,inner);
+    return Norm.resolve(p,(HistoricType) preciseTOpt);
+    //throw new ErrorMessage.UnresolvedType((Ast.HistoricType)preciseTOpt,inner);
     }
   NormType preciseT=(NormType)preciseTOpt;
   return preciseT;

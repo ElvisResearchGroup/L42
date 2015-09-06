@@ -91,7 +91,7 @@ public class GuessTypeCore implements Visitor<Path>{
       if(s.get_catch().isPresent()){
         Catch k = s.get_catch().get();
         for(On on:k.getOns()){
-          NormType nti=Functions.forceNormType(s,on.getT());
+          NormType nti=Functions.forceNormType(p,s,on.getT());
           this.varEnv.put(k.getX(),nti);
           ps.add(on.getInner().accept(this));
           }

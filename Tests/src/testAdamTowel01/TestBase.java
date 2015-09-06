@@ -18,14 +18,14 @@ public class TestBase {
   //@Before public void initialize() {  TestHelper.configureForTest();}
   //not run when single test executed?
 
-  //@Test
+  @Test
   public  void _00DeployAdamTowel01() throws Throwable{
     TestHelper.configureForTest();
     Paths.get("localhost","AdamTowel01.L42").toFile().delete();
     L42.main(new String[]{"examples/DeployAdamTowel01"});
     Assert.assertTrue(Paths.get("localhost","AdamTowel01.L42").toFile().exists());
   }
-  //@Test
+  @Test
   public  void _01UseAdamTowel01() throws Throwable{
     TestHelper.configureForTest();
     L42.main(new String[]{"examples/testsForAdamTowel01/UseAdamTowel01.L42"});

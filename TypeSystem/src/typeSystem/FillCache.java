@@ -112,6 +112,7 @@ public static void computeStage(Program p,ClassB cb) {
 
 public static boolean progress(List<CachedStage>again){
   for(CachedStage st:again){
+    assert st.getStage()==Stage.ToIterate;
     for(ClassB cbi:st.getDependencies()){
       if (cbi.getStage().getStage()==Stage.Less||cbi.getStage().getStage()==Stage.Plus){
         st.setStage(cbi.getStage().getStage());
@@ -124,6 +125,7 @@ public static boolean progress(List<CachedStage>again){
   public static void computeStageFirst(List<CachedStage>again,Program p,ClassB cb) {
     List<ClassB> inner = new ArrayList<>();
     collectInnerClasses(again,p,cb,inner);
+    if(! IsCompiled.of(cb)){return;}
     List<ClassB> es = extractUsedCb(p, cb);
     Stage stage = stage(p, cb, es);
     if(stage==Stage.ToIterate){again.add(cb.getStage());}
@@ -149,6 +151,12 @@ public static boolean progress(List<CachedStage>again){
   static Ast.Stage stage(Program p,ClassB cb,Collection<ClassB>es/*can have nulls*/){
     if(!IsCompiled.of(cb)){return Stage.None;}
     for(ClassB cbi: es){
+      if(cbi==null){continue;}
+      if(cbi.getStage().getStage()!=Stage.Star){
+        cb.getStage().getDependencies().add(cbi);
+      }
+    }
+    for(ClassB cbi: es){
       if(cbi==null){return Stage.Less;}
       if(cbi.getStage().getStage()==Stage.Less){return Stage.Less;}
       if(!IsCompiled.of(cbi)){return Stage.Less;}
@@ -157,12 +165,6 @@ public static boolean progress(List<CachedStage>again){
       cb.getStage().setCoherent(false);
       return Stage.Plus;
       }
-    for(ClassB cbi: es){
-      assert cbi!=null;
-      if(cbi.getStage().getStage()==Stage.Plus || cbi.getStage().getStage()==Stage.None|| cbi.getStage().getStage()==Stage.ToIterate){
-        cb.getStage().getDependencies().add(cbi);
-      }
-    }
     for(ClassB cbi:cb.getStage().getDependencies()){
       if(cbi.getStage().getStage()==Stage.Plus){return Stage.Plus;}
     }

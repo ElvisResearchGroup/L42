@@ -147,7 +147,7 @@ public class TypeSystem implements Visitor<Type>, Reporter{
       //TODO:was tollerant
       Type preciseTOpt=typecheckSure(false,p,varEnv,sealEnv,throwEnv,suggestedNested,s.getInner());
       if (preciseTOpt instanceof Ast.FreeType){return preciseTOpt;}
-      NormType preciseT = Functions.forceNormType(s.getInner(), preciseTOpt);
+      NormType preciseT = Functions.forceNormType(this.p,s.getInner(), preciseTOpt);
       if(preciseT.getPh()!=Ph.None){
         throw new ErrorMessage.InvalidTypeForThrowe(s, preciseT);
       }
@@ -187,8 +187,8 @@ public class TypeSystem implements Visitor<Type>, Reporter{
     Type result=_typecheckTollerant(p, varEnv, sealEnv, throwEnv, suggestedAllowPromotions, inner);
     if(result instanceof Ast.FreeType){return result;}
     if(suggested instanceof Ast.FreeType){return result;}
-    NormType nts=Functions.forceNormType( inner,suggested);
-    NormType nt=Functions.forceNormType( inner,result);
+    NormType nts=Functions.forceNormType( p,inner,suggested);
+    NormType nt=Functions.forceNormType(p, inner,result);
     if(!Functions.isSubtype(p, nt.getPath(),nts.getPath())){
       CachedStage cs = new CachedStage();
       Path iPath=null;

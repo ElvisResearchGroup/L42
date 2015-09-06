@@ -18,6 +18,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Supplier;
 
+import coreVisitors.CloneVisitor;
 import coreVisitors.CollectClassBs0;
 import coreVisitors.CollectPaths0;
 import platformSpecific.fakeInternet.PluginType;
@@ -34,6 +35,7 @@ import ast.Ast.Path;
 import ast.Ast.SignalKind;
 import ast.Ast.Stage;
 import ast.ExpCore.ClassB;
+import ast.Util.CachedStage;
 import auxiliaryGrammar.EncodingHelper;
 import auxiliaryGrammar.Functions;
 import auxiliaryGrammar.Program;
@@ -151,7 +153,7 @@ public class Resources {
       Configuration.typeSystem.computeStage(p,cb);
       try{Configuration.typeSystem.checkCt( p, cb);}
       catch(ErrorMessage msg){
-        msg.printStackTrace();
+        //msg.printStackTrace();
         throw msg;//to breakpoint here
         }
       if(strict && (cb.getStage().getStage()==Stage.Less || cb.getStage().getStage()==Stage.None)){
@@ -179,6 +181,13 @@ public class Resources {
     T res=null;
     try{
       res=cls.apply(plg, xs);
+      if(res instanceof ExpCore){
+        res=(T)((ExpCore)res).accept(new CloneVisitor(){
+          public ExpCore visit(ClassB s) {
+            return ((ClassB)super.visit(s)).withStage(new CachedStage());
+          }
+        });
+      }
       if(Resources.isValid(p,res,xs)){return res;}
       else{throw Resources.notAct;}
       }

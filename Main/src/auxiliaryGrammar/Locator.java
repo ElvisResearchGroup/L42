@@ -73,8 +73,11 @@ public class Locator {
   public void addCs(List<String> cs) {
     auxAddCs(cs);
     assert !cbs.contains(null) : cbs;
-    this.cbs.set(this.cbs.size() - 1, null);
-    this.indexes.set(this.cbs.size()-1, 0);
+    int size=this.size();
+    if(cs.size()!=0){
+      this.cbs.set(size - 1, null);
+      this.indexes.set(size-1, 0);
+    }
   }
   private void auxAddCs(List<String> cs) {
     int size=this.size();

@@ -65,13 +65,13 @@ public class TypecheckBlock {
     }
   }
   private static Type typeCheckMinimalBlock(TypeSystem that, Block s) {
-    List<HashMap<String, NormType>> varEnvs=splitVarEnvsForBlock(that.varEnv,s);
-    ThrowEnv throwsEnv2 = TypecheckBlock.catchExtentions(that.throwEnv,s.get_catch());
+    List<HashMap<String, NormType>> varEnvs=splitVarEnvsForBlock(that.p,that.varEnv,s);
+    ThrowEnv throwsEnv2 = TypecheckBlock.catchExtentions(that.p,that.throwEnv,s.get_catch());
     ArrayList<NormType> tsExp=new ArrayList<NormType>();
     //ArrayList<Type> ts=new ArrayList<Type>();
     {int i=0;for(Block.Dec di:s.getDecs()){
       i+=1;//correct to start from 1
-      NormType expectedi=Functions.forceNormType(di.getE(), di.getT());
+      NormType expectedi=Functions.forceNormType(that.p,di.getE(), di.getT());
       expectedi=Functions.toPartial(expectedi);
       tsExp.add(expectedi);
       HashMap<String, NormType> varEnvi = varEnvs.get(i);
@@ -136,7 +136,7 @@ public class TypecheckBlock {
     NormType nt=(NormType)on.getT();
     try{
       HashMap<String, NormType> varEnvi=new HashMap<String, NormType>(varEnv2);
-      varEnvi.put(x,Functions.forceNormType(on.getInner(), on.getT()));
+      varEnvi.put(x,Functions.forceNormType(p,on.getInner(), on.getT()));
       //TODO:was tollerant
       Type ti=TypeSystem.typecheckSure(false,p,varEnvi,sealEnv2,throwEnv2,newSuggested,on.getInner());
       if(!(ti instanceof Ast.FreeType)){results.add(ti);}
@@ -167,10 +167,10 @@ public class TypecheckBlock {
       trAlt.resAddAll(throwEnv2.res());
       }
     else{
-      trAlt.resAddAll(ThrowEnv.accResult(throwEnv2.res(),Arrays.asList(on)));
+      trAlt.resAddAll(ThrowEnv.accResult(p,throwEnv2.res(),Arrays.asList(on)));
       }
     HashMap<String, NormType> varEnvi=new HashMap<String, NormType>(varEnv2);
-    varEnvi.put(x,Functions.forceNormType(on.getInner(), on.getT()));
+    varEnvi.put(x,Functions.forceNormType(p,on.getInner(), on.getT()));
     try{ checkCatchSingle(kind,x,on,p,varEnv2,sealEnv2,trAlt,newSuggested,results); }
     catch(ErrorMessage _ignored){throw err;}
   }
@@ -181,7 +181,7 @@ public class TypecheckBlock {
     return s.withDecs(decs1).withInner(s.withDecs(decs2));
   }
 
-  private static List<HashMap<String, NormType>> splitVarEnvsForBlock(HashMap<String, NormType> thatVarEnv,Block s){
+  private static List<HashMap<String, NormType>> splitVarEnvsForBlock(Program p,HashMap<String, NormType> thatVarEnv,Block s){
     List<ExpCore> es=new ArrayList<ExpCore>();
     ExpCore ek=s.getInner();
     if(s.get_catch().isPresent()){
@@ -193,7 +193,7 @@ public class TypecheckBlock {
     }
     HashMap<String, NormType> varEnvPrime=new HashMap<String, NormType>();
     for(Block.Dec dec:s.getDecs()){
-      varEnvPrime.put(dec.getX(),Functions.forceNormType(dec.getE(), dec.getT()));
+      varEnvPrime.put(dec.getX(),Functions.forceNormType(p,dec.getE(), dec.getT()));
     }
     List<HashMap<String,NormType>> varEnvs=new ArrayList<HashMap<String,NormType>>();
     HashMap<String, NormType> varEnvPrimeForEi=Functions.toPh(Functions.complete(varEnvPrime));
@@ -289,14 +289,14 @@ public class TypecheckBlock {
   }
 
 
-  private static  ThrowEnv catchExtentions(ThrowEnv throwEnv, Optional<Catch> k) {
+  private static  ThrowEnv catchExtentions(Program p,ThrowEnv throwEnv, Optional<Catch> k) {
   if(!k.isPresent()){return throwEnv;}
   Catch c=k.get();
   if(c.getKind()==SignalKind.Error){return throwEnv;}
   ThrowEnv result=new ThrowEnv();
   if(c.getKind()==SignalKind.Exception){
     for(Block.On on:c.getOns()){
-      NormType onT=Functions.forceNormType(on.getInner(),on.getT());
+      NormType onT=Functions.forceNormType(p,on.getInner(),on.getT());
       result.exceptions.add(onT.getPath());
       }
     result.exceptions.remove(Path.Any());
@@ -307,7 +307,7 @@ public class TypecheckBlock {
   }
   result.exceptions.addAll(throwEnv.exceptions);
   result.resClear();
-  result.resAddAll(ThrowEnv.accResult(throwEnv.res(),c.getOns()));
+  result.resAddAll(ThrowEnv.accResult(p,throwEnv.res(),c.getOns()));
   return result;
   }
 

@@ -54,7 +54,7 @@ public class SmallStep extends Executor{
       //}
     //run m.e1-->e2
     ExpCore e2=executeAtomicStep(p1,e1);
-    Configuration.typeSystem.checkMetaExpr(p1.getExecutableStar(),e2);//as assert
+    if(!(e2 instanceof ClassB)){Configuration.typeSystem.checkMetaExpr(p1.getExecutableStar(),e2);}//as assert
     ClassB cbRes=cb.withMember(m.withBody(e2));
     //TODO: if e2 is an error, terminate with error, do it better?
     //is it already stopping if that happens?

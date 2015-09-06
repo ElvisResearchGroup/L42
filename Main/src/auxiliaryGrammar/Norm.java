@@ -99,7 +99,7 @@ public class Norm {
     }
   }
 
-  private static NormType resolve(Program p, HistoricType t) {
+  public static NormType resolve(Program p, HistoricType t) {
   if(t.getSelectors().size()==1){return resolvePh(resolveOne(p,t),t.isForcePlaceholder());}
   assert t.getSelectors().size()>1;
   return resolvePh(resolveMany(p,t),t.isForcePlaceholder());

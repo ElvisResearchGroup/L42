@@ -14,6 +14,7 @@ import ast.ExpCore;
 import ast.ExpCore.Block;
 import ast.ExpCore.Block.On;
 import auxiliaryGrammar.Functions;
+import auxiliaryGrammar.Program;
 
 public class ThrowEnv {
 //fgfdhgfh  //TODO:put res private and wrap accesses to check consistency
@@ -67,13 +68,13 @@ public class ThrowEnv {
     if(k.isPresent()){return accumulate(k.get());}
     return this;
     }*/
-  static Set<NormType> accResult(Set<NormType> res,List<On> ons) {
+  static Set<NormType> accResult(Program p,Set<NormType> res,List<On> ons) {
     assert TypecheckBlock.sameMdf(res);
     Mdf current=null;
     if(res.size()!=0){current=res.iterator().next().getMdf();}
     HashSet<NormType> results=new HashSet<NormType>();
     for(Block.On on:ons){
-      NormType nt = Functions.forceNormType(on.getInner(),on.getT());
+      NormType nt = Functions.forceNormType(p,on.getInner(),on.getT());
       if(results.isEmpty()){
         results.add(nt);
         current=nt.getMdf();

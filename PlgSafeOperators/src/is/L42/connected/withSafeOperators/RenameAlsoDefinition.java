@@ -32,18 +32,7 @@ class RenameAlsoDefinition extends RenameUsage{
     }
     return result2;
     }
-  //it may clash against something
-  public MethodWithType visit(MethodWithType mwt){
-    //System.out.println("visitMethodWithType "+mwt.getMs());
-    MethodWithType result=super.visit(mwt);
-    Locator current=this.getLocator().copy();
-    current.pushMember(mwt);
-    for(Locator l:this.maps.selectors){
-      if(!l.equals(current)){continue;}
-      return result.withMs((MethodSelector) l.getAnnotation());
-    }
-    return result;
-  }
+
   public ClassB.MethodImplemented visit(ClassB.MethodImplemented mi){
     //System.out.println("visitMethodImplemented "+mi.getS());
     return potentiallyRenameMethodImplementedHeader(super.visit(mi));

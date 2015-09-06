@@ -69,6 +69,11 @@ public static class TestCollectPrivates {
     + "}",
     "[42]\n[Outer0::foo__42()[0]null, Outer0::foo__42()[1]bla()[0]null]\n[]\nfalse"
   
+  },{
+    lineNumber(),
+    "{method'@private\n Void foo( Outer0::foo() x)}",
+    "[]\n[Outer0::foo(x)[0]foo__0_0(x)]\n[]\nfalse"
+  
   }});}
 
 
@@ -126,7 +131,16 @@ public static class TestNormalizePrivates1 {
     lineNumber(),"{  method '@private\n Void foo() void}","{  method '@private\n Void foo__0_0() void}" 
   },{
     lineNumber(),"{ method Library bar() {  method '@private\n Void foo() void}}","{ method Library bar() {  method '@private\n Void foo__0_0() void}}" 
-    
+  },{
+    lineNumber(),
+    "{method'@private\n Void foo( Outer0::foo(x) x)}",
+    "{\nmethod '@private\nVoid foo__0_0(Outer0::foo__0_0(x ) x) }"
+  
+  },{
+    lineNumber(),
+    "{ A:'@private\n{method A a()} method A foo( A::a() x)}",
+    "{ A__0_0:'@private\n{method A__0_0 a()} method  A__0_0 foo ( A__0_0::a() x)}"
+  
   }});}
 
 

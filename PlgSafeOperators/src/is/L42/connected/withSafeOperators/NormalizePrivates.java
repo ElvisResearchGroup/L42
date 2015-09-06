@@ -92,7 +92,10 @@ public class NormalizePrivates {
       }
     result.computeNewNames();
     cb=NormalizePrivates.normalize(p,result, cb);
-    cb.getStage().setPrivateNormalized(true);
+    //cb.getStage().setPrivateNormalized(true);
+    cb.accept(new CloneVisitor(){public ExpCore visit(ClassB cb){
+      cb.getStage().setPrivateNormalized(true);
+      return super.visit(cb);}});
     return cb;
   
     }

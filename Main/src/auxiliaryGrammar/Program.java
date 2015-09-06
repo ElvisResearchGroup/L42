@@ -196,7 +196,7 @@ public class Program {
       }
     MethodWithType mwt=Program.extractMwt(result.get(),classB);
     mwt=From.from(mwt, path);
-    mwt=Norm.of(this,mwt,isOnlyType);
+    //mwt=Norm.of(this,mwt,isOnlyType);
     return mwt;
 
   }
