@@ -57,7 +57,7 @@ public class ClassOperations {
     return cb.withMs(newMs);
   }
 
-  static ClassB normalizePrivates(Program p,ClassB cb){
+  static ClassB _old_normalizePrivates(Program p,ClassB cb){
     //collect private names
     CollectPrivateNames cpn=CollectPrivateNames.of(cb);
     //rename all

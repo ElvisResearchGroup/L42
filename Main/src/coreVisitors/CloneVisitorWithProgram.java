@@ -10,14 +10,9 @@ import auxiliaryGrammar.Program;
 public class CloneVisitorWithProgram extends CloneVisitor{
   public CloneVisitorWithProgram(Program p) {this.p = p;}
   protected Program p;
-  public ClassB.NestedClass visit(ClassB.NestedClass nc){
-    Program aux=p;
-    p=p.pop().addAtTop(p.topCb());
-    try{return super.visit(nc);}
-    finally{p=aux;}
-    }
+ 
   public ExpCore visit(ClassB s) {
-    //Configuration.typeSystem.computeStage(p, s);//TODO:is it needed?
+    Configuration.typeSystem.computeStage(p, s);//It is needed!
     Program aux=p;
     p=p.addAtTop(s);
     try{return super.visit(s);}

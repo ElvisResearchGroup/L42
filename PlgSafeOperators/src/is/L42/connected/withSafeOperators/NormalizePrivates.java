@@ -84,6 +84,7 @@ public class NormalizePrivates {
     return replace__(ss);
   }
   public static ClassB normalize(Program p,ClassB cb){
+    if(cb.getStage().isPrivateNormalized()){return cb;}
     CollectedLocatorsMap result = NormalizePrivates.collectPrivates(cb);
     if (result.normalized && result.pedexes.isEmpty()){return cb;}
     cb=replace__ifPresent(cb, result);

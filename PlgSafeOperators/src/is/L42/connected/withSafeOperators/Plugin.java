@@ -195,7 +195,7 @@ public class Plugin implements PluginType{
     @ActionType({ActionType.Type.Library,ActionType.Type.Library})
     public Object MprivateNormalize£xthat(Object _that){
       ClassB that=ensureExtractClassB(_that);
-      if(that.getStage().isPrivateNormalized()){return that;}
+      //if(that.getStage().isPrivateNormalized()){return that;}
       return NormalizePrivates.normalize(Resources.getP(),that);
     }
   }

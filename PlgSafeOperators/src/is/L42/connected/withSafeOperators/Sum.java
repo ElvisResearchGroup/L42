@@ -25,8 +25,8 @@ import auxiliaryGrammar.Program;
 
 public class Sum {
   static ClassB sum(Program p, ClassB a, ClassB b) {
-    a = ClassOperations.normalizePrivates(p,a);
-    b = ClassOperations.normalizePrivates(p,b);
+    a =NormalizePrivates.normalize(p, a);//TODO: find ways to not renormalize when is not needed
+    b = NormalizePrivates.normalize(p, b);//TODO: this is wrong,
     a=ClassOperations.normalizePaths(a);
     b=ClassOperations.normalizePaths(b);
     return normalizedTopSum(p, a, b);

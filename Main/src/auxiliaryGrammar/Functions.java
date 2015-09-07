@@ -27,6 +27,7 @@ import ast.ExpCore;
 import ast.ExpCore.*;
 import ast.ExpCore.ClassB.*;
 import ast.Expression;
+import ast.Util.CachedStage;
 import coreVisitors.Dec;
 import coreVisitors.FreeVariables;
 import coreVisitors.From;
@@ -472,6 +473,14 @@ private static void retainOnlyOriginalMethOf(Program p, List<Path> paths,Set<Met
           mt->ms0.remove(mt.getMs()));
       }
   }
+}
+@SuppressWarnings("unchecked")
+public static <T extends ExpCore> T flushCache(T res) {
+  return (T)res.accept(new coreVisitors.CloneVisitor(){
+    public ExpCore visit(ClassB s) {
+      return ((ClassB)super.visit(s)).withStage(new CachedStage());
+    }
+  });
 }
 
 }
