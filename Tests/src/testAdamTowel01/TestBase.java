@@ -37,7 +37,7 @@ public class TestBase {
     L42.main(new String[]{"examples/testsForAdamTowel01/UseSimpleLib.L42"});
     Assert.assertEquals(L42.record.toString(),"Hello World 42\n");
     }
-  //@Test
+  @Test
   public  void _03DeploySimpleLib() throws Throwable{
     TestHelper.configureForTest();
     Paths.get("localhost","DeployedSimpleLib.L42").toFile().delete();
@@ -53,7 +53,9 @@ public class TestBase {
   @Test
   public  void _05DeployCollections() throws Throwable{
     TestHelper.configureForTest();
+    Paths.get("localhost","Collections.L42").toFile().delete();
     L42.main(new String[]{"examples/DeployCollections"});
+    Assert.assertTrue(Paths.get("localhost","Collections.L42").toFile().exists());
     }
   @Test
   public  void _06UseCollections() throws Throwable{
@@ -61,7 +63,7 @@ public class TestBase {
     L42.main(new String[]{"examples/testsForAdamTowel01/UseCollections.L42"});
     Assert.assertEquals(L42.record.toString(),"size is 2 hello world\nhello\nworld\n");
     }
-  @Test
+  //@Test
   public  void _07introspection() throws Throwable{
     TestHelper.configureForTest();
     L42.main(new String[]{"examples/testsForAdamTowel01/UseIntrospectionAdamTowel.L42"});

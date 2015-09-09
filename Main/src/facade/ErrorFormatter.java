@@ -215,8 +215,10 @@ public class ErrorFormatter {
     try{
       Field f=c.getDeclaredField("pos");
       f.setAccessible(true);
-      Ast.Position pos=(Ast.Position)f.get(msg);
-      ps.add(pos);
+      if( f.get(msg) instanceof Ast.Position){
+        Ast.Position pos=(Ast.Position)f.get(msg);
+        ps.add(pos);
+        }
     }
     catch(NoSuchFieldException ignored){}
   }

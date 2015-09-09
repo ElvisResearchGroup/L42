@@ -25,19 +25,8 @@ public class TestShortPrograms {
       throw msg;
     }
     ClassB res=res0.getTopLevelProgram();
-    //ClassB.NestedClass last=(ClassB.NestedClass)res.getMs().get(res.getMs().size()-1);
-    //res=(ClassB)last.getInner();
-    /*if(!(res1 instanceof ClassB)){
-      ExpCore ee2=TestHelper.testParseString("{'@ExpectedClass \n}").accept(new InjectionOnCore());
-      TestHelper.assertEqualExp(res1,ee2);
-      }*/
-    //ClassB res=(ClassB)res1;
     ClassB.NestedClass nc=(ClassB.NestedClass)res.getMs().get(res.getMs().size()-1);
     ExpCore ee2=Desugar.of(Parser.parse(null,"{'@exitStatus\n'0\n\n}##star ^##")).accept(new InjectionOnCore());
-    /*if(!nc.getInner().equals(ee2)){
-      ExpCore ee3=Parser.parse("{'@something around a OK\n}").accept(new InjectionOnCore());
-      TestHelper.assertEqualExp(res,ee3);
-    }*/
     TestHelper.assertEqualExp(nc.getInner(),ee2);
   }
 
@@ -280,4 +269,19 @@ public void testPlusNotStar(){tp("{"
 ,"}"
 );}
 
+@Test(expected=ErrorMessage.PathsNotSubtype.class)
+public void testDeepTyping1(){tp("{"
+    ," D: { type method Library wrong()  { A:{method Void v(Any a) a } } }"
+    ," E: ( Library ignore=D.wrong(), {'@exitStatus\n'0\n\n})"
+    ,"}");}
+@Test(expected=ErrorMessage.MethodNotPresent.class)
+public void testDeepTyping2(){tp("{"
+    ," D: { type method Library wrong()  { A:{method Void v() this.notDeclared() } } }"
+    ," E: ( Library ignore=D.wrong(), {'@exitStatus\n'0\n\n})"
+    ,"}");}
+@Test(expected=ErrorMessage.MethodNotPresent.class)
+public void testDeepTyping3(){tp("{"
+    ," D: { type method Library wrong()  { A:{method Void v() this.notDeclared() } } }"
+    ," E: ( Void ignore=D.wrong(), {'@exitStatus\n'0\n\n})"//we check that methodNotPresent has priority over PathsNotSubtype in this case
+    ,"}");}
 }

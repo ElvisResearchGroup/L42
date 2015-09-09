@@ -103,6 +103,7 @@ public class TypeSystem implements Visitor<Type>, Reporter{
     try{if (this.p.isExecutableStar()){this.p=p.removeExecutableStar();}
       return collectEnvs(()->{
         assert IsCompiled.of(s);
+        Configuration.typeSystem.computeStage(p,s);
         if(p.executablePlus()){
           if(s.getStage().getStage()==Stage.Less){
             throw new ErrorMessage.LibraryRefersToIncompleteClasses(p.getInnerData(), s);
