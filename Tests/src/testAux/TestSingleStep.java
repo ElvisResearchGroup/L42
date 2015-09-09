@@ -57,7 +57,7 @@ public class TestSingleStep {
        },{lineNumber(),"{ A:{'@plugin\n'L42.is/connected/withAlu\n()}"
         + " C: using A check sumInt32(n1:{} n2:{}) error void}",
           "{ A:{'@plugin\n'L42.is/connected/withAlu\n()}##star ^##"
-        + " C:error {'@stringU\n'InvalidInt32\n}}"
+        + " C:error {'@stringU\n'InvalidInt32\n}##star ^##}"
 
        },{lineNumber(),"{ A:{'@plugin\n'L42.is/connected/withAlu\n()}"
            + " C: using A check sumInt32(n1:{'@int32\n'5\n} n2:{'@int32\n'3\n}) error void}",
@@ -131,15 +131,15 @@ public class TestSingleStep {
        },{lineNumber(),"( mut D r=D.new(x:r) (mut D r1a=D.new(x:r1b) mut D r1b=D.new(x:r1b) (mut D r2a=D.new(x:r2b)mut D r2b=D.new(x:r1a) r.x(r2a))))",
           "( mut D r=D.new(x:r2a)mut D r1a=D.new(x:r1b)mut D r1b=D.new(x:r1b) mut D r2a=D.new(x:r2b)  mut D r2b=D.new(x:r1a) ((void)))"
        },{lineNumber(),"{outer() C: {new() type method Library m() {inner()}} D: C.m()}",
-            "{outer() C: {new() type method Library m() {inner()}}##star ^## D:(type C this0=C { inner()} )}"
+            "{outer() C: {new() type method Library m() {inner()}##star ^##}##star ^## D:(type C this0=C { inner()}##star ^## )}"
        },{lineNumber(),"{ method Library m() ({outer() C: {new() type method Library m() ({inner()})} D: C.m()})}",
-         "{ method Library m() ({ outer()C:{ new()type method Library m() ({ inner()})}##star ^## D:(type C this0=C ({ inner()} ))})}"
+         "{ method Library m() ({ outer()C:{ new()type method Library m() ({ inner()}##star ^##)}##star ^## D:(type C this0=C ({ inner()}##star ^## ))})}"
 
 
          //can not work without the normalization
        //},{"{ C:( Library result=( ( ( Library result0=(  {'@exitStatus\n'0\n} ) result0 ) ) ) result )}",
          },{lineNumber(),"{ C:( Library result=( ( ( Library result0=  {'@exitStatus\n'0\n}  result0 ) ) ) result )}",
-           " { C:( Library result=( ( ( {'@exitStatus\n'0\n} ) ) ) result )}"
+           " { C:( Library result=( ( ( {'@exitStatus\n'0\n}##star ^## ) ) ) result )}"
        },{lineNumber(),TestHelper.multiLine("{"
         ,"C:{ k() type method Library ok() ({'@oK\n})"
         ,"        type method Library ko() ({'@kO\n})"
@@ -155,10 +155,10 @@ public class TestSingleStep {
         TestHelper.multiLine(
          "{C:{ k()type method Library ok() ("
         ,"  {'@oK"
-        ,"}"
+        ,"}##star ^##"
         ,"  )type method Library ko() ("
         ,"  {'@kO"
-        ,"}"
+        ,"}##star ^##"
         ,"  )}##star ^## I:{interface }##star ^## AI:{ k()<:Outer1::I}##star ^## D:("
         ,"  Any z=error ("
         ,"    Outer0::AI aI=Outer0::AI.k()"
@@ -188,7 +188,7 @@ TestHelper.multiLine("{"
 ,"  lent Box box=Box.k(f:any)"
 ,"  Any z1=(void)"
 ,"  Any z2=error box.f()"
-,"  {ok()}"
+,"  {ok()}##star ^##"
 ,"  )}")
 
 },{lineNumber(),TestHelper.multiLine(" "

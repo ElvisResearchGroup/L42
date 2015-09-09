@@ -3,15 +3,15 @@ type method
 Library generateVector(type Any that, Library lib) (
   Void unused=(
     Library res=lib
-    mut Outer0::Varres1_$%28_0_$%$%57_0_$%$%$%85_0_$%$%$%$%114_0_$%$%$%$%$%143_0__171_0 varres=Outer0::Varres1_$%28_0_$%$%57_0_$%$%$%85_0_$%$%$%$%114_0_$%$%$%$%$%143_0__171_0.#apply(inner:res)
+    mut Outer0::Varres1_$%$%28_0_$%$%$%57_0_$%$%$%$%85_0_$%$%$%$%$%114_0_$%$%$%$%$%$%143_0__171_0 varres=Outer0::Varres1_$%$%28_0_$%$%$%57_0_$%$%$%$%85_0_$%$%$%$%$%114_0_$%$%$%$%$%$%143_0__171_0.#apply(inner:res)
     Void unused0=varres.inner(that:Outer0::PrImpl::Refactor::RenamePath.#begin().#add(that:Outer0::PrImpl::Path.#stringParser(that:{'@stringU
     'VectorStruct
-    }), to:Outer0::PrImpl::Path.#stringParser(that:{'@stringU
+    }##star ^##), to:Outer0::PrImpl::Path.#stringParser(that:{'@stringU
     'Outer0
-    })).#end().#leftleft(that:varres.#inner()))
+    }##star ^##)).#end().#leftleft(that:varres.#inner()))
     Void unused1=varres.inner(that:Outer0::PrImpl::Refactor::Redirect.#begin().#add(that:Outer0::PrImpl::Path.#stringParser(that:{'@stringU
     'Elem
-    }), to:that).#end().#leftleft(that:varres.#inner()))
+    }##star ^##), to:that).#end().#leftleft(that:varres.#inner()))
     Void unused2=return varres.#inner()
     catch exception err (
       on Outer0::PrImpl::Report error err
@@ -23,21 +23,21 @@ Library generateVector(type Any that, Library lib) (
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
-  }
+  }##star ^##
   )
 type method 
 Library vector(type Any that) Outer0.generateVector(that:that, lib:{
-Elem:{}
+Elem:{}##star ^##
 Kind:' put it as private
 {
 type method 'read/lent/mut/type/capsule/
 Outer1::Elem elem() error Outer2::PrImpl::Report::UnsupportedOperation.#stringParser(that:{'@stringU
 'make it an interface?
-})
+}##star ^##)
 type method 'read/lent/mut/type/capsule/
 Outer1::Elem elemRead() error Outer2::PrImpl::Report::UnsupportedOperation.#stringParser(that:{'@stringU
 'make it an interface?
-})}
+}##star ^##)}##plus ^##
 VectorStruct:{
 type method ' size should be computed?
 mut Outer0 #apply(mut Outer0::Cell^head, Outer2::N^size) 
@@ -53,7 +53,7 @@ mut method ' size should be computed?
 Outer2::N #size() 
 read method ' size should be computed?
 Outer2::N size() 
-Cell:{interface }
+Cell:{interface }##star ^##
 CellNext:{<:Outer1::Cell
 type method 
 mut Outer0 #apply(Outer2::Kind::elem() ^val, mut Outer1::Cell^next) 
@@ -64,22 +64,22 @@ mut Outer1::Cell #next()
 read method 
 read Outer1::Cell next() 
 read method 
-Outer2::Kind::elemRead() val() }
+Outer2::Kind::elemRead() val() }##plus ^##
 CellEnd:{<:Outer1::Cell
 type method 
-mut Outer0 #apply() }
+mut Outer0 #apply() }##star ^##
 read method 
 Void reportError(Outer2::N that) error Outer2::S.#stringParser(that:{'@stringU
 'IndexOutOfBound: max is 
-}).#plusplus(that:this.size().#plusplus(that:Outer2::S.#stringParser(that:{'@stringU
+}##star ^##).#plusplus(that:this.size()).#plusplus(that:Outer2::S.#stringParser(that:{'@stringU
 ' proposed is 
-}).#plusplus(that:that)))
+}##star ^##).#plusplus(that:that))
 read method 
 Void reportUnexpected(Outer2::N that) error Outer2::S.#stringParser(that:{'@stringU
 'Unexpected failure like IndexOutOfBound: max is 
-}).#plusplus(that:this.size().#plusplus(that:Outer2::S.#stringParser(that:{'@stringU
+}##star ^##).#plusplus(that:this.size()).#plusplus(that:Outer2::S.#stringParser(that:{'@stringU
 ' proposed is 
-}).#plusplus(that:that)))
+}##star ^##).#plusplus(that:that))
 read method 
 Outer1::Kind::elemRead() #apply(Outer2::N that) (
   Void unused=(
@@ -108,7 +108,7 @@ Outer1::Kind::elemRead() auxGet(Outer2::N that, read Outer0::Cell cell) (
             )
           error {'@stringU
           'CastT-Should be unreachable code
-          }
+          }##star ^##
           )
         catch exception unused4 (
           on Void void
@@ -117,7 +117,7 @@ Outer1::Kind::elemRead() auxGet(Outer2::N that, read Outer0::Cell cell) (
           Void unused5=(
             Outer2::N::#equalequal(that ) cond=that.#equalequal(that:Outer2::N.#numberParser(that:{'@stringU
             '0
-            }))
+            }##star ^##))
             (
               Void unused6=cond.#checkTrue()
               catch exception unused7 (
@@ -138,7 +138,7 @@ Outer1::Kind::elemRead() auxGet(Outer2::N that, read Outer0::Cell cell) (
           )
         error {'@stringU
         'CastT-Should be unreachable code
-        }
+        }##star ^##
         )
       catch exception unused9 (
         on Void (
@@ -151,7 +151,7 @@ Outer1::Kind::elemRead() auxGet(Outer2::N that, read Outer0::Cell cell) (
               )
             error {'@stringU
             'CastT-Should be unreachable code
-            }
+            }##star ^##
             )
           catch exception unused11 (
             on Void void
@@ -159,7 +159,7 @@ Outer1::Kind::elemRead() auxGet(Outer2::N that, read Outer0::Cell cell) (
           (
             Void unused12=return Outer0.auxGet(that:that.#less(that:Outer2::N.#numberParser(that:{'@stringU
             '1
-            })), cell:cell0.next())
+            }##star ^##)), cell:cell0.next())
             void
             )
           )
@@ -171,7 +171,7 @@ Outer1::Kind::elemRead() auxGet(Outer2::N that, read Outer0::Cell cell) (
       )
     Void unused1=error Outer2::S.#stringParser(that:{'@stringU
     'Unreachable
-    })
+    }##star ^##)
     void
     )
   catch return result (
@@ -179,7 +179,7 @@ Outer1::Kind::elemRead() auxGet(Outer2::N that, read Outer0::Cell cell) (
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
-  }
+  }##star ^##
   )
 mut method 
 Void #apply(Outer2::N that, Outer1::Kind::elem() val) (
@@ -209,7 +209,7 @@ mut Outer0::CellNext auxSet(Outer2::N that, Outer1::Kind::elem() val, mut Outer0
             )
           error {'@stringU
           'CastT-Should be unreachable code
-          }
+          }##star ^##
           )
         catch exception unused4 (
           on Void void
@@ -218,7 +218,7 @@ mut Outer0::CellNext auxSet(Outer2::N that, Outer1::Kind::elem() val, mut Outer0
           Void unused5=(
             Outer2::N::#equalequal(that ) cond=that.#equalequal(that:Outer2::N.#numberParser(that:{'@stringU
             '0
-            }))
+            }##star ^##))
             (
               Void unused6=cond.#checkTrue()
               catch exception unused7 (
@@ -239,7 +239,7 @@ mut Outer0::CellNext auxSet(Outer2::N that, Outer1::Kind::elem() val, mut Outer0
           )
         error {'@stringU
         'CastT-Should be unreachable code
-        }
+        }##star ^##
         )
       catch exception unused9 (
         on Void (
@@ -252,7 +252,7 @@ mut Outer0::CellNext auxSet(Outer2::N that, Outer1::Kind::elem() val, mut Outer0
               )
             error {'@stringU
             'CastT-Should be unreachable code
-            }
+            }##star ^##
             )
           catch exception unused11 (
             on Void void
@@ -260,7 +260,7 @@ mut Outer0::CellNext auxSet(Outer2::N that, Outer1::Kind::elem() val, mut Outer0
           (
             Void unused12=return Outer0::CellNext.#apply(val:cell0.val(), next:Outer0.auxSet(that:that.#less(that:Outer2::N.#numberParser(that:{'@stringU
             '1
-            })), val:val, cell:cell0.#next()))
+            }##star ^##)), val:val, cell:cell0.#next()))
             void
             )
           )
@@ -272,7 +272,7 @@ mut Outer0::CellNext auxSet(Outer2::N that, Outer1::Kind::elem() val, mut Outer0
       )
     Void unused1=error Outer2::S.#stringParser(that:{'@stringU
     'Unreachable
-    })
+    }##star ^##)
     void
     )
   catch return result (
@@ -280,17 +280,17 @@ mut Outer0::CellNext auxSet(Outer2::N that, Outer1::Kind::elem() val, mut Outer0
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
-  }
+  }##star ^##
   )
 type method 
 mut Outer0 #apply() Outer0.#apply(head:Outer0::CellEnd.#apply(), size:Outer2::N.#numberParser(that:{'@stringU
 '0
-}))
+}##star ^##))
 mut method 
 mut Outer0 add(Outer1::Kind::elem() that) (
   Void unused=this.size(that:this.size().#plus(that:Outer2::N.#numberParser(that:{'@stringU
   '1
-  })))
+  }##star ^##)))
   Void unused0=this.head(that:Outer0.auxAdd(that:that, cell:this.#head()))
   this
   )
@@ -307,7 +307,7 @@ mut Outer0::Cell auxAdd(Outer1::Kind::elem() that, mut Outer0::Cell cell) (
           )
         error {'@stringU
         'CastT-Should be unreachable code
-        }
+        }##star ^##
         )
       catch exception unused3 (
         on Void (
@@ -320,7 +320,7 @@ mut Outer0::Cell auxAdd(Outer1::Kind::elem() that, mut Outer0::Cell cell) (
               )
             error {'@stringU
             'CastT-Should be unreachable code
-            }
+            }##star ^##
             )
           catch exception unused5 (
             on Void void
@@ -338,7 +338,7 @@ mut Outer0::Cell auxAdd(Outer1::Kind::elem() that, mut Outer0::Cell cell) (
       )
     Void unused1=error Outer2::S.#stringParser(that:{'@stringU
     'Unreachable
-    })
+    }##star ^##)
     void
     )
   catch return result (
@@ -346,7 +346,7 @@ mut Outer0::Cell auxAdd(Outer1::Kind::elem() that, mut Outer0::Cell cell) (
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
-  }
+  }##star ^##
   )
 type method 
 mut Outer0 #begin() Outer0.#apply()
@@ -363,13 +363,13 @@ read method
 Outer0::TOpt that() 
 TOpt:{interface 
 method 
-Outer4::N get() }
+Outer4::N get() }##plus ^##
 TEmpty:{<:Outer1::TOpt
 type method 
 Outer0 #apply() 
 method get() error Outer4::PrImpl::Report::UnsupportedOperation.#stringParser(that:{'@stringU
 'TEmpty.get() Value not present in Optional
-})}
+}##star ^##)}##plus ^##
 TOf:{<:Outer1::TOpt
 type method 
 Outer0 #apply(Outer4::N^that) 
@@ -377,7 +377,7 @@ mut method
 Outer4::N #that() 
 read method 
 Outer4::N that() 
-method get() this.that()}
+method get() this.that()}##plus ^##
 method 
 Outer3::N #tilde() this.that().get()
 method 
@@ -395,12 +395,12 @@ Outer3::Bool isPresent() (
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
-  }
+  }##star ^##
   )
 type method 
 Outer0 #apply() Outer0.#new(that:Outer0::TEmpty.#apply())
 type method 
-Outer0 #apply(Outer3::N that) Outer0.#new(that:Outer0::TOf.#apply(that:that))}
+Outer0 #apply(Outer3::N that) Outer0.#new(that:Outer0::TOf.#apply(that:that))}##plus ^##
 OptFill:{
 type method 
 Outer0 #new(Outer0::TOpt^that) 
@@ -410,13 +410,13 @@ read method
 Outer0::TOpt that() 
 TOpt:{interface 
 method 
-Outer3::Elem get() }
+Outer3::Elem get() }##star ^##
 TEmpty:{<:Outer1::TOpt
 type method 
 Outer0 #apply() 
 method get() error Outer4::PrImpl::Report::UnsupportedOperation.#stringParser(that:{'@stringU
 'TEmpty.get() Value not present in Optional
-})}
+}##star ^##)}##plus ^##
 TOf:{<:Outer1::TOpt
 type method 
 Outer0 #apply(Outer3::Elem^that) 
@@ -424,7 +424,7 @@ mut method
 Outer3::Elem #that() 
 read method 
 Outer3::Elem that() 
-method get() this.that()}
+method get() this.that()}##star ^##
 method 
 Outer2::Elem #tilde() this.that().get()
 method 
@@ -442,76 +442,76 @@ Outer3::Bool isPresent() (
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
-  }
+  }##star ^##
   )
 type method 
 Outer0 #apply() Outer0.#new(that:Outer0::TEmpty.#apply())
 type method 
-Outer0 #apply(Outer2::Elem that) Outer0.#new(that:Outer0::TOf.#apply(that:that))}
+Outer0 #apply(Outer2::Elem that) Outer0.#new(that:Outer0::TOf.#apply(that:that))}##plus ^##
 read method 
 lent Outer0::Iterator vals(Outer2::N min, Outer2::N ok, Outer2::N max, Outer1::Kind::elem() fill) Outer0::Iterator.#apply(that:this, min:min.#less(that:Outer2::N.#numberParser(that:{'@stringU
 '1
-})), ok:ok, max:Outer0::OptMax.#apply(that:max), fill:Outer0::OptFill.#apply(that:fill))
+}##star ^##)), ok:ok, max:Outer0::OptMax.#apply(that:max), fill:Outer0::OptFill.#apply(that:fill))
 read method 
 lent Outer0::Iterator vals(Outer2::N min, Outer2::N ok, Outer2::N max) Outer0::Iterator.#apply(that:this, min:min.#less(that:Outer2::N.#numberParser(that:{'@stringU
 '1
-})), ok:ok, max:Outer0::OptMax.#apply(that:max), fill:Outer0::OptFill.#apply())
+}##star ^##)), ok:ok, max:Outer0::OptMax.#apply(that:max), fill:Outer0::OptFill.#apply())
 read method 
 lent Outer0::Iterator vals(Outer2::N min, Outer2::N ok, Outer1::Kind::elem() fill) Outer0::Iterator.#apply(that:this, min:min.#less(that:Outer2::N.#numberParser(that:{'@stringU
 '1
-})), ok:ok, max:Outer0::OptMax.#apply(), fill:Outer0::OptFill.#apply(that:fill))
+}##star ^##)), ok:ok, max:Outer0::OptMax.#apply(), fill:Outer0::OptFill.#apply(that:fill))
 read method 
 lent Outer0::Iterator vals(Outer2::N min, Outer2::N ok) Outer0::Iterator.#apply(that:this, min:min.#less(that:Outer2::N.#numberParser(that:{'@stringU
 '1
-})), ok:ok, max:Outer0::OptMax.#apply(), fill:Outer0::OptFill.#apply())
+}##star ^##)), ok:ok, max:Outer0::OptMax.#apply(), fill:Outer0::OptFill.#apply())
 read method 
 lent Outer0::Iterator vals(Outer2::N min, Outer2::N max, Outer1::Kind::elem() fill) Outer0::Iterator.#apply(that:this, min:min.#less(that:Outer2::N.#numberParser(that:{'@stringU
 '1
-})), ok:max, max:Outer0::OptMax.#apply(that:max), fill:Outer0::OptFill.#apply(that:fill))
+}##star ^##)), ok:max, max:Outer0::OptMax.#apply(that:max), fill:Outer0::OptFill.#apply(that:fill))
 read method 
 lent Outer0::Iterator vals(Outer2::N min, Outer2::N max) Outer0::Iterator.#apply(that:this, min:min.#less(that:Outer2::N.#numberParser(that:{'@stringU
 '1
-})), ok:max, max:Outer0::OptMax.#apply(that:max), fill:Outer0::OptFill.#apply())
+}##star ^##)), ok:max, max:Outer0::OptMax.#apply(that:max), fill:Outer0::OptFill.#apply())
 read method 
 lent Outer0::Iterator vals(Outer2::N min, Outer1::Kind::elem() fill) Outer0::Iterator.#apply(that:this, min:min.#less(that:Outer2::N.#numberParser(that:{'@stringU
 '1
-})), ok:this.size(), max:Outer0::OptMax.#apply(), fill:Outer0::OptFill.#apply(that:fill))
+}##star ^##)), ok:this.size(), max:Outer0::OptMax.#apply(), fill:Outer0::OptFill.#apply(that:fill))
 read method 
 lent Outer0::Iterator vals(Outer2::N min) Outer0::Iterator.#apply(that:this, min:min.#less(that:Outer2::N.#numberParser(that:{'@stringU
 '1
-})), ok:this.size(), max:Outer0::OptMax.#apply(), fill:Outer0::OptFill.#apply())
+}##star ^##)), ok:this.size(), max:Outer0::OptMax.#apply(), fill:Outer0::OptFill.#apply())
 read method 
 lent Outer0::Iterator vals(Outer2::N ok, Outer2::N max, Outer1::Kind::elem() fill) Outer0::Iterator.#apply(that:this, min:Outer2::N.#numberParser(that:{'@stringU
 '-1
-}), ok:ok, max:Outer0::OptMax.#apply(that:max), fill:Outer0::OptFill.#apply(that:fill))
+}##star ^##), ok:ok, max:Outer0::OptMax.#apply(that:max), fill:Outer0::OptFill.#apply(that:fill))
 read method 
 lent Outer0::Iterator vals(Outer2::N ok, Outer2::N max) Outer0::Iterator.#apply(that:this, min:Outer2::N.#numberParser(that:{'@stringU
 '-1
-}), ok:ok, max:Outer0::OptMax.#apply(that:max), fill:Outer0::OptFill.#apply())
+}##star ^##), ok:ok, max:Outer0::OptMax.#apply(that:max), fill:Outer0::OptFill.#apply())
 read method 
 lent Outer0::Iterator vals(Outer2::N ok, Outer1::Kind::elem() fill) Outer0::Iterator.#apply(that:this, min:Outer2::N.#numberParser(that:{'@stringU
 '-1
-}), ok:ok, max:Outer0::OptMax.#apply(), fill:Outer0::OptFill.#apply(that:fill))
+}##star ^##), ok:ok, max:Outer0::OptMax.#apply(), fill:Outer0::OptFill.#apply(that:fill))
 read method 
 lent Outer0::Iterator vals(Outer2::N ok) Outer0::Iterator.#apply(that:this, min:Outer2::N.#numberParser(that:{'@stringU
 '-1
-}), ok:ok, max:Outer0::OptMax.#apply(), fill:Outer0::OptFill.#apply())
+}##star ^##), ok:ok, max:Outer0::OptMax.#apply(), fill:Outer0::OptFill.#apply())
 read method 
 lent Outer0::Iterator vals(Outer2::N max, Outer1::Kind::elem() fill) Outer0::Iterator.#apply(that:this, min:Outer2::N.#numberParser(that:{'@stringU
 '-1
-}), ok:max, max:Outer0::OptMax.#apply(that:max), fill:Outer0::OptFill.#apply(that:fill))
+}##star ^##), ok:max, max:Outer0::OptMax.#apply(that:max), fill:Outer0::OptFill.#apply(that:fill))
 read method 
 lent Outer0::Iterator vals(Outer2::N max) Outer0::Iterator.#apply(that:this, min:Outer2::N.#numberParser(that:{'@stringU
 '-1
-}), ok:max, max:Outer0::OptMax.#apply(that:max), fill:Outer0::OptFill.#apply())
+}##star ^##), ok:max, max:Outer0::OptMax.#apply(that:max), fill:Outer0::OptFill.#apply())
 read method 
 lent Outer0::Iterator vals(Outer1::Kind::elem() fill) Outer0::Iterator.#apply(that:this, min:Outer2::N.#numberParser(that:{'@stringU
 '-1
-}), ok:this.size(), max:Outer0::OptMax.#apply(), fill:Outer0::OptFill.#apply(that:fill))
+}##star ^##), ok:this.size(), max:Outer0::OptMax.#apply(), fill:Outer0::OptFill.#apply(that:fill))
 read method 
 lent Outer0::Iterator vals() Outer0::Iterator.#apply(that:this, min:Outer2::N.#numberParser(that:{'@stringU
 '-1
-}), ok:this.size(), max:Outer0::OptMax.#apply(), fill:Outer0::OptFill.#apply())
+}##star ^##), ok:this.size(), max:Outer0::OptMax.#apply(), fill:Outer0::OptFill.#apply())
 Iterator:{
 type method 
 lent Outer0 #apply(read Outer1^that, Outer3::N^min, Outer3::N^ok, Outer1::OptMax^max, Outer1::OptFill^fill) 
@@ -542,7 +542,7 @@ Void #next() exception Void (
   Void unused=(
     Void unused0=this.min(that:this.min().#plus(that:Outer3::N.#numberParser(that:{'@stringU
     '1
-    })))
+    }##star ^##)))
     Void unused1=(
       Outer0::fill() ::isPresent() cond=this.fill().isPresent()
       (
@@ -612,7 +612,7 @@ Void #next() exception Void (
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
-  }
+  }##star ^##
   )
 read method 
 Void #checkEnd() (
@@ -624,9 +624,9 @@ Void #checkEnd() (
       )
     error Outer3::S.#stringParser(that:{'@stringU
     'Unexpected termination of iteration, reached 
-    }).#plusplus(that:this.min().#plusplus(that:Outer3::S.#stringParser(that:{'@stringU
+    }##star ^##).#plusplus(that:this.min()).#plusplus(that:Outer3::S.#stringParser(that:{'@stringU
     ' instead of 
-    }).#plusplus(that:this.ok())))
+    }##star ^##).#plusplus(that:this.ok()))
     )
   )
 read method 
@@ -660,74 +660,74 @@ Outer2::Kind::elem() #inner() (
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
-  }
+  }##star ^##
   )
 read method 
-Void #close() void}
+Void #close() void}##plus ^##
 mut method 
 mut Outer0::VarIterator vars(Outer2::N min, Outer2::N ok, Outer2::N max, Outer1::Kind::elem() fill) Outer0::VarIterator.#apply(that:this, min:min.#less(that:Outer2::N.#numberParser(that:{'@stringU
 '1
-})), ok:ok, max:Outer0::OptMax.#apply(that:max), fill:Outer0::OptFill.#apply(that:fill))
+}##star ^##)), ok:ok, max:Outer0::OptMax.#apply(that:max), fill:Outer0::OptFill.#apply(that:fill))
 mut method 
 mut Outer0::VarIterator vars(Outer2::N min, Outer2::N ok, Outer2::N max) Outer0::VarIterator.#apply(that:this, min:min.#less(that:Outer2::N.#numberParser(that:{'@stringU
 '1
-})), ok:ok, max:Outer0::OptMax.#apply(that:max), fill:Outer0::OptFill.#apply())
+}##star ^##)), ok:ok, max:Outer0::OptMax.#apply(that:max), fill:Outer0::OptFill.#apply())
 mut method 
 mut Outer0::VarIterator vars(Outer2::N min, Outer2::N ok, Outer1::Kind::elem() fill) Outer0::VarIterator.#apply(that:this, min:min.#less(that:Outer2::N.#numberParser(that:{'@stringU
 '1
-})), ok:ok, max:Outer0::OptMax.#apply(), fill:Outer0::OptFill.#apply(that:fill))
+}##star ^##)), ok:ok, max:Outer0::OptMax.#apply(), fill:Outer0::OptFill.#apply(that:fill))
 mut method 
 mut Outer0::VarIterator vars(Outer2::N min, Outer2::N ok) Outer0::VarIterator.#apply(that:this, min:min.#less(that:Outer2::N.#numberParser(that:{'@stringU
 '1
-})), ok:ok, max:Outer0::OptMax.#apply(), fill:Outer0::OptFill.#apply())
+}##star ^##)), ok:ok, max:Outer0::OptMax.#apply(), fill:Outer0::OptFill.#apply())
 mut method 
 mut Outer0::VarIterator vars(Outer2::N min, Outer2::N max, Outer1::Kind::elem() fill) Outer0::VarIterator.#apply(that:this, min:min.#less(that:Outer2::N.#numberParser(that:{'@stringU
 '1
-})), ok:max, max:Outer0::OptMax.#apply(that:max), fill:Outer0::OptFill.#apply(that:fill))
+}##star ^##)), ok:max, max:Outer0::OptMax.#apply(that:max), fill:Outer0::OptFill.#apply(that:fill))
 mut method 
 mut Outer0::VarIterator vars(Outer2::N min, Outer2::N max) Outer0::VarIterator.#apply(that:this, min:min.#less(that:Outer2::N.#numberParser(that:{'@stringU
 '1
-})), ok:max, max:Outer0::OptMax.#apply(that:max), fill:Outer0::OptFill.#apply())
+}##star ^##)), ok:max, max:Outer0::OptMax.#apply(that:max), fill:Outer0::OptFill.#apply())
 mut method 
 mut Outer0::VarIterator vars(Outer2::N min, Outer1::Kind::elem() fill) Outer0::VarIterator.#apply(that:this, min:min.#less(that:Outer2::N.#numberParser(that:{'@stringU
 '1
-})), ok:this.size(), max:Outer0::OptMax.#apply(), fill:Outer0::OptFill.#apply(that:fill))
+}##star ^##)), ok:this.size(), max:Outer0::OptMax.#apply(), fill:Outer0::OptFill.#apply(that:fill))
 mut method 
 mut Outer0::VarIterator vars(Outer2::N min) Outer0::VarIterator.#apply(that:this, min:min.#less(that:Outer2::N.#numberParser(that:{'@stringU
 '1
-})), ok:this.size(), max:Outer0::OptMax.#apply(), fill:Outer0::OptFill.#apply())
+}##star ^##)), ok:this.size(), max:Outer0::OptMax.#apply(), fill:Outer0::OptFill.#apply())
 mut method 
 mut Outer0::VarIterator vars(Outer2::N ok, Outer2::N max, Outer1::Kind::elem() fill) Outer0::VarIterator.#apply(that:this, min:Outer2::N.#numberParser(that:{'@stringU
 '-1
-}), ok:ok, max:Outer0::OptMax.#apply(that:max), fill:Outer0::OptFill.#apply(that:fill))
+}##star ^##), ok:ok, max:Outer0::OptMax.#apply(that:max), fill:Outer0::OptFill.#apply(that:fill))
 mut method 
 mut Outer0::VarIterator vars(Outer2::N ok, Outer2::N max) Outer0::VarIterator.#apply(that:this, min:Outer2::N.#numberParser(that:{'@stringU
 '-1
-}), ok:ok, max:Outer0::OptMax.#apply(that:max), fill:Outer0::OptFill.#apply())
+}##star ^##), ok:ok, max:Outer0::OptMax.#apply(that:max), fill:Outer0::OptFill.#apply())
 mut method 
 mut Outer0::VarIterator vars(Outer2::N ok, Outer1::Kind::elem() fill) Outer0::VarIterator.#apply(that:this, min:Outer2::N.#numberParser(that:{'@stringU
 '-1
-}), ok:ok, max:Outer0::OptMax.#apply(), fill:Outer0::OptFill.#apply(that:fill))
+}##star ^##), ok:ok, max:Outer0::OptMax.#apply(), fill:Outer0::OptFill.#apply(that:fill))
 mut method 
 mut Outer0::VarIterator vars(Outer2::N ok) Outer0::VarIterator.#apply(that:this, min:Outer2::N.#numberParser(that:{'@stringU
 '-1
-}), ok:ok, max:Outer0::OptMax.#apply(), fill:Outer0::OptFill.#apply())
+}##star ^##), ok:ok, max:Outer0::OptMax.#apply(), fill:Outer0::OptFill.#apply())
 mut method 
 mut Outer0::VarIterator vars(Outer2::N max, Outer1::Kind::elem() fill) Outer0::VarIterator.#apply(that:this, min:Outer2::N.#numberParser(that:{'@stringU
 '-1
-}), ok:max, max:Outer0::OptMax.#apply(that:max), fill:Outer0::OptFill.#apply(that:fill))
+}##star ^##), ok:max, max:Outer0::OptMax.#apply(that:max), fill:Outer0::OptFill.#apply(that:fill))
 mut method 
 mut Outer0::VarIterator vars(Outer2::N max) Outer0::VarIterator.#apply(that:this, min:Outer2::N.#numberParser(that:{'@stringU
 '-1
-}), ok:max, max:Outer0::OptMax.#apply(that:max), fill:Outer0::OptFill.#apply())
+}##star ^##), ok:max, max:Outer0::OptMax.#apply(that:max), fill:Outer0::OptFill.#apply())
 mut method 
 mut Outer0::VarIterator vars(Outer1::Kind::elem() fill) Outer0::VarIterator.#apply(that:this, min:Outer2::N.#numberParser(that:{'@stringU
 '-1
-}), ok:this.size(), max:Outer0::OptMax.#apply(), fill:Outer0::OptFill.#apply(that:fill))
+}##star ^##), ok:this.size(), max:Outer0::OptMax.#apply(), fill:Outer0::OptFill.#apply(that:fill))
 mut method 
 mut Outer0::VarIterator vars() Outer0::VarIterator.#apply(that:this, min:Outer2::N.#numberParser(that:{'@stringU
 '-1
-}), ok:this.size(), max:Outer0::OptMax.#apply(), fill:Outer0::OptFill.#apply())
+}##star ^##), ok:this.size(), max:Outer0::OptMax.#apply(), fill:Outer0::OptFill.#apply())
 VarIterator:{
 type method 
 mut Outer0 #apply(mut Outer1^that, Outer3::N^min, Outer3::N^ok, Outer1::OptMax^max, Outer1::OptFill^fill) 
@@ -760,7 +760,7 @@ Void #next() exception Void (
   Void unused=(
     Void unused0=this.min(that:this.min().#plus(that:Outer3::N.#numberParser(that:{'@stringU
     '1
-    })))
+    }##star ^##)))
     Void unused1=(
       Outer0::fill() ::isPresent() cond=this.fill().isPresent()
       (
@@ -830,7 +830,7 @@ Void #next() exception Void (
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
-  }
+  }##star ^##
   )
 read method 
 Void #checkEnd() (
@@ -842,9 +842,9 @@ Void #checkEnd() (
       )
     error Outer3::S.#stringParser(that:{'@stringU
     'Unexpected termination of iteration, reached 
-    }).#plusplus(that:this.min().#plusplus(that:Outer3::S.#stringParser(that:{'@stringU
+    }##star ^##).#plusplus(that:this.min()).#plusplus(that:Outer3::S.#stringParser(that:{'@stringU
     ' instead of 
-    }).#plusplus(that:this.ok())))
+    }##star ^##).#plusplus(that:this.ok()))
     )
   )
 read method 
@@ -878,10 +878,10 @@ Outer2::Kind::elem() #inner() (
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
-  }
+  }##star ^##
   )
 read method 
-Void #close() void}}})
+Void #close() void}##plus ^##}##plus ^##}##plus ^##)
 N:{<:Outer1::S::ToS
 type method 
 Outer0 #apply(Library^_binaryRepr) 
@@ -1006,14 +1006,14 @@ Outer0 #stringParser(Library that) Outer0.#apply(reason:Outer3::S.#stringParser(
 type method 
 Outer0 #apply() Outer0.#apply(that:Outer3::S.#stringParser(that:{'@stringU
 '
-}))
+}##star ^##))
 type method 
 Outer0 #apply(Outer3::S that) Outer0.#apply(reason:that)
 method toS() Outer3::S.#stringParser(that:{'@stringU
 'UnsupportedOperation[
-}).#plusplus(that:this.reason().#plusplus(that:Outer3::S.#stringParser(that:{'@stringU
+}##star ^##).#plusplus(that:this.reason().#plusplus(that:Outer3::S.#stringParser(that:{'@stringU
 ']
-})))}##plus ^##
+}##star ^##)))}##plus ^##
 InvalidOnTopLevel:{<:Outer1, Outer3::S::ToS
 type method 
 Outer0 #apply(Outer2::Introspection::Record^report) 
@@ -1023,7 +1023,7 @@ read method
 Outer2::Introspection::Record report() 
 method toS() Outer3::S.#stringParser(that:{'@stringU
 'InvalidOnTopLevel
-})}##plus ^##
+}##star ^##)}##plus ^##
 TargetUnavailable:{<:Outer1, Outer3::S::ToS
 type method 
 Outer0 #apply(Outer2::Introspection::Record^report) 
@@ -1033,7 +1033,7 @@ read method
 Outer2::Introspection::Record report() 
 method toS() Outer3::S.#stringParser(that:{'@stringU
 'TargetUnavailable
-})}##plus ^##
+}##star ^##)}##plus ^##
 SourceUnfit:{<:Outer1, Outer3::S::ToS
 type method 'TODO: here, when typechecking introspection, for bug introspection can not see itself back. fix tomorrow.
 Outer0 #apply(Outer2::Introspection::Record^report) 
@@ -1043,7 +1043,7 @@ read method 'TODO: here, when typechecking introspection, for bug introspection 
 Outer2::Introspection::Record report() 
 method toS() Outer3::S.#stringParser(that:{'@stringU
 'SourceUnfit
-})}##plus ^##
+}##star ^##)}##plus ^##
 ClassClash:{'findMeClassClash
 <:Outer1, Outer3::S::ToS
 type method 
@@ -1054,7 +1054,7 @@ read method
 Outer2::Introspection::Record report() 
 method toS() Outer3::S.#stringParser(that:{'@stringU
 'ClassClash
-})}##plus ^##
+}##star ^##)}##plus ^##
 MethodClash:{<:Outer1, Outer3::S::ToS
 type method 
 Outer0 #apply(Outer2::Introspection::Record^report) 
@@ -1064,7 +1064,7 @@ read method
 Outer2::Introspection::Record report() 
 method toS() Outer3::S.#stringParser(that:{'@stringU
 'MethodClash
-})}##plus ^##
+}##star ^##)}##plus ^##
 CodeNotReachable:{<:Outer3::S::ToS
 type method 
 Outer0 #apply(Outer3::S^reason) 
@@ -1077,14 +1077,14 @@ Outer0 #stringParser(Library that) Outer0.#apply(reason:Outer3::S.#stringParser(
 type method 
 Outer0 #apply() Outer0.#apply(that:Outer3::S.#stringParser(that:{'@stringU
 '
-}))
+}##star ^##))
 type method 
 Outer0 #apply(Outer3::S that) Outer0.#apply(reason:that)
 method toS() Outer3::S.#stringParser(that:{'@stringU
 'CodeNotReachable[
-}).#plusplus(that:this.reason().#plusplus(that:Outer3::S.#stringParser(that:{'@stringU
+}##star ^##).#plusplus(that:this.reason().#plusplus(that:Outer3::S.#stringParser(that:{'@stringU
 ']
-})))}##plus ^##
+}##star ^##)))}##plus ^##
 PluginFailure:'to report the inability of a plugin to act
 {<:Outer3::S::ToS
 type method 
@@ -1098,14 +1098,14 @@ Outer0 #stringParser(Library that) Outer0.#apply(reason:Outer3::S.#stringParser(
 type method 
 Outer0 #apply() Outer0.#apply(that:Outer3::S.#stringParser(that:{'@stringU
 '
-}))
+}##star ^##))
 type method 
 Outer0 #apply(Outer3::S that) Outer0.#apply(reason:that)
 method toS() Outer3::S.#stringParser(that:{'@stringU
 'PluginFailure[
-}).#plusplus(that:this.reason().#plusplus(that:Outer3::S.#stringParser(that:{'@stringU
+}##star ^##).#plusplus(that:this.reason().#plusplus(that:Outer3::S.#stringParser(that:{'@stringU
 ']
-})))}##plus ^##
+}##star ^##)))}##plus ^##
 NotImplementedYet:{<:Outer3::S::ToS
 type method 
 Outer0 #apply(Outer3::S^reason) 
@@ -1118,14 +1118,14 @@ Outer0 #stringParser(Library that) Outer0.#apply(reason:Outer3::S.#stringParser(
 type method 
 Outer0 #apply() Outer0.#apply(that:Outer3::S.#stringParser(that:{'@stringU
 '
-}))
+}##star ^##))
 type method 
 Outer0 #apply(Outer3::S that) Outer0.#apply(reason:that)
 method toS() Outer3::S.#stringParser(that:{'@stringU
 'CodeNotReachable[
-}).#plusplus(that:this.reason().#plusplus(that:Outer3::S.#stringParser(that:{'@stringU
+}##star ^##).#plusplus(that:this.reason().#plusplus(that:Outer3::S.#stringParser(that:{'@stringU
 ']
-})))}##plus ^##
+}##star ^##)))}##plus ^##
 ObservedBug:'if this happens, then the programmer had wrong assumption on the code behaviour.
 {<:Outer3::S::ToS
 type method 
@@ -1139,14 +1139,14 @@ Outer0 #stringParser(Library that) Outer0.#apply(reason:Outer3::S.#stringParser(
 type method 
 Outer0 #apply() Outer0.#apply(that:Outer3::S.#stringParser(that:{'@stringU
 '
-}))
+}##star ^##))
 type method 
 Outer0 #apply(Outer3::S that) Outer0.#apply(reason:that)
 method toS() Outer3::S.#stringParser(that:{'@stringU
 'ObservedBug[
-}).#plusplus(that:this.reason().#plusplus(that:Outer3::S.#stringParser(that:{'@stringU
+}##star ^##).#plusplus(that:this.reason().#plusplus(that:Outer3::S.#stringParser(that:{'@stringU
 ']
-})))}##plus ^##
+}##star ^##)))}##plus ^##
 Misuse:'If this happens, then the library client is calling a function with wrong parameters or in a wrong way.
 'It is a shorter name for Precondition Violation
 'If the violation is because the "this" parameter is not suitable to perform the requested operation,
@@ -1163,14 +1163,14 @@ Outer0 #stringParser(Library that) Outer0.#apply(reason:Outer3::S.#stringParser(
 type method 
 Outer0 #apply() Outer0.#apply(that:Outer3::S.#stringParser(that:{'@stringU
 '
-}))
+}##star ^##))
 type method 
 Outer0 #apply(Outer3::S that) Outer0.#apply(reason:that)
 method toS() Outer3::S.#stringParser(that:{'@stringU
 'Misuse[
-}).#plusplus(that:this.reason().#plusplus(that:Outer3::S.#stringParser(that:{'@stringU
+}##star ^##).#plusplus(that:this.reason().#plusplus(that:Outer3::S.#stringParser(that:{'@stringU
 ']
-})))}##plus ^##}##plus ^##
+}##star ^##)))}##plus ^##}##plus ^##
 Path:{<:Outer2::S::ToS
 type method '  toPutAs private
 Outer0 _private(Library^_binaryRepr) 
@@ -1200,7 +1200,7 @@ Outer2::Bool #equalequal(Outer0 that) (
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
-  }
+  }##star ^##
   )
 method 
 Outer0 #plusplus(Outer0 that) (
@@ -1208,7 +1208,7 @@ Outer0 #plusplus(Outer0 that) (
     Void unused0=(
       Outer0::#equalequal(that ) cond=this.#equalequal(that:Outer0.#stringParser(that:{'@stringU
       'Outer0
-      }))
+      }##star ^##))
       (
         Void unused3=cond.#checkTrue()
         catch exception unused4 (
@@ -1220,7 +1220,7 @@ Outer0 #plusplus(Outer0 that) (
     Void unused1=(
       Outer0::#equalequal(that ) cond0=that.#equalequal(that:Outer0.#stringParser(that:{'@stringU
       'Outer0
-      }))
+      }##star ^##))
       (
         Void unused5=cond0.#checkTrue()
         catch exception unused6 (
@@ -1231,7 +1231,7 @@ Outer0 #plusplus(Outer0 that) (
       )
     Void unused2=return Outer0.#stringParser(that:this.toS().#plusplus(that:Outer2::S.#stringParser(that:{'@stringU
     '::
-    }).#plusplus(that:that.toS())).binaryRepr())
+    }##star ^##).#plusplus(that:that.toS())).binaryRepr())
     void
     )
   catch return result (
@@ -1239,7 +1239,7 @@ Outer0 #plusplus(Outer0 that) (
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
-  }
+  }##star ^##
   )
 InvalidFormat:{
 type method 
@@ -1270,25 +1270,25 @@ Library #leftleft(Library that) exception Outer2::Report::TargetUnavailable, Out
         (
           Outer2::Introspection::#apply(lib ) ::report() ::#stringParser(that ) x=report.#stringParser(that:{'@stringU
           'Kind
-          })
+          }##star ^##)
           (
             Outer2::Introspection::#apply(lib ) ::report() ::#stringParser(that ) ::#equalequal(that ) cond=x.#equalequal(that:Outer3::S.#stringParser(that:{'@stringU
             'TargetUnavailable
-            }))
+            }##star ^##))
             (
               Void unused1=cond.#checkTrue()
               catch exception unused2 (
                 on Void (
                   Outer2::Introspection::#apply(lib ) ::report() ::#stringParser(that ) ::#equalequal(that ) cond0=x.#equalequal(that:Outer3::S.#stringParser(that:{'@stringU
                   'MethodClash
-                  }))
+                  }##star ^##))
                   (
                     Void unused3=cond0.#checkTrue()
                     catch exception unused4 (
                       on Void (
                         Outer2::Introspection::#apply(lib ) ::report() ::#stringParser(that ) ::#equalequal(that ) cond1=x.#equalequal(that:Outer3::S.#stringParser(that:{'@stringU
                         'ClassClash
-                        }))
+                        }##star ^##))
                         (
                           Void unused5=cond1.#checkTrue()
                           catch exception unused6 (
@@ -1315,7 +1315,7 @@ Library #leftleft(Library that) exception Outer2::Report::TargetUnavailable, Out
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
-  }
+  }##star ^##
   )
 type method 
 type Outer0 #begin() Outer0
@@ -1342,32 +1342,32 @@ Library #leftleft(Library that) exception Outer2::Report::TargetUnavailable, Out
         (
           Outer2::Introspection::#apply(lib ) ::report() ::#stringParser(that ) x=report.#stringParser(that:{'@stringU
           'Kind
-          })
+          }##star ^##)
           (
             Outer2::Introspection::#apply(lib ) ::report() ::#stringParser(that ) ::#equalequal(that ) cond=x.#equalequal(that:Outer3::S.#stringParser(that:{'@stringU
             'TargetUnavailable
-            }))
+            }##star ^##))
             (
               Void unused1=cond.#checkTrue()
               catch exception unused2 (
                 on Void (
                   Outer2::Introspection::#apply(lib ) ::report() ::#stringParser(that ) ::#equalequal(that ) cond0=x.#equalequal(that:Outer3::S.#stringParser(that:{'@stringU
                   'InvalidOnTopLevel
-                  }))
+                  }##star ^##))
                   (
                     Void unused3=cond0.#checkTrue()
                     catch exception unused4 (
                       on Void (
                         Outer2::Introspection::#apply(lib ) ::report() ::#stringParser(that ) ::#equalequal(that ) cond1=x.#equalequal(that:Outer3::S.#stringParser(that:{'@stringU
                         'MethodClash
-                        }))
+                        }##star ^##))
                         (
                           Void unused5=cond1.#checkTrue()
                           catch exception unused6 (
                             on Void (
                               Outer2::Introspection::#apply(lib ) ::report() ::#stringParser(that ) ::#equalequal(that ) cond2=x.#equalequal(that:Outer3::S.#stringParser(that:{'@stringU
                               'SourceUnfit
-                              }))
+                              }##star ^##))
                               (
                                 Void unused7=cond2.#checkTrue()
                                 catch exception unused8 (
@@ -1398,7 +1398,7 @@ Library #leftleft(Library that) exception Outer2::Report::TargetUnavailable, Out
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
-  }
+  }##star ^##
   )
 type method 
 type Outer0 #begin() Outer0
@@ -1413,7 +1413,7 @@ type method
 Outer0::NestedClass #apply(Library lib) (
   Outer0::MirrorPr::Lib::#apply(lib ) ::introspectReport(root path ) root=Outer0::MirrorPr::Lib.#apply(lib:lib).introspectReport(root:root, path:Outer1::Path.#stringParser(that:{'@stringU
   'Outer0
-  }))
+  }##star ^##))
   catch exception x (
     on Outer1::Report::TargetUnavailable error Outer1::Report::CodeNotReachable.#apply()
     )
@@ -1443,12 +1443,12 @@ Void dbg() (
         )
       error {'@stringU
       'CastT-Should be unreachable code
-      }
+      }##star ^##
       )
     catch exception unused0 (
       on Void Outer3::Debug.#apply(that:Outer3::S.#stringParser(that:{'@stringU
       'Sorry, can not print class mirrors
-      }))
+      }##star ^##))
       )
     (
       Void unused1=Outer3::Debug.#apply(lib:x0.lib())
@@ -1471,7 +1471,7 @@ Outer3::S #stringParser(Library that) (
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
-  }
+  }##star ^##
   )
 method 
 Outer2::Doc docOf(Outer2::Path path) (
@@ -1488,7 +1488,7 @@ Outer2::Doc docOf(Outer2::Path path) (
             )
           error {'@stringU
           'CastT-Should be unreachable code
-          }
+          }##star ^##
           )
         catch exception unused3 (
           on Void void
@@ -1496,7 +1496,7 @@ Outer2::Doc docOf(Outer2::Path path) (
         (
           Void unused4=return Outer2::Doc.#apply(that:Outer2::SafeOperators.renameClass(that:mirror0.lib(), src:path, dest:Outer2::Path.#stringParser(that:{'@stringU
           'Outer0
-          })))
+          }##star ^##)))
           void
           )
         )
@@ -1509,7 +1509,7 @@ Outer2::Doc docOf(Outer2::Path path) (
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
-  }
+  }##star ^##
   )
 type method 
 Outer1::Member dispatch(Outer1::NestedClass^root, Outer2::Path path, Outer1::MirrorPr mirror, Outer3::N memberN, Library report) (
@@ -1519,38 +1519,38 @@ Outer1::Member dispatch(Outer1::NestedClass^root, Outer2::Path path, Outer1::Mir
       Void unused0=(
         Outer0::#apply(lib ) ::#stringParser(that ) x=_report.#stringParser(that:{'@stringU
         'MemberKind
-        })
+        }##star ^##)
         (
           Outer0::#apply(lib ) ::#stringParser(that ) ::#equalequal(that ) cond=x.#equalequal(that:Outer3::S.#stringParser(that:{'@stringU
           'InterfaceImplementedMethod
-          }))
+          }##star ^##))
           (
             Void unused1=cond.#checkTrue()
             catch exception unused2 (
               on Void (
                 Outer0::#apply(lib ) ::#stringParser(that ) ::#equalequal(that ) cond0=x.#equalequal(that:Outer3::S.#stringParser(that:{'@stringU
                 'ImplementedMethod
-                }))
+                }##star ^##))
                 (
                   Void unused3=cond0.#checkTrue()
                   catch exception unused4 (
                     on Void (
                       Outer0::#apply(lib ) ::#stringParser(that ) ::#equalequal(that ) cond1=x.#equalequal(that:Outer3::S.#stringParser(that:{'@stringU
                       'AbstractMethod
-                      }))
+                      }##star ^##))
                       (
                         Void unused5=cond1.#checkTrue()
                         catch exception unused6 (
                           on Void (
                             Outer0::#apply(lib ) ::#stringParser(that ) ::#equalequal(that ) cond2=x.#equalequal(that:Outer3::S.#stringParser(that:{'@stringU
                             'NestedClass
-                            }))
+                            }##star ^##))
                             (
                               Void unused7=cond2.#checkTrue()
                               catch exception unused8 (
                                 on Void error Outer2::Report::ObservedBug.#apply(that:Outer3::S.#stringParser(that:{'@stringU
                                 'invalid member kind 
-                                }).#plusplus(that:x))
+                                }##star ^##).#plusplus(that:x))
                                 )
                               return Outer0::RootForNested.#apply(path:path, mirror:mirror, _report:_report)
                               )
@@ -1575,7 +1575,7 @@ Outer1::Member dispatch(Outer1::NestedClass^root, Outer2::Path path, Outer1::Mir
       )
     error {'@stringU
     'CurlyBlock-Should be unreachable code
-    }
+    }##star ^##
     )
   result.#apply(root:root)
   )
@@ -1639,15 +1639,15 @@ read method
 Outer1::Record report() 
 method toS() Outer3::S.#stringParser(that:{'@stringU
 'NestedClass[
-}).#plusplus(that:this.allAsString().#plusplus(that:Outer3::S.#stringParser(that:{'@stringU
+}##star ^##).#plusplus(that:this.allAsString().#plusplus(that:Outer3::S.#stringParser(that:{'@stringU
 ']
-})))
+}##star ^##)))
 method 'empty for Outer0
 Outer2::Doc nestedDoc() (
   Void unused=(
     Outer0::path() ::#equalequal(that ) cond=this.path().#equalequal(that:Outer2::Path.#stringParser(that:{'@stringU
     'Outer0
-    }))
+    }##star ^##))
     (
       Void unused0=cond.#checkTrue()
       catch exception unused1 (
@@ -1655,17 +1655,17 @@ Outer2::Doc nestedDoc() (
         )
       error Outer2::Report::UnsupportedOperation.#stringParser(that:{'@stringU
       'NestedClass.nestedDoc()  The NestedClass Object refers to Outer0
-      })
+      }##star ^##)
       )
     )
   this.report().docOf(path:Outer2::Path.#stringParser(that:{'@stringU
   'Doc
-  }))
+  }##star ^##))
   )
 method 'of the library literal
 Outer2::Doc doc() this.report().docOf(path:Outer2::Path.#stringParser(that:{'@stringU
 'Doc
-}))
+}##star ^##))
 method 
 Outer2::Path pathFromRoot() this.path()
 method 
@@ -1674,7 +1674,7 @@ type Any externalType() (
     Void unused0=(
       Outer0::path() ::#bangequal(that ) cond=this.path().#bangequal(that:Outer2::Path.#stringParser(that:{'@stringU
       'Outer0
-      }))
+      }##star ^##))
       (
         Void unused2=cond.#checkTrue()
         catch exception unused3 (
@@ -1682,7 +1682,7 @@ type Any externalType() (
           )
         error Outer2::Report::UnsupportedOperation.#apply(that:Outer3::S.#stringParser(that:{'@stringU
         'NestedClass.externalType() The NestedClass Object refers to 
-        }).#plusplus(that:this.path()))
+        }##star ^##).#plusplus(that:this.path()))
         )
       )
     Void unused1=(
@@ -1697,12 +1697,12 @@ type Any externalType() (
             )
           error {'@stringU
           'CastT-Should be unreachable code
-          }
+          }##star ^##
           )
         catch exception unused5 (
           on Void error Outer2::Report::UnsupportedOperation.#stringParser(that:{'@stringU
           'NestedClass.externalType() The NestedClass Object is unbound
-          })
+          }##star ^##)
           )
         (
           Void unused6=return mirror0.lib()
@@ -1717,24 +1717,24 @@ type Any externalType() (
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
-  }
+  }##star ^##
   )
 method 
 Outer3::S classKind() this.report().#stringParser(that:{'@stringU
 'ClassKind
-})
+}##star ^##)
 method 
 Outer3::S allAsString() this.report().#stringParser(that:{'@stringU
 'AllAsString
-})
+}##star ^##)
 method 
 Outer1::Members members() (
   Outer1::Members::#begin() ::#end() result=Outer1::Members.#begin().#end()
   Outer3::N::#numberParser(that ) mN=Outer3::N.#numberParser(that:{'@stringU
   '1
-  })
-  mut Outer0::Varresult1_$%14_0_$%$%43_0_$%$%$%71_0_$%$%$%$%100_0_$%$%$%$%$%129_0__157_0 varresult=Outer0::Varresult1_$%14_0_$%$%43_0_$%$%$%71_0_$%$%$%$%100_0_$%$%$%$%$%129_0__157_0.#apply(inner:result)
-  mut Outer0::VarmN_$%13_0_$%$%42_0_$%$%$%70_0_$%$%$%$%99_0_$%$%$%$%$%128_0__156_0 varmN=Outer0::VarmN_$%13_0_$%$%42_0_$%$%$%70_0_$%$%$%$%99_0_$%$%$%$%$%128_0__156_0.#apply(inner:mN)
+  }##star ^##)
+  mut Outer0::Varresult1_$%$%14_0_$%$%$%43_0_$%$%$%$%71_0_$%$%$%$%$%100_0_$%$%$%$%$%$%129_0__157_0 varresult=Outer0::Varresult1_$%$%14_0_$%$%$%43_0_$%$%$%$%71_0_$%$%$%$%$%100_0_$%$%$%$%$%$%129_0__157_0.#apply(inner:result)
+  mut Outer0::VarmN_$%$%13_0_$%$%$%42_0_$%$%$%$%70_0_$%$%$%$%$%99_0_$%$%$%$%$%$%128_0__156_0 varmN=Outer0::VarmN_$%$%13_0_$%$%$%42_0_$%$%$%$%70_0_$%$%$%$%$%99_0_$%$%$%$%$%$%128_0__156_0.#apply(inner:mN)
   Void unused=(
     Void unused0=loop (
       Void unused1=Outer3::Bool.true().#checkTrue()
@@ -1743,7 +1743,7 @@ Outer1::Members members() (
         Void unused2=varresult.inner(that:varresult.#inner().#add(that:this.mirror().introspectReportMember(root:this, path:this.path(), memberN:varmN.#inner())))
         varmN.inner(that:varmN.#inner().#plus(that:Outer3::N.#numberParser(that:{'@stringU
         '1
-        })))
+        }##star ^##)))
         )
       )
     catch exception unused3 (
@@ -1759,7 +1759,7 @@ Outer1::Members members() (
 method 
 Outer1::Methods methods() (
   Outer1::Methods::#begin() accumulator=Outer1::Methods.#begin()
-  mut Outer0::Varaccumulator_$%15_0_$%$%44_0_$%$%$%72_0_$%$%$%$%101_0_$%$%$%$%$%130_0__158_0 varaccumulator=Outer0::Varaccumulator_$%15_0_$%$%44_0_$%$%$%72_0_$%$%$%$%101_0_$%$%$%$%$%130_0__158_0.#apply(inner:accumulator)
+  mut Outer0::Varaccumulator_$%$%15_0_$%$%$%44_0_$%$%$%$%72_0_$%$%$%$%$%101_0_$%$%$%$%$%$%130_0__158_0 varaccumulator=Outer0::Varaccumulator_$%$%15_0_$%$%$%44_0_$%$%$%$%72_0_$%$%$%$%$%101_0_$%$%$%$%$%$%130_0__158_0.#apply(inner:accumulator)
   Void unused=(
     Outer0::members() ::vals() m=this.members().vals()
     (
@@ -1789,7 +1789,7 @@ Outer1::Methods methods() (
                   )
                 error {'@stringU
                 'CastT-Should be unreachable code
-                }
+                }##star ^##
                 )
               catch exception unused9 (
                 on Void void
@@ -1827,7 +1827,7 @@ Outer1::Methods methods() (
 method 
 Outer1::NestedClasses nestedClasses() (
   Outer1::NestedClasses::#begin() accumulator=Outer1::NestedClasses.#begin()
-  mut Outer0::Varaccumulator0_$%16_0_$%$%45_0_$%$%$%73_0_$%$%$%$%102_0_$%$%$%$%$%131_0__159_0 varaccumulator=Outer0::Varaccumulator0_$%16_0_$%$%45_0_$%$%$%73_0_$%$%$%$%102_0_$%$%$%$%$%131_0__159_0.#apply(inner:accumulator)
+  mut Outer0::Varaccumulator0_$%$%16_0_$%$%$%45_0_$%$%$%$%73_0_$%$%$%$%$%102_0_$%$%$%$%$%$%131_0__159_0 varaccumulator=Outer0::Varaccumulator0_$%$%16_0_$%$%$%45_0_$%$%$%$%73_0_$%$%$%$%$%102_0_$%$%$%$%$%$%131_0__159_0.#apply(inner:accumulator)
   Void unused=(
     Outer0::members() ::vals() m=this.members().vals()
     (
@@ -1857,7 +1857,7 @@ Outer1::NestedClasses nestedClasses() (
                   )
                 error {'@stringU
                 'CastT-Should be unreachable code
-                }
+                }##star ^##
                 )
               catch exception unused9 (
                 on Void void
@@ -1897,9 +1897,9 @@ Outer1::Types implementedInterfaces() (
   Outer1::Types::#begin() ::#end() result=Outer1::Types.#begin().#end()
   Outer3::N::#numberParser(that ) tN=Outer3::N.#numberParser(that:{'@stringU
   '-1
-  })
-  mut Outer0::Varresult2_$%18_0_$%$%47_0_$%$%$%75_0_$%$%$%$%104_0_$%$%$%$%$%133_0__161_0 varresult=Outer0::Varresult2_$%18_0_$%$%47_0_$%$%$%75_0_$%$%$%$%104_0_$%$%$%$%$%133_0__161_0.#apply(inner:result)
-  mut Outer0::VartN_$%17_0_$%$%46_0_$%$%$%74_0_$%$%$%$%103_0_$%$%$%$%$%132_0__160_0 vartN=Outer0::VartN_$%17_0_$%$%46_0_$%$%$%74_0_$%$%$%$%103_0_$%$%$%$%$%132_0__160_0.#apply(inner:tN)
+  }##star ^##)
+  mut Outer0::Varresult2_$%$%18_0_$%$%$%47_0_$%$%$%$%75_0_$%$%$%$%$%104_0_$%$%$%$%$%$%133_0__161_0 varresult=Outer0::Varresult2_$%$%18_0_$%$%$%47_0_$%$%$%$%75_0_$%$%$%$%$%104_0_$%$%$%$%$%$%133_0__161_0.#apply(inner:result)
+  mut Outer0::VartN_$%$%17_0_$%$%$%46_0_$%$%$%$%74_0_$%$%$%$%$%103_0_$%$%$%$%$%$%132_0__160_0 vartN=Outer0::VartN_$%$%17_0_$%$%$%46_0_$%$%$%$%74_0_$%$%$%$%$%103_0_$%$%$%$%$%$%132_0__160_0.#apply(inner:tN)
   Void unused=(
     Void unused0=loop (
       Void unused1=Outer3::Bool.true().#checkTrue()
@@ -1907,10 +1907,10 @@ Outer1::Types implementedInterfaces() (
       
         Void unused2=varresult.inner(that:varresult.#inner().#add(that:this.report().that().introspectReportType(root:this, path:this.path(), memberN:Outer3::N.#numberParser(that:{'@stringU
         '0
-        }), typeN:vartN.#inner())))
+        }##star ^##), typeN:vartN.#inner())))
         vartN.inner(that:vartN.#inner().#less(that:Outer3::N.#numberParser(that:{'@stringU
         '1
-        })))
+        }##star ^##)))
         )
       )
     catch exception unused3 (
@@ -1929,7 +1929,7 @@ method
 Outer1::Method methodFromSelector(Outer2::Selector that) exception Outer2::Report::TargetUnavailable error Outer2::Report::NotImplementedYet.#apply()
 method 
 Outer0 nestedClassFromRoot(Outer2::Path that) exception Outer2::Report::TargetUnavailable this.mirror().introspectReport(root:this.root(), path:that)
-VartN_$%17_0_$%$%46_0_$%$%$%74_0_$%$%$%$%103_0_$%$%$%$%$%132_0__160_0:'@private
+VarmN_$%$%13_0_$%$%$%42_0_$%$%$%$%70_0_$%$%$%$%$%99_0_$%$%$%$%$%$%128_0__156_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer4::N::#numberParser(that ) ^inner) 
@@ -1937,23 +1937,15 @@ mut method
 Void inner(Outer4::N::#numberParser(that ) that) 
 mut method 
 Outer4::N::#numberParser(that ) #inner() }##plus ^##
-Varaccumulator0_$%16_0_$%$%45_0_$%$%$%73_0_$%$%$%$%102_0_$%$%$%$%$%131_0__159_0:'@private
+VartN_$%$%17_0_$%$%$%46_0_$%$%$%$%74_0_$%$%$%$%$%103_0_$%$%$%$%$%$%132_0__160_0:'@private
 {
 type method 
-mut Outer0 #apply(Outer2::NestedClasses::#begin() ^inner) 
+mut Outer0 #apply(Outer4::N::#numberParser(that ) ^inner) 
 mut method 
-Void inner(Outer2::NestedClasses::#begin() that) 
+Void inner(Outer4::N::#numberParser(that ) that) 
 mut method 
-Outer2::NestedClasses::#begin() #inner() }##plus ^##
-Varresult1_$%14_0_$%$%43_0_$%$%$%71_0_$%$%$%$%100_0_$%$%$%$%$%129_0__157_0:'@private
-{
-type method 
-mut Outer0 #apply(Outer2::Members::#begin() ::#end() ^inner) 
-mut method 
-Void inner(Outer2::Members::#begin() ::#end() that) 
-mut method 
-Outer2::Members::#begin() ::#end() #inner() }##plus ^##
-Varaccumulator_$%15_0_$%$%44_0_$%$%$%72_0_$%$%$%$%101_0_$%$%$%$%$%130_0__158_0:'@private
+Outer4::N::#numberParser(that ) #inner() }##plus ^##
+Varaccumulator_$%$%15_0_$%$%$%44_0_$%$%$%$%72_0_$%$%$%$%$%101_0_$%$%$%$%$%$%130_0__158_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer2::Methods::#begin() ^inner) 
@@ -1961,22 +1953,30 @@ mut method
 Void inner(Outer2::Methods::#begin() that) 
 mut method 
 Outer2::Methods::#begin() #inner() }##plus ^##
-VarmN_$%13_0_$%$%42_0_$%$%$%70_0_$%$%$%$%99_0_$%$%$%$%$%128_0__156_0:'@private
-{
-type method 
-mut Outer0 #apply(Outer4::N::#numberParser(that ) ^inner) 
-mut method 
-Void inner(Outer4::N::#numberParser(that ) that) 
-mut method 
-Outer4::N::#numberParser(that ) #inner() }##plus ^##
-Varresult2_$%18_0_$%$%47_0_$%$%$%75_0_$%$%$%$%104_0_$%$%$%$%$%133_0__161_0:'@private
+Varresult2_$%$%18_0_$%$%$%47_0_$%$%$%$%75_0_$%$%$%$%$%104_0_$%$%$%$%$%$%133_0__161_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer2::Types::#begin() ::#end() ^inner) 
 mut method 
 Void inner(Outer2::Types::#begin() ::#end() that) 
 mut method 
-Outer2::Types::#begin() ::#end() #inner() }##plus ^##}##plus ^##
+Outer2::Types::#begin() ::#end() #inner() }##plus ^##
+Varaccumulator0_$%$%16_0_$%$%$%45_0_$%$%$%$%73_0_$%$%$%$%$%102_0_$%$%$%$%$%$%131_0__159_0:'@private
+{
+type method 
+mut Outer0 #apply(Outer2::NestedClasses::#begin() ^inner) 
+mut method 
+Void inner(Outer2::NestedClasses::#begin() that) 
+mut method 
+Outer2::NestedClasses::#begin() #inner() }##plus ^##
+Varresult1_$%$%14_0_$%$%$%43_0_$%$%$%$%71_0_$%$%$%$%$%100_0_$%$%$%$%$%$%129_0__157_0:'@private
+{
+type method 
+mut Outer0 #apply(Outer2::Members::#begin() ::#end() ^inner) 
+mut method 
+Void inner(Outer2::Members::#begin() ::#end() that) 
+mut method 
+Outer2::Members::#begin() ::#end() #inner() }##plus ^##}##plus ^##
 MirrorPr:{interface 
 Lib:{<:Outer1
 type method 
@@ -1988,7 +1988,7 @@ Library lib()
 method introspectReport(root path ) (
   Outer2::NestedClass::#apply(root path mirror report ) result=Outer2::NestedClass.#apply(root:root, path:path, mirror:this, report:Outer2::Record.#apply(that:Outer0.#apply(lib:using Outer3::SafeOperators check introspectLibraryReport(that:this.lib(), path:path.binaryRepr()) error Outer3::Report::PluginFailure.#stringParser(that:{'@stringU
   'SafeOperators.introspectReport
-  }))))
+  }##star ^##))))
   catch error x (
     on Library exception Outer3::Report::TargetUnavailable.#apply(report:Outer2::Record.#apply(lib:x))
     )
@@ -2011,7 +2011,7 @@ method introspectReportType(root path memberN typeN ) (
 method introspectDocAsString(path annotationN ) (
   Outer4::S::#stringParser(that ) result=Outer4::S.#stringParser(that:using Outer3::SafeOperators check introspectLibraryDocAsString(that:this.lib(), path:path.binaryRepr(), annotationN:Outer4::N.#numberParser(that:{'@stringU
   '1
-  }).#plus(that:annotationN).binaryRepr()) exception void)
+  }##star ^##).#plus(that:annotationN).binaryRepr()) exception void)
   catch error x (
     on Library exception Outer3::Report::TargetUnavailable.#apply(report:Outer2::Record.#apply(lib:x))
     )
@@ -2020,9 +2020,9 @@ method introspectDocAsString(path annotationN ) (
 method introspectDocAsString(path ) (
   Outer4::S::#stringParser(that ) result=Outer4::S.#stringParser(that:using Outer3::SafeOperators check introspectLibraryDocAsString(that:this.lib(), path:path.binaryRepr(), annotationN:Outer4::N.#numberParser(that:{'@stringU
   '0
-  }).binaryRepr()) error Outer3::Report::PluginFailure.#stringParser(that:{'@stringU
+  }##star ^##).binaryRepr()) error Outer3::Report::PluginFailure.#stringParser(that:{'@stringU
   'SafeOperators.introspectLibraryDocAsString
-  }))
+  }##star ^##))
   catch error x (
     on Library exception Outer3::Report::TargetUnavailable.#apply(report:Outer2::Record.#apply(lib:x))
     )
@@ -2031,7 +2031,7 @@ method introspectDocAsString(path ) (
 method introspectDocPath(path annotationN ) (
   type Any result=using Outer3::SafeOperators check introspectLibraryDocPath(that:this.lib(), path:path.binaryRepr(), annotationN:annotationN.binaryRepr()) error Outer3::Report::PluginFailure.#stringParser(that:{'@stringU
   'SafeOperators.introspectLibraryDocPath
-  })
+  }##star ^##)
   catch error x (
     on Library exception Outer3::Report::TargetUnavailable.#apply(report:Outer2::Record.#apply(lib:x))
     )
@@ -2087,7 +2087,7 @@ Outer3::Bool isEmpty() (
             )
           error {'@stringU
           'CastT-Should be unreachable code
-          }
+          }##star ^##
           )
         catch exception unused2 (
           on Void return Outer3::Bool.false()
@@ -2105,7 +2105,7 @@ Outer3::Bool isEmpty() (
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
-  }
+  }##star ^##
   )
 method 
 Outer1::Type top() this.head().#inner()
@@ -2120,7 +2120,7 @@ Outer0 pop() (
     catch exception unused1 (
       on Void error Outer2::Report::Misuse.#stringParser(that:{'@stringU
       'PopOnEmpyList
-      })
+      }##star ^##)
       )
     void
     )
@@ -2129,13 +2129,13 @@ Outer0 pop() (
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
-  }
+  }##star ^##
   )
 method 
 Outer0 #plusplus(Outer0 that) (
   Void unused=(
     Outer0 res=this
-    mut Outer0::Varres_$%21_0_$%$%50_0_$%$%$%78_0_$%$%$%$%107_0_$%$%$%$%$%136_0__164_0 varres=Outer0::Varres_$%21_0_$%$%50_0_$%$%$%78_0_$%$%$%$%107_0_$%$%$%$%$%136_0__164_0.#apply(inner:res)
+    mut Outer0::Varres_$%$%21_0_$%$%$%50_0_$%$%$%$%78_0_$%$%$%$%$%107_0_$%$%$%$%$%$%136_0__164_0 varres=Outer0::Varres_$%$%21_0_$%$%$%50_0_$%$%$%$%78_0_$%$%$%$%$%107_0_$%$%$%$%$%$%136_0__164_0.#apply(inner:res)
     Void unused0=(
       Outer0::vals() e=that.vals()
       (
@@ -2187,7 +2187,7 @@ Outer0 #plusplus(Outer0 that) (
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
-  }
+  }##star ^##
   )
 type method 
 Outer0 #begin() Outer0.#apply()
@@ -2196,7 +2196,7 @@ Outer0 #add(Outer1::Type that) Outer0._new(head:Outer0::CellNext.#apply(elem:tha
 method 
 Outer0 #end() (
   Outer0::#apply() res=Outer0.#apply()
-  mut Outer0::Varres0_$%22_0_$%$%51_0_$%$%$%79_0_$%$%$%$%108_0_$%$%$%$%$%137_0__165_0 varres=Outer0::Varres0_$%22_0_$%$%51_0_$%$%$%79_0_$%$%$%$%108_0_$%$%$%$%$%137_0__165_0.#apply(inner:res)
+  mut Outer0::Varres0_$%$%22_0_$%$%$%51_0_$%$%$%$%79_0_$%$%$%$%$%108_0_$%$%$%$%$%$%137_0__165_0 varres=Outer0::Varres0_$%$%22_0_$%$%$%51_0_$%$%$%$%79_0_$%$%$%$%$%108_0_$%$%$%$%$%$%137_0__165_0.#apply(inner:res)
   Void unused=(
     Outer0::vals() elem=this.vals()
     (
@@ -2242,16 +2242,14 @@ Outer0 #end() (
     )
   varres.#inner()
   )
-Varres_$%21_0_$%$%50_0_$%$%$%78_0_$%$%$%$%107_0_$%$%$%$%$%136_0__164_0:'@private
+Varres0_$%$%22_0_$%$%$%51_0_$%$%$%$%79_0_$%$%$%$%$%108_0_$%$%$%$%$%$%137_0__165_0:'@private
 {
 type method 
-mut Outer0 #apply(Outer1^inner) 
+mut Outer0 #apply(Outer1::#apply() ^inner) 
 mut method 
-Void inner(Outer1 that) 
+Void inner(Outer1::#apply() that) 
 mut method 
-Outer1 #inner() 
-read method 
-Outer1 inner() }##plus ^##
+Outer1::#apply() #inner() }##plus ^##
 Iterator:{
 type method 
 mut Outer0 #apply(Outer1::Cell^that, Outer4::Bool^terminate) 
@@ -2279,7 +2277,7 @@ Void #next() exception Void (
           )
         error {'@stringU
         'CastT-Should be unreachable code
-        }
+        }##star ^##
         )
       catch exception unused3 (
         on Void void
@@ -2297,7 +2295,7 @@ Void #next() exception Void (
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
-  }
+  }##star ^##
   )
 read method 
 Void #checkEnd() (
@@ -2314,14 +2312,6 @@ read method
 Outer2::Type #inner() this.that().#inner()
 read method 
 Void #close() void}##plus ^##
-Varres0_$%22_0_$%$%51_0_$%$%$%79_0_$%$%$%$%108_0_$%$%$%$%$%137_0__165_0:'@private
-{
-type method 
-mut Outer0 #apply(Outer1::#apply() ^inner) 
-mut method 
-Void inner(Outer1::#apply() that) 
-mut method 
-Outer1::#apply() #inner() }##plus ^##
 Cell:{interface 
 method 
 mut Outer1::Iterator vals(Outer4::Bool terminate) 
@@ -2331,6 +2321,16 @@ method
 Outer2::Type #inner() 
 method 
 Void #checkEnd() }##plus ^##
+Varres_$%$%21_0_$%$%$%50_0_$%$%$%$%78_0_$%$%$%$%$%107_0_$%$%$%$%$%$%136_0__164_0:'@private
+{
+type method 
+mut Outer0 #apply(Outer1^inner) 
+mut method 
+Void inner(Outer1 that) 
+mut method 
+Outer1 #inner() 
+read method 
+Outer1 inner() }##plus ^##
 CellNext:{<:Outer1::Cell
 type method 
 Outer0 #apply(Outer2::Type^elem, Outer1::Cell^nextCell) 
@@ -2353,7 +2353,7 @@ method vals(terminate ) (
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
-  }
+  }##star ^##
   )
 method #next() this.nextCell()
 method #inner() this.elem()
@@ -2369,7 +2369,7 @@ method #checkEnd() (
         )
       error {'@stringU
       'CastT-Should be unreachable code
-      }
+      }##star ^##
       )
     catch exception unused0 (
       on Void void
@@ -2377,7 +2377,7 @@ method #checkEnd() (
     (
       Void unused1=error Outer3::Report::Misuse.#stringParser(that:{'@stringU
       'IterationNotComplete,\u000a  use valsCut() to allows incomplete iterations\u000a
-      })
+      }##star ^##)
       void
       )
     )
@@ -2389,7 +2389,7 @@ method vals(terminate ) Outer1::Iterator.#apply(that:this, terminate:terminate)
 method #next() exception void
 method #inner() error Outer3::Report::ObservedBug.#stringParser(that:{'@stringU
 'InnerOnCellEnd
-})
+}##star ^##)
 method #checkEnd() void}##plus ^##}##plus ^##
 Member:{interface <:Outer3::S::ToS}##plus ^##
 Methods:{' generic linked list class, elements of type Elem
@@ -2417,7 +2417,7 @@ Outer3::Bool isEmpty() (
             )
           error {'@stringU
           'CastT-Should be unreachable code
-          }
+          }##star ^##
           )
         catch exception unused2 (
           on Void return Outer3::Bool.false()
@@ -2435,7 +2435,7 @@ Outer3::Bool isEmpty() (
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
-  }
+  }##star ^##
   )
 method 
 Outer1::Method top() this.head().#inner()
@@ -2450,7 +2450,7 @@ Outer0 pop() (
     catch exception unused1 (
       on Void error Outer2::Report::Misuse.#stringParser(that:{'@stringU
       'PopOnEmpyList
-      })
+      }##star ^##)
       )
     void
     )
@@ -2459,13 +2459,13 @@ Outer0 pop() (
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
-  }
+  }##star ^##
   )
 method 
 Outer0 #plusplus(Outer0 that) (
   Void unused=(
     Outer0 res=this
-    mut Outer0::Varres_$%11_0_$%$%40_0_$%$%$%68_0_$%$%$%$%97_0_$%$%$%$%$%126_0__154_0 varres=Outer0::Varres_$%11_0_$%$%40_0_$%$%$%68_0_$%$%$%$%97_0_$%$%$%$%$%126_0__154_0.#apply(inner:res)
+    mut Outer0::Varres_$%$%11_0_$%$%$%40_0_$%$%$%$%68_0_$%$%$%$%$%97_0_$%$%$%$%$%$%126_0__154_0 varres=Outer0::Varres_$%$%11_0_$%$%$%40_0_$%$%$%$%68_0_$%$%$%$%$%97_0_$%$%$%$%$%$%126_0__154_0.#apply(inner:res)
     Void unused0=(
       Outer0::vals() e=that.vals()
       (
@@ -2517,7 +2517,7 @@ Outer0 #plusplus(Outer0 that) (
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
-  }
+  }##star ^##
   )
 type method 
 Outer0 #begin() Outer0.#apply()
@@ -2526,7 +2526,7 @@ Outer0 #add(Outer1::Method that) Outer0._new(head:Outer0::CellNext.#apply(elem:t
 method 
 Outer0 #end() (
   Outer0::#apply() res=Outer0.#apply()
-  mut Outer0::Varres0_$%12_0_$%$%41_0_$%$%$%69_0_$%$%$%$%98_0_$%$%$%$%$%127_0__155_0 varres=Outer0::Varres0_$%12_0_$%$%41_0_$%$%$%69_0_$%$%$%$%98_0_$%$%$%$%$%127_0__155_0.#apply(inner:res)
+  mut Outer0::Varres0_$%$%12_0_$%$%$%41_0_$%$%$%$%69_0_$%$%$%$%$%98_0_$%$%$%$%$%$%127_0__155_0 varres=Outer0::Varres0_$%$%12_0_$%$%$%41_0_$%$%$%$%69_0_$%$%$%$%$%98_0_$%$%$%$%$%$%127_0__155_0.#apply(inner:res)
   Void unused=(
     Outer0::vals() elem=this.vals()
     (
@@ -2599,7 +2599,7 @@ Void #next() exception Void (
           )
         error {'@stringU
         'CastT-Should be unreachable code
-        }
+        }##star ^##
         )
       catch exception unused3 (
         on Void void
@@ -2617,7 +2617,7 @@ Void #next() exception Void (
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
-  }
+  }##star ^##
   )
 read method 
 Void #checkEnd() (
@@ -2634,7 +2634,7 @@ read method
 Outer2::Method #inner() this.that().#inner()
 read method 
 Void #close() void}##plus ^##
-Varres_$%11_0_$%$%40_0_$%$%$%68_0_$%$%$%$%97_0_$%$%$%$%$%126_0__154_0:'@private
+Varres_$%$%11_0_$%$%$%40_0_$%$%$%$%68_0_$%$%$%$%$%97_0_$%$%$%$%$%$%126_0__154_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer1^inner) 
@@ -2653,6 +2653,14 @@ method
 Outer2::Method #inner() 
 method 
 Void #checkEnd() }##plus ^##
+Varres0_$%$%12_0_$%$%$%41_0_$%$%$%$%69_0_$%$%$%$%$%98_0_$%$%$%$%$%$%127_0__155_0:'@private
+{
+type method 
+mut Outer0 #apply(Outer1::#apply() ^inner) 
+mut method 
+Void inner(Outer1::#apply() that) 
+mut method 
+Outer1::#apply() #inner() }##plus ^##
 CellNext:{<:Outer1::Cell
 type method 
 Outer0 #apply(Outer2::Method^elem, Outer1::Cell^nextCell) 
@@ -2675,7 +2683,7 @@ method vals(terminate ) (
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
-  }
+  }##star ^##
   )
 method #next() this.nextCell()
 method #inner() this.elem()
@@ -2691,7 +2699,7 @@ method #checkEnd() (
         )
       error {'@stringU
       'CastT-Should be unreachable code
-      }
+      }##star ^##
       )
     catch exception unused0 (
       on Void void
@@ -2699,7 +2707,7 @@ method #checkEnd() (
     (
       Void unused1=error Outer3::Report::Misuse.#stringParser(that:{'@stringU
       'IterationNotComplete,\u000a  use valsCut() to allows incomplete iterations\u000a
-      })
+      }##star ^##)
       void
       )
     )
@@ -2711,16 +2719,8 @@ method vals(terminate ) Outer1::Iterator.#apply(that:this, terminate:terminate)
 method #next() exception void
 method #inner() error Outer3::Report::ObservedBug.#stringParser(that:{'@stringU
 'InnerOnCellEnd
-})
-method #checkEnd() void}##plus ^##
-Varres0_$%12_0_$%$%41_0_$%$%$%69_0_$%$%$%$%98_0_$%$%$%$%$%127_0__155_0:'@private
-{
-type method 
-mut Outer0 #apply(Outer1::#apply() ^inner) 
-mut method 
-Void inner(Outer1::#apply() that) 
-mut method 
-Outer1::#apply() #inner() }##plus ^##}##plus ^##
+}##star ^##)
+method #checkEnd() void}##plus ^##}##plus ^##
 Type:{<:Outer3::S::ToS
 type method 
 Outer0 #apply(Outer1::NestedClass^root, Outer2::Path^path, Outer3::N^memberN, Outer3::N^typeN, Outer1::Record^report) 
@@ -2746,13 +2746,13 @@ read method
 Outer1::Record report() 
 method toS() Outer3::S.#stringParser(that:{'@stringU
 'Type[
-}).#plusplus(that:this.allAsString().#plusplus(that:Outer3::S.#stringParser(that:{'@stringU
+}##star ^##).#plusplus(that:this.allAsString().#plusplus(that:Outer3::S.#stringParser(that:{'@stringU
 ']
-})))
+}##star ^##)))
 method 
 Outer3::S allAsString() this.report().#stringParser(that:{'@stringU
 'AllAsString
-})}##plus ^##
+}##star ^##)}##plus ^##
 NestedClasses:{' generic linked list class, elements of type Elem
 
 type method 
@@ -2778,7 +2778,7 @@ Outer3::Bool isEmpty() (
             )
           error {'@stringU
           'CastT-Should be unreachable code
-          }
+          }##star ^##
           )
         catch exception unused2 (
           on Void return Outer3::Bool.false()
@@ -2796,7 +2796,7 @@ Outer3::Bool isEmpty() (
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
-  }
+  }##star ^##
   )
 method 
 Outer1::NestedClass top() this.head().#inner()
@@ -2811,7 +2811,7 @@ Outer0 pop() (
     catch exception unused1 (
       on Void error Outer2::Report::Misuse.#stringParser(that:{'@stringU
       'PopOnEmpyList
-      })
+      }##star ^##)
       )
     void
     )
@@ -2820,13 +2820,13 @@ Outer0 pop() (
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
-  }
+  }##star ^##
   )
 method 
 Outer0 #plusplus(Outer0 that) (
   Void unused=(
     Outer0 res=this
-    mut Outer0::Varres_$%19_0_$%$%48_0_$%$%$%76_0_$%$%$%$%105_0_$%$%$%$%$%134_0__162_0 varres=Outer0::Varres_$%19_0_$%$%48_0_$%$%$%76_0_$%$%$%$%105_0_$%$%$%$%$%134_0__162_0.#apply(inner:res)
+    mut Outer0::Varres_$%$%19_0_$%$%$%48_0_$%$%$%$%76_0_$%$%$%$%$%105_0_$%$%$%$%$%$%134_0__162_0 varres=Outer0::Varres_$%$%19_0_$%$%$%48_0_$%$%$%$%76_0_$%$%$%$%$%105_0_$%$%$%$%$%$%134_0__162_0.#apply(inner:res)
     Void unused0=(
       Outer0::vals() e=that.vals()
       (
@@ -2878,7 +2878,7 @@ Outer0 #plusplus(Outer0 that) (
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
-  }
+  }##star ^##
   )
 type method 
 Outer0 #begin() Outer0.#apply()
@@ -2887,7 +2887,7 @@ Outer0 #add(Outer1::NestedClass that) Outer0._new(head:Outer0::CellNext.#apply(e
 method 
 Outer0 #end() (
   Outer0::#apply() res=Outer0.#apply()
-  mut Outer0::Varres0_$%20_0_$%$%49_0_$%$%$%77_0_$%$%$%$%106_0_$%$%$%$%$%135_0__163_0 varres=Outer0::Varres0_$%20_0_$%$%49_0_$%$%$%77_0_$%$%$%$%106_0_$%$%$%$%$%135_0__163_0.#apply(inner:res)
+  mut Outer0::Varres0_$%$%20_0_$%$%$%49_0_$%$%$%$%77_0_$%$%$%$%$%106_0_$%$%$%$%$%$%135_0__163_0 varres=Outer0::Varres0_$%$%20_0_$%$%$%49_0_$%$%$%$%77_0_$%$%$%$%$%106_0_$%$%$%$%$%$%135_0__163_0.#apply(inner:res)
   Void unused=(
     Outer0::vals() elem=this.vals()
     (
@@ -2960,7 +2960,7 @@ Void #next() exception Void (
           )
         error {'@stringU
         'CastT-Should be unreachable code
-        }
+        }##star ^##
         )
       catch exception unused3 (
         on Void void
@@ -2978,7 +2978,7 @@ Void #next() exception Void (
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
-  }
+  }##star ^##
   )
 read method 
 Void #checkEnd() (
@@ -2995,7 +2995,7 @@ read method
 Outer2::NestedClass #inner() this.that().#inner()
 read method 
 Void #close() void}##plus ^##
-Varres_$%19_0_$%$%48_0_$%$%$%76_0_$%$%$%$%105_0_$%$%$%$%$%134_0__162_0:'@private
+Varres_$%$%19_0_$%$%$%48_0_$%$%$%$%76_0_$%$%$%$%$%105_0_$%$%$%$%$%$%134_0__162_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer1^inner) 
@@ -3014,7 +3014,7 @@ method
 Outer2::NestedClass #inner() 
 method 
 Void #checkEnd() }##plus ^##
-Varres0_$%20_0_$%$%49_0_$%$%$%77_0_$%$%$%$%106_0_$%$%$%$%$%135_0__163_0:'@private
+Varres0_$%$%20_0_$%$%$%49_0_$%$%$%$%77_0_$%$%$%$%$%106_0_$%$%$%$%$%$%135_0__163_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer1::#apply() ^inner) 
@@ -3044,7 +3044,7 @@ method vals(terminate ) (
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
-  }
+  }##star ^##
   )
 method #next() this.nextCell()
 method #inner() this.elem()
@@ -3060,7 +3060,7 @@ method #checkEnd() (
         )
       error {'@stringU
       'CastT-Should be unreachable code
-      }
+      }##star ^##
       )
     catch exception unused0 (
       on Void void
@@ -3068,7 +3068,7 @@ method #checkEnd() (
     (
       Void unused1=error Outer3::Report::Misuse.#stringParser(that:{'@stringU
       'IterationNotComplete,\u000a  use valsCut() to allows incomplete iterations\u000a
-      })
+      }##star ^##)
       void
       )
     )
@@ -3080,7 +3080,7 @@ method vals(terminate ) Outer1::Iterator.#apply(that:this, terminate:terminate)
 method #next() exception void
 method #inner() error Outer3::Report::ObservedBug.#stringParser(that:{'@stringU
 'InnerOnCellEnd
-})
+}##star ^##)
 method #checkEnd() void}##plus ^##}##plus ^##
 Members:{' generic linked list class, elements of type Elem
 
@@ -3107,7 +3107,7 @@ Outer3::Bool isEmpty() (
             )
           error {'@stringU
           'CastT-Should be unreachable code
-          }
+          }##star ^##
           )
         catch exception unused2 (
           on Void return Outer3::Bool.false()
@@ -3125,7 +3125,7 @@ Outer3::Bool isEmpty() (
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
-  }
+  }##star ^##
   )
 method 
 Outer1::Member top() this.head().#inner()
@@ -3140,7 +3140,7 @@ Outer0 pop() (
     catch exception unused1 (
       on Void error Outer2::Report::Misuse.#stringParser(that:{'@stringU
       'PopOnEmpyList
-      })
+      }##star ^##)
       )
     void
     )
@@ -3149,13 +3149,13 @@ Outer0 pop() (
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
-  }
+  }##star ^##
   )
 method 
 Outer0 #plusplus(Outer0 that) (
   Void unused=(
     Outer0 res=this
-    mut Outer0::Varres_$%7_0_$%$%36_0_$%$%$%64_0_$%$%$%$%93_0_$%$%$%$%$%122_0__150_0 varres=Outer0::Varres_$%7_0_$%$%36_0_$%$%$%64_0_$%$%$%$%93_0_$%$%$%$%$%122_0__150_0.#apply(inner:res)
+    mut Outer0::Varres_$%$%7_0_$%$%$%36_0_$%$%$%$%64_0_$%$%$%$%$%93_0_$%$%$%$%$%$%122_0__150_0 varres=Outer0::Varres_$%$%7_0_$%$%$%36_0_$%$%$%$%64_0_$%$%$%$%$%93_0_$%$%$%$%$%$%122_0__150_0.#apply(inner:res)
     Void unused0=(
       Outer0::vals() e=that.vals()
       (
@@ -3207,7 +3207,7 @@ Outer0 #plusplus(Outer0 that) (
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
-  }
+  }##star ^##
   )
 type method 
 Outer0 #begin() Outer0.#apply()
@@ -3216,7 +3216,7 @@ Outer0 #add(Outer1::Member that) Outer0._new(head:Outer0::CellNext.#apply(elem:t
 method 
 Outer0 #end() (
   Outer0::#apply() res=Outer0.#apply()
-  mut Outer0::Varres0_$%8_0_$%$%37_0_$%$%$%65_0_$%$%$%$%94_0_$%$%$%$%$%123_0__151_0 varres=Outer0::Varres0_$%8_0_$%$%37_0_$%$%$%65_0_$%$%$%$%94_0_$%$%$%$%$%123_0__151_0.#apply(inner:res)
+  mut Outer0::Varres0_$%$%8_0_$%$%$%37_0_$%$%$%$%65_0_$%$%$%$%$%94_0_$%$%$%$%$%$%123_0__151_0 varres=Outer0::Varres0_$%$%8_0_$%$%$%37_0_$%$%$%$%65_0_$%$%$%$%$%94_0_$%$%$%$%$%$%123_0__151_0.#apply(inner:res)
   Void unused=(
     Outer0::vals() elem=this.vals()
     (
@@ -3262,6 +3262,16 @@ Outer0 #end() (
     )
   varres.#inner()
   )
+Varres_$%$%7_0_$%$%$%36_0_$%$%$%$%64_0_$%$%$%$%$%93_0_$%$%$%$%$%$%122_0__150_0:'@private
+{
+type method 
+mut Outer0 #apply(Outer1^inner) 
+mut method 
+Void inner(Outer1 that) 
+mut method 
+Outer1 #inner() 
+read method 
+Outer1 inner() }##plus ^##
 Iterator:{
 type method 
 mut Outer0 #apply(Outer1::Cell^that, Outer4::Bool^terminate) 
@@ -3289,7 +3299,7 @@ Void #next() exception Void (
           )
         error {'@stringU
         'CastT-Should be unreachable code
-        }
+        }##star ^##
         )
       catch exception unused3 (
         on Void void
@@ -3307,7 +3317,7 @@ Void #next() exception Void (
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
-  }
+  }##star ^##
   )
 read method 
 Void #checkEnd() (
@@ -3333,24 +3343,6 @@ method
 Outer2::Member #inner() 
 method 
 Void #checkEnd() }##plus ^##
-Varres_$%7_0_$%$%36_0_$%$%$%64_0_$%$%$%$%93_0_$%$%$%$%$%122_0__150_0:'@private
-{
-type method 
-mut Outer0 #apply(Outer1^inner) 
-mut method 
-Void inner(Outer1 that) 
-mut method 
-Outer1 #inner() 
-read method 
-Outer1 inner() }##plus ^##
-Varres0_$%8_0_$%$%37_0_$%$%$%65_0_$%$%$%$%94_0_$%$%$%$%$%123_0__151_0:'@private
-{
-type method 
-mut Outer0 #apply(Outer1::#apply() ^inner) 
-mut method 
-Void inner(Outer1::#apply() that) 
-mut method 
-Outer1::#apply() #inner() }##plus ^##
 CellNext:{<:Outer1::Cell
 type method 
 Outer0 #apply(Outer2::Member^elem, Outer1::Cell^nextCell) 
@@ -3373,7 +3365,7 @@ method vals(terminate ) (
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
-  }
+  }##star ^##
   )
 method #next() this.nextCell()
 method #inner() this.elem()
@@ -3389,7 +3381,7 @@ method #checkEnd() (
         )
       error {'@stringU
       'CastT-Should be unreachable code
-      }
+      }##star ^##
       )
     catch exception unused0 (
       on Void void
@@ -3397,11 +3389,19 @@ method #checkEnd() (
     (
       Void unused1=error Outer3::Report::Misuse.#stringParser(that:{'@stringU
       'IterationNotComplete,\u000a  use valsCut() to allows incomplete iterations\u000a
-      })
+      }##star ^##)
       void
       )
     )
   )}##plus ^##
+Varres0_$%$%8_0_$%$%$%37_0_$%$%$%$%65_0_$%$%$%$%$%94_0_$%$%$%$%$%$%123_0__151_0:'@private
+{
+type method 
+mut Outer0 #apply(Outer1::#apply() ^inner) 
+mut method 
+Void inner(Outer1::#apply() that) 
+mut method 
+Outer1::#apply() #inner() }##plus ^##
 CellEnd:{<:Outer1::Cell
 type method 
 Outer0 #apply() 
@@ -3409,7 +3409,7 @@ method vals(terminate ) Outer1::Iterator.#apply(that:this, terminate:terminate)
 method #next() exception void
 method #inner() error Outer3::Report::ObservedBug.#stringParser(that:{'@stringU
 'InnerOnCellEnd
-})
+}##star ^##)
 method #checkEnd() void}##plus ^##}##plus ^##
 Method:{<:Outer1::Member, Outer3::S::ToS
 type method 
@@ -3432,37 +3432,37 @@ read method
 Outer1::Record report() 
 method toS() Outer3::S.#stringParser(that:{'@stringU
 'Method[
-}).#plusplus(that:this.allAsString().#plusplus(that:Outer3::S.#stringParser(that:{'@stringU
+}##star ^##).#plusplus(that:this.allAsString().#plusplus(that:Outer3::S.#stringParser(that:{'@stringU
 ']
-})))
+}##star ^##)))
 method 
 Outer2::Doc doc() this.report().docOf(path:Outer2::Path.#stringParser(that:{'@stringU
 'Doc
-}))
+}##star ^##))
 method 
 Outer3::S thisMdf() this.report().#stringParser(that:{'@stringU
 'ThisMdf
-})
+}##star ^##)
 method ' invariant NestedClass(...).nestedClassFromRoot(path).pathFromRoot()==path
 Outer2::Path pathFromRoot() this.path()
 method 
 Outer2::Selector selector() Outer2::Selector.#stringParser(that:this.report().#stringParser(that:{'@stringU
 'Key
-}).binaryRepr())
+}##star ^##).binaryRepr())
 method 
 Outer3::S methodKind() this.report().#stringParser(that:{'@stringU
 'MemberKind
-})
+}##star ^##)
 method 
 Outer3::S allAsString() this.report().#stringParser(that:{'@stringU
 'AllAsString
-})
+}##star ^##)
 method 
 Outer1::Type returnType() (
   Void unused=(
     Void unused0=return this.root().mirror().introspectReportType(root:this.root(), path:this.path(), memberN:this.memberN(), typeN:Outer3::N.#numberParser(that:{'@stringU
     '0
-    }))
+    }##star ^##))
     catch exception x (
       on Outer2::Report::TargetUnavailable error Outer2::Report::CodeNotReachable.#apply()
       
@@ -3475,7 +3475,7 @@ Outer1::Type returnType() (
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
-  }
+  }##star ^##
   )
 method 
 Outer1::Types exceptions() error Outer2::Report::NotImplementedYet.#apply()
@@ -3485,9 +3485,9 @@ Outer1::Types parameterTypes() (
     Outer1::Types::#begin() ::#end() result=Outer1::Types.#begin().#end()
     Outer3::N::#numberParser(that ) pN=Outer3::N.#numberParser(that:{'@stringU
     '1
-    })
-    mut Outer0::Varresult0_$%10_0_$%$%39_0_$%$%$%67_0_$%$%$%$%96_0_$%$%$%$%$%125_0__153_0 varresult=Outer0::Varresult0_$%10_0_$%$%39_0_$%$%$%67_0_$%$%$%$%96_0_$%$%$%$%$%125_0__153_0.#apply(inner:result)
-    mut Outer0::VarpN_$%9_0_$%$%38_0_$%$%$%66_0_$%$%$%$%95_0_$%$%$%$%$%124_0__152_0 varpN=Outer0::VarpN_$%9_0_$%$%38_0_$%$%$%66_0_$%$%$%$%95_0_$%$%$%$%$%124_0__152_0.#apply(inner:pN)
+    }##star ^##)
+    mut Outer0::Varresult0_$%$%10_0_$%$%$%39_0_$%$%$%$%67_0_$%$%$%$%$%96_0_$%$%$%$%$%$%125_0__153_0 varresult=Outer0::Varresult0_$%$%10_0_$%$%$%39_0_$%$%$%$%67_0_$%$%$%$%$%96_0_$%$%$%$%$%$%125_0__153_0.#apply(inner:result)
+    mut Outer0::VarpN_$%$%9_0_$%$%$%38_0_$%$%$%$%66_0_$%$%$%$%$%95_0_$%$%$%$%$%$%124_0__152_0 varpN=Outer0::VarpN_$%$%9_0_$%$%$%38_0_$%$%$%$%66_0_$%$%$%$%$%95_0_$%$%$%$%$%$%124_0__152_0.#apply(inner:pN)
     Void unused0=(
       Void unused2=loop (
         Void unused3=Outer3::Bool.true().#checkTrue()
@@ -3497,7 +3497,7 @@ Outer1::Types parameterTypes() (
           Void unused4=varresult.inner(that:varresult.#inner().#add(that:ti))
           varpN.inner(that:varpN.#inner().#plus(that:Outer3::N.#numberParser(that:{'@stringU
           '1
-          })))
+          }##star ^##)))
           )
         )
       catch exception unused5 (
@@ -3516,9 +3516,9 @@ Outer1::Types parameterTypes() (
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
-  }
+  }##star ^##
   )
-Varresult0_$%10_0_$%$%39_0_$%$%$%67_0_$%$%$%$%96_0_$%$%$%$%$%125_0__153_0:'@private
+Varresult0_$%$%10_0_$%$%$%39_0_$%$%$%$%67_0_$%$%$%$%$%96_0_$%$%$%$%$%$%125_0__153_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer2::Types::#begin() ::#end() ^inner) 
@@ -3526,7 +3526,7 @@ mut method
 Void inner(Outer2::Types::#begin() ::#end() that) 
 mut method 
 Outer2::Types::#begin() ::#end() #inner() }##plus ^##
-VarpN_$%9_0_$%$%38_0_$%$%$%66_0_$%$%$%$%95_0_$%$%$%$%$%124_0__152_0:'@private
+VarpN_$%$%9_0_$%$%$%38_0_$%$%$%$%66_0_$%$%$%$%$%95_0_$%$%$%$%$%$%124_0__152_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer4::N::#numberParser(that ) ^inner) 
@@ -3540,35 +3540,35 @@ SafeOperators:{'@plugin
 type method 
 Library compose(Library left, Library right) using Outer0 check compose(left:left, right:right) error Outer1::Report::PluginFailure.#stringParser(that:{'@stringU
 'SafeOperators.compose
-})
+}##star ^##)
 type method 
 Library renameClass(Library that, Outer1::Path src, Outer1::Path dest) using Outer0 check renameClass(that:that, src:src.binaryRepr(), dest:dest.binaryRepr()) error Outer1::Report::PluginFailure.#stringParser(that:{'@stringU
 'SafeOperators.renameClass
-})
+}##star ^##)
 type method 
 Library renameMethod(Library that, Outer1::Path path, Outer1::Selector src, Outer1::Selector dest) using Outer0 check renameMethod(that:that, path:path.binaryRepr(), src:src.binaryRepr(), dest:dest.binaryRepr()) error Outer1::Report::PluginFailure.#stringParser(that:{'@stringU
 'SafeOperators.renameMethod
-})
+}##star ^##)
 type method 
 Library redirect(Library that, Outer1::Path src, type Any dest) using Outer0 check redirect(that:that, src:src.binaryRepr(), dest:dest) error Outer1::Report::PluginFailure.#stringParser(that:{'@stringU
 'SafeOperators.redirect
-})
+}##star ^##)
 type method 
 Library removeImplementation(Library that, Outer1::Path path) using Outer0 check removeImplementation(that:that, path:path.binaryRepr()) error Outer1::Report::PluginFailure.#stringParser(that:{'@stringU
 'SafeOperators.removeImplementation(path)
-})
+}##star ^##)
 type method 
 Library removeImplementation(Library that, Outer1::Path path, Outer1::Selector selector) using Outer0 check removeImplementation(that:that, path:path.binaryRepr(), selector:selector.binaryRepr()) error Outer1::Report::PluginFailure.#stringParser(that:{'@stringU
 'SafeOperators.removeImplementation(path,selector)
-})
+}##star ^##)
 type method 
 Library addDocumentation(Library that, Outer1::Path path, Outer1::Doc doc) using Outer0 check addDocumentation(that:that, path:path.binaryRepr(), doc:doc.binaryRepr()) error Outer1::Report::PluginFailure.#stringParser(that:{'@stringU
 'SafeOperators.addDocumentation(path)
-})
+}##star ^##)
 type method 
 Library addDocumentation(Library that, Outer1::Path path, Outer1::Selector selector, Outer1::Doc doc) using Outer0 check addDocumentation(that:that, path:path.binaryRepr(), selector:selector.binaryRepr(), doc:doc.binaryRepr()) error Outer1::Report::PluginFailure.#stringParser(that:{'@stringU
 'SafeOperators.addDocumentation(path,selector)
-})}##plus ^##
+}##star ^##)}##plus ^##
 Doc:{<:Outer2::S::ToS
 type method '  toPutAs private
 Outer0 _private(Library^_binaryRepr) 
@@ -3612,44 +3612,44 @@ Outer2::Bool #equalequal(Outer2::S that) (
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
-  }
+  }##star ^##
   )
 method 
 Outer2::S name() (
   Outer0::toS() str=this.toS()
   str.#apply(end:str.firstIndexOf(that:Outer2::S.#stringParser(that:{'@stringU
   '(
-  })))
+  }##star ^##)))
   )
 method 
 Outer1::Strings names() (
   Void unused=(
     Outer0::toS() str=this.toS()
-    mut Outer0::Varstr_$%6_0_$%$%35_0_$%$%$%63_0_$%$%$%$%92_0_$%$%$%$%$%121_0__149_0 varstr=Outer0::Varstr_$%6_0_$%$%35_0_$%$%$%63_0_$%$%$%$%92_0_$%$%$%$%$%121_0__149_0.#apply(inner:str)
+    mut Outer0::Varstr_$%$%6_0_$%$%$%35_0_$%$%$%$%63_0_$%$%$%$%$%92_0_$%$%$%$%$%$%121_0__149_0 varstr=Outer0::Varstr_$%$%6_0_$%$%$%35_0_$%$%$%$%63_0_$%$%$%$%$%92_0_$%$%$%$%$%$%121_0__149_0.#apply(inner:str)
     Void unused0=varstr.inner(that:varstr.#inner().#apply(start:varstr.#inner().firstIndexOf(that:Outer2::S.#stringParser(that:{'@stringU
     '(
-    })).#plus(that:Outer2::N.#numberParser(that:{'@stringU
+    }##star ^##)).#plus(that:Outer2::N.#numberParser(that:{'@stringU
     '1
-    })), end:varstr.#inner().size().#less(that:Outer2::N.#numberParser(that:{'@stringU
+    }##star ^##)), end:varstr.#inner().size().#less(that:Outer2::N.#numberParser(that:{'@stringU
     '1
-    }))).#plusplus(that:Outer2::S.#stringParser(that:{'@stringU
+    }##star ^##))).#plusplus(that:Outer2::S.#stringParser(that:{'@stringU
     ',
-    })))
+    }##star ^##)))
     Outer1::Strings::#begin() ::#end() result=Outer1::Strings.#begin().#end()
-    mut Outer0::Varresult_$%5_0_$%$%34_0_$%$%$%62_0_$%$%$%$%91_0_$%$%$%$%$%120_0__148_0 varresult=Outer0::Varresult_$%5_0_$%$%34_0_$%$%$%62_0_$%$%$%$%91_0_$%$%$%$%$%120_0__148_0.#apply(inner:result)
+    mut Outer0::Varresult_$%$%5_0_$%$%$%34_0_$%$%$%$%62_0_$%$%$%$%$%91_0_$%$%$%$%$%$%120_0__148_0 varresult=Outer0::Varresult_$%$%5_0_$%$%$%34_0_$%$%$%$%62_0_$%$%$%$%$%91_0_$%$%$%$%$%$%120_0__148_0.#apply(inner:result)
     Void unused1=(
       Void unused3=loop (
         Void unused4=varstr.#inner().#bangequal(that:Outer2::S.#stringParser(that:{'@stringU
         '
-        })).#checkTrue()
+        }##star ^##)).#checkTrue()
         (
-          Outer0::Varstr_$%6_0_$%$%35_0_$%$%$%63_0_$%$%$%$%92_0_$%$%$%$%$%121_0__149_0::#inner() ::firstIndexOf(that ) pos=varstr.#inner().firstIndexOf(that:Outer2::S.#stringParser(that:{'@stringU
+          Outer0::Varstr_$%$%6_0_$%$%$%35_0_$%$%$%$%63_0_$%$%$%$%$%92_0_$%$%$%$%$%$%121_0__149_0::#inner() ::firstIndexOf(that ) pos=varstr.#inner().firstIndexOf(that:Outer2::S.#stringParser(that:{'@stringU
           ',
-          }))
+          }##star ^##))
           Void unused5=varresult.inner(that:varresult.#inner().#add(that:varstr.#inner().#apply(end:pos)))
           varstr.inner(that:varstr.#inner().#apply(start:pos.#plus(that:Outer2::N.#numberParser(that:{'@stringU
           '1
-          }))))
+          }##star ^##))))
           )
         )
       catch exception unused6 (
@@ -3665,16 +3665,8 @@ Outer1::Strings names() (
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
-  }
+  }##star ^##
   )
-Varresult_$%5_0_$%$%34_0_$%$%$%62_0_$%$%$%$%91_0_$%$%$%$%$%120_0__148_0:'@private
-{
-type method 
-mut Outer0 #apply(Outer2::Strings::#begin() ::#end() ^inner) 
-mut method 
-Void inner(Outer2::Strings::#begin() ::#end() that) 
-mut method 
-Outer2::Strings::#begin() ::#end() #inner() }##plus ^##
 InvalidFormat:{
 type method 
 Outer0 #apply(Outer3::S^that) 
@@ -3682,14 +3674,22 @@ mut method
 Outer3::S #that() 
 read method 
 Outer3::S that() }##plus ^##
-Varstr_$%6_0_$%$%35_0_$%$%$%63_0_$%$%$%$%92_0_$%$%$%$%$%121_0__149_0:'@private
+Varstr_$%$%6_0_$%$%$%35_0_$%$%$%$%63_0_$%$%$%$%$%92_0_$%$%$%$%$%$%121_0__149_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer1::toS() ^inner) 
 mut method 
 Void inner(Outer1::toS() that) 
 mut method 
-Outer1::toS() #inner() }##plus ^##}##plus ^##
+Outer1::toS() #inner() }##plus ^##
+Varresult_$%$%5_0_$%$%$%34_0_$%$%$%$%62_0_$%$%$%$%$%91_0_$%$%$%$%$%$%120_0__148_0:'@private
+{
+type method 
+mut Outer0 #apply(Outer2::Strings::#begin() ::#end() ^inner) 
+mut method 
+Void inner(Outer2::Strings::#begin() ::#end() that) 
+mut method 
+Outer2::Strings::#begin() ::#end() #inner() }##plus ^##}##plus ^##
 Strings:{' generic linked list class, elements of type Elem
 
 type method 
@@ -3715,7 +3715,7 @@ Outer2::Bool isEmpty() (
             )
           error {'@stringU
           'CastT-Should be unreachable code
-          }
+          }##star ^##
           )
         catch exception unused2 (
           on Void return Outer2::Bool.false()
@@ -3733,7 +3733,7 @@ Outer2::Bool isEmpty() (
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
-  }
+  }##star ^##
   )
 method 
 Outer2::S top() this.head().#inner()
@@ -3748,7 +3748,7 @@ Outer0 pop() (
     catch exception unused1 (
       on Void error Outer1::Report::Misuse.#stringParser(that:{'@stringU
       'PopOnEmpyList
-      })
+      }##star ^##)
       )
     void
     )
@@ -3757,13 +3757,13 @@ Outer0 pop() (
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
-  }
+  }##star ^##
   )
 method 
 Outer0 #plusplus(Outer0 that) (
   Void unused=(
     Outer0 res=this
-    mut Outer0::Varres_$%3_0_$%$%32_0_$%$%$%60_0_$%$%$%$%89_0_$%$%$%$%$%118_0__146_0 varres=Outer0::Varres_$%3_0_$%$%32_0_$%$%$%60_0_$%$%$%$%89_0_$%$%$%$%$%118_0__146_0.#apply(inner:res)
+    mut Outer0::Varres_$%$%3_0_$%$%$%32_0_$%$%$%$%60_0_$%$%$%$%$%89_0_$%$%$%$%$%$%118_0__146_0 varres=Outer0::Varres_$%$%3_0_$%$%$%32_0_$%$%$%$%60_0_$%$%$%$%$%89_0_$%$%$%$%$%$%118_0__146_0.#apply(inner:res)
     Void unused0=(
       Outer0::vals() e=that.vals()
       (
@@ -3815,7 +3815,7 @@ Outer0 #plusplus(Outer0 that) (
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
-  }
+  }##star ^##
   )
 type method 
 Outer0 #begin() Outer0.#apply()
@@ -3824,7 +3824,7 @@ Outer0 #add(Outer2::S that) Outer0._new(head:Outer0::CellNext.#apply(elem:that, 
 method 
 Outer0 #end() (
   Outer0::#apply() res=Outer0.#apply()
-  mut Outer0::Varres0_$%4_0_$%$%33_0_$%$%$%61_0_$%$%$%$%90_0_$%$%$%$%$%119_0__147_0 varres=Outer0::Varres0_$%4_0_$%$%33_0_$%$%$%61_0_$%$%$%$%90_0_$%$%$%$%$%119_0__147_0.#apply(inner:res)
+  mut Outer0::Varres0_$%$%4_0_$%$%$%33_0_$%$%$%$%61_0_$%$%$%$%$%90_0_$%$%$%$%$%$%119_0__147_0 varres=Outer0::Varres0_$%$%4_0_$%$%$%33_0_$%$%$%$%61_0_$%$%$%$%$%90_0_$%$%$%$%$%$%119_0__147_0.#apply(inner:res)
   Void unused=(
     Outer0::vals() elem=this.vals()
     (
@@ -3897,7 +3897,7 @@ Void #next() exception Void (
           )
         error {'@stringU
         'CastT-Should be unreachable code
-        }
+        }##star ^##
         )
       catch exception unused3 (
         on Void void
@@ -3915,7 +3915,7 @@ Void #next() exception Void (
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
-  }
+  }##star ^##
   )
 read method 
 Void #checkEnd() (
@@ -3932,7 +3932,7 @@ read method
 Outer3::S #inner() this.that().#inner()
 read method 
 Void #close() void}##plus ^##
-Varres0_$%4_0_$%$%33_0_$%$%$%61_0_$%$%$%$%90_0_$%$%$%$%$%119_0__147_0:'@private
+Varres0_$%$%4_0_$%$%$%33_0_$%$%$%$%61_0_$%$%$%$%$%90_0_$%$%$%$%$%$%119_0__147_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer1::#apply() ^inner) 
@@ -3971,7 +3971,7 @@ method vals(terminate ) (
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
-  }
+  }##star ^##
   )
 method #next() this.nextCell()
 method #inner() this.elem()
@@ -3987,7 +3987,7 @@ method #checkEnd() (
         )
       error {'@stringU
       'CastT-Should be unreachable code
-      }
+      }##star ^##
       )
     catch exception unused0 (
       on Void void
@@ -3995,21 +3995,12 @@ method #checkEnd() (
     (
       Void unused1=error Outer2::Report::Misuse.#stringParser(that:{'@stringU
       'IterationNotComplete,\u000a  use valsCut() to allows incomplete iterations\u000a
-      })
+      }##star ^##)
       void
       )
     )
   )}##plus ^##
-CellEnd:{<:Outer1::Cell
-type method 
-Outer0 #apply() 
-method vals(terminate ) Outer1::Iterator.#apply(that:this, terminate:terminate)
-method #next() exception void
-method #inner() error Outer2::Report::ObservedBug.#stringParser(that:{'@stringU
-'InnerOnCellEnd
-})
-method #checkEnd() void}##plus ^##
-Varres_$%3_0_$%$%32_0_$%$%$%60_0_$%$%$%$%89_0_$%$%$%$%$%118_0__146_0:'@private
+Varres_$%$%3_0_$%$%$%32_0_$%$%$%$%60_0_$%$%$%$%$%89_0_$%$%$%$%$%$%118_0__146_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer1^inner) 
@@ -4018,8 +4009,17 @@ Void inner(Outer1 that)
 mut method 
 Outer1 #inner() 
 read method 
-Outer1 inner() }##plus ^##}##plus ^##}##plus ^##
-Varres1_$%28_0_$%$%57_0_$%$%$%85_0_$%$%$%$%114_0_$%$%$%$%$%143_0__171_0:'@private
+Outer1 inner() }##plus ^##
+CellEnd:{<:Outer1::Cell
+type method 
+Outer0 #apply() 
+method vals(terminate ) Outer1::Iterator.#apply(that:this, terminate:terminate)
+method #next() exception void
+method #inner() error Outer2::Report::ObservedBug.#stringParser(that:{'@stringU
+'InnerOnCellEnd
+}##star ^##)
+method #checkEnd() void}##plus ^##}##plus ^##}##plus ^##
+Varres1_$%$%28_0_$%$%$%57_0_$%$%$%$%85_0_$%$%$%$%$%114_0_$%$%$%$%$%$%143_0__171_0:'@private
 {
 type method 
 mut Outer0 #apply(Library^inner) 

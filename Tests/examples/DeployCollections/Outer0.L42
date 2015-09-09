@@ -3,8 +3,11 @@ Resource:{type method Library (){
   reuse L42.is/AdamTowel01
   Collections:...
   }}
-Task:DeployLibrary[
-  Path"Collections",
-  url:URL"localhost/Collections.L42"
-  ]<<Resource()
+Task: (
+  Debug(S"Starting deployment")
+  DeployLibrary[
+    Path"Collections",
+    url:URL"localhost/Collections.L42"
+    ]<<Resource()
+    )
 }

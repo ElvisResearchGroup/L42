@@ -3,8 +3,7 @@ Resource:{type method Library(){
   reuse L42.is/AdamTowel01
   MyLib:{'could be in another file
     type method
-    Void printHelloWorld() Debug(1N++S"Hello World Deployed")
-    'wrong on purpose to check
+    Void printHelloWorld() Debug(S"Hello World Deployed")
     }
   }}
 Task:DeployLibrary[
