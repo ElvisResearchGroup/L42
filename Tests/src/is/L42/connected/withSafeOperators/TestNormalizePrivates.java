@@ -141,6 +141,15 @@ public static class TestNormalizePrivates1 {
     "{ A:'@private\n{method A a()} method A foo( A::a() x)}",
     "{ A__0_0:'@private\n{method A__0_0 a()} method  A__0_0 foo ( A__0_0::a() x)}"
   
+  },{
+    lineNumber(),
+    "{ A__1_12:'@private\n{method A__1_12 a()} method A__1_12 foo()}",
+    "{ A__1_12:'@private\n{method A__1_12 a()} method  A__1_12 foo ()}"
+  },{
+    lineNumber(),
+    "{ A:{method'@private\n A a__1_12 ()}}",
+    "{ A:{method'@private\n A a__1_12 ()}}"
+    
   }});}
 
 

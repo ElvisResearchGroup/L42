@@ -1,6 +1,7 @@
 package is.L42.connected.withSafeOperators;
 
 import static helpers.TestHelper.getClassB;
+import static helpers.TestHelper.lineNumber;
 import static org.junit.Assert.fail;
 import facade.L42;
 import helpers.TestHelper;
@@ -12,6 +13,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
+import org.junit.runners.Parameterized.Parameters;
 
 import platformSpecific.javaTranslation.Resources;
 import ast.ExpCore.ClassB;
@@ -19,19 +21,20 @@ import auxiliaryGrammar.Program;
 
   @RunWith(Parameterized.class)
   public class TestSum {
-    @Parameter(0) public String _cb1;
-    @Parameter(1) public String _cb2;
-    @Parameter(2) public String _expected;
-    @Parameter(3) public boolean isError;
-    @Parameterized.Parameters
+    @Parameter(0) public int _lineNumber;
+    @Parameter(1) public String _cb1;
+    @Parameter(2) public String _cb2;
+    @Parameter(3) public String _expected;
+    @Parameter(4) public boolean isError;
+    @Parameters(name = "{index}: line {0}")
     public static List<Object[]> createData() {
       return Arrays.asList(new Object[][] {
-      {"{B:{}}","{C:{}}","{B:{} C:{}}",false
-    },{"{()}","{B:{()}}","{() B:{()} }",false
-    },{"{B:'@private\n{}}","{}","{B:'@private\n{}}",false
-    },{"{B:'@private\n{}}","{}","{B:'@private\n{}}",false//twice the same, to test that we clear the used names
-    },{"{B:'@private\n{}}","{B:'@private\n{}}","{B:'@private\n{} B0:'@private\n{} }",false
-    },{"{B:{method Void m()}}","{B:{method B m()}}",
+      {    lineNumber(),"{B:{}}","{C:{}}","{B:{} C:{}}",false
+    },{    lineNumber(),"{()}","{B:{()}}","{() B:{()} }",false
+    },{    lineNumber(),"{B:'@private\n{}}","{}","{B__0_0:'@private\n{}}",false
+    },{    lineNumber(),"{B:'@private\n{}}","{}","{B__0_0:'@private\n{}}",false//twice the same, to test that we clear the used names
+    },{    lineNumber(),"{B:'@private\n{}}","{B:'@private\n{}}","{B__0_0:'@private\n{} B__1_0:'@private\n{} }",false
+    },{    lineNumber(),"{B:{method Void m()}}","{B:{method B m()}}",
       "{Kind:{'@stringU\n'MethodClash\n}"
       +"Path:{'@::B\n}"
       +"Left:{'@stringU\n'method Void m()\n}"
@@ -43,22 +46,23 @@ import auxiliaryGrammar.Program;
       +"DifferentThisMdf:{'@stringU\n'false\n}"
       +"IncompatibleException:{'@stringU\n'false\n}}",
       true
-    },{"{B:{method Outer0 m()}}","{B:{method B m()}}","{B:{method Outer0 m()} }",false
-    //test the following:
-    //sum of Box with Box =Box
-    //sum of interface with interface =interface
-    //sum of Box with interface=interface
-    //sum of Box with free interface=free interface
-    //sum of Class with free interface=class
-    //sum of Box with class=class
-    //sum of class with non free interface is error
+    },{    lineNumber(),"{B:{method Outer0 m()}}","{B:{method B m()}}","{B:{method Outer0 m()} }",false
+
+    },{    lineNumber(),"{B__0fred:'@private\n{}}","{}",
+      "{B_$%0fred__0_0:'@private\n{}}",false
+      
+    },{    lineNumber(),"{B__0_0:'@private\n{}}","{B__0_1:'@private\n{}}",
+      "{B__0_0:'@private\n{} B__0_1:'@private\n{}}",false
+      
+
+    },{    lineNumber(),"{B__0_0:'@private\n{}}","{B__1_0:'@private\n{}}",
+      "{B__0_0:'@private\n{} B__0_1:'@private\n{}}",false
   }});}
   @Test  public void test() {
     TestHelper.configureForTest();
     ClassB cb1=getClassB(_cb1);
     ClassB cb2=getClassB(_cb2);
     ClassB expected=getClassB(_expected);
-    L42.usedNames.clear();
     if(!isError){
       ClassB res=Sum.sum(Program.empty(),cb1,cb2);
       TestHelper.assertEqualExp(expected,res);

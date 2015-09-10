@@ -16,6 +16,10 @@ import ast.ExpCore.ClassB.Member;
 
 
 public class Util {
+  @Value public static class PrivatePedex{
+    int family;
+    int number;
+  }
   @Value public static class InfoAboutMs{
     @NonNull java.util.List<Path> allSuper;
     @NonNull Path original;

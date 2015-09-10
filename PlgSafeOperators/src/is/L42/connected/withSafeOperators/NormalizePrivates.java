@@ -36,10 +36,6 @@ public class NormalizePrivates {
   }
   public static String freshName(String name,String newPedex){
     assert !name.contains("__");//should have been removed before
-    //if(name.contains("__")){
-    //  name=name.replace("__", "_"+NormalizePrivates.doubleUnderscoreReplacement);      }
-    //just removing __ would be wrong, multiple methods would get different names, but multiple getters would be merged together
-    
     return name+newPedex;
   }
   public static CollectedLocatorsMap collectPrivates(ClassB cb){
@@ -47,9 +43,13 @@ public class NormalizePrivates {
     cb.accept(new CloneWithPath(){
       @Override public ClassB.NestedClass visit(ClassB.NestedClass nc){
         String name=nc.getName();
-        boolean hasValidUniquePexed=processNameAndReturnHasUnseenPedex(result.pedexes,name);
-        if(!nc.getDoc().isPrivate()){return super.visit(nc);}
-        if(!hasValidUniquePexed){result.normalized=false;}
+        String uniquePexed=processNameAndReturnUnseenPedex(result.pedexes,name);
+        PrivatePedex validUniquePexed = isValidPedex(uniquePexed);
+        if(!nc.getDoc().isPrivate()){
+          if(name.contains("__")){result.normalized=false;}
+          return super.visit(nc);
+          }
+        if(validUniquePexed==null){result.normalized=false;}
         Locator nl=this.getLocator().copy();
         nl.pushMember(nc);
         result.nesteds.add(nl);
@@ -57,9 +57,13 @@ public class NormalizePrivates {
         }
       @Override public ClassB.MethodWithType visit(ClassB.MethodWithType mwt){
         String name=mwt.getMs().getName();
-        boolean hasValidUniquePexed=processNameAndReturnHasUnseenPedex(result.pedexes,name);
-        if(!mwt.getDoc().isPrivate()){return super.visit(mwt);}
-        if(!hasValidUniquePexed){result.normalized=false;}
+        String uniquePexed=processNameAndReturnUnseenPedex(result.pedexes,name);
+        PrivatePedex validUniquePexed = isValidPedex(uniquePexed);
+        if(!mwt.getDoc().isPrivate()){
+          if(name.contains("__")){result.normalized=false;}
+          return super.visit(mwt);
+          }
+        if(validUniquePexed==null){result.normalized=false;}
         Locator ml=this.getLocator().copy();
         ml.pushMember(mwt);
         result.selectors.add(ml);
@@ -69,14 +73,27 @@ public class NormalizePrivates {
     return result;
     }
   
-  public static boolean processNameAndReturnHasUnseenPedex(Set<String> collected,String name){
+  static Util.PrivatePedex isValidPedex(String uniquePexed) {
+    int pos_=uniquePexed.indexOf("_");
+    if(pos_==-1){return null;}
+    String n1=uniquePexed.substring(0,pos_);
+    String n2=uniquePexed.substring(pos_+1);
+    try{
+      int i1=Integer.parseInt(n1);
+      int i2=Integer.parseInt(n2);
+      return new Util.PrivatePedex(i2,i1);
+    }
+    catch (NumberFormatException nfe){return null;}
+  }
+  public static String processNameAndReturnUnseenPedex(Set<String> collected,String name){
     int index=name.indexOf("__");
-    if(index==-1){return false;}
+    if(index==-1){return null;}
     updateDoubleUnderscoreReplacement(name);
     
     String pedex=name.substring(index+2,name.length());
     boolean wasAdded=collected.add(pedex);
-    return wasAdded;
+    if(wasAdded){return pedex;}
+    return null;
   }
   private static String replace__(String s){
     String ss=s.replace("__", "_"+NormalizePrivates.doubleUnderscoreReplacement);
@@ -86,7 +103,7 @@ public class NormalizePrivates {
   public static ClassB normalize(Program p,ClassB cb){
     if(cb.getStage().isPrivateNormalized()){return cb;}
     CollectedLocatorsMap result = NormalizePrivates.collectPrivates(cb);
-    if (result.normalized && result.pedexes.isEmpty()){return cb;}
+    if (result.normalized ){return cb;}//put && result.pedexes.isEmpty() for renormalization
     cb=replace__ifPresent(cb, result);
     if(!result.pedexes.isEmpty()){
       result=NormalizePrivates.collectPrivates(cb);//could be made faster, but not important here
