@@ -25,10 +25,18 @@ import auxiliaryGrammar.Program;
 
 public class Sum {
   static ClassB sum(Program p, ClassB a, ClassB b) {
-    a =NormalizePrivates.normalize(p, a);//TODO: find ways to not renormalize when is not needed
-    b = NormalizePrivates.normalize(p, b);//TODO: this is wrong,
     a=ClassOperations.normalizePaths(a);
     b=ClassOperations.normalizePaths(b);
+    a =NormalizePrivates.normalize(p, a);
+    b = NormalizePrivates.normalize(p, b);
+    int famSizeA=a.getStage().getFamilies().size();
+    int famSizeB=b.getStage().getFamilies().size();
+    if(famSizeA>famSizeB){
+      a=NormalizePrivates.refreshFamilies(b.getStage().getFamilies(), a);
+    }
+    else{
+      b=NormalizePrivates.refreshFamilies(a.getStage().getFamilies(), b);
+    }
     return normalizedTopSum(p, a, b);
   }
 

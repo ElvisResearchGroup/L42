@@ -1,6 +1,7 @@
 package is.L42.connected.withSafeOperators;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -12,9 +13,11 @@ import tools.Map;
 import ast.ExpCore;
 import ast.Util;
 import ast.ExpCore.*;
+import ast.ExpCore.ClassB.NestedClass;
 import ast.Util.*;
 import auxiliaryGrammar.Locator;
 import auxiliaryGrammar.Program;
+import ast.Ast;
 import ast.Ast.Path;
 //this file may be moved in L42_Main
 public class NormalizePrivates {
@@ -50,6 +53,7 @@ public class NormalizePrivates {
           return super.visit(nc);
           }
         if(validUniquePexed==null){result.normalized=false;}
+        else{result.families.add(validUniquePexed.getFamily());}
         Locator nl=this.getLocator().copy();
         nl.pushMember(nc);
         result.nesteds.add(nl);
@@ -70,10 +74,15 @@ public class NormalizePrivates {
         return super.visit(mwt);
         }
       });
+    if(result.normalized){
+      cb.getStage().getFamilies().clear();
+      cb.getStage().getFamilies().addAll(result.families);
+    }
     return result;
     }
   
   static Util.PrivatePedex isValidPedex(String uniquePexed) {
+    if(uniquePexed==null){return null;}
     int pos_=uniquePexed.indexOf("_");
     if(pos_==-1){return null;}
     String n1=uniquePexed.substring(0,pos_);
@@ -103,6 +112,14 @@ public class NormalizePrivates {
   public static ClassB normalize(Program p,ClassB cb){
     if(cb.getStage().isPrivateNormalized()){return cb;}
     CollectedLocatorsMap result = NormalizePrivates.collectPrivates(cb);
+    cb = auxNormalize(p, cb, result);
+    cb.accept(new CloneVisitor(){public ExpCore visit(ClassB cb){
+      cb.getStage().setPrivateNormalized(true);
+      return super.visit(cb);}});
+    return cb;
+  
+    }
+  private static ClassB auxNormalize(Program p, ClassB cb, CollectedLocatorsMap result) {
     if (result.normalized ){return cb;}//put && result.pedexes.isEmpty() for renormalization
     cb=replace__ifPresent(cb, result);
     if(!result.pedexes.isEmpty()){
@@ -110,13 +127,8 @@ public class NormalizePrivates {
       }
     result.computeNewNames();
     cb=NormalizePrivates.normalize(p,result, cb);
-    //cb.getStage().setPrivateNormalized(true);
-    cb.accept(new CloneVisitor(){public ExpCore visit(ClassB cb){
-      cb.getStage().setPrivateNormalized(true);
-      return super.visit(cb);}});
     return cb;
-  
-    }
+  }
   private static ClassB replace__ifPresent(ClassB cb, CollectedLocatorsMap result) {
     if(result.pedexes.isEmpty()){return cb;}
     return (ClassB)cb.accept(new CloneVisitor(){
@@ -137,7 +149,49 @@ public class NormalizePrivates {
         }
       }) ;
   }
-   
+  public static ClassB refreshFamilies(List<Integer>forbidden,ClassB cb){
+    CachedStage stg = cb.getStage();
+    assert stg.isPrivateNormalized():
+      stg;
+    List<Integer>needRename=new ArrayList<>(stg.getFamilies());
+    needRename.retainAll(forbidden);
+    if(needRename.isEmpty()){return cb;}
+    PrivateHelper.countFamilies+=1;
+    int newFamily=PrivateHelper.countFamilies;
+    HashMap<String,String>renaming=new HashMap<>();
+    return (ClassB) cb.accept(new CloneVisitor(){
+      private int currentNum=0;
+      private String visitName(String name) {
+        String mapped=renaming.get(name);
+        if(mapped!=null){return mapped;}
+        int index__=name.indexOf("__");
+        if(index__==-1){return name;}
+        int index_=name.lastIndexOf("_");
+        assert index_>index__+2;
+        int family=Integer.parseInt(name.substring(index_+1));
+        //if(!needRename.contains(family)){return name;}//this check is wrong, indeed we want to rename all in a single family
+        String newName=name.substring(0,index__)+"__"+(currentNum++)+"_"+newFamily;
+        renaming.put(name,newName);
+        return newName;
+      }
+      //nc, ms,path
+      public NestedClass visit(NestedClass nc){
+        String newName=visitName(nc.getName());
+        return super.visit(nc.withName(newName));
+        }
+
+      public ExpCore visit(Path path){
+        List<String>cs=path.getCBar();
+        cs=Map.of(c->visitName(c),cs);
+        return super.visit(Path.outer(path.outerNumber(),cs));
+        }
+      public Ast.MethodSelector liftMs(Ast.MethodSelector ms){
+        return super.liftMs(ms.withName(visitName(ms.getName())).withNames(
+            Map.of(n->visitName(n), ms.getNames())
+            ));
+        }
+    });
+  }
   public static ClassB normalize(Program p,CollectedLocatorsMap privates,ClassB cb){
     cb=(ClassB)new RenameAlsoDefinition(cb,privates,p).visit(cb);
     return cb;
@@ -147,5 +201,5 @@ public class NormalizePrivates {
     //the rename declarations for methods, for renameMethod have to keep method sum in account.
     
     }
-  public static ClassB importWithReuseNormalizedClass(int round,ClassB cb){return cb;}
+  //public static ClassB importWithReuseNormalizedClass(int round,ClassB cb){return cb;}
 }
