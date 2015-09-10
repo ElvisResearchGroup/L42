@@ -69,17 +69,19 @@ public static ExpCore stepStar(Executor executer,ExpCore e){
   //catch(ErrorMessage.NormalForm mess){ return mess.getE();}
   catch(ErrorMessage.CtxExtractImpossible mess){
     assert e instanceof ClassB;
-    ClassB ct=(ClassB)e;
-    Configuration.typeSystem.computeStage(emptyP,ct);
-    Program p1=emptyP.addAtTop(ct);
-    Configuration.typeSystem.checkCt( emptyP, ct);
-    if(!p1.checkComplete()){//also check is star
-      p1.checkComplete();//to let debugger enter
-      throw new ErrorMessage.MalformedFinalResult(ct,
-        "Some class can not be completely typed as is still incomplete or refers to incomplete classes"
-          +ErrorFormatter.reportPlaceOfMetaError(p1,ct)
-          );
-      };
+    if(!L42.trustPluginsAndFinalProgram){
+      ClassB ct=(ClassB)e;
+      Configuration.typeSystem.computeStage(emptyP,ct);
+      Program p1=emptyP.addAtTop(ct);
+      Configuration.typeSystem.checkCt( emptyP, ct);
+      if(!p1.checkComplete()){//also check is star
+        //p1.checkComplete();//to let debugger enter
+        throw new ErrorMessage.MalformedFinalResult(ct,
+          "Some class can not be completely typed as is still incomplete or refers to incomplete classes"
+            +ErrorFormatter.reportPlaceOfMetaError(p1,ct)
+            );
+        }
+      }
     return e;}
 }
 final public ExpCore step(Program p,ExpCore e){

@@ -41,6 +41,7 @@ public class L42 {
   private static ExecutionStage stage=ExecutionStage.None;
   public static ExecutionStage getStage(){return stage;}
   public static int compilationRounds=0;
+  public final static boolean trustPluginsAndFinalProgram=true;
   public static StringBuilder record=new StringBuilder();
   public static String[] programArgs=null;
   public static List<URL> pluginPaths=null;

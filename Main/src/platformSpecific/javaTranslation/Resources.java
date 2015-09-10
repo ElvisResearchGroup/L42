@@ -2,6 +2,7 @@ package platformSpecific.javaTranslation;
 
 import facade.Configuration;
 import facade.ErrorFormatter;
+import facade.L42;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -127,6 +128,7 @@ public class Resources {
     public ast.ExpCore revert();
   }
   public static boolean isValid(Program p,Object res, Object[] xs) {
+    if(L42.trustPluginsAndFinalProgram){return true;}
     ExpCore ec0=Revertable.doRevert(res);
     List<ExpCore> es=new ArrayList<>();
     for(Object o:xs){
