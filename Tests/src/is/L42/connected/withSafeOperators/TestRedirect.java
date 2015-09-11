@@ -50,6 +50,13 @@ public static class TestRedirect1 {//add more test for error cases
     },{lineNumber(), new String[]{"{A:{}}"},
         "{InnerA:{}  method InnerA m(InnerA a) a}","Outer0::InnerA","Outer1::A",
         "{ method Outer1::A m(Outer1::A a) a}",false
+    },{lineNumber(), new String[]{ // Redirect free templates into primitive types
+        "{A:{ method Void fun(Library that, Any other)}}"},
+        "{InnerVoid:{} InnerLib:{} InnerAny:{}"
+        + "InnerA:{method InnerVoid fun(InnerLib that, InnerAny other)}"
+        + "method InnerAny moreFun(InnerVoid that, InnerLib other)"
+        + "}","Outer0::InnerA","Outer1::A",
+        "{method Any moreFun(Void that, Library other)}",false
     },{lineNumber(), new String[]{"{A2:{  }}","{A1:{  }}"}, // redirecting into one of multiple outer scopes
         "{InnerA:{}  method InnerA m(InnerA a) a}","Outer0::InnerA","Outer1::A1",
         "{ method Outer1::A1 m(Outer1::A1 a) a}",false
@@ -494,6 +501,17 @@ public static class TestRedirect1 {//add more test for error cases
           .set("SrcPath", "'@::InnerA::C", "DestExternalPath", "'@Outer2::A::C",
                "UnexpectedMembers", "[mostFun()]")
           .str(), true
+    },{lineNumber(), new String[]{ // Redirect free templates with methods into primitive types
+        "{A:{ method Void fun(Library that, Any other)}}"},
+        "{InnerVoid:{()} InnerLib:{()} InnerAny:{()}"
+        + "InnerA:{method InnerVoid fun(InnerLib that, InnerAny other)}"
+        + "method InnerAny moreFun(InnerVoid that, InnerLib other)"
+        + "}","Outer0::InnerA","Outer1::A",
+        ec
+          .set("SrcPath", "'@::InnerVoid", "DestExternalPath", "'@Void",
+               "UnexpectedMembers", "[Outer0 #apply()]" 
+               )
+          .str(), true
     },{lineNumber(), new String[]{  // One unimplemented interface; no unexpected members
         "{A:{interface type method Void fun(Void that)  method Void moreFun(Void that, Library other) \n"
         + " C:{interface}}}"
@@ -506,7 +524,7 @@ public static class TestRedirect1 {//add more test for error cases
         + "}",
         "Outer0::InnerA","Outer1::A",
         ec
-          .set(
+          .set("SrcPath", "'@::InnerA::C", "DestExternalPath", "'@Outer2::A::C",
                "UnexpectedMembers", "[]",
                "UnexpectedImplementedInterfaces", "'[@::BlockingInterface1]"
                )
@@ -550,7 +568,8 @@ public static class TestRedirect1 {//add more test for error cases
                )
           .str(), true
 
-    // IncoherentRedirectMapping
+
+    // IncoherentRedirectMapping: Src(1..), Dest(1..), IncoherentSrc(1..), IncoherentDest(0, 2..)
     // TODO@James: enumerate the parameters and explore them thoroughly
     // TODO@James: explore the relationship between intersection unambiguity and forced split
     },{lineNumber(), new String[]{      // Incoherent redirect, forcing InnerAB to be split into both A and B
@@ -611,8 +630,7 @@ public static class TestRedirect1 {//add more test for error cases
     // MethodClash: Path(1), Left(1), Right(1), LeftKind(enum(4)), RightKind(enum(4)),
     // DifferentParameters(0..), DifferentReturnType(t/f), DifferentThisMdf(t/f), IncompatibleException(t/f)
 
-    },{lineNumber(), new String[]{   // Redirect, using the matching-alias rule, to a class with an incompatible method
-                                     // @Marco, I protest against tabs in method specs in these errors
+    },{lineNumber(), new String[]{   // Redirect, using the matching-alias rule, one primitive type onto another
                     "{"
                     + "X:{Y:{\n"
                     + "       FluffyA:{method Library fun(Void that)}\n"
@@ -651,26 +669,7 @@ public static class TestRedirect1 {//add more test for error cases
         + "}",
         "Outer0::Z::Aliases","Outer1::X::Y::Aliases",
         ec.set("Right", "method Outer1::X::Y fun(Void that)").str(), true
-/* TODO@James: play properly with redirects and primitive types        
-    },{lineNumber(), new String[]{   // Redirect from, but not to, incompatible which is a path
-                                     // @Marco, I think that we should keep getting MethodClash here, because Void is not a source-created path to add to the cascade
-                                     //TODO: @James, I think it should be src unfit instrad. We *can* redirect stuff to Void, Any or Library. For example we can have collections of Libraries.
-                    "{"
-                    + "X:{Y:{\n"
-                    + "       FluffyA:{method Void fun(Void that)}\n"
-                    + "       Aliases:{method FluffyA::fun() notSoFun()}\n"
-                    + "}}"
-                    + "}"},
-        "{Z:{\n"
-        + "   FluffyA:{method Outer1 fun(Void that)} \n"
-        + "   Aliases:{method FluffyA::fun() notSoFun()}\n"
-        + "}\n"
-        + "TestA:{method Z::FluffyA fun()}"
-        + "}",
-        "Outer0::Z::Aliases","Outer1::X::Y::Aliases",
-        ec.set("Left", "method Outer1 fun(Void that)",
-               "Right", "method Void fun(Void that)").str(), true
-*/
+// TODO@James: play properly with redirects and primitive types        
 
 /* TODO@James : try this test, when I get to method clashes
     },{lineNumber(), new String[]{ // mismatches in type vs instance method
@@ -704,15 +703,30 @@ public static class TestRedirect1 {//add more test for error cases
            */
 
     // MemberUnavailable: Path(1), Selector(0..1), InvalidKind(enum 4)
-    // In practice, Selector(0), InvalidKind(enum 1) in this context,
+    // In practice, Selector(0), InvalidKind(enum 2) in this context,
     // because all of the other cases are reported as SourceUnfit 
-
     },{lineNumber(),   // Redirect a private class
         new String[]{"{A:{ }}"},
         "{InnerA:'@private\n {type method Void fun(Void that)} }",
         "Outer0::InnerA","Outer1::A",
         ec.load("MemberUnavailable",
                 "Path", "'@::InnerA",
+                "Selector", "",
+                "InvalidKind", "PrivatePath"
+               ).str(), true
+    },{lineNumber(),   // Redirect a nonexistent class
+        new String[]{"{A:{ }}"},
+        "{InnerNotA:{} }",
+        "Outer0::InnerA","Outer1::A",
+        ec.set("InvalidKind", "NonexistentPath"
+               ).str(), true
+/* Privacy does not trigger MemberUnavailable
+    },{lineNumber(),   // Redirect to a private class
+        new String[]{"{A:'@private\n { }}"},
+        "{InnerA:{} }",
+        "Outer0::InnerA","Outer1::A",
+        ec.load("MemberUnavailable",
+                "Path", "'Outer2::A",
                 "Selector", "",
                 "InvalidKind", "PrivatePath"
                ).str(), true
@@ -725,7 +739,7 @@ public static class TestRedirect1 {//add more test for error cases
         ec.set("Selector", "fun(that)"
                 )
           .str(), true
-
+*/
     }});
     return TestHelper.skipUntilLine(tests, startLine);
 }
