@@ -703,11 +703,9 @@ public static class TestRedirect1 {//add more test for error cases
           .str(), true
            */
 
-    // MemberUnavailable:
-    // TODO@James: set up these tests properly; this is a temporary job to keep errors i found by accident 
-    // Path(1), Left(1), Right(1), LeftKind(enum(4)), RightKind(enum(4)),
-    // DifferentParameters(0..), DifferentReturnType(t/f), DifferentThisMdf(t/f), IncompatibleException(t/f)
-
+    // MemberUnavailable: Path(1), Selector(0..1), InvalidKind(enum 4)
+    // In practice, Selector(0), InvalidKind(enum 1) in this context,
+    // because all of the other cases are reported as SourceUnfit 
 
     },{lineNumber(),   // Redirect a private class
         new String[]{"{A:{ }}"},
@@ -718,9 +716,9 @@ public static class TestRedirect1 {//add more test for error cases
                 "Selector", "",
                 "InvalidKind", "PrivatePath"
                ).str(), true
-    },{lineNumber(),      // Redirect a class with a private method, for which the target has a matching method
-       new String[]{"{A:{type method Void fun(Void that) }}"},
-        "{InnerA:{() type method '@private\n Void fun(Void that)} "
+    },{lineNumber(),      // Redirect a class with method, for which the target has a private matching method
+       new String[]{"{A:{type method '@private\n Void fun(Void that) }}"},
+        "{InnerA:{type method Void fun(Void that)} "
         + "InnerB:{type method Void moreFun(Void that) InnerA.fun(that)}"
         + "}",
         "Outer0::InnerA","Outer1::A",
