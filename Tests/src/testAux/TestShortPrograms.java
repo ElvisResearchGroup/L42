@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import helpers.TestHelper;
 import facade.Configuration;
+import facade.ErrorFormatter;
 import facade.Parser;
 import sugarVisitors.Desugar;
 import sugarVisitors.InjectionOnCore;
@@ -16,21 +17,16 @@ import ast.ExpCore.ClassB;
 public class TestShortPrograms {
   public void tp(String ...code) {
     TestHelper.configureForTest();
-    FinalResult res0=facade.L42.runSlow(null,TestHelper.multiLine(code));
+    FinalResult res0;
+    try{
+      res0=facade.L42.runSlow(null,TestHelper.multiLine(code));
+    }catch(ErrorMessage msg){
+      ErrorFormatter.topFormatErrorMessage(msg);
+      throw msg;
+    }
     ClassB res=res0.getTopLevelProgram();
-    //ClassB.NestedClass last=(ClassB.NestedClass)res.getMs().get(res.getMs().size()-1);
-    //res=(ClassB)last.getInner();
-    /*if(!(res1 instanceof ClassB)){
-      ExpCore ee2=TestHelper.testParseString("{'@ExpectedClass \n}").accept(new InjectionOnCore());
-      TestHelper.assertEqualExp(res1,ee2);
-      }*/
-    //ClassB res=(ClassB)res1;
     ClassB.NestedClass nc=(ClassB.NestedClass)res.getMs().get(res.getMs().size()-1);
-    ExpCore ee2=Desugar.of(Parser.parse(null,"{'@exitStatus\n'0\n\n}")).accept(new InjectionOnCore());
-    /*if(!nc.getInner().equals(ee2)){
-      ExpCore ee3=Parser.parse("{'@something around a OK\n}").accept(new InjectionOnCore());
-      TestHelper.assertEqualExp(res,ee3);
-    }*/
+    ExpCore ee2=Desugar.of(Parser.parse(null,"{'@exitStatus\n'0\n\n}##star ^##")).accept(new InjectionOnCore());
     TestHelper.assertEqualExp(nc.getInner(),ee2);
   }
 
@@ -196,7 +192,7 @@ public void test8f(){tp("{"
 
 
 
-@Test(expected=ErrorMessage.PathsNotSubtype.class/*PathNonExistant.class*/)
+@Test(expected=PathNonExistant.class)
 public void test9b(){tp("{()"
     ," D: {() type method Library id(Library that) (that)}"
     ," C: {()  H:{() method Void foo() (Outer2::C::E x= this void)}}"
@@ -204,14 +200,18 @@ public void test9b(){tp("{()"
     ,"}");}
 
 
-@Test(expected=ErrorMessage.PathsNotSubtype.class/*PathNonExistant.class*/)
-public void test9c(){tp("{()"
-    //TODO:here, it pass if you put C::H, is this coherent?
+@Test(expected=PathNonExistant.class)
+public void test9c1(){tp("{()"//focus on the difference between c1 and c2. This is the expected behaviour.
     ," D: {() type method Library id(Library that) (that)}"
     ," C: D.id({()  H:{() method Void foo() (Outer2::C::E x= this void)}}) "
     ," F: {'@exitStatus\n'0\n\n}"
     ,"}");}
-
+@Test()
+public void test9c2(){tp("{()"
+    ," D: {() type method Library id(Library that) (that)}"
+    ," C: D.id({()  H:{() method Void foo() (Outer2::C::H x= this void)}}) "
+    ," F: {'@exitStatus\n'0\n\n}"
+    ,"}");}
 @Test(/*expected=ErrorMessage.PathsNotSubtype.class/*PathNonExistant.class*/)//correctly no error for trashing the error.
 public void test9d(){tp("{()"
     ," D: {() type method Library trash(Library that) ({()})}"
@@ -269,4 +269,19 @@ public void testPlusNotStar(){tp("{"
 ,"}"
 );}
 
+@Test(expected=ErrorMessage.PathsNotSubtype.class)
+public void testDeepTyping1(){tp("{"
+    ," D: { type method Library wrong()  { A:{method Void v(Any a) a } } }"
+    ," E: ( Library ignore=D.wrong(), {'@exitStatus\n'0\n\n})"
+    ,"}");}
+@Test(expected=ErrorMessage.MethodNotPresent.class)
+public void testDeepTyping2(){tp("{"
+    ," D: { type method Library wrong()  { A:{method Void v() this.notDeclared() } } }"
+    ," E: ( Library ignore=D.wrong(), {'@exitStatus\n'0\n\n})"
+    ,"}");}
+@Test(expected=ErrorMessage.MethodNotPresent.class)
+public void testDeepTyping3(){tp("{"
+    ," D: { type method Library wrong()  { A:{method Void v() this.notDeclared() } } }"
+    ," E: ( Void ignore=D.wrong(), {'@exitStatus\n'0\n\n})"//we check that methodNotPresent has priority over PathsNotSubtype in this case
+    ,"}");}
 }

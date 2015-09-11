@@ -85,8 +85,8 @@ public class EncodingHelper{
 
   public static ClassB ensureExtractCt(Object e,Program p) {
     ClassB cb=ensureExtractClassB(e);
-    ClassB res = Configuration.typeSystem.typeExtraction(p,cb);
-    return res;
+    //ClassB res = Configuration.typeSystem.typeExtraction(p,cb);
+    return cb;
     }
  
   public static Doc ensureExtractDoc(Object e) {

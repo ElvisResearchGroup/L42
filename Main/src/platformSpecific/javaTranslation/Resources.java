@@ -2,6 +2,7 @@ package platformSpecific.javaTranslation;
 
 import facade.Configuration;
 import facade.ErrorFormatter;
+import facade.L42;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -45,6 +46,7 @@ public class Resources {
   public static String submitRes(Object cb){
     HashSet<String> hs=new HashSet<>(usedRes.keySet());
     String newK=Functions.freshName("key", hs);
+    assert !usedRes.containsKey(newK);
     usedRes.put(newK,cb);
     return newK;
     }
@@ -63,7 +65,7 @@ public class Resources {
     }
   public static Object getRes(String key){
     Object o=usedRes.get(key);
-    if(o==null){throw new Error("Invalid resource"+key+" Valid resources are: "+usedRes.keySet());}
+    if(o==null){throw new Error("Invalid resource "+key+" Valid resources are: "+usedRes.keySet());}
     return o;
     }
   public static void clearRes() {
@@ -126,6 +128,7 @@ public class Resources {
     public ast.ExpCore revert();
   }
   public static boolean isValid(Program p,Object res, Object[] xs) {
+    if(L42.trustPluginsAndFinalProgram){return true;}
     ExpCore ec0=Revertable.doRevert(res);
     List<ExpCore> es=new ArrayList<>();
     for(Object o:xs){
@@ -136,24 +139,24 @@ public class Resources {
       List<ClassB> cbs = CollectClassBs0.of(ec);
       List<Path> ps = CollectPaths0.of(ec);
       for(ClassB cb:cbs){
-        ClassB ct1= Configuration.typeSystem.typeExtraction(p,cb);
-        if(ct1.getStage().getStage()==Stage.Less ||ct1.getStage().getStage()==Stage.None  ){strict=false;}
+        Configuration.typeSystem.computeInherited(p,cb);
+        if(cb.getStage().getStage()==Stage.Less ||cb.getStage().getStage()==Stage.None  ){strict=false;}
         }
       for(Path path:ps){
         if(path.isPrimitive()){continue;}
-        Stage extracted=p.extractCt(path).getStage().getStage();
+        Stage extracted=p.extractCb(path).getStage().getStage();
         if(extracted==Stage.Less || extracted==Stage.None){strict=false;}
         }
       }
     List<ClassB> cbs = CollectClassBs0.of(ec0);
     for(ClassB cb:cbs){
-      ClassB ct= Configuration.typeSystem.typeExtraction(p,cb);
-      try{Configuration.typeSystem.checkCt( p, ct);}
+      Configuration.typeSystem.computeStage(p,cb);
+      try{Configuration.typeSystem.checkCt( p, cb);}
       catch(ErrorMessage msg){
-        msg.printStackTrace();
+        //msg.printStackTrace();
         throw msg;//to breakpoint here
         }
-      if(strict && (ct.getStage().getStage()==Stage.Less || ct.getStage().getStage()==Stage.None)){
+      if(strict && (cb.getStage().getStage()==Stage.Less || cb.getStage().getStage()==Stage.None)){
         return false;
         //throw Assertions.codeNotReachable("try to make this happen, is it possible? it should mean bug in plugin code\n"/*+ToFormattedText.of(ct)*/);
       }
@@ -178,6 +181,9 @@ public class Resources {
     T res=null;
     try{
       res=cls.apply(plg, xs);
+      if(res instanceof ExpCore){
+        res=(T)Functions.flushCache((ExpCore) res);
+      }
       if(Resources.isValid(p,res,xs)){return res;}
       else{throw Resources.notAct;}
       }

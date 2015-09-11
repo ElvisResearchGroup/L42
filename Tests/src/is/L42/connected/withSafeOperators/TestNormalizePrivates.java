@@ -69,6 +69,11 @@ public static class TestCollectPrivates {
     + "}",
     "[42]\n[Outer0::foo__42()[0]null, Outer0::foo__42()[1]bla()[0]null]\n[]\nfalse"
   
+  },{
+    lineNumber(),
+    "{method'@private\n Void foo( Outer0::foo() x)}",
+    "[]\n[Outer0::foo(x)[0]foo__0_0(x)]\n[]\nfalse"
+  
   }});}
 
 
@@ -104,8 +109,7 @@ public static class TestNormalizePrivates1 {
   },{
     lineNumber(),"{method Void fo$%$%o__a()}","{method Void fo$%$%o_$%$%$%a()}"
   },{
-    lineNumber(),"{ C__A:{interface <:C__A }}","{ C_$%A:{interface <:C_$%A }}"                                                           
-  
+    lineNumber(),"{ C__A:{interface <:C__A }}","{ C_$%A:{interface <:C_$%A }}"      
   },{
     lineNumber(),"{ C:'@private\n{interface <:C }}","{ C__0_0:'@private\n{interface <:C__0_0 }}"                                                           
   },{
@@ -127,6 +131,24 @@ public static class TestNormalizePrivates1 {
     lineNumber(),"{  method '@private\n Void foo() void}","{  method '@private\n Void foo__0_0() void}" 
   },{
     lineNumber(),"{ method Library bar() {  method '@private\n Void foo() void}}","{ method Library bar() {  method '@private\n Void foo__0_0() void}}" 
+  },{
+    lineNumber(),
+    "{method'@private\n Void foo( Outer0::foo(x) x)}",
+    "{\nmethod '@private\nVoid foo__0_0(Outer0::foo__0_0(x ) x) }"
+  
+  },{
+    lineNumber(),
+    "{ A:'@private\n{method A a()} method A foo( A::a() x)}",
+    "{ A__0_0:'@private\n{method A__0_0 a()} method  A__0_0 foo ( A__0_0::a() x)}"
+  
+  },{
+    lineNumber(),
+    "{ A__1_12:'@private\n{method A__1_12 a()} method A__1_12 foo()}",
+    "{ A__1_12:'@private\n{method A__1_12 a()} method  A__1_12 foo ()}"
+  },{
+    lineNumber(),
+    "{ A:{method'@private\n A a__1_12 ()}}",
+    "{ A:{method'@private\n A a__1_12 ()}}"
     
   }});}
 

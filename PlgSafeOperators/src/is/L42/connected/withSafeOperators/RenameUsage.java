@@ -54,10 +54,11 @@ public class RenameUsage extends MethodPathCloneVisitor {
       }
       if(filtered.isEmpty()){return original;}
       Locator pathOriginal=this.getLocator().copy();
-      boolean isOut=pathOriginal.moveInPath(src);
-      if(isOut){return original;}
+      pathOriginal.toFormerNodeLocator();
+      boolean isIn=pathOriginal.moveInPath(src);
+      if(!isIn){return original;}
       for(Locator pMx:filtered){
-          Locator pathDef=pMx;
+          Locator pathDef=pMx.copy();
           pathDef.toFormerNodeLocator();
           if(!pathDef.equals(pathOriginal)){continue;}
           return (MethodSelector)pMx.getAnnotation();

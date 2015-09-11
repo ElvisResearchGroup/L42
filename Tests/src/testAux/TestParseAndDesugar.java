@@ -381,6 +381,26 @@ public class TestParseAndDesugar {
 +" C:{"
 +" method"
 +" Void foo() void}}"
+//----------
+
+},{lineNumber(),"{a( Outer0::A a, var Outer0::B b)}",
+  "{"
+ +" type method Outer0 a( Outer0::A^ a, Outer0::B^ b) "
+ +" mut method Outer0::A #a() "
+ +" read method Outer0::A a()"
+ +" mut method Void b(Outer0::B that)"
+ +" mut method Outer0::B #b()"
+ +" read method Outer0::B b()"
+ +" }"    
+},{lineNumber(),"{a( Outer0::A a, var Outer0::B b)'@private\n}",
+    "{"
+   +" type method'@private\n Outer0 a( Outer0::A^ a, Outer0::B^ b) "
+   +" mut method'@private\n Outer0::A #a() "
+   +" read method'@private\n Outer0::A a()"
+   +" mut method'@private\n Void b(Outer0::B that)"
+   +" mut method'@private\n Outer0::B #b()"
+   +" read method'@private\n Outer0::B b()"
+   +" }"    
 
 }});}
 

@@ -28,6 +28,7 @@ import auxiliaryGrammar.Program;
 import facade.Configuration;
 import facade.L42;
 import facade.Parser;
+import is.L42.connected.withSafeOperators.NormalizePrivates;
 
 public class TestHelper {
   public static void assertEqualExp(ExpCore e1,ExpCore e2){
@@ -113,8 +114,8 @@ public class TestHelper {
       Expression e=Parser.parse("Outer"+outerCount,s);
       --outerCount;
       ClassB ec=(ClassB)Desugar.of(e).accept(new InjectionOnCore());
-      ClassB ect=Configuration.typeSystem.typeExtraction(p0, ec);
-      p0=p0.addAtTop(ec,ect);
+      Configuration.typeSystem.computeStage(p0, ec);
+      p0=p0.addAtTop(ec);
       }
     return p0;
   }
@@ -166,6 +167,7 @@ public class TestHelper {
     Configuration.typeSystem=new typeSystem.Facade();
     L42.record=new StringBuilder();
     L42.usedNames.clear();
+    NormalizePrivates.reset();
   }
   public static void reportError(ErrorMessage e){
   if(Executor.last1==null||Executor.last2==null){throw e;}

@@ -215,8 +215,10 @@ public class ErrorFormatter {
     try{
       Field f=c.getDeclaredField("pos");
       f.setAccessible(true);
-      Ast.Position pos=(Ast.Position)f.get(msg);
-      ps.add(pos);
+      if( f.get(msg) instanceof Ast.Position){
+        Ast.Position pos=(Ast.Position)f.get(msg);
+        ps.add(pos);
+        }
     }
     catch(NoSuchFieldException ignored){}
   }
@@ -259,7 +261,25 @@ public class ErrorFormatter {
       ExpCore exp=(ExpCore)obj;
       //Expression expression=exp.accept(new RecoverStoredSugar());
       Expression expression=exp.accept(new InjectionOnSugar());
-      return errorFormat(expression,ps);
+      String cachedInfo="";
+      if(exp instanceof ClassB){
+        CachedStage stg = ((ClassB)exp).getStage();
+        if(stg.getGivenName().isEmpty()){
+          cachedInfo+="anonimus";
+        }
+        else{ cachedInfo+="name: "+stg.getGivenName();}
+        cachedInfo+=  " depends:[";
+        //cachedInfo+=//can be circular errorFormat(stg.getDependencies(),new ArrayList<>());
+        for(ClassB cbd:stg.getDependencies()){
+          if(cbd.getStage().getGivenName().isEmpty()){
+            cachedInfo+="anonimus";
+          }
+          else {cachedInfo+=cbd.getStage().getGivenName();}
+          cachedInfo  +="{"+cbd.getStage().getStage().name()+"}, ";
+        }
+        cachedInfo+="]";
+        }
+      return cachedInfo+errorFormat(expression,ps);
       }
     if(obj instanceof Ast.MethodSelector){
       return formatSelectorCompact((Ast.MethodSelector)obj);
@@ -285,7 +305,7 @@ public class ErrorFormatter {
     if(obj instanceof Ast.Type){return ToFormattedText.of((Ast.Type)obj);}
 
     if(obj instanceof ClassB.Member){return ToFormattedText.of((ClassB.Member)obj);}
-    if(obj instanceof Expression){return ToFormattedText.of((Expression)obj);}
+    //if(obj instanceof Expression){return ToFormattedText.of((Expression)obj);}
     if(obj instanceof Expression.ClassB.Member){return ToFormattedText.of((Expression.ClassB.Member)obj);}
     if(obj instanceof java.nio.file.Path){return obj.toString();}
     if(obj instanceof CachedStage){return obj.toString();}
@@ -306,7 +326,7 @@ public class ErrorFormatter {
     }
   private static void printType(int i, Program p) {
     if(p.isEmpty()){return;}
-    printType(i,"",p.topCt());
+    printType(i,"",p.topCb());
     printType(i+1,p.pop());
 
   }
@@ -371,12 +391,28 @@ public class ErrorFormatter {
   }
 
   public static String whyIsNotExecutable(Path path, Program p1) {
-    ClassB cb=p1.extractCt(path);
+    ClassB cb=p1.extractCb(path);
     String whyNot=whyIsNotExecutable(cb);
     if (whyNot!=null){
       return "The requested path is incomplete.\n  "
           +ToFormattedText.of(path)+whyNot;
     }
     return "The requested path is incomplete since it refers to other incomplete classes in the program";
+  }
+  public static void topFormatErrorMessage(ErrorMessage msg) {
+    //System.out.println(ErrorFormatter.formatError(msg).getErrorTxt());
+    L42.printDebug(
+        formatError(Program.empty(),msg).getErrorTxt()
+        );
+    for(Field f:msg.getClass().getDeclaredFields()){
+      f.setAccessible(true);
+      if(!f.getName().equals("p")){continue;}
+      List<ClassB> program;
+      try { program = (List<ClassB>)f.get(msg);}
+      catch (IllegalArgumentException | IllegalAccessException e) { throw new Error(e);}
+      for(ClassB cb:program){
+        L42.printDebug(displayAbstractMethods(cb));
+      }
+    }
   }
 }

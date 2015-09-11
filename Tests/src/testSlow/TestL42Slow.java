@@ -18,7 +18,6 @@ import org.junit.Test;
 import reduction.SmallStep;
 import sugarVisitors.Desugar;
 import sugarVisitors.InjectionOnCore;
-import typeSystem.TypeExtraction;
 import typeSystem.TypeSystemOK;
 import ast.ErrorMessage;
 import ast.Expression;

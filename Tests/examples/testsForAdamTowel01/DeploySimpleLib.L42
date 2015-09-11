@@ -1,9 +1,13 @@
 {reuse L42.is/AdamTowel01
-Task:DeployLibrary[Path"MyLib",url:URL"localhost/DeployedSimpleLib.L42"]<<{
+Resource:{type method Library(){
   reuse L42.is/AdamTowel01
   MyLib:{'could be in another file
     type method
     Void printHelloWorld() Debug(S"Hello World Deployed")
     }
-  }
+  }}
+Task:DeployLibrary[
+  Path"MyLib",
+  url:URL"localhost/DeployedSimpleLib.L42"
+  ]<<Resource()
 }

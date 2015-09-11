@@ -9,7 +9,12 @@ import ast.ExpCore.ClassB;
 import auxiliaryGrammar.Program;
 
 public class Facade implements facade.TypeSystem{
-
+  public @Override void computeInherited(Program p,ClassB cb){
+    FillCache.computeInherited(p, cb);
+  }
+  public @Override void computeStage(Program p,ClassB cb) {//requires inherited
+    FillCache.computeStage(p, cb);
+  }
   @Override
   public void checkCt(Program p, ClassB ct) {
     TypeSystemOK.checkCt(p, ct);    
@@ -26,7 +31,7 @@ public class Facade implements facade.TypeSystem{
     env.exceptions.add(Path.Any());
     TypeSystem.typecheckSure(false,p,new HashMap<>(),SealEnv.empty(),env,new Ast.NormType(Ast.Mdf.Immutable,Ast.Path.Library(),Ast.Ph.None),e);
   }
-
+/*
   private static HashMap<Par,ClassB>cache=new HashMap<>();
   private static class Par{@Override public int hashCode() {
       final int prime = 31;
@@ -45,14 +50,9 @@ public class Facade implements facade.TypeSystem{
   public Par(Program p, ClassB cb) {this.p = p;this.cb = cb;    }
     Program p; ClassB cb;
     }
-  
-  public @Override void computeInherited(Program p,ClassB cb){
-    FillCache.computeInherited(p, cb);
-  }
-  public @Override void computeStage(Program p,ClassB cb) {//requires inherited
-    FillCache.computeStage(p, cb);
-  }
-  
+  */
+ 
+  /*
   @Override public ClassB typeExtraction(Program p, ClassB cb) {
     Par par=new Par(p,cb);
     ClassB old=cache.get(par);
@@ -63,6 +63,6 @@ public class Facade implements facade.TypeSystem{
     old=TypeExtraction.etFull(p, cb);
     cache.put(par, old);
     return old;
-  }
+  }*/
   
 }

@@ -275,7 +275,7 @@ public static class TestRedirect1 {//add more test for error cases
                                      // via a pile that explicitly directs both
                     "{I1:{interface method Void fun()}\n"
                     + "I2:{interface method Void moreFun()}\n"
-                    + "A:{<:I1 I2 method Void fun() method Void moreFun()}\n"
+                    + "A:{<:I1 I2 }\n"
                     + "%Redirect:{method I1 _I1() method I2 _I2() method A _A()}\n"
                     + "}"},
         "{InnerI1:{interface method Void fun()}\n"
@@ -586,7 +586,7 @@ public static class TestRedirect1 {//add more test for error cases
                                      // disambiguating it turned out to be prohibitive.
                     "{I1:{interface method Void fun()}\n"
                     + "I2:{interface method Void moreFun()}\n"
-                    + "A:{<:I1 I2 method Void fun() method Void moreFun()}"
+                    + "A:{<:I1 I2 }"
                     + "}"},
         "{InnerI1:{interface method Void fun()}\n"
         + "InnerI2:{interface method Void moreFun()}\n"
@@ -684,7 +684,7 @@ public static class TestRedirect1 {//add more test for error cases
           .set("UnexpectedMethods", "[moreFun(that), mostFun()]").str(), true
           */
 
-          /* TODO@James: with this test, I get TargetUnavailable, which I don't understand yet
+          /* TODO@James: with this test, I get MemberUnavailable, which I don't understand yet
     },{lineNumber(), new String[]{  // Matched inner interface shows as non-free
         "{A:{interface type method Void fun(Void that)  method Void moreFun(Void that, Library other) \n"
         + " C:{interface}}}"
@@ -692,7 +692,7 @@ public static class TestRedirect1 {//add more test for error cases
         "{InnerA:{interface type method Void fun(Void that)  method Void moreFun(Void that, Library other)\n"
         + "C:{interface method Void mostFun() } } \n"
         + "C_impl:{<:InnerA::C"
-        + "         method Void mostFun()"    // Uncommenting this line changes from SourceUnfit to TargetUnavailable
+        + "         method Void mostFun()"    // Uncommenting this line changes from SourceUnfit to MemberUnavailable
         + "       } "
         + "}",
         "Outer0::InnerA","Outer1::A",

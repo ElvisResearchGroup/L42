@@ -40,7 +40,7 @@ public class CompiledStep extends SmallStep{
         L42.compilationRounds++;
         System.out.println("Compilation Iteration: "+L42.compilationRounds+ "");
         Object o=Translator.runString(code);
-        //System.out.println("Compilation Iteration complete: "+rounds);
+        System.out.println("Compilation Iteration complete: "+L42.compilationRounds+ "");
         assert o instanceof ClassB;
         return (ClassB)o;
         }

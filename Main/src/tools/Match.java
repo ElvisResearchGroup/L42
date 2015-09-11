@@ -15,14 +15,15 @@ public class Match<T2> {
     return p.function.apply((T1)this.elem);
   }
   public T2 end() {
-    return end(new IllegalArgumentException("Cannot match "/* + this.elem*/));
+    return end(null);
   }
   public T2 end(RuntimeException e) {
     for (Pattern<?,T2> pattern : patterns){
       if (!pattern.clazz.isInstance(this.elem)){continue;}
       return apply(pattern);
     }
-    throw e;
+    if(e!=null){throw e;}
+    throw new IllegalArgumentException("Cannot match "/* + this.elem*/);
   }
   public <T1>Match<T2> add(Class<T1>t,Function<T1, T2> f){this.patterns.add(new Pattern<T1,T2>(t,f));return this;}
 }

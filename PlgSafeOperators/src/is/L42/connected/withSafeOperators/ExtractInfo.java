@@ -228,8 +228,8 @@ public class ExtractInfo {
       //the implemented interfaces in typeA,typeB (transitive already done!)
       //implA=typeA.impl()//with normalization
       //implB=typeB.impl()//with normalization
-      java.util.Map<Path,List<MethodSelector>> implA=implementedInterfacesMethods(p.addAtTop(a, null),Path.outer(0,current));
-      java.util.Map<Path,List<MethodSelector>> implB=implementedInterfacesMethods(p.addAtTop(b, null),Path.outer(0,current));
+      java.util.Map<Path,List<MethodSelector>> implA=implementedInterfacesMethods(p.addAtTop(a),Path.outer(0,current));
+      java.util.Map<Path,List<MethodSelector>> implB=implementedInterfacesMethods(p.addAtTop(b),Path.outer(0,current));
       //implA0=implA-implB
       //implB0=implB-implA
       Set<Path> implA0=new HashSet<Path>(implA.keySet());

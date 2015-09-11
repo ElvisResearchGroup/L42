@@ -35,7 +35,12 @@ abstract public class MethodPathCloneVisitor extends RenameMembers {
   public HashMap<String, Type> varEnv=new HashMap<>();
   public final ClassB visitStart;
   public final Program p;
-  public MethodPathCloneVisitor(ClassB visitStart,CollectedLocatorsMap maps,Program p) {  super(maps);this.visitStart=visitStart; this.p=p.addAtTop(visitStart, Configuration.typeSystem.typeExtraction(p, visitStart));}
+  public MethodPathCloneVisitor(ClassB visitStart,CollectedLocatorsMap maps,Program p) { 
+    super(maps);
+    this.visitStart=visitStart;
+    Configuration.typeSystem.computeStage(p,visitStart);
+    this.p=p.addAtTop(visitStart);
+    }
   ClassB getLastCb(){
     if(this.getLocator().size()==0){return visitStart;}
     return this.getLocator().getLastCb();
@@ -122,7 +127,7 @@ abstract public class MethodPathCloneVisitor extends RenameMembers {
         last=nt.getPath();
         }
       Ast.HistoricType ht2=ht.withSelectors(sels);
-      return ht2;
+      return super.liftT(ht2);//this renames the initial path
       }
 
 
@@ -137,5 +142,5 @@ abstract public class MethodPathCloneVisitor extends RenameMembers {
     s=new MCall(s.getReceiver(),ms2,s.getDoc(),s.getEs(),s.getP());
     return super.visit(s);
     }
- 
+    protected MethodSelector liftMs(MethodSelector ms){return visitMS(ms,Path.outer(0));}
 }

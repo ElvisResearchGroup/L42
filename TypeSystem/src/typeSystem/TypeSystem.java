@@ -102,15 +102,14 @@ public class TypeSystem implements Visitor<Type>, Reporter{
     Program pOld=this.p;
     try{if (this.p.isExecutableStar()){this.p=p.removeExecutableStar();}
       return collectEnvs(()->{
-        ClassB ct= TypeExtraction.etFull(p,s);
-        //assert Configuration.typeExtraction.isCt(ct);
-        assert IsCompiled.of(ct);
+        assert IsCompiled.of(s);
+        Configuration.typeSystem.computeStage(p,s);
         if(p.executablePlus()){
-          if(ct.getStage().getStage()==Stage.Less){
-            throw new ErrorMessage.LibraryRefersToIncompleteClasses(p.getInnerData(), ct);
+          if(s.getStage().getStage()==Stage.Less){
+            throw new ErrorMessage.LibraryRefersToIncompleteClasses(p.getInnerData(), s);
             }
           }
-        TypeSystemOK.checkCt(p, ct);
+        TypeSystemOK.checkCt(p, s);
         return new NormType(Mdf.Immutable,Path.Library(),Ph.None);
       });
     }
@@ -120,7 +119,7 @@ public class TypeSystem implements Visitor<Type>, Reporter{
   public Type visit(Path s) {
     return collectEnvs(()->{
       if( s.isPrimitive()){return new NormType(Mdf.Type,s,Ph.None);}
-      ClassB ct=p.extractCt(s);
+      ClassB ct=p.extractCb(s);
       if(ct.isInterface()){
         return new NormType(Mdf.Type,Path.Any(),Ph.None);
         }
@@ -149,7 +148,7 @@ public class TypeSystem implements Visitor<Type>, Reporter{
       //TODO:was tollerant
       Type preciseTOpt=typecheckSure(false,p,varEnv,sealEnv,throwEnv,suggestedNested,s.getInner());
       if (preciseTOpt instanceof Ast.FreeType){return preciseTOpt;}
-      NormType preciseT = Functions.forceNormType(s.getInner(), preciseTOpt);
+      NormType preciseT = Functions.forceNormType(this.p,s.getInner(), preciseTOpt);
       if(preciseT.getPh()!=Ph.None){
         throw new ErrorMessage.InvalidTypeForThrowe(s, preciseT);
       }
@@ -189,14 +188,14 @@ public class TypeSystem implements Visitor<Type>, Reporter{
     Type result=_typecheckTollerant(p, varEnv, sealEnv, throwEnv, suggestedAllowPromotions, inner);
     if(result instanceof Ast.FreeType){return result;}
     if(suggested instanceof Ast.FreeType){return result;}
-    NormType nts=Functions.forceNormType( inner,suggested);
-    NormType nt=Functions.forceNormType( inner,result);
+    NormType nts=Functions.forceNormType( p,inner,suggested);
+    NormType nt=Functions.forceNormType(p, inner,result);
     if(!Functions.isSubtype(p, nt.getPath(),nts.getPath())){
       CachedStage cs = new CachedStage();
       Path iPath=null;
       if(inner instanceof Path){iPath=(Path)inner;}
       if(iPath!=null &&!iPath.isPrimitive()){
-    	  cs=p.extractCt(iPath).getStage();
+    	  cs=p.extractCb(iPath).getStage();
     	  }
 	  throw new ErrorMessage.PathsNotSubtype(nt,nts,inner,p.getInnerData(),cs);
       }

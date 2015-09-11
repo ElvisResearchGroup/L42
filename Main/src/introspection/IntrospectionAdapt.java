@@ -120,7 +120,7 @@ public class IntrospectionAdapt {
   public static ClassB applyMapPath(Program p,ClassB l, List<PathPath> mapPath) {
     List<ClassB> results=new ArrayList<ClassB>();
     ClassB lprime=l;
-    Program pPrime=removeTopLevelWalkBy(p);
+    Program pPrime=p;//removeTopLevelWalkBy(p);
     lprime=renameUsage(pPrime,mapPath,lprime);
     ClassB l0=lprime;
     for(PathPath pp:mapPath){
@@ -133,16 +133,16 @@ public class IntrospectionAdapt {
     return accumulate(results,Path.outer(0));
 
   }
-  public static Program removeTopLevelWalkBy(Program p) {
+  /*public static Program removeTopLevelWalkBy(Program p) {
     if(p.isEmpty()){return p;}
     Program pPrime=p;
-    Optional<NestedClass> wb = Program.findWalkBy(p.topCt());
+    Optional<NestedClass> wb = Program.findWalkBy(p.topCb());
     if(wb.isPresent()){
       ClassB newTop=p.topCt().withMember(wb.get().withBody(new Signal(SignalKind.Error,new _void())));
       pPrime=pPrime.pop().addAtTop(pPrime.topCb(),newTop);
     }
     return pPrime;
-  }
+  }*/
   private static void redirectDefinition(PathPath pp, ClassB lprime,List<ClassB> results) {
     assert pp.getPath1().isCore();
     assert pp.getPath1().outerNumber()==0;
@@ -300,7 +300,7 @@ static Path add1Outer(Path p) {
   public static ClassB applyMapMx(Program p,ClassB l, List<PathMxMx> mapMx) {
     List<ClassB> results=new ArrayList<ClassB>();
     ClassB lprime=l;
-    Program pPrime=removeTopLevelWalkBy(p);
+    Program pPrime=p;//removeTopLevelWalkBy(p);
     lprime=RenameUsage.of(pPrime,mapMx,lprime);
     ClassB l0=lprime;
     for(PathMxMx pp:mapMx){
@@ -442,7 +442,7 @@ static Path add1Outer(Path p) {
       if(cbi.isInterface()){mapMxOfInterface.add(px);}
     }
     if(mapMxOfInterface.isEmpty()){return mapMx;}
-    ClassB ct=Configuration.typeSystem.typeExtraction(p,classB);
+    Configuration.typeSystem.computeStage(p,classB);
     Visitor v=new CloneVisitor(){
 
     };

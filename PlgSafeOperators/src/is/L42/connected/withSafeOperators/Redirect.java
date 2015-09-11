@@ -45,7 +45,7 @@ public class Redirect {
     //call redirectOk, if that is ok, no other errors?
     //should cb be normalized first?
     assert external.isPrimitive() || external.outerNumber()>0;
-    p=p.addAtTop(cb,null);
+    p=p.addAtTop(cb);
     List<PathPath>toRedirect=redirectOk(p,cb,internal,external);
     return applyMapPath(p,cb,toRedirect);
   }
@@ -65,10 +65,14 @@ public class Redirect {
     List<SPathSPath> exceptions=new ArrayList<>();
     ambiguities.add(new PathSPath(internal,Arrays.asList(external)));
     for(PathSPath current=choseUnabigus(ambiguities); current!=null;current=choseUnabigus(ambiguities)){
+      PathSPath _current=current;//closure final limitations
+      assert ambiguitiesOk(ambiguities);
+      assert verified.stream().allMatch(pp->!pp.getPath1().equals(_current.getPath())):
+        verified+" "+_current.getPath();
       redirectOkAux(p,current,cbTop,ambiguities,exceptions);
       assert current.getPaths().size()==1;
-      PathSPath _current=current;
-      assert verified.stream().allMatch(pp->!pp.getPath1().equals(_current.getPath()));
+      assert verified.stream().allMatch(pp->!pp.getPath1().equals(_current.getPath())):
+        verified+" "+_current.getPath();
       verified.add(new PathPath(current.getPath(),current.getPaths().get(0)));
       accumulateVerified(ambiguities,verified);
     }
@@ -79,6 +83,9 @@ public class Redirect {
     checkExceptionOk(exceptions,verified);
     return verified;
     }
+  private static boolean ambiguitiesOk(List<PathSPath> ambiguities) {
+    return ambiguities.stream().allMatch(e1->ambiguities.stream().allMatch(e2->(e1==e2|| !e1.getPath().equals(e2.getPath()))));
+  }
   private static void checkExceptionOk(List<SPathSPath> exceptions, List<PathPath> verified) {
     for(SPathSPath exc:exceptions){
      List<Path> src = exc.getMwt1().getMt().getExceptions(); 
@@ -105,6 +112,7 @@ public class Redirect {
     }
   }*/
   private static void accumulateVerified(List<PathSPath> ambiguities, List<PathPath> verified) {
+    assert ambiguitiesOk(ambiguities);
     for(PathPath pp:verified){
       PathSPath psp=selectPSP(ambiguities,pp.getPath1());
       if(psp==null){continue;}
@@ -184,7 +192,7 @@ public class Redirect {
       assert ((NestedClass)mi).getName().equals(((NestedClass)miGet).getName());
       Path src=current.getPath().pushC(((NestedClass)mi).getName());
       Path dest=current.getPaths().get(0).pushC(((NestedClass)mi).getName());
-      ambiguities.add(new PathSPath(src,Arrays.asList(dest)));
+      plusEqual(ambiguities,src,Arrays.asList(dest));
       return;
     }    
     assert mi.getClass().equals( miGet.getClass());
@@ -240,6 +248,7 @@ public class Redirect {
   private static boolean plusEqualCheckExt(List<PathSPath> ambiguities, Path path, List<Path> paths) {
     if(!path.isPrimitive() && path.outerNumber()==0){
       plusEqual(ambiguities,path,paths);
+      assert ambiguitiesOk(ambiguities);
       return true;
       }
     assert paths.size()==1;
@@ -269,7 +278,8 @@ public class Redirect {
           kindSrc,kindDest,Collections.emptyList(), true, unexpectedInterfaces);
   }
   private static void plusEqual(List<PathSPath> ambiguities, Path pif, List<Path> extPs) {
-    assert !extPs.isEmpty();
+    assert ambiguitiesOk(ambiguities);
+    try{assert !extPs.isEmpty();
     assert !extPs.contains(null);
     assert !pif.isPrimitive() && pif.outerNumber()==0;
     for(PathSPath psp:ambiguities){
@@ -285,7 +295,7 @@ public class Redirect {
         return;
       }}
     ambiguities.add(new PathSPath(pif,extPs));
-  }
+  }finally{assert ambiguitiesOk(ambiguities);}}
   static PathSPath choseUnabigus(List<PathSPath> ambiguities){
     for(PathSPath psp:ambiguities){if (psp.getPaths().size()==1){return psp;}}
     return null;

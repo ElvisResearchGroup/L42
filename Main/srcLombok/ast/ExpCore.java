@@ -102,6 +102,7 @@ public interface ExpCore {
       this.supertypes = supertypes;
       this.ms = ms;
       this.stage=stage;
+      assert stage!=null;
       isConsistent();
     }//lombock fails me here :-(
     Doc doc1;

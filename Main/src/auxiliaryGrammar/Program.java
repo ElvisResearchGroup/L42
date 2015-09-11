@@ -21,25 +21,26 @@ import ast.ExpCore._void;
 import ast.Expression;
 import ast.Util;
 import ast.Util.InfoAboutMs;
+import ast.Util.PathMwt;
 import ast.ExpCore.ClassB.*;
 import ast.Ast.*;
 
 public class Program {
   private final Program next;
   private final ClassB cb;//cb is like the source, with no walkby
-  private final ClassB ct;//ct is the annotated one, with collected interface types and walkby
-  //nullable cb or ct, not both
-  private Program(Program next,ClassB cb,ClassB ct){
-    assert this.getClass()!=Program.class || (next!=null  && (cb!=null || ct!=null));
-    this.next=next;this.cb=cb;this.ct=ct;
+ // private final ClassB ct;//ct is the annotated one, with collected interface types and walkby
+ // //nullable cb or ct, not both
+  private Program(Program next,ClassB cb/*,ClassB ct*/){
+   // assert this.getClass()!=Program.class || (next!=null  && (cb!=null || ct!=null));
+    this.next=next;this.cb=cb;//this.ct=ct;
     }
-  public ClassB getCt(int num){
+  /*public ClassB getCt(int num){
     //assert this.classB!=null;
     assert !this.isEmpty():
       "empty program reached";
     if(num==0){return this.ct;}
     return this.next.getCt(num-1);
-    }
+    }*/
   public ClassB getCb(int num){
     //assert this.classB!=null;
     assert !this.isEmpty():
@@ -48,8 +49,8 @@ public class Program {
     return this.next.getCb(num-1);
     }
 
-  private static final Program regularEmpty=new Program(null,null,null){ };
-  private static final Program executableStarEmpty=new Program(null,null,null){};
+  private static final Program regularEmpty=new Program(null,null){ };
+  private static final Program executableStarEmpty=new Program(null,null){};
 
   public static Program empty(){return regularEmpty;}
   public boolean isExecutableStar(){
@@ -59,22 +60,24 @@ public class Program {
   public Program getExecutableStar(){
     assert this!=executableStarEmpty;//may be not needed
     if (this==regularEmpty){return executableStarEmpty;}
-    return new Program(this.pop().getExecutableStar(),this.topCb(),this.topCt());
+    return new Program(this.pop().getExecutableStar(),this.topCb()/*,this.topCt()*/);
   }
   public Program removeExecutableStar() {
     assert this!=regularEmpty;//may be not needed
     if (this==executableStarEmpty){return regularEmpty;}
-    return new Program(this.pop().removeExecutableStar(),this.topCb(),this.topCt());
+    return new Program(this.pop().removeExecutableStar(),this.topCb());
   }
 
   public Stage getStage(){
-    if(ct==null){Assertions.codeNotReachable();}
-    return ct.getStage().getStage();
+    if(cb==null){Assertions.codeNotReachable();}
+    return cb.getStage().getStage();
+    //if(ct==null){Assertions.codeNotReachable();}
+    //return ct.getStage().getStage();
     }
-  public Stage getStage(Path p){return this.extractCt(p).getStage().getStage();};
+  public Stage getStage(Path p){return this.extractCb(p).getStage().getStage();};
   //public void __addAtTop(ClassB cb){this.inner.add(0,cb);}
 
-  public Program addAtTop(ClassB cb,ClassB ct){return new Program(this,cb,ct);}
+  public Program addAtTop(ClassB cb){return new Program(this,cb);}
   public Program pop(){assert !this.isEmpty();return this.next;}
   public Program pop(int n){
     assert n>=0;
@@ -87,21 +90,22 @@ public class Program {
     assert this.cb!=null;
     return this.cb;
     }
-  public ClassB topCt(){
+  /*public ClassB topCt(){
     assert this.ct!=null;
     return this.ct;
-    }
+    }*/
 
   public boolean executablePlus(){
     assert !this.isEmpty();
-    return this.ct.getStage().getStage()!=Stage.Less;
+    //return this.ct.getStage().getStage()!=Stage.Less;
+    return this.cb.getStage().getStage()!=Stage.Less;
   }
 
   public boolean executablePlus(Path p){
-    return this.extractCt(p).getStage().getStage()!=Stage.Less;
+    return this.extractCb(p).getStage().getStage()!=Stage.Less;
   }
   public boolean executable(Path p){
-    return this.extractCt(p).getStage().getStage()==Stage.None;
+    return this.extractCb(p).getStage().getStage()==Stage.None;
   }
 
 /*
@@ -118,14 +122,13 @@ public class Program {
   }*/
   public Program navigateInTo(String c){
     assert !this.isEmpty();
-    Optional<Member> mOpt=getIfInDom(this.topCt().getMs(),c);
+    Optional<Member> mOpt=getIfInDom(this.topCb().getMs(),c);
     if(!mOpt.isPresent()){
-      throw new ErrorMessage.PathNonExistant(Arrays.asList(c),this.topCt(),null);
+      throw new ErrorMessage.PathNonExistant(Arrays.asList(c),this.topCb(),null);
     }
     Member m=mOpt.get();
-    ClassB newTop=this.topCt().withMember(m.withBody(new ExpCore.WalkBy()));
-    Program result=this.next.addAtTop(null,newTop);
-    return result.addAtTop(null,(ClassB)((NestedClass)m).getInner());
+    Program result=this;
+    return result.addAtTop((ClassB)((NestedClass)m).getInner());
   }
   public Program navigateInTo(List<String> paths){
     if(paths.isEmpty()){return this;}
@@ -138,13 +141,13 @@ public class Program {
     assert cb!=null;
     return cb;
   }
-  public ClassB extractCt(Path path){
+  /*public ClassB extractCt(Path path){
     ClassB ct=this.getCt(path.outerNumber());
     if(ct==null){return null;}
     ct = extractCBar(path.getCBar(), ct);
     //if(ct==null){return null;}
     return ct;
-  }
+  }*/
   private static final Doc[] _trashCommentRef=new Doc[]{Doc.empty()};
   private static final Boolean[] _trashIsPrivateRef=new Boolean[]{false};
   public static ClassB extractCBar(List<String> list, ClassB cb) {
@@ -183,7 +186,7 @@ public class Program {
     if(path.isPrimitive()){
       throw new ErrorMessage.MethodNotPresent(path,ms,forError,null,this.getInnerData());
       }
-    ClassB classB=extractCt(path);
+    ClassB classB=extractCb(path);
     if(classB==null){classB=extractCb(path);}
 //    path=Path.parse("Outer0::C::C");
     //classB=(ClassB)From.from(classB,path);
@@ -191,9 +194,9 @@ public class Program {
     if(!result.isPresent()){
       throw new ErrorMessage.MethodNotPresent(path,ms,forError,null,this.getInnerData());
       }
-    MethodWithType mwt=(MethodWithType)result.get();
+    MethodWithType mwt=Program.extractMwt(result.get(),classB);
     mwt=From.from(mwt, path);
-    mwt=Norm.of(this,mwt,isOnlyType);
+    //mwt=Norm.of(this,mwt,isOnlyType);
     return mwt;
 
   }
@@ -261,24 +264,8 @@ public class Program {
   public List<ExpCore.ClassB> getInnerData() {
     List<ExpCore.ClassB> result=new ArrayList<ExpCore.ClassB>();
     Program p=this;
-    while(p.next!=null){result.add(p.ct);p=p.next;}
+    while(p.next!=null){result.add(p.cb);p=p.next;}
     return result;
-  }
-
-  public boolean isNotClassB(Path path) {
-    assert !path.isPrimitive():"method isNotClassB is not defined over primitive paths";
-    try{//like extract but no normalize
-      ClassB cb=this.getCt(path.outerNumber());
-      cb = extractCBar(path.getCBar(), cb);
-      }
-    catch(ErrorMessage.ProgramExtractOnMetaExpression found){return true;}
-    catch(ErrorMessage.ProgramExtractOnWalkBy found){return true;}
-    return false;
-  }
-  public boolean checkFullyNormalized(){
-    if(this.isEmpty()){return true;}
-    checkFullyNormalized(this.topCt());
-    return this.pop().checkFullyNormalized();
   }
   public static ClassB replaceWalkByWith(ClassB cb, ExpCore newExp) {
     ClassB ct=cb;
@@ -288,6 +275,28 @@ public class Program {
     }
     return ct;
   }
+  public boolean isNotClassB(Path path) {
+    assert !path.isPrimitive():"method isNotClassB is not defined over primitive paths";
+    try{//like extract but no normalize
+      ClassB cb=this.getCb(path.outerNumber());
+      cb = extractCBar(path.getCBar(), cb);
+      }
+    catch(ErrorMessage.ProgramExtractOnMetaExpression found){return true;}
+    catch(ErrorMessage.ProgramExtractOnWalkBy found){return true;}
+    return false;
+  }
+  
+  
+  
+  
+  /*
+  public boolean checkFullyNormalized(){
+    if(this.isEmpty()){return true;}
+    checkFullyNormalized(this.topCb());
+    return this.pop().checkFullyNormalized();
+  }
+
+  
   private static boolean checkFullyNormalized(ClassB cb) {
     for(Member m:cb.getMs()){
       m.match(
@@ -320,7 +329,7 @@ public class Program {
     for(Type t:mt.getTs()){
       assert t instanceof NormType;
     }
-  }
+  }*/
   public void exePlusOk(HashMap<String,NormType> varEnv){
     if(this.getStage()==Stage.Less){return;}
     for(NormType nt:varEnv.values()){
@@ -331,20 +340,22 @@ public class Program {
   }
   public boolean checkComplete(){
     if(this.isEmpty()){return true;}
-    if(this.topCt().getStage().getStage()!=Stage.Star){return false;}
+    if(this.topCb().getStage().getStage()!=Stage.Star){return false;}
     return this.pop().checkComplete();
   }
   public static Program getExtendedProgram(Program p,List<ClassB>extension){
     for(ClassB cb:extension){
       if(cb!=null){
-        p=p.addAtTop(cb, Configuration.typeSystem.typeExtraction(p, cb));
-    }}
+        Configuration.typeSystem.computeStage(p, cb);
+        p=p.addAtTop(cb);
+        }
+      else{return p;}
+    }
     return p;
   }
   private static void accumulateAllSupertypes(List<Path> ps,Program p,Path pi){
-    if(!ps.contains(pi)){
-      ps.add(pi);
-      }
+    if(ps.contains(pi)){return;}
+    ps.add(pi);
     ClassB cbi=p.extractCb(pi);
     for(Path pj:cbi.getSupertypes()){
       pj=From.fromP(pj,pi);
@@ -372,5 +383,15 @@ public class Program {
     }
     throw Assertions.codeNotReachable();
     }
-
+  public static MethodWithType extractMwt(Member m,ClassB cb){
+    return m.match(nc->{throw Assertions.codeNotReachable();}, 
+        mi->{
+          for(PathMwt mt:cb.getStage().getInherited()){
+            if(!mt.getMwt().getMs().equals(mi.getS())){continue;}
+            return mt.getMwt().withInner(Optional.of(mi.getInner()));
+          }
+          throw Assertions.codeNotReachable();
+        },
+        mt->mt);
+  }
 }

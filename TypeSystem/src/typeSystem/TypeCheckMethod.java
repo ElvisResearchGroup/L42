@@ -62,7 +62,7 @@ public class TypeCheckMethod {
     fvs.add(FreeVariables.of(es.get(i)));
     for(ExpCore ei:s.getEs()){
       i+=1;//correct to start from 1
-      NormType expectedi=Functions.forceNormType(ei, mwt.getMt().getTs().get(i-1));
+      NormType expectedi=Functions.forceNormType(that.p,ei, mwt.getMt().getTs().get(i-1));
       assert i==tsExp.size();
       tsExp.add(expectedi);
       fvs.add(FreeVariables.of(es.get(i)));
@@ -77,13 +77,13 @@ public class TypeCheckMethod {
     //from typecheck with suggested, we know they are subtypes.
     Type rtOpt=mwt.getMt().getReturnType();
     if(that.p.executablePlus() && rtOpt instanceof Ast.HistoricType){return rtOpt;}
-    NormType rt=Functions.forceNormType(s, rtOpt);
+    NormType rt=Functions.forceNormType(that.p,s, rtOpt);
     //TODO:for now force all the types to be norm anyway, open to relax for Stage.Less
     boolean ph=false;
     assert ts.size()==es.size():ts.size()+" "+es.size();
     {int j=-1;for(Type t:ts){j+=1;
       if(t instanceof Ast.FreeType){continue;}
-      NormType nt=Functions.forceNormType(es.get(j), t);
+      NormType nt=Functions.forceNormType(that.p,es.get(j), t);
       if(nt.getPh()!=Ph.None){ph=true;}
     }}
     if(ph){return Functions.toPartial(rt);}

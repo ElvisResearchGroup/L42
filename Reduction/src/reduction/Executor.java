@@ -69,16 +69,19 @@ public static ExpCore stepStar(Executor executer,ExpCore e){
   //catch(ErrorMessage.NormalForm mess){ return mess.getE();}
   catch(ErrorMessage.CtxExtractImpossible mess){
     assert e instanceof ClassB;
-    ClassB ct= Configuration.typeSystem.typeExtraction(emptyP,(ClassB)e);
-    Program p1=emptyP.addAtTop((ClassB)e,ct);
-    Configuration.typeSystem.checkCt( emptyP, ct);
-    if(!p1.checkComplete()){//also check is star
-      p1.checkComplete();//to let debugger enter
-      throw new ErrorMessage.MalformedFinalResult(ct,
-        "Some class can not be completely typed as is still incomplete or refers to incomplete classes"
-          +ErrorFormatter.reportPlaceOfMetaError(p1,ct)
-          );
-      };
+    if(!L42.trustPluginsAndFinalProgram){
+      ClassB ct=(ClassB)e;
+      Configuration.typeSystem.computeStage(emptyP,ct);
+      Program p1=emptyP.addAtTop(ct);
+      Configuration.typeSystem.checkCt( emptyP, ct);
+      if(!p1.checkComplete()){//also check is star
+        //p1.checkComplete();//to let debugger enter
+        throw new ErrorMessage.MalformedFinalResult(ct,
+          "Some class can not be completely typed as is still incomplete or refers to incomplete classes"
+            +ErrorFormatter.reportPlaceOfMetaError(p1,ct)
+            );
+        }
+      }
     return e;}
 }
 final public ExpCore step(Program p,ExpCore e){
@@ -145,10 +148,10 @@ private ExpCore meta(Program p, ExpCore ctx, Meta r) {
 protected ClassB meta1Prop(Program p, ClassB cb, NestedClass m) {
   log("---meta1Prop--");
   //get cb-->ct
-  ClassB ct= Configuration.typeSystem.typeExtraction(p,cb);
-  ct=ct.withMember(m.withBody(new WalkBy()));
+  Configuration.typeSystem.computeStage(p,cb);
+  //BOOH??ct=ct.withMember(m.withBody(new WalkBy()));
   //get p'
-  Program p1=p.addAtTop(cb,ct);
+  Program p1=p.addAtTop(cb);
   //extract e
   ExpCore e=m.match(
       nc->nc.getInner(),
@@ -167,9 +170,9 @@ protected ClassB meta1Prop(Program p, ClassB cb, NestedClass m) {
 protected ClassB metaMethod(Program p, ClassB cb, Member m) {
   log("---meta2--");
   //get cb-->ct
-  ClassB ct= Configuration.typeSystem.typeExtraction(p,cb);
+  Configuration.typeSystem.computeStage(p, cb);
   //get p'
-  Program p1=p.addAtTop(cb,ct);
+  Program p1=p.addAtTop(cb);
   //extract e
   ExpCore e=m.match(
       nc->nc.getInner(),

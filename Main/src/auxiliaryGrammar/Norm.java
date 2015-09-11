@@ -99,7 +99,7 @@ public class Norm {
     }
   }
 
-  private static NormType resolve(Program p, HistoricType t) {
+  public static NormType resolve(Program p, HistoricType t) {
   if(t.getSelectors().size()==1){return resolvePh(resolveOne(p,t),t.isForcePlaceholder());}
   assert t.getSelectors().size()>1;
   return resolvePh(resolveMany(p,t),t.isForcePlaceholder());
@@ -143,15 +143,15 @@ public class Norm {
     if(path.getRowData().size()==1){return path;}
     String c=path.getRowData().get(1);
 	//if(path.outerNumber()>=p.getInnerData().size()){throw External.external;}
-    ClassB myLib=p.getCt(n);//need types on interface implemented methods
-    if(myLib==null){myLib=p.getCb(n);}
-    assert myLib!=null;//TODO: should get better with cached annotationss
+    ClassB myLib=p.getCb(n);//need types on interface implemented methods
     List<Member> ms=myLib.getMs();
     Optional<Member> om=Program.getIfInDom(ms, c);
     boolean isPass=false;
     if(om.isPresent()){
       NestedClass m=(NestedClass)om.get();
-      if(m.getInner() instanceof ExpCore.WalkBy){isPass=true;};
+      assert n>0;
+      ClassB myLibNext=p.getCb(n-1);
+      if(m.getInner() ==myLibNext){isPass=true;};
       }
     if(!isPass){return path;}
     List<String> result=new ArrayList<String>();

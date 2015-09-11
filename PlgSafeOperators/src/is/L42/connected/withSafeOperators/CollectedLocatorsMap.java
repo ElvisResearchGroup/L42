@@ -20,6 +20,7 @@ import ast.Ast.MethodSelector;
 
 public class CollectedLocatorsMap{
 final Set<String> pedexes=new HashSet<>();
+final Set<Integer> families=new HashSet<>();
 final List<Locator>selectors=new ArrayList<>();
 final List<Locator>nesteds=new ArrayList<>();
 boolean normalized=true;

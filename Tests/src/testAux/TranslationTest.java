@@ -9,6 +9,7 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
+import facade.Configuration;
 import facade.L42;
 import facade.Parser;
 import platformSpecific.inMemoryCompiler.InMemoryJavaCompiler;
@@ -19,7 +20,6 @@ import platformSpecific.javaTranslation.Resources;
 import platformSpecific.javaTranslation.Translator;
 import sugarVisitors.Desugar;
 import sugarVisitors.InjectionOnCore;
-import typeSystem.TypeExtraction;
 import typeSystem.TypeSystemOK;
 import ast.ExpCore;
 import ast.ExpCore.ClassB;
@@ -138,8 +138,8 @@ public class TranslationTest {
   private static Program runTypeSystem(String scb1) {
     ClassB cb1=(ClassB)Desugar.of(Parser.parse(null,scb1)).accept(new InjectionOnCore());
     Program p=Program.empty();
-    ClassB cb1t=TypeExtraction.etFull(p,cb1);
-    p=p.addAtTop(cb1,cb1t);
+    Configuration.typeSystem.computeStage(p,cb1);
+    p=p.addAtTop(cb1);
     TypeSystemOK.checkAll(p);
     return p;
   }
