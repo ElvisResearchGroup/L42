@@ -70,7 +70,7 @@ public class Errors42 {
     return Resources.Error.multiPartStringError("InvalidOnTopLevel");
   }
   //"MemberUnavailable", caused by most operations referring to paths and methods
-  static enum MemberUnavailable{PrivatePath,PrivateMethod,InexistentPath,InexistentMethod}
+  static enum MemberUnavailable{PrivatePath,PrivateMethod,NonExistentPath,NonExistentMethod}
   static Member checkExistsPathMethod(ClassB cb, List<String> path,Optional<MethodSelector>ms){
     try{
       Boolean[] isPrivateRef=new Boolean[]{false};
@@ -90,7 +90,7 @@ public class Errors42 {
           }
         }
       MemberUnavailable kind=null;
-      if(absentMeth){kind=MemberUnavailable.InexistentMethod;}
+      if(absentMeth){kind=MemberUnavailable.NonExistentMethod;}
       if(isPrivateMeth[0]){kind=MemberUnavailable.PrivateMethod;}
       if(isPrivateRef[0]){kind=MemberUnavailable.PrivatePath;}
       if(kind==null){return null;}
@@ -103,7 +103,7 @@ public class Errors42 {
       throw Resources.Error.multiPartStringError("MemberUnavailable",
           "Path",formatPathIn(path),
           "Selector",""+((ms.isPresent())?ms.get():""),
-          "InvalidKind",""+MemberUnavailable.InexistentPath);
+          "InvalidKind",""+MemberUnavailable.NonExistentPath);
     }
   }
 
@@ -198,8 +198,8 @@ public class Errors42 {
     return Doc.factory("@::"+String.join("::", path));
   }
   static Doc formatPathOut(Path path){
-    assert path.outerNumber()>0;
     if(path.isPrimitive()){return Doc.factory(path);}
+    assert path.outerNumber()>0;
     return Doc.factory(Path.outer(path.outerNumber()+1,path.getCBar()));
   }
   static Doc formatPath(Path path){

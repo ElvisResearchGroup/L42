@@ -509,7 +509,9 @@ public static class TestRedirect1 {//add more test for error cases
         + "}","Outer0::InnerA","Outer1::A",
         ec
           .set("SrcPath", "'@::InnerVoid", "DestExternalPath", "'@Void",
-               "UnexpectedMembers", "[Outer0 #apply()]" 
+              "SrcKind","FreeTemplate",
+              "DestKind","Template",
+               "UnexpectedMembers", "[#apply()]"
                )
           .str(), true
     },{lineNumber(), new String[]{  // One unimplemented interface; no unexpected members
@@ -525,7 +527,9 @@ public static class TestRedirect1 {//add more test for error cases
         "Outer0::InnerA","Outer1::A",
         ec
           .set("SrcPath", "'@::InnerA::C", "DestExternalPath", "'@Outer2::A::C",
-               "UnexpectedMembers", "[]",
+              "SrcKind","Interface",
+              "DestKind","Interface", 
+              "UnexpectedMembers", "[]",
                "UnexpectedImplementedInterfaces", "'[@::BlockingInterface1]"
                )
           .str(), true
@@ -718,7 +722,7 @@ public static class TestRedirect1 {//add more test for error cases
         new String[]{"{A:{ }}"},
         "{InnerNotA:{} }",
         "Outer0::InnerA","Outer1::A",
-        ec.set("InvalidKind", "NonexistentPath"
+        ec.set("InvalidKind", "NonExistentPath"
                ).str(), true
 /* Privacy does not trigger MemberUnavailable
     },{lineNumber(),   // Redirect to a private class

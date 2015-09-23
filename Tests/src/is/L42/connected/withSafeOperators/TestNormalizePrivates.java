@@ -38,16 +38,16 @@ public static class TestCollectPrivates {
   },{
     lineNumber(),"{method'@private\n Void foo()}","[]\n[Outer0::foo()[0]foo__0_0()]\n[]\nfalse"
   },{
-    lineNumber(),"{method'@private\n Void foo__42()}","[42]\n[Outer0::foo__42()[0]null]\n[]\ntrue"
+    lineNumber(),"{method'@private\n Void foo__42()}","[42]\n[Outer0::foo__42()[0]null]\n[]\nfalse"
   },{
     lineNumber(),"{method'@private\n Void foo__42()method'@private\n Void foo__43()}",
-    "[42, 43]\n[Outer0::foo__42()[0]null, Outer0::foo__43()[0]null]\n[]\ntrue"
+    "[42, 43]\n[Outer0::foo__42()[0]null, Outer0::foo__43()[0]null]\n[]\nfalse"
   },{
     lineNumber(),
-    "{method'@private\n Void foo__42()"
-    + " this({ method '@private\n Void bla__33()  }, second:{})"
+    "{method'@private\n Void foo__42_0()"
+    + " this({ method '@private\n Void bla__33_1()  }, second:{})"
     + "}",
-    "[33, 42]\n[Outer0::foo__42()[0]null, Outer0::foo__42()[1]bla__33()[0]null]\n[]\ntrue"
+    "[33_1, 42_0]\n[Outer0::foo__42_0()[0]null, Outer0::foo__42_0()[1]bla__33_1()[0]null]\n[]\ntrue"
   },{
     lineNumber(),
     "{ make(Foo f)'@private\n method'@private\n Void foo()"
