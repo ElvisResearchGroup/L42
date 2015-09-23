@@ -1,6 +1,5 @@
 package coreVisitors;
 
-import introspection.ConsistentRenaming;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,7 +48,7 @@ public class CollectPrivateNames extends CloneVisitor{
     }
   public ClassB.MethodWithType visit(ClassB.MethodWithType mt){
     // consistent names are collected later
-    if(!mt.getDoc().isPrivate() || ConsistentRenaming.isAnnotatedConsistent(mt.getDoc())){ return super.visit(mt);}
+    if(!mt.getDoc().isPrivate() ){ return super.visit(mt);}
     MethodSelector msPr = usePrivateNames(mt.getMs());
     if(!msPr.equals(mt.getMs())){//depending on how we clean up private names, == can happens
       mapMx.add(new PathMxMx(Path.outer(0, cs),mt.getMs(),msPr));

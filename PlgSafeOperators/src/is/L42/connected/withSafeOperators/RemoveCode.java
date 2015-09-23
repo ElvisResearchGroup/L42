@@ -1,7 +1,5 @@
 package is.L42.connected.withSafeOperators;
 import static auxiliaryGrammar.EncodingHelper.ensureExtractClassB;
-import introspection.IntrospectionAdapt;
-import introspection.IntrospectionSum;
 
 import java.util.ArrayList;
 import java.util.Collections;

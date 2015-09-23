@@ -1,7 +1,6 @@
 package is.L42.connected.withSafeOperators;
 
-import introspection.ConsistentRenaming;
-import introspection.IntrospectionAdapt;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,16 +56,6 @@ public class ClassOperations {
     return cb.withMs(newMs);
   }
 
-  static ClassB _old_normalizePrivates(Program p,ClassB cb){
-    //collect private names
-    CollectPrivateNames cpn=CollectPrivateNames.of(cb);
-    //rename all
-    Program emptyP=Program.empty();
-    List<PathMxMx> mapMx = ConsistentRenaming.makeMapMxConsistent(cb,cpn.mapMx);
-    cb=IntrospectionAdapt.applyMapMx(p,cb,mapMx);
-    cb=IntrospectionAdapt.applyMapPath(p,cb,cpn.mapPath);
-    return cb;
-  }
   static ClassB normalizePaths(ClassB cb){
     return (ClassB)cb.accept(new CloneWithPath(){
       public ast.ExpCore visit(ast.Ast.Path s) {

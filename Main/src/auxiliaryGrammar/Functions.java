@@ -2,6 +2,7 @@ package auxiliaryGrammar;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -36,6 +37,22 @@ import coreVisitors.IsValue;
 import coreVisitors.ReplaceCtx;
 
 public class Functions {
+  
+public static ClassB.NestedClass encapsulateIn(List<String> cBar,ClassB elem,Doc doc) {
+    //Notice: encapsulation do not do the from. It must be done
+    //on the call side as in "redirectDefinition"
+    assert !cBar.isEmpty();
+    List<String> cBar2 = cBar.subList(1,cBar.size());
+    if(cBar2.isEmpty()){return new ClassB.NestedClass(doc,cBar.get(0),elem,null);}
+    List<Member> ms=new ArrayList<>();
+    ms.add(encapsulateIn(cBar2,elem,doc));
+    ClassB cb= new ClassB(Doc.empty(),Doc.empty(),false,Collections.emptyList(),ms);
+    return new ClassB.NestedClass(Doc.empty(),cBar.get(0),cb,null);
+  }
+public static Path add1Outer(Path p) {
+    if( p.isPrimitive()){return p;}
+    return p.setNewOuter(p.outerNumber()+1);
+  }
 public static Path classOf(Program p,ExpCore ctxVal,ExpCore val){
   assert IsValue.of(p,val)|
          new IsValue(p).validRightValue(val):ToFormattedText.of(val);

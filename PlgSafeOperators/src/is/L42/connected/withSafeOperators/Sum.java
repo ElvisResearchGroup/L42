@@ -1,6 +1,5 @@
 package is.L42.connected.withSafeOperators;
 
-import introspection.IntrospectionSum;
 
 import java.util.ArrayList;
 import java.util.Collections;

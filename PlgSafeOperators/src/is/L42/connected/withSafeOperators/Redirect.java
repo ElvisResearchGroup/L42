@@ -15,7 +15,6 @@ import coreVisitors.CloneWithPath;
 import coreVisitors.From;
 import coreVisitors.FromInClass;
 import facade.Configuration;
-import introspection.IntrospectionAdapt;
 import is.L42.connected.withSafeOperators.ExtractInfo.ClassKind;
 import is.L42.connected.withSafeOperators.ExtractInfo.IsUsed;
 import is.L42.connected.withSafeOperators.Pop.PopNFrom;
@@ -51,11 +50,38 @@ public class Redirect {
   }
   public static ClassB applyMapPath(Program p,ClassB cb, List<PathPath> mapPath) {
     cb=Rename.renameUsage(mapPath,cb);
-       //TODO: use this when ready RenameMembers.of(mapPath, cb);
+     CollectedLocatorsMap coll=new CollectedLocatorsMap();
     for(PathPath pp:mapPath){
-      cb=IntrospectionAdapt.remove(pp.getPath1(),cb);
+      cb=Redirect.remove(pp.getPath1(),cb);
     }
     return cb;
+  }
+  public static ClassB remove(Path path1, ClassB l) {
+    if(path1.equals(Path.outer(0))){
+      return new ClassB(Doc.empty(),Doc.empty(),false,Collections.emptyList(),Collections.emptyList());
+      }
+    return (ClassB)l.accept(new coreVisitors.CloneVisitor(){
+      List<String> cs=path1.getCBar();
+      public List<Member> liftMembers(List<Member> s) {
+        List<Member> result=new ArrayList<Member>();
+        for(Member m:s){m.match(
+          nc->manageNC(nc,result),
+          mi->result.add(liftM(m)),
+          mt->result.add(liftM(m))
+          );}
+        return result;
+        }
+      private boolean manageNC(NestedClass nc, List<Member> result) {
+        assert !cs.isEmpty();
+        String top=cs.get(0);
+        if(!top.equals(nc.getName())){return result.add(nc);}//out of path
+        if(cs.size()==1){return true;}
+        List<String> csLocal=cs;
+        cs=cs.subList(1,cs.size());
+        try{return result.add(this.visit(nc));}
+        finally{cs=csLocal;}
+      }
+    });
   }
   
   public static List<PathPath> redirectOk(Program p,ClassB cbTop,Path internal,Path external){

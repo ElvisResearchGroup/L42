@@ -1,6 +1,5 @@
 package is.L42.connected.withSafeOperators;
 
-import introspection.IntrospectionAdapt;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,6 +20,7 @@ import ast.ExpCore.*;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodWithType;
 import ast.Util.PathPath;
+import auxiliaryGrammar.Functions;
 import auxiliaryGrammar.Norm;
 import auxiliaryGrammar.Program;
 
@@ -98,7 +98,7 @@ public class Rename {
     Path toFrom=Path.outer(dest.size()-1,src.subList(0,src.size()-1));
     cb=(ClassB)FromInClass.of(cb, toFrom);
     List<Member>ms=new ArrayList<>();
-    ms.add(IntrospectionAdapt.encapsulateIn(dest, cb,docCb[0]));
+    ms.add(Functions.encapsulateIn(dest, cb,docCb[0]));
     return new ClassB(Doc.empty(),Doc.empty(),false,Collections.emptyList(),ms);
   }
  

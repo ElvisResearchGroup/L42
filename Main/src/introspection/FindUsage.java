@@ -64,7 +64,7 @@ public class FindUsage extends MethodPathCloneVisitor {
   }
   public ExpCore visit(ClassB s) {
     List<PathMx> newPs=Map.of(pi->
-      pi.withPath(IntrospectionAdapt.add1Outer(pi.getPath())),pMxs);
+      pi.withPath(Functions.add1Outer(pi.getPath())),pMxs);
     List<PathMx> oldPs=pMxs;
     pMxs=newPs;
     try{return super.visit(s);}

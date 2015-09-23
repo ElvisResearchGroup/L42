@@ -9,7 +9,6 @@ import static auxiliaryGrammar.EncodingHelper.ensureExtractDoc;
 import java.util.List;
 
 import static auxiliaryGrammar.EncodingHelper.ensureExtractInt32;
-import static auxiliaryGrammar.EncodingHelper.ensureExtractInternalPath;
 
 import ast.Ast;
 import ast.Ast.Doc;

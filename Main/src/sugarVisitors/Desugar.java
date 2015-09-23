@@ -1,7 +1,5 @@
 package sugarVisitors;
 
-import introspection.ConsistentRenaming;
-import introspection.IntrospectionAdapt;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;

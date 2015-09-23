@@ -62,7 +62,6 @@ public class ErrorFormatter {
         },
       mt->{
         if(mt.getInner().isPresent()){return null;}
-        if(introspection.ConsistentRenaming.isAnnotatedConsistent(mt.getDoc())){return null;}
         if(mt.getMt().getMdf()==Mdf.Type){return null;}
         result.append(nesting);
         result.append(ToFormattedText.of(mt).replace("\n", "\n"+nesting));

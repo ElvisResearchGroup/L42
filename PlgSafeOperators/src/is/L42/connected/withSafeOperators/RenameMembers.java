@@ -39,7 +39,7 @@ public class RenameMembers extends coreVisitors.CloneWithPath{
     super();
     this.maps = maps;
   }
-  private static  ClassB of(CollectedLocatorsMap maps,ClassB cb){
+  public static  ClassB of(CollectedLocatorsMap maps,ClassB cb){
     return (ClassB)cb.accept(new RenameMembers(maps));
   }
       public ExpCore visit(Path s) {

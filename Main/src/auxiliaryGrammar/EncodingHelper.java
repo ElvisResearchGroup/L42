@@ -1,6 +1,5 @@
 package auxiliaryGrammar;
 
-import introspection.IntrospectionAdapt;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -153,14 +152,7 @@ public class EncodingHelper{
     if(code==null){return null;}
     return EncodingHelper.parseStringUnicode(code);
     }
-  
-    public static Path ensureExtractInternalPath(Object e) {
-    String res=ensureExtractStringU(e);
-    Path path=IntrospectionAdapt.extractPath(res);
-    if (path==null ){throw new Resources.Error("InvalidInternalPath");}
-    if(path.isCore() && !path.equals(Path.outer(0))){throw new Resources.Error("InvalidInternalPath");}
-    return path;
-    }
+
   static String extractCode(ClassB cb, String prefix) {
     if(cb.isInterface()){return null;}
     if(!cb.getMs().isEmpty()){return null;}
