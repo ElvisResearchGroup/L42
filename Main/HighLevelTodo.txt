@@ -1,48 +1,48 @@
--RedirectOk needs to follow another plan:
-  A= ambiguities, Set of (int Path-> (set ext Path)) functional
-  V= verified redirects Set of int Path->ext Path functional
-    so that for all v of them redirectOk(p,v, cb,A,Exc)  is well defined for some R,A,Exc
- Exc=Set of ( (Set of Path )-> (Set of extPath))
-    then, starting from r1,  A={r1}, V=empty, Exc=empty
-  take an element r from (unambiguos(A) less V),    
-    if redirectOk(p,r,cb,A,Exc), then 
-    V+=r, //this can throw amibuity error
-    A+=V //this can throw ambiguty error //plus equal do the intersection of codomains
-    A-=V //this remove all the dom(V) from dom(A), is safe since A+=V worked before
-  When unambiguos(A)  is empty,  
-    check that for all ps->ps' in Exc, V(ps) superset of ps'
-    check that A is empty
-   and return V
+Adam Towel
+  -we need to reorganize the errors, we need to add the ambigus redirect.
+  -make opt have checktrue, ! & and | ? 
+   -for collections, error S" still report stuff that should be done better.
+  -for concatenating strings, use S"..."[a;b;c]"..." where a,b,c should be ToS,
+  and ++ should take only strings in input.
    
-   define redirectOk(p,intPath->extPath,cb,R;A;Exc)
-   intCb=cb(intPath)
-   extCb=p,cb(extPath)
-   if there is any implementation in intCb is an error src unfit
-   if there is any private in intCb is error src unfit
-   with ps, ps' is implemented interfaces of intCb,extCb
-      ps=intPs,extPs
-      extPs subset of ps' or srcUnfitError?
-      A+=intPs[from intPath]->ps'[from extPath]//if intPath in A already mapped in A, do the intersection of the ambiguities. Error if the empty set is produced.
-      //should give ambiguity error is interface in one set is empty on h other? redirect to Any?
-   for all the nested c of intCb,
-      A+= intPaht::c->extPath::c
-   for all the mwt in intCb, check that there is a corresponding mwt' in extCb,
-   if not error srcUnfit unextped member
-   then redirectOkMwt(p,mwt[from intPath],mwt'.withNoBody()[from extPath],A,Exc)
-   
-   redirectOkMwt(p, T0 (T1..Tn) ps,T0' (T1'..Tn')ps',A,Exc)
-     redirectOkT(p,Ti,T'i,A,Exc)
-     Exc+=ps->ps'
-     A+=ps->ps'//if intPath in A already mapped in A, do the intersection of the ambiguities. Error if the empty set is produced.
-     
+Caching
+   -desugaring import library, assume verified
+   -make cache only in cb (remove from methods)
+   -how it interact with trusted plugins?
+    -is private normalized
+    -get the set of used families
+    -if runaway abstractness/incoherence causes plus, plus should keep track of why it exists.
+       
+    
+    
+    -Sum and interfaces: sum can make interfaces circular. I think I will make this OK
+    
+ Other plugins
+    -db plugin
+      design of resources: make connection string "is" resource handler?
+ 
+ Syntax
+    -put Outer without number in the sugar,outer keyword, to skip the first in scope
+    - put << normalization in the sugar
+    -put keywords/behaviour for circular and entangled. 
+    -put partial, mut partial and so on instead of ^ in parser
+    -use @as default? instead of #?
+     so Map[   @[a;b;c];       @[a;b;c];       ]
+    options[isVisible:@]   vs  options[isVisible:Bool.true()]
+    Car(weels:@[....] doors:@[])
+    RenamePath[@"Bar" to:@"Beer"]
+    -operators <-  ->   \/ /\ ?? may be not?
+    -usually ~ is give me internal, so rename all .binary repr?
+
+Well formedness
+  -well formedness, state must be all private or all public.
+well formedness: implemented or exceptions must be with no repetition, and with no Any.
+Operators should preserve this
+interfaces can be circular, check that no bug happens
   
-  redirectOkT(p, T,T,A,Exc)  is ok //same exact T, method clash if the two T are external but different.
-  redirectOkT(p,.. intPath .. ,..extPath..,A,Exc)  A+=intPaht->extPath//two T different only for the path.
-  
-  -when this is ok, we need to reorganize the errors, we need to add the ambigus redirect.
-  
-   Other tasks
-   
+
+------------------
+   Check if what is under is done
     -private rename normalization
     collect privates: 
      MethodLocator:{List<Member> mTail; List<Integer> mPos; Ms that, Ms newName}
@@ -63,77 +63,4 @@
     normalizePrivates(newIndex) rename all the name__N_K in name__N'_index
     reuse on Uppercase, do desugar and do not do private renaming at all.// just for testing
          
-    -enhance classB/program so that they can be annotated for:
-    -is private normalized
-    -get the set of used families
-    -if ct is needed, here is all the annotations
-    -program/extract type start working only when annotation is required in actual type system but not available
-      like p.requireStage(path)? p.requireAllMethodSignatures(path)? 
-       
-    -db plugin
-      design of resources: make connection string "is" resource handler?
-    -put Outer without number in the sugar
-    - put << normalization in the sugar
-    -put keywords/behaviour for circular and entangled. 
-    -put outer keyword, to skip the first in scope
-    -put partial, mut partial and so on instead of ^ in parser
-    -run coverage (emma eclipse tool?)
-    -remove @consistent?
-    -use @as default? instead of #?
-     so Map[
-       @[a;b;c];
-       @[a;b;c];
-       ]
-    options[isVisible:@]   vs  options[isVisible:Bool.true()]
-    Car(weels:@[....] doors:@[])
-    RenamePath[@"Bar" to:@"Beer"]
-    -operators <-  ->   \/ /\ ?? may be not?
-    -usually ~ is give me internal, so rename all .binary repr?
-    -make opt have checktrue, ! & and | ?
-    -for collections, error S" still report stuff that should be done better.
-
--for concatenating strings, use S[a;b;c] where a,b,c should be ToS,
-and ++ should take only strings in input.
-
-
--rethink typeextraction. use caching of info somehow.
--if runaway abstractness/incoherence causes plus, plus should keep
-track of why it exists.
-
-may be: cache only in cb.
-cacheStage contains
-stage+
-inherited:list of PathMwt
-if inherited==null,
-then interfaces not computed.
-computeInherited(p,cb)
-computeStage(p,cb) //requires inherited
-
-cache contains ct, at the start is equal to cb.
-then, if extractType(p,cb) is asked,
- cb.stage.ct is improved.
- when no further ann is possible, is saved.
- when etdeep is called, it first restore the one in the cached nested.
- Sharing the pointer, it get the same pointer in the nested in ct and in the nested in cb?
-
-method implemented keep type
-CachedMT{ OptMt, OptPath }
-CachedStage:{Stage, map of dependencies path->classB, verified bool}
-
-extractMt(ms,classB,locator,program)
-extractStage(classB,locator,program)
-Now:
-  remove extractCt stuff,
-  add the two extract over.
-  Then, remove cts form the program. 
-
-
-
--TargetUnavable become MemberUnavable
-
--well formedness, state must be all private or all public.
-This is also connected with removing @consistent from desugaring
-well formedness: implemented or exceptions must be with no repetition, and with no Any.
-Operators should preserve this
-
--Sum and interfaces: sum can make interfaces circular. I think I will make this OK
+   

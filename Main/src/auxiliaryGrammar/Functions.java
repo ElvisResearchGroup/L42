@@ -492,10 +492,18 @@ private static void retainOnlyOriginalMethOf(Program p, List<Path> paths,Set<Met
   }
 }
 @SuppressWarnings("unchecked")
-public static <T extends ExpCore> T flushCache(T res) {
+public static <T extends ExpCore> T flushCache(T res,boolean trust) {
   return (T)res.accept(new coreVisitors.CloneVisitor(){
     public ExpCore visit(ClassB s) {
-      return ((ClassB)super.visit(s)).withStage(new CachedStage());
+      CachedStage stg = new CachedStage();
+      s=(ClassB)super.visit(s);
+      if(!trust){return s.withStage(stg);}
+      if(s.getStage().isVerified()){stg.setVerified(true);}
+      if(s.getStage().isPrivateNormalized()){
+        stg.setPrivateNormalized(true);
+        stg.getFamilies().addAll(s.getStage().getFamilies());
+        }
+      return s.withStage(stg);
     }
   });
 }

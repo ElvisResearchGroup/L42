@@ -18,6 +18,7 @@ import java.util.Set;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 
 import coreVisitors.InjectionOnSugar;
+import profiling.Timer;
 import sugarVisitors.CollapsePositions;
 import sugarVisitors.CollectDeclaredClassNamesAndMethodNames;
 import sugarVisitors.CollectDeclaredVarsAndCheckNoDeclaredTwice;
@@ -46,6 +47,8 @@ public class L42 {
   public static String[] programArgs=null;
   public static List<URL> pluginPaths=null;
   public static final Set<String> usedNames=new HashSet<String>();
+  public static Timer reduction=new Timer("reduction");
+  public static Timer typing=new Timer("typing");
   public static void printDebug(String s){
     record.append(s);
     record.append("\n");

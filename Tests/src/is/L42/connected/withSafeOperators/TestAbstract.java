@@ -61,7 +61,7 @@ public static class TestAbstractMeth {//add more test for error cases
   ClassB expected=getClassB(_expected);
   if(!isError){
     ClassB res=Abstract.toAbstract(cb1, path.getCBar(), ms);
-    res=Functions.flushCache(res);
+    res=Functions.flushCache(res,false);
     TestHelper.assertEqualExp(expected,res);
     }
   else{
@@ -152,7 +152,7 @@ public static class TestAbstractClass {//add more test for error cases
   ClassB expected=getClassB(_expected);
   if(!isError){
     ClassB res=Abstract.toAbstract(cb1, path.getCBar());
-    res=Functions.flushCache(res);
+    res=Functions.flushCache(res,false);
     TestHelper.assertEqualExp(expected,res);
     }
   else{

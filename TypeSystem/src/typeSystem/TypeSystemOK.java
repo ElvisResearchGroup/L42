@@ -130,6 +130,7 @@ public class TypeSystemOK {
   }
 
   private static void checkCt2(Program p, ClassB ct) {
+    if(L42.trustPluginsAndFinalProgram){if(ct.getStage().isVerified()){return;}}
     for(Member m:ct.getMs()){
       m.match(
         nc->{
@@ -144,7 +145,8 @@ public class TypeSystemOK {
           methodOk(p.addAtTop(ct),mt);
           return null;
           }
-        );};
+        );}
+    ct.getStage().setVerified(true);
   }
 
   private static void methodOk(Program p, MethodImplemented mi,CachedStage c) {

@@ -128,7 +128,9 @@ public class Resources {
     public ast.ExpCore revert();
   }
   public static boolean isValid(Program p,Object res, Object[] xs) {
-    if(L42.trustPluginsAndFinalProgram){return true;}
+    if(L42.trustPluginsAndFinalProgram){
+      return true;
+      }
     ExpCore ec0=Revertable.doRevert(res);
     List<ExpCore> es=new ArrayList<>();
     for(Object o:xs){
@@ -139,7 +141,7 @@ public class Resources {
       List<ClassB> cbs = CollectClassBs0.of(ec);
       List<Path> ps = CollectPaths0.of(ec);
       for(ClassB cb:cbs){
-        Configuration.typeSystem.computeInherited(p,cb);
+        //Configuration.typeSystem.computeStage(p,cb);
         if(cb.getStage().getStage()==Stage.Less ||cb.getStage().getStage()==Stage.None  ){strict=false;}
         }
       for(Path path:ps){
@@ -182,7 +184,7 @@ public class Resources {
     try{
       res=cls.apply(plg, xs);
       if(res instanceof ExpCore){
-        res=(T)Functions.flushCache((ExpCore) res);
+        res=(T)Functions.flushCache((ExpCore) res,L42.trustPluginsAndFinalProgram);
       }
       if(Resources.isValid(p,res,xs)){return res;}
       else{throw Resources.notAct;}
