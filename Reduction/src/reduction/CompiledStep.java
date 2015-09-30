@@ -6,6 +6,7 @@ import java.nio.file.Paths;
 
 import platformSpecific.javaTranslation.Resources;
 import platformSpecific.javaTranslation.Translator;
+import profiling.Timer;
 import sugarVisitors.ToFormattedText;
 import coreVisitors.IsCompiled;
 import coreVisitors.IsValue;
@@ -32,7 +33,11 @@ public class CompiledStep extends SmallStep{
         throw new ErrorMessage.CtxExtractImpossible(e1,p1.getInnerData());
         //}
         }
-      String code=Translator.translateProgram(p1, e1);
+      String code;
+      Timer.activate("Translator.translateProgram");try{
+      code=Translator.translateProgram(p1, e1);
+      }finally{Timer.deactivate("Translator.translateProgram");}
+      //String code=Translator.translateProgram(p1, e1);
       //System.out.println(code);
       //TODO: for testng only
       //try {Files.write(Paths.get("C:\\Users\\marco\\Desktop\\eclipseMars\\L42Local\\Tests\\src\\generated\\Program42.java"), code.getBytes());}catch (IOException e) {throw new Error(e);}

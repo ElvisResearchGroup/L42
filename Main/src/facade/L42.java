@@ -42,13 +42,11 @@ public class L42 {
   private static ExecutionStage stage=ExecutionStage.None;
   public static ExecutionStage getStage(){return stage;}
   public static int compilationRounds=0;
-  public final static boolean trustPluginsAndFinalProgram=false;
+  public final static boolean trustPluginsAndFinalProgram=true;
   public static StringBuilder record=new StringBuilder();
   public static String[] programArgs=null;
   public static List<URL> pluginPaths=null;
   public static final Set<String> usedNames=new HashSet<String>();
-  public static Timer reduction=new Timer("reduction");
-  public static Timer typing=new Timer("typing");
   public static void printDebug(String s){
     record.append(s);
     record.append("\n");
@@ -102,6 +100,9 @@ public class L42 {
       }
     catch(ErrorMessage msg){
       ErrorFormatter.topFormatErrorMessage(msg);
+    }
+    finally{
+      System.out.print(Timer.report());
     }
   }
 

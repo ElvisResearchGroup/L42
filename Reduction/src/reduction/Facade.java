@@ -4,6 +4,7 @@ import ast.ExpCore.ClassB;
 import facade.Configuration;
 import facade.L42;
 import facade.Reduction;
+import profiling.Timer;
 
 public class Facade implements Reduction{
 
@@ -18,11 +19,12 @@ public class Facade implements Reduction{
     }
   @Override
   public ClassB of(ClassB topLevel) {
+    return Timer.record("Reduction.execute",()->{    
     return (ClassB)Executor.stepStar(
         //getExecutor(),
         new CompiledStep(),
         //new BigStep(),
         //new SmallStep(),
         topLevel);
-  }
+  });}
 }

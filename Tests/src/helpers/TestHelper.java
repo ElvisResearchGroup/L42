@@ -29,6 +29,7 @@ import facade.Configuration;
 import facade.L42;
 import facade.Parser;
 import is.L42.connected.withSafeOperators.NormalizePrivates;
+import profiling.Timer;
 
 public class TestHelper {
   public static void assertEqualExp(ExpCore e1,ExpCore e2){
@@ -168,6 +169,8 @@ public class TestHelper {
     L42.record=new StringBuilder();
     L42.usedNames.clear();
     NormalizePrivates.reset();
+    Timer.restart();
+    Timer.activate("TOP");
   }
   public static void reportError(ErrorMessage e){
   if(Executor.last1==null||Executor.last2==null){throw e;}

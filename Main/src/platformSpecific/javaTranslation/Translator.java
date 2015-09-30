@@ -15,6 +15,7 @@ import java.util.function.Consumer;
 import platformSpecific.inMemoryCompiler.InMemoryJavaCompiler;
 import platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.CompilationError;
 import platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.SourceFile;
+import profiling.Timer;
 import tools.Assertions;
 import coreVisitors.From;
 import coreVisitors.IsCompiled;
@@ -49,16 +50,21 @@ public class Translator {
     SourceFile file = new SourceFile(fileName,s);
     List<SourceFile> files = Arrays.asList(file);
     //System.out.println("Compilation Iteration ready to compile");
-    ClassLoader cl=InMemoryJavaCompiler.compile(files);
+    ClassLoader cl;
+    Timer.activate("InMemoryJavaCompiler.compile");try{
+    cl=InMemoryJavaCompiler.compile(files);//can throw, no closure possible
+    }finally{ Timer.deactivate("InMemoryJavaCompiler.compile");}
     //System.out.println("Compilation Iteration complete compilation, start class loading");
     Class<?> cl0 = cl.loadClass(fileName);
     //System.out.println("Compilation Iteration start method retrival");
     Method m0 = cl0.getDeclaredMethod("execute0");
     //System.out.println("Compilation Iteration ready to execute");
     assert Resources.getP()!=null;
+    Timer.activate("InMemoryJavaCompiler.execute");try{
     Object result = m0.invoke(null);
     //System.out.println("Compilation Iteration execution complete");
     return result;
+    }finally{Timer.deactivate("InMemoryJavaCompiler.execute");}
 
   }
   public static String translateProgram(Program p,ExpCore e){
