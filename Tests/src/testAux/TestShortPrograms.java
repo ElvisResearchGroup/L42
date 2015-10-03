@@ -8,11 +8,13 @@ import facade.ErrorFormatter;
 import facade.Parser;
 import sugarVisitors.Desugar;
 import sugarVisitors.InjectionOnCore;
+import ast.Ast;
 import ast.ErrorMessage;
 import ast.ErrorMessage.FinalResult;
 import ast.ErrorMessage.PathNonExistant;
 import ast.ExpCore;
 import ast.ExpCore.ClassB;
+import auxiliaryGrammar.Functions;
 
 public class TestShortPrograms {
   public void tp(String ...code) {
@@ -26,8 +28,8 @@ public class TestShortPrograms {
     }
     ClassB res=res0.getTopLevelProgram();
     ClassB.NestedClass nc=(ClassB.NestedClass)res.getMs().get(res.getMs().size()-1);
-    ExpCore ee2=Desugar.of(Parser.parse(null,"{'@exitStatus\n'0\n\n}##star ^##")).accept(new InjectionOnCore());
-    TestHelper.assertEqualExp(nc.getInner(),ee2);
+    ExpCore ee2=Desugar.of(Parser.parse(null,"{'@exitStatus\n'0\n\n}")).accept(new InjectionOnCore());
+    TestHelper.assertEqualExp(Functions.clearCache(nc.getInner(),Ast.Stage.None),ee2);
   }
 
 
@@ -146,21 +148,21 @@ public class TestShortPrograms {
 @Test public void test8(){tp("{()"
   ," D: {() type method Library id(Library that) (that)}"
   ," C: D.id({()  method Void foo() (C x= this void)}) "
-  ," E: {'@exitStatus\n'0\n\n}"
+  ," E: ( c=C {'@exitStatus\n'0\n\n})"
   ,"}");}
 
 @Test(expected=ErrorMessage.PathsNotSubtype.class)
 public void test8b(){tp("{()"
     ," D: {() type method Library id(Library that) (that)}"
     ," C: {()  method Void foo() (D x= this void)} "
-    ," E: {'@exitStatus\n'0\n\n}"
+    ," E: ( c=C {'@exitStatus\n'0\n\n})"
     ,"}");}
 
 @Test(expected=ErrorMessage.PathsNotSubtype.class)
 public void test8c(){tp("{()"
     ," D: {() type method Library id(Library that) (that)}"
     ," C: D.id({() method Void foo() (D x= this void)}) "
-    ," E: {'@exitStatus\n'0\n\n}"
+    ," E:( c=C {'@exitStatus\n'0\n\n})"
     ,"}");}
 
 @Test(expected=ErrorMessage.PathNonExistant.class)
@@ -168,7 +170,7 @@ public void test8d(){tp("{()"
     ," A: {Bla:{}}"
     ," D: {() type method Void wrongParameter(A::BlaWrong that)void type method Library id(Library that) that}"
     ," C: D.id({()  method Void foo() void} )"
-    ," E: {'@exitStatus\n'0\n\n}"
+    ," E: ( c=C {'@exitStatus\n'0\n\n})"
     ,"}");}
 
 @Test(expected=ErrorMessage.PathNonExistant.class)
@@ -177,18 +179,18 @@ public void test8e(){tp("{"
     ," B:{(C::D d) }"
     ," C:{ DPr:{}  }"
     ," }"
-    ," Main:{'@exitStatus"
+    ,"Main:( c=C {'@exitStatus"
     ," '0"
-    ," }}");}
+    ," })}");}
 @Test(expected=ErrorMessage.PathNonExistant.class)
 public void test8f(){tp("{"
     ," A:{"
     ," B:{method Void foo() (type Any unused=C::Dpr void)}"
     ," C:{ DPr:{}  }"
     ," }"
-    ," Main:{'@exitStatus"
+    ," Main:( c=C {'@exitStatus"
     ," '0"
-    ," }}");}
+    ," })}");}
 
 
 
@@ -196,7 +198,7 @@ public void test8f(){tp("{"
 public void test9b(){tp("{()"
     ," D: {() type method Library id(Library that) (that)}"
     ," C: {()  H:{() method Void foo() (Outer2::C::E x= this void)}}"
-    ," E: {'@exitStatus\n'0\n\n}"
+    ," E: ( c=C {'@exitStatus\n'0\n\n})"
     ,"}");}
 
 
@@ -204,39 +206,39 @@ public void test9b(){tp("{()"
 public void test9c1(){tp("{()"//focus on the difference between c1 and c2. This is the expected behaviour.
     ," D: {() type method Library id(Library that) (that)}"
     ," C: D.id({()  H:{() method Void foo() (Outer2::C::E x= this void)}}) "
-    ," F: {'@exitStatus\n'0\n\n}"
+    ," F:( c=C {'@exitStatus\n'0\n\n})"//otherwise it does not fails with optimizations on
     ,"}");}
 @Test()
 public void test9c2(){tp("{()"
     ," D: {() type method Library id(Library that) (that)}"
     ," C: D.id({()  H:{() method Void foo() (Outer2::C::H x= this void)}}) "
-    ," F: {'@exitStatus\n'0\n\n}"
+    ," F:( c=C {'@exitStatus\n'0\n\n})"
     ,"}");}
 @Test(/*expected=ErrorMessage.PathsNotSubtype.class/*PathNonExistant.class*/)//correctly no error for trashing the error.
 public void test9d(){tp("{()"
     ," D: {() type method Library trash(Library that) ({()})}"
     ," C: D.trash({()  H:{() method Void foo() (Outer2::C::E x= this void)}}) "
-    ," E: {'@exitStatus\n'0\n\n}"
+    ," E: ( c=C {'@exitStatus\n'0\n\n})"
     ,"}");}
 
 
 @Test public void test9(){tp("{()"
     ," D: {() type method Library id(Library that) (that)}"
     ," C: D.id({()  H:{() method Void foo() (Outer2::C::H x= this void)}}) "
-    ," E: {'@exitStatus\n'0\n\n}"
+    ," E: ( c=C {'@exitStatus\n'0\n\n})"
     ,"}");}
 
 @Test(expected=ErrorMessage.MethodNotPresent.class)
 public void test10(){tp("{()"
     ," D: {() type method Library id(Library that) (that)}"
     ," C: D.id({()  method Void foo(D x) ( x.foo(x))}) "
-    ," E: {'@exitStatus\n'0\n\n}"
+    ," E: ( c=C {'@exitStatus\n'0\n\n})"
     ,"}");}
 @Test//(expectedExceptions=ErrorMessage.MethodNotPresent.class)
 public void test11(){tp("{()"
     ," D: {() type method Library id(Library that) (that)}"
     ," C: D.id({()  method Void foo(C x) ( x.foo(x:x))}) "
-    ," E: {'@exitStatus\n'0\n\n}"
+    ," E: ( c=C {'@exitStatus\n'0\n\n})"
     ,"}");}
 
 @Test(expected=ErrorMessage.PathNonExistant.class)
@@ -245,7 +247,7 @@ public void test12(){tp("{()"
 ,"  T:{() }"
 ,"  type method"
 ,"  Outer0::GenericId::T id(Outer0::GenericId::T that) (that)}"
-,"E: {'@exitStatus\n'0\n\n}"
+,"E:( c=LibList {'@exitStatus\n'0\n\n})"
 ,"}"
 );}
 

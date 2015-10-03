@@ -9,6 +9,7 @@ import java.util.Set;
 import coreVisitors.IsCompiled;
 import facade.Configuration;
 import facade.L42;
+import profiling.Timer;
 import tools.Assertions;
 import ast.Ast;
 import ast.ErrorMessage;
@@ -131,22 +132,29 @@ public class TypeSystemOK {
 
   private static void checkCt2(Program p, ClassB ct) {
     if(L42.trustPluginsAndFinalProgram){if(ct.getStage().isVerified()){return;}}
-    for(Member m:ct.getMs()){
-      m.match(
-        nc->{
-          assert nc.getInner() instanceof ClassB;
-          //Program p1=p.addAtTop(null,ct.withMember(m.withBody(new WalkBy())));
-          Program p1=p.addAtTop(ct);
-          checkCt(p1,(ClassB)nc.getInner());
-          return null;
-          },
-        mi->{methodOk(p.addAtTop(ct),mi,ct.getStage());return null;},
-        mt->{
-          methodOk(p.addAtTop(ct),mt);
-          return null;
-          }
-        );}
+    assert ct.getStage().getGivenName()!=null;
+    String name=ct.getStage().getGivenName();
+    if(!name.isEmpty()){Timer.activate("TypeSystem.checkCt2::"+name);}try{
+    for(Member m:ct.getMs()){checkCt2Member(p, ct, m);}
+    }finally{if(!name.isEmpty()){Timer.deactivate("TypeSystem.checkCt2::"+name);}}
     ct.getStage().setVerified(true);
+  }
+
+  private static void checkCt2Member(Program p, ClassB ct, Member m) {
+    m.match(
+      nc->{
+        assert nc.getInner() instanceof ClassB;
+        //Program p1=p.addAtTop(null,ct.withMember(m.withBody(new WalkBy())));
+        Program p1=p.addAtTop(ct);
+        checkCt(p1,(ClassB)nc.getInner());
+        return null;
+        },
+      mi->{methodOk(p.addAtTop(ct),mi,ct.getStage());return null;},
+      mt->{
+        methodOk(p.addAtTop(ct),mt);
+        return null;
+        }
+      );
   }
 
   private static void methodOk(Program p, MethodImplemented mi,CachedStage c) {

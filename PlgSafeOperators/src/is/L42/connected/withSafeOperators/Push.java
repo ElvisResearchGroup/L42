@@ -11,6 +11,7 @@ import ast.Ast.Stage;
 import ast.ExpCore;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
+import ast.Util.CachedStage;
 
 class Push {
   //never wrong
@@ -19,7 +20,7 @@ class Push {
     Path p=Path.outer(1);
     ClassB cb=(ClassB)FromInClass.of(in, p);
     List<Member> ms=Collections.singletonList(new ClassB.NestedClass(Doc.empty(),s,cb,null));
-    return new ClassB(Doc.empty(),Doc.empty(),false,Collections.emptyList(),ms);
+    return new ClassB(Doc.empty(),Doc.empty(),false,Collections.emptyList(),ms,cb.getStage().copyMostStableInfo());
   }
   //could be more efficient if directly implemented
   static ClassB pushMany(ClassB in,List<String>cs){

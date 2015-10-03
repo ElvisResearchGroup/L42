@@ -30,6 +30,7 @@ import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodImplemented;
 import ast.ExpCore.ClassB.MethodWithType;
 import ast.ExpCore.ClassB.NestedClass;
+import ast.Util.CachedStage;
 import coreVisitors.From;
 import coreVisitors.InjectionOnSugar;
 import coreVisitors.IsCompiled;
@@ -86,7 +87,7 @@ public class Norm {
     if(!isOnlyType){eInner = Map.of(e->of(p,e),mt.getInner());}
     return new MethodWithType(mt.getDoc(),mt.getMs(),mt2,eInner,mt.getP());
   }
-  private static final ClassB forOnlyType=new ClassB(Doc.factory("Only the type was asked\n"),Doc.empty(),false,Collections.emptyList(),Collections.emptyList());
+  private static final ClassB forOnlyType=new ClassB(Doc.factory("Only the type was asked\n"),Doc.empty(),false,Collections.emptyList(),Collections.emptyList(),new CachedStage());
 
 
   public static NormType of(Program p, Type t) {

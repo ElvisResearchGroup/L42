@@ -16,7 +16,9 @@ import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
 
 import platformSpecific.javaTranslation.Resources;
+import ast.Ast;
 import ast.ExpCore.ClassB;
+import auxiliaryGrammar.Functions;
 import auxiliaryGrammar.Program;
 
   @RunWith(Parameterized.class)
@@ -65,6 +67,7 @@ import auxiliaryGrammar.Program;
     ClassB expected=getClassB(_expected);
     if(!isError){
       ClassB res=Sum.sum(Program.empty(),cb1,cb2);
+      res=Functions.clearCache(res,Ast.Stage.None);
       TestHelper.assertEqualExp(expected,res);
       }
     else{

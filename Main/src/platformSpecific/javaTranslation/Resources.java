@@ -35,6 +35,7 @@ import ast.Ast.Path;
 import ast.Ast.SignalKind;
 import ast.Ast.Stage;
 import ast.ExpCore.ClassB;
+import ast.Util.CachedStage;
 import auxiliaryGrammar.EncodingHelper;
 import auxiliaryGrammar.Functions;
 import auxiliaryGrammar.Program;
@@ -91,12 +92,12 @@ public class Resources {
         ClassB inner;
         if(map[i+1] instanceof String){inner=EncodingHelper.wrapStringU((String)map[i+1]);}
         else{//for now, just doc.
-          inner=new ClassB((Doc)map[i+1],Doc.empty(),false,Collections.emptyList(),Collections.emptyList());
+          inner=new ClassB((Doc)map[i+1],Doc.empty(),false,Collections.emptyList(),Collections.emptyList(),new CachedStage());
           }
         if(!Path.isValidClassName(cName)){throw Assertions.codeNotReachable("Invalid name in multiPartStringError:"+cName);}
         ms.add(new ExpCore.ClassB.NestedClass(Doc.empty(), cName, inner,null));
       }
-      ExpCore.ClassB cb=new ExpCore.ClassB(Doc.empty(), Doc.empty(), false, Collections.emptyList(), ms);
+      ExpCore.ClassB cb=new ExpCore.ClassB(Doc.empty(), Doc.empty(), false, Collections.emptyList(), ms,new CachedStage());
       return cb;
     }
     }
@@ -183,9 +184,9 @@ public class Resources {
     T res=null;
     try{
       res=cls.apply(plg, xs);
-      if(res instanceof ExpCore){
-        res=(T)Functions.flushCache((ExpCore) res,L42.trustPluginsAndFinalProgram);
-      }
+      //if(res instanceof ExpCore){
+      //  res=(T)Functions.clearCache((ExpCore) res,Stage.Plus);
+      //}
       if(Resources.isValid(p,res,xs)){return res;}
       else{throw Resources.notAct;}
       }

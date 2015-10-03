@@ -20,6 +20,7 @@ import ast.Ast.Type;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.Using;
 import ast.ExpCore._void;
+import ast.Util.CachedStage;
 
 public class EncodingHelper{
   //encoding
@@ -76,10 +77,10 @@ public class EncodingHelper{
     return wrapInt32(""+i);
   }
   public static ClassB wrapInt32(String i) {
-    return new ClassB(Doc.factory("@int32\n"+i+"\n"),Doc.empty(),false,Collections.emptyList(),Collections.emptyList());
+    return new ClassB(Doc.factory("@int32\n"+i+"\n"),Doc.empty(),false,Collections.emptyList(),Collections.emptyList(),verifiedStage.copyMostStableInfo());
   }
   public static ClassB wrapStringU(String s) {
-    return new ClassB(Doc.factory("@stringU\n"+produceStringUnicode(s)+"\n"),Doc.empty(),false,Collections.emptyList(),Collections.emptyList());
+    return new ClassB(Doc.factory("@stringU\n"+produceStringUnicode(s)+"\n"),Doc.empty(),false,Collections.emptyList(),Collections.emptyList(),verifiedStage.copyMostStableInfo());
   }
 
   public static ClassB ensureExtractCt(Object e,Program p) {
@@ -211,4 +212,7 @@ public class EncodingHelper{
     throw Assertions.codeNotReachable("I may have to expand to handle paths:"+o);
   }
 
+  
+  private static final CachedStage verifiedStage=new CachedStage();
+  static{verifiedStage.setVerified(true);}
 }

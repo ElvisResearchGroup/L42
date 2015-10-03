@@ -16,10 +16,13 @@ import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
 
 import platformSpecific.javaTranslation.Resources;
+import ast.Ast;
 import ast.Ast.MethodSelector;
 import ast.Ast.Path;
 import ast.ExpCore.ClassB;
+import auxiliaryGrammar.Functions;
 import auxiliaryGrammar.Program;
+import facade.Configuration;
 
 public class TestRename {
   @RunWith(Parameterized.class) public static class TestRenameMethod {//add more test for error cases
@@ -47,6 +50,7 @@ public class TestRename {
       ClassB expected = getClassB(_expected);
       if (!isError) {
         ClassB res = Rename.renameMethod(Program.empty(), cb1, path.getCBar(), ms1, ms2);
+        res=Functions.clearCache(res,Ast.Stage.None);
         TestHelper.assertEqualExp(expected, res);
       } else {
         try {
@@ -72,17 +76,26 @@ public class TestRename {
         "{B:{ method Void m() void}}", "B", "C", "{C:{ method Void m() void}}", false//
         }, {//
         "{B:{ method Void m() void}}", "B", "C::D", "{C:{ D:{method Void m() void}}}", false//
+        },{// 
+        "{A:{interface method Outer0 m()  } B:{<:A method m() this.m().m()}   User:{ method A mm(B b) b.m().m()}}","B","C",
+        "{A:{interface method Outer0 m()  } User:{ method A mm(C b) b.m().m()}  C:{<:A method m() this.m().m()} }",false
+        },{// 
+          "{A:{interface method Outer0 m()  } B:{<:A method m() this.m().m()}   User:{ method A mm(B b) b.m().m()} }","A","C",
+          "{B:{<:C method m() this.m().m()}  User:{ method C mm(B b) b.m().m()} C:{interface method Outer0 m()  }    }",false
         } });
     }
 
     @Test public void test() {
       TestHelper.configureForTest();
       ClassB cb1 = getClassB(_cb1);
+      Configuration.typeSystem.computeStage(Program.empty(), cb1);
       Path path1 = Path.parse(_path1);
       Path path2 = Path.parse(_path2);
       ClassB expected = getClassB(_expected);
       if (!isError) {
         ClassB res = Rename.renameClassStrict(Program.empty(), cb1, path1.getCBar(), path2.getCBar());
+        Configuration.typeSystem.checkCt(Program.empty(),res);
+        res=Functions.clearCache(res,Ast.Stage.None);
         TestHelper.assertEqualExp(expected, res);
       } else {
         try {
@@ -269,6 +282,7 @@ public class TestRename {
       ClassB expected = getClassB(_expected);
       if (!isError) {
         ClassB res = Rename.renameClass(Program.empty(), cb1, path1.getCBar(), path2.getCBar());
+        res=Functions.clearCache(res,Ast.Stage.None);
         TestHelper.assertEqualExp(expected, res);
       } else {
         try {

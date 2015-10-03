@@ -18,6 +18,7 @@ import ast.Ast.SignalKind;
 import ast.Ast.Type;
 import ast.Expression.ClassReuse;
 import ast.Expression.WalkBy;
+import ast.Util.CachedStage;
 import ast.ExpCore.*;
 import ast.ExpCore.Block.*;
 import ast.ExpCore.Block.Catch;
@@ -85,7 +86,7 @@ public class InjectionOnCore implements Visitor<ExpCore> {
           })
        );
     }
-    ClassB result=new ClassB(doc1,doc2,isInterface,supertypes,members);
+    ClassB result=new ClassB(doc1,doc2,isInterface,supertypes,members,new CachedStage());
     result.getStage().setStage(s.getStage());
     return result;
     }
@@ -129,5 +130,15 @@ public class InjectionOnCore implements Visitor<ExpCore> {
   public ExpCore visit(Expression.DotDotDot s){
     throw Assertions.codeNotReachable();}
   public ExpCore visit(Expression.Literal s){throw Assertions.codeNotReachable();}
-  public ExpCore visit(ClassReuse s) {throw Assertions.codeNotReachable();}
+  public ExpCore visit(ClassReuse s) {
+    ExpCore.ClassB cb=s.getUrlFetched();
+    ExpCore.ClassB newStuff=(ClassB)s.getInner().accept(this);
+    assert cb!=null;
+    assert newStuff!=null;
+    assert !newStuff.isInterface();
+    if(newStuff.getMs().isEmpty()){return cb;}
+    List<Member> ms = new ArrayList<Member>(cb.getMs());
+    ms.addAll(newStuff.getMs());
+    return cb.withMs(ms).withStage(new CachedStage());//we still keep the cache in the inner literals
+    }
 }

@@ -33,6 +33,7 @@ import ast.ExpCore;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.NestedClass;
+import ast.Util;
 import ast.Util.PathMwt;
 import ast.ExpCore.*;
 public class Translator {
@@ -107,7 +108,7 @@ public class Translator {
       map.put(nameOf(level,cs),new ExpCore.ClassB(
           Doc.factory("DebugInfo: is interface since (cb.getStage()!=Stage.Star :"
             +(cb.getStage().getStage()!=Stage.Star)+") or since !IsCompiled.of(cb) :"+!IsCompiled.of(cb)+")"
-          ),Doc.empty(),true,Collections.emptyList(),Collections.emptyList()));
+          ),Doc.empty(),true,Collections.emptyList(),Collections.emptyList(),new Util.CachedStage()));
       }
     for(Member m:cb.getMs()){
       if (!(m instanceof NestedClass)){continue;}

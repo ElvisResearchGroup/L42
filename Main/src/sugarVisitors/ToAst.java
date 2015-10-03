@@ -319,7 +319,7 @@ public class ToAst extends AbstractVisitor<Expression>{
     url=url.trim();
     List<Member> ms=visitMembers(ctx.member());
     ClassB inner=new ClassB(doc1, doc2, new Ast.TraitHeader(),Collections.emptyList(), ms, Stage.None);
-    return new Expression.ClassReuse(inner,url);
+    return new Expression.ClassReuse(inner,url,null);
   }
   @Override public Expression visitClassB(ClassBContext ctx) {
     Doc doc1=comm(ctx.docsOpt().get(0));

@@ -60,19 +60,27 @@ public class Util {
     }  
 
   @Data public static class CachedStage{
-	@NonNull ast.Ast.Stage stage=Stage.None;
-	final java.util.List<ClassB>dependencies=new java.util.ArrayList<>();
+    boolean verified=false;
+    boolean privateNormalized=false;
+    final java.util.List<Integer> families=new java.util.ArrayList<>();
+	  @NonNull ast.Ast.Stage stage=Stage.None;
+	  final java.util.List<ClassB>dependencies=new java.util.ArrayList<>();
 	//final java.util.List<Path> allSupertypes=new java.util.ArrayList<>();
 	java.util.List<PathMwt> inherited=null;
-	boolean verified=false;
 	boolean coherent=true;
 	String givenName="";
-	boolean privateNormalized=false;
-	final java.util.List<Integer> families=new java.util.ArrayList<>();
+	
 	public boolean isInheritedComputed(){return inherited!=null;}
+	public CachedStage copyMostStableInfo(){//to avoid the misdesigned clone
+	  CachedStage result=new CachedStage();
+	  result.verified=this.verified;
+	  result.privateNormalized=this.privateNormalized;
+	  result.families.addAll(this.families);
+	  return result;
+	}
     }
-  @Data public static class CachedMt{
+ /* @Data public static class CachedMt{
 	  ast.Ast.MethodType mt;
 	  Path path;
-  }
+  }*/
 }

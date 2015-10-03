@@ -52,7 +52,7 @@ public class Timer {
       boolean isOpen=te.name.startsWith("o");
       assert isOpen|| interval.closes.size()+1==interval.opens.size(): interval.closes+" "+interval.opens;//is close
       assert!isOpen|| interval.closes.size()==interval.opens.size():
-        isOpen;//is open
+        te.name;//is open
       //those check verify no recursion in timing
       if(isOpen){interval.opens.add(te.time);}
       else{
@@ -62,18 +62,6 @@ public class Timer {
         interval.tot+=current;
       }
     }
-    /*for(String name:data.keySet()){
-      TimerData td=data.get(name);
-      assert td.closes.size()==td.opens.size();
-      assert td.closes.size()==td.times.size();
-      for(int i=0;i<td.closes.size();i++){
-        long open=td.opens.get(i);
-        long close=td.closes.get(i);
-        long time=td.times.get(i);
-        list opens, closes //save all the internal that are subinterval in open,close.
-        //before adding a new interval, check if is subinterval
-      }
-    }*/
     
     String result="\n*******************************\n";
     List<String>names=new ArrayList<>(data.keySet());
@@ -86,7 +74,7 @@ public class Timer {
       for(long time:td.times){
         if(max<time){max=time;}
         }
-      result+=String.format("percentage:%.1f tot:%.3f max:%.3f number:%d",(td.tot/(float)totTop),td.tot/60000f,max/60000f,td.times.size())+"\n";
+      result+=String.format("percentage:%.2f tot:%.3f max:%.3f number:%d",(td.tot/(float)totTop),td.tot/60000f,max/60000f,td.times.size())+"\n";
       }
     return result+"*************************************\n";
   }

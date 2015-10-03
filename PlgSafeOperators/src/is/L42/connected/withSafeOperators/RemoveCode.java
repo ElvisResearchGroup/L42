@@ -19,6 +19,7 @@ import ast.Ast.Stage;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.NestedClass;
+import ast.Util.CachedStage;
 import auxiliaryGrammar.Program;
 import auxiliaryGrammar.UsedPaths;
 public class RemoveCode {
@@ -140,7 +141,7 @@ public class RemoveCode {
       ClassB newInner=removeAllButPath(path.subList(1, path.size()),(ClassB)nc.getInner());
       ms.add(nc.withInner(newInner));
       }
-    return new ClassB(Doc.empty(),Doc.empty(),false,Collections.emptyList(),ms);
+    return new ClassB(Doc.empty(),Doc.empty(),false,Collections.emptyList(),ms,new CachedStage());
   }
 
   private static List<List<String>> collectDep(ClassB depSource, List<String> origin) {

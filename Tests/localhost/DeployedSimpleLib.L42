@@ -3,7 +3,7 @@
 type method 
 Void printHelloWorld() Outer0::Debug.#apply(that:Outer0::S.#stringParser(that:{'@stringU
 'Hello World Deployed
-}))
+}##star ^##))
 N:{<:Outer1::S::ToS
 type method 
 Outer0 #apply(Library^_binaryRepr) 
@@ -34,7 +34,7 @@ Outer1::Bool #bangequal(Outer0 that)
 method 
 Outer1::Bool #right(Outer0 that) 
 method 
-Outer1::Bool #rightequal(Outer0 that) }
+Outer1::Bool #rightequal(Outer0 that) }##plus ^##
 S:{<:Outer0::ToS
 type method '  toPutAs private
 Outer0 _private(Library^_binaryRepr) 
@@ -48,7 +48,7 @@ method
 Library binaryRepr() 
 ToS:{interface 
 method 
-Outer1 toS() }
+Outer1 toS() }##plus ^##
 method 
 Outer0 #plusplus(Outer0::ToS that) 
 method 
@@ -77,13 +77,13 @@ Outer1 string()
 mut method 
 Outer1 #subString() 
 read method 
-Outer1 subString() }
+Outer1 subString() }##plus ^##
 method 
 Outer1::N size() 
 type method 
 Outer0 doubleQuote() 
 method 
-Outer0 replace(Outer0 that, Outer0 into) }
+Outer0 replace(Outer0 that, Outer0 into) }##plus ^##
 Bool:{<:Outer1::S::ToS
 type method '  toPutAs private
 Outer0 #apply(Library^binaryRepr) 
@@ -102,11 +102,11 @@ Outer0 #and(Outer0 that)
 method 
 Outer0 #or(Outer0 that) 
 method 
-Outer0 #bang() }
+Outer0 #bang() }##plus ^##
 Debug:{
 type method 
 Void #apply(Outer1::S::ToS that) 
 type method 
 Void #apply(Library lib) 
 type method 
-Void #apply(Outer1::S::ToS fileName, Outer1::S::ToS content) }}
+Void #apply(Outer1::S::ToS fileName, Outer1::S::ToS content) }##plus ^##}##plus ^##

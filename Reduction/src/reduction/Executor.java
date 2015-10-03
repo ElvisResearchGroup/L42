@@ -163,6 +163,7 @@ protected ClassB meta1Prop(Program p, ClassB cb, NestedClass m) {
   //run cb1-->cb2
   ClassB cb2=(ClassB)step(p1, ctxC.hole);
   ExpCore e2=ReplaceCtx.of(ctxC.ctx,cb2);
+  
   //compose cb with new member
   return cb.withMember(m.withBody(e2));
 }

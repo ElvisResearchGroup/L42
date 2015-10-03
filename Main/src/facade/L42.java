@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 
@@ -42,7 +43,7 @@ public class L42 {
   private static ExecutionStage stage=ExecutionStage.None;
   public static ExecutionStage getStage(){return stage;}
   public static int compilationRounds=0;
-  public final static boolean trustPluginsAndFinalProgram=true;
+  public static boolean trustPluginsAndFinalProgram=false;
   public static StringBuilder record=new StringBuilder();
   public static String[] programArgs=null;
   public static List<URL> pluginPaths=null;
@@ -75,6 +76,7 @@ public class L42 {
    }
 
   public static void main(String [] arg) throws IOException, InstantiationException, IllegalAccessException, ClassNotFoundException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException{
+    //assert false;
     setClassPath(Paths.get("Plugins"));
     L42.programArgs=arg;
     try{
@@ -108,8 +110,8 @@ public class L42 {
 
   public static String pathToString(Path p) {
     StringBuffer b=new StringBuffer();
-    try {
-      Files.lines(p).forEach((l)->{b.append("\n");b.append(l);});
+    try (Stream<String> lines = Files.lines(p)) {
+      lines.forEach((l)->{b.append("\n");b.append(l);});
       b.append("\n");
       return b.toString();
       }

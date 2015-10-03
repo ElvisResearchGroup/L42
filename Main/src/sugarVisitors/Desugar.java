@@ -61,6 +61,7 @@ import ast.Expression.While;
 import ast.Expression.With;
 import ast.Expression.X;
 import ast.Expression._void;
+import ast.Util.CachedStage;
 import ast.Util.PathMxMx;
 import auxiliaryGrammar.EncodingHelper;
 import auxiliaryGrammar.Functions;
@@ -69,6 +70,7 @@ import coreVisitors.CollectPrivateNames;
 import coreVisitors.InjectionOnSugar;
 import coreVisitors.IsCompiled;
 import coreVisitors.Visitor;
+import facade.Configuration;
 import facade.L42;
 public class Desugar extends CloneVisitor{
   public static Expression of(Expression e){
@@ -120,6 +122,15 @@ public class Desugar extends CloneVisitor{
         ClassB data = OnLineCode.getCode(s.getUrl());
         L42.usedNames.addAll(CollectDeclaredClassNamesAndMethodNames.of(data));
         ast.ExpCore.ClassB dataCore=(ast.ExpCore.ClassB) data.accept(new InjectionOnCore());
+        Configuration.typeSystem.computeStage(Program.empty(),dataCore);
+        dataCore.accept(new coreVisitors.CloneVisitor(){
+          @Override public ExpCore visit(ExpCore.ClassB cb){ 
+            CachedStage stage=cb.getStage();
+            assert stage!=null;
+            stage.setVerified(true);//TODO add more cached info?
+            return super.visit(cb);
+            }
+        });
         Desugar.this.importedLibs.put(s.getUrl(),dataCore);
         return super.visit(s);
       }
@@ -337,10 +348,7 @@ public class Desugar extends CloneVisitor{
   //ClassB reused2=OnLineCode.getCode(s.getUrl());
     ExpCore.ClassB reused=this.importedLibs.get(s.getUrl());
     assert reused!=null:s.getUrl()+" "+this.importedLibs.keySet()+this.importedLibs.get(s.getUrl())+this.importedLibs;
-    Expression.ClassB reused2=(ClassB)reused.accept(new InjectionOnSugar());
-    List<Member> ms = new ArrayList<Member>(reused2.getMs());
-    ms.addAll(res.getMs());
-    return reused2.withMs(ms);//.accept(this);
+    return new ClassReuse(res,s.getUrl(),reused);
   }
 
 

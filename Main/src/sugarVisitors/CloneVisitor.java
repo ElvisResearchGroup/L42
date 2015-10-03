@@ -203,7 +203,8 @@ public class CloneVisitor implements Visitor<Expression>{
   }
   @Override
   public Expression visit(ClassReuse s) {
-    return new ClassReuse(lift(s.getInner()),s.getUrl());
+    //assert s.getUrlFetched()==null;
+    return new ClassReuse(lift(s.getInner()),s.getUrl(),s.getUrlFetched());
   }
 
 }

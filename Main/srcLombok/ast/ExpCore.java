@@ -92,9 +92,9 @@ public interface ExpCore {
   }
 
   @Value @Wither @EqualsAndHashCode(exclude = "stage") public static class ClassB implements ExpCore, Ast.Atom {
-	  public ClassB(Doc doc1, Doc doc2, boolean isInterface, List<Path> supertypes, List<Member> ms) {
+	  /*public ClassB(Doc doc1, Doc doc2, boolean isInterface, List<Path> supertypes, List<Member> ms) {
 		  this(doc1,doc2,isInterface,supertypes,ms,new ast.Util.CachedStage());
-		  }
+		  }*/
 	  public ClassB(Doc doc1, Doc doc2, boolean isInterface, List<Path> supertypes, List<Member> ms,ast.Util.CachedStage stage) {
       this.doc1 = doc1;
       this.doc2 = doc2;

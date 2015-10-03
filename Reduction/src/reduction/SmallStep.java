@@ -17,6 +17,7 @@ import ast.Util.CachedStage;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.NestedClass;
 import auxiliaryGrammar.Ctx;
+import auxiliaryGrammar.Functions;
 import auxiliaryGrammar.Norm;
 import auxiliaryGrammar.Program;
 import coreVisitors.CollectPaths0;
@@ -50,7 +51,8 @@ public class SmallStep extends Executor{
       Configuration.typeSystem.checkMetaExpr(p1.getExecutableStar(),e1);
       //run m.e1-->e2
       ExpCore e2=executeAtomicStep(p1,e1);
-      if(!(e2 instanceof ClassB)){Configuration.typeSystem.checkMetaExpr(p1.getExecutableStar(),e2);}//as assert
+      e2=Functions.clearCache(e2,Stage.Less);
+      if(!(e2 instanceof ClassB)){Configuration.typeSystem.checkMetaExpr(p1.getExecutableStar(),e2);}//TODO: as assert
       ClassB cbRes=cb.withMember(m.withBody(e2));
       //TODO: if e2 is an error, terminate with error, do it better?
       //is it already stopping if that happens?

@@ -15,9 +15,21 @@ import helpers.TestHelper;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TestBase {
 
-  //@Before public void initialize() {  TestHelper.configureForTest();}
+  @Before
+  public void initialize() {
+    //TestHelper.configureForTest();
+    System.out.println("AssertionsDisabled");
+    ClassLoader.getSystemClassLoader().setDefaultAssertionStatus(false);
+    L42.trustPluginsAndFinalProgram=true;
+    }
   //not run when single test executed?
 
+  @Test
+  public  void _000AJustToWarmUpJVM01() throws Throwable{
+    TestHelper.configureForTest();
+    L42.main(new String[]{"examples/testsForAdamTowel01/UseAdamTowel01.L42"});
+    Assert.assertEquals(L42.record.toString(),"FreeTemplate\nFreeTemplate\nHello Adam 0\nazz\nbzz\nczz\n");
+    }
   @Test
   public  void _00DeployAdamTowel01() throws Throwable{
     TestHelper.configureForTest();

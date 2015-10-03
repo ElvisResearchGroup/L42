@@ -9,6 +9,7 @@ import ast.Ast.MethodSelector;
 import ast.Ast.Path;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
+import ast.Util.CachedStage;
 import lombok.Data;
 import lombok.NonNull;
 
@@ -117,7 +118,7 @@ public class Locator {
   }
   
   static class LocatorSupport {
-    private static final ClassB dumbCb = new ClassB(Doc.empty(), Doc.empty(), false, Collections.emptyList(), Collections.emptyList());
+    private static final ClassB dumbCb = new ClassB(Doc.empty(), Doc.empty(), false, Collections.emptyList(), Collections.emptyList(),new CachedStage());
   }
   
   public boolean prefixOf(Locator nl) {

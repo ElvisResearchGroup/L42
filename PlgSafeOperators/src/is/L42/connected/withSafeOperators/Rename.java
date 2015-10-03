@@ -10,11 +10,14 @@ import tools.Map;
 import coreVisitors.CloneVisitor;
 import coreVisitors.CloneVisitorWithProgram;
 import coreVisitors.FromInClass;
+import facade.Configuration;
+import facade.L42;
 import ast.ExpCore;
 import ast.Ast.Doc;
 import ast.Ast.Path;
 import ast.Ast.MethodSelector;
 import ast.Ast.Stage;
+import ast.Util.CachedStage;
 import ast.Util.PathMxMx;
 import ast.ExpCore.*;
 import ast.ExpCore.ClassB.Member;
@@ -46,6 +49,7 @@ public class Rename {
     cb=Push.pushOne(cb,"Result");
     List<String> tmp = Collections.singletonList("Tmp");
     cb=directRename(p,cb,src,tmp);
+    if(!L42.trustPluginsAndFinalProgram) {Configuration.typeSystem.checkCt(p, cb);}
     cb=directRename(p,cb,tmp,dest);
     cb=Pop.directPop(cb);
     return ClassOperations.normalizePaths(cb);
@@ -64,13 +68,11 @@ public class Rename {
     return ClassOperations.normalizePaths(directRename(p, cb, src, dest));
   }
   private static ClassB directRename(Program p, ClassB cb, List<String> src, List<String> dest) {
-    //ClassB renamedCb=renameUsage(Collections.singletonList(new PathPath(Path.outer(0,src),Path.outer(0,dest))),cb);//cb, renamedCb are normalized
    CollectedLocatorsMap clm=CollectedLocatorsMap.from(Path.outer(0,src), Path.outer(0,dest));
     ClassB renamedCb=(ClassB)new RenameAlsoDefinition(cb,clm,p).visit(cb);
-    //cb, renamedCb are normalized   
     ClassB clearCb=ClassOperations.onNestedNavigateToPathAndDo(renamedCb,src,nc->Optional.empty());
     ClassB newCb=redirectDefinition(src,dest,renamedCb);
-    newCb=ClassOperations.normalizePaths(newCb);
+    //newCb=ClassOperations.normalizePaths(newCb);
     return Sum.normalizedTopSum(p, clearCb, newCb);
   }
   public static ClassB renameMethod(Program p,ClassB cb,List<String> path,MethodSelector src,MethodSelector dest){
@@ -99,7 +101,7 @@ public class Rename {
     cb=(ClassB)FromInClass.of(cb, toFrom);
     List<Member>ms=new ArrayList<>();
     ms.add(Functions.encapsulateIn(dest, cb,docCb[0]));
-    return new ClassB(Doc.empty(),Doc.empty(),false,Collections.emptyList(),ms);
+    return new ClassB(Doc.empty(),Doc.empty(),false,Collections.emptyList(),ms,new CachedStage());
   }
  
   //TODO: replace with same mechanism of private normalization when is completed

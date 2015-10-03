@@ -176,6 +176,7 @@ public interface Expression extends Ast {
   @Value public static class ClassReuse implements Expression, Ast.Atom {
     ClassB inner;
     String url;
+    ExpCore.ClassB urlFetched;
     @Override public <T> T accept(sugarVisitors.Visitor<T> v) {
       return v.visit(this);
     }

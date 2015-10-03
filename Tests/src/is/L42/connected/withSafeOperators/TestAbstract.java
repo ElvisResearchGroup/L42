@@ -15,6 +15,7 @@ import org.junit.runners.Parameterized.Parameter;
 import platformSpecific.javaTranslation.Resources;
 import ast.Ast.MethodSelector;
 import ast.Ast.Path;
+import ast.Ast.Stage;
 import ast.ExpCore.ClassB;
 import auxiliaryGrammar.Functions;
 
@@ -61,7 +62,7 @@ public static class TestAbstractMeth {//add more test for error cases
   ClassB expected=getClassB(_expected);
   if(!isError){
     ClassB res=Abstract.toAbstract(cb1, path.getCBar(), ms);
-    res=Functions.flushCache(res,false);
+    res=Functions.clearCache(res,Stage.None);
     TestHelper.assertEqualExp(expected,res);
     }
   else{
@@ -152,7 +153,7 @@ public static class TestAbstractClass {//add more test for error cases
   ClassB expected=getClassB(_expected);
   if(!isError){
     ClassB res=Abstract.toAbstract(cb1, path.getCBar());
-    res=Functions.flushCache(res,false);
+    res=Functions.clearCache(res,Stage.None);
     TestHelper.assertEqualExp(expected,res);
     }
   else{

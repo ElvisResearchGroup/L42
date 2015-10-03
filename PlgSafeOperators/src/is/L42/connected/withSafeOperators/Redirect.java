@@ -33,6 +33,7 @@ import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodWithType;
 import ast.ExpCore.ClassB.NestedClass;
+import ast.Util.CachedStage;
 import ast.Util.PathPath;
 import ast.Util.PathSPath;
 import ast.Util.SPathSPath;
@@ -58,7 +59,7 @@ public class Redirect {
   }
   public static ClassB remove(Path path1, ClassB l) {
     if(path1.equals(Path.outer(0))){
-      return new ClassB(Doc.empty(),Doc.empty(),false,Collections.emptyList(),Collections.emptyList());
+      return new ClassB(Doc.empty(),Doc.empty(),false,Collections.emptyList(),Collections.emptyList(),new CachedStage());
       }
     return (ClassB)l.accept(new coreVisitors.CloneVisitor(){
       List<String> cs=path1.getCBar();
@@ -176,7 +177,7 @@ public class Redirect {
       }
     else{
       assert path.isPrimitive();
-      currentExtCb=new ClassB(Doc.empty(),Doc.empty(),path.equals(Path.Any()),Collections.emptyList(),Collections.emptyList());
+      currentExtCb=new ClassB(Doc.empty(),Doc.empty(),path.equals(Path.Any()),Collections.emptyList(),Collections.emptyList(),new CachedStage());
     }
     assert !csPrivate[0];
     boolean isPrivateState=ExtractInfo.hasPrivateState(currentIntCb);

@@ -19,9 +19,11 @@ import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
 
 import platformSpecific.javaTranslation.Resources;
+import ast.Ast;
 import ast.Ast.MethodSelector;
 import ast.Ast.Path;
 import ast.ExpCore.ClassB;
+import auxiliaryGrammar.Functions;
 import auxiliaryGrammar.Program;
 
 public class TestNormalizePrivates{
@@ -159,6 +161,7 @@ public static class TestNormalizePrivates1 {
   ClassB cb1=getClassB("cb1", _cb1);
   ClassB expected=getClassB("expected", _expected);
   cb1=NormalizePrivates.normalize(Program.empty(),cb1);
+  cb1=Functions.clearCache(cb1,Ast.Stage.None);
   TestHelper.assertEqualExp(expected,cb1);
   }
 }

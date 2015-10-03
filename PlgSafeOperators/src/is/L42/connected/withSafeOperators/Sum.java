@@ -19,6 +19,7 @@ import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodImplemented;
 import ast.ExpCore.ClassB.MethodWithType;
 import ast.ExpCore.ClassB.NestedClass;
+import ast.Util.CachedStage;
 import ast.ExpCore.*;
 import auxiliaryGrammar.Program;
 
@@ -52,7 +53,14 @@ public class Sum {
     Doc doc2 = a.getDoc2().sum(b.getDoc2());
     ExtractInfo.checkClassClash(p, current, topA, topB, a, b);
     boolean isInterface =a.isInterface() || b.isInterface();
-    return new ClassB(doc1, doc2, isInterface, superT, ms);
+    CachedStage stage=new CachedStage();
+    stage.setPrivateNormalized(true);
+    stage.getFamilies().addAll(a.getStage().getFamilies());
+    for(Integer fam:b.getStage().getFamilies()){
+      if(!stage.getFamilies().contains(fam)){stage.getFamilies().add(fam);}
+    }
+    if(a.getStage().isVerified() && b.getStage().isVerified()){stage.setVerified(true);}
+    return new ClassB(doc1, doc2, isInterface, superT, ms,stage);
     }
   private static void doubleSimetricalMatch(Program p, ClassB topA, ClassB topB,ClassB a, ClassB b, List<Member> ms, List<String> current) {
     for (Member m : a.getMs()) {//add from a+b

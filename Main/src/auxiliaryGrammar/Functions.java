@@ -27,6 +27,7 @@ import ast.ErrorMessage;
 import ast.ExpCore;
 import ast.ExpCore.*;
 import ast.ExpCore.ClassB.*;
+import ast.Expression.ClassReuse;
 import ast.Expression;
 import ast.Util.CachedStage;
 import coreVisitors.Dec;
@@ -46,7 +47,7 @@ public static ClassB.NestedClass encapsulateIn(List<String> cBar,ClassB elem,Doc
     if(cBar2.isEmpty()){return new ClassB.NestedClass(doc,cBar.get(0),elem,null);}
     List<Member> ms=new ArrayList<>();
     ms.add(encapsulateIn(cBar2,elem,doc));
-    ClassB cb= new ClassB(Doc.empty(),Doc.empty(),false,Collections.emptyList(),ms);
+    ClassB cb= new ClassB(Doc.empty(),Doc.empty(),false,Collections.emptyList(),ms,new CachedStage());
     return new ClassB.NestedClass(Doc.empty(),cBar.get(0),cb,null);
   }
 public static Path add1Outer(Path p) {
@@ -311,7 +312,7 @@ public static boolean isInterface(Program p, Path path) {
 public static boolean checkCore(Expression result) {
     result.accept(new CloneVisitor(){
       public Expression visit(Path p){assert p.isCore() || p.isPrimitive():p;return p;}
-      protected <T extends Expression>T lift(T e){
+      protected <T extends Expression>T lift(T e){//exists just to breakpoint
         try{return super.lift(e);}
         catch(AssertionError err){
           throw err;
@@ -491,19 +492,21 @@ private static void retainOnlyOriginalMethOf(Program p, List<Path> paths,Set<Met
       }
   }
 }
-@SuppressWarnings("unchecked")
-public static <T extends ExpCore> T flushCache(T res,boolean trust) {
-  return (T)res.accept(new coreVisitors.CloneVisitor(){
-    public ExpCore visit(ClassB s) {
-      CachedStage stg = new CachedStage();
-      s=(ClassB)super.visit(s);
-      if(!trust){return s.withStage(stg);}
-      if(s.getStage().isVerified()){stg.setVerified(true);}
-      if(s.getStage().isPrivateNormalized()){
-        stg.setPrivateNormalized(true);
-        stg.getFamilies().addAll(s.getStage().getFamilies());
+//with less remove only less, with plus remove plus and less, with other remove always
+@SuppressWarnings("unchecked") public static <T extends ExpCore> T clearCache(T e,Ast.Stage level){
+  return (T)e.accept(new coreVisitors.CloneVisitor(){
+    @Override public ExpCore visit(ExpCore.ClassB cb){
+      cb=((ExpCore.ClassB)super.visit(cb));
+      if(level!=Stage.Plus && level!=Stage.Less){
+        return cb.withStage(new CachedStage());
+      }
+      if(cb.getStage().getStage()==Stage.Less){
+        return  cb.withStage(new CachedStage());
         }
-      return s.withStage(stg);
+      if(level==Stage.Plus && cb.getStage().getStage()==Stage.Plus ){
+        return  cb.withStage(new CachedStage());
+        }
+      return cb;
     }
   });
 }
