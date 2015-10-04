@@ -75,7 +75,7 @@ public class TestBase {
     L42.main(new String[]{"examples/testsForAdamTowel01/UseCollections.L42"});
     Assert.assertEquals(L42.record.toString(),"size is 2 hello world\nhello\nworld\n");
     }
-  //@Test
+  @Test
   public  void _07introspection() throws Throwable{
     TestHelper.configureForTest();
     L42.main(new String[]{"examples/testsForAdamTowel01/UseIntrospectionAdamTowel.L42"});
@@ -89,11 +89,20 @@ public class TestBase {
        ,"Outer0 as string: {"
        ,"Bar:{"
        ,"method "
-       ,"Void foo() }}"
+       ,"Void foo() }"
+        ,"Beer:{}}"
        ,"--------------------------"
        ,"for all the methods of Bar:"
        ,"selector is: foo()"
-       ,"return type is:"
+       ,"return type is:Type[Void]"
+       ,"--------------------------"
+       ,"for all the nested classes of Bar:"
+       ,"Nested class path is:Beer"
+       ,"NestedClass[{}]"
+       ,"Nested class path is:Bar"
+       ,"NestedClass[{"
+       ,"method "
+       ,"Void foo() }]"
        //,""
         ));
     }

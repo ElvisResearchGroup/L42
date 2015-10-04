@@ -61,7 +61,8 @@ Record:
     {(Path path,MirrorPr mirror,Record _report)<:RootForMember
       method(root) (
       'Debug(S"logRootForNested")
-      NestedClass(root:root,path:this.path(),mirror:this.mirror(),report:this._report())
+      path=Path.#stringParser(this._report()"Key".binaryRepr())
+      NestedClass(root:root,path:path,mirror:this.mirror(),report:this._report())
       )}
   RootForMethod:' toPutAs private
     {(Path path,N memberN,Record _report)<:RootForMember

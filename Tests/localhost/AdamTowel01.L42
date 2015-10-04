@@ -1648,7 +1648,13 @@ mut method
 Outer2::Record #_report() 
 read method 
 Outer2::Record _report() 
-method #apply(root ) Outer2::NestedClass.#apply(root:root, path:this.path(), mirror:this.mirror(), report:this._report())}
+method #apply(root ) ('Debug(S"logRootForNested")
+
+  Outer3::Path::#stringParser(that ) path=Outer3::Path.#stringParser(that:this._report().#stringParser(that:{'@stringU
+  'Key
+  }).binaryRepr())
+  Outer2::NestedClass.#apply(root:root, path:path, mirror:this.mirror(), report:this._report())
+  )}
 RootForMethod:' toPutAs private
 {<:Outer1::RootForMember
 type method 
