@@ -1,7 +1,7 @@
 {
   type method Void t1(){
     l=ListArray[S"hello";S"world"]
-    Debug(S"size is "++l.size()++S" "++l(0N)++S" "++l(1N))
+    Debug(S"size is "[l.size()]" "[l(0N)]" "[l(1N)]"")
     with x in l.vals() (
       Debug(x)
       )    
@@ -29,7 +29,7 @@
     '*******************
   type method Void t2(){
     l=ListArray[S"hello";S"world"]
-    Debug(S"size is "++l.size()++S" "++l(0N)++S" "++l(1N))
+    Debug(S"size is "[l.size()]" "[l(0N)]" "[l(1N)]"")
     with var x in l.vars() (
       Debug(x)
       )    

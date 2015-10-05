@@ -4,7 +4,7 @@ Void printHelloWorld() Outer0::Debug.#apply(that:Outer0::S.#stringParser(that:{'
 'Hello World 
 }).#plusplus(that:Outer0::N.#numberParser(that:{'@stringU
 '42
-})))
+}).toS()))
 Bool:{<:Outer1::S::ToS
   method Void #checkTrue() exception Void 
   type method Outer0 true() 
@@ -28,7 +28,7 @@ N:{<:Outer1::S::ToS
 S:{<:Outer0::ToS
   type method Outer0 #stringParser(Library that) 
   ToS:{interface method Outer1 toS() }
-  method Outer0 #plusplus(Outer0::ToS that) 
+  method Outer0 #plusplus(Outer0 that) 
   method Outer1::Bool #bangequal(Outer0 that) 
   method Outer1::Bool #equalequal(Outer0 that) 
   method Outer0 #apply(Outer1::N that) 

@@ -7,9 +7,9 @@
   'CellNextMut:{mut (mut Kind::elem() val,mut Cell next)<:Cell}
   CellEnd:{mut ()<:Cell}
   read method Void reportError(N that)
-    error (S"IndexOutOfBound: max is "++this.size())++S" proposed is "++that
+    error S"IndexOutOfBound: max is "[this.size()]" proposed is "[that]""
   read method Void reportUnexpected(N that)
-    error (S"Unexpected failure like IndexOutOfBound: max is "++this.size())++S" proposed is "++that
+    error S"Unexpected failure like IndexOutOfBound: max is "[this.size()]" proposed is "[that]""
   'GETTING
   read method 
   Kind::elemRead() (N that) (
@@ -134,7 +134,7 @@
     
     read method
     Void #checkEnd()
-      if this.min()<this.ok() ( error (S"Unexpected termination of iteration, reached "++this.min())++S" instead of "++this.ok() )
+      if this.min()<this.ok() ( error S"Unexpected termination of iteration, reached "[this.min()]" instead of "[this.ok()]"" )
     
     read method
     Kind::elem() #inner() {
@@ -207,7 +207,7 @@
     
     read method
     Void #checkEnd()
-      if this.min()<this.ok() ( error (S"Unexpected termination of iteration, reached "++this.min())++S" instead of "++this.ok() )
+      if this.min()<this.ok() ( error S"Unexpected termination of iteration, reached "[this.min()]" instead of "[this.ok()]"" )
     
     read method
     Kind::elem() #inner() {

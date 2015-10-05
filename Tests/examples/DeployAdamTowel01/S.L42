@@ -9,7 +9,7 @@
   method toS() this
 
   method
-  S ++ (ToS that) S.#stringParser(using Alu
+  S ++ (S that) S.#stringParser(using Alu
       check stringConcat(s1:this.binaryRepr(),s2:that.toS().binaryRepr())
       error void)
 
@@ -71,4 +71,19 @@
         dest:into.binaryRepr())
       error void)
 
+  method
+  SConcat #begin()
+    SConcat(accumulator:this)
+    
+  SConcat:{(S accumulator)
+    method
+    SConcat #add(ToS that)
+      SConcat(accumulator:this.accumulator()++that.toS())
+    method
+    SConcat #end()
+      this
+    method
+    S #stringParser(Library that)
+      this.accumulator()++S.#stringParser(that)
+    }
   }

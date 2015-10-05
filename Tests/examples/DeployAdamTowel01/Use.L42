@@ -46,9 +46,9 @@
       Selector name=ms.pop().pop().top().selector()
       Selector nameLeft=ms.pop().top().selector()
       Selector nameRight=ms.top().selector()
-      Debug(S"name is: "++name)
-      Debug(S"nameLeft is: "++nameLeft)
-      Debug(S"nameRight is: "++nameRight)
+      Debug(S"name is: "[name]"")
+      Debug(S"nameLeft is: "[nameLeft]"")
+      Debug(S"nameRight is: "[nameRight]"")
       error Report::NotImplementedYet"DO ADAPTER"
       'Name name=Name.#stringParser(_name.binaryRepr())
       'Name nameLeft=Name.#stringParser(_nameLeft.binaryRepr())

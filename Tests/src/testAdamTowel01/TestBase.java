@@ -28,7 +28,6 @@ public class TestBase {
   public  void _000AJustToWarmUpJVM01() throws Throwable{
     TestHelper.configureForTest();
     L42.main(new String[]{"examples/testsForAdamTowel01/UseAdamTowel01.L42"});
-    Assert.assertEquals(L42.record.toString(),"FreeTemplate\nFreeTemplate\nHello Adam 0\nazz\nbzz\nczz\n");
     }
   @Test
   public  void _00DeployAdamTowel01() throws Throwable{
@@ -41,7 +40,7 @@ public class TestBase {
   public  void _01UseAdamTowel01() throws Throwable{
     TestHelper.configureForTest();
     L42.main(new String[]{"examples/testsForAdamTowel01/UseAdamTowel01.L42"});
-    Assert.assertEquals(L42.record.toString(),"FreeTemplate\nFreeTemplate\nHello Adam 0\nazz\nbzz\nczz\n");
+    Assert.assertEquals(L42.record.toString(),"FreeTemplate\nFreeTemplate\nHello Adam 0\nazz\nbzz\nczz\nHello Adam n1:0 n2:false endOfString\n");
     }
   @Test
   public  void _02UseSimpleLib() throws Throwable{

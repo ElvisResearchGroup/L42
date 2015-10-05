@@ -5,7 +5,7 @@ ObservedBug:
   type method Outer0 #stringParser(Library that) Outer0(reason:S.#stringParser(that))
   type method Outer0 () Outer0(S"")
   type method Outer0 (S that) Outer0(reason:that)
-  method toS()  S"ObservedBug["++this.reason()++S"]"
+  method toS()  S"ObservedBug["[this.reason()]"]"
   }
 
 Misuse:
@@ -17,7 +17,7 @@ Misuse:
   type method Outer0 #stringParser(Library that) Outer0(reason:S.#stringParser(that))
   type method Outer0 () Outer0(S"")
   type method Outer0 (S that) Outer0(reason:that)
-  method toS()  S"Misuse["++this.reason()++S"]"
+  method toS()  S"Misuse["[this.reason()]"]"
   }
 UnsupportedOperation:
 'to report that a target do not support a certain selector.
@@ -27,7 +27,7 @@ UnsupportedOperation:
   type method Outer0 #stringParser(Library that) Outer0(reason:S.#stringParser(that))
   type method Outer0 () Outer0(S"")
   type method Outer0 (S that) Outer0(reason:that)
-  method toS()  S"UnsupportedOperation["++this.reason()++S"]"
+  method toS()  S"UnsupportedOperation["[this.reason()]"]"
   }
 
 PluginFailure:
@@ -36,19 +36,19 @@ PluginFailure:
   type method Outer0 #stringParser(Library that) Outer0(reason:S.#stringParser(that))
   type method Outer0 () Outer0(S"")
   type method Outer0 (S that) Outer0(reason:that)
-  method toS()  S"PluginFailure["++this.reason()++S"]"
+  method toS()  S"PluginFailure["[this.reason()]"]"
   }
 CodeNotReachable:{(S reason)<:S::ToS
   type method Outer0 #stringParser(Library that) Outer0(reason:S.#stringParser(that))
   type method Outer0 () Outer0(S"")
   type method Outer0 (S that) Outer0(reason:that)
-  method toS()  S"CodeNotReachable["++this.reason()++S"]"
+  method toS()  S"CodeNotReachable["[this.reason()]"]"
   }
 NotImplementedYet:{(S reason)<:S::ToS
   type method Outer0 #stringParser(Library that) Outer0(reason:S.#stringParser(that))
   type method Outer0 () Outer0(S"")
   type method Outer0 (S that) Outer0(reason:that)
-  method toS()  S"CodeNotReachable["++this.reason()++S"]"
+  method toS()  S"CodeNotReachable["[this.reason()]"]"
   }
 'in the following, a set of reports for composition operators
 
@@ -72,7 +72,7 @@ PrivacyCoupuled:{(Introspection::Record report) <:Report
   method toS() S"PrivacyCoupuled"
   }
 NSBMissing:{(Report report) <:Report
-  method toS() S"NSBMissing "++this.report()
+  method toS() S"NSBMissing "[this.report()]""
   }
 
 

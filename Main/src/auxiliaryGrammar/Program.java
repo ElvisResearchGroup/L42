@@ -192,13 +192,16 @@ public class Program {
     //classB=(ClassB)From.from(classB,path);
     Optional<Member> result = getIfInDom(classB.getMs(),ms);
     if(!result.isPresent()){
+      for(PathMwt mt:classB.getStage().getInherited()){
+        if(!mt.getMwt().getMs().equals(ms)){continue;}
+        return From.from(mt.getMwt(), path);
+        }
       throw new ErrorMessage.MethodNotPresent(path,ms,forError,null,this.getInnerData());
       }
     MethodWithType mwt=Program.extractMwt(result.get(),classB);
     mwt=From.from(mwt, path);
     //mwt=Norm.of(this,mwt,isOnlyType);
     return mwt;
-
   }
 
   public static Optional<NestedClass> findWalkBy(ClassB classB) {

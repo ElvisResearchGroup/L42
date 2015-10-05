@@ -51,7 +51,7 @@ Record:
   '    case x== S"InterfaceImplementedMethod" (return Method(root:root,path:path,memberN:memberN,report:_report))
   '    case x== S"ImplementedMethod" (return Method(root:root,path:path,memberN:memberN,report:_report))
   '    case x== S"AbstractMethod" (return Method(root:root,path:path,memberN:memberN,report:_report))
-  '    default error Report::ObservedBug(S"invalid member kind "++x)
+  '    default error Report::ObservedBug(S"invalid member kind "[x]"")
   '    )
   '  }
   'instead, I have to write this :-(
@@ -72,7 +72,7 @@ Record:
         )}
   type method Member dispatch(NestedClass^ root,Path path,MirrorPr mirror, N memberN,Library report) (
     _report =Record(lib:report)
-    'Debug(S"MemberKind(in dispatch) is"++_report"MemberKind")
+    'Debug(S"MemberKind(in dispatch) is"[_report]"MemberKind")
     'Debug(S"ReportAsString is ")
     'Debug(lib:report)
     RootForMember result={ with x=_report"MemberKind" (
@@ -89,7 +89,7 @@ Record:
         return RootForNested(path:path,mirror:mirror,_report:_report)
         )
 
-      default error Report::ObservedBug(S"invalid member kind "++x)
+      default error Report::ObservedBug(S"invalid member kind "[x]"")
       )}
     result(root:root)
     )

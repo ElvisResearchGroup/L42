@@ -4,7 +4,7 @@ Ss:Collections.vector(S)
 Tests:{
   type method Void t1(){
     l=Ss[S"hello";S"world"]
-    Debug(S"size is "++l.size()++S" "++l(0N)++S" "++l(1N))
+    Debug(S"size is "[l.size()]" "[l(0N)]" "[l(1N)]"")
     with x in l.vals() (
       Debug(x)
       )

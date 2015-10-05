@@ -46,7 +46,7 @@ public class SmallStep extends Executor{
       ErrorFormatter.printType(p1);
       //check p'
       Configuration.typeSystem.checkAll(p1);
-      e1=Norm.of(p1,e1);
+      e1=Norm.of(p1,e1);      
       //check e1
       Configuration.typeSystem.checkMetaExpr(p1.getExecutableStar(),e1);
       //run m.e1-->e2

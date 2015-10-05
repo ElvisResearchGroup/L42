@@ -12,15 +12,15 @@ Main:{
   Debug(S"for all the methods of Bar:")
   ms=i.methods()
   with m in ms.vals() (
-   Debug(S"selector is: "++m.selector())
+   Debug(S"selector is: "[m.selector()]"")
    ti=m.returnType()
-   Debug(S"return type is:"++ti)
+   Debug(S"return type is:"[ti]"")
    'ti.report().dbg()
    )
   Debug(S"--------------------------")
   Debug(S"for all the nested classes of Bar:")
   with nc in i.root().nestedClasses().vals() (
-    Debug(S"Nested class path is:"++nc.pathFromRoot())
+    Debug(S"Nested class path is:"[nc.pathFromRoot()]"")
     Debug(nc)
     )
   return ExitCode.normal()

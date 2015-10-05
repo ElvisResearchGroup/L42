@@ -1,6 +1,6 @@
 {'findMeNestedClass
 (NestedClass root,Path path,MirrorPr mirror, Record report)<:Member
-method toS() S"NestedClass["++this.allAsString()++S"]"
+method toS() S"NestedClass["[this.allAsString()]"]"
 method 'empty for Outer0
 Doc nestedDoc()(
   if this.path()==Path"Outer0" (
@@ -14,7 +14,7 @@ Doc doc() this.report().docOf(path:Path"Doc")
 method Path pathFromRoot() this.path() ' invariant NestedClass(...).nestedClassFromRoot(path).pathFromRoot()==path
 method type Any externalType(){
   if this.path()!=Path"Outer0" (
-    error Report::UnsupportedOperation(S"NestedClass.externalType() The NestedClass Object refers to "++this.path())
+    error Report::UnsupportedOperation(S"NestedClass.externalType() The NestedClass Object refers to "[this.path()]"")
     )
   with mirror=this.report() (
     on MirrorPr::Class return mirror.lib()

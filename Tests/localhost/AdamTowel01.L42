@@ -205,7 +205,7 @@ method
 Outer2::S toS() }
 method toS() this
 method 
-Outer1::S #plusplus(Outer0::ToS that) Outer1::S.#stringParser(that:using Outer1::Alu check stringConcat(s1:this.binaryRepr(), s2:that.toS().binaryRepr()) error void)
+Outer1::S #plusplus(Outer1::S that) Outer1::S.#stringParser(that:using Outer1::Alu check stringConcat(s1:this.binaryRepr(), s2:that.toS().binaryRepr()) error void)
 method 
 Outer1::Bool #bangequal(Outer1::S that) this.#equalequal(that:that).#bang()
 method 
@@ -297,7 +297,22 @@ Outer1::S doubleQuote() Outer1::S.#stringParser(that:{'@stringU
 '0
 }))
 method 
-Outer1::S replace(Outer1::S that, Outer1::S into) Outer1::S.#stringParser(that:using Outer1::Alu check stringReplace(that:this.binaryRepr(), src:that.binaryRepr(), dest:into.binaryRepr()) error void)}
+Outer1::S replace(Outer1::S that, Outer1::S into) Outer1::S.#stringParser(that:using Outer1::Alu check stringReplace(that:this.binaryRepr(), src:that.binaryRepr(), dest:into.binaryRepr()) error void)
+method 
+Outer0::SConcat #begin() Outer0::SConcat.#apply(accumulator:this)
+SConcat:{
+type method 
+Outer0 #apply(Outer2::S^accumulator) 
+mut method 
+Outer2::S #accumulator() 
+read method 
+Outer2::S accumulator() 
+method 
+Outer1::SConcat #add(Outer1::ToS that) Outer1::SConcat.#apply(accumulator:this.accumulator().#plusplus(that:that.toS()))
+method 
+Outer1::SConcat #end() this
+method 
+Outer2::S #stringParser(Library that) this.accumulator().#plusplus(that:Outer2::S.#stringParser(that:that))}}
 URL:{<:Outer1::S::ToS
 type method '  toPutAs private
 Outer0 _private(Library^_binaryRepr) 
@@ -1070,9 +1085,11 @@ Outer1::Path #plusplus(Outer1::Path that) (
         return this
         )
       )
-    Void unused2=return Outer1::Path.#stringParser(that:this.toS().#plusplus(that:Outer1::S.#stringParser(that:{'@stringU
+    Void unused2=return Outer1::Path.#stringParser(that:this.toS().#begin().#add(that:Outer1::S.#stringParser(that:{'@stringU
     '::
-    }).#plusplus(that:that.toS())).binaryRepr())
+    })).#add(that:that).#end().#stringParser(that:{'@stringU
+    '
+    }).binaryRepr())
     void
     )
   catch return result (
@@ -1257,9 +1274,9 @@ type method
 Outer0 #apply(Outer2::S that) Outer0.#apply(reason:that)
 method toS() Outer2::S.#stringParser(that:{'@stringU
 'ObservedBug[
-}).#plusplus(that:this.reason().#plusplus(that:Outer2::S.#stringParser(that:{'@stringU
+}).#begin().#add(that:this.reason()).#end().#stringParser(that:{'@stringU
 ']
-})))}
+})}
 Misuse:'If this happens, then the library client is calling a function with wrong parameters or in a wrong way.
 'It is a shorter name for Precondition Violation
 'If the violation is because the "this" parameter is not suitable to perform the requested operation,
@@ -1281,9 +1298,9 @@ type method
 Outer0 #apply(Outer2::S that) Outer0.#apply(reason:that)
 method toS() Outer2::S.#stringParser(that:{'@stringU
 'Misuse[
-}).#plusplus(that:this.reason().#plusplus(that:Outer2::S.#stringParser(that:{'@stringU
+}).#begin().#add(that:this.reason()).#end().#stringParser(that:{'@stringU
 ']
-})))}
+})}
 UnsupportedOperation:'to report that a target do not support a certain selector.
 'to be used when a class have a method available only on certain instances.
 'For example, getting the element out of an optional type that is not present.
@@ -1304,9 +1321,9 @@ type method
 Outer0 #apply(Outer2::S that) Outer0.#apply(reason:that)
 method toS() Outer2::S.#stringParser(that:{'@stringU
 'UnsupportedOperation[
-}).#plusplus(that:this.reason().#plusplus(that:Outer2::S.#stringParser(that:{'@stringU
+}).#begin().#add(that:this.reason()).#end().#stringParser(that:{'@stringU
 ']
-})))}
+})}
 PluginFailure:'to report the inability of a plugin to act
 {<:Outer2::S::ToS
 type method 
@@ -1325,9 +1342,9 @@ type method
 Outer0 #apply(Outer2::S that) Outer0.#apply(reason:that)
 method toS() Outer2::S.#stringParser(that:{'@stringU
 'PluginFailure[
-}).#plusplus(that:this.reason().#plusplus(that:Outer2::S.#stringParser(that:{'@stringU
+}).#begin().#add(that:this.reason()).#end().#stringParser(that:{'@stringU
 ']
-})))}
+})}
 CodeNotReachable:{<:Outer2::S::ToS
 type method 
 Outer0 #apply(Outer2::S^reason) 
@@ -1345,9 +1362,9 @@ type method
 Outer0 #apply(Outer2::S that) Outer0.#apply(reason:that)
 method toS() Outer2::S.#stringParser(that:{'@stringU
 'CodeNotReachable[
-}).#plusplus(that:this.reason().#plusplus(that:Outer2::S.#stringParser(that:{'@stringU
+}).#begin().#add(that:this.reason()).#end().#stringParser(that:{'@stringU
 ']
-})))}
+})}
 NotImplementedYet:{<:Outer2::S::ToS
 type method 
 Outer0 #apply(Outer2::S^reason) 
@@ -1365,9 +1382,9 @@ type method
 Outer0 #apply(Outer2::S that) Outer0.#apply(reason:that)
 method toS() Outer2::S.#stringParser(that:{'@stringU
 'CodeNotReachable[
-}).#plusplus(that:this.reason().#plusplus(that:Outer2::S.#stringParser(that:{'@stringU
+}).#begin().#add(that:this.reason()).#end().#stringParser(that:{'@stringU
 ']
-})))}
+})}
 SourceUnfit:{<:Outer2::Report, Outer2::S::ToS
 type method 'TODO: here, when typechecking introspection, for bug introspection can not see itself back. fix tomorrow.
 Outer0 #apply(Outer2::Introspection::Record^report) 
@@ -1438,7 +1455,9 @@ read method
 Outer2::Report report() 
 method toS() Outer2::S.#stringParser(that:{'@stringU
 'NSBMissing 
-}).#plusplus(that:this.report())}}
+}).#begin().#add(that:this.report()).#end().#stringParser(that:{'@stringU
+'
+})}}
 Introspection:{'findMeIntrospection
 
 type method 
@@ -1711,7 +1730,9 @@ Outer1::Member dispatch(Outer1::NestedClass^root, Outer2::Path path, Outer1::Mir
                               catch exception unused8 (
                                 on Void error Outer2::Report::ObservedBug.#apply(that:Outer2::S.#stringParser(that:{'@stringU
                                 'invalid member kind 
-                                }).#plusplus(that:x))
+                                }).#begin().#add(that:x).#end().#stringParser(that:{'@stringU
+                                '
+                                }))
                                 )
                               return Outer0::RootForNested.#apply(path:path, mirror:mirror, _report:_report)
                               )
@@ -2107,9 +2128,9 @@ read method
 Outer1::Record report() 
 method toS() Outer2::S.#stringParser(that:{'@stringU
 'Method[
-}).#plusplus(that:this.allAsString().#plusplus(that:Outer2::S.#stringParser(that:{'@stringU
+}).#begin().#add(that:this.allAsString()).#end().#stringParser(that:{'@stringU
 ']
-})))
+})
 method 
 Outer2::Doc doc() this.report().docOf(path:Outer2::Path.#stringParser(that:{'@stringU
 'Doc
@@ -2592,9 +2613,9 @@ read method
 Outer1::Record report() 
 method toS() Outer2::S.#stringParser(that:{'@stringU
 'NestedClass[
-}).#plusplus(that:this.allAsString().#plusplus(that:Outer2::S.#stringParser(that:{'@stringU
+}).#begin().#add(that:this.allAsString()).#end().#stringParser(that:{'@stringU
 ']
-})))
+})
 method 'empty for Outer0
 Outer2::Doc nestedDoc() (
   Void unused=(
@@ -2635,7 +2656,9 @@ type Any externalType() (
           )
         error Outer2::Report::UnsupportedOperation.#apply(that:Outer2::S.#stringParser(that:{'@stringU
         'NestedClass.externalType() The NestedClass Object refers to 
-        }).#plusplus(that:this.path()))
+        }).#begin().#add(that:this.path()).#end().#stringParser(that:{'@stringU
+        '
+        }))
         )
       )
     Void unused1=(
@@ -3236,9 +3259,9 @@ read method
 Outer1::Record report() 
 method toS() Outer2::S.#stringParser(that:{'@stringU
 'Type[
-}).#plusplus(that:this.allAsString().#plusplus(that:Outer2::S.#stringParser(that:{'@stringU
+}).#begin().#add(that:this.allAsString()).#end().#stringParser(that:{'@stringU
 ']
-})))
+})
 method 
 Outer2::S allAsString() this.report().#stringParser(that:{'@stringU
 'AllAsString
@@ -4166,13 +4189,19 @@ Library accumulate(Library l1, Library l2) exception Outer1::Report::ClassClash,
         Outer1::Selector nameRight=ms.top().selector()
         Void unused2=Outer1::Debug.#apply(that:Outer1::S.#stringParser(that:{'@stringU
         'name is: 
-        }).#plusplus(that:name))
+        }).#begin().#add(that:name).#end().#stringParser(that:{'@stringU
+        '
+        }))
         Void unused3=Outer1::Debug.#apply(that:Outer1::S.#stringParser(that:{'@stringU
         'nameLeft is: 
-        }).#plusplus(that:nameLeft))
+        }).#begin().#add(that:nameLeft).#end().#stringParser(that:{'@stringU
+        '
+        }))
         Void unused4=Outer1::Debug.#apply(that:Outer1::S.#stringParser(that:{'@stringU
         'nameRight is: 
-        }).#plusplus(that:nameRight))
+        }).#begin().#add(that:nameRight).#end().#stringParser(that:{'@stringU
+        '
+        }))
         error Outer1::Report::NotImplementedYet.#stringParser(that:{'@stringU
         'DO ADAPTER
         })

@@ -1,4 +1,4 @@
 {(NestedClass root,Path path, N memberN, N typeN,Record report)<:S::ToS
-method toS() S"Type["++this.allAsString()++S"]"
+method toS() S"Type["[this.allAsString()]"]"
 method S allAsString() this.report()"AllAsString"  'just the library literal
 }
