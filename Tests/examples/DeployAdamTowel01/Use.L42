@@ -18,7 +18,7 @@
     i=Introspection(lib:i)
     var acc=that
     with lib in myLibs().vals() (
-      libi=this.renameSupers(lib, intro:i) 
+      libi=this.renameSupers(lib, intro:i,path:Path"Outer0") 
       acc:=IntrospectionPlugin.sumLib(l1:acc,l2:libi)
       )
     with lib in myLibs().vals() (
@@ -28,14 +28,13 @@
     }
 
   method '  toPutAs private
-  Library renameSupers(Library that,Introspection(lib) intro) exception Report::ClassClash, Report::MethodClash {
-    return SafeOperators.compose(left:left,right:right)
-    catch error err (on Library (
-      report=Introspection::Record(lib:err) 'Introspection(lib:err).report()
-      with x=report"Kind" (
-        case x== S"ClassClash"  (exception Report::ClassClash(report:report))
-        case x== S"MethodClash"  (exception Report::MethodClash(report:report))
-        default error err)))
+  Library renameSupers(Library that,Introspection(lib) intro, Path path)
+  exception Report::ClassClash, Report::MethodClash {
+    thatI=Introspection(lib:that, path:path)
+    catch exception Report::
+    'for all the methods of intro, if method in that, rename method in that.
+    with 
+    'for all the nesteds in intro, if method in that.nested, rename method
     }
   method
   Library accumulate(Library l1,Library l2) exception Report::ClassClash,Report::MethodClash{

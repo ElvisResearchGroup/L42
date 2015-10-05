@@ -34,7 +34,7 @@ Type returnType() {
     memberN:this.memberN(),
     typeN:0N)
   catch exception x (
-    on Report::TargetUnavailable error Report::CodeNotReachable()
+    on Report::MemberUnavailable error Report::CodeNotReachable()
     on Void error Report::CodeNotReachable()
     )
   }
@@ -56,7 +56,7 @@ Types parameterTypes() {
     pN+=1N
     )
   return result
-  catch exception err (on Report::TargetUnavailable error err)
+  catch exception err (on Report::MemberUnavailable error err)
   }
 }
 

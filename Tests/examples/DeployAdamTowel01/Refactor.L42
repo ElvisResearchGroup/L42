@@ -12,12 +12,12 @@
     }
   Redirect:Squares<<{#add(Path that, type Any to)
     method
-    Library << (Library that)exception Report::TargetUnavailable,Report::InvalidOnTopLevel,Report::SourceUnfit,Report::MethodClash{
+    Library << (Library that)exception Report::MemberUnavailable,Report::InvalidOnTopLevel,Report::SourceUnfit,Report::MethodClash{
       return SafeOperators.redirect(that,src:this.that(),dest:this.to())
       catch error err (on Library (
         report=Introspection(lib:err).report()
         with x=report"Kind" (
-          case x== S"TargetUnavailable"  (exception Report::TargetUnavailable(report:report))
+          case x== S"MemberUnavailable"  (exception Report::MemberUnavailable(report:report))
           case x== S"InvalidOnTopLevel"  (exception Report::InvalidOnTopLevel(report:report))
           case x== S"MethodClash"  (exception Report::MethodClash(report:report))
           case x== S"SourceUnfit"  (exception Report::SourceUnfit(report:report))
@@ -26,24 +26,24 @@
     }
   RenameSelector:Squares<<{#add(Selector that, Path of, Selector to)
     method
-    Library << (Library that)exception Report::TargetUnavailable,Report::MethodClash{
+    Library << (Library that)exception Report::MemberUnavailable,Report::MethodClash{
       return SafeOperators.renameMethod(that,path:this.of() src:this.that(),dest:this.to())
       catch error err (on Library (
         report=Introspection(lib:err).report()
         with x=report"Kind" (
-          case x== S"TargetUnavailable"  (exception Report::TargetUnavailable(report:report))
+          case x== S"MemberUnavailable"  (exception Report::MemberUnavailable(report:report))
           case x== S"MethodClash"  (exception Report::MethodClash(report:report))
           default error err)))
       }
     }
   RenamePath:Squares<<{#add(Path that, Path to)
     method
-    Library << (Library that)exception Report::TargetUnavailable,Report::MethodClash,Report::ClassClash{
+    Library << (Library that)exception Report::MemberUnavailable,Report::MethodClash,Report::ClassClash{
       return SafeOperators.renameClass(that,src:this.that(),dest:this.to())
       catch error err (on Library (
         report=Introspection(lib:err).report()
         with x=report"Kind" (
-          case x== S"TargetUnavailable"  (exception Report::TargetUnavailable(report:report))
+          case x== S"MemberUnavailable"  (exception Report::MemberUnavailable(report:report))
           case x== S"MethodClash"  (exception Report::MethodClash(report:report))
           case x== S"ClassClash"  (exception Report::ClassClash(report:report))
           default error err)))
@@ -51,69 +51,69 @@
     }
   RemoveImplementationSelector:Squares<<{#add(Selector that, Path of)
     method
-    Library << (Library that)exception Report::TargetUnavailable{
+    Library << (Library that)exception Report::MemberUnavailable{
       return SafeOperators.removeImplementation(that,path:this.of(),selector:this.that())
       catch error err (on Library (
         report=Introspection(lib:err).report()
         with x=report"Kind" (
-          case x== S"TargetUnavailable"  (exception Report::TargetUnavailable(report:report))
+          case x== S"MemberUnavailable"  (exception Report::MemberUnavailable(report:report))
           default error err)))
       }
     }
   RemoveImplementationPath:Squares<<{#add(Path that)
     method
-    Library << (Library that)exception Report::TargetUnavailable,Report::PrivacyCoupuled{
+    Library << (Library that)exception Report::MemberUnavailable,Report::PrivacyCoupuled{
       return SafeOperators.removeImplementation(that,path:this.that())
       catch error err (on Library (
         report=Introspection(lib:err).report()
         with x=report"Kind" (
-          case x== S"TargetUnavailable"  (exception Report::TargetUnavailable(report:report))
+          case x== S"MemberUnavailable"  (exception Report::MemberUnavailable(report:report))
           case x== S"PrivacyCoupuled"  (exception Report::PrivacyCoupuled(report:report))
           default error err)))
       }
     }
   AddDocumentationSelector:Squares<<{#add(Selector that, Path of,Doc doc)
     method
-    Library << (Library that)exception Report::TargetUnavailable{
+    Library << (Library that)exception Report::MemberUnavailable{
       return SafeOperators.addDocumentation(that,path:this.of() selector:this.that(),doc:this.doc())
       catch error err (on Library (
         report=Introspection(lib:err).report()
         with x=report"Kind" (
-          case x== S"TargetUnavailable"  (exception Report::TargetUnavailable(report:report))
+          case x== S"MemberUnavailable"  (exception Report::MemberUnavailable(report:report))
           default error err)))
       }
     }
   AddDocumentationPath:Squares<<{#add(Path that,Doc doc)
     method
-    Library << (Library that)exception Report::TargetUnavailable,Report::InvalidOnTopLevel{
+    Library << (Library that)exception Report::MemberUnavailable,Report::InvalidOnTopLevel{
       return SafeOperators.addDocumentation(that,path:this.that(),doc:this.doc())
       catch error err (on Library (
         report=Introspection(lib:err).report()
         with x=report"Kind" (
-          case x== S"TargetUnavailable"  (exception Report::TargetUnavailable(report:report))
+          case x== S"MemberUnavailable"  (exception Report::MemberUnavailable(report:report))
           case x== S"InvalidOnTopLevel"  (exception Report::InvalidOnTopLevel(report:report))
           default error err)))
       }
     }
   MakePrivatePath:Squares<<{#add(Path that)
     method
-    Library << (Library that)exception Report::TargetUnavailable,Report::InvalidOnTopLevel
+    Library << (Library that)exception Report::MemberUnavailable,Report::InvalidOnTopLevel
       AddDocumentationPath[this.that(),doc:Doc.#stringParser({'@private
         })]<<that'string parser works, but we can not use the sugar, that would add @stringU
     }
   MakePrivateSelector:Squares<<{#add(Selector that, Path of,)
     method
-    Library << (Library that)exception Report::TargetUnavailable,Report::InvalidOnTopLevel
+    Library << (Library that)exception Report::MemberUnavailable,Report::InvalidOnTopLevel
       AddDocumentationSelector[this.that() of:this.of() doc:Doc.#stringParser({'@private
         })]<<that
     }
   ExposeAsLibrary:Squares<<{#add(Path that)
     method
-    Library << (Library that)exception Report::TargetUnavailable,Report::PrivacyCoupuled,Report::NSBMissing {
+    Library << (Library that)exception Report::MemberUnavailable,Report::PrivacyCoupuled,Report::NSBMissing {
       if this.that()==Path"Outer0" (return that)
-      this.checkTargetExists(that)'throws TargetUnavailable
+      this.checkTargetExists(that)'throws MemberUnavailable
       var res=that
-      res:=RenamePath[Path"Outer0" to:Path"PrImpl"]<<res'TargetUnavailable,MethodClash,ClassClash can not happen on Outer0
+      res:=RenamePath[Path"Outer0" to:Path"PrImpl"]<<res'MemberUnavailable,MethodClash,ClassClash can not happen on Outer0
       catch exception (on Report error Report::CodeNotReachable())
       res:=RenamePath[Path"PrImpl::N" to:Path"BNS::N"]<<res
       res:=RenamePath[Path"PrImpl::S" to:Path"BNS::S"]<<res'fails here
@@ -121,7 +121,7 @@
       res:=RenamePath[Path"PrImpl::Debug" to:Path"BNS::Debug"]<<res
       catch exception r (on Report exception Report::NSBMissing(report:r))
       res:=RemoveImplementationPath[Path"BNS"]<<res'leak PrivacyCoupuled
-      catch exception (on Report::TargetUnavailable error Report::CodeNotReachable())
+      catch exception (on Report::MemberUnavailable error Report::CodeNotReachable())
       res:=RenamePath[Path"PrImpl"++this.that() to:Path"Outer0"]<<res
       res:=RenamePath[Path"BNS" to:Path"Outer0"]<<res
       res:=MakePrivatePath[Path"PrImpl"]<<res
@@ -129,7 +129,7 @@
       return res
       }
     method
-    Void checkTargetExists(Library that) exception Report::TargetUnavailable (
+    Void checkTargetExists(Library that) exception Report::MemberUnavailable (
       unused=AddDocumentationPath[this.that() doc:Doc"JustToSeeIfItIsThere"]<<that
       catch exception x (
         on Report::InvalidOnTopLevel error Report::CodeNotReachable() 'TODO: if you omit Report:: the error reporting is horrible

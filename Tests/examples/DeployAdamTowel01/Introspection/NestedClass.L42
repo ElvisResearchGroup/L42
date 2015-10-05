@@ -33,7 +33,7 @@ Members members() (
       .introspectReportMember(root:this,path:this.path(),memberN:mN))
     mN+=1N
     )
-  catch exception x (on Report::TargetUnavailable error Report::CodeNotReachable())
+  catch exception x (on Report::MemberUnavailable error Report::CodeNotReachable())
   result)
 
 method
@@ -52,12 +52,12 @@ method Types implementedInterfaces() (
       .introspectReportType(root:this,path:this.path(),memberN:0N,typeN:tN))
     tN-=1N
     )
-  catch exception x (on Report::TargetUnavailable error Report::CodeNotReachable())
+  catch exception x (on Report::MemberUnavailable error Report::CodeNotReachable())
   result)
 
 method Method constructor()  error Report::NotImplementedYet()
-method Method methodFromSelector(Selector that) exception Report::TargetUnavailable  error Report::NotImplementedYet()
-method NestedClass nestedClassFromRoot(Path that) exception Report::TargetUnavailable
+method Method methodFromSelector(Selector that) exception Report::MemberUnavailable  error Report::NotImplementedYet()
+method NestedClass nestedClassFromRoot(Path that) exception Report::MemberUnavailable
   this.mirror().introspectReport(root:this.root(),path:that)
 
 

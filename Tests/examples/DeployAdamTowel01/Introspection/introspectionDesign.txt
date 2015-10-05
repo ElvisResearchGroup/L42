@@ -1,6 +1,6 @@
 Introspection:{
   type method NestedClass (Library lib)
-  type method NestedClass (Library lib,Path path) exception TargetUnavailable
+  type method NestedClass (Library lib,Path path) exception MemberUnavailable
   type method NestedClass (type Any cls)
 
   Member:{interface}
@@ -18,8 +18,8 @@ Introspection:{
     method NestedClasses nestedClasses()
     method Types implementedInterfaces()
     method Method constructor()
-    method Method method(Selector that) exception TargetUnavailable
-    method NestedClass nestedClassFromRoot(Path that) exception TargetUnavailable
+    method Method method(Selector that) exception MemberUnavailable
+    method NestedClass nestedClassFromRoot(Path that) exception MemberUnavailable
     }
 
   Method:{<:Member

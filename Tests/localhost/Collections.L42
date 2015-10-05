@@ -1047,7 +1047,7 @@ Outer2::Introspection::Record report()
 method toS() Outer3::S.#stringParser(that:{'@stringU
 'InvalidOnTopLevel
 })}
-TargetUnavailable:{<:Outer1, Outer3::S::ToS
+MemberUnavailable:{<:Outer1, Outer3::S::ToS
 type method 
 Outer0 #apply(Outer2::Introspection::Record^report) 
 mut method 
@@ -1055,7 +1055,7 @@ Outer2::Introspection::Record #report()
 read method 
 Outer2::Introspection::Record report() 
 method toS() Outer3::S.#stringParser(that:{'@stringU
-'TargetUnavailable
+'MemberUnavailable
 })}
 SourceUnfit:{<:Outer1, Outer3::S::ToS
 type method 'TODO: here, when typechecking introspection, for bug introspection can not see itself back. fix tomorrow.
@@ -1286,7 +1286,7 @@ Outer2::Path #to()
 read method 
 Outer2::Path to() 
 method 
-Library #leftleft(Library that) exception Outer2::Report::TargetUnavailable, Outer2::Report::MethodClash, Outer2::Report::ClassClash (
+Library #leftleft(Library that) exception Outer2::Report::MemberUnavailable, Outer2::Report::MethodClash, Outer2::Report::ClassClash (
   Void unused=(
     Void unused0=return Outer2::SafeOperators.renameClass(that:that, src:this.that(), dest:this.to())
     catch error err (
@@ -1298,7 +1298,7 @@ Library #leftleft(Library that) exception Outer2::Report::TargetUnavailable, Out
           })
           (
             Outer2::Introspection::#apply(lib ) ::report() ::#stringParser(that ) ::#equalequal(that ) cond=x.#equalequal(that:Outer3::S.#stringParser(that:{'@stringU
-            'TargetUnavailable
+            'MemberUnavailable
             }))
             (
               Void unused1=cond.#checkTrue()
@@ -1327,7 +1327,7 @@ Library #leftleft(Library that) exception Outer2::Report::TargetUnavailable, Out
                     )
                   )
                 )
-              exception Outer2::Report::TargetUnavailable.#apply(report:report)
+              exception Outer2::Report::MemberUnavailable.#apply(report:report)
               )
             )
           )
@@ -1358,7 +1358,7 @@ type Any #to()
 read method 
 type Any to() 
 method 
-Library #leftleft(Library that) exception Outer2::Report::TargetUnavailable, Outer2::Report::InvalidOnTopLevel, Outer2::Report::SourceUnfit, Outer2::Report::MethodClash (
+Library #leftleft(Library that) exception Outer2::Report::MemberUnavailable, Outer2::Report::InvalidOnTopLevel, Outer2::Report::SourceUnfit, Outer2::Report::MethodClash (
   Void unused=(
     Void unused0=return Outer2::SafeOperators.redirect(that:that, src:this.that(), dest:this.to())
     catch error err (
@@ -1370,7 +1370,7 @@ Library #leftleft(Library that) exception Outer2::Report::TargetUnavailable, Out
           })
           (
             Outer2::Introspection::#apply(lib ) ::report() ::#stringParser(that ) ::#equalequal(that ) cond=x.#equalequal(that:Outer3::S.#stringParser(that:{'@stringU
-            'TargetUnavailable
+            'MemberUnavailable
             }))
             (
               Void unused1=cond.#checkTrue()
@@ -1410,7 +1410,7 @@ Library #leftleft(Library that) exception Outer2::Report::TargetUnavailable, Out
                     )
                   )
                 )
-              exception Outer2::Report::TargetUnavailable.#apply(report:report)
+              exception Outer2::Report::MemberUnavailable.#apply(report:report)
               )
             )
           )
@@ -1440,12 +1440,12 @@ Outer0::NestedClass #apply(Library lib) (
   'Outer0
   }))
   catch exception x (
-    on Outer1::Report::TargetUnavailable error Outer1::Report::CodeNotReachable.#apply()
+    on Outer1::Report::MemberUnavailable error Outer1::Report::CodeNotReachable.#apply()
     )
   root
   )
 type method 
-Outer0::NestedClass #apply(Library lib, Outer1::Path path) exception Outer1::Report::TargetUnavailable Outer0.#apply(lib:lib).nestedClassFromRoot(that:path)
+Outer0::NestedClass #apply(Library lib, Outer1::Path path) exception Outer1::Report::MemberUnavailable Outer0.#apply(lib:lib).nestedClassFromRoot(that:path)
 Record:{
 type method 
 Outer0 #apply(Outer1::MirrorPr^that) 
@@ -1487,7 +1487,7 @@ Outer3::S #stringParser(Library that) (
     Outer2::Path::#stringParser(that ) path=Outer2::Path.#stringParser(that:that)
     Void unused0=return this.that().introspectDocAsString(path:path)
     catch exception x (
-      on Outer2::Report::TargetUnavailable error x
+      on Outer2::Report::MemberUnavailable error x
       )
     void
     )
@@ -1787,7 +1787,7 @@ Outer1::Members members() (
     void
     )
   catch exception x (
-    on Outer2::Report::TargetUnavailable error Outer2::Report::CodeNotReachable.#apply()
+    on Outer2::Report::MemberUnavailable error Outer2::Report::CodeNotReachable.#apply()
     )
   varresult.#inner()
   )
@@ -1954,16 +1954,16 @@ Outer1::Types implementedInterfaces() (
     void
     )
   catch exception x (
-    on Outer2::Report::TargetUnavailable error Outer2::Report::CodeNotReachable.#apply()
+    on Outer2::Report::MemberUnavailable error Outer2::Report::CodeNotReachable.#apply()
     )
   varresult.#inner()
   )
 method 
 Outer1::Method constructor() error Outer2::Report::NotImplementedYet.#apply()
 method 
-Outer1::Method methodFromSelector(Outer2::Selector that) exception Outer2::Report::TargetUnavailable error Outer2::Report::NotImplementedYet.#apply()
+Outer1::Method methodFromSelector(Outer2::Selector that) exception Outer2::Report::MemberUnavailable error Outer2::Report::NotImplementedYet.#apply()
 method 
-Outer0 nestedClassFromRoot(Outer2::Path that) exception Outer2::Report::TargetUnavailable this.mirror().introspectReport(root:this.root(), path:that)
+Outer0 nestedClassFromRoot(Outer2::Path that) exception Outer2::Report::MemberUnavailable this.mirror().introspectReport(root:this.root(), path:that)
 Varresult1__14_1:'@private
 {
 type method 
@@ -2025,21 +2025,21 @@ method introspectReport(root path ) (
   'SafeOperators.introspectReport
   }))))
   catch error x (
-    on Library exception Outer3::Report::TargetUnavailable.#apply(report:Outer2::Record.#apply(lib:x))
+    on Library exception Outer3::Report::MemberUnavailable.#apply(report:Outer2::Record.#apply(lib:x))
     )
   result
   )
 method introspectReportMember(root path memberN ) (
   Outer2::Record::dispatch(root path mirror memberN report ) result=Outer2::Record.dispatch(root:root, path:path, mirror:this, memberN:memberN, report:using Outer3::SafeOperators check introspectLibraryReportMember(that:this.lib(), path:path.binaryRepr(), memberN:memberN.binaryRepr()) exception void)
   catch error x (
-    on Library exception Outer3::Report::TargetUnavailable.#apply(report:Outer2::Record.#apply(lib:x))
+    on Library exception Outer3::Report::MemberUnavailable.#apply(report:Outer2::Record.#apply(lib:x))
     )
   result
   )
 method introspectReportType(root path memberN typeN ) (
   Outer2::Type::#apply(root path memberN typeN report ) result=Outer2::Type.#apply(root:root, path:path, memberN:memberN, typeN:typeN, report:Outer2::Record.#apply(that:Outer0.#apply(lib:using Outer3::SafeOperators check introspectLibraryReportType(that:this.lib(), path:path.binaryRepr(), memberN:memberN.binaryRepr(), typeN:typeN.binaryRepr()) exception void)))
   catch error x (
-    on Library exception Outer3::Report::TargetUnavailable.#apply(report:Outer2::Record.#apply(lib:x))
+    on Library exception Outer3::Report::MemberUnavailable.#apply(report:Outer2::Record.#apply(lib:x))
     )
   result
   )
@@ -2048,7 +2048,7 @@ method introspectDocAsString(path annotationN ) (
   '1
   }).#plus(that:annotationN).binaryRepr()) exception void)
   catch error x (
-    on Library exception Outer3::Report::TargetUnavailable.#apply(report:Outer2::Record.#apply(lib:x))
+    on Library exception Outer3::Report::MemberUnavailable.#apply(report:Outer2::Record.#apply(lib:x))
     )
   result
   )
@@ -2059,7 +2059,7 @@ method introspectDocAsString(path ) (
   'SafeOperators.introspectLibraryDocAsString
   }))
   catch error x (
-    on Library exception Outer3::Report::TargetUnavailable.#apply(report:Outer2::Record.#apply(lib:x))
+    on Library exception Outer3::Report::MemberUnavailable.#apply(report:Outer2::Record.#apply(lib:x))
     )
   result
   )
@@ -2068,22 +2068,22 @@ method introspectDocPath(path annotationN ) (
   'SafeOperators.introspectLibraryDocPath
   })
   catch error x (
-    on Library exception Outer3::Report::TargetUnavailable.#apply(report:Outer2::Record.#apply(lib:x))
+    on Library exception Outer3::Report::MemberUnavailable.#apply(report:Outer2::Record.#apply(lib:x))
     )
   result
   )}
 method 
-Outer1::NestedClass introspectReport(Outer1::NestedClass^root, Outer2::Path path) exception Outer2::Report::TargetUnavailable 
+Outer1::NestedClass introspectReport(Outer1::NestedClass^root, Outer2::Path path) exception Outer2::Report::MemberUnavailable 
 method 
-Outer1::Member introspectReportMember(Outer1::NestedClass^root, Outer2::Path path, Outer3::N memberN) exception Outer2::Report::TargetUnavailable, Void 
+Outer1::Member introspectReportMember(Outer1::NestedClass^root, Outer2::Path path, Outer3::N memberN) exception Outer2::Report::MemberUnavailable, Void 
 method 
-Outer1::Type introspectReportType(Outer1::NestedClass^root, Outer2::Path path, Outer3::N memberN, Outer3::N typeN) exception Outer2::Report::TargetUnavailable, Void 
+Outer1::Type introspectReportType(Outer1::NestedClass^root, Outer2::Path path, Outer3::N memberN, Outer3::N typeN) exception Outer2::Report::MemberUnavailable, Void 
 method 
-Outer3::S introspectDocAsString(Outer2::Path path) exception Outer2::Report::TargetUnavailable 
+Outer3::S introspectDocAsString(Outer2::Path path) exception Outer2::Report::MemberUnavailable 
 method 
-Outer3::S introspectDocAsString(Outer2::Path path, Outer3::N annotationN) exception Outer2::Report::TargetUnavailable, Void 
+Outer3::S introspectDocAsString(Outer2::Path path, Outer3::N annotationN) exception Outer2::Report::MemberUnavailable, Void 
 method 
-type Any introspectDocPath(Outer2::Path path, Outer3::N annotationN) exception Outer2::Report::TargetUnavailable, Void 
+type Any introspectDocPath(Outer2::Path path, Outer3::N annotationN) exception Outer2::Report::MemberUnavailable, Void 
 Class:{<:Outer1
 type method 
 Outer0 #apply(type Any^lib) 
@@ -3499,7 +3499,7 @@ Outer1::Type returnType() (
     '0
     }))
     catch exception x (
-      on Outer2::Report::TargetUnavailable error Outer2::Report::CodeNotReachable.#apply()
+      on Outer2::Report::MemberUnavailable error Outer2::Report::CodeNotReachable.#apply()
       
       on Void error Outer2::Report::CodeNotReachable.#apply()
       )
@@ -3542,7 +3542,7 @@ Outer1::Types parameterTypes() (
       )
     Void unused1=return varresult.#inner()
     catch exception err (
-      on Outer2::Report::TargetUnavailable error err
+      on Outer2::Report::MemberUnavailable error err
       )
     void
     )

@@ -3,11 +3,11 @@
 type method
 NestedClass(Library lib)(
   root=MirrorPr::Lib(lib:lib).introspectReport(root:root,path:Path"Outer0")
-  catch exception x (on Report::TargetUnavailable error Report::CodeNotReachable())
+  catch exception x (on Report::MemberUnavailable error Report::CodeNotReachable())
   root
   )
 type method
-NestedClass(Library lib,Path path) exception Report::TargetUnavailable
+NestedClass(Library lib,Path path) exception Report::MemberUnavailable
   Outer0(lib:lib).nestedClassFromRoot(path)
 
 'type method
@@ -31,7 +31,7 @@ Record:
   method S #stringParser(Library that) {
     path=Path.#stringParser(that)
     return this.that().introspectDocAsString(path:path)
-    catch exception x (on Report::TargetUnavailable error x )
+    catch exception x (on Report::MemberUnavailable error x )
     }
   method
   Doc docOf(Path path){

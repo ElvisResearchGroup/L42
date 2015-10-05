@@ -1,16 +1,16 @@
 {interface
   method
-  NestedClass introspectReport(NestedClass^ root,Path path) exception Report::TargetUnavailable
+  NestedClass introspectReport(NestedClass^ root,Path path) exception Report::MemberUnavailable
   method
-  Member introspectReportMember(NestedClass^ root,Path path, N memberN) exception Report::TargetUnavailable,Void
+  Member introspectReportMember(NestedClass^ root,Path path, N memberN) exception Report::MemberUnavailable,Void
   method
-  Type introspectReportType(NestedClass^ root,Path path, N memberN, N typeN) exception Report::TargetUnavailable,Void
+  Type introspectReportType(NestedClass^ root,Path path, N memberN, N typeN) exception Report::MemberUnavailable,Void
   method
-  S introspectDocAsString(Path path) exception Report::TargetUnavailable
+  S introspectDocAsString(Path path) exception Report::MemberUnavailable
   method
-  S introspectDocAsString(Path path, N annotationN) exception Report::TargetUnavailable,Void
+  S introspectDocAsString(Path path, N annotationN) exception Report::MemberUnavailable,Void
   method
-  type Any introspectDocPath(Path path, N annotationN) exception Report::TargetUnavailable,Void
+  type Any introspectDocPath(Path path, N annotationN) exception Report::MemberUnavailable,Void
 
   Lib:{(Library lib)<:Outer1
     method
@@ -19,7 +19,7 @@
         using SafeOperators
           check introspectLibraryReport(this.lib(), path:path.binaryRepr())
           error Report::PluginFailure"SafeOperators.introspectReport")))
-      catch error x (on Library exception Report::TargetUnavailable(report:Record(lib:x)))
+      catch error x (on Library exception Report::MemberUnavailable(report:Record(lib:x)))
       result)
 
     method
@@ -28,7 +28,7 @@
         using SafeOperators
           check introspectLibraryReportMember(this.lib(), path:path.binaryRepr(),memberN:memberN.binaryRepr())
           exception void)
-      catch error x (on Library exception Report::TargetUnavailable(report:Record(lib:x)))
+      catch error x (on Library exception Report::MemberUnavailable(report:Record(lib:x)))
       result)
 
     method
@@ -40,7 +40,7 @@
             memberN:memberN.binaryRepr()
             typeN:typeN.binaryRepr())
           exception void)))
-      catch error x (on Library exception Report::TargetUnavailable(report:Record(lib:x)))
+      catch error x (on Library exception Report::MemberUnavailable(report:Record(lib:x)))
       result)
 
     method
@@ -48,7 +48,7 @@
       result=S.#stringParser(using SafeOperators
         check introspectLibraryDocAsString(this.lib(), path:path.binaryRepr(),annotationN:(1N+annotationN).binaryRepr())
         exception void)
-      catch error x (on Library exception Report::TargetUnavailable(report:Record(lib:x)))
+      catch error x (on Library exception Report::MemberUnavailable(report:Record(lib:x)))
       result)
 
     method
@@ -56,7 +56,7 @@
       result=S.#stringParser(using SafeOperators
         check introspectLibraryDocAsString(this.lib(), path:path.binaryRepr(),annotationN:0N.binaryRepr())
         error Report::PluginFailure"SafeOperators.introspectLibraryDocAsString")
-      catch error x (on Library exception Report::TargetUnavailable(report:Record(lib:x)))
+      catch error x (on Library exception Report::MemberUnavailable(report:Record(lib:x)))
       result)
 
     method
@@ -64,7 +64,7 @@
       type Any result=using SafeOperators
         check introspectLibraryDocPath(this.lib(), path:path.binaryRepr(),annotationN:annotationN.binaryRepr())
         error Report::PluginFailure"SafeOperators.introspectLibraryDocPath"
-      catch error x (on Library exception Report::TargetUnavailable(report:Record(lib:x)))
+      catch error x (on Library exception Report::MemberUnavailable(report:Record(lib:x)))
       result)
     }
 
