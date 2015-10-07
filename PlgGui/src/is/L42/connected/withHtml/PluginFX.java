@@ -36,18 +36,16 @@ public class PluginFX implements PluginType {
   public static Ast.MethodType Mopen£that£title=mt(Path.Void(),Path.Library(),Path.Library());
   @ActionType({ActionType.Type.Void,ActionType.Type.Library,ActionType.Type.Library})
   public Resources.Void Mopen£that£title(Object cb1,Object cb2){
-    String s1=extractStringU(cb1);
-    String s2=extractStringU(cb2);
-    if (s1==null||s2==null){throw new Resources.Error("InvalidStringU");}
+    String s1=ensureExtractStringU(cb1);
+    String s2=ensureExtractStringU(cb2);
     FrameFX.open(s2,s1);
     return Resources.Void.instance;
   }
   public static Ast.MethodType Mset£that£id=mt(Path.Void(),Path.Library(),Path.Library());
   @ActionType({ActionType.Type.Void,ActionType.Type.Library,ActionType.Type.Library})
   public  Resources.Void Mset£that£id(Object cb1,Object cb2){
-    String s1=extractStringU(cb1);
-    String s2=extractStringU(cb2);
-    if (s1==null||s2==null){throw new Resources.Error("InvalidStringU");}
+    String s1=ensureExtractStringU(cb1);
+    String s2=ensureExtractStringU(cb2);
     FrameFX.setId(s2,s1);
     return Resources.Void.instance;
   }

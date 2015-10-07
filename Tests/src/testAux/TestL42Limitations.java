@@ -32,7 +32,7 @@ import facade.Parser;
 public class TestL42Limitations {
 //TODO: in loop on big step on11/04/2015
 
-@Test
+//@Test
 public void test1() throws IOException{
     TestHelper.configureForTest();
     //L42.setRootPath(Paths.get("dummy"));

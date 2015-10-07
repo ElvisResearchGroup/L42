@@ -207,7 +207,7 @@ private ExpCore methCall(Program p, ExpCore ctxVal, MethCall r) {
     }
   for(int i=0;i<mc.getEs().size();i++){
     if(!IsValue.isAtom(mc.getEs().get(i))){
-      return ReplaceCtx.of(ctxVal,primCallArg(mc,i,mwt,usedNames));
+      return ReplaceCtx.of(ctxVal,primCallArg(p,mc,i,mwt,usedNames));
       }
     }
   //case new
@@ -297,10 +297,10 @@ private ExpCore rNew(MCall mc, MethodWithType mwt,HashSet<String> usedNames) {
   return new Block(Doc.empty(),new Block.Dec(t0,x0,mc),
     new ExpCore.X(x0),mc.getP());
 }
-private ExpCore primCallArg(MCall mc, int i, MethodWithType mwt, HashSet<String> usedNames) {
+private ExpCore primCallArg(Program p,MCall mc, int i, MethodWithType mwt, HashSet<String> usedNames) {
   //String xRole=ms.getXs().get(i);
   log("---primCallArg--");
-  NormType ti=(NormType)mwt.getMt().getTs().get(i);
+  NormType ti=mwt.getMt().getTs().get(i).match(n->n, hType->Norm.resolve(p,hType));
   Path pi=ti.getPath();
   ti=ti.withPh(Ph.None);
   String xi=Functions.freshName(pi,usedNames);

@@ -1,5 +1,7 @@
 {(Library _binaryRepr)<:S::ToS
-
+  type method
+  Outer0 fromS(S::ToS that)
+    Outer0.#numberParser(that.toS().binaryRepr())
   method
   Library binaryRepr() this._binaryRepr()
 
@@ -39,7 +41,7 @@
       error void)
 
   method
-  Bool ==(N that) {
+  Bool ==(Outer0 that) {
     using Alu
       check ifInt32EqualDo(n1:this.binaryRepr() n2:that.binaryRepr())
       return Bool.true()
@@ -62,7 +64,7 @@
     return Bool.false()
     }
 
-  method Bool !=(N that) !(this==that)
+  method Bool !=(Outer0 that) !(this==that)
 
   method Bool >(N that)  !(this<=that)
 

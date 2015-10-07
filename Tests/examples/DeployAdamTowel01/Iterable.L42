@@ -1,0 +1,36 @@
+{
+SafeOperatorsAccess:'  toPutAs private
+  {'@plugin
+   'L42.is/connected/withSafeOperators
+   type method
+  Library compose(Library left,Library right)
+    using Outer0
+      check compose(left:left,right:right)
+      error S"SafeOperators.compose"
+
+  }
+type method Library opt() {
+  Opt:{#new(TOpt that)
+      TOpt:{interface method Outer2 get() }
+      TEmpty:{()<:TOpt method get() error Report::UnsupportedOperation"TEmpty.get() Value not present in Optional" }
+      TOf:{(Outer2 that)<:TOpt method get() this.that()}
+      method T ~() this.that().get()
+      method Bool isPresent() {
+        unused=~this
+        return Bool.true()
+        catch error (on Any return Bool.false())
+        }
+      type method Outer0 () Outer0.#new(TEmpty())
+      type method Outer0 (T that) Outer0.#new(TOf(that))
+      }
+  Iterator:{interface 
+    mut method
+    Void #next() exception Void
+    read method
+    Void #checkEnd()
+    read method
+    Outer2 #inner()
+    read method
+    Void #close()
+  }
+}

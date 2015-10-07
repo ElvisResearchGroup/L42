@@ -1,5 +1,8 @@
 { _private(Library _binaryRepr)<: S::ToS '  toPutAs private
 
+  type method
+  Outer0 fromS(S::ToS that)
+    Outer0.#stringParser(that.toS().binaryRepr())
   type method Outer0 #stringParser(Library that) (
     using SafeOperators
       check ifInvalidDo(path:that)
@@ -13,10 +16,10 @@
   method toS() S.#stringParser(this._binaryRepr())
 
 
-  method Bool != (S that) !(this==that)
+  method Bool != (Outer0 that) !(this==that)
 
   method
-  Bool == (S that) {
+  Bool == (Outer0 that) {
     using Alu
       check ifStringEqualDo(s1:this.binaryRepr(),s2:that.binaryRepr())
       return Bool.true()

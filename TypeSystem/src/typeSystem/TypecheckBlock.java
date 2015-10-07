@@ -24,6 +24,7 @@ import ast.ExpCore.Block.Catch;
 import ast.ExpCore.Block.Dec;
 import ast.ExpCore.Block.On;
 import auxiliaryGrammar.Functions;
+import auxiliaryGrammar.Norm;
 import auxiliaryGrammar.Program;
 import coreVisitors.FreeVariables;
 
@@ -133,7 +134,7 @@ public class TypecheckBlock {
   private static void checkCatchSingle(
       SignalKind kind,String x, On on,
       Program p, HashMap<String, NormType> varEnv2, SealEnv sealEnv2, ThrowEnv throwEnv2, Type newSuggested, HashSet<Type> results) {
-    NormType nt=(NormType)on.getT();
+    NormType nt=on.getT().match(n->n, hType->Norm.resolve(p, hType));
     try{
       HashMap<String, NormType> varEnvi=new HashMap<String, NormType>(varEnv2);
       varEnvi.put(x,Functions.forceNormType(p,on.getInner(), on.getT()));

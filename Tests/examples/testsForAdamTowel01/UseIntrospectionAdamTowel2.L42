@@ -1,0 +1,11 @@
+{reuse L42.is/AdamTowel01
+
+Main:{
+  sel=Selector"foo()"
+  i2=Introspection(lib:{method 'fuffa @a beer @b bar
+    Void foo()})
+  mFoo=i2.methodFromSelector(sel)
+  Debug(mFoo.doc())
+  return ExitCode.normal()
+  }
+}

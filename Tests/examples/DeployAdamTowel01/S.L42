@@ -13,10 +13,10 @@
       check stringConcat(s1:this.binaryRepr(),s2:that.toS().binaryRepr())
       error void)
 
-  method Bool != (S that) !(this==that)
+  method Bool != (Outer0 that) !(this==that)
 
   method
-  Bool == (S that) {
+  Bool == (Outer0 that) {
     using Alu
       check ifStringEqualDo(s1:this.binaryRepr(),s2:that.binaryRepr())
       return Bool.true()

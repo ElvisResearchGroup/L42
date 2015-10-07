@@ -105,7 +105,16 @@ public class TestBase {
        //,""
         ));
     }
-}
+  
+  @Test
+  public  void _08introspection2() throws Throwable{
+    TestHelper.configureForTest();
+    L42.main(new String[]{"examples/testsForAdamTowel01/UseIntrospectionAdamTowel2.L42"});
+    Assert.assertEquals(L42.record.toString(),TestHelper.multiLine(
+        "fuffa @a beer @b bar"
+        ));
+    }
+  }
 
 //  Kind:MethodClash
 //  Path:Outer0::N

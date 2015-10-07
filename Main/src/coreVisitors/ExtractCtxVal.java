@@ -105,30 +105,6 @@ public class ExtractCtxVal implements Visitor<Ctx<Redex>>{
         ctx->s.withInner(ctx));
     }
   
-  /*public static Redex.Garbage nestedGarbage(Block b) {
-    //b is a right value!
-    Block b2=Functions.garbage(b,b.getDecs().size());
-    if(!b2.equals(b)){return new Redex.Garbage(b,b2);}
-    //else, try nested!
-    {int i=-1;for(Dec di:b.getDecs()){i+=1;
-      if (!(di.getE() instanceof Block)){continue;}
-      Block bi=(Block) di.getE();
-      Redex.Garbage ngi=nestedGarbage(bi);
-      if(ngi==null){continue;}
-      assert ngi.getThat().equals(bi);
-      List<Block.Dec> ds=new ArrayList<Block.Dec>(b.getDecs());
-      ds.set(i,di.withE(ngi.getThatLessGarbage()));
-      return new Redex.Garbage(b,b.withDecs(ds));
-    }}
-    if(!(b.getInner() instanceof Block)){return null;}
-    Block bIn=(Block)b.getInner();
-    Redex.Garbage ngIn=nestedGarbage(bIn);
-    if(ngIn==null){return null;}
-    assert ngIn.getThat().equals(bIn);
-    return new Redex.Garbage(b,b.withInner(ngIn.getThatLessGarbage()));    
-    
-  }*/
-
   private Ctx<Redex> lift(Ctx<Redex> res,Function<ExpCore,ExpCore> f){
     if(res!=null){res.ctx=f.apply(res.ctx);}
     return res;

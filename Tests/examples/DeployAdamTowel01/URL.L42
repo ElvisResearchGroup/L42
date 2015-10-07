@@ -1,5 +1,8 @@
 { _private(Library _binaryRepr)<: S::ToS '  toPutAs private
 
+  type method
+  Outer0 fromS(S::ToS that)
+    Outer0.#stringParser(that.toS().binaryRepr())
   type method Outer0 #stringParser(Library that) Outer0._private(_binaryRepr:that)
 
   method Library binaryRepr() this._binaryRepr()
@@ -7,10 +10,10 @@
 
   method toS() S.#stringParser(this._binaryRepr())
 
-  method Bool != (URL that) !(this==that)
+  method Bool != (Outer0 that) !(this==that)
 
   method
-  Bool == (URL that) {
+  Bool == (Outer0 that) {
     using Alu
       check ifStringEqualDo(s1:this.binaryRepr(),s2:that.binaryRepr())
       return Bool.true()

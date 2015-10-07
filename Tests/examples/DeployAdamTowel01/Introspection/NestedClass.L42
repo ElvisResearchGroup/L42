@@ -6,7 +6,7 @@ Doc nestedDoc()(
   if this.path()==Path"Outer0" (
     error Report::UnsupportedOperation"NestedClass.nestedDoc()  The NestedClass Object refers to Outer0"
     )
-  this.report().docOf(path:Path"Doc")
+  this.report().docOf(path:Path"MemberDoc")
   )
 method 'of the library literal
 Doc doc() this.report().docOf(path:Path"Doc")
@@ -55,10 +55,25 @@ method Types implementedInterfaces() (
   catch exception x (on Report::MemberUnavailable error Report::CodeNotReachable())
   result)
 
-method Method constructor()  error Report::NotImplementedYet()
-method Method methodFromSelector(Selector that) exception Report::MemberUnavailable  error Report::NotImplementedYet()
+method
+Method constructor()
+  error Report::NotImplementedYet()
+method
+Method methodFromSelector(Selector that) exception Report::MemberUnavailable {
+  with meth in this.methods().vals() (
+    if meth.selector()==that (return meth)
+    )
+  error Report::MemberUnavailable.nonExistentMethod(path:this.pathFromRoot(),selector:that)
+  'note: it can return a private method
+  }
+method
+Bool has(Selector selector){
+  unused=this.methodFromSelector(selector)
+  catch exception (on Report::MemberUnavailable return Bool.false())
+  return Bool.true()
+  }
 method NestedClass nestedClassFromRoot(Path that) exception Report::MemberUnavailable
   this.mirror().introspectReport(root:this.root(),path:that)
-
+method Bool has(Path pathFromRoot) error Report::NotImplementedYet()
 
 }

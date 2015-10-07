@@ -18,8 +18,10 @@ Introspection:{
     method NestedClasses nestedClasses()
     method Types implementedInterfaces()
     method Method constructor()
-    method Method method(Selector that) exception MemberUnavailable
+    method Method methodFromSelector(Selector that) exception MemberUnavailable
+    method Bool has(Selector selector)
     method NestedClass nestedClassFromRoot(Path that) exception MemberUnavailable
+    method Bool has(Path pathFromRoot)
     }
 
   Method:{<:Member

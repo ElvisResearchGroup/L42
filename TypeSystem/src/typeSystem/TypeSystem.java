@@ -357,7 +357,9 @@ public class TypeSystem implements Visitor<Type>, Reporter{
   public static boolean noFreeVar(List<ExpCore> es, List<HashMap<String, NormType>> varEnvs,HashMap<String, NormType> original) {
     {int i=-1;for(ExpCore ei:es){i+=1;
      if(varEnvs.get(i).keySet().containsAll(FreeVariables.of(ei))){continue;}
-     throw new AssertionError(ToFormattedText.of(ei)+"\n freeVars: "+FreeVariables.of(ei)+" "+varEnvs.get(i)+"\n original:"+original+"\n es:"+es);
+     String forEi=ToFormattedText.of(ei);
+     Set<String> freeVarEi = FreeVariables.of(ei);
+     throw new AssertionError(forEi+"\n freeVars: "+freeVarEi+" "+varEnvs.get(i)+"\n original:"+original);
      }}
     return true;
     }

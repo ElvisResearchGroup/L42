@@ -73,22 +73,19 @@ public class Plugin implements PluginType {
 
   @ActionType({ActionType.Type.Library,ActionType.Type.Library})
   public  Object MstringToInt32£xthat(Object cb){
-    String s=extractStringU(cb);
-    if (s==null){throw new Resources.Error("InvalidStringU");}
+    String s=ensureExtractStringU(cb);
     try{return new Integer(s);}
     catch(NumberFormatException nfe){throw new Resources.Error("InvalidEncodingForI32: "+s);    }
   }
 
   @ActionType({ActionType.Type.Library,ActionType.Type.Library})
   public  Object Mint32ToString£xthat(Object cb){
-    Integer i=extractInt32(cb);
-    if (i==null){throw new Resources.Error("InvalidStringU");}
+    Integer i=ensureExtractInt32(cb);
     return ""+i;
   }
   @ActionType({ActionType.Type.Void,ActionType.Type.Library})
   public Resources.Void MstringDebug£xthat(Object cb){
-    String s=extractStringU(cb);
-    if (s==null){throw new Resources.Error ("InvalidStringU");}
+    String s=ensureExtractStringU(cb);
     L42.printDebug(s);
     return Resources.Void.instance;
   }
@@ -103,15 +100,13 @@ public class Plugin implements PluginType {
   }
   @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
   public  Object MstringConcat£xs1£xs2(Object cb1,Object cb2){
-    String s1=extractStringU(cb1);
-    String s2=extractStringU(cb2);
-    if (s1==null||s2==null){throw new Resources.Error("InvalidStringU");}
+    String s1=ensureExtractStringU(cb1);
+    String s2=ensureExtractStringU(cb2);
     return s1+s2;
   }
   @ActionType({ActionType.Type.Library,ActionType.Type.Library})
   public  Object MstringSize£xthat(Object cb1){
-    String s1=extractStringU(cb1);
-    if (s1==null){throw new Resources.Error("InvalidStringU");}
+    String s1=ensureExtractStringU(cb1);
     return s1.length();
   }
   @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
@@ -127,9 +122,8 @@ public class Plugin implements PluginType {
   }
   @ActionType({ActionType.Type.Void,ActionType.Type.Library,ActionType.Type.Library})
   public Resources.Void MifStringEqualDo£xs1£xs2(Object cb1,Object cb2){
-    String s1=extractStringU(cb1);
-    String s2=extractStringU(cb2);
-    if (s1==null||s2==null){throw new Resources.Error("InvalidStringU");}
+    String s1=ensureExtractStringU(cb1);
+    String s2=ensureExtractStringU(cb2);
     if(!s1.equals(s2)){return Resources.Void.instance;}
     throw Resources.notAct;
   }

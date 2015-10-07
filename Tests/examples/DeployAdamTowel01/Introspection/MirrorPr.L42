@@ -69,18 +69,24 @@
     }
 
 
-Class:{(type Any lib)<:Outer1
-  method
-  introspectReport(root,path) error Report::NotImplementedYet()
-  method
-  introspectReportMember(root, path, memberN) error Report::NotImplementedYet()
-  method
-  introspectReportType(root,path, memberN, typeN) error Report::NotImplementedYet()
-  method
-  introspectDocAsString(path) error Report::NotImplementedYet()
-  method
-  introspectDocAsString(path,annotationN) error Report::NotImplementedYet()
-  method
-  introspectDocPath(path,annotationN) error Report::NotImplementedYet()
-  }
+  Class:{(type Any lib)<:Outer1
+    method
+    introspectReport(root,path)
+      error Report::NotImplementedYet()
+    method
+    introspectReportMember(root, path, memberN)
+      error Report::NotImplementedYet()
+    method
+    introspectReportType(root,path, memberN, typeN)
+      error Report::NotImplementedYet()
+    method
+    introspectDocAsString(path)
+      error Report::NotImplementedYet()
+    method
+    introspectDocAsString(path,annotationN)
+      error Report::NotImplementedYet()
+    method
+    introspectDocPath(path,annotationN)
+      error Report::NotImplementedYet()
+    }
   }

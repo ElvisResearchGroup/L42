@@ -52,7 +52,7 @@ NotImplementedYet:{(S reason)<:S::ToS
   }
 'in the following, a set of reports for composition operators
 
-SourceUnfit:{(Introspection::Record report) <:Report 'TODO: here, when typechecking introspection, for bug introspection can not see itself back. fix tomorrow.
+SourceUnfit:{(Introspection::Record report) <:Report 'TODO: here, when typechecking introspection, for bug introspection can not see itself back. fix tomorrow. ADDED Has been fixed?
   method toS() S"SourceUnfit"
   }
 ClassClash:{'findMeClassClash
@@ -65,8 +65,39 @@ MethodClash:{(Introspection::Record report) <:Report
 InvalidOnTopLevel:{(Introspection::Record report) <:Report
   method toS() S"InvalidOnTopLevel"
   }
-MemberUnavailable:{(Introspection::Record report) <:Report
-  method toS() S"MemberUnavailable"
+MemberUnavailable:{(Path path,S _selector,InvalidKind invalidKind)<:Report
+  InvalidKind:{(S inner)<:S::ToS method toS() this.inner()}
+  type method
+  Outer0 privatePath(Path path)
+    Outer0(path:path,_selector:S"",invalidKind:InvalidKind(inner:S"PrivatePath"))
+  type method
+  Outer0 privateMethod(Path path, Selector selector)
+    Outer0(path:path, _selector:selector.toS(), invalidKind:InvalidKind(inner:S"PrivateMethod"))
+  type method
+  Outer0 nonExistentPath(Path path)
+    Outer0(path:path,_selector:S"",invalidKind:InvalidKind(inner:S"NonExistentPath"))
+  type method 
+  Outer0 nonExistentMethod(Path path, Selector selector)
+    Outer0(path:path, _selector:selector.toS(), invalidKind:InvalidKind(inner:S"NonExistentMethod"))    
+  
+  type method
+  Outer0 (Introspection::Record report) 
+    Outer0(
+      path:Path.fromS(report"Path"),
+      _selector:report"Selector", 'selector may not exists, would be S""
+      invalidKind:InvalidKind(inner:report"InvalidKind")
+      )
+  method
+  Selector selector() {
+    if this.hasSelector() (return Selector.fromS(this._selector()))
+    error Report::Misuse"the MemberUnavailable is a path"
+    }
+  method
+  Bool hasSelector() this._selector()!=S""
+  method toS() S"MemberUnavailable[path:"[this.path();{
+    if this.hasSelector() (return S" selector:"[this.selector()]"")
+    return S""
+    }]" kind:"[this.invalidKind()]"]"
   }
 PrivacyCoupuled:{(Introspection::Record report) <:Report
   method toS() S"PrivacyCoupuled"

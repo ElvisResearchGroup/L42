@@ -141,6 +141,7 @@ public class EncodingHelper{
   public static String ensureExtractStringU(Object e) {
     String res=extractStringU(e);
     if (res==null ){
+      System.out.println("Doh, invalid string"+e);
       throw new Resources.Error("InvalidStringU");
       }
     return res;

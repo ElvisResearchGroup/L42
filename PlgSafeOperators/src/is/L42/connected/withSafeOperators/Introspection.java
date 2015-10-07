@@ -187,12 +187,15 @@ public class Introspection {//TODO: we keep 5 methods, but we merge the PathRepo
    What should we do for @int32 and similar?
     */
   public static String extractDocAsString(ClassB that,List<String>path,int annotationN){
+    System.out.println("extractDocAsString("+path+" annotationN:"+annotationN+")");
     Errors42.checkExistsPathMethod(that, path,Optional.empty());
     ClassB current = Program.extractCBar(path, that);
     Doc d=current.getDoc1();
     d=liftDoc(path,d,0);
+    System.out.println("extractDocAsString("+d+")");
     if(annotationN<=0){
       String result=d.toString();
+      System.out.println("extractDocAsString(result:"+result+")");
       if(annotationN==-1 || !result.startsWith("@stringU\n")){
         return result;// extra @stringU will be added since we return "String"
         }
