@@ -46,7 +46,7 @@
     method
     introspectDocAsString(path,annotationN) (
       result=S.#stringParser(using SafeOperators
-        check introspectLibraryDocAsString(this.lib(), path:path.binaryRepr(),annotationN:(1N+annotationN).binaryRepr())
+        check introspectLibraryDocAsString(this.lib(), path:path.binaryRepr(),annotationN:annotationN.binaryRepr())
         exception void)
       catch error x (on Library exception Report::MemberUnavailable(report:Record(lib:x)))
       result)

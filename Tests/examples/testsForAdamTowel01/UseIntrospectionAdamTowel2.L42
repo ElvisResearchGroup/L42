@@ -1,11 +1,23 @@
 {reuse L42.is/AdamTowel01
-
+External:{}
 Main:{
-  sel=Selector"foo()"
-  i2=Introspection(lib:{method 'fuffa @a beer @b bar
+  i2=Introspection(lib:{ Internal:{} method 'fuffa @a beer @External bar @Internal fuzz
     Void foo()})
-  mFoo=i2.methodFromSelector(sel)
-  Debug(mFoo.doc())
+  mFoo=i2.methodFromSelector(Selector"foo()")
+  doc=mFoo.doc()
+  Debug(doc)
+  with ann in doc.annotations().vals() (
+    Debug(ann)
+    (
+      with t=ann.referredClass() (
+        on type External Debug(S"External found")
+        default Debug(S"something Else")
+        )
+      catch error x (on Report Debug(S"Report error as "++x.toS()))
+      void
+      )
+    Debug(S"Iteration complete")
+    )
   return ExitCode.normal()
   }
 }
