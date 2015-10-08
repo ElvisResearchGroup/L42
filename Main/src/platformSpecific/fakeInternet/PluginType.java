@@ -8,7 +8,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import platformSpecific.javaTranslation.Resources;
-import platformSpecific.javaTranslation.Translator;
 import ast.Ast.MethodType;
 import ast.ErrorMessage;
 import ast.ExpCore;
@@ -18,7 +17,7 @@ import auxiliaryGrammar.Program;
 public interface PluginType {
   //Object dispatch(boolean t,Program p, Using u);
   static Method getMethod(PluginType that,Program p,Using u){
-    String mName=Translator.nameOf(u.getS().getName(),u.getS().getNames());
+    String mName=Resources.nameOf(u.getS().getName(),u.getS().getNames());
     Class<?>[] parameterTypes=new Class<?>[u.getS().getNames().size()];
     Arrays.fill(parameterTypes, Object.class);
     try {return that.getClass().getMethod(mName, parameterTypes);}

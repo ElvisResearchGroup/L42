@@ -9,6 +9,7 @@ import java.util.stream.IntStream;
 import platformSpecific.fakeInternet.PluginType;
 import tools.Assertions;
 import tools.StringBuilders;
+import ast.Ast.NormType;
 import ast.Ast.Path;
 import ast.ErrorMessage;
 import ast.ExpCore;
@@ -59,7 +60,7 @@ public class TranslateExpression implements coreVisitors.Visitor<Void>{
       if(s.equals(Path.Void())){res.append("platformSpecific.javaTranslation.Resources.Void.type");}
       return null;
     }
-    res.append(Translator.nameOf(s)+".type");
+    res.append(Resources.nameOf(s)+".type");
     return null;
   }
 
@@ -95,7 +96,7 @@ public class TranslateExpression implements coreVisitors.Visitor<Void>{
     res.append("new "+plgName+"(), ");
     res.append("("+plF+","+xsF+")->"+plF+".");
     //MsumInt32£xn1£xn2(xsF[0],xsF[1]),
-    res.append(Translator.nameOf(s.getS().getName(),s.getS().getNames()));
+    res.append(Resources.nameOf(s.getS().getName(),s.getS().getNames()));
     res.append("(");
     StringBuilders.formatSequence(res,
         IntStream.range(0, s.getEs().size()).iterator(),
@@ -143,7 +144,7 @@ public class TranslateExpression implements coreVisitors.Visitor<Void>{
   public Void visit(MCall s) {
     res.append("(");
     s.getReceiver().accept(this);
-    res.append(")."+Translator.nameOf(s.getS().getName(),s.getS().getNames())+"(");
+    res.append(")."+Resources.nameOf(s.getS().getName(),s.getS().getNames())+"(");
     StringBuilders.formatSequence(res,s.getEs().iterator(),
       ", ", ei->ei.accept(this));
     res.append(")");
@@ -192,8 +193,10 @@ public class TranslateExpression implements coreVisitors.Visitor<Void>{
   }
 
   private void getCatch(Catch c, On on,String asReturn,String kVar) {
-    String tn=Translator.nameOf(on.getT());
-    res.append("if(K"+c.getX()+".unbox instanceof "+tn+"){\n");
+    Path p=((NormType)on.getT()).getPath();
+    String tn=Resources.nameOf(p);
+    if(p.equals(Path.Library())){res.append(getCatchHeaderForLibrary(c.getX()));}
+    else {res.append("if(K"+c.getX()+".unbox instanceof "+tn+"){\n");}
     res.append("  "+tn+" P"+c.getX()+"=("+tn+")K"+c.getX()+".unbox;\n");
     res.append(asReturn);
     on.getInner().accept(this);
@@ -203,6 +206,16 @@ public class TranslateExpression implements coreVisitors.Visitor<Void>{
   }
 
   
+  private Object getCatchHeaderForLibrary(String xName) {
+    String iOf="K"+xName+".unbox instanceof ";
+    return "if("
+        +iOf+" String ||"
+        +iOf+" Integer ||"
+        +iOf+"  ast.ExpCore.ClassB||"
+        +iOf+"  ast.Ast.Doc"
+        +"){\n";
+  }
+
   private void initializeVars(Set<String> domPhs, List<Dec> decs,String kVar) {
     //insertComment(domPhs);
     this.undeclared.addAll(domPhs);
@@ -244,7 +257,7 @@ public class TranslateExpression implements coreVisitors.Visitor<Void>{
   public Set<String> declareVarsAndPh(List<Dec> decs) {
     Set<String> unDeclared=new HashSet<>();
     for(Dec d:decs){//declare all vars;
-      res.append(Translator.nameOf(d.getT()));
+      res.append(Resources.nameOf(d.getT()));
       res.append(" P"+d.getX()+";\n");
       unDeclared.add(d.getX());
     }
@@ -258,8 +271,8 @@ public class TranslateExpression implements coreVisitors.Visitor<Void>{
     assert unDeclared.isEmpty();
     for(Dec d:decs){
       if(domPhs.contains(d.getX())){//declare placeholder
-        res.append(Translator.nameOf(d.getT())+".Ph");
-        res.append(" PH"+d.getX()+"=new "+Translator.nameOf(d.getT())+".Ph();\n");
+        res.append(Resources.nameOf(d.getT())+".Ph");
+        res.append(" PH"+d.getX()+"=new "+Resources.nameOf(d.getT())+".Ph();\n");
         }
       }
     return domPhs;

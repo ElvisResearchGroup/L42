@@ -31,6 +31,7 @@ import ast.ErrorMessage.TypeError;
 import ast.ErrorMessage.UserLevelError;
 import ast.ExpCore;
 import ast.Ast.Doc;
+import ast.Ast.NormType;
 import ast.Ast.Path;
 import ast.Ast.SignalKind;
 import ast.Ast.Stage;
@@ -286,16 +287,40 @@ public class Resources {
       throw new Error(exc);
       }
     }
+  public static String nameOf(Ast.Type t) {
+    Path p=((NormType)t).getPath();
+    return nameOf(p);
+    }
+  public static String nameOf(Ast.MethodSelector ms) {
+    return nameOf(ms.getName(),ms.getNames());
+    }
+  public static String nameOf(String name, List<String> names) {
+    String result="M"+name;
+    for(String x:names){result+="£x"+x;}
+    return nameOf(result);
+    }
+  public static String nameOf(Path p) {
+    if (p.equals(Path.Any())){return "Object";}
+    if (p.equals(Path.Library())){return "Object";}
+    if (p.equals(Path.Void())){return "platformSpecific.javaTranslation.Resources.Void";}
+    return nameOf(p.outerNumber(),p.getCBar());
+  }
+  public static String nameOf(int level, List<String> cs) {
+    String res="Outer"+level;
+    for(String s:cs){res+="::"+s;}
+    return nameOf(res);
+  }
+  public static String nameOf(String s){
+      s=s.replace("::","£_");
+      s=s.replace("%","£p");
+      s=s.replace("#","£h");
+      return s;
+  }
+  public static String name42Of(String javaName){
+      String s=javaName;
+      s=s.replace("£_","::");
+      s=s.replace("£p","%");
+      s=s.replace("£h","#");
+      return s;
+  }
 }
-
-/*
-{
-type method
-Void printHelloWorld()
-  Outer0::Debug.#apply(that:Outer1::S"Hello World"++Outer0::N"42"
-Debug:{
-type method
-Void #apply(Outer2::S that)
- }}
-
-*/

@@ -19,7 +19,7 @@ public class TestBase {
   public void initialize() {
     //TestHelper.configureForTest();
     System.out.println("AssertionsDisabled");
-    ClassLoader.getSystemClassLoader().setDefaultAssertionStatus(false);
+    //ClassLoader.getSystemClassLoader().setDefaultAssertionStatus(false);
     L42.trustPluginsAndFinalProgram=true;
     }
   //not run when single test executed?
@@ -111,7 +111,17 @@ public class TestBase {
     TestHelper.configureForTest();
     L42.main(new String[]{"examples/testsForAdamTowel01/UseIntrospectionAdamTowel2.L42"});
     Assert.assertEquals(L42.record.toString(),TestHelper.multiLine(
-        "fuffa @a beer @b bar"
+        "fuffa @a beer @Outer1::External bar @::Internal fuzz"
+       ,""
+       ,"a"
+       ,"Report plgFailure as PluginFailure[SafeOperators.introspectLibraryDocPath]"
+       ,"Iteration complete"
+       ,"Outer1::External"
+       ,"External found"
+       ,"Iteration complete"
+       ,"::Internal"
+       ,"Report plgFailure as PluginFailure[SafeOperators.introspectLibraryDocPath]"
+       ,"Iteration complete"
         ));
     }
   }

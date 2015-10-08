@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Optional;
 import facade.Configuration;
 import platformSpecific.javaTranslation.Resources;
-import platformSpecific.javaTranslation.Translator;
 import tools.Assertions;
 import ast.Ast;
 import ast.ExpCore;

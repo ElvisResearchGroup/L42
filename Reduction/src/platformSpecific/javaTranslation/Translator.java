@@ -16,6 +16,7 @@ import platformSpecific.inMemoryCompiler.InMemoryJavaCompiler;
 import platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.CompilationError;
 import platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.SourceFile;
 import profiling.Timer;
+import reduction.Facade;
 import tools.Assertions;
 import coreVisitors.From;
 import coreVisitors.IsCompiled;
@@ -54,6 +55,7 @@ public class Translator {
     ClassLoader cl;
     Timer.activate("InMemoryJavaCompiler.compile");try{
     cl=InMemoryJavaCompiler.compile(files);//can throw, no closure possible
+    Facade.setLastLoader(cl);
     }finally{ Timer.deactivate("InMemoryJavaCompiler.compile");}
     //System.out.println("Compilation Iteration complete compilation, start class loading");
     Class<?> cl0 = cl.loadClass(fileName);
@@ -102,10 +104,10 @@ public class Translator {
   public static void add(int level,List<String> cs,ClassB cb, Map<String,ClassB> map,Program original){
     Ast.Path p=Ast.Path.outer(level, cs);
     if(cb.getStage().getStage()==Stage.Star  && IsCompiled.of(cb)){//otherwise is "meta"
-      map.put(nameOf(level,cs),useFrom(cb,p));
+      map.put(Resources.nameOf(level,cs),useFrom(cb,p));
       }
     else{//generate only for metaprogramming
-      map.put(nameOf(level,cs),new ExpCore.ClassB(
+      map.put(Resources.nameOf(level,cs),new ExpCore.ClassB(
           Doc.factory("DebugInfo: is interface since (cb.getStage()!=Stage.Star :"
             +(cb.getStage().getStage()!=Stage.Star)+") or since !IsCompiled.of(cb) :"+!IsCompiled.of(cb)+")"
           ),Doc.empty(),true,Collections.emptyList(),Collections.emptyList(),new Util.CachedStage()));
@@ -143,41 +145,5 @@ public class Translator {
     List<Path> sup = tools.Map.of(pi->(Path)
         Norm.of(p,pi),ct.getSupertypes());
     return Norm.ofAllMethodsOf(p, ct,false).withSupertypes(sup);
-  }
-  public static String nameOf(Ast.Type t) {
-    Path p=((NormType)t).getPath();
-    return Translator.nameOf(p);
-    }
-  public static String nameOf(Ast.MethodSelector ms) {
-    return nameOf(ms.getName(),ms.getNames());
-    }
-  public static String nameOf(String name, List<String> names) {
-    String result="M"+name;
-    for(String x:names){result+="£x"+x;}
-    return nameOf(result);
-    }
-  public static String nameOf(Path p) {
-    if (p.equals(Path.Any())){return "Object";}
-    if (p.equals(Path.Library())){return "Object";}
-    if (p.equals(Path.Void())){return "platformSpecific.javaTranslation.Resources.Void";}
-    return nameOf(p.outerNumber(),p.getCBar());
-  }
-  public static String nameOf(int level, List<String> cs) {
-    String res="Outer"+level;
-    for(String s:cs){res+="::"+s;}
-    return nameOf(res);
-  }
-  public static String nameOf(String s){
-      s=s.replace("::","£_");
-      s=s.replace("%","£p");
-      s=s.replace("#","£h");
-      return s;
-  }
-  public static String name42Of(String javaName){
-      String s=javaName;
-      s=s.replace("£_","::");
-      s=s.replace("£p","%");
-      s=s.replace("£h","#");
-      return s;
   }
 }

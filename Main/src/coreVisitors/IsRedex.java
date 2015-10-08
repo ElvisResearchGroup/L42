@@ -44,10 +44,11 @@ public class IsRedex{
       }
     catch(ErrorMessage.PluginActionUndefined pau){
       ExpCore inner=s.getInner();
-      if(IsValue.of(p,inner)){return new Redex.UsingOut(s);}
-      ExpCore throw_ = ExtractThrow.of(p,inner);
-      if(throw_ instanceof ExpCore.Signal){return new Redex.UsingOut(s);}
-      return Redex.invalid();
+      //if(IsValue.of(p,inner))//TODO: boh, should just return the expression, since is small step?
+      {return new Redex.UsingOut(s);}
+      //ExpCore throw_ = ExtractThrow.of(p,inner);
+      //if(throw_ instanceof ExpCore.Signal){return new Redex.UsingOut(s);}
+      //return Redex.invalid();
     }
   }
   public static Redex visit(Program p,ClassB s)  {

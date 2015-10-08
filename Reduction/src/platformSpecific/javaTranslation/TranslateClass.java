@@ -58,13 +58,13 @@ public class TranslateClass {
   private static void getITReverter(String s,StringBuilder res) {
     res.append("public ast.ExpCore revert(){\n");
     res.append("return ast.Ast.Path.parse(\"");
-    res.append(Translator.name42Of(s));
+    res.append(Resources.name42Of(s));
     res.append("\");}\n");
     }
   private static void getReverterForNotInstantiableClass(String s,StringBuilder res) {
     res.append("public ast.ExpCore revert(){\n");
     res.append("ast.Ast.Path receiver=ast.Ast.Path.parse(\"");
-    res.append(Translator.name42Of(s));
+    res.append(Resources.name42Of(s));
     res.append("\");\n");
     res.append("if(this==type){return receiver;}\n");
     res.append("throw new Error(\"Impossible to revert an instance of a not instantiable class, how you get this instance?\");");
@@ -74,7 +74,7 @@ public class TranslateClass {
   private static void getReverter(String s, MethodWithType ctor,StringBuilder res) {
     res.append("public ast.ExpCore revert(){\n");
     res.append("ast.Ast.Path receiver=ast.Ast.Path.parse(\"");
-    res.append(Translator.name42Of(s));
+    res.append(Resources.name42Of(s));
     res.append("\");\n");
     res.append("if(this==type){return receiver;}\n");
     //res.append("java.util.ArrayList<String> xs=new java.util.ArrayList<>(java.util.Arrays.asList(");
@@ -106,7 +106,7 @@ public class TranslateClass {
     res.append("platformSpecific.javaTranslation.Resources.Revertable");
     for(Path pi:ct.getSupertypes()){
       res.append(", ");
-      res.append(Translator.nameOf(pi));
+      res.append(Resources.nameOf(pi));
     }      
     return isInterface;
   }
@@ -128,7 +128,7 @@ public class TranslateClass {
       ";\n", (n,t)->{
         assert t instanceof NormType;
         res.append("public ");
-        res.append(Translator.nameOf(t));
+        res.append(Resources.nameOf(t));
         res.append(" F"+n);
         });
     res.append(";\n");
@@ -141,7 +141,7 @@ public class TranslateClass {
     List<Type> ts = ctor.getMt().getTs();
     StringBuilders.formatSequence(res,ns.iterator(),ts.iterator(),
       ", ",(n,t)->{
-        res.append(Translator.nameOf(t));
+        res.append(Resources.nameOf(t));
         res.append(" P"+n);
       });
     res.append("){\n");
@@ -155,7 +155,7 @@ public class TranslateClass {
       //if(d instanceof PhI<?>){((PhI<D>)d).addAction((val)->this.d=val);}
       res.append("if(");
       res.append("P"+n);
-      res.append(" instanceof platformSpecific.javaTranslation.Resources.PhI<?>){((platformSpecific.javaTranslation.Resources.PhI<"+Translator.nameOf(t)+">)");
+      res.append(" instanceof platformSpecific.javaTranslation.Resources.PhI<?>){((platformSpecific.javaTranslation.Resources.PhI<"+Resources.nameOf(t)+">)");
       res.append("P"+n);
       res.append(").addAction((val)->this.");
       res.append("F"+n);
@@ -198,15 +198,15 @@ public class TranslateClass {
 
   public static void getMethodHeader(MethodWithType mt, StringBuilder res) {
     res.append("\npublic ");
-    res.append(Translator.nameOf(mt.getMt().getReturnType()));
+    res.append(Resources.nameOf(mt.getMt().getReturnType()));
     res.append(" ");
-    res.append(Translator.nameOf(mt.getMs()));
+    res.append(Resources.nameOf(mt.getMs()));
     res.append("(");
     StringBuilders.formatSequence(res,
       mt.getMs().getNames().iterator(),
       mt.getMt().getTs().iterator(), ", ",
       (n,t)->{
-        res.append(Translator.nameOf(t));
+        res.append(Resources.nameOf(t));
         res.append(" P"+n);
       });
     res.append(")\n");

@@ -1,7 +1,6 @@
 package is.L42.connected.withSafeOperators;
 
 import platformSpecific.javaTranslation.Resources;
-import platformSpecific.javaTranslation.Translator;
 import sugarVisitors.ToFormattedText;
 import ast.Ast;
 import ast.ErrorMessage;
@@ -27,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 import coreVisitors.From;
+import facade.Configuration;
 
 public class Introspection {//TODO: we keep 5 methods, but we merge the PathReport and MemberReport content.
   public static ClassB giveInfo(ClassB that,List<String> path){
@@ -187,15 +187,15 @@ public class Introspection {//TODO: we keep 5 methods, but we merge the PathRepo
    What should we do for @int32 and similar?
     */
   public static String extractDocAsString(ClassB that,List<String>path,int annotationN){
-    System.out.println("extractDocAsString("+path+" annotationN:"+annotationN+")");
+    //System.out.println("extractDocAsString("+path+" annotationN:"+annotationN+")");
     Errors42.checkExistsPathMethod(that, path,Optional.empty());
     ClassB current = Program.extractCBar(path, that);
     Doc d=current.getDoc1();
     d=liftDoc(path,d,0);
-    System.out.println("extractDocAsString("+d+")");
+    //System.out.println("extractDocAsString("+d+")");
     if(annotationN<=0){
       String result=d.toString();
-      System.out.println("extractDocAsString(result:"+result+")");
+      //System.out.println("extractDocAsString(result:"+result+")");
       if(annotationN==-1 || !result.startsWith("@stringU\n")){
         return result;// extra @stringU will be added since we return "String"
         }
@@ -212,19 +212,22 @@ public class Introspection {//TODO: we keep 5 methods, but we merge the PathRepo
     Errors42.checkExistsPathMethod(that, path,Optional.empty());
     ClassB current = Program.extractCBar(path, that);
     Doc d=current.getDoc1();
-    d=liftDoc(path,d,0);
+    d=liftDoc(path,d,0);//ok, it is as should be if wrote in the class (see under)
     if(d.getAnnotations().size()<annNumber){throw Resources.notAct;}
     Object o=d.getAnnotations().get(annNumber-1);
-    if(!(o instanceof Path)){throw Resources.notAct;}
-    //TODO: after is wrong, we need to use this kind of stuff.String s=Translator.nameOf((Path)o);
-    //test returning paths and then throw catch them,
-    //test especially difference between Library and Any.
-    return (Path)o;
+    //if(o instanceof String){throw Resources.notAct;}
+    if(!(o instanceof Path)){
+      throw Resources.notAct;
+      }
+    Path pRes=(Path)o;
+    assert pRes.isPrimitive() || pRes.outerNumber()>=1;
+    if(pRes.isPrimitive()){return pRes;}
+    pRes=pRes.setNewOuter(pRes.outerNumber()-1);
+    return pRes;
   }
   /*
   5)extractDocPath:Lib*,path, pathNumber ->typeAny //error for internal paths or number bigger than possible.
 */
-  //TODO: composition errors should be exceptions. This mean that <<, >>, ++, ** have to become right associative
 
   private static Doc liftDoc(List<String> path, Doc doc,int newNested) {
     //for all external paths (pi.outern>path.size) new outern=oldOutern-size+newNested

@@ -19,6 +19,7 @@ import ast.ExpCore.ClassB;
 import auxiliaryGrammar.Norm;
 import auxiliaryGrammar.Program;
 import coreVisitors.CloneVisitorWithProgram;
+import facade.Configuration;
 import platformSpecific.fakeInternet.ActionType;
 import platformSpecific.fakeInternet.PluginType;
 import platformSpecific.javaTranslation.Resources;
@@ -146,7 +147,7 @@ public class Plugin implements PluginType{
       ClassB that=ensureExtractClassB(_that);
       List<String> path=Path.parseValidCs(ensureExtractStringU(_path));
       int annotationN=ensureExtractInt32(_annotationN);
-      return Introspection.extractDocPath(that, path, annotationN);
+      return Configuration.reduction.convertPath(Introspection.extractDocPath(that, path, annotationN));
     }
     
     //-----5 +5 introspections //type
@@ -189,7 +190,7 @@ public class Plugin implements PluginType{
       ClassB that=Resources.getP().extractCb(iPath);
       List<String> path=Path.parseValidCs(ensureExtractStringU(_path));
       int annotationN=ensureExtractInt32(_annotationN);
-      return Introspection.extractDocPath(that, path, annotationN);
+      return Configuration.reduction.convertPath(Introspection.extractDocPath(that, path, annotationN));
     }
     @ActionType({ActionType.Type.Library,ActionType.Type.Library})
     public Object MprivateNormalize£xthat(Object _that){
