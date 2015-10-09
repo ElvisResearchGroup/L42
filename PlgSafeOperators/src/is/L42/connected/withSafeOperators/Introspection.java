@@ -102,27 +102,32 @@ public class Introspection {//TODO: we keep 5 methods, but we merge the PathRepo
     if(memberN<0){throw Resources.notAct;}//TODO: is this a good idea?
     if(memberN==0){
       Path implN = current.getSupertypes().get(typeN-1);
-      boolean isExternal=false;
-      if(implN.isPrimitive() ||implN.outerNumber()>path.size()){isExternal=true;}
-      Doc dImplN=Doc.factory(implN);//is ok since I have liftDoc
-      return typeReport(path,
-          TypeKind.Normal,//isExternal?TypeKind.ExternalNormal:TypeKind.InternalNormal,
-          Mdf.Immutable,Mdf.Immutable,
-          dImplN,dImplN, false,false,"","",current.getDoc2(),ToFormattedText.of(implN));
-    }
+      return typeReport(p.addAtTop(that), new NormType(Mdf.Immutable,implN,Ph.None),path,current.getDoc2());
+      }
     assert memberN>0;
     Member mi = current.getMs().get(memberN-1);
     if(!(mi instanceof MethodWithType)){throw Resources.notAct;}
     MethodWithType mwt=(MethodWithType)mi;
      Type ti = mwt.getMt().getReturnType();
+     Doc doci=mwt.getDoc();
      if(typeN>mwt.getMt().getTs().size()){throw Resources.notAct;}
      if(typeN<-mwt.getMt().getExceptions().size()){throw Resources.notAct;}
-    if(typeN>0){ti=mwt.getMt().getTs().get(typeN-1);}
-    if(typeN<0){ti=new NormType(Mdf.Immutable,mwt.getMt().getExceptions().get((typeN*-1)-1),Ph.None);}
+    if(typeN>0){
+      ti=mwt.getMt().getTs().get(typeN-1);
+      doci=mwt.getMt().getTDocs().get(typeN-1);
+      }
+    if(typeN<0){
+      ti=new NormType(Mdf.Immutable,mwt.getMt().getExceptions().get((typeN*-1)-1),Ph.None);
+      //TODO: doci=?? add docs for exceptions, return type and implements
+      }
+    return typeReport(p.addAtTop(that), ti,path,doci);
+    }
+  private static ClassB typeReport(Program p,Type ti, List<String> src, Doc doc){
+    p=p.navigateInTo(src);
     NormType normTi=(ti instanceof NormType)?(NormType)ti:null;
     NormType resolvedTi=null;
     try{resolvedTi=Norm.of(p, ti);}catch(ErrorMessage.NormImpossible ni){}
-    TypeKind tk = getTypeKind(path,ti, resolvedTi);
+    TypeKind tk = getTypeKind(src,ti, resolvedTi);
     Mdf mdf=(normTi!=null)?normTi.getMdf():Mdf.Immutable;
     Mdf resMdf=(resolvedTi!=null)?resolvedTi.getMdf():Mdf.Immutable;
     Path pi=(normTi!=null)?normTi.getPath():((Ast.HistoricType)ti).getPath();
@@ -132,11 +137,9 @@ public class Introspection {//TODO: we keep 5 methods, but we merge the PathRepo
     boolean ph=(normTi!=null)?normTi.getPh()==Ph.Ph:((Ast.HistoricType)ti).isForcePlaceholder();
     boolean resPh=(resolvedTi!=null)?resolvedTi.getPh()==Ph.Ph:ph;
     String suffix=(ti instanceof Ast.HistoricType)?selectorsToString(((Ast.HistoricType)ti).getSelectors()):"";
-    String parName=(typeN>0)?mwt.getMs().getNames().get(typeN-1):"";
-    Doc doc=mwt.getDoc();
     String allAsString=ToFormattedText.of(ti);
-    return typeReport(path, tk, mdf, resMdf, dPi, dResPi, ph, resPh, suffix, parName, doc, allAsString);
-    }
+    return typeReport(src, tk, mdf, resMdf, dPi, dResPi, ph, resPh, suffix, doc, allAsString);
+  }
 
   //private static boolean isExternal(List<String>path,Path pi){return pi.isPrimitive()||pi.outerNumber()>path.size(); }
   private static TypeKind getTypeKind(List<String>path,Type ti, NormType resolvedTi) {
@@ -165,7 +168,7 @@ public class Introspection {//TODO: we keep 5 methods, but we merge the PathRepo
     return result;
   }
 
-  private static ClassB typeReport(List<String> path, TypeKind kind, Mdf mdf, Mdf resMdf, Doc pi, Doc resPi, boolean ph, boolean resPh, String suffix, String parName, Doc doc, String allAsString) throws Error {
+  private static ClassB typeReport(List<String> path, TypeKind kind, Mdf mdf, Mdf resMdf, Doc pi, Doc resPi, boolean ph, boolean resPh, String suffix,  Doc doc, String allAsString) throws Error {
     assert mdf!=null && resMdf!=null;
     return Resources.Error.multiPartStringClassB("TypeReport",
       "TypeKind",""+kind,//:Normal, Alias, AliasUnresolvable

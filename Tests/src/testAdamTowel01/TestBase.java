@@ -124,6 +124,24 @@ public class TestBase {
        ,"Iteration complete"
         ));
     }
+  @Test
+  public  void _09introspection3() throws Throwable{
+    TestHelper.configureForTest();
+    L42.main(new String[]{"examples/testsForAdamTowel01/UseIntrospectionAdamTowel3.L42"});
+    Assert.assertEquals(L42.record.toString(),TestHelper.multiLine(
+        "fuffa @a beer @Outer1::External bar @::Internal fuzz"
+       ,""
+       ,"a"
+       ,"Report plgFailure as PluginFailure[SafeOperators.introspectLibraryDocPath]"
+       ,"Iteration complete"
+       ,"Outer1::External"
+       ,"External found"
+       ,"Iteration complete"
+       ,"::Internal"
+       ,"Report plgFailure as PluginFailure[SafeOperators.introspectLibraryDocPath]"
+       ,"Iteration complete"
+        ));
+    }
   }
 
 //  Kind:MethodClash

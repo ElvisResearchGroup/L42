@@ -1,0 +1,19 @@
+{reuse L42.is/AdamTowel01
+External:{ type method Library (){
+  method Void m1()
+  method Library m2()
+  method Any m3()
+  method Outer0 m4()
+  method External m5()
+  }}
+'Generated: External()
+Main:{
+  i2=Introspection(lib:External())
+  with meth in i2.methods().vals() (
+    Debug(meth)
+    ti=meth.returnType()
+    ti.report().dbg()
+    )
+  return ExitCode.normal()
+  }
+}
