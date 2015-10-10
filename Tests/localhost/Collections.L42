@@ -3,7 +3,7 @@ type method
 Library generateVector(type Any that, Library lib) (
   Void unused=(
     Library res=lib
-    mut Outer0::Varres1__32_1 varres=Outer0::Varres1__32_1.#apply(inner:res)
+    mut Outer0::Varres1__33_1 varres=Outer0::Varres1__33_1.#apply(inner:res)
     Void unused0=varres.inner(that:Outer0::PrImpl::Refactor::RenamePath.#begin().#add(that:Outer0::PrImpl::Path.#stringParser(that:{'@stringU
     'VectorStruct
     }), to:Outer0::PrImpl::Path.#stringParser(that:{'@stringU
@@ -967,6 +967,12 @@ Outer1 #subString()
 read method 
 Outer1 subString() }
 method 
+Outer1::Bool contains(Outer0 that) 
+method 
+Outer1::Bool isASCIILowerCase(Outer1::N that) 
+method 
+Outer1::Bool isASCIIUpperCase(Outer1::N that) 
+method 
 Outer1::N size() 
 type method 
 Outer0 doubleQuote() 
@@ -1015,6 +1021,16 @@ type method
 Void #apply(Library lib) 
 type method 
 Void #apply(Outer1::S::ToS fileName, Outer1::S::ToS content) }
+Varres1__33_1:'@private
+{
+type method 
+mut Outer0 #apply(Library^inner) 
+mut method 
+Void inner(Library that) 
+mut method 
+Library #inner() 
+read method 
+Library inner() }
 PrImpl:'@private
 {
 Report:{interface <:Outer2::S::ToS
@@ -1043,11 +1059,11 @@ method toS() Outer3::S.#stringParser(that:{'@stringU
 })}
 InvalidOnTopLevel:{<:Outer1, Outer3::S::ToS
 type method 
-Outer0 #apply(Outer2::Introspection::Record^report) 
+Outer0 #apply(Outer2::Introspection::Record^record) 
 mut method 
-Outer2::Introspection::Record #report() 
+Outer2::Introspection::Record #record() 
 read method 
-Outer2::Introspection::Record report() 
+Outer2::Introspection::Record record() 
 method toS() Outer3::S.#stringParser(that:{'@stringU
 'InvalidOnTopLevel
 })}
@@ -1087,11 +1103,11 @@ Outer0 nonExistentMethod(Outer2::Path path, Outer2::Selector selector) Outer0.#a
 'NonExistentMethod
 })))
 type method 
-Outer0 #apply(Outer2::Introspection::Record report) Outer0.#apply(path:Outer2::Path.fromS(that:report.#stringParser(that:{'@stringU
+Outer0 #apply(Outer2::Introspection::Record record) Outer0.#apply(path:Outer2::Path.fromS(that:record.#stringParser(that:{'@stringU
 'Path
-})), _selector:report.#stringParser(that:{'@stringU
+})), _selector:record.#stringParser(that:{'@stringU
 'Selector
-}), invalidKind:Outer0::InvalidKind.#apply(inner:report.#stringParser(that:{'@stringU
+}), invalidKind:Outer0::InvalidKind.#apply(inner:record.#stringParser(that:{'@stringU
 'InvalidKind
 })))
 method 
@@ -1167,32 +1183,32 @@ Outer4::S inner()
 method toS() this.inner()}}
 SourceUnfit:{<:Outer1, Outer3::S::ToS
 type method 'TODO: here, when typechecking introspection, for bug introspection can not see itself back. fix tomorrow. ADDED Has been fixed?
-Outer0 #apply(Outer2::Introspection::Record^report) 
+Outer0 #apply(Outer2::Introspection::Record^record) 
 mut method 'TODO: here, when typechecking introspection, for bug introspection can not see itself back. fix tomorrow. ADDED Has been fixed?
-Outer2::Introspection::Record #report() 
+Outer2::Introspection::Record #record() 
 read method 'TODO: here, when typechecking introspection, for bug introspection can not see itself back. fix tomorrow. ADDED Has been fixed?
-Outer2::Introspection::Record report() 
+Outer2::Introspection::Record record() 
 method toS() Outer3::S.#stringParser(that:{'@stringU
 'SourceUnfit
 })}
 ClassClash:{'findMeClassClash
 <:Outer1, Outer3::S::ToS
 type method 
-Outer0 #apply(Outer2::Introspection::Record^report) 
+Outer0 #apply(Outer2::Introspection::Record^record) 
 mut method 
-Outer2::Introspection::Record #report() 
+Outer2::Introspection::Record #record() 
 read method 
-Outer2::Introspection::Record report() 
+Outer2::Introspection::Record record() 
 method toS() Outer3::S.#stringParser(that:{'@stringU
 'ClassClash
 })}
 MethodClash:{<:Outer1, Outer3::S::ToS
 type method 
-Outer0 #apply(Outer2::Introspection::Record^report) 
+Outer0 #apply(Outer2::Introspection::Record^record) 
 mut method 
-Outer2::Introspection::Record #report() 
+Outer2::Introspection::Record #record() 
 read method 
-Outer2::Introspection::Record report() 
+Outer2::Introspection::Record record() 
 method toS() Outer3::S.#stringParser(that:{'@stringU
 'MethodClash
 })}
@@ -1401,27 +1417,27 @@ Library #leftleft(Library that) exception Outer2::Report::MemberUnavailable, Out
     Void unused0=return Outer2::SafeOperators.renameClass(that:that, src:this.that(), dest:this.to())
     catch error err (
       on Library (
-        Outer2::Introspection::#apply(lib ) ::report() report=Outer2::Introspection.#apply(lib:err).report()
+        Outer2::Introspection::#apply(lib ) ::record() record=Outer2::Introspection.#apply(lib:err).record()
         (
-          Outer2::Introspection::#apply(lib ) ::report() ::#stringParser(that ) x=report.#stringParser(that:{'@stringU
+          Outer2::Introspection::#apply(lib ) ::record() ::#stringParser(that ) x=record.#stringParser(that:{'@stringU
           'Kind
           })
           (
-            Outer2::Introspection::#apply(lib ) ::report() ::#stringParser(that ) ::#equalequal(that ) cond=x.#equalequal(that:Outer3::S.#stringParser(that:{'@stringU
+            Outer2::Introspection::#apply(lib ) ::record() ::#stringParser(that ) ::#equalequal(that ) cond=x.#equalequal(that:Outer3::S.#stringParser(that:{'@stringU
             'MemberUnavailable
             }))
             (
               Void unused1=cond.#checkTrue()
               catch exception unused2 (
                 on Void (
-                  Outer2::Introspection::#apply(lib ) ::report() ::#stringParser(that ) ::#equalequal(that ) cond0=x.#equalequal(that:Outer3::S.#stringParser(that:{'@stringU
+                  Outer2::Introspection::#apply(lib ) ::record() ::#stringParser(that ) ::#equalequal(that ) cond0=x.#equalequal(that:Outer3::S.#stringParser(that:{'@stringU
                   'MethodClash
                   }))
                   (
                     Void unused3=cond0.#checkTrue()
                     catch exception unused4 (
                       on Void (
-                        Outer2::Introspection::#apply(lib ) ::report() ::#stringParser(that ) ::#equalequal(that ) cond1=x.#equalequal(that:Outer3::S.#stringParser(that:{'@stringU
+                        Outer2::Introspection::#apply(lib ) ::record() ::#stringParser(that ) ::#equalequal(that ) cond1=x.#equalequal(that:Outer3::S.#stringParser(that:{'@stringU
                         'ClassClash
                         }))
                         (
@@ -1429,15 +1445,15 @@ Library #leftleft(Library that) exception Outer2::Report::MemberUnavailable, Out
                           catch exception unused6 (
                             on Void error err
                             )
-                          exception Outer2::Report::ClassClash.#apply(report:report)
+                          exception Outer2::Report::ClassClash.#apply(record:record)
                           )
                         )
                       )
-                    exception Outer2::Report::MethodClash.#apply(report:report)
+                    exception Outer2::Report::MethodClash.#apply(record:record)
                     )
                   )
                 )
-              exception Outer2::Report::MemberUnavailable.#apply(report:report)
+              exception Outer2::Report::MemberUnavailable.#apply(record:record)
               )
             )
           )
@@ -1473,34 +1489,34 @@ Library #leftleft(Library that) exception Outer2::Report::MemberUnavailable, Out
     Void unused0=return Outer2::SafeOperators.redirect(that:that, src:this.that(), dest:this.to())
     catch error err (
       on Library (
-        Outer2::Introspection::#apply(lib ) ::report() report=Outer2::Introspection.#apply(lib:err).report()
+        Outer2::Introspection::#apply(lib ) ::record() record=Outer2::Introspection.#apply(lib:err).record()
         (
-          Outer2::Introspection::#apply(lib ) ::report() ::#stringParser(that ) x=report.#stringParser(that:{'@stringU
+          Outer2::Introspection::#apply(lib ) ::record() ::#stringParser(that ) x=record.#stringParser(that:{'@stringU
           'Kind
           })
           (
-            Outer2::Introspection::#apply(lib ) ::report() ::#stringParser(that ) ::#equalequal(that ) cond=x.#equalequal(that:Outer3::S.#stringParser(that:{'@stringU
+            Outer2::Introspection::#apply(lib ) ::record() ::#stringParser(that ) ::#equalequal(that ) cond=x.#equalequal(that:Outer3::S.#stringParser(that:{'@stringU
             'MemberUnavailable
             }))
             (
               Void unused1=cond.#checkTrue()
               catch exception unused2 (
                 on Void (
-                  Outer2::Introspection::#apply(lib ) ::report() ::#stringParser(that ) ::#equalequal(that ) cond0=x.#equalequal(that:Outer3::S.#stringParser(that:{'@stringU
+                  Outer2::Introspection::#apply(lib ) ::record() ::#stringParser(that ) ::#equalequal(that ) cond0=x.#equalequal(that:Outer3::S.#stringParser(that:{'@stringU
                   'InvalidOnTopLevel
                   }))
                   (
                     Void unused3=cond0.#checkTrue()
                     catch exception unused4 (
                       on Void (
-                        Outer2::Introspection::#apply(lib ) ::report() ::#stringParser(that ) ::#equalequal(that ) cond1=x.#equalequal(that:Outer3::S.#stringParser(that:{'@stringU
+                        Outer2::Introspection::#apply(lib ) ::record() ::#stringParser(that ) ::#equalequal(that ) cond1=x.#equalequal(that:Outer3::S.#stringParser(that:{'@stringU
                         'MethodClash
                         }))
                         (
                           Void unused5=cond1.#checkTrue()
                           catch exception unused6 (
                             on Void (
-                              Outer2::Introspection::#apply(lib ) ::report() ::#stringParser(that ) ::#equalequal(that ) cond2=x.#equalequal(that:Outer3::S.#stringParser(that:{'@stringU
+                              Outer2::Introspection::#apply(lib ) ::record() ::#stringParser(that ) ::#equalequal(that ) cond2=x.#equalequal(that:Outer3::S.#stringParser(that:{'@stringU
                               'SourceUnfit
                               }))
                               (
@@ -1508,19 +1524,19 @@ Library #leftleft(Library that) exception Outer2::Report::MemberUnavailable, Out
                                 catch exception unused8 (
                                   on Void error err
                                   )
-                                exception Outer2::Report::SourceUnfit.#apply(report:report)
+                                exception Outer2::Report::SourceUnfit.#apply(record:record)
                                 )
                               )
                             )
-                          exception Outer2::Report::MethodClash.#apply(report:report)
+                          exception Outer2::Report::MethodClash.#apply(record:record)
                           )
                         )
                       )
-                    exception Outer2::Report::InvalidOnTopLevel.#apply(report:report)
+                    exception Outer2::Report::InvalidOnTopLevel.#apply(record:record)
                     )
                   )
                 )
-              exception Outer2::Report::MemberUnavailable.#apply(report:report)
+              exception Outer2::Report::MemberUnavailable.#apply(record:record)
               )
             )
           )
@@ -1556,6 +1572,16 @@ Outer0::NestedClass #apply(Library lib) (
   )
 type method 
 Outer0::NestedClass #apply(Library lib, Outer1::Path path) exception Outer1::Report::MemberUnavailable Outer0.#apply(lib:lib).nestedClassFromRoot(that:path)
+type method 
+Outer0::NestedClass #apply(type Any clazz) (
+  Outer0::MirrorPr::Class::#apply(lib ) ::introspectReport(root path ) root=Outer0::MirrorPr::Class.#apply(lib:clazz).introspectReport(root:root, path:Outer1::Path.#stringParser(that:{'@stringU
+  'Outer0
+  }))
+  catch exception x (
+    on Outer1::Report::MemberUnavailable error Outer1::Report::CodeNotReachable.#apply()
+    )
+  root
+  )
 Record:{
 type method 
 Outer0 #apply(Outer1::MirrorPr^that) 
@@ -1564,7 +1590,9 @@ Outer1::MirrorPr #that()
 read method 
 Outer1::MirrorPr that() 
 type method 
-Outer0 #apply(Library lib) Outer0.#apply(that:Outer1.#apply(lib:lib).mirror())
+Outer0 #apply(type Any clazz) Outer0.#apply(that:Outer1::MirrorPr::Class.#apply(lib:clazz))
+type method 
+Outer0 #apply(Library lib) Outer0.#apply(that:Outer1::MirrorPr::Lib.#apply(lib:lib))
 method 
 Void dbg() (
   Outer0::that() x=this.that()
@@ -1647,8 +1675,8 @@ Outer2::Doc docOf(Outer2::Path path) (
   }
   )
 type method 
-Outer1::Member dispatch(Outer1::NestedClass^root, Outer2::Path path, Outer1::MirrorPr mirror, Outer3::N memberN, Library report) (
-  Outer0::#apply(lib ) _report=Outer0.#apply(lib:report)
+Outer1::Member dispatch(Outer1::NestedClass^root, Outer2::Path path, Outer1::MirrorPr mirror, Outer3::N memberN, Library record) (
+  Outer0::#apply(lib ) _report=Outer0.#apply(lib:record)
   Outer0::RootForMember result=(
     Void unused=(
       Void unused0=(
@@ -1736,7 +1764,7 @@ mut method
 Outer1 #_report() 
 read method 
 Outer1 _report() 
-method #apply(root ) Outer2::Method.#apply(root:root, path:this.path(), memberN:this.memberN(), report:this._report())}
+method #apply(root ) Outer2::Method.#apply(root:root, path:this.path(), memberN:this.memberN(), record:this._report())}
 RootForNested:' toPutAs private
 {<:Outer1::RootForMember
 type method 
@@ -1758,12 +1786,139 @@ method #apply(root ) ('Debug(S"logRootForNested")
   Outer3::Path::#stringParser(that ) path=Outer3::Path.#stringParser(that:this._report().#stringParser(that:{'@stringU
   'Key
   }).binaryRepr())
-  Outer2::NestedClass.#apply(root:root, path:path, mirror:this.mirror(), report:this._report())
+  Outer2::NestedClass.#apply(root:root, path:path, mirror:this.mirror(), record:this._report())
   )}}
+MirrorPr:{interface 
+Lib:{<:Outer1
+type method 
+Outer0 #apply(Library^lib) 
+mut method 
+Library #lib() 
+read method 
+Library lib() 
+method introspectReport(root path ) (
+  Outer2::NestedClass::#apply(root path mirror record ) result=Outer2::NestedClass.#apply(root:root, path:path, mirror:this, record:Outer2::Record.#apply(that:Outer0.#apply(lib:using Outer3::SafeOperators check introspectLibraryReport(that:this.lib(), path:path.binaryRepr()) error Outer3::Report::PluginFailure.#stringParser(that:{'@stringU
+  'SafeOperators.introspectLibraryReport
+  }))))
+  catch error x (
+    on Library exception Outer3::Report::MemberUnavailable.#apply(record:Outer2::Record.#apply(lib:x))
+    )
+  result
+  )
+method introspectReportMember(root path memberN ) (
+  Outer2::Record::dispatch(root path mirror memberN record ) result=Outer2::Record.dispatch(root:root, path:path, mirror:this, memberN:memberN, record:using Outer3::SafeOperators check introspectLibraryReportMember(that:this.lib(), path:path.binaryRepr(), memberN:memberN.binaryRepr()) exception void)
+  catch error x (
+    on Library exception Outer3::Report::MemberUnavailable.#apply(record:Outer2::Record.#apply(lib:x))
+    )
+  result
+  )
+method introspectReportType(root path memberN typeN ) (
+  Outer2::Type::#apply(root path memberN typeN record ) result=Outer2::Type.#apply(root:root, path:path, memberN:memberN, typeN:typeN, record:Outer2::Record.#apply(that:Outer0.#apply(lib:using Outer3::SafeOperators check introspectLibraryReportType(that:this.lib(), path:path.binaryRepr(), memberN:memberN.binaryRepr(), typeN:typeN.binaryRepr()) exception void)))
+  catch error x (
+    on Library exception Outer3::Report::MemberUnavailable.#apply(record:Outer2::Record.#apply(lib:x))
+    )
+  result
+  )
+method introspectDocAsString(path annotationN ) (
+  Outer4::S::#stringParser(that ) result=Outer4::S.#stringParser(that:using Outer3::SafeOperators check introspectLibraryDocAsString(that:this.lib(), path:path.binaryRepr(), annotationN:annotationN.binaryRepr()) exception void)
+  catch error x (
+    on Library exception Outer3::Report::MemberUnavailable.#apply(record:Outer2::Record.#apply(lib:x))
+    )
+  result
+  )
+method introspectDocAsString(path ) (
+  Outer4::S::#stringParser(that ) result=Outer4::S.#stringParser(that:using Outer3::SafeOperators check introspectLibraryDocAsString(that:this.lib(), path:path.binaryRepr(), annotationN:Outer4::N.#numberParser(that:{'@stringU
+  '0
+  }).binaryRepr()) error Outer3::Report::PluginFailure.#stringParser(that:{'@stringU
+  'SafeOperators.introspectLibraryDocAsString
+  }))
+  catch error x (
+    on Library exception Outer3::Report::MemberUnavailable.#apply(record:Outer2::Record.#apply(lib:x))
+    )
+  result
+  )
+method introspectDocPath(path annotationN ) (
+  type Any result=using Outer3::SafeOperators check introspectLibraryDocPath(that:this.lib(), path:path.binaryRepr(), annotationN:annotationN.binaryRepr()) error Outer3::Report::PluginFailure.#stringParser(that:{'@stringU
+  'SafeOperators.introspectLibraryDocPath
+  })
+  catch error x (
+    on Library exception Outer3::Report::MemberUnavailable.#apply(record:Outer2::Record.#apply(lib:x))
+    )
+  result
+  )}
+Class:{<:Outer1
+type method 
+Outer0 #apply(type Any^lib) 
+mut method 
+type Any #lib() 
+read method 
+type Any lib() 
+method introspectReport(root path ) (
+  Outer2::NestedClass::#apply(root path mirror record ) result=Outer2::NestedClass.#apply(root:root, path:path, mirror:this, record:Outer2::Record.#apply(that:Outer1::Lib.#apply(lib:using Outer3::SafeOperators check introspectTypeReport(that:this.lib(), path:path.binaryRepr()) error Outer3::Report::PluginFailure.#stringParser(that:{'@stringU
+  'SafeOperators.introspectTypeReport
+  }))))
+  catch error x (
+    on Library exception Outer3::Report::MemberUnavailable.#apply(record:Outer2::Record.#apply(lib:x))
+    )
+  result
+  )
+method introspectReportMember(root path memberN ) (
+  Outer2::Record::dispatch(root path mirror memberN record ) result=Outer2::Record.dispatch(root:root, path:path, mirror:this, memberN:memberN, record:using Outer3::SafeOperators check introspectTypeReportMember(that:this.lib(), path:path.binaryRepr(), memberN:memberN.binaryRepr()) exception void)
+  catch error x (
+    on Library exception Outer3::Report::MemberUnavailable.#apply(record:Outer2::Record.#apply(lib:x))
+    )
+  result
+  )
+method introspectReportType(root path memberN typeN ) (
+  Outer2::Type::#apply(root path memberN typeN record ) result=Outer2::Type.#apply(root:root, path:path, memberN:memberN, typeN:typeN, record:Outer2::Record.#apply(that:Outer1::Lib.#apply(lib:using Outer3::SafeOperators check introspectTypeReportType(that:this.lib(), path:path.binaryRepr(), memberN:memberN.binaryRepr(), typeN:typeN.binaryRepr()) exception void)))
+  catch error x (
+    on Library exception Outer3::Report::MemberUnavailable.#apply(record:Outer2::Record.#apply(lib:x))
+    )
+  result
+  )
+method introspectDocAsString(path annotationN ) (
+  Outer4::S::#stringParser(that ) result=Outer4::S.#stringParser(that:using Outer3::SafeOperators check introspectTypeDocAsString(that:this.lib(), path:path.binaryRepr(), annotationN:annotationN.binaryRepr()) exception void)
+  catch error x (
+    on Library exception Outer3::Report::MemberUnavailable.#apply(record:Outer2::Record.#apply(lib:x))
+    )
+  result
+  )
+method introspectDocAsString(path ) (
+  Outer4::S::#stringParser(that ) result=Outer4::S.#stringParser(that:using Outer3::SafeOperators check introspectTypeDocAsString(that:this.lib(), path:path.binaryRepr(), annotationN:Outer4::N.#numberParser(that:{'@stringU
+  '0
+  }).binaryRepr()) error Outer3::Report::PluginFailure.#stringParser(that:{'@stringU
+  'SafeOperators.introspectTypeDocAsString
+  }))
+  catch error x (
+    on Library exception Outer3::Report::MemberUnavailable.#apply(record:Outer2::Record.#apply(lib:x))
+    )
+  result
+  )
+method introspectDocPath(path annotationN ) (
+  type Any result=using Outer3::SafeOperators check introspectTypeDocPath(that:this.lib(), path:path.binaryRepr(), annotationN:annotationN.binaryRepr()) error Outer3::Report::PluginFailure.#stringParser(that:{'@stringU
+  'SafeOperators.introspectTypeDocPath
+  })
+  catch error x (
+    on Library exception Outer3::Report::MemberUnavailable.#apply(record:Outer2::Record.#apply(lib:x))
+    )
+  result
+  )}
+method 
+Outer1::NestedClass introspectReport(Outer1::NestedClass^root, Outer2::Path path) exception Outer2::Report::MemberUnavailable 
+method 
+Outer1::Member introspectReportMember(Outer1::NestedClass^root, Outer2::Path path, Outer3::N memberN) exception Outer2::Report::MemberUnavailable, Void 
+method 
+Outer1::Type introspectReportType(Outer1::NestedClass^root, Outer2::Path path, Outer3::N memberN, Outer3::N typeN) exception Outer2::Report::MemberUnavailable, Void 
+method 
+Outer3::S introspectDocAsString(Outer2::Path path) exception Outer2::Report::MemberUnavailable 
+method 
+Outer3::S introspectDocAsString(Outer2::Path path, Outer3::N annotationN) exception Outer2::Report::MemberUnavailable, Void 
+method 
+type Any introspectDocPath(Outer2::Path path, Outer3::N annotationN) exception Outer2::Report::MemberUnavailable, Void }
 NestedClass:{'findMeNestedClass
 <:Outer1::Member, Outer3::S::ToS
 type method 
-Outer0 #apply(Outer0^root, Outer2::Path^path, Outer1::MirrorPr^mirror, Outer1::Record^report) 
+Outer0 #apply(Outer0^root, Outer2::Path^path, Outer1::MirrorPr^mirror, Outer1::Record^record) 
 mut method 
 Outer0 #root() 
 read method 
@@ -1777,9 +1932,9 @@ Outer1::MirrorPr #mirror()
 read method 
 Outer1::MirrorPr mirror() 
 mut method 
-Outer1::Record #report() 
+Outer1::Record #record() 
 read method 
-Outer1::Record report() 
+Outer1::Record record() 
 method toS() Outer3::S.#stringParser(that:{'@stringU
 'NestedClass[
 }).#begin().#add(that:this.allAsString()).#end().#stringParser(that:{'@stringU
@@ -1801,12 +1956,12 @@ Outer2::Doc nestedDoc() (
       })
       )
     )
-  this.report().docOf(path:Outer2::Path.#stringParser(that:{'@stringU
+  this.record().docOf(path:Outer2::Path.#stringParser(that:{'@stringU
   'MemberDoc
   }))
   )
 method 'of the library literal
-Outer2::Doc doc() this.report().docOf(path:Outer2::Path.#stringParser(that:{'@stringU
+Outer2::Doc doc() this.record().docOf(path:Outer2::Path.#stringParser(that:{'@stringU
 'Doc
 }))
 method 
@@ -1831,7 +1986,7 @@ type Any externalType() (
         )
       )
     Void unused1=(
-      Outer0::report() mirror=this.report()
+      Outer0::record() mirror=this.record()
       (
         Outer1::MirrorPr::Class mirror0=(
           Void unused4=return mirror
@@ -1865,11 +2020,11 @@ type Any externalType() (
   }
   )
 method 
-Outer3::S classKind() this.report().#stringParser(that:{'@stringU
+Outer3::S classKind() this.record().#stringParser(that:{'@stringU
 'ClassKind
 })
 method 
-Outer3::S allAsString() this.report().#stringParser(that:{'@stringU
+Outer3::S allAsString() this.record().#stringParser(that:{'@stringU
 'AllAsString
 })
 method 
@@ -1878,8 +2033,8 @@ Outer1::Members members() (
   Outer3::N::#numberParser(that ) mN=Outer3::N.#numberParser(that:{'@stringU
   '1
   })
-  mut Outer0::Varresult2__18_1 varresult=Outer0::Varresult2__18_1.#apply(inner:result)
-  mut Outer0::VarmN__17_1 varmN=Outer0::VarmN__17_1.#apply(inner:mN)
+  mut Outer0::Varresult2__19_1 varresult=Outer0::Varresult2__19_1.#apply(inner:result)
+  mut Outer0::VarmN__18_1 varmN=Outer0::VarmN__18_1.#apply(inner:mN)
   Void unused=(
     Void unused0=loop (
       Void unused1=Outer3::Bool.true().#checkTrue()
@@ -1904,7 +2059,7 @@ Outer1::Members members() (
 method 
 Outer1::Methods methods() (
   Outer1::Methods::#begin() accumulator=Outer1::Methods.#begin()
-  mut Outer0::Varaccumulator__19_1 varaccumulator=Outer0::Varaccumulator__19_1.#apply(inner:accumulator)
+  mut Outer0::Varaccumulator__20_1 varaccumulator=Outer0::Varaccumulator__20_1.#apply(inner:accumulator)
   Void unused=(
     Outer0::members() ::vals() m=this.members().vals()
     (
@@ -1972,7 +2127,7 @@ Outer1::Methods methods() (
 method 
 Outer1::NestedClasses nestedClasses() (
   Outer1::NestedClasses::#begin() accumulator=Outer1::NestedClasses.#begin()
-  mut Outer0::Varaccumulator0__20_1 varaccumulator=Outer0::Varaccumulator0__20_1.#apply(inner:accumulator)
+  mut Outer0::Varaccumulator0__21_1 varaccumulator=Outer0::Varaccumulator0__21_1.#apply(inner:accumulator)
   Void unused=(
     Outer0::members() ::vals() m=this.members().vals()
     (
@@ -2043,14 +2198,14 @@ Outer1::Types implementedInterfaces() (
   Outer3::N::#numberParser(that ) tN=Outer3::N.#numberParser(that:{'@stringU
   '-1
   })
-  mut Outer0::Varresult3__22_1 varresult=Outer0::Varresult3__22_1.#apply(inner:result)
-  mut Outer0::VartN__21_1 vartN=Outer0::VartN__21_1.#apply(inner:tN)
+  mut Outer0::Varresult3__23_1 varresult=Outer0::Varresult3__23_1.#apply(inner:result)
+  mut Outer0::VartN__22_1 vartN=Outer0::VartN__22_1.#apply(inner:tN)
   Void unused=(
     Void unused0=loop (
       Void unused1=Outer3::Bool.true().#checkTrue()
       (' to be able to break
       
-        Void unused2=varresult.inner(that:varresult.#inner().#add(that:this.report().that().introspectReportType(root:this, path:this.path(), memberN:Outer3::N.#numberParser(that:{'@stringU
+        Void unused2=varresult.inner(that:varresult.#inner().#add(that:this.record().that().introspectReportType(root:this, path:this.path(), memberN:Outer3::N.#numberParser(that:{'@stringU
         '0
         }), typeN:vartN.#inner())))
         vartN.inner(that:vartN.#inner().#less(that:Outer3::N.#numberParser(that:{'@stringU
@@ -2155,42 +2310,46 @@ Outer3::Bool has(Outer2::Selector selector) (
   }
   )
 method 
-Outer0 nestedClassFromRoot(Outer2::Path that) exception Outer2::Report::MemberUnavailable this.mirror().introspectReport(root:this.root(), path:that)
+Outer0 nestedClassFromRoot(Outer2::Path that) exception Outer2::Report::MemberUnavailable (
+  Void unused=(
+    Void unused0=(
+      Outer2::Path::#equalequal(that ) cond=that.#equalequal(that:Outer2::Path.#stringParser(that:{'@stringU
+      'Outer0
+      }))
+      (
+        Void unused3=cond.#checkTrue()
+        catch exception unused4 (
+          on Void void
+          )
+        return this.root()
+        )
+      )
+    Outer0::record() ::docOf(path ) ::annotations() ::top() myClass=this.record().docOf(path:Outer2::Path.#stringParser(that:{'@stringU
+    'MyClass
+    })).annotations().top()
+    Void unused1=(
+      Outer0::record() ::docOf(path ) ::annotations() ::top() ::hasReferredClass() ::#bang() cond0=myClass.hasReferredClass().#bang()
+      (
+        Void unused5=cond0.#checkTrue()
+        catch exception unused6 (
+          on Void void
+          )
+        return this.mirror().introspectReport(root:this.root(), path:that)
+        )
+      )
+    Void unused2=return Outer1.#apply(clazz:myClass.referredClass())
+    void
+    )
+  catch return result (
+    on Outer0 result
+    )
+  error {'@stringU
+  'CurlyBlock-Should be unreachable code
+  }
+  )
 method 
 Outer3::Bool has(Outer2::Path pathFromRoot) error Outer2::Report::NotImplementedYet.#apply()
-VarmN__17_1:'@private
-{
-type method 
-mut Outer0 #apply(Outer4::N::#numberParser(that ) ^inner) 
-mut method 
-Void inner(Outer4::N::#numberParser(that ) that) 
-mut method 
-Outer4::N::#numberParser(that ) #inner() }
-Varresult2__18_1:'@private
-{
-type method 
-mut Outer0 #apply(Outer2::Members::#begin() ::#end() ^inner) 
-mut method 
-Void inner(Outer2::Members::#begin() ::#end() that) 
-mut method 
-Outer2::Members::#begin() ::#end() #inner() }
-Varresult3__22_1:'@private
-{
-type method 
-mut Outer0 #apply(Outer2::Types::#begin() ::#end() ^inner) 
-mut method 
-Void inner(Outer2::Types::#begin() ::#end() that) 
-mut method 
-Outer2::Types::#begin() ::#end() #inner() }
-Varaccumulator__19_1:'@private
-{
-type method 
-mut Outer0 #apply(Outer2::Methods::#begin() ^inner) 
-mut method 
-Void inner(Outer2::Methods::#begin() that) 
-mut method 
-Outer2::Methods::#begin() #inner() }
-Varaccumulator0__20_1:'@private
+Varaccumulator0__21_1:'@private
 {
 type method 
 mut Outer0 #apply(Outer2::NestedClasses::#begin() ^inner) 
@@ -2198,97 +2357,704 @@ mut method
 Void inner(Outer2::NestedClasses::#begin() that) 
 mut method 
 Outer2::NestedClasses::#begin() #inner() }
-VartN__21_1:'@private
+VarmN__18_1:'@private
 {
 type method 
 mut Outer0 #apply(Outer4::N::#numberParser(that ) ^inner) 
 mut method 
 Void inner(Outer4::N::#numberParser(that ) that) 
 mut method 
-Outer4::N::#numberParser(that ) #inner() }}
-MirrorPr:{interface 
-Lib:{<:Outer1
+Outer4::N::#numberParser(that ) #inner() }
+VartN__22_1:'@private
+{
 type method 
-Outer0 #apply(Library^lib) 
+mut Outer0 #apply(Outer4::N::#numberParser(that ) ^inner) 
 mut method 
-Library #lib() 
+Void inner(Outer4::N::#numberParser(that ) that) 
+mut method 
+Outer4::N::#numberParser(that ) #inner() }
+Varresult2__19_1:'@private
+{
+type method 
+mut Outer0 #apply(Outer2::Members::#begin() ::#end() ^inner) 
+mut method 
+Void inner(Outer2::Members::#begin() ::#end() that) 
+mut method 
+Outer2::Members::#begin() ::#end() #inner() }
+Varresult3__23_1:'@private
+{
+type method 
+mut Outer0 #apply(Outer2::Types::#begin() ::#end() ^inner) 
+mut method 
+Void inner(Outer2::Types::#begin() ::#end() that) 
+mut method 
+Outer2::Types::#begin() ::#end() #inner() }
+Varaccumulator__20_1:'@private
+{
+type method 
+mut Outer0 #apply(Outer2::Methods::#begin() ^inner) 
+mut method 
+Void inner(Outer2::Methods::#begin() that) 
+mut method 
+Outer2::Methods::#begin() #inner() }}
+NestedClasses:{' generic linked list class, elements of type Elem
+
+type method 
+Outer0 _new(Outer0::Cell^head) 
+mut method 
+Outer0::Cell #head() 
 read method 
-Library lib() 
-method introspectReport(root path ) (
-  Outer2::NestedClass::#apply(root path mirror report ) result=Outer2::NestedClass.#apply(root:root, path:path, mirror:this, report:Outer2::Record.#apply(that:Outer0.#apply(lib:using Outer3::SafeOperators check introspectLibraryReport(that:this.lib(), path:path.binaryRepr()) error Outer3::Report::PluginFailure.#stringParser(that:{'@stringU
-  'SafeOperators.introspectReport
-  }))))
-  catch error x (
-    on Library exception Outer3::Report::MemberUnavailable.#apply(report:Outer2::Record.#apply(lib:x))
+Outer0::Cell head() 
+type method 
+Outer0 #apply() Outer0._new(head:Outer0::CellEnd.#apply())
+method 
+Outer3::Bool isEmpty() (
+  Void unused=(
+    Void unused0=(
+      Outer0::head() x=this.head()
+      (
+        Outer0::CellEnd x0=(
+          Void unused1=return x
+          catch return casted (
+            on Outer0::CellEnd casted
+            
+            on Any exception void
+            )
+          error {'@stringU
+          'CastT-Should be unreachable code
+          }
+          )
+        catch exception unused2 (
+          on Void return Outer3::Bool.false()
+          )
+        (
+          Void unused3=return Outer3::Bool.true()
+          void
+          )
+        )
+      )
+    void
     )
-  result
+  catch return result (
+    on Outer3::Bool result
+    )
+  error {'@stringU
+  'CurlyBlock-Should be unreachable code
+  }
   )
-method introspectReportMember(root path memberN ) (
-  Outer2::Record::dispatch(root path mirror memberN report ) result=Outer2::Record.dispatch(root:root, path:path, mirror:this, memberN:memberN, report:using Outer3::SafeOperators check introspectLibraryReportMember(that:this.lib(), path:path.binaryRepr(), memberN:memberN.binaryRepr()) exception void)
-  catch error x (
-    on Library exception Outer3::Report::MemberUnavailable.#apply(report:Outer2::Record.#apply(lib:x))
+method 
+Outer1::NestedClass top() this.head().#inner()
+method 
+mut Outer0::Iterator vals() this.head().vals(terminate:Outer3::Bool.true())
+method 
+mut Outer0::Iterator valsCut() this.head().vals(terminate:Outer3::Bool.false())
+method 
+Outer0 pop() (
+  Void unused=(
+    Void unused0=return Outer0._new(head:this.head().#next())
+    catch exception unused1 (
+      on Void error Outer2::Report::Misuse.#stringParser(that:{'@stringU
+      'PopOnEmpyList
+      })
+      )
+    void
     )
-  result
+  catch return result (
+    on Outer0 result
+    )
+  error {'@stringU
+  'CurlyBlock-Should be unreachable code
+  }
   )
-method introspectReportType(root path memberN typeN ) (
-  Outer2::Type::#apply(root path memberN typeN report ) result=Outer2::Type.#apply(root:root, path:path, memberN:memberN, typeN:typeN, report:Outer2::Record.#apply(that:Outer0.#apply(lib:using Outer3::SafeOperators check introspectLibraryReportType(that:this.lib(), path:path.binaryRepr(), memberN:memberN.binaryRepr(), typeN:typeN.binaryRepr()) exception void)))
-  catch error x (
-    on Library exception Outer3::Report::MemberUnavailable.#apply(report:Outer2::Record.#apply(lib:x))
+method 
+Outer0 #plusplus(Outer0 that) (
+  Void unused=(
+    Outer0 res=this
+    mut Outer0::Varres__24_1 varres=Outer0::Varres__24_1.#apply(inner:res)
+    Void unused0=(
+      Outer0::vals() e=that.vals()
+      (
+        Void unused2=(
+          Void unused3=(
+            Void unused4=loop (
+              Void unused5=e.#next()
+              catch exception unused6 (
+                on Void (
+                  Void unused7=(
+                    Void unused8=e.#checkEnd()
+                    catch exception unused9 (
+                      on Void void
+                      )
+                    void
+                    )
+                  exception void
+                  )
+                )
+              varres.inner(that:varres.#inner().#add(that:e.#inner()))
+              )
+            catch exception unused10 (
+              on Void void
+              )
+            void
+            )
+          catch exception propagated (
+            on Any (
+              Void unused11=e.#close()
+              exception propagated
+              )
+            )
+          void
+          )
+        catch return propagated0 (
+          on Outer0 (
+            Void unused12=e.#close()
+            return propagated0
+            )
+          )
+        e.#close()
+        )
+      )
+    Void unused1=return varres.#inner()
+    void
     )
-  result
+  catch return result (
+    on Outer0 result
+    )
+  error {'@stringU
+  'CurlyBlock-Should be unreachable code
+  }
   )
-method introspectDocAsString(path annotationN ) (
-  Outer4::S::#stringParser(that ) result=Outer4::S.#stringParser(that:using Outer3::SafeOperators check introspectLibraryDocAsString(that:this.lib(), path:path.binaryRepr(), annotationN:annotationN.binaryRepr()) exception void)
-  catch error x (
-    on Library exception Outer3::Report::MemberUnavailable.#apply(report:Outer2::Record.#apply(lib:x))
+type method 
+Outer0 #begin() Outer0.#apply()
+method 
+Outer0 #add(Outer1::NestedClass that) Outer0._new(head:Outer0::CellNext.#apply(elem:that, nextCell:this.head()))
+method 
+Outer0 #end() (
+  Outer0::#apply() res=Outer0.#apply()
+  mut Outer0::Varres0__25_1 varres=Outer0::Varres0__25_1.#apply(inner:res)
+  Void unused=(
+    Outer0::vals() elem=this.vals()
+    (
+      Void unused0=(
+        Void unused1=(
+          Void unused2=loop (
+            Void unused3=elem.#next()
+            catch exception unused4 (
+              on Void (
+                Void unused5=(
+                  Void unused6=elem.#checkEnd()
+                  catch exception unused7 (
+                    on Void void
+                    )
+                  void
+                  )
+                exception void
+                )
+              )
+            varres.inner(that:varres.#inner().#add(that:elem.#inner()))
+            )
+          catch exception unused8 (
+            on Void void
+            )
+          void
+          )
+        catch exception propagated (
+          on Any (
+            Void unused9=elem.#close()
+            exception propagated
+            )
+          )
+        void
+        )
+      catch return propagated0 (
+        on Any (
+          Void unused10=elem.#close()
+          return propagated0
+          )
+        )
+      elem.#close()
+      )
     )
-  result
+  varres.#inner()
   )
-method introspectDocAsString(path ) (
-  Outer4::S::#stringParser(that ) result=Outer4::S.#stringParser(that:using Outer3::SafeOperators check introspectLibraryDocAsString(that:this.lib(), path:path.binaryRepr(), annotationN:Outer4::N.#numberParser(that:{'@stringU
-  '0
-  }).binaryRepr()) error Outer3::Report::PluginFailure.#stringParser(that:{'@stringU
-  'SafeOperators.introspectLibraryDocAsString
-  }))
-  catch error x (
-    on Library exception Outer3::Report::MemberUnavailable.#apply(report:Outer2::Record.#apply(lib:x))
+Iterator:{
+type method 
+mut Outer0 #apply(Outer1::Cell^that, Outer4::Bool^terminate) 
+mut method 
+Void that(Outer1::Cell that) 
+mut method 
+Outer1::Cell #that() 
+read method 
+Outer1::Cell that() 
+mut method 
+Outer4::Bool #terminate() 
+read method 
+Outer4::Bool terminate() 
+mut method 
+Void #next() exception Void (
+  Void unused=(
+    Outer0::that() ::#next() x=this.that().#next()
+    Void unused0=(
+      Outer1::CellEnd x0=(
+        Void unused2=return x
+        catch return casted (
+          on Outer1::CellEnd casted
+          
+          on Any exception void
+          )
+        error {'@stringU
+        'CastT-Should be unreachable code
+        }
+        )
+      catch exception unused3 (
+        on Void void
+        )
+      (
+        Void unused4=exception void
+        void
+        )
+      )
+    Void unused1=return this.that(that:x)
+    void
     )
-  result
+  catch return result (
+    on Void result
+    )
+  error {'@stringU
+  'CurlyBlock-Should be unreachable code
+  }
   )
-method introspectDocPath(path annotationN ) (
-  type Any result=using Outer3::SafeOperators check introspectLibraryDocPath(that:this.lib(), path:path.binaryRepr(), annotationN:annotationN.binaryRepr()) error Outer3::Report::PluginFailure.#stringParser(that:{'@stringU
-  'SafeOperators.introspectLibraryDocPath
-  })
-  catch error x (
-    on Library exception Outer3::Report::MemberUnavailable.#apply(report:Outer2::Record.#apply(lib:x))
+read method 
+Void #checkEnd() (
+  Outer0::terminate() cond=this.terminate()
+  (
+    Void unused=cond.#checkTrue()
+    catch exception unused0 (
+      on Void void
+      )
+    this.that().#checkEnd()
     )
-  result
+  )
+read method 
+Outer2::NestedClass #inner() this.that().#inner()
+read method 
+Void #close() void}
+Varres0__25_1:'@private
+{
+type method 
+mut Outer0 #apply(Outer1::#apply() ^inner) 
+mut method 
+Void inner(Outer1::#apply() that) 
+mut method 
+Outer1::#apply() #inner() }
+Cell:{interface 
+method 
+mut Outer1::Iterator vals(Outer4::Bool terminate) 
+method 
+Outer0 #next() exception Void 
+method 
+Outer2::NestedClass #inner() 
+method 
+Void #checkEnd() }
+Varres__24_1:'@private
+{
+type method 
+mut Outer0 #apply(Outer1^inner) 
+mut method 
+Void inner(Outer1 that) 
+mut method 
+Outer1 #inner() 
+read method 
+Outer1 inner() }
+CellNext:{<:Outer1::Cell
+type method 
+Outer0 #apply(Outer2::NestedClass^elem, Outer1::Cell^nextCell) 
+mut method 
+Outer2::NestedClass #elem() 
+read method 
+Outer2::NestedClass elem() 
+mut method 
+Outer1::Cell #nextCell() 
+read method 
+Outer1::Cell nextCell() 
+method vals(terminate ) (
+  Void unused=(
+    Outer0::#apply(elem nextCell ) startPoint=Outer0.#apply(elem:this.elem(), nextCell:this)
+    Void unused0=return Outer1::Iterator.#apply(that:startPoint, terminate:terminate)
+    void
+    )
+  catch return result (
+    on Outer0::vals(terminate ) result
+    )
+  error {'@stringU
+  'CurlyBlock-Should be unreachable code
+  }
+  )
+method #next() this.nextCell()
+method #inner() this.elem()
+method #checkEnd() (
+  Outer0::#checkEnd() ::this::nextCell() cell=this.nextCell()
+  (
+    Outer0 cell0=(
+      Void unused=return cell
+      catch return casted (
+        on Outer0 casted
+        
+        on Any exception void
+        )
+      error {'@stringU
+      'CastT-Should be unreachable code
+      }
+      )
+    catch exception unused0 (
+      on Void void
+      )
+    (
+      Void unused1=error Outer3::Report::Misuse.#stringParser(that:{'@stringU
+      'IterationNotComplete,\u000a  use valsCut() to allows incomplete iterations\u000a
+      })
+      void
+      )
+    )
   )}
-method 
-Outer1::NestedClass introspectReport(Outer1::NestedClass^root, Outer2::Path path) exception Outer2::Report::MemberUnavailable 
-method 
-Outer1::Member introspectReportMember(Outer1::NestedClass^root, Outer2::Path path, Outer3::N memberN) exception Outer2::Report::MemberUnavailable, Void 
-method 
-Outer1::Type introspectReportType(Outer1::NestedClass^root, Outer2::Path path, Outer3::N memberN, Outer3::N typeN) exception Outer2::Report::MemberUnavailable, Void 
-method 
-Outer3::S introspectDocAsString(Outer2::Path path) exception Outer2::Report::MemberUnavailable 
-method 
-Outer3::S introspectDocAsString(Outer2::Path path, Outer3::N annotationN) exception Outer2::Report::MemberUnavailable, Void 
-method 
-type Any introspectDocPath(Outer2::Path path, Outer3::N annotationN) exception Outer2::Report::MemberUnavailable, Void 
-Class:{<:Outer1
+CellEnd:{<:Outer1::Cell
 type method 
-Outer0 #apply(type Any^lib) 
+Outer0 #apply() 
+method vals(terminate ) Outer1::Iterator.#apply(that:this, terminate:terminate)
+method #next() exception void
+method #inner() error Outer3::Report::ObservedBug.#stringParser(that:{'@stringU
+'InnerOnCellEnd
+})
+method #checkEnd() void}}
+Members:{' generic linked list class, elements of type Elem
+
+type method 
+Outer0 _new(Outer0::Cell^head) 
 mut method 
-type Any #lib() 
+Outer0::Cell #head() 
 read method 
-type Any lib() 
-method introspectReport(root path ) error Outer3::Report::NotImplementedYet.#apply()
-method introspectReportMember(root path memberN ) error Outer3::Report::NotImplementedYet.#apply()
-method introspectReportType(root path memberN typeN ) error Outer3::Report::NotImplementedYet.#apply()
-method introspectDocAsString(path ) error Outer3::Report::NotImplementedYet.#apply()
-method introspectDocAsString(path annotationN ) error Outer3::Report::NotImplementedYet.#apply()
-method introspectDocPath(path annotationN ) error Outer3::Report::NotImplementedYet.#apply()}}
+Outer0::Cell head() 
+type method 
+Outer0 #apply() Outer0._new(head:Outer0::CellEnd.#apply())
+method 
+Outer3::Bool isEmpty() (
+  Void unused=(
+    Void unused0=(
+      Outer0::head() x=this.head()
+      (
+        Outer0::CellEnd x0=(
+          Void unused1=return x
+          catch return casted (
+            on Outer0::CellEnd casted
+            
+            on Any exception void
+            )
+          error {'@stringU
+          'CastT-Should be unreachable code
+          }
+          )
+        catch exception unused2 (
+          on Void return Outer3::Bool.false()
+          )
+        (
+          Void unused3=return Outer3::Bool.true()
+          void
+          )
+        )
+      )
+    void
+    )
+  catch return result (
+    on Outer3::Bool result
+    )
+  error {'@stringU
+  'CurlyBlock-Should be unreachable code
+  }
+  )
+method 
+Outer1::Member top() this.head().#inner()
+method 
+mut Outer0::Iterator vals() this.head().vals(terminate:Outer3::Bool.true())
+method 
+mut Outer0::Iterator valsCut() this.head().vals(terminate:Outer3::Bool.false())
+method 
+Outer0 pop() (
+  Void unused=(
+    Void unused0=return Outer0._new(head:this.head().#next())
+    catch exception unused1 (
+      on Void error Outer2::Report::Misuse.#stringParser(that:{'@stringU
+      'PopOnEmpyList
+      })
+      )
+    void
+    )
+  catch return result (
+    on Outer0 result
+    )
+  error {'@stringU
+  'CurlyBlock-Should be unreachable code
+  }
+  )
+method 
+Outer0 #plusplus(Outer0 that) (
+  Void unused=(
+    Outer0 res=this
+    mut Outer0::Varres__12_1 varres=Outer0::Varres__12_1.#apply(inner:res)
+    Void unused0=(
+      Outer0::vals() e=that.vals()
+      (
+        Void unused2=(
+          Void unused3=(
+            Void unused4=loop (
+              Void unused5=e.#next()
+              catch exception unused6 (
+                on Void (
+                  Void unused7=(
+                    Void unused8=e.#checkEnd()
+                    catch exception unused9 (
+                      on Void void
+                      )
+                    void
+                    )
+                  exception void
+                  )
+                )
+              varres.inner(that:varres.#inner().#add(that:e.#inner()))
+              )
+            catch exception unused10 (
+              on Void void
+              )
+            void
+            )
+          catch exception propagated (
+            on Any (
+              Void unused11=e.#close()
+              exception propagated
+              )
+            )
+          void
+          )
+        catch return propagated0 (
+          on Outer0 (
+            Void unused12=e.#close()
+            return propagated0
+            )
+          )
+        e.#close()
+        )
+      )
+    Void unused1=return varres.#inner()
+    void
+    )
+  catch return result (
+    on Outer0 result
+    )
+  error {'@stringU
+  'CurlyBlock-Should be unreachable code
+  }
+  )
+type method 
+Outer0 #begin() Outer0.#apply()
+method 
+Outer0 #add(Outer1::Member that) Outer0._new(head:Outer0::CellNext.#apply(elem:that, nextCell:this.head()))
+method 
+Outer0 #end() (
+  Outer0::#apply() res=Outer0.#apply()
+  mut Outer0::Varres0__13_1 varres=Outer0::Varres0__13_1.#apply(inner:res)
+  Void unused=(
+    Outer0::vals() elem=this.vals()
+    (
+      Void unused0=(
+        Void unused1=(
+          Void unused2=loop (
+            Void unused3=elem.#next()
+            catch exception unused4 (
+              on Void (
+                Void unused5=(
+                  Void unused6=elem.#checkEnd()
+                  catch exception unused7 (
+                    on Void void
+                    )
+                  void
+                  )
+                exception void
+                )
+              )
+            varres.inner(that:varres.#inner().#add(that:elem.#inner()))
+            )
+          catch exception unused8 (
+            on Void void
+            )
+          void
+          )
+        catch exception propagated (
+          on Any (
+            Void unused9=elem.#close()
+            exception propagated
+            )
+          )
+        void
+        )
+      catch return propagated0 (
+        on Any (
+          Void unused10=elem.#close()
+          return propagated0
+          )
+        )
+      elem.#close()
+      )
+    )
+  varres.#inner()
+  )
+Varres__12_1:'@private
+{
+type method 
+mut Outer0 #apply(Outer1^inner) 
+mut method 
+Void inner(Outer1 that) 
+mut method 
+Outer1 #inner() 
+read method 
+Outer1 inner() }
+Iterator:{
+type method 
+mut Outer0 #apply(Outer1::Cell^that, Outer4::Bool^terminate) 
+mut method 
+Void that(Outer1::Cell that) 
+mut method 
+Outer1::Cell #that() 
+read method 
+Outer1::Cell that() 
+mut method 
+Outer4::Bool #terminate() 
+read method 
+Outer4::Bool terminate() 
+mut method 
+Void #next() exception Void (
+  Void unused=(
+    Outer0::that() ::#next() x=this.that().#next()
+    Void unused0=(
+      Outer1::CellEnd x0=(
+        Void unused2=return x
+        catch return casted (
+          on Outer1::CellEnd casted
+          
+          on Any exception void
+          )
+        error {'@stringU
+        'CastT-Should be unreachable code
+        }
+        )
+      catch exception unused3 (
+        on Void void
+        )
+      (
+        Void unused4=exception void
+        void
+        )
+      )
+    Void unused1=return this.that(that:x)
+    void
+    )
+  catch return result (
+    on Void result
+    )
+  error {'@stringU
+  'CurlyBlock-Should be unreachable code
+  }
+  )
+read method 
+Void #checkEnd() (
+  Outer0::terminate() cond=this.terminate()
+  (
+    Void unused=cond.#checkTrue()
+    catch exception unused0 (
+      on Void void
+      )
+    this.that().#checkEnd()
+    )
+  )
+read method 
+Outer2::Member #inner() this.that().#inner()
+read method 
+Void #close() void}
+Cell:{interface 
+method 
+mut Outer1::Iterator vals(Outer4::Bool terminate) 
+method 
+Outer0 #next() exception Void 
+method 
+Outer2::Member #inner() 
+method 
+Void #checkEnd() }
+Varres0__13_1:'@private
+{
+type method 
+mut Outer0 #apply(Outer1::#apply() ^inner) 
+mut method 
+Void inner(Outer1::#apply() that) 
+mut method 
+Outer1::#apply() #inner() }
+CellNext:{<:Outer1::Cell
+type method 
+Outer0 #apply(Outer2::Member^elem, Outer1::Cell^nextCell) 
+mut method 
+Outer2::Member #elem() 
+read method 
+Outer2::Member elem() 
+mut method 
+Outer1::Cell #nextCell() 
+read method 
+Outer1::Cell nextCell() 
+method vals(terminate ) (
+  Void unused=(
+    Outer0::#apply(elem nextCell ) startPoint=Outer0.#apply(elem:this.elem(), nextCell:this)
+    Void unused0=return Outer1::Iterator.#apply(that:startPoint, terminate:terminate)
+    void
+    )
+  catch return result (
+    on Outer0::vals(terminate ) result
+    )
+  error {'@stringU
+  'CurlyBlock-Should be unreachable code
+  }
+  )
+method #next() this.nextCell()
+method #inner() this.elem()
+method #checkEnd() (
+  Outer0::#checkEnd() ::this::nextCell() cell=this.nextCell()
+  (
+    Outer0 cell0=(
+      Void unused=return cell
+      catch return casted (
+        on Outer0 casted
+        
+        on Any exception void
+        )
+      error {'@stringU
+      'CastT-Should be unreachable code
+      }
+      )
+    catch exception unused0 (
+      on Void void
+      )
+    (
+      Void unused1=error Outer3::Report::Misuse.#stringParser(that:{'@stringU
+      'IterationNotComplete,\u000a  use valsCut() to allows incomplete iterations\u000a
+      })
+      void
+      )
+    )
+  )}
+CellEnd:{<:Outer1::Cell
+type method 
+Outer0 #apply() 
+method vals(terminate ) Outer1::Iterator.#apply(that:this, terminate:terminate)
+method #next() exception void
+method #inner() error Outer3::Report::ObservedBug.#stringParser(that:{'@stringU
+'InnerOnCellEnd
+})
+method #checkEnd() void}}
 Types:{' generic linked list class, elements of type Elem
 
 type method 
@@ -2362,7 +3128,7 @@ method
 Outer0 #plusplus(Outer0 that) (
   Void unused=(
     Outer0 res=this
-    mut Outer0::Varres__25_1 varres=Outer0::Varres__25_1.#apply(inner:res)
+    mut Outer0::Varres__26_1 varres=Outer0::Varres__26_1.#apply(inner:res)
     Void unused0=(
       Outer0::vals() e=that.vals()
       (
@@ -2423,7 +3189,7 @@ Outer0 #add(Outer1::Type that) Outer0._new(head:Outer0::CellNext.#apply(elem:tha
 method 
 Outer0 #end() (
   Outer0::#apply() res=Outer0.#apply()
-  mut Outer0::Varres0__26_1 varres=Outer0::Varres0__26_1.#apply(inner:res)
+  mut Outer0::Varres0__27_1 varres=Outer0::Varres0__27_1.#apply(inner:res)
   Void unused=(
     Outer0::vals() elem=this.vals()
     (
@@ -2531,7 +3297,7 @@ read method
 Outer2::Type #inner() this.that().#inner()
 read method 
 Void #close() void}
-Varres0__26_1:'@private
+Varres0__27_1:'@private
 {
 type method 
 mut Outer0 #apply(Outer1::#apply() ^inner) 
@@ -2548,7 +3314,7 @@ method
 Outer2::Type #inner() 
 method 
 Void #checkEnd() }
-Varres__25_1:'@private
+Varres__26_1:'@private
 {
 type method 
 mut Outer0 #apply(Outer1^inner) 
@@ -2692,7 +3458,7 @@ method
 Outer0 #plusplus(Outer0 that) (
   Void unused=(
     Outer0 res=this
-    mut Outer0::Varres__15_1 varres=Outer0::Varres__15_1.#apply(inner:res)
+    mut Outer0::Varres__16_1 varres=Outer0::Varres__16_1.#apply(inner:res)
     Void unused0=(
       Outer0::vals() e=that.vals()
       (
@@ -2753,7 +3519,7 @@ Outer0 #add(Outer1::Method that) Outer0._new(head:Outer0::CellNext.#apply(elem:t
 method 
 Outer0 #end() (
   Outer0::#apply() res=Outer0.#apply()
-  mut Outer0::Varres0__16_1 varres=Outer0::Varres0__16_1.#apply(inner:res)
+  mut Outer0::Varres0__17_1 varres=Outer0::Varres0__17_1.#apply(inner:res)
   Void unused=(
     Outer0::vals() elem=this.vals()
     (
@@ -2799,16 +3565,6 @@ Outer0 #end() (
     )
   varres.#inner()
   )
-Varres__15_1:'@private
-{
-type method 
-mut Outer0 #apply(Outer1^inner) 
-mut method 
-Void inner(Outer1 that) 
-mut method 
-Outer1 #inner() 
-read method 
-Outer1 inner() }
 Iterator:{
 type method 
 mut Outer0 #apply(Outer1::Cell^that, Outer4::Bool^terminate) 
@@ -2871,6 +3627,16 @@ read method
 Outer2::Method #inner() this.that().#inner()
 read method 
 Void #close() void}
+Varres__16_1:'@private
+{
+type method 
+mut Outer0 #apply(Outer1^inner) 
+mut method 
+Void inner(Outer1 that) 
+mut method 
+Outer1 #inner() 
+read method 
+Outer1 inner() }
 Cell:{interface 
 method 
 mut Outer1::Iterator vals(Outer4::Bool terminate) 
@@ -2880,6 +3646,14 @@ method
 Outer2::Method #inner() 
 method 
 Void #checkEnd() }
+Varres0__17_1:'@private
+{
+type method 
+mut Outer0 #apply(Outer1::#apply() ^inner) 
+mut method 
+Void inner(Outer1::#apply() that) 
+mut method 
+Outer1::#apply() #inner() }
 CellNext:{<:Outer1::Cell
 type method 
 Outer0 #apply(Outer2::Method^elem, Outer1::Cell^nextCell) 
@@ -2931,14 +3705,6 @@ method #checkEnd() (
       )
     )
   )}
-Varres0__16_1:'@private
-{
-type method 
-mut Outer0 #apply(Outer1::#apply() ^inner) 
-mut method 
-Void inner(Outer1::#apply() that) 
-mut method 
-Outer1::#apply() #inner() }
 CellEnd:{<:Outer1::Cell
 type method 
 Outer0 #apply() 
@@ -2950,7 +3716,7 @@ method #inner() error Outer3::Report::ObservedBug.#stringParser(that:{'@stringU
 method #checkEnd() void}}
 Type:{<:Outer3::S::ToS
 type method 
-Outer0 #apply(Outer1::NestedClass^root, Outer2::Path^path, Outer3::N^memberN, Outer3::N^typeN, Outer1::Record^report) 
+Outer0 #apply(Outer1::NestedClass^root, Outer2::Path^path, Outer3::N^memberN, Outer3::N^typeN, Outer1::Record^record) 
 mut method 
 Outer1::NestedClass #root() 
 read method 
@@ -2968,679 +3734,21 @@ Outer3::N #typeN()
 read method 
 Outer3::N typeN() 
 mut method 
-Outer1::Record #report() 
+Outer1::Record #record() 
 read method 
-Outer1::Record report() 
+Outer1::Record record() 
 method toS() Outer3::S.#stringParser(that:{'@stringU
 'Type[
 }).#begin().#add(that:this.allAsString()).#end().#stringParser(that:{'@stringU
 ']
 })
 method 
-Outer3::S allAsString() this.report().#stringParser(that:{'@stringU
+Outer3::S allAsString() this.record().#stringParser(that:{'@stringU
 'AllAsString
 })}
-NestedClasses:{' generic linked list class, elements of type Elem
-
-type method 
-Outer0 _new(Outer0::Cell^head) 
-mut method 
-Outer0::Cell #head() 
-read method 
-Outer0::Cell head() 
-type method 
-Outer0 #apply() Outer0._new(head:Outer0::CellEnd.#apply())
-method 
-Outer3::Bool isEmpty() (
-  Void unused=(
-    Void unused0=(
-      Outer0::head() x=this.head()
-      (
-        Outer0::CellEnd x0=(
-          Void unused1=return x
-          catch return casted (
-            on Outer0::CellEnd casted
-            
-            on Any exception void
-            )
-          error {'@stringU
-          'CastT-Should be unreachable code
-          }
-          )
-        catch exception unused2 (
-          on Void return Outer3::Bool.false()
-          )
-        (
-          Void unused3=return Outer3::Bool.true()
-          void
-          )
-        )
-      )
-    void
-    )
-  catch return result (
-    on Outer3::Bool result
-    )
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
-  }
-  )
-method 
-Outer1::NestedClass top() this.head().#inner()
-method 
-mut Outer0::Iterator vals() this.head().vals(terminate:Outer3::Bool.true())
-method 
-mut Outer0::Iterator valsCut() this.head().vals(terminate:Outer3::Bool.false())
-method 
-Outer0 pop() (
-  Void unused=(
-    Void unused0=return Outer0._new(head:this.head().#next())
-    catch exception unused1 (
-      on Void error Outer2::Report::Misuse.#stringParser(that:{'@stringU
-      'PopOnEmpyList
-      })
-      )
-    void
-    )
-  catch return result (
-    on Outer0 result
-    )
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
-  }
-  )
-method 
-Outer0 #plusplus(Outer0 that) (
-  Void unused=(
-    Outer0 res=this
-    mut Outer0::Varres__23_1 varres=Outer0::Varres__23_1.#apply(inner:res)
-    Void unused0=(
-      Outer0::vals() e=that.vals()
-      (
-        Void unused2=(
-          Void unused3=(
-            Void unused4=loop (
-              Void unused5=e.#next()
-              catch exception unused6 (
-                on Void (
-                  Void unused7=(
-                    Void unused8=e.#checkEnd()
-                    catch exception unused9 (
-                      on Void void
-                      )
-                    void
-                    )
-                  exception void
-                  )
-                )
-              varres.inner(that:varres.#inner().#add(that:e.#inner()))
-              )
-            catch exception unused10 (
-              on Void void
-              )
-            void
-            )
-          catch exception propagated (
-            on Any (
-              Void unused11=e.#close()
-              exception propagated
-              )
-            )
-          void
-          )
-        catch return propagated0 (
-          on Outer0 (
-            Void unused12=e.#close()
-            return propagated0
-            )
-          )
-        e.#close()
-        )
-      )
-    Void unused1=return varres.#inner()
-    void
-    )
-  catch return result (
-    on Outer0 result
-    )
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
-  }
-  )
-type method 
-Outer0 #begin() Outer0.#apply()
-method 
-Outer0 #add(Outer1::NestedClass that) Outer0._new(head:Outer0::CellNext.#apply(elem:that, nextCell:this.head()))
-method 
-Outer0 #end() (
-  Outer0::#apply() res=Outer0.#apply()
-  mut Outer0::Varres0__24_1 varres=Outer0::Varres0__24_1.#apply(inner:res)
-  Void unused=(
-    Outer0::vals() elem=this.vals()
-    (
-      Void unused0=(
-        Void unused1=(
-          Void unused2=loop (
-            Void unused3=elem.#next()
-            catch exception unused4 (
-              on Void (
-                Void unused5=(
-                  Void unused6=elem.#checkEnd()
-                  catch exception unused7 (
-                    on Void void
-                    )
-                  void
-                  )
-                exception void
-                )
-              )
-            varres.inner(that:varres.#inner().#add(that:elem.#inner()))
-            )
-          catch exception unused8 (
-            on Void void
-            )
-          void
-          )
-        catch exception propagated (
-          on Any (
-            Void unused9=elem.#close()
-            exception propagated
-            )
-          )
-        void
-        )
-      catch return propagated0 (
-        on Any (
-          Void unused10=elem.#close()
-          return propagated0
-          )
-        )
-      elem.#close()
-      )
-    )
-  varres.#inner()
-  )
-Iterator:{
-type method 
-mut Outer0 #apply(Outer1::Cell^that, Outer4::Bool^terminate) 
-mut method 
-Void that(Outer1::Cell that) 
-mut method 
-Outer1::Cell #that() 
-read method 
-Outer1::Cell that() 
-mut method 
-Outer4::Bool #terminate() 
-read method 
-Outer4::Bool terminate() 
-mut method 
-Void #next() exception Void (
-  Void unused=(
-    Outer0::that() ::#next() x=this.that().#next()
-    Void unused0=(
-      Outer1::CellEnd x0=(
-        Void unused2=return x
-        catch return casted (
-          on Outer1::CellEnd casted
-          
-          on Any exception void
-          )
-        error {'@stringU
-        'CastT-Should be unreachable code
-        }
-        )
-      catch exception unused3 (
-        on Void void
-        )
-      (
-        Void unused4=exception void
-        void
-        )
-      )
-    Void unused1=return this.that(that:x)
-    void
-    )
-  catch return result (
-    on Void result
-    )
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
-  }
-  )
-read method 
-Void #checkEnd() (
-  Outer0::terminate() cond=this.terminate()
-  (
-    Void unused=cond.#checkTrue()
-    catch exception unused0 (
-      on Void void
-      )
-    this.that().#checkEnd()
-    )
-  )
-read method 
-Outer2::NestedClass #inner() this.that().#inner()
-read method 
-Void #close() void}
-Varres0__24_1:'@private
-{
-type method 
-mut Outer0 #apply(Outer1::#apply() ^inner) 
-mut method 
-Void inner(Outer1::#apply() that) 
-mut method 
-Outer1::#apply() #inner() }
-Cell:{interface 
-method 
-mut Outer1::Iterator vals(Outer4::Bool terminate) 
-method 
-Outer0 #next() exception Void 
-method 
-Outer2::NestedClass #inner() 
-method 
-Void #checkEnd() }
-Varres__23_1:'@private
-{
-type method 
-mut Outer0 #apply(Outer1^inner) 
-mut method 
-Void inner(Outer1 that) 
-mut method 
-Outer1 #inner() 
-read method 
-Outer1 inner() }
-CellNext:{<:Outer1::Cell
-type method 
-Outer0 #apply(Outer2::NestedClass^elem, Outer1::Cell^nextCell) 
-mut method 
-Outer2::NestedClass #elem() 
-read method 
-Outer2::NestedClass elem() 
-mut method 
-Outer1::Cell #nextCell() 
-read method 
-Outer1::Cell nextCell() 
-method vals(terminate ) (
-  Void unused=(
-    Outer0::#apply(elem nextCell ) startPoint=Outer0.#apply(elem:this.elem(), nextCell:this)
-    Void unused0=return Outer1::Iterator.#apply(that:startPoint, terminate:terminate)
-    void
-    )
-  catch return result (
-    on Outer0::vals(terminate ) result
-    )
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
-  }
-  )
-method #next() this.nextCell()
-method #inner() this.elem()
-method #checkEnd() (
-  Outer0::#checkEnd() ::this::nextCell() cell=this.nextCell()
-  (
-    Outer0 cell0=(
-      Void unused=return cell
-      catch return casted (
-        on Outer0 casted
-        
-        on Any exception void
-        )
-      error {'@stringU
-      'CastT-Should be unreachable code
-      }
-      )
-    catch exception unused0 (
-      on Void void
-      )
-    (
-      Void unused1=error Outer3::Report::Misuse.#stringParser(that:{'@stringU
-      'IterationNotComplete,\u000a  use valsCut() to allows incomplete iterations\u000a
-      })
-      void
-      )
-    )
-  )}
-CellEnd:{<:Outer1::Cell
-type method 
-Outer0 #apply() 
-method vals(terminate ) Outer1::Iterator.#apply(that:this, terminate:terminate)
-method #next() exception void
-method #inner() error Outer3::Report::ObservedBug.#stringParser(that:{'@stringU
-'InnerOnCellEnd
-})
-method #checkEnd() void}}
-Members:{' generic linked list class, elements of type Elem
-
-type method 
-Outer0 _new(Outer0::Cell^head) 
-mut method 
-Outer0::Cell #head() 
-read method 
-Outer0::Cell head() 
-type method 
-Outer0 #apply() Outer0._new(head:Outer0::CellEnd.#apply())
-method 
-Outer3::Bool isEmpty() (
-  Void unused=(
-    Void unused0=(
-      Outer0::head() x=this.head()
-      (
-        Outer0::CellEnd x0=(
-          Void unused1=return x
-          catch return casted (
-            on Outer0::CellEnd casted
-            
-            on Any exception void
-            )
-          error {'@stringU
-          'CastT-Should be unreachable code
-          }
-          )
-        catch exception unused2 (
-          on Void return Outer3::Bool.false()
-          )
-        (
-          Void unused3=return Outer3::Bool.true()
-          void
-          )
-        )
-      )
-    void
-    )
-  catch return result (
-    on Outer3::Bool result
-    )
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
-  }
-  )
-method 
-Outer1::Member top() this.head().#inner()
-method 
-mut Outer0::Iterator vals() this.head().vals(terminate:Outer3::Bool.true())
-method 
-mut Outer0::Iterator valsCut() this.head().vals(terminate:Outer3::Bool.false())
-method 
-Outer0 pop() (
-  Void unused=(
-    Void unused0=return Outer0._new(head:this.head().#next())
-    catch exception unused1 (
-      on Void error Outer2::Report::Misuse.#stringParser(that:{'@stringU
-      'PopOnEmpyList
-      })
-      )
-    void
-    )
-  catch return result (
-    on Outer0 result
-    )
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
-  }
-  )
-method 
-Outer0 #plusplus(Outer0 that) (
-  Void unused=(
-    Outer0 res=this
-    mut Outer0::Varres__11_1 varres=Outer0::Varres__11_1.#apply(inner:res)
-    Void unused0=(
-      Outer0::vals() e=that.vals()
-      (
-        Void unused2=(
-          Void unused3=(
-            Void unused4=loop (
-              Void unused5=e.#next()
-              catch exception unused6 (
-                on Void (
-                  Void unused7=(
-                    Void unused8=e.#checkEnd()
-                    catch exception unused9 (
-                      on Void void
-                      )
-                    void
-                    )
-                  exception void
-                  )
-                )
-              varres.inner(that:varres.#inner().#add(that:e.#inner()))
-              )
-            catch exception unused10 (
-              on Void void
-              )
-            void
-            )
-          catch exception propagated (
-            on Any (
-              Void unused11=e.#close()
-              exception propagated
-              )
-            )
-          void
-          )
-        catch return propagated0 (
-          on Outer0 (
-            Void unused12=e.#close()
-            return propagated0
-            )
-          )
-        e.#close()
-        )
-      )
-    Void unused1=return varres.#inner()
-    void
-    )
-  catch return result (
-    on Outer0 result
-    )
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
-  }
-  )
-type method 
-Outer0 #begin() Outer0.#apply()
-method 
-Outer0 #add(Outer1::Member that) Outer0._new(head:Outer0::CellNext.#apply(elem:that, nextCell:this.head()))
-method 
-Outer0 #end() (
-  Outer0::#apply() res=Outer0.#apply()
-  mut Outer0::Varres0__12_1 varres=Outer0::Varres0__12_1.#apply(inner:res)
-  Void unused=(
-    Outer0::vals() elem=this.vals()
-    (
-      Void unused0=(
-        Void unused1=(
-          Void unused2=loop (
-            Void unused3=elem.#next()
-            catch exception unused4 (
-              on Void (
-                Void unused5=(
-                  Void unused6=elem.#checkEnd()
-                  catch exception unused7 (
-                    on Void void
-                    )
-                  void
-                  )
-                exception void
-                )
-              )
-            varres.inner(that:varres.#inner().#add(that:elem.#inner()))
-            )
-          catch exception unused8 (
-            on Void void
-            )
-          void
-          )
-        catch exception propagated (
-          on Any (
-            Void unused9=elem.#close()
-            exception propagated
-            )
-          )
-        void
-        )
-      catch return propagated0 (
-        on Any (
-          Void unused10=elem.#close()
-          return propagated0
-          )
-        )
-      elem.#close()
-      )
-    )
-  varres.#inner()
-  )
-Varres__11_1:'@private
-{
-type method 
-mut Outer0 #apply(Outer1^inner) 
-mut method 
-Void inner(Outer1 that) 
-mut method 
-Outer1 #inner() 
-read method 
-Outer1 inner() }
-Iterator:{
-type method 
-mut Outer0 #apply(Outer1::Cell^that, Outer4::Bool^terminate) 
-mut method 
-Void that(Outer1::Cell that) 
-mut method 
-Outer1::Cell #that() 
-read method 
-Outer1::Cell that() 
-mut method 
-Outer4::Bool #terminate() 
-read method 
-Outer4::Bool terminate() 
-mut method 
-Void #next() exception Void (
-  Void unused=(
-    Outer0::that() ::#next() x=this.that().#next()
-    Void unused0=(
-      Outer1::CellEnd x0=(
-        Void unused2=return x
-        catch return casted (
-          on Outer1::CellEnd casted
-          
-          on Any exception void
-          )
-        error {'@stringU
-        'CastT-Should be unreachable code
-        }
-        )
-      catch exception unused3 (
-        on Void void
-        )
-      (
-        Void unused4=exception void
-        void
-        )
-      )
-    Void unused1=return this.that(that:x)
-    void
-    )
-  catch return result (
-    on Void result
-    )
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
-  }
-  )
-read method 
-Void #checkEnd() (
-  Outer0::terminate() cond=this.terminate()
-  (
-    Void unused=cond.#checkTrue()
-    catch exception unused0 (
-      on Void void
-      )
-    this.that().#checkEnd()
-    )
-  )
-read method 
-Outer2::Member #inner() this.that().#inner()
-read method 
-Void #close() void}
-Cell:{interface 
-method 
-mut Outer1::Iterator vals(Outer4::Bool terminate) 
-method 
-Outer0 #next() exception Void 
-method 
-Outer2::Member #inner() 
-method 
-Void #checkEnd() }
-Varres0__12_1:'@private
-{
-type method 
-mut Outer0 #apply(Outer1::#apply() ^inner) 
-mut method 
-Void inner(Outer1::#apply() that) 
-mut method 
-Outer1::#apply() #inner() }
-CellNext:{<:Outer1::Cell
-type method 
-Outer0 #apply(Outer2::Member^elem, Outer1::Cell^nextCell) 
-mut method 
-Outer2::Member #elem() 
-read method 
-Outer2::Member elem() 
-mut method 
-Outer1::Cell #nextCell() 
-read method 
-Outer1::Cell nextCell() 
-method vals(terminate ) (
-  Void unused=(
-    Outer0::#apply(elem nextCell ) startPoint=Outer0.#apply(elem:this.elem(), nextCell:this)
-    Void unused0=return Outer1::Iterator.#apply(that:startPoint, terminate:terminate)
-    void
-    )
-  catch return result (
-    on Outer0::vals(terminate ) result
-    )
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
-  }
-  )
-method #next() this.nextCell()
-method #inner() this.elem()
-method #checkEnd() (
-  Outer0::#checkEnd() ::this::nextCell() cell=this.nextCell()
-  (
-    Outer0 cell0=(
-      Void unused=return cell
-      catch return casted (
-        on Outer0 casted
-        
-        on Any exception void
-        )
-      error {'@stringU
-      'CastT-Should be unreachable code
-      }
-      )
-    catch exception unused0 (
-      on Void void
-      )
-    (
-      Void unused1=error Outer3::Report::Misuse.#stringParser(that:{'@stringU
-      'IterationNotComplete,\u000a  use valsCut() to allows incomplete iterations\u000a
-      })
-      void
-      )
-    )
-  )}
-CellEnd:{<:Outer1::Cell
-type method 
-Outer0 #apply() 
-method vals(terminate ) Outer1::Iterator.#apply(that:this, terminate:terminate)
-method #next() exception void
-method #inner() error Outer3::Report::ObservedBug.#stringParser(that:{'@stringU
-'InnerOnCellEnd
-})
-method #checkEnd() void}}
 Method:{<:Outer1::Member, Outer3::S::ToS
 type method 
-Outer0 #apply(Outer1::NestedClass^root, Outer2::Path^path, Outer3::N^memberN, Outer1::Record^report) 
+Outer0 #apply(Outer1::NestedClass^root, Outer2::Path^path, Outer3::N^memberN, Outer1::Record^record) 
 mut method 
 Outer1::NestedClass #root() 
 read method 
@@ -3654,34 +3762,34 @@ Outer3::N #memberN()
 read method 
 Outer3::N memberN() 
 mut method 
-Outer1::Record #report() 
+Outer1::Record #record() 
 read method 
-Outer1::Record report() 
+Outer1::Record record() 
 method toS() Outer3::S.#stringParser(that:{'@stringU
 'Method[
 }).#begin().#add(that:this.allAsString()).#end().#stringParser(that:{'@stringU
 ']
 })
 method 
-Outer2::Doc doc() this.report().docOf(path:Outer2::Path.#stringParser(that:{'@stringU
+Outer2::Doc doc() this.record().docOf(path:Outer2::Path.#stringParser(that:{'@stringU
 'MemberDoc
 }))
 method 
-Outer3::S thisMdf() this.report().#stringParser(that:{'@stringU
+Outer3::S thisMdf() this.record().#stringParser(that:{'@stringU
 'ThisMdf
 })
 method ' invariant NestedClass(...).nestedClassFromRoot(path).pathFromRoot()==path
 Outer2::Path pathFromRoot() this.path()
 method 
-Outer2::Selector selector() Outer2::Selector.#stringParser(that:this.report().#stringParser(that:{'@stringU
+Outer2::Selector selector() Outer2::Selector.#stringParser(that:this.record().#stringParser(that:{'@stringU
 'Key
 }).binaryRepr())
 method 
-Outer3::S methodKind() this.report().#stringParser(that:{'@stringU
+Outer3::S methodKind() this.record().#stringParser(that:{'@stringU
 'MemberKind
 })
 method 
-Outer3::S allAsString() this.report().#stringParser(that:{'@stringU
+Outer3::S allAsString() this.record().#stringParser(that:{'@stringU
 'AllAsString
 })
 method 
@@ -3713,14 +3821,14 @@ Outer1::Types parameterTypes() (
     Outer3::N::#numberParser(that ) pN=Outer3::N.#numberParser(that:{'@stringU
     '1
     })
-    mut Outer0::Varresult1__14_1 varresult=Outer0::Varresult1__14_1.#apply(inner:result)
-    mut Outer0::VarpN__13_1 varpN=Outer0::VarpN__13_1.#apply(inner:pN)
+    mut Outer0::Varresult1__15_1 varresult=Outer0::Varresult1__15_1.#apply(inner:result)
+    mut Outer0::VarpN__14_1 varpN=Outer0::VarpN__14_1.#apply(inner:pN)
     Void unused0=(
       Void unused2=loop (
         Void unused3=Outer3::Bool.true().#checkTrue()
         (' to be able to break
         
-          Outer1::Type ti=this.root().report().that().introspectReportType(root:this.root(), path:this.pathFromRoot(), memberN:this.memberN(), typeN:varpN.#inner())
+          Outer1::Type ti=this.root().record().that().introspectReportType(root:this.root(), path:this.pathFromRoot(), memberN:this.memberN(), typeN:varpN.#inner())
           Void unused4=varresult.inner(that:varresult.#inner().#add(that:ti))
           varpN.inner(that:varpN.#inner().#plus(that:Outer3::N.#numberParser(that:{'@stringU
           '1
@@ -3745,7 +3853,7 @@ Outer1::Types parameterTypes() (
   'CurlyBlock-Should be unreachable code
   }
   )
-Varresult1__14_1:'@private
+Varresult1__15_1:'@private
 {
 type method 
 mut Outer0 #apply(Outer2::Types::#begin() ::#end() ^inner) 
@@ -3753,7 +3861,7 @@ mut method
 Void inner(Outer2::Types::#begin() ::#end() that) 
 mut method 
 Outer2::Types::#begin() ::#end() #inner() }
-VarpN__13_1:'@private
+VarpN__14_1:'@private
 {
 type method 
 mut Outer0 #apply(Outer4::N::#numberParser(that ) ^inner) 
@@ -3813,8 +3921,8 @@ Outer0 #apply(Library that) (
   Outer2::N::#numberParser(that ) aN=Outer2::N.#numberParser(that:{'@stringU
   '1
   })
-  mut Outer0::Varresult0__8_1 varresult=Outer0::Varresult0__8_1.#apply(inner:result)
-  mut Outer0::VaraN__7_1 varaN=Outer0::VaraN__7_1.#apply(inner:aN)
+  mut Outer0::Varresult0__9_1 varresult=Outer0::Varresult0__9_1.#apply(inner:result)
+  mut Outer0::VaraN__8_1 varaN=Outer0::VaraN__8_1.#apply(inner:aN)
   Void unused=(
     Void unused0=loop (
       Void unused1=Outer2::Bool.true().#checkTrue()
@@ -3836,7 +3944,10 @@ Outer0 #apply(Library that) (
   catch exception x (
     on Outer1::Report::MemberUnavailable error Outer1::Report::CodeNotReachable.#apply()
     )
-  Outer0._private(_binaryRepr:that, annotations:varresult.#inner())
+  (
+    Void unused4=varresult.inner(that:varresult.#inner().#end())
+    Outer0._private(_binaryRepr:that, annotations:varresult.#inner())
+    )
   )
 type method 
 Outer0 #stringParser(Library that) Outer0.#apply(that:that)
@@ -3932,7 +4043,7 @@ method
 Outer0 #plusplus(Outer0 that) (
   Void unused=(
     Outer0 res=this
-    mut Outer0::Varres__9_1 varres=Outer0::Varres__9_1.#apply(inner:res)
+    mut Outer0::Varres__10_1 varres=Outer0::Varres__10_1.#apply(inner:res)
     Void unused0=(
       Outer0::vals() e=that.vals()
       (
@@ -3993,7 +4104,7 @@ Outer0 #add(Outer1::Annotation that) Outer0._new(head:Outer0::CellNext.#apply(el
 method 
 Outer0 #end() (
   Outer0::#apply() res=Outer0.#apply()
-  mut Outer0::Varres0__10_1 varres=Outer0::Varres0__10_1.#apply(inner:res)
+  mut Outer0::Varres0__11_1 varres=Outer0::Varres0__11_1.#apply(inner:res)
   Void unused=(
     Outer0::vals() elem=this.vals()
     (
@@ -4101,7 +4212,7 @@ read method
 Outer2::Annotation #inner() this.that().#inner()
 read method 
 Void #close() void}
-Varres__9_1:'@private
+Varres__10_1:'@private
 {
 type method 
 mut Outer0 #apply(Outer1^inner) 
@@ -4120,7 +4231,7 @@ method
 Outer2::Annotation #inner() 
 method 
 Void #checkEnd() }
-Varres0__10_1:'@private
+Varres0__11_1:'@private
 {
 type method 
 mut Outer0 #apply(Outer1::#apply() ^inner) 
@@ -4188,7 +4299,7 @@ method #inner() error Outer3::Report::ObservedBug.#stringParser(that:{'@stringU
 'InnerOnCellEnd
 })
 method #checkEnd() void}}
-VaraN__7_1:'@private
+VaraN__8_1:'@private
 {
 type method 
 mut Outer0 #apply(Outer3::N::#numberParser(that ) ^inner) 
@@ -4196,7 +4307,7 @@ mut method
 Void inner(Outer3::N::#numberParser(that ) that) 
 mut method 
 Outer3::N::#numberParser(that ) #inner() }
-Varresult0__8_1:'@private
+Varresult0__9_1:'@private
 {
 type method 
 mut Outer0 #apply(Outer1::Annotations::#begin() ::#end() ^inner) 
@@ -4204,7 +4315,7 @@ mut method
 Void inner(Outer1::Annotations::#begin() ::#end() that) 
 mut method 
 Outer1::Annotations::#begin() ::#end() #inner() }
-Annotation:{
+Annotation:{<:Outer3::S::ToS
 type method 
 Outer0 #apply(Library^_binaryRepr, Outer3::S^text, Outer3::N^index) 
 mut method 
@@ -4219,6 +4330,7 @@ mut method
 Outer3::N #index() 
 read method 
 Outer3::N index() 
+method toS() this.text()
 method 
 type Any referredClass() (
   Void unused=(
@@ -4226,7 +4338,7 @@ type Any referredClass() (
     'Outer0
     }), annotationN:this.index())
     catch exception x (
-      on Outer2::Report::MemberUnavailable error x
+      on Outer2::Report::MemberUnavailable error Outer2::Report::CodeNotReachable.#apply()
       
       on Void error Outer2::Report::ObservedBug.#stringParser(that:{'@stringU
       'Plugin introspection bug
@@ -4240,7 +4352,13 @@ type Any referredClass() (
   error {'@stringU
   'CurlyBlock-Should be unreachable code
   }
-  )}}
+  )
+method 
+Outer3::Bool hasReferredClass() this.text().#bangequal(that:Outer3::S.#stringParser(that:{'@stringU
+'
+})).#and(that:this.text().isASCIIUpperCase(that:Outer3::N.#numberParser(that:{'@stringU
+'0
+})))}}
 Selector:{<:Outer2::S::ToS
 type method '  toPutAs private
 Outer0 _private(Library^_binaryRepr) 
@@ -4285,7 +4403,7 @@ method
 Outer1::Strings names() (
   Void unused=(
     Outer0::toS() str=this.toS()
-    mut Outer0::Varstr__6_1 varstr=Outer0::Varstr__6_1.#apply(inner:str)
+    mut Outer0::Varstr__7_1 varstr=Outer0::Varstr__7_1.#apply(inner:str)
     Void unused0=varstr.inner(that:varstr.#inner().#apply(start:varstr.#inner().firstIndexOf(that:Outer2::S.#stringParser(that:{'@stringU
     '(
     })).#plus(that:Outer2::N.#numberParser(that:{'@stringU
@@ -4296,14 +4414,14 @@ Outer1::Strings names() (
     ',
     })))
     Outer1::Strings::#begin() ::#end() result=Outer1::Strings.#begin().#end()
-    mut Outer0::Varresult__5_1 varresult=Outer0::Varresult__5_1.#apply(inner:result)
+    mut Outer0::Varresult__6_1 varresult=Outer0::Varresult__6_1.#apply(inner:result)
     Void unused1=(
       Void unused3=loop (
         Void unused4=varstr.#inner().#bangequal(that:Outer2::S.#stringParser(that:{'@stringU
         '
         })).#checkTrue()
         (
-          Outer0::Varstr__6_1::#inner() ::firstIndexOf(that ) pos=varstr.#inner().firstIndexOf(that:Outer2::S.#stringParser(that:{'@stringU
+          Outer0::Varstr__7_1::#inner() ::firstIndexOf(that ) pos=varstr.#inner().firstIndexOf(that:Outer2::S.#stringParser(that:{'@stringU
           ',
           }))
           Void unused5=varresult.inner(that:varresult.#inner().#add(that:varstr.#inner().#apply(end:pos)))
@@ -4327,7 +4445,7 @@ Outer1::Strings names() (
   'CurlyBlock-Should be unreachable code
   }
   )
-Varresult__5_1:'@private
+Varresult__6_1:'@private
 {
 type method 
 mut Outer0 #apply(Outer2::Strings::#begin() ::#end() ^inner) 
@@ -4335,7 +4453,7 @@ mut method
 Void inner(Outer2::Strings::#begin() ::#end() that) 
 mut method 
 Outer2::Strings::#begin() ::#end() #inner() }
-Varstr__6_1:'@private
+Varstr__7_1:'@private
 {
 type method 
 mut Outer0 #apply(Outer1::toS() ^inner) 
@@ -4423,7 +4541,7 @@ method
 Outer0 #plusplus(Outer0 that) (
   Void unused=(
     Outer0 res=this
-    mut Outer0::Varres__3_1 varres=Outer0::Varres__3_1.#apply(inner:res)
+    mut Outer0::Varres__4_1 varres=Outer0::Varres__4_1.#apply(inner:res)
     Void unused0=(
       Outer0::vals() e=that.vals()
       (
@@ -4484,7 +4602,7 @@ Outer0 #add(Outer2::S that) Outer0._new(head:Outer0::CellNext.#apply(elem:that, 
 method 
 Outer0 #end() (
   Outer0::#apply() res=Outer0.#apply()
-  mut Outer0::Varres0__4_1 varres=Outer0::Varres0__4_1.#apply(inner:res)
+  mut Outer0::Varres0__5_1 varres=Outer0::Varres0__5_1.#apply(inner:res)
   Void unused=(
     Outer0::vals() elem=this.vals()
     (
@@ -4530,6 +4648,14 @@ Outer0 #end() (
     )
   varres.#inner()
   )
+Varres0__5_1:'@private
+{
+type method 
+mut Outer0 #apply(Outer1::#apply() ^inner) 
+mut method 
+Void inner(Outer1::#apply() that) 
+mut method 
+Outer1::#apply() #inner() }
 Iterator:{
 type method 
 mut Outer0 #apply(Outer1::Cell^that, Outer3::Bool^terminate) 
@@ -4592,15 +4718,7 @@ read method
 Outer3::S #inner() this.that().#inner()
 read method 
 Void #close() void}
-Varres0__4_1:'@private
-{
-type method 
-mut Outer0 #apply(Outer1::#apply() ^inner) 
-mut method 
-Void inner(Outer1::#apply() that) 
-mut method 
-Outer1::#apply() #inner() }
-Varres__3_1:'@private
+Varres__4_1:'@private
 {
 type method 
 mut Outer0 #apply(Outer1^inner) 
@@ -4678,14 +4796,4 @@ method #next() exception void
 method #inner() error Outer2::Report::ObservedBug.#stringParser(that:{'@stringU
 'InnerOnCellEnd
 })
-method #checkEnd() void}}}
-Varres1__32_1:'@private
-{
-type method 
-mut Outer0 #apply(Library^inner) 
-mut method 
-Void inner(Library that) 
-mut method 
-Library #inner() 
-read method 
-Library inner() }}
+method #checkEnd() void}}}}

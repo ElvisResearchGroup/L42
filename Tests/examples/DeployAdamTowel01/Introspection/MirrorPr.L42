@@ -15,32 +15,32 @@
   Lib:{(Library lib)<:Outer1
     method
     introspectReport(root, path) (
-      result=NestedClass(root:root,path:path,mirror:this,report:Record(Lib(lib:
+      result=NestedClass(root:root,path:path,mirror:this,record:Record(Lib(lib:
         using SafeOperators
           check introspectLibraryReport(this.lib(), path:path.binaryRepr())
-          error Report::PluginFailure"SafeOperators.introspectReport")))
-      catch error x (on Library exception Report::MemberUnavailable(report:Record(lib:x)))
+          error Report::PluginFailure"SafeOperators.introspectLibraryReport")))
+      catch error x (on Library exception Report::MemberUnavailable(record:Record(lib:x)))
       result)
 
     method
     introspectReportMember(root,path,memberN) (
-      result=Record.dispatch(root:root,path:path,mirror:this,memberN:memberN,report:
+      result=Record.dispatch(root:root,path:path,mirror:this,memberN:memberN,record:
         using SafeOperators
           check introspectLibraryReportMember(this.lib(), path:path.binaryRepr(),memberN:memberN.binaryRepr())
           exception void)
-      catch error x (on Library exception Report::MemberUnavailable(report:Record(lib:x)))
+      catch error x (on Library exception Report::MemberUnavailable(record:Record(lib:x)))
       result)
 
     method
     introspectReportType(root,path,memberN,typeN) (
-      result=Type(root:root,path:path,memberN:memberN,typeN:typeN,report: Record(Lib(lib:
+      result=Type(root:root,path:path,memberN:memberN,typeN:typeN,record: Record(Lib(lib:
         using SafeOperators
           check introspectLibraryReportType(this.lib()
             path:path.binaryRepr()
             memberN:memberN.binaryRepr()
             typeN:typeN.binaryRepr())
           exception void)))
-      catch error x (on Library exception Report::MemberUnavailable(report:Record(lib:x)))
+      catch error x (on Library exception Report::MemberUnavailable(record:Record(lib:x)))
       result)
 
     method
@@ -48,7 +48,7 @@
       result=S.#stringParser(using SafeOperators
         check introspectLibraryDocAsString(this.lib(), path:path.binaryRepr(),annotationN:annotationN.binaryRepr())
         exception void)
-      catch error x (on Library exception Report::MemberUnavailable(report:Record(lib:x)))
+      catch error x (on Library exception Report::MemberUnavailable(record: Record(lib:x)))
       result)
 
     method
@@ -56,7 +56,7 @@
       result=S.#stringParser(using SafeOperators
         check introspectLibraryDocAsString(this.lib(), path:path.binaryRepr(),annotationN:0N.binaryRepr())
         error Report::PluginFailure"SafeOperators.introspectLibraryDocAsString")
-      catch error x (on Library exception Report::MemberUnavailable(report:Record(lib:x)))
+      catch error x (on Library exception Report::MemberUnavailable(record:Record(lib:x)))
       result)
 
     method
@@ -64,29 +64,64 @@
       type Any result=using SafeOperators
         check introspectLibraryDocPath(this.lib(), path:path.binaryRepr(),annotationN:annotationN.binaryRepr())
         error Report::PluginFailure"SafeOperators.introspectLibraryDocPath"
-      catch error x (on Library exception Report::MemberUnavailable(report:Record(lib:x)))
+      catch error x (on Library exception Report::MemberUnavailable(record:Record(lib:x)))
       result)
     }
 
 
   Class:{(type Any lib)<:Outer1
+  method
+    introspectReport(root, path) (
+      result=NestedClass(root:root,path:path,mirror:this,record: Record(Lib(lib:
+        using SafeOperators
+          check introspectTypeReport(this.lib(), path:path.binaryRepr())
+          error Report::PluginFailure"SafeOperators.introspectTypeReport")))
+      catch error x (on Library exception Report::MemberUnavailable(record:Record(lib:x)))
+      result)
+
     method
-    introspectReport(root,path)
-      error Report::NotImplementedYet()
+    introspectReportMember(root,path,memberN) (
+      result=Record.dispatch(root:root,path:path,mirror:this,memberN:memberN,record:
+        using SafeOperators
+          check introspectTypeReportMember(this.lib(), path:path.binaryRepr(),memberN:memberN.binaryRepr())
+          exception void)
+      catch error x (on Library exception Report::MemberUnavailable(record:Record(lib:x)))
+      result)
+
     method
-    introspectReportMember(root, path, memberN)
-      error Report::NotImplementedYet()
+    introspectReportType(root,path,memberN,typeN) (
+      result=Type(root:root,path:path,memberN:memberN,typeN:typeN,record: Record(Lib(lib:
+        using SafeOperators
+          check introspectTypeReportType(this.lib()
+            path:path.binaryRepr()
+            memberN:memberN.binaryRepr()
+            typeN:typeN.binaryRepr())
+          exception void)))
+      catch error x (on Library exception Report::MemberUnavailable(record: Record(lib:x)))
+      result)
+
     method
-    introspectReportType(root,path, memberN, typeN)
-      error Report::NotImplementedYet()
+    introspectDocAsString(path,annotationN) (
+      result=S.#stringParser(using SafeOperators
+        check introspectTypeDocAsString(this.lib(), path:path.binaryRepr(),annotationN:annotationN.binaryRepr())
+        exception void)
+      catch error x (on Library exception Report::MemberUnavailable(record: Record(lib:x)))
+      result)
+
     method
-    introspectDocAsString(path)
-      error Report::NotImplementedYet()
+    introspectDocAsString(path) (
+      result=S.#stringParser(using SafeOperators
+        check introspectTypeDocAsString(this.lib(), path:path.binaryRepr(),annotationN:0N.binaryRepr())
+        error Report::PluginFailure"SafeOperators.introspectTypeDocAsString")
+      catch error x (on Library exception Report::MemberUnavailable(record: Record(lib:x)))
+      result)
+
     method
-    introspectDocAsString(path,annotationN)
-      error Report::NotImplementedYet()
-    method
-    introspectDocPath(path,annotationN)
-      error Report::NotImplementedYet()
+    introspectDocPath(path,annotationN) (
+      type Any result=using SafeOperators
+        check introspectTypeDocPath(this.lib(), path:path.binaryRepr(),annotationN:annotationN.binaryRepr())
+        error Report::PluginFailure"SafeOperators.introspectTypeDocPath"
+      catch error x (on Library exception Report::MemberUnavailable(record: Record(lib:x)))
+      result)
     }
   }

@@ -52,6 +52,7 @@ public class TestParseBackAndForth {
 },{" a 'bar\n ","a'bar\n"
 },{"!a","!a"
 },{"~(a+b)","~(a + b)"
+},{" (a+b+c)","(a + b + c)"
 },{"a(b,x:c)","a(b, x:c)"
 },{"!a(b,x:c)","!a(b, x:c)"
 },{" (a )(b,x:c)","(a)(b, x:c)"

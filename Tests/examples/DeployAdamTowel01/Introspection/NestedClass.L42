@@ -1,29 +1,31 @@
 {'findMeNestedClass
-(NestedClass root,Path path,MirrorPr mirror, Record report)<:Member
+(NestedClass root,Path path,MirrorPr mirror, Record record)<:Member
 method toS() S"NestedClass["[this.allAsString()]"]"
 method 'empty for Outer0
 Doc nestedDoc()(
   if this.path()==Path"Outer0" (
     error Report::UnsupportedOperation"NestedClass.nestedDoc()  The NestedClass Object refers to Outer0"
     )
-  this.report().docOf(path:Path"MemberDoc")
+  this.record().docOf(path:Path"MemberDoc")
   )
 method 'of the library literal
-Doc doc() this.report().docOf(path:Path"Doc")
+Doc doc() this.record().docOf(path:Path"Doc")
 
-method Path pathFromRoot() this.path() ' invariant NestedClass(...).nestedClassFromRoot(path).pathFromRoot()==path
+method Path pathFromRoot()
+  this.path() ' invariant NestedClass(...).nestedClassFromRoot(path).pathFromRoot()==path
+  
 method type Any externalType(){
   if this.path()!=Path"Outer0" (
     error Report::UnsupportedOperation(S"NestedClass.externalType() The NestedClass Object refers to "[this.path()]"")
     )
-  with mirror=this.report() (
+  with mirror=this.record() (
     on MirrorPr::Class return mirror.lib()
     default error Report::UnsupportedOperation"NestedClass.externalType() The NestedClass Object is unbound"
     )
   }
 
-method S classKind() this.report()"ClassKind"
-method S allAsString() this.report()"AllAsString"  'just the library literal
+method S classKind() this.record()"ClassKind"
+method S allAsString() this.record()"AllAsString"  'just the library literal
 method
 Members members() (
   var result=Members[]
@@ -48,7 +50,7 @@ method Types implementedInterfaces() (
   var result=Types[]
   var tN=-1N
   while Bool.true() (' to be able to break
-    result:=result.#add(this.report().that()
+    result:=result.#add(this.record().that()
       .introspectReportType(root:this,path:this.path(),memberN:0N,typeN:tN))
     tN-=1N
     )
@@ -72,8 +74,15 @@ Bool has(Selector selector){
   catch exception (on Report::MemberUnavailable return Bool.false())
   return Bool.true()
   }
-method NestedClass nestedClassFromRoot(Path that) exception Report::MemberUnavailable
-  this.mirror().introspectReport(root:this.root(),path:that)
+method NestedClass nestedClassFromRoot(Path that) exception Report::MemberUnavailable {
+  if that==Path"Outer0" (return this.root())
+  ' could be, but ugly with m=this.mirror() ( case Mirror::Class
+  myClass=this.record().docOf(path:Path"MyClass").annotations().top()
+  if !myClass.hasReferredClass() (
+    return this.mirror().introspectReport(root:this.root(),path:that)
+    )
+  return Introspection(clazz:myClass.referredClass())
+  }
 method Bool has(Path pathFromRoot) error Report::NotImplementedYet()
 
 }

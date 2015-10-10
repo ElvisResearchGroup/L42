@@ -1,6 +1,6 @@
-{(NestedClass root,Path path, N memberN, N typeN,Record report)<:S::ToS
+{(NestedClass root,Path path, N memberN, N typeN,Record record)<:S::ToS
 method toS() S"Type["[this.allAsString()]"]"
-method S allAsString() this.report()"AllAsString"  'just the library literal
+method S allAsString() this.record()"AllAsString"  'just the library literal
 }
 
 'do mirror for class, then test NestedClass.externalType(), then import methods from design,

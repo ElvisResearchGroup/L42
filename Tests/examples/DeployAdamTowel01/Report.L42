@@ -52,17 +52,17 @@ NotImplementedYet:{(S reason)<:S::ToS
   }
 'in the following, a set of reports for composition operators
 
-SourceUnfit:{(Introspection::Record report) <:Report 'TODO: here, when typechecking introspection, for bug introspection can not see itself back. fix tomorrow. ADDED Has been fixed?
+SourceUnfit:{(Introspection::Record record) <:Report 'TODO: here, when typechecking introspection, for bug introspection can not see itself back. fix tomorrow. ADDED Has been fixed?
   method toS() S"SourceUnfit"
   }
 ClassClash:{'findMeClassClash
-(Introspection::Record report) <:Report
+(Introspection::Record record) <:Report
   method toS() S"ClassClash"
   }
-MethodClash:{(Introspection::Record report) <:Report
+MethodClash:{(Introspection::Record record) <:Report
   method toS() S"MethodClash"
   }
-InvalidOnTopLevel:{(Introspection::Record report) <:Report
+InvalidOnTopLevel:{(Introspection::Record record) <:Report
   method toS() S"InvalidOnTopLevel"
   }
 MemberUnavailable:{(Path path,S _selector,InvalidKind invalidKind)<:Report
@@ -81,11 +81,11 @@ MemberUnavailable:{(Path path,S _selector,InvalidKind invalidKind)<:Report
     Outer0(path:path, _selector:selector.toS(), invalidKind:InvalidKind(inner:S"NonExistentMethod"))    
   
   type method
-  Outer0 (Introspection::Record report) 
+  Outer0 (Introspection::Record record) 
     Outer0(
-      path:Path.fromS(report"Path"),
-      _selector:report"Selector", 'selector may not exists, would be S""
-      invalidKind:InvalidKind(inner:report"InvalidKind")
+      path:Path.fromS(record"Path"),
+      _selector:record"Selector", 'selector may not exists, would be S""
+      invalidKind:InvalidKind(inner:record"InvalidKind")
       )
   method
   Selector selector() {
@@ -99,7 +99,7 @@ MemberUnavailable:{(Path path,S _selector,InvalidKind invalidKind)<:Report
     return S""
     }]" kind:"[this.invalidKind()]"]"
   }
-PrivacyCoupuled:{(Introspection::Record report) <:Report
+PrivacyCoupuled:{(Introspection::Record record) <:Report
   method toS() S"PrivacyCoupuled"
   }
 NSBMissing:{(Report report) <:Report

@@ -401,6 +401,16 @@ public class TestParseAndDesugar {
    +" mut method'@private\n Outer0::B #b()"
    +" read method'@private\n Outer0::B b()"
    +" }"    
+},{lineNumber(),"{ method Any(Any a,Any b) a+ b}",
+  "{ method Any #apply(Any a, Any b) a.#plus(that:b)}"
+},{lineNumber(),"{ method Any() this!=this &   this}",
+  "{ method Any #apply() this.#bangequal(that:this).#and(that:this)}"
+},{lineNumber(),"{ method Any() this==this &   this}",
+  "{ method Any #apply() this.#equalequal(that:this).#and(that:this)}"
+},{lineNumber(),"{ method Any() this<=this &   this}",
+  "{ method Any #apply() this.#leftequal(that:this).#and(that:this)}"
+},{lineNumber(),"{ method Any() this+this &   this}",
+  "{ method Any #apply() this.#plus(that:this).#and(that:this)}"
 
 }});}
 

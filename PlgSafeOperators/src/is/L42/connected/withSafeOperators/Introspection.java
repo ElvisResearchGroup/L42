@@ -23,22 +23,22 @@ import auxiliaryGrammar.Program;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Optional;
 
 import coreVisitors.From;
 import facade.Configuration;
 
 public class Introspection {//TODO: we keep 5 methods, but we merge the PathReport and MemberReport content.
-  public static ClassB giveInfo(ClassB that,List<String> path){
+  public static List<Object>  giveInfo(ClassB that,List<String> path){
     Errors42.checkExistsPathMethod(that, path,Optional.empty());
     Doc[] docRef={null};
     ClassB current = Program.extractCBar(path, that,docRef);
-    return Resources.Error.multiPartStringClassB("MemberReport",
+    return Arrays.asList(
       "MemberKind","NestedClass",
       "MemberDoc",(docRef[0]==null)?"":liftDoc(path.subList(0,path.size()-1),docRef[0],1),
       "Key",""+String.join("::",path),
       "AllAsString",ToFormattedText.of(current),
-
       "ClassKind",ExtractInfo.classKind(that, path, current,null, null,null).name(),
       "LibraryDoc",liftDoc(path,current.getDoc1(),1),
       "MemberNumber",""+current.getMs().size(),

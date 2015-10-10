@@ -8,11 +8,11 @@ type method Library binaryReprFrom(Library lib)(
   Library norm=using SafeOperatorsAccess
     check privateNormalize(lib)
     error Outer0"privateNormalize"
-  Library report=using SafeOperatorsAccess
+  Library record=using SafeOperatorsAccess
     check introspectLibraryReport(lib, path:Outer0"Outer0")
     error Outer0"introspectLibraryReport"
   using SafeOperatorsAccess
-    check introspectLibraryDocAsString(report, path:Outer0"AllAsString",annotationN:0Outer0)
+    check introspectLibraryDocAsString(record, path:Outer0"AllAsString",annotationN:0Outer0)
     error Outer0"introspectLibraryDocAsString"
   )
 method

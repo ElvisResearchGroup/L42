@@ -10,8 +10,12 @@ type method
 NestedClass(Library lib,Path path) exception Report::MemberUnavailable
   Outer0(lib:lib).nestedClassFromRoot(path)
 
-'type method
-'NestedClass(type Any cls) NestedClass(mirror:MirrorPr::Class(lib:cls))
+type method
+NestedClass(type Any clazz) (
+  root=MirrorPr::Class(lib:clazz).introspectReport(root:root,path:Path"Outer0")
+  catch exception x (on Report::MemberUnavailable error Report::CodeNotReachable())
+  root
+  )
 
 MirrorPr:... 'Todo:remove Pr later.
 

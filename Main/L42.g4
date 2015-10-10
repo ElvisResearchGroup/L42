@@ -101,9 +101,9 @@ xOp:X EqOp eTop;
 //binOp:BinOp;
 eTopForMethod:eTop | roundBlockForMethod (squareW|square|Dot mCall|round|docs | stringParse)*;
 eTop:
-    eL3 ( RelOp  eL3)*;
+    eL3 ( BoolOp  eL3)*;
 eL3:
-    eL2 ( BoolOp  eL2)*;
+    eL2 ( RelOp  eL2)*;
 eL2:
     eL1 ( DataOp eL1)*;
 eL1:

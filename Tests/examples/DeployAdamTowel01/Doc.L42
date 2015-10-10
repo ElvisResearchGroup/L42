@@ -9,6 +9,9 @@
         on Void error Report::ObservedBug"Plugin introspection bug"
         )
       }
+    method Bool hasReferredClass()
+      this.text()!=S"" &
+      this.text().isASCIIUpperCase(0N)
     }
   Annotations:LinkedList.list(Annotation)
   type method Outer0 (Library that) (

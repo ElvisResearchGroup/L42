@@ -6,6 +6,7 @@ import static auxiliaryGrammar.EncodingHelper.extractInt32;
 import static auxiliaryGrammar.EncodingHelper.ensureExtractPathFromJava;
 import static auxiliaryGrammar.EncodingHelper.ensureExtractDoc;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static auxiliaryGrammar.EncodingHelper.ensureExtractInt32;
@@ -15,7 +16,11 @@ import ast.Ast.Doc;
 import ast.ExpCore;
 import ast.Ast.MethodSelector;
 import ast.Ast.Path;
+import ast.Ast.Position;
 import ast.ExpCore.ClassB;
+import ast.ExpCore.ClassB.Member;
+import ast.ExpCore.ClassB.NestedClass;
+import auxiliaryGrammar.Functions;
 import auxiliaryGrammar.Norm;
 import auxiliaryGrammar.Program;
 import coreVisitors.CloneVisitorWithProgram;
@@ -117,7 +122,10 @@ public class Plugin implements PluginType{
     public Object MintrospectLibraryReport£xthat£xpath(Object _that,Object _path){
       ClassB that=ensureExtractClassB(_that);
       List<String> path=Path.parseValidCs(ensureExtractStringU(_path));
-      return Introspection.giveInfo(that, path);
+      List<Object> result= new ArrayList<>(Introspection.giveInfo(that, path));
+      result.add("MyClass");
+      result.add(Doc.factory("::"+String.join("::",path)));
+      return Resources.Error.multiPartStringClassB("MemberReport",result.toArray());
     }
     @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
     public Object MintrospectLibraryReportMember£xthat£xpath£xmemberN(Object _that,Object _path,Object _memberN){
@@ -156,7 +164,10 @@ public class Plugin implements PluginType{
       Path iPath=(_that instanceof Path)?(Path)_that:(Path)((Revertable)_that).revert();
       ClassB that=Resources.getP().extractCb(iPath);
       List<String> path=Path.parseValidCs(ensureExtractStringU(_path));
-      return Introspection.giveInfo(that, path);
+      List<Object> result= new ArrayList<>(Introspection.giveInfo(that, path));
+      result.add("MyClass");
+      result.add(Doc.factory(Functions.add1Outer(iPath)));
+      return Resources.Error.multiPartStringClassB("MemberReport",result.toArray());
     }
     @ActionType({ActionType.Type.Library,ActionType.Type.TypeAny,ActionType.Type.Library,ActionType.Type.Library})
     public Object MintrospectTypeReportMember£xthat£xpath£xmemberN(Object _that,Object _path,Object _memberN){

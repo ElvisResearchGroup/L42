@@ -41,17 +41,37 @@
   method
   Bool beginsWith(S that) this(end:that.size())==that
 
-  method
-  N firstIndexOf(S that) {
+  method '@private
+  N auxFirstIndexOf(S that) { 'TODO: discuss if should be exception
     var current=0N
     while current<this.size() (
       if this(start:current).beginsWith(that) (return current)
       current+=1N
       )
+    return 0N-1N
+    error SubstringNotPresent(string:this,subString:that)
+    }
+  method
+  N firstIndexOf(S that) { 'TODO: discuss if should be exception
+    res=this.auxFirstIndexOf(that)
+    if res>=0N (return res)
     error SubstringNotPresent(string:this,subString:that)
     }
   SubstringNotPresent:{(S string, S subString)}
-
+  
+  method
+  Bool contains(S that){
+    res=this.auxFirstIndexOf(that)
+    if res>=0N (return Bool.true())
+    return Bool.false()
+    }
+  method
+  Bool isASCIILowerCase(N that)
+    S"qwertyuiopasdfghjklzxcvbnm".contains(this(that))
+  method
+  Bool isASCIIUpperCase(N that)
+    S"QWERTYUIOPASDFGHJKLZXCVBNM".contains(this(that))
+    
   method N size ()
     N(_binaryRepr: using Alu
       check stringSize(this.binaryRepr())

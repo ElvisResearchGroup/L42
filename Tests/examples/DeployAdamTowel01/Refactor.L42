@@ -15,12 +15,12 @@
     Library << (Library that)exception Report::MemberUnavailable,Report::InvalidOnTopLevel,Report::SourceUnfit,Report::MethodClash{
       return SafeOperators.redirect(that,src:this.that(),dest:this.to())
       catch error err (on Library (
-        report=Introspection(lib:err).report()
-        with x=report"Kind" (
-          case x== S"MemberUnavailable"  (exception Report::MemberUnavailable(report:report))
-          case x== S"InvalidOnTopLevel"  (exception Report::InvalidOnTopLevel(report:report))
-          case x== S"MethodClash"  (exception Report::MethodClash(report:report))
-          case x== S"SourceUnfit"  (exception Report::SourceUnfit(report:report))
+        record=Introspection(lib:err).record()
+        with x=record"Kind" (
+          case x== S"MemberUnavailable"  (exception Report::MemberUnavailable(record:record))
+          case x== S"InvalidOnTopLevel"  (exception Report::InvalidOnTopLevel(record:record))
+          case x== S"MethodClash"  (exception Report::MethodClash(record:record))
+          case x== S"SourceUnfit"  (exception Report::SourceUnfit(record:record))
           default error err)))
       }
     }
@@ -29,10 +29,10 @@
     Library << (Library that)exception Report::MemberUnavailable,Report::MethodClash{
       return SafeOperators.renameMethod(that,path:this.of() src:this.that(),dest:this.to())
       catch error err (on Library (
-        report=Introspection(lib:err).report()
-        with x=report"Kind" (
-          case x== S"MemberUnavailable"  (exception Report::MemberUnavailable(report:report))
-          case x== S"MethodClash"  (exception Report::MethodClash(report:report))
+        record=Introspection(lib:err).record()
+        with x=record"Kind" (
+          case x== S"MemberUnavailable"  (exception Report::MemberUnavailable(record:record))
+          case x== S"MethodClash"  (exception Report::MethodClash(record:record))
           default error err)))
       }
     }
@@ -41,11 +41,11 @@
     Library << (Library that)exception Report::MemberUnavailable,Report::MethodClash,Report::ClassClash{
       return SafeOperators.renameClass(that,src:this.that(),dest:this.to())
       catch error err (on Library (
-        report=Introspection(lib:err).report()
-        with x=report"Kind" (
-          case x== S"MemberUnavailable"  (exception Report::MemberUnavailable(report:report))
-          case x== S"MethodClash"  (exception Report::MethodClash(report:report))
-          case x== S"ClassClash"  (exception Report::ClassClash(report:report))
+        record=Introspection(lib:err).record()
+        with x=record"Kind" (
+          case x== S"MemberUnavailable"  (exception Report::MemberUnavailable(record:record))
+          case x== S"MethodClash"  (exception Report::MethodClash(record:record))
+          case x== S"ClassClash"  (exception Report::ClassClash(record:record))
           default error err)))
       }
     }
@@ -54,9 +54,9 @@
     Library << (Library that)exception Report::MemberUnavailable{
       return SafeOperators.removeImplementation(that,path:this.of(),selector:this.that())
       catch error err (on Library (
-        report=Introspection(lib:err).report()
-        with x=report"Kind" (
-          case x== S"MemberUnavailable"  (exception Report::MemberUnavailable(report:report))
+        record=Introspection(lib:err).record()
+        with x=record"Kind" (
+          case x== S"MemberUnavailable"  (exception Report::MemberUnavailable(record:record))
           default error err)))
       }
     }
@@ -65,10 +65,10 @@
     Library << (Library that)exception Report::MemberUnavailable,Report::PrivacyCoupuled{
       return SafeOperators.removeImplementation(that,path:this.that())
       catch error err (on Library (
-        report=Introspection(lib:err).report()
-        with x=report"Kind" (
-          case x== S"MemberUnavailable"  (exception Report::MemberUnavailable(report:report))
-          case x== S"PrivacyCoupuled"  (exception Report::PrivacyCoupuled(report:report))
+        record=Introspection(lib:err).record()
+        with x=record"Kind" (
+          case x== S"MemberUnavailable"  (exception Report::MemberUnavailable(record:record))
+          case x== S"PrivacyCoupuled"  (exception Report::PrivacyCoupuled(record:record))
           default error err)))
       }
     }
@@ -77,9 +77,9 @@
     Library << (Library that)exception Report::MemberUnavailable{
       return SafeOperators.addDocumentation(that,path:this.of() selector:this.that(),doc:this.doc())
       catch error err (on Library (
-        report=Introspection(lib:err).report()
-        with x=report"Kind" (
-          case x== S"MemberUnavailable"  (exception Report::MemberUnavailable(report:report))
+        record=Introspection(lib:err).record()
+        with x=record"Kind" (
+          case x== S"MemberUnavailable"  (exception Report::MemberUnavailable(record:record))
           default error err)))
       }
     }
@@ -88,10 +88,10 @@
     Library << (Library that)exception Report::MemberUnavailable,Report::InvalidOnTopLevel{
       return SafeOperators.addDocumentation(that,path:this.that(),doc:this.doc())
       catch error err (on Library (
-        report=Introspection(lib:err).report()
-        with x=report"Kind" (
-          case x== S"MemberUnavailable"  (exception Report::MemberUnavailable(report:report))
-          case x== S"InvalidOnTopLevel"  (exception Report::InvalidOnTopLevel(report:report))
+        record=Introspection(lib:err).record()
+        with x=record"Kind" (
+          case x== S"MemberUnavailable"  (exception Report::MemberUnavailable(record:record))
+          case x== S"InvalidOnTopLevel"  (exception Report::InvalidOnTopLevel(record:record))
           default error err)))
       }
     }

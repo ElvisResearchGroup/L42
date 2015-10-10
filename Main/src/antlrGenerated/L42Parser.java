@@ -922,13 +922,13 @@ public class L42Parser extends Parser {
 		public List<EL3Context> eL3() {
 			return getRuleContexts(EL3Context.class);
 		}
-		public List<TerminalNode> RelOp() { return getTokens(L42Parser.RelOp); }
+		public TerminalNode BoolOp(int i) {
+			return getToken(L42Parser.BoolOp, i);
+		}
 		public EL3Context eL3(int i) {
 			return getRuleContext(EL3Context.class,i);
 		}
-		public TerminalNode RelOp(int i) {
-			return getToken(L42Parser.RelOp, i);
-		}
+		public List<TerminalNode> BoolOp() { return getTokens(L42Parser.BoolOp); }
 		public ETopContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -963,7 +963,7 @@ public class L42Parser extends Parser {
 				if ( _alt==1 ) {
 					{
 					{
-					setState(194); match(RelOp);
+					setState(194); match(BoolOp);
 					setState(195); eL3();
 					}
 					} 
@@ -986,15 +986,15 @@ public class L42Parser extends Parser {
 	}
 
 	public static class EL3Context extends ParserRuleContext {
-		public TerminalNode BoolOp(int i) {
-			return getToken(L42Parser.BoolOp, i);
-		}
-		public List<TerminalNode> BoolOp() { return getTokens(L42Parser.BoolOp); }
+		public List<TerminalNode> RelOp() { return getTokens(L42Parser.RelOp); }
 		public EL2Context eL2(int i) {
 			return getRuleContext(EL2Context.class,i);
 		}
 		public List<EL2Context> eL2() {
 			return getRuleContexts(EL2Context.class);
+		}
+		public TerminalNode RelOp(int i) {
+			return getToken(L42Parser.RelOp, i);
 		}
 		public EL3Context(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -1030,7 +1030,7 @@ public class L42Parser extends Parser {
 				if ( _alt==1 ) {
 					{
 					{
-					setState(202); match(BoolOp);
+					setState(202); match(RelOp);
 					setState(203); eL2();
 					}
 					} 
@@ -4309,9 +4309,9 @@ public class L42Parser extends Parser {
 		"\2\2\u00bc\u00ba\3\2\2\2\u00bc\u00bb\3\2\2\2\u00bd\u00c0\3\2\2\2\u00be"+
 		"\u00bc\3\2\2\2\u00be\u00bf\3\2\2\2\u00bf\u00c2\3\2\2\2\u00c0\u00be\3\2"+
 		"\2\2\u00c1\u00b3\3\2\2\2\u00c1\u00b4\3\2\2\2\u00c2\33\3\2\2\2\u00c3\u00c8"+
-		"\5\36\20\2\u00c4\u00c5\7\62\2\2\u00c5\u00c7\5\36\20\2\u00c6\u00c4\3\2"+
+		"\5\36\20\2\u00c4\u00c5\7\61\2\2\u00c5\u00c7\5\36\20\2\u00c6\u00c4\3\2"+
 		"\2\2\u00c7\u00ca\3\2\2\2\u00c8\u00c6\3\2\2\2\u00c8\u00c9\3\2\2\2\u00c9"+
-		"\35\3\2\2\2\u00ca\u00c8\3\2\2\2\u00cb\u00d0\5 \21\2\u00cc\u00cd\7\61\2"+
+		"\35\3\2\2\2\u00ca\u00c8\3\2\2\2\u00cb\u00d0\5 \21\2\u00cc\u00cd\7\62\2"+
 		"\2\u00cd\u00cf\5 \21\2\u00ce\u00cc\3\2\2\2\u00cf\u00d2\3\2\2\2\u00d0\u00ce"+
 		"\3\2\2\2\u00d0\u00d1\3\2\2\2\u00d1\37\3\2\2\2\u00d2\u00d0\3\2\2\2\u00d3"+
 		"\u00d8\5\"\22\2\u00d4\u00d5\7\63\2\2\u00d5\u00d7\5\"\22\2\u00d6\u00d4"+

@@ -34,10 +34,10 @@
   Library liftErrorsCompose(Library left,Library right) exception Report::ClassClash, Report::MethodClash {
     return SafeOperators.compose(left:left,right:right)
     catch error err (on Library (
-      report=Introspection::Record(lib:err) 'Introspection(lib:err).report()
-      with x=report"Kind" (
-        case x== S"ClassClash"  (exception Report::ClassClash(report:report))
-        case x== S"MethodClash"  (exception Report::MethodClash(report:report))
+      record=Introspection::Record(lib:err) 'Introspection(lib:err).record()
+      with x=record"Kind" (
+        case x== S"ClassClash"  (exception Report::ClassClash(record:record))
+        case x== S"MethodClash"  (exception Report::MethodClash(record:record))
         default error err)))
     }
   method

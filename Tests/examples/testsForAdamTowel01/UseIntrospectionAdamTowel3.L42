@@ -5,14 +5,23 @@ External:{ type method Library (){
   method Any m3()
   method Outer0 m4()
   method External m5()
+  Foo:{}
   }}
-'Generated: External()
+Generated: External()
 Main:{
-  i2=Introspection(lib:External())
-  with meth in i2.methods().vals() (
-    Debug(meth)
-    ti=meth.returnType()
-    ti.report().dbg()
+  i1=Introspection(lib:External())
+  i2=Introspection(clazz:Generated)
+  'with meth1 in i1.methods().vals() meth2 in i2.methods().vals() (
+  '  'Debug(meth1)
+  '  Debug(meth2)
+  '  'meth1.returnType().record().dbg()
+  '  meth2.returnType().record().dbg()
+  '  )
+  i3=i2.nestedClassFromRoot(Path"Foo")
+  et=i3.externalType()
+  with et (
+    on type Generated::Foo Debug(S"Foo!")
+    default Debug(S"other")
     )
   return ExitCode.normal()
   }
