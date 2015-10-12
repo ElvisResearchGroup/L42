@@ -1020,7 +1020,9 @@ Void #apply(Outer1::S::ToS that)
 type method 
 Void #apply(Library lib) 
 type method 
-Void #apply(Outer1::S::ToS fileName, Outer1::S::ToS content) }
+Void #apply(Outer1::S::ToS fileName, Outer1::S::ToS content) 
+type method 
+Void #apply(type Any clazz) }
 Varres1__33_1:'@private
 {
 type method 
@@ -1571,12 +1573,23 @@ Outer0::NestedClass #apply(Library lib) (
   root
   )
 type method 
-Outer0::NestedClass #apply(Library lib, Outer1::Path path) exception Outer1::Report::MemberUnavailable Outer0.#apply(lib:lib).nestedClassFromRoot(that:path)
+Outer0::NestedClass #apply(Library lib, Outer1::Path path) exception Outer1::Report::MemberUnavailable (
+  Outer0::#apply(lib ) root=Outer0.#apply(lib:lib)
+  root.mirror().introspectReport(root:root, path:path)
+  )
 type method 
 Outer0::NestedClass #apply(type Any clazz) (
   Outer0::MirrorPr::Class::#apply(lib ) ::introspectReport(root path ) root=Outer0::MirrorPr::Class.#apply(lib:clazz).introspectReport(root:root, path:Outer1::Path.#stringParser(that:{'@stringU
   'Outer0
   }))
+  catch exception x (
+    on Outer1::Report::MemberUnavailable error Outer1::Report::CodeNotReachable.#apply()
+    )
+  root
+  )
+type method 
+Outer0::NestedClass #apply(type Any clazz, Outer1::Path path) (
+  Outer0::MirrorPr::Class::#apply(lib ) ::introspectReport(root path ) root=Outer0::MirrorPr::Class.#apply(lib:clazz).introspectReport(root:root, path:path)
   catch exception x (
     on Outer1::Report::MemberUnavailable error Outer1::Report::CodeNotReachable.#apply()
     )
@@ -1781,8 +1794,7 @@ mut method
 Outer1 #_report() 
 read method 
 Outer1 _report() 
-method #apply(root ) ('Debug(S"logRootForNested")
-
+method #apply(root ) (
   Outer3::Path::#stringParser(that ) path=Outer3::Path.#stringParser(that:this._report().#stringParser(that:{'@stringU
   'Key
   }).binaryRepr())
@@ -1854,9 +1866,15 @@ type Any #lib()
 read method 
 type Any lib() 
 method introspectReport(root path ) (
-  Outer2::NestedClass::#apply(root path mirror record ) result=Outer2::NestedClass.#apply(root:root, path:path, mirror:this, record:Outer2::Record.#apply(that:Outer1::Lib.#apply(lib:using Outer3::SafeOperators check introspectTypeReport(that:this.lib(), path:path.binaryRepr()) error Outer3::Report::PluginFailure.#stringParser(that:{'@stringU
+  Outer2::Record::#apply(lib ) record=Outer2::Record.#apply(lib:using Outer3::SafeOperators check introspectTypeReport(that:this.lib(), path:path.binaryRepr()) error Outer3::Report::PluginFailure.#stringParser(that:{'@stringU
   'SafeOperators.introspectTypeReport
-  }))))
+  }))
+  Outer2::Record::#apply(lib ) ::docOf(path ) ::annotations() ::top() ::referredClass() realRootType=record.docOf(path:Outer3::Path.#stringParser(that:{'@stringU
+  'MyClass
+  })).annotations().top().referredClass()
+  Outer2::NestedClass::#apply(root path mirror record ) result=Outer2::NestedClass.#apply(root:result, path:Outer3::Path.#stringParser(that:{'@stringU
+  'Outer0
+  }), mirror:Outer0.#apply(lib:realRootType), record:record)
   catch error x (
     on Library exception Outer3::Report::MemberUnavailable.#apply(record:Outer2::Record.#apply(lib:x))
     )
@@ -1986,12 +2004,12 @@ type Any externalType() (
         )
       )
     Void unused1=(
-      Outer0::record() mirror=this.record()
+      Outer0::mirror() mirror=this.mirror()
       (
-        Outer1::MirrorPr::Class mirror0=(
+        Outer1::MirrorPr::Class mirror2=(
           Void unused4=return mirror
-          catch return casted (
-            on Outer1::MirrorPr::Class casted
+          catch return casted1 (
+            on Outer1::MirrorPr::Class casted1
             
             on Any exception void
             )
@@ -2000,12 +2018,54 @@ type Any externalType() (
           }
           )
         catch exception unused5 (
-          on Void error Outer2::Report::UnsupportedOperation.#stringParser(that:{'@stringU
-          'NestedClass.externalType() The NestedClass Object is unbound
-          })
+          on Void (
+            Outer1::MirrorPr::Lib mirror1=(
+              Void unused6=return mirror
+              catch return casted0 (
+                on Outer1::MirrorPr::Lib casted0
+                
+                on Any exception void
+                )
+              error {'@stringU
+              'CastT-Should be unreachable code
+              }
+              )
+            catch exception unused7 (
+              on Void (
+                Outer1::MirrorPr mirror0=(
+                  Void unused8=return mirror
+                  catch return casted (
+                    on Outer1::MirrorPr casted
+                    
+                    on Any exception void
+                    )
+                  error {'@stringU
+                  'CastT-Should be unreachable code
+                  }
+                  )
+                catch exception unused9 (
+                  on Void error Outer2::Report::ObservedBug.#stringParser(that:{'@stringU
+                  'WTF 02
+                  })
+                  )
+                (
+                  Void unused10=error Outer2::Report::ObservedBug.#stringParser(that:{'@stringU
+                  'WTF 01
+                  })
+                  void
+                  )
+                )
+              )
+            (
+              Void unused11=error error Outer2::Report::UnsupportedOperation.#stringParser(that:{'@stringU
+              'NestedClass.externalType() The NestedClass Object is unbound
+              })
+              void
+              )
+            )
           )
         (
-          Void unused6=return mirror0.lib()
+          Void unused12=return mirror2.lib()
           void
           )
         )
@@ -2337,7 +2397,7 @@ Outer0 nestedClassFromRoot(Outer2::Path that) exception Outer2::Report::MemberUn
         return this.mirror().introspectReport(root:this.root(), path:that)
         )
       )
-    Void unused2=return Outer1.#apply(clazz:myClass.referredClass())
+    Void unused2=return Outer1.#apply(clazz:myClass.referredClass(), path:that)
     void
     )
   catch return result (
@@ -4354,11 +4414,14 @@ type Any referredClass() (
   }
   )
 method 
-Outer3::Bool hasReferredClass() this.text().#bangequal(that:Outer3::S.#stringParser(that:{'@stringU
-'
-})).#and(that:this.text().isASCIIUpperCase(that:Outer3::N.#numberParser(that:{'@stringU
-'0
-})))}}
+Outer3::Bool hasReferredClass() (
+  Outer0::text() ::#bangequal(that ) ::#and(that ) res=this.text().#bangequal(that:Outer3::S.#stringParser(that:{'@stringU
+  '
+  })).#and(that:this.text().isASCIIUpperCase(that:Outer3::N.#numberParser(that:{'@stringU
+  '0
+  })))
+  res
+  )}}
 Selector:{<:Outer2::S::ToS
 type method '  toPutAs private
 Outer0 _private(Library^_binaryRepr) 

@@ -19,4 +19,9 @@
         content:content.toS().binaryRepr()
         )
       void
+  type method
+  Void (type Any clazz) (
+    doc=Introspection(clazz:clazz).record().docOf(path:Path"MyClass")
+    Outer0(doc.annotations().top())
+    )
   }

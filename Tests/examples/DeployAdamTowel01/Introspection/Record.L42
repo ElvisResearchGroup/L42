@@ -44,21 +44,16 @@
   RootForNested:' toPutAs private
     {(Path path,MirrorPr mirror,Record _report)<:RootForMember
       method(root) (
-      'Debug(S"logRootForNested")
       path=Path.#stringParser(this._report()"Key".binaryRepr())
       NestedClass(root:root,path:path,mirror:this.mirror(),record: this._report())
       )}
   RootForMethod:' toPutAs private
     {(Path path,N memberN,Record _report)<:RootForMember
       method(root) (
-        'Debug(S"logRootForMethod")
         Method(root:root,path:this.path(),memberN:this.memberN(),record:this._report())
         )}
   type method Member dispatch(NestedClass^ root,Path path,MirrorPr mirror, N memberN,Library record) (
     _report =Record(lib:record)
-    'Debug(S"MemberKind(in dispatch) is"[_report]"MemberKind")
-    'Debug(S"ReportAsString is ")
-    'Debug(lib: record)
     RootForMember result={ with x=_report"MemberKind" (
       case x== S"InterfaceImplementedMethod" (
         return RootForMethod(path:path,memberN:memberN,_report:_report)

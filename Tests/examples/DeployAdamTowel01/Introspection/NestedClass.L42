@@ -18,9 +18,11 @@ method type Any externalType(){
   if this.path()!=Path"Outer0" (
     error Report::UnsupportedOperation(S"NestedClass.externalType() The NestedClass Object refers to "[this.path()]"")
     )
-  with mirror=this.record() (
+  with mirror=this.mirror() (
     on MirrorPr::Class return mirror.lib()
-    default error Report::UnsupportedOperation"NestedClass.externalType() The NestedClass Object is unbound"
+    on MirrorPr::Lib error error Report::UnsupportedOperation"NestedClass.externalType() The NestedClass Object is unbound"
+    on MirrorPr error Report::ObservedBug"WTF 01"
+    default error Report::ObservedBug"WTF 02"
     )
   }
 
@@ -76,12 +78,12 @@ Bool has(Selector selector){
   }
 method NestedClass nestedClassFromRoot(Path that) exception Report::MemberUnavailable {
   if that==Path"Outer0" (return this.root())
-  ' could be, but ugly with m=this.mirror() ( case Mirror::Class
+   'could be, but ugly with m=this.mirror() ( case Mirror::Class
   myClass=this.record().docOf(path:Path"MyClass").annotations().top()
   if !myClass.hasReferredClass() (
-    return this.mirror().introspectReport(root:this.root(),path:that)
+     return this.mirror().introspectReport(root:this.root(),path:that)
     )
-  return Introspection(clazz:myClass.referredClass())
+  return Introspection(clazz:myClass.referredClass(),path:that)
   }
 method Bool has(Path pathFromRoot) error Report::NotImplementedYet()
 

@@ -72,10 +72,11 @@
   Class:{(type Any lib)<:Outer1
   method
     introspectReport(root, path) (
-      result=NestedClass(root:root,path:path,mirror:this,record: Record(Lib(lib:
-        using SafeOperators
-          check introspectTypeReport(this.lib(), path:path.binaryRepr())
-          error Report::PluginFailure"SafeOperators.introspectTypeReport")))
+      record=Record(lib:using SafeOperators
+        check introspectTypeReport(this.lib(), path:path.binaryRepr())
+        error Report::PluginFailure"SafeOperators.introspectTypeReport")
+      realRootType=record.docOf(path:Path"MyClass").annotations().top().referredClass()
+      result=NestedClass(root:result,path:Path"Outer0",mirror:Outer0(lib:realRootType),record: record)
       catch error x (on Library exception Report::MemberUnavailable(record:Record(lib:x)))
       result)
 

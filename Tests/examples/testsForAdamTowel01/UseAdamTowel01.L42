@@ -5,7 +5,6 @@ Main:{
 
   i=Introspection(lib:{Bar:{method Void()}})
   Introspection::NestedClass ni=i.nestedClassFromRoot(Path"Bar")
-
   Debug(ni.classKind())
   Debug(i.classKind())
 

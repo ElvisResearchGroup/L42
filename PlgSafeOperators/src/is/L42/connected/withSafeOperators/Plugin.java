@@ -124,7 +124,7 @@ public class Plugin implements PluginType{
       List<String> path=Path.parseValidCs(ensureExtractStringU(_path));
       List<Object> result= new ArrayList<>(Introspection.giveInfo(that, path));
       result.add("MyClass");
-      result.add(Doc.factory("::"+String.join("::",path)));
+      result.add(Doc.factory("@::"+String.join("::",path)));
       return Resources.Error.multiPartStringClassB("MemberReport",result.toArray());
     }
     @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
@@ -162,11 +162,19 @@ public class Plugin implements PluginType{
     @ActionType({ActionType.Type.Library,ActionType.Type.TypeAny,ActionType.Type.Library})
     public Object MintrospectTypeReport£xthat£xpath(Object _that,Object _path){
       Path iPath=(_that instanceof Path)?(Path)_that:(Path)((Revertable)_that).revert();
+      if (iPath.isPrimitive()){throw Resources.notAct;}
+      //TODO: provide fake classes
       ClassB that=Resources.getP().extractCb(iPath);
       List<String> path=Path.parseValidCs(ensureExtractStringU(_path));
       List<Object> result= new ArrayList<>(Introspection.giveInfo(that, path));
       result.add("MyClass");
-      result.add(Doc.factory(Functions.add1Outer(iPath)));
+      List<String> cs = new ArrayList<>(iPath.getCBar());
+      cs.addAll(path);
+      System.out.println("@@@@@@@@@@@@@@@@@@@@@@@"+iPath);
+      iPath=Path.outer(iPath.outerNumber(),cs);
+      System.out.println("@@@@@@@@@@@@@@@@@@@@@@@"+iPath);
+      iPath=Functions.add1Outer(Functions.add1Outer(iPath));
+      result.add(Doc.factory(iPath));
       return Resources.Error.multiPartStringClassB("MemberReport",result.toArray());
     }
     @ActionType({ActionType.Type.Library,ActionType.Type.TypeAny,ActionType.Type.Library,ActionType.Type.Library})

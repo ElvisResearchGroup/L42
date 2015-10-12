@@ -40,8 +40,17 @@ import ast.Expression;
 
 public class L42 {
   public static enum ExecutionStage{None,Reading,Parsing,CheckingWellFormedness,Desugaring,MetaExecution,Closing;}
-  private static ExecutionStage stage=ExecutionStage.None;
-  public static ExecutionStage getStage(){return stage;}
+  private static ExecutionStage _stage=ExecutionStage.None;
+  private static void setExecutionStage(ExecutionStage newStage){
+    if(_stage!=ExecutionStage.None){
+      Timer.deactivate(_stage.toString());
+      }
+    if(newStage!=ExecutionStage.None){
+      Timer.activate(newStage.toString());
+      }
+    _stage=newStage;    
+  }
+  public static ExecutionStage getStage(){return _stage;}
   public static int compilationRounds=0;
   public static boolean trustPluginsAndFinalProgram=false;
   public static StringBuilder record=new StringBuilder();
@@ -119,7 +128,7 @@ public class L42 {
     }
   public static int runSlow(Path p) throws IOException{
     try{
-      stage=ExecutionStage.Reading;
+      L42.setExecutionStage(ExecutionStage.Reading);
       String code=pathToString(p);
       throw runSlow(p.toString(),code);}
     catch(ErrorMessage.FinalResult e){return e.getErrCode();}
@@ -133,7 +142,7 @@ public class L42 {
     throw new ErrorMessage.MalformedFinalResult(result, s);
   }
   public static ErrorMessage.FinalResult checkFinalError(ClassB result){
-    stage=ExecutionStage.Closing;
+    L42.setExecutionStage(ExecutionStage.Closing);
     ClassB.NestedClass last=(ClassB.NestedClass)result.getMs().get(result.getMs().size()-1);
     if(!(last.getInner() instanceof ClassB)){finalErr(result,"The last class can not be completed");}
     ClassB lastC=(ClassB)last.getInner();
@@ -150,24 +159,26 @@ public class L42 {
     return new ErrorMessage.FinalResult(errCodeInt,result);
   }
   public static ErrorMessage.FinalResult runSlow(String fileName,String code){
-    stage=ExecutionStage.Parsing;
-    Expression code1=Parser.parse(fileName,code);
-    stage=ExecutionStage.CheckingWellFormedness;
-    auxiliaryGrammar.WellFormedness.checkAll(code1);
-    stage=ExecutionStage.Desugaring;
-    Expression code2=Desugar.of(code1);
-    assert auxiliaryGrammar.WellFormedness.checkAll(code2);
-    ExpCore.ClassB code3=(ExpCore.ClassB)code2.accept(new InjectionOnCore());
-    assert coreVisitors.CheckNoVarDeclaredTwice.of(code3);
-    //L42.usedNames.addAll(CollectDeclaredVarsAndCheckNoDeclaredTwice.of(code2));
-    //L42.usedNames.addAll(CollectDeclaredClassNamesAndMethodNames.of(code2));
-    stage=ExecutionStage.MetaExecution;
-    //ClassB result= (ClassB)Executor.stepStar(exe,code3);
-    ClassB result= Configuration.reduction.of(code3);
-    //System.out.println("--------------------------");
-    //System.out.println(ToFormattedText.of(result));
-    //System.out.println("--------------------------");
-    return checkFinalError(result);
+    try{
+      L42.setExecutionStage(ExecutionStage.Parsing);
+      Expression code1=Parser.parse(fileName,code);
+      L42.setExecutionStage(ExecutionStage.CheckingWellFormedness);
+      auxiliaryGrammar.WellFormedness.checkAll(code1);
+      L42.setExecutionStage(ExecutionStage.Desugaring);
+      Expression code2=Desugar.of(code1);
+      assert auxiliaryGrammar.WellFormedness.checkAll(code2);
+      ExpCore.ClassB code3=(ExpCore.ClassB)code2.accept(new InjectionOnCore());
+      assert coreVisitors.CheckNoVarDeclaredTwice.of(code3);
+      // L42.usedNames.addAll(CollectDeclaredVarsAndCheckNoDeclaredTwice.of(code2));
+      //L42.usedNames.addAll(CollectDeclaredClassNamesAndMethodNames.of(code2));
+      L42.setExecutionStage(ExecutionStage.MetaExecution);
+      //ClassB result= (ClassB)Executor.stepStar(exe,code3);
+      ClassB result= Configuration.reduction.of(code3);
+      //System.out.println("--------------------------");
+      //System.out.println(ToFormattedText.of(result));
+      //System.out.println("--------------------------");
+      return checkFinalError(result);
+    }finally{L42.setExecutionStage(ExecutionStage.None);}
   }
 
   public static Path path;

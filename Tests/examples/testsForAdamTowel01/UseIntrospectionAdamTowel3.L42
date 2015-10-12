@@ -11,18 +11,20 @@ Generated: External()
 Main:{
   i1=Introspection(lib:External())
   i2=Introspection(clazz:Generated)
-  'with meth1 in i1.methods().vals() meth2 in i2.methods().vals() (
-  '  'Debug(meth1)
-  '  Debug(meth2)
-  '  'meth1.returnType().record().dbg()
-  '  meth2.returnType().record().dbg()
-  '  )
+  with meth1 in i1.methods().vals() meth2 in i2.methods().vals() (
+  if meth1.toS()!=meth2.toS() (Debug(S"Fail"))
+  )
   i3=i2.nestedClassFromRoot(Path"Foo")
   et=i3.externalType()
   with et (
     on type Generated::Foo Debug(S"Foo!")
+    on type Generated Debug(S"Generated!")   
     default Debug(S"other")
     )
+  Debug(clazz:External)
+  Debug(clazz:Generated)
+  Debug(clazz:Generated::Foo)
+  Debug(clazz:Debug)
   return ExitCode.normal()
   }
 }

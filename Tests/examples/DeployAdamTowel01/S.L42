@@ -62,6 +62,7 @@
   method
   Bool contains(S that){
     res=this.auxFirstIndexOf(that)
+    'Debug(S"S::contains(this:"[this]" that:"[that]")="[res]"")
     if res>=0N (return Bool.true())
     return Bool.false()
     }
@@ -69,8 +70,10 @@
   Bool isASCIILowerCase(N that)
     S"qwertyuiopasdfghjklzxcvbnm".contains(this(that))
   method
-  Bool isASCIIUpperCase(N that)
+  Bool isASCIIUpperCase(N that) (
+    'Debug(S"S::isASCIIUpperCase(this:"[this]" that:"[that]")")
     S"QWERTYUIOPASDFGHJKLZXCVBNM".contains(this(that))
+    )
     
   method N size ()
     N(_binaryRepr: using Alu
