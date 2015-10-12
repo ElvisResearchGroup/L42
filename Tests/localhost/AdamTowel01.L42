@@ -1869,6 +1869,7 @@ method toS() Outer2::S.#stringParser(that:{'@stringU
 UnsupportedOperation:'to report that a target do not support a certain selector.
 'to be used when a class have a method available only on certain instances.
 'For example, getting the element out of an optional type that is not present.
+'is this a kind of misuse?
 {<:Outer2::S::ToS
 type method 
 Outer0 #apply(Outer2::S^reason) 
@@ -4166,7 +4167,178 @@ method toS() Outer2::S.#stringParser(that:{'@stringU
 method 
 Outer2::S allAsString() this.record().#stringParser(that:{'@stringU
 'AllAsString
-})}
+})
+method 
+Outer2::S typeKind() this.record().#stringParser(that:{'@stringU
+'TypeKind
+})
+method 
+Outer2::S mdf() (
+  Void unused=('error on AliasUnresolvable
+  
+    Void unused0=(
+      Outer0::typeKind() ::#bangequal(that ) cond=this.typeKind().#bangequal(that:Outer2::S.#stringParser(that:{'@stringU
+      'AliasUnresolvable
+      }))
+      (
+        Void unused2=cond.#checkTrue()
+        catch exception unused3 (
+          on Void void
+          )
+        return this.record().#stringParser(that:{'@stringU
+        'Mdf
+        })
+        )
+      )
+    Void unused1=error Outer2::Report::UnsupportedOperation.#stringParser(that:{'@stringU
+    'AliasUnresolvable type, mdf unknown
+    })
+    void
+    )
+  catch return result (
+    on Outer2::S result
+    )
+  error {'@stringU
+  'CurlyBlock-Should be unreachable code
+  }
+  )
+method '@private
+Outer1::NestedClass referencedPath(Outer2::Doc::Annotation ann) (
+  Void unused=(
+    Void unused0=(
+      Outer2::Doc::Annotation::hasReferredClass() cond=ann.hasReferredClass()
+      (
+        Void unused2=cond.#checkTrue()
+        catch exception unused3 (
+          on Void void
+          )
+        return Outer2::Introspection.#apply(clazz:ann.referredClass())
+        )
+      )
+    Outer2::S sPath=ann.toS().#apply(start:Outer2::N.#numberParser(that:{'@stringU
+    '2
+    }))
+    Outer2::Path path=(
+      Void unused4=(
+        Void unused5=(
+          Outer2::S::#equalequal(that ) cond0=sPath.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
+          '
+          }))
+          (
+            Void unused7=cond0.#checkTrue()
+            catch exception unused8 (
+              on Void void
+              )
+            return Outer2::Path.#stringParser(that:{'@stringU
+            'Outer0
+            })
+            )
+          )
+        Void unused6=return Outer2::Path.fromS(that:sPath)
+        void
+        )
+      catch return result0 (
+        on Outer2::Path result0
+        )
+      error {'@stringU
+      'CurlyBlock-Should be unreachable code
+      }
+      )
+    Void unused1=return this.root().nestedClassFromRoot(that:path)
+    catch exception x (
+      on Outer2::Report::MemberUnavailable error Outer2::Report::ObservedBug.#stringParser(that:{'@stringU
+      'Type refers to unexistent path
+      })
+      )
+    void
+    )
+  catch return result (
+    on Outer1::NestedClass result
+    )
+  error {'@stringU
+  'CurlyBlock-Should be unreachable code
+  }
+  )
+method 
+Outer1::NestedClass referencedPath() this.referencedPath(ann:this.record().docOf(path:Outer2::Path.#stringParser(that:{'@stringU
+'Path
+})).annotations().top())
+method 
+Outer1::NestedClass resolvedReferencedPath() (
+  Void unused=('error on AliasUnresolvable
+  
+    Void unused0=(
+      Outer0::typeKind() ::#bangequal(that ) cond=this.typeKind().#bangequal(that:Outer2::S.#stringParser(that:{'@stringU
+      'AliasUnresolvable
+      }))
+      (
+        Void unused2=cond.#checkTrue()
+        catch exception unused3 (
+          on Void void
+          )
+        return this.referencedPath(ann:this.record().docOf(path:Outer2::Path.#stringParser(that:{'@stringU
+        'ResolvedPath
+        })).annotations().top())
+        )
+      )
+    Void unused1=error Outer2::Report::UnsupportedOperation.#stringParser(that:{'@stringU
+    'AliasUnresolvable type, mdf unknown
+    })
+    void
+    )
+  catch return result (
+    on Outer1::NestedClass result
+    )
+  error {'@stringU
+  'CurlyBlock-Should be unreachable code
+  }
+  )
+method 
+Outer2::Bool partial() this.record().#stringParser(that:{'@stringU
+'Ph
+}).#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
+'true
+}))
+method 
+Outer2::Bool resolvedPartial() this.record().#stringParser(that:{'@stringU
+'ResolvedPh
+}).#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
+'true
+}))
+method 
+Outer2::S suffix() (
+  Void unused=('error on Normal
+  
+    Void unused0=(
+      Outer0::typeKind() ::#equalequal(that ) cond=this.typeKind().#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
+      'Normal
+      }))
+      (
+        Void unused2=cond.#checkTrue()
+        catch exception unused3 (
+          on Void void
+          )
+        error Outer2::Report::UnsupportedOperation.#stringParser(that:{'@stringU
+        'Normal types have no suffix
+        })
+        )
+      )
+    Void unused1=return this.record().#stringParser(that:{'@stringU
+    'Ph
+    })
+    void
+    )
+  catch return result (
+    on Outer2::S result
+    )
+  error {'@stringU
+  'CurlyBlock-Should be unreachable code
+  }
+  )
+method 
+Outer2::Doc doc() this.record().docOf(path:Outer2::Path.#stringParser(that:{'@stringU
+'Doc
+}))}
 Types:{' generic linked list class, elements of type Elem
 
 Varres:'@private

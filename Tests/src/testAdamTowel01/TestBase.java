@@ -136,6 +136,18 @@ public class TestBase {
   ,"Outer1::Debug"
 ));
     }
+  @Test
+  public  void _10introspection4() throws Throwable{
+    TestHelper.configureForTest();
+    L42.main(new String[]{"examples/testsForAdamTowel01/UseIntrospectionAdamTowel4.L42"});
+    Assert.assertEquals(L42.record.toString(),TestHelper.multiLine(
+   "Foo!"
+  ,"Outer1::External"
+  ,"Outer1::Generated"
+  ,"Outer1::Generated::Foo"
+  ,"Outer1::Debug"
+));
+    }
   }
 
 //  Kind:MethodClash

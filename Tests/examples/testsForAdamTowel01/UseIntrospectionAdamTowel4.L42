@@ -1,0 +1,32 @@
+{reuse L42.is/AdamTowel01
+External:{ type method Library (){
+  'method Void m1()
+  'method Library m2()
+  'method Any m3()
+  method Outer0 m4()
+  method External m5()
+  }}
+Generated: External()
+Main:{
+  i1=Introspection(lib:External())
+  i2=Introspection(clazz:Generated)
+  with meth1 in i1.methods().vals() meth2 in i2.methods().vals() (
+  if meth1.toS()!=meth2.toS() (Debug(S"Fail"))
+  n1=meth1.returnType().referencedPath()
+  n2=meth1.returnType().referencedPath()
+  
+  )
+  i3=i2.nestedClassFromRoot(Path"Foo")
+  et=i3.externalType()
+  with et (
+    on type Generated::Foo Debug(S"Foo!")
+    on type Generated Debug(S"Generated!")   
+    default Debug(S"other")
+    )
+  Debug(clazz:External)
+  Debug(clazz:Generated)
+  Debug(clazz:Generated::Foo)
+  Debug(clazz:Debug)
+  return ExitCode.normal()
+  }
+}
