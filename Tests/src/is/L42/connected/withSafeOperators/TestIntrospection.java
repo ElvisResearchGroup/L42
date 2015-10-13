@@ -59,7 +59,7 @@ public static class TestGiveInfoType {
   ClassB cb=getClassB(_cb);
   Path path=Path.parse(_path);
   ClassB expected=getClassB(_expected);
-  ClassB result=Introspection.giveInfoType(Program.empty(),cb,path.getCBar(),methNum,typeNum);
+  ClassB result=Introspection.giveInfoType(null,Program.empty(),cb,path.getCBar(),methNum,typeNum);
   TestHelper.assertEqualExp(expected,result);
   }
 }

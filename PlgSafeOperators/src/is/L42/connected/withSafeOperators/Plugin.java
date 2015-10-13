@@ -140,7 +140,7 @@ public class Plugin implements PluginType{
       List<String> path=Path.parseValidCs(ensureExtractStringU(_path));
       int memberN=ensureExtractInt32(_memberN);
       int typeN=ensureExtractInt32(_typeN);
-      return Introspection.giveInfoType(Resources.getP(), that, path, memberN, typeN);
+      return Introspection.giveInfoType(null,Resources.getP(), that, path, memberN, typeN);
     }
 
     @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
@@ -170,9 +170,7 @@ public class Plugin implements PluginType{
       result.add("MyClass");
       List<String> cs = new ArrayList<>(iPath.getCBar());
       cs.addAll(path);
-      System.out.println("@@@@@@@@@@@@@@@@@@@@@@@"+iPath);
       iPath=Path.outer(iPath.outerNumber(),cs);
-      System.out.println("@@@@@@@@@@@@@@@@@@@@@@@"+iPath);
       iPath=Functions.add1Outer(Functions.add1Outer(iPath));
       result.add(Doc.factory(iPath));
       return Resources.Error.multiPartStringClassB("MemberReport",result.toArray());
@@ -192,7 +190,7 @@ public class Plugin implements PluginType{
       List<String> path=Path.parseValidCs(ensureExtractStringU(_path));
       int memberN=ensureExtractInt32(_memberN);
       int typeN=ensureExtractInt32(_typeN);
-      return Introspection.giveInfoType(Resources.getP(), that, path, memberN, typeN);
+      return Introspection.giveInfoType(iPath,Resources.getP(), that, path, memberN, typeN);
     }
 
     @ActionType({ActionType.Type.Library,ActionType.Type.TypeAny,ActionType.Type.Library,ActionType.Type.Library})

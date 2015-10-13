@@ -1,11 +1,16 @@
 Adam Towel
   -test introspection more 
+  -test if from is applied when reading method types?
+    -on literal, it should be frommed before passed to plugin
+    -on external?
+    -is it coherent that on external is frommed from the specific node, while from internal
+    is frommed from the root?
   -we need to reorganize the errors, we need to add the ambigus redirect.
   -make opt have checktrue, ! & and | ? 
   //complex: what should & second parameter be? boolable would prevent optimizations or not?
    -for collections, error S" still report stuff that should be done better.
   -opt and iterator: version generic, version to sum with outer0 and get a nested.
-   
+  -method from interfaces? just all interfaces - this will miss from? 
 Caching
    -desugaring import library, assume verified//done?
    -how it interact with trusted plugins?
@@ -20,6 +25,10 @@ Caching
  Other plugins
     -db plugin
       design of resources: make connection string "is" resource handler?
+ 
+ Language
+   -coherent class has ph OR NOT in the constructor, on a field basis.
+   -no need of ph in desugared vars?
  
  Syntax
     -put Outer without number in the sugar,outer keyword, to skip the first in scope

@@ -12,7 +12,8 @@ method '@private
 NestedClass  referencedPath(Doc::Annotation ann) {
   if ann.hasReferredClass() (return Introspection(clazz:ann.referredClass()))
   S sPath=ann.toS()(start:2N)
-  Path path={if sPath==S"" (return Path"Outer0") return Path.fromS(sPath)}
+  if sPath==S"" (return this.root())
+  Path path=Path.fromS(sPath)
   return this.root().nestedClassFromRoot(path)
   catch exception x ( on Report::MemberUnavailable error Report::ObservedBug"Type refers to unexistent path")
   }

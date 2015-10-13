@@ -5,28 +5,30 @@ External:{ type method Library (){
   'method Any m3()
   method Outer0 m4()
   method External m5()
+  method Foo m6()
+  Foo:{}
   }}
 Generated: External()
 Main:{
   i1=Introspection(lib:External())
   i2=Introspection(clazz:Generated)
+  Debug(i1.hasExternalType())
+  Debug(i2.hasExternalType())
   with meth1 in i1.methods().vals() meth2 in i2.methods().vals() (
-  if meth1.toS()!=meth2.toS() (Debug(S"Fail"))
-  n1=meth1.returnType().referencedPath()
-  n2=meth1.returnType().referencedPath()
-  
-  )
-  i3=i2.nestedClassFromRoot(Path"Foo")
-  et=i3.externalType()
-  with et (
-    on type Generated::Foo Debug(S"Foo!")
-    on type Generated Debug(S"Generated!")   
-    default Debug(S"other")
+    if meth1.toS()!=meth2.toS() (Debug(S"Fail"))
+    n1=meth1.returnType().referencedPath()
+    n2=meth2.returnType().referencedPath()
+    Debug(S""[meth1.selector()]
+      ", methRootExternal:"[meth1.root().hasExternalType()]
+      ", typeExternal:"[meth1.returnType().root().hasExternalType()]
+      ", typeRefExternal:"[n1.hasExternalType()]"")
+    if n1.hasExternalType() (Debug(clazz:n1.externalType()))
+    Debug(S""[meth2.selector()]
+      ", methRootExternal:"[meth2.root().hasExternalType()]
+      ", typeExternal:"[meth2.returnType().root().hasExternalType()]
+      ", typeRefExternal:"[n2.hasExternalType()]"")
+    if n2.hasExternalType() (Debug(clazz:n2.externalType()))
     )
-  Debug(clazz:External)
-  Debug(clazz:Generated)
-  Debug(clazz:Generated::Foo)
-  Debug(clazz:Debug)
   return ExitCode.normal()
   }
 }

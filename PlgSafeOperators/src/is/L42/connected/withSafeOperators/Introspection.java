@@ -18,6 +18,7 @@ import ast.ExpCore.ClassB.MethodWithType;
 import ast.ExpCore.ClassB.NestedClass;
 import ast.ExpCore.*;
 import auxiliaryGrammar.EncodingHelper;
+import auxiliaryGrammar.Functions;
 import auxiliaryGrammar.Norm;
 import auxiliaryGrammar.Program;
 
@@ -95,14 +96,14 @@ public class Introspection {//TODO: we keep 5 methods, but we merge the PathRepo
   //static enum TypeKind{InternalNormal,ExternalNormal,InternalAlias,ExternalAlias, InternalAliasUnresolvable,ExternalAliasUnresolvable,InternalExternalAlias}
   static enum TypeKind{Normal,Alias,AliasUnresolvable}
   //if member ==0, talk about implemented interfaces, nested classes have no types
-  public static ClassB giveInfoType(Program p,ClassB that,List<String> path,int memberN,int typeN){
+  public static ClassB giveInfoType(Path  isExternal,Program p,ClassB that,List<String> path,int memberN,int typeN){
     Errors42.checkExistsPathMethod(that, path,Optional.empty());
     ClassB current = Program.extractCBar(path, that);
     if(current.getMs().size()<memberN){throw Resources.notAct;}
     if(memberN<0){throw Resources.notAct;}//TODO: is this a good idea?
     if(memberN==0){
       Path implN = current.getSupertypes().get(typeN-1);
-      return typeReport(p.addAtTop(that), new NormType(Mdf.Immutable,implN,Ph.None),path,current.getDoc2());
+      return typeReport(isExternal,p.addAtTop(that), new NormType(Mdf.Immutable,implN,Ph.None),path,current.getDoc2());
       }
     assert memberN>0;
     Member mi = current.getMs().get(memberN-1);
@@ -120,9 +121,9 @@ public class Introspection {//TODO: we keep 5 methods, but we merge the PathRepo
       ti=new NormType(Mdf.Immutable,mwt.getMt().getExceptions().get((typeN*-1)-1),Ph.None);
       //TODO: doci=?? add docs for exceptions, return type and implements
       }
-    return typeReport(p.addAtTop(that), ti,path,doci);
+    return typeReport(isExternal,p.addAtTop(that), ti,path,doci);
     }
-  private static ClassB typeReport(Program p,Type ti, List<String> src, Doc doc){
+  private static ClassB typeReport(Path isExternal,Program p,Type ti, List<String> src, Doc doc){
     p=p.navigateInTo(src);
     NormType normTi=(ti instanceof NormType)?(NormType)ti:null;
     NormType resolvedTi=null;
@@ -132,13 +133,12 @@ public class Introspection {//TODO: we keep 5 methods, but we merge the PathRepo
     Mdf resMdf=(resolvedTi!=null)?resolvedTi.getMdf():Mdf.Immutable;
     Path pi=(normTi!=null)?normTi.getPath():((Ast.HistoricType)ti).getPath();
     Path resPi=(resolvedTi!=null)?resolvedTi.getPath():pi;
-    Doc dPi=Doc.factory(pi);
-    Doc dResPi=Doc.factory(resPi);
     boolean ph=(normTi!=null)?normTi.getPh()==Ph.Ph:((Ast.HistoricType)ti).isForcePlaceholder();
     boolean resPh=(resolvedTi!=null)?resolvedTi.getPh()==Ph.Ph:ph;
     String suffix=(ti instanceof Ast.HistoricType)?selectorsToString(((Ast.HistoricType)ti).getSelectors()):"";
     String allAsString=ToFormattedText.of(ti);
-    return typeReport(src, tk, mdf, resMdf, dPi, dResPi, ph, resPh, suffix, doc, allAsString);
+    return typeReport(isExternal,src, tk, mdf, resMdf, pi, resPi, ph, resPh, suffix, doc, allAsString);
+    //unfold?
   }
 
   //private static boolean isExternal(List<String>path,Path pi){return pi.isPrimitive()||pi.outerNumber()>path.size(); }
@@ -168,14 +168,22 @@ public class Introspection {//TODO: we keep 5 methods, but we merge the PathRepo
     return result;
   }
 
-  private static ClassB typeReport(List<String> path, TypeKind kind, Mdf mdf, Mdf resMdf, Doc pi, Doc resPi, boolean ph, boolean resPh, String suffix,  Doc doc, String allAsString) throws Error {
+  private static ClassB typeReport(Path isExternal,List<String> path, TypeKind kind, Mdf mdf, Mdf resMdf, Path pi, Path resPi, boolean ph, boolean resPh, String suffix,  Doc doc, String allAsString) throws Error {
     assert mdf!=null && resMdf!=null;
+    Doc dPi=liftDoc(path,Doc.factory(pi),1);
+    Doc dResPi=liftDoc(path,Doc.factory(resPi),1);
+    if(isExternal!=null && dPi.getAnnotations().get(0) instanceof String){
+      dPi=Doc.factory(Functions.add1Outer(Functions.add1Outer(From.fromP(pi,isExternal))));
+    }
+    if(isExternal!=null && dResPi.getAnnotations().get(0) instanceof String){
+      dResPi=Doc.factory(Functions.add1Outer(Functions.add1Outer(From.fromP(resPi,isExternal))));
+    }
     return Resources.Error.multiPartStringClassB("TypeReport",
       "TypeKind",""+kind,//:Normal, Alias, AliasUnresolvable
       "Mdf",""+((mdf==Mdf.Immutable)?resMdf:mdf),//:String
       //"ResolvedMdf",""+resMdf,//:String
-      "Path",liftDoc(path,pi,1),//:Doc with one annotation, can be typeAny or not
-      "ResolvedPath",liftDoc(path,resPi,1),//:Doc with one annotation, can be typeAny or not
+      "Path",dPi,//:Doc with one annotation, can be typeAny or not
+      "ResolvedPath",dResPi,//:Doc with one annotation, can be typeAny or not
       "Ph",""+ph,//:Boolean
       "ResolvedPh",""+resPh,//:Boolean
       "Suffix",""+suffix,//:String (may be empty for not alias type)

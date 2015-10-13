@@ -3383,6 +3383,54 @@ Outer2::Doc doc() this.record().docOf(path:Outer2::Path.#stringParser(that:{'@st
 method 
 Outer2::Path pathFromRoot() this.path()
 method 
+Outer2::Bool hasExternalType() (
+  Void unused=(
+    Void unused0=(
+      Outer0::path() ::#bangequal(that ) cond=this.path().#bangequal(that:Outer2::Path.#stringParser(that:{'@stringU
+      'Outer0
+      }))
+      (
+        Void unused3=cond.#checkTrue()
+        catch exception unused4 (
+          on Void void
+          )
+        return Outer2::Bool.false()
+        )
+      )
+    Void unused1=(
+      Outer0::mirror() mirror=this.mirror()
+      (
+        Outer1::MirrorPr::Class mirror0=(
+          Void unused5=return mirror
+          catch return casted (
+            on Outer1::MirrorPr::Class casted
+            
+            on Any exception void
+            )
+          error {'@stringU
+          'CastT-Should be unreachable code
+          }
+          )
+        catch exception unused6 (
+          on Void void
+          )
+        (
+          Void unused7=return Outer2::Bool.true()
+          void
+          )
+        )
+      )
+    Void unused2=return Outer2::Bool.false()
+    void
+    )
+  catch return result (
+    on Outer2::Bool result
+    )
+  error {'@stringU
+  'CurlyBlock-Should be unreachable code
+  }
+  )
+method 
 type Any externalType() (
   Void unused=(
     Void unused0=(
@@ -3455,7 +3503,7 @@ type Any externalType() (
                 )
               )
             (
-              Void unused11=error error Outer2::Report::UnsupportedOperation.#stringParser(that:{'@stringU
+              Void unused11=error Outer2::Report::UnsupportedOperation.#stringParser(that:{'@stringU
               'NestedClass.externalType() The NestedClass Object is unbound
               })
               void
@@ -4208,8 +4256,8 @@ Outer1::NestedClass referencedPath(Outer2::Doc::Annotation ann) (
     Void unused0=(
       Outer2::Doc::Annotation::hasReferredClass() cond=ann.hasReferredClass()
       (
-        Void unused2=cond.#checkTrue()
-        catch exception unused3 (
+        Void unused3=cond.#checkTrue()
+        catch exception unused4 (
           on Void void
           )
         return Outer2::Introspection.#apply(clazz:ann.referredClass())
@@ -4218,33 +4266,20 @@ Outer1::NestedClass referencedPath(Outer2::Doc::Annotation ann) (
     Outer2::S sPath=ann.toS().#apply(start:Outer2::N.#numberParser(that:{'@stringU
     '2
     }))
-    Outer2::Path path=(
-      Void unused4=(
-        Void unused5=(
-          Outer2::S::#equalequal(that ) cond0=sPath.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
-          '
-          }))
-          (
-            Void unused7=cond0.#checkTrue()
-            catch exception unused8 (
-              on Void void
-              )
-            return Outer2::Path.#stringParser(that:{'@stringU
-            'Outer0
-            })
-            )
+    Void unused1=(
+      Outer2::S::#equalequal(that ) cond0=sPath.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
+      '
+      }))
+      (
+        Void unused5=cond0.#checkTrue()
+        catch exception unused6 (
+          on Void void
           )
-        Void unused6=return Outer2::Path.fromS(that:sPath)
-        void
+        return this.root()
         )
-      catch return result0 (
-        on Outer2::Path result0
-        )
-      error {'@stringU
-      'CurlyBlock-Should be unreachable code
-      }
       )
-    Void unused1=return this.root().nestedClassFromRoot(that:path)
+    Outer2::Path path=Outer2::Path.fromS(that:sPath)
+    Void unused2=return this.root().nestedClassFromRoot(that:path)
     catch exception x (
       on Outer2::Report::MemberUnavailable error Outer2::Report::ObservedBug.#stringParser(that:{'@stringU
       'Type refers to unexistent path

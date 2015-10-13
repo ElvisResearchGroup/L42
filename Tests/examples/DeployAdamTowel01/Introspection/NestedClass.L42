@@ -13,14 +13,21 @@ Doc doc() this.record().docOf(path:Path"Doc")
 
 method Path pathFromRoot()
   this.path() ' invariant NestedClass(...).nestedClassFromRoot(path).pathFromRoot()==path
-  
+
+method Bool hasExternalType(){
+  if this.path()!=Path"Outer0" (return Bool.false())
+   with mirror=this.mirror() (
+    on MirrorPr::Class return Bool.true()
+    )
+  return Bool.false()
+  }
 method type Any externalType(){
   if this.path()!=Path"Outer0" (
     error Report::UnsupportedOperation(S"NestedClass.externalType() The NestedClass Object refers to "[this.path()]"")
     )
   with mirror=this.mirror() (
     on MirrorPr::Class return mirror.lib()
-    on MirrorPr::Lib error error Report::UnsupportedOperation"NestedClass.externalType() The NestedClass Object is unbound"
+    on MirrorPr::Lib error Report::UnsupportedOperation"NestedClass.externalType() The NestedClass Object is unbound"
     on MirrorPr error Report::ObservedBug"WTF 01"
     default error Report::ObservedBug"WTF 02"
     )
