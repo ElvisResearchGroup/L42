@@ -11,13 +11,14 @@
     Outer0(myLibs:Libs[])
 
   method
-  Outer0 #end() this
+  Outer0 #end()
+    Outer0(myLibs:this.myLibs().#end())
 
   method
   Library << (Library that) exception Report::ClassClash,Report::MethodClash{
     i=Introspection(lib:that)
     var map=SrcDests[]
-    var acc=that
+    var acc={}
     with lib in this.myLibs().vals(), index in 0N.vals() (
       var libi=lib
       with ren in this.renameMap(lib,prefix:S"#"[index]"", intro:i).vals() (

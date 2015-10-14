@@ -241,19 +241,13 @@ public interface Ast {
 		}
 
 		private static boolean checkX(String s, boolean allowHash) {
-			if (s.isEmpty()) {
-				return false;
-			}
+			if (s.isEmpty()) {return false;}
 			char c0 = s.charAt(0);
 			if (allowHash && c0 == '#') {
-				if (s.length() == 1) {
-					return false;
-				}
+				if (s.length() == 1) {return false;}
 				char c1 = s.charAt(1);
-				if (c1 == '#') {
-					return false;
-				}
-				return checkX(s.substring(1), allowHash);
+				if (c1 == '#') {return false;}
+				//return checkX(s.substring(1), allowHash);
 			}
 			for (char c : s.toCharArray()) {
 				if (allowHash && c == '#') {continue;}
@@ -262,8 +256,9 @@ public interface Ast {
 				if (c >= 'A' && c <= 'Z') {continue;}
 				if (c >= 'a' && c <= 'z') {continue;}
 				if (c >= '0' && c <= '9') {continue;}
+				return false;
 			}
-			return c0 == '_' || (c0 >= 'a' && c0 <= 'z');
+			return c0 == '_' ||c0 == '#' || (c0 >= 'a' && c0 <= 'z');
 		}
 	}
 

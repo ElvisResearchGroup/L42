@@ -5962,13 +5962,13 @@ Outer0 #add(Library that) Outer0.#apply(myLibs:this.myLibs().#add(that:that))
 type method 
 Outer0 #begin() Outer0.#apply(myLibs:Outer0::Libs.#begin().#end())
 method 
-Outer0 #end() this
+Outer0 #end() Outer0.#apply(myLibs:this.myLibs().#end())
 method 
 Library #leftleft(Library that) exception Outer1::Report::ClassClash, Outer1::Report::MethodClash (
   Void unused=(
     Outer1::Introspection::#apply(lib ) i=Outer1::Introspection.#apply(lib:that)
     Outer0::SrcDests::#begin() ::#end() map=Outer0::SrcDests.#begin().#end()
-    Library acc=that
+    Library acc={}
     mut Outer0::Varmap varmap=Outer0::Varmap.#apply(inner:map)
     mut Outer0::Varacc varacc=Outer0::Varacc.#apply(inner:acc)
     Void unused0=(

@@ -25,6 +25,11 @@ import auxiliaryGrammar.Program;
 
 public class Sum {
   static ClassB sum(Program p, ClassB a, ClassB b) {
+    //System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+    //System.out.println("___________________________________________________");
+    //System.out.println(a);
+    //System.out.println(b);
+    //System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
     a=ClassOperations.normalizePaths(a);
     b=ClassOperations.normalizePaths(b);
     a =NormalizePrivates.normalize(p, a);
