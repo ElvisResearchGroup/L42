@@ -14,20 +14,31 @@ C1:{
 C2:{
   type method Library m1(){
     type method S c() S"c1"
+    Inner:{type method S c() S"ic1"}
     }
   type method Library m2(){
     type method S c() S"c2"    
+    Inner:{type method S c() S"ic2"}
     }
   type method Library m3(){
     type method S c() S"c3"    
+    Inner:{type method S c() S"ic3"}
     } 
   }
 G1:Use[C1.m1();C1.m2();C1.m3()]<<{}
-G2:Use[C2.m1();C2.m2();C2.m3()]<<{ type method S c() this.#1c()++this.#2c()++this.#3c() }  
+G2:Use[C2.m1();C2.m2();C2.m3()]<<{
+  type method
+  S c() this.#1c()++this.#2c()++this.#3c() 
+  Inner:{
+    type method
+    S c() this.#1c()++this.#2c()++this.#3c() 
+    }
+  }  
 
 Main:{
   Debug(G1.c1()++G1.c2()++G1.c3())
   Debug(G2.c())
+  Debug(G2::Inner.c())
   return ExitCode.normal()
   }
 }
