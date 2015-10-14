@@ -83,7 +83,9 @@ Bool has(Selector selector){
   catch exception (on Report::MemberUnavailable return Bool.false())
   return Bool.true()
   }
-method NestedClass nestedClassFromRoot(Path that) exception Report::MemberUnavailable {
+  
+method
+NestedClass nestedClassFromRoot(Path that) exception Report::MemberUnavailable {
   if that==Path"Outer0" (return this.root())
    'could be, but ugly with m=this.mirror() ( case Mirror::Class
   myClass=this.record().docOf(path:Path"MyClass").annotations().top()
@@ -92,6 +94,19 @@ method NestedClass nestedClassFromRoot(Path that) exception Report::MemberUnavai
     )
   return Introspection(clazz:myClass.referredClass(),path:that)
   }
-method Bool has(Path pathFromRoot) error Report::NotImplementedYet()
-
+  
+method
+Bool has(Path fromRoot) (
+  unused=this.nestedClassFromRoot(fromRoot)
+  catch exception (on Report::MemberUnavailable Bool.false() )
+  Bool.true()
+  )
+  
+method
+Bool isPrivate() {
+  with ann in this.nestedDoc().annotations().vals() (
+    case ann.toS()==S"private" return Bool.true()
+    )
+  return Bool.false()
+  }
 }

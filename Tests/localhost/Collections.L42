@@ -3,7 +3,7 @@ type method
 Library generateVector(type Any that, Library lib) (
   Void unused=(
     Library res=lib
-    mut Outer0::Varres1__34_1 varres=Outer0::Varres1__34_1.#apply(inner:res)
+    mut Outer0::Varres1__39_1 varres=Outer0::Varres1__39_1.#apply(inner:res)
     Void unused0=varres.inner(that:Outer0::PrImpl::Refactor::RenamePath.#begin().#add(that:Outer0::PrImpl::Path.#stringParser(that:{'@stringU
     'VectorStruct
     }), to:Outer0::PrImpl::Path.#stringParser(that:{'@stringU
@@ -922,7 +922,32 @@ Outer1::Bool #bangequal(Outer0 that)
 method 
 Outer1::Bool #right(Outer0 that) 
 method 
-Outer1::Bool #rightequal(Outer0 that) }
+Outer1::Bool #rightequal(Outer0 that) 
+method 
+mut Outer0::Iterator vals() 
+method 
+mut Outer0::Iterator vals(Outer0 upTo) 
+Iterator:{
+type method 
+mut Outer0 #apply(Outer1^start, Outer1^end) 
+mut method 
+Void start(Outer1 that) 
+mut method 
+Outer1 #start() 
+read method 
+Outer1 start() 
+mut method 
+Outer1 #end() 
+read method 
+Outer1 end() 
+mut method 
+Void #next() exception Void 
+read method 
+Void #checkEnd() 
+read method 
+Outer1 #inner() 
+read method 
+Void #close() }}
 S:{<:Outer0::ToS
 type method '  toPutAs private
 Outer0 _private(Library^_binaryRepr) 
@@ -2447,7 +2472,80 @@ Outer0 nestedClassFromRoot(Outer2::Path that) exception Outer2::Report::MemberUn
   }
   )
 method 
-Outer3::Bool has(Outer2::Path pathFromRoot) error Outer2::Report::NotImplementedYet.#apply()
+Outer3::Bool has(Outer2::Path fromRoot) (
+  Outer0::nestedClassFromRoot(that ) unused=this.nestedClassFromRoot(that:fromRoot)
+  catch exception unused0 (
+    on Outer2::Report::MemberUnavailable Outer3::Bool.false()
+    )
+  Outer3::Bool.true()
+  )
+method 
+Outer3::Bool isPrivate() (
+  Void unused=(
+    Void unused0=(
+      Outer0::nestedDoc() ::annotations() ::vals() ann=this.nestedDoc().annotations().vals()
+      (
+        Void unused2=(
+          Void unused3=(
+            Void unused4=loop (
+              Void unused5=ann.#next()
+              catch exception unused6 (
+                on Void (
+                  Void unused7=(
+                    Void unused8=ann.#checkEnd()
+                    catch exception unused9 (
+                      on Void void
+                      )
+                    void
+                    )
+                  exception void
+                  )
+                )
+              (
+                Outer0::nestedDoc() ::annotations() ::vals() ::#inner() ::toS() ::#equalequal(that ) cond=ann.#inner().toS().#equalequal(that:Outer3::S.#stringParser(that:{'@stringU
+                'private
+                }))
+                (
+                  Void unused10=cond.#checkTrue()
+                  catch exception unused11 (
+                    on Void void
+                    )
+                  return Outer3::Bool.true()
+                  )
+                )
+              )
+            catch exception unused12 (
+              on Void void
+              )
+            void
+            )
+          catch exception propagated (
+            on Any (
+              Void unused13=ann.#close()
+              exception propagated
+              )
+            )
+          void
+          )
+        catch return propagated0 (
+          on Outer3::Bool (
+            Void unused14=ann.#close()
+            return propagated0
+            )
+          )
+        ann.#close()
+        )
+      )
+    Void unused1=return Outer3::Bool.false()
+    void
+    )
+  catch return result (
+    on Outer3::Bool result
+    )
+  error {'@stringU
+  'CurlyBlock-Should be unreachable code
+  }
+  )
 VartN__23_1:'@private
 {
 type method 
@@ -4110,6 +4208,73 @@ Outer1::Types parameterTypes() (
   'CurlyBlock-Should be unreachable code
   }
   )
+method 
+Outer3::Bool isPrivate() (
+  Void unused=(
+    Void unused0=(
+      Outer0::doc() ::annotations() ::vals() ann=this.doc().annotations().vals()
+      (
+        Void unused2=(
+          Void unused3=(
+            Void unused4=loop (
+              Void unused5=ann.#next()
+              catch exception unused6 (
+                on Void (
+                  Void unused7=(
+                    Void unused8=ann.#checkEnd()
+                    catch exception unused9 (
+                      on Void void
+                      )
+                    void
+                    )
+                  exception void
+                  )
+                )
+              (
+                Outer0::doc() ::annotations() ::vals() ::#inner() ::toS() ::#equalequal(that ) cond=ann.#inner().toS().#equalequal(that:Outer3::S.#stringParser(that:{'@stringU
+                'private
+                }))
+                (
+                  Void unused10=cond.#checkTrue()
+                  catch exception unused11 (
+                    on Void void
+                    )
+                  return Outer3::Bool.true()
+                  )
+                )
+              )
+            catch exception unused12 (
+              on Void void
+              )
+            void
+            )
+          catch exception propagated (
+            on Any (
+              Void unused13=ann.#close()
+              exception propagated
+              )
+            )
+          void
+          )
+        catch return propagated0 (
+          on Outer3::Bool (
+            Void unused14=ann.#close()
+            return propagated0
+            )
+          )
+        ann.#close()
+        )
+      )
+    Void unused1=return Outer3::Bool.false()
+    void
+    )
+  catch return result (
+    on Outer3::Bool result
+    )
+  error {'@stringU
+  'CurlyBlock-Should be unreachable code
+  }
+  )
 Varresult1__16_1:'@private
 {
 type method 
@@ -5057,7 +5222,7 @@ method #inner() error Outer2::Report::ObservedBug.#stringParser(that:{'@stringU
 'InnerOnCellEnd
 })
 method #checkEnd() void}}}
-Varres1__34_1:'@private
+Varres1__39_1:'@private
 {
 type method 
 mut Outer0 #apply(Library^inner) 

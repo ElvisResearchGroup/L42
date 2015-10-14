@@ -15,63 +15,50 @@
 
   method
   Library << (Library that) exception Report::ClassClash,Report::MethodClash{
-    i=Introspection(lib:i)
+    i=Introspection(lib:that)
+    var map=SrcDests[]
     var acc=that
-    with lib in myLibs().vals() (
-      libi=this.renameSupers(lib, intro:i) 
-      acc:=IntrospectionPlugin.sumLib(l1:acc,l2:libi)
+    with lib in this.myLibs().vals(), index in 0N.vals() (
+      var libi=lib
+      with ren in this.renameMap(lib,prefix:S"#"[index]"", intro:i).vals() (
+        map:=map.#add(ren)
+        libi:=Refactor::RenameSelector[ren.src() of:ren.path() to:ren.dest()]<<libi
+        )
+      acc:=Compose(left:acc,right:libi)
       )
-    with lib in myLibs().vals() (
-      acc:=this.makePrivateSupers(lib,acc:acc,intro:i)
+    acc:=Compose(left:acc,right:that)
+    with mapi in map.vals() (
+      acc:=Refactor::MakePrivateSelector[mapi.dest() of:mapi.path()]<<acc
       )
     return acc
+    catch exception (on Report::MemberUnavailable error Report::CodeNotReachable())
     }
 
+  SrcDest:{(Path path, Selector src,Selector dest)}
+  SrcDests:LinkedList.list(SrcDest)
   method '  toPutAs private
-  Library renameSupers(Library that,Introspection(lib) intro)
-  exception Report::ClassClash, Report::MethodClash {
-    var acc=that
-    thatI=Introspection(lib:that, path:intro.pathFromRoot())
-    catch exception (on Report::MemberUnavailable return that)
-    'for all the methods of intro, if method in that, rename method in that.
+  SrcDests renameMap(Library that,S prefix,Introspection::NestedClass intro) {
+    var acc=SrcDests[]
+    path=intro.pathFromRoot()
+    thatI=Introspection(lib:that, path:path)
+    catch exception (on Report::MemberUnavailable return SrcDests[])
     with meth in intro.methods().vals() (
-      hasMeth={unused=thatI.methodFromSelector(meth.selector())
-      catch exception (on Report::MemberUnavailable return Bool.false())
-      return Bool.true()}
-    )
-    'for all the nesteds in intro, if method in that.nested, rename method
-    }
-  method
-  Library accumulate(Library l1,Library l2) exception Report::ClassClash,Report::MethodClash{
-    return this.liftErrorsCompose(left:l1,right:l2)
-    catch exception x (on Any (
-      if !this.resolver().isPresent() (error x) 'boh, why is not working? with exception
-      ms=Introspection(lib:~this.resolver()).methods()
-      Selector name=ms.pop().pop().top().selector()
-      Selector nameLeft=ms.pop().top().selector()
-      Selector nameRight=ms.top().selector()
-      Debug(S"name is: "[name]"")
-      Debug(S"nameLeft is: "[nameLeft]"")
-      Debug(S"nameRight is: "[nameRight]"")
-      error Report::NotImplementedYet"DO ADAPTER"
-      'Name name=Name.#stringParser(_name.binaryRepr())
-      'Name nameLeft=Name.#stringParser(_nameLeft.binaryRepr())
-      'Name nameRight=Name.#stringParser(_nameRight.binaryRepr())
-      'l1A=Adapt[name into:nameLeft;]<<l1
-      'l2A=Adapt[name into:nameRight;]<<l2
-      'var result=IntrospectionPlugin.sumLib(l1:l1A,l2:l2A)
-      'result:=IntrospectionPlugin.sumLib(l1:!this.resolver(),l2:result)
-      'result:=MakePrivate(nameLeft into:result)
-      'result:=MakePrivate(nameRight into:result)
-      'return result
-      ))
-    }
-  method Outer0 ++ (Outer0 that) {
-    list=this.myLibs()++that.myLibs()
-    Resolver res={
-      if that.resolver().isPresent() (return that.resolver())
-      return this.resolver()
-      }
-    return Outer0(resolver:res, myLibs:list)
-    }
+      case !meth.isPrivate() (
+        destSel=Selector.fromS(prefix++meth.selector().toS())
+        ' if the selector can not be prefixed
+        catch error (on Report::Misuse void)
+        meth2=thatI.methodFromSelector(meth.selector())
+        catch exception (on Report::MemberUnavailable void)
+        if !meth2.isPrivate() (
+          acc:=acc.#add(SrcDest(path:path,src:meth.selector(),dest:destSel))
+          )
+        )
+      )
+    with nested in intro.nestedClasses().vals() (
+      acc++=this.renameMap(that,prefix:prefix,intro:nested)
+      )
+    return acc
+    }      
+  method Outer0 ++ (Outer0 that)
+    Outer0(myLibs:this.myLibs()++that.myLibs())
   }

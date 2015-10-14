@@ -58,5 +58,13 @@ Types parameterTypes() {
   return result
   catch exception err (on Report::MemberUnavailable error err)
   }
+
+method
+Bool isPrivate() {
+  with ann in this.doc().annotations().vals() (
+    case ann.toS()==S"private" return Bool.true()
+    )
+  return Bool.false()
+  }
 }
 

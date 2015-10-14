@@ -36,7 +36,32 @@ Outer1::Bool #bangequal(Outer0 that)
 method 
 Outer1::Bool #right(Outer0 that) 
 method 
-Outer1::Bool #rightequal(Outer0 that) }
+Outer1::Bool #rightequal(Outer0 that) 
+method 
+mut Outer0::Iterator vals() 
+method 
+mut Outer0::Iterator vals(Outer0 upTo) 
+Iterator:{
+type method 
+mut Outer0 #apply(Outer1^start, Outer1^end) 
+mut method 
+Void start(Outer1 that) 
+mut method 
+Outer1 #start() 
+read method 
+Outer1 start() 
+mut method 
+Outer1 #end() 
+read method 
+Outer1 end() 
+mut method 
+Void #next() exception Void 
+read method 
+Void #checkEnd() 
+read method 
+Outer1 #inner() 
+read method 
+Void #close() }}
 S:{<:Outer0::ToS
 type method '  toPutAs private
 Outer0 _private(Library^_binaryRepr) 

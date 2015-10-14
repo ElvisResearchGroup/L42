@@ -1,0 +1,37 @@
+{reuse L42.is/AdamTowel01
+
+C1:{
+  type method Library m1(){
+    type method S c1() S"c1"
+    }
+  type method Library m2(){
+    type method S c2() S"c2"    
+    }
+  type method Library m3(){
+    type method S c3() S"c3"    
+    } 
+  }
+C2:{
+  type method Library m1(){
+    type method S c() S"c1"
+    }
+  type method Library m2(){
+    type method S c() S"c2"    
+    }
+  type method Library m3(){
+    type method S c() S"c3"    
+    } 
+  }
+'G1:Use[C1.m1();C1.m2();C1.m3()]<<{}
+G2:(
+Debug(S"start")
+  lib=Use[C2.m1();C2.m2();C2.m3()]<<{ type method S c() this.#0c()++this.#1c()++this.#2c() }  
+  Debug(lib:lib)
+  lib
+  )
+Main:{
+  'Debug(G1.c1()++G1.c2()++G1.c3())
+  'Debug(G2.c())
+  return ExitCode.normal()
+  }
+}

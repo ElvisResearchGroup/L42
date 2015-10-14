@@ -3,12 +3,12 @@
     {'findMeSquares
     type method
     Library << (Library that) exception Report::MethodClash,Report::ClassClash
-      Compose[that]<<{
+      Compose(left:that,right:{
         type method
         type Outer0 #begin() Outer0
         method
         Outer0 #end() this
-        }
+        })
     }
   Redirect:Squares<<{#add(Path that, type Any to)
     method
@@ -103,7 +103,7 @@
     }
   MakePrivateSelector:Squares<<{#add(Selector that, Path of,)
     method
-    Library << (Library that)exception Report::MemberUnavailable,Report::InvalidOnTopLevel
+    Library << (Library that)exception Report::MemberUnavailable
       AddDocumentationSelector[this.that() of:this.of() doc:Doc.#stringParser({'@private
         })]<<that
     }

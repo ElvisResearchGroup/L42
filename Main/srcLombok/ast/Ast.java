@@ -256,24 +256,12 @@ public interface Ast {
 				return checkX(s.substring(1), allowHash);
 			}
 			for (char c : s.toCharArray()) {
-				if (allowHash && c == '#') {
-					continue;
-				}
-				if (c == '%') {
-					continue;
-				}
-				if (c == '_') {
-					continue;
-				}
-				if (c >= 'A' && c <= 'Z') {
-					continue;
-				}
-				if (c >= 'a' && c <= 'z') {
-					continue;
-				}
-				if (c >= '0' && c <= '9') {
-					continue;
-				}
+				if (allowHash && c == '#') {continue;}
+				if (c == '%') {continue;}
+				if (c == '_') {continue;}
+				if (c >= 'A' && c <= 'Z') {continue;}
+				if (c >= 'a' && c <= 'z') {continue;}
+				if (c >= '0' && c <= '9') {continue;}
 			}
 			return c0 == '_' || (c0 >= 'a' && c0 <= 'z');
 		}

@@ -99,21 +99,26 @@ public class TypeSystem implements Visitor<Type>, Reporter{
 
   @Override
   public Type visit(ClassB s) {
-    Program pOld=this.p;
-    try{if (this.p.isExecutableStar()){this.p=p.removeExecutableStar();}
+    //Program pOld=this.p;
+    //try{if (this.p.isExecutableStar()){this.p=p.removeExecutableStar();}
       return collectEnvs(()->{
         assert IsCompiled.of(s);
         Configuration.typeSystem.computeStage(p,s);
-        if(p.executablePlus()){
+       /* if(p.executablePlus()){
           if(s.getStage().getStage()==Stage.Less){
             throw new ErrorMessage.LibraryRefersToIncompleteClasses(p.getInnerData(), s);
             }
+          }*/
+        if (!p.isExecutableStar()){
+          TypeSystemOK.checkCt(p, s);
+          //if(s.getStage().getStage()==Stage.Less){
+          //  throw new ErrorMessage.LibraryRefersToIncompleteClasses(p.getInnerData(), s);
+          //  }
           }
-        TypeSystemOK.checkCt(p, s);
         return new NormType(Mdf.Immutable,Path.Library(),Ph.None);
       });
-    }
-    finally{this.p=pOld;}
+    //}
+   // finally{this.p=pOld;}
   }
   @Override
   public Type visit(Path s) {

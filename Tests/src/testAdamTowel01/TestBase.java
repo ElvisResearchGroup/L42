@@ -155,6 +155,17 @@ public class TestBase {
 ,"Outer1::Generated"
 ));
     }
+  
+  @Test
+  public  void _11UseOperators1() throws Throwable{
+    TestHelper.configureForTest();
+    L42.main(new String[]{"examples/testsForAdamTowel01/UseOperators1.L42"});
+    Assert.assertEquals(L42.record.toString(),"c1c2c3\n");
+    }
+  
+  
+  
+  
   }
 
 //  Kind:MethodClash

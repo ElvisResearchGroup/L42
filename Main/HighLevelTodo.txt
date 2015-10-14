@@ -1,4 +1,7 @@
 Adam Towel
+  -compose just compose two libs/a list of libs, no "<<"
+  -compose is used in squares and "as much as make sense", and is suggested in derived operators.
+  -use do automatic method hiding, and 
   -test introspection more 
   -test if from is applied when reading method types?
     -on literal, it should be frommed before passed to plugin
@@ -42,6 +45,8 @@ Caching
     RenamePath[@"Bar" to:@"Beer"]
     -operators <-  ->   \/ /\ ?? may be not?
     -usually ~ is give me internal, so rename all .binary repr?
+Parsing errors:
+  variable declare multiple times do not give any info, not even the file
 
 Well formedness
   -well formedness, state must be all private or all public.

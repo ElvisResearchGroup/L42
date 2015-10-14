@@ -70,4 +70,29 @@
 
 
   method Bool >=(N that) !(this<that)
+  
+  method 
+  mut Iterator vals()
+    Iterator(start:this,end:-1N)
+  
+  method 
+  mut Iterator vals(N upTo)
+    Iterator(start:this,end:upTo)
+  
+  Iterator:{mut(var Outer1 start, Outer1 end)
+    mut method
+    Void #next() exception Void (
+      if this.end() <0N | this.start()<this.end() (this.start(this.start()+1N))
+      else exception void 
+      )
+     
+    read method
+    Void #checkEnd() void
+    
+    read method
+    Outer1 #inner() this.start()
+
+    read method
+    Void #close() void
+    }
   }

@@ -48,7 +48,7 @@ Path://    Outer ('::'C)* |
   C(ClassSep C)*;//| 'Any' | 'Void' | 'Library';
 ClassSep: '::';
 X:Lowercase (Uppercase|Lowercase|Digit|'#')*;
-HashX:'#' Lowercase (Uppercase|Lowercase|Digit|'#')*;
+HashX:'#'  (Uppercase|Lowercase|Digit|'#')*;
 //void is a particular X, syntactically
 fragment CharsId :'A'..'Z'|'a'..'z'|'0'..'9';
 fragment CharsOp :'&'|'|'|'*'|'+'|'-'|'='|'/';
