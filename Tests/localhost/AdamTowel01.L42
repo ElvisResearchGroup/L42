@@ -45,7 +45,7 @@ Outer0 fromS(Outer1::S::ToS that) (
         return Outer0.false()
         )
       )
-    Void unused2=error Outer1::Report::Misuse.#stringParser(that:{'@stringU
+    Void unused2=error Outer1::Report::Misuse::$.#stringParser(that:{'@stringU
     'Provided string does not define a bool
     })
     void
@@ -461,26 +461,241 @@ method
 Outer1::SConcat #end() this
 method 
 Outer2::S #stringParser(Library that) this.accumulator().#plusplus(that:Outer2::S.#stringParser(that:that))}}
-URL:{<:Outer1::S::ToS
-type method '  toPutAs private
-Outer0 _private(Library^_binaryRepr) 
-mut method '  toPutAs private
-Library #_binaryRepr() 
-read method '  toPutAs private
-Library _binaryRepr() 
+SafeOperatorsAccess:'@private
+{'@plugin
+'L42.is/connected/withSafeOperators
+
 type method 
-Outer0 fromS(Outer1::S::ToS that) Outer0.#stringParser(that:that.toS().binaryRepr())
+Library compose(Library left, Library right) using Outer0 check compose(left:left, right:right) error Outer1::S.#stringParser(that:{'@stringU
+'SafeOperatorsAccess.compose
+})
 type method 
-Outer0 #stringParser(Library that) Outer0._private(_binaryRepr:that)
+Library redirect(Library that, Library srcBinaryRepr, type Any dest) using Outer1::SafeOperatorsAccess check redirect(that:that, src:srcBinaryRepr, dest:dest) error Outer1::S.#stringParser(that:{'@stringU
+'SafeOperatorsAccess.redirect
+})}
+Traits:'@private
+{
+type method 
+Library stringable() {
+type method 
+Outer0 #apply() 
+type method 
+Outer0 #begin() Outer0.#apply()
 method 
-Library binaryRepr() this._binaryRepr()
-method toS() Outer1::S.#stringParser(that:this._binaryRepr())
+Outer0 #end() this
+method 
+Library #leftleft(Library that) Outer2::SafeOperatorsAccess.compose(left:that, right:{'@private
+<:Outer3::S::ToS
+type method 
+Outer0 #apply(Outer3::S^inner) 
+mut method 
+Outer3::S #inner() 
+read method 
+Outer3::S inner() 
+method 
+Void invariant() 
+type method 
+Outer0 #stringParser(Library that) Outer0.#apply(that:Outer3::S.#stringParser(that:that))
+type method 
+Outer0 #apply(Outer3::S::ToS that) (
+  Outer0::#apply(inner ) result=Outer0.#apply(inner:that.toS())
+  Void unused=result.invariant()
+  result
+  )
+method 
+Outer3::S #tilde() this.inner()
+method '@private
+Outer3::S myName() (
+  Outer3::Introspection::#apply(clazz ) ::record() ::docOf(path ) doc=Outer3::Introspection.#apply(clazz:Outer0).record().docOf(path:Outer3::Path.#stringParser(that:{'@stringU
+  'MyClass
+  }))
+  doc.annotations().top().toS()
+  )
+method toS() this.myName().#begin().#end().#stringParser(that:{'@stringU
+'[
+}).#begin().#add(that:this.inner()).#end().#stringParser(that:{'@stringU
+']
+})
+method 
+Library binaryRepr() this.inner().binaryRepr()
+method 
+Outer3::Bool #bangequal(Outer0 that) this.#equalequal(that:that).#bang()
+method 
+Outer3::Bool #equalequal(Outer0 that) this.inner().#equalequal(that:that.inner())
+method 
+Outer3::Bool equals(Any that) (
+  Void unused=(
+    Void unused0=(
+      Outer0 that0=(
+        Void unused2=return that
+        catch return casted (
+          on Outer0 casted
+          
+          on Any exception void
+          )
+        error {'@stringU
+        'CastT-Should be unreachable code
+        }
+        )
+      catch exception unused3 (
+        on Void void
+        )
+      (
+        Void unused4=return this.#equalequal(that:that0)
+        void
+        )
+      )
+    Void unused1=return Outer3::Bool.false()
+    void
+    )
+  catch return result (
+    on Outer3::Bool result
+    )
+  error {'@stringU
+  'CurlyBlock-Should be unreachable code
+  }
+  )})}}
+StringableU:'@private
+{
+type method 
+Outer0 #apply() 
+type method 
+Outer0 #begin() Outer0.#apply()
+method 
+Outer0 #end() this
+method 
+Library #leftleft(Library that) Outer1::SafeOperatorsAccess.compose(left:that, right:{'@private
+<:Outer2::S::ToS
+type method 
+Outer0 #apply(Outer2::S^inner) 
+mut method 
+Outer2::S #inner() 
+read method 
+Outer2::S inner() 
+method 
+Void invariant() 
+type method 
+Outer0 #stringParser(Library that) Outer0.#apply(that:Outer2::S.#stringParser(that:that))
+type method 
+Outer0 #apply(Outer2::S::ToS that) (
+  Outer0::#apply(inner ) result=Outer0.#apply(inner:that.toS())
+  Void unused=result.invariant()
+  result
+  )
+method 
+Outer2::S #tilde() this.inner()
+method '@private
+Outer2::S myName() (
+  Outer2::Introspection::#apply(clazz ) ::record() ::docOf(path ) doc=Outer2::Introspection.#apply(clazz:Outer0).record().docOf(path:Outer2::Path.#stringParser(that:{'@stringU
+  'MyClass
+  }))
+  doc.annotations().top().toS()
+  )
+method toS() this.myName().#begin().#end().#stringParser(that:{'@stringU
+'[
+}).#begin().#add(that:this.inner()).#end().#stringParser(that:{'@stringU
+']
+})
+method 
+Library binaryRepr() this.inner().binaryRepr()
+method 
+Outer2::Bool #bangequal(Outer0 that) this.#equalequal(that:that).#bang()
+method 
+Outer2::Bool #equalequal(Outer0 that) this.inner().#equalequal(that:that.inner())
+method 
+Outer2::Bool equals(Any that) (
+  Void unused=(
+    Void unused0=(
+      Outer0 that0=(
+        Void unused2=return that
+        catch return casted (
+          on Outer0 casted
+          
+          on Any exception void
+          )
+        error {'@stringU
+        'CastT-Should be unreachable code
+        }
+        )
+      catch exception unused3 (
+        on Void void
+        )
+      (
+        Void unused4=return this.#equalequal(that:that0)
+        void
+        )
+      )
+    Void unused1=return Outer2::Bool.false()
+    void
+    )
+  catch return result (
+    on Outer2::Bool result
+    )
+  error {'@stringU
+  'CurlyBlock-Should be unreachable code
+  }
+  )})}
+URL:{'@private
+<:Outer1::S::ToS
+method 
+Void invariant() void
+type method 
+Outer0 #apply(Outer1::S^inner) 
+mut method 
+Outer1::S #inner() 
+read method 
+Outer1::S inner() 
+type method 
+Outer0 #stringParser(Library that) Outer0.#apply(that:Outer1::S.#stringParser(that:that))
+type method 
+Outer0 #apply(Outer1::S::ToS that) (
+  Outer0::#apply(inner ) result=Outer0.#apply(inner:that.toS())
+  Void unused=result.invariant()
+  result
+  )
+method 
+Outer1::S #tilde() this.inner()
+method '@private
+Outer1::S myName__0_0() (
+  Outer1::Introspection::#apply(clazz ) ::record() ::docOf(path ) doc=Outer1::Introspection.#apply(clazz:Outer0).record().docOf(path:Outer1::Path.#stringParser(that:{'@stringU
+  'MyClass
+  }))
+  doc.annotations().top().toS()
+  )
+method toS() this.myName__0_0().#begin().#end().#stringParser(that:{'@stringU
+'[
+}).#begin().#add(that:this.inner()).#end().#stringParser(that:{'@stringU
+']
+})
+method 
+Library binaryRepr() this.inner().binaryRepr()
 method 
 Outer1::Bool #bangequal(Outer0 that) this.#equalequal(that:that).#bang()
 method 
-Outer1::Bool #equalequal(Outer0 that) (
+Outer1::Bool #equalequal(Outer0 that) this.inner().#equalequal(that:that.inner())
+method 
+Outer1::Bool equals(Any that) (
   Void unused=(
-    Void unused0=using Outer1::Alu check ifStringEqualDo(s1:this.binaryRepr(), s2:that.binaryRepr()) return Outer1::Bool.true()
+    Void unused0=(
+      Outer0 that0=(
+        Void unused2=return that
+        catch return casted (
+          on Outer0 casted
+          
+          on Any exception void
+          )
+        error {'@stringU
+        'CastT-Should be unreachable code
+        }
+        )
+      catch exception unused3 (
+        on Void void
+        )
+      (
+        Void unused4=return this.#equalequal(that:that0)
+        void
+        )
+      )
     Void unused1=return Outer1::Bool.false()
     void
     )
@@ -568,7 +783,7 @@ Outer0 pop() (
   Void unused=(
     Void unused0=return Outer0._new(head:this.head().#next())
     catch exception unused1 (
-      on Void error Outer3::Report::Misuse.#stringParser(that:{'@stringU
+      on Void error Outer3::Report::Misuse::$.#stringParser(that:{'@stringU
       'PopOnEmpyList
       })
       )
@@ -755,7 +970,7 @@ method #checkEnd() (
       on Void void
       )
     (
-      Void unused1=error Outer4::Report::Misuse.#stringParser(that:{'@stringU
+      Void unused1=error Outer4::Report::Misuse::$.#stringParser(that:{'@stringU
       'IterationNotComplete,\u000a  use valsCut() to allows incomplete iterations\u000a
       })
       void
@@ -825,15 +1040,9 @@ Outer1::Elem #inner() this.that().#inner()
 read method 
 Void #close() void}}}
 type method 
-Library list(type Any that) using Outer0::SafeOperatorsAccess check redirect(that:Outer0::ListCode.#apply(), src:Outer1::S.#stringParser(that:{'@stringU
+Library list(type Any that) Outer1::SafeOperatorsAccess.redirect(that:Outer0::ListCode.#apply(), srcBinaryRepr:Outer1::S.#stringParser(that:{'@stringU
 'Elem
-}).binaryRepr(), dest:that) error Outer1::Report::PluginFailure.#stringParser(that:{'@stringU
-'SafeOperators.redirect -- inside LinkedList
-})
-SafeOperatorsAccess:'  toPutAs private
-{'@plugin
-'L42.is/connected/withSafeOperators
-}}
+}).binaryRepr(), dest:that)}
 Strings:{' generic linked list class, elements of type Elem
 
 Varres:'@private
@@ -908,7 +1117,7 @@ Outer0 pop() (
   Void unused=(
     Void unused0=return Outer0._new(head:this.head().#next())
     catch exception unused1 (
-      on Void error Outer1::Report::Misuse.#stringParser(that:{'@stringU
+      on Void error Outer1::Report::Misuse::$.#stringParser(that:{'@stringU
       'PopOnEmpyList
       })
       )
@@ -1094,7 +1303,7 @@ method #checkEnd() (
       on Void void
       )
     (
-      Void unused1=error Outer2::Report::Misuse.#stringParser(that:{'@stringU
+      Void unused1=error Outer2::Report::Misuse::$.#stringParser(that:{'@stringU
       'IterationNotComplete,\u000a  use valsCut() to allows incomplete iterations\u000a
       })
       void
@@ -1515,7 +1724,7 @@ Outer0 pop() (
   Void unused=(
     Void unused0=return Outer0._new(head:this.head().#next())
     catch exception unused1 (
-      on Void error Outer2::Report::Misuse.#stringParser(that:{'@stringU
+      on Void error Outer2::Report::Misuse::$.#stringParser(that:{'@stringU
       'PopOnEmpyList
       })
       )
@@ -1701,7 +1910,7 @@ method #checkEnd() (
       on Void void
       )
     (
-      Void unused1=error Outer3::Report::Misuse.#stringParser(that:{'@stringU
+      Void unused1=error Outer3::Report::Misuse::$.#stringParser(that:{'@stringU
       'IterationNotComplete,\u000a  use valsCut() to allows incomplete iterations\u000a
       })
       void
@@ -1882,30 +2091,46 @@ method toS() Outer2::S.#stringParser(that:{'@stringU
 }).#begin().#add(that:this.reason()).#end().#stringParser(that:{'@stringU
 ']
 })}
-Misuse:'If this happens, then the library client is calling a function with wrong parameters or in a wrong way.
-'It is a shorter name for Precondition Violation
+Misuse:'as exceptions, Misuse objects are a way to report/guard complex operations,
+' where checking the shape of the input can be unconvenient.
+'as errors, they represent precondition violations. 
+'Turning an exception Misuse into an error Misuse
+' is equivalent of declaring that such misuse should not happen (responsability of the caller)
+' an error Misuse is like a Precondition Violation in other systems.
 'If the violation is because the "this" parameter is not suitable to perform the requested operation,
 'consider using UnsupportedOperation instead
-{<:Outer2::S::ToS
+{interface <:Outer2::S::ToS
+$$:'@private
+{<:Outer1, Outer3::S::ToS
 type method 
-Outer0 #apply(Outer2::S^reason) 
+Outer0 #apply(Outer3::S^reason) 
 mut method 
-Outer2::S #reason() 
+Outer3::S #reason() 
 read method 
-Outer2::S reason() 
+Outer3::S reason() 
 type method 
-Outer0 #stringParser(Library that) Outer0.#apply(reason:Outer2::S.#stringParser(that:that))
+Outer0 #stringParser(Library that) Outer0.#apply(reason:Outer3::S.#stringParser(that:that))
 type method 
-Outer0 #apply() Outer0.#apply(that:Outer2::S.#stringParser(that:{'@stringU
+Outer0 #apply() Outer0.#apply(that:Outer3::S.#stringParser(that:{'@stringU
 '
 }))
 type method 
-Outer0 #apply(Outer2::S that) Outer0.#apply(reason:that)
-method toS() Outer2::S.#stringParser(that:{'@stringU
+Outer0 #apply(Outer3::S that) Outer0.#apply(reason:that)
+method toS() Outer3::S.#stringParser(that:{'@stringU
 'Misuse[
 }).#begin().#add(that:this.reason()).#end().#stringParser(that:{'@stringU
 ']
 })}
+$:{'pattern to allow interfaces to have static methods
+
+type method 
+Outer1 #apply() Outer1::$$.#apply(that:Outer3::S.#stringParser(that:{'@stringU
+'
+}))
+type method 
+Outer1 #apply(Outer3::S that) Outer1::$$.#apply(reason:that)
+type method 
+Outer1 #stringParser(Library that) Outer1::$$.#apply(reason:Outer3::S.#stringParser(that:that))}}
 UnsupportedOperation:'to report that a target do not support a certain selector.
 'to be used when a class have a method available only on certain instances.
 'For example, getting the element out of an optional type that is not present.
@@ -1987,7 +2212,7 @@ Outer0 #apply() Outer0.#apply(that:Outer2::S.#stringParser(that:{'@stringU
 type method 
 Outer0 #apply(Outer2::S that) Outer0.#apply(reason:that)
 method toS() Outer2::S.#stringParser(that:{'@stringU
-'CodeNotReachable[
+'NotImplementedYet[
 }).#begin().#add(that:this.reason()).#end().#stringParser(that:{'@stringU
 ']
 })}
@@ -2096,7 +2321,7 @@ Outer2::Selector selector() (
         return Outer2::Selector.fromS(that:this._selector())
         )
       )
-    Void unused1=error Outer2::Report::Misuse.#stringParser(that:{'@stringU
+    Void unused1=error Outer2::Report::UnsupportedOperation.#stringParser(that:{'@stringU
     'the MemberUnavailable is a path
     })
     void
@@ -2616,7 +2841,7 @@ Outer0 pop() (
   Void unused=(
     Void unused0=return Outer0._new(head:this.head().#next())
     catch exception unused1 (
-      on Void error Outer2::Report::Misuse.#stringParser(that:{'@stringU
+      on Void error Outer2::Report::Misuse::$.#stringParser(that:{'@stringU
       'PopOnEmpyList
       })
       )
@@ -2802,7 +3027,7 @@ method #checkEnd() (
       on Void void
       )
     (
-      Void unused1=error Outer3::Report::Misuse.#stringParser(that:{'@stringU
+      Void unused1=error Outer3::Report::Misuse::$.#stringParser(that:{'@stringU
       'IterationNotComplete,\u000a  use valsCut() to allows incomplete iterations\u000a
       })
       void
@@ -3135,7 +3360,7 @@ Outer0 pop() (
   Void unused=(
     Void unused0=return Outer0._new(head:this.head().#next())
     catch exception unused1 (
-      on Void error Outer2::Report::Misuse.#stringParser(that:{'@stringU
+      on Void error Outer2::Report::Misuse::$.#stringParser(that:{'@stringU
       'PopOnEmpyList
       })
       )
@@ -3321,7 +3546,7 @@ method #checkEnd() (
       on Void void
       )
     (
-      Void unused1=error Outer3::Report::Misuse.#stringParser(that:{'@stringU
+      Void unused1=error Outer3::Report::Misuse::$.#stringParser(that:{'@stringU
       'IterationNotComplete,\u000a  use valsCut() to allows incomplete iterations\u000a
       })
       void
@@ -4109,7 +4334,7 @@ Outer0 pop() (
   Void unused=(
     Void unused0=return Outer0._new(head:this.head().#next())
     catch exception unused1 (
-      on Void error Outer2::Report::Misuse.#stringParser(that:{'@stringU
+      on Void error Outer2::Report::Misuse::$.#stringParser(that:{'@stringU
       'PopOnEmpyList
       })
       )
@@ -4295,7 +4520,7 @@ method #checkEnd() (
       on Void void
       )
     (
-      Void unused1=error Outer3::Report::Misuse.#stringParser(that:{'@stringU
+      Void unused1=error Outer3::Report::Misuse::$.#stringParser(that:{'@stringU
       'IterationNotComplete,\u000a  use valsCut() to allows incomplete iterations\u000a
       })
       void
@@ -4628,7 +4853,7 @@ Outer0 pop() (
   Void unused=(
     Void unused0=return Outer0._new(head:this.head().#next())
     catch exception unused1 (
-      on Void error Outer2::Report::Misuse.#stringParser(that:{'@stringU
+      on Void error Outer2::Report::Misuse::$.#stringParser(that:{'@stringU
       'PopOnEmpyList
       })
       )
@@ -4814,7 +5039,7 @@ method #checkEnd() (
       on Void void
       )
     (
-      Void unused1=error Outer3::Report::Misuse.#stringParser(that:{'@stringU
+      Void unused1=error Outer3::Report::Misuse::$.#stringParser(that:{'@stringU
       'IterationNotComplete,\u000a  use valsCut() to allows incomplete iterations\u000a
       })
       void
@@ -5467,7 +5692,7 @@ type Outer0 #begin() Outer0
 method 
 Outer0 #end() this}
 ExposeAsLibrary:{
-Varres1__0_0:'@private
+Varres1__1_0:'@private
 {
 type method 
 mut Outer0 #apply(Library^inner) 
@@ -5500,7 +5725,7 @@ Library #leftleft(Library that) exception Outer2::Report::MemberUnavailable, Out
       )
     Void unused1=this.checkTargetExists(that:that)
     Library res=that
-    mut Outer0::Varres1__0_0 varres=Outer0::Varres1__0_0.#apply(inner:res)
+    mut Outer0::Varres1__1_0 varres=Outer0::Varres1__1_0.#apply(inner:res)
     Void unused2=varres.inner(that:Outer1::RenamePath.#begin().#add(that:Outer2::Path.#stringParser(that:{'@stringU
     'Outer0
     }), to:Outer2::Path.#stringParser(that:{'@stringU
@@ -5702,7 +5927,7 @@ Outer0 pop() (
   Void unused=(
     Void unused0=return Outer0._new(head:this.head().#next())
     catch exception unused1 (
-      on Void error Outer2::Report::Misuse.#stringParser(that:{'@stringU
+      on Void error Outer2::Report::Misuse::$.#stringParser(that:{'@stringU
       'PopOnEmpyList
       })
       )
@@ -5888,7 +6113,7 @@ method #checkEnd() (
       on Void void
       )
     (
-      Void unused1=error Outer3::Report::Misuse.#stringParser(that:{'@stringU
+      Void unused1=error Outer3::Report::Misuse::$.#stringParser(that:{'@stringU
       'IterationNotComplete,\u000a  use valsCut() to allows incomplete iterations\u000a
       })
       void
@@ -6273,7 +6498,7 @@ Outer0 pop() (
   Void unused=(
     Void unused0=return Outer0._new(head:this.head().#next())
     catch exception unused1 (
-      on Void error Outer2::Report::Misuse.#stringParser(that:{'@stringU
+      on Void error Outer2::Report::Misuse::$.#stringParser(that:{'@stringU
       'PopOnEmpyList
       })
       )
@@ -6459,7 +6684,7 @@ method #checkEnd() (
       on Void void
       )
     (
-      Void unused1=error Outer3::Report::Misuse.#stringParser(that:{'@stringU
+      Void unused1=error Outer3::Report::Misuse::$.#stringParser(that:{'@stringU
       'IterationNotComplete,\u000a  use valsCut() to allows incomplete iterations\u000a
       })
       void
@@ -6741,7 +6966,7 @@ Library #leftleft(Library that) (
   })
   Outer1::ExitCode.normal()
   )
-SafeOperatorsAccess:'  toPutAs private
+SafeOperatorsAccess:'@private
 {'@plugin
 'L42.is/connected/withSafeOperators
 }

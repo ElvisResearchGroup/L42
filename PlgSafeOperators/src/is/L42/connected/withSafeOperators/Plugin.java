@@ -38,7 +38,11 @@ public class Plugin implements PluginType{
     public Object Mcompose£xleft£xright(Object _left,Object _right){
       ClassB left=ensureExtractClassB(_left);
       ClassB right=ensureExtractClassB(_right);
-      return Sum.sum(Resources.getP(),left,right);
+      try{return Sum.sum(Resources.getP(),left,right);
+      }catch(ArrayIndexOutOfBoundsException exc){
+        exc.printStackTrace();
+        throw exc;
+      }
       }
     @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
     public Object MrenameClass£xthat£xsrc£xdest(Object _that,Object _src,Object _dest){

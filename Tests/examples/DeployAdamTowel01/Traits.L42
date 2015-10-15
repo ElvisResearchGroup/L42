@@ -1,0 +1,34 @@
+{
+type method
+Library stringable() {()
+  type method Outer0 #begin() Outer0()
+  method Outer0 #end() this
+  method Library <<(Library that)
+    SafeOperatorsAccess.compose(left:that, right:{
+      '@private
+      (S inner)<:S::ToS
+      method Void invariant()
+      type method Outer0 #stringParser(Library that) Outer0(S.#stringParser(that))
+      type method Outer0 (S::ToS that) (
+        result=Outer0(inner:that.toS())
+        result.invariant()
+        result
+        )
+      method S ~() this.inner()
+
+      method '@private
+      S myName() (
+        doc=Introspection(clazz:Outer0).record().docOf(path:Path"MyClass")
+        doc.annotations().top().toS()
+        )
+      method toS()  this.myName()[]"["[this.inner()]"]"
+      method Library binaryRepr() this.inner().binaryRepr()
+      method Bool != (Outer0 that) !(this==that)
+      method Bool == (Outer0 that) this.inner()==that.inner()
+      method Bool equals(Any that) {
+        with that (on Outer0 return this==that)
+        return Bool.false()
+        }
+      })
+  }
+}

@@ -3,7 +3,7 @@
   Outer0 fromS(S::ToS that){
     if that.toS()==S"true" (return Outer0.true())
     if that.toS()==S"false" (return Outer0.false())
-    error Report::Misuse"Provided string does not define a bool"
+    error Report::Misuse::$"Provided string does not define a bool"
     }
   method Void #checkTrue() exception Void 
     using Alu

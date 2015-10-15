@@ -9,15 +9,27 @@ ObservedBug:
   }
 
 Misuse:
-'If this happens, then the library client is calling a function with wrong parameters or in a wrong way.
-'It is a shorter name for Precondition Violation
+'as exceptions, Misuse objects are a way to report/guard complex operations,
+' where checking the shape of the input can be unconvenient.
+'as errors, they represent precondition violations. 
+'Turning an exception Misuse into an error Misuse
+' is equivalent of declaring that such misuse should not happen (responsability of the caller)
+' an error Misuse is like a Precondition Violation in other systems.
 'If the violation is because the "this" parameter is not suitable to perform the requested operation,
 'consider using UnsupportedOperation instead
-{(S reason)<:S::ToS
-  type method Outer0 #stringParser(Library that) Outer0(reason:S.#stringParser(that))
-  type method Outer0 () Outer0(S"")
-  type method Outer0 (S that) Outer0(reason:that)
-  method toS()  S"Misuse["[this.reason()]"]"
+  {interface<:S::ToS
+  $$:'@private
+    {(S reason)<:Outer1
+    type method Outer0 #stringParser(Library that) Outer0(reason:S.#stringParser(that))
+    type method Outer0 () Outer0(S"")
+    type method Outer0 (S that) Outer0(reason:that)
+    method toS()  S"Misuse["[this.reason()]"]"
+    }
+  $:{'pattern to allow interfaces to have static methods
+    type method Outer1 () $$(S"")
+    type method Outer1 (S that) $$(reason:that)
+        type method Outer1 #stringParser(Library that) $$(reason:S.#stringParser(that))
+    } 
   }
 UnsupportedOperation:
 'to report that a target do not support a certain selector.
@@ -49,7 +61,7 @@ NotImplementedYet:{(S reason)<:S::ToS
   type method Outer0 #stringParser(Library that) Outer0(reason:S.#stringParser(that))
   type method Outer0 () Outer0(S"")
   type method Outer0 (S that) Outer0(reason:that)
-  method toS()  S"CodeNotReachable["[this.reason()]"]"
+  method toS()  S"NotImplementedYet["[this.reason()]"]"
   }
 'in the following, a set of reports for composition operators
 
@@ -91,7 +103,7 @@ MemberUnavailable:{(Path path,S _selector,InvalidKind invalidKind)<:Report
   method
   Selector selector() {
     if this.hasSelector() (return Selector.fromS(this._selector()))
-    error Report::Misuse"the MemberUnavailable is a path"
+    error Report::UnsupportedOperation"the MemberUnavailable is a path"
     }
   method
   Bool hasSelector() this._selector()!=S""

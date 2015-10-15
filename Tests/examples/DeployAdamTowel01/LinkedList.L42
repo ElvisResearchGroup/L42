@@ -3,11 +3,5 @@
 
   type method
   Library list(type Any that)
-    using SafeOperatorsAccess
-      check redirect(ListCode(),src:S"Elem".binaryRepr(),dest:that)
-      error Report::PluginFailure"SafeOperators.redirect -- inside LinkedList"
-  SafeOperatorsAccess:'  toPutAs private
-    {'@plugin
-    'L42.is/connected/withSafeOperators
-    }
+    SafeOperatorsAccess.redirect(ListCode(),srcBinaryRepr:S"Elem".binaryRepr(),dest:that)
   }

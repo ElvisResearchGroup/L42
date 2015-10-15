@@ -20,6 +20,7 @@ public class Locator {
   
   final List<ClassB.Member> ms = new ArrayList<>();
   final List<Integer> indexes = new ArrayList<>();
+  ClassB initialCb=null;
   final List<ClassB> cbs = new ArrayList<>();
   Object annotation = null;
   public void setAnnotation(Object o){annotation=o;}
@@ -31,6 +32,10 @@ public class Locator {
     return this.ms.get(this.ms.size()-1);
   }
   public ClassB getLastCb(){
+    if (this.cbs.isEmpty()){
+      assert this.initialCb!=null;
+      return this.initialCb;
+    }
     return this.cbs.get(this.cbs.size()-1);
   }
   public String getLastName(){
@@ -94,6 +99,7 @@ public class Locator {
   }
   public void toFormerNodeLocator(){
     int size=this.size();
+    if(size==0){return;}
     if(this.cbs.get(size-1)!=null){return;}
     assert this.cbs.get(size-1)==null;
     this.cbs.remove(size-1);
@@ -176,7 +182,11 @@ public class Locator {
   }
   public void enterClassB(ClassB cb){
     int size=this.size();
-    if(size==0){return;}
+    if(size==0){
+      assert this.initialCb==null;
+      this.initialCb=cb;
+      return;
+      }
     assert this.cbs.get(size-1)==null;
     this.cbs.set(size-1,cb);
     this.indexes.set(size-1,this.indexes.get(size-1)+1);
@@ -184,7 +194,11 @@ public class Locator {
   }
   public void exitClassB(){
     int size=this.size();
-    if(size==0){return;}
+    if(size==0){
+      assert this.initialCb!=null;
+      this.initialCb=null;
+      return;
+      }
     assert !cbs.contains(null) : cbs;
     //assert this.cbs.get(size-1)!=null;
     this.cbs.set(size-1,null);

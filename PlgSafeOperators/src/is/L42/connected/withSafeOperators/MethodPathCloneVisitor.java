@@ -14,6 +14,7 @@ import ast.Ast.NormType;
 import ast.Ast.Path;
 import ast.Ast.Ph;
 import ast.Ast.Type;
+import ast.ErrorMessage.NormImpossible;
 import ast.ExpCore.Block;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.MCall;
@@ -134,9 +135,13 @@ abstract public class MethodPathCloneVisitor extends RenameMembers {
   public ExpCore visit(MCall s) {
     Program ep=Program.getExtendedProgram(p,this.getLocator().getCbs());
     MethodSelector ms=s.getS();
-    Path guessed=GuessTypeCore.of( ep, varEnv,s.getReceiver());
-    assert guessed!=null;//{return super.visit(s);}
-    guessed=Norm.of(ep, guessed);
+    Path guessed=null;
+    try{
+      guessed=GuessTypeCore.of( ep, varEnv,s.getReceiver());
+      assert guessed!=null;//{return super.visit(s);}
+      guessed=Norm.of(ep, guessed);
+      }
+    catch(NormImpossible ignored){return super.visit(s);}
     MethodSelector ms2=visitMS(ms,guessed);
     if(ms2.equals(ms)){return super.visit(s);}
     s=new MCall(s.getReceiver(),ms2,s.getDoc(),s.getEs(),s.getP());

@@ -1,14 +1,5 @@
 {
-SafeOperatorsAccess:'  toPutAs private
-  {'@plugin
-   'L42.is/connected/withSafeOperators
-   type method
-  Library compose(Library left,Library right)
-    using Outer0
-      check compose(left:left,right:right)
-      error S"SafeOperators.compose"
 
-  }
 type method Library opt() {
   Opt:{#new(TOpt that)
       TOpt:{interface method Outer2 get() }

@@ -27,7 +27,7 @@ mut Iterator valsCut()
 method
 Outer0 pop() {
   return Outer0._new(head:this.head().#next())
-  catch exception (on Void error Report::Misuse"PopOnEmpyList")
+  catch exception (on Void error Report::Misuse::$"PopOnEmpyList")
   }
 
 method
@@ -110,7 +110,7 @@ CellNext:{(Elem elem, Cell nextCell)<:Cell
   method
   #checkEnd()
     with cell=this.nextCell() (
-      on CellNext error Report::Misuse"
+      on CellNext error Report::Misuse::$"
       'IterationNotComplete,
       '  use valsCut() to allows incomplete iterations
       "

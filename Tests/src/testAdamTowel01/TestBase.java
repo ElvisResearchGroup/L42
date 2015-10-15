@@ -24,7 +24,7 @@ public class TestBase {
     }
   //not run when single test executed?
 
-  //@Test
+  @Test
   public  void _000AJustToWarmUpJVM01() throws Throwable{
     TestHelper.configureForTest();
     L42.main(new String[]{"examples/testsForAdamTowel01/UseAdamTowel01.L42"});
@@ -36,45 +36,45 @@ public class TestBase {
     L42.main(new String[]{"examples/DeployAdamTowel01"});
     Assert.assertTrue(Paths.get("localhost","AdamTowel01.L42").toFile().exists());
   }
- // @Test
+ @Test
   public  void _01UseAdamTowel01() throws Throwable{
     TestHelper.configureForTest();
     L42.main(new String[]{"examples/testsForAdamTowel01/UseAdamTowel01.L42"});
     Assert.assertEquals(L42.record.toString(),"FreeTemplate\nFreeTemplate\nHello Adam 0\nazz\nbzz\nczz\nHello Adam n1:0 n2:false endOfString\n");
     }
-  //@Test
+  @Test
   public  void _02UseSimpleLib() throws Throwable{
     TestHelper.configureForTest();
     L42.main(new String[]{"examples/testsForAdamTowel01/UseSimpleLib.L42"});
     Assert.assertEquals(L42.record.toString(),"Hello World 42\n");
     }
-  //@Test
+  @Test
   public  void _03DeploySimpleLib() throws Throwable{
     TestHelper.configureForTest();
     Paths.get("localhost","DeployedSimpleLib.L42").toFile().delete();
     L42.main(new String[]{"examples/testsForAdamTowel01/DeploySimpleLib.L42"});
     Assert.assertTrue(Paths.get("localhost","DeployedSimpleLib.L42").toFile().exists());
     }
-  //@Test
+  @Test
   public  void _04LoadDeployedSimpleLib() throws Throwable{
     TestHelper.configureForTest();
     L42.main(new String[]{"examples/testsForAdamTowel01/UseDeployedSimpleLib.L42"});
     Assert.assertEquals(L42.record.toString(),"Hello World Deployed\n");
     }
-  //@Test
+  @Test
   public  void _05DeployCollections() throws Throwable{
     TestHelper.configureForTest();
     Paths.get("localhost","Collections.L42").toFile().delete();
     L42.main(new String[]{"examples/DeployCollections"});
     Assert.assertTrue(Paths.get("localhost","Collections.L42").toFile().exists());
     }
-  //@Test
+  @Test
   public  void _06UseCollections() throws Throwable{
     TestHelper.configureForTest();
     L42.main(new String[]{"examples/testsForAdamTowel01/UseCollections.L42"});
     Assert.assertEquals(L42.record.toString(),"size is 2 hello world\nhello\nworld\n");
     }
-  //@Test
+  @Test
   public  void _07introspection() throws Throwable{
     TestHelper.configureForTest();
     L42.main(new String[]{"examples/testsForAdamTowel01/UseIntrospectionAdamTowel.L42"});
@@ -106,7 +106,7 @@ public class TestBase {
         ));
     }
   
-  //@Test
+  @Test
   public  void _08introspection2() throws Throwable{
     TestHelper.configureForTest();
     L42.main(new String[]{"examples/testsForAdamTowel01/UseIntrospectionAdamTowel2.L42"});
@@ -124,7 +124,7 @@ public class TestBase {
        ,"Iteration complete"
         ));
     }
-  //@Test
+  @Test
   public  void _09introspection3() throws Throwable{
     TestHelper.configureForTest();
     L42.main(new String[]{"examples/testsForAdamTowel01/UseIntrospectionAdamTowel3.L42"});
@@ -136,7 +136,7 @@ public class TestBase {
   ,"Outer1::Debug"
 ));
     }
-  //@Test
+  @Test
   public  void _10introspection4() throws Throwable{
     TestHelper.configureForTest();
     L42.main(new String[]{"examples/testsForAdamTowel01/UseIntrospectionAdamTowel4.L42"});

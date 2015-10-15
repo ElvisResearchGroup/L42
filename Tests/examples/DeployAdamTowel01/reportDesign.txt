@@ -1,0 +1,45 @@
+Misuse 'It is a shorter name for Precondition Violation
+  UnsupportedOperation: if "this" is unfit
+  MetaprogrammingGuard: for composition operators
+as exceptions, Misuse objects are a way to report/guard complex operations,
+ where checking the shape of the input can be unconvenient.
+as errors, they represent precondition violations. 
+Turning an exception Misuse into an error Misuse
+ is equivalent of declaring that such misuse should not happen (responsability of the caller)
+
+ObservedBug: 'except in rare case, should be only used as errors.
+'if this happens, then the programmer had wrong assumption on the code behaviour.
+  CodeNotReachable: code not reachable can wrap a Report (often a Misuse) to declare that such Report should
+    happen (responsabilty on the code logic)
+  NotImplementedYet:
+  AssertionFailure:
+  
+
+SystemEvent
+  PluginFailure:'to report the inability of a plugin to act
+  Memory/Stack overflow? how to handle them?
+  
+
+'all misuse?
+SourceUnfit:
+ClassClash:
+MethodClash:
+InvalidOnTopLevel:
+MemberUnavailable:
+PrivacyCoupuled:
+NSBMissing:
+
+Report vs not Report:
+Reports have many fields and "explanations", others have only stringable
+
+--
+Stringables:
+toS, fromS
+S field,
+Outer0"", Outer0(S)
+
+Next: test now, 
+link safeoperators access, remove clones.
+test
+then test Path as Stringable
+then go for Reports
