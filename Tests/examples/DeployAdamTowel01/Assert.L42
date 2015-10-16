@@ -1,0 +1,19 @@
+{
+AssertionFailure:{interface <:S::ToS}
+
+ObservedBug:
+ 'if this happens, then the programmer had wrong assumption on the code behaviour.
+ 'is about logic errors
+ StringableU[]<<{<:Guard method Void invariant() void }
+CodeNotReachable: 
+ 'in an ideal world, a static analysis would verify this
+ StringableU[]<<{<:Guard method Void invariant() void }
+CatchCaseNotReachable:
+  'Can wrap a captured error/exception (often a Guard)
+  'to declare that is a bug if such case 
+  'happens (responsabilty on the code logic)
+  StringableU[]<<{<:Guard method Void invariant() void }
+NotImplementedYet:
+ StringableU[]<<{<:Guard method Void invariant() void }
+
+}

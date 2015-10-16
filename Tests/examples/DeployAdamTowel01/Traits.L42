@@ -17,7 +17,7 @@ Library stringable() {()
       method S ~() this.inner()
 
       method '@private
-      S myName() (
+      S myName() ('meh, it can happen that we need to put this later :( put it abstract here
         doc=Introspection(clazz:Outer0).record().docOf(path:Path"MyClass")
         doc.annotations().top().toS()
         )

@@ -72,7 +72,7 @@
           default error err)))
       }
     }
-  AddDocumentationSelector:Squares<<{#add(Selector that, Path of,Doc doc)
+  AddDocumentationSelector:Squares<<{#add(Selector that, Path of,Introspection::Doc doc)
     method
     Library << (Library that)exception Report::MemberUnavailable{
       return SafeOperators.addDocumentation(that,path:this.of() selector:this.that(),doc:this.doc())
@@ -83,7 +83,7 @@
           default error err)))
       }
     }
-  AddDocumentationPath:Squares<<{#add(Path that,Doc doc)
+  AddDocumentationPath:Squares<<{#add(Path that,Introspection::Doc doc)
     method
     Library << (Library that)exception Report::MemberUnavailable,Report::InvalidOnTopLevel{
       return SafeOperators.addDocumentation(that,path:this.that(),doc:this.doc())
@@ -98,13 +98,13 @@
   MakePrivatePath:Squares<<{#add(Path that)
     method
     Library << (Library that)exception Report::MemberUnavailable,Report::InvalidOnTopLevel
-      AddDocumentationPath[this.that(),doc:Doc.#stringParser({'@private
+      AddDocumentationPath[this.that(),doc:Introspection::Doc.#stringParser({'@private
         })]<<that'string parser works, but we can not use the sugar, that would add @stringU
     }
   MakePrivateSelector:Squares<<{#add(Selector that, Path of,)
     method
     Library << (Library that)exception Report::MemberUnavailable
-      AddDocumentationSelector[this.that() of:this.of() doc:Doc.#stringParser({'@private
+      AddDocumentationSelector[this.that() of:this.of() doc:Introspection::Doc.#stringParser({'@private
         })]<<that
     }
   ExposeAsLibrary:Squares<<{#add(Path that)
@@ -130,7 +130,7 @@
       }
     method
     Void checkTargetExists(Library that) exception Report::MemberUnavailable (
-      unused=AddDocumentationPath[this.that() doc:Doc"JustToSeeIfItIsThere"]<<that
+      unused=AddDocumentationPath[this.that() doc:Introspection::Doc"JustToSeeIfItIsThere"]<<that
       catch exception x (
         on Report::InvalidOnTopLevel error Report::CodeNotReachable() 'TODO: if you omit Report:: the error reporting is horrible
         )

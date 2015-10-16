@@ -53,7 +53,7 @@
       error Report::PluginFailure"SafeOperators.removeImplementation(path,selector)"
 
   type method
-  Library addDocumentation(Library that,Path path,Doc doc)
+  Library addDocumentation(Library that,Path path,Introspection::Doc doc)
     using Outer0
       check addDocumentation(that
         path:path.binaryRepr()
@@ -62,7 +62,7 @@
       error Report::PluginFailure"SafeOperators.addDocumentation(path)"
 
   type method
-  Library addDocumentation(Library that,Path path,Selector selector,Doc doc)
+  Library addDocumentation(Library that,Path path,Selector selector,Introspection::Doc doc)
     using Outer0
       check addDocumentation(that
         path:path.binaryRepr()

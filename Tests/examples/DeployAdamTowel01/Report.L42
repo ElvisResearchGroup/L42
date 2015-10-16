@@ -1,12 +1,4 @@
 {interface<:S::ToS
-ObservedBug:
-'if this happens, then the programmer had wrong assumption on the code behaviour.
-{(S reason)<:S::ToS
-  type method Outer0 #stringParser(Library that) Outer0(reason:S.#stringParser(that))
-  type method Outer0 () Outer0(S"")
-  type method Outer0 (S that) Outer0(reason:that)
-  method toS()  S"ObservedBug["[this.reason()]"]"
-  }
 
 Misuse:
 'as exceptions, Misuse objects are a way to report/guard complex operations,
@@ -42,6 +34,13 @@ UnsupportedOperation:
   type method Outer0 (S that) Outer0(reason:that)
   method toS()  S"UnsupportedOperation["[this.reason()]"]"
   }
+InvalidParameter:
+'to report that a parameter (different from 'this') is not
+' as needed to perform the operation normally
+StringableU[]<<{ method Void invariant() void}
+
+
+
 
 PluginFailure:
 'to report the inability of a plugin to act
@@ -51,6 +50,16 @@ PluginFailure:
   type method Outer0 (S that) Outer0(reason:that)
   method toS()  S"PluginFailure["[this.reason()]"]"
   }
+  
+ObservedBug:
+'if this happens, then the programmer had wrong assumption on the code behaviour.
+{(S reason)<:S::ToS
+  type method Outer0 #stringParser(Library that) Outer0(reason:S.#stringParser(that))
+  type method Outer0 () Outer0(S"")
+  type method Outer0 (S that) Outer0(reason:that)
+  method toS()  S"ObservedBug["[this.reason()]"]"
+  }
+  
 CodeNotReachable:{(S reason)<:S::ToS
   type method Outer0 #stringParser(Library that) Outer0(reason:S.#stringParser(that))
   type method Outer0 () Outer0(S"")
@@ -118,6 +127,10 @@ PrivacyCoupuled:{(Introspection::Record record) <:Report
 NSBMissing:{(Report report) <:Report
   method toS() S"NSBMissing "[this.report()]""
   }
-
+'New:{(type Any super)
+'  type method type Outer0 #begin() Outer0
+'  type method Outer0 #add(type Any that) Outer0(super:that)
+'  method Outer0 #end() this
+'} 'nah, we are just happy with a Stringable plus injecting interfaces together with the invariant
 
 }
