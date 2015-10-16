@@ -25,9 +25,9 @@
         map:=map.#add(ren)
         libi:=Refactor::RenameSelector[ren.src() of:ren.path() to:ren.dest()]<<libi
         )
-      acc:=Compose(left:acc,right:libi)
+      acc:=Refactor.compose(left:acc,right:libi)
       )
-    acc:=Compose(left:acc,right:that)
+    acc:=Refactor.compose(left:acc,right:that)
     with mapi in map.vals() (
       acc:=Refactor::MakePrivateSelector[mapi.dest() of:mapi.path()]<<acc
       )
@@ -47,7 +47,7 @@
       case !meth.isPrivate() (
         destSel=Selector.fromS(prefix++meth.selector().toS())
         ' if the selector can not be prefixed
-        catch error (on Report::Misuse void)
+        catch error (on Guard void)
         meth2=thatI.methodFromSelector(meth.selector())
         catch exception (on Report::MemberUnavailable void)
         if !meth2.isPrivate() (

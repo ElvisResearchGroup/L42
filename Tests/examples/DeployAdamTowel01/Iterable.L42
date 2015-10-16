@@ -3,7 +3,7 @@
 type method Library opt() {
   Opt:{#new(TOpt that)
       TOpt:{interface method Outer2 get() }
-      TEmpty:{()<:TOpt method get() error Report::UnsupportedOperation"TEmpty.get() Value not present in Optional" }
+      TEmpty:{()<:TOpt method get() error Guard::Operation"TEmpty.get() Value not present in Optional" }
       TOf:{(Outer2 that)<:TOpt method get() this.that()}
       method T ~() this.that().get()
       method Bool isPresent() {

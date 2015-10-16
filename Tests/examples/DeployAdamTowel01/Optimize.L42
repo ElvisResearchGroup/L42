@@ -8,6 +8,6 @@ RemoveUnreachableCode:{()
   Library << (Library that)
     using SafeOperators
       check removeUnreachableCode(that)
-      error Report::PluginFailure"SafeOperators.removeUnreachableCode"
+      error System::Guard::PluginFailure"SafeOperators.removeUnreachableCode"
   }
 }

@@ -15,7 +15,7 @@
   method S #stringParser(Library that) {
     path=Path.#stringParser(that)
     return this.that().introspectDocAsString(path:path)
-    catch exception x (on Report::MemberUnavailable error x )
+    catch exception x (on MetaGuard::MemberUnavailable error Assert::CatchCaseNotReachable(x) )
     }
   method
   Doc docOf(Path path){
@@ -25,7 +25,7 @@
         'This can not be done for circular reference Refactor::RenamePath[path to:Path"Outer0"]<<mirror.lib()
         )
       )
-    error Report::CodeNotReachable()
+    error Assert::CodeNotReachable""
     }
   'this is how I would like it to be
   'type method Member dispatch(NestedClass^ root,Path path,MirrorPr mirror, N memberN,Library record) {
@@ -35,7 +35,7 @@
   '    case x== S"InterfaceImplementedMethod" (return Method(root:root,path:path,memberN:memberN,record:_report))
   '    case x== S"ImplementedMethod" (return Method(root:root,path:path,memberN:memberN,record:_report))
   '    case x== S"AbstractMethod" (return Method(root:root,path:path,memberN:memberN,record:_report))
-  '    default error Report::ObservedBug(S"invalid member kind "[x]"")
+  '    default error Assert::ObservedBug(S"invalid member kind "[x]"")
   '    )
   '  }
   'instead, I have to write this :-(
@@ -68,7 +68,7 @@
         return RootForNested(path:path,mirror:mirror,_report:_report)
         )
 
-      default error Report::ObservedBug(S"invalid member kind "[x]"")
+      default error Assert::ObservedBug(S"invalid member kind "[x]"")
       )}
     result(root:root)
     )

@@ -1,8 +1,8 @@
 {
-Guard:{ '<:Outer::Guard soon
-  <:Outer2::Guard
+Guard:{ '<:Outer::Guard soon (remove "interface" for a bad translation bug: Outer1_System_Guard is not abstract and does not override abstract method MtoS()
+  interface <:Outer2::Guard
   PluginFailure:'to report the inability of a plugin to act
-    StringableU[]<<{<:Guard method Void invariant() void}
+    StringableU[]<<{<:Guard method Void invariant() void method S myName() S"PluginFailure"}
   'Memory/Stack overflow? how to handle them?
   }
 

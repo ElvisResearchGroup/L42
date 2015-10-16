@@ -23,8 +23,8 @@ public class TestErrorMsgs {
     catch(ErrorMessage msg){
       UserLevelError err = ErrorFormatter.formatError(Program.empty(),msg);
       Assert.assertEquals(err.getKind(), expectedKind);
-      Assert.assertEquals(err.getP().getFile(),fileName);
-      Assert.assertEquals(err.getP().getLine1(),expectedLine);
+      Assert.assertEquals(err.getPos().getFile(),fileName);
+      Assert.assertEquals(err.getPos().getLine1(),expectedLine);
       }
   }
   //@Test(singleThreaded=false)

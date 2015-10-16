@@ -3,25 +3,25 @@
 type method
 NestedClass(Library lib)(
   root=MirrorPr::Lib(lib:lib).introspectReport(root:root,path:Path"Outer0")
-  catch exception x (on Report::MemberUnavailable error Report::CodeNotReachable())
+  catch exception x (on MetaGuard::NestedClassUnavailable error Assert::CodeNotReachable"")
   root
   )
 type method
-NestedClass(Library lib,Path path) exception Report::MemberUnavailable (
+NestedClass(Library lib,Path path) exception MetaGuard::NestedClassUnavailable (
   root=Outer0(lib:lib)
   root.mirror().introspectReport(root:root,path:path)
   )
 type method
 NestedClass(type Any clazz) (
   root=MirrorPr::Class(lib:clazz).introspectReport(root:root,path:Path"Outer0")
-  catch exception x (on Report::MemberUnavailable error Report::CodeNotReachable())
+  catch exception x (on MetaGuard::NestedClassUnavailable error Assert::CodeNotReachable"")
   root
   )
 
 type method
 NestedClass(type Any clazz,Path path) (
   root=MirrorPr::Class(lib:clazz).introspectReport(root:root,path:path)
-  catch exception x (on Report::MemberUnavailable error Report::CodeNotReachable())
+  catch exception x (on MetaGuard::NestedClassUnavailable error Assert::CodeNotReachable"")
   root
   )
 MirrorPr:... 'Todo:remove Pr later.

@@ -1,19 +1,42 @@
 {
-AssertionFailure:{interface <:S::ToS}
+Failure:{interface <:S::ToS}
+NotImplementedYet:
+  StringableU[]<<{<:Failure method Void invariant() void method S myName() S"NotImplementedYet"}
 
 ObservedBug:
- 'if this happens, then the programmer had wrong assumption on the code behaviour.
- 'is about logic errors
- StringableU[]<<{<:Guard method Void invariant() void }
+  'if this happens, then the programmer had wrong assumption on the code behaviour.
+  'is about logic errors
+ StringableU[]<<{<:Failure method Void invariant() void method S myName() S"ObservedBug"}
 CodeNotReachable: 
- 'in an ideal world, a static analysis would verify this
- StringableU[]<<{<:Guard method Void invariant() void }
+  'in an ideal world, a static analysis would verify this
+  StringableU[]<<{<:Failure method Void invariant() void method S myName() S"CodeNotReachable" }
 CatchCaseNotReachable:
   'Can wrap a captured error/exception (often a Guard)
   'to declare that is a bug if such case 
   'happens (responsabilty on the code logic)
-  StringableU[]<<{<:Guard method Void invariant() void }
-NotImplementedYet:
- StringableU[]<<{<:Guard method Void invariant() void }
-
+  {(S::ToS cause)<:S::ToS
+  type method Outer0 (S::ToS that) Outer0(cause:that)
+  method S::ToS ~() this.cause()
+  method toS() S"CatchCaseNotReachable["[this.cause()]"]"
+ 'code under, not clear if good to have. use == on .toS()?? 
+ ' method Bool != (Outer0 that) !(this==that)
+ ' method Bool == (Outer0 that) this.cause()==that.cause()
+ ' method Bool equals(Any that) {
+ '   with that (on Outer0 return this==that)
+ '   return Bool.false()
+ '   }
+  }
+  
+  type method Condition #begin() Condition(0N)
+  Condition:{(N that)
+    method Condition #add(Bool that){
+      if that (return Outer0(this.that()+1N))
+      error AssertMessage(S"Condition number "[this.that()]" failed")
+      }
+    method Condition #add(Bool that, S::ToS msg){
+      if that (return Outer0(this.that()+1N))
+      error AssertMessage(msg.toS()[S.nl()]"number:"[this.that()]" failed")
+      }
+    }
+  AssertMessage:StringableU[]<<{<:Failure method Void invariant() void method S myName() S"AssertMessage"}
 }

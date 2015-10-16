@@ -30,7 +30,7 @@ import ast.Util.PathMwt;
       WellFormedness, TypeError, MetaError, Unclassified
     }
     Kind kind;
-    Ast.Position p;
+    Ast.Position pos;
     ErrorMessage internal;
     String errorTxt;
   }
@@ -162,7 +162,7 @@ import ast.Util.PathMwt;
     Ast.Position pos;
   }
   @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class PathNonStar extends TypeError {
-    Path p;
+    Path path;
     HashMap<String, Ast.NormType> varEnv;
   }
 

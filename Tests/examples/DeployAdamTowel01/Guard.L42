@@ -10,10 +10,10 @@
 
 interface<:S::ToS 'all other guards should implement this one
 Operation:'if "this" is unfit
-  StringableU[]<<{<:Guard method Void invariant() void }
+  StringableU[]<<{<:Guard method Void invariant() void method S myName() S"Operation"}
 Parameter:' if a parameter is unfit
-  StringableU[]<<{<:Guard method Void invariant() void }
+  StringableU[]<<{<:Guard method Void invariant() void method S myName() S"Parameter"}
 Precondition:' if it is about multiple parameters
-  StringableU[]<<{<:Guard method Void invariant() void }
+  StringableU[]<<{<:Guard method Void invariant() void method S myName() S"Precondition"}
 
 }

@@ -5,7 +5,7 @@ method Outer0 #end() this
 type method Outer0 #add(Path that,URL url) Outer0(path:that,url:url)
 
 method
-Library <<(Library that) exception Report::MemberUnavailable,Report::PrivacyCoupuled,Report::NSBMissing {
+Library <<(Library that) exception MetaGuard::NestedClassUnavailable, MetaGuard::PrivacyCoupuled,Report::NSBMissing {
   var res=that
   res:=Refactor::ExposeAsLibrary[this.path()]<<res
   res:=Optimize::RemoveUnreachableCode[]<<res

@@ -4,7 +4,7 @@ method toS() S"NestedClass["[this.allAsString()]"]"
 method 'empty for Outer0
 Doc nestedDoc()(
   if this.path()==Path"Outer0" (
-    error Report::UnsupportedOperation"NestedClass.nestedDoc()  The NestedClass Object refers to Outer0"
+    error Guard::Operation"NestedClass.nestedDoc()  The NestedClass Object refers to Outer0"
     )
   this.record().docOf(path:Path"MemberDoc")
   )
@@ -23,13 +23,12 @@ method Bool hasExternalType(){
   }
 method type Any externalType(){
   if this.path()!=Path"Outer0" (
-    error Report::UnsupportedOperation(S"NestedClass.externalType() The NestedClass Object refers to "[this.path()]"")
+    error Guard::Operation(S"NestedClass.externalType() The NestedClass Object refers to "[this.path()]"")
     )
   with mirror=this.mirror() (
     on MirrorPr::Class return mirror.lib()
-    on MirrorPr::Lib error Report::UnsupportedOperation"NestedClass.externalType() The NestedClass Object is unbound"
-    on MirrorPr error Report::ObservedBug"WTF 01"
-    default error Report::ObservedBug"WTF 02"
+    on MirrorPr::Lib error Guard::Operation"NestedClass.externalType() The NestedClass Object is unbound"
+    default error Assert::CodeNotReachable""
     )
   }
 
@@ -44,7 +43,7 @@ Members members() (
       .introspectReportMember(root:this,path:this.path(),memberN:mN))
     mN+=1N
     )
-  catch exception x (on Report::MemberUnavailable error Report::CodeNotReachable())
+  catch exception x (on MetaGuard::MemberUnavailable error Assert::CatchCaseNotReachable(x))
   result)
 
 method
@@ -63,29 +62,29 @@ method Types implementedInterfaces() (
       .introspectReportType(root:this,path:this.path(),memberN:0N,typeN:tN))
     tN-=1N
     )
-  catch exception x (on Report::MemberUnavailable error Report::CodeNotReachable())
+  catch exception x (on MetaGuard::MemberUnavailable error Assert::CatchCaseNotReachable(x))
   result)
 
 method
 Method constructor()
-  error Report::NotImplementedYet()
+  error Assert::NotImplementedYet()
 method
-Method methodFromSelector(Selector that) exception Report::MemberUnavailable {
+Method methodFromSelector(Selector that) exception MetaGuard::MethodUnavailable {
   with meth in this.methods().vals() (
     if meth.selector()==that (return meth)
     )
-  error Report::MemberUnavailable.nonExistentMethod(path:this.pathFromRoot(),selector:that)
+  error MetaGuard::MethodUnavailable(path:this.pathFromRoot(),selector:that,isPrivate:Bool.false())
   'note: it can return a private method
   }
 method
 Bool has(Selector selector){
   unused=this.methodFromSelector(selector)
-  catch exception (on Report::MemberUnavailable return Bool.false())
+  catch exception (on MetaGuard::MemberUnavailable return Bool.false())
   return Bool.true()
   }
   
 method
-NestedClass nestedClassFromRoot(Path that) exception Report::MemberUnavailable {
+NestedClass nestedClassFromRoot(Path that) exception MetaGuard::NestedClassUnavailable {
   if that==Path"Outer0" (return this.root())
    'could be, but ugly with m=this.mirror() ( case Mirror::Class
   myClass=this.record().docOf(path:Path"MyClass").annotations().top()
@@ -98,7 +97,7 @@ NestedClass nestedClassFromRoot(Path that) exception Report::MemberUnavailable {
 method
 Bool has(Path fromRoot) (
   unused=this.nestedClassFromRoot(fromRoot)
-  catch exception (on Report::MemberUnavailable Bool.false() )
+  catch exception (on MetaGuard::MemberUnavailable Bool.false() )
   Bool.true()
   )
   

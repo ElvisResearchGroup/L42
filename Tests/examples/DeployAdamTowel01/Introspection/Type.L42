@@ -5,7 +5,7 @@ method S allAsString() this.record()"AllAsString"  'just the library literal
 method S typeKind() this.record()"TypeKind" '{Normal,Alias,AliasUnresolvable}
 method S mdf() {'error on AliasUnresolvable
   if this.typeKind()!=S"AliasUnresolvable" (return this.record()"Mdf")
-  error Report::UnsupportedOperation"AliasUnresolvable type, mdf unknown" 
+  error Guard::Operation"AliasUnresolvable type, mdf unknown" 
   }
 
 method '@private
@@ -15,7 +15,7 @@ NestedClass  referencedPath(Doc::Annotation ann) {
   if sPath==S"" (return this.root())
   Path path=Path.fromS(sPath)
   return this.root().nestedClassFromRoot(path)
-  catch exception x ( on Report::MemberUnavailable error Report::ObservedBug"Type refers to unexistent path")
+  catch exception x ( on MetaGuard::NestedClassUnavailable error Assert::ObservedBug"Type refers to unexistent path")
   }
 method NestedClass referencedPath()
   this.referencedPath(ann:this.record().docOf(path:Path"Path").annotations().top())
@@ -24,14 +24,14 @@ method NestedClass resolvedReferencedPath() {'error on AliasUnresolvable
   if this.typeKind()!=S"AliasUnresolvable" (
     return this.referencedPath(ann:this.record().docOf(path:Path"ResolvedPath").annotations().top())
     )
-  error Report::UnsupportedOperation"AliasUnresolvable type, mdf unknown" 
+  error Guard::Operation"AliasUnresolvable type, mdf unknown" 
   }
 
 method Bool partial() this.record()"Ph"==S"true"
 method Bool resolvedPartial() this.record()"ResolvedPh"==S"true" 'error on Normal? or the same of partial()
 method S suffix() { 'error on Normal
   if this.typeKind()==S"Normal" (
-    error Report::UnsupportedOperation"Normal types have no suffix" 
+    error Guard::Operation"Normal types have no suffix" 
     )
   return this.record()"Ph"
   }

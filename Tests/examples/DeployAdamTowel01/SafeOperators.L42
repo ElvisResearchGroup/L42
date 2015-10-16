@@ -5,7 +5,7 @@
   Library compose(Library left,Library right)
     using Outer0
       check compose(left:left,right:right)
-      error Report::PluginFailure"SafeOperators.compose"
+      error System::Guard::PluginFailure"SafeOperators.compose"
 
   type method
   Library renameClass(Library that,Path src, Path dest)
@@ -14,7 +14,7 @@
         src:src.binaryRepr()
         dest:dest.binaryRepr()
         )
-      error Report::PluginFailure"SafeOperators.renameClass"
+      error System::Guard::PluginFailure"SafeOperators.renameClass"
 
   type method
   Library renameMethod(Library that,Path path,Selector src,Selector dest)
@@ -24,7 +24,7 @@
         src:src.binaryRepr()
         dest:dest.binaryRepr()
         )
-      error Report::PluginFailure"SafeOperators.renameMethod"
+      error System::Guard::PluginFailure"SafeOperators.renameMethod"
 
   type method
   Library redirect(Library that,Path src, type Any dest)
@@ -33,7 +33,7 @@
         src:src.binaryRepr()
         dest:dest
         )
-      error Report::PluginFailure"SafeOperators.redirect"
+      error System::Guard::PluginFailure"SafeOperators.redirect"
 
   type method
   Library removeImplementation(Library that,Path path)
@@ -41,7 +41,7 @@
       check removeImplementation(that
         path:path.binaryRepr()
         )
-      error Report::PluginFailure"SafeOperators.removeImplementation(path)"
+      error System::Guard::PluginFailure"SafeOperators.removeImplementation(path)"
 
   type method
   Library removeImplementation(Library that,Path path,Selector selector)
@@ -50,7 +50,7 @@
         path:path.binaryRepr()
         selector:selector.binaryRepr()
         )
-      error Report::PluginFailure"SafeOperators.removeImplementation(path,selector)"
+      error System::Guard::PluginFailure"SafeOperators.removeImplementation(path,selector)"
 
   type method
   Library addDocumentation(Library that,Path path,Introspection::Doc doc)
@@ -59,7 +59,7 @@
         path:path.binaryRepr()
         doc:doc.binaryRepr()
         )
-      error Report::PluginFailure"SafeOperators.addDocumentation(path)"
+      error System::Guard::PluginFailure"SafeOperators.addDocumentation(path)"
 
   type method
   Library addDocumentation(Library that,Path path,Selector selector,Introspection::Doc doc)
@@ -69,6 +69,6 @@
         selector:selector.binaryRepr()
         doc:doc.binaryRepr()
         )
-      error Report::PluginFailure"SafeOperators.addDocumentation(path,selector)"
+      error System::Guard::PluginFailure"SafeOperators.addDocumentation(path,selector)"
 
   }

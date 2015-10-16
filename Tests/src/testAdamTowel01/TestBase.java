@@ -15,7 +15,7 @@ import helpers.TestHelper;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TestBase {
 
-  //@Before
+  @Before
   public void initialize() {
     //TestHelper.configureForTest();
     System.out.println("AssertionsDisabled");

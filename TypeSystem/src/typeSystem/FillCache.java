@@ -13,6 +13,7 @@ import ast.Ast.Stage;
 import ast.ErrorMessage;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
+import ast.ExpCore.ClassB.MethodImplemented;
 import ast.ExpCore.ClassB.MethodWithType;
 import ast.ExpCore.ClassB.NestedClass;
 import ast.Util.CachedStage;
@@ -48,6 +49,7 @@ public class FillCache {
 private static void checkCoherent(List<PathMwt> mwts, ClassB cb) {
   //- no two mwt are the same
   //-forall mwti, cb do not define them as mwt.
+  //-forall mi in cb, mwti defines it.
   for(int i=0;i<mwts.size();i++){
     for(int j=i+1;j<mwts.size();j++){
       if(!mwts.get(i).getMwt().getMs().equals(mwts.get(j).getMwt().getMs())){continue;}
@@ -61,6 +63,15 @@ private static void checkCoherent(List<PathMwt> mwts, ClassB cb) {
      if(!pmwt.getMwt().getMs().equals(mwt.getMs())){continue;}
      throw new ErrorMessage.IncoherentMwts(completeMwts(mwts,cb));
    } 
+  }
+  for(Member m:cb.getMs()){
+    if(!(m instanceof MethodImplemented)){continue;}
+    MethodImplemented mi=(MethodImplemented) m;
+    boolean find=false;
+    for(PathMwt pmwt: mwts){
+      if(pmwt.getMwt().getMs().equals(mi.getS())){ find=true; break;}
+    } 
+    if(!find){throw new ErrorMessage.IncoherentMwts(completeMwts(mwts,cb));}
   }
 }
 private static List<PathMwt> completeMwts(List<PathMwt> mwts, ClassB cb) {
