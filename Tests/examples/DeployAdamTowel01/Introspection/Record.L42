@@ -28,7 +28,7 @@
     error Assert::CodeNotReachable""
     }
   'this is how I would like it to be
-  'type method Member dispatch(NestedClass^ root,Path path,MirrorPr mirror, N memberN,Library record) {
+  'type method Member dispatch(fwd NestedClass root,Path path,MirrorPr mirror, N memberN,Library record) {
   '  _report =Introspection(lib:report).record()
   '  with x=_report"MemberKind" (
   '    case x== S"NestedClass"  (return NestedClass(root:root,path:path,mirror:mirror,record:_report))
@@ -40,7 +40,7 @@
   '  }
   'instead, I have to write this :-(
   RootForMember:' toPutAs private
-    {interface method Member (NestedClass^ root)}
+    {interface method Member (fwd NestedClass root)}
   RootForNested:' toPutAs private
     {(Path path,MirrorPr mirror,Record _report)<:RootForMember
       method(root) (
@@ -52,7 +52,7 @@
       method(root) (
         Method(root:root,path:this.path(),memberN:this.memberN(),record:this._report())
         )}
-  type method Member dispatch(NestedClass^ root,Path path,MirrorPr mirror, N memberN,Library record) (
+  type method Member dispatch(fwd NestedClass root,Path path,MirrorPr mirror, N memberN,Library record) (
     _report =Record(lib:record)
     RootForMember result={ with x=_report"MemberKind" (
       case x== S"InterfaceImplementedMethod" (

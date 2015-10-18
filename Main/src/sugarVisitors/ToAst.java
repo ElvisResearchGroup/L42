@@ -277,7 +277,7 @@ public class ToAst extends AbstractVisitor<Expression>{
        for(HistoricalSeqContext ms:tt.historicalSeq()){
          mss.add(parseMethSelectorX(ms));
        }
-       return new ast.Ast.HistoricType(p,mss,tt.Ph()!=null);
+       return new ast.Ast.HistoricType(p,mss,false);
     }
     throw Assertions.codeNotReachable();
   }

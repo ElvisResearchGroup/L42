@@ -68,7 +68,7 @@ public class TestSingleStep {
        },{lineNumber(),"(Outer0::C x= Outer0::C.new() void)","(void)"
        },{lineNumber(),"loop void","(Void void0=void, loop void)"
        },{lineNumber(),"(Outer0::C x= Outer0::C.new() Any y= y.m() void)","(Any y= y.m() void)"
-       },{lineNumber(),"(Any^ x= Outer0::C.new() x)","(Outer0::C x= Outer0::C.new() x)"
+       },{lineNumber(),"(fwd Any x= Outer0::C.new() x)","(Outer0::C x= Outer0::C.new() x)"
 
        },{lineNumber(),"(capsule Any x= Outer0::C.new() x)",
           "(capsule Outer0::C x= Outer0::C.new() x)"
@@ -171,7 +171,7 @@ public class TestSingleStep {
        },{lineNumber(),
 TestHelper.multiLine("{"
 ,"AI:{ mut k()}"
-,"Box:{ lent k(var read Any f)}"
+,"Box:{ lent k(var fwd read Any f)}"
 ,"D:("
 ,"  lent Box box=Box.k(f:box)"
 ,"  Any z1=("
@@ -182,7 +182,7 @@ TestHelper.multiLine("{"
 ,"  )}"
 ),TestHelper.multiLine("{"
 ,"AI:{ mut k()}##star ^##"
-,"Box:{ lent k(var read Any f)}##star ^##"
+,"Box:{ lent k(var fwd read Any f)}##star ^##"
 ,"D:("
 ,"  Outer0::AI any=(mut AI aI=AI.k() aI)"
 ,"  lent Box box=Box.k(f:any)"

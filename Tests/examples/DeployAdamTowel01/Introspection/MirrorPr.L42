@@ -1,10 +1,10 @@
 {interface
   method
-  NestedClass introspectReport(NestedClass^ root,Path path) exception MetaGuard::NestedClassUnavailable
+  NestedClass introspectReport(fwd NestedClass root,Path path) exception MetaGuard::NestedClassUnavailable
   method
-  Member introspectReportMember(NestedClass^ root,Path path, N memberN) exception MetaGuard::MemberUnavailable,Void
+  Member introspectReportMember(fwd NestedClass root,Path path, N memberN) exception MetaGuard::MemberUnavailable,Void
   method
-  Type introspectReportType(NestedClass^ root,Path path, N memberN, N typeN) exception MetaGuard::MemberUnavailable,Void
+  Type introspectReportType(fwd NestedClass root,Path path, N memberN, N typeN) exception MetaGuard::MemberUnavailable,Void
   method
   S introspectDocAsString(Path path) exception MetaGuard::NestedClassUnavailable
   method

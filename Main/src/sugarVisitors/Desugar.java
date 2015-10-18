@@ -752,29 +752,44 @@ public class Desugar extends CloneVisitor{
     List<Doc> tDocss=new ArrayList<>();
     List<Type> ts=new ArrayList<Type>();
     List<String> names= new ArrayList<String>();
+    boolean hasMut=false;
+    boolean hasLentRead=false;
     for(FieldDec f:h.getFs()){
+      if(f.isVar()){hasMut=true;}
+      if(f.getT() instanceof NormType){
+        Mdf mdf=((NormType)f.getT()).getMdf();
+        if(mdf==Mdf.Lent || mdf==Mdf.Readable){hasLentRead=true;hasMut=true;}
+        if(mdf==Mdf.Mutable){hasMut=true;}
+        }
       tDocss.add(f.getDoc());
-      ts.add(Functions.toPh(f.getT()));
+      ts.add(f.getT());
       names.add(f.getName());
       }
-    MethodType mt=new MethodType(Doc.empty(),ast.Ast.Mdf.Type,ts,tDocss,new ast.Ast.NormType(h.getMdf(),ast.Ast.Path.outer(0),Ph.None),Collections.emptyList());
+    NormType resT=new ast.Ast.NormType(h.getMdf(),ast.Ast.Path.outer(0),Ph.None);
+    if(resT.getMdf()==Mdf.Immutable && hasMut){//otherwise user is overriding the constructor mdf
+      resT=resT.withMdf(hasLentRead?Mdf.Lent:Mdf.Mutable);
+    }
+    MethodType mt=new MethodType(Doc.empty(),ast.Ast.Mdf.Type,ts,tDocss,resT,Collections.emptyList());
     MethodSelector ms=new MethodSelector(h.getName(),names);
     result.add(new MethodWithType(doc, ms,mt, Optional.empty(),h.getP()));
   }
   static private void cfType2(Expression.Position pos,ast.Ast.FieldDec f, Doc doc,List<Member> result) {
     if(!f.isVar()){return;}
-    MethodType mti=new MethodType(Doc.empty(),Mdf.Mutable,Collections.singletonList(f.getT()),Collections.singletonList(Doc.empty()),new ast.Ast.NormType(Mdf.Immutable,Path.Void(),Ph.None),Collections.emptyList());
+    Type tt=f.getT().match(nt->nt.withPh(Ph.None), hType->hType);    
+    MethodType mti=new MethodType(Doc.empty(),Mdf.Mutable,Collections.singletonList(tt),Collections.singletonList(Doc.empty()),new ast.Ast.NormType(Mdf.Immutable,Path.Void(),Ph.None),Collections.emptyList());
     MethodSelector msi=new MethodSelector(f.getName(),Collections.singletonList("that"));
     result.add(new MethodWithType(doc, msi, mti, Optional.empty(),pos));
   }
   static private void cfType3(Expression.Position pos,FieldDec f,Doc doc, List<Member> result) {
-    MethodType mti=new MethodType(Doc.empty(),Mdf.Mutable,Collections.emptyList(),Collections.emptyList(),f.getT(),Collections.emptyList());
+    Type tt=f.getT().match(nt->nt.withPh(Ph.None), hType->hType);
+    MethodType mti=new MethodType(Doc.empty(),Mdf.Mutable,Collections.emptyList(),Collections.emptyList(),tt,Collections.emptyList());
     MethodSelector msi=new MethodSelector("#"+f.getName(),Collections.emptyList());
     result.add(new MethodWithType(doc, msi, mti, Optional.empty(),pos));
   }
   static private void cfType4(Expression.Position pos,FieldDec f,Doc doc, List<Member> result) {
     if(!( f.getT() instanceof NormType)){return;}
     NormType fieldNt=(NormType)f.getT();
+    fieldNt=fieldNt.withPh(Ph.None);
     fieldNt=Functions.sharedAndLentToReadable(fieldNt);
     MethodType mti=new MethodType(Doc.empty(),Mdf.Readable,Collections.emptyList(),Collections.emptyList(),fieldNt,Collections.emptyList());
     MethodSelector msi=new MethodSelector(f.getName(),Collections.emptyList());

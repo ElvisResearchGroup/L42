@@ -202,7 +202,7 @@ public class TestRename {
               helpers.TestHelper.multiLine(""
               ,"{"
               ,"type method "
-              ,"mut Outer0 #apply(mut Outer0::Cell^head"
+              ,"mut Outer0 #apply(mut Outer0::Cell head"
               ,") "
               ,"mut method"
               ,"Void head(mut Outer0::Cell that)"

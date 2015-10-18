@@ -21,7 +21,11 @@ import facade.L42;
 import facade.Parser;
 import sugarVisitors.Desugar;
 import sugarVisitors.InjectionOnCore;
+import sugarVisitors.ToFormattedText;
+import ast.ExpCore;
 import ast.Expression;
+import auxiliaryGrammar.Functions;
+import coreVisitors.InjectionOnSugar;
 
 public class TestParseAndDesugar {
 
@@ -267,13 +271,13 @@ public class TestParseAndDesugar {
    " (Void unused=Outer0::X.#checkTrue() catch exception unused0 ( on Void  void ) (Outer0::Bla) )"
 },{lineNumber(), "if Foo+Bar (bla) ",
    " ( Outer0::Foo::#plus(that ) cond=Outer0::Foo.#plus(that:Outer0::Bar) ( Void unused=cond.#checkTrue() catch exception unused0 ( on Void  void ) (bla)))"
-},{lineNumber(), "{ <(T bar) }'bla\n"," ('bla\n{ type method Outer0 #left(Outer0::T^bar)mut method Outer0::T #bar()read method Outer0::T bar()})"
-},{lineNumber(), "{ (T bar) }"," {type method Outer0 #apply(Outer0::T^bar) mut method Outer0::T #bar() read method Outer0::T bar() }"
+},{lineNumber(), "{ <(T bar) }'bla\n"," ('bla\n{ type method Outer0 #left(Outer0::T bar)mut method Outer0::T #bar()read method Outer0::T bar()})"
+},{lineNumber(), "{ (T bar) }"," {type method Outer0 #apply(Outer0::T bar) mut method Outer0::T #bar() read method Outer0::T bar() }"
 },{lineNumber(), " (T x={ if A (return B) return C } x)",
    " (Outer0::T x=( Void unused=( Void unused0=( Void unused2=Outer0::A.#checkTrue() catch exception unused3 ( on Void  void ) (return Outer0::B)) Void unused1=return Outer0::C void ) catch return result ( on Outer0::T result ) error  {'@stringU\n'CurlyBlock-Should be unreachable code\n } )x )"
 },{lineNumber(), "{ Vara: {} method a() (var T a=a+c c=a Fuffa(a:=a(a)) c ) }",
   " {Vara0:'@private\n{type method \n"
-+"mut Outer0 #apply(Outer1::T^inner) \n"
++"mut Outer0 #apply(Outer1::T inner) \n"
 +"mut method \n"
 +"Void inner(Outer1::T that) \n"
 +"mut method \n"
@@ -282,7 +286,7 @@ public class TestParseAndDesugar {
 +"Outer1::T inner() } Vara:{} method a() ( Outer0::T a=a.#plus(that:c) Outer0::T c=a mut Outer0::Vara0 vara=Outer0::Vara0.#apply(inner:a) Void unused=Outer0::Fuffa.#apply(that:vara.inner(that:vara.#inner().#apply(that:vara.#inner()))) c )}"
 },{lineNumber(), "{ method Void () Outer0[with b in Outer0 (b)]}","{"
 +"Varaccumulator:'@private\n{type method \n"
-+"mut Outer0 #apply(Outer1::#begin() ^inner)\n"
++"mut Outer0 #apply(Outer1::#begin() inner)\n"
 +"mut method "
 +"Void inner(Outer1::#begin() that)\n"
 +"mut method \n"
@@ -302,90 +306,9 @@ public class TestParseAndDesugar {
 +"       )) void ) catch return propagated0 ( on Any ("
 +"       Void unused10=b.#close() return propagated0  )  )"
 +"      b.#close() ) ) varaccumulator.#inner().#end())}"
-},{lineNumber(),
-  "{reuse L42.is/nanoBasePrivates\n method Void seal() void }",
-  "{\n"
-+"  I:{interface\n"
-+"    method '@private\n"
-+"    Void seal0() }\n"
-+"    Foo:{<:Outer1::I\n"
-+"    type method\n"
-+"    Outer0 #apply()\n"
-+"    method seal0() this.seal0()\n"
-+"    type method '@private\n"
-+"    Void bar0() this.seal0()}\n"
-+"    Bar:{\n"
-+"    type method\n"
-+"    Outer0 #apply()\n"
-+"    Beer:{\n"
-+"    type method\n"
-+"    Outer0 #apply() \n"
-+"    type method '@private\n"
-+"    Void bar1() void}\n"
-+"    Bit0:'@private\n"
-+"    {\n"
-+"    type method \n"
-+"    Outer0 #apply() }}\n"//+"    Outer1::Bit0 #apply() }}\n"//Ok, there was a time this looked ok to me... :(
-+"    method \n"
-+"    Void seal() void}\n"
-},{lineNumber(),
-  "{reuse L42.is/nanoBasePrivates2\n   method  Void gg() void}",
-" {\n"
-+"type method\n"
-+"Outer0 #apply()\n"
-+"Foo:{\n"
-+"type method '@private\n"
-+"Outer0 new0() }\n"
-+"Bar:{\n"
-+"method\n"
-+"Void #apply() (\n"
-+"Void unused=this.b0(that:this.a0())\n"
-+"this.b0(that:Outer1::Foo.new0())\n"
-+")\n"
-+"type method '@private\n"
-+"mut Outer0 new1(Outer1::Foo^a0'@private\n"
-    +", Outer1::Foo^b0'@private\n"
-+")\n"
-+"mut method '@private\n"
-+"Outer1::Foo #a0()\n"
-+"read method '@private\n"
-+"Outer1::Foo a0()\n"
-+"mut method '@private\n"
-+"Void b0(Outer1::Foo that)\n"
-+"mut method '@private\n"
-+"Outer1::Foo #b0()\n"
-+"read method '@private\n"
-+"Outer1::Foo b0()\n"
-+" }\n"
-+"method\n"
-+"Void gg() void}\n"
-},{lineNumber(),
-    "{reuse L42.is/nanoBasePrivates3\n   C:{method  Void foo() void}}",
-  "{"
-+" type method "
-+" Outer0::foo0() bar() Outer0.foo0()"
-+" type method '@private\n"
-+" Void foo0() void"
-+" C:{"
-+" method"
-+" Void foo() void}}"
-},{lineNumber(), //whe we fix this test, go in FlatFirstLevel and put back the @private add.
-  //TODO: the whole private renaming is flowed. It is using reaname "as operator" but private names can be declared INSIDE
-  //class literal in method bodies.
-  "{reuse L42.is/nanoBasePrivates4\n   C:{method  Void f1() void C1:{}}}",
-"{"
-+" type method "
-+" Outer0::foo0() bar() Outer0.foo0()"
-+" type method '@private\n"
-+" Void foo0() void"
-+" C:{"
-+" method"
-+" Void foo() void}}"
-//----------
-
 },{lineNumber(),"{a( Outer0::A a, var Outer0::B b)}",
   "{"
- +" type method Outer0 a( Outer0::A^ a, Outer0::B^ b) "
+ +" type method mut Outer0 a( Outer0::A  a, Outer0::B b) "
  +" mut method Outer0::A #a() "
  +" read method Outer0::A a()"
  +" mut method Void b(Outer0::B that)"
@@ -394,7 +317,7 @@ public class TestParseAndDesugar {
  +" }"    
 },{lineNumber(),"{a( Outer0::A a, var Outer0::B b)'@private\n}",
     "{"
-   +" type method'@private\n Outer0 a( Outer0::A^ a, Outer0::B^ b) "
+   +" type method'@private\n mut Outer0 a( Outer0::A a, Outer0::B b) "
    +" mut method'@private\n Outer0::A #a() "
    +" read method'@private\n Outer0::A a()"
    +" mut method'@private\n Void b(Outer0::B that)"
@@ -422,7 +345,51 @@ public class TestParseAndDesugar {
     Expression es1=Parser.parse(null,_p1);
     Expression es2=Parser.parse(null,_p2);
     Expression result=Desugar.of(es1);
+    //ExpCore res = result.accept(new InjectionOnCore());
+    //result=res.accept(new InjectionOnSugar());
     TestHelper.assertEqualExp(result,es2);
   }
   }
+  
+ 
+  @RunWith(Parameterized.class)
+  public static class TestPrivateNormalization {
+    @Parameter(0) public int _lineNumber;
+    @Parameter(1) public String _p1;
+    @Parameter(2) public String _p2;
+    @Parameters(name = "{index}: line {0}")
+    public static List<Object[]> createData() {
+      return Arrays.asList(new Object[][] {
+  {lineNumber(),
+  "{reuse L42.is/nanoBasePrivates\n  BB:{reuse L42.is/nanoBasePrivates}}",
+  "__0_19"
+},{lineNumber(),
+  "{reuse L42.is/nanoBasePrivates2\n   method  Void gg() void}",  "__0_1"
+},{lineNumber(),
+    "{reuse L42.is/nanoBasePrivates3\n   C:{method  Void foo() void}}",  "__0_1"
+  },{lineNumber(), //whe we fix this test, go in FlatFirstLevel and put back the @private add.
+  "{reuse L42.is/nanoBasePrivates4\n   C:{method  Void f1() void C1:{}}}",  "__0_1"
+
+}});}
+
+//----------
+@Test
+  public void testOk() {
+    TestHelper.configureForTest();
+    L42.setRootPath(Paths.get("dummy"));
+    L42.usedNames.clear();
+    Expression es1=Parser.parse(null,_p1);
+    String res2=(String)_p2;
+    Expression result=Desugar.of(es1);
+    ExpCore res = result.accept(new InjectionOnCore());
+    res=Functions.clearCache(res,ast.Ast.Stage.None);
+    result=res.accept(new InjectionOnSugar());
+    String r1=ToFormattedText.of(res);
+    boolean check=r1.contains(res2);
+    if(!check){Assert.assertEquals(r1,"We expected it to contain  "+res2);}
+    Assert.assertTrue(check);
+  }
+  }
+    
+  
 }

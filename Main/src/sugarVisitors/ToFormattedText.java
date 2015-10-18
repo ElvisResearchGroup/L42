@@ -495,10 +495,10 @@ public class ToFormattedText implements Visitor<Void>{
   private Void formatType(Type t) {
     return t.match(
       tN->{
+        if(tN.getPh()==ast.Ast.Ph.Ph){c("fwd");}
         if(ast.Ast.Mdf.Immutable!=tN.getMdf()){
           c(tN.getMdf().inner);sp();}
         visit(tN.getPath());
-        if(tN.getPh()==ast.Ast.Ph.Ph){c("^");}
         if(tN.getPh()==ast.Ast.Ph.Partial){c("%");}
         return null;
       },

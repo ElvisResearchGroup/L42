@@ -309,6 +309,7 @@ public class ErrorFormatter {
     if(obj instanceof java.nio.file.Path){return obj.toString();}
     if(obj instanceof CachedStage){return obj.toString();}
     if(obj instanceof Ast.Position){ return obj.toString();}
+    if(obj instanceof Collection){ return obj.toString();}
     return "unknown kind "+obj.getClass().getCanonicalName();
   }
   public static String formatSelectorCompact(Ast.MethodSelector ms) {

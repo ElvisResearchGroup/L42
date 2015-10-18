@@ -2,6 +2,8 @@ package testAux;
 
 import helpers.TestHelper;
 
+import static helpers.TestHelper.lineNumber;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -17,6 +19,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
+import org.junit.runners.Parameterized.Parameters;
 
 import coreVisitors.CollectPaths0;
 import facade.Configuration;
@@ -44,76 +47,77 @@ public class TestTypeStage1 {
 
     @RunWith(Parameterized.class)
     public static class TestStage1 {
-      @Parameter(0) public String _e;
-      @Parameter(1) public Type typeSugg;
-      @Parameter(2) public Type typeExpected;
-      @Parameter(3) public String[] program;
-      @Parameterized.Parameters
+      @Parameter(0) public int _lineNumber;
+      @Parameter(1) public String _e;
+      @Parameter(2) public Type typeSugg;
+      @Parameter(3) public Type typeExpected;
+      @Parameter(4) public String[] program;
+      @Parameters(name = "{index}: line {0}")
       public static List<Object[]> createData() {
         return Arrays.asList(new Object[][] {
-         {"void",
+         {lineNumber(),"void",
            new NormType(Mdf.Immutable,Path.Void(),Ph.None),
            new NormType(Mdf.Capsule,Path.Void(),Ph.None),
            new String[]{"{ C:{k()}}"}
 
-         },{"( exception void catch exception x (on Void void) void)",
+         },{lineNumber(),"( exception void catch exception x (on Void void) void)",
            new Ast.FreeType(),
            new NormType(Mdf.Capsule,Path.Void(),Ph.None),
            new String[]{"{ D:{k()}}"}
-         },{"( (exception void "
+         },{lineNumber(),"( (exception void "
           + "   catch exception x (on Any exception x)"
           + "   void)"
           + " catch exception xOut (on Void void) void)",
            new Ast.FreeType(),
            new NormType(Mdf.Capsule,Path.Void(),Ph.None),
            new String[]{"{ D:{k()}}"}
-       },{"Any",
+       },{lineNumber(),"Any",
          new NormType(Mdf.Type,Path.Any(),Ph.None),
          new NormType(Mdf.Type,Path.Any(),Ph.None),
          new String[]{"{ C:{k()}}"}
-       },{"Library",
+       },{lineNumber(),"Library",
          new Ast.FreeType(),
          new NormType(Mdf.Type,Path.Library(),Ph.None),
          new String[]{"{ C:{k()}}"}
-       },{"C.k()",
+       },{lineNumber(),"C.k()",
          new NormType(Mdf.Immutable,Path.parse("Outer0::C"),Ph.None),
          new NormType(Mdf.Immutable,Path.parse("Outer0::C"),Ph.None),
          new String[]{"{ C:{k()}}"}
-       },{"C.k()",
+       },{lineNumber(),"C.k()",
          new NormType(Mdf.Mutable,Path.parse("Outer0::C"),Ph.None),
          new NormType(Mdf.Mutable,Path.parse("Outer0::C"),Ph.None),
          new String[]{"{ C:{mut k()}}"}
-       },{"C.k(f:D.k(),ft:D)",
+       },{lineNumber(),"C.k(f:D.k(),ft:D)",
          new NormType(Mdf.Mutable,Path.parse("Outer0::C"),Ph.None),
          new NormType(Mdf.Mutable,Path.parse("Outer0::C"),Ph.None),
          new String[]{"{ C:{mut k(var D f, type D ft)}, D:{k()}}"}
-       },{"( D x=D.k(), C.k(f:x,ft:D))",
+       },{lineNumber(),"( D x=D.k(), C.k(f:x,ft:D))",
          new NormType(Mdf.Mutable,Path.parse("Outer0::C"),Ph.None),
          new NormType(Mdf.Mutable,Path.parse("Outer0::C"),Ph.None),
          new String[]{"{ C:{mut k(var D f, type D ft)}, D:{k()}}"}
 
-       },{"error D.k()",
+       },{lineNumber(),"error D.k()",
          new Ast.FreeType(),
          new Ast.FreeType(),
          new String[]{"{ D:{k()}}"}
 
-       },{"( D x=D.k(f:x), x)",
+       },{lineNumber(),"( D x=D.k(f:x), x)",
          new Ast.FreeType(),
          new NormType(Mdf.Immutable,Path.parse("Outer0::D"),Ph.None),
-         new String[]{"{ D:{k(var D f)} }"}
+         new String[]{"{ D:{k(var fwd D f)} }"}
 
-       },{"List.factory(N.k())",
+       },{lineNumber(),"List.factory(N.k())",
          new Ast.FreeType(),
          new NormType(Mdf.Immutable,Path.parse("Outer0::List"),Ph.None),
          new String[]{listExample}
-       },{"(type List this=List, N that=N.k(), List x=this.factoryAux(that,top:x)  x)",
+       },{lineNumber(),"(type List this=List, N that=N.k(), List x=this.factoryAux(that,top:x)  x)",
          new Ast.FreeType(),
          new NormType(Mdf.Immutable,Path.parse("Outer0::List"),Ph.None),
          new String[]{listExample}
-       },{TestHelper.multiLine(""
+       },{lineNumber(),TestHelper.multiLine(""
 ,"(type List this=List,"
 ," N that=N.k(),"
-," List^ top=List.factory(N.k())"
+," fwd List top=List.factory(N.k())"
 ," ( Void z=that.checkZero(),"
 ,"   catch error x ("
 , "    on Void  List.k("
@@ -125,17 +129,26 @@ public class TestTypeStage1 {
          new NormType(Mdf.Immutable,Path.parse("Outer0::List"),Ph.Partial),
          new String[]{listExample}
 
-         },{"( D^ x=D.k(f:void), x)",
+         },{lineNumber(),"( fwd D x=D.k(f:void), x)",
            new Ast.FreeType(),
            new NormType(Mdf.Immutable,Path.parse("Outer0::D"),Ph.Ph),
            new String[]{"{ D:{k(var Any f)} }"}
 
-         },{"( D^ x=D.k(f:void), D.k(f:x))",
+         //
+         },{lineNumber(),"( fwd D x=D.k(f:void), D.k(f:x))",
+           new Ast.FreeType(),
+           new NormType(Mdf.Mutable,Path.parse("Outer0::D"),Ph.Partial),
+           new String[]{"{ D:{k(var fwd Any f)} }"}
+         },{lineNumber(),"( fwd D x=D.k(f:void), D.k(f:x))",
            new Ast.FreeType(),
            new NormType(Mdf.Immutable,Path.parse("Outer0::D"),Ph.Partial),
-           new String[]{"{ D:{k(var Any f)} }"}
-
-         },{TestHelper.multiLine(""
+           new String[]{"{ D:{k( fwd Any f)} }"}
+         },{lineNumber(),"( D x=D.k(f:void), D.k(f:x))",
+           new NormType(Mdf.Immutable,Path.parse("Outer0::D"),Ph.None),
+           new NormType(Mdf.Immutable,Path.parse("Outer0::D"),Ph.None),
+           new String[]{"{ D:{k(var fwd Any f)} }"}
+        //
+         },{lineNumber(),TestHelper.multiLine(""
 ,"("
 ,"  Void unused1=("
 ,"    Void unused00=exception C.k()"
@@ -159,12 +172,12 @@ new String[]{"{ C:{ k()}, D:{k()}}"}
 
 static String listExample=TestHelper.multiLine(
     "{N:{k() method Void checkZero() (void) method N lessOne() (this)}"
-    ,"List:{k(List next, N elem)"
+    ,"List:{k(fwd List next, N elem)"
     ,"  type method List factory(N that) ("
     ,"    List x=this.factoryAux(that,top:x)"
     ,"    x"
     ,"    )"
-    ,"type method List factoryAux(N that, List^ top)"
+    ,"type method List factoryAux(N that,fwd List top)"
     ,"  (Void z=that.checkZero()"
     ,"   catch error x (on Void "
     ,"     List.k("

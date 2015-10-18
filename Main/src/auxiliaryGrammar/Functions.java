@@ -262,11 +262,7 @@ public static NormType toPartial(NormType that) {
   return new NormType(that.getMdf(),that.getPath(),Ph.Partial);
   }
 
-public static Type toPh(Type that){
-  if(that instanceof NormType){ return toPh((NormType)that);}
-  Ast.HistoricType ht=(Ast.HistoricType)that;
-  return ht.withForcePlaceholder(true);
-  }
+
 public static NormType toPh(NormType that){
   return new NormType(that.getMdf(),that.getPath(),Ph.Ph);
   }
@@ -367,9 +363,6 @@ public static boolean coherent(Program p, ClassB ct) {
     Mdf tMdf=((NormType)t).getMdf();
     if(tMdf!=Mdf.Capsule && tMdf!=Mdf.Immutable  && tMdf!=Mdf.Type){canBeImmCaps=false;}
     if(tMdf==Mdf.Lent ||tMdf==Mdf.Readable){mustBeLentRead=true;}
-    if(((NormType)t).getPh()!=Ast.Ph.Ph){
-      return false;
-      }
   }
   Mdf retMdf=retType.getMdf();
   if(mustBeLentRead){
@@ -382,7 +375,7 @@ public static boolean coherent(Program p, ClassB ct) {
       return false;
       }
   }
-  //now we have a fully normalized constr with all ph types.
+  //now we have a fully normalized constr
   for(MethodWithType mwt:mwts){//for all the other h
     String name=mwt.getMs().getName();
     if(name.startsWith("#")){name=name.substring(1);}
