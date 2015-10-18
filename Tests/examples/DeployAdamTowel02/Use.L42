@@ -15,7 +15,7 @@
     Outer0(myLibs:this.myLibs().#end())
 
   method
-  Library << (Library that) exception Report::ClassClash,Report::MethodClash{
+  Library << (Library that) exception MetaGuard::ClassClash,MetaGuard::MethodClash{
     i=Introspection(lib:that)
     var map=SrcDests[]
     var acc={}
@@ -32,7 +32,7 @@
       acc:=Refactor::MakePrivateSelector[mapi.dest() of:mapi.path()]<<acc
       )
     return acc
-    catch exception (on Report::MemberUnavailable error Report::CodeNotReachable())
+    catch exception (on MetaGuard::MemberUnavailable error Guard::CodeNotReachable"")
     }
 
   SrcDest:{(Path path, Selector src,Selector dest)}
@@ -42,14 +42,14 @@
     var acc=SrcDests[]
     path=intro.pathFromRoot()
     thatI=Introspection(lib:that, path:path)
-    catch exception (on Report::MemberUnavailable return SrcDests[])
+    catch exception (on MetaGuard::MemberUnavailable return SrcDests[])
     with meth in intro.methods().vals() (
       case !meth.isPrivate() (
         destSel=Selector.fromS(prefix++meth.selector().toS())
         ' if the selector can not be prefixed
         catch error (on Guard void)
         meth2=thatI.methodFromSelector(meth.selector())
-        catch exception (on Report::MemberUnavailable void)
+        catch exception (on MetaGuard::MemberUnavailable void)
         if !meth2.isPrivate() (
           acc:=acc.#add(SrcDest(path:path,src:meth.selector(),dest:destSel))
           )

@@ -33,10 +33,11 @@ public class SmallStep extends Executor{
     log("---meta1--");
     ExpCore e1=m.getInner();
     //get cb-->ct
+    //?Functions.clearCache(cb, Stage.Plus);
+    //?for(ClassB cbi:p.getInnerData()){Functions.clearCache(cb, Stage.Plus);}
+    //?p.recomputeStage();
     Configuration.typeSystem.computeStage(p,cb);
-    //ct=ct.withMember(m.withBody(new WalkBy()));
     //get p'
-    //ct=ct.withStage(new CachedStage());
     Stage oldSt=cb.getStage().getStage();
     try{
       cb.getStage().setStage(Stage.Less);//TODO: ok according with Formal. should we make formal nicer?
@@ -59,7 +60,9 @@ public class SmallStep extends Executor{
       //if(e2 instanceof ExpCore.Signal){throw new ErrorMessage.MalformedFinalResult(cbRes, "error raised in metaexpression evauation");}
       //replace cb[m.e2]
       return cbRes;
-    }finally{cb.getStage().setStage(oldSt);}
+    }finally{
+      cb.getStage().setStage(oldSt);
+      }
   }
   protected ExpCore executeAtomicStep(Program p1, ExpCore e1) {
     //return step(p1,e1);//TODO push withP in compiledStep

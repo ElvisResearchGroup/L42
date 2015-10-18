@@ -119,8 +119,25 @@ public static void computeStage(Program p,ClassB cb) {
   computeStageFirst(again,p,cb);
   while(true){ if(!progress(again)){break;}}
   for(CachedStage st:again){st.setStage(Stage.Star);}
+  cleanDependencies(cb);
+  for(ClassB cbi:p.getInnerData()){ cleanDependencies(cbi);}
 }
 
+private static void cleanDependencies(ClassB cb) {
+  List<ClassB> dep = cb.getStage().getDependencies();
+  List<ClassB>toRemove=new ArrayList<>();
+  for(ClassB cbi:dep){
+    if (cbi.getStage().getStage()==Stage.Star){toRemove.add(cbi);}
+  }
+  dep.removeAll(toRemove);
+  dep.remove(cb);
+  for(Member m:cb.getMs()){ m.match(nc->{
+    if (!(nc.getInner() instanceof ClassB)){return null;}
+    ClassB cbi=(ClassB) nc.getInner();
+    if(cbi.getStage().getStage()!=Stage.Star){dep.add(cbi);}
+    return null;
+  }, mi->null, mt->null);}
+}
 public static boolean progress(List<CachedStage>again){
   for(CachedStage st:again){
     assert st.getStage()==Stage.ToIterate;
@@ -177,7 +194,9 @@ public static boolean progress(List<CachedStage>again){
       return Stage.Plus;
       }
     for(ClassB cbi:cb.getStage().getDependencies()){
-      if(cbi.getStage().getStage()==Stage.Plus){return Stage.Plus;}
+      if(cbi.getStage().getStage()==Stage.Plus){
+        return Stage.Plus;
+        }
     }
     if(cb.getStage().getDependencies().isEmpty()){return Stage.Star;}
     return Stage.ToIterate;

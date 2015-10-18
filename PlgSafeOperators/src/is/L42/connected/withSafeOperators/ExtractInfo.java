@@ -15,6 +15,7 @@ import auxiliaryGrammar.Norm;
 import auxiliaryGrammar.Program;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -238,13 +239,16 @@ public class ExtractInfo {
       implB0.removeAll(implA.keySet());
       List<Path> conflicts=new ArrayList<>();
       for(Path api:implA0)for(Path bpi:implB0){
-        Set<MethodSelector> amis = new HashSet<>(implA.get(api));
-        Set<MethodSelector> bmis = new HashSet<>(implA.get(bpi));
-        //amij!=bmij as selectors
-        amis.retainAll(bmis);//intersection
+        Set<MethodSelector> amis = intersection(implA.get(api),implB.get(bpi));        
         if(!amis.isEmpty()){conflicts.add(api);conflicts.add(bpi);}
       }
      return conflicts;
+  }
+  private static Set<MethodSelector> intersection(Collection<MethodSelector>ams, Collection<MethodSelector>bms){
+    if( ams==null || ams.isEmpty() || bms==null || bms.isEmpty()){return  Collections.emptySet();}
+    Set<MethodSelector> result = new HashSet<>(ams);
+    result.retainAll(bms);
+    return result;
   }
   static void accumulateCb(java.util.Map<Path,List<MethodSelector>> accumulator,Path path,ClassB cb){
     assert cb.isInterface();

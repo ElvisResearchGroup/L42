@@ -1,5 +1,5 @@
 {'findMeNestedClass
-(NestedClass root,Path path,MirrorPr mirror, Record record)<:Member
+(fwd NestedClass root,Path path,MirrorPr mirror, Record record)<:Member
 method toS() S"NestedClass["[this.allAsString()]"]"
 method 'empty for Outer0
 Doc nestedDoc()(
@@ -67,7 +67,7 @@ method Types implementedInterfaces() (
 
 method
 Method constructor()
-  error Assert::NotImplementedYet()
+  error Assert::NotImplementedYet""
 method
 Method methodFromSelector(Selector that) exception MetaGuard::MethodUnavailable {
   with meth in this.methods().vals() (

@@ -60,6 +60,20 @@ public class Util {
     }  
 
   @Data public static class CachedStage{
+    public String toString(){
+      String result="anonymus";
+      if(!this.givenName.isEmpty()){result=this.givenName;}
+      result+="["+this.stage+"]";
+      if(this.coherent){result+="[coherent]";}
+      if(this.verified){result+="[verified]";}
+      result+="[";
+      for(ClassB cb:this.dependencies){
+        if(cb.getStage().getGivenName().isEmpty()){result+="?;";}
+        else {result+=cb.getStage().getGivenName()+";";}
+      }
+      result+="]";
+      return result;
+    }
     boolean verified=false;
     boolean privateNormalized=false;
     final java.util.List<Integer> families=new java.util.ArrayList<>();

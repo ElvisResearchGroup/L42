@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -309,6 +310,7 @@ public class ErrorFormatter {
     if(obj instanceof java.nio.file.Path){return obj.toString();}
     if(obj instanceof CachedStage){return obj.toString();}
     if(obj instanceof Ast.Position){ return obj.toString();}
+    if(obj instanceof HashMap){ return obj.toString();}
     if(obj instanceof Collection){ return obj.toString();}
     return "unknown kind "+obj.getClass().getCanonicalName();
   }

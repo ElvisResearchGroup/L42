@@ -1,24 +1,34 @@
 { interface<:Guard
-    
+  
+ RecordWrapper:'@private
+    {
+    type method Library <<(Library that) 
+      SafeOperatorsAccess.compose(left:that,right:{
+        <:MetaGuard
+        type method Outer0(Introspection::Record record) 
+        method toS() this.myName()
+        method S myName()
+        })
+    }
 SourceUnfit:RecordWrapper<<{method S myName()S"SourceUnfit"}
 ClassClash:RecordWrapper<<{method S myName()S"ClasClash"}
 MethodClash:RecordWrapper<<{method S myName()S"MethodClash"}
 InvalidOnTopLevel:RecordWrapper<<{method S myName()S"InvalidOnTopLevel"}
 PrivacyCoupuled:RecordWrapper<<{method S myName()S"PrivacyCoupuled"}
-MemberUnavailable:{interface}
-Dispatch:{
-type method MetaGuard(Library that){
+MemberUnavailable:{interface<:MetaGuard}
+DispatchMemberUnavailable:{
+type method MemberUnavailable(Library that){
   record=Introspection::Record(lib:that)
   with x=record"Kind" (
     case x== S"MemberUnavailable" (
       if record"InvalidKind".contains(S"Method") (
         return MethodUnavailable(record:record) )
-      else return NestedClassUnavailable(record:record)
+      return NestedClassUnavailable(record:record)
       )
-    case x== S"MethodClash" (return MetaGuard::MethodClash(record:record))
-    case x== S"ClassClash" (return MetaGuard::ClassClash(record:record))
-    default error Assert::ObservedBug"error dispatching failing"
+'    case x== S"MethodClash" (return MetaGuard::MethodClash(record:record))
+'    case x== S"ClassClash" (return MetaGuard::ClassClash(record:record))
     )
+  error Assert::ObservedBug"error dispatching failing"
   }
 }
 NestedClassUnavailable:RecordWrapper<<{(Path path,Bool isPrivate)<:MemberUnavailable
@@ -28,7 +38,7 @@ NestedClassUnavailable:RecordWrapper<<{(Path path,Bool isPrivate)<:MemberUnavail
   }
 MethodUnavailable:RecordWrapper<<{(Path path,Selector selector,Bool isPrivate)<:MemberUnavailable
   type method Outer0 (Introspection::Record record) 
-    Outer0(path:Path.fromS(record"Path"),selector:Selector.fromS(record"Selector"))
+    Outer0(path:Path.fromS(record"Path"),selector:Selector.fromS(record"Selector"),isPrivate:Bool.fromS(record"IsPrivate"))
   method S myName()S"NestedClassUnavailable"
   }
     'add ParseFail to N as in Bool, check there should be another wannabe parse fail?

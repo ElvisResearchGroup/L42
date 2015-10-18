@@ -1,0 +1,15 @@
+{
+  type method Outer0 #begin()'constructor
+  method Outer0 #end() this
+  method Library << (Library that) exception MetaGuard::MemberUnavailable,MetaGuard::InvalidOnTopLevel, MetaGuard::SourceUnfit,MetaGuard::MethodClash{
+    'assume that have abstract Bool N and S
+    return Refactor::Redirect[Path"Debug" to:Debug]' this should cause redirect of N, ToS, Bool
+      <<(Refactor::Redirect[Path"S" to:S]<<that)
+    'catch err (
+    '  on MetaGuard::MemberUnavailable exception LibraryCreatedWithIncompatibleTowel()
+    '  on MetaGuard::SourceUnfit exception LibraryCreatedWithIncompatibleTowel()
+    '  on MetaGuard::MethodClash exception LibraryCreatedWithIncompatibleTowel()
+    '  on MetaGuard::InvalidOnTopLevel error Assert::CodeNotReachable""
+    '  )
+    }
+}

@@ -76,7 +76,11 @@ public class Program {
     }
   public Stage getStage(Path p){return this.extractCb(p).getStage().getStage();};
   //public void __addAtTop(ClassB cb){this.inner.add(0,cb);}
-
+  public void recomputeStage(){
+    if(this.isEmpty()){return;}
+    this.pop().recomputeStage();
+    Configuration.typeSystem.computeStage(this.pop(),this.topCb());
+  }
   public Program addAtTop(ClassB cb){return new Program(this,cb);}
   public Program pop(){assert !this.isEmpty();return this.next;}
   public Program pop(int n){
