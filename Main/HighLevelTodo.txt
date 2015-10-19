@@ -1,5 +1,6 @@
 Adam Towel
   -test introspection more 
+  -in deploy library, check that is closed code
   -test if from is applied when reading method types?
     -on literal, it should be frommed before passed to plugin
     -on external?
@@ -47,6 +48,8 @@ Parsing errors:
 
 Well formedness
   -well formedness, state must be all private or all public.
+  -well formedness, no outer level bigger than max possible.
+  -in Type system on T must check that T exists BEFORE checking the expr in the on
 well formedness: implemented or exceptions must be with no repetition, and with no Any.
 Operators should preserve this
 interfaces can be circular, check that no bug happens

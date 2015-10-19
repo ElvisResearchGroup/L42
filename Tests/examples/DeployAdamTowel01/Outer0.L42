@@ -1,10 +1,16 @@
 {
 ExitCode:...
 DeployTowel:...
-DeployDeployer:DeployTowel[
+ResourceDeploy:{type method Library (){
+  ExitCode:...' TODO:need to add a check that deployed code is self consistent.
+  'otherwise removing exitCode give errors only on the user side
+  DeployTowel:...
+  }}
+AdamTowel01:{type method Library () ...}
+Task0:DeployTowel[
   fileName:DeployTowel"localhost/DeployTowel.L42"
-  ]<<{DeployTowel:...}
-AdamTowel01: DeployTowel[
+  ]<<ResourceDeploy()
+Task1: DeployTowel[
   fileName:DeployTowel"localhost/AdamTowel01.L42"
-  ]<<...
+  ]<<AdamTowel01()
 }

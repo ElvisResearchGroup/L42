@@ -1,0 +1,62 @@
+{
+ExitCode:{
+type method 
+Library normal() {'@exitStatus
+'0
+}
+type method 
+Library failure() {'@exitStatus
+'42000
+}}##star ^##
+DeployTowel:{
+type method 
+Outer0 #apply(Library fileName) 
+mut method 
+Library #fileName() 
+read method 
+Library fileName() 
+type method 
+type Outer0 #begin() Outer0
+type method 
+Outer0 #add(Library fileName) Outer0.#apply(fileName:fileName)
+method 
+Outer0 #end() this
+type method 
+Library binaryReprFrom(Library lib) (
+  Library norm=using Outer0::SafeOperatorsAccess check privateNormalize(that:lib) error Outer0.#stringParser(that:{'@stringU
+  'privateNormalize
+  })
+  Library record=using Outer0::SafeOperatorsAccess check introspectLibraryReport(that:lib, path:Outer0.#stringParser(that:{'@stringU
+  'Outer0
+  })) error Outer0.#stringParser(that:{'@stringU
+  'introspectLibraryReport
+  })
+  using Outer0::SafeOperatorsAccess check introspectLibraryDocAsString(that:record, path:Outer0.#stringParser(that:{'@stringU
+  'AllAsString
+  }), annotationN:Outer0.#numberParser(that:{'@stringU
+  '0
+  })) error Outer0.#stringParser(that:{'@stringU
+  'introspectLibraryDocAsString
+  })
+  )
+method 
+Library #leftleft(Library that) (
+  Void unused=using Outer0::Alu check fileDebug(fileName:this.fileName(), content:Outer0.binaryReprFrom(lib:that)) error Outer0.#stringParser(that:{'@stringU
+  'fileDebug
+  })
+  Outer1::ExitCode.normal()
+  )
+SafeOperatorsAccess:'@private
+{'@plugin
+'L42.is/connected/withSafeOperators
+}##star ^##
+Alu:'  toPutAs private
+{'@plugin
+'L42.is/connected/withAlu
+}##star ^##
+type method 
+Library #stringParser(Library that) that
+type method 
+Library #numberParser(Library that) using Outer0::Alu check stringToInt32(that:that) error Outer0.#stringParser(that:{'@stringU
+'stringToInt32
+})}##star ^##}##star ^##

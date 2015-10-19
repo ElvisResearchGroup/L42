@@ -1,6 +1,6 @@
 {
   type method
-  Library (Library left,Library right)
+  Library compose(Library left,Library right)
   exception MetaGuard::ClassClash, MetaGuard::MethodClash {
     return SafeOperators.compose(left:left,right:right)
     catch error err (on Library (
@@ -121,7 +121,7 @@
     }
   ExposeAsLibrary:Squares<<{#add(Path that)
     method
-    Library << (Library that)exception MetaGuard::MemberUnavailable,MetaGuard::PrivacyCoupuled {
+    Library << (Library that)exception MetaGuard::NestedClassUnavailable,MetaGuard::PrivacyCoupuled {
       if this.that()==Path"Outer0" (return that)
       this.checkTargetExists(that)'throws MemberUnavailable
       var res=that

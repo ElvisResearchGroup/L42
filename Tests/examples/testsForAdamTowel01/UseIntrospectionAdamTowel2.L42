@@ -15,7 +15,7 @@ Main:{
         )
       catch error x (
         on System::Guard::PluginFailure Debug(S"Report plgFailure as "++x.toS())
-        on ToS Debug(S"Report error as "++x.toS())
+        on S::ToS Debug(S"Report error as "++x.toS())
         )
       void
       )

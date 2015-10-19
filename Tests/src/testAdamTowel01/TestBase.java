@@ -15,7 +15,7 @@ import helpers.TestHelper;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TestBase {
 
-  //@Before
+  @Before
   public void initialize() {
     //TestHelper.configureForTest();
     System.out.println("AssertionsDisabled");
@@ -142,7 +142,7 @@ public class TestBase {
   @Test
   public  void _02_01UseSimpleLib() throws Throwable{
     TestHelper.configureForTest();
-    L42.main(new String[]{"examples/testsForAdamTowel01/UseSimpleLib.L42"});
+    L42.main(new String[]{"examples/testsForAdamTowel02/UseSimpleLib.L42"});
     Assert.assertEquals(L42.record.toString(),"Hello World 42\n");
     }
 
@@ -150,13 +150,13 @@ public class TestBase {
   public  void _02_02DeploySimpleLib() throws Throwable{
     TestHelper.configureForTest();
     Paths.get("localhost","DeployedSimpleLib.L42").toFile().delete();
-    L42.main(new String[]{"examples/testsForAdamTowel01/DeploySimpleLib.L42"});
+    L42.main(new String[]{"examples/testsForAdamTowel02/DeploySimpleLib.L42"});
     Assert.assertTrue(Paths.get("localhost","DeployedSimpleLib.L42").toFile().exists());
     }
   @Test
   public  void _02_03LoadDeployedSimpleLib() throws Throwable{
     TestHelper.configureForTest();
-    L42.main(new String[]{"examples/testsForAdamTowel01/UseDeployedSimpleLib.L42"});
+    L42.main(new String[]{"examples/testsForAdamTowel02/UseDeployedSimpleLib.L42"});
     Assert.assertEquals(L42.record.toString(),"Hello World Deployed\n");
     }
   //@Test
@@ -169,7 +169,7 @@ public class TestBase {
   //@Test
   public  void _02_05UseCollections() throws Throwable{
     TestHelper.configureForTest();
-    L42.main(new String[]{"examples/testsForAdamTowel01/UseCollections.L42"});
+    L42.main(new String[]{"examples/testsForAdamTowel02/UseCollections.L42"});
     Assert.assertEquals(L42.record.toString(),"size is 2 hello world\nhello\nworld\n");
     }
   

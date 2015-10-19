@@ -32,7 +32,7 @@
       acc:=Refactor::MakePrivateSelector[mapi.dest() of:mapi.path()]<<acc
       )
     return acc
-    catch exception (on MetaGuard::MemberUnavailable error Guard::CodeNotReachable"")
+    catch exception (on MetaGuard::MemberUnavailable error Assert::CodeNotReachable"")
     }
 
   SrcDest:{(Path path, Selector src,Selector dest)}

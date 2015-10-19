@@ -108,7 +108,7 @@ public static void collectInnerClasses(List<CachedStage>again,Program p,ClassB c
     if(cbi.getStage().getStage()==Stage.None){
       computeStageFirst(again,p,cbi);
     }
-    collectInnerClasses(again,p,cbi,result);
+    //collectInnerClasses(again,p,cbi,result);
     }
 }
 public static void computeStage(Program p,ClassB cb) {
