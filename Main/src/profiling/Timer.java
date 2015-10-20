@@ -2,11 +2,20 @@ package profiling;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.function.Supplier;
 
 public class Timer {
+  private static final String TOP 	= "TOP";
+  private static final int RAWTOTAL	= 0;
+  private static final int RAWMAX	= 1;
+  private static final int NETTOTAL	= 2;
+  private static final int NETMAX	= 3;
+  private static final int COUNT	= 4;
   public static <T> T record(String name,Supplier<T> fun){
   Timer.activate(name);try{  return fun.get();
   }finally{Timer.deactivate(name);}
@@ -18,24 +27,17 @@ public class Timer {
     fakeTimes=fakeTimes.subList(1, fakeTimes.size());
     return res;
   }
-  private static class TimerData{
-    List<Long> opens=new ArrayList<>();
-    List<Long> closes=new ArrayList<>();
-    List<Long> times=new ArrayList<>();
-    List<Long> timesLess=new ArrayList<>();
-    long tot=0;
-  }
   private static class TimerEntry{
-      String name;long time;
-      TimerEntry(String name,long time){this.name=name;this.time=time;}
+      String name;long time; boolean isOpen;
+      TimerEntry(String name,long time, boolean isOpen){this.name=name;this.time=time; this.isOpen = isOpen;}
   }
   public static final List<TimerEntry>timers=new ArrayList<>();
   public static void activate(String name){
     assert timers.isEmpty() || !timers.get(timers.size()-1).name.equals("o_"+name);
-    timers.add(new TimerEntry("o_"+name,giveTime()));
+    timers.add(new TimerEntry(name,giveTime(), true));
   }
   public static void deactivate(String name){
-    timers.add(new TimerEntry("c_"+name,giveTime()));
+    timers.add(new TimerEntry(name,giveTime(), false));
   }
  
   public static void restart(){timers.clear(); }
@@ -43,40 +45,107 @@ public class Timer {
     if(timers.size()%2!=0){
       Timer.deactivate("TOP");
     }
-    Map<String,TimerData> data=new HashMap<>();
-    for(TimerEntry te:timers){
-      assert te.name!=null;
-      String name=te.name.substring(2);
-      if(!data.containsKey(name)){ data.put(name, new TimerData());      }
-      TimerData interval = data.get(name);
-      boolean isOpen=te.name.startsWith("o");
-      assert isOpen|| interval.closes.size()+1==interval.opens.size(): interval.closes+" "+interval.opens;//is close
-      assert!isOpen|| interval.closes.size()==interval.opens.size():
-        te.name;//is open
-      //those check verify no recursion in timing
-      if(isOpen){interval.opens.add(te.time);}
-      else{
-        interval.closes.add(te.time);
-        long current=te.time-interval.opens.get(interval.opens.size()-1);
-        interval.times.add(current);
-        interval.tot+=current;
-      }
+
+    Map<String,long[]> processStatistic = new HashMap<String, long[]>();
+    timerTreeNode timerTree = new timerTreeNode(0, TOP);
+    getTimersTree(timers.listIterator(), timerTree);
+    if(timerTree.childs.isEmpty())
+    	return "nothing to see\n";
+    if(timerTree.childs.get(0).name.equals(TOP))
+    	timerTree = timerTree.childs.get(0);
+    else{
+    	timerTree.name		= TOP;
+    	timerTree.startTime = timerTree.childs.get(0).startTime;
+    	timerTree.endTime	= timerTree.childs.get(timerTree.childs.size()-1).endTime;
     }
+    try {
+		timerTree.calculateTimes(processStatistic, new ArrayList<String>());
+	} catch (Exception e) {
+		e.printStackTrace();
+		return "something went wrong\n";
+	}
     
     String result="\n*******************************\n";
-    List<String>names=new ArrayList<>(data.keySet());
-    names.sort((n1,n2)->(int)(data.get(n2).tot-data.get(n1).tot));
-    long totTop=data.get("TOP").tot;
+    List<String>names=new ArrayList<>(processStatistic.keySet());
+    names.sort((n1,n2)->(int)(processStatistic.get(n2)[RAWTOTAL]-processStatistic.get(n1)[RAWTOTAL]));
+    long totTop = timerTree.total();
     for(String name:names){
-      TimerData td=data.get(name);
+      long[] stats	=processStatistic.get(name);
       result+="# "+name+"\n";
-      long max=0;
-      for(long time:td.times){
-        if(max<time){max=time;}
-        }
-      result+=String.format("percentage:%.2f tot:%.3f max:%.3f number:%d",(td.tot/(float)totTop),td.tot/60000f,max/60000f,td.times.size())+"\n";
+      result+=String.format("percentage:%.2f/%.2f tot:%.3f/%.3f max:%.3f/%.3f number:%d",
+    		  (stats[RAWTOTAL]/(float)totTop), (stats[NETTOTAL]/(float)totTop),
+    		  stats[RAWTOTAL]/60000f, stats[NETTOTAL]/60000f,
+    		  stats[RAWMAX]/60000f, stats[NETMAX]/60000f,
+    		  (int)stats[COUNT])
+    		  +"\n";
       }
     return result+"*************************************\n";
+  }  
+  private static long getTimersTree(ListIterator<TimerEntry> timerIterator, timerTreeNode parent){
+	  if(!timerIterator.hasNext())
+		return 0;
+	  TimerEntry current = timerIterator.next();
+	  long time = current.time;
+	  String name = current.name;
+	  if(!current.isOpen)
+		  return time;
+	  timerTreeNode self = new timerTreeNode(time, name);
+	  parent.addChild(self);
+	  long endTime = getTimersTree(timerIterator, self);
+	  self.endTime = endTime;
+	  return getTimersTree(timerIterator, parent);
+  }  
+
+  protected static class timerTreeNode{
+	  long startTime;
+	  long endTime;
+	  String name;
+	  List<timerTreeNode> childs;
+	timerTreeNode(long startTime, String name) {
+		super();
+		this.startTime = startTime;
+		this.endTime = 0;
+		this.name = name;
+		this.childs = new ArrayList<>();
+	}	
+	void addChild(timerTreeNode child){
+		this.childs.add(child);
+	}
+	long total(){
+		return endTime-startTime;
+	}	
+	void calculateTimes(Map<String, long[]> outputList, List<String> elders) throws Exception{
+		long netNodeTime = this.total();
+		boolean isAncestor = true;
+		if(elders.contains(this.name))
+			isAncestor = false;
+		else
+			elders.add(this.name);
+		
+		for(timerTreeNode child:this.childs){
+			child.calculateTimes(outputList, elders);
+			netNodeTime -= child.total();
+		}
+		if(isAncestor)
+			elders.remove(this.name);
+		if(netNodeTime<0)
+			throw new Exception("unreliable tree");
+		long newNode[]	= new long[5];
+		if(outputList.containsKey(this.name)){
+			newNode[RAWTOTAL]	= outputList.get(this.name)[RAWTOTAL];
+			newNode[RAWMAX]		= outputList.get(this.name)[RAWMAX];
+			newNode[NETTOTAL]	= outputList.get(this.name)[NETTOTAL];
+			newNode[COUNT]		= outputList.get(this.name)[COUNT];
+		}
+		if(isAncestor)
+			newNode[RAWTOTAL]	+= this.total();
+		if(newNode[RAWMAX]<this.total())
+			newNode[RAWMAX] = this.total();
+		if(newNode[NETMAX]<netNodeTime)
+			newNode[NETMAX]	= netNodeTime;
+		newNode[NETTOTAL]	+= netNodeTime;
+		newNode[COUNT]	+= 1;
+		outputList.put(this.name, newNode);
+	}
   }
-  
 }
