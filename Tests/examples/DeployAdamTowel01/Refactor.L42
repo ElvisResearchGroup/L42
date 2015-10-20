@@ -24,7 +24,13 @@
     }
   Redirect:Squares<<{#add(Path that, type Any to)
     method
-    Library << (Library that)exception MetaGuard::NestedClassUnavailable,MetaGuard::InvalidOnTopLevel,MetaGuard::SourceUnfit,MetaGuard::MethodClash{
+    Library << (Library that)
+    exception
+        MetaGuard::NestedClassUnavailable,
+        MetaGuard::InvalidOnTopLevel,
+        MetaGuard::SourceUnfit,
+        MetaGuard::MethodClash,
+        MetaGuard::IncoherentRedirectMapping{
       return SafeOperators.redirect(that,src:this.that(),dest:this.to())
       catch error err (on Library (
         record=Introspection(lib:err).record()
@@ -33,6 +39,7 @@
           case x== S"InvalidOnTopLevel"  (exception MetaGuard::InvalidOnTopLevel(record:record))
           case x== S"MethodClash"  (exception MetaGuard::MethodClash(record:record))
           case x== S"SourceUnfit"  (exception MetaGuard::SourceUnfit(record:record))
+          case x== S"IncoherentRedirectMapping" (exception MetaGuard::IncoherentRedirectMapping(record:record))
           default error err)))
       }
     }

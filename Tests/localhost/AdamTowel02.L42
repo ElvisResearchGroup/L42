@@ -2426,6 +2426,14 @@ Outer2::S myName() Outer2::S.#stringParser(that:{'@stringU
 type method 
 Outer0 #apply(Outer2::Introspection::Record record) 
 method toS() this.myName()}
+IncoherentRedirectMapping:{<:Outer2::MetaGuard, Outer2::Guard, Outer2::S::ToS
+method 
+Outer2::S myName() Outer2::S.#stringParser(that:{'@stringU
+'IncoherentRedirectMapping
+})
+type method 
+Outer0 #apply(Outer2::Introspection::Record record) 
+method toS() this.myName()}
 ClassClash:{<:Outer2::MetaGuard, Outer2::Guard, Outer2::S::ToS
 method 
 Outer2::S myName() Outer2::S.#stringParser(that:{'@stringU
@@ -4939,7 +4947,7 @@ Outer1::Method methodFromSelector(Outer2::Selector that) exception Outer2::MetaG
         meth.#close()
         )
       )
-    Void unused1=error Outer2::MetaGuard::MethodUnavailable.#apply(path:this.pathFromRoot(), selector:that, isPrivate:Outer2::Bool.false())
+    Void unused1=exception Outer2::MetaGuard::MethodUnavailable.#apply(path:this.pathFromRoot(), selector:that, isPrivate:Outer2::Bool.false())
     void
     )
   catch return result (
@@ -6147,7 +6155,7 @@ type Any #to()
 read method 
 type Any to() 
 method 
-Library #leftleft(Library that) exception Outer2::MetaGuard::NestedClassUnavailable, Outer2::MetaGuard::InvalidOnTopLevel, Outer2::MetaGuard::SourceUnfit, Outer2::MetaGuard::MethodClash (
+Library #leftleft(Library that) exception Outer2::MetaGuard::NestedClassUnavailable, Outer2::MetaGuard::InvalidOnTopLevel, Outer2::MetaGuard::SourceUnfit, Outer2::MetaGuard::MethodClash, Outer2::MetaGuard::IncoherentRedirectMapping (
   Void unused=(
     Void unused0=return Outer2::SafeOperators.redirect(that:that, src:this.that(), dest:this.to())
     catch error err (
@@ -6185,7 +6193,18 @@ Library #leftleft(Library that) exception Outer2::MetaGuard::NestedClassUnavaila
                               (
                                 Void unused7=cond2.#checkTrue()
                                 catch exception unused8 (
-                                  on Void error err
+                                  on Void (
+                                    Outer2::Introspection::#apply(lib ) ::record() ::#stringParser(that ) ::#equalequal(that ) cond3=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
+                                    'IncoherentRedirectMapping
+                                    }))
+                                    (
+                                      Void unused9=cond3.#checkTrue()
+                                      catch exception unused10 (
+                                        on Void error err
+                                        )
+                                      exception Outer2::MetaGuard::IncoherentRedirectMapping.#apply(record:record)
+                                      )
+                                    )
                                   )
                                 exception Outer2::MetaGuard::SourceUnfit.#apply(record:record)
                                 )
@@ -6745,7 +6764,7 @@ Outer0 #begin()
 method 
 Outer0 #end() this
 method 
-Library #leftleft(Library that) exception Outer1::MetaGuard::MemberUnavailable, Outer1::MetaGuard::InvalidOnTopLevel, Outer1::MetaGuard::SourceUnfit, Outer1::MetaGuard::MethodClash (
+Library #leftleft(Library that) exception Outer1::MetaGuard::MemberUnavailable, Outer1::MetaGuard::InvalidOnTopLevel, Outer1::MetaGuard::SourceUnfit, Outer1::MetaGuard::MethodClash, Outer1::MetaGuard::IncoherentRedirectMapping (
   Void unused=('assume that have abstract Bool N and S
   
     Void unused0=return Outer1::Refactor::Redirect.#begin().#add(that:Outer1::Path.#stringParser(that:{'@stringU
