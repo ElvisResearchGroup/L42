@@ -31,7 +31,7 @@ Introspection:{
     method S thisMdf()
     method Path pathFromRoot()' invariant NestedClass(...).nestedClassFromRoot(path).pathFromRoot()==path
     method Selector selector()
-    method S memberKind()
+    method S memberKind() 'one of NestedClass,InterfaceImplementedMethod,ImplementedMethod,AbstractMethod
     method S allAsString()
     method Type returnType()
     method Types exceptions()

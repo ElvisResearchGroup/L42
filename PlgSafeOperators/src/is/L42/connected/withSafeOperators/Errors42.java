@@ -97,13 +97,15 @@ public class Errors42 {
       throw Resources.Error.multiPartStringError("MemberUnavailable",
           "Path",formatPathIn(path),
           "Selector",""+((ms.isPresent())?ms.get():""),
-          "InvalidKind",""+kind.name());
+          "InvalidKind",""+kind.name(),
+          "IsPrivate",""+kind.name().contains("Private"));
       }
     catch(ast.ErrorMessage.PathNonExistant e){
       throw Resources.Error.multiPartStringError("MemberUnavailable",
           "Path",formatPathIn(path),
           "Selector",""+((ms.isPresent())?ms.get():""),
-          "InvalidKind",""+MemberUnavailable.NonExistentPath);
+          "InvalidKind",""+MemberUnavailable.NonExistentPath,
+          "IsPrivate","false");
     }
   }
 

@@ -8089,4 +8089,91 @@ Outer0::SrcDests renameMap(Library that, Outer1::S prefix, Outer1::Introspection
   }
   )
 method 
-Outer0 #plusplus(Outer0 that) Outer0.#apply(myLibs:this.myLibs().#plusplus(that:that.myLibs()))}}
+Outer0 #plusplus(Outer0 that) Outer0.#apply(myLibs:this.myLibs().#plusplus(that:that.myLibs()))}
+Default:{
+MyName:{
+type method 
+Library #leftleft(Library that) (
+  Void unused=(
+    Outer2::Introspection::#apply(lib ) i=Outer2::Introspection.#apply(lib:that)
+    Outer2::Introspection::#apply(lib ) ::methodFromSelector(that ) myName=i.methodFromSelector(that:Outer2::Selector.#stringParser(that:{'@stringU
+    'myName()
+    }))
+    catch exception unused0 (
+      on Outer2::MetaGuard::MethodUnavailable return that
+      )
+    (
+      Void unused1=(
+        Outer2::Introspection::#apply(lib ) ::methodFromSelector(that ) ::methodKind() ::#bangequal(that ) cond=myName.methodKind().#bangequal(that:Outer2::S.#stringParser(that:{'@stringU
+        'AbstractMethod
+        }))
+        (
+          Void unused3=cond.#checkTrue()
+          catch exception unused4 (
+            on Void void
+            )
+          return that
+          )
+        )
+      Library myNameImpl=(
+        Void unused5=(
+          Void unused6=(
+            Outer2::Introspection::#apply(lib ) ::methodFromSelector(that ) ::thisMdf() ::#equalequal(that ) cond0=myName.thisMdf().#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
+            'Immutable
+            }))
+            (
+              Void unused8=cond0.#checkTrue()
+              catch exception unused9 (
+                on Void void
+                )
+              return {
+              method 
+              Outer3::S myName() (
+                Outer3::Introspection::#apply(clazz ) ::record() ::docOf(path ) doc=Outer3::Introspection.#apply(clazz:Outer0).record().docOf(path:Outer3::Path.#stringParser(that:{'@stringU
+                'MyClass
+                }))
+                Outer3::Introspection::#apply(clazz ) ::record() ::docOf(path ) ::annotations() ::top() ::toS() nameAndPrefix=doc.annotations().top().toS()
+                nameAndPrefix.#apply(start:nameAndPrefix.firstIndexOf(that:Outer3::S.#stringParser(that:{'@stringU
+                '::
+                })).#plus(that:Outer3::N.#numberParser(that:{'@stringU
+                '2
+                })))
+                )}
+              )
+            )
+          Void unused7=return {
+          type method 
+          Outer3::S myName() (
+            Outer3::Introspection::#apply(clazz ) ::record() ::docOf(path ) doc=Outer3::Introspection.#apply(clazz:Outer0).record().docOf(path:Outer3::Path.#stringParser(that:{'@stringU
+            'MyClass
+            }))
+            Outer3::Introspection::#apply(clazz ) ::record() ::docOf(path ) ::annotations() ::top() ::toS() nameAndPrefix=doc.annotations().top().toS()
+            nameAndPrefix.#apply(start:nameAndPrefix.firstIndexOf(that:Outer3::S.#stringParser(that:{'@stringU
+            '::
+            })).#plus(that:Outer3::N.#numberParser(that:{'@stringU
+            '2
+            })))
+            )}
+          void
+          )
+        catch return result0 (
+          on Library result0
+          )
+        error {'@stringU
+        'CurlyBlock-Should be unreachable code
+        }
+        )
+      Void unused2=return Outer2::Refactor.compose(left:that, right:myNameImpl)
+      catch exception x (
+        on Outer2::MetaGuard error x
+        )
+      void
+      )
+    )
+  catch return result (
+    on Library result
+    )
+  error {'@stringU
+  'CurlyBlock-Should be unreachable code
+  }
+  )}}}

@@ -73,7 +73,7 @@ Method methodFromSelector(Selector that) exception MetaGuard::MethodUnavailable 
   with meth in this.methods().vals() (
     if meth.selector()==that (return meth)
     )
-  error MetaGuard::MethodUnavailable(path:this.pathFromRoot(),selector:that,isPrivate:Bool.false())
+  exception MetaGuard::MethodUnavailable(path:this.pathFromRoot(),selector:that,isPrivate:Bool.false())
   'note: it can return a private method
   }
 method

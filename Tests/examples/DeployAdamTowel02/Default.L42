@@ -1,0 +1,27 @@
+{
+MyName:{
+  type method Library<<(Library that) {
+    i=Introspection(lib:that)
+    myName=i.methodFromSelector(Selector"myName()")
+    catch exception (on MetaGuard::MethodUnavailable return that)
+    if myName.methodKind()!=S"AbstractMethod" ( return that)
+    Library myNameImpl={
+      if myName.thisMdf()==S"Immutable" (return {
+        method S myName()(
+          doc=Introspection(clazz:Outer0).record().docOf(path:Path"MyClass")
+          nameAndPrefix=doc.annotations().top().toS()
+          nameAndPrefix(start:nameAndPrefix.firstIndexOf(S"::")+2N)
+          )})
+      return {
+        type method S myName()(
+          doc=Introspection(clazz:Outer0).record().docOf(path:Path"MyClass")
+          nameAndPrefix=doc.annotations().top().toS()
+          nameAndPrefix(start:nameAndPrefix.firstIndexOf(S"::")+2N)
+          )}}
+    'check: if exceptions is ok?
+    'check: no arguments? I know it already from selector!
+    return Refactor.compose(left:that,right:myNameImpl)
+    catch exception x(on MetaGuard error x)
+    }
+  }
+}

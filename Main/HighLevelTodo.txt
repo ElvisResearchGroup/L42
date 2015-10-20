@@ -50,6 +50,8 @@ Well formedness
   -well formedness, state must be all private or all public.
   -well formedness, no outer level bigger than max possible.
   -in Type system on T must check that T exists BEFORE checking the expr in the on
+  - varName={if ... (return.. ) return ..} now give horrible error if type for varName is omitted.
+    is ok to have error, but need a better one
 well formedness: implemented or exceptions must be with no repetition, and with no Any.
 Operators should preserve this
 interfaces can be circular, check that no bug happens

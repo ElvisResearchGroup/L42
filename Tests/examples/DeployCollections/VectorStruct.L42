@@ -1,11 +1,9 @@
 {mut(var mut Cell head,var N size)' size should be computed?
   Cell:{interface}
-  CellNext:{
-    mut (Kind::elem() val,mut Cell next)<:Cell
+  CellNext:{(Kind::elem() val,mut Cell next)<:Cell
     read method Kind::elemRead() val()
     }
-  'CellNextMut:{mut (mut Kind::elem() val,mut Cell next)<:Cell}
-  CellEnd:{mut ()<:Cell}
+  CellEnd:{<:Cell type method mut Outer0()}
   read method Void reportError(N that)
     error S"IndexOutOfBound: max is "[this.size()]" proposed is "[that]""
   read method Void reportUnexpected(N that)
@@ -77,6 +75,8 @@
   OptMax:Opt(N)
   OptFill:Opt(Elem)
 
+  Iterator:...
+  VarIterator:...
   
   read method lent Iterator vals(N min, N ok, N max, Kind::elem() fill) '0
     Iterator(this,min:min-1N,ok:ok, max:OptMax(max),fill:OptFill(fill))
@@ -114,37 +114,6 @@
     Iterator(this,min:-1N,ok:this.size(), max:OptMax(),fill:OptFill(fill))
   read method lent Iterator vals()'15
     Iterator(this,min:-1N,ok:this.size(), max:OptMax(),fill:OptFill())
-
-  
-  Iterator:{lent (read Outer1 that, var N min, N ok, OptMax max, OptFill fill)
-    mut method
-    Void #next() exception Void {
-      this.min(this.min()+1N)
-      if this.fill().isPresent() (
-        if !this.max().isPresent() (return void)
-        if this.min()>= ~this.max() (exception void)
-        return void
-        )
-      if this.max().isPresent() (
-          if this.min()>=~this.max() (exception void)
-          )
-      if this.min()>=this.that().size() (exception void)
-      return void
-      }
-    
-    read method
-    Void #checkEnd()
-      if this.min()<this.ok() ( error S"Unexpected termination of iteration, reached "[this.min()]" instead of "[this.ok()]"" )
-    
-    read method
-    Kind::elem() #inner() {
-      if !this.fill().isPresent() (return this.that()(this.min()))
-      if this.min()<this.that().size() (return this.that()(this.min()))
-      return ~this.fill()
-      }
-    read method
-    Void #close() void
-    }
   '*************************************
   '*************************************
   mut method mut VarIterator vars(N min, N ok, N max, Kind::elem() fill) '0
@@ -183,40 +152,5 @@
     VarIterator(this,min:-1N,ok:this.size(), max:OptMax(),fill:OptFill(fill))
   mut method mut VarIterator vars()'15
     VarIterator(this,min:-1N,ok:this.size(), max:OptMax(),fill:OptFill())
-
-  
-  VarIterator:{mut (mut Outer1 that, var N min, N ok, OptMax max, OptFill fill)
-    mut method
-    Void inner(Kind::elem() that) this.#that()(this.min(), val:that)
-
-    'all here is the same?
-    mut method
-    Void #next() exception Void {
-      this.min(this.min()+1N)
-      if this.fill().isPresent() (
-        if !this.max().isPresent() (return void)
-        if this.min()>= ~this.max() (exception void)
-        return void
-        )
-      if this.max().isPresent() (
-          if this.min()>=~this.max() (exception void)
-          )
-      if this.min()>=this.that().size() (exception void)
-      return void
-      }
-    
-    read method
-    Void #checkEnd()
-      if this.min()<this.ok() ( error S"Unexpected termination of iteration, reached "[this.min()]" instead of "[this.ok()]"" )
-    
-    read method
-    Kind::elem() #inner() {
-      if !this.fill().isPresent() (return this.that()(this.min()))
-      if this.min()<this.that().size() (return this.that()(this.min()))
-      return ~this.fill()
-      }
-    read method
-    Void #close() void
-    }
   
   }

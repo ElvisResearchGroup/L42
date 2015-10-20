@@ -13,7 +13,7 @@ import facade.L42;
 import helpers.TestHelper;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class TestBase {
+public class TestBase01 {
 
   @Before
   public void initialize() {
@@ -24,7 +24,7 @@ public class TestBase {
     }
   //not run when single test executed?
 
-  //@Test
+  @Test
   public  void _00_00AJustToWarmUpJVM() throws Throwable{
     TestHelper.configureForTest();
     L42.main(new String[]{"examples/testsForAdamTowel01/UseAdamTowel01.L42"});
@@ -127,60 +127,5 @@ public class TestBase {
 ));
    }
  
-//-----------------------------------------
-//-----------------------------------------
-//-----------------------------------------
-  
-  @Test
-  public  void _02_00DeployAdamTowel02() throws Throwable{
-    TestHelper.configureForTest();
-    Paths.get("localhost","AdamTowel02.L42").toFile().delete();
-    L42.main(new String[]{"examples/DeployAdamTowel02"});
-    Assert.assertTrue(Paths.get("localhost","AdamTowel02.L42").toFile().exists());
-  }
 
-  @Test
-  public  void _02_01UseSimpleLib() throws Throwable{
-    TestHelper.configureForTest();
-    L42.main(new String[]{"examples/testsForAdamTowel02/UseSimpleLib.L42"});
-    Assert.assertEquals(L42.record.toString(),"Hello World 42\n");
-    }
-
-  @Test
-  public  void _02_02DeploySimpleLib() throws Throwable{
-    TestHelper.configureForTest();
-    Paths.get("localhost","DeployedSimpleLib.L42").toFile().delete();
-    L42.main(new String[]{"examples/testsForAdamTowel02/DeploySimpleLib.L42"});
-    Assert.assertTrue(Paths.get("localhost","DeployedSimpleLib.L42").toFile().exists());
-    }
-  @Test
-  public  void _02_03LoadDeployedSimpleLib() throws Throwable{
-    TestHelper.configureForTest();
-    L42.main(new String[]{"examples/testsForAdamTowel02/UseDeployedSimpleLib.L42"});
-    Assert.assertEquals(L42.record.toString(),"Hello World Deployed\n");
-    }
-  //@Test
-  public  void _02_04DeployCollections() throws Throwable{
-    TestHelper.configureForTest();
-    Paths.get("localhost","Collections.L42").toFile().delete();
-    L42.main(new String[]{"examples/DeployCollections"});
-    Assert.assertTrue(Paths.get("localhost","Collections.L42").toFile().exists());
-    }
-  //@Test
-  public  void _02_05UseCollections() throws Throwable{
-    TestHelper.configureForTest();
-    L42.main(new String[]{"examples/testsForAdamTowel02/UseCollections.L42"});
-    Assert.assertEquals(L42.record.toString(),"size is 2 hello world\nhello\nworld\n");
-    }
-  
-  @Test
-  public  void _02_06UseOperators1() throws Throwable{
-    TestHelper.configureForTest();
-    L42.main(new String[]{"examples/testsForAdamTowel02/UseOperators1.L42"});
-    Assert.assertEquals(L42.record.toString(),"c1c2c3\nc1c2c3\nic1ic2ic3\n");
-    }
-  
-  
- 
-  
   }
