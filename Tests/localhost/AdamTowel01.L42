@@ -2397,6 +2397,10 @@ Library removeImplementation(Library that, Outer1::Path path) using Outer0 check
 'SafeOperators.removeImplementation(path)
 })
 type method 
+Library moveImplementation(Library that, Outer1::Path path, Outer1::Selector src, Outer1::Selector dest) using Outer0 check moveImplementation(that:that, path:path.binaryRepr(), src:src.binaryRepr(), dest:dest.binaryRepr()) error Outer1::System::Guard::PluginFailure.#stringParser(that:{'@stringU
+'SafeOperators.moveImplementation
+})
+type method 
 Library removeImplementation(Library that, Outer1::Path path, Outer1::Selector selector) using Outer0 check removeImplementation(that:that, path:path.binaryRepr(), selector:selector.binaryRepr()) error Outer1::System::Guard::PluginFailure.#stringParser(that:{'@stringU
 'SafeOperators.removeImplementation(path,selector)
 })
@@ -4497,6 +4501,14 @@ mut method
 Void inner(Outer2::NestedClasses::#begin() that) 
 mut method 
 Outer2::NestedClasses::#begin() #inner() }
+Varresult3:'@private
+{
+type method 
+mut Outer0 #apply(Outer2::NestedClasses::#begin() ::#add(that ) ::#end() inner) 
+mut method 
+Void inner(Outer2::NestedClasses::#begin() ::#add(that ) ::#end() that) 
+mut method 
+Outer2::NestedClasses::#begin() ::#add(that ) ::#end() #inner() }
 VartN:'@private
 {
 type method 
@@ -4505,7 +4517,7 @@ mut method
 Void inner(Outer3::N::#numberParser(that ) that) 
 mut method 
 Outer3::N::#numberParser(that ) #inner() }
-Varresult3:'@private
+Varresult4:'@private
 {
 type method 
 mut Outer0 #apply(Outer2::Types::#begin() ::#end() inner) 
@@ -4858,12 +4870,61 @@ Outer1::NestedClasses nestedClasses() (
   varaccumulator.#inner().#end()
   )
 method 
+Outer1::NestedClasses transitivelyNestedClasses() (
+  Outer1::NestedClasses::#begin() ::#add(that ) ::#end() result=Outer1::NestedClasses.#begin().#add(that:this).#end()
+  mut Outer0::Varresult3 varresult=Outer0::Varresult3.#apply(inner:result)
+  Void unused=(
+    Outer0::nestedClasses() ::vals() nc=this.nestedClasses().vals()
+    (
+      Void unused0=(
+        Void unused1=(
+          Void unused2=loop (
+            Void unused3=nc.#next()
+            catch exception unused4 (
+              on Void (
+                Void unused5=(
+                  Void unused6=nc.#checkEnd()
+                  catch exception unused7 (
+                    on Void void
+                    )
+                  void
+                  )
+                exception void
+                )
+              )
+            varresult.inner(that:varresult.#inner().#plusplus(that:nc.#inner().transitivelyNestedClasses()))
+            )
+          catch exception unused8 (
+            on Void void
+            )
+          void
+          )
+        catch exception propagated (
+          on Any (
+            Void unused9=nc.#close()
+            exception propagated
+            )
+          )
+        void
+        )
+      catch return propagated0 (
+        on Any (
+          Void unused10=nc.#close()
+          return propagated0
+          )
+        )
+      nc.#close()
+      )
+    )
+  varresult.#inner()
+  )
+method 
 Outer1::Types implementedInterfaces() (
   Outer1::Types::#begin() ::#end() result=Outer1::Types.#begin().#end()
   Outer2::N::#numberParser(that ) tN=Outer2::N.#numberParser(that:{'@stringU
   '-1
   })
-  mut Outer0::Varresult3 varresult=Outer0::Varresult3.#apply(inner:result)
+  mut Outer0::Varresult4 varresult=Outer0::Varresult4.#apply(inner:result)
   mut Outer0::VartN vartN=Outer0::VartN.#apply(inner:tN)
   Void unused=(
     Void unused0=loop (
@@ -6404,6 +6465,71 @@ Library #leftleft(Library that) exception Outer2::MetaGuard::MemberUnavailable (
               Void unused1=cond.#checkTrue()
               catch exception unused2 (
                 on Void error err
+                )
+              exception Outer2::MetaGuard::DispatchMemberUnavailable.#apply(that:err)
+              )
+            )
+          )
+        )
+      )
+    void
+    )
+  catch return result (
+    on Library result
+    )
+  error {'@stringU
+  'CurlyBlock-Should be unreachable code
+  }
+  )
+type method 
+type Outer0 #begin() Outer0
+method 
+Outer0 #end() this}
+MoveImplementationSelector:{
+type method 
+Outer0 #add(Outer2::Selector that, Outer2::Path of, Outer2::Selector to) 
+mut method 
+Outer2::Selector #that() 
+read method 
+Outer2::Selector that() 
+mut method 
+Outer2::Path #of() 
+read method 
+Outer2::Path of() 
+mut method 
+Outer2::Selector #to() 
+read method 
+Outer2::Selector to() 
+method 
+Library #leftleft(Library that) exception Outer2::MetaGuard::MemberUnavailable, Outer2::MetaGuard::MethodClash (
+  Void unused=(
+    Void unused0=return Outer2::SafeOperators.moveImplementation(that:that, path:this.of(), src:this.that(), dest:this.to())
+    catch error err (
+      on Library (
+        Outer2::Introspection::#apply(lib ) ::record() record=Outer2::Introspection.#apply(lib:err).record()
+        (
+          Outer2::Introspection::#apply(lib ) ::record() ::#stringParser(that ) x=record.#stringParser(that:{'@stringU
+          'Kind
+          })
+          (
+            Outer2::Introspection::#apply(lib ) ::record() ::#stringParser(that ) ::#equalequal(that ) cond=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
+            'MemberUnavailable
+            }))
+            (
+              Void unused1=cond.#checkTrue()
+              catch exception unused2 (
+                on Void (
+                  Outer2::Introspection::#apply(lib ) ::record() ::#stringParser(that ) ::#equalequal(that ) cond0=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
+                  'MethodClash
+                  }))
+                  (
+                    Void unused3=cond0.#checkTrue()
+                    catch exception unused4 (
+                      on Void error err
+                      )
+                    exception Outer2::MetaGuard::MethodClash.#apply(record:record)
+                    )
+                  )
                 )
               exception Outer2::MetaGuard::DispatchMemberUnavailable.#apply(that:err)
               )

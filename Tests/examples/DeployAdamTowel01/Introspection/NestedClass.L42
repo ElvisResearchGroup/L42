@@ -54,6 +54,14 @@ method
 NestedClasses nestedClasses()
   NestedClasses[with m in this.members().vals() ( on NestedClass m)]
 
+method
+NestedClasses transitivelyNestedClasses() (
+  var result=NestedClasses[this]
+  with nc in this.nestedClasses().vals() (result++=nc.transitivelyNestedClasses())
+  result
+  )
+
+  
 method Types implementedInterfaces() (
   var result=Types[]
   var tN=-1N

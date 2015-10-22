@@ -1,0 +1,83 @@
+{
+$:{interface
+  method
+  Library solveConflict(Library that,SrcDest location)exception MetaGuard
+  }
+SrcDest:{(Path path, Selector src,Selector dest)}
+SrcDests:LinkedList.list(SrcDest)
+Libs:'@private
+  LinkedList.list(Library)
+
+type method
+Library <<(Library that) exception MetaGuard::ClassClash,MetaGuard::MethodClash
+  Refactor.compose(left:that,right:{
+ (Libs myLibs)<:$
+
+  method
+  Outer0 #add(Library that)
+    Outer0(myLibs:this.myLibs().#add(that))
+    
+  type method
+  Outer0 #begin()
+    Outer0(myLibs:Libs[])
+
+  method
+  Outer0 #end()
+    Outer0(myLibs:this.myLibs().#end())
+
+  method
+  Library << (Library that) exception MetaGuard::ClassClash,MetaGuard::MethodClash{
+    i=Introspection(lib:that)
+    var map=SrcDests[]
+    var acc={}
+    with lib in this.myLibs().vals(), index in 0N.vals() (
+      var libi=lib
+      rens=this.renameMap(lib,prefix:S"#"[index]"", intros:i.transitivelyNestedClasses())
+      with ren in rens.vals() (
+        map:=map.#add(ren)
+        libi:=this.solveConflict(libi,location:ren)
+        catch exception (on MetaGuard error Assert::ObservedBug({
+          return S"solveConflict does not follow the specification: it throws exceptions"
+          ' yes, exception can be handled by type system, but it is an example of
+          'wrong behaviour for metaprogrammed code?
+          'if ... check if ren is well formed w.r.t. libi, otherwise blame S"renameMap"
+          }))
+        void
+        )
+      acc:=Refactor.compose(left:acc,right:libi)
+      )
+    acc:=Refactor.compose(left:acc,right:that)
+    with mapi in map.vals() (
+      acc:=Refactor::MakePrivateSelector[mapi.dest() of:mapi.path()]<<acc
+      )
+    return acc
+    catch exception (on MetaGuard::MemberUnavailable error Assert::CodeNotReachable"")
+    }
+  method '@private
+  SrcDests renameMap(Library that,S prefix,Introspection::NestedClasses intros) {
+    var acc=SrcDests[]
+    with intro in intros.vals() ( acc++=this.renameMap(that,prefix:prefix,intro:intro) )
+    return acc
+    }
+  method '@private
+  SrcDests renameMap(Library that,S prefix,Introspection::NestedClass intro) {
+    path=intro.pathFromRoot()
+    thatI=Introspection(lib:that, path:path)
+    catch exception (on MetaGuard::MemberUnavailable return SrcDests[])
+    return SrcDests[with meth in intro.methods().vals() (
+      case this.needRename(that:thatI,meth:meth) (
+        destSel=Selector.fromS(prefix++meth.selector().toS())
+        SrcDest(path:path,src:meth.selector(),dest:destSel)
+        ))]
+    }      
+  method '@private    
+  Bool needRename(Introspection::NestedClass that,Introspection::Method meth) {
+    if meth.isPrivate() (return Bool.false() )
+    meth2=that.methodFromSelector(meth.selector())
+    catch exception (on MetaGuard::MemberUnavailable return Bool.false())
+    return !meth2.isPrivate()
+    }
+  method Outer0 ++ (Outer0 that)
+    Outer0(myLibs:this.myLibs()++that.myLibs())
+  })
+}

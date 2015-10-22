@@ -24,7 +24,7 @@ public class TestBase02 {
     }
   //not run when single test executed?
 
-  @Test
+  //@Test
   public  void _00_00AJustToWarmUpJVM() throws Throwable{
     TestHelper.configureForTest();
     L42.main(new String[]{"examples/testsForAdamTowel01/UseAdamTowel01.L42"});
@@ -38,21 +38,21 @@ public class TestBase02 {
     Assert.assertTrue(Paths.get("localhost","AdamTowel02.L42").toFile().exists());
   }
 
-  @Test
+  //@Test
   public  void _02_01UseSimpleLib() throws Throwable{
     TestHelper.configureForTest();
     L42.main(new String[]{"examples/testsForAdamTowel02/UseSimpleLib.L42"});
     Assert.assertEquals(L42.record.toString(),"Hello World 42\n");
     }
 
-  @Test
+  //@Test
   public  void _02_02DeploySimpleLib() throws Throwable{
     TestHelper.configureForTest();
     Paths.get("localhost","DeployedSimpleLib.L42").toFile().delete();
     L42.main(new String[]{"examples/testsForAdamTowel02/DeploySimpleLib.L42"});
     Assert.assertTrue(Paths.get("localhost","DeployedSimpleLib.L42").toFile().exists());
     }
-  @Test
+  //@Test
   public  void _02_03LoadDeployedSimpleLib() throws Throwable{
     TestHelper.configureForTest();
     L42.main(new String[]{"examples/testsForAdamTowel02/UseDeployedSimpleLib.L42"});
@@ -64,7 +64,7 @@ public class TestBase02 {
     L42.main(new String[]{"examples/testsForAdamTowel02/UseOperators1.L42"});
     Assert.assertEquals(L42.record.toString(),"c1c2c3\nc1c2c3\nic1ic2ic3\n");
     }
-   @Test
+   //@Test
    public  void _02_05UseOperators2() throws Throwable{
      TestHelper.configureForTest();
      L42.main(new String[]{"examples/testsForAdamTowel02/UseOperators2.L42"});

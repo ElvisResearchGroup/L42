@@ -61,12 +61,13 @@ public static class TestAbstractMeth {//add more test for error cases
   assert ms!=null;
   ClassB expected=getClassB(_expected);
   if(!isError){
-    ClassB res=Abstract.toAbstract(cb1, path.getCBar(), ms);
+    //TODO: mettere tests per il caso con un selettore destinazione. In particolare testare interfacce
+    ClassB res=Abstract.toAbstract(cb1, path.getCBar(), ms,null);
     res=Functions.clearCache(res,Stage.None);
     TestHelper.assertEqualExp(expected,res);
     }
   else{
-    try{Abstract.toAbstract(cb1, path.getCBar(), ms);fail("error expected");}
+    try{Abstract.toAbstract(cb1, path.getCBar(), ms,null);fail("error expected");}
     catch(Resources.Error err){
       ClassB res=(ClassB)err.unbox;
       TestHelper.assertEqualExp(expected,res);

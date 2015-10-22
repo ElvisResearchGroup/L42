@@ -11,4 +11,19 @@ Main:{
   Debug(D::E.myName())
   return ExitCode.normal()
   }
+'TODO next:
+
+'use Extends to implement MyName better. catch methClash and produce better error.
+' myName must be on type
+'do also Invariant with case for bool and case for void
+' invariant is different w.r.t. MyName, if 
+'invariant methd is not present, leave ...??
+'in introspection, remove constructor() and put
+' method Methods state()
+' if state is private, return the private state, starting with the constructor
+' else if there is a single abstract type method, collect its state and return
+' else return the empty list
+' method Bool isConcrete() true iff all non state methods are implemented and
+' all the interface methods are implemented.
+'use MyName and Invariat to implement Stringable (not U)
 }

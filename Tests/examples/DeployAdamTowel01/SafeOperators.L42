@@ -42,7 +42,17 @@
         path:path.binaryRepr()
         )
       error System::Guard::PluginFailure"SafeOperators.removeImplementation(path)"
-
+  
+  type method
+  Library moveImplementation(Library that,Path path,Selector src,Selector dest)
+    using Outer0
+      check moveImplementation(that
+        path:path.binaryRepr()
+        src:src.binaryRepr()
+        dest:dest.binaryRepr()
+        )
+      error System::Guard::PluginFailure"SafeOperators.moveImplementation"
+  
   type method
   Library removeImplementation(Library that,Path path,Selector selector)
     using Outer0

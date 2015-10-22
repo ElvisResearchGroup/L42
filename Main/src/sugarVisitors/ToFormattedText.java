@@ -269,7 +269,11 @@ public class ToFormattedText implements Visitor<Void>{
     }
   @Override
   public Void visit(SquareWithCall arg0) {
-    throw Assertions.codeNotReachable();  }
+    arg0.getReceiver().accept(this);
+    c("[");
+    arg0.getWith().accept(this);
+    return c("]");
+    }
 
   @Override
   public Void visit(RoundBlock arg0) {

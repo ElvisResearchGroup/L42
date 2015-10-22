@@ -10,6 +10,7 @@ import platformSpecific.javaTranslation.Resources;
 import ast.ErrorMessage;
 import ast.ErrorMessage.PathNonExistant;
 import ast.ExpCore.*;
+import ast.Ast.Doc;
 import ast.Ast.MethodSelector;
 import ast.Ast.Path;
 import ast.ExpCore.ClassB;
@@ -17,6 +18,7 @@ import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodImplemented;
 import ast.ExpCore.ClassB.MethodWithType;
 import ast.ExpCore.ClassB.NestedClass;
+import ast.Util.PathMwt;
 import ast.Util.PathMx;
 import auxiliaryGrammar.Program;
 import introspection.FindUsage;
@@ -52,12 +54,12 @@ public class Abstract {
     return cb.withMs(newMs);
   }
 
-  public static ClassB toAbstract(ClassB cb, List<String> path,MethodSelector sel){
+  public static ClassB toAbstract(ClassB cb, List<String> path,MethodSelector sel,MethodSelector newSel){
     Errors42.checkExistsPathMethod(cb, path, Optional.of(sel));
-    if(path.isEmpty()){return auxToAbstract(cb,sel);}
-    return ClassOperations.onClassNavigateToPathAndDo(cb,path,cbi->auxToAbstract(cbi,sel));
+    if(path.isEmpty()){return auxToAbstract(cb,path,sel,newSel);}
+    return ClassOperations.onClassNavigateToPathAndDo(cb,path,cbi->auxToAbstract(cbi,path,sel,newSel));
   }
-  private static ClassB auxToAbstract(ClassB cb,MethodSelector sel) {
+  private static ClassB auxToAbstract(ClassB cb,List<String> pathForError,MethodSelector sel,MethodSelector newSel) {
     List<Member> newMs=new ArrayList<>(cb.getMs());
     Member m=Program.getIfInDom(newMs, sel).get();
     //make m abstract
@@ -70,7 +72,15 @@ public class Abstract {
       Program.removeIfInDom(newMs, sel);
       }
     //create new class
-    return cb.withMs(newMs);
+    if(newSel==null){ return cb.withMs(newMs);  }
+    MethodWithType mwt1 = Program.extractMwt(sel, cb).get();
+    Optional<MethodWithType> mwt2 = Program.extractMwt(newSel, cb);
+    mwt1=mwt1.withMs(newSel).withDoc(Doc.empty());
+    if(mwt2.isPresent()){
+       throw Errors42.errorMethodClash(pathForError, mwt1,mwt2.get(), false, Collections.emptyList(), false,false); 
+       }   
+    newMs.add(mwt1);
+    return cb.withMs(newMs);  
   }
 
   static void checkPrivacyCoupuled(ClassB cbFull,ClassB cbClear, List<String> path) {
