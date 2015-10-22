@@ -82,18 +82,19 @@ public class Timer {
     return result+"*************************************\n";
   }  
   private static long getTimersTree(ListIterator<TimerEntry> timerIterator, timerTreeNode parent){
-	  if(!timerIterator.hasNext())
-		return 0;
-	  TimerEntry current = timerIterator.next();
-	  long time = current.time;
-	  String name = current.name;
-	  if(!current.isOpen)
-		  return time;
-	  timerTreeNode self = new timerTreeNode(time, name);
-	  parent.addChild(self);
-	  long endTime = getTimersTree(timerIterator, self);
-	  self.endTime = endTime;
-	  return getTimersTree(timerIterator, parent);
+	  while(true){
+		  if(!timerIterator.hasNext())
+			return 0;
+		  TimerEntry current = timerIterator.next();
+		  long time = current.time;
+		  String name = current.name;
+		  if(!current.isOpen)
+			  return time;
+		  timerTreeNode self = new timerTreeNode(time, name);
+		  parent.addChild(self);
+		  long endTime = getTimersTree(timerIterator, self);
+		  self.endTime = endTime;
+	  }
   }  
 
   protected static class timerTreeNode{
