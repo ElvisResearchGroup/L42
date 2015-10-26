@@ -62,7 +62,8 @@ public class TestBase02 {
   public  void _02_04UseOperators1() throws Throwable{
     TestHelper.configureForTest();
     L42.main(new String[]{"examples/testsForAdamTowel02/UseOperators1.L42"});
-    Assert.assertEquals(L42.record.toString(),"c1c2c3\nc1c2c3\nic1ic2ic3\n");
+    Assert.assertEquals(L42.record.toString(),
+        "c1c2c3\nc1c2c3\nic1ic2ic3\nc1c2c3\nc1c2c3\nc1c2c3c1c2c3c1c2c3\n");
     }
    //@Test
    public  void _02_05UseOperators2() throws Throwable{

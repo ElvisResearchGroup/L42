@@ -54,12 +54,12 @@ public class Abstract {
     return cb.withMs(newMs);
   }
 
-  public static ClassB toAbstract(ClassB cb, List<String> path,MethodSelector sel,MethodSelector newSel){
+  public static ClassB toAbstract(Program p,ClassB cb, List<String> path,MethodSelector sel,MethodSelector newSel){
     Errors42.checkExistsPathMethod(cb, path, Optional.of(sel));
-    if(path.isEmpty()){return auxToAbstract(cb,path,sel,newSel);}
-    return ClassOperations.onClassNavigateToPathAndDo(cb,path,cbi->auxToAbstract(cbi,path,sel,newSel));
+    if(path.isEmpty()){return auxToAbstract(p,cb,path,sel,newSel);}
+    return ClassOperations.onClassNavigateToPathAndDo(cb,path,cbi->auxToAbstract(p,cbi,path,sel,newSel));
   }
-  private static ClassB auxToAbstract(ClassB cb,List<String> pathForError,MethodSelector sel,MethodSelector newSel) {
+  private static ClassB auxToAbstract(Program p,ClassB cb,List<String> pathForError,MethodSelector sel,MethodSelector newSel) {
     List<Member> newMs=new ArrayList<>(cb.getMs());
     Member m=Program.getIfInDom(newMs, sel).get();
     //make m abstract
@@ -73,8 +73,8 @@ public class Abstract {
       }
     //create new class
     if(newSel==null){ return cb.withMs(newMs);  }
-    MethodWithType mwt1 = Program.extractMwt(sel, cb).get();
-    Optional<MethodWithType> mwt2 = Program.extractMwt(newSel, cb);
+    MethodWithType mwt1 = p.extractMwt(sel, cb).get();
+    Optional<MethodWithType> mwt2 = p.extractMwt(newSel, cb);
     mwt1=mwt1.withMs(newSel).withDoc(Doc.empty());
     if(mwt2.isPresent()){
        throw Errors42.errorMethodClash(pathForError, mwt1,mwt2.get(), false, Collections.emptyList(), false,false); 

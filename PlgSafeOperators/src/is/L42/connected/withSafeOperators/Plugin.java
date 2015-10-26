@@ -80,7 +80,7 @@ public class Plugin implements PluginType{
       ClassB that=ensureExtractClassB(_that);
       List<String> path=Path.parseValidCs(ensureExtractStringU(_path));
       MethodSelector sel = MethodSelector.parse(ensureExtractStringU(_sel));
-      return Abstract.toAbstract(that,path,sel,null);
+      return Abstract.toAbstract(Resources.getP(),that,path,sel,null);
       }
     @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
     public Object MmoveImplementation£xthat£xpath£xsrc£xdest(Object _that,Object _path,Object _sel1,Object _sel2){
@@ -88,7 +88,7 @@ public class Plugin implements PluginType{
       List<String> path=Path.parseValidCs(ensureExtractStringU(_path));
       MethodSelector sel1 = MethodSelector.parse(ensureExtractStringU(_sel1));
       MethodSelector sel2 = MethodSelector.parse(ensureExtractStringU(_sel2));
-      return Abstract.toAbstract(that,path,sel1,sel2);
+      return Abstract.toAbstract(Resources.getP(),that,path,sel1,sel2);
       }
     @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
     public Object MaddDocumentation£xthat£xpath£xdoc(Object _that,Object _path,Object _doc){

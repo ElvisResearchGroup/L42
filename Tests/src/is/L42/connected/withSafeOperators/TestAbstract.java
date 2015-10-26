@@ -18,6 +18,7 @@ import ast.Ast.Path;
 import ast.Ast.Stage;
 import ast.ExpCore.ClassB;
 import auxiliaryGrammar.Functions;
+import auxiliaryGrammar.Program;
 
 public class TestAbstract{
 @RunWith(Parameterized.class)
@@ -62,12 +63,12 @@ public static class TestAbstractMeth {//add more test for error cases
   ClassB expected=getClassB(_expected);
   if(!isError){
     //TODO: mettere tests per il caso con un selettore destinazione. In particolare testare interfacce
-    ClassB res=Abstract.toAbstract(cb1, path.getCBar(), ms,null);
+    ClassB res=Abstract.toAbstract(Program.empty(),cb1, path.getCBar(), ms,null);
     res=Functions.clearCache(res,Stage.None);
     TestHelper.assertEqualExp(expected,res);
     }
   else{
-    try{Abstract.toAbstract(cb1, path.getCBar(), ms,null);fail("error expected");}
+    try{Abstract.toAbstract(Program.empty(),cb1, path.getCBar(), ms,null);fail("error expected");}
     catch(Resources.Error err){
       ClassB res=(ClassB)err.unbox;
       TestHelper.assertEqualExp(expected,res);
