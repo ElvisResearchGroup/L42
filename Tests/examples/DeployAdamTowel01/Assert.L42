@@ -1,20 +1,20 @@
 {
 Failure:{interface <:S::ToS}
 NotImplementedYet:
-  StringableU[]<<{<:Failure method Void invariant() void method S myName() S"NotImplementedYet"}
+  StringableU[]<<{<:Failure type method S myName() S"NotImplementedYet"}
 
 ObservedBug:
   'if this happens, then the programmer had wrong assumption on the code behaviour.
   'is about logic errors
- StringableU[]<<{<:Failure method Void invariant() void method S myName() S"ObservedBug"}
+ StringableU[]<<{<:Failure type method S myName() S"ObservedBug"}
 CodeNotReachable: 
   'in an ideal world, a static analysis would verify this
-  StringableU[]<<{<:Failure method Void invariant() void method S myName() S"CodeNotReachable" }
+  StringableU[]<<{<:Failure type method S myName() S"CodeNotReachable" }
 CatchCaseNotReachable:
   'Can wrap a captured error/exception (often a Guard)
   'to declare that is a bug if such case 
   'happens (responsabilty on the code logic)
-  {(S::ToS cause)<:S::ToS
+  {(S::ToS cause)<:Failure
   type method Outer0 (S::ToS that) Outer0(cause:that)
   method S::ToS ~() this.cause()
   method toS() S"CatchCaseNotReachable["[this.cause()]"]"
@@ -38,5 +38,5 @@ CatchCaseNotReachable:
       error AssertMessage(msg.toS()[S.nl()]"number:"[this.that()]" failed")
       }
     }
-  AssertMessage:StringableU[]<<{<:Failure method Void invariant() void method S myName() S"AssertMessage"}
+  AssertMessage:StringableU[]<<{<:Failure type method S myName() S"AssertMessage"}
 }

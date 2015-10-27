@@ -1,14 +1,16 @@
 {reuse L42.is/AdamTowel02
 
 A:{B:{C:Default::MyName<<{()
- method S myName()
  }}}
 D:{E:Default::MyName<<{
  type method S myName()
  }}
 Main:{
-  Debug(A::B::C().myName())
+  Debug(A::B::C.myName())
   Debug(D::E.myName())
+  (res=Default::MyName<<{method N myName()}
+  catch exception x (on Default::MyName::DecorationUnfeasable Debug(x))
+  void)
   return ExitCode.normal()
   }
 'TODO next:

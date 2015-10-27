@@ -2,21 +2,14 @@
 type method Library stringableTrait(){
   '@private
   (S inner)<:S::ToS
-  method Void invariant()
   type method Outer0 #stringParser(Library that) Outer0(S.#stringParser(that))
-  type method Outer0 (S::ToS that) (
-    result=Outer0(inner:that.toS())
-    result.invariant()
-    result
-    )
+  type method Outer0 (S::ToS that) 
+    Outer0(inner:that.toS())
+
   method S ~() this.inner()
 
-  method
-  S myName() '('meh, it can happen that we need to put this later :( put it abstract here
-    'doc=Introspection(clazz:Outer0).record().docOf(path:Path"MyClass")
-    'doc.annotations().top().toS()
-    ')  
-  method toS()  this.myName()[]"["[this.inner()]"]"
+  type method S myName() 
+  method toS()  Outer0.myName()[]"["[this.inner()]"]"
   method Library binaryRepr() this.inner().binaryRepr()
   method Bool != (Outer0 that) !(this==that)
   method Bool == (Outer0 that) this.inner()==that.inner()

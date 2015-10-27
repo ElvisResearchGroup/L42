@@ -8,7 +8,7 @@ Resource:{type method Library (){
   Opt:...
   PreferentialComposition:'@private
     ...
-  Extend:PreferentialComposition<<{<:PreferentialComposition::$
+  Extends:PreferentialComposition<<{<:PreferentialComposition::$
     method solveConflict(that,location)
       Refactor::MoveImplementationSelector[location.src() of:location.path() to:location.dest()]<<that
     }

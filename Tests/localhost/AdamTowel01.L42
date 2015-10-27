@@ -601,21 +601,15 @@ mut method
 Outer2::S #inner() 
 read method 
 Outer2::S inner() 
-method 
-Void invariant() 
 type method 
 Outer0 #stringParser(Library that) Outer0.#apply(that:Outer2::S.#stringParser(that:that))
 type method 
-Outer0 #apply(Outer2::S::ToS that) (
-  Outer0::#apply(inner ) result=Outer0.#apply(inner:that.toS())
-  Void unused=result.invariant()
-  result
-  )
+Outer0 #apply(Outer2::S::ToS that) Outer0.#apply(inner:that.toS())
 method 
 Outer2::S #tilde() this.inner()
-method 
+type method 
 Outer2::S myName() 
-method toS() this.myName().#begin().#end().#stringParser(that:{'@stringU
+method toS() Outer0.myName().#begin().#end().#stringParser(that:{'@stringU
 '[
 }).#begin().#add(that:this.inner()).#end().#stringParser(that:{'@stringU
 ']
@@ -669,7 +663,7 @@ URL:{'@private
 <:Outer1::S::ToS
 method 
 Void invariant() void
-method 
+type method 
 Outer1::S myName() Outer1::S.#stringParser(that:{'@stringU
 'URL
 })
@@ -682,14 +676,10 @@ Outer1::S inner()
 type method 
 Outer0 #stringParser(Library that) Outer0.#apply(that:Outer1::S.#stringParser(that:that))
 type method 
-Outer0 #apply(Outer1::S::ToS that) (
-  Outer0::#apply(inner ) result=Outer0.#apply(inner:that.toS())
-  Void unused=result.invariant()
-  result
-  )
+Outer0 #apply(Outer1::S::ToS that) Outer0.#apply(inner:that.toS())
 method 
 Outer1::S #tilde() this.inner()
-method toS() this.myName().#begin().#end().#stringParser(that:{'@stringU
+method toS() Outer0.myName().#begin().#end().#stringParser(that:{'@stringU
 '[
 }).#begin().#add(that:this.inner()).#end().#stringParser(that:{'@stringU
 ']
@@ -746,9 +736,7 @@ interface <:Outer1::S::ToS'all other guards should implement this one
 Operation:'if "this" is unfit
 {'@private
 <:Outer2::Guard, Outer2::S::ToS
-method 
-Void invariant() void
-method 
+type method 
 Outer2::S myName() Outer2::S.#stringParser(that:{'@stringU
 'Operation
 })
@@ -761,14 +749,10 @@ Outer2::S inner()
 type method 
 Outer0 #stringParser(Library that) Outer0.#apply(that:Outer2::S.#stringParser(that:that))
 type method 
-Outer0 #apply(Outer2::S::ToS that) (
-  Outer0::#apply(inner ) result=Outer0.#apply(inner:that.toS())
-  Void unused=result.invariant()
-  result
-  )
+Outer0 #apply(Outer2::S::ToS that) Outer0.#apply(inner:that.toS())
 method 
 Outer2::S #tilde() this.inner()
-method toS() this.myName().#begin().#end().#stringParser(that:{'@stringU
+method toS() Outer0.myName().#begin().#end().#stringParser(that:{'@stringU
 '[
 }).#begin().#add(that:this.inner()).#end().#stringParser(that:{'@stringU
 ']
@@ -815,9 +799,7 @@ Outer2::Bool equals(Any that) (
 Parameter:' if a parameter is unfit
 {'@private
 <:Outer2::Guard, Outer2::S::ToS
-method 
-Void invariant() void
-method 
+type method 
 Outer2::S myName() Outer2::S.#stringParser(that:{'@stringU
 'Parameter
 })
@@ -830,14 +812,10 @@ Outer2::S inner()
 type method 
 Outer0 #stringParser(Library that) Outer0.#apply(that:Outer2::S.#stringParser(that:that))
 type method 
-Outer0 #apply(Outer2::S::ToS that) (
-  Outer0::#apply(inner ) result=Outer0.#apply(inner:that.toS())
-  Void unused=result.invariant()
-  result
-  )
+Outer0 #apply(Outer2::S::ToS that) Outer0.#apply(inner:that.toS())
 method 
 Outer2::S #tilde() this.inner()
-method toS() this.myName().#begin().#end().#stringParser(that:{'@stringU
+method toS() Outer0.myName().#begin().#end().#stringParser(that:{'@stringU
 '[
 }).#begin().#add(that:this.inner()).#end().#stringParser(that:{'@stringU
 ']
@@ -884,9 +862,7 @@ Outer2::Bool equals(Any that) (
 Precondition:' if it is about multiple parameters
 {'@private
 <:Outer2::Guard, Outer2::S::ToS
-method 
-Void invariant() void
-method 
+type method 
 Outer2::S myName() Outer2::S.#stringParser(that:{'@stringU
 'Precondition
 })
@@ -899,14 +875,10 @@ Outer2::S inner()
 type method 
 Outer0 #stringParser(Library that) Outer0.#apply(that:Outer2::S.#stringParser(that:that))
 type method 
-Outer0 #apply(Outer2::S::ToS that) (
-  Outer0::#apply(inner ) result=Outer0.#apply(inner:that.toS())
-  Void unused=result.invariant()
-  result
-  )
+Outer0 #apply(Outer2::S::ToS that) Outer0.#apply(inner:that.toS())
 method 
 Outer2::S #tilde() this.inner()
-method toS() this.myName().#begin().#end().#stringParser(that:{'@stringU
+method toS() Outer0.myName().#begin().#end().#stringParser(that:{'@stringU
 '[
 }).#begin().#add(that:this.inner()).#end().#stringParser(that:{'@stringU
 ']
@@ -956,9 +928,7 @@ interface <:Outer2::Guard, Outer2::S::ToS
 PluginFailure:'to report the inability of a plugin to act
 {'@private
 <:Outer2::Guard, Outer3::Guard, Outer3::S::ToS
-method 
-Void invariant() void
-method 
+type method 
 Outer3::S myName() Outer3::S.#stringParser(that:{'@stringU
 'PluginFailure
 })
@@ -971,14 +941,10 @@ Outer3::S inner()
 type method 
 Outer0 #stringParser(Library that) Outer0.#apply(that:Outer3::S.#stringParser(that:that))
 type method 
-Outer0 #apply(Outer3::S::ToS that) (
-  Outer0::#apply(inner ) result=Outer0.#apply(inner:that.toS())
-  Void unused=result.invariant()
-  result
-  )
+Outer0 #apply(Outer3::S::ToS that) Outer0.#apply(inner:that.toS())
 method 
 Outer3::S #tilde() this.inner()
-method toS() this.myName().#begin().#end().#stringParser(that:{'@stringU
+method toS() Outer0.myName().#begin().#end().#stringParser(that:{'@stringU
 '[
 }).#begin().#add(that:this.inner()).#end().#stringParser(that:{'@stringU
 ']
@@ -1026,9 +992,7 @@ Assert:{
 Failure:{interface <:Outer2::S::ToS}
 NotImplementedYet:{'@private
 <:Outer1::Failure, Outer2::S::ToS
-method 
-Void invariant() void
-method 
+type method 
 Outer2::S myName() Outer2::S.#stringParser(that:{'@stringU
 'NotImplementedYet
 })
@@ -1041,14 +1005,10 @@ Outer2::S inner()
 type method 
 Outer0 #stringParser(Library that) Outer0.#apply(that:Outer2::S.#stringParser(that:that))
 type method 
-Outer0 #apply(Outer2::S::ToS that) (
-  Outer0::#apply(inner ) result=Outer0.#apply(inner:that.toS())
-  Void unused=result.invariant()
-  result
-  )
+Outer0 #apply(Outer2::S::ToS that) Outer0.#apply(inner:that.toS())
 method 
 Outer2::S #tilde() this.inner()
-method toS() this.myName().#begin().#end().#stringParser(that:{'@stringU
+method toS() Outer0.myName().#begin().#end().#stringParser(that:{'@stringU
 '[
 }).#begin().#add(that:this.inner()).#end().#stringParser(that:{'@stringU
 ']
@@ -1096,9 +1056,7 @@ ObservedBug:'if this happens, then the programmer had wrong assumption on the co
 'is about logic errors
 {'@private
 <:Outer1::Failure, Outer2::S::ToS
-method 
-Void invariant() void
-method 
+type method 
 Outer2::S myName() Outer2::S.#stringParser(that:{'@stringU
 'ObservedBug
 })
@@ -1111,14 +1069,10 @@ Outer2::S inner()
 type method 
 Outer0 #stringParser(Library that) Outer0.#apply(that:Outer2::S.#stringParser(that:that))
 type method 
-Outer0 #apply(Outer2::S::ToS that) (
-  Outer0::#apply(inner ) result=Outer0.#apply(inner:that.toS())
-  Void unused=result.invariant()
-  result
-  )
+Outer0 #apply(Outer2::S::ToS that) Outer0.#apply(inner:that.toS())
 method 
 Outer2::S #tilde() this.inner()
-method toS() this.myName().#begin().#end().#stringParser(that:{'@stringU
+method toS() Outer0.myName().#begin().#end().#stringParser(that:{'@stringU
 '[
 }).#begin().#add(that:this.inner()).#end().#stringParser(that:{'@stringU
 ']
@@ -1165,9 +1119,7 @@ Outer2::Bool equals(Any that) (
 CodeNotReachable:'in an ideal world, a static analysis would verify this
 {'@private
 <:Outer1::Failure, Outer2::S::ToS
-method 
-Void invariant() void
-method 
+type method 
 Outer2::S myName() Outer2::S.#stringParser(that:{'@stringU
 'CodeNotReachable
 })
@@ -1180,14 +1132,10 @@ Outer2::S inner()
 type method 
 Outer0 #stringParser(Library that) Outer0.#apply(that:Outer2::S.#stringParser(that:that))
 type method 
-Outer0 #apply(Outer2::S::ToS that) (
-  Outer0::#apply(inner ) result=Outer0.#apply(inner:that.toS())
-  Void unused=result.invariant()
-  result
-  )
+Outer0 #apply(Outer2::S::ToS that) Outer0.#apply(inner:that.toS())
 method 
 Outer2::S #tilde() this.inner()
-method toS() this.myName().#begin().#end().#stringParser(that:{'@stringU
+method toS() Outer0.myName().#begin().#end().#stringParser(that:{'@stringU
 '[
 }).#begin().#add(that:this.inner()).#end().#stringParser(that:{'@stringU
 ']
@@ -1234,7 +1182,7 @@ Outer2::Bool equals(Any that) (
 CatchCaseNotReachable:'Can wrap a captured error/exception (often a Guard)
 'to declare that is a bug if such case 
 'happens (responsabilty on the code logic)
-{<:Outer2::S::ToS
+{<:Outer1::Failure, Outer2::S::ToS
 type method 
 Outer0 #apply(Outer2::S::ToS cause) 
 mut method 
@@ -1315,9 +1263,7 @@ Outer1::Condition #add(Outer2::Bool that, Outer2::S::ToS msg) (
   )}
 AssertMessage:{'@private
 <:Outer1::Failure, Outer2::S::ToS
-method 
-Void invariant() void
-method 
+type method 
 Outer2::S myName() Outer2::S.#stringParser(that:{'@stringU
 'AssertMessage
 })
@@ -1330,14 +1276,10 @@ Outer2::S inner()
 type method 
 Outer0 #stringParser(Library that) Outer0.#apply(that:Outer2::S.#stringParser(that:that))
 type method 
-Outer0 #apply(Outer2::S::ToS that) (
-  Outer0::#apply(inner ) result=Outer0.#apply(inner:that.toS())
-  Void unused=result.invariant()
-  result
-  )
+Outer0 #apply(Outer2::S::ToS that) Outer0.#apply(inner:that.toS())
 method 
 Outer2::S #tilde() this.inner()
-method toS() this.myName().#begin().#end().#stringParser(that:{'@stringU
+method toS() Outer0.myName().#begin().#end().#stringParser(that:{'@stringU
 '[
 }).#begin().#add(that:this.inner()).#end().#stringParser(that:{'@stringU
 ']
@@ -1654,9 +1596,7 @@ method #checkEnd() (
   )
 IterationNotComplete:{'@private
 <:Outer5::Assert::Failure, Outer5::S::ToS
-method 
-Void invariant() void
-method 
+type method 
 Outer5::S myName() Outer5::S.#stringParser(that:{'@stringU
 'IterationNotComplete
 })
@@ -1669,14 +1609,10 @@ Outer5::S inner()
 type method 
 Outer0 #stringParser(Library that) Outer0.#apply(that:Outer5::S.#stringParser(that:that))
 type method 
-Outer0 #apply(Outer5::S::ToS that) (
-  Outer0::#apply(inner ) result=Outer0.#apply(inner:that.toS())
-  Void unused=result.invariant()
-  result
-  )
+Outer0 #apply(Outer5::S::ToS that) Outer0.#apply(inner:that.toS())
 method 
 Outer5::S #tilde() this.inner()
-method toS() this.myName().#begin().#end().#stringParser(that:{'@stringU
+method toS() Outer0.myName().#begin().#end().#stringParser(that:{'@stringU
 '[
 }).#begin().#add(that:this.inner()).#end().#stringParser(that:{'@stringU
 ']
@@ -2055,9 +1991,7 @@ method #checkEnd() (
   )
 IterationNotComplete:{'@private
 <:Outer3::Assert::Failure, Outer3::S::ToS
-method 
-Void invariant() void
-method 
+type method 
 Outer3::S myName() Outer3::S.#stringParser(that:{'@stringU
 'IterationNotComplete
 })
@@ -2070,14 +2004,10 @@ Outer3::S inner()
 type method 
 Outer0 #stringParser(Library that) Outer0.#apply(that:Outer3::S.#stringParser(that:that))
 type method 
-Outer0 #apply(Outer3::S::ToS that) (
-  Outer0::#apply(inner ) result=Outer0.#apply(inner:that.toS())
-  Void unused=result.invariant()
-  result
-  )
+Outer0 #apply(Outer3::S::ToS that) Outer0.#apply(inner:that.toS())
 method 
 Outer3::S #tilde() this.inner()
-method toS() this.myName().#begin().#end().#stringParser(that:{'@stringU
+method toS() Outer0.myName().#begin().#end().#stringParser(that:{'@stringU
 '[
 }).#begin().#add(that:this.inner()).#end().#stringParser(that:{'@stringU
 ']
@@ -2419,57 +2349,57 @@ type method
 Library #leftleft(Library that) Outer2::SafeOperatorsAccess.compose(left:that, right:{<:Outer3::MetaGuard, Outer3::Guard, Outer3::S::ToS
 type method 
 Outer0 #apply(Outer3::Introspection::Record record) 
-method toS() this.myName()
-method 
+method toS() Outer0.myName()
+type method 
 Outer3::S myName() })}
 SourceUnfit:{<:Outer2::MetaGuard, Outer2::Guard, Outer2::S::ToS
-method 
+type method 
 Outer2::S myName() Outer2::S.#stringParser(that:{'@stringU
 'SourceUnfit
 })
 type method 
 Outer0 #apply(Outer2::Introspection::Record record) 
-method toS() this.myName()}
+method toS() Outer0.myName()}
 IncoherentRedirectMapping:{<:Outer2::MetaGuard, Outer2::Guard, Outer2::S::ToS
-method 
+type method 
 Outer2::S myName() Outer2::S.#stringParser(that:{'@stringU
 'IncoherentRedirectMapping
 })
 type method 
 Outer0 #apply(Outer2::Introspection::Record record) 
-method toS() this.myName()}
+method toS() Outer0.myName()}
 ClassClash:{<:Outer2::MetaGuard, Outer2::Guard, Outer2::S::ToS
-method 
+type method 
 Outer2::S myName() Outer2::S.#stringParser(that:{'@stringU
 'ClasClash
 })
 type method 
 Outer0 #apply(Outer2::Introspection::Record record) 
-method toS() this.myName()}
+method toS() Outer0.myName()}
 MethodClash:{<:Outer2::MetaGuard, Outer2::Guard, Outer2::S::ToS
-method 
+type method 
 Outer2::S myName() Outer2::S.#stringParser(that:{'@stringU
 'MethodClash
 })
 type method 
 Outer0 #apply(Outer2::Introspection::Record record) 
-method toS() this.myName()}
+method toS() Outer0.myName()}
 InvalidOnTopLevel:{<:Outer2::MetaGuard, Outer2::Guard, Outer2::S::ToS
-method 
+type method 
 Outer2::S myName() Outer2::S.#stringParser(that:{'@stringU
 'InvalidOnTopLevel
 })
 type method 
 Outer0 #apply(Outer2::Introspection::Record record) 
-method toS() this.myName()}
+method toS() Outer0.myName()}
 PrivacyCoupuled:{<:Outer2::MetaGuard, Outer2::Guard, Outer2::S::ToS
-method 
+type method 
 Outer2::S myName() Outer2::S.#stringParser(that:{'@stringU
 'PrivacyCoupuled
 })
 type method 
 Outer0 #apply(Outer2::Introspection::Record record) 
-method toS() this.myName()}
+method toS() Outer0.myName()}
 MemberUnavailable:{interface <:Outer2::MetaGuard, Outer2::Guard, Outer2::S::ToS}
 DispatchMemberUnavailable:{
 type method 
@@ -2538,11 +2468,11 @@ Outer0 #apply(Outer2::Introspection::Record record) Outer0.#apply(path:Outer2::P
 })), isPrivate:Outer2::Bool.fromS(that:record.#stringParser(that:{'@stringU
 'IsPrivate
 })))
-method 
+type method 
 Outer2::S myName() Outer2::S.#stringParser(that:{'@stringU
 'NestedClassUnavailable
 })
-method toS() this.myName()}
+method toS() Outer0.myName()}
 MethodUnavailable:{<:Outer1::MemberUnavailable, Outer2::MetaGuard, Outer2::Guard, Outer2::S::ToS
 type method 
 Outer0 #apply(Outer2::Path path, Outer2::Selector selector, Outer2::Bool isPrivate) 
@@ -2566,11 +2496,11 @@ Outer0 #apply(Outer2::Introspection::Record record) Outer0.#apply(path:Outer2::P
 })), isPrivate:Outer2::Bool.fromS(that:record.#stringParser(that:{'@stringU
 'IsPrivate
 })))
-method 
+type method 
 Outer2::S myName() Outer2::S.#stringParser(that:{'@stringU
 'NestedClassUnavailable
 })
-method toS() this.myName()}}
+method toS() Outer0.myName()}}
 Introspection:{'findMeIntrospection
 
 type method 
@@ -3088,9 +3018,7 @@ method #checkEnd() (
   )
 IterationNotComplete:{'@private
 <:Outer5::Assert::Failure, Outer5::S::ToS
-method 
-Void invariant() void
-method 
+type method 
 Outer5::S myName() Outer5::S.#stringParser(that:{'@stringU
 'IterationNotComplete
 })
@@ -3103,14 +3031,10 @@ Outer5::S inner()
 type method 
 Outer0 #stringParser(Library that) Outer0.#apply(that:Outer5::S.#stringParser(that:that))
 type method 
-Outer0 #apply(Outer5::S::ToS that) (
-  Outer0::#apply(inner ) result=Outer0.#apply(inner:that.toS())
-  Void unused=result.invariant()
-  result
-  )
+Outer0 #apply(Outer5::S::ToS that) Outer0.#apply(inner:that.toS())
 method 
 Outer5::S #tilde() this.inner()
-method toS() this.myName().#begin().#end().#stringParser(that:{'@stringU
+method toS() Outer0.myName().#begin().#end().#stringParser(that:{'@stringU
 '[
 }).#begin().#add(that:this.inner()).#end().#stringParser(that:{'@stringU
 ']
@@ -3748,9 +3672,7 @@ method #checkEnd() (
   )
 IterationNotComplete:{'@private
 <:Outer4::Assert::Failure, Outer4::S::ToS
-method 
-Void invariant() void
-method 
+type method 
 Outer4::S myName() Outer4::S.#stringParser(that:{'@stringU
 'IterationNotComplete
 })
@@ -3763,14 +3685,10 @@ Outer4::S inner()
 type method 
 Outer0 #stringParser(Library that) Outer0.#apply(that:Outer4::S.#stringParser(that:that))
 type method 
-Outer0 #apply(Outer4::S::ToS that) (
-  Outer0::#apply(inner ) result=Outer0.#apply(inner:that.toS())
-  Void unused=result.invariant()
-  result
-  )
+Outer0 #apply(Outer4::S::ToS that) Outer0.#apply(inner:that.toS())
 method 
 Outer4::S #tilde() this.inner()
-method toS() this.myName().#begin().#end().#stringParser(that:{'@stringU
+method toS() Outer0.myName().#begin().#end().#stringParser(that:{'@stringU
 '[
 }).#begin().#add(that:this.inner()).#end().#stringParser(that:{'@stringU
 ']
@@ -4339,9 +4257,7 @@ method #checkEnd() (
   )
 IterationNotComplete:{'@private
 <:Outer4::Assert::Failure, Outer4::S::ToS
-method 
-Void invariant() void
-method 
+type method 
 Outer4::S myName() Outer4::S.#stringParser(that:{'@stringU
 'IterationNotComplete
 })
@@ -4354,14 +4270,10 @@ Outer4::S inner()
 type method 
 Outer0 #stringParser(Library that) Outer0.#apply(that:Outer4::S.#stringParser(that:that))
 type method 
-Outer0 #apply(Outer4::S::ToS that) (
-  Outer0::#apply(inner ) result=Outer0.#apply(inner:that.toS())
-  Void unused=result.invariant()
-  result
-  )
+Outer0 #apply(Outer4::S::ToS that) Outer0.#apply(inner:that.toS())
 method 
 Outer4::S #tilde() this.inner()
-method toS() this.myName().#begin().#end().#stringParser(that:{'@stringU
+method toS() Outer0.myName().#begin().#end().#stringParser(that:{'@stringU
 '[
 }).#begin().#add(that:this.inner()).#end().#stringParser(that:{'@stringU
 ']
@@ -5419,9 +5331,7 @@ method #checkEnd() (
   )
 IterationNotComplete:{'@private
 <:Outer4::Assert::Failure, Outer4::S::ToS
-method 
-Void invariant() void
-method 
+type method 
 Outer4::S myName() Outer4::S.#stringParser(that:{'@stringU
 'IterationNotComplete
 })
@@ -5434,14 +5344,10 @@ Outer4::S inner()
 type method 
 Outer0 #stringParser(Library that) Outer0.#apply(that:Outer4::S.#stringParser(that:that))
 type method 
-Outer0 #apply(Outer4::S::ToS that) (
-  Outer0::#apply(inner ) result=Outer0.#apply(inner:that.toS())
-  Void unused=result.invariant()
-  result
-  )
+Outer0 #apply(Outer4::S::ToS that) Outer0.#apply(inner:that.toS())
 method 
 Outer4::S #tilde() this.inner()
-method toS() this.myName().#begin().#end().#stringParser(that:{'@stringU
+method toS() Outer0.myName().#begin().#end().#stringParser(that:{'@stringU
 '[
 }).#begin().#add(that:this.inner()).#end().#stringParser(that:{'@stringU
 ']
@@ -6006,9 +5912,7 @@ method #checkEnd() (
   )
 IterationNotComplete:{'@private
 <:Outer4::Assert::Failure, Outer4::S::ToS
-method 
-Void invariant() void
-method 
+type method 
 Outer4::S myName() Outer4::S.#stringParser(that:{'@stringU
 'IterationNotComplete
 })
@@ -6021,14 +5925,10 @@ Outer4::S inner()
 type method 
 Outer0 #stringParser(Library that) Outer0.#apply(that:Outer4::S.#stringParser(that:that))
 type method 
-Outer0 #apply(Outer4::S::ToS that) (
-  Outer0::#apply(inner ) result=Outer0.#apply(inner:that.toS())
-  Void unused=result.invariant()
-  result
-  )
+Outer0 #apply(Outer4::S::ToS that) Outer0.#apply(inner:that.toS())
 method 
 Outer4::S #tilde() this.inner()
-method toS() this.myName().#begin().#end().#stringParser(that:{'@stringU
+method toS() Outer0.myName().#begin().#end().#stringParser(that:{'@stringU
 '[
 }).#begin().#add(that:this.inner()).#end().#stringParser(that:{'@stringU
 ']
