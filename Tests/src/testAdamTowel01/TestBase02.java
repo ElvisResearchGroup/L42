@@ -69,7 +69,7 @@ public class TestBase02 {
    public  void _02_05UseOperators2() throws Throwable{
      TestHelper.configureForTest();
      L42.main(new String[]{"examples/testsForAdamTowel02/UseOperators2.L42"});
-     Assert.assertEquals(L42.record.toString(),"A::B::C\nD::E\n");
+     Assert.assertEquals(L42.record.toString(),"A::B::C\nD::E\nMyName::DecorationUnfeasable[MethodClash]\n");
      }
   
  

@@ -73,9 +73,12 @@ Library <<(Library that) exception MetaGuard::ClassClash,MetaGuard::MethodClash
   method '@private    
   Bool needRename(Introspection::NestedClass that,Introspection::Method meth) {
     if meth.isPrivate() (return Bool.false() )
+    if meth.methodKind()==S"AbstractMethod" (return Bool.false() )
     meth2=that.methodFromSelector(meth.selector())
     catch exception (on MetaGuard::MemberUnavailable return Bool.false())
-    return !meth2.isPrivate()
+    if meth2.isPrivate() (return Bool.false() )
+    if meth.methodKind()==S"AbstractMethod" (return Bool.false() )    
+    return Bool.true()
     }
   method Outer0 ++ (Outer0 that)
     Outer0(myLibs:this.myLibs()++that.myLibs())

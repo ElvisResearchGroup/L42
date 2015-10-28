@@ -8158,19 +8158,53 @@ Outer2::Bool needRename(Outer2::Introspection::NestedClass that, Outer2::Introsp
     Void unused0=(
       Outer2::Introspection::Method::isPrivate() cond=meth.isPrivate()
       (
-        Void unused1=cond.#checkTrue()
-        catch exception unused2 (
+        Void unused2=cond.#checkTrue()
+        catch exception unused3 (
+          on Void void
+          )
+        return Outer2::Bool.false()
+        )
+      )
+    Void unused1=(
+      Outer2::Introspection::Method::methodKind() ::#equalequal(that ) cond0=meth.methodKind().#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
+      'AbstractMethod
+      }))
+      (
+        Void unused4=cond0.#checkTrue()
+        catch exception unused5 (
           on Void void
           )
         return Outer2::Bool.false()
         )
       )
     Outer2::Introspection::NestedClass::methodFromSelector(that ) meth2=that.methodFromSelector(that:meth.selector())
-    catch exception unused3 (
+    catch exception unused6 (
       on Outer2::MetaGuard::MemberUnavailable return Outer2::Bool.false()
       )
     (
-      Void unused4=return meth2.isPrivate().#bang()
+      Void unused7=(
+        Outer2::Introspection::NestedClass::methodFromSelector(that ) ::isPrivate() cond1=meth2.isPrivate()
+        (
+          Void unused10=cond1.#checkTrue()
+          catch exception unused11 (
+            on Void void
+            )
+          return Outer2::Bool.false()
+          )
+        )
+      Void unused8=(
+        Outer2::Introspection::Method::methodKind() ::#equalequal(that ) cond2=meth.methodKind().#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
+        'AbstractMethod
+        }))
+        (
+          Void unused12=cond2.#checkTrue()
+          catch exception unused13 (
+            on Void void
+            )
+          return Outer2::Bool.false()
+          )
+        )
+      Void unused9=return Outer2::Bool.true()
       void
       )
     )
@@ -8623,19 +8657,53 @@ Outer1::Bool needRename__2_2(Outer1::Introspection::NestedClass that, Outer1::In
     Void unused0=(
       Outer1::Introspection::Method::isPrivate() cond=meth.isPrivate()
       (
-        Void unused1=cond.#checkTrue()
-        catch exception unused2 (
+        Void unused2=cond.#checkTrue()
+        catch exception unused3 (
+          on Void void
+          )
+        return Outer1::Bool.false()
+        )
+      )
+    Void unused1=(
+      Outer1::Introspection::Method::methodKind() ::#equalequal(that ) cond0=meth.methodKind().#equalequal(that:Outer1::S.#stringParser(that:{'@stringU
+      'AbstractMethod
+      }))
+      (
+        Void unused4=cond0.#checkTrue()
+        catch exception unused5 (
           on Void void
           )
         return Outer1::Bool.false()
         )
       )
     Outer1::Introspection::NestedClass::methodFromSelector(that ) meth2=that.methodFromSelector(that:meth.selector())
-    catch exception unused3 (
+    catch exception unused6 (
       on Outer1::MetaGuard::MemberUnavailable return Outer1::Bool.false()
       )
     (
-      Void unused4=return meth2.isPrivate().#bang()
+      Void unused7=(
+        Outer1::Introspection::NestedClass::methodFromSelector(that ) ::isPrivate() cond1=meth2.isPrivate()
+        (
+          Void unused10=cond1.#checkTrue()
+          catch exception unused11 (
+            on Void void
+            )
+          return Outer1::Bool.false()
+          )
+        )
+      Void unused8=(
+        Outer1::Introspection::Method::methodKind() ::#equalequal(that ) cond2=meth.methodKind().#equalequal(that:Outer1::S.#stringParser(that:{'@stringU
+        'AbstractMethod
+        }))
+        (
+          Void unused12=cond2.#checkTrue()
+          catch exception unused13 (
+            on Void void
+            )
+          return Outer1::Bool.false()
+          )
+        )
+      Void unused9=return Outer1::Bool.true()
       void
       )
     )
@@ -9088,19 +9156,53 @@ Outer1::Bool needRename__10_2(Outer1::Introspection::NestedClass that, Outer1::I
     Void unused0=(
       Outer1::Introspection::Method::isPrivate() cond=meth.isPrivate()
       (
-        Void unused1=cond.#checkTrue()
-        catch exception unused2 (
+        Void unused2=cond.#checkTrue()
+        catch exception unused3 (
+          on Void void
+          )
+        return Outer1::Bool.false()
+        )
+      )
+    Void unused1=(
+      Outer1::Introspection::Method::methodKind() ::#equalequal(that ) cond0=meth.methodKind().#equalequal(that:Outer1::S.#stringParser(that:{'@stringU
+      'AbstractMethod
+      }))
+      (
+        Void unused4=cond0.#checkTrue()
+        catch exception unused5 (
           on Void void
           )
         return Outer1::Bool.false()
         )
       )
     Outer1::Introspection::NestedClass::methodFromSelector(that ) meth2=that.methodFromSelector(that:meth.selector())
-    catch exception unused3 (
+    catch exception unused6 (
       on Outer1::MetaGuard::MemberUnavailable return Outer1::Bool.false()
       )
     (
-      Void unused4=return meth2.isPrivate().#bang()
+      Void unused7=(
+        Outer1::Introspection::NestedClass::methodFromSelector(that ) ::isPrivate() cond1=meth2.isPrivate()
+        (
+          Void unused10=cond1.#checkTrue()
+          catch exception unused11 (
+            on Void void
+            )
+          return Outer1::Bool.false()
+          )
+        )
+      Void unused8=(
+        Outer1::Introspection::Method::methodKind() ::#equalequal(that ) cond2=meth.methodKind().#equalequal(that:Outer1::S.#stringParser(that:{'@stringU
+        'AbstractMethod
+        }))
+        (
+          Void unused12=cond2.#checkTrue()
+          catch exception unused13 (
+            on Void void
+            )
+          return Outer1::Bool.false()
+          )
+        )
+      Void unused9=return Outer1::Bool.true()
       void
       )
     )
