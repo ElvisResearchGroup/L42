@@ -4,6 +4,7 @@ import static helpers.TestHelper.getClassB;
 import static helpers.TestHelper.lineNumber;
 import static org.junit.Assert.fail;
 import helpers.TestHelper;
+import is.L42.connected.withSafeOperators.Rename.UserForMethodResult;
 
 import java.util.Arrays;
 import java.util.List;
@@ -70,19 +71,23 @@ public class TestRename {
     @Parameter(1) public String _cb1;
     @Parameter(2) public String _path;
     @Parameter(3) public String _ms1;
-    @Parameter(4) public String expected;
-    @Parameter(5) public boolean isError;
+    @Parameter(4) public String expected1;
+    @Parameter(5) public String expected2;
+    @Parameter(6) public boolean isError;
 
     @Parameters(name = "{index}: line {0}")
     public static List<Object[]> createData() {
       return Arrays.asList(new Object[][] { { //
-          lineNumber(),"{B:{ method Void m() void}}", "B", "m()", "[]", false //
+          lineNumber(),"{B:{ method Void m() void}}", "B", "m()", "[]","[]", false //
           }, { //
-            lineNumber(),"{ method Void m()  this.m()}", "Outer0", "m()", "[Outer0.m()]", false //
+            lineNumber(),"{ method Void m()  this.m()}", "Outer0", "m()",
+            "[]","[m()]", false //
           }, { //
-            lineNumber(),"{ B:{method Void m()  this.m()} method Void mm(B b) b.m()}", "B", "m()", "[Outer0::B.m(), Outer0.mm(b)]", false //
+            lineNumber(),"{ B:{method Void m()  this.m()} method Void mm(B b) b.m()}", "B", "m()",
+            "[Outer0.mm(b)]","[m()]", false //
           }, { //
-            lineNumber(),"{ B:{method Void m()  this.m() method B::m() k() void} method Void mm(B b) b.m()}", "B", "m()", "[Outer0::B.m(), Outer0.mm(b)]", false //
+            lineNumber(),"{ B:{method Void m()  this.m() method B::m() k() void} method Void mm(B b) b.m()}", "B", "m()",
+            "[Outer0.mm(b)]","[m()]", false //
           } });
     }
 
@@ -92,8 +97,9 @@ public class TestRename {
       Path path = Path.parse(_path);
       MethodSelector ms1 = MethodSelector.parse(_ms1);
       if (!isError) {
-        List<PathMx> res = Rename.userForMethod(Program.empty(), cb1, path.getCBar(), ms1);
-        Assert.assertEquals(expected, res.toString());
+        UserForMethodResult res = Rename.userForMethod(Program.empty(), cb1, path.getCBar(), ms1);
+        Assert.assertEquals(expected1, res.asClient.toString());
+        Assert.assertEquals(expected2, res.asThis.toString());
       } else {
         try {
           Rename.userForMethod(Program.empty(), cb1, path.getCBar(), ms1);

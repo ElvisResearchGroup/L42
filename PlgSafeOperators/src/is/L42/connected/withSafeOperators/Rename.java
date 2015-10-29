@@ -88,26 +88,37 @@ public class Rename {
       RenameAlsoDefinition ren=new RenameAlsoDefinition(cb, maps,p);
      return (ClassB) ren.visit(cb);
     }
-  public static List<PathMx> userForMethod(Program p,ClassB cb,List<String> path,MethodSelector src){
+  static class UserForMethodResult{List<PathMx> asClient;List<MethodSelector>asThis;}
+  public static UserForMethodResult userForMethod(Program p,ClassB cb,List<String> path,MethodSelector src){
     Member mem=Errors42.checkExistsPathMethod(cb, path, Optional.of(src));
     assert mem instanceof MethodWithType;
     CollectedLocatorsMap maps=CollectedLocatorsMap.from(Path.outer(0,path),(MethodWithType) mem,src);
-    HashSet<PathMx> result=new HashSet<PathMx>();
+    HashSet<PathMx> result1=new HashSet<>();
+    HashSet<MethodSelector> result2=new HashSet<>();
     MethodPathCloneVisitor ren=new MethodPathCloneVisitor(cb, maps,p){
       public Ast.Type liftT(Ast.Type t){return t;}
       protected MethodSelector liftMs(MethodSelector ms){return ms;}
+      public ExpCore visit(MCall s) {
+        List<String> localPath = this.getLocator().getClassNamesPath();
+        if(!localPath.equals(path)){return super.visit(s);}
+        if(s.getReceiver().equals(Path.outer(0)) || s.getReceiver().equals(new ExpCore.X("this"))){
+            result2.add(s.getS());
+            return s.withReceiver(s.getReceiver().accept(this)).withEs(Map.of(e->e.accept(this), s.getEs()));
+            }
+        return super.visit(s);
+        }
       @Override public MethodSelector visitMS(MethodSelector original, Path src) {
         Member m=this.getLocator().getLastMember();
         assert !(m instanceof NestedClass);
         MethodSelector msUser=m.match(nc->{throw Assertions.codeNotReachable();},
             mi->mi.getS(), mt->mt.getMs());
         Path pathUser=Path.outer(0,this.getLocator().getClassNamesPath());
-        result.add(new PathMx(pathUser,msUser));
+        result1.add(new PathMx(pathUser,msUser));
         return original;
       }      
     };
    ren.visit(cb);
-   return new ArrayList<PathMx>(result);
+   return new UserForMethodResult(){{asClient=new ArrayList<>(result1);asThis=new ArrayList<>(result2);}};
   }
 
   
