@@ -3,25 +3,30 @@ package is.L42.connected.withSafeOperators;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
+import tools.Assertions;
 import tools.Map;
 import coreVisitors.CloneVisitor;
 import coreVisitors.CloneVisitorWithProgram;
 import coreVisitors.FromInClass;
 import facade.Configuration;
 import facade.L42;
+import ast.Ast;
 import ast.ExpCore;
 import ast.Ast.Doc;
 import ast.Ast.Path;
 import ast.Ast.MethodSelector;
 import ast.Ast.Stage;
 import ast.Util.CachedStage;
+import ast.Util.PathMx;
 import ast.Util.PathMxMx;
 import ast.ExpCore.*;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodWithType;
+import ast.ExpCore.ClassB.NestedClass;
 import ast.Util.PathPath;
 import auxiliaryGrammar.Functions;
 import auxiliaryGrammar.Norm;
@@ -76,20 +81,34 @@ public class Rename {
     return Sum.normalizedTopSum(p, clearCb, newCb);
   }
   public static ClassB renameMethod(Program p,ClassB cb,List<String> path,MethodSelector src,MethodSelector dest){
-    /*
-    errors:
-    path.src does not exists
-    dest+src is wrong
-    */
       Member mem=Errors42.checkExistsPathMethod(cb, path, Optional.of(src));
       assert mem instanceof MethodWithType;
       cb=NormalizePrivates.normalize(p, cb);
-      //PathMxMx pmx=new PathMxMx(Path.outer(0,path),src,dest);
       CollectedLocatorsMap maps=CollectedLocatorsMap.from(Path.outer(0,path),(MethodWithType) mem,dest);
       RenameAlsoDefinition ren=new RenameAlsoDefinition(cb, maps,p);
-      //return IntrospectionAdapt.applyMapMx(p, cb, Collections.singletonList(pmx));
      return (ClassB) ren.visit(cb);
     }
+  public static List<PathMx> userForMethod(Program p,ClassB cb,List<String> path,MethodSelector src){
+    Member mem=Errors42.checkExistsPathMethod(cb, path, Optional.of(src));
+    assert mem instanceof MethodWithType;
+    CollectedLocatorsMap maps=CollectedLocatorsMap.from(Path.outer(0,path),(MethodWithType) mem,src);
+    HashSet<PathMx> result=new HashSet<PathMx>();
+    MethodPathCloneVisitor ren=new MethodPathCloneVisitor(cb, maps,p){
+      public Ast.Type liftT(Ast.Type t){return t;}
+      protected MethodSelector liftMs(MethodSelector ms){return ms;}
+      @Override public MethodSelector visitMS(MethodSelector original, Path src) {
+        Member m=this.getLocator().getLastMember();
+        assert !(m instanceof NestedClass);
+        MethodSelector msUser=m.match(nc->{throw Assertions.codeNotReachable();},
+            mi->mi.getS(), mt->mt.getMs());
+        Path pathUser=Path.outer(0,this.getLocator().getClassNamesPath());
+        result.add(new PathMx(pathUser,msUser));
+        return original;
+      }      
+    };
+   ren.visit(cb);
+   return new ArrayList<PathMx>(result);
+  }
 
   
   private static ClassB redirectDefinition(List<String>src,List<String>dest, ClassB lprime) {

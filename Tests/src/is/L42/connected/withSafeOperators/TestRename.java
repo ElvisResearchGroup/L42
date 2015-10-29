@@ -19,7 +19,9 @@ import platformSpecific.javaTranslation.Resources;
 import ast.Ast;
 import ast.Ast.MethodSelector;
 import ast.Ast.Path;
+import ast.ExpCore;
 import ast.ExpCore.ClassB;
+import ast.Util.PathMx;
 import auxiliaryGrammar.Functions;
 import auxiliaryGrammar.Program;
 import facade.Configuration;
@@ -59,6 +61,46 @@ public class TestRename {
         } catch (Resources.Error err) {
           ClassB res = (ClassB) err.unbox;
           TestHelper.assertEqualExp(expected, res);
+        }
+      }
+    }
+  }
+  @RunWith(Parameterized.class) public static class TestUserForMethod{//add more test for error cases
+    @Parameter(0) public int _lineNumber;
+    @Parameter(1) public String _cb1;
+    @Parameter(2) public String _path;
+    @Parameter(3) public String _ms1;
+    @Parameter(4) public String expected;
+    @Parameter(5) public boolean isError;
+
+    @Parameters(name = "{index}: line {0}")
+    public static List<Object[]> createData() {
+      return Arrays.asList(new Object[][] { { //
+          lineNumber(),"{B:{ method Void m() void}}", "B", "m()", "[]", false //
+          }, { //
+            lineNumber(),"{ method Void m()  this.m()}", "Outer0", "m()", "[Outer0.m()]", false //
+          }, { //
+            lineNumber(),"{ B:{method Void m()  this.m()} method Void mm(B b) b.m()}", "B", "m()", "[Outer0::B.m(), Outer0.mm(b)]", false //
+          }, { //
+            lineNumber(),"{ B:{method Void m()  this.m() method B::m() k() void} method Void mm(B b) b.m()}", "B", "m()", "[Outer0::B.m(), Outer0.mm(b)]", false //
+          } });
+    }
+
+    @Test public void test() {
+      TestHelper.configureForTest();
+      ClassB cb1 = getClassB(_cb1);
+      Path path = Path.parse(_path);
+      MethodSelector ms1 = MethodSelector.parse(_ms1);
+      if (!isError) {
+        List<PathMx> res = Rename.userForMethod(Program.empty(), cb1, path.getCBar(), ms1);
+        Assert.assertEquals(expected, res.toString());
+      } else {
+        try {
+          Rename.userForMethod(Program.empty(), cb1, path.getCBar(), ms1);
+          fail("error expected");
+        } catch (Resources.Error err) {
+          ClassB res = (ClassB) err.unbox;
+          TestHelper.assertEqualExp(new ExpCore._void(), res);
         }
       }
     }
