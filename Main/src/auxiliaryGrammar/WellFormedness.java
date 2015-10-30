@@ -213,8 +213,8 @@ public class WellFormedness {
     for(FieldDec f:h.getFs()){
       if(f.isVar()){haveVar=true;break;}
     }
-    if(haveVar && h.getMdf()==Mdf.Immutable){
-      throw new ErrorMessage.NotWellFormed(cb,null, "Immutable classes can not hava variable fields");
+    if(haveVar && h.getMdf()==Mdf.Readable){//was Immutable, but now the idea is that the mdf can be inferred
+      throw new ErrorMessage.NotWellFormed(cb,null, "Readable classes can not have a variable fields");
       }
   }
 

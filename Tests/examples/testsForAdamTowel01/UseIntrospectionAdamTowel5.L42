@@ -1,0 +1,22 @@
+{reuse L42.is/AdamTowel01
+
+Check:{
+  type method Void(Library lib,S expected )(
+    i=Introspection(lib:lib)
+    var result=S""
+    with m in i.state().vals() (
+      result++=m.selector().toS()
+      )
+    if result!=expected (Debug(S"expected:"[expected]" computed:"[result]""))
+    )
+  }
+
+Main:{
+  Check(lib:{foo(Bar b, var Foo f) Bar:{} Foo:{}}
+    expected:S"foo(b,f)b()#b()f()#f()f(that)")
+  Check(lib:{(Bar b, Foo f) Bar:{} Foo:{}}
+    expected:S"#apply(b,f)b()#b()f()#f()")
+  Debug(S"OK")
+  return ExitCode.normal()
+  }
+}

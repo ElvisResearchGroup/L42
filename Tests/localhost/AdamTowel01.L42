@@ -4437,6 +4437,54 @@ mut method
 Void inner(Outer2::Types::#begin() ::#end() that) 
 mut method 
 Outer2::Types::#begin() ::#end() #inner() }
+VarabsMethods:'@private
+{
+type method 
+mut Outer0 #apply(Outer2::Methods::#begin() ::#end() inner) 
+mut method 
+Void inner(Outer2::Methods::#begin() ::#end() that) 
+mut method 
+Outer2::Methods::#begin() ::#end() #inner() }
+VarhavePrivate:'@private
+{
+type method 
+mut Outer0 #apply(Outer3::Bool::false() inner) 
+mut method 
+Void inner(Outer3::Bool::false() that) 
+mut method 
+Outer3::Bool::false() #inner() }
+Varaccumulator1:'@private
+{
+type method 
+mut Outer0 #apply(Outer2::Methods::#begin() inner) 
+mut method 
+Void inner(Outer2::Methods::#begin() that) 
+mut method 
+Outer2::Methods::#begin() #inner() }
+Varaccumulator2:'@private
+{
+type method 
+mut Outer0 #apply(Outer2::Methods::#begin() inner) 
+mut method 
+Void inner(Outer2::Methods::#begin() that) 
+mut method 
+Outer2::Methods::#begin() #inner() }
+Varresult5:'@private
+{
+type method 
+mut Outer0 #apply(Outer2::Methods::#begin() ::#end() inner) 
+mut method 
+Void inner(Outer2::Methods::#begin() ::#end() that) 
+mut method 
+Outer2::Methods::#begin() ::#end() #inner() }
+Varaccumulator3:'@private
+{
+type method 
+mut Outer0 #apply(Outer2::Methods::#begin() inner) 
+mut method 
+Void inner(Outer2::Methods::#begin() that) 
+mut method 
+Outer2::Methods::#begin() #inner() }
 type method 
 Outer0 #apply(fwd Outer1::NestedClass root, Outer2::Path path, Outer1::MirrorPr mirror, Outer1::Record record) 
 mut method 
@@ -4862,9 +4910,347 @@ Outer1::Types implementedInterfaces() (
   varresult.#inner()
   )
 method 
-Outer1::Method constructor() error Outer2::Assert::NotImplementedYet.#stringParser(that:{'@stringU
-'
-})
+Outer1::Methods stateCandidate() (
+  Outer2::Bool::false() havePrivate=Outer2::Bool.false()
+  mut Outer0::VarhavePrivate varhavePrivate=Outer0::VarhavePrivate.#apply(inner:havePrivate)
+  Outer1::Methods::#begin() ::#end() absMethods=(
+    Outer1::Methods::#begin() accumulator=Outer1::Methods.#begin()
+    mut Outer0::Varaccumulator1 varaccumulator=Outer0::Varaccumulator1.#apply(inner:accumulator)
+    Void unused0=(
+      Outer0::methods() ::vals() m=this.methods().vals()
+      (
+        Void unused1=(
+          Void unused2=(
+            Void unused3=loop (
+              Void unused4=m.#next()
+              catch exception unused5 (
+                on Void (
+                  Void unused6=(
+                    Void unused7=m.#checkEnd()
+                    catch exception unused8 (
+                      on Void void
+                      )
+                    void
+                    )
+                  exception void
+                  )
+                )
+              (
+                Outer0::methods() ::vals() ::#inner() ::methodKind() ::#equalequal(that ) cond=m.#inner().methodKind().#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
+                'AbstractMethod
+                }))
+                (
+                  Void unused9=cond.#checkTrue()
+                  catch exception unused10 (
+                    on Void void
+                    )
+                  varaccumulator.inner(that:varaccumulator.#inner().#add(that:(
+                    Void unused11=varhavePrivate.inner(that:varhavePrivate.#inner().#or(that:m.#inner().isPrivate()))
+                    m.#inner()
+                    )))
+                  )
+                )
+              )
+            catch exception unused12 (
+              on Void void
+              )
+            void
+            )
+          catch exception propagated (
+            on Any (
+              Void unused13=m.#close()
+              exception propagated
+              )
+            )
+          void
+          )
+        catch return propagated0 (
+          on Any (
+            Void unused14=m.#close()
+            return propagated0
+            )
+          )
+        m.#close()
+        )
+      )
+    varaccumulator.#inner().#end()
+    )
+  mut Outer0::VarabsMethods varabsMethods=Outer0::VarabsMethods.#apply(inner:absMethods)
+  Void unused=(
+    Outer0::VarhavePrivate::#inner() cond0=varhavePrivate.#inner()
+    (
+      Void unused15=cond0.#checkTrue()
+      catch exception unused16 (
+        on Void void
+        )
+      varabsMethods.inner(that:(
+        Outer1::Methods::#begin() accumulator0=Outer1::Methods.#begin()
+        mut Outer0::Varaccumulator2 varaccumulator0=Outer0::Varaccumulator2.#apply(inner:accumulator0)
+        Void unused17=(
+          Outer0::VarabsMethods::#inner() ::vals() a=varabsMethods.#inner().vals()
+          (
+            Void unused18=(
+              Void unused19=(
+                Void unused20=loop (
+                  Void unused21=a.#next()
+                  catch exception unused22 (
+                    on Void (
+                      Void unused23=(
+                        Void unused24=a.#checkEnd()
+                        catch exception unused25 (
+                          on Void void
+                          )
+                        void
+                        )
+                      exception void
+                      )
+                    )
+                  (
+                    Outer0::VarabsMethods::#inner() ::vals() ::#inner() ::isPrivate() cond1=a.#inner().isPrivate()
+                    (
+                      Void unused26=cond1.#checkTrue()
+                      catch exception unused27 (
+                        on Void void
+                        )
+                      varaccumulator0.inner(that:varaccumulator0.#inner().#add(that:a.#inner()))
+                      )
+                    )
+                  )
+                catch exception unused28 (
+                  on Void void
+                  )
+                void
+                )
+              catch exception propagated1 (
+                on Any (
+                  Void unused29=a.#close()
+                  exception propagated1
+                  )
+                )
+              void
+              )
+            catch return propagated2 (
+              on Any (
+                Void unused30=a.#close()
+                return propagated2
+                )
+              )
+            a.#close()
+            )
+          )
+        varaccumulator0.#inner().#end()
+        ))
+      )
+    )
+  varabsMethods.#inner()
+  )
+method 
+Outer1::Methods state() (
+  Void unused=(
+    Outer1::Methods::#begin() ::#end() result=Outer1::Methods.#begin().#end()
+    Outer0::stateCandidate() stateCandidate=this.stateCandidate()
+    Outer1::Methods::#begin() ::#end() ::top() constr=(
+      Outer1::Methods::#begin() ::#end() classMethods=(
+        Outer1::Methods::#begin() accumulator=Outer1::Methods.#begin()
+        mut Outer0::Varaccumulator3 varaccumulator=Outer0::Varaccumulator3.#apply(inner:accumulator)
+        Void unused5=(
+          Outer0::stateCandidate() ::vals() m=stateCandidate.vals()
+          (
+            Void unused6=(
+              Void unused7=(
+                Void unused8=loop (
+                  Void unused9=m.#next()
+                  catch exception unused10 (
+                    on Void (
+                      Void unused11=(
+                        Void unused12=m.#checkEnd()
+                        catch exception unused13 (
+                          on Void void
+                          )
+                        void
+                        )
+                      exception void
+                      )
+                    )
+                  (
+                    Outer0::stateCandidate() ::vals() ::#inner() ::thisMdf() ::#equalequal(that ) cond=m.#inner().thisMdf().#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
+                    'Type
+                    }))
+                    (
+                      Void unused14=cond.#checkTrue()
+                      catch exception unused15 (
+                        on Void void
+                        )
+                      varaccumulator.inner(that:varaccumulator.#inner().#add(that:m.#inner()))
+                      )
+                    )
+                  )
+                catch exception unused16 (
+                  on Void void
+                  )
+                void
+                )
+              catch exception propagated (
+                on Any (
+                  Void unused17=m.#close()
+                  exception propagated
+                  )
+                )
+              void
+              )
+            catch return propagated0 (
+              on Outer1::Methods (
+                Void unused18=m.#close()
+                return propagated0
+                )
+              )
+            m.#close()
+            )
+          )
+        varaccumulator.#inner().#end()
+        )
+      Void unused3=(
+        Outer1::Methods::#begin() ::#end() ::isEmpty() cond0=classMethods.isEmpty()
+        (
+          Void unused19=cond0.#checkTrue()
+          catch exception unused20 (
+            on Void void
+            )
+          return result
+          )
+        )
+      Void unused4=(
+        Outer1::Methods::#begin() ::#end() ::pop() ::isEmpty() ::#bang() cond1=classMethods.pop().isEmpty().#bang()
+        (
+          Void unused21=cond1.#checkTrue()
+          catch exception unused22 (
+            on Void void
+            )
+          return result
+          )
+        )
+      classMethods.top()
+      )
+    mut Outer0::Varresult5 varresult=Outer0::Varresult5.#apply(inner:result)
+    Void unused0=varresult.inner(that:varresult.#inner().#add(that:constr))
+    Outer1::Methods::#begin() ::#end() ::top() ::selector() ::names() names=constr.selector().names()
+    Void unused1=(
+      Outer1::Methods::#begin() ::#end() ::top() ::selector() ::names() ::vals() name=names.vals()
+      (
+        Void unused23=(
+          Void unused24=(
+            Void unused25=loop (
+              Void unused26=name.#next()
+              catch exception unused27 (
+                on Void (
+                  Void unused28=(
+                    Void unused29=name.#checkEnd()
+                    catch exception unused30 (
+                      on Void void
+                      )
+                    void
+                    )
+                  exception void
+                  )
+                )
+              (
+                Outer2::Selector::fromS(that ) getter=Outer2::Selector.fromS(that:name.#inner().#plusplus(that:Outer2::S.#stringParser(that:{'@stringU
+                '()
+                })))
+                Outer2::Selector::fromS(that ) exposer=Outer2::Selector.fromS(that:Outer2::S.#stringParser(that:{'@stringU
+                '#
+                }).#plusplus(that:name.#inner().#plusplus(that:Outer2::S.#stringParser(that:{'@stringU
+                '()
+                }))))
+                Outer2::Selector::fromS(that ) setter=Outer2::Selector.fromS(that:name.#inner().#plusplus(that:Outer2::S.#stringParser(that:{'@stringU
+                '(that)
+                })))
+                (
+                  Outer0::stateCandidate() ::vals() f=stateCandidate.vals()
+                  (
+                    Void unused31=(
+                      Void unused32=(
+                        Void unused33=loop (
+                          Void unused34=f.#next()
+                          catch exception unused35 (
+                            on Void (
+                              Void unused36=(
+                                Void unused37=f.#checkEnd()
+                                catch exception unused38 (
+                                  on Void void
+                                  )
+                                void
+                                )
+                              exception void
+                              )
+                            )
+                          (
+                            Outer0::stateCandidate() ::vals() ::#inner() ::selector() ::#equalequal(that ) ::#or(that ) ::#or(that ) cond2=f.#inner().selector().#equalequal(that:getter).#or(that:f.#inner().selector().#equalequal(that:exposer)).#or(that:f.#inner().selector().#equalequal(that:setter))
+                            (
+                              Void unused39=cond2.#checkTrue()
+                              catch exception unused40 (
+                                on Void void
+                                )
+                              varresult.inner(that:varresult.#inner().#add(that:f.#inner()))
+                              )
+                            )
+                          )
+                        catch exception unused41 (
+                          on Void void
+                          )
+                        void
+                        )
+                      catch exception propagated1 (
+                        on Any (
+                          Void unused42=f.#close()
+                          exception propagated1
+                          )
+                        )
+                      void
+                      )
+                    catch return propagated2 (
+                      on Outer1::Methods (
+                        Void unused43=f.#close()
+                        return propagated2
+                        )
+                      )
+                    f.#close()
+                    )
+                  )
+                )
+              )
+            catch exception unused44 (
+              on Void void
+              )
+            void
+            )
+          catch exception propagated3 (
+            on Any (
+              Void unused45=name.#close()
+              exception propagated3
+              )
+            )
+          void
+          )
+        catch return propagated4 (
+          on Outer1::Methods (
+            Void unused46=name.#close()
+            return propagated4
+            )
+          )
+        name.#close()
+        )
+      )
+    Void unused2=return varresult.#inner().#end()
+    void
+    )
+  catch return result0 (
+    on Outer1::Methods result0
+    )
+  error {'@stringU
+  'CurlyBlock-Should be unreachable code
+  }
+  )
 method 
 Outer1::Method methodFromSelector(Outer2::Selector that) exception Outer2::MetaGuard::MethodUnavailable (
   Void unused=(

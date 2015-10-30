@@ -74,8 +74,47 @@ method Types implementedInterfaces() (
   result)
 
 method
-Method constructor()
-  error Assert::NotImplementedYet""
+Methods stateCandidate() (
+  var havePrivate=Bool.false()
+  var absMethods=Methods[with m in this.methods().vals() (
+    case m.methodKind()==S"AbstractMethod" (
+      havePrivate|=m.isPrivate()
+      m
+      )
+    )]
+  if havePrivate (
+    absMethods:=Methods[with a in absMethods.vals() (
+      case a.isPrivate() a
+      )]
+    )
+  absMethods
+  )  
+method
+Methods state() {
+  var result=Methods[]
+  stateCandidate=this.stateCandidate()
+  constr=(
+    classMethods=Methods[with m in stateCandidate.vals() (
+      case m.thisMdf()==S"Type" m
+      )]
+    if classMethods.isEmpty() (return result)
+    if !classMethods.pop().isEmpty() (return result)
+    classMethods.top()
+    )
+  result:=result.#add(constr)
+  names=constr.selector().names()
+  with name in names.vals() (
+    getter=Selector.fromS(name++S"()")
+    exposer=Selector.fromS(S"#"++name++S"()")
+    setter=Selector.fromS(name++S"(that)")
+    with f in stateCandidate.vals() (
+      if f.selector()==getter |f.selector()==exposer |f.selector()==setter (
+        result:=result.#add(f)
+        )
+      )
+    )
+  return result.#end()
+  }
 method
 Method methodFromSelector(Selector that) exception MetaGuard::MethodUnavailable {
   with meth in this.methods().vals() (

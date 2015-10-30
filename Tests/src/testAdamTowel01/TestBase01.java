@@ -127,5 +127,9 @@ public class TestBase01 {
 ));
    }
  
-
+ @Test
+ public  void _01_06introspection5() throws Throwable{
+   TestHelper.configureForTest();
+   L42.main(new String[]{"examples/testsForAdamTowel01/UseIntrospectionAdamTowel5.L42"});
+   Assert.assertEquals(L42.record.toString(),"OK\n");}
   }
