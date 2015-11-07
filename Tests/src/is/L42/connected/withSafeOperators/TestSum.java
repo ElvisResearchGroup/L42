@@ -59,6 +59,13 @@ import auxiliaryGrammar.Program;
 
     },{    lineNumber(),"{B__0_0:'@private\n{}}","{B__1_0:'@private\n{}}",
       "{B__0_0:'@private\n{} B__0_1:'@private\n{}}",false
+      
+    },{    lineNumber(),"{(B x)'@private\nB:{}}","{(B x) B:{}}",
+      "{#apply__0_0(Outer0::B x__0_0)'@private\nB:{}"
+      + "type method Outer0 (Outer0::B x)"
+      + "mut method B #x()"
+      + "read method B x() }",
+      false
   }});}
   @Test  public void test() {
     TestHelper.configureForTest();
