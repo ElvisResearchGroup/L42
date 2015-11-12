@@ -880,6 +880,14 @@ method
 Library #leftleft(Library that) Outer2::SafeOperatorsAccess.compose(left:that, right:Outer0.messageTrait())
 type method 
 Library messageTrait() {<:Outer3::Message, Outer3::S::ToS, Outer3::Concept::Equals, Outer3::Concept::Classable
+Varres:'@private
+{
+type method 
+mut Outer0 #apply(Outer1::kind() inner) 
+mut method 
+Void inner(Outer1::kind() that) 
+mut method 
+Outer1::kind() #inner() }
 type method 
 Outer0 #apply(Outer3::S _text, Outer3::Message::Opt cause) 
 mut method 
@@ -931,24 +939,35 @@ type method
 Outer0 #stringParser(Library that) Outer0.#apply(text:Outer3::S.#stringParser(that:that))
 method toS() (
   Void unused=(
-    Outer0::kind() ::#begin() ::#end() ::#stringParser(that ) ::#begin() ::#add(that ) ::#end() res=Outer0.kind().#begin().#end().#stringParser(that:{'@stringU
-    '[
-    }).#begin().#add(that:this.text()).#end()
     Void unused0=(
-      Outer0::toS() ::this::cause() ::isPresent() cond=this.cause().isPresent()
+      Outer0::toS() ::this::cause() ::isPresent() ::#bang() cond=this.cause().isPresent().#bang()
       (
-        Void unused2=cond.#checkTrue()
-        catch exception unused3 (
+        Void unused3=cond.#checkTrue()
+        catch exception unused4 (
           on Void void
           )
-        return res.#stringParser(that:{'@stringU
-        ',
-        }).#begin().#add(that:this.cause().#tilde()).#end().#stringParser(that:{'@stringU
-        ']
-        })
+        return Outer0.kind().#plusplus(that:Outer3::S.doubleQuote().#plusplus(that:this.text().#plusplus(that:Outer3::S.doubleQuote())))
         )
       )
-    Void unused1=return res.#stringParser(that:{'@stringU
+    Outer0::kind() res=Outer0.kind()
+    mut Outer0::Varres varres=Outer0::Varres.#apply(inner:res)
+    Void unused1=(
+      Outer0::toS() ::this::text() ::#bangequal(that ) cond0=this.text().#bangequal(that:Outer3::S.#stringParser(that:{'@stringU
+      '
+      }))
+      (
+        Void unused5=cond0.#checkTrue()
+        catch exception unused6 (
+          on Void void
+          )
+        varres.inner(that:varres.#inner().#plusplus(that:Outer3::S.#stringParser(that:{'@stringU
+        '[text:
+        })).#plusplus(that:Outer3::S.doubleQuote().#plusplus(that:this.text().#plusplus(that:Outer3::S.doubleQuote().#plusplus(that:Outer3::S.#stringParser(that:{'@stringU
+        ', cause:
+        }))))))
+        )
+      )
+    Void unused2=return varres.#inner().#begin().#add(that:this.cause().#tilde()).#end().#stringParser(that:{'@stringU
     ']
     })
     void
@@ -988,6 +1007,14 @@ type method
 Outer2::S myName() Outer2::S.#stringParser(that:{'@stringU
 'Guard::Operation
 })
+Varres__0_0:'@private
+{
+type method 
+mut Outer0 #apply(Outer1::kind() inner) 
+mut method 
+Void inner(Outer1::kind() that) 
+mut method 
+Outer1::kind() #inner() }
 type method 
 Outer0 #apply(Outer2::S _text, Outer2::Message::Opt cause) 
 mut method 
@@ -1037,24 +1064,35 @@ type method
 Outer0 #stringParser(Library that) Outer0.#apply(text:Outer2::S.#stringParser(that:that))
 method toS() (
   Void unused=(
-    Outer0::kind() ::#begin() ::#end() ::#stringParser(that ) ::#begin() ::#add(that ) ::#end() res=Outer0.kind().#begin().#end().#stringParser(that:{'@stringU
-    '[
-    }).#begin().#add(that:this.text()).#end()
     Void unused0=(
-      Outer0::toS() ::this::cause() ::isPresent() cond=this.cause().isPresent()
+      Outer0::toS() ::this::cause() ::isPresent() ::#bang() cond=this.cause().isPresent().#bang()
       (
-        Void unused2=cond.#checkTrue()
-        catch exception unused3 (
+        Void unused3=cond.#checkTrue()
+        catch exception unused4 (
           on Void void
           )
-        return res.#stringParser(that:{'@stringU
-        ',
-        }).#begin().#add(that:this.cause().#tilde()).#end().#stringParser(that:{'@stringU
-        ']
-        })
+        return Outer0.kind().#plusplus(that:Outer2::S.doubleQuote().#plusplus(that:this.text().#plusplus(that:Outer2::S.doubleQuote())))
         )
       )
-    Void unused1=return res.#stringParser(that:{'@stringU
+    Outer0::kind() res=Outer0.kind()
+    mut Outer0::Varres__0_0 varres=Outer0::Varres__0_0.#apply(inner:res)
+    Void unused1=(
+      Outer0::toS() ::this::text() ::#bangequal(that ) cond0=this.text().#bangequal(that:Outer2::S.#stringParser(that:{'@stringU
+      '
+      }))
+      (
+        Void unused5=cond0.#checkTrue()
+        catch exception unused6 (
+          on Void void
+          )
+        varres.inner(that:varres.#inner().#plusplus(that:Outer2::S.#stringParser(that:{'@stringU
+        '[text:
+        })).#plusplus(that:Outer2::S.doubleQuote().#plusplus(that:this.text().#plusplus(that:Outer2::S.doubleQuote().#plusplus(that:Outer2::S.#stringParser(that:{'@stringU
+        ', cause:
+        }))))))
+        )
+      )
+    Void unused2=return varres.#inner().#begin().#add(that:this.cause().#tilde()).#end().#stringParser(that:{'@stringU
     ']
     })
     void
@@ -1084,6 +1122,14 @@ type method
 Outer2::S myName() Outer2::S.#stringParser(that:{'@stringU
 'Guard::Parameter
 })
+Varres__1_0:'@private
+{
+type method 
+mut Outer0 #apply(Outer1::kind() inner) 
+mut method 
+Void inner(Outer1::kind() that) 
+mut method 
+Outer1::kind() #inner() }
 type method 
 Outer0 #apply(Outer2::S _text, Outer2::Message::Opt cause) 
 mut method 
@@ -1133,24 +1179,35 @@ type method
 Outer0 #stringParser(Library that) Outer0.#apply(text:Outer2::S.#stringParser(that:that))
 method toS() (
   Void unused=(
-    Outer0::kind() ::#begin() ::#end() ::#stringParser(that ) ::#begin() ::#add(that ) ::#end() res=Outer0.kind().#begin().#end().#stringParser(that:{'@stringU
-    '[
-    }).#begin().#add(that:this.text()).#end()
     Void unused0=(
-      Outer0::toS() ::this::cause() ::isPresent() cond=this.cause().isPresent()
+      Outer0::toS() ::this::cause() ::isPresent() ::#bang() cond=this.cause().isPresent().#bang()
       (
-        Void unused2=cond.#checkTrue()
-        catch exception unused3 (
+        Void unused3=cond.#checkTrue()
+        catch exception unused4 (
           on Void void
           )
-        return res.#stringParser(that:{'@stringU
-        ',
-        }).#begin().#add(that:this.cause().#tilde()).#end().#stringParser(that:{'@stringU
-        ']
-        })
+        return Outer0.kind().#plusplus(that:Outer2::S.doubleQuote().#plusplus(that:this.text().#plusplus(that:Outer2::S.doubleQuote())))
         )
       )
-    Void unused1=return res.#stringParser(that:{'@stringU
+    Outer0::kind() res=Outer0.kind()
+    mut Outer0::Varres__1_0 varres=Outer0::Varres__1_0.#apply(inner:res)
+    Void unused1=(
+      Outer0::toS() ::this::text() ::#bangequal(that ) cond0=this.text().#bangequal(that:Outer2::S.#stringParser(that:{'@stringU
+      '
+      }))
+      (
+        Void unused5=cond0.#checkTrue()
+        catch exception unused6 (
+          on Void void
+          )
+        varres.inner(that:varres.#inner().#plusplus(that:Outer2::S.#stringParser(that:{'@stringU
+        '[text:
+        })).#plusplus(that:Outer2::S.doubleQuote().#plusplus(that:this.text().#plusplus(that:Outer2::S.doubleQuote().#plusplus(that:Outer2::S.#stringParser(that:{'@stringU
+        ', cause:
+        }))))))
+        )
+      )
+    Void unused2=return varres.#inner().#begin().#add(that:this.cause().#tilde()).#end().#stringParser(that:{'@stringU
     ']
     })
     void
@@ -1180,6 +1237,14 @@ type method
 Outer2::S myName() Outer2::S.#stringParser(that:{'@stringU
 'Guard::Precondition
 })
+Varres__2_0:'@private
+{
+type method 
+mut Outer0 #apply(Outer1::kind() inner) 
+mut method 
+Void inner(Outer1::kind() that) 
+mut method 
+Outer1::kind() #inner() }
 type method 
 Outer0 #apply(Outer2::S _text, Outer2::Message::Opt cause) 
 mut method 
@@ -1229,24 +1294,35 @@ type method
 Outer0 #stringParser(Library that) Outer0.#apply(text:Outer2::S.#stringParser(that:that))
 method toS() (
   Void unused=(
-    Outer0::kind() ::#begin() ::#end() ::#stringParser(that ) ::#begin() ::#add(that ) ::#end() res=Outer0.kind().#begin().#end().#stringParser(that:{'@stringU
-    '[
-    }).#begin().#add(that:this.text()).#end()
     Void unused0=(
-      Outer0::toS() ::this::cause() ::isPresent() cond=this.cause().isPresent()
+      Outer0::toS() ::this::cause() ::isPresent() ::#bang() cond=this.cause().isPresent().#bang()
       (
-        Void unused2=cond.#checkTrue()
-        catch exception unused3 (
+        Void unused3=cond.#checkTrue()
+        catch exception unused4 (
           on Void void
           )
-        return res.#stringParser(that:{'@stringU
-        ',
-        }).#begin().#add(that:this.cause().#tilde()).#end().#stringParser(that:{'@stringU
-        ']
-        })
+        return Outer0.kind().#plusplus(that:Outer2::S.doubleQuote().#plusplus(that:this.text().#plusplus(that:Outer2::S.doubleQuote())))
         )
       )
-    Void unused1=return res.#stringParser(that:{'@stringU
+    Outer0::kind() res=Outer0.kind()
+    mut Outer0::Varres__2_0 varres=Outer0::Varres__2_0.#apply(inner:res)
+    Void unused1=(
+      Outer0::toS() ::this::text() ::#bangequal(that ) cond0=this.text().#bangequal(that:Outer2::S.#stringParser(that:{'@stringU
+      '
+      }))
+      (
+        Void unused5=cond0.#checkTrue()
+        catch exception unused6 (
+          on Void void
+          )
+        varres.inner(that:varres.#inner().#plusplus(that:Outer2::S.#stringParser(that:{'@stringU
+        '[text:
+        })).#plusplus(that:Outer2::S.doubleQuote().#plusplus(that:this.text().#plusplus(that:Outer2::S.doubleQuote().#plusplus(that:Outer2::S.#stringParser(that:{'@stringU
+        ', cause:
+        }))))))
+        )
+      )
+    Void unused2=return varres.#inner().#begin().#add(that:this.cause().#tilde()).#end().#stringParser(that:{'@stringU
     ']
     })
     void
@@ -1279,6 +1355,14 @@ type method
 Outer3::S myName() Outer3::S.#stringParser(that:{'@stringU
 'System::Guard::PluginFailure
 })
+Varres__3_0:'@private
+{
+type method 
+mut Outer0 #apply(Outer1::kind() inner) 
+mut method 
+Void inner(Outer1::kind() that) 
+mut method 
+Outer1::kind() #inner() }
 type method 
 Outer0 #apply(Outer3::S _text, Outer3::Message::Opt cause) 
 mut method 
@@ -1328,24 +1412,35 @@ type method
 Outer0 #stringParser(Library that) Outer0.#apply(text:Outer3::S.#stringParser(that:that))
 method toS() (
   Void unused=(
-    Outer0::kind() ::#begin() ::#end() ::#stringParser(that ) ::#begin() ::#add(that ) ::#end() res=Outer0.kind().#begin().#end().#stringParser(that:{'@stringU
-    '[
-    }).#begin().#add(that:this.text()).#end()
     Void unused0=(
-      Outer0::toS() ::this::cause() ::isPresent() cond=this.cause().isPresent()
+      Outer0::toS() ::this::cause() ::isPresent() ::#bang() cond=this.cause().isPresent().#bang()
       (
-        Void unused2=cond.#checkTrue()
-        catch exception unused3 (
+        Void unused3=cond.#checkTrue()
+        catch exception unused4 (
           on Void void
           )
-        return res.#stringParser(that:{'@stringU
-        ',
-        }).#begin().#add(that:this.cause().#tilde()).#end().#stringParser(that:{'@stringU
-        ']
-        })
+        return Outer0.kind().#plusplus(that:Outer3::S.doubleQuote().#plusplus(that:this.text().#plusplus(that:Outer3::S.doubleQuote())))
         )
       )
-    Void unused1=return res.#stringParser(that:{'@stringU
+    Outer0::kind() res=Outer0.kind()
+    mut Outer0::Varres__3_0 varres=Outer0::Varres__3_0.#apply(inner:res)
+    Void unused1=(
+      Outer0::toS() ::this::text() ::#bangequal(that ) cond0=this.text().#bangequal(that:Outer3::S.#stringParser(that:{'@stringU
+      '
+      }))
+      (
+        Void unused5=cond0.#checkTrue()
+        catch exception unused6 (
+          on Void void
+          )
+        varres.inner(that:varres.#inner().#plusplus(that:Outer3::S.#stringParser(that:{'@stringU
+        '[text:
+        })).#plusplus(that:Outer3::S.doubleQuote().#plusplus(that:this.text().#plusplus(that:Outer3::S.doubleQuote().#plusplus(that:Outer3::S.#stringParser(that:{'@stringU
+        ', cause:
+        }))))))
+        )
+      )
+    Void unused2=return varres.#inner().#begin().#add(that:this.cause().#tilde()).#end().#stringParser(that:{'@stringU
     ']
     })
     void
@@ -1376,6 +1471,14 @@ type method
 Outer2::S myName() Outer2::S.#stringParser(that:{'@stringU
 'Assert::NotImplementedYet
 })
+Varres__4_0:'@private
+{
+type method 
+mut Outer0 #apply(Outer1::kind() inner) 
+mut method 
+Void inner(Outer1::kind() that) 
+mut method 
+Outer1::kind() #inner() }
 type method 
 Outer0 #apply(Outer2::S _text, Outer2::Message::Opt cause) 
 mut method 
@@ -1425,24 +1528,35 @@ type method
 Outer0 #stringParser(Library that) Outer0.#apply(text:Outer2::S.#stringParser(that:that))
 method toS() (
   Void unused=(
-    Outer0::kind() ::#begin() ::#end() ::#stringParser(that ) ::#begin() ::#add(that ) ::#end() res=Outer0.kind().#begin().#end().#stringParser(that:{'@stringU
-    '[
-    }).#begin().#add(that:this.text()).#end()
     Void unused0=(
-      Outer0::toS() ::this::cause() ::isPresent() cond=this.cause().isPresent()
+      Outer0::toS() ::this::cause() ::isPresent() ::#bang() cond=this.cause().isPresent().#bang()
       (
-        Void unused2=cond.#checkTrue()
-        catch exception unused3 (
+        Void unused3=cond.#checkTrue()
+        catch exception unused4 (
           on Void void
           )
-        return res.#stringParser(that:{'@stringU
-        ',
-        }).#begin().#add(that:this.cause().#tilde()).#end().#stringParser(that:{'@stringU
-        ']
-        })
+        return Outer0.kind().#plusplus(that:Outer2::S.doubleQuote().#plusplus(that:this.text().#plusplus(that:Outer2::S.doubleQuote())))
         )
       )
-    Void unused1=return res.#stringParser(that:{'@stringU
+    Outer0::kind() res=Outer0.kind()
+    mut Outer0::Varres__4_0 varres=Outer0::Varres__4_0.#apply(inner:res)
+    Void unused1=(
+      Outer0::toS() ::this::text() ::#bangequal(that ) cond0=this.text().#bangequal(that:Outer2::S.#stringParser(that:{'@stringU
+      '
+      }))
+      (
+        Void unused5=cond0.#checkTrue()
+        catch exception unused6 (
+          on Void void
+          )
+        varres.inner(that:varres.#inner().#plusplus(that:Outer2::S.#stringParser(that:{'@stringU
+        '[text:
+        })).#plusplus(that:Outer2::S.doubleQuote().#plusplus(that:this.text().#plusplus(that:Outer2::S.doubleQuote().#plusplus(that:Outer2::S.#stringParser(that:{'@stringU
+        ', cause:
+        }))))))
+        )
+      )
+    Void unused2=return varres.#inner().#begin().#add(that:this.cause().#tilde()).#end().#stringParser(that:{'@stringU
     ']
     })
     void
@@ -1473,6 +1587,14 @@ type method
 Outer2::S myName() Outer2::S.#stringParser(that:{'@stringU
 'Assert::ObservedBug
 })
+Varres__5_0:'@private
+{
+type method 
+mut Outer0 #apply(Outer1::kind() inner) 
+mut method 
+Void inner(Outer1::kind() that) 
+mut method 
+Outer1::kind() #inner() }
 type method 
 Outer0 #apply(Outer2::S _text, Outer2::Message::Opt cause) 
 mut method 
@@ -1522,24 +1644,35 @@ type method
 Outer0 #stringParser(Library that) Outer0.#apply(text:Outer2::S.#stringParser(that:that))
 method toS() (
   Void unused=(
-    Outer0::kind() ::#begin() ::#end() ::#stringParser(that ) ::#begin() ::#add(that ) ::#end() res=Outer0.kind().#begin().#end().#stringParser(that:{'@stringU
-    '[
-    }).#begin().#add(that:this.text()).#end()
     Void unused0=(
-      Outer0::toS() ::this::cause() ::isPresent() cond=this.cause().isPresent()
+      Outer0::toS() ::this::cause() ::isPresent() ::#bang() cond=this.cause().isPresent().#bang()
       (
-        Void unused2=cond.#checkTrue()
-        catch exception unused3 (
+        Void unused3=cond.#checkTrue()
+        catch exception unused4 (
           on Void void
           )
-        return res.#stringParser(that:{'@stringU
-        ',
-        }).#begin().#add(that:this.cause().#tilde()).#end().#stringParser(that:{'@stringU
-        ']
-        })
+        return Outer0.kind().#plusplus(that:Outer2::S.doubleQuote().#plusplus(that:this.text().#plusplus(that:Outer2::S.doubleQuote())))
         )
       )
-    Void unused1=return res.#stringParser(that:{'@stringU
+    Outer0::kind() res=Outer0.kind()
+    mut Outer0::Varres__5_0 varres=Outer0::Varres__5_0.#apply(inner:res)
+    Void unused1=(
+      Outer0::toS() ::this::text() ::#bangequal(that ) cond0=this.text().#bangequal(that:Outer2::S.#stringParser(that:{'@stringU
+      '
+      }))
+      (
+        Void unused5=cond0.#checkTrue()
+        catch exception unused6 (
+          on Void void
+          )
+        varres.inner(that:varres.#inner().#plusplus(that:Outer2::S.#stringParser(that:{'@stringU
+        '[text:
+        })).#plusplus(that:Outer2::S.doubleQuote().#plusplus(that:this.text().#plusplus(that:Outer2::S.doubleQuote().#plusplus(that:Outer2::S.#stringParser(that:{'@stringU
+        ', cause:
+        }))))))
+        )
+      )
+    Void unused2=return varres.#inner().#begin().#add(that:this.cause().#tilde()).#end().#stringParser(that:{'@stringU
     ']
     })
     void
@@ -1572,6 +1705,14 @@ type method
 Outer2::S myName() Outer2::S.#stringParser(that:{'@stringU
 'Assert::CodeNotReachable
 })
+Varres__6_0:'@private
+{
+type method 
+mut Outer0 #apply(Outer1::kind() inner) 
+mut method 
+Void inner(Outer1::kind() that) 
+mut method 
+Outer1::kind() #inner() }
 type method 
 Outer0 #apply(Outer2::S _text, Outer2::Message::Opt cause) 
 mut method 
@@ -1621,24 +1762,35 @@ type method
 Outer0 #stringParser(Library that) Outer0.#apply(text:Outer2::S.#stringParser(that:that))
 method toS() (
   Void unused=(
-    Outer0::kind() ::#begin() ::#end() ::#stringParser(that ) ::#begin() ::#add(that ) ::#end() res=Outer0.kind().#begin().#end().#stringParser(that:{'@stringU
-    '[
-    }).#begin().#add(that:this.text()).#end()
     Void unused0=(
-      Outer0::toS() ::this::cause() ::isPresent() cond=this.cause().isPresent()
+      Outer0::toS() ::this::cause() ::isPresent() ::#bang() cond=this.cause().isPresent().#bang()
       (
-        Void unused2=cond.#checkTrue()
-        catch exception unused3 (
+        Void unused3=cond.#checkTrue()
+        catch exception unused4 (
           on Void void
           )
-        return res.#stringParser(that:{'@stringU
-        ',
-        }).#begin().#add(that:this.cause().#tilde()).#end().#stringParser(that:{'@stringU
-        ']
-        })
+        return Outer0.kind().#plusplus(that:Outer2::S.doubleQuote().#plusplus(that:this.text().#plusplus(that:Outer2::S.doubleQuote())))
         )
       )
-    Void unused1=return res.#stringParser(that:{'@stringU
+    Outer0::kind() res=Outer0.kind()
+    mut Outer0::Varres__6_0 varres=Outer0::Varres__6_0.#apply(inner:res)
+    Void unused1=(
+      Outer0::toS() ::this::text() ::#bangequal(that ) cond0=this.text().#bangequal(that:Outer2::S.#stringParser(that:{'@stringU
+      '
+      }))
+      (
+        Void unused5=cond0.#checkTrue()
+        catch exception unused6 (
+          on Void void
+          )
+        varres.inner(that:varres.#inner().#plusplus(that:Outer2::S.#stringParser(that:{'@stringU
+        '[text:
+        })).#plusplus(that:Outer2::S.doubleQuote().#plusplus(that:this.text().#plusplus(that:Outer2::S.doubleQuote().#plusplus(that:Outer2::S.#stringParser(that:{'@stringU
+        ', cause:
+        }))))))
+        )
+      )
+    Void unused2=return varres.#inner().#begin().#add(that:this.cause().#tilde()).#end().#stringParser(that:{'@stringU
     ']
     })
     void
@@ -1732,6 +1884,14 @@ type method
 Outer2::S myName() Outer2::S.#stringParser(that:{'@stringU
 'AssertMessage
 })
+Varres__7_0:'@private
+{
+type method 
+mut Outer0 #apply(Outer1::kind() inner) 
+mut method 
+Void inner(Outer1::kind() that) 
+mut method 
+Outer1::kind() #inner() }
 type method 
 Outer0 #apply(Outer2::S _text, Outer2::Message::Opt cause) 
 mut method 
@@ -1781,24 +1941,35 @@ type method
 Outer0 #stringParser(Library that) Outer0.#apply(text:Outer2::S.#stringParser(that:that))
 method toS() (
   Void unused=(
-    Outer0::kind() ::#begin() ::#end() ::#stringParser(that ) ::#begin() ::#add(that ) ::#end() res=Outer0.kind().#begin().#end().#stringParser(that:{'@stringU
-    '[
-    }).#begin().#add(that:this.text()).#end()
     Void unused0=(
-      Outer0::toS() ::this::cause() ::isPresent() cond=this.cause().isPresent()
+      Outer0::toS() ::this::cause() ::isPresent() ::#bang() cond=this.cause().isPresent().#bang()
       (
-        Void unused2=cond.#checkTrue()
-        catch exception unused3 (
+        Void unused3=cond.#checkTrue()
+        catch exception unused4 (
           on Void void
           )
-        return res.#stringParser(that:{'@stringU
-        ',
-        }).#begin().#add(that:this.cause().#tilde()).#end().#stringParser(that:{'@stringU
-        ']
-        })
+        return Outer0.kind().#plusplus(that:Outer2::S.doubleQuote().#plusplus(that:this.text().#plusplus(that:Outer2::S.doubleQuote())))
         )
       )
-    Void unused1=return res.#stringParser(that:{'@stringU
+    Outer0::kind() res=Outer0.kind()
+    mut Outer0::Varres__7_0 varres=Outer0::Varres__7_0.#apply(inner:res)
+    Void unused1=(
+      Outer0::toS() ::this::text() ::#bangequal(that ) cond0=this.text().#bangequal(that:Outer2::S.#stringParser(that:{'@stringU
+      '
+      }))
+      (
+        Void unused5=cond0.#checkTrue()
+        catch exception unused6 (
+          on Void void
+          )
+        varres.inner(that:varres.#inner().#plusplus(that:Outer2::S.#stringParser(that:{'@stringU
+        '[text:
+        })).#plusplus(that:Outer2::S.doubleQuote().#plusplus(that:this.text().#plusplus(that:Outer2::S.doubleQuote().#plusplus(that:Outer2::S.#stringParser(that:{'@stringU
+        ', cause:
+        }))))))
+        )
+      )
+    Void unused2=return varres.#inner().#begin().#add(that:this.cause().#tilde()).#end().#stringParser(that:{'@stringU
     ']
     })
     void
@@ -1827,7 +1998,7 @@ ListCode:{
 type method 
 Library #apply() {' generic linked list class, elements of type Elem
 
-Varres:'@private
+Varres0:'@private
 {
 type method 
 mut Outer0 #apply(Outer1 inner) 
@@ -1837,7 +2008,7 @@ mut method
 Outer1 #inner() 
 read method 
 Outer1 inner() }
-Varres0:'@private
+Varres1:'@private
 {
 type method 
 mut Outer0 #apply(Outer1::#apply() inner) 
@@ -1916,7 +2087,7 @@ method
 Outer0 #plusplus(Outer0 that) (
   Void unused=(
     Outer0 res=this
-    mut Outer0::Varres varres=Outer0::Varres.#apply(inner:res)
+    mut Outer0::Varres0 varres=Outer0::Varres0.#apply(inner:res)
     Void unused0=(
       Outer0::vals() e=that.vals()
       (
@@ -1977,7 +2148,7 @@ Outer0 #add(Outer0::Elem that) Outer0._new(head:Outer0::CellNext.#apply(elem:tha
 method 
 Outer0 #end() (
   Outer0::#apply() res=Outer0.#apply()
-  mut Outer0::Varres0 varres=Outer0::Varres0.#apply(inner:res)
+  mut Outer0::Varres1 varres=Outer0::Varres1.#apply(inner:res)
   Void unused=(
     Outer0::vals() elem=this.vals()
     (
@@ -2098,6 +2269,14 @@ type method
 Outer5::S myName() Outer5::S.#stringParser(that:{'@stringU
 'IterationNotComplete
 })
+Varres__8_0:'@private
+{
+type method 
+mut Outer0 #apply(Outer1::kind() inner) 
+mut method 
+Void inner(Outer1::kind() that) 
+mut method 
+Outer1::kind() #inner() }
 type method 
 Outer0 #apply(Outer5::S _text, Outer5::Message::Opt cause) 
 mut method 
@@ -2147,24 +2326,35 @@ type method
 Outer0 #stringParser(Library that) Outer0.#apply(text:Outer5::S.#stringParser(that:that))
 method toS() (
   Void unused=(
-    Outer0::kind() ::#begin() ::#end() ::#stringParser(that ) ::#begin() ::#add(that ) ::#end() res=Outer0.kind().#begin().#end().#stringParser(that:{'@stringU
-    '[
-    }).#begin().#add(that:this.text()).#end()
     Void unused0=(
-      Outer0::toS() ::this::cause() ::isPresent() cond=this.cause().isPresent()
+      Outer0::toS() ::this::cause() ::isPresent() ::#bang() cond=this.cause().isPresent().#bang()
       (
-        Void unused2=cond.#checkTrue()
-        catch exception unused3 (
+        Void unused3=cond.#checkTrue()
+        catch exception unused4 (
           on Void void
           )
-        return res.#stringParser(that:{'@stringU
-        ',
-        }).#begin().#add(that:this.cause().#tilde()).#end().#stringParser(that:{'@stringU
-        ']
-        })
+        return Outer0.kind().#plusplus(that:Outer5::S.doubleQuote().#plusplus(that:this.text().#plusplus(that:Outer5::S.doubleQuote())))
         )
       )
-    Void unused1=return res.#stringParser(that:{'@stringU
+    Outer0::kind() res=Outer0.kind()
+    mut Outer0::Varres__8_0 varres=Outer0::Varres__8_0.#apply(inner:res)
+    Void unused1=(
+      Outer0::toS() ::this::text() ::#bangequal(that ) cond0=this.text().#bangequal(that:Outer5::S.#stringParser(that:{'@stringU
+      '
+      }))
+      (
+        Void unused5=cond0.#checkTrue()
+        catch exception unused6 (
+          on Void void
+          )
+        varres.inner(that:varres.#inner().#plusplus(that:Outer5::S.#stringParser(that:{'@stringU
+        '[text:
+        })).#plusplus(that:Outer5::S.doubleQuote().#plusplus(that:this.text().#plusplus(that:Outer5::S.doubleQuote().#plusplus(that:Outer5::S.#stringParser(that:{'@stringU
+        ', cause:
+        }))))))
+        )
+      )
+    Void unused2=return varres.#inner().#begin().#add(that:this.cause().#tilde()).#end().#stringParser(that:{'@stringU
     ']
     })
     void
@@ -2256,7 +2446,7 @@ Library list(type Any that) Outer1::SafeOperatorsAccess.redirect(that:Outer0::Li
 }).binaryRepr(), dest:that)}
 Strings:{' generic linked list class, elements of type Elem
 
-Varres:'@private
+Varres0:'@private
 {
 type method 
 mut Outer0 #apply(Outer1 inner) 
@@ -2266,7 +2456,7 @@ mut method
 Outer1 #inner() 
 read method 
 Outer1 inner() }
-Varres0:'@private
+Varres1:'@private
 {
 type method 
 mut Outer0 #apply(Outer1::#apply() inner) 
@@ -2345,7 +2535,7 @@ method
 Outer0 #plusplus(Outer0 that) (
   Void unused=(
     Outer0 res=this
-    mut Outer0::Varres varres=Outer0::Varres.#apply(inner:res)
+    mut Outer0::Varres0 varres=Outer0::Varres0.#apply(inner:res)
     Void unused0=(
       Outer0::vals() e=that.vals()
       (
@@ -2406,7 +2596,7 @@ Outer0 #add(Outer1::S that) Outer0._new(head:Outer0::CellNext.#apply(elem:that, 
 method 
 Outer0 #end() (
   Outer0::#apply() res=Outer0.#apply()
-  mut Outer0::Varres0 varres=Outer0::Varres0.#apply(inner:res)
+  mut Outer0::Varres1 varres=Outer0::Varres1.#apply(inner:res)
   Void unused=(
     Outer0::vals() elem=this.vals()
     (
@@ -2526,6 +2716,14 @@ type method
 Outer3::S myName() Outer3::S.#stringParser(that:{'@stringU
 'IterationNotComplete
 })
+Varres__8_0:'@private
+{
+type method 
+mut Outer0 #apply(Outer1::kind() inner) 
+mut method 
+Void inner(Outer1::kind() that) 
+mut method 
+Outer1::kind() #inner() }
 type method 
 Outer0 #apply(Outer3::S _text, Outer3::Message::Opt cause) 
 mut method 
@@ -2575,24 +2773,35 @@ type method
 Outer0 #stringParser(Library that) Outer0.#apply(text:Outer3::S.#stringParser(that:that))
 method toS() (
   Void unused=(
-    Outer0::kind() ::#begin() ::#end() ::#stringParser(that ) ::#begin() ::#add(that ) ::#end() res=Outer0.kind().#begin().#end().#stringParser(that:{'@stringU
-    '[
-    }).#begin().#add(that:this.text()).#end()
     Void unused0=(
-      Outer0::toS() ::this::cause() ::isPresent() cond=this.cause().isPresent()
+      Outer0::toS() ::this::cause() ::isPresent() ::#bang() cond=this.cause().isPresent().#bang()
       (
-        Void unused2=cond.#checkTrue()
-        catch exception unused3 (
+        Void unused3=cond.#checkTrue()
+        catch exception unused4 (
           on Void void
           )
-        return res.#stringParser(that:{'@stringU
-        ',
-        }).#begin().#add(that:this.cause().#tilde()).#end().#stringParser(that:{'@stringU
-        ']
-        })
+        return Outer0.kind().#plusplus(that:Outer3::S.doubleQuote().#plusplus(that:this.text().#plusplus(that:Outer3::S.doubleQuote())))
         )
       )
-    Void unused1=return res.#stringParser(that:{'@stringU
+    Outer0::kind() res=Outer0.kind()
+    mut Outer0::Varres__8_0 varres=Outer0::Varres__8_0.#apply(inner:res)
+    Void unused1=(
+      Outer0::toS() ::this::text() ::#bangequal(that ) cond0=this.text().#bangequal(that:Outer3::S.#stringParser(that:{'@stringU
+      '
+      }))
+      (
+        Void unused5=cond0.#checkTrue()
+        catch exception unused6 (
+          on Void void
+          )
+        varres.inner(that:varres.#inner().#plusplus(that:Outer3::S.#stringParser(that:{'@stringU
+        '[text:
+        })).#plusplus(that:Outer3::S.doubleQuote().#plusplus(that:this.text().#plusplus(that:Outer3::S.doubleQuote().#plusplus(that:Outer3::S.#stringParser(that:{'@stringU
+        ', cause:
+        }))))))
+        )
+      )
+    Void unused2=return varres.#inner().#begin().#add(that:this.cause().#tilde()).#end().#stringParser(that:{'@stringU
     ']
     })
     void
@@ -3705,7 +3914,7 @@ Outer3::Bool hasReferredClass() (
   )}
 Annotations:{' generic linked list class, elements of type Elem
 
-Varres:'@private
+Varres0:'@private
 {
 type method 
 mut Outer0 #apply(Outer1 inner) 
@@ -3715,7 +3924,7 @@ mut method
 Outer1 #inner() 
 read method 
 Outer1 inner() }
-Varres0:'@private
+Varres1:'@private
 {
 type method 
 mut Outer0 #apply(Outer1::#apply() inner) 
@@ -3794,7 +4003,7 @@ method
 Outer0 #plusplus(Outer0 that) (
   Void unused=(
     Outer0 res=this
-    mut Outer0::Varres varres=Outer0::Varres.#apply(inner:res)
+    mut Outer0::Varres0 varres=Outer0::Varres0.#apply(inner:res)
     Void unused0=(
       Outer0::vals() e=that.vals()
       (
@@ -3855,7 +4064,7 @@ Outer0 #add(Outer1::Annotation that) Outer0._new(head:Outer0::CellNext.#apply(el
 method 
 Outer0 #end() (
   Outer0::#apply() res=Outer0.#apply()
-  mut Outer0::Varres0 varres=Outer0::Varres0.#apply(inner:res)
+  mut Outer0::Varres1 varres=Outer0::Varres1.#apply(inner:res)
   Void unused=(
     Outer0::vals() elem=this.vals()
     (
@@ -3975,6 +4184,14 @@ type method
 Outer5::S myName() Outer5::S.#stringParser(that:{'@stringU
 'IterationNotComplete
 })
+Varres__8_0:'@private
+{
+type method 
+mut Outer0 #apply(Outer1::kind() inner) 
+mut method 
+Void inner(Outer1::kind() that) 
+mut method 
+Outer1::kind() #inner() }
 type method 
 Outer0 #apply(Outer5::S _text, Outer5::Message::Opt cause) 
 mut method 
@@ -4024,24 +4241,35 @@ type method
 Outer0 #stringParser(Library that) Outer0.#apply(text:Outer5::S.#stringParser(that:that))
 method toS() (
   Void unused=(
-    Outer0::kind() ::#begin() ::#end() ::#stringParser(that ) ::#begin() ::#add(that ) ::#end() res=Outer0.kind().#begin().#end().#stringParser(that:{'@stringU
-    '[
-    }).#begin().#add(that:this.text()).#end()
     Void unused0=(
-      Outer0::toS() ::this::cause() ::isPresent() cond=this.cause().isPresent()
+      Outer0::toS() ::this::cause() ::isPresent() ::#bang() cond=this.cause().isPresent().#bang()
       (
-        Void unused2=cond.#checkTrue()
-        catch exception unused3 (
+        Void unused3=cond.#checkTrue()
+        catch exception unused4 (
           on Void void
           )
-        return res.#stringParser(that:{'@stringU
-        ',
-        }).#begin().#add(that:this.cause().#tilde()).#end().#stringParser(that:{'@stringU
-        ']
-        })
+        return Outer0.kind().#plusplus(that:Outer5::S.doubleQuote().#plusplus(that:this.text().#plusplus(that:Outer5::S.doubleQuote())))
         )
       )
-    Void unused1=return res.#stringParser(that:{'@stringU
+    Outer0::kind() res=Outer0.kind()
+    mut Outer0::Varres__8_0 varres=Outer0::Varres__8_0.#apply(inner:res)
+    Void unused1=(
+      Outer0::toS() ::this::text() ::#bangequal(that ) cond0=this.text().#bangequal(that:Outer5::S.#stringParser(that:{'@stringU
+      '
+      }))
+      (
+        Void unused5=cond0.#checkTrue()
+        catch exception unused6 (
+          on Void void
+          )
+        varres.inner(that:varres.#inner().#plusplus(that:Outer5::S.#stringParser(that:{'@stringU
+        '[text:
+        })).#plusplus(that:Outer5::S.doubleQuote().#plusplus(that:this.text().#plusplus(that:Outer5::S.doubleQuote().#plusplus(that:Outer5::S.#stringParser(that:{'@stringU
+        ', cause:
+        }))))))
+        )
+      )
+    Void unused2=return varres.#inner().#begin().#add(that:this.cause().#tilde()).#end().#stringParser(that:{'@stringU
     ']
     })
     void
@@ -4392,7 +4620,7 @@ Outer1::Member dispatch(fwd Outer1::NestedClass root, Outer2::Path path, Outer1:
 Member:{interface <:Outer2::S::ToS}
 Members:{' generic linked list class, elements of type Elem
 
-Varres:'@private
+Varres0:'@private
 {
 type method 
 mut Outer0 #apply(Outer1 inner) 
@@ -4402,7 +4630,7 @@ mut method
 Outer1 #inner() 
 read method 
 Outer1 inner() }
-Varres0:'@private
+Varres1:'@private
 {
 type method 
 mut Outer0 #apply(Outer1::#apply() inner) 
@@ -4481,7 +4709,7 @@ method
 Outer0 #plusplus(Outer0 that) (
   Void unused=(
     Outer0 res=this
-    mut Outer0::Varres varres=Outer0::Varres.#apply(inner:res)
+    mut Outer0::Varres0 varres=Outer0::Varres0.#apply(inner:res)
     Void unused0=(
       Outer0::vals() e=that.vals()
       (
@@ -4542,7 +4770,7 @@ Outer0 #add(Outer1::Member that) Outer0._new(head:Outer0::CellNext.#apply(elem:t
 method 
 Outer0 #end() (
   Outer0::#apply() res=Outer0.#apply()
-  mut Outer0::Varres0 varres=Outer0::Varres0.#apply(inner:res)
+  mut Outer0::Varres1 varres=Outer0::Varres1.#apply(inner:res)
   Void unused=(
     Outer0::vals() elem=this.vals()
     (
@@ -4662,6 +4890,14 @@ type method
 Outer4::S myName() Outer4::S.#stringParser(that:{'@stringU
 'IterationNotComplete
 })
+Varres__8_0:'@private
+{
+type method 
+mut Outer0 #apply(Outer1::kind() inner) 
+mut method 
+Void inner(Outer1::kind() that) 
+mut method 
+Outer1::kind() #inner() }
 type method 
 Outer0 #apply(Outer4::S _text, Outer4::Message::Opt cause) 
 mut method 
@@ -4711,24 +4947,35 @@ type method
 Outer0 #stringParser(Library that) Outer0.#apply(text:Outer4::S.#stringParser(that:that))
 method toS() (
   Void unused=(
-    Outer0::kind() ::#begin() ::#end() ::#stringParser(that ) ::#begin() ::#add(that ) ::#end() res=Outer0.kind().#begin().#end().#stringParser(that:{'@stringU
-    '[
-    }).#begin().#add(that:this.text()).#end()
     Void unused0=(
-      Outer0::toS() ::this::cause() ::isPresent() cond=this.cause().isPresent()
+      Outer0::toS() ::this::cause() ::isPresent() ::#bang() cond=this.cause().isPresent().#bang()
       (
-        Void unused2=cond.#checkTrue()
-        catch exception unused3 (
+        Void unused3=cond.#checkTrue()
+        catch exception unused4 (
           on Void void
           )
-        return res.#stringParser(that:{'@stringU
-        ',
-        }).#begin().#add(that:this.cause().#tilde()).#end().#stringParser(that:{'@stringU
-        ']
-        })
+        return Outer0.kind().#plusplus(that:Outer4::S.doubleQuote().#plusplus(that:this.text().#plusplus(that:Outer4::S.doubleQuote())))
         )
       )
-    Void unused1=return res.#stringParser(that:{'@stringU
+    Outer0::kind() res=Outer0.kind()
+    mut Outer0::Varres__8_0 varres=Outer0::Varres__8_0.#apply(inner:res)
+    Void unused1=(
+      Outer0::toS() ::this::text() ::#bangequal(that ) cond0=this.text().#bangequal(that:Outer4::S.#stringParser(that:{'@stringU
+      '
+      }))
+      (
+        Void unused5=cond0.#checkTrue()
+        catch exception unused6 (
+          on Void void
+          )
+        varres.inner(that:varres.#inner().#plusplus(that:Outer4::S.#stringParser(that:{'@stringU
+        '[text:
+        })).#plusplus(that:Outer4::S.doubleQuote().#plusplus(that:this.text().#plusplus(that:Outer4::S.doubleQuote().#plusplus(that:Outer4::S.#stringParser(that:{'@stringU
+        ', cause:
+        }))))))
+        )
+      )
+    Void unused2=return varres.#inner().#begin().#add(that:this.cause().#tilde()).#end().#stringParser(that:{'@stringU
     ']
     })
     void
@@ -5010,7 +5257,7 @@ Outer2::Bool isPrivate() (
   )}
 Methods:{' generic linked list class, elements of type Elem
 
-Varres:'@private
+Varres0:'@private
 {
 type method 
 mut Outer0 #apply(Outer1 inner) 
@@ -5020,7 +5267,7 @@ mut method
 Outer1 #inner() 
 read method 
 Outer1 inner() }
-Varres0:'@private
+Varres1:'@private
 {
 type method 
 mut Outer0 #apply(Outer1::#apply() inner) 
@@ -5099,7 +5346,7 @@ method
 Outer0 #plusplus(Outer0 that) (
   Void unused=(
     Outer0 res=this
-    mut Outer0::Varres varres=Outer0::Varres.#apply(inner:res)
+    mut Outer0::Varres0 varres=Outer0::Varres0.#apply(inner:res)
     Void unused0=(
       Outer0::vals() e=that.vals()
       (
@@ -5160,7 +5407,7 @@ Outer0 #add(Outer1::Method that) Outer0._new(head:Outer0::CellNext.#apply(elem:t
 method 
 Outer0 #end() (
   Outer0::#apply() res=Outer0.#apply()
-  mut Outer0::Varres0 varres=Outer0::Varres0.#apply(inner:res)
+  mut Outer0::Varres1 varres=Outer0::Varres1.#apply(inner:res)
   Void unused=(
     Outer0::vals() elem=this.vals()
     (
@@ -5280,6 +5527,14 @@ type method
 Outer4::S myName() Outer4::S.#stringParser(that:{'@stringU
 'IterationNotComplete
 })
+Varres__8_0:'@private
+{
+type method 
+mut Outer0 #apply(Outer1::kind() inner) 
+mut method 
+Void inner(Outer1::kind() that) 
+mut method 
+Outer1::kind() #inner() }
 type method 
 Outer0 #apply(Outer4::S _text, Outer4::Message::Opt cause) 
 mut method 
@@ -5329,24 +5584,35 @@ type method
 Outer0 #stringParser(Library that) Outer0.#apply(text:Outer4::S.#stringParser(that:that))
 method toS() (
   Void unused=(
-    Outer0::kind() ::#begin() ::#end() ::#stringParser(that ) ::#begin() ::#add(that ) ::#end() res=Outer0.kind().#begin().#end().#stringParser(that:{'@stringU
-    '[
-    }).#begin().#add(that:this.text()).#end()
     Void unused0=(
-      Outer0::toS() ::this::cause() ::isPresent() cond=this.cause().isPresent()
+      Outer0::toS() ::this::cause() ::isPresent() ::#bang() cond=this.cause().isPresent().#bang()
       (
-        Void unused2=cond.#checkTrue()
-        catch exception unused3 (
+        Void unused3=cond.#checkTrue()
+        catch exception unused4 (
           on Void void
           )
-        return res.#stringParser(that:{'@stringU
-        ',
-        }).#begin().#add(that:this.cause().#tilde()).#end().#stringParser(that:{'@stringU
-        ']
-        })
+        return Outer0.kind().#plusplus(that:Outer4::S.doubleQuote().#plusplus(that:this.text().#plusplus(that:Outer4::S.doubleQuote())))
         )
       )
-    Void unused1=return res.#stringParser(that:{'@stringU
+    Outer0::kind() res=Outer0.kind()
+    mut Outer0::Varres__8_0 varres=Outer0::Varres__8_0.#apply(inner:res)
+    Void unused1=(
+      Outer0::toS() ::this::text() ::#bangequal(that ) cond0=this.text().#bangequal(that:Outer4::S.#stringParser(that:{'@stringU
+      '
+      }))
+      (
+        Void unused5=cond0.#checkTrue()
+        catch exception unused6 (
+          on Void void
+          )
+        varres.inner(that:varres.#inner().#plusplus(that:Outer4::S.#stringParser(that:{'@stringU
+        '[text:
+        })).#plusplus(that:Outer4::S.doubleQuote().#plusplus(that:this.text().#plusplus(that:Outer4::S.doubleQuote().#plusplus(that:Outer4::S.#stringParser(that:{'@stringU
+        ', cause:
+        }))))))
+        )
+      )
+    Void unused2=return varres.#inner().#begin().#add(that:this.cause().#tilde()).#end().#stringParser(that:{'@stringU
     ']
     })
     void
@@ -6503,7 +6769,7 @@ Outer2::Bool isPrivate() (
   )}
 NestedClasses:{' generic linked list class, elements of type Elem
 
-Varres:'@private
+Varres0:'@private
 {
 type method 
 mut Outer0 #apply(Outer1 inner) 
@@ -6513,7 +6779,7 @@ mut method
 Outer1 #inner() 
 read method 
 Outer1 inner() }
-Varres0:'@private
+Varres1:'@private
 {
 type method 
 mut Outer0 #apply(Outer1::#apply() inner) 
@@ -6592,7 +6858,7 @@ method
 Outer0 #plusplus(Outer0 that) (
   Void unused=(
     Outer0 res=this
-    mut Outer0::Varres varres=Outer0::Varres.#apply(inner:res)
+    mut Outer0::Varres0 varres=Outer0::Varres0.#apply(inner:res)
     Void unused0=(
       Outer0::vals() e=that.vals()
       (
@@ -6653,7 +6919,7 @@ Outer0 #add(Outer1::NestedClass that) Outer0._new(head:Outer0::CellNext.#apply(e
 method 
 Outer0 #end() (
   Outer0::#apply() res=Outer0.#apply()
-  mut Outer0::Varres0 varres=Outer0::Varres0.#apply(inner:res)
+  mut Outer0::Varres1 varres=Outer0::Varres1.#apply(inner:res)
   Void unused=(
     Outer0::vals() elem=this.vals()
     (
@@ -6773,6 +7039,14 @@ type method
 Outer4::S myName() Outer4::S.#stringParser(that:{'@stringU
 'IterationNotComplete
 })
+Varres__8_0:'@private
+{
+type method 
+mut Outer0 #apply(Outer1::kind() inner) 
+mut method 
+Void inner(Outer1::kind() that) 
+mut method 
+Outer1::kind() #inner() }
 type method 
 Outer0 #apply(Outer4::S _text, Outer4::Message::Opt cause) 
 mut method 
@@ -6822,24 +7096,35 @@ type method
 Outer0 #stringParser(Library that) Outer0.#apply(text:Outer4::S.#stringParser(that:that))
 method toS() (
   Void unused=(
-    Outer0::kind() ::#begin() ::#end() ::#stringParser(that ) ::#begin() ::#add(that ) ::#end() res=Outer0.kind().#begin().#end().#stringParser(that:{'@stringU
-    '[
-    }).#begin().#add(that:this.text()).#end()
     Void unused0=(
-      Outer0::toS() ::this::cause() ::isPresent() cond=this.cause().isPresent()
+      Outer0::toS() ::this::cause() ::isPresent() ::#bang() cond=this.cause().isPresent().#bang()
       (
-        Void unused2=cond.#checkTrue()
-        catch exception unused3 (
+        Void unused3=cond.#checkTrue()
+        catch exception unused4 (
           on Void void
           )
-        return res.#stringParser(that:{'@stringU
-        ',
-        }).#begin().#add(that:this.cause().#tilde()).#end().#stringParser(that:{'@stringU
-        ']
-        })
+        return Outer0.kind().#plusplus(that:Outer4::S.doubleQuote().#plusplus(that:this.text().#plusplus(that:Outer4::S.doubleQuote())))
         )
       )
-    Void unused1=return res.#stringParser(that:{'@stringU
+    Outer0::kind() res=Outer0.kind()
+    mut Outer0::Varres__8_0 varres=Outer0::Varres__8_0.#apply(inner:res)
+    Void unused1=(
+      Outer0::toS() ::this::text() ::#bangequal(that ) cond0=this.text().#bangequal(that:Outer4::S.#stringParser(that:{'@stringU
+      '
+      }))
+      (
+        Void unused5=cond0.#checkTrue()
+        catch exception unused6 (
+          on Void void
+          )
+        varres.inner(that:varres.#inner().#plusplus(that:Outer4::S.#stringParser(that:{'@stringU
+        '[text:
+        })).#plusplus(that:Outer4::S.doubleQuote().#plusplus(that:this.text().#plusplus(that:Outer4::S.doubleQuote().#plusplus(that:Outer4::S.#stringParser(that:{'@stringU
+        ', cause:
+        }))))))
+        )
+      )
+    Void unused2=return varres.#inner().#begin().#add(that:this.cause().#tilde()).#end().#stringParser(that:{'@stringU
     ']
     })
     void
@@ -7117,7 +7402,7 @@ Outer1::Doc doc() this.record().docOf(path:Outer2::Path.#stringParser(that:{'@st
 }))}
 Types:{' generic linked list class, elements of type Elem
 
-Varres:'@private
+Varres0:'@private
 {
 type method 
 mut Outer0 #apply(Outer1 inner) 
@@ -7127,7 +7412,7 @@ mut method
 Outer1 #inner() 
 read method 
 Outer1 inner() }
-Varres0:'@private
+Varres1:'@private
 {
 type method 
 mut Outer0 #apply(Outer1::#apply() inner) 
@@ -7206,7 +7491,7 @@ method
 Outer0 #plusplus(Outer0 that) (
   Void unused=(
     Outer0 res=this
-    mut Outer0::Varres varres=Outer0::Varres.#apply(inner:res)
+    mut Outer0::Varres0 varres=Outer0::Varres0.#apply(inner:res)
     Void unused0=(
       Outer0::vals() e=that.vals()
       (
@@ -7267,7 +7552,7 @@ Outer0 #add(Outer1::Type that) Outer0._new(head:Outer0::CellNext.#apply(elem:tha
 method 
 Outer0 #end() (
   Outer0::#apply() res=Outer0.#apply()
-  mut Outer0::Varres0 varres=Outer0::Varres0.#apply(inner:res)
+  mut Outer0::Varres1 varres=Outer0::Varres1.#apply(inner:res)
   Void unused=(
     Outer0::vals() elem=this.vals()
     (
@@ -7387,6 +7672,14 @@ type method
 Outer4::S myName() Outer4::S.#stringParser(that:{'@stringU
 'IterationNotComplete
 })
+Varres__8_0:'@private
+{
+type method 
+mut Outer0 #apply(Outer1::kind() inner) 
+mut method 
+Void inner(Outer1::kind() that) 
+mut method 
+Outer1::kind() #inner() }
 type method 
 Outer0 #apply(Outer4::S _text, Outer4::Message::Opt cause) 
 mut method 
@@ -7436,24 +7729,35 @@ type method
 Outer0 #stringParser(Library that) Outer0.#apply(text:Outer4::S.#stringParser(that:that))
 method toS() (
   Void unused=(
-    Outer0::kind() ::#begin() ::#end() ::#stringParser(that ) ::#begin() ::#add(that ) ::#end() res=Outer0.kind().#begin().#end().#stringParser(that:{'@stringU
-    '[
-    }).#begin().#add(that:this.text()).#end()
     Void unused0=(
-      Outer0::toS() ::this::cause() ::isPresent() cond=this.cause().isPresent()
+      Outer0::toS() ::this::cause() ::isPresent() ::#bang() cond=this.cause().isPresent().#bang()
       (
-        Void unused2=cond.#checkTrue()
-        catch exception unused3 (
+        Void unused3=cond.#checkTrue()
+        catch exception unused4 (
           on Void void
           )
-        return res.#stringParser(that:{'@stringU
-        ',
-        }).#begin().#add(that:this.cause().#tilde()).#end().#stringParser(that:{'@stringU
-        ']
-        })
+        return Outer0.kind().#plusplus(that:Outer4::S.doubleQuote().#plusplus(that:this.text().#plusplus(that:Outer4::S.doubleQuote())))
         )
       )
-    Void unused1=return res.#stringParser(that:{'@stringU
+    Outer0::kind() res=Outer0.kind()
+    mut Outer0::Varres__8_0 varres=Outer0::Varres__8_0.#apply(inner:res)
+    Void unused1=(
+      Outer0::toS() ::this::text() ::#bangequal(that ) cond0=this.text().#bangequal(that:Outer4::S.#stringParser(that:{'@stringU
+      '
+      }))
+      (
+        Void unused5=cond0.#checkTrue()
+        catch exception unused6 (
+          on Void void
+          )
+        varres.inner(that:varres.#inner().#plusplus(that:Outer4::S.#stringParser(that:{'@stringU
+        '[text:
+        })).#plusplus(that:Outer4::S.doubleQuote().#plusplus(that:this.text().#plusplus(that:Outer4::S.doubleQuote().#plusplus(that:Outer4::S.#stringParser(that:{'@stringU
+        ', cause:
+        }))))))
+        )
+      )
+    Void unused2=return varres.#inner().#begin().#add(that:this.cause().#tilde()).#end().#stringParser(that:{'@stringU
     ']
     })
     void
@@ -8160,7 +8464,7 @@ type Outer0 #begin() Outer0
 method 
 Outer0 #end() this}
 ExposeAsLibrary:{
-Varres1__0_0:'@private
+Varres2__9_0:'@private
 {
 type method 
 mut Outer0 #apply(Library inner) 
@@ -8193,7 +8497,7 @@ Library #leftleft(Library that) exception Outer2::MetaGuard::NestedClassUnavaila
       )
     Void unused1=this.checkTargetExists(that:that)
     Library res=that
-    mut Outer0::Varres1__0_0 varres=Outer0::Varres1__0_0.#apply(inner:res)
+    mut Outer0::Varres2__9_0 varres=Outer0::Varres2__9_0.#apply(inner:res)
     Void unused2=varres.inner(that:Outer1::RenamePath.#begin().#add(that:Outer2::Path.#stringParser(that:{'@stringU
     'Outer0
     }), to:Outer2::Path.#stringParser(that:{'@stringU

@@ -134,13 +134,7 @@ method
 Outer0 #end() 
 method 
 Outer1 #stringParser(Library that) }}
-Bool:{<:Outer1::S::ToS
-type method '  toPutAs private
-Outer0 #apply(Library binaryRepr) 
-mut method '  toPutAs private
-Library #binaryRepr() 
-read method '  toPutAs private
-Library binaryRepr() 
+Bool:{<:Outer1::S::ToS, Outer1::PrImpl::Concept::Equals
 method 
 Void #checkTrue() exception Void 
 type method 
@@ -155,28 +149,10 @@ method
 Outer0 #bang() 
 type method 
 Outer0 fromS(Outer1::S::ToS that) 
-ParseFail:{'@private
-<:Outer2::S::ToS
-type method '<:Guard TODO: is circular to use Guard, an embrowdery should make a fix with a sum
-Outer0 #apply(Outer2::S inner) 
-mut method '<:Guard TODO: is circular to use Guard, an embrowdery should make a fix with a sum
-Outer2::S #inner() 
-read method '<:Guard TODO: is circular to use Guard, an embrowdery should make a fix with a sum
-Outer2::S inner() 
-type method 
-Outer0 #stringParser(Library that) 
-type method 
-Outer0 #apply(Outer2::S::ToS that) 
 method 
-Outer2::S #tilde() 
+Outer0 #equalequal(Outer0 that) 
 method 
-Library binaryRepr() 
-method 
-Outer1 #bangequal(Outer0 that) 
-method 
-Outer1 #equalequal(Outer0 that) 
-method 
-Outer1 equals(Any that) }}
+Outer0 #bangequal(Outer0 that) }
 Debug:{
 type method 
 Void #apply(Outer1::S::ToS that) 
@@ -185,4 +161,10 @@ Void #apply(Library lib)
 type method 
 Void #apply(Outer1::S::ToS fileName, Outer1::S::ToS content) 
 type method 
-Void #apply(type Any clazz) }}
+Void #apply(type Any clazz) }
+PrImpl:'@private
+{
+Concept:{
+Equals:{interface 
+read method 
+Outer3::Bool equals(read Any that) }}}}

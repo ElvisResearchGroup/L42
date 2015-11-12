@@ -36,7 +36,7 @@ Library <<(Library that) exception MetaGuard::ClassClash,MetaGuard::MethodClash
       with ren in rens.vals() (
         map:=map.#add(ren)
         libi:=this.solveConflict(libi,location:ren)
-        catch exception (on MetaGuard error Assert::ObservedBug({
+        catch exception (on MetaGuard error Assert::ObservedBug(text:{
           return S"solveConflict does not follow the specification: it throws exceptions"
           ' yes, exception can be handled by type system, but it is an example of
           'wrong behaviour for metaprogrammed code?

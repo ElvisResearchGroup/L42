@@ -1,9 +1,7 @@
 {
 MyName:{
-  DecorationUnfeasable:{(MetaGuard cause)<:MetaGuard
-    type method Outer0 (MetaGuard that) Outer0(cause:that)
-    method S::ToS ~() this.cause()
-    method toS() S"MyName::DecorationUnfeasable["[this.cause()]"]"
+  DecorationUnfeasable:Message::$[]<<{<:MetaGuard
+    type method S myName() S"MyName::DecorationUnfeasable"
     }
   type method Library<<(Library that) exception DecorationUnfeasable{
     return Extends[{

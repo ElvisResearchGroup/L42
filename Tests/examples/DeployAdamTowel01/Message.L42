@@ -47,9 +47,16 @@ $:{()
       }
     type method Outer0 #stringParser(Library that) Outer0(text:S.#stringParser(that))
     method toS() {
-      res=Outer0.kind()[]"["[this.text()]
-      if this.cause().isPresent() (return res","[~this.cause()]"]")
-      return res"]"
+      if !this.cause().isPresent() (
+        return Outer0.kind()++S.doubleQuote()++this.text()++S.doubleQuote()
+        )
+      var res=Outer0.kind()
+      if this.text()!=S"" (
+        res:=res++S"[text:"++S.doubleQuote()++this.text()++S.doubleQuote()
+          ++S", cause:"
+        )
+      else (res:=res++S"[")
+      return res[~this.cause()]"]"
       }
     method Bool != (Outer0 that) !(this==that)
     method Bool == (Outer0 that) Message::EqualMessages(this,other:that)

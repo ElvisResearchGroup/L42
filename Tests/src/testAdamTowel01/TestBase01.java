@@ -85,13 +85,13 @@ public class TestBase01 {
        "fuffa @a beer @Outer1::External bar @::Internal fuzz"
       ,""
       ,"a"
-      ,"Report plgFailure as System::Guard::PluginFailure[SafeOperators.introspectLibraryDocPath]"
+      ,"Report plgFailure as System::Guard::PluginFailure\"SafeOperators.introspectLibraryDocPath\""
       ,"Iteration complete"
       ,"Outer1::External"
       ,"External found"
       ,"Iteration complete"
       ,"::Internal"
-      ,"Report plgFailure as System::Guard::PluginFailure[SafeOperators.introspectLibraryDocPath]"
+      ,"Report plgFailure as System::Guard::PluginFailure\"SafeOperators.introspectLibraryDocPath\""
       ,"Iteration complete"
        ));
    }
