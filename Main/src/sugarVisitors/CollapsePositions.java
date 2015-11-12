@@ -1,7 +1,10 @@
 package sugarVisitors;
 
 import ast.Expression;
-import ast.Ast.Position;;
+import ast.Ast.FieldDec;
+import ast.Ast.Header;
+import ast.Ast.Position;
+import ast.Expression.ClassB.Member;;
 
 public class CollapsePositions extends CloneVisitor{
   Position p=Position.noInfo;
@@ -10,12 +13,28 @@ public class CollapsePositions extends CloneVisitor{
     e.accept(cp);
     return cp.p;
   }
+  
+  protected Header liftH(Header h){
+    accumulatePos(h);
+    return super.liftH(h);
+  } 
+  protected FieldDec liftF(FieldDec f){
+    accumulatePos(f);
+    return super.liftF(f);
+  } 
+  protected Member liftM(Member m){
+    accumulatePos(m);
+    return super.liftM(m);
+  } 
   protected <T extends Expression>T lift(T e){
-    if(e instanceof Expression.HasPos){
-      Expression.HasPos hp=(Expression.HasPos)e;
+   accumulatePos(e);
+    return super.lift(e);
+  }
+  private void accumulatePos(Object o){
+    if(o instanceof Expression.HasPos){
+      Expression.HasPos hp=(Expression.HasPos)o;
       p=accumulatePos(p,hp.getP());
     }
-    return super.lift(e);
   }
   public static Position accumulatePos(Position p1, Position p2) {
     if(p2==null){return p1;}

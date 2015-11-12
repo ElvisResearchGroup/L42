@@ -9,6 +9,7 @@ import java.util.Map;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.Value;
+import lombok.experimental.Wither;
 import ast.Ast;
 import ast.ExpCore;
 import ast.Ast.HistoricType;
@@ -53,8 +54,9 @@ import ast.Util.PathMwt;
     List<ClassB.Member> alreadyOffered;
   }
   @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class IncoherentMwts extends ErrorMessage {
-
-  List<PathMwt> incoherent;}
+  ast.Ast.MethodSelector guilty;
+  List<PathMwt> incoherent;
+  Ast.Position pos;}
   @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class MalformedUnionOfMembers extends ErrorMessage {
     ClassB.MethodWithType mFromInterface;
     ClassB.MethodWithType mFromClass;
@@ -156,7 +158,7 @@ import ast.Util.PathMwt;
     List<ClassB> p;
     ClassB cb;
   }
-  @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class PathNonExistant extends TypeError {
+  @Value @Wither @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class PathNonExistant extends TypeError {
     List<String> listOfNodeNames;
     ClassB cb;
     Ast.Position pos;
@@ -270,7 +272,7 @@ import ast.Util.PathMwt;
     Throwable promotionAttemptedBut;
   }
 
-  @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class MethodNotPresent extends TypeError {
+  @Value @Wither @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class MethodNotPresent extends TypeError {
     Path path;
     MethodSelector ms;
     ExpCore.MCall call;

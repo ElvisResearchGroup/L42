@@ -2,13 +2,24 @@
   
  RecordWrapper:'@private
     {
+    type method Library recordWrapperTrait(){<:MetaGuard
+      method kind() Outer0.myName()
+      method text() S""
+      method responseOf() Message::Opt()
+      method toS() Outer0.myName()    
+      method equals(that){
+        with that (on Outer0 return this==that)
+        return Bool.false()
+        }
+      method clazz() Outer0
+      method classAny() Outer0
+      type method Outer0(Introspection::Record record) 
+      type method S myName()
+      method Bool != (Outer0 that) !(this==that)
+      method Bool == (Outer0 that) Message::EqualMessages(this,other:that)
+      }
     type method Library <<(Library that) 
-      SafeOperatorsAccess.compose(left:that,right:{
-        <:MetaGuard
-        type method Outer0(Introspection::Record record) 
-        method toS() Outer0.myName()
-        type method S myName()
-        })
+      SafeOperatorsAccess.compose(left:that,right:Outer0.recordWrapperTrait())
     }
 SourceUnfit:RecordWrapper<<{type method S myName()S"SourceUnfit"}
 IncoherentRedirectMapping:RecordWrapper<<{type method S myName()S"IncoherentRedirectMapping"}

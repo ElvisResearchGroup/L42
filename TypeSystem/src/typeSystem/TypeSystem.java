@@ -29,6 +29,7 @@ import ast.Ast.Ph;
 import ast.Ast.SignalKind;
 import ast.Ast.Stage;
 import ast.ErrorMessage;
+import ast.ErrorMessage.MethodNotPresent;
 import ast.ExpCore;
 import ast.ExpCore.Block;
 import ast.ExpCore.ClassB;
@@ -392,7 +393,9 @@ public class TypeSystem implements Visitor<Type>, Reporter{
       if(recOpt==null){return methodUnknownT(varEnvs,s);}
       if(recOpt.isPrimitive()){//TODO: method not present thrown only for primitives?
         throw new ErrorMessage.MethodNotPresent(recOpt,s.getS(),s,null,p.getInnerData());}
-      MethodWithType mwt = p.method(recOpt,s.getS(),s,true);
+      MethodWithType mwt;
+      try{mwt= p.method(recOpt,s.getS(),s,true);}
+      catch(MethodNotPresent mnp){throw mnp.withPos(s.getP());}
       NormType recExpected=new NormType(mwt.getMt().getMdf(),recOpt,Ph.None);
       return TypeCheckMethod.methCallT(this,varEnvs,s,recExpected,mwt);
     });

@@ -1,4 +1,4 @@
-{(Library binaryRepr)<:S::ToS '  toPutAs private
+{(Library binaryRepr)<:S::ToS Concept::Equals '@private
   method Void #checkTrue() exception Void 
     using Alu
       check ifInt32EqualDo(n1:this.binaryRepr() n2:0N.binaryRepr())
@@ -26,21 +26,16 @@
   Outer0 fromS(S::ToS that){
     if that.toS()==S"true" (return Outer0.true())
     if that.toS()==S"false" (return Outer0.false())
-    error ParseFail""
+    error S"UnsatisfactoryErrorToAvoidCycle, replace in Adam2-3"
+    'error ParseFail"" ParseFail<:Guard and nested in Bool
     }
-  ParseFail:{
-  '@private
-  (S inner) <:S::ToS '<:Guard TODO: is circular to use Guard, an embrowdery should make a fix with a sum
-  type method Outer0 #stringParser(Library that) Outer0(S.#stringParser(that))
-  type method Outer0 (S::ToS that) Outer0(inner:that.toS())
-  method S ~() this.inner()
-  method toS()  S"ParseFail["[this.inner()]"]"
-  method Library binaryRepr() this.inner().binaryRepr()
-  method Bool != (Outer0 that) !(this==that)
-  method Bool == (Outer0 that) this.inner()==that.inner()
-  method Bool equals(Any that) {
-    with that (on Outer0 return this==that)
-    return Bool.false()
+  method Outer0 ==(Outer0 that) {
+    if this (return that)
+    return !that
     }
-  }
+  method Outer0 !=(Outer0 that) !(this==that)
+      method equals(that){
+      with that (on Outer0 return this==that)
+      return Bool.false()
+      }
 }

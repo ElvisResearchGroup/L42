@@ -1,0 +1,63 @@
+{interface<:S::ToS, Concept::Equals,Concept::Classable
+type method S kind()
+method S text()
+method Opt responseOf()
+read method type Outer0 clazz()
+Opt:{#new(TOpt that)
+  TOpt:{interface method Outer2 get() }
+  TEmpty:{()<:TOpt method get() 
+    error S"UnsatisfactoryErrorToAvoidCycle, replace in Adam2-3"
+    'error Guard::Operation"TEmpty.get() Value not present in Optional" 
+    }
+  TOf:{(Outer2 that)<:TOpt method get() this.that()}
+  method Outer1 ~() this.that().get()
+  method Bool isPresent() {
+    unused=~this
+    return Bool.true()
+    catch error (on Any return Bool.false())
+    }
+  type method Outer0 () Outer0.#new(TEmpty())
+  type method Outer0 (Outer1 that) Outer0.#new(TOf(that))
+  }
+EqualMessages:{
+  type method Bool (Message that,Message other){
+  'assuming they have the same type
+  res=that.clazz().kind()==other.clazz().kind() 
+    & that.text()==other.text()
+    & that.responseOf().isPresent()==other.responseOf().isPresent()
+  if !res (return Bool.false())
+  if !that.responseOf().isPresent() (return Bool.true())
+  'i know both are present
+  return (~that.responseOf()).equals(~other.responseOf()) ' this calls  equals in message,
+  'that check for equal type and then call EqualMessages
+  }}
+$:{()
+  type method Outer0 #begin() Outer0()
+  method Outer0 #end() this
+  method Library <<(Library that)
+    SafeOperatorsAccess.compose(left:that, right:Outer0.messageTrait())
+  type method Library messageTrait() {(S _text, Message::Opt cause)<:Message
+    type method S myName()
+    method kind() this.myName()
+    method text() this._text()
+    method responseOf() this.cause()
+    method equals(that){
+      with that (on Outer0 return this==that)
+      return Bool.false()
+      }
+    type method Outer0 #stringParser(Library that) Outer0(text:S.#stringParser(that))
+    method toS() {
+      res=Outer0.kind()[]"["[this.text()]
+      if this.cause().isPresent() (return res","[~this.cause()]"]")
+      return res"]"
+      }
+    method Bool != (Outer0 that) !(this==that)
+    method Bool == (Outer0 that) Message::EqualMessages(this,other:that)
+    method classAny() Outer0
+    method clazz() Outer0
+    type method Outer0 (S text) Outer0(_text:text,cause:Message::Opt())
+    type method Outer0(S text, Message cause) Outer0(_text:text,cause:Message::Opt(cause))
+    type method Outer0(Message that) Outer0(_text:that.text(),cause:Message::Opt(that))
+    }
+  }
+}

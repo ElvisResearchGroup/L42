@@ -1,42 +1,30 @@
 {
-Failure:{interface <:S::ToS}
+Failure:{interface <:Message}
 NotImplementedYet:
-  StringableU[]<<{<:Failure type method S myName() S"NotImplementedYet"}
+  Message::$[]<<{<:Guard type method S myName() S"Assert::NotImplementedYet"}
 
 ObservedBug:
   'if this happens, then the programmer had wrong assumption on the code behaviour.
   'is about logic errors
- StringableU[]<<{<:Failure type method S myName() S"ObservedBug"}
-CodeNotReachable: 
-  'in an ideal world, a static analysis would verify this
-  StringableU[]<<{<:Failure type method S myName() S"CodeNotReachable" }
-CatchCaseNotReachable:
+ Message::$[]<<{<:Guard type method S myName() S"Assert::ObservedBug"}
+CodeNotReachable:
   'Can wrap a captured error/exception (often a Guard)
   'to declare that is a bug if such case 
-  'happens (responsabilty on the code logic)
-  {(S::ToS cause)<:Failure
-  type method Outer0 (S::ToS that) Outer0(cause:that)
-  method S::ToS ~() this.cause()
-  method toS() S"CatchCaseNotReachable["[this.cause()]"]"
- 'code under, not clear if good to have. use == on .toS()?? 
- ' method Bool != (Outer0 that) !(this==that)
- ' method Bool == (Outer0 that) this.cause()==that.cause()
- ' method Bool equals(Any that) {
- '   with that (on Outer0 return this==that)
- '   return Bool.false()
- '   }
-  }
+  'happens (responsabilty on the code logic).
+  'In an ideal world, a static analysis would verify this
+  Message::$[]<<{<:Guard type method S myName() S"Assert::CodeNotReachable"}
   
-  type method Condition #begin() Condition(0N)
-  Condition:{(N that)
-    method Condition #add(Bool that){
-      if that (return Outer0(this.that()+1N))
-      error AssertMessage(S"Condition number "[this.that()]" failed")
-      }
-    method Condition #add(Bool that, S::ToS msg){
-      if that (return Outer0(this.that()+1N))
-      error AssertMessage(msg.toS()[S.nl()]"number:"[this.that()]" failed")
-      }
+type method Condition #begin() Condition(0N)
+Condition:{(N that)
+  method Void #end() void
+  method Condition #add(Bool that){
+    if that (return Outer0(this.that()+1N))
+    error AssertMessage(text:S"Condition number "[this.that()]" failed")
     }
-  AssertMessage:StringableU[]<<{<:Failure type method S myName() S"AssertMessage"}
+  method Condition #add(Bool that, S::ToS msg){
+    if that (return Outer0(this.that()+1N))
+    error AssertMessage(text:msg.toS()[S.nl()]"number:"[this.that()]" failed")
+    }
+  }
+AssertMessage:Message::$[]<<{<:Failure type method S myName() S"AssertMessage"}
 }

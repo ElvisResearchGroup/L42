@@ -7,13 +7,12 @@
 'Turning an exception Gard into an error Gard
 ' is equivalent of declaring that such misuse should not happen (blame on the caller),
 ' still, there is no bug in the program at this stage. Is legit for the caller to try and be blamed
-
-interface<:S::ToS 'all other guards should implement this one
+interface<:Message 'all other guards should implement this one
 Operation:'if "this" is unfit
-  StringableU[]<<{<:Guard type method S myName() S"Operation"}
+  Message::$[]<<{<:Guard type method S myName() S"Guard::Operation"}
 Parameter:' if a parameter is unfit
-  StringableU[]<<{<:Guard type method S myName() S"Parameter"}
+  Message::$[]<<{<:Guard type method S myName() S"Guard::Parameter"}
 Precondition:' if it is about multiple parameters
-  StringableU[]<<{<:Guard type method S myName() S"Precondition"}
+  Message::$[]<<{<:Guard type method S myName() S"Guard::Precondition"}
 
 }

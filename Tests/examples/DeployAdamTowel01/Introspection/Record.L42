@@ -15,7 +15,7 @@
   method S #stringParser(Library that) {
     path=Path.#stringParser(that)
     return this.that().introspectDocAsString(path:path)
-    catch exception x (on MetaGuard::MemberUnavailable error Assert::CatchCaseNotReachable(x) )
+    catch exception x (on MetaGuard::MemberUnavailable error Assert::CodeNotReachable(x) )
     }
   method
   Doc docOf(Path path){
@@ -68,7 +68,7 @@
         return RootForNested(path:path,mirror:mirror,_report:_report)
         )
 
-      default error Assert::ObservedBug(S"invalid member kind "[x]"")
+      default error Assert::ObservedBug(text:S"invalid member kind "[x]"")
       )}
     result(root:root)
     )

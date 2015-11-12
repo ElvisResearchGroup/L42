@@ -115,7 +115,7 @@ CellNext:{(Elem elem, Cell nextCell)<:Cell
       '  use valsCut() to allows incomplete iterations
       "
       )
-    IterationNotComplete:StringableU[]<<{<:Assert::Failure type method S myName() S"IterationNotComplete"}
+    IterationNotComplete:Message::$[]<<{<:Assert::Failure type method S myName() S"IterationNotComplete"}
   }
 
 Iterator:{mut (var Cell that,Bool terminate)

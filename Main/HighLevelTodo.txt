@@ -1,4 +1,9 @@
 Adam Towel
+ -adam towel 2 or 3 must:
+   -inject ParseErrors in Bool, N
+   -inject better error in Message::Opt
+   -replace a Functor computing class names with the actual behaviour (thus I can remove all the myName in AdamTowel1)
+ 
   -test introspection more 
   -in deploy library, check that is closed code
   -test if from is applied when reading method types?
@@ -22,6 +27,8 @@ Caching
     
     
     -Sum and interfaces: sum can make interfaces circular. I think I will make this OK
+    -sum must give error if sum class implementing interface with class directly defining an 
+    interface method of the first one. check this case
     
  Other plugins
     -db plugin

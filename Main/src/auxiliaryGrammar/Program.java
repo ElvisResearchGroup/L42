@@ -165,14 +165,12 @@ public class Program {
   }
   public static ClassB extractCBar(List<String> list, ClassB cb,Doc[] commentRef,Boolean[]isPrivateRef) {
     assert cb!=null;
-    Position pos=null;
     for(String s:list){
       Optional<Member> optNc = Program.getIfInDom(cb.getMs(),s);
       if(!optNc.isPresent()){
-        throw new ErrorMessage.PathNonExistant(list,cb,pos);
+        throw new ErrorMessage.PathNonExistant(list,cb,null);
         }
       NestedClass nc=(NestedClass)optNc.get();
-      pos=nc.getP();
       ExpCore ec=nc.getInner();
       commentRef[0]=nc.getDoc();
       isPrivateRef[0]|=nc.getDoc().isPrivate();
@@ -360,20 +358,23 @@ public class Program {
     }
     return p;
   }
-  private static void accumulateAllSupertypes(List<Path> ps,Program p,Path pi){
+  private static void accumulateAllSupertypes(ClassB forErr,List<Path> ps,Program p,Path pi){
     if(ps.contains(pi)){return;}
     ps.add(pi);
     ClassB cbi=p.extractCb(pi);
+    if (!cbi.isInterface()){
+      throw new ErrorMessage.MalformedSubtypeDeclaration(forErr,cbi, pi, p.getInnerData());
+    }
     for(Path pj:cbi.getSupertypes()){
       pj=From.fromP(pj,pi);
-      accumulateAllSupertypes(ps, p, pj);
+      accumulateAllSupertypes(cbi,ps, p, pj);
     }
   }
   /**cb must be frommed so that is like it is the top of p*/
   public static List<Path> getAllSupertypes(Program p,ClassB cb){
     List<Path> result=new ArrayList<>();
     for(Path pi:cb.getSupertypes()){
-      accumulateAllSupertypes(result, p, pi);     
+      accumulateAllSupertypes(cb,result, p, pi);     
       }
     return result;
   }

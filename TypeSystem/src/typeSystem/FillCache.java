@@ -9,8 +9,11 @@ import java.util.Set;
 
 import ast.Ast;
 import ast.Ast.Path;
+import ast.Ast.Position;
 import ast.Ast.Stage;
 import ast.ErrorMessage;
+import ast.Expression;
+import ast.ErrorMessage.PathNonExistant;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodImplemented;
@@ -22,7 +25,10 @@ import auxiliaryGrammar.Functions;
 import auxiliaryGrammar.Program;
 import auxiliaryGrammar.UsedPathsPlus;
 import coreVisitors.From;
+import coreVisitors.InjectionOnSugar;
 import coreVisitors.IsCompiled;
+import facade.ErrorFormatter;
+import sugarVisitors.CollapsePositions;
 
 public class FillCache {
  public static void computeInheritedDeep(Program p,ClassB cb){
@@ -53,7 +59,8 @@ private static void checkCoherent(List<PathMwt> mwts, ClassB cb) {
   for(int i=0;i<mwts.size();i++){
     for(int j=i+1;j<mwts.size();j++){
       if(!mwts.get(i).getMwt().getMs().equals(mwts.get(j).getMwt().getMs())){continue;}
-      throw new ErrorMessage.IncoherentMwts(completeMwts(mwts,cb));
+      throw new ErrorMessage.IncoherentMwts(mwts.get(i).getMwt().getMs(),completeMwts(mwts,cb),
+          CollapsePositions.of(cb.accept(new InjectionOnSugar())));
     }
   }
   for(PathMwt pmwt: mwts){
@@ -61,7 +68,8 @@ private static void checkCoherent(List<PathMwt> mwts, ClassB cb) {
      if(!(m instanceof MethodWithType)){continue;}
      MethodWithType mwt=(MethodWithType) m;
      if(!pmwt.getMwt().getMs().equals(mwt.getMs())){continue;}
-     throw new ErrorMessage.IncoherentMwts(completeMwts(mwts,cb));
+     throw new ErrorMessage.IncoherentMwts(mwt.getMs(),completeMwts(mwts,cb),
+         CollapsePositions.of(cb.accept(new InjectionOnSugar())));
    } 
   }
   for(Member m:cb.getMs()){
@@ -71,7 +79,8 @@ private static void checkCoherent(List<PathMwt> mwts, ClassB cb) {
     for(PathMwt pmwt: mwts){
       if(pmwt.getMwt().getMs().equals(mi.getS())){ find=true; break;}
     } 
-    if(!find){throw new ErrorMessage.IncoherentMwts(completeMwts(mwts,cb));}
+    if(!find){throw new ErrorMessage.IncoherentMwts(mi.getS(),completeMwts(mwts,cb),
+        CollapsePositions.of(cb.accept(new InjectionOnSugar())));}
   }
 }
 private static List<PathMwt> completeMwts(List<PathMwt> mwts, ClassB cb) {
@@ -154,7 +163,7 @@ public static boolean progress(List<CachedStage>again){
     List<ClassB> inner = new ArrayList<>();
     collectInnerClasses(again,p,cb,inner);
     if(! IsCompiled.of(cb)){return;}
-    List<ClassB> es = extractUsedCb(p, cb);
+    List<ClassB> es=extractUsedCb(p, cb);
     Stage stage = stage(p, cb, es);
     if(stage==Stage.ToIterate){again.add(cb.getStage());}
     assert stage!=null;
@@ -172,6 +181,11 @@ public static boolean progress(List<CachedStage>again){
         }
       catch(ErrorMessage.ProgramExtractOnMetaExpression meta){es.add(null);}
       catch(ErrorMessage.ProgramExtractOnWalkBy walk){ es.add(null);}
+     catch(PathNonExistant pne){
+       assert pne.getPos()==null;
+       Position pos=CollapsePositions.of(cb.accept(new InjectionOnSugar()));
+       throw pne.withPos(pos);  
+       }
       }
     return es;
   }

@@ -23,7 +23,7 @@ method Bool hasExternalType(){
   }
 method type Any externalType(){
   if this.path()!=Path"Outer0" (
-    error Guard::Operation(S"NestedClass.externalType() The NestedClass Object refers to "[this.path()]"")
+    error Guard::Operation(text:S"NestedClass.externalType() The NestedClass Object refers to "[this.path()]"")
     )
   with mirror=this.mirror() (
     on MirrorPr::Class return mirror.lib()
@@ -43,7 +43,7 @@ Members members() (
       .introspectReportMember(root:this,path:this.path(),memberN:mN))
     mN+=1N
     )
-  catch exception x (on MetaGuard::MemberUnavailable error Assert::CatchCaseNotReachable(x))
+  catch exception x (on MetaGuard::MemberUnavailable error Assert::CodeNotReachable(x))
   result)
 
 method
@@ -70,7 +70,7 @@ method Types implementedInterfaces() (
       .introspectReportType(root:this,path:this.path(),memberN:0N,typeN:tN))
     tN-=1N
     )
-  catch exception x (on MetaGuard::MemberUnavailable error Assert::CatchCaseNotReachable(x))
+  catch exception x (on MetaGuard::MemberUnavailable error Assert::CodeNotReachable(x))
   result)
 
 method

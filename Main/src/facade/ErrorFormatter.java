@@ -240,6 +240,7 @@ public class ErrorFormatter {
     for(Field f:c.getDeclaredFields()){
       f.setAccessible(true);
       if(f.getName().equals("p")){continue;}
+      if(f.getName().equals("cb")){continue;}
       Object obj=f.get(msg);
       if(obj==null){continue;}
       errorTxt+=f.getName();
@@ -271,6 +272,8 @@ public class ErrorFormatter {
         cachedInfo+=  " depends:[";
         //cachedInfo+=//can be circular errorFormat(stg.getDependencies(),new ArrayList<>());
         for(ClassB cbd:stg.getDependencies()){
+          if(cbd.getStage().getStage()==Stage.Less){cachedInfo+="-";}
+          if(cbd.getStage().getStage()==Stage.Plus){cachedInfo+="+";}
           if(cbd.getStage().getGivenName().isEmpty()){
             cachedInfo+="anonimus";
           }
@@ -312,6 +315,7 @@ public class ErrorFormatter {
     if(obj instanceof Ast.Position){ return obj.toString();}
     if(obj instanceof HashMap){ return obj.toString();}
     if(obj instanceof Collection){ return obj.toString();}
+    if(obj instanceof ast.Util.PathMwt){ return obj.toString();}
     return "unknown kind "+obj.getClass().getCanonicalName();
   }
   public static String formatSelectorCompact(Ast.MethodSelector ms) {

@@ -63,11 +63,14 @@ public class Util {
     public String toString(){
       String result="anonymus";
       if(!this.givenName.isEmpty()){result=this.givenName;}
-      result+="["+this.stage+"]";
+      if(this.stage==Stage.Less){result="-"+result;}
+      if(this.stage==Stage.Plus){result="+"+result;}
       if(this.coherent){result+="[coherent]";}
       if(this.verified){result+="[verified]";}
       result+="[";
       for(ClassB cb:this.dependencies){
+        if(cb.getStage().stage==Stage.Less){result+="-";}
+        if(cb.getStage().stage==Stage.Plus){result+="+";}
         if(cb.getStage().getGivenName().isEmpty()){result+="?;";}
         else {result+=cb.getStage().getGivenName()+";";}
       }

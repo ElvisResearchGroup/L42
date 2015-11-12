@@ -5,7 +5,7 @@
       return Introspection::Record(lib:this._binaryRepr()).that()
         .introspectDocPath(path:Path"Outer0",annotationN:this.index())
       catch exception x (
-        on MetaGuard::NestedClassUnavailable error Assert::CatchCaseNotReachable(x)
+        on MetaGuard::NestedClassUnavailable error Assert::CodeNotReachable(x)
         on Void error Assert::ObservedBug"Plugin introspection bug"
         )
       }
@@ -29,7 +29,7 @@
         ))
       aN+=1N
       )
-    catch exception x (on MetaGuard::NestedClassUnavailable error Assert::CatchCaseNotReachable(x))
+    catch exception x (on MetaGuard::NestedClassUnavailable error Assert::CodeNotReachable(x))
     result:=result.#end() 'reverse the list
     Outer0._private(_binaryRepr:that, annotations:result)
     )
@@ -41,6 +41,6 @@
   method toS() {
     return Introspection::Record(lib:this._binaryRepr()).that()
       .introspectDocAsString(path:Path"Outer0")
-    catch exception x (on MetaGuard::NestedClassUnavailable error Assert::CatchCaseNotReachable(x)) 
+    catch exception x (on MetaGuard::NestedClassUnavailable error Assert::CodeNotReachable(x)) 
    }
   }
