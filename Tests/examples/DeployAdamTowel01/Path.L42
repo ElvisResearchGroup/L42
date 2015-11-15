@@ -1,14 +1,14 @@
-{ _private(Library _binaryRepr)<: S::ToS '  toPutAs private
+{ _private(Library _binaryRepr)<:Concept::ToS Concept::Equals Concept::Named'@private
+  method myName()GetMyName(Outer0)
   type method
-  Outer0 fromS(S::ToS that)
+  Outer0 fromS(Concept::ToS that)
     Outer0.#stringParser(that.toS().binaryRepr())
   type method Outer0 #stringParser(Library that) (
     using SafeOperators 
       check ifInvalidDo(selector:that)
-      error InvalidFormat(S.#stringParser(that))
+      error S.#stringParser(that) 'will be improved later
     Outer0._private(_binaryRepr:that)
     )
-  InvalidFormat:{(S that)}
 
   method Library binaryRepr() this._binaryRepr()
 
@@ -25,6 +25,10 @@
       return Bool.true()
     return Bool.false()
     }
+  method equals(that){
+    with that (on Outer0 return this==that)
+    return Bool.false()
+    }
   method
   Path ++(Path that){
     if this==Path"Outer0" (return that)
@@ -33,7 +37,4 @@
       this.toS()[S"::";that]"".binaryRepr()
       )
     }
-  'we still need to add check validity,list of classNames
-  'and ways to concatenate two paths ++
-  'keep the original repr but being able to regenrate it from the list of classNames
   }

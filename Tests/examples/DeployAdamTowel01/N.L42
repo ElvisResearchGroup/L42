@@ -1,6 +1,7 @@
-{(Library _binaryRepr)<:S::ToS
+{(Library _binaryRepr)<:Concept::ToS Concept::Equals Concept::Named'@private
+  method myName()GetMyName(Outer0)
   type method
-  Outer0 fromS(S::ToS that)
+  Outer0 fromS(Concept::ToS that)
     Outer0.#numberParser(that.toS().binaryRepr())
   method
   Library binaryRepr() this._binaryRepr()
@@ -45,6 +46,10 @@
     using Alu
       check ifInt32EqualDo(n1:this.binaryRepr() n2:that.binaryRepr())
       return Bool.true()
+    return Bool.false()
+    }
+  method equals(that){
+    with that (on Outer0 return this==that)
     return Bool.false()
     }
 

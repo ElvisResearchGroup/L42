@@ -1,5 +1,16 @@
-{(fwd NestedClass root,Path path,N memberN,Record record)<:Member
-method toS() S"Method["[this.allAsString()]"]"
+{(fwd NestedClass root,Path path,N memberN,Record record)<:Member '@private
+method myName()GetMyName(Outer0)
+method toS() Outer0.myName()++S"["[this.allAsString()]"]"
+method Bool ==(Outer0 that){
+  if this.path()!=that.path() (return Bool.false())
+  if this.memberN()!=this.memberN() (return Bool.false())
+  return this.root()==that.root()
+  }
+method Bool != (Outer0 that) !(this==that)
+method equals(that){
+  with that (on Outer0 return this==that)
+  return Bool.false()
+  }
 
 method
 Doc doc()

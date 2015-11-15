@@ -22,12 +22,12 @@ Main:{
       ", methRootExternal:"[meth1.root().hasExternalType()]
       ", typeExternal:"[meth1.returnType().root().hasExternalType()]
       ", typeRefExternal:"[n1.hasExternalType()]"")
-    if n1.hasExternalType() (Debug(clazz:n1.externalType()))
+    if n1.hasExternalType() (Debug(Introspection(clazz:n1.externalType()).externalTypeToS()))
     Debug(S""[meth2.selector()]
       ", methRootExternal:"[meth2.root().hasExternalType()]
       ", typeExternal:"[meth2.returnType().root().hasExternalType()]
       ", typeRefExternal:"[n2.hasExternalType()]"")
-    if n2.hasExternalType() (Debug(clazz:n2.externalType()))
+    if n2.hasExternalType() (Debug(Introspection(clazz:n2.externalType()).externalTypeToS()))
     )
   return ExitCode.normal()
   }

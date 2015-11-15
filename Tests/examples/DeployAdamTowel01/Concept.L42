@@ -6,6 +6,9 @@ Classable:{interface
   read method type Any classAny()
   'read method type Outer0 clazz()
   }
+Named:{interface
+  type method S myName()
+  }
   
 'boxes: type capsule imm mut lent read & var novar
 'but to avoid initialization/update cast: novar, capsule==lent
@@ -39,6 +42,10 @@ Contains:{interface
 Parsable:{interface
   'type method capsule Outer0 fromS(S that) exception Guard::Parameter(specific) invalid string
   '''type method capsule Outer0 #fromS(S that) exception Guard::Parameter
+  }
+Invariant:{interface
+  read method ' can throw error or return false, as more opportune
+  Bool invariant()
   }
 RandomAccess:{interface
   'read method read Elem (N that)

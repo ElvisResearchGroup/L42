@@ -1,7 +1,23 @@
 {'findMeNestedClass
-(fwd NestedClass root,Path path,MirrorPr mirror, Record record)<:Member
-method toS() S"NestedClass["[this.allAsString()]"]"
-method 'empty for Outer0
+(fwd NestedClass root,Path path,MirrorPr mirror, Record record)<:Member '@private
+method myName()GetMyName(Outer0)
+method toS() Outer0.myName()++S"["[this.allAsString()]"]"
+method Bool ==(Outer0 that){
+  if this.path()!=that.path() (return Bool.false())
+  'else equal paths
+  if this.path()!=Path"Outer0" (return this.root()==that.root())
+  'else, both paths are Outer0
+  ext=this.hasExternalType()
+  if ext!=that.hasExternalType() (return Bool.false())
+  if ext (return this.externalTypeToS()==that.externalTypeToS())
+  return this.allAsString()==that.allAsString()
+  }
+method Bool != (Outer0 that) !(this==that)
+method equals(that){
+  with that (on Outer0 return this==that)
+  return Bool.false()
+  }
+method 'error for Outer0
 Doc nestedDoc()(
   if this.path()==Path"Outer0" (
     error Guard::Operation"NestedClass.nestedDoc()  The NestedClass Object refers to Outer0"
@@ -31,6 +47,19 @@ method type Any externalType(){
     default error Assert::CodeNotReachable""
     )
   }
+method S externalTypeToS() {
+  if this.path()!=Path"Outer0" (
+    error Guard::Operation(text:S"NestedClass.externalTypeToS() The NestedClass Object refers to "[this.path()]"")
+    )
+  doc=this.record().docOf(path:Path"MyClass")
+  nameAndPrefix=doc.annotations().top().toS()
+  sep=nameAndPrefix.firstIndexOf(S"::")
+  name= nameAndPrefix(start:sep+2N)
+  prefix=N.fromS(nameAndPrefix(start:5N, end:sep)) '5N== S"Outer".size()
+  Assert::$[prefix>0N]
+  'if prefix == 1N (return name)
+  return S"Outer"[prefix-1N]"::"++name
+}
 
 method S classKind() this.record()"ClassKind"
 method S allAsString() this.record()"AllAsString"  'just the library literal
@@ -61,7 +90,7 @@ NestedClasses transitivelyNestedClasses() (
   result
   )
 
-  
+'add transitivellyImplementedInterfaces(), note, there can be circle! does require == on stuff?  
 method Types implementedInterfaces() (
   var result=Types[]
   var tN=-1N
@@ -72,7 +101,37 @@ method Types implementedInterfaces() (
     )
   catch exception x (on MetaGuard::MemberUnavailable error Assert::CodeNotReachable(x))
   result)
-
+method Types transitivelyImplementedInterfaces() {
+  var result=this.removeDup(this.implementedInterfaces())
+  var new=result
+  loop (
+    var extra=Types[]
+    with t in new.vals() (
+      impl=t.referencedPath().implementedInterfaces()
+      extra++=this.remove(impl, from:result)
+      )
+    if extra.isEmpty() (return result)
+    new:=extra
+    result++=extra    
+    )
+  }
+method'@private
+Types removeDup(Types that) (
+  var result=Types[]
+  with t in that.vals() (
+    if this.select(t,from:result) (result:=result.#add(t))
+    )
+  result
+  )
+method'@private
+Bool select(Type that,Types from) (
+  rp=that.referencedPath()
+  Count[with t in from.vals() (t.referencedPath() == rp)]==0N
+  )
+method'@private
+Types remove(Types that,Types from)
+  Types[with t in that.vals() (case this.select(t,from:from) t)]
+  
 method
 Methods stateCandidate() (
   var havePrivate=Bool.false()

@@ -1,6 +1,6 @@
 {
   type method
-  Void (S::ToS that)
+  Void (Concept::ToS that)
     using Alu
       check stringDebug(that.toS().binaryRepr())
       void
@@ -12,16 +12,12 @@
 
 
   type method
-  Void (S::ToS fileName, S::ToS content)
+  Void (Concept::ToS fileName, Concept::ToS content)
     using Alu
       check fileDebug(
         fileName:fileName.toS().binaryRepr(),
         content:content.toS().binaryRepr()
         )
       void
-  type method
-  Void (type Any clazz) (
-    doc=Introspection(clazz:clazz).record().docOf(path:Path"MyClass")
-    Outer0(doc.annotations().top())
-    )
+
   }

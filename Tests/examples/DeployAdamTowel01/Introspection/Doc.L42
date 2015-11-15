@@ -1,5 +1,7 @@
-{ _private(Library _binaryRepr, Annotations annotations)<: S::ToS '  toPutAs private
-  Annotation:{(Library _binaryRepr, S text, N index)<:S::ToS
+{ _private(Library _binaryRepr, Annotations annotations)<:Concept::ToS,Concept::Named '@private
+  method myName()GetMyName(Outer0)
+  Annotation:{(Library _binaryRepr, S text, N index)<:Concept::ToS,Concept::Named
+    method myName()GetMyName(Outer0)
     method toS() this.text()
     method type Any referredClass() {
       return Introspection::Record(lib:this._binaryRepr()).that()

@@ -21,10 +21,10 @@ Main:{
     on type Generated Debug(S"Generated!")   
     default Debug(S"other")
     )
-  Debug(clazz:External)
-  Debug(clazz:Generated)
-  Debug(clazz:Generated::Foo)
-  Debug(clazz:Debug)
+  Debug(Introspection(clazz:External).externalTypeToS())
+  Debug(Introspection(clazz:Generated).externalTypeToS())
+  Debug(Introspection(clazz:Generated::Foo).externalTypeToS())
+  Debug(Introspection(clazz:Debug).externalTypeToS())
   return ExitCode.normal()
   }
 }

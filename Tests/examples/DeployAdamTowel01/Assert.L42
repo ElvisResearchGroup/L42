@@ -1,30 +1,27 @@
-{
-Failure:{interface <:Message}
-NotImplementedYet:
-  Message::$[]<<{<:Guard type method S myName() S"Assert::NotImplementedYet"}
+{interface <:Message
+NotImplementedYet:Message::$[]<<{<:Outer1}
 
-ObservedBug:
+ObservedBug:Message::$[]<<{<:Outer1}
   'if this happens, then the programmer had wrong assumption on the code behaviour.
   'is about logic errors
- Message::$[]<<{<:Guard type method S myName() S"Assert::ObservedBug"}
-CodeNotReachable:
+
+CodeNotReachable:Message::$[]<<{<:Outer1}
   'Can wrap a captured error/exception (often a Guard)
   'to declare that is a bug if such case 
   'happens (responsabilty on the code logic).
   'In an ideal world, a static analysis would verify this
-  Message::$[]<<{<:Guard type method S myName() S"Assert::CodeNotReachable"}
   
-type method Condition #begin() Condition(0N)
-Condition:{(N that)
+$:{(N that)
+  type method Outer0 #begin() Outer0(0N)
   method Void #end() void
-  method Condition #add(Bool that){
+  method Outer0 #add(Bool that){
     if that (return Outer0(this.that()+1N))
     error AssertMessage(text:S"Condition number "[this.that()]" failed")
     }
-  method Condition #add(Bool that, S::ToS msg){
+  method Outer0 #add(Bool that, Concept::ToS msg){
     if that (return Outer0(this.that()+1N))
     error AssertMessage(text:msg.toS()[S.nl()]"number:"[this.that()]" failed")
     }
   }
-AssertMessage:Message::$[]<<{<:Failure type method S myName() S"AssertMessage"}
+AssertMessage:Message::$[]<<{<:Outer1}
 }

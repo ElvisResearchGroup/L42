@@ -1,10 +1,9 @@
-{ _private(Library _binaryRepr)<: ToS '  toPutAs private
+{ _private(Library _binaryRepr)<: Concept::ToS Concept::Equals Concept::Named'@private
+  method myName()GetMyName(Outer0)
 
   type method Outer0 #stringParser(Library that) Outer0._private(_binaryRepr:that)
 
   method Library binaryRepr() this._binaryRepr()
-
-  ToS:{interface method S toS()}
 
   method toS() this
 
@@ -20,6 +19,10 @@
     using Alu
       check ifStringEqualDo(s1:this.binaryRepr(),s2:that.binaryRepr())
       return Bool.true()
+    return Bool.false()
+    }
+  method equals(that){
+    with that (on Outer0 return this==that)
     return Bool.false()
     }
 
@@ -105,7 +108,7 @@
     
   SConcat:{(S accumulator)
     method
-    SConcat #add(ToS that)
+    SConcat #add(Concept::ToS that)
       SConcat(accumulator:this.accumulator()++that.toS())
     method
     SConcat #end()

@@ -35,14 +35,15 @@ Caching
       design of resources: make connection string "is" resource handler?
  
  Language
-   -coherent class has ph OR NOT in the constructor, on a field basis.
-   -no need of ph in desugared vars?
- 
+  - method of interfaces can be refined, method refine T m(xs) eOpt
+  -yeld?
  Syntax
+    -concrete header have doc ('here fs)'and here  -- one of the two must be the place for @private?
+    -all implemented interface names have docs, also simpler @ann syntax no new line
+    
     -put Outer without number in the sugar,outer keyword, to skip the first in scope
     - put << normalization in the sugar
-    -put keywords/behaviour for circular and entangled. 
-    -put partial, mut partial and so on instead of ^ in parser
+    -put keywords/behaviour for circular and entangled. ?? no? fwd in constructor solved?
     -use @as default? instead of #?
      so Map[   @[a;b;c];       @[a;b;c];       ]
     options[isVisible:@]   vs  options[isVisible:Bool.true()]

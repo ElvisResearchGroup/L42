@@ -1,15 +1,55 @@
 {
-MyName:{
-  DecorationUnfeasable:Message::$[]<<{<:MetaGuard
-    type method S myName() S"MyName::DecorationUnfeasable"
-    }
+DecorationUnfeasable:Message::$[]<<{<:MetaGuard}
+
+
+Parsable:{
   type method Library<<(Library that) exception DecorationUnfeasable{
     return Extends[{
-        type method S myName()(
-          doc=Introspection(clazz:Outer0).record().docOf(path:Path"MyClass")
-          nameAndPrefix=doc.annotations().top().toS()
-          nameAndPrefix(start:nameAndPrefix.firstIndexOf(S"::")+2N)
-          )}]<<that
+    'ParseFailure:Message:S[]<<{<:Guard} no need, related to invariant?
+    type method' if you do not implement it, it is a constructor?
+    capsule Outer0 fromS(read Concept::ToS that)      
+    type method
+    capsule Outer0 #stringParser(Library that) 
+      Outer0.fromS(that.toS().#stringParser(that))
+    }]<<that
+  }
+Invariant:{
+  type method Library<<(Library that) exception DecorationUnfeasable{
+    i=Introspection(lib:that)
+    impl=i.implementedInterfaces() 'transitive?
+    invariantMeth=i.methodFromSelector(Selector"invariant()")
+    catch exception (on MetaGuard::MethodUnavailable return that)
+    if myName.methodKind()!=S"AbstractMethod" ( return that)
+  
+    }
+  }
+
+DataFromToS:{' in the future we can add also hashCode and > =>
+  type method Library<<(Library that) exception DecorationUnfeasable{
+    return Extends[{
+    method Bool != (Outer0 that) !(this==that)
+    read method Bool ==(read Outer0 that) this.toS()==that.toS()
+    }]<<Equals<<that
+  }
+
+Equals:{
+  type method Library<<(Library that) exception DecorationUnfeasable{
+    return Extends[{<:Concept::Equals
+      method equals(that){
+        with that (on Outer0 return this==that)
+        return Bool.false()
+        }
+      read method Bool ==(read Outer0 that)
+      }]<<that
+    catch exception x(on MetaGuard exception DecorationUnfeasable(x))
+    }
+  }
+Named:{
+  type method Library<<(Library that) exception DecorationUnfeasable{
+    return Extends[{<:Concept::Named
+        method myName() Introspection(clazz:Outer0).externalTypeToS()
+        }]<<that
+    'can improve error: if is method defined against method implemented
     catch exception x(on MetaGuard exception DecorationUnfeasable(x))
     }
   }

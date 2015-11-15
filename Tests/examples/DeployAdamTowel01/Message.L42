@@ -1,4 +1,4 @@
-{interface<:S::ToS, Concept::Equals,Concept::Classable
+{interface<:Concept::ToS, Concept::Equals,Concept::Classable,Concept::Named
 type method S kind()
 method S text()
 method Opt responseOf()
@@ -12,7 +12,7 @@ Opt:{#new(TOpt that)
   TOf:{(Outer2 that)<:TOpt method get() this.that()}
   method Outer1 ~() this.that().get()
   method Bool isPresent() {
-    unused=~this
+    unused=~this  'unused=~this
     return Bool.true()
     catch error (on Any return Bool.false())
     }
@@ -37,7 +37,7 @@ $:{()
   method Library <<(Library that)
     SafeOperatorsAccess.compose(left:that, right:Outer0.messageTrait())
   type method Library messageTrait() {(S _text, Message::Opt cause)<:Message
-    type method S myName()
+    method myName()GetMyName(Outer0)
     method kind() this.myName()
     method text() this._text()
     method responseOf() this.cause()

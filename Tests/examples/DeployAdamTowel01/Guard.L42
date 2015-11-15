@@ -8,11 +8,9 @@
 ' is equivalent of declaring that such misuse should not happen (blame on the caller),
 ' still, there is no bug in the program at this stage. Is legit for the caller to try and be blamed
 interface<:Message 'all other guards should implement this one
-Operation:'if "this" is unfit
-  Message::$[]<<{<:Guard type method S myName() S"Guard::Operation"}
-Parameter:' if a parameter is unfit
-  Message::$[]<<{<:Guard type method S myName() S"Guard::Parameter"}
-Precondition:' if it is about multiple parameters
-  Message::$[]<<{<:Guard type method S myName() S"Guard::Precondition"}
+Operation:Message::$[]<<{<:Guard}'if "this" is unfit
+Parameter:Message::$[]<<{<:Guard}' if a parameter is unfit
+Precondition:Message::$[]<<{<:Guard}' if it is about multiple parameters
+
 
 }

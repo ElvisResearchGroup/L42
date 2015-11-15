@@ -1,7 +1,8 @@
-{ _private(Library _binaryRepr)<: S::ToS '  toPutAs private
+{ _private(Library _binaryRepr)<:Concept::ToS Concept::Equals Concept::Named'@private
+  method myName()GetMyName(Outer0)
 
   type method
-  Outer0 fromS(S::ToS that)
+  Outer0 fromS(Concept::ToS that)
     Outer0.#stringParser(that.toS().binaryRepr())
   type method Outer0 #stringParser(Library that) (
     using SafeOperators
@@ -23,6 +24,10 @@
     using Alu
       check ifStringEqualDo(s1:this.binaryRepr(),s2:that.binaryRepr())
       return Bool.true()
+    return Bool.false()
+    }
+  method equals(that){
+    with that (on Outer0 return this==that)
     return Bool.false()
     }
 

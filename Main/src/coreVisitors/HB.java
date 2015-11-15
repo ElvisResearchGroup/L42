@@ -68,12 +68,12 @@ public class HB implements Visitor<ExpCore> {
     if(result==null &&onlyAroundHole){return null;}
     assert !onlyAroundHole || result instanceof WalkBy:onlyAroundHole+" "+result;
     for(Block.Dec dec:s.getDecs()){
-      if(xs.contains(dec.getX())){throw new ErrorMessage.VariableDeclaredMultipleTimes(dec.getX());}
+      if(xs.contains(dec.getX())){throw new ErrorMessage.VariableDeclaredMultipleTimes(dec.getX(),s.getP());}
       this.xs.add(dec.getX());
       }
     if(!onlyAroundHole && s.get_catch().isPresent()){
       Catch k=s.get_catch().get();          
-      if(xs.contains(k.getX())){throw new ErrorMessage.VariableDeclaredMultipleTimes(k.getX());}
+      if(xs.contains(k.getX())){throw new ErrorMessage.VariableDeclaredMultipleTimes(k.getX(),s.getP());}
       xs.add(k.getX());
       for(On on:k.getOns()){
         on.getInner().accept(this);

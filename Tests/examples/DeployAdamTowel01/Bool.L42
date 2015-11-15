@@ -1,4 +1,5 @@
-{(Library binaryRepr)<:S::ToS Concept::Equals '@private
+{(Library binaryRepr)<:Concept::ToS Concept::Equals Concept::Named'@private
+  method myName()GetMyName(Outer0)
   method Void #checkTrue() exception Void 
     using Alu
       check ifInt32EqualDo(n1:this.binaryRepr() n2:0N.binaryRepr())
@@ -23,7 +24,7 @@
     return S"false"
     }
   type method
-  Outer0 fromS(S::ToS that){
+  Outer0 fromS(Concept::ToS that){
     if that.toS()==S"true" (return Outer0.true())
     if that.toS()==S"false" (return Outer0.false())
     error S"UnsatisfactoryErrorToAvoidCycle, replace in Adam2-3"
@@ -34,8 +35,8 @@
     return !that
     }
   method Outer0 !=(Outer0 that) !(this==that)
-      method equals(that){
-      with that (on Outer0 return this==that)
-      return Bool.false()
-      }
+  method equals(that){
+    with that (on Outer0 return this==that)
+    return Bool.false()
+    }
 }

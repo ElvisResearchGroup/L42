@@ -168,8 +168,9 @@ import ast.Util.PathMwt;
     HashMap<String, Ast.NormType> varEnv;
   }
 
-  @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class VariableDeclaredMultipleTimes extends ErrorMessage {
+  @Value @Wither @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class VariableDeclaredMultipleTimes extends ErrorMessage {
     String x;
+    Ast.Position pos;
   }
 
   //when a plugin exists but chose to not act
