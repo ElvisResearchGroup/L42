@@ -2,7 +2,8 @@ Adam Towel
  -adam towel 2 or 3 must:
    -inject ParseErrors in Bool, N
    -inject better error in Message::Opt
-   -replace a Functor computing class names with the actual behaviour (thus I can remove all the myName in AdamTowel1)
+  -Message generate Foo"bla" :Foo
+  and Foo"bla"(cause) :Foo, Foo(cause) should not work any more
  
   -test introspection more 
   -in deploy library, check that is closed code
@@ -33,6 +34,11 @@ Caching
  Other plugins
     -db plugin
       design of resources: make connection string "is" resource handler?
+ 
+ Composition operators:
+   method composition path ms0, ms1
+    T0 m0(arg0) eOpt0+ T1 m1(T0 x arg1) eOpt1=
+    T0 m0(arg0) eOpt0 T1  m1(T0 x arg1) eOpt1    T1 m0m1(arg0 arg1) this.m1(this.m0(arg0),arg1)  
  
  Language
   - method of interfaces can be refined, method refine T m(xs) eOpt

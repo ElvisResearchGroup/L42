@@ -90,14 +90,13 @@ NestedClasses transitivelyNestedClasses() (
   result
   )
 
-'add transitivellyImplementedInterfaces(), note, there can be circle! does require == on stuff?  
 method Types implementedInterfaces() (
   var result=Types[]
-  var tN=-1N
+  var tN=1N
   while Bool.true() (' to be able to break
-    result:=result.#add(this.record().that()
+    result:=result.#add(this.mirror()
       .introspectReportType(root:this,path:this.path(),memberN:0N,typeN:tN))
-    tN-=1N
+    tN+=1N
     )
   catch exception x (on MetaGuard::MemberUnavailable error Assert::CodeNotReachable(x))
   result)

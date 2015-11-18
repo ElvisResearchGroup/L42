@@ -5889,7 +5889,7 @@ method
 Outer1::Types implementedInterfaces() (
   Outer1::Types::#begin() ::#end() result=Outer1::Types.#begin().#end()
   Outer2::N::#numberParser(that ) tN=Outer2::N.#numberParser(that:{'@stringU
-  '-1
+  '1
   })
   mut Outer0::Varresult4 varresult=Outer0::Varresult4.#apply(inner:result)
   mut Outer0::VartN vartN=Outer0::VartN.#apply(inner:tN)
@@ -5898,10 +5898,10 @@ Outer1::Types implementedInterfaces() (
       Void unused1=Outer2::Bool.true().#checkTrue()
       (' to be able to break
       
-        Void unused2=varresult.inner(that:varresult.#inner().#add(that:this.record().that().introspectReportType(root:this, path:this.path(), memberN:Outer2::N.#numberParser(that:{'@stringU
+        Void unused2=varresult.inner(that:varresult.#inner().#add(that:this.mirror().introspectReportType(root:this, path:this.path(), memberN:Outer2::N.#numberParser(that:{'@stringU
         '0
         }), typeN:vartN.#inner())))
-        vartN.inner(that:vartN.#inner().#less(that:Outer2::N.#numberParser(that:{'@stringU
+        vartN.inner(that:vartN.#inner().#plus(that:Outer2::N.#numberParser(that:{'@stringU
         '1
         })))
         )

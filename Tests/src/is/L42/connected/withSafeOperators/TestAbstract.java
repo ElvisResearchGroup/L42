@@ -40,19 +40,22 @@ public static class TestAbstractMeth {//add more test for error cases
     "{Kind:{'@stringU\n'MemberUnavailable\n}"+
     "Path:{'@::C\n}"+
     "Selector:{'@stringU\n'm(x)\n}"+
-    "InvalidKind:{'@stringU\n'NonExistentPath\n}}",
+    "InvalidKind:{'@stringU\n'NonExistentPath\n}"+
+    "IsPrivate:{'@stringU\n'false\n}}",
 	  true
   },{"{B:{ method Void m(Any x) void}}", "B", "k()",
     "{Kind:{'@stringU\n'MemberUnavailable\n}"+
 	  "Path:{'@::B\n}"+
 	  "Selector:{'@stringU\n'k()\n}"+
-    "InvalidKind:{'@stringU\n'NonExistentMethod\n}}",
+    "InvalidKind:{'@stringU\n'NonExistentMethod\n}"+
+    "IsPrivate:{'@stringU\n'false\n}}",
 	  true
   },{"{B:{ method Void m(Any x) void}}", "B", "m()",
     "{Kind:{'@stringU\n'MemberUnavailable\n}"+
 	  "Path:{'@::B\n}"+
 	  "Selector:{'@stringU\n'm()\n}"+
-    "InvalidKind:{'@stringU\n'NonExistentMethod\n}}",
+    "InvalidKind:{'@stringU\n'NonExistentMethod\n}"+
+    "IsPrivate:{'@stringU\n'false\n}}",
 	  true
 }});}
 @Test  public void test() {
@@ -119,20 +122,23 @@ public static class TestAbstractClass {//add more test for error cases
     "{Kind:{'@stringU\n'MemberUnavailable\n}"+
     "Path:{'@::C::B\n}"+
     "Selector:{'@stringU\n'\n}"+
-    "InvalidKind:{'@stringU\n'PrivatePath\n}}",
+    "InvalidKind:{'@stringU\n'PrivatePath\n}"+
+    "IsPrivate:{'@stringU\n'true\n}}",
 	  true
 
   },{"{C:{}}","C::B",
     "{Kind:{'@stringU\n'MemberUnavailable\n}"+
     "Path:{'@::C::B\n}"+
     "Selector:{'@stringU\n'\n}"+
-    "InvalidKind:{'@stringU\n'NonExistentPath\n}}",
+    "InvalidKind:{'@stringU\n'NonExistentPath\n}"+
+    "IsPrivate:{'@stringU\n'false\n}}",
 	  true
   },{"{C:{}}","B",
     "{Kind:{'@stringU\n'MemberUnavailable\n}"+
     "Path:{'@::B\n}"+
     "Selector:{'@stringU\n'\n}"+
-    "InvalidKind:{'@stringU\n'NonExistentPath\n}}",
+    "InvalidKind:{'@stringU\n'NonExistentPath\n}"+
+    "IsPrivate:{'@stringU\n'false\n}}",
 	  true
 
   },{"{C:{B:{ method Void m(Any x) void  method '@private\nVoid foo() void } D:{ method Void bar() B.foo() }}}",

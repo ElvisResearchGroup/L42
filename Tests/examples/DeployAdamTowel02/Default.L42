@@ -9,18 +9,54 @@ Parsable:{
     type method' if you do not implement it, it is a constructor?
     capsule Outer0 fromS(read Concept::ToS that)      
     type method
-    capsule Outer0 #stringParser(Library that) 
-      Outer0.fromS(that.toS().#stringParser(that))
-    }]<<that
+    Outer0 #stringParser(Library that) 
+      Outer0.fromS(S.#stringParser(that))
+      }]<<that
+    catch exception mg (on MetaGuard exception DecorationUnfeasable(mg))
+    }
   }
+SealState:{
+  ' how to specify which factory to keep out? what getters
+  type method Library<<(Library that){
+    i=Introspection(lib:that)
+    return that
+    }
+  }
+  
 Invariant:{
+  type method Bool isInvariant(Introspection::NestedClass that) {
+    interf=that.transitivelyImplementedInterfaces()
+    with ti in interf.vals() (
+      with tAny=ti.referencedPath().externalType() (
+        on Concept::Invariant return Bool.true()
+        )
+      catch error (on Guard::Operation void)
+      void
+      )
+    return Bool.false()
+    }
   type method Library<<(Library that) exception DecorationUnfeasable{
     i=Introspection(lib:that)
-    impl=i.implementedInterfaces() 'transitive?
-    invariantMeth=i.methodFromSelector(Selector"invariant()")
-    catch exception (on MetaGuard::MethodUnavailable return that)
-    if myName.methodKind()!=S"AbstractMethod" ( return that)
-  
+    isInv=this.isInvariant(i)
+    if !isInv (return that)
+    state=i.state()
+    if state.isEmpty() (exception DecorationUnfeasable"State is empty")
+    k=state.top()
+    if k.isPrivate() (exception DecorationUnfeasable"State is private")
+    return that
+    'tmp={type method mdf Outer0 k(args) }[rename k.selector() in fresh]+
+    '  {<:Concept::Invariant 
+    '  type method
+    '  mdf Outer0 (mdf Outer0 new) {
+    '  if !new.invariant() error ...
+    '  return new}
+    '  }[rename #apply(new) in k.selector()#]
+    ' sumMethod Outer0 fresh k.selector()#
+    'for  setters:
+    '{ mut method Void (Void fresh){
+    '  if !this.invariant() error ...
+    '  return fresh
+    '  }}
     }
   }
 
@@ -30,6 +66,11 @@ DataFromToS:{' in the future we can add also hashCode and > =>
     method Bool != (Outer0 that) !(this==that)
     read method Bool ==(read Outer0 that) this.toS()==that.toS()
     }]<<Equals<<that
+    catch exception mg (
+      on DecorationUnfeasable exception mg
+      on MetaGuard exception DecorationUnfeasable(mg)
+      )
+    }
   }
 
 Equals:{

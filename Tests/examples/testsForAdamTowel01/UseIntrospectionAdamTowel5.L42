@@ -1,6 +1,6 @@
 {reuse L42.is/AdamTowel01
 
-Check:{
+CheckState:{
   type method Void(Library lib,S expected )(
     i=Introspection(lib:lib)
     var result=S""
@@ -11,11 +11,35 @@ Check:{
     )
   }
 
+CheckSubtype:{
+  type method Void(Library lib,S expected )(
+    i=Introspection(lib:lib)
+    var result=S""
+    with t in i.transitivelyImplementedInterfaces().vals() (
+      n=t.referencedPath()
+      if n.hasExternalType() (result++=n.externalTypeToS()++S",")
+      else result++=S"@::"[n.pathFromRoot()]","
+      )
+    if result!=expected (Debug(S"expected:"[expected]" computed:"[result]""))
+    )
+  }
+EA:{interface }
+EB:{interface <:EA}  
 Main:{
-  Check(lib:{foo(Bar b, var Foo f) Bar:{} Foo:{}}
+  CheckState(lib:{foo(Bar b, var Foo f) Bar:{} Foo:{}}
     expected:S"foo(b,f)b()#b()f()#f()f(that)")
-  Check(lib:{(Bar b, Foo f) Bar:{} Foo:{}}
+  CheckState(lib:{(Bar b, Foo f) Bar:{} Foo:{}}
     expected:S"#apply(b,f)b()#b()f()#f()")
+  CheckSubtype(lib:{}
+    expected:S"")
+  CheckSubtype(lib:{interface <:A A:{interface}}
+    expected:S"@::A,")
+  CheckSubtype(lib:{interface <:EA }
+    expected:S"Outer0::EA,")
+    CheckSubtype(lib:{interface <:B B:{interface<:A} A:{interface}}
+    expected:S"@::B,@::A,")
+  CheckSubtype(lib:{interface <:EB }
+    expected:S"Outer0::EB,Outer0::EA,")
   Debug(S"OK")
   return ExitCode.normal()
   }

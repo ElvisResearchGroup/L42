@@ -29,7 +29,7 @@ public class TestBase01 {
     TestHelper.configureForTest();
     L42.main(new String[]{"examples/testsForAdamTowel01/UseAdamTowel01.L42"});
     }
-  //@Test
+  @Test
   public  void _01_00DeployAdamTowel01() throws Throwable{
     TestHelper.configureForTest();
     Paths.get("localhost","DeployTowel.L42").toFile().delete();

@@ -1,0 +1,6 @@
+{ (S inner)<:Concept::ToS
+method toS() this.inner()
+method Library binaryRepr() this.inner().binaryRepr()
+method capsule Outer0 fromS(Concept::ToS that) Outer0(inner:that.toS())
+  
+}

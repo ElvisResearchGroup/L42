@@ -211,11 +211,12 @@ public class Resources {
     catch(ClassCastException msg){throw msg;}
     catch(RuntimeException msg){
       //throw Resources.notAct;//will be
-      throw Assertions.codeNotReachable("try to make this happen, is it possible? it should mean bug in plugin code\n"+msg+"\n---------------\n");
+      throw Assertions.codeNotReachable("try to make this happen, is it possible? it should mean bug in plugin code\n",msg);
+      
       }
     catch(java.lang.Error msg){
       //throw Resources.notAct;//will be
-      throw Assertions.codeNotReachable("try to make this happen, is it possible? it should mean bug in plugin code\n"+msg+"\n---------------\n");
+      throw Assertions.codeNotReachable("try to make this happen, is it possible? it should mean bug in plugin code\n",msg);
       }
     catch(Throwable tF){
       //throw Resources.notAct;//will be

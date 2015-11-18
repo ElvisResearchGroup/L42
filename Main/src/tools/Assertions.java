@@ -72,6 +72,10 @@ public final class Assertions {
   public final static Error codeNotReachable(String s) {
     throw new AssertionError("-Code should not be reachable:: " + s);
   }
+  public final static Error codeNotReachable(String s,Throwable cause) {
+    throw new AssertionError("-Code should not be reachable:: " + s,cause);
+  }
+  
   
   /**
    * A codeNotReachable mark in a point means that

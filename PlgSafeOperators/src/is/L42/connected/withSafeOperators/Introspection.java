@@ -102,6 +102,8 @@ public class Introspection {//TODO: we keep 5 methods, but we merge the PathRepo
     if(current.getMs().size()<memberN){throw Resources.notAct;}
     if(memberN<0){throw Resources.notAct;}//TODO: is this a good idea?
     if(memberN==0){
+      if(typeN<=0){throw Resources.notAct;}
+      if(current.getSupertypes().size()<typeN){throw Resources.notAct;}
       Path implN = current.getSupertypes().get(typeN-1);
       return typeReport(isExternal,p.addAtTop(that), new NormType(Mdf.Immutable,implN,Ph.None),path,current.getDoc2());
       }

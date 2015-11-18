@@ -716,14 +716,15 @@ public static class TestRedirect1 {//add more test for error cases
         ec.load("MemberUnavailable",
                 "Path", "'@::InnerA",
                 "Selector", "",
-                "InvalidKind", "PrivatePath"
+                "InvalidKind", "PrivatePath",
+                "IsPrivate","true"
                ).str(), true
     },{lineNumber(),   // Redirect a nonexistent class
         new String[]{"{A:{ }}"},
         "{InnerNotA:{} }",
         "Outer0::InnerA","Outer1::A",
-        ec.set("InvalidKind", "NonExistentPath"
-               ).str(), true
+        ec.set("InvalidKind", "NonExistentPath")
+            .set("IsPrivate","false").str(), true
 /* Privacy does not trigger MemberUnavailable
     },{lineNumber(),   // Redirect to a private class
         new String[]{"{A:'@private\n { }}"},

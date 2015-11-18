@@ -2,14 +2,19 @@
 NotImplementedYet:Message::$[]<<{<:Outer1}
 
 ObservedBug:Message::$[]<<{<:Outer1}
-  'if this happens, then the programmer had wrong assumption on the code behaviour.
-  'is about logic errors
+  'if this happens, we observe 
+  ' -a parameter that do not met our expected requirement,
+  ' -we can not satisfy our postcondition, a logic error in our client
+  ' -a method do not produce a result respecting its postcondition
+  '   is about logic errors in the current method
 
 CodeNotReachable:Message::$[]<<{<:Outer1}
+  ' it sounds like, assuming the rest is right, I think this never happens
+  ' in most cases, in an ideal world a static analysis would verify this
   'Can wrap a captured error/exception (often a Guard)
   'to declare that is a bug if such case 
-  'happens (responsabilty on the code logic).
-  'In an ideal world, a static analysis would verify this
+  'happens. The programmer believe is either a bug in language semantic or
+  ' a method not respecting its own postcondition
   
 $:{(N that)
   type method Outer0 #begin() Outer0(0N)
