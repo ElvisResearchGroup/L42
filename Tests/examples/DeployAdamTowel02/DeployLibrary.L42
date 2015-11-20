@@ -10,26 +10,28 @@ exception MetaGuard::NestedClassUnavailable, MetaGuard::PrivacyCoupuled
   var res=that
   res:=Refactor::RenamePath[Path"Outer0" to:Path"PrImpl"]<<res
   catch exception unreachable(on MetaGuard error Assert::CodeNotReachable(unreachable))
-  imap=Paths[with m in Introspection(lib:map).methods().vals() (m.pathFromRoot())]
-  with p in imap (
-    res:=Refactor::RenamePath[Path"PrImpl"++p to:Path"Abstract"++p]<<res
-    catch exception notFound (
-      on MetaGuard::MemberUnavailable error Assert::ObservedBug(
-        text:S"map and library mismatch on "[p]"",cause:notFound)
-      on MetaGuard error Assert::CodeNotReachable(notFound)
+  with m in Introspection(lib:map).methods().vals() (
+    p=m.pathFromRoot()
+      (
+      res:=Refactor::RenamePath[Path"PrImpl"++p to:Path"Abstract"++p]<<res
+      catch exception notFound (
+        on MetaGuard::MemberUnavailable error Assert::ObservedBug(
+          text:S"map and library mismatch on "[p]"",cause:notFound)
+        on MetaGuard error Assert::CodeNotReachable(notFound)
+        )
+      void
       )
-    void
     )
   res:=Refactor::RemoveImplementationPath[Path"Abstract"]<<res'leak PrivacyCoupuled
   catch exception (on MetaGuard::MemberUnavailable error Assert::CodeNotReachable"")
-  res:=RenamePath[Path"PrImpl"++path to:Path"Outer0"]<<res
-  res:=MakePrivatePath[Path"PrImpl"]<<res
+  res:=Refactor::RenamePath[Path"PrImpl"++path to:Path"Outer0"]<<res
+  res:=Refactor::MakePrivatePath[Path"PrImpl"]<<res
   catch exception (on MetaGuard error Assert::CodeNotReachable"")
   return res
   }
 method
 Void checkTargetExists(Library that) exception MetaGuard::NestedClassUnavailable (
-  unused=AddDocumentationPath[this.that() doc:Introspection::Doc"JustToSeeIfItIsThere"]<<that
+  unused=Refactor::AddDocumentationPath[this.that() doc:Introspection::Doc"JustToSeeIfItIsThere"]<<that
   catch exception x (
     on MetaGuard::InvalidOnTopLevel error Assert::CodeNotReachable""
     )
@@ -42,7 +44,7 @@ type method Outer0 #add(Path that,Url url) Outer0(path:that,url:url)
 
 method
 Library <<(Library that) exception MetaGuard::NestedClassUnavailable, MetaGuard::PrivacyCoupuled {
-  var res=exposeAsLibrary(that,path:this.path(),map:Load.ontologicMap())
+  var res=this.exposeAsLibrary(that,path:this.path(),map:Load.ontologicMap())
   res:=Optimize::RemoveUnreachableCode[]<<res
   return DeployTowel[fileName:this.url().binaryRepr()]<<res
   }

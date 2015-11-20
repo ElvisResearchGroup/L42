@@ -28,7 +28,7 @@ Invariant:{
     interf=that.transitivelyImplementedInterfaces()
     with ti in interf.vals() (
       with tAny=ti.referencedPath().externalType() (
-        on Concept::Invariant return Bool.true()
+        on type Concept::Invariant return Bool.true()
         )
       catch error (on Guard::Operation void)
       void

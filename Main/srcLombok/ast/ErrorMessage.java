@@ -180,12 +180,21 @@ import ast.Util.PathMwt;
     // some time in milliseconds to try acting again.
   }
 
-  @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class NotWellFormed extends ErrorMessage {
+ public abstract static class NotWellFormed extends ErrorMessage {
+  }
+  @Value @Wither @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true)
+  public static class VariableUsedNotInScope extends NotWellFormed {
+    Expression.X e;
+    Expression ctx;
+    String reason;
+  }
+  @Value @Wither @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true)
+  public static class NotWellFormedMsk extends NotWellFormed {
+    //msk for misk, this class will be multiplied on need when is needed to distinguis the various kinds
     Expression e;
     Expression ctx;
     String reason;
   }
-
   //Type system
   //@ToString(callSuper=false, includeFieldNames=true)
   public static abstract class TypeError extends ErrorMessage {

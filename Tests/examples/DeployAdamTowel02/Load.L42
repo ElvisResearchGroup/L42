@@ -36,7 +36,7 @@ type method Library ontologicMap(){interface
 'shape of a loadable library:
 ' Outer0 contains actual library, but
 ' Abstract:{} contains abstract classes, and 
-' ConceptMap:{} mapping concepts names to abstract classes
+' Abstract::ConceptMap mapps concepts names to abstract classes
   type method Outer0 #begin()'constructor
   method Outer0 #end() this
   ConceptMapMismatch:Message::$[]<<Default::MyName<<{<:MetaGuard}
@@ -45,7 +45,7 @@ type method Library ontologicMap(){interface
   Library << (Library that)
   exception ConceptMapMismatch, ConceptMapUnavailable
     {
-    return Refactor::Redirect[Path"ConceptMap" to:ConceptMap]<<that
+    return Refactor::Redirect[Path"Abstract::ConceptMap" to:ConceptMap]<<that
     catch exception err (
       on MetaGuard::MemberUnavailable exception ConceptMapUnavailable(err)
       on MetaGuard::SourceUnfit exception ConceptMapMismatch(err)

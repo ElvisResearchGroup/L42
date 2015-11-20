@@ -36,7 +36,7 @@ public class CheckVarUsedAreInScope extends CloneVisitor{
   Set<String> xs=new HashSet<String>();
   public Expression visit(Expression.X s){
     if(this.xs.contains(s.getInner())){return super.visit(s);}
-    throw new ErrorMessage.NotWellFormed(s, ctx,"Variable used not in scope");
+    throw new ErrorMessage.VariableUsedNotInScope(s, ctx,"Variable used not in scope");
     }
   protected ast.Ast.BlockContent liftBC(ast.Ast.BlockContent c) {
     Set<String> aux = this.xs;
@@ -48,7 +48,16 @@ public class CheckVarUsedAreInScope extends CloneVisitor{
     this.xs=aux2;
     List<VarDec> liftVarDecs = liftVarDecs(c.getDecs());
     this.xs=aux;
-    Optional<Catch> liftK = Map.of(this::liftK,c.get_catch());
+    Optional<Catch> liftK;
+    try{liftK=Map.of(this::liftK,c.get_catch());}
+    catch(ErrorMessage.VariableUsedNotInScope nis){
+       Expression.X x=nis.getE();
+       assert !aux.contains(x.getInner());
+       if (aux2.contains(x.getInner())){
+         throw nis.withReason(nis.getReason()+"\nThe variable is in lexical scope, but is used in a catch of the declaring block. It may not be initialized at this stage");
+         }
+       throw nis;
+    }
     this.xs=aux2;//add again for later contents
     return new ast.Ast.BlockContent(liftVarDecs,liftK);
   }
