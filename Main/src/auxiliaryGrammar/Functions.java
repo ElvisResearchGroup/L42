@@ -7,10 +7,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import sugarVisitors.CloneVisitor;
 import sugarVisitors.ToFormattedText;
 import tools.Assertions;
+import tools.Map;
 import tools.Match;
 import ast.Ast;
 import ast.Ast.Doc;
@@ -327,35 +329,40 @@ public static NormType forceNormType(Program p,ExpCore inner, Type preciseTOpt) 
   NormType preciseT=(NormType)preciseTOpt;
   return preciseT;
 }
-public static boolean isAbstract(Program p, ClassB ct) {
-  if(!coherent(p,ct)){
-	  return true;
+public static List<String> isAbstract(Program p, ClassB ct) {
+  List<String> details=coherent(p,ct);
+  if(!details.isEmpty()){
+	  return details;
 	  }
+  details=new ArrayList<>();
   for(Member m:ct.getMs()){
     if(!(m instanceof NestedClass)){continue;}
     NestedClass nc=(NestedClass)m;
     assert nc.getInner() instanceof ClassB;
-    if(isAbstract(p.addAtTop(ct),(ClassB)nc.getInner())){return true;}
+    isAbstract(p.addAtTop(ct),(ClassB)nc.getInner()).stream()
+        .map(s->nc.getName()+"."+s).forEach(details::add);
   }
-  return false;
+  return details;
 }
-public static boolean coherent(Program p, ClassB ct) {
+public static List<String> coherent(Program p, ClassB ct) {
   Program p1=p.addAtTop(ct);
-  if( ct.isInterface()){ return true;}
+  if( ct.isInterface()){ return Collections.emptyList();}
   List<MethodWithType> mwts= collectAbstractMethods(ct);
-  if(mwts.isEmpty()){return true;}
+  if(mwts.isEmpty()){return Collections.emptyList();}
   List<MethodWithType> typeMethods=new ArrayList<>();
   for(MethodWithType mwt:mwts){if(mwt.getMt().getMdf()==Ast.Mdf.Type){typeMethods.add(mwt);}}
-  if(typeMethods.size()!=1){return false;}
+  if(typeMethods.size()!=1){
+    return mwts.stream().map(m->m.getMs().toString()).collect(Collectors.toList());
+    }
   MethodWithType constr=typeMethods.get(0);
   mwts.remove(constr);
   constr=Norm.of(p1, constr,true);
   NormType retType=(NormType)constr.getMt().getReturnType();
   if(!retType.getPath().equals(Path.outer(0))){
-    return false;
+    return Collections.singletonList(constr.getMs().toString());
     }
   if(retType.getPh()!=Ph.None){
-    return false;
+    return Collections.singletonList(constr.getMs().toString()+" 'return type fwd invalid for constructor");
   }
   boolean mustBeLentRead=false;
   boolean canBeImmCaps=true;
@@ -367,12 +374,12 @@ public static boolean coherent(Program p, ClassB ct) {
   Mdf retMdf=retType.getMdf();
   if(mustBeLentRead){
     if(retMdf!=Mdf.Lent && retMdf!=Mdf.Readable){
-      return false;
+      return Collections.singletonList(constr.getMs().toString()+" 'a field is lent/read, constructor result must be lent");
       }
   }
   if(!canBeImmCaps){
     if(retMdf==Mdf.Immutable || retMdf==Mdf.Capsule){
-      return false;
+      return Collections.singletonList(constr.getMs().toString()+" 'field shape prevent immutable/capsule constructor result");
       }
   }
   //now we have a fully normalized constr
@@ -382,13 +389,13 @@ public static boolean coherent(Program p, ClassB ct) {
     //select satisfying parameter
     NormType nt=selectCorrespondingFieldType(constr,  name);
     if(nt==null){
-      return false;
+      return Collections.singletonList(mwt.getMs().toString()+" 'Abstract method not a field of the constructor");
       }
-    if(!coherent(p1, nt.getMdf(),nt.getPath(),mwt)){
-      return false;
+    if(!coherent(p1, nt.getMdf(),nt.getPath(),mwt)){ 
+       return Collections.singletonList(mwt.getMs().toString()+" 'Abstract method has invalid shape to be part of the state");
       }
     }
-  return true;
+  return Collections.emptyList();
   }
 /**null if no corresponding field is found*/
 private static NormType selectCorrespondingFieldType(MethodWithType constr, String name) {

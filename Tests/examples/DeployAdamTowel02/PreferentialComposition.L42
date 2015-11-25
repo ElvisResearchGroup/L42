@@ -77,7 +77,7 @@ Library <<(Library that) exception MetaGuard::ClassClash,MetaGuard::MethodClash
     meth2=that.methodFromSelector(meth.selector())
     catch exception (on MetaGuard::MemberUnavailable return Bool.false())
     if meth2.isPrivate() (return Bool.false() )
-    if meth.methodKind()==S"AbstractMethod" (return Bool.false() )    
+    if meth2.methodKind()==S"AbstractMethod" (return Bool.false() )    
     return Bool.true()
     }
   method Outer0 ++ (Outer0 that)

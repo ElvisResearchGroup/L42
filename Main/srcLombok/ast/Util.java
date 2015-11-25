@@ -65,10 +65,12 @@ public class Util {
       if(!this.givenName.isEmpty()){result=this.givenName;}
       if(this.stage==Stage.Less){result="-"+result;}
       if(this.stage==Stage.Plus){result="+"+result;}
-      if(this.coherent){result+="[coherent]";}
+      if(!this.coherent.isEmpty()){
+        result+="[not coherent:"+this.coherent+"]";
+        }
       if(this.verified){result+="[verified]";}
       result+="[";
-      for(ClassB cb:this.dependencies){
+      for(ClassB cb:new java.util.HashSet<>(this.dependencies)){
         if(cb.getStage().stage==Stage.Less){result+="-";}
         if(cb.getStage().stage==Stage.Plus){result+="+";}
         if(cb.getStage().getGivenName().isEmpty()){result+="?;";}
@@ -84,7 +86,7 @@ public class Util {
 	  final java.util.List<ClassB>dependencies=new java.util.ArrayList<>();
 	//final java.util.List<Path> allSupertypes=new java.util.ArrayList<>();
 	java.util.List<PathMwt> inherited=null;
-	boolean coherent=true;
+	List<String> coherent=Collections.emptyList();
 	String givenName="";
 	
 	public boolean isInheritedComputed(){return inherited!=null;}

@@ -45,7 +45,13 @@ $:{()
       with that (on Outer0 return this==that)
       return Bool.false()
       }
-    type method Outer0 #stringParser(Library that) Outer0(text:S.#stringParser(that))
+  type method
+  Outer0 #stringParser(Library that)
+    Outer0(text:S.#stringParser(that))
+  method
+  Outer0 (Message that)
+    Outer0(text:this.text(),cause:that)
+
     method toS() {
       if !this.cause().isPresent() (
         return Outer0.kind()++S.doubleQuote()++this.text()++S.doubleQuote()
@@ -64,7 +70,7 @@ $:{()
     method clazz() Outer0
     type method Outer0 (S text) Outer0(_text:text,cause:Message::Opt())
     type method Outer0(S text, Message cause) Outer0(_text:text,cause:Message::Opt(cause))
-    type method Outer0(Message that) Outer0(_text:that.text(),cause:Message::Opt(that))
+    'type method Outer0(Message that) Outer0(_text:that.text(),cause:Message::Opt(that))
     }
   }
 }

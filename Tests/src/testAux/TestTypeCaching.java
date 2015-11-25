@@ -99,7 +99,7 @@ public class TestTypeCaching {
       FillCache.computeInheritedDeep(p, cb1);
       FillCache.computeStage(p, cb1);
       CachedStage stg = Program.extractCBar(path.getCBar(), cb1).getStage();
-      Assert.assertEquals(expectedCoh, stg.isCoherent());
+      Assert.assertEquals(expectedCoh, stg.getCoherent().isEmpty());
       Assert.assertEquals(expected,stg.getInherited().toString());
     }
     }

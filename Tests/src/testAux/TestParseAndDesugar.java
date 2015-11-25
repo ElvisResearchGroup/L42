@@ -370,6 +370,9 @@ public class TestParseAndDesugar {
   },{lineNumber(), //whe we fix this test, go in FlatFirstLevel and put back the @private add.
   "{reuse L42.is/nanoBasePrivates4\n   C:{method  Void f1() void C1:{}}}",  "__0_1"
 
+  },{lineNumber(), //whe we fix this test, go in FlatFirstLevel and put back the @private add.
+    "{reuse L42.is/NanoBasePrivates5\n AA:{(A a)}}",  "__0_1"
+
 }});}
 
 //----------

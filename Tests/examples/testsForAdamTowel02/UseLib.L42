@@ -1,7 +1,8 @@
 {reuse L42.is/AdamTowel02
-Lib:Load[]<<{reuse L42.is/MiniSimpleLib}
+
 Main:{
-  Lib.printHelloWorld()
+  Url url=Url"Foo"
+  Debug(S"Hello World 42")
   return ExitCode.normal()
   }
 }

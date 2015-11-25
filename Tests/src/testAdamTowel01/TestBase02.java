@@ -39,9 +39,9 @@ public class TestBase02 {
   }
 
   @Test
-  public  void _02_01UseSimpleLib() throws Throwable{
+  public  void _02_01UseLib() throws Throwable{
     TestHelper.configureForTest();
-    L42.main(new String[]{"examples/testsForAdamTowel02/UseSimpleLib.L42"});
+    L42.main(new String[]{"examples/testsForAdamTowel02/UseLib.L42"});
     Assert.assertEquals(L42.record.toString(),"Hello World 42\n");
     }
 

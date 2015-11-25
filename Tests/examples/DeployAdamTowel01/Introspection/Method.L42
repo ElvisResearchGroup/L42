@@ -45,7 +45,7 @@ Type returnType() {
     memberN:this.memberN(),
     typeN:0N)
   catch exception x (
-    on MetaGuard::MemberUnavailable error Assert::CodeNotReachable(x)
+    on MetaGuard::MemberUnavailable error Assert::CodeNotReachable""(x)
     on Void error Assert::CodeNotReachable"void was thrown"
     )
   }
@@ -67,7 +67,7 @@ Types parameterTypes() {
     pN+=1N
     )
   return result
-  catch exception err (on MetaGuard::MemberUnavailable error Assert::CodeNotReachable(err))
+  catch exception err (on MetaGuard::MemberUnavailable error Assert::CodeNotReachable""(err))
   }
 
 method

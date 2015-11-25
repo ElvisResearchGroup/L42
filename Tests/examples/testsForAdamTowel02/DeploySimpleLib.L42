@@ -6,8 +6,16 @@ Resource:{type method Library(){
     Void printHelloWorld() Debug(S"Hello World Deployed")
     }
   }}
-Task:DeployLibrary[
-  Path"MyLib",
-  url:Url"localhost/DeployedSimpleLib.L42"
-  ]<<Resource()
+Main:{
+  l=Resource()
+  dl=Load::DeployLibrary[
+    Path"MyLib",
+    url:Url"localhost/DeployedSimpleLib.L42"
+    ]<<Resource()
+  return ExitCode.normal()
+}  
+'Task:Load::DeployLibrary[
+'  Path"MyLib",
+'  url:Url"localhost/DeployedSimpleLib.L42"
+'  ]<<Resource()
 }

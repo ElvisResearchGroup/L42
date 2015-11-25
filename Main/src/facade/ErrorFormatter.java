@@ -5,6 +5,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -139,7 +140,7 @@ public class ErrorFormatter {
     for(Member m:cb.getMs()){
       if(IsCompiled.of(m)){continue;}
       return m.match(
-        nc->nc.getName()+"\nError is:\n"+isItErrorPlace(p,nc.getInner()),
+        nc->nc.getName()+"\nError is:\n"+L42.messageOfLastTopLevelError+"\n"+isItErrorPlace(p,nc.getInner()),
         mi->formatSelectorCompact(mi.getS())+"::"+isItErrorPlace(p,mi.getInner()),
         mt->formatSelectorCompact(mt.getMs())+"::"+isItErrorPlace(p,mt.getInner().get())
         );
@@ -271,14 +272,14 @@ public class ErrorFormatter {
         else{ cachedInfo+="name: "+stg.getGivenName();}
         cachedInfo+=  " depends:[";
         //cachedInfo+=//can be circular errorFormat(stg.getDependencies(),new ArrayList<>());
-        for(ClassB cbd:stg.getDependencies()){
+        for(ClassB cbd:new HashSet<>(stg.getDependencies())){
           if(cbd.getStage().getStage()==Stage.Less){cachedInfo+="-";}
           if(cbd.getStage().getStage()==Stage.Plus){cachedInfo+="+";}
           if(cbd.getStage().getGivenName().isEmpty()){
             cachedInfo+="anonimus";
           }
           else {cachedInfo+=cbd.getStage().getGivenName();}
-          cachedInfo  +="{"+cbd.getStage().getStage().name()+"}, ";
+          cachedInfo  +=/*"{"+cbd.getStage().getStage().name()+"}"+*/", ";
         }
         cachedInfo+="]";
         }

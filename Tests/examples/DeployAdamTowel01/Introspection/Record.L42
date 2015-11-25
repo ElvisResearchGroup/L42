@@ -15,7 +15,7 @@
   method S #stringParser(Library that) {
     path=Path.#stringParser(that)
     return this.that().introspectDocAsString(path:path)
-    catch exception x (on MetaGuard::MemberUnavailable error Assert::CodeNotReachable(x) )
+    catch exception x (on MetaGuard::MemberUnavailable error Assert::CodeNotReachable""(x) )
     }
   method
   Doc docOf(Path path){

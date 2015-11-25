@@ -4,7 +4,10 @@ import facade.Configuration;
 import facade.ErrorFormatter;
 import facade.L42;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -22,6 +25,7 @@ import java.util.function.Supplier;
 import coreVisitors.CollectClassBs0;
 import coreVisitors.CollectPaths0;
 import platformSpecific.fakeInternet.PluginType;
+import platformSpecific.javaTranslation.Resources.Error;
 import sugarVisitors.ToFormattedText;
 import tools.Assertions;
 import ast.Ast;
@@ -73,13 +77,15 @@ public class Resources {
   public static void clearRes() {
     usedRes.clear();
   }
-
+  
   @SuppressWarnings("serial")
-  public static class Error extends RuntimeException{
+  private static class L42Throwable extends RuntimeException{
+    public final Object unbox; public L42Throwable(Object u){unbox=u;}
+    }
+  @SuppressWarnings("serial")
+  public static class Error extends L42Throwable{
     public String toString() {return "Error["+ unbox +"]";}
-    public final Object unbox; public Error(Object u){
-      //assert !u.getClass().getName().startsWith("generated.Program42$");
-      unbox=u;}
+    public Error(Object u){super(u);}
     public static Error multiPartStringError(String kind,Object ... map){
       ExpCore.ClassB cb = multiPartStringClassB(kind, map);
       return new Error(cb);
@@ -103,14 +109,14 @@ public class Resources {
     }
     }
   @SuppressWarnings("serial")
-  public static class Exception extends RuntimeException{
+  public static class Exception extends L42Throwable{
     public String toString() {return "Exception["+ unbox +"]";}
-    public final Object unbox; public Exception(Object u){unbox=u;}
+    public Exception(Object u){super(u);}
     }
   @SuppressWarnings("serial")
-  public static class Return extends RuntimeException{
+  public static class Return extends L42Throwable{
     public String toString() {return "Return["+ unbox +"]";}
-    public final Object unbox; public Return(Object u){unbox=u;}
+    public Return(Object u){super(u);}
     }
   public static class Void{
     public static final Void instance=new Void();
@@ -324,4 +330,25 @@ public class Resources {
       s=s.replace("£h","#");
       return s;
   }
+  public static void cacheMessage(L42Throwable err) {
+   String s=extractMessage(err);
+   L42.messageOfLastTopLevelError=s;
+  }
+  private static String extractMessage(L42Throwable err) {
+    try{
+      Object obj=err.unbox;
+      Method toS = obj.getClass().getMethod("MtoS");
+      Object s42=toS.invoke(obj);
+      Method binaryRepr = s42.getClass().getMethod("MbinaryRepr");
+      Object lib=binaryRepr.invoke(s42);
+      if( lib instanceof String){return (String)lib;}
+      ExpCore.ClassB cb=(ExpCore.ClassB)Revertable.doRevert(lib);
+      return EncodingHelper.ensureExtractStringU(cb);//safer that extracting on lib, if the method return numbers or other stuff
+      } catch (NoSuchMethodException | SecurityException 
+         | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+        return "";
+      }
+  }
+    
+  
 }

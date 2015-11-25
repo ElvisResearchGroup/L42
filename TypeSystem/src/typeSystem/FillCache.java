@@ -203,8 +203,9 @@ public static boolean progress(List<CachedStage>again){
       if(cbi.getStage().getStage()==Stage.Less){return Stage.Less;}
       if(!IsCompiled.of(cbi)){return Stage.Less;}
     }
-    if(Functions.isAbstract(p,cb)){
-      cb.getStage().setCoherent(false);
+    List<String> details = Functions.isAbstract(p,cb);
+    if(!details.isEmpty()){
+      cb.getStage().setCoherent(details);
       return Stage.Plus;
       }
     for(ClassB cbi:cb.getStage().getDependencies()){

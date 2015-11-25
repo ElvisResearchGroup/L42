@@ -7,12 +7,14 @@ Parsable:{
     return Extends[{
     'ParseFailure:Message:S[]<<{<:Guard} no need, related to invariant?
     type method' if you do not implement it, it is a constructor?
-    capsule Outer0 fromS(read Concept::ToS that)      
+    Outer0 fromS(read Concept::ToS that)    
+    'will be in the interface when there is type refinement,
+    'and will be imm in the interface, and classes can refine to their outer0, ant to capsule if makes sense
     type method
     Outer0 #stringParser(Library that) 
       Outer0.fromS(S.#stringParser(that))
       }]<<that
-    catch exception mg (on MetaGuard exception DecorationUnfeasable(mg))
+    catch exception mg (on MetaGuard exception DecorationUnfeasable"Parsable"(mg))
     }
   }
 SealState:{
@@ -62,13 +64,13 @@ Invariant:{
 
 DataFromToS:{' in the future we can add also hashCode and > =>
   type method Library<<(Library that) exception DecorationUnfeasable{
-    return Extends[{
+    return Extends[{<:Concept::ToS
     method Bool != (Outer0 that) !(this==that)
     read method Bool ==(read Outer0 that) this.toS()==that.toS()
     }]<<Equals<<that
     catch exception mg (
       on DecorationUnfeasable exception mg
-      on MetaGuard exception DecorationUnfeasable(mg)
+      on MetaGuard exception DecorationUnfeasable""(mg)
       )
     }
   }
@@ -82,7 +84,7 @@ Equals:{
         }
       read method Bool ==(read Outer0 that)
       }]<<that
-    catch exception x(on MetaGuard exception DecorationUnfeasable(x))
+    catch exception x(on MetaGuard exception DecorationUnfeasable"Equals"(x))
     }
   }
 Named:{
@@ -91,7 +93,7 @@ Named:{
         method myName() Introspection(clazz:Outer0).externalTypeToS()
         }]<<that
     'can improve error: if is method defined against method implemented
-    catch exception x(on MetaGuard exception DecorationUnfeasable(x))
+    catch exception x(on MetaGuard exception DecorationUnfeasable"Named"(x))
     }
   }
     'i=Introspection(lib:that)

@@ -54,6 +54,7 @@ public class L42 {
   public static int compilationRounds=0;
   public static boolean trustPluginsAndFinalProgram=false;
   public static StringBuilder record=new StringBuilder();
+  public static String messageOfLastTopLevelError="";
   public static String[] programArgs=null;
   public static List<URL> pluginPaths=null;
   public static final Set<String> usedNames=new HashSet<String>();

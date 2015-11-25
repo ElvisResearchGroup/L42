@@ -72,7 +72,7 @@ Members members() (
       .introspectReportMember(root:this,path:this.path(),memberN:mN))
     mN+=1N
     )
-  catch exception x (on MetaGuard::MemberUnavailable error Assert::CodeNotReachable(x))
+  catch exception x (on MetaGuard::MemberUnavailable error Assert::CodeNotReachable""(x))
   result)
 
 method
@@ -98,7 +98,7 @@ method Types implementedInterfaces() (
       .introspectReportType(root:this,path:this.path(),memberN:0N,typeN:tN))
     tN+=1N
     )
-  catch exception x (on MetaGuard::MemberUnavailable error Assert::CodeNotReachable(x))
+  catch exception x (on MetaGuard::MemberUnavailable error Assert::CodeNotReachable""(x))
   result)
 method Types transitivelyImplementedInterfaces() {
   var result=this.removeDup(this.implementedInterfaces())

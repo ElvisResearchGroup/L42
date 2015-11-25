@@ -50,12 +50,15 @@ public class CompiledStep extends SmallStep{
         return (ClassB)o;
         }
       catch(Resources.Error err){
+        Resources.cacheMessage(err);
         return EncodingHelper.wrapResource(err);
         }
       catch(Resources.Exception err){
+        Resources.cacheMessage(err);
         return EncodingHelper.wrapResource(err);
         }
       catch(Resources.Return err){//it can happen if other stuff is wrong, in this way we can see the error.
+        Resources.cacheMessage(err);
         return EncodingHelper.wrapResource(err);
         }
       });
