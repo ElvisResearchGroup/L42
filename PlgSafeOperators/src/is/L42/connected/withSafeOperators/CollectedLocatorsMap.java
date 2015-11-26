@@ -60,9 +60,9 @@ public static  CollectedLocatorsMap from(Path src,Path dest){
   maps.nesteds.add(nl);
   return maps;
 }
-public static  CollectedLocatorsMap from(Path src,MethodWithType mwt,MethodSelector ms2){
+public static  CollectedLocatorsMap from(Path src,Member m,MethodSelector ms2){
   Locator result=new Locator();
-  result.addCsAndMember(src.getCBar(),mwt);
+  result.addCsAndMember(src.getCBar(),m);
   result.setAnnotation(ms2);
   CollectedLocatorsMap maps=new CollectedLocatorsMap();
   maps.selectors.add(result);

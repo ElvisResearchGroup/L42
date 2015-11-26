@@ -140,9 +140,12 @@ public class NormalizePrivates {
           if(newCs.equals(cs)){return s;}
           return Path.outer(s.outerNumber(),newCs);
         }
-        public ast.Ast.MethodSelector liftMs(ast.Ast.MethodSelector ms){
+        @Override public ast.Ast.MethodSelector liftMs(ast.Ast.MethodSelector ms){
           return super.liftMs(ms.withName(replace__(ms.getName())).withNames(
               Map.of(ni->replace__(ni),ms.getNames())));
+        }
+        @Override public ast.Ast.MethodSelector liftMsInMetDec(ast.Ast.MethodSelector ms){
+          return liftMs(ms);
         }
         public ClassB.NestedClass visit(ClassB.NestedClass nc){
           return super.visit(nc.withName(replace__(nc.getName())));
@@ -195,11 +198,5 @@ public class NormalizePrivates {
   public static ClassB normalize(Program p,CollectedLocatorsMap privates,ClassB cb){
     cb=(ClassB)new RenameAlsoDefinition(cb,privates,p).visit(cb);
     return cb;
-    //renameMethod still use old introspection
-    //write a rename usage from data of collected privates for both paths and methods.
-    //then write a simple rename declarations.
-    //the rename declarations for methods, for renameMethod have to keep method sum in account.
-    
     }
-  //public static ClassB importWithReuseNormalizedClass(int round,ClassB cb){return cb;}
 }

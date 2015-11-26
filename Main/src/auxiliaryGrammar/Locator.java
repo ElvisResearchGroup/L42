@@ -70,6 +70,11 @@ public class Locator {
     this.addCs(path.getCBar());
     return true;
   }
+  public boolean auxMoveInPath(Path path) {//avoid putting 0 in the end
+    if (!this.cutUpTo(path.outerNumber())) { return false; }
+    this.auxAddCs(path.getCBar());
+    return true;
+  }
   public void addCsAndMember(List<String> cs,Member m) {
     auxAddCs(cs);
     this.cbs.add(null);

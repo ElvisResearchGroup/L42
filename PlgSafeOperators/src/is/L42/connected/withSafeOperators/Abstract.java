@@ -2,6 +2,7 @@ package is.L42.connected.withSafeOperators;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -21,8 +22,8 @@ import ast.ExpCore.ClassB.NestedClass;
 import ast.Util.PathMwt;
 import ast.Util.PathMx;
 import auxiliaryGrammar.Program;
-import introspection.FindUsage;
 import is.L42.connected.withSafeOperators.ExtractInfo.IsUsed;
+import is.L42.connected.withSafeOperators.Rename.UserForMethodResult;
 public class Abstract {
   public static ClassB toAbstract(ClassB cb, List<String> path){
     Errors42.checkExistsPathMethod(cb, path, Optional.empty());
@@ -100,7 +101,7 @@ public class Abstract {
   }
   List<PathMx> ordered=new ArrayList<>();
   try{
-    Set<PathMx> usedPrMeth = FindUsage.of(Program.empty(),prMeth, cbClear);
+    Set<PathMx> usedPrMeth =findUsage(prMeth,cbClear); //FindUsage.of(Program.empty(),prMeth, cbClear);
     if(coupuledPaths.isEmpty() && usedPrMeth.isEmpty()){return;}
     ordered.addAll(usedPrMeth);
     }
@@ -111,4 +112,15 @@ public class Abstract {
   throw Errors42.errorPrivacyCoupuled(coupuledPaths, ordered);
   }
 
+  private static class NotFound extends Error{ static NotFound nf=new NotFound();}
+  private static Set<PathMx> findUsage(List<PathMx> prMeth, ClassB cbClear) {
+    Set<PathMx> result=new HashSet<>();
+    for(PathMx pmx:prMeth){
+      assert pmx.getPath().outerNumber()==0;
+      UserForMethodResult res= Rename.userForMethod(Program.empty(), cbClear,pmx.getPath().getCBar(),pmx.getMs(),false);
+      result.addAll(res.asClient);
+      res.asThis.stream().map(e->new PathMx(Path.outer(0),e)).forEach(result::add);
+      }
+    return result;
+  }
 }

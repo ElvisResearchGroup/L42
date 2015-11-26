@@ -18,6 +18,7 @@ import ast.Ast;
 import ast.ExpCore;
 import ast.Ast.Doc;
 import ast.Ast.Path;
+import ast.Ast.Position;
 import ast.Ast.MethodSelector;
 import ast.Ast.Stage;
 import ast.Util.CachedStage;
@@ -25,6 +26,7 @@ import ast.Util.PathMx;
 import ast.Util.PathMxMx;
 import ast.ExpCore.*;
 import ast.ExpCore.ClassB.Member;
+import ast.ExpCore.ClassB.MethodImplemented;
 import ast.ExpCore.ClassB.MethodWithType;
 import ast.ExpCore.ClassB.NestedClass;
 import ast.Util.PathPath;
@@ -89,15 +91,19 @@ public class Rename {
      return (ClassB) ren.visit(cb);
     }
   static class UserForMethodResult{List<PathMx> asClient;List<MethodSelector>asThis;}
-  public static UserForMethodResult userForMethod(Program p,ClassB cb,List<String> path,MethodSelector src){
-    Member mem=Errors42.checkExistsPathMethod(cb, path, Optional.of(src));
-    assert mem instanceof MethodWithType;
-    CollectedLocatorsMap maps=CollectedLocatorsMap.from(Path.outer(0,path),(MethodWithType) mem,src);
+  public static UserForMethodResult userForMethod(Program p,ClassB cb,List<String> path,MethodSelector src,boolean checkMethExists ){
+    if(checkMethExists){
+      Member mem=Errors42.checkExistsPathMethod(cb, path, Optional.of(src));
+      assert mem instanceof MethodWithType;
+      }
+    Member mem=new ExpCore.ClassB.MethodImplemented(Doc.empty(),src,new ExpCore._void(),Position.noInfo);
+    CollectedLocatorsMap maps=CollectedLocatorsMap.from(Path.outer(0,path), mem,src);
     HashSet<PathMx> result1=new HashSet<>();
     HashSet<MethodSelector> result2=new HashSet<>();
     MethodPathCloneVisitor ren=new MethodPathCloneVisitor(cb, maps,p){
       public Ast.Type liftT(Ast.Type t){return t;}
-      protected MethodSelector liftMs(MethodSelector ms){return ms;}
+      @Override protected MethodSelector liftMs(MethodSelector ms){return ms;}
+      @Override protected MethodSelector liftMsInMetDec(MethodSelector ms){return ms;}
       public ExpCore visit(MCall s) {
         List<String> localPath = this.getLocator().getClassNamesPath();
         if(!localPath.equals(path)){return super.visit(s);}
@@ -109,7 +115,8 @@ public class Rename {
         }
       @Override public MethodSelector visitMS(MethodSelector original, Path src) {
         Member m=this.getLocator().getLastMember();
-        assert !(m instanceof NestedClass);
+        assert !(m instanceof NestedClass):
+          "";
         MethodSelector msUser=m.match(nc->{throw Assertions.codeNotReachable();},
             mi->mi.getS(), mt->mt.getMs());
         Path pathUser=Path.outer(0,this.getLocator().getClassNamesPath());

@@ -24,7 +24,7 @@
     return S"false"
     }
   type method
-  Outer0 fromS(Concept::ToS that){
+  Outer0 fromS(read Concept::ToS that){
     if that.toS()==S"true" (return Outer0.true())
     if that.toS()==S"false" (return Outer0.false())
     error S"UnsatisfactoryErrorToAvoidCycle, replace in Adam2-3"

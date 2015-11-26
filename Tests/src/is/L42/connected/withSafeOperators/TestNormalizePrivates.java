@@ -155,6 +155,23 @@ public static class TestNormalizePrivates1 {
     lineNumber(),    
     "{ A:{(A a)'@private\n}  B:{method A::a() fuffa()} }",
     "{ A:{#apply__0_0(A a__0_0)'@private\n}  B:{method A::a__0_0() fuffa()} }"
+  },{
+    lineNumber(),    
+    "{ A:{(A a)'@private\n}  B:{method A fuffa(A a) a.a()} }",
+    "{ A:{#apply__0_0(A a__0_0)'@private\n}  B:{method A fuffa(A a) a.a__0_0()} }"
+  },{
+    lineNumber(),    
+    "{ A:{(A a)'@private\n}  B:{(A a) method A fuffa(B a) a.a().a()} }",
+    "{ A:{#apply__0_0(A a__0_0)'@private\n}  B:{(A a) method A fuffa(B a) a.a().a__0_0()} }"
+  },{
+    lineNumber(),    
+    "{ A:{(A a)'@private\n}  B:{(A a)'@private\n method A fuffa(B a) a.a().a()} }",
+    "{ A:{#apply__0_0(A a__0_0)'@private\n}  B:{#apply__1_0(A a__1_0)'@private\n method A fuffa(B a) a.a__1_0().a__0_0()} }"
+  },{
+    lineNumber(),    
+    "{ A:{(A a)'@private\n}  B:{(A _a)'@private\n method A a()this._a() method A fuffa(B a) a.a().a()} }",
+    "{ A:{#apply__0_0(A a__0_0)'@private\n}  B:{#apply__1_0(A _a__1_0)'@private\n method A a()this._a__1_0() method A fuffa(B a) a.a().a__0_0()} }"
+
   }});}
 
 

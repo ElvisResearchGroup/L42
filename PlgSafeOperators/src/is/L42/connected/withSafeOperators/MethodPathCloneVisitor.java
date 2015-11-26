@@ -57,14 +57,14 @@ abstract public class MethodPathCloneVisitor extends RenameMembers {
     HashMap<String, Ast.Type> aux =this.varEnv;
     Program ep=Program.getExtendedProgram(p,this.getLocator().getCbs());
     this.varEnv=getVarEnvOf(ep,mi.getS(),this.getLastCb());
-    try{return super.visit(mi);}
+    try{ return super.visit(mi); }
     finally{this.varEnv=aux;}
   }
   public ClassB.MethodWithType visit(ClassB.MethodWithType mt){
     HashMap<String, Ast.Type> aux =this.varEnv;
     Program ep=Program.getExtendedProgram(p,this.getLocator().getCbs());
     this.varEnv=getVarEnvOf(ep,mt.getMs(),this.getLastCb());
-    try{return super.visit(mt);}
+    try{ return super.visit(mt);}
     finally{this.varEnv=aux;}
     }
   private Ast.MethodType getMt(Program p,MethodSelector s,ClassB cb){
@@ -147,5 +147,6 @@ abstract public class MethodPathCloneVisitor extends RenameMembers {
     s=new MCall(s.getReceiver(),ms2,s.getDoc(),s.getEs(),s.getP());
     return super.visit(s);
     }
-    protected MethodSelector liftMs(MethodSelector ms){return visitMS(ms,Path.outer(0));}
+    @Override protected MethodSelector liftMsInMetDec(MethodSelector ms){return visitMS(ms,Path.outer(0));}
+
 }

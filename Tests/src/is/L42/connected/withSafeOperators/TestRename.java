@@ -41,6 +41,8 @@ public class TestRename {
           "{B:{ method Void m() void}}", "B", "m()", "k()", "{B:{ method Void k() void}}", false //
           }, { //
           "{ method Void m() void}", "Outer0", "m()", "k()", "{ method Void k() void}", false //
+          }, { //
+          "{ method Void m() void method Outer0::m() mm() void}", "Outer0", "m()", "k()", "{ method Void k() void method Outer0::k() mm() void}", false //
           } });
     }
 
@@ -97,12 +99,12 @@ public class TestRename {
       Path path = Path.parse(_path);
       MethodSelector ms1 = MethodSelector.parse(_ms1);
       if (!isError) {
-        UserForMethodResult res = Rename.userForMethod(Program.empty(), cb1, path.getCBar(), ms1);
+        UserForMethodResult res = Rename.userForMethod(Program.empty(), cb1, path.getCBar(), ms1,true);
         Assert.assertEquals(expected1, res.asClient.toString());
         Assert.assertEquals(expected2, res.asThis.toString());
       } else {
         try {
-          Rename.userForMethod(Program.empty(), cb1, path.getCBar(), ms1);
+          Rename.userForMethod(Program.empty(), cb1, path.getCBar(), ms1,true);
           fail("error expected");
         } catch (Resources.Error err) {
           ClassB res = (ClassB) err.unbox;

@@ -71,10 +71,10 @@ public class CloneVisitor implements Visitor<ExpCore>{
   }
   public ClassB.NestedClass visit(ClassB.NestedClass nc){return new ClassB.NestedClass(liftDoc(nc.getDoc()),nc.getName(),lift(nc.getInner()),nc.getP());}
   public ClassB.MethodImplemented visit(ClassB.MethodImplemented mi){
-    return new ClassB.MethodImplemented(liftDoc(mi.getDoc()), liftMs(mi.getS()), lift(mi.getInner()),mi.getP());
+    return new ClassB.MethodImplemented(liftDoc(mi.getDoc()), liftMsInMetDec(mi.getS()), lift(mi.getInner()),mi.getP());
     }
   public ClassB.MethodWithType visit(ClassB.MethodWithType mt){
-    return new ClassB.MethodWithType(liftDoc(mt.getDoc()),liftMs(mt.getMs()),liftMT(mt.getMt()), Map.of(this::lift,mt.getInner()),mt.getP());
+    return new ClassB.MethodWithType(liftDoc(mt.getDoc()),liftMsInMetDec(mt.getMs()),liftMT(mt.getMt()), Map.of(this::lift,mt.getInner()),mt.getP());
     }
 
   protected MethodType liftMT(MethodType mt) {
@@ -113,5 +113,8 @@ public class CloneVisitor implements Visitor<ExpCore>{
   @Override
   public ExpCore visit(Loop s) {
     return new Loop(lift(s.getInner()));
+  }
+  protected MethodSelector liftMsInMetDec(MethodSelector ms) {
+    return ms;
   }
 }
