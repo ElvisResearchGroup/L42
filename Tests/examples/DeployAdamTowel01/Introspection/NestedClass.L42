@@ -1,5 +1,5 @@
 {'findMeNestedClass
-(fwd NestedClass root,Path path,MirrorPr mirror, Record record)<:Member '@private
+(fwd NestedClass _root,Path path,MirrorPr mirror, Record record)<:Member '@private
 method myName()GetMyName(Outer0)
 method toS() Outer0.myName()++S"["[this.allAsString()]"]"
 method Bool ==(Outer0 that){
@@ -17,6 +17,7 @@ method equals(that){
   with that (on Outer0 return this==that)
   return Bool.false()
   }
+method Outer0 root()this._root()
 method 'error for Outer0
 Doc nestedDoc()(
   if this.path()==Path"Outer0" (

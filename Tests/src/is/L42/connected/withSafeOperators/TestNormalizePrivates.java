@@ -171,6 +171,10 @@ public static class TestNormalizePrivates1 {
     lineNumber(),    
     "{ A:{(A a)'@private\n}  B:{(A _a)'@private\n method A a()this._a() method A fuffa(B a) a.a().a()} }",
     "{ A:{#apply__0_0(A a__0_0)'@private\n}  B:{#apply__1_0(A _a__1_0)'@private\n method A a()this._a__1_0() method A fuffa(B a) a.a().a__0_0()} }"
+  },{
+    lineNumber(),    
+    "{reuse L42.is/NanoBasePrivates6\n  B2:{ } }",
+    "{C:{method '@private\nVoid foo__1_1() void\nmethod Void bar() this.foo__1_1()}B2:{}}"
 
   }});}
 

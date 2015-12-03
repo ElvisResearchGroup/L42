@@ -3617,7 +3617,7 @@ Library #lib()
 read method 
 Library lib() 
 method introspectReport(root path ) (
-  Outer2::NestedClass::#apply__20_0(root__20_0 path__20_0 mirror__20_0 record__20_0 ) result=Outer2::NestedClass.#apply__20_0(root__20_0:root, path__20_0:path, mirror__20_0:this, record__20_0:Outer2::Record.#apply(that:Outer1::Lib.#apply(lib:using Outer3::SafeOperators check introspectLibraryReport(that:this.lib(), path:path.binaryRepr()) error Outer3::System::Guard::PluginFailure.#stringParser(that:{'@stringU
+  Outer2::NestedClass::#apply__20_0(_root__20_0 path__20_0 mirror__20_0 record__20_0 ) result=Outer2::NestedClass.#apply__20_0(_root__20_0:root, path__20_0:path, mirror__20_0:this, record__20_0:Outer2::Record.#apply(that:Outer1::Lib.#apply(lib:using Outer3::SafeOperators check introspectLibraryReport(that:this.lib(), path:path.binaryRepr()) error Outer3::System::Guard::PluginFailure.#stringParser(that:{'@stringU
   'SafeOperators.introspectLibraryReport
   }))))
   catch error x (
@@ -3677,10 +3677,10 @@ method introspectReport(root path ) (
   Outer2::Record::#apply(lib ) record=Outer2::Record.#apply(lib:using Outer3::SafeOperators check introspectTypeReport(that:this.lib(), path:path.binaryRepr()) error Outer3::System::Guard::PluginFailure.#stringParser(that:{'@stringU
   'SafeOperators.introspectTypeReport
   }))
-  Outer2::Record::#apply(lib ) ::docOf(path ) ::annotations__18_0() ::top() ::referredClass() realRootType=record.docOf(path:Outer3::Path.#stringParser(that:{'@stringU
+  Outer2::Record::#apply(lib ) ::docOf(path ) ::annotations() ::top() ::referredClass() realRootType=record.docOf(path:Outer3::Path.#stringParser(that:{'@stringU
   'MyClass
-  })).annotations__18_0().top().referredClass()
-  Outer2::NestedClass::#apply__20_0(root__20_0 path__20_0 mirror__20_0 record__20_0 ) result=Outer2::NestedClass.#apply__20_0(root__20_0:result, path__20_0:Outer3::Path.#stringParser(that:{'@stringU
+  })).annotations().top().referredClass()
+  Outer2::NestedClass::#apply__20_0(_root__20_0 path__20_0 mirror__20_0 record__20_0 ) result=Outer2::NestedClass.#apply__20_0(_root__20_0:result, path__20_0:Outer3::Path.#stringParser(that:{'@stringU
   'Outer0
   }), mirror__20_0:Outer0.#apply(lib:realRootType), record__20_0:record)
   catch error x (
@@ -3747,15 +3747,15 @@ Void inner(Outer1::Annotations::#begin() ::#end() that)
 mut method 
 Outer1::Annotations::#begin() ::#end() #inner() }
 type method '@private
-Outer0 _private__18_0(Library _binaryRepr__18_0, Outer0::Annotations annotations__18_0) 
+Outer0 _private__18_0(Library _binaryRepr__18_0, Outer0::Annotations _annotations__18_0) 
 mut method '@private
 Library #_binaryRepr__18_0() 
 read method '@private
 Library _binaryRepr__18_0() 
 mut method '@private
-Outer0::Annotations #annotations__18_0() 
+Outer0::Annotations #_annotations__18_0() 
 read method '@private
-Outer0::Annotations annotations__18_0() 
+Outer0::Annotations _annotations__18_0() 
 method myName() Outer2::GetMyName.#apply(that:Outer0)
 Annotation:{<:Outer3::Concept::ToS, Outer3::Concept::Named
 type method 
@@ -4170,7 +4170,7 @@ Outer0 #apply(Library that) (
     )
   (
     Void unused4=varresult.inner(that:varresult.#inner().#end())
-    Outer0._private__18_0(_binaryRepr__18_0:that, annotations__18_0:varresult.#inner())
+    Outer0._private__18_0(_binaryRepr__18_0:that, _annotations__18_0:varresult.#inner())
     )
   )
 type method 
@@ -4195,7 +4195,9 @@ method toS() (
   error {'@stringU
   'CurlyBlock-Should be unreachable code
   }
-  )}
+  )
+method 
+Outer0::Annotations annotations() this._annotations__18_0()}
 Record:{
 type method 
 Outer0 #apply(Outer1::MirrorPr that) 
@@ -4316,7 +4318,7 @@ method #apply(root ) (
   Outer3::Path::#stringParser(that ) path=Outer3::Path.#stringParser(that:this._report().#stringParser(that:{'@stringU
   'Key
   }).binaryRepr())
-  Outer2::NestedClass.#apply__20_0(root__20_0:root, path__20_0:path, mirror__20_0:this.mirror(), record__20_0:this._report())
+  Outer2::NestedClass.#apply__20_0(_root__20_0:root, path__20_0:path, mirror__20_0:this.mirror(), record__20_0:this._report())
   )}
 RootForMethod:' toPutAs private
 {<:Outer1::RootForMember
@@ -4334,7 +4336,7 @@ mut method
 Outer2::Record #_report() 
 read method 
 Outer2::Record _report() 
-method #apply(root ) Outer2::Method.#apply__19_0(root__19_0:root, path__19_0:this.path(), memberN__19_0:this.memberN(), record__19_0:this._report())}
+method #apply(root ) Outer2::Method.#apply__19_0(_root__19_0:root, path__19_0:this.path(), memberN__19_0:this.memberN(), record__19_0:this._report())}
 type method 
 Outer1::Member dispatch(fwd Outer1::NestedClass root, Outer2::Path path, Outer1::MirrorPr mirror, Outer2::N memberN, Library record) (
   Outer1::Record::#apply(lib ) _report=Outer1::Record.#apply(lib:record)
@@ -4754,11 +4756,11 @@ Void inner(Outer2::Types::#begin() ::#end() that)
 mut method 
 Outer2::Types::#begin() ::#end() #inner() }
 type method '@private
-Outer0 #apply__19_0(fwd Outer1::NestedClass root__19_0, Outer2::Path path__19_0, Outer2::N memberN__19_0, Outer1::Record record__19_0) 
+Outer0 #apply__19_0(fwd Outer1::NestedClass _root__19_0, Outer2::Path path__19_0, Outer2::N memberN__19_0, Outer1::Record record__19_0) 
 mut method '@private
-Outer1::NestedClass #root__19_0() 
+Outer1::NestedClass #_root__19_0() 
 read method '@private
-Outer1::NestedClass root__19_0() 
+Outer1::NestedClass _root__19_0() 
 mut method '@private
 Outer2::Path #path__19_0() 
 read method '@private
@@ -4800,7 +4802,7 @@ Outer2::Bool #equalequal(Outer0 that) (
         return Outer2::Bool.false()
         )
       )
-    Void unused2=return this.root__19_0().#equalequal(that:that.root__19_0())
+    Void unused2=return this.root().#equalequal(that:that.root())
     void
     )
   catch return result (
@@ -4869,7 +4871,7 @@ Outer2::S allAsString() this.record__19_0().#stringParser(that:{'@stringU
 method 
 Outer1::Type returnType() (
   Void unused=(
-    Void unused0=return this.root__19_0().mirror__20_0().introspectReportType(root:this.root__19_0(), path:this.path__19_0(), memberN:this.memberN__19_0(), typeN:Outer2::N.#numberParser(that:{'@stringU
+    Void unused0=return this.root().mirror__20_0().introspectReportType(root:this.root(), path:this.path__19_0(), memberN:this.memberN__19_0(), typeN:Outer2::N.#numberParser(that:{'@stringU
     '0
     }))
     catch exception x (
@@ -4908,7 +4910,7 @@ Outer1::Types parameterTypes() (
         Void unused3=Outer2::Bool.true().#checkTrue()
         (' to be able to break
         
-          Outer1::Type ti=this.root__19_0().record__20_0().that().introspectReportType(root:this.root__19_0(), path:this.pathFromRoot(), memberN:this.memberN__19_0(), typeN:varpN.#inner())
+          Outer1::Type ti=this.root().record__20_0().that().introspectReportType(root:this.root(), path:this.pathFromRoot(), memberN:this.memberN__19_0(), typeN:varpN.#inner())
           Void unused4=varresult.inner(that:varresult.#inner().#add(that:ti))
           varpN.inner(that:varpN.#inner().#plus(that:Outer2::N.#numberParser(that:{'@stringU
           '1
@@ -4939,7 +4941,7 @@ method
 Outer2::Bool isPrivate() (
   Void unused=(
     Void unused0=(
-      Outer0::doc() ::annotations__18_0() ::vals() ann=this.doc().annotations__18_0().vals()
+      Outer0::doc() ::annotations() ::vals() ann=this.doc().annotations().vals()
       (
         Void unused2=(
           Void unused3=(
@@ -4958,7 +4960,7 @@ Outer2::Bool isPrivate() (
                   )
                 )
               (
-                Outer0::doc() ::annotations__18_0() ::vals() ::#inner() ::toS() ::#equalequal(that ) cond=ann.#inner().toS().#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
+                Outer0::doc() ::annotations() ::vals() ::#inner() ::toS() ::#equalequal(that ) cond=ann.#inner().toS().#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
                 'private
                 }))
                 (
@@ -5001,7 +5003,9 @@ Outer2::Bool isPrivate() (
   error {'@stringU
   'CurlyBlock-Should be unreachable code
   }
-  )}
+  )
+method 
+Outer1::NestedClass root() this._root__19_0()}
 Methods:{' generic linked list class, elements of type Elem
 <:Outer2::Concept::Named
 Varres0__54_0:'@private
@@ -5487,11 +5491,11 @@ Void inner(Outer2::Methods::#begin() that)
 mut method 
 Outer2::Methods::#begin() #inner() }
 type method '@private
-Outer0 #apply__20_0(fwd Outer1::NestedClass root__20_0, Outer2::Path path__20_0, Outer1::MirrorPr mirror__20_0, Outer1::Record record__20_0) 
+Outer0 #apply__20_0(fwd Outer1::NestedClass _root__20_0, Outer2::Path path__20_0, Outer1::MirrorPr mirror__20_0, Outer1::Record record__20_0) 
 mut method '@private
-Outer1::NestedClass #root__20_0() 
+Outer1::NestedClass #_root__20_0() 
 read method '@private
-Outer1::NestedClass root__20_0() 
+Outer1::NestedClass _root__20_0() 
 mut method '@private
 Outer2::Path #path__20_0() 
 read method '@private
@@ -5532,7 +5536,7 @@ Outer2::Bool #equalequal(Outer0 that) (
         catch exception unused8 (
           on Void void
           )
-        return this.root__20_0().#equalequal(that:that.root__20_0())
+        return this.root().#equalequal(that:that.root())
         )
       )
     Outer0::hasExternalType() ext=this.hasExternalType()
@@ -5597,6 +5601,8 @@ method equals(that ) (
   'CurlyBlock-Should be unreachable code
   }
   )
+method 
+Outer0 root() this._root__20_0()
 method 'error for Outer0
 Outer1::Doc nestedDoc() (
   Void unused=(
@@ -5767,11 +5773,11 @@ Outer2::S externalTypeToS() (
     Outer0::record__20_0() ::docOf(path ) doc=this.record__20_0().docOf(path:Outer2::Path.#stringParser(that:{'@stringU
     'MyClass
     }))
-    Outer0::record__20_0() ::docOf(path ) ::annotations__18_0() ::top() ::toS() nameAndPrefix=doc.annotations__18_0().top().toS()
-    Outer0::record__20_0() ::docOf(path ) ::annotations__18_0() ::top() ::toS() ::firstIndexOf(that ) sep=nameAndPrefix.firstIndexOf(that:Outer2::S.#stringParser(that:{'@stringU
+    Outer0::record__20_0() ::docOf(path ) ::annotations() ::top() ::toS() nameAndPrefix=doc.annotations().top().toS()
+    Outer0::record__20_0() ::docOf(path ) ::annotations() ::top() ::toS() ::firstIndexOf(that ) sep=nameAndPrefix.firstIndexOf(that:Outer2::S.#stringParser(that:{'@stringU
     '::
     }))
-    Outer0::record__20_0() ::docOf(path ) ::annotations__18_0() ::top() ::toS() ::#apply(start ) name=nameAndPrefix.#apply(start:sep.#plus(that:Outer2::N.#numberParser(that:{'@stringU
+    Outer0::record__20_0() ::docOf(path ) ::annotations() ::top() ::toS() ::#apply(start ) name=nameAndPrefix.#apply(start:sep.#plus(that:Outer2::N.#numberParser(that:{'@stringU
     '2
     })))
     Outer2::N::fromS(that ) prefix=Outer2::N.fromS(that:nameAndPrefix.#apply(start:Outer2::N.#numberParser(that:{'@stringU
@@ -6739,20 +6745,20 @@ Outer1::NestedClass nestedClassFromRoot(Outer2::Path that) exception Outer2::Met
         catch exception unused4 (
           on Void void
           )
-        return this.root__20_0()
+        return this.root()
         )
       )
-    Outer0::record__20_0() ::docOf(path ) ::annotations__18_0() ::top() myClass=this.record__20_0().docOf(path:Outer2::Path.#stringParser(that:{'@stringU
+    Outer0::record__20_0() ::docOf(path ) ::annotations() ::top() myClass=this.record__20_0().docOf(path:Outer2::Path.#stringParser(that:{'@stringU
     'MyClass
-    })).annotations__18_0().top()
+    })).annotations().top()
     Void unused1=(
-      Outer0::record__20_0() ::docOf(path ) ::annotations__18_0() ::top() ::hasReferredClass() ::#bang() cond0=myClass.hasReferredClass().#bang()
+      Outer0::record__20_0() ::docOf(path ) ::annotations() ::top() ::hasReferredClass() ::#bang() cond0=myClass.hasReferredClass().#bang()
       (
         Void unused5=cond0.#checkTrue()
         catch exception unused6 (
           on Void void
           )
-        return this.mirror__20_0().introspectReport(root:this.root__20_0(), path:that)
+        return this.mirror__20_0().introspectReport(root:this.root(), path:that)
         )
       )
     Void unused2=return Outer2::Introspection.#apply(clazz:myClass.referredClass(), path:that)
@@ -6777,7 +6783,7 @@ method
 Outer2::Bool isPrivate() (
   Void unused=(
     Void unused0=(
-      Outer0::nestedDoc() ::annotations__18_0() ::vals() ann=this.nestedDoc().annotations__18_0().vals()
+      Outer0::nestedDoc() ::annotations() ::vals() ann=this.nestedDoc().annotations().vals()
       (
         Void unused2=(
           Void unused3=(
@@ -6796,7 +6802,7 @@ Outer2::Bool isPrivate() (
                   )
                 )
               (
-                Outer0::nestedDoc() ::annotations__18_0() ::vals() ::#inner() ::toS() ::#equalequal(that ) cond=ann.#inner().toS().#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
+                Outer0::nestedDoc() ::annotations() ::vals() ::#inner() ::toS() ::#equalequal(that ) cond=ann.#inner().toS().#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
                 'private
                 }))
                 (
@@ -7284,7 +7290,7 @@ Outer1::NestedClass referencedPath__25_0(Outer1::Doc::Annotation ann) (
 method 
 Outer1::NestedClass referencedPath() this.referencedPath__25_0(ann:this.record__24_0().docOf(path:Outer2::Path.#stringParser(that:{'@stringU
 'Path
-})).annotations__18_0().top())
+})).annotations().top())
 method 
 Outer1::NestedClass resolvedReferencedPath() (
   Void unused=('error on AliasUnresolvable
@@ -7300,7 +7306,7 @@ Outer1::NestedClass resolvedReferencedPath() (
           )
         return this.referencedPath__25_0(ann:this.record__24_0().docOf(path:Outer2::Path.#stringParser(that:{'@stringU
         'ResolvedPath
-        })).annotations__18_0().top())
+        })).annotations().top())
         )
       )
     Void unused1=error Outer2::Guard::Operation.#stringParser(that:{'@stringU

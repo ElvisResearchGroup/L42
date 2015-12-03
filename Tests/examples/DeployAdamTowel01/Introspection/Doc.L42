@@ -1,4 +1,4 @@
-{ _private(Library _binaryRepr, Annotations annotations)<:Concept::ToS,Concept::Named '@private
+{ _private(Library _binaryRepr, Annotations _annotations)<:Concept::ToS,Concept::Named '@private
   method myName()GetMyName(Outer0)
   Annotation:{(Library _binaryRepr, S text, N index)<:Concept::ToS,Concept::Named
     method myName()GetMyName(Outer0)
@@ -33,7 +33,7 @@
       )
     catch exception x (on MetaGuard::NestedClassUnavailable error Assert::CodeNotReachable""(x))
     result:=result.#end() 'reverse the list
-    Outer0._private(_binaryRepr:that, annotations:result)
+    Outer0._private(_binaryRepr:that, _annotations:result)
     )
   type method Outer0 #stringParser(Library that) Outer0(that)
     
@@ -45,4 +45,5 @@
       .introspectDocAsString(path:Path"Outer0")
     catch exception x (on MetaGuard::NestedClassUnavailable error Assert::CodeNotReachable""(x)) 
    }
+   method Annotations annotations()this._annotations()
   }

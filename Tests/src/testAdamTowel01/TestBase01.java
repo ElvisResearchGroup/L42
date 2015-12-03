@@ -117,7 +117,7 @@ public class TestBase01 {
 ,"m6(), methRootExternal:false, typeExternal:false, typeRefExternal:false"
 ,"m6(), methRootExternal:true, typeExternal:true, typeRefExternal:true"
 ,"Outer0::Generated::Foo"
-,"m5(), methRootExternal:false, typeExternal:false, typeRefExternal:true"
+,"m5(), methRootExternal:false, typeExternal:true, typeRefExternal:true"
 ,"Outer0::External"
 ,"m5(), methRootExternal:true, typeExternal:true, typeRefExternal:true"
 ,"Outer0::External"

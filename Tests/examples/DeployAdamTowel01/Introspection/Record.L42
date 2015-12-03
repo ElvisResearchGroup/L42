@@ -31,10 +31,10 @@
   'type method Member dispatch(fwd NestedClass root,Path path,MirrorPr mirror, N memberN,Library record) {
   '  _report =Introspection(lib:report).record()
   '  with x=_report"MemberKind" (
-  '    case x== S"NestedClass"  (return NestedClass(root:root,path:path,mirror:mirror,record:_report))
-  '    case x== S"InterfaceImplementedMethod" (return Method(root:root,path:path,memberN:memberN,record:_report))
-  '    case x== S"ImplementedMethod" (return Method(root:root,path:path,memberN:memberN,record:_report))
-  '    case x== S"AbstractMethod" (return Method(root:root,path:path,memberN:memberN,record:_report))
+  '    case x== S"NestedClass"  (return NestedClass(_root:root,path:path,mirror:mirror,record:_report))
+  '    case x== S"InterfaceImplementedMethod" (return Method(_root:root,path:path,memberN:memberN,record:_report))
+  '    case x== S"ImplementedMethod" (return Method(_root:root,path:path,memberN:memberN,record:_report))
+  '    case x== S"AbstractMethod" (return Method(_root:root,path:path,memberN:memberN,record:_report))
   '    default error Assert::ObservedBug(S"invalid member kind "[x]"")
   '    )
   '  }
@@ -45,12 +45,12 @@
     {(Path path,MirrorPr mirror,Record _report)<:RootForMember
       method(root) (
       path=Path.#stringParser(this._report()"Key".binaryRepr())
-      NestedClass(root:root,path:path,mirror:this.mirror(),record: this._report())
+      NestedClass(_root:root,path:path,mirror:this.mirror(),record: this._report())
       )}
   RootForMethod:' toPutAs private
     {(Path path,N memberN,Record _report)<:RootForMember
       method(root) (
-        Method(root:root,path:this.path(),memberN:this.memberN(),record:this._report())
+        Method(_root:root,path:this.path(),memberN:this.memberN(),record:this._report())
         )}
   type method Member dispatch(fwd NestedClass root,Path path,MirrorPr mirror, N memberN,Library record) (
     _report =Record(lib:record)

@@ -28,6 +28,7 @@ import auxiliaryGrammar.Program;
 import facade.Configuration;
 import facade.L42;
 import facade.Parser;
+import facade.L42.ExecutionStage;
 import is.L42.connected.withSafeOperators.NormalizePrivates;
 import profiling.Timer;
 
@@ -102,7 +103,13 @@ public class TestHelper {
   }
 
   public static ClassB getClassB(String source, String e1) {
-    return (ClassB)Desugar.of(Parser.parse(source," "+e1)).accept(new InjectionOnCore());
+    Expression code1=Parser.parse("GeneratedByTestHelper_"+source,e1);
+    auxiliaryGrammar.WellFormedness.checkAll(code1);
+    Expression code2=Desugar.of(code1);
+    assert auxiliaryGrammar.WellFormedness.checkAll(code2);
+    ExpCore.ClassB code3=(ExpCore.ClassB)code2.accept(new InjectionOnCore());
+    assert coreVisitors.CheckNoVarDeclaredTwice.of(code3);
+    return code3;
   }
   public static ClassB getClassB(String e1) {
     return getClassB(null, e1);

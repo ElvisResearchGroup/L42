@@ -24,7 +24,11 @@ public class PrivateHelper {
   public static ClassB updatePrivateFamilies(ClassB cb){
     countFamilies+=1;
     return (ClassB)cb.accept(new CloneVisitor(){
-      protected MethodSelector liftMs(MethodSelector ms){
+      @Override protected MethodSelector liftMs(MethodSelector ms){
+        return ms.withName(updateSingleName(ms.getName()))
+            .withNames(Map.of(PrivateHelper::updateSingleName, ms.getNames()));
+        }
+      @Override protected MethodSelector liftMsInMetDec(MethodSelector ms){
         return ms.withName(updateSingleName(ms.getName()))
             .withNames(Map.of(PrivateHelper::updateSingleName, ms.getNames()));
         }
