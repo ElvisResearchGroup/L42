@@ -10,8 +10,8 @@ import java.util.function.Function;
 import sugarVisitors.Desugar;
 import tools.Assertions;
 import tools.StringBuilders;
-import ast.Ast.Doc;
-import ast.Ast.MethodSelector;
+//import ast.Ast.Doc;
+//import ast.Ast.MethodSelector;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.Value;
@@ -185,6 +185,17 @@ public interface Ast {
 	public class MethodSelector {
 		String name;
 		List<String> names;
+		public MethodSelector(String name,List<String>names){
+		  this.name=name;
+		  this.names=java.util.Collections.unmodifiableList(names);
+		  assert this.invariant();
+		}
+		public boolean invariant(){
+		  // not good enought, it can also be empty or operator 
+		  // assert checkX(name,true);
+		  for(String n:names){assert checkX(n,false);}
+		  return true;
+		}
 
 		public String toSrcEquivalent() {
 			String result = "new ast.Ast.MethodSelector(\"" + name + "\",java.util.Arrays.asList(";
@@ -251,12 +262,8 @@ public interface Ast {
 			}
 			for (char c : s.toCharArray()) {
 				if (allowHash && c == '#') {continue;}
-				if (c == '%') {continue;}
-				if (c == '_') {continue;}
-				if (c >= 'A' && c <= 'Z') {continue;}
-				if (c >= 'a' && c <= 'z') {continue;}
-				if (c >= '0' && c <= '9') {continue;}
-				return false;
+			  if (ast.Ast.Path.isValidPathChar(c)) {continue;}
+	      return false;
 			}
 			return c0 == '_' ||c0 == '#' || (c0 >= 'a' && c0 <= 'z');
 		}
@@ -648,57 +655,35 @@ public interface Ast {
 	}
 
 	public static enum Op {
-		Tilde("~", OpKind.Unary, true, true), Bang("!", OpKind.Unary, true, true), And("&", OpKind.BoolOp, true,
-				true), Or("|", OpKind.BoolOp, true, true), LTEqual("<=", OpKind.RelationalOp, false, true), GTEqual(
-						">=", OpKind.RelationalOp, true, true), LT("<", OpKind.RelationalOp, false, true), GT(">",
-								OpKind.RelationalOp, true,
-								true), EqualEqual("==", OpKind.RelationalOp, true, false), BangEqual("!=",
-										OpKind.RelationalOp, true,
-										true), Plus("+", OpKind.DataOp, true, true), Minus("-", OpKind.DataOp, true,
-												true), Times("*", OpKind.DataOp, true, true), Divide("/", OpKind.DataOp,
-														true, true), LTLT("<<", OpKind.DataOp, false, false), GTGT(">>",
-																OpKind.DataOp, true, false), PlusPlus("++",
-																		OpKind.DataOp, true, false), TimesTimes("**",
-																				OpKind.DataOp, true,
-																				false), PlusEqual("+=", OpKind.EqOp,
-																						true, true), MinusEqual("-=",
-																								OpKind.EqOp, true,
-																								true), TimesEqual("*=",
-																										OpKind.EqOp,
-																										true,
-																										true), DivideEqual(
-																												"/=",
-																												OpKind.EqOp,
-																												true,
-																												true), AndEqual(
-																														"&=",
-																														OpKind.EqOp,
-																														true,
-																														true), OrEqual(
-																																"|=",
-																																OpKind.EqOp,
-																																true,
-																																true), LTLTEqual(
-																																		"<<=",
-																																		OpKind.EqOp,
-																																		true,
-																																		true), GTGTEqual(
-																																				">>=",
-																																				OpKind.EqOp,
-																																				true,
-																																				true), PlusPlusEqual(
-																																						"++=",
-																																						OpKind.EqOp,
-																																						true,
-																																						true), TimesTimesEqual(
-																																								"**=",
-																																								OpKind.EqOp,
-																																								true,
-																																								true), ColonEqual(
-																																										":=",
-																																										OpKind.EqOp,
-																																										true,
-																																										true);
+		Tilde("~", OpKind.Unary, true, true),//
+		Bang("!", OpKind.Unary, true, true),//
+		And("&", OpKind.BoolOp, true,true),//
+		Or("|", OpKind.BoolOp, true, true),//
+		LTEqual("<=", OpKind.RelationalOp, false, true),//
+		GTEqual(">=", OpKind.RelationalOp, true, true),//
+		LT("<", OpKind.RelationalOp, false, true),//
+		GT(">",OpKind.RelationalOp, true,true),//
+		EqualEqual("==", OpKind.RelationalOp, true, false),//
+		BangEqual("!=",OpKind.RelationalOp, true,true),//
+		Plus("+", OpKind.DataOp, true, true),//
+		Minus("-", OpKind.DataOp, true,true),//
+		Times("*", OpKind.DataOp, true, true),//
+		Divide("/", OpKind.DataOp,true, true),//
+		LTLT("<<", OpKind.DataOp, false, false),//
+		GTGT(">>",OpKind.DataOp, true, false),//
+		PlusPlus("++",OpKind.DataOp, true, false),//
+		TimesTimes("**",OpKind.DataOp, true,false),//
+		PlusEqual("+=", OpKind.EqOp,true, true),//
+		MinusEqual("-=",OpKind.EqOp, true,true),//
+		TimesEqual("*=",OpKind.EqOp,true,true),//
+		DivideEqual("/=",OpKind.EqOp,true,true),//
+		AndEqual("&=",OpKind.EqOp,true,true),//
+		OrEqual("|=",OpKind.EqOp,true,true),//
+		LTLTEqual("<<=",OpKind.EqOp,true,true),//
+		GTGTEqual(">>=",OpKind.EqOp,true,true),//
+		PlusPlusEqual("++=",OpKind.EqOp,true,true),//
+		TimesTimesEqual("**=",OpKind.EqOp,true,true),//
+		ColonEqual(":=",OpKind.EqOp,true,true);//
 
 		public final String inner;
 		public final OpKind kind;

@@ -85,7 +85,7 @@ public class TranslateClass {
     res.append("java.util.ArrayList<ast.ExpCore> es=new java.util.ArrayList<>(java.util.Arrays.asList(");
     StringBuilders.formatSequence(res,ns.iterator(),
       ", ",n->res.append(
-          "platformSpecific.javaTranslation.Resources.Revertable.doRevert(this.F"+n+")"
+          "platformSpecific.javaTranslation.Resources.Revertable.doRevert(this.F"+Resources.nameOf(n)+")"
           ));
     res.append("));\n");
     res.append("return new ast.ExpCore.MCall(receiver,"+ctor.getMs().toSrcEquivalent()+",ast.Ast.Doc.empty(),es,null);\n");
@@ -129,7 +129,7 @@ public class TranslateClass {
         assert t instanceof NormType;
         res.append("public ");
         res.append(Resources.nameOf(t));
-        res.append(" F"+n);
+        res.append(" F"+Resources.nameOf(n));
         });
     res.append(";\n");
   }
@@ -141,12 +141,14 @@ public class TranslateClass {
     List<Type> ts = ctor.getMt().getTs();
     StringBuilders.formatSequence(res,ns.iterator(),ts.iterator(),
       ", ",(n,t)->{
+        n=Resources.nameOf(n);
         res.append(Resources.nameOf(t));
         res.append(" P"+n);
       });
     res.append("){\n");
     StringBuilders.formatSequence(res,ns.iterator(),ts.iterator(),
     "\n",(n,t)->{
+      n=Resources.nameOf(n);
       res.append("this.");
       res.append("F"+n);
       res.append("=");
@@ -182,7 +184,7 @@ public class TranslateClass {
   private static void getSetter(MethodWithType mt, StringBuilder res) {
     getMethodHeader(mt, res);
     res.append("{this.");
-    String name=mt.getMs().getName();
+    String name=Resources.nameOf(mt.getMs().getName());
     res.append("F"+name);
     res.append("=Pthat;return platformSpecific.javaTranslation.Resources.Void.instance;}");
     }
@@ -192,6 +194,7 @@ public class TranslateClass {
     res.append("{return this.");
     String name=mt.getMs().getName();
     if(name.startsWith("#")){name=name.substring(1);}
+    name=Resources.nameOf(name);
     res.append("F"+name);
     res.append(";}");
     }
@@ -206,6 +209,7 @@ public class TranslateClass {
       mt.getMs().getNames().iterator(),
       mt.getMt().getTs().iterator(), ", ",
       (n,t)->{
+        n=Resources.nameOf(n);
         res.append(Resources.nameOf(t));
         res.append(" P"+n);
       });
@@ -253,7 +257,7 @@ public class TranslateClass {
     getMethodHeader(ctor, res);
     res.append("{return new "+s+"(");
     StringBuilders.formatSequence(res,ctor.getMs().getNames().iterator(),
-      ", ",n->res.append("P"+n));
+      ", ",n->res.append("P"+Resources.nameOf(n)));
     res.append(");}\n");
     }
   private static void getIType(String s, ClassB cb, StringBuilder res) {

@@ -57,7 +57,7 @@ RandomAccess:{interface
   'mut method Void (N that, mut Elem val)
 '  mut method Void set(N that, mut Any val) exception Guard::Parameter ???
 '  }
-Sizable:{
+Sizable:{interface
   read method N size()
   read method Bool isEmpty()
   }
