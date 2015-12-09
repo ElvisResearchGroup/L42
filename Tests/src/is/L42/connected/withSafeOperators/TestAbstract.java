@@ -144,7 +144,16 @@ public static class TestAbstractClass {//add more test for error cases
     "C::D",
     "{C:{ method Void m() D.m() D:{ type method Void m() }}}",
     false
-
+  },{lineNumber(),//
+    "{C:{ method Void m() A::D.m() A:{D:{ type method Void m() void}}}}",
+    "C::A::D",
+    "{C:{ method Void m() A::D.m() A:{D:{ type method Void m() }}}}",
+    false
+  },{lineNumber(),//
+    "{C:{ method Void m() A::D.m()} A:{D:{ type method Void m() void}}}",
+    "A::D",
+    "{C:{ method Void m() A::D.m()} A:{D:{ type method Void m() }}}",
+    false
   },{lineNumber(),//
     "{C:{ B:'@private\n{}}}","C::B",
     "{Kind:{'@stringU\n'MemberUnavailable\n}"+
