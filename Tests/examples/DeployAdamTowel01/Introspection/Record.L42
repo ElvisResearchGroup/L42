@@ -15,7 +15,7 @@
   method S #stringParser(Library that) {
     path=Path.#stringParser(that)
     return this.that().introspectDocAsString(path:path)
-    catch exception x (on MetaGuard::MemberUnavailable error Assert::CodeNotReachable""(x) )
+    catch exception x (on MetaGuard::MemberUnavailable error Assert::CodeNotReachable"Record1"(x) )
     }
   method
   Doc docOf(Path path){
@@ -25,7 +25,7 @@
         'This can not be done for circular reference Refactor::RenamePath[path to:Path"Outer0"]<<mirror.lib()
         )
       )
-    error Assert::CodeNotReachable""
+    error Assert::CodeNotReachable"Record2"
     }
   'this is how I would like it to be
   'type method Member dispatch(fwd NestedClass root,Path path,MirrorPr mirror, N memberN,Library record) {

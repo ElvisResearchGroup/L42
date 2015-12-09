@@ -8,6 +8,7 @@ Resource:{type method Library(){
   }}
 Main:{
   l=Resource()
+  Debug(S"foo")
   dl=Load::DeployLibrary[
     Path"MyLib",
     url:Url"localhost/DeployedSimpleLib.L42"

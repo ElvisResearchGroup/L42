@@ -3450,7 +3450,7 @@ Outer0::NestedClass #apply(Library lib) (
   }))
   catch exception x (
     on Outer1::MetaGuard::NestedClassUnavailable error Outer1::Assert::CodeNotReachable.#stringParser(that:{'@stringU
-    '
+    'Introspection1
     })
     )
   root
@@ -3467,7 +3467,7 @@ Outer0::NestedClass #apply(type Any clazz) (
   }))
   catch exception x (
     on Outer1::MetaGuard::NestedClassUnavailable error Outer1::Assert::CodeNotReachable.#stringParser(that:{'@stringU
-    '
+    'Introspection2
     })
     )
   root
@@ -3477,7 +3477,7 @@ Outer0::NestedClass #apply(type Any clazz, Outer1::Path path) (
   Outer0::MirrorPr::Class::#apply(lib ) ::introspectReport(root path ) root=Outer0::MirrorPr::Class.#apply(lib:clazz).introspectReport(root:root, path:path)
   catch exception x (
     on Outer1::MetaGuard::NestedClassUnavailable error Outer1::Assert::CodeNotReachable.#stringParser(that:{'@stringU
-    '
+    'Introspection3
     })
     )
   root
@@ -3668,7 +3668,7 @@ type Any referredClass() (
     }), annotationN:this.index())
     catch exception x (
       on Outer3::MetaGuard::NestedClassUnavailable error Outer3::Assert::CodeNotReachable.#stringParser(that:{'@stringU
-      '
+      'Doc1
       }).#apply(that:x)
       
       on Void error Outer3::Assert::ObservedBug.#stringParser(that:{'@stringU
@@ -4051,7 +4051,7 @@ Outer0 #apply(Library that) (
     )
   catch exception x (
     on Outer2::MetaGuard::NestedClassUnavailable error Outer2::Assert::CodeNotReachable.#stringParser(that:{'@stringU
-    '
+    'Doc2
     }).#apply(that:x)
     )
   (
@@ -4070,7 +4070,7 @@ method toS() (
     }))
     catch exception x (
       on Outer2::MetaGuard::NestedClassUnavailable error Outer2::Assert::CodeNotReachable.#stringParser(that:{'@stringU
-      '
+      'Doc3
       }).#apply(that:x)
       )
     void
@@ -4128,7 +4128,7 @@ Outer2::S #stringParser(Library that) (
     Void unused0=return this.that().introspectDocAsString(path:path)
     catch exception x (
       on Outer2::MetaGuard::MemberUnavailable error Outer2::Assert::CodeNotReachable.#stringParser(that:{'@stringU
-      '
+      'Record1
       }).#apply(that:x)
       )
     void
@@ -4169,7 +4169,7 @@ Outer1::Doc docOf(Outer2::Path path) (
         )
       )
     Void unused1=error Outer2::Assert::CodeNotReachable.#stringParser(that:{'@stringU
-    '
+    'Record2
     })
     void
     )
@@ -4762,7 +4762,7 @@ Outer1::Type returnType() (
     }))
     catch exception x (
       on Outer2::MetaGuard::MemberUnavailable error Outer2::Assert::CodeNotReachable.#stringParser(that:{'@stringU
-      '
+      'Method1
       }).#apply(that:x)
       
       on Void error Outer2::Assert::CodeNotReachable.#stringParser(that:{'@stringU
@@ -4811,7 +4811,7 @@ Outer1::Types parameterTypes() (
     Void unused1=return varresult.#inner()
     catch exception err (
       on Outer2::MetaGuard::MemberUnavailable error Outer2::Assert::CodeNotReachable.#stringParser(that:{'@stringU
-      '
+      'Method2
       }).#apply(that:err)
       )
     void
@@ -5611,7 +5611,7 @@ type Any externalType() (
               )
             catch exception unused7 (
               on Void error Outer2::Assert::CodeNotReachable.#stringParser(that:{'@stringU
-              '
+              'NestedClass1
               })
               )
             (
@@ -5722,7 +5722,7 @@ Outer1::Members members() (
     )
   catch exception x (
     on Outer2::MetaGuard::MemberUnavailable error Outer2::Assert::CodeNotReachable.#stringParser(that:{'@stringU
-    '
+    'NestedClass2
     }).#apply(that:x)
     )
   varresult.#inner()
@@ -5940,7 +5940,7 @@ Outer1::Types implementedInterfaces() (
     )
   catch exception x (
     on Outer2::MetaGuard::MemberUnavailable error Outer2::Assert::CodeNotReachable.#stringParser(that:{'@stringU
-    '
+    'NestedClass3
     }).#apply(that:x)
     )
   varresult.#inner()
@@ -7656,41 +7656,41 @@ Library #leftleft(Library that) exception Outer2::MetaGuard::NestedClassUnavaila
     Void unused0=return Outer2::SafeOperators.redirect(that:that, src:this.that(), dest:this.to())
     catch error err (
       on Library (
-        Outer2::Introspection::#apply(lib ) ::record__19_0() record=Outer2::Introspection.#apply(lib:err).record__19_0()
+        Outer2::Introspection::Record::#apply(lib ) record=Outer2::Introspection::Record.#apply(lib:err)
         (
-          Outer2::Introspection::#apply(lib ) ::record__19_0() ::#stringParser(that ) x=record.#stringParser(that:{'@stringU
+          Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) x=record.#stringParser(that:{'@stringU
           'Kind
           })
           (
-            Outer2::Introspection::#apply(lib ) ::record__19_0() ::#stringParser(that ) ::#equalequal(that ) cond=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
+            Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) ::#equalequal(that ) cond=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
             'MemberUnavailable
             }))
             (
               Void unused1=cond.#checkTrue()
               catch exception unused2 (
                 on Void (
-                  Outer2::Introspection::#apply(lib ) ::record__19_0() ::#stringParser(that ) ::#equalequal(that ) cond0=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
+                  Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) ::#equalequal(that ) cond0=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
                   'InvalidOnTopLevel
                   }))
                   (
                     Void unused3=cond0.#checkTrue()
                     catch exception unused4 (
                       on Void (
-                        Outer2::Introspection::#apply(lib ) ::record__19_0() ::#stringParser(that ) ::#equalequal(that ) cond1=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
+                        Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) ::#equalequal(that ) cond1=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
                         'MethodClash
                         }))
                         (
                           Void unused5=cond1.#checkTrue()
                           catch exception unused6 (
                             on Void (
-                              Outer2::Introspection::#apply(lib ) ::record__19_0() ::#stringParser(that ) ::#equalequal(that ) cond2=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
+                              Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) ::#equalequal(that ) cond2=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
                               'SourceUnfit
                               }))
                               (
                                 Void unused7=cond2.#checkTrue()
                                 catch exception unused8 (
                                   on Void (
-                                    Outer2::Introspection::#apply(lib ) ::record__19_0() ::#stringParser(that ) ::#equalequal(that ) cond3=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
+                                    Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) ::#equalequal(that ) cond3=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
                                     'IncoherentRedirectMapping
                                     }))
                                     (
@@ -7754,20 +7754,20 @@ Library #leftleft(Library that) exception Outer2::MetaGuard::MemberUnavailable, 
     Void unused0=return Outer2::SafeOperators.renameMethod(that:that, path:this.of(), src:this.that(), dest:this.to())
     catch error err (
       on Library (
-        Outer2::Introspection::#apply(lib ) ::record__19_0() record=Outer2::Introspection.#apply(lib:err).record__19_0()
+        Outer2::Introspection::Record::#apply(lib ) record=Outer2::Introspection::Record.#apply(lib:err)
         (
-          Outer2::Introspection::#apply(lib ) ::record__19_0() ::#stringParser(that ) x=record.#stringParser(that:{'@stringU
+          Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) x=record.#stringParser(that:{'@stringU
           'Kind
           })
           (
-            Outer2::Introspection::#apply(lib ) ::record__19_0() ::#stringParser(that ) ::#equalequal(that ) cond=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
+            Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) ::#equalequal(that ) cond=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
             'MemberUnavailable
             }))
             (
               Void unused1=cond.#checkTrue()
               catch exception unused2 (
                 on Void (
-                  Outer2::Introspection::#apply(lib ) ::record__19_0() ::#stringParser(that ) ::#equalequal(that ) cond0=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
+                  Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) ::#equalequal(that ) cond0=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
                   'MethodClash
                   }))
                   (
@@ -7812,36 +7812,45 @@ Outer2::Path to()
 method 
 Library #leftleft(Library that) exception Outer2::MetaGuard::NestedClassUnavailable, Outer2::MetaGuard::MethodClash, Outer2::MetaGuard::ClassClash (
   Void unused=(
-    Void unused0=return Outer2::SafeOperators.renameClass(that:that, src:this.that(), dest:this.to())
+    Void unused0=Outer2::Debug.#apply(that:Outer2::S.#stringParser(that:{'@stringU
+    'Started RenamePath
+    }))
+    Void unused1=return Outer2::SafeOperators.renameClass(that:that, src:this.that(), dest:this.to())
     catch error err (
       on Library (
-        Outer2::Introspection::#apply(lib ) ::record__19_0() record=Outer2::Introspection.#apply(lib:err).record__19_0()
+        Outer2::Introspection::Record::#apply(lib ) record=Outer2::Introspection::Record.#apply(lib:err)
         (
-          Outer2::Introspection::#apply(lib ) ::record__19_0() ::#stringParser(that ) x=record.#stringParser(that:{'@stringU
+          Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) x=record.#stringParser(that:{'@stringU
           'Kind
           })
           (
-            Outer2::Introspection::#apply(lib ) ::record__19_0() ::#stringParser(that ) ::#equalequal(that ) cond=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
+            Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) ::#equalequal(that ) cond=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
             'MemberUnavailable
             }))
             (
-              Void unused1=cond.#checkTrue()
-              catch exception unused2 (
+              Void unused2=cond.#checkTrue()
+              catch exception unused3 (
                 on Void (
-                  Outer2::Introspection::#apply(lib ) ::record__19_0() ::#stringParser(that ) ::#equalequal(that ) cond0=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
+                  Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) ::#equalequal(that ) cond0=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
                   'MethodClash
                   }))
                   (
-                    Void unused3=cond0.#checkTrue()
-                    catch exception unused4 (
+                    Void unused4=cond0.#checkTrue()
+                    catch exception unused5 (
                       on Void (
-                        Outer2::Introspection::#apply(lib ) ::record__19_0() ::#stringParser(that ) ::#equalequal(that ) cond1=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
+                        Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) ::#equalequal(that ) cond1=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
                         'ClassClash
                         }))
                         (
-                          Void unused5=cond1.#checkTrue()
-                          catch exception unused6 (
-                            on Void error err
+                          Void unused6=cond1.#checkTrue()
+                          catch exception unused7 (
+                            on Void (
+                              Void unused8=Outer2::Debug.#apply(that:Outer2::S.#stringParser(that:{'@stringU
+                              'critical failure in capturing plugin primitive error
+                              }))
+                              Void unused9=Outer2::Debug.#apply(that:x)
+                              error err
+                              )
                             )
                           exception Outer2::MetaGuard::ClassClash.#apply(record:record)
                           )
@@ -7887,13 +7896,13 @@ Library #leftleft(Library that) exception Outer2::MetaGuard::MemberUnavailable (
     Void unused0=return Outer2::SafeOperators.removeImplementation(that:that, path:this.of(), selector:this.that())
     catch error err (
       on Library (
-        Outer2::Introspection::#apply(lib ) ::record__19_0() record=Outer2::Introspection.#apply(lib:err).record__19_0()
+        Outer2::Introspection::Record::#apply(lib ) record=Outer2::Introspection::Record.#apply(lib:err)
         (
-          Outer2::Introspection::#apply(lib ) ::record__19_0() ::#stringParser(that ) x=record.#stringParser(that:{'@stringU
+          Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) x=record.#stringParser(that:{'@stringU
           'Kind
           })
           (
-            Outer2::Introspection::#apply(lib ) ::record__19_0() ::#stringParser(that ) ::#equalequal(that ) cond=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
+            Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) ::#equalequal(that ) cond=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
             'MemberUnavailable
             }))
             (
@@ -7941,20 +7950,20 @@ Library #leftleft(Library that) exception Outer2::MetaGuard::MemberUnavailable, 
     Void unused0=return Outer2::SafeOperators.moveImplementation(that:that, path:this.of(), src:this.that(), dest:this.to())
     catch error err (
       on Library (
-        Outer2::Introspection::#apply(lib ) ::record__19_0() record=Outer2::Introspection.#apply(lib:err).record__19_0()
+        Outer2::Introspection::Record::#apply(lib ) record=Outer2::Introspection::Record.#apply(lib:err)
         (
-          Outer2::Introspection::#apply(lib ) ::record__19_0() ::#stringParser(that ) x=record.#stringParser(that:{'@stringU
+          Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) x=record.#stringParser(that:{'@stringU
           'Kind
           })
           (
-            Outer2::Introspection::#apply(lib ) ::record__19_0() ::#stringParser(that ) ::#equalequal(that ) cond=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
+            Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) ::#equalequal(that ) cond=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
             'MemberUnavailable
             }))
             (
               Void unused1=cond.#checkTrue()
               catch exception unused2 (
                 on Void (
-                  Outer2::Introspection::#apply(lib ) ::record__19_0() ::#stringParser(that ) ::#equalequal(that ) cond0=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
+                  Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) ::#equalequal(that ) cond0=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
                   'MethodClash
                   }))
                   (
@@ -7998,20 +8007,20 @@ Library #leftleft(Library that) exception Outer2::MetaGuard::NestedClassUnavaila
     Void unused0=return Outer2::SafeOperators.removeImplementation(that:that, path:this.that())
     catch error err (
       on Library (
-        Outer2::Introspection::#apply(lib ) ::record__19_0() record=Outer2::Introspection.#apply(lib:err).record__19_0()
+        Outer2::Introspection::Record::#apply(lib ) record=Outer2::Introspection::Record.#apply(lib:err)
         (
-          Outer2::Introspection::#apply(lib ) ::record__19_0() ::#stringParser(that ) x=record.#stringParser(that:{'@stringU
+          Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) x=record.#stringParser(that:{'@stringU
           'Kind
           })
           (
-            Outer2::Introspection::#apply(lib ) ::record__19_0() ::#stringParser(that ) ::#equalequal(that ) cond=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
+            Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) ::#equalequal(that ) cond=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
             'MemberUnavailable
             }))
             (
               Void unused1=cond.#checkTrue()
               catch exception unused2 (
                 on Void (
-                  Outer2::Introspection::#apply(lib ) ::record__19_0() ::#stringParser(that ) ::#equalequal(that ) cond0=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
+                  Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) ::#equalequal(that ) cond0=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
                   'PrivacyCoupuled
                   }))
                   (
@@ -8063,13 +8072,13 @@ Library #leftleft(Library that) exception Outer2::MetaGuard::MemberUnavailable (
     Void unused0=return Outer2::SafeOperators.addDocumentation(that:that, path:this.of(), selector:this.that(), doc:this.doc())
     catch error err (
       on Library (
-        Outer2::Introspection::#apply(lib ) ::record__19_0() record=Outer2::Introspection.#apply(lib:err).record__19_0()
+        Outer2::Introspection::Record::#apply(lib ) record=Outer2::Introspection::Record.#apply(lib:err)
         (
-          Outer2::Introspection::#apply(lib ) ::record__19_0() ::#stringParser(that ) x=record.#stringParser(that:{'@stringU
+          Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) x=record.#stringParser(that:{'@stringU
           'Kind
           })
           (
-            Outer2::Introspection::#apply(lib ) ::record__19_0() ::#stringParser(that ) ::#equalequal(that ) cond=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
+            Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) ::#equalequal(that ) cond=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
             'MemberUnavailable
             }))
             (
@@ -8113,20 +8122,20 @@ Library #leftleft(Library that) exception Outer2::MetaGuard::NestedClassUnavaila
     Void unused0=return Outer2::SafeOperators.addDocumentation(that:that, path:this.that(), doc:this.doc())
     catch error err (
       on Library (
-        Outer2::Introspection::#apply(lib ) ::record__19_0() record=Outer2::Introspection.#apply(lib:err).record__19_0()
+        Outer2::Introspection::Record::#apply(lib ) record=Outer2::Introspection::Record.#apply(lib:err)
         (
-          Outer2::Introspection::#apply(lib ) ::record__19_0() ::#stringParser(that ) x=record.#stringParser(that:{'@stringU
+          Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) x=record.#stringParser(that:{'@stringU
           'Kind
           })
           (
-            Outer2::Introspection::#apply(lib ) ::record__19_0() ::#stringParser(that ) ::#equalequal(that ) cond=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
+            Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) ::#equalequal(that ) cond=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
             'MemberUnavailable
             }))
             (
               Void unused1=cond.#checkTrue()
               catch exception unused2 (
                 on Void (
-                  Outer2::Introspection::#apply(lib ) ::record__19_0() ::#stringParser(that ) ::#equalequal(that ) cond0=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
+                  Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) ::#equalequal(that ) cond0=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
                   'InvalidOnTopLevel
                   }))
                   (
@@ -8231,7 +8240,7 @@ Library #leftleft(Library that) exception Outer2::MetaGuard::NestedClassUnavaila
     })).#end().#leftleft(that:varres.#inner()))
     catch exception unused5 (
       on Outer2::MetaGuard error Outer2::Assert::CodeNotReachable.#stringParser(that:{'@stringU
-      '
+      'Refactor1
       })
       )
     (
@@ -8266,7 +8275,7 @@ Library #leftleft(Library that) exception Outer2::MetaGuard::NestedClassUnavaila
         })).#end().#leftleft(that:varres.#inner()))
         catch exception unused11 (
           on Outer2::MetaGuard::MemberUnavailable error Outer2::Assert::CodeNotReachable.#stringParser(that:{'@stringU
-          '
+          'Refactor2
           })
           )
         (
@@ -8285,7 +8294,7 @@ Library #leftleft(Library that) exception Outer2::MetaGuard::NestedClassUnavaila
           })).#end().#leftleft(that:varres.#inner()))
           catch exception unused15 (
             on Outer2::MetaGuard error Outer2::Assert::CodeNotReachable.#stringParser(that:{'@stringU
-            '
+            'Refactor3
             })
             )
           (
@@ -8310,7 +8319,7 @@ Void checkTargetExists(Library that) exception Outer2::MetaGuard::MemberUnavaila
   })).#end().#leftleft(that:that)
   catch exception x (
     on Outer2::MetaGuard::InvalidOnTopLevel error Outer2::Assert::CodeNotReachable.#stringParser(that:{'@stringU
-    '
+    'Refactor4
     })
     )
   void

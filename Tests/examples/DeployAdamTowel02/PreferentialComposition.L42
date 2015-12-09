@@ -11,7 +11,7 @@ Libs:'@private
 type method
 Library <<(Library that) exception MetaGuard::ClassClash,MetaGuard::MethodClash
   Refactor.compose(left:that,right:{
- (Libs myLibs)<:$
+ (Libs myLibs)<:$ '@private
 
   method
   Outer0 #add(Library that)
@@ -51,7 +51,7 @@ Library <<(Library that) exception MetaGuard::ClassClash,MetaGuard::MethodClash
       acc:=Refactor::MakePrivateSelector[mapi.dest() of:mapi.path()]<<acc
       )
     return acc
-    catch exception (on MetaGuard::MemberUnavailable error Assert::CodeNotReachable"")
+    catch exception (on MetaGuard::MemberUnavailable error Assert::CodeNotReachable"PreferentialComposition1")
     }
   method '@private
   SrcDests renameMap(Library that,S prefix,Introspection::NestedClasses intros) {

@@ -38,14 +38,14 @@ public class TestBase02 {
     Assert.assertTrue(Paths.get("localhost","AdamTowel02.L42").toFile().exists());
   }
 
-  @Test
+  //@Test
   public  void _02_01UseLib() throws Throwable{
     TestHelper.configureForTest();
     L42.main(new String[]{"examples/testsForAdamTowel02/UseLib.L42"});
     Assert.assertEquals(L42.record.toString(),"Hello World 42\n");
     }
 
-  //@Test
+  @Test
   public  void _02_02DeploySimpleLib() throws Throwable{
     TestHelper.configureForTest();
     Paths.get("localhost","DeployedSimpleLib.L42").toFile().delete();
