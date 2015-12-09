@@ -100,7 +100,7 @@ public class Rename {
     CollectedLocatorsMap maps=CollectedLocatorsMap.from(Path.outer(0,path), mem,src);
     HashSet<PathMx> result1=new HashSet<>();
     HashSet<MethodSelector> result2=new HashSet<>();
-    MethodPathCloneVisitor ren=new MethodPathCloneVisitor(cb, maps,p){
+    MethodPathCloneVisitor ren=new RenameUsage(cb, maps,p){
       public Ast.Type liftT(Ast.Type t){return t;}
       @Override protected MethodSelector liftMs(MethodSelector ms){return ms;}
       @Override protected MethodSelector liftMsInMetDec(MethodSelector ms){return ms;}
@@ -114,6 +114,8 @@ public class Rename {
         return super.visit(s);
         }
       @Override public MethodSelector visitMS(MethodSelector original, Path src) {
+        MethodSelector toCollect=this.mSToReplaceOrNull(original, src);
+        if(toCollect==null){return original;}
         Member m=this.getLocator().getLastMember();
         assert !(m instanceof NestedClass):
           "";

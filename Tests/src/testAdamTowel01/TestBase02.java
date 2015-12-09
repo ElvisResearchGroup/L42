@@ -52,7 +52,7 @@ public class TestBase02 {
     L42.main(new String[]{"examples/testsForAdamTowel02/DeploySimpleLib.L42"});
     Assert.assertTrue(Paths.get("localhost","DeployedSimpleLib.L42").toFile().exists());
     }
-  //@Test
+  @Test
   public  void _02_03LoadDeployedSimpleLib() throws Throwable{
     TestHelper.configureForTest();
     L42.main(new String[]{"examples/testsForAdamTowel02/UseDeployedSimpleLib.L42"});

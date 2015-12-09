@@ -41,28 +41,33 @@ public class RenameUsage extends MethodPathCloneVisitor {
     super(visitStart,maps,p);
   }
   
+  public MethodSelector mSToReplaceOrNull(MethodSelector original,Path src){
+    assert src!=null;
+    List<Locator> filtered=new ArrayList<>();
+    for(Locator pMx:maps.selectors){
+      MethodSelector mii=pMx.getLastMember().match(
+          nc->{throw Assertions.codeNotReachable();},
+          mi->mi.getS(),
+          mt->mt.getMs());
+      if(original.equals(mii)){filtered.add(pMx);}
+    }
+    if(filtered.isEmpty()){return null;}
+    Locator pathOriginal=this.getLocator().copy();
+    pathOriginal.toFormerNodeLocator();
+    boolean isIn=pathOriginal.auxMoveInPath(src);//for both ms in methods and in htypes
+    if(!isIn){return null;}
+    for(Locator pMx:filtered){
+        Locator pathDef=pMx.copy();
+        pathDef.toFormerNodeLocator();
+        if(!pathDef.equals(pathOriginal)){continue;}
+        return (MethodSelector)pMx.getAnnotation();
+        }
+      return null;
+  }
+  
   @Override public MethodSelector visitMS(MethodSelector original,Path src){
-     // System.out.println("visitMethodSelector "+original+" of "+ src);
-      assert src!=null;
-      List<Locator> filtered=new ArrayList<>();
-      for(Locator pMx:maps.selectors){
-        MethodSelector mii=pMx.getLastMember().match(
-            nc->{throw Assertions.codeNotReachable();},
-            mi->mi.getS(),
-            mt->mt.getMs());
-        if(original.equals(mii)){filtered.add(pMx);}
-      }
-      if(filtered.isEmpty()){return original;}
-      Locator pathOriginal=this.getLocator().copy();
-      pathOriginal.toFormerNodeLocator();
-      boolean isIn=pathOriginal.auxMoveInPath(src);//for both ms in methods and in htypes
-      if(!isIn){return original;}
-      for(Locator pMx:filtered){
-          Locator pathDef=pMx.copy();
-          pathDef.toFormerNodeLocator();
-          if(!pathDef.equals(pathOriginal)){continue;}
-          return (MethodSelector)pMx.getAnnotation();
-          }
-        return original;
+      MethodSelector result=mSToReplaceOrNull(original,src);
+      if(result==null){ return original;}
+      return result;
     }
 }

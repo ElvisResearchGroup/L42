@@ -150,7 +150,7 @@ public static class TestAbstractClass {//add more test for error cases
     "{C:{ method Void m() A::D.m() A:{D:{ type method Void m() }}}}",
     false
   },{lineNumber(),//
-    "{C:{ method Void m() A::D.m()} A:{D:{ type method Void m() void}}}",
+    "{C:{ method Void m() A::D.m()} A:{D:{ type method Void m() void type method'@private\n Void k() void}}}",
     "A::D",
     "{C:{ method Void m() A::D.m()} A:{D:{ type method Void m() }}}",
     false
