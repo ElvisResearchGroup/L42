@@ -73,6 +73,14 @@ public class TestBase02 {
      Assert.assertEquals(L42.record.toString(),
          "Outer0::A::B::C\nSecret\nFailed\n");
      }
+
+   @Test
+   public  void _02_06IsConcrete() throws Throwable{
+     TestHelper.configureForTest();
+     L42.main(new String[]{"examples/testsForAdamTowel02/TestIsConcrete.L42"});
+     Assert.assertEquals(L42.record.toString(),
+         "DanielWriteHere\n");
+     }
   
  
   
