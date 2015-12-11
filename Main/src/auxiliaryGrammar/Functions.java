@@ -38,6 +38,7 @@ import coreVisitors.From;
 import coreVisitors.IsCompiled;
 import coreVisitors.IsValue;
 import coreVisitors.ReplaceCtx;
+import facade.Configuration;
 
 public class Functions {
   
@@ -508,6 +509,32 @@ private static void retainOnlyOriginalMethOf(Program p, List<Path> paths,Set<Met
         }
       return cb;
     }
+  });
+}
+
+public static <T > boolean verifyMinimalCache(T e){
+  if(!(e instanceof ExpCore)){return true;}
+  ((ExpCore)e).accept(new coreVisitors.CloneVisitor(){
+    @Override public ExpCore visit(ExpCore.ClassB cb){
+      cb=((ExpCore.ClassB)super.visit(cb));
+      if(!cb.getStage().isInheritedComputed()){
+        throw new AssertionError(cb);
+      }
+      return  cb;
+      }
+  });
+  return true;
+}
+
+@SuppressWarnings("unchecked")
+public static <T > T setMinimalCache(Program p,T e){
+  if(!(e instanceof ExpCore)){return e;}
+  return (T)((ExpCore)e).accept(new coreVisitors.CloneVisitor(){
+    @Override public ExpCore visit(ExpCore.ClassB cb){
+      //cb=((ExpCore.ClassB)super.visit(cb)); we need to stop at the first layer
+      Configuration.typeSystem.computeStage(p, cb);
+      return  cb;
+      }
   });
 }
 

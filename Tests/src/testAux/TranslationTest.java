@@ -23,6 +23,7 @@ import sugarVisitors.InjectionOnCore;
 import typeSystem.TypeSystemOK;
 import ast.ExpCore;
 import ast.ExpCore.ClassB;
+import auxiliaryGrammar.Functions;
 import auxiliaryGrammar.Norm;
 import auxiliaryGrammar.Program;
 
@@ -128,7 +129,7 @@ public class TranslationTest {
     TestHelper.configureForTest();
     Program p=runTypeSystem(cbStr);
     ExpCore e=Desugar.of(Parser.parse(null,eStr)).accept(new InjectionOnCore());
-    ExpCore e2=Norm.of(p, e);
+    ExpCore e2=Functions.setMinimalCache(p,Norm.of(p, e));
     String code=Resources.withPDo(p,()->Translator.translateProgram(p, e2));
     System.out.println(code);
     Object o=Resources.withPDo(p,()->Translator.runString(code));

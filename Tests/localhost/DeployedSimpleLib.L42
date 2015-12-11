@@ -60,15 +60,15 @@ method
 Library #leftleft(Library that) exception Outer0::ConceptMapMismatch, Outer0::ConceptMapUnavailable 
 DeployLibrary:{
 type method 
-Outer0 #apply(Outer2::Path path, Outer3::PrImpl::Url url) 
+Outer0 #apply(Outer2::Path path, Outer2::Url url) 
 mut method 
 Outer2::Path #path() 
 read method 
 Outer2::Path path() 
 mut method 
-Outer3::PrImpl::Url #url() 
+Outer2::Url #url() 
 read method 
-Outer3::PrImpl::Url url() 
+Outer2::Url url() 
 type method 
 Library exposeAsLibrary(Library that, Outer2::Path path) exception Outer2::MetaGuard::NestedClassUnavailable, Outer2::MetaGuard::PrivacyCoupuled 
 type method 
@@ -78,7 +78,7 @@ type Outer0 #begin()
 method 
 Outer0 #end() 
 type method 
-Outer0 #add(Outer2::Path that, Outer3::PrImpl::Url url) 
+Outer0 #add(Outer2::Path that, Outer2::Url url) 
 method 
 Library #leftleft(Library that) exception Outer2::MetaGuard::NestedClassUnavailable, Outer2::MetaGuard::PrivacyCoupuled }}
 PreferentialComposition:{
@@ -1180,6 +1180,20 @@ method
 Outer1::Bool #equalequal(Outer0 that) 
 method 
 Outer0 #plusplus(Outer0 that) }
+Url:{'ParseFailure:Message:S[]<<{<:Guard} no need, related to invariant?
+<:Outer1::Concept::ToS
+type method ' if you do not implement it, it is a constructor?
+Outer0 fromS(read Outer1::Concept::ToS that) 
+type method 
+Outer0 #stringParser(Library that) 
+type method 
+Outer0 #apply(Outer1::S inner) 
+mut method 
+Outer1::S #inner() 
+read method 
+Outer1::S inner() 
+method 
+Library binaryRepr() }
 ConceptMap:{interface 
 method 
 Outer1::Alu _Alu() 
@@ -1207,6 +1221,8 @@ method
 Outer1::Debug _Debug() 
 method 
 Outer0 _ConceptMap() 
+method 
+Outer1::Url _Url() 
 method 
 Outer1::Path _Path() 
 method 
@@ -1789,21 +1805,4 @@ Alu:{'@plugin
 type method 
 Void printHelloWorld() Outer0::Abstract::Debug.#apply(that:Outer0::Abstract::S.#stringParser(that:{'@stringU
 'Hello World Deployed
-}))
-PrImpl:'@private
-{
-Url:{'ParseFailure:Message:S[]<<{<:Guard} no need, related to invariant?
-<:Outer2::Abstract::Concept::ToS
-type method ' if you do not implement it, it is a constructor?
-Outer0 fromS(read Outer2::Abstract::Concept::ToS that) Outer0.#apply(inner:that.toS())
-type method 
-Outer0 #stringParser(Library that) Outer0.fromS(that:Outer2::Abstract::S.#stringParser(that:that))
-type method 
-Outer0 #apply(Outer2::Abstract::S inner) 
-mut method 
-Outer2::Abstract::S #inner() 
-read method 
-Outer2::Abstract::S inner() 
-method toS() this.inner()
-method 
-Library binaryRepr() this.inner().binaryRepr()}}}
+}))}

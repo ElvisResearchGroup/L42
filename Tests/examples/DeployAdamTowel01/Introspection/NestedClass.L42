@@ -69,12 +69,16 @@ Members members() (
   var result=Members[]
   var mN=1N
   while Bool.true() (' to be able to break
+    'Debug(S"Iteration "[mN]"")
     result:=result.#add(this.mirror()
       .introspectReportMember(root:this,path:this.path(),memberN:mN))
+    'this was a private member
+    catch exception x (on MetaGuard::MemberUnavailable exception void)
     mN+=1N
     )
-  catch exception x (on MetaGuard::MemberUnavailable error Assert::CodeNotReachable"NestedClass2"(x))
   result)
+  'TODO: this method goes in loop for private members.
+  'different result with compiled or bigstep see test introspection5
 
 method
 Methods methods()

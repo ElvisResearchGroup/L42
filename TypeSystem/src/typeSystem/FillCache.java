@@ -123,6 +123,7 @@ public static void collectInnerClasses(List<CachedStage>again,Program p,ClassB c
 public static void computeStage(Program p,ClassB cb) {
   if(cb.getStage().getStage()!=Stage.None){return;}
   computeInheritedDeep(p, cb);
+  p.addAtTop(cb);
   assert cb.getStage().getInherited()!=null;
   List<CachedStage>again=new ArrayList<>();
   computeStageFirst(again,p,cb);

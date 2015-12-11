@@ -16,11 +16,12 @@ import helpers.TestHelper;
 public class TestBase02 {
 
   @Before
-  public void initialize() {
+  public void initialize() throws Throwable {
     //TestHelper.configureForTest();
     System.out.println("AssertionsDisabled");
-    ClassLoader.getSystemClassLoader().setDefaultAssertionStatus(false);
+    //ClassLoader.getSystemClassLoader().setDefaultAssertionStatus(false);
     L42.trustPluginsAndFinalProgram=true;
+    //_02_00DeployAdamTowel02();
     }
   //not run when single test executed?
 
@@ -38,7 +39,7 @@ public class TestBase02 {
     Assert.assertTrue(Paths.get("localhost","AdamTowel02.L42").toFile().exists());
   }
 
-  //@Test
+  @Test
   public  void _02_01UseLib() throws Throwable{
     TestHelper.configureForTest();
     L42.main(new String[]{"examples/testsForAdamTowel02/UseLib.L42"});
@@ -58,18 +59,19 @@ public class TestBase02 {
     L42.main(new String[]{"examples/testsForAdamTowel02/UseDeployedSimpleLib.L42"});
     Assert.assertEquals(L42.record.toString(),"Hello World Deployed\n");
     }
-   //@Test
+   @Test
   public  void _02_04UseOperators1() throws Throwable{
     TestHelper.configureForTest();
     L42.main(new String[]{"examples/testsForAdamTowel02/UseOperators1.L42"});
     Assert.assertEquals(L42.record.toString(),
         "c1c2c3\nc1c2c3\nic1ic2ic3\nc1c2c3\nc1c2c3\nc1c2c3c1c2c3c1c2c3\n");
     }
-   //@Test
+   @Test
    public  void _02_05UseOperators2() throws Throwable{
      TestHelper.configureForTest();
      L42.main(new String[]{"examples/testsForAdamTowel02/UseOperators2.L42"});
-     Assert.assertEquals(L42.record.toString(),"A::B::C\nD::E\nMyName::DecorationUnfeasable[MethodClash]\n");
+     Assert.assertEquals(L42.record.toString(),
+         "Outer0::A::B::C\nSecret\nFailed\n");
      }
   
  

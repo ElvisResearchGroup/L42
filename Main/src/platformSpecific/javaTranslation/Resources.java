@@ -187,13 +187,15 @@ public class Resources {
    * @param xs parameters
    * @return a safe result, or a safe error, or an non-action exception
    */
+  
   public static <Pt extends PluginType,T> T plgExecuteSafe(Program p,Pt plg,PlgClosure<Pt,T> cls,Object ... xs){
     T res=null;
+    //for(Object o:xs){assert Functions.verifyMinimalCache(o);}
+    for(int i=0;i<xs.length;i++){xs[i]=Functions.setMinimalCache(p, xs[i]);}
+    //TODO: sadly the translation process lose this while putting in resources, when fixed, decomment after and check here
     try{
       res=cls.apply(plg, xs);
-      //if(res instanceof ExpCore){
-      //  res=(T)Functions.clearCache((ExpCore) res,Stage.Plus);
-      //}
+      res=Functions.setMinimalCache(p, res);
       if(Resources.isValid(p,res,xs)){return res;}
       else{throw Resources.notAct;}
       }

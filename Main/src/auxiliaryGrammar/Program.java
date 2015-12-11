@@ -405,6 +405,7 @@ public class Program {
   public static MethodWithType extractMwt(Member m,ClassB cb){
     return m.match(nc->{throw Assertions.codeNotReachable();}, 
         mi->{
+          assert cb.getStage().isInheritedComputed();
           for(PathMwt mt:cb.getStage().getInherited()){
             if(!mt.getMwt().getMs().equals(mi.getS())){continue;}
             return mt.getMwt().withInner(Optional.of(mi.getInner()));

@@ -264,6 +264,33 @@ public void test12(){tp("{()"
 /*,"C: {'@exitStatus\n'0\n\n}"*/," C:( A myA=Factory(a:myA)  {'@exitStatus\n'0\n})"
 ,"}"
 );}
+
+@Test public void testTwoKindExc1(){tp(""
+,"{"
+,"A:{()}"
+,"B:{()}"
+," C:( "
+,"  A myA=A()"
+,"  exception A()"
+,"  catch exception x (on A "
+," {'@exitStatus\n'0\n})"
+," {'@exitStatus\n'2\n})"
+,"}"
+);}
+
+@Test(expected=ErrorMessage.MalformedFinalResult.class)
+public void testTwoKindExc2(){tp(""
+,"{"
+,"A:{()}"
+,"B:{()}"
+," C:( "
+,"  A myA=A()"
+,"  exception void"
+,"  catch exception x (on A "
+," {'@exitStatus\n'0\n})"
+," {'@exitStatus\n'0\n})"
+,"}"
+);}
 @Test(expected=ErrorMessage.PathsNotSubtype.class)
 public void testPlusNotStar(){tp("{"
 ,"A:{ () method Library foo() }"

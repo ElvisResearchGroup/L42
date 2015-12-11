@@ -20,6 +20,7 @@ import auxiliaryGrammar.Ctx;
 import auxiliaryGrammar.Functions;
 import auxiliaryGrammar.Norm;
 import auxiliaryGrammar.Program;
+import coreVisitors.CloneVisitor;
 import coreVisitors.CollectPaths0;
 import coreVisitors.ExtractCtxCompiled;
 import coreVisitors.IsCompiled;
@@ -50,6 +51,13 @@ public class SmallStep extends Executor{
       e1=Norm.of(p1,e1);      
       //check e1
       Configuration.typeSystem.checkMetaExpr(p1.getExecutableStar(),e1);
+      e1.accept(new CloneVisitor(){
+        @Override public ExpCore visit(ClassB cb){
+          assert cb.getStage().isInheritedComputed():
+            "foo";
+          return cb;//we must only check the outermost layer or cb
+        }
+      });
       //run m.e1-->e2
       ExpCore e2=executeAtomicStep(p1,e1);
       e2=Functions.clearCache(e2,Stage.Less);

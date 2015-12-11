@@ -16,11 +16,12 @@ import helpers.TestHelper;
 public class TestBase01 {
 
   @Before
-  public void initialize() {
+  public void initialize() throws Throwable {
     //TestHelper.configureForTest();
     System.out.println("AssertionsDisabled");
     ClassLoader.getSystemClassLoader().setDefaultAssertionStatus(false);
     L42.trustPluginsAndFinalProgram=true;
+    //_01_00DeployAdamTowel01();
     }
   //not run when single test executed?
 

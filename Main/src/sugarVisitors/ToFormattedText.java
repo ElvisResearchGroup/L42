@@ -54,6 +54,7 @@ import ast.Expression.With;
 import ast.Expression.X;
 import ast.Expression._void;
 import ast.Util.CachedStage;
+import auxiliaryGrammar.Functions;
 import auxiliaryGrammar.Program;
 
 public class ToFormattedText implements Visitor<Void>{
@@ -83,6 +84,9 @@ public class ToFormattedText implements Visitor<Void>{
    
   public static String of(ExpCore e){
     return of(e.accept(new InjectionOnSugar()));
+  }
+  public static String ofNoStage(ExpCore e){
+    return of(Functions.clearCache(e,Stage.Less));
   }
   public static String of(ExpCore.ClassB.Member m){
     List<ExpCore.ClassB.Member> ms=new ArrayList<>();

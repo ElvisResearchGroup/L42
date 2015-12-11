@@ -39,7 +39,7 @@ public class Introspection {//TODO: we keep 5 methods, but we merge the PathRepo
       "MemberKind","NestedClass",
       "MemberDoc",(docRef[0]==null)?"":liftDoc(path.subList(0,path.size()-1),docRef[0],1),
       "Key",""+String.join("::",path),
-      "AllAsString",ToFormattedText.of(current),
+      "AllAsString",ToFormattedText.ofNoStage(current),
       "ClassKind",ExtractInfo.classKind(that, path, current,null, null,null).name(),
       "LibraryDoc",liftDoc(path,current.getDoc1(),1),
       "MemberNumber",""+current.getMs().size(),
@@ -50,7 +50,9 @@ public class Introspection {//TODO: we keep 5 methods, but we merge the PathRepo
     assert memberN!=0;
     Errors42.checkExistsPathMethod(that, path,Optional.empty());
     ClassB current = Program.extractCBar(path, that);
-    if(current.getMs().size()<memberN){throw Resources.notAct;}
+    if(current.getMs().size()<memberN){
+      throw Resources.notAct;
+      }
     Member mN=current.getMs().get(memberN-1);
     ClassB[] result={null};
     mN.match(
@@ -61,7 +63,7 @@ public class Introspection {//TODO: we keep 5 methods, but we merge the PathRepo
           "MemberKind","NestedClass",
           "MemberDoc",liftDoc(path,nc.getDoc(),1),
           "Key",String.join("::",fullPath),
-          "AllAsString",ToFormattedText.of(nc.getInner()),
+          "AllAsString",ToFormattedText.ofNoStage(nc.getInner()),
           "ClassKind",ExtractInfo.classKind(that, path,(ClassB) nc.getInner(),null, null,null).name(),
           "LibraryDoc",liftDoc(path,current.getDoc1(),1),
           "MemberNumber",""+current.getMs().size(),

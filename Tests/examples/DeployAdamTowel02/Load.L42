@@ -13,7 +13,14 @@
     {
     return Refactor::Redirect[Path"Abstract::ConceptMap" to:ConceptMap]<<that
     catch exception err (
-      on MetaGuard::MemberUnavailable exception ConceptMapUnavailable"provided library do not offers Abstract::ConceptMap"
+      on MetaGuard::NestedClassUnavailable (
+        available=Introspection(lib:that).transitivelyNestedClasses()
+        sAvailable=S""[with av in available.vals() ( 
+            S.nl()++av.pathFromRoot().toS() '(start:8N)  
+            )]"" '[Introspection(lib:that)]"" contains a private PrImpl with still not normalized name?
+        exception ConceptMapUnavailable(text:S"provided library do not offers Abstract::ConceptMap or "[err.path()]" avaible paths are "++sAvailable)
+        'string parsing may have problem with parenthesis, try add par around or
+        )
       on MetaGuard::SourceUnfit exception ConceptMapMismatch""(err)
       on MetaGuard::MethodClash exception ConceptMapMismatch""(err)
       on MetaGuard::IncoherentRedirectMapping exception ConceptMapMismatch""(err)

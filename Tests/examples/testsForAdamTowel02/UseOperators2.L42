@@ -1,44 +1,27 @@
 {reuse L42.is/AdamTowel02
 
-A:{B:{C:Default::MyName<<{()
+A:{B:{C:Default::Named<<{()
  }}}
-D:{E:Default::MyName<<{
- type method S myName()
+D:{E:Default::Named<<{<:Concept::Named
+  method myName() S"Secret"
  }}
 Main:{
   Debug(A::B::C.myName())
   Debug(D::E.myName())
-  (res=Default::MyName<<{method N myName()}
-  catch exception x (on Default::MyName::DecorationUnfeasable Debug(x))
+  (res=Default::Named<<{method N myName()}
+  catch exception x (on Default::DecorationUnfeasable Debug(S"Failed"))
   void)
   return ExitCode.normal()
   }
-'TODO next:
-
-'use Extends to implement MyName better. catch methClash and produce better error.
-' myName must be on type
-'do also Invariant with case for bool and case for void
-' invariant is different w.r.t. MyName, if 
-'invariant methd is not present, leave ...??
 'Operator method composition:
 ' sum two methods: cb m1,m2 
 ' A m1(ps1)E1 + A m2(A that, ps2)E2 
 '   = m1,m2, A m1+m2(ps1,ps2)E1,E2 m2(m1(ps1),ps2)
-'in introspection, remove constructor() and put
-' method Methods state()
-' if state is private, return the private state, starting with the constructor
-' else if there is a single abstract type method, collect its state and return
-' else return the empty list
 ' method Bool isConcrete() true iff all non state methods are implemented and
 ' all the interface methods are implemented.
-'use MyName and Invariat to implement Stringable (not U)
-'other stuff: toS should be readable, no need of className in ToS, 
-'  to check if capsule field is used only on this: make class
-' on isolated branch, impement the field, make it private, abstract away all class,
-' check for exception
-' to check if a method contains #foo, make #foo private, keep both library versions,
-' if the method stop containing #foo in its string repr? then is ok?
-' but how for comments/literals?
+'use Named and Invariat to implement Stringable (not U)
+
+'we need to check capsule fields are encapsulated:
 'add operator check fields sealed?
 ' isUsed Path,mSel, in: mSel of:path ->extend the rename also usage?
 'well, need to check is used only on this - isUsed and isUsedAsClient? 

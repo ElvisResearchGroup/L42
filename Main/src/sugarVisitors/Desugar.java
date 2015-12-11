@@ -122,7 +122,7 @@ public class Desugar extends CloneVisitor{
         ClassB data = OnLineCode.getCode(s.getUrl());
         L42.usedNames.addAll(CollectDeclaredClassNamesAndMethodNames.of(data));
         ast.ExpCore.ClassB dataCore=(ast.ExpCore.ClassB) data.accept(new InjectionOnCore());
-        Configuration.typeSystem.computeStage(Program.empty(),dataCore);
+        Configuration.typeSystem.computeStage(Program.empty().addAtTop(dataCore),dataCore);
         dataCore.accept(new coreVisitors.CloneVisitor(){
           @Override public ExpCore visit(ExpCore.ClassB cb){ 
             CachedStage stage=cb.getStage();

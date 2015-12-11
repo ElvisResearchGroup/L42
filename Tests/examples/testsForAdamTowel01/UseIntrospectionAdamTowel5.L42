@@ -23,6 +23,17 @@ CheckSubtype:{
     if result!=expected (Debug(S"expected:"[expected]" computed:"[result]""))
     )
   }
+CheckNested:{
+  type method Void(Library lib,S expected )(
+    i=Introspection(lib:lib)
+    var result=S""
+    with n in i.transitivelyNestedClasses().vals() (
+      result++=S"@::"[n.pathFromRoot()]","
+      )
+    if result!=expected (Debug(S"expected:"[expected]" computed:"[result]""))
+    )
+  }
+
 EA:{interface }
 EB:{interface <:EA}  
 Main:{
@@ -40,6 +51,18 @@ Main:{
     expected:S"@::B,@::A,")
   CheckSubtype(lib:{interface <:EB }
     expected:S"Outer0::EB,Outer0::EA,")
+  CheckNested(lib:{}
+    expected:S"@::Outer0,")
+  CheckNested(lib:{A:{} B:{}}
+    expected:S"@::A,@::B,@::Outer0,")
+  CheckNested(lib:{A:{ B:{}}}
+    expected:S"@::A,@::A::B,@::Outer0,")
+    CheckNested(lib:{A:{} B:'@private
+      {}}
+    expected:S"@::A,@::B,@::Outer0,")
+  CheckNested(lib:{A:{} B:'@private
+      {C:{}}}
+    expected:S"@::A,@::B,@::Outer0,")
   Debug(S"OK")
   return ExitCode.normal()
   }
