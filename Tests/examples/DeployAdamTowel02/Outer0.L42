@@ -1,4 +1,4 @@
-{reuse L42.is/DeployTowel
+{reuse L42.is/AdamTowel01
 
 Resource:{type method Library (){
   reuse L42.is/AdamTowel01
@@ -7,8 +7,20 @@ Resource:{type method Library (){
   Ontology:...
   ConceptMap:Use[Ontology.ontologicMap()]<<{interface method Load _Load()}
   Load:...
+  GetMyNameFix:{
+      type method
+      S (type Any that)
+        Introspection(clazz:that).externalTypeToS()
+      }
   }}
-Task: DeployTowel[
+Task: {
+  r=Refactor::RenamePath
+    [Path"GetMyNameFix" to:Path"GetMyName"]
+    <<Refactor::RemoveImplementationSelector
+    [Selector"#apply(that)" of:Path"GetMyName"]
+    <<Resource()
+  return DeployTowel[
   fileName:DeployTowel"localhost/AdamTowel02.L42"
-  ]<<Resource()
+  ]<<r
+  }
 }
