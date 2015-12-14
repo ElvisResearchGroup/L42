@@ -190,6 +190,9 @@ public interface Ast {
 		  this.names=java.util.Collections.unmodifiableList(names);
 		  assert this.invariant();
 		}
+		public boolean isOperator(){
+		  return this.name.startsWith("#");//for now, to improve later
+		}
 		public boolean invariant(){
 		  // not good enought, it can also be empty or operator 
 		  // assert checkX(name,true);

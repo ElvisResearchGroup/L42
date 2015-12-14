@@ -48,6 +48,18 @@ import auxiliaryGrammar.Program;
       +"DifferentThisMdf:{'@stringU\n'false\n}"
       +"IncompatibleException:{'@stringU\n'false\n}}",
       true
+    },{    lineNumber(),"{B:{method Void m()}}","{I:{method Void m()}B:{<:I}}",
+      "{Kind:{'@stringU\n'MethodClash\n}"
+      +"Path:{'@::B\n}"
+      +"Left:{'@stringU\n'method Void m()\n}"
+      +"Right:{'@stringU\n'method Outer0 m()\n}"
+      +"LeftKind:{'@stringU\n'AbstractMethod\n}"
+      +"RightKind:{'@stringU\n'AbstractMethod\n}"
+      +"DifferentParameters:{'@stringU\n'[]\n}"
+      +"DifferentReturnType:{'@stringU\n'true\n}"
+      +"DifferentThisMdf:{'@stringU\n'false\n}"
+      +"IncompatibleException:{'@stringU\n'false\n}}",
+      true
     },{    lineNumber(),"{B:{method Outer0 m()}}","{B:{method B m()}}","{B:{method Outer0 m()} }",false
 
     },{    lineNumber(),"{B__0fred:'@private\n{}}","{}",

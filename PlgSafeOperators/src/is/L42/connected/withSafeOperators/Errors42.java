@@ -64,7 +64,18 @@ public class Errors42 {
       "DifferentThisMdf",""+ !thisMdf,//if the modifier for "this" is different
       "IncompatibleException",""+!exc);//if they have an incompatible exception list
     }
-
+  //"ParameterTypeMismach" caused by sumMethod
+  static Error errorParameterTypeMismach(List<String> pathForError, Member mta, Member mtb,  boolean par, boolean mdf) {
+      return Resources.Error.multiPartStringError("ParameterTypeMismach",
+       "Path",formatPathIn(pathForError),//the path of the clash (that own  the method), in the rename is the path of the destination clash
+      "Left",sugarVisitors.ToFormattedText.of(mta).replace("\n","").trim(),//implementation dependend print of the left and right methods
+      "Right",sugarVisitors.ToFormattedText.of(mtb).replace("\n","").trim(),
+      "LeftKind",ExtractInfo.memberKind(mta),//kind of the left/right methods
+      "RightKind",ExtractInfo.memberKind(mtb),
+      "FirstParameterTypeOk",""+ par,//first parameter=return type
+      "MdfOk",""+ mdf// the modifier for "this" is  compatible
+        );//if they have an incompatible exception list
+    }
   //"InvalidOnTopLevel", caused by redirect and addDocumentationOnNestedClass
   static Error errorInvalidOnTopLevel() {
     return Resources.Error.multiPartStringError("InvalidOnTopLevel");

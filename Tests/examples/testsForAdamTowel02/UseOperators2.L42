@@ -15,8 +15,8 @@ Main:{
   }
 'Operator method composition:
 ' sum two methods: cb m1,m2 
-' A m1(ps1)E1 + A m2(A that, ps2)E2 
-'   = m1,m2, A m1+m2(ps1,ps2)E1,E2 m2(m1(ps1),ps2)
+' A1 m1(ps1)E1 + A2 m2(A1 that, ps2)E2 
+'   = m1,m2, A2 m1+m2(ps1,ps2)E1,E2 m2(this.m1(ps1),ps2)
 ' method Bool isConcrete() true iff all non state methods are implemented and
 ' all the interface methods are implemented.
 'use Named and Invariat to implement Stringable (not U)
