@@ -3,6 +3,8 @@ package is.L42.connected.withSafeOperators;
 import static helpers.TestHelper.getClassB;
 import static helpers.TestHelper.lineNumber;
 import static org.junit.Assert.fail;
+
+import facade.Configuration;
 import facade.L42;
 import helpers.TestHelper;
 
@@ -48,18 +50,24 @@ import auxiliaryGrammar.Program;
       +"DifferentThisMdf:{'@stringU\n'false\n}"
       +"IncompatibleException:{'@stringU\n'false\n}}",
       true
-    },{    lineNumber(),"{B:{method Void m()}}","{I:{method Void m()}B:{<:I}}",
+    },{    lineNumber(),"{B:{method Void m()}}","{I:{interface method Void m()}B:{<:I}}",
       "{Kind:{'@stringU\n'MethodClash\n}"
       +"Path:{'@::B\n}"
       +"Left:{'@stringU\n'method Void m()\n}"
-      +"Right:{'@stringU\n'method Outer0 m()\n}"
+      +"Right:{'@stringU\n'method Void m()\n}"
       +"LeftKind:{'@stringU\n'AbstractMethod\n}"
-      +"RightKind:{'@stringU\n'AbstractMethod\n}"
+      +"RightKind:{'@stringU\n'InterfaceAbstractMethod\n}"
       +"DifferentParameters:{'@stringU\n'[]\n}"
-      +"DifferentReturnType:{'@stringU\n'true\n}"
+      +"DifferentReturnType:{'@stringU\n'false\n}"
       +"DifferentThisMdf:{'@stringU\n'false\n}"
       +"IncompatibleException:{'@stringU\n'false\n}}",
       true
+    },{    lineNumber(),"{J:{interface method Void m()} B:{<:J}}","{I:{interface method Void m()}B:{<:I}}",
+      "{Kind:{'@stringU\n'ClassClash\n}"
+     +"Path:{'@::B\n}"
+     +"ConflictingImplementedInterfaces:{'[@::J, @::I]\n}}",
+      true
+
     },{    lineNumber(),"{B:{method Outer0 m()}}","{B:{method B m()}}","{B:{method Outer0 m()} }",false
 
     },{    lineNumber(),"{B__0fred:'@private\n{}}","{}",
@@ -83,6 +91,8 @@ import auxiliaryGrammar.Program;
     TestHelper.configureForTest();
     ClassB cb1=getClassB(_cb1);
     ClassB cb2=getClassB(_cb2);
+    Configuration.typeSystem.computeStage(Program.empty(), cb1);
+    Configuration.typeSystem.computeStage(Program.empty(), cb2);
     ClassB expected=getClassB(_expected);
     if(!isError){
       ClassB res=Sum.sum(Program.empty(),cb1,cb2);

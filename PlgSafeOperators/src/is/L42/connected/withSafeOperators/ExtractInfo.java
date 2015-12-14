@@ -152,28 +152,6 @@ public class ExtractInfo {
     return false;
   }
 
-  public static void checkClassClash(
-      Program p,List<String>current,
-      ClassB topA,ClassB topB,
-      ClassB currentA,ClassB currentB){
-   List<Path> confl=conflictingImplementedInterfaces(p, current,topA,topB);
-   //*sum of two classes with private state
-   //*sum class/interface invalid
-   boolean privateA=hasPrivateState(currentA);
-   boolean privateB=hasPrivateState(currentB);
-   boolean twoPrivateState=privateA &&privateB;
-   boolean isAllOk=confl.isEmpty() && !twoPrivateState && currentA.isInterface()==currentB.isInterface();
-   if (isAllOk){return;}
-   ClassKind kindA=classKind(topA,current,currentA,null,privateA,null);
-   ClassKind kindB=classKind(topB,current,currentB,null,privateB,null);
-   boolean isClassInterfaceSumOk=currentA.isInterface()==currentB.isInterface();
-   if(!isClassInterfaceSumOk){
-     isClassInterfaceSumOk=kindA==ClassKind.FreeTemplate||kindB==ClassKind.FreeTemplate;
-     }
-   isAllOk=confl.isEmpty() && !twoPrivateState && isClassInterfaceSumOk;
-   if (isAllOk){return;}
-   throw Errors42.errorClassClash(current, confl,kindA,kindB);
-  }
   static List<String> showMembers(List<Member> ms){
     List<String>result=new ArrayList<>();
     for(Member m:ms){
@@ -223,33 +201,12 @@ public class ExtractInfo {
     return true;
    }
 
-    public static List<Path> conflictingImplementedInterfaces(
-        Program p,List<String>current,ClassB a,ClassB b){
-      //*sum of class with non compatible interfaces (same method, different signature)
-      //the implemented interfaces in typeA,typeB (transitive already done!)
-      //implA=typeA.impl()//with normalization
-      //implB=typeB.impl()//with normalization
-      java.util.Map<Path,List<MethodSelector>> implA=implementedInterfacesMethods(p.addAtTop(a),Path.outer(0,current));
-      java.util.Map<Path,List<MethodSelector>> implB=implementedInterfacesMethods(p.addAtTop(b),Path.outer(0,current));
-      //implA0=implA-implB
-      //implB0=implB-implA
-      Set<Path> implA0=new HashSet<Path>(implA.keySet());
-      implA0.removeAll(implB.keySet());
-      Set<Path> implB0=new HashSet<Path>(implB.keySet());
-      implB0.removeAll(implA.keySet());
-      List<Path> conflicts=new ArrayList<>();
-      for(Path api:implA0)for(Path bpi:implB0){
-        Set<MethodSelector> amis = intersection(implA.get(api),implB.get(bpi));        
-        if(!amis.isEmpty()){conflicts.add(api);conflicts.add(bpi);}
-      }
-     return conflicts;
-  }
-  private static Set<MethodSelector> intersection(Collection<MethodSelector>ams, Collection<MethodSelector>bms){
+ /*   private static Set<MethodSelector> intersection(Collection<MethodSelector>ams, Collection<MethodSelector>bms){
     if( ams==null || ams.isEmpty() || bms==null || bms.isEmpty()){return  Collections.emptySet();}
     Set<MethodSelector> result = new HashSet<>(ams);
     result.retainAll(bms);
     return result;
-  }
+  }*/
   static void accumulateCb(java.util.Map<Path,List<MethodSelector>> accumulator,Path path,ClassB cb){
     assert cb.isInterface();
     if(accumulator.containsKey(path)){return;}
@@ -260,7 +217,7 @@ public class ExtractInfo {
       }
     accumulator.put(path, defined);
     }
-
+/*
   static java.util.Map<Path,List<MethodSelector>> implementedInterfacesMethods(Program p,Path path){
     java.util.Map<Path,List<MethodSelector>> accumulator=new HashMap<>();
     fillImplementedInterfacesMethods(accumulator,p,path);
@@ -275,7 +232,7 @@ public class ExtractInfo {
       fillImplementedInterfacesMethods(accumulator, p, pi);
     }
   }
-
+*/
   static List<Integer> isParTypeOk(MethodWithType mta, MethodWithType mtb) {
     List<Integer>res=new ArrayList<>();
     for(int i=0;i<mta.getMt().getTs().size();i++){

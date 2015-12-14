@@ -42,23 +42,23 @@ public class Errors42 {
            );
   }
   //"ClassClash" caused by sum, renameClass, renameClassStrict, renameClass
-  static Error errorClassClash(List<String> current,  List<Path> confl,ExtractInfo.ClassKind kindA,ExtractInfo.ClassKind kindB) {
+  static Error errorClassClash(List<String> current,  List<Path> confl/*,ExtractInfo.ClassKind kindA,ExtractInfo.ClassKind kindB*/) {
     return Resources.Error.multiPartStringError("ClassClash",
-       "Path",""+Path.outer(0,current),//the path of the clash, in the rename is the path of the destination clash
-       "LeftKind",kindA.name(),//kind of left and right classes
-       "RightKind",kindB.name(),//this allows to infer if the class kinds was compatible
-       "ConflictingImplementedInterfaces",""+confl//the list of interface that define methods with same name
-       //TODO:test how this is checked, what order we get what exactly?
+       "Path",formatPathIn(current),//the path of the clash, in the rename is the path of the destination clash
+       //"LeftKind",kindA.name(),//kind of left and right classes
+       //"RightKind",kindB.name(),//this allows to infer if the class kinds was compatible
+       //Well, is just enough to see if conflict is empty then was incompatible kinds...
+       "ConflictingImplementedInterfaces",ExtractInfo.showPaths(confl)//the list of interface that define methods with same name
         );
   }
   //"MethodClash" caused by sum, renameMethod, renameClassStrict, renameClass
-  static Error errorMethodClash(List<String> pathForError, Member mta, Member mtb, boolean exc, List<Integer> pars, boolean retType, boolean thisMdf) {
+  static Error errorMethodClash(List<String> pathForError, Member mta, Member mtb, boolean exc, List<Integer> pars, boolean retType, boolean thisMdf,boolean rightIsInterfaceAbstract) {
       return Resources.Error.multiPartStringError("MethodClash",
-       "Path",formatPathIn(pathForError),//the path of the clash (that own  the method), in the rename is the path of the destination clash
+      "Path",formatPathIn(pathForError),//the path of the clash (that own  the method), in the rename is the path of the destination clash
       "Left",sugarVisitors.ToFormattedText.of(mta).replace("\n","").trim(),//implementation dependend print of the left and right methods
       "Right",sugarVisitors.ToFormattedText.of(mtb).replace("\n","").trim(),
       "LeftKind",ExtractInfo.memberKind(mta),//kind of the left/right methods
-      "RightKind",ExtractInfo.memberKind(mtb),
+      "RightKind",(rightIsInterfaceAbstract)?"InterfaceAbstractMethod":ExtractInfo.memberKind(mtb),
       "DifferentParameters",""+ pars,//number of parameters with different types
       "DifferentReturnType",""+ !retType,//if the return types are different
       "DifferentThisMdf",""+ !thisMdf,//if the modifier for "this" is different
@@ -149,16 +149,16 @@ public class Errors42 {
         "ContainsMethods",""+meth,
         "ActualKind",""+kind.name());
   }
-  public static void checkMethodClash(List<String>pathForError,MethodWithType mta, MethodWithType mtb){
+  public static void checkMethodClash(List<String>pathForError,MethodWithType mta, MethodWithType mtb,boolean rightIsInterfaceAbstract){
     boolean implClash=mta.getInner().isPresent() && mtb.getInner().isPresent();
     boolean exc=ExtractInfo.isExceptionOk(mta,mtb);
     List<Integer> pars=ExtractInfo.isParTypeOk(mta,mtb);
     boolean retType=mta.getMt().getReturnType().equals(mtb.getMt().getReturnType());
     boolean thisMdf=mta.getMt().getMdf().equals(mtb.getMt().getMdf());
-    if(!implClash && exc && pars.isEmpty() && retType && thisMdf){return;}
+    if(!implClash && exc && pars.isEmpty() && retType && thisMdf && !rightIsInterfaceAbstract){return;}
     if(mta.getInner().isPresent()){mta=mta.withInner(Optional.of(new ExpCore.X("implementation")));}
     if(mtb.getInner().isPresent()){mtb=mtb.withInner(Optional.of(new ExpCore.X("implementation")));}
-    throw errorMethodClash(pathForError, mta, mtb, exc, pars, retType, thisMdf);
+    throw errorMethodClash(pathForError, mta, mtb, exc, pars, retType, thisMdf,false);
   }
  /* static void checkCoherentMapping(List<PathPath> setVisited) {
     // setVisited is a set of individual redirected classes,

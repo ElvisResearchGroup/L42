@@ -10,18 +10,22 @@ import java.util.Set;
 
 import platformSpecific.javaTranslation.Resources;
 import facade.Configuration;
+import is.L42.connected.withSafeOperators.ExtractInfo.ClassKind;
 import ast.Ast.Doc;
 import ast.Ast.MethodType;
 import ast.Ast.Path;
 import ast.Ast.Stage;
+import ast.ErrorMessage;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodImplemented;
 import ast.ExpCore.ClassB.MethodWithType;
 import ast.ExpCore.ClassB.NestedClass;
 import ast.Util.CachedStage;
+import ast.Util.PathMwt;
 import ast.ExpCore.*;
 import auxiliaryGrammar.Program;
+import coreVisitors.From;
 
 public class Sum {
   static ClassB sum(Program p, ClassB a, ClassB b) {
@@ -46,17 +50,48 @@ public class Sum {
   }
 
   public static ClassB normalizedTopSum(Program p, ClassB topA, ClassB topB) {
-    return normalizedSum(p,topA, topB,topA, topB, Collections.emptyList());
+     ClassB result=normalizedSum(p,topA, topB,topA, topB, Collections.emptyList());
+     Sum.interfaceClash(p,result);
+     return result;
     }
 
+  private static void interfaceClash(Program p, ClassB candidate) {
+   try{
+     Configuration.typeSystem.computeStage(p,candidate);
+   }catch(ErrorMessage.IncoherentMwts i){
+     List<Path>ps=new ArrayList<>();
+     List<Member>mems=new ArrayList<>();
+     Path ph=Path.outer(0,i.getExploredPath());
+     for(PathMwt e:i.getIncoherent()){
+       ps.add(From.fromP(e.getOriginal(),ph));
+     }
+     assert !ps.isEmpty();
+     Member  notInterf=null;
+     for(Path pi:ps){
+       assert pi.outerNumber()==0;
+       ClassB cb=Program.extractCBar(pi.getCBar(), candidate);
+       Member current=Program.getIfInDom(cb.getMs(),i.getGuilty()).get();
+       if(cb.isInterface()){
+         mems.add(current);
+       }
+       else notInterf=current;
+     }
+     if(notInterf==null){
+       throw Errors42.errorClassClash(i.getExploredPath(), ps);
+     }
+     Member mb=mems.get(0);
+     throw Errors42.errorMethodClash(i.getExploredPath(), notInterf,mb, true,Collections.emptyList(),true,true,true);
+
+   }
+  }
+
   static ClassB normalizedSum(Program p, ClassB topA, ClassB topB,ClassB a, ClassB b, List<String> current) {
-    List<Member> ms = new ArrayList<>();
-    doubleSimetricalMatch(p,topA,topB,a, b, ms, current);
+    List<Member> ms = doubleSimetricalMatch(p,topA,topB,a, b,  current);
     List<Path> superT = new ArrayList<Path>(a.getSupertypes());
     superT.addAll(b.getSupertypes());
     Doc doc1 = a.getDoc1().sum(b.getDoc1());
     Doc doc2 = a.getDoc2().sum(b.getDoc2());
-    ExtractInfo.checkClassClash(p, current, topA, topB, a, b);
+    Sum.checkClassClash(p, current, topA, topB, a, b);
     boolean isInterface =a.isInterface() || b.isInterface();
     CachedStage stage=new CachedStage();
     stage.setPrivateNormalized(true);
@@ -67,7 +102,23 @@ public class Sum {
     if(a.getStage().isVerified() && b.getStage().isVerified()){stage.setVerified(true);}
     return new ClassB(doc1, doc2, isInterface, superT, ms,stage);
     }
-  private static void doubleSimetricalMatch(Program p, ClassB topA, ClassB topB,ClassB a, ClassB b, List<Member> ms, List<String> current) {
+  private static void checkMethodClashInterfaceAbstract(List<String> pathForError,List<PathMwt> aInh, List<PathMwt> bInh, List<Member> ms) {
+    for(Member m:ms){
+      if (!(m instanceof MethodWithType)){continue;}
+      MethodWithType mwt=(MethodWithType)m;
+      for(PathMwt a: bInh){
+        if(a.getMwt().getMs().equals(mwt.getMs())){
+          throw Errors42.errorMethodClash(pathForError, mwt,a.getMwt(), false, Collections.emptyList(), false,false,true);
+        }
+      }
+      for(PathMwt b: bInh){
+        if(b.getMwt().getMs().equals(mwt.getMs())){}
+      }
+    }
+  }
+
+  private static List<Member> doubleSimetricalMatch(Program p, ClassB topA, ClassB topB,ClassB a, ClassB b, List<String> current) {
+    List<Member> ms=new ArrayList<>();
     for (Member m : a.getMs()) {//add from a+b
       Optional<Member> oms = Program.getIfInDom(b.getMs(), m);
       if (!oms.isPresent()) {
@@ -82,10 +133,14 @@ public class Sum {
         ms.add(m);
         }
       }
+    return ms;
     }
 
   public static void doubleSimmetricalMatch(Program p, ClassB topA, ClassB topB, List<Member> ms, List<String> current, Member m, Member oms) {
-    m.match(nc -> matchNC(p,topA,topB,nc, ms, (NestedClass) oms, current), mi -> matchMi(current, mi, ms, oms), mt -> matchMt(current, mt, ms, oms));
+    m.match(
+        nc -> matchNC(p,topA,topB,nc, ms, (NestedClass) oms, current), 
+        mi -> matchMi(current, mi, ms, oms),
+        mt -> matchMt(current, mt, ms, oms));
   }
 
   private static Void matchNC(Program p, ClassB topA, ClassB topB,NestedClass nca, List<Member> ms, NestedClass ncb, List<String> current) {
@@ -99,15 +154,15 @@ public class Sum {
 
 
   private static Void matchMt(List<String> pathForError, MethodWithType mwta, List<Member> ms, Member mb) {
-    if (mb instanceof MethodImplemented) { throw Errors42.errorMethodClash(pathForError, mwta, mb, false, Collections.emptyList(), false, false); }
+    if (mb instanceof MethodImplemented) { throw Errors42.errorMethodClash(pathForError, mwta, mb, false, Collections.emptyList(), false, false,false); }
     MethodWithType mwtb = (MethodWithType) mb;
-    Errors42.checkMethodClash(pathForError, mwta, mwtb);
+    Errors42.checkMethodClash(pathForError, mwta, mwtb,false);
     ms.add(Sum.sumMethod(mwta, mwtb));
     return null;
   }
 
   private static Void matchMi(List<String> pathForError, MethodImplemented mia, List<Member> ms, Member mb) {
-    throw Errors42.errorMethodClash(pathForError, mia, mb, false, Collections.emptyList(), false, false);
+    throw Errors42.errorMethodClash(pathForError, mia, mb, false, Collections.emptyList(), false, false,false);
   }
 
   static MethodWithType sumMethod(MethodWithType ma, MethodWithType mb) {
@@ -133,4 +188,42 @@ public class Sum {
     }
     return mwt;
   }
+
+  public static void checkClassClash(
+      Program p,List<String>current,
+      ClassB topA,ClassB topB,
+      ClassB currentA,ClassB currentB){
+  
+   //*sum of two classes with private state
+   //*sum class/interface invalid
+   boolean privateA=ExtractInfo.hasPrivateState(currentA);
+   boolean privateB=ExtractInfo.hasPrivateState(currentB);
+   boolean twoPrivateState=privateA &&privateB;
+   boolean isAllOk= !twoPrivateState && currentA.isInterface()==currentB.isInterface();
+   if (isAllOk){return;}
+   ExtractInfo.ClassKind kindA=ExtractInfo.classKind(topA,current,currentA,null,privateA,null);
+   ExtractInfo.ClassKind kindB=ExtractInfo.classKind(topB,current,currentB,null,privateB,null);
+   boolean isClassInterfaceSumOk=currentA.isInterface()==currentB.isInterface();
+   if(!isClassInterfaceSumOk){
+     isClassInterfaceSumOk=kindA==ExtractInfo.ClassKind.FreeTemplate||kindB==ExtractInfo.ClassKind.FreeTemplate;
+     }
+   isAllOk= !twoPrivateState && isClassInterfaceSumOk;
+   if (isAllOk){return;}
+   throw Errors42.errorClassClash(current, Collections.emptyList());
+  }
+/*
+  public static List<Path> 
+    conflictingImplementedInterfaces(
+        Program p,List<String>current,ClassB cba,ClassB cbb){
+      List<Path> cc=new ArrayList<>();
+      for(PathMwt a: cba.getStage().getInherited()){
+        for(PathMwt b: cbb.getStage().getInherited()){
+          if(a.getMwt().getMs().equals(b.getMwt().getMs())){
+            if(a.getOriginal().equals(b.getOriginal())){continue;}
+            cc.add(a.getOriginal());
+            cc.add(b.getOriginal());
+            }
+      } }
+     return cc;
+  }*/
 }

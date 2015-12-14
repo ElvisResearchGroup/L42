@@ -224,9 +224,9 @@ public class TestRename {
         }, {lineNumber(),//
           "{ A1:{ A2:{ type method Outer1::B () } B:{ } }}","A1::A2","Outer0",   "{ A1:{B:{ }} type method Outer0::A1::B () }"   ,false//
         }, {lineNumber(),//
-          "{ A:{ D:{ method Outer0 d() Outer0.d() } type method Outer1::B foo ()Outer0.foo() } B:{ }}" ,
+          "{ A:{ D:{ type method Outer0 d() Outer0.d() } type method Outer1::B foo ()Outer0.foo() } B:{ }}" ,
           "A","Outer0",
-          "{ B:{ } D:{ method Outer0 d() Outer0.d() } type method Outer0::B foo ()Outer0.foo()  }"   ,false//
+          "{ B:{ } D:{ type method Outer0 d() Outer0.d() } type method Outer0::B foo ()Outer0.foo()  }"   ,false//
         }, {lineNumber(),//
           helpers.TestHelper.multiLine(""
               ,"{ A:{"
@@ -327,6 +327,7 @@ public class TestRename {
     @Test public void test() {
       TestHelper.configureForTest();
       ClassB cb1 = getClassB(_cb1);
+      Configuration.typeSystem.computeStage(Program.empty(), cb1);
       Path path1 = Path.parse(_path1);
       Path path2 = Path.parse(_path2);
       ClassB expected = getClassB(_expected);

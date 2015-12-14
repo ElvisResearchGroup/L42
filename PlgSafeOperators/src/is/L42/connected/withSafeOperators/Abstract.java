@@ -78,7 +78,7 @@ public class Abstract {
     Optional<MethodWithType> mwt2 = p.extractMwt(newSel, cb);
     mwt1=mwt1.withMs(newSel).withDoc(Doc.empty());
     if(mwt2.isPresent()){
-       throw Errors42.errorMethodClash(pathForError, mwt1,mwt2.get(), false, Collections.emptyList(), false,false); 
+       throw Errors42.errorMethodClash(pathForError, mwt1,mwt2.get(), false, Collections.emptyList(), false,false,false); 
        }   
     newMs.add(mwt1);
     return cb.withMs(newMs);  

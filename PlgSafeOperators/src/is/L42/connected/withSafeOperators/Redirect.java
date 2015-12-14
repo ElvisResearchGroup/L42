@@ -119,7 +119,7 @@ public class Redirect {
      src=Map.of(pi->traspose(verified,pi),src);
      if(!src.containsAll(exc.getMwt2().getMt().getExceptions())){
        throw Errors42.errorMethodClash(exc.getSrc().getCBar(), exc.getMwt1(),exc.getMwt2(),true,
-           Collections.emptyList(),false,false);
+           Collections.emptyList(),false,false,false);
        }
     }
   }
@@ -237,7 +237,7 @@ public class Redirect {
     }}
     boolean excOk=plusEqualAndExc(ambiguities,exceptions,current.getPath(),mwtSrc, mwtDest);
     if(thisMdfOk && retOk && excOk && parWrong.isEmpty()){return;}
-    throw Errors42.errorMethodClash(current.getPath().getCBar(),mwtSrc,mwtDest,excOk,parWrong,retOk, thisMdfOk);
+    throw Errors42.errorMethodClash(current.getPath().getCBar(),mwtSrc,mwtDest,excOk,parWrong,retOk, thisMdfOk,false);
     }
   private static boolean plusEqualAndExc(List<PathSPath> ambiguities, List<SPathSPath> exceptions, Path src,MethodWithType mwtSrc, MethodWithType mwtDest) {
     int countExternal=0;

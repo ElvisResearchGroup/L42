@@ -1,5 +1,6 @@
 package typeSystem;
 
+import java.util.Collections;
 import java.util.HashMap;
 
 import ast.Ast;
@@ -14,7 +15,7 @@ import profiling.Timer;
 public class Facade implements facade.TypeSystem{
   public @Override void computeInherited(Program p,ClassB cb){
     Timer.record("TypeSystem.computeInherited",()->{
-    FillCache.computeInherited(p, cb);
+    FillCache.computeInherited(p, Collections.emptyList(),cb);
     return null;});
   }
   public @Override void computeStage(Program p,ClassB cb) {//requires inherited

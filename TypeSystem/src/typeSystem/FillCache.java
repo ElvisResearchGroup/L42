@@ -31,35 +31,37 @@ import facade.ErrorFormatter;
 import sugarVisitors.CollapsePositions;
 
 public class FillCache {
- public static void computeInheritedDeep(Program p,ClassB cb){
+ public static void computeInheritedDeep(Program p,ClassB cb,List<String>explored){
    assert cb!=null;
-   computeInherited(p,cb);
+   computeInherited(p,explored,cb);
    for(Member m:cb.getMs()){
      if(!(m instanceof NestedClass)){continue;}
      NestedClass nc=(NestedClass)m;
      if( nc.getInner() instanceof ClassB){
-       computeInheritedDeep(p.addAtTop(cb), (ClassB)nc.getInner());
+       explored.add(nc.getName());
+       computeInheritedDeep(p.addAtTop(cb), (ClassB)nc.getInner(),explored);
+       explored.remove(explored.size()-1);//ok not in final, should survive on error
      }
    }
  }
- public static void computeInherited(Program p,ClassB cb){
+ public static void computeInherited(Program p, List<String> explored,ClassB cb){
     if(cb.getStage().isInheritedComputed()){return;}
     p=p.addAtTop(cb);
     List<Path> allSup = Program.getAllSupertypes(p, cb);
     List<PathMwt> mwts=computeMwts(p, allSup);
-    checkCoherent(mwts,cb);
+    checkCoherent(mwts,explored,cb);
     cb.getStage().setInherited(mwts);
     cb.getSupertypes().clear();
     cb.getSupertypes().addAll(allSup);
   }
-private static void checkCoherent(List<PathMwt> mwts, ClassB cb) {
+private static void checkCoherent(List<PathMwt> mwts, List<String> explored,ClassB cb) {
   //- no two mwt are the same
   //-forall mwti, cb do not define them as mwt.
   //-forall mi in cb, mwti defines it.
   for(int i=0;i<mwts.size();i++){
     for(int j=i+1;j<mwts.size();j++){
       if(!mwts.get(i).getMwt().getMs().equals(mwts.get(j).getMwt().getMs())){continue;}
-      throw new ErrorMessage.IncoherentMwts(mwts.get(i).getMwt().getMs(),completeMwts(mwts,cb),
+      throw new ErrorMessage.IncoherentMwts(mwts.get(i).getMwt().getMs(),explored,completeMwts(mwts,cb),
           CollapsePositions.of(cb.accept(new InjectionOnSugar())));
     }
   }
@@ -68,7 +70,7 @@ private static void checkCoherent(List<PathMwt> mwts, ClassB cb) {
      if(!(m instanceof MethodWithType)){continue;}
      MethodWithType mwt=(MethodWithType) m;
      if(!pmwt.getMwt().getMs().equals(mwt.getMs())){continue;}
-     throw new ErrorMessage.IncoherentMwts(mwt.getMs(),completeMwts(mwts,cb),
+     throw new ErrorMessage.IncoherentMwts(mwt.getMs(),explored,completeMwts(mwts,cb),
          CollapsePositions.of(cb.accept(new InjectionOnSugar())));
    } 
   }
@@ -79,7 +81,7 @@ private static void checkCoherent(List<PathMwt> mwts, ClassB cb) {
     for(PathMwt pmwt: mwts){
       if(pmwt.getMwt().getMs().equals(mi.getS())){ find=true; break;}
     } 
-    if(!find){throw new ErrorMessage.IncoherentMwts(mi.getS(),completeMwts(mwts,cb),
+    if(!find){throw new ErrorMessage.IncoherentMwts(mi.getS(),explored,completeMwts(mwts,cb),
         CollapsePositions.of(cb.accept(new InjectionOnSugar())));}
   }
 }
@@ -122,7 +124,8 @@ public static void collectInnerClasses(List<CachedStage>again,Program p,ClassB c
 }
 public static void computeStage(Program p,ClassB cb) {
   if(cb.getStage().getStage()!=Stage.None){return;}
-  computeInheritedDeep(p, cb);
+  List<String>explored=new ArrayList<>();
+  computeInheritedDeep(p, cb,explored);
   p.addAtTop(cb);
   assert cb.getStage().getInherited()!=null;
   List<CachedStage>again=new ArrayList<>();

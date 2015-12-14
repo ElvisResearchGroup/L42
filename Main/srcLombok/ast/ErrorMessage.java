@@ -55,6 +55,7 @@ import ast.Util.PathMwt;
   }
   @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class IncoherentMwts extends ErrorMessage {
   ast.Ast.MethodSelector guilty;
+  List<String> exploredPath;
   List<PathMwt> incoherent;
   Ast.Position pos;}
   @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class MalformedUnionOfMembers extends ErrorMessage {

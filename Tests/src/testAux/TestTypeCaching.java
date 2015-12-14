@@ -96,7 +96,7 @@ public class TestTypeCaching {
       ClassB cb1=(ClassB)(Desugar.of(Parser.parse(null,e1)).accept(new InjectionOnCore()));
       Program p=Program.empty();
       Path path=Path.parse(_path);
-      FillCache.computeInheritedDeep(p, cb1);
+      FillCache.computeInheritedDeep(p, cb1,new ArrayList<>());
       FillCache.computeStage(p, cb1);
       CachedStage stg = Program.extractCBar(path.getCBar(), cb1).getStage();
       Assert.assertEquals(expectedCoh, stg.getCoherent().isEmpty());
