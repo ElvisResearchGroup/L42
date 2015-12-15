@@ -5,22 +5,28 @@ import ast.Ast.MethodSelector;
 import ast.Ast.MethodType;
 import ast.Ast.Path;
 import ast.Ast.Type;
+import ast.ExpCore;
 import ast.ExpCore.*;
 import ast.ExpCore.ClassB.Member;
+import ast.ExpCore.ClassB.MethodImplemented;
 import ast.ExpCore.ClassB.MethodWithType;
 import ast.ExpCore.ClassB.NestedClass;
 import ast.Util.PathMwt;
 import auxiliaryGrammar.Functions;
 import auxiliaryGrammar.Program;
+import tools.Assertions;
 
 import java.util.*;
 public class SumMethods {
-  ClassB sumMethods(ClassB lib, List<String> path, MethodSelector m1,MethodSelector m2){
-    NestedClass nc=(NestedClass)Errors42.checkExistsPathMethod(lib, path, Optional.empty());
+  public static ClassB sumMethods(ClassB lib, List<String> path, MethodSelector m1,MethodSelector m2){
+    ClassB pathCb=lib;
+    if(!path.isEmpty()){
+      pathCb=(ClassB)((NestedClass)Errors42.checkExistsPathMethod(lib, path, Optional.empty())).getInner();
+    }
     Member mem1=Errors42.checkExistsPathMethod(lib, path, Optional.of(m1));
     Member mem2=Errors42.checkExistsPathMethod(lib, path, Optional.of(m2));
-    MethodWithType mwt1 = Program.extractMwt(mem1,(ClassB) nc.getInner());
-    MethodWithType mwt2 = Program.extractMwt(mem2,(ClassB) nc.getInner());
+    MethodWithType mwt1 = Program.extractMwt(mem1,(ClassB) pathCb);
+    MethodWithType mwt2 = Program.extractMwt(mem2,(ClassB) pathCb);
     MethodType mt1=mwt1.getMt();
     MethodType mt2=mwt2.getMt();
     boolean wrongFirstPar=true;
@@ -56,24 +62,38 @@ public class SumMethods {
     for(PathMwt e:cbPath.getStage().getInherited()){
       if(e.getMwt().getMs().equals(msU)){mtConflict=e.getMwt();}
     }
+    ExpCore r1=(mt1.getMdf()==Mdf.Type)?Path.outer(0):new ExpCore.X("this");
+    ExpCore r2=(mt2.getMdf()==Mdf.Type)?Path.outer(0):new ExpCore.X("this");
+    //this/outer0 . m2(this/outer0 .m1(ps1),ps2)
+    ArrayList<ExpCore> ps1=new ArrayList<>();
+    for(String x:m1.getNames()){ps1.add(new ExpCore.X(x));}
+    ExpCore eInner=new ExpCore.MCall(r1, m1,Doc.empty(), ps1, mem2.getP());
+    
+    ArrayList<ExpCore> ps2=new ArrayList<>();
+    ps2.add(eInner);
+    for(String x:m2.getNames()){ps2.add(new ExpCore.X(x));}
+    ExpCore eU=new ExpCore.MCall(r2, m2, Doc.empty(),ps2 ,  mem2.getP());
+    MethodWithType mwtU=new MethodWithType(Doc.empty(),msU,mtU,Optional.of(eU),mem2.getP() );
     if(mtConflict!=null){
       //hard. Is satisfy one interface triky and risk to be buggy?
-      //throw Errors42.errorMethodClash(path, mtConflict, mtb, exc, pars, retType, thisMdf)
-      //TODO:test sum sum on not implemented interface method
+      Errors42.checkMethodClash(path, mwtU,mtConflict,true);//always throws
+      throw  Assertions.codeNotReachable();
     }
     Optional<Member> optConflict = Program.getIfInDom(cbPath.getMs(),msU);    
     if(optConflict.isPresent()){
-      //hard, should we require exact type? pre existent can have more exceptions?
+      if(optConflict.get() instanceof MethodImplemented){
+        throw Errors42.errorMethodClash(path,mwtU, optConflict.get(), true,Collections.emptyList(),true,true,false);    
+      }
+      MethodWithType mwtC=(MethodWithType)optConflict.get();
+      Errors42.checkMethodClash(path, mwtU,mwtC,false);//same as for sum/rename   
     } 
     //simple
-    //is it a problem if m1+m2 is a private name? is that possible?
-    //wrong if
-    //first par type meth2 not same a return meth1
-    //mdf 1 not type, mdf1 not supertype of mdf2
-    //ParameterTypeMismach
-    //m1+m2 exists, not abstract or wrong signature.//methodClash
-
-    return lib;//TODO to implement
+    //TODO: is it a problem if m1+m2 is a private name? is that possible?
+    if(path.isEmpty()){
+      return lib.withMember(mwtU);
+      }
+    return ClassOperations.onClassNavigateToPathAndDo(lib,path,cbi->cbi.withMember(mwtU));
+    
   }
 
   private static Mdf mdfU(Mdf mdf1, Mdf mdf2) {
