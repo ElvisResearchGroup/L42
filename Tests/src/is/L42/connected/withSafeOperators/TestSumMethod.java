@@ -38,11 +38,41 @@ import auxiliaryGrammar.Program;
     public static List<Object[]> createData() {
       return Arrays.asList(new Object[][] {
       {    lineNumber(),"{method Void m1() method Void m2(Void that)}",
-                                   "Outer0","m1()", "m2(that)","{}",false
-      }});}
+                                   "Outer0","m1()", "m2(that)",
+                                   "{method Void m1() method Void m2(Void that)"
+                                   + " method Void m1m2() this.m2(that:this.m1())}",false
+     },{    lineNumber(),"{method Void m1() method Void (Void that)}",
+                                     "Outer0","m1()", "#apply(that)",
+                                     "{method Void m1() this.#apply(that:this.m1()) "
+                                     + "method Void #apply(Void that) }",false
+     },{    lineNumber(),"{method Void () method Void m2(Void that)}",
+       "Outer0","#apply()", "m2(that)",
+       "{method Void #apply() method Void m2(Void that) "
+       + "method Void m2() this.m2(that:this.#apply())}",false
+  },{    lineNumber(),"{method Void +() method Void m2(Void that)}",
+    "Outer0","#plus()", "m2(that)",
+    "{method Void +() method Void m2(Void that) "
+    + "method Void m2() this.m2(that:this.#plus())}",false
+  },{    lineNumber(),"{A:{} B:{} C:{} method Void m1(A a, B b) method Void m2(Void that, C c)}",
+    "Outer0","m1(a,b)", "m2(that,c)",
+    "{A:{} B:{} C:{}"
+    + "method Void m1(Outer0::A a, Outer0::B b) "
+    + "method Void m2(Void that, Outer0::C c) "
+    + "method Void m1m2(Outer0::A a, Outer0::B b, Outer0::C c)"
+    + "   this.m2(that:this.m1(a:a, b:b), c:c)}",false
+  },{    lineNumber(),"{A:{} B:{} C:{} type method Void m1(A a) method Void m2(Void that, B b,C c)}",
+    "Outer0","m1(a)", "m2(that,b,c)",
+    "{A:{} B:{} C:{}"
+    + "type method Void m1(Outer0::A a) "
+    + "method Void m2(Void that, Outer0::B b, Outer0::C c) "
+    + "method Void m1m2(Outer0::A a, Outer0::B b, Outer0::C c)"
+    + "   this.m2(that:Outer0.m1(a:a), b:b, c:c)}",false
+
+   }});}
   @Test  public void test() {
     TestHelper.configureForTest();
     ClassB cb=getClassB(_cb);
+    Configuration.typeSystem.computeStage(Program.empty(), cb);
     Path path=Path.parse(_path);
     MethodSelector ms1=MethodSelector.parse(_ms1);
     MethodSelector ms2=MethodSelector.parse(_ms2);

@@ -1,3 +1,9 @@
+AddDocumentation for private state?
+-constructor must be first?
+-error if you was going to create a incoherent private state.
+-- no seams like addDocumentation must be called on the constructor, and make private all the potential state
+-to prevent capture of unwanted state methods, you can rename or implement them and then revert.
+
 Adam Towel
  -adam towel 2 or 3 must:
    -inject ParseErrors in Bool, N

@@ -36,8 +36,14 @@ public class SumMethods {
        if(p1.equals(r)){wrongFirstPar=false;}
     }
     Mdf mdfU=mdfU(mt1.getMdf(),mt2.getMdf());
-    if(wrongFirstPar||mdfU==null){
-      throw Errors42.errorParameterTypeMismach(path, mem1,mem2, !wrongFirstPar,mdfU!=null);
+    boolean parDisj=true;
+    for(int i=1;i<m2.getNames().size();i++){
+      String e2=m2.getNames().get(i);
+      for( String e1:m1.getNames()){
+      if(e1.equals(e2)){parDisj=false;}
+    }}
+    if(wrongFirstPar||mdfU==null || !parDisj){
+      throw Errors42.errorParameterMismach(path, mem1,mem2, !wrongFirstPar,mdfU!=null,parDisj);
     }
     ArrayList<Path> exU = new ArrayList<>(mt1.getExceptions());
     exU.addAll(mt2.getExceptions());
@@ -71,7 +77,7 @@ public class SumMethods {
     
     ArrayList<ExpCore> ps2=new ArrayList<>();
     ps2.add(eInner);
-    for(String x:m2.getNames()){ps2.add(new ExpCore.X(x));}
+    for(int i=1;i<m2.getNames().size();i++){ps2.add(new ExpCore.X(m2.getNames().get(i)));}
     ExpCore eU=new ExpCore.MCall(r2, m2, Doc.empty(),ps2 ,  mem2.getP());
     MethodWithType mwtU=new MethodWithType(Doc.empty(),msU,mtU,Optional.of(eU),mem2.getP() );
     if(mtConflict!=null){

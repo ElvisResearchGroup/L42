@@ -245,6 +245,7 @@ public class ToFormattedText implements Visitor<Void>{
     return c(")");  
     }
    private void formatParameters(Parameters ps) {
+     assert ps.getEs().size()==ps.getXs().size();
      if(ps.getE().isPresent()){ps.getE().get().accept(this);
        if(!ps.getEs().isEmpty()){c(", ");}
        }
