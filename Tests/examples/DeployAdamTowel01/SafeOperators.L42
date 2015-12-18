@@ -25,6 +25,15 @@
         dest:dest.binaryRepr()
         )
       error System::Guard::PluginFailure"SafeOperators.renameMethod"
+  type method
+  Library sumMethods(Library that,Path path,Selector src,Selector dest)
+    using Outer0
+      check sumMethods(that
+        path:path.binaryRepr()
+        src:src.binaryRepr()
+        dest:dest.binaryRepr()
+        )
+      error System::Guard::PluginFailure"SafeOperators.renameMethod"
 
   type method
   Library redirect(Library that,Path src, type Any dest)

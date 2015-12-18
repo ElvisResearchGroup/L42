@@ -17,6 +17,7 @@ import ast.Ast.Doc;
 import ast.Ast.MethodSelector;
 import ast.Ast.Path;
 import ast.ExpCore.ClassB;
+import auxiliaryGrammar.Program;
 
 public class TestAddComment {
   @RunWith(Parameterized.class)
@@ -32,6 +33,12 @@ public class TestAddComment {
       return Arrays.asList(new Object[][] {
       {"{B:{ method Void m() void}}","B","m()","fuffa\n","{B:{ method'fuffa\n Void m() void}}",false
     },{"{B:{ method Void m() void}}","B","m()","@private\n","{B:{ method'@private\n Void m() void}}",false
+    },{"{B:{k(B b)}}",
+      "B","k(b)","@private\n","{B:{type method '@private\n"
+          + "Outer0 k(Outer1::B b)mut method '@private\n"
+          + "Outer1::B #b() read method '@private\n"
+          + "Outer1::B b() }}",false
+     
       //TODO: make test that check that making private allows for name replacement if sum is used
   }});}
   @Test  public void test() {
@@ -42,11 +49,11 @@ public class TestAddComment {
     assert ms!=null;
     ClassB expected=getClassB(_expected);
     if(!isError){
-      ClassB res=AddDocumentation.addDocumentationOnMethod(cb1, path.getCBar(), ms,doc);
+      ClassB res=AddDocumentation.addDocumentationOnMethod(Program.empty(),cb1, path.getCBar(), ms,doc);
       TestHelper.assertEqualExp(expected,res);
       }
     else{
-      try{AddDocumentation.addDocumentationOnMethod(cb1, path.getCBar(), ms,doc);fail("error expected");}
+      try{AddDocumentation.addDocumentationOnMethod(Program.empty(),cb1, path.getCBar(), ms,doc);fail("error expected");}
       catch(Resources.Error err){
         ClassB res=(ClassB)err.unbox;
         TestHelper.assertEqualExp(expected,res);
@@ -75,11 +82,11 @@ public class TestAddComment {
     Doc doc=Doc.factory(_doc);
     ClassB expected=getClassB(_expected);
     if(!isError){
-      ClassB res=AddDocumentation.addDocumentationOnNestedClass(cb1, path.getCBar(),doc);
+      ClassB res=AddDocumentation.addDocumentationOnNestedClass(Program.empty(),cb1, path.getCBar(),doc);
       TestHelper.assertEqualExp(expected,res);
       }
     else{
-      try{AddDocumentation.addDocumentationOnNestedClass(cb1, path.getCBar(),doc);fail("error expected");}
+      try{AddDocumentation.addDocumentationOnNestedClass(Program.empty(),cb1, path.getCBar(),doc);fail("error expected");}
       catch(Resources.Error err){
         ClassB res=(ClassB)err.unbox;
         TestHelper.assertEqualExp(expected,res);

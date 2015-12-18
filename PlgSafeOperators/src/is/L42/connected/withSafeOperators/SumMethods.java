@@ -43,7 +43,7 @@ public class SumMethods {
       if(e1.equals(e2)){parDisj=false;}
     }}
     if(wrongFirstPar||mdfU==null || !parDisj){
-      throw Errors42.errorParameterMismach(path, mem1,mem2, !wrongFirstPar,mdfU!=null,parDisj);
+      throw Errors42.errorParameterMismatch(path, mem1,mem2, !wrongFirstPar,mdfU!=null,parDisj);
     }
     ArrayList<Path> exU = new ArrayList<>(mt1.getExceptions());
     exU.addAll(mt2.getExceptions());

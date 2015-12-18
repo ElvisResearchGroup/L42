@@ -13,6 +13,7 @@ import ast.Ast.Path;
 import ast.Ast.Stage;
 import ast.ExpCore.*;
 import ast.ExpCore.ClassB.Member;
+import ast.Util.InvalidMwtAsState;
 
 
 public class Util {
@@ -24,6 +25,10 @@ public class Util {
     @NonNull java.util.List<Path> allSuper;
     @NonNull Path original;
     @NonNull ast.Ast.MethodType mt;
+  }
+  @Value public static class InvalidMwtAsState{
+    @NonNull String reason;
+    @NonNull ExpCore.ClassB.MethodWithType mwt;
   }
   @Value public static class PathMwt{
     @NonNull Path original;
@@ -86,7 +91,7 @@ public class Util {
 	  final java.util.List<ClassB>dependencies=new java.util.ArrayList<>();
 	//final java.util.List<Path> allSupertypes=new java.util.ArrayList<>();
 	java.util.List<PathMwt> inherited=null;
-	List<String> coherent=Collections.emptyList();
+	List<InvalidMwtAsState> coherent=Collections.emptyList();
 	String givenName="";
 	
 	public boolean isInheritedComputed(){return inherited!=null;}

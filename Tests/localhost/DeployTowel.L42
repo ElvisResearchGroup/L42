@@ -23,15 +23,15 @@ method
 Outer0 #end() this
 type method 
 Library binaryReprFrom(Library lib) (
-  Library norm=using Outer0::SafeOperatorsAccess__28_0 check privateNormalize(that:lib) error Outer0.#stringParser(that:{'@stringU
+  Library norm=using Outer0::SafeOperatorsAccess__27_0 check privateNormalize(that:lib) error Outer0.#stringParser(that:{'@stringU
   'privateNormalize
   })
-  Library record=using Outer0::SafeOperatorsAccess__28_0 check introspectLibraryReport(that:norm, path:Outer0.#stringParser(that:{'@stringU
+  Library record=using Outer0::SafeOperatorsAccess__27_0 check introspectLibraryReport(that:norm, path:Outer0.#stringParser(that:{'@stringU
   'Outer0
   })) error Outer0.#stringParser(that:{'@stringU
   'introspectLibraryReport
   })
-  using Outer0::SafeOperatorsAccess__28_0 check introspectLibraryDocAsString(that:record, path:Outer0.#stringParser(that:{'@stringU
+  using Outer0::SafeOperatorsAccess__27_0 check introspectLibraryDocAsString(that:record, path:Outer0.#stringParser(that:{'@stringU
   'AllAsString
   }), annotationN:Outer0.#numberParser(that:{'@stringU
   '0
@@ -46,7 +46,7 @@ Library #leftleft(Library that) (
   })
   Outer1::ExitCode.normal()
   )
-SafeOperatorsAccess__28_0:'@private
+SafeOperatorsAccess__27_0:'@private
 {'@plugin
 'L42.is/connected/withSafeOperators
 }

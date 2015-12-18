@@ -1,0 +1,107 @@
+{reuse L42.is/AdamTowel02
+
+GetSOrName:{
+  type method S(read Any that){
+    with that (
+      on Concept::ToS return that.toS()
+      on Concept::Classable return GetMyName(that.classAny())++S" instance"
+      default return S"instance not ToS or Classable"
+      )
+    }
+  }
+
+Invariant:{
+  InvariantFailure:Message::$[]<<{<:MetaGuard}
+  type method Bool isInvariant(Introspection::NestedClass that) {
+    interf=that.transitivelyImplementedInterfaces()
+    with ti in interf.vals() (
+      with tAny=ti.referencedPath().externalType() (
+        on type Concept::Invariant return Bool.true()
+        )
+      catch error (on Guard::Operation void)
+      void
+      )
+    return Bool.false()
+    }
+  type method
+  Library<<(Library that)
+  exception Default::DecorationUnfeasable{
+    i=Introspection(lib:that)
+    isInv=this.isInvariant(i)
+    if !isInv (return that)
+    state=i.state()
+    if state.isEmpty() (exception Default::DecorationUnfeasable"State is empty")
+    k=state.top()
+    if k.isPrivate() (exception Default::DecorationUnfeasable"State is private")
+    'for now, we should
+    'check state.pop() has all no arg methods
+    'check all ret.types are imm mdf
+    var checker={<:Concept::Invariant 
+      type method ' TODO:should not work on immutable objects only
+      Outer0 (Outer0 new) {
+        if !new.invariant() ( error InvariantFailure(text:S"invalid object detected "++GetSOrName(new) ))
+        return new
+        }
+      }
+    freshName=S"_1"' TODO: get a fresh name operator
+    kSel=k.selector()
+    freshSel=Selector.fromS( (
+      res=kSel.name()++freshName++S"("[
+        with n in kSel.names().vals() (n++S",")]")"
+      res.replace(S",)" into:S")")
+      ) )
+    checkerSel=Selector.fromS(freshName++S"(new)")
+    
+    checker:=Refactor::RenameSelector[Selector"(new)" of:Path"Outer0" to: checkerSel]<<checker
+    
+    checker:=Refactor::SumMethods[kSel of:Path"Outer0" to:checkerSel]<<Refactor.compose(left:that, right:checker)
+    
+      
+    checker:=Refactor::MakePrivateSelector[kSel of:Path"Outer0"]<<checker
+    checker:=Refactor::MakePrivateSelector[checkerSel of:Path"Outer0"]<<checker
+    checker:=Refactor::RenameSelector[freshSel of:Path"Outer0" to: kSel]<<checker
+    'Debug(Introspection(lib:checker).allAsString())
+      return checker
+    'tmp={type method mdf Outer0 k(args) }[rename k.selector() in fresh]+
+    '  {<:Concept::Invariant 
+    '  type method
+    '  mdf Outer0 (mdf Outer0 new) {
+    '  if !new.invariant() error ...
+    '  return new}
+    '  }[rename #apply(new) in k.selector()#]
+    ' sumMethod Outer0 fresh k.selector()#
+    'for  setters:
+    '{ mut method Void (Void fresh){
+    '  if !this.invariant() error ...
+    '  return fresh
+    '  }}
+    catch exception cnr(
+      on MetaGuard::MemberUnavailable error Assert::CodeNotReachable"Invariant1"(cnr)
+      on MetaGuard::MethodClash error Assert::CodeNotReachable"Invariant2"(cnr)
+      on MetaGuard::ParameterMismatch error Assert::CodeNotReachable"Invariant3"(cnr)
+      on MetaGuard::ClassClash error Assert::CodeNotReachable"Invariant4"(cnr)
+      )
+    }
+  }
+
+C:Invariant<<{a(N n)<:Concept::Invariant
+  method invariant() this.n()>10N
+  }
+Main:{
+  C c1=C.a(n:20N)
+  Debug(S"Ok 20")
+  C c2=C.a(n:5N)
+  Debug(S"Ok 5")
+  return ExitCode.failure()
+  catch error err (
+    on Invariant::InvariantFailure
+      return ExitCode.normal()
+    )
+  }
+' method Bool isConcrete() true iff all non state methods are implemented and
+' all the interface methods are implemented.
+}
+
+
+
+

@@ -43,6 +43,39 @@ public class TestRename {
           "{ method Void m() void}", "Outer0", "m()", "k()", "{ method Void k() void}", false //
           }, { //
           "{ method Void m() void method Outer0::m() mm() void}", "Outer0", "m()", "k()", "{ method Void k() void method Outer0::k() mm() void}", false //
+          }, { //
+            "{ method Void m() void method'@private\n Void mm() void}",
+            "Outer0", "m()", "mm()", 
+            "{method Void mm() void"
+            + " method '@private\n"
+            + "Void mm__0_0() void}", false //
+          }, { //
+         "{ type method '@private\n"
+            +" Outer0 a(Any n) \n"
+            +"   mut method '@private\n"
+            +"  Any #n() \n"
+            +"  read method '@private\n"
+            +"   Any n() \n"
+            +"  type method\n"
+            +"  Outer0 _1(Outer0 new)  new\n"
+            +"  type method \n"
+            +"  Outer0 a_1(Any n) Outer0._1(new:Outer0.a(n:n))}\n",
+            "Outer0", "a_1(n)", "a(n)", 
+            "{type method '@private\n"
+            +"Outer0 a__0_0(Any n__0_0)\n"
+            +"mut method '@private\n"
+            +"Any #n__0_0()\n"
+            +"read method '@private\n"
+            +"Any n__0_0()\n"
+            +"type method\n"
+            +"Outer0 _1(Outer0 new) new\n"
+            +"type method\n"
+            +"Outer0 a(Any n) Outer0._1(new:Outer0.a__0_0(n__0_0:n))}",false
+                      
+            
+            
+            
+            
           } });
     }
 

@@ -289,6 +289,8 @@ Library #leftleft(Library that) }}
 Refactor:{
 type method 
 Library compose(Library left, Library right) exception Outer1::MetaGuard::ClassClash, Outer1::MetaGuard::MethodClash 
+type method 
+Void checkTargetExists(Library that, Outer1::Path path) exception Outer1::MetaGuard::NestedClassUnavailable 
 Squares:'  toPutAs private
 {'findMeSquares
 
@@ -468,17 +470,23 @@ type method
 type Outer0 #begin() 
 method 
 Outer0 #end() }
-ExposeAsLibrary:{
+SumMethods:{
 type method 
-Outer0 #add(Outer2::Path that) 
+Outer0 #add(Outer2::Selector that, Outer2::Path of, Outer2::Selector to) 
 mut method 
-Outer2::Path #that() 
+Outer2::Selector #that() 
 read method 
-Outer2::Path that() 
+Outer2::Selector that() 
+mut method 
+Outer2::Path #of() 
+read method 
+Outer2::Path of() 
+mut method 
+Outer2::Selector #to() 
+read method 
+Outer2::Selector to() 
 method 
-Library #leftleft(Library that) exception Outer2::MetaGuard::NestedClassUnavailable, Outer2::MetaGuard::PrivacyCoupuled 
-method 
-Void checkTargetExists(Library that) exception Outer2::MetaGuard::MemberUnavailable 
+Library #leftleft(Library that) exception Outer2::MetaGuard::MemberUnavailable, Outer2::MetaGuard::MethodClash, Outer2::MetaGuard::ParameterMismatch 
 type method 
 type Outer0 #begin() 
 method 
@@ -1097,6 +1105,13 @@ Outer2::Bool #bangequal(Outer0 that)
 method 
 Outer2::Bool #equalequal(Outer0 that) }
 PrivacyCoupuled:{<:Outer1, Outer2::Guard, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
+type method 
+Outer0 #apply(Outer2::Introspection::Record record) 
+method 
+Outer2::Bool #bangequal(Outer0 that) 
+method 
+Outer2::Bool #equalequal(Outer0 that) }
+ParameterMismatch:{<:Outer1, Outer2::Guard, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
 type method 
 Outer0 #apply(Outer2::Introspection::Record record) 
 method 

@@ -32,6 +32,7 @@ import ast.ExpCore.ClassB.*;
 import ast.Expression.ClassReuse;
 import ast.Expression;
 import ast.Util.CachedStage;
+import ast.Util.InvalidMwtAsState;
 import coreVisitors.Dec;
 import coreVisitors.FreeVariables;
 import coreVisitors.From;
@@ -330,8 +331,8 @@ public static NormType forceNormType(Program p,ExpCore inner, Type preciseTOpt) 
   NormType preciseT=(NormType)preciseTOpt;
   return preciseT;
 }
-public static List<String> isAbstract(Program p, ClassB ct) {
-  List<String> details=coherent(p,ct);
+public static List<InvalidMwtAsState> isAbstract(Program p, ClassB ct) {
+  List<InvalidMwtAsState> details = coherent(p,ct);
   if(!details.isEmpty()){
 	  return details;
 	  }
@@ -341,29 +342,33 @@ public static List<String> isAbstract(Program p, ClassB ct) {
     NestedClass nc=(NestedClass)m;
     assert nc.getInner() instanceof ClassB;
     isAbstract(p.addAtTop(ct),(ClassB)nc.getInner()).stream()
-        .map(s->nc.getName()+"."+s).forEach(details::add);
+        .map(s->new InvalidMwtAsState(nc.getName()+"::"+s.getReason(),s.getMwt())).forEach(details::add);
   }
   return details;
 }
-public static List<String> coherent(Program p, ClassB ct) {
+public static List<InvalidMwtAsState> coherent(Program p, ClassB ct) {
   Program p1=p.addAtTop(ct);
   if( ct.isInterface()){ return Collections.emptyList();}
   List<MethodWithType> mwts= collectAbstractMethods(ct);
   if(mwts.isEmpty()){return Collections.emptyList();}
   List<MethodWithType> typeMethods=new ArrayList<>();
   for(MethodWithType mwt:mwts){if(mwt.getMt().getMdf()==Ast.Mdf.Type){typeMethods.add(mwt);}}
-  if(typeMethods.size()!=1){
-    return mwts.stream().map(m->m.getMs().toString()).collect(Collectors.toList());
+  if(typeMethods.size()>1){
+    return mwts.stream().map(m->new InvalidMwtAsState("More than one constructor candidate",m)).collect(Collectors.toList());
     }
+  if(typeMethods.size()==0){
+    return mwts.stream().map(m->new InvalidMwtAsState("No constructor candidate",m)).collect(Collectors.toList());
+    }
+  
   MethodWithType constr=typeMethods.get(0);
   mwts.remove(constr);
   constr=Norm.of(p1, constr,true);
   NormType retType=(NormType)constr.getMt().getReturnType();
   if(!retType.getPath().equals(Path.outer(0))){
-    return Collections.singletonList(constr.getMs().toString());
+    return Collections.singletonList(new InvalidMwtAsState(" return path must be Outer0",constr));
     }
   if(retType.getPh()!=Ph.None){
-    return Collections.singletonList(constr.getMs().toString()+" 'return type fwd invalid for constructor");
+    return Collections.singletonList(new InvalidMwtAsState(" return type fwd invalid for constructor",constr));
   }
   boolean mustBeLentRead=false;
   boolean canBeImmCaps=true;
@@ -375,12 +380,12 @@ public static List<String> coherent(Program p, ClassB ct) {
   Mdf retMdf=retType.getMdf();
   if(mustBeLentRead){
     if(retMdf!=Mdf.Lent && retMdf!=Mdf.Readable){
-      return Collections.singletonList(constr.getMs().toString()+" 'a field is lent/read, constructor result must be lent");
+      return Collections.singletonList(new InvalidMwtAsState(" a field is lent/read, constructor result must be lent",constr));
       }
   }
   if(!canBeImmCaps){
     if(retMdf==Mdf.Immutable || retMdf==Mdf.Capsule){
-      return Collections.singletonList(constr.getMs().toString()+" 'field shape prevent immutable/capsule constructor result");
+      return Collections.singletonList(new InvalidMwtAsState(" field shape prevent immutable/capsule constructor result",constr));
       }
   }
   //now we have a fully normalized constr
@@ -390,10 +395,10 @@ public static List<String> coherent(Program p, ClassB ct) {
     //select satisfying parameter
     NormType nt=selectCorrespondingFieldType(constr,  name);
     if(nt==null){
-      return Collections.singletonList(mwt.getMs().toString()+" 'Abstract method not a field of the constructor");
+      return Collections.singletonList(new InvalidMwtAsState(" Abstract method not a field of the constructor",mwt));
       }
     if(!coherent(p1, nt.getMdf(),nt.getPath(),mwt)){ 
-       return Collections.singletonList(mwt.getMs().toString()+" 'Abstract method has invalid shape to be part of the state");
+       return Collections.singletonList(new InvalidMwtAsState(" Abstract method has invalid shape to be part of the state",mwt));
       }
     }
   return Collections.emptyList();

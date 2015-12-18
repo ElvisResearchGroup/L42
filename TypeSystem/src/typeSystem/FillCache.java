@@ -20,6 +20,7 @@ import ast.ExpCore.ClassB.MethodImplemented;
 import ast.ExpCore.ClassB.MethodWithType;
 import ast.ExpCore.ClassB.NestedClass;
 import ast.Util.CachedStage;
+import ast.Util.InvalidMwtAsState;
 import ast.Util.PathMwt;
 import auxiliaryGrammar.Functions;
 import auxiliaryGrammar.Program;
@@ -207,7 +208,7 @@ public static boolean progress(List<CachedStage>again){
       if(cbi.getStage().getStage()==Stage.Less){return Stage.Less;}
       if(!IsCompiled.of(cbi)){return Stage.Less;}
     }
-    List<String> details = Functions.isAbstract(p,cb);
+     List<InvalidMwtAsState> details = Functions.isAbstract(p,cb);
     if(!details.isEmpty()){
       cb.getStage().setCoherent(details);
       return Stage.Plus;

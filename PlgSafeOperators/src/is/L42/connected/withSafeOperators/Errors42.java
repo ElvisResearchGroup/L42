@@ -64,9 +64,9 @@ public class Errors42 {
       "DifferentThisMdf",""+ !thisMdf,//if the modifier for "this" is different
       "IncompatibleException",""+!exc);//if they have an incompatible exception list
     }
-  //"ParameterTypeMismach" caused by sumMethod
-  static Error errorParameterMismach(List<String> pathForError, Member mta, Member mtb,  boolean par, boolean mdf,boolean parNames) {
-      return Resources.Error.multiPartStringError("ParameterMismach",
+  //"ParameterMismatch" caused by sumMethod
+  static Error errorParameterMismatch(List<String> pathForError, Member mta, Member mtb,  boolean par, boolean mdf,boolean parNames) {
+      return Resources.Error.multiPartStringError("ParameterMismatch",
        "Path",formatPathIn(pathForError),//the path of the clash (that own  the method), in the rename is the path of the destination clash
       "Left",sugarVisitors.ToFormattedText.of(mta).replace("\n","").trim(),//implementation dependend print of the left and right methods
       "Right",sugarVisitors.ToFormattedText.of(mtb).replace("\n","").trim(),
@@ -137,6 +137,12 @@ public class Errors42 {
      "Prefix",""+shorter,
      "Clashing",""+longer);}
 
+  
+  //"InvalidOnMember", caused by pop if there is more then one nested class
+  static Error errorInvalidOnMember(Doc doc) {
+    return Resources.Error.multiPartStringError("InvalidOnMember",
+        "Doc",doc);
+  }
   //"AmbiguousPop", caused by pop if there is more then one nested class
   static Error errorAmbiguousPop(ClassB cb) {
     return Resources.Error.multiPartStringError("AmbiguousPop",
@@ -208,8 +214,8 @@ public class Errors42 {
         );
   }
   static Doc formatPathIn(List<String> path){
-    if(path.isEmpty()){return Doc.factory(Path.outer(0));}
-    return Doc.factory("@::"+String.join("::", path));
+    //if(path.isEmpty()){return Doc.factory(Path.outer(0));}
+    return Doc.factory("@::"+String.join("::", path)+" ");
   }
   static Doc formatPathOut(Path path){
     if(path.isPrimitive()){return Doc.factory(path);}

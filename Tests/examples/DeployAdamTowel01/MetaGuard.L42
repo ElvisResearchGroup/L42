@@ -2,11 +2,13 @@
   
  RecordWrapper:'@private
     {
+    type method Library recordWrapperToSTrait(){<:MetaGuard 
+      method toS() Outer0.myName()    
+      }
     type method Library recordWrapperTrait(){<:MetaGuard
       method kind() Outer0.myName()
       method text() S""
       method responseOf() Message::Opt()
-      method toS() Outer0.myName()    
       method myName()GetMyName(Outer0)
       method equals(that){
         with that (on Outer0 return this==that)
@@ -18,8 +20,13 @@
       method Bool != (Outer0 that) !(this==that)
       method Bool == (Outer0 that) Message::EqualMessages(this,other:that)
       }
-    type method Library <<(Library that) 
-      SafeOperatorsAccess.compose(left:that,right:Outer0.recordWrapperTrait())
+    type method Library <<(Library that) (
+      res=SafeOperatorsAccess.compose(left:that,right:Outer0.recordWrapperTrait())
+        {
+        return SafeOperatorsAccess.compose(left:res,right:Outer0.recordWrapperToSTrait())
+        catch error (on Library return res)
+        }
+      )
     }
 SourceUnfit:RecordWrapper<<{}
 IncoherentRedirectMapping:RecordWrapper<<{}
@@ -27,6 +34,8 @@ ClassClash:RecordWrapper<<{}
 MethodClash:RecordWrapper<<{}
 InvalidOnTopLevel:RecordWrapper<<{}
 PrivacyCoupuled:RecordWrapper<<{}
+ParameterMismatch:RecordWrapper<<{}
+
 MemberUnavailable:{interface<:MetaGuard}
 DispatchMemberUnavailable:{
 type method MemberUnavailable(Library that){
@@ -44,11 +53,13 @@ type method MemberUnavailable(Library that){
   }
 }
 NestedClassUnavailable:RecordWrapper<<{(Path path,Bool isPrivate)<:MemberUnavailable
+  method toS() Outer0.myName()++S"[path:"[this.path()]",isPrivate:"[this.isPrivate()]"]"
   type method Outer0 (Introspection::Record record) 
-    Outer0(path:Path.fromS(record"Path"),isPrivate:Bool.fromS(record"IsPrivate"))
+    Outer0(path:Path.fromDocInternalizedS(record"Path"),isPrivate:Bool.fromS(record"IsPrivate"))
   }
 MethodUnavailable:RecordWrapper<<{(Path path,Selector selector,Bool isPrivate)<:MemberUnavailable
+  method toS() Outer0.myName()++S"[path:"[this.path()]", selector:"[this.selector()]",isPrivate:"[this.isPrivate()]"]"
   type method Outer0 (Introspection::Record record) 
-    Outer0(path:Path.fromS(record"Path"),selector:Selector.fromS(record"Selector"),isPrivate:Bool.fromS(record"IsPrivate"))
+    Outer0(path:Path.fromDocInternalizedS(record"Path"),selector:Selector.fromS(record"Selector"),isPrivate:Bool.fromS(record"IsPrivate"))
   }
 }

@@ -10,6 +10,14 @@
         case x== S"MethodClash"  (exception MetaGuard::MethodClash(record:record))
         default error err)))
     }
+  type method
+  Void checkTargetExists(Library that,Path path) exception MetaGuard::NestedClassUnavailable (
+    unused=AddDocumentationPath[path doc:Introspection::Doc"JustToSeeIfItIsThere"]<<that
+    catch exception x (
+      on MetaGuard::InvalidOnTopLevel error Assert::CodeNotReachable"Refactor4" 'TODO: if you omit Assert:: the error reporting is horrible
+      )
+    void
+    )
     
   Squares:'  toPutAs private
     {'findMeSquares
@@ -137,40 +145,26 @@
       AddDocumentationPath[this.that(),doc:Introspection::Doc.#stringParser({'@private
         })]<<that'string parser works, but we can not use the sugar, that would add @stringU
     }
-  MakePrivateSelector:Squares<<{#add(Selector that, Path of,)
+  MakePrivateSelector:Squares<<{#add(Selector that, Path of)
     method
     Library << (Library that)exception MetaGuard::MemberUnavailable
       AddDocumentationSelector[this.that() of:this.of() doc:Introspection::Doc.#stringParser({'@private
         })]<<that
     }
-  ExposeAsLibrary:Squares<<{#add(Path that)
+  
+  SumMethods:Squares<<{#add(Selector that, Path of, Selector to)
     method
-    Library << (Library that)exception MetaGuard::NestedClassUnavailable,MetaGuard::PrivacyCoupuled {
-      if this.that()==Path"Outer0" (return that)
-      this.checkTargetExists(that)'throws MemberUnavailable
-      var res=that
-      res:=RenamePath[Path"Outer0" to:Path"PrImpl"]<<res'MemberUnavailable,MethodClash,ClassClash can not happen on Outer0
-      catch exception (on MetaGuard error Assert::CodeNotReachable"Refactor1")
-      res:=RenamePath[Path"PrImpl::N" to:Path"BNS::N"]<<res
-      res:=RenamePath[Path"PrImpl::S" to:Path"BNS::S"]<<res'fails here
-      res:=RenamePath[Path"PrImpl::Bool" to:Path"BNS::Bool"]<<res
-      res:=RenamePath[Path"PrImpl::Debug" to:Path"BNS::Debug"]<<res
-      catch exception r (on MetaGuard error Assert::CodeNotReachable"Was NSB missing, to refactor for new load")
-      res:=RemoveImplementationPath[Path"BNS"]<<res'leak PrivacyCoupuled
-      catch exception (on MetaGuard::MemberUnavailable error Assert::CodeNotReachable"Refactor2")
-      res:=RenamePath[Path"PrImpl"++this.that() to:Path"Outer0"]<<res
-      res:=RenamePath[Path"BNS" to:Path"Outer0"]<<res
-      res:=MakePrivatePath[Path"PrImpl"]<<res
-      catch exception (on MetaGuard error Assert::CodeNotReachable"Refactor3")
-      return res
+    Library << (Library that)exception MetaGuard::MemberUnavailable,MetaGuard::MethodClash, MetaGuard::ParameterMismatch{
+      return SafeOperators.sumMethods(that,path:this.of() src:this.that(),dest:this.to())
+      catch error err (on Library (
+        record=Introspection::Record(lib:err)
+        with x=record"Kind" (
+          case x== S"MemberUnavailable"  (exception MetaGuard::DispatchMemberUnavailable(err))
+          case x== S"MethodClash"  (exception MetaGuard::MethodClash(record:record))
+          case x== S"ParameterMismatch"  (exception MetaGuard::ParameterMismatch(record:record))
+          default error err)))
       }
-    method
-    Void checkTargetExists(Library that) exception MetaGuard::MemberUnavailable (
-      unused=AddDocumentationPath[this.that() doc:Introspection::Doc"JustToSeeIfItIsThere"]<<that
-      catch exception x (
-        on MetaGuard::InvalidOnTopLevel error Assert::CodeNotReachable"Refactor4" 'TODO: if you omit Guard:: the error reporting is horrible
-        )
-      void
-      )
     }
+    
+  
 }

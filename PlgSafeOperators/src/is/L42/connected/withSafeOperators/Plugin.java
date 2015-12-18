@@ -60,6 +60,14 @@ public class Plugin implements PluginType{
        MethodSelector dest = MethodSelector.parse(ensureExtractStringU(_dest));
       return Rename.renameMethod(Resources.getP(),that,path,src,dest);
       }
+    @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+    public Object MsumMethods£xthat£xpath£xsrc£xdest(Object _that,Object _path,Object _src,Object _dest){
+      ClassB that=ensureExtractClassB(_that);
+      List<String> path=Path.parseValidCs(ensureExtractStringU(_path));
+       MethodSelector src = MethodSelector.parse(ensureExtractStringU(_src));
+       MethodSelector dest = MethodSelector.parse(ensureExtractStringU(_dest));
+      return SumMethods.sumMethods(that,path,src,dest);
+      }
     @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.TypeAny})
     public Object Mredirect£xthat£xsrc£xdest(Object _that,Object _src,Object _dest){
       ClassB that=ensureExtractClassB(_that);
@@ -96,7 +104,7 @@ public class Plugin implements PluginType{
       ClassB that=ensureExtractClassB(_that);
       List<String> path=Path.parseValidCs(ensureExtractStringU(_path));
       Doc doc=ensureExtractDoc(_doc);
-      return AddDocumentation.addDocumentationOnNestedClass(that,path,doc);
+      return AddDocumentation.addDocumentationOnNestedClass(Resources.getP(),that,path,doc);
       }
     @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
     public Object MaddDocumentation£xthat£xpath£xselector£xdoc(Object _that,Object _path,Object _sel,Object _doc){
@@ -104,7 +112,7 @@ public class Plugin implements PluginType{
       List<String> path=Path.parseValidCs(ensureExtractStringU(_path));
       MethodSelector sel = MethodSelector.parse(ensureExtractStringU(_sel));
       Doc doc=ensureExtractDoc(_doc);
-      return AddDocumentation.addDocumentationOnMethod(that,path,sel,doc);
+      return AddDocumentation.addDocumentationOnMethod(Resources.getP(),that,path,sel,doc);
       }
     
     @ActionType({ActionType.Type.Library,ActionType.Type.Library})
