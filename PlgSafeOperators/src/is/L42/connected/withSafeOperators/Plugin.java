@@ -25,6 +25,7 @@ import auxiliaryGrammar.Norm;
 import auxiliaryGrammar.Program;
 import coreVisitors.CloneVisitorWithProgram;
 import facade.Configuration;
+import facade.L42;
 import platformSpecific.fakeInternet.ActionType;
 import platformSpecific.fakeInternet.PluginType;
 import platformSpecific.javaTranslation.Resources;
@@ -237,4 +238,13 @@ public class Plugin implements PluginType{
       //if(that.getStage().isPrivateNormalized()){return that;}
       return NormalizePrivates.normalize(Resources.getP(),that);
     }
+    
+    @ActionType({ActionType.Type.Library,ActionType.Type.Library})
+    public  Object MfreshName£xthat(Object _s){
+      String name=ensureExtractStringU(_s);
+      return Functions.freshName(name,L42.usedNames);
+      //good for both selectors and class names
+      //good for current operators, but for tomorrow ones?
+    }
+
   }

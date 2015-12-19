@@ -43,7 +43,19 @@ public class TestBase01 {
   public  void _01_01UseAdamTowel01() throws Throwable{
     TestHelper.configureForTest();
     L42.main(new String[]{"examples/testsForAdamTowel01/UseAdamTowel01.L42"});
-    Assert.assertEquals(L42.record.toString(),"FreeTemplate\nFreeTemplate\nHello Adam 0\nazz\nbzz\nczz\nHello Adam n1:0 n2:false endOfString\n");
+    Assert.assertEquals(L42.record.toString(),
+        "FreeTemplate\n"
+        + "FreeTemplate\n"
+        + "Hello Adam 0\n"
+        + "azz\nbzz\nczz\n"
+        + "foo(azz,bzz,czz)\n"
+        + "foo0(azz,bzz,czz)\n"
+        +"A\nB\nC\n"
+        +"A::B::C\n"
+        +"A::B::C0\n"
+        +"Fresh\n"
+        +"Fresh0\n"
+        + "Hello Adam n1:0 n2:false endOfString\n");
     }
  
  @Test

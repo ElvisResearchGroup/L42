@@ -13,6 +13,15 @@ Main:{
 
   selector=Selector"foo(azz,bzz,czz)"
   with s in selector.names().vals() (Debug(s))
+  Debug(Selector.fresh(selector))
+  Debug(Selector.fresh(selector))
+  path=Path"A::B::C"
+  with n in path.names().vals() (Debug(n))
+  Debug(Path.fresh(path:path))
+  Debug(Path.fresh(path:path))
+  Debug(Path.fresh())
+  Debug(Path.fresh(path:Path"Outer0"))
+  
   Debug(S"Hello Adam n1:"[0N]" n2:"[Bool.false()]" endOfString" )
   return ExitCode.normal()
   }

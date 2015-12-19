@@ -43,4 +43,35 @@
       this.toS()[S"::";that]"".binaryRepr()
       )
     }
+  method
+  Strings names(){
+    var str=this.toS()
+    if str==S"Outer0" (return Strings[])
+    str++=S"::"
+    var result=Strings[]
+    while str!=S"" (
+      pos=str.firstIndexOf(S"::")
+      result:=result.#add(str(end:pos))
+      str:=str(start:pos+2N)
+      )
+    return result.#end()
+    }
+  type method
+  Path fresh(S name)
+    Path.fromS(SafeOperators.freshName(name))
+  
+  type method
+  Path fresh()
+    this.fresh(name:S"Fresh")
+    
+  type method
+  Path fresh(Path path){
+    names=path.names().#end()
+    if names.isEmpty() (return this.fresh())
+    Path last=this.fresh(name:names.top())
+    var Path acc=Path"Outer0"
+    with n in names.pop().#end().vals() (acc++=Path.fromS(n))
+    acc++=last
+    return acc
+    }
   }

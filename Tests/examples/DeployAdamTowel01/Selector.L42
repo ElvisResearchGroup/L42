@@ -50,6 +50,17 @@
       )
     return result.#end()'reverse the linked list
   }
+  
+  type method
+  Selector fresh(Selector that) {
+    fName=SafeOperators.freshName(that.name())
+    var tot=fName++S"("
+    with n in that.names().vals() (
+      tot++=n++S","
+      )
+    tot:=tot(start:0N end:tot.size()-1N)++S")"
+    return Selector.fromS(tot)
+    }
   'we still need to add check validity, and fields name, list parameters, bool isOperator
   'and ways to add/remove parameters
   }
