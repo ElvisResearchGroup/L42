@@ -84,6 +84,76 @@ public static class TestAbstractMeth {//add more test for error cases
 }
 
 @RunWith(Parameterized.class)
+public static class TestMoveMeth {//add more test for error cases
+  @Parameter(0) public int _lineNumber;
+  @Parameter(1) public String _cb1;
+  @Parameter(2) public String _path;
+  @Parameter(3) public String _ms1;
+  @Parameter(4) public String _ms2;
+  @Parameter(5) public String _expected;
+  @Parameter(6) public boolean isError;
+  @Parameterized.Parameters
+  public static List<Object[]> createData() {
+    return Arrays.asList(new Object[][] {
+    {lineNumber(),//
+      "{B:{ method Void m() void}}","B","m()","k()","{B:{ method Void m() method Void k() void}}",false
+  },{lineNumber(),//
+    "{B:{ method Void m(Any x) }}","B","m(x)","k(x)","{B:{ method Void m(Any x) method Void k(Any x)}}",false
+  },{lineNumber(),//
+    "{ method Void m(Any x) void}","Outer0","m(x)","k(x)","{ method Void m(Any x) method Void k(Any x) void}",false
+  },{lineNumber(),//
+    "{C:{B:{ method Void m(Any x) }}}","C::B","m(x)","k(x)","{C:{B:{ method Void m(Any x) method Void k(Any x)}}}",false
+  },{
+    lineNumber(),//
+    "{ method Void m()}","Outer0","m()","k(x)",
+    "    {Kind:{'@stringU\n"+
+        "      'MethodClash\n"+
+        "    }Path:{'@::\n"+
+        "    }Left:{'@stringU\n"+
+        "      'method Void m()\n"+
+        "    }Right:{'@stringU\n"+
+        "      'method Void k(Void x)\n"+
+        "    }LeftKind:{'@stringU\n"+
+        "      'AbstractMethod\n"+
+        "    }RightKind:{'@stringU\n"+
+        "      'AbstractMethod\n"+
+        "    }DifferentParameters:{'@stringU\n"+
+        "      '[0]\n"+
+        "    }DifferentReturnType:{'@stringU\n"+
+        "      'false\n"+
+        "    }DifferentThisMdf:{'@stringU\n"+
+        "      'false\n"+
+        "    }IncompatibleException:{'@stringU\n"+
+        "      'false\n"+
+            "}}"
+    ,true
+}});}
+@Test  public void test() {
+  TestHelper.configureForTest();
+  ClassB cb1=getClassB(_cb1);
+  Path path=Path.parse(_path);
+  MethodSelector ms1=MethodSelector.parse(_ms1);
+  assert ms1!=null;
+  MethodSelector ms2=MethodSelector.parse(_ms2);
+  assert ms2!=null;
+  ClassB expected=getClassB(_expected);
+  if(!isError){
+    //TODO: mettere tests per il caso con un selettore destinazione. In particolare testare interfacce
+    ClassB res=Abstract.toAbstract(Program.empty(),cb1, path.getCBar(), ms1,ms2);
+    res=Functions.clearCache(res,Stage.None);
+    TestHelper.assertEqualExp(expected,res);
+    }
+  else{
+    try{Abstract.toAbstract(Program.empty(),cb1, path.getCBar(), ms1,ms2);fail("error expected");}
+    catch(Resources.Error err){
+      ClassB res=(ClassB)err.unbox;
+      TestHelper.assertEqualExp(expected,res);
+    }
+  }
+}
+}
+
+@RunWith(Parameterized.class)
 public static class TestAbstractClass {//add more test for error cases
   @Parameter(0) public int _lineNumber;
   @Parameter(1) public String _cb1;

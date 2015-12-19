@@ -75,6 +75,7 @@ public class Abstract {
     //create new class
     if(newSel==null){ return cb.withMs(newMs);  }
     MethodWithType mwt1 = p.extractMwt(sel, cb).get();
+    if(newSel!=null){Errors42.checkCompatibleMs(pathForError, mwt1, newSel);}
     Optional<MethodWithType> mwt2 = p.extractMwt(newSel, cb);
     mwt1=mwt1.withMs(newSel).withDoc(Doc.empty());
     if(mwt2.isPresent()){

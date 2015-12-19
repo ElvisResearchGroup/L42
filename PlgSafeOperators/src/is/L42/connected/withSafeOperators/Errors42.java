@@ -4,6 +4,8 @@ import is.L42.connected.withSafeOperators.ExtractInfo.ClassKind;
 import is.L42.connected.withSafeOperators.ExtractInfo.IsUsed;
 
 import tools.Assertions;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -12,8 +14,11 @@ import platformSpecific.javaTranslation.Resources;
 import platformSpecific.javaTranslation.Resources.Error;
 import sugarVisitors.ToFormattedText;
 import ast.Ast.Doc;
+import ast.Ast.Mdf;
 import ast.Ast.MethodSelector;
 import ast.Ast.Path;
+import ast.Ast.Ph;
+import ast.Ast.Type;
 import ast.ErrorMessage;
 import ast.ErrorMessage.PathNonExistant;
 import ast.ExpCore;
@@ -52,7 +57,7 @@ public class Errors42 {
         );
   }
   //"MethodClash" caused by sum, renameMethod, renameClassStrict, renameClass
-  static Error errorMethodClash(List<String> pathForError, Member mta, Member mtb, boolean exc, List<Integer> pars, boolean retType, boolean thisMdf,boolean rightIsInterfaceAbstract) {
+  static Error errorMethodClash(List<String> pathForError, Member mta, Member mtb, boolean excOk, List<Integer> pars, boolean retType, boolean thisMdf,boolean rightIsInterfaceAbstract) {
       return Resources.Error.multiPartStringError("MethodClash",
       "Path",formatPathIn(pathForError),//the path of the clash (that own  the method), in the rename is the path of the destination clash
       "Left",sugarVisitors.ToFormattedText.of(mta).replace("\n","").trim(),//implementation dependend print of the left and right methods
@@ -62,7 +67,7 @@ public class Errors42 {
       "DifferentParameters",""+ pars,//number of parameters with different types
       "DifferentReturnType",""+ !retType,//if the return types are different
       "DifferentThisMdf",""+ !thisMdf,//if the modifier for "this" is different
-      "IncompatibleException",""+!exc);//if they have an incompatible exception list
+      "IncompatibleException",""+!excOk);//if they have an incompatible exception list
     }
   //"ParameterMismatch" caused by sumMethod
   static Error errorParameterMismatch(List<String> pathForError, Member mta, Member mtb,  boolean par, boolean mdf,boolean parNames) {
@@ -215,7 +220,7 @@ public class Errors42 {
   }
   static Doc formatPathIn(List<String> path){
     //if(path.isEmpty()){return Doc.factory(Path.outer(0));}
-    return Doc.factory("@::"+String.join("::", path)+" ");
+    return Doc.factory("@::"+String.join("::", path));
   }
   static Doc formatPathOut(Path path){
     if(path.isPrimitive()){return Doc.factory(path);}
@@ -226,5 +231,27 @@ public class Errors42 {
     if(path.isPrimitive()){return Doc.factory(path);}
     if(path.outerNumber()==0){return formatPathIn(path.getCBar());}
     return formatPathOut(path);
+  }
+  public static void checkCompatibleMs(List<String> pathForError,MethodWithType mem, MethodSelector dest) {
+    int sizeA = mem.getMs().getNames().size();
+    int sizeB = dest.getNames().size();
+    if(sizeA==sizeB){return;}
+    List<Integer> parsWrong=new ArrayList<>();
+    int min=Math.min(sizeA,sizeB);
+    int max=Math.max(sizeA,sizeB);
+    for(int i=min;i<max;i++){parsWrong.add(i);}
+    List<Type> ts = new ArrayList<>(mem.getMt().getTs());
+    List<Doc> tsd = new ArrayList<>(mem.getMt().getTDocs());
+    for(int i=sizeA;i<sizeB;i++){
+      ts.add(new ast.Ast.NormType(Mdf.Immutable,Path.Void(),Ph.None));
+      tsd.add(Doc.empty());
+      }
+    if(sizeA>sizeB){
+      ts=ts.subList(0, sizeB);
+      tsd=tsd.subList(0, sizeB);
+    }
+    MethodWithType memb = mem.withMs(dest).withMt(mem.getMt().withTs(ts).withTDocs(tsd));
+    throw errorMethodClash(pathForError, mem,memb, true, parsWrong,true, true, false);
+    
   }
 }

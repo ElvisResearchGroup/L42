@@ -235,8 +235,15 @@ public class ExtractInfo {
 */
   static List<Integer> isParTypeOk(MethodWithType mta, MethodWithType mtb) {
     List<Integer>res=new ArrayList<>();
-    for(int i=0;i<mta.getMt().getTs().size();i++){
-      if(!mta.getMt().getTs().get(i).equals(mtb.getMt().getTs().get(i))){res.add(i);}
+    int maxLen=Math.max(mta.getMt().getTs().size(),mtb.getMt().getTs().size());
+    for(int i=0;i<maxLen;i++){
+      Type ta;
+      Type tb;
+      try{
+        ta = mta.getMt().getTs().get(i);
+        tb=mtb.getMt().getTs().get(i);
+      }catch(ArrayIndexOutOfBoundsException out){res.add(i);continue;}
+      if(!ta.equals(tb)){res.add(i);}
     }
     return res;
   }

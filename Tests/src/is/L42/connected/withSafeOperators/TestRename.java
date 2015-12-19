@@ -72,7 +72,39 @@ public class TestRename {
             +"type method\n"
             +"Outer0 a(Any n) Outer0._1(new:Outer0.a__0_0(n__0_0:n))}",false
                       
-            
+          }, { //
+          "{ method Void m() void}", "Outer0", "m()", "k(x)", 
+"{ Kind:{'@stringU\n"+
+"'MethodClash\n"+
+"}\n"+
+"Path:{'@::\n"+ 
+"}\n"+
+"Left:{'@stringU\n"+
+"'method Void m() void\n"+
+"}\n"+
+"Right:{'@stringU\n"+
+"'method Void k(Void x) void\n"+
+"}\n"+
+"LeftKind:{'@stringU\n"+
+"'ImplementedMethod\n"+
+"}\n"+
+"RightKind:{'@stringU\n"+
+"'ImplementedMethod\n"+
+"}\n"+
+"DifferentParameters:{'@stringU\n"+
+"'[0]\n"+
+"}\n"+
+"DifferentReturnType:{'@stringU\n"+
+"'false\n"+
+"}\n"+
+"DifferentThisMdf:{'@stringU\n"+
+"'false\n"+
+"}\n"+
+"IncompatibleException:{'@stringU\n"+
+"'false\n"+
+"}}",
+          true //
+       
             
             
             

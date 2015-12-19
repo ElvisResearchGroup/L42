@@ -85,6 +85,7 @@ public class Rename {
   public static ClassB renameMethod(Program p,ClassB cb,List<String> path,MethodSelector src,MethodSelector dest){
       Member mem=Errors42.checkExistsPathMethod(cb, path, Optional.of(src));
       assert mem instanceof MethodWithType;
+      Errors42.checkCompatibleMs(path,(MethodWithType)mem,dest);
       cb=NormalizePrivates.normalize(p, cb);
       CollectedLocatorsMap maps=CollectedLocatorsMap.from(Path.outer(0,path),(MethodWithType) mem,dest);
       RenameAlsoDefinition ren=new RenameAlsoDefinition(cb, maps,p);
