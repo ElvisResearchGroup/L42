@@ -153,44 +153,7 @@ Patch:{'no, remove metaguard entirelly, make methClash and co as
 '    }
 'make [] works for Message messages
   }
-PostAct:{(Selector that,Path of,  Library action,Selector deprecated)
-  InvalidAction:Message::$[]<<{<:MetaGuard}
-  type method
-  Library <<(Library that){
-    origin=this.that()
-    dest=this.deprecated()
-    p=this.of()
-    a=Action(path:p,proposedAction:this.action())
-    var acc=that
-    acc:=Refactor::MoveImplementationSelector[
-      origin of:p to:dest]<<acc
-    acc:=Refactor.compose(left:acc,right:a.action())
-    acc:=Refactor::SumMethod[dest and:a.fresh() of:p to: origin]<<acc
-    catch exception parm( on MetaGuard::ParameterMismatch
-          error InvalidAction"Action type signature do not fit with.. PostAct::Action0"(parm) )
-    acc:=Refactor::MakePrivateSelector[a.fresh() of:p]<<acc
-    return acc
-    'throws shortcuts: return { return }  exception errorOn/exceptionOn
-    ' on Metaguard, Guard error e
-    ' exceptionOn Metaguard InvalidAction"YEP"
-    catch exception cnr( on MetaGuard
-          error Assert::CodeNotReachable"PostAct::Action0"(cnr) )
-    }
-    Action:{(Selector fresh,Library action)
-      type method Outer0 (Path path,Library proposedAction){
-        fresh=Selector.fresh(Selector"(that)")
-        'add verification over action
-        'a single implemented method called "(that)" must be present.
-        ' type T->T
-        action=Refactor::RenameSelector[
-          Selector"(that)"
-          of: path
-          to: that
-          ]<<proposedAction
-        catch exception cnr( on MetaGuard
-          error Assert::CodeNotReachable"PostAct::Action0"(cnr) )
-        return Outer0(fresh:fresh,action:action)
-      }
+
   }
 
 

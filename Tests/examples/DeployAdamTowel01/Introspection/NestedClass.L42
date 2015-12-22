@@ -44,7 +44,9 @@ method type Any externalType(){
     )
   with mirror=this.mirror() (
     on MirrorPr::Class return mirror.lib()
-    on MirrorPr::Lib error Guard::Operation"NestedClass.externalType() The NestedClass Object is unbound"
+    on MirrorPr::Lib 
+      error Guard::Operation
+        "NestedClass.externalType() The NestedClass Object is unbound"
     default error Assert::CodeNotReachable"NestedClass1"
     )
   }

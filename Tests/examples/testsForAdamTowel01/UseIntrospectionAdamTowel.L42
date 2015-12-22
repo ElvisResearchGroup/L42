@@ -2,7 +2,7 @@
 
 Main:{
 
-  i=Introspection(lib:{Bar:{method Void foo()} Beer:{}},path:Path"Bar")
+  i=Introspection(lib:{Bar:{method Void foo(Void par1 Any par2)} Beer:{}},path:Path"Bar")
   Debug(S"classkind of Bar is "++i.classKind())
   Debug(S"Bas as string: "++i.allAsString())
   Debug(S"--------------------------")
@@ -15,6 +15,9 @@ Main:{
    Debug(S"selector is: "[m.selector()]"")
    ti=m.returnType()
    Debug(S"return type is:"[ti]"")
+   with parT in m.parameterTypes().vals() (
+     Debug(S"parameter type is:"[parT]"")  
+     )
    'ti.record().dbg()
    )
   Debug(S"--------------------------")

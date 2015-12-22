@@ -58,7 +58,9 @@
   
   type method
   Selector fresh(Selector that) {
-    fName=SafeOperators.freshName(that.name())
+    var name=that.name()
+    if name==S"" (name:= S"fresh")
+    fName=SafeOperators.freshName(name)
     var tot=fName++S"("
     with n in that.names().vals() (
       tot++=n++S","

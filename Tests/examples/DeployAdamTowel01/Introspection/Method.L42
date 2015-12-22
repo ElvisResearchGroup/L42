@@ -60,13 +60,13 @@ Types parameterTypes() {
   var result=Types[]
   var pN=1N
   while Bool.true() (' to be able to break
-    Type ti=this.root().record().that()
-      .introspectReportType(root:this.root(),'TODO: no, we need a mirror?
+    Type ti=this.root().mirror()
+      .introspectReportType(root:this.root(),
       path:this.pathFromRoot(),memberN:this.memberN(),typeN:pN)
     result:=result.#add(ti)
     pN+=1N
     )
-  return result
+  return result.#end()
   catch exception err (on MetaGuard::MemberUnavailable error Assert::CodeNotReachable"Method2"(err))
   }
 
