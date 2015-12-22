@@ -347,7 +347,7 @@ public static List<InvalidMwtAsState> isAbstract(Program p, ClassB ct) {
   return details;
 }
 public static List<InvalidMwtAsState> coherent(Program p, ClassB ct) {
-  Program p1=p.addAtTop(ct);
+  Program p1=p.addAtTop(ct);//was designed to give 1 error, now must give full list
   if( ct.isInterface()){ return Collections.emptyList();}
   List<MethodWithType> mwts= collectAbstractMethods(ct);
   if(mwts.isEmpty()){return Collections.emptyList();}
@@ -372,6 +372,7 @@ public static List<InvalidMwtAsState> coherent(Program p, ClassB ct) {
   }
   boolean mustBeLentRead=false;
   boolean canBeImmCaps=true;
+  List<InvalidMwtAsState> result=new ArrayList<>();
   for(Type t:constr.getMt().getTs()){
     Mdf tMdf=((NormType)t).getMdf();
     if(tMdf!=Mdf.Capsule && tMdf!=Mdf.Immutable  && tMdf!=Mdf.Type){canBeImmCaps=false;}
@@ -380,12 +381,12 @@ public static List<InvalidMwtAsState> coherent(Program p, ClassB ct) {
   Mdf retMdf=retType.getMdf();
   if(mustBeLentRead){
     if(retMdf!=Mdf.Lent && retMdf!=Mdf.Readable){
-      return Collections.singletonList(new InvalidMwtAsState(" a field is lent/read, constructor result must be lent",constr));
+      result.add(new InvalidMwtAsState(" a field is lent/read, constructor result must be lent",constr));
       }
   }
   if(!canBeImmCaps){
     if(retMdf==Mdf.Immutable || retMdf==Mdf.Capsule){
-      return Collections.singletonList(new InvalidMwtAsState(" field shape prevent immutable/capsule constructor result",constr));
+      result.add(new InvalidMwtAsState(" field shape prevent immutable/capsule constructor result",constr));
       }
   }
   //now we have a fully normalized constr
@@ -395,13 +396,13 @@ public static List<InvalidMwtAsState> coherent(Program p, ClassB ct) {
     //select satisfying parameter
     NormType nt=selectCorrespondingFieldType(constr,  name);
     if(nt==null){
-      return Collections.singletonList(new InvalidMwtAsState(" Abstract method not a field of the constructor",mwt));
+      result.add(new InvalidMwtAsState(" Abstract method not a field of the constructor",mwt));
       }
-    if(!coherent(p1, nt.getMdf(),nt.getPath(),mwt)){ 
-       return Collections.singletonList(new InvalidMwtAsState(" Abstract method has invalid shape to be part of the state",mwt));
+    else if(!coherent(p1, nt.getMdf(),nt.getPath(),mwt)){ 
+      result.add(new InvalidMwtAsState(" Abstract method has invalid shape to be part of the state",mwt));
       }
     }
-  return Collections.emptyList();
+  return result;
   }
 /**null if no corresponding field is found*/
 private static NormType selectCorrespondingFieldType(MethodWithType constr, String name) {

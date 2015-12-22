@@ -61,13 +61,14 @@ public class Plugin implements PluginType{
        MethodSelector dest = MethodSelector.parse(ensureExtractStringU(_dest));
       return Rename.renameMethod(Resources.getP(),that,path,src,dest);
       }
-    @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
-    public Object MsumMethods£xthat£xpath£xsrc£xdest(Object _that,Object _path,Object _src,Object _dest){
+    @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+    public Object MsumMethods£xthat£xpath£xsrc1£xsrc2£xdest(Object _that,Object _path,Object _src1,Object _src2,Object _dest){
       ClassB that=ensureExtractClassB(_that);
       List<String> path=Path.parseValidCs(ensureExtractStringU(_path));
-       MethodSelector src = MethodSelector.parse(ensureExtractStringU(_src));
+       MethodSelector src1 = MethodSelector.parse(ensureExtractStringU(_src1));
+       MethodSelector src2 = MethodSelector.parse(ensureExtractStringU(_src2));
        MethodSelector dest = MethodSelector.parse(ensureExtractStringU(_dest));
-      return SumMethods.sumMethods(that,path,src,dest);
+      return SumMethods.sumMethods(that,path,src1,src2,dest);
       }
     @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.TypeAny})
     public Object Mredirect£xthat£xsrc£xdest(Object _that,Object _src,Object _dest){
@@ -125,15 +126,17 @@ public class Plugin implements PluginType{
     public  Resources.Void MifInvalidDo£xselector(Object _selector){
       String s=ensureExtractStringU(_selector);
      try{Ast.MethodSelector.parse(s);}
-     catch(Resources.Error err){return Resources.Void.instance;}
-      throw Resources.notAct;
+     catch(Resources.Error err){throw Resources.notAct;}
+     return Resources.Void.instance;
     }
     @ActionType({ActionType.Type.Void,ActionType.Type.Library})
     public  Resources.Void MifInvalidDo£xpath(Object _path){
       String s=ensureExtractStringU(_path);
      try{Ast.Path.parseValidCs(s);}
-     catch(Resources.Error err){return Resources.Void.instance;}
-      throw Resources.notAct;
+     catch(Resources.Error err){
+       throw Resources.notAct;
+       }      
+      return Resources.Void.instance;
     }
     
 //--------------------------------------------------------------------------------------------------

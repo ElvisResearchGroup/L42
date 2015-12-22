@@ -244,6 +244,9 @@ public interface Ast {
 					if (!checkX(si, false)) {
 						throw new Resources.Error("InvalidSelector: " + s);
 					}
+					if(xs.contains(si)){
+					  throw new Resources.Error("InvalidSelector: " + s+" a parameter is repeted: "+si);
+					}
 					xs.add(si);
 				}
 			}

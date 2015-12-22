@@ -39,27 +39,38 @@ EB:{interface <:EA}
 Main:{
   CheckState(lib:{foo(Bar b, var Foo f) Bar:{} Foo:{}}
     expected:S"foo(b,f)b()#b()f()#f()f(that)")
+  Debug(S"a")
   CheckState(lib:{(Bar b, Foo f) Bar:{} Foo:{}}
     expected:S"#apply(b,f)b()#b()f()#f()")
+  Debug(S"b")
   CheckSubtype(lib:{}
     expected:S"")
+  Debug(S"c")
   CheckSubtype(lib:{interface <:A A:{interface}}
     expected:S"@::A,")
+  Debug(S"d")
   CheckSubtype(lib:{interface <:EA }
     expected:S"Outer0::EA,")
+  Debug(S"e")
     CheckSubtype(lib:{interface <:B B:{interface<:A} A:{interface}}
     expected:S"@::B,@::A,")
+  Debug(S"f")
   CheckSubtype(lib:{interface <:EB }
     expected:S"Outer0::EB,Outer0::EA,")
+  Debug(S"g")
   CheckNested(lib:{}
     expected:S"@::Outer0,")
+  Debug(S"h")
   CheckNested(lib:{A:{} B:{}}
     expected:S"@::A,@::B,@::Outer0,")
+  Debug(S"i")
   CheckNested(lib:{A:{ B:{}}}
     expected:S"@::A,@::A::B,@::Outer0,")
-    CheckNested(lib:{A:{} B:'@private
+  Debug(S"l")
+  CheckNested(lib:{A:{} B:'@private
       {}}
     expected:S"@::A,@::B,@::Outer0,")
+  Debug(S"m")
   CheckNested(lib:{A:{} B:'@private
       {C:{}}}
     expected:S"@::A,@::B,@::Outer0,")

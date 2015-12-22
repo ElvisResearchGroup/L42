@@ -25,7 +25,7 @@ public class TestBase01 {
     }
   //not run when single test executed?
 
-  @Test
+  //@Test
   public  void _00_00AJustToWarmUpJVM() throws Throwable{
     TestHelper.configureForTest();
     L42.main(new String[]{"examples/testsForAdamTowel01/UseAdamTowel01.L42"});
@@ -144,5 +144,6 @@ public class TestBase01 {
  public  void _01_06introspection5() throws Throwable{
    TestHelper.configureForTest();
    L42.main(new String[]{"examples/testsForAdamTowel01/UseIntrospectionAdamTowel5.L42"});
-   Assert.assertEquals(L42.record.toString(),"OK\n");}
+   Assert.assertEquals(L42.record.toString(),
+       "a\nb\nc\nd\ne\nf\ng\nh\ni\nl\nm\nOK\n");}
   }

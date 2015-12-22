@@ -32,36 +32,37 @@ import auxiliaryGrammar.Program;
     @Parameter(2) public String _path;
     @Parameter(3) public String _ms1;
     @Parameter(4) public String _ms2;
-    @Parameter(5) public String _expected;
-    @Parameter(6) public boolean isError;
+    @Parameter(5) public String _ms3;
+    @Parameter(6) public String _expected;
+    @Parameter(7) public boolean isError;
     @Parameters(name = "{index}: line {0}")
     public static List<Object[]> createData() {
       return Arrays.asList(new Object[][] {
       {    lineNumber(),"{method Void m1() method Void m2(Void that)}",
-                                   "Outer0","m1()", "m2(that)",
+                                   "Outer0","m1()", "m2(that)","m1m2()",
                                    "{method Void m1() method Void m2(Void that)"
                                    + " method Void m1m2() this.m2(that:this.m1())}",false
      },{    lineNumber(),"{method Void m1() method Void (Void that)}",
-                                     "Outer0","m1()", "#apply(that)",
+                                     "Outer0","m1()", "#apply(that)","m1()",
                                      "{method Void m1() this.#apply(that:this.m1()) "
                                      + "method Void #apply(Void that) }",false
      },{    lineNumber(),"{method Void () method Void m2(Void that)}",
-       "Outer0","#apply()", "m2(that)",
+       "Outer0","#apply()", "m2(that)","m2()",
        "{method Void #apply() method Void m2(Void that) "
        + "method Void m2() this.m2(that:this.#apply())}",false
   },{    lineNumber(),"{method Void +() method Void m2(Void that)}",
-    "Outer0","#plus()", "m2(that)",
+    "Outer0","#plus()", "m2(that)","m2()",
     "{method Void +() method Void m2(Void that) "
     + "method Void m2() this.m2(that:this.#plus())}",false
   },{    lineNumber(),"{A:{} B:{} C:{} method Void m1(A a, B b) method Void m2(Void that, C c)}",
-    "Outer0","m1(a,b)", "m2(that,c)",
+    "Outer0","m1(a,b)", "m2(that,c)","m1m2(a,b,c)",
     "{A:{} B:{} C:{}"
     + "method Void m1(Outer0::A a, Outer0::B b) "
     + "method Void m2(Void that, Outer0::C c) "
     + "method Void m1m2(Outer0::A a, Outer0::B b, Outer0::C c)"
     + "   this.m2(that:this.m1(a:a, b:b), c:c)}",false
   },{    lineNumber(),"{A:{} B:{} C:{} type method Void m1(A a) method Void m2(Void that, B b,C c)}",
-    "Outer0","m1(a)", "m2(that,b,c)",
+    "Outer0","m1(a)", "m2(that,b,c)","m1m2(a,b,c)",
     "{A:{} B:{} C:{}"
     + "type method Void m1(Outer0::A a) "
     + "method Void m2(Void that, Outer0::B b, Outer0::C c) "
@@ -76,14 +77,15 @@ import auxiliaryGrammar.Program;
     Path path=Path.parse(_path);
     MethodSelector ms1=MethodSelector.parse(_ms1);
     MethodSelector ms2=MethodSelector.parse(_ms2);
+    MethodSelector ms3=MethodSelector.parse(_ms3);
     ClassB expected=getClassB(_expected);
     if(!isError){
-      ClassB res=SumMethods.sumMethods(cb,path.getCBar(),ms1,ms2);
+      ClassB res=SumMethods.sumMethods(cb,path.getCBar(),ms1,ms2,ms3);
       res=Functions.clearCache(res,Ast.Stage.None);
       TestHelper.assertEqualExp(expected,res);
       }
     else{
-      try{ClassB res=SumMethods.sumMethods(cb,path.getCBar(),ms1,ms2);fail("error expected");}
+      try{ClassB res=SumMethods.sumMethods(cb,path.getCBar(),ms1,ms2,ms3);fail("error expected");}
       catch(Resources.Error err){
         ClassB res=(ClassB)err.unbox;
         TestHelper.assertEqualExp(expected,res);

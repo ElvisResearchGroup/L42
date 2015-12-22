@@ -91,5 +91,16 @@ public class TestBase02 {
          "Ok 20\n");
      }  
  
-  
+   @Test
+   public  void _02_08PostOperation() throws Throwable{
+     //new TestBase01()._01_00DeployAdamTowel01();
+     //this._02_00DeployAdamTowel02();
+     TestHelper.configureForTest();
+     L42.main(new String[]{"examples/testsForAdamTowel02/TestPostOperation.L42"});
+     Assert.assertEquals(L42.record.toString(),
+         "Ok 20\n");
+     }  
+ 
+ 
+   
   }

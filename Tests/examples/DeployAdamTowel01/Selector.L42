@@ -6,11 +6,11 @@
     Outer0.#stringParser(that.toS().binaryRepr())
   type method Outer0 #stringParser(Library that) (
     using SafeOperators
-      check ifInvalidDo(path:that)
-      error InvalidFormat(S.#stringParser(that))
+      check ifInvalidDo(selector:that)
+      error InvalidFormat(S"Selector.fromS - invalid string "++S.#stringParser(that))
     Outer0._private(_binaryRepr:that)
     )
-  InvalidFormat:{(S that)}
+  InvalidFormat:{(S that)} ' TODO: turn in function, (also in Path, and patch later (define pathing operator?)
   method Library binaryRepr() this._binaryRepr()
 
 
@@ -31,6 +31,11 @@
     return Bool.false()
     }
 
+  method
+  Bool isOperator(){
+    if this.name().size()==0N (return Bool.true() )
+    return this.name()(0N)==S"#"
+    }
   method
   S name() (
     str=this.toS()
@@ -61,6 +66,5 @@
     tot:=tot(start:0N end:tot.size()-1N)++S")"
     return Selector.fromS(tot)
     }
-  'we still need to add check validity, and fields name, list parameters, bool isOperator
-  'and ways to add/remove parameters
+  'we still need to add check validity, and fields name, list parameters, and ways to add/remove parameters
   }

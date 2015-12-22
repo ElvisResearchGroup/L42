@@ -2669,7 +2669,7 @@ Outer0 fromDocInternalizedS(Outer1::S that) (
   Void unused=(
     Void unused0=(
       Outer1::S::#equalequal(that ) cond=that.#equalequal(that:Outer1::S.#stringParser(that:{'@stringU
-      '\u0040:: 
+      '\u0040::
       }).#plusplus(that:Outer1::S.nl()))
       (
         Void unused2=cond.#checkTrue()
@@ -2682,9 +2682,9 @@ Outer0 fromDocInternalizedS(Outer1::S that) (
         )
       )
     Void unused1=return Outer0.fromS(that:that.#apply(start:Outer1::N.#numberParser(that:{'@stringU
-    '2
+    '3
     }), end:that.size().#less(that:Outer1::N.#numberParser(that:{'@stringU
-    '2
+    '1
     }))))
     void
     )
@@ -2699,7 +2699,11 @@ type method
 Outer0 fromS(Outer1::Concept::ToS that) Outer0.#stringParser(that:that.toS().binaryRepr())
 type method 
 Outer0 #stringParser(Library that) (
-  Void unused=using Outer1::SafeOperators check ifInvalidDo(selector:that) error Outer1::S.#stringParser(that:that)
+  Void unused=using Outer1::SafeOperators check ifInvalidDo(path:that) error Outer1::S.#stringParser(that:{'@stringU
+  'Path.fromS - invalid string [
+  }).#plusplus(that:Outer1::S.#stringParser(that:that).#plusplus(that:Outer1::S.#stringParser(that:{'@stringU
+  ']
+  })))
   Outer0._private__33_0(_binaryRepr__33_0:that)
   )
 method 
@@ -2961,7 +2965,9 @@ type method
 Outer0 fromS(Outer1::Concept::ToS that) Outer0.#stringParser(that:that.toS().binaryRepr())
 type method 
 Outer0 #stringParser(Library that) (
-  Void unused=using Outer1::SafeOperators check ifInvalidDo(path:that) error Outer0::InvalidFormat.#apply(that:Outer1::S.#stringParser(that:that))
+  Void unused=using Outer1::SafeOperators check ifInvalidDo(selector:that) error Outer0::InvalidFormat.#apply(that:Outer1::S.#stringParser(that:{'@stringU
+  'Selector.fromS - invalid string 
+  }).#plusplus(that:Outer1::S.#stringParser(that:that)))
   Outer0._private__34_0(_binaryRepr__34_0:that)
   )
 InvalidFormat:{
@@ -3017,6 +3023,35 @@ method equals(that ) (
     )
   catch return result (
     on Outer0::equals(that ) result
+    )
+  error {'@stringU
+  'CurlyBlock-Should be unreachable code
+  }
+  )
+method 
+Outer1::Bool isOperator() (
+  Void unused=(
+    Void unused0=(
+      Outer0::name() ::size() ::#equalequal(that ) cond=this.name().size().#equalequal(that:Outer1::N.#numberParser(that:{'@stringU
+      '0
+      }))
+      (
+        Void unused2=cond.#checkTrue()
+        catch exception unused3 (
+          on Void void
+          )
+        return Outer1::Bool.true()
+        )
+      )
+    Void unused1=return this.name().#apply(that:Outer1::N.#numberParser(that:{'@stringU
+    '0
+    })).#equalequal(that:Outer1::S.#stringParser(that:{'@stringU
+    '#
+    }))
+    void
+    )
+  catch return result (
+    on Outer1::Bool result
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
@@ -3161,7 +3196,7 @@ Library renameMethod(Library that, Outer1::Path path, Outer1::Selector src, Oute
 'SafeOperators.renameMethod
 })
 type method 
-Library sumMethods(Library that, Outer1::Path path, Outer1::Selector src, Outer1::Selector dest) using Outer0 check sumMethods(that:that, path:path.binaryRepr(), src:src.binaryRepr(), dest:dest.binaryRepr()) error Outer1::System::Guard::PluginFailure.#stringParser(that:{'@stringU
+Library sumMethods(Library that, Outer1::Path path, Outer1::Selector src1, Outer1::Selector src2, Outer1::Selector dest) using Outer0 check sumMethods(that:that, path:path.binaryRepr(), src1:src1.binaryRepr(), src2:src2.binaryRepr(), dest:dest.binaryRepr()) error Outer1::System::Guard::PluginFailure.#stringParser(that:{'@stringU
 'SafeOperators.renameMethod
 })
 type method 
@@ -8566,11 +8601,15 @@ method
 Outer0 #end() this}
 SumMethods:{
 type method 
-Outer0 #add(Outer2::Selector that, Outer2::Path of, Outer2::Selector to) 
+Outer0 #add(Outer2::Selector that, Outer2::Selector and, Outer2::Path of, Outer2::Selector to) 
 mut method 
 Outer2::Selector #that() 
 read method 
 Outer2::Selector that() 
+mut method 
+Outer2::Selector #and() 
+read method 
+Outer2::Selector and() 
 mut method 
 Outer2::Path #of() 
 read method 
@@ -8582,7 +8621,7 @@ Outer2::Selector to()
 method 
 Library #leftleft(Library that) exception Outer2::MetaGuard::MemberUnavailable, Outer2::MetaGuard::MethodClash, Outer2::MetaGuard::ParameterMismatch (
   Void unused=(
-    Void unused0=return Outer2::SafeOperators.sumMethods(that:that, path:this.of(), src:this.that(), dest:this.to())
+    Void unused0=return Outer2::SafeOperators.sumMethods(that:that, path:this.of(), src1:this.that(), src2:this.and(), dest:this.to())
     catch error err (
       on Library (
         Outer2::Introspection::Record::#apply(lib ) record=Outer2::Introspection::Record.#apply(lib:err)

@@ -3,16 +3,17 @@
   
   type method 
   Outer0 fromDocInternalizedS(S that){
-    if that==S"@:: "++S.nl() (return Outer0.fromS(S"Outer0"))
-    return Outer0.fromS(that(start:2N end:that.size()-2N))
+    if that==S"@::"++S.nl() (return Outer0.fromS(S"Outer0"))
+    'Debug(S"["++that++S"]")
+    return Outer0.fromS(that(start:3N end:that.size()-1N))
     }
   type method
   Outer0 fromS(Concept::ToS that)
     Outer0.#stringParser(that.toS().binaryRepr())
   type method Outer0 #stringParser(Library that) (
     using SafeOperators 
-      check ifInvalidDo(selector:that)
-      error S.#stringParser(that) 'will be improved later
+      check ifInvalidDo(path:that)
+      error S"Path.fromS - invalid string ["++S.#stringParser(that)++S"]" 'will be improved later
     Outer0._private(_binaryRepr:that)
     )
 

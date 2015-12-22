@@ -18,7 +18,7 @@ import tools.Assertions;
 
 import java.util.*;
 public class SumMethods {
-  public static ClassB sumMethods(ClassB lib, List<String> path, MethodSelector m1,MethodSelector m2){
+  public static ClassB sumMethods(ClassB lib, List<String> path, MethodSelector m1,MethodSelector m2,MethodSelector mRes){
     ClassB pathCb=lib;
     if(!path.isEmpty()){
       pathCb=(ClassB)((NestedClass)Errors42.checkExistsPathMethod(lib, path, Optional.empty())).getInner();
@@ -36,37 +36,58 @@ public class SumMethods {
        if(p1.equals(r)){wrongFirstPar=false;}
     }
     Mdf mdfU=mdfU(mt1.getMdf(),mt2.getMdf());
-    boolean parDisj=true;
+    List<String> totPars=new ArrayList<>();
+    List<Type> totTypes=new ArrayList<>();
+    List<Doc> totDocs=new ArrayList<>();
     for(int i=1;i<m2.getNames().size();i++){
-      String e2=m2.getNames().get(i);
-      for( String e1:m1.getNames()){
-      if(e1.equals(e2)){parDisj=false;}
-    }}
-    if(wrongFirstPar||mdfU==null || !parDisj){
-      throw Errors42.errorParameterMismatch(path, mem1,mem2, !wrongFirstPar,mdfU!=null,parDisj);
+      totPars.add(m2.getNames().get(i));
+      totTypes.add(mt2.getTs().get(i));
+      totDocs.add(mt2.getTDocs().get(i));
+      }
+    assert totPars.size()==totTypes.size();
+    assert totPars.size()==totDocs.size();
+    for(int i=0;i<m1.getNames().size();i++){
+      String e1=m1.getNames().get(i);
+      Type t1=mt1.getTs().get(i);
+      int index=totPars.indexOf(e1);
+      if(index==-1){
+        totPars.add(e1);
+        totTypes.add(t1);
+        totDocs.add(mt1.getTDocs().get(i));
+        }
+      else {//check they have the same type
+        Type t2=totTypes.get(index);
+        if(!t1.equals(t2)){
+          throw Errors42.errorParameterMismatch(path, mem1,mem2, !wrongFirstPar,mdfU!=null,false);
+        }
+        totDocs.set(index,totDocs.get(index).sum(mt1.getTDocs().get(i)));
+        //totDocs(index, val:#+di)
+      }
+      }
+    assert totPars.size()==totTypes.size();
+    assert totPars.size()==totDocs.size();
+    boolean parAll=true;
+    List<Type> totTypesInOrder=new ArrayList<>();
+    List<Doc> totDocsInOrder=new ArrayList<>();
+    if(totPars.size()!=mRes.getNames().size()){parAll=false;}
+    else for(String nRes:mRes.getNames()){
+      int index=totPars.indexOf(nRes);
+      if(index==-1){parAll=false; break;}
+      totTypesInOrder.add(totTypes.get(index));
+      totDocsInOrder.add(totDocs.get(index));
+    }
+    if(wrongFirstPar||mdfU==null || !parAll){
+      throw Errors42.errorParameterMismatch(path, mem1,mem2, !wrongFirstPar,mdfU!=null,parAll);
     }
     ArrayList<Path> exU = new ArrayList<>(mt1.getExceptions());
     exU.addAll(mt2.getExceptions());
-    String nameU;
-    if(m1.isOperator()){nameU=m2.getName();}
-    else if(m2.isOperator()){nameU=m1.getName();}
-    else {nameU=m1.getName()+m2.getName();}
-    ArrayList<String> psU = new ArrayList<>(m1.getNames());
-    ArrayList<Type> tsU = new ArrayList<>(mt1.getTs());
-    ArrayList<Doc> tdsU = new ArrayList<>(mt1.getTDocs());
-    for(int i=1;i<m2.getNames().size();i++){
-      psU.add(m2.getNames().get(i));
-      tsU.add(mt2.getTs().get(i));
-      tdsU.add(mt2.getTDocs().get(i));
-    }
-    MethodSelector msU=new MethodSelector(nameU,psU);
-     MethodType mtU =new MethodType(
+    MethodType mtU =new MethodType(
          mt1.getDocExceptions().sum(mt2.getDocExceptions()),
-         mdfU,tsU,tdsU,mt2.getReturnType(),exU); 
+         mdfU,totTypesInOrder,totDocsInOrder,mt2.getReturnType(),exU); 
     ClassB cbPath = Program.extractCBar(path,lib);
     MethodWithType mtConflict = null;
     for(PathMwt e:cbPath.getStage().getInherited()){
-      if(e.getMwt().getMs().equals(msU)){mtConflict=e.getMwt();}
+      if(e.getMwt().getMs().equals(mRes)){mtConflict=e.getMwt();}
     }
     ExpCore r1=(mt1.getMdf()==Mdf.Type)?Path.outer(0):new ExpCore.X("this");
     ExpCore r2=(mt2.getMdf()==Mdf.Type)?Path.outer(0):new ExpCore.X("this");
@@ -79,13 +100,13 @@ public class SumMethods {
     ps2.add(eInner);
     for(int i=1;i<m2.getNames().size();i++){ps2.add(new ExpCore.X(m2.getNames().get(i)));}
     ExpCore eU=new ExpCore.MCall(r2, m2, Doc.empty(),ps2 ,  mem2.getP());
-    MethodWithType mwtU=new MethodWithType(Doc.empty(),msU,mtU,Optional.of(eU),mem2.getP() );
+    MethodWithType mwtU=new MethodWithType(Doc.empty(),mRes,mtU,Optional.of(eU),mem2.getP() );
     if(mtConflict!=null){
       //hard. Is satisfy one interface triky and risk to be buggy?
       Errors42.checkMethodClash(path, mwtU,mtConflict,true);//always throws
       throw  Assertions.codeNotReachable();
     }
-    Optional<Member> optConflict = Program.getIfInDom(cbPath.getMs(),msU);    
+    Optional<Member> optConflict = Program.getIfInDom(cbPath.getMs(),mRes);    
     if(optConflict.isPresent()){
       if(optConflict.get() instanceof MethodImplemented){
         throw Errors42.errorMethodClash(path,mwtU, optConflict.get(), true,Collections.emptyList(),true,true,false);    

@@ -1,0 +1,86 @@
+{reuse L42.is/AdamTowel02
+PostAct:{(Selector that,Path of,  Library action,Selector deprecated)
+  InvalidAction:Message::$[]<<{<:MetaGuard}
+  type method
+  Library <<(Library that){
+    origin=this.that()
+    dest=this.deprecated()
+    p=this.of()
+    a=Action(path:p,proposedAction:this.action())
+    var acc=that
+    acc:=Refactor::MoveImplementationSelector[
+      origin of:p to:dest]<<acc
+    acc:=Refactor.compose(left:acc,right:a.action())
+    acc:=Refactor::SumMethod[dest and:a.fresh() of:p to: origin]<<acc
+    catch exception parm( on MetaGuard::ParameterMismatch
+          error InvalidAction"Action type signature do not fit with.. PostAct::Action0"(parm) )
+    acc:=Refactor::MakePrivateSelector[a.fresh() of:p]<<acc
+    return acc
+    'throws shortcuts: return { return }  exception errorOn/exceptionOn
+    ' on Metaguard, Guard error e
+    ' exceptionOn Metaguard InvalidAction"YEP"
+    catch exception cnr( on MetaGuard
+          error Assert::CodeNotReachable"PostAct::Action0"(cnr) )
+    }
+    Action:{(Selector fresh,Library action)
+      type method Outer0 (Path path,Library proposedAction){
+        fresh=Selector.fresh(Selector"(that)")
+        'add verification over action
+        'a single implemented method called "(that)" must be present.
+        ' type T->T
+        action=Refactor::RenameSelector[
+          Selector"(that)"
+          of: path
+          to: that
+          ]<<proposedAction
+        catch exception cnr( on MetaGuard
+          error Assert::CodeNotReachable"PostAct::Action0"(cnr) )
+        return Outer0(fresh:fresh,action:action)
+      }
+
+GetSOrName:{
+  type method S(read Any that){
+    with that (
+      on Concept::ToS return that.toS()
+      on Concept::Classable return GetMyName(that.classAny())++S" instance"
+      default return S"instance not ToS or Classable"
+      )
+    }
+  }
+Selectors:LinkedList.list(Selector)
+    
+
+C:Invariant<<{a(N n)<:Concept::Invariant
+  method invariant() this.n()>10N
+  }
+Main:{
+  C c1=C.a(n:20N)
+  Debug(S"Ok 20")
+  C c2=C.a(n:5N)
+  Debug(S"Ok 5")
+  return ExitCode.failure()
+  catch error err (
+    on Invariant::InvariantFailure
+      return ExitCode.normal()
+    )
+  }
+' method Bool isConcrete() true iff all non state methods are implemented and
+' all the interface methods are implemented.
+}
+'add a printableOutline() to nested class
+' all public methods lv1,
+' for all public nc lv*, if not annotated '@importanceX with x 1-*, with indented methods
+' otherwise with all methods inline, nested after?
+
+Patch:{'no, remove metaguard entirelly, make methClash and co as 
+'nested in Refactor, and specific errors as nested in the operator?
+'remove also the general DecorationUnfeasable?
+'or on the opposite, have DecorationUnfeasable take a class, and print itself in a fancy way to look like a nested?
+'  MetaGuard:{interface
+'    DecorationUnfeasable:Message::$[]<<{<:MetaGuard}
+'    }
+'make [] works for Message messages
+  }
+  }
+
+

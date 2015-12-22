@@ -26,11 +26,12 @@
         )
       error System::Guard::PluginFailure"SafeOperators.renameMethod"
   type method
-  Library sumMethods(Library that,Path path,Selector src,Selector dest)
+  Library sumMethods(Library that,Path path,Selector src1,Selector src2,Selector dest)
     using Outer0
       check sumMethods(that
         path:path.binaryRepr()
-        src:src.binaryRepr()
+        src1:src1.binaryRepr()
+        src2:src2.binaryRepr()
         dest:dest.binaryRepr()
         )
       error System::Guard::PluginFailure"SafeOperators.renameMethod"
