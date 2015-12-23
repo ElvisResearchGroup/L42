@@ -11,6 +11,22 @@
     Outer0._private(_binaryRepr:that)
     )
   InvalidFormat:{(S that)} ' TODO: turn in function, (also in Path, and patch later (define pathing operator?)
+  
+  type method 
+  Outer0 fromStrings(S name,Strings names) (
+    pars=S"("[with n in names.vals() (n++S",")]""
+    Outer0.fromS(name++pars(end:pars.size()-1N)++S")")
+    'Outer0.fromS(name[pars(end:#-1N)]")")
+    )
+  method S nameAsField() {
+    n=this.name()
+    if n(0N)==S"#" (return n(start:1N))
+    return n
+    }
+  method S prefixAsField() {
+    if this.toS()(0N)==S"#" (return S"#")
+    return S""
+    }
   method Library binaryRepr() this._binaryRepr()
 
 

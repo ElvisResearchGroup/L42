@@ -85,7 +85,7 @@ public class TestBase02 {
    public  void _02_07addInvariant() throws Throwable{
      TestHelper.configureForTest();
      //new TestBase01()._01_00DeployAdamTowel01();
-     this._02_00DeployAdamTowel02();
+     //this._02_00DeployAdamTowel02();
      L42.main(new String[]{"examples/testsForAdamTowel02/TestAddInvariant.L42"});
      Assert.assertEquals(L42.record.toString(),
          "Ok 20\n");

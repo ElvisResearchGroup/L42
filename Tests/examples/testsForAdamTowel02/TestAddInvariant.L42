@@ -1,17 +1,8 @@
 {reuse L42.is/AdamTowel02
 
-GetSOrName:{
-  type method S(read Any that){
-    with that (
-      on Concept::ToS return that.toS()
-      on Concept::Classable return GetMyName(that.classAny())++S" instance"
-      default return S"instance not ToS or Classable"
-      )
-    }
-  }
-Selectors:LinkedList.list(Selector)
-
 Invariant:{
+
+  ' error handling
   InvariantFailure:Message::$[]<<{<:MetaGuard}
   type method Bool isInvariant(Introspection::NestedClass that) {
     interf=that.transitivelyImplementedInterfaces()
@@ -36,74 +27,142 @@ Invariant:{
     if k.isPrivate() (exception Default::DecorationUnfeasable"State is private")
     return state
     }
+  
+  'invariant checking and actions
   type method
-  Selector getCheckerSelector() Selector.fresh(Selector"k(new)")
+  Void checkInvariant(read Concept::Invariant that) (
+    if !that.invariant() (
+      error InvariantFailure(
+        text:S"invalid object detected "++GetSOrName(that) )
+      )
+    )
   type method
-  Library getChecker(Selector that) {
-    return Refactor::RenameSelector[
-      Selector"k(new)"
-      of: Path"Outer0"
-      to: that
-      ]<<{<:Concept::Invariant 
-        type method ' TODO:should not work on immutable objects only
-        Outer0 k(Outer0 new) {
-          if !new.invariant() ( error InvariantFailure(text:S"invalid object detected "++GetSOrName(new) ))
-          return new
-          }
-        }
-      catch exception cnr( on MetaGuard error Assert::CodeNotReachable"Invariant0"(cnr) )
+  Library constructorAction(Invariant::Method that) {
+    immA={<:Concept::Invariant 
+      type method
+      Outer0 (Outer0 that) ( Invariant.checkInvariant(that) that )
       }
+    mutA={<:Concept::Invariant 
+      type method
+      mut Outer0 (mut Outer0 that) ( Invariant.checkInvariant(that) that )
+      }
+    lentA={<:Concept::Invariant 
+      type method
+      mut Outer0 (mut Outer0 that) ( Invariant.checkInvariant(that) that )
+      }
+    readA={<:Concept::Invariant 
+      type method
+      mut Outer0 (mut Outer0 that) ( Invariant.checkInvariant(that) that )
+      }
+    capsuleA={<:Concept::Invariant 
+      type method
+      capsule Outer0 (capsule Outer0 that) ( Invariant.checkInvariant(that) that )
+      }
+    with mdf=that.returnType().mdf() (
+      case mdf==S"" return immA
+      case mdf==S"mut" return mutA
+      case mdf==S"lent" return lentA
+      case mdf==S"read" return readA
+      case mdf==S"capsule" return capsuleA
+      default error Default::DecorationUnfeasable(
+        text:S"unidentified mdf:"[mdf]"!")
+      )
+    }
+  }
+  type method
+  Library setterAction() {<:Concept::Invariant 
+    mut method
+    Void (Void that) (
+      Invariant.checkInvariant(this) 
+      that
+      )
+    }
+  
+  type method
+  Library idAction(Introspection::Type that){
+    classA={ type method type T (type T that) that T:{}}
+    immA={ type method T (T that) that T:{}}
+    mutA={ type method mut T (mut T that) that T:{}}
+    lentA={ type method lent T (lent T that) that T:{}}
+    readA={ type method read T (read T that) that T:{}}
+    mdfA={with mdf=that.mdf() (
+      case mdf==S"type" return classA
+      case mdf==S"" return immA
+      case mdf==S"mut" return mutA
+      case mdf==S"lent" return lentA
+      case mdf==S"read" return readA
+      default error Default::DecorationUnfeasable(
+        text:S"unidentified mdf:"[mdf]"!")
+      )}
+    nc=that.referencedPath()
+    if nc.hasExternalType() (
+      return Refactor::Redirect[
+        Path"T" to:nc.externalType()]<<mdfA
+      )
+    return Refactor::RenamePath
+      [Path"T" to:nc.pathFromRoot()]<<mdfA
+    }
+    
+  'main decoration method
   type method
   Library<<(Library that)
   exception Default::DecorationUnfeasable
     this.stateDecoration(that,state:this.extractOkState(that))
-    
-  type method Library stateDecoration(Library that,Introspection::Methods state){
+  
+  'decoration after pre checking
+  type method
+  Library stateDecoration(Library that,Introspection::Methods state){
     if state.isEmpty() (return that)
-    k=state.top()
-    kSel=k.selector()
-    kSelFresh=Selector.fresh(kSel)
-    'for now, we should
-    'check all ret.types are imm mdf
-    checkerKSel=this.getCheckerSelector()
-    var checker=Refactor.compose(left:that,
-      right:this.getChecker(checkerKSel))
-    checker:=Refactor::SumMethods[
-      kSel
-      and:checkerKSel
-      of:Path"Outer0"
-      to:kSelFresh]<<checker      
-    catch exception cnr1(
-      on MetaGuard error Assert::CodeNotReachable"Invariant1"(cnr1)
-      )
-    fields=Selectors[with m in state.pop().vals() (
+    p=Path"Outer0"
+    kSel=state.top().selector()
+    kName=kSel.name()
+    kNames=kSel.names()
+    kNameF=SafeOperators.freshName(kName)
+    kNamesF=Strings[with n in kNames.vals() (
+      SafeOperators.freshName(n))]
+    kSelF=Selector.from(name:kNameF,names:kNamesF)
+    var acc=that
+    with m in state.vals() (
       s=m.selector()
-      s1=Selector.fresh(s)
-      checker:=Refactor::MoveImplementationSelector[s of:Path"Outer0" to:s1]<<checker
-      s1)]
-    catch exception cnr2(
-      on MetaGuard error Assert::CodeNotReachable"Invariant2"(cnr2)
+      mdf=m.getMdf()
+      zeroArgs=s.names().isEmpty()
+      if mdf==S"type" (
+        acc:=PostAction(s of:p 
+          action:this.constructorAction()
+          deprecated: kSelF)<<acc
+        )
+      else if zeroArgs (
+        acc:=PostAction(s of:p 
+          action:this.idAction()
+          deprecated:Outer0.stateFname(s,old:kNames, fresh:kNamesF)
+          )<<acc
+        )
+      else (
+        acc:=PostAction(s of:p 
+          action:this.setterAction()
+          deprecated:Outer0.stateFname(s,old:kNames, fresh:kNamesF)
+          )<<acc
+        )
       )
-    checker:=Refactor::MakePrivateSelector[kSel of:Path"Outer0"]<<checker
-    checker:=Refactor::MakePrivateSelector[checkerKSel of:Path"Outer0"]<<checker
-    catch exception cnr3(
-      on MetaGuard error Assert::CodeNotReachable"Invariant3"(cnr3)
-      )
-    checker:=Refactor::RenameSelector[kSelFresh of:Path"Outer0" to: kSel]<<checker
-    'Debug(Introspection(lib:checker).allAsString())
-    with s2 in fields.vals(), m2 in state.pop().vals() (
-      Debug(S"rename "[s2]"into "[m2.selector()]"")
-      checker:=Refactor::RenameSelector[s2 of:Path"Outer0" to: m2.selector()]<<checker
-      Debug(S"-------------------------------DONE")
-Debug(Introspection(lib:checker).allAsString())
-      
-   )
-    return checker
-    catch exception cnr4(
-      on MetaGuard error Assert::CodeNotReachable"Invariant4"(cnr4)
+    acc:=Refactor::MakePrivateSelector[kSelF of:p]<<acc
+    return acc
+    catch exception cnr(
+      on MetaGuard error Assert::CodeNotReachable"Invariant"(cnr)
       )
     }
-  }
+    
+    type method
+    Selector stateFName(
+      Selector that, Strings old,Strings fresh){
+      name=that.nameAsField()
+      prefix=that.prefixAsField()
+      names=that.names()
+      with o in old.vals(), f in fresh.vals() (
+        if name==o (return Selector.from(name:prefix++f,names:names))
+        )
+      error Assert::CodeNotReachable"stateFName"      
+      }
+ 
   
   '-#n diventa privato? controlla cosa succede in add doc private constr.
   '-fare un operatre di delega generale, che prende un post oporation optionale e fa anche rename e lascia il vecchio come deprecated
@@ -138,13 +197,13 @@ Main:{
   }
 ' method Bool isConcrete() true iff all non state methods are implemented and
 ' all the interface methods are implemented.
-}
+
 'add a printableOutline() to nested class
 ' all public methods lv1,
 ' for all public nc lv*, if not annotated '@importanceX with x 1-*, with indented methods
 ' otherwise with all methods inline, nested after?
 
-Patch:{'no, remove metaguard entirelly, make methClash and co as 
+'Patch:{'no, remove metaguard entirelly, make methClash and co as 
 'nested in Refactor, and specific errors as nested in the operator?
 'remove also the general DecorationUnfeasable?
 'or on the opposite, have DecorationUnfeasable take a class, and print itself in a fancy way to look like a nested?
@@ -162,8 +221,5 @@ Patch:{'no, remove metaguard entirelly, make methClash and co as
 ' all public methods lv1,
 ' for all public nc lv*, if not annotated '@importanceX with x 1-*, with indented methods
 ' otherwise with all methods inline, nested after?
-  }
-
-  }
-
+}
 
