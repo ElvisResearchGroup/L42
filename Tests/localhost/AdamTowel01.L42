@@ -8237,10 +8237,7 @@ Outer2::Path to()
 method 
 Library #leftleft(Library that) exception Outer2::MetaGuard::NestedClassUnavailable, Outer2::MetaGuard::MethodClash, Outer2::MetaGuard::ClassClash (
   Void unused=(
-    Void unused0=Outer2::Debug.#apply(that:Outer2::S.#stringParser(that:{'@stringU
-    'Started RenamePath
-    }))
-    Void unused1=return Outer2::SafeOperators.renameClass(that:that, src:this.that(), dest:this.to())
+    Void unused0=return Outer2::SafeOperators.renameClass(that:that, src:this.that(), dest:this.to())
     catch error err (
       on Library (
         Outer2::Introspection::Record::#apply(lib ) record=Outer2::Introspection::Record.#apply(lib:err)
@@ -8253,27 +8250,27 @@ Library #leftleft(Library that) exception Outer2::MetaGuard::NestedClassUnavaila
             'MemberUnavailable
             }))
             (
-              Void unused2=cond.#checkTrue()
-              catch exception unused3 (
+              Void unused1=cond.#checkTrue()
+              catch exception unused2 (
                 on Void (
                   Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) ::#equalequal(that ) cond0=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
                   'MethodClash
                   }))
                   (
-                    Void unused4=cond0.#checkTrue()
-                    catch exception unused5 (
+                    Void unused3=cond0.#checkTrue()
+                    catch exception unused4 (
                       on Void (
                         Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) ::#equalequal(that ) cond1=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
                         'ClassClash
                         }))
                         (
-                          Void unused6=cond1.#checkTrue()
-                          catch exception unused7 (
+                          Void unused5=cond1.#checkTrue()
+                          catch exception unused6 (
                             on Void (
-                              Void unused8=Outer2::Debug.#apply(that:Outer2::S.#stringParser(that:{'@stringU
+                              Void unused7=Outer2::Debug.#apply(that:Outer2::S.#stringParser(that:{'@stringU
                               'critical failure in capturing plugin primitive error
                               }))
-                              Void unused9=Outer2::Debug.#apply(that:x)
+                              Void unused8=Outer2::Debug.#apply(that:x)
                               error err
                               )
                             )

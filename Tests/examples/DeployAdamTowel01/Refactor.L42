@@ -66,7 +66,6 @@
   RenamePath:Squares<<{#add(Path that, Path to)
     method
     Library << (Library that)exception MetaGuard::NestedClassUnavailable,MetaGuard::MethodClash,MetaGuard::ClassClash{
-      Debug(S"Started RenamePath")
       return SafeOperators.renameClass(that,src:this.that(),dest:this.to())
       catch error err (on Library (
         record=Introspection::Record(lib:err)

@@ -83,9 +83,9 @@ public class TestBase02 {
      }
    @Test
    public  void _02_07addInvariant() throws Throwable{
-     //new TestBase01()._01_00DeployAdamTowel01();
-     //this._02_00DeployAdamTowel02();
      TestHelper.configureForTest();
+     //new TestBase01()._01_00DeployAdamTowel01();
+     this._02_00DeployAdamTowel02();
      L42.main(new String[]{"examples/testsForAdamTowel02/TestAddInvariant.L42"});
      Assert.assertEquals(L42.record.toString(),
          "Ok 20\n");
@@ -93,12 +93,12 @@ public class TestBase02 {
  
    @Test
    public  void _02_08PostOperation() throws Throwable{
-     //new TestBase01()._01_00DeployAdamTowel01();
-     //this._02_00DeployAdamTowel02();
      TestHelper.configureForTest();
+     new TestBase01()._01_00DeployAdamTowel01();
+     this._02_00DeployAdamTowel02();
      L42.main(new String[]{"examples/testsForAdamTowel02/TestPostOperation.L42"});
      Assert.assertEquals(L42.record.toString(),
-         "Ok 20\n");
+         "Hello\nWorld\nHello\n");
      }  
  
  
