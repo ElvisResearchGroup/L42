@@ -11,6 +11,11 @@ Main:{
   Debug(S"--------------------------")
   Debug(S"for all the methods of Bar:")
   ms=i.methods()
+  
+  if !Selector"foo()".names().isEmpty() (Debug(S"fail"))
+  if !Selector"f()".names().isEmpty() (Debug(S"fail"
+    [with ni in Selector"f()".names().vals() (S"{"++ni++S"}")]"!!"))
+  
   with m in ms.vals() (
    Debug(S"selector is: "[m.selector()]"")
    ti=m.returnType()

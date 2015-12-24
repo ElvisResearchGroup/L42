@@ -101,7 +101,9 @@ public class GuessType implements Visitor<Type> {
   }
   public Type visit(DotDotDot s)  {throw Assertions.codeNotReachable();}
   public Type visit(WalkBy s) {throw Assertions.codeNotReachable();}
-  public Type visit(CurlyBlock s) {throw Assertions.codeNotReachable();}
+  public Type visit(CurlyBlock s) {
+    throw new ast.ErrorMessage.NotWellFormedMsk(s,s,"Can not infer the type of a { ... return ... } block.");
+    }
 
   public Type visit(ClassReuse s){return new NormType(Mdf.Immutable,Path.Library(),Ph.None);}
   public Type visit(ClassB s) {return new NormType(Mdf.Immutable,Path.Library(),Ph.None);}

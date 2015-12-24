@@ -353,7 +353,7 @@ public class TypeSystem implements Visitor<Type>, Reporter{
           assert a.get(s)!=null: a+" "+s;
           if(a.get(s).getMdf()!=Mdf.Capsule){continue;}
           if(!b.containsKey(s)){continue;}
-          assert false: a+" -- "+b;
+          // just for debug assert false: a+" -- "+b;
           throw new ErrorMessage.CapsuleUsedMoreThenOne(es, s);
           }
         }

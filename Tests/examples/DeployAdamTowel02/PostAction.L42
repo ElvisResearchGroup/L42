@@ -28,7 +28,7 @@ exception InvalidAction{
   acc:=Refactor::MakePrivateSelector[a.fresh() of:p]<<acc
   return acc    
   catch exception cnr( on MetaGuard
-        error Assert::CodeNotReachable"PostAct::Action0"(cnr) )
+        error Assert::CodeNotReachable"PostAct::Action1"(cnr) )
   }
   Action:{(Selector fresh,Library action)
     type method Outer0 (Path path,Library proposedAction)
@@ -45,7 +45,7 @@ exception InvalidAction{
       action=Refactor::RenameSelector[
         defS of:path to:fresh]<<proposedAction
       catch exception cnr( on MetaGuard
-        error Assert::CodeNotReachable"PostAct::Action0"(cnr) )
+        error Assert::CodeNotReachable"PostAct::Action2"(cnr) )
       return Outer0(fresh:fresh,action:action)
     }
   }

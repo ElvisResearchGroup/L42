@@ -33,11 +33,11 @@ Invariant:{
   Void checkInvariant(read Concept::Invariant that) (
     if !that.invariant() (
       error InvariantFailure(
-        text:S"invalid object detected "++GetSOrName(that) )
+        text:S"invalid object detected "++Refactor::Tools.getToSOrName(that) )
       )
     )
   type method
-  Library constructorAction(Invariant::Method that) {
+  Library constructorAction(Introspection::Type that) {
     immA={<:Concept::Invariant 
       type method
       Outer0 (Outer0 that) ( Invariant.checkInvariant(that) that )
@@ -56,9 +56,13 @@ Invariant:{
       }
     capsuleA={<:Concept::Invariant 
       type method
-      capsule Outer0 (capsule Outer0 that) ( Invariant.checkInvariant(that) that )
+      capsule Outer0 (capsule Outer0 that) ( 
+        mut Outer0 open=that
+        Invariant.checkInvariant(open)
+        open
+        )
       }
-    with mdf=that.returnType().mdf() (
+    with mdf=that.mdf() (
       case mdf==S"" return immA
       case mdf==S"mut" return mutA
       case mdf==S"lent" return lentA
@@ -68,7 +72,6 @@ Invariant:{
         text:S"unidentified mdf:"[mdf]"!")
       )
     }
-  }
   type method
   Library setterAction() {<:Concept::Invariant 
     mut method
@@ -85,7 +88,7 @@ Invariant:{
     mutA={ type method mut T (mut T that) that T:{}}
     lentA={ type method lent T (lent T that) that T:{}}
     readA={ type method read T (read T that) that T:{}}
-    mdfA={with mdf=that.mdf() (
+    Library mdfA={with mdf=that.mdf() (
       case mdf==S"type" return classA
       case mdf==S"" return immA
       case mdf==S"mut" return mutA
@@ -101,6 +104,9 @@ Invariant:{
       )
     return Refactor::RenamePath
       [Path"T" to:nc.pathFromRoot()]<<mdfA
+    catch exception cnr(
+      on MetaGuard error Assert::CodeNotReachable"idAction"(cnr)
+      )
     }
     
   'main decoration method
@@ -124,24 +130,32 @@ Invariant:{
     var acc=that
     with m in state.vals() (
       s=m.selector()
-      mdf=m.getMdf()
+      mdf=m.thisMdf()
       zeroArgs=s.names().isEmpty()
+      'Debug(S"zeroArgs"[zeroArgs]"")
       if mdf==S"type" (
+        'Debug(S"is k "[s]"")
         acc:=PostAction(s of:p 
-          action:this.constructorAction()
+          action:this.constructorAction(m.returnType())
           deprecated: kSelF)<<acc
         )
-      else if zeroArgs (
-        acc:=PostAction(s of:p 
-          action:this.idAction()
-          deprecated:Outer0.stateFname(s,old:kNames, fresh:kNamesF)
-          )<<acc
-        )
       else (
-        acc:=PostAction(s of:p 
-          action:this.setterAction()
-          deprecated:Outer0.stateFname(s,old:kNames, fresh:kNamesF)
-          )<<acc
+        newSel=Outer0.stateFName(s,old:kNames, fresh:kNamesF)
+        'Debug(S"!!")
+        if zeroArgs (
+          'Debug(S"is getter/exposer "[s]" "[newSel]"")
+          acc:=PostAction(s of:p 
+            action:this.idAction(m.returnType())
+            deprecated:newSel
+            )<<acc
+          )
+        else (
+          'Debug(S"is setter "[s]" "[newSel]" "[with ni in s.names().vals() (S"{"++ni++S"}")]"!!")
+          acc:=PostAction(s of:p 
+            action:this.setterAction()
+            deprecated:newSel
+            )<<acc
+          )
         )
       )
     acc:=Refactor::MakePrivateSelector[kSelF of:p]<<acc
@@ -151,50 +165,46 @@ Invariant:{
       )
     }
     
-    type method
-    Selector stateFName(
-      Selector that, Strings old,Strings fresh){
-      name=that.nameAsField()
-      prefix=that.prefixAsField()
-      names=that.names()
-      with o in old.vals(), f in fresh.vals() (
-        if name==o (return Selector.from(name:prefix++f,names:names))
-        )
-      error Assert::CodeNotReachable"stateFName"      
-      }
- 
-  
-  '-#n diventa privato? controlla cosa succede in add doc private constr.
-  '-fare un operatre di delega generale, che prende un post oporation optionale e fa anche rename e lascia il vecchio come deprecated
-  'tmp={type method mdf Outer0 k(args) }[rename k.selector() in fresh]+
-    '  {<:Concept::Invariant 
-    '  type method
-    '  mdf Outer0 (mdf Outer0 new) {
-    '  if !new.invariant() error ...
-    '  return new}
-    '  }[rename #apply(new) in k.selector()#]
-    ' sumMethod Outer0 fresh k.selector()#
-    'for  setters:
-    '{ mut method Void (Void fresh){
-    '  if !this.invariant() error ...
-    '  return fresh
-    '  }}
-    
+  type method
+  Selector stateFName(
+  Selector that, Strings old,Strings fresh){
+    name=that.nameAsField()
+    prefix=that.prefixAsField()
+    names=that.names()
+    with o in old.vals(), f in fresh.vals() (
+      if name==o (return Selector.from(name:prefix++f,names:names))
+      )
+    error Assert::CodeNotReachable(text:S"stateFName ["[name]"]"
+    [with o1 in old.vals(), f1 in fresh.vals() (o1++S"!"++f1)]"")      
+    }
+  }
+   
 
 C:Invariant<<{a(N n)<:Concept::Invariant
   method invariant() this.n()>10N
   }
+'D:Invariant<<{( var C c)<:Concept::Invariant
+'  method invariant() this.c().n()>15N
+'  }
+
 Main:{
-  C c1=C.a(n:20N)
-  Debug(S"Ok 20")
-  C c2=C.a(n:5N)
-  Debug(S"Ok 5")
-  return ExitCode.failure()
-  catch error err (
-    on Invariant::InvariantFailure
-      return ExitCode.normal()
-    )
+  Debug(Introspection(clazz:C).allAsString())
+  C c12=C.a(n:12N)
+  (
+    C c1=C.a(n:20N) void
+  ) (
+   C c2=C.a(n:5N) Debug(S"Fail")
+   catch error ( on Invariant::InvariantFailure void ) void
+  )' (
+'    D d1=D(c:C.a(n:20N)) void
+'  ) (
+'   D d2=D(c:c12) Debug(S"Fail")
+'   catch error ( on Invariant::InvariantFailure void ) void
+'   )
+  Debug(S"OK")
+  return ExitCode.normal()
   }
+' make multiple normalization not insert multiple %$ stuff
 ' method Bool isConcrete() true iff all non state methods are implemented and
 ' all the interface methods are implemented.
 

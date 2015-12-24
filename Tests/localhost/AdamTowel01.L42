@@ -2994,66 +2994,87 @@ Outer2::S #that()
 read method 
 Outer2::S that() }
 type method 
-Outer0 fromStrings(Outer1::S name, Outer1::Strings names) (
-  Outer1::S::#stringParser(that ) ::#begin() ::#end() ::#stringParser(that ) pars=(
-    Outer1::S::#stringParser(that ) ::#begin() accumulator=Outer1::S.#stringParser(that:{'@stringU
-    '(
-    }).#begin()
-    mut Outer0::Varaccumulator__74_0 varaccumulator=Outer0::Varaccumulator__74_0.#apply(inner:accumulator)
-    Void unused=(
-      Outer1::Strings::vals() n=names.vals()
+Outer0 from(Outer1::S name, Outer1::Strings names) (
+  Void unused=(
+    Void unused0=(
+      Outer1::Strings::isEmpty() cond=names.isEmpty()
       (
-        Void unused0=(
-          Void unused1=(
-            Void unused2=loop (
-              Void unused3=n.#next()
-              catch exception unused4 (
-                on Void (
-                  Void unused5=(
-                    Void unused6=n.#checkEnd()
-                    catch exception unused7 (
-                      on Void void
+        Void unused2=cond.#checkTrue()
+        catch exception unused3 (
+          on Void void
+          )
+        return Outer0.fromS(that:name.#plusplus(that:Outer1::S.#stringParser(that:{'@stringU
+        '()
+        })))
+        )
+      )
+    Outer1::S::#stringParser(that ) ::#begin() ::#end() ::#stringParser(that ) pars=(
+      Outer1::S::#stringParser(that ) ::#begin() accumulator=Outer1::S.#stringParser(that:{'@stringU
+      '(
+      }).#begin()
+      mut Outer0::Varaccumulator__74_0 varaccumulator=Outer0::Varaccumulator__74_0.#apply(inner:accumulator)
+      Void unused4=(
+        Outer1::Strings::vals() n=names.vals()
+        (
+          Void unused5=(
+            Void unused6=(
+              Void unused7=loop (
+                Void unused8=n.#next()
+                catch exception unused9 (
+                  on Void (
+                    Void unused10=(
+                      Void unused11=n.#checkEnd()
+                      catch exception unused12 (
+                        on Void void
+                        )
+                      void
                       )
-                    void
+                    exception void
                     )
-                  exception void
                   )
+                varaccumulator.inner(that:varaccumulator.#inner().#add(that:n.#inner().#plusplus(that:Outer1::S.#stringParser(that:{'@stringU
+                ',
+                }))))
                 )
-              varaccumulator.inner(that:varaccumulator.#inner().#add(that:n.#inner().#plusplus(that:Outer1::S.#stringParser(that:{'@stringU
-              ',
-              }))))
+              catch exception unused13 (
+                on Void void
+                )
+              void
               )
-            catch exception unused8 (
-              on Void void
+            catch exception propagated (
+              on Any (
+                Void unused14=n.#close()
+                exception propagated
+                )
               )
             void
             )
-          catch exception propagated (
-            on Any (
-              Void unused9=n.#close()
-              exception propagated
+          catch return propagated0 (
+            on Outer0 (
+              Void unused15=n.#close()
+              return propagated0
               )
             )
-          void
+          n.#close()
           )
-        catch return propagated0 (
-          on Any (
-            Void unused10=n.#close()
-            return propagated0
-            )
-          )
-        n.#close()
         )
-      )
-    varaccumulator.#inner().#end()
-    ).#stringParser(that:{'@stringU
-  '
-  })
-  Outer0.fromS(that:name.#plusplus(that:pars.#apply(end:pars.size().#less(that:Outer1::N.#numberParser(that:{'@stringU
-  '1
-  }))).#plusplus(that:Outer1::S.#stringParser(that:{'@stringU
-  ')
-  }))))
+      varaccumulator.#inner().#end()
+      ).#stringParser(that:{'@stringU
+    '
+    })
+    Void unused1=return Outer0.fromS(that:name.#plusplus(that:pars.#apply(end:pars.size().#less(that:Outer1::N.#numberParser(that:{'@stringU
+    '1
+    }))).#plusplus(that:Outer1::S.#stringParser(that:{'@stringU
+    ')
+    }))))
+    void
+    )
+  catch return result (
+    on Outer0 result
+    )
+  error {'@stringU
+  'CurlyBlock-Should be unreachable code
+  }
   )
 method 
 Outer1::S nameAsField() (
@@ -3218,28 +3239,40 @@ Outer1::Strings names() (
     ',
     })))
     Outer1::Strings::#begin() ::#end() result=Outer1::Strings.#begin().#end()
-    mut Outer0::Varresult0__75_0 varresult=Outer0::Varresult0__75_0.#apply(inner:result)
     Void unused1=(
-      Void unused3=loop (
-        Void unused4=varstr.#inner().#bangequal(that:Outer1::S.#stringParser(that:{'@stringU
+      Outer0::Varstr0__76_0::#inner() ::#equalequal(that ) cond=varstr.#inner().#equalequal(that:Outer1::S.#stringParser(that:{'@stringU
+      ',
+      }))
+      (
+        Void unused4=cond.#checkTrue()
+        catch exception unused5 (
+          on Void void
+          )
+        return result
+        )
+      )
+    mut Outer0::Varresult0__75_0 varresult=Outer0::Varresult0__75_0.#apply(inner:result)
+    Void unused2=(
+      Void unused6=loop (
+        Void unused7=varstr.#inner().#bangequal(that:Outer1::S.#stringParser(that:{'@stringU
         '
         })).#checkTrue()
         (
           Outer0::Varstr0__76_0::#inner() ::firstIndexOf(that ) pos=varstr.#inner().firstIndexOf(that:Outer1::S.#stringParser(that:{'@stringU
           ',
           }))
-          Void unused5=varresult.inner(that:varresult.#inner().#add(that:varstr.#inner().#apply(end:pos)))
+          Void unused8=varresult.inner(that:varresult.#inner().#add(that:varstr.#inner().#apply(end:pos)))
           varstr.inner(that:varstr.#inner().#apply(start:pos.#plus(that:Outer1::N.#numberParser(that:{'@stringU
           '1
           }))))
           )
         )
-      catch exception unused6 (
+      catch exception unused9 (
         on Void void
         )
       void
       )
-    Void unused2=return varresult.#inner().#end()
+    Void unused3=return varresult.#inner().#end()
     void
     )
   catch return result0 (
@@ -6902,7 +6935,7 @@ Outer1::Methods state() (
                     )
                   (
                     Outer0::stateCandidate() ::vals() ::#inner() ::thisMdf() ::#equalequal(that ) cond=m.#inner().thisMdf().#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
-                    'Type
+                    'type
                     }))
                     (
                       Void unused14=cond.#checkTrue()

@@ -13,11 +13,12 @@
   InvalidFormat:{(S that)} ' TODO: turn in function, (also in Path, and patch later (define pathing operator?)
   
   type method 
-  Outer0 fromStrings(S name,Strings names) (
+  Outer0 from(S name,Strings names) {
+    if names.isEmpty() (return Outer0.fromS(name++S"()"))
     pars=S"("[with n in names.vals() (n++S",")]""
-    Outer0.fromS(name++pars(end:pars.size()-1N)++S")")
+    return Outer0.fromS(name++pars(end:pars.size()-1N)++S")")
     'Outer0.fromS(name[pars(end:#-1N)]")")
-    )
+    }
   method S nameAsField() {
     n=this.name()
     if n(0N)==S"#" (return n(start:1N))
@@ -64,6 +65,7 @@
     str:=str(start:str.firstIndexOf(S"(")+1N, end:str.size()-1N)++S","
     ' from foo(a,b,c) to a,b,c,
     var result=Strings[]
+    if str==S"," (return result)
     while str!=S"" (
       pos=str.firstIndexOf(S",")
       result:=result.#add(str(end:pos))

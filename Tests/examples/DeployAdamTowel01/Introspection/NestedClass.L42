@@ -160,7 +160,7 @@ Methods state() {
   stateCandidate=this.stateCandidate()
   constr=(
     classMethods=Methods[with m in stateCandidate.vals() (
-      case m.thisMdf()==S"Type" m
+      case m.thisMdf()==S"type" m
       )]
     if classMethods.isEmpty() (return result)
     if !classMethods.pop().isEmpty() (return result)
