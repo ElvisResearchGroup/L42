@@ -158,6 +158,7 @@ Invariant:{
           )
         )
       )
+    'Debug(Introspection(lib:acc).allAsString())
     acc:=Refactor::MakePrivateSelector[kSelF of:p]<<acc
     return acc
     catch exception cnr(
@@ -183,25 +184,25 @@ Invariant:{
 C:Invariant<<{a(N n)<:Concept::Invariant
   method invariant() this.n()>10N
   }
-'D:Invariant<<{( var C c)<:Concept::Invariant
-'  method invariant() this.c().n()>15N
-'  }
+D:Invariant<<{( var C c)<:Concept::Invariant
+  method invariant() this.c().n()>15N
+  }
 
 Main:{
-  Debug(Introspection(clazz:C).allAsString())
   C c12=C.a(n:12N)
   (
     C c1=C.a(n:20N) void
   ) (
    C c2=C.a(n:5N) Debug(S"Fail")
    catch error ( on Invariant::InvariantFailure void ) void
-  )' (
-'    D d1=D(c:C.a(n:20N)) void
-'  ) (
-'   D d2=D(c:c12) Debug(S"Fail")
-'   catch error ( on Invariant::InvariantFailure void ) void
-'   )
+  ) (
+    D d1=D(c:C.a(n:20N)) void
+  ) (
+   D d2=D(c:c12) Debug(S"Fail")
+   catch error ( on Invariant::InvariantFailure void ) void
+   )
   Debug(S"OK")
+  'TODO: add this check to verify %$ are not stupidly added Debug(Introspection(clazz:C).allAsString())
   return ExitCode.normal()
   }
 ' make multiple normalization not insert multiple %$ stuff

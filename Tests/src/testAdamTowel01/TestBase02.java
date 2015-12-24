@@ -88,7 +88,7 @@ public class TestBase02 {
      //this._02_00DeployAdamTowel02();
      L42.main(new String[]{"examples/testsForAdamTowel02/TestAddInvariant.L42"});
      Assert.assertEquals(L42.record.toString(),
-         "Ok 20\n");
+         "OK\n");
      }  
  
    @Test

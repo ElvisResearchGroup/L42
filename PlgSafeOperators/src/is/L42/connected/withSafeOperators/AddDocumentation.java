@@ -62,18 +62,19 @@ public class AddDocumentation {
     if(mwt.getMt().getMdf()!=Mdf.Type){throw Errors42.errorInvalidOnMember(doc);}
     //is an abstract type method in a non private state class.
     //discover all potential getters/setters
-    List<MethodWithType> nonTypeM = 
+    List<MethodWithType> abstrGetExposerSet = 
         cb.getMs().stream()
         .filter(m->m instanceof MethodWithType).map(m->(MethodWithType)m)
         .filter(m->m.getMt().getMdf()!=Mdf.Type)
+        .filter(m->!m.getInner().isPresent())
         .collect(Collectors.toCollection(ArrayList::new));
-    nonTypeM.add(mwt);//the chosen constructor
-    List<InvalidMwtAsState> nonWelcome = Functions.coherent(p, cb.withMs(new ArrayList<>(nonTypeM)));
+    abstrGetExposerSet.add(mwt);//the chosen constructor
+    List<InvalidMwtAsState> nonWelcome = Functions.coherent(p, cb.withMs(new ArrayList<>(abstrGetExposerSet)));
     for(InvalidMwtAsState e: nonWelcome){
       if(e.getMwt().equals(mwt)){throw Errors42.errorInvalidOnMember(doc);}
-      nonTypeM.remove(e.getMwt());
+      abstrGetExposerSet.remove(e.getMwt());
     }
-    for(MethodWithType mwti: nonTypeM){
+    for(MethodWithType mwti: abstrGetExposerSet){
       mwti=mwti.withDoc(mwti.getDoc().sum(doc));
       Program.replaceIfInDom(newMs,mwti);
     }
