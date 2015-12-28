@@ -22,6 +22,18 @@ public class From extends CloneVisitor {
     //return s.accept(new FromInClass(0,path.setNewOuter(path.outerNumber()+1).pushC("__IRRELEVANT__")));
     return FromInClass.of(s,path);
   }
+  public static Path normalizeShort(Path p0,List<String>explored){
+    int n=Math.min(p0.outerNumber(),explored.size());
+    if(n==0){return p0;}
+    List<String> cs = p0.getCBar();
+    n=Math.min(n,cs.size());
+    int i=0;
+    while(i<n){
+      if (cs.get(i).equals(explored.get(i))){ i++;}
+      else{break;}
+    }
+    return Path.outer(p0.outerNumber()-i,cs.subList(i,cs.size()));
+  }
   public static Path fromP(Path p0, Path source){
     if(p0.isPrimitive()){return p0;}
     LinkedList<String> cs0=new LinkedList<String>(p0.getRowData());

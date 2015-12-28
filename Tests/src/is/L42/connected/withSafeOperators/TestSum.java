@@ -86,6 +86,8 @@ import auxiliaryGrammar.Program;
       + "mut method B #x()"
       + "read method B x() }",
       false
+      
+//insert more private tests    },{    lineNumber(),"{()}","{B:{()}}","{() B:{()} }",false
   }});}
   @Test  public void test() {
     TestHelper.configureForTest();

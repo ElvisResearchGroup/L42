@@ -49,10 +49,10 @@ public class NormalizePrivates {
         String uniquePexed=processNameAndReturnUnseenPedex(result.pedexes,name);
         PrivatePedex validUniquePexed = isValidPedex(uniquePexed);
         if(!nc.getDoc().isPrivate()){
-          if(name.contains("__")){result.normalized=false;}
+          if(name.contains("__")){result.notNormalized();}
           return super.visit(nc);
           }
-        if(validUniquePexed==null){result.normalized=false;}
+        if(validUniquePexed==null){result.notNormalized();}
         else{result.families.add(validUniquePexed.getFamily());}
         Locator nl=this.getLocator().copy();
         nl.pushMember(nc);
@@ -64,10 +64,10 @@ public class NormalizePrivates {
         String uniquePexed=processNameAndReturnUnseenPedex(result.pedexes,name);
         PrivatePedex validUniquePexed = isValidPedex(uniquePexed);
         if(!mwt.getDoc().isPrivate()){
-          if(name.contains("__")){result.normalized=false;}
+          if(name.contains("__")){result.notNormalized();}
           return super.visit(mwt);
           }
-        if(validUniquePexed==null){result.normalized=false;}
+        if(validUniquePexed==null){result.notNormalized();}
         Locator ml=this.getLocator().copy();
         ml.pushMember(mwt);
         result.selectors.add(ml);

@@ -111,17 +111,17 @@ public static class TestNormalizePrivates1 {
   },{
     lineNumber(),"{method Void fo$%$%o__a()}","{method Void fo$%$%o_$%$%$%a()}"
   },{
-    lineNumber(),"{ C__A:{interface <:C__A }}","{ C_$%A:{interface <:C_$%A }}"      
+    lineNumber(),"{ C__A:{interface <:C__A }}","{ C_$%A:{interface <:Outer0 }}"      
   },{
-    lineNumber(),"{ C:'@private\n{interface <:C }}","{ C__0_0:'@private\n{interface <:C__0_0 }}"                                                           
+    lineNumber(),"{ C:'@private\n{interface <:C }}","{ C__0_0:'@private\n{interface <:Outer0}}"                                                           
   },{
-    lineNumber(),"{ C:'@private\n{interface D:{<:C} }}","{ C__0_0:'@private\n{interface D:{<:C__0_0} }}"
+    lineNumber(),"{ C:'@private\n{interface D:{<:C} }}","{ C__0_0:'@private\n{interface D:{<:Outer1} }}"
   },{
-    lineNumber(),"{ C:'@private\n{interface A:{B:{<:C }}}}","{ C__0_0:'@private\n{interface A:{B:{<:C__0_0 }}}}"   
+    lineNumber(),"{ C:'@private\n{interface A:{B:{<:C }}}}","{ C__0_0:'@private\n{interface A:{B:{<:Outer2}}}}"   
   },{
-    lineNumber(),"{ D:{<:C} C:'@private\n{interface <:C }}","{ D:{<:C__0_0 } C__0_0:'@private\n{interface <:C__0_0 }}" 
+    lineNumber(),"{ D:{<:C} C:'@private\n{interface <:C }}","{ D:{<:C__0_0 } C__0_0:'@private\n{interface <:Outer0 }}" 
   },{
-    lineNumber(),"{ D:{<:A::C} A:{C:'@private\n{interface <:C }}}","{ D:{<:A::C__0_0 } A:{C__0_0:'@private\n{interface <:C__0_0 }}}" 
+    lineNumber(),"{ D:{<:A::C} A:{C:'@private\n{interface <:C }}}","{ D:{<:A::C__0_0 } A:{C__0_0:'@private\n{interface <:Outer1::C__0_0}}}" 
   },{
     lineNumber(),"{ D:{<: A::C::D} A:{C:'@private\n{ D:{interface}}}}","{ D:{<:A::C__0_0::D } A:{C__0_0:'@private\n{ D:{interface}}}}" 
   },{

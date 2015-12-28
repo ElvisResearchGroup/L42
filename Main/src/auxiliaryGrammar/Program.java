@@ -81,7 +81,19 @@ public class Program {
     this.pop().recomputeStage();
     Configuration.typeSystem.computeStage(this.pop(),this.topCb());
   }
-  public Program addAtTop(ClassB cb){return new Program(this,cb);}
+  public boolean canBeAdded(ClassB cb){
+    if(this.isEmpty()){return true;}
+    assert !cb.equals(this.topCb());
+    if(cb.getMs().size()!=this.topCb().getMs().size()){return true;}
+    assert !cb.getMs().isEmpty();
+    assert cb.getMs().get(0) !=this.topCb().getMs().get(0);
+    assert !cb.getMs().get(0).equals(this.topCb().getMs().get(0));
+    return true;    
+  }
+  public Program addAtTop(ClassB cb){
+    assert canBeAdded(cb);
+    return new Program(this,cb);
+    }
   public Program pop(){assert !this.isEmpty();return this.next;}
   public Program pop(int n){
     assert n>=0;
@@ -370,7 +382,17 @@ public class Program {
       accumulateAllSupertypes(cbi,ps, p, pj);
     }
   }
-  /**cb must be frommed so that is like it is the top of p*/
+  public static List<Path> removeDuplicates(List<Path>paths, List<String> explored){
+    List<Path> result=new ArrayList<>();
+    for(Path pi:paths){
+      pi=From.normalizeShort(pi, explored);
+      if (!result.contains(pi)){result.add(pi);}
+    }
+    return result;
+  }
+  /**cb must be frommed so that is like it is the top of p,*/
+  //can return "duplicated" with different ways to refer to the same path, use  remove duplicates
+  //to remove those doubles.
   public static List<Path> getAllSupertypes(Program p,ClassB cb){
     List<Path> result=new ArrayList<>();
     for(Path pi:cb.getSupertypes()){

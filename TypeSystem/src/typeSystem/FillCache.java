@@ -49,6 +49,7 @@ public class FillCache {
     if(cb.getStage().isInheritedComputed()){return;}
     p=p.addAtTop(cb);
     List<Path> allSup = Program.getAllSupertypes(p, cb);
+    allSup=Program.removeDuplicates(allSup,explored);
     List<PathMwt> mwts=computeMwts(p, allSup);
     checkCoherent(mwts,explored,cb);
     cb.getStage().setInherited(mwts);
@@ -98,7 +99,8 @@ private static  List<PathMwt> computeMwts(Program p, List<Path> allSup) {
   List<PathMwt> mwts=new ArrayList<>();
   for(Path pi:allSup){
     ClassB cbi=p.extractCb(pi);
-    assert cbi.isInterface();
+    assert cbi.isInterface():
+      cbi;
     for(Member mij:cbi.getMs()){
       if (mij instanceof ClassB.NestedClass){continue;}
       MethodWithType mwt=(MethodWithType) mij;
@@ -124,6 +126,7 @@ public static void collectInnerClasses(List<CachedStage>again,Program p,ClassB c
     }
 }
 public static void computeStage(Program p,ClassB cb) {
+  assert p.addAtTop(cb)!=p;///a way to check that cb is not on top
   if(cb.getStage().getStage()!=Stage.None){return;}
   List<String>explored=new ArrayList<>();
   computeInheritedDeep(p, cb,explored);

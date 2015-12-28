@@ -989,7 +989,7 @@ Guard:{' exception as Guard bureocracy, error as Guard detection
 ' still, there is no bug in the program at this stage. Is legit for the caller to try and be blamed
 interface <:Outer1::Message, Outer1::Concept::ToS, Outer1::Concept::Equals, Outer1::Concept::Classable, Outer1::Concept::Named'all other guards should implement this one
 
-Operation:{<:Outer2::Guard, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
+Operation:{<:Outer1, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
 Varres_$%0_0__59_0:'@private
 {
 type method 
@@ -1102,7 +1102,7 @@ type method
 Outer0 #apply(Outer2::S text) Outer0.#apply(_text:text, cause:Outer2::Message::Opt.#apply())
 type method 
 Outer0 #apply(Outer2::S text, Outer2::Message cause) Outer0.#apply(_text:text, cause:Outer2::Message::Opt.#apply(that:cause))}
-Parameter:{<:Outer2::Guard, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
+Parameter:{<:Outer1, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
 Varres_$%1_0__60_0:'@private
 {
 type method 
@@ -1215,7 +1215,7 @@ type method
 Outer0 #apply(Outer2::S text) Outer0.#apply(_text:text, cause:Outer2::Message::Opt.#apply())
 type method 
 Outer0 #apply(Outer2::S text, Outer2::Message cause) Outer0.#apply(_text:text, cause:Outer2::Message::Opt.#apply(that:cause))}
-Precondition:{<:Outer2::Guard, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
+Precondition:{<:Outer1, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
 Varres_$%2_0__61_0:'@private
 {
 type method 
@@ -3488,7 +3488,7 @@ Library #leftleft(Library that) (
     }
     )
   )}
-SourceUnfit:{<:Outer2::MetaGuard, Outer2::Guard, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
+SourceUnfit:{<:Outer1, Outer2::Guard, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
 method kind() Outer0.myName()
 method text() Outer2::S.#stringParser(that:{'@stringU
 '
@@ -3536,7 +3536,7 @@ Outer2::Bool #bangequal(Outer0 that) this.#equalequal(that:that).#bang()
 method 
 Outer2::Bool #equalequal(Outer0 that) Outer2::Message::EqualMessages.#apply(that:this, other:that)
 method toS() Outer0.myName()}
-IncoherentRedirectMapping:{<:Outer2::MetaGuard, Outer2::Guard, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
+IncoherentRedirectMapping:{<:Outer1, Outer2::Guard, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
 method kind() Outer0.myName()
 method text() Outer2::S.#stringParser(that:{'@stringU
 '
@@ -3584,7 +3584,7 @@ Outer2::Bool #bangequal(Outer0 that) this.#equalequal(that:that).#bang()
 method 
 Outer2::Bool #equalequal(Outer0 that) Outer2::Message::EqualMessages.#apply(that:this, other:that)
 method toS() Outer0.myName()}
-ClassClash:{<:Outer2::MetaGuard, Outer2::Guard, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
+ClassClash:{<:Outer1, Outer2::Guard, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
 method kind() Outer0.myName()
 method text() Outer2::S.#stringParser(that:{'@stringU
 '
@@ -3632,7 +3632,7 @@ Outer2::Bool #bangequal(Outer0 that) this.#equalequal(that:that).#bang()
 method 
 Outer2::Bool #equalequal(Outer0 that) Outer2::Message::EqualMessages.#apply(that:this, other:that)
 method toS() Outer0.myName()}
-MethodClash:{<:Outer2::MetaGuard, Outer2::Guard, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
+MethodClash:{<:Outer1, Outer2::Guard, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
 method kind() Outer0.myName()
 method text() Outer2::S.#stringParser(that:{'@stringU
 '
@@ -3680,7 +3680,7 @@ Outer2::Bool #bangequal(Outer0 that) this.#equalequal(that:that).#bang()
 method 
 Outer2::Bool #equalequal(Outer0 that) Outer2::Message::EqualMessages.#apply(that:this, other:that)
 method toS() Outer0.myName()}
-InvalidOnTopLevel:{<:Outer2::MetaGuard, Outer2::Guard, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
+InvalidOnTopLevel:{<:Outer1, Outer2::Guard, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
 method kind() Outer0.myName()
 method text() Outer2::S.#stringParser(that:{'@stringU
 '
@@ -3728,7 +3728,7 @@ Outer2::Bool #bangequal(Outer0 that) this.#equalequal(that:that).#bang()
 method 
 Outer2::Bool #equalequal(Outer0 that) Outer2::Message::EqualMessages.#apply(that:this, other:that)
 method toS() Outer0.myName()}
-PrivacyCoupuled:{<:Outer2::MetaGuard, Outer2::Guard, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
+PrivacyCoupuled:{<:Outer1, Outer2::Guard, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
 method kind() Outer0.myName()
 method text() Outer2::S.#stringParser(that:{'@stringU
 '
@@ -3776,7 +3776,7 @@ Outer2::Bool #bangequal(Outer0 that) this.#equalequal(that:that).#bang()
 method 
 Outer2::Bool #equalequal(Outer0 that) Outer2::Message::EqualMessages.#apply(that:this, other:that)
 method toS() Outer0.myName()}
-ParameterMismatch:{<:Outer2::MetaGuard, Outer2::Guard, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
+ParameterMismatch:{<:Outer1, Outer2::Guard, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
 method kind() Outer0.myName()
 method text() Outer2::S.#stringParser(that:{'@stringU
 '
@@ -3824,7 +3824,7 @@ Outer2::Bool #bangequal(Outer0 that) this.#equalequal(that:that).#bang()
 method 
 Outer2::Bool #equalequal(Outer0 that) Outer2::Message::EqualMessages.#apply(that:this, other:that)
 method toS() Outer0.myName()}
-MemberUnavailable:{interface <:Outer2::MetaGuard, Outer2::Guard, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named}
+MemberUnavailable:{interface <:Outer1, Outer2::Guard, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named}
 DispatchMemberUnavailable:{
 type method 
 Outer1::MemberUnavailable #apply(Library that) (
@@ -3875,7 +3875,7 @@ Outer1::MemberUnavailable #apply(Library that) (
   'CurlyBlock-Should be unreachable code
   }
   )}
-NestedClassUnavailable:{<:Outer1::MemberUnavailable, Outer2::MetaGuard, Outer2::Guard, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
+NestedClassUnavailable:{<:Outer1::MemberUnavailable, Outer1, Outer2::Guard, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
 type method 
 Outer0 #apply(Outer2::Path path, Outer2::Bool isPrivate) 
 mut method 
@@ -3943,7 +3943,7 @@ method
 Outer2::Bool #bangequal(Outer0 that) this.#equalequal(that:that).#bang()
 method 
 Outer2::Bool #equalequal(Outer0 that) Outer2::Message::EqualMessages.#apply(that:this, other:that)}
-MethodUnavailable:{<:Outer1::MemberUnavailable, Outer2::MetaGuard, Outer2::Guard, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
+MethodUnavailable:{<:Outer1::MemberUnavailable, Outer1, Outer2::Guard, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
 type method 
 Outer0 #apply(Outer2::Path path, Outer2::Selector selector, Outer2::Bool isPrivate) 
 mut method 

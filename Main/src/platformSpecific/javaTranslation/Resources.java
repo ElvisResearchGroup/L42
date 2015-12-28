@@ -213,7 +213,7 @@ public class Resources {
       System.out.println(res);
       System.out.println("################################");
       UserLevelError err = ErrorFormatter.formatError(p,msg);
-      throw Assertions.codeNotReachable("try to make this happen, is it possible? it should mean bug in plugin code\n"+err+"\n---------------\n");
+      throw Assertions.codeNotReachable("try to make this happen, is it possible? it should mean bug in plugin code\n"+err+"\n---------------\n",msg);
     }
     catch(NullPointerException msg){throw msg;}
     catch(ClassCastException msg){throw msg;}

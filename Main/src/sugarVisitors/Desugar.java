@@ -122,7 +122,7 @@ public class Desugar extends CloneVisitor{
         ClassB data = OnLineCode.getCode(s.getUrl());
         L42.usedNames.addAll(CollectDeclaredClassNamesAndMethodNames.of(data));
         ast.ExpCore.ClassB dataCore=(ast.ExpCore.ClassB) data.accept(new InjectionOnCore());
-        Configuration.typeSystem.computeStage(Program.empty().addAtTop(dataCore),dataCore);
+        Configuration.typeSystem.computeStage(Program.empty()/*.addAtTop(dataCore)*/,dataCore);
         dataCore.accept(new coreVisitors.CloneVisitor(){
           @Override public ExpCore visit(ExpCore.ClassB cb){ 
             CachedStage stage=cb.getStage();
@@ -348,6 +348,22 @@ public class Desugar extends CloneVisitor{
   //ClassB reused2=OnLineCode.getCode(s.getUrl());
     ExpCore.ClassB reused=this.importedLibs.get(s.getUrl());
     assert reused!=null:s.getUrl()+" "+this.importedLibs.keySet()+this.importedLibs.get(s.getUrl())+this.importedLibs;
+    for(ast.ExpCore.ClassB.Member m1:reused.getMs()){
+      for(Member m2:res.getMs()){
+        m1.match(
+            nc1->{return m2.match(nc2->{
+               if (nc1.getName().equals(nc2.getName())){throw new ast.ErrorMessage.NotWellFormedMsk(s, s, "Nested class \""+nc1.getName()+"\" already present in reused library "+s.getUrl());} 
+              return null;}, mi2->null, mt2->null);},
+            mi1->{return m2.match(nc2->null,mi2->{
+              if (mi1.getS().equals(mi2.getS())){throw new ast.ErrorMessage.NotWellFormedMsk(s, s, "Method implemented \""+mi1.getS()+"\" already present in reused library "+s.getUrl());} 
+             return null;},  mt2->null);},
+            mt1->{return m2.match(nc2->null,mi2->null,mt2->{
+              if (mt1.getMs().equals(mt2.getMs())){throw new ast.ErrorMessage.NotWellFormedMsk(s, s, "Method with type \""+mt1.getMs()+"\" already present in reused library "+s.getUrl());} 
+             return null;});}
+            );
+        //NotWellFormedMsk
+      }
+    }
     return new ClassReuse(res,s.getUrl(),reused);
   }
 

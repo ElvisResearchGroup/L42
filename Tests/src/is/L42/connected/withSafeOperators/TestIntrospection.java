@@ -30,7 +30,7 @@ public static class TestGiveInfoType {
     {"{B:{method Void m()}}","B",1,0,
     "{Kind:{'@stringU\n'TypeReport\n}"
     +"TypeKind:{'@stringU\n'Normal\n}"
-    +"Mdf:{'@stringU\n'Immutable\n}"
+    +"Mdf:{'@stringU\n'\n}"
 //+"ResolvedMdf:{'@stringU\n'Immutable\n}"
     +"Path:{'@Void\n}"
     +"ResolvedPath:{'@Void\n}"
@@ -44,7 +44,7 @@ public static class TestGiveInfoType {
   },{"{B:{method Void m(Any x)}}","B",1,1,
     "{ Kind:{'@stringU\n'TypeReport\n}"
     +"TypeKind:{'@stringU\n'Normal\n}"
-  +"Mdf:{'@stringU\n'Immutable\n}"
+  +"Mdf:{'@stringU\n'\n}"
 //+"ResolvedMdf:{'@stringU\n'Immutable\n}"
   +"Path:{'@Any\n}"
 +"ResolvedPath:{'@Any\n}"

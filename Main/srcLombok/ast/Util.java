@@ -89,7 +89,6 @@ public class Util {
     final java.util.List<Integer> families=new java.util.ArrayList<>();
 	  @NonNull ast.Ast.Stage stage=Stage.None;
 	  final java.util.List<ClassB>dependencies=new java.util.ArrayList<>();
-	//final java.util.List<Path> allSupertypes=new java.util.ArrayList<>();
 	java.util.List<PathMwt> inherited=null;
 	List<InvalidMwtAsState> coherent=Collections.emptyList();
 	String givenName="";

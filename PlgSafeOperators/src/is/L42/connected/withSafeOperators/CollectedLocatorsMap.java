@@ -24,6 +24,9 @@ final Set<Integer> families=new HashSet<>();
 final List<Locator>selectors=new ArrayList<>();
 final List<Locator>nesteds=new ArrayList<>();
 boolean normalized=true;
+void notNormalized(){
+  this.normalized=false;
+}
 public String toString(){
   return""+pedexes+"\n"+selectors+"\n"+nesteds+"\n"+normalized;
   }

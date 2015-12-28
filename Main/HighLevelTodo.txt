@@ -1,3 +1,65 @@
+'caching is getting out of control
+'a save version, operators refresh all the cache?
+'still good, many operators do lots of internal stuff?
+
+
+'@NonNull ast.Ast.Stage stage=Stage.None;//fix point for typing
+'final java.util.List<ClassB>dependencies=-//if not empty, just to provide a better error, is sort of connected with stage? check!
+'java.util.List<PathMwt> inherited=null;//fix point for interface implementation
+'List<InvalidMwtAsState> coherent=-
+'String givenName="";
+'boolean verified=false;//to avoid re typechecking, should be safe for all operators?
+'boolean privateNormalized=false;//to avoid re normalization - if operators remove cache, is not usefull.
+'Would it disappear in the new idea? replaced with min-max with -1 default?
+'final java.util.List<Integer> families=- //to merge two classes easier with sum, again same problem as before//Would disappear
+	
+prviati: 
+method selector contiene un long int. -1 per non privato
+@private non ha semantica nel linguaggio,
+una library compilata e' ben formata se tutti i nomi dichiarati con forma a__n sono dichiarati una volta sola al suo interno, e non ridichiara nomi dichiarati fuori. (quindi hiding is ok)
+operatori che prendono cose ben formate (in un certo programa)producono cose ben formate (nello stesso programma).
+su chiamata di metodo(small step) o su resource.get() on compiled i nomi sono rimpiazzati.
+
+una classB e' normalizata (non solo ben formata) se
+ha nomi privati consegutivi e ordinati nei sottoalberi, 
+e ogni classB cachia min e max (non solo le normalizzate).
+Per efficiacia di implementazione, normalizziamo tutte le librerie del programma iniziale (reused).
+
+all operators except sum and addprivate do not need further attention?
+sum a,b if interval disoint, just sum and make union of interval
+if not disjoint, normalize both starting from higer number ever committed (different from higher reached).
+On commit, set up a new max committed
+On add private, just extend the interval by 1 and use such index.
+
+' make multiple normalization not insert multiple %$ stuff
+' method Bool isConcrete() true iff all non state methods are implemented and
+' all the interface methods are implemented.
+
+'add a printableOutline() to nested class
+' all public methods lv1,
+' for all public nc lv*, if not annotated '@importanceX with x 1-*, with indented methods
+' otherwise with all methods inline, nested after?
+
+'Patch:{'no, remove metaguard entirelly, make methClash and co as 
+'nested in Refactor, and specific errors as nested in the operator?
+'remove also the general DecorationUnfeasable?
+'or on the opposite, have DecorationUnfeasable take a class, and print itself in a fancy way to look like a nested?
+'  MetaGuard:{interface
+'    DecorationUnfeasable:Message::$[]<<{<:MetaGuard}
+'    }
+'make [] works for Message messages
+'throws shortcuts: return { return }  exception errorOn/exceptionOn
+    ' on Metaguard, Guard error e
+    ' exceptionOn Metaguard InvalidAction"YEP"  
+' method Bool isConcrete() true iff all non state methods are implemented and
+' all the interface methods are implemented.
+
+'add a printableOutline() to nested class
+' all public methods lv1,
+' for all public nc lv*, if not annotated '@importanceX with x 1-*, with indented methods
+' otherwise with all methods inline, nested after?
+
+
 AddDocumentation for private state?
 -constructor must be first?
 -error if you was going to create a incoherent private state.

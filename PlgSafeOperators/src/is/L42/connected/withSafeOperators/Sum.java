@@ -70,7 +70,13 @@ public class Sum {
      for(Path pi:ps){
        assert pi.outerNumber()==0;
        ClassB cb=Program.extractCBar(pi.getCBar(), candidate);
-       Member current=Program.getIfInDom(cb.getMs(),i.getGuilty()).get();
+       System.out.println(pi);
+       System.out.println(i);
+       System.out.println(cb.getStage());
+       System.out.println(candidate.getStage());
+       Optional<Member> currentOpt=Program.getIfInDom(cb.getMs(),i.getGuilty());
+       Member current=currentOpt.get();
+       
        if(cb.isInterface()){
          mems.add(current);
        }
@@ -102,6 +108,7 @@ public class Sum {
     if(a.getStage().isVerified() && b.getStage().isVerified()){stage.setVerified(true);}
     return new ClassB(doc1, doc2, isInterface, superT, ms,stage);
     }
+  /*
   private static void checkMethodClashInterfaceAbstract(List<String> pathForError,List<PathMwt> aInh, List<PathMwt> bInh, List<Member> ms) {
     for(Member m:ms){
       if (!(m instanceof MethodWithType)){continue;}
@@ -116,7 +123,7 @@ public class Sum {
       }
     }
   }
-
+*/
   private static List<Member> doubleSimetricalMatch(Program p, ClassB topA, ClassB topB,ClassB a, ClassB b, List<String> current) {
     List<Member> ms=new ArrayList<>();
     for (Member m : a.getMs()) {//add from a+b

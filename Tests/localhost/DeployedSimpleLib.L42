@@ -472,11 +472,15 @@ method
 Outer0 #end() }
 SumMethods:{
 type method 
-Outer0 #add(Outer2::Selector that, Outer2::Path of, Outer2::Selector to) 
+Outer0 #add(Outer2::Selector that, Outer2::Selector and, Outer2::Path of, Outer2::Selector to) 
 mut method 
 Outer2::Selector #that() 
 read method 
 Outer2::Selector that() 
+mut method 
+Outer2::Selector #and() 
+read method 
+Outer2::Selector and() 
 mut method 
 Outer2::Path #of() 
 read method 
@@ -490,7 +494,10 @@ Library #leftleft(Library that) exception Outer2::MetaGuard::MemberUnavailable, 
 type method 
 type Outer0 #begin() 
 method 
-Outer0 #end() }}
+Outer0 #end() }
+Tools:{
+type method 
+Outer2::S getToSOrName(read Any that) }}
 Introspection:{'findMeIntrospection
 
 type method 
@@ -1172,6 +1179,12 @@ mut method
 Outer2::S #that() 
 read method 
 Outer2::S that() }
+type method 
+Outer0 from(Outer1::S name, Outer1::Strings names) 
+method 
+Outer1::S nameAsField() 
+method 
+Outer1::S prefixAsField() 
 method 
 Library binaryRepr() 
 method 
@@ -1179,10 +1192,16 @@ Outer1::Bool #bangequal(Outer0 that)
 method 
 Outer1::Bool #equalequal(Outer0 that) 
 method 
+Outer1::Bool isOperator() 
+method 
 Outer1::S name() 
 method 
-Outer1::Strings names() }
+Outer1::Strings names() 
+type method 
+Outer0 fresh(Outer0 that) }
 Path:{<:Outer1::Concept::ToS, Outer1::Concept::Equals, Outer1::Concept::Named
+type method 
+Outer0 fromDocInternalizedS(Outer1::S that) 
 type method 
 Outer0 fromS(Outer1::Concept::ToS that) 
 type method 
@@ -1194,7 +1213,15 @@ Outer1::Bool #bangequal(Outer0 that)
 method 
 Outer1::Bool #equalequal(Outer0 that) 
 method 
-Outer0 #plusplus(Outer0 that) }
+Outer0 #plusplus(Outer0 that) 
+method 
+Outer1::Strings names() 
+type method 
+Outer0 fresh(Outer1::S name) 
+type method 
+Outer0 fresh() 
+type method 
+Outer0 fresh(Outer0 path) }
 Url:{'ParseFailure:Message:S[]<<{<:Guard} no need, related to invariant?
 <:Outer1::Concept::ToS
 type method ' if you do not implement it, it is a constructor?

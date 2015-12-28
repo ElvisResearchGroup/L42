@@ -21,10 +21,10 @@ public class AddDocumentation {
     Errors42.checkExistsPathMethod(cb, cs, Optional.of(sel));
     if(cs.isEmpty()){cb=auxAddDocOnMethod(p,cb,sel,doc);}
     else{
-      p=p.addAtTop(cb);
-      if(cs.size()>1){p=p.navigateInTo(cs.subList(0, cs.size()-1));}
-      Program p1=p;
-      cb= ClassOperations.onClassNavigateToPathAndDo(cb,cs,cbi->auxAddDocOnMethod(p1,cbi,sel,doc));
+      Program p1=p.addAtTop(cb);
+      if(cs.size()>1){p1=p1.navigateInTo(cs.subList(0, cs.size()-1));}
+      Program p2=p1;
+       cb= ClassOperations.onClassNavigateToPathAndDo(cb,cs,cbi->auxAddDocOnMethod(p2,cbi,sel,doc));
       }
     if(doc.isPrivate()){
       cb.getStage().setPrivateNormalized(false);
