@@ -85,9 +85,9 @@ public class Program {
     if(this.isEmpty()){return true;}
     assert !cb.equals(this.topCb());
     if(cb.getMs().size()!=this.topCb().getMs().size()){return true;}
-    assert !cb.getMs().isEmpty();
-    assert cb.getMs().get(0) !=this.topCb().getMs().get(0);
-    assert !cb.getMs().get(0).equals(this.topCb().getMs().get(0));
+    assert cb.getMs().isEmpty() ||
+      cb.getMs().get(0) !=this.topCb().getMs().get(0);
+    //this can actually happen assert !cb.getMs().get(0).equals(this.topCb().getMs().get(0));
     return true;    
   }
   public Program addAtTop(ClassB cb){

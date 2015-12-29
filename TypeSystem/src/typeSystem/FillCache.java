@@ -34,6 +34,7 @@ import sugarVisitors.CollapsePositions;
 public class FillCache {
  public static void computeInheritedDeep(Program p,ClassB cb,List<String>explored){
    assert cb!=null;
+   assert p.canBeAdded(cb);
    computeInherited(p,explored,cb);
    for(Member m:cb.getMs()){
      if(!(m instanceof NestedClass)){continue;}
@@ -126,7 +127,7 @@ public static void collectInnerClasses(List<CachedStage>again,Program p,ClassB c
     }
 }
 public static void computeStage(Program p,ClassB cb) {
-  assert p.addAtTop(cb)!=p;///a way to check that cb is not on top
+  assert p.canBeAdded(cb);
   if(cb.getStage().getStage()!=Stage.None){return;}
   List<String>explored=new ArrayList<>();
   computeInheritedDeep(p, cb,explored);

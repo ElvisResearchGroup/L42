@@ -38,8 +38,8 @@ public class ErrorFormatter {
   //TODO: in future, not display for coherent classes
   public static String displayAbstractMethods(ClassB cb){
     StringBuilder result=new StringBuilder();
-    result.append("Abstract methods:\n");
-    displayAbstractMethods(cb,result,"");
+    //result.append("Abstract methods:\n");
+    //displayAbstractMethods(cb,result,"");
     return result.toString();
   }
   private static void displayAbstractMethods(ClassB cb,StringBuilder result,String nesting){

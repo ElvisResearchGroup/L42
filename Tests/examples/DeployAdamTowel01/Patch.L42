@@ -1,0 +1,42 @@
+{(Path that)
+  method
+  Library <<(Library that)
+  exception MetaGuard::ClassClash,MetaGuard::MethodClash{
+    ip=Introspection(lib:that,path:this.that())
+    itr=ip.transitivelyNestedClasses()
+    rens=Outer0.renameMap(that,prefix:S"#1", intros:itr)
+    var map=PreferentialComposition::SrcDests[]
+    var acc=that
+    with ren in rens.vals() (
+      map:=map.#add(ren)
+      acc:=Refactor::MoveImplementationSelector[
+        ren.src() of:ren.path() to:ren.dest()]<<acc
+      catch exception err (on MetaGuard
+        error Assert::ObservedBug"Path.#lessless(that)"(err))
+      void
+      )
+    acc:=Refactor::RenamePath[
+      this.that() to:Path"Outer0"]<<acc
+    with mapi in map.vals() (
+      acc:=Refactor::MakePrivateSelector[
+        mapi.dest() of:mapi.path()]<<acc
+      )
+    return acc
+    catch exception err2 (on MetaGuard::MemberUnavailable
+      error Assert::CodeNotReachable"Path2"(err2)
+      )
+    }
+  type method '@private
+  PreferentialComposition::SrcDests renameMap(Library that,S prefix,Introspection::NestedClasses intros) {
+    var acc=PreferentialComposition::SrcDests[]
+    with intro in intros.vals() (
+      ns=intro.pathFromRoot().names()
+      Assert::$[!ns.isEmpty()]
+      acc++=PreferentialComposition.renameMap(that,
+        prefix:prefix,
+        path:Path.from(names:ns.pop())
+        ms:intro.methods()) 
+      )
+    return acc
+    }  
+  }

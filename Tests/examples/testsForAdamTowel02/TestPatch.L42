@@ -1,0 +1,22 @@
+{reuse L42.is/AdamTowel02
+SrcDest:{(Path path, Selector src,Selector dest)}
+' make it use the PC ones
+SrcDests:LinkedList.list(SrcDest)
+
+
+C:Patch(Path"P")<<{
+  A:{type method Void foo()Debug(S"World")}
+  P:{
+    A:{type method Void foo() (Debug(S"Hello") this.#1foo() )}
+    B:{type method Void foo() (Debug(S"Hello-") A.#1foo() )}
+    }
+  }
+
+Main:{
+  C::A.foo()
+  C::B.foo()
+  Debug(S"OK")
+  return ExitCode.normal()
+  }
+}
+

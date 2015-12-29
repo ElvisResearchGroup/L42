@@ -100,6 +100,15 @@ public class TestBase02 {
      Assert.assertEquals(L42.record.toString(),
          "Hello\nWorld\nHello\n");
      }  
+   @Test
+   public  void _02_09Patch() throws Throwable{
+     TestHelper.configureForTest();
+     //new TestBase01()._01_00DeployAdamTowel01();
+     //this._02_00DeployAdamTowel02();
+     L42.main(new String[]{"examples/testsForAdamTowel02/TestPatch.L42"});
+     Assert.assertEquals(L42.record.toString(),
+         "Hello\nWorld\nHello-\nWorld\nOK\n");
+     }  
  
  
    

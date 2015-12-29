@@ -3,6 +3,38 @@ grammar L42;
 
 @header {package antlrGenerated;}
 //@lexer::header {package antlrGenerated;}
+fragment Uppercase:'A'..'Z'|'%'|'$';
+fragment Lowercase:'a'..'z'|'_';
+fragment Digit:'0'..'9';
+fragment C:Uppercase (Uppercase|Lowercase|Digit)*;
+
+
+//nice idea, but there must be a bug in antlr... trying to unwrap cathegories
+//fragment CharsId :'A'..'Z'|'a'..'z'|'0'..'9';
+//fragment CharsOp :'&'|'|'|'*'|'+'|'-'|'='|'/';
+//fragment CharsPar :'('|')'|'{'|'}'|'['|']'|'<'|'>';
+//fragment CharsPunct :'!'|'?'|';'|':'|','|'.'|' ';
+//fragment CharsSpecial : '~'|'@'|'#'|'$'|'%'|'`'|'^'|'_'|'\\';
+//fragment CharsAll: CharsId|CharsOp|CharsPar|CharsPunct|CharsSpecial;
+//fragment CharsUrl: CharsId|CharsOp|CharsPunct|CharsSpecial
+//    |'('|')'|'['|']'|'<'|'>'|' '|'\"'|'\'';
+fragment CharsAll:
+  'A'..'Z'|'a'..'z'|'0'..'9' | '(' | ')' | '[' | ']' | '<' | '>' |'&'|'|'|'*'|'+'|'-'|'=' | '/' | '!' | '?' | ';' | ':' | ',' | '.' | ' ' | '~' | '@' | '#' | '$' | '%' | '`' | '^' | '_' | '\\' | '{' | '}' ;
+fragment CharsUrl:
+  'A'..'Z'|'a'..'z'|'0'..'9' | '(' | ')' | '[' | ']' | '<' | '>' |'&'|'|'|'*'|'+'|'-'|'=' | '/' | '!' | '?' | ';' | ':' | ',' | '.' | ' ' | '~' | '@' | '#' | '$' | '%' | '`' | '^' | '_' | '\\'  ;
+fragment CharsAllStrLine:
+  'A'..'Z'|'a'..'z'|'0'..'9' | '(' | ')' | '[' | ']' | '<' | '>' |'&'|'|'|'*'|'+'|'-'|'=' | '/' | '!' | '?' | ';' | ':' | ',' | '.' | ' ' | '~' | '@' | '#' | '$' | '%' | '`' | '^' | '_' | '\\' | '{' | '}' | '\"' | '\'' ;
+fragment CharsAllString:
+  'A'..'Z'|'a'..'z'|'0'..'9' | '(' | ')' | '[' | ']' | '<' | '>' |'&'|'|'|'*'|'+'|'-'|'=' | '/' | '!' | '?' | ';' | ':' | ',' | '.' | ' ' | '~' | '@' | '#' | '$' | '%' | '`' | '^' | '_' | '\\' | '{' | '}' | '\'' ;  
+fragment StrLine: '\'' CharsAllStrLine* '\n'; // tab not valid in 42, used to encode ( with space in initial rewriting
+fragment String: CharsAllString*;
+//fragment Num:Digit|'-'|'.';
+//fragment Num1:'0'|('1'..'9')Digit*;
+//fragment NumLast:Digit;
+fragment NumNext:Digit|'-'Digit|'.'Digit;
+//fragment NumFirst:Digit|'-'Digit;
+
+
 S:
     'return'|'error'|'exception';
 Mdf:
@@ -40,31 +72,13 @@ Check:'check';
 FieldSpecial:'##field';
 WalkBy:'##walkBy';
 Stage:'##less'|'##meta'|'##plus'|'##star'|'##needable'|'##needed';
-fragment Uppercase:'A'..'Z'|'%'|'$';
-fragment Lowercase:'a'..'z'|'_';
-fragment Digit:'0'..'9';
-fragment C:Uppercase (Uppercase|Lowercase|Digit)*;
 Path://    Outer ('::'C)* |
   C(ClassSep C)*;//| 'Any' | 'Void' | 'Library';
 ClassSep: '::';
 X:Lowercase (Uppercase|Lowercase|Digit|'#')*;
 HashX:'#'  (Uppercase|Lowercase|Digit|'#')*;
 //void is a particular X, syntactically
-fragment CharsId :'A'..'Z'|'a'..'z'|'0'..'9';
-fragment CharsOp :'&'|'|'|'*'|'+'|'-'|'='|'/';
-fragment CharsPar :'('|')'|'{'|'}'|'['|']'|'<'|'>';
-fragment CharsPunct :'!'|'?'|';'|':'|','|'.'|' ';
-fragment CharsSpecial : '~'|'@'|'#'|'$'|'%'|'`'|'^'|'_'|'\\';
-fragment CharsAll: CharsId|CharsOp|CharsPar|CharsPunct|CharsSpecial;
-fragment CharsUrl: CharsId|CharsOp|CharsPunct|CharsSpecial
-    |'('|')'|'['|']'|'<'|'>'|' '|'\"'|'\'';
-fragment StrLine: '\'' (CharsAll|'\"'|'\'')*'\n'; // tab not valid in 42, used to encode ( with space in initial rewriting
-fragment String: (CharsAll|'\'')*;
-//fragment Num:Digit|'-'|'.';
-//fragment Num1:'0'|('1'..'9')Digit*;
-//fragment NumLast:Digit;
-fragment NumNext:Digit|'-'Digit|'.'Digit;
-//fragment NumFirst:Digit|'-'Digit;
+
 StringQuote: '"' String '"' | '"' (' ' | ',')* '\n' ((' ' | ',')*StrLine)+ (' ' | ',')* '"';
 UrlNL: 'reuse' ' '+ CharsUrl+'\n';
 Url: 'reuse' ' '+ CharsUrl+;
