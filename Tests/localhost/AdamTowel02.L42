@@ -380,7 +380,22 @@ method clazz() Outer0
 type method 
 Outer0 #apply(Outer2::S text) Outer0.#apply(_text:text, cause:Outer2::Message::Opt.#apply())
 type method 
-Outer0 #apply(Outer2::S text, Outer2::Message cause) Outer0.#apply(_text:text, cause:Outer2::Message::Opt.#apply(that:cause))}}
+Outer0 #apply(Outer2::S text, Outer2::Message cause) Outer0.#apply(_text:text, cause:Outer2::Message::Opt.#apply(that:cause))
+method 
+Outer0::SConcat #begin() Outer0::SConcat.#apply(accumulator:this.text())
+SConcat:{
+type method 
+Outer0 #apply(Outer3::S accumulator) 
+mut method 
+Outer3::S #accumulator() 
+read method 
+Outer3::S accumulator() 
+method 
+Outer0 #add(Outer3::Concept::ToS that) Outer0.#apply(accumulator:this.accumulator().#plusplus(that:that.toS()))
+method 
+Outer0 #end() this
+method 
+Outer1 #stringParser(Library that) Outer1.#apply(text:this.accumulator().#plusplus(that:Outer3::S.#stringParser(that:that)))}}}
 N:{<:Outer1::Concept::ToS, Outer1::Concept::Equals, Outer1::Concept::Named
 type method '@private
 Outer0 #apply_$%$%19_1_$%$%$%1_1_$%$%$%$%116_1_$%$%$%$%$%233_1_$%$%$%$%$%$%350_1_$%$%$%$%$%$%$%468_1_$%$%$%$%$%$%$%$%587_1__707_1(Library _binaryRepr_$%$%19_1_$%$%$%1_1_$%$%$%$%116_1_$%$%$%$%$%233_1_$%$%$%$%$%$%350_1_$%$%$%$%$%$%$%468_1_$%$%$%$%$%$%$%$%587_1__707_1) 
@@ -646,7 +661,22 @@ method clazz() Outer0
 type method 
 Outer0 #apply(Outer2::S text) Outer0.#apply(_text:text, cause:Outer2::Message::Opt.#apply())
 type method 
-Outer0 #apply(Outer2::S text, Outer2::Message cause) Outer0.#apply(_text:text, cause:Outer2::Message::Opt.#apply(that:cause))}}
+Outer0 #apply(Outer2::S text, Outer2::Message cause) Outer0.#apply(_text:text, cause:Outer2::Message::Opt.#apply(that:cause))
+method 
+Outer0::SConcat #begin() Outer0::SConcat.#apply(accumulator:this.text())
+SConcat:{
+type method 
+Outer0 #apply(Outer3::S accumulator) 
+mut method 
+Outer3::S #accumulator() 
+read method 
+Outer3::S accumulator() 
+method 
+Outer0 #add(Outer3::Concept::ToS that) Outer0.#apply(accumulator:this.accumulator().#plusplus(that:that.toS()))
+method 
+Outer0 #end() this
+method 
+Outer1 #stringParser(Library that) Outer1.#apply(text:this.accumulator().#plusplus(that:Outer3::S.#stringParser(that:that)))}}}
 S:{<:Outer1::Concept::ToS, Outer1::Concept::Equals, Outer1::Concept::Named
 Varcurrent_$%$%39_1_$%$%$%21_1_$%$%$%$%139_1_$%$%$%$%$%256_1_$%$%$%$%$%$%374_1_$%$%$%$%$%$%$%493_1_$%$%$%$%$%$%$%$%613_1__734_1:'@private
 {
@@ -1224,7 +1254,22 @@ method clazz() Outer0
 type method 
 Outer0 #apply(Outer3::S text) Outer0.#apply(_text:text, cause:Outer2::Opt.#apply())
 type method 
-Outer0 #apply(Outer3::S text, Outer2 cause) Outer0.#apply(_text:text, cause:Outer2::Opt.#apply(that:cause))}}}
+Outer0 #apply(Outer3::S text, Outer2 cause) Outer0.#apply(_text:text, cause:Outer2::Opt.#apply(that:cause))
+method 
+Outer0::SConcat #begin() Outer0::SConcat.#apply(accumulator:this.text())
+SConcat:{
+type method 
+Outer0 #apply(Outer4::S accumulator) 
+mut method 
+Outer4::S #accumulator() 
+read method 
+Outer4::S accumulator() 
+method 
+Outer0 #add(Outer4::Concept::ToS that) Outer0.#apply(accumulator:this.accumulator().#plusplus(that:that.toS()))
+method 
+Outer0 #end() this
+method 
+Outer1 #stringParser(Library that) Outer1.#apply(text:this.accumulator().#plusplus(that:Outer4::S.#stringParser(that:that)))}}}}
 Guard:{' exception as Guard bureocracy, error as Guard detection
 '-is a check guarenteed to be performed, program logic can rely on this being enforced.
 '  as exceptions, Guards objects are a way to report/guard complex operations,
@@ -1347,7 +1392,22 @@ method clazz() Outer0
 type method 
 Outer0 #apply(Outer2::S text) Outer0.#apply(_text:text, cause:Outer2::Message::Opt.#apply())
 type method 
-Outer0 #apply(Outer2::S text, Outer2::Message cause) Outer0.#apply(_text:text, cause:Outer2::Message::Opt.#apply(that:cause))}
+Outer0 #apply(Outer2::S text, Outer2::Message cause) Outer0.#apply(_text:text, cause:Outer2::Message::Opt.#apply(that:cause))
+method 
+Outer0::SConcat #begin() Outer0::SConcat.#apply(accumulator:this.text())
+SConcat:{
+type method 
+Outer0 #apply(Outer3::S accumulator) 
+mut method 
+Outer3::S #accumulator() 
+read method 
+Outer3::S accumulator() 
+method 
+Outer0 #add(Outer3::Concept::ToS that) Outer0.#apply(accumulator:this.accumulator().#plusplus(that:that.toS()))
+method 
+Outer0 #end() this
+method 
+Outer1 #stringParser(Library that) Outer1.#apply(text:this.accumulator().#plusplus(that:Outer3::S.#stringParser(that:that)))}}
 Parameter:{<:Outer1, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
 Varres_$%1_0_$%$%43_1_$%$%$%25_1_$%$%$%$%143_1_$%$%$%$%$%260_1_$%$%$%$%$%$%378_1_$%$%$%$%$%$%$%497_1_$%$%$%$%$%$%$%$%617_1__738_1:'@private
 {
@@ -1460,7 +1520,22 @@ method clazz() Outer0
 type method 
 Outer0 #apply(Outer2::S text) Outer0.#apply(_text:text, cause:Outer2::Message::Opt.#apply())
 type method 
-Outer0 #apply(Outer2::S text, Outer2::Message cause) Outer0.#apply(_text:text, cause:Outer2::Message::Opt.#apply(that:cause))}
+Outer0 #apply(Outer2::S text, Outer2::Message cause) Outer0.#apply(_text:text, cause:Outer2::Message::Opt.#apply(that:cause))
+method 
+Outer0::SConcat #begin() Outer0::SConcat.#apply(accumulator:this.text())
+SConcat:{
+type method 
+Outer0 #apply(Outer3::S accumulator) 
+mut method 
+Outer3::S #accumulator() 
+read method 
+Outer3::S accumulator() 
+method 
+Outer0 #add(Outer3::Concept::ToS that) Outer0.#apply(accumulator:this.accumulator().#plusplus(that:that.toS()))
+method 
+Outer0 #end() this
+method 
+Outer1 #stringParser(Library that) Outer1.#apply(text:this.accumulator().#plusplus(that:Outer3::S.#stringParser(that:that)))}}
 Precondition:{<:Outer1, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
 Varres_$%2_0_$%$%44_1_$%$%$%26_1_$%$%$%$%144_1_$%$%$%$%$%261_1_$%$%$%$%$%$%379_1_$%$%$%$%$%$%$%498_1_$%$%$%$%$%$%$%$%618_1__739_1:'@private
 {
@@ -1573,7 +1648,22 @@ method clazz() Outer0
 type method 
 Outer0 #apply(Outer2::S text) Outer0.#apply(_text:text, cause:Outer2::Message::Opt.#apply())
 type method 
-Outer0 #apply(Outer2::S text, Outer2::Message cause) Outer0.#apply(_text:text, cause:Outer2::Message::Opt.#apply(that:cause))}
+Outer0 #apply(Outer2::S text, Outer2::Message cause) Outer0.#apply(_text:text, cause:Outer2::Message::Opt.#apply(that:cause))
+method 
+Outer0::SConcat #begin() Outer0::SConcat.#apply(accumulator:this.text())
+SConcat:{
+type method 
+Outer0 #apply(Outer3::S accumulator) 
+mut method 
+Outer3::S #accumulator() 
+read method 
+Outer3::S accumulator() 
+method 
+Outer0 #add(Outer3::Concept::ToS that) Outer0.#apply(accumulator:this.accumulator().#plusplus(that:that.toS()))
+method 
+Outer0 #end() this
+method 
+Outer1 #stringParser(Library that) Outer1.#apply(text:this.accumulator().#plusplus(that:Outer3::S.#stringParser(that:that)))}}
 ParseFail:{interface <:Outer1, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named}}
 System:{
 Guard:{'<:Outer::Guard soon (remove "interface" for a bad translation bug: Outer1_System_Guard is not abstract and does not override abstract method MtoS()
@@ -1690,7 +1780,22 @@ method clazz() Outer0
 type method 
 Outer0 #apply(Outer3::S text) Outer0.#apply(_text:text, cause:Outer3::Message::Opt.#apply())
 type method 
-Outer0 #apply(Outer3::S text, Outer3::Message cause) Outer0.#apply(_text:text, cause:Outer3::Message::Opt.#apply(that:cause))}}}
+Outer0 #apply(Outer3::S text, Outer3::Message cause) Outer0.#apply(_text:text, cause:Outer3::Message::Opt.#apply(that:cause))
+method 
+Outer0::SConcat #begin() Outer0::SConcat.#apply(accumulator:this.text())
+SConcat:{
+type method 
+Outer0 #apply(Outer4::S accumulator) 
+mut method 
+Outer4::S #accumulator() 
+read method 
+Outer4::S accumulator() 
+method 
+Outer0 #add(Outer4::Concept::ToS that) Outer0.#apply(accumulator:this.accumulator().#plusplus(that:that.toS()))
+method 
+Outer0 #end() this
+method 
+Outer1 #stringParser(Library that) Outer1.#apply(text:this.accumulator().#plusplus(that:Outer4::S.#stringParser(that:that)))}}}}
 Assert:{interface <:Outer1::Message, Outer1::Concept::ToS, Outer1::Concept::Equals, Outer1::Concept::Classable, Outer1::Concept::Named
 NotImplementedYet:{<:Outer1, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
 Varres_$%4_0_$%$%46_1_$%$%$%28_1_$%$%$%$%146_1_$%$%$%$%$%263_1_$%$%$%$%$%$%381_1_$%$%$%$%$%$%$%500_1_$%$%$%$%$%$%$%$%620_1__741_1:'@private
@@ -1804,7 +1909,22 @@ method clazz() Outer0
 type method 
 Outer0 #apply(Outer2::S text) Outer0.#apply(_text:text, cause:Outer2::Message::Opt.#apply())
 type method 
-Outer0 #apply(Outer2::S text, Outer2::Message cause) Outer0.#apply(_text:text, cause:Outer2::Message::Opt.#apply(that:cause))}
+Outer0 #apply(Outer2::S text, Outer2::Message cause) Outer0.#apply(_text:text, cause:Outer2::Message::Opt.#apply(that:cause))
+method 
+Outer0::SConcat #begin() Outer0::SConcat.#apply(accumulator:this.text())
+SConcat:{
+type method 
+Outer0 #apply(Outer3::S accumulator) 
+mut method 
+Outer3::S #accumulator() 
+read method 
+Outer3::S accumulator() 
+method 
+Outer0 #add(Outer3::Concept::ToS that) Outer0.#apply(accumulator:this.accumulator().#plusplus(that:that.toS()))
+method 
+Outer0 #end() this
+method 
+Outer1 #stringParser(Library that) Outer1.#apply(text:this.accumulator().#plusplus(that:Outer3::S.#stringParser(that:that)))}}
 ObservedBug:{<:Outer1, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
 Varres_$%5_0_$%$%47_1_$%$%$%29_1_$%$%$%$%147_1_$%$%$%$%$%264_1_$%$%$%$%$%$%382_1_$%$%$%$%$%$%$%501_1_$%$%$%$%$%$%$%$%621_1__742_1:'@private
 {
@@ -1917,7 +2037,22 @@ method clazz() Outer0
 type method 
 Outer0 #apply(Outer2::S text) Outer0.#apply(_text:text, cause:Outer2::Message::Opt.#apply())
 type method 
-Outer0 #apply(Outer2::S text, Outer2::Message cause) Outer0.#apply(_text:text, cause:Outer2::Message::Opt.#apply(that:cause))}
+Outer0 #apply(Outer2::S text, Outer2::Message cause) Outer0.#apply(_text:text, cause:Outer2::Message::Opt.#apply(that:cause))
+method 
+Outer0::SConcat #begin() Outer0::SConcat.#apply(accumulator:this.text())
+SConcat:{
+type method 
+Outer0 #apply(Outer3::S accumulator) 
+mut method 
+Outer3::S #accumulator() 
+read method 
+Outer3::S accumulator() 
+method 
+Outer0 #add(Outer3::Concept::ToS that) Outer0.#apply(accumulator:this.accumulator().#plusplus(that:that.toS()))
+method 
+Outer0 #end() this
+method 
+Outer1 #stringParser(Library that) Outer1.#apply(text:this.accumulator().#plusplus(that:Outer3::S.#stringParser(that:that)))}}
 CodeNotReachable:{<:Outer1, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
 Varres_$%6_0_$%$%48_1_$%$%$%30_1_$%$%$%$%148_1_$%$%$%$%$%265_1_$%$%$%$%$%$%383_1_$%$%$%$%$%$%$%502_1_$%$%$%$%$%$%$%$%622_1__743_1:'@private
 {
@@ -2030,7 +2165,22 @@ method clazz() Outer0
 type method 
 Outer0 #apply(Outer2::S text) Outer0.#apply(_text:text, cause:Outer2::Message::Opt.#apply())
 type method 
-Outer0 #apply(Outer2::S text, Outer2::Message cause) Outer0.#apply(_text:text, cause:Outer2::Message::Opt.#apply(that:cause))}
+Outer0 #apply(Outer2::S text, Outer2::Message cause) Outer0.#apply(_text:text, cause:Outer2::Message::Opt.#apply(that:cause))
+method 
+Outer0::SConcat #begin() Outer0::SConcat.#apply(accumulator:this.text())
+SConcat:{
+type method 
+Outer0 #apply(Outer3::S accumulator) 
+mut method 
+Outer3::S #accumulator() 
+read method 
+Outer3::S accumulator() 
+method 
+Outer0 #add(Outer3::Concept::ToS that) Outer0.#apply(accumulator:this.accumulator().#plusplus(that:that.toS()))
+method 
+Outer0 #end() this
+method 
+Outer1 #stringParser(Library that) Outer1.#apply(text:this.accumulator().#plusplus(that:Outer3::S.#stringParser(that:that)))}}
 $:{
 type method 
 Outer0 #apply(Outer2::N that) 
@@ -2208,7 +2358,22 @@ method clazz() Outer0
 type method 
 Outer0 #apply(Outer2::S text) Outer0.#apply(_text:text, cause:Outer2::Message::Opt.#apply())
 type method 
-Outer0 #apply(Outer2::S text, Outer2::Message cause) Outer0.#apply(_text:text, cause:Outer2::Message::Opt.#apply(that:cause))}}
+Outer0 #apply(Outer2::S text, Outer2::Message cause) Outer0.#apply(_text:text, cause:Outer2::Message::Opt.#apply(that:cause))
+method 
+Outer0::SConcat #begin() Outer0::SConcat.#apply(accumulator:this.text())
+SConcat:{
+type method 
+Outer0 #apply(Outer3::S accumulator) 
+mut method 
+Outer3::S #accumulator() 
+read method 
+Outer3::S accumulator() 
+method 
+Outer0 #add(Outer3::Concept::ToS that) Outer0.#apply(accumulator:this.accumulator().#plusplus(that:that.toS()))
+method 
+Outer0 #end() this
+method 
+Outer1 #stringParser(Library that) Outer1.#apply(text:this.accumulator().#plusplus(that:Outer3::S.#stringParser(that:that)))}}}
 LinkedList:{
 ListCode:{
 type method 
@@ -3396,7 +3561,22 @@ method clazz() Outer0
 type method 
 Outer0 #apply(Outer2::S text) Outer0.#apply(_text:text, cause:Outer2::Message::Opt.#apply())
 type method 
-Outer0 #apply(Outer2::S text, Outer2::Message cause) Outer0.#apply(_text:text, cause:Outer2::Message::Opt.#apply(that:cause))}}
+Outer0 #apply(Outer2::S text, Outer2::Message cause) Outer0.#apply(_text:text, cause:Outer2::Message::Opt.#apply(that:cause))
+method 
+Outer0::SConcat #begin() Outer0::SConcat.#apply(accumulator:this.text())
+SConcat:{
+type method 
+Outer0 #apply(Outer3::S accumulator) 
+mut method 
+Outer3::S #accumulator() 
+read method 
+Outer3::S accumulator() 
+method 
+Outer0 #add(Outer3::Concept::ToS that) Outer0.#apply(accumulator:this.accumulator().#plusplus(that:that.toS()))
+method 
+Outer0 #end() this
+method 
+Outer1 #stringParser(Library that) Outer1.#apply(text:this.accumulator().#plusplus(that:Outer3::S.#stringParser(that:that)))}}}
 Selector:{<:Outer1::Concept::ToS, Outer1::Concept::Equals, Outer1::Concept::Named
 Varaccumulator0_$%$%58_1_$%$%$%40_1_$%$%$%$%159_1_$%$%$%$%$%276_1_$%$%$%$%$%$%394_1_$%$%$%$%$%$%$%513_1_$%$%$%$%$%$%$%$%633_1__754_1:'@private
 {
@@ -3949,7 +4129,22 @@ method clazz() Outer0
 type method 
 Outer0 #apply(Outer2::S text) Outer0.#apply(_text:text, cause:Outer2::Message::Opt.#apply())
 type method 
-Outer0 #apply(Outer2::S text, Outer2::Message cause) Outer0.#apply(_text:text, cause:Outer2::Message::Opt.#apply(that:cause))}}
+Outer0 #apply(Outer2::S text, Outer2::Message cause) Outer0.#apply(_text:text, cause:Outer2::Message::Opt.#apply(that:cause))
+method 
+Outer0::SConcat #begin() Outer0::SConcat.#apply(accumulator:this.text())
+SConcat:{
+type method 
+Outer0 #apply(Outer3::S accumulator) 
+mut method 
+Outer3::S #accumulator() 
+read method 
+Outer3::S accumulator() 
+method 
+Outer0 #add(Outer3::Concept::ToS that) Outer0.#apply(accumulator:this.accumulator().#plusplus(that:that.toS()))
+method 
+Outer0 #end() this
+method 
+Outer1 #stringParser(Library that) Outer1.#apply(text:this.accumulator().#plusplus(that:Outer3::S.#stringParser(that:that)))}}}
 SafeOperators:{'@plugin
 'L42.is/connected/withSafeOperators
 
@@ -11635,7 +11830,22 @@ method clazz() Outer0
 type method 
 Outer0 #apply(Outer2::S text) Outer0.#apply(_text:text, cause:Outer2::Message::Opt.#apply())
 type method 
-Outer0 #apply(Outer2::S text, Outer2::Message cause) Outer0.#apply(_text:text, cause:Outer2::Message::Opt.#apply(that:cause))}
+Outer0 #apply(Outer2::S text, Outer2::Message cause) Outer0.#apply(_text:text, cause:Outer2::Message::Opt.#apply(that:cause))
+method 
+Outer0::SConcat #begin() Outer0::SConcat.#apply(accumulator:this.text())
+SConcat:{
+type method 
+Outer0 #apply(Outer3::S accumulator) 
+mut method 
+Outer3::S #accumulator() 
+read method 
+Outer3::S accumulator() 
+method 
+Outer0 #add(Outer3::Concept::ToS that) Outer0.#apply(accumulator:this.accumulator().#plusplus(that:that.toS()))
+method 
+Outer0 #end() this
+method 
+Outer1 #stringParser(Library that) Outer1.#apply(text:this.accumulator().#plusplus(that:Outer3::S.#stringParser(that:that)))}}
 Parsable:{
 type method 
 Library #leftleft(Library that) exception Outer1::DecorationUnfeasable (
@@ -12053,7 +12263,22 @@ method clazz() Outer0
 type method 
 Outer0 #apply(Outer2::S text) Outer0.#apply(_text:text, cause:Outer2::Message::Opt.#apply())
 type method 
-Outer0 #apply(Outer2::S text, Outer2::Message cause) Outer0.#apply(_text:text, cause:Outer2::Message::Opt.#apply(that:cause))}
+Outer0 #apply(Outer2::S text, Outer2::Message cause) Outer0.#apply(_text:text, cause:Outer2::Message::Opt.#apply(that:cause))
+method 
+Outer0::SConcat #begin() Outer0::SConcat.#apply(accumulator:this.text())
+SConcat:{
+type method 
+Outer0 #apply(Outer3::S accumulator) 
+mut method 
+Outer3::S #accumulator() 
+read method 
+Outer3::S accumulator() 
+method 
+Outer0 #add(Outer3::Concept::ToS that) Outer0.#apply(accumulator:this.accumulator().#plusplus(that:that.toS()))
+method 
+Outer0 #end() this
+method 
+Outer1 #stringParser(Library that) Outer1.#apply(text:this.accumulator().#plusplus(that:Outer3::S.#stringParser(that:that)))}}
 method 
 Library #leftleft(Library that) exception Outer0::InvalidAction (
   Void unused=('no throw
@@ -12290,7 +12515,22 @@ method clazz() Outer0
 type method 
 Outer0 #apply(Outer2::S text) Outer0.#apply(_text:text, cause:Outer2::Message::Opt.#apply())
 type method 
-Outer0 #apply(Outer2::S text, Outer2::Message cause) Outer0.#apply(_text:text, cause:Outer2::Message::Opt.#apply(that:cause))}
+Outer0 #apply(Outer2::S text, Outer2::Message cause) Outer0.#apply(_text:text, cause:Outer2::Message::Opt.#apply(that:cause))
+method 
+Outer0::SConcat #begin() Outer0::SConcat.#apply(accumulator:this.text())
+SConcat:{
+type method 
+Outer0 #apply(Outer3::S accumulator) 
+mut method 
+Outer3::S #accumulator() 
+read method 
+Outer3::S accumulator() 
+method 
+Outer0 #add(Outer3::Concept::ToS that) Outer0.#apply(accumulator:this.accumulator().#plusplus(that:that.toS()))
+method 
+Outer0 #end() this
+method 
+Outer1 #stringParser(Library that) Outer1.#apply(text:this.accumulator().#plusplus(that:Outer3::S.#stringParser(that:that)))}}
 type method 
 Outer1::Bool isInvariant(Outer1::Introspection::NestedClass that) (
   Void unused=(
@@ -13344,7 +13584,22 @@ method clazz() Outer0
 type method 
 Outer0 #apply(Outer2::S text) Outer0.#apply(_text:text, cause:Outer2::Message::Opt.#apply())
 type method 
-Outer0 #apply(Outer2::S text, Outer2::Message cause) Outer0.#apply(_text:text, cause:Outer2::Message::Opt.#apply(that:cause))}
+Outer0 #apply(Outer2::S text, Outer2::Message cause) Outer0.#apply(_text:text, cause:Outer2::Message::Opt.#apply(that:cause))
+method 
+Outer0::SConcat #begin() Outer0::SConcat.#apply(accumulator:this.text())
+SConcat:{
+type method 
+Outer0 #apply(Outer3::S accumulator) 
+mut method 
+Outer3::S #accumulator() 
+read method 
+Outer3::S accumulator() 
+method 
+Outer0 #add(Outer3::Concept::ToS that) Outer0.#apply(accumulator:this.accumulator().#plusplus(that:that.toS()))
+method 
+Outer0 #end() this
+method 
+Outer1 #stringParser(Library that) Outer1.#apply(text:this.accumulator().#plusplus(that:Outer3::S.#stringParser(that:that)))}}
 ConceptMapUnavailable:{<:Outer2::MetaGuard, Outer2::Guard, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
 Varres_$%$%41_1_$%$%$%107_1_$%$%$%$%227_1_$%$%$%$%$%344_1_$%$%$%$%$%$%462_1_$%$%$%$%$%$%$%581_1_$%$%$%$%$%$%$%$%701_1__822_1:'@private
 {
@@ -13457,7 +13712,22 @@ method clazz() Outer0
 type method 
 Outer0 #apply(Outer2::S text) Outer0.#apply(_text:text, cause:Outer2::Message::Opt.#apply())
 type method 
-Outer0 #apply(Outer2::S text, Outer2::Message cause) Outer0.#apply(_text:text, cause:Outer2::Message::Opt.#apply(that:cause))}
+Outer0 #apply(Outer2::S text, Outer2::Message cause) Outer0.#apply(_text:text, cause:Outer2::Message::Opt.#apply(that:cause))
+method 
+Outer0::SConcat #begin() Outer0::SConcat.#apply(accumulator:this.text())
+SConcat:{
+type method 
+Outer0 #apply(Outer3::S accumulator) 
+mut method 
+Outer3::S #accumulator() 
+read method 
+Outer3::S accumulator() 
+method 
+Outer0 #add(Outer3::Concept::ToS that) Outer0.#apply(accumulator:this.accumulator().#plusplus(that:that.toS()))
+method 
+Outer0 #end() this
+method 
+Outer1 #stringParser(Library that) Outer1.#apply(text:this.accumulator().#plusplus(that:Outer3::S.#stringParser(that:that)))}}
 method 
 Library #leftleft(Library that) exception Outer0::ConceptMapMismatch, Outer0::ConceptMapUnavailable (
   Void unused=(

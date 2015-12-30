@@ -110,7 +110,8 @@ Caching
  
  Language
   - method of interfaces can be refined, method refine T m(xs) eOpt
-  -yeld?
+  -yeld? [with .... yeld(e) or yeld(v, separator:S", ")
+  this would allow S"["[with n in names.vals() ( yeld(n,separator:S"; "))]"]"
  Syntax
     -concrete header have doc ('here fs)'and here  -- one of the two must be the place for @private?
     -all implemented interface names have docs, also simpler @ann syntax no new line

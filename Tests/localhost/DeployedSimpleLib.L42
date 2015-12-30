@@ -32,7 +32,22 @@ Outer2::Bool #equalequal(Outer0 that)
 type method 
 Outer0 #apply(Outer2::S text) 
 type method 
-Outer0 #apply(Outer2::S text, Outer2::Message cause) }
+Outer0 #apply(Outer2::S text, Outer2::Message cause) 
+method 
+Outer0::SConcat #begin() 
+SConcat:{
+type method 
+Outer0 #apply(Outer3::S accumulator) 
+mut method 
+Outer3::S #accumulator() 
+read method 
+Outer3::S accumulator() 
+method 
+Outer0 #add(Outer3::Concept::ToS that) 
+method 
+Outer0 #end() 
+method 
+Outer1 #stringParser(Library that) }}
 ConceptMapUnavailable:{<:Outer2::MetaGuard, Outer2::Guard, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
 type method 
 Outer0 #apply(Outer2::S _text, Outer2::Message::Opt cause) 
@@ -55,7 +70,22 @@ Outer2::Bool #equalequal(Outer0 that)
 type method 
 Outer0 #apply(Outer2::S text) 
 type method 
-Outer0 #apply(Outer2::S text, Outer2::Message cause) }
+Outer0 #apply(Outer2::S text, Outer2::Message cause) 
+method 
+Outer0::SConcat #begin() 
+SConcat:{
+type method 
+Outer0 #apply(Outer3::S accumulator) 
+mut method 
+Outer3::S #accumulator() 
+read method 
+Outer3::S accumulator() 
+method 
+Outer0 #add(Outer3::Concept::ToS that) 
+method 
+Outer0 #end() 
+method 
+Outer1 #stringParser(Library that) }}
 method 
 Library #leftleft(Library that) exception Outer0::ConceptMapMismatch, Outer0::ConceptMapUnavailable 
 DeployLibrary:{
@@ -233,7 +263,22 @@ Outer2::Bool #equalequal(Outer0 that)
 type method 
 Outer0 #apply(Outer2::S text) 
 type method 
-Outer0 #apply(Outer2::S text, Outer2::Message cause) }
+Outer0 #apply(Outer2::S text, Outer2::Message cause) 
+method 
+Outer0::SConcat #begin() 
+SConcat:{
+type method 
+Outer0 #apply(Outer3::S accumulator) 
+mut method 
+Outer3::S #accumulator() 
+read method 
+Outer3::S accumulator() 
+method 
+Outer0 #add(Outer3::Concept::ToS that) 
+method 
+Outer0 #end() 
+method 
+Outer1 #stringParser(Library that) }}
 Parsable:{
 type method 
 Library #leftleft(Library that) exception Outer1::DecorationUnfeasable }
@@ -1223,7 +1268,22 @@ Outer2::Bool #equalequal(Outer0 that)
 type method 
 Outer0 #apply(Outer2::S text) 
 type method 
-Outer0 #apply(Outer2::S text, Outer2::Message cause) }}
+Outer0 #apply(Outer2::S text, Outer2::Message cause) 
+method 
+Outer0::SConcat #begin() 
+SConcat:{
+type method 
+Outer0 #apply(Outer3::S accumulator) 
+mut method 
+Outer3::S #accumulator() 
+read method 
+Outer3::S accumulator() 
+method 
+Outer0 #add(Outer3::Concept::ToS that) 
+method 
+Outer0 #end() 
+method 
+Outer1 #stringParser(Library that) }}}
 Path:{<:Outer1::Concept::ToS, Outer1::Concept::Equals, Outer1::Concept::Named
 type method 
 Outer0 fromDocInternalizedS(Outer1::S that) 
@@ -1275,7 +1335,22 @@ Outer2::Bool #equalequal(Outer0 that)
 type method 
 Outer0 #apply(Outer2::S text) 
 type method 
-Outer0 #apply(Outer2::S text, Outer2::Message cause) }}
+Outer0 #apply(Outer2::S text, Outer2::Message cause) 
+method 
+Outer0::SConcat #begin() 
+SConcat:{
+type method 
+Outer0 #apply(Outer3::S accumulator) 
+mut method 
+Outer3::S #accumulator() 
+read method 
+Outer3::S accumulator() 
+method 
+Outer0 #add(Outer3::Concept::ToS that) 
+method 
+Outer0 #end() 
+method 
+Outer1 #stringParser(Library that) }}}
 Url:{'ParseFailure:Message:S[]<<{<:Guard} no need, related to invariant?
 <:Outer1::Concept::ToS
 type method ' if you do not implement it, it is a constructor?
@@ -1449,7 +1524,22 @@ Outer2::Bool #equalequal(Outer0 that)
 type method 
 Outer0 #apply(Outer2::S text) 
 type method 
-Outer0 #apply(Outer2::S text, Outer2::Message cause) }
+Outer0 #apply(Outer2::S text, Outer2::Message cause) 
+method 
+Outer0::SConcat #begin() 
+SConcat:{
+type method 
+Outer0 #apply(Outer3::S accumulator) 
+mut method 
+Outer3::S #accumulator() 
+read method 
+Outer3::S accumulator() 
+method 
+Outer0 #add(Outer3::Concept::ToS that) 
+method 
+Outer0 #end() 
+method 
+Outer1 #stringParser(Library that) }}
 ObservedBug:{<:Outer1, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
 type method 
 Outer0 #apply(Outer2::S _text, Outer2::Message::Opt cause) 
@@ -1472,7 +1562,22 @@ Outer2::Bool #equalequal(Outer0 that)
 type method 
 Outer0 #apply(Outer2::S text) 
 type method 
-Outer0 #apply(Outer2::S text, Outer2::Message cause) }
+Outer0 #apply(Outer2::S text, Outer2::Message cause) 
+method 
+Outer0::SConcat #begin() 
+SConcat:{
+type method 
+Outer0 #apply(Outer3::S accumulator) 
+mut method 
+Outer3::S #accumulator() 
+read method 
+Outer3::S accumulator() 
+method 
+Outer0 #add(Outer3::Concept::ToS that) 
+method 
+Outer0 #end() 
+method 
+Outer1 #stringParser(Library that) }}
 CodeNotReachable:{<:Outer1, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
 type method 
 Outer0 #apply(Outer2::S _text, Outer2::Message::Opt cause) 
@@ -1495,7 +1600,22 @@ Outer2::Bool #equalequal(Outer0 that)
 type method 
 Outer0 #apply(Outer2::S text) 
 type method 
-Outer0 #apply(Outer2::S text, Outer2::Message cause) }
+Outer0 #apply(Outer2::S text, Outer2::Message cause) 
+method 
+Outer0::SConcat #begin() 
+SConcat:{
+type method 
+Outer0 #apply(Outer3::S accumulator) 
+mut method 
+Outer3::S #accumulator() 
+read method 
+Outer3::S accumulator() 
+method 
+Outer0 #add(Outer3::Concept::ToS that) 
+method 
+Outer0 #end() 
+method 
+Outer1 #stringParser(Library that) }}
 $:{
 type method 
 Outer0 #apply(Outer2::N that) 
@@ -1533,7 +1653,22 @@ Outer2::Bool #equalequal(Outer0 that)
 type method 
 Outer0 #apply(Outer2::S text) 
 type method 
-Outer0 #apply(Outer2::S text, Outer2::Message cause) }}
+Outer0 #apply(Outer2::S text, Outer2::Message cause) 
+method 
+Outer0::SConcat #begin() 
+SConcat:{
+type method 
+Outer0 #apply(Outer3::S accumulator) 
+mut method 
+Outer3::S #accumulator() 
+read method 
+Outer3::S accumulator() 
+method 
+Outer0 #add(Outer3::Concept::ToS that) 
+method 
+Outer0 #end() 
+method 
+Outer1 #stringParser(Library that) }}}
 System:{
 Guard:{'<:Outer::Guard soon (remove "interface" for a bad translation bug: Outer1_System_Guard is not abstract and does not override abstract method MtoS()
 interface <:Outer2::Guard, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
@@ -1559,7 +1694,22 @@ Outer3::Bool #equalequal(Outer0 that)
 type method 
 Outer0 #apply(Outer3::S text) 
 type method 
-Outer0 #apply(Outer3::S text, Outer3::Message cause) }}}
+Outer0 #apply(Outer3::S text, Outer3::Message cause) 
+method 
+Outer0::SConcat #begin() 
+SConcat:{
+type method 
+Outer0 #apply(Outer4::S accumulator) 
+mut method 
+Outer4::S #accumulator() 
+read method 
+Outer4::S accumulator() 
+method 
+Outer0 #add(Outer4::Concept::ToS that) 
+method 
+Outer0 #end() 
+method 
+Outer1 #stringParser(Library that) }}}}
 Guard:{' exception as Guard bureocracy, error as Guard detection
 '-is a check guarenteed to be performed, program logic can rely on this being enforced.
 '  as exceptions, Guards objects are a way to report/guard complex operations,
@@ -1592,7 +1742,22 @@ Outer2::Bool #equalequal(Outer0 that)
 type method 
 Outer0 #apply(Outer2::S text) 
 type method 
-Outer0 #apply(Outer2::S text, Outer2::Message cause) }
+Outer0 #apply(Outer2::S text, Outer2::Message cause) 
+method 
+Outer0::SConcat #begin() 
+SConcat:{
+type method 
+Outer0 #apply(Outer3::S accumulator) 
+mut method 
+Outer3::S #accumulator() 
+read method 
+Outer3::S accumulator() 
+method 
+Outer0 #add(Outer3::Concept::ToS that) 
+method 
+Outer0 #end() 
+method 
+Outer1 #stringParser(Library that) }}
 Parameter:{<:Outer1, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
 type method 
 Outer0 #apply(Outer2::S _text, Outer2::Message::Opt cause) 
@@ -1615,7 +1780,22 @@ Outer2::Bool #equalequal(Outer0 that)
 type method 
 Outer0 #apply(Outer2::S text) 
 type method 
-Outer0 #apply(Outer2::S text, Outer2::Message cause) }
+Outer0 #apply(Outer2::S text, Outer2::Message cause) 
+method 
+Outer0::SConcat #begin() 
+SConcat:{
+type method 
+Outer0 #apply(Outer3::S accumulator) 
+mut method 
+Outer3::S #accumulator() 
+read method 
+Outer3::S accumulator() 
+method 
+Outer0 #add(Outer3::Concept::ToS that) 
+method 
+Outer0 #end() 
+method 
+Outer1 #stringParser(Library that) }}
 Precondition:{<:Outer1, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
 type method 
 Outer0 #apply(Outer2::S _text, Outer2::Message::Opt cause) 
@@ -1638,7 +1818,22 @@ Outer2::Bool #equalequal(Outer0 that)
 type method 
 Outer0 #apply(Outer2::S text) 
 type method 
-Outer0 #apply(Outer2::S text, Outer2::Message cause) }
+Outer0 #apply(Outer2::S text, Outer2::Message cause) 
+method 
+Outer0::SConcat #begin() 
+SConcat:{
+type method 
+Outer0 #apply(Outer3::S accumulator) 
+mut method 
+Outer3::S #accumulator() 
+read method 
+Outer3::S accumulator() 
+method 
+Outer0 #add(Outer3::Concept::ToS that) 
+method 
+Outer0 #end() 
+method 
+Outer1 #stringParser(Library that) }}
 ParseFail:{interface <:Outer1, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named}}
 Message:{interface <:Outer1::Concept::ToS, Outer1::Concept::Equals, Outer1::Concept::Classable, Outer1::Concept::Named
 type method 
@@ -1896,7 +2091,22 @@ Outer2::Bool #equalequal(Outer0 that)
 type method 
 Outer0 #apply(Outer2::S text) 
 type method 
-Outer0 #apply(Outer2::S text, Outer2::Message cause) }}
+Outer0 #apply(Outer2::S text, Outer2::Message cause) 
+method 
+Outer0::SConcat #begin() 
+SConcat:{
+type method 
+Outer0 #apply(Outer3::S accumulator) 
+mut method 
+Outer3::S #accumulator() 
+read method 
+Outer3::S accumulator() 
+method 
+Outer0 #add(Outer3::Concept::ToS that) 
+method 
+Outer0 #end() 
+method 
+Outer1 #stringParser(Library that) }}}
 Bool:{<:Outer1::Concept::ToS, Outer1::Concept::Equals, Outer1::Concept::Named
 method 
 Void #checkTrue() exception Void 
@@ -1940,7 +2150,22 @@ Outer1 #equalequal(Outer0 that)
 type method 
 Outer0 #apply(Outer2::S text) 
 type method 
-Outer0 #apply(Outer2::S text, Outer2::Message cause) }}
+Outer0 #apply(Outer2::S text, Outer2::Message cause) 
+method 
+Outer0::SConcat #begin() 
+SConcat:{
+type method 
+Outer0 #apply(Outer3::S accumulator) 
+mut method 
+Outer3::S #accumulator() 
+read method 
+Outer3::S accumulator() 
+method 
+Outer0 #add(Outer3::Concept::ToS that) 
+method 
+Outer0 #end() 
+method 
+Outer1 #stringParser(Library that) }}}
 ExitCode:{
 type method 
 Library normal() 
