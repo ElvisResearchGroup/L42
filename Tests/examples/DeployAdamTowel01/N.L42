@@ -8,9 +8,12 @@
   
   type method
   N #numberParser(Library that)
-    N(_binaryRepr:using Alu
+    N(_binaryRepr: using Alu
       check stringToInt32(that)
-      error void)
+      error Outer0.parseError(S.#stringParser(that)))
+  type method
+  Any parseError(S that)
+    S"UnsatisfactoryErrorToAvoidCycle, replace in AdamT2"
 
   method
   toS() S.#stringParser(using Alu

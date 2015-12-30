@@ -4,13 +4,16 @@
   type method
   Outer0 fromS(Concept::ToS that)
     Outer0.#stringParser(that.toS().binaryRepr())
-  type method Outer0 #stringParser(Library that) (
+  type method
+  Outer0 #stringParser(Library that) (
     using SafeOperators
       check ifInvalidDo(selector:that)
-      error InvalidFormat(S"Selector.fromS - invalid string "++S.#stringParser(that))
+      error Outer0.parseError(S.#stringParser(that))
     Outer0._private(_binaryRepr:that)
     )
-  InvalidFormat:{(S that)} ' TODO: turn in function, (also in Path, and patch later (define pathing operator?)
+  type method
+  Any parseError(S that)
+    S"UnsatisfactoryErrorToAvoidCycle, replace in AdamT2"
   
   type method 
   Outer0 from(S name,Strings names) {

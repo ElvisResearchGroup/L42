@@ -194,9 +194,7 @@ Outer0 fromS(read Outer1::Concept::ToS that) (
         return Outer0.false()
         )
       )
-    Void unused2=error Outer1::S.#stringParser(that:{'@stringU
-    'UnsatisfactoryErrorToAvoidCycle, replace in Adam2-3
-    })
+    Void unused2=error Outer0.parseError(that:that.toS())
     void
     )
   catch return result (
@@ -259,7 +257,11 @@ method equals(that ) (
   error {'@stringU
   'CurlyBlock-Should be unreachable code
   }
-  )}
+  )
+type method 
+Any parseError(Outer1::S that) Outer1::S.#stringParser(that:{'@stringU
+'UnsatisfactoryErrorToAvoidCycle, replace in AdamT2
+})}
 N:{<:Outer1::Concept::ToS, Outer1::Concept::Equals, Outer1::Concept::Named
 type method '@private
 Outer0 #apply__19_0(Library _binaryRepr__19_0) 
@@ -273,7 +275,11 @@ Outer0 fromS(Outer1::Concept::ToS that) Outer0.#numberParser(that:that.toS().bin
 method 
 Library binaryRepr() this._binaryRepr__19_0()
 type method 
-Outer1::N #numberParser(Library that) Outer1::N.#apply__19_0(_binaryRepr__19_0:using Outer1::Alu check stringToInt32(that:that) error void)
+Outer1::N #numberParser(Library that) Outer1::N.#apply__19_0(_binaryRepr__19_0:using Outer1::Alu check stringToInt32(that:that) error Outer0.parseError(that:Outer1::S.#stringParser(that:that)))
+type method 
+Any parseError(Outer1::S that) Outer1::S.#stringParser(that:{'@stringU
+'UnsatisfactoryErrorToAvoidCycle, replace in AdamT2
+})
 method toS() Outer1::S.#stringParser(that:using Outer1::Alu check int32ToString(that:this.binaryRepr()) error void)
 method 
 Outer1::N #plus(Outer1::N that) Outer1::N.#apply__19_0(_binaryRepr__19_0:using Outer1::Alu check sumInt32(n1:this.binaryRepr(), n2:that.binaryRepr()) error void)
@@ -2694,6 +2700,9 @@ Outer0 fromDocInternalizedS(Outer1::S that) (
     }), end:that.size().#less(that:Outer1::N.#numberParser(that:{'@stringU
     '1
     }))))
+    catch error x (
+      on Outer1::Message error Outer0.parseError(that:that, cause:x)
+      )
     void
     )
   catch return result (
@@ -2707,13 +2716,17 @@ type method
 Outer0 fromS(Outer1::Concept::ToS that) Outer0.#stringParser(that:that.toS().binaryRepr())
 type method 
 Outer0 #stringParser(Library that) (
-  Void unused=using Outer1::SafeOperators check ifInvalidDo(path:that) error Outer1::S.#stringParser(that:{'@stringU
-  'Path.fromS - invalid string [
-  }).#plusplus(that:Outer1::S.#stringParser(that:that).#plusplus(that:Outer1::S.#stringParser(that:{'@stringU
-  ']
-  })))
+  Void unused=using Outer1::SafeOperators check ifInvalidDo(path:that) error Outer0.parseError(that:Outer1::S.#stringParser(that:that))
   Outer0._private__23_0(_binaryRepr__23_0:that)
   )
+type method 
+Any parseError(Outer1::S that) Outer1::S.#stringParser(that:{'@stringU
+'UnsatisfactoryErrorToAvoidCycle, replace in AdamT2
+})
+type method 
+Any parseError(Outer1::S that, Outer1::Message cause) Outer1::S.#stringParser(that:{'@stringU
+'UnsatisfactoryErrorToAvoidCycle, replace in AdamT2
+})
 method 
 Library binaryRepr() this._binaryRepr__23_0()
 method toS() Outer1::S.#stringParser(that:this._binaryRepr__23_0())
@@ -3070,18 +3083,13 @@ type method
 Outer0 fromS(Outer1::Concept::ToS that) Outer0.#stringParser(that:that.toS().binaryRepr())
 type method 
 Outer0 #stringParser(Library that) (
-  Void unused=using Outer1::SafeOperators check ifInvalidDo(selector:that) error Outer0::InvalidFormat.#apply(that:Outer1::S.#stringParser(that:{'@stringU
-  'Selector.fromS - invalid string 
-  }).#plusplus(that:Outer1::S.#stringParser(that:that)))
+  Void unused=using Outer1::SafeOperators check ifInvalidDo(selector:that) error Outer0.parseError(that:Outer1::S.#stringParser(that:that))
   Outer0._private__24_0(_binaryRepr__24_0:that)
   )
-InvalidFormat:{
 type method 
-Outer0 #apply(Outer2::S that) 
-mut method 
-Outer2::S #that() 
-read method 
-Outer2::S that() }
+Any parseError(Outer1::S that) Outer1::S.#stringParser(that:{'@stringU
+'UnsatisfactoryErrorToAvoidCycle, replace in AdamT2
+})
 type method 
 Outer0 from(Outer1::S name, Outer1::Strings names) (
   Void unused=(

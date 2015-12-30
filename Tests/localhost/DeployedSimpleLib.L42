@@ -81,7 +81,8 @@ type method
 Outer0 #add(Outer2::Path that, Outer2::Url url) 
 method 
 Library #leftleft(Library that) exception Outer2::MetaGuard::NestedClassUnavailable, Outer2::MetaGuard::PrivacyCoupuled }}
-PreferentialComposition:{
+PreferentialComposition:{'members of PreferentialComposition
+
 $:{interface 
 method 
 Library solveConflict(Library that, Outer1::SrcDest location) exception Outer2::MetaGuard }
@@ -173,6 +174,10 @@ Outer2::SrcDest #inner()
 read method 
 Void #close() }}
 type method 
+Outer0::SrcDests renameMap(Library that, Outer1::S prefix, Outer1::Path path, Outer1::Introspection::Methods ms) 
+type method 
+Outer1::Bool needRename(Outer1::Introspection::NestedClass that, Outer1::Introspection::Method meth) 
+type method 
 Library #leftleft(Library that) exception Outer1::MetaGuard::ClassClash, Outer1::MetaGuard::MethodClash }
 DeployTowel:{
 type method 
@@ -251,7 +256,8 @@ Library #leftleft(Library that) exception Outer1::DecorationUnfeasable }
 Named:{
 type method 
 Library #leftleft(Library that) exception Outer1::DecorationUnfeasable }}
-Use:{<:Outer1::PreferentialComposition::$
+Use:{'members of each produced class
+<:Outer1::PreferentialComposition::$
 method 
 Outer0 #add(Library that) 
 type method 
@@ -262,7 +268,8 @@ method
 Library #leftleft(Library that) exception Outer1::MetaGuard::ClassClash, Outer1::MetaGuard::MethodClash 
 method 
 Outer0 #plusplus(Outer0 that) }
-Extends:{<:Outer1::PreferentialComposition::$
+Extends:{'members of each produced class
+<:Outer1::PreferentialComposition::$
 method 
 Outer0 #add(Library that) 
 type method 
@@ -1172,13 +1179,8 @@ type method
 Outer0 fromS(Outer1::Concept::ToS that) 
 type method 
 Outer0 #stringParser(Library that) 
-InvalidFormat:{
 type method 
-Outer0 #apply(Outer2::S that) 
-mut method 
-Outer2::S #that() 
-read method 
-Outer2::S that() }
+Any parseError(Outer1::S that) 
 type method 
 Outer0 from(Outer1::S name, Outer1::Strings names) 
 method 
@@ -1198,7 +1200,30 @@ Outer1::S name()
 method 
 Outer1::Strings names() 
 type method 
-Outer0 fresh(Outer0 that) }
+Outer0 fresh(Outer0 that) 
+ParseFail:{<:Outer2::Guard::ParseFail, Outer2::Guard, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
+type method 
+Outer0 #apply(Outer2::S _text, Outer2::Message::Opt cause) 
+mut method 
+Outer2::S #_text() 
+read method 
+Outer2::S _text() 
+mut method 
+Outer2::Message::Opt #cause() 
+read method 
+Outer2::Message::Opt cause() 
+type method 
+Outer0 #stringParser(Library that) 
+method 
+Outer0 #apply(Outer2::Message that) 
+method 
+Outer2::Bool #bangequal(Outer0 that) 
+method 
+Outer2::Bool #equalequal(Outer0 that) 
+type method 
+Outer0 #apply(Outer2::S text) 
+type method 
+Outer0 #apply(Outer2::S text, Outer2::Message cause) }}
 Path:{<:Outer1::Concept::ToS, Outer1::Concept::Equals, Outer1::Concept::Named
 type method 
 Outer0 fromDocInternalizedS(Outer1::S that) 
@@ -1206,6 +1231,10 @@ type method
 Outer0 fromS(Outer1::Concept::ToS that) 
 type method 
 Outer0 #stringParser(Library that) 
+type method 
+Any parseError(Outer1::S that) 
+type method 
+Any parseError(Outer1::S that, Outer1::Message cause) 
 method 
 Library binaryRepr() 
 method 
@@ -1217,11 +1246,36 @@ Outer0 #plusplus(Outer0 that)
 method 
 Outer1::Strings names() 
 type method 
+Outer0 from(Outer1::Strings names) 
+type method 
 Outer0 fresh(Outer1::S name) 
 type method 
 Outer0 fresh() 
 type method 
-Outer0 fresh(Outer0 path) }
+Outer0 fresh(Outer0 path) 
+ParseFail:{<:Outer2::Guard::ParseFail, Outer2::Guard, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
+type method 
+Outer0 #apply(Outer2::S _text, Outer2::Message::Opt cause) 
+mut method 
+Outer2::S #_text() 
+read method 
+Outer2::S _text() 
+mut method 
+Outer2::Message::Opt #cause() 
+read method 
+Outer2::Message::Opt cause() 
+type method 
+Outer0 #stringParser(Library that) 
+method 
+Outer0 #apply(Outer2::Message that) 
+method 
+Outer2::Bool #bangequal(Outer0 that) 
+method 
+Outer2::Bool #equalequal(Outer0 that) 
+type method 
+Outer0 #apply(Outer2::S text) 
+type method 
+Outer0 #apply(Outer2::S text, Outer2::Message cause) }}
 Url:{'ParseFailure:Message:S[]<<{<:Guard} no need, related to invariant?
 <:Outer1::Concept::ToS
 type method ' if you do not implement it, it is a constructor?
@@ -1584,7 +1638,8 @@ Outer2::Bool #equalequal(Outer0 that)
 type method 
 Outer0 #apply(Outer2::S text) 
 type method 
-Outer0 #apply(Outer2::S text, Outer2::Message cause) }}
+Outer0 #apply(Outer2::S text, Outer2::Message cause) }
+ParseFail:{interface <:Outer1, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named}}
 Message:{interface <:Outer1::Concept::ToS, Outer1::Concept::Equals, Outer1::Concept::Classable, Outer1::Concept::Named
 type method 
 Outer1::S kind() 
@@ -1772,6 +1827,8 @@ method
 Library binaryRepr() 
 type method 
 Outer0 #numberParser(Library that) 
+type method 
+Any parseError(Outer1::S that) 
 method 
 Outer0 #plus(Outer0 that) 
 method 
@@ -1816,7 +1873,30 @@ Void #checkEnd()
 read method 
 Outer1 #inner() 
 read method 
-Void #close() }}
+Void #close() }
+ParseFail:{<:Outer2::Guard::ParseFail, Outer2::Guard, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
+type method 
+Outer0 #apply(Outer2::S _text, Outer2::Message::Opt cause) 
+mut method 
+Outer2::S #_text() 
+read method 
+Outer2::S _text() 
+mut method 
+Outer2::Message::Opt #cause() 
+read method 
+Outer2::Message::Opt cause() 
+type method 
+Outer0 #stringParser(Library that) 
+method 
+Outer0 #apply(Outer2::Message that) 
+method 
+Outer2::Bool #bangequal(Outer0 that) 
+method 
+Outer2::Bool #equalequal(Outer0 that) 
+type method 
+Outer0 #apply(Outer2::S text) 
+type method 
+Outer0 #apply(Outer2::S text, Outer2::Message cause) }}
 Bool:{<:Outer1::Concept::ToS, Outer1::Concept::Equals, Outer1::Concept::Named
 method 
 Void #checkTrue() exception Void 
@@ -1835,7 +1915,32 @@ Outer0 fromS(read Outer1::Concept::ToS that)
 method 
 Outer0 #equalequal(Outer0 that) 
 method 
-Outer0 #bangequal(Outer0 that) }
+Outer0 #bangequal(Outer0 that) 
+type method 
+Any parseError(Outer1::S that) 
+ParseFail:{<:Outer2::Guard::ParseFail, Outer2::Guard, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
+type method 
+Outer0 #apply(Outer2::S _text, Outer2::Message::Opt cause) 
+mut method 
+Outer2::S #_text() 
+read method 
+Outer2::S _text() 
+mut method 
+Outer2::Message::Opt #cause() 
+read method 
+Outer2::Message::Opt cause() 
+type method 
+Outer0 #stringParser(Library that) 
+method 
+Outer0 #apply(Outer2::Message that) 
+method 
+Outer1 #bangequal(Outer0 that) 
+method 
+Outer1 #equalequal(Outer0 that) 
+type method 
+Outer0 #apply(Outer2::S text) 
+type method 
+Outer0 #apply(Outer2::S text, Outer2::Message cause) }}
 ExitCode:{
 type method 
 Library normal() 

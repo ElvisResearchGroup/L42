@@ -6,6 +6,9 @@
     if that==S"@::"++S.nl() (return Outer0.fromS(S"Outer0"))
     'Debug(S"["++that++S"]")
     return Outer0.fromS(that(start:3N end:that.size()-1N))
+    catch error x ( on Message 
+      error Outer0.parseError(that,cause:x)
+      )
     }
   type method
   Outer0 fromS(Concept::ToS that)
@@ -13,9 +16,15 @@
   type method Outer0 #stringParser(Library that) (
     using SafeOperators 
       check ifInvalidDo(path:that)
-      error S"Path.fromS - invalid string ["++S.#stringParser(that)++S"]" 'will be improved later
+      error Outer0.parseError(S.#stringParser(that))
     Outer0._private(_binaryRepr:that)
     )
+  type method
+  Any parseError(S that)
+    S"UnsatisfactoryErrorToAvoidCycle, replace in AdamT2"
+  type method
+  Any parseError(S that, Message cause)
+    S"UnsatisfactoryErrorToAvoidCycle, replace in AdamT2"
 
   method Library binaryRepr() this._binaryRepr()
 

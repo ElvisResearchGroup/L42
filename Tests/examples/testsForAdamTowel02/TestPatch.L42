@@ -1,8 +1,4 @@
 {reuse L42.is/AdamTowel02
-SrcDest:{(Path path, Selector src,Selector dest)}
-' make it use the PC ones
-SrcDests:LinkedList.list(SrcDest)
-
 
 C:Patch(Path"P")<<{
   A:{type method Void foo()Debug(S"World")}
@@ -11,7 +7,20 @@ C:Patch(Path"P")<<{
     B:{type method Void foo() (Debug(S"Hello-") A.#1foo() )}
     }
   }
-
+D:Patch(Path"P")<<{
+  A:{
+    type method A foo(A that)this.foo(that)
+    type method B bar(B that)this.bar(that)
+    }
+  B:{}
+  P:{
+    A:{
+      type method A foo(A that)that
+      type method B bar(B that)that
+      }       
+    B:{type method B bar(B that)that} 
+    }
+  }
 Main:{
   C::A.foo()
   C::B.foo()

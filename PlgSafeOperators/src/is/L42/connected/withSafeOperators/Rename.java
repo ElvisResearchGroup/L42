@@ -48,6 +48,7 @@ public class Rename {
         }//otherwise, proceed with encoding
     }
     cb=NormalizePrivates.normalize(p, cb);
+    cb=ClassOperations.normalizePaths(cb);
     if(!ExtractInfo.isPrefix(src, dest)){ return ClassOperations.normalizePaths(directRename(p,cb,src,dest));}
     src=new ArrayList<>(src);
     dest=new ArrayList<>(dest);
@@ -59,7 +60,7 @@ public class Rename {
     if(!L42.trustPluginsAndFinalProgram) {Configuration.typeSystem.checkCt(p, cb);}
     cb=directRename(p,cb,tmp,dest);
     cb=Pop.directPop(cb);
-    return ClassOperations.normalizePaths(cb);
+    return cb;
   }
   public static ClassB renameClassStrict(Program p,ClassB cb,List<String> src,List<String> dest){
   /*
@@ -79,7 +80,7 @@ public class Rename {
     ClassB renamedCb=(ClassB)new RenameAlsoDefinition(cb,clm,p).visit(cb);
     ClassB clearCb=ClassOperations.onNestedNavigateToPathAndDo(renamedCb,src,nc->Optional.empty());
     ClassB newCb=redirectDefinition(src,dest,renamedCb);
-    //newCb=ClassOperations.normalizePaths(newCb);
+    newCb=ClassOperations.normalizePaths(newCb);
     return Sum.normalizedTopSum(p, clearCb, newCb);
   }
   public static ClassB renameMethod(Program p,ClassB cb,List<String> path,MethodSelector src,MethodSelector dest){

@@ -9,18 +9,10 @@ Resource:{type method Library (){
   Ontology:...
   ConceptMap:Use[Ontology.ontologicMap()]<<{interface method Load _Load()}
   Load:...
-  GetMyNameFix:{
-      type method
-      S (type Any that)
-        Introspection(clazz:that).externalTypeToS()
-      }
+  Fix:...
   }}
 Task: {
-  r=Refactor::RenamePath
-    [Path"GetMyNameFix" to:Path"GetMyName"]
-    <<Refactor::RemoveImplementationSelector
-    [Selector"#apply(that)" of:Path"GetMyName"]
-    <<Resource()
+  r=Patch(Path"Fix")<<Resource()
   return DeployTowel[
   fileName:DeployTowel"localhost/AdamTowel02.L42"
   ]<<r

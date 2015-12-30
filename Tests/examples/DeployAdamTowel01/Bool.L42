@@ -1,25 +1,35 @@
 {(Library binaryRepr)<:Concept::ToS Concept::Equals Concept::Named'@private
-  method myName()GetMyName(Outer0)
-  method Void #checkTrue() exception Void 
+  method
+  myName()GetMyName(Outer0)
+  method
+  Void #checkTrue() exception Void 
     using Alu
       check ifInt32EqualDo(n1:this.binaryRepr() n2:0N.binaryRepr())
       exception void
-  type method Outer0 true() Outer0(binaryRepr:1N.binaryRepr())
-  type method Outer0 false() Outer0(binaryRepr:0N.binaryRepr())
+  type method
+  Outer0 true()
+    Outer0(binaryRepr:1N.binaryRepr())
+  type method
+  Outer0 false()
+    Outer0(binaryRepr:0N.binaryRepr())
 
-  method Outer0 &(Outer0 that){
+  method
+  Outer0 &(Outer0 that){
     if this (return that)
     return this
     }
-  method Outer0 |(Outer0 that){
+  method
+  Outer0 |(Outer0 that){
     if this (return this)
     return that
     }
-  method Outer0 !(){
+  method
+  Outer0 !(){
     if this (return Outer0.false())
     return Outer0.true()
     }
-  method toS(){
+  method
+  toS(){
     if this (return S"true")
     return S"false"
     }
@@ -27,16 +37,21 @@
   Outer0 fromS(read Concept::ToS that){
     if that.toS()==S"true" (return Outer0.true())
     if that.toS()==S"false" (return Outer0.false())
-    error S"UnsatisfactoryErrorToAvoidCycle, replace in Adam2-3"
-    'error ParseFail"" ParseFail<:Guard and nested in Bool
+    error Outer0.parseError(that.toS())
     }
-  method Outer0 ==(Outer0 that) {
+  method
+  Outer0 ==(Outer0 that) {
     if this (return that)
     return !that
     }
-  method Outer0 !=(Outer0 that) !(this==that)
-  method equals(that){
+  method
+  Outer0 !=(Outer0 that) !(this==that)
+  method
+  equals(that){
     with that (on Outer0 return this==that)
     return Bool.false()
     }
+  type method
+  Any parseError(S that)
+    S"UnsatisfactoryErrorToAvoidCycle, replace in AdamT2"
 }

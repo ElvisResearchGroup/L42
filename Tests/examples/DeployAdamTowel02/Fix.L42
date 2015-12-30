@@ -1,0 +1,46 @@
+{
+GetMyName:{
+  type method
+  S (type Any that)
+    Introspection(clazz:that).externalTypeToS()
+  }
+Guard:{interface ParseFail:{interface <:Guard}}
+Bool:{
+  ParseFail:Message::$[]<<{<:Guard::ParseFail}
+  type method
+  Any parseError(S that)
+    ParseFail(text:
+      S"The provided string is not a valid bool: "[that]""
+      )
+  }
+N:{
+  ParseFail:Message::$[]<<{<:Guard::ParseFail}
+  type method
+  Any parseError(S that)
+    ParseFail(text:
+      S"The provided string is not a valid Int32: "[that]""
+      )
+  }
+Selector:{
+  ParseFail:Message::$[]<<{<:Guard::ParseFail}
+  type method
+  Any parseError(S that)
+    ParseFail(text:
+      S"The provided string is not a valid selector: "[that]""
+      )
+  }
+Path:{
+  ParseFail:Message::$[]<<{<:Guard::ParseFail}
+  type method
+  Any parseError(S that)
+    ParseFail(text:
+      S"The provided string is not a valid path: "[that]""
+      )
+  type method
+  Any parseError(S that,Message cause)
+    ParseFail(text:
+      S"The provided string is not a valid internalized path: "[that]""
+      cause:cause
+      )
+  }
+}
