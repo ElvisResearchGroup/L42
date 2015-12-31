@@ -5,7 +5,7 @@ Resource:{type method Library (){
   }}
 Task: (
   Debug(S"Starting deployment")
-  DeployLibrary[
+  Load::DeployLibrary[
     Path"Collections",
     url:Url"localhost/Collections.L42"
     ]<<Resource()

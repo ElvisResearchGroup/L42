@@ -24,7 +24,7 @@ public class TestCollections {
     }
   //not run when single test executed?
 
-  @Test
+  //@Test
   public  void _00_00AJustToWarmUpJVM() throws Throwable{
     TestHelper.configureForTest();
     L42.main(new String[]{"examples/testsForAdamTowel01/UseAdamTowel01.L42"});
