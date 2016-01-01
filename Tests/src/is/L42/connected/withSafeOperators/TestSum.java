@@ -87,7 +87,11 @@ import auxiliaryGrammar.Program;
       + "read method B x() }",
       false
       
-//insert more private tests    },{    lineNumber(),"{()}","{B:{()}}","{() B:{()} }",false
+    },{    lineNumber(),
+      "{I1:{interface <: I2} I2:{interface} }",
+      "{I1:{interface } I2:{interface<: I1} }",
+      "{I1:{interface <:I2} I2:{interface<:I1} }",
+      false
   }});}
   @Test  public void test() {
     TestHelper.configureForTest();

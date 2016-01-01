@@ -55,8 +55,8 @@ public class Util {
     public String toString(){return ""+path1+"->"+path2;}
     }
   @Data @Wither public static class PathSPath{
-    @NonNull Path path; @NonNull List<Path> paths;
-    public String toString(){return ""+path+"->"+paths;}
+    @NonNull Path path; @NonNull java.util.Set<Path> pathsSet;
+    public String toString(){return ""+path+"->"+pathsSet;}
     }
   @Data @Wither public static class SPathSPath{
     @NonNull Path src; @NonNull ClassB.MethodWithType mwt1;@NonNull ClassB.MethodWithType mwt2;
@@ -90,6 +90,7 @@ public class Util {
 	  @NonNull ast.Ast.Stage stage=Stage.None;
 	  final java.util.List<ClassB>dependencies=new java.util.ArrayList<>();
 	java.util.List<PathMwt> inherited=null;
+	java.util.List<Path> inheritedPaths=null;
 	List<InvalidMwtAsState> coherent=Collections.emptyList();
 	String givenName="";
 	

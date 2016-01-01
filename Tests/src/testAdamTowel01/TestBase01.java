@@ -149,3 +149,4 @@ public class TestBase01 {
    Assert.assertEquals(L42.record.toString(),
        "a\nb\nc\nd\ne\nf\ng\nh\ni\nl\nm\nOK\n");}
   }
+

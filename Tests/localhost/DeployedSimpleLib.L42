@@ -10,7 +10,7 @@ type method
 Outer0 #begin() 
 method 
 Outer0 #end() 
-ConceptMapMismatch:{<:Outer2::MetaGuard, Outer2::Guard, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
+ConceptMapMismatch:{<:Outer2::MetaGuard, Outer2::Message
 type method 
 Outer0 #apply(Outer2::S _text, Outer2::Message::Opt cause) 
 mut method 
@@ -48,7 +48,7 @@ method
 Outer0 #end() 
 method 
 Outer1 #stringParser(Library that) }}
-ConceptMapUnavailable:{<:Outer2::MetaGuard, Outer2::Guard, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
+ConceptMapUnavailable:{<:Outer2::MetaGuard, Outer2::Message
 type method 
 Outer0 #apply(Outer2::S _text, Outer2::Message::Opt cause) 
 mut method 
@@ -241,7 +241,7 @@ Library #apply() }
 type method 
 Library list(type Any that) }
 Default:{
-DecorationUnfeasable:{<:Outer2::MetaGuard, Outer2::Guard, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
+DecorationUnfeasable:{<:Outer2::MetaGuard, Outer2::Message
 type method 
 Outer0 #apply(Outer2::S _text, Outer2::Message::Opt cause) 
 mut method 
@@ -302,7 +302,7 @@ Named:{
 type method 
 Library #leftleft(Library that) exception Outer1::DecorationUnfeasable }}
 Use:{'members of each produced class
-<:Outer1::PreferentialComposition::$
+<:Outer1::PreferentialComposition::$, Outer1::PreferentialComposition::$
 method 
 Outer0 #add(Library that) 
 type method 
@@ -314,7 +314,7 @@ Library #leftleft(Library that) exception Outer1::MetaGuard::ClassClash, Outer1:
 method 
 Outer0 #plusplus(Outer0 that) }
 Extends:{'members of each produced class
-<:Outer1::PreferentialComposition::$
+<:Outer1::PreferentialComposition::$, Outer1::PreferentialComposition::$
 method 
 Outer0 #add(Library that) 
 type method 
@@ -815,7 +815,7 @@ read method
 Outer2::Member #inner() 
 read method 
 Void #close() }}
-Method:{<:Outer1::Member, Outer2::Concept::ToS, Outer2::Concept::Named, Outer2::Concept::Equals
+Method:{<:Outer1::Member
 method 
 Outer2::Bool #equalequal(Outer0 that) 
 method 
@@ -915,7 +915,7 @@ Outer2::Method #inner()
 read method 
 Void #close() }}
 NestedClass:{'findMeNestedClass
-<:Outer1::Member, Outer2::Concept::ToS, Outer2::Concept::Named, Outer2::Concept::Equals
+<:Outer1::Member
 method 
 Outer2::Bool #equalequal(Outer0 that) 
 method 
@@ -1127,61 +1127,61 @@ read method
 Outer2::Type #inner() 
 read method 
 Void #close() }}}
-MetaGuard:{interface <:Outer1::Guard, Outer1::Message, Outer1::Concept::ToS, Outer1::Concept::Equals, Outer1::Concept::Classable, Outer1::Concept::Named
-SourceUnfit:{<:Outer1, Outer2::Guard, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
+MetaGuard:{interface <:Outer1::Guard
+SourceUnfit:{<:Outer1, Outer1
 type method 
 Outer0 #apply(Outer2::Introspection::Record record) 
 method 
 Outer2::Bool #bangequal(Outer0 that) 
 method 
 Outer2::Bool #equalequal(Outer0 that) }
-IncoherentRedirectMapping:{<:Outer1, Outer2::Guard, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
+IncoherentRedirectMapping:{<:Outer1, Outer1
 type method 
 Outer0 #apply(Outer2::Introspection::Record record) 
 method 
 Outer2::Bool #bangequal(Outer0 that) 
 method 
 Outer2::Bool #equalequal(Outer0 that) }
-ClassClash:{<:Outer1, Outer2::Guard, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
+ClassClash:{<:Outer1, Outer1
 type method 
 Outer0 #apply(Outer2::Introspection::Record record) 
 method 
 Outer2::Bool #bangequal(Outer0 that) 
 method 
 Outer2::Bool #equalequal(Outer0 that) }
-MethodClash:{<:Outer1, Outer2::Guard, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
+MethodClash:{<:Outer1, Outer1
 type method 
 Outer0 #apply(Outer2::Introspection::Record record) 
 method 
 Outer2::Bool #bangequal(Outer0 that) 
 method 
 Outer2::Bool #equalequal(Outer0 that) }
-InvalidOnTopLevel:{<:Outer1, Outer2::Guard, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
+InvalidOnTopLevel:{<:Outer1, Outer1
 type method 
 Outer0 #apply(Outer2::Introspection::Record record) 
 method 
 Outer2::Bool #bangequal(Outer0 that) 
 method 
 Outer2::Bool #equalequal(Outer0 that) }
-PrivacyCoupuled:{<:Outer1, Outer2::Guard, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
+PrivacyCoupuled:{<:Outer1, Outer1
 type method 
 Outer0 #apply(Outer2::Introspection::Record record) 
 method 
 Outer2::Bool #bangequal(Outer0 that) 
 method 
 Outer2::Bool #equalequal(Outer0 that) }
-ParameterMismatch:{<:Outer1, Outer2::Guard, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
+ParameterMismatch:{<:Outer1, Outer1
 type method 
 Outer0 #apply(Outer2::Introspection::Record record) 
 method 
 Outer2::Bool #bangequal(Outer0 that) 
 method 
 Outer2::Bool #equalequal(Outer0 that) }
-MemberUnavailable:{interface <:Outer1, Outer2::Guard, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named}
+MemberUnavailable:{interface <:Outer1}
 DispatchMemberUnavailable:{
 type method 
 Outer1::MemberUnavailable #apply(Library that) }
-NestedClassUnavailable:{<:Outer1::MemberUnavailable, Outer1, Outer2::Guard, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
+NestedClassUnavailable:{<:Outer1::MemberUnavailable, Outer1
 type method 
 Outer0 #apply(Outer2::Path path, Outer2::Bool isPrivate) 
 mut method 
@@ -1198,7 +1198,7 @@ method
 Outer2::Bool #bangequal(Outer0 that) 
 method 
 Outer2::Bool #equalequal(Outer0 that) }
-MethodUnavailable:{<:Outer1::MemberUnavailable, Outer1, Outer2::Guard, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
+MethodUnavailable:{<:Outer1::MemberUnavailable, Outer1
 type method 
 Outer0 #apply(Outer2::Path path, Outer2::Selector selector, Outer2::Bool isPrivate) 
 mut method 
@@ -1246,7 +1246,7 @@ method
 Outer1::Strings names() 
 type method 
 Outer0 fresh(Outer0 that) 
-ParseFail:{<:Outer2::Guard::ParseFail, Outer2::Guard, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
+ParseFail:{<:Outer2::Guard::ParseFail, Outer2::Message
 type method 
 Outer0 #apply(Outer2::S _text, Outer2::Message::Opt cause) 
 mut method 
@@ -1313,7 +1313,7 @@ type method
 Outer0 fresh() 
 type method 
 Outer0 fresh(Outer0 path) 
-ParseFail:{<:Outer2::Guard::ParseFail, Outer2::Guard, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
+ParseFail:{<:Outer2::Guard::ParseFail, Outer2::Message
 type method 
 Outer0 #apply(Outer2::S _text, Outer2::Message::Opt cause) 
 mut method 
@@ -1501,8 +1501,8 @@ read method
 Outer2::S #inner() 
 read method 
 Void #close() }}
-Assert:{interface <:Outer1::Message, Outer1::Concept::ToS, Outer1::Concept::Equals, Outer1::Concept::Classable, Outer1::Concept::Named
-NotImplementedYet:{<:Outer1, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
+Assert:{interface <:Outer1::Message
+NotImplementedYet:{<:Outer1, Outer2::Message
 type method 
 Outer0 #apply(Outer2::S _text, Outer2::Message::Opt cause) 
 mut method 
@@ -1540,7 +1540,7 @@ method
 Outer0 #end() 
 method 
 Outer1 #stringParser(Library that) }}
-ObservedBug:{<:Outer1, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
+ObservedBug:{<:Outer1, Outer2::Message
 type method 
 Outer0 #apply(Outer2::S _text, Outer2::Message::Opt cause) 
 mut method 
@@ -1578,7 +1578,7 @@ method
 Outer0 #end() 
 method 
 Outer1 #stringParser(Library that) }}
-CodeNotReachable:{<:Outer1, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
+CodeNotReachable:{<:Outer1, Outer2::Message
 type method 
 Outer0 #apply(Outer2::S _text, Outer2::Message::Opt cause) 
 mut method 
@@ -1631,7 +1631,7 @@ method
 Outer0 #add(Outer2::Bool that) 
 method 
 Outer0 #add(Outer2::Bool that, Outer2::Concept::ToS msg) }
-AssertMessage:{<:Outer1, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
+AssertMessage:{<:Outer1, Outer2::Message
 type method 
 Outer0 #apply(Outer2::S _text, Outer2::Message::Opt cause) 
 mut method 
@@ -1671,8 +1671,8 @@ method
 Outer1 #stringParser(Library that) }}}
 System:{
 Guard:{'<:Outer::Guard soon (remove "interface" for a bad translation bug: Outer1_System_Guard is not abstract and does not override abstract method MtoS()
-interface <:Outer2::Guard, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
-PluginFailure:{<:Outer1, Outer3::Guard, Outer3::Message, Outer3::Concept::ToS, Outer3::Concept::Equals, Outer3::Concept::Classable, Outer3::Concept::Named
+interface <:Outer2::Guard
+PluginFailure:{<:Outer1, Outer3::Message
 type method 
 Outer0 #apply(Outer3::S _text, Outer3::Message::Opt cause) 
 mut method 
@@ -1718,9 +1718,9 @@ Guard:{' exception as Guard bureocracy, error as Guard detection
 'Turning an exception Gard into an error Gard
 ' is equivalent of declaring that such misuse should not happen (blame on the caller),
 ' still, there is no bug in the program at this stage. Is legit for the caller to try and be blamed
-interface <:Outer1::Message, Outer1::Concept::ToS, Outer1::Concept::Equals, Outer1::Concept::Classable, Outer1::Concept::Named'all other guards should implement this one
+interface <:Outer1::Message'all other guards should implement this one
 
-Operation:{<:Outer1, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
+Operation:{<:Outer1, Outer2::Message
 type method 
 Outer0 #apply(Outer2::S _text, Outer2::Message::Opt cause) 
 mut method 
@@ -1758,7 +1758,7 @@ method
 Outer0 #end() 
 method 
 Outer1 #stringParser(Library that) }}
-Parameter:{<:Outer1, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
+Parameter:{<:Outer1, Outer2::Message
 type method 
 Outer0 #apply(Outer2::S _text, Outer2::Message::Opt cause) 
 mut method 
@@ -1796,7 +1796,7 @@ method
 Outer0 #end() 
 method 
 Outer1 #stringParser(Library that) }}
-Precondition:{<:Outer1, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
+Precondition:{<:Outer1, Outer2::Message
 type method 
 Outer0 #apply(Outer2::S _text, Outer2::Message::Opt cause) 
 mut method 
@@ -1834,7 +1834,7 @@ method
 Outer0 #end() 
 method 
 Outer1 #stringParser(Library that) }}
-ParseFail:{interface <:Outer1, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named}}
+ParseFail:{interface <:Outer1}}
 Message:{interface <:Outer1::Concept::ToS, Outer1::Concept::Equals, Outer1::Concept::Classable, Outer1::Concept::Named
 type method 
 Outer1::S kind() 
@@ -2069,7 +2069,7 @@ read method
 Outer1 #inner() 
 read method 
 Void #close() }
-ParseFail:{<:Outer2::Guard::ParseFail, Outer2::Guard, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
+ParseFail:{<:Outer2::Guard::ParseFail, Outer2::Message
 type method 
 Outer0 #apply(Outer2::S _text, Outer2::Message::Opt cause) 
 mut method 
@@ -2128,7 +2128,7 @@ method
 Outer0 #bangequal(Outer0 that) 
 type method 
 Any parseError(Outer1::S that) 
-ParseFail:{<:Outer2::Guard::ParseFail, Outer2::Guard, Outer2::Message, Outer2::Concept::ToS, Outer2::Concept::Equals, Outer2::Concept::Classable, Outer2::Concept::Named
+ParseFail:{<:Outer2::Guard::ParseFail, Outer2::Message
 type method 
 Outer0 #apply(Outer2::S _text, Outer2::Message::Opt cause) 
 mut method 

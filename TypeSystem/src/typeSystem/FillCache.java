@@ -54,8 +54,7 @@ public class FillCache {
     List<PathMwt> mwts=computeMwts(p, allSup);
     checkCoherent(mwts,explored,cb);
     cb.getStage().setInherited(mwts);
-    cb.getSupertypes().clear();
-    cb.getSupertypes().addAll(allSup);
+    cb.getStage().setInheritedPaths(allSup);
   }
 private static void checkCoherent(List<PathMwt> mwts, List<String> explored,ClassB cb) {
   //- no two mwt are the same

@@ -53,10 +53,10 @@ Main:{
     expected:S"Outer0::EA,")
   Debug(S"e")
     CheckSubtype(lib:{interface <:B B:{interface<:A} A:{interface}}
-    expected:S"@::B,@::A,")
+    expected:S"@::A,@::B,")
   Debug(S"f")
   CheckSubtype(lib:{interface <:EB }
-    expected:S"Outer0::EB,Outer0::EA,")
+    expected:S"Outer0::EA,Outer0::EB,")
   Debug(S"g")
   CheckNested(lib:{}
     expected:S"@::Outer0,")

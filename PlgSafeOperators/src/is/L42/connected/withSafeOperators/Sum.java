@@ -95,6 +95,7 @@ public class Sum {
     List<Member> ms = doubleSimetricalMatch(p,topA,topB,a, b,  current);
     List<Path> superT = new ArrayList<Path>(a.getSupertypes());
     superT.addAll(b.getSupertypes());
+    superT=Collections.unmodifiableList(superT);
     Doc doc1 = a.getDoc1().sum(b.getDoc1());
     Doc doc2 = a.getDoc2().sum(b.getDoc2());
     Sum.checkClassClash(p, current, topA, topB, a, b);

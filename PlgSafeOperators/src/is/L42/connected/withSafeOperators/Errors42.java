@@ -203,7 +203,7 @@ public class Errors42 {
       //  ambig=ambig.sum(Doc.factory("@"+a.getPaths().size()));
       //  }
       Doc srci=formatPathIn(a.getPath().getCBar());
-      for(Path pij:a.getPaths()){
+      for(Path pij:a.getPathsSet()){
         src=src.sum(srci);
         dest=dest.sum(formatPathOut(pij));
       }

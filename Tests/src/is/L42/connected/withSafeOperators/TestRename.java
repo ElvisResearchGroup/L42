@@ -289,9 +289,9 @@ public class TestRename {
         }, {lineNumber(),//
           "{ A1:{ A2:{ type method Outer1::B () } B:{ } }}","A1::A2","Outer0",   "{ A1:{B:{ }} type method Outer0::A1::B () }"   ,false//
         }, {lineNumber(),//
-          "{ A:{ D:{ type method Outer0 d() Outer0.d() } type method Outer1::B foo ()Outer0.foo() } B:{ }}" ,
+          "{ A:{ D:{ type method Outer0 d() Outer0.d() } type method Outer1::B foo()Outer0.foo() } B:{ }}" ,
           "A","Outer0",
-          "{ B:{ } D:{ type method Outer0 d() Outer0.d() } type method Outer0::B foo ()Outer0.foo()  }"   ,false//
+          "{ B:{ } D:{ type method Outer0 d() Outer0.d() } type method Outer0::B foo()Outer0.foo()  }"   ,false//
         }, {lineNumber(),//
           helpers.TestHelper.multiLine(""
               ,"{ A:{"
@@ -309,7 +309,7 @@ public class TestRename {
               ,"}}")    ,false//
         }, {lineNumber(),//        ////18
           helpers.TestHelper.multiLine(""
-              ,"{ A:{mut(var mut Cell head)"
+              ,"{ A:{mut (var mut Cell head)"
               ,"  Cell:{interface}"
               ,"  CellEnd:{<:Cell}"
               ,"  }}"),

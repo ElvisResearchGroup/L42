@@ -104,7 +104,8 @@ public class TranslateClass {
     if(isInterface){res.append(" extends ");}
     else{res.append(" implements ");}
     res.append("platformSpecific.javaTranslation.Resources.Revertable");
-    for(Path pi:ct.getSupertypes()){
+    for(Path pi:ct.getStage().getInheritedPaths()){
+      //if (pi.equals(Path.outer(0))){continue;}
       res.append(", ");
       res.append(Resources.nameOf(pi));
     }      

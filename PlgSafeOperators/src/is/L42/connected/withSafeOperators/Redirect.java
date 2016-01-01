@@ -90,17 +90,17 @@ public class Redirect {
     verifiedForErrorMsg=verified;
     List<PathSPath> ambiguities=new ArrayList<>();
     List<SPathSPath> exceptions=new ArrayList<>();
-    ambiguities.add(new PathSPath(internal,Arrays.asList(external)));
+    ambiguities.add(new PathSPath(internal,new HashSet<>(Arrays.asList(external))));
     for(PathSPath current=choseUnabigus(ambiguities); current!=null;current=choseUnabigus(ambiguities)){
       PathSPath _current=current;//closure final limitations
       assert ambiguitiesOk(ambiguities);
       assert verified.stream().allMatch(pp->!pp.getPath1().equals(_current.getPath())):
         verified+" "+_current.getPath();
       redirectOkAux(p,current,cbTop,ambiguities,exceptions);
-      assert current.getPaths().size()==1;
+      assert current.getPathsSet().size()==1;
       assert verified.stream().allMatch(pp->!pp.getPath1().equals(_current.getPath())):
         verified+" "+_current.getPath();
-      verified.add(new PathPath(current.getPath(),current.getPaths().get(0)));
+      verified.add(new PathPath(current.getPath(),current.getPathsSet().iterator().next()));
       accumulateVerified(ambiguities,verified);
     }
     assert choseUnabigus(ambiguities)==null;
@@ -144,9 +144,9 @@ public class Redirect {
       PathSPath psp=selectPSP(ambiguities,pp.getPath1());
       if(psp==null){continue;}
       //ambiguities.add(new PathSPath(pp.getPath1(),Arrays.asList(pp.getPath2())));
-      if(psp.getPaths().contains(pp.getPath2())){ambiguities.remove(psp);}
+      if(psp.getPathsSet().contains(pp.getPath2())){ambiguities.remove(psp);}
       else{
-        List<Path> ps=new ArrayList<>(psp.getPaths());
+        List<Path> ps=new ArrayList<>(psp.getPathsSet());
         ps.add(pp.getPath2());
         throw Errors42.errorIncoherentRedirectMapping(verified, ambiguities,psp.getPath(),ps);
         }
@@ -161,14 +161,14 @@ public class Redirect {
     return null;
   }
   private static void redirectOkAux(Program p, PathSPath current, ClassB cbTop, List<PathSPath> ambiguities, List<SPathSPath> exceptions) {
-    assert current.getPaths().size()==1;
+    assert current.getPathsSet().size()==1;
     List<String>cs=current.getPath().getCBar();
     if(cs.isEmpty()){throw Errors42.errorInvalidOnTopLevel();}
     Errors42.checkExistsPathMethod(cbTop, cs, Optional.empty());
     Boolean[] csPrivate=new Boolean[]{false};
     ClassB currentIntCb=Program.extractCBar(cs,cbTop,csPrivate);
     //path exists by construction.
-    Path path=current.getPaths().get(0);
+    Path path=current.getPathsSet().iterator().next();
     ClassB currentExtCb;
     if(path.isCore()){
       assert path.outerNumber()>0:
@@ -218,7 +218,7 @@ public class Redirect {
       assert miGet instanceof NestedClass;
       assert ((NestedClass)mi).getName().equals(((NestedClass)miGet).getName());
       Path src=current.getPath().pushC(((NestedClass)mi).getName());
-      Path dest=current.getPaths().get(0).pushC(((NestedClass)mi).getName());
+      Path dest=current.getPathsSet().iterator().next().pushC(((NestedClass)mi).getName());
       plusEqual(ambiguities,src,Arrays.asList(dest));
       return;
     }    
@@ -227,7 +227,7 @@ public class Redirect {
     MethodWithType mwtSrc=(MethodWithType)mi;
     MethodWithType mwtDest=(MethodWithType)miGet;
     mwtSrc=From.from(mwtSrc, current.getPath());//this is what happens in p.method
-    mwtDest=From.from(mwtDest, current.getPaths().get(0));
+    mwtDest=From.from(mwtDest, current.getPathsSet().iterator().next());
     assert mwtSrc.getMs().equals(mwtDest.getMs());
     boolean thisMdfOk=mwtSrc.getMt().getMdf().equals(mwtDest.getMt().getMdf());
     boolean retOk=redirectOkT(ambiguities,mwtSrc.getMt().getReturnType(),mwtDest.getMt().getReturnType());
@@ -285,7 +285,7 @@ public class Redirect {
    // List<Path>unexpectedInterfaces=new ArrayList<>(unexpectedI);
    // Collections.sort(unexpectedInterfaces,(pa,pb)->pa.toString().compareTo(pb.toString()));
     List<Path>extPs=currentExtCb.getSupertypes();
-    Path destP=current.getPaths().get(0);
+    Path destP=current.getPathsSet().iterator().next();
     extPs=Map.of(pi->From.fromP(pi,destP), extPs);
     List<Path> unexpectedInterfaces=new ArrayList<>();
     for(Path pi:currentIntCb.getSupertypes()){
@@ -301,7 +301,7 @@ public class Redirect {
       }
     }
     if(unexpectedInterfaces.isEmpty()){return;}
-    throw Errors42.errorSourceUnfit(current.getPath().getCBar(),current.getPaths().get(0),
+    throw Errors42.errorSourceUnfit(current.getPath().getCBar(),current.getPathsSet().iterator().next(),
           kindSrc,kindDest,Collections.emptyList(), true, unexpectedInterfaces);
   }
   private static void plusEqual(List<PathSPath> ambiguities, Path pif, List<Path> extPs) {
@@ -311,20 +311,20 @@ public class Redirect {
     assert !pif.isPrimitive() && pif.outerNumber()==0;
     for(PathSPath psp:ambiguities){
       if(psp.getPath().equals(pif)){
-        psp.setPaths(new ArrayList<>(psp.getPaths()));
-        assert !psp.getPaths().isEmpty();
-        Path forErr=psp.getPaths().get(0);
-        psp.getPaths().retainAll(extPs);
-        if(psp.getPaths().isEmpty()){
+        psp.setPathsSet(new HashSet<>(psp.getPathsSet()));
+        assert !psp.getPathsSet().isEmpty();
+        Path forErr=psp.getPathsSet().iterator().next();
+        psp.getPathsSet().retainAll(extPs);
+        if(psp.getPathsSet().isEmpty()){
           List<Path>psErr=Arrays.asList(forErr,extPs.get(0));
           throw Errors42.errorIncoherentRedirectMapping(Redirect.verifiedForErrorMsg,ambiguities,psp.getPath(),psErr);
           }
         return;
       }}
-    ambiguities.add(new PathSPath(pif,extPs));
+    ambiguities.add(new PathSPath(pif,new HashSet<>(extPs)));
   }finally{assert ambiguitiesOk(ambiguities);}}
   static PathSPath choseUnabigus(List<PathSPath> ambiguities){
-    for(PathSPath psp:ambiguities){if (psp.getPaths().size()==1){return psp;}}
+    for(PathSPath psp:ambiguities){if (psp.getPathsSet().size()==1){return psp;}}
     return null;
   }
   /*

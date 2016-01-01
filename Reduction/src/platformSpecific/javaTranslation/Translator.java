@@ -96,7 +96,7 @@ public class Translator {
     }
   public static void addP(int level,Program p,Map<String,ClassB> map,Program original){
     if(p.isEmpty()){return;}
-
+    Configuration.typeSystem.computeInherited(p.pop(),p.topCb());
     add(level,Collections.emptyList(),p.topCb(),map,original);
     addP(level+1,p.pop(),map,original);
   }
@@ -104,13 +104,20 @@ public class Translator {
   public static void add(int level,List<String> cs,ClassB cb, Map<String,ClassB> map,Program original){
     Ast.Path p=Ast.Path.outer(level, cs);
     if(cb.getStage().getStage()==Stage.Star  && IsCompiled.of(cb)){//otherwise is "meta"
-      map.put(Resources.nameOf(level,cs),useFrom(cb,p));
+      assert cb.getStage().getInheritedPaths()!=null;
+      ClassB cbUF=useFrom(cb,p);
+      assert cbUF.getStage().getInheritedPaths()!=null;
+      map.put(Resources.nameOf(level,cs),cbUF);
       }
     else{//generate only for metaprogramming
-      map.put(Resources.nameOf(level,cs),new ExpCore.ClassB(
+      ExpCore.ClassB cbMP = new ExpCore.ClassB(
           Doc.factory("DebugInfo: is interface since (cb.getStage()!=Stage.Star :"
             +(cb.getStage().getStage()!=Stage.Star)+") or since !IsCompiled.of(cb) :"+!IsCompiled.of(cb)+")"
-          ),Doc.empty(),true,Collections.emptyList(),Collections.emptyList(),new Util.CachedStage()));
+          ),Doc.empty(),true,Collections.emptyList(),Collections.emptyList(),new Util.CachedStage());
+      cbMP.getStage().setInheritedPaths(Collections.emptyList());
+      cbMP.getStage().setInherited(Collections.emptyList());
+      assert cbMP.getStage().getInheritedPaths()!=null;
+      map.put(Resources.nameOf(level,cs),cbMP);
       }
     for(Member m:cb.getMs()){
       if (!(m instanceof NestedClass)){continue;}
@@ -139,11 +146,20 @@ public class Translator {
       ms.add(From.from(pmwt.getMwt(), p));
     }
     List<Path> sup = tools.Map.of(pi->(Path)From.fromP(pi,p),ct.getSupertypes());
-    return ct.withMs(ms).withSupertypes(sup);
+    List<Path> supAll = tools.Map.of(pi->(Path)From.fromP(pi,p),ct.getStage().getInheritedPaths());
+    ClassB res= ct.withMs(ms).withSupertypes(sup);
+    res=res.withStage(res.getStage().copyMostStableInfo());
+    res.getStage().setInheritedPaths(supAll);
+    return res;
   }
   private static ClassB normalizeClass(Program p,ClassB ct) {
+    assert ct.getStage().getInheritedPaths()!=null;
     List<Path> sup = tools.Map.of(pi->(Path)
         Norm.of(p,pi),ct.getSupertypes());
-    return Norm.ofAllMethodsOf(p, ct,false).withSupertypes(sup);
+    ClassB result= Norm.ofAllMethodsOf(p, ct,false).withSupertypes(sup);
+    result.withStage(ct.getStage().copyMostStableInfo());
+    result.getStage().setInheritedPaths(tools.Map.of(pi->(Path)
+        Norm.of(p,pi),ct.getStage().getInheritedPaths()));
+    return result;
   }
 }

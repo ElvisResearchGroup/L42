@@ -111,15 +111,15 @@ public static class TestNormalizePrivates1 {
   },{
     lineNumber(),"{method Void fo$%$%o__a()}","{method Void fo$%$%o_$%$%$%a()}"
   },{
-    lineNumber(),"{ C__A:{interface <:C__A }}","{ C_$%A:{interface <:Outer0 }}"      
+    lineNumber(),"{ C__A:{interface <:C__A }}","{ C_$%A:{interface <:Outer1::C_$%A }}"      
   },{
-    lineNumber(),"{ C:'@private\n{interface <:C }}","{ C__0_0:'@private\n{interface <:Outer0}}"                                                           
+    lineNumber(),"{ C:'@private\n{interface <:C }}","{ C__0_0:'@private\n{interface <:Outer1::C__0_0}}"                                                           
   },{
-    lineNumber(),"{ C:'@private\n{interface D:{<:C} }}","{ C__0_0:'@private\n{interface D:{<:Outer1} }}"
+    lineNumber(),"{ C:'@private\n{interface D:{<:C} }}","{ C__0_0:'@private\n{interface D:{<:Outer2::C__0_0} }}"
   },{
-    lineNumber(),"{ C:'@private\n{interface A:{B:{<:C }}}}","{ C__0_0:'@private\n{interface A:{B:{<:Outer2}}}}"   
+    lineNumber(),"{ C:'@private\n{interface A:{B:{<:C }}}}","{ C__0_0:'@private\n{interface A:{B:{<:Outer3::C__0_0}}}}"   
   },{
-    lineNumber(),"{ D:{<:C} C:'@private\n{interface <:C }}","{ D:{<:C__0_0 } C__0_0:'@private\n{interface <:Outer0 }}" 
+    lineNumber(),"{ D:{<:C} C:'@private\n{interface <:C }}","{ D:{<:C__0_0 } C__0_0:'@private\n{interface <:Outer1::C__0_0}}" 
   },{
     lineNumber(),"{ D:{<:A::C} A:{C:'@private\n{interface <:C }}}","{ D:{<:A::C__0_0 } A:{C__0_0:'@private\n{interface <:Outer1::C__0_0}}}" 
   },{
@@ -141,16 +141,16 @@ public static class TestNormalizePrivates1 {
   },{
     lineNumber(),
     "{ A:'@private\n{method A a()} method A foo( A::a() x)}",
-    "{ A__0_0:'@private\n{method A__0_0 a()} method  A__0_0 foo ( A__0_0::a() x)}"
+    "{ A__0_0:'@private\n{method A__0_0 a()} method  A__0_0 foo( A__0_0::a() x)}"
   
   },{
     lineNumber(),
     "{ A__1_12:'@private\n{method A__1_12 a()} method A__1_12 foo()}",
-    "{ A__1_12:'@private\n{method A__1_12 a()} method  A__1_12 foo ()}"
+    "{ A__1_12:'@private\n{method A__1_12 a()} method  A__1_12 foo()}"
   },{
     lineNumber(),
-    "{ A:{method'@private\n A a__1_12 ()}}",
-    "{ A:{method'@private\n A a__1_12 ()}}"
+    "{ A:{method'@private\n A a__1_12()}}",
+    "{ A:{method'@private\n A a__1_12()}}"
   },{
     lineNumber(),    
     "{ A:{(A a)'@private\n}  B:{method A::a() fuffa()} }",

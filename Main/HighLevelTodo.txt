@@ -1,6 +1,5 @@
 syntax stuff:
 use yeld(ps) for [with..]
-allows keywords as method names (since followed by "(")
 make error/exception on Path1... Pathn (e) 
 ==catch exception fresh (
   on Path1 error/exception (e)(fresh) ...on Pathn error/exception (e)(fresh)
@@ -13,6 +12,9 @@ make comments with // /**/
 make @id == /*@id*/
 
 new desugaring for string and number literals!!
+x:e in ps becomes x=e
+:: becomes .
+
 
 'caching is getting out of control
 'a save version, operators refresh all the cache?
@@ -63,7 +65,6 @@ On add private, just extend the interval by 1 and use such index.
 '  MetaGuard:{interface
 '    DecorationUnfeasable:Message::$[]<<{<:MetaGuard}
 '    }
-'make [] works for Message messages
 'throws shortcuts: return { return }  exception errorOn/exceptionOn
     ' on Metaguard, Guard error e
     ' exceptionOn Metaguard InvalidAction"YEP"  
@@ -75,13 +76,13 @@ On add private, just extend the interval by 1 and use such index.
 ' for all public nc lv*, if not annotated '@importanceX with x 1-*, with indented methods
 ' otherwise with all methods inline, nested after?
 
-
-AddDocumentation for private state?
--constructor must be first?
--error if you was going to create a incoherent private state.
--- no seams like addDocumentation must be called on the constructor, and make private all the potential state
--to prevent capture of unwanted state methods, you can rename or implement them and then revert.
-
+Obsolete(
+  AddDocumentation for private state?
+  -constructor must be first?
+  -error if you was going to create a incoherent private state.
+  -- no seams like addDocumentation must be called on the constructor, and make private all the potential state
+  -to prevent capture of unwanted state methods, you can rename or implement them and then revert.
+)
 Adam Towel
  -adam towel 2 or 3 must:
    -inject ParseErrors in Bool, N
