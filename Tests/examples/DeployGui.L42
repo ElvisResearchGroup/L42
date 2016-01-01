@@ -67,7 +67,7 @@ Main:Deploy[S"Top::Exported", fileName:S"localhost/GuiLib.L42"]<{reuse L42.is/te
       mut Iterator events()
         Iterator(id: this.id(), current:S"")
   
-      Iterator:{mut(S id, var S current)
+      Iterator:{mut (S id, var S current)
       
         type method S auxFetchEvent(S id) exception Void {
           Library s=using GuiPlugin

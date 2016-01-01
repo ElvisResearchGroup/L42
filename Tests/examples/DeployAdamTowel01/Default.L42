@@ -84,7 +84,7 @@ Equals:{
         }
       read method Bool ==(read Outer0 that)
       }]<<that
-    catch exception x(on MetaGuard exception DecorationUnfeasable"Equals"(x))
+    catch exception x (on MetaGuard exception DecorationUnfeasable"Equals"(x))
     }
   }
 Named:{
@@ -93,7 +93,7 @@ Named:{
         method myName() Introspection(clazz:Outer0).externalTypeToS()
         }]<<that
     'can improve error: if is method defined against method implemented
-    catch exception x(on MetaGuard exception DecorationUnfeasable"Named"(x))
+    catch exception x (on MetaGuard exception DecorationUnfeasable"Named"(x))
     }
   }
     'i=Introspection(lib:that)

@@ -1,3 +1,19 @@
+syntax stuff:
+use yeld(ps) for [with..]
+allows keywords as method names (since followed by "(")
+make error/exception on Path1... Pathn (e) 
+==catch exception fresh (
+  on Path1 error/exception (e)(fresh) ...on Pathn error/exception (e)(fresh)
+  )
+  add # for defaults: logic is
+    on addition methods, is a constructor
+    on set is the old value
+    on stuff in a numericalish range 0..n, is the max range.
+make comments with // /**/
+make @id == /*@id*/
+
+new desugaring for string and number literals!!
+
 'caching is getting out of control
 'a save version, operators refresh all the cache?
 'still good, many operators do lots of internal stuff?

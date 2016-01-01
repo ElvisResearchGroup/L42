@@ -63,6 +63,7 @@ public class ToAst extends AbstractVisitor<Expression>{
       Doc doc1=(h.docsOpt().get(0)==null)?Doc.empty():comm(h.docsOpt().get(0));
       Doc doc2=(ctx.docsOpt()==null)?Doc.empty():comm(ctx.docsOpt());
       String name=(h.mDec()==null)?"":h.mDec().getText();
+      if(name.endsWith("(")){name=name.substring(0,name.length()-1);}
       Mdf mdf=Ast.Mdf.fromString((h.Mdf()==null)?"":h.Mdf().getText());
       List<Type> ts=new ArrayList<>();
       List<Doc> tdocs=new ArrayList<>();
@@ -145,6 +146,7 @@ public class ToAst extends AbstractVisitor<Expression>{
     return nameL(s.getText());
   }
   public static String nameL(String c){
+    if(c.endsWith("(")) {return c.substring(0,c.length()-1);}
     return c;
   }
   public static String nameU(ParseTree s){
@@ -170,7 +172,8 @@ public class ToAst extends AbstractVisitor<Expression>{
     String result=res.toString();
     assert result.charAt(result.length()-1)=='\n':result;
 //    res.append("\n");
-    return Doc.factory(res.toString());
+    result=result.replace('\t','(');
+    return Doc.factory(result);
   }
 
   //TODO: check if is needed
@@ -307,7 +310,15 @@ public class ToAst extends AbstractVisitor<Expression>{
     if(ctx.numParse()!=null){i=1;}
     return addNumParse(ctx,ctx.children.get(i).accept(this));
     }
-
+  @Override public Expression visitMxRound(MxRoundContext ctx) {
+    String mx=ctx.MX().getText();
+    assert mx.endsWith("(");
+    mx=mx.substring(0,mx.length()-1);
+    RoundContext r = ctx.round();
+    Doc doc=comm(r.docsOpt());
+    return new Expression.FCall(position(r),new Expression.X(mx),doc,
+        parseMParameters(r.ps()));
+    }
   @Override public Expression visitClassBReuse(ClassBReuseContext ctx) {
     Doc doc1=Doc.empty();
     if(ctx.docsOpt().size()>=1){doc1=comm(ctx.docsOpt().get(0));}
@@ -506,6 +517,7 @@ public class ToAst extends AbstractVisitor<Expression>{
         }
         s="";
         for(int i=1; i<ss.length-1;i++){s+=ss[i]+"\n";}
+        s=s.replace('\t','(');
         return new Expression.Literal(position(ctx),e0,s,false);
       }
     }

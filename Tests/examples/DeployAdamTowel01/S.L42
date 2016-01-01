@@ -79,7 +79,7 @@
     S"QWERTYUIOPASDFGHJKLZXCVBNM".contains(this(that))
     )
     
-  method N size ()
+  method N size()
     N(_binaryRepr: using Alu
       check stringSize(this.binaryRepr())
       error void)

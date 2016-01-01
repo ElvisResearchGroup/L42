@@ -88,7 +88,7 @@ public class TestShortPrograms {
 ,"      )"
 ,"    C.ko()"
 ,"    )"
-,"    catch error y( on AI C.ok())"
+,"    catch error y ( on AI C.ok())"
 , " res)"
 ,"}");}
 

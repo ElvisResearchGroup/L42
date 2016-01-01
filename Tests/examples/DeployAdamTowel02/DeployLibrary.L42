@@ -10,7 +10,7 @@ exception MetaGuard::NestedClassUnavailable, MetaGuard::PrivacyCoupuled
   var res=that
   Debug(S"1.1")
   res:=Refactor::RenamePath[Path"Outer0" to:Path"PrImpl"]<<res
-  catch exception unreachable(on MetaGuard error Assert::CodeNotReachable"DeployLibrary1"(unreachable))
+  catch exception unreachable (on MetaGuard error Assert::CodeNotReachable"DeployLibrary1"(unreachable))
   Debug(S"1.2")
   with m in Introspection(lib:that, path:Path"ConceptMap").methods().vals() (
     Debug(S"1.2a")

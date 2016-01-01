@@ -12,22 +12,24 @@ Library generateVector(type Any that, Library lib){
   return res
   catch exception err (on Guard error err)
   }
-type method Library vector(type Any of) Outer0.generateVector(of,lib:{
-  Elem:{} Kind:' private
-    {interface 
-    type method Elem elem() 
-    type method Elem elemRead()
-    }
+  
+type method Library vector(type Any of)
+  Outer0.generateVector(of,lib:{Elem:{} Kind:'@private
+      {interface 
+      type method Elem elem() 
+      type method Elem elemRead()
+      }
   VectorStruct:...
   })
-'type method Library vector(type Any ofMut) Outer0.generateVector(ofMut,lib:{
-'  Elem:{} Kind:'@private
-'    {interface 
-'    type method mut Elem elem() 
-'    type method read Elem elemRead()
-'    }
-'  VectorStruct:...
-'  })
+type method Library vector(type Any ofMut)
+  Outer0.generateVector(ofMut,lib:{Elem:{} Kind:'@private
+      {interface 
+      type method mut Elem elem() 
+      type method read Elem elemRead()
+      }
+  VectorStruct:...
+  })
+
 'type method Library vector(type Any ofType) Outer0.generateVector(ofType,lib:{
 '  Elem:{} Kind:'@private
 '    {interface 

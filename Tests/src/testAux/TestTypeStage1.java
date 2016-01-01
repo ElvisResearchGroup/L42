@@ -200,115 +200,116 @@ static String listExample=TestHelper.multiLine(
 
 @RunWith(Parameterized.class)
 public static class TestStage2 {
-  @Parameter(0) public String _e;
-  @Parameter(1) public Type typeSugg;
-  @Parameter(2) public Type typeExpected;
-  @Parameter(3) public String[] program;
-  @Parameterized.Parameters
+  @Parameter(0) public int _lineNumber;
+  @Parameter(1) public String _e;
+  @Parameter(2) public Type typeSugg;
+  @Parameter(3) public Type typeExpected;
+  @Parameter(4) public String[] program;
+  @Parameters(name = "{index}: line {0}")
   public static List<Object[]> createData() {
     return Arrays.asList(new Object[][] {
-      {"void",
+      {lineNumber(), "void",
       new NormType(Mdf.Immutable,Path.Void(),Ph.None),
       new NormType(Mdf.Capsule,Path.Void(),Ph.None),
       new String[]{"{ C:{k()}}"}
-    },{"C.k()",
+    },{lineNumber(), "C.k()",
       new NormType(Mdf.Capsule,Path.parse("Outer0::C"),Ph.None),
       new NormType(Mdf.Capsule,Path.parse("Outer0::C"),Ph.None),
       new String[]{"{ C:{mut k()}}"}
-    },{"C.k(f:D.k()).f()",
+    },{lineNumber(), "C.k(f:D.k()).f()",
       new NormType(Mdf.Readable,Path.parse("Outer0::D"),Ph.None),
       new NormType(Mdf.Readable,Path.parse("Outer0::D"),Ph.None),
       new String[]{"{ C:{mut k(var mut D f)} D:{mut k()}}"}
-    },{"C.k(f:D.k()).#f()",
+    },{lineNumber(), "C.k(f:D.k()).#f()",
       new NormType(Mdf.Mutable,Path.parse("Outer0::D"),Ph.None),
       new NormType(Mdf.Mutable,Path.parse("Outer0::D"),Ph.None),
       new String[]{"{ C:{mut k(var mut D f)} D:{mut k()}}"}
-    },{"C.k(f:D.k()).f()",
+    },{lineNumber(), "C.k(f:D.k()).f()",
       new NormType(Mdf.Immutable,Path.parse("Outer0::D"),Ph.None),
       new NormType(Mdf.Immutable,Path.parse("Outer0::D"),Ph.None),
       new String[]{"{ C:{mut k(var mut D f)} D:{mut k()}}"}
 
-    },{"(lent Vector v=Vector.k(), mut B b=B.k(N.k()),v.add(b.clone()))",
+    },{lineNumber(), "(lent Vector v=Vector.k(), mut B b=B.k(N.k()),v.add(b.clone()))",
       new NormType(Mdf.Immutable,Path.Void(),Ph.None),
       new NormType(Mdf.Immutable,Path.Void(),Ph.None),
       new String[]{cloneExample}
-    },{"(A a=A.k(f:B.k(N.k()).clone()) a)",
+    },{lineNumber(), "(A a=A.k(f:B.k(N.k()).clone()) a)",
       new NormType(Mdf.Immutable,Path.parse("Outer0::A"),Ph.None),
       new NormType(Mdf.Immutable,Path.parse("Outer0::A"),Ph.None),
       new String[]{cloneExample}
   //is ok, clone vuole readable
-    },{"(mut B b=B.k(N.k()), A a=A.k(f:b.clone()) a)",
+    },{lineNumber(), "(mut B b=B.k(N.k()), A a=A.k(f:b.clone()) a)",
       new NormType(Mdf.Immutable,Path.parse("Outer0::A"),Ph.None),
       new NormType(Mdf.Immutable,Path.parse("Outer0::A"),Ph.None),
       new String[]{cloneExample}
 
-    },{"(mut B b=B.k(N.k()), A a=A.k(f:b.clone()) a)",
+    },{lineNumber(), "(mut B b=B.k(N.k()), A a=A.k(f:b.clone()) a)",
       new NormType(Mdf.Immutable,Path.parse("Outer0::A"),Ph.None),
       new NormType(Mdf.Immutable,Path.parse("Outer0::A"),Ph.None),
       new String[]{cloneExample}
 
-    },{" ( B bi=A.k(f:(read B b=B.k(N.k()) b).clone()).f() bi)",
+    },{lineNumber(), " ( B bi=A.k(f:(read B b=B.k(N.k()) b).clone()).f() bi)",
       new NormType(Mdf.Immutable,Path.parse("Outer0::B"),Ph.None),
       new NormType(Mdf.Immutable,Path.parse("Outer0::B"),Ph.None),
       new String[]{cloneExample}
 
-    },{" (read B b=B.k(N.k()),  B bi=A.k(f:b.clone()).f() bi)",
+    },{lineNumber(), " (read B b=B.k(N.k()),  B bi=A.k(f:b.clone()).f() bi)",
       new NormType(Mdf.Immutable,Path.parse("Outer0::B"),Ph.None),
       new NormType(Mdf.Immutable,Path.parse("Outer0::B"),Ph.None),
       new String[]{cloneExample}
-    },{" (AI any=(mut AI aI=AI.k() aI) any)",
+    },{lineNumber(), " (AI any=(mut AI aI=AI.k() aI) any)",
     new NormType(Mdf.Immutable,Path.parse("Outer0::AI"),Ph.None),
     new NormType(Mdf.Immutable,Path.parse("Outer0::AI"),Ph.None),
     new String[]{"{ AI:{mut k()} }"}
 
-    },{"error D.k()",//get capsule promoted
+    },{lineNumber(), "error D.k()",//get capsule promoted
       new Ast.FreeType(),
       new Ast.FreeType(),
       new String[]{"{ D:{ mut k()}}"}
-    },{"( D().m(D()) )",
+    },{lineNumber(), "( D().m(D()) )",
       new Ast.FreeType(),
       new NormType(Mdf.Immutable,Path.Void(),Ph.None),
       new String[]{"{() D:{ mut () mut method Void m(mut D that) error void }}"}
-    },{"( mut D x=D() mut D y=D() x.m(y)  )",
+    },{lineNumber(), "( mut D x=D() mut D y=D() x.m(y)  )",
       new Ast.FreeType(),
       new NormType(Mdf.Immutable,Path.Void(),Ph.None),
       new String[]{"{() D:{ mut () mut method Void m(mut D that) error void }}"}
-    },{"( lent D x=D() mut D y=D() x.m(y)  )",//Deceiving, but it should pass! as for ( lent D x=D() ( mut D y=D() x.m(y) ) )
+    },{lineNumber(), "( lent D x=D() mut D y=D() x.m(y)  )",//Deceiving, but it should pass! as for ( lent D x=D() ( mut D y=D() x.m(y) ) )
       new Ast.FreeType(),
       new NormType(Mdf.Immutable,Path.Void(),Ph.None),
       new String[]{"{() D:{ mut () mut method Void m(mut D that) error void }}"}
-    },{
+    },{lineNumber(), 
       "Reader.readCustomer()",
       new Ast.FreeType(),
       new NormType(Mdf.Capsule,Path.parse("Outer0::Customer"),Ph.None),
-      new String[]{"{ () \n Customer:{ mut() }\n Reader :{()\n"
+      new String[]{"{ () \n Customer:{ mut () }\n Reader :{()\n"
       +" type method capsule Customer readCustomer() (\n"
       +"   mut Customer c=Customer()\n"
       +"   c 'ok, capsule promotion here\n"
       +" )}}"}
-    },{
+    },{lineNumber(), 
         "Reader.readCustomer()",
         new Ast.FreeType(),
         new NormType(Mdf.Capsule,Path.parse("Outer0::Customer"),Ph.None),
-        new String[]{"{() \n Customer:{ mut() }\n Reader :{()\n"
+        new String[]{"{() \n Customer:{ mut () }\n Reader :{()\n"
         +" type method capsule Customer readCustomer() {\n"
         +" return Customer()"
         +" }}}"}
-    },{
+    },{lineNumber(), 
       "Reader.readCustomer()",
       new Ast.FreeType(),
       new NormType(Mdf.Capsule,Path.parse("Outer0::Customer"),Ph.None),
-      new String[]{"{() \n Customer:{ mut() }\n Reader :{()\n"
+      new String[]{"{() \n Customer:{ mut () }\n Reader :{()\n"
       +" type method capsule Customer readCustomer() (\n"
       +"   mut Customer c=Customer()\n"
       +"   return c 'ok, capsule promotion here\n"
       +"   catch return x (on mut Customer x)"
       +"   error void)}}"}
-    },{
+    },{lineNumber(), 
       "Reader.readCustomer()",
       new Ast.FreeType(),
       new NormType(Mdf.Capsule,Path.parse("Outer0::Customer"),Ph.None),
-      new String[]{"{() \n Customer:{ mut() }\n Reader :{()\n"
+      new String[]{"{() \n Customer:{ mut () }\n Reader :{()\n"
       +" type method capsule Customer readCustomer() {\n"
       +"   mut Customer c=Customer()\n"
       +"   return c 'ok, capsule promotion here\n"

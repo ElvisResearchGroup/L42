@@ -19,7 +19,7 @@ exception InvalidAction{
   ('throws ParameterMismatch
     acc:=Refactor::SumMethods
       [dest and:a.fresh() of:p to: origin]<<acc
-    catch exception parm( on MetaGuard::ParameterMismatch
+    catch exception parm ( on MetaGuard::ParameterMismatch
         error InvalidAction
           "Action type signature do not fit with.. PostAct::Action0"(parm) 
           )
@@ -27,7 +27,7 @@ exception InvalidAction{
   'no throw expected
   acc:=Refactor::MakePrivateSelector[a.fresh() of:p]<<acc
   return acc    
-  catch exception cnr( on MetaGuard
+  catch exception cnr ( on MetaGuard
         error Assert::CodeNotReachable"PostAct::Action1"(cnr) )
   }
   Action:{(Selector fresh,Library action)
@@ -44,7 +44,7 @@ exception InvalidAction{
       if pt.toS()!=rt.toS() (exception InvalidAction"action return type need to be equal to parameter type" )
       action=Refactor::RenameSelector[
         defS of:path to:fresh]<<proposedAction
-      catch exception cnr( on MetaGuard
+      catch exception cnr ( on MetaGuard
         error Assert::CodeNotReachable"PostAct::Action2"(cnr) )
       return Outer0(fresh:fresh,action:action)
     }

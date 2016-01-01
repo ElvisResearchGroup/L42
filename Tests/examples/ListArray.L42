@@ -1,5 +1,5 @@
 {reuse L42.is/miniBase
-ListArray:{mut(var mut Cell head,var N size)
+ListArray:{mut (var mut Cell head,var N size)
   Cell:{interface}
   CellNext:{mut (S val,mut Cell next)<:Cell}
   'CellNextMut:{mut (mut S val,mut Cell next)<:Cell}

@@ -63,13 +63,13 @@ public class TestFrom {
     public static List<Object[]> createData() {
       return Arrays.asList(new Object[][] {
 
-  {"{ method () (Outer3::A.m())}", "Outer2::B","{ method() (Outer4::A.m())}"
+  {"{ method () (Outer3::A.m())}", "Outer2::B","{ method () (Outer4::A.m())}"
   },{"{ C:{ method () (Outer3::A.m())}}",
       "Outer2::B",
-      "{ C:{ method() (Outer4::A.m())}}"
-  },{"{ C:{ method () (Outer1::A.m())}}", "Outer2::B","{ C:{ method() (Outer1::A.m())}}"
-  },{"{ C:{ method () (Outer1::A.m())}}", "Outer20::B","{ C:{ method() (Outer1::A.m())}}"
-  },{"{ C:{ method () (Outer1::A.m())}}", "Outer0::B","{ C:{ method() (Outer1::A.m())}}"
+      "{ C:{ method () (Outer4::A.m())}}"
+  },{"{ C:{ method () (Outer1::A.m())}}", "Outer2::B","{ C:{ method () (Outer1::A.m())}}"
+  },{"{ C:{ method () (Outer1::A.m())}}", "Outer20::B","{ C:{ method () (Outer1::A.m())}}"
+  },{"{ C:{ method () (Outer1::A.m())}}", "Outer0::B","{ C:{ method () (Outer1::A.m())}}"
   },{"{interface method Void m()^## Outer10}","Outer1","{interface method Void m()^## Outer11}"
   },{"{interface method Void m()^## Outer0}","Outer1","{interface method Void m()^## Outer0}"
     //and would be different as members out of a class

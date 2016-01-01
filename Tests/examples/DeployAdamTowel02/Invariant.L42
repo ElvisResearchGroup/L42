@@ -102,7 +102,7 @@
       )
     return Refactor::RenamePath
       [Path"T" to:nc.pathFromRoot()]<<mdfA
-    catch exception cnr(
+    catch exception cnr (
       on MetaGuard error Assert::CodeNotReachable"idAction"(cnr)
       )
     }
@@ -159,7 +159,7 @@
     'Debug(Introspection(lib:acc).allAsString())
     acc:=Refactor::MakePrivateSelector[kSelF of:p]<<acc
     return acc
-    catch exception cnr(
+    catch exception cnr (
       on MetaGuard error Assert::CodeNotReachable"Invariant"(cnr)
       )
     }

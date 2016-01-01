@@ -138,6 +138,13 @@ public interface L42Visitor<T> extends ParseTreeVisitor<T> {
 	T visitCurlyBlock(@NotNull L42Parser.CurlyBlockContext ctx);
 
 	/**
+	 * Visit a parse tree produced by {@link L42Parser#mxRound}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMxRound(@NotNull L42Parser.MxRoundContext ctx);
+
+	/**
 	 * Visit a parse tree produced by {@link L42Parser#wSimple}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

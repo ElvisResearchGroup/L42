@@ -43,13 +43,13 @@
     {interface method Member (fwd NestedClass root)}
   RootForNested:' toPutAs private
     {(Path path,MirrorPr mirror,Record _report)<:RootForMember
-      method(root) (
+      method (root) (
       path=Path.#stringParser(this._report()"Key".binaryRepr())
       NestedClass(_root:root,path:path,mirror:this.mirror(),record: this._report())
       )}
   RootForMethod:' toPutAs private
     {(Path path,N memberN,Record _report)<:RootForMember
-      method(root) (
+      method (root) (
         Method(_root:root,path:this.path(),memberN:this.memberN(),record:this._report())
         )}
   type method Member dispatch(fwd NestedClass root,Path path,MirrorPr mirror, N memberN,Library record) (

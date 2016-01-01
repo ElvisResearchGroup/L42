@@ -207,6 +207,17 @@ public interface L42Listener extends ParseTreeListener {
 	void exitCurlyBlock(@NotNull L42Parser.CurlyBlockContext ctx);
 
 	/**
+	 * Enter a parse tree produced by {@link L42Parser#mxRound}.
+	 * @param ctx the parse tree
+	 */
+	void enterMxRound(@NotNull L42Parser.MxRoundContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link L42Parser#mxRound}.
+	 * @param ctx the parse tree
+	 */
+	void exitMxRound(@NotNull L42Parser.MxRoundContext ctx);
+
+	/**
 	 * Enter a parse tree produced by {@link L42Parser#wSimple}.
 	 * @param ctx the parse tree
 	 */

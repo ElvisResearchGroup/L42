@@ -19,13 +19,13 @@ fragment C:Uppercase (Uppercase|Lowercase|Digit)*;
 //fragment CharsUrl: CharsId|CharsOp|CharsPunct|CharsSpecial
 //    |'('|')'|'['|']'|'<'|'>'|' '|'\"'|'\'';
 fragment CharsAll:
-  'A'..'Z'|'a'..'z'|'0'..'9' | '(' | ')' | '[' | ']' | '<' | '>' |'&'|'|'|'*'|'+'|'-'|'=' | '/' | '!' | '?' | ';' | ':' | ',' | '.' | ' ' | '~' | '@' | '#' | '$' | '%' | '`' | '^' | '_' | '\\' | '{' | '}' ;
+ '\t'| 'A'..'Z'|'a'..'z'|'0'..'9' | '(' | ')' | '[' | ']' | '<' | '>' |'&'|'|'|'*'|'+'|'-'|'=' | '/' | '!' | '?' | ';' | ':' | ',' | '.' | ' ' | '~' | '@' | '#' | '$' | '%' | '`' | '^' | '_' | '\\' | '{' | '}' ;
 fragment CharsUrl:
-  'A'..'Z'|'a'..'z'|'0'..'9' | '(' | ')' | '[' | ']' | '<' | '>' |'&'|'|'|'*'|'+'|'-'|'=' | '/' | '!' | '?' | ';' | ':' | ',' | '.' | ' ' | '~' | '@' | '#' | '$' | '%' | '`' | '^' | '_' | '\\'  ;
+ '\t'| 'A'..'Z'|'a'..'z'|'0'..'9' | '(' | ')' | '[' | ']' | '<' | '>' |'&'|'|'|'*'|'+'|'-'|'=' | '/' | '!' | '?' | ';' | ':' | ',' | '.' | ' ' | '~' | '@' | '#' | '$' | '%' | '`' | '^' | '_' | '\\'  ;
 fragment CharsAllStrLine:
-  'A'..'Z'|'a'..'z'|'0'..'9' | '(' | ')' | '[' | ']' | '<' | '>' |'&'|'|'|'*'|'+'|'-'|'=' | '/' | '!' | '?' | ';' | ':' | ',' | '.' | ' ' | '~' | '@' | '#' | '$' | '%' | '`' | '^' | '_' | '\\' | '{' | '}' | '\"' | '\'' ;
+ '\t'| 'A'..'Z'|'a'..'z'|'0'..'9' | '(' | ')' | '[' | ']' | '<' | '>' |'&'|'|'|'*'|'+'|'-'|'=' | '/' | '!' | '?' | ';' | ':' | ',' | '.' | ' ' | '~' | '@' | '#' | '$' | '%' | '`' | '^' | '_' | '\\' | '{' | '}' | '\"' | '\'' ;
 fragment CharsAllString:
-  'A'..'Z'|'a'..'z'|'0'..'9' | '(' | ')' | '[' | ']' | '<' | '>' |'&'|'|'|'*'|'+'|'-'|'=' | '/' | '!' | '?' | ';' | ':' | ',' | '.' | ' ' | '~' | '@' | '#' | '$' | '%' | '`' | '^' | '_' | '\\' | '{' | '}' | '\'' ;  
+ '\t'| 'A'..'Z'|'a'..'z'|'0'..'9' | '(' | ')' | '[' | ']' | '<' | '>' |'&'|'|'|'*'|'+'|'-'|'=' | '/' | '!' | '?' | ';' | ':' | ',' | '.' | ' ' | '~' | '@' | '#' | '$' | '%' | '`' | '^' | '_' | '\\' | '{' | '}' | '\'' ;  
 fragment StrLine: '\'' CharsAllStrLine* '\n'; // tab not valid in 42, used to encode ( with space in initial rewriting
 fragment String: CharsAllString*;
 //fragment Num:Digit|'-'|'.';
@@ -75,8 +75,9 @@ Stage:'##less'|'##meta'|'##plus'|'##star'|'##needable'|'##needed';
 Path://    Outer ('::'C)* |
   C(ClassSep C)*;//| 'Any' | 'Void' | 'Library';
 ClassSep: '::';
+MX:Lowercase (Uppercase|Lowercase|Digit|'#')*'(';
 X:Lowercase (Uppercase|Lowercase|Digit|'#')*;
-HashX:'#'  (Uppercase|Lowercase|Digit|'#')*;
+HashX:'#'  (Uppercase|Lowercase|Digit|'#')*'(';
 //void is a particular X, syntactically
 
 StringQuote: '"' String '"' | '"' (' ' | ',')* '\n' ((' ' | ',')*StrLine)+ (' ' | ',')* '"';
@@ -95,8 +96,10 @@ RelOp:'<'|'>'|'=='|'<='|'>='|'!=';
 DataOp:'+'|'-'|'*'|'/'|'<<'|'>>'|'++'|'**';
 
 NumParse:Digit NumNext*;
-m: X |HashX;
-mDec:m| UnOp|EqOp|BoolOp|RelOp|DataOp;
+m: MX |HashX;
+mDec:m
+  | UnOp ORoundNoSpace|EqOp ORoundNoSpace|BoolOp ORoundNoSpace|RelOp ORoundNoSpace|DataOp ORoundNoSpace
+  | UnOp ORoundSpace|EqOp ORoundSpace|BoolOp ORoundSpace|RelOp ORoundSpace|DataOp ORoundSpace  ;
 
 path:Path;
 docs: Doc;
@@ -105,13 +108,13 @@ t:concreteT|historicalT;
 concreteT: Ph? Mdf? Path;
 historicalSeq:ClassSep methSelector (ClassSep x)?;
 historicalT:Path historicalSeq+;
-methSelector: mDec? (ORoundNoSpace|ORoundSpace) x* CRound;
+methSelector: (mDec| ORoundNoSpace|ORoundSpace) x* CRound;
 
 x: X;
 xOp:X EqOp eTop;
 //unOp:UnOp;
 //binOp:BinOp;
-eTopForMethod:eTop | roundBlockForMethod (squareW|square|Dot mCall|round|docs | stringParse)*;
+eTopForMethod:eTop | roundBlockForMethod (squareW|square|Dot mCall|ORoundNoSpace round|docs | stringParse)*;
 eTop:
     eL3 ( BoolOp  eL3)*;
 eL3:
@@ -122,8 +125,9 @@ eL1:
     eUnOp;
 numParse: DataOp? NumParse;
 eUnOp: UnOp? /*numParse?*/ ePost;
-ePost: eAtom  (squareW|square|Dot mCall|round|docs | stringParse)*;
-eAtom:classBReuse|classB|numParse? x | xOp|numParse? Path|numParse? block|ifExpr|whileExpr| signalExpr| loopExpr |WalkBy | w |using | DotDotDot;
+ePost: eAtom  (squareW|square|Dot mCall|ORoundNoSpace round|docs | stringParse)*;
+eAtom:classBReuse|classB|numParse? x | xOp|numParse? Path|numParse? block|ifExpr|whileExpr| signalExpr| loopExpr |WalkBy | w |using | DotDotDot | mxRound;
+mxRound:MX round;
 ifExpr: If eTop block (Else eTop)?;
 using:Using Path Check mCall eTop;
 whileExpr: While eTop block;
@@ -141,7 +145,7 @@ stringParse: StringQuote;
 square:OSquare  docsOpt (ps Semicolon docsOpt)* ps CSquare;
 squareW:OSquare docsOpt w CSquare;
 mCall: m round;
-round:ORoundNoSpace docsOpt ps CRound;
+round: docsOpt ps CRound;
 ps:(eTop )?(X Colon  eTop )*;
 k: Catch S X? (ORoundSpace|ORoundNoSpace) on* (Default eTop)? CRound;   
 on: On t (Case eTop)? eTop;
@@ -151,12 +155,12 @@ classBExtra:Stage? Path* EndType;
 classBReuse: OCurly docsOpt  Url CCurly |OCurly docsOpt UrlNL docsOpt member+ CCurly;
 classB:OCurly docsOpt header Implements? Path* docsOpt member* CCurly classBExtra?;
 mhs: Method docsOpt methSelector (EndType Path mht)?;
-mht: Mdf? Method docsOpt t mDec? (ORoundNoSpace|ORoundSpace) (t x docsOpt)* CRound (S Path+)?;
+mht: Mdf? Method docsOpt t (mDec |ORoundNoSpace|ORoundSpace) (t x docsOpt)* CRound (S Path+)?;
 member: methodWithType|methodImplemented|nestedClass;
 methodWithType: mht (EndType Path)? docsOpt eTopForMethod?| mht FieldSpecial;//was block?
 methodImplemented: mhs eTopForMethod;
 nestedClass: Path Colon docsOpt eTop;
-header:| Interface |Mdf? mDec? (ORoundSpace|ORoundNoSpace) fieldDec* CRound;
+header:| Interface |Mdf? (mDec |ORoundSpace|ORoundNoSpace) fieldDec* CRound;
 fieldDec:Var? t x docsOpt;
 
 w: wSwitch|wSimple;
