@@ -57,6 +57,7 @@ import antlrGenerated.L42Parser.SquareContext;
 import antlrGenerated.L42Parser.SquareWContext;
 import antlrGenerated.L42Parser.StringParseContext;
 import antlrGenerated.L42Parser.TContext;
+import antlrGenerated.L42Parser.UseSquareContext;
 import antlrGenerated.L42Parser.UsingContext;
 import antlrGenerated.L42Parser.VarDecContext;
 import antlrGenerated.L42Parser.WContext;
@@ -203,5 +204,7 @@ public  class AbstractVisitor<T>  implements L42Visitor<T>{
   public T visitETopForMethod(ETopForMethodContext ctx) {throw Assertions.codeNotReachable();}
 
   @Override public T visitMxRound(MxRoundContext ctx) {throw Assertions.codeNotReachable();}
+
+  @Override public T visitUseSquare(UseSquareContext ctx) {throw Assertions.codeNotReachable();}
   
 }

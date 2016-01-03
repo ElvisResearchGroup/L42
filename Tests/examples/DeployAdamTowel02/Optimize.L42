@@ -6,7 +6,7 @@ RemoveUnreachableCode:{()
   Outer0 #end() this
   method
   Library << (Library that)
-    using SafeOperators
+    use SafeOperators
       check removeUnreachableCode(that)
       error System::Guard::PluginFailure"SafeOperators.removeUnreachableCode"
   }

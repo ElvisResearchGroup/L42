@@ -178,6 +178,10 @@ public class CloneVisitor implements Visitor<Expression>{
     return new SquareWithCall(s.getP(),lift(s.getReceiver()),lift(s.getWith()));
   }
   @Override
+  public Expression visit(UseSquare s) {
+    return new UseSquare(lift(s.getInner()));
+  }
+  @Override
   public Expression visit(RoundBlock s) {
     List<BlockContent> content = Map.of(this::liftBC,s.getContents());
     Expression inner = lift(s.getInner());

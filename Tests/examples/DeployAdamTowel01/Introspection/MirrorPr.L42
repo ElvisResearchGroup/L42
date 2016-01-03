@@ -16,7 +16,7 @@
     method
     introspectReport(root, path) (
       result=NestedClass(_root:root,path:path,mirror:this,record:Record(Lib(lib:
-        using SafeOperators
+        use SafeOperators
           check introspectLibraryReport(this.lib(), path:path.binaryRepr())
           error System::Guard::PluginFailure"SafeOperators.introspectLibraryReport")))
       catch error x (on Library exception MetaGuard::NestedClassUnavailable(record:Record(lib:x)))
@@ -25,7 +25,7 @@
     method
     introspectReportMember(root,path,memberN) (
       result=Record.dispatch(root:root,path:path,mirror:this,memberN:memberN,record:
-        using SafeOperators
+        use SafeOperators
           check introspectLibraryReportMember(this.lib(), path:path.binaryRepr(),memberN:memberN.binaryRepr())
           exception void)
       catch error x (on Library exception MetaGuard::DispatchMemberUnavailable(x) )
@@ -34,7 +34,7 @@
     method
     introspectReportType(root,path,memberN,typeN) (
       result=Type(root:root,path:path,memberN:memberN,typeN:typeN,record: Record(Lib(lib:
-        using SafeOperators
+        use SafeOperators
           check introspectLibraryReportType(this.lib()
             path:path.binaryRepr()
             memberN:memberN.binaryRepr()
@@ -45,7 +45,7 @@
 
     method
     introspectDocAsString(path,annotationN) (
-      result=S.#stringParser(using SafeOperators
+      result=S.#stringParser(use SafeOperators
         check introspectLibraryDocAsString(this.lib(), path:path.binaryRepr(),annotationN:annotationN.binaryRepr())
         exception void)
       catch error x (on Library exception MetaGuard::NestedClassUnavailable(record:Record(lib:x)))
@@ -53,7 +53,7 @@
 
     method
     introspectDocAsString(path) (
-      result=S.#stringParser(using SafeOperators
+      result=S.#stringParser(use SafeOperators
         check introspectLibraryDocAsString(this.lib(), path:path.binaryRepr(),annotationN:0N.binaryRepr())
         error System::Guard::PluginFailure"SafeOperators.introspectLibraryDocAsString")
       catch error x (on Library exception MetaGuard::NestedClassUnavailable(record:Record(lib:x)))
@@ -61,7 +61,7 @@
 
     method
     introspectDocPath(path,annotationN) (
-      type Any result=using SafeOperators
+      type Any result=use SafeOperators
         check introspectLibraryDocPath(this.lib(), path:path.binaryRepr(),annotationN:annotationN.binaryRepr())
         error System::Guard::PluginFailure"SafeOperators.introspectLibraryDocPath"
       catch error x (on Library exception MetaGuard::NestedClassUnavailable(record:Record(lib:x)))
@@ -72,7 +72,7 @@
   Class:{(type Any lib)<:Outer1
   method
     introspectReport(root, path) (
-      record=Record(lib:using SafeOperators
+      record=Record(lib:use SafeOperators
         check introspectTypeReport(this.lib(), path:path.binaryRepr())
         error System::Guard::PluginFailure"SafeOperators.introspectTypeReport")
       realRootType=record.docOf(path:Path"MyClass").annotations().top().referredClass()
@@ -83,7 +83,7 @@
     method
     introspectReportMember(root,path,memberN) (
       result=Record.dispatch(root:root,path:path,mirror:this,memberN:memberN,record:
-        using SafeOperators
+        use SafeOperators
           check introspectTypeReportMember(this.lib(), path:path.binaryRepr(),memberN:memberN.binaryRepr())
           exception void)
       catch error x (on Library exception MetaGuard::DispatchMemberUnavailable(x))
@@ -92,7 +92,7 @@
     method
     introspectReportType(root,path,memberN,typeN) (
       result=Type(root:root,path:path,memberN:memberN,typeN:typeN,record: Record(Lib(lib:
-        using SafeOperators
+        use SafeOperators
           check introspectTypeReportType(this.lib()
             path:path.binaryRepr()
             memberN:memberN.binaryRepr()
@@ -103,7 +103,7 @@
 
     method
     introspectDocAsString(path,annotationN) (
-      result=S.#stringParser(using SafeOperators
+      result=S.#stringParser(use SafeOperators
         check introspectTypeDocAsString(this.lib(), path:path.binaryRepr(),annotationN:annotationN.binaryRepr())
         exception void)
       catch error x (on Library exception MetaGuard::NestedClassUnavailable(record:Record(lib:x)))
@@ -111,7 +111,7 @@
 
     method
     introspectDocAsString(path) (
-      result=S.#stringParser(using SafeOperators
+      result=S.#stringParser(use SafeOperators
         check introspectTypeDocAsString(this.lib(), path:path.binaryRepr(),annotationN:0N.binaryRepr())
         error System::Guard::PluginFailure"SafeOperators.introspectTypeDocAsString")
       catch error x (on Library exception MetaGuard::NestedClassUnavailable(record:Record(lib:x)))
@@ -119,7 +119,7 @@
 
     method
     introspectDocPath(path,annotationN) (
-      type Any result=using SafeOperators
+      type Any result=use SafeOperators
         check introspectTypeDocPath(this.lib(), path:path.binaryRepr(),annotationN:annotationN.binaryRepr())
         error System::Guard::PluginFailure"SafeOperators.introspectTypeDocPath"
       catch error x (on Library exception MetaGuard::NestedClassUnavailable(record:Record(lib:x)))

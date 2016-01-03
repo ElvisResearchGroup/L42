@@ -142,6 +142,12 @@ public interface Expression extends Ast {
       return v.visit(this);
     }
   }
+  @Value public static class UseSquare implements Expression{
+    Expression inner;//is either SquareCall with void receiver or With
+    @Override public <T> T accept(sugarVisitors.Visitor<T> v) {
+      return v.visit(this);
+    }
+  }
 
   @Value @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") @Wither public static class RoundBlock implements Expression, HasPos {
     Position p;

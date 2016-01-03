@@ -23,15 +23,15 @@ method
 Outer0 #end() this
 type method 
 Library binaryReprFrom(Library lib) (
-  Library norm=using Outer0::SafeOperatorsAccess__17_0 check privateNormalize(that:lib) error Outer0.#stringParser(that:{'@stringU
+  Library norm=use Outer0::SafeOperatorsAccess__17_0 check privateNormalize(that:lib) error Outer0.#stringParser(that:{'@stringU
   'privateNormalize
   })
-  Library record=using Outer0::SafeOperatorsAccess__17_0 check introspectLibraryReport(that:norm, path:Outer0.#stringParser(that:{'@stringU
+  Library record=use Outer0::SafeOperatorsAccess__17_0 check introspectLibraryReport(that:norm, path:Outer0.#stringParser(that:{'@stringU
   'Outer0
   })) error Outer0.#stringParser(that:{'@stringU
   'introspectLibraryReport
   })
-  using Outer0::SafeOperatorsAccess__17_0 check introspectLibraryDocAsString(that:record, path:Outer0.#stringParser(that:{'@stringU
+  use Outer0::SafeOperatorsAccess__17_0 check introspectLibraryDocAsString(that:record, path:Outer0.#stringParser(that:{'@stringU
   'AllAsString
   }), annotationN:Outer0.#numberParser(that:{'@stringU
   '0
@@ -41,7 +41,7 @@ Library binaryReprFrom(Library lib) (
   )
 method 
 Library #leftleft(Library that) (
-  Void unused=using Outer0::Alu check fileDebug(fileName:this.fileName(), content:Outer0.binaryReprFrom(lib:that)) error Outer0.#stringParser(that:{'@stringU
+  Void unused=use Outer0::Alu check fileDebug(fileName:this.fileName(), content:Outer0.binaryReprFrom(lib:that)) error Outer0.#stringParser(that:{'@stringU
   'fileDebug
   })
   Outer1::ExitCode.normal()
@@ -57,6 +57,6 @@ Alu:'  toPutAs private
 type method 
 Library #stringParser(Library that) that
 type method 
-Library #numberParser(Library that) using Outer0::Alu check stringToInt32(that:that) error Outer0.#stringParser(that:{'@stringU
+Library #numberParser(Library that) use Outer0::Alu check stringToInt32(that:that) error Outer0.#stringParser(that:{'@stringU
 'stringToInt32
 })}}

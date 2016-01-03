@@ -446,6 +446,19 @@ public class L42BaseListener implements L42Listener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterUseSquare(@NotNull L42Parser.UseSquareContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitUseSquare(@NotNull L42Parser.UseSquareContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterMember(@NotNull L42Parser.MemberContext ctx) { }
 	/**
 	 * {@inheritDoc}

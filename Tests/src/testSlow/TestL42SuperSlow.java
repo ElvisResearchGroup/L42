@@ -60,7 +60,7 @@ public void testList1() throws IOException{
 ,"C:{"
 ,"  l=SList[S\"a\";S\"b\";] "
 ,"  with s in l.vals() ("
-,"    using Alu check stringDebug(s.that()) void"
+,"    use Alu check stringDebug(s.that()) void"
 ,"    )"
 ,"  return ExitCode.normal()"
 ,"  }"
@@ -78,9 +78,9 @@ public void testList2() throws IOException{
 ,"SList:Collections.list(S)"
 ,"C:{"
 ,"  l=SList[S\"a\";S\"b\";] 'var?"
-,"  l2=SList[with si in l.vals() (si)]"
+,"  l2=SList[with si in l.vals() (use[si])]"
 ,"  with s in l2.vals() ("
-,"    using Alu check stringDebug(s.that()) void"
+,"    use Alu check stringDebug(s.that()) void"
 ,"    )"
 ,"  return ExitCode.normal()"
 ,"  }"
@@ -270,8 +270,8 @@ public void test14() throws IOException{
 ,"  with"
     + " s1 in l1.valsCut()"//
     + " s2 in l2.valsCut() ("
-,"    using Alu check stringDebug(s1.that()) void"//
-,"    using Alu check stringDebug(s2.that()) void"
+,"    use Alu check stringDebug(s1.that()) void"//
+,"    use Alu check stringDebug(s2.that()) void"
 ,"    )"
 ,"  return ExitCode.normal()"
 ,"  }"

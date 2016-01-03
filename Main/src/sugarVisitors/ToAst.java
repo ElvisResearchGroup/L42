@@ -464,10 +464,7 @@ public class ToAst extends AbstractVisitor<Expression>{
   @Override public Expression visitEPost(EPostContext ctx) {
     return visitEPostAux(ctx.children);
   }
-  private Expression visitEPostAux(List<ParseTree> ctxChildren) {
-    ParseTree c = ctxChildren.get(0);
-    Expression e0=c.accept(this);
-    class VisitEPost extends AbstractVisitor<Expression>{
+    private class VisitEPost extends AbstractVisitor<Expression>{
       Expression e0; VisitEPost(Expression e0){this.e0=e0;}
       @Override public Expression visitDocs(DocsContext ctx) {
         return new Expression.DocE(e0,comm(ctx.Doc()));
@@ -521,6 +518,9 @@ public class ToAst extends AbstractVisitor<Expression>{
         return new Expression.Literal(position(ctx),e0,s,false);
       }
     }
+    private Expression visitEPostAux(List<ParseTree> ctxChildren) {
+      ParseTree c = ctxChildren.get(0);
+      Expression e0=c.accept(this);
 
       for(int i=1;i<ctxChildren.size();i++){
         ParseTree cc = ctxChildren.get(i);
@@ -560,4 +560,19 @@ public class ToAst extends AbstractVisitor<Expression>{
     if(ctx.eTop()!=null){return visitETop(ctx.eTop());}
     return visitEPostAux(ctx.children);
     }
+  @Override public Expression visitUseSquare(UseSquareContext ctx) {
+    SquareContext sq = ctx.square();
+    SquareWContext sqW = ctx.squareW();
+    assert sq==null || sqW==null;
+    assert sq!=null || sqW!=null;
+    if( sq!=null){
+      Expression sq2 = this.new VisitEPost(new Expression._void()).visitSquare(sq);
+      assert sq2 instanceof Expression.SquareCall;
+      return new Expression.UseSquare(sq2);
+    }
+    Expression sW2 = sqW.accept(this);
+    assert sW2 instanceof Expression.SquareWithCall;
+    return new Expression.UseSquare(((SquareWithCall)sW2).getWith());
+    }
+
   }

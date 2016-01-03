@@ -25,9 +25,9 @@ Library that,S prefix,Path path, Introspection::Methods ms) {
   thatI=Introspection(lib:that, path:path)
   catch exception (on MetaGuard::MemberUnavailable return SrcDests[])
   return SrcDests[with meth in ms.vals() (
-    case this.needRename(that:thatI,meth:meth) (
+    if this.needRename(that:thatI,meth:meth) (
       destSel=Selector.fromS(prefix++meth.selector().toS())
-      SrcDest(path:path,src:meth.selector(),dest:destSel)
+      use[SrcDest(path:path,src:meth.selector(),dest:destSel)]
       ))]
   }      
 type method

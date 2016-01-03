@@ -31,6 +31,7 @@ public class GuessType implements Visitor<Type> {
   public Type visit(If s) {return new NormType(Mdf.Immutable,Path.Void(),Ph.None);}
   public Type visit(While s) {return new NormType(Mdf.Immutable,Path.Void(),Ph.None);}
   public Type visit(With s)  {return new NormType(Mdf.Immutable,Path.Void(),Ph.None);}
+  public Type visit(UseSquare s)  {return new NormType(Mdf.Immutable,Path.Void(),Ph.None);}
   public Type visit(_void s) {return new NormType(Mdf.Immutable,Path.Void(),Ph.None);}
   public Type visit(Loop s) {return new NormType(Mdf.Immutable,Path.Void(),Ph.None);}
 

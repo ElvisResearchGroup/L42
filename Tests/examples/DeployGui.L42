@@ -14,7 +14,7 @@ Main:Deploy[S"Top::Exported", fileName:S"localhost/GuiLib.L42"]<{reuse L42.is/te
         )
       method
       Void close()
-        using GuiPlugin
+        use GuiPlugin
           check close(wName:this.id().binaryRepr())
           error void
       method
@@ -38,7 +38,7 @@ Main:Deploy[S"Top::Exported", fileName:S"localhost/GuiLib.L42"]<{reuse L42.is/te
     
       method
       Void open(S html, N x, N y) 
-        using GuiPlugin
+        use GuiPlugin
           check open(
             wName:this.id().binaryRepr()
             html:html.binaryRepr()
@@ -59,7 +59,7 @@ Main:Deploy[S"Top::Exported", fileName:S"localhost/GuiLib.L42"]<{reuse L42.is/te
         
       method
       S executeJs(S that)
-        S.#stringParser(using GuiPlugin
+        S.#stringParser(use GuiPlugin
           check executeJs(wName:this.id().binaryRepr(),command:that.binaryRepr())
           error void)
     
@@ -70,7 +70,7 @@ Main:Deploy[S"Top::Exported", fileName:S"localhost/GuiLib.L42"]<{reuse L42.is/te
       Iterator:{mut (S id, var S current)
       
         type method S auxFetchEvent(S id) exception Void {
-          Library s=using GuiPlugin
+          Library s=use GuiPlugin
             check eventPending(wName:id.binaryRepr())
             exception void
           catch error x (on Library exception void)

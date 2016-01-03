@@ -331,76 +331,77 @@ public static class TestStage2 {
 }
 @RunWith(Parameterized.class)
 public static class TestStage3_notOk {
-  @Parameter(0) public String _e;
-  @Parameter(1) public Type typeSugg;
-  @Parameter(2) public Type typeExpected;
-  @Parameter(3) public String[] program;
-  @Parameterized.Parameters
+  @Parameter(0) public int _lineNumber;
+  @Parameter(1) public String _e;
+  @Parameter(2) public Type typeSugg;
+  @Parameter(3) public Type typeExpected;
+  @Parameter(4) public String[] program;
+  @Parameters(name = "{index}: line {0}")
   public static List<Object[]> createData() {
     return Arrays.asList(new Object[][] {
-        {" (mut C x=C(x) x)",
+        {lineNumber()," (mut C x=C(x) x)",
         new NormType(Mdf.Immutable,Path.Void(),Ph.None),
         new NormType(Mdf.Capsule,Path.Void(),Ph.None),
         new String[]{"{ C:{mut (mut C that)}}"}
-        },{" (mut C x=C(x) (capsule C y=x y))",
+        },{lineNumber()," (mut C x=C(x) (capsule C y=x y))",
           new NormType(Mdf.Capsule,Path.parse("Outer0::C"),Ph.None),
           new NormType(Mdf.Capsule,Path.parse("Outer0::C"),Ph.None),
           new String[]{"{ C:{mut (mut C that)}}"}
 
-      },{" (mut C x=C(x) (capsule C y=x.#that() y))",
+      },{lineNumber()," (mut C x=C(x) (capsule C y=x.#that() y))",
         new NormType(Mdf.Capsule,Path.parse("Outer0::C"),Ph.None),
         new NormType(Mdf.Capsule,Path.parse("Outer0::C"),Ph.None),
         new String[]{"{ C:{mut (mut C that)}}"}
-      },{"(mut B b=B.k(N.k()), A a=A.k(f:b) a)",
+      },{lineNumber(),"(mut B b=B.k(N.k()), A a=A.k(f:b) a)",
         new NormType(Mdf.Immutable,Path.parse("Outer0::A"),Ph.None),
         new NormType(Mdf.Immutable,Path.parse("Outer0::A"),Ph.None),
         new String[]{cloneExample}
 
-      },{"error D.k()",
+      },{lineNumber(),"error D.k()",
         new Ast.FreeType(),
         new Ast.FreeType(),
         new String[]{"{ D:{ lent k()}}"}
-      },{" ( mut D x= D.k() error x)",
+      },{lineNumber()," ( mut D x= D.k() error x)",
         new Ast.FreeType(),
         new Ast.FreeType(),
         new String[]{"{ D:{ mut k()}}"}
 
-      },{"using A check sumInt32(n1:void n2:{}) error void",
+      },{lineNumber(),"use A check sumInt32(n1:void n2:{}) error void",
           new Ast.FreeType(),
           new Ast.FreeType(),
           new String[]{"{ A:{'@plugin\n'L42.is/connected/withAlu\n}}"}
       //test to check that exception Any can not be captured
-      },{"( exception D() catch exception x (on Any void) void)",
+      },{lineNumber(),"( exception D() catch exception x (on Any void) void)",
         new NormType(Mdf.Immutable,Path.Void(),Ph.None),
         new NormType(Mdf.Immutable,Path.Void(),Ph.None),
         new String[]{"{ D:{k() method Void m() (void)}}"}
-      },{"( loop ( exception void"
+      },{lineNumber(),"( loop ( exception void"
       +"      catch exception ( on Void ( exception void ) ) void)"
       +"    catch exception p ( on Any ( exception p ) ) void )",
       new NormType(Mdf.Immutable,Path.Void(),Ph.None),
       new NormType(Mdf.Immutable,Path.Void(),Ph.None),
       new String[]{"{ D:{k() method Void m() (void)}}"}
-      },{
+      },{lineNumber(),
         "(exception void catch exception p ( on Any ( exception p ) ) void )",
         new NormType(Mdf.Immutable,Path.Void(),Ph.None),
         new NormType(Mdf.Capsule,Path.Void(),Ph.None),
         new String[]{"{ D:{k() method Void m() (void)}}"}
 
-            },{ "( ( exception void"
+            },{lineNumber(), "( ( exception void"
                 +"      catch exception ( on Void ( exception void ) ) void)"
                 +"    catch exception p ( on Any ( exception p ) ) void )",
                 new NormType(Mdf.Immutable,Path.Void(),Ph.None),
                 new NormType(Mdf.Capsule,Path.Void(),Ph.None),
                 new String[]{"{ D:{k() method Void m() (void)}}"}
-            },{"( exception D.k() catch exception x (on Any void) void)",//should fail
+            },{lineNumber(),"( exception D.k() catch exception x (on Any void) void)",//should fail
               new NormType(Mdf.Immutable,Path.Void(),Ph.None),
               new NormType(Mdf.Capsule,Path.Void(),Ph.None),
               new String[]{"{ D:{k() method Void m() (void)}}"}
-            },{"( mut D x=D() lent D y=D() x.m(y)  )",//must fail//ok
+            },{lineNumber(),"( mut D x=D() lent D y=D() x.m(y)  )",//must fail//ok
               new Ast.FreeType(),
               new NormType(Mdf.Immutable,Path.Void(),Ph.None),
               new String[]{"{() D:{ mut () mut method Void m(mut D that) error void }}"}
-            },{"( mut D y=D() lent D x=D() x.m(y)  )",//must fail//ok
+            },{lineNumber(),"( mut D y=D() lent D x=D() x.m(y)  )",//must fail//ok
               new Ast.FreeType(),
               new NormType(Mdf.Immutable,Path.Void(),Ph.None),
               new String[]{"{() D:{ mut () mut method Void m(mut D that) error void }}"}

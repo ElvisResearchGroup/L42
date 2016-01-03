@@ -243,6 +243,13 @@ public interface L42Visitor<T> extends ParseTreeVisitor<T> {
 	T visitClassB(@NotNull L42Parser.ClassBContext ctx);
 
 	/**
+	 * Visit a parse tree produced by {@link L42Parser#useSquare}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitUseSquare(@NotNull L42Parser.UseSquareContext ctx);
+
+	/**
 	 * Visit a parse tree produced by {@link L42Parser#member}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

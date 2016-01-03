@@ -260,6 +260,9 @@ public class ToFormattedText implements Visitor<Void>{
   @Override
   public Void visit(SquareCall arg0) {
     arg0.getReceiver().accept(this);
+    return formatSquarePart(arg0);
+    }
+  private Void formatSquarePart(SquareCall arg0) {
     c("[");
     arg0.getDoc();
     indent();
@@ -271,13 +274,25 @@ public class ToFormattedText implements Visitor<Void>{
         });
     c("]");
     return deIndent();
-    }
+  }
   @Override
   public Void visit(SquareWithCall arg0) {
     arg0.getReceiver().accept(this);
     c("[");
     arg0.getWith().accept(this);
     return c("]");
+    }
+  @Override
+  public Void visit(Expression.UseSquare arg0) {
+    Expression inner=arg0.getInner();
+    if (inner instanceof Expression.With){
+      c("use [");
+      inner.accept(this);
+      return c("]");
+    }
+    assert inner instanceof Expression.SquareCall;
+    c("use");
+    return formatSquarePart((Expression.SquareCall)inner);    
     }
 
   @Override
@@ -364,7 +379,7 @@ public class ToFormattedText implements Visitor<Void>{
 
   @Override
   public Void visit(Using arg0) {
-    c("using ");
+    c("use ");
     arg0.getPath().accept(this);
     sp();
     c("check ");

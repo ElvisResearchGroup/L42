@@ -27,4 +27,5 @@ public interface Visitor<T> {
   T visit(Ast.Path s);
   T visit(Loop s);
   T visit(ClassReuse s);
+  T visit(UseSquare s);
 }

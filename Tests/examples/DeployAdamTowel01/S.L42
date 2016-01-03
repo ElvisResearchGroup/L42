@@ -8,7 +8,7 @@
   method toS() this
 
   method
-  S ++ (S that) S.#stringParser(using Alu
+  S ++ (S that) S.#stringParser(use Alu
       check stringConcat(s1:this.binaryRepr(),s2:that.toS().binaryRepr())
       error void)
 
@@ -16,7 +16,7 @@
 
   method
   Bool == (Outer0 that) {
-    using Alu
+    use Alu
       check ifStringEqualDo(s1:this.binaryRepr(),s2:that.binaryRepr())
       return Bool.true()
     return Bool.false()
@@ -28,7 +28,7 @@
 
   method
   S (N start, N end)
-    S.#stringParser(using Alu
+    S.#stringParser(use Alu
       check stringSubstring(this.binaryRepr(),start:start.binaryRepr(),end:end.binaryRepr())
       error void )
 
@@ -80,7 +80,7 @@
     )
     
   method N size()
-    N(_binaryRepr: using Alu
+    N(_binaryRepr: use Alu
       check stringSize(this.binaryRepr())
       error void)
 
@@ -97,7 +97,7 @@
     "
   method
   S replace(S that, S into)
-    S.#stringParser(using Alu
+    S.#stringParser(use Alu
       check stringReplace(this.binaryRepr(),
         src:that.binaryRepr()
         dest:into.binaryRepr())
@@ -105,17 +105,26 @@
 
   method
   SConcat #begin()
-    SConcat(accumulator:this)
+    SConcat(old:this,accumulator:S"")
     
-  SConcat:{(S accumulator)
+  SConcat:{(S old,S accumulator)
     method
     SConcat #add(Concept::ToS that)
-      SConcat(accumulator:this.accumulator()++that.toS())
+      SConcat(old:this.old(),
+        accumulator:this.accumulator()++that.toS())
+    method
+    SConcat #add(Concept::ToS that, Concept::ToS separedBy) (
+      var newAcc=that.toS()
+      if this.accumulator()!=S"" (
+        newAcc:=this.accumulator()++separedBy.toS()++newAcc
+        )
+      SConcat(old:this.old(),accumulator:newAcc)
+      )
     method
     SConcat #end()
       this
     method
     S #stringParser(Library that)
-      this.accumulator()++S.#stringParser(that)
+      this.old()++this.accumulator()++S.#stringParser(that)
     }
   }

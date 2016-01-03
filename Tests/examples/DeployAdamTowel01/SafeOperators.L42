@@ -3,13 +3,13 @@
 
   type method
   Library compose(Library left,Library right)
-    using Outer0
+    use Outer0
       check compose(left:left,right:right)
       error System::Guard::PluginFailure"SafeOperators.compose"
 
   type method
   Library renameClass(Library that,Path src, Path dest)
-    using Outer0
+    use Outer0
       check renameClass(that
         src:src.binaryRepr()
         dest:dest.binaryRepr()
@@ -18,7 +18,7 @@
 
   type method
   Library renameMethod(Library that,Path path,Selector src,Selector dest)
-    using Outer0
+    use Outer0
       check renameMethod(that
         path:path.binaryRepr()
         src:src.binaryRepr()
@@ -27,7 +27,7 @@
       error System::Guard::PluginFailure"SafeOperators.renameMethod"
   type method
   Library sumMethods(Library that,Path path,Selector src1,Selector src2,Selector dest, S name)
-    using Outer0
+    use Outer0
       check sumMethods(that
         path:path.binaryRepr()
         src1:src1.binaryRepr()
@@ -39,7 +39,7 @@
 
   type method
   Library redirect(Library that,Path src, type Any dest)
-    using Outer0
+    use Outer0
       check redirect(that
         src:src.binaryRepr()
         dest:dest
@@ -48,7 +48,7 @@
 
   type method
   Library removeImplementation(Library that,Path path)
-    using Outer0
+    use Outer0
       check removeImplementation(that
         path:path.binaryRepr()
         )
@@ -56,7 +56,7 @@
   
   type method
   Library moveImplementation(Library that,Path path,Selector src,Selector dest)
-    using Outer0
+    use Outer0
       check moveImplementation(that
         path:path.binaryRepr()
         src:src.binaryRepr()
@@ -66,7 +66,7 @@
   
   type method
   Library removeImplementation(Library that,Path path,Selector selector)
-    using Outer0
+    use Outer0
       check removeImplementation(that
         path:path.binaryRepr()
         selector:selector.binaryRepr()
@@ -75,7 +75,7 @@
 
   type method
   Library addDocumentation(Library that,Path path,Introspection::Doc doc)
-    using Outer0
+    use Outer0
       check addDocumentation(that
         path:path.binaryRepr()
         doc:doc.binaryRepr()
@@ -84,7 +84,7 @@
 
   type method
   Library addDocumentation(Library that,Path path,Selector selector,Introspection::Doc doc)
-    using Outer0
+    use Outer0
       check addDocumentation(that
         path:path.binaryRepr()
         selector:selector.binaryRepr()
@@ -94,7 +94,7 @@
 
   type method
   S freshName(S that) S.#stringParser(
-    using Outer0
+    use Outer0
       check freshName(that.binaryRepr())
       error System::Guard::PluginFailure"SafeOperators.freshName(that)"
     )    

@@ -2,12 +2,12 @@
    'L42.is/connected/withSafeOperators
 type method
 Library compose(Library left,Library right)
-  using Outer0
+  use Outer0
     check compose(left:left,right:right)
     error S"SafeOperatorsAccess.compose"
 type method
 Library redirect(Library that,Library srcBinaryRepr,type Any dest)
-    using SafeOperatorsAccess
+    use SafeOperatorsAccess
       check redirect(that,src:srcBinaryRepr,dest:dest)
       error S"SafeOperatorsAccess.redirect"
   }

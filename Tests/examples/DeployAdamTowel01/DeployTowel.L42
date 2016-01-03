@@ -5,20 +5,20 @@ type method Outer0 #add(Library fileName) Outer0(fileName:fileName)
 method Outer0 #end()this
 
 type method Library binaryReprFrom(Library lib)(
-  Library norm=using SafeOperatorsAccess
+  Library norm=use SafeOperatorsAccess
     check privateNormalize(lib)
     error Outer0"privateNormalize"
-  Library record=using SafeOperatorsAccess
+  Library record=use SafeOperatorsAccess
     check introspectLibraryReport(norm 'lib,'norm TODO
       path:Outer0"Outer0")
     error Outer0"introspectLibraryReport"
-  using SafeOperatorsAccess
+  use SafeOperatorsAccess
     check introspectLibraryDocAsString(record, path:Outer0"AllAsString",annotationN:0Outer0)
     error Outer0"introspectLibraryDocAsString"
   )
 method
 Library <<(Library that) (
-  using Alu
+  use Alu
     check fileDebug(fileName:this.fileName(), content:Outer0.binaryReprFrom(lib:that))
     error Outer0"fileDebug"
   ExitCode.normal()
@@ -34,7 +34,7 @@ Alu:'  toPutAs private
   }
   type method Library #stringParser(Library that) that
 type method Library #numberParser(Library that)
-  using Alu
+  use Alu
     check stringToInt32(that)
     error Outer0"stringToInt32"
 

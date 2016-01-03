@@ -27,7 +27,7 @@ public class TestRemoveCode {
   },{"{()}","{()}"
   },{"{C:{}}","{C:{}}"
   },{"{ C:'@private\n{}}","{}"
-  },{"{ A:{ method Void foo() using C check bar() void } C:'@private\n{}}","{ A:{ method Void foo() using C check bar() void } C:'@private\n{}}"
+  },{"{ A:{ method Void foo() use C check bar() void } C:'@private\n{}}","{ A:{ method Void foo() use C check bar() void } C:'@private\n{}}"
   },{"{ A:{ method type Any foo() C } C:'@private\n{}}","{ A:{ method type Any foo() C } C:'@private\n{}}"
   },{"{(C x) C:'@private\n{}}","{(C x) C:'@private\n{}}"
   },{"{(C x) C:'@private\n{(D y)} D:'@private\n{(D y)}}","{(C x) C:'@private\n{(D y)} D:'@private\n{(D y)}}"

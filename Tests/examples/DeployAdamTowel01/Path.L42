@@ -14,7 +14,7 @@
   Outer0 fromS(Concept::ToS that)
     Outer0.#stringParser(that.toS().binaryRepr())
   type method Outer0 #stringParser(Library that) (
-    using SafeOperators 
+    use SafeOperators 
       check ifInvalidDo(path:that)
       error Outer0.parseError(S.#stringParser(that))
     Outer0._private(_binaryRepr:that)
@@ -36,7 +36,7 @@
 
   method
   Bool == (Outer0 that) {
-    using Alu
+    use Alu
       check ifStringEqualDo(s1:this.binaryRepr(),s2:that.binaryRepr())
       return Bool.true()
     return Bool.false()
@@ -69,7 +69,7 @@
   type method
   Path from(Strings names) {
     if names.isEmpty() (return Path"Outer0")
-    s=S""[with n in names.vals() (n++S"::")]""
+    s=S""[with n in names.vals() (use[n++S"::"])]""
     return Outer0.fromS(s(end:s.size()-2N))
     }
   type method

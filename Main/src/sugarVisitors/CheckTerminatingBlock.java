@@ -25,6 +25,7 @@ import ast.Expression.RoundBlock;
 import ast.Expression.Signal;
 import ast.Expression.SquareCall;
 import ast.Expression.SquareWithCall;
+import ast.Expression.UseSquare;
 import ast.Expression.UnOp;
 import ast.Expression.Using;
 import ast.Expression.WalkBy;
@@ -90,6 +91,7 @@ public class CheckTerminatingBlock implements Visitor<Void> {
   public Void visit(FCall s) {return fail(s);}
   public Void visit(SquareCall s) {return fail(s);}
   public Void visit(SquareWithCall s) {return fail(s);}
+  public Void visit(UseSquare s) {return fail(s);}
   public Void visit(Using s) {return fail(s);}
   public Void visit(ClassB s) {return fail(s);}
   public Void visit(DotDotDot s) {return fail(s);}

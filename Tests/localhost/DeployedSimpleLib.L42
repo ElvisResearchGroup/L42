@@ -2009,13 +2009,19 @@ method
 Outer0::SConcat #begin() 
 SConcat:{
 type method 
-Outer0 #apply(Outer1 accumulator) 
+Outer0 #apply(Outer1 old, Outer1 accumulator) 
+mut method 
+Outer1 #old() 
+read method 
+Outer1 old() 
 mut method 
 Outer1 #accumulator() 
 read method 
 Outer1 accumulator() 
 method 
 Outer0 #add(Outer2::Concept::ToS that) 
+method 
+Outer0 #add(Outer2::Concept::ToS that, Outer2::Concept::ToS separedBy) 
 method 
 Outer0 #end() 
 method 

@@ -55,12 +55,12 @@ public class TestSingleStep {
           + " mut Outer0::D x= y"
           + " x)"
        },{lineNumber(),"{ A:{'@plugin\n'L42.is/connected/withAlu\n()}"
-        + " C: using A check sumInt32(n1:{} n2:{}) error void}",
+        + " C: use A check sumInt32(n1:{} n2:{}) error void}",
           "{ A:{'@plugin\n'L42.is/connected/withAlu\n()}##star ^##"
         + " C:error {'@stringU\n'InvalidInt32\n}##star ^##}"
 
        },{lineNumber(),"{ A:{'@plugin\n'L42.is/connected/withAlu\n()}"
-           + " C: using A check sumInt32(n1:{'@int32\n'5\n} n2:{'@int32\n'3\n}) error void}",
+           + " C: use A check sumInt32(n1:{'@int32\n'5\n} n2:{'@int32\n'3\n}) error void}",
              "{ A:{'@plugin\n'L42.is/connected/withAlu\n()}##star ^##"
            + " C:{'@int32\n'8\n}}"
 
@@ -113,10 +113,10 @@ public class TestSingleStep {
        },{lineNumber(),"(Outer0::C c1=Outer0::C.new() ( Outer0::C c2=Outer0::C.new() mut Outer0::D r=Outer0::D.new(x:c1)  r.x(that:c2)))",
           "(Outer0::C c1=Outer0::C.new() ( Outer0::C c2=Outer0::C.new() mut Outer0::D r=Outer0::D.new(x:c2)  void  ))"
 
-       },{lineNumber(),"using Any check m(that:(Outer0::C c1=Outer0::C.new() Outer0::C c2=Outer0::C.new() mut Outer0::D r=Outer0::D.new(x:c1)  r.x(that:c2))) void",
-          "using Any check m(that:(Outer0::C c1=Outer0::C.new() Outer0::C c2=Outer0::C.new() mut Outer0::D r=Outer0::D.new(x:c2)  void)) void"
+       },{lineNumber(),"use Any check m(that:(Outer0::C c1=Outer0::C.new() Outer0::C c2=Outer0::C.new() mut Outer0::D r=Outer0::D.new(x:c1)  r.x(that:c2))) void",
+          "use Any check m(that:(Outer0::C c1=Outer0::C.new() Outer0::C c2=Outer0::C.new() mut Outer0::D r=Outer0::D.new(x:c2)  void)) void"
 
-       },{lineNumber()," (using Any check m(that:(error void)) void catch error x (on Void void) void)",
+       },{lineNumber()," (use Any check m(that:(error void)) void catch error x (on Void void) void)",
          "( Void x=( void ) void )"
 
        },{lineNumber(),"(C c1=C.new() ( C c2=C.new() mut D r=D.new(x:c1)  r.x(c2)))",

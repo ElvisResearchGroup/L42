@@ -84,11 +84,11 @@ Members members() (
 
 method
 Methods methods()
-  Methods[with m in this.members().vals() ( on Method m)]
+  Methods[with m in this.members().vals() ( on Method use[m])]
 
 method
 NestedClasses nestedClasses()
-  NestedClasses[with m in this.members().vals() ( on NestedClass m)]
+  NestedClasses[with m in this.members().vals() ( on NestedClass use[m])]
 
 method
 NestedClasses transitivelyNestedClasses() (
@@ -132,24 +132,24 @@ Types removeDup(Types that) (
 method'@private
 Bool select(Type that,Types from) (
   rp=that.referencedPath()
-  Count[with t in from.vals() (t.referencedPath() == rp)]==0N
+  Count[with t in from.vals() (use[t.referencedPath() == rp])]==0N
   )
 method'@private
 Types remove(Types that,Types from)
-  Types[with t in that.vals() (case this.select(t,from:from) t)]
+  Types[with t in that.vals() (if this.select(t,from:from) (use[t]))]
   
 method
 Methods stateCandidate() (
   var havePrivate=Bool.false()
   var absMethods=Methods[with m in this.methods().vals() (
-    case m.methodKind()==S"AbstractMethod" (
+    if m.methodKind()==S"AbstractMethod" (
       havePrivate|=m.isPrivate()
-      m
+      use[m]
       )
     )]
   if havePrivate (
     absMethods:=Methods[with a in absMethods.vals() (
-      case a.isPrivate() a
+      if a.isPrivate() (use[a])
       )]
     )
   absMethods
@@ -160,7 +160,7 @@ Methods state() {
   stateCandidate=this.stateCandidate()
   constr=(
     classMethods=Methods[with m in stateCandidate.vals() (
-      case m.thisMdf()==S"type" m
+      if m.thisMdf()==S"type" (use[m])
       )]
     if classMethods.isEmpty() (return result)
     if !classMethods.pop().isEmpty() (return result)

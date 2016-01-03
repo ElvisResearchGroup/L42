@@ -31,6 +31,7 @@ import ast.Expression.Loop;
 import ast.Expression.MCall;
 import ast.Expression.RoundBlock;
 import ast.Expression.Signal;
+import ast.Expression.SquareCall;
 import ast.Expression.SquareWithCall;
 import ast.Expression.With;
 import ast.Expression.X;
@@ -100,7 +101,22 @@ class DesugarW extends CloneVisitor{
     VarDecXE xe=new VarDecXE(true,Optional.empty(),x,
         Desugar.getMCall(s.getP(),s.getReceiver(),"#begin",Desugar.getPs())
         );
-    //new with
+    List<VarDec> decs=new ArrayList<VarDec>();
+    decs.add(xe);    
+    //oldWith_noUseKw(s, xX, decs);
+    Expression ew=s.getWith().accept(this);
+    ew=ew.accept(new CloneVisitor(){
+      @Override public Expression visit(Expression.UseSquare u){
+        Expression result=Desugar.appendAddMethods(
+            (SquareCall) u.getInner(), xX);
+        result=new BinOp(s.getP(),xX,Op.ColonEqual,result);        
+        return result.accept(this);
+        }
+    });
+    decs.add(new VarDecE(ew));
+    return Desugar.getBlock(s.getP(),decs,Desugar.appendEndMethod(s.getP(),xX,s)).accept(this);
+    }
+  private void oldWith_noUseKw(SquareWithCall s, X xX, List<VarDec> decs) {
     List<On> ons = s.getWith().getOns();
     List<On> onsPrime = new ArrayList<>();
     for(On on:ons){
@@ -109,11 +125,8 @@ class DesugarW extends CloneVisitor{
     Optional<Expression> def = s.getWith().getDefaultE();
     Optional<Expression> defPrime =Map.of(e->withSquareAdd(s.getP(),xX,e), def);
     With w=s.getWith().withOns(onsPrime).withDefaultE(defPrime);
-    List<VarDec> decs=new ArrayList<VarDec>();
-    decs.add(xe);
     decs.add(new VarDecE(w));
-    return Desugar.getBlock(s.getP(),decs,Desugar.appendEndMethod(s.getP(),xX,s)).accept(this);
-    }
+  }
 
   private VarDecXE castT(Position pos,Type t, String y, String x) {
     assert t instanceof NormType;

@@ -1,19 +1,19 @@
 {
   type method
   Void (Concept::ToS that)
-    using Alu
+    use Alu
       check stringDebug(that.toS().binaryRepr())
       void
   type method
   Void (Library lib)
-    using Alu
+    use Alu
       check stringDebug(DeployTowel.binaryReprFrom(lib:lib))
       void
 
 
   type method
   Void (Concept::ToS fileName, Concept::ToS content)
-    using Alu
+    use Alu
       check fileDebug(
         fileName:fileName.toS().binaryRepr(),
         content:content.toS().binaryRepr()

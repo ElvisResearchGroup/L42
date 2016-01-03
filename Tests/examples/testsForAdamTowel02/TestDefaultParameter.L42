@@ -6,9 +6,18 @@ DefaultPar:{
   method library <<(Library that){
   
     newNames=Strings[with n in that.names().vals() (
-      case n!=this.name() n
+      if n!=this.name() (use[n])
       )]
     ' genrate meth name that/a
+    
+    
+    
+    flat=Strings[with ss in sss.vals() (
+      with s in ss.vals() (use[s]))]
+    
+    a.location(#.with(x:#+20N))
+    (l=a.location() 
+     a.location(l.with(x:l.x()+20N)))
     
     Refactor::SumMethods[
       dest and:a.fresh() of:p over:a.fresh().names().top() to: origin]<<acc

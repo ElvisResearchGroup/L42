@@ -56,6 +56,7 @@ import ast.Expression.RoundBlock;
 import ast.Expression.SquareCall;
 import ast.Expression.SquareWithCall;
 import ast.Expression.UnOp;
+import ast.Expression.UseSquare;
 import ast.Expression.Using;
 import ast.Expression.While;
 import ast.Expression.With;
@@ -550,16 +551,25 @@ public class Desugar extends CloneVisitor{
     return visit(visit1Step(s));
   }
   static public MCall visit1Step(SquareCall s) {
-    MCall result=getMCall(s.getP(),s.getReceiver(),"#begin",getPs());
+    Expression result=getMCall(s.getP(),s.getReceiver(),"#begin",getPs());
+    result = appendAddMethods(s, result);
+    return (MCall)appendEndMethod(s.getP(),result,s);
+  }
+  public static Expression appendAddMethods(SquareCall s, Expression result) {
     for(Parameters ps: s.getPss()){
       result=getMCall(s.getP(),result,"#add",ps);
     }
-    return (MCall)appendEndMethod(s.getP(),result,s);
+    return result;
   }
   public static Expression appendEndMethod(Position pos,Expression x,Expression inner) {
     MCall result=new MCall(x,"#end",Doc.empty(),Desugar.getPs(),pos);
     return result;
     //return x;
+  }
+  @Override
+  public Expression visit(UseSquare s) {
+    assert s.getInner() instanceof Expression.SquareCall:"The other shape is stupid: use[with...]== with...";
+    return super.visit(s);
   }
   public Expression visit(Literal s) {
     return visit(visit1Step(s));

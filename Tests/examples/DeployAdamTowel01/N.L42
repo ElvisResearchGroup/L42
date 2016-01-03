@@ -8,7 +8,7 @@
   
   type method
   N #numberParser(Library that)
-    N(_binaryRepr: using Alu
+    N(_binaryRepr: use Alu
       check stringToInt32(that)
       error Outer0.parseError(S.#stringParser(that)))
   type method
@@ -16,37 +16,37 @@
     S"UnsatisfactoryErrorToAvoidCycle, replace in AdamT2"
 
   method
-  toS() S.#stringParser(using Alu
+  toS() S.#stringParser(use Alu
       check int32ToString(this.binaryRepr())
       error void)
 
   method
   N +(N that)
-    N(_binaryRepr:using Alu
+    N(_binaryRepr:use Alu
       check sumInt32(n1:this.binaryRepr() n2:that.binaryRepr())
       error void)
 
   method
   N -(N that)
-    N(_binaryRepr:using Alu
+    N(_binaryRepr:use Alu
       check subInt32(n1:this.binaryRepr() n2:that.binaryRepr())
       error void)
 
   method
   N *(N that)
-    N(_binaryRepr:using Alu
+    N(_binaryRepr:use Alu
       check mulInt32(n1:this.binaryRepr() n2:that.binaryRepr())
       error void)
 
   method
   N /(N that)
-    N(_binaryRepr:using Alu
+    N(_binaryRepr:use Alu
       check divInt32(n1:this.binaryRepr() n2:that.binaryRepr())
       error void)
 
   method
   Bool ==(Outer0 that) {
-    using Alu
+    use Alu
       check ifInt32EqualDo(n1:this.binaryRepr() n2:that.binaryRepr())
       return Bool.true()
     return Bool.false()
@@ -58,7 +58,7 @@
 
   method
   Bool <(N that) {
-    using Alu
+    use Alu
       check ifInt32GrtDo(n1:this.binaryRepr() n2:that.binaryRepr())
       return Bool.true()
     return Bool.false()
@@ -66,7 +66,7 @@
 
   method
   Bool <=(N that) {
-    using Alu
+    use Alu
       check ifInt32GEqDo(n1:this.binaryRepr() n2:that.binaryRepr())
       return Bool.true()
     return Bool.false()

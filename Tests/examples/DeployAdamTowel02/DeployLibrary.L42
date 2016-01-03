@@ -22,7 +22,7 @@ exception MetaGuard::NestedClassUnavailable, MetaGuard::PrivacyCoupuled
         on MetaGuard::MemberUnavailable (
           available=Introspection(lib:res, path:Path"PrImpl").nestedClasses()
           sAvailable=S""[with av in available.vals() ( 
-            S.nl()++av.pathFromRoot().toS()(start:8N)  
+            use[S.nl()++av.pathFromRoot().toS()(start:8N)]  
             )]""
           error Assert::ObservedBug(
             text:S"map and library mismatch on "[p]" available paths are "

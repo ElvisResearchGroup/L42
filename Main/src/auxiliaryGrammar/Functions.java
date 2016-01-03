@@ -218,7 +218,7 @@ static{
   keywords.add("default");
   keywords.add("interface");
   keywords.add("method");
-  keywords.add("using");
+  keywords.add("use");
   keywords.add("check");
 }
 public static List<Block.Dec> replace(List<Block.Dec> dvs,MCall mc){

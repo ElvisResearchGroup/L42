@@ -274,8 +274,8 @@ public class TypecheckBlock {
       }
     return result;
     //how to in  42?
-    //VarEnv[with s in ve.keys(), nt in ve.vals() (VarEnv::Entry(key:s,val:mutAndlentToReadable(nt)]
-    //VarEnv[with e in ve.entries() (VarEnv::Entry(key:e.key(),val:mutAndlentToReadable(e.val())]
+    //VarEnv[with s in ve.keys(), nt in ve.vals() (use[VarEnv::Entry(key:s,val:mutAndlentToReadable(nt)])]
+    //VarEnv[with e in ve.entries() (use[VarEnv::Entry(key:e.key(),val:mutAndlentToReadable(e.val()])]
   }
 
   private static boolean toProtect(String x,Set<String> fv, SealEnv sealEnv) {
