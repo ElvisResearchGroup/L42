@@ -522,9 +522,10 @@ type method
 type Outer0 #begin() 
 method 
 Outer0 #end() }
-SumMethods:{
+SumMethods:{'#add(Selector that,Selector and, Path of, Selector to)
+
 type method 
-Outer0 #add(Outer2::Selector that, Outer2::Selector and, Outer2::Path of, Outer2::Selector to) 
+Outer0 #add(Outer2::Selector that, Outer2::Selector and, Outer2::Path of, Outer2::S over, Outer2::Selector to) 
 mut method 
 Outer2::Selector #that() 
 read method 
@@ -537,6 +538,10 @@ mut method
 Outer2::Path #of() 
 read method 
 Outer2::Path of() 
+mut method 
+Outer2::S #over() 
+read method 
+Outer2::S over() 
 mut method 
 Outer2::Selector #to() 
 read method 

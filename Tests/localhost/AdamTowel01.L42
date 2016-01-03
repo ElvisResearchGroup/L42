@@ -3616,7 +3616,7 @@ Library renameMethod(Library that, Outer1::Path path, Outer1::Selector src, Oute
 'SafeOperators.renameMethod
 })
 type method 
-Library sumMethods(Library that, Outer1::Path path, Outer1::Selector src1, Outer1::Selector src2, Outer1::Selector dest) using Outer0 check sumMethods(that:that, path:path.binaryRepr(), src1:src1.binaryRepr(), src2:src2.binaryRepr(), dest:dest.binaryRepr()) error Outer1::System::Guard::PluginFailure.#stringParser(that:{'@stringU
+Library sumMethods(Library that, Outer1::Path path, Outer1::Selector src1, Outer1::Selector src2, Outer1::Selector dest, Outer1::S name) using Outer0 check sumMethods(that:that, path:path.binaryRepr(), src1:src1.binaryRepr(), src2:src2.binaryRepr(), dest:dest.binaryRepr(), name:name.binaryRepr()) error Outer1::System::Guard::PluginFailure.#stringParser(that:{'@stringU
 'SafeOperators.renameMethod
 })
 type method 
@@ -9016,9 +9016,10 @@ type method
 type Outer0 #begin() Outer0
 method 
 Outer0 #end() this}
-SumMethods:{
+SumMethods:{'#add(Selector that,Selector and, Path of, Selector to)
+
 type method 
-Outer0 #add(Outer2::Selector that, Outer2::Selector and, Outer2::Path of, Outer2::Selector to) 
+Outer0 #add(Outer2::Selector that, Outer2::Selector and, Outer2::Path of, Outer2::S over, Outer2::Selector to) 
 mut method 
 Outer2::Selector #that() 
 read method 
@@ -9032,13 +9033,17 @@ Outer2::Path #of()
 read method 
 Outer2::Path of() 
 mut method 
+Outer2::S #over() 
+read method 
+Outer2::S over() 
+mut method 
 Outer2::Selector #to() 
 read method 
 Outer2::Selector to() 
 method 
 Library #leftleft(Library that) exception Outer2::MetaGuard::MemberUnavailable, Outer2::MetaGuard::MethodClash, Outer2::MetaGuard::ParameterMismatch (
   Void unused=(
-    Void unused0=return Outer2::SafeOperators.sumMethods(that:that, path:this.of(), src1:this.that(), src2:this.and(), dest:this.to())
+    Void unused0=return Outer2::SafeOperators.sumMethods(that:that, path:this.of(), src1:this.that(), src2:this.and(), dest:this.to(), name:this.over())
     catch error err (
       on Library (
         Outer2::Introspection::Record::#apply(lib ) record=Outer2::Introspection::Record.#apply(lib:err)

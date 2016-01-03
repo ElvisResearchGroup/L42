@@ -1,0 +1,27 @@
+{reuse L42.is/AdamTowel02
+DefaultPar:{
+  (Selector that, S name, Selector by)
+  'LinkedList.list(NameBy)
+  ParameterNameNotPresent:Message::$[]<<{<:MetaGuard}
+  method library <<(Library that){
+  
+    newNames=Strings[with n in that.names().vals() (
+      case n!=this.name() n
+      )]
+    ' genrate meth name that/a
+    
+    Refactor::SumMethods[
+      dest and:a.fresh() of:p over:a.fresh().names().top() to: origin]<<acc
+    }
+  }
+C:PostAction(Selector"foo()"
+  of:Path"Outer0",
+  action:{ type method Void (Void that) Debug(S"World")}
+  deprecated:Selector"bar()"
+  )<<{type method Void foo() Debug(S"Hello")}
+Main:{
+  C.foo()
+  C.bar()
+  return ExitCode.failure()
+  }
+}

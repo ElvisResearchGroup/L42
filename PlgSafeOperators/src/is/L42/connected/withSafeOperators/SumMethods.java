@@ -20,16 +20,20 @@ import tools.Assertions;
 
 import java.util.*;
 public class SumMethods {
-  public static ClassB sumMethods(ClassB lib, List<String> path, MethodSelector m1,MethodSelector m2,MethodSelector mRes){
+  public static ClassB sumMethods(ClassB lib, List<String> path, MethodSelector m1,MethodSelector m2,MethodSelector mRes,String name){
     ClassB pathCb = pathCb(lib, path);
     Member mem1=Errors42.checkExistsPathMethod(lib, path, Optional.of(m1));
     Member mem2=Errors42.checkExistsPathMethod(lib, path, Optional.of(m2));
     MethodType mt1=Program.extractMwt(mem1,(ClassB) pathCb).getMt();
     MethodType mt2=Program.extractMwt(mem2,(ClassB) pathCb).getMt();
-    checkParSize(path, m1, m2, mRes, mem1, mem2, mt1, mt2);
-    MethodType mtU=mtU(mt1,mt2);
-    if(mtU==null){throw Errors42.errorParameterMismatch(path, mem1,mem2, isFirstParOk(mt1,mt2),false,false);}
-    ExpCore eU=eU(mem2.getP(),mt1,mt2,m1,m2, mRes);
+    int index=m2.getNames().indexOf(name);
+    if(index==-1){
+      throw Errors42.errorParameterMismatch(path, mem1,mem2, false,false,false);
+      }
+    checkParSize(index,path, m1, m2, mRes, mem1, mem2, mt1, mt2);
+    MethodType mtU=mtU(index,mt1,mt2);
+    if(mtU==null){throw Errors42.errorParameterMismatch(path, mem1,mem2, isReplacedParOk(index,mt1,mt2),false,true);}
+    ExpCore eU=eU(index,mem2.getP(),mt1,mt2,m1,m2, mRes);
     MethodWithType mwtU=new MethodWithType(Doc.empty(),mRes,mtU,Optional.of(eU),mem2.getP() );   
     checkConflict(path, mRes, pathCb, mwtU);      
     return finalResult(lib, path, mwtU);    
@@ -40,9 +44,9 @@ public class SumMethods {
       }
     return ClassOperations.onClassNavigateToPathAndDo(lib,path,cbi->cbi.withMember(mwtU));
   }
-  private static void checkParSize(List<String> path, MethodSelector m1, MethodSelector m2, MethodSelector mRes, Member mem1, Member mem2, MethodType mt1, MethodType mt2) {
+  private static void checkParSize(int index,List<String> path, MethodSelector m1, MethodSelector m2, MethodSelector mRes, Member mem1, Member mem2, MethodType mt1, MethodType mt2) {
     if(m1.getNames().size()+m2.getNames().size()-1!=mRes.getNames().size()){
-      throw Errors42.errorParameterMismatch(path, mem1,mem2, isFirstParOk(mt1,mt2),mdfU(mt1.getMdf(),mt2.getMdf())!=null,false);
+      throw Errors42.errorParameterMismatch(path, mem1,mem2, isReplacedParOk(index,mt1,mt2),mdfU(mt1.getMdf(),mt2.getMdf())!=null,false);
     }
   }
   private static ClassB pathCb(ClassB lib, List<String> path) {
@@ -69,15 +73,16 @@ public class SumMethods {
       Errors42.checkMethodClash(path, mwtU,mwtC,false);   
     }
   }
-  static MethodType mtU(MethodType mt1,MethodType mt2){
+  static MethodType mtU(int index,MethodType mt1,MethodType mt2){
     Mdf mdfU=mdfU(mt1.getMdf(),mt2.getMdf());
     if(mdfU==null){return null;}
     List<Type> totTypes=new ArrayList<>(mt1.getTs());
     List<Doc> totDocs=new ArrayList<>(mt1.getTDocs());
-    for(int i=1;i<mt2.getTs().size();i++){
-      totTypes.add(mt2.getTs().get(i));
-      totDocs.add(mt2.getTDocs().get(i));
-      }
+    totTypes.addAll(mt2.getTs());
+    totDocs.addAll(mt2.getTDocs());
+    int toRemove=mt1.getTs().size()+index;
+    totTypes.remove(toRemove);
+    totDocs.remove(toRemove);
     assert totTypes.size()==totDocs.size();
     ArrayList<Path> exU = new ArrayList<>(mt1.getExceptions());
     exU.addAll(mt2.getExceptions());
@@ -86,15 +91,15 @@ public class SumMethods {
         mdfU,totTypes,totDocs,mt2.getReturnType(),exU);
     return mtU;
     }
-  static boolean isFirstParOk(MethodType mt1,MethodType mt2){
+  static boolean isReplacedParOk(int index,MethodType mt1,MethodType mt2){
     if(mt2.getTs().isEmpty()){return false;}
-    Type p1 = mt2.getTs().get(0);
+    Type p1 = mt2.getTs().get(index);
     Type r = mt1.getReturnType();
     return p1.equals(r);
     }
   
   
-  static ExpCore eU(Position pos,MethodType mt1,MethodType mt2,MethodSelector m1,MethodSelector m2,MethodSelector mRes){
+  static ExpCore eU(int index,Position pos,MethodType mt1,MethodType mt2,MethodSelector m1,MethodSelector m2,MethodSelector mRes){
     ExpCore r1=(mt1.getMdf()==Mdf.Type)?Path.outer(0):new ExpCore.X("this");
     ExpCore r2=(mt2.getMdf()==Mdf.Type)?Path.outer(0):new ExpCore.X("this");
     //this/outer0 . m2(this/outer0 .m1(ps1),ps2)
@@ -103,11 +108,11 @@ public class SumMethods {
     ExpCore eInner=new ExpCore.MCall(r1, m1,Doc.empty(), ps1, pos);
     
     ArrayList<ExpCore> ps2=new ArrayList<>();
-    ps2.add(eInner);
     for(int i=1;i<m2.getNames().size();i++){
       String x=mRes.getNames().get(m1.getNames().size()+i-1);
       ps2.add(new ExpCore.X(x));
       }
+    ps2.add(index,eInner);
     ExpCore eU=new ExpCore.MCall(r2, m2, Doc.empty(),ps2 , pos);
     return eU;
   }

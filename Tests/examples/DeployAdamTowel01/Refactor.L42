@@ -151,10 +151,13 @@
         })]<<that
     }
   
-  SumMethods:Squares<<{#add(Selector that,Selector and, Path of, Selector to)
+  SumMethods:Squares<<{
+    '#add(Selector that,Selector and, Path of, Selector to)
+    #add(Selector that,Selector and, Path of, S over, Selector to)
+    
     method
     Library << (Library that)exception MetaGuard::MemberUnavailable,MetaGuard::MethodClash, MetaGuard::ParameterMismatch{
-      return SafeOperators.sumMethods(that,path:this.of() src1:this.that(),src2:this.and(), dest:this.to())
+      return SafeOperators.sumMethods(that,path:this.of() src1:this.that(),src2:this.and(), dest:this.to(),name:this.over())
       catch error err (on Library (
         record=Introspection::Record(lib:err)
         with x=record"Kind" (

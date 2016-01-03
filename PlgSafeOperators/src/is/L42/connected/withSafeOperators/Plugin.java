@@ -61,14 +61,15 @@ public class Plugin implements PluginType{
        MethodSelector dest = MethodSelector.parse(ensureExtractStringU(_dest));
       return Rename.renameMethod(Resources.getP(),that,path,src,dest);
       }
-    @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
-    public Object MsumMethods£xthat£xpath£xsrc1£xsrc2£xdest(Object _that,Object _path,Object _src1,Object _src2,Object _dest){
+    @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+    public Object MsumMethods£xthat£xpath£xsrc1£xsrc2£xdest£xname(Object _that,Object _path,Object _src1,Object _src2,Object _dest,Object _name){
       ClassB that=ensureExtractClassB(_that);
+      String name=ensureExtractStringU(_name);
       List<String> path=Path.parseValidCs(ensureExtractStringU(_path));
        MethodSelector src1 = MethodSelector.parse(ensureExtractStringU(_src1));
        MethodSelector src2 = MethodSelector.parse(ensureExtractStringU(_src2));
        MethodSelector dest = MethodSelector.parse(ensureExtractStringU(_dest));
-      return SumMethods.sumMethods(that,path,src1,src2,dest);
+      return SumMethods.sumMethods(that,path,src1,src2,dest,name);
       }
     @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.TypeAny})
     public Object Mredirect£xthat£xsrc£xdest(Object _that,Object _src,Object _dest){

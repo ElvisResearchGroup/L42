@@ -18,7 +18,7 @@ exception InvalidAction{
   acc:=Refactor.compose(left:acc,right:a.action())
   ('throws ParameterMismatch
     acc:=Refactor::SumMethods
-      [dest and:a.fresh() of:p to: origin]<<acc
+      [dest and:a.fresh() of:p over:a.fresh().names().top() to: origin]<<acc
     catch exception parm ( on MetaGuard::ParameterMismatch
         error InvalidAction
           "Action type signature do not fit with.. PostAct::Action0"(parm) 

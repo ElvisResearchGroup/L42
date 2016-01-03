@@ -70,7 +70,7 @@ public class Errors42 {
       "IncompatibleException",""+!excOk);//if they have an incompatible exception list
     }
   //"ParameterMismatch" caused by sumMethod
-  static Error errorParameterMismatch(List<String> pathForError, Member mta, Member mtb,  boolean par, boolean mdf,boolean parNames) {
+  static Error errorParameterMismatch(List<String> pathForError, Member mta, Member mtb,  boolean par, boolean mdf,boolean parNameOk) {
       return Resources.Error.multiPartStringError("ParameterMismatch",
        "Path",formatPathIn(pathForError),//the path of the clash (that own  the method), in the rename is the path of the destination clash
       "Left",sugarVisitors.ToFormattedText.of(mta).replace("\n","").trim(),//implementation dependend print of the left and right methods
@@ -79,7 +79,7 @@ public class Errors42 {
       "RightKind",ExtractInfo.memberKind(mtb),
       "FirstParameterTypeOk",""+ par,//first parameter=return type
       "MdfOk",""+ mdf,// the modifier for "this" is  compatible
-      "ParNamesDisjoint",""+ parNames// disjoint par names
+      "ParNameContainedInRight",""+ parNameOk// disjoint par names
         );//if they have an incompatible exception list
     }
   //"InvalidOnTopLevel", caused by redirect and addDocumentationOnNestedClass
