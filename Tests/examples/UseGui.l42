@@ -1,8 +1,7 @@
-{reuse L42.is/miniBase
-Gui:Load[]<{reuse L42.is/GuiLib}
-SList:Collections.list(S)
+{reuse L42.is/AdamTowel02
+Gui:Load[]<<{reuse L42.is/GuiLib}
 C:{
-  list=SList[S"4.png";S"2.png";S"bang.jpg";S"bang.jpg";S"bang.jpg"]
+  list=Strings[S"4.png";S"2.png";S"bang.jpg";S"bang.jpg";S"bang.jpg"]
   var msg=S"<div id='Alpha'>"
   Gui gui=Gui(id:S"a1")
   gui.open(
@@ -21,6 +20,7 @@ C:{
     gui.set(msg++S"</div>", id:S"Alpha")
     )
   gui.close() 
+  Debug(S"Success")
   return ExitCode.normal()
   }
 }
