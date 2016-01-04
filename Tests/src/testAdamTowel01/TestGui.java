@@ -39,9 +39,9 @@ public class TestGui {
   @Test
   public  void _01_01UseGui() throws Throwable{
     TestHelper.configureForTest();
-    L42.setRootPath(Paths.get("dummy"));
+    //L42.setRootPath(Paths.get("dummy"));
     L42.main(new String[]{"examples/UseGui.L42"});
-    Assert.assertTrue(L42.record.toString().endsWith("Success"));
+    Assert.assertTrue(L42.record.toString().contains("#@Success@#"));
     }
   
    

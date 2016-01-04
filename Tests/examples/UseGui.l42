@@ -6,7 +6,8 @@ C:{
   Gui gui=Gui(id:S"a1")
   gui.open(
     title:S"FIRST!"
-    basePath:S"file:///C:/Users/marco/Desktop/latexHelper/elvisMarcoServetto/L42ProgrammingGuide/L42TestRunApril/examples/"
+    basePath:S"file:///C:\Users\marco\Desktop\eclipseMars\L42Local\Tests\examples\Img"
+    'put here any folder with the right images in
     body:S"
       '<div id="Alpha"> </div>
       '<font size="3" color="blue">Press the button to make stuff happens! (slowly)</font>
@@ -20,7 +21,7 @@ C:{
     gui.set(msg++S"</div>", id:S"Alpha")
     )
   gui.close() 
-  Debug(S"Success")
+  Debug(S"#@Success@#")
   return ExitCode.normal()
   }
 }
