@@ -20,7 +20,7 @@ exception InvalidAction{
     acc:=Refactor::SumMethods
       [dest and:a.fresh() of:p over:a.fresh().names().top() to: origin]<<acc
     catch exception parm ( on MetaGuard::ParameterMismatch
-        error InvalidAction
+        exception InvalidAction
           "Action type signature do not fit with.. PostAct::Action0"(parm) 
           )
     void)

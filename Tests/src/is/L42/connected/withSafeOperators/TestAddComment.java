@@ -16,7 +16,9 @@ import platformSpecific.javaTranslation.Resources;
 import ast.Ast.Doc;
 import ast.Ast.MethodSelector;
 import ast.Ast.Path;
+import ast.Ast.Stage;
 import ast.ExpCore.ClassB;
+import auxiliaryGrammar.Functions;
 import auxiliaryGrammar.Program;
 
 public class TestAddComment {
@@ -52,6 +54,7 @@ public class TestAddComment {
     ClassB expected=getClassB(_expected);
     if(!isError){
       ClassB res=AddDocumentation.addDocumentationOnMethod(Program.empty(),cb1, path.getCBar(), ms,doc);
+      res=Functions.clearCache(res,Stage.None);
       TestHelper.assertEqualExp(expected,res);
       }
     else{

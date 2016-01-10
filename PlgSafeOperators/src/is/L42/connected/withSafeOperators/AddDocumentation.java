@@ -14,11 +14,13 @@ import ast.ExpCore.ClassB.MethodWithType;
 import ast.Util.InvalidMwtAsState;
 import auxiliaryGrammar.Functions;
 import auxiliaryGrammar.Program;
+import facade.Configuration;
 import platformSpecific.javaTranslation.Resources;
 public class AddDocumentation {
 
   public static ClassB addDocumentationOnMethod (Program p,ClassB cb, List<String> cs,MethodSelector sel,Doc doc){
     Errors42.checkExistsPathMethod(cb, cs, Optional.of(sel));
+    Configuration.typeSystem.computeStage(p, cb);
     if(cs.isEmpty()){cb=auxAddDocOnMethod(p,cb,sel,doc);}
     else{
       Program p1=p.addAtTop(cb);
