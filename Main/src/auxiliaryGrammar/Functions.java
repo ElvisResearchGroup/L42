@@ -33,6 +33,7 @@ import ast.Expression.ClassReuse;
 import ast.Expression;
 import ast.Util.CachedStage;
 import ast.Util.InvalidMwtAsState;
+import ast.Util.PathMwt;
 import coreVisitors.Dec;
 import coreVisitors.FreeVariables;
 import coreVisitors.From;
@@ -346,9 +347,14 @@ public static List<InvalidMwtAsState> isAbstract(Program p, ClassB ct) {
   }
   return details;
 }
+
 public static List<InvalidMwtAsState> coherent(Program p, ClassB ct) {
   Program p1=p.addAtTop(ct);//was designed to give 1 error, now must give full list
   if( ct.isInterface()){ return Collections.emptyList();}
+  List<MethodWithType> mwtsNI= collectNotImplementedMethods(ct);
+  if(!mwtsNI.isEmpty()){
+    return mwtsNI.stream().map(m->new InvalidMwtAsState("Method from interface not implemented",m)).collect(Collectors.toList());
+  }
   List<MethodWithType> mwts= collectAbstractMethods(ct);
   if(mwts.isEmpty()){return Collections.emptyList();}
   List<MethodWithType> typeMethods=new ArrayList<>();
@@ -465,6 +471,17 @@ private static boolean checkVoidAndThatOk(Program p,MethodWithType mwt) {
   if(!mwt.getMs().getNames().get(0).equals("that")){return false;}
   return true;
   }
+
+private static List<MethodWithType> collectNotImplementedMethods(ClassB cb) {
+  List<MethodWithType> mwts=new ArrayList<>();
+  for(PathMwt inhM:cb.getStage().getInherited()){
+    MethodSelector si = inhM.getMwt().getMs();
+    if( Program.getIfInDom(cb.getMs(),si).isPresent()){continue;}
+    mwts.add(inhM.getMwt());
+  }
+  return mwts;
+}
+
 private static List<MethodWithType> collectAbstractMethods(ClassB cb) {
   List<MethodWithType> mwts=new ArrayList<>();
   for(Member m:cb.getMs()){

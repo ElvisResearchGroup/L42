@@ -81,6 +81,7 @@ public class TestBase02 {
      Assert.assertEquals(L42.record.toString(),
          "DanielWriteHere\n");
      }
+
    @Test
    public  void _02_07addInvariant() throws Throwable{
      TestHelper.configureForTest();

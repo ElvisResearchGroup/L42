@@ -313,4 +313,20 @@ public void testDeepTyping3(){tp("{"
     ," D: { type method Library wrong()  { A:{method Void v() this.notDeclared() } } }"
     ," E: ( Void ignore=D.wrong(), {'@exitStatus\n'0\n\n})"//we check that methodNotPresent has priority over PathsNotSubtype in this case
     ,"}");}
+
+@Test(expected=ErrorMessage.MalformedFinalResult.class)
+public void test13(){tp("{",
+    " I:{ interface method I foo() }",
+    "A:{ ()<:I  method I beer()}",
+    "Main:(x={} {'@exitStatus\n'0\n\n})",
+    " }");}
+
+@Test(expected=ErrorMessage.MalformedFinalResult.class)
+public void test13b(){tp("{",
+    " I:{ interface method I foo() }",
+    "A:{ ()<:I  }",
+    "Main:(x={} {'@exitStatus\n'0\n\n})",
+    " }");}
+
+
 }

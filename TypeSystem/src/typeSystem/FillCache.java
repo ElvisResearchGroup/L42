@@ -135,7 +135,9 @@ public static void computeStage(Program p,ClassB cb) {
   List<CachedStage>again=new ArrayList<>();
   computeStageFirst(again,p,cb);
   while(true){ if(!progress(again)){break;}}
-  for(CachedStage st:again){st.setStage(Stage.Star);}
+  for(CachedStage st:again){
+    st.setStage(Stage.Star);
+    }
   cleanDependencies(cb);
   for(ClassB cbi:p.getInnerData()){ cleanDependencies(cbi);}
 }
@@ -221,7 +223,9 @@ public static boolean progress(List<CachedStage>again){
         return Stage.Plus;
         }
     }
-    if(cb.getStage().getDependencies().isEmpty()){return Stage.Star;}
+    if(cb.getStage().getDependencies().isEmpty()){
+      return Stage.Star;
+      }
     return Stage.ToIterate;
    }
 }
