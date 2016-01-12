@@ -83,7 +83,7 @@ public class Desugar extends CloneVisitor{
     //replaceDots(currentFolder,e)-> clone visitor
     d.collectAllUsedLibs(e);//collect all classBreuse in a map url->core version
     L42.usedNames.addAll(CollectDeclaredClassNamesAndMethodNames.of(e));
-    d.usedVars.addAll(CollectDeclaredVarsAndCheckNoDeclaredTwice.of(e));
+    d.usedVars.addAll(CollectDeclaredVars.of(e));
     d.renameAllPrivatesInUsedLibs();
     Expression result= e.accept(d);
     assert Functions.checkCore(result);
@@ -695,7 +695,7 @@ public class Desugar extends CloneVisitor{
   public NestedClass visit(NestedClass nc){
     this.usedVars=new HashSet<String>();
     this.varEnv=new HashMap<String, Type>();
-    usedVars.addAll(CollectDeclaredVarsAndCheckNoDeclaredTwice.of(nc.getInner()));
+    usedVars.addAll(CollectDeclaredVars.of(nc.getInner()));
     return withExpectedType(
       new NormType(Mdf.Immutable, Path.Library(), Ph.None),
       ()->super.visit(nc));
@@ -717,7 +717,7 @@ public class Desugar extends CloneVisitor{
     varEnv.put("this",new Ast.HistoricType(Path.outer(0),msxsi,false));
     List<Ast.MethodSelectorX> msxs=new ArrayList<>();
     msxs.add(new Ast.MethodSelectorX(mi.getS(),""));
-    usedVars.addAll(CollectDeclaredVarsAndCheckNoDeclaredTwice.of(mi.getInner()));
+    usedVars.addAll(CollectDeclaredVars.of(mi.getInner()));
     final MethodImplemented mi2=mi;//final restrictions
     return withExpectedType(
       new Ast.HistoricType(Path.outer(0),msxs,false),
@@ -735,7 +735,7 @@ public class Desugar extends CloneVisitor{
     }}
     usedVars.add("this");
     varEnv.put("this",new NormType(mt.getMt().getMdf(),Path.outer(0),Ph.None));
-    usedVars.addAll(CollectDeclaredVarsAndCheckNoDeclaredTwice.of(mt.getInner().get()));
+    usedVars.addAll(CollectDeclaredVars.of(mt.getInner().get()));
     final MethodWithType mt2=mt;//final restrictions
     return withExpectedType(
       liftT(mt.getMt().getReturnType()),

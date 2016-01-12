@@ -20,12 +20,13 @@ import ast.ExpCore._void;
 
 public class HB implements Visitor<ExpCore> {
   HashSet<String> xs=new HashSet<String>();
+  HashSet<String> xsRes=new HashSet<String>();
   boolean onlyAroundHole;
   HB(boolean onlyAroundHole){this.onlyAroundHole=onlyAroundHole;}
   public static HashSet<String> of(ExpCore ctxVal, boolean onlyAroundHole){
     HB hb=new HB(onlyAroundHole);
     ctxVal.accept(hb);
-    return hb.xs;
+    return hb.xsRes;
   }
   
   //return null if not walkBy,
@@ -70,16 +71,24 @@ public class HB implements Visitor<ExpCore> {
     for(Block.Dec dec:s.getDecs()){
       if(xs.contains(dec.getX())){throw new ErrorMessage.VariableDeclaredMultipleTimes(dec.getX(),s.getP());}
       this.xs.add(dec.getX());
+      this.xsRes.add(dec.getX());
       }
-    if(!onlyAroundHole && s.get_catch().isPresent()){
-      Catch k=s.get_catch().get();          
-      if(xs.contains(k.getX())){throw new ErrorMessage.VariableDeclaredMultipleTimes(k.getX(),s.getP());}
-      xs.add(k.getX());
-      for(On on:k.getOns()){
-        on.getInner().accept(this);
-      }
-      }
-    return result;
+    try{
+      if(!onlyAroundHole && s.get_catch().isPresent()){
+        Catch k=s.get_catch().get();          
+        if(xs.contains(k.getX())){throw new ErrorMessage.VariableDeclaredMultipleTimes(k.getX(),s.getP());}
+        xs.add(k.getX());
+        xsRes.add(k.getX());
+        for(On on:k.getOns()){
+          on.getInner().accept(this);
+          }
+        }
+      return result;
+    }finally{
+      for(Block.Dec dec:s.getDecs()){
+        this.xs.remove(dec.getX());
+        }
+    }
   }
 
   public ExpCore visit(Path s) {return null;}

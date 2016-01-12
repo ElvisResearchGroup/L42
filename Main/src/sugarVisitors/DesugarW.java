@@ -45,7 +45,7 @@ class DesugarW extends CloneVisitor{
   Set<String> usedVars=new HashSet<String>();
   public static Expression of(Expression e){
     DesugarW d=new DesugarW();
-    d.usedVars.addAll(CollectDeclaredVarsAndCheckNoDeclaredTwice.of(e));
+    d.usedVars.addAll(CollectDeclaredVars.of(e));
     Expression result= e.accept(d);
     return result;
   }
@@ -56,14 +56,14 @@ class DesugarW extends CloneVisitor{
   }
   public NestedClass visit(NestedClass nc){
     this.usedVars=new HashSet<String>();
-    usedVars.addAll(CollectDeclaredVarsAndCheckNoDeclaredTwice.of(nc.getInner()));
+    usedVars.addAll(CollectDeclaredVars.of(nc.getInner()));
     return super.visit(nc);
   }
   public MethodImplemented visit(MethodImplemented mi){
     this.usedVars=new HashSet<String>();
     for(String name:mi.getS().getNames()){ usedVars.add(name); }
     usedVars.add("this");
-    usedVars.addAll(CollectDeclaredVarsAndCheckNoDeclaredTwice.of(mi.getInner()));
+    usedVars.addAll(CollectDeclaredVars.of(mi.getInner()));
     return super.visit(mi);
     }
   public MethodWithType visit(MethodWithType mt){
@@ -71,7 +71,7 @@ class DesugarW extends CloneVisitor{
     if(!mt.getInner().isPresent()){return super.visit(mt);}
     for(String name:mt.getMs().getNames()){this.usedVars.add(name);}
     usedVars.add("this");
-    usedVars.addAll(CollectDeclaredVarsAndCheckNoDeclaredTwice.of(mt.getInner().get()));
+    usedVars.addAll(CollectDeclaredVars.of(mt.getInner().get()));
     return super.visit(mt);
       }
 

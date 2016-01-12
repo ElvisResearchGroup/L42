@@ -328,5 +328,16 @@ public void test13b(){tp("{",
     "Main:(x={} {'@exitStatus\n'0\n\n})",
     " }");}
 
+@Test
+public void test14RelaxVarableSameName1(){tp("{",
+    " A:{type method Library foo() (   var lib={} (x={} lib:=x)  (x={'@exitStatus\n'0\n\n} lib:=x  ) lib   )}",
+    "Main:A.foo()",
+    " }");}
+
+@Test(expected=ErrorMessage.MalformedFinalResult.class)
+public void test14RelaxVarableSameName2(){tp("{",
+    " A:{type method Library foo() (   var lib={}  (x={'@exitStatus\n'0\n\n} lib:=x  )  (x={} lib:=x) lib   )}",
+    "Main:A.foo()",
+    " }");}
 
 }

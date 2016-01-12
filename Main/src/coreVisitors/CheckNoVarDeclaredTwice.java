@@ -17,6 +17,7 @@ public class CheckNoVarDeclaredTwice{
     Local cdv=new Local();
     cdv.xs.addAll(names);
     cdv.xs.add("this");
+    cdv.xsRes.addAll(cdv.xs);
     e.accept(cdv);
   }
 

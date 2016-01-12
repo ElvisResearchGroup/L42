@@ -22,7 +22,6 @@ import coreVisitors.InjectionOnSugar;
 import profiling.Timer;
 import sugarVisitors.CollapsePositions;
 import sugarVisitors.CollectDeclaredClassNamesAndMethodNames;
-import sugarVisitors.CollectDeclaredVarsAndCheckNoDeclaredTwice;
 import sugarVisitors.Desugar;
 import sugarVisitors.InjectionOnCore;
 import sugarVisitors.ToFormattedText;
