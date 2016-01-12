@@ -12328,16 +12328,24 @@ Library #leftleft(Library that) exception Outer0::InvalidAction (
     mut Outer0::Varacc_$%$%$%100_1_$%$%$%$%221_1_$%$%$%$%$%339_1_$%$%$%$%$%$%458_1_$%$%$%$%$%$%$%578_1_$%$%$%$%$%$%$%$%699_1__821_1 varacc=Outer0::Varacc_$%$%$%100_1_$%$%$%$%221_1_$%$%$%$%$%339_1_$%$%$%$%$%$%458_1_$%$%$%$%$%$%$%578_1_$%$%$%$%$%$%$%$%699_1__821_1.#apply(inner:acc)
     Void unused0=varacc.inner(that:Outer1::Refactor::MoveImplementationSelector.#begin().#add(that:origin, of:p, to:dest).#end().#leftleft(that:varacc.#inner()))
     Void unused1=varacc.inner(that:Outer1::Refactor.compose(left:varacc.#inner(), right:a.action()))
-    Void unused2=('throws ParameterMismatch
-    
-      Void unused5=varacc.inner(that:Outer1::Refactor::SumMethods.#begin().#add(that:dest, and:a.fresh(), of:p, over:a.fresh().names().top(), to:origin).#end().#leftleft(that:varacc.#inner()))
-      catch exception parm (
-        on Outer1::MetaGuard::ParameterMismatch exception Outer0::InvalidAction.#stringParser(that:{'@stringU
-        'Action type signature do not fit with.. PostAct::Action0
-        }).#apply(that:parm)
+    Void unused2=varacc.inner(that:(
+      Void unused5=('throws ParameterMismatch
+      
+        Void unused6=return Outer1::Refactor::SumMethods.#begin().#add(that:dest, and:a.fresh(), of:p, over:a.fresh().names().top(), to:origin).#end().#leftleft(that:varacc.#inner())
+        catch exception parm (
+          on Outer1::MetaGuard::ParameterMismatch exception Outer0::InvalidAction.#stringParser(that:{'@stringU
+          'Action type signature do not fit with.. PostAct::Action0
+          }).#apply(that:parm)
+          )
+        void
         )
-      void
-      )
+      catch return result0 (
+        on Outer0::Varacc_$%$%$%100_1_$%$%$%$%221_1_$%$%$%$%$%339_1_$%$%$%$%$%$%458_1_$%$%$%$%$%$%$%578_1_$%$%$%$%$%$%$%$%699_1__821_1::inner(that ) ::that result0
+        )
+      error {'@stringU
+      'CurlyBlock-Should be unreachable code
+      }
+      ))
     Void unused3=varacc.inner(that:Outer1::Refactor::MakePrivateSelector.#begin().#add(that:a.fresh(), of:p).#end().#leftleft(that:varacc.#inner()))
     Void unused4=return varacc.#inner()
     catch exception cnr (

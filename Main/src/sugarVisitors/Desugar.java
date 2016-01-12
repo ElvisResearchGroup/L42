@@ -519,8 +519,15 @@ public class Desugar extends CloneVisitor{
   }
   public Expression visit(BinOp s) {
     if(s.getOp()==Op.ColonEqual){
-      assert s.getLeft() instanceof X:s.getLeft();
-      return visit(getMCall(s.getP(),s.getLeft(),"inner",getPs(lift(s.getRight()))));
+      //assert s.getLeft() instanceof X:s.getLeft();
+      //Expression.X x = (Expression.X)s.getLeft();
+      //Type declared = this.varEnv.get(x.getInner());
+      //assert declared!=null;
+      //Type aux=this.t;
+      //this.t=declared;
+      //Expression right=lift(s.getRight());
+      //this.t=aux;
+      return visit(getMCall(s.getP(),s.getLeft(),"inner",getPs(s.getRight())));
     }
     if(s.getOp().kind==Ast.OpKind.EqOp){
       Op op2=Op.fromString(s.getOp().inner.substring(0,s.getOp().inner.length()-1));
