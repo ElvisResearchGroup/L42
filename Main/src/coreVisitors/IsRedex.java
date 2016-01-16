@@ -102,7 +102,7 @@ public class IsRedex{
     }//end of for members
     Block s2=Functions.garbage(s, s.getDecs().size());
     if(!s2.equals(s)){return new Redex.Garbage(s2);}
-    if(s.get_catch().isPresent()){
+    if(!s.getOns().isEmpty()){
       return new Redex.NoThrowRemoveOn(s);
     }
       
@@ -118,7 +118,7 @@ public class IsRedex{
     }
     if(!IsValue.of(p,ei)){
       //no or throw
-      if(!s.get_catch().isPresent()){return Redex.invalid();}
+      if(s.getOns().isEmpty()){return Redex.invalid();}
       ExpCore throw_ = ExtractThrow.of(p,ei);
       if(throw_ instanceof WalkBy){return Redex.invalid();}
       return new Redex.CaptureOrNot(s, i,(Signal)throw_);

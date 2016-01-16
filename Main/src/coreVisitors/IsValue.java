@@ -60,7 +60,7 @@ public class IsValue extends TestShapeVisitor{
   public Boolean visit(_void s)  {return true;}
   public Boolean visit(ClassB s)  {return true;}
   public Boolean visit(Block s)  {
-    if(s.get_catch().isPresent()){return false;}
+    if(!s.getOns().isEmpty()){return false;}
     int dvsn=s.getDecs().size();
     for( int i=0;i<dvsn;i++){
       if(!validDvs(s.getDecs().get(i))){return false;}

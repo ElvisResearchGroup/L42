@@ -7,7 +7,6 @@ import ast.Ast.Path;
 import ast.ErrorMessage;
 import ast.ExpCore;
 import ast.ExpCore.Block;
-import ast.ExpCore.Block.Catch;
 import ast.ExpCore.Block.On;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.Loop;
@@ -74,13 +73,13 @@ public class HB implements Visitor<ExpCore> {
       this.xsRes.add(dec.getX());
       }
     try{
-      if(!onlyAroundHole && s.get_catch().isPresent()){
-        Catch k=s.get_catch().get();          
-        if(xs.contains(k.getX())){throw new ErrorMessage.VariableDeclaredMultipleTimes(k.getX(),s.getP());}
-        xs.add(k.getX());
-        xsRes.add(k.getX());
-        for(On on:k.getOns()){
+      if(!onlyAroundHole && !s.getOns().isEmpty()){
+        for(On on:s.getOns()){
+          if(xs.contains(on.getX())){throw new ErrorMessage.VariableDeclaredMultipleTimes(on.getX(),s.getP());}
+          xs.add(on.getX());
+          xsRes.add(on.getX());
           on.getInner().accept(this);
+          xs.remove(on.getX());
           }
         }
       return result;

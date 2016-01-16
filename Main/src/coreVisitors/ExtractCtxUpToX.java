@@ -81,7 +81,7 @@ public class ExtractCtxUpToX implements Visitor<Ctx<Block>>{
      return res;
    }
    assert IsCtx.of(s.getInner());
-   assert !s.get_catch().isPresent();
+   assert s.getOns().isEmpty();
    res=s.getInner().accept(this);
    res.ctx=s.withInner(res.ctx);
    return res;

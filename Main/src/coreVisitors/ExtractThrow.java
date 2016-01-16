@@ -1,5 +1,6 @@
 package coreVisitors;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import tools.Assertions;
@@ -46,7 +47,7 @@ public class ExtractThrow implements Visitor<ExpCore>{
     }
 
   public ExpCore visit(Block s) {
-    if(s.get_catch().isPresent()){return new ExpCore.WalkBy();}
+    if(!s.getOns().isEmpty()){return new ExpCore.WalkBy();}
     for(int i=0;i<s.getDecs().size();i++){
       if(new IsValue(p).validDvs(s.getDecs().get(i))){continue;}
       //otherwise, i is the first non dv
@@ -54,7 +55,7 @@ public class ExtractThrow implements Visitor<ExpCore>{
       if(res instanceof ExpCore.WalkBy){return res;}
       Signal res_=(Signal)res;
       List<Block.Dec> decs = s.getDecs().subList(0, i);
-      Block newInner=new Block(s.getDoc(),decs,res_.getInner(),Optional.empty(),s.getP());
+      Block newInner=new Block(s.getDoc(),decs,res_.getInner(),Collections.emptyList(),s.getP());
       newInner=Functions.garbage(newInner,i);
       return res_.withInner(newInner);
       }

@@ -1,6 +1,7 @@
 package sugarVisitors;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import sugarVisitors.Visitor;
@@ -21,7 +22,6 @@ import ast.Expression.WalkBy;
 import ast.Util.CachedStage;
 import ast.ExpCore.*;
 import ast.ExpCore.Block.*;
-import ast.ExpCore.Block.Catch;
 import ast.ExpCore.ClassB.Member;
 import ast.Expression;
 public class InjectionOnCore implements Visitor<ExpCore> {
@@ -37,7 +37,6 @@ public class InjectionOnCore implements Visitor<ExpCore> {
     Doc doc = s.getDoc();
     assert s.getContents().size()<=1:s.getContents();
     List<Dec> decs=new ArrayList<Dec>();
-    Optional<Catch> _catch=Optional.empty();
     ExpCore inner=s.getInner().accept(this);
     if(s.getContents().size()==1){
       BlockContent c = s.getContents().get(0);
@@ -60,12 +59,12 @@ public class InjectionOnCore implements Visitor<ExpCore> {
         for(On on:c1.getOns()){
           assert on.getTs().size()==1;
           assert !on.get_if().isPresent();
-          ons.add(new ExpCore.Block.On(on.getTs().get(0),lift(on.getInner())));
+          ons.add(new ExpCore.Block.On(kind,x,on.getTs().get(0),lift(on.getInner())));
         }
-      _catch=Optional.of(new Catch(kind,x,ons));
+      return new Block(doc,decs,inner,ons,s.getP());
       }
     }
-    return new Block(doc,decs,inner,_catch,s.getP());
+    return new Block(doc,decs,inner,Collections.emptyList(),s.getP());
   }
   public ExpCore visit(Expression.ClassB s){
     Doc doc1=s.getDoc1();

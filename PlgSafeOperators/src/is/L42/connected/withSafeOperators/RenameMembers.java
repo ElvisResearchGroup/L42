@@ -18,7 +18,6 @@ import ast.Ast.Type;
 import ast.ExpCore.Block;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.MCall;
-import ast.ExpCore.Block.Catch;
 import ast.ExpCore.Block.Dec;
 import ast.ExpCore.Block.On;
 import ast.ExpCore.ClassB.Member;

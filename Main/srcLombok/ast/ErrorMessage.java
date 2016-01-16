@@ -258,7 +258,7 @@ import ast.Util.PathMwt;
   }
 
   @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class ConfusedResultingTypeForMultiCatch extends TypeError {
-    ExpCore.Block.Catch k;
+    List<ExpCore.Block.On> k;
     HashSet<Type> options;
   }
 

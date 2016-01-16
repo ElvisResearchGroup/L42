@@ -15,7 +15,6 @@ import ast.Ast.Path;
 import ast.Ast;
 import ast.ExpCore;
 import ast.ExpCore.Block;
-import ast.ExpCore.Block.Catch;
 import ast.ExpCore.Block.Dec;
 import ast.ExpCore.Block.On;
 import ast.ExpCore.ClassB;
@@ -88,14 +87,13 @@ public class GuessTypeCore implements Visitor<Path>{
         this.varEnv.put(d.getX(),d.getT());
         }
       HashSet<Path> ps=new HashSet<>();
-      if(s.get_catch().isPresent()){
-        Catch k = s.get_catch().get();
-        for(On on:k.getOns()){
+      if(!s.getOns().isEmpty()){
+        for(On on:s.getOns()){
           NormType nti=Functions.forceNormType(p,s,on.getT());
-          this.varEnv.put(k.getX(),nti);
+          this.varEnv.put(on.getX(),nti);
           ps.add(on.getInner().accept(this));
+          this.varEnv.remove(on.getX());
           }
-        this.varEnv.remove(k.getX());
         }
       ps.add(s.getInner().accept(this));
       ps.remove(null);

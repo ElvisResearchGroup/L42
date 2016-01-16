@@ -142,7 +142,7 @@ public class Move implements Visitor<Ctx<List<Block.Dec>>>{
       return ctx.withDecs(newDecs);
     }
     assert IsCtx.of(ctx.getInner());
-    assert !ctx.get_catch().isPresent();
+    assert ctx.getOns().isEmpty();
     res=ctx.getInner().accept(new Move(a));
     newDecs.addAll(res.hole);
     return ctx.withDecs(newDecs).withInner(res.ctx);

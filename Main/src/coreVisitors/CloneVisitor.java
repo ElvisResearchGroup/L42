@@ -40,11 +40,9 @@ public class CloneVisitor implements Visitor<ExpCore>{
     return selector.withMs(ms2).withX(ms2.getNames().get(pos));
     }
   protected MethodSelector liftMs(MethodSelector ms){return ms;}
-  protected ExpCore.Block.Catch liftK(ExpCore.Block.Catch k){
-    return new ExpCore.Block.Catch(k.getKind(),k.getX(),Map.of(this::liftO,k.getOns()));
-    }
+
   protected ExpCore.Block.On liftO(ExpCore.Block.On on){
-    return new ExpCore.Block.On(liftT(on.getT()),lift(on.getInner()));
+    return new ExpCore.Block.On(on.getKind(),on.getX(),liftT(on.getT()),lift(on.getInner()));
     }
   /*protected Header liftH(Header h) {
     return h.match(ch->new ConcreteHeader(
@@ -94,7 +92,7 @@ public class CloneVisitor implements Visitor<ExpCore>{
     return new MCall(lift(s.getReceiver()),liftMs(s.getS()),liftDoc(s.getDoc()),Map.of(this::lift,s.getEs()),s.getP());
   }
   public ExpCore visit(Block s) {
-    return new Block(liftDoc(s.getDoc()),liftDecs(s.getDecs()),lift(s.getInner()),Map.of(this::liftK,s.get_catch()),s.getP());
+    return new Block(liftDoc(s.getDoc()),liftDecs(s.getDecs()),lift(s.getInner()),Map.of(this::liftO,s.getOns()),s.getP());
   }
   protected List<Dec> liftDecs(List<Dec> s) {
     return Map.of(this::liftDec,s);

@@ -18,7 +18,6 @@ import ast.ErrorMessage.NormImpossible;
 import ast.ExpCore.Block;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.MCall;
-import ast.ExpCore.Block.Catch;
 import ast.ExpCore.Block.Dec;
 import ast.ExpCore.Block.On;
 import ast.ExpCore.ClassB.Member;
@@ -96,20 +95,13 @@ abstract public class MethodPathCloneVisitor extends RenameMembers {
             );
         }
       List<Dec> newDecs = liftDecs(s.getDecs());
-      Optional<Catch> kOpt = Optional.empty();
-      if(s.get_catch().isPresent()){
-        Catch k = s.get_catch().get();
-        List<On> newOns=new ArrayList<>();
-        for(On on:k.getOns()){
-          //NormType nti=Functions.forceNormType(s,on.getT());
-          //NormType nti=Norm.of(p,on.getT());
-          this.varEnv.put(k.getX(),on.getT());
-          newOns.add(liftO(on));
-          }
-        this.varEnv.remove(k.getX());
-        kOpt=Optional.of(k.withOns(newOns));
+      List<On> newOns=new ArrayList<>();
+      for(On on:s.getOns()){
+        this.varEnv.put(on.getX(),on.getT());
+        newOns.add(liftO(on));
+        this.varEnv.remove(on.getX());
         }
-      return new Block(s.getDoc(),newDecs,lift(s.getInner()),kOpt,s.getP());
+      return new Block(s.getDoc(),newDecs,lift(s.getInner()),newOns,s.getP());
       }
     finally{this.varEnv=aux;}
     }

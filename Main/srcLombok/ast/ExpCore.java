@@ -43,7 +43,7 @@ public interface ExpCore {
     Doc doc;
     List<Dec> decs;
     ExpCore inner;
-    Optional<Catch> _catch;
+    List<On> ons;
     Position p;
     @Override public <T> T accept(coreVisitors.Visitor<T> v) {
       return v.visit(this);
@@ -64,28 +64,10 @@ public interface ExpCore {
       }
       return dom;
     }
-    public Block(Doc doc, ExpCore inner,Position p) {
-      this(doc, Collections.emptyList(), inner, Optional.<Catch> empty(),p);
-    }
-    public Block(Doc doc, Dec dec, ExpCore inner,Position p) {
-      this(doc, Collections.singletonList(dec), inner, Optional.<Catch> empty(),p);
-    }
-    public Block(Doc doc, List<Dec> decs, ExpCore inner,Position p) {
-      this(doc, decs, inner, Optional.<Catch> empty(),p);
-    }
-    public Block(Doc doc, List<Dec> decs, ExpCore inner, Optional<Catch> _catch,Position p) {
-      this.doc = doc;
-      this.decs = decs;
-      this.inner = inner;
-      this._catch = _catch;
-      this.p=p;
-    }
-    @Value @Wither public static class Catch {
+   
+    @Value @Wither public static class On {
       SignalKind kind;
       String x;
-      List<On> ons;
-    }
-    @Value @Wither public static class On {
       Type t;
       ExpCore inner;
     }

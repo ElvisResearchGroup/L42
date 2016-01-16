@@ -140,7 +140,7 @@ public static Block garbage(Block e, int n) {
     if(i<n&&!needKeep.contains(i)){continue;}
     decs2.add(decs1.get(i));
     }
-  return new Block(e.getDoc(),decs2,e.getInner(),e.get_catch(),e.getP());
+  return new Block(e.getDoc(),decs2,e.getInner(),e.getOns(),e.getP());
   }
 private static boolean iterateAddNeeded(Block e, int n, HashSet<String> needX, HashSet<Integer> needKeep) {
   int size=needKeep.size();
@@ -258,7 +258,7 @@ public static List<Path> remove1OuterAndPrimitives(Collection<Path> paths){
 
 public static Path classOf(Program p, ExpCore ctxVal,List<ast.ExpCore.Block.Dec> decs, ExpCore inner) {
   Position pos=null;if(inner instanceof Ast.HasPos){pos=((Ast.HasPos)inner).getP();}
-  Block b=new Block(Doc.empty(),decs,new WalkBy(),pos);
+  Block b=new Block(Doc.empty(),decs,new WalkBy(),Collections.emptyList(),pos);
   ctxVal=ReplaceCtx.of(ctxVal, b);
   return classOf(p,ctxVal,inner);
 }

@@ -100,7 +100,7 @@ public class ExtractCtxVal implements Visitor<Ctx<Redex>>{
         return s.withDecs(es);
         });
       }
-    if(s.get_catch().isPresent()){return null;}
+    if(!s.getOns().isEmpty()){return null;}
     return lift(s.getInner().accept(this),
         ctx->s.withInner(ctx));
     }

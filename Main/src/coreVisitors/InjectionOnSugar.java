@@ -2,6 +2,7 @@
 package coreVisitors;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import coreVisitors.Visitor;
@@ -85,7 +86,7 @@ public class InjectionOnSugar implements Visitor<ast.Expression> {
       Expression e=lift(s.getDecs().get(i).getE());
       decs.add(new VarDecXE(false,Optional.of(t),x,e));
     }
-    Optional<Catch> _catch=injectionCatch(s.get_catch());
+    Optional<Catch> _catch=injectionCatch(s.getOns());
     List<BlockContent> contents=new ArrayList<BlockContent>();
     if(!decs.isEmpty() || _catch.isPresent()){
       contents.add(new BlockContent(decs,_catch));
@@ -96,17 +97,16 @@ public class InjectionOnSugar implements Visitor<ast.Expression> {
     return result;
   }
 
-  private Optional<Catch> injectionCatch(Optional<ast.ExpCore.Block.Catch> s) {
-    if(!s.isPresent()){return Optional.empty();}
-    ast.ExpCore.Block.Catch c = s.get();
+  private Optional<Catch> injectionCatch(List<ast.ExpCore.Block.On> list) {
+    if(list.isEmpty()){return Optional.empty();}// Collections.emptyList();} 
     List<On> ons=new ArrayList<>();
-    for( ast.ExpCore.Block.On on:c.getOns()){
+    for( ast.ExpCore.Block.On on:list){
       List<Type> ts=new ArrayList<>();
       ts.add(on.getT());
       Expression inner = lift(on.getInner());
       ons.add(new On(ts,Optional.empty(),inner));
     }
-    Catch result=new Catch(c.getKind(),c.getX(),ons,Optional.empty());
+    Catch result=new Catch(list.get(0).getKind(),list.get(0).getX(),ons,Optional.empty());
     return Optional.of(result);
   }
 

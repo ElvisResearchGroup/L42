@@ -1,8 +1,10 @@
 package reduction;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import platformSpecific.javaTranslation.Resources;
@@ -129,7 +131,7 @@ private static ExpCore loopR(ExpCore ctxVal, LoopR r) {
   assert checkSuccessRename(usedSomewhere, newInner);
   Block.Dec xDec=new Block.Dec(new NormType(Mdf.Immutable,Path.Void(),Ph.None),x,newInner);
   Ast.Position pos=null; if(r.getThat().getInner() instanceof Ast.HasPos){pos=((Ast.HasPos)r.getThat().getInner()).getP();}
-  Block result=new Block(Doc.empty(),xDec,r.getThat(),pos);
+  Block result=new Block(Doc.empty(),Collections.singletonList(xDec),r.getThat(),Collections.emptyList(),pos);
   return ReplaceCtx.of(ctxVal, result);
 }
 //NO! the ctc could no be extracted//.end(new ErrorMessage.NormalForm(e,p.getInnerData()));}
@@ -190,7 +192,7 @@ protected ClassB metaMethod(Program p, ClassB cb, Member m) {
 }
 
 private static ExpCore removeCatch(ExpCore ctxVal, NoThrowRemoveOn r) {
-  return ReplaceCtx.of(ctxVal,r.getThat().with_catch(Optional.empty()));
+  return ReplaceCtx.of(ctxVal,r.getThat().withOns(Collections.emptyList()));
 }
 private ExpCore methCall(Program p, ExpCore ctxVal, MethCall r) {
   MCall mc = r.getThat();
@@ -287,15 +289,15 @@ private Block fieldABlock(Set<String> around,MCall mc, MethodWithType mwt,HashSe
   String z=Functions.freshName(path1, forbidden);
   MCall mcz=mc.withReceiver(decRec.getInner());
   ExpCore ez=decRec.withInner(mcz);
-  Block result=new Block(Doc.empty(),new Block.Dec(tz,z,ez),new ExpCore.X(z),mc.getP());
+  Block result=new Block(Doc.empty(),Collections.singletonList(new Block.Dec(tz,z,ez)),new ExpCore.X(z),Collections.emptyList(),mc.getP());
   return result;
 }
 private ExpCore rNew(MCall mc, MethodWithType mwt,HashSet<String> usedNames) {
   log("---method rNew--");
   NormType t0=(NormType)mwt.getMt().getReturnType();
   String x0=Functions.freshName(t0.getPath(), usedNames);
-  return new Block(Doc.empty(),new Block.Dec(t0,x0,mc),
-    new ExpCore.X(x0),mc.getP());
+  return new Block(Doc.empty(),Collections.singletonList(new Block.Dec(t0,x0,mc)),
+    new ExpCore.X(x0),Collections.emptyList(),mc.getP());
 }
 private ExpCore primCallArg(Program p,MCall mc, int i, MethodWithType mwt, HashSet<String> usedNames) {
   //String xRole=ms.getXs().get(i);
@@ -307,15 +309,15 @@ private ExpCore primCallArg(Program p,MCall mc, int i, MethodWithType mwt, HashS
   ExpCore ei=mc.getEs().get(i);
   ArrayList<ExpCore> es = new ArrayList<ExpCore>(mc.getEs());
   es.set(i, new ExpCore.X(xi));
-  return new Block(Doc.empty(),new Block.Dec(ti,xi,ei),
-      mc.withEs(es),mc.getP());
+  return new Block(Doc.empty(),Collections.singletonList(new Block.Dec(ti,xi,ei)),
+      mc.withEs(es),Collections.emptyList(),mc.getP());
 }
 private ExpCore primCallRec(MCall mc, Path pathR,MethodWithType mwt, HashSet<String> usedNames) {  NormType t1=new NormType(mwt.getMt().getMdf(),pathR,Ast.Ph.None);
   log("---primCallRec--");
   String x1=Functions.freshName(pathR,usedNames);
   ExpCore e1=mc.getReceiver();
-  return new Block(Doc.empty(),new Block.Dec(t1,x1,e1),
-      mc.withReceiver(new ExpCore.X(x1)),mc.getP());
+  return new Block(Doc.empty(),Collections.singletonList(new Block.Dec(t1,x1,e1)),
+      mc.withReceiver(new ExpCore.X(x1)),Collections.emptyList(),mc.getP());
 }
 private ExpCore normalMeth(Path pathR,MethodWithType mwt, ExpCore ctxVal, MCall mc) {
   log("---normalMeth--");
@@ -356,7 +358,7 @@ private ExpCore normalMeth(Path pathR,MethodWithType mwt, ExpCore ctxVal, MCall 
       renames.get(mwt.getMs().getNames().get(i)),
       mc.getEs().get(i)));
   }
-  Block e2=new Block(mc.getDoc(),decs,e,mc.getP());
+  Block e2=new Block(mc.getDoc(),decs,e,Collections.emptyList(),mc.getP());
   //System.out.println(aroundAndParameters+"\n"+ToFormattedText.of(e2)+"\n@@\n@@\n"+ToFormattedText.of(mc));
   assert checkSuccessRename(around, e2);
   ExpCore result= ReplaceCtx.of(ctxVal,e2);
@@ -386,14 +388,16 @@ private static ExpCore captureOrNot(Program p,ExpCore ctxVal,Redex.CaptureOrNot 
   //case capture
   //-subtype
   Path c=Functions.classOf(p, ctxVal,decsUpToI, s.getInner());
-  Catch catch_ = e1.get_catch().get();
-  NormType onT=Norm.of(p, catch_.getOns().get(0).getT());
+  List<On> catch_ = e1.getOns();
+  assert !catch_.isEmpty();
+  On on=catch_.get(0);
+  NormType onT=Norm.of(p, on.getT());
   //TODO: -hope garbage remove dvx' properly
   ArrayList<Block.Dec> decs = new ArrayList<Block.Dec>(decsUpToI);
-  if(s.getKind()==catch_.getKind() && Functions.isSubtype(p, c, onT.getPath())){
+  if(s.getKind()==on.getKind() && Functions.isSubtype(p, c, onT.getPath())){
     decs.add(new Block.Dec(
-      onT,catch_.getX(),s.getInner()));
-    Block e2=new Block(e1.getDoc(),decs,catch_.getOns().get(0).getInner(),e1.getP());
+      onT,on.getX(),s.getInner()));
+    Block e2=new Block(e1.getDoc(),decs,on.getInner(),Collections.emptyList(),e1.getP());
     return ReplaceCtx.of(ctxVal,e2);
     }
   //case notCapture
@@ -405,14 +409,9 @@ private static ExpCore rOnMiss(ArrayList<Block.Dec> ds,Block b) {
   return result.withDecs(ds);
 }
 private static Block removeOneOn(Block e1){
-  Catch k=e1.get_catch().get();
-  Optional<Catch> k2=Optional.empty();
-  if(k.getOns().size()!=1){
-    ArrayList<On> oneOnLess = new ArrayList<On>(k.getOns().subList(1, k.getOns().size()));
-    k2=Optional.of(k.withOns(oneOnLess));
-    }
-  return e1.with_catch(k2);
-
+  List<On> k = e1.getOns();
+  assert !k.isEmpty();
+  return e1.withOns(k.subList(1, k.size()));
 }
 
 private ExpCore blockElim(ExpCore ctxVal,Redex.BlockElim r){
@@ -422,7 +421,7 @@ private ExpCore blockElim(ExpCore ctxVal,Redex.BlockElim r){
   int ii=r.getElimIndex();
   ArrayList<Block.Dec> decs = new ArrayList<Block.Dec>(e1.getDecs());
   Block eInner=(Block)decs.get(ii).getE();
-  assert !eInner.get_catch().isPresent();
+  assert eInner.getOns().isEmpty();
   decs.set(ii,decs.get(ii).withE(eInner.getInner()));
   decs.addAll(ii, eInner.getDecs());
   //Note: we lose the docs on eInner, is it ok?
@@ -436,7 +435,7 @@ public static ExpCore subst(ExpCore ctxVal,Redex.Subst r){
   String x=e1.getDecs().get(i).getX();
   ArrayList<Block.Dec> decs = new ArrayList<Block.Dec>(e1.getDecs());
   decs.remove(i);
-  Block e2=new Block(e1.getDoc(),decs,e1.getInner(),e1.get_catch(),e1.getP());
+  Block e2=new Block(e1.getDoc(),decs,e1.getInner(),e1.getOns(),e1.getP());
   ExpCore result=ReplaceX.of(e2,val,x);
   return ReplaceCtx.of(ctxVal,result);
 }

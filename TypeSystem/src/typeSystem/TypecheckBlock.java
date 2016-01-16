@@ -20,7 +20,6 @@ import ast.Ast.Type;
 import ast.ErrorMessage;
 import ast.ExpCore;
 import ast.ExpCore.Block;
-import ast.ExpCore.Block.Catch;
 import ast.ExpCore.Block.Dec;
 import ast.ExpCore.Block.On;
 import auxiliaryGrammar.Functions;
@@ -40,34 +39,35 @@ public class TypecheckBlock {
   private static Type typeCheckMinimalBlockAdaptCatch(TypeSystem that, Block s) {
     try{return typeCheckMinimalBlock(that,s);}
     catch(ErrorMessage e){
-      if(!s.get_catch().isPresent()){throw e;}//no catch to adapt
-      Catch k=s.get_catch().get();
-      if(k.getKind()!=SignalKind.Return){throw e;}
-      if(k.getOns().size()!=1){throw e;}
-      ExpCore inn=k.getOns().get(0).getInner();
+      if(s.getOns().isEmpty()){throw e;}//no catch to adapt
+      List<On> k=s.getOns();
+      On on=k.get(0);
+      if(k.get(0).getKind()!=SignalKind.Return){throw e;}
+      if(k.size()!=1){throw e;}
+      ExpCore inn=on.getInner();
       if(!(inn instanceof ExpCore.X)){throw e;}
       ExpCore.X x=(ExpCore.X)inn;
-      if(!x.getInner().equals(k.getX())){throw e;}
-      Type t=k.getOns().get(0).getT();
+      if(!x.getInner().equals(on.getX())){throw e;}
+      Type t=on.getT();
       if(!(t instanceof Ast.NormType)){throw e;}
       NormType nt=(NormType)t;
       if(nt.getMdf()!=Mdf.Capsule && nt.getMdf()!=Mdf.Immutable){throw e;}
       ArrayList<On> onsMut = new ArrayList<>();
-      onsMut.add(k.getOns().get(0).withT(nt.withMdf(Mdf.Mutable)));
-      Block sMut=s.with_catch(Optional.of(k.withOns(onsMut)));
+      onsMut.add(on.withT(nt.withMdf(Mdf.Mutable)));
+      Block sMut=s.withOns(onsMut);
       try{return typeCheckMinimalBlock(that,sMut);}
       catch(ErrorMessage e2){
         if(nt.getMdf()!=Mdf.Immutable){throw e;}//ok e not e2
         ArrayList<On> onsRead = new ArrayList<>();
-        onsRead.add(k.getOns().get(0).withT(nt.withMdf(Mdf.Readable)));
-        Block sRead=s.with_catch(Optional.of(k.withOns(onsRead)));
+        onsRead.add(on.withT(nt.withMdf(Mdf.Readable)));
+        Block sRead=s.withOns(onsRead);
         try{return typeCheckMinimalBlock(that,sRead);}catch(ErrorMessage e3){throw e;}
         }
     }
   }
   private static Type typeCheckMinimalBlock(TypeSystem that, Block s) {
     List<HashMap<String, NormType>> varEnvs=splitVarEnvsForBlock(that.p,that.varEnv,s);
-    ThrowEnv throwsEnv2 = TypecheckBlock.catchExtentions(that.p,that.throwEnv,s.get_catch());
+    ThrowEnv throwsEnv2 = TypecheckBlock.catchExtentions(that.p,that.throwEnv,s.getOns());
     ArrayList<NormType> tsExp=new ArrayList<NormType>();
     //ArrayList<Type> ts=new ArrayList<Type>();
     {int i=0;for(Block.Dec di:s.getDecs()){
@@ -76,12 +76,12 @@ public class TypecheckBlock {
       expectedi=Functions.toPartial(expectedi);
       tsExp.add(expectedi);
       HashMap<String, NormType> varEnvi = varEnvs.get(i);
-      varEnvi=catchRestrictions(varEnvi, s.get_catch(),that.sealEnv);
+      varEnvi=catchRestrictions(varEnvi, s.getOns(),that.sealEnv);
       TypeSystem.typecheckSure(false,that.p,varEnvi,that.sealEnv, throwsEnv2,expectedi,di.getE());
     }}
     Type res1=checkBlockBody(that,varEnvs.get(0),s);
     that.p.exePlusOk(varEnvs.get(0));
-    Type res2=checkCatch(that.p,varEnvs.get(0),that.sealEnv,that.throwEnv,that.suggested,s.getDecs(),s.get_catch());
+    Type res2=checkCatch(that.p,varEnvs.get(0),that.sealEnv,that.throwEnv,that.suggested,s.getDecs(),s.getOns());
     return searchCommonSupertype(that, s, res1, res2);
   }
 
@@ -114,19 +114,18 @@ public class TypecheckBlock {
     //TODO:was tollerant
     return TypeSystem.typecheckSure(false,that.p,varEnv,newSealEnv,that.throwEnv,that.suggested,block.getInner());
   }
-  private static Type checkCatch(Program p, HashMap<String, NormType> varEnv2, SealEnv sealEnv2,ThrowEnv throwEnv2, Type newSuggested, List<Dec> decs, Optional<Catch> k) {
-    if(!k.isPresent()){return new FreeType();}
-    if(k.get().getOns().size()==0){return new FreeType();}
+  private static Type checkCatch(Program p, HashMap<String, NormType> varEnv2, SealEnv sealEnv2,ThrowEnv throwEnv2, Type newSuggested, List<Dec> decs, List<On> k) {
+    if(k.isEmpty()){return new FreeType();}
     varEnv2=new HashMap<String, NormType>(varEnv2);
     for(Dec d:decs){varEnv2.remove(d.getX());}
     HashSet<Type> results=new HashSet<Type>();
-    for(On on:k.get().getOns()){
-      checkCatchSingle(k.get().getKind(),k.get().getX(),on,p, varEnv2, sealEnv2, throwEnv2, newSuggested,results);
+    for(On on:k){
+      checkCatchSingle(on.getKind(),on.getX(),on,p, varEnv2, sealEnv2, throwEnv2, newSuggested,results);
     }
     if(results.isEmpty()){return new FreeType();}//all free types
     if(results.size()==1){return results.iterator().next();}
     if(newSuggested instanceof Ast.FreeType){
-      throw new ErrorMessage.ConfusedResultingTypeForMultiCatch(k.get(),results);
+      throw new ErrorMessage.ConfusedResultingTypeForMultiCatch(k,results);
     }
       return newSuggested;
   }
@@ -185,8 +184,8 @@ public class TypecheckBlock {
   private static List<HashMap<String, NormType>> splitVarEnvsForBlock(Program p,HashMap<String, NormType> thatVarEnv,Block s){
     List<ExpCore> es=new ArrayList<ExpCore>();
     ExpCore ek=s.getInner();
-    if(s.get_catch().isPresent()){
-      ek=new Block(Doc.empty(),new ArrayList<>(),ek,s.get_catch(),s.getP());
+    if(!s.getOns().isEmpty()){
+      ek=new Block(Doc.empty(),new ArrayList<>(),ek,s.getOns(),s.getP());
     }
     es.add(ek);
     for(Block.Dec dec:s.getDecs()){
@@ -254,15 +253,16 @@ public class TypecheckBlock {
     return true;
   }
 
-  private static HashMap<String, NormType> catchRestrictions(HashMap<String, NormType> varEnv, Optional<Catch> k, SealEnv sealEnv) {
-    if(!k.isPresent()){return varEnv;}
-    if(k.get().getKind()!=SignalKind.Error){return varEnv;}
+  private static HashMap<String, NormType> catchRestrictions(HashMap<String, NormType> varEnv, List<On> k, SealEnv sealEnv) {
+    if(k.isEmpty()){return varEnv;}
+    if(k.get(0).getKind()!=SignalKind.Error){return varEnv;}
     HashMap<String, NormType> result=new HashMap<String, NormType>();
     Set<String> fvk =new HashSet<>();
-    for(On on:k.get().getOns()){
-      fvk.addAll(FreeVariables.of(on.getInner()));
+    for(On on:k){
+      Set<String> fri = FreeVariables.of(on.getInner());
+      fri.remove(on.getX());
+      fvk.addAll(fri);
       }
-    fvk.remove(k.get().getX());
     for(String x:varEnv.keySet()){
       boolean toProtect=toProtect(x,fvk,sealEnv);
       if(toProtect){
@@ -290,13 +290,18 @@ public class TypecheckBlock {
   }
 
 
-  private static  ThrowEnv catchExtentions(Program p,ThrowEnv throwEnv, Optional<Catch> k) {
-  if(!k.isPresent()){return throwEnv;}
-  Catch c=k.get();
-  if(c.getKind()==SignalKind.Error){return throwEnv;}
+  private static  ThrowEnv catchExtentions(Program p,ThrowEnv throwEnv, List<On> k) {
+  if(k.isEmpty()){return throwEnv;}
+  On on0=k.get(0);
+  SignalKind kind = on0.getKind();
+  boolean allEq=true;
+  for(On on:k){ if(on.getKind()!=kind){allEq=false;}}
+  assert allEq;//TODO: for now ok, then we will capture a more general exception on need.
+ 
+  if(kind==SignalKind.Error){return throwEnv;}
   ThrowEnv result=new ThrowEnv();
-  if(c.getKind()==SignalKind.Exception){
-    for(Block.On on:c.getOns()){
+  if(kind==SignalKind.Exception){
+    for(Block.On on:k){
       NormType onT=Functions.forceNormType(p,on.getInner(),on.getT());
       result.exceptions.add(onT.getPath());
       }
@@ -307,8 +312,7 @@ public class TypecheckBlock {
     return result;
   }
   result.exceptions.addAll(throwEnv.exceptions);
-  result.resClear();
-  result.resAddAll(ThrowEnv.accResult(p,throwEnv.res(),c.getOns()));
+  result.resAddAll(ThrowEnv.accResult(p,throwEnv.res(),k));
   return result;
   }
 

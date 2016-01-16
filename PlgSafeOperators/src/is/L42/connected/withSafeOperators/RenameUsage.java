@@ -20,7 +20,6 @@ import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.MethodImplemented;
 import ast.ExpCore.MCall;
 import ast.Util;
-import ast.ExpCore.Block.Catch;
 import ast.ExpCore.Block.Dec;
 import ast.ExpCore.Block.On;
 import ast.ExpCore.ClassB.Member;

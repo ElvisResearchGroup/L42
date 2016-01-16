@@ -8,7 +8,7 @@ import tools.Assertions;
 import tools.Map;
 import ast.ExpCore;
 import ast.ExpCore.Block;
-import ast.ExpCore.Block.Catch;
+import ast.ExpCore.Block.On;
 import ast.ExpCore.WalkBy;
 import ast.ExpCore.X;
 
@@ -27,10 +27,12 @@ public class RenameVars extends CloneVisitor{
     return new X(alt);
     }
   public ExpCore visit(Block s) {
-    Optional<Catch> k = Map.of(this::liftK,s.get_catch());
-    if(k.isPresent()){
-      String altK=toRename.get(k.get().getX());
-      if(altK!=null){k=Optional.of(k.get().withX(altK));}
+    List<On> k = Map.of(this::liftO,s.getOns());
+    List<On>newK=new ArrayList<>();
+    for (On on : k){
+      String altK=toRename.get(on.getX());
+      if(altK!=null){newK.add(on.withX(altK));}
+      else{newK.add(on);}
     }
     List<Block.Dec> decs = new ArrayList<>();
     for(Block.Dec dec:s.getDecs()){
@@ -39,7 +41,7 @@ public class RenameVars extends CloneVisitor{
       else {decs.add(dec.withX(altxi));}
     }
 
-    return new Block(s.getDoc(),Map.of(this::liftDec,decs),lift(s.getInner()),k,s.getP());
+    return new Block(s.getDoc(),Map.of(this::liftDec,decs),lift(s.getInner()),newK,s.getP());
   }
 
 

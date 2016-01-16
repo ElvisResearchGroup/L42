@@ -11,10 +11,10 @@ import tools.Assertions;
 import tools.StringBuilders;
 import ast.Ast.NormType;
 import ast.Ast.Path;
+import ast.Ast.SignalKind;
 import ast.ErrorMessage;
 import ast.ExpCore;
 import ast.ExpCore.Block;
-import ast.ExpCore.Block.Catch;
 import ast.ExpCore.Block.Dec;
 import ast.ExpCore.Block.On;
 import ast.ExpCore.ClassB;
@@ -162,11 +162,11 @@ public class TranslateExpression implements coreVisitors.Visitor<Void>{
     String kVar=" L"+Functions.freshName("lab",TranslateExpression.labels);
     res.append("{"+kVar+":{");
     Set<String> domPhs=declareVarsAndPh(s.getDecs());
-    if(s.get_catch().isPresent()){
+    if(!s.getOns().isEmpty()){
       res.append("try{\n");
       initializeVars(domPhs,s.getDecs(),kVar);  
       res.append("\n}");
-      getCatches(s.get_catch().get(),asReturn,kVar);
+      getCatches(s.getOns(),asReturn,kVar);
     }
     else{initializeVars(domPhs,s.getDecs(),kVar);}
     //if(s.getInner()instanceof Block){
@@ -183,31 +183,36 @@ public class TranslateExpression implements coreVisitors.Visitor<Void>{
     res.append("}}");
   }
 
-  private void getCatches(Catch c,String asReturn,String kVar) {
-    assert !c.getOns().isEmpty();
-    res.append("catch(platformSpecific.javaTranslation.Resources."+c.getKind().name()+" K"+c.getX());
+  private void getCatches(List<On> c,String asReturn,String kLab) {
+    assert !c.isEmpty();
+    SignalKind kind = c.get(0).getKind();
+    boolean allEq=true;
+    for(On on:c){ if(on.getKind()!=kind){allEq=false;}}
+    assert allEq;//TODO: for now ok, then we will capture a more general exception on need.
+    String kVar=Functions.freshName("K",TranslateExpression.labels);
+    res.append("catch(platformSpecific.javaTranslation.Resources."+kind.name()+" "+kVar);
     res.append("){\n");
-    for(On on:c.getOns()){getCatch(c,on,asReturn,kVar);}
-    res.append("{}/*ensure termination*/throw K"+c.getX());
+    for(On on:c){getCatch(kVar,on,asReturn,kLab);}
+    res.append("{}/*ensure termination*/throw "+kVar);
     res.append(";\n}\n");
   }
 
-  private void getCatch(Catch c, On on,String asReturn,String kVar) {
+  private void getCatch(String kVar,On on,String asReturn,String kLab) {
     Path p=((NormType)on.getT()).getPath();
     String tn=Resources.nameOf(p);
-    if(p.equals(Path.Library())){res.append(getCatchHeaderForLibrary(c.getX()));}
-    else {res.append("if(K"+c.getX()+".unbox instanceof "+tn+"){\n");}
-    res.append("  "+tn+" P"+c.getX()+"=("+tn+")K"+c.getX()+".unbox;\n");
+    if(p.equals(Path.Library())){res.append(getCatchHeaderForLibrary(kVar));}
+    else {res.append("if("+kVar+".unbox instanceof "+tn+"){\n");}
+    res.append("  "+tn+" P"+on.getX()+"=("+tn+")"+kVar+".unbox;\n");
     res.append(asReturn);
     on.getInner().accept(this);
     res.append(";");
-    if(asReturn.contains("=")){ res.append("break "+kVar+";");  }
+    if(asReturn.contains("=")){ res.append("break "+kLab+";");  }
     res.append("\n  }\nelse ");
   }
 
   
   private Object getCatchHeaderForLibrary(String xName) {
-    String iOf="K"+xName+".unbox instanceof ";
+    String iOf=xName+".unbox instanceof ";
     return "if("
         +iOf+" String ||"
         +iOf+" Integer ||"

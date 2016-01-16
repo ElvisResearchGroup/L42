@@ -7,13 +7,12 @@ import tools.Map;
 import ast.Ast;
 import ast.ExpCore;
 import ast.ExpCore.Block;
-import ast.ExpCore.Block.Catch;
 import ast.ExpCore.Block.Dec;
 
 public class NormalizeBlocks extends CloneVisitor{
   
   private Dec isTxEx(Block s){
-    if(s.get_catch().isPresent()){return null;}
+    if(!s.getOns().isEmpty()){return null;}
     if(s.getDecs().size()!=1){return null;}
     Dec dec=s.getDecs().get(0);
     if(!(s.getInner() instanceof ExpCore.X)){return null;}
@@ -22,13 +21,8 @@ public class NormalizeBlocks extends CloneVisitor{
     return dec;       
     }
   public ExpCore visit(Block s) {
-    Optional<Catch>c=s.get_catch();
     //I think reduction take care of catch already
-    assert !c.isPresent() || c.get().getOns().size()>0;
-    if(c.isPresent() && c.get().getOns().size()==0){
-      c=Optional.empty();
-    }
-    if(!c.isPresent()&& s.getDecs().size()==0){ //(e)-->e
+    if(s.getOns().isEmpty()&& s.getDecs().size()==0){ //(e)-->e
       return s.getInner().accept(this);
     }
     Dec decOut=this.isTxEx(s);
@@ -36,7 +30,7 @@ public class NormalizeBlocks extends CloneVisitor{
       Dec decIn=this.isTxEx((Block)decOut.getE());
       if(validDoubleWrap(decOut,decIn)){return decIn.getE().accept(this);}
     }
-    return super.visit(s.with_catch(c));
+    return super.visit(s);
     }
 
   private boolean validDoubleWrap(Dec decOut, Dec decIn) {
