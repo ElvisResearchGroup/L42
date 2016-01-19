@@ -162,6 +162,14 @@ public class L42BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements L4
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
+	@Override public T visitK1(@NotNull L42Parser.K1Context ctx) { return visitChildren(ctx); }
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
 	@Override public T visitMxRound(@NotNull L42Parser.MxRoundContext ctx) { return visitChildren(ctx); }
 
 	/**
@@ -322,6 +330,14 @@ public class L42BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements L4
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
+	@Override public T visitKMany(@NotNull L42Parser.KManyContext ctx) { return visitChildren(ctx); }
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
 	@Override public T visitD(@NotNull L42Parser.DContext ctx) { return visitChildren(ctx); }
 
 	/**
@@ -347,6 +363,14 @@ public class L42BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements L4
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitEUnOp(@NotNull L42Parser.EUnOpContext ctx) { return visitChildren(ctx); }
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitKs(@NotNull L42Parser.KsContext ctx) { return visitChildren(ctx); }
 
 	/**
 	 * {@inheritDoc}

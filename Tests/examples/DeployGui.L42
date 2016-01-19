@@ -72,7 +72,7 @@ Resource:{type method Library (){
           Library s=use GuiPlugin
             check eventPending(wName:id.binaryRepr())
             exception void
-          catch error x (on Library exception void)
+          catch error Library x exception void
           return S.#stringParser(s)
           }
           

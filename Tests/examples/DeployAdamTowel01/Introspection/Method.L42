@@ -44,10 +44,8 @@ Type returnType() {
     path:this.path(),
     memberN:this.memberN(),
     typeN:0N)
-  catch exception x (
-    on MetaGuard::MemberUnavailable error Assert::CodeNotReachable"Method1"(x)
-    on Void error Assert::CodeNotReachable"void was thrown"
-    )
+  catch exception MetaGuard::MemberUnavailable x error Assert::CodeNotReachable"Method1"(x)
+  catch exception Void  error Assert::CodeNotReachable"void was thrown"
   }
 
 
@@ -67,13 +65,13 @@ Types parameterTypes() {
     pN+=1N
     )
   return result.#end()
-  catch exception err (on MetaGuard::MemberUnavailable error Assert::CodeNotReachable"Method2"(err))
+  catch exception MetaGuard::MemberUnavailable err error Assert::CodeNotReachable"Method2"(err)
   }
 
 method
 Bool isPrivate() {
   with ann in this.doc().annotations().vals() (
-    case ann.toS()==S"private" return Bool.true()
+    if ann.toS()==S"private" (return Bool.true())
     )
   return Bool.false()
   }

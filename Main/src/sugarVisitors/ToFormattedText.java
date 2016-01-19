@@ -13,14 +13,11 @@ import coreVisitors.InjectionOnSugar;
 import tools.Assertions;
 import tools.StringBuilders;
 import ast.Ast;
-import ast.Ast.BlockContent;
-import ast.Ast.Catch;
 import ast.Ast.ConcreteHeader;
 import ast.Ast.Doc;
 import ast.Ast.FieldDec;
 import ast.Ast.MethodSelector;
 import ast.Ast.MethodSelectorX;
-import ast.Ast.On;
 import ast.Ast.Parameters;
 import ast.Ast.Path;
 import ast.Ast.Stage;
@@ -176,14 +173,9 @@ public class ToFormattedText implements Visitor<Void>{
       xe.getInner().accept(this);
     });
     c(" (");nl();
-    for(Ast.On on:s.getOns()){
+    for(With.On on:s.getOns()){
       c("on ");
       StringBuilders.formatSequence(this.result,on.getTs().iterator(),", ",t->formatType(t));
-      if(on.get_if().isPresent()){
-        separeFromChar();
-        c("case ");
-        on.get_if().get().accept(this);
-      }
       sp();
       on.getInner().accept(this);
       nl();
@@ -307,10 +299,10 @@ public class ToFormattedText implements Visitor<Void>{
     return null; 
   }
 
-  private void generateContent(List<BlockContent> contents) {
+  private void generateContent(List<Expression.BlockContent> contents) {
     if(!contents.isEmpty()){
       indent();nl();}
-    for(BlockContent bc :contents){
+    for(Expression.BlockContent bc :contents){
       for(VarDec vd: bc.getDecs()){
         vd.match(
           (v)->{
@@ -332,39 +324,37 @@ public class ToFormattedText implements Visitor<Void>{
             });
         nl();
       }
-      if(bc.get_catch().isPresent()){
-        generateCatch(bc.get_catch().get());
+      if(!bc.get_catch().isEmpty()){nl();}
+      for(Expression.Catch k : bc.get_catch()){
+        generateCatch(k);
       }
     }
   }
-  private void generateCatch(Catch catch1) {
-    c("catch ");
-    c(catch1.getKind().content);
-    sp();
-    c(catch1.getX());
-    c(" (");
-    indent();
-    for(On on: catch1.getOns()){
-      nl();
-      if(!on.getTs().isEmpty()){c("on ");}
-      StringBuilders.formatSequence(this.result,on.getTs().iterator(),", ",
-        t->formatType(t));
-      if(on.get_if().isPresent()){
-        separeFromChar();
-        c("case ");
-        on.get_if().get().accept(this);
-      }
-      separeFromChar();
-      on.getInner().accept(this);
-      nl();
-    }
-    if(catch1.get_default().isPresent()){
-      c("default ");
-      catch1.get_default().get().accept(this);
-    }
-    c(")");
-    deIndent();
-    nl();    
+  private void generateCatch(Expression.Catch catch1) {
+    catch1.match(
+        k1->{
+          c("catch ");
+          c(k1.getKind().content);
+          sp();
+          formatType(k1.getT());
+          sp();
+          c(k1.getX());
+          sp();
+          k1.getInner().accept(this);
+          nl();
+          return null;},
+        kM->{
+          c("catch ");
+          c(kM.getKind().content);
+          sp();
+          for(Type t:kM.getTs()){
+            formatType(t);
+            }
+          sp();
+          kM.getInner().accept(this);
+          return null;
+        }
+        );
   }
   @Override
   public Void visit(CurlyBlock arg0) {

@@ -1,10 +1,9 @@
 package sugarVisitors;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import tools.Map;
-import ast.Ast.BlockContent;
-import ast.Ast.Catch;
 import ast.Ast.Doc;
 import ast.Ast.MethodSelector;
 import ast.Ast.Parameters;
@@ -38,16 +37,23 @@ public class CloneVisitor implements Visitor<Expression>{
         ht->(Type)new HistoricType(lift(ht.getPath()),ht.getSelectors(),ht.isForcePlaceholder())
         );
     }
-  protected ast.Ast.Catch liftK(ast.Ast.Catch k){
-    return new ast.Ast.Catch(
-      k.getKind(),
-      k.getX(),
-      Map.of(this::liftO,k.getOns()),
-      Map.of(this::lift, k.get_default())
+  protected Expression.Catch liftK(Expression.Catch k){
+    if (k instanceof DesugarCatchDefault.CatchToComplete){
+      k = this.liftK(((DesugarCatchDefault.CatchToComplete) k).catch1);
+      return new DesugarCatchDefault.CatchToComplete((Catch1) k);
+      }
+    return k.match(k1->new Expression.Catch1(
+      k1.getKind(),
+      liftT(k1.getT()),
+      k1.getX(),
+      lift(k1.getInner())
+      ),
+      kM->new Expression.CatchMany(kM.getKind(),
+          Map.of(this::liftT,kM.getTs()) , lift(kM.getInner()))
       );
     }
-  protected ast.Ast.On liftO(ast.Ast.On on){
-    return new ast.Ast.On(Map.of(this::liftT,on.getTs()),Map.of(this::lift,on.get_if()),lift(on.getInner()));
+  protected Expression.With.On liftO(Expression.With.On on){
+    return new Expression.With.On(Map.of(this::liftT,on.getTs()),lift(on.getInner()));
     }
   protected Header liftH(Header h) {
     return h.match(ch->new ConcreteHeader(
@@ -62,10 +68,15 @@ public class CloneVisitor implements Visitor<Expression>{
       if(ann instanceof Path){return this.visit((Path)ann);}
       return ann;},doc.getAnnotations()));
   }
-  protected ast.Ast.BlockContent liftBC(ast.Ast.BlockContent c) {
+  protected Expression.BlockContent liftBC(Expression.BlockContent c) {
     List<VarDec> liftVarDecs = liftVarDecs(c.getDecs());
-    Optional<Catch> liftK = Map.of(this::liftK,c.get_catch());
-    return new ast.Ast.BlockContent(liftVarDecs,liftK);
+    List<Expression.Catch> liftK = this.liftKs(c.get_catch());
+    return new Expression.BlockContent(liftVarDecs,liftK);
+  }
+  protected List<Catch> liftKs(List<Catch> ks) {
+    List<Catch> result=new ArrayList<>();
+    for(Catch k:ks){result.add(liftK(k));}
+    return result;
   }
   protected List<ast.Ast.VarDec> liftVarDecs(List<ast.Ast.VarDec> ds) {
     return Map.of(this::liftVarDec, ds);

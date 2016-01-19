@@ -8,7 +8,7 @@
       with tAny=ti.referencedPath().externalType() (
         on type Concept::Invariant return Bool.true()
         )
-      catch error (on Guard::Operation void)
+      catch error Guard::Operation void
       void
       )
     return Bool.false()
@@ -61,12 +61,12 @@
         )
       }
     with mdf=that.mdf() (
-      case mdf==S"" return immA
-      case mdf==S"mut" return mutA
-      case mdf==S"lent" return lentA
-      case mdf==S"read" return readA
-      case mdf==S"capsule" return capsuleA
-      default error Default::DecorationUnfeasable(
+      if mdf==S"" (return immA)
+      if mdf==S"mut" (return mutA)
+      if mdf==S"lent" (return lentA)
+      if mdf==S"read" (return readA)
+      if mdf==S"capsule" (return capsuleA)
+      error Default::DecorationUnfeasable(
         text:S"unidentified mdf:"[mdf]"!")
       )
     }
@@ -87,12 +87,12 @@
     lentA={ type method lent T (lent T that) that T:{}}
     readA={ type method read T (read T that) that T:{}}
     Library mdfA={with mdf=that.mdf() (
-      case mdf==S"type" return classA
-      case mdf==S"" return immA
-      case mdf==S"mut" return mutA
-      case mdf==S"lent" return lentA
-      case mdf==S"read" return readA
-      default error Default::DecorationUnfeasable(
+      if mdf==S"type" (return classA)
+      if mdf==S"" (return immA)
+      if mdf==S"mut" (return mutA)
+      if mdf==S"lent" (return lentA)
+      if mdf==S"read" (return readA)
+      error Default::DecorationUnfeasable(
         text:S"unidentified mdf:"[mdf]"!")
       )}
     nc=that.referencedPath()

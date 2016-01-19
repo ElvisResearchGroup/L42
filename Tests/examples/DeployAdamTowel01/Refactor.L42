@@ -3,19 +3,18 @@
   Library compose(Library left,Library right)
   exception MetaGuard::ClassClash, MetaGuard::MethodClash {
     return SafeOperators.compose(left:left,right:right)
-    catch error err (on Library (
+    catch error Library err (
       record=Introspection::Record(lib:err)
-      with x=record"Kind" (
-        case x== S"ClassClash"  (exception MetaGuard::ClassClash(record:record))
-        case x== S"MethodClash"  (exception MetaGuard::MethodClash(record:record))
-        default error err)))
+      x=record"Kind"
+      if x== S"ClassClash"  (exception MetaGuard::ClassClash(record:record))
+      if x== S"MethodClash"  (exception MetaGuard::MethodClash(record:record))
+      error err)
     }
   type method
   Void checkTargetExists(Library that,Path path) exception MetaGuard::NestedClassUnavailable (
     unused=AddDocumentationPath[path doc:Introspection::Doc"JustToSeeIfItIsThere"]<<that
-    catch exception x (
-      on MetaGuard::InvalidOnTopLevel error Assert::CodeNotReachable"Refactor4" 'TODO: if you omit Assert:: the error reporting is horrible
-      )
+    catch exception MetaGuard::InvalidOnTopLevel x
+      error Assert::CodeNotReachable"Refactor4" 'TODO: if you omit Assert:: the error reporting is horrible
     void
     )
     
@@ -40,102 +39,101 @@
         MetaGuard::MethodClash,
         MetaGuard::IncoherentRedirectMapping{
       return SafeOperators.redirect(that,src:this.that(),dest:this.to())
-      catch error err (on Library (
+      catch error Library err (
         record=Introspection::Record(lib:err)
-        with x=record"Kind" (
-          case x== S"MemberUnavailable"  (exception MetaGuard::NestedClassUnavailable(record:record))
-          case x== S"InvalidOnTopLevel"  (exception MetaGuard::InvalidOnTopLevel(record:record))
-          case x== S"MethodClash"  (exception MetaGuard::MethodClash(record:record))
-          case x== S"SourceUnfit"  (exception MetaGuard::SourceUnfit(record:record))
-          case x== S"IncoherentRedirectMapping" (exception MetaGuard::IncoherentRedirectMapping(record:record))
-          default error err)))
+        x=record"Kind"
+        if x== S"MemberUnavailable"  (exception MetaGuard::NestedClassUnavailable(record:record))
+        if x== S"InvalidOnTopLevel"  (exception MetaGuard::InvalidOnTopLevel(record:record))
+        if x== S"MethodClash"  (exception MetaGuard::MethodClash(record:record))
+        if x== S"SourceUnfit"  (exception MetaGuard::SourceUnfit(record:record))
+        if x== S"IncoherentRedirectMapping" (exception MetaGuard::IncoherentRedirectMapping(record:record))
+        error err)
       }
     }
   RenameSelector:Squares<<{#add(Selector that, Path of, Selector to)
     method
     Library << (Library that)exception MetaGuard::MemberUnavailable,MetaGuard::MethodClash{
       return SafeOperators.renameMethod(that,path:this.of() src:this.that(),dest:this.to())
-      catch error err (on Library (
+      catch error Library err (
         record=Introspection::Record(lib:err)
-        with x=record"Kind" (
-          case x== S"MemberUnavailable"  (exception MetaGuard::DispatchMemberUnavailable(err))
-          case x== S"MethodClash"  (exception MetaGuard::MethodClash(record:record))
-          default error err)))
+        x=record"Kind"
+        if x== S"MemberUnavailable"  (exception MetaGuard::DispatchMemberUnavailable(err))
+        if x== S"MethodClash"  (exception MetaGuard::MethodClash(record:record))
+        error err)
       }
     }
   RenamePath:Squares<<{#add(Path that, Path to)
     method
     Library << (Library that)exception MetaGuard::NestedClassUnavailable,MetaGuard::MethodClash,MetaGuard::ClassClash{
       return SafeOperators.renameClass(that,src:this.that(),dest:this.to())
-      catch error err (on Library (
+      catch error Library err (
         record=Introspection::Record(lib:err)
-        with x=record"Kind" (
-          case x== S"MemberUnavailable"  (exception MetaGuard::NestedClassUnavailable(record:record))
-          case x== S"MethodClash"  (exception MetaGuard::MethodClash(record:record))
-          case x== S"ClassClash"  (exception MetaGuard::ClassClash(record:record))
-          default (
-            Debug(S"critical failure in capturing plugin primitive error")
-            Debug(x)
-            error err
-          ))))
+        x=record"Kind"
+        if x== S"MemberUnavailable"  (exception MetaGuard::NestedClassUnavailable(record:record))
+        if x== S"MethodClash"  (exception MetaGuard::MethodClash(record:record))
+        if x== S"ClassClash"  (exception MetaGuard::ClassClash(record:record))
+        Debug(S"critical failure in capturing plugin primitive error")
+        Debug(x)
+        error err
+        )
       }
     }
   RemoveImplementationSelector:Squares<<{#add(Selector that, Path of)
     method
     Library << (Library that)exception MetaGuard::MemberUnavailable{
       return SafeOperators.removeImplementation(that,path:this.of(),selector:this.that())
-      catch error err (on Library (
+      catch error Library err (
         record=Introspection::Record(lib:err)
-        with x=record"Kind" (
-          case x== S"MemberUnavailable"  (exception MetaGuard::DispatchMemberUnavailable(err))
-          default error err)))
+        x=record"Kind"
+        if x== S"MemberUnavailable"  (exception MetaGuard::DispatchMemberUnavailable(err))
+        error err)
       }
     }
   MoveImplementationSelector:Squares<<{#add(Selector that, Path of,Selector to)
     method
     Library << (Library that)exception MetaGuard::MemberUnavailable,MetaGuard::MethodClash{
       return SafeOperators.moveImplementation(that,path:this.of(),src:this.that(),dest:this.to())
-      catch error err (on Library (
+      catch error Library err (
         record=Introspection::Record(lib:err)
-        with x=record"Kind" (
-          case x== S"MemberUnavailable"  (exception MetaGuard::DispatchMemberUnavailable(err))
-          case x== S"MethodClash"  (exception MetaGuard::MethodClash(record:record))
-          default error err)))
+        x=record"Kind"
+        if x== S"MemberUnavailable"  (exception MetaGuard::DispatchMemberUnavailable(err))
+        if x== S"MethodClash"  (exception MetaGuard::MethodClash(record:record))
+        error err)
       }
     }
   RemoveImplementationPath:Squares<<{#add(Path that)
     method
     Library << (Library that)exception MetaGuard::NestedClassUnavailable,MetaGuard::PrivacyCoupuled{
       return SafeOperators.removeImplementation(that,path:this.that())
-      catch error err (on Library (
+      catch error Library err (
         record=Introspection::Record(lib:err)
-        with x=record"Kind" (
-          case x== S"MemberUnavailable"  (exception MetaGuard::NestedClassUnavailable(record:record))
-          case x== S"PrivacyCoupuled"  (exception MetaGuard::PrivacyCoupuled(record:record))
-          default error err)))
+        x=record"Kind"
+        if x== S"MemberUnavailable"  (exception MetaGuard::NestedClassUnavailable(record:record))
+        if x== S"PrivacyCoupuled"  (exception MetaGuard::PrivacyCoupuled(record:record))
+        error err)
       }
     }
   AddDocumentationSelector:Squares<<{#add(Selector that, Path of,Introspection::Doc doc)
     method
     Library << (Library that)exception MetaGuard::MemberUnavailable{
       return SafeOperators.addDocumentation(that,path:this.of() selector:this.that(),doc:this.doc())
-      catch error err (on Library (
+      catch error Library err (
         record=Introspection::Record(lib:err)
-        with x=record"Kind" (
-          case x== S"MemberUnavailable"  (exception MetaGuard::DispatchMemberUnavailable(err))
-          default error err)))
+        x=record"Kind"
+        if x== S"MemberUnavailable"  (exception MetaGuard::DispatchMemberUnavailable(err))
+        error err)
       }
     }
   AddDocumentationPath:Squares<<{#add(Path that,Introspection::Doc doc)
     method
     Library << (Library that)exception MetaGuard::NestedClassUnavailable,MetaGuard::InvalidOnTopLevel{
       return SafeOperators.addDocumentation(that,path:this.that(),doc:this.doc())
-      catch error err (on Library (
+      catch error Library err (
         record=Introspection::Record(lib:err)
-        with x=record"Kind" (
-          case x== S"MemberUnavailable"  (exception MetaGuard::NestedClassUnavailable(record:record))
-          case x== S"InvalidOnTopLevel"  (exception MetaGuard::InvalidOnTopLevel(record:record))
-          default error err)))
+        x=record"Kind"
+        if x== S"MemberUnavailable"  (exception MetaGuard::NestedClassUnavailable(record:record))
+        if x== S"InvalidOnTopLevel"  (exception MetaGuard::InvalidOnTopLevel(record:record))
+        error err)
       }
     }
   MakePrivatePath:Squares<<{#add(Path that)
@@ -158,13 +156,13 @@
     method
     Library << (Library that)exception MetaGuard::MemberUnavailable,MetaGuard::MethodClash, MetaGuard::ParameterMismatch{
       return SafeOperators.sumMethods(that,path:this.of() src1:this.that(),src2:this.and(), dest:this.to(),name:this.over())
-      catch error err (on Library (
+      catch error Library err (
         record=Introspection::Record(lib:err)
-        with x=record"Kind" (
-          case x== S"MemberUnavailable"  (exception MetaGuard::DispatchMemberUnavailable(err))
-          case x== S"MethodClash"  (exception MetaGuard::MethodClash(record:record))
-          case x== S"ParameterMismatch"  (exception MetaGuard::ParameterMismatch(record:record))
-          default error err)))
+        x=record"Kind"
+        if x== S"MemberUnavailable"  (exception MetaGuard::DispatchMemberUnavailable(err))
+        if x== S"MethodClash"  (exception MetaGuard::MethodClash(record:record))
+        if x== S"ParameterMismatch"  (exception MetaGuard::ParameterMismatch(record:record))
+        error err)
       }
     }
   Tools:...

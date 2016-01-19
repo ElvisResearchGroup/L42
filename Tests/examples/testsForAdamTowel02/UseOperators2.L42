@@ -9,7 +9,7 @@ Main:{
   Debug(A::B::C.myName())
   Debug(D::E.myName())
   (res=Default::Named<<{method N myName()}
-  catch exception x (on Default::DecorationUnfeasable Debug(S"Failed"))
+  catch exception Default::DecorationUnfeasable x Debug(S"Failed")
   void)
   return ExitCode.normal()
   }

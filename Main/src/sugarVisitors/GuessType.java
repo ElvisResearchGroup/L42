@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import tools.Assertions;
-import ast.Ast.BlockContent;
 import ast.Ast.Doc;
 import ast.Ast.Mdf;
 import ast.Ast.MethodSelector;

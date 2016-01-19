@@ -8,15 +8,14 @@ import sugarVisitors.Visitor;
 import tools.Assertions;
 import tools.Match;
 import ast.Ast;
-import ast.Ast.BlockContent;
 import ast.Ast.Doc;
 import ast.Ast.MethodSelector;
 import ast.Ast.MethodType;
-import ast.Ast.On;
 import ast.ExpCore;
 import ast.Ast.Path;
 import ast.Ast.SignalKind;
 import ast.Ast.Type;
+import ast.Expression.Catch;
 import ast.Expression.ClassReuse;
 import ast.Expression.WalkBy;
 import ast.Util.CachedStage;
@@ -37,9 +36,10 @@ public class InjectionOnCore implements Visitor<ExpCore> {
     Doc doc = s.getDoc();
     assert s.getContents().size()<=1:s.getContents();
     List<Dec> decs=new ArrayList<Dec>();
+    List<ExpCore.Block.On> ons=new ArrayList<ExpCore.Block.On>();
     ExpCore inner=s.getInner().accept(this);
     if(s.getContents().size()==1){
-      BlockContent c = s.getContents().get(0);
+      Expression.BlockContent c = s.getContents().get(0);
       for(Ast.VarDec d:c.getDecs()){
         assert d instanceof Ast.VarDecXE:d;
         Ast.VarDecXE sugarDec=(Ast.VarDecXE)d;
@@ -48,22 +48,17 @@ public class InjectionOnCore implements Visitor<ExpCore> {
         String x=sugarDec.getX();
         ExpCore e=sugarDec.getInner().accept(this);
         decs.add(new Dec(t,x,e));
-        };
-      if(c.get_catch().isPresent()){
-        ast.Ast.Catch c1 = c.get_catch().get();
-        SignalKind kind=c1.getKind();
-        String x=c1.getX();
+        };//END FOR DECS
+      for(Catch k :c.get_catch()){
+        assert k instanceof Expression.Catch1;
+        Expression.Catch1 k1=(Expression.Catch1)k;
+        SignalKind kind=k1.getKind();
+        String x=k1.getX();
         assert x.length()>=1;
-        assert c1.getOns().size()>=1;
-        List<ExpCore.Block.On> ons=new ArrayList<ExpCore.Block.On>();
-        for(On on:c1.getOns()){
-          assert on.getTs().size()==1;
-          assert !on.get_if().isPresent();
-          ons.add(new ExpCore.Block.On(kind,x,on.getTs().get(0),lift(on.getInner())));
+        ons.add(new ExpCore.Block.On(kind,x,k1.getT(),lift(k1.getInner())));
         }
       return new Block(doc,decs,inner,ons,s.getP());
       }
-    }
     return new Block(doc,decs,inner,Collections.emptyList(),s.getP());
   }
   public ExpCore visit(Expression.ClassB s){

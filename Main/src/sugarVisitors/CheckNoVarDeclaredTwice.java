@@ -47,7 +47,7 @@ public class CheckNoVarDeclaredTwice{
       finally{xs.remove(d.getX());}
     }
     @Override 
-    protected ast.Ast.Catch liftK(ast.Ast.Catch k){
+    protected Expression.Catch liftK(Expression.Catch k){
       if(xs.contains(k.getX())){
         throw new ErrorMessage.VariableDeclaredMultipleTimes(k.getX(),null);
         }

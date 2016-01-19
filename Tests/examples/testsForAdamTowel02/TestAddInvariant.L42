@@ -13,12 +13,12 @@ Main:{
     C c1=C.a(n:20N) void
   ) (
    C c2=C.a(n:5N) Debug(S"Fail")
-   catch error ( on Invariant::InvariantFailure void ) void
+   catch error Invariant::InvariantFailure void  void
   ) (
     D d1=D(c:C.a(n:20N)) void
   ) (
    D d2=D(c:c12) Debug(S"Fail")
-   catch error ( on Invariant::InvariantFailure void ) void
+   catch error Invariant::InvariantFailure void void
    )
   Debug(S"OK")
   return ExitCode.normal()

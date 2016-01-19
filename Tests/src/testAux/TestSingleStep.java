@@ -78,15 +78,15 @@ public class TestSingleStep {
 
        },{lineNumber(),"( Any x= y x)","(y)"
        },{lineNumber(),"( mut Any x= (Outer0::C z=Outer0::C.new() y) x)","( Outer0::C z=Outer0::C.new() mut Any x=  y x)"
-       },{lineNumber(),"( Any x= error (Outer0::C z=Outer0::C.new() z) catch error y (on Outer0::D y) x)","( Any x= error (Outer0::C z=Outer0::C.new() z) x)"
-       },{lineNumber(),"( Any x= error (Outer0::C z=Outer0::C.new() z) catch error y (on Outer0::C y) x)","( Outer0::C y=(Outer0::C z=Outer0::C.new() z) y)"
-       },{lineNumber(),"( Any x= (Any z=Outer0::C.new() z) catch error y (on Outer0::C y) x)",
-          "( Any x= (Outer0::C z=Outer0::C.new() z) catch error y (on Outer0::C y) x)"
+       },{lineNumber(),"( Any x= error (Outer0::C z=Outer0::C.new() z) catch error Outer0::D y y x)","( Any x= error (Outer0::C z=Outer0::C.new() z) x)"
+       },{lineNumber(),"( Any x= error (Outer0::C z=Outer0::C.new() z) catch error Outer0::C y y x)","( Outer0::C y=(Outer0::C z=Outer0::C.new() z) y)"
+       },{lineNumber(),"( Any x= (Any z=Outer0::C.new() z) catch error Outer0::C y y x)",
+          "( Any x= (Outer0::C z=Outer0::C.new() z) catch error Outer0::C y y x)"
 
-       },{lineNumber(),"( Any x= (Outer0::C z=Outer0::C.new() z) catch error y (on Outer0::C y) x)",
-          "( Outer0::C x= (Outer0::C z=Outer0::C.new() z) catch error y (on Outer0::C y) x)"
+       },{lineNumber(),"( Any x= (Outer0::C z=Outer0::C.new() z) catch error Outer0::C y y x)",
+          "( Outer0::C x= (Outer0::C z=Outer0::C.new() z) catch error Outer0::C y y x)"
 
-       },{lineNumber(),"( Outer0::C x= (Outer0::C z=Outer0::C.new() z) catch error y (on Outer0::C y on Outer0::D y) x)",
+       },{lineNumber(),"( Outer0::C x= (Outer0::C z=Outer0::C.new() z) catch error Outer0::C y y catch error Outer0::D y y x)",
          "( Outer0::C x= (Outer0::C z=Outer0::C.new() z)  x)"
 
        },{lineNumber(),"Outer0::C.foo(bar:Outer0::C)","(type Outer0::C this0=Outer0::C,type Outer0::C bar=Outer0::C (bar.foo(bar:this0)))"
@@ -116,7 +116,7 @@ public class TestSingleStep {
        },{lineNumber(),"use Any check m(that:(Outer0::C c1=Outer0::C.new() Outer0::C c2=Outer0::C.new() mut Outer0::D r=Outer0::D.new(x:c1)  r.x(that:c2))) void",
           "use Any check m(that:(Outer0::C c1=Outer0::C.new() Outer0::C c2=Outer0::C.new() mut Outer0::D r=Outer0::D.new(x:c2)  void)) void"
 
-       },{lineNumber()," (use Any check m(that:(error void)) void catch error x (on Void void) void)",
+       },{lineNumber()," (use Any check m(that:(error void)) void catch error Void x void void)",
          "( Void x=( void ) void )"
 
        },{lineNumber(),"(C c1=C.new() ( C c2=C.new() mut D r=D.new(x:c1)  r.x(c2)))",
@@ -148,8 +148,7 @@ public class TestSingleStep {
         ,"AI:{ k()<:Outer1::I}"
         ,"D:("
         ,"  Any z=error Outer0::AI.k()"
-        ,"  catch error x (on Outer0::AI Outer0::C.ok()"
-        ,"    )"
+        ,"  catch error Outer0::AI x Outer0::C.ok()"
         ,"  Outer0::C.ko()"
         ,"  )}"),
         TestHelper.multiLine(
@@ -164,8 +163,7 @@ public class TestSingleStep {
         ,"    Outer0::AI aI=Outer0::AI.k()"
         ,"    aI"
         ,"    )"
-        ,"  catch error x (on Outer0::AI Outer0::C.ok()"
-        ,"    )"
+        ,"  catch error Outer0::AI x Outer0::C.ok()"
         ,"  Outer0::C.ko()"
         ,"  )}")
        },{lineNumber(),
@@ -197,7 +195,7 @@ TestHelper.multiLine("{"
 ,"      Void unused6=error void"
 ,"      ( Void unused4=return {}  void )"
 ,"      )"
-,"    catch return result0 ( on Library result0 )"
+,"    catch return Library result0 result0 "
 ,"    error void"
 ,"    )"
 ,"  void)"),

@@ -137,7 +137,7 @@ loopExpr: Loop eTop;
 block: roundBlock|curlyBlock;
 roundBlockForMethod:ORoundNoSpace docsOpt bb* eTop CRound;
 roundBlock:ORoundSpace docsOpt bb* eTop CRound;//last one must be eTop
-bb:d+ k?;//clearly ambigus, why do not complain?
+bb:d+ ks;//clearly ambigus, why do not complain?
 curlyBlock:OCurly docsOpt bb+ CCurly;
 varDec: Var? t? x Equal eTop;
 d: varDec| eTop| nestedClass;
@@ -148,7 +148,11 @@ squareW:OSquare docsOpt w CSquare;
 mCall: m round;
 round: docsOpt ps CRound;
 ps:(eTop )?(X Colon  eTop )*;
-k: Catch S X? (ORoundSpace|ORoundNoSpace) on* (Default eTop)? CRound;   
+k1: Catch S t X  eTop;
+kMany:Catch S t+  eTop;
+k:k1|kMany;   
+ks:k*;//other variations to come (k|kMany|kProp)*
+
 on: On t (Case eTop)? eTop;
 onPlus: On t+ (Case eTop)? eTop | Case eTop eTop;
 nudeE: eTop EOF;

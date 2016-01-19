@@ -30,11 +30,6 @@ public interface Ast {
 		List<Expression> es;
 	}
 
-	@Value
-	public class BlockContent {
-		List<VarDec> decs;
-		Optional<Catch> _catch;
-	}
 
 	public interface VarDec {
 		<T> T match(Function<VarDecXE, T> xe, Function<VarDecE, T> e, Function<VarDecCE, T> ce);
@@ -71,22 +66,6 @@ public interface Ast {
 		}
 	}
 
-	@Value
-	@Wither
-	public class Catch {
-		SignalKind kind;
-		String x;
-		List<On> ons;
-		Optional<Expression> _default;
-	}
-
-	@Value
-	@Wither
-	public class On {
-		List<Type> ts;
-		Optional<Expression> _if;
-		Expression inner;
-	}
 
 	public interface Header {
 		<T> T match(Function<ConcreteHeader, T> concreteH, Function<TraitHeader, T> traitH,

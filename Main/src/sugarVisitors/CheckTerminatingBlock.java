@@ -3,14 +3,12 @@ package sugarVisitors;
 import java.util.List;
 
 import ast.Ast;
-import ast.Ast.BlockContent;
-import ast.Ast.Catch;
-import ast.Ast.On;
 import ast.Ast.Path;
 import ast.Ast.VarDec;
 import ast.ErrorMessage;
 import ast.Expression;
 import ast.Expression.BinOp;
+import ast.Expression.BlockContent;
 import ast.Expression.ClassB;
 import ast.Expression.ClassReuse;
 import ast.Expression.CurlyBlock;
@@ -31,6 +29,7 @@ import ast.Expression.Using;
 import ast.Expression.WalkBy;
 import ast.Expression.While;
 import ast.Expression.With;
+import ast.Expression.With.On;
 import ast.Expression.X;
 import ast.Expression._void;
 
@@ -61,20 +60,18 @@ public class CheckTerminatingBlock implements Visitor<Void> {
     }
   public Void visit(CurlyBlock s) {
     checkBlockContent(s.getContents());
-    BlockContent bc = s.getContents().get(s.getContents().size()-1);
+    Expression.BlockContent bc = s.getContents().get(s.getContents().size()-1);
     VarDec dec = bc.getDecs().get(bc.getDecs().size()-1);
     if(!(dec instanceof Ast.VarDecE)){return fail(s);}
     Ast.VarDecE decE=(Ast.VarDecE)dec;
     return decE.getInner().accept(this);
     }
-  public void checkBlockContent(List<BlockContent> l) {
-    for( BlockContent c:l){
-      if(!c.get_catch().isPresent()){continue;}
-      Catch k = c.get_catch().get();
-      for(On on:k.getOns()){
-        on.getInner().accept(this);
+  public void checkBlockContent(List<Expression.BlockContent> l) {
+    for( Expression.BlockContent c:l){
+      if(c.get_catch().isEmpty()){continue;}
+      for( Expression.Catch ki : c.get_catch()){
+       ki.getInner().accept(this);
         }
-      if(k.get_default().isPresent()){k.get_default().get().accept(this);}
       }
     }
       

@@ -11,8 +11,8 @@
       map:=map.#add(ren)
       acc:=Refactor::MoveImplementationSelector[
         ren.src() of:ren.path() to:ren.dest()]<<acc
-      catch exception err (on MetaGuard
-        error Assert::ObservedBug"Path.#lessless(that)"(err))
+      catch exception MetaGuard err
+        error Assert::ObservedBug"Path.#lessless(that)"(err)
       void
       )
     acc:=Refactor::RenamePath[
@@ -22,9 +22,8 @@
         mapi.dest() of:mapi.path()]<<acc
       )
     return acc
-    catch exception err2 (on MetaGuard::MemberUnavailable
-      error Assert::CodeNotReachable"Path2"(err2)
-      )
+    catch exception MetaGuard::MemberUnavailable err
+      error Assert::CodeNotReachable"Path2"(err)
     }
   type method '@private
   PreferentialComposition::SrcDests renameMap(Library that,S prefix,Introspection::NestedClasses intros) {

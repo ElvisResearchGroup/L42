@@ -23,7 +23,7 @@ type method
 SrcDests renameMap(
 Library that,S prefix,Path path, Introspection::Methods ms) {
   thatI=Introspection(lib:that, path:path)
-  catch exception (on MetaGuard::MemberUnavailable return SrcDests[])
+  catch exception MetaGuard::MemberUnavailable return SrcDests[]
   return SrcDests[with meth in ms.vals() (
     if this.needRename(that:thatI,meth:meth) (
       destSel=Selector.fromS(prefix++meth.selector().toS())
@@ -36,9 +36,8 @@ Introspection::NestedClass that,Introspection::Method meth) {
   if meth.isPrivate() (return Bool.false() )
   if meth.methodKind()==S"AbstractMethod" (return Bool.false() )
   meth2=that.methodFromSelector(meth.selector())
-  catch exception (on MetaGuard::MemberUnavailable
+  catch exception  MetaGuard::MemberUnavailable
     return Bool.false()
-    )
   if meth2.isPrivate() (return Bool.false() )
   if meth2.methodKind()==S"AbstractMethod" (return Bool.false() )    
   return Bool.true()
@@ -74,12 +73,12 @@ Library <<(Library that) exception MetaGuard::ClassClash,MetaGuard::MethodClash
       with ren in rens.vals() (
         map:=map.#add(ren)
         libi:=this.solveConflict(libi,location:ren)
-        catch exception (on MetaGuard error Assert::ObservedBug(text:{
+        catch exception  MetaGuard error Assert::ObservedBug(text:{
           return S"solveConflict does not follow the specification: it throws exceptions"
           ' yes, exception can be handled by type system, but it is an example of
           'wrong behaviour for metaprogrammed code?
           'if ... check if ren is well formed w.r.t. libi, otherwise blame S"renameMap"
-          }))
+          })
         void
         )
       acc:=Refactor.compose(left:acc,right:libi)
@@ -89,7 +88,7 @@ Library <<(Library that) exception MetaGuard::ClassClash,MetaGuard::MethodClash
       acc:=Refactor::MakePrivateSelector[mapi.dest() of:mapi.path()]<<acc
       )
     return acc
-    catch exception (on MetaGuard::MemberUnavailable error Assert::CodeNotReachable"PreferentialComposition1")
+    catch exception MetaGuard::MemberUnavailable error Assert::CodeNotReachable"PreferentialComposition1"
     }  
   method Outer0 ++ (Outer0 that)
     Outer0(myLibs:this.myLibs()++that.myLibs())

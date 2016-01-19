@@ -4,6 +4,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
+
+import ast.Ast.SignalKind;
+import ast.Ast.Type;
+import ast.Ast.VarDec;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import lombok.ToString;
@@ -57,6 +61,13 @@ public interface Expression extends Ast {
     @Override public <T> T accept(sugarVisitors.Visitor<T> v) {
       return v.visit(this);
     }
+    @Value
+    @Wither
+    public static class On {
+      List<Type> ts;
+      Expression inner;
+    }
+
   }
 
   @Value public static class X implements Expression, Ast.Atom {
@@ -149,6 +160,31 @@ public interface Expression extends Ast {
     }
   }
 
+  public static interface Catch{
+    <T> T match(Function<Catch1, T> k1,Function<CatchMany, T> kM);
+    String getX();
+    Expression getInner();
+  }
+  @Value @Wither public static class Catch1 implements Catch{
+    SignalKind kind;
+    Type t;
+    String x;
+    Expression inner;
+    public <T> T match(Function<Catch1, T> k1,Function<CatchMany, T> kM){return k1.apply(this);}
+  }
+  @Value @Wither public static class CatchMany implements Catch{
+    SignalKind kind;
+    List<Type> ts;
+    Expression inner;
+    public String getX(){return "";}
+    public <T> T match(Function<Catch1, T> k1,Function<CatchMany, T> kM){return kM.apply(this);}
+  }
+  @Value
+  public class BlockContent {
+    List<VarDec> decs;
+    List<Catch> _catch;
+  }
+  
   @Value @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") @Wither public static class RoundBlock implements Expression, HasPos {
     Position p;
     Doc doc;

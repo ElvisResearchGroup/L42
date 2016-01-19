@@ -251,6 +251,19 @@ public class L42BaseListener implements L42Listener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterK1(@NotNull L42Parser.K1Context ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitK1(@NotNull L42Parser.K1Context ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterMxRound(@NotNull L42Parser.MxRoundContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -511,6 +524,19 @@ public class L42BaseListener implements L42Listener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterKMany(@NotNull L42Parser.KManyContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitKMany(@NotNull L42Parser.KManyContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterD(@NotNull L42Parser.DContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -557,6 +583,19 @@ public class L42BaseListener implements L42Listener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitEUnOp(@NotNull L42Parser.EUnOpContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterKs(@NotNull L42Parser.KsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitKs(@NotNull L42Parser.KsContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

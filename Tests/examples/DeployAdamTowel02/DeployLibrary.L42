@@ -36,20 +36,19 @@ exception MetaGuard::NestedClassUnavailable, MetaGuard::PrivacyCoupuled
   Debug(S"1.3")
   res:=Refactor::RemoveImplementationPath[Path"Abstract"]<<res'leak PrivacyCoupuled
   Debug(S"1.4")
-  catch exception (on MetaGuard::MemberUnavailable error Assert::CodeNotReachable"DeployLibrary3")
+  catch exception MetaGuard::MemberUnavailable error Assert::CodeNotReachable"DeployLibrary3"
   res:=Refactor::RenamePath[Path"PrImpl"++path to:Path"Outer0"]<<res
   Debug(S"1.5")
   res:=Refactor::MakePrivatePath[Path"PrImpl"]<<res
   Debug(S"1.6")
-  catch exception (on MetaGuard error Assert::CodeNotReachable"DeployLibrary4")
+  catch exception MetaGuard error Assert::CodeNotReachable"DeployLibrary4"
   return res
   }
 type method
 Void checkTargetExists(Library that,Path path) exception MetaGuard::NestedClassUnavailable (
   unused=Refactor::AddDocumentationPath[path doc:Introspection::Doc"JustToSeeIfItIsThere"]<<that
-  catch exception x (
-    on MetaGuard::InvalidOnTopLevel error Assert::CodeNotReachable"DeployLibrary5"
-    )
+  catch exception  MetaGuard::InvalidOnTopLevel x
+    error Assert::CodeNotReachable"DeployLibrary5"
   void
   )
 

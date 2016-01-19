@@ -30,7 +30,10 @@ import antlrGenerated.L42Parser.HistoricalSeqContext;
 import antlrGenerated.L42Parser.HistoricalTContext;
 import antlrGenerated.L42Parser.IContext;
 import antlrGenerated.L42Parser.IfExprContext;
+import antlrGenerated.L42Parser.K1Context;
 import antlrGenerated.L42Parser.KContext;
+import antlrGenerated.L42Parser.KManyContext;
+import antlrGenerated.L42Parser.KsContext;
 import antlrGenerated.L42Parser.LoopExprContext;
 import antlrGenerated.L42Parser.MCallContext;
 import antlrGenerated.L42Parser.MContext;
@@ -206,5 +209,12 @@ public  class AbstractVisitor<T>  implements L42Visitor<T>{
   @Override public T visitMxRound(MxRoundContext ctx) {throw Assertions.codeNotReachable();}
 
   @Override public T visitUseSquare(UseSquareContext ctx) {throw Assertions.codeNotReachable();}
+
+  @Override public T visitKs(KsContext ctx)  {throw Assertions.codeNotReachable();}
+
+  @Override public T visitK1(K1Context ctx) {throw Assertions.codeNotReachable();}
+
+  @Override public T visitKMany(KManyContext ctx) {throw Assertions.codeNotReachable();}
+
   
 }

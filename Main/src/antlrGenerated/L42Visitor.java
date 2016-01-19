@@ -138,6 +138,13 @@ public interface L42Visitor<T> extends ParseTreeVisitor<T> {
 	T visitCurlyBlock(@NotNull L42Parser.CurlyBlockContext ctx);
 
 	/**
+	 * Visit a parse tree produced by {@link L42Parser#k1}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitK1(@NotNull L42Parser.K1Context ctx);
+
+	/**
 	 * Visit a parse tree produced by {@link L42Parser#mxRound}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -278,6 +285,13 @@ public interface L42Visitor<T> extends ParseTreeVisitor<T> {
 	T visitOn(@NotNull L42Parser.OnContext ctx);
 
 	/**
+	 * Visit a parse tree produced by {@link L42Parser#kMany}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitKMany(@NotNull L42Parser.KManyContext ctx);
+
+	/**
 	 * Visit a parse tree produced by {@link L42Parser#d}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -304,6 +318,13 @@ public interface L42Visitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitEUnOp(@NotNull L42Parser.EUnOpContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link L42Parser#ks}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitKs(@NotNull L42Parser.KsContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link L42Parser#i}.

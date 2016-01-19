@@ -9,7 +9,7 @@
       method Bool isPresent(){
         aux=~this
         return Bool.true()
-        catch error (on Any return Bool.false())
+        catch error Any return Bool.false()
         }
       type method Outer0 () Outer0.#new(TEmpty())
       type method Outer0 (T that) Outer0.#new(TOf(that))

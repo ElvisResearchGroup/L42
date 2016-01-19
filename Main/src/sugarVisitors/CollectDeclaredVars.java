@@ -24,7 +24,7 @@ public class CollectDeclaredVars extends CloneVisitor {
     return super.liftVarDecXE(d);
   }
   @Override 
-  protected ast.Ast.Catch liftK(ast.Ast.Catch k){
+  protected Expression.Catch liftK(Expression.Catch k){
     if(k.getX().length()>0){xs.add(k.getX());}
     return super.liftK(k);
     } 

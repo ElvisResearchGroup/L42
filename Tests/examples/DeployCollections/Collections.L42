@@ -10,7 +10,7 @@ Library generateVector(type Any that, Library lib){
   'res:=Refactor::MakePrivatePath[Path"Iterator"]<<res
   'res:=Refactor::MakePrivatePath[Path"VarIterator"]<<res
   return res
-  catch exception err (on Guard error err)
+  catch exception Guard err error err
   }
   
 type method Library vector(type Any of)

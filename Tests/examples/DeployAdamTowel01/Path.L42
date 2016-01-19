@@ -6,9 +6,8 @@
     if that==S"@::"++S.nl() (return Outer0.fromS(S"Outer0"))
     'Debug(S"["++that++S"]")
     return Outer0.fromS(that(start:3N end:that.size()-1N))
-    catch error x ( on Message 
+    catch error Message x 
       error Outer0.parseError(that,cause:x)
-      )
     }
   type method
   Outer0 fromS(Concept::ToS that)

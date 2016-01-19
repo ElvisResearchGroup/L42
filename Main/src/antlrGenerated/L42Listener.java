@@ -207,6 +207,17 @@ public interface L42Listener extends ParseTreeListener {
 	void exitCurlyBlock(@NotNull L42Parser.CurlyBlockContext ctx);
 
 	/**
+	 * Enter a parse tree produced by {@link L42Parser#k1}.
+	 * @param ctx the parse tree
+	 */
+	void enterK1(@NotNull L42Parser.K1Context ctx);
+	/**
+	 * Exit a parse tree produced by {@link L42Parser#k1}.
+	 * @param ctx the parse tree
+	 */
+	void exitK1(@NotNull L42Parser.K1Context ctx);
+
+	/**
 	 * Enter a parse tree produced by {@link L42Parser#mxRound}.
 	 * @param ctx the parse tree
 	 */
@@ -427,6 +438,17 @@ public interface L42Listener extends ParseTreeListener {
 	void exitOn(@NotNull L42Parser.OnContext ctx);
 
 	/**
+	 * Enter a parse tree produced by {@link L42Parser#kMany}.
+	 * @param ctx the parse tree
+	 */
+	void enterKMany(@NotNull L42Parser.KManyContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link L42Parser#kMany}.
+	 * @param ctx the parse tree
+	 */
+	void exitKMany(@NotNull L42Parser.KManyContext ctx);
+
+	/**
 	 * Enter a parse tree produced by {@link L42Parser#d}.
 	 * @param ctx the parse tree
 	 */
@@ -469,6 +491,17 @@ public interface L42Listener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitEUnOp(@NotNull L42Parser.EUnOpContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link L42Parser#ks}.
+	 * @param ctx the parse tree
+	 */
+	void enterKs(@NotNull L42Parser.KsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link L42Parser#ks}.
+	 * @param ctx the parse tree
+	 */
+	void exitKs(@NotNull L42Parser.KsContext ctx);
 
 	/**
 	 * Enter a parse tree produced by {@link L42Parser#i}.

@@ -60,14 +60,14 @@ public class TestTypeStage1 {
            new NormType(Mdf.Capsule,Path.Void(),Ph.None),
            new String[]{"{ C:{k()}}"}
 
-         },{lineNumber(),"( exception void catch exception x (on Void void) void)",
+         },{lineNumber(),"( exception void catch exception  Void  x void  void)",
            new Ast.FreeType(),
            new NormType(Mdf.Capsule,Path.Void(),Ph.None),
            new String[]{"{ D:{k()}}"}
          },{lineNumber(),"( (exception void "
-          + "   catch exception x (on Any exception x)"
+          + "   catch exception Any x exception x"
           + "   void)"
-          + " catch exception xOut (on Void void) void)",
+          + " catch exception Void xOut void void)",
            new Ast.FreeType(),
            new NormType(Mdf.Capsule,Path.Void(),Ph.None),
            new String[]{"{ D:{k()}}"}
@@ -119,12 +119,12 @@ public class TestTypeStage1 {
 ," N that=N.k(),"
 ," fwd List top=List.factory(N.k())"
 ," ( Void z=that.checkZero(),"
-,"   catch error x ("
-, "    on Void  List.k("
+,"   catch error "
+, "    Void  x List.k("
 ,"       next:List.factoryAux(that.lessOne(),top:top),"
-,"       elem:that))"
-,"   List.k(next:top,elem:N.k())"
-," ))"),
+,"       elem:that)"
+,"   List.k(next:top,elem:N.k()))"
+," )"),
          new Ast.FreeType(),
          new NormType(Mdf.Immutable,Path.parse("Outer0::List"),Ph.Partial),
          new String[]{listExample}
@@ -152,14 +152,14 @@ public class TestTypeStage1 {
 ,"("
 ,"  Void unused1=("
 ,"    Void unused00=exception C.k()"
-,"    catch exception x ("
-,"      on D return { a()}"
-,"      on C error void"
-,"      )"
+,"    catch exception "
+,"      D x return { a()}"
+,"    catch exception C x error void"
+,"      "
 ,"    void"
 ,"    )"
-,"  catch return result0 ("
-,"    on Library result0"
+,"  catch return  Library result0 ("
+,"    result0"
 ,"    )"
 ,"  error void"
 ,"  )"),
@@ -179,11 +179,11 @@ static String listExample=TestHelper.multiLine(
     ,"    )"
     ,"type method List factoryAux(N that,fwd List top)"
     ,"  (Void z=that.checkZero()"
-    ,"   catch error x (on Void "
+    ,"   catch error Void x"
     ,"     List.k("
     ,"       next:List.factoryAux(that.lessOne(),top:top),"
-    ,"       elem:that))"
-    ,"   List.k(next:top,elem:N.k()) )"
+    ,"       elem:that)"
+    ,"   List.k(next:top,elem:N.k())) "
     ,"}}");
 
     @Test
@@ -303,7 +303,7 @@ public static class TestStage2 {
       +" type method capsule Customer readCustomer() (\n"
       +"   mut Customer c=Customer()\n"
       +"   return c 'ok, capsule promotion here\n"
-      +"   catch return x (on mut Customer x)"
+      +"   catch return mut Customer x x"
       +"   error void)}}"}
     },{lineNumber(), 
       "Reader.readCustomer()",
@@ -371,29 +371,29 @@ public static class TestStage3_notOk {
           new Ast.FreeType(),
           new String[]{"{ A:{'@plugin\n'L42.is/connected/withAlu\n}}"}
       //test to check that exception Any can not be captured
-      },{lineNumber(),"( exception D() catch exception x (on Any void) void)",
+      },{lineNumber(),"( exception D() catch exception Any x void void)",
         new NormType(Mdf.Immutable,Path.Void(),Ph.None),
         new NormType(Mdf.Immutable,Path.Void(),Ph.None),
         new String[]{"{ D:{k() method Void m() (void)}}"}
       },{lineNumber(),"( loop ( exception void"
-      +"      catch exception ( on Void ( exception void ) ) void)"
-      +"    catch exception p ( on Any ( exception p ) ) void )",
+      +"      catch exception Void ( exception void )  void)"
+      +"    catch exception Any p ( exception p  ) void )",
       new NormType(Mdf.Immutable,Path.Void(),Ph.None),
       new NormType(Mdf.Immutable,Path.Void(),Ph.None),
       new String[]{"{ D:{k() method Void m() (void)}}"}
       },{lineNumber(),
-        "(exception void catch exception p ( on Any ( exception p ) ) void )",
+        "(exception void catch exception Any p ( exception p  ) void )",
         new NormType(Mdf.Immutable,Path.Void(),Ph.None),
         new NormType(Mdf.Capsule,Path.Void(),Ph.None),
         new String[]{"{ D:{k() method Void m() (void)}}"}
 
             },{lineNumber(), "( ( exception void"
-                +"      catch exception ( on Void ( exception void ) ) void)"
-                +"    catch exception p ( on Any ( exception p ) ) void )",
+                +"      catch exception Void  exception void  void)"
+                +"    catch exception  Any p  exception p  void )",
                 new NormType(Mdf.Immutable,Path.Void(),Ph.None),
                 new NormType(Mdf.Capsule,Path.Void(),Ph.None),
                 new String[]{"{ D:{k() method Void m() (void)}}"}
-            },{lineNumber(),"( exception D.k() catch exception x (on Any void) void)",//should fail
+            },{lineNumber(),"( exception D.k() catch exception Any x void void)",//should fail
               new NormType(Mdf.Immutable,Path.Void(),Ph.None),
               new NormType(Mdf.Capsule,Path.Void(),Ph.None),
               new String[]{"{ D:{k() method Void m() (void)}}"}
@@ -411,6 +411,7 @@ public static class TestStage3_notOk {
       }});}
       @Test(expected=ErrorMessage.TypeError.class)
       public void testFail() {
+        TestHelper.configureForTest();
         ExpCore e=Desugar.of(Parser.parse(null," "+_e)).accept(new InjectionOnCore());
         Program p=TestHelper.getProgram(program);
         TypeSystem.typecheckSure(false,p, new HashMap<>(),SealEnv.empty(),new ThrowEnv(), typeSugg, e);

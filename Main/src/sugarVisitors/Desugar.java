@@ -12,8 +12,6 @@ import platformSpecific.fakeInternet.OnLineCode;
 import privateMangling.PrivateHelper;
 import tools.Assertions;
 import ast.Ast;
-import ast.Ast.BlockContent;
-import ast.Ast.Catch;
 import ast.Ast.ConcreteHeader;
 import ast.Ast.Doc;
 import ast.Ast.FieldDec;
@@ -23,7 +21,6 @@ import ast.Ast.MethodSelector;
 import ast.Ast.MethodSelectorX;
 import ast.Ast.MethodType;
 import ast.Ast.NormType;
-import ast.Ast.On;
 import ast.Ast.Op;
 import ast.Ast.Parameters;
 import ast.Ast.Path;
@@ -39,6 +36,8 @@ import ast.Ast.VarDecXE;
 import ast.ExpCore;
 import ast.Expression;
 import ast.Expression.BinOp;
+import ast.Expression.Catch;
+import ast.Expression.CatchMany;
 import ast.Expression.ClassB;
 import ast.Expression.ClassB.Member;
 import ast.Expression.ClassB.MethodImplemented;
@@ -158,6 +157,18 @@ public class Desugar extends CloneVisitor{
     }
     finally{varEnv=oldVarEnv;}
   }
+  @Override protected Catch liftK(Catch k){
+    if(!(k instanceof Expression.Catch1)){return super.liftK(k);}
+    //slower but safer?HashMap<String, Type> oldVarEnv = new HashMap<String, Type>(varEnv);
+    String added=null;
+    try{
+      Expression.Catch1 k1=(Expression.Catch1)k;
+      added=k1.getX();
+      varEnv.put(added,k1.getT());
+      return super.liftK(k);
+    }
+    finally{varEnv.remove(added);}
+  }
   private void addAllDec(List<VarDec> decs) {
     for(VarDec _dec:decs){
       if(!(_dec instanceof VarDecXE)){continue;}
@@ -168,8 +179,8 @@ public class Desugar extends CloneVisitor{
   }
   private RoundBlock blockContentSepare(RoundBlock s) {
     if(s.getContents().size()<=1){return s;}
-    List<BlockContent> ctxTop = new ArrayList<>(s.getContents().subList(0,1));
-    List<BlockContent> ctxPop = new ArrayList<>(s.getContents().subList(1, s.getContents().size()));
+    List<Expression.BlockContent> ctxTop = new ArrayList<>(s.getContents().subList(0,1));
+    List<Expression.BlockContent> ctxPop = new ArrayList<>(s.getContents().subList(1, s.getContents().size()));
     RoundBlock next=blockContentSepare(s.withContents(ctxPop));
     return s.withContents(ctxTop).withInner(next);
   }
@@ -194,8 +205,8 @@ public class Desugar extends CloneVisitor{
 
   private RoundBlock blockWithDec(RoundBlock s, List<VarDec> decs) {
     assert s.getContents().size()==1: s.getContents().size();
-    List<BlockContent> ctx = new ArrayList<>();
-    ctx.add(new BlockContent(decs, s.getContents().get(0).get_catch()));
+    List<Expression.BlockContent> ctx = new ArrayList<>();
+    ctx.add(new Expression.BlockContent(decs, s.getContents().get(0).get_catch()));
     return s.withContents(ctx);
   }
   private int firstVar(List<VarDec> varDecs){
@@ -233,18 +244,18 @@ public class Desugar extends CloneVisitor{
     else{trueDecs.addAll(varDecs);}
     trueDecs.add(d);
     trueDecs.addAll(fake.getContents().get(0).getDecs());
-    List<BlockContent> trueContent=new ArrayList<BlockContent>();
-    trueContent.add(new BlockContent(trueDecs,fake.getContents().get(0).get_catch()));
+    List<Expression.BlockContent> trueContent=new ArrayList<>();
+    trueContent.add(new Expression.BlockContent(trueDecs,fake.getContents().get(0).get_catch()));
     return fake.withContents(trueContent);
     }
   private RoundBlock getFakeBlock(Expression src,X x, X z,RoundBlock s, List<VarDec> varDecs,
       int d3First) {
-    List<BlockContent> fakeContent=new ArrayList<BlockContent>();
+    List<Expression.BlockContent> fakeContent=new ArrayList<>();
     List<VarDec> fakeDecs=new ArrayList<VarDec>();
     if(d3First!=-1){//d3 not empty
       fakeDecs.addAll(varDecs.subList(d3First, varDecs.size()));
     }
-    fakeContent.add(new BlockContent(fakeDecs,s.getContents().get(0).get_catch()));
+    fakeContent.add(new Expression.BlockContent(fakeDecs,s.getContents().get(0).get_catch()));
     RoundBlock fake=new RoundBlock(s.getP(),s.getDoc(),s.getInner(),fakeContent);
     fake=(RoundBlock) XEqOpInZEqOp.of(x, z, fake);
     fake=(RoundBlock) XInE.of(x,getMCall(getPosition(src),z,"#inner", getPs()),fake);
@@ -393,6 +404,23 @@ public class Desugar extends CloneVisitor{
     }
     return index;
   }
+  protected List<Catch> liftKs(List<Catch> ks) {
+    List<Catch> result=new ArrayList<>();
+    String x=Functions.freshName("catched", usedVars);
+    for(Catch k:ks){
+      if( k instanceof DesugarCatchDefault.CatchToComplete){
+        result.add(k);
+        continue;
+        }
+      k.match(k1->result.add(liftK(k1)), kM->{
+        for(Type t:kM.getTs()){
+          result.add(liftK(new Expression.Catch1(kM.getKind(),t,x,kM.getInner())));
+        }
+        return false;
+      });
+      }
+    return result;
+  }
   protected Parameters liftPs(Parameters ps) {
     if(!ps.getE().isPresent()){return liftPsPropagate(ps);}
     List<String> xs = new ArrayList<String>(ps.getXs());
@@ -424,8 +452,8 @@ public class Desugar extends CloneVisitor{
     RoundBlock b=Desugar.getBlock(p,cond,s.getThen());
     Loop l=new Loop(b);
     NormType _void=new NormType(Mdf.Immutable,Path.Void(),Ph.None);
-    Catch k=Desugar.getK(SignalKind.Exception, "",_void,  new _void());
-    RoundBlock b2=Desugar.getBlock(p,l,k,new _void());
+    Expression.Catch k=Desugar.getK(SignalKind.Exception, "",_void,  new _void());
+    RoundBlock b2=Desugar.getBlock(p,l,Collections.singletonList(k),new _void());
     return b2.accept(this);
   }
   public Expression visit(If s) {
@@ -439,7 +467,8 @@ public class Desugar extends CloneVisitor{
       return visit(getBlock(p,x, s.getCond(),s.withCond(new X(x))));
     }
     MCall check=getMCall(p,s.getCond(),"#checkTrue", getPs());
-    return visit(getBlock(p,check,getK(SignalKind.Exception,"",new NormType(Mdf.Immutable,Path.Void(),Ph.None),s.get_else().get()),s.getThen()));
+    Expression.Catch k = getK(SignalKind.Exception,"",new NormType(Mdf.Immutable,Path.Void(),Ph.None),s.get_else().get());
+    return visit(getBlock(p,check,Collections.singletonList(k),s.getThen()));
   }
 
   static Parameters getPs(){
@@ -463,54 +492,45 @@ public class Desugar extends CloneVisitor{
     return new MCall(rec,name,Doc.empty(),ps,p);
   }
   static RoundBlock getBlock(Position p,String x,Expression xe,Expression inner){
-    List<Ast.BlockContent> bc=new ArrayList<Ast.BlockContent>();
+    List<Expression.BlockContent> bc=new ArrayList<>();
     List<VarDec> decs = new ArrayList<VarDec>();
     decs.add(new VarDecXE(false,Optional.empty(),x,xe));
-    bc.add(new Ast.BlockContent(decs,Optional.empty()));
+    bc.add(new Expression.BlockContent(decs,Collections.emptyList()));
     return new RoundBlock(p,Doc.empty(),inner,bc);
   }
   static RoundBlock getBlock(Position p,List<? extends VarDec> _decs,Expression inner){
     if(_decs.isEmpty()){return new RoundBlock(p,Doc.empty(),inner,Collections.emptyList());}
     List<VarDec> decs=new ArrayList<VarDec>(_decs);
-    List<Ast.BlockContent> bc=new ArrayList<>();
-    bc.add(new Ast.BlockContent(decs,Optional.empty()));
+    List<Expression.BlockContent> bc=new ArrayList<>();
+    bc.add(new Expression.BlockContent(decs,Collections.emptyList()));
     return new RoundBlock(p,Doc.empty(),inner,bc);
   }
-  static RoundBlock getBlock(Position p,List<? extends VarDec> _decs,Expression inner,Catch k){
-    if(_decs.isEmpty()){return new RoundBlock(p,Doc.empty(),inner,Collections.emptyList());}
-    List<VarDec> decs=new ArrayList<VarDec>(_decs);
-    List<Ast.BlockContent> bc=new ArrayList<Ast.BlockContent>();
-    bc.add(new Ast.BlockContent(decs,Optional.of(k)));
-    return new RoundBlock(p,Doc.empty(),inner,bc);
-  }
+
   static RoundBlock getBlock(Position p,Expression xe,Expression inner){
-    List<Ast.BlockContent> bc=new ArrayList<Ast.BlockContent>();
+    List<Expression.BlockContent> bc=new ArrayList<>();
     List<VarDec> decs = new ArrayList<VarDec>();
     decs.add(new VarDecE(xe));
-    bc.add(new Ast.BlockContent(decs,Optional.empty()));
+    bc.add(new Expression.BlockContent(decs,Collections.emptyList()));
     return new RoundBlock(p,Doc.empty(),inner,bc);
   }
-  static RoundBlock getBlock(Position p,Expression xe,Ast.Catch k,Expression inner){
-    List<Ast.BlockContent> bc=new ArrayList<Ast.BlockContent>();
+  static RoundBlock getBlock(Position p,Expression xe,List<Expression.Catch> ks,Expression inner){
+    List<Expression.BlockContent> bc=new ArrayList<>();
     List<VarDec> decs = new ArrayList<VarDec>();
     decs.add(new VarDecE(xe));
-    bc.add(new Ast.BlockContent(decs,Optional.of(k)));
+    bc.add(new Expression.BlockContent(decs,ks));
     return new RoundBlock(p,Doc.empty(),inner,bc);
   }
-  static Ast.Catch getK(SignalKind kind, String x, Type t,Expression inner){
-  List<On> ons=new ArrayList<On>();
-  List<Type> ts=new ArrayList<Type>();
-  ts.add(t);
-  ons.add(new On(ts, Optional.empty(), inner));
-  return new Ast.Catch(kind,x,ons,Optional.empty());
+  static Expression.Catch getK(SignalKind kind, String x, Type t,Expression inner){
+  if (x==""){return new Expression.CatchMany(kind,Collections.singletonList(t),inner);}  
+  return new Expression.Catch1(kind,t,x,inner);
   }
   public Expression visit(CurlyBlock s) {
     RoundBlock inner=new RoundBlock(s.getP(),s.getDoc(),new Expression._void(),s.getContents());
     String y=Functions.freshName("result",this.usedVars);
     //usedVars.add(y);
-    Ast.Catch k=getK(SignalKind.Return,y,this.t,new X(y));
+    Expression.Catch k=getK(SignalKind.Return,y,this.t,new X(y));
     Expression termination= Desugar.errorMsg("CurlyBlock-Should be unreachable code");
-    RoundBlock outer=getBlock(s.getP(),inner, k,termination);
+    RoundBlock outer=getBlock(s.getP(),inner, Collections.singletonList(k),termination);
     //assert L42.checkWellFormedness(outer);
     return visit(outer);
   }
@@ -577,29 +597,6 @@ public class Desugar extends CloneVisitor{
     String name="#stringParser";
     if(s.isNumber()){name="#numberParser";}
     return getMCall(s.getP(),s.getReceiver(),name,getPs(encodePrimitiveString(s.getInner())));
-  }
-  protected ast.Ast.Catch liftK(ast.Ast.Catch k){
-    if(!k.getX().isEmpty()){
-      List<On> ons=new ArrayList<On>();
-      for(On on:k.getOns()){
-        assert !varEnv.containsKey(k.getX());
-        assert on.getTs().size()==1;
-        varEnv.put(k.getX(),on.getTs().get(0));
-        try{ons.add(liftO(on));}
-        finally{varEnv.remove(k.getX());}
-      }
-      Optional<Expression> def=Optional.empty();
-      if(k.get_default().isPresent()){
-       Expression e=k.get_default().get();
-       varEnv.put(k.getX(),new NormType(Mdf.Immutable,Path.Any(),Ph.None));
-       try{def=Optional.of(lift(e));}
-       finally{varEnv.remove(k.getX());}
-      }
-      return new ast.Ast.Catch(k.getKind(),k.getX(),ons,def);
-      }
-    String x=Functions.freshName("unused",this.usedVars);
-    //this.usedVars.add(x);
-    return liftK(k.withX(x));
   }
   protected ast.Ast.VarDecXE liftVarDecXE(ast.Ast.VarDecXE d) {
     assert !d.isVar();
@@ -743,15 +740,15 @@ public class Desugar extends CloneVisitor{
   public Expression visit(With e){
     throw Assertions.codeNotReachable();
     }
-  public static BlockContent getBlockContent(Expression e) {
+  public static Expression.BlockContent getBlockContent(Expression e) {
     List<VarDec> single= new ArrayList<VarDec>();
     single.add(new VarDecE(e));
-    return new BlockContent(single,Optional.empty());
+    return new Expression.BlockContent(single,Collections.emptyList());
   }
-  public static BlockContent getBlockContent(Expression e,Catch k) {
+  public static Expression.BlockContent getBlockContent(Expression e,Expression.Catch k) {
     List<VarDec> single= new ArrayList<VarDec>();
     single.add(new VarDecE(e));
-    return new BlockContent(single,Optional.of(k));
+    return new Expression.BlockContent(single,Collections.singletonList(k));
   }
   public Expression visit(SquareWithCall s) {
     throw Assertions.codeNotReachable();

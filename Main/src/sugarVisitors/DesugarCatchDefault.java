@@ -3,62 +3,64 @@ package sugarVisitors;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
+
 import ast.Ast;
 import ast.Ast.Mdf;
-import ast.Ast.On;
+import ast.Expression.With.On;
+import tools.Map;
+import ast.Expression.BlockContent;
 import ast.Ast.Path;
 import ast.Ast.Ph;
 import ast.Ast.Type;
 import ast.Expression;
-import ast.Ast.Catch;
+import ast.Expression.Catch;
+import ast.Expression.Catch1;
+import ast.Expression.CatchMany;
 import ast.Ast.SignalKind;
 import ast.Ast.VarDec;
 import ast.Expression.ClassB;
 
 public class DesugarCatchDefault extends CloneVisitor{
+  public static class CatchToComplete implements Expression.Catch{
+    public <T> T match(Function<Catch1, T> k1, Function<CatchMany, T> kM) {throw new Error("temporaryInstance");}
+    public String getX() {return catch1.getX();}
+    public Expression getInner() {return catch1.getInner();}
+    public final Catch1 catch1;
+    public CatchToComplete(Catch1 catch1){this.catch1=catch1;}
+    public Catch1 completeCatch(Type t){
+      return catch1.withT(t);
+    }
+  }
   Ast.Type lastReturn=null;
   public static ClassB of(ClassB s) {
     return (ClassB)s.accept(new DesugarCatchDefault());
   }
-  protected ast.Ast.BlockContent liftBC(ast.Ast.BlockContent c) {
-    if(!c.get_catch().isPresent()){return super.liftBC(c);}
-    Catch k = c.get_catch().get();
-    Optional<Catch> liftK = Optional.of(this.liftK(k));
+  protected BlockContent liftBC(BlockContent c) {
+    if(c.get_catch().isEmpty()){return super.liftBC(c);}
+    List<Catch> ks = Map.of(this::liftK, c.get_catch());
     Type oldR=this.lastReturn;
-    this.lastReturn=newR(k);
+    this.lastReturn=newR(ks);
     try{
       List<VarDec> liftVarDecs = liftVarDecs(c.getDecs());
-      return new ast.Ast.BlockContent(liftVarDecs,liftK);
+      return new BlockContent(liftVarDecs,ks);
       }
     finally{this.lastReturn=oldR;}
   }
     
-  private Type newR(Catch k) {
+  private Type newR(List<Catch> ks) {
+    if (ks.size()!=1){return this.lastReturn;} 
+    Expression.Catch1 k=(Expression.Catch1)ks.get(0);
     if(k.getKind()!=SignalKind.Return){return this.lastReturn;}
-    if(k.getOns().size()!=1){return this.lastReturn;}
-    return k.getOns().get(0).getTs().get(0);
+    return k.getT();
     }
   
-  protected ast.Ast.Catch liftK(ast.Ast.Catch k){
-    if(k.get_default().isPresent()){
-      Expression e=k.get_default().get();
-      List<On> ons = new ArrayList<>(k.getOns());
-      List<Type>ts=new ArrayList<>();
-      if(k.getKind()==SignalKind.Return){
-        if(this.lastReturn!=null){
-          ts.add(this.lastReturn);
-          }
-        else{
-          ts.add(new Ast.NormType(Mdf.Immutable,Path.Any(),Ph.None));
-          }
-        }
-      else{
-        assert k.getKind()==SignalKind.Exception;
-        ts.add(new Ast.NormType(Mdf.Immutable,Path.Any(),Ph.None));
-      }
-      ons.add(new On(ts,Optional.empty(),e));      
-      k=new Catch(k.getKind(),k.getX(),ons,Optional.empty());
-      }
-    return super.liftK(k);
+  protected Catch liftK(Catch k){
+    if(!(k instanceof CatchToComplete)){return super.liftK(k);}
+    if(this.lastReturn!=null){
+       return ((CatchToComplete)k).completeCatch(this.lastReturn);
+       }
+    return ((CatchToComplete)k).completeCatch(
+         new Ast.NormType(Mdf.Immutable,Path.Any(),Ph.None));
     }
 }

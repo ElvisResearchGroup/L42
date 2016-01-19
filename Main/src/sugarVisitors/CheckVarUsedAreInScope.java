@@ -10,8 +10,6 @@ import tools.Map;
 import ast.Ast.VarDecXE;
 import ast.ErrorMessage;
 import ast.Expression;
-import ast.Ast.BlockContent;
-import ast.Ast.Catch;
 import ast.Ast.VarDec;
 import ast.Expression.*;
 import ast.Expression.ClassB.Member;
@@ -38,7 +36,7 @@ public class CheckVarUsedAreInScope extends CloneVisitor{
     if(this.xs.contains(s.getInner())){return super.visit(s);}
     throw new ErrorMessage.VariableUsedNotInScope(s, ctx,"Variable used not in scope");
     }
-  protected ast.Ast.BlockContent liftBC(ast.Ast.BlockContent c) {
+  protected Expression.BlockContent liftBC(Expression.BlockContent c) {
     Set<String> aux = this.xs;
     Set<String> aux2=new HashSet<String>(aux);
     for(VarDec vd:c.getDecs()){vd.match(
@@ -48,7 +46,7 @@ public class CheckVarUsedAreInScope extends CloneVisitor{
     this.xs=aux2;
     List<VarDec> liftVarDecs = liftVarDecs(c.getDecs());
     this.xs=aux;
-    Optional<Catch> liftK;
+    List<Catch> liftK;
     try{liftK=Map.of(this::liftK,c.get_catch());}
     catch(ErrorMessage.VariableUsedNotInScope nis){
        Expression.X x=nis.getE();
@@ -59,9 +57,9 @@ public class CheckVarUsedAreInScope extends CloneVisitor{
        throw nis;
     }
     this.xs=aux2;//add again for later contents
-    return new ast.Ast.BlockContent(liftVarDecs,liftK);
+    return new Expression.BlockContent(liftVarDecs,liftK);
   }
-  protected ast.Ast.Catch liftK(ast.Ast.Catch k){
+  protected Expression.Catch liftK(Expression.Catch k){
     Set<String> aux = this.xs;
     Set<String> aux2=new HashSet<String>(aux);
     aux2.add(k.getX());

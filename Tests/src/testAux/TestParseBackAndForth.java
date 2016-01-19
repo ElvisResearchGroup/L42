@@ -60,8 +60,8 @@ public class TestParseBackAndForth {
 
 },{"with x in a  var y in b + c() z= t var T w=t (on T y)",
    "with x in a, var y in b + c() z= t, var T w= t (\non T y\n)"
-},{"with x in a (on T y on T T z+y on A case e() b )",
-   "with x in a (\non T y\non T, T z + y\non A case e() b\n)"
+},{"with x in a (on T y on T T z+y on A  b )",
+   "with x in a (\non T y\non T, T z + y\non A b\n)"
 }});}
   @Test
   public void testOkToString() {

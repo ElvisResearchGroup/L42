@@ -1,6 +1,8 @@
 package sugarVisitors;
 
 import java.util.*;
+import java.util.stream.Collectors;
+
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
 import antlrGenerated.L42Lexer;
@@ -9,8 +11,9 @@ import ast.Ast;
 import ast.Expression;
 import ast.Ast.*;
 import tools.*;
-import ast.Ast.BlockContent;
-import ast.Ast.Catch;
+import tools.Map;
+import ast.Expression.BlockContent;
+import ast.Expression.Catch;
 import ast.Ast.ConcreteHeader;
 import ast.Ast.Doc;
 import ast.Ast.FieldDec;
@@ -20,7 +23,7 @@ import ast.Ast.Mdf;
 import ast.Ast.MethodSelector;
 import ast.Ast.MethodSelectorX;
 import ast.Ast.NormType;
-import ast.Ast.On;
+import ast.Expression.With.On;
 import ast.Ast.Op;
 import ast.Ast.Parameters;
 import ast.Ast.Path;
@@ -191,25 +194,25 @@ public class ToAst extends AbstractVisitor<Expression>{
     }
   @Override public Expression visitCurlyBlock(CurlyBlockContext ctx) {
     Doc doc=comm(ctx.docsOpt());
-    List<Ast.BlockContent> contents=new ArrayList<Ast.BlockContent>();
+    List<BlockContent> contents=new ArrayList<BlockContent>();
     for( BbContext b:ctx.bb()){
       List<VarDec> decs=new ArrayList<VarDec>();
-      Optional<Catch> _catch=Optional.empty();
       for(DContext d:b.d()){decs.add(parseVDec(d));}
-      if(b.k()!=null)_catch=Optional.of(parseK(b.k()));
-      contents.add(new Ast.BlockContent(decs,_catch));
+      assert b.ks()!=null;
+      List<Catch> _catch=parseKs(b.ks());
+      contents.add(new BlockContent(decs,_catch));
       }
     return new Expression.CurlyBlock(position(ctx),doc, contents);
   }
   private Expression visitRoundBlockAux(ParserRuleContext ctx,DocsOptContext docsOpt, List<BbContext> bB,ETopContext eTop) {
     Doc doc=comm(docsOpt);
-    List<Ast.BlockContent> contents=new ArrayList<Ast.BlockContent>();
+    List<BlockContent> contents=new ArrayList<BlockContent>();
     for( BbContext b:bB){
       List<VarDec> decs=new ArrayList<VarDec>();
-      Optional<Catch> _catch=Optional.empty();
       for(DContext d:b.d()){decs.add(parseVDec(d));}
-      if(b.k()!=null)_catch=Optional.of(parseK(b.k()));
-      contents.add(new Ast.BlockContent(decs,_catch));
+      assert b.ks()!=null;
+      List<Catch> _catch=parseKs(b.ks());
+      contents.add(new BlockContent(decs,_catch));
     }
     Expression inner=eTop.accept(this);
     return new Expression.RoundBlock(position(ctx),doc, inner, contents);
@@ -217,32 +220,38 @@ public class ToAst extends AbstractVisitor<Expression>{
   @Override public Expression visitRoundBlock(RoundBlockContext ctx) {
     return visitRoundBlockAux(ctx,ctx.docsOpt(),ctx.bb(),ctx.eTop());
     }
-
+  
+  private List<Catch> parseKs(KsContext ks) {
+    List<Catch> result=new ArrayList<>();
+    for( KContext ki:ks.k()){
+      assert ki instanceof KContext;//for now //TODO: 
+      result.add(parseK((KContext)ki));
+    }
+    return result;
+  }
   private Catch parseK(KContext k) {
-    List<On> ons=new ArrayList<On>();
-    for(OnContext on:k.on()){ons.add(parseOns(on));}
-    String xk="";
-    if(k.X()!=null){xk=nameL(k.X());}
-    Optional<Expression> def=Optional.empty();
-    if(k.eTop()!=null){def=Optional.of(k.eTop().accept(this));}
-    return new Catch(
-      SignalKind.fromString(nameK(k.S())),
-      xk, ons, def);
+    if(k.k1()!=null){
+      return new Expression.Catch1(
+          SignalKind.fromString(nameK(k.k1().S())),
+          parseType(k.k1().t()),
+          nameL(k.k1().X()),
+          k.k1().eTop().accept(this));
+    }
+    if(k.kMany()!=null){
+      return new Expression.CatchMany(
+          SignalKind.fromString(nameK(k.kMany().S())),
+          k.kMany().t().stream().map(this::parseType).collect(Collectors.toList()),
+          k.kMany().eTop().accept(this)
+          );
+    }    
+    throw Assertions.codeNotReachable();
   }
-  private On parseOns(OnContext on) {
-    Type t=parseType(on.t());
-    Optional<Expression> _if=(on.Case()==null)?Optional.empty():
-      Optional.of(on.eTop(0).accept(this));
-    Expression inner=on.eTop((on.Case()==null)?0:1).accept(this);
-    return new On(Collections.singletonList(t),_if,inner);
-  }
+
   private On parseOnPlus(OnPlusContext on) {
     List<Type> ts=new ArrayList<Type>();
     for(TContext t: on.t()){ts.add(parseType(t));}
-    Optional<Expression> _if=(on.Case()==null)?Optional.empty():
-      Optional.of(on.eTop(0).accept(this));
     Expression inner=on.eTop((on.Case()==null)?0:1).accept(this);
-    return new On(ts,_if,inner);
+    return new On(ts,inner);
   }
   private VarDec parseVDec(DContext d) {
     if(d.nestedClass()!=null){

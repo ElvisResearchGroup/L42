@@ -32,7 +32,7 @@ public class TestFreeVariables {
     },{" (y)",new String[]{"y"}
     },{" (Outer0::T x=y x)",new String[]{"y"}
     },{" (Outer0::T y=y x)",new String[]{"x"}
-    },{" (Outer0::T y=void catch error z ( on Outer0::Foo z.foo(that:bar) ) x)",new String[]{"x","bar"}
+    },{" (Outer0::T y=void catch error Outer0::Foo z (z.foo(that:bar) ) x)",new String[]{"x","bar"}
     },{" (Outer0::List x=this.factoryAux(that:that, top:x) x ) ",new String[]{"this","that"}
     },{" (Outer0::N that=Outer0::N.k() (Outer0::List x=this.factoryAux(that:that, top:x) x )  )",new String[]{"this"}
 

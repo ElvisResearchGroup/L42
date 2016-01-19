@@ -75,7 +75,7 @@ Members members() (
     result:=result.#add(this.mirror()
       .introspectReportMember(root:this,path:this.path(),memberN:mN))
     'this was a private member
-    catch exception x (on MetaGuard::MemberUnavailable exception void)
+    catch exception MetaGuard::MemberUnavailable exception void
     mN+=1N
     )
   result)
@@ -105,7 +105,7 @@ method Types implementedInterfaces() (
       .introspectReportType(root:this,path:this.path(),memberN:0N,typeN:tN))
     tN+=1N
     )
-  catch exception x (on MetaGuard::MemberUnavailable error Assert::CodeNotReachable"NestedClass3"(x))
+  catch exception MetaGuard::MemberUnavailable x error Assert::CodeNotReachable"NestedClass3"(x)
   result)
 method Types transitivelyImplementedInterfaces() {
   var result=this.removeDup(this.implementedInterfaces())
@@ -191,14 +191,13 @@ Method methodFromSelector(Selector that) exception MetaGuard::MethodUnavailable 
 method
 Bool has(Selector selector){
   unused=this.methodFromSelector(selector)
-  catch exception (on MetaGuard::MemberUnavailable return Bool.false())
+  catch exception MetaGuard::MemberUnavailable return Bool.false()
   return Bool.true()
   }
   
 method
 NestedClass nestedClassFromRoot(Path that) exception MetaGuard::NestedClassUnavailable {
   if that==Path"Outer0" (return this.root())
-   'could be, but ugly with m=this.mirror() ( case Mirror::Class
   myClass=this.record().docOf(path:Path"MyClass").annotations().top()
   if !myClass.hasReferredClass() (
      return this.mirror().introspectReport(root:this.root(),path:that)
@@ -209,14 +208,14 @@ NestedClass nestedClassFromRoot(Path that) exception MetaGuard::NestedClassUnava
 method
 Bool has(Path fromRoot) (
   unused=this.nestedClassFromRoot(fromRoot)
-  catch exception (on MetaGuard::MemberUnavailable Bool.false() )
+  catch exception MetaGuard::MemberUnavailable Bool.false() 
   Bool.true()
   )
   
 method
 Bool isPrivate() {
   with ann in this.nestedDoc().annotations().vals() (
-    case ann.toS()==S"private" return Bool.true()
+    if ann.toS()==S"private" (return Bool.true())
     )
   return Bool.false()
   }

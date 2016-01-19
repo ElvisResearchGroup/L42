@@ -24,7 +24,7 @@
       res=SafeOperatorsAccess.compose(left:that,right:Outer0.recordWrapperTrait())
         {
         return SafeOperatorsAccess.compose(left:res,right:Outer0.recordWrapperToSTrait())
-        catch error (on Library return res)
+        catch error Library return res
         }
       )
     }
@@ -40,15 +40,14 @@ MemberUnavailable:{interface<:MetaGuard}
 DispatchMemberUnavailable:{
 type method MemberUnavailable(Library that){
   record=Introspection::Record(lib:that)
-  with x=record"Kind" (
-    case x== S"MemberUnavailable" (
-      if record"InvalidKind".contains(S"Method") (
-        return MethodUnavailable(record:record) )
-      return NestedClassUnavailable(record:record)
-      )
-'    case x== S"MethodClash" (return MetaGuard::MethodClash(record:record))
-'    case x== S"ClassClash" (return MetaGuard::ClassClash(record:record))
+  x=record"Kind"
+  if x== S"MemberUnavailable" (
+    if record"InvalidKind".contains(S"Method") (
+      return MethodUnavailable(record:record) )
+    return NestedClassUnavailable(record:record)
     )
+'    if x== S"MethodClash" (return MetaGuard::MethodClash(record:record))
+'    if x== S"ClassClash" (return MetaGuard::ClassClash(record:record))
   error Assert::ObservedBug"error dispatching failing"
   }
 }

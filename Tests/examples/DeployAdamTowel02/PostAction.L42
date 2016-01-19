@@ -37,15 +37,15 @@ exception InvalidAction{
       fresh=Selector.fresh(defS)
       defM=Introspection(lib: proposedAction, path:path)
         .methodFromSelector(defS)
-      catch exception err (on MetaGuard 
-        exception InvalidAction"action method not present"(err) )
+      catch exception MetaGuard err 
+        exception InvalidAction"action method not present"(err) 
       pt=defM.parameterTypes().top()
       rt=defM.returnType()
       if pt.toS()!=rt.toS() (exception InvalidAction"action return type need to be equal to parameter type" )
       action=Refactor::RenameSelector[
         defS of:path to:fresh]<<proposedAction
-      catch exception cnr ( on MetaGuard
-        error Assert::CodeNotReachable"PostAct::Action2"(cnr) )
+      catch exception MetaGuard cnr
+        error Assert::CodeNotReachable"PostAct::Action2"(cnr)
       return Outer0(fresh:fresh,action:action)
     }
   }

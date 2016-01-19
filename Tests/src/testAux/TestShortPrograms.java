@@ -51,8 +51,8 @@ public class TestShortPrograms {
 ,"  AI:{k()<:I}"
 ,"  D:("
 ,"    Any z=error AI.k()"
-,"    catch error x ("
-,"      on AI C.ok()"
+,"    catch error AI x ("
+,"      C.ok()"
 ,"      )"
 ,"    C.ko()"
 ,"    )"
@@ -67,8 +67,8 @@ public class TestShortPrograms {
 ,"  AI:{k()<:I}"
 ,"  D:("
 ,"    Any z=error AI.k()"
-,"    catch error x ("
-,"      on I C.ok()"//here it was AI
+,"    catch error I x ("
+,"      C.ok()"//here it was AI
 ,"      )"
 ,"    C.ko()"
 ,"    )"
@@ -83,12 +83,12 @@ public class TestShortPrograms {
 ,"  AI:{k()}"//removed <:I
 ,"  D:(Library res=("
 ,"    Any z=error AI.k()"
-,"    catch error x ("
-,"      on I C.ko()"//here it was AI
+,"    catch error I x ("
+,"      C.ko()"//here it was AI
 ,"      )"
 ,"    C.ko()"
 ,"    )"
-,"    catch error y ( on AI C.ok())"
+,"    catch error AI y ( C.ok())"
 , " res)"
 ,"}");}
 
@@ -101,10 +101,10 @@ public class TestShortPrograms {
 ,"  AI:{k()}"//removed <:I
 ,"  D:("
 ,"    Any z=error AI.k()"
-,"    catch error x ("
-,"      on I C.ko()"
-,"      on AI C.ok()"
-,"      )"
+,"    catch error I x ("
+,"       C.ko())"
+,"    catch error AI x C.ok()"
+,"      "
 ,"    C.ko()"
 ,"    )"
 ,"}");}
@@ -119,8 +119,8 @@ public class TestShortPrograms {
 ,"  AI:{k()<:I}"
 ,"  D:("
 ,"    mut Box box=Box.k(f:box)"
-,"    catch error x ("
-,"      on I C.ko()"
+,"    catch error I x ("
+,"      C.ko()"
 ,"      )"
 ,"    C.ok()"
 ,"    )"
@@ -138,8 +138,8 @@ public class TestShortPrograms {
 ,"    lent Box box=Box.k(f:box)"
 ,"    Any z1=box.f(AI.k())"
 ,"    Any z2=error box.f()"//plus, even commenting thos lines, still seen as readonly??
-,"    catch error x ("//fixed, it was a huge deal: DISASTER: splittando il blocco vado a richiedere che bx sia readable sotto la dichiarazione!
-,"      on I C.ok()"
+,"    catch error I x ("//fixed, it was a huge deal: DISASTER: splittando il blocco vado a richiedere che bx sia readable sotto la dichiarazione!
+,"      C.ok()"
 ,"      )"
 ,"    C.ko()"
 ,"    )"
@@ -272,7 +272,7 @@ public void test12(){tp("{()"
 ," C:( "
 ,"  A myA=A()"
 ,"  exception A()"
-,"  catch exception x (on A "
+,"  catch exception A x ( "
 ," {'@exitStatus\n'0\n})"
 ," {'@exitStatus\n'2\n})"
 ,"}"
@@ -286,7 +286,7 @@ public void testTwoKindExc2(){tp(""
 ," C:( "
 ,"  A myA=A()"
 ,"  exception void"
-,"  catch exception x (on A "
+,"  catch exception A x ( "
 ," {'@exitStatus\n'0\n})"
 ," {'@exitStatus\n'0\n})"
 ,"}"

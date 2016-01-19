@@ -14,7 +14,7 @@ Parsable:{
     Outer0 #stringParser(Library that) 
       Outer0.fromS(S.#stringParser(that))
       }]<<that
-    catch exception mg (on MetaGuard exception DecorationUnfeasable"Parsable"(mg))
+    catch exception MetaGuard mg exception DecorationUnfeasable"Parsable"(mg)
     }
   }
 SealState:{
@@ -32,7 +32,7 @@ Invariant:{
       with tAny=ti.referencedPath().externalType() (
         on type Concept::Invariant return Bool.true()
         )
-      catch error (on Guard::Operation void)
+      catch error Guard::Operation void
       void
       )
     return Bool.false()
@@ -68,10 +68,8 @@ DataFromToS:{' in the future we can add also hashCode and > =>
     method Bool != (Outer0 that) !(this==that)
     read method Bool ==(read Outer0 that) this.toS()==that.toS()
     }]<<Equals<<that
-    catch exception mg (
-      on DecorationUnfeasable exception mg
-      on MetaGuard exception DecorationUnfeasable""(mg)
-      )
+    catch exception DecorationUnfeasable mg exception mg
+    catch exception MetaGuard mg exception DecorationUnfeasable""(mg)
     }
   }
 
@@ -84,7 +82,7 @@ Equals:{
         }
       read method Bool ==(read Outer0 that)
       }]<<that
-    catch exception x (on MetaGuard exception DecorationUnfeasable"Equals"(x))
+    catch exception MetaGuard x exception DecorationUnfeasable"Equals"(x)
     }
   }
 Named:{
@@ -93,12 +91,12 @@ Named:{
         method myName() Introspection(clazz:Outer0).externalTypeToS()
         }]<<that
     'can improve error: if is method defined against method implemented
-    catch exception x (on MetaGuard exception DecorationUnfeasable"Named"(x))
+    catch exception MetaGuard x exception DecorationUnfeasable"Named"(x)
     }
   }
     'i=Introspection(lib:that)
     'myName=i.methodFromSelector(Selector"myName()")
-    'catch exception (on MetaGuard::MethodUnavailable return that)
+    'catch exception MetaGuard::MethodUnavailable return that
     'if myName.methodKind()!=S"AbstractMethod" ( return that)
     'Library myNameImpl={
     '  if myName.thisMdf()==S"Immutable" (return {

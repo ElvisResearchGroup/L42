@@ -6,7 +6,6 @@ import java.util.List;
 
 import ast.Ast;
 import ast.ErrorMessage;
-import ast.Ast.BlockContent;
 import ast.Ast.ConcreteHeader;
 import ast.Ast.FieldDec;
 import ast.Ast.Mdf;
@@ -132,10 +131,7 @@ public class WellFormedness {
   public static boolean checkBlockContentOk(Expression forErr,List<BlockContent> l) {
     if(l.isEmpty()){return true;}
     for(BlockContent bc:l.subList(0, l.size()-1)){
-      if(!bc.get_catch().isPresent()){
-        throw Assertions.codeNotReachable("Catch should not be empty on multiple contents");
-        }
-      if(bc.get_catch().get().getOns().isEmpty()){
+      if(bc.get_catch().isEmpty()){
         throw Assertions.codeNotReachable("Catch should not be empty on multiple contents");
         }
       if(bc.getDecs().isEmpty()){
@@ -164,7 +160,7 @@ public class WellFormedness {
         }
     });
     }
-  static void withVarCheckNotReadAfterAssign(List<String>notEqOp,Ast.On on){
+  static void withVarCheckNotReadAfterAssign(List<String>notEqOp,With.On on){
     //TODO: much much harder than what expected. will call terminating inside? can not be a clone visitor!
     }
   public static void withCheck(Expression _e){
@@ -178,7 +174,7 @@ public class WellFormedness {
         //$\withKw\,\xs\,\is\,\es\, %\Opt\onStart\,
         //\oRound\Many\onWith\Opt\block\cRound$
         //is well formed if the number of types $\T_\vI\ldots\T_\vn$ in each $\onKw$ is the same of the sum of the cardinalities of $\xs$, $\is$ and $\es$.
-        for(Ast.On on:s.getOns()){
+        for(With.On on:s.getOns()){
           if(!on.getTs().isEmpty() && on.getTs().size()!=size){
             throw new ErrorMessage.NotWellFormedMsk(on.getInner(),s, "on types should be the same number of the with expressions, here on have: "+on.getTs().size()+" while the with have: "+size);
             }

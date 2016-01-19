@@ -8,14 +8,11 @@ import java.util.Optional;
 import coreVisitors.Visitor;
 import tools.Match;
 import ast.Ast;
-import ast.Ast.BlockContent;
-import ast.Ast.Catch;
 import ast.Ast.Doc;
 import ast.Ast.Header;
 import ast.Ast.Mdf;
 import ast.Ast.MethodSelector;
 import ast.Ast.MethodType;
-import ast.Ast.On;
 import ast.Ast.Path;
 import ast.Ast.Position;
 import ast.Ast.Type;
@@ -86,10 +83,10 @@ public class InjectionOnSugar implements Visitor<ast.Expression> {
       Expression e=lift(s.getDecs().get(i).getE());
       decs.add(new VarDecXE(false,Optional.of(t),x,e));
     }
-    Optional<Catch> _catch=injectionCatch(s.getOns());
-    List<BlockContent> contents=new ArrayList<BlockContent>();
-    if(!decs.isEmpty() || _catch.isPresent()){
-      contents.add(new BlockContent(decs,_catch));
+    List<Expression.Catch> _catch=injectionCatch(s.getOns());
+    List<Expression.BlockContent> contents=new ArrayList<>();
+    if(!decs.isEmpty() || !_catch.isEmpty()){
+      contents.add(new Expression.BlockContent(decs,_catch));
       }
     Expression.Position pos=s.getP();
     Expression.RoundBlock result=new Expression.RoundBlock(pos,docs,inner,contents);
@@ -97,17 +94,14 @@ public class InjectionOnSugar implements Visitor<ast.Expression> {
     return result;
   }
 
-  private Optional<Catch> injectionCatch(List<ast.ExpCore.Block.On> list) {
-    if(list.isEmpty()){return Optional.empty();}// Collections.emptyList();} 
-    List<On> ons=new ArrayList<>();
+  private List<Expression.Catch> injectionCatch(List<ast.ExpCore.Block.On> list) {
+    if(list.isEmpty()){return Collections.emptyList();} 
+    List<Expression.Catch> ks=new ArrayList<>();
     for( ast.ExpCore.Block.On on:list){
-      List<Type> ts=new ArrayList<>();
-      ts.add(on.getT());
       Expression inner = lift(on.getInner());
-      ons.add(new On(ts,Optional.empty(),inner));
+      ks.add(new Expression.Catch1(on.getKind(),on.getT(),on.getX(),inner));
     }
-    Catch result=new Catch(list.get(0).getKind(),list.get(0).getX(),ons,Optional.empty());
-    return Optional.of(result);
+    return ks;
   }
 
   @Override public Expression visit(ClassB s) {

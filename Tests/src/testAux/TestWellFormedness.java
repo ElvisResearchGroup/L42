@@ -44,7 +44,7 @@ public class TestWellFormedness {
       return Arrays.asList(new Object[][] {
     {"{C:{} C:{}}"
   },{"{f(C a C a)}"
-  },{"{ method () ( D d=D.k() catch exception x (on Void d.m()) void)}"
+  },{"{ method () ( D d=D.k() catch exception Void x d.m() void)}"
   },{"{ method () ( this+this*this )}"
   },{"{ method () ( this++this**this )}"
        }});}
