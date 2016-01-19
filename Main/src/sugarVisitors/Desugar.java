@@ -37,6 +37,7 @@ import ast.ExpCore;
 import ast.Expression;
 import ast.Expression.BinOp;
 import ast.Expression.Catch;
+import ast.Expression.Catch1;
 import ast.Expression.CatchMany;
 import ast.Expression.ClassB;
 import ast.Expression.ClassB.Member;
@@ -409,7 +410,8 @@ public class Desugar extends CloneVisitor{
     String x=Functions.freshName("catched", usedVars);
     for(Catch k:ks){
       if( k instanceof DesugarCatchDefault.CatchToComplete){
-        result.add(k);
+        Catch k2=this.liftK(((DesugarCatchDefault.CatchToComplete) k).catch1);
+        result.add(new DesugarCatchDefault.CatchToComplete((Catch1) k2));
         continue;
         }
       k.match(k1->result.add(liftK(k1)), kM->{

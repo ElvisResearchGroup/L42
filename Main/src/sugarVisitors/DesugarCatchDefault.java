@@ -57,6 +57,8 @@ public class DesugarCatchDefault extends CloneVisitor{
   
   protected Catch liftK(Catch k){
     if(!(k instanceof CatchToComplete)){return super.liftK(k);}
+    CatchToComplete ktc=(CatchToComplete)k;
+    if(ktc.catch1.getKind()!=SignalKind.Return){return super.liftK(ktc.catch1);}
     if(this.lastReturn!=null){
        return ((CatchToComplete)k).completeCatch(this.lastReturn);
        }

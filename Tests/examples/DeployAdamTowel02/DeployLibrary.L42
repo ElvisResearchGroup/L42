@@ -10,7 +10,8 @@ exception MetaGuard::NestedClassUnavailable, MetaGuard::PrivacyCoupuled
   var res=that
   Debug(S"1.1")
   res:=Refactor::RenamePath[Path"Outer0" to:Path"PrImpl"]<<res
-  catch exception unreachable (on MetaGuard error Assert::CodeNotReachable"DeployLibrary1"(unreachable))
+  catch exception MetaGuard unreachable
+    error Assert::CodeNotReachable"DeployLibrary1"(unreachable)
   Debug(S"1.2")
   with m in Introspection(lib:that, path:Path"ConceptMap").methods().vals() (
     Debug(S"1.2a")
@@ -18,8 +19,7 @@ exception MetaGuard::NestedClassUnavailable, MetaGuard::PrivacyCoupuled
       (
       Debug(S"1.2b "[p]" renamed")
       res:=Refactor::RenamePath[Path"PrImpl"++p to:Path"Abstract"++p]<<res
-      catch exception notFound (
-        on MetaGuard::MemberUnavailable (
+      catch exception  MetaGuard::MemberUnavailable notFound (
           available=Introspection(lib:res, path:Path"PrImpl").nestedClasses()
           sAvailable=S""[with av in available.vals() ( 
             use[S.nl()++av.pathFromRoot().toS()(start:8N)]  
@@ -28,8 +28,7 @@ exception MetaGuard::NestedClassUnavailable, MetaGuard::PrivacyCoupuled
             text:S"map and library mismatch on "[p]" available paths are "
             ++sAvailable,
             cause:notFound))
-        on MetaGuard error Assert::CodeNotReachable"DeployLibrary2"(notFound)
-        )
+        catch exception MetaGuard notFound error Assert::CodeNotReachable"DeployLibrary2"(notFound)
       void
       )
     )

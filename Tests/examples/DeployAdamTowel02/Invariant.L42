@@ -60,15 +60,14 @@
         open
         )
       }
-    with mdf=that.mdf() (
-      if mdf==S"" (return immA)
-      if mdf==S"mut" (return mutA)
-      if mdf==S"lent" (return lentA)
-      if mdf==S"read" (return readA)
-      if mdf==S"capsule" (return capsuleA)
-      error Default::DecorationUnfeasable(
+    mdf=that.mdf()
+    if mdf==S"" (return immA)
+    if mdf==S"mut" (return mutA)
+    if mdf==S"lent" (return lentA)
+    if mdf==S"read" (return readA)
+    if mdf==S"capsule" (return capsuleA)
+    error Default::DecorationUnfeasable(
         text:S"unidentified mdf:"[mdf]"!")
-      )
     }
   type method
   Library setterAction() {<:Concept::Invariant 
@@ -86,7 +85,8 @@
     mutA={ type method mut T (mut T that) that T:{}}
     lentA={ type method lent T (lent T that) that T:{}}
     readA={ type method read T (read T that) that T:{}}
-    Library mdfA={with mdf=that.mdf() (
+    Library mdfA={
+      mdf=that.mdf()
       if mdf==S"type" (return classA)
       if mdf==S"" (return immA)
       if mdf==S"mut" (return mutA)
@@ -94,7 +94,7 @@
       if mdf==S"read" (return readA)
       error Default::DecorationUnfeasable(
         text:S"unidentified mdf:"[mdf]"!")
-      )}
+      }
     nc=that.referencedPath()
     if nc.hasExternalType() (
       return Refactor::Redirect[
@@ -102,9 +102,8 @@
       )
     return Refactor::RenamePath
       [Path"T" to:nc.pathFromRoot()]<<mdfA
-    catch exception cnr (
-      on MetaGuard error Assert::CodeNotReachable"idAction"(cnr)
-      )
+    catch exception MetaGuard cnr
+      error Assert::CodeNotReachable"idAction"(cnr)
     }
     
   'main decoration method
@@ -159,9 +158,8 @@
     'Debug(Introspection(lib:acc).allAsString())
     acc:=Refactor::MakePrivateSelector[kSelF of:p]<<acc
     return acc
-    catch exception cnr (
-      on MetaGuard error Assert::CodeNotReachable"Invariant"(cnr)
-      )
+    catch exception  MetaGuard cnr
+      error Assert::CodeNotReachable"Invariant"(cnr)
     }
     
   type method

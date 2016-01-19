@@ -5,30 +5,26 @@ InvalidAction:Message::$[]<<{<:MetaGuard}
 method
 Library <<(Library that)
 exception InvalidAction{
-  'no throw
-  origin=this.that()
-  dest=this.deprecated()
-  p=this.of()
-  'only throw InvalidAction
-  a=Action(path:p,proposedAction:this.action())
-  'no throw expected
+  src=this.that() 'src selector of the method
+  dest=this.deprecated()'dest selector for the copy of the method
+  p=this.of()' path of the method
+  a=Action(path:p,proposedAction:this.action())'throws InvalidAction
   var acc=that    
   acc:=Refactor::MoveImplementationSelector[
-    origin of:p to:dest]<<acc
+    src of:p to:dest]<<acc
   acc:=Refactor.compose(left:acc,right:a.action())
   acc:={'throws ParameterMismatch
     return Refactor::SumMethods
-      [dest and:a.fresh() of:p over:a.fresh().names().top() to: origin]<<acc
-    catch exception parm ( on MetaGuard::ParameterMismatch
+      [dest and:a.fresh() of:p over:a.fresh().names().top() to: src]<<acc
+    catch exception MetaGuard::ParameterMismatch parm
         exception InvalidAction
           "Action type signature do not fit with.. PostAct::Action0"(parm) 
-          )
     }
   'no throw expected
   acc:=Refactor::MakePrivateSelector[a.fresh() of:p]<<acc
   return acc    
-  catch exception cnr ( on MetaGuard
-        error Assert::CodeNotReachable"PostAct::Action1"(cnr) )
+  catch exception MetaGuard cnr
+        error Assert::CodeNotReachable"PostAct::Action1"(cnr)
   }
   Action:{(Selector fresh,Library action)
     type method Outer0 (Path path,Library proposedAction)

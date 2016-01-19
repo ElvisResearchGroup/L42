@@ -41,7 +41,8 @@ public class InjectionOnCore implements Visitor<ExpCore> {
     if(s.getContents().size()==1){
       Expression.BlockContent c = s.getContents().get(0);
       for(Ast.VarDec d:c.getDecs()){
-        assert d instanceof Ast.VarDecXE:d;
+        assert d instanceof Ast.VarDecXE:
+          d;
         Ast.VarDecXE sugarDec=(Ast.VarDecXE)d;
         assert sugarDec.getT().isPresent() :sugarDec;
         Type t=sugarDec.getT().get();
