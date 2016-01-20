@@ -47,6 +47,10 @@ public class TestWellFormedness {
   },{"{ method () ( D d=D.k() catch exception Void x d.m() void)}"
   },{"{ method () ( this+this*this )}"
   },{"{ method () ( this++this**this )}"
+  },{"{ method Void () {void}}"
+  },{"{ method Void () {void  void}}"
+  },{"{ method Void () {void catch error Void x void  void}}"
+},{"{ method Void () {void catch error Void error void  if void (error void)}}"
        }});}
 
       @Test(expected=ErrorMessage.NotWellFormed.class)
@@ -70,6 +74,9 @@ public static class TestPass {
 },{"{ method ()  this<=this<=this }"
 },{"{ method ()  this+this<=this <=this & this }"
 },{"{ method ()  this<=this<= this+this<=this <=this & this *this *this }"
+},{"{ method Void () { return void}}"
+},{"{ method Void () {void catch error Void error void  error void}}"
+},{"{ method Void () {void catch error Void error void  if void (error void) else return void}}"
  }});}
 
 @Test

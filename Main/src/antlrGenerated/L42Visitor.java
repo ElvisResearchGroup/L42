@@ -313,6 +313,13 @@ public interface L42Visitor<T> extends ParseTreeVisitor<T> {
 	T visitMDec(@NotNull L42Parser.MDecContext ctx);
 
 	/**
+	 * Visit a parse tree produced by {@link L42Parser#kProp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitKProp(@NotNull L42Parser.KPropContext ctx);
+
+	/**
 	 * Visit a parse tree produced by {@link L42Parser#eUnOp}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

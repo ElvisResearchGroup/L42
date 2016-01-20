@@ -33,6 +33,7 @@ import antlrGenerated.L42Parser.IfExprContext;
 import antlrGenerated.L42Parser.K1Context;
 import antlrGenerated.L42Parser.KContext;
 import antlrGenerated.L42Parser.KManyContext;
+import antlrGenerated.L42Parser.KPropContext;
 import antlrGenerated.L42Parser.KsContext;
 import antlrGenerated.L42Parser.LoopExprContext;
 import antlrGenerated.L42Parser.MCallContext;
@@ -215,6 +216,9 @@ public  class AbstractVisitor<T>  implements L42Visitor<T>{
   @Override public T visitK1(K1Context ctx) {throw Assertions.codeNotReachable();}
 
   @Override public T visitKMany(KManyContext ctx) {throw Assertions.codeNotReachable();}
+
+  @Override public T visitKProp(KPropContext ctx)  {throw Assertions.codeNotReachable();}
+
 
   
 }

@@ -150,6 +150,7 @@ round: docsOpt ps CRound;
 ps:(eTop )?(X Colon  eTop )*;
 k1: Catch S t X  eTop;
 kMany:Catch S t+  eTop;
+kProp:S On t+  eTop;
 k:k1|kMany;   
 ks:k*;//other variations to come (k|kMany|kProp)*
 

@@ -576,6 +576,19 @@ public class L42BaseListener implements L42Listener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterKProp(@NotNull L42Parser.KPropContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitKProp(@NotNull L42Parser.KPropContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterEUnOp(@NotNull L42Parser.EUnOpContext ctx) { }
 	/**
 	 * {@inheritDoc}

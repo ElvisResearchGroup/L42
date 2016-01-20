@@ -161,7 +161,7 @@ public interface Expression extends Ast {
   }
 
   public static interface Catch{
-    <T> T match(Function<Catch1, T> k1,Function<CatchMany, T> kM);
+    <T> T match(Function<Catch1, T> k1,Function<CatchMany, T> kM,Function<CatchProp, T> kP);
     String getX();
     Expression getInner();
   }
@@ -170,14 +170,21 @@ public interface Expression extends Ast {
     Type t;
     String x;
     Expression inner;
-    public <T> T match(Function<Catch1, T> k1,Function<CatchMany, T> kM){return k1.apply(this);}
+    public <T> T match(Function<Catch1, T> k1,Function<CatchMany, T> kM,Function<CatchProp, T> kP){return k1.apply(this);}
   }
   @Value @Wither public static class CatchMany implements Catch{
     SignalKind kind;
     List<Type> ts;
     Expression inner;
     public String getX(){return "";}
-    public <T> T match(Function<Catch1, T> k1,Function<CatchMany, T> kM){return kM.apply(this);}
+    public <T> T match(Function<Catch1, T> k1,Function<CatchMany, T> kM,Function<CatchProp, T> kP){return kM.apply(this);}
+  }
+  @Value @Wither public static class CatchProp implements Catch{
+    SignalKind kind;
+    List<Type> ts;
+    Expression inner;
+    public String getX(){return "";}
+    public <T> T match(Function<Catch1, T> k1,Function<CatchMany, T> kM,Function<CatchProp, T> kP){return kP.apply(this);}
   }
   @Value
   public class BlockContent {

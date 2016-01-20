@@ -419,6 +419,14 @@ public class Desugar extends CloneVisitor{
           result.add(liftK(new Expression.Catch1(kM.getKind(),t,x,kM.getInner())));
         }
         return false;
+      },
+      kP->{
+        for(Type t:kP.getTs()){
+          //S on T e ==  catch exception T x S e(x)
+          Expression inner=new Expression.Signal(kP.getKind(),kP.getInner());
+          result.add(liftK(new Expression.Catch1(SignalKind.Exception,t,x,inner)));
+        }
+        return false;
       });
       }
     return result;

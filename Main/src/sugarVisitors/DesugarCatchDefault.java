@@ -23,7 +23,7 @@ import ast.Expression.ClassB;
 
 public class DesugarCatchDefault extends CloneVisitor{
   public static class CatchToComplete implements Expression.Catch{
-    public <T> T match(Function<Catch1, T> k1, Function<CatchMany, T> kM) {throw new Error("temporaryInstance");}
+    public <T> T match(Function<Catch1, T> k1, Function<CatchMany, T> kM, Function<Expression.CatchProp, T> kP) {throw new Error("temporaryInstance");}
     public String getX() {return catch1.getX();}
     public Expression getInner() {return catch1.getInner();}
     public final Catch1 catch1;

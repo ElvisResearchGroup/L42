@@ -482,6 +482,17 @@ public interface L42Listener extends ParseTreeListener {
 	void exitMDec(@NotNull L42Parser.MDecContext ctx);
 
 	/**
+	 * Enter a parse tree produced by {@link L42Parser#kProp}.
+	 * @param ctx the parse tree
+	 */
+	void enterKProp(@NotNull L42Parser.KPropContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link L42Parser#kProp}.
+	 * @param ctx the parse tree
+	 */
+	void exitKProp(@NotNull L42Parser.KPropContext ctx);
+
+	/**
 	 * Enter a parse tree produced by {@link L42Parser#eUnOp}.
 	 * @param ctx the parse tree
 	 */

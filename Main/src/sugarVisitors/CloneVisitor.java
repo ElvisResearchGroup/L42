@@ -49,7 +49,9 @@ public class CloneVisitor implements Visitor<Expression>{
       lift(k1.getInner())
       ),
       kM->new Expression.CatchMany(kM.getKind(),
-          Map.of(this::liftT,kM.getTs()) , lift(kM.getInner()))
+          Map.of(this::liftT,kM.getTs()) , lift(kM.getInner())),
+      kP->new Expression.CatchProp(kP.getKind(),
+          Map.of(this::liftT,kP.getTs()) , lift(kP.getInner()))
       );
     }
   protected Expression.With.On liftO(Expression.With.On on){

@@ -44,6 +44,7 @@ public class CheckTerminatingBlock implements Visitor<Void> {
   public Void visit(If s) {
     s.getThen().accept(this);
     if(s.get_else().isPresent()){s.get_else().get().accept(this);}
+    else{return fail(s);}
     return null;
     }
   public Void visit(With s) {

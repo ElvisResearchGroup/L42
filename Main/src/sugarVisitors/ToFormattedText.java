@@ -353,6 +353,17 @@ public class ToFormattedText implements Visitor<Void>{
           sp();
           kM.getInner().accept(this);
           return null;
+        },
+        kP->{
+          sp();
+          c(kP.getKind().content);
+          c(" on ");
+          for(Type t:kP.getTs()){
+            formatType(t);
+            }
+          sp();
+          kP.getInner().accept(this);
+          return null;
         }
         );
   }
