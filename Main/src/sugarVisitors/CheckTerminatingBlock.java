@@ -71,6 +71,7 @@ public class CheckTerminatingBlock implements Visitor<Void> {
     for( Expression.BlockContent c:l){
       if(c.get_catch().isEmpty()){continue;}
       for( Expression.Catch ki : c.get_catch()){
+       if(ki instanceof Expression.CatchProp){continue;}
        ki.getInner().accept(this);
         }
       }

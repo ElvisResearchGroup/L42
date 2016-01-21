@@ -42,7 +42,7 @@ public class CloneVisitor implements Visitor<ExpCore>{
   protected MethodSelector liftMs(MethodSelector ms){return ms;}
 
   protected ExpCore.Block.On liftO(ExpCore.Block.On on){
-    return new ExpCore.Block.On(on.getKind(),on.getX(),liftT(on.getT()),lift(on.getInner()));
+    return new ExpCore.Block.On(on.getKind(),on.getX(),liftT(on.getT()),lift(on.getInner()),on.getP());
     }
   /*protected Header liftH(Header h) {
     return h.match(ch->new ConcreteHeader(

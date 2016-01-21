@@ -416,15 +416,18 @@ public class Desugar extends CloneVisitor{
         }
       k.match(k1->result.add(liftK(k1)), kM->{
         for(Type t:kM.getTs()){
-          result.add(liftK(new Expression.Catch1(kM.getKind(),t,x,kM.getInner())));
+          result.add(liftK(new Expression.Catch1(kM.getP(),kM.getKind(),t,x,kM.getInner())));
         }
         return false;
       },
       kP->{
         for(Type t:kP.getTs()){
           //S on T e ==  catch exception T x S e(x)
-          Expression inner=new Expression.Signal(kP.getKind(),kP.getInner());
-          result.add(liftK(new Expression.Catch1(SignalKind.Exception,t,x,inner)));
+          Expression inner=kP.getInner();
+          inner=new Expression.FCall(kP.getP(),inner,Doc.empty(),
+              new ast.Ast.Parameters(Optional.of(new X(x)),Collections.emptyList(),Collections.emptyList()));
+          inner=new Expression.Signal(kP.getKind(),inner);
+          result.add(liftK(new Expression.Catch1(kP.getP(),SignalKind.Exception,t,x,inner)));
         }
         return false;
       });
@@ -457,27 +460,26 @@ public class Desugar extends CloneVisitor{
     return ti;
   }
   public Expression visit(While s) {
-    Position p=getPosition(s.getThen());
-    Expression cond=Desugar.getMCall(p,s.getCond(), "#checkTrue",Desugar.getPs());
-    RoundBlock b=Desugar.getBlock(p,cond,s.getThen());
+    Expression cond=Desugar.getMCall(s.getP(),s.getCond(), "#checkTrue",Desugar.getPs());
+    RoundBlock b=Desugar.getBlock(s.getP(),cond,s.getThen());
     Loop l=new Loop(b);
     NormType _void=new NormType(Mdf.Immutable,Path.Void(),Ph.None);
-    Expression.Catch k=Desugar.getK(SignalKind.Exception, "",_void,  new _void());
-    RoundBlock b2=Desugar.getBlock(p,l,Collections.singletonList(k),new _void());
+    Expression.Catch k=Desugar.getK(s.getP(),SignalKind.Exception, "",_void,  new _void());
+    RoundBlock b2=Desugar.getBlock(s.getP(),l,Collections.singletonList(k),new _void());
     return b2.accept(this);
   }
   public Expression visit(If s) {
     if(!s.get_else().isPresent()){
       return visit(s.with_else(Optional.of(new _void())));
     }
-    Position p=getPosition(s.getThen());
+    Position p=s.getP();
     if(!(s.getCond() instanceof Ast.Atom)){
       String x=Functions.freshName("cond", usedVars);
       //usedVars.add(x);
       return visit(getBlock(p,x, s.getCond(),s.withCond(new X(x))));
     }
     MCall check=getMCall(p,s.getCond(),"#checkTrue", getPs());
-    Expression.Catch k = getK(SignalKind.Exception,"",new NormType(Mdf.Immutable,Path.Void(),Ph.None),s.get_else().get());
+    Expression.Catch k = getK(p,SignalKind.Exception,"",new NormType(Mdf.Immutable,Path.Void(),Ph.None),s.get_else().get());
     return visit(getBlock(p,check,Collections.singletonList(k),s.getThen()));
   }
 
@@ -530,15 +532,15 @@ public class Desugar extends CloneVisitor{
     bc.add(new Expression.BlockContent(decs,ks));
     return new RoundBlock(p,Doc.empty(),inner,bc);
   }
-  static Expression.Catch getK(SignalKind kind, String x, Type t,Expression inner){
-  if (x==""){return new Expression.CatchMany(kind,Collections.singletonList(t),inner);}  
-  return new Expression.Catch1(kind,t,x,inner);
+  static Expression.Catch getK(Position pos,SignalKind kind, String x, Type t,Expression inner){
+  if (x==""){return new Expression.CatchMany(pos,kind,Collections.singletonList(t),inner);}  
+  return new Expression.Catch1(pos,kind,t,x,inner);
   }
   public Expression visit(CurlyBlock s) {
     RoundBlock inner=new RoundBlock(s.getP(),s.getDoc(),new Expression._void(),s.getContents());
     String y=Functions.freshName("result",this.usedVars);
     //usedVars.add(y);
-    Expression.Catch k=getK(SignalKind.Return,y,this.t,new X(y));
+    Expression.Catch k=getK(s.getP(),SignalKind.Return,y,this.t,new X(y));
     Expression termination= Desugar.errorMsg("CurlyBlock-Should be unreachable code");
     RoundBlock outer=getBlock(s.getP(),inner, Collections.singletonList(k),termination);
     //assert L42.checkWellFormedness(outer);

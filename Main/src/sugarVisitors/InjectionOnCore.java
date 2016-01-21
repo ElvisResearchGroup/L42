@@ -56,7 +56,7 @@ public class InjectionOnCore implements Visitor<ExpCore> {
         SignalKind kind=k1.getKind();
         String x=k1.getX();
         assert x.length()>=1;
-        ons.add(new ExpCore.Block.On(kind,x,k1.getT(),lift(k1.getInner())));
+        ons.add(new ExpCore.Block.On(kind,x,k1.getT(),lift(k1.getInner()),k1.getP()));
         }
       return new Block(doc,decs,inner,ons,s.getP());
       }

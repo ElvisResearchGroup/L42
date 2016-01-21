@@ -160,26 +160,29 @@ public interface Expression extends Ast {
     }
   }
 
-  public static interface Catch{
+  public static interface Catch extends HasPos{
     <T> T match(Function<Catch1, T> k1,Function<CatchMany, T> kM,Function<CatchProp, T> kP);
     String getX();
     Expression getInner();
   }
-  @Value @Wither public static class Catch1 implements Catch{
+  @Value @Wither @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") public static class Catch1 implements Catch{
+    Position p;
     SignalKind kind;
     Type t;
     String x;
     Expression inner;
     public <T> T match(Function<Catch1, T> k1,Function<CatchMany, T> kM,Function<CatchProp, T> kP){return k1.apply(this);}
   }
-  @Value @Wither public static class CatchMany implements Catch{
+  @Value @Wither @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") public static class CatchMany implements Catch{
+    Position p;
     SignalKind kind;
     List<Type> ts;
     Expression inner;
     public String getX(){return "";}
     public <T> T match(Function<Catch1, T> k1,Function<CatchMany, T> kM,Function<CatchProp, T> kP){return kM.apply(this);}
   }
-  @Value @Wither public static class CatchProp implements Catch{
+  @Value @Wither @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") public static class CatchProp implements Catch{
+    Position p;
     SignalKind kind;
     List<Type> ts;
     Expression inner;

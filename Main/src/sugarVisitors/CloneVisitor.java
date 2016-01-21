@@ -42,15 +42,15 @@ public class CloneVisitor implements Visitor<Expression>{
       k = this.liftK(((DesugarCatchDefault.CatchToComplete) k).catch1);
       return new DesugarCatchDefault.CatchToComplete((Catch1) k);
       }
-    return k.match(k1->new Expression.Catch1(
+    return k.match(k1->new Expression.Catch1(k1.getP(),
       k1.getKind(),
       liftT(k1.getT()),
       k1.getX(),
       lift(k1.getInner())
       ),
-      kM->new Expression.CatchMany(kM.getKind(),
+      kM->new Expression.CatchMany(kM.getP(),kM.getKind(),
           Map.of(this::liftT,kM.getTs()) , lift(kM.getInner())),
-      kP->new Expression.CatchProp(kP.getKind(),
+      kP->new Expression.CatchProp(kP.getP(),kP.getKind(),
           Map.of(this::liftT,kP.getTs()) , lift(kP.getInner()))
       );
     }

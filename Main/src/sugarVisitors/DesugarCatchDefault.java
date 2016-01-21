@@ -12,6 +12,7 @@ import tools.Map;
 import ast.Expression.BlockContent;
 import ast.Ast.Path;
 import ast.Ast.Ph;
+import ast.Ast.Position;
 import ast.Ast.Type;
 import ast.Expression;
 import ast.Expression.Catch;
@@ -31,6 +32,7 @@ public class DesugarCatchDefault extends CloneVisitor{
     public Catch1 completeCatch(Type t){
       return catch1.withT(t);
     }
+    public Position getP() {return catch1.getP();}
   }
   Ast.Type lastReturn=null;
   public static ClassB of(ClassB s) {

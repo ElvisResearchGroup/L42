@@ -138,9 +138,9 @@ class DesugarW extends CloneVisitor{
 
     List<Catch> ks=new ArrayList<>();
     Type t2=new NormType(nt.getMdf(),Path.Any(),Ph.None);
-    ks.add(new Expression.Catch1(SignalKind.Return,t,z,//case return captured
+    ks.add(new Expression.Catch1(pos,SignalKind.Return,t,z,//case return captured
         new X(z)));//return it
-    ks.add(new Expression.Catch1(SignalKind.Return,t2,z,//else
+    ks.add(new Expression.Catch1(pos,SignalKind.Return,t2,z,//else
         new Signal(SignalKind.Exception,new _void())));// exception void
     RoundBlock block=Desugar.getBlock(pos,
       new Signal(SignalKind.Return,new X(x)),
@@ -188,7 +188,7 @@ class DesugarW extends CloneVisitor{
     String yi=ys.get(i);
     decs.add(castT(pos,ti,yi,xi));}}
     //catch exception Void recursive call
-    Catch k=Desugar.getK(
+    Catch k=Desugar.getK(pos,
       SignalKind.Exception, "",
       new NormType(Mdf.Immutable, Path.Void(),Ph.None),
       continuation);
@@ -229,7 +229,7 @@ class DesugarW extends CloneVisitor{
       b=XInE.of(new X(xi),Desugar.getMCall(pos,new X(xi),"#inner", Desugar.getPs()),b);
       }
     RoundBlock inner=new RoundBlock(pos,Doc.empty(),b,bc);
-    Catch k=Desugar.getK(SignalKind.Exception, "",
+    Catch k=Desugar.getK(pos,SignalKind.Exception, "",
         new NormType(Mdf.Immutable,Path.Void(),Ph.None),
         new _void());
     inner=Desugar.getBlock(pos,new Loop(inner), Collections.singletonList(k), new _void());
@@ -262,12 +262,12 @@ class DesugarW extends CloneVisitor{
     String propagated1=Functions.freshName("propagated",usedVars);
     Expression blockPropagate1=Desugar.getBlock(pos,eClose,new Signal(kind,new X(propagated1)));
     Type t=new Ast.NormType(Mdf.Immutable,Path.Any(),Ph.None);
-    Expression.Catch1 k1=new Expression.Catch1(kind, t,propagated1,blockPropagate1);
+    Expression.Catch1 k1=new Expression.Catch1(pos,kind, t,propagated1,blockPropagate1);
     return new DesugarCatchDefault.CatchToComplete(k1);
   }
 
   private static RoundBlock withE1CatchExceptionOnVoidE2elseE3(Position pos,Expression e1,Expression e2,Expression e3) {
-    Expression.Catch k=Desugar.getK(SignalKind.Exception, "", new NormType(Mdf.Immutable,Path.Void(),Ph.None),e2);
+    Expression.Catch k=Desugar.getK(pos,SignalKind.Exception, "", new NormType(Mdf.Immutable,Path.Void(),Ph.None),e2);
     List<Expression.BlockContent> cs=new ArrayList<>();
     cs.add(Desugar.getBlockContent(e1,k));
     return new RoundBlock(pos,Doc.empty(),e3,cs);
@@ -288,7 +288,7 @@ class DesugarW extends CloneVisitor{
       decs.add(new VarDecE(ei));
     }
     Expression eCatch=Desugar.getBlock(pos,decs, new Signal(SignalKind.Exception,new _void()));
-    Expression.Catch k=Desugar.getK(SignalKind.Exception, "", new NormType(Mdf.Immutable,Path.Void(),Ph.None),eCatch);
+    Expression.Catch k=Desugar.getK(pos,SignalKind.Exception, "", new NormType(Mdf.Immutable,Path.Void(),Ph.None),eCatch);
     return Desugar.getBlockContent(eStart,k);
   }
 

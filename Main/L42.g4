@@ -151,7 +151,7 @@ ps:(eTop )?(X Colon  eTop )*;
 k1: Catch S t X  eTop;
 kMany:Catch S t+  eTop;
 kProp:S On t+  eTop;
-k:k1|kMany;   
+k:k1|kMany|kProp;   
 ks:k*;//other variations to come (k|kMany|kProp)*
 
 on: On t (Case eTop)? eTop;

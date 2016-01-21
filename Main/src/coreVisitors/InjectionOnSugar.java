@@ -99,7 +99,7 @@ public class InjectionOnSugar implements Visitor<ast.Expression> {
     List<Expression.Catch> ks=new ArrayList<>();
     for( ast.ExpCore.Block.On on:list){
       Expression inner = lift(on.getInner());
-      ks.add(new Expression.Catch1(on.getKind(),on.getT(),on.getX(),inner));
+      ks.add(new Expression.Catch1(on.getP(),on.getKind(),on.getT(),on.getX(),inner));
     }
     return ks;
   }

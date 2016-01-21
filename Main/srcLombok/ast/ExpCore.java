@@ -65,11 +65,12 @@ public interface ExpCore {
       return dom;
     }
    
-    @Value @Wither public static class On {
+    @Value @Wither @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") public static class On implements HasPos{
       SignalKind kind;
       String x;
       Type t;
       ExpCore inner;
+      Position p;
     }
   }
 

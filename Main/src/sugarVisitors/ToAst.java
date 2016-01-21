@@ -231,19 +231,26 @@ public class ToAst extends AbstractVisitor<Expression>{
   }
   private Catch parseK(KContext k) {
     if(k.k1()!=null){
-      return new Expression.Catch1(
+      return new Expression.Catch1(position(k),
           SignalKind.fromString(nameK(k.k1().S())),
           parseType(k.k1().t()),
           nameL(k.k1().X()),
           k.k1().eTop().accept(this));
     }
     if(k.kMany()!=null){
-      return new Expression.CatchMany(
+      return new Expression.CatchMany(position(k),
           SignalKind.fromString(nameK(k.kMany().S())),
           k.kMany().t().stream().map(this::parseType).collect(Collectors.toList()),
           k.kMany().eTop().accept(this)
           );
     }    
+    if( k.kProp()!=null){
+      return new Expression.CatchProp(position(k),
+          SignalKind.fromString(nameK(k.kProp().S())),
+          k.kProp().t().stream().map(this::parseType).collect(Collectors.toList()),
+          k.kProp().eTop().accept(this)
+          );
+    }
     throw Assertions.codeNotReachable();
   }
 
