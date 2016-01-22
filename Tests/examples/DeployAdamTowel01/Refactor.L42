@@ -6,8 +6,8 @@
     catch error Library err (
       record=Introspection::Record(lib:err)
       x=record"Kind"
-      if x== S"ClassClash"  (exception MetaGuard::ClassClash(record:record))
-      if x== S"MethodClash"  (exception MetaGuard::MethodClash(record:record))
+      if x== S"ClassClash"  (exception MetaGuard::ClassClash(record:record,lib:err))
+      if x== S"MethodClash"  (exception MetaGuard::MethodClash(record:record,lib:err))
       error err)
     }
   type method
@@ -42,11 +42,11 @@
       catch error Library err (
         record=Introspection::Record(lib:err)
         x=record"Kind"
-        if x== S"MemberUnavailable"  (exception MetaGuard::NestedClassUnavailable(record:record))
-        if x== S"InvalidOnTopLevel"  (exception MetaGuard::InvalidOnTopLevel(record:record))
-        if x== S"MethodClash"  (exception MetaGuard::MethodClash(record:record))
-        if x== S"SourceUnfit"  (exception MetaGuard::SourceUnfit(record:record))
-        if x== S"IncoherentRedirectMapping" (exception MetaGuard::IncoherentRedirectMapping(record:record))
+        if x== S"MemberUnavailable"  (exception MetaGuard::NestedClassUnavailable(record:record,lib:err))
+        if x== S"InvalidOnTopLevel"  (exception MetaGuard::InvalidOnTopLevel(record:record,lib:err))
+        if x== S"MethodClash"  (exception MetaGuard::MethodClash(record:record,lib:err))
+        if x== S"SourceUnfit"  (exception MetaGuard::SourceUnfit(record:record,lib:err))
+        if x== S"IncoherentRedirectMapping" (exception MetaGuard::IncoherentRedirectMapping(record:record,lib:err))
         error err)
       }
     }
@@ -58,7 +58,7 @@
         record=Introspection::Record(lib:err)
         x=record"Kind"
         if x== S"MemberUnavailable"  (exception MetaGuard::DispatchMemberUnavailable(err))
-        if x== S"MethodClash"  (exception MetaGuard::MethodClash(record:record))
+        if x== S"MethodClash"  (exception MetaGuard::MethodClash(record:record,lib:err))
         error err)
       }
     }
@@ -69,9 +69,9 @@
       catch error Library err (
         record=Introspection::Record(lib:err)
         x=record"Kind"
-        if x== S"MemberUnavailable"  (exception MetaGuard::NestedClassUnavailable(record:record))
-        if x== S"MethodClash"  (exception MetaGuard::MethodClash(record:record))
-        if x== S"ClassClash"  (exception MetaGuard::ClassClash(record:record))
+        if x== S"MemberUnavailable"  (exception MetaGuard::NestedClassUnavailable(record:record,lib:err))
+        if x== S"MethodClash"  (exception MetaGuard::MethodClash(record:record,lib:err))
+        if x== S"ClassClash"  (exception MetaGuard::ClassClash(record:record,lib:err))
         Debug(S"critical failure in capturing plugin primitive error")
         Debug(x)
         error err
@@ -97,7 +97,7 @@
         record=Introspection::Record(lib:err)
         x=record"Kind"
         if x== S"MemberUnavailable"  (exception MetaGuard::DispatchMemberUnavailable(err))
-        if x== S"MethodClash"  (exception MetaGuard::MethodClash(record:record))
+        if x== S"MethodClash"  (exception MetaGuard::MethodClash(record:record,lib:err))
         error err)
       }
     }
@@ -108,8 +108,8 @@
       catch error Library err (
         record=Introspection::Record(lib:err)
         x=record"Kind"
-        if x== S"MemberUnavailable"  (exception MetaGuard::NestedClassUnavailable(record:record))
-        if x== S"PrivacyCoupuled"  (exception MetaGuard::PrivacyCoupuled(record:record))
+        if x== S"MemberUnavailable"  (exception MetaGuard::NestedClassUnavailable(record:record,lib:err))
+        if x== S"PrivacyCoupuled"  (exception MetaGuard::PrivacyCoupuled(record:record,lib:err))
         error err)
       }
     }
@@ -131,8 +131,8 @@
       catch error Library err (
         record=Introspection::Record(lib:err)
         x=record"Kind"
-        if x== S"MemberUnavailable"  (exception MetaGuard::NestedClassUnavailable(record:record))
-        if x== S"InvalidOnTopLevel"  (exception MetaGuard::InvalidOnTopLevel(record:record))
+        if x== S"MemberUnavailable"  (exception MetaGuard::NestedClassUnavailable(record:record,lib:err))
+        if x== S"InvalidOnTopLevel"  (exception MetaGuard::InvalidOnTopLevel(record:record,lib:err))
         error err)
       }
     }
@@ -160,8 +160,8 @@
         record=Introspection::Record(lib:err)
         x=record"Kind"
         if x== S"MemberUnavailable"  (exception MetaGuard::DispatchMemberUnavailable(err))
-        if x== S"MethodClash"  (exception MetaGuard::MethodClash(record:record))
-        if x== S"ParameterMismatch"  (exception MetaGuard::ParameterMismatch(record:record))
+        if x== S"MethodClash"  (exception MetaGuard::MethodClash(record:record,lib:err))
+        if x== S"ParameterMismatch"  (exception MetaGuard::ParameterMismatch(record:record,lib:err))
         error err)
       }
     }

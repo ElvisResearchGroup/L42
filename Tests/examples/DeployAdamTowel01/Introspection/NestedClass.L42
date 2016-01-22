@@ -26,7 +26,7 @@ Doc nestedDoc()(
   this.record().docOf(path:Path"MemberDoc")
   )
 method 'of the library literal
-Doc doc() this.record().docOf(path:Path"Doc")
+Doc doc() this.record().docOf(path:Path"LibraryDoc")
 
 method Path pathFromRoot()
   this.path() ' invariant NestedClass(...).nestedClassFromRoot(path).pathFromRoot()==path

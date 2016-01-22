@@ -43,4 +43,15 @@ Path:{
       cause:cause
       )
   }
+  MetaGuard:{interface
+    RecordWrapper:{
+    type method S libToS(Library that) (
+      i=Introspection(lib:that)
+      ncs=i.nestedClasses().vals()
+      S"["[S.nl()]""[with nc in ncs (
+        use[nc.pathFromRoot();S":";nc.doc();S.nl()]
+        )]"]"
+      )
+    }
+  }
 }

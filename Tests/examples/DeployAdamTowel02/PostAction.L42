@@ -1,7 +1,8 @@
 {(Selector that,Path of,  Library action,Selector deprecated)
-
-InvalidAction:Message::$[]<<{<:MetaGuard}
-
+'can be used as
+' PostAction(Selector"foo(bar)" of:Path"A" 
+'   action:{method N (N that) that+that}
+'   deprecated: Selector"fooOld(bar)")<<myCode
 method
 Library <<(Library that)
 exception InvalidAction{
@@ -51,4 +52,6 @@ exception InvalidAction (
     exception InvalidAction"action return type need to be equal to parameter type" 
     )
   ) 
+
+InvalidAction:Message::$[]<<{<:MetaGuard} 
 }

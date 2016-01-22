@@ -20,11 +20,14 @@ import ast.ExpCore._void;
 
 public class FreeVariables implements Visitor<Set<String>>{
   private HashSet<String> collected=new HashSet<String>();
+  private HashSet<String> inScope=new HashSet<String>();
   public static Set<String> of(ExpCore e){
     return e.accept(new FreeVariables());
   } 
   public Set<String> visit(X s) {
-    collected.add(s.getInner());
+    if(!inScope.contains(s.getInner())){
+      collected.add(s.getInner());
+      }
     return collected;
   }
   public Set<String> visit(Using s) {
@@ -46,21 +49,21 @@ public class FreeVariables implements Visitor<Set<String>>{
 
   private  void visitK(List<On> k) {
     for(On on:k){
+      inScope.add(on.getX());
       on.getInner().accept(this);
-      collected.remove(on.getX());//TODO: bug, could remove a x used before
+      inScope.remove(on.getX());
       }    
     }
     
   @Override
   public Set<String> visit(Block s) {
+    for(Block.Dec di:s.getDecs()){  inScope.add(di.getX()); }
     for(Block.Dec di:s.getDecs()){
       di.getE().accept(this);
       }
     if(!s.getOns().isEmpty()){visitK(s.getOns());}
     Set<String> res = s.getInner().accept(this);
-    for(Block.Dec di:s.getDecs()){
-      collected.remove(di.getX());
-      }
+    for(Block.Dec di:s.getDecs()){  inScope.remove(di.getX()); }
     return res;
   }
   

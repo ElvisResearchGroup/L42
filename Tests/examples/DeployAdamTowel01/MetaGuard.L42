@@ -1,9 +1,12 @@
 { interface<:Guard
   
- RecordWrapper:'@private
+ RecordWrapper:' can not be private, I need to Patch it.
     {
+    type method S libToS(Library that) S"TO FIX"
+    
     type method Library recordWrapperToSTrait(){<:MetaGuard 
-      method toS() Outer0.myName()    
+      method toS() Outer0.myName()++Outer1.libToS(this.lib())
+      method Library lib()      
       }
     type method Library recordWrapperTrait(){<:MetaGuard
       method kind() Outer0.myName()
@@ -16,11 +19,13 @@
         }
       method clazz() Outer0
       method classAny() Outer0
-      type method Outer0(Introspection::Record record) 
+      type method Outer0(Introspection::Record record, Library lib)
       method Bool != (Outer0 that) !(this==that)
       method Bool == (Outer0 that) Message::EqualMessages(this,other:that)
       }
+      
     type method Library <<(Library that) (
+      'either that provides a toS, or I have a default impl, that requires lib()
       res=SafeOperatorsAccess.compose(left:that,right:Outer0.recordWrapperTrait())
         {
         return SafeOperatorsAccess.compose(left:res,right:Outer0.recordWrapperToSTrait())
@@ -43,8 +48,8 @@ type method MemberUnavailable(Library that){
   x=record"Kind"
   if x== S"MemberUnavailable" (
     if record"InvalidKind".contains(S"Method") (
-      return MethodUnavailable(record:record) )
-    return NestedClassUnavailable(record:record)
+      return MethodUnavailable(record:record,lib:that) )
+    return NestedClassUnavailable(record:record,lib:that)
     )
 '    if x== S"MethodClash" (return MetaGuard::MethodClash(record:record))
 '    if x== S"ClassClash" (return MetaGuard::ClassClash(record:record))
@@ -53,12 +58,12 @@ type method MemberUnavailable(Library that){
 }
 NestedClassUnavailable:RecordWrapper<<{(Path path,Bool isPrivate)<:MemberUnavailable
   method toS() Outer0.myName()++S"[path:"[this.path()]",isPrivate:"[this.isPrivate()]"]"
-  type method Outer0 (Introspection::Record record) 
+  type method Outer0 (Introspection::Record record, Library lib) 
     Outer0(path:Path.fromDocInternalizedS(record"Path"),isPrivate:Bool.fromS(record"IsPrivate"))
   }
 MethodUnavailable:RecordWrapper<<{(Path path,Selector selector,Bool isPrivate)<:MemberUnavailable
   method toS() Outer0.myName()++S"[path:"[this.path()]", selector:"[this.selector()]",isPrivate:"[this.isPrivate()]"]"
-  type method Outer0 (Introspection::Record record) 
+  type method Outer0 (Introspection::Record record, Library lib) 
     Outer0(path:Path.fromDocInternalizedS(record"Path"),selector:Selector.fromS(record"Selector"),isPrivate:Bool.fromS(record"IsPrivate"))
   }
 }

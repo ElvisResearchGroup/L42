@@ -59,15 +59,16 @@ public class Introspection {//TODO: we keep 5 methods, but we merge the PathRepo
       nc->{
         List<String> fullPath=new ArrayList<>(path);
         fullPath.add(nc.getName());
+        ClassB currentNc=(ClassB)nc.getInner();
         result[0]=Resources.Error.multiPartStringClassB("MemberReport",
           "MemberKind","NestedClass",
           "MemberDoc",liftDoc(path,nc.getDoc(),1),
           "Key",String.join("::",fullPath),
           "AllAsString",ToFormattedText.ofNoStage(nc.getInner()),
           "ClassKind",ExtractInfo.classKind(that, path,(ClassB) nc.getInner(),null, null,null).name(),
-          "LibraryDoc",liftDoc(path,current.getDoc1(),1),
-          "MemberNumber",""+current.getMs().size(),
-          "ImplementedNumber",""+current.getSupertypes().size()
+          "LibraryDoc",liftDoc(path,currentNc.getDoc1(),1),
+          "MemberNumber",""+currentNc.getMs().size(),
+          "ImplementedNumber",""+currentNc.getSupertypes().size()
           );
         return null;
           },
