@@ -1,0 +1,31 @@
+{(Selector that, Path of,S name, Selector by)
+
+  ParameterNameNotPresent:Message::$[]<<{<:MetaGuard}
+  DefaultValueInvalid:Message::$[]<<{<:MetaGuard}
+  
+  method
+  Library <<(Library that)
+  exception ParameterNameNotPresent,DefaultValueInvalid{
+    origin=this.that()
+    p=this.of()
+    name=this.name()
+    provider=this.by()
+    newSelector= (
+      var found=Bool.false()
+      newNames=Strings[with n in origin.names().vals() (
+        if n!=name (use[n])
+        else found:=Bool.true()
+        )]
+      if !found (
+        exception ParameterNameNotPresent
+          "Parameter name '"[name]"' not present in '"[origin]"'"
+        )
+      Selector.from(name:origin.name(),names:newNames)
+      )
+   'can be more precise, stating that provider needs to be a no arg method with the same type of the parameter, and with compatible this modifier.
+    return Refactor::SumMethods[
+      provider and:origin of:p over:name to: newSelector]<<that
+    error on MetaGuard
+      DefaultValueInvalid""
+    }
+  }
