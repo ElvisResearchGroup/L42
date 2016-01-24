@@ -4,4 +4,47 @@
   type method
   Library list(type Any that)
     SafeOperatorsAccess.redirect(ListCode(),srcBinaryRepr:S"Elem".binaryRepr(),dest:that)
-  }
+    
+  type method
+  Library eqList(type Any that) (
+    lib=SafeOperatorsAccess.compose(left:ListCode(),right:ListCodeEq())
+    SafeOperatorsAccess.redirect(lib,srcBinaryRepr:S"Elem".binaryRepr(),dest:that)
+    )
+  
+  ListCodeEq:{ type method Library() {
+    Elem:{<:Concept::Equals}
+    type method Outer0 #begin()
+    method Outer0 #add(Elem that)
+    method Outer0 #end()
+    method mut Iterator vals()
+    Iterator:{
+      mut method Void #next() exception Void
+      read method Void #checkEnd()
+      read method Elem #inner()
+      read method Void #close()
+      }
+    method 
+    Bool contains(Elem that){
+      with e in this.vals() (
+        if e.equals(that) (return Bool.true()) 
+        )
+      return Bool.false()
+      }
+    method
+    Outer0 remove(Elem that)
+      Outer0[with e in this.vals() (if !e.equals(that) (use[e]))]      
+    method
+    Bool ==(Outer0 that){
+      with e1 in this.vals(), e2 in that.vals() (
+        if !e1.equals(e2) (return Bool.false())
+        )
+      return Bool.true()
+      }
+    method
+    Bool equals(Any that){
+      with that (on Outer0 return this==that)
+      return Bool.false()
+      }
+    }
+  } 
+}

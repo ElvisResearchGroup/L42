@@ -239,7 +239,12 @@ ListCode:{
 type method 
 Library #apply() }
 type method 
-Library list(type Any that) }
+Library list(type Any that) 
+type method 
+Library eqList(type Any that) 
+ListCodeEq:{
+type method 
+Library #apply() }}
 Default:{
 DecorationUnfeasable:{<:Outer2::MetaGuard, Outer2::Message
 type method 
@@ -819,8 +824,16 @@ Void #checkEnd()
 read method 
 Outer2::Member #inner() 
 read method 
-Void #close() }}
-Method:{<:Outer1::Member
+Void #close() }
+method 
+Outer2::Bool contains(Outer1::Member that) 
+method 
+Outer0 remove(Outer1::Member that) 
+method 
+Outer2::Bool #equalequal(Outer0 that) 
+method 
+Outer2::Bool equals(Any that) }
+Method:{<:Outer1::Member, Outer2::Concept::Equals
 method 
 Outer2::Bool #equalequal(Outer0 that) 
 method 
@@ -918,9 +931,17 @@ Void #checkEnd()
 read method 
 Outer2::Method #inner() 
 read method 
-Void #close() }}
+Void #close() }
+method 
+Outer2::Bool contains(Outer1::Method that) 
+method 
+Outer0 remove(Outer1::Method that) 
+method 
+Outer2::Bool #equalequal(Outer0 that) 
+method 
+Outer2::Bool equals(Any that) }
 NestedClass:{'findMeNestedClass
-<:Outer1::Member
+<:Outer1::Member, Outer2::Concept::Equals
 method 
 Outer2::Bool #equalequal(Outer0 that) 
 method 
@@ -1040,7 +1061,15 @@ Void #checkEnd()
 read method 
 Outer2::NestedClass #inner() 
 read method 
-Void #close() }}
+Void #close() }
+method 
+Outer2::Bool contains(Outer1::NestedClass that) 
+method 
+Outer0 remove(Outer1::NestedClass that) 
+method 
+Outer2::Bool #equalequal(Outer0 that) 
+method 
+Outer2::Bool equals(Any that) }
 Type:{<:Outer2::Concept::ToS, Outer2::Concept::Named
 method 
 Outer2::S allAsString() 
@@ -1529,7 +1558,15 @@ Void #checkEnd()
 read method 
 Outer2::S #inner() 
 read method 
-Void #close() }}
+Void #close() }
+method 
+Outer1::Bool contains(Outer1::S that) 
+method 
+Outer0 remove(Outer1::S that) 
+method 
+Outer1::Bool #equalequal(Outer0 that) 
+method 
+Outer1::Bool equals(Any that) }
 Assert:{interface <:Outer1::Message
 NotImplementedYet:{<:Outer1, Outer2::Message
 type method 

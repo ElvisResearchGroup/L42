@@ -115,10 +115,20 @@ public class TestBase02 {
    public  void _02_10DefaultParameter() throws Throwable{
      TestHelper.configureForTest();
      //new TestBase01()._01_00DeployAdamTowel01();
-     this._02_00DeployAdamTowel02();
+     //this._02_00DeployAdamTowel02();
      L42.main(new String[]{"examples/testsForAdamTowel02/TestDefaultParameter.L42"});
      Assert.assertEquals(L42.record.toString(),
          "Hello\nWorld -- 42\n");
+     }   
+   
+   @Test
+   public  void _02_11Wither() throws Throwable{
+     TestHelper.configureForTest();
+     //new TestBase01()._01_00DeployAdamTowel01();
+     //this._02_00DeployAdamTowel02();
+     L42.main(new String[]{"examples/testsForAdamTowel02/TestWither.L42"});
+     Assert.assertEquals(L42.record.toString(),
+         "20\n20\n20\n10\n10\n20\n10\n10\n");
      }   
    
   }

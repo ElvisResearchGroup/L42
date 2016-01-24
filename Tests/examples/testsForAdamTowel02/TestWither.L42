@@ -1,0 +1,70 @@
+{reuse L42.is/AdamTowel02
+
+Wither:{
+
+ConstructorUnavailable:Message::$[]<<{<:MetaGuard}  
+
+Selectors:LinkedList.list(Selector)
+
+type method
+Library<<(Library that) 
+exception ConstructorUnavailable, MetaGuard{
+  i=Introspection(lib:that)
+  s=i.state()
+  if s.isEmpty() (exception ConstructorUnavailable"")
+  k=s.top()
+  names=k.selector().names()
+  var acc=that
+  withK=Selector.from(name:S"with",names:names)
+  var ss=Selectors[withK]
+  acc:=this.addWithAllArgs(that,k:k)
+  with n in withK.names().vals() (
+    ' I know all names in ss contains n
+    with sel in ss.vals() (
+      newSelNames=sel.names().remove(n)
+      newSel=Selector.from(name:S"with",names:newSelNames)
+      defP=Selector.from(name:n,names:Strings[])
+      ss:=ss.#add(newSel)
+      acc:=DefaultParameter(sel, of:Path"Outer0",name:n, by:defP)<<acc
+      )
+    )
+  return acc
+  }
+
+type method 
+Library addWithAllArgs(Library that,Introspection::Method k)
+exception ConstructorUnavailable, MetaGuard{
+  p=Path"Outer0"  
+  freshK=Selector.fresh(k.selector())
+  freshW=Selector.fresh(Selector"with(that)")
+  withK=Selector.from(name:S"with",names:k.selector().names())
+  action={ read method capsule Outer0 with(capsule Outer0 that) that} 'discussion on k modifiers
+  var acc=that
+  acc:=Refactor.compose(left:acc
+    right:Refactor::RenameSelector[
+      Selector"with(that)" of:p to:freshW]<<action)
+  acc:=Refactor::SumMethods[k.selector() and:freshW of:p over:S"that" to:withK]<<acc
+  return acc  
+  }
+}
+
+C:Wither<<{(N n, S s)}
+
+
+Main:{
+  C c=C(n:10N,s:S"10")
+  C c1=c.with(n:20N, s:S"20")
+  C c2=c.with(n:20N)
+  C c3=c.with(s:S"20")
+  C c4=c.with()
+  Debug(c1.n())
+  Debug(c1.s())
+  Debug(c2.n())
+  Debug(c2.s())
+  Debug(c3.n())
+  Debug(c3.s())
+  Debug(c4.n())
+  Debug(c4.s())
+  return ExitCode.normal()
+  }
+}
