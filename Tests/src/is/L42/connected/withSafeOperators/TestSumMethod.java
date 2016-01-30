@@ -93,6 +93,7 @@ import auxiliaryGrammar.Program;
     + "method Void m2(Outer0::B b, Outer0::C c,Void that) "
     + "method Void m1m2(Outer0::A a, Outer0::B b, Outer0::C c)"
     + "   this.m2(b:b,c:c,that:Outer0.m1(a:a))}",false
+    
    }});}
   @Test  public void test() {
     TestHelper.configureForTest();

@@ -1,20 +1,45 @@
 
-consider adding ";" between exeptions in throws (and in multicatchs?) No? is ambiguos in a good way?
+Many constructor is ok for a class?
+for example 
+type method mut Outer0 k1(mut Foo n) ' with the actual type of the fields
+type method Outer0 k2(Foo n) ' the imm constructor, can always take imm fields
+ the imm constructor is ok even in case of lent fields.
+ 
+ multiple constr must agree on the names of fields, and on their path, but the mdf may differ.
+ fields getters, 
+ method Foo n() ' the imm getters can always return imm stuff
+ 
+ go by cases:
+ imm F x: can have 
+   read-imm-/lent-imm-/mut-imm-/imm-imm- getter,
+   lent-imm+/mut-imm+ setter,
+   mut-imm+/capsule-imm+/lent-imm+/read-imm+/imm-imm+ constr
+ mut F x:
+   read-read/lent-lent-/mut-mut-/imm-imm- getter
+   lent-capsule/mut-mut setter
+   mut-mut+/capsule-capsule/lent-mut/read-read+/imm-imm+ constr
+   *note: lent-lent constr *may* be allowed in special cases: only if is a single field OR if no mut-mut getter provided for more than 1 field
+lent F x:
+   read-read/lent-lent-/imm-imm- getter
+   lent-lent+/mut-lent+ setter
+   mut-mut+/capsule-capsule/lent-lent+/read-read+/imm-imm+ constr
+read F x:
+   read-read/lent-read/imm-imm- getter
+   lent-read+/mut-read+ setter
+   mut-(mut+,Imm)/capsule-capsule/lent-lent+/read-read+/imm-imm+ constr
+ capsule F x:
+   read-read/lent-lent-/mut-lent-/imm-imm- getter
+   lent-capsule/mut-capsule setter
+   mut-capsule/capsule-capsule/lent-capsule/read-capsule/imm-imm+ constr
+-----
+wither on method  Outer0 with(imm T x)
+clone on read method mut Outer0 clone(orignal T x)//all capsule fields are not defaulted? defaulted wih clone()?
 
-Per fare lo wither: 
-e' lo stesso che fare valori di default per metodi:
-prendi il metodo con tutti i parametri, usa una versione di SumMethod con un metodo
-che produce quel valore.
-Serve che sum method prenda anche il nome del parametro da rimpiazzare
-Lib, Path, meth1 meth2, methRes, nome(contenuto in meth2)?
-Dove vanno i parametri di meth1? all'inizio? alla fine? al posto del nome?
-
+what if (Ti xi) create both
+#apply and #immK
+and Ti xi create no constructors?
+----
 syntax stuff:
-use use[psMany] for [with..], Done? now support separedBy in strings, make Debug stringable.
-make error/exception on Path1... Pathn (e) 
-==catch exception fresh (
-  on Path1 error/exception (e)(fresh) ...on Pathn error/exception (e)(fresh)
-  )
   add # for defaults: logic is
     on addition methods, is a constructor
     on set is the old value
@@ -94,14 +119,7 @@ Obsolete(
   -- no seams like addDocumentation must be called on the constructor, and make private all the potential state
   -to prevent capture of unwanted state methods, you can rename or implement them and then revert.
 )
-Adam Towel
- -adam towel 2 or 3 must:
-   -inject ParseErrors in Bool, N
-   -inject better error in Message::Opt
-  -Message generate Foo"bla" :Foo
-  and Foo"bla"(cause) :Foo, Foo(cause) should not work any more
- 
-  -test introspection more 
+
   -in deploy library, check that is closed code
   -test if from is applied when reading method types?
     -on literal, it should be frommed before passed to plugin
@@ -119,8 +137,6 @@ Caching
    -how it interact with trusted plugins?
     -is private normalized
     -get the set of used families
-    -if runaway abstractness/incoherence causes plus, plus should keep track of why it exists.
-       
     
     
     -Sum and interfaces: sum can make interfaces circular. I think I will make this OK
@@ -131,11 +147,6 @@ Caching
     -db plugin
       design of resources: make connection string "is" resource handler?
  
- Composition operators:
-   method composition path ms0, ms1
-    T0 m0(arg0) eOpt0+ T1 m1(T0 x arg1) eOpt1=
-    T0 m0(arg0) eOpt0 T1  m1(T0 x arg1) eOpt1    T1 m0m1(arg0 arg1) this.m1(this.m0(arg0),arg1)  
- 
  Language
   - method of interfaces can be refined, method refine T m(xs) eOpt
   -yeld? [with .... yeld(e) or yeld(v, separator:S", ")
@@ -144,16 +155,15 @@ Caching
     -concrete header have doc ('here fs)'and here  -- one of the two must be the place for @private?
     -all implemented interface names have docs, also simpler @ann syntax no new line
     
-    -put Outer without number in the sugar,outer keyword, to skip the first in scope
     - put << normalization in the sugar
-    -put keywords/behaviour for circular and entangled. ?? no? fwd in constructor solved?
     -use @as default? instead of #?
      so Map[   @[a;b;c];       @[a;b;c];       ]
     options[isVisible:@]   vs  options[isVisible:Bool.true()]
     Car(weels:@[....] doors:@[])
     RenamePath[@"Bar" to:@"Beer"]
-    -operators <-  ->   \/ /\ ?? may be not?
+    -operators <-  ->   \/ /\    <><  ><>  <=<  >=> ?? may be not?
     -usually ~ is give me internal, so rename all .binary repr?
+
 Parsing errors:
   variable declare multiple times do not give any info, not even the file
  -'Add that a file can be also a commented class? but then this comment would be lost.

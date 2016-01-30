@@ -35,13 +35,15 @@ public class SumMethods {
     if(mtU==null){throw Errors42.errorParameterMismatch(path, mem1,mem2, isReplacedParOk(index,mt1,mt2),false,true);}
     ExpCore eU=eU(index,mem2.getP(),mt1,mt2,m1,m2, mRes);
     MethodWithType mwtU=new MethodWithType(Doc.empty(),mRes,mtU,Optional.of(eU),mem2.getP() );   
-    checkConflict(path, mRes, pathCb, mwtU);      
+    checkConflict(path, mRes, pathCb, mwtU);
+    boolean replOk=isReplacedParOk(index,mt1,mt2);
+    if(!replOk){throw Errors42.errorParameterMismatch(path, mem1,mem2, false,true,true);}
     return finalResult(lib, path, mwtU);    
   }
   private static ClassB finalResult(ClassB lib, List<String> path, MethodWithType mwtU) {
     if(path.isEmpty()){
       return lib.withMember(mwtU);
-      }
+      }//if may be omitted?
     return ClassOperations.onClassNavigateToPathAndDo(lib,path,cbi->cbi.withMember(mwtU));
   }
   private static void checkParSize(int index,List<String> path, MethodSelector m1, MethodSelector m2, MethodSelector mRes, Member mem1, Member mem2, MethodType mt1, MethodType mt2) {
