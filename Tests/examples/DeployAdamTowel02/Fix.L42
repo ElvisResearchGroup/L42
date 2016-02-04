@@ -1,57 +1,58 @@
 {
 GetMyName:{
   type method
-  S (type Any that)
+  Outer2::S (type Any that)
     Introspection(clazz:that).externalTypeToS()
   }
+Message:{Opt:{
+  TOpt:{interface method Outer2 get() }
+  TEmpty:{<:TOpt
+    method get()
+      error Outer4::Guard::Operation
+        "TEmpty.get() Value not present in Optional"
+  }}}
 Guard:{interface ParseFail:{interface <:Guard}}
 Bool:{
-  ParseFail:Message::$[]<<{<:Guard::ParseFail}
+  ParseFail:Outer2::Message::$[]<<{<:Guard::ParseFail}
   type method
-  Any parseError(S that)
-    ParseFail(text:
-      S"The provided string is not a valid bool: "[that]""
-      )
+  Any parseError(Outer2::S that)
+    ParseFail"The provided string is not a valid bool: "[that]""
   }
 N:{
-  ParseFail:Message::$[]<<{<:Guard::ParseFail}
+  ParseFail:Outer2::Message::$[]<<{<:Guard::ParseFail}
   type method
-  Any parseError(S that)
-    ParseFail(text:
-      S"The provided string is not a valid Int32: "[that]""
-      )
+  Any parseError(Outer2::S that)
+    ParseFail"The provided string is not a valid Int32: "[that]""
+  }
+S:{
+  SubStringNotPresent:Outer2::Message::$[]<<{<:Guard}  
+  type method Void subStringNotPresent(Outer2::S string, Outer2::S subString)
+    error SubStringNotPresent"string["[string]"] do not contains ["[subString]"" 
   }
 Selector:{
-  ParseFail:Message::$[]<<{<:Guard::ParseFail}
+  ParseFail:Outer2::Message::$[]<<{<:Guard::ParseFail}
   type method
-  Any parseError(S that)
-    ParseFail(text:
-      S"The provided string is not a valid selector: "[that]""
-      )
+  Any parseError(Outer2::S that)
+    ParseFail"The provided string is not a valid selector: "[that]""
   }
 Path:{
-  ParseFail:Message::$[]<<{<:Guard::ParseFail}
+  ParseFail:Outer2::Message::$[]<<{<:Guard::ParseFail}
   type method
-  Any parseError(S that)
-    ParseFail(text:
-      S"The provided string is not a valid path: "[that]""
-      )
+  Any parseError(Outer2::S that)
+    ParseFail"The provided string is not a valid path: "[that]""
   type method
-  Any parseError(S that,Message cause)
-    ParseFail(text:
-      S"The provided string is not a valid internalized path: "[that]""
-      cause:cause
-      )
+  Any parseError(Outer2::S that,Outer2::Message cause)
+    ParseFail"The provided string is not a valid internalized path: "[that]""(cause)
   }
   MetaGuard:{interface
     RecordWrapper:{
-    type method S libToS(Library that) (
+    type method Outer3::S libToS(Library that) (
       i=Introspection(lib:that)
       ncs=i.nestedClasses().vals()
-      S"["[S.nl()]""[with nc in ncs (
-        use[nc.pathFromRoot();S":";nc.doc();S.nl()]
+      Outer3::S"["[Outer3::S.nl()]""[with nc in ncs (
+        use[nc.pathFromRoot();Outer3::S":";nc.doc();Outer3::S.nl()]
         )]"]"
       )
     }
-  }
-}
+  }'Ho messo Outer4::S e ora da un errore senza info che devo debuggare
+} 

@@ -41,9 +41,9 @@ exception ConstructorUnavailable, MetaGuard{
   action={ read method capsule Outer0 with(capsule Outer0 that) that} 'discussion on k modifiers
   var acc=that
   acc:=Refactor.compose(left:acc
-    right:Refactor::RenameSelector[
-      Selector"with(that)" of:p to:freshW]<<action)
-  acc:=Refactor::SumMethods[k.selector() and:freshW of:p over:S"that" to:withK]<<acc
+    right:Refactor::RenameSelector(
+      Selector"with(that)" of:p to:freshW)<<action)
+  acc:=Refactor::SumMethods(k.selector() and:freshW of:p over:S"that" to:withK)<<acc
   return acc  
   }
 }

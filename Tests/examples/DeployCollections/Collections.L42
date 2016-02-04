@@ -2,13 +2,13 @@
 type method '@private
 Library generateVector(type Any that, Library lib){
   var res=lib
-  res:=Refactor::RenamePath[Path"VectorStruct" to:Path"Outer0"]<<res
-  res:=Refactor::Redirect[Path"Elem" to: that]<<res
-  res:=Refactor::MakePrivatePath[Path"Cell"]<<res
-  res:=Refactor::MakePrivatePath[Path"CellNext"]<<res
-  res:=Refactor::MakePrivatePath[Path"CellEnd"]<<res
-  'res:=Refactor::MakePrivatePath[Path"Iterator"]<<res
-  'res:=Refactor::MakePrivatePath[Path"VarIterator"]<<res
+  res:=Refactor::RenamePath(Path"VectorStruct" to:Path"Outer0")<<res
+  res:=Refactor::Redirect(Path"Elem" to: that)<<res
+  res:=Refactor::MakePrivatePath(Path"Cell")<<res
+  res:=Refactor::MakePrivatePath(Path"CellNext")<<res
+  res:=Refactor::MakePrivatePath(Path"CellEnd")<<res
+  'res:=Refactor::MakePrivatePath(Path"Iterator")<<res
+  'res:=Refactor::MakePrivatePath(Path"VarIterator")<<res
   return res
   catch exception Guard err error err
   }

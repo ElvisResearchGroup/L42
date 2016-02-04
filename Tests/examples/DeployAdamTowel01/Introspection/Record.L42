@@ -22,7 +22,7 @@
     with mirror=this.that() (
       on MirrorPr::Lib return Doc(
         SafeOperators.renameClass(mirror.lib(), src:path, dest:Path"Outer0")
-        'This can not be done for circular reference Refactor::RenamePath[path to:Path"Outer0"]<<mirror.lib()
+        'This can not be done for circular reference Refactor::RenamePath(path to:Path"Outer0")<<mirror.lib()
         )
       )
     error Assert::CodeNotReachable"Record2"

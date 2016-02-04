@@ -1,4 +1,5 @@
-{ _private(Library _binaryRepr)<: Concept::ToS Concept::Equals Concept::Named'@private
+{ _private(Library _binaryRepr)
+<: Concept::ToS Concept::Equals Concept::Named'@private
   method myName()GetMyName(Outer0)
 
   type method Outer0 #stringParser(Library that) Outer0._private(_binaryRepr:that)
@@ -45,23 +46,22 @@
   Bool beginsWith(S that) this(end:that.size())==that
 
   method '@private
-  N auxFirstIndexOf(S that) { 'TODO: discuss if should be exception
+  N auxFirstIndexOf(S that) {
     var current=0N
     while current<this.size() (
       if this(start:current).beginsWith(that) (return current)
       current+=1N
       )
     return 0N-1N
-    error SubstringNotPresent(string:this,subString:that)
-    'TODO: put a function producing the error, and then fix the function and put a real exception in AdamTowel2
+    error Outer0.subStringNotPresent(string:this,subString:that)
     }
   method
-  N firstIndexOf(S that) { 'TODO: discuss if should be exception
+  N firstIndexOf(S that) { 'TODO: discuss if should be exception or error
     res=this.auxFirstIndexOf(that)
     if res>=0N (return res)
-    error SubstringNotPresent(string:this,subString:that)
+    error Outer0.subStringNotPresent(string:this,subString:that)
     }
-  SubstringNotPresent:{(S string, S subString)}
+  type method Void subStringNotPresent(S string, S subString) void
   
   method
   Bool contains(S that){

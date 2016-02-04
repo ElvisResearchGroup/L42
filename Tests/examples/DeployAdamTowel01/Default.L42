@@ -3,18 +3,20 @@ DecorationUnfeasable:Message::$[]<<{<:MetaGuard}
 
 
 Parsable:{
-  type method Library<<(Library that) exception DecorationUnfeasable{
+  type method Library<<(Library that)
+  exception DecorationUnfeasable{
     return Extends[{
-    'ParseFailure:Message:S[]<<{<:Guard} no need, related to invariant?
-    type method' if you do not implement it, it is a constructor?
-    Outer0 fromS(read Concept::ToS that)    
-    'will be in the interface when there is type refinement,
-    'and will be imm in the interface, and classes can refine to their outer0, ant to capsule if makes sense
-    type method
-    Outer0 #stringParser(Library that) 
-      Outer0.fromS(S.#stringParser(that))
+      'ParseFailure:Message:S[]<<{<:Guard} no need, related to invariant?
+      type method' if you do not implement it, it is a constructor?
+      Outer0 fromS(read Concept::ToS that)    
+      'will be in the interface when there is type refinement,
+      'and will be imm in the interface, and classes can refine to their outer0, ant to capsule if makes sense
+      type method
+      Outer0 #stringParser(Library that) 
+        Outer0.fromS(S.#stringParser(that))
       }]<<that
-    catch exception MetaGuard mg exception DecorationUnfeasable"Parsable"(mg)
+    exception on MetaGuard
+      DecorationUnfeasable"Parsable"
     }
   }
 SealState:{
@@ -25,51 +27,16 @@ SealState:{
     }
   }
   
-Invariant:{
-  type method Bool isInvariant(Introspection::NestedClass that) {
-    interf=that.transitivelyImplementedInterfaces()
-    with ti in interf.vals() (
-      with tAny=ti.referencedPath().externalType() (
-        on type Concept::Invariant return Bool.true()
-        )
-      catch error Guard::Operation void
-      void
-      )
-    return Bool.false()
-    }
-  type method Library<<(Library that) exception DecorationUnfeasable{
-    i=Introspection(lib:that)
-    isInv=this.isInvariant(i)
-    if !isInv (return that)
-    state=i.state()
-    if state.isEmpty() (exception DecorationUnfeasable"State is empty")
-    k=state.top()
-    if k.isPrivate() (exception DecorationUnfeasable"State is private")
-    return that
-    'tmp={type method mdf Outer0 k(args) }[rename k.selector() in fresh]+
-    '  {<:Concept::Invariant 
-    '  type method
-    '  mdf Outer0 (mdf Outer0 new) {
-    '  if !new.invariant() error ...
-    '  return new}
-    '  }[rename #apply(new) in k.selector()#]
-    ' sumMethod Outer0 fresh k.selector()#
-    'for  setters:
-    '{ mut method Void (Void fresh){
-    '  if !this.invariant() error ...
-    '  return fresh
-    '  }}
-    }
-  }
-
 DataFromToS:{' in the future we can add also hashCode and > =>
   type method Library<<(Library that) exception DecorationUnfeasable{
     return Extends[{<:Concept::ToS
     method Bool != (Outer0 that) !(this==that)
     read method Bool ==(read Outer0 that) this.toS()==that.toS()
     }]<<Equals<<that
-    catch exception DecorationUnfeasable mg exception mg
-    catch exception MetaGuard mg exception DecorationUnfeasable""(mg)
+    catch exception DecorationUnfeasable mg
+      exception mg
+    exception on MetaGuard
+      DecorationUnfeasable""
     }
   }
 
@@ -82,27 +49,19 @@ Equals:{
         }
       read method Bool ==(read Outer0 that)
       }]<<that
-    catch exception MetaGuard x exception DecorationUnfeasable"Equals"(x)
+    exception on MetaGuard
+      DecorationUnfeasable"Equals"
     }
   }
 Named:{
   type method Library<<(Library that) exception DecorationUnfeasable{
     return Extends[{<:Concept::Named
-        method myName() Introspection(clazz:Outer0).externalTypeToS()
+        method myName()
+          Introspection(clazz:Outer0).externalTypeToS()
         }]<<that
     'can improve error: if is method defined against method implemented
-    catch exception MetaGuard x exception DecorationUnfeasable"Named"(x)
+    exception on MetaGuard
+      DecorationUnfeasable"Named"
     }
   }
-    'i=Introspection(lib:that)
-    'myName=i.methodFromSelector(Selector"myName()")
-    'catch exception MetaGuard::MethodUnavailable return that
-    'if myName.methodKind()!=S"AbstractMethod" ( return that)
-    'Library myNameImpl={
-    '  if myName.thisMdf()==S"Immutable" (return {
-    '    method S myName()(
-    '      doc=Introspection(clazz:Outer0).record().docOf(path:Path"MyClass")
-    '      nameAndPrefix=doc.annotations().top().toS()
-    '      nameAndPrefix(start:nameAndPrefix.firstIndexOf(S"::")+2N)
-    '      )})
 }

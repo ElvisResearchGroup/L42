@@ -100,6 +100,8 @@ Outer2::Url #url()
 read method 
 Outer2::Url url() 
 type method 
+Library moveToAbstract(Outer2::Path that, Library of) 
+type method 
 Library exposeAsLibrary(Library that, Outer2::Path path) exception Outer2::MetaGuard::NestedClassUnavailable, Outer2::MetaGuard::PrivacyCoupuled 
 type method 
 Void checkTargetExists(Library that, Outer2::Path path) exception Outer2::MetaGuard::NestedClassUnavailable 
@@ -115,7 +117,7 @@ PreferentialComposition:{'members of PreferentialComposition
 
 $:{interface 
 method 
-Library solveConflict(Library that, Outer1::SrcDest location) exception Outer2::MetaGuard }
+Library solveConflict(Library that, Outer1::SrcDest location) }
 SrcDest:{
 type method 
 Outer0 #apply(Outer2::Path path, Outer2::Selector src, Outer2::Selector dest) 
@@ -291,11 +293,6 @@ SealState:{' how to specify which factory to keep out? what getters
 
 type method 
 Library #leftleft(Library that) }
-Invariant:{
-type method 
-Outer2::Bool isInvariant(Outer2::Introspection::NestedClass that) 
-type method 
-Library #leftleft(Library that) exception Outer1::DecorationUnfeasable }
 DataFromToS:{' in the future we can add also hashCode and > =>
 
 type method 
@@ -348,14 +345,9 @@ type method
 Library compose(Library left, Library right) exception Outer1::MetaGuard::ClassClash, Outer1::MetaGuard::MethodClash 
 type method 
 Void checkTargetExists(Library that, Outer1::Path path) exception Outer1::MetaGuard::NestedClassUnavailable 
-Squares:'  toPutAs private
-{'findMeSquares
-
-type method 
-Library #leftleft(Library that) }
 Redirect:{
 type method 
-Outer0 #add(Outer2::Path that, type Any to) 
+Outer0 #apply(Outer2::Path that, type Any to) 
 mut method 
 Outer2::Path #that() 
 read method 
@@ -365,14 +357,10 @@ type Any #to()
 read method 
 type Any to() 
 method 
-Library #leftleft(Library that) exception Outer2::MetaGuard::NestedClassUnavailable, Outer2::MetaGuard::InvalidOnTopLevel, Outer2::MetaGuard::SourceUnfit, Outer2::MetaGuard::MethodClash, Outer2::MetaGuard::IncoherentRedirectMapping 
-type method 
-type Outer0 #begin() 
-method 
-Outer0 #end() }
+Library #leftleft(Library that) exception Outer2::MetaGuard::NestedClassUnavailable, Outer2::MetaGuard::InvalidOnTopLevel, Outer2::MetaGuard::SourceUnfit, Outer2::MetaGuard::MethodClash, Outer2::MetaGuard::IncoherentRedirectMapping }
 RenameSelector:{
 type method 
-Outer0 #add(Outer2::Selector that, Outer2::Path of, Outer2::Selector to) 
+Outer0 #apply(Outer2::Selector that, Outer2::Path of, Outer2::Selector to) 
 mut method 
 Outer2::Selector #that() 
 read method 
@@ -386,14 +374,10 @@ Outer2::Selector #to()
 read method 
 Outer2::Selector to() 
 method 
-Library #leftleft(Library that) exception Outer2::MetaGuard::MemberUnavailable, Outer2::MetaGuard::MethodClash 
-type method 
-type Outer0 #begin() 
-method 
-Outer0 #end() }
+Library #leftleft(Library that) exception Outer2::MetaGuard::MemberUnavailable, Outer2::MetaGuard::MethodClash }
 RenamePath:{
 type method 
-Outer0 #add(Outer2::Path that, Outer2::Path to) 
+Outer0 #apply(Outer2::Path that, Outer2::Path to) 
 mut method 
 Outer2::Path #that() 
 read method 
@@ -403,14 +387,10 @@ Outer2::Path #to()
 read method 
 Outer2::Path to() 
 method 
-Library #leftleft(Library that) exception Outer2::MetaGuard::NestedClassUnavailable, Outer2::MetaGuard::MethodClash, Outer2::MetaGuard::ClassClash 
-type method 
-type Outer0 #begin() 
-method 
-Outer0 #end() }
+Library #leftleft(Library that) exception Outer2::MetaGuard::NestedClassUnavailable, Outer2::MetaGuard::MethodClash, Outer2::MetaGuard::ClassClash }
 RemoveImplementationSelector:{
 type method 
-Outer0 #add(Outer2::Selector that, Outer2::Path of) 
+Outer0 #apply(Outer2::Selector that, Outer2::Path of) 
 mut method 
 Outer2::Selector #that() 
 read method 
@@ -420,14 +400,10 @@ Outer2::Path #of()
 read method 
 Outer2::Path of() 
 method 
-Library #leftleft(Library that) exception Outer2::MetaGuard::MemberUnavailable 
-type method 
-type Outer0 #begin() 
-method 
-Outer0 #end() }
+Library #leftleft(Library that) exception Outer2::MetaGuard::MemberUnavailable }
 MoveImplementationSelector:{
 type method 
-Outer0 #add(Outer2::Selector that, Outer2::Path of, Outer2::Selector to) 
+Outer0 #apply(Outer2::Selector that, Outer2::Path of, Outer2::Selector to) 
 mut method 
 Outer2::Selector #that() 
 read method 
@@ -441,27 +417,19 @@ Outer2::Selector #to()
 read method 
 Outer2::Selector to() 
 method 
-Library #leftleft(Library that) exception Outer2::MetaGuard::MemberUnavailable, Outer2::MetaGuard::MethodClash 
-type method 
-type Outer0 #begin() 
-method 
-Outer0 #end() }
+Library #leftleft(Library that) exception Outer2::MetaGuard::MemberUnavailable, Outer2::MetaGuard::MethodClash }
 RemoveImplementationPath:{
 type method 
-Outer0 #add(Outer2::Path that) 
+Outer0 #apply(Outer2::Path that) 
 mut method 
 Outer2::Path #that() 
 read method 
 Outer2::Path that() 
 method 
-Library #leftleft(Library that) exception Outer2::MetaGuard::NestedClassUnavailable, Outer2::MetaGuard::PrivacyCoupuled 
-type method 
-type Outer0 #begin() 
-method 
-Outer0 #end() }
+Library #leftleft(Library that) exception Outer2::MetaGuard::NestedClassUnavailable, Outer2::MetaGuard::PrivacyCoupuled }
 AddDocumentationSelector:{
 type method 
-Outer0 #add(Outer2::Selector that, Outer2::Path of, Outer2::Introspection::Doc doc) 
+Outer0 #apply(Outer2::Selector that, Outer2::Path of, Outer2::Introspection::Doc doc) 
 mut method 
 Outer2::Selector #that() 
 read method 
@@ -475,14 +443,10 @@ Outer2::Introspection::Doc #doc()
 read method 
 Outer2::Introspection::Doc doc() 
 method 
-Library #leftleft(Library that) exception Outer2::MetaGuard::MemberUnavailable 
-type method 
-type Outer0 #begin() 
-method 
-Outer0 #end() }
+Library #leftleft(Library that) exception Outer2::MetaGuard::MemberUnavailable }
 AddDocumentationPath:{
 type method 
-Outer0 #add(Outer2::Path that, Outer2::Introspection::Doc doc) 
+Outer0 #apply(Outer2::Path that, Outer2::Introspection::Doc doc) 
 mut method 
 Outer2::Path #that() 
 read method 
@@ -492,27 +456,19 @@ Outer2::Introspection::Doc #doc()
 read method 
 Outer2::Introspection::Doc doc() 
 method 
-Library #leftleft(Library that) exception Outer2::MetaGuard::NestedClassUnavailable, Outer2::MetaGuard::InvalidOnTopLevel 
-type method 
-type Outer0 #begin() 
-method 
-Outer0 #end() }
+Library #leftleft(Library that) exception Outer2::MetaGuard::NestedClassUnavailable, Outer2::MetaGuard::InvalidOnTopLevel }
 MakePrivatePath:{
 type method 
-Outer0 #add(Outer2::Path that) 
+Outer0 #apply(Outer2::Path that) 
 mut method 
 Outer2::Path #that() 
 read method 
 Outer2::Path that() 
 method 
-Library #leftleft(Library that) exception Outer2::MetaGuard::MemberUnavailable, Outer2::MetaGuard::InvalidOnTopLevel 
-type method 
-type Outer0 #begin() 
-method 
-Outer0 #end() }
+Library #leftleft(Library that) exception Outer2::MetaGuard::MemberUnavailable, Outer2::MetaGuard::InvalidOnTopLevel }
 MakePrivateSelector:{
 type method 
-Outer0 #add(Outer2::Selector that, Outer2::Path of) 
+Outer0 #apply(Outer2::Selector that, Outer2::Path of) 
 mut method 
 Outer2::Selector #that() 
 read method 
@@ -522,15 +478,10 @@ Outer2::Path #of()
 read method 
 Outer2::Path of() 
 method 
-Library #leftleft(Library that) exception Outer2::MetaGuard::MemberUnavailable 
+Library #leftleft(Library that) exception Outer2::MetaGuard::MemberUnavailable }
+SumMethods:{
 type method 
-type Outer0 #begin() 
-method 
-Outer0 #end() }
-SumMethods:{'#add(Selector that,Selector and, Path of, Selector to)
-
-type method 
-Outer0 #add(Outer2::Selector that, Outer2::Selector and, Outer2::Path of, Outer2::S over, Outer2::Selector to) 
+Outer0 #apply(Outer2::Selector that, Outer2::Selector and, Outer2::Path of, Outer2::S over, Outer2::Selector to) 
 mut method 
 Outer2::Selector #that() 
 read method 
@@ -552,11 +503,7 @@ Outer2::Selector #to()
 read method 
 Outer2::Selector to() 
 method 
-Library #leftleft(Library that) exception Outer2::MetaGuard::MemberUnavailable, Outer2::MetaGuard::MethodClash, Outer2::MetaGuard::ParameterMismatch 
-type method 
-type Outer0 #begin() 
-method 
-Outer0 #end() }
+Library #leftleft(Library that) exception Outer2::MetaGuard::MemberUnavailable, Outer2::MetaGuard::MethodClash, Outer2::MetaGuard::ParameterMismatch }
 Tools:{
 type method 
 Outer2::S getToSOrName(read Any that) }}
@@ -1174,71 +1121,99 @@ type method
 Library #leftleft(Library that) }
 SourceUnfit:{<:Outer1, Outer1
 type method 
+Outer2::S libName() 
+type method 
 Outer0 #apply(Outer2::Introspection::Record record, Library lib) 
 method 
 Outer2::Bool #bangequal(Outer0 that) 
 method 
 Outer2::Bool #equalequal(Outer0 that) 
+type method 
+Void #apply(Library lift) exception Outer0 
 method 
 Library lib() }
 IncoherentRedirectMapping:{<:Outer1, Outer1
 type method 
+Outer2::S libName() 
+type method 
 Outer0 #apply(Outer2::Introspection::Record record, Library lib) 
 method 
 Outer2::Bool #bangequal(Outer0 that) 
 method 
 Outer2::Bool #equalequal(Outer0 that) 
+type method 
+Void #apply(Library lift) exception Outer0 
 method 
 Library lib() }
 ClassClash:{<:Outer1, Outer1
 type method 
+Outer2::S libName() 
+type method 
 Outer0 #apply(Outer2::Introspection::Record record, Library lib) 
 method 
 Outer2::Bool #bangequal(Outer0 that) 
 method 
 Outer2::Bool #equalequal(Outer0 that) 
+type method 
+Void #apply(Library lift) exception Outer0 
 method 
 Library lib() }
 MethodClash:{<:Outer1, Outer1
 type method 
+Outer2::S libName() 
+type method 
 Outer0 #apply(Outer2::Introspection::Record record, Library lib) 
 method 
 Outer2::Bool #bangequal(Outer0 that) 
 method 
 Outer2::Bool #equalequal(Outer0 that) 
+type method 
+Void #apply(Library lift) exception Outer0 
 method 
 Library lib() }
 InvalidOnTopLevel:{<:Outer1, Outer1
 type method 
+Outer2::S libName() 
+type method 
 Outer0 #apply(Outer2::Introspection::Record record, Library lib) 
 method 
 Outer2::Bool #bangequal(Outer0 that) 
 method 
 Outer2::Bool #equalequal(Outer0 that) 
+type method 
+Void #apply(Library lift) exception Outer0 
 method 
 Library lib() }
 PrivacyCoupuled:{<:Outer1, Outer1
 type method 
-Outer0 #apply(Outer2::Introspection::Record record, Library lib) 
-method 
-Outer2::Bool #bangequal(Outer0 that) 
-method 
-Outer2::Bool #equalequal(Outer0 that) 
-method 
-Library lib() }
-ParameterMismatch:{<:Outer1, Outer1
+Outer2::S libName() 
 type method 
 Outer0 #apply(Outer2::Introspection::Record record, Library lib) 
 method 
 Outer2::Bool #bangequal(Outer0 that) 
 method 
 Outer2::Bool #equalequal(Outer0 that) 
+type method 
+Void #apply(Library lift) exception Outer0 
+method 
+Library lib() }
+ParameterMismatch:{<:Outer1, Outer1
+type method 
+Outer2::S libName() 
+type method 
+Outer0 #apply(Outer2::Introspection::Record record, Library lib) 
+method 
+Outer2::Bool #bangequal(Outer0 that) 
+method 
+Outer2::Bool #equalequal(Outer0 that) 
+type method 
+Void #apply(Library lift) exception Outer0 
 method 
 Library lib() }
 MemberUnavailable:{interface <:Outer1}
 DispatchMemberUnavailable:{
 type method 
-Outer1::MemberUnavailable #apply(Library that) }
+Void #apply(Library that) exception Outer1::MemberUnavailable }
 NestedClassUnavailable:{<:Outer1::MemberUnavailable, Outer1
 type method 
 Outer0 #apply(Outer2::Path path, Outer2::Bool isPrivate) 
@@ -1252,10 +1227,14 @@ read method
 Outer2::Bool isPrivate() 
 type method 
 Outer0 #apply(Outer2::Introspection::Record record, Library lib) 
+type method 
+Outer2::S libName() 
 method 
 Outer2::Bool #bangequal(Outer0 that) 
 method 
-Outer2::Bool #equalequal(Outer0 that) }
+Outer2::Bool #equalequal(Outer0 that) 
+type method 
+Void #apply(Library lift) exception Outer0 }
 MethodUnavailable:{<:Outer1::MemberUnavailable, Outer1
 type method 
 Outer0 #apply(Outer2::Path path, Outer2::Selector selector, Outer2::Bool isPrivate) 
@@ -1273,10 +1252,14 @@ read method
 Outer2::Bool isPrivate() 
 type method 
 Outer0 #apply(Outer2::Introspection::Record record, Library lib) 
+type method 
+Outer2::S libName() 
 method 
 Outer2::Bool #bangequal(Outer0 that) 
 method 
-Outer2::Bool #equalequal(Outer0 that) }}
+Outer2::Bool #equalequal(Outer0 that) 
+type method 
+Void #apply(Library lift) exception Outer0 }}
 Selector:{<:Outer1::Concept::ToS, Outer1::Concept::Equals, Outer1::Concept::Named
 type method 
 Outer0 fromS(Outer1::Concept::ToS that) 
@@ -1781,7 +1764,7 @@ Guard:{' exception as Guard bureocracy, error as Guard detection
 '  as exceptions, Guards objects are a way to report/guard complex operations,
 ' where checking the shape of the input can be unconvenient.
 'as errors, they represent precondition violations. 
-'Turning an exception Gard into an error Gard
+'Turning an exception Guard into an error Guard
 ' is equivalent of declaring that such misuse should not happen (blame on the caller),
 ' still, there is no bug in the program at this stage. Is legit for the caller to try and be blamed
 interface <:Outer1::Message'all other guards should implement this one
@@ -1920,7 +1903,7 @@ Outer0::TOpt that()
 TOpt:{interface 
 method 
 Outer2 get() }
-TEmpty:{<:Outer1::TOpt
+TEmpty:{<:Outer1::TOpt, Outer1::TOpt
 type method 
 Outer0 #apply() }
 TOf:{<:Outer1::TOpt
@@ -2041,17 +2024,8 @@ method
 Outer1::Bool beginsWith(Outer0 that) 
 method 
 Outer1::N firstIndexOf(Outer0 that) 
-SubstringNotPresent:{
 type method 
-Outer0 #apply(Outer1 string, Outer1 subString) 
-mut method 
-Outer1 #string() 
-read method 
-Outer1 string() 
-mut method 
-Outer1 #subString() 
-read method 
-Outer1 subString() }
+Void subStringNotPresent(Outer0 string, Outer0 subString) 
 method 
 Outer1::Bool contains(Outer0 that) 
 method 
@@ -2086,7 +2060,45 @@ Outer0 #add(Outer2::Concept::ToS that, Outer2::Concept::ToS separedBy)
 method 
 Outer0 #end() 
 method 
-Outer1 #stringParser(Library that) }}
+Outer1 #stringParser(Library that) }
+SubStringNotPresent:{<:Outer2::Guard, Outer2::Message
+type method 
+Outer0 #apply(Outer1 _text, Outer2::Message::Opt cause) 
+mut method 
+Outer1 #_text() 
+read method 
+Outer1 _text() 
+mut method 
+Outer2::Message::Opt #cause() 
+read method 
+Outer2::Message::Opt cause() 
+type method 
+Outer0 #stringParser(Library that) 
+method 
+Outer0 #apply(Outer2::Message that) 
+method 
+Outer2::Bool #bangequal(Outer0 that) 
+method 
+Outer2::Bool #equalequal(Outer0 that) 
+type method 
+Outer0 #apply(Outer1 text) 
+type method 
+Outer0 #apply(Outer1 text, Outer2::Message cause) 
+method 
+Outer0::SConcat #begin() 
+SConcat:{
+type method 
+Outer0 #apply(Outer2 accumulator) 
+mut method 
+Outer2 #accumulator() 
+read method 
+Outer2 accumulator() 
+method 
+Outer0 #add(Outer3::Concept::ToS that) 
+method 
+Outer0 #end() 
+method 
+Outer1 #stringParser(Library that) }}}
 N:{<:Outer1::Concept::ToS, Outer1::Concept::Equals, Outer1::Concept::Named
 type method 
 Outer0 fromS(Outer1::Concept::ToS that) 

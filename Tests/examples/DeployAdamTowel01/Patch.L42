@@ -9,17 +9,17 @@
     var acc=that
     with ren in rens.vals() (
       map:=map.#add(ren)
-      acc:=Refactor::MoveImplementationSelector[
-        ren.src() of:ren.path() to:ren.dest()]<<acc
+      acc:=Refactor::MoveImplementationSelector(
+        ren.src() of:ren.path() to:ren.dest())<<acc
       catch exception MetaGuard err
         error Assert::ObservedBug"Path.#lessless(that)"(err)
       void
       )
-    acc:=Refactor::RenamePath[
-      this.that() to:Path"Outer0"]<<acc
+    acc:=Refactor::RenamePath(
+      this.that() to:Path"Outer0")<<acc
     with mapi in map.vals() (
-      acc:=Refactor::MakePrivateSelector[
-        mapi.dest() of:mapi.path()]<<acc
+      acc:=Refactor::MakePrivateSelector(
+        mapi.dest() of:mapi.path())<<acc
       )
     return acc
     catch exception MetaGuard::MemberUnavailable err

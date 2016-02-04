@@ -238,7 +238,12 @@ ListCode:{
 type method 
 Library #apply() }
 type method 
-Library list(type Any that) }
+Library list(type Any that) 
+type method 
+Library eqList(type Any that) 
+ListCodeEq:{
+type method 
+Library #apply() }}
 Default:{
 DecorationUnfeasable:{<:Outer2::MetaGuard, Outer2::Message
 type method 
@@ -818,8 +823,16 @@ Void #checkEnd()
 read method 
 Outer2::Member #inner() 
 read method 
-Void #close() }}
-Method:{<:Outer1::Member
+Void #close() }
+method 
+Outer2::Bool contains(Outer1::Member that) 
+method 
+Outer0 remove(Outer1::Member that) 
+method 
+Outer2::Bool #equalequal(Outer0 that) 
+method 
+Outer2::Bool equals(Any that) }
+Method:{<:Outer1::Member, Outer2::Concept::Equals
 method 
 Outer2::Bool #equalequal(Outer0 that) 
 method 
@@ -917,9 +930,17 @@ Void #checkEnd()
 read method 
 Outer2::Method #inner() 
 read method 
-Void #close() }}
+Void #close() }
+method 
+Outer2::Bool contains(Outer1::Method that) 
+method 
+Outer0 remove(Outer1::Method that) 
+method 
+Outer2::Bool #equalequal(Outer0 that) 
+method 
+Outer2::Bool equals(Any that) }
 NestedClass:{'findMeNestedClass
-<:Outer1::Member
+<:Outer1::Member, Outer2::Concept::Equals
 method 
 Outer2::Bool #equalequal(Outer0 that) 
 method 
@@ -1039,7 +1060,15 @@ Void #checkEnd()
 read method 
 Outer2::NestedClass #inner() 
 read method 
-Void #close() }}
+Void #close() }
+method 
+Outer2::Bool contains(Outer1::NestedClass that) 
+method 
+Outer0 remove(Outer1::NestedClass that) 
+method 
+Outer2::Bool #equalequal(Outer0 that) 
+method 
+Outer2::Bool equals(Any that) }
 Type:{<:Outer2::Concept::ToS, Outer2::Concept::Named
 method 
 Outer2::S allAsString() 
@@ -1132,55 +1161,79 @@ Outer2::Type #inner()
 read method 
 Void #close() }}}
 MetaGuard:{interface <:Outer1::Guard
+RecordWrapper:' can not be private, I need to Patch it.
+{
+type method 
+Outer2::S libToS(Library that) 
+type method 
+Library recordWrapperToSTrait() 
+type method 
+Library recordWrapperTrait() 
+type method 
+Library #leftleft(Library that) }
 SourceUnfit:{<:Outer1, Outer1
 type method 
-Outer0 #apply(Outer2::Introspection::Record record) 
+Outer0 #apply(Outer2::Introspection::Record record, Library lib) 
 method 
 Outer2::Bool #bangequal(Outer0 that) 
 method 
-Outer2::Bool #equalequal(Outer0 that) }
+Outer2::Bool #equalequal(Outer0 that) 
+method 
+Library lib() }
 IncoherentRedirectMapping:{<:Outer1, Outer1
 type method 
-Outer0 #apply(Outer2::Introspection::Record record) 
+Outer0 #apply(Outer2::Introspection::Record record, Library lib) 
 method 
 Outer2::Bool #bangequal(Outer0 that) 
 method 
-Outer2::Bool #equalequal(Outer0 that) }
+Outer2::Bool #equalequal(Outer0 that) 
+method 
+Library lib() }
 ClassClash:{<:Outer1, Outer1
 type method 
-Outer0 #apply(Outer2::Introspection::Record record) 
+Outer0 #apply(Outer2::Introspection::Record record, Library lib) 
 method 
 Outer2::Bool #bangequal(Outer0 that) 
 method 
-Outer2::Bool #equalequal(Outer0 that) }
+Outer2::Bool #equalequal(Outer0 that) 
+method 
+Library lib() }
 MethodClash:{<:Outer1, Outer1
 type method 
-Outer0 #apply(Outer2::Introspection::Record record) 
+Outer0 #apply(Outer2::Introspection::Record record, Library lib) 
 method 
 Outer2::Bool #bangequal(Outer0 that) 
 method 
-Outer2::Bool #equalequal(Outer0 that) }
+Outer2::Bool #equalequal(Outer0 that) 
+method 
+Library lib() }
 InvalidOnTopLevel:{<:Outer1, Outer1
 type method 
-Outer0 #apply(Outer2::Introspection::Record record) 
+Outer0 #apply(Outer2::Introspection::Record record, Library lib) 
 method 
 Outer2::Bool #bangequal(Outer0 that) 
 method 
-Outer2::Bool #equalequal(Outer0 that) }
+Outer2::Bool #equalequal(Outer0 that) 
+method 
+Library lib() }
 PrivacyCoupuled:{<:Outer1, Outer1
 type method 
-Outer0 #apply(Outer2::Introspection::Record record) 
+Outer0 #apply(Outer2::Introspection::Record record, Library lib) 
 method 
 Outer2::Bool #bangequal(Outer0 that) 
 method 
-Outer2::Bool #equalequal(Outer0 that) }
+Outer2::Bool #equalequal(Outer0 that) 
+method 
+Library lib() }
 ParameterMismatch:{<:Outer1, Outer1
 type method 
-Outer0 #apply(Outer2::Introspection::Record record) 
+Outer0 #apply(Outer2::Introspection::Record record, Library lib) 
 method 
 Outer2::Bool #bangequal(Outer0 that) 
 method 
-Outer2::Bool #equalequal(Outer0 that) }
+Outer2::Bool #equalequal(Outer0 that) 
+method 
+Library lib() }
 MemberUnavailable:{interface <:Outer1}
 DispatchMemberUnavailable:{
 type method 
@@ -1197,7 +1250,7 @@ Outer2::Bool #isPrivate()
 read method 
 Outer2::Bool isPrivate() 
 type method 
-Outer0 #apply(Outer2::Introspection::Record record) 
+Outer0 #apply(Outer2::Introspection::Record record, Library lib) 
 method 
 Outer2::Bool #bangequal(Outer0 that) 
 method 
@@ -1218,7 +1271,7 @@ Outer2::Bool #isPrivate()
 read method 
 Outer2::Bool isPrivate() 
 type method 
-Outer0 #apply(Outer2::Introspection::Record record) 
+Outer0 #apply(Outer2::Introspection::Record record, Library lib) 
 method 
 Outer2::Bool #bangequal(Outer0 that) 
 method 
@@ -1504,7 +1557,15 @@ Void #checkEnd()
 read method 
 Outer2::S #inner() 
 read method 
-Void #close() }}
+Void #close() }
+method 
+Outer1::Bool contains(Outer1::S that) 
+method 
+Outer0 remove(Outer1::S that) 
+method 
+Outer1::Bool #equalequal(Outer0 that) 
+method 
+Outer1::Bool equals(Any that) }
 Assert:{interface <:Outer1::Message
 NotImplementedYet:{<:Outer1, Outer2::Message
 type method 
@@ -2242,18 +2303,16 @@ Void set(Outer0::Abstract::S that, Outer0::Abstract::S id) (
       }))
       (
         Void unused3=cond.#checkTrue()
-        catch exception unused4 (
-          on Void void
-          )
+        
+        catch exception Void catched0 void
         Outer0::Abstract::Debug.#apply(that:x)
         )
       )
     Void unused2=return void
     void
     )
-  catch return result (
-    on Void result
-    )
+  
+  catch return Void result result
   error {'@stringU
   'CurlyBlock-Should be unreachable code
   }
@@ -2281,17 +2340,15 @@ type method
 Outer1::Abstract::S auxFetchEvent(Outer1::Abstract::S id) exception Void (
   Void unused=(
     Library s=use Outer1::GuiPlugin check eventPending(wName:id.binaryRepr()) exception void
-    catch error x (
-      on Library exception void
-      )
+    
+    catch error Library x exception void
     (
       Void unused0=return Outer1::Abstract::S.#stringParser(that:s)
       void
       )
     )
-  catch return result (
-    on Outer1::Abstract::S result
-    )
+  
+  catch return Outer1::Abstract::S result result
   error {'@stringU
   'CurlyBlock-Should be unreachable code
   }
@@ -2303,9 +2360,8 @@ Void #next() exception Void (
     Void unused0=return this.current(that:s)
     void
     )
-  catch return result (
-    on Void result
-    )
+  
+  catch return Void result result
   error {'@stringU
   'CurlyBlock-Should be unreachable code
   }

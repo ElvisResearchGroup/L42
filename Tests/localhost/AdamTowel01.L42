@@ -466,8 +466,7 @@ method
 Outer1::Bool beginsWith(Outer1::S that) this.#apply(end:that.size()).#equalequal(that:that)
 method '@private
 Outer1::N auxFirstIndexOf__33_0(Outer1::S that) (
-  Void unused=('TODO: discuss if should be exception
-  
+  Void unused=(
     Outer1::N::#numberParser(that ) current=Outer1::N.#numberParser(that:{'@stringU
     '0
     })
@@ -499,7 +498,7 @@ Outer1::N auxFirstIndexOf__33_0(Outer1::S that) (
     }).#less(that:Outer1::N.#numberParser(that:{'@stringU
     '1
     }))
-    Void unused2=error Outer0::SubstringNotPresent.#apply(string:this, subString:that)
+    Void unused2=error Outer0.subStringNotPresent(string:this, subString:that)
     void
     )
   
@@ -510,7 +509,7 @@ Outer1::N auxFirstIndexOf__33_0(Outer1::S that) (
   )
 method 
 Outer1::N firstIndexOf(Outer1::S that) (
-  Void unused=('TODO: discuss if should be exception
+  Void unused=('TODO: discuss if should be exception or error
   
     Outer0::auxFirstIndexOf__33_0(that ) res=this.auxFirstIndexOf__33_0(that:that)
     Void unused0=(
@@ -524,7 +523,7 @@ Outer1::N firstIndexOf(Outer1::S that) (
         return res
         )
       )
-    Void unused1=error Outer0::SubstringNotPresent.#apply(string:this, subString:that)
+    Void unused1=error Outer0.subStringNotPresent(string:this, subString:that)
     void
     )
   
@@ -533,17 +532,8 @@ Outer1::N firstIndexOf(Outer1::S that) (
   'CurlyBlock-Should be unreachable code
   }
   )
-SubstringNotPresent:{
 type method 
-Outer0 #apply(Outer2::S string, Outer2::S subString) 
-mut method 
-Outer2::S #string() 
-read method 
-Outer2::S string() 
-mut method 
-Outer2::S #subString() 
-read method 
-Outer2::S subString() }
+Void subStringNotPresent(Outer1::S string, Outer1::S subString) void
 method 
 Outer1::Bool contains(Outer1::S that) (
   Void unused=(
@@ -785,7 +775,7 @@ TEmpty:{<:Outer1::TOpt
 type method 
 Outer0 #apply() 
 method get() error Outer3::S.#stringParser(that:{'@stringU
-'UnsatisfactoryErrorToAvoidCycle, replace in Adam2-3
+'UnsatisfactoryErrorToAvoidCycle, replace in Adam2
 })}
 TOf:{<:Outer1::TOpt
 type method 
@@ -985,7 +975,7 @@ Guard:{' exception as Guard bureocracy, error as Guard detection
 '  as exceptions, Guards objects are a way to report/guard complex operations,
 ' where checking the shape of the input can be unconvenient.
 'as errors, they represent precondition violations. 
-'Turning an exception Gard into an error Gard
+'Turning an exception Guard into an error Guard
 ' is equivalent of declaring that such misuse should not happen (blame on the caller),
 ' still, there is no bug in the program at this stage. Is legit for the caller to try and be blamed
 interface <:Outer1::Message'all other guards should implement this one
@@ -1865,11 +1855,11 @@ Outer0 #add(Outer2::Bool that) (
       '1
       })))
       )
-    Void unused1=error Outer1::AssertMessage.#apply(text:Outer2::S.#stringParser(that:{'@stringU
+    Void unused1=error Outer1::AssertMessage.#stringParser(that:{'@stringU
     'Condition number 
     }).#begin().#add(that:this.that()).#end().#stringParser(that:{'@stringU
     ' failed
-    }))
+    })
     void
     )
   
@@ -1889,11 +1879,13 @@ Outer0 #add(Outer2::Bool that, Outer2::Concept::ToS msg) (
       '1
       })))
       )
-    Void unused1=error Outer1::AssertMessage.#apply(text:msg.toS().#begin().#add(that:Outer2::S.nl()).#end().#stringParser(that:{'@stringU
+    Void unused1=error Outer1::AssertMessage.#stringParser(that:{'@stringU
+    '
+    }).#begin().#add(that:msg).#add(that:Outer2::S.nl()).#end().#stringParser(that:{'@stringU
     'number:
     }).#begin().#add(that:this.that()).#end().#stringParser(that:{'@stringU
     ' failed
-    }))
+    })
     void
     )
   
@@ -2097,9 +2089,11 @@ Outer0 pop() (
   Void unused=(
     Void unused0=return Outer0._new(head:this.head().#next())
     
-    catch exception Void catched error Outer3::Guard::Operation.#apply(text:Outer0.myName().#plusplus(that:Outer3::S.#stringParser(that:{'@stringU
+    catch exception Void catched error Outer3::Guard::Operation.#stringParser(that:{'@stringU
+    '
+    }).#begin().#add(that:Outer0.myName()).#end().#stringParser(that:{'@stringU
     ':PopOnEmpyList
-    })))
+    })
     void
     )
   
@@ -2267,9 +2261,11 @@ method #checkEnd() (
     
     catch exception Void catched1 void
     (
-      Void unused0=error Outer4::Assert::ObservedBug.#apply(text:Outer1.myName().#plusplus(that:Outer4::S.#stringParser(that:{'@stringU
+      Void unused0=error Outer4::Assert::ObservedBug.#stringParser(that:{'@stringU
+      '
+      }).#begin().#add(that:Outer1.myName()).#end().#stringParser(that:{'@stringU
       ':IterationNotComplete,\u000a  use valsCut() to allows incomplete iterations\u000a
-      })))
+      })
       void
       )
     )
@@ -2689,9 +2685,11 @@ Outer0 pop() (
   Void unused=(
     Void unused0=return Outer0._new(head:this.head().#next())
     
-    catch exception Void catched error Outer1::Guard::Operation.#apply(text:Outer0.myName().#plusplus(that:Outer1::S.#stringParser(that:{'@stringU
+    catch exception Void catched error Outer1::Guard::Operation.#stringParser(that:{'@stringU
+    '
+    }).#begin().#add(that:Outer0.myName()).#end().#stringParser(that:{'@stringU
     ':PopOnEmpyList
-    })))
+    })
     void
     )
   
@@ -2858,9 +2856,11 @@ method #checkEnd() (
     
     catch exception Void catched1 void
     (
-      Void unused0=error Outer2::Assert::ObservedBug.#apply(text:Outer1.myName().#plusplus(that:Outer2::S.#stringParser(that:{'@stringU
+      Void unused0=error Outer2::Assert::ObservedBug.#stringParser(that:{'@stringU
+      '
+      }).#begin().#add(that:Outer1.myName()).#end().#stringParser(that:{'@stringU
       ':IterationNotComplete,\u000a  use valsCut() to allows incomplete iterations\u000a
-      })))
+      })
       void
       )
     )
@@ -3434,9 +3434,9 @@ Outer1::Path from(Outer1::Strings names) (
                     )
                   exception void
                   )
-                varaccumulator.inner(that:varaccumulator.#inner().#add(that:n.#inner().#plusplus(that:Outer1::S.#stringParser(that:{'@stringU
+                varaccumulator.inner(that:varaccumulator.#inner().#add(that:n.#inner(), separedBy:Outer1::S.#stringParser(that:{'@stringU
                 '::
-                }))))
+                })))
                 )
               
               catch exception Void catched5 void
@@ -3461,9 +3461,7 @@ Outer1::Path from(Outer1::Strings names) (
       ).#stringParser(that:{'@stringU
     '
     })
-    Void unused1=return Outer0.fromS(that:s.#apply(end:s.size().#less(that:Outer1::N.#numberParser(that:{'@stringU
-    '2
-    }))))
+    Void unused1=return Outer0.fromS(that:s)
     void
     )
   
@@ -4052,7 +4050,25 @@ Outer0 #apply(Outer3::Introspection::Record record, Library lib)
 method 
 Outer3::Bool #bangequal(Outer0 that) this.#equalequal(that:that).#bang()
 method 
-Outer3::Bool #equalequal(Outer0 that) Outer3::Message::EqualMessages.#apply(that:this, other:that)}
+Outer3::Bool #equalequal(Outer0 that) Outer3::Message::EqualMessages.#apply(that:this, other:that)
+type method 
+Outer3::S libName() 
+type method 
+Void #apply(Library lift) exception Outer0 (
+  Outer3::Introspection::Record::#apply(lib ) record=Outer3::Introspection::Record.#apply(lib:lift)
+  Outer3::Introspection::Record::#apply(lib ) ::#stringParser(that ) x=record.#stringParser(that:{'@stringU
+  'Kind
+  })
+  (
+    Outer3::Introspection::Record::#apply(lib ) ::#stringParser(that ) ::#equalequal(that ) cond=x.#equalequal(that:Outer0.libName())
+    (
+      Void unused=cond.#checkTrue()
+      
+      catch exception Void catched1 void
+      exception Outer0.#apply(record:record, lib:lift)
+      )
+    )
+  )}
 type method 
 Library #leftleft(Library that) ('either that provides a toS, or I have a default impl, that requires lib()
 
@@ -4072,6 +4088,10 @@ Library #leftleft(Library that) ('either that provides a toS, or I have a defaul
     )
   )}
 SourceUnfit:{<:Outer2::MetaGuard, Outer2::MetaGuard
+type method 
+Outer2::S libName() Outer2::S.#stringParser(that:{'@stringU
+'SourceUnfit
+})
 method kind() Outer0.myName()
 method text() Outer2::S.#stringParser(that:{'@stringU
 '
@@ -4114,10 +4134,30 @@ method
 Outer2::Bool #bangequal(Outer0 that) this.#equalequal(that:that).#bang()
 method 
 Outer2::Bool #equalequal(Outer0 that) Outer2::Message::EqualMessages.#apply(that:this, other:that)
+type method 
+Void #apply(Library lift) exception Outer0 (
+  Outer2::Introspection::Record::#apply(lib ) record=Outer2::Introspection::Record.#apply(lib:lift)
+  Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) x=record.#stringParser(that:{'@stringU
+  'Kind
+  })
+  (
+    Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) ::#equalequal(that ) cond=x.#equalequal(that:Outer0.libName())
+    (
+      Void unused=cond.#checkTrue()
+      
+      catch exception Void catched1 void
+      exception Outer0.#apply(record:record, lib:lift)
+      )
+    )
+  )
 method toS() Outer0.myName().#plusplus(that:Outer1::RecordWrapper.libToS(that:this.lib()))
 method 
 Library lib() }
 IncoherentRedirectMapping:{<:Outer2::MetaGuard, Outer2::MetaGuard
+type method 
+Outer2::S libName() Outer2::S.#stringParser(that:{'@stringU
+'IncoherentRedirectMapping
+})
 method kind() Outer0.myName()
 method text() Outer2::S.#stringParser(that:{'@stringU
 '
@@ -4160,10 +4200,30 @@ method
 Outer2::Bool #bangequal(Outer0 that) this.#equalequal(that:that).#bang()
 method 
 Outer2::Bool #equalequal(Outer0 that) Outer2::Message::EqualMessages.#apply(that:this, other:that)
+type method 
+Void #apply(Library lift) exception Outer0 (
+  Outer2::Introspection::Record::#apply(lib ) record=Outer2::Introspection::Record.#apply(lib:lift)
+  Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) x=record.#stringParser(that:{'@stringU
+  'Kind
+  })
+  (
+    Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) ::#equalequal(that ) cond=x.#equalequal(that:Outer0.libName())
+    (
+      Void unused=cond.#checkTrue()
+      
+      catch exception Void catched1 void
+      exception Outer0.#apply(record:record, lib:lift)
+      )
+    )
+  )
 method toS() Outer0.myName().#plusplus(that:Outer1::RecordWrapper.libToS(that:this.lib()))
 method 
 Library lib() }
 ClassClash:{<:Outer2::MetaGuard, Outer2::MetaGuard
+type method 
+Outer2::S libName() Outer2::S.#stringParser(that:{'@stringU
+'ClassClash
+})
 method kind() Outer0.myName()
 method text() Outer2::S.#stringParser(that:{'@stringU
 '
@@ -4206,10 +4266,30 @@ method
 Outer2::Bool #bangequal(Outer0 that) this.#equalequal(that:that).#bang()
 method 
 Outer2::Bool #equalequal(Outer0 that) Outer2::Message::EqualMessages.#apply(that:this, other:that)
+type method 
+Void #apply(Library lift) exception Outer0 (
+  Outer2::Introspection::Record::#apply(lib ) record=Outer2::Introspection::Record.#apply(lib:lift)
+  Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) x=record.#stringParser(that:{'@stringU
+  'Kind
+  })
+  (
+    Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) ::#equalequal(that ) cond=x.#equalequal(that:Outer0.libName())
+    (
+      Void unused=cond.#checkTrue()
+      
+      catch exception Void catched1 void
+      exception Outer0.#apply(record:record, lib:lift)
+      )
+    )
+  )
 method toS() Outer0.myName().#plusplus(that:Outer1::RecordWrapper.libToS(that:this.lib()))
 method 
 Library lib() }
 MethodClash:{<:Outer2::MetaGuard, Outer2::MetaGuard
+type method 
+Outer2::S libName() Outer2::S.#stringParser(that:{'@stringU
+'MethodClash
+})
 method kind() Outer0.myName()
 method text() Outer2::S.#stringParser(that:{'@stringU
 '
@@ -4252,10 +4332,30 @@ method
 Outer2::Bool #bangequal(Outer0 that) this.#equalequal(that:that).#bang()
 method 
 Outer2::Bool #equalequal(Outer0 that) Outer2::Message::EqualMessages.#apply(that:this, other:that)
+type method 
+Void #apply(Library lift) exception Outer0 (
+  Outer2::Introspection::Record::#apply(lib ) record=Outer2::Introspection::Record.#apply(lib:lift)
+  Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) x=record.#stringParser(that:{'@stringU
+  'Kind
+  })
+  (
+    Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) ::#equalequal(that ) cond=x.#equalequal(that:Outer0.libName())
+    (
+      Void unused=cond.#checkTrue()
+      
+      catch exception Void catched1 void
+      exception Outer0.#apply(record:record, lib:lift)
+      )
+    )
+  )
 method toS() Outer0.myName().#plusplus(that:Outer1::RecordWrapper.libToS(that:this.lib()))
 method 
 Library lib() }
 InvalidOnTopLevel:{<:Outer2::MetaGuard, Outer2::MetaGuard
+type method 
+Outer2::S libName() Outer2::S.#stringParser(that:{'@stringU
+'InvalidOnTopLevel
+})
 method kind() Outer0.myName()
 method text() Outer2::S.#stringParser(that:{'@stringU
 '
@@ -4298,10 +4398,30 @@ method
 Outer2::Bool #bangequal(Outer0 that) this.#equalequal(that:that).#bang()
 method 
 Outer2::Bool #equalequal(Outer0 that) Outer2::Message::EqualMessages.#apply(that:this, other:that)
+type method 
+Void #apply(Library lift) exception Outer0 (
+  Outer2::Introspection::Record::#apply(lib ) record=Outer2::Introspection::Record.#apply(lib:lift)
+  Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) x=record.#stringParser(that:{'@stringU
+  'Kind
+  })
+  (
+    Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) ::#equalequal(that ) cond=x.#equalequal(that:Outer0.libName())
+    (
+      Void unused=cond.#checkTrue()
+      
+      catch exception Void catched1 void
+      exception Outer0.#apply(record:record, lib:lift)
+      )
+    )
+  )
 method toS() Outer0.myName().#plusplus(that:Outer1::RecordWrapper.libToS(that:this.lib()))
 method 
 Library lib() }
 PrivacyCoupuled:{<:Outer2::MetaGuard, Outer2::MetaGuard
+type method 
+Outer2::S libName() Outer2::S.#stringParser(that:{'@stringU
+'PrivacyCoupuled
+})
 method kind() Outer0.myName()
 method text() Outer2::S.#stringParser(that:{'@stringU
 '
@@ -4344,10 +4464,30 @@ method
 Outer2::Bool #bangequal(Outer0 that) this.#equalequal(that:that).#bang()
 method 
 Outer2::Bool #equalequal(Outer0 that) Outer2::Message::EqualMessages.#apply(that:this, other:that)
+type method 
+Void #apply(Library lift) exception Outer0 (
+  Outer2::Introspection::Record::#apply(lib ) record=Outer2::Introspection::Record.#apply(lib:lift)
+  Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) x=record.#stringParser(that:{'@stringU
+  'Kind
+  })
+  (
+    Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) ::#equalequal(that ) cond=x.#equalequal(that:Outer0.libName())
+    (
+      Void unused=cond.#checkTrue()
+      
+      catch exception Void catched1 void
+      exception Outer0.#apply(record:record, lib:lift)
+      )
+    )
+  )
 method toS() Outer0.myName().#plusplus(that:Outer1::RecordWrapper.libToS(that:this.lib()))
 method 
 Library lib() }
 ParameterMismatch:{<:Outer2::MetaGuard, Outer2::MetaGuard
+type method 
+Outer2::S libName() Outer2::S.#stringParser(that:{'@stringU
+'ParameterMismatch
+})
 method kind() Outer0.myName()
 method text() Outer2::S.#stringParser(that:{'@stringU
 '
@@ -4390,54 +4530,59 @@ method
 Outer2::Bool #bangequal(Outer0 that) this.#equalequal(that:that).#bang()
 method 
 Outer2::Bool #equalequal(Outer0 that) Outer2::Message::EqualMessages.#apply(that:this, other:that)
+type method 
+Void #apply(Library lift) exception Outer0 (
+  Outer2::Introspection::Record::#apply(lib ) record=Outer2::Introspection::Record.#apply(lib:lift)
+  Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) x=record.#stringParser(that:{'@stringU
+  'Kind
+  })
+  (
+    Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) ::#equalequal(that ) cond=x.#equalequal(that:Outer0.libName())
+    (
+      Void unused=cond.#checkTrue()
+      
+      catch exception Void catched1 void
+      exception Outer0.#apply(record:record, lib:lift)
+      )
+    )
+  )
 method toS() Outer0.myName().#plusplus(that:Outer1::RecordWrapper.libToS(that:this.lib()))
 method 
 Library lib() }
 MemberUnavailable:{interface <:Outer2::MetaGuard}
 DispatchMemberUnavailable:{
 type method 
-Outer1::MemberUnavailable #apply(Library that) (
-  Void unused=(
-    Outer2::Introspection::Record::#apply(lib ) record=Outer2::Introspection::Record.#apply(lib:that)
-    Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) x=record.#stringParser(that:{'@stringU
-    'Kind
-    })
-    Void unused0=(
-      Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) ::#equalequal(that ) cond=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
-      'MemberUnavailable
-      }))
+Void #apply(Library that) exception Outer1::MemberUnavailable (
+  Outer2::Introspection::Record::#apply(lib ) record=Outer2::Introspection::Record.#apply(lib:that)
+  Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) x=record.#stringParser(that:{'@stringU
+  'Kind
+  })
+  (
+    Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) ::#equalequal(that ) cond=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
+    'MemberUnavailable
+    }))
+    (
+      Void unused=cond.#checkTrue()
+      
+      catch exception Void catched1 void
       (
-        Void unused2=cond.#checkTrue()
-        
-        catch exception Void catched0 void
-        (
-          Void unused3=(
-            Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) ::contains(that ) cond0=record.#stringParser(that:{'@stringU
-            'InvalidKind
-            }).contains(that:Outer2::S.#stringParser(that:{'@stringU
-            'Method
-            }))
-            (
-              Void unused4=cond0.#checkTrue()
-              
-              catch exception Void catched2 void
-              return Outer1::MethodUnavailable.#apply(record:record, lib:that)
-              )
+        Void unused0=(
+          Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) ::contains(that ) cond0=record.#stringParser(that:{'@stringU
+          'InvalidKind
+          }).contains(that:Outer2::S.#stringParser(that:{'@stringU
+          'Method
+          }))
+          (
+            Void unused1=cond0.#checkTrue()
+            
+            catch exception Void catched3 void
+            exception Outer1::MethodUnavailable.#apply(record:record, lib:that)
             )
-          return Outer1::NestedClassUnavailable.#apply(record:record, lib:that)
           )
+        exception Outer1::NestedClassUnavailable.#apply(record:record, lib:that)
         )
       )
-    Void unused1=error Outer2::Assert::ObservedBug.#stringParser(that:{'@stringU
-    'error dispatching failing
-    })
-    void
     )
-  
-  catch return Outer1::MemberUnavailable result result
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
-  }
   )}
 NestedClassUnavailable:{<:Outer1::MemberUnavailable, Outer2::MetaGuard
 type method 
@@ -4463,6 +4608,10 @@ Outer0 #apply(Outer2::Introspection::Record record, Library lib) Outer0.#apply(p
 })), isPrivate:Outer2::Bool.fromS(that:record.#stringParser(that:{'@stringU
 'IsPrivate
 })))
+type method 
+Outer2::S libName() Outer2::S.#stringParser(that:{'@stringU
+'MemberUnavailable
+})
 method kind() Outer0.myName()
 method text() Outer2::S.#stringParser(that:{'@stringU
 '
@@ -4502,7 +4651,23 @@ method classAny() Outer0
 method 
 Outer2::Bool #bangequal(Outer0 that) this.#equalequal(that:that).#bang()
 method 
-Outer2::Bool #equalequal(Outer0 that) Outer2::Message::EqualMessages.#apply(that:this, other:that)}
+Outer2::Bool #equalequal(Outer0 that) Outer2::Message::EqualMessages.#apply(that:this, other:that)
+type method 
+Void #apply(Library lift) exception Outer0 (
+  Outer2::Introspection::Record::#apply(lib ) record=Outer2::Introspection::Record.#apply(lib:lift)
+  Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) x=record.#stringParser(that:{'@stringU
+  'Kind
+  })
+  (
+    Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) ::#equalequal(that ) cond=x.#equalequal(that:Outer0.libName())
+    (
+      Void unused=cond.#checkTrue()
+      
+      catch exception Void catched1 void
+      exception Outer0.#apply(record:record, lib:lift)
+      )
+    )
+  )}
 MethodUnavailable:{<:Outer1::MemberUnavailable, Outer2::MetaGuard
 type method 
 Outer0 #apply(Outer2::Path path, Outer2::Selector selector, Outer2::Bool isPrivate) 
@@ -4535,6 +4700,10 @@ Outer0 #apply(Outer2::Introspection::Record record, Library lib) Outer0.#apply(p
 })), isPrivate:Outer2::Bool.fromS(that:record.#stringParser(that:{'@stringU
 'IsPrivate
 })))
+type method 
+Outer2::S libName() Outer2::S.#stringParser(that:{'@stringU
+'MemberUnavailable
+})
 method kind() Outer0.myName()
 method text() Outer2::S.#stringParser(that:{'@stringU
 '
@@ -4574,7 +4743,23 @@ method classAny() Outer0
 method 
 Outer2::Bool #bangequal(Outer0 that) this.#equalequal(that:that).#bang()
 method 
-Outer2::Bool #equalequal(Outer0 that) Outer2::Message::EqualMessages.#apply(that:this, other:that)}}
+Outer2::Bool #equalequal(Outer0 that) Outer2::Message::EqualMessages.#apply(that:this, other:that)
+type method 
+Void #apply(Library lift) exception Outer0 (
+  Outer2::Introspection::Record::#apply(lib ) record=Outer2::Introspection::Record.#apply(lib:lift)
+  Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) x=record.#stringParser(that:{'@stringU
+  'Kind
+  })
+  (
+    Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) ::#equalequal(that ) cond=x.#equalequal(that:Outer0.libName())
+    (
+      Void unused=cond.#checkTrue()
+      
+      catch exception Void catched1 void
+      exception Outer0.#apply(record:record, lib:lift)
+      )
+    )
+  )}}
 Introspection:{'findMeIntrospection
 
 type method 
@@ -4880,9 +5065,11 @@ Outer0 pop() (
   Void unused=(
     Void unused0=return Outer0._new(head:this.head().#next())
     
-    catch exception Void catched error Outer3::Guard::Operation.#apply(text:Outer0.myName().#plusplus(that:Outer3::S.#stringParser(that:{'@stringU
+    catch exception Void catched error Outer3::Guard::Operation.#stringParser(that:{'@stringU
+    '
+    }).#begin().#add(that:Outer0.myName()).#end().#stringParser(that:{'@stringU
     ':PopOnEmpyList
-    })))
+    })
     void
     )
   
@@ -5049,9 +5236,11 @@ method #checkEnd() (
     
     catch exception Void catched1 void
     (
-      Void unused0=error Outer4::Assert::ObservedBug.#apply(text:Outer1.myName().#plusplus(that:Outer4::S.#stringParser(that:{'@stringU
+      Void unused0=error Outer4::Assert::ObservedBug.#stringParser(that:{'@stringU
+      '
+      }).#begin().#add(that:Outer1.myName()).#end().#stringParser(that:{'@stringU
       ':IterationNotComplete,\u000a  use valsCut() to allows incomplete iterations\u000a
-      })))
+      })
       void
       )
     )
@@ -5439,9 +5628,11 @@ Outer0 pop() (
   Void unused=(
     Void unused0=return Outer0._new(head:this.head().#next())
     
-    catch exception Void catched error Outer2::Guard::Operation.#apply(text:Outer0.myName().#plusplus(that:Outer2::S.#stringParser(that:{'@stringU
+    catch exception Void catched error Outer2::Guard::Operation.#stringParser(that:{'@stringU
+    '
+    }).#begin().#add(that:Outer0.myName()).#end().#stringParser(that:{'@stringU
     ':PopOnEmpyList
-    })))
+    })
     void
     )
   
@@ -5608,9 +5799,11 @@ method #checkEnd() (
     
     catch exception Void catched1 void
     (
-      Void unused0=error Outer3::Assert::ObservedBug.#apply(text:Outer1.myName().#plusplus(that:Outer3::S.#stringParser(that:{'@stringU
+      Void unused0=error Outer3::Assert::ObservedBug.#stringParser(that:{'@stringU
+      '
+      }).#begin().#add(that:Outer1.myName()).#end().#stringParser(that:{'@stringU
       ':IterationNotComplete,\u000a  use valsCut() to allows incomplete iterations\u000a
-      })))
+      })
       void
       )
     )
@@ -6246,9 +6439,11 @@ Outer0 pop() (
   Void unused=(
     Void unused0=return Outer0._new(head:this.head().#next())
     
-    catch exception Void catched error Outer2::Guard::Operation.#apply(text:Outer0.myName().#plusplus(that:Outer2::S.#stringParser(that:{'@stringU
+    catch exception Void catched error Outer2::Guard::Operation.#stringParser(that:{'@stringU
+    '
+    }).#begin().#add(that:Outer0.myName()).#end().#stringParser(that:{'@stringU
     ':PopOnEmpyList
-    })))
+    })
     void
     )
   
@@ -6415,9 +6610,11 @@ method #checkEnd() (
     
     catch exception Void catched1 void
     (
-      Void unused0=error Outer3::Assert::ObservedBug.#apply(text:Outer1.myName().#plusplus(that:Outer3::S.#stringParser(that:{'@stringU
+      Void unused0=error Outer3::Assert::ObservedBug.#stringParser(that:{'@stringU
+      '
+      }).#begin().#add(that:Outer1.myName()).#end().#stringParser(that:{'@stringU
       ':IterationNotComplete,\u000a  use valsCut() to allows incomplete iterations\u000a
-      })))
+      })
       void
       )
     )
@@ -8187,9 +8384,11 @@ Outer0 pop() (
   Void unused=(
     Void unused0=return Outer0._new(head:this.head().#next())
     
-    catch exception Void catched error Outer2::Guard::Operation.#apply(text:Outer0.myName().#plusplus(that:Outer2::S.#stringParser(that:{'@stringU
+    catch exception Void catched error Outer2::Guard::Operation.#stringParser(that:{'@stringU
+    '
+    }).#begin().#add(that:Outer0.myName()).#end().#stringParser(that:{'@stringU
     ':PopOnEmpyList
-    })))
+    })
     void
     )
   
@@ -8356,9 +8555,11 @@ method #checkEnd() (
     
     catch exception Void catched1 void
     (
-      Void unused0=error Outer3::Assert::ObservedBug.#apply(text:Outer1.myName().#plusplus(that:Outer3::S.#stringParser(that:{'@stringU
+      Void unused0=error Outer3::Assert::ObservedBug.#stringParser(that:{'@stringU
+      '
+      }).#begin().#add(that:Outer1.myName()).#end().#stringParser(that:{'@stringU
       ':IterationNotComplete,\u000a  use valsCut() to allows incomplete iterations\u000a
-      })))
+      })
       void
       )
     )
@@ -8927,9 +9128,11 @@ Outer0 pop() (
   Void unused=(
     Void unused0=return Outer0._new(head:this.head().#next())
     
-    catch exception Void catched error Outer2::Guard::Operation.#apply(text:Outer0.myName().#plusplus(that:Outer2::S.#stringParser(that:{'@stringU
+    catch exception Void catched error Outer2::Guard::Operation.#stringParser(that:{'@stringU
+    '
+    }).#begin().#add(that:Outer0.myName()).#end().#stringParser(that:{'@stringU
     ':PopOnEmpyList
-    })))
+    })
     void
     )
   
@@ -9096,9 +9299,11 @@ method #checkEnd() (
     
     catch exception Void catched1 void
     (
-      Void unused0=error Outer3::Assert::ObservedBug.#apply(text:Outer1.myName().#plusplus(that:Outer3::S.#stringParser(that:{'@stringU
+      Void unused0=error Outer3::Assert::ObservedBug.#stringParser(that:{'@stringU
+      '
+      }).#begin().#add(that:Outer1.myName()).#end().#stringParser(that:{'@stringU
       ':IterationNotComplete,\u000a  use valsCut() to allows incomplete iterations\u000a
-      })))
+      })
       void
       )
     )
@@ -9167,32 +9372,8 @@ Library compose(Library left, Library right) exception Outer1::MetaGuard::ClassC
     Void unused0=return Outer1::SafeOperators.compose(left:left, right:right)
     
     catch error Library err (
-      Outer1::Introspection::Record::#apply(lib ) record=Outer1::Introspection::Record.#apply(lib:err)
-      Outer1::Introspection::Record::#apply(lib ) ::#stringParser(that ) x=record.#stringParser(that:{'@stringU
-      'Kind
-      })
-      Void unused1=(
-        Outer1::Introspection::Record::#apply(lib ) ::#stringParser(that ) ::#equalequal(that ) cond=x.#equalequal(that:Outer1::S.#stringParser(that:{'@stringU
-        'ClassClash
-        }))
-        (
-          Void unused3=cond.#checkTrue()
-          
-          catch exception Void catched1 void
-          exception Outer1::MetaGuard::ClassClash.#apply(record:record, lib:err)
-          )
-        )
-      Void unused2=(
-        Outer1::Introspection::Record::#apply(lib ) ::#stringParser(that ) ::#equalequal(that ) cond0=x.#equalequal(that:Outer1::S.#stringParser(that:{'@stringU
-        'MethodClash
-        }))
-        (
-          Void unused4=cond0.#checkTrue()
-          
-          catch exception Void catched3 void
-          exception Outer1::MetaGuard::MethodClash.#apply(record:record, lib:err)
-          )
-        )
+      Void unused1=Outer1::MetaGuard::ClassClash.#apply(lift:err)
+      Void unused2=Outer1::MetaGuard::MethodClash.#apply(lift:err)
       error err
       )
     void
@@ -9205,27 +9386,18 @@ Library compose(Library left, Library right) exception Outer1::MetaGuard::ClassC
   )
 type method 
 Void checkTargetExists(Library that, Outer1::Path path) exception Outer1::MetaGuard::NestedClassUnavailable (
-  Outer0::AddDocumentationPath::#begin() ::#add(that doc ) ::#end() ::#leftleft(that ) unused=Outer0::AddDocumentationPath.#begin().#add(that:path, doc:Outer1::Introspection::Doc.#stringParser(that:{'@stringU
+  Outer0::AddDocumentationPath::#apply(that doc ) ::#leftleft(that ) unused=Outer0::AddDocumentationPath.#apply(that:path, doc:Outer1::Introspection::Doc.#stringParser(that:{'@stringU
   'JustToSeeIfItIsThere
-  })).#end().#leftleft(that:that)
+  })).#leftleft(that:that)
   
   catch exception Outer1::MetaGuard::InvalidOnTopLevel x error Outer1::Assert::CodeNotReachable.#stringParser(that:{'@stringU
   'Refactor4
   })
   void
   )
-Squares:'  toPutAs private
-{'findMeSquares
-
-type method 
-Library #leftleft(Library that) Outer2::SafeOperatorsAccess__53_0.compose(left:that, right:{
-type method 
-type Outer0 #begin() Outer0
-method 
-Outer0 #end() this})}
 Redirect:{
 type method 
-Outer0 #add(Outer2::Path that, type Any to) 
+Outer0 #apply(Outer2::Path that, type Any to) 
 mut method 
 Outer2::Path #that() 
 read method 
@@ -9240,65 +9412,11 @@ Library #leftleft(Library that) exception Outer2::MetaGuard::NestedClassUnavaila
     Void unused0=return Outer2::SafeOperators.redirect(that:that, src:this.that(), dest:this.to())
     
     catch error Library err (
-      Outer2::Introspection::Record::#apply(lib ) record=Outer2::Introspection::Record.#apply(lib:err)
-      Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) x=record.#stringParser(that:{'@stringU
-      'Kind
-      })
-      Void unused1=(
-        Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) ::#equalequal(that ) cond=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
-        'MemberUnavailable
-        }))
-        (
-          Void unused6=cond.#checkTrue()
-          
-          catch exception Void catched1 void
-          exception Outer2::MetaGuard::NestedClassUnavailable.#apply(record:record, lib:err)
-          )
-        )
-      Void unused2=(
-        Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) ::#equalequal(that ) cond0=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
-        'InvalidOnTopLevel
-        }))
-        (
-          Void unused7=cond0.#checkTrue()
-          
-          catch exception Void catched3 void
-          exception Outer2::MetaGuard::InvalidOnTopLevel.#apply(record:record, lib:err)
-          )
-        )
-      Void unused3=(
-        Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) ::#equalequal(that ) cond1=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
-        'MethodClash
-        }))
-        (
-          Void unused8=cond1.#checkTrue()
-          
-          catch exception Void catched5 void
-          exception Outer2::MetaGuard::MethodClash.#apply(record:record, lib:err)
-          )
-        )
-      Void unused4=(
-        Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) ::#equalequal(that ) cond2=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
-        'SourceUnfit
-        }))
-        (
-          Void unused9=cond2.#checkTrue()
-          
-          catch exception Void catched7 void
-          exception Outer2::MetaGuard::SourceUnfit.#apply(record:record, lib:err)
-          )
-        )
-      Void unused5=(
-        Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) ::#equalequal(that ) cond3=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
-        'IncoherentRedirectMapping
-        }))
-        (
-          Void unused10=cond3.#checkTrue()
-          
-          catch exception Void catched9 void
-          exception Outer2::MetaGuard::IncoherentRedirectMapping.#apply(record:record, lib:err)
-          )
-        )
+      Void unused1=Outer2::MetaGuard::NestedClassUnavailable.#apply(lift:err)
+      Void unused2=Outer2::MetaGuard::InvalidOnTopLevel.#apply(lift:err)
+      Void unused3=Outer2::MetaGuard::SourceUnfit.#apply(lift:err)
+      Void unused4=Outer2::MetaGuard::MethodClash.#apply(lift:err)
+      Void unused5=Outer2::MetaGuard::IncoherentRedirectMapping.#apply(lift:err)
       error err
       )
     void
@@ -9308,14 +9426,10 @@ Library #leftleft(Library that) exception Outer2::MetaGuard::NestedClassUnavaila
   error {'@stringU
   'CurlyBlock-Should be unreachable code
   }
-  )
-type method 
-type Outer0 #begin() Outer0
-method 
-Outer0 #end() this}
+  )}
 RenameSelector:{
 type method 
-Outer0 #add(Outer2::Selector that, Outer2::Path of, Outer2::Selector to) 
+Outer0 #apply(Outer2::Selector that, Outer2::Path of, Outer2::Selector to) 
 mut method 
 Outer2::Selector #that() 
 read method 
@@ -9334,32 +9448,8 @@ Library #leftleft(Library that) exception Outer2::MetaGuard::MemberUnavailable, 
     Void unused0=return Outer2::SafeOperators.renameMethod(that:that, path:this.of(), src:this.that(), dest:this.to())
     
     catch error Library err (
-      Outer2::Introspection::Record::#apply(lib ) record=Outer2::Introspection::Record.#apply(lib:err)
-      Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) x=record.#stringParser(that:{'@stringU
-      'Kind
-      })
-      Void unused1=(
-        Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) ::#equalequal(that ) cond=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
-        'MemberUnavailable
-        }))
-        (
-          Void unused3=cond.#checkTrue()
-          
-          catch exception Void catched1 void
-          exception Outer2::MetaGuard::DispatchMemberUnavailable.#apply(that:err)
-          )
-        )
-      Void unused2=(
-        Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) ::#equalequal(that ) cond0=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
-        'MethodClash
-        }))
-        (
-          Void unused4=cond0.#checkTrue()
-          
-          catch exception Void catched3 void
-          exception Outer2::MetaGuard::MethodClash.#apply(record:record, lib:err)
-          )
-        )
+      Void unused1=Outer2::MetaGuard::DispatchMemberUnavailable.#apply(that:err)
+      Void unused2=Outer2::MetaGuard::MethodClash.#apply(lift:err)
       error err
       )
     void
@@ -9369,14 +9459,10 @@ Library #leftleft(Library that) exception Outer2::MetaGuard::MemberUnavailable, 
   error {'@stringU
   'CurlyBlock-Should be unreachable code
   }
-  )
-type method 
-type Outer0 #begin() Outer0
-method 
-Outer0 #end() this}
+  )}
 RenamePath:{
 type method 
-Outer0 #add(Outer2::Path that, Outer2::Path to) 
+Outer0 #apply(Outer2::Path that, Outer2::Path to) 
 mut method 
 Outer2::Path #that() 
 read method 
@@ -9391,47 +9477,9 @@ Library #leftleft(Library that) exception Outer2::MetaGuard::NestedClassUnavaila
     Void unused0=return Outer2::SafeOperators.renameClass(that:that, src:this.that(), dest:this.to())
     
     catch error Library err (
-      Outer2::Introspection::Record::#apply(lib ) record=Outer2::Introspection::Record.#apply(lib:err)
-      Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) x=record.#stringParser(that:{'@stringU
-      'Kind
-      })
-      Void unused1=(
-        Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) ::#equalequal(that ) cond=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
-        'MemberUnavailable
-        }))
-        (
-          Void unused6=cond.#checkTrue()
-          
-          catch exception Void catched1 void
-          exception Outer2::MetaGuard::NestedClassUnavailable.#apply(record:record, lib:err)
-          )
-        )
-      Void unused2=(
-        Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) ::#equalequal(that ) cond0=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
-        'MethodClash
-        }))
-        (
-          Void unused7=cond0.#checkTrue()
-          
-          catch exception Void catched3 void
-          exception Outer2::MetaGuard::MethodClash.#apply(record:record, lib:err)
-          )
-        )
-      Void unused3=(
-        Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) ::#equalequal(that ) cond1=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
-        'ClassClash
-        }))
-        (
-          Void unused8=cond1.#checkTrue()
-          
-          catch exception Void catched5 void
-          exception Outer2::MetaGuard::ClassClash.#apply(record:record, lib:err)
-          )
-        )
-      Void unused4=Outer2::Debug.#apply(that:Outer2::S.#stringParser(that:{'@stringU
-      'critical failure in capturing plugin primitive error
-      }))
-      Void unused5=Outer2::Debug.#apply(that:x)
+      Void unused1=Outer2::MetaGuard::NestedClassUnavailable.#apply(lift:err)
+      Void unused2=Outer2::MetaGuard::MethodClash.#apply(lift:err)
+      Void unused3=Outer2::MetaGuard::ClassClash.#apply(lift:err)
       error err
       )
     void
@@ -9441,14 +9489,10 @@ Library #leftleft(Library that) exception Outer2::MetaGuard::NestedClassUnavaila
   error {'@stringU
   'CurlyBlock-Should be unreachable code
   }
-  )
-type method 
-type Outer0 #begin() Outer0
-method 
-Outer0 #end() this}
+  )}
 RemoveImplementationSelector:{
 type method 
-Outer0 #add(Outer2::Selector that, Outer2::Path of) 
+Outer0 #apply(Outer2::Selector that, Outer2::Path of) 
 mut method 
 Outer2::Selector #that() 
 read method 
@@ -9463,21 +9507,7 @@ Library #leftleft(Library that) exception Outer2::MetaGuard::MemberUnavailable (
     Void unused0=return Outer2::SafeOperators.removeImplementation(that:that, path:this.of(), selector:this.that())
     
     catch error Library err (
-      Outer2::Introspection::Record::#apply(lib ) record=Outer2::Introspection::Record.#apply(lib:err)
-      Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) x=record.#stringParser(that:{'@stringU
-      'Kind
-      })
-      Void unused1=(
-        Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) ::#equalequal(that ) cond=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
-        'MemberUnavailable
-        }))
-        (
-          Void unused2=cond.#checkTrue()
-          
-          catch exception Void catched1 void
-          exception Outer2::MetaGuard::DispatchMemberUnavailable.#apply(that:err)
-          )
-        )
+      Void unused1=Outer2::MetaGuard::DispatchMemberUnavailable.#apply(that:err)
       error err
       )
     void
@@ -9487,14 +9517,10 @@ Library #leftleft(Library that) exception Outer2::MetaGuard::MemberUnavailable (
   error {'@stringU
   'CurlyBlock-Should be unreachable code
   }
-  )
-type method 
-type Outer0 #begin() Outer0
-method 
-Outer0 #end() this}
+  )}
 MoveImplementationSelector:{
 type method 
-Outer0 #add(Outer2::Selector that, Outer2::Path of, Outer2::Selector to) 
+Outer0 #apply(Outer2::Selector that, Outer2::Path of, Outer2::Selector to) 
 mut method 
 Outer2::Selector #that() 
 read method 
@@ -9513,32 +9539,8 @@ Library #leftleft(Library that) exception Outer2::MetaGuard::MemberUnavailable, 
     Void unused0=return Outer2::SafeOperators.moveImplementation(that:that, path:this.of(), src:this.that(), dest:this.to())
     
     catch error Library err (
-      Outer2::Introspection::Record::#apply(lib ) record=Outer2::Introspection::Record.#apply(lib:err)
-      Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) x=record.#stringParser(that:{'@stringU
-      'Kind
-      })
-      Void unused1=(
-        Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) ::#equalequal(that ) cond=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
-        'MemberUnavailable
-        }))
-        (
-          Void unused3=cond.#checkTrue()
-          
-          catch exception Void catched1 void
-          exception Outer2::MetaGuard::DispatchMemberUnavailable.#apply(that:err)
-          )
-        )
-      Void unused2=(
-        Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) ::#equalequal(that ) cond0=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
-        'MethodClash
-        }))
-        (
-          Void unused4=cond0.#checkTrue()
-          
-          catch exception Void catched3 void
-          exception Outer2::MetaGuard::MethodClash.#apply(record:record, lib:err)
-          )
-        )
+      Void unused1=Outer2::MetaGuard::DispatchMemberUnavailable.#apply(that:err)
+      Void unused2=Outer2::MetaGuard::MethodClash.#apply(lift:err)
       error err
       )
     void
@@ -9548,14 +9550,10 @@ Library #leftleft(Library that) exception Outer2::MetaGuard::MemberUnavailable, 
   error {'@stringU
   'CurlyBlock-Should be unreachable code
   }
-  )
-type method 
-type Outer0 #begin() Outer0
-method 
-Outer0 #end() this}
+  )}
 RemoveImplementationPath:{
 type method 
-Outer0 #add(Outer2::Path that) 
+Outer0 #apply(Outer2::Path that) 
 mut method 
 Outer2::Path #that() 
 read method 
@@ -9566,32 +9564,8 @@ Library #leftleft(Library that) exception Outer2::MetaGuard::NestedClassUnavaila
     Void unused0=return Outer2::SafeOperators.removeImplementation(that:that, path:this.that())
     
     catch error Library err (
-      Outer2::Introspection::Record::#apply(lib ) record=Outer2::Introspection::Record.#apply(lib:err)
-      Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) x=record.#stringParser(that:{'@stringU
-      'Kind
-      })
-      Void unused1=(
-        Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) ::#equalequal(that ) cond=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
-        'MemberUnavailable
-        }))
-        (
-          Void unused3=cond.#checkTrue()
-          
-          catch exception Void catched1 void
-          exception Outer2::MetaGuard::NestedClassUnavailable.#apply(record:record, lib:err)
-          )
-        )
-      Void unused2=(
-        Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) ::#equalequal(that ) cond0=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
-        'PrivacyCoupuled
-        }))
-        (
-          Void unused4=cond0.#checkTrue()
-          
-          catch exception Void catched3 void
-          exception Outer2::MetaGuard::PrivacyCoupuled.#apply(record:record, lib:err)
-          )
-        )
+      Void unused1=Outer2::MetaGuard::NestedClassUnavailable.#apply(lift:err)
+      Void unused2=Outer2::MetaGuard::PrivacyCoupuled.#apply(lift:err)
       error err
       )
     void
@@ -9601,14 +9575,10 @@ Library #leftleft(Library that) exception Outer2::MetaGuard::NestedClassUnavaila
   error {'@stringU
   'CurlyBlock-Should be unreachable code
   }
-  )
-type method 
-type Outer0 #begin() Outer0
-method 
-Outer0 #end() this}
+  )}
 AddDocumentationSelector:{
 type method 
-Outer0 #add(Outer2::Selector that, Outer2::Path of, Outer2::Introspection::Doc doc) 
+Outer0 #apply(Outer2::Selector that, Outer2::Path of, Outer2::Introspection::Doc doc) 
 mut method 
 Outer2::Selector #that() 
 read method 
@@ -9627,21 +9597,7 @@ Library #leftleft(Library that) exception Outer2::MetaGuard::MemberUnavailable (
     Void unused0=return Outer2::SafeOperators.addDocumentation(that:that, path:this.of(), selector:this.that(), doc:this.doc())
     
     catch error Library err (
-      Outer2::Introspection::Record::#apply(lib ) record=Outer2::Introspection::Record.#apply(lib:err)
-      Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) x=record.#stringParser(that:{'@stringU
-      'Kind
-      })
-      Void unused1=(
-        Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) ::#equalequal(that ) cond=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
-        'MemberUnavailable
-        }))
-        (
-          Void unused2=cond.#checkTrue()
-          
-          catch exception Void catched1 void
-          exception Outer2::MetaGuard::DispatchMemberUnavailable.#apply(that:err)
-          )
-        )
+      Void unused1=Outer2::MetaGuard::DispatchMemberUnavailable.#apply(that:err)
       error err
       )
     void
@@ -9651,14 +9607,10 @@ Library #leftleft(Library that) exception Outer2::MetaGuard::MemberUnavailable (
   error {'@stringU
   'CurlyBlock-Should be unreachable code
   }
-  )
-type method 
-type Outer0 #begin() Outer0
-method 
-Outer0 #end() this}
+  )}
 AddDocumentationPath:{
 type method 
-Outer0 #add(Outer2::Path that, Outer2::Introspection::Doc doc) 
+Outer0 #apply(Outer2::Path that, Outer2::Introspection::Doc doc) 
 mut method 
 Outer2::Path #that() 
 read method 
@@ -9673,32 +9625,8 @@ Library #leftleft(Library that) exception Outer2::MetaGuard::NestedClassUnavaila
     Void unused0=return Outer2::SafeOperators.addDocumentation(that:that, path:this.that(), doc:this.doc())
     
     catch error Library err (
-      Outer2::Introspection::Record::#apply(lib ) record=Outer2::Introspection::Record.#apply(lib:err)
-      Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) x=record.#stringParser(that:{'@stringU
-      'Kind
-      })
-      Void unused1=(
-        Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) ::#equalequal(that ) cond=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
-        'MemberUnavailable
-        }))
-        (
-          Void unused3=cond.#checkTrue()
-          
-          catch exception Void catched1 void
-          exception Outer2::MetaGuard::NestedClassUnavailable.#apply(record:record, lib:err)
-          )
-        )
-      Void unused2=(
-        Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) ::#equalequal(that ) cond0=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
-        'InvalidOnTopLevel
-        }))
-        (
-          Void unused4=cond0.#checkTrue()
-          
-          catch exception Void catched3 void
-          exception Outer2::MetaGuard::InvalidOnTopLevel.#apply(record:record, lib:err)
-          )
-        )
+      Void unused1=Outer2::MetaGuard::NestedClassUnavailable.#apply(lift:err)
+      Void unused2=Outer2::MetaGuard::InvalidOnTopLevel.#apply(lift:err)
       error err
       )
     void
@@ -9708,28 +9636,20 @@ Library #leftleft(Library that) exception Outer2::MetaGuard::NestedClassUnavaila
   error {'@stringU
   'CurlyBlock-Should be unreachable code
   }
-  )
-type method 
-type Outer0 #begin() Outer0
-method 
-Outer0 #end() this}
+  )}
 MakePrivatePath:{
 type method 
-Outer0 #add(Outer2::Path that) 
+Outer0 #apply(Outer2::Path that) 
 mut method 
 Outer2::Path #that() 
 read method 
 Outer2::Path that() 
 method 
-Library #leftleft(Library that) exception Outer2::MetaGuard::MemberUnavailable, Outer2::MetaGuard::InvalidOnTopLevel Outer1::AddDocumentationPath.#begin().#add(that:this.that(), doc:Outer2::Introspection::Doc.#stringParser(that:{'@private
-})).#end().#leftleft(that:that)
-type method 
-type Outer0 #begin() Outer0
-method 
-Outer0 #end() this}
+Library #leftleft(Library that) exception Outer2::MetaGuard::MemberUnavailable, Outer2::MetaGuard::InvalidOnTopLevel Outer1::AddDocumentationPath.#apply(that:this.that(), doc:Outer2::Introspection::Doc.#stringParser(that:{'@private
+})).#leftleft(that:that)}
 MakePrivateSelector:{
 type method 
-Outer0 #add(Outer2::Selector that, Outer2::Path of) 
+Outer0 #apply(Outer2::Selector that, Outer2::Path of) 
 mut method 
 Outer2::Selector #that() 
 read method 
@@ -9739,16 +9659,11 @@ Outer2::Path #of()
 read method 
 Outer2::Path of() 
 method 
-Library #leftleft(Library that) exception Outer2::MetaGuard::MemberUnavailable Outer1::AddDocumentationSelector.#begin().#add(that:this.that(), of:this.of(), doc:Outer2::Introspection::Doc.#stringParser(that:{'@private
-})).#end().#leftleft(that:that)
+Library #leftleft(Library that) exception Outer2::MetaGuard::MemberUnavailable Outer1::AddDocumentationSelector.#apply(that:this.that(), of:this.of(), doc:Outer2::Introspection::Doc.#stringParser(that:{'@private
+})).#leftleft(that:that)}
+SumMethods:{
 type method 
-type Outer0 #begin() Outer0
-method 
-Outer0 #end() this}
-SumMethods:{'#add(Selector that,Selector and, Path of, Selector to)
-
-type method 
-Outer0 #add(Outer2::Selector that, Outer2::Selector and, Outer2::Path of, Outer2::S over, Outer2::Selector to) 
+Outer0 #apply(Outer2::Selector that, Outer2::Selector and, Outer2::Path of, Outer2::S over, Outer2::Selector to) 
 mut method 
 Outer2::Selector #that() 
 read method 
@@ -9775,43 +9690,9 @@ Library #leftleft(Library that) exception Outer2::MetaGuard::MemberUnavailable, 
     Void unused0=return Outer2::SafeOperators.sumMethods(that:that, path:this.of(), src1:this.that(), src2:this.and(), dest:this.to(), name:this.over())
     
     catch error Library err (
-      Outer2::Introspection::Record::#apply(lib ) record=Outer2::Introspection::Record.#apply(lib:err)
-      Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) x=record.#stringParser(that:{'@stringU
-      'Kind
-      })
-      Void unused1=(
-        Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) ::#equalequal(that ) cond=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
-        'MemberUnavailable
-        }))
-        (
-          Void unused4=cond.#checkTrue()
-          
-          catch exception Void catched1 void
-          exception Outer2::MetaGuard::DispatchMemberUnavailable.#apply(that:err)
-          )
-        )
-      Void unused2=(
-        Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) ::#equalequal(that ) cond0=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
-        'MethodClash
-        }))
-        (
-          Void unused5=cond0.#checkTrue()
-          
-          catch exception Void catched3 void
-          exception Outer2::MetaGuard::MethodClash.#apply(record:record, lib:err)
-          )
-        )
-      Void unused3=(
-        Outer2::Introspection::Record::#apply(lib ) ::#stringParser(that ) ::#equalequal(that ) cond1=x.#equalequal(that:Outer2::S.#stringParser(that:{'@stringU
-        'ParameterMismatch
-        }))
-        (
-          Void unused6=cond1.#checkTrue()
-          
-          catch exception Void catched5 void
-          exception Outer2::MetaGuard::ParameterMismatch.#apply(record:record, lib:err)
-          )
-        )
+      Void unused1=Outer2::MetaGuard::DispatchMemberUnavailable.#apply(that:err)
+      Void unused2=Outer2::MetaGuard::MethodClash.#apply(lift:err)
+      Void unused3=Outer2::MetaGuard::ParameterMismatch.#apply(lift:err)
       error err
       )
     void
@@ -9821,11 +9702,7 @@ Library #leftleft(Library that) exception Outer2::MetaGuard::MemberUnavailable, 
   error {'@stringU
   'CurlyBlock-Should be unreachable code
   }
-  )
-type method 
-type Outer0 #begin() Outer0
-method 
-Outer0 #end() this}
+  )}
 Tools:{
 type method 
 Outer2::S getToSOrName(read Any that) (
@@ -9945,7 +9822,7 @@ mut method
 Outer1::SrcDests::#begin() #inner() }
 $:{interface 
 method 
-Library solveConflict(Library that, Outer1::SrcDest location) exception Outer2::MetaGuard }
+Library solveConflict(Library that, Outer1::SrcDest location) }
 SrcDest:{
 type method 
 Outer0 #apply(Outer2::Path path, Outer2::Selector src, Outer2::Selector dest) 
@@ -10032,9 +9909,11 @@ Outer0 pop() (
   Void unused=(
     Void unused0=return Outer0._new(head:this.head().#next())
     
-    catch exception Void catched error Outer2::Guard::Operation.#apply(text:Outer0.myName().#plusplus(that:Outer2::S.#stringParser(that:{'@stringU
+    catch exception Void catched error Outer2::Guard::Operation.#stringParser(that:{'@stringU
+    '
+    }).#begin().#add(that:Outer0.myName()).#end().#stringParser(that:{'@stringU
     ':PopOnEmpyList
-    })))
+    })
     void
     )
   
@@ -10201,9 +10080,11 @@ method #checkEnd() (
     
     catch exception Void catched1 void
     (
-      Void unused0=error Outer3::Assert::ObservedBug.#apply(text:Outer1.myName().#plusplus(that:Outer3::S.#stringParser(that:{'@stringU
+      Void unused0=error Outer3::Assert::ObservedBug.#stringParser(that:{'@stringU
+      '
+      }).#begin().#add(that:Outer1.myName()).#end().#stringParser(that:{'@stringU
       ':IterationNotComplete,\u000a  use valsCut() to allows incomplete iterations\u000a
-      })))
+      })
       void
       )
     )
@@ -10337,9 +10218,11 @@ Outer0 pop() (
   Void unused=(
     Void unused0=return Outer0._new(head:this.head().#next())
     
-    catch exception Void catched error Outer2::Guard::Operation.#apply(text:Outer0.myName().#plusplus(that:Outer2::S.#stringParser(that:{'@stringU
+    catch exception Void catched error Outer2::Guard::Operation.#stringParser(that:{'@stringU
+    '
+    }).#begin().#add(that:Outer0.myName()).#end().#stringParser(that:{'@stringU
     ':PopOnEmpyList
-    })))
+    })
     void
     )
   
@@ -10506,9 +10389,11 @@ method #checkEnd() (
     
     catch exception Void catched1 void
     (
-      Void unused0=error Outer3::Assert::ObservedBug.#apply(text:Outer1.myName().#plusplus(that:Outer3::S.#stringParser(that:{'@stringU
+      Void unused0=error Outer3::Assert::ObservedBug.#stringParser(that:{'@stringU
+      '
+      }).#begin().#add(that:Outer1.myName()).#end().#stringParser(that:{'@stringU
       ':IterationNotComplete,\u000a  use valsCut() to allows incomplete iterations\u000a
-      })))
+      })
       void
       )
     )
@@ -10878,38 +10763,23 @@ Library #leftleft(Library that) exception Outer2::MetaGuard::ClassClash, Outer2:
                                     )
                                   (
                                     Void unused28=varmap.inner(that:varmap.#inner().#add(that:ren.#inner()))
-                                    Void unused29=varlibi.inner(that:this.solveConflict(that:varlibi.#inner(), location:ren.#inner()))
-                                    
-                                    catch exception Outer2::MetaGuard catched14 error Outer2::Assert::ObservedBug.#apply(text:(
-                                      Void unused30=(
-                                        Void unused31=return Outer2::S.#stringParser(that:{'@stringU
-                                        'solveConflict does not follow the specification: it throws exceptions
-                                        })
-                                        void
-                                        )
-                                      
-                                      catch return Outer2::Assert::ObservedBug::#apply(text ) ::text result0 result0
-                                      error {'@stringU
-                                      'CurlyBlock-Should be unreachable code
-                                      }
-                                      ))
-                                    void
+                                    varlibi.inner(that:this.solveConflict(that:varlibi.#inner(), location:ren.#inner()))
                                     )
                                   )
                                 
-                                catch exception Void catched17 void
+                                catch exception Void catched15 void
                                 void
                                 )
                               
                               catch exception Any propagated (
-                                Void unused32=ren.#close()
+                                Void unused29=ren.#close()
                                 exception propagated
                                 )
                               void
                               )
                             
                             catch return Library propagated0 (
-                              Void unused33=ren.#close()
+                              Void unused30=ren.#close()
                               return propagated0
                               )
                             ren.#close()
@@ -10920,19 +10790,19 @@ Library #leftleft(Library that) exception Outer2::MetaGuard::ClassClash, Outer2:
                       )
                     )
                   
-                  catch exception Void catched23 void
+                  catch exception Void catched21 void
                   void
                   )
                 
                 catch exception Any propagated1 (
-                  Void unused34=index.#close()
+                  Void unused31=index.#close()
                   exception propagated1
                   )
                 void
                 )
               
               catch return Library propagated2 (
-                Void unused35=index.#close()
+                Void unused32=index.#close()
                 return propagated2
                 )
               index.#close()
@@ -10940,14 +10810,14 @@ Library #leftleft(Library that) exception Outer2::MetaGuard::ClassClash, Outer2:
             )
           
           catch exception Any propagated3 (
-            Void unused36=lib.#close()
+            Void unused33=lib.#close()
             exception propagated3
             )
           void
           )
         
         catch return Library propagated4 (
-          Void unused37=lib.#close()
+          Void unused34=lib.#close()
           return propagated4
           )
         lib.#close()
@@ -10957,36 +10827,36 @@ Library #leftleft(Library that) exception Outer2::MetaGuard::ClassClash, Outer2:
     Void unused2=(
       Outer0::Varmap__122_0::#inner() ::vals() mapi=varmap.#inner().vals()
       (
-        Void unused38=(
-          Void unused39=(
-            Void unused40=loop (
-              Void unused41=mapi.#next()
+        Void unused35=(
+          Void unused36=(
+            Void unused37=loop (
+              Void unused38=mapi.#next()
               
-              catch exception Void catched33 (
-                Void unused42=(
-                  Void unused43=mapi.#checkEnd()
+              catch exception Void catched31 (
+                Void unused39=(
+                  Void unused40=mapi.#checkEnd()
                   
-                  catch exception Void catched34 void
+                  catch exception Void catched32 void
                   void
                   )
                 exception void
                 )
-              varacc.inner(that:Outer2::Refactor::MakePrivateSelector.#begin().#add(that:mapi.#inner().dest(), of:mapi.#inner().path()).#end().#leftleft(that:varacc.#inner()))
+              varacc.inner(that:Outer2::Refactor::MakePrivateSelector.#apply(that:mapi.#inner().dest(), of:mapi.#inner().path()).#leftleft(that:varacc.#inner()))
               )
             
-            catch exception Void catched36 void
+            catch exception Void catched34 void
             void
             )
           
           catch exception Any propagated5 (
-            Void unused44=mapi.#close()
+            Void unused41=mapi.#close()
             exception propagated5
             )
           void
           )
         
         catch return Library propagated6 (
-          Void unused45=mapi.#close()
+          Void unused42=mapi.#close()
           return propagated6
           )
         mapi.#close()
@@ -10994,9 +10864,9 @@ Library #leftleft(Library that) exception Outer2::MetaGuard::ClassClash, Outer2:
       )
     Void unused3=return varacc.#inner()
     
-    catch exception Outer2::MetaGuard::MemberUnavailable catched41 error Outer2::Assert::CodeNotReachable.#stringParser(that:{'@stringU
+    catch exception Outer2::MetaGuard::MemberUnavailable catched39 error Outer2::Assert::CodeNotReachable.#stringParser(that:{'@stringU
     'PreferentialComposition1
-    })
+    }).#apply(that:catched39)
     void
     )
   
@@ -11009,7 +10879,21 @@ method
 Outer0 #plusplus(Outer0 that) Outer0.#apply__46_0(myLibs__46_0:this.myLibs__46_0().#plusplus(that:that.myLibs__46_0()))})}
 Extends:{'members of each produced class
 <:Outer1::PreferentialComposition::$, Outer1::PreferentialComposition::$
-method solveConflict(that location ) Outer1::Refactor::MoveImplementationSelector.#begin().#add(that:location.src(), of:location.path(), to:location.dest()).#end().#leftleft(that:that)
+method solveConflict(that location ) (
+  Void unused=(
+    Void unused0=return Outer1::Refactor::MoveImplementationSelector.#apply(that:location.src(), of:location.path(), to:location.dest()).#leftleft(that:that)
+    
+    catch exception Outer1::MetaGuard catched error Outer1::Assert::CodeNotReachable.#stringParser(that:{'@stringU
+    '
+    }).#apply(that:catched)
+    void
+    )
+  
+  catch return Outer0::solveConflict(that location )  result result
+  error {'@stringU
+  'CurlyBlock-Should be unreachable code
+  }
+  )
 Varacc1_$%21_0__124_0:'@private
 {
 type method 
@@ -11136,38 +11020,23 @@ Library #leftleft(Library that) exception Outer1::MetaGuard::ClassClash, Outer1:
                                     )
                                   (
                                     Void unused28=varmap.inner(that:varmap.#inner().#add(that:ren.#inner()))
-                                    Void unused29=varlibi.inner(that:this.solveConflict(that:varlibi.#inner(), location:ren.#inner()))
-                                    
-                                    catch exception Outer1::MetaGuard catched14 error Outer1::Assert::ObservedBug.#apply(text:(
-                                      Void unused30=(
-                                        Void unused31=return Outer1::S.#stringParser(that:{'@stringU
-                                        'solveConflict does not follow the specification: it throws exceptions
-                                        })
-                                        void
-                                        )
-                                      
-                                      catch return Outer1::Assert::ObservedBug::#apply(text ) ::text result0 result0
-                                      error {'@stringU
-                                      'CurlyBlock-Should be unreachable code
-                                      }
-                                      ))
-                                    void
+                                    varlibi.inner(that:this.solveConflict(that:varlibi.#inner(), location:ren.#inner()))
                                     )
                                   )
                                 
-                                catch exception Void catched17 void
+                                catch exception Void catched15 void
                                 void
                                 )
                               
                               catch exception Any propagated (
-                                Void unused32=ren.#close()
+                                Void unused29=ren.#close()
                                 exception propagated
                                 )
                               void
                               )
                             
                             catch return Library propagated0 (
-                              Void unused33=ren.#close()
+                              Void unused30=ren.#close()
                               return propagated0
                               )
                             ren.#close()
@@ -11178,19 +11047,19 @@ Library #leftleft(Library that) exception Outer1::MetaGuard::ClassClash, Outer1:
                       )
                     )
                   
-                  catch exception Void catched23 void
+                  catch exception Void catched21 void
                   void
                   )
                 
                 catch exception Any propagated1 (
-                  Void unused34=index.#close()
+                  Void unused31=index.#close()
                   exception propagated1
                   )
                 void
                 )
               
               catch return Library propagated2 (
-                Void unused35=index.#close()
+                Void unused32=index.#close()
                 return propagated2
                 )
               index.#close()
@@ -11198,14 +11067,14 @@ Library #leftleft(Library that) exception Outer1::MetaGuard::ClassClash, Outer1:
             )
           
           catch exception Any propagated3 (
-            Void unused36=lib.#close()
+            Void unused33=lib.#close()
             exception propagated3
             )
           void
           )
         
         catch return Library propagated4 (
-          Void unused37=lib.#close()
+          Void unused34=lib.#close()
           return propagated4
           )
         lib.#close()
@@ -11215,36 +11084,36 @@ Library #leftleft(Library that) exception Outer1::MetaGuard::ClassClash, Outer1:
     Void unused2=(
       Outer0::Varmap_$%22_0__125_0::#inner() ::vals() mapi=varmap.#inner().vals()
       (
-        Void unused38=(
-          Void unused39=(
-            Void unused40=loop (
-              Void unused41=mapi.#next()
+        Void unused35=(
+          Void unused36=(
+            Void unused37=loop (
+              Void unused38=mapi.#next()
               
-              catch exception Void catched33 (
-                Void unused42=(
-                  Void unused43=mapi.#checkEnd()
+              catch exception Void catched31 (
+                Void unused39=(
+                  Void unused40=mapi.#checkEnd()
                   
-                  catch exception Void catched34 void
+                  catch exception Void catched32 void
                   void
                   )
                 exception void
                 )
-              varacc.inner(that:Outer1::Refactor::MakePrivateSelector.#begin().#add(that:mapi.#inner().dest(), of:mapi.#inner().path()).#end().#leftleft(that:varacc.#inner()))
+              varacc.inner(that:Outer1::Refactor::MakePrivateSelector.#apply(that:mapi.#inner().dest(), of:mapi.#inner().path()).#leftleft(that:varacc.#inner()))
               )
             
-            catch exception Void catched36 void
+            catch exception Void catched34 void
             void
             )
           
           catch exception Any propagated5 (
-            Void unused44=mapi.#close()
+            Void unused41=mapi.#close()
             exception propagated5
             )
           void
           )
         
         catch return Library propagated6 (
-          Void unused45=mapi.#close()
+          Void unused42=mapi.#close()
           return propagated6
           )
         mapi.#close()
@@ -11252,9 +11121,9 @@ Library #leftleft(Library that) exception Outer1::MetaGuard::ClassClash, Outer1:
       )
     Void unused3=return varacc.#inner()
     
-    catch exception Outer1::MetaGuard::MemberUnavailable catched41 error Outer1::Assert::CodeNotReachable.#stringParser(that:{'@stringU
+    catch exception Outer1::MetaGuard::MemberUnavailable catched39 error Outer1::Assert::CodeNotReachable.#stringParser(that:{'@stringU
     'PreferentialComposition1
-    })
+    }).#apply(that:catched39)
     void
     )
   
@@ -11267,7 +11136,21 @@ method
 Outer0 #plusplus(Outer0 that) Outer0.#apply_$%20_0__47_0(myLibs_$%20_0__47_0:this.myLibs_$%20_0__47_0().#plusplus(that:that.myLibs_$%20_0__47_0()))}
 Use:{'members of each produced class
 <:Outer1::PreferentialComposition::$, Outer1::PreferentialComposition::$
-method solveConflict(that location ) Outer1::Refactor::RenameSelector.#begin().#add(that:location.src(), of:location.path(), to:location.dest()).#end().#leftleft(that:that)
+method solveConflict(that location ) (
+  Void unused=(
+    Void unused0=return Outer1::Refactor::RenameSelector.#apply(that:location.src(), of:location.path(), to:location.dest()).#leftleft(that:that)
+    
+    catch exception Outer1::MetaGuard catched error Outer1::Assert::CodeNotReachable.#stringParser(that:{'@stringU
+    '
+    }).#apply(that:catched)
+    void
+    )
+  
+  catch return Outer0::solveConflict(that location )  result result
+  error {'@stringU
+  'CurlyBlock-Should be unreachable code
+  }
+  )
 Varacc1_$%25_0__127_0:'@private
 {
 type method 
@@ -11394,38 +11277,23 @@ Library #leftleft(Library that) exception Outer1::MetaGuard::ClassClash, Outer1:
                                     )
                                   (
                                     Void unused28=varmap.inner(that:varmap.#inner().#add(that:ren.#inner()))
-                                    Void unused29=varlibi.inner(that:this.solveConflict(that:varlibi.#inner(), location:ren.#inner()))
-                                    
-                                    catch exception Outer1::MetaGuard catched14 error Outer1::Assert::ObservedBug.#apply(text:(
-                                      Void unused30=(
-                                        Void unused31=return Outer1::S.#stringParser(that:{'@stringU
-                                        'solveConflict does not follow the specification: it throws exceptions
-                                        })
-                                        void
-                                        )
-                                      
-                                      catch return Outer1::Assert::ObservedBug::#apply(text ) ::text result0 result0
-                                      error {'@stringU
-                                      'CurlyBlock-Should be unreachable code
-                                      }
-                                      ))
-                                    void
+                                    varlibi.inner(that:this.solveConflict(that:varlibi.#inner(), location:ren.#inner()))
                                     )
                                   )
                                 
-                                catch exception Void catched17 void
+                                catch exception Void catched15 void
                                 void
                                 )
                               
                               catch exception Any propagated (
-                                Void unused32=ren.#close()
+                                Void unused29=ren.#close()
                                 exception propagated
                                 )
                               void
                               )
                             
                             catch return Library propagated0 (
-                              Void unused33=ren.#close()
+                              Void unused30=ren.#close()
                               return propagated0
                               )
                             ren.#close()
@@ -11436,19 +11304,19 @@ Library #leftleft(Library that) exception Outer1::MetaGuard::ClassClash, Outer1:
                       )
                     )
                   
-                  catch exception Void catched23 void
+                  catch exception Void catched21 void
                   void
                   )
                 
                 catch exception Any propagated1 (
-                  Void unused34=index.#close()
+                  Void unused31=index.#close()
                   exception propagated1
                   )
                 void
                 )
               
               catch return Library propagated2 (
-                Void unused35=index.#close()
+                Void unused32=index.#close()
                 return propagated2
                 )
               index.#close()
@@ -11456,14 +11324,14 @@ Library #leftleft(Library that) exception Outer1::MetaGuard::ClassClash, Outer1:
             )
           
           catch exception Any propagated3 (
-            Void unused36=lib.#close()
+            Void unused33=lib.#close()
             exception propagated3
             )
           void
           )
         
         catch return Library propagated4 (
-          Void unused37=lib.#close()
+          Void unused34=lib.#close()
           return propagated4
           )
         lib.#close()
@@ -11473,36 +11341,36 @@ Library #leftleft(Library that) exception Outer1::MetaGuard::ClassClash, Outer1:
     Void unused2=(
       Outer0::Varmap_$%26_0__128_0::#inner() ::vals() mapi=varmap.#inner().vals()
       (
-        Void unused38=(
-          Void unused39=(
-            Void unused40=loop (
-              Void unused41=mapi.#next()
+        Void unused35=(
+          Void unused36=(
+            Void unused37=loop (
+              Void unused38=mapi.#next()
               
-              catch exception Void catched33 (
-                Void unused42=(
-                  Void unused43=mapi.#checkEnd()
+              catch exception Void catched31 (
+                Void unused39=(
+                  Void unused40=mapi.#checkEnd()
                   
-                  catch exception Void catched34 void
+                  catch exception Void catched32 void
                   void
                   )
                 exception void
                 )
-              varacc.inner(that:Outer1::Refactor::MakePrivateSelector.#begin().#add(that:mapi.#inner().dest(), of:mapi.#inner().path()).#end().#leftleft(that:varacc.#inner()))
+              varacc.inner(that:Outer1::Refactor::MakePrivateSelector.#apply(that:mapi.#inner().dest(), of:mapi.#inner().path()).#leftleft(that:varacc.#inner()))
               )
             
-            catch exception Void catched36 void
+            catch exception Void catched34 void
             void
             )
           
           catch exception Any propagated5 (
-            Void unused44=mapi.#close()
+            Void unused41=mapi.#close()
             exception propagated5
             )
           void
           )
         
         catch return Library propagated6 (
-          Void unused45=mapi.#close()
+          Void unused42=mapi.#close()
           return propagated6
           )
         mapi.#close()
@@ -11510,9 +11378,9 @@ Library #leftleft(Library that) exception Outer1::MetaGuard::ClassClash, Outer1:
       )
     Void unused3=return varacc.#inner()
     
-    catch exception Outer1::MetaGuard::MemberUnavailable catched41 error Outer1::Assert::CodeNotReachable.#stringParser(that:{'@stringU
+    catch exception Outer1::MetaGuard::MemberUnavailable catched39 error Outer1::Assert::CodeNotReachable.#stringParser(that:{'@stringU
     'PreferentialComposition1
-    })
+    }).#apply(that:catched39)
     void
     )
   
@@ -11587,7 +11455,7 @@ Library #leftleft(Library that) exception Outer1::MetaGuard::ClassClash, Outer1:
                 )
               (
                 Void unused10=varmap.inner(that:varmap.#inner().#add(that:ren.#inner()))
-                Void unused11=varacc.inner(that:Outer1::Refactor::MoveImplementationSelector.#begin().#add(that:ren.#inner().src(), of:ren.#inner().path(), to:ren.#inner().dest()).#end().#leftleft(that:varacc.#inner()))
+                Void unused11=varacc.inner(that:Outer1::Refactor::MoveImplementationSelector.#apply(that:ren.#inner().src(), of:ren.#inner().path(), to:ren.#inner().dest()).#leftleft(that:varacc.#inner()))
                 
                 catch exception Outer1::MetaGuard err error Outer1::Assert::ObservedBug.#stringParser(that:{'@stringU
                 'Path.#lessless(that)
@@ -11614,9 +11482,9 @@ Library #leftleft(Library that) exception Outer1::MetaGuard::ClassClash, Outer1:
         ren.#close()
         )
       )
-    Void unused1=varacc.inner(that:Outer1::Refactor::RenamePath.#begin().#add(that:this.that(), to:Outer1::Path.#stringParser(that:{'@stringU
+    Void unused1=varacc.inner(that:Outer1::Refactor::RenamePath.#apply(that:this.that(), to:Outer1::Path.#stringParser(that:{'@stringU
     'Outer0
-    })).#end().#leftleft(that:varacc.#inner()))
+    })).#leftleft(that:varacc.#inner()))
     Void unused2=(
       Outer0::Varmap0__131_0::#inner() ::vals() mapi=varmap.#inner().vals()
       (
@@ -11634,7 +11502,7 @@ Library #leftleft(Library that) exception Outer1::MetaGuard::ClassClash, Outer1:
                   )
                 exception void
                 )
-              varacc.inner(that:Outer1::Refactor::MakePrivateSelector.#begin().#add(that:mapi.#inner().dest(), of:mapi.#inner().path()).#end().#leftleft(that:varacc.#inner()))
+              varacc.inner(that:Outer1::Refactor::MakePrivateSelector.#apply(that:mapi.#inner().dest(), of:mapi.#inner().path()).#leftleft(that:varacc.#inner()))
               )
             
             catch exception Void catched13 void
@@ -11857,9 +11725,9 @@ Library #leftleft(Library that) exception Outer1::DecorationUnfeasable (
     type method 
     Outer0 #stringParser(Library that) Outer0.fromS(that:Outer3::S.#stringParser(that:that))}).#end().#leftleft(that:that)
     
-    catch exception Outer2::MetaGuard mg exception Outer1::DecorationUnfeasable.#stringParser(that:{'@stringU
+    catch exception Outer2::MetaGuard catched exception Outer1::DecorationUnfeasable.#stringParser(that:{'@stringU
     'Parsable
-    }).#apply(that:mg)
+    }).#apply(that:catched)
     void
     )
   
@@ -11883,129 +11751,6 @@ Library #leftleft(Library that) (
   'CurlyBlock-Should be unreachable code
   }
   )}
-Invariant:{
-type method 
-Outer2::Bool isInvariant(Outer2::Introspection::NestedClass that) (
-  Void unused=(
-    Outer2::Introspection::NestedClass::transitivelyImplementedInterfaces() interf=that.transitivelyImplementedInterfaces()
-    Void unused0=(
-      Outer2::Introspection::NestedClass::transitivelyImplementedInterfaces() ::vals() ti=interf.vals()
-      (
-        Void unused2=(
-          Void unused3=(
-            Void unused4=loop (
-              Void unused5=ti.#next()
-              
-              catch exception Void catched0 (
-                Void unused6=(
-                  Void unused7=ti.#checkEnd()
-                  
-                  catch exception Void catched1 void
-                  void
-                  )
-                exception void
-                )
-              (
-                Void unused8=(
-                  Outer2::Introspection::NestedClass::transitivelyImplementedInterfaces() ::vals() ::#inner() ::referencedPath() ::externalType() tAny=ti.#inner().referencedPath().externalType()
-                  (
-                    type Outer2::Concept::Invariant tAny0=(
-                      Void unused9=return tAny
-                      
-                      catch return type Outer2::Concept::Invariant casted casted
-                      catch return type Any casted exception void
-                      error {'@stringU
-                      'CastT-Should be unreachable code
-                      }
-                      )
-                    
-                    catch exception Void catched5 void
-                    (
-                      Void unused10=return Outer2::Bool.true()
-                      void
-                      )
-                    )
-                  )
-                
-                catch error Outer2::Guard::Operation catched7 void
-                void
-                )
-              )
-            
-            catch exception Void catched8 void
-            void
-            )
-          
-          catch exception Any propagated (
-            Void unused11=ti.#close()
-            exception propagated
-            )
-          void
-          )
-        
-        catch return Outer2::Bool propagated0 (
-          Void unused12=ti.#close()
-          return propagated0
-          )
-        ti.#close()
-        )
-      )
-    Void unused1=return Outer2::Bool.false()
-    void
-    )
-  
-  catch return Outer2::Bool result result
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
-  }
-  )
-type method 
-Library #leftleft(Library that) exception Outer1::DecorationUnfeasable (
-  Void unused=(
-    Outer2::Introspection::#apply(lib ) i=Outer2::Introspection.#apply(lib:that)
-    Outer0::isInvariant(that ) isInv=this.isInvariant(that:i)
-    Void unused0=(
-      Outer0::isInvariant(that ) ::#bang() cond=isInv.#bang()
-      (
-        Void unused4=cond.#checkTrue()
-        
-        catch exception Void catched0 void
-        return that
-        )
-      )
-    Outer2::Introspection::#apply(lib ) ::state() state=i.state()
-    Void unused1=(
-      Outer2::Introspection::#apply(lib ) ::state() ::isEmpty() cond0=state.isEmpty()
-      (
-        Void unused5=cond0.#checkTrue()
-        
-        catch exception Void catched2 void
-        exception Outer1::DecorationUnfeasable.#stringParser(that:{'@stringU
-        'State is empty
-        })
-        )
-      )
-    Outer2::Introspection::#apply(lib ) ::state() ::top() k=state.top()
-    Void unused2=(
-      Outer2::Introspection::#apply(lib ) ::state() ::top() ::isPrivate() cond1=k.isPrivate()
-      (
-        Void unused6=cond1.#checkTrue()
-        
-        catch exception Void catched4 void
-        exception Outer1::DecorationUnfeasable.#stringParser(that:{'@stringU
-        'State is private
-        })
-        )
-      )
-    Void unused3=return that
-    void
-    )
-  
-  catch return Library result result
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
-  }
-  )}
 DataFromToS:{' in the future we can add also hashCode and > =>
 
 type method 
@@ -12018,9 +11763,9 @@ Library #leftleft(Library that) exception Outer1::DecorationUnfeasable (
     Outer3::Bool #equalequal(read Outer0 that) this.toS().#equalequal(that:that.toS())}).#end().#leftleft(that:Outer1::Equals.#leftleft(that:that))
     
     catch exception Outer1::DecorationUnfeasable mg exception mg
-    catch exception Outer2::MetaGuard mg exception Outer1::DecorationUnfeasable.#stringParser(that:{'@stringU
+    catch exception Outer2::MetaGuard catched exception Outer1::DecorationUnfeasable.#stringParser(that:{'@stringU
     '
-    }).#apply(that:mg)
+    }).#apply(that:catched)
     void
     )
   
@@ -12065,9 +11810,9 @@ Library #leftleft(Library that) exception Outer1::DecorationUnfeasable (
     read method 
     Outer3::Bool #equalequal(read Outer0 that) }).#end().#leftleft(that:that)
     
-    catch exception Outer2::MetaGuard x exception Outer1::DecorationUnfeasable.#stringParser(that:{'@stringU
+    catch exception Outer2::MetaGuard catched exception Outer1::DecorationUnfeasable.#stringParser(that:{'@stringU
     'Equals
-    }).#apply(that:x)
+    }).#apply(that:catched)
     void
     )
   
@@ -12083,9 +11828,9 @@ Library #leftleft(Library that) exception Outer1::DecorationUnfeasable (
     Void unused0=return Outer2::Extends.#begin().#add(that:{<:Outer3::Concept::Named
     method myName() Outer3::Introspection.#apply(clazz:Outer0).externalTypeToS()}).#end().#leftleft(that:that)
     
-    catch exception Outer2::MetaGuard x exception Outer1::DecorationUnfeasable.#stringParser(that:{'@stringU
+    catch exception Outer2::MetaGuard catched exception Outer1::DecorationUnfeasable.#stringParser(that:{'@stringU
     'Named
-    }).#apply(that:x)
+    }).#apply(that:catched)
     void
     )
   

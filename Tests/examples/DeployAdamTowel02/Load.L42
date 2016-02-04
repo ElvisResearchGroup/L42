@@ -11,7 +11,7 @@
   Library << (Library that)
   exception ConceptMapMismatch, ConceptMapUnavailable
     {
-    return Refactor::Redirect[Path"Abstract::ConceptMap" to:ConceptMap]<<that
+    return Refactor::Redirect(Path"Abstract::ConceptMap" to:ConceptMap)<<that
     catch exception  MetaGuard::NestedClassUnavailable err (
         available=Introspection(lib:that).transitivelyNestedClasses()
         sAvailable=S""[with av in available.vals() ( 

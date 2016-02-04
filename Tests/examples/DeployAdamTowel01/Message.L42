@@ -6,7 +6,7 @@ read method type Outer0 clazz()
 Opt:{#new(TOpt that)
   TOpt:{interface method Outer2 get() }
   TEmpty:{()<:TOpt method get() 
-    error S"UnsatisfactoryErrorToAvoidCycle, replace in Adam2-3"
+    error S"UnsatisfactoryErrorToAvoidCycle, replace in Adam2"
     'error Guard::Operation"TEmpty.get() Value not present in Optional" 
     }
   TOf:{(Outer2 that)<:TOpt method get() this.that()}
@@ -64,8 +64,10 @@ $:{()
       else (res:=res++S"[")
       return res[~this.cause()]"]"
       }
-    method Bool != (Outer0 that) !(this==that)
-    method Bool == (Outer0 that) Message::EqualMessages(this,other:that)
+    method Bool != (Outer0 that)
+      !(this==that)
+    method Bool == (Outer0 that)
+      Message::EqualMessages(this,other:that)
     method classAny() Outer0
     method clazz() Outer0
     type method

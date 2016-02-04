@@ -36,12 +36,16 @@ Opt:...
 PreferentialComposition:
   ...
 Extends:PreferentialComposition<<{<:PreferentialComposition::$
-  method solveConflict(that,location)
-    Refactor::MoveImplementationSelector[location.src() of:location.path() to:location.dest()]<<that
+  method solveConflict(that,location){
+    return Refactor::MoveImplementationSelector(location.src() of:location.path() to:location.dest())<<that
+    error on MetaGuard Assert::CodeNotReachable""
+    }
   }
 Use:PreferentialComposition<<{<:PreferentialComposition::$
-  method solveConflict(that,location) 
-    Refactor::RenameSelector[location.src() of:location.path() to:location.dest()]<<that
+  method solveConflict(that,location){
+    return Refactor::RenameSelector(location.src() of:location.path() to:location.dest())<<that
+    error on MetaGuard Assert::CodeNotReachable""
+    }
   }
 Patch:...
 Default:...

@@ -21,11 +21,11 @@ $:{(N that)
   method Void #end() void
   method Outer0 #add(Bool that){
     if that (return Outer0(this.that()+1N))
-    error AssertMessage(text:S"Condition number "[this.that()]" failed")
+    error AssertMessage"Condition number "[this.that()]" failed"
     }
   method Outer0 #add(Bool that, Concept::ToS msg){
     if that (return Outer0(this.that()+1N))
-    error AssertMessage(text:msg.toS()[S.nl()]"number:"[this.that()]" failed")
+    error AssertMessage""[msg;S.nl()]"number:"[this.that()]" failed"
     }
   }
 AssertMessage:Message::$[]<<{<:Outer1}

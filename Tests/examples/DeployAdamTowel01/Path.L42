@@ -68,8 +68,8 @@
   type method
   Path from(Strings names) {
     if names.isEmpty() (return Path"Outer0")
-    s=S""[with n in names.vals() (use[n++S"::"])]""
-    return Outer0.fromS(s(end:s.size()-2N))
+    s=S""[with n in names.vals() (use[n separedBy:S"::"])]""
+    return Outer0.fromS(s) '(end:s.size()-2N)
     }
   type method
   Path fresh(S name)

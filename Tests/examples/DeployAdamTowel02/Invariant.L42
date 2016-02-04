@@ -97,11 +97,11 @@
       }
     nc=that.referencedPath()
     if nc.hasExternalType() (
-      return Refactor::Redirect[
-        Path"T" to:nc.externalType()]<<mdfA
+      return Refactor::Redirect(
+        Path"T" to:nc.externalType())<<mdfA
       )
-    return Refactor::RenamePath
-      [Path"T" to:nc.pathFromRoot()]<<mdfA
+    return Refactor::RenamePath(
+      Path"T" to:nc.pathFromRoot())<<mdfA
     catch exception MetaGuard cnr
       error Assert::CodeNotReachable"idAction"(cnr)
     }
@@ -156,7 +156,7 @@
         )
       )
     'Debug(Introspection(lib:acc).allAsString())
-    acc:=Refactor::MakePrivateSelector[kSelF of:p]<<acc
+    acc:=Refactor::MakePrivateSelector(kSelF of:p)<<acc
     return acc
     catch exception  MetaGuard cnr
       error Assert::CodeNotReachable"Invariant"(cnr)
