@@ -148,5 +148,14 @@ public class TestBase01 {
    L42.main(new String[]{"examples/testsForAdamTowel01/UseIntrospectionAdamTowel5.L42"});
    Assert.assertEquals(L42.record.toString(),
        "a\nb\nc\nd\ne\nf\ng\nh\ni\nl\nm\nOK\n");}
-  }
+
+ @Test
+ public  void _01_07builder() throws Throwable{
+   TestHelper.configureForTest();
+   L42.main(new String[]{"examples/testsForAdamTowel01/UseAdamTowel_SBuilder.L42"});
+   Assert.assertEquals(L42.record.toString(),
+       "a@b\n");}
+
+ 
+}
 

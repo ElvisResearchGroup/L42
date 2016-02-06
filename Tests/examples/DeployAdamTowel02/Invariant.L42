@@ -1,7 +1,7 @@
 {
 
   ' error handling
-  InvariantFailure:Message::$[]<<{<:MetaGuard}
+  InvariantFailure:Message::$<<{<:MetaGuard}
   type method Bool isInvariant(Introspection::NestedClass that) {
     interf=that.transitivelyImplementedInterfaces()
     with ti in interf.vals() (

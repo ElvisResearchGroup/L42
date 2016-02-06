@@ -8,6 +8,8 @@ decorator MakeMethod[m; m0; m1 x1, mn xn; excNum]
 ={m method m0 T0 (m1 T1 x1, ...,mn Tn xn) exception Tn+1,...Tn+excNum}
 //can be done with sum method+make abstract, but would be very slow
 
+consider e0[e1;e2] desugared in (x=e0 x.#fromSequence(x.#sequenceFactory().#add(e1).#add(e2))
+
 should != be desugared in !(==)    > norm for <=, => <,  >> <<, 
 This==This0, This1... Thisn for outers, and outer for outside with scope.
 
@@ -111,7 +113,7 @@ On add private, just extend the interval by 1 and use such index.
 'remove also the general DecorationUnfeasable?
 'or on the opposite, have DecorationUnfeasable take a class, and print itself in a fancy way to look like a nested?
 '  MetaGuard:{interface
-'    DecorationUnfeasable:Message::$[]<<{<:MetaGuard}
+'    DecorationUnfeasable:Message::$<<{<:MetaGuard}
 '    }
 'throws shortcuts: return { return }  exception errorOn/exceptionOn
     ' on Metaguard, Guard error e

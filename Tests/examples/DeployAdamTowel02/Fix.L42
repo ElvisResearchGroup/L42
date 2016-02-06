@@ -13,30 +13,30 @@ Message:{Opt:{
   }}}
 Guard:{interface ParseFail:{interface <:Guard}}
 Bool:{
-  ParseFail:Outer2::Message::$[]<<{<:Guard::ParseFail}
+  ParseFail:Outer2::Message::$<<{<:Guard::ParseFail}
   type method
   Any parseError(Outer2::S that)
     ParseFail"The provided string is not a valid bool: "[that]""
   }
 N:{
-  ParseFail:Outer2::Message::$[]<<{<:Guard::ParseFail}
+  ParseFail:Outer2::Message::$<<{<:Guard::ParseFail}
   type method
   Any parseError(Outer2::S that)
     ParseFail"The provided string is not a valid Int32: "[that]""
   }
 S:{
-  SubStringNotPresent:Outer2::Message::$[]<<{<:Guard}  
+  SubStringNotPresent:Outer2::Message::$<<{<:Guard}  
   type method Void subStringNotPresent(Outer2::S string, Outer2::S subString)
     error SubStringNotPresent"string["[string]"] do not contains ["[subString]"" 
   }
 Selector:{
-  ParseFail:Outer2::Message::$[]<<{<:Guard::ParseFail}
+  ParseFail:Outer2::Message::$<<{<:Guard::ParseFail}
   type method
   Any parseError(Outer2::S that)
     ParseFail"The provided string is not a valid selector: "[that]""
   }
 Path:{
-  ParseFail:Outer2::Message::$[]<<{<:Guard::ParseFail}
+  ParseFail:Outer2::Message::$<<{<:Guard::ParseFail}
   type method
   Any parseError(Outer2::S that)
     ParseFail"The provided string is not a valid path: "[that]""

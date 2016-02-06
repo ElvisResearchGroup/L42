@@ -127,4 +127,7 @@
     S #stringParser(Library that)
       this.old()++this.accumulator()++S.#stringParser(that)
     }
+    
+  SBuilder:...
+  type method Outer0 from(SBuilder builder) Outer0._private(_binaryRepr:builder.binaryRepr())
   }

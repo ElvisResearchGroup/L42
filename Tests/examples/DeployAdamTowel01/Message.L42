@@ -32,9 +32,7 @@ EqualMessages:{
   'that check for equal type and then call EqualMessages
   }}
 $:{()
-  type method Outer0 #begin() Outer0()
-  method Outer0 #end() this
-  method Library <<(Library that)
+  type method Library <<(Library that)
     SafeOperatorsAccess.compose(left:that, right:Outer0.messageTrait())
   type method Library messageTrait() {(S _text, Message::Opt cause)<:Message
     method myName()GetMyName(Outer0)

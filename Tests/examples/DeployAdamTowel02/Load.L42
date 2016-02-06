@@ -5,8 +5,8 @@
 ' Abstract::ConceptMap mapps concepts names to abstract classes
   type method Outer0 #begin()'constructor
   method Outer0 #end() this
-  ConceptMapMismatch:Message::$[]<<{<:MetaGuard}
-  ConceptMapUnavailable:Message::$[]<<{<:MetaGuard}
+  ConceptMapMismatch:Message::$<<{<:MetaGuard}
+  ConceptMapUnavailable:Message::$<<{<:MetaGuard}
   method
   Library << (Library that)
   exception ConceptMapMismatch, ConceptMapUnavailable
