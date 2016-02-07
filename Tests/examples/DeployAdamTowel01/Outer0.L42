@@ -1,5 +1,22 @@
 {
+Alu:{'@plugin
+  'L42.is/connected/withAlu
+  }
 ExitCode:...
+Url:{(Library binaryRepr)
+  SBuilder:...  
+  
+  type method
+  Outer0 #stringParser(Library that)
+    Outer0(binaryRepr:that)
+  type method
+  Outer0 #from(SBuilder builder) 
+    Outer0.#stringParser(builder.binaryRepr())
+    
+  type method
+  SBuilder #builder()
+    SBuilder.empty()
+  }
 DeployTowel:...
 ResourceDeploy:{type method Library (){
   ExitCode:...' TODO:need to add a check that deployed code is self consistent/self contained.
@@ -7,10 +24,8 @@ ResourceDeploy:{type method Library (){
   DeployTowel:...
   }}
 AdamTowel01:{type method Library () ...}
-Task0:DeployTowel[
-  fileName:DeployTowel"localhost/DeployTowel.L42"
-  ]<<ResourceDeploy()
-Task1: DeployTowel[
-  fileName:DeployTowel"localhost/AdamTowel01.L42"
-  ]<<AdamTowel01()
+Task0:DeployTowel(fileName:Url"localhost/DeployTowel.L42")
+  <<ResourceDeploy()
+Task1: DeployTowel(fileName:Url"localhost/AdamTowel01.L42")
+  <<AdamTowel01()
 }

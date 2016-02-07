@@ -2,7 +2,7 @@
 
 Main:{
   b=S::SBuilder.empty().#a().#at().#b()
-  s=S.from(builder:b)
+  s=S.#from(builder:b)
   Debug(s)
   return ExitCode.normal()
   }

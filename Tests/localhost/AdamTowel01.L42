@@ -1,57 +1,5 @@
 {'--layer-- Bool N S -     and first layer of unsafe operators
 
-DeployTowel:{
-type method 
-Outer0 #apply(Library fileName) 
-mut method 
-Library #fileName() 
-read method 
-Library fileName() 
-type method 
-type Outer0 #begin() Outer0
-type method 
-Outer0 #add(Library fileName) Outer0.#apply(fileName:fileName)
-method 
-Outer0 #end() this
-type method 
-Library binaryReprFrom(Library lib) (
-  Library norm=use Outer0::SafeOperatorsAccess__51_0 check privateNormalize(that:lib) error Outer0.#stringParser(that:{'@stringU
-  'privateNormalize
-  })
-  Library record=use Outer0::SafeOperatorsAccess__51_0 check introspectLibraryReport(that:norm, path:Outer0.#stringParser(that:{'@stringU
-  'Outer0
-  })) error Outer0.#stringParser(that:{'@stringU
-  'introspectLibraryReport
-  })
-  use Outer0::SafeOperatorsAccess__51_0 check introspectLibraryDocAsString(that:record, path:Outer0.#stringParser(that:{'@stringU
-  'AllAsString
-  }), annotationN:Outer0.#numberParser(that:{'@stringU
-  '0
-  })) error Outer0.#stringParser(that:{'@stringU
-  'introspectLibraryDocAsString
-  })
-  )
-method 
-Library #leftleft(Library that) (
-  Void unused=use Outer0::Alu check fileDebug(fileName:this.fileName(), content:Outer0.binaryReprFrom(lib:that)) error Outer0.#stringParser(that:{'@stringU
-  'fileDebug
-  })
-  Outer1::ExitCode.normal()
-  )
-SafeOperatorsAccess__51_0:'@private
-{'@plugin
-'L42.is/connected/withSafeOperators
-}
-Alu:'  toPutAs private
-{'@plugin
-'L42.is/connected/withAlu
-}
-type method 
-Library #stringParser(Library that) that
-type method 
-Library #numberParser(Library that) use Outer0::Alu check stringToInt32(that:that) error Outer0.#stringParser(that:{'@stringU
-'stringToInt32
-})}
 Alu:{'@plugin
 'L42.is/connected/withAlu
 }
@@ -385,7 +333,7 @@ Outer1 #inner() this.start()
 read method 
 Void #close() void}}
 S:{<:Outer1::Concept::ToS, Outer1::Concept::Equals, Outer1::Concept::Named
-Varcurrent__52_0:'@private
+Varcurrent__51_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer2::N::#numberParser(that ) inner) 
@@ -470,7 +418,7 @@ Outer1::N auxFirstIndexOf__33_0(Outer1::S that) (
     Outer1::N::#numberParser(that ) current=Outer1::N.#numberParser(that:{'@stringU
     '0
     })
-    mut Outer0::Varcurrent__52_0 varcurrent=Outer0::Varcurrent__52_0.#apply(inner:current)
+    mut Outer0::Varcurrent__51_0 varcurrent=Outer0::Varcurrent__51_0.#apply(inner:current)
     Void unused0=(
       Void unused3=loop (
         Void unused4=varcurrent.#inner().#left(that:this.size()).#checkTrue()
@@ -585,7 +533,7 @@ Outer0::SConcat #begin() Outer0::SConcat.#apply(old:this, accumulator:Outer1::S.
 '
 }))
 SConcat:{
-VarnewAcc__53_0:'@private
+VarnewAcc__52_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer3::Concept::ToS::toS() inner) 
@@ -608,7 +556,7 @@ Outer1::SConcat #add(Outer2::Concept::ToS that) Outer1::SConcat.#apply(old:this.
 method 
 Outer1::SConcat #add(Outer2::Concept::ToS that, Outer2::Concept::ToS separedBy) (
   Outer2::Concept::ToS::toS() newAcc=that.toS()
-  mut Outer0::VarnewAcc__53_0 varnewAcc=Outer0::VarnewAcc__53_0.#apply(inner:newAcc)
+  mut Outer0::VarnewAcc__52_0 varnewAcc=Outer0::VarnewAcc__52_0.#apply(inner:newAcc)
   Void unused=(
     Outer0::accumulator() ::#bangequal(that ) cond=this.accumulator().#bangequal(that:Outer2::S.#stringParser(that:{'@stringU
     '
@@ -1029,12 +977,16 @@ Outer0 #newLine() this.#plusplus(that:{'@stringU
 '
 })}
 type method 
-Outer0 from(Outer0::SBuilder builder) Outer0._private__32_0(_binaryRepr__32_0:builder.binaryRepr())}
+Outer0 #from(Outer1::S::SBuilder builder) Outer0._private__32_0(_binaryRepr__32_0:builder.binaryRepr())
+type method 
+Outer1::S::SBuilder #builder() Outer1::S::SBuilder.empty()}
 Debug:{
 type method 
 Void #apply(Outer1::Concept::ToS that) use Outer1::Alu check stringDebug(that:that.toS().binaryRepr()) void
 type method 
-Void #apply(Library lib) use Outer1::Alu check stringDebug(that:Outer1::DeployTowel.binaryReprFrom(lib:lib)) void
+Void #apply(Library lib) error Outer1::S.#stringParser(that:{'@stringU
+'to fix in AdamTowel2
+})
 type method 
 Void #apply(Outer1::Concept::ToS fileName, Outer1::Concept::ToS content) use Outer1::Alu check fileDebug(fileName:fileName.toS().binaryRepr(), content:content.toS().binaryRepr()) void}
 Count:{
@@ -1073,7 +1025,7 @@ Outer0 #add(Outer1::Bool that) (
   'CurlyBlock-Should be unreachable code
   }
   )}
-SafeOperatorsAccess__54_0:'@private
+SafeOperatorsAccess__53_0:'@private
 {'@plugin
 'L42.is/connected/withSafeOperators
 
@@ -1082,7 +1034,7 @@ Library compose(Library left, Library right) use Outer0 check compose(left:left,
 'SafeOperatorsAccess.compose
 })
 type method 
-Library redirect(Library that, Library srcBinaryRepr, type Any dest) use Outer1::SafeOperatorsAccess__54_0 check redirect(that:that, src:srcBinaryRepr, dest:dest) error Outer1::S.#stringParser(that:{'@stringU
+Library redirect(Library that, Library srcBinaryRepr, type Any dest) use Outer1::SafeOperatorsAccess__53_0 check redirect(that:that, src:srcBinaryRepr, dest:dest) error Outer1::S.#stringParser(that:{'@stringU
 'SafeOperatorsAccess.redirect
 })}
 Concept:{
@@ -1247,10 +1199,10 @@ $:{
 type method 
 Outer0 #apply() 
 type method 
-Library #leftleft(Library that) Outer2::SafeOperatorsAccess__54_0.compose(left:that, right:Outer0.messageTrait())
+Library #leftleft(Library that) Outer2::SafeOperatorsAccess__53_0.compose(left:that, right:Outer0.messageTrait())
 type method 
 Library messageTrait() {<:Outer3::Message
-Varres__55_0:'@private
+Varres__54_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer1::kind() inner) 
@@ -1316,7 +1268,7 @@ method toS() (
         )
       )
     Outer0::kind() res=Outer0.kind()
-    mut Outer0::Varres__55_0 varres=Outer0::Varres__55_0.#apply(inner:res)
+    mut Outer0::Varres__54_0 varres=Outer0::Varres__54_0.#apply(inner:res)
     Void unused1=(
       Outer0::toS() ::this::text() ::#bangequal(that ) cond0=this.text().#bangequal(that:Outer3::S.#stringParser(that:{'@stringU
       '
@@ -1381,7 +1333,7 @@ Guard:{' exception as Guard bureocracy, error as Guard detection
 interface <:Outer1::Message'all other guards should implement this one
 
 Operation:{<:Outer2::Guard, Outer2::Message
-Varres_$%0_0__56_0:'@private
+Varres_$%0_0__55_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer1::kind() inner) 
@@ -1447,7 +1399,7 @@ method toS() (
         )
       )
     Outer0::kind() res=Outer0.kind()
-    mut Outer0::Varres_$%0_0__56_0 varres=Outer0::Varres_$%0_0__56_0.#apply(inner:res)
+    mut Outer0::Varres_$%0_0__55_0 varres=Outer0::Varres_$%0_0__55_0.#apply(inner:res)
     Void unused1=(
       Outer0::toS() ::this::text() ::#bangequal(that ) cond0=this.text().#bangequal(that:Outer2::S.#stringParser(that:{'@stringU
       '
@@ -1502,7 +1454,7 @@ Outer0 #end() this
 method 
 Outer1 #stringParser(Library that) Outer1.#apply(text:this.accumulator().#plusplus(that:Outer3::S.#stringParser(that:that)))}}
 Parameter:{<:Outer2::Guard, Outer2::Message
-Varres_$%1_0__57_0:'@private
+Varres_$%1_0__56_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer1::kind() inner) 
@@ -1568,7 +1520,7 @@ method toS() (
         )
       )
     Outer0::kind() res=Outer0.kind()
-    mut Outer0::Varres_$%1_0__57_0 varres=Outer0::Varres_$%1_0__57_0.#apply(inner:res)
+    mut Outer0::Varres_$%1_0__56_0 varres=Outer0::Varres_$%1_0__56_0.#apply(inner:res)
     Void unused1=(
       Outer0::toS() ::this::text() ::#bangequal(that ) cond0=this.text().#bangequal(that:Outer2::S.#stringParser(that:{'@stringU
       '
@@ -1623,7 +1575,7 @@ Outer0 #end() this
 method 
 Outer1 #stringParser(Library that) Outer1.#apply(text:this.accumulator().#plusplus(that:Outer3::S.#stringParser(that:that)))}}
 Precondition:{<:Outer2::Guard, Outer2::Message
-Varres_$%2_0__58_0:'@private
+Varres_$%2_0__57_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer1::kind() inner) 
@@ -1689,7 +1641,7 @@ method toS() (
         )
       )
     Outer0::kind() res=Outer0.kind()
-    mut Outer0::Varres_$%2_0__58_0 varres=Outer0::Varres_$%2_0__58_0.#apply(inner:res)
+    mut Outer0::Varres_$%2_0__57_0 varres=Outer0::Varres_$%2_0__57_0.#apply(inner:res)
     Void unused1=(
       Outer0::toS() ::this::text() ::#bangequal(that ) cond0=this.text().#bangequal(that:Outer2::S.#stringParser(that:{'@stringU
       '
@@ -1747,7 +1699,7 @@ System:{
 Guard:{'<:Outer::Guard soon (remove "interface" for a bad translation bug: Outer1_System_Guard is not abstract and does not override abstract method MtoS()
 interface <:Outer2::Guard
 PluginFailure:{<:Outer2::Guard, Outer3::Message
-Varres_$%3_0__59_0:'@private
+Varres_$%3_0__58_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer1::kind() inner) 
@@ -1813,7 +1765,7 @@ method toS() (
         )
       )
     Outer0::kind() res=Outer0.kind()
-    mut Outer0::Varres_$%3_0__59_0 varres=Outer0::Varres_$%3_0__59_0.#apply(inner:res)
+    mut Outer0::Varres_$%3_0__58_0 varres=Outer0::Varres_$%3_0__58_0.#apply(inner:res)
     Void unused1=(
       Outer0::toS() ::this::text() ::#bangequal(that ) cond0=this.text().#bangequal(that:Outer3::S.#stringParser(that:{'@stringU
       '
@@ -1869,7 +1821,7 @@ method
 Outer1 #stringParser(Library that) Outer1.#apply(text:this.accumulator().#plusplus(that:Outer4::S.#stringParser(that:that)))}}}}
 Assert:{interface <:Outer1::Message
 NotImplementedYet:{<:Outer1, Outer2::Message
-Varres_$%4_0__60_0:'@private
+Varres_$%4_0__59_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer1::kind() inner) 
@@ -1935,7 +1887,7 @@ method toS() (
         )
       )
     Outer0::kind() res=Outer0.kind()
-    mut Outer0::Varres_$%4_0__60_0 varres=Outer0::Varres_$%4_0__60_0.#apply(inner:res)
+    mut Outer0::Varres_$%4_0__59_0 varres=Outer0::Varres_$%4_0__59_0.#apply(inner:res)
     Void unused1=(
       Outer0::toS() ::this::text() ::#bangequal(that ) cond0=this.text().#bangequal(that:Outer2::S.#stringParser(that:{'@stringU
       '
@@ -1990,7 +1942,7 @@ Outer0 #end() this
 method 
 Outer1 #stringParser(Library that) Outer1.#apply(text:this.accumulator().#plusplus(that:Outer3::S.#stringParser(that:that)))}}
 ObservedBug:{<:Outer1, Outer2::Message
-Varres_$%5_0__61_0:'@private
+Varres_$%5_0__60_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer1::kind() inner) 
@@ -2056,7 +2008,7 @@ method toS() (
         )
       )
     Outer0::kind() res=Outer0.kind()
-    mut Outer0::Varres_$%5_0__61_0 varres=Outer0::Varres_$%5_0__61_0.#apply(inner:res)
+    mut Outer0::Varres_$%5_0__60_0 varres=Outer0::Varres_$%5_0__60_0.#apply(inner:res)
     Void unused1=(
       Outer0::toS() ::this::text() ::#bangequal(that ) cond0=this.text().#bangequal(that:Outer2::S.#stringParser(that:{'@stringU
       '
@@ -2111,7 +2063,7 @@ Outer0 #end() this
 method 
 Outer1 #stringParser(Library that) Outer1.#apply(text:this.accumulator().#plusplus(that:Outer3::S.#stringParser(that:that)))}}
 CodeNotReachable:{<:Outer1, Outer2::Message
-Varres_$%6_0__62_0:'@private
+Varres_$%6_0__61_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer1::kind() inner) 
@@ -2177,7 +2129,7 @@ method toS() (
         )
       )
     Outer0::kind() res=Outer0.kind()
-    mut Outer0::Varres_$%6_0__62_0 varres=Outer0::Varres_$%6_0__62_0.#apply(inner:res)
+    mut Outer0::Varres_$%6_0__61_0 varres=Outer0::Varres_$%6_0__61_0.#apply(inner:res)
     Void unused1=(
       Outer0::toS() ::this::text() ::#bangequal(that ) cond0=this.text().#bangequal(that:Outer2::S.#stringParser(that:{'@stringU
       '
@@ -2295,7 +2247,7 @@ Outer0 #add(Outer2::Bool that, Outer2::Concept::ToS msg) (
   }
   )}
 AssertMessage:{<:Outer1, Outer2::Message
-Varres_$%7_0__63_0:'@private
+Varres_$%7_0__62_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer1::kind() inner) 
@@ -2361,7 +2313,7 @@ method toS() (
         )
       )
     Outer0::kind() res=Outer0.kind()
-    mut Outer0::Varres_$%7_0__63_0 varres=Outer0::Varres_$%7_0__63_0.#apply(inner:res)
+    mut Outer0::Varres_$%7_0__62_0 varres=Outer0::Varres_$%7_0__62_0.#apply(inner:res)
     Void unused1=(
       Outer0::toS() ::this::text() ::#bangequal(that ) cond0=this.text().#bangequal(that:Outer2::S.#stringParser(that:{'@stringU
       '
@@ -2420,7 +2372,7 @@ ListCode:{
 type method 
 Library #apply() {' generic linked list class, elements of type Elem
 <:Outer3::Concept::Named
-Varres0__64_0:'@private
+Varres0__63_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer1 inner) 
@@ -2430,7 +2382,7 @@ mut method
 Outer1 #inner() 
 read method 
 Outer1 inner() }
-Varres1__65_0:'@private
+Varres1__64_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer1::#apply() inner) 
@@ -2506,7 +2458,7 @@ method
 Outer0 #plusplus(Outer0 that) (
   Void unused=(
     Outer0 res=this
-    mut Outer0::Varres0__64_0 varres=Outer0::Varres0__64_0.#apply(inner:res)
+    mut Outer0::Varres0__63_0 varres=Outer0::Varres0__63_0.#apply(inner:res)
     Void unused0=(
       Outer0::vals() e=that.vals()
       (
@@ -2561,7 +2513,7 @@ Outer0 #add(Outer0::Elem that) Outer0._new(head:Outer0::CellNext.#apply(elem:tha
 method 
 Outer0 #end() (
   Outer0::#apply() res=Outer0.#apply()
-  mut Outer0::Varres1__65_0 varres=Outer0::Varres1__65_0.#apply(inner:res)
+  mut Outer0::Varres1__64_0 varres=Outer0::Varres1__64_0.#apply(inner:res)
   Void unused=(
     Outer0::vals() elem=this.vals()
     (
@@ -2728,20 +2680,20 @@ Outer1::Elem #inner() this.that().#inner()
 read method 
 Void #close() void}}}
 type method 
-Library list(type Any that) Outer1::SafeOperatorsAccess__54_0.redirect(that:Outer0::ListCode.#apply(), srcBinaryRepr:Outer1::S.#stringParser(that:{'@stringU
+Library list(type Any that) Outer1::SafeOperatorsAccess__53_0.redirect(that:Outer0::ListCode.#apply(), srcBinaryRepr:Outer1::S.#stringParser(that:{'@stringU
 'Elem
 }).binaryRepr(), dest:that)
 type method 
 Library eqList(type Any that) (
-  Outer1::SafeOperatorsAccess__54_0::compose(left right ) lib=Outer1::SafeOperatorsAccess__54_0.compose(left:Outer0::ListCode.#apply(), right:Outer0::ListCodeEq.#apply())
-  Outer1::SafeOperatorsAccess__54_0.redirect(that:lib, srcBinaryRepr:Outer1::S.#stringParser(that:{'@stringU
+  Outer1::SafeOperatorsAccess__53_0::compose(left right ) lib=Outer1::SafeOperatorsAccess__53_0.compose(left:Outer0::ListCode.#apply(), right:Outer0::ListCodeEq.#apply())
+  Outer1::SafeOperatorsAccess__53_0.redirect(that:lib, srcBinaryRepr:Outer1::S.#stringParser(that:{'@stringU
   'Elem
   }).binaryRepr(), dest:that)
   )
 ListCodeEq:{
 type method 
 Library #apply() {
-Varaccumulator__66_0:'@private
+Varaccumulator__65_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer1::#begin() inner) 
@@ -2828,7 +2780,7 @@ Outer3::Bool contains(Outer0::Elem that) (
 method 
 Outer0 remove(Outer0::Elem that) (
   Outer0::#begin() accumulator=Outer0.#begin()
-  mut Outer0::Varaccumulator__66_0 varaccumulator=Outer0::Varaccumulator__66_0.#apply(inner:accumulator)
+  mut Outer0::Varaccumulator__65_0 varaccumulator=Outer0::Varaccumulator__65_0.#apply(inner:accumulator)
   Void unused=(
     Outer0::vals() e=this.vals()
     (
@@ -3016,7 +2968,7 @@ Outer3::Bool equals(Any that) (
   )}}}
 Strings:{' generic linked list class, elements of type Elem
 <:Outer1::Concept::Named
-Varres0_$%8_0__67_0:'@private
+Varres0_$%8_0__66_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer1 inner) 
@@ -3026,7 +2978,7 @@ mut method
 Outer1 #inner() 
 read method 
 Outer1 inner() }
-Varres1_$%9_0__68_0:'@private
+Varres1_$%9_0__67_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer1::#apply() inner) 
@@ -3102,7 +3054,7 @@ method
 Outer0 #plusplus(Outer0 that) (
   Void unused=(
     Outer0 res=this
-    mut Outer0::Varres0_$%8_0__67_0 varres=Outer0::Varres0_$%8_0__67_0.#apply(inner:res)
+    mut Outer0::Varres0_$%8_0__66_0 varres=Outer0::Varres0_$%8_0__66_0.#apply(inner:res)
     Void unused0=(
       Outer0::vals() e=that.vals()
       (
@@ -3157,7 +3109,7 @@ Outer0 #add(Outer1::S that) Outer0._new(head:Outer0::CellNext.#apply(elem:that, 
 method 
 Outer0 #end() (
   Outer0::#apply() res=Outer0.#apply()
-  mut Outer0::Varres1_$%9_0__68_0 varres=Outer0::Varres1_$%9_0__68_0.#apply(inner:res)
+  mut Outer0::Varres1_$%9_0__67_0 varres=Outer0::Varres1_$%9_0__67_0.#apply(inner:res)
   Void unused=(
     Outer0::vals() elem=this.vals()
     (
@@ -3322,7 +3274,7 @@ read method
 Outer2::S #inner() this.that().#inner()
 read method 
 Void #close() void}
-Varaccumulator_$%10_0__69_0:'@private
+Varaccumulator_$%10_0__68_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer1::#begin() inner) 
@@ -3391,7 +3343,7 @@ Outer1::Bool contains(Outer1::S that) (
 method 
 Outer0 remove(Outer1::S that) (
   Outer0::#begin() accumulator=Outer0.#begin()
-  mut Outer0::Varaccumulator_$%10_0__69_0 varaccumulator=Outer0::Varaccumulator_$%10_0__69_0.#apply(inner:accumulator)
+  mut Outer0::Varaccumulator_$%10_0__68_0 varaccumulator=Outer0::Varaccumulator_$%10_0__68_0.#apply(inner:accumulator)
   Void unused=(
     Outer0::vals() e=this.vals()
     (
@@ -3578,7 +3530,7 @@ Outer1::Bool equals(Any that) (
   }
   )}
 Path:{<:Outer1::Concept::ToS, Outer1::Concept::Equals, Outer1::Concept::Named
-Varresult__70_0:'@private
+Varresult__69_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer2::Strings::#begin() ::#end() inner) 
@@ -3586,7 +3538,7 @@ mut method
 Void inner(Outer2::Strings::#begin() ::#end() that) 
 mut method 
 Outer2::Strings::#begin() ::#end() #inner() }
-Varstr__71_0:'@private
+Varstr__70_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer1::toS() inner) 
@@ -3594,7 +3546,7 @@ mut method
 Void inner(Outer1::toS() that) 
 mut method 
 Outer1::toS() #inner() }
-Varaccumulator0__72_0:'@private
+Varaccumulator0__71_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer2::S::#stringParser(that ) ::#begin() inner) 
@@ -3602,7 +3554,7 @@ mut method
 Void inner(Outer2::S::#stringParser(that ) ::#begin() that) 
 mut method 
 Outer2::S::#stringParser(that ) ::#begin() #inner() }
-Varacc__73_0:'@private
+Varacc__72_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer2::Path inner) 
@@ -3652,6 +3604,10 @@ Outer0 fromDocInternalizedS(Outer1::S that) (
   )
 type method 
 Outer0 fromS(Outer1::Concept::ToS that) Outer0.#stringParser(that:that.toS().binaryRepr())
+type method 
+Outer0 #from(Outer1::S::SBuilder builder) Outer0.#stringParser(that:builder.binaryRepr())
+type method 
+Outer1::S::SBuilder #builder() Outer1::S::SBuilder.empty()
 type method 
 Outer0 #stringParser(Library that) (
   Void unused=use Outer1::SafeOperators check ifInvalidDo(path:that) error Outer0.parseError(that:Outer1::S.#stringParser(that:that))
@@ -3764,19 +3720,19 @@ Outer1::Strings names() (
         return Outer1::Strings.#begin().#end()
         )
       )
-    mut Outer0::Varstr__71_0 varstr=Outer0::Varstr__71_0.#apply(inner:str)
+    mut Outer0::Varstr__70_0 varstr=Outer0::Varstr__70_0.#apply(inner:str)
     Void unused1=varstr.inner(that:varstr.#inner().#plusplus(that:Outer1::S.#stringParser(that:{'@stringU
     '::
     })))
     Outer1::Strings::#begin() ::#end() result=Outer1::Strings.#begin().#end()
-    mut Outer0::Varresult__70_0 varresult=Outer0::Varresult__70_0.#apply(inner:result)
+    mut Outer0::Varresult__69_0 varresult=Outer0::Varresult__69_0.#apply(inner:result)
     Void unused2=(
       Void unused5=loop (
         Void unused6=varstr.#inner().#bangequal(that:Outer1::S.#stringParser(that:{'@stringU
         '
         })).#checkTrue()
         (
-          Outer0::Varstr__71_0::#inner() ::firstIndexOf(that ) pos=varstr.#inner().firstIndexOf(that:Outer1::S.#stringParser(that:{'@stringU
+          Outer0::Varstr__70_0::#inner() ::firstIndexOf(that ) pos=varstr.#inner().firstIndexOf(that:Outer1::S.#stringParser(that:{'@stringU
           '::
           }))
           Void unused7=varresult.inner(that:varresult.#inner().#add(that:varstr.#inner().#apply(end:pos)))
@@ -3816,7 +3772,7 @@ Outer1::Path from(Outer1::Strings names) (
       Outer1::S::#stringParser(that ) ::#begin() accumulator=Outer1::S.#stringParser(that:{'@stringU
       '
       }).#begin()
-      mut Outer0::Varaccumulator0__72_0 varaccumulator=Outer0::Varaccumulator0__72_0.#apply(inner:accumulator)
+      mut Outer0::Varaccumulator0__71_0 varaccumulator=Outer0::Varaccumulator0__71_0.#apply(inner:accumulator)
       Void unused3=(
         Outer1::Strings::vals() n=names.vals()
         (
@@ -3893,7 +3849,7 @@ Outer1::Path fresh(Outer1::Path path) (
     Outer1::Path acc=Outer1::Path.#stringParser(that:{'@stringU
     'Outer0
     })
-    mut Outer0::Varacc__73_0 varacc=Outer0::Varacc__73_0.#apply(inner:acc)
+    mut Outer0::Varacc__72_0 varacc=Outer0::Varacc__72_0.#apply(inner:acc)
     Void unused1=(
       Outer1::Path::names() ::#end() ::pop() ::#end() ::vals() n=names.pop().#end().vals()
       (
@@ -3943,7 +3899,7 @@ Outer1::Path fresh(Outer1::Path path) (
   }
   )}
 Selector:{<:Outer1::Concept::ToS, Outer1::Concept::Equals, Outer1::Concept::Named
-Varaccumulator1__74_0:'@private
+Varaccumulator1__73_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer2::S::#stringParser(that ) ::#begin() inner) 
@@ -3951,7 +3907,7 @@ mut method
 Void inner(Outer2::S::#stringParser(that ) ::#begin() that) 
 mut method 
 Outer2::S::#stringParser(that ) ::#begin() #inner() }
-Varresult0__75_0:'@private
+Varresult0__74_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer2::Strings::#begin() ::#end() inner) 
@@ -3959,7 +3915,7 @@ mut method
 Void inner(Outer2::Strings::#begin() ::#end() that) 
 mut method 
 Outer2::Strings::#begin() ::#end() #inner() }
-Varstr0__76_0:'@private
+Varstr0__75_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer1::toS() inner) 
@@ -3967,7 +3923,7 @@ mut method
 Void inner(Outer1::toS() that) 
 mut method 
 Outer1::toS() #inner() }
-Vartot__77_0:'@private
+Vartot__76_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer2::SafeOperators::freshName(that ) ::#plusplus(that ) inner) 
@@ -3975,7 +3931,7 @@ mut method
 Void inner(Outer2::SafeOperators::freshName(that ) ::#plusplus(that ) that) 
 mut method 
 Outer2::SafeOperators::freshName(that ) ::#plusplus(that ) #inner() }
-Varname__78_0:'@private
+Varname__77_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer2::Selector::name() inner) 
@@ -3992,6 +3948,10 @@ Library _binaryRepr__37_0()
 method myName() Outer1::GetMyName.#apply(that:Outer0)
 type method 
 Outer0 fromS(Outer1::Concept::ToS that) Outer0.#stringParser(that:that.toS().binaryRepr())
+type method 
+Outer0 #from(Outer1::S::SBuilder builder) Outer0.#stringParser(that:builder.binaryRepr())
+type method 
+Outer1::S::SBuilder #builder() Outer1::S::SBuilder.empty()
 type method 
 Outer0 #stringParser(Library that) (
   Void unused=use Outer1::SafeOperators check ifInvalidDo(selector:that) error Outer0.parseError(that:Outer1::S.#stringParser(that:that))
@@ -4019,7 +3979,7 @@ Outer0 from(Outer1::S name, Outer1::Strings names) (
       Outer1::S::#stringParser(that ) ::#begin() accumulator=Outer1::S.#stringParser(that:{'@stringU
       '(
       }).#begin()
-      mut Outer0::Varaccumulator1__74_0 varaccumulator=Outer0::Varaccumulator1__74_0.#apply(inner:accumulator)
+      mut Outer0::Varaccumulator1__73_0 varaccumulator=Outer0::Varaccumulator1__73_0.#apply(inner:accumulator)
       Void unused3=(
         Outer1::Strings::vals() n=names.vals()
         (
@@ -4218,7 +4178,7 @@ method
 Outer1::Strings names() (
   Void unused=(
     Outer0::toS() str=this.toS()
-    mut Outer0::Varstr0__76_0 varstr=Outer0::Varstr0__76_0.#apply(inner:str)
+    mut Outer0::Varstr0__75_0 varstr=Outer0::Varstr0__75_0.#apply(inner:str)
     Void unused0=varstr.inner(that:varstr.#inner().#apply(start:varstr.#inner().firstIndexOf(that:Outer1::S.#stringParser(that:{'@stringU
     '(
     })).#plus(that:Outer1::N.#numberParser(that:{'@stringU
@@ -4230,7 +4190,7 @@ Outer1::Strings names() (
     })))
     Outer1::Strings::#begin() ::#end() result=Outer1::Strings.#begin().#end()
     Void unused1=(
-      Outer0::Varstr0__76_0::#inner() ::#equalequal(that ) cond=varstr.#inner().#equalequal(that:Outer1::S.#stringParser(that:{'@stringU
+      Outer0::Varstr0__75_0::#inner() ::#equalequal(that ) cond=varstr.#inner().#equalequal(that:Outer1::S.#stringParser(that:{'@stringU
       ',
       }))
       (
@@ -4240,14 +4200,14 @@ Outer1::Strings names() (
         return result
         )
       )
-    mut Outer0::Varresult0__75_0 varresult=Outer0::Varresult0__75_0.#apply(inner:result)
+    mut Outer0::Varresult0__74_0 varresult=Outer0::Varresult0__74_0.#apply(inner:result)
     Void unused2=(
       Void unused5=loop (
         Void unused6=varstr.#inner().#bangequal(that:Outer1::S.#stringParser(that:{'@stringU
         '
         })).#checkTrue()
         (
-          Outer0::Varstr0__76_0::#inner() ::firstIndexOf(that ) pos=varstr.#inner().firstIndexOf(that:Outer1::S.#stringParser(that:{'@stringU
+          Outer0::Varstr0__75_0::#inner() ::firstIndexOf(that ) pos=varstr.#inner().firstIndexOf(that:Outer1::S.#stringParser(that:{'@stringU
           ',
           }))
           Void unused7=varresult.inner(that:varresult.#inner().#add(that:varstr.#inner().#apply(end:pos)))
@@ -4273,9 +4233,9 @@ type method
 Outer1::Selector fresh(Outer1::Selector that) (
   Void unused=(
     Outer1::Selector::name() name=that.name()
-    mut Outer0::Varname__78_0 varname=Outer0::Varname__78_0.#apply(inner:name)
+    mut Outer0::Varname__77_0 varname=Outer0::Varname__77_0.#apply(inner:name)
     Void unused0=(
-      Outer0::Varname__78_0::#inner() ::#equalequal(that ) cond=varname.#inner().#equalequal(that:Outer1::S.#stringParser(that:{'@stringU
+      Outer0::Varname__77_0::#inner() ::#equalequal(that ) cond=varname.#inner().#equalequal(that:Outer1::S.#stringParser(that:{'@stringU
       '
       }))
       (
@@ -4291,7 +4251,7 @@ Outer1::Selector fresh(Outer1::Selector that) (
     Outer1::SafeOperators::freshName(that ) ::#plusplus(that ) tot=fName.#plusplus(that:Outer1::S.#stringParser(that:{'@stringU
     '(
     }))
-    mut Outer0::Vartot__77_0 vartot=Outer0::Vartot__77_0.#apply(inner:tot)
+    mut Outer0::Vartot__76_0 vartot=Outer0::Vartot__76_0.#apply(inner:tot)
     Void unused1=(
       Outer1::Selector::names() ::vals() n=that.names().vals()
       (
@@ -4472,10 +4432,10 @@ Void #apply(Library lift) exception Outer0 (
 type method 
 Library #leftleft(Library that) ('either that provides a toS, or I have a default impl, that requires lib()
 
-  Outer2::SafeOperatorsAccess__54_0::compose(left right ) res=Outer2::SafeOperatorsAccess__54_0.compose(left:that, right:Outer0.recordWrapperTrait())
+  Outer2::SafeOperatorsAccess__53_0::compose(left right ) res=Outer2::SafeOperatorsAccess__53_0.compose(left:that, right:Outer0.recordWrapperTrait())
   (
     Void unused=(
-      Void unused0=return Outer2::SafeOperatorsAccess__54_0.compose(left:res, right:Outer0.recordWrapperToSTrait())
+      Void unused0=return Outer2::SafeOperatorsAccess__53_0.compose(left:res, right:Outer0.recordWrapperToSTrait())
       
       catch error Library catched0 return res
       void
@@ -5320,7 +5280,7 @@ method introspectDocPath(path annotationN ) (
   result
   )}}
 Doc:{<:Outer2::Concept::ToS, Outer2::Concept::Named
-VaraN__79_0:'@private
+VaraN__78_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer3::N::#numberParser(that ) inner) 
@@ -5328,7 +5288,7 @@ mut method
 Void inner(Outer3::N::#numberParser(that ) that) 
 mut method 
 Outer3::N::#numberParser(that ) #inner() }
-Varresult1__80_0:'@private
+Varresult1__79_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer1::Annotations::#begin() ::#end() inner) 
@@ -5396,7 +5356,7 @@ Outer3::Bool hasReferredClass() (
   )}
 Annotations:{' generic linked list class, elements of type Elem
 <:Outer3::Concept::Named
-Varres0__81_0:'@private
+Varres0__80_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer1 inner) 
@@ -5406,7 +5366,7 @@ mut method
 Outer1 #inner() 
 read method 
 Outer1 inner() }
-Varres1__82_0:'@private
+Varres1__81_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer1::#apply() inner) 
@@ -5482,7 +5442,7 @@ method
 Outer0 #plusplus(Outer0 that) (
   Void unused=(
     Outer0 res=this
-    mut Outer0::Varres0__81_0 varres=Outer0::Varres0__81_0.#apply(inner:res)
+    mut Outer0::Varres0__80_0 varres=Outer0::Varres0__80_0.#apply(inner:res)
     Void unused0=(
       Outer0::vals() e=that.vals()
       (
@@ -5537,7 +5497,7 @@ Outer0 #add(Outer1::Annotation that) Outer0._new(head:Outer0::CellNext.#apply(el
 method 
 Outer0 #end() (
   Outer0::#apply() res=Outer0.#apply()
-  mut Outer0::Varres1__82_0 varres=Outer0::Varres1__82_0.#apply(inner:res)
+  mut Outer0::Varres1__81_0 varres=Outer0::Varres1__81_0.#apply(inner:res)
   Void unused=(
     Outer0::vals() elem=this.vals()
     (
@@ -5708,8 +5668,8 @@ Outer0 #apply(Library that) (
   Outer2::N::#numberParser(that ) aN=Outer2::N.#numberParser(that:{'@stringU
   '1
   })
-  mut Outer0::Varresult1__80_0 varresult=Outer0::Varresult1__80_0.#apply(inner:result)
-  mut Outer0::VaraN__79_0 varaN=Outer0::VaraN__79_0.#apply(inner:aN)
+  mut Outer0::Varresult1__79_0 varresult=Outer0::Varresult1__79_0.#apply(inner:result)
+  mut Outer0::VaraN__78_0 varaN=Outer0::VaraN__78_0.#apply(inner:aN)
   Void unused=(
     Void unused0=loop (
       Void unused1=Outer2::Bool.true().#checkTrue()
@@ -5959,7 +5919,7 @@ Outer1::Member dispatch(fwd Outer1::NestedClass root, Outer2::Path path, Outer1:
 Member:{interface <:Outer2::Concept::ToS, Outer2::Concept::Named, Outer2::Concept::Equals}
 Members:{' generic linked list class, elements of type Elem
 <:Outer2::Concept::Named
-Varres0_$%11_0__83_0:'@private
+Varres0_$%11_0__82_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer1 inner) 
@@ -5969,7 +5929,7 @@ mut method
 Outer1 #inner() 
 read method 
 Outer1 inner() }
-Varres1_$%12_0__84_0:'@private
+Varres1_$%12_0__83_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer1::#apply() inner) 
@@ -6045,7 +6005,7 @@ method
 Outer0 #plusplus(Outer0 that) (
   Void unused=(
     Outer0 res=this
-    mut Outer0::Varres0_$%11_0__83_0 varres=Outer0::Varres0_$%11_0__83_0.#apply(inner:res)
+    mut Outer0::Varres0_$%11_0__82_0 varres=Outer0::Varres0_$%11_0__82_0.#apply(inner:res)
     Void unused0=(
       Outer0::vals() e=that.vals()
       (
@@ -6100,7 +6060,7 @@ Outer0 #add(Outer1::Member that) Outer0._new(head:Outer0::CellNext.#apply(elem:t
 method 
 Outer0 #end() (
   Outer0::#apply() res=Outer0.#apply()
-  mut Outer0::Varres1_$%12_0__84_0 varres=Outer0::Varres1_$%12_0__84_0.#apply(inner:res)
+  mut Outer0::Varres1_$%12_0__83_0 varres=Outer0::Varres1_$%12_0__83_0.#apply(inner:res)
   Void unused=(
     Outer0::vals() elem=this.vals()
     (
@@ -6265,7 +6225,7 @@ read method
 Outer2::Member #inner() this.that().#inner()
 read method 
 Void #close() void}
-Varaccumulator_$%13_0__85_0:'@private
+Varaccumulator_$%13_0__84_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer1::#begin() inner) 
@@ -6334,7 +6294,7 @@ Outer2::Bool contains(Outer1::Member that) (
 method 
 Outer0 remove(Outer1::Member that) (
   Outer0::#begin() accumulator=Outer0.#begin()
-  mut Outer0::Varaccumulator_$%13_0__85_0 varaccumulator=Outer0::Varaccumulator_$%13_0__85_0.#apply(inner:accumulator)
+  mut Outer0::Varaccumulator_$%13_0__84_0 varaccumulator=Outer0::Varaccumulator_$%13_0__84_0.#apply(inner:accumulator)
   Void unused=(
     Outer0::vals() e=this.vals()
     (
@@ -6521,7 +6481,7 @@ Outer2::Bool equals(Any that) (
   }
   )}
 Method:{<:Outer1::Member, Outer2::Concept::Equals
-VarpN__86_0:'@private
+VarpN__85_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer3::N::#numberParser(that ) inner) 
@@ -6529,7 +6489,7 @@ mut method
 Void inner(Outer3::N::#numberParser(that ) that) 
 mut method 
 Outer3::N::#numberParser(that ) #inner() }
-Varresult2__87_0:'@private
+Varresult2__86_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer2::Types::#begin() ::#end() inner) 
@@ -6675,8 +6635,8 @@ Outer1::Types parameterTypes() (
     Outer2::N::#numberParser(that ) pN=Outer2::N.#numberParser(that:{'@stringU
     '1
     })
-    mut Outer0::Varresult2__87_0 varresult=Outer0::Varresult2__87_0.#apply(inner:result)
-    mut Outer0::VarpN__86_0 varpN=Outer0::VarpN__86_0.#apply(inner:pN)
+    mut Outer0::Varresult2__86_0 varresult=Outer0::Varresult2__86_0.#apply(inner:result)
+    mut Outer0::VarpN__85_0 varpN=Outer0::VarpN__85_0.#apply(inner:pN)
     Void unused0=(
       Void unused2=loop (
         Void unused3=Outer2::Bool.true().#checkTrue()
@@ -6770,7 +6730,7 @@ method
 Outer1::NestedClass root() this._root__39_0()}
 Methods:{' generic linked list class, elements of type Elem
 <:Outer2::Concept::Named
-Varres0_$%14_0__88_0:'@private
+Varres0_$%14_0__87_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer1 inner) 
@@ -6780,7 +6740,7 @@ mut method
 Outer1 #inner() 
 read method 
 Outer1 inner() }
-Varres1_$%15_0__89_0:'@private
+Varres1_$%15_0__88_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer1::#apply() inner) 
@@ -6856,7 +6816,7 @@ method
 Outer0 #plusplus(Outer0 that) (
   Void unused=(
     Outer0 res=this
-    mut Outer0::Varres0_$%14_0__88_0 varres=Outer0::Varres0_$%14_0__88_0.#apply(inner:res)
+    mut Outer0::Varres0_$%14_0__87_0 varres=Outer0::Varres0_$%14_0__87_0.#apply(inner:res)
     Void unused0=(
       Outer0::vals() e=that.vals()
       (
@@ -6911,7 +6871,7 @@ Outer0 #add(Outer1::Method that) Outer0._new(head:Outer0::CellNext.#apply(elem:t
 method 
 Outer0 #end() (
   Outer0::#apply() res=Outer0.#apply()
-  mut Outer0::Varres1_$%15_0__89_0 varres=Outer0::Varres1_$%15_0__89_0.#apply(inner:res)
+  mut Outer0::Varres1_$%15_0__88_0 varres=Outer0::Varres1_$%15_0__88_0.#apply(inner:res)
   Void unused=(
     Outer0::vals() elem=this.vals()
     (
@@ -7076,7 +7036,7 @@ read method
 Outer2::Method #inner() this.that().#inner()
 read method 
 Void #close() void}
-Varaccumulator_$%16_0__90_0:'@private
+Varaccumulator_$%16_0__89_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer1::#begin() inner) 
@@ -7145,7 +7105,7 @@ Outer2::Bool contains(Outer1::Method that) (
 method 
 Outer0 remove(Outer1::Method that) (
   Outer0::#begin() accumulator=Outer0.#begin()
-  mut Outer0::Varaccumulator_$%16_0__90_0 varaccumulator=Outer0::Varaccumulator_$%16_0__90_0.#apply(inner:accumulator)
+  mut Outer0::Varaccumulator_$%16_0__89_0 varaccumulator=Outer0::Varaccumulator_$%16_0__89_0.#apply(inner:accumulator)
   Void unused=(
     Outer0::vals() e=this.vals()
     (
@@ -7333,7 +7293,7 @@ Outer2::Bool equals(Any that) (
   )}
 NestedClass:{'findMeNestedClass
 <:Outer1::Member, Outer2::Concept::Equals
-VarmN__91_0:'@private
+VarmN__90_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer3::N::#numberParser(that ) inner) 
@@ -7341,7 +7301,7 @@ mut method
 Void inner(Outer3::N::#numberParser(that ) that) 
 mut method 
 Outer3::N::#numberParser(that ) #inner() }
-Varresult3__92_0:'@private
+Varresult3__91_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer2::Members::#begin() ::#end() inner) 
@@ -7349,7 +7309,7 @@ mut method
 Void inner(Outer2::Members::#begin() ::#end() that) 
 mut method 
 Outer2::Members::#begin() ::#end() #inner() }
-Varaccumulator2__93_0:'@private
+Varaccumulator2__92_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer2::Methods::#begin() inner) 
@@ -7357,7 +7317,7 @@ mut method
 Void inner(Outer2::Methods::#begin() that) 
 mut method 
 Outer2::Methods::#begin() #inner() }
-Varaccumulator3__94_0:'@private
+Varaccumulator3__93_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer2::NestedClasses::#begin() inner) 
@@ -7365,7 +7325,7 @@ mut method
 Void inner(Outer2::NestedClasses::#begin() that) 
 mut method 
 Outer2::NestedClasses::#begin() #inner() }
-Varresult4__95_0:'@private
+Varresult4__94_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer2::NestedClasses::#begin() ::#add(that ) ::#end() inner) 
@@ -7373,7 +7333,7 @@ mut method
 Void inner(Outer2::NestedClasses::#begin() ::#add(that ) ::#end() that) 
 mut method 
 Outer2::NestedClasses::#begin() ::#add(that ) ::#end() #inner() }
-VartN__96_0:'@private
+VartN__95_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer3::N::#numberParser(that ) inner) 
@@ -7381,7 +7341,7 @@ mut method
 Void inner(Outer3::N::#numberParser(that ) that) 
 mut method 
 Outer3::N::#numberParser(that ) #inner() }
-Varresult5__97_0:'@private
+Varresult5__96_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer2::Types::#begin() ::#end() inner) 
@@ -7389,7 +7349,7 @@ mut method
 Void inner(Outer2::Types::#begin() ::#end() that) 
 mut method 
 Outer2::Types::#begin() ::#end() #inner() }
-Varnew__98_0:'@private
+Varnew__97_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer1::removeDup__41_0(that ) inner) 
@@ -7397,7 +7357,7 @@ mut method
 Void inner(Outer1::removeDup__41_0(that ) that) 
 mut method 
 Outer1::removeDup__41_0(that ) #inner() }
-Varresult6__99_0:'@private
+Varresult6__98_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer1::removeDup__41_0(that ) inner) 
@@ -7405,7 +7365,7 @@ mut method
 Void inner(Outer1::removeDup__41_0(that ) that) 
 mut method 
 Outer1::removeDup__41_0(that ) #inner() }
-Varextra__100_0:'@private
+Varextra__99_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer2::Types::#begin() ::#end() inner) 
@@ -7413,7 +7373,7 @@ mut method
 Void inner(Outer2::Types::#begin() ::#end() that) 
 mut method 
 Outer2::Types::#begin() ::#end() #inner() }
-Varresult7__101_0:'@private
+Varresult7__100_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer2::Types::#begin() ::#end() inner) 
@@ -7421,7 +7381,7 @@ mut method
 Void inner(Outer2::Types::#begin() ::#end() that) 
 mut method 
 Outer2::Types::#begin() ::#end() #inner() }
-Varaccumulator4__102_0:'@private
+Varaccumulator4__101_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer3::Count::#begin() inner) 
@@ -7429,7 +7389,7 @@ mut method
 Void inner(Outer3::Count::#begin() that) 
 mut method 
 Outer3::Count::#begin() #inner() }
-Varaccumulator5__103_0:'@private
+Varaccumulator5__102_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer2::Types::#begin() inner) 
@@ -7437,7 +7397,7 @@ mut method
 Void inner(Outer2::Types::#begin() that) 
 mut method 
 Outer2::Types::#begin() #inner() }
-VarabsMethods__104_0:'@private
+VarabsMethods__103_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer2::Methods::#begin() ::#end() inner) 
@@ -7445,7 +7405,7 @@ mut method
 Void inner(Outer2::Methods::#begin() ::#end() that) 
 mut method 
 Outer2::Methods::#begin() ::#end() #inner() }
-VarhavePrivate__105_0:'@private
+VarhavePrivate__104_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer3::Bool::false() inner) 
@@ -7453,7 +7413,7 @@ mut method
 Void inner(Outer3::Bool::false() that) 
 mut method 
 Outer3::Bool::false() #inner() }
-Varaccumulator6__106_0:'@private
+Varaccumulator6__105_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer2::Methods::#begin() inner) 
@@ -7461,7 +7421,7 @@ mut method
 Void inner(Outer2::Methods::#begin() that) 
 mut method 
 Outer2::Methods::#begin() #inner() }
-Varaccumulator7__107_0:'@private
+Varaccumulator7__106_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer2::Methods::#begin() inner) 
@@ -7469,7 +7429,7 @@ mut method
 Void inner(Outer2::Methods::#begin() that) 
 mut method 
 Outer2::Methods::#begin() #inner() }
-Varresult8__108_0:'@private
+Varresult8__107_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer2::Methods::#begin() ::#end() inner) 
@@ -7477,7 +7437,7 @@ mut method
 Void inner(Outer2::Methods::#begin() ::#end() that) 
 mut method 
 Outer2::Methods::#begin() ::#end() #inner() }
-Varaccumulator8__109_0:'@private
+Varaccumulator8__108_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer2::Methods::#begin() inner) 
@@ -7786,8 +7746,8 @@ Outer1::Members members() (
   Outer2::N::#numberParser(that ) mN=Outer2::N.#numberParser(that:{'@stringU
   '1
   })
-  mut Outer0::Varresult3__92_0 varresult=Outer0::Varresult3__92_0.#apply(inner:result)
-  mut Outer0::VarmN__91_0 varmN=Outer0::VarmN__91_0.#apply(inner:mN)
+  mut Outer0::Varresult3__91_0 varresult=Outer0::Varresult3__91_0.#apply(inner:result)
+  mut Outer0::VarmN__90_0 varmN=Outer0::VarmN__90_0.#apply(inner:mN)
   Void unused=(
     Void unused0=loop (
       Void unused1=Outer2::Bool.true().#checkTrue()
@@ -7811,7 +7771,7 @@ Outer1::Members members() (
 method 
 Outer1::Methods methods() (
   Outer1::Methods::#begin() accumulator=Outer1::Methods.#begin()
-  mut Outer0::Varaccumulator2__93_0 varaccumulator=Outer0::Varaccumulator2__93_0.#apply(inner:accumulator)
+  mut Outer0::Varaccumulator2__92_0 varaccumulator=Outer0::Varaccumulator2__92_0.#apply(inner:accumulator)
   Void unused=(
     Outer0::members() ::vals() m=this.members().vals()
     (
@@ -7871,7 +7831,7 @@ Outer1::Methods methods() (
 method 
 Outer1::NestedClasses nestedClasses() (
   Outer1::NestedClasses::#begin() accumulator=Outer1::NestedClasses.#begin()
-  mut Outer0::Varaccumulator3__94_0 varaccumulator=Outer0::Varaccumulator3__94_0.#apply(inner:accumulator)
+  mut Outer0::Varaccumulator3__93_0 varaccumulator=Outer0::Varaccumulator3__93_0.#apply(inner:accumulator)
   Void unused=(
     Outer0::members() ::vals() m=this.members().vals()
     (
@@ -7931,7 +7891,7 @@ Outer1::NestedClasses nestedClasses() (
 method 
 Outer1::NestedClasses transitivelyNestedClasses() (
   Outer1::NestedClasses::#begin() ::#add(that ) ::#end() result=Outer1::NestedClasses.#begin().#add(that:this).#end()
-  mut Outer0::Varresult4__95_0 varresult=Outer0::Varresult4__95_0.#apply(inner:result)
+  mut Outer0::Varresult4__94_0 varresult=Outer0::Varresult4__94_0.#apply(inner:result)
   Void unused=(
     Outer0::nestedClasses() ::vals() nc=this.nestedClasses().vals()
     (
@@ -7978,8 +7938,8 @@ Outer1::Types implementedInterfaces() (
   Outer2::N::#numberParser(that ) tN=Outer2::N.#numberParser(that:{'@stringU
   '1
   })
-  mut Outer0::Varresult5__97_0 varresult=Outer0::Varresult5__97_0.#apply(inner:result)
-  mut Outer0::VartN__96_0 vartN=Outer0::VartN__96_0.#apply(inner:tN)
+  mut Outer0::Varresult5__96_0 varresult=Outer0::Varresult5__96_0.#apply(inner:result)
+  mut Outer0::VartN__95_0 vartN=Outer0::VartN__95_0.#apply(inner:tN)
   Void unused=(
     Void unused0=loop (
       Void unused1=Outer2::Bool.true().#checkTrue()
@@ -8008,13 +7968,13 @@ Outer1::Types transitivelyImplementedInterfaces() (
   Void unused=(
     Outer0::removeDup__41_0(that ) result=this.removeDup__41_0(that:this.implementedInterfaces())
     Outer0::removeDup__41_0(that ) new=result
-    mut Outer0::Varresult6__99_0 varresult=Outer0::Varresult6__99_0.#apply(inner:result)
-    mut Outer0::Varnew__98_0 varnew=Outer0::Varnew__98_0.#apply(inner:new)
+    mut Outer0::Varresult6__98_0 varresult=Outer0::Varresult6__98_0.#apply(inner:result)
+    mut Outer0::Varnew__97_0 varnew=Outer0::Varnew__97_0.#apply(inner:new)
     Void unused0=loop (
       Outer1::Types::#begin() ::#end() extra=Outer1::Types.#begin().#end()
-      mut Outer0::Varextra__100_0 varextra=Outer0::Varextra__100_0.#apply(inner:extra)
+      mut Outer0::Varextra__99_0 varextra=Outer0::Varextra__99_0.#apply(inner:extra)
       Void unused1=(
-        Outer0::Varnew__98_0::#inner() ::vals() t=varnew.#inner().vals()
+        Outer0::Varnew__97_0::#inner() ::vals() t=varnew.#inner().vals()
         (
           Void unused4=(
             Void unused5=(
@@ -8031,7 +7991,7 @@ Outer1::Types transitivelyImplementedInterfaces() (
                   exception void
                   )
                 (
-                  Outer0::Varnew__98_0::#inner() ::vals() ::#inner() ::referencedPath() ::implementedInterfaces() impl=t.#inner().referencedPath().implementedInterfaces()
+                  Outer0::Varnew__97_0::#inner() ::vals() ::#inner() ::referencedPath() ::implementedInterfaces() impl=t.#inner().referencedPath().implementedInterfaces()
                   varextra.inner(that:varextra.#inner().#plusplus(that:this.remove__43_0(that:impl, from:varresult.#inner())))
                   )
                 )
@@ -8055,7 +8015,7 @@ Outer1::Types transitivelyImplementedInterfaces() (
           )
         )
       Void unused2=(
-        Outer0::Varextra__100_0::#inner() ::isEmpty() cond=varextra.#inner().isEmpty()
+        Outer0::Varextra__99_0::#inner() ::isEmpty() cond=varextra.#inner().isEmpty()
         (
           Void unused12=cond.#checkTrue()
           
@@ -8077,7 +8037,7 @@ Outer1::Types transitivelyImplementedInterfaces() (
 method '@private
 Outer1::Types removeDup__41_0(Outer1::Types that) (
   Outer1::Types::#begin() ::#end() result=Outer1::Types.#begin().#end()
-  mut Outer0::Varresult7__101_0 varresult=Outer0::Varresult7__101_0.#apply(inner:result)
+  mut Outer0::Varresult7__100_0 varresult=Outer0::Varresult7__100_0.#apply(inner:result)
   Void unused=(
     Outer1::Types::vals() t=that.vals()
     (
@@ -8131,7 +8091,7 @@ Outer2::Bool select__42_0(Outer1::Type that, Outer1::Types from) (
   Outer1::Type::referencedPath() rp=that.referencedPath()
   (
     Outer2::Count::#begin() accumulator=Outer2::Count.#begin()
-    mut Outer0::Varaccumulator4__102_0 varaccumulator=Outer0::Varaccumulator4__102_0.#apply(inner:accumulator)
+    mut Outer0::Varaccumulator4__101_0 varaccumulator=Outer0::Varaccumulator4__101_0.#apply(inner:accumulator)
     Void unused=(
       Outer1::Types::vals() t=from.vals()
       (
@@ -8178,7 +8138,7 @@ Outer2::Bool select__42_0(Outer1::Type that, Outer1::Types from) (
 method '@private
 Outer1::Types remove__43_0(Outer1::Types that, Outer1::Types from) (
   Outer1::Types::#begin() accumulator=Outer1::Types.#begin()
-  mut Outer0::Varaccumulator5__103_0 varaccumulator=Outer0::Varaccumulator5__103_0.#apply(inner:accumulator)
+  mut Outer0::Varaccumulator5__102_0 varaccumulator=Outer0::Varaccumulator5__102_0.#apply(inner:accumulator)
   Void unused=(
     Outer1::Types::vals() t=that.vals()
     (
@@ -8230,10 +8190,10 @@ Outer1::Types remove__43_0(Outer1::Types that, Outer1::Types from) (
 method 
 Outer1::Methods stateCandidate() (
   Outer2::Bool::false() havePrivate=Outer2::Bool.false()
-  mut Outer0::VarhavePrivate__105_0 varhavePrivate=Outer0::VarhavePrivate__105_0.#apply(inner:havePrivate)
+  mut Outer0::VarhavePrivate__104_0 varhavePrivate=Outer0::VarhavePrivate__104_0.#apply(inner:havePrivate)
   Outer1::Methods::#begin() ::#end() absMethods=(
     Outer1::Methods::#begin() accumulator=Outer1::Methods.#begin()
-    mut Outer0::Varaccumulator6__106_0 varaccumulator=Outer0::Varaccumulator6__106_0.#apply(inner:accumulator)
+    mut Outer0::Varaccumulator6__105_0 varaccumulator=Outer0::Varaccumulator6__105_0.#apply(inner:accumulator)
     Void unused0=(
       Outer0::methods() ::vals() m=this.methods().vals()
       (
@@ -8287,18 +8247,18 @@ Outer1::Methods stateCandidate() (
       )
     varaccumulator.#inner().#end()
     )
-  mut Outer0::VarabsMethods__104_0 varabsMethods=Outer0::VarabsMethods__104_0.#apply(inner:absMethods)
+  mut Outer0::VarabsMethods__103_0 varabsMethods=Outer0::VarabsMethods__103_0.#apply(inner:absMethods)
   Void unused=(
-    Outer0::VarhavePrivate__105_0::#inner() cond0=varhavePrivate.#inner()
+    Outer0::VarhavePrivate__104_0::#inner() cond0=varhavePrivate.#inner()
     (
       Void unused11=cond0.#checkTrue()
       
       catch exception Void catched13 void
       varabsMethods.inner(that:(
         Outer1::Methods::#begin() accumulator0=Outer1::Methods.#begin()
-        mut Outer0::Varaccumulator7__107_0 varaccumulator0=Outer0::Varaccumulator7__107_0.#apply(inner:accumulator0)
+        mut Outer0::Varaccumulator7__106_0 varaccumulator0=Outer0::Varaccumulator7__106_0.#apply(inner:accumulator0)
         Void unused12=(
-          Outer0::VarabsMethods__104_0::#inner() ::vals() a=varabsMethods.#inner().vals()
+          Outer0::VarabsMethods__103_0::#inner() ::vals() a=varabsMethods.#inner().vals()
           (
             Void unused13=(
               Void unused14=(
@@ -8315,7 +8275,7 @@ Outer1::Methods stateCandidate() (
                     exception void
                     )
                   (
-                    Outer0::VarabsMethods__104_0::#inner() ::vals() ::#inner() ::isPrivate() cond1=a.#inner().isPrivate()
+                    Outer0::VarabsMethods__103_0::#inner() ::vals() ::#inner() ::isPrivate() cond1=a.#inner().isPrivate()
                     (
                       Void unused19=cond1.#checkTrue()
                       
@@ -8357,7 +8317,7 @@ Outer1::Methods state() (
     Outer1::Methods::#begin() ::#end() ::top() constr=(
       Outer1::Methods::#begin() ::#end() classMethods=(
         Outer1::Methods::#begin() accumulator=Outer1::Methods.#begin()
-        mut Outer0::Varaccumulator8__109_0 varaccumulator=Outer0::Varaccumulator8__109_0.#apply(inner:accumulator)
+        mut Outer0::Varaccumulator8__108_0 varaccumulator=Outer0::Varaccumulator8__108_0.#apply(inner:accumulator)
         Void unused5=(
           Outer0::stateCandidate() ::vals() m=stateCandidate.vals()
           (
@@ -8428,7 +8388,7 @@ Outer1::Methods state() (
         )
       classMethods.top()
       )
-    mut Outer0::Varresult8__108_0 varresult=Outer0::Varresult8__108_0.#apply(inner:result)
+    mut Outer0::Varresult8__107_0 varresult=Outer0::Varresult8__107_0.#apply(inner:result)
     Void unused0=varresult.inner(that:varresult.#inner().#add(that:constr))
     Outer1::Methods::#begin() ::#end() ::top() ::selector() ::names() names=constr.selector().names()
     Void unused1=(
@@ -8715,7 +8675,7 @@ Outer2::Bool isPrivate() (
   )}
 NestedClasses:{' generic linked list class, elements of type Elem
 <:Outer2::Concept::Named
-Varres0_$%17_0__110_0:'@private
+Varres0_$%17_0__109_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer1 inner) 
@@ -8725,7 +8685,7 @@ mut method
 Outer1 #inner() 
 read method 
 Outer1 inner() }
-Varres1_$%18_0__111_0:'@private
+Varres1_$%18_0__110_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer1::#apply() inner) 
@@ -8801,7 +8761,7 @@ method
 Outer0 #plusplus(Outer0 that) (
   Void unused=(
     Outer0 res=this
-    mut Outer0::Varres0_$%17_0__110_0 varres=Outer0::Varres0_$%17_0__110_0.#apply(inner:res)
+    mut Outer0::Varres0_$%17_0__109_0 varres=Outer0::Varres0_$%17_0__109_0.#apply(inner:res)
     Void unused0=(
       Outer0::vals() e=that.vals()
       (
@@ -8856,7 +8816,7 @@ Outer0 #add(Outer1::NestedClass that) Outer0._new(head:Outer0::CellNext.#apply(e
 method 
 Outer0 #end() (
   Outer0::#apply() res=Outer0.#apply()
-  mut Outer0::Varres1_$%18_0__111_0 varres=Outer0::Varres1_$%18_0__111_0.#apply(inner:res)
+  mut Outer0::Varres1_$%18_0__110_0 varres=Outer0::Varres1_$%18_0__110_0.#apply(inner:res)
   Void unused=(
     Outer0::vals() elem=this.vals()
     (
@@ -9021,7 +8981,7 @@ read method
 Outer2::NestedClass #inner() this.that().#inner()
 read method 
 Void #close() void}
-Varaccumulator_$%19_0__112_0:'@private
+Varaccumulator_$%19_0__111_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer1::#begin() inner) 
@@ -9090,7 +9050,7 @@ Outer2::Bool contains(Outer1::NestedClass that) (
 method 
 Outer0 remove(Outer1::NestedClass that) (
   Outer0::#begin() accumulator=Outer0.#begin()
-  mut Outer0::Varaccumulator_$%19_0__112_0 varaccumulator=Outer0::Varaccumulator_$%19_0__112_0.#apply(inner:accumulator)
+  mut Outer0::Varaccumulator_$%19_0__111_0 varaccumulator=Outer0::Varaccumulator_$%19_0__111_0.#apply(inner:accumulator)
   Void unused=(
     Outer0::vals() e=this.vals()
     (
@@ -9459,7 +9419,7 @@ Outer1::Doc doc() this.record__44_0().docOf(path:Outer2::Path.#stringParser(that
 }))}
 Types:{' generic linked list class, elements of type Elem
 <:Outer2::Concept::Named
-Varres0__113_0:'@private
+Varres0__112_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer1 inner) 
@@ -9469,7 +9429,7 @@ mut method
 Outer1 #inner() 
 read method 
 Outer1 inner() }
-Varres1__114_0:'@private
+Varres1__113_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer1::#apply() inner) 
@@ -9545,7 +9505,7 @@ method
 Outer0 #plusplus(Outer0 that) (
   Void unused=(
     Outer0 res=this
-    mut Outer0::Varres0__113_0 varres=Outer0::Varres0__113_0.#apply(inner:res)
+    mut Outer0::Varres0__112_0 varres=Outer0::Varres0__112_0.#apply(inner:res)
     Void unused0=(
       Outer0::vals() e=that.vals()
       (
@@ -9600,7 +9560,7 @@ Outer0 #add(Outer1::Type that) Outer0._new(head:Outer0::CellNext.#apply(elem:tha
 method 
 Outer0 #end() (
   Outer0::#apply() res=Outer0.#apply()
-  mut Outer0::Varres1__114_0 varres=Outer0::Varres1__114_0.#apply(inner:res)
+  mut Outer0::Varres1__113_0 varres=Outer0::Varres1__113_0.#apply(inner:res)
   Void unused=(
     Outer0::vals() elem=this.vals()
     (
@@ -10204,7 +10164,7 @@ Outer0 #apply(Outer0::T that) Outer0.#new(that:Outer0::TOf.#apply(that:that))}, 
 }), dest:that)}
 PreferentialComposition:{'members of PreferentialComposition
 
-Varacc0__115_0:'@private
+Varacc0__114_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer1::SrcDests::#begin() ::#end() inner) 
@@ -10212,7 +10172,7 @@ mut method
 Void inner(Outer1::SrcDests::#begin() ::#end() that) 
 mut method 
 Outer1::SrcDests::#begin() ::#end() #inner() }
-Varaccumulator9__116_0:'@private
+Varaccumulator9__115_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer1::SrcDests::#begin() inner) 
@@ -10240,7 +10200,7 @@ read method
 Outer2::Selector dest() }
 SrcDests:{' generic linked list class, elements of type Elem
 <:Outer2::Concept::Named
-Varres0__117_0:'@private
+Varres0__116_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer1 inner) 
@@ -10250,7 +10210,7 @@ mut method
 Outer1 #inner() 
 read method 
 Outer1 inner() }
-Varres1__118_0:'@private
+Varres1__117_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer1::#apply() inner) 
@@ -10326,7 +10286,7 @@ method
 Outer0 #plusplus(Outer0 that) (
   Void unused=(
     Outer0 res=this
-    mut Outer0::Varres0__117_0 varres=Outer0::Varres0__117_0.#apply(inner:res)
+    mut Outer0::Varres0__116_0 varres=Outer0::Varres0__116_0.#apply(inner:res)
     Void unused0=(
       Outer0::vals() e=that.vals()
       (
@@ -10381,7 +10341,7 @@ Outer0 #add(Outer1::SrcDest that) Outer0._new(head:Outer0::CellNext.#apply(elem:
 method 
 Outer0 #end() (
   Outer0::#apply() res=Outer0.#apply()
-  mut Outer0::Varres1__118_0 varres=Outer0::Varres1__118_0.#apply(inner:res)
+  mut Outer0::Varres1__117_0 varres=Outer0::Varres1__117_0.#apply(inner:res)
   Void unused=(
     Outer0::vals() elem=this.vals()
     (
@@ -10546,7 +10506,7 @@ read method
 Outer2::SrcDest #inner() this.that().#inner()
 read method 
 Void #close() void}}
-Libs__119_0:'@private
+Libs__118_0:'@private
 {' generic linked list class, elements of type Elem
 <:Outer2::Concept::Named
 Varres0:'@private
@@ -10859,7 +10819,7 @@ type method '@private
 Outer0::SrcDests renameMap__46_0(Library that, Outer1::S prefix, Outer1::Introspection::NestedClasses intros) (
   Void unused=(
     Outer0::SrcDests::#begin() ::#end() acc=Outer0::SrcDests.#begin().#end()
-    mut Outer0::Varacc0__115_0 varacc=Outer0::Varacc0__115_0.#apply(inner:acc)
+    mut Outer0::Varacc0__114_0 varacc=Outer0::Varacc0__114_0.#apply(inner:acc)
     Void unused0=(
       Outer1::Introspection::NestedClasses::vals() intro=intros.vals()
       (
@@ -10916,7 +10876,7 @@ Outer0::SrcDests renameMap(Library that, Outer1::S prefix, Outer1::Path path, Ou
     (
       Void unused0=return (
         Outer0::SrcDests::#begin() accumulator=Outer0::SrcDests.#begin()
-        mut Outer0::Varaccumulator9__116_0 varaccumulator=Outer0::Varaccumulator9__116_0.#apply(inner:accumulator)
+        mut Outer0::Varaccumulator9__115_0 varaccumulator=Outer0::Varaccumulator9__115_0.#apply(inner:accumulator)
         Void unused1=(
           Outer1::Introspection::Methods::vals() meth=ms.vals()
           (
@@ -11037,7 +10997,7 @@ Outer1::Bool needRename(Outer1::Introspection::NestedClass that, Outer1::Introsp
 type method 
 Library #leftleft(Library that) exception Outer1::MetaGuard::ClassClash, Outer1::MetaGuard::MethodClash Outer1::Refactor.compose(left:that, right:{'members of each produced class
 <:Outer1::$
-Varacc1__122_0:'@private
+Varacc1__121_0:'@private
 {
 type method 
 mut Outer0 #apply(Library inner) 
@@ -11047,7 +11007,7 @@ mut method
 Library #inner() 
 read method 
 Library inner() }
-Varmap__123_0:'@private
+Varmap__122_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer2::SrcDests::#begin() ::#end() inner) 
@@ -11055,7 +11015,7 @@ mut method
 Void inner(Outer2::SrcDests::#begin() ::#end() that) 
 mut method 
 Outer2::SrcDests::#begin() ::#end() #inner() }
-Varlibi__124_0:'@private
+Varlibi__123_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer1::myLibs__47_0() ::vals() ::#inner() inner) 
@@ -11064,15 +11024,15 @@ Void inner(Outer1::myLibs__47_0() ::vals() ::#inner() that)
 mut method 
 Outer1::myLibs__47_0() ::vals() ::#inner() #inner() }
 type method '@private
-Outer0 #apply__47_0(Outer1::Libs__119_0 myLibs__47_0) 
+Outer0 #apply__47_0(Outer1::Libs__118_0 myLibs__47_0) 
 mut method '@private
-Outer1::Libs__119_0 #myLibs__47_0() 
+Outer1::Libs__118_0 #myLibs__47_0() 
 read method '@private
-Outer1::Libs__119_0 myLibs__47_0() 
+Outer1::Libs__118_0 myLibs__47_0() 
 method 
 Outer0 #add(Library that) Outer0.#apply__47_0(myLibs__47_0:this.myLibs__47_0().#add(that:that))
 type method 
-Outer0 #begin() Outer0.#apply__47_0(myLibs__47_0:Outer1::Libs__119_0.#begin().#end())
+Outer0 #begin() Outer0.#apply__47_0(myLibs__47_0:Outer1::Libs__118_0.#begin().#end())
 method 
 Outer0 #end() Outer0.#apply__47_0(myLibs__47_0:this.myLibs__47_0().#end())
 method 
@@ -11081,8 +11041,8 @@ Library #leftleft(Library that) exception Outer2::MetaGuard::ClassClash, Outer2:
     Outer2::Introspection::#apply(lib ) i=Outer2::Introspection.#apply(lib:that)
     Outer1::SrcDests::#begin() ::#end() map=Outer1::SrcDests.#begin().#end()
     Library acc={}
-    mut Outer0::Varmap__123_0 varmap=Outer0::Varmap__123_0.#apply(inner:map)
-    mut Outer0::Varacc1__122_0 varacc=Outer0::Varacc1__122_0.#apply(inner:acc)
+    mut Outer0::Varmap__122_0 varmap=Outer0::Varmap__122_0.#apply(inner:map)
+    mut Outer0::Varacc1__121_0 varacc=Outer0::Varacc1__121_0.#apply(inner:acc)
     Void unused0=(
       Outer0::myLibs__47_0() ::vals() lib=this.myLibs__47_0().vals()
       (
@@ -11143,7 +11103,7 @@ Library #leftleft(Library that) exception Outer2::MetaGuard::ClassClash, Outer2:
                         }).#begin().#add(that:index.#inner()).#end().#stringParser(that:{'@stringU
                         '
                         }), intros:i.transitivelyNestedClasses())
-                        mut Outer0::Varlibi__124_0 varlibi=Outer0::Varlibi__124_0.#apply(inner:libi)
+                        mut Outer0::Varlibi__123_0 varlibi=Outer0::Varlibi__123_0.#apply(inner:libi)
                         Void unused21=(
                           Outer1::renameMap__46_0(that prefix intros ) ::vals() ren=rens.vals()
                           (
@@ -11225,7 +11185,7 @@ Library #leftleft(Library that) exception Outer2::MetaGuard::ClassClash, Outer2:
       )
     Void unused1=varacc.inner(that:Outer2::Refactor.compose(left:varacc.#inner(), right:that))
     Void unused2=(
-      Outer0::Varmap__123_0::#inner() ::vals() mapi=varmap.#inner().vals()
+      Outer0::Varmap__122_0::#inner() ::vals() mapi=varmap.#inner().vals()
       (
         Void unused35=(
           Void unused36=(
@@ -11294,7 +11254,7 @@ method solveConflict(that location ) (
   'CurlyBlock-Should be unreachable code
   }
   )
-Varacc1_$%21_0__125_0:'@private
+Varacc1_$%21_0__124_0:'@private
 {
 type method 
 mut Outer0 #apply(Library inner) 
@@ -11304,7 +11264,7 @@ mut method
 Library #inner() 
 read method 
 Library inner() }
-Varmap_$%22_0__126_0:'@private
+Varmap_$%22_0__125_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer2::PreferentialComposition::SrcDests::#begin() ::#end() inner) 
@@ -11312,7 +11272,7 @@ mut method
 Void inner(Outer2::PreferentialComposition::SrcDests::#begin() ::#end() that) 
 mut method 
 Outer2::PreferentialComposition::SrcDests::#begin() ::#end() #inner() }
-Varlibi_$%23_0__127_0:'@private
+Varlibi_$%23_0__126_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer1::myLibs_$%20_0__48_0() ::vals() ::#inner() inner) 
@@ -11321,15 +11281,15 @@ Void inner(Outer1::myLibs_$%20_0__48_0() ::vals() ::#inner() that)
 mut method 
 Outer1::myLibs_$%20_0__48_0() ::vals() ::#inner() #inner() }
 type method '@private
-Outer0 #apply_$%20_0__48_0(Outer1::PreferentialComposition::Libs__119_0 myLibs_$%20_0__48_0) 
+Outer0 #apply_$%20_0__48_0(Outer1::PreferentialComposition::Libs__118_0 myLibs_$%20_0__48_0) 
 mut method '@private
-Outer1::PreferentialComposition::Libs__119_0 #myLibs_$%20_0__48_0() 
+Outer1::PreferentialComposition::Libs__118_0 #myLibs_$%20_0__48_0() 
 read method '@private
-Outer1::PreferentialComposition::Libs__119_0 myLibs_$%20_0__48_0() 
+Outer1::PreferentialComposition::Libs__118_0 myLibs_$%20_0__48_0() 
 method 
 Outer0 #add(Library that) Outer0.#apply_$%20_0__48_0(myLibs_$%20_0__48_0:this.myLibs_$%20_0__48_0().#add(that:that))
 type method 
-Outer0 #begin() Outer0.#apply_$%20_0__48_0(myLibs_$%20_0__48_0:Outer1::PreferentialComposition::Libs__119_0.#begin().#end())
+Outer0 #begin() Outer0.#apply_$%20_0__48_0(myLibs_$%20_0__48_0:Outer1::PreferentialComposition::Libs__118_0.#begin().#end())
 method 
 Outer0 #end() Outer0.#apply_$%20_0__48_0(myLibs_$%20_0__48_0:this.myLibs_$%20_0__48_0().#end())
 method 
@@ -11338,8 +11298,8 @@ Library #leftleft(Library that) exception Outer1::MetaGuard::ClassClash, Outer1:
     Outer1::Introspection::#apply(lib ) i=Outer1::Introspection.#apply(lib:that)
     Outer1::PreferentialComposition::SrcDests::#begin() ::#end() map=Outer1::PreferentialComposition::SrcDests.#begin().#end()
     Library acc={}
-    mut Outer0::Varmap_$%22_0__126_0 varmap=Outer0::Varmap_$%22_0__126_0.#apply(inner:map)
-    mut Outer0::Varacc1_$%21_0__125_0 varacc=Outer0::Varacc1_$%21_0__125_0.#apply(inner:acc)
+    mut Outer0::Varmap_$%22_0__125_0 varmap=Outer0::Varmap_$%22_0__125_0.#apply(inner:map)
+    mut Outer0::Varacc1_$%21_0__124_0 varacc=Outer0::Varacc1_$%21_0__124_0.#apply(inner:acc)
     Void unused0=(
       Outer0::myLibs_$%20_0__48_0() ::vals() lib=this.myLibs_$%20_0__48_0().vals()
       (
@@ -11400,7 +11360,7 @@ Library #leftleft(Library that) exception Outer1::MetaGuard::ClassClash, Outer1:
                         }).#begin().#add(that:index.#inner()).#end().#stringParser(that:{'@stringU
                         '
                         }), intros:i.transitivelyNestedClasses())
-                        mut Outer0::Varlibi_$%23_0__127_0 varlibi=Outer0::Varlibi_$%23_0__127_0.#apply(inner:libi)
+                        mut Outer0::Varlibi_$%23_0__126_0 varlibi=Outer0::Varlibi_$%23_0__126_0.#apply(inner:libi)
                         Void unused21=(
                           Outer1::PreferentialComposition::renameMap__46_0(that prefix intros ) ::vals() ren=rens.vals()
                           (
@@ -11482,7 +11442,7 @@ Library #leftleft(Library that) exception Outer1::MetaGuard::ClassClash, Outer1:
       )
     Void unused1=varacc.inner(that:Outer1::Refactor.compose(left:varacc.#inner(), right:that))
     Void unused2=(
-      Outer0::Varmap_$%22_0__126_0::#inner() ::vals() mapi=varmap.#inner().vals()
+      Outer0::Varmap_$%22_0__125_0::#inner() ::vals() mapi=varmap.#inner().vals()
       (
         Void unused35=(
           Void unused36=(
@@ -11551,7 +11511,7 @@ method solveConflict(that location ) (
   'CurlyBlock-Should be unreachable code
   }
   )
-Varacc1_$%25_0__128_0:'@private
+Varacc1_$%25_0__127_0:'@private
 {
 type method 
 mut Outer0 #apply(Library inner) 
@@ -11561,7 +11521,7 @@ mut method
 Library #inner() 
 read method 
 Library inner() }
-Varmap_$%26_0__129_0:'@private
+Varmap_$%26_0__128_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer2::PreferentialComposition::SrcDests::#begin() ::#end() inner) 
@@ -11569,7 +11529,7 @@ mut method
 Void inner(Outer2::PreferentialComposition::SrcDests::#begin() ::#end() that) 
 mut method 
 Outer2::PreferentialComposition::SrcDests::#begin() ::#end() #inner() }
-Varlibi_$%27_0__130_0:'@private
+Varlibi_$%27_0__129_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer1::myLibs_$%24_0__49_0() ::vals() ::#inner() inner) 
@@ -11578,15 +11538,15 @@ Void inner(Outer1::myLibs_$%24_0__49_0() ::vals() ::#inner() that)
 mut method 
 Outer1::myLibs_$%24_0__49_0() ::vals() ::#inner() #inner() }
 type method '@private
-Outer0 #apply_$%24_0__49_0(Outer1::PreferentialComposition::Libs__119_0 myLibs_$%24_0__49_0) 
+Outer0 #apply_$%24_0__49_0(Outer1::PreferentialComposition::Libs__118_0 myLibs_$%24_0__49_0) 
 mut method '@private
-Outer1::PreferentialComposition::Libs__119_0 #myLibs_$%24_0__49_0() 
+Outer1::PreferentialComposition::Libs__118_0 #myLibs_$%24_0__49_0() 
 read method '@private
-Outer1::PreferentialComposition::Libs__119_0 myLibs_$%24_0__49_0() 
+Outer1::PreferentialComposition::Libs__118_0 myLibs_$%24_0__49_0() 
 method 
 Outer0 #add(Library that) Outer0.#apply_$%24_0__49_0(myLibs_$%24_0__49_0:this.myLibs_$%24_0__49_0().#add(that:that))
 type method 
-Outer0 #begin() Outer0.#apply_$%24_0__49_0(myLibs_$%24_0__49_0:Outer1::PreferentialComposition::Libs__119_0.#begin().#end())
+Outer0 #begin() Outer0.#apply_$%24_0__49_0(myLibs_$%24_0__49_0:Outer1::PreferentialComposition::Libs__118_0.#begin().#end())
 method 
 Outer0 #end() Outer0.#apply_$%24_0__49_0(myLibs_$%24_0__49_0:this.myLibs_$%24_0__49_0().#end())
 method 
@@ -11595,8 +11555,8 @@ Library #leftleft(Library that) exception Outer1::MetaGuard::ClassClash, Outer1:
     Outer1::Introspection::#apply(lib ) i=Outer1::Introspection.#apply(lib:that)
     Outer1::PreferentialComposition::SrcDests::#begin() ::#end() map=Outer1::PreferentialComposition::SrcDests.#begin().#end()
     Library acc={}
-    mut Outer0::Varmap_$%26_0__129_0 varmap=Outer0::Varmap_$%26_0__129_0.#apply(inner:map)
-    mut Outer0::Varacc1_$%25_0__128_0 varacc=Outer0::Varacc1_$%25_0__128_0.#apply(inner:acc)
+    mut Outer0::Varmap_$%26_0__128_0 varmap=Outer0::Varmap_$%26_0__128_0.#apply(inner:map)
+    mut Outer0::Varacc1_$%25_0__127_0 varacc=Outer0::Varacc1_$%25_0__127_0.#apply(inner:acc)
     Void unused0=(
       Outer0::myLibs_$%24_0__49_0() ::vals() lib=this.myLibs_$%24_0__49_0().vals()
       (
@@ -11657,7 +11617,7 @@ Library #leftleft(Library that) exception Outer1::MetaGuard::ClassClash, Outer1:
                         }).#begin().#add(that:index.#inner()).#end().#stringParser(that:{'@stringU
                         '
                         }), intros:i.transitivelyNestedClasses())
-                        mut Outer0::Varlibi_$%27_0__130_0 varlibi=Outer0::Varlibi_$%27_0__130_0.#apply(inner:libi)
+                        mut Outer0::Varlibi_$%27_0__129_0 varlibi=Outer0::Varlibi_$%27_0__129_0.#apply(inner:libi)
                         Void unused21=(
                           Outer1::PreferentialComposition::renameMap__46_0(that prefix intros ) ::vals() ren=rens.vals()
                           (
@@ -11739,7 +11699,7 @@ Library #leftleft(Library that) exception Outer1::MetaGuard::ClassClash, Outer1:
       )
     Void unused1=varacc.inner(that:Outer1::Refactor.compose(left:varacc.#inner(), right:that))
     Void unused2=(
-      Outer0::Varmap_$%26_0__129_0::#inner() ::vals() mapi=varmap.#inner().vals()
+      Outer0::Varmap_$%26_0__128_0::#inner() ::vals() mapi=varmap.#inner().vals()
       (
         Void unused35=(
           Void unused36=(
@@ -11792,7 +11752,7 @@ Library #leftleft(Library that) exception Outer1::MetaGuard::ClassClash, Outer1:
 method 
 Outer0 #plusplus(Outer0 that) Outer0.#apply_$%24_0__49_0(myLibs_$%24_0__49_0:this.myLibs_$%24_0__49_0().#plusplus(that:that.myLibs_$%24_0__49_0()))}
 Patch:{
-Varacc2__131_0:'@private
+Varacc2__130_0:'@private
 {
 type method 
 mut Outer0 #apply(Library inner) 
@@ -11802,7 +11762,7 @@ mut method
 Library #inner() 
 read method 
 Library inner() }
-Varmap0__132_0:'@private
+Varmap0__131_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer2::PreferentialComposition::SrcDests::#begin() ::#end() inner) 
@@ -11810,7 +11770,7 @@ mut method
 Void inner(Outer2::PreferentialComposition::SrcDests::#begin() ::#end() that) 
 mut method 
 Outer2::PreferentialComposition::SrcDests::#begin() ::#end() #inner() }
-Varacc3__133_0:'@private
+Varacc3__132_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer2::PreferentialComposition::SrcDests::#begin() ::#end() inner) 
@@ -11834,8 +11794,8 @@ Library #leftleft(Library that) exception Outer1::MetaGuard::ClassClash, Outer1:
     }), intros:itr)
     Outer1::PreferentialComposition::SrcDests::#begin() ::#end() map=Outer1::PreferentialComposition::SrcDests.#begin().#end()
     Library acc=that
-    mut Outer0::Varmap0__132_0 varmap=Outer0::Varmap0__132_0.#apply(inner:map)
-    mut Outer0::Varacc2__131_0 varacc=Outer0::Varacc2__131_0.#apply(inner:acc)
+    mut Outer0::Varmap0__131_0 varmap=Outer0::Varmap0__131_0.#apply(inner:map)
+    mut Outer0::Varacc2__130_0 varacc=Outer0::Varacc2__130_0.#apply(inner:acc)
     Void unused0=(
       Outer0::renameMap__50_0(that prefix intros ) ::vals() ren=rens.vals()
       (
@@ -11886,7 +11846,7 @@ Library #leftleft(Library that) exception Outer1::MetaGuard::ClassClash, Outer1:
     'Outer0
     })).#leftleft(that:varacc.#inner()))
     Void unused2=(
-      Outer0::Varmap0__132_0::#inner() ::vals() mapi=varmap.#inner().vals()
+      Outer0::Varmap0__131_0::#inner() ::vals() mapi=varmap.#inner().vals()
       (
         Void unused14=(
           Void unused15=(
@@ -11940,7 +11900,7 @@ type method '@private
 Outer1::PreferentialComposition::SrcDests renameMap__50_0(Library that, Outer1::S prefix, Outer1::Introspection::NestedClasses intros) (
   Void unused=(
     Outer1::PreferentialComposition::SrcDests::#begin() ::#end() acc=Outer1::PreferentialComposition::SrcDests.#begin().#end()
-    mut Outer0::Varacc3__133_0 varacc=Outer0::Varacc3__133_0.#apply(inner:acc)
+    mut Outer0::Varacc3__132_0 varacc=Outer0::Varacc3__132_0.#apply(inner:acc)
     Void unused0=(
       Outer1::Introspection::NestedClasses::vals() intro=intros.vals()
       (
@@ -11994,7 +11954,7 @@ Outer1::PreferentialComposition::SrcDests renameMap__50_0(Library that, Outer1::
   )}
 Default:{
 DecorationUnfeasable:{<:Outer2::MetaGuard, Outer2::Message
-Varres_$%28_0__134_0:'@private
+Varres_$%28_0__133_0:'@private
 {
 type method 
 mut Outer0 #apply(Outer1::kind() inner) 
@@ -12060,7 +12020,7 @@ method toS() (
         )
       )
     Outer0::kind() res=Outer0.kind()
-    mut Outer0::Varres_$%28_0__134_0 varres=Outer0::Varres_$%28_0__134_0.#apply(inner:res)
+    mut Outer0::Varres_$%28_0__133_0 varres=Outer0::Varres_$%28_0__133_0.#apply(inner:res)
     Void unused1=(
       Outer0::toS() ::this::text() ::#bangequal(that ) cond0=this.text().#bangequal(that:Outer2::S.#stringParser(that:{'@stringU
       '
@@ -12122,6 +12082,10 @@ Library #leftleft(Library that) exception Outer1::DecorationUnfeasable (
     
     type method ' if you do not implement it, it is a constructor?
     Outer0 fromS(read Outer3::Concept::ToS that) 
+    type method 
+    Outer0 #from(Outer3::S::SBuilder builder) Outer0.#stringParser(that:builder.binaryRepr())
+    type method 
+    Outer3::S::SBuilder #builder() Outer3::S::SBuilder.empty()
     type method 
     Outer0 #stringParser(Library that) Outer0.fromS(that:Outer3::S.#stringParser(that:that))}).#end().#leftleft(that:that)
     
@@ -12238,4 +12202,59 @@ Library #leftleft(Library that) exception Outer1::DecorationUnfeasable (
   error {'@stringU
   'CurlyBlock-Should be unreachable code
   }
-  )}}}
+  )}}
+Url:{'ParseFailure:Message:S[]<<{<:Guard} no need, related to invariant?
+<:Outer1::Concept::ToS
+type method ' if you do not implement it, it is a constructor?
+Outer0 fromS(read Outer1::Concept::ToS that) Outer0.#apply(inner:that.toS())
+type method 
+Outer0 #from(Outer1::S::SBuilder builder) Outer0.#stringParser(that:builder.binaryRepr())
+type method 
+Outer1::S::SBuilder #builder() Outer1::S::SBuilder.empty()
+type method 
+Outer0 #stringParser(Library that) Outer0.fromS(that:Outer1::S.#stringParser(that:that))
+type method 
+Outer0 #apply(Outer1::S inner) 
+mut method 
+Outer1::S #inner() 
+read method 
+Outer1::S inner() 
+method toS() this.inner()
+method 
+Library binaryRepr() this.inner().binaryRepr()}
+DeployTowel:{
+type method '(Any fileName)
+Outer0 #apply(Outer1::Url fileName) 
+mut method '(Any fileName)
+Outer1::Url #fileName() 
+read method '(Any fileName)
+Outer1::Url fileName() 
+type method 
+Library binaryReprFrom(Library lib) (
+  Library norm=use Outer0::SafeOperatorsAccess__134_0 check privateNormalize(that:lib) error {
+  type method 
+  Outer0 privateNormalize() }
+  Library record=use Outer0::SafeOperatorsAccess__134_0 check introspectLibraryReport(that:norm, path:{'@stringU
+  'Outer0
+  }) error {
+  type method 
+  Outer0 introspectLibraryReport() }
+  use Outer0::SafeOperatorsAccess__134_0 check introspectLibraryDocAsString(that:record, path:{'@stringU
+  'AllAsString
+  }, annotationN:{'@int32
+  '0
+  }) error {
+  type method 
+  Outer0 introspectLibraryDocAsString() }
+  )
+method 
+Library #leftleft(Library that) (
+  Void unused=use Outer1::Alu check fileDebug(fileName:this.fileName().binaryRepr(), content:Outer0.binaryReprFrom(lib:that)) error {
+  type method 
+  Outer0 fileDebug() }
+  Outer1::ExitCode.normal()
+  )
+SafeOperatorsAccess__134_0:'@private
+{'@plugin
+'L42.is/connected/withSafeOperators
+}}}

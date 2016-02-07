@@ -4,6 +4,12 @@
   type method
   Outer0 fromS(Concept::ToS that)
     Outer0.#stringParser(that.toS().binaryRepr())
+  
+  type method Outer0 #from(S::SBuilder builder) 
+    Outer0.#stringParser(builder.binaryRepr())
+  
+  type method S::SBuilder #builder() S::SBuilder.empty()
+  
   type method
   Outer0 #stringParser(Library that) (
     use SafeOperators

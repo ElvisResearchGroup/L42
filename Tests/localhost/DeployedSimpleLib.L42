@@ -212,30 +212,16 @@ Outer1::Bool needRename(Outer1::Introspection::NestedClass that, Outer1::Introsp
 type method 
 Library #leftleft(Library that) exception Outer1::MetaGuard::ClassClash, Outer1::MetaGuard::MethodClash }
 DeployTowel:{
-type method 
-Outer0 #apply(Library fileName) 
-mut method 
-Library #fileName() 
-read method 
-Library fileName() 
-type method 
-type Outer0 #begin() 
-type method 
-Outer0 #add(Library fileName) 
-method 
-Outer0 #end() 
+type method '(Any fileName)
+Outer0 #apply(Outer1::Url fileName) 
+mut method '(Any fileName)
+Outer1::Url #fileName() 
+read method '(Any fileName)
+Outer1::Url fileName() 
 type method 
 Library binaryReprFrom(Library lib) 
 method 
-Library #leftleft(Library that) 
-Alu:'  toPutAs private
-{'@plugin
-'L42.is/connected/withAlu
-}
-type method 
-Library #stringParser(Library that) 
-type method 
-Library #numberParser(Library that) }
+Library #leftleft(Library that) }
 LinkedList:{
 ListCode:{
 type method 
@@ -1264,6 +1250,10 @@ Selector:{<:Outer1::Concept::ToS, Outer1::Concept::Equals, Outer1::Concept::Name
 type method 
 Outer0 fromS(Outer1::Concept::ToS that) 
 type method 
+Outer0 #from(Outer1::S::SBuilder builder) 
+type method 
+Outer1::S::SBuilder #builder() 
+type method 
 Outer0 #stringParser(Library that) 
 type method 
 Any parseError(Outer1::S that) 
@@ -1331,6 +1321,10 @@ Outer0 fromDocInternalizedS(Outer1::S that)
 type method 
 Outer0 fromS(Outer1::Concept::ToS that) 
 type method 
+Outer0 #from(Outer1::S::SBuilder builder) 
+type method 
+Outer1::S::SBuilder #builder() 
+type method 
 Outer0 #stringParser(Library that) 
 type method 
 Any parseError(Outer1::S that) 
@@ -1396,6 +1390,10 @@ Url:{'ParseFailure:Message:S[]<<{<:Guard} no need, related to invariant?
 <:Outer1::Concept::ToS
 type method ' if you do not implement it, it is a constructor?
 Outer0 fromS(read Outer1::Concept::ToS that) 
+type method 
+Outer0 #from(Outer1::S::SBuilder builder) 
+type method 
+Outer1::S::SBuilder #builder() 
 type method 
 Outer0 #stringParser(Library that) 
 type method 
@@ -2259,7 +2257,9 @@ Outer0 #space()
 method 
 Outer0 #newLine() }
 type method 
-Outer0 from(Outer0::SBuilder builder) 
+Outer0 #from(Outer0::SBuilder builder) 
+type method 
+Outer0::SBuilder #builder() 
 SubStringNotPresent:{<:Outer2::Guard, Outer2::Message
 type method 
 Outer0 #apply(Outer1 _text, Outer2::Message::Opt cause) 

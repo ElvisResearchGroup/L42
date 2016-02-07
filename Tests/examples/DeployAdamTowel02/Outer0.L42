@@ -5,7 +5,6 @@ Resource:{type method Library (){
   PostAction:... 'should go in a patch nested class? to inject into Refactor?
   DefaultParameter:...'should go in a patch nested class? to inject into Refactor?
   Invariant:...'should go in a patch nested class? to inject into Default?
-  Url:Default::Parsable<<...
   Optimize:...
   Ontology:...
   ConceptMap:Use[Ontology.ontologicMap()]<<{interface method Load _Load()}
@@ -14,8 +13,6 @@ Resource:{type method Library (){
   }}
 Task: {
   r=Patch(Path"Fix")<<Resource()
-  return DeployTowel[
-  fileName:DeployTowel"localhost/AdamTowel02.L42"
-  ]<<r
+  return DeployTowel(fileName:Url"localhost/AdamTowel02.L42")<<r
   }
 }

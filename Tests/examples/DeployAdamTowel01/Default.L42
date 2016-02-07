@@ -10,7 +10,15 @@ Parsable:{
       type method' if you do not implement it, it is a constructor?
       Outer0 fromS(read Concept::ToS that)    
       'will be in the interface when there is type refinement,
-      'and will be imm in the interface, and classes can refine to their outer0, ant to capsule if makes sense
+      'and will be imm in the interface, and classes can refine to their outer0, and to capsule if makes sense
+      
+      type method
+      Outer0 #from(S::SBuilder builder) 
+        Outer0.#stringParser(builder.binaryRepr())
+    
+      type method
+      S::SBuilder #builder() S::SBuilder.empty()
+ 
       type method
       Outer0 #stringParser(Library that) 
         Outer0.fromS(S.#stringParser(that))

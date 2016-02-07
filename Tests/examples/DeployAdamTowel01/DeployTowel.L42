@@ -1,42 +1,38 @@
-{(Library fileName)
-
-type method type Outer0 #begin() Outer0
-type method Outer0 #add(Library fileName) Outer0(fileName:fileName)
-method Outer0 #end()this
-
-type method Library binaryReprFrom(Library lib)(
+{
+(Url fileName)
+'(Any fileName)
+ type method Library binaryReprFrom(Library lib)(
   Library norm=use SafeOperatorsAccess
     check privateNormalize(lib)
-    error Outer0"privateNormalize"
+    error {privateNormalize()}
   Library record=use SafeOperatorsAccess
-    check introspectLibraryReport(norm 'lib,'norm TODO
-      path:Outer0"Outer0")
-    error Outer0"introspectLibraryReport"
+    check introspectLibraryReport(norm, path:{'@stringU
+            'Outer0
+           })
+    error {introspectLibraryReport()}
   use SafeOperatorsAccess
-    check introspectLibraryDocAsString(record, path:Outer0"AllAsString",annotationN:0Outer0)
-    error Outer0"introspectLibraryDocAsString"
+    check introspectLibraryDocAsString(record,
+      path:{'@stringU
+            'AllAsString
+           },annotationN:{'@int32
+            '0
+           })
+    error {introspectLibraryDocAsString()}
   )
 method
 Library <<(Library that) (
   use Alu
-    check fileDebug(fileName:this.fileName(), content:Outer0.binaryReprFrom(lib:that))
-    error Outer0"fileDebug"
+    check fileDebug(
+      fileName:this.fileName().binaryRepr(),
+      content:Outer0.binaryReprFrom(lib:that)
+      )
+    error {fileDebug()}
   ExitCode.normal()
   )
+ 
 
 SafeOperatorsAccess:'@private
   {'@plugin
    'L42.is/connected/withSafeOperators
    }
-Alu:'  toPutAs private
-  {'@plugin
-   'L42.is/connected/withAlu
-  }
-  type method Library #stringParser(Library that) that
-type method Library #numberParser(Library that)
-  use Alu
-    check stringToInt32(that)
-    error Outer0"stringToInt32"
-
-
 }

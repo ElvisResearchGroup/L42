@@ -68,6 +68,6 @@ exception MetaGuard::NestedClassUnavailable, MetaGuard::PrivacyCoupuled {
   Debug(S"2")
   res:=Optimize::RemoveUnreachableCode[]<<res
   Debug(S"3")
-  return DeployTowel[fileName:this.url().binaryRepr()]<<res
+  return DeployTowel(fileName:this.url())<<res
   }
 }

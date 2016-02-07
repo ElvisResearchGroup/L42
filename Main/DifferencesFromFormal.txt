@@ -1,0 +1,12 @@
+(// means still to implement)
+*Syntactic sugar
+//S"foo"    =    S.#from(builder:S.#builder().#f().#o().#o())
+//12N       =    N.#from(builder:N.#builder().#1().#2())
+//V[a;b]     =    V.#from(builder:V.#builder().#add(a).#add(b))
+*Syntax
+Catch T x e
+Catch Ts e
+s on Ts e
+
+*core logic
+//normalized classB {*  or {+   or {-   with all norm types and all interface method with refined type

@@ -44,6 +44,14 @@ Path:{
   Any parseError(Outer2::S that,Outer2::Message cause)
     ParseFail"The provided string is not a valid internalized path: "[that]""(cause)
   }
+  
+  Debug:{
+    type method
+    Void (Library lib)
+      use Alu
+        check stringDebug(DeployTowel.binaryReprFrom(lib:lib))
+        void
+    }
   MetaGuard:{interface
     RecordWrapper:{
     type method Outer3::S libToS(Library that) (

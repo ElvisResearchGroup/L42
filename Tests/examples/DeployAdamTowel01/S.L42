@@ -129,5 +129,7 @@
     }
     
   SBuilder:...
-  type method Outer0 from(SBuilder builder) Outer0._private(_binaryRepr:builder.binaryRepr())
+  type method Outer0 #from(S::SBuilder builder) 
+    Outer0._private(_binaryRepr:builder.binaryRepr())
+  type method S::SBuilder #builder() S::SBuilder.empty()
   }
