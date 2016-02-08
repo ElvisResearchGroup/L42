@@ -2,14 +2,14 @@
 <: Concept::ToS Concept::Equals Concept::Named'@private
   method myName()GetMyName(Outer0)
 
-  type method Outer0 #stringParser(Library that) Outer0._private(_binaryRepr:that)
+  type method Outer0 #from(Library binaryRepr) Outer0._private(_binaryRepr:binaryRepr)
 
   method Library binaryRepr() this._binaryRepr()
 
   method toS() this
 
   method
-  S ++ (S that) S.#stringParser(use Alu
+  S ++ (S that) S.#from(binaryRepr: use Alu
       check stringConcat(s1:this.binaryRepr(),s2:that.toS().binaryRepr())
       error void)
 
@@ -29,7 +29,7 @@
 
   method
   S (N start, N end)
-    S.#stringParser(use Alu
+    S.#from(binaryRepr:use Alu
       check stringSubstring(this.binaryRepr(),start:start.binaryRepr(),end:end.binaryRepr())
       error void )
 
@@ -97,7 +97,7 @@
     "
   method
   S replace(S that, S into)
-    S.#stringParser(use Alu
+    S.#from(binaryRepr:use Alu
       check stringReplace(this.binaryRepr(),
         src:that.binaryRepr()
         dest:into.binaryRepr())

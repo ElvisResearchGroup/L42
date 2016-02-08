@@ -46,7 +46,7 @@
   RootForNested:' toPutAs private
     {(Path path,MirrorPr mirror,Record _report)<:RootForMember
       method (root) (
-      path=Path.#stringParser(this._report()"Key".binaryRepr())
+      path=Path.fromS(this._report()"Key")
       NestedClass(_root:root,path:path,mirror:this.mirror(),record: this._report())
       )}
   RootForMethod:' toPutAs private

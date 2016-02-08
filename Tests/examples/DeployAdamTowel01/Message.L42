@@ -43,9 +43,6 @@ $:{()
       with that (on Outer0 return this==that)
       return Bool.false()
       }
-  type method
-  Outer0 #stringParser(Library that)
-    Outer0(text:S.#stringParser(that))
   method
   Outer0 (Message that)
     Outer0(text:this.text(),cause:that)

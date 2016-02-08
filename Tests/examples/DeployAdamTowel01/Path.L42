@@ -11,17 +11,17 @@
     }
   type method
   Outer0 fromS(Concept::ToS that)
-    Outer0.#stringParser(that.toS().binaryRepr())
+    Outer0.#from(binaryRepr: that.toS().binaryRepr())
   
   type method Outer0 #from(S::SBuilder builder) 
-    Outer0.#stringParser(builder.binaryRepr())
+    Outer0.#from(binaryRepr: builder.binaryRepr())
   type method S::SBuilder #builder() S::SBuilder.empty()
   
-  type method Outer0 #stringParser(Library that) (
+  type method Outer0 #from(Library binaryRepr) (
     use SafeOperators 
-      check ifInvalidDo(path:that)
-      error Outer0.parseError(S.#stringParser(that))
-    Outer0._private(_binaryRepr:that)
+      check ifInvalidDo(path:binaryRepr)
+      error Outer0.parseError(S.#from(binaryRepr: binaryRepr))
+    Outer0._private(_binaryRepr:binaryRepr)
     )
   type method
   Any parseError(S that)
@@ -33,7 +33,7 @@
   method Library binaryRepr() this._binaryRepr()
 
 
-  method toS() S.#stringParser(this._binaryRepr())
+  method toS() S.#from(binaryRepr: this._binaryRepr())
 
 
   method Bool != (Outer0 that) !(this==that)
@@ -53,7 +53,7 @@
   Path ++(Path that){
     if this==Path"Outer0" (return that)
     if that==Path"Outer0" (return this)
-    return Path.#stringParser(
+    return Path.#from(binaryRepr: 
       this.toS()[S"::";that]"".binaryRepr()
       )
     }

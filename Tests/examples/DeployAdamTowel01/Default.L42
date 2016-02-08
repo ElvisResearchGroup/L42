@@ -13,16 +13,12 @@ Parsable:{
       'and will be imm in the interface, and classes can refine to their outer0, and to capsule if makes sense
       
       type method
-      Outer0 #from(S::SBuilder builder) 
-        Outer0.#stringParser(builder.binaryRepr())
+      Outer0 #from(S::SBuilder builder)
+        Outer0.fromS(S.#from(binaryRepr: builder.binaryRepr()))
     
       type method
       S::SBuilder #builder() S::SBuilder.empty()
- 
-      type method
-      Outer0 #stringParser(Library that) 
-        Outer0.fromS(S.#stringParser(that))
-      }]<<that
+     }]<<that
     exception on MetaGuard
       DecorationUnfeasable"Parsable"
     }

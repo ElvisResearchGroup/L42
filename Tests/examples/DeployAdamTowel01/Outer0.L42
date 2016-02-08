@@ -7,11 +7,8 @@ Url:{(Library binaryRepr)
   SBuilder:...  
   
   type method
-  Outer0 #stringParser(Library that)
-    Outer0(binaryRepr:that)
-  type method
   Outer0 #from(SBuilder builder) 
-    Outer0.#stringParser(builder.binaryRepr())
+    Outer0(binaryRepr:builder.binaryRepr())
     
   type method
   SBuilder #builder()

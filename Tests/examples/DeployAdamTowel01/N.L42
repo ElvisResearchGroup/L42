@@ -10,13 +10,13 @@
   N #numberParser(Library that)
     N(_binaryRepr: use Alu
       check stringToInt32(that)
-      error Outer0.parseError(S.#stringParser(that)))
+      error Outer0.parseError(S.#from(binaryRepr: that)))
   type method
   Any parseError(S that)
     S"UnsatisfactoryErrorToAvoidCycle, replace in AdamT2"
 
   method
-  toS() S.#stringParser(use Alu
+  toS() S.#from(binaryRepr: use Alu
       check int32ToString(this.binaryRepr())
       error void)
 

@@ -120,14 +120,14 @@
     exception 
         MetaGuard::MemberUnavailable,
         MetaGuard::InvalidOnTopLevel
-      AddDocumentationPath(this.that(),doc:Introspection::Doc.#stringParser({'@private
-        }))<<that'string parser works, but we can not use the sugar, that would add @stringU
+      AddDocumentationPath(this.that(),doc:Introspection::Doc({'@private
+        }))<<that
     }
   MakePrivateSelector:{(Selector that, Path of)
     method
     Library << (Library that)
     exception MetaGuard::MemberUnavailable
-      AddDocumentationSelector(this.that() of:this.of() doc:Introspection::Doc.#stringParser({'@private
+      AddDocumentationSelector(this.that() of:this.of() doc:Introspection::Doc({'@private
         }))<<that
     }
   

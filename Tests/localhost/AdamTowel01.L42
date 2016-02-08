@@ -196,10 +196,10 @@ Outer0 fromS(Outer1::Concept::ToS that) Outer0.#numberParser(that:that.toS().bin
 method 
 Library binaryRepr() this._binaryRepr__40_0()
 type method 
-Outer1::N #numberParser(Library that) Outer1::N.#apply__40_0(_binaryRepr__40_0:use Outer1::Alu check stringToInt32(that:that) error Outer0.parseError(that:Outer1::S.#stringParser(that:that)))
+Outer1::N #numberParser(Library that) Outer1::N.#apply__40_0(_binaryRepr__40_0:use Outer1::Alu check stringToInt32(that:that) error Outer0.parseError(that:Outer1::S.#from(binaryRepr:that)))
 type method 
 Any parseError(Outer1::S that) Outer1::S.#from(builder:Outer1::S.#builder().#U().#n().#s().#a().#t().#i().#s().#f().#a().#c().#t().#o().#r().#y().#E().#r().#r().#o().#r().#T().#o().#A().#v().#o().#i().#d().#C().#y().#c().#l().#e().#comma().#space().#r().#e().#p().#l().#a().#c().#e().#space().#i().#n().#space().#A().#d().#a().#m().#T().#2())
-method toS() Outer1::S.#stringParser(that:use Outer1::Alu check int32ToString(that:this.binaryRepr()) error void)
+method toS() Outer1::S.#from(binaryRepr:use Outer1::Alu check int32ToString(that:this.binaryRepr()) error void)
 method 
 Outer1::N #plus(Outer1::N that) Outer1::N.#apply__40_0(_binaryRepr__40_0:use Outer1::Alu check sumInt32(n1:this.binaryRepr(), n2:that.binaryRepr()) error void)
 method 
@@ -337,12 +337,12 @@ read method '@private
 Library _binaryRepr__41_0() 
 method myName() Outer1::GetMyName.#apply(that:Outer0)
 type method 
-Outer0 #stringParser(Library that) Outer0._private__41_0(_binaryRepr__41_0:that)
+Outer0 #from(Library binaryRepr) Outer0._private__41_0(_binaryRepr__41_0:binaryRepr)
 method 
 Library binaryRepr() this._binaryRepr__41_0()
 method toS() this
 method 
-Outer1::S #plusplus(Outer1::S that) Outer1::S.#stringParser(that:use Outer1::Alu check stringConcat(s1:this.binaryRepr(), s2:that.toS().binaryRepr()) error void)
+Outer1::S #plusplus(Outer1::S that) Outer1::S.#from(binaryRepr:use Outer1::Alu check stringConcat(s1:this.binaryRepr(), s2:that.toS().binaryRepr()) error void)
 method 
 Outer1::Bool #bangequal(Outer0 that) this.#equalequal(that:that).#bang()
 method 
@@ -387,7 +387,7 @@ method equals(that ) (
   }
   )
 method 
-Outer1::S #apply(Outer1::N start, Outer1::N end) Outer1::S.#stringParser(that:use Outer1::Alu check stringSubstring(that:this.binaryRepr(), start:start.binaryRepr(), end:end.binaryRepr()) error void)
+Outer1::S #apply(Outer1::N start, Outer1::N end) Outer1::S.#from(binaryRepr:use Outer1::Alu check stringSubstring(that:this.binaryRepr(), start:start.binaryRepr(), end:end.binaryRepr()) error void)
 method 
 Outer1::S #apply(Outer1::N that) this.#apply(start:that, end:that.#plus(that:Outer1::N.#numberParser(that:{'@stringU
 '1
@@ -507,7 +507,7 @@ Outer1::S doubleQuote() Outer1::S.#from(builder:Outer1::S.#builder().#dQuote().#
 type method 
 Outer1::S nl() Outer1::S.#from(builder:Outer1::S.#builder().#newline())
 method 
-Outer1::S replace(Outer1::S that, Outer1::S into) Outer1::S.#stringParser(that:use Outer1::Alu check stringReplace(that:this.binaryRepr(), src:that.binaryRepr(), dest:into.binaryRepr()) error void)
+Outer1::S replace(Outer1::S that, Outer1::S into) Outer1::S.#from(binaryRepr:use Outer1::Alu check stringReplace(that:this.binaryRepr(), src:that.binaryRepr(), dest:into.binaryRepr()) error void)
 method 
 Outer0::SConcat #begin() Outer0::SConcat.#apply(old:this, accumulator:Outer1::S.#from(builder:Outer1::S.#builder()))
 SConcat:{
@@ -559,8 +559,6 @@ mut method '@private
 Library #_binaryRepr__43_0() 
 read method '@private
 Library _binaryRepr__43_0() 
-type method 
-Outer0 #stringParser(Library that) Outer0._private__43_0(_binaryRepr__43_0:that)
 method 
 Library binaryRepr() this._binaryRepr__43_0()
 method 
@@ -1220,8 +1218,6 @@ method equals(that ) (
   'CurlyBlock-Should be unreachable code
   }
   )
-type method 
-Outer0 #stringParser(Library that) Outer0.#apply(text:Outer3::S.#stringParser(that:that))
 method 
 Outer0 #apply(Outer3::Message that) Outer0.#apply(text:this.text(), cause:that)
 method toS() (
@@ -1377,8 +1373,6 @@ method equals(that ) (
   'CurlyBlock-Should be unreachable code
   }
   )
-type method 
-Outer0 #stringParser(Library that) Outer0.#apply(text:Outer2::S.#stringParser(that:that))
 method 
 Outer0 #apply(Outer2::Message that) Outer0.#apply(text:this.text(), cause:that)
 method toS() (
@@ -1524,8 +1518,6 @@ method equals(that ) (
   'CurlyBlock-Should be unreachable code
   }
   )
-type method 
-Outer0 #stringParser(Library that) Outer0.#apply(text:Outer2::S.#stringParser(that:that))
 method 
 Outer0 #apply(Outer2::Message that) Outer0.#apply(text:this.text(), cause:that)
 method toS() (
@@ -1671,8 +1663,6 @@ method equals(that ) (
   'CurlyBlock-Should be unreachable code
   }
   )
-type method 
-Outer0 #stringParser(Library that) Outer0.#apply(text:Outer2::S.#stringParser(that:that))
 method 
 Outer0 #apply(Outer2::Message that) Outer0.#apply(text:this.text(), cause:that)
 method toS() (
@@ -1821,8 +1811,6 @@ method equals(that ) (
   'CurlyBlock-Should be unreachable code
   }
   )
-type method 
-Outer0 #stringParser(Library that) Outer0.#apply(text:Outer3::S.#stringParser(that:that))
 method 
 Outer0 #apply(Outer3::Message that) Outer0.#apply(text:this.text(), cause:that)
 method toS() (
@@ -1969,8 +1957,6 @@ method equals(that ) (
   'CurlyBlock-Should be unreachable code
   }
   )
-type method 
-Outer0 #stringParser(Library that) Outer0.#apply(text:Outer2::S.#stringParser(that:that))
 method 
 Outer0 #apply(Outer2::Message that) Outer0.#apply(text:this.text(), cause:that)
 method toS() (
@@ -2116,8 +2102,6 @@ method equals(that ) (
   'CurlyBlock-Should be unreachable code
   }
   )
-type method 
-Outer0 #stringParser(Library that) Outer0.#apply(text:Outer2::S.#stringParser(that:that))
 method 
 Outer0 #apply(Outer2::Message that) Outer0.#apply(text:this.text(), cause:that)
 method toS() (
@@ -2263,8 +2247,6 @@ method equals(that ) (
   'CurlyBlock-Should be unreachable code
   }
   )
-type method 
-Outer0 #stringParser(Library that) Outer0.#apply(text:Outer2::S.#stringParser(that:that))
 method 
 Outer0 #apply(Outer2::Message that) Outer0.#apply(text:this.text(), cause:that)
 method toS() (
@@ -2472,8 +2454,6 @@ method equals(that ) (
   'CurlyBlock-Should be unreachable code
   }
   )
-type method 
-Outer0 #stringParser(Library that) Outer0.#apply(text:Outer2::S.#stringParser(that:that))
 method 
 Outer0 #apply(Outer2::Message that) Outer0.#apply(text:this.text(), cause:that)
 method toS() (
@@ -3788,15 +3768,15 @@ Outer0 fromDocInternalizedS(Outer1::S that) (
   }
   )
 type method 
-Outer0 fromS(Outer1::Concept::ToS that) Outer0.#stringParser(that:that.toS().binaryRepr())
+Outer0 fromS(Outer1::Concept::ToS that) Outer0.#from(binaryRepr:that.toS().binaryRepr())
 type method 
-Outer0 #from(Outer1::S::SBuilder builder) Outer0.#stringParser(that:builder.binaryRepr())
+Outer0 #from(Outer1::S::SBuilder builder) Outer0.#from(binaryRepr:builder.binaryRepr())
 type method 
 Outer1::S::SBuilder #builder() Outer1::S::SBuilder.empty()
 type method 
-Outer0 #stringParser(Library that) (
-  Void unused=use Outer1::SafeOperators check ifInvalidDo(path:that) error Outer0.parseError(that:Outer1::S.#stringParser(that:that))
-  Outer0._private__45_0(_binaryRepr__45_0:that)
+Outer0 #from(Library binaryRepr) (
+  Void unused=use Outer1::SafeOperators check ifInvalidDo(path:binaryRepr) error Outer0.parseError(that:Outer1::S.#from(binaryRepr:binaryRepr))
+  Outer0._private__45_0(_binaryRepr__45_0:binaryRepr)
   )
 type method 
 Any parseError(Outer1::S that) Outer1::S.#from(builder:Outer1::S.#builder().#U().#n().#s().#a().#t().#i().#s().#f().#a().#c().#t().#o().#r().#y().#E().#r().#r().#o().#r().#T().#o().#A().#v().#o().#i().#d().#C().#y().#c().#l().#e().#comma().#space().#r().#e().#p().#l().#a().#c().#e().#space().#i().#n().#space().#A().#d().#a().#m().#T().#2())
@@ -3804,7 +3784,7 @@ type method
 Any parseError(Outer1::S that, Outer1::Message cause) Outer1::S.#from(builder:Outer1::S.#builder().#U().#n().#s().#a().#t().#i().#s().#f().#a().#c().#t().#o().#r().#y().#E().#r().#r().#o().#r().#T().#o().#A().#v().#o().#i().#d().#C().#y().#c().#l().#e().#comma().#space().#r().#e().#p().#l().#a().#c().#e().#space().#i().#n().#space().#A().#d().#a().#m().#T().#2())
 method 
 Library binaryRepr() this._binaryRepr__45_0()
-method toS() Outer1::S.#stringParser(that:this._binaryRepr__45_0())
+method toS() Outer1::S.#from(binaryRepr:this._binaryRepr__45_0())
 method 
 Outer1::Bool #bangequal(Outer0 that) this.#equalequal(that:that).#bang()
 method 
@@ -3869,7 +3849,7 @@ Outer1::Path #plusplus(Outer1::Path that) (
         return this
         )
       )
-    Void unused2=return Outer1::Path.#stringParser(that:(
+    Void unused2=return Outer1::Path.#from(binaryRepr:(
       Outer0::toS() ::#begin() ::#add(that ) ::#add(that ) ::#end() listKind=this.toS().#begin().#add(that:Outer1::S.#from(builder:Outer1::S.#builder().#colon().#colon())).#add(that:that).#end()
       listKind.#from(builder:listKind.#builder())
       ).binaryRepr())
@@ -4106,15 +4086,15 @@ read method '@private
 Library _binaryRepr__46_0() 
 method myName() Outer1::GetMyName.#apply(that:Outer0)
 type method 
-Outer0 fromS(Outer1::Concept::ToS that) Outer0.#stringParser(that:that.toS().binaryRepr())
+Outer0 fromS(Outer1::Concept::ToS that) Outer0.#from(binaryRepr:that.toS().binaryRepr())
 type method 
-Outer0 #from(Outer1::S::SBuilder builder) Outer0.#stringParser(that:builder.binaryRepr())
+Outer0 #from(Outer1::S::SBuilder builder) Outer0.#from(binaryRepr:builder.binaryRepr())
 type method 
 Outer1::S::SBuilder #builder() Outer1::S::SBuilder.empty()
 type method 
-Outer0 #stringParser(Library that) (
-  Void unused=use Outer1::SafeOperators check ifInvalidDo(selector:that) error Outer0.parseError(that:Outer1::S.#stringParser(that:that))
-  Outer0._private__46_0(_binaryRepr__46_0:that)
+Outer0 #from(Library binaryRepr) (
+  Void unused=use Outer1::SafeOperators check ifInvalidDo(selector:binaryRepr) error Outer0.parseError(that:Outer1::S.#from(binaryRepr:binaryRepr))
+  Outer0._private__46_0(_binaryRepr__46_0:binaryRepr)
   )
 type method 
 Any parseError(Outer1::S that) Outer1::S.#from(builder:Outer1::S.#builder().#U().#n().#s().#a().#t().#i().#s().#f().#a().#c().#t().#o().#r().#y().#E().#r().#r().#o().#r().#T().#o().#A().#v().#o().#i().#d().#C().#y().#c().#l().#e().#comma().#space().#r().#e().#p().#l().#a().#c().#e().#space().#i().#n().#space().#A().#d().#a().#m().#T().#2())
@@ -4238,7 +4218,7 @@ Outer1::S prefixAsField() (
   )
 method 
 Library binaryRepr() this._binaryRepr__46_0()
-method toS() Outer1::S.#stringParser(that:this._binaryRepr__46_0())
+method toS() Outer1::S.#from(binaryRepr:this._binaryRepr__46_0())
 method 
 Outer1::Bool #bangequal(Outer0 that) this.#equalequal(that:that).#bang()
 method 
@@ -4450,7 +4430,7 @@ Library addDocumentation(Library that, Outer1::Path path, Outer1::Introspection:
 type method 
 Library addDocumentation(Library that, Outer1::Path path, Outer1::Selector selector, Outer1::Introspection::Doc doc) use Outer0 check addDocumentation(that:that, path:path.binaryRepr(), selector:selector.binaryRepr(), doc:doc.binaryRepr()) error Outer1::System::Guard::PluginFailure.#from(builder:Outer1::System::Guard::PluginFailure.#builder().#S().#a().#f().#e().#O().#p().#e().#r().#a().#t().#o().#r().#s().#dot().#a().#d().#d().#D().#o().#c().#u().#m().#e().#n().#t().#a().#t().#i().#o().#n().#oRound().#p().#a().#t().#h().#comma().#s().#e().#l().#e().#c().#t().#o().#r().#cRound())
 type method 
-Outer1::S freshName(Outer1::S that) Outer1::S.#stringParser(that:use Outer0 check freshName(that:that.binaryRepr()) error Outer1::System::Guard::PluginFailure.#from(builder:Outer1::System::Guard::PluginFailure.#builder().#S().#a().#f().#e().#O().#p().#e().#r().#a().#t().#o().#r().#s().#dot().#f().#r().#e().#s().#h().#N().#a().#m().#e().#oRound().#t().#h().#a().#t().#cRound()))}
+Outer1::S freshName(Outer1::S that) Outer1::S.#from(binaryRepr:use Outer0 check freshName(that:that.binaryRepr()) error Outer1::System::Guard::PluginFailure.#from(builder:Outer1::System::Guard::PluginFailure.#builder().#S().#a().#f().#e().#O().#p().#e().#r().#a().#t().#o().#r().#s().#dot().#f().#r().#e().#s().#h().#N().#a().#m().#e().#oRound().#t().#h().#a().#t().#cRound()))}
 MetaGuard:{interface <:Outer1::Guard
 RecordWrapper:' can not be private, I need to Patch it.
 {
@@ -5207,13 +5187,13 @@ method introspectReportType(root path memberN typeN ) (
   result
   )
 method introspectDocAsString(path annotationN ) (
-  Outer3::S::#stringParser(that ) result=Outer3::S.#stringParser(that:use Outer3::SafeOperators check introspectLibraryDocAsString(that:this.lib(), path:path.binaryRepr(), annotationN:annotationN.binaryRepr()) exception void)
+  Outer3::S::#from(binaryRepr ) result=Outer3::S.#from(binaryRepr:use Outer3::SafeOperators check introspectLibraryDocAsString(that:this.lib(), path:path.binaryRepr(), annotationN:annotationN.binaryRepr()) exception void)
   
   catch error Library x exception Outer3::MetaGuard::NestedClassUnavailable.#apply(record:Outer2::Record.#apply(lib:x), lib:x)
   result
   )
 method introspectDocAsString(path ) (
-  Outer3::S::#stringParser(that ) result=Outer3::S.#stringParser(that:use Outer3::SafeOperators check introspectLibraryDocAsString(that:this.lib(), path:path.binaryRepr(), annotationN:Outer3::N.#numberParser(that:{'@stringU
+  Outer3::S::#from(binaryRepr ) result=Outer3::S.#from(binaryRepr:use Outer3::SafeOperators check introspectLibraryDocAsString(that:this.lib(), path:path.binaryRepr(), annotationN:Outer3::N.#numberParser(that:{'@stringU
   '0
   }).binaryRepr()) error Outer3::System::Guard::PluginFailure.#from(builder:Outer3::System::Guard::PluginFailure.#builder().#S().#a().#f().#e().#O().#p().#e().#r().#a().#t().#o().#r().#s().#dot().#i().#n().#t().#r().#o().#s().#p().#e().#c().#t().#L().#i().#b().#r().#a().#r().#y().#D().#o().#c().#A().#s().#S().#t().#r().#i().#n().#g()))
   
@@ -5255,13 +5235,13 @@ method introspectReportType(root path memberN typeN ) (
   result
   )
 method introspectDocAsString(path annotationN ) (
-  Outer3::S::#stringParser(that ) result=Outer3::S.#stringParser(that:use Outer3::SafeOperators check introspectTypeDocAsString(that:this.lib(), path:path.binaryRepr(), annotationN:annotationN.binaryRepr()) exception void)
+  Outer3::S::#from(binaryRepr ) result=Outer3::S.#from(binaryRepr:use Outer3::SafeOperators check introspectTypeDocAsString(that:this.lib(), path:path.binaryRepr(), annotationN:annotationN.binaryRepr()) exception void)
   
   catch error Library x exception Outer3::MetaGuard::NestedClassUnavailable.#apply(record:Outer2::Record.#apply(lib:x), lib:x)
   result
   )
 method introspectDocAsString(path ) (
-  Outer3::S::#stringParser(that ) result=Outer3::S.#stringParser(that:use Outer3::SafeOperators check introspectTypeDocAsString(that:this.lib(), path:path.binaryRepr(), annotationN:Outer3::N.#numberParser(that:{'@stringU
+  Outer3::S::#from(binaryRepr ) result=Outer3::S.#from(binaryRepr:use Outer3::SafeOperators check introspectTypeDocAsString(that:this.lib(), path:path.binaryRepr(), annotationN:Outer3::N.#numberParser(that:{'@stringU
   '0
   }).binaryRepr()) error Outer3::System::Guard::PluginFailure.#from(builder:Outer3::System::Guard::PluginFailure.#builder().#S().#a().#f().#e().#O().#p().#e().#r().#a().#t().#o().#r().#s().#dot().#i().#n().#t().#r().#o().#s().#p().#e().#c().#t().#T().#y().#p().#e().#D().#o().#c().#A().#s().#S().#t().#r().#i().#n().#g()))
   
@@ -5676,8 +5656,6 @@ Outer0 #apply(Library that) (
     )
   )
 type method 
-Outer0 #stringParser(Library that) Outer0.#apply(that:that)
-type method 
 Outer2::S::SBuilder #builder() Outer2::S::SBuilder.empty()
 type method 
 Outer0 #from(Outer2::S::SBuilder builder) Outer0.#apply(that:builder.binaryRepr())
@@ -5803,10 +5781,10 @@ Outer2::Record #_report()
 read method 
 Outer2::Record _report() 
 method #apply(root ) (
-  Outer3::Path::#stringParser(that ) path=Outer3::Path.#stringParser(that:(
+  Outer3::Path::fromS(that ) path=Outer3::Path.fromS(that:(
     Outer0::#apply(root ) ::this::_report() listKind=this._report()
     listKind.#from(builder:listKind.#builder().#K().#e().#y())
-    ).binaryRepr())
+    ))
   Outer2::NestedClass.#apply__49_0(_root__49_0:root, path__49_0:path, mirror__49_0:this.mirror(), record__49_0:this._report())
   )}
 RootForMethod:' toPutAs private
@@ -6552,10 +6530,10 @@ Outer2::S thisMdf() (
 method ' invariant NestedClass(...).nestedClassFromRoot(path).pathFromRoot()==path
 Outer2::Path pathFromRoot() this.path__48_0()
 method 
-Outer2::Selector selector() Outer2::Selector.#stringParser(that:(
+Outer2::Selector selector() Outer2::Selector.fromS(that:(
   Outer0::record__48_0() listKind=this.record__48_0()
   listKind.#from(builder:listKind.#builder().#K().#e().#y())
-  ).binaryRepr())
+  ))
 method 
 Outer2::S methodKind() (
   Outer0::record__48_0() listKind=this.record__48_0()
@@ -9875,7 +9853,7 @@ Outer2::Path #that()
 read method 
 Outer2::Path that() 
 method 
-Library #leftleft(Library that) exception Outer2::MetaGuard::MemberUnavailable, Outer2::MetaGuard::InvalidOnTopLevel Outer1::AddDocumentationPath.#apply(that:this.that(), doc:Outer2::Introspection::Doc.#stringParser(that:{'@private
+Library #leftleft(Library that) exception Outer2::MetaGuard::MemberUnavailable, Outer2::MetaGuard::InvalidOnTopLevel Outer1::AddDocumentationPath.#apply(that:this.that(), doc:Outer2::Introspection::Doc.#apply(that:{'@private
 })).#leftleft(that:that)}
 MakePrivateSelector:{
 type method 
@@ -9889,7 +9867,7 @@ Outer2::Path #of()
 read method 
 Outer2::Path of() 
 method 
-Library #leftleft(Library that) exception Outer2::MetaGuard::MemberUnavailable Outer1::AddDocumentationSelector.#apply(that:this.that(), of:this.of(), doc:Outer2::Introspection::Doc.#stringParser(that:{'@private
+Library #leftleft(Library that) exception Outer2::MetaGuard::MemberUnavailable Outer1::AddDocumentationSelector.#apply(that:this.that(), of:this.of(), doc:Outer2::Introspection::Doc.#apply(that:{'@private
 })).#leftleft(that:that)}
 SumMethods:{
 type method 
@@ -11833,8 +11811,6 @@ method equals(that ) (
   'CurlyBlock-Should be unreachable code
   }
   )
-type method 
-Outer0 #stringParser(Library that) Outer0.#apply(text:Outer2::S.#stringParser(that:that))
 method 
 Outer0 #apply(Outer2::Message that) Outer0.#apply(text:this.text(), cause:that)
 method toS() (
@@ -11938,11 +11914,9 @@ Library #leftleft(Library that) exception Outer1::DecorationUnfeasable (
     type method ' if you do not implement it, it is a constructor?
     Outer0 fromS(read Outer3::Concept::ToS that) 
     type method 
-    Outer0 #from(Outer3::S::SBuilder builder) Outer0.#stringParser(that:builder.binaryRepr())
+    Outer0 #from(Outer3::S::SBuilder builder) Outer0.fromS(that:Outer3::S.#from(binaryRepr:builder.binaryRepr()))
     type method 
-    Outer3::S::SBuilder #builder() Outer3::S::SBuilder.empty()
-    type method 
-    Outer0 #stringParser(Library that) Outer0.fromS(that:Outer3::S.#stringParser(that:that))}).#end().#leftleft(that:that)
+    Outer3::S::SBuilder #builder() Outer3::S::SBuilder.empty()}).#end().#leftleft(that:that)
     
     catch exception Outer2::MetaGuard catched exception Outer1::DecorationUnfeasable.#from(builder:Outer1::DecorationUnfeasable.#builder().#P().#a().#r().#s().#a().#b().#l().#e()).#apply(that:catched)
     void
@@ -12055,11 +12029,9 @@ Url:{'ParseFailure:Message:S[]<<{<:Guard} no need, related to invariant?
 type method ' if you do not implement it, it is a constructor?
 Outer0 fromS(read Outer1::Concept::ToS that) Outer0.#apply(inner:that.toS())
 type method 
-Outer0 #from(Outer1::S::SBuilder builder) Outer0.#stringParser(that:builder.binaryRepr())
+Outer0 #from(Outer1::S::SBuilder builder) Outer0.fromS(that:Outer1::S.#from(binaryRepr:builder.binaryRepr()))
 type method 
 Outer1::S::SBuilder #builder() Outer1::S::SBuilder.empty()
-type method 
-Outer0 #stringParser(Library that) Outer0.fromS(that:Outer1::S.#stringParser(that:that))
 type method 
 Outer0 #apply(Outer1::S inner) 
 mut method 

@@ -21,8 +21,6 @@ mut method
 Outer2::Message::Opt #cause() 
 read method 
 Outer2::Message::Opt cause() 
-type method 
-Outer0 #stringParser(Library that) 
 method 
 Outer0 #apply(Outer2::Message that) 
 method 
@@ -71,8 +69,6 @@ mut method
 Outer2::Message::Opt #cause() 
 read method 
 Outer2::Message::Opt cause() 
-type method 
-Outer0 #stringParser(Library that) 
 method 
 Outer0 #apply(Outer2::Message that) 
 method 
@@ -269,8 +265,6 @@ mut method
 Outer2::Message::Opt #cause() 
 read method 
 Outer2::Message::Opt cause() 
-type method 
-Outer0 #stringParser(Library that) 
 method 
 Outer0 #apply(Outer2::Message that) 
 method 
@@ -660,8 +654,6 @@ read method
 Void #close() }}
 type method 
 Outer0 #apply(Library that) 
-type method 
-Outer0 #stringParser(Library that) 
 type method 
 Outer2::S::SBuilder #builder() 
 type method 
@@ -1296,7 +1288,7 @@ Outer0 #from(Outer1::S::SBuilder builder)
 type method 
 Outer1::S::SBuilder #builder() 
 type method 
-Outer0 #stringParser(Library that) 
+Outer0 #from(Library binaryRepr) 
 type method 
 Any parseError(Outer1::S that) 
 type method 
@@ -1330,8 +1322,6 @@ mut method
 Outer2::Message::Opt #cause() 
 read method 
 Outer2::Message::Opt cause() 
-type method 
-Outer0 #stringParser(Library that) 
 method 
 Outer0 #apply(Outer2::Message that) 
 method 
@@ -1379,7 +1369,7 @@ Outer0 #from(Outer1::S::SBuilder builder)
 type method 
 Outer1::S::SBuilder #builder() 
 type method 
-Outer0 #stringParser(Library that) 
+Outer0 #from(Library binaryRepr) 
 type method 
 Any parseError(Outer1::S that) 
 type method 
@@ -1413,8 +1403,6 @@ mut method
 Outer2::Message::Opt #cause() 
 read method 
 Outer2::Message::Opt cause() 
-type method 
-Outer0 #stringParser(Library that) 
 method 
 Outer0 #apply(Outer2::Message that) 
 method 
@@ -1460,8 +1448,6 @@ type method
 Outer0 #from(Outer1::S::SBuilder builder) 
 type method 
 Outer1::S::SBuilder #builder() 
-type method 
-Outer0 #stringParser(Library that) 
 type method 
 Outer0 #apply(Outer1::S inner) 
 mut method 
@@ -1626,8 +1612,6 @@ mut method
 Outer2::Message::Opt #cause() 
 read method 
 Outer2::Message::Opt cause() 
-type method 
-Outer0 #stringParser(Library that) 
 method 
 Outer0 #apply(Outer2::Message that) 
 method 
@@ -1676,8 +1660,6 @@ mut method
 Outer2::Message::Opt #cause() 
 read method 
 Outer2::Message::Opt cause() 
-type method 
-Outer0 #stringParser(Library that) 
 method 
 Outer0 #apply(Outer2::Message that) 
 method 
@@ -1726,8 +1708,6 @@ mut method
 Outer2::Message::Opt #cause() 
 read method 
 Outer2::Message::Opt cause() 
-type method 
-Outer0 #stringParser(Library that) 
 method 
 Outer0 #apply(Outer2::Message that) 
 method 
@@ -1791,8 +1771,6 @@ mut method
 Outer2::Message::Opt #cause() 
 read method 
 Outer2::Message::Opt cause() 
-type method 
-Outer0 #stringParser(Library that) 
 method 
 Outer0 #apply(Outer2::Message that) 
 method 
@@ -1844,8 +1822,6 @@ mut method
 Outer3::Message::Opt #cause() 
 read method 
 Outer3::Message::Opt cause() 
-type method 
-Outer0 #stringParser(Library that) 
 method 
 Outer0 #apply(Outer3::Message that) 
 method 
@@ -1904,8 +1880,6 @@ mut method
 Outer2::Message::Opt #cause() 
 read method 
 Outer2::Message::Opt cause() 
-type method 
-Outer0 #stringParser(Library that) 
 method 
 Outer0 #apply(Outer2::Message that) 
 method 
@@ -1954,8 +1928,6 @@ mut method
 Outer2::Message::Opt #cause() 
 read method 
 Outer2::Message::Opt cause() 
-type method 
-Outer0 #stringParser(Library that) 
 method 
 Outer0 #apply(Outer2::Message that) 
 method 
@@ -2004,8 +1976,6 @@ mut method
 Outer2::Message::Opt #cause() 
 read method 
 Outer2::Message::Opt cause() 
-type method 
-Outer0 #stringParser(Library that) 
 method 
 Outer0 #apply(Outer2::Message that) 
 method 
@@ -2159,7 +2129,7 @@ read method
 Void #close() }}
 S:{<:Outer1::Concept::ToS, Outer1::Concept::Equals, Outer1::Concept::Named
 type method 
-Outer0 #stringParser(Library that) 
+Outer0 #from(Library binaryRepr) 
 method 
 Library binaryRepr() 
 method 
@@ -2220,8 +2190,6 @@ Outer1::SBuilder #builder()
 method 
 Outer1 #from(Outer1::SBuilder builder) }
 SBuilder:{
-type method 
-Outer0 #stringParser(Library that) 
 method 
 Library binaryRepr() 
 method 
@@ -2435,8 +2403,6 @@ mut method
 Outer2::Message::Opt #cause() 
 read method 
 Outer2::Message::Opt cause() 
-type method 
-Outer0 #stringParser(Library that) 
 method 
 Outer0 #apply(Outer2::Message that) 
 method 
@@ -2539,8 +2505,6 @@ mut method
 Outer2::Message::Opt #cause() 
 read method 
 Outer2::Message::Opt cause() 
-type method 
-Outer0 #stringParser(Library that) 
 method 
 Outer0 #apply(Outer2::Message that) 
 method 
@@ -2610,8 +2574,6 @@ mut method
 Outer2::Message::Opt #cause() 
 read method 
 Outer2::Message::Opt cause() 
-type method 
-Outer0 #stringParser(Library that) 
 method 
 Outer0 #apply(Outer2::Message that) 
 method 

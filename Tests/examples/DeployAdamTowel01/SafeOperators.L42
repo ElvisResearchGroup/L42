@@ -93,8 +93,7 @@
       error System::Guard::PluginFailure"SafeOperators.addDocumentation(path,selector)"
 
   type method
-  S freshName(S that) S.#stringParser(
-    use Outer0
+  S freshName(S that) S.#from(binaryRepr: use Outer0
       check freshName(that.binaryRepr())
       error System::Guard::PluginFailure"SafeOperators.freshName(that)"
     )    
