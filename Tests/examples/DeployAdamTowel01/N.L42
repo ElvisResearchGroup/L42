@@ -1,16 +1,28 @@
 {(Library _binaryRepr)<:Concept::ToS Concept::Equals Concept::Named'@private
   method myName()GetMyName(Outer0)
   type method
-  Outer0 fromS(Concept::ToS that)
-    Outer0.#numberParser(that.toS().binaryRepr())
+  Outer0 fromS(Concept::ToS that) (
+    s=that.toS()
+    N(_binaryRepr: use Alu
+      check stringToInt32(s.binaryRepr())
+      error Outer0.parseError(s))
+    )
+  type method
+  Outer0 #from(Library binaryRepr)
+    N(_binaryRepr:binaryRepr)
   method
   Library binaryRepr() this._binaryRepr()
   
   type method
-  N #numberParser(Library that)
+  S::SBuilder #builder()
+    S::SBuilder.empty()
+     
+  type method
+  N #from(S::SBuilder builder)
     N(_binaryRepr: use Alu
-      check stringToInt32(that)
-      error Outer0.parseError(S.#from(binaryRepr: that)))
+      check stringToInt32(builder.binaryRepr())
+      error Outer0.parseError(S.#from(builder: builder)))
+      
   type method
   Any parseError(S that)
     S"UnsatisfactoryErrorToAvoidCycle, replace in AdamT2"

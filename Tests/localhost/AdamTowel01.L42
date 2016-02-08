@@ -21,17 +21,11 @@ read method '@private
 Library binaryRepr__39_0() 
 method myName() Outer1::GetMyName.#apply(that:Outer0)
 method 
-Void #checkTrue() exception Void use Outer1::Alu check ifInt32EqualDo(n1:this.binaryRepr__39_0(), n2:Outer1::N.#numberParser(that:{'@stringU
-'0
-}).binaryRepr()) exception void
+Void #checkTrue() exception Void use Outer1::Alu check ifInt32EqualDo(n1:this.binaryRepr__39_0(), n2:Outer1::N.#from(builder:Outer1::N.#builder().#0()).binaryRepr()) exception void
 type method 
-Outer0 true() Outer0.#apply__39_0(binaryRepr__39_0:Outer1::N.#numberParser(that:{'@stringU
-'1
-}).binaryRepr())
+Outer0 true() Outer0.#apply__39_0(binaryRepr__39_0:Outer1::N.#from(builder:Outer1::N.#builder().#1()).binaryRepr())
 type method 
-Outer0 false() Outer0.#apply__39_0(binaryRepr__39_0:Outer1::N.#numberParser(that:{'@stringU
-'0
-}).binaryRepr())
+Outer0 false() Outer0.#apply__39_0(binaryRepr__39_0:Outer1::N.#from(builder:Outer1::N.#builder().#0()).binaryRepr())
 method 
 Outer0 #and(Outer0 that) (
   Void unused=(
@@ -192,11 +186,18 @@ read method '@private
 Library _binaryRepr__40_0() 
 method myName() Outer1::GetMyName.#apply(that:Outer0)
 type method 
-Outer0 fromS(Outer1::Concept::ToS that) Outer0.#numberParser(that:that.toS().binaryRepr())
+Outer0 fromS(Outer1::Concept::ToS that) (
+  Outer1::Concept::ToS::toS() s=that.toS()
+  Outer1::N.#apply__40_0(_binaryRepr__40_0:use Outer1::Alu check stringToInt32(that:s.binaryRepr()) error Outer0.parseError(that:s))
+  )
+type method 
+Outer0 #from(Library binaryRepr) Outer1::N.#apply__40_0(_binaryRepr__40_0:binaryRepr)
 method 
 Library binaryRepr() this._binaryRepr__40_0()
 type method 
-Outer1::N #numberParser(Library that) Outer1::N.#apply__40_0(_binaryRepr__40_0:use Outer1::Alu check stringToInt32(that:that) error Outer0.parseError(that:Outer1::S.#from(binaryRepr:that)))
+Outer1::S::SBuilder #builder() Outer1::S::SBuilder.empty()
+type method 
+Outer1::N #from(Outer1::S::SBuilder builder) Outer1::N.#apply__40_0(_binaryRepr__40_0:use Outer1::Alu check stringToInt32(that:builder.binaryRepr()) error Outer0.parseError(that:Outer1::S.#from(builder:builder)))
 type method 
 Any parseError(Outer1::S that) Outer1::S.#from(builder:Outer1::S.#builder().#U().#n().#s().#a().#t().#i().#s().#f().#a().#c().#t().#o().#r().#y().#E().#r().#r().#o().#r().#T().#o().#A().#v().#o().#i().#d().#C().#y().#c().#l().#e().#comma().#space().#r().#e().#p().#l().#a().#c().#e().#space().#i().#n().#space().#A().#d().#a().#m().#T().#2())
 method toS() Outer1::S.#from(binaryRepr:use Outer1::Alu check int32ToString(that:this.binaryRepr()) error void)
@@ -282,9 +283,7 @@ Outer1::Bool #right(Outer1::N that) this.#leftequal(that:that).#bang()
 method 
 Outer1::Bool #rightequal(Outer1::N that) this.#left(that:that).#bang()
 method 
-mut Outer0::Iterator vals() Outer0::Iterator.#apply(start:this, end:Outer1::N.#numberParser(that:{'@stringU
-'-1
-}))
+mut Outer0::Iterator vals() Outer0::Iterator.#apply(start:this, end:Outer1::N.#from(builder:Outer1::N.#builder().#less().#1()))
 method 
 mut Outer0::Iterator vals(Outer1::N upTo) Outer0::Iterator.#apply(start:this, end:upTo)
 Iterator:{
@@ -302,16 +301,12 @@ read method
 Outer1 end() 
 mut method 
 Void #next() exception Void (
-  Outer0::end() ::#left(that ) ::#or(that ) cond=this.end().#left(that:Outer2::N.#numberParser(that:{'@stringU
-  '0
-  })).#or(that:this.start().#left(that:this.end()))
+  Outer0::end() ::#left(that ) ::#or(that ) cond=this.end().#left(that:Outer2::N.#from(builder:Outer2::N.#builder().#0())).#or(that:this.start().#left(that:this.end()))
   (
     Void unused=cond.#checkTrue()
     
     catch exception Void catched0 exception void
-    this.start(that:this.start().#plus(that:Outer2::N.#numberParser(that:{'@stringU
-    '1
-    })))
+    this.start(that:this.start().#plus(that:Outer2::N.#from(builder:Outer2::N.#builder().#1())))
     )
   )
 read method 
@@ -324,11 +319,11 @@ S:{<:Outer1::Concept::ToS, Outer1::Concept::Equals, Outer1::Concept::Named
 Varcurrent__60_0:'@private
 {
 type method 
-mut Outer0 #apply(Outer2::N::#numberParser(that ) inner) 
+mut Outer0 #apply(Outer2::N::#from(builder ) inner) 
 mut method 
-Void inner(Outer2::N::#numberParser(that ) that) 
+Void inner(Outer2::N::#from(builder ) that) 
 mut method 
-Outer2::N::#numberParser(that ) #inner() }
+Outer2::N::#from(builder ) #inner() }
 type method '@private
 Outer0 _private__41_0(Library _binaryRepr__41_0) 
 mut method '@private
@@ -389,23 +384,17 @@ method equals(that ) (
 method 
 Outer1::S #apply(Outer1::N start, Outer1::N end) Outer1::S.#from(binaryRepr:use Outer1::Alu check stringSubstring(that:this.binaryRepr(), start:start.binaryRepr(), end:end.binaryRepr()) error void)
 method 
-Outer1::S #apply(Outer1::N that) this.#apply(start:that, end:that.#plus(that:Outer1::N.#numberParser(that:{'@stringU
-'1
-})))
+Outer1::S #apply(Outer1::N that) this.#apply(start:that, end:that.#plus(that:Outer1::N.#from(builder:Outer1::N.#builder().#1())))
 method 
 Outer1::S #apply(Outer1::N start) this.#apply(start:start, end:this.size())
 method 
-Outer1::S #apply(Outer1::N end) this.#apply(start:Outer1::N.#numberParser(that:{'@stringU
-'0
-}), end:end)
+Outer1::S #apply(Outer1::N end) this.#apply(start:Outer1::N.#from(builder:Outer1::N.#builder().#0()), end:end)
 method 
 Outer1::Bool beginsWith(Outer1::S that) this.#apply(end:that.size()).#equalequal(that:that)
 method '@private
 Outer1::N auxFirstIndexOf__42_0(Outer1::S that) (
   Void unused=(
-    Outer1::N::#numberParser(that ) current=Outer1::N.#numberParser(that:{'@stringU
-    '0
-    })
+    Outer1::N::#from(builder ) current=Outer1::N.#from(builder:Outer1::N.#builder().#0())
     mut Outer0::Varcurrent__60_0 varcurrent=Outer0::Varcurrent__60_0.#apply(inner:current)
     Void unused0=(
       Void unused3=loop (
@@ -420,20 +409,14 @@ Outer1::N auxFirstIndexOf__42_0(Outer1::S that) (
               return varcurrent.#inner()
               )
             )
-          varcurrent.inner(that:varcurrent.#inner().#plus(that:Outer1::N.#numberParser(that:{'@stringU
-          '1
-          })))
+          varcurrent.inner(that:varcurrent.#inner().#plus(that:Outer1::N.#from(builder:Outer1::N.#builder().#1())))
           )
         )
       
       catch exception Void catched3 void
       void
       )
-    Void unused1=return Outer1::N.#numberParser(that:{'@stringU
-    '0
-    }).#less(that:Outer1::N.#numberParser(that:{'@stringU
-    '1
-    }))
+    Void unused1=return Outer1::N.#from(builder:Outer1::N.#builder().#0()).#less(that:Outer1::N.#from(builder:Outer1::N.#builder().#1()))
     Void unused2=error Outer0.subStringNotPresent(string:this, subString:that)
     void
     )
@@ -449,9 +432,7 @@ Outer1::N firstIndexOf(Outer1::S that) (
   
     Outer0::auxFirstIndexOf__42_0(that ) res=this.auxFirstIndexOf__42_0(that:that)
     Void unused0=(
-      Outer0::auxFirstIndexOf__42_0(that ) ::#rightequal(that ) cond=res.#rightequal(that:Outer1::N.#numberParser(that:{'@stringU
-      '0
-      }))
+      Outer0::auxFirstIndexOf__42_0(that ) ::#rightequal(that ) cond=res.#rightequal(that:Outer1::N.#from(builder:Outer1::N.#builder().#0()))
       (
         Void unused2=cond.#checkTrue()
         
@@ -475,9 +456,7 @@ Outer1::Bool contains(Outer1::S that) (
   Void unused=(
     Outer0::auxFirstIndexOf__42_0(that ) res=this.auxFirstIndexOf__42_0(that:that)
     Void unused0=(
-      Outer0::auxFirstIndexOf__42_0(that ) ::#rightequal(that ) cond=res.#rightequal(that:Outer1::N.#numberParser(that:{'@stringU
-      '0
-      }))
+      Outer0::auxFirstIndexOf__42_0(that ) ::#rightequal(that ) cond=res.#rightequal(that:Outer1::N.#from(builder:Outer1::N.#builder().#0()))
       (
         Void unused2=cond.#checkTrue()
         
@@ -501,9 +480,7 @@ Outer1::Bool isASCIIUpperCase(Outer1::N that) Outer1::S.#from(builder:Outer1::S.
 method 
 Outer1::N size() Outer1::N.#apply__40_0(_binaryRepr__40_0:use Outer1::Alu check stringSize(that:this.binaryRepr()) error void)
 type method 
-Outer1::S doubleQuote() Outer1::S.#from(builder:Outer1::S.#builder().#dQuote().#newline()).#apply(that:Outer1::N.#numberParser(that:{'@stringU
-'0
-}))
+Outer1::S doubleQuote() Outer1::S.#from(builder:Outer1::S.#builder().#dQuote().#newline()).#apply(that:Outer1::N.#from(builder:Outer1::N.#builder().#0()))
 type method 
 Outer1::S nl() Outer1::S.#from(builder:Outer1::S.#builder().#newline())
 method 
@@ -971,9 +948,7 @@ Outer1::N #counter__44_0()
 read method '@private
 Outer1::N counter__44_0() 
 type method 
-Outer0 #begin() Outer0.#apply__44_0(counter__44_0:Outer1::N.#numberParser(that:{'@stringU
-'0
-}))
+Outer0 #begin() Outer0.#apply__44_0(counter__44_0:Outer1::N.#from(builder:Outer1::N.#builder().#0()))
 method 
 Outer1::N #end() this.counter__44_0()
 method 
@@ -988,9 +963,7 @@ Outer0 #add(Outer1::Bool that) (
         return this
         )
       )
-    Void unused1=return Outer0.#apply__44_0(counter__44_0:this.counter__44_0().#plus(that:Outer1::N.#numberParser(that:{'@stringU
-    '1
-    })))
+    Void unused1=return Outer0.#apply__44_0(counter__44_0:this.counter__44_0().#plus(that:Outer1::N.#from(builder:Outer1::N.#builder().#1())))
     void
     )
   
@@ -2349,9 +2322,7 @@ Outer2::N #that()
 read method 
 Outer2::N that() 
 type method 
-Outer0 #begin() Outer0.#apply(that:Outer2::N.#numberParser(that:{'@stringU
-'0
-}))
+Outer0 #begin() Outer0.#apply(that:Outer2::N.#from(builder:Outer2::N.#builder().#0()))
 method 
 Void #end() void
 method 
@@ -2361,9 +2332,7 @@ Outer0 #add(Outer2::Bool that) (
       Void unused2=that.#checkTrue()
       
       catch exception Void catched void
-      return Outer0.#apply(that:this.that().#plus(that:Outer2::N.#numberParser(that:{'@stringU
-      '1
-      })))
+      return Outer0.#apply(that:this.that().#plus(that:Outer2::N.#from(builder:Outer2::N.#builder().#1())))
       )
     Void unused1=error (
       Outer1::AssertMessage::#from(builder ) ::#begin() ::#add(that ) ::#end() listKind=Outer1::AssertMessage.#from(builder:Outer1::AssertMessage.#builder().#C().#o().#n().#d().#i().#t().#i().#o().#n().#space().#n().#u().#m().#b().#e().#r().#space()).#begin().#add(that:this.that()).#end()
@@ -2384,9 +2353,7 @@ Outer0 #add(Outer2::Bool that, Outer2::Concept::ToS msg) (
       Void unused2=that.#checkTrue()
       
       catch exception Void catched void
-      return Outer0.#apply(that:this.that().#plus(that:Outer2::N.#numberParser(that:{'@stringU
-      '1
-      })))
+      return Outer0.#apply(that:this.that().#plus(that:Outer2::N.#from(builder:Outer2::N.#builder().#1())))
       )
     Void unused1=error (
       Outer1::AssertMessage::#from(builder ) ::#begin() ::#add(that ) ::#add(that ) ::#end() ::#from(builder ) ::#begin() ::#add(that ) ::#end() listKind=(
@@ -3752,11 +3719,7 @@ Outer0 fromDocInternalizedS(Outer1::S that) (
         return Outer0.fromS(that:Outer1::S.#from(builder:Outer1::S.#builder().#O().#u().#t().#e().#r().#0()))
         )
       )
-    Void unused1=return Outer0.fromS(that:that.#apply(start:Outer1::N.#numberParser(that:{'@stringU
-    '3
-    }), end:that.size().#less(that:Outer1::N.#numberParser(that:{'@stringU
-    '1
-    }))))
+    Void unused1=return Outer0.fromS(that:that.#apply(start:Outer1::N.#from(builder:Outer1::N.#builder().#3()), end:that.size().#less(that:Outer1::N.#from(builder:Outer1::N.#builder().#1()))))
     
     catch error Outer1::Message x error Outer0.parseError(that:that, cause:x)
     void
@@ -3884,9 +3847,7 @@ Outer1::Strings names() (
         (
           Outer0::Varstr__88_0::#inner() ::firstIndexOf(that ) pos=varstr.#inner().firstIndexOf(that:Outer1::S.#from(builder:Outer1::S.#builder().#colon().#colon()))
           Void unused7=varresult.inner(that:varresult.#inner().#add(that:varstr.#inner().#apply(end:pos)))
-          varstr.inner(that:varstr.#inner().#apply(start:pos.#plus(that:Outer1::N.#numberParser(that:{'@stringU
-          '2
-          }))))
+          varstr.inner(that:varstr.#inner().#apply(start:pos.#plus(that:Outer1::N.#from(builder:Outer1::N.#builder().#2()))))
           )
         )
       
@@ -4156,9 +4117,7 @@ Outer0 from(Outer1::S name, Outer1::Strings names) (
         )
       listKind.#from(builder:listKind.#builder())
       )
-    Void unused1=return Outer0.fromS(that:name.#plusplus(that:pars.#apply(end:pars.size().#less(that:Outer1::N.#numberParser(that:{'@stringU
-    '1
-    }))).#plusplus(that:Outer1::S.#from(builder:Outer1::S.#builder().#cRound()))))
+    Void unused1=return Outer0.fromS(that:name.#plusplus(that:pars.#apply(end:pars.size().#less(that:Outer1::N.#from(builder:Outer1::N.#builder().#1()))).#plusplus(that:Outer1::S.#from(builder:Outer1::S.#builder().#cRound()))))
     void
     )
   
@@ -4172,16 +4131,12 @@ Outer1::S nameAsField() (
   Void unused=(
     Outer0::name() n=this.name()
     Void unused0=(
-      Outer0::name() ::#apply(that ) ::#equalequal(that ) cond=n.#apply(that:Outer1::N.#numberParser(that:{'@stringU
-      '0
-      })).#equalequal(that:Outer1::S.#from(builder:Outer1::S.#builder().#hash()))
+      Outer0::name() ::#apply(that ) ::#equalequal(that ) cond=n.#apply(that:Outer1::N.#from(builder:Outer1::N.#builder().#0())).#equalequal(that:Outer1::S.#from(builder:Outer1::S.#builder().#hash()))
       (
         Void unused2=cond.#checkTrue()
         
         catch exception Void catched0 void
-        return n.#apply(start:Outer1::N.#numberParser(that:{'@stringU
-        '1
-        }))
+        return n.#apply(start:Outer1::N.#from(builder:Outer1::N.#builder().#1()))
         )
       )
     Void unused1=return n
@@ -4197,9 +4152,7 @@ method
 Outer1::S prefixAsField() (
   Void unused=(
     Void unused0=(
-      Outer0::toS() ::#apply(that ) ::#equalequal(that ) cond=this.toS().#apply(that:Outer1::N.#numberParser(that:{'@stringU
-      '0
-      })).#equalequal(that:Outer1::S.#from(builder:Outer1::S.#builder().#hash()))
+      Outer0::toS() ::#apply(that ) ::#equalequal(that ) cond=this.toS().#apply(that:Outer1::N.#from(builder:Outer1::N.#builder().#0())).#equalequal(that:Outer1::S.#from(builder:Outer1::S.#builder().#hash()))
       (
         Void unused2=cond.#checkTrue()
         
@@ -4266,9 +4219,7 @@ method
 Outer1::Bool isOperator() (
   Void unused=(
     Void unused0=(
-      Outer0::name() ::size() ::#equalequal(that ) cond=this.name().size().#equalequal(that:Outer1::N.#numberParser(that:{'@stringU
-      '0
-      }))
+      Outer0::name() ::size() ::#equalequal(that ) cond=this.name().size().#equalequal(that:Outer1::N.#from(builder:Outer1::N.#builder().#0()))
       (
         Void unused2=cond.#checkTrue()
         
@@ -4276,9 +4227,7 @@ Outer1::Bool isOperator() (
         return Outer1::Bool.true()
         )
       )
-    Void unused1=return this.name().#apply(that:Outer1::N.#numberParser(that:{'@stringU
-    '0
-    })).#equalequal(that:Outer1::S.#from(builder:Outer1::S.#builder().#hash()))
+    Void unused1=return this.name().#apply(that:Outer1::N.#from(builder:Outer1::N.#builder().#0())).#equalequal(that:Outer1::S.#from(builder:Outer1::S.#builder().#hash()))
     void
     )
   
@@ -4297,11 +4246,7 @@ Outer1::Strings names() (
   Void unused=(
     Outer0::toS() str=this.toS()
     mut Outer0::Varstr0__93_0 varstr=Outer0::Varstr0__93_0.#apply(inner:str)
-    Void unused0=varstr.inner(that:varstr.#inner().#apply(start:varstr.#inner().firstIndexOf(that:Outer1::S.#from(builder:Outer1::S.#builder().#oRound())).#plus(that:Outer1::N.#numberParser(that:{'@stringU
-    '1
-    })), end:varstr.#inner().size().#less(that:Outer1::N.#numberParser(that:{'@stringU
-    '1
-    }))).#plusplus(that:Outer1::S.#from(builder:Outer1::S.#builder().#comma())))
+    Void unused0=varstr.inner(that:varstr.#inner().#apply(start:varstr.#inner().firstIndexOf(that:Outer1::S.#from(builder:Outer1::S.#builder().#oRound())).#plus(that:Outer1::N.#from(builder:Outer1::N.#builder().#1())), end:varstr.#inner().size().#less(that:Outer1::N.#from(builder:Outer1::N.#builder().#1()))).#plusplus(that:Outer1::S.#from(builder:Outer1::S.#builder().#comma())))
     Outer1::Strings::#begin() ::#end() result=Outer1::Strings.#begin().#end()
     Void unused1=(
       Outer0::Varstr0__93_0::#inner() ::#equalequal(that ) cond=varstr.#inner().#equalequal(that:Outer1::S.#from(builder:Outer1::S.#builder().#comma()))
@@ -4319,9 +4264,7 @@ Outer1::Strings names() (
         (
           Outer0::Varstr0__93_0::#inner() ::firstIndexOf(that ) pos=varstr.#inner().firstIndexOf(that:Outer1::S.#from(builder:Outer1::S.#builder().#comma()))
           Void unused7=varresult.inner(that:varresult.#inner().#add(that:varstr.#inner().#apply(end:pos)))
-          varstr.inner(that:varstr.#inner().#apply(start:pos.#plus(that:Outer1::N.#numberParser(that:{'@stringU
-          '1
-          }))))
+          varstr.inner(that:varstr.#inner().#apply(start:pos.#plus(that:Outer1::N.#from(builder:Outer1::N.#builder().#1()))))
           )
         )
       
@@ -4392,11 +4335,7 @@ Outer1::Selector fresh(Outer1::Selector that) (
         n.#close()
         )
       )
-    Void unused2=vartot.inner(that:vartot.#inner().#apply(start:Outer1::N.#numberParser(that:{'@stringU
-    '0
-    }), end:vartot.#inner().size().#less(that:Outer1::N.#numberParser(that:{'@stringU
-    '1
-    }))).#plusplus(that:Outer1::S.#from(builder:Outer1::S.#builder().#cRound())))
+    Void unused2=vartot.inner(that:vartot.#inner().#apply(start:Outer1::N.#from(builder:Outer1::N.#builder().#0()), end:vartot.#inner().size().#less(that:Outer1::N.#from(builder:Outer1::N.#builder().#1()))).#plusplus(that:Outer1::S.#from(builder:Outer1::S.#builder().#cRound())))
     Void unused3=return Outer1::Selector.fromS(that:vartot.#inner())
     void
     )
@@ -5193,9 +5132,7 @@ method introspectDocAsString(path annotationN ) (
   result
   )
 method introspectDocAsString(path ) (
-  Outer3::S::#from(binaryRepr ) result=Outer3::S.#from(binaryRepr:use Outer3::SafeOperators check introspectLibraryDocAsString(that:this.lib(), path:path.binaryRepr(), annotationN:Outer3::N.#numberParser(that:{'@stringU
-  '0
-  }).binaryRepr()) error Outer3::System::Guard::PluginFailure.#from(builder:Outer3::System::Guard::PluginFailure.#builder().#S().#a().#f().#e().#O().#p().#e().#r().#a().#t().#o().#r().#s().#dot().#i().#n().#t().#r().#o().#s().#p().#e().#c().#t().#L().#i().#b().#r().#a().#r().#y().#D().#o().#c().#A().#s().#S().#t().#r().#i().#n().#g()))
+  Outer3::S::#from(binaryRepr ) result=Outer3::S.#from(binaryRepr:use Outer3::SafeOperators check introspectLibraryDocAsString(that:this.lib(), path:path.binaryRepr(), annotationN:Outer3::N.#from(builder:Outer3::N.#builder().#0()).binaryRepr()) error Outer3::System::Guard::PluginFailure.#from(builder:Outer3::System::Guard::PluginFailure.#builder().#S().#a().#f().#e().#O().#p().#e().#r().#a().#t().#o().#r().#s().#dot().#i().#n().#t().#r().#o().#s().#p().#e().#c().#t().#L().#i().#b().#r().#a().#r().#y().#D().#o().#c().#A().#s().#S().#t().#r().#i().#n().#g()))
   
   catch error Library x exception Outer3::MetaGuard::NestedClassUnavailable.#apply(record:Outer2::Record.#apply(lib:x), lib:x)
   result
@@ -5241,9 +5178,7 @@ method introspectDocAsString(path annotationN ) (
   result
   )
 method introspectDocAsString(path ) (
-  Outer3::S::#from(binaryRepr ) result=Outer3::S.#from(binaryRepr:use Outer3::SafeOperators check introspectTypeDocAsString(that:this.lib(), path:path.binaryRepr(), annotationN:Outer3::N.#numberParser(that:{'@stringU
-  '0
-  }).binaryRepr()) error Outer3::System::Guard::PluginFailure.#from(builder:Outer3::System::Guard::PluginFailure.#builder().#S().#a().#f().#e().#O().#p().#e().#r().#a().#t().#o().#r().#s().#dot().#i().#n().#t().#r().#o().#s().#p().#e().#c().#t().#T().#y().#p().#e().#D().#o().#c().#A().#s().#S().#t().#r().#i().#n().#g()))
+  Outer3::S::#from(binaryRepr ) result=Outer3::S.#from(binaryRepr:use Outer3::SafeOperators check introspectTypeDocAsString(that:this.lib(), path:path.binaryRepr(), annotationN:Outer3::N.#from(builder:Outer3::N.#builder().#0()).binaryRepr()) error Outer3::System::Guard::PluginFailure.#from(builder:Outer3::System::Guard::PluginFailure.#builder().#S().#a().#f().#e().#O().#p().#e().#r().#a().#t().#o().#r().#s().#dot().#i().#n().#t().#r().#o().#s().#p().#e().#c().#t().#T().#y().#p().#e().#D().#o().#c().#A().#s().#S().#t().#r().#i().#n().#g()))
   
   catch error Library x exception Outer3::MetaGuard::NestedClassUnavailable.#apply(record:Outer2::Record.#apply(lib:x), lib:x)
   result
@@ -5258,11 +5193,11 @@ Doc:{<:Outer2::Concept::ToS, Outer2::Concept::Named
 VaraN__96_0:'@private
 {
 type method 
-mut Outer0 #apply(Outer3::N::#numberParser(that ) inner) 
+mut Outer0 #apply(Outer3::N::#from(builder ) inner) 
 mut method 
-Void inner(Outer3::N::#numberParser(that ) that) 
+Void inner(Outer3::N::#from(builder ) that) 
 mut method 
-Outer3::N::#numberParser(that ) #inner() }
+Outer3::N::#from(builder ) #inner() }
 Varresult1__97_0:'@private
 {
 type method 
@@ -5316,9 +5251,7 @@ type Any referredClass() (
   )
 method 
 Outer3::Bool hasReferredClass() (
-  Outer0::text() ::#bangequal(that ) ::#and(that ) res=this.text().#bangequal(that:Outer3::S.#from(builder:Outer3::S.#builder())).#and(that:this.text().isASCIIUpperCase(that:Outer3::N.#numberParser(that:{'@stringU
-  '0
-  })))
+  Outer0::text() ::#bangequal(that ) ::#and(that ) res=this.text().#bangequal(that:Outer3::S.#from(builder:Outer3::S.#builder())).#and(that:this.text().isASCIIUpperCase(that:Outer3::N.#from(builder:Outer3::N.#builder().#0())))
   res
   )}
 Annotations:{' generic linked list class, elements of type Elem
@@ -5628,9 +5561,7 @@ Void #close() void}}
 type method 
 Outer0 #apply(Library that) (
   Outer0::Annotations::#begin() ::#end() result=Outer0::Annotations.#begin().#end()
-  Outer2::N::#numberParser(that ) aN=Outer2::N.#numberParser(that:{'@stringU
-  '1
-  })
+  Outer2::N::#from(builder ) aN=Outer2::N.#from(builder:Outer2::N.#builder().#1())
   mut Outer0::Varresult1__97_0 varresult=Outer0::Varresult1__97_0.#apply(inner:result)
   mut Outer0::VaraN__96_0 varaN=Outer0::VaraN__96_0.#apply(inner:aN)
   Void unused=(
@@ -5639,9 +5570,7 @@ Outer0 #apply(Library that) (
       (' to be able to break
       
         Void unused2=varresult.inner(that:varresult.#inner().#add(that:Outer0::Annotation.#apply(_binaryRepr:that, text:Outer2::Introspection::Record.#apply(lib:that).that().introspectDocAsString(path:Outer2::Path.#from(builder:Outer2::Path.#builder().#O().#u().#t().#e().#r().#0()), annotationN:varaN.#inner()), index:varaN.#inner())))
-        varaN.inner(that:varaN.#inner().#plus(that:Outer2::N.#numberParser(that:{'@stringU
-        '1
-        })))
+        varaN.inner(that:varaN.#inner().#plus(that:Outer2::N.#from(builder:Outer2::N.#builder().#1())))
         )
       )
     
@@ -6424,11 +6353,11 @@ Method:{<:Outer1::Member, Outer2::Concept::Equals
 VarpN__103_0:'@private
 {
 type method 
-mut Outer0 #apply(Outer3::N::#numberParser(that ) inner) 
+mut Outer0 #apply(Outer3::N::#from(builder ) inner) 
 mut method 
-Void inner(Outer3::N::#numberParser(that ) that) 
+Void inner(Outer3::N::#from(builder ) that) 
 mut method 
-Outer3::N::#numberParser(that ) #inner() }
+Outer3::N::#from(builder ) #inner() }
 Varresult2__104_0:'@private
 {
 type method 
@@ -6547,9 +6476,7 @@ Outer2::S allAsString() (
 method 
 Outer1::Type returnType() (
   Void unused=(
-    Void unused0=return this.root().mirror__49_0().introspectReportType(root:this.root(), path:this.path__48_0(), memberN:this.memberN__48_0(), typeN:Outer2::N.#numberParser(that:{'@stringU
-    '0
-    }))
+    Void unused0=return this.root().mirror__49_0().introspectReportType(root:this.root(), path:this.path__48_0(), memberN:this.memberN__48_0(), typeN:Outer2::N.#from(builder:Outer2::N.#builder().#0()))
     
     catch exception Outer2::MetaGuard::MemberUnavailable x error Outer2::Assert::CodeNotReachable.#from(builder:Outer2::Assert::CodeNotReachable.#builder().#M().#e().#t().#h().#o().#d().#1()).#apply(that:x)
     catch exception Void catched error Outer2::Assert::CodeNotReachable.#from(builder:Outer2::Assert::CodeNotReachable.#builder().#v().#o().#i().#d().#space().#w().#a().#s().#space().#t().#h().#r().#o().#w().#n())
@@ -6567,9 +6494,7 @@ method
 Outer1::Types parameterTypes() (
   Void unused=(
     Outer1::Types::#begin() ::#end() result=Outer1::Types.#begin().#end()
-    Outer2::N::#numberParser(that ) pN=Outer2::N.#numberParser(that:{'@stringU
-    '1
-    })
+    Outer2::N::#from(builder ) pN=Outer2::N.#from(builder:Outer2::N.#builder().#1())
     mut Outer0::Varresult2__104_0 varresult=Outer0::Varresult2__104_0.#apply(inner:result)
     mut Outer0::VarpN__103_0 varpN=Outer0::VarpN__103_0.#apply(inner:pN)
     Void unused0=(
@@ -6579,9 +6504,7 @@ Outer1::Types parameterTypes() (
         
           Outer1::Type ti=this.root().mirror__49_0().introspectReportType(root:this.root(), path:this.pathFromRoot(), memberN:this.memberN__48_0(), typeN:varpN.#inner())
           Void unused4=varresult.inner(that:varresult.#inner().#add(that:ti))
-          varpN.inner(that:varpN.#inner().#plus(that:Outer2::N.#numberParser(that:{'@stringU
-          '1
-          })))
+          varpN.inner(that:varpN.#inner().#plus(that:Outer2::N.#from(builder:Outer2::N.#builder().#1())))
           )
         )
       
@@ -7223,11 +7146,11 @@ NestedClass:{'findMeNestedClass
 VarmN__108_0:'@private
 {
 type method 
-mut Outer0 #apply(Outer3::N::#numberParser(that ) inner) 
+mut Outer0 #apply(Outer3::N::#from(builder ) inner) 
 mut method 
-Void inner(Outer3::N::#numberParser(that ) that) 
+Void inner(Outer3::N::#from(builder ) that) 
 mut method 
-Outer3::N::#numberParser(that ) #inner() }
+Outer3::N::#from(builder ) #inner() }
 Varresult3__109_0:'@private
 {
 type method 
@@ -7263,11 +7186,11 @@ Outer2::NestedClasses::#begin() ::#add(that ) ::#end() #inner() }
 VartN__113_0:'@private
 {
 type method 
-mut Outer0 #apply(Outer3::N::#numberParser(that ) inner) 
+mut Outer0 #apply(Outer3::N::#from(builder ) inner) 
 mut method 
-Void inner(Outer3::N::#numberParser(that ) that) 
+Void inner(Outer3::N::#from(builder ) that) 
 mut method 
-Outer3::N::#numberParser(that ) #inner() }
+Outer3::N::#from(builder ) #inner() }
 Varresult5__114_0:'@private
 {
 type method 
@@ -7608,19 +7531,11 @@ Outer2::S externalTypeToS() (
     Outer0::record__49_0() ::docOf(path ) doc=this.record__49_0().docOf(path:Outer2::Path.#from(builder:Outer2::Path.#builder().#M().#y().#C().#l().#a().#s().#s()))
     Outer0::record__49_0() ::docOf(path ) ::annotations() ::top() ::toS() nameAndPrefix=doc.annotations().top().toS()
     Outer0::record__49_0() ::docOf(path ) ::annotations() ::top() ::toS() ::firstIndexOf(that ) sep=nameAndPrefix.firstIndexOf(that:Outer2::S.#from(builder:Outer2::S.#builder().#colon().#colon()))
-    Outer0::record__49_0() ::docOf(path ) ::annotations() ::top() ::toS() ::#apply(start ) name=nameAndPrefix.#apply(start:sep.#plus(that:Outer2::N.#numberParser(that:{'@stringU
-    '2
-    })))
-    Outer2::N::fromS(that ) prefix=Outer2::N.fromS(that:nameAndPrefix.#apply(start:Outer2::N.#numberParser(that:{'@stringU
-    '5
-    }), end:sep))
-    Void unused1=Outer2::Assert::$.#begin().#add(that:prefix.#right(that:Outer2::N.#numberParser(that:{'@stringU
-    '0
-    }))).#end()
+    Outer0::record__49_0() ::docOf(path ) ::annotations() ::top() ::toS() ::#apply(start ) name=nameAndPrefix.#apply(start:sep.#plus(that:Outer2::N.#from(builder:Outer2::N.#builder().#2())))
+    Outer2::N::fromS(that ) prefix=Outer2::N.fromS(that:nameAndPrefix.#apply(start:Outer2::N.#from(builder:Outer2::N.#builder().#5()), end:sep))
+    Void unused1=Outer2::Assert::$.#begin().#add(that:prefix.#right(that:Outer2::N.#from(builder:Outer2::N.#builder().#0()))).#end()
     Void unused2=return (
-      Outer2::S::#from(builder ) ::#begin() ::#add(that ) ::#end() listKind0=Outer2::S.#from(builder:Outer2::S.#builder().#O().#u().#t().#e().#r()).#begin().#add(that:prefix.#less(that:Outer2::N.#numberParser(that:{'@stringU
-      '1
-      }))).#end()
+      Outer2::S::#from(builder ) ::#begin() ::#add(that ) ::#end() listKind0=Outer2::S.#from(builder:Outer2::S.#builder().#O().#u().#t().#e().#r()).#begin().#add(that:prefix.#less(that:Outer2::N.#from(builder:Outer2::N.#builder().#1()))).#end()
       listKind0.#from(builder:listKind0.#builder().#colon().#colon())
       ).#plusplus(that:name)
     void
@@ -7644,9 +7559,7 @@ Outer2::S allAsString() (
 method 
 Outer1::Members members() (
   Outer1::Members::#begin() ::#end() result=Outer1::Members.#begin().#end()
-  Outer2::N::#numberParser(that ) mN=Outer2::N.#numberParser(that:{'@stringU
-  '1
-  })
+  Outer2::N::#from(builder ) mN=Outer2::N.#from(builder:Outer2::N.#builder().#1())
   mut Outer0::Varresult3__109_0 varresult=Outer0::Varresult3__109_0.#apply(inner:result)
   mut Outer0::VarmN__108_0 varmN=Outer0::VarmN__108_0.#apply(inner:mN)
   Void unused=(
@@ -7658,9 +7571,7 @@ Outer1::Members members() (
         Void unused2=varresult.inner(that:varresult.#inner().#add(that:this.mirror__49_0().introspectReportMember(root:this, path:this.path__49_0(), memberN:varmN.#inner())))
         
         catch exception Outer2::MetaGuard::MemberUnavailable catched0 exception void
-        varmN.inner(that:varmN.#inner().#plus(that:Outer2::N.#numberParser(that:{'@stringU
-        '1
-        })))
+        varmN.inner(that:varmN.#inner().#plus(that:Outer2::N.#from(builder:Outer2::N.#builder().#1())))
         )
       )
     
@@ -7836,9 +7747,7 @@ Outer1::NestedClasses transitivelyNestedClasses() (
 method 
 Outer1::Types implementedInterfaces() (
   Outer1::Types::#begin() ::#end() result=Outer1::Types.#begin().#end()
-  Outer2::N::#numberParser(that ) tN=Outer2::N.#numberParser(that:{'@stringU
-  '1
-  })
+  Outer2::N::#from(builder ) tN=Outer2::N.#from(builder:Outer2::N.#builder().#1())
   mut Outer0::Varresult5__114_0 varresult=Outer0::Varresult5__114_0.#apply(inner:result)
   mut Outer0::VartN__113_0 vartN=Outer0::VartN__113_0.#apply(inner:tN)
   Void unused=(
@@ -7846,12 +7755,8 @@ Outer1::Types implementedInterfaces() (
       Void unused1=Outer2::Bool.true().#checkTrue()
       (' to be able to break
       
-        Void unused2=varresult.inner(that:varresult.#inner().#add(that:this.mirror__49_0().introspectReportType(root:this, path:this.path__49_0(), memberN:Outer2::N.#numberParser(that:{'@stringU
-        '0
-        }), typeN:vartN.#inner())))
-        vartN.inner(that:vartN.#inner().#plus(that:Outer2::N.#numberParser(that:{'@stringU
-        '1
-        })))
+        Void unused2=varresult.inner(that:varresult.#inner().#add(that:this.mirror__49_0().introspectReportType(root:this, path:this.path__49_0(), memberN:Outer2::N.#from(builder:Outer2::N.#builder().#0()), typeN:vartN.#inner())))
+        vartN.inner(that:vartN.#inner().#plus(that:Outer2::N.#from(builder:Outer2::N.#builder().#1())))
         )
       )
     
@@ -8030,9 +7935,7 @@ Outer2::Bool select__51_0(Outer1::Type that, Outer1::Types from) (
         )
       )
     varaccumulator.#inner().#end()
-    ).#equalequal(that:Outer2::N.#numberParser(that:{'@stringU
-  '0
-  }))
+    ).#equalequal(that:Outer2::N.#from(builder:Outer2::N.#builder().#0()))
   )
 method '@private
 Outer1::Types remove__52_0(Outer1::Types that, Outer1::Types from) (
@@ -9188,9 +9091,7 @@ Outer1::NestedClass referencedPath__54_0(Outer1::Doc::Annotation ann) (
         return Outer2::Introspection.#apply(clazz:ann.referredClass())
         )
       )
-    Outer2::S sPath=ann.toS().#apply(start:Outer2::N.#numberParser(that:{'@stringU
-    '2
-    }))
+    Outer2::S sPath=ann.toS().#apply(start:Outer2::N.#from(builder:Outer2::N.#builder().#2()))
     Void unused1=(
       Outer2::S::#equalequal(that ) cond0=sPath.#equalequal(that:Outer2::S.#from(builder:Outer2::S.#builder()))
       (
@@ -10876,9 +10777,7 @@ Library #leftleft(Library that) exception Outer2::MetaGuard::ClassClash, Outer2:
       (
         Void unused4=(
           Void unused5=(
-            Outer2::N::#numberParser(that ) ::vals() index=Outer2::N.#numberParser(that:{'@stringU
-            '0
-            }).vals()
+            Outer2::N::#from(builder ) ::vals() index=Outer2::N.#from(builder:Outer2::N.#builder().#0()).vals()
             (
               Void unused6=(
                 Void unused7=(
@@ -11128,9 +11027,7 @@ Library #leftleft(Library that) exception Outer1::MetaGuard::ClassClash, Outer1:
       (
         Void unused4=(
           Void unused5=(
-            Outer1::N::#numberParser(that ) ::vals() index=Outer1::N.#numberParser(that:{'@stringU
-            '0
-            }).vals()
+            Outer1::N::#from(builder ) ::vals() index=Outer1::N.#from(builder:Outer1::N.#builder().#0()).vals()
             (
               Void unused6=(
                 Void unused7=(
@@ -11380,9 +11277,7 @@ Library #leftleft(Library that) exception Outer1::MetaGuard::ClassClash, Outer1:
       (
         Void unused4=(
           Void unused5=(
-            Outer1::N::#numberParser(that ) ::vals() index=Outer1::N.#numberParser(that:{'@stringU
-            '0
-            }).vals()
+            Outer1::N::#from(builder ) ::vals() index=Outer1::N.#from(builder:Outer1::N.#builder().#0()).vals()
             (
               Void unused6=(
                 Void unused7=(

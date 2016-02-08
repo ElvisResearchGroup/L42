@@ -2443,10 +2443,14 @@ Outer1 #from(Outer2::SBuilder builder) }}}
 N:{<:Outer1::Concept::ToS, Outer1::Concept::Equals, Outer1::Concept::Named
 type method 
 Outer0 fromS(Outer1::Concept::ToS that) 
+type method 
+Outer0 #from(Library binaryRepr) 
 method 
 Library binaryRepr() 
 type method 
-Outer0 #numberParser(Library that) 
+Outer1::S::SBuilder #builder() 
+type method 
+Outer0 #from(Outer1::S::SBuilder builder) 
 type method 
 Any parseError(Outer1::S that) 
 method 

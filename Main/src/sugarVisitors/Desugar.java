@@ -611,10 +611,6 @@ public class Desugar extends CloneVisitor{
     return getBlock(s.getP(),x, rcv,visit1Step(s.withReceiver(new X(x))));    
   }
   static public MCall visit1Step(Literal s) {
-    if(s.isNumber()){
-      String name="#numberParser";
-      return getMCall(s.getP(),s.getReceiver(),name,getPs(encodePrimitiveString(s.getInner())));
-    }
     Expression chain=getMCall(s.getP(),s.getReceiver(),"#builder",getPs());
     for(char ch:s.getInner().toCharArray()){
       String name=Character.toString(ch);
