@@ -10,6 +10,17 @@ decorator MakeMethod[m; m0; m1 x1, mn xn; excNum]
 
 consider e0[e1;e2] desugared in (x=e0 x.#fromSequence(x.#sequenceFactory().#add(e1).#add(e2))
 
+Assert::Pre[] preconditions
+and
+Assert::Bug[] postconditions/checks in the middle
+and 
+Assert::Pre""()
+and
+Assert::Bug""()  also for code unreachable error on Bla Assert::Bug""
+NotImplementedYet
+Unreachable //error in the language or (another) method do not respect its postcondition
+
+
 should != be desugared in !(==)    > norm for <=, => <,  >> <<, 
 This==This0, This1... Thisn for outers, and outer for outside with scope.
 

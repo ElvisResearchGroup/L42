@@ -17,15 +17,15 @@ read method '(Any fileName)
 Outer2::Url fileName() 
 type method 
 Library binaryReprFrom(Library lib) (
-  Library norm=use Outer0::SafeOperatorsAccess__29_0 check privateNormalize(that:lib) error {
+  Library norm=use Outer0::SafeOperatorsAccess__38_0 check privateNormalize(that:lib) error {
   type method 
   Outer0 privateNormalize() }
-  Library record=use Outer0::SafeOperatorsAccess__29_0 check introspectLibraryReport(that:norm, path:{'@stringU
+  Library record=use Outer0::SafeOperatorsAccess__38_0 check introspectLibraryReport(that:norm, path:{'@stringU
   'Outer0
   }) error {
   type method 
   Outer0 introspectLibraryReport() }
-  use Outer0::SafeOperatorsAccess__29_0 check introspectLibraryDocAsString(that:record, path:{'@stringU
+  use Outer0::SafeOperatorsAccess__38_0 check introspectLibraryDocAsString(that:record, path:{'@stringU
   'AllAsString
   }, annotationN:{'@int32
   '0
@@ -40,7 +40,7 @@ Library #leftleft(Library that) (
   Outer0 fileDebug() }
   Outer1::ExitCode.normal()
   )
-SafeOperatorsAccess__29_0:'@private
+SafeOperatorsAccess__38_0:'@private
 {'@plugin
 'L42.is/connected/withSafeOperators
 }}}

@@ -1,4 +1,4 @@
-{interface
+{interface <:Concept::ToS
   method
   NestedClass introspectReport(fwd NestedClass root,Path path) exception MetaGuard::NestedClassUnavailable
   method
@@ -13,6 +13,7 @@
   type Any introspectDocPath(Path path, N annotationN) exception MetaGuard::NestedClassUnavailable, Void
 
   Lib:{(Library lib)<:Outer1
+    method toS() Introspection(lib:this.lib()).toS()
     method
     introspectReport(root, path) (
       result=NestedClass(_root:root,path:path,mirror:this,record:Record(Lib(lib:
@@ -70,6 +71,7 @@
 
 
   Class:{(type Any lib)<:Outer1
+  method toS() Introspection(clazz:this.lib()).toS()
   method
     introspectReport(root, path) (
       record=Record(lib:use SafeOperators

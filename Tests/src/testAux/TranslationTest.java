@@ -93,37 +93,6 @@ public class TranslationTest {
       " 5N+3N+80N","generated.Program42$Outer0£_N");}
 
 
-  @Test public void t11(){tester(
-      TestHelper.multiLine("{"
-      ,"Alu:{'@plugin"
-      ,"  'L42.is/connected/withAlu"
-      ,"  ()}"
-      ,"N:{(Library that)"
-      ,"  type method N #numberParser(Library that) ("
-      ,"    N(use Alu"
-      ,"      check stringToInt32(that)"
-      ,"      error void))"
-      ,"  method N +(N that) ("
-      ,"    N(use Alu"
-      ,"      check sumInt32(n1:this.that() n2:that.that())"
-      ,"      error void))"
-      ,"}"
-      ,"S:{#stringParser(Library that)"
-      ,"  method S ++ (S that) ("
-      ,"    S.#stringParser(use Alu"
-      ,"      check stringConcat(s1:this.that(),s2:that.that())"
-      ,"      error void) )"
-      ,"  }"
-      ,"  }"),
-      TestHelper.multiLine(""
-      ," ( S s1=S\"foo\""
-      ,"   S s2=s1++S\"bar\""
-      ,"   use Alu check stringDebug(s2.that()) void "
-      ,"  )")
-       ,"platformSpecific.javaTranslation.Resources$Void");
-  Assert.assertEquals(L42.record.toString(),"foobar\n");
-  L42.record=new StringBuilder();
-  }
 
   public void tester(String cbStr,String eStr,String nameRes) {
     TestHelper.configureForTest();

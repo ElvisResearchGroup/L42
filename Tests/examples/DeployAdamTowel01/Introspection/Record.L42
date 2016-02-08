@@ -12,10 +12,12 @@
       default Debug(S"Sorry, can not print class mirrors")
       )
 
-  method S #stringParser(Library that) {
-    path=Path.#stringParser(that)
+  method S::SBuilder #builder()S::SBuilder.empty()
+  method S #from(S::SBuilder builder) {
+    path=Path.#from(builder:builder)
     return this.that().introspectDocAsString(path:path)
-    catch exception MetaGuard::MemberUnavailable x error Assert::CodeNotReachable"Record1"(x) 
+    error on MetaGuard::MemberUnavailable 
+      Assert::CodeNotReachable"Record1"[this.that()]"" 'TODO: not the right error? 
     }
   method
   Doc docOf(Path path){

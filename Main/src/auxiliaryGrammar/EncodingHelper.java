@@ -89,18 +89,16 @@ public class EncodingHelper{
     }
  
   public static Doc ensureExtractDoc(Object e) {
-    Doc res=extractDoc(e);
-    if (res==null ){throw new Resources.Error("InvalidClassB");}
-    return res;
-    }
-  public static Doc extractDoc(Object e) {
     if(e instanceof Doc){return (Doc)e;}
-    if(e instanceof ClassB){return ((ClassB)e).getDoc1();}
-    return null;
+    ClassB cb=ensureExtractClassB(e);
+    return cb.getDoc1();
     }
+
   public static ClassB ensureExtractClassB(Object e) {
     ClassB res=extractClassB(e);
-    if (res==null ){throw new Resources.Error("InvalidClassB");}
+    if (res==null ){
+      throw new Resources.Error("InvalidClassB for ensureExtractClassB");
+      }
     return res;
     }
   public static ClassB extractClassB(Object e) {

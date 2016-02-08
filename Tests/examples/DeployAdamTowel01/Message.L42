@@ -75,20 +75,30 @@ $:{()
     Outer0(S text, Message cause)
       Outer0(_text:text,cause:Message::Opt(cause))
     'next part could become a trait on its own (but S must keep its version)
+    
+    type method S::SBuilder #builder()S::SBuilder.empty()
+      type method Outer0 #from(S::SBuilder builder)
+        Outer0(text:S.#from(builder:builder))
+        
     method
     SConcat #begin()
-      SConcat(accumulator:this.text())
-    
-    SConcat:{(S accumulator)
+      SConcat(old:this,accumulator:S"")
+      
+    SConcat:{(Concept::ToS old,S accumulator)
+      method SConcat #add(Concept::ToS that)
+        SConcat(old:this.old(),accumulator:this.accumulator()++that.toS())
+      method SConcat #add(Concept::ToS that, Concept::ToS separedBy) (
+        var newAcc=that.toS()
+        if this.accumulator()!=S"" (
+          newAcc:=this.accumulator()++separedBy.toS()++newAcc
+          )
+        SConcat(old:this.old(),accumulator:newAcc)
+        )
       method
-      SConcat #add(Concept::ToS that)
-        SConcat(accumulator:this.accumulator()++that.toS())
-      method
-      SConcat #end()
-        this
-      method
-      Outer1 #stringParser(Library that)
-        Outer1(text:this.accumulator()++S.#stringParser(that))
+      SConcat #end() this
+      method S::SBuilder #builder()S::SBuilder.empty()
+      method Outer1 #from(S::SBuilder builder)
+        Outer1(text:this.old().toS()++this.accumulator()++S.#from(builder:builder))
       }
     }
   }

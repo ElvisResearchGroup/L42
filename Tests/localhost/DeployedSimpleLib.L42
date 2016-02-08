@@ -33,11 +33,19 @@ type method
 Outer0 #apply(Outer2::S text) 
 type method 
 Outer0 #apply(Outer2::S text, Outer2::Message cause) 
+type method 
+Outer2::S::SBuilder #builder() 
+type method 
+Outer0 #from(Outer2::S::SBuilder builder) 
 method 
 Outer0::SConcat #begin() 
 SConcat:{
 type method 
-Outer0 #apply(Outer3::S accumulator) 
+Outer0 #apply(Outer3::Concept::ToS old, Outer3::S accumulator) 
+mut method 
+Outer3::Concept::ToS #old() 
+read method 
+Outer3::Concept::ToS old() 
 mut method 
 Outer3::S #accumulator() 
 read method 
@@ -45,9 +53,13 @@ Outer3::S accumulator()
 method 
 Outer0 #add(Outer3::Concept::ToS that) 
 method 
+Outer0 #add(Outer3::Concept::ToS that, Outer3::Concept::ToS separedBy) 
+method 
 Outer0 #end() 
 method 
-Outer1 #stringParser(Library that) }}
+Outer3::S::SBuilder #builder() 
+method 
+Outer1 #from(Outer3::S::SBuilder builder) }}
 ConceptMapUnavailable:{<:Outer2::MetaGuard, Outer2::Message
 type method 
 Outer0 #apply(Outer2::S _text, Outer2::Message::Opt cause) 
@@ -71,11 +83,19 @@ type method
 Outer0 #apply(Outer2::S text) 
 type method 
 Outer0 #apply(Outer2::S text, Outer2::Message cause) 
+type method 
+Outer2::S::SBuilder #builder() 
+type method 
+Outer0 #from(Outer2::S::SBuilder builder) 
 method 
 Outer0::SConcat #begin() 
 SConcat:{
 type method 
-Outer0 #apply(Outer3::S accumulator) 
+Outer0 #apply(Outer3::Concept::ToS old, Outer3::S accumulator) 
+mut method 
+Outer3::Concept::ToS #old() 
+read method 
+Outer3::Concept::ToS old() 
 mut method 
 Outer3::S #accumulator() 
 read method 
@@ -83,9 +103,13 @@ Outer3::S accumulator()
 method 
 Outer0 #add(Outer3::Concept::ToS that) 
 method 
+Outer0 #add(Outer3::Concept::ToS that, Outer3::Concept::ToS separedBy) 
+method 
 Outer0 #end() 
 method 
-Outer1 #stringParser(Library that) }}
+Outer3::S::SBuilder #builder() 
+method 
+Outer1 #from(Outer3::S::SBuilder builder) }}
 method 
 Library #leftleft(Library that) exception Outer0::ConceptMapMismatch, Outer0::ConceptMapUnavailable 
 DeployLibrary:{
@@ -257,11 +281,19 @@ type method
 Outer0 #apply(Outer2::S text) 
 type method 
 Outer0 #apply(Outer2::S text, Outer2::Message cause) 
+type method 
+Outer2::S::SBuilder #builder() 
+type method 
+Outer0 #from(Outer2::S::SBuilder builder) 
 method 
 Outer0::SConcat #begin() 
 SConcat:{
 type method 
-Outer0 #apply(Outer3::S accumulator) 
+Outer0 #apply(Outer3::Concept::ToS old, Outer3::S accumulator) 
+mut method 
+Outer3::Concept::ToS #old() 
+read method 
+Outer3::Concept::ToS old() 
 mut method 
 Outer3::S #accumulator() 
 read method 
@@ -269,9 +301,13 @@ Outer3::S accumulator()
 method 
 Outer0 #add(Outer3::Concept::ToS that) 
 method 
+Outer0 #add(Outer3::Concept::ToS that, Outer3::Concept::ToS separedBy) 
+method 
 Outer0 #end() 
 method 
-Outer1 #stringParser(Library that) }}
+Outer3::S::SBuilder #builder() 
+method 
+Outer1 #from(Outer3::S::SBuilder builder) }}
 Parsable:{
 type method 
 Library #leftleft(Library that) exception Outer1::DecorationUnfeasable }
@@ -503,7 +539,7 @@ type method
 Outer0::NestedClass #apply(type Any clazz) 
 type method 
 Outer0::NestedClass #apply(type Any clazz, Outer1::Path path) 
-MirrorPr:{interface 
+MirrorPr:{interface <:Outer2::Concept::ToS
 method 
 Outer1::NestedClass introspectReport(fwd Outer1::NestedClass root, Outer2::Path path) exception Outer2::MetaGuard::NestedClassUnavailable 
 method 
@@ -626,6 +662,10 @@ type method
 Outer0 #apply(Library that) 
 type method 
 Outer0 #stringParser(Library that) 
+type method 
+Outer2::S::SBuilder #builder() 
+type method 
+Outer0 #from(Outer2::S::SBuilder builder) 
 method 
 Library binaryRepr() 
 method 
@@ -644,7 +684,9 @@ Outer0 #apply(Library lib)
 method 
 Void dbg() 
 method 
-Outer2::S #stringParser(Library that) 
+Outer2::S::SBuilder #builder() 
+method 
+Outer2::S #from(Outer2::S::SBuilder builder) 
 method 
 Outer1::Doc docOf(Outer2::Path path) 
 RootForMember:' toPutAs private
@@ -1300,11 +1342,19 @@ type method
 Outer0 #apply(Outer2::S text) 
 type method 
 Outer0 #apply(Outer2::S text, Outer2::Message cause) 
+type method 
+Outer2::S::SBuilder #builder() 
+type method 
+Outer0 #from(Outer2::S::SBuilder builder) 
 method 
 Outer0::SConcat #begin() 
 SConcat:{
 type method 
-Outer0 #apply(Outer3::S accumulator) 
+Outer0 #apply(Outer3::Concept::ToS old, Outer3::S accumulator) 
+mut method 
+Outer3::Concept::ToS #old() 
+read method 
+Outer3::Concept::ToS old() 
 mut method 
 Outer3::S #accumulator() 
 read method 
@@ -1312,9 +1362,13 @@ Outer3::S accumulator()
 method 
 Outer0 #add(Outer3::Concept::ToS that) 
 method 
+Outer0 #add(Outer3::Concept::ToS that, Outer3::Concept::ToS separedBy) 
+method 
 Outer0 #end() 
 method 
-Outer1 #stringParser(Library that) }}}
+Outer3::S::SBuilder #builder() 
+method 
+Outer1 #from(Outer3::S::SBuilder builder) }}}
 Path:{<:Outer1::Concept::ToS, Outer1::Concept::Equals, Outer1::Concept::Named
 type method 
 Outer0 fromDocInternalizedS(Outer1::S that) 
@@ -1371,11 +1425,19 @@ type method
 Outer0 #apply(Outer2::S text) 
 type method 
 Outer0 #apply(Outer2::S text, Outer2::Message cause) 
+type method 
+Outer2::S::SBuilder #builder() 
+type method 
+Outer0 #from(Outer2::S::SBuilder builder) 
 method 
 Outer0::SConcat #begin() 
 SConcat:{
 type method 
-Outer0 #apply(Outer3::S accumulator) 
+Outer0 #apply(Outer3::Concept::ToS old, Outer3::S accumulator) 
+mut method 
+Outer3::Concept::ToS #old() 
+read method 
+Outer3::Concept::ToS old() 
 mut method 
 Outer3::S #accumulator() 
 read method 
@@ -1383,9 +1445,13 @@ Outer3::S accumulator()
 method 
 Outer0 #add(Outer3::Concept::ToS that) 
 method 
+Outer0 #add(Outer3::Concept::ToS that, Outer3::Concept::ToS separedBy) 
+method 
 Outer0 #end() 
 method 
-Outer1 #stringParser(Library that) }}}
+Outer3::S::SBuilder #builder() 
+method 
+Outer1 #from(Outer3::S::SBuilder builder) }}}
 Url:{'ParseFailure:Message:S[]<<{<:Guard} no need, related to invariant?
 <:Outer1::Concept::ToS
 type method ' if you do not implement it, it is a constructor?
@@ -1572,11 +1638,19 @@ type method
 Outer0 #apply(Outer2::S text) 
 type method 
 Outer0 #apply(Outer2::S text, Outer2::Message cause) 
+type method 
+Outer2::S::SBuilder #builder() 
+type method 
+Outer0 #from(Outer2::S::SBuilder builder) 
 method 
 Outer0::SConcat #begin() 
 SConcat:{
 type method 
-Outer0 #apply(Outer3::S accumulator) 
+Outer0 #apply(Outer3::Concept::ToS old, Outer3::S accumulator) 
+mut method 
+Outer3::Concept::ToS #old() 
+read method 
+Outer3::Concept::ToS old() 
 mut method 
 Outer3::S #accumulator() 
 read method 
@@ -1584,9 +1658,13 @@ Outer3::S accumulator()
 method 
 Outer0 #add(Outer3::Concept::ToS that) 
 method 
+Outer0 #add(Outer3::Concept::ToS that, Outer3::Concept::ToS separedBy) 
+method 
 Outer0 #end() 
 method 
-Outer1 #stringParser(Library that) }}
+Outer3::S::SBuilder #builder() 
+method 
+Outer1 #from(Outer3::S::SBuilder builder) }}
 ObservedBug:{<:Outer1, Outer2::Message
 type method 
 Outer0 #apply(Outer2::S _text, Outer2::Message::Opt cause) 
@@ -1610,11 +1688,19 @@ type method
 Outer0 #apply(Outer2::S text) 
 type method 
 Outer0 #apply(Outer2::S text, Outer2::Message cause) 
+type method 
+Outer2::S::SBuilder #builder() 
+type method 
+Outer0 #from(Outer2::S::SBuilder builder) 
 method 
 Outer0::SConcat #begin() 
 SConcat:{
 type method 
-Outer0 #apply(Outer3::S accumulator) 
+Outer0 #apply(Outer3::Concept::ToS old, Outer3::S accumulator) 
+mut method 
+Outer3::Concept::ToS #old() 
+read method 
+Outer3::Concept::ToS old() 
 mut method 
 Outer3::S #accumulator() 
 read method 
@@ -1622,9 +1708,13 @@ Outer3::S accumulator()
 method 
 Outer0 #add(Outer3::Concept::ToS that) 
 method 
+Outer0 #add(Outer3::Concept::ToS that, Outer3::Concept::ToS separedBy) 
+method 
 Outer0 #end() 
 method 
-Outer1 #stringParser(Library that) }}
+Outer3::S::SBuilder #builder() 
+method 
+Outer1 #from(Outer3::S::SBuilder builder) }}
 CodeNotReachable:{<:Outer1, Outer2::Message
 type method 
 Outer0 #apply(Outer2::S _text, Outer2::Message::Opt cause) 
@@ -1648,11 +1738,19 @@ type method
 Outer0 #apply(Outer2::S text) 
 type method 
 Outer0 #apply(Outer2::S text, Outer2::Message cause) 
+type method 
+Outer2::S::SBuilder #builder() 
+type method 
+Outer0 #from(Outer2::S::SBuilder builder) 
 method 
 Outer0::SConcat #begin() 
 SConcat:{
 type method 
-Outer0 #apply(Outer3::S accumulator) 
+Outer0 #apply(Outer3::Concept::ToS old, Outer3::S accumulator) 
+mut method 
+Outer3::Concept::ToS #old() 
+read method 
+Outer3::Concept::ToS old() 
 mut method 
 Outer3::S #accumulator() 
 read method 
@@ -1660,9 +1758,13 @@ Outer3::S accumulator()
 method 
 Outer0 #add(Outer3::Concept::ToS that) 
 method 
+Outer0 #add(Outer3::Concept::ToS that, Outer3::Concept::ToS separedBy) 
+method 
 Outer0 #end() 
 method 
-Outer1 #stringParser(Library that) }}
+Outer3::S::SBuilder #builder() 
+method 
+Outer1 #from(Outer3::S::SBuilder builder) }}
 $:{
 type method 
 Outer0 #apply(Outer2::N that) 
@@ -1701,11 +1803,19 @@ type method
 Outer0 #apply(Outer2::S text) 
 type method 
 Outer0 #apply(Outer2::S text, Outer2::Message cause) 
+type method 
+Outer2::S::SBuilder #builder() 
+type method 
+Outer0 #from(Outer2::S::SBuilder builder) 
 method 
 Outer0::SConcat #begin() 
 SConcat:{
 type method 
-Outer0 #apply(Outer3::S accumulator) 
+Outer0 #apply(Outer3::Concept::ToS old, Outer3::S accumulator) 
+mut method 
+Outer3::Concept::ToS #old() 
+read method 
+Outer3::Concept::ToS old() 
 mut method 
 Outer3::S #accumulator() 
 read method 
@@ -1713,9 +1823,13 @@ Outer3::S accumulator()
 method 
 Outer0 #add(Outer3::Concept::ToS that) 
 method 
+Outer0 #add(Outer3::Concept::ToS that, Outer3::Concept::ToS separedBy) 
+method 
 Outer0 #end() 
 method 
-Outer1 #stringParser(Library that) }}}
+Outer3::S::SBuilder #builder() 
+method 
+Outer1 #from(Outer3::S::SBuilder builder) }}}
 System:{
 Guard:{'<:Outer::Guard soon (remove "interface" for a bad translation bug: Outer1_System_Guard is not abstract and does not override abstract method MtoS()
 interface <:Outer2::Guard
@@ -1742,11 +1856,19 @@ type method
 Outer0 #apply(Outer3::S text) 
 type method 
 Outer0 #apply(Outer3::S text, Outer3::Message cause) 
+type method 
+Outer3::S::SBuilder #builder() 
+type method 
+Outer0 #from(Outer3::S::SBuilder builder) 
 method 
 Outer0::SConcat #begin() 
 SConcat:{
 type method 
-Outer0 #apply(Outer4::S accumulator) 
+Outer0 #apply(Outer4::Concept::ToS old, Outer4::S accumulator) 
+mut method 
+Outer4::Concept::ToS #old() 
+read method 
+Outer4::Concept::ToS old() 
 mut method 
 Outer4::S #accumulator() 
 read method 
@@ -1754,9 +1876,13 @@ Outer4::S accumulator()
 method 
 Outer0 #add(Outer4::Concept::ToS that) 
 method 
+Outer0 #add(Outer4::Concept::ToS that, Outer4::Concept::ToS separedBy) 
+method 
 Outer0 #end() 
 method 
-Outer1 #stringParser(Library that) }}}}
+Outer4::S::SBuilder #builder() 
+method 
+Outer1 #from(Outer4::S::SBuilder builder) }}}}
 Guard:{' exception as Guard bureocracy, error as Guard detection
 '-is a check guarenteed to be performed, program logic can rely on this being enforced.
 '  as exceptions, Guards objects are a way to report/guard complex operations,
@@ -1790,11 +1916,19 @@ type method
 Outer0 #apply(Outer2::S text) 
 type method 
 Outer0 #apply(Outer2::S text, Outer2::Message cause) 
+type method 
+Outer2::S::SBuilder #builder() 
+type method 
+Outer0 #from(Outer2::S::SBuilder builder) 
 method 
 Outer0::SConcat #begin() 
 SConcat:{
 type method 
-Outer0 #apply(Outer3::S accumulator) 
+Outer0 #apply(Outer3::Concept::ToS old, Outer3::S accumulator) 
+mut method 
+Outer3::Concept::ToS #old() 
+read method 
+Outer3::Concept::ToS old() 
 mut method 
 Outer3::S #accumulator() 
 read method 
@@ -1802,9 +1936,13 @@ Outer3::S accumulator()
 method 
 Outer0 #add(Outer3::Concept::ToS that) 
 method 
+Outer0 #add(Outer3::Concept::ToS that, Outer3::Concept::ToS separedBy) 
+method 
 Outer0 #end() 
 method 
-Outer1 #stringParser(Library that) }}
+Outer3::S::SBuilder #builder() 
+method 
+Outer1 #from(Outer3::S::SBuilder builder) }}
 Parameter:{<:Outer1, Outer2::Message
 type method 
 Outer0 #apply(Outer2::S _text, Outer2::Message::Opt cause) 
@@ -1828,11 +1966,19 @@ type method
 Outer0 #apply(Outer2::S text) 
 type method 
 Outer0 #apply(Outer2::S text, Outer2::Message cause) 
+type method 
+Outer2::S::SBuilder #builder() 
+type method 
+Outer0 #from(Outer2::S::SBuilder builder) 
 method 
 Outer0::SConcat #begin() 
 SConcat:{
 type method 
-Outer0 #apply(Outer3::S accumulator) 
+Outer0 #apply(Outer3::Concept::ToS old, Outer3::S accumulator) 
+mut method 
+Outer3::Concept::ToS #old() 
+read method 
+Outer3::Concept::ToS old() 
 mut method 
 Outer3::S #accumulator() 
 read method 
@@ -1840,9 +1986,13 @@ Outer3::S accumulator()
 method 
 Outer0 #add(Outer3::Concept::ToS that) 
 method 
+Outer0 #add(Outer3::Concept::ToS that, Outer3::Concept::ToS separedBy) 
+method 
 Outer0 #end() 
 method 
-Outer1 #stringParser(Library that) }}
+Outer3::S::SBuilder #builder() 
+method 
+Outer1 #from(Outer3::S::SBuilder builder) }}
 Precondition:{<:Outer1, Outer2::Message
 type method 
 Outer0 #apply(Outer2::S _text, Outer2::Message::Opt cause) 
@@ -1866,11 +2016,19 @@ type method
 Outer0 #apply(Outer2::S text) 
 type method 
 Outer0 #apply(Outer2::S text, Outer2::Message cause) 
+type method 
+Outer2::S::SBuilder #builder() 
+type method 
+Outer0 #from(Outer2::S::SBuilder builder) 
 method 
 Outer0::SConcat #begin() 
 SConcat:{
 type method 
-Outer0 #apply(Outer3::S accumulator) 
+Outer0 #apply(Outer3::Concept::ToS old, Outer3::S accumulator) 
+mut method 
+Outer3::Concept::ToS #old() 
+read method 
+Outer3::Concept::ToS old() 
 mut method 
 Outer3::S #accumulator() 
 read method 
@@ -1878,9 +2036,13 @@ Outer3::S accumulator()
 method 
 Outer0 #add(Outer3::Concept::ToS that) 
 method 
+Outer0 #add(Outer3::Concept::ToS that, Outer3::Concept::ToS separedBy) 
+method 
 Outer0 #end() 
 method 
-Outer1 #stringParser(Library that) }}
+Outer3::S::SBuilder #builder() 
+method 
+Outer1 #from(Outer3::S::SBuilder builder) }}
 ParseFail:{interface <:Outer1}}
 Message:{interface <:Outer1::Concept::ToS, Outer1::Concept::Equals, Outer1::Concept::Classable, Outer1::Concept::Named
 type method 
@@ -2054,7 +2216,9 @@ Outer0 #add(Outer2::Concept::ToS that, Outer2::Concept::ToS separedBy)
 method 
 Outer0 #end() 
 method 
-Outer1 #stringParser(Library that) }
+Outer1::SBuilder #builder() 
+method 
+Outer1 #from(Outer1::SBuilder builder) }
 SBuilder:{
 type method 
 Outer0 #stringParser(Library that) 
@@ -2255,7 +2419,7 @@ Outer0 #backslash()
 method 
 Outer0 #space() 
 method 
-Outer0 #newLine() }
+Outer0 #newline() }
 type method 
 Outer0 #from(Outer0::SBuilder builder) 
 type method 
@@ -2283,11 +2447,19 @@ type method
 Outer0 #apply(Outer1 text) 
 type method 
 Outer0 #apply(Outer1 text, Outer2::Message cause) 
+type method 
+Outer1::SBuilder #builder() 
+type method 
+Outer0 #from(Outer1::SBuilder builder) 
 method 
 Outer0::SConcat #begin() 
 SConcat:{
 type method 
-Outer0 #apply(Outer2 accumulator) 
+Outer0 #apply(Outer3::Concept::ToS old, Outer2 accumulator) 
+mut method 
+Outer3::Concept::ToS #old() 
+read method 
+Outer3::Concept::ToS old() 
 mut method 
 Outer2 #accumulator() 
 read method 
@@ -2295,9 +2467,13 @@ Outer2 accumulator()
 method 
 Outer0 #add(Outer3::Concept::ToS that) 
 method 
+Outer0 #add(Outer3::Concept::ToS that, Outer3::Concept::ToS separedBy) 
+method 
 Outer0 #end() 
 method 
-Outer1 #stringParser(Library that) }}}
+Outer2::SBuilder #builder() 
+method 
+Outer1 #from(Outer2::SBuilder builder) }}}
 N:{<:Outer1::Concept::ToS, Outer1::Concept::Equals, Outer1::Concept::Named
 type method 
 Outer0 fromS(Outer1::Concept::ToS that) 
@@ -2375,11 +2551,19 @@ type method
 Outer0 #apply(Outer2::S text) 
 type method 
 Outer0 #apply(Outer2::S text, Outer2::Message cause) 
+type method 
+Outer2::S::SBuilder #builder() 
+type method 
+Outer0 #from(Outer2::S::SBuilder builder) 
 method 
 Outer0::SConcat #begin() 
 SConcat:{
 type method 
-Outer0 #apply(Outer3::S accumulator) 
+Outer0 #apply(Outer3::Concept::ToS old, Outer3::S accumulator) 
+mut method 
+Outer3::Concept::ToS #old() 
+read method 
+Outer3::Concept::ToS old() 
 mut method 
 Outer3::S #accumulator() 
 read method 
@@ -2387,9 +2571,13 @@ Outer3::S accumulator()
 method 
 Outer0 #add(Outer3::Concept::ToS that) 
 method 
+Outer0 #add(Outer3::Concept::ToS that, Outer3::Concept::ToS separedBy) 
+method 
 Outer0 #end() 
 method 
-Outer1 #stringParser(Library that) }}}
+Outer3::S::SBuilder #builder() 
+method 
+Outer1 #from(Outer3::S::SBuilder builder) }}}
 Bool:{<:Outer1::Concept::ToS, Outer1::Concept::Equals, Outer1::Concept::Named
 method 
 Void #checkTrue() exception Void 
@@ -2434,11 +2622,19 @@ type method
 Outer0 #apply(Outer2::S text) 
 type method 
 Outer0 #apply(Outer2::S text, Outer2::Message cause) 
+type method 
+Outer2::S::SBuilder #builder() 
+type method 
+Outer0 #from(Outer2::S::SBuilder builder) 
 method 
 Outer0::SConcat #begin() 
 SConcat:{
 type method 
-Outer0 #apply(Outer3::S accumulator) 
+Outer0 #apply(Outer3::Concept::ToS old, Outer3::S accumulator) 
+mut method 
+Outer3::Concept::ToS #old() 
+read method 
+Outer3::Concept::ToS old() 
 mut method 
 Outer3::S #accumulator() 
 read method 
@@ -2446,9 +2642,13 @@ Outer3::S accumulator()
 method 
 Outer0 #add(Outer3::Concept::ToS that) 
 method 
+Outer0 #add(Outer3::Concept::ToS that, Outer3::Concept::ToS separedBy) 
+method 
 Outer0 #end() 
 method 
-Outer1 #stringParser(Library that) }}}
+Outer3::S::SBuilder #builder() 
+method 
+Outer1 #from(Outer3::S::SBuilder builder) }}}
 ExitCode:{
 type method 
 Library normal() 
@@ -2458,6 +2658,4 @@ Alu:{'@plugin
 'L42.is/connected/withAlu
 }}
 type method 
-Void printHelloWorld() Outer0::Abstract::Debug.#apply(that:Outer0::Abstract::S.#stringParser(that:{'@stringU
-'Hello World Deployed
-}))}
+Void printHelloWorld() Outer0::Abstract::Debug.#apply(that:Outer0::Abstract::S.#from(builder:Outer0::Abstract::S.#builder().#H().#e().#l().#l().#o().#space().#W().#o().#r().#l().#d().#space().#D().#e().#p().#l().#o().#y().#e().#d()))}

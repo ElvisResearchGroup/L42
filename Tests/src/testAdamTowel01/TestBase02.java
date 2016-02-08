@@ -49,6 +49,8 @@ public class TestBase02 {
   @Test
   public  void _02_02DeploySimpleLib() throws Throwable{
     TestHelper.configureForTest();
+    //new TestBase01()._01_00DeployAdamTowel01();
+    //this._02_00DeployAdamTowel02();
     Paths.get("localhost","DeployedSimpleLib.L42").toFile().delete();
     L42.main(new String[]{"examples/testsForAdamTowel02/DeploySimpleLib.L42"});
     Assert.assertTrue(Paths.get("localhost","DeployedSimpleLib.L42").toFile().exists());

@@ -325,7 +325,7 @@ public interface Expression extends Ast {
     }
   }
 
-  @Value @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") public static class Literal implements Expression, HasPos {
+  @Value @Wither @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") public static class Literal implements Expression, HasPos {
     Position p;
     Expression receiver;
     String inner;

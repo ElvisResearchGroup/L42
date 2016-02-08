@@ -123,9 +123,9 @@
     method
     SConcat #end()
       this
-    method
-    S #stringParser(Library that)
-      this.old()++this.accumulator()++S.#stringParser(that)
+    method S::SBuilder #builder()S::SBuilder.empty()
+    method S #from(S::SBuilder builder)
+      this.old()++this.accumulator()++S.#from(builder:builder)
     }
     
   SBuilder:...

@@ -1,7 +1,10 @@
 package platformSpecific.javaTranslation;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -45,7 +48,10 @@ public class Translator {
       if (ex.getCause() instanceof Error) throw (Error)ex.getCause();
       throw new Error(ex.getCause());
       }
-    catch(CompilationError| IllegalAccessException| IllegalArgumentException| NoSuchMethodException| SecurityException| ClassNotFoundException e){ throw new Error(e);}
+    catch(CompilationError| IllegalAccessException| IllegalArgumentException| NoSuchMethodException| SecurityException| ClassNotFoundException e){
+      //try {Files.write(Paths.get("C:\\Users\\marco\\Desktop\\eclipseMars\\L42Local\\Tests\\src\\generated\\Program42.java"), s.getBytes());}catch (IOException _e) {throw new Error(_e);}
+      throw new Error(e);
+      }
     }
   public static Object runStringExc(String s) throws CompilationError, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, ClassNotFoundException {
     String fileName="generated.Program42";

@@ -475,7 +475,6 @@ public class Desugar extends CloneVisitor{
     Position p=s.getP();
     if(!(s.getCond() instanceof Ast.Atom)){
       String x=Functions.freshName("cond", usedVars);
-      //usedVars.add(x);
       return visit(getBlock(p,x, s.getCond(),s.withCond(new X(x))));
     }
     MCall check=getMCall(p,s.getCond(),"#checkTrue", getPs());
@@ -603,12 +602,29 @@ public class Desugar extends CloneVisitor{
     return super.visit(s);
   }
   public Expression visit(Literal s) {
-    return visit(visit1Step(s));
+    return normalizeReceiver(s).accept(this);//and visit1step
+  }
+  public Expression normalizeReceiver(Literal s) {
+    Expression rcv=s.getReceiver();
+    if (rcv instanceof Ast.Atom){return visit1Step(s);}
+    String x=Functions.freshName("listKind", usedVars);
+    return getBlock(s.getP(),x, rcv,visit1Step(s.withReceiver(new X(x))));    
   }
   static public MCall visit1Step(Literal s) {
-    String name="#stringParser";
-    if(s.isNumber()){name="#numberParser";}
-    return getMCall(s.getP(),s.getReceiver(),name,getPs(encodePrimitiveString(s.getInner())));
+    if(s.isNumber()){
+      String name="#numberParser";
+      return getMCall(s.getP(),s.getReceiver(),name,getPs(encodePrimitiveString(s.getInner())));
+    }
+    Expression chain=getMCall(s.getP(),s.getReceiver(),"#builder",getPs());
+    for(char ch:s.getInner().toCharArray()){
+      String name=Character.toString(ch);
+      if(!Character.isAlphabetic(ch) && ! Character.isDigit(ch) ){
+        name=desugarSymbol(name);
+        }
+      chain=getMCall(s.getP(),chain,"#"+name,getPs());
+    }
+    Parameters ps=new Parameters(Optional.empty(), Collections.singletonList("builder"),Collections.singletonList(chain));
+    return getMCall(s.getP(),s.getReceiver(),"#from",ps);
   }
   protected ast.Ast.VarDecXE liftVarDecXE(ast.Ast.VarDecXE d) {
     assert !d.isVar();
@@ -628,7 +644,10 @@ public class Desugar extends CloneVisitor{
   public static String desugarName(String n){
     if(n.isEmpty())return "#apply";
     if(isNormalName(n)){return n;}
-    String res="#";
+    return "#"+desugarSymbol(n);
+    }
+  public static String desugarSymbol(String n){  
+    String res="";
     for(char c:n.toCharArray()){
       switch (c){
         case '+':res+="plus";break;
@@ -642,6 +661,27 @@ public class Desugar extends CloneVisitor{
         case '=':res+="equal";break;
         case '*':res+="times";break;
         case '/':res+="divide";break;
+        case '(':res+="oRound";break;
+        case ')':res+="cRound";break;
+        case '[':res+="oSquare";break;
+        case ']':res+="cSquare";break;
+        case '{':res+="oCurly";break;
+        case '}':res+="cCurly";break;
+        case '\"':res+="dQuote";break;
+        case '\'':res+="sQuote";break;
+        case '`':res+="hQuote";break;
+        case '?':res+="qMark";break;
+        case '^':res+="hat";break;
+        case ',':res+="comma";break;
+        case ';':res+="semicolon";break;
+        case ':':res+="colon";break;
+        case '.':res+="dot";break;
+        case '_':res+="underscore";break;
+        case '#':res+="hash";break;
+        case '@':res+="at";break;
+        case '\\':res+="backslash";break;
+        case ' ':res+="space";break;
+        case '\n':res+="newline";break;
       }
     }
     return res;
