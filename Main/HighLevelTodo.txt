@@ -25,6 +25,87 @@ should != be desugared in !(==)    > norm for <=, => <,  >> <<,
 This==This0, This1... Thisn for outers, and outer for outside with scope.
 
 Many constructor is ok for a class?
+
+Void checkCoherent(Library lib) (
+  abss=lib.abstractMethods()
+  ks=abss.clazz()[with m in abss.vals() (if m.isConstructor() ( use[m]))]
+  gs==abss.clazz()[with m in abss.vals() (if m.isGetter() ( use[m]))]
+  ss==abss.clazz()[with m in abss.vals() (if m.isSetter() ( use[m]))]
+  if ks.size()+gs.size()+ss.size()!=abss.size() (error _)
+  if ks.isEmpty() (error _)
+  with k1 in ks.vals() (// all ks need to define the same fields
+    with k2 in ks.vals() ( sameParams(k1:k1,k2:k2))
+    )
+  //for each field have  a set of all possible modifers.
+ Mdf: Enum"type, capsule, imm, mut, lent, read"
+ Mdfs: EnumSet(Mdf)
+ FMap:Map(from:S toMut:Mdfs)
+ fmap=FMap[with f in ks.top().parameters().vals() ( use[from:f.name() to: Mdfs.full())]
+
+//for each constructor: type constr is wrong
+ //imm+ constructor need imm+ or Type(all cheched before in isConstr)
+ with k in ks (//need to assume all normalized types?
+   with p in k.parameters().vals() (
+     restrictK(
+       acc:fMap.val(p.name()),
+       mdf:k.mdf(), , pMdf:p.type().mdf()
+       )))
+ with g in gs (restrictG(
+   acc:fMap.val(g.nameAsField()),
+   mdf:g.mdf(), , pMdf:g.returnType().mdf()
+   ))  
+ with s in ss (restrictS(
+   acc:fMap.val(s.nameAsField()),
+   mdf:s.mdf(), , pMdf:s.parameters().top().type().mdf()
+   ))
+with p in fMap.pairs() (
+  if p.val().isEmpty() (error _)
+  )
+  //otherwise, is coherent! 
+ )
+
+restrictK(acc, mdf, pMdf)
+  acc.remove({
+    if pMdf==Mdf"type" (return Mdfs.all()-type) //will write type from now on  
+    //*,type: All / type
+    if mdf==capsule & pMdf==capsule (return Mdfs[type])//will write [type] from now on
+    //capsule,capsule: type
+    if mdf==capsule & pMdf==imm (return Mdfs.all()-imm-capsule )
+    //capsule,imm: All/ imm-
+    if mdf==imm & pMdf==imm (return [type] )
+    //imm,imm: type
+    if mdf==mut & [lent; read].contains(pMdf) (error_)
+    if ![mut;lent;read].contains(mdf) (error _)
+    mutPlus=[pMdf;capsule]//just capsule if pMdf==capsule
+    return Mdfs.all()--mutPlus 
+   //mut,mdf: All /mdf+, mdf notin lent- //else error
+   //lent-,mdf:  All /mdf+
+   })
+
+restrictS(acc, mdf, pMdf)
+  acc.remove({ *,type: All / type
+ capsule,* setter does not make sense?
+imm-,* setter not allowed
+mut,mdf: All /mdf+
+lent,mdf:  All /mdf+, and mdf is lent-
+ )}
+ 
+ 
+restrictG(acc, mdf, pMdf)
+  acc.remove({ *,type: All / type
+ capsule,caps/mut/lent : type,imm
+ capsule,imm/read: type
+imm,imm-:type
+read,imm: All/imm
+read,read: type
+mut,mdf:  All/mdf+
+lent,mdf:  All /mdf+, and mdf is not mut
+)}
+
+carefull in mdf+ includes capsule? yes, a "capsule" field is a capsule/mut/lent field.
+Then a state is consistent if all fields have 1 or more candidate mdf.
+
+
 for example 
 type method mut Outer0 k1(mut Foo n) ' with the actual type of the fields
 type method Outer0 k2(Foo n) ' the imm constructor, can always take imm fields
