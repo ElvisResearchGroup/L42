@@ -12,7 +12,7 @@
       default Debug(S"Sorry, can not print class mirrors")
       )
 
-  method S::SBuilder #builder()S::SBuilder.empty()
+  method mut S::SBuilder #builder()S::SBuilder.empty()
   method S #from(S::SBuilder builder) {
     path=Path.#from(builder:builder)
     return this.that().introspectDocAsString(path:path)

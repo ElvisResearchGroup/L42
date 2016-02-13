@@ -33,7 +33,7 @@
     result:=result.#end() 'reverse the list
     Outer0._private(_binaryRepr:that, _annotations:result)
     )
-  type method S::SBuilder #builder()S::SBuilder.empty()
+  type method mut S::SBuilder #builder()S::SBuilder.empty()
   type method Outer0 #from(S::SBuilder builder)
     Outer0(builder.binaryRepr())
   method Library binaryRepr() this._binaryRepr()

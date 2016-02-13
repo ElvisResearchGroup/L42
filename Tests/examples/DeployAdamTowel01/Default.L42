@@ -17,7 +17,7 @@ Parsable:{
         Outer0.fromS(S.#from(binaryRepr: builder.binaryRepr()))
     
       type method
-      S::SBuilder #builder() S::SBuilder.empty()
+      mut S::SBuilder #builder() S::SBuilder.empty()
      }]<<that
     exception on MetaGuard
       DecorationUnfeasable"Parsable"

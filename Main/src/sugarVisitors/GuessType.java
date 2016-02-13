@@ -1,6 +1,7 @@
 package sugarVisitors;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import tools.Assertions;
@@ -26,13 +27,13 @@ public class GuessType implements Visitor<Type> {
     Type t=e.accept(new GuessType(varEnv));
     return t;
   }
-  public Type visit(Signal s)  {return new NormType(Mdf.Immutable,Path.Void(),Ph.None);}
-  public Type visit(If s) {return new NormType(Mdf.Immutable,Path.Void(),Ph.None);}
-  public Type visit(While s) {return new NormType(Mdf.Immutable,Path.Void(),Ph.None);}
-  public Type visit(With s)  {return new NormType(Mdf.Immutable,Path.Void(),Ph.None);}
-  public Type visit(UseSquare s)  {return new NormType(Mdf.Immutable,Path.Void(),Ph.None);}
-  public Type visit(_void s) {return new NormType(Mdf.Immutable,Path.Void(),Ph.None);}
-  public Type visit(Loop s) {return new NormType(Mdf.Immutable,Path.Void(),Ph.None);}
+  public Type visit(Signal s)  {return NormType.immVoid;}
+  public Type visit(If s) {return NormType.immVoid;}
+  public Type visit(While s) {return NormType.immVoid;}
+  public Type visit(With s)  {return NormType.immVoid;}
+  public Type visit(UseSquare s)  {return NormType.immVoid;}
+  public Type visit(_void s) {return NormType.immVoid;}
+  public Type visit(Loop s) {return NormType.immVoid;}
 
   public Type visit(DocE s) {return s.getInner().accept(this);}
   public Type visit(Using s) {return s.getInner().accept(this); }
@@ -65,19 +66,35 @@ public class GuessType implements Visitor<Type> {
     return result;
   }
 
-  public Type visit(MCall s) {
-    Type t=s.getReceiver().accept(this);
-    assert t!=null:s;
+  public static HistoricType concatHistoricType(Type t,MethodSelector ms ){
     if(t instanceof NormType){
       NormType nt = (NormType)t;
-      List<Ast.MethodSelectorX> selectors=new ArrayList<Ast.MethodSelectorX>();
-      selectors.add(new Ast.MethodSelectorX(getMS(s),""));
+      List<Ast.MethodSelectorX> selectors=Collections.singletonList(new Ast.MethodSelectorX(ms,""));
       return new HistoricType(nt.getPath(), selectors,false);
     }
     HistoricType ht=(HistoricType)t;
     List<Ast.MethodSelectorX> selectors = new ArrayList<>(ht.getSelectors());
-    selectors.add(new Ast.MethodSelectorX(getMS(s),""));
+    selectors.add(new Ast.MethodSelectorX(ms,""));
     return ht.withSelectors(selectors);
+  }
+  public Type visit(MCall s) {
+    try{//to test//TODO: can be removed now?
+    Type t=s.getReceiver().accept(this);
+    assert t!=null:s;
+    return concatHistoricType(t,getMS(s));
+    }catch(StackOverflowError oerr){
+       if(times<1995){
+         times++;
+         System.out.println(times);
+         throw new StackOverflowError();
+        }
+       System.out.println("dd");
+       throw new ast.ErrorMessage.UserLevelError(null,null,null,"");}
+    }
+  public static int times=0;
+  public void foo(){
+    System.out.println("dd");
+    
   }
 
   MethodSelector getMS(MCall mc){
@@ -91,9 +108,9 @@ public class GuessType implements Visitor<Type> {
   public Type visit(UnOp s) { return visit(Desugar.visit1Step(s));}
   public Type visit(FCall s) { return visit(Desugar.visit1Step(s));}
   public Type visit(SquareCall s) { return visit(Desugar.visit1Step(s));}
-  public Type visit(Literal s) { return visit(Desugar.visit1Step(s));}
+  public Type visit(Literal s) { return GuessType.concatHistoricType(s.getReceiver().accept(this),Desugar.literalGuessedSelector());}
   public Type visit(BinOp s) {
-    if(s.getOp().kind==Ast.OpKind.EqOp){return new NormType(Mdf.Immutable,Path.Void(),Ph.None);}
+    if(s.getOp().kind==Ast.OpKind.EqOp){return NormType.immVoid;}
     return visit(Desugar.visit1Step(s));
     }
   public Type visit(SquareWithCall s) {

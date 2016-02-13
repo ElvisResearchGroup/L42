@@ -58,41 +58,7 @@ public class TranslationTest {
   @Test public void t9(){tester(
       "{ A:{()<:IA method foo() void} IA:{interface method Void foo() } }"," A().foo()","platformSpecific.javaTranslation.Resources$Void");}
 
-  @Test public void t10(){tester(
-      TestHelper.multiLine("{"
-      ,"Alu:{'@plugin"
-      ,"  'L42.is/connected/withAlu"
-      ,"  ()}"
-      ,"N:{(Library that)"
-      ,"  type method N #numberParser(Library that) ("
-      ,"    N(use Alu"
-      ,"      check stringToInt32(that)"
-      ,"      error void))"
-      ,"  method N +(N that) ("
-      ,"    N(use Alu"
-      ,"      check sumInt32(n1:this.that() n2:that.that())"
-      ,"      error void))"
-      ,"}}"),
-      " 5N+3N","generated.Program42$Outer0£_N");}
-
-  @Test public void t10b(){tester(
-      TestHelper.multiLine("{"
-      ,"Alu:{'@plugin"
-      ,"  'L42.is/connected/withAlu"
-      ,"  ()}"
-      ,"N:{(Library that)"
-      ,"  type method N #numberParser(Library that) ("
-      ,"    N(use Alu"
-      ,"      check stringToInt32(that)"
-      ,"      error void))"
-      ,"  method N +(N that) ("
-      ,"    N(use Alu"
-      ,"      check sumInt32(n1:this.that() n2:that.that())"
-      ,"      error void))"
-      ,"}}"),
-      " 5N+3N+80N","generated.Program42$Outer0£_N");}
-
-
+ 
 
   public void tester(String cbStr,String eStr,String nameRes) {
     TestHelper.configureForTest();

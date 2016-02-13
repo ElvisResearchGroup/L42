@@ -32,6 +32,7 @@ public class TypecheckBlock {
   public static Type typecheckBlock(TypeSystem that,Block s) {
     //assert suggested instanceof Ast.FreeType || !((NormType)suggested).getPath().equals(Path.Any());
     //it can happen correctly with signal!
+    
     int splitPoint=splitPoint(s);//0 or -1 for no split
     if(splitPoint>0){return typecheckBlock(that,splitBlock(s,splitPoint));}
     return typeCheckMinimalBlockAdaptCatch(that, s);
@@ -219,11 +220,42 @@ public class TypecheckBlock {
     return varEnvs;
   }
 
+  private static int allUnusedUpTo(Set<String> fv,Block s){
+    List<Dec>decs=s.getDecs();
+    int size=s.getDecs().size();
+    for(int i=0;i<size;i++){
+      String x=decs.get(i).getX();
+      if(fv.contains(x)){
+          return i;
+        }
+      }
+    return size;
+  }
+  private static int allUnusedAfter(Set<String> fv,Block s){
+    List<Dec>decs=s.getDecs();
+    int size=s.getDecs().size();
+    for(int i=size-1;i>=0;i--){
+      String x=decs.get(i).getX();
+      if(fv.contains(x)){
+          return i+1;
+        }
+      }
+    return 0;
+  }
+
   private static int splitPoint(Block s) {
     if(s.getDecs().size()<=1){return 0;}
-    int candidate=s.getDecs().size()-1;
-    //String x=s.getDecs().get(candidate).getX();
+   int candidate=s.getDecs().size()-1;
+   int minSplit=0;
+   Type t0=s.getDecs().get(0).getT();
+   Set<String> fv=FreeVariables.ofBlock(s);
+   int earlyBreak=allUnusedAfter(fv, s);
+   if(earlyBreak==0){return -1;/*all unused*/}
+   if(earlyBreak<s.getDecs().size()){return earlyBreak;}
+   assert earlyBreak==s.getDecs().size();
+   if(t0.equals(NormType.immVoid)){minSplit=allUnusedUpTo(fv,s);}
     while(true){
+      if(candidate<=minSplit){return minSplit;}
       int minUse=TypecheckBlock.getMinUse(candidate,s.getDecs());
       if(minUse>=candidate){return candidate;}
       candidate=minUse;
@@ -232,7 +264,7 @@ public class TypecheckBlock {
   }
 
   private static int getMinUse(int candidate, List<Dec> decs) {
-    String x=decs.get(candidate).getX();
+    String x=decs.get(candidate).getX();//TODO: is it possible to avoid recursion here?
     int minUse=candidate;
     for(int i=0;i<candidate;i++){
       if(FreeVariables.of(decs.get(i).getE()).contains(x)){

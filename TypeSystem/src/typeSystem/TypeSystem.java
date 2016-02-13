@@ -438,7 +438,7 @@ public class TypeSystem implements Visitor<Type>, Reporter{
   @Override
   public Type visit(Loop s) {
     return collectEnvs(()->{
-      NormType v=new NormType(Mdf.Immutable,Path.Void(),Ph.None);
+      NormType v=NormType.immVoid;
       checkSuggested(p,v,suggested,s);
       Type preciseTOpt=typecheckSure(false,p,varEnv,sealEnv,throwEnv,v,s.getInner());
       assert Functions.isSubtype(p, (NormType)preciseTOpt,v);

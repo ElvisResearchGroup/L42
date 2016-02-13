@@ -42,6 +42,10 @@ public class Timer {
  
   public static void restart(){timers.clear(); }
   public static String report(){
+    try{return _report();}
+    catch(Throwable t){ t.printStackTrace(); return "Unable to profile, caused by "+t;}
+  }
+  private static String _report(){
     if(timers.size()%2!=0){
       Timer.deactivate("TOP");
     }

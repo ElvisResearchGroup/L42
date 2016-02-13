@@ -24,6 +24,9 @@ public class FreeVariables implements Visitor<Set<String>>{
   public static Set<String> of(ExpCore e){
     return e.accept(new FreeVariables());
   } 
+  public static Set<String> ofBlock(Block s){
+    return new FreeVariables().inBlock(s);
+  } 
   public Set<String> visit(X s) {
     if(!inScope.contains(s.getInner())){
       collected.add(s.getInner());
@@ -58,12 +61,16 @@ public class FreeVariables implements Visitor<Set<String>>{
   @Override
   public Set<String> visit(Block s) {
     for(Block.Dec di:s.getDecs()){  inScope.add(di.getX()); }
+    Set<String> res = inBlock(s);
+    for(Block.Dec di:s.getDecs()){  inScope.remove(di.getX()); }
+    return res;
+  }
+  private Set<String> inBlock(Block s) {
     for(Block.Dec di:s.getDecs()){
       di.getE().accept(this);
       }
     if(!s.getOns().isEmpty()){visitK(s.getOns());}
     Set<String> res = s.getInner().accept(this);
-    for(Block.Dec di:s.getDecs()){  inScope.remove(di.getX()); }
     return res;
   }
   

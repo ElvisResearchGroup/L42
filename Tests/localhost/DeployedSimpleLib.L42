@@ -32,7 +32,7 @@ Outer0 #apply(Outer2::S text)
 type method 
 Outer0 #apply(Outer2::S text, Outer2::Message cause) 
 type method 
-Outer2::S::SBuilder #builder() 
+mut Outer2::S::SBuilder #builder() 
 type method 
 Outer0 #from(Outer2::S::SBuilder builder) 
 method 
@@ -55,7 +55,7 @@ Outer0 #add(Outer3::Concept::ToS that, Outer3::Concept::ToS separedBy)
 method 
 Outer0 #end() 
 method 
-Outer3::S::SBuilder #builder() 
+mut Outer3::S::SBuilder #builder() 
 method 
 Outer1 #from(Outer3::S::SBuilder builder) }}
 ConceptMapUnavailable:{<:Outer2::MetaGuard, Outer2::Message
@@ -80,7 +80,7 @@ Outer0 #apply(Outer2::S text)
 type method 
 Outer0 #apply(Outer2::S text, Outer2::Message cause) 
 type method 
-Outer2::S::SBuilder #builder() 
+mut Outer2::S::SBuilder #builder() 
 type method 
 Outer0 #from(Outer2::S::SBuilder builder) 
 method 
@@ -103,7 +103,7 @@ Outer0 #add(Outer3::Concept::ToS that, Outer3::Concept::ToS separedBy)
 method 
 Outer0 #end() 
 method 
-Outer3::S::SBuilder #builder() 
+mut Outer3::S::SBuilder #builder() 
 method 
 Outer1 #from(Outer3::S::SBuilder builder) }}
 method 
@@ -276,7 +276,7 @@ Outer0 #apply(Outer2::S text)
 type method 
 Outer0 #apply(Outer2::S text, Outer2::Message cause) 
 type method 
-Outer2::S::SBuilder #builder() 
+mut Outer2::S::SBuilder #builder() 
 type method 
 Outer0 #from(Outer2::S::SBuilder builder) 
 method 
@@ -299,7 +299,7 @@ Outer0 #add(Outer3::Concept::ToS that, Outer3::Concept::ToS separedBy)
 method 
 Outer0 #end() 
 method 
-Outer3::S::SBuilder #builder() 
+mut Outer3::S::SBuilder #builder() 
 method 
 Outer1 #from(Outer3::S::SBuilder builder) }}
 Parsable:{
@@ -655,7 +655,7 @@ Void #close() }}
 type method 
 Outer0 #apply(Library that) 
 type method 
-Outer2::S::SBuilder #builder() 
+mut Outer2::S::SBuilder #builder() 
 type method 
 Outer0 #from(Outer2::S::SBuilder builder) 
 method 
@@ -676,7 +676,7 @@ Outer0 #apply(Library lib)
 method 
 Void dbg() 
 method 
-Outer2::S::SBuilder #builder() 
+mut Outer2::S::SBuilder #builder() 
 method 
 Outer2::S #from(Outer2::S::SBuilder builder) 
 method 
@@ -1286,7 +1286,7 @@ Outer0 fromS(Outer1::Concept::ToS that)
 type method 
 Outer0 #from(Outer1::S::SBuilder builder) 
 type method 
-Outer1::S::SBuilder #builder() 
+mut Outer1::S::SBuilder #builder() 
 type method 
 Outer0 #from(Library binaryRepr) 
 type method 
@@ -1333,7 +1333,7 @@ Outer0 #apply(Outer2::S text)
 type method 
 Outer0 #apply(Outer2::S text, Outer2::Message cause) 
 type method 
-Outer2::S::SBuilder #builder() 
+mut Outer2::S::SBuilder #builder() 
 type method 
 Outer0 #from(Outer2::S::SBuilder builder) 
 method 
@@ -1356,7 +1356,7 @@ Outer0 #add(Outer3::Concept::ToS that, Outer3::Concept::ToS separedBy)
 method 
 Outer0 #end() 
 method 
-Outer3::S::SBuilder #builder() 
+mut Outer3::S::SBuilder #builder() 
 method 
 Outer1 #from(Outer3::S::SBuilder builder) }}}
 Path:{<:Outer1::Concept::ToS, Outer1::Concept::Equals, Outer1::Concept::Named
@@ -1367,7 +1367,7 @@ Outer0 fromS(Outer1::Concept::ToS that)
 type method 
 Outer0 #from(Outer1::S::SBuilder builder) 
 type method 
-Outer1::S::SBuilder #builder() 
+mut Outer1::S::SBuilder #builder() 
 type method 
 Outer0 #from(Library binaryRepr) 
 type method 
@@ -1414,7 +1414,7 @@ Outer0 #apply(Outer2::S text)
 type method 
 Outer0 #apply(Outer2::S text, Outer2::Message cause) 
 type method 
-Outer2::S::SBuilder #builder() 
+mut Outer2::S::SBuilder #builder() 
 type method 
 Outer0 #from(Outer2::S::SBuilder builder) 
 method 
@@ -1437,7 +1437,7 @@ Outer0 #add(Outer3::Concept::ToS that, Outer3::Concept::ToS separedBy)
 method 
 Outer0 #end() 
 method 
-Outer3::S::SBuilder #builder() 
+mut Outer3::S::SBuilder #builder() 
 method 
 Outer1 #from(Outer3::S::SBuilder builder) }}}
 Url:{'ParseFailure:Message:S[]<<{<:Guard} no need, related to invariant?
@@ -1447,7 +1447,7 @@ Outer0 fromS(read Outer1::Concept::ToS that)
 type method 
 Outer0 #from(Outer1::S::SBuilder builder) 
 type method 
-Outer1::S::SBuilder #builder() 
+mut Outer1::S::SBuilder #builder() 
 type method 
 Outer0 #apply(Outer1::S inner) 
 mut method 
@@ -1623,7 +1623,7 @@ Outer0 #apply(Outer2::S text)
 type method 
 Outer0 #apply(Outer2::S text, Outer2::Message cause) 
 type method 
-Outer2::S::SBuilder #builder() 
+mut Outer2::S::SBuilder #builder() 
 type method 
 Outer0 #from(Outer2::S::SBuilder builder) 
 method 
@@ -1646,7 +1646,7 @@ Outer0 #add(Outer3::Concept::ToS that, Outer3::Concept::ToS separedBy)
 method 
 Outer0 #end() 
 method 
-Outer3::S::SBuilder #builder() 
+mut Outer3::S::SBuilder #builder() 
 method 
 Outer1 #from(Outer3::S::SBuilder builder) }}
 ObservedBug:{<:Outer1, Outer2::Message
@@ -1671,7 +1671,7 @@ Outer0 #apply(Outer2::S text)
 type method 
 Outer0 #apply(Outer2::S text, Outer2::Message cause) 
 type method 
-Outer2::S::SBuilder #builder() 
+mut Outer2::S::SBuilder #builder() 
 type method 
 Outer0 #from(Outer2::S::SBuilder builder) 
 method 
@@ -1694,7 +1694,7 @@ Outer0 #add(Outer3::Concept::ToS that, Outer3::Concept::ToS separedBy)
 method 
 Outer0 #end() 
 method 
-Outer3::S::SBuilder #builder() 
+mut Outer3::S::SBuilder #builder() 
 method 
 Outer1 #from(Outer3::S::SBuilder builder) }}
 CodeNotReachable:{<:Outer1, Outer2::Message
@@ -1719,7 +1719,7 @@ Outer0 #apply(Outer2::S text)
 type method 
 Outer0 #apply(Outer2::S text, Outer2::Message cause) 
 type method 
-Outer2::S::SBuilder #builder() 
+mut Outer2::S::SBuilder #builder() 
 type method 
 Outer0 #from(Outer2::S::SBuilder builder) 
 method 
@@ -1742,7 +1742,7 @@ Outer0 #add(Outer3::Concept::ToS that, Outer3::Concept::ToS separedBy)
 method 
 Outer0 #end() 
 method 
-Outer3::S::SBuilder #builder() 
+mut Outer3::S::SBuilder #builder() 
 method 
 Outer1 #from(Outer3::S::SBuilder builder) }}
 $:{
@@ -1782,7 +1782,7 @@ Outer0 #apply(Outer2::S text)
 type method 
 Outer0 #apply(Outer2::S text, Outer2::Message cause) 
 type method 
-Outer2::S::SBuilder #builder() 
+mut Outer2::S::SBuilder #builder() 
 type method 
 Outer0 #from(Outer2::S::SBuilder builder) 
 method 
@@ -1805,7 +1805,7 @@ Outer0 #add(Outer3::Concept::ToS that, Outer3::Concept::ToS separedBy)
 method 
 Outer0 #end() 
 method 
-Outer3::S::SBuilder #builder() 
+mut Outer3::S::SBuilder #builder() 
 method 
 Outer1 #from(Outer3::S::SBuilder builder) }}}
 System:{
@@ -1833,7 +1833,7 @@ Outer0 #apply(Outer3::S text)
 type method 
 Outer0 #apply(Outer3::S text, Outer3::Message cause) 
 type method 
-Outer3::S::SBuilder #builder() 
+mut Outer3::S::SBuilder #builder() 
 type method 
 Outer0 #from(Outer3::S::SBuilder builder) 
 method 
@@ -1856,7 +1856,7 @@ Outer0 #add(Outer4::Concept::ToS that, Outer4::Concept::ToS separedBy)
 method 
 Outer0 #end() 
 method 
-Outer4::S::SBuilder #builder() 
+mut Outer4::S::SBuilder #builder() 
 method 
 Outer1 #from(Outer4::S::SBuilder builder) }}}}
 Guard:{' exception as Guard bureocracy, error as Guard detection
@@ -1891,7 +1891,7 @@ Outer0 #apply(Outer2::S text)
 type method 
 Outer0 #apply(Outer2::S text, Outer2::Message cause) 
 type method 
-Outer2::S::SBuilder #builder() 
+mut Outer2::S::SBuilder #builder() 
 type method 
 Outer0 #from(Outer2::S::SBuilder builder) 
 method 
@@ -1914,7 +1914,7 @@ Outer0 #add(Outer3::Concept::ToS that, Outer3::Concept::ToS separedBy)
 method 
 Outer0 #end() 
 method 
-Outer3::S::SBuilder #builder() 
+mut Outer3::S::SBuilder #builder() 
 method 
 Outer1 #from(Outer3::S::SBuilder builder) }}
 Parameter:{<:Outer1, Outer2::Message
@@ -1939,7 +1939,7 @@ Outer0 #apply(Outer2::S text)
 type method 
 Outer0 #apply(Outer2::S text, Outer2::Message cause) 
 type method 
-Outer2::S::SBuilder #builder() 
+mut Outer2::S::SBuilder #builder() 
 type method 
 Outer0 #from(Outer2::S::SBuilder builder) 
 method 
@@ -1962,7 +1962,7 @@ Outer0 #add(Outer3::Concept::ToS that, Outer3::Concept::ToS separedBy)
 method 
 Outer0 #end() 
 method 
-Outer3::S::SBuilder #builder() 
+mut Outer3::S::SBuilder #builder() 
 method 
 Outer1 #from(Outer3::S::SBuilder builder) }}
 Precondition:{<:Outer1, Outer2::Message
@@ -1987,7 +1987,7 @@ Outer0 #apply(Outer2::S text)
 type method 
 Outer0 #apply(Outer2::S text, Outer2::Message cause) 
 type method 
-Outer2::S::SBuilder #builder() 
+mut Outer2::S::SBuilder #builder() 
 type method 
 Outer0 #from(Outer2::S::SBuilder builder) 
 method 
@@ -2010,7 +2010,7 @@ Outer0 #add(Outer3::Concept::ToS that, Outer3::Concept::ToS separedBy)
 method 
 Outer0 #end() 
 method 
-Outer3::S::SBuilder #builder() 
+mut Outer3::S::SBuilder #builder() 
 method 
 Outer1 #from(Outer3::S::SBuilder builder) }}
 ParseFail:{interface <:Outer1}}
@@ -2186,212 +2186,212 @@ Outer0 #add(Outer2::Concept::ToS that, Outer2::Concept::ToS separedBy)
 method 
 Outer0 #end() 
 method 
-Outer1::SBuilder #builder() 
+mut Outer1::SBuilder #builder() 
 method 
 Outer1 #from(Outer1::SBuilder builder) }
 SBuilder:{
-method 
+read method 
 Library binaryRepr() 
-method 
-Outer0 #plusplus(Library that) 
+mut method 
+Void acc(Library that) 
 type method 
-Outer0 empty() 
-method 
-Outer0 #0() 
-method 
-Outer0 #1() 
-method 
-Outer0 #2() 
-method 
-Outer0 #3() 
-method 
-Outer0 #4() 
-method 
-Outer0 #5() 
-method 
-Outer0 #6() 
-method 
-Outer0 #7() 
-method 
-Outer0 #8() 
-method 
-Outer0 #9() 
-method 
-Outer0 #q() 
-method 
-Outer0 #w() 
-method 
-Outer0 #e() 
-method 
-Outer0 #r() 
-method 
-Outer0 #t() 
-method 
-Outer0 #y() 
-method 
-Outer0 #u() 
-method 
-Outer0 #i() 
-method 
-Outer0 #o() 
-method 
-Outer0 #p() 
-method 
-Outer0 #a() 
-method 
-Outer0 #s() 
-method 
-Outer0 #d() 
-method 
-Outer0 #f() 
-method 
-Outer0 #g() 
-method 
-Outer0 #h() 
-method 
-Outer0 #j() 
-method 
-Outer0 #k() 
-method 
-Outer0 #l() 
-method 
-Outer0 #z() 
-method 
-Outer0 #x() 
-method 
-Outer0 #c() 
-method 
-Outer0 #v() 
-method 
-Outer0 #b() 
-method 
-Outer0 #n() 
-method 
-Outer0 #m() 
-method 
-Outer0 #Q() 
-method 
-Outer0 #W() 
-method 
-Outer0 #E() 
-method 
-Outer0 #R() 
-method 
-Outer0 #T() 
-method 
-Outer0 #Y() 
-method 
-Outer0 #U() 
-method 
-Outer0 #I() 
-method 
-Outer0 #O() 
-method 
-Outer0 #P() 
-method 
-Outer0 #A() 
-method 
-Outer0 #S() 
-method 
-Outer0 #D() 
-method 
-Outer0 #F() 
-method 
-Outer0 #G() 
-method 
-Outer0 #H() 
-method 
-Outer0 #J() 
-method 
-Outer0 #K() 
-method 
-Outer0 #L() 
-method 
-Outer0 #Z() 
-method 
-Outer0 #X() 
-method 
-Outer0 #C() 
-method 
-Outer0 #V() 
-method 
-Outer0 #B() 
-method 
-Outer0 #N() 
-method 
-Outer0 #M() 
-method 
-Outer0 #%() 
-method 
-Outer0 #$() 
-method 
-Outer0 #left() 
-method 
-Outer0 #right() 
-method 
-Outer0 #bang() 
-method 
-Outer0 #tilde() 
-method 
-Outer0 #plus() 
-method 
-Outer0 #times() 
-method 
-Outer0 #divide() 
-method 
-Outer0 #less() 
-method 
-Outer0 #and() 
-method 
-Outer0 #or() 
-method 
-Outer0 #oRound() 
-method 
-Outer0 #cRound() 
-method 
-Outer0 #oSquare() 
-method 
-Outer0 #cSquare() 
-method 
-Outer0 #oCurly() 
-method 
-Outer0 #cCurly() 
-method 
-Outer0 #dQuote() 
-method 
-Outer0 #sQuote() 
-method 
-Outer0 #hQuote() 
-method 
-Outer0 #equal() 
-method 
-Outer0 #qMark() 
-method 
-Outer0 #hat() 
-method 
-Outer0 #comma() 
-method 
-Outer0 #semicolon() 
-method 
-Outer0 #colon() 
-method 
-Outer0 #dot() 
-method 
-Outer0 #underscore() 
-method 
-Outer0 #hash() 
-method 
-Outer0 #at() 
-method 
-Outer0 #backslash() 
-method 
-Outer0 #space() 
-method 
-Outer0 #newline() }
+mut Outer0 empty() 
+mut method 
+Void #0() 
+mut method 
+Void #1() 
+mut method 
+Void #2() 
+mut method 
+Void #3() 
+mut method 
+Void #4() 
+mut method 
+Void #5() 
+mut method 
+Void #6() 
+mut method 
+Void #7() 
+mut method 
+Void #8() 
+mut method 
+Void #9() 
+mut method 
+Void #q() 
+mut method 
+Void #w() 
+mut method 
+Void #e() 
+mut method 
+Void #r() 
+mut method 
+Void #t() 
+mut method 
+Void #y() 
+mut method 
+Void #u() 
+mut method 
+Void #i() 
+mut method 
+Void #o() 
+mut method 
+Void #p() 
+mut method 
+Void #a() 
+mut method 
+Void #s() 
+mut method 
+Void #d() 
+mut method 
+Void #f() 
+mut method 
+Void #g() 
+mut method 
+Void #h() 
+mut method 
+Void #j() 
+mut method 
+Void #k() 
+mut method 
+Void #l() 
+mut method 
+Void #z() 
+mut method 
+Void #x() 
+mut method 
+Void #c() 
+mut method 
+Void #v() 
+mut method 
+Void #b() 
+mut method 
+Void #n() 
+mut method 
+Void #m() 
+mut method 
+Void #Q() 
+mut method 
+Void #W() 
+mut method 
+Void #E() 
+mut method 
+Void #R() 
+mut method 
+Void #T() 
+mut method 
+Void #Y() 
+mut method 
+Void #U() 
+mut method 
+Void #I() 
+mut method 
+Void #O() 
+mut method 
+Void #P() 
+mut method 
+Void #A() 
+mut method 
+Void #S() 
+mut method 
+Void #D() 
+mut method 
+Void #F() 
+mut method 
+Void #G() 
+mut method 
+Void #H() 
+mut method 
+Void #J() 
+mut method 
+Void #K() 
+mut method 
+Void #L() 
+mut method 
+Void #Z() 
+mut method 
+Void #X() 
+mut method 
+Void #C() 
+mut method 
+Void #V() 
+mut method 
+Void #B() 
+mut method 
+Void #N() 
+mut method 
+Void #M() 
+mut method 
+Void #%() 
+mut method 
+Void #$() 
+mut method 
+Void #left() 
+mut method 
+Void #right() 
+mut method 
+Void #bang() 
+mut method 
+Void #tilde() 
+mut method 
+Void #plus() 
+mut method 
+Void #times() 
+mut method 
+Void #divide() 
+mut method 
+Void #less() 
+mut method 
+Void #and() 
+mut method 
+Void #or() 
+mut method 
+Void #oRound() 
+mut method 
+Void #cRound() 
+mut method 
+Void #oSquare() 
+mut method 
+Void #cSquare() 
+mut method 
+Void #oCurly() 
+mut method 
+Void #cCurly() 
+mut method 
+Void #dQuote() 
+mut method 
+Void #sQuote() 
+mut method 
+Void #hQuote() 
+mut method 
+Void #equal() 
+mut method 
+Void #qMark() 
+mut method 
+Void #hat() 
+mut method 
+Void #comma() 
+mut method 
+Void #semicolon() 
+mut method 
+Void #colon() 
+mut method 
+Void #dot() 
+mut method 
+Void #underscore() 
+mut method 
+Void #hash() 
+mut method 
+Void #at() 
+mut method 
+Void #backslash() 
+mut method 
+Void #space() 
+mut method 
+Void #newline() }
 type method 
 Outer0 #from(Outer0::SBuilder builder) 
 type method 
-Outer0::SBuilder #builder() 
+mut Outer0::SBuilder #builder() 
 SubStringNotPresent:{<:Outer2::Guard, Outer2::Message
 type method 
 Outer0 #apply(Outer1 _text, Outer2::Message::Opt cause) 
@@ -2414,7 +2414,7 @@ Outer0 #apply(Outer1 text)
 type method 
 Outer0 #apply(Outer1 text, Outer2::Message cause) 
 type method 
-Outer1::SBuilder #builder() 
+mut Outer1::SBuilder #builder() 
 type method 
 Outer0 #from(Outer1::SBuilder builder) 
 method 
@@ -2437,7 +2437,7 @@ Outer0 #add(Outer3::Concept::ToS that, Outer3::Concept::ToS separedBy)
 method 
 Outer0 #end() 
 method 
-Outer2::SBuilder #builder() 
+mut Outer2::SBuilder #builder() 
 method 
 Outer1 #from(Outer2::SBuilder builder) }}}
 N:{<:Outer1::Concept::ToS, Outer1::Concept::Equals, Outer1::Concept::Named
@@ -2448,7 +2448,7 @@ Outer0 #from(Library binaryRepr)
 method 
 Library binaryRepr() 
 type method 
-Outer1::S::SBuilder #builder() 
+mut Outer1::S::SBuilder #builder() 
 type method 
 Outer0 #from(Outer1::S::SBuilder builder) 
 type method 
@@ -2520,7 +2520,7 @@ Outer0 #apply(Outer2::S text)
 type method 
 Outer0 #apply(Outer2::S text, Outer2::Message cause) 
 type method 
-Outer2::S::SBuilder #builder() 
+mut Outer2::S::SBuilder #builder() 
 type method 
 Outer0 #from(Outer2::S::SBuilder builder) 
 method 
@@ -2543,7 +2543,7 @@ Outer0 #add(Outer3::Concept::ToS that, Outer3::Concept::ToS separedBy)
 method 
 Outer0 #end() 
 method 
-Outer3::S::SBuilder #builder() 
+mut Outer3::S::SBuilder #builder() 
 method 
 Outer1 #from(Outer3::S::SBuilder builder) }}}
 Bool:{<:Outer1::Concept::ToS, Outer1::Concept::Equals, Outer1::Concept::Named
@@ -2589,7 +2589,7 @@ Outer0 #apply(Outer2::S text)
 type method 
 Outer0 #apply(Outer2::S text, Outer2::Message cause) 
 type method 
-Outer2::S::SBuilder #builder() 
+mut Outer2::S::SBuilder #builder() 
 type method 
 Outer0 #from(Outer2::S::SBuilder builder) 
 method 
@@ -2612,7 +2612,7 @@ Outer0 #add(Outer3::Concept::ToS that, Outer3::Concept::ToS separedBy)
 method 
 Outer0 #end() 
 method 
-Outer3::S::SBuilder #builder() 
+mut Outer3::S::SBuilder #builder() 
 method 
 Outer1 #from(Outer3::S::SBuilder builder) }}}
 ExitCode:{
@@ -2624,4 +2624,27 @@ Alu:{'@plugin
 'L42.is/connected/withAlu
 }}
 type method 
-Void printHelloWorld() Outer0::Abstract::Debug.#apply(that:Outer0::Abstract::S.#from(builder:Outer0::Abstract::S.#builder().#H().#e().#l().#l().#o().#space().#W().#o().#r().#l().#d().#space().#D().#e().#p().#l().#o().#y().#e().#d()))}
+Void printHelloWorld() Outer0::Abstract::Debug.#apply(that:Outer0::Abstract::S.#from(builder:(
+  Outer0::Abstract::S::#builder() b=Outer0::Abstract::S.#builder()
+  Void unused=b.#H()
+  Void unused0=b.#e()
+  Void unused1=b.#l()
+  Void unused2=b.#l()
+  Void unused3=b.#o()
+  Void unused4=b.#space()
+  Void unused5=b.#W()
+  Void unused6=b.#o()
+  Void unused7=b.#r()
+  Void unused8=b.#l()
+  Void unused9=b.#d()
+  Void unused10=b.#space()
+  Void unused11=b.#D()
+  Void unused12=b.#e()
+  Void unused13=b.#p()
+  Void unused14=b.#l()
+  Void unused15=b.#o()
+  Void unused16=b.#y()
+  Void unused17=b.#e()
+  Void unused18=b.#d()
+  b
+  )))}

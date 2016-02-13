@@ -7,6 +7,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
+import ast.Ast.Mdf;
+import ast.Ast.NormType;
+import ast.Ast.Path;
+import ast.Ast.Ph;
 import sugarVisitors.Desugar;
 import tools.Assertions;
 import tools.StringBuilders;
@@ -123,7 +127,7 @@ public interface Ast {
 		Mdf mdf;
 		Path path;
 		Ph ph;
-
+    public static final NormType immVoid=new NormType(Mdf.Immutable,Path.Void(),Ph.None);
 		public String toString() {
 			return "" + mdf.name() + "" + this.path.rowData + ((ph == Ph.Ph) ? "^" : (ph == Ph.None) ? "" : "%");
 		}

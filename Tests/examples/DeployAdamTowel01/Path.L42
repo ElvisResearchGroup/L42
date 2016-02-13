@@ -15,7 +15,7 @@
   
   type method Outer0 #from(S::SBuilder builder) 
     Outer0.#from(binaryRepr: builder.binaryRepr())
-  type method S::SBuilder #builder() S::SBuilder.empty()
+  type method mut S::SBuilder #builder() S::SBuilder.empty()
   
   type method Outer0 #from(Library binaryRepr) (
     use SafeOperators 

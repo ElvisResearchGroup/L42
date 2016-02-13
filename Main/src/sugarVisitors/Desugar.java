@@ -141,7 +141,7 @@ public class Desugar extends CloneVisitor{
   HashMap<String,ast.ExpCore.ClassB> importedLibs=new HashMap<>();
   Set<String> usedVars=new HashSet<String>();
   ArrayList<ClassB> p=new ArrayList<ClassB>();
-  Type t=new NormType(Mdf.Immutable,Path.Void(),Ph.None);
+  Type t=NormType.immVoid;
   HashMap<String,Type> varEnv=new HashMap<String,Type>();
 
   public Expression visit(RoundBlock s) {
@@ -195,7 +195,7 @@ public class Desugar extends CloneVisitor{
       VarDecE dec=(VarDecE)_dec;
       String x=Functions.freshName("unused", usedVars);
       //usedVars.add(x);
-      VarDecXE newXE=new VarDecXE(false,Optional.of(new NormType(Mdf.Immutable,Path.Void(),Ph.None)),x,dec.getInner());
+      VarDecXE newXE=new VarDecXE(false,Optional.of(NormType.immVoid),x,dec.getInner());
       newDecs.add(newXE);
       }
     RoundBlock result = blockWithDec(s,newDecs);
@@ -463,7 +463,7 @@ public class Desugar extends CloneVisitor{
     Expression cond=Desugar.getMCall(s.getP(),s.getCond(), "#checkTrue",Desugar.getPs());
     RoundBlock b=Desugar.getBlock(s.getP(),cond,s.getThen());
     Loop l=new Loop(b);
-    NormType _void=new NormType(Mdf.Immutable,Path.Void(),Ph.None);
+    NormType _void=NormType.immVoid;
     Expression.Catch k=Desugar.getK(s.getP(),SignalKind.Exception, "",_void,  new _void());
     RoundBlock b2=Desugar.getBlock(s.getP(),l,Collections.singletonList(k),new _void());
     return b2.accept(this);
@@ -478,7 +478,7 @@ public class Desugar extends CloneVisitor{
       return visit(getBlock(p,x, s.getCond(),s.withCond(new X(x))));
     }
     MCall check=getMCall(p,s.getCond(),"#checkTrue", getPs());
-    Expression.Catch k = getK(p,SignalKind.Exception,"",new NormType(Mdf.Immutable,Path.Void(),Ph.None),s.get_else().get());
+    Expression.Catch k = getK(p,SignalKind.Exception,"",NormType.immVoid,s.get_else().get());
     return visit(getBlock(p,check,Collections.singletonList(k),s.getThen()));
   }
 
@@ -610,17 +610,26 @@ public class Desugar extends CloneVisitor{
     String x=Functions.freshName("listKind", usedVars);
     return getBlock(s.getP(),x, rcv,visit1Step(s.withReceiver(new X(x))));    
   }
-  static public MCall visit1Step(Literal s) {
-    Expression chain=getMCall(s.getP(),s.getReceiver(),"#builder",getPs());
+  public MCall visit1Step(Literal s) {
+    //(b=r.builder() b.a() b.b() b.c() .... b)
+    List<VarDec> vd=new ArrayList<>();
+    Expression k=getMCall(s.getP(),s.getReceiver(),"#builder",getPs());
+    String x=Functions.freshName("b", usedVars);
+    X b=new X(x);
+    vd.add(new VarDecXE(false, Optional.empty(), x, k));
     for(char ch:s.getInner().toCharArray()){
       String name=Character.toString(ch);
       if(!Character.isAlphabetic(ch) && ! Character.isDigit(ch) ){
         name=desugarSymbol(name);
         }
-      chain=getMCall(s.getP(),chain,"#"+name,getPs());
+      vd.add(new VarDecE(getMCall(s.getP(),b,"#"+name,getPs())));
     }
-    Parameters ps=new Parameters(Optional.empty(), Collections.singletonList("builder"),Collections.singletonList(chain));
+    Expression inner=getBlock(s.getP(), vd, b);
+    Parameters ps=new Parameters(Optional.empty(), Collections.singletonList("builder"),Collections.singletonList(inner));
     return getMCall(s.getP(),s.getReceiver(),"#from",ps);
+  }
+  static Ast.MethodSelector literalGuessedSelector(){
+    return new Ast.MethodSelector("#from",Collections.singletonList("builder"));
   }
   protected ast.Ast.VarDecXE liftVarDecXE(ast.Ast.VarDecXE d) {
     assert !d.isVar();
@@ -675,11 +684,14 @@ public class Desugar extends CloneVisitor{
         case '_':res+="underscore";break;
         case '#':res+="hash";break;
         case '@':res+="at";break;
+        case '$':res+="$";break;//yes, is not an operator, but is not alphabetic :(
+        case '%':res+="%";break;//yes, is not an operator, but is not alphabetic :(
         case '\\':res+="backslash";break;
         case ' ':res+="space";break;
         case '\n':res+="newline";break;
       }
     }
+    assert res.length()>0;
     return res;
   }
   private static boolean isNormalName(String n) {
@@ -731,7 +743,7 @@ public class Desugar extends CloneVisitor{
     }
   public Expression visit(Using s) {
     Type aux=this.t;
-    this.t=new NormType(Mdf.Immutable,Path.Void(),Ph.None);
+    this.t=NormType.immVoid;
     Parameters ps = liftPs(s.getPs());
     this.t=aux;
     return new Using(lift(s.getPath()),s.getName(),s.getDocs(),ps,lift(s.getInner()));
@@ -846,7 +858,7 @@ public class Desugar extends CloneVisitor{
   static private void cfType2(Expression.Position pos,ast.Ast.FieldDec f, Doc doc,List<Member> result) {
     if(!f.isVar()){return;}
     Type tt=f.getT().match(nt->nt.withPh(Ph.None), hType->hType);    
-    MethodType mti=new MethodType(Doc.empty(),Mdf.Mutable,Collections.singletonList(tt),Collections.singletonList(Doc.empty()),new ast.Ast.NormType(Mdf.Immutable,Path.Void(),Ph.None),Collections.emptyList());
+    MethodType mti=new MethodType(Doc.empty(),Mdf.Mutable,Collections.singletonList(tt),Collections.singletonList(Doc.empty()),NormType.immVoid,Collections.emptyList());
     MethodSelector msi=new MethodSelector(f.getName(),Collections.singletonList("that"));
     result.add(new MethodWithType(doc, msi, mti, Optional.empty(),pos));
   }

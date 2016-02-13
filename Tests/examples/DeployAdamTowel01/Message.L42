@@ -73,7 +73,7 @@ $:{()
       Outer0(_text:text,cause:Message::Opt(cause))
     'next part could become a trait on its own (but S must keep its version)
     
-    type method S::SBuilder #builder()S::SBuilder.empty()
+    type method mut S::SBuilder #builder()S::SBuilder.empty()
       type method Outer0 #from(S::SBuilder builder)
         Outer0(text:S.#from(builder:builder))
         
@@ -93,7 +93,7 @@ $:{()
         )
       method
       SConcat #end() this
-      method S::SBuilder #builder()S::SBuilder.empty()
+      method mut S::SBuilder #builder()S::SBuilder.empty()
       method Outer1 #from(S::SBuilder builder)
         Outer1(text:this.old().toS()++this.accumulator()++S.#from(builder:builder))
       }

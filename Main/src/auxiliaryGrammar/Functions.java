@@ -467,7 +467,7 @@ private static boolean okSubtypeSet(Program p, Mdf mdf, Path path, MethodWithTyp
 private static boolean checkVoidAndThatOk(Program p,MethodWithType mwt) {
   if(mwt.getMt().getTs().size()>1){return false;}
   if(mwt.getMt().getTs().isEmpty()){return true;}
-  if(!Norm.of(p,mwt.getMt().getReturnType()).equals(new NormType(Mdf.Immutable,Path.Void(),Ph.None))){return false;}
+  if(!Norm.of(p,mwt.getMt().getReturnType()).equals(NormType.immVoid)){return false;}
   if(!mwt.getMs().getNames().get(0).equals("that")){return false;}
   return true;
   }

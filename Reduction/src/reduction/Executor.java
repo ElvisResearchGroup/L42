@@ -129,7 +129,7 @@ private static ExpCore loopR(ExpCore ctxVal, LoopR r) {
   }
   newInner=RenameVars.of(newInner,renames);
   assert checkSuccessRename(usedSomewhere, newInner);
-  Block.Dec xDec=new Block.Dec(new NormType(Mdf.Immutable,Path.Void(),Ph.None),x,newInner);
+  Block.Dec xDec=new Block.Dec(NormType.immVoid,x,newInner);
   Ast.Position pos=null; if(r.getThat().getInner() instanceof Ast.HasPos){pos=((Ast.HasPos)r.getThat().getInner()).getP();}
   Block result=new Block(Doc.empty(),Collections.singletonList(xDec),r.getThat(),Collections.emptyList(),pos);
   return ReplaceCtx.of(ctxVal, result);

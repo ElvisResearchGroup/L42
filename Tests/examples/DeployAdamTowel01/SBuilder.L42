@@ -1,227 +1,227 @@
-{ _private(Library _binaryRepr)'@private
+{ _private(var Library _binaryRepr)'@private
  
-  method Library binaryRepr() this._binaryRepr()
+  read method Library binaryRepr() this._binaryRepr()
 
-  method Outer0 ++(Library that) Outer0._private(_binaryRepr:
+  mut method Void acc(Library that) this._binaryRepr(
     use Alu
     check stringConcat(s1:this.binaryRepr(),s2:that)
     error void)
 
-  type method Outer0 empty() Outer0._private(_binaryRepr:{
+  type method mut Outer0 empty() Outer0._private(_binaryRepr:{
     '@stringU
     '
     })
   
   'NUMBERS:
   
-  method Outer0 #0() this++{'@stringU
+     mut method Void #0() this.acc({'@stringU
     '0
-  }method Outer0 #1() this++{'@stringU
+  }) mut method Void #1() this.acc({'@stringU
     '1
-  }method Outer0 #2() this++{'@stringU
+  }) mut method Void #2() this.acc({'@stringU
     '2
-  }method Outer0 #3() this++{'@stringU
+  }) mut method Void #3() this.acc({'@stringU
     '3
-  }method Outer0 #4() this++{'@stringU
+  }) mut method Void #4() this.acc({'@stringU
     '4
-  }method Outer0 #5() this++{'@stringU
+  }) mut method Void #5() this.acc({'@stringU
     '5
-  }method Outer0 #6() this++{'@stringU
+  }) mut method Void #6() this.acc({'@stringU
     '6
-  }method Outer0 #7() this++{'@stringU
+  }) mut method Void #7() this.acc({'@stringU
     '7
-  }method Outer0 #8() this++{'@stringU
+  }) mut method Void #8() this.acc({'@stringU
     '8
-  }method Outer0 #9() this++{'@stringU
+  }) mut method Void #9() this.acc({'@stringU
     '9
-  }
+  })
     'LOWERCASE:
     
-  method Outer0 #q() this++{'@stringU
+     mut method Void #q() this.acc({'@stringU
     'q
-  }method Outer0 #w() this++{'@stringU
+  }) mut method Void #w() this.acc({'@stringU
     'w
-  }method Outer0 #e() this++{'@stringU
+  }) mut method Void #e() this.acc({'@stringU
     'e
-  }method Outer0 #r() this++{'@stringU
+  }) mut method Void #r() this.acc({'@stringU
     'r
-  }method Outer0 #t() this++{'@stringU
+  }) mut method Void #t() this.acc({'@stringU
     't
-  }method Outer0 #y() this++{'@stringU
+  }) mut method Void #y() this.acc({'@stringU
     'y
-  }method Outer0 #u() this++{'@stringU
+  }) mut method Void #u() this.acc({'@stringU
     'u
-  }method Outer0 #i() this++{'@stringU
+  }) mut method Void #i() this.acc({'@stringU
     'i
-  }method Outer0 #o() this++{'@stringU
+  }) mut method Void #o() this.acc({'@stringU
     'o
-  }method Outer0 #p() this++{'@stringU
+  }) mut method Void #p() this.acc({'@stringU
     'p
-  }method Outer0 #a() this++{'@stringU
+  }) mut method Void #a() this.acc({'@stringU
     'a
-  }method Outer0 #s() this++{'@stringU
+  }) mut method Void #s() this.acc({'@stringU
     's
-  }method Outer0 #d() this++{'@stringU
+  }) mut method Void #d() this.acc({'@stringU
     'd
-  }method Outer0 #f() this++{'@stringU
+  }) mut method Void #f() this.acc({'@stringU
     'f
-  }method Outer0 #g() this++{'@stringU
+  }) mut method Void #g() this.acc({'@stringU
     'g
-  }method Outer0 #h() this++{'@stringU
+  }) mut method Void #h() this.acc({'@stringU
     'h
-  }method Outer0 #j() this++{'@stringU
+  }) mut method Void #j() this.acc({'@stringU
     'j
-  }method Outer0 #k() this++{'@stringU
+  }) mut method Void #k() this.acc({'@stringU
     'k
-  }method Outer0 #l() this++{'@stringU
+  }) mut method Void #l() this.acc({'@stringU
     'l
-  }method Outer0 #z() this++{'@stringU
+  }) mut method Void #z() this.acc({'@stringU
     'z
-  }method Outer0 #x() this++{'@stringU
+  }) mut method Void #x() this.acc({'@stringU
     'x
-  }method Outer0 #c() this++{'@stringU
+  }) mut method Void #c() this.acc({'@stringU
     'c
-  }method Outer0 #v() this++{'@stringU
+  }) mut method Void #v() this.acc({'@stringU
     'v
-  }method Outer0 #b() this++{'@stringU
+  }) mut method Void #b() this.acc({'@stringU
     'b
-  }method Outer0 #n() this++{'@stringU
+  }) mut method Void #n() this.acc({'@stringU
     'n
-  }method Outer0 #m() this++{'@stringU
+  }) mut method Void #m() this.acc({'@stringU
     'm
-  }
+  })
   
   'UPPERCASE:
 
-   method Outer0 #Q() this++{'@stringU
+     mut method Void #Q() this.acc({'@stringU
     'Q
-  }method Outer0 #W() this++{'@stringU
+  }) mut method Void #W() this.acc({'@stringU
     'W
-  }method Outer0 #E() this++{'@stringU
+  }) mut method Void #E() this.acc({'@stringU
     'E
-  }method Outer0 #R() this++{'@stringU
+  }) mut method Void #R() this.acc({'@stringU
     'R
-  }method Outer0 #T() this++{'@stringU
+  }) mut method Void #T() this.acc({'@stringU
     'T
-  }method Outer0 #Y() this++{'@stringU
+  }) mut method Void #Y() this.acc({'@stringU
     'Y
-  }method Outer0 #U() this++{'@stringU
+  }) mut method Void #U() this.acc({'@stringU
     'U
-  }method Outer0 #I() this++{'@stringU
+  }) mut method Void #I() this.acc({'@stringU
     'I
-  }method Outer0 #O() this++{'@stringU
+  }) mut method Void #O() this.acc({'@stringU
     'O
-  }method Outer0 #P() this++{'@stringU
+  }) mut method Void #P() this.acc({'@stringU
     'P
-  }method Outer0 #A() this++{'@stringU
+  }) mut method Void #A() this.acc({'@stringU
     'A
-  }method Outer0 #S() this++{'@stringU
+  }) mut method Void #S() this.acc({'@stringU
     'S
-  }method Outer0 #D() this++{'@stringU
+  }) mut method Void #D() this.acc({'@stringU
     'D
-  }method Outer0 #F() this++{'@stringU
+  }) mut method Void #F() this.acc({'@stringU
     'F
-  }method Outer0 #G() this++{'@stringU
+  }) mut method Void #G() this.acc({'@stringU
     'G
-  }method Outer0 #H() this++{'@stringU
+  }) mut method Void #H() this.acc({'@stringU
     'H
-  }method Outer0 #J() this++{'@stringU
+  }) mut method Void #J() this.acc({'@stringU
     'J
-  }method Outer0 #K() this++{'@stringU
+  }) mut method Void #K() this.acc({'@stringU
     'K
-  }method Outer0 #L() this++{'@stringU
+  }) mut method Void #L() this.acc({'@stringU
     'L
-  }method Outer0 #Z() this++{'@stringU
+  }) mut method Void #Z() this.acc({'@stringU
     'Z
-  }method Outer0 #X() this++{'@stringU
+  }) mut method Void #X() this.acc({'@stringU
     'X
-  }method Outer0 #C() this++{'@stringU
+  }) mut method Void #C() this.acc({'@stringU
     'C
-  }method Outer0 #V() this++{'@stringU
+  }) mut method Void #V() this.acc({'@stringU
     'V
-  }method Outer0 #B() this++{'@stringU
+  }) mut method Void #B() this.acc({'@stringU
     'B
-  }method Outer0 #N() this++{'@stringU
+  }) mut method Void #N() this.acc({'@stringU
     'N
-  }method Outer0 #M() this++{'@stringU
+  }) mut method Void #M() this.acc({'@stringU
     'M
-  }method Outer0 #%() this++{'@stringU
+  }) mut method Void #%() this.acc({'@stringU
     '%
-  }method Outer0 #$() this++{'@stringU
+  }) mut method Void #$() this.acc({'@stringU
     '$
-  }    
+  })    
   'OPERATORS:
-   method Outer0 <() this++{'@stringU
+   mut method Void <() this.acc({'@stringU
     '<
-  }method Outer0 >() this++{'@stringU
+  }) mut method Void >() this.acc({'@stringU
     '>
-  }method Outer0 !() this++{'@stringU
+  }) mut method Void !() this.acc({'@stringU
     '!
-  }method Outer0 ~() this++{'@stringU
+  }) mut method Void ~() this.acc({'@stringU
     '~
-  }method Outer0 +() this++{'@stringU
+  }) mut method Void +() this.acc({'@stringU
     '+
-  }method Outer0 *() this++{'@stringU
+  }) mut method Void *() this.acc({'@stringU
     '*
-  }method Outer0 /() this++{'@stringU
+  }) mut method Void /() this.acc({'@stringU
     '/
-  }method Outer0 -() this++{'@stringU
+  }) mut method Void -() this.acc({'@stringU
     '-
-  }method Outer0 &() this++{'@stringU
+  }) mut method Void &() this.acc({'@stringU
     '&
-  }method Outer0 |() this++{'@stringU
+  }) mut method Void |() this.acc({'@stringU
     '|
-  }
+  })
   
   'SYMBOLS- Parenthesis:
 
-   method Outer0 #oRound() this++{'@stringU
+     mut method Void #oRound() this.acc({'@stringU
     '(
-  }method Outer0 #cRound() this++{'@stringU
+  }) mut method Void #cRound() this.acc({'@stringU
     ')
-  }method Outer0 #oSquare() this++{'@stringU
+  }) mut method Void #oSquare() this.acc({'@stringU
     '[
-  }method Outer0 #cSquare() this++{'@stringU
+  }) mut method Void #cSquare() this.acc({'@stringU
     ']
-  }method Outer0 #oCurly() this++{'@stringU
+  }) mut method Void #oCurly() this.acc({'@stringU
     '{
-  }method Outer0 #cCurly() this++{'@stringU
+  }) mut method Void #cCurly() this.acc({'@stringU
     '}
-  }method Outer0 #dQuote() this++{'@stringU
+  }) mut method Void #dQuote() this.acc({'@stringU
     '"
-  }method Outer0 #sQuote() this++{'@stringU
+  }) mut method Void #sQuote() this.acc({'@stringU
     ''
-  }method Outer0 #hQuote() this++{'@stringU
+  }) mut method Void #hQuote() this.acc({'@stringU
     '`
-  }
+  })
   
   'SYMBOLS- Unused operators:
-   method Outer0 #equal() this++{'@stringU
+     mut method Void #equal() this.acc({'@stringU
     '=
-  }method Outer0 #qMark() this++{'@stringU
+  }) mut method Void #qMark() this.acc({'@stringU
     '?
-  }method Outer0 #hat() this++{'@stringU
+  }) mut method Void #hat() this.acc({'@stringU
     '^
-  }method Outer0 #comma() this++{'@stringU
+  }) mut method Void #comma() this.acc({'@stringU
     ',
-  }method Outer0 #semicolon() this++{'@stringU
+  }) mut method Void #semicolon() this.acc({'@stringU
     ';
-  }method Outer0 #colon() this++{'@stringU
+  }) mut method Void #colon() this.acc({'@stringU
     ':
-  }method Outer0 #dot() this++{'@stringU
+  }) mut method Void #dot() this.acc({'@stringU
     '.
-  }method Outer0 #underscore() this++{'@stringU
+  }) mut method Void #underscore() this.acc({'@stringU
     '_
-  }method Outer0 #hash() this++{'@stringU
+  }) mut method Void #hash() this.acc({'@stringU
     '#
-  }method Outer0 #at() this++{'@stringU
+  }) mut method Void #at() this.acc({'@stringU
     '\u0040
-  }method Outer0 #backslash() this++{'@stringU
+  }) mut method Void #backslash() this.acc({'@stringU
     '\
-  }method Outer0 #space() this++{'@stringU
+  }) mut method Void #space() this.acc({'@stringU
     ' 
-  }method Outer0 #newline() this++{'@stringU
+  }) mut method Void #newline() this.acc({'@stringU
     '
     '
-  }
+  })
 }
