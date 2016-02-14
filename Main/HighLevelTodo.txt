@@ -16,19 +16,21 @@ Assert::Bug[] postconditions/checks in the middle
 and 
 Assert::Pre""()
 and
-Assert::Bug""()  also for code unreachable error on Bla Assert::Bug""
+Assert::Bug""()  also for code unreachable? error on Bla Assert::Bug""
 NotImplementedYet
 Unreachable //error in the language or (another) method do not respect its postcondition
-
+or Bug can have a (broken:S"localPaht.selector")
 
 should != be desugared in !(==)    > norm for <=, => <,  >> <<, 
 This==This0, This1... Thisn for outers, and outer for outside with scope.
 
 Many constructor is ok for a class?
 
+
+//isFactory, isGetter, isSetter ensure invariants as seen later
 Void checkCoherent(Library lib) (
   abss=lib.abstractMethods()
-  ks=abss.clazz()[with m in abss.vals() (if m.isConstructor() ( use[m]))]
+  ks=abss.clazz()[with m in abss.vals() (if m.isFactory() ( use[m]))]
   gs==abss.clazz()[with m in abss.vals() (if m.isGetter() ( use[m]))]
   ss==abss.clazz()[with m in abss.vals() (if m.isSetter() ( use[m]))]
   if ks.size()+gs.size()+ss.size()!=abss.size() (error _)
@@ -36,11 +38,10 @@ Void checkCoherent(Library lib) (
   with k1 in ks.vals() (// all ks need to define the same fields
     with k2 in ks.vals() ( sameParams(k1:k1,k2:k2))
     )
-  //for each field have  a set of all possible modifers.
+  //each field have  a set of all possible modifers.
  Mdf: Enum"type, capsule, imm, mut, lent, read"
- Mdfs: EnumSet(Mdf)
- FMap:Map(from:S toMut:Mdfs)
- fmap=FMap[with f in ks.top().parameters().vals() ( use[from:f.name() to: Mdfs.full())]
+ FMap:Map(from:S toMut:Mdf.Set)
+ fmap=FMap[with f in ks.top().parameters().vals() ( use[from:f.name() to: Mdf.all())]
 
 //for each constructor: type constr is wrong
  //imm+ constructor need imm+ or Type(all cheched before in isConstr)
@@ -64,43 +65,54 @@ with p in fMap.pairs() (
   //otherwise, is coherent! 
  )
 
-restrictK(acc, mdf, pMdf)
-  acc.remove({
-    if pMdf==Mdf"type" (return Mdfs.all()-type) //will write type from now on  
-    //*,type: All / type
-    if mdf==capsule & pMdf==capsule (return Mdfs[type])//will write [type] from now on
-    //capsule,capsule: type
-    if mdf==capsule & pMdf==imm (return Mdfs.all()-imm-capsule )
-    //capsule,imm: All/ imm-
-    if mdf==imm & pMdf==imm (return [type] )
-    //imm,imm: type
-    if mdf==mut & [lent; read].contains(pMdf) (error_)
-    if ![mut;lent;read].contains(mdf) (error _)
-    mutPlus=[pMdf;capsule]//just capsule if pMdf==capsule
-    return Mdfs.all()--mutPlus 
-   //mut,mdf: All /mdf+, mdf notin lent- //else error
-   //lent-,mdf:  All /mdf+
+class method
+Void restrictK(Introspection.Mdf.Set acc, Introspection.Mdf mM, Introspection.Mdf pM) //resultmodifier  parametermodifier
+  acc.retain(all:{  
+    //mM never type,
+    //mM==#mut implies pM !< #[#lent; #read]
+    //mM<#[#imm;#capsule] implies pM<#[#imm;#capsule;#type]
+    //  0type +3caps+ 3Imm + 4mut + 6lent+6read =22
+    if pM==#type return #[#type]   //5
+    if mM<#[#imm;#capsule] return #all-#type//4
+    if pM==#imm return #[#imm;#read]//3
+    Assert.Bug[ mM < #[#mut;#lent;#read] ]
+    Assert.Bug[ pM < #[#capsule;#mut;#lent;#read] ] // 3*4= 12 left, but mut not with lent/read, thus 10 left
+    if pM==#capsule  return #all-#type //3
+    if pM==#mut  return #[#mut;#lent;#read]//3
+    if pM==#lent return #[#lent ;#read]   //2
+    return #[#read]//2
    })
 
-restrictS(acc, mdf, pMdf)
-  acc.remove({ *,type: All / type
- capsule,* setter does not make sense?
-imm-,* setter not allowed
-mut,mdf: All /mdf+
-lent,mdf:  All /mdf+, and mdf is lent-
+method
+Void restrictS(Introspection.Mdf.Set acc, Introspection.Mdf mM, Introspection.Mdf pM) //methodmodifier  parametermodifier
+  acc.retain(all:{//mM only mut,lent;  mM==mut implies pM !< #[#lent; #read]  6+4=10
+  if pM==#type return #[#type]   //2
+  if pM==#imm return #[#imm;#read] //2
+  if pM==#capsule return #all-#type //2 
+  if pM==#read return #[#read] //1
+  if pM==#lent return #[#lent;#read] //1
+  Assert.Bug[pM==#mut]
+  if mM==#lent return #[#lent;#read] //1
+  return #[#mut;#lent;#read]//1
  )}
  
- 
-restrictG(acc, mdf, pMdf)
-  acc.remove({ *,type: All / type
- capsule,caps/mut/lent : type,imm
- capsule,imm/read: type
-imm,imm-:type
-read,imm: All/imm
-read,read: type
-mut,mdf:  All/mdf+
-lent,mdf:  All /mdf+, and mdf is not mut
-)}
+ method
+ Void restrictG(Introspection.Mdf.Set acc, Introspection.Mdf mM, Introspection.Mdf pM) //methodmodifier resultmodifier
+  acc.retain({
+  //mM not type, pM ==capsule implies mM==capsule
+  //mM< #[#read; #imm] implies  pM !< #[#mut; #lent]
+  //mM== #lent implies  pM != #mut
+ // 6caps+ 4lent+3read +3Imm+5mut   =21
+    if pM==#type return #[#type]   //5     // 5caps+ 3lent+2read +2Imm+4mut 
+    if pM==#imm return #[#imm] //5      // 4caps+ 2lent+1read +1Imm+3mut
+    Assert.Bug[mM==#read -> pM==#read]
+    Assert.Bug[pM==#lent -> mM<#[#mut;#lent;#capsule]]
+    if pM<#[#capsule;#lent] return #[#mut;#lent;#capsule] //1+3   // 2caps+ 1lent+1read +1Imm+2mut
+    if pM==#read return #all-#type  //mM=imm,read,lent,mut,capsule 5   // 1caps+ 0lent+0read +0Imm+1mut
+    Assert.Bug[pM==#mut]
+    Assert.Bug[mM< #[#mut;#capsule]]
+    return #[#mut;#capsule]//2  // 0caps+ 0lent+0read +0Imm+0mut
+  )}
 
 carefull in mdf+ includes capsule? yes, a "capsule" field is a capsule/mut/lent field.
 Then a state is consistent if all fields have 1 or more candidate mdf.
