@@ -2,14 +2,13 @@ package is.L42.connected.withSafeOperators;
 
 import static auxiliaryGrammar.EncodingHelper.ensureExtractClassB;
 import static auxiliaryGrammar.EncodingHelper.ensureExtractStringU;
-import static auxiliaryGrammar.EncodingHelper.extractInt32;
+import static auxiliaryGrammar.EncodingHelper.ensureExtractInt32;
 import static auxiliaryGrammar.EncodingHelper.ensureExtractPathFromJava;
 import static auxiliaryGrammar.EncodingHelper.ensureExtractDoc;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static auxiliaryGrammar.EncodingHelper.ensureExtractInt32;
 
 import ast.Ast;
 import ast.Ast.Doc;

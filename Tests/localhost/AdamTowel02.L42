@@ -705,7 +705,11 @@ Void #next() exception Void (
 read method 
 Void #checkEnd() void
 read method 
-Outer1 #inner() this.start()
+Outer1 #inner() this.start().#less(that:Outer1.#from(builder:(
+  Outer1::#builder() b=Outer1.#builder()
+  Void unused=b.#1()
+  b
+  )))
 read method 
 Void #close() void}
 type method '@private

@@ -83,7 +83,19 @@ public class TestBase02 {
      Assert.assertEquals(L42.record.toString(),
          "DanielWriteHere\n");
      }
+   @Test
+   public  void _02_101BinaryFlag32() throws Throwable{
+     TestHelper.configureForTest();
+     //new TestBase01()._01_00DeployAdamTowel01();
+     //this._02_00DeployAdamTowel02();
+     L42.main(new String[]{"examples/testsForAdamTowel02/TestBinaryFlag32.L42"});
+     Assert.assertEquals(L42.record.toString(),
+         "B00000000000000000000000000000101\n5\nB00000000000000000000000010100101\n");
+     }
+   //B00000000000000000000000000000000
 
+   
+   
    @Test
    public  void _02_07addInvariant() throws Throwable{
      TestHelper.configureForTest();

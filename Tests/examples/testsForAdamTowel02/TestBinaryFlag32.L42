@@ -1,0 +1,132 @@
+{reuse L42.is/AdamTowel02
+BinaryFlag32:{(N that)
+  <:Concept::ToS Concept::Equals Concept::Named'@private
+  
+  method myName()GetMyName(Outer0)
+  
+  method toS() ( 
+    one=Outer0(1N)
+    S"B"[with i in 0N.vals(upTo:32N) (
+      twoi=one<<(31N-i)
+      if (twoi & this) ==twoi ( use[S"1"] )
+      else (use[S"0"])
+    )]"")
+  
+  type method
+  Outer0 fromS(Concept::ToS that) this.#from(builder:(
+    s=that.toS()
+    b=this.#builder()
+    with i in 0N.vals(upTo:s.size()) (
+      c=s(i)
+      if c==S"0" (b.#0())
+      else if c==S"1" (b.#1())
+      else error ParseFail
+        "BinaryFlag32 invalid character:["[c
+        ]"] contained in string:["[s]"]."
+      )
+    b
+    ))
+    
+  type method  
+  mut BBuilder #builder()
+    BBuilder.empty()
+  
+  ParseFail:Message::$<<{<:Guard::ParseFail}
+  BBuilder:{(var Library that, var N count)
+    type method
+    mut Outer0 empty()
+      Outer0(0N.binaryRepr(),count:0N)
+  
+    mut method Void #0() (
+      this.count(this.count()+1N)
+      this.that(use Alu
+        check leftShiftInt32(n1:this.that() n2:1N.binaryRepr())
+        error void)
+      )    
+    mut method Void #1() (
+      this.#0()
+      this.that(use Alu
+        check orInt32(n1:this.that(), n2:1N.binaryRepr())
+        error void
+        )
+      )    
+    }  
+  type method
+  Outer0 #from(BBuilder builder) (
+    if builder.count()>32N (error ParseFail
+      "BinaryFlag32 too long:"[builder.count()]" bits was required."
+      )
+    Outer0(N.#from(binaryRepr:builder.that()))
+    )
+      
+  method'@private
+  Outer0 res(Library that) Outer0(N.#from(binaryRepr:that))
+  method'@private
+  Library br() this.that().binaryRepr()
+  method
+  Outer0 &(Outer0 that) this.res(use Alu
+      check andInt32(n1:this.br() n2:that.br())
+      error void)
+  method
+  Outer0 |(Outer0 that) this.res(use Alu
+      check orInt32(n1:this.br() n2:that.br())
+      error void)
+  method
+  Outer0 <<(N that) this.res(use Alu
+      check leftShiftInt32(n1:this.br() n2:that.binaryRepr())
+      error void)
+  method
+  Outer0 >>(N that) this.res(use Alu
+      check rightShiftInt32(n1:this.br() n2:that.binaryRepr())
+      error void)
+  method
+  Outer0 xor(Outer0 that) this.res(use Alu
+      check xorInt32(n1:this.br() n2:that.br())
+      error void)
+  method
+  Outer0 ~() this.res(use Alu
+      check notInt32(n1:this.br())
+      error void)
+    
+  method
+  Bool ==(Outer0 that) this.that()==that.that()
+  
+  method equals(that){
+    with that (on Outer0 return this==that)
+    return Bool.false()
+    }
+  
+  method
+  Bool <(Outer0 that) {
+    use Alu
+      check ifUInt32GrtDo(n1:this.br() n2:that.br())
+      return Bool.true()
+    return Bool.false()
+    }
+
+  method
+  Bool <=(Outer0 that) {
+    use Alu
+      check ifUInt32GEqDo(n1:this.br() n2:that.br())
+      return Bool.true()
+    return Bool.false()
+    }
+
+  method Bool !=(Outer0 that) !(this==that)
+
+  method Bool >(Outer0 that)  !(this<=that)
+
+
+  method Bool >=(Outer0 that) !(this<that)
+  }
+
+
+Main:{
+  bf=101BinaryFlag32
+  Debug(bf)
+  Debug(bf.that())
+  Debug(bf | 10100000BinaryFlag32)
+  
+  return ExitCode.normal()
+  }
+}

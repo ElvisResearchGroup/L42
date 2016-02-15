@@ -473,7 +473,11 @@ Void #next() exception Void (
 read method 
 Void #checkEnd() void
 read method 
-Outer1 #inner() this.start()
+Outer1 #inner() this.start().#less(that:Outer2::N.#from(builder:(
+  Outer2::N::#builder() b=Outer2::N.#builder()
+  Void unused=b.#1()
+  b
+  )))
 read method 
 Void #close() void}}
 S:{<:Outer1::Concept::ToS, Outer1::Concept::Equals, Outer1::Concept::Named

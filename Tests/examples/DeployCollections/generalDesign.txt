@@ -1,0 +1,105 @@
+design
+
+mut list imm/mut/...
+
+read method TR top()
+mut method T #top()
+mut method Void top(T that)
+
+read method TR bottom()
+mut method T #bottom()
+mut method Void bottom(that)
+
+read method TR val(N that)
+mut method T #val(N that)
+mut method Void (N that Tval)
+
+mut method remove(index)
+mut method removeTop
+mut method removeBottom
+mut method removeAll(elem:)
+mut method removeFirst(elem:)
+mut method removeLast(elem:)
+
+method pop(N index)//need to be imm to be optimizable
+method popTop  need imm constr
+method popBottom   need imm constr
+method popAll(elem:)
+method popFirst(elem:)
+method popLast(elem:)
+
+mut method Void add(T top)
+mut method Void add(T bottom)
+mut method Void add(N that T val)
+
+method List push(T top)
+method List push(T bottom)
+method List push(N that T val)
+
+method List +(T that)
+method List ++(List that)
+method List -(T that) //removeAll
+method List --(List that)//set remove
+
+method List &(List that)//set intersection
+method List |(List that)//set union
+
+method Bool >(T that)  //contains
+method Bool !>(T that)
+method Bool >=(T that)  //superseteq
+method Bool >>(T that) //superset
+method Bool !>>(T that)
+method Bool !>=(T that)
+class method mut List []
+
+read method N size()
+read method Boolean isEmpty()
+
+
+plus functionalList with
+implements Flist? but with no generics?
+read top
+mut #top
+top(that)
+
+read bottom
+mut #bottom
+bottom(that)
+
+val(that)
+#val(that)
+(that val)
+
+size
+isEmpty
+
+pop(index)
+popTop  need imm constr
+popBottom   need imm constr
+popAll(elem:)
+popFirst
+popLast
+
+
+iteratorVals vals()
+iterator?Vals #vals()
+iteratorVars   vars()
+
+
+------
+enumerations:
+Mdf:{(N inner)<: Concept::ToS
+  method S name(){
+    if this.inner()==1N.B return S"type"
+    if this.inner()==10N.B return S"capsule"
+    if this.inner()==100N.B return S"imm"
+    if this.inner()==1000N.B return S"mut"
+    if this.inner()==10000N.B return S"lent"
+    if this.inner()==100000N.B return S"read"
+    }
+  method toS(){}
+  
+  Set:{
+    }
+
+  }

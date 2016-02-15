@@ -14,63 +14,114 @@ public class Plugin implements PluginType {
   // +
   @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
   public  Object MsumInt32£xn1£xn2(Object cb1,Object cb2){
-    Integer i1=extractInt32(cb1);
-    Integer i2=extractInt32(cb2);
-    if (i1==null ||i2==null){throw new Resources.Error("InvalidInt32");}
+    Integer i1=ensureExtractInt32(cb1);
+    Integer i2=ensureExtractInt32(cb2);
     return i1+i2;
   }
   //*
   @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
   public  Object MmulInt32£xn1£xn2(Object cb1,Object cb2){
-    Integer i1=extractInt32(cb1);
-    Integer i2=extractInt32(cb2);
-    if (i1==null ||i2==null){throw new Resources.Error("InvalidInt32");}
+    Integer i1=ensureExtractInt32(cb1);
+    Integer i2=ensureExtractInt32(cb2);
     return i1*i2;
   }
   // /
   @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
   public  Object MdivInt32£xn1£xn2(Object cb1,Object cb2){
-    Integer i1=extractInt32(cb1);
-    Integer i2=extractInt32(cb2);
-    if (i1==null ||i2==null){throw new Resources.Error("InvalidInt32");}
+    Integer i1=ensureExtractInt32(cb1);
+    Integer i2=ensureExtractInt32(cb2);
     return i1/i2;
   }
   //-
   @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
   public  Object MsubInt32£xn1£xn2(Object cb1,Object cb2){
-    Integer i1=extractInt32(cb1);
-    Integer i2=extractInt32(cb2);
-    if (i1==null ||i2==null){throw new Resources.Error("InvalidInt32");}
+    Integer i1=ensureExtractInt32(cb1);
+    Integer i2=ensureExtractInt32(cb2);
     return i1-i2;
   }
+  //&
+  @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+  public  Object MandInt32£xn1£xn2(Object cb1,Object cb2){
+    Integer i1=ensureExtractInt32(cb1);
+    Integer i2=ensureExtractInt32(cb2);
+    return i1 & i2;
+  }
+  // |
+  @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+  public  Object MorInt32£xn1£xn2(Object cb1,Object cb2){
+    Integer i1=ensureExtractInt32(cb1);
+    Integer i2=ensureExtractInt32(cb2);
+    return i1 | i2;
+  }
+  // ^
+  @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+  public  Object MxorInt32£xn1£xn2(Object cb1,Object cb2){
+    Integer i1=ensureExtractInt32(cb1);
+    Integer i2=ensureExtractInt32(cb2);
+    return i1 ^ i2;
+  } 
+  // <<
+  @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+  public  Object MleftShiftInt32£xn1£xn2(Object cb1,Object cb2){
+    Integer i1=ensureExtractInt32(cb1);
+    Integer i2=ensureExtractInt32(cb2);
+    if(i2>=32){return 0;}
+    return i1 << i2;
+  }
+//>>
+ @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+ public  Object MrightShiftInt32£xn1£xn2(Object cb1,Object cb2){
+   Integer i1=ensureExtractInt32(cb1);
+   Integer i2=ensureExtractInt32(cb2);
+   if(i2>=32){return 0;}
+   return i1 >>> i2;
+ }
+  //~
+  @ActionType({ActionType.Type.Library,ActionType.Type.Library})
+  public  Object MnotInt32£xn1(Object cb1){
+    Integer i1=ensureExtractInt32(cb1);
+    return ~i1 ;
+  } 
   //==
   @ActionType({ActionType.Type.Void,ActionType.Type.Library,ActionType.Type.Library})
   public  Resources.Void MifInt32EqualDo£xn1£xn2(Object cb1,Object cb2){
-    Integer i1=extractInt32(cb1);
-    Integer i2=extractInt32(cb2);
-    if (i1==null ||i2==null){throw new Resources.Error("InvalidInt32");}
+    Integer i1=ensureExtractInt32(cb1);
+    Integer i2=ensureExtractInt32(cb2);
     if(!i1.equals(i2)){return Resources.Void.instance;}
     throw Resources.notAct;
   }
   //<
   @ActionType({ActionType.Type.Void,ActionType.Type.Library,ActionType.Type.Library})
   public  Resources.Void MifInt32GrtDo£xn1£xn2(Object cb1,Object cb2){
-    Integer i1=extractInt32(cb1);
-    Integer i2=extractInt32(cb2);
-    if (i1==null ||i2==null){throw new Resources.Error("InvalidInt32");}
+    Integer i1=ensureExtractInt32(cb1);
+    Integer i2=ensureExtractInt32(cb2);
     if(!(i1<i2)){return Resources.Void.instance;}
     throw Resources.notAct;
   }
   //<=
   @ActionType({ActionType.Type.Void,ActionType.Type.Library,ActionType.Type.Library})
   public  Resources.Void MifInt32GEqDo£xn1£xn2(Object cb1,Object cb2){
-    Integer i1=extractInt32(cb1);
-    Integer i2=extractInt32(cb2);
-    if (i1==null ||i2==null){throw new Resources.Error("InvalidInt32");}
+    Integer i1=ensureExtractInt32(cb1);
+    Integer i2=ensureExtractInt32(cb2);
     if(!(i1<=i2)){return Resources.Void.instance;}
     throw Resources.notAct;
   }
-
+//< unsigned
+  @ActionType({ActionType.Type.Void,ActionType.Type.Library,ActionType.Type.Library})
+  public  Resources.Void MifUInt32GrtDo£xn1£xn2(Object cb1,Object cb2){
+    Integer i1=ensureExtractInt32(cb1);
+    Integer i2=ensureExtractInt32(cb2);
+    if(Integer.compareUnsigned(i1,i2)>=0){return Resources.Void.instance;}
+    throw Resources.notAct;
+  }
+//<= unsigned
+  @ActionType({ActionType.Type.Void,ActionType.Type.Library,ActionType.Type.Library})
+  public  Resources.Void MifUInt32GEqDo£xn1£xn2(Object cb1,Object cb2){
+    Integer i1=ensureExtractInt32(cb1);
+    Integer i2=ensureExtractInt32(cb2);
+    if(Integer.compareUnsigned(i1,i2)>0){return Resources.Void.instance;}
+    throw Resources.notAct;
+  }
   @ActionType({ActionType.Type.Library,ActionType.Type.Library})
   public  Object MstringToInt32£xthat(Object cb){
     String s=ensureExtractStringU(cb);

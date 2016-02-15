@@ -82,11 +82,6 @@ public class EncodingHelper{
     return new ClassB(Doc.factory("@stringU\n"+produceStringUnicode(s)+"\n"),Doc.empty(),false,Collections.emptyList(),Collections.emptyList(),verifiedStage.copyMostStableInfo());
   }
 
-  public static ClassB ensureExtractCt(Object e,Program p) {
-    ClassB cb=ensureExtractClassB(e);
-    //ClassB res = Configuration.typeSystem.typeExtraction(p,cb);
-    return cb;
-    }
  
   public static Doc ensureExtractDoc(Object e) {
     if(e instanceof Doc){return (Doc)e;}
@@ -95,24 +90,24 @@ public class EncodingHelper{
     }
 
   public static ClassB ensureExtractClassB(Object e) {
-    ClassB res=extractClassB(e);
+    ClassB res=_extractClassB(e);
     if (res==null ){
       throw new Resources.Error("InvalidClassB for ensureExtractClassB");
       }
     return res;
     }
-  public static ClassB extractClassB(Object e) {
+  public static ClassB _extractClassB(Object e) {
     if(e instanceof ClassB){return (ClassB)e;}
     if(e instanceof Integer){return wrapInt32((Integer)e);}
     if(e instanceof String){return wrapStringU((String)e);}
     return null;
     }
   public static Integer ensureExtractInt32(Object e) {
-    Integer res=extractInt32(e);
+    Integer res=_extractInt32(e);
     if (res==null ){throw new Resources.Error("InvalidInt32");}
     return res;
     }
-  public static Integer extractInt32(Object e) {
+  public static Integer _extractInt32(Object e) {
     if(e instanceof Integer){return (Integer)e;}
     if(!(e instanceof ClassB)){return null;}
     ClassB cb=(ClassB)e;
@@ -123,11 +118,11 @@ public class EncodingHelper{
     }
   
   public static Path ensureExtractPathFromJava(Object e) {
-    Path res=extractPathFromJava(e);
+    Path res=_extractPathFromJava(e);
     if (res==null ){throw new Resources.Error("InvalidPath");}
     return res;
     }
-  public static Ast.Path extractPathFromJava(Object e) {
+  public static Ast.Path _extractPathFromJava(Object e) {
     if(e instanceof Ast.Path){return (Ast.Path)e;}
     if(e instanceof Resources.Any){return Path.Any();}
     if(e instanceof Resources.Library){return Path.Library();}
@@ -136,14 +131,14 @@ public class EncodingHelper{
     return (Path) ((Resources.Revertable)e).revert();
     }
   public static String ensureExtractStringU(Object e) {
-    String res=extractStringU(e);
+    String res=_extractStringU(e);
     if (res==null ){
       System.out.println("Doh, invalid string"+e);
       throw new Resources.Error("InvalidStringU");
       }
     return res;
     }
-  public static String extractStringU(Object e) {
+  public static String _extractStringU(Object e) {
     if(e instanceof String){return (String)e;}
     if(!(e instanceof ClassB)){return null;}
     ClassB cb=(ClassB)e;
