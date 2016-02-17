@@ -76,7 +76,7 @@ mut Introspection.Mdf.Set extract(mut FMap that,Introspection.Method ifPresent) 
   }
 
 class method
-Void restrictK(Introspection.Mdf.Set acc, Introspection.Mdf oM, Introspection.Mdf fM) //resultmodifier  parametermodifier
+Void restrictK(mut Introspection.Mdf.Set acc, Introspection.Mdf oM, Introspection.Mdf fM)
   acc.retain(all:{  
     //oM never type,
     //oM==#mut implies fM !< #[#lent; #read]
@@ -94,7 +94,7 @@ Void restrictK(Introspection.Mdf.Set acc, Introspection.Mdf oM, Introspection.Md
    })
 
 method
-Void restrictS(Introspection.Mdf.Set acc, Introspection.Mdf oM, Introspection.Mdf fM) //methodmodifier  parametermodifier
+Void restrictS(mut Introspection.Mdf.Set acc, Introspection.Mdf oM, Introspection.Mdf fM)
   acc.retain(all:{//oM only mut,lent;  oM==mut implies fM !< #[#lent; #read]  6+4=10
   if fM==#type return #[#type]   //2
   if fM==#imm return #[#imm;#read] //2
@@ -107,7 +107,7 @@ Void restrictS(Introspection.Mdf.Set acc, Introspection.Mdf oM, Introspection.Md
  )}
  
  method
- Void restrictG(Introspection.Mdf.Set acc, Introspection.Mdf oM, Introspection.Mdf fM) //methodmodifier resultmodifier
+ Void restrictG(mut Introspection.Mdf.Set acc, Introspection.Mdf oM, Introspection.Mdf fM) 
   acc.retain({
   //oM not type, fM ==capsule implies oM==capsule
   //oM< #[#read; #imm] implies  fM !< #[#mut; #lent]
