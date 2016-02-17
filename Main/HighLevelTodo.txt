@@ -30,6 +30,7 @@ Many constructor is ok for a class?
 //isFactory, isGetter, isSetter ensure invariants as seen later
 Void checkCoherent(Library lib) (
   abss=lib.abstractMethods()
+  if abss.isEmpty() (OK!!)
   ks=abss.clazz()[with m in abss.vals() (if m.isFactory() ( use[m]))]
   gs==abss.clazz()[with m in abss.vals() (if m.isGetter() ( use[m]))]
   ss==abss.clazz()[with m in abss.vals() (if m.isSetter() ( use[m]))]
@@ -72,7 +73,6 @@ mut Introspection.Mdf.Set extract(mut FMap that,Introspection.Method ifPresent) 
   s=m.nameAsField().toS()
   if !that.has(key:s) error _ //abs method m is not part of state
   return that.val(s)
-  catch error 
   }
 
 class method
