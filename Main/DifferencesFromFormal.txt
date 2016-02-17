@@ -1,12 +1,21 @@
 (// means still to implement)
 *Syntactic sugar
-//S"foo"    =    S.#from(builder:S.#builder().#f().#o().#o())
-//12N       =    N.#from(builder:N.#builder().#1().#2())
+S"foo"    =    S.#from(builder:S.#builder().#f().#o().#o())
+12N       =    N.#from(builder:N.#builder().#1().#2())
 //V[a;b]     =    V.#from(builder:V.#builder().#add(a).#add(b))
 *Syntax
 Catch T x e
 Catch Ts e
 s on Ts e
+
+sugar expression hash #_,
+   e.m(xes) with e!=x,#_ directlyIn xes === (x=e, x.m(xes))
+   x.m(xes) with #_ directlyIn xes === x.m(xes[#/x.m(xs)])
+   #_ directlyIn e.m(xes) if #_ directlyIn e, #_ !directlyIn classB otherwise propagate.
+   e.m(xes)[#/x.m(xi)] =e[#/x.m(xi)].m(xes), classB[#/x]=classB, otherwise propagate.
+   #id/x.m(xi) = x.id()
+   #/x.m(xi) = x.m_default(xi:void)
+
 
 *core logic
 //normalized classB {*  or {+   or {-   with all norm types and all interface method with refined type

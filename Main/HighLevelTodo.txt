@@ -1,14 +1,14 @@
 todo: 
-refactor at1 at2 code with new syntax
 constructors understanding
+new desugaring for []
+consider e0[e1;e2] desugared in (x=e0 x.#fromSequence(x.#sequenceFactory().#add(e1).#add(e2))
 in deploy towel, check code is self contained (see AT1 outer0)
-= vs: . vs:: // vs '
+= vs: . vs:: // vs ' plus /**/
 use check vs use m(xes) with
 decorator MakeMethod[m; m0; m1 x1, mn xn; excNum]
 ={m method m0 T0 (m1 T1 x1, ...,mn Tn xn) exception Tn+1,...Tn+excNum}
 //can be done with sum method+make abstract, but would be very slow
 
-consider e0[e1;e2] desugared in (x=e0 x.#fromSequence(x.#sequenceFactory().#add(e1).#add(e2))
 
 Assert::Pre[] preconditions
 and
@@ -49,16 +49,17 @@ Void checkCoherent(Library lib) (
    with p in k.parameters().vals() (
      restrictK(
        acc:fMap.val(p.name()),
-       mdf:k.mdf(), , pMdf:p.type().mdf()
+       oM:k.mdf(),  fM:p.type().mdf()
        )))
  with g in gs (restrictG(
-   acc:fMap.val(g.nameAsField()),
-   mdf:g.mdf(), , pMdf:g.returnType().mdf()
+   acc:this.extrat(fMap, ifPresent:g),
+   oM:g.mdf(), fM:g.returnType().mdf()
    ))  
  with s in ss (restrictS(
-   acc:fMap.val(s.nameAsField()),
-   mdf:s.mdf(), , pMdf:s.parameters().top().type().mdf()
+   acc:this.extrat(fMap, ifPresent:g),
+   oM:s.mdf(), fM:s.parameters().top().type().mdf()
    ))
+
 with p in fMap.pairs() (
   if p.val().isEmpty() (error _)
   )
@@ -66,51 +67,60 @@ with p in fMap.pairs() (
  )
 
 class method
-Void restrictK(Introspection.Mdf.Set acc, Introspection.Mdf mM, Introspection.Mdf pM) //resultmodifier  parametermodifier
+mut Introspection.Mdf.Set extract(mut FMap that,Introspection.Method ifPresent) {
+  m=ifPresent
+  s=m.nameAsField().toS()
+  if !that.has(key:s) error _ //abs method m is not part of state
+  return that.val(s)
+  catch error 
+  }
+
+class method
+Void restrictK(Introspection.Mdf.Set acc, Introspection.Mdf oM, Introspection.Mdf fM) //resultmodifier  parametermodifier
   acc.retain(all:{  
-    //mM never type,
-    //mM==#mut implies pM !< #[#lent; #read]
-    //mM<#[#imm;#capsule] implies pM<#[#imm;#capsule;#type]
+    //oM never type,
+    //oM==#mut implies fM !< #[#lent; #read]
+    //oM<#[#imm;#capsule] implies fM<#[#imm;#capsule;#type]
     //  0type +3caps+ 3Imm + 4mut + 6lent+6read =22
-    if pM==#type return #[#type]   //5
-    if mM<#[#imm;#capsule] return #all-#type//4
-    if pM==#imm return #[#imm;#read]//3
-    Assert.Bug[ mM < #[#mut;#lent;#read] ]
-    Assert.Bug[ pM < #[#capsule;#mut;#lent;#read] ] // 3*4= 12 left, but mut not with lent/read, thus 10 left
-    if pM==#capsule  return #all-#type //3
-    if pM==#mut  return #[#mut;#lent;#read]//3
-    if pM==#lent return #[#lent ;#read]   //2
+    if fM==#type return #[#type]   //5
+    if oM<#[#imm;#capsule] return #all-#type//4
+    if fM==#imm return #[#imm;#read]//3
+    Assert.Bug[ oM < #[#mut;#lent;#read] ]
+    Assert.Bug[ fM < #[#capsule;#mut;#lent;#read] ] // 3*4= 12 left, but mut not with lent/read, thus 10 left
+    if fM==#capsule  return #all-#type //3
+    if fM==#mut  return #[#mut;#lent;#read]//3
+    if fM==#lent return #[#lent ;#read]   //2
     return #[#read]//2
    })
 
 method
-Void restrictS(Introspection.Mdf.Set acc, Introspection.Mdf mM, Introspection.Mdf pM) //methodmodifier  parametermodifier
-  acc.retain(all:{//mM only mut,lent;  mM==mut implies pM !< #[#lent; #read]  6+4=10
-  if pM==#type return #[#type]   //2
-  if pM==#imm return #[#imm;#read] //2
-  if pM==#capsule return #all-#type //2 
-  if pM==#read return #[#read] //1
-  if pM==#lent return #[#lent;#read] //1
-  Assert.Bug[pM==#mut]
-  if mM==#lent return #[#lent;#read] //1
+Void restrictS(Introspection.Mdf.Set acc, Introspection.Mdf oM, Introspection.Mdf fM) //methodmodifier  parametermodifier
+  acc.retain(all:{//oM only mut,lent;  oM==mut implies fM !< #[#lent; #read]  6+4=10
+  if fM==#type return #[#type]   //2
+  if fM==#imm return #[#imm;#read] //2
+  if fM==#capsule return #all-#type //2 
+  if fM==#read return #[#read] //1
+  if fM==#lent return #[#lent;#read] //1
+  Assert.Bug[fM==#mut]
+  if oM==#lent return #[#lent;#read] //1
   return #[#mut;#lent;#read]//1
  )}
  
  method
- Void restrictG(Introspection.Mdf.Set acc, Introspection.Mdf mM, Introspection.Mdf pM) //methodmodifier resultmodifier
+ Void restrictG(Introspection.Mdf.Set acc, Introspection.Mdf oM, Introspection.Mdf fM) //methodmodifier resultmodifier
   acc.retain({
-  //mM not type, pM ==capsule implies mM==capsule
-  //mM< #[#read; #imm] implies  pM !< #[#mut; #lent]
-  //mM== #lent implies  pM != #mut
+  //oM not type, fM ==capsule implies oM==capsule
+  //oM< #[#read; #imm] implies  fM !< #[#mut; #lent]
+  //oM== #lent implies  fM != #mut
  // 6caps+ 4lent+3read +3Imm+5mut   =21
-    if pM==#type return #[#type]   //5     // 5caps+ 3lent+2read +2Imm+4mut 
-    if pM==#imm return #[#imm] //5      // 4caps+ 2lent+1read +1Imm+3mut
-    Assert.Bug[mM==#read -> pM==#read]
-    Assert.Bug[pM==#lent -> mM<#[#mut;#lent;#capsule]]
-    if pM<#[#capsule;#lent] return #[#mut;#lent;#capsule] //1+3   // 2caps+ 1lent+1read +1Imm+2mut
-    if pM==#read return #all-#type  //mM=imm,read,lent,mut,capsule 5   // 1caps+ 0lent+0read +0Imm+1mut
-    Assert.Bug[pM==#mut]
-    Assert.Bug[mM< #[#mut;#capsule]]
+    if fM==#type return #[#type]   //5     // 5caps+ 3lent+2read +2Imm+4mut 
+    if fM==#imm return #[#imm] //5      // 4caps+ 2lent+1read +1Imm+3mut
+    Assert.Bug[oM==#read -> fM==#read]
+    Assert.Bug[fM==#lent -> oM<#[#mut;#lent;#capsule]]
+    if fM<#[#capsule;#lent] return #[#mut;#lent;#capsule] //1+3   // 2caps+ 1lent+1read +1Imm+2mut
+    if fM==#read return #all-#type  //oM=imm,read,lent,mut,capsule 5   // 1caps+ 0lent+0read +0Imm+1mut
+    Assert.Bug[fM==#mut]
+    Assert.Bug[oM< #[#mut;#capsule]]
     return #[#mut;#capsule]//2  // 0caps+ 0lent+0read +0Imm+0mut
   )}
 

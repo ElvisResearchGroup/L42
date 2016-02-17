@@ -79,7 +79,17 @@ public interface Expression extends Ast {
       return v.visit(this);
     }
   }
+  @Value public static class HashId implements Expression, Ast.Atom {
+    String inner;//contains the "#"
+    public String toString() {
+      return this.inner;
+    }
+    @Override public <T> T accept(sugarVisitors.Visitor<T> v) {
+      return v.visit(this);
+    }
+  }
 
+  
   @Value @EqualsAndHashCode(exclude = "p") /*@ToString(exclude = "p")*/ @Wither public static class BinOp implements Expression, HasPos {
     Position p;
     Expression left;
@@ -113,7 +123,7 @@ public interface Expression extends Ast {
     }
   }
 
-  @Value @EqualsAndHashCode(exclude = {"p"}) @ToString(exclude = {"p"}) public static class MCall implements Expression, HasPos {
+  @Value @Wither @EqualsAndHashCode(exclude = {"p"}) @ToString(exclude = {"p"}) public static class MCall implements Expression, HasPos {
     Expression receiver;
     String name;
     Doc doc;
@@ -323,6 +333,7 @@ public interface Expression extends Ast {
     @Override public <T> T accept(sugarVisitors.Visitor<T> v) {
       return v.visit(this);
     }
+    public static final _void instance=new _void();
   }
 
   @Value @Wither @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") public static class Literal implements Expression, HasPos {

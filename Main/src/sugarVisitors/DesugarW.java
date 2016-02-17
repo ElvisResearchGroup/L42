@@ -46,9 +46,9 @@ import auxiliaryGrammar.Functions;
 
 class DesugarW extends CloneVisitor{
   Set<String> usedVars=new HashSet<String>();
-  public static Expression of(Expression e){
+  public static Expression of(Set<String> usedVars,Expression e){
     DesugarW d=new DesugarW();
-    d.usedVars.addAll(CollectDeclaredVars.of(e));
+    d.usedVars=usedVars;
     Expression result= e.accept(d);
     return result;
   }
@@ -95,7 +95,7 @@ class DesugarW extends CloneVisitor{
     }
   private static With with_A_applyDefault(With e) {//a (case a in 6 pages)
   if (e.getDefaultE().isPresent()){return e;}
-  return e.withDefaultE(Optional.of(new _void()));
+  return e.withDefaultE(Optional.of(Expression._void.instance));
   }
   public Expression visit(SquareWithCall s) {
     String x=Functions.freshName("accumulator", this.usedVars);
@@ -141,7 +141,7 @@ class DesugarW extends CloneVisitor{
     ks.add(new Expression.Catch1(pos,SignalKind.Return,t,z,//case return captured
         new X(z)));//return it
     ks.add(new Expression.Catch1(pos,SignalKind.Return,t2,z,//else
-        new Signal(SignalKind.Exception,new _void())));// exception void
+        new Signal(SignalKind.Exception,Expression._void.instance)));// exception void
     RoundBlock block=Desugar.getBlock(pos,
       new Signal(SignalKind.Return,new X(x)),
       ks,Desugar.errorMsg("CastT-Should be unreachable code"));
@@ -204,7 +204,7 @@ class DesugarW extends CloneVisitor{
     contents.add(content);
     contents.add(Desugar.getBlockContent(e0));
     //void)
-    return new RoundBlock(pos,Doc.empty(),new _void(),contents);
+    return new RoundBlock(pos,Doc.empty(),Expression._void.instance,contents);
   }
 
   /*private static Expression with_C_B(Position p,Expression cond, Expression then, Expression _else) {
@@ -231,8 +231,8 @@ class DesugarW extends CloneVisitor{
     RoundBlock inner=new RoundBlock(pos,Doc.empty(),b,bc);
     Catch k=Desugar.getK(pos,SignalKind.Exception, "",
         NormType.immVoid,
-        new _void());
-    inner=Desugar.getBlock(pos,new Loop(inner), Collections.singletonList(k), new _void());
+        Expression._void.instance);
+    inner=Desugar.getBlock(pos,new Loop(inner), Collections.singletonList(k), Expression._void.instance);
     Expression result=withDeclareIts(is,inner);
     //accept
     return result;
@@ -253,7 +253,7 @@ class DesugarW extends CloneVisitor{
     Expression eClose=Desugar.getMCall(inner.getP(),new X(i0.getX()),"#close",Desugar.getPs());
     Catch k1 = withDesugarGetDefaultCatch(inner.getP(),SignalKind.Exception,eClose);
     Catch k2 = withDesugarGetDefaultCatch(inner.getP(),SignalKind.Return,eClose);
-    RoundBlock conclusive1=Desugar.getBlock(inner.getP(),recursive, Collections.singletonList(k1), new _void());
+    RoundBlock conclusive1=Desugar.getBlock(inner.getP(),recursive, Collections.singletonList(k1), Expression._void.instance);
     RoundBlock conclusive2=Desugar.getBlock(inner.getP(),conclusive1, Collections.singletonList(k2), eClose);
     return conclusive2;
   }
@@ -279,15 +279,15 @@ class DesugarW extends CloneVisitor{
     List<VarDec> decs=new ArrayList<>();
     for(String x:xs.subList(index+1, xs.size())){
       Expression ei=Desugar.getMCall(pos,new X(x),"#next",Desugar.getPs());
-      ei=withE1CatchExceptionOnVoidE2elseE3(pos,ei,new _void(),new _void());
+      ei=withE1CatchExceptionOnVoidE2elseE3(pos,ei,Expression._void.instance,Expression._void.instance);
       decs.add(new VarDecE(ei));
     }
     for(String x:xs){
       Expression ei=Desugar.getMCall(pos,new X(x),"#checkEnd",Desugar.getPs());
-      ei=withE1CatchExceptionOnVoidE2elseE3(pos,ei,new _void(),new _void());
+      ei=withE1CatchExceptionOnVoidE2elseE3(pos,ei,Expression._void.instance,Expression._void.instance);
       decs.add(new VarDecE(ei));
     }
-    Expression eCatch=Desugar.getBlock(pos,decs, new Signal(SignalKind.Exception,new _void()));
+    Expression eCatch=Desugar.getBlock(pos,decs, new Signal(SignalKind.Exception,Expression._void.instance));
     Expression.Catch k=Desugar.getK(pos,SignalKind.Exception, "", NormType.immVoid,eCatch);
     return Desugar.getBlockContent(eStart,k);
   }

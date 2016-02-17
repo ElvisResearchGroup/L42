@@ -78,6 +78,7 @@ ClassSep: '::';
 MX:Lowercase (Uppercase|Lowercase|Digit|'#')*'(';
 X:Lowercase (Uppercase|Lowercase|Digit|'#')*;
 HashX:'#'  (Uppercase|Lowercase|Digit|'#')*'(';
+HashId:'#'  (Uppercase|Lowercase|Digit|'#');
 //void is a particular X, syntactically
 
 StringQuote: '"' String '"' | '"' (' ' | ',')* '\n' ((' ' | ',')*StrLine)+ (' ' | ',')* '"';
@@ -126,8 +127,9 @@ eL1:
 numParse: DataOp? NumParse;
 eUnOp: UnOp? /*numParse?*/ ePost;
 ePost: eAtom  (squareW|square|Dot mCall|ORoundNoSpace round|docs | stringParse)*;
-eAtom:classBReuse|classB|numParse? x | xOp|numParse? Path|numParse? block|ifExpr|whileExpr| signalExpr| loopExpr |WalkBy | w |using | DotDotDot | mxRound | useSquare;
-mxRound:MX round;
+eAtom:classBReuse|classB|numParse? x | xOp|numParse? Path|numParse? block|ifExpr|whileExpr| signalExpr| loopExpr |WalkBy | w |using | DotDotDot | mxRound | useSquare|hashId;
+mxRound: m round;
+hashId: HashId;
 useSquare: Using square | Using squareW;
 ifExpr: If eTop block (Else eTop)?;
 using:Using Path Check mCall eTop;

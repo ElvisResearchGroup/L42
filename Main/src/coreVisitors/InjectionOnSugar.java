@@ -42,7 +42,7 @@ public class InjectionOnSugar implements Visitor<ast.Expression> {
   }
 
   @Override public Expression visit(_void s) {
-    return new Expression._void();
+    return Expression._void.instance;
   }
 
   @Override public Expression visit(Using s) {

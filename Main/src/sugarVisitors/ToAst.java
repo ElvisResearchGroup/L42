@@ -40,6 +40,7 @@ import ast.Expression.CurlyBlock;
 import ast.Expression.DocE;
 import ast.Expression.DotDotDot;
 import ast.Expression.FCall;
+import ast.Expression.HashId;
 import ast.Expression.If;
 import ast.Expression.MCall;
 import ast.Expression.RoundBlock;
@@ -308,7 +309,7 @@ public class ToAst extends AbstractVisitor<Expression>{
       return ctx.eTop().accept(this);}
   @Override public Expression visitX(XContext ctx) {
     assert ctx.children.size()==1: ctx.children.get(1).getClass();
-    if(nameK(ctx.X()).equals("void")){return new Expression._void();}
+    if(nameK(ctx.X()).equals("void")){return Expression._void.instance;}
     return new Expression.X(nameL(ctx.X()));
     }
 
@@ -327,14 +328,19 @@ public class ToAst extends AbstractVisitor<Expression>{
     return addNumParse(ctx,ctx.children.get(i).accept(this));
     }
   @Override public Expression visitMxRound(MxRoundContext ctx) {
-    String mx=ctx.MX().getText();
+    String mx=ctx.m().getText();
     assert mx.endsWith("(");
     mx=mx.substring(0,mx.length()-1);
     RoundContext r = ctx.round();
     Doc doc=comm(r.docsOpt());
-    return new Expression.FCall(position(r),new Expression.X(mx),doc,
-        parseMParameters(r.ps()));
+    Expression rcv= (mx.startsWith("#"))?new Expression.HashId(mx):new Expression.X(mx);
+    return new Expression.FCall(position(r),rcv,doc,parseMParameters(r.ps()));
     }
+
+  @Override public Expression visitHashId(HashIdContext ctx) {
+    return new Expression.HashId(ctx.getText());
+    }
+  
   @Override public Expression visitClassBReuse(ClassBReuseContext ctx) {
     Doc doc1=Doc.empty();
     if(ctx.docsOpt().size()>=1){doc1=comm(ctx.docsOpt().get(0));}
@@ -582,7 +588,7 @@ public class ToAst extends AbstractVisitor<Expression>{
     assert sq==null || sqW==null;
     assert sq!=null || sqW!=null;
     if( sq!=null){
-      Expression sq2 = this.new VisitEPost(new Expression._void()).visitSquare(sq);
+      Expression sq2 = this.new VisitEPost(Expression._void.instance).visitSquare(sq);
       assert sq2 instanceof Expression.SquareCall;
       return new Expression.UseSquare(sq2);
     }

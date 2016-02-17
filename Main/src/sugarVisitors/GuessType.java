@@ -78,25 +78,11 @@ public class GuessType implements Visitor<Type> {
     return ht.withSelectors(selectors);
   }
   public Type visit(MCall s) {
-    try{//to test//TODO: can be removed now?
     Type t=s.getReceiver().accept(this);
     assert t!=null:s;
     return concatHistoricType(t,getMS(s));
-    }catch(StackOverflowError oerr){
-       if(times<1995){
-         times++;
-         System.out.println(times);
-         throw new StackOverflowError();
-        }
-       System.out.println("dd");
-       throw new ast.ErrorMessage.UserLevelError(null,null,null,"");}
     }
-  public static int times=0;
-  public void foo(){
-    System.out.println("dd");
-    
-  }
-
+ 
   MethodSelector getMS(MCall mc){
     List<String> xs=new ArrayList<String>();
     if(mc.getPs().getE().isPresent()){xs.add("that");}
@@ -124,5 +110,8 @@ public class GuessType implements Visitor<Type> {
 
   public Type visit(ClassReuse s){return new NormType(Mdf.Immutable,Path.Library(),Ph.None);}
   public Type visit(ClassB s) {return new NormType(Mdf.Immutable,Path.Library(),Ph.None);}
+  @Override public Type visit(HashId s) {
+    throw new ast.ErrorMessage.NotWellFormedMsk(s,s,"Can not infer the type of a hashId (can this error happens?)");
+  }
 
 }

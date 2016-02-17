@@ -383,6 +383,17 @@ public interface L42Listener extends ParseTreeListener {
 	void exitClassB(@NotNull L42Parser.ClassBContext ctx);
 
 	/**
+	 * Enter a parse tree produced by {@link L42Parser#hashId}.
+	 * @param ctx the parse tree
+	 */
+	void enterHashId(@NotNull L42Parser.HashIdContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link L42Parser#hashId}.
+	 * @param ctx the parse tree
+	 */
+	void exitHashId(@NotNull L42Parser.HashIdContext ctx);
+
+	/**
 	 * Enter a parse tree produced by {@link L42Parser#useSquare}.
 	 * @param ctx the parse tree
 	 */

@@ -17,6 +17,7 @@ import ast.Ast.SignalKind;
 import ast.Ast.Type;
 import ast.Expression.Catch;
 import ast.Expression.ClassReuse;
+import ast.Expression.HashId;
 import ast.Expression.WalkBy;
 import ast.Util.CachedStage;
 import ast.ExpCore.*;
@@ -137,4 +138,5 @@ public class InjectionOnCore implements Visitor<ExpCore> {
     ms.addAll(newStuff.getMs());
     return cb.withMs(ms).withStage(new CachedStage());//we still keep the cache in the inner literals
     }
+  @Override public ExpCore visit(HashId s){throw Assertions.codeNotReachable();}
 }

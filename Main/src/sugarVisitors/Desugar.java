@@ -76,14 +76,16 @@ import facade.L42;
 public class Desugar extends CloneVisitor{
   public static Expression of(Expression e){
     if(L42.path!=null){e=ReplaceDots.of(L42.path, e);}
-    e=DesugarW.of(e);
     Desugar d=new Desugar();
+    d.usedVars.addAll(CollectDeclaredVars.of(e));
+    e=DesugarHash.of(d.usedVars, e);
+    e=DesugarW.of(d.usedVars,e);
     //understand what is the current folder
     //replace ... recursively
     //replaceDots(currentFolder,e)-> clone visitor
     d.collectAllUsedLibs(e);//collect all classBreuse in a map url->core version
     L42.usedNames.addAll(CollectDeclaredClassNamesAndMethodNames.of(e));
-    d.usedVars.addAll(CollectDeclaredVars.of(e));
+    
     d.renameAllPrivatesInUsedLibs();
     Expression result= e.accept(d);
     assert Functions.checkCore(result);
@@ -464,13 +466,13 @@ public class Desugar extends CloneVisitor{
     RoundBlock b=Desugar.getBlock(s.getP(),cond,s.getThen());
     Loop l=new Loop(b);
     NormType _void=NormType.immVoid;
-    Expression.Catch k=Desugar.getK(s.getP(),SignalKind.Exception, "",_void,  new _void());
-    RoundBlock b2=Desugar.getBlock(s.getP(),l,Collections.singletonList(k),new _void());
+    Expression.Catch k=Desugar.getK(s.getP(),SignalKind.Exception, "",_void,  Expression._void.instance);
+    RoundBlock b2=Desugar.getBlock(s.getP(),l,Collections.singletonList(k),Expression._void.instance);
     return b2.accept(this);
   }
   public Expression visit(If s) {
     if(!s.get_else().isPresent()){
-      return visit(s.with_else(Optional.of(new _void())));
+      return visit(s.with_else(Optional.of(Expression._void.instance)));
     }
     Position p=s.getP();
     if(!(s.getCond() instanceof Ast.Atom)){
@@ -536,7 +538,7 @@ public class Desugar extends CloneVisitor{
   return new Expression.Catch1(pos,kind,t,x,inner);
   }
   public Expression visit(CurlyBlock s) {
-    RoundBlock inner=new RoundBlock(s.getP(),s.getDoc(),new Expression._void(),s.getContents());
+    RoundBlock inner=new RoundBlock(s.getP(),s.getDoc(),Expression._void.instance,s.getContents());
     String y=Functions.freshName("result",this.usedVars);
     //usedVars.add(y);
     Expression.Catch k=getK(s.getP(),SignalKind.Return,y,this.t,new X(y));

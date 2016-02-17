@@ -15,6 +15,7 @@ import ast.Expression.CurlyBlock;
 import ast.Expression.DocE;
 import ast.Expression.DotDotDot;
 import ast.Expression.FCall;
+import ast.Expression.HashId;
 import ast.Expression.If;
 import ast.Expression.Literal;
 import ast.Expression.Loop;
@@ -100,4 +101,5 @@ public class CheckTerminatingBlock implements Visitor<Void> {
   public Void visit(While s) {return fail(s);}
   public Void visit(Path s) {return fail(s);}
   public Void visit(ClassReuse s) {return fail(s);}
+  public Void visit(HashId s)  {return fail(s);}
   }

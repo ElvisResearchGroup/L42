@@ -35,6 +35,7 @@ import ast.Expression.CurlyBlock;
 import ast.Expression.DocE;
 import ast.Expression.DotDotDot;
 import ast.Expression.FCall;
+import ast.Expression.HashId;
 import ast.Expression.If;
 import ast.Expression.Loop;
 import ast.Expression.MCall;
@@ -477,7 +478,6 @@ public class ToFormattedText implements Visitor<Void>{
         sp();
         c(h.getName());
         c("(");
-        //TODO: StringBuilders.formatSequence(this.result ...);
         StringBuilders.formatSequence(result,h.getFs().iterator(),
             ", ",v->{
           if(v.isVar()){c("var ");}
@@ -612,5 +612,8 @@ public class ToFormattedText implements Visitor<Void>{
     if(inline){res=res.replace("\n", " ");}
     //if(res.length()>80){ res=res.substring(0, 34)+" ... "+res.substring(res.length()-34); }
     return res;
+  }
+  @Override public Void visit(HashId s) {
+    return c(s.getInner());
   }
 }

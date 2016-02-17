@@ -38,57 +38,12 @@ public class TestParseAndDesugar {
     public static List<Object[]> createData() {
       return Arrays.asList(new Object[][] {
    {lineNumber(), "a","a"
-  /*},{lineNumber(), " ( void catch exception x ( default x) void )",
- " ("
-+"  Void unused=void"
-//+"  catch exception x (on Any x)"//ok done in the method
-+"  catch exception x ( default x)"
-+"  void"
-+"  )"
-  },{lineNumber(), " { method () ( void catch exception x ( default x) void ) }",
-" {"
-+"method #apply() ("
-+"  Void unused=void"
-//+"  catch exception x (default x)"
-+"  catch exception x (on Any x)"
-+"  void"
-+"  )}"
-  },{lineNumber(), " { method Foo () ( void catch exception x ( on Void x  default x) void )}",
- " { method Outer0::Foo #apply() ("
-+"  Void unused=void"
-+"  catch exception x ("
-+"    on Void x"
-+"    on Any x"
-+"    ) void )}"
-  },{lineNumber(), " { method Foo () { void catch return x ( default x) return void } }",
-    " { method Outer0::Foo #apply() ( Void unused=( Void unused0=void"
-+"     catch return x (  on Outer0::Foo x )  (  Void unused1=return void void ) )"
-+"     catch return result ( on Outer0::Foo result ) error {'@stringU\n'CurlyBlock-Should be unreachable code\n } )}"
-  },{lineNumber(), " { method Foo () ( Bar b={void catch return x ( default x) void } b) }",
-    " { method Outer0::Foo #apply() ( Outer0::Bar b=( Void unused=( Void unused0=void"
-+"      catch return x ( on Outer0::Bar x ) ( Void unused1=void  void ) )"
-+"      catch return result ( on Outer0::Bar result ) error {'@stringU\n'CurlyBlock-Should be unreachable code\n } ) b )}"
  
-    },{lineNumber(), "with var x in void ( on Void {a()})",
- " ( Void x=void  (  Void unused=(  Void unused0=(  Void unused1=loop ( Void unused2=x.#next()"
- + "  catch exception unused3 ( on Void (  Void unused4=( Void unused5=x.#checkEnd()"
- + "    catch exception unused6 ( on Void void )  void  ) exception void ) )"
- +"      ((  Void x0=( Void unused7=return x.#inner()  catch return casted ("
- +"         on Void casted                      "
- +"         on Any exception void ) error {'@stringU\n'CastT-Should be unreachable code\n })"
- +"      catch exception unused8 ( on Void void )"
- +"    ( Void unused9={  type method  Outer0 a()}  void ) )) )"
- +"  catch exception unused10 ( on Void void ) void )"
- +"  catch exception propagated (default ( Void unused11=x.#close() exception propagated))"
- +"      void) catch return propagated0 (default ( Void unused12=x.#close() return propagated0 ))"
- +"    x.#close() ) )"
- */
 },{lineNumber(), " (var x=void x:=void)",
     " ( Varx:'@private\n{mut (var Void inner)}  Void x=void"
    +"   mut Outer0::Varx varx=Outer0::Varx.#apply(inner:x)"
    +"   varx.inner(that:void) )"
-//},{"with var x in void ( x:=void)",
-//},{"with var x in {a()}, y in {b()} ( x+=y+y)",//why y++y do not work?
+
 },{lineNumber(), "with x=void (on Void void)",
    " ( Void x=void ("
    + " Void x0=("
@@ -105,19 +60,11 @@ public class TestParseAndDesugar {
   + "   error {'@stringU\n'CastT-Should be unreachable code\n } )"
   + " catch exception Void catched1 void "
   +" ( Void unused0=loop void void ) ) )"
-/*},{lineNumber(), "with x=void y={'a\n} ("
- + "  on Library Library loop void"
- + "  on Void Void return Any"
- + "  on Any Any {'b\n}"
- + "  default {'c\n}"
- + "  )"," "*/
- //too unstable result
-/*},{lineNumber(), "with x=void y={'a\n} ("
-    + "  on Library Library case x(y) loop void"
-    + "  on Any Any case y(x) {'b\n}"//works also for just case y(x) {b()}, I may want to add another test?
-    + "  )"," "*/
-    //too unstable result
+
 },{lineNumber(), "A*b","Outer0::A.#times(that:b)"
+},{lineNumber(), "A(b)","Outer0::A.#apply(that:b)"
+},{lineNumber(), " ( Void a=void a(b))"," (Void a=void a.#apply(that:b))"
+},{lineNumber(), " ( Void a=void (a)(b) )"," ( Void a=void (a).#apply(that:b))"  
 },{lineNumber(), " ( T a=b T b=c catch error  Foo x x T a2=b2 T b2=c2 c )"," ( Outer0::T a=b Outer0::T b=c catch error Outer0::Foo x x     (   Outer0::T a2=b2 Outer0::T b2=c2  c  ) )"
 },{lineNumber(), " (A*b a b c )"," ( Void unused=Outer0::A.#times(that:b) Void unused0=a Void unused1=b c )"
 },{lineNumber(), " (T a=b c=a c )"," (Outer0::T a=b Outer0::T c=a c )"

@@ -25,6 +25,7 @@ import antlrGenerated.L42Parser.ETopContext;
 import antlrGenerated.L42Parser.ETopForMethodContext;
 import antlrGenerated.L42Parser.EUnOpContext;
 import antlrGenerated.L42Parser.FieldDecContext;
+import antlrGenerated.L42Parser.HashIdContext;
 import antlrGenerated.L42Parser.HeaderContext;
 import antlrGenerated.L42Parser.HistoricalSeqContext;
 import antlrGenerated.L42Parser.HistoricalTContext;
@@ -218,6 +219,8 @@ public  class AbstractVisitor<T>  implements L42Visitor<T>{
   @Override public T visitKMany(KManyContext ctx) {throw Assertions.codeNotReachable();}
 
   @Override public T visitKProp(KPropContext ctx)  {throw Assertions.codeNotReachable();}
+
+  @Override public T visitHashId(HashIdContext ctx) {throw Assertions.codeNotReachable();}
 
 
   
