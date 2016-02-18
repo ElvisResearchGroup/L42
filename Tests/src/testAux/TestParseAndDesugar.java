@@ -61,6 +61,8 @@ public class TestParseAndDesugar {
   + " catch exception Void catched1 void "
   +" ( Void unused0=loop void void ) ) )"
 
+},{lineNumber(), "A.m(that:#foo+A)","Outer0::A.#times(that:b)"
+  
 },{lineNumber(), "A*b","Outer0::A.#times(that:b)"
 },{lineNumber(), "A(b)","Outer0::A.#apply(that:b)"
 },{lineNumber(), " ( Void a=void a(b))"," (Void a=void a.#apply(that:b))"
@@ -113,30 +115,7 @@ public class TestParseAndDesugar {
 +"read method \n"
 +"Outer1::T inner() } Vara:{} method a() ( Outer0::T a=a.#plus(that:c) Outer0::T c=a mut Outer0::Vara0 vara=Outer0::Vara0.#apply(inner:a) Void unused=Outer0::Fuffa.#apply(that:vara.inner(that:vara.#inner().#apply(that:vara.#inner()))) c )}"
 
-//Tooo fragile, changed the desugar for [with..]
-/*},{lineNumber(), "{ method Void () Outer0[with b in Outer0 (b)]}","{"
-+"Varaccumulator:'@private\n{type method \n"
-+"mut Outer0 #apply(Outer1::#begin() inner)\n"
-+"mut method "
-+"Void inner(Outer1::#begin() that)\n"
-+"mut method \n"
-+"Outer1::#begin() #inner()}"
-+"method Void #apply() ("
-+"  Outer0::#begin() accumulator=Outer0.#begin()"
-+"  mut Outer0::Varaccumulator varaccumulator=Outer0::Varaccumulator.#apply(inner:accumulator)"
-+"  Void unused=( type Outer0 b=Outer0"
-+"    (  Void unused0=( Void unused1=( Void unused2=loop ("
-+"       Void unused3=b.#next()"
-+"       catch exception unused4 ( on Void ( Void unused5=("
-+"         Void unused6=b.#checkEnd() catch exception unused7 ( on Void void  )"
-+"         void ) exception void ) )"
-+"       varaccumulator.inner(that:varaccumulator.#inner().#add(that:(b.#inner()))) )"
-+"       catch exception unused8 ( on Void void ) void  )"
-+"       catch exception propagated (  on Any ( Void unused9=b.#close() exception propagated"
-+"       )) void ) catch return propagated0 ( on Any ("
-+"       Void unused10=b.#close() return propagated0  )  )"
-+"      b.#close() ) ) varaccumulator.#inner().#end())}"
-*/
+
 },{lineNumber(),"{a( Outer0::A a, var Outer0::B b)}",
   "{"
  +" type method mut Outer0 a( Outer0::A  a, Outer0::B b) "

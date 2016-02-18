@@ -110,7 +110,7 @@ Void restrictS(mut Introspection.Mdf.Set acc, Introspection.Mdf oM, Introspectio
  Void restrictG(mut Introspection.Mdf.Set acc, Introspection.Mdf oM, Introspection.Mdf fM) 
   acc.retain({
   //oM not type, fM ==capsule implies oM==capsule
-  //oM< #[#read; #imm] implies  fM !< #[#mut; #lent]
+  //oM< \[\read; \imm] implies  fM !< #[#mut; #lent]
   //oM== #lent implies  fM != #mut
  // 6caps+ 4lent+3read +3Imm+5mut   =21
     if fM==#type return #[#type]   //5     // 5caps+ 3lent+2read +2Imm+4mut 
@@ -172,6 +172,14 @@ syntax stuff:
     on addition methods, is a constructor
     on set is the old value
     on stuff in a numericalish range 0..n, is the max range.
+
+foo.location(\.with(\+20N))
+
+foo.location(%.with(%+20N))
+
+foo.location(#.with(#+20N))
+
+
 make comments with // /**/
 make @id == /*@id*/
 

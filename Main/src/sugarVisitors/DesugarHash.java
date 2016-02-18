@@ -110,6 +110,7 @@ class DesugarHash extends CloneVisitor{
     d.usedVars=usedVars;
     Expression result= e.accept(d);
     return result;
+    //TODO: need to check there is no #out of scope, that would be ill formed
   }
 
   public Expression visit(Expression.MCall s) {
