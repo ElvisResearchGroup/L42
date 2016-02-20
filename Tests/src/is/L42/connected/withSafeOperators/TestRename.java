@@ -77,7 +77,7 @@ public class TestRename {
 "{ Kind:{'@stringU\n"+
 "'MethodClash\n"+
 "}\n"+
-"Path:{'@::\n"+ 
+"Path:{'@.\n"+ 
 "}\n"+
 "Left:{'@stringU\n"+
 "'method Void m() void\n"+
@@ -151,10 +151,10 @@ public class TestRename {
             "[]","[m()]", false //
           }, { //
             lineNumber(),"{ B:{method Void m()  this.m()} method Void mm(B b) b.m()}", "B", "m()",
-            "[Outer0.mm(b)]","[m()]", false //
+            "[Outer0::mm(b)]","[m()]", false //
           }, { //
             lineNumber(),"{ B:{method Void m()  this.m() method B::m() k() void} method Void mm(B b) b.m()}", "B", "m()",
-            "[Outer0.mm(b)]","[m()]", false //
+            "[Outer0::mm(b)]","[m()]", false //
           } });
     }
 
@@ -190,7 +190,7 @@ public class TestRename {
       return Arrays.asList(new Object[][] { {//
         "{B:{ method Void m() void}}", "B", "C", "{C:{ method Void m() void}}", false//
         }, {//
-        "{B:{ method Void m() void}}", "B", "C::D", "{C:{ D:{method Void m() void}}}", false//
+        "{B:{ method Void m() void}}", "B", "C.D", "{C:{ D:{method Void m() void}}}", false//
         },{// 
         "{A:{interface method Outer0 m()  } B:{<:A method m() this.m().m()}   User:{ method A mm(B b) b.m().m()}}","B","C",
         "{A:{interface method Outer0 m()  } User:{ method A mm(C b) b.m().m()}  C:{<:A method m() this.m().m()} }",false
@@ -227,13 +227,13 @@ public class TestRename {
   //-----
   @Test
   public void testToTop() {
-    List<String> res = ClassOperations.toTop(Arrays.asList(),Path.parse("Outer0::A"));
+    List<String> res = ClassOperations.toTop(Arrays.asList(),Path.parse("Outer0.A"));
     Assert.assertEquals(res,Arrays.asList("A"));
-    res = ClassOperations.toTop(Arrays.asList(),Path.parse("Outer0::A::B"));
+    res = ClassOperations.toTop(Arrays.asList(),Path.parse("Outer0.A.B"));
     Assert.assertEquals(res,Arrays.asList("A","B"));
-    res = ClassOperations.toTop(Arrays.asList("C"),Path.parse("Outer1::A::B"));
+    res = ClassOperations.toTop(Arrays.asList("C"),Path.parse("Outer1.A.B"));
     Assert.assertEquals(res,Arrays.asList("A","B"));
-    res = ClassOperations.toTop(Arrays.asList("C"),Path.parse("Outer0::A::B"));
+    res = ClassOperations.toTop(Arrays.asList("C"),Path.parse("Outer0.A.B"));
     Assert.assertEquals(res,Arrays.asList("C","A","B"));
   }
   @Test
@@ -241,7 +241,7 @@ public class TestRename {
     Path res = ClassOperations.normalizePath(Arrays.asList(),0,Arrays.asList());
     Assert.assertEquals(res,Path.outer(0));
     res = ClassOperations.normalizePath(Arrays.asList("A"),1,Arrays.asList("B"));
-    Assert.assertEquals(res,Path.parse("Outer1::B"));
+    Assert.assertEquals(res,Path.parse("Outer1.B"));
     res = ClassOperations.normalizePath(Arrays.asList("B"),1,Arrays.asList("B"));
     Assert.assertEquals(res,Path.parse("Outer0"));
 
@@ -259,7 +259,7 @@ public class TestRename {
       return Arrays.asList(new Object[][] { {//
         lineNumber(),"{B:{ method Void m() void}}", "B", "C", "{C:{ method Void m() void}}", false//
         }, {lineNumber(),//
-        "{B:{ method Void m() void}}", "B", "C::D", "{C:{ D:{method Void m() void}}}", false//
+        "{B:{ method Void m() void}}", "B", "C.D", "{C:{ D:{method Void m() void}}}", false//
         }, {lineNumber(),//
         "{A:{}}","A","B","{B:{}}",false//
         }, {lineNumber(),//
@@ -269,35 +269,35 @@ public class TestRename {
         }, {lineNumber(),//
           "{A:{ method A ()} B:{foo()}}","A","B",  "{B:{ type method Outer0 foo()  method Outer0 ()}}"   ,false//
         }, {lineNumber(),//
-          "{C:{A:{ method A ()}} B:{foo()}}","C::A","B",  "{C:{} B:{ type method Outer0 foo() method Outer0 ()  }}"    ,false//
+          "{C:{A:{ method A ()}} B:{foo()}}","C.A","B",  "{C:{} B:{ type method Outer0 foo() method Outer0 ()  }}"    ,false//
         }, {lineNumber(),//
-          "{D:{C:{A:{ method A ()}}} B:{foo()}}","D::C::A","B",  "{D:{C:{}} B:{ type method Outer0 foo()  method Outer0 ()}}"   ,false//
+          "{D:{C:{A:{ method A ()}}} B:{foo()}}","D.C.A","B",  "{D:{C:{}} B:{ type method Outer0 foo()  method Outer0 ()}}"   ,false//
         }, {lineNumber(),//
-          "{A:{ method A ()} C:{B:{foo()}}}","A","C::B",  "{C:{B:{ type method Outer0 foo() method Outer0 () }}}"   ,false//
+          "{A:{ method A ()} C:{B:{foo()}}}","A","C.B",  "{C:{B:{ type method Outer0 foo() method Outer0 () }}}"   ,false//
         }, {lineNumber(),//
-          "{A:{ method A ()} D:{C:{B:{foo()}}}}","A","D::C::B",  "{D:{C:{B:{  type method Outer0 foo()  method Outer0 ()}}}}"   ,false//
+          "{A:{ method A ()} D:{C:{B:{foo()}}}}","A","D.C.B",  "{D:{C:{B:{  type method Outer0 foo()  method Outer0 ()}}}}"   ,false//
         }, {lineNumber(),//        ////
-          "{ A:{ type method Outer1::B () } B:{ }}","A","Outer0", "{ B:{ } type method Outer0::B ()  }"    ,false//
+          "{ A:{ type method Outer1.B () } B:{ }}","A","Outer0", "{ B:{ } type method Outer0.B ()  }"    ,false//
         }, {lineNumber(),//
-          "{ A:{ type method Outer1::B () } B:{ }}" ,"A","C", "{ B:{ }  C:{type method Outer1::B () }}"    ,false//
+          "{ A:{ type method Outer1.B () } B:{ }}" ,"A","C", "{ B:{ }  C:{type method Outer1.B () }}"    ,false//
         }, {lineNumber(),//
-          "{ A1:{ A2:{ type method B () }} B:{ }}","A1::A2","A1",   "{ A1:{ type method B () } B:{ }}"   ,false//
+          "{ A1:{ A2:{ type method B () }} B:{ }}","A1.A2","A1",   "{ A1:{ type method B () } B:{ }}"   ,false//
         }, {lineNumber(),//
-          "{ A1:{ A2:{ type method B () }} B:{ }}" ,"A1::A2","Outer0",  "{ A1:{ } B:{ } type method B () }"   ,false//
+          "{ A1:{ A2:{ type method B () }} B:{ }}" ,"A1.A2","Outer0",  "{ A1:{ } B:{ } type method B () }"   ,false//
         }, {lineNumber(),//
-          "{ A1:{ A2:{ type method B () } B:{ } }}","A1::A2","A1",  "{ A1:{B:{ } type method B () }}"   ,false//
+          "{ A1:{ A2:{ type method B () } B:{ } }}","A1.A2","A1",  "{ A1:{B:{ } type method B () }}"   ,false//
         }, {lineNumber(),//
-          "{ A1:{ A2:{ type method Outer1::B () } B:{ } }}","A1::A2","Outer0",   "{ A1:{B:{ }} type method Outer0::A1::B () }"   ,false//
+          "{ A1:{ A2:{ type method Outer1.B () } B:{ } }}","A1.A2","Outer0",   "{ A1:{B:{ }} type method Outer0.A1.B () }"   ,false//
         }, {lineNumber(),//
-          "{ A:{ D:{ type method Outer0 d() Outer0.d() } type method Outer1::B foo()Outer0.foo() } B:{ }}" ,
+          "{ A:{ D:{ type method Outer0 d() Outer0.d() } type method Outer1.B foo()Outer0.foo() } B:{ }}" ,
           "A","Outer0",
-          "{ B:{ } D:{ type method Outer0 d() Outer0.d() } type method Outer0::B foo()Outer0.foo()  }"   ,false//
+          "{ B:{ } D:{ type method Outer0 d() Outer0.d() } type method Outer0.B foo()Outer0.foo()  }"   ,false//
         }, {lineNumber(),//
           helpers.TestHelper.multiLine(""
               ,"{ A:{"
               ,"  OptMax:{"
               ,"    TOpt:{interface}"
-              ,"    TEmpty:{<:Outer1::TOpt}"
+              ,"    TEmpty:{<:Outer1.TOpt}"
               ,"    }"
               ,"  }}"),
               "A","Outer0",
@@ -305,7 +305,7 @@ public class TestRename {
               ,"{"
               ,"OptMax:{"
               ,"  TOpt:{interface }"
-              ,"  TEmpty:{<:Outer1::TOpt}"
+              ,"  TEmpty:{<:Outer1.TOpt}"
               ,"}}")    ,false//
         }, {lineNumber(),//        ////18
           helpers.TestHelper.multiLine(""
@@ -317,69 +317,69 @@ public class TestRename {
               helpers.TestHelper.multiLine(""
               ,"{"
               ,"type method "
-              ,"mut Outer0 #apply(mut Outer0::Cell head"
+              ,"mut Outer0 #apply(mut Outer0.Cell head"
               ,") "
               ,"mut method"
-              ,"Void head(mut Outer0::Cell that)"
+              ,"Void head(mut Outer0.Cell that)"
               ,"mut method"
-              ,"mut Outer0::Cell #head()"
+              ,"mut Outer0.Cell #head()"
               ,"read method"
-              ,"read Outer0::Cell head()"
+              ,"read Outer0.Cell head()"
               ,"Cell:{interface }"
-              ,"CellEnd:{<:Outer1::Cell}"
+              ,"CellEnd:{<:Outer1.Cell}"
               ,"}") ,false//
         }, {lineNumber(),//
-          "{ A:{type method Outer1::B ()}  B:{ }}",
-          "A","A::C",
-          "{ B:{} A:{ C:{type method Outer2::B #apply() }}}"  ,false//
+          "{ A:{type method Outer1.B ()}  B:{ }}",
+          "A","A.C",
+          "{ B:{} A:{ C:{type method Outer2.B #apply() }}}"  ,false//
         }, {lineNumber(),//
-          "{ A:{type method Outer0::B ()  B:{ }}}"
-          ,"A","A::C",
-          "{ A:{ C:{type method Outer0::B #apply() B:{} }}}",false//
+          "{ A:{type method Outer0.B ()  B:{ }}}"
+          ,"A","A.C",
+          "{ A:{ C:{type method Outer0.B #apply() B:{} }}}",false//
           
        },{lineNumber(),////the sub parts of test above
-        "{ Result:{ A:{ type method Outer0::B #apply() B:{}}}}",
-       "Result::A","Tmp",
-       "{Result:{} Tmp:{ type method Outer0::B #apply() B:{}}}",false
+        "{ Result:{ A:{ type method Outer0.B #apply() B:{}}}}",
+       "Result.A","Tmp",
+       "{Result:{} Tmp:{ type method Outer0.B #apply() B:{}}}",false
 /*
           "{  Result:{}
             Tmp:{
             type method 
-            Outer2::Tmp #apply() 
+            Outer2.Tmp #apply() 
             B:{}}}
-        "Tmp","Result::A::C",false*/
+        "Tmp","Result.A.C",false*/
         }, {lineNumber(),//
-          "{ type method Outer0::B ()  B:{ }}"
+          "{ type method Outer0.B ()  B:{ }}"
           ,"Outer0","C",
-          "{ C:{ type method Outer0::B #apply() B:{}}}",false//
+          "{ C:{ type method Outer0.B #apply() B:{}}}",false//
         }, {lineNumber(),//
           "{ A:{B:{ method A m(B x)}} }"
-          ,"A::B","C::B",
+          ,"A.B","C.B",
           "{ A:{ } C:{B:{ method A m(Outer0 x)}} }",false//
         }, {lineNumber(),//
           "{ A:{B:{ } method Void ma(B x)}  }"
-          ,"A::B","C::D",
-          "{ A:{method Void ma(Outer1::C::D x)}  C:{D:{ }}}",false//
+          ,"A.B","C.D",
+          "{ A:{method Void ma(Outer1.C.D x)}  C:{D:{ }}}",false//
         }, {lineNumber(),//
-          "{ A:{B:{ method A mab(B x)} method A ma(B x)} method A m(A::B x) }"
-          ,"A::B","C::D",
-          "{ A:{method Outer0 ma(Outer1::C::D x)} method A m(C::D x) C:{D:{ method Outer2::A mab(Outer0 x)}}}",false//
+          "{ A:{B:{ method A mab(B x)} method A ma(B x)} method A m(A.B x) }"
+          ,"A.B","C.D",
+          "{ A:{method Outer0 ma(Outer1.C.D x)} method A m(C.D x) C:{D:{ method Outer2.A mab(Outer0 x)}}}",false//
        
         }, {lineNumber(),//
-          "{ A:{B:{ method A mab(B x)} method A ma(B x)} method A m(A::B x) }"
-          ,"A","C::D",
-          "{ method C::D m(C::D::B x) C:{D:{B:{ method Outer1 mab(Outer0 x)} method Outer0 ma(B x)}} }",false//
+          "{ A:{B:{ method A mab(B x)} method A ma(B x)} method A m(A.B x) }"
+          ,"A","C.D",
+          "{ method C.D m(C.D.B x) C:{D:{B:{ method Outer1 mab(Outer0 x)} method Outer0 ma(B x)}} }",false//
         }, {lineNumber(),//simplified method from before
-          "{ A:{B:{}} method Void m(A::B x) }"
-          ,"A","C::D",
-          "{ method Void m(C::D::B x) C:{D:{B:{}}} }",false//
+          "{ A:{B:{}} method Void m(A.B x) }"
+          ,"A","C.D",
+          "{ method Void m(C.D.B x) C:{D:{B:{}}} }",false//
         }, {lineNumber(),//simplified method from before2
           "{ A:{B:{}} method A m() }"
-          ,"A","C::D",
-          "{ method C::D m() C:{D:{B:{}}} }",false//
+          ,"A","C.D",
+          "{ method C.D m() C:{D:{B:{}}} }",false//
         }, {lineNumber(),//nested method from before
           "{ A:{B:{method A m()}}  }"
-          ,"A","C::D",
+          ,"A","C.D",
           "{  C:{D:{B:{method Outer1 m() }}} }",false//
         }, {lineNumber(),//
           "{ A:{method Library m() {method A k()}} }"

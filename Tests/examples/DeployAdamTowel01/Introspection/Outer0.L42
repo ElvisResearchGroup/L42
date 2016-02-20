@@ -2,33 +2,33 @@
 
 type method
 NestedClass(Library lib)(
-  root=MirrorPr::Lib(lib:lib).introspectReport(root:root,path:Path"Outer0")
-  catch exception  MetaGuard::NestedClassUnavailable x error Assert::CodeNotReachable"Introspection1"
+  root=MirrorPr.Lib(lib:lib).introspectReport(root:root,path:Path"Outer0")
+  catch exception  MetaGuard.NestedClassUnavailable x error Assert.CodeNotReachable"Introspection1"
   root
   )
 type method
-NestedClass(Library lib,Path path) exception MetaGuard::NestedClassUnavailable (
+NestedClass(Library lib,Path path) exception MetaGuard.NestedClassUnavailable (
   root=Outer0(lib:lib)
   root.mirror().introspectReport(root:root,path:path)
   )
 type method
 NestedClass(type Any clazz) (
-  root=MirrorPr::Class(lib:clazz).introspectReport(root:root,path:Path"Outer0")
-  catch exception MetaGuard::NestedClassUnavailable x error Assert::CodeNotReachable"Introspection2"
+  root=MirrorPr.Class(lib:clazz).introspectReport(root:root,path:Path"Outer0")
+  catch exception MetaGuard.NestedClassUnavailable x error Assert.CodeNotReachable"Introspection2"
   root
   )
 
 type method
 NestedClass(type Any clazz,Path path) (
-  root=MirrorPr::Class(lib:clazz).introspectReport(root:root,path:path)
-  catch exception MetaGuard::NestedClassUnavailable x error Assert::CodeNotReachable"Introspection3"
+  root=MirrorPr.Class(lib:clazz).introspectReport(root:root,path:path)
+  catch exception MetaGuard.NestedClassUnavailable x error Assert.CodeNotReachable"Introspection3"
   root
   )
 MirrorPr:... 'Todo:remove Pr later.
 
 Doc:...
 Record:...
-Member:{interface<: Concept::ToS,Concept::Named,Concept::Equals}
+Member:{interface<: Concept.ToS,Concept.Named,Concept.Equals}
 Members:LinkedList.eqList(Member)
 Method:...
 Methods:LinkedList.eqList(Method)

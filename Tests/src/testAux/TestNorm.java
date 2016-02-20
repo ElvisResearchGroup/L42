@@ -27,14 +27,14 @@ public class TestNorm {
     @Parameterized.Parameters
     public static List<Object[]> createData() {
       return Arrays.asList(new Object[][] {
-         {"Outer0::A","Outer0::A",new String[]{}
-       },{"Outer0::A","Outer0::A",new String[]{"{C:{}}"}
-       },{"Outer0::A","Outer0::A",new String[]{"{C:##walkBy}"}
-       },{"Outer1::A","Outer1::A",new String[]{"{C:{}}","{A:{}}"}
-       },{"Outer1::C","Outer1::C",new String[]{"{C:{}}","{A:{}}"}
-       //I have lost the possibity of doing this test using caching },{"Outer1::C","Outer0",new String[]{"{C:##walkBy}","{A:{}}"}
-      //I have lost the possibity of doing this test using caching },{"Outer2::D::C","Outer0",new String[]{"{D:##walkBy}","{C:##walkBy}","{A:{}}"}
-      //I have lost the possibity of doing this test using caching },{"Outer2::D::C","Outer1::C",new String[]{"{D:##walkBy}","{C:{}}","{A:{}}"}
+         {"Outer0.A","Outer0.A",new String[]{}
+       },{"Outer0.A","Outer0.A",new String[]{"{C:{}}"}
+       },{"Outer0.A","Outer0.A",new String[]{"{C:##walkBy}"}
+       },{"Outer1.A","Outer1.A",new String[]{"{C:{}}","{A:{}}"}
+       },{"Outer1.C","Outer1.C",new String[]{"{C:{}}","{A:{}}"}
+       //I have lost the possibity of doing this test using caching },{"Outer1.C","Outer0",new String[]{"{C:##walkBy}","{A:{}}"}
+      //I have lost the possibity of doing this test using caching },{"Outer2.D.C","Outer0",new String[]{"{D:##walkBy}","{C:##walkBy}","{A:{}}"}
+      //I have lost the possibity of doing this test using caching },{"Outer2.D.C","Outer1.C",new String[]{"{D:##walkBy}","{C:{}}","{A:{}}"}
        }});}
 
     @Test

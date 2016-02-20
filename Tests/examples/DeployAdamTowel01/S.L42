@@ -1,5 +1,5 @@
 { _private(Library _binaryRepr)
-<: Concept::ToS Concept::Equals Concept::Named'@private
+<: Concept.ToS Concept.Equals Concept.Named'@private
   method myName()GetMyName(Outer0)
 
   type method Outer0 #from(Library binaryRepr) Outer0._private(_binaryRepr:binaryRepr)
@@ -66,7 +66,7 @@
   method
   Bool contains(S that){
     res=this.auxFirstIndexOf(that)
-    'Debug(S"S::contains(this:"[this]" that:"[that]")="[res]"")
+    'Debug(S"S.contains(this:"[this]" that:"[that]")="[res]"")
     if res>=0N (return Bool.true())
     return Bool.false()
     }
@@ -75,7 +75,7 @@
     S"qwertyuiopasdfghjklzxcvbnm".contains(this(that))
   method
   Bool isASCIIUpperCase(N that) (
-    'Debug(S"S::isASCIIUpperCase(this:"[this]" that:"[that]")")
+    'Debug(S"S.isASCIIUpperCase(this:"[this]" that:"[that]")")
     S"QWERTYUIOPASDFGHJKLZXCVBNM".contains(this(that))
     )
     
@@ -109,11 +109,11 @@
     
   SConcat:{(S old,S accumulator)
     method
-    SConcat #add(Concept::ToS that)
+    SConcat #add(Concept.ToS that)
       SConcat(old:this.old(),
         accumulator:this.accumulator()++that.toS())
     method
-    SConcat #add(Concept::ToS that, Concept::ToS separedBy) (
+    SConcat #add(Concept.ToS that, Concept.ToS separedBy) (
       var newAcc=that.toS()
       if this.accumulator()!=S"" (
         newAcc:=this.accumulator()++separedBy.toS()++newAcc
@@ -123,13 +123,13 @@
     method
     SConcat #end()
       this
-    method mut S::SBuilder #builder()S::SBuilder.empty()
-    method S #from(S::SBuilder builder)
+    method mut S.SBuilder #builder()S.SBuilder.empty()
+    method S #from(S.SBuilder builder)
       this.old()++this.accumulator()++S.#from(builder:builder)
     }
     
   SBuilder:...
-  type method Outer0 #from(S::SBuilder builder) 
+  type method Outer0 #from(S.SBuilder builder) 
     Outer0._private(_binaryRepr:builder.binaryRepr())
-  type method mut S::SBuilder #builder() S::SBuilder.empty()
+  type method mut S.SBuilder #builder() S.SBuilder.empty()
   }

@@ -1,5 +1,5 @@
 {
-DecorationUnfeasable:Message::$<<{<:MetaGuard}
+DecorationUnfeasable:Message.$<<{<:MetaGuard}
 
 
 Parsable:{
@@ -8,16 +8,16 @@ Parsable:{
     return Extends[{
       'ParseFailure:Message:S[]<<{<:Guard} no need, related to invariant?
       type method' if you do not implement it, it is a constructor?
-      Outer0 fromS(read Concept::ToS that)    
+      Outer0 fromS(read Concept.ToS that)    
       'will be in the interface when there is type refinement,
       'and will be imm in the interface, and classes can refine to their outer0, and to capsule if makes sense
       
       type method
-      Outer0 #from(S::SBuilder builder)
+      Outer0 #from(S.SBuilder builder)
         Outer0.fromS(S.#from(binaryRepr: builder.binaryRepr()))
     
       type method
-      mut S::SBuilder #builder() S::SBuilder.empty()
+      mut S.SBuilder #builder() S.SBuilder.empty()
      }]<<that
     exception on MetaGuard
       DecorationUnfeasable"Parsable"
@@ -33,7 +33,7 @@ SealState:{
   
 DataFromToS:{' in the future we can add also hashCode and > =>
   type method Library<<(Library that) exception DecorationUnfeasable{
-    return Extends[{<:Concept::ToS
+    return Extends[{<:Concept.ToS
     method Bool != (Outer0 that) !(this==that)
     read method Bool ==(read Outer0 that) this.toS()==that.toS()
     }]<<Equals<<that
@@ -46,7 +46,7 @@ DataFromToS:{' in the future we can add also hashCode and > =>
 
 Equals:{
   type method Library<<(Library that) exception DecorationUnfeasable{
-    return Extends[{<:Concept::Equals
+    return Extends[{<:Concept.Equals
       method equals(that){
         with that (on Outer0 return this==that)
         return Bool.false()
@@ -59,7 +59,7 @@ Equals:{
   }
 Named:{
   type method Library<<(Library that) exception DecorationUnfeasable{
-    return Extends[{<:Concept::Named
+    return Extends[{<:Concept.Named
         method myName()
           Introspection(clazz:Outer0).externalTypeToS()
         }]<<that

@@ -30,8 +30,8 @@ public class ExtractInfoTest {
     },{"{()}","Outer0",1//for desugaring of ()
     },{"{B:{(Outer0 a)}}","Outer0",0
     },{"{B:{(Outer1 a)}}","Outer0",1//ctx, getter, exposer
-    },{"{B:{(Outer0 a)}}","Outer0::B",1//ctx*2, getter,exposer
-    },{"{B:{(Outer0 a, Outer1::B b)}}","Outer0::B",1//ctx*3, getter*2,exposer*2
+    },{"{B:{(Outer0 a)}}","Outer0.B",1//ctx*2, getter,exposer
+    },{"{B:{(Outer0 a, Outer1.B b)}}","Outer0.B",1//ctx*3, getter*2,exposer*2
   }});}
   @Test  public void test() {
     ClassB classInput=getClassB(_classInput);

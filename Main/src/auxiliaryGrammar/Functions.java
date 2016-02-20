@@ -343,7 +343,7 @@ public static List<InvalidMwtAsState> isAbstract(Program p, ClassB ct) {
     NestedClass nc=(NestedClass)m;
     assert nc.getInner() instanceof ClassB;
     isAbstract(p.addAtTop(ct),(ClassB)nc.getInner()).stream()
-        .map(s->new InvalidMwtAsState(nc.getName()+"::"+s.getReason(),s.getMwt())).forEach(details::add);
+        .map(s->new InvalidMwtAsState(nc.getName()+"."+s.getReason(),s.getMwt())).forEach(details::add);
   }
   return details;
 }

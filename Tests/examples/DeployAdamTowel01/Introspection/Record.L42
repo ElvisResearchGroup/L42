@@ -1,33 +1,33 @@
 {(MirrorPr that)
   type method
   Outer0(type Any clazz)
-    Outer0(MirrorPr::Class(lib:clazz))
+    Outer0(MirrorPr.Class(lib:clazz))
   type method
   Outer0 (Library lib)
-    Outer0(MirrorPr::Lib(lib:lib))
+    Outer0(MirrorPr.Lib(lib:lib))
     'Outer0(Introspection(lib:lib).mirror())
   method Void dbg()
     with x=this.that() (
-      on MirrorPr::Lib Debug(lib:x.lib())
+      on MirrorPr.Lib Debug(lib:x.lib())
       default Debug(S"Sorry, can not print class mirrors")
       )
 
-  method mut S::SBuilder #builder()S::SBuilder.empty()
-  method S #from(S::SBuilder builder) {
+  method mut S.SBuilder #builder()S.SBuilder.empty()
+  method S #from(S.SBuilder builder) {
     path=Path.#from(builder:builder)
     return this.that().introspectDocAsString(path:path)
-    error on MetaGuard::MemberUnavailable 
-      Assert::CodeNotReachable"Record1"[this.that()]"" 'TODO: not the right error? 
+    error on MetaGuard.MemberUnavailable 
+      Assert.CodeNotReachable"Record1"[this.that()]"" 'TODO: not the right error? 
     }
   method
   Doc docOf(Path path){
     with mirror=this.that() (
-      on MirrorPr::Lib return Doc(
+      on MirrorPr.Lib return Doc(
         SafeOperators.renameClass(mirror.lib(), src:path, dest:Path"Outer0")
-        'This can not be done for circular reference Refactor::RenamePath(path to:Path"Outer0")<<mirror.lib()
+        'This can not be done for circular reference Refactor.RenamePath(path to:Path"Outer0")<<mirror.lib()
         )
       )
-    error Assert::CodeNotReachable"Record2"
+    error Assert.CodeNotReachable"Record2"
     }
   'this is how I would like it to be
   'type method Member dispatch(fwd NestedClass root,Path path,MirrorPr mirror, N memberN,Library record) {
@@ -37,7 +37,7 @@
   '    if x== S"InterfaceImplementedMethod" (return Method(_root:root,path:path,memberN:memberN,record:_report))
   '    if x== S"ImplementedMethod" (return Method(_root:root,path:path,memberN:memberN,record:_report))
   '    if x== S"AbstractMethod" (return Method(_root:root,path:path,memberN:memberN,record:_report))
-  '    default error Assert::ObservedBug(S"invalid member kind "[x]"")
+  '    default error Assert.ObservedBug(S"invalid member kind "[x]"")
   '    )
   '  }
   'instead, I have to write this :-(
@@ -70,7 +70,7 @@
       if x== S"NestedClass" (
         return RootForNested(path:path,mirror:mirror,_report:_report)
         )
-      error Assert::ObservedBug(text:S"invalid member kind "[x]"")
+      error Assert.ObservedBug(text:S"invalid member kind "[x]"")
       }
     result(root:root)
     )

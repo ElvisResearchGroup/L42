@@ -47,7 +47,7 @@ public class TestParseBackAndForth {
 },{" { }","{}"
 },{" {()}","{ ()}"
 },{" {interface}","{interface }"
-},{" {<: A::B, C}","{<:A::B, C}"
+},{" {<: A.B, C}","{<:A.B, C}"
 
 },{" a 'bar\n ","a'bar\n"
 },{"!a","!a"
@@ -56,7 +56,7 @@ public class TestParseBackAndForth {
 },{"a(b,x:c)","a(b, x:c)"
 },{"!a(b,x:c)","!a(b, x:c)"
 },{" (a )(b,x:c)","(a)(b, x:c)"
-},{" use A::B::C check m('bar\nfoo) a+b","use A::B::C check m('bar\nfoo) a + b"
+},{" use A.B.C check m('bar\nfoo) a+b","use A.B.C check m('bar\nfoo) a + b"
 
 },{"with x in a  var y in b + c() z= t var T w=t (on T y)",
    "with x in a, var y in b + c() z= t, var T w= t (\non T y\n)"

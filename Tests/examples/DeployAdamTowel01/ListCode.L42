@@ -1,5 +1,5 @@
 {' generic linked list class, elements of type Elem
- _new(Cell head)<:Concept::Named
+ _new(Cell head)<:Concept.Named
 method myName()GetMyName(Outer0)
 type method
 Outer0 ()
@@ -28,7 +28,7 @@ method
 Outer0 pop() {
   return Outer0._new(head:this.head().#next())
   catch exception Void
-    error Guard::Operation""[Outer0.myName()]":PopOnEmpyList"
+    error Guard.Operation""[Outer0.myName()]":PopOnEmpyList"
   }
 
 method
@@ -85,7 +85,7 @@ CellEnd:{()<:Cell
 
   method
   #inner()
-    error Assert::ObservedBug"InnerOnCellEnd"
+    error Assert.ObservedBug"InnerOnCellEnd"
 
   method
   #checkEnd()
@@ -111,7 +111,7 @@ CellNext:{(Elem elem, Cell nextCell)<:Cell
   method
   #checkEnd()
     with cell=this.nextCell() (
-      on CellNext error  Assert::ObservedBug""[Outer1.myName()]"
+      on CellNext error  Assert.ObservedBug""[Outer1.myName()]"
       ':IterationNotComplete,
       '  use valsCut() to allows incomplete iterations
       "

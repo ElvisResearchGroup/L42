@@ -220,7 +220,7 @@ public class Errors42 {
   }
   static Doc formatPathIn(List<String> path){
     //if(path.isEmpty()){return Doc.factory(Path.outer(0));}
-    return Doc.factory("@::"+String.join("::", path));
+    return Doc.factory("@."+String.join(".", path));
   }
   static Doc formatPathOut(Path path){
     if(path.isPrimitive()){return Doc.factory(path);}

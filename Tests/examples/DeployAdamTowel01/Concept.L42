@@ -40,8 +40,8 @@ Contains:{interface
   read method Bool contains(read Any that)
   }
 Parsable:{interface
-  'type method capsule Outer0 fromS(S that) exception Guard::Parameter(specific) invalid string
-  '''type method capsule Outer0 #fromS(S that) exception Guard::Parameter
+  'type method capsule Outer0 fromS(S that) exception Guard.Parameter(specific) invalid string
+  '''type method capsule Outer0 #fromS(S that) exception Guard.Parameter
   }
 Invariant:{interface
   read method ' can throw error or return false, as more opportune
@@ -55,7 +55,7 @@ RandomAccess:{interface
   }
 'RandomUpdate:{interface
   'mut method Void (N that, mut Elem val)
-'  mut method Void set(N that, mut Any val) exception Guard::Parameter ???
+'  mut method Void set(N that, mut Any val) exception Guard.Parameter ???
 '  }
 Sizable:{interface
   read method N size()

@@ -204,7 +204,7 @@ Name:{(Bool isExternal, Library adapter)
     using IntrospectionPlugin check typeNameToAdapter(that) error {typeNameToAdapter()}
     ))
   method Bool isInternalPath(){
-    Introspection::Methods ms=Introspection(this.adapter(),node:S"%o_0%").methods()
+    Introspection.Methods ms=Introspection(this.adapter(),node:S"%o_0%").methods()
     return !ms.pop().pop().isEmpty()
     }
   }

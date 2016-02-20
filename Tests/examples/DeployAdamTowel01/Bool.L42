@@ -1,4 +1,4 @@
-{(Library binaryRepr)<:Concept::ToS Concept::Equals Concept::Named'@private
+{(Library binaryRepr)<:Concept.ToS Concept.Equals Concept.Named'@private
   method
   myName()GetMyName(Outer0)
   method
@@ -34,7 +34,7 @@
     return S"false"
     }
   type method
-  Outer0 fromS(read Concept::ToS that){
+  Outer0 fromS(read Concept.ToS that){
     if that.toS()==S"true" (return Outer0.true())
     if that.toS()==S"false" (return Outer0.false())
     error Outer0.parseError(that.toS())
@@ -53,5 +53,5 @@
     }
   type method
   Any parseError(S that)
-    S"UnsatisfactoryErrorToAvoidCycle, replace in AdamT2"
+    S"Bool.UnsatisfactoryErrorToAvoidCycle, replace in AdamT2"
 }

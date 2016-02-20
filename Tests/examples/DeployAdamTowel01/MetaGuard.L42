@@ -11,7 +11,7 @@
     type method Library recordWrapperTrait(){<:MetaGuard
       method kind() Outer0.myName()
       method text() S""
-      method responseOf() Message::Opt()
+      method responseOf() Message.Opt()
       method myName()GetMyName(Outer0)
       method equals(that){
         with that (on Outer0 return this==that)
@@ -19,14 +19,14 @@
         }
       method clazz() Outer0
       method classAny() Outer0
-      type method Outer0(Introspection::Record record, Library lib)
+      type method Outer0(Introspection.Record record, Library lib)
       method Bool != (Outer0 that)
         !(this==that)
       method Bool == (Outer0 that)
-        Message::EqualMessages(this,other:that)
+        Message.EqualMessages(this,other:that)
       type method S libName()
       type method Void (Library lift) exception Outer0 (
-        record=Introspection::Record(lib:lift)
+        record=Introspection.Record(lib:lift)
         x=record"Kind"
         if x==Outer0.libName() (
           exception Outer0(record:record,lib:lift)
@@ -55,7 +55,7 @@ MemberUnavailable:{interface<:MetaGuard}
 DispatchMemberUnavailable:{
   type method Void(Library that)
   exception MemberUnavailable(
-    record=Introspection::Record(lib:that)
+    record=Introspection.Record(lib:that)
     x=record"Kind"
     if x== S"MemberUnavailable" (
       if record"InvalidKind".contains(S"Method") (
@@ -66,13 +66,13 @@ DispatchMemberUnavailable:{
   }
 NestedClassUnavailable:RecordWrapper<<{(Path path,Bool isPrivate)<:MemberUnavailable
   method toS() Outer0.myName()++S"[path:"[this.path()]",isPrivate:"[this.isPrivate()]"]"
-  type method Outer0 (Introspection::Record record, Library lib) 
+  type method Outer0 (Introspection.Record record, Library lib) 
     Outer0(path:Path.fromDocInternalizedS(record"Path"),isPrivate:Bool.fromS(record"IsPrivate"))
   type method S libName()S"MemberUnavailable"
   }
 MethodUnavailable:RecordWrapper<<{(Path path,Selector selector,Bool isPrivate)<:MemberUnavailable
   method toS() Outer0.myName()++S"[path:"[this.path()]", selector:"[this.selector()]",isPrivate:"[this.isPrivate()]"]"
-  type method Outer0 (Introspection::Record record, Library lib) 
+  type method Outer0 (Introspection.Record record, Library lib) 
     Outer0(path:Path.fromDocInternalizedS(record"Path"),selector:Selector.fromS(record"Selector"),isPrivate:Bool.fromS(record"IsPrivate"))
   type method S libName()S"MemberUnavailable"
   }

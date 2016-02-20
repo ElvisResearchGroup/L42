@@ -10,7 +10,7 @@ Libs:'@private
   LinkedList.list(Library)
 
 type method '@private
-SrcDests renameMap(Library that,S prefix,Introspection::NestedClasses intros) {
+SrcDests renameMap(Library that,S prefix,Introspection.NestedClasses intros) {
   var acc=SrcDests[]
   with intro in intros.vals() (
     acc++=this.renameMap(that,prefix:prefix,
@@ -21,9 +21,9 @@ SrcDests renameMap(Library that,S prefix,Introspection::NestedClasses intros) {
   }
 type method
 SrcDests renameMap(
-Library that,S prefix,Path path, Introspection::Methods ms) {
+Library that,S prefix,Path path, Introspection.Methods ms) {
   thatI=Introspection(lib:that, path:path)
-  catch exception MetaGuard::MemberUnavailable return SrcDests[]
+  catch exception MetaGuard.MemberUnavailable return SrcDests[]
   return SrcDests[with meth in ms.vals() (
     if this.needRename(that:thatI,meth:meth) (
       destSel=Selector.fromS(prefix++meth.selector().toS())
@@ -32,11 +32,11 @@ Library that,S prefix,Path path, Introspection::Methods ms) {
   }      
 type method
 Bool needRename(
-Introspection::NestedClass that,Introspection::Method meth) {
+Introspection.NestedClass that,Introspection.Method meth) {
   if meth.isPrivate() (return Bool.false() )
   if meth.methodKind()==S"AbstractMethod" (return Bool.false() )
   meth2=that.methodFromSelector(meth.selector())
-  catch exception  MetaGuard::MemberUnavailable
+  catch exception  MetaGuard.MemberUnavailable
     return Bool.false()
   if meth2.isPrivate() (return Bool.false() )
   if meth2.methodKind()==S"AbstractMethod" (return Bool.false() )    
@@ -44,7 +44,7 @@ Introspection::NestedClass that,Introspection::Method meth) {
   }
  
 type method
-Library <<(Library that) exception MetaGuard::ClassClash,MetaGuard::MethodClash
+Library <<(Library that) exception MetaGuard.ClassClash,MetaGuard.MethodClash
   Refactor.compose(left:that,right:{
   'members of each produced class
  (Libs myLibs)<:$ '@private
@@ -64,11 +64,11 @@ Library <<(Library that) exception MetaGuard::ClassClash,MetaGuard::MethodClash
     
   method
   Library << (Library that)
-  exception MetaGuard::ClassClash,MetaGuard::MethodClash{
+  exception MetaGuard.ClassClash,MetaGuard.MethodClash{
     i=Introspection(lib:that)
     var map=SrcDests[]
     var acc={}
-    with lib in this.myLibs().vals(), index in 0N.vals() (
+    with lib in this.myLibs().vals(), index in 1N.vals() (
       var libi=lib
       rens=Outer1.renameMap(lib,prefix:S"#"[index]"", intros:i.transitivelyNestedClasses())
       with ren in rens.vals() (
@@ -79,11 +79,11 @@ Library <<(Library that) exception MetaGuard::ClassClash,MetaGuard::MethodClash
       )
     acc:=Refactor.compose(left:acc,right:that)
     with mapi in map.vals() (
-      acc:=Refactor::MakePrivateSelector(mapi.dest() of:mapi.path())<<acc
+      acc:=Refactor.MakePrivateSelector(mapi.dest() of:mapi.path())<<acc
       )
     return acc
-    error on MetaGuard::MemberUnavailable
-      Assert::CodeNotReachable"PreferentialComposition1"
+    error on MetaGuard.MemberUnavailable
+      Assert.CodeNotReachable"PreferentialComposition1"
     }  
   method Outer0 ++ (Outer0 that)
     Outer0(myLibs:this.myLibs()++that.myLibs())

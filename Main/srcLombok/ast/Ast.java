@@ -407,7 +407,7 @@ public interface Ast {
 			if (cs.equals("Outer0")) {
 				return Collections.emptyList();
 			}
-			List<String> rowData = Collections.unmodifiableList(Arrays.asList(cs.split("::")));
+			List<String> rowData = Collections.unmodifiableList(Arrays.asList(cs.split("\\.")));
 			for (String s : rowData) {
 				if (!isValidClassName(s)) {
 					throw new Resources.Error("InvalidPath: " + cs);
@@ -457,7 +457,7 @@ public interface Ast {
 		}
 
 		public static Path parse(String path) {
-			List<String> rowData = Arrays.asList(path.split("::"));
+			List<String> rowData = Arrays.asList(path.split("\\."));
 			for (String s : rowData) {// TODO: make it more precise, throw real
 										// error?
 				assert isValidOuter(s) || isValidClassName(s) : path;
@@ -539,7 +539,7 @@ public interface Ast {
 					if (i + 1 < s.length()) {
 						next = s.charAt(i + 1);
 					}
-					if (next == ':' || Path.isValidPathChar(next)) {
+					if (next == '.' || Path.isValidPathChar(next)) {
 						sb.append("%s");
 						i = readAnnotation(s, i + 1, annotations);
 					} else {
@@ -588,7 +588,7 @@ public interface Ast {
 			StringBuilder sb = new StringBuilder();
 			for (int i = start; i < s.length(); i++) {
 				char ci = s.charAt(i);
-				if (ci == ':' || Path.isValidPathChar(ci)) {
+				if (ci == '.' || Path.isValidPathChar(ci)) {
 					sb.append(ci);
 				} else {
 					if (Path.isValidPathStart(s.charAt(start))) {

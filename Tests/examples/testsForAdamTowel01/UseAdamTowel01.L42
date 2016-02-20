@@ -4,7 +4,7 @@ NList:LinkedList.list(N)
 Main:{
 
   i=Introspection(lib:{Bar:{method Void()}})
-  Introspection::NestedClass ni=i.nestedClassFromRoot(Path"Bar")
+  Introspection.NestedClass ni=i.nestedClassFromRoot(Path"Bar")
   Debug(ni.classKind())
   Debug(i.classKind())
 
@@ -15,7 +15,7 @@ Main:{
   with s in selector.names().vals() (Debug(s))
   Debug(Selector.fresh(selector))
   Debug(Selector.fresh(selector))
-  path=Path"A::B::C"
+  path=Path"A.B.C"
   with n in path.names().vals() (Debug(n))
   Debug(Path.fresh(path:path))
   Debug(Path.fresh(path:path))

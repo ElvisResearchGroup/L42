@@ -1,6 +1,6 @@
 {
   type method
-  Void (Concept::ToS that)
+  Void (Concept.ToS that)
     use Alu
       check stringDebug(that.toS().binaryRepr())
       void
@@ -8,7 +8,7 @@
   Void (Library lib) error S"to fix in AdamTowel2"
 
   type method
-  Void (Concept::ToS fileName, Concept::ToS content)
+  Void (Concept.ToS fileName, Concept.ToS content)
     use Alu
       check fileDebug(
         fileName:fileName.toS().binaryRepr(),

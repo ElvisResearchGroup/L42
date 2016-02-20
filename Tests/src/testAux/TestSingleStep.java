@@ -37,22 +37,22 @@ public class TestSingleStep {
     @Parameters(name = "{index}: line {0}")
     public static List<Object[]> createData() {
       return Arrays.asList(new Object[][] {
-         {lineNumber(),"(Any x= Outer0::C.new() void)","(Outer0::C x= Outer0::C.new() void)"
-       },{lineNumber(),"( Outer0::C xx= Outer0::C.new()"
-        + "  mut Outer0::C x= (Outer0::C z=Outer0::C.new() y)"
-        + "  Outer0::C zz= Outer0::C.new()"
+         {lineNumber(),"(Any x= Outer0.C.new() void)","(Outer0.C x= Outer0.C.new() void)"
+       },{lineNumber(),"( Outer0.C xx= Outer0.C.new()"
+        + "  mut Outer0.C x= (Outer0.C z=Outer0.C.new() y)"
+        + "  Outer0.C zz= Outer0.C.new()"
         + "  xx)",
-         "(Outer0::C xx= Outer0::C.new()"
-       + " Outer0::C z=Outer0::C.new()"
-       + " mut Outer0::C x= y"
-       + " Outer0::C zz= Outer0::C.new()"
+         "(Outer0.C xx= Outer0.C.new()"
+       + " Outer0.C z=Outer0.C.new()"
+       + " mut Outer0.C x= y"
+       + " Outer0.C zz= Outer0.C.new()"
        + " xx)"
 
-       },{lineNumber(),"( mut Outer0::D x= (Outer0::D z=Outer0::D.new(x:zz) Outer0::C zz=Outer0::C.new() y)"
+       },{lineNumber(),"( mut Outer0.D x= (Outer0.D z=Outer0.D.new(x:zz) Outer0.C zz=Outer0.C.new() y)"
            + "  x)",
-           " (Outer0::D z=Outer0::D.new(x:zz)"
-          + " Outer0::C zz= Outer0::C.new()"
-          + " mut Outer0::D x= y"
+           " (Outer0.D z=Outer0.D.new(x:zz)"
+          + " Outer0.C zz= Outer0.C.new()"
+          + " mut Outer0.D x= y"
           + " x)"
        },{lineNumber(),"{ A:{'@plugin\n'L42.is/connected/withAlu\n()}"
         + " C: use A check sumInt32(n1:{} n2:{}) error void}",
@@ -65,56 +65,56 @@ public class TestSingleStep {
            + " C:{'@int32\n'8\n}}"
 
 
-       },{lineNumber(),"(Outer0::C x= Outer0::C.new() void)","(void)"
+       },{lineNumber(),"(Outer0.C x= Outer0.C.new() void)","(void)"
        },{lineNumber(),"loop void","(Void void0=void, loop void)"
-       },{lineNumber(),"(Outer0::C x= Outer0::C.new() Any y= y.m() void)","(Any y= y.m() void)"
-       },{lineNumber(),"(fwd Any x= Outer0::C.new() x)","(Outer0::C x= Outer0::C.new() x)"
+       },{lineNumber(),"(Outer0.C x= Outer0.C.new() Any y= y.m() void)","(Any y= y.m() void)"
+       },{lineNumber(),"(fwd Any x= Outer0.C.new() x)","(Outer0.C x= Outer0.C.new() x)"
 
-       },{lineNumber(),"(capsule Any x= Outer0::C.new() x)",
-          "(capsule Outer0::C x= Outer0::C.new() x)"
+       },{lineNumber(),"(capsule Any x= Outer0.C.new() x)",
+          "(capsule Outer0.C x= Outer0.C.new() x)"
 
-       },{lineNumber(),"(capsule Outer0::C x= Outer0::C.new() x)",
-          "(Outer0::C.new())"
+       },{lineNumber(),"(capsule Outer0.C x= Outer0.C.new() x)",
+          "(Outer0.C.new())"
 
        },{lineNumber(),"( Any x= y x)","(y)"
-       },{lineNumber(),"( mut Any x= (Outer0::C z=Outer0::C.new() y) x)","( Outer0::C z=Outer0::C.new() mut Any x=  y x)"
-       },{lineNumber(),"( Any x= error (Outer0::C z=Outer0::C.new() z) catch error Outer0::D y y x)","( Any x= error (Outer0::C z=Outer0::C.new() z) x)"
-       },{lineNumber(),"( Any x= error (Outer0::C z=Outer0::C.new() z) catch error Outer0::C y y x)","( Outer0::C y=(Outer0::C z=Outer0::C.new() z) y)"
-       },{lineNumber(),"( Any x= (Any z=Outer0::C.new() z) catch error Outer0::C y y x)",
-          "( Any x= (Outer0::C z=Outer0::C.new() z) catch error Outer0::C y y x)"
+       },{lineNumber(),"( mut Any x= (Outer0.C z=Outer0.C.new() y) x)","( Outer0.C z=Outer0.C.new() mut Any x=  y x)"
+       },{lineNumber(),"( Any x= error (Outer0.C z=Outer0.C.new() z) catch error Outer0.D y y x)","( Any x= error (Outer0.C z=Outer0.C.new() z) x)"
+       },{lineNumber(),"( Any x= error (Outer0.C z=Outer0.C.new() z) catch error Outer0.C y y x)","( Outer0.C y=(Outer0.C z=Outer0.C.new() z) y)"
+       },{lineNumber(),"( Any x= (Any z=Outer0.C.new() z) catch error Outer0.C y y x)",
+          "( Any x= (Outer0.C z=Outer0.C.new() z) catch error Outer0.C y y x)"
 
-       },{lineNumber(),"( Any x= (Outer0::C z=Outer0::C.new() z) catch error Outer0::C y y x)",
-          "( Outer0::C x= (Outer0::C z=Outer0::C.new() z) catch error Outer0::C y y x)"
+       },{lineNumber(),"( Any x= (Outer0.C z=Outer0.C.new() z) catch error Outer0.C y y x)",
+          "( Outer0.C x= (Outer0.C z=Outer0.C.new() z) catch error Outer0.C y y x)"
 
-       },{lineNumber(),"( Outer0::C x= (Outer0::C z=Outer0::C.new() z) catch error Outer0::C y y catch error Outer0::D y y x)",
-         "( Outer0::C x= (Outer0::C z=Outer0::C.new() z)  x)"
+       },{lineNumber(),"( Outer0.C x= (Outer0.C z=Outer0.C.new() z) catch error Outer0.C y y catch error Outer0.D y y x)",
+         "( Outer0.C x= (Outer0.C z=Outer0.C.new() z)  x)"
 
-       },{lineNumber(),"Outer0::C.foo(bar:Outer0::C)","(type Outer0::C this0=Outer0::C,type Outer0::C bar=Outer0::C (bar.foo(bar:this0)))"
+       },{lineNumber(),"Outer0.C.foo(bar:Outer0.C)","(type Outer0.C this0=Outer0.C,type Outer0.C bar=Outer0.C (bar.foo(bar:this0)))"
 
-       },{lineNumber()," (type Outer0::C this0=Outer0::C,type Outer0::C bar=Outer0::C (bar.foo(bar:this0)))",
-          " (type Outer0::C bar=Outer0::C ( bar.foo(bar:Outer0::C) ) )"
+       },{lineNumber()," (type Outer0.C this0=Outer0.C,type Outer0.C bar=Outer0.C (bar.foo(bar:this0)))",
+          " (type Outer0.C bar=Outer0.C ( bar.foo(bar:Outer0.C) ) )"
 
-       },{lineNumber()," (type Outer0::C bar=Outer0::C ( bar.foo(bar:Outer0::C) ) )",
-          " ((Outer0::C.foo(bar:Outer0::C)))"
+       },{lineNumber()," (type Outer0.C bar=Outer0.C ( bar.foo(bar:Outer0.C) ) )",
+          " ((Outer0.C.foo(bar:Outer0.C)))"
 
 
-       },{lineNumber(),"(Outer0::C c=Outer0::C.new() Outer0::D r=Outer0::D.new(x:c) (r).x())","(Outer0::C c=Outer0::C.new() Outer0::D r=Outer0::D.new(x:c) (read Outer0::D d=(r) d.x()))"
-       },{lineNumber(),"(Outer0::C c=Outer0::C.new() Outer0::D r=Outer0::D.new(x:c) r.x(that:(c)))","(Outer0::C c=Outer0::C.new() Outer0::D r=Outer0::D.new(x:c) (Outer0::C c0=(c) r.x(that:c0)))"
-       },{lineNumber(),"Outer0::C.new()","(Outer0::C c=Outer0::C.new() c)"
+       },{lineNumber(),"(Outer0.C c=Outer0.C.new() Outer0.D r=Outer0.D.new(x:c) (r).x())","(Outer0.C c=Outer0.C.new() Outer0.D r=Outer0.D.new(x:c) (read Outer0.D d=(r) d.x()))"
+       },{lineNumber(),"(Outer0.C c=Outer0.C.new() Outer0.D r=Outer0.D.new(x:c) r.x(that:(c)))","(Outer0.C c=Outer0.C.new() Outer0.D r=Outer0.D.new(x:c) (Outer0.C c0=(c) r.x(that:c0)))"
+       },{lineNumber(),"Outer0.C.new()","(Outer0.C c=Outer0.C.new() c)"
        //
-       },{lineNumber(),"(Outer0::C c=Outer0::C.new() Outer0::D r=(Outer0::D d=Outer0::D.new(x:c) d) r.x())",
-          "(Outer0::C c=Outer0::C.new() Outer0::D r=( Outer0::D d=Outer0::D.new(x:c) d ) ( Outer0::C c0=( Outer0::D d0=Outer0::D.new(x:c) d0.x() ) c0 ) )"
+       },{lineNumber(),"(Outer0.C c=Outer0.C.new() Outer0.D r=(Outer0.D d=Outer0.D.new(x:c) d) r.x())",
+          "(Outer0.C c=Outer0.C.new() Outer0.D r=( Outer0.D d=Outer0.D.new(x:c) d ) ( Outer0.C c0=( Outer0.D d0=Outer0.D.new(x:c) d0.x() ) c0 ) )"
 
-       },{lineNumber(),"(Outer0::C c=Outer0::C.new() Outer0::D r=Outer0::D.new(x:c)  r.x())",
-          "(Outer0::C c=Outer0::C.new() Outer0::D r=Outer0::D.new(x:c)  c)"
+       },{lineNumber(),"(Outer0.C c=Outer0.C.new() Outer0.D r=Outer0.D.new(x:c)  r.x())",
+          "(Outer0.C c=Outer0.C.new() Outer0.D r=Outer0.D.new(x:c)  c)"
 
-       },{lineNumber(),"(Outer0::C c1=Outer0::C.new() Outer0::C c2=Outer0::C.new() mut Outer0::D r=Outer0::D.new(x:c1)  r.x(that:c2))",
-         "(Outer0::C c1=Outer0::C.new() Outer0::C c2=Outer0::C.new() mut Outer0::D r=Outer0::D.new(x:c2)  void)"
-       },{lineNumber(),"(Outer0::C c1=Outer0::C.new() ( Outer0::C c2=Outer0::C.new() mut Outer0::D r=Outer0::D.new(x:c1)  r.x(that:c2)))",
-          "(Outer0::C c1=Outer0::C.new() ( Outer0::C c2=Outer0::C.new() mut Outer0::D r=Outer0::D.new(x:c2)  void  ))"
+       },{lineNumber(),"(Outer0.C c1=Outer0.C.new() Outer0.C c2=Outer0.C.new() mut Outer0.D r=Outer0.D.new(x:c1)  r.x(that:c2))",
+         "(Outer0.C c1=Outer0.C.new() Outer0.C c2=Outer0.C.new() mut Outer0.D r=Outer0.D.new(x:c2)  void)"
+       },{lineNumber(),"(Outer0.C c1=Outer0.C.new() ( Outer0.C c2=Outer0.C.new() mut Outer0.D r=Outer0.D.new(x:c1)  r.x(that:c2)))",
+          "(Outer0.C c1=Outer0.C.new() ( Outer0.C c2=Outer0.C.new() mut Outer0.D r=Outer0.D.new(x:c2)  void  ))"
 
-       },{lineNumber(),"use Any check m(that:(Outer0::C c1=Outer0::C.new() Outer0::C c2=Outer0::C.new() mut Outer0::D r=Outer0::D.new(x:c1)  r.x(that:c2))) void",
-          "use Any check m(that:(Outer0::C c1=Outer0::C.new() Outer0::C c2=Outer0::C.new() mut Outer0::D r=Outer0::D.new(x:c2)  void)) void"
+       },{lineNumber(),"use Any check m(that:(Outer0.C c1=Outer0.C.new() Outer0.C c2=Outer0.C.new() mut Outer0.D r=Outer0.D.new(x:c1)  r.x(that:c2))) void",
+          "use Any check m(that:(Outer0.C c1=Outer0.C.new() Outer0.C c2=Outer0.C.new() mut Outer0.D r=Outer0.D.new(x:c2)  void)) void"
 
        },{lineNumber()," (use Any check m(that:(error void)) void catch error Void x void void)",
          "( Void x=( void ) void )"
@@ -145,11 +145,11 @@ public class TestSingleStep {
         ,"        type method Library ko() ({'@kO\n})"
         ,"  }"
         ,"I:{interface }"
-        ,"AI:{ k()<:Outer1::I}"
+        ,"AI:{ k()<:Outer1.I}"
         ,"D:("
-        ,"  Any z=error Outer0::AI.k()"
-        ,"  catch error Outer0::AI x Outer0::C.ok()"
-        ,"  Outer0::C.ko()"
+        ,"  Any z=error Outer0.AI.k()"
+        ,"  catch error Outer0.AI x Outer0.C.ok()"
+        ,"  Outer0.C.ko()"
         ,"  )}"),
         TestHelper.multiLine(
          "{C:{ k()type method Library ok() ("
@@ -158,13 +158,13 @@ public class TestSingleStep {
         ,"  )type method Library ko() ("
         ,"  {'@kO"
         ,"}##star ^##"
-        ,"  )}##star ^## I:{interface }##star ^## AI:{ k()<:Outer1::I}##star ^## D:("
+        ,"  )}##star ^## I:{interface }##star ^## AI:{ k()<:Outer1.I}##star ^## D:("
         ,"  Any z=error ("
-        ,"    Outer0::AI aI=Outer0::AI.k()"
+        ,"    Outer0.AI aI=Outer0.AI.k()"
         ,"    aI"
         ,"    )"
-        ,"  catch error Outer0::AI x Outer0::C.ok()"
-        ,"  Outer0::C.ko()"
+        ,"  catch error Outer0.AI x Outer0.C.ok()"
+        ,"  Outer0.C.ko()"
         ,"  )}")
        },{lineNumber(),
 TestHelper.multiLine("{"
@@ -173,7 +173,7 @@ TestHelper.multiLine("{"
 ,"D:("
 ,"  lent Box box=Box.k(f:box)"
 ,"  Any z1=("
-,"    Outer0::AI any=(mut AI aI=AI.k() aI)"
+,"    Outer0.AI any=(mut AI aI=AI.k() aI)"
 ,"    box.f(any))"
 ,"  Any z2=error box.f()"
 ,"  {ok()}"
@@ -182,7 +182,7 @@ TestHelper.multiLine("{"
 ,"AI:{ mut k()}##star ^##"
 ,"Box:{ lent k(var fwd read Any f)}##star ^##"
 ,"D:("
-,"  Outer0::AI any=(mut AI aI=AI.k() aI)"
+,"  Outer0.AI any=(mut AI aI=AI.k() aI)"
 ,"  lent Box box=Box.k(f:any)"
 ,"  Any z1=(void)"
 ,"  Any z2=error box.f()"

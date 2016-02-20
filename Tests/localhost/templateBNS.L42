@@ -11,13 +11,13 @@ Generalize:{()
   method Library <(Library that){
     var result=that
     result:=Adapt[
-      Name"Bool" into:Name(Template::Bool);
-      Name"N" into:Name(Template::N);
-      Name"S" into:Name(Template::S);
-      Name"Debug" into:Name(Template::Debug);
+      Name"Bool" into:Name(Template.Bool);
+      Name"N" into:Name(Template.N);
+      Name"S" into:Name(Template.S);
+      Name"Debug" into:Name(Template.Debug);
       ]<result
     result:=Adapt[Name"Outer0" into:Name"PrivateImpl"]<result
-    result:=Adapt[Name"PrivateImpl::Exported" into:Name"Outer0"]<result
+    result:=Adapt[Name"PrivateImpl.Exported" into:Name"Outer0"]<result
     result:=MakePrivate(Name"PrivateImpl" into:result)
     'result:=IntrospectionPlugin.purgePrivates(result)
     Debug(S"###############---Generating")
@@ -28,7 +28,7 @@ Generalize:{()
   }
 
 Template:{
-  Bool:{<:S::ToS
+  Bool:{<:S.ToS
     method Void #checkTrue() exception Void 
     type method Outer0 true()
     type method Outer0 false()
@@ -36,7 +36,7 @@ Template:{
     method Outer0 |(Outer0 that)
     method Outer0 !()
     }
-  N:{<:S::ToS
+  N:{<:S.ToS
     type method N #numberParser(Library that)       
     method N +(N that)       
     method N -(N that)       

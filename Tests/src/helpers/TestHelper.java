@@ -99,7 +99,7 @@ public class TestHelper {
     }finally{System.setErr(lpsErr.underlying);}
     }*/
   public static Program getProgramCD(){
-    return getProgram(new String[]{"{C:{new() type method Outer1::C foo(type Outer1::C bar) (bar.foo(bar:this))}, D:{new(var Outer1::C x)}}"});
+    return getProgram(new String[]{"{C:{new() type method Outer1.C foo(type Outer1.C bar) (bar.foo(bar:this))}, D:{new(var Outer1.C x)}}"});
   }
 
   public static ClassB getClassB(String source, String e1) {

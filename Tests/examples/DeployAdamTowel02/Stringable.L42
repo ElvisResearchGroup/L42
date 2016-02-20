@@ -1,7 +1,7 @@
 {()
 type method Library stringableTrait(){
-  (S inner)<:Concept::ToS, Concept::Named, Concept
-  type method Outer0 (Concept::ToS that) 
+  (S inner)<:Concept.ToS, Concept.Named, Concept
+  type method Outer0 (Concept.ToS that) 
     Outer0(inner:that.toS())
 
   method S ~() this.inner()

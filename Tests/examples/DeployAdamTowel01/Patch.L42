@@ -1,36 +1,36 @@
 {(Path that)
   method
   Library <<(Library that)
-  exception MetaGuard::ClassClash,MetaGuard::MethodClash{
+  exception MetaGuard.ClassClash,MetaGuard.MethodClash{
     ip=Introspection(lib:that,path:this.that())
     itr=ip.transitivelyNestedClasses()
     rens=Outer0.renameMap(that,prefix:S"#1", intros:itr)
-    var map=PreferentialComposition::SrcDests[]
+    var map=PreferentialComposition.SrcDests[]
     var acc=that
     with ren in rens.vals() (
       map:=map.#add(ren)
-      acc:=Refactor::MoveImplementationSelector(
+      acc:=Refactor.MoveImplementationSelector(
         ren.src() of:ren.path() to:ren.dest())<<acc
       catch exception MetaGuard err
-        error Assert::ObservedBug"Path.#lessless(that)"(err)
+        error Assert.ObservedBug"Path.#lessless(that)"(err)
       void
       )
-    acc:=Refactor::RenamePath(
+    acc:=Refactor.RenamePath(
       this.that() to:Path"Outer0")<<acc
     with mapi in map.vals() (
-      acc:=Refactor::MakePrivateSelector(
+      acc:=Refactor.MakePrivateSelector(
         mapi.dest() of:mapi.path())<<acc
       )
     return acc
-    catch exception MetaGuard::MemberUnavailable err
-      error Assert::CodeNotReachable"Path2"(err)
+    catch exception MetaGuard.MemberUnavailable err
+      error Assert.CodeNotReachable"Path2"(err)
     }
   type method '@private
-  PreferentialComposition::SrcDests renameMap(Library that,S prefix,Introspection::NestedClasses intros) {
-    var acc=PreferentialComposition::SrcDests[]
+  PreferentialComposition.SrcDests renameMap(Library that,S prefix,Introspection.NestedClasses intros) {
+    var acc=PreferentialComposition.SrcDests[]
     with intro in intros.vals() (
       ns=intro.pathFromRoot().names()
-      Assert::$[!ns.isEmpty()]
+      Assert.$[!ns.isEmpty()]
       acc++=PreferentialComposition.renameMap(that,
         prefix:prefix,
         path:Path.from(names:ns.pop())

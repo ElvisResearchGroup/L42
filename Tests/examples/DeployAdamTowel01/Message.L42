@@ -1,4 +1,4 @@
-{interface<:Concept::ToS, Concept::Equals, Concept::Classable, Concept::Named
+{interface<:Concept.ToS, Concept.Equals, Concept.Classable, Concept.Named
 type method S kind()
 method S text()
 method Opt responseOf()
@@ -7,7 +7,7 @@ Opt:{#new(TOpt that)
   TOpt:{interface method Outer2 get() }
   TEmpty:{()<:TOpt method get() 
     error S"UnsatisfactoryErrorToAvoidCycle, replace in Adam2"
-    'error Guard::Operation"TEmpty.get() Value not present in Optional" 
+    'error Guard.Operation"TEmpty.get() Value not present in Optional" 
     }
   TOf:{(Outer2 that)<:TOpt method get() this.that()}
   method Outer1 ~() this.that().get()
@@ -34,7 +34,7 @@ EqualMessages:{
 $:{()
   type method Library <<(Library that)
     SafeOperatorsAccess.compose(left:that, right:Outer0.messageTrait())
-  type method Library messageTrait() {(S _text, Message::Opt cause)<:Message
+  type method Library messageTrait() {(S _text, Message.Opt cause)<:Message
     method myName()GetMyName(Outer0)
     method kind() this.myName()
     method text() this._text()
@@ -62,29 +62,29 @@ $:{()
     method Bool != (Outer0 that)
       !(this==that)
     method Bool == (Outer0 that)
-      Message::EqualMessages(this,other:that)
+      Message.EqualMessages(this,other:that)
     method classAny() Outer0
     method clazz() Outer0
     type method
     Outer0 (S text)
-      Outer0(_text:text,cause:Message::Opt())
+      Outer0(_text:text,cause:Message.Opt())
     type method
     Outer0(S text, Message cause)
-      Outer0(_text:text,cause:Message::Opt(cause))
+      Outer0(_text:text,cause:Message.Opt(cause))
     'next part could become a trait on its own (but S must keep its version)
     
-    type method mut S::SBuilder #builder()S::SBuilder.empty()
-      type method Outer0 #from(S::SBuilder builder)
+    type method mut S.SBuilder #builder()S.SBuilder.empty()
+      type method Outer0 #from(S.SBuilder builder)
         Outer0(text:S.#from(builder:builder))
         
     method
     SConcat #begin()
       SConcat(old:this,accumulator:S"")
       
-    SConcat:{(Concept::ToS old,S accumulator)
-      method SConcat #add(Concept::ToS that)
+    SConcat:{(Concept.ToS old,S accumulator)
+      method SConcat #add(Concept.ToS that)
         SConcat(old:this.old(),accumulator:this.accumulator()++that.toS())
-      method SConcat #add(Concept::ToS that, Concept::ToS separedBy) (
+      method SConcat #add(Concept.ToS that, Concept.ToS separedBy) (
         var newAcc=that.toS()
         if this.accumulator()!=S"" (
           newAcc:=this.accumulator()++separedBy.toS()++newAcc
@@ -93,8 +93,8 @@ $:{()
         )
       method
       SConcat #end() this
-      method mut S::SBuilder #builder()S::SBuilder.empty()
-      method Outer1 #from(S::SBuilder builder)
+      method mut S.SBuilder #builder()S.SBuilder.empty()
+      method Outer1 #from(S.SBuilder builder)
         Outer1(text:this.old().toS()++this.accumulator()++S.#from(builder:builder))
       }
     }

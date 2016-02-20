@@ -26,13 +26,13 @@ public class TestPop {//add more test for error cases
     {"{B:{}}","{}",false
   },{"{B:{()}}","{()}",false
   },{"{B:{(C a) C:{}}}","{(C a) C:{}}",false
-  },{"{B:{method Outer1::B b()}}",
+  },{"{B:{method Outer1.B b()}}",
     "{method Outer0 b()}",false
-  },{"{B:{(Outer0::C a,Outer1::B::C b,Outer2::C c ) C:{}}}",
-    "{(Outer0::C a,Outer0::C b,Outer1::C c ) C:{}}",false
-  },{"{B:{(Outer0::C a,Outer1 b,Outer2::C c ) C:{}}}",
+  },{"{B:{(Outer0.C a,Outer1.B.C b,Outer2.C c ) C:{}}}",
+    "{(Outer0.C a,Outer0.C b,Outer1.C c ) C:{}}",false
+  },{"{B:{(Outer0.C a,Outer1 b,Outer2.C c ) C:{}}}",
     "{Kind:{'@stringU\n'NotBox\n}"
-    +"UsedBy:{'@stringU\n'[Outer0::B]\n}"
+    +"UsedBy:{'@stringU\n'[Outer0.B]\n}"
     +"Supertypes:{'@stringU\n'[]\n}"
     +"ContainsMethods:{'@stringU\n'[]\n}"
     +"ActualKind:{'@stringU\n'Template\n}}",true

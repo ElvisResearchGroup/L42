@@ -1,14 +1,14 @@
-{ _private(Library _binaryRepr)<:Concept::ToS Concept::Equals Concept::Named'@private
+{ _private(Library _binaryRepr)<:Concept.ToS Concept.Equals Concept.Named'@private
   method myName()GetMyName(Outer0)
 
   type method
-  Outer0 fromS(Concept::ToS that)
+  Outer0 fromS(Concept.ToS that)
     Outer0.#from(binaryRepr: that.toS().binaryRepr())
   
-  type method Outer0 #from(S::SBuilder builder) 
+  type method Outer0 #from(S.SBuilder builder) 
     Outer0.#from(binaryRepr: builder.binaryRepr())
   
-  type method mut S::SBuilder #builder() S::SBuilder.empty()
+  type method mut S.SBuilder #builder() S.SBuilder.empty()
   
   type method
   Outer0 #from(Library binaryRepr) (
@@ -19,7 +19,7 @@
     )
   type method
   Any parseError(S that)
-    S"UnsatisfactoryErrorToAvoidCycle, replace in AdamT2"
+    S"Selector.UnsatisfactoryErrorToAvoidCycle, replace in AdamT2"
   
   type method 
   Outer0 from(S name,Strings names) {

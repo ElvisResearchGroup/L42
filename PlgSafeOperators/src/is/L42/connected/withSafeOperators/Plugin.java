@@ -149,7 +149,7 @@ public class Plugin implements PluginType{
       List<String> path=Path.parseValidCs(ensureExtractStringU(_path));
       List<Object> result= new ArrayList<>(Introspection.giveInfo(that, path));
       result.add("MyClass");
-      result.add(Doc.factory("@::"+String.join("::",path)));
+      result.add(Doc.factory("@."+String.join(".",path)));
       return Resources.Error.multiPartStringClassB("MemberReport",result.toArray());
     }
     @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
@@ -245,6 +245,7 @@ public class Plugin implements PluginType{
     @ActionType({ActionType.Type.Library,ActionType.Type.Library})
     public  Object MfreshName£xthat(Object _s){
       String name=ensureExtractStringU(_s);
+      if (name.isEmpty()){name="fresh";}
       return Functions.freshName(name,L42.usedNames);
       //good for both selectors and class names
       //good for current operators, but for tomorrow ones?

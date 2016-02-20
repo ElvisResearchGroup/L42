@@ -1,21 +1,21 @@
-{ _private(Library _binaryRepr)<:Concept::ToS Concept::Equals Concept::Named'@private
+{ _private(Library _binaryRepr)<:Concept.ToS Concept.Equals Concept.Named'@private
   method myName()GetMyName(Outer0)
   
   type method 
   Outer0 fromDocInternalizedS(S that){
-    if that==S"@::"++S.nl() (return Outer0.fromS(S"Outer0"))
+    if that==S"@."++S.nl() (return Outer0.fromS(S"Outer0"))
     'Debug(S"["++that++S"]")
-    return Outer0.fromS(that(start:3N end:that.size()-1N))
+    return Outer0.fromS(that(start:2N end:that.size()-1N))
     catch error Message x 
       error Outer0.parseError(that,cause:x)
     }
   type method
-  Outer0 fromS(Concept::ToS that)
+  Outer0 fromS(Concept.ToS that)
     Outer0.#from(binaryRepr: that.toS().binaryRepr())
   
-  type method Outer0 #from(S::SBuilder builder) 
+  type method Outer0 #from(S.SBuilder builder) 
     Outer0.#from(binaryRepr: builder.binaryRepr())
-  type method mut S::SBuilder #builder() S::SBuilder.empty()
+  type method mut S.SBuilder #builder() S.SBuilder.empty()
   
   type method Outer0 #from(Library binaryRepr) (
     use SafeOperators 
@@ -25,10 +25,10 @@
     )
   type method
   Any parseError(S that)
-    S"UnsatisfactoryErrorToAvoidCycle, replace in AdamT2"
+    S"Path1.["[that]"] UnsatisfactoryErrorToAvoidCycle, replace in AdamT2"
   type method
   Any parseError(S that, Message cause)
-    S"UnsatisfactoryErrorToAvoidCycle, replace in AdamT2"
+    S"Path2.["[that]"] UnsatisfactoryErrorToAvoidCycle, replace in AdamT2"
 
   method Library binaryRepr() this._binaryRepr()
 
@@ -54,27 +54,27 @@
     if this==Path"Outer0" (return that)
     if that==Path"Outer0" (return this)
     return Path.#from(binaryRepr: 
-      this.toS()[S"::";that]"".binaryRepr()
+      this.toS()[S".";that]"".binaryRepr()
       )
     }
   method
   Strings names(){
     var str=this.toS()
     if str==S"Outer0" (return Strings[])
-    str++=S"::"
+    str++=S"."
     var result=Strings[]
     while str!=S"" (
-      pos=str.firstIndexOf(S"::")
+      pos=str.firstIndexOf(S".")
       result:=result.#add(str(end:pos))
-      str:=str(start:pos+2N)
+      str:=str(start:pos+1N)
       )
     return result.#end()
     }
   type method
   Path from(Strings names) {
     if names.isEmpty() (return Path"Outer0")
-    s=S""[with n in names.vals() (use[n separedBy:S"::"])]""
-    return Outer0.fromS(s) '(end:s.size()-2N)
+    s=S""[with n in names.vals() (use[n separedBy:S"."])]""
+    return Outer0.fromS(s) '(end:s.size()-1N)
     }
   type method
   Path fresh(S name)

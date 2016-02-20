@@ -202,7 +202,7 @@ public class Program {
       }
     ClassB classB=extractCb(path);
     if(classB==null){classB=extractCb(path);}
-//    path=Path.parse("Outer0::C::C");
+//    path=Path.parse("Outer0.C.C");
     //classB=(ClassB)From.from(classB,path);
     Optional<Member> result = getIfInDom(classB.getMs(),ms);
     if(!result.isPresent()){

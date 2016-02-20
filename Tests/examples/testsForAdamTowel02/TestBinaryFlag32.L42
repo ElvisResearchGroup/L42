@@ -1,6 +1,6 @@
 {reuse L42.is/AdamTowel02
 BinaryFlag32:{(N that)
-  <:Concept::ToS Concept::Equals Concept::Named'@private
+  <:Concept.ToS Concept.Equals Concept.Named'@private
   
   method myName()GetMyName(Outer0)
   
@@ -13,7 +13,7 @@ BinaryFlag32:{(N that)
     )]"")
   
   type method
-  Outer0 fromS(Concept::ToS that) this.#from(builder:(
+  Outer0 fromS(Concept.ToS that) this.#from(builder:(
     s=that.toS()
     b=this.#builder()
     with i in 0N.vals(upTo:s.size()) (
@@ -31,7 +31,7 @@ BinaryFlag32:{(N that)
   mut BBuilder #builder()
     BBuilder.empty()
   
-  ParseFail:Message::$<<{<:Guard::ParseFail}
+  ParseFail:Message.$<<{<:Guard.ParseFail}
   BBuilder:{(var Library that, var N count)
     type method
     mut Outer0 empty()

@@ -1,6 +1,6 @@
 {mut (mut Outer1 that, var N min, N ok, OptMax max, OptFill fill)
     mut method
-    Void inner(Kind::elem() that) this.#that()(this.min(), val:that)
+    Void inner(Kind.elem() that) this.#that()(this.min(), val:that)
 
     'all here is the same?
     mut method
@@ -23,7 +23,7 @@
       if this.min()<this.ok() ( error S"Unexpected termination of iteration, reached "[this.min()]" instead of "[this.ok()]"" )
     
     read method
-    Kind::elem() #inner() {
+    Kind.elem() #inner() {
       if !this.fill().isPresent() (return this.that()(this.min()))
       if this.min()<this.that().size() (return this.that()(this.min()))
       return ~this.fill()

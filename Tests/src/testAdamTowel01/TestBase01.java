@@ -51,8 +51,8 @@ public class TestBase01 {
         + "foo(azz,bzz,czz)\n"
         + "foo0(azz,bzz,czz)\n"
         +"A\nB\nC\n"
-        +"A::B::C\n"
-        +"A::B::C0\n"
+        +"A.B.C\n"
+        +"A.B.C0\n"
         +"Fresh\n"
         +"Fresh0\n"
         + "Hello Adam n1:0 n2:false endOfString\n");
@@ -97,15 +97,15 @@ public class TestBase01 {
    TestHelper.configureForTest();
    L42.main(new String[]{"examples/testsForAdamTowel01/UseIntrospectionAdamTowel2.L42"});
    Assert.assertEquals(L42.record.toString(),TestHelper.multiLine(
-       "fuffa @a beer @Outer1::External bar @::Internal fuzz"
+       "fuffa @a beer @Outer1.External bar @.Internal fuzz"
       ,""
       ,"a"
       ,"Report plgFailure as --NameStillToFix--\"SafeOperators.introspectLibraryDocPath\""
       ,"Iteration complete"
-      ,"Outer1::External"
+      ,"Outer1.External"
       ,"External found"
       ,"Iteration complete"
-      ,"::Internal"
+      ,".Internal"
       ,"Report plgFailure as --NameStillToFix--\"SafeOperators.introspectLibraryDocPath\""
       ,"Iteration complete"
        ));
@@ -116,10 +116,10 @@ public class TestBase01 {
    L42.main(new String[]{"examples/testsForAdamTowel01/UseIntrospectionAdamTowel3.L42"});
    Assert.assertEquals(L42.record.toString(),TestHelper.multiLine(
   "Foo!"
- ,"Outer0::External"
- ,"Outer0::Generated"
- ,"Outer0::Generated::Foo"
- ,"Outer0::Debug"
+ ,"Outer0.External"
+ ,"Outer0.Generated"
+ ,"Outer0.Generated.Foo"
+ ,"Outer0.Debug"
 ));
    }
  @Test
@@ -131,23 +131,25 @@ public class TestBase01 {
 ,"true"
 ,"m6(), methRootExternal:false, typeExternal:false, typeRefExternal:false"
 ,"m6(), methRootExternal:true, typeExternal:true, typeRefExternal:true"
-,"Outer0::Generated::Foo"
+,"Outer0.Generated.Foo"
 ,"m5(), methRootExternal:false, typeExternal:true, typeRefExternal:true"
-,"Outer0::External"
+,"Outer0.External"
 ,"m5(), methRootExternal:true, typeExternal:true, typeRefExternal:true"
-,"Outer0::External"
+,"Outer0.External"
 ,"m4(), methRootExternal:false, typeExternal:false, typeRefExternal:false"
 ,"m4(), methRootExternal:true, typeExternal:true, typeRefExternal:true"
-,"Outer0::Generated"
+,"Outer0.Generated"
 ));
    }
  
  @Test
  public  void _01_06introspection5() throws Throwable{
+   //this._01_00DeployAdamTowel01();
+   //new TestBase02()._02_00DeployAdamTowel02();
    TestHelper.configureForTest();
    L42.main(new String[]{"examples/testsForAdamTowel01/UseIntrospectionAdamTowel5.L42"});
    Assert.assertEquals(L42.record.toString(),
-       "a\nb\nc\nd\ne\nf\ng\nh\ni\nl\nm\nOK\n");}
+       "a\nb\nc1\nc2\nd\ne\nf\ng\nh\ni\nl\nm\nOK\n");}
 
  @Test
  public  void _01_07builder() throws Throwable{

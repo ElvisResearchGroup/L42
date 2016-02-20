@@ -18,7 +18,7 @@ public class PathAnnotateClass extends CloneWithPath{
     int len=astNodesPath.size();
     assert len==astIndexesPath.size();
     StringBuffer comment=new StringBuffer();
-    comment.append("Outer0::");
+    comment.append("Outer0.");
     for(int i=0;i<len;i++){
       astNodesPath.get(i).match(
           nc->comment.append(nc.getName()),

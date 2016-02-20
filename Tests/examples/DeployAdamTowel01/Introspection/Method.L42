@@ -1,4 +1,4 @@
-{(fwd NestedClass _root,Path path,N memberN,Record record)<:Member,Concept::Equals '@private
+{(fwd NestedClass _root,Path path,N memberN,Record record)<:Member,Concept.Equals '@private
 method myName()GetMyName(Outer0)
 method toS() Outer0.myName()++S"["[this.allAsString()]"]"
 method Bool ==(Outer0 that){
@@ -44,14 +44,14 @@ Type returnType() {
     path:this.path(),
     memberN:this.memberN(),
     typeN:0N)
-  catch exception MetaGuard::MemberUnavailable x error Assert::CodeNotReachable"Method1"(x)
-  catch exception Void  error Assert::CodeNotReachable"void was thrown"
+  catch exception MetaGuard.MemberUnavailable x error Assert.CodeNotReachable"Method1"(x)
+  catch exception Void  error Assert.CodeNotReachable"void was thrown"
   }
 
 
 
 method
-Types exceptions() error Assert::NotImplementedYet""
+Types exceptions() error Assert.NotImplementedYet""
 
 method
 Types parameterTypes() {
@@ -65,7 +65,7 @@ Types parameterTypes() {
     pN+=1N
     )
   return result.#end()
-  catch exception MetaGuard::MemberUnavailable err error Assert::CodeNotReachable"Method2"(err)
+  catch exception MetaGuard.MemberUnavailable err error Assert.CodeNotReachable"Method2"(err)
   }
 
 method

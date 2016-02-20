@@ -48,7 +48,7 @@ import auxiliaryGrammar.Functions;
     for(ClassB cb:cb0){
       pathsStar.addAll(_CollectPathsStar.of(cb));
     }
-    Path toFrom=Path.parse("Outer0::"+nc.getName());
+    Path toFrom=Path.parse("Outer0."+nc.getName());
     pathsStar=Map.of(p->From.fromP(p,toFrom), pathsStar);
     paths.addAll(pathsStar);
     return nc;

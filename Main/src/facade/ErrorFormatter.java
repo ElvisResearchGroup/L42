@@ -109,7 +109,7 @@ public class ErrorFormatter {
       case MetaError:
         errorTxt=errorStart+"runStatus: "+kind.name()+"\n"+
         "Error in generating the following class: \n"
-            +reportPlaceOfMetaError(p,msg)/*.replace("::\n","\n")*/+"\n----------\n"+errorTxt;
+            +reportPlaceOfMetaError(p,msg)/*.replace(".\n","\n")*/+"\n----------\n"+errorTxt;
       default:
         break;
       }
@@ -140,16 +140,17 @@ public class ErrorFormatter {
     for(Member m:cb.getMs()){
       if(IsCompiled.of(m)){continue;}
       return m.match(
-        nc->nc.getName()+"\nError is:\n"+L42.messageOfLastTopLevelError+"\n"+isItErrorPlace(p,nc.getInner()),
-        mi->formatSelectorCompact(mi.getS())+"::"+isItErrorPlace(p,mi.getInner()),
-        mt->formatSelectorCompact(mt.getMs())+"::"+isItErrorPlace(p,mt.getInner().get())
+        nc->nc.getName()+"\nError is:\n"+L42.messageOfLastTopLevelError+"\n"+
+      "reconstructed stackTrace:"+L42.reconstructedStackTrace+"\n"+isItErrorPlace(p,nc.getInner()),
+        mi->formatSelectorCompact(mi.getS())+"."+isItErrorPlace(p,mi.getInner()),
+        mt->formatSelectorCompact(mt.getMs())+"."+isItErrorPlace(p,mt.getInner().get())
         );
       }
     for(Member m:cb.getMs()){
       String err=m.match(nc->{
         ClassB ncb=(ClassB)nc.getInner();
         if(ncb.getStage().getStage()!=Stage.Star){
-          return nc.getName()+"::"+isItErrorPlace(p,nc.getInner());
+          return nc.getName()+"."+isItErrorPlace(p,nc.getInner());
           }
         return null;
         }, mi->null, mt->null);
@@ -345,7 +346,7 @@ public class ErrorFormatter {
       if(!(m instanceof NestedClass)){continue;}
       NestedClass nc=(NestedClass)m;
       if(nc.getInner() instanceof ClassB){
-        printType(i,"::"+nc.getName(),(ClassB)nc.getInner());
+        printType(i,"."+nc.getName(),(ClassB)nc.getInner());
       }
     }
 
@@ -391,7 +392,7 @@ public class ErrorFormatter {
       }
       String nestedRes=whyIsNotExecutable((ClassB)nc.getInner());
       if(nestedRes!=null){
-        return "::"+nc.getName()+nestedRes;
+        return "."+nc.getName()+nestedRes;
       }
     }
     return null;

@@ -74,7 +74,8 @@ WalkBy:'##walkBy';
 Stage:'##less'|'##meta'|'##plus'|'##star'|'##needable'|'##needed';
 Path://    Outer ('::'C)* |
   C(ClassSep C)*;//| 'Any' | 'Void' | 'Library';
-ClassSep: '::';
+ClassSep: '.';
+ClassMethSep: '::';
 MX:Lowercase (Uppercase|Lowercase|Digit|'#')*'(';
 X:Lowercase (Uppercase|Lowercase|Digit|'#')*;
 HashX:'#'  (Uppercase|Lowercase|Digit|'#')*'(';
@@ -107,7 +108,7 @@ docs: Doc;
 docsOpt: Doc?;
 t:concreteT|historicalT;
 concreteT: Ph? Mdf? Path;
-historicalSeq:ClassSep methSelector (ClassSep x)?;
+historicalSeq: ClassMethSep methSelector (ClassMethSep x)?;
 historicalT:Path historicalSeq+;
 methSelector: (mDec| ORoundNoSpace|ORoundSpace) x* CRound;
 

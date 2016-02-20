@@ -1,14 +1,14 @@
 {interface <:Message
-NotImplementedYet:Message::$<<{<:Outer1}
+NotImplementedYet:Message.$<<{<:Outer1}
 
-ObservedBug:Message::$<<{<:Outer1}
+ObservedBug:Message.$<<{<:Outer1}
   'if this happens, we observe 
   ' -a parameter that do not met our expected requirement,
   ' -we can not satisfy our postcondition, a logic error in our client
   ' -a method do not produce a result respecting its postcondition
   '   is about logic errors in the current method
 
-CodeNotReachable:Message::$<<{<:Outer1}
+CodeNotReachable:Message.$<<{<:Outer1}
   ' it sounds like, assuming the rest is right, I think this never happens
   ' in most cases, in an ideal world a static analysis would verify this
   'Can wrap a captured error/exception (often a Guard)
@@ -23,10 +23,10 @@ $:{(N that)
     if that (return Outer0(this.that()+1N))
     error AssertMessage"Condition number "[this.that()]" failed"
     }
-  method Outer0 #add(Bool that, Concept::ToS msg){
+  method Outer0 #add(Bool that, Concept.ToS msg){
     if that (return Outer0(this.that()+1N))
     error AssertMessage""[msg;S.nl()]"number:"[this.that()]" failed"
     }
   }
-AssertMessage:Message::$<<{<:Outer1}
+AssertMessage:Message.$<<{<:Outer1}
 }

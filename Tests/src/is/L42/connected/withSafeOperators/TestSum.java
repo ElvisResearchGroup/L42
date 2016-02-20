@@ -40,7 +40,7 @@ import auxiliaryGrammar.Program;
     },{    lineNumber(),"{B:'@private\n{}}","{B:'@private\n{}}","{B__0_0:'@private\n{} B__1_0:'@private\n{} }",false
     },{    lineNumber(),"{B:{method Void m()}}","{B:{method B m()}}",
       "{Kind:{'@stringU\n'MethodClash\n}"
-      +"Path:{'@::B\n}"
+      +"Path:{'@.B\n}"
       +"Left:{'@stringU\n'method Void m()\n}"
       +"Right:{'@stringU\n'method Outer0 m()\n}"
       +"LeftKind:{'@stringU\n'AbstractMethod\n}"
@@ -52,7 +52,7 @@ import auxiliaryGrammar.Program;
       true
     },{    lineNumber(),"{B:{method Void m()}}","{I:{interface method Void m()}B:{<:I}}",
       "{Kind:{'@stringU\n'MethodClash\n}"
-      +"Path:{'@::B\n}"
+      +"Path:{'@.B\n}"
       +"Left:{'@stringU\n'method Void m()\n}"
       +"Right:{'@stringU\n'method Void m()\n}"
       +"LeftKind:{'@stringU\n'AbstractMethod\n}"
@@ -64,8 +64,8 @@ import auxiliaryGrammar.Program;
       true
     },{    lineNumber(),"{J:{interface method Void m()} B:{<:J}}","{I:{interface method Void m()}B:{<:I}}",
       "{Kind:{'@stringU\n'ClassClash\n}"
-     +"Path:{'@::B\n}"
-     +"ConflictingImplementedInterfaces:{'[@::J, @::I]\n}}",
+     +"Path:{'@.B\n}"
+     +"ConflictingImplementedInterfaces:{'[@.J, @.I]\n}}",
       true
 
     },{    lineNumber(),"{B:{method Outer0 m()}}","{B:{method B m()}}","{B:{method Outer0 m()} }",false
@@ -81,8 +81,8 @@ import auxiliaryGrammar.Program;
       "{B__0_0:'@private\n{} B__0_1:'@private\n{}}",false
       
     },{    lineNumber(),"{(B x)'@private\nB:{}}","{(B x) B:{}}",
-      "{#apply__0_0(Outer0::B x__0_0)'@private\nB:{}"
-      + "type method Outer0 (Outer0::B x)"
+      "{#apply__0_0(Outer0.B x__0_0)'@private\nB:{}"
+      + "type method Outer0 (Outer0.B x)"
       + "mut method B #x()"
       + "read method B x() }",
       false

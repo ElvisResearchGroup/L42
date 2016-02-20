@@ -4,7 +4,7 @@
       T:{}
       TOpt:{interface method T get() }
       TEmpty:{()<:TOpt method get()
-        error Guard::Operation
+        error Guard.Operation
           "TEmpty.get() Value not present in Optional" }
       TOf:{(T that)<:TOpt method get() this.that()}
       method T ~() this.that().get()

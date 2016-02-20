@@ -1,33 +1,33 @@
 {(Path path,Url url)
 
 type method Library moveToAbstract(Path that,Library of){
-  return Refactor::RenamePath(
+  return Refactor.RenamePath(
     Path"PrImpl"++that to:Path"Abstract"++that)<<of
-  error on MetaGuard::NestedClassUnavailable (
+  error on MetaGuard.NestedClassUnavailable (
     available=Introspection(lib:of, path:Path"PrImpl").nestedClasses()
-    error on MetaGuard::NestedClassUnavailable
-      Assert::CodeNotReachable"DeployLibrary2"
-    Assert::ObservedBug"map and library mismatch on "[that]" available paths are "[
+    error on MetaGuard.NestedClassUnavailable
+      Assert.CodeNotReachable"DeployLibrary2"
+    Assert.ObservedBug"map and library mismatch on "[that]" available paths are "[
       with av in available.vals() ( 
         use[S.nl()++av.pathFromRoot().toS()(start:8N)]  
       )]""
     )
   error on MetaGuard
-    Assert::CodeNotReachable"DeployLibrary3"
+    Assert.CodeNotReachable"DeployLibrary3"
   }
 
 type method
 Library  exposeAsLibrary(Library that, Path path)
 exception
-    MetaGuard::NestedClassUnavailable,
-    MetaGuard::PrivacyCoupuled {
-  Assert::$[path!=Path"Outer0"]
-  this.checkTargetExists(that,path:path)'throws MetaGuard::NestedClassUnavailable
+    MetaGuard.NestedClassUnavailable,
+    MetaGuard.PrivacyCoupuled {
+  Assert.$[path!=Path"Outer0"]
+  this.checkTargetExists(that,path:path)'throws MetaGuard.NestedClassUnavailable
   var res=that
   Debug(S"1.1")
-  res:=Refactor::RenamePath(Path"Outer0" to:Path"PrImpl")<<res
+  res:=Refactor.RenamePath(Path"Outer0" to:Path"PrImpl")<<res
   error on MetaGuard
-    Assert::CodeNotReachable"DeployLibrary1"
+    Assert.CodeNotReachable"DeployLibrary1"
   Debug(S"1.2")
   with m in Introspection(lib:that, path:Path"ConceptMap").methods().vals() (
     p=m.returnType().referencedPath().pathFromRoot()
@@ -35,24 +35,24 @@ exception
     Debug(S"1.2b "[p]" renamed")
     )
   Debug(S"1.3")
-  res:=Refactor::RemoveImplementationPath(Path"Abstract")<<res'leak PrivacyCoupuled
+  res:=Refactor.RemoveImplementationPath(Path"Abstract")<<res'leak PrivacyCoupuled
   Debug(S"1.4")
-  error on MetaGuard::MemberUnavailable
-    Assert::CodeNotReachable"DeployLibrary3"
-  res:=Refactor::RenamePath(Path"PrImpl"++path to:Path"Outer0")<<res
+  error on MetaGuard.MemberUnavailable
+    Assert.CodeNotReachable"DeployLibrary3"
+  res:=Refactor.RenamePath(Path"PrImpl"++path to:Path"Outer0")<<res
   Debug(S"1.5")
-  res:=Refactor::MakePrivatePath(Path"PrImpl")<<res
+  res:=Refactor.MakePrivatePath(Path"PrImpl")<<res
   Debug(S"1.6")
   return res
   error on MetaGuard 
-    Assert::CodeNotReachable"DeployLibrary4"
+    Assert.CodeNotReachable"DeployLibrary4"
   }
 type method
 Void checkTargetExists(Library that,Path path)
-exception MetaGuard::NestedClassUnavailable (
-  unused=Refactor::AddDocumentationPath(path doc:Introspection::Doc"JustToSeeIfItIsThere")<<that
-  error on MetaGuard::InvalidOnTopLevel 
-    Assert::CodeNotReachable"DeployLibrary5"
+exception MetaGuard.NestedClassUnavailable (
+  unused=Refactor.AddDocumentationPath(path doc:Introspection.Doc"JustToSeeIfItIsThere")<<that
+  error on MetaGuard.InvalidOnTopLevel 
+    Assert.CodeNotReachable"DeployLibrary5"
   void
   )
 
@@ -62,11 +62,11 @@ type method Outer0 #add(Path that,Url url) Outer0(path:that,url:url)
 
 method
 Library <<(Library that)
-exception MetaGuard::NestedClassUnavailable, MetaGuard::PrivacyCoupuled {
+exception MetaGuard.NestedClassUnavailable, MetaGuard.PrivacyCoupuled {
   Debug(S"1")
   var res=Outer0.exposeAsLibrary(that,path:this.path())
   Debug(S"2")
-  res:=Optimize::RemoveUnreachableCode[]<<res
+  res:=Optimize.RemoveUnreachableCode[]<<res
   Debug(S"3")
   return DeployTowel(fileName:this.url())<<res
   }

@@ -38,10 +38,10 @@ public class TestExtractThrow {
       {"(void)","##walkBy"
     },{"error void","error void"
     },{"error exception void","exception void"
-    },{"(Outer0::C x=void error void)","##walkBy"//OK, since x=void is NOT a valid dv
-    },{"(Outer0::C x=Outer0::C.new() error void)","error (Outer0::C x=Outer0::C.new() void)"
-    },{"(Outer0::C x=Outer0::C.new() Any y=error void void)","error (void)"
-    },{"void.m(that:(Outer0::C x=Outer0::C.new() Any y=error void void))","error (void)"
+    },{"(Outer0.C x=void error void)","##walkBy"//OK, since x=void is NOT a valid dv
+    },{"(Outer0.C x=Outer0.C.new() error void)","error (Outer0.C x=Outer0.C.new() void)"
+    },{"(Outer0.C x=Outer0.C.new() Any y=error void void)","error (void)"
+    },{"void.m(that:(Outer0.C x=Outer0.C.new() Any y=error void void))","error (void)"
   }});}
 
   @Test

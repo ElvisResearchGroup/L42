@@ -58,16 +58,16 @@ import auxiliaryGrammar.Program;
   },{    lineNumber(),"{A:{} B:{} C:{} method Void m1(A a, B b) method Void m2(Void that, C c)}",
     "Outer0","m1(a,b)", "m2(that,c)","m1m2(a,b,c)","that",
     "{A:{} B:{} C:{}"
-    + "method Void m1(Outer0::A a, Outer0::B b) "
-    + "method Void m2(Void that, Outer0::C c) "
-    + "method Void m1m2(Outer0::A a, Outer0::B b, Outer0::C c)"
+    + "method Void m1(Outer0.A a, Outer0.B b) "
+    + "method Void m2(Void that, Outer0.C c) "
+    + "method Void m1m2(Outer0.A a, Outer0.B b, Outer0.C c)"
     + "   this.m2(that:this.m1(a:a, b:b), c:c)}",false
   },{    lineNumber(),"{A:{} B:{} C:{} type method Void m1(A a) method Void m2(Void that, B b,C c)}",
     "Outer0","m1(a)", "m2(that,b,c)","m1m2(a,b,c)","that",
     "{A:{} B:{} C:{}"
-    + "type method Void m1(Outer0::A a) "
-    + "method Void m2(Void that, Outer0::B b, Outer0::C c) "
-    + "method Void m1m2(Outer0::A a, Outer0::B b, Outer0::C c)"
+    + "type method Void m1(Outer0.A a) "
+    + "method Void m2(Void that, Outer0.B b, Outer0.C c) "
+    + "method Void m1m2(Outer0.A a, Outer0.B b, Outer0.C c)"
     + "   this.m2(that:Outer0.m1(a:a), b:b, c:c)}",false
   },{    lineNumber(),"{method Void noArg() method Void m(Void a,Void b)}",
     "Outer0","noArg()", "m(a,b)","m(c)","a",
@@ -81,17 +81,17 @@ import auxiliaryGrammar.Program;
   },{    lineNumber(),"{A:{} B:{} C:{} type method Void m1(A a) method Void m2(B b,Void that, C c)}",
     "Outer0","m1(a)", "m2(b,that,c)","m1m2(a,b,c)","that",
     "{A:{} B:{} C:{}"
-    + "type method Void m1(Outer0::A a) "
-    + "method Void m2(Outer0::B b,Void that, Outer0::C c) "
-    + "method Void m1m2(Outer0::A a, Outer0::B b, Outer0::C c)"
+    + "type method Void m1(Outer0.A a) "
+    + "method Void m2(Outer0.B b,Void that, Outer0.C c) "
+    + "method Void m1m2(Outer0.A a, Outer0.B b, Outer0.C c)"
     + "   this.m2(b:b,that:Outer0.m1(a:a), c:c)}",false
     
   },{    lineNumber(),"{A:{} B:{} C:{} type method Void m1(A a) method Void m2(B b, C c,Void that)}",
     "Outer0","m1(a)", "m2(b,c,that)","m1m2(a,b,c)","that",
     "{A:{} B:{} C:{}"
-    + "type method Void m1(Outer0::A a) "
-    + "method Void m2(Outer0::B b, Outer0::C c,Void that) "
-    + "method Void m1m2(Outer0::A a, Outer0::B b, Outer0::C c)"
+    + "type method Void m1(Outer0.A a) "
+    + "method Void m2(Outer0.B b, Outer0.C c,Void that) "
+    + "method Void m1m2(Outer0.A a, Outer0.B b, Outer0.C c)"
     + "   this.m2(b:b,c:c,that:Outer0.m1(a:a))}",false
     
    }});}

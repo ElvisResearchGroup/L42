@@ -237,7 +237,7 @@ public class Resources {
         conclE,e1,e2);
   }*/
   public static <Pt extends PluginType,T> T plgExecutor(String plgCall,Program p,Pt plg,PlgClosure<Pt,T> cls,Callable<T> concl, Object ... es){
-    //System.err.println("Executing now::"+plgCall);
+    //System.err.println("Executing now."+plgCall);
     Future<T> exe=null;
     try{//for finally
       while(true){//cycle on another plugin supervision
@@ -316,18 +316,18 @@ public class Resources {
   }
   public static String nameOf(int level, List<String> cs) {
     String res="Outer"+level;
-    for(String s:cs){res+="::"+s;}
+    for(String s:cs){res+="."+s;}
     return nameOf(res);
   }
   public static String nameOf(String s){
-      s=s.replace("::","£_");
+      s=s.replace(".","£_");
       s=s.replace("%","£p");
       s=s.replace("#","£h");
       return s;
   }
   public static String name42Of(String javaName){
       String s=javaName;
-      s=s.replace("£_","::");
+      s=s.replace("£_",".");
       s=s.replace("£p","%");
       s=s.replace("£h","#");
       return s;
@@ -335,6 +335,34 @@ public class Resources {
   public static void cacheMessage(L42Throwable err) {
    String s=extractMessage(err);
    L42.messageOfLastTopLevelError=s;
+   L42.reconstructedStackTrace=extractTrace(err);
+  }
+  private static String extractTrace(L42Throwable err){
+    StackTraceElement[] st = err.getStackTrace();
+    String result="\n";
+    for(StackTraceElement si:st){
+      if(!si.getMethodName().startsWith("M")){continue;}
+      result+=extractClassName(si.getClassName());
+      result+=extractMethName(si.getMethodName());
+      result+="\n";
+    }
+    return result;
+  }
+  private static String extractMethName(String methodName) {
+    assert methodName.startsWith("M");
+    String end=")";
+    if (!methodName.contains("£x")){end="()";}
+    methodName=methodName.replaceFirst("£x", "(");
+    methodName=methodName.replaceAll("£x", ", ");
+    methodName=name42Of(methodName);
+    return "."+methodName.substring(1)+end;
+  }
+  private static String extractClassName(String className) {
+    assert className.startsWith("generated.Program42$Outer0£_");
+    className=className.substring(28);
+    className=className.replace("£_", ".");
+    className=name42Of(className);
+    return className;
   }
   private static String extractMessage(L42Throwable err) {
     try{

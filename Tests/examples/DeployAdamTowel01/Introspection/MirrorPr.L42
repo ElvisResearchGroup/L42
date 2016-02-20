@@ -1,16 +1,16 @@
-{interface <:Concept::ToS
+{interface <:Concept.ToS
   method
-  NestedClass introspectReport(fwd NestedClass root,Path path) exception MetaGuard::NestedClassUnavailable
+  NestedClass introspectReport(fwd NestedClass root,Path path) exception MetaGuard.NestedClassUnavailable
   method
-  Member introspectReportMember(fwd NestedClass root,Path path, N memberN) exception MetaGuard::MemberUnavailable,Void
+  Member introspectReportMember(fwd NestedClass root,Path path, N memberN) exception MetaGuard.MemberUnavailable,Void
   method
-  Type introspectReportType(fwd NestedClass root,Path path, N memberN, N typeN) exception MetaGuard::MemberUnavailable,Void
+  Type introspectReportType(fwd NestedClass root,Path path, N memberN, N typeN) exception MetaGuard.MemberUnavailable,Void
   method
-  S introspectDocAsString(Path path) exception MetaGuard::NestedClassUnavailable
+  S introspectDocAsString(Path path) exception MetaGuard.NestedClassUnavailable
   method
-  S introspectDocAsString(Path path, N annotationN) exception MetaGuard::NestedClassUnavailable,Void
+  S introspectDocAsString(Path path, N annotationN) exception MetaGuard.NestedClassUnavailable,Void
   method
-  type Any introspectDocPath(Path path, N annotationN) exception MetaGuard::NestedClassUnavailable, Void
+  type Any introspectDocPath(Path path, N annotationN) exception MetaGuard.NestedClassUnavailable, Void
 
   Lib:{(Library lib)<:Outer1
     method toS() Introspection(lib:this.lib()).toS()
@@ -19,8 +19,8 @@
       result=NestedClass(_root:root,path:path,mirror:this,record:Record(Lib(lib:
         use SafeOperators
           check introspectLibraryReport(this.lib(), path:path.binaryRepr())
-          error System::Guard::PluginFailure"SafeOperators.introspectLibraryReport")))
-      catch error Library x exception MetaGuard::NestedClassUnavailable(record:Record(lib:x),lib:x)
+          error System.Guard.PluginFailure"SafeOperators.introspectLibraryReport")))
+      catch error Library x exception MetaGuard.NestedClassUnavailable(record:Record(lib:x),lib:x)
       result)
 
     method
@@ -29,7 +29,7 @@
         use SafeOperators
           check introspectLibraryReportMember(this.lib(), path:path.binaryRepr(),memberN:memberN.binaryRepr())
           exception void)
-      catch error Library x exception MetaGuard::DispatchMemberUnavailable(x) 
+      catch error Library x exception MetaGuard.DispatchMemberUnavailable(x) 
       result)
 
     method
@@ -41,7 +41,7 @@
             memberN:memberN.binaryRepr()
             typeN:typeN.binaryRepr())
           exception void)))
-      catch error Library x exception MetaGuard::DispatchMemberUnavailable(x)
+      catch error Library x exception MetaGuard.DispatchMemberUnavailable(x)
       result)
 
     method
@@ -49,23 +49,23 @@
       result=S.#from(binaryRepr: use SafeOperators
         check introspectLibraryDocAsString(this.lib(), path:path.binaryRepr(),annotationN:annotationN.binaryRepr())
         exception void)
-      catch error Library x exception MetaGuard::NestedClassUnavailable(record:Record(lib:x),lib:x)
+      catch error Library x exception MetaGuard.NestedClassUnavailable(record:Record(lib:x),lib:x)
       result)
 
     method
     introspectDocAsString(path) (
       result=S.#from(binaryRepr: use SafeOperators
         check introspectLibraryDocAsString(this.lib(), path:path.binaryRepr(),annotationN:0N.binaryRepr())
-        error System::Guard::PluginFailure"SafeOperators.introspectLibraryDocAsString")
-      catch error Library x exception MetaGuard::NestedClassUnavailable(record:Record(lib:x),lib:x)
+        error System.Guard.PluginFailure"SafeOperators.introspectLibraryDocAsString")
+      catch error Library x exception MetaGuard.NestedClassUnavailable(record:Record(lib:x),lib:x)
       result)
 
     method
     introspectDocPath(path,annotationN) (
       type Any result=use SafeOperators
         check introspectLibraryDocPath(this.lib(), path:path.binaryRepr(),annotationN:annotationN.binaryRepr())
-        error System::Guard::PluginFailure"SafeOperators.introspectLibraryDocPath"
-      catch error Library x exception MetaGuard::NestedClassUnavailable(record:Record(lib:x),lib:x)
+        error System.Guard.PluginFailure"SafeOperators.introspectLibraryDocPath"
+      catch error Library x exception MetaGuard.NestedClassUnavailable(record:Record(lib:x),lib:x)
       result)
     }
 
@@ -76,10 +76,10 @@
     introspectReport(root, path) (
       record=Record(lib:use SafeOperators
         check introspectTypeReport(this.lib(), path:path.binaryRepr())
-        error System::Guard::PluginFailure"SafeOperators.introspectTypeReport")
+        error System.Guard.PluginFailure"SafeOperators.introspectTypeReport")
       realRootType=record.docOf(path:Path"MyClass").annotations().top().referredClass()
       result=NestedClass(_root:result,path:Path"Outer0",mirror:Outer0(lib:realRootType),record: record)
-      catch error Library x exception MetaGuard::NestedClassUnavailable(record:Record(lib:x),lib:x)
+      catch error Library x exception MetaGuard.NestedClassUnavailable(record:Record(lib:x),lib:x)
       result)
 
     method
@@ -88,7 +88,7 @@
         use SafeOperators
           check introspectTypeReportMember(this.lib(), path:path.binaryRepr(),memberN:memberN.binaryRepr())
           exception void)
-      catch error Library x exception MetaGuard::DispatchMemberUnavailable(x)
+      catch error Library x exception MetaGuard.DispatchMemberUnavailable(x)
       result)
 
     method
@@ -100,7 +100,7 @@
             memberN:memberN.binaryRepr()
             typeN:typeN.binaryRepr())
           exception void)))
-      catch error Library x exception MetaGuard::DispatchMemberUnavailable(x)
+      catch error Library x exception MetaGuard.DispatchMemberUnavailable(x)
       result)
 
     method
@@ -108,23 +108,23 @@
       result=S.#from(binaryRepr: use SafeOperators
         check introspectTypeDocAsString(this.lib(), path:path.binaryRepr(),annotationN:annotationN.binaryRepr())
         exception void)
-      catch error Library x exception MetaGuard::NestedClassUnavailable(record:Record(lib:x),lib:x)
+      catch error Library x exception MetaGuard.NestedClassUnavailable(record:Record(lib:x),lib:x)
       result)
 
     method
     introspectDocAsString(path) (
       result=S.#from(binaryRepr: use SafeOperators
         check introspectTypeDocAsString(this.lib(), path:path.binaryRepr(),annotationN:0N.binaryRepr())
-        error System::Guard::PluginFailure"SafeOperators.introspectTypeDocAsString")
-      catch error Library x exception MetaGuard::NestedClassUnavailable(record:Record(lib:x),lib:x)
+        error System.Guard.PluginFailure"SafeOperators.introspectTypeDocAsString")
+      catch error Library x exception MetaGuard.NestedClassUnavailable(record:Record(lib:x),lib:x)
       result)
 
     method
     introspectDocPath(path,annotationN) (
       type Any result=use SafeOperators
         check introspectTypeDocPath(this.lib(), path:path.binaryRepr(),annotationN:annotationN.binaryRepr())
-        error System::Guard::PluginFailure"SafeOperators.introspectTypeDocPath"
-      catch error Library x exception MetaGuard::NestedClassUnavailable(record:Record(lib:x),lib:x)
+        error System.Guard.PluginFailure"SafeOperators.introspectTypeDocPath"
+      catch error Library x exception MetaGuard.NestedClassUnavailable(record:Record(lib:x),lib:x)
       result)
     }
   }

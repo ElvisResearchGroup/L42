@@ -22,8 +22,8 @@ D:Patch(Path"P")<<{
     }
   }
 Main:{
-  C::A.foo()
-  C::B.foo()
+  C.A.foo()
+  C.B.foo()
   Debug(S"OK")
   return ExitCode.normal()
   }

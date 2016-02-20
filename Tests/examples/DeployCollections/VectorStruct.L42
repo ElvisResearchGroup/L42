@@ -1,7 +1,7 @@
 {mut (var mut Cell head,var N size)' size should be computed?
   Cell:{interface}
-  CellNext:{(Kind::elem() val,mut Cell next)<:Cell
-    read method Kind::elemRead() val()
+  CellNext:{(Kind.elem() val,mut Cell next)<:Cell
+    read method Kind.elemRead() val()
     }
   CellEnd:{<:Cell type method mut Outer0()}
   read method Void reportError(N that)
@@ -10,12 +10,12 @@
     error S"Unexpected failure like IndexOutOfBound: max is "[this.size()]" proposed is "[that]""
   'GETTING
   read method 
-  Kind::elemRead() (N that) (
+  Kind.elemRead() (N that) (
     if that>=this.size() (this.reportError(that))
     Outer0.auxGet(that,cell:this.head())
     )
   type method
-  Kind::elemRead() auxGet(N that,read Cell cell){
+  Kind.elemRead() auxGet(N that,read Cell cell){
     with cell (
       on read CellNext case that==0N return cell.val()
       on read CellNext return Outer0.auxGet(that-1N,cell:cell.next())
@@ -24,12 +24,12 @@
     }
   'SETTING
   mut method 
-  Void (N that,Kind::elem() val) (
+  Void (N that,Kind.elem() val) (
     if that>=this.size() (this.reportError(that))
     this.head(Outer0.auxSet(that,val:val,cell:this.#head()))
     )
   type method
-  mut CellNext auxSet(N that,Kind::elem() val,mut Cell cell){
+  mut CellNext auxSet(N that,Kind.elem() val,mut Cell cell){
     with cell (
       on mut CellNext case that==0N return CellNext(val:val,next:cell.#next())
       on mut CellNext return CellNext(val:cell.val(),next:Outer0.auxSet(that-1N,val:val,cell:cell.#next()))
@@ -41,13 +41,13 @@
   mut Outer0 () Outer0(head:CellEnd(),size:0N)
   'ADDING
   mut method
-  mut Outer0 add(Kind::elem() that) (
+  mut Outer0 add(Kind.elem() that) (
     this.size(this.size()+1N)
     this.head(Outer0.auxAdd(that,cell:this.#head()))
     this
     )
   type method
-  mut Cell auxAdd(Kind::elem() that,mut Cell cell){
+  mut Cell auxAdd(Kind.elem() that,mut Cell cell){
     with cell (
       on mut CellEnd return CellNext(val:that,next:cell)
       on mut CellNext return CellNext(
@@ -66,7 +66,7 @@
   mut method
   mut Outer0 #end() this
   mut method
-  mut Outer0 #add(Kind::elem() that) this.add(that)
+  mut Outer0 #add(Kind.elem() that) this.add(that)
   
   
   
@@ -78,77 +78,77 @@
   Iterator:...
   VarIterator:...
   
-  read method lent Iterator vals(N min, N ok, N max, Kind::elem() fill) '0
+  read method lent Iterator vals(N min, N ok, N max, Kind.elem() fill) '0
     Iterator(this,min:min-1N,ok:ok, max:OptMax(max),fill:OptFill(fill))
   read method lent Iterator vals(N min, N ok, N max) '1
     Iterator(this,min:min-1N,ok:ok, max:OptMax(max),fill:OptFill())
-  read method lent Iterator vals(N min, N ok, Kind::elem() fill)'2
+  read method lent Iterator vals(N min, N ok, Kind.elem() fill)'2
     Iterator(this,min:min-1N,ok:ok, max:OptMax(),fill:OptFill(fill))
   read method lent Iterator vals(N min, N ok)'3
     Iterator(this,min:min-1N,ok:ok, max:OptMax(),fill:OptFill())
 
-  read method lent Iterator vals(N min, N max, Kind::elem() fill) '4
+  read method lent Iterator vals(N min, N max, Kind.elem() fill) '4
     Iterator(this,min:min-1N,ok:max, max:OptMax(max),fill:OptFill(fill))
   read method lent Iterator vals(N min, N max) '5
     Iterator(this,min:min-1N,ok:max, max:OptMax(max),fill:OptFill())
-  read method lent Iterator vals(N min, Kind::elem() fill)'6
+  read method lent Iterator vals(N min, Kind.elem() fill)'6
     Iterator(this,min:min-1N,ok:this.size(), max:OptMax(),fill:OptFill(fill))
   read method lent Iterator vals(N min)'7
     Iterator(this,min:min-1N,ok:this.size(), max:OptMax(),fill:OptFill())
     
 
-  read method lent Iterator vals(N ok, N max, Kind::elem() fill) '8
+  read method lent Iterator vals(N ok, N max, Kind.elem() fill) '8
     Iterator(this,min:-1N,ok:ok, max:OptMax(max),fill:OptFill(fill))
   read method lent Iterator vals(N ok, N max) '9
     Iterator(this,min:-1N,ok:ok, max:OptMax(max),fill:OptFill())
-  read method lent Iterator vals(N ok, Kind::elem() fill)'10
+  read method lent Iterator vals(N ok, Kind.elem() fill)'10
     Iterator(this,min:-1N,ok:ok, max:OptMax(),fill:OptFill(fill))
   read method lent Iterator vals(N ok)'11
     Iterator(this,min:-1N,ok:ok, max:OptMax(),fill:OptFill())
 
-  read method lent Iterator vals(N max, Kind::elem() fill) '12
+  read method lent Iterator vals(N max, Kind.elem() fill) '12
     Iterator(this,min:-1N,ok:max, max:OptMax(max),fill:OptFill(fill))
   read method lent Iterator vals(N max) '13
     Iterator(this,min:-1N,ok:max, max:OptMax(max),fill:OptFill())
-  read method lent Iterator vals(Kind::elem() fill)'14
+  read method lent Iterator vals(Kind.elem() fill)'14
     Iterator(this,min:-1N,ok:this.size(), max:OptMax(),fill:OptFill(fill))
   read method lent Iterator vals()'15
     Iterator(this,min:-1N,ok:this.size(), max:OptMax(),fill:OptFill())
   '*************************************
   '*************************************
-  mut method mut VarIterator vars(N min, N ok, N max, Kind::elem() fill) '0
+  mut method mut VarIterator vars(N min, N ok, N max, Kind.elem() fill) '0
     VarIterator(this,min:min-1N,ok:ok, max:OptMax(max),fill:OptFill(fill))
   mut method mut VarIterator vars(N min, N ok, N max) '1
     VarIterator(this,min:min-1N,ok:ok, max:OptMax(max),fill:OptFill())
-  mut method mut VarIterator vars(N min, N ok, Kind::elem() fill)'2
+  mut method mut VarIterator vars(N min, N ok, Kind.elem() fill)'2
     VarIterator(this,min:min-1N,ok:ok, max:OptMax(),fill:OptFill(fill))
   mut method mut VarIterator vars(N min, N ok)'3
     VarIterator(this,min:min-1N,ok:ok, max:OptMax(),fill:OptFill())
 
-  mut method mut VarIterator vars(N min, N max, Kind::elem() fill) '4
+  mut method mut VarIterator vars(N min, N max, Kind.elem() fill) '4
     VarIterator(this,min:min-1N,ok:max, max:OptMax(max),fill:OptFill(fill))
   mut method mut VarIterator vars(N min, N max) '5
     VarIterator(this,min:min-1N,ok:max, max:OptMax(max),fill:OptFill())
-  mut method mut VarIterator vars(N min, Kind::elem() fill)'6
+  mut method mut VarIterator vars(N min, Kind.elem() fill)'6
     VarIterator(this,min:min-1N,ok:this.size(), max:OptMax(),fill:OptFill(fill))
   mut method mut VarIterator vars(N min)'7
     VarIterator(this,min:min-1N,ok:this.size(), max:OptMax(),fill:OptFill())
     
 
-  mut method mut VarIterator vars(N ok, N max, Kind::elem() fill) '8
+  mut method mut VarIterator vars(N ok, N max, Kind.elem() fill) '8
     VarIterator(this,min:-1N,ok:ok, max:OptMax(max),fill:OptFill(fill))
   mut method mut VarIterator vars(N ok, N max) '9
     VarIterator(this,min:-1N,ok:ok, max:OptMax(max),fill:OptFill())
-  mut method mut VarIterator vars(N ok, Kind::elem() fill)'10
+  mut method mut VarIterator vars(N ok, Kind.elem() fill)'10
     VarIterator(this,min:-1N,ok:ok, max:OptMax(),fill:OptFill(fill))
   mut method mut VarIterator vars(N ok)'11
     VarIterator(this,min:-1N,ok:ok, max:OptMax(),fill:OptFill())
 
-  mut method mut VarIterator vars(N max, Kind::elem() fill) '12
+  mut method mut VarIterator vars(N max, Kind.elem() fill) '12
     VarIterator(this,min:-1N,ok:max, max:OptMax(max),fill:OptFill(fill))
   mut method mut VarIterator vars(N max) '13
     VarIterator(this,min:-1N,ok:max, max:OptMax(max),fill:OptFill())
-  mut method mut VarIterator vars(Kind::elem() fill)'14
+  mut method mut VarIterator vars(Kind.elem() fill)'14
     VarIterator(this,min:-1N,ok:this.size(), max:OptMax(),fill:OptFill(fill))
   mut method mut VarIterator vars()'15
     VarIterator(this,min:-1N,ok:this.size(), max:OptMax(),fill:OptFill())

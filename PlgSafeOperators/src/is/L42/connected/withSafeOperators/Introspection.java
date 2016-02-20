@@ -38,7 +38,7 @@ public class Introspection {//TODO: we keep 5 methods, but we merge the PathRepo
     return Arrays.asList(
       "MemberKind","NestedClass",
       "MemberDoc",(docRef[0]==null)?"":liftDoc(path.subList(0,path.size()-1),docRef[0],1),
-      "Key",""+String.join("::",path),
+      "Key",""+String.join(".",path),
       "AllAsString",ToFormattedText.ofNoStage(current),
       "ClassKind",ExtractInfo.classKind(that, path, current,null, null,null).name(),
       "LibraryDoc",liftDoc(path,current.getDoc1(),1),
@@ -63,7 +63,7 @@ public class Introspection {//TODO: we keep 5 methods, but we merge the PathRepo
         result[0]=Resources.Error.multiPartStringClassB("MemberReport",
           "MemberKind","NestedClass",
           "MemberDoc",liftDoc(path,nc.getDoc(),1),
-          "Key",String.join("::",fullPath),
+          "Key",String.join(".",fullPath),
           "AllAsString",ToFormattedText.ofNoStage(nc.getInner()),
           "ClassKind",ExtractInfo.classKind(that, path,(ClassB) nc.getInner(),null, null,null).name(),
           "LibraryDoc",liftDoc(path,currentNc.getDoc1(),1),
@@ -167,8 +167,8 @@ public class Introspection {//TODO: we keep 5 methods, but we merge the PathRepo
   private static String selectorsToString(List<MethodSelectorX> selectors) {
     String result="";
     for(MethodSelectorX msx:selectors){
-      result+="::"+msx.getMs().toString();
-      if(!msx.getX().isEmpty()){result+="::"+msx.getX();}
+      result+="."+msx.getMs().toString();
+      if(!msx.getX().isEmpty()){result+="."+msx.getX();}
     }
     return result;
   }
@@ -259,7 +259,7 @@ public class Introspection {//TODO: we keep 5 methods, but we merge the PathRepo
           ann.add(o);continue;
           }
       List<String>topPi=ClassOperations.toTop(path, pi);
-      o="::"+String.join("::",topPi);
+      o="."+String.join(".",topPi);
       ann.add(o);//continue;
     }
     return doc.withAnnotations(ann);

@@ -1,18 +1,18 @@
 {
   type method
   Library compose(Library left,Library right)
-  exception MetaGuard::ClassClash, MetaGuard::MethodClash {
+  exception MetaGuard.ClassClash, MetaGuard.MethodClash {
     return SafeOperators.compose(left:left,right:right)
     catch error Library err (
-      MetaGuard::ClassClash(lift:err)
-      MetaGuard::MethodClash(lift:err)
+      MetaGuard.ClassClash(lift:err)
+      MetaGuard.MethodClash(lift:err)
       error err)
     }
   type method
-  Void checkTargetExists(Library that,Path path) exception MetaGuard::NestedClassUnavailable (
-    unused=AddDocumentationPath(path doc:Introspection::Doc"JustToSeeIfItIsThere")<<that
-    catch exception MetaGuard::InvalidOnTopLevel x
-      error Assert::CodeNotReachable"Refactor4" 'TODO: if you omit Assert:: the error reporting is horrible
+  Void checkTargetExists(Library that,Path path) exception MetaGuard.NestedClassUnavailable (
+    unused=AddDocumentationPath(path doc:Introspection.Doc"JustToSeeIfItIsThere")<<that
+    catch exception MetaGuard.InvalidOnTopLevel x
+      error Assert.CodeNotReachable"Refactor4" 'TODO: if you omit Assert. the error reporting is horrible
     void
     )
     
@@ -20,40 +20,40 @@
     method
     Library << (Library that)
     exception
-        MetaGuard::NestedClassUnavailable,
-        MetaGuard::InvalidOnTopLevel,
-        MetaGuard::SourceUnfit,
-        MetaGuard::MethodClash,
-        MetaGuard::IncoherentRedirectMapping{
+        MetaGuard.NestedClassUnavailable,
+        MetaGuard.InvalidOnTopLevel,
+        MetaGuard.SourceUnfit,
+        MetaGuard.MethodClash,
+        MetaGuard.IncoherentRedirectMapping{
       return SafeOperators.redirect(that,src:this.that(),dest:this.to())
       catch error Library err (
-        MetaGuard::NestedClassUnavailable(lift:err)
-        MetaGuard::InvalidOnTopLevel(lift:err)
-        MetaGuard::SourceUnfit(lift:err)
-        MetaGuard::MethodClash(lift:err)
-        MetaGuard::IncoherentRedirectMapping(lift:err)
+        MetaGuard.NestedClassUnavailable(lift:err)
+        MetaGuard.InvalidOnTopLevel(lift:err)
+        MetaGuard.SourceUnfit(lift:err)
+        MetaGuard.MethodClash(lift:err)
+        MetaGuard.IncoherentRedirectMapping(lift:err)
         error err)
       }
     }
   RenameSelector:{(Selector that, Path of, Selector to)
     method
     Library << (Library that)
-    exception MetaGuard::MemberUnavailable,MetaGuard::MethodClash{
+    exception MetaGuard.MemberUnavailable,MetaGuard.MethodClash{
       return SafeOperators.renameMethod(that,path:this.of() src:this.that(),dest:this.to())
       catch error Library err (
-        MetaGuard::DispatchMemberUnavailable(err)
-        MetaGuard::MethodClash(lift:err)
+        MetaGuard.DispatchMemberUnavailable(err)
+        MetaGuard.MethodClash(lift:err)
         error err)
       }
     }
   RenamePath:{(Path that, Path to)
     method
-    Library << (Library that)exception MetaGuard::NestedClassUnavailable,MetaGuard::MethodClash,MetaGuard::ClassClash{
+    Library << (Library that)exception MetaGuard.NestedClassUnavailable,MetaGuard.MethodClash,MetaGuard.ClassClash{
       return SafeOperators.renameClass(that,src:this.that(),dest:this.to())
       catch error Library err (
-        MetaGuard::NestedClassUnavailable(lift:err)
-        MetaGuard::MethodClash(lift:err)
-        MetaGuard::ClassClash(lift:err)
+        MetaGuard.NestedClassUnavailable(lift:err)
+        MetaGuard.MethodClash(lift:err)
+        MetaGuard.ClassClash(lift:err)
         error err
         )
       }
@@ -61,21 +61,21 @@
   RemoveImplementationSelector:{(Selector that, Path of)
     method
     Library << (Library that)
-    exception MetaGuard::MemberUnavailable{
+    exception MetaGuard.MemberUnavailable{
       return SafeOperators.removeImplementation(that,path:this.of(),selector:this.that())
       catch error Library err (
-        MetaGuard::DispatchMemberUnavailable(err)
+        MetaGuard.DispatchMemberUnavailable(err)
         error err)
       }
     }
   MoveImplementationSelector:{(Selector that, Path of,Selector to)
     method
     Library << (Library that)
-    exception MetaGuard::MemberUnavailable,MetaGuard::MethodClash{
+    exception MetaGuard.MemberUnavailable,MetaGuard.MethodClash{
       return SafeOperators.moveImplementation(that,path:this.of(),src:this.that(),dest:this.to())
       catch error Library err (
-        MetaGuard::DispatchMemberUnavailable(err)
-        MetaGuard::MethodClash(lift:err)
+        MetaGuard.DispatchMemberUnavailable(err)
+        MetaGuard.MethodClash(lift:err)
         error err)
       }
     }
@@ -83,34 +83,34 @@
     method
     Library << (Library that)
     exception 
-        MetaGuard::NestedClassUnavailable,
-        MetaGuard::PrivacyCoupuled{
+        MetaGuard.NestedClassUnavailable,
+        MetaGuard.PrivacyCoupuled{
       return SafeOperators.removeImplementation(that,path:this.that())
       catch error Library err (
-        MetaGuard::NestedClassUnavailable(lift:err)MetaGuard::PrivacyCoupuled(lift:err)
+        MetaGuard.NestedClassUnavailable(lift:err)MetaGuard.PrivacyCoupuled(lift:err)
         error err)
       }
     }
-  AddDocumentationSelector:{(Selector that, Path of,Introspection::Doc doc)
+  AddDocumentationSelector:{(Selector that, Path of,Introspection.Doc doc)
     method
     Library << (Library that)
-    exception MetaGuard::MemberUnavailable{
+    exception MetaGuard.MemberUnavailable{
       return SafeOperators.addDocumentation(that,path:this.of() selector:this.that(),doc:this.doc())
       catch error Library err (     
-        MetaGuard::DispatchMemberUnavailable(err)
+        MetaGuard.DispatchMemberUnavailable(err)
         error err)
       }
     }
-  AddDocumentationPath:{(Path that,Introspection::Doc doc)
+  AddDocumentationPath:{(Path that,Introspection.Doc doc)
     method
     Library << (Library that)
     exception
-        MetaGuard::NestedClassUnavailable,
-        MetaGuard::InvalidOnTopLevel{
+        MetaGuard.NestedClassUnavailable,
+        MetaGuard.InvalidOnTopLevel{
       return SafeOperators.addDocumentation(that,path:this.that(),doc:this.doc())
       catch error Library err (
-        MetaGuard::NestedClassUnavailable(lift:err)
-        MetaGuard::InvalidOnTopLevel(lift:err)
+        MetaGuard.NestedClassUnavailable(lift:err)
+        MetaGuard.InvalidOnTopLevel(lift:err)
         error err)
       }
     }
@@ -118,16 +118,16 @@
     method
     Library << (Library that)
     exception 
-        MetaGuard::MemberUnavailable,
-        MetaGuard::InvalidOnTopLevel
-      AddDocumentationPath(this.that(),doc:Introspection::Doc({'@private
+        MetaGuard.MemberUnavailable,
+        MetaGuard.InvalidOnTopLevel
+      AddDocumentationPath(this.that(),doc:Introspection.Doc({'@private
         }))<<that
     }
   MakePrivateSelector:{(Selector that, Path of)
     method
     Library << (Library that)
-    exception MetaGuard::MemberUnavailable
-      AddDocumentationSelector(this.that() of:this.of() doc:Introspection::Doc({'@private
+    exception MetaGuard.MemberUnavailable
+      AddDocumentationSelector(this.that() of:this.of() doc:Introspection.Doc({'@private
         }))<<that
     }
   
@@ -137,13 +137,13 @@
     method
     Library << (Library that)
     exception
-        MetaGuard::MemberUnavailable,
-        MetaGuard::MethodClash,
-        MetaGuard::ParameterMismatch{
+        MetaGuard.MemberUnavailable,
+        MetaGuard.MethodClash,
+        MetaGuard.ParameterMismatch{
       return SafeOperators.sumMethods(that,path:this.of() src1:this.that(),src2:this.and(), dest:this.to(),name:this.over())
       catch error Library err (
-        MetaGuard::DispatchMemberUnavailable(err)MetaGuard::MethodClash(lift:err)
-        MetaGuard::ParameterMismatch(lift:err)
+        MetaGuard.DispatchMemberUnavailable(err)MetaGuard.MethodClash(lift:err)
+        MetaGuard.ParameterMismatch(lift:err)
         error err)
       }
     }

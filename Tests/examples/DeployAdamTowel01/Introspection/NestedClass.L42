@@ -1,5 +1,5 @@
 {'findMeNestedClass
-(fwd NestedClass _root,Path path,MirrorPr mirror, Record record)<:Member,Concept::Equals '@private
+(fwd NestedClass _root,Path path,MirrorPr mirror, Record record)<:Member,Concept.Equals '@private
 method myName()GetMyName(Outer0)
 method toS() Outer0.myName()++S"["[this.allAsString()]"]"
 method Bool ==(Outer0 that){
@@ -21,7 +21,7 @@ method Outer0 root()this._root()
 method 'error for Outer0
 Doc nestedDoc()(
   if this.path()==Path"Outer0" (
-    error Guard::Operation"NestedClass.nestedDoc()  The NestedClass Object refers to Outer0"
+    error Guard.Operation"NestedClass.nestedDoc()  The NestedClass Object refers to Outer0"
     )
   this.record().docOf(path:Path"MemberDoc")
   )
@@ -34,34 +34,34 @@ method Path pathFromRoot()
 method Bool hasExternalType(){
   if this.path()!=Path"Outer0" (return Bool.false())
    with mirror=this.mirror() (
-    on MirrorPr::Class return Bool.true()
+    on MirrorPr.Class return Bool.true()
     )
   return Bool.false()
   }
 method type Any externalType(){
   if this.path()!=Path"Outer0" (
-    error Guard::Operation(text:S"NestedClass.externalType() The NestedClass Object refers to "[this.path()]"")
+    error Guard.Operation(text:S"NestedClass.externalType() The NestedClass Object refers to "[this.path()]"")
     )
   with mirror=this.mirror() (
-    on MirrorPr::Class return mirror.lib()
-    on MirrorPr::Lib 
-      error Guard::Operation
+    on MirrorPr.Class return mirror.lib()
+    on MirrorPr.Lib 
+      error Guard.Operation
         "NestedClass.externalType() The NestedClass Object is unbound"
-    default error Assert::CodeNotReachable"NestedClass1"
+    default error Assert.CodeNotReachable"NestedClass1"
     )
   }
 method S externalTypeToS() {
   if this.path()!=Path"Outer0" (
-    error Guard::Operation(text:S"NestedClass.externalTypeToS() The NestedClass Object refers to "[this.path()]"")
+    error Guard.Operation(text:S"NestedClass.externalTypeToS() The NestedClass Object refers to "[this.path()]"")
     )
   doc=this.record().docOf(path:Path"MyClass")
   nameAndPrefix=doc.annotations().top().toS()
-  sep=nameAndPrefix.firstIndexOf(S"::")
-  name= nameAndPrefix(start:sep+2N)
+  sep=nameAndPrefix.firstIndexOf(S".")
+  name= nameAndPrefix(start:sep+1N)
   prefix=N.fromS(nameAndPrefix(start:5N, end:sep)) '5N== S"Outer".size()
-  Assert::$[prefix>0N]
+  Assert.$[prefix>0N]
   'if prefix == 1N (return name)
-  return S"Outer"[prefix-1N]"::"++name
+  return S"Outer"[prefix-1N]"."++name
 }
 
 method S classKind() this.record()"ClassKind"
@@ -75,7 +75,7 @@ Members members() (
     result:=result.#add(this.mirror()
       .introspectReportMember(root:this,path:this.path(),memberN:mN))
     'this was a private member
-    catch exception MetaGuard::MemberUnavailable exception void
+    catch exception MetaGuard.MemberUnavailable exception void
     mN+=1N
     )
   result)
@@ -93,7 +93,9 @@ NestedClasses nestedClasses()
 method
 NestedClasses transitivelyNestedClasses() (
   var result=NestedClasses[this]
-  with nc in this.nestedClasses().vals() (result++=nc.transitivelyNestedClasses())
+  with nc in this.nestedClasses().vals() (
+    result++=nc.transitivelyNestedClasses()
+    )
   result
   )
 
@@ -101,11 +103,18 @@ method Types implementedInterfaces() (
   var result=Types[]
   var tN=1N
   while Bool.true() (' to be able to break
-    result:=result.#add(this.mirror()
-      .introspectReportType(root:this,path:this.path(),memberN:0N,typeN:tN))
+    ti=this.mirror()
+      .introspectReportType(root:this,path:this.path(),memberN:0N,typeN:tN)
+    'Assert.$[with sr=ti.strRepr() (
+    '  use[sr!=S"Outer0";sr!=S""]
+    '  )]
+    sr=ti.strRepr()
+    Assert.$[sr!=S"@.Outer0";sr!=S"Outer0";sr!=S""]
+    
+    result:=result.#add(ti)
     tN+=1N
     )
-  catch exception MetaGuard::MemberUnavailable x error Assert::CodeNotReachable"NestedClass3"(x)
+  catch exception MetaGuard.MemberUnavailable x error Assert.CodeNotReachable"NestedClass3"(x)
   result)
 method Types transitivelyImplementedInterfaces() {
   var result=this.removeDup(this.implementedInterfaces())
@@ -181,22 +190,22 @@ Methods state() {
   return result.#end()
   }
 method
-Method methodFromSelector(Selector that) exception MetaGuard::MethodUnavailable {
+Method methodFromSelector(Selector that) exception MetaGuard.MethodUnavailable {
   with meth in this.methods().vals() (
     if meth.selector()==that (return meth)
     )
-  exception MetaGuard::MethodUnavailable(path:this.pathFromRoot(),selector:that,isPrivate:Bool.false())
+  exception MetaGuard.MethodUnavailable(path:this.pathFromRoot(),selector:that,isPrivate:Bool.false())
   'note: it can return a private method
   }
 method
 Bool has(Selector selector){
   unused=this.methodFromSelector(selector)
-  catch exception MetaGuard::MemberUnavailable return Bool.false()
+  catch exception MetaGuard.MemberUnavailable return Bool.false()
   return Bool.true()
   }
   
 method
-NestedClass nestedClassFromRoot(Path that) exception MetaGuard::NestedClassUnavailable {
+NestedClass nestedClassFromRoot(Path that) exception MetaGuard.NestedClassUnavailable {
   if that==Path"Outer0" (return this.root())
   myClass=this.record().docOf(path:Path"MyClass").annotations().top()
   if !myClass.hasReferredClass() (
@@ -208,7 +217,7 @@ NestedClass nestedClassFromRoot(Path that) exception MetaGuard::NestedClassUnava
 method
 Bool has(Path fromRoot) (
   unused=this.nestedClassFromRoot(fromRoot)
-  catch exception MetaGuard::MemberUnavailable Bool.false() 
+  catch exception MetaGuard.MemberUnavailable Bool.false() 
   Bool.true()
   )
   

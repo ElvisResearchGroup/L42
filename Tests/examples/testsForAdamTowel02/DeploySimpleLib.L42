@@ -9,13 +9,13 @@ Resource:{type method Library(){
 Main:{
   l=Resource()
   Debug(S"foo")
-  dl=Load::DeployLibrary[
+  dl=Load.DeployLibrary[
     Path"MyLib",
     url:Url"localhost/DeployedSimpleLib.L42"
     ]<<Resource()
   return ExitCode.normal()
 }  
-'Task:Load::DeployLibrary[
+'Task:Load.DeployLibrary[
 '  Path"MyLib",
 '  url:Url"localhost/DeployedSimpleLib.L42"
 '  ]<<Resource()

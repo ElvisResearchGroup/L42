@@ -134,9 +134,9 @@ public class TypeSystemOK {
     if(L42.trustPluginsAndFinalProgram){if(ct.getStage().isVerified()){return;}}
     assert ct.getStage().getGivenName()!=null;
     String name=ct.getStage().getGivenName();
-    if(!name.isEmpty()){Timer.activate("TypeSystem.checkCt2::"+name);}try{
+    if(!name.isEmpty()){Timer.activate("TypeSystem.checkCt2."+name);}try{
     for(Member m:ct.getMs()){checkCt2Member(p, ct, m);}
-    }finally{if(!name.isEmpty()){Timer.deactivate("TypeSystem.checkCt2::"+name);}}
+    }finally{if(!name.isEmpty()){Timer.deactivate("TypeSystem.checkCt2."+name);}}
     ct.getStage().setVerified(true);
   }
 

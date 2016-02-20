@@ -486,20 +486,20 @@ public class Redirect {
     return pathOk[0];
   }
   private static boolean redirectOkPath(List<PathPath> s, Program p, ClassB l,Path cs, Path path) {
-    //S;p|-L[Outern::Cs =~Outern::Cs]:emptyset  holds with n>0
+    //S;p|-L[Outern.Cs =~Outern.Cs]:emptyset  holds with n>0
     if(cs.isPrimitive() ||cs.outerNumber()>0){
       if(!cs.equals(path)){return false;}
       return true;
     }
     //otherwise
-    //S;p|-L[Outer0::Cs =~ Path ]: S'
+    //S;p|-L[Outer0.Cs =~ Path ]: S'
     //if S;p|-L[redirect Cs->Path]:S'
     redirectOk(s,p,l,cs,path);
     return true;
   }
   private static Void redirectOkNc(List<PathPath> s, Program p, ClassB l, NestedClass nc, ClassB.NestedClass miPrime, PathPath currentPP) {
     //S;p|-L[C:L1=~C:L1' Cs->Path]:S'
-    //if S,Cs->Path;p|-L[redirect Cs::C->Path::C]:S'
+    //if S,Cs->Path;p|-L[redirect Cs.C->Path.C]:S'
     Path src=currentPP.getPath1().pushC(nc.getName());
     Path dest=currentPP.getPath2().pushC(nc.getName());
     redirectOk(s,p,l,src,dest);

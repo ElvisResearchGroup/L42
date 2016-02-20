@@ -1,15 +1,15 @@
 {reuse L42.is/AdamTowel02
 
-A:{B:{C:Default::Named<<{()
+A:{B:{C:Default.Named<<{()
  }}}
-D:{E:Default::Named<<{<:Concept::Named
+D:{E:Default.Named<<{<:Concept.Named
   method myName() S"Secret"
  }}
 Main:{
-  Debug(A::B::C.myName())
-  Debug(D::E.myName())
-  (res=Default::Named<<{method N myName()}
-  catch exception Default::DecorationUnfeasable x Debug(S"Failed")
+  Debug(A.B.C.myName())
+  Debug(D.E.myName())
+  (res=Default.Named<<{method N myName()}
+  catch exception Default.DecorationUnfeasable x Debug(S"Failed")
   void)
   return ExitCode.normal()
   }

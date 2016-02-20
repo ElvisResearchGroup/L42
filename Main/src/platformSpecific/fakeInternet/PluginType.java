@@ -43,7 +43,7 @@ public interface PluginType {
     ActionType ann = m.getAnnotation(ActionType.class);
     assert ann!=null;
     MethodType mt = ActionType.Type.mt(ann.mdf(),ann.value());
-    assert mt.getTs().size()==u.getS().getNames().size(): m.getName()+" "+mt.getTs().size()+"::"+u.getS().getNames().size();
+    assert mt.getTs().size()==u.getS().getNames().size(): m.getName()+" "+mt.getTs().size()+"."+u.getS().getNames().size();
     return mt;
     };
   default Object execute(Program p, Using u){//return  dispatch(false,p,u);}

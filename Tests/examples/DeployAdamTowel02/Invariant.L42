@@ -1,58 +1,58 @@
 {
 
   ' error handling
-  InvariantFailure:Message::$<<{<:MetaGuard}
-  type method Bool isInvariant(Introspection::NestedClass that) {
+  InvariantFailure:Message.$<<{<:MetaGuard}
+  type method Bool isInvariant(Introspection.NestedClass that) {
     interf=that.transitivelyImplementedInterfaces()
     with ti in interf.vals() (
       with tAny=ti.referencedPath().externalType() (
-        on type Concept::Invariant return Bool.true()
+        on type Concept.Invariant return Bool.true()
         )
-      catch error Guard::Operation void
+      catch error Guard.Operation void
       void
       )
     return Bool.false()
     }
   type method
-  Introspection::Methods extractOkState(Library that)
-  exception Default::DecorationUnfeasable{
+  Introspection.Methods extractOkState(Library that)
+  exception Default.DecorationUnfeasable{
     i=Introspection(lib:that)
     isInv=this.isInvariant(i)
-    if !isInv (return Introspection::Methods[])
+    if !isInv (return Introspection.Methods[])
     state=i.state()
-    if state.isEmpty() (exception Default::DecorationUnfeasable"State is empty")
+    if state.isEmpty() (exception Default.DecorationUnfeasable"State is empty")
     k=state.top()
-    if k.isPrivate() (exception Default::DecorationUnfeasable"State is private")
+    if k.isPrivate() (exception Default.DecorationUnfeasable"State is private")
     return state
     }
   
   'invariant checking and actions
   type method
-  Void checkInvariant(read Concept::Invariant that) (
+  Void checkInvariant(read Concept.Invariant that) (
     if !that.invariant() (
       error InvariantFailure(
-        text:S"invalid object detected "++Refactor::Tools.getToSOrName(that) )
+        text:S"invalid object detected "++Refactor.Tools.getToSOrName(that) )
       )
     )
   type method
-  Library constructorAction(Introspection::Type that) {
-    immA={<:Concept::Invariant 
+  Library constructorAction(Introspection.Type that) {
+    immA={<:Concept.Invariant 
       type method
       Outer0 (Outer0 that) ( Invariant.checkInvariant(that) that )
       }
-    mutA={<:Concept::Invariant 
+    mutA={<:Concept.Invariant 
       type method
       mut Outer0 (mut Outer0 that) ( Invariant.checkInvariant(that) that )
       }
-    lentA={<:Concept::Invariant 
+    lentA={<:Concept.Invariant 
       type method
       mut Outer0 (mut Outer0 that) ( Invariant.checkInvariant(that) that )
       }
-    readA={<:Concept::Invariant 
+    readA={<:Concept.Invariant 
       type method
       mut Outer0 (mut Outer0 that) ( Invariant.checkInvariant(that) that )
       }
-    capsuleA={<:Concept::Invariant 
+    capsuleA={<:Concept.Invariant 
       type method
       capsule Outer0 (capsule Outer0 that) ( 
         mut Outer0 open=that
@@ -66,11 +66,11 @@
     if mdf==S"lent" (return lentA)
     if mdf==S"read" (return readA)
     if mdf==S"capsule" (return capsuleA)
-    error Default::DecorationUnfeasable(
+    error Default.DecorationUnfeasable(
         text:S"unidentified mdf:"[mdf]"!")
     }
   type method
-  Library setterAction() {<:Concept::Invariant 
+  Library setterAction() {<:Concept.Invariant 
     mut method
     Void (Void that) (
       Invariant.checkInvariant(this) 
@@ -79,7 +79,7 @@
     }
   
   type method
-  Library idAction(Introspection::Type that){
+  Library idAction(Introspection.Type that){
     classA={ type method type T (type T that) that T:{}}
     immA={ type method T (T that) that T:{}}
     mutA={ type method mut T (mut T that) that T:{}}
@@ -92,29 +92,29 @@
       if mdf==S"mut" (return mutA)
       if mdf==S"lent" (return lentA)
       if mdf==S"read" (return readA)
-      error Default::DecorationUnfeasable(
+      error Default.DecorationUnfeasable(
         text:S"unidentified mdf:"[mdf]"!")
       }
     nc=that.referencedPath()
     if nc.hasExternalType() (
-      return Refactor::Redirect(
+      return Refactor.Redirect(
         Path"T" to:nc.externalType())<<mdfA
       )
-    return Refactor::RenamePath(
+    return Refactor.RenamePath(
       Path"T" to:nc.pathFromRoot())<<mdfA
     catch exception MetaGuard cnr
-      error Assert::CodeNotReachable"idAction"(cnr)
+      error Assert.CodeNotReachable"idAction"(cnr)
     }
     
   'main decoration method
   type method
   Library<<(Library that)
-  exception Default::DecorationUnfeasable
+  exception Default.DecorationUnfeasable
     this.stateDecoration(that,state:this.extractOkState(that))
   
   'decoration after pre checking
   type method
-  Library stateDecoration(Library that,Introspection::Methods state){
+  Library stateDecoration(Library that,Introspection.Methods state){
     if state.isEmpty() (return that)
     p=Path"Outer0"
     kSel=state.top().selector()
@@ -156,10 +156,10 @@
         )
       )
     'Debug(Introspection(lib:acc).allAsString())
-    acc:=Refactor::MakePrivateSelector(kSelF of:p)<<acc
+    acc:=Refactor.MakePrivateSelector(kSelF of:p)<<acc
     return acc
     catch exception  MetaGuard cnr
-      error Assert::CodeNotReachable"Invariant"(cnr)
+      error Assert.CodeNotReachable"Invariant"(cnr)
     }
     
   type method
@@ -171,7 +171,7 @@
     with o in old.vals(), f in fresh.vals() (
       if name==o (return Selector.from(name:prefix++f,names:names))
       )
-    error Assert::CodeNotReachable(text:S"stateFName ["[name]"]"
+    error Assert.CodeNotReachable(text:S"stateFName ["[name]"]"
     [with o1 in old.vals(), f1 in fresh.vals() (use[o1++S"!"++f1])]"")     
     }
   }

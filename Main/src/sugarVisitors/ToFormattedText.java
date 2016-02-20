@@ -572,7 +572,7 @@ public class ToFormattedText implements Visitor<Void>{
     if(Path.Library()==path){return c("Library");}
     if(Path.Void()==path){return c("Void");}
     StringBuilders.formatSequence(this.result,path.getRowData().iterator(),
-        "::",s->c(s));
+        ".",s->c(s));
     return null;
   }
   @Override

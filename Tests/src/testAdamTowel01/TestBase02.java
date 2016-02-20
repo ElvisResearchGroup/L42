@@ -64,6 +64,8 @@ public class TestBase02 {
    @Test
   public  void _02_04UseOperators1() throws Throwable{
     TestHelper.configureForTest();
+    //new TestBase01()._01_00DeployAdamTowel01();
+    //this._02_00DeployAdamTowel02();
     L42.main(new String[]{"examples/testsForAdamTowel02/UseOperators1.L42"});
     Assert.assertEquals(L42.record.toString(),
         "c1c2c3\nc1c2c3\nic1ic2ic3\nc1c2c3\nc1c2c3\nc1c2c3c1c2c3c1c2c3\n");
@@ -73,7 +75,7 @@ public class TestBase02 {
      TestHelper.configureForTest();
      L42.main(new String[]{"examples/testsForAdamTowel02/UseOperators2.L42"});
      Assert.assertEquals(L42.record.toString(),
-         "Outer0::A::B::C\nSecret\nFailed\n");
+         "Outer0.A.B.C\nSecret\nFailed\n");
      }
 
    @Test

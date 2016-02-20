@@ -1,7 +1,7 @@
-{(Library _binaryRepr)<:Concept::ToS Concept::Equals Concept::Named'@private
+{(Library _binaryRepr)<:Concept.ToS Concept.Equals Concept.Named'@private
   method myName()GetMyName(Outer0)
   type method
-  Outer0 fromS(Concept::ToS that) (
+  Outer0 fromS(Concept.ToS that) (
     s=that.toS()
     N(_binaryRepr: use Alu
       check stringToInt32(s.binaryRepr())
@@ -14,18 +14,18 @@
   Library binaryRepr() this._binaryRepr()
   
   type method
-  mut S::SBuilder #builder()
-    S::SBuilder.empty()
+  mut S.SBuilder #builder()
+    S.SBuilder.empty()
      
   type method
-  N #from(S::SBuilder builder)
+  N #from(S.SBuilder builder)
     N(_binaryRepr: use Alu
       check stringToInt32(builder.binaryRepr())
       error Outer0.parseError(S.#from(builder: builder)))
       
   type method
   Any parseError(S that)
-    S"UnsatisfactoryErrorToAvoidCycle, replace in AdamT2"
+    S"N.UnsatisfactoryErrorToAvoidCycle, replace in AdamT2"
 
   method
   toS() S.#from(binaryRepr: use Alu
@@ -52,7 +52,7 @@
 
   method
   N /(N that)
-    N(_binaryRepr:use Alu
+    N(_binaryRepr: use Alu
       check divInt32(n1:this.binaryRepr() n2:that.binaryRepr())
       error void)
 
