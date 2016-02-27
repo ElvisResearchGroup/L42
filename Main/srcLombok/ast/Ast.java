@@ -177,7 +177,7 @@ public interface Ast {
 		  return this.name.startsWith("#");//for now, to improve later
 		}
 		public boolean invariant(){
-		  // not good enought, it can also be empty or operator 
+		  // not good enought, it can also be empty or operator
 		  // assert checkX(name,true);
 		  for(String n:names){assert checkX(n,false);}
 		  return true;
@@ -754,5 +754,9 @@ public interface Ast {
 
 	public static interface HasPos {
 		Position getP();
+	}
+	public static interface HasReceiver extends HasPos,Expression{
+		Expression getReceiver();
+		Expression withReceiver(Expression receiver);
 	}
 }

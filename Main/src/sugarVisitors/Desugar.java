@@ -78,14 +78,14 @@ public class Desugar extends CloneVisitor{
     if(L42.path!=null){e=ReplaceDots.of(L42.path, e);}
     Desugar d=new Desugar();
     d.usedVars.addAll(CollectDeclaredVars.of(e));
-    e=DesugarHash.of(d.usedVars, e);
+    e=DesugarContext.of(d.usedVars, e);
     e=DesugarW.of(d.usedVars,e);
     //understand what is the current folder
     //replace ... recursively
     //replaceDots(currentFolder,e)-> clone visitor
     d.collectAllUsedLibs(e);//collect all classBreuse in a map url->core version
     L42.usedNames.addAll(CollectDeclaredClassNamesAndMethodNames.of(e));
-    
+
     d.renameAllPrivatesInUsedLibs();
     Expression result= e.accept(d);
     assert Functions.checkCore(result);
@@ -127,7 +127,7 @@ public class Desugar extends CloneVisitor{
         ast.ExpCore.ClassB dataCore=(ast.ExpCore.ClassB) data.accept(new InjectionOnCore());
         Configuration.typeSystem.computeStage(Program.empty()/*.addAtTop(dataCore)*/,dataCore);
         dataCore.accept(new coreVisitors.CloneVisitor(){
-          @Override public ExpCore visit(ExpCore.ClassB cb){ 
+          @Override public ExpCore visit(ExpCore.ClassB cb){
             CachedStage stage=cb.getStage();
             assert stage!=null;
             stage.setVerified(true);//TODO add more cached info?
@@ -367,13 +367,13 @@ public class Desugar extends CloneVisitor{
       for(Member m2:res.getMs()){
         m1.match(
             nc1->{return m2.match(nc2->{
-               if (nc1.getName().equals(nc2.getName())){throw new ast.ErrorMessage.NotWellFormedMsk(s, s, "Nested class \""+nc1.getName()+"\" already present in reused library "+s.getUrl());} 
+               if (nc1.getName().equals(nc2.getName())){throw new ast.ErrorMessage.NotWellFormedMsk(s, s, "Nested class \""+nc1.getName()+"\" already present in reused library "+s.getUrl());}
               return null;}, mi2->null, mt2->null);},
             mi1->{return m2.match(nc2->null,mi2->{
-              if (mi1.getS().equals(mi2.getS())){throw new ast.ErrorMessage.NotWellFormedMsk(s, s, "Method implemented \""+mi1.getS()+"\" already present in reused library "+s.getUrl());} 
+              if (mi1.getS().equals(mi2.getS())){throw new ast.ErrorMessage.NotWellFormedMsk(s, s, "Method implemented \""+mi1.getS()+"\" already present in reused library "+s.getUrl());}
              return null;},  mt2->null);},
             mt1->{return m2.match(nc2->null,mi2->null,mt2->{
-              if (mt1.getMs().equals(mt2.getMs())){throw new ast.ErrorMessage.NotWellFormedMsk(s, s, "Method with type \""+mt1.getMs()+"\" already present in reused library "+s.getUrl());} 
+              if (mt1.getMs().equals(mt2.getMs())){throw new ast.ErrorMessage.NotWellFormedMsk(s, s, "Method with type \""+mt1.getMs()+"\" already present in reused library "+s.getUrl());}
              return null;});}
             );
         //NotWellFormedMsk
@@ -534,7 +534,7 @@ public class Desugar extends CloneVisitor{
     return new RoundBlock(p,Doc.empty(),inner,bc);
   }
   static Expression.Catch getK(Position pos,SignalKind kind, String x, Type t,Expression inner){
-  if (x==""){return new Expression.CatchMany(pos,kind,Collections.singletonList(t),inner);}  
+  if (x==""){return new Expression.CatchMany(pos,kind,Collections.singletonList(t),inner);}
   return new Expression.Catch1(pos,kind,t,x,inner);
   }
   public Expression visit(CurlyBlock s) {
@@ -610,7 +610,7 @@ public class Desugar extends CloneVisitor{
     Expression rcv=s.getReceiver();
     if (rcv instanceof Ast.Atom){return visit1Step(s);}
     String x=Functions.freshName("listKind", usedVars);
-    return getBlock(s.getP(),x, rcv,visit1Step(s.withReceiver(new X(x))));    
+    return getBlock(s.getP(),x, rcv,visit1Step(s.withReceiver(new X(x))));
   }
   public MCall visit1Step(Literal s) {
     //(b=r.builder() b.a() b.b() b.c() .... b)
@@ -653,7 +653,7 @@ public class Desugar extends CloneVisitor{
     if(isNormalName(n)){return n;}
     return "#"+desugarSymbol(n);
     }
-  public static String desugarSymbol(String n){  
+  public static String desugarSymbol(String n){
     String res="";
     for(char c:n.toCharArray()){
       switch (c){
@@ -859,7 +859,7 @@ public class Desugar extends CloneVisitor{
   }
   static private void cfType2(Expression.Position pos,ast.Ast.FieldDec f, Doc doc,List<Member> result) {
     if(!f.isVar()){return;}
-    Type tt=f.getT().match(nt->nt.withPh(Ph.None), hType->hType);    
+    Type tt=f.getT().match(nt->nt.withPh(Ph.None), hType->hType);
     MethodType mti=new MethodType(Doc.empty(),Mdf.Mutable,Collections.singletonList(tt),Collections.singletonList(Doc.empty()),NormType.immVoid,Collections.emptyList());
     MethodSelector msi=new MethodSelector(f.getName(),Collections.singletonList("that"));
     result.add(new MethodWithType(doc, msi, mti, Optional.empty(),pos));

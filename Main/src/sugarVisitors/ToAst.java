@@ -34,26 +34,7 @@ import ast.Ast.VarDec;
 import ast.Ast.VarDecCE;
 import ast.Ast.VarDecE;
 import ast.Ast.VarDecXE;
-import ast.Expression.BinOp;
-import ast.Expression.ClassB;
-import ast.Expression.CurlyBlock;
-import ast.Expression.DocE;
-import ast.Expression.DotDotDot;
-import ast.Expression.FCall;
-import ast.Expression.HashId;
-import ast.Expression.If;
-import ast.Expression.MCall;
-import ast.Expression.RoundBlock;
-import ast.Expression.Signal;
-import ast.Expression.SquareCall;
-import ast.Expression.SquareWithCall;
-import ast.Expression.Literal;
-import ast.Expression.UnOp;
-import ast.Expression.Using;
-import ast.Expression.While;
-import ast.Expression.With;
-import ast.Expression.X;
-import ast.Expression._void;
+import ast.Expression.*;
 import ast.Expression.ClassB.*;
 
 public class ToAst extends AbstractVisitor<Expression>{
@@ -221,11 +202,11 @@ public class ToAst extends AbstractVisitor<Expression>{
   @Override public Expression visitRoundBlock(RoundBlockContext ctx) {
     return visitRoundBlockAux(ctx,ctx.docsOpt(),ctx.bb(),ctx.eTop());
     }
-  
+
   private List<Catch> parseKs(KsContext ks) {
     List<Catch> result=new ArrayList<>();
     for( KContext ki:ks.k()){
-      assert ki instanceof KContext;//for now //TODO: 
+      assert ki instanceof KContext;//for now //TODO:
       result.add(parseK((KContext)ki));
     }
     return result;
@@ -244,7 +225,7 @@ public class ToAst extends AbstractVisitor<Expression>{
           k.kMany().t().stream().map(this::parseType).collect(Collectors.toList()),
           k.kMany().eTop().accept(this)
           );
-    }    
+    }
     if( k.kProp()!=null){
       return new Expression.CatchProp(position(k),
           SignalKind.fromString(nameK(k.kProp().S())),
@@ -333,14 +314,17 @@ public class ToAst extends AbstractVisitor<Expression>{
     mx=mx.substring(0,mx.length()-1);
     RoundContext r = ctx.round();
     Doc doc=comm(r.docsOpt());
-    Expression rcv= (mx.startsWith("#"))?new Expression.HashId(mx):new Expression.X(mx);
+    assert !mx.startsWith("#");
+    assert !mx.startsWith("\\");
+    Expression rcv=new Expression.X(mx);
+    //Expression rcv= (mx.startsWith("#"))?new Expression.ContextId(mx):new Expression.X(mx);
     return new Expression.FCall(position(r),rcv,doc,parseMParameters(r.ps()));
     }
 
-  @Override public Expression visitHashId(HashIdContext ctx) {
-    return new Expression.HashId(ctx.getText());
+  @Override public Expression visitContextId(ContextIdContext ctx) {
+    return new Expression.ContextId(ctx.getText());
     }
-  
+
   @Override public Expression visitClassBReuse(ClassBReuseContext ctx) {
     Doc doc1=Doc.empty();
     if(ctx.docsOpt().size()>=1){doc1=comm(ctx.docsOpt().get(0));}

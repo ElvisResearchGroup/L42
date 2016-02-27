@@ -82,7 +82,7 @@ public class GuessType implements Visitor<Type> {
     assert t!=null:s;
     return concatHistoricType(t,getMS(s));
     }
- 
+
   MethodSelector getMS(MCall mc){
     List<String> xs=new ArrayList<String>();
     if(mc.getPs().getE().isPresent()){xs.add("that");}
@@ -110,7 +110,7 @@ public class GuessType implements Visitor<Type> {
 
   public Type visit(ClassReuse s){return new NormType(Mdf.Immutable,Path.Library(),Ph.None);}
   public Type visit(ClassB s) {return new NormType(Mdf.Immutable,Path.Library(),Ph.None);}
-  @Override public Type visit(HashId s) {
+  @Override public Type visit(ContextId s) {
     throw new ast.ErrorMessage.NotWellFormedMsk(s,s,"Can not infer the type of a hashId (can this error happens?)");
   }
 

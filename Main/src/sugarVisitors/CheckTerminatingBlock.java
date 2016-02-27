@@ -7,38 +7,14 @@ import ast.Ast.Path;
 import ast.Ast.VarDec;
 import ast.ErrorMessage;
 import ast.Expression;
-import ast.Expression.BinOp;
-import ast.Expression.BlockContent;
-import ast.Expression.ClassB;
-import ast.Expression.ClassReuse;
-import ast.Expression.CurlyBlock;
-import ast.Expression.DocE;
-import ast.Expression.DotDotDot;
-import ast.Expression.FCall;
-import ast.Expression.HashId;
-import ast.Expression.If;
-import ast.Expression.Literal;
-import ast.Expression.Loop;
-import ast.Expression.MCall;
-import ast.Expression.RoundBlock;
-import ast.Expression.Signal;
-import ast.Expression.SquareCall;
-import ast.Expression.SquareWithCall;
-import ast.Expression.UseSquare;
-import ast.Expression.UnOp;
-import ast.Expression.Using;
-import ast.Expression.WalkBy;
-import ast.Expression.While;
-import ast.Expression.With;
+import ast.Expression.*;
 import ast.Expression.With.On;
-import ast.Expression.X;
-import ast.Expression._void;
 
 public class CheckTerminatingBlock implements Visitor<Void> {
   private CurlyBlock start;
   private CheckTerminatingBlock(CurlyBlock start) {this.start = start;}
   public static void of(CurlyBlock s) {
-    s.accept(new CheckTerminatingBlock(s));    
+    s.accept(new CheckTerminatingBlock(s));
     }
   public Void visit(Signal s) {return null;}
   public Void visit(Loop s) {return null;}
@@ -77,12 +53,12 @@ public class CheckTerminatingBlock implements Visitor<Void> {
         }
       }
     }
-      
+
   private Void fail(Expression s){
     throw new ErrorMessage.NotWellFormedMsk(s, this.start, "The expression is not a valid terminator for the block");
     }
-      
-     
+
+
   public Void visit(X s) {return fail(s);}
   public Void visit(BinOp s) {return fail(s);}
   public Void visit(DocE s) {return fail(s);}
@@ -101,5 +77,5 @@ public class CheckTerminatingBlock implements Visitor<Void> {
   public Void visit(While s) {return fail(s);}
   public Void visit(Path s) {return fail(s);}
   public Void visit(ClassReuse s) {return fail(s);}
-  public Void visit(HashId s)  {return fail(s);}
+  public Void visit(ContextId s)  {return fail(s);}
   }

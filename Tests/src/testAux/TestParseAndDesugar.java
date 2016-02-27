@@ -61,7 +61,14 @@ public class TestParseAndDesugar {
   + " catch exception Void catched1 void "
   +" ( Void unused0=loop void void ) ) )"
 
-},{lineNumber(), "A.m(that:#foo+A)","Outer0.A.stillToFixHash()"
+},{lineNumber(), "A.m(that: \\foo)","Outer0.A.m(that:Outer0.A.foo())"
+},{lineNumber(), "A.m(that: \\foo+void)","Outer0.A.m(that:Outer0.A.foo().#plus(that:void))"
+},{lineNumber(), "A.m(that: \\+void)","Outer0.A.m(that:Outer0.A.#default#m(that:void).#plus(that:void))"
+},{lineNumber(), "A(\\+void)","Outer0.A.#apply(that:Outer0.A.#default##apply(that:void).#plus(that:void))"
+},{lineNumber(), "A[\\a;\\a]","Outer0.A.#begin().#add(that:Outer0.A.a()).#add(that:Outer0.A.a()).#end()"
+  //in this test setting, we can not generate Outer0.A for method local nested classes introduced desugaring vars, and other stuff :(
+  //thus we use a classB literal however
+  //},{lineNumber(), "{method foo() A[with x in \\a ( void )]}","would be super long"
 
 },{lineNumber(), "A*b","Outer0.A.#times(that:b)"
 },{lineNumber(), "A(b)","Outer0.A.#apply(that:b)"

@@ -20,7 +20,7 @@ public class L42Parser extends Parser {
 		Dot=14, Equal=15, Ph=16, Implements=17, Case=18, If=19, Else=20, While=21, 
 		Loop=22, With=23, On=24, In=25, Catch=26, Var=27, Default=28, Interface=29, 
 		Method=30, Using=31, Check=32, FieldSpecial=33, WalkBy=34, Stage=35, Path=36, 
-		ClassSep=37, ClassMethSep=38, MX=39, X=40, HashX=41, HashId=42, StringQuote=43, 
+		ClassSep=37, ClassMethSep=38, MX=39, X=40, HashX=41, ContextId=42, StringQuote=43, 
 		UrlNL=44, Url=45, Doc=46, WS=47, UnOp=48, EqOp=49, BoolOp=50, RelOp=51, 
 		DataOp=52, NumParse=53;
 	public static final String[] tokenNames = {
@@ -29,7 +29,7 @@ public class L42Parser extends Parser {
 		"'if'", "'else'", "'while'", "'loop'", "'with'", "'on'", "'in'", "'catch'", 
 		"'var'", "'default'", "'interface'", "'method'", "'use'", "'check'", "'##field'", 
 		"'##walkBy'", "Stage", "Path", "ClassSep", "'::'", "MX", "X", "HashX", 
-		"HashId", "StringQuote", "UrlNL", "Url", "Doc", "WS", "UnOp", "EqOp", 
+		"ContextId", "StringQuote", "UrlNL", "Url", "Doc", "WS", "UnOp", "EqOp", 
 		"BoolOp", "RelOp", "DataOp", "NumParse"
 	};
 	public static final int
@@ -38,7 +38,7 @@ public class L42Parser extends Parser {
 		RULE_methSelector = 9, RULE_x = 10, RULE_xOp = 11, RULE_eTopForMethod = 12, 
 		RULE_eTop = 13, RULE_eL3 = 14, RULE_eL2 = 15, RULE_eL1 = 16, RULE_numParse = 17, 
 		RULE_eUnOp = 18, RULE_ePost = 19, RULE_eAtom = 20, RULE_mxRound = 21, 
-		RULE_hashId = 22, RULE_useSquare = 23, RULE_ifExpr = 24, RULE_using = 25, 
+		RULE_contextId = 22, RULE_useSquare = 23, RULE_ifExpr = 24, RULE_using = 25, 
 		RULE_whileExpr = 26, RULE_signalExpr = 27, RULE_loopExpr = 28, RULE_block = 29, 
 		RULE_roundBlockForMethod = 30, RULE_roundBlock = 31, RULE_bb = 32, RULE_curlyBlock = 33, 
 		RULE_varDec = 34, RULE_d = 35, RULE_stringParse = 36, RULE_square = 37, 
@@ -51,7 +51,7 @@ public class L42Parser extends Parser {
 	public static final String[] ruleNames = {
 		"m", "mDec", "path", "docs", "docsOpt", "t", "concreteT", "historicalSeq", 
 		"historicalT", "methSelector", "x", "xOp", "eTopForMethod", "eTop", "eL3", 
-		"eL2", "eL1", "numParse", "eUnOp", "ePost", "eAtom", "mxRound", "hashId", 
+		"eL2", "eL1", "numParse", "eUnOp", "ePost", "eAtom", "mxRound", "contextId", 
 		"useSquare", "ifExpr", "using", "whileExpr", "signalExpr", "loopExpr", 
 		"block", "roundBlockForMethod", "roundBlock", "bb", "curlyBlock", "varDec", 
 		"d", "stringParse", "square", "squareW", "mCall", "round", "ps", "k1", 
@@ -902,7 +902,7 @@ public class L42Parser extends Parser {
 			case MX:
 			case X:
 			case HashX:
-			case HashId:
+			case ContextId:
 			case UnOp:
 			case DataOp:
 			case NumParse:
@@ -1494,8 +1494,8 @@ public class L42Parser extends Parser {
 			return getRuleContext(ClassBContext.class,0);
 		}
 		public TerminalNode WalkBy() { return getToken(L42Parser.WalkBy, 0); }
-		public HashIdContext hashId() {
-			return getRuleContext(HashIdContext.class,0);
+		public ContextIdContext contextId() {
+			return getRuleContext(ContextIdContext.class,0);
 		}
 		public WhileExprContext whileExpr() {
 			return getRuleContext(WhileExprContext.class,0);
@@ -1684,7 +1684,7 @@ public class L42Parser extends Parser {
 			case 17:
 				enterOuterAlt(_localctx, 17);
 				{
-				setState(297); hashId();
+				setState(297); contextId();
 				}
 				break;
 			}
@@ -1747,34 +1747,34 @@ public class L42Parser extends Parser {
 		return _localctx;
 	}
 
-	public static class HashIdContext extends ParserRuleContext {
-		public TerminalNode HashId() { return getToken(L42Parser.HashId, 0); }
-		public HashIdContext(ParserRuleContext parent, int invokingState) {
+	public static class ContextIdContext extends ParserRuleContext {
+		public TerminalNode ContextId() { return getToken(L42Parser.ContextId, 0); }
+		public ContextIdContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_hashId; }
+		@Override public int getRuleIndex() { return RULE_contextId; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof L42Listener ) ((L42Listener)listener).enterHashId(this);
+			if ( listener instanceof L42Listener ) ((L42Listener)listener).enterContextId(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof L42Listener ) ((L42Listener)listener).exitHashId(this);
+			if ( listener instanceof L42Listener ) ((L42Listener)listener).exitContextId(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof L42Visitor ) return ((L42Visitor<? extends T>)visitor).visitHashId(this);
+			if ( visitor instanceof L42Visitor ) return ((L42Visitor<? extends T>)visitor).visitContextId(this);
 			else return visitor.visitChildren(this);
 		}
 	}
 
-	public final HashIdContext hashId() throws RecognitionException {
-		HashIdContext _localctx = new HashIdContext(_ctx, getState());
-		enterRule(_localctx, 44, RULE_hashId);
+	public final ContextIdContext contextId() throws RecognitionException {
+		ContextIdContext _localctx = new ContextIdContext(_ctx, getState());
+		enterRule(_localctx, 44, RULE_contextId);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(303); match(HashId);
+			setState(303); match(ContextId);
 			}
 		}
 		catch (RecognitionException re) {
@@ -2430,7 +2430,7 @@ public class L42Parser extends Parser {
 				setState(372); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << S) | (1L << Mdf) | (1L << ORoundSpace) | (1L << OCurly) | (1L << DotDotDot) | (1L << Ph) | (1L << If) | (1L << While) | (1L << Loop) | (1L << With) | (1L << Var) | (1L << Using) | (1L << WalkBy) | (1L << Path) | (1L << MX) | (1L << X) | (1L << HashX) | (1L << HashId) | (1L << UnOp) | (1L << DataOp) | (1L << NumParse))) != 0) );
+			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << S) | (1L << Mdf) | (1L << ORoundSpace) | (1L << OCurly) | (1L << DotDotDot) | (1L << Ph) | (1L << If) | (1L << While) | (1L << Loop) | (1L << With) | (1L << Var) | (1L << Using) | (1L << WalkBy) | (1L << Path) | (1L << MX) | (1L << X) | (1L << HashX) | (1L << ContextId) | (1L << UnOp) | (1L << DataOp) | (1L << NumParse))) != 0) );
 			setState(374); match(CCurly);
 			}
 		}

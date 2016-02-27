@@ -35,7 +35,7 @@ import ast.Expression.CurlyBlock;
 import ast.Expression.DocE;
 import ast.Expression.DotDotDot;
 import ast.Expression.FCall;
-import ast.Expression.HashId;
+import ast.Expression.ContextId;
 import ast.Expression.If;
 import ast.Expression.Loop;
 import ast.Expression.MCall;
@@ -79,7 +79,7 @@ public class ToFormattedText implements Visitor<Void>{
     tft.formatDoc(doc);
     return tft.result.toString();
   }
-   
+
   public static String of(ExpCore e){
     return of(e.accept(new InjectionOnSugar()));
   }
@@ -114,7 +114,7 @@ public class ToFormattedText implements Visitor<Void>{
     }
   private Void nl(){result.append("\n");result.append(currentIndent);return null;}
   private Void indent(){currentIndent+="  ";return null;}
-  private Void deIndent(){currentIndent=currentIndent.substring(2);return null;}  
+  private Void deIndent(){currentIndent=currentIndent.substring(2);return null;}
   @Override
   public Void visit(Signal arg0) {
     c(arg0.getKind().content);
@@ -126,7 +126,7 @@ public class ToFormattedText implements Visitor<Void>{
     c("loop ");
     return arg0.getInner().accept(this);
 
-  }  
+  }
 
   @Override
   public Void visit(If arg0) {
@@ -154,7 +154,7 @@ public class ToFormattedText implements Visitor<Void>{
     c("with");//ok no space
     if (!s.getXs().isEmpty()){c(" ");}
     StringBuilders.formatSequence(this.result,s.getXs().iterator(),", ",x->c(x));
-    
+
     if (!s.getIs().isEmpty()){c(" ");}
     StringBuilders.formatSequence(this.result,s.getIs().iterator(),", ",is->{
       if(is.isVar()){c("var ");}
@@ -186,7 +186,7 @@ public class ToFormattedText implements Visitor<Void>{
       if(!s.getOns().isEmpty()){c("default");separeFromChar();}
       s.getDefaultE().get().accept(this);
     }
-    return c(")");//throw Assertions.codeNotReachable();    
+    return c(")");//throw Assertions.codeNotReachable();
   }
 
   @Override
@@ -201,7 +201,7 @@ public class ToFormattedText implements Visitor<Void>{
     c(arg0.getOp().inner);
     sp();
     return arg0.getRight().accept(this);
-    
+
   }
 
   @Override
@@ -213,7 +213,7 @@ public class ToFormattedText implements Visitor<Void>{
   @Override
   public Void visit(UnOp arg0) {
     c(arg0.getOp().inner);
-    return arg0.getInner().accept(this);    
+    return arg0.getInner().accept(this);
     }
 
   @Override
@@ -222,6 +222,7 @@ public class ToFormattedText implements Visitor<Void>{
     arg0.getReceiver().accept(this);
     if(arg0.getReceiver() instanceof Expression.Signal){c(")");}
     c(".");
+    assert !arg0.getName().isEmpty();
     c(arg0.getName());
     c("(");
     formatDoc(arg0.getDoc());
@@ -235,7 +236,7 @@ public class ToFormattedText implements Visitor<Void>{
     c("(");
     formatDoc(arg0.getDoc());
     formatParameters(arg0.getPs());
-    return c(")");  
+    return c(")");
     }
    private void formatParameters(Parameters ps) {
      assert ps.getEs().size()==ps.getXs().size();
@@ -285,7 +286,7 @@ public class ToFormattedText implements Visitor<Void>{
     }
     assert inner instanceof Expression.SquareCall;
     c("use");
-    return formatSquarePart((Expression.SquareCall)inner);    
+    return formatSquarePart((Expression.SquareCall)inner);
     }
 
   @Override
@@ -297,7 +298,7 @@ public class ToFormattedText implements Visitor<Void>{
     if(!arg0.getContents().isEmpty()){
       nl();c(")");deIndent();}
     else  c(")");
-    return null; 
+    return null;
   }
 
   private void generateContent(List<Expression.BlockContent> contents) {
@@ -404,7 +405,7 @@ public class ToFormattedText implements Visitor<Void>{
     /*StringBuilders.formatSequence(this.result,cb.getAllSupertypes().iterator(), ", ",
         p->{this.visit(p);});*/
     if (cb.getStage()!=Stage.None/* || !cb.getAllSupertypes().isEmpty()*/){
-      c("^##");      
+      c("^##");
       }
     return null;
   }
@@ -446,7 +447,7 @@ public class ToFormattedText implements Visitor<Void>{
     separeFromChar();
     c(methT.getMs().getName());
     c("(");
-    StringBuilders.formatSequence(this.result,methT.getMt().getTs().iterator(), methT.getMt().getTDocs().iterator(),methT.getMs().getNames().iterator(),", ", 
+    StringBuilders.formatSequence(this.result,methT.getMt().getTs().iterator(), methT.getMt().getTDocs().iterator(),methT.getMs().getNames().iterator(),", ",
       (ti,doci,xi)->{
       formatType(ti);
       separeFromChar();
@@ -539,7 +540,7 @@ public class ToFormattedText implements Visitor<Void>{
         }
         if(tH.isForcePlaceholder()){c("^");}
         return null;
-      });    
+      });
   }
   @Override
   public Void visit(DotDotDot arg0) {
@@ -602,7 +603,7 @@ public class ToFormattedText implements Visitor<Void>{
           if(m instanceof NestedClass){
             NestedClass nc=(NestedClass)m;
             if(nc.getInner() instanceof WalkBy){wb=nc.getName()+":##";}
-            }          
+            }
         }
         return c("{.."+wb+"..}");
       }
@@ -613,7 +614,7 @@ public class ToFormattedText implements Visitor<Void>{
     //if(res.length()>80){ res=res.substring(0, 34)+" ... "+res.substring(res.length()-34); }
     return res;
   }
-  @Override public Void visit(HashId s) {
+  @Override public Void visit(ContextId s) {
     return c(s.getInner());
   }
 }
