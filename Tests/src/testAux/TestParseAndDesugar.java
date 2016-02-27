@@ -38,7 +38,7 @@ public class TestParseAndDesugar {
     public static List<Object[]> createData() {
       return Arrays.asList(new Object[][] {
    {lineNumber(), "a","a"
- 
+
 },{lineNumber(), " (var x=void x:=void)",
     " ( Varx:'@private\n{mut (var Void inner)}  Void x=void"
    +"   mut Outer0.Varx varx=Outer0.Varx.#apply(inner:x)"
@@ -62,11 +62,11 @@ public class TestParseAndDesugar {
   +" ( Void unused0=loop void void ) ) )"
 
 },{lineNumber(), "A.m(that:#foo+A)","Outer0.A.stillToFixHash()"
-  
+
 },{lineNumber(), "A*b","Outer0.A.#times(that:b)"
 },{lineNumber(), "A(b)","Outer0.A.#apply(that:b)"
 },{lineNumber(), " ( Void a=void a(b))"," (Void a=void a.#apply(that:b))"
-},{lineNumber(), " ( Void a=void (a)(b) )"," ( Void a=void (a).#apply(that:b))"  
+},{lineNumber(), " ( Void a=void (a)(b) )"," ( Void a=void (a).#apply(that:b))"
 },{lineNumber(), " ( T a=b T b=c catch error  Foo x x T a2=b2 T b2=c2 c )"," ( Outer0.T a=b Outer0.T b=c catch error Outer0.Foo x x     (   Outer0.T a2=b2 Outer0.T b2=c2  c  ) )"
 },{lineNumber(), " (A*b a b c )"," ( Void unused=Outer0.A.#times(that:b) Void unused0=a Void unused1=b c )"
 },{lineNumber(), " (T a=b c=a c )"," (Outer0.T a=b Outer0.T c=a c )"
@@ -98,9 +98,9 @@ public class TestParseAndDesugar {
 },{lineNumber(), "if X (Bla) else (Foo)",
    " (Void unused=Outer0.X.#checkTrue() catch exception Void catched (Outer0.Foo ) (Outer0.Bla) )"
 },{lineNumber(), "if X (Bla) ",
-   " (Void unused=Outer0.X::#checkTrue() catch exception Void catched  void  (Outer0.Bla) )"
+   " (Void unused=Outer0.X.#checkTrue() catch exception Void catched  void  (Outer0.Bla) )"
 },{lineNumber(), "if Foo+Bar (bla) ",
-   " ( Outer0.Foo.#plus(that ) cond=Outer0.Foo.#plus(that:Outer0.Bar) ( Void unused=cond.#checkTrue() catch exception Void catched0  void  (bla)))"
+   " ( Outer0.Foo::#plus(that ) cond=Outer0.Foo.#plus(that:Outer0.Bar) ( Void unused=cond.#checkTrue() catch exception Void catched0  void  (bla)))"
 },{lineNumber(), "{ <(T bar) }'bla\n"," ('bla\n{ type method Outer0 #left(Outer0.T bar)mut method Outer0.T #bar()read method Outer0.T bar()})"
 },{lineNumber(), "{ (T bar) }"," {type method Outer0 #apply(Outer0.T bar) mut method Outer0.T #bar() read method Outer0.T bar() }"
 },{lineNumber(), " (T x={ if A (return B) return C } x)",
@@ -124,7 +124,7 @@ public class TestParseAndDesugar {
  +" mut method Void b(Outer0.B that)"
  +" mut method Outer0.B #b()"
  +" read method Outer0.B b()"
- +" }"    
+ +" }"
 },{lineNumber(),"{a( Outer0.A a, var Outer0.B b)'@private\n}",
     "{"
    +" type method'@private\n mut Outer0 a( Outer0.A a, Outer0.B b) "
@@ -133,7 +133,7 @@ public class TestParseAndDesugar {
    +" mut method'@private\n Void b(Outer0.B that)"
    +" mut method'@private\n Outer0.B #b()"
    +" read method'@private\n Outer0.B b()"
-   +" }"    
+   +" }"
 },{lineNumber(),"{ method Any(Any a,Any b) a+ b}",
   "{ method Any #apply(Any a, Any b) a.#plus(that:b)}"
 },{lineNumber(),"{ method Any() this!=this &   this}",
@@ -160,8 +160,8 @@ public class TestParseAndDesugar {
     TestHelper.assertEqualExp(result,es2);
   }
   }
-  
- 
+
+
   @RunWith(Parameterized.class)
   public static class TestPrivateNormalization {
     @Parameter(0) public int _lineNumber;
@@ -203,6 +203,6 @@ public class TestParseAndDesugar {
     Assert.assertTrue(check);
   }
   }
-    
-  
+
+
 }
