@@ -339,7 +339,7 @@ public class ErrorFormatter {
 
   }
   private static void printType(int i,String prefix, ClassB top) {
-    System.out.print("Outer"+i+prefix+" :{\n");
+    System.out.print("This"+i+prefix+" :{\n");
     printMembers(top);
     System.out.print("  }\n");
     for(Member m:top.getMs()){

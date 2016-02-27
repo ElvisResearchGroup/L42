@@ -2,8 +2,8 @@
  mut _new(var mut Cell head)
 
 type method
-Outer0 ()
-  Outer0._new(head:CellEnd())
+This ()
+  This._new(head:CellEnd())
 mut method
 Bool isEmpty() {
   with x=this.head() (
@@ -25,34 +25,34 @@ mut Iterator valsCut()
   this.head().vals(terminate:False())
  
 mut method
-mut Outer0 #pop() {
-  return Outer0._new(head:this.head().#next()) 
+mut This #pop() {
+  return This._new(head:this.head().#next()) 
   catch exception (on Void error S"PopOnEmpyList")
   }    
 
 read method
-capsule Outer0 clone() Outer0._new(head:this.head().clone())
+capsule This clone() This._new(head:this.head().clone())
 
 read method
-capsule Outer0 ++(read Outer0 that) {
-  var mut Outer0 res=this.clone()
+capsule This ++(read This that) {
+  var mut This res=this.clone()
   with e in that.vals() (res:=res.#add(e))
   return res
   }
 
 type method
-mut Outer0 #begin()
-  Outer0()
+mut This #begin()
+  This()
 
 mut method
-mut Outer0 #add(Elem that) {
+mut This #add(Elem that) {
   this.head=CellNext(elem:that,nextCell:this.#head())
   return this
   }
 
 mut method
-mut Outer0 #end() (
-  var res=Outer0()
+mut This #end() (
+  var res=This()
   with elem in this.vals() (
     res:=res.#add(elem)
     )

@@ -5,20 +5,20 @@ Bool:{(Library binaryRepr)<:S.ToS '@private
     using Alu
       check ifInt32EqualDo(n1:this.binaryRepr() n2:0N.binaryRepr())
       exception void
-  type method Outer0 true() Outer0(binaryRepr:1N.binaryRepr())
-  type method Outer0 false() Outer0(binaryRepr:0N.binaryRepr())
+  type method This true() This(binaryRepr:1N.binaryRepr())
+  type method This false() This(binaryRepr:0N.binaryRepr())
 
-  method Outer0 &(Outer0 that){
+  method This &(This that){
     if this (return that)
     return this
     }
-  method Outer0 |(Outer0 that){
+  method This |(This that){
     if this (return this)
     return that
     }
-  method Outer0 !(){
-    if this (return Outer0.false())
-    return Outer0.true()
+  method This !(){
+    if this (return This.false())
+    return This.true()
     }
   method toS(){
     if this (return S"true")
@@ -114,7 +114,7 @@ N:{(Library binaryRepr)<:S.ToS
 
 S:{ _private(Library _binaryRepr)<: ToS
 
-  type method Outer0 #stringParser(Library that) Outer0._private(_binaryRepr:that)
+  type method This #stringParser(Library that) This._private(_binaryRepr:that)
 
   method Library binaryRepr() this._binaryRepr()
 

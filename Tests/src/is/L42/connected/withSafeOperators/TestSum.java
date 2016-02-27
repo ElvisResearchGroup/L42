@@ -42,7 +42,7 @@ import auxiliaryGrammar.Program;
       "{Kind:{'@stringU\n'MethodClash\n}"
       +"Path:{'@.B\n}"
       +"Left:{'@stringU\n'method Void m()\n}"
-      +"Right:{'@stringU\n'method Outer0 m()\n}"
+      +"Right:{'@stringU\n'method This0 m()\n}"
       +"LeftKind:{'@stringU\n'AbstractMethod\n}"
       +"RightKind:{'@stringU\n'AbstractMethod\n}"
       +"DifferentParameters:{'@stringU\n'[]\n}"
@@ -68,7 +68,7 @@ import auxiliaryGrammar.Program;
      +"ConflictingImplementedInterfaces:{'[@.J, @.I]\n}}",
       true
 
-    },{    lineNumber(),"{B:{method Outer0 m()}}","{B:{method B m()}}","{B:{method Outer0 m()} }",false
+    },{    lineNumber(),"{B:{method This0 m()}}","{B:{method B m()}}","{B:{method This0 m()} }",false
 
     },{    lineNumber(),"{B__0fred:'@private\n{}}","{}",
       "{B_$%0fred__0_0:'@private\n{}}",false
@@ -81,8 +81,8 @@ import auxiliaryGrammar.Program;
       "{B__0_0:'@private\n{} B__0_1:'@private\n{}}",false
       
     },{    lineNumber(),"{(B x)'@private\nB:{}}","{(B x) B:{}}",
-      "{#apply__0_0(Outer0.B x__0_0)'@private\nB:{}"
-      + "type method Outer0 (Outer0.B x)"
+      "{#apply__0_0(This0.B x__0_0)'@private\nB:{}"
+      + "type method This0 (This0.B x)"
       + "mut method B #x()"
       + "read method B x() }",
       false

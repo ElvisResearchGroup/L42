@@ -78,6 +78,7 @@ public class Desugar extends CloneVisitor{
     if(L42.path!=null){e=ReplaceDots.of(L42.path, e);}
     Desugar d=new Desugar();
     d.usedVars.addAll(CollectDeclaredVars.of(e));
+    e=DesugarPaths.of(e);
     e=DesugarContext.of(d.usedVars, e);
     e=DesugarW.of(d.usedVars,e);
     //understand what is the current folder
@@ -142,7 +143,6 @@ public class Desugar extends CloneVisitor{
 
   HashMap<String,ast.ExpCore.ClassB> importedLibs=new HashMap<>();
   Set<String> usedVars=new HashSet<String>();
-  ArrayList<ClassB> p=new ArrayList<ClassB>();
   Type t=NormType.immVoid;
   HashMap<String,Type> varEnv=new HashMap<String,Type>();
 
@@ -340,26 +340,17 @@ public class Desugar extends CloneVisitor{
     Set<String> oldUsedVars = this.usedVars;
     HashMap<String, Type> oldVarEnv = this.varEnv;
     try{
-      p.add(0,s);
       s=(ClassB)super.visit(s);
-      //TODO: it can loop, somehow!
       s=FlatFirstLevelLocalNestedClasses.of(s,this);
       s=DesugarCatchDefault.of(s);
       return s;}
     finally{
-      //this.usedCnames=oldUsedCNames;->L42.usedNames//TODO: use new visitor objects! no? how to do with inheritance? new this?
       this.usedVars=oldUsedVars;
       this.varEnv=oldVarEnv;
-      p.remove(0);
       }
   }
   public Expression visit(ClassReuse s) {
-    ClassB res=s.getInner();//lift(s.getInner());
-    { ArrayList<ClassB> oldP = this.p;
-      this.p=new ArrayList<ClassB>();
-      try{res=(ClassB) res.accept(this);}
-      finally{this.p=oldP;}
-    }
+    ClassB res=lift(s.getInner());
   //ClassB reused2=OnLineCode.getCode(s.getUrl());
     ExpCore.ClassB reused=this.importedLibs.get(s.getUrl());
     assert reused!=null:s.getUrl()+" "+this.importedLibs.keySet()+this.importedLibs.get(s.getUrl())+this.importedLibs;
@@ -384,28 +375,8 @@ public class Desugar extends CloneVisitor{
 
 
   public Expression visit(Path s) {
-    if(s.isCore()|| s.isPrimitive()){return s;}
-    List<String> rd = new ArrayList<String>(s.getRowData());
-    String key=rd.get(0);
-    int index = searchForScope(key);
-    if (index==-1){index=0;}//to simplify testing
-    rd.add(0,"Outer"+index);
-    return new Path(rd);
-    }
-
-  private int searchForScope(String key) {
-    int index=-1;
-    for(ClassB cb:p){
-      index+=1;
-      //if (cb.getH())
-      for(Member m:cb.getMs()){
-        if(!(m instanceof NestedClass)){continue;}
-        NestedClass nc=(NestedClass)m;
-        if(!nc.getName().equals(key)){continue;}
-        return index;
-      }
-    }
-    return index;
+    assert s.isCore()|| s.isPrimitive();
+    return s;
   }
   protected List<Catch> liftKs(List<Catch> ks) {
     List<Catch> result=new ArrayList<>();

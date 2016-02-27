@@ -75,7 +75,7 @@ public class TestBase02 {
      TestHelper.configureForTest();
      L42.main(new String[]{"examples/testsForAdamTowel02/UseOperators2.L42"});
      Assert.assertEquals(L42.record.toString(),
-         "Outer0.A.B.C\nSecret\nFailed\n");
+         "This0.A.B.C\nSecret\nFailed\n");
      }
 
    @Test

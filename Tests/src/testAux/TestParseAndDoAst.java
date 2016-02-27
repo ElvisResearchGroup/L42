@@ -65,7 +65,7 @@ public class TestParseAndDoAst {
 },{lineNumber()," ( C a = b c)"
 },{lineNumber()," ( C a = b, D b=c c)"
 },{lineNumber()," ( C.D b=c c)"
-},{lineNumber()," ( Outer2.D b=c c)"
+},{lineNumber()," ( This2.D b=c c)"
 },{lineNumber()," ( Any b=c c)"
 },{lineNumber()," ( mut Any b=c c)"
 },{lineNumber()," ( type Any b=c c)"

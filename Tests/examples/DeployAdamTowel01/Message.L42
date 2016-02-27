@@ -2,22 +2,22 @@
 type method S kind()
 method S text()
 method Opt responseOf()
-read method type Outer0 clazz()
+read method type This clazz()
 Opt:{#new(TOpt that)
-  TOpt:{interface method Outer2 get() }
+  TOpt:{interface method This2 get() }
   TEmpty:{()<:TOpt method get() 
     error S"UnsatisfactoryErrorToAvoidCycle, replace in Adam2"
     'error Guard.Operation"TEmpty.get() Value not present in Optional" 
     }
-  TOf:{(Outer2 that)<:TOpt method get() this.that()}
-  method Outer1 ~() this.that().get()
+  TOf:{(This2 that)<:TOpt method get() this.that()}
+  method This1 ~() this.that().get()
   method Bool isPresent() {
     unused=~this  'unused=~this
     return Bool.true()
     catch error Any return Bool.false()
     }
-  type method Outer0 () Outer0.#new(TEmpty())
-  type method Outer0 (Outer1 that) Outer0.#new(TOf(that))
+  type method This () This.#new(TEmpty())
+  type method This (This1 that) This.#new(TOf(that))
   }
 EqualMessages:{
   type method Bool (Message that,Message other){
@@ -33,25 +33,25 @@ EqualMessages:{
   }}
 $:{()
   type method Library <<(Library that)
-    SafeOperatorsAccess.compose(left:that, right:Outer0.messageTrait())
+    SafeOperatorsAccess.compose(left:that, right:This.messageTrait())
   type method Library messageTrait() {(S _text, Message.Opt cause)<:Message
-    method myName()GetMyName(Outer0)
+    method myName()GetMyName(This)
     method kind() this.myName()
     method text() this._text()
     method responseOf() this.cause()
     method equals(that){
-      with that (on Outer0 return this==that)
+      with that (on This return this==that)
       return Bool.false()
       }
   method
-  Outer0 (Message that)
-    Outer0(text:this.text(),cause:that)
+  This (Message that)
+    This(text:this.text(),cause:that)
 
     method toS() {
       if !this.cause().isPresent() (
-        return Outer0.kind()++S.doubleQuote()++this.text()++S.doubleQuote()
+        return This.kind()++S.doubleQuote()++this.text()++S.doubleQuote()
         )
-      var res=Outer0.kind()
+      var res=This.kind()
       if this.text()!=S"" (
         res:=res++S"[text:"++S.doubleQuote()++this.text()++S.doubleQuote()
           ++S", cause:"
@@ -59,23 +59,23 @@ $:{()
       else (res:=res++S"[")
       return res[~this.cause()]"]"
       }
-    method Bool != (Outer0 that)
+    method Bool != (This that)
       !(this==that)
-    method Bool == (Outer0 that)
+    method Bool == (This that)
       Message.EqualMessages(this,other:that)
-    method classAny() Outer0
-    method clazz() Outer0
+    method classAny() This
+    method clazz() This
     type method
-    Outer0 (S text)
-      Outer0(_text:text,cause:Message.Opt())
+    This (S text)
+      This(_text:text,cause:Message.Opt())
     type method
-    Outer0(S text, Message cause)
-      Outer0(_text:text,cause:Message.Opt(cause))
+    This(S text, Message cause)
+      This(_text:text,cause:Message.Opt(cause))
     'next part could become a trait on its own (but S must keep its version)
     
     type method mut S.SBuilder #builder()S.SBuilder.empty()
-      type method Outer0 #from(S.SBuilder builder)
-        Outer0(text:S.#from(builder:builder))
+      type method This #from(S.SBuilder builder)
+        This(text:S.#from(builder:builder))
         
     method
     SConcat #begin()
@@ -94,8 +94,8 @@ $:{()
       method
       SConcat #end() this
       method mut S.SBuilder #builder()S.SBuilder.empty()
-      method Outer1 #from(S.SBuilder builder)
-        Outer1(text:this.old().toS()++this.accumulator()++S.#from(builder:builder))
+      method This1 #from(S.SBuilder builder)
+        This1(text:this.old().toS()++this.accumulator()++S.#from(builder:builder))
       }
     }
   }

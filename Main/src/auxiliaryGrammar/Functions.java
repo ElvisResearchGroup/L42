@@ -43,7 +43,7 @@ import coreVisitors.ReplaceCtx;
 import facade.Configuration;
 
 public class Functions {
-  
+
 public static ClassB.NestedClass encapsulateIn(List<String> cBar,ClassB elem,Doc doc) {
     //Notice: encapsulation do not do the from. It must be done
     //on the call side as in "redirectDefinition"
@@ -365,13 +365,13 @@ public static List<InvalidMwtAsState> coherent(Program p, ClassB ct) {
   if(typeMethods.size()==0){
     return mwts.stream().map(m->new InvalidMwtAsState("No constructor candidate",m)).collect(Collectors.toList());
     }
-  
+
   MethodWithType constr=typeMethods.get(0);
   mwts.remove(constr);
   constr=Norm.of(p1, constr,true);
   NormType retType=(NormType)constr.getMt().getReturnType();
   if(!retType.getPath().equals(Path.outer(0))){
-    return Collections.singletonList(new InvalidMwtAsState(" return path must be Outer0",constr));
+    return Collections.singletonList(new InvalidMwtAsState(" return path must be This",constr));
     }
   if(retType.getPh()!=Ph.None){
     return Collections.singletonList(new InvalidMwtAsState(" return type fwd invalid for constructor",constr));
@@ -404,7 +404,7 @@ public static List<InvalidMwtAsState> coherent(Program p, ClassB ct) {
     if(nt==null){
       result.add(new InvalidMwtAsState(" Abstract method not a field of the constructor",mwt));
       }
-    else if(!coherent(p1, nt.getMdf(),nt.getPath(),mwt)){ 
+    else if(!coherent(p1, nt.getMdf(),nt.getPath(),mwt)){
       result.add(new InvalidMwtAsState(" Abstract method has invalid shape to be part of the state",mwt));
       }
     }

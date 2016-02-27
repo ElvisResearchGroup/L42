@@ -1,8 +1,8 @@
 {(N counter)'@private
-type method Outer0 #begin() Outer0(counter:0N)
+type method This #begin() This(counter:0N)
 method N #end()this.counter()
-method Outer0 #add(Bool that) {
+method This #add(Bool that) {
   if !that (return this)
-  return Outer0(counter:this.counter()+1N)
+  return This(counter:this.counter()+1N)
   }
 }

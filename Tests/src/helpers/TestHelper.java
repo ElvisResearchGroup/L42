@@ -99,7 +99,7 @@ public class TestHelper {
     }finally{System.setErr(lpsErr.underlying);}
     }*/
   public static Program getProgramCD(){
-    return getProgram(new String[]{"{C:{new() type method Outer1.C foo(type Outer1.C bar) (bar.foo(bar:this))}, D:{new(var Outer1.C x)}}"});
+    return getProgram(new String[]{"{C:{new() type method This1.C foo(type This1.C bar) (bar.foo(bar:this))}, D:{new(var This1.C x)}}"});
   }
 
   public static ClassB getClassB(String source, String e1) {
@@ -119,7 +119,7 @@ public class TestHelper {
     Program p0=Program.empty();
     Integer outerCount = code.length;
     for(String s:code){
-      Expression e=Parser.parse("Outer"+outerCount,s);
+      Expression e=Parser.parse("This"+outerCount,s);
       --outerCount;
       ClassB ec=(ClassB)Desugar.of(e).accept(new InjectionOnCore());
       Configuration.typeSystem.computeStage(p0, ec);

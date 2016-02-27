@@ -38,10 +38,10 @@ public class TestParseAndDesugar {
     public static List<Object[]> createData() {
       return Arrays.asList(new Object[][] {
    {lineNumber(), "a","a"
-
-},{lineNumber(), " (var x=void x:=void)",
+   },{lineNumber(), " This","This0"
+   },{lineNumber(), " (var x=void x:=void)",
     " ( Varx:'@private\n{mut (var Void inner)}  Void x=void"
-   +"   mut Outer0.Varx varx=Outer0.Varx.#apply(inner:x)"
+   +"   mut This0.Varx varx=This0.Varx.#apply(inner:x)"
    +"   varx.inner(that:void) )"
 
 },{lineNumber(), "with x=void (on Void void)",
@@ -61,85 +61,85 @@ public class TestParseAndDesugar {
   + " catch exception Void catched1 void "
   +" ( Void unused0=loop void void ) ) )"
 
-},{lineNumber(), "A.m(that: \\foo)","Outer0.A.m(that:Outer0.A.foo())"
-},{lineNumber(), "A.m(that: \\foo+void)","Outer0.A.m(that:Outer0.A.foo().#plus(that:void))"
-},{lineNumber(), "A.m(that: \\+void)","Outer0.A.m(that:Outer0.A.#default#m(that:void).#plus(that:void))"
-},{lineNumber(), "A(\\+void)","Outer0.A.#apply(that:Outer0.A.#default##apply(that:void).#plus(that:void))"
-},{lineNumber(), "A[\\a;\\a]","Outer0.A.#begin().#add(that:Outer0.A.a()).#add(that:Outer0.A.a()).#end()"
-  //in this test setting, we can not generate Outer0.A for method local nested classes introduced desugaring vars, and other stuff :(
+},{lineNumber(), "A.m(that: \\foo)","This0.A.m(that:This0.A.foo())"
+},{lineNumber(), "A.m(that: \\foo+void)","This0.A.m(that:This0.A.foo().#plus(that:void))"
+},{lineNumber(), "A.m(that: \\+void)","This0.A.m(that:This0.A.#default#m(that:void).#plus(that:void))"
+},{lineNumber(), "A(\\+void)","This0.A.#apply(that:This0.A.#default##apply(that:void).#plus(that:void))"
+},{lineNumber(), "A[\\a;\\a]","This0.A.#begin().#add(that:This0.A.a()).#add(that:This0.A.a()).#end()"
+  //in this test setting, we can not generate This0.A for method local nested classes introduced desugaring vars, and other stuff :(
   //thus we use a classB literal however
   //},{lineNumber(), "{method foo() A[with x in \\a ( void )]}","would be super long"
 
-},{lineNumber(), "A*b","Outer0.A.#times(that:b)"
-},{lineNumber(), "A(b)","Outer0.A.#apply(that:b)"
+},{lineNumber(), "A*b","This0.A.#times(that:b)"
+},{lineNumber(), "A(b)","This0.A.#apply(that:b)"
 },{lineNumber(), " ( Void a=void a(b))"," (Void a=void a.#apply(that:b))"
 },{lineNumber(), " ( Void a=void (a)(b) )"," ( Void a=void (a).#apply(that:b))"
-},{lineNumber(), " ( T a=b T b=c catch error  Foo x x T a2=b2 T b2=c2 c )"," ( Outer0.T a=b Outer0.T b=c catch error Outer0.Foo x x     (   Outer0.T a2=b2 Outer0.T b2=c2  c  ) )"
-},{lineNumber(), " (A*b a b c )"," ( Void unused=Outer0.A.#times(that:b) Void unused0=a Void unused1=b c )"
-},{lineNumber(), " (T a=b c=a c )"," (Outer0.T a=b Outer0.T c=a c )"
-},{lineNumber(), " (var Outer0.T a=a+c c=a a:=C(a) fuffa c )",//ok outer 0 can not be desugared since there is not outer nested class.
-   " (Vara:'@private\n{mut (var Outer1.T inner)}"
-  +"  Outer0.T a=a.#plus(that:c)"
-  +"  Outer0.T c=a"
-  +"  mut Outer0.Vara vara=Outer0.Vara.#apply(inner:a)"
-  +"  Void unused=vara.inner(that:Outer0.C.#apply(that:vara.#inner()))"
+},{lineNumber(), " ( T a=b T b=c catch error  Foo x x T a2=b2 T b2=c2 c )"," ( This0.T a=b This0.T b=c catch error This0.Foo x x     (   This0.T a2=b2 This0.T b2=c2  c  ) )"
+},{lineNumber(), " (A*b a b c )"," ( Void unused=This0.A.#times(that:b) Void unused0=a Void unused1=b c )"
+},{lineNumber(), " (T a=b c=a c )"," (This0.T a=b This0.T c=a c )"
+},{lineNumber(), " (var This0.T a=a+c c=a a:=C(a) fuffa c )",//ok outer 0 can not be desugared since there is not outer nested class.
+   " (Vara:'@private\n{mut (var This1.T inner)}"
+  +"  This0.T a=a.#plus(that:c)"
+  +"  This0.T c=a"
+  +"  mut This0.Vara vara=This0.Vara.#apply(inner:a)"
+  +"  Void unused=vara.inner(that:This0.C.#apply(that:vara.#inner()))"
   +"  Void unused0=fuffa"
   +"  c)"
-},{lineNumber(), " (var Outer0.T a=a+c c=a Fuffa(a:=a(a)) c )",//ok outer 0 can not be desugared since there is not outer nested class.
+},{lineNumber(), " (var This0.T a=a+c c=a Fuffa(a:=a(a)) c )",//ok outer 0 can not be desugared since there is not outer nested class.
   " ("
-  +" Vara:'@private\n{mut (var Outer1.T inner)}"
-  +" Outer0.T a=a.#plus(that:c)"
-  +" Outer0.T c=a"
-  +" mut Outer0.Vara vara=Outer0.Vara.#apply(inner:a)"
-  +" Void unused=Outer0.Fuffa.#apply(that:vara.inner(that:vara.#inner().#apply(that:vara.#inner())))"
+  +" Vara:'@private\n{mut (var This1.T inner)}"
+  +" This0.T a=a.#plus(that:c)"
+  +" This0.T c=a"
+  +" mut This0.Vara vara=This0.Vara.#apply(inner:a)"
+  +" Void unused=This0.Fuffa.#apply(that:vara.inner(that:vara.#inner().#apply(that:vara.#inner())))"
   +"c"
   +")"
-},{lineNumber(), " (T a=b (c=a c ))"," (Outer0.T a=b (Outer0.T c=a c ))"
-},{lineNumber(), " (T a=b c=a.m() c )"," (Outer0.T a=b Outer0.T::m() c=a.m() c )"
-},{lineNumber(), " (T a=b (c=a.m() c ))"," (Outer0.T a=b (Outer0.T::m() c=a.m() c ))"
+},{lineNumber(), " (T a=b (c=a c ))"," (This0.T a=b (This0.T c=a c ))"
+},{lineNumber(), " (T a=b c=a.m() c )"," (This0.T a=b This0.T::m() c=a.m() c )"
+},{lineNumber(), " (T a=b (c=a.m() c ))"," (This0.T a=b (This0.T::m() c=a.m() c ))"
 },{lineNumber(), " (T a=void a*b a+b catch error Foo x (x.bar()) a b c )",
-   " (Outer0.T a=void  Void unused=a.#times(that:b)   Void unused0=a.#plus(that:b)  catch error Outer0.Foo x (x.bar()    )  (    Void unused1=a    Void unused2=b    c  ) )"
+   " (This0.T a=void  Void unused=a.#times(that:b)   Void unused0=a.#plus(that:b)  catch error This0.Foo x (x.bar()    )  (    Void unused1=a    Void unused2=b    c  ) )"
 },{lineNumber(), " (T a=void a+=a +a)",
-   " (Outer0.T a=void a.inner(that:a.#inner().#plus(that:a.#plus(that:a))))"
-//TOO UNSTABLE},{"{ reuse L42.is/base }","{Bool:{interface type method Void #checkTrue() exception Void} True:{ _private()<:Outer1.Bool method #checkTrue() ( void )} False:{ _private()<:Outer1.Bool method #checkTrue() (exception  void )}}"
+   " (This0.T a=void a.inner(that:a.#inner().#plus(that:a.#plus(that:a))))"
+//TOO UNSTABLE},{"{ reuse L42.is/base }","{Bool:{interface type method Void #checkTrue() exception Void} True:{ _private()<:This1.Bool method #checkTrue() ( void )} False:{ _private()<:This1.Bool method #checkTrue() (exception  void )}}"
 },{lineNumber(), "if X (Bla) else (Foo)",
-   " (Void unused=Outer0.X.#checkTrue() catch exception Void catched (Outer0.Foo ) (Outer0.Bla) )"
+   " (Void unused=This0.X.#checkTrue() catch exception Void catched (This0.Foo ) (This0.Bla) )"
 },{lineNumber(), "if X (Bla) ",
-   " (Void unused=Outer0.X.#checkTrue() catch exception Void catched  void  (Outer0.Bla) )"
+   " (Void unused=This0.X.#checkTrue() catch exception Void catched  void  (This0.Bla) )"
 },{lineNumber(), "if Foo+Bar (bla) ",
-   " ( Outer0.Foo::#plus(that ) cond=Outer0.Foo.#plus(that:Outer0.Bar) ( Void unused=cond.#checkTrue() catch exception Void catched0  void  (bla)))"
-},{lineNumber(), "{ <(T bar) }'bla\n"," ('bla\n{ type method Outer0 #left(Outer0.T bar)mut method Outer0.T #bar()read method Outer0.T bar()})"
-},{lineNumber(), "{ (T bar) }"," {type method Outer0 #apply(Outer0.T bar) mut method Outer0.T #bar() read method Outer0.T bar() }"
+   " ( This0.Foo::#plus(that ) cond=This0.Foo.#plus(that:This0.Bar) ( Void unused=cond.#checkTrue() catch exception Void catched0  void  (bla)))"
+},{lineNumber(), "{ <(T bar) }'bla\n"," ('bla\n{ type method This0 #left(This0.T bar)mut method This0.T #bar()read method This0.T bar()})"
+},{lineNumber(), "{ (T bar) }"," {type method This0 #apply(This0.T bar) mut method This0.T #bar() read method This0.T bar() }"
 },{lineNumber(), " (T x={ if A (return B) return C } x)",
-   " (Outer0.T x=( Void unused=( Void unused0=( Void unused2=Outer0.A.#checkTrue() catch exception  Void catched void  (return Outer0.B)) Void unused1=return Outer0.C void ) catch return Outer0.T result result error  {'@stringU\n'CurlyBlock-Should be unreachable code\n } )x )"
+   " (This0.T x=( Void unused=( Void unused0=( Void unused2=This0.A.#checkTrue() catch exception  Void catched void  (return This0.B)) Void unused1=return This0.C void ) catch return This0.T result result error  {'@stringU\n'CurlyBlock-Should be unreachable code\n } )x )"
 },{lineNumber(), "{ Vara: {} method a() (var T a=a+c c=a Fuffa(a:=a(a)) c ) }",
   " {Vara0:'@private\n{type method \n"
-+"mut Outer0 #apply(Outer1.T inner) \n"
++"mut This0 #apply(This1.T inner) \n"
 +"mut method \n"
-+"Void inner(Outer1.T that) \n"
++"Void inner(This1.T that) \n"
 +"mut method \n"
-+"Outer1.T #inner() \n"
++"This1.T #inner() \n"
 +"read method \n"
-+"Outer1.T inner() } Vara:{} method a() ( Outer0.T a=a.#plus(that:c) Outer0.T c=a mut Outer0.Vara0 vara=Outer0.Vara0.#apply(inner:a) Void unused=Outer0.Fuffa.#apply(that:vara.inner(that:vara.#inner().#apply(that:vara.#inner()))) c )}"
++"This1.T inner() } Vara:{} method a() ( This0.T a=a.#plus(that:c) This0.T c=a mut This0.Vara0 vara=This0.Vara0.#apply(inner:a) Void unused=This0.Fuffa.#apply(that:vara.inner(that:vara.#inner().#apply(that:vara.#inner()))) c )}"
 
 
-},{lineNumber(),"{a( Outer0.A a, var Outer0.B b)}",
+},{lineNumber(),"{a( This0.A a, var This0.B b)}",
   "{"
- +" type method mut Outer0 a( Outer0.A  a, Outer0.B b) "
- +" mut method Outer0.A #a() "
- +" read method Outer0.A a()"
- +" mut method Void b(Outer0.B that)"
- +" mut method Outer0.B #b()"
- +" read method Outer0.B b()"
+ +" type method mut This0 a( This0.A  a, This0.B b) "
+ +" mut method This0.A #a() "
+ +" read method This0.A a()"
+ +" mut method Void b(This0.B that)"
+ +" mut method This0.B #b()"
+ +" read method This0.B b()"
  +" }"
-},{lineNumber(),"{a( Outer0.A a, var Outer0.B b)'@private\n}",
+},{lineNumber(),"{a( This0.A a, var This0.B b)'@private\n}",
     "{"
-   +" type method'@private\n mut Outer0 a( Outer0.A a, Outer0.B b) "
-   +" mut method'@private\n Outer0.A #a() "
-   +" read method'@private\n Outer0.A a()"
-   +" mut method'@private\n Void b(Outer0.B that)"
-   +" mut method'@private\n Outer0.B #b()"
-   +" read method'@private\n Outer0.B b()"
+   +" type method'@private\n mut This0 a( This0.A a, This0.B b) "
+   +" mut method'@private\n This0.A #a() "
+   +" read method'@private\n This0.A a()"
+   +" mut method'@private\n Void b(This0.B that)"
+   +" mut method'@private\n This0.B #b()"
+   +" read method'@private\n This0.B b()"
    +" }"
 },{lineNumber(),"{ method Any(Any a,Any b) a+ b}",
   "{ method Any #apply(Any a, Any b) a.#plus(that:b)}"

@@ -31,7 +31,7 @@ exception InvalidAction{
 method '@private
 Library composeAction(Library that,Selector fresh){
   var acc=this.action()
-  acc:=Refactor.RenamePath(Path"Outer0" to:this.of())<<acc
+  acc:=Refactor.RenamePath(Path"This" to:this.of())<<acc
   acc:=Refactor.RenameSelector(Selector"#apply(that)" of:this.of() to:fresh)<<acc
   acc:=Refactor.compose(left:that,right:acc)
   'ok since action res has fresh name

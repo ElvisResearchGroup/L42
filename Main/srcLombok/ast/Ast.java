@@ -291,7 +291,7 @@ public interface Ast {
 			String start = this.rowData.get(0);
 			boolean isCore = isOutern(start);
 			if (isCore) {
-				start = start.substring("Outer".length());
+				start = start.substring("This".length());
 				n = Integer.parseInt(start);
 			} else {
 				n = -1;
@@ -321,10 +321,10 @@ public interface Ast {
 		}
 
 		private static boolean isOutern(String start) {
-			if (!start.startsWith("Outer")) {
+			if (!start.startsWith("This")) {
 				return false;
 			}
-			start = start.substring("Outer".length());
+			start = start.substring("This".length());
 			if (start.isEmpty()) {
 				return false;
 			}
@@ -362,7 +362,7 @@ public interface Ast {
 		public Path setNewOuter(int n) {
 			assert isCore();
 			List<String> s = new ArrayList<String>(this.rowData);
-			s.set(0, "Outer" + n);
+			s.set(0, "This" + n);
 			return new Path(n, s);
 		}
 
@@ -371,14 +371,14 @@ public interface Ast {
 			return this.n;
 		}
 
-		private static final Path _Outer0 = new Path(0, Arrays.asList("Outer0"));
+		private static final Path _Outer0 = new Path(0, Arrays.asList("This0"));
 		private static final Path _Void = new Path(-1, Arrays.asList("Void"));
 		private static final Path _Any = new Path(-1, Arrays.asList("Any"));
 		private static final Path _Library = new Path(-1, Arrays.asList("Library"));
 
 		public static Path outer(int n, List<String> cs) {
 			List<String> arr = new ArrayList<>();
-			arr.add("Outer" + n);
+			arr.add("This" + n);
 			arr.addAll(cs);
 			return new Path(n, arr);
 		}
@@ -388,7 +388,7 @@ public interface Ast {
 			if (n == 0) {
 				return _Outer0;
 			}
-			return new Path(n, Arrays.asList("Outer" + n));
+			return new Path(n, Arrays.asList("This" + n));
 		}
 
 		public static Path Void() {
@@ -404,7 +404,7 @@ public interface Ast {
 		}
 
 		public static List<String> parseValidCs(String cs) {
-			if (cs.equals("Outer0")) {
+			if (cs.equals("This0") || cs.equals("This")) {
 				return Collections.emptyList();
 			}
 			List<String> rowData = Collections.unmodifiableList(Arrays.asList(cs.split("\\.")));
@@ -418,16 +418,16 @@ public interface Ast {
 
 		public static boolean isValidOuter(String name) {// thus invalid as
 															// pathName
-			if (name.equals("Outer")) {
+			if (name.equals("This")) {
 				return true;
 			}
-			if (name.equals("Outer0")) {
+			if (name.equals("This0")) {
 				return true;
 			}
-			if (!name.startsWith("Outer")) {
+			if (!name.startsWith("This")) {
 				return false;
 			}
-			int firstN = "Outer".length();
+			int firstN = "This".length();
 			char c = name.charAt(firstN);
 			// first is 1--9 and all rest is 0-9
 			if ("123456789".indexOf(c) != -1) {

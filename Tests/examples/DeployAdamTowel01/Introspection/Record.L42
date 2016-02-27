@@ -1,11 +1,11 @@
 {(MirrorPr that)
   type method
-  Outer0(type Any clazz)
-    Outer0(MirrorPr.Class(lib:clazz))
+  This(type Any clazz)
+    This(MirrorPr.Class(lib:clazz))
   type method
-  Outer0 (Library lib)
-    Outer0(MirrorPr.Lib(lib:lib))
-    'Outer0(Introspection(lib:lib).mirror())
+  This (Library lib)
+    This(MirrorPr.Lib(lib:lib))
+    'This(Introspection(lib:lib).mirror())
   method Void dbg()
     with x=this.that() (
       on MirrorPr.Lib Debug(lib:x.lib())
@@ -23,8 +23,8 @@
   Doc docOf(Path path){
     with mirror=this.that() (
       on MirrorPr.Lib return Doc(
-        SafeOperators.renameClass(mirror.lib(), src:path, dest:Path"Outer0")
-        'This can not be done for circular reference Refactor.RenamePath(path to:Path"Outer0")<<mirror.lib()
+        SafeOperators.renameClass(mirror.lib(), src:path, dest:Path"This")
+        'This can not be done for circular reference Refactor.RenamePath(path to:Path"This")<<mirror.lib()
         )
       )
     error Assert.CodeNotReachable"Record2"

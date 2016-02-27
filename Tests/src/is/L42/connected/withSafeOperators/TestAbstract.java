@@ -36,9 +36,9 @@ public static class TestAbstractMeth {//add more test for error cases
     return Arrays.asList(new Object[][] {
     {"{B:{ method Void m() void}}","B","m()","{B:{ method Void m()}}",false
   },{"{B:{ method Void m(Any x) void}}","B","m(x)","{B:{ method Void m(Any x)}}",false
-  },{"{ method Void m(Any x) void}","Outer0","m(x)","{ method Void m(Any x)}",false
+  },{"{ method Void m(Any x) void}","This0","m(x)","{ method Void m(Any x)}",false
   },{"{C:{B:{ method Void m(Any x) void}}}","C.B","m(x)","{C:{B:{ method Void m(Any x)}}}",false
-  },{"{ method Void m()}","Outer0","m()","{ method Void m()}",false
+  },{"{ method Void m()}","This0","m()","{ method Void m()}",false
   },{"{B:{ method Void m(Any x) void}}", "C", "m(x)",
     "{Kind:{'@stringU\n'MemberUnavailable\n}"+
     "Path:{'@.C\n}"+
@@ -100,12 +100,12 @@ public static class TestMoveMeth {//add more test for error cases
   },{lineNumber(),//
     "{B:{ method Void m(Any x) }}","B","m(x)","k(x)","{B:{ method Void m(Any x) method Void k(Any x)}}",false
   },{lineNumber(),//
-    "{ method Void m(Any x) void}","Outer0","m(x)","k(x)","{ method Void m(Any x) method Void k(Any x) void}",false
+    "{ method Void m(Any x) void}","This0","m(x)","k(x)","{ method Void m(Any x) method Void k(Any x) void}",false
   },{lineNumber(),//
     "{C:{B:{ method Void m(Any x) }}}","C.B","m(x)","k(x)","{C:{B:{ method Void m(Any x) method Void k(Any x)}}}",false
   },{
     lineNumber(),//
-    "{ method Void m()}","Outer0","m()","k(x)",
+    "{ method Void m()}","This0","m()","k(x)",
     "    {Kind:{'@stringU\n"+
         "      'MethodClash\n"+
         "    }Path:{'@.\n"+
@@ -170,11 +170,11 @@ public static class TestAbstractClass {//add more test for error cases
   },{lineNumber(),//
     "{B:{ method Void m(Any x) void}}","B","{B:{ method Void m(Any x)}}",false
   },{lineNumber(),//
-    "{ method Void m(Any x) void}","Outer0","{ method Void m(Any x)}",false
+    "{ method Void m(Any x) void}","This0","{ method Void m(Any x)}",false
   },{lineNumber(),//
     "{B:{ method '@private\n Void m() void method Void n() void}}","B","{B:{ method Void n()}}",false
   },{lineNumber(),//
-    "{ method '@private\n Void m(Any x) void}","Outer0","{}",false
+    "{ method '@private\n Void m(Any x) void}","This0","{}",false
   },{lineNumber(),//
     "{C:{B:{ method Void m(Any x) void}}}","C.B","{C:{B:{ method Void m(Any x)}}}",false
   },{lineNumber(),//
@@ -256,14 +256,14 @@ public static class TestAbstractClass {//add more test for error cases
 	  "{Kind:{'@stringU\n'PrivacyCoupuled\n}"+
 	  "CoupuledPath:{'@stringU\n'[]\n}"+
 	  "CoupuledMethods:{'@stringU\n'"
-	  //+ "[Outer2.C.B.foo()]\n}}",the user or the used??
-	  +"[Outer0.C.D::bar()]\n}}",
+	  //+ "[This2.C.B.foo()]\n}}",the user or the used??
+	  +"[This0.C.D::bar()]\n}}",
 	  true
   },{lineNumber(),//
     "{C:{B:'@private\n{} D:{ method B bar() void }}}",
 	  "C",
 	  "{Kind:{'@stringU\n'PrivacyCoupuled\n}"+
-	   "CoupuledPath:{'@stringU\n'[Outer0.C.B]\n}"+
+	   "CoupuledPath:{'@stringU\n'[This0.C.B]\n}"+
 	   "CoupuledMethods:{'@stringU\n'[]\n}}",
 	   true
 }});}

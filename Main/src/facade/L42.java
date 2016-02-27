@@ -47,7 +47,7 @@ public class L42 {
     if(newStage!=ExecutionStage.None){
       Timer.activate(newStage.toString());
       }
-    _stage=newStage;    
+    _stage=newStage;
   }
   public static ExecutionStage getStage(){return _stage;}
   public static int compilationRounds=0;
@@ -96,7 +96,7 @@ public class L42 {
       String code=null;
       if(Files.isDirectory(path)){
         L42.setRootPath(path);
-        code=L42.pathToString(path.resolve("Outer0.L42"));
+        code=L42.pathToString(path.resolve("This.L42"));
         }
       else {
         L42.setRootPath(path.getParent());

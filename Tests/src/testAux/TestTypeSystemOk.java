@@ -40,38 +40,38 @@ public class TestTypeSystemOk {
     @Parameters(name = "{index}: line {0}")
     public static List<Object[]> createData() {
       return Arrays.asList(new Object[][] {
- {lineNumber(),"Outer0.C","{C:{method Void()}}","{C:{method Void()}##plus^##}##plus^##"
-},{lineNumber(),"Outer0.C","{C:{method Void()} D:{}}","{C:{method Void()}##plus^## D:{}##star ^##}##plus^##"
-},{lineNumber(),"Outer0.C",
-  "{C:{type method Void foo() (Outer0.foo())} }",
-  "{C:{type method Void foo() (Outer0.foo())}##star^## }##star^##"
-},{lineNumber(),"Outer0.C",
+ {lineNumber(),"This0.C","{C:{method Void()}}","{C:{method Void()}##plus^##}##plus^##"
+},{lineNumber(),"This0.C","{C:{method Void()} D:{}}","{C:{method Void()}##plus^## D:{}##star ^##}##plus^##"
+},{lineNumber(),"This0.C",
+  "{C:{type method Void foo() (This0.foo())} }",
+  "{C:{type method Void foo() (This0.foo())}##star^## }##star^##"
+},{lineNumber(),"This0.C",
   "{C:{type method Void foo() (D.foo())} D:{method Void() type method Void foo() (void)}}",
   "{C:{type method Void foo() (D.foo())}##plus^## D:{method Void()type method Void foo() (void)}##plus ^##}##plus^##"
-},{lineNumber(),"Outer0.C",
-  "{C:{E:{type method Void foo() (Outer1.foo())} type method Void foo() (D.foo())} D:{type method Void foo() (C.E.foo())}}",
-  "{C:{E:{type method Void foo() (Outer1.foo())}##star^## type method Void foo() (D.foo())}##star^## D:{type method Void foo() (C.E.foo())}##star^##}##star^##"
-},{lineNumber(),"Outer0.C",
-  "{C:{E:{type method Void foo() (Outer1.foo())} type method Void foo() (D.foo())} D:{method Void() type method Void foo() (C.E.foo())}}",
-  "{C:{E:{type method Void foo() (Outer1.foo())}##plus^## type method Void foo() (D.foo())}##plus^## D:{method Void()  type method Void foo() (C.E.foo())}##plus^##}##plus^##"
+},{lineNumber(),"This0.C",
+  "{C:{E:{type method Void foo() (This1.foo())} type method Void foo() (D.foo())} D:{type method Void foo() (C.E.foo())}}",
+  "{C:{E:{type method Void foo() (This1.foo())}##star^## type method Void foo() (D.foo())}##star^## D:{type method Void foo() (C.E.foo())}##star^##}##star^##"
+},{lineNumber(),"This0.C",
+  "{C:{E:{type method Void foo() (This1.foo())} type method Void foo() (D.foo())} D:{method Void() type method Void foo() (C.E.foo())}}",
+  "{C:{E:{type method Void foo() (This1.foo())}##plus^## type method Void foo() (D.foo())}##plus^## D:{method Void()  type method Void foo() (C.E.foo())}##plus^##}##plus^##"
 
-},{lineNumber(),"Outer0.C",
-  "{K:{E:{type method Void foo() (Outer2.C.foo())}} C:{type method Void foo() (D.foo())} D:{type method Void foo() (K.E.foo())}}",
-  "{K:{E:{type method Void foo() (Outer2.C.foo())}##star^##}##star ^## C:{type method Void foo() (D.foo())}##star^## D:{type method Void foo() (K.E.foo())}##star^##}##star^##"
-},{lineNumber(),"Outer0.C",
+},{lineNumber(),"This0.C",
+  "{K:{E:{type method Void foo() (This2.C.foo())}} C:{type method Void foo() (D.foo())} D:{type method Void foo() (K.E.foo())}}",
+  "{K:{E:{type method Void foo() (This2.C.foo())}##star^##}##star ^## C:{type method Void foo() (D.foo())}##star^## D:{type method Void foo() (K.E.foo())}##star^##}##star^##"
+},{lineNumber(),"This0.C",
   "{K:{method Void() E:{type method C foo() (C.foo())}} C:{type method C foo() (D.foo())} D:{type method C foo() (K.E.foo())}}",
   "{K:{method Void() E:{type method C foo() (C.foo())}##star^##}##plus ^## C:{type method C foo() (D.foo())}##star^## D:{type method C foo() (K.E.foo())}##star^##}##plus^##"
   //norm//NO, Norm is executed only in the extracted method
-//},{"Outer0.C",
+//},{"This0.C",
 //  "{K:{E:{type method C.foo() foo() (C.foo())}} C:{type method C foo() (D.foo())} D:{type method C foo() (K.E.foo())}}",
 //  "{K:{E:{type method C foo() (C.foo())}##plus^##}##plus ^## C:{type method C foo() (D.foo())}##plus^## D:{type method C foo() (K.E.foo())}##plus^##}##plus^##"
-//},{"Outer0.C",
+//},{"This0.C",
 //  "{K:{E:{type method C.foo().foo() foo() (C.foo())}} C:{type method C foo() (D.foo())} D:{type method C foo() (K.E.foo())}}",
 //  "{K:{E:{type method C foo() (C.foo())}##plus^##}##plus^## C:{type method C foo() (D.foo())}##plus^## D:{type method C foo() (K.E.foo())}##plus^##}##plus^##"
-},{lineNumber(),"Outer0.C",
-  "{C:{ method Void foo() (Outer0 x= this void)} }",
-  "{C:{ method Void foo() (Outer0 x= this void)}##star^## }##star^##"
-},{lineNumber(),"Outer0.C",
+},{lineNumber(),"This0.C",
+  "{C:{ method Void foo() (This0 x= this void)} }",
+  "{C:{ method Void foo() (This0 x= this void)}##star^## }##star^##"
+},{lineNumber(),"This0.C",
   "{C:{ method Void foo() (C x= this void)} }",
   "{C:{ method Void foo() (C x= this void)}##star^## }##star^##"
 
@@ -94,14 +94,14 @@ public static class TesFail {
   @Parameterized.Parameters
   public static List<Object[]> createData() {
     return Arrays.asList(new Object[][] {
-    {"Outer0.C",
+    {"This0.C",
     "{C:{type method Void foo() (D.foo())} D:{type method Void bar() (void)}}"
-  },{"Outer0.C",
-   "{C:{E:{type method Void foo() (Outer1.foo())} type method Library foo() (D.foo())} D:{type method Void foo() (C.E.foo())}}"
-  },{"Outer0.C",
-    "{C:{E:{type method Void foo() (Outer1.foo())} type method Library foo() (D.foo())} D:{type method Void foo() (C.E.foo())}}"
- },{"Outer0.C",
-  "{K:{E:{type method Any  foo() (Outer1.foo())}} C:{type method Void foo() (D.foo())} D:{type method Library foo() (K.E.foo())}}"
+  },{"This0.C",
+   "{C:{E:{type method Void foo() (This1.foo())} type method Library foo() (D.foo())} D:{type method Void foo() (C.E.foo())}}"
+  },{"This0.C",
+    "{C:{E:{type method Void foo() (This1.foo())} type method Library foo() (D.foo())} D:{type method Void foo() (C.E.foo())}}"
+ },{"This0.C",
+  "{K:{E:{type method Any  foo() (This1.foo())}} C:{type method Void foo() (D.foo())} D:{type method Library foo() (K.E.foo())}}"
 
        }});}
 

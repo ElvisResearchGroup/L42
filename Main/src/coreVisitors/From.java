@@ -13,7 +13,7 @@ import ast.ExpCore;
 public class From extends CloneVisitor {
   private Path path;
   private From(Path path){  this.path=path;  }
-  
+
   @Override public ExpCore visit(Path p){
     if(p.isPrimitive()){return p;}
     return fromP(p,path);
@@ -45,12 +45,12 @@ public class From extends CloneVisitor {
     int k=cs1.size();
     List<String> result=new ArrayList<String>();
     if(n<=k){
-      result.add("Outer"+m);
+      result.add("This"+m);
       result.addAll(cs1.subList(0,cs1.size()-n));
       result.addAll(cs0);
     }
     else{
-      result.add("Outer"+(m+n-k));
+      result.add("This"+(m+n-k));
       result.addAll(cs0);
     }
   return new Path(result);

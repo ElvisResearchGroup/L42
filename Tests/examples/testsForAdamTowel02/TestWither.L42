@@ -25,7 +25,7 @@ exception ConstructorUnavailable, MetaGuard{
       newSel=Selector.from(name:S"with",names:newSelNames)
       defP=Selector.from(name:n,names:Strings[])
       ss:=ss.#add(newSel)
-      acc:=DefaultParameter(sel, of:Path"Outer0",name:n, by:defP)<<acc
+      acc:=DefaultParameter(sel, of:Path"This",name:n, by:defP)<<acc
       )
     )
   return acc
@@ -34,11 +34,11 @@ exception ConstructorUnavailable, MetaGuard{
 type method 
 Library addWithAllArgs(Library that,Introspection.Method k)
 exception ConstructorUnavailable, MetaGuard{
-  p=Path"Outer0"  
+  p=Path"This"  
   freshK=Selector.fresh(k.selector())
   freshW=Selector.fresh(Selector"with(that)")
   withK=Selector.from(name:S"with",names:k.selector().names())
-  action={ read method capsule Outer0 with(capsule Outer0 that) that} 'discussion on k modifiers
+  action={ read method capsule This with(capsule This that) that} 'discussion on k modifiers
   var acc=that
   acc:=Refactor.compose(left:acc
     right:Refactor.RenameSelector(

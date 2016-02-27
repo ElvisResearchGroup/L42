@@ -1,16 +1,16 @@
 { reuse L42.is/nanoBase1
 
 Deploy:{ (S node, S fileName)
-  type method type Outer0 #begin() Outer0
-  type method Outer0 #add(S that, S fileName) Outer0(node:that, fileName:fileName)
-  method Outer0 #end() this
+  type method type This #begin() This
+  type method This #add(S that, S fileName) This(node:that, fileName:fileName)
+  method This #end() this
   method Library <(Library that){
     adapter=IntrospectionPlugin.adapter(nameDest:this.node(),nameSrc:S"Template")
     code=IntrospectionPlugin.adaptLib(l1:that,l2:adapter)
     'equivalent to code=Adapt[Name"Template" into Name.#stringParser(this.node().binaryRep())]<that
-    Outer0(fileName:this.fileName(),code:code,node:this.node())    
+    This(fileName:this.fileName(),code:code,node:this.node())    
     'code=that
-    'Outer0(fileName:this.fileName(),code:code,node:S"Outer0")    
+    'This(fileName:this.fileName(),code:code,node:S"This")    
     return ExitCode.normal()
     }
     
@@ -28,7 +28,7 @@ Deploy:{ (S node, S fileName)
 
   type method
   Void (S fileName, Library code, S node)
-    Debug(fileName:fileName, content:Outer0._get(code,node:node) )
+    Debug(fileName:fileName, content:This._get(code,node:node) )
   }
   
 }

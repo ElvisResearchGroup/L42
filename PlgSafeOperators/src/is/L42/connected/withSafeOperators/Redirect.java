@@ -84,7 +84,7 @@ public class Redirect {
       }
     });
   }
-  
+
   public static List<PathPath> redirectOk(Program p,ClassB cbTop,Path internal,Path external){
     List<PathPath> verified=new ArrayList<>();
     verifiedForErrorMsg=verified;
@@ -115,7 +115,7 @@ public class Redirect {
   }
   private static void checkExceptionOk(List<SPathSPath> exceptions, List<PathPath> verified) {
     for(SPathSPath exc:exceptions){
-     List<Path> src = exc.getMwt1().getMt().getExceptions(); 
+     List<Path> src = exc.getMwt1().getMt().getExceptions();
      src=Map.of(pi->traspose(verified,pi),src);
      if(!src.containsAll(exc.getMwt2().getMt().getExceptions())){
        throw Errors42.errorMethodClash(exc.getSrc().getCBar(), exc.getMwt1(),exc.getMwt2(),true,
@@ -189,11 +189,11 @@ public class Redirect {
     }
     ClassKind kindDest = ExtractInfo.classKind(null,null,currentExtCb,null,null,null);
     if(isPrivateState || !isNoImplementation){//unexpectedMembers stay empty if there is implementation
-      assert kindSrc!=ClassKind.FreeTemplate 
+      assert kindSrc!=ClassKind.FreeTemplate
           || kindSrc!=ClassKind.Template
           || kindSrc!=ClassKind.Interface:
             kindSrc;
-      throw Errors42.errorSourceUnfit(current.getPath().getCBar(),path,  
+      throw Errors42.errorSourceUnfit(current.getPath().getCBar(),path,
         kindSrc,kindDest,Collections.emptyList(), headerOk, Collections.emptyList());
     }
     redirectOkImpl(kindSrc,kindDest,ambiguities,current,currentIntCb,currentExtCb);
@@ -211,7 +211,7 @@ public class Redirect {
     if(kindDest==null){kindDest = ExtractInfo.classKind(null,null,currentExtCb,null,null,null);}
     throw Errors42.errorSourceUnfit(cs,path,
         kindSrc,kindDest,unexpectedMembers, headerOk, Collections.emptyList());
-    
+
   }
   private static void redirectOkMember(List<PathSPath> ambiguities,List<SPathSPath>exceptions, Member mi, Member miGet, PathSPath current) {
     if(mi instanceof NestedClass){
@@ -221,7 +221,7 @@ public class Redirect {
       Path dest=current.getPathsSet().iterator().next().pushC(((NestedClass)mi).getName());
       plusEqual(ambiguities,src,Arrays.asList(dest));
       return;
-    }    
+    }
     assert mi.getClass().equals( miGet.getClass());
     assert mi instanceof MethodWithType:mi;
     MethodWithType mwtSrc=(MethodWithType)mi;
@@ -373,11 +373,11 @@ public class Redirect {
     if(!isNoImplementation){//unexpectedMembers stay empty if there is implementation
       if(kindSrc==null){kindSrc = ExtractInfo.classKind(l,cs,l0NoFrom, null, isPrivateState, isNoImplementation);}
       ClassKind kindDest = ExtractInfo.classKind(null,null,l0DestNoFrom,null,null,null);
-      assert kindSrc!=ClassKind.FreeTemplate 
+      assert kindSrc!=ClassKind.FreeTemplate
           || kindSrc!=ClassKind.Template
           || kindSrc!=ClassKind.Interface:
             kindSrc;
-      throw Errors42.errorSourceUnfit(currentPP.getPath1().getCBar(),path,  
+      throw Errors42.errorSourceUnfit(currentPP.getPath1().getCBar(),path,
         kindSrc,kindDest,Collections.emptyList(), headerOk, Collections.emptyList(), isPrivate);
     }
     Set<Path>unexpectedI=redirectOkImpl(setVisited,currentPP,p,l,
@@ -411,7 +411,7 @@ public class Redirect {
     throw Errors42.errorSourceUnfit(currentPP.getPath1().getCBar(),path,
         kindSrc,kindDest,unexpectedMembers, headerOk, unexpectedInterfaces, isPrivate);
   }
-  
+
   private static Set<Path> redirectOkImpl(List<PathPath> s, PathPath currentPP, Program p, ClassB l, List<Path> paths, List<Path> pathsPrime) {
     //(paths ok)//and I can not use it for exceptions since opposite subset relation
     //S;p|-L[Paths=~Paths']:S'
@@ -492,7 +492,7 @@ public class Redirect {
       return true;
     }
     //otherwise
-    //S;p|-L[Outer0.Cs =~ Path ]: S'
+    //S;p|-L[This0.Cs =~ Path ]: S'
     //if S;p|-L[redirect Cs->Path]:S'
     redirectOk(s,p,l,cs,path);
     return true;

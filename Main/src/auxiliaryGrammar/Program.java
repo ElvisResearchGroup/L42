@@ -88,7 +88,7 @@ public class Program {
     assert cb.getMs().isEmpty() ||
       cb.getMs().get(0) !=this.topCb().getMs().get(0);
     //this can actually happen assert !cb.getMs().get(0).equals(this.topCb().getMs().get(0));
-    return true;    
+    return true;
   }
   public Program addAtTop(ClassB cb){
     assert canBeAdded(cb);
@@ -202,7 +202,7 @@ public class Program {
       }
     ClassB classB=extractCb(path);
     if(classB==null){classB=extractCb(path);}
-//    path=Path.parse("Outer0.C.C");
+//    path=Path.parse("This0.C.C");
     //classB=(ClassB)From.from(classB,path);
     Optional<Member> result = getIfInDom(classB.getMs(),ms);
     if(!result.isPresent()){
@@ -302,10 +302,10 @@ public class Program {
     catch(ErrorMessage.ProgramExtractOnWalkBy found){return true;}
     return false;
   }
-  
-  
-  
-  
+
+
+
+
   /*
   public boolean checkFullyNormalized(){
     if(this.isEmpty()){return true;}
@@ -313,7 +313,7 @@ public class Program {
     return this.pop().checkFullyNormalized();
   }
 
-  
+
   private static boolean checkFullyNormalized(ClassB cb) {
     for(Member m:cb.getMs()){
       m.match(
@@ -396,7 +396,7 @@ public class Program {
   public static List<Path> getAllSupertypes(Program p,ClassB cb){
     List<Path> result=new ArrayList<>();
     for(Path pi:cb.getSupertypes()){
-      accumulateAllSupertypes(cb,result, p, pi);     
+      accumulateAllSupertypes(cb,result, p, pi);
       }
     return result;
   }
@@ -425,7 +425,7 @@ public class Program {
     return Optional.empty();
   }
   public static MethodWithType extractMwt(Member m,ClassB cb){
-    return m.match(nc->{throw Assertions.codeNotReachable();}, 
+    return m.match(nc->{throw Assertions.codeNotReachable();},
         mi->{
           assert cb.getStage().isInheritedComputed();
           for(PathMwt mt:cb.getStage().getInherited()){

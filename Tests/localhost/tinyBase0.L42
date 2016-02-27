@@ -18,7 +18,7 @@ Name:{
       error {nameToAdapter()}
     return Name.new(
       externalPath: Bool.false()
-      internalPath: Outer0.computeIsInternalPath(adapter:adapter)
+      internalPath: This.computeIsInternalPath(adapter:adapter)
       repr:S.#stringParser(that)
       adapter: adapter
       )
@@ -35,14 +35,14 @@ Name:{
       adapter:adapter
       )
     }
-  type method Outer0 (Library adapter){
-    internalName=Outer0.getInternalAdapterStringOrEmpty(adapter:adapter)
+  type method This (Library adapter){
+    internalName=This.getInternalAdapterStringOrEmpty(adapter:adapter)
       isExternal=internalName.size()==0N
       S repr={
           if isExternal (return S"ExternalPathName about "++Introspection(adapter).get())
           return internalName
           }
-      return Outer0.new(
+      return This.new(
         externalPath:isExternal
         internalPath:!isExternal 'can not be a methodName
         repr:repr 'try to put repr definition here
@@ -64,12 +64,12 @@ Name:{
     
   method
   Bool ==(Any that){
-    with that (on Outer0 return this.innerEquals(that))
+    with that (on This return this.innerEquals(that))
     return Bool.false()
     }
     
   method
-  Bool innerEquals(Outer0 that)
+  Bool innerEquals(This that)
     Introspection(this.adapter()).get()==Introspection(that.adapter()).get()
   }
   
@@ -77,7 +77,7 @@ Introspection:{
   (Library that, S node)
   
   type method
-  Outer0(Library that) Outer0(that,node:S"Outer0")
+  This(Library that) This(that,node:S"This")
   
   method
   S get() 

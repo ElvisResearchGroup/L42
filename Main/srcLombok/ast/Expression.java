@@ -235,7 +235,7 @@ public interface Expression extends Ast {
     }
   }
 
-  @Value public static class ClassReuse implements Expression, Ast.Atom {
+  @Value @Wither public static class ClassReuse implements Expression, Ast.Atom {
     ClassB inner;
     String url;
     ExpCore.ClassB urlFetched;

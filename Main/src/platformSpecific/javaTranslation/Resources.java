@@ -77,7 +77,7 @@ public class Resources {
   public static void clearRes() {
     usedRes.clear();
   }
-  
+
   @SuppressWarnings("serial")
   private static class L42Throwable extends RuntimeException{
     public final Object unbox; public L42Throwable(Object u){unbox=u;}
@@ -187,7 +187,7 @@ public class Resources {
    * @param xs parameters
    * @return a safe result, or a safe error, or an non-action exception
    */
-  
+
   public static <Pt extends PluginType,T> T plgExecuteSafe(Program p,Pt plg,PlgClosure<Pt,T> cls,Object ... xs){
     T res=null;
     //for(Object o:xs){assert Functions.verifyMinimalCache(o);}
@@ -220,7 +220,7 @@ public class Resources {
     catch(RuntimeException msg){
       //throw Resources.notAct;//will be
       throw Assertions.codeNotReachable("try to make this happen, is it possible? it should mean bug in plugin code\n",msg);
-      
+
       }
     catch(java.lang.Error msg){
       //throw Resources.notAct;//will be
@@ -315,7 +315,7 @@ public class Resources {
     return nameOf(p.outerNumber(),p.getCBar());
   }
   public static String nameOf(int level, List<String> cs) {
-    String res="Outer"+level;
+    String res="This"+level;
     for(String s:cs){res+="."+s;}
     return nameOf(res);
   }
@@ -358,11 +358,13 @@ public class Resources {
     return "."+methodName.substring(1)+end;
   }
   private static String extractClassName(String className) {
-    assert className.startsWith("generated.Program42$Outer0£_");
-    className=className.substring(28);
-    className=className.replace("£_", ".");
-    className=name42Of(className);
-    return className;
+    if(className.startsWith("generated.Program42$This0£_")){
+      className=className.substring(27);
+      className=className.replace("£_", ".");
+      className=name42Of(className);
+      return className;
+    }
+    return className;//may be is plugin code?
   }
   private static String extractMessage(L42Throwable err) {
     try{
@@ -374,11 +376,11 @@ public class Resources {
       if( lib instanceof String){return (String)lib;}
       ExpCore.ClassB cb=(ExpCore.ClassB)Revertable.doRevert(lib);
       return EncodingHelper.ensureExtractStringU(cb);//safer that extracting on lib, if the method return numbers or other stuff
-      } catch (NoSuchMethodException | SecurityException 
+      } catch (NoSuchMethodException | SecurityException
          | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
         return "";
       }
   }
-    
-  
+
+
 }

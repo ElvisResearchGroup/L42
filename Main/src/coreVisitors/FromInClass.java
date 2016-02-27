@@ -36,9 +36,9 @@ public class FromInClass extends CloneVisitor {
     List<String> inner=new ArrayList<String>(p.getRowData());
     int newOuters=p.outerNumber()+k;
     assert newOuters>=0;
-    inner.set(0,"Outer"+newOuters);
+    inner.set(0,"This"+newOuters);
     return new Path(inner);
-  }  
+  }
   public static ExpCore of(ClassB cb, Path source){
     return cb.accept(new FromInClass(0,source));
   }

@@ -19,7 +19,7 @@ Resource:{type method Library (){
       method
       Void open(S title,S basePath, S body, N x, N y)
         this.open(
-          html:Outer0.htmlHeader()++S"<TITLE>"++title
+          html:This.htmlHeader()++S"<TITLE>"++title
           ++S"</TITLE>"++S"<base href='"++basePath++S"' /></HTML><BODY>"++body++S"</BODY></HTML>"
           x:x
           y:y)
@@ -48,8 +48,8 @@ Resource:{type method Library (){
           
       method
       Void set(S that,S id) {
-        cmd=S"$('#"++Outer0.jsEscape(id)
-        ++S"').replaceWith('"++Outer0.jsEscape(that)++S"');"
+        cmd=S"$('#"++This.jsEscape(id)
+        ++S"').replaceWith('"++This.jsEscape(that)++S"');"
         x=this.executeJs(cmd)
         Debug(cmd)
         if x!=S"" (Debug(x))

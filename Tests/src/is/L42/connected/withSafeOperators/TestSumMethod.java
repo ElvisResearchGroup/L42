@@ -40,59 +40,59 @@ import auxiliaryGrammar.Program;
     public static List<Object[]> createData() {
       return Arrays.asList(new Object[][] {
       {    lineNumber(),"{method Void m1() method Void m2(Void that)}",
-                                   "Outer0","m1()", "m2(that)","m1m2()","that",
+                                   "This0","m1()", "m2(that)","m1m2()","that",
                                    "{method Void m1() method Void m2(Void that)"
                                    + " method Void m1m2() this.m2(that:this.m1())}",false
      },{    lineNumber(),"{method Void m1() method Void (Void that)}",
-                                     "Outer0","m1()", "#apply(that)","m1()","that",
+                                     "This0","m1()", "#apply(that)","m1()","that",
                                      "{method Void m1() this.#apply(that:this.m1()) "
                                      + "method Void #apply(Void that) }",false
      },{    lineNumber(),"{method Void () method Void m2(Void that)}",
-       "Outer0","#apply()", "m2(that)","m2()","that",
+       "This0","#apply()", "m2(that)","m2()","that",
        "{method Void #apply() method Void m2(Void that) "
        + "method Void m2() this.m2(that:this.#apply())}",false
   },{    lineNumber(),"{method Void +() method Void m2(Void that)}",
-    "Outer0","#plus()", "m2(that)","m2()","that",
+    "This0","#plus()", "m2(that)","m2()","that",
     "{method Void +() method Void m2(Void that) "
     + "method Void m2() this.m2(that:this.#plus())}",false
   },{    lineNumber(),"{A:{} B:{} C:{} method Void m1(A a, B b) method Void m2(Void that, C c)}",
-    "Outer0","m1(a,b)", "m2(that,c)","m1m2(a,b,c)","that",
+    "This0","m1(a,b)", "m2(that,c)","m1m2(a,b,c)","that",
     "{A:{} B:{} C:{}"
-    + "method Void m1(Outer0.A a, Outer0.B b) "
-    + "method Void m2(Void that, Outer0.C c) "
-    + "method Void m1m2(Outer0.A a, Outer0.B b, Outer0.C c)"
+    + "method Void m1(This0.A a, This0.B b) "
+    + "method Void m2(Void that, This0.C c) "
+    + "method Void m1m2(This0.A a, This0.B b, This0.C c)"
     + "   this.m2(that:this.m1(a:a, b:b), c:c)}",false
   },{    lineNumber(),"{A:{} B:{} C:{} type method Void m1(A a) method Void m2(Void that, B b,C c)}",
-    "Outer0","m1(a)", "m2(that,b,c)","m1m2(a,b,c)","that",
+    "This0","m1(a)", "m2(that,b,c)","m1m2(a,b,c)","that",
     "{A:{} B:{} C:{}"
-    + "type method Void m1(Outer0.A a) "
-    + "method Void m2(Void that, Outer0.B b, Outer0.C c) "
-    + "method Void m1m2(Outer0.A a, Outer0.B b, Outer0.C c)"
-    + "   this.m2(that:Outer0.m1(a:a), b:b, c:c)}",false
+    + "type method Void m1(This0.A a) "
+    + "method Void m2(Void that, This0.B b, This0.C c) "
+    + "method Void m1m2(This0.A a, This0.B b, This0.C c)"
+    + "   this.m2(that:This0.m1(a:a), b:b, c:c)}",false
   },{    lineNumber(),"{method Void noArg() method Void m(Void a,Void b)}",
-    "Outer0","noArg()", "m(a,b)","m(c)","a",
+    "This0","noArg()", "m(a,b)","m(c)","a",
     "{method Void noArg() method Void m(Void a,Void b) "
     + "method Void m(Void c) this.m(a:this.noArg(),b:c)}",false
   },{    lineNumber(),"{method Void noArg() method Void m(Void a,Void b)}",
-    "Outer0","noArg()", "m(a,b)","m(c)","b",
+    "This0","noArg()", "m(a,b)","m(c)","b",
     "{method Void noArg() method Void m(Void a,Void b) "
     + "method Void m(Void c) this.m(a:c,b:this.noArg())}",false
     
   },{    lineNumber(),"{A:{} B:{} C:{} type method Void m1(A a) method Void m2(B b,Void that, C c)}",
-    "Outer0","m1(a)", "m2(b,that,c)","m1m2(a,b,c)","that",
+    "This0","m1(a)", "m2(b,that,c)","m1m2(a,b,c)","that",
     "{A:{} B:{} C:{}"
-    + "type method Void m1(Outer0.A a) "
-    + "method Void m2(Outer0.B b,Void that, Outer0.C c) "
-    + "method Void m1m2(Outer0.A a, Outer0.B b, Outer0.C c)"
-    + "   this.m2(b:b,that:Outer0.m1(a:a), c:c)}",false
+    + "type method Void m1(This0.A a) "
+    + "method Void m2(This0.B b,Void that, This0.C c) "
+    + "method Void m1m2(This0.A a, This0.B b, This0.C c)"
+    + "   this.m2(b:b,that:This0.m1(a:a), c:c)}",false
     
   },{    lineNumber(),"{A:{} B:{} C:{} type method Void m1(A a) method Void m2(B b, C c,Void that)}",
-    "Outer0","m1(a)", "m2(b,c,that)","m1m2(a,b,c)","that",
+    "This0","m1(a)", "m2(b,c,that)","m1m2(a,b,c)","that",
     "{A:{} B:{} C:{}"
-    + "type method Void m1(Outer0.A a) "
-    + "method Void m2(Outer0.B b, Outer0.C c,Void that) "
-    + "method Void m1m2(Outer0.A a, Outer0.B b, Outer0.C c)"
-    + "   this.m2(b:b,c:c,that:Outer0.m1(a:a))}",false
+    + "type method Void m1(This0.A a) "
+    + "method Void m2(This0.B b, This0.C c,Void that) "
+    + "method Void m1m2(This0.A a, This0.B b, This0.C c)"
+    + "   this.m2(b:b,c:c,that:This0.m1(a:a))}",false
     
    }});}
   @Test  public void test() {

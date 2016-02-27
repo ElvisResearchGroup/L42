@@ -2,7 +2,7 @@
    'L42.is/connected/withSafeOperators
 type method
 Library compose(Library left,Library right)
-  use Outer0
+  use This
     check compose(left:left,right:right)
     error S"SafeOperatorsAccess.compose"
 type method

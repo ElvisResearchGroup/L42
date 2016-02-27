@@ -1,11 +1,11 @@
 { _private(Library _binaryRepr, Annotations _annotations)<:Concept.ToS,Concept.Named '@private
-  method myName()GetMyName(Outer0)
+  method myName()GetMyName(This)
   Annotation:{(Library _binaryRepr, S text, N index)<:Concept.ToS,Concept.Named
-    method myName()GetMyName(Outer0)
+    method myName()GetMyName(This)
     method toS() this.text()
     method type Any referredClass() {
       return Introspection.Record(lib:this._binaryRepr()).that()
-        .introspectDocPath(path:Path"Outer0",annotationN:this.index())
+        .introspectDocPath(path:Path"This",annotationN:this.index())
       catch exception MetaGuard.NestedClassUnavailable x error Assert.CodeNotReachable"Doc1"(x)
       catch exception Void x error Assert.ObservedBug"Plugin introspection bug"
       }
@@ -17,31 +17,31 @@
       )
     }
   Annotations:LinkedList.list(Annotation)
-  type method Outer0 (Library that) (
+  type method This (Library that) (
     var result=Annotations[]
     var aN=1N
     while Bool.true() (' to be able to break
       result:=result.#add(Annotation(
         _binaryRepr:that,
         text:Introspection.Record(lib:that).that()
-          .introspectDocAsString(path:Path"Outer0",annotationN:aN)
+          .introspectDocAsString(path:Path"This",annotationN:aN)
         index:aN
         ))
       aN+=1N
       )
     catch exception MetaGuard.NestedClassUnavailable x error Assert.CodeNotReachable"Doc2"(x)
     result:=result.#end() 'reverse the list
-    Outer0._private(_binaryRepr:that, _annotations:result)
+    This._private(_binaryRepr:that, _annotations:result)
     )
   type method mut S.SBuilder #builder()S.SBuilder.empty()
-  type method Outer0 #from(S.SBuilder builder)
-    Outer0(builder.binaryRepr())
+  type method This #from(S.SBuilder builder)
+    This(builder.binaryRepr())
   method Library binaryRepr() this._binaryRepr()
   
   
   method toS() {
     return Introspection.Record(lib:this._binaryRepr()).that()
-      .introspectDocAsString(path:Path"Outer0")
+      .introspectDocAsString(path:Path"This")
     catch exception MetaGuard.NestedClassUnavailable x error Assert.CodeNotReachable"Doc3"(x) 
    }
    method Annotations annotations()this._annotations()

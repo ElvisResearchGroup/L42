@@ -7,7 +7,7 @@ Introspection:{
   NestedClass:{<:Member
     (NestedClass root, Path path,Mirror mainMirror, Record report)'@private
     method NestedClass root()
-    method Doc nestedDoc()' error  for Outer0
+    method Doc nestedDoc()' error  for This
     method Doc doc() 'of the library literal
     method Path pathFromRoot() ' invariant NestedClass(...).nestedClassFromRoot(path).pathFromRoot()==path
     method type Any externalType() 'error if  root()!=this or root() is literal, otherwise contains the type Any used to initialize root/this.

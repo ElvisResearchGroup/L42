@@ -38,24 +38,24 @@
   Library constructorAction(Introspection.Type that) {
     immA={<:Concept.Invariant 
       type method
-      Outer0 (Outer0 that) ( Invariant.checkInvariant(that) that )
+      This (This that) ( Invariant.checkInvariant(that) that )
       }
     mutA={<:Concept.Invariant 
       type method
-      mut Outer0 (mut Outer0 that) ( Invariant.checkInvariant(that) that )
+      mut This (mut This that) ( Invariant.checkInvariant(that) that )
       }
     lentA={<:Concept.Invariant 
       type method
-      mut Outer0 (mut Outer0 that) ( Invariant.checkInvariant(that) that )
+      mut This (mut This that) ( Invariant.checkInvariant(that) that )
       }
     readA={<:Concept.Invariant 
       type method
-      mut Outer0 (mut Outer0 that) ( Invariant.checkInvariant(that) that )
+      mut This (mut This that) ( Invariant.checkInvariant(that) that )
       }
     capsuleA={<:Concept.Invariant 
       type method
-      capsule Outer0 (capsule Outer0 that) ( 
-        mut Outer0 open=that
+      capsule This (capsule This that) ( 
+        mut This open=that
         Invariant.checkInvariant(open)
         open
         )
@@ -116,7 +116,7 @@
   type method
   Library stateDecoration(Library that,Introspection.Methods state){
     if state.isEmpty() (return that)
-    p=Path"Outer0"
+    p=Path"This"
     kSel=state.top().selector()
     kName=kSel.name()
     kNames=kSel.names()
@@ -137,7 +137,7 @@
           deprecated: kSelF)<<acc
         )
       else (
-        newSel=Outer0.stateFName(s,old:kNames, fresh:kNamesF)
+        newSel=This.stateFName(s,old:kNames, fresh:kNamesF)
         'Debug(S"!!")
         if zeroArgs (
           'Debug(S"is getter/exposer "[s]" "[newSel]"")

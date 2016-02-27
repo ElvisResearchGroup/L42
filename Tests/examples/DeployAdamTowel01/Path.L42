@@ -1,27 +1,27 @@
 { _private(Library _binaryRepr)<:Concept.ToS Concept.Equals Concept.Named'@private
-  method myName()GetMyName(Outer0)
+  method myName()GetMyName(This)
   
   type method 
-  Outer0 fromDocInternalizedS(S that){
-    if that==S"@."++S.nl() (return Outer0.fromS(S"Outer0"))
+  This fromDocInternalizedS(S that){
+    if that==S"@."++S.nl() (return This.fromS(S"This"))
     'Debug(S"["++that++S"]")
-    return Outer0.fromS(that(start:2N end:that.size()-1N))
+    return This.fromS(that(start:2N end:that.size()-1N))
     catch error Message x 
-      error Outer0.parseError(that,cause:x)
+      error This.parseError(that,cause:x)
     }
   type method
-  Outer0 fromS(Concept.ToS that)
-    Outer0.#from(binaryRepr: that.toS().binaryRepr())
+  This fromS(Concept.ToS that)
+    This.#from(binaryRepr: that.toS().binaryRepr())
   
-  type method Outer0 #from(S.SBuilder builder) 
-    Outer0.#from(binaryRepr: builder.binaryRepr())
+  type method This #from(S.SBuilder builder) 
+    This.#from(binaryRepr: builder.binaryRepr())
   type method mut S.SBuilder #builder() S.SBuilder.empty()
   
-  type method Outer0 #from(Library binaryRepr) (
+  type method This #from(Library binaryRepr) (
     use SafeOperators 
       check ifInvalidDo(path:binaryRepr)
-      error Outer0.parseError(S.#from(binaryRepr: binaryRepr))
-    Outer0._private(_binaryRepr:binaryRepr)
+      error This.parseError(S.#from(binaryRepr: binaryRepr))
+    This._private(_binaryRepr:binaryRepr)
     )
   type method
   Any parseError(S that)
@@ -36,23 +36,23 @@
   method toS() S.#from(binaryRepr: this._binaryRepr())
 
 
-  method Bool != (Outer0 that) !(this==that)
+  method Bool != (This that) !(this==that)
 
   method
-  Bool == (Outer0 that) {
+  Bool == (This that) {
     use Alu
       check ifStringEqualDo(s1:this.binaryRepr(),s2:that.binaryRepr())
       return Bool.true()
     return Bool.false()
     }
   method equals(that){
-    with that (on Outer0 return this==that)
+    with that (on This return this==that)
     return Bool.false()
     }
   method
   Path ++(Path that){
-    if this==Path"Outer0" (return that)
-    if that==Path"Outer0" (return this)
+    if this==Path"This" (return that)
+    if that==Path"This" (return this)
     return Path.#from(binaryRepr: 
       this.toS()[S".";that]"".binaryRepr()
       )
@@ -60,7 +60,7 @@
   method
   Strings names(){
     var str=this.toS()
-    if str==S"Outer0" (return Strings[])
+    if str==S"This" (return Strings[])
     str++=S"."
     var result=Strings[]
     while str!=S"" (
@@ -72,9 +72,9 @@
     }
   type method
   Path from(Strings names) {
-    if names.isEmpty() (return Path"Outer0")
+    if names.isEmpty() (return Path"This")
     s=S""[with n in names.vals() (use[n separedBy:S"."])]""
-    return Outer0.fromS(s) '(end:s.size()-1N)
+    return This.fromS(s) '(end:s.size()-1N)
     }
   type method
   Path fresh(S name)
@@ -89,7 +89,7 @@
     names=path.names().#end()
     if names.isEmpty() (return this.fresh())
     Path last=this.fresh(name:names.top())
-    var Path acc=Path"Outer0"
+    var Path acc=Path"This"
     with n in names.pop().#end().vals() (acc++=Path.fromS(n))
     acc++=last
     return acc

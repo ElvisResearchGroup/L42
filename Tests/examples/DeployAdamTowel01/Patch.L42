@@ -4,7 +4,7 @@
   exception MetaGuard.ClassClash,MetaGuard.MethodClash{
     ip=Introspection(lib:that,path:this.that())
     itr=ip.transitivelyNestedClasses()
-    rens=Outer0.renameMap(that,prefix:S"#1", intros:itr)
+    rens=This.renameMap(that,prefix:S"#1", intros:itr)
     var map=PreferentialComposition.SrcDests[]
     var acc=that
     with ren in rens.vals() (
@@ -16,7 +16,7 @@
       void
       )
     acc:=Refactor.RenamePath(
-      this.that() to:Path"Outer0")<<acc
+      this.that() to:Path"This")<<acc
     with mapi in map.vals() (
       acc:=Refactor.MakePrivateSelector(
         mapi.dest() of:mapi.path())<<acc

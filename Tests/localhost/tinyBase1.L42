@@ -1,8 +1,8 @@
 { reuse L42.is/tinyBase0
 
 Load:{
-  type method Outer0 #begin()'constructor
-  method Outer0 #end() this
+  type method This #begin()'constructor
+  method This #end() this
   method Library < (Library that) {
     'assume that have abstract Bool N and S
     return Adapt[
@@ -28,8 +28,8 @@ Opt:{unused()
         return Bool.true()
         catch error (on Any return Bool.false())
         }
-      type method Outer0 () Outer0.#new(TEmpty())
-      type method Outer0 (T that) Outer0.#new(TOf(that))
+      type method This () This.#new(TEmpty())
+      type method This (T that) This.#new(TOf(that))
       }
   }
 Use:{ (Resolver resolver,Libs myLibs)
@@ -37,20 +37,20 @@ Use:{ (Resolver resolver,Libs myLibs)
   Libs:'@private
     Collections.list(Library)
   type method
-  Outer0 () Outer0(resolver:Resolver(), myLibs:Libs[])
+  This () This(resolver:Resolver(), myLibs:Libs[])
   
   method
-  Outer0 #add(Library that) (
+  This #add(Library that) (
     ls=this.myLibs().#add(that)
-    Outer0(resolver:this.resolver(),myLibs:ls)
+    This(resolver:this.resolver(),myLibs:ls)
     )
-  method Outer0 #add(Library resolver)
-    Outer0(resolver:Resolver(resolver),myLibs:this.myLibs())
+  method This #add(Library resolver)
+    This(resolver:Resolver(resolver),myLibs:this.myLibs())
   type method
-  Outer0 #begin() Outer0()
+  This #begin() This()
   
   method
-  Outer0 #end() this  
+  This #end() this  
   
   method
   Library < (Library that) {
@@ -87,48 +87,48 @@ Use:{ (Resolver resolver,Libs myLibs)
       return result
       ))
     }
-  method Outer0 ++ (Outer0 that) {
+  method This ++ (This that) {
     list=this.myLibs()++that.myLibs()
     Resolver res={
       if that.resolver().isPresent() (return that.resolver())
       return this.resolver()
       }
-    return Outer0(resolver:res, myLibs:list)
+    return This(resolver:res, myLibs:list)
     }
   }
 Adapt:{(Library adapter)'@private
 
   type method
-  Outer0 () Outer0(adapter:{})
+  This () This(adapter:{})
   
   method
-  Outer0 #add(Name that, Name into) {
+  This #add(Name that, Name into) {
     if that.isExternalPathName() (error S"start name must be internal")
-    if !that.isInternalPathName() (return this.#add(that,of:Name"Outer0",into:into))
+    if !that.isInternalPathName() (return this.#add(that,of:Name"This",into:into))
     map=IntrospectionPlugin.adaptLib(
       l1:into.adapter(), l2:that.adapter())
     lib=IntrospectionPlugin.sumLib(l1:this.adapter(), l2:map)
-    return Outer0(adapter:lib)
+    return This(adapter:lib)
     }
   method
-  Outer0 #add(Name that, Name of, Name into) {
+  This #add(Name that, Name of, Name into) {
     map1=IntrospectionPlugin.adaptLib(
       l1:into.adapter(), l2:that.adapter())
     map2=IntrospectionPlugin.adaptLib(
       l1:map1, l2:of.adapter())
     lib=IntrospectionPlugin.sumLib(l1:this.adapter(), l2:map2)
-    return Outer0(adapter:lib)
+    return This(adapter:lib)
     }
   type method
-  Outer0 #begin() Outer0()
+  This #begin() This()
   
   method
-  Outer0 #end() this
+  This #end() this
   
   method
-  Outer0 ++ (Outer0 that) (
+  This ++ (This that) (
     lib=IntrospectionPlugin.sumLib(l1:this.adapter(), l2:that.adapter())
-    Outer0(adapter:lib)
+    This(adapter:lib)
     )
   method
   Library < (Library that)
@@ -138,7 +138,7 @@ MakePrivate:{
 type method
   Library (Name that, Library into){
     if that.isExternalPathName() (error S"start name must be internal")
-    if !that.isInternalPathName() (return Outer0(that:that,of:Name"Outer0", into:into))
+    if !that.isInternalPathName() (return This(that:that,of:Name"This", into:into))
     res=IntrospectionPlugin.sumComment(into, comment:{'@private      
       },adapter:that.adapter())
     fName=Name(adapter:IntrospectionPlugin.getFreshName(that.adapter()))
@@ -156,29 +156,29 @@ type method
   }
 
 Data:{()
-  type method Outer0 #begin() Outer0()
-  method Outer0 #end() this
+  type method This #begin() This()
+  method This #end() this
   method Library < (Library that) Use[this.addEquals(l:that);]<that
   method Library equalsOnField(Name c,Name n)
     Adapt[Name"T" into: c; Name"f" into:n;]<{
       T:{ method Bool ==(Any that)}
       read method T f()
-      method Bool current(Outer0 that) this.f()==that.f()
+      method Bool current(This that) this.f()==that.f()
       }
   method Library addEquals(Library l){
     var decorator=Use[ with field in Introspection(l).fields().vals() (
       this.equalsOnField(c:field.class(), n:Name.#stringParser(field.name().binaryRepr()))
       )]
     decorator++=Use[resolver:{
-      method Bool current(Outer0 that) this.left(that) & this.right(that)
-      method Bool left(Outer0 that)
-      method Bool right(Outer0 that)
+      method Bool current(This that) this.left(that) & this.right(that)
+      method Bool left(This that)
+      method Bool right(This that)
       };]
     result=decorator<{
-      method Bool current(Outer0 that)
+      method Bool current(This that)
       method Bool ==(Any that){
         with that (
-          on Outer0 return this.current(that)
+          on This return this.current(that)
           default return Bool.false()
           )}
       }

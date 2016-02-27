@@ -2,8 +2,8 @@
  _new(Cell head)
 
 type method
-Outer0 ()
-  Outer0._new(head:CellEnd())
+This ()
+  This._new(head:CellEnd())
 method
 Bool isEmpty() {
   with x=this.head() (
@@ -25,31 +25,31 @@ mut Iterator valsCut()
   this.head().vals(terminate:Bool.false())
  
 method
-Outer0 pop() {
-  return Outer0._new(head:this.head().#next()) 
+This pop() {
+  return This._new(head:this.head().#next()) 
   catch exception (on Void error S"PopOnEmpyList")
   }    
 
 method
-Outer0 ++(Outer0 that) {
-  var Outer0 res=this
+This ++(This that) {
+  var This res=this
   with e in that.vals() (res:=res.#add(e))
   return res
   }
 
 type method
-Outer0 #begin()
-  Outer0()
+This #begin()
+  This()
 
 method
-Outer0 #add(Elem that) 
-  Outer0._new(
+This #add(Elem that) 
+  This._new(
     head:CellNext(elem:that,nextCell:this.head())
     )
     
 method
-Outer0 #end() (
-  var res=Outer0()
+This #end() (
+  var res=This()
   with elem in this.vals() (
     res:=res.#add(elem)
     )
