@@ -13,9 +13,44 @@ sugar expression hash #_,
    x.m(xes) with #_ directlyIn xes === x.m(xes[#/x.m(xs)])
    #_ directlyIn e.m(xes) if #_ directlyIn e, #_ !directlyIn classB otherwise propagate.
    e.m(xes)[#/x.m(xi)] =e[#/x.m(xi)].m(xes), classB[#/x]=classB, otherwise propagate.
+   TODO: update add a(...) and a[...]
    #id/x.m(xi) = x.id()
    #/x.m(xi) = x.m_default(xi:void)
 is Ill formed if # is out of any scope
-
+shuld be \   
+bla[\row[  ]]
+scope:
+a.b(..#.)
+a(..#..)
+a+b NO
+bla[...#...]
 *core logic
 //normalized classB {*  or {+   or {-   with all norm types and all interface method with refined type
+core:
+member::=  C:e | method ms e | mdf method optRefine T m(Txs) optExceptions optE
+classB: {label optInterface optImplements members }
+-if a class is not normalized, label must be empty
+*compiled: all C:e of form C:classB
+*normalized: 
+ -compiled 
+ -no historic/indirect types
+ -no method ms e 
+ -label is either - + or *
+ 
+*a well formed normalized class
+ -all implemented interfaces are normalized_p
+ -all implemented interface methods are reported as refine 
+ -if label is + or * it is well typed
+ -if label is * all referred paths are * too.
+ 
+ we write Le for not compiled L
+ Lc for compiled L,
+ Ln for normalized L, 
+ L-, L+, L* for specifically labelled normalized L
+ CLs* for a sequence of C:L*
+ 
+ L -->p L' 
+    L={ ms_1, C:e ms_2 }
+    p'=p,{CLs*^L}
+    L'={ ms_1, C:e' ms_2 }
+    e-->
