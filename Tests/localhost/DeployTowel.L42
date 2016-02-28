@@ -10,35 +10,35 @@ Library failure() {'@exitStatus
 }}
 DeployTowel:{
 type method '(Any fileName)
-Outer0 #apply(Outer2.Url fileName) 
+This0 #apply(This2.Url fileName) 
 mut method '(Any fileName)
-Outer2.Url #fileName() 
+This2.Url #fileName() 
 read method '(Any fileName)
-Outer2.Url fileName() 
+This2.Url fileName() 
 type method 
 Library binaryReprFrom(Library lib) (
-  Library norm=use Outer0.SafeOperatorsAccess__38_0 check privateNormalize(that:lib) error {
+  Library norm=use This0.SafeOperatorsAccess__38_0 check privateNormalize(that:lib) error {
   type method 
-  Outer0 privateNormalize() }
-  Library record=use Outer0.SafeOperatorsAccess__38_0 check introspectLibraryReport(that:norm, path:{'@stringU
-  'Outer0
+  This0 privateNormalize() }
+  Library record=use This0.SafeOperatorsAccess__38_0 check introspectLibraryReport(that:norm, path:{'@stringU
+  'This
   }) error {
   type method 
-  Outer0 introspectLibraryReport() }
-  use Outer0.SafeOperatorsAccess__38_0 check introspectLibraryDocAsString(that:record, path:{'@stringU
+  This0 introspectLibraryReport() }
+  use This0.SafeOperatorsAccess__38_0 check introspectLibraryDocAsString(that:record, path:{'@stringU
   'AllAsString
   }, annotationN:{'@int32
   '0
   }) error {
   type method 
-  Outer0 introspectLibraryDocAsString() }
+  This0 introspectLibraryDocAsString() }
   )
 method 
 Library #leftleft(Library that) (
-  Void unused=use Outer2.Alu check fileDebug(fileName:this.fileName().binaryRepr(), content:Outer0.binaryReprFrom(lib:that)) error {
+  Void unused=use This2.Alu check fileDebug(fileName:this.fileName().binaryRepr(), content:This0.binaryReprFrom(lib:that)) error {
   type method 
-  Outer0 fileDebug() }
-  Outer1.ExitCode.normal()
+  This0 fileDebug() }
+  This1.ExitCode.normal()
   )
 SafeOperatorsAccess__38_0:'@private
 {'@plugin

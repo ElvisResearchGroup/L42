@@ -459,19 +459,6 @@ public class L42BaseListener implements L42Listener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterHashId(@NotNull L42Parser.HashIdContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitHashId(@NotNull L42Parser.HashIdContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterUseSquare(@NotNull L42Parser.UseSquareContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -661,6 +648,19 @@ public class L42BaseListener implements L42Listener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitETopForMethod(@NotNull L42Parser.ETopForMethodContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterContextId(@NotNull L42Parser.ContextIdContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitContextId(@NotNull L42Parser.ContextIdContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

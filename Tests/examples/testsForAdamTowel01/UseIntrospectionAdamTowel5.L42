@@ -22,8 +22,8 @@ CheckSubtype1:{
       )
     if result!=expected (Debug(S"expected:"[expected]" computed:"[result]""))
     )
-  }  
-  
+  }
+
 CheckSubtype:{
   type method Void(Library lib,S expected )(
     i=Introspection(lib:lib)
@@ -48,7 +48,7 @@ CheckNested:{
   }
 
 EA:{interface }
-EB:{interface <:EA}  
+EB:{interface <:EA}
 Main:{
   CheckState(lib:{foo(Bar b, var Foo f) Bar:{} Foo:{}}
     expected:S"foo(b,f)b()#b()f()#f()f(that)")
@@ -67,32 +67,32 @@ Main:{
 
   Debug(S"d")
   CheckSubtype(lib:{interface <:EA }
-    expected:S"Outer0.EA,")
+    expected:S"This.EA,")
   Debug(S"e")
     CheckSubtype(lib:{interface <:B B:{interface<:A} A:{interface}}
     expected:S"@.A,@.B,")
   Debug(S"f")
   CheckSubtype(lib:{interface <:EB }
-    expected:S"Outer0.EA,Outer0.EB,")
+    expected:S"This.EA,This.EB,")
   Debug(S"g")
   CheckNested(lib:{}
-    expected:S"@.Outer0,")
+    expected:S"@.This,")
   Debug(S"h")
   CheckNested(lib:{A:{} B:{}}
-    expected:S"@.A,@.B,@.Outer0,")
+    expected:S"@.A,@.B,@.This,")
   Debug(S"i")
   CheckNested(lib:{A:{ B:{}}}
-    expected:S"@.A,@.A.B,@.Outer0,")
+    expected:S"@.A,@.A.B,@.This,")
   Debug(S"l")
   CheckNested(lib:{A:{} B:'@private
       {}}
-    expected:S"@.A,@.B,@.Outer0,")
+    expected:S"@.A,@.B,@.This,")
   Debug(S"m")
   CheckNested(lib:{A:{} B:'@private
       {C:{}}}
-    expected:S"@.A,@.B,@.Outer0,")
+    expected:S"@.A,@.B,@.This,")
   Debug(S"OK")
-  catch exception Concept.Classable x 
+  catch exception Concept.Classable x
     error Debug(Introspection(clazz:x.classAny()).externalTypeToS())
   return ExitCode.normal()
   }

@@ -1,10 +1,10 @@
 {
 Bool:{interface
-  type method Outer0 ()
+  type method This ()
   method Void #checkTrue() exception Void
-  method Outer0 & (Outer0 that)
-  method Outer0 | (Outer0 that)
-  method Outer0 ! ()
+  method This & (This that)
+  method This | (This that)
+  method This ! ()
   }
 True:{_private() <:Bool
   method () (this._private())
@@ -121,10 +121,10 @@ S:{#stringParser(Library that)
 IntrospectionPlugin:{'@plugin
   'L42.is/connected/withItself
   ()
-  type method Library sumLib(Library l1,Library l2) using Outer0 check sumLib(l1:l1,l2:l2) error {sumLib()}
-  type method Library adaptLib(Library l1 Library l2) using Outer0 check adaptLib(l1:l1,l2:l2) error {adaptLib()}
-  type method Library nameToAdapter(Library that) using Outer0 check nameToAdapter(that) error {nameToAdapter()}
-  type method Library typeNameToAdapter(type Any that) using Outer0 check typeNameToAdapter(that) error {typeNameToAdapter()}
+  type method Library sumLib(Library l1,Library l2) using This check sumLib(l1:l1,l2:l2) error {sumLib()}
+  type method Library adaptLib(Library l1 Library l2) using This check adaptLib(l1:l1,l2:l2) error {adaptLib()}
+  type method Library nameToAdapter(Library that) using This check nameToAdapter(that) error {nameToAdapter()}
+  type method Library typeNameToAdapter(type Any that) using This check typeNameToAdapter(that) error {typeNameToAdapter()}
   }
 Collections:{()
   type method Library listRow() { _new(Cell head)
@@ -154,18 +154,18 @@ Collections:{()
         error {iterationNotComplete()})
       }
     type method
-    Outer0 () (Outer0._new(head:CellEnd()))
+    This () (This._new(head:CellEnd()))
     method
-    Outer0 #add(T that) (
-      Outer0._new(head:CellNext(
+    This #add(T that) (
+      This._new(head:CellNext(
         elem:that,
         _next:this.head()))
       )
     type method
-    Outer0 #begin() Outer0()
+    This #begin() This()
     method
-    Outer0 #end() (
-      var res=Outer0()
+    This #end() (
+      var res=This()
       with elem in this.vals() (
         res:=res.#add(elem)
         )
@@ -177,8 +177,8 @@ Collections:{()
     mut Iterator vals() ( this.head().#vals(True()))
     method
     mut Iterator valsCut() ( this.head().#vals(False()))
-    method Outer0 pop() {
-      return Outer0._new(head:this.head().#next())
+    method This pop() {
+      return This._new(head:this.head().#next())
       catch exception (on Void error {popOnEmpyList()})}
     Iterator:{mut (var Cell that,Bool terminate)
       mut method Void #next() exception Void ( x=this.that().#next(),x.checkEmpty() this.that(x) )

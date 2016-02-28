@@ -8,13 +8,13 @@ Parsable:{
     return Extends[{
       'ParseFailure:Message:S[]<<{<:Guard} no need, related to invariant?
       type method' if you do not implement it, it is a constructor?
-      Outer0 fromS(read Concept.ToS that)    
+      This fromS(read Concept.ToS that)    
       'will be in the interface when there is type refinement,
       'and will be imm in the interface, and classes can refine to their outer0, and to capsule if makes sense
       
       type method
-      Outer0 #from(S.SBuilder builder)
-        Outer0.fromS(S.#from(binaryRepr: builder.binaryRepr()))
+      This #from(S.SBuilder builder)
+        This.fromS(S.#from(binaryRepr: builder.binaryRepr()))
     
       type method
       mut S.SBuilder #builder() S.SBuilder.empty()
@@ -34,8 +34,8 @@ SealState:{
 DataFromToS:{' in the future we can add also hashCode and > =>
   type method Library<<(Library that) exception DecorationUnfeasable{
     return Extends[{<:Concept.ToS
-    method Bool != (Outer0 that) !(this==that)
-    read method Bool ==(read Outer0 that) this.toS()==that.toS()
+    method Bool != (This that) !(this==that)
+    read method Bool ==(read This that) this.toS()==that.toS()
     }]<<Equals<<that
     catch exception DecorationUnfeasable mg
       exception mg
@@ -48,10 +48,10 @@ Equals:{
   type method Library<<(Library that) exception DecorationUnfeasable{
     return Extends[{<:Concept.Equals
       method equals(that){
-        with that (on Outer0 return this==that)
+        with that (on This return this==that)
         return Bool.false()
         }
-      read method Bool ==(read Outer0 that)
+      read method Bool ==(read This that)
       }]<<that
     exception on MetaGuard
       DecorationUnfeasable"Equals"
@@ -61,7 +61,7 @@ Named:{
   type method Library<<(Library that) exception DecorationUnfeasable{
     return Extends[{<:Concept.Named
         method myName()
-          Introspection(clazz:Outer0).externalTypeToS()
+          Introspection(clazz:This).externalTypeToS()
         }]<<that
     'can improve error: if is method defined against method implemented
     exception on MetaGuard

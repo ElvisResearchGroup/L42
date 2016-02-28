@@ -22,7 +22,7 @@ Library( type Any itType, type Any elemType, Library better)
       that.#next()
       catch exception ( on Void error S"Max undefined on empty lists")
       var result=that.#inner()
-      with current in that ( result:=Outer0(a:result,b:current) )
+      with current in that ( result:=This(a:result,b:current) )
       return result
       }
     })

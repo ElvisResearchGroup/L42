@@ -223,7 +223,7 @@ public class CloneVisitor implements Visitor<Expression>{
     //assert s.getUrlFetched()==null;
     return new ClassReuse(lift(s.getInner()),s.getUrl(),s.getUrlFetched());
   }
-  @Override public Expression visit(HashId s) {
+  @Override public Expression visit(ContextId s) {
     return s;
   }
 

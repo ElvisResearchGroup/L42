@@ -79,8 +79,8 @@ public interface Expression extends Ast {
       return v.visit(this);
     }
   }
-  @Value public static class HashId implements Expression, Ast.Atom {
-    String inner;//contains the "#"
+  @Value public static class ContextId implements Expression, Ast.Atom {
+    String inner;//contains the "\"
     public String toString() {
       return this.inner;
     }
@@ -89,7 +89,7 @@ public interface Expression extends Ast {
     }
   }
 
-  
+
   @Value @EqualsAndHashCode(exclude = "p") /*@ToString(exclude = "p")*/ @Wither public static class BinOp implements Expression, HasPos {
     Position p;
     Expression left;
@@ -123,7 +123,7 @@ public interface Expression extends Ast {
     }
   }
 
-  @Value @Wither @EqualsAndHashCode(exclude = {"p"}) @ToString(exclude = {"p"}) public static class MCall implements Expression, HasPos {
+  @Value @Wither @EqualsAndHashCode(exclude = {"p"}) @ToString(exclude = {"p"}) public static class MCall implements Expression, HasPos,HasReceiver {
     Expression receiver;
     String name;
     Doc doc;
@@ -134,7 +134,7 @@ public interface Expression extends Ast {
     }
   }
 
-  @Value @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") public static class FCall implements Expression, HasPos {
+  @Value @Wither @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") public static class FCall implements Expression, HasPos, HasReceiver {
     @NonNull Position p;
     Expression receiver;
     Doc doc;
@@ -144,7 +144,7 @@ public interface Expression extends Ast {
     }
   }
 
-  @Value @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") public static class SquareCall implements Expression, HasPos {
+  @Value @Wither @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") public static class SquareCall implements Expression, HasPos,HasReceiver {
     Position p;
     Expression receiver;
     Doc doc;
@@ -155,7 +155,7 @@ public interface Expression extends Ast {
     }
   }
 
-  @Value @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") public static class SquareWithCall implements Expression, HasPos {
+  @Value @Wither @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") public static class SquareWithCall implements Expression, HasPos,HasReceiver {
     Position p;
     Expression receiver;
     With with;
@@ -204,7 +204,7 @@ public interface Expression extends Ast {
     List<VarDec> decs;
     List<Catch> _catch;
   }
-  
+
   @Value @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") @Wither public static class RoundBlock implements Expression, HasPos {
     Position p;
     Doc doc;
@@ -235,7 +235,7 @@ public interface Expression extends Ast {
     }
   }
 
-  @Value public static class ClassReuse implements Expression, Ast.Atom {
+  @Value @Wither public static class ClassReuse implements Expression, Ast.Atom {
     ClassB inner;
     String url;
     ExpCore.ClassB urlFetched;
@@ -336,7 +336,7 @@ public interface Expression extends Ast {
     public static final _void instance=new _void();
   }
 
-  @Value @Wither @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") public static class Literal implements Expression, HasPos {
+  @Value @Wither @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") public static class Literal implements Expression, HasPos,HasReceiver {
     Position p;
     Expression receiver;
     String inner;

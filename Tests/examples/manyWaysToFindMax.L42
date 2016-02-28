@@ -23,7 +23,7 @@ Exercise1:{()
   type method N max4( NList that) {
     if that.isEmpty() (error S"Max undefined on empty lists")
     if that.pop().isEmpty() ( return that.top())
-    result=Outer0.max4(that.pop())
+    result=This.max4(that.pop())
     if result <that.top() ( return that.top())
     return result
     }

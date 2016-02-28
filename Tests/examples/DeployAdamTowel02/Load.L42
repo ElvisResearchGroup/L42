@@ -1,10 +1,10 @@
 {
 'shape of a loadable library:
-' Outer0 contains actual library, but
+' This contains actual library, but
 ' Abstract:{} contains abstract classes, and 
 ' Abstract.ConceptMap mapps concepts names to abstract classes
-  type method Outer0 #begin()'constructor
-  method Outer0 #end() this
+  type method This #begin()'constructor
+  method This #end() this
   ConceptMapMismatch:Message.$<<{<:MetaGuard}
   ConceptMapUnavailable:Message.$<<{<:MetaGuard}
   method

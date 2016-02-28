@@ -3,7 +3,7 @@
   CellNext:{(Kind.elem() val,mut Cell next)<:Cell
     read method Kind.elemRead() val()
     }
-  CellEnd:{<:Cell type method mut Outer0()}
+  CellEnd:{<:Cell type method mut This()}
   read method Void reportError(N that)
     error S"IndexOutOfBound: max is "[this.size()]" proposed is "[that]""
   read method Void reportUnexpected(N that)
@@ -12,13 +12,13 @@
   read method 
   Kind.elemRead() (N that) (
     if that>=this.size() (this.reportError(that))
-    Outer0.auxGet(that,cell:this.head())
+    This.auxGet(that,cell:this.head())
     )
   type method
   Kind.elemRead() auxGet(N that,read Cell cell){
     with cell (
       on read CellNext case that==0N return cell.val()
-      on read CellNext return Outer0.auxGet(that-1N,cell:cell.next())
+      on read CellNext return This.auxGet(that-1N,cell:cell.next())
       )
     error S"Unreachable"
     }
@@ -26,24 +26,24 @@
   mut method 
   Void (N that,Kind.elem() val) (
     if that>=this.size() (this.reportError(that))
-    this.head(Outer0.auxSet(that,val:val,cell:this.#head()))
+    this.head(This.auxSet(that,val:val,cell:this.#head()))
     )
   type method
   mut CellNext auxSet(N that,Kind.elem() val,mut Cell cell){
     with cell (
       on mut CellNext case that==0N return CellNext(val:val,next:cell.#next())
-      on mut CellNext return CellNext(val:cell.val(),next:Outer0.auxSet(that-1N,val:val,cell:cell.#next()))
+      on mut CellNext return CellNext(val:cell.val(),next:This.auxSet(that-1N,val:val,cell:cell.#next()))
       )
     error S"Unreachable"
     }
   'EMPTY
   type method 
-  mut Outer0 () Outer0(head:CellEnd(),size:0N)
+  mut This () This(head:CellEnd(),size:0N)
   'ADDING
   mut method
-  mut Outer0 add(Kind.elem() that) (
+  mut This add(Kind.elem() that) (
     this.size(this.size()+1N)
-    this.head(Outer0.auxAdd(that,cell:this.#head()))
+    this.head(This.auxAdd(that,cell:this.#head()))
     this
     )
   type method
@@ -52,7 +52,7 @@
       on mut CellEnd return CellNext(val:that,next:cell)
       on mut CellNext return CellNext(
         val:cell.val(),
-        next:Outer0.auxAdd(that,cell:cell.#next())
+        next:This.auxAdd(that,cell:cell.#next())
         )
       )
     error S"Unreachable"
@@ -62,11 +62,11 @@
   '*******************
     
   type method 
-  mut Outer0 #begin() Outer0()
+  mut This #begin() This()
   mut method
-  mut Outer0 #end() this
+  mut This #end() this
   mut method
-  mut Outer0 #add(Kind.elem() that) this.add(that)
+  mut This #add(Kind.elem() that) this.add(that)
   
   
   

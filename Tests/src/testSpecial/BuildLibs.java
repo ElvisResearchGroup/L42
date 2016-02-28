@@ -31,7 +31,7 @@ public class BuildLibs {
 ,"    fileName:S\"localhost/miniBase.L42\","
 ,"    code:{reuse L42.is/tinyBase1},"
 //,"    code:{reuse L42.is/nanoBase1},"
-,"    node:S\"Outer0\")"
+,"    node:S\"This0\")"
 ,"  return ExitCode.normal()"
 ,"  }"
 ,"}"

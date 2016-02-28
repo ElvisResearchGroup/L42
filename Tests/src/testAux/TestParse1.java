@@ -25,7 +25,7 @@ public class TestParse1 {
     public static List<Object[]> createData() {
       return Arrays.asList(new Object[][] {
   {lineNumber(), "a"
-  },{lineNumber()," (Outer0.that().#next() x=this.that().#next() x)"
+  },{lineNumber()," (This0.that().#next() x=this.that().#next() x)"
 //},{lineNumber(),"{'@ExpectedClass :( \n}"//TODO: the ( is turned in \t, and \t is not accepted in comments.
 //    more important: should ' be accepted in single line strings?
 },{lineNumber(),TestHelper.multiLine("{"
@@ -33,11 +33,11 @@ public class TestParse1 {
         ,"        type method Library ko() ({'@KO\n})"
         ,"  }"
         ,"I:{interface }"
-        ,"AI:{ k()<:Outer1.I}"
+        ,"AI:{ k()<:This1.I}"
         ,"D:("
-        ,"  Any z=error Outer0.AI.k()"
-        ,"  catch error Outer0.AI x Outer0.C.ok()"
-        ,"  Outer0.C.ko()"
+        ,"  Any z=error This0.AI.k()"
+        ,"  catch error This0.AI x This0.C.ok()"
+        ,"  This0.C.ko()"
         ,"  )"
         ,"}"),
   },{lineNumber(),"{ }"
@@ -48,10 +48,10 @@ public class TestParse1 {
 },{lineNumber(),"{outer() C: {new() type method Library m() ({inner()})} D: C.m()}"
 },{lineNumber(),"{outer() C: {new() type method Library m() ({inner()})} D: ({inner()})}"
 
-},{lineNumber()," (Outer0.C).foo(bar:Outer0.C)"
-},{lineNumber()," (type Outer0.C c=(Outer0.C) c.foo(bar:Outer0.C))"
-},{lineNumber()," (Outer0.C c=Outer0.C.new() Outer0.D r=Outer0.D.new(x:c) (r).x())"
-},{lineNumber()," (Outer0.C c=Outer0.C.new() Outer0.D r=Outer0.D.new(x:c) (Outer0.D d=(r) d.x()))"
+},{lineNumber()," (This0.C).foo(bar:This0.C)"
+},{lineNumber()," (type This0.C c=(This0.C) c.foo(bar:This0.C))"
+},{lineNumber()," (This0.C c=This0.C.new() This0.D r=This0.D.new(x:c) (r).x())"
+},{lineNumber()," (This0.C c=This0.C.new() This0.D r=This0.D.new(x:c) (This0.D d=(r) d.x()))"
 },{lineNumber(),"void"
 },{lineNumber()," (void)"
 },{lineNumber(),"5N"
@@ -126,11 +126,11 @@ public class TestParse1 {
 },{lineNumber()," (a )(b,x:c)"
 },{lineNumber()," (a-a)()"
 },{lineNumber(),  "{ method () (b)}"
-},{lineNumber(),  "{a( Outer0.A a)"
-    +" type method Outer0 a( Outer0.A a) ##field"
-    +" mut method Outer0.A a() ##field"
-    +" read method Outer0.A #a() ##field"
-    +" mut method Void a(Outer0.A that) ##field"
+},{lineNumber(),  "{a( This0.A a)"
+    +" type method This0 a( This0.A a) ##field"
+    +" mut method This0.A a() ##field"
+    +" read method This0.A #a() ##field"
+    +" mut method Void a(This0.A that) ##field"
     +" }"
 },{lineNumber(),"a'bla\n"//test that is not ok without newline
 },{lineNumber()," S\"aaa\""

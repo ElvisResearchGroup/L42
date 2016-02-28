@@ -4,7 +4,7 @@ ToS:{interface
   }
 Classable:{interface
   read method type Any classAny()
-  'read method type Outer0 clazz()
+  'read method type This clazz()
   }
 Named:{interface
   type method S myName()
@@ -21,12 +21,12 @@ LentWrapper:{interface <:ReadWrapper mut method lent Any #inner()}
   
 Equals:{interface
   read method Bool equals(read Any that)
-  'read method Bool ==(read Outer0 that)
+  'read method Bool ==(read This that)
   }
 'a<b == b>a
 Comparable:{interface
   read method Bool greater(read Any that)
-  'read method Bool >(read Outer0 that)
+  'read method Bool >(read This that)
   }
 Boollable:{interface
   read method Void #checkTrue() exception Void 
@@ -40,8 +40,8 @@ Contains:{interface
   read method Bool contains(read Any that)
   }
 Parsable:{interface
-  'type method capsule Outer0 fromS(S that) exception Guard.Parameter(specific) invalid string
-  '''type method capsule Outer0 #fromS(S that) exception Guard.Parameter
+  'type method capsule This fromS(S that) exception Guard.Parameter(specific) invalid string
+  '''type method capsule This #fromS(S that) exception Guard.Parameter
   }
 Invariant:{interface
   read method ' can throw error or return false, as more opportune

@@ -1,32 +1,32 @@
 {(Library binaryRepr)<:Concept.ToS Concept.Equals Concept.Named'@private
   method
-  myName()GetMyName(Outer0)
+  myName()GetMyName(This)
   method
   Void #checkTrue() exception Void 
     use Alu
       check ifInt32EqualDo(n1:this.binaryRepr() n2:0N.binaryRepr())
       exception void
   type method
-  Outer0 true()
-    Outer0(binaryRepr:1N.binaryRepr())
+  This true()
+    This(binaryRepr:1N.binaryRepr())
   type method
-  Outer0 false()
-    Outer0(binaryRepr:0N.binaryRepr())
+  This false()
+    This(binaryRepr:0N.binaryRepr())
 
   method
-  Outer0 &(Outer0 that){
+  This &(This that){
     if this (return that)
     return this
     }
   method
-  Outer0 |(Outer0 that){
+  This |(This that){
     if this (return this)
     return that
     }
   method
-  Outer0 !(){
-    if this (return Outer0.false())
-    return Outer0.true()
+  This !(){
+    if this (return This.false())
+    return This.true()
     }
   method
   toS(){
@@ -34,21 +34,21 @@
     return S"false"
     }
   type method
-  Outer0 fromS(read Concept.ToS that){
-    if that.toS()==S"true" (return Outer0.true())
-    if that.toS()==S"false" (return Outer0.false())
-    error Outer0.parseError(that.toS())
+  This fromS(read Concept.ToS that){
+    if that.toS()==S"true" (return This.true())
+    if that.toS()==S"false" (return This.false())
+    error This.parseError(that.toS())
     }
   method
-  Outer0 ==(Outer0 that) {
+  This ==(This that) {
     if this (return that)
     return !that
     }
   method
-  Outer0 !=(Outer0 that) !(this==that)
+  This !=(This that) !(this==that)
   method
   equals(that){
-    with that (on Outer0 return this==that)
+    with that (on This return this==that)
     return Bool.false()
     }
   type method

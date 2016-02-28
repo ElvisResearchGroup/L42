@@ -1,27 +1,27 @@
 {'findMeNestedClass
 (fwd NestedClass _root,Path path,MirrorPr mirror, Record record)<:Member,Concept.Equals '@private
-method myName()GetMyName(Outer0)
-method toS() Outer0.myName()++S"["[this.allAsString()]"]"
-method Bool ==(Outer0 that){
+method myName()GetMyName(This)
+method toS() This.myName()++S"["[this.allAsString()]"]"
+method Bool ==(This that){
   if this.path()!=that.path() (return Bool.false())
   'else equal paths
-  if this.path()!=Path"Outer0" (return this.root()==that.root())
-  'else, both paths are Outer0
+  if this.path()!=Path"This" (return this.root()==that.root())
+  'else, both paths are This
   ext=this.hasExternalType()
   if ext!=that.hasExternalType() (return Bool.false())
   if ext (return this.externalTypeToS()==that.externalTypeToS())
   return this.allAsString()==that.allAsString()
   }
-method Bool != (Outer0 that) !(this==that)
+method Bool != (This that) !(this==that)
 method equals(that){
-  with that (on Outer0 return this==that)
+  with that (on This return this==that)
   return Bool.false()
   }
-method Outer0 root()this._root()
-method 'error for Outer0
+method This root()this._root()
+method 'error for This
 Doc nestedDoc()(
-  if this.path()==Path"Outer0" (
-    error Guard.Operation"NestedClass.nestedDoc()  The NestedClass Object refers to Outer0"
+  if this.path()==Path"This" (
+    error Guard.Operation"NestedClass.nestedDoc()  The NestedClass Object refers to This"
     )
   this.record().docOf(path:Path"MemberDoc")
   )
@@ -32,36 +32,36 @@ method Path pathFromRoot()
   this.path() ' invariant NestedClass(...).nestedClassFromRoot(path).pathFromRoot()==path
 
 method Bool hasExternalType(){
-  if this.path()!=Path"Outer0" (return Bool.false())
+  if this.path()!=Path"This" (return Bool.false())
    with mirror=this.mirror() (
     on MirrorPr.Class return Bool.true()
     )
   return Bool.false()
   }
 method type Any externalType(){
-  if this.path()!=Path"Outer0" (
+  if this.path()!=Path"This" (
     error Guard.Operation(text:S"NestedClass.externalType() The NestedClass Object refers to "[this.path()]"")
     )
   with mirror=this.mirror() (
     on MirrorPr.Class return mirror.lib()
-    on MirrorPr.Lib 
+    on MirrorPr.Lib
       error Guard.Operation
         "NestedClass.externalType() The NestedClass Object is unbound"
     default error Assert.CodeNotReachable"NestedClass1"
     )
   }
 method S externalTypeToS() {
-  if this.path()!=Path"Outer0" (
+  if this.path()!=Path"This" (
     error Guard.Operation(text:S"NestedClass.externalTypeToS() The NestedClass Object refers to "[this.path()]"")
     )
   doc=this.record().docOf(path:Path"MyClass")
   nameAndPrefix=doc.annotations().top().toS()
   sep=nameAndPrefix.firstIndexOf(S".")
   name= nameAndPrefix(start:sep+1N)
-  prefix=N.fromS(nameAndPrefix(start:5N, end:sep)) '5N== S"Outer".size()
+  prefix=N.fromS(nameAndPrefix(start:4N, end:sep)) '4N== S"This".size()
   Assert.$[prefix>0N]
-  'if prefix == 1N (return name)
-  return S"Outer"[prefix-1N]"."++name
+  if prefix == 1N (return S"This."++name)
+  return S"This"[prefix-1N]"."++name
 }
 
 method S classKind() this.record()"ClassKind"
@@ -106,11 +106,11 @@ method Types implementedInterfaces() (
     ti=this.mirror()
       .introspectReportType(root:this,path:this.path(),memberN:0N,typeN:tN)
     'Assert.$[with sr=ti.strRepr() (
-    '  use[sr!=S"Outer0";sr!=S""]
+    '  use[sr!=S"This";sr!=S""]
     '  )]
     sr=ti.strRepr()
-    Assert.$[sr!=S"@.Outer0";sr!=S"Outer0";sr!=S""]
-    
+    Assert.$[sr!=S"@.This";sr!=S"This";sr!=S""]
+
     result:=result.#add(ti)
     tN+=1N
     )
@@ -127,7 +127,7 @@ method Types transitivelyImplementedInterfaces() {
       )
     if extra.isEmpty() (return result)
     new:=extra
-    result++=extra    
+    result++=extra
     )
   }
 method'@private
@@ -146,7 +146,7 @@ Bool select(Type that,Types from) (
 method'@private
 Types remove(Types that,Types from)
   Types[with t in that.vals() (if this.select(t,from:from) (use[t]))]
-  
+
 method
 Methods stateCandidate() (
   var havePrivate=Bool.false()
@@ -162,7 +162,7 @@ Methods stateCandidate() (
       )]
     )
   absMethods
-  )  
+  )
 method
 Methods state() {
   var result=Methods[]
@@ -203,24 +203,24 @@ Bool has(Selector selector){
   catch exception MetaGuard.MemberUnavailable return Bool.false()
   return Bool.true()
   }
-  
+
 method
 NestedClass nestedClassFromRoot(Path that) exception MetaGuard.NestedClassUnavailable {
-  if that==Path"Outer0" (return this.root())
+  if that==Path"This" (return this.root())
   myClass=this.record().docOf(path:Path"MyClass").annotations().top()
   if !myClass.hasReferredClass() (
      return this.mirror().introspectReport(root:this.root(),path:that)
     )
   return Introspection(clazz:myClass.referredClass(),path:that)
   }
-  
+
 method
 Bool has(Path fromRoot) (
   unused=this.nestedClassFromRoot(fromRoot)
-  catch exception MetaGuard.MemberUnavailable Bool.false() 
+  catch exception MetaGuard.MemberUnavailable Bool.false()
   Bool.true()
   )
-  
+
 method
 Bool isPrivate() {
   with ann in this.nestedDoc().annotations().vals() (

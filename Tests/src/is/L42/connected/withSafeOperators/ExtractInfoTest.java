@@ -26,17 +26,17 @@ public class ExtractInfoTest {
       return Arrays.asList(new Object[][] {
       {"{}","B",0
     },{"{()}","B",0
-    },{"{}","Outer0",0
-    },{"{()}","Outer0",1//for desugaring of ()
-    },{"{B:{(Outer0 a)}}","Outer0",0
-    },{"{B:{(Outer1 a)}}","Outer0",1//ctx, getter, exposer
-    },{"{B:{(Outer0 a)}}","Outer0.B",1//ctx*2, getter,exposer
-    },{"{B:{(Outer0 a, Outer1.B b)}}","Outer0.B",1//ctx*3, getter*2,exposer*2
+    },{"{}","This0",0
+    },{"{()}","This0",1//for desugaring of ()
+    },{"{B:{(This0 a)}}","This0",0
+    },{"{B:{(This1 a)}}","This0",1//ctx, getter, exposer
+    },{"{B:{(This0 a)}}","This0.B",1//ctx*2, getter,exposer
+    },{"{B:{(This0 a, This1.B b)}}","This0.B",1//ctx*3, getter*2,exposer*2
   }});}
   @Test  public void test() {
     ClassB classInput=getClassB(_classInput);
     Path path=Path.parse(_path);
-    path=Path.outer(0,path.getCBar());//normalize, put Outer0 on top.
+    path=Path.outer(0,path.getCBar());//normalize, put This0 on top.
     ExtractInfo.IsUsed iu=new ExtractInfo.IsUsed(path);
     classInput.accept(iu);
     assertEquals(iu.whereUsed.size(),(int)count);//cast to avoid overloading ambiguity :(

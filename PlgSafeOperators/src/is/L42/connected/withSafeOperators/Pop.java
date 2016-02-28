@@ -16,7 +16,7 @@ import platformSpecific.javaTranslation.Resources;
 
 class Pop {
   //error conditions:
-  //Outer0 is not a box
+  //This0 is not a box
   //there is  not exactly 1 member
   static ClassB pop(ClassB cb) throws Resources.Error/*BoxError,AmbiguousPop*/{
     boolean rightSize=cb.getMs().size()==1;

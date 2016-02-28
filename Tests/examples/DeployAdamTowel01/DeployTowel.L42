@@ -7,7 +7,7 @@
     error {privateNormalize()}
   Library record=use SafeOperatorsAccess
     check introspectLibraryReport(norm, path:{'@stringU
-            'Outer0
+            'This
            })
     error {introspectLibraryReport()}
   use SafeOperatorsAccess
@@ -24,7 +24,7 @@ Library <<(Library that) (
   use Alu
     check fileDebug(
       fileName:this.fileName().binaryRepr(),
-      content:Outer0.binaryReprFrom(lib:that)
+      content:This.binaryReprFrom(lib:that)
       )
     error {fileDebug()}
   ExitCode.normal()

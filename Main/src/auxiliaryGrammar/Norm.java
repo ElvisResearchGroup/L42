@@ -156,7 +156,7 @@ public class Norm {
       }
     if(!isPass){return path;}
     List<String> result=new ArrayList<String>();
-    result.add("Outer"+(n-1));
+    result.add("This"+(n-1));
     result.addAll(path.getRowData().subList(2,path.getRowData().size()));
     return of(p,new Path(result));
   }

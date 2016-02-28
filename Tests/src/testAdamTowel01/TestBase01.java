@@ -18,7 +18,7 @@ public class TestBase01 {
   @Before
   public void initialize() throws Throwable {
     //TestHelper.configureForTest();
-    System.out.println("AssertionsDisabled");
+    //System.out.println("AssertionsDisabled");
     //ClassLoader.getSystemClassLoader().setDefaultAssertionStatus(false);
     L42.trustPluginsAndFinalProgram=true;
     //_01_00DeployAdamTowel01();
@@ -57,7 +57,7 @@ public class TestBase01 {
         +"Fresh0\n"
         + "Hello Adam n1:0 n2:false endOfString\n");
     }
- 
+
  @Test
  public  void _01_02introspection() throws Throwable{
    TestHelper.configureForTest();
@@ -68,8 +68,8 @@ public class TestBase01 {
       ,"method "
       ,"Void foo(Void par1, Any par2) }"
       ,"--------------------------"
-      ,"classkind of Outer0 is FreeTemplate"
-      ,"Outer0 as string: {"
+      ,"classkind of This is FreeTemplate"
+      ,"This as string: {"
       ,"Bar:{"
       ,"method "
       ,"Void foo(Void par1, Any par2) }"
@@ -91,18 +91,18 @@ public class TestBase01 {
       //,""
        ));
    }
- 
+
  @Test
  public  void _01_03introspection2() throws Throwable{
    TestHelper.configureForTest();
    L42.main(new String[]{"examples/testsForAdamTowel01/UseIntrospectionAdamTowel2.L42"});
    Assert.assertEquals(L42.record.toString(),TestHelper.multiLine(
-       "fuffa @a beer @Outer1.External bar @.Internal fuzz"
+       "fuffa @a beer @This1.External bar @.Internal fuzz"
       ,""
       ,"a"
       ,"Report plgFailure as --NameStillToFix--\"SafeOperators.introspectLibraryDocPath\""
       ,"Iteration complete"
-      ,"Outer1.External"
+      ,"This1.External"
       ,"External found"
       ,"Iteration complete"
       ,".Internal"
@@ -116,10 +116,10 @@ public class TestBase01 {
    L42.main(new String[]{"examples/testsForAdamTowel01/UseIntrospectionAdamTowel3.L42"});
    Assert.assertEquals(L42.record.toString(),TestHelper.multiLine(
   "Foo!"
- ,"Outer0.External"
- ,"Outer0.Generated"
- ,"Outer0.Generated.Foo"
- ,"Outer0.Debug"
+ ,"This.External"
+ ,"This.Generated"
+ ,"This.Generated.Foo"
+ ,"This.Debug"
 ));
    }
  @Test
@@ -131,17 +131,17 @@ public class TestBase01 {
 ,"true"
 ,"m6(), methRootExternal:false, typeExternal:false, typeRefExternal:false"
 ,"m6(), methRootExternal:true, typeExternal:true, typeRefExternal:true"
-,"Outer0.Generated.Foo"
+,"This.Generated.Foo"
 ,"m5(), methRootExternal:false, typeExternal:true, typeRefExternal:true"
-,"Outer0.External"
+,"This.External"
 ,"m5(), methRootExternal:true, typeExternal:true, typeRefExternal:true"
-,"Outer0.External"
+,"This.External"
 ,"m4(), methRootExternal:false, typeExternal:false, typeRefExternal:false"
 ,"m4(), methRootExternal:true, typeExternal:true, typeRefExternal:true"
-,"Outer0.Generated"
+,"This.Generated"
 ));
    }
- 
+
  @Test
  public  void _01_06introspection5() throws Throwable{
    //this._01_00DeployAdamTowel01();
@@ -158,6 +158,6 @@ public class TestBase01 {
    Assert.assertEquals(L42.record.toString(),
        "a@b\n");}
 
- 
+
 }
 

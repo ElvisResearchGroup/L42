@@ -12,13 +12,13 @@ ListArray:{mut (var mut Cell head,var N size)
   read method 
   S (N that) (
     if that>=this.size() (this.reportError(that))
-    Outer0.auxGet(that,cell:this.head())
+    This.auxGet(that,cell:this.head())
     )
   type method
   S auxGet(N that,read Cell cell){
     with cell (
       on read CellNext case that==0N return cell.val()
-      on read CellNext return Outer0.auxGet(that-1N,cell:cell.next())
+      on read CellNext return This.auxGet(that-1N,cell:cell.next())
       )
     error S"Unreachable"
     }
@@ -26,24 +26,24 @@ ListArray:{mut (var mut Cell head,var N size)
   mut method 
   Void (N that,S val) (
     if that>=this.size() (this.reportError(that))
-    this.head(Outer0.auxSet(that,val:val,cell:this.#head()))
+    this.head(This.auxSet(that,val:val,cell:this.#head()))
     )
   type method
   mut CellNext auxSet(N that,S val,mut Cell cell){
     with cell (
       on mut CellNext case that==0N return CellNext(val:val,next:cell.#next())
-      on mut CellNext return CellNext(val:cell.val(),next:Outer0.auxSet(that-1N,val:val,cell:cell.#next()))
+      on mut CellNext return CellNext(val:cell.val(),next:This.auxSet(that-1N,val:val,cell:cell.#next()))
       )
     error S"Unreachable"
     }
   'EMPTY
   type method 
-  mut Outer0 () Outer0(head:CellEnd(),size:0N)
+  mut This () This(head:CellEnd(),size:0N)
   'ADDING
   mut method
-  mut Outer0 add(S that) (
+  mut This add(S that) (
     this.size(this.size()+1N)
-    this.head(Outer0.auxAdd(that,cell:this.#head()))
+    this.head(This.auxAdd(that,cell:this.#head()))
     this
     )
   type method
@@ -52,7 +52,7 @@ ListArray:{mut (var mut Cell head,var N size)
       on mut CellEnd return CellNext(val:that,next:cell)
       on mut CellNext return CellNext(
         val:cell.val(),
-        next:Outer0.auxAdd(that,cell:cell.#next())
+        next:This.auxAdd(that,cell:cell.#next())
         )
       )
     error S"Unreachable"
@@ -62,11 +62,11 @@ ListArray:{mut (var mut Cell head,var N size)
   '*******************
     
   type method 
-  mut Outer0 #begin() Outer0()
+  mut This #begin() This()
   mut method
-  mut Outer0 #end() this
+  mut This #end() this
   mut method
-  mut Outer0 #add(S that) this.add(that)
+  mut This #add(S that) this.add(that)
   
   
   
@@ -114,7 +114,7 @@ ListArray:{mut (var mut Cell head,var N size)
     Iterator(this,min:-1N,ok:this.size(), max:OptMax(),fill:OptFill())
 
   
-  Iterator:{lent (read Outer1 that, var N min, N ok, OptMax max, OptFill fill)
+  Iterator:{lent (read This1 that, var N min, N ok, OptMax max, OptFill fill)
     mut method
     Void #next() exception Void {
       this.min(this.min()+1N)
@@ -183,7 +183,7 @@ ListArray:{mut (var mut Cell head,var N size)
     VarIterator(this,min:-1N,ok:this.size(), max:OptMax(),fill:OptFill())
 
   
-  VarIterator:{mut (mut Outer1 that, var N min, N ok, OptMax max, OptFill fill)
+  VarIterator:{mut (mut This1 that, var N min, N ok, OptMax max, OptFill fill)
     mut method
     Void inner(S that) this.#that()(this.min(), val:that)
 

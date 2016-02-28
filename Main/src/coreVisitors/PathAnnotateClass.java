@@ -18,11 +18,11 @@ public class PathAnnotateClass extends CloneWithPath{
     int len=astNodesPath.size();
     assert len==astIndexesPath.size();
     StringBuffer comment=new StringBuffer();
-    comment.append("Outer0.");
+    comment.append("This0.");
     for(int i=0;i<len;i++){
       astNodesPath.get(i).match(
           nc->comment.append(nc.getName()),
-          mi->comment.append(mi.getS().toString()), 
+          mi->comment.append(mi.getS().toString()),
           mt->comment.append(mt.getMs().toString())
           );
       comment.append("["+astIndexesPath.get(i)+"]");
@@ -34,7 +34,7 @@ public class PathAnnotateClass extends CloneWithPath{
     //comment+=mt.getMs();
     Doc doc=Doc.factory(comment).sum(mt.getDoc());
     return super.visit(mt.withDoc(doc));
-  }  
+  }
   public ClassB.MethodImplemented visit(ClassB.MethodImplemented mi){
     String comment=this.getLocator().toStringNoAnnotation();//computeComment(this.getAstNodesPath(),this.getAstIndexesPath());
     //comment+=mi.getS();
@@ -46,5 +46,5 @@ public class PathAnnotateClass extends CloneWithPath{
     Doc doc=Doc.factory(comment).sum(cb.getDoc1());
     return super.visit(cb.withDoc1(doc));
   }
-    
+
 }

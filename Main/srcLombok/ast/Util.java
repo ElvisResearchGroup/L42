@@ -41,7 +41,7 @@ public class Util {
   @Value @Wither public static class CsMx{
     @NonNull java.util.List<String> cs;@NonNull MethodSelector ms;
     public String toString(){
-      String prefix="Outer0";
+      String prefix="This0";
       if(!cs.isEmpty()){prefix=String.join(".",cs);}
       return prefix+"::"+ms;}
     }
@@ -62,7 +62,7 @@ public class Util {
     @NonNull Path src; @NonNull ClassB.MethodWithType mwt1;@NonNull ClassB.MethodWithType mwt2;
     //@NonNull List<Path> paths1; @NonNull List<Path> paths2;
     //public String toString(){return ""+paths1+"->"+paths2;}
-    }  
+    }
 
   @Data public static class CachedStage{
     public String toString(){
@@ -93,7 +93,7 @@ public class Util {
 	java.util.List<Path> inheritedPaths=null;
 	List<InvalidMwtAsState> coherent=Collections.emptyList();
 	String givenName="";
-	
+
 	public boolean isInheritedComputed(){return inherited!=null;}
 	public CachedStage copyMostStableInfo(){//to avoid the misdesigned clone
 	  CachedStage result=new CachedStage();

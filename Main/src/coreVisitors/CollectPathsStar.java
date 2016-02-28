@@ -34,7 +34,7 @@ import auxiliaryGrammar.Functions;
     if(tmp!=null){toFrom=tmp;}
     else{
       paths=Functions.remove1Outer(paths);
-      tmpP.addAll(paths);     
+      tmpP.addAll(paths);
     }
     toFrom=tmp;
     paths=tmpP;
@@ -48,7 +48,7 @@ import auxiliaryGrammar.Functions;
     for(ClassB cb:cb0){
       pathsStar.addAll(_CollectPathsStar.of(cb));
     }
-    Path toFrom=Path.parse("Outer0."+nc.getName());
+    Path toFrom=Path.parse("This0."+nc.getName());
     pathsStar=Map.of(p->From.fromP(p,toFrom), pathsStar);
     paths.addAll(pathsStar);
     return nc;
@@ -62,7 +62,7 @@ import auxiliaryGrammar.Functions;
       paths.add(nt.getPath());
       }
     return super.liftH(h);
-  }*/  
+  }*/
   public ClassB.MethodImplemented visit(ClassB.MethodImplemented mi){
     collectPathsFromEandCBs(mi.getInner());
     //throw Assertions.codeNotReachable(ToFormattedText.of(mi));
@@ -83,5 +83,5 @@ import auxiliaryGrammar.Functions;
       pathsStar.addAll(_CollectPathsStar.of(cb));
     }
     paths.addAll(Functions.remove1OuterAndPrimitives(pathsStar));
-  }  
+  }
 }

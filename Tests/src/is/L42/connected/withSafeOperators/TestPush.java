@@ -24,9 +24,9 @@ public class TestPush {
     {"{}","{B:{}}","B"
   },{"{()}","{B:{()}}","B"
   },{"{A:{}}","{B:{A:{}}}","B"
-  },{"{(Outer2 foo)}","{B:{(Outer3 foo)}}","B"
-  },{"{(Outer2 a,Outer1 b,Outer0 c)}","{B:{(Outer3 a,Outer2 b,Outer0 c)}}","B"
-  },{"{(Outer0.H a) H:{}}","{B:{(Outer0.H a) H:{}}}","B"
+  },{"{(This2 foo)}","{B:{(This3 foo)}}","B"
+  },{"{(This2 a,This1 b,This0 c)}","{B:{(This3 a,This2 b,This0 c)}}","B"
+  },{"{(This0.H a) H:{}}","{B:{(This0.H a) H:{}}}","B"
   //test also the pushMany
 }});}
 @Test  public void test() {

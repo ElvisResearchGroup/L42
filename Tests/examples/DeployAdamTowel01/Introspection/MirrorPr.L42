@@ -12,7 +12,7 @@
   method
   type Any introspectDocPath(Path path, N annotationN) exception MetaGuard.NestedClassUnavailable, Void
 
-  Lib:{(Library lib)<:Outer1
+  Lib:{(Library lib)<:This1
     method toS() Introspection(lib:this.lib()).toS()
     method
     introspectReport(root, path) (
@@ -70,7 +70,7 @@
     }
 
 
-  Class:{(type Any lib)<:Outer1
+  Class:{(type Any lib)<:This1
   method toS() Introspection(clazz:this.lib()).toS()
   method
     introspectReport(root, path) (
@@ -78,7 +78,7 @@
         check introspectTypeReport(this.lib(), path:path.binaryRepr())
         error System.Guard.PluginFailure"SafeOperators.introspectTypeReport")
       realRootType=record.docOf(path:Path"MyClass").annotations().top().referredClass()
-      result=NestedClass(_root:result,path:Path"Outer0",mirror:Outer0(lib:realRootType),record: record)
+      result=NestedClass(_root:result,path:Path"This",mirror:This(lib:realRootType),record: record)
       catch error Library x exception MetaGuard.NestedClassUnavailable(record:Record(lib:x),lib:x)
       result)
 

@@ -1,14 +1,14 @@
 {(fwd NestedClass _root,Path path,N memberN,Record record)<:Member,Concept.Equals '@private
-method myName()GetMyName(Outer0)
-method toS() Outer0.myName()++S"["[this.allAsString()]"]"
-method Bool ==(Outer0 that){
+method myName()GetMyName(This)
+method toS() This.myName()++S"["[this.allAsString()]"]"
+method Bool ==(This that){
   if this.path()!=that.path() (return Bool.false())
   if this.memberN()!=this.memberN() (return Bool.false())
   return this.root()==that.root()
   }
-method Bool != (Outer0 that) !(this==that)
+method Bool != (This that) !(this==that)
 method equals(that){
-  with that (on Outer0 return this==that)
+  with that (on This return this==that)
   return Bool.false()
   }
 

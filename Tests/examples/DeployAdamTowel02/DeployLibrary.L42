@@ -21,17 +21,17 @@ Library  exposeAsLibrary(Library that, Path path)
 exception
     MetaGuard.NestedClassUnavailable,
     MetaGuard.PrivacyCoupuled {
-  Assert.$[path!=Path"Outer0"]
+  Assert.$[path!=Path"This"]
   this.checkTargetExists(that,path:path)'throws MetaGuard.NestedClassUnavailable
   var res=that
   Debug(S"1.1")
-  res:=Refactor.RenamePath(Path"Outer0" to:Path"PrImpl")<<res
+  res:=Refactor.RenamePath(Path"This" to:Path"PrImpl")<<res
   error on MetaGuard
     Assert.CodeNotReachable"DeployLibrary1"
   Debug(S"1.2")
   with m in Introspection(lib:that, path:Path"ConceptMap").methods().vals() (
     p=m.returnType().referencedPath().pathFromRoot()
-    res:=Outer0.moveToAbstract(p of:res)
+    res:=This.moveToAbstract(p of:res)
     Debug(S"1.2b "[p]" renamed")
     )
   Debug(S"1.3")
@@ -39,7 +39,7 @@ exception
   Debug(S"1.4")
   error on MetaGuard.MemberUnavailable
     Assert.CodeNotReachable"DeployLibrary3"
-  res:=Refactor.RenamePath(Path"PrImpl"++path to:Path"Outer0")<<res
+  res:=Refactor.RenamePath(Path"PrImpl"++path to:Path"This")<<res
   Debug(S"1.5")
   res:=Refactor.MakePrivatePath(Path"PrImpl")<<res
   Debug(S"1.6")
@@ -56,15 +56,15 @@ exception MetaGuard.NestedClassUnavailable (
   void
   )
 
-type method type Outer0 #begin() Outer0
-method Outer0 #end() this
-type method Outer0 #add(Path that,Url url) Outer0(path:that,url:url)
+type method type This #begin() This
+method This #end() this
+type method This #add(Path that,Url url) This(path:that,url:url)
 
 method
 Library <<(Library that)
 exception MetaGuard.NestedClassUnavailable, MetaGuard.PrivacyCoupuled {
   Debug(S"1")
-  var res=Outer0.exposeAsLibrary(that,path:this.path())
+  var res=This.exposeAsLibrary(that,path:this.path())
   Debug(S"2")
   res:=Optimize.RemoveUnreachableCode[]<<res
   Debug(S"3")

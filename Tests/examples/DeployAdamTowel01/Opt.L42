@@ -13,8 +13,8 @@
         return Bool.true()
         catch error Any return Bool.false()
         }
-      type method Outer0 () Outer0.#new(TEmpty())
-      type method Outer0 (T that) Outer0.#new(TOf(that))
+      type method This () This.#new(TEmpty())
+      type method This (T that) This.#new(TOf(that))
       },
       src:Path"T",dest:that)
   }

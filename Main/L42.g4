@@ -25,7 +25,7 @@ fragment CharsUrl:
 fragment CharsAllStrLine:
  '\t'| 'A'..'Z'|'a'..'z'|'0'..'9' | '(' | ')' | '[' | ']' | '<' | '>' |'&'|'|'|'*'|'+'|'-'|'=' | '/' | '!' | '?' | ';' | ':' | ',' | '.' | ' ' | '~' | '@' | '#' | '$' | '%' | '`' | '^' | '_' | '\\' | '{' | '}' | '\"' | '\'' ;
 fragment CharsAllString:
- '\t'| 'A'..'Z'|'a'..'z'|'0'..'9' | '(' | ')' | '[' | ']' | '<' | '>' |'&'|'|'|'*'|'+'|'-'|'=' | '/' | '!' | '?' | ';' | ':' | ',' | '.' | ' ' | '~' | '@' | '#' | '$' | '%' | '`' | '^' | '_' | '\\' | '{' | '}' | '\'' ;  
+ '\t'| 'A'..'Z'|'a'..'z'|'0'..'9' | '(' | ')' | '[' | ']' | '<' | '>' |'&'|'|'|'*'|'+'|'-'|'=' | '/' | '!' | '?' | ';' | ':' | ',' | '.' | ' ' | '~' | '@' | '#' | '$' | '%' | '`' | '^' | '_' | '\\' | '{' | '}' | '\'' ;
 fragment StrLine: '\'' CharsAllStrLine* '\n'; // tab not valid in 42, used to encode ( with space in initial rewriting
 fragment String: CharsAllString*;
 //fragment Num:Digit|'-'|'.';
@@ -79,7 +79,7 @@ ClassMethSep: '::';
 MX:Lowercase (Uppercase|Lowercase|Digit|'#')*'(';
 X:Lowercase (Uppercase|Lowercase|Digit|'#')*;
 HashX:'#'  (Uppercase|Lowercase|Digit|'#')*'(';
-HashId:'#'  (Uppercase|Lowercase|Digit|'#');
+ContextId: '\\'  (Uppercase|Lowercase|Digit|'#')*;
 //void is a particular X, syntactically
 
 StringQuote: '"' String '"' | '"' (' ' | ',')* '\n' ((' ' | ',')*StrLine)+ (' ' | ',')* '"';
@@ -128,9 +128,9 @@ eL1:
 numParse: DataOp? NumParse;
 eUnOp: UnOp? /*numParse?*/ ePost;
 ePost: eAtom  (squareW|square|Dot mCall|ORoundNoSpace round|docs | stringParse)*;
-eAtom:classBReuse|classB|numParse? x | xOp|numParse? Path|numParse? block|ifExpr|whileExpr| signalExpr| loopExpr |WalkBy | w |using | DotDotDot | mxRound | useSquare|hashId;
+eAtom:classBReuse|classB|numParse? x | xOp|numParse? Path|numParse? block|ifExpr|whileExpr| signalExpr| loopExpr |WalkBy | w |using | DotDotDot | mxRound | useSquare|contextId;
 mxRound: m round;
-hashId: HashId;
+contextId: ContextId;
 useSquare: Using square | Using squareW;
 ifExpr: If eTop block (Else eTop)?;
 using:Using Path Check mCall eTop;
@@ -154,7 +154,7 @@ ps:(eTop )?(X Colon  eTop )*;
 k1: Catch S t X  eTop;
 kMany:Catch S t+  eTop;
 kProp:S On t+  eTop;
-k:k1|kMany|kProp;   
+k:k1|kMany|kProp;
 ks:k*;//other variations to come (k|kMany|kProp)*
 
 on: On t (Case eTop)? eTop;

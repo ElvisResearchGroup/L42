@@ -2,15 +2,15 @@
 
 Bool:{interface <:Outer1.S.ToS
 type method 
-Outer0 #apply() 
+This #apply() 
 method 
 Void #checkTrue() exception Void 
 method 
-Outer0 #and(Outer0 that) 
+This #and(This that) 
 method 
-Outer0 #or(Outer0 that) 
+This #or(This that) 
 method 
-Outer0 #bang() }
+This #bang() }
 True:{ _private()<:Outer1.Bool
 method #apply() this._private()
 method #checkTrue() void
@@ -159,7 +159,7 @@ Outer1.Bool #rightequal(Outer1.N that) (
   'CurlyBlock-Should be unreachable code
   }
   )}
-S:{ #stringParser(Library that)<:Outer0.ToS
+S:{ #stringParser(Library that)<:This.ToS
 Varresult0:{mut #apply(var Outer2.S inner)}
 Vari0:{mut #apply(var Outer2.N inner)}
 ToS:{interface 
@@ -167,7 +167,7 @@ method
 Outer2.S toS() }
 method toS() this
 method 
-Outer1.S #plusplus(Outer0.ToS that) Outer1.S.#stringParser(that:using Outer1.Alu check stringConcat(s1:this.that(), s2:that.toS().that()) error void)
+Outer1.S #plusplus(This.ToS that) Outer1.S.#stringParser(that:using Outer1.Alu check stringConcat(s1:this.that(), s2:that.toS().that()) error void)
 method 
 Outer1.Bool #bangequal(Outer1.S that) this.#equalequal(that:that).#bang()
 method 
@@ -203,14 +203,14 @@ Outer1.S replace(Outer1.S that, Outer1.S into) (
     })
     Outer1.S result=Outer1.S.#stringParser(that:{'@stringU
     })
-    mut Outer0.Vari0 vari=Outer0.Vari0.#apply(inner:i)
-    mut Outer0.Varresult0 varresult=Outer0.Varresult0.#apply(inner:result)
+    mut This.Vari0 vari=This.Vari0.#apply(inner:i)
+    mut This.Varresult0 varresult=This.Varresult0.#apply(inner:result)
     Void unused0=(
       Void unused2=loop (
         Void unused3=vari.#inner().#left(that:this.size()).#checkTrue()
         (
           Void unused4=(
-            Outer0.#apply(that ) .#equalequal(that ) cond=this.#apply(that:vari.#inner()).#equalequal(that:that)
+            This.#apply(that ) .#equalequal(that ) cond=this.#apply(that:vari.#inner()).#equalequal(that:that)
             (
               Void unused5=cond.#checkTrue()
               catch exception unused6 (
@@ -248,34 +248,34 @@ IntrospectionPlugin:{'@plugin
 'L42.is/connected/withItself
  #apply()
 type method 
-Library sumLib(Library l1, Library l2) using Outer0 check sumLib(l1:l1, l2:l2) error { sumLib()}
+Library sumLib(Library l1, Library l2) using This check sumLib(l1:l1, l2:l2) error { sumLib()}
 type method 
-Library adaptLib(Library l1, Library l2) using Outer0 check adaptLib(l1:l1, l2:l2) error { adaptLib()}
+Library adaptLib(Library l1, Library l2) using This check adaptLib(l1:l1, l2:l2) error { adaptLib()}
 type method 
-Library nameToAdapter(Library that) using Outer0 check nameToAdapter(that:that) error { nameToAdapter()}
+Library nameToAdapter(Library that) using This check nameToAdapter(that:that) error { nameToAdapter()}
 type method 
-Library typeNameToAdapter(type Any that) using Outer0 check typeNameToAdapter(that:that) error { typeNameToAdapter()}
+Library typeNameToAdapter(type Any that) using This check typeNameToAdapter(that:that) error { typeNameToAdapter()}
 type method 
-Library getFreshName(Library that) using Outer0 check getFreshName(that:that) error { getFreshName()}}
+Library getFreshName(Library that) using This check getFreshName(that:that) error { getFreshName()}}
 Collections:{ #apply()
 ListCode:{ _new()
 type method 
 Library #apply() {' generic linked list class, elements of type Elem
- _new(Outer0.Cell head)
+ _new(This.Cell head)
 Varres1:{mut #apply(var Outer1 inner)}
 Varres2:{mut #apply(var Outer1.#apply()  inner)}
 type method 
-Outer0 #apply() Outer0._new(head:Outer0.CellEnd.#apply())
+This #apply() This._new(head:This.CellEnd.#apply())
 method 
 Outer3.Bool isEmpty() (
   Void unused=(
     Void unused0=(
-      Outer0.head() x=this.head()
+      This.head() x=this.head()
       (
-        Outer0.CellEnd x0=(
+        This.CellEnd x0=(
           Void unused1=return x
           catch return casted (
-            on Outer0.CellEnd casted
+            on This.CellEnd casted
             
             on Any exception void
             )
@@ -302,15 +302,15 @@ Outer3.Bool isEmpty() (
   }
   )
 method 
-Outer0.Elem top() this.head().#inner()
+This.Elem top() this.head().#inner()
 method 
-mut Outer0.Iterator vals() this.head().vals(terminate:Outer3.True.#apply())
+mut This.Iterator vals() this.head().vals(terminate:Outer3.True.#apply())
 method 
-mut Outer0.Iterator valsCut() this.head().vals(terminate:Outer3.False.#apply())
+mut This.Iterator valsCut() this.head().vals(terminate:Outer3.False.#apply())
 method 
-Outer0 pop() (
+This pop() (
   Void unused=(
-    Void unused0=return Outer0._new(head:this.head().#next())
+    Void unused0=return This._new(head:this.head().#next())
     catch exception unused1 (
       on Void error Outer3.S.#stringParser(that:{'@stringU
       'PopOnEmpyList
@@ -319,19 +319,19 @@ Outer0 pop() (
     void
     )
   catch return result (
-    on Outer0 result
+    on This result
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
   }
   )
 method 
-Outer0 #plusplus(Outer0 that) (
+This #plusplus(This that) (
   Void unused=(
-    Outer0 res=this
-    mut Outer0.Varres1 varres=Outer0.Varres1.#apply(inner:res)
+    This res=this
+    mut This.Varres1 varres=This.Varres1.#apply(inner:res)
     Void unused0=(
-      Outer0.vals() e=that.vals()
+      This.vals() e=that.vals()
       (
         Void unused2=(
           Void unused3=(
@@ -365,7 +365,7 @@ Outer0 #plusplus(Outer0 that) (
           void
           )
         catch return propagated0 (
-          on Outer0 (
+          on This (
             Void unused12=e.#close()
             return propagated0
             )
@@ -377,22 +377,22 @@ Outer0 #plusplus(Outer0 that) (
     void
     )
   catch return result (
-    on Outer0 result
+    on This result
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
   }
   )
 type method 
-Outer0 #begin() Outer0.#apply()
+This #begin() This.#apply()
 method 
-Outer0 #add(Outer0.Elem that) Outer0._new(head:Outer0.CellNext.#apply(elem:that, nextCell:this.head()))
+This #add(This.Elem that) This._new(head:This.CellNext.#apply(elem:that, nextCell:this.head()))
 method 
-Outer0 #end() (
-  Outer0.#apply() res=Outer0.#apply()
-  mut Outer0.Varres2 varres=Outer0.Varres2.#apply(inner:res)
+This #end() (
+  This.#apply() res=This.#apply()
+  mut This.Varres2 varres=This.Varres2.#apply(inner:res)
   Void unused=(
-    Outer0.vals() elem=this.vals()
+    This.vals() elem=this.vals()
     (
       Void unused0=(
         Void unused1=(
@@ -439,7 +439,7 @@ Outer0 #end() (
 Elem:{}
 Cell:{interface 
 method 
-mut Outer1.Iterator vals(Outer4.Bool terminate) 
+mut Outer1.Iterator vals(This4.Bool terminate) 
 method 
 Outer1.Cell #next() exception Void 
 method 
@@ -449,7 +449,7 @@ Void #checkEnd() }
 CellEnd:{ #apply()<:Outer1.Cell
 method vals(terminate ) Outer1.Iterator.#apply(that:this, terminate:terminate)
 method #next() exception void
-method #inner() error Outer4.S.#stringParser(that:{'@stringU
+method #inner() error This4.S.#stringParser(that:{'@stringU
 'InnerOnCellEnd, should not happen
 })
 method #checkEnd() void}
@@ -461,7 +461,7 @@ method vals(terminate ) (
     void
     )
   catch return result (
-    on Outer0.vals(terminate ) result
+    on This.vals(terminate ) result
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
@@ -470,7 +470,7 @@ method vals(terminate ) (
 method #next() this.nextCell()
 method #inner() this.elem()
 method #checkEnd() (
-  Outer0.#checkEnd() .this.nextCell() cell=this.nextCell()
+  This.#checkEnd() .this.nextCell() cell=this.nextCell()
   (
     Outer1.CellNext cell0=(
       Void unused=return cell
@@ -487,18 +487,18 @@ method #checkEnd() (
       on Void void
       )
     (
-      Void unused1=error Outer4.S.#stringParser(that:{'@stringU
+      Void unused1=error This4.S.#stringParser(that:{'@stringU
       'IterationNotComplete,\u000a  use valsCut() to allows incomplete iterations\u000a
       })
       void
       )
     )
   )}
-Iterator:{mut #apply(var Outer1.Cell that, Outer4.Bool terminate)
+Iterator:{mut #apply(var Outer1.Cell that, This4.Bool terminate)
 mut method 
 Void #next() exception Void (
   Void unused=(
-    Outer0.that() .#next() x=this.that().#next()
+    This.that() .#next() x=this.that().#next()
     Void unused0=(
       Outer1.CellEnd x0=(
         Void unused2=return x
@@ -531,7 +531,7 @@ Void #next() exception Void (
   )
 read method 
 Void #checkEnd() (
-  Outer0.terminate() cond=this.terminate()
+  This.terminate() cond=this.terminate()
   (
     Void unused=cond.#checkTrue()
     catch exception unused0 (
@@ -564,7 +564,7 @@ Library list(type Any that) (
 type method 
 Library list(Library adapter) (
   Void unused=(
-    Void unused0=return Outer1.IntrospectionPlugin.adaptLib(l1:Outer0.ListCode.#apply(), l2:adapter)
+    Void unused0=return Outer1.IntrospectionPlugin.adaptLib(l1:This.ListCode.#apply(), l2:adapter)
     void
     )
   catch return result (
@@ -599,17 +599,17 @@ Introspection:{ #apply(Library that, Outer1.S node)
 VarmNum:{mut #apply(var Outer2.N inner)}
 Varms:{mut #apply(var Outer1.Methods inner)}
 type method 
-Outer0 #apply(Library that) Outer0.#apply(that:that, node:Outer1.S.#stringParser(that:{'@stringU
-'Outer0
+This #apply(Library that) This.#apply(that:that, node:Outer1.S.#stringParser(that:{'@stringU
+'This
 }))
 method 
 Outer1.S get() Outer1.S.#stringParser(that:using Outer1.IntrospectionPlugin check get(that:this.that(), node:this.node().that()) error { getThatNode()})
 method 
 Library getIfExists(Outer1.N interfaceNum) exception Void using Outer1.IntrospectionPlugin check getOrElse(that:this.that(), interfaceNum:interfaceNum.that(), node:this.node().that()) exception void
 method 
-Outer0.Method get(Outer1.N methodNum) exception Void (
+This.Method get(Outer1.N methodNum) exception Void (
   Library name=using Outer1.IntrospectionPlugin check getNameOrElse(that:this.that(), methodNum:methodNum.that(), node:this.node().that()) exception void
-  Outer0.Method.#apply(myClass:this, num:methodNum, name:Outer1.S.#stringParser(that:name))
+  This.Method.#apply(myClass:this, num:methodNum, name:Outer1.S.#stringParser(that:name))
   )
 Method:{ #apply(Outer1 myClass, Outer2.N num, Outer2.S name)
 VarpNum:{mut #apply(var Outer3.N.#numberParser(that )  inner)}
@@ -649,8 +649,8 @@ Outer1.Parameters parameters() (
     Outer2.N.#numberParser(that ) pNum=Outer2.N.#numberParser(that:{'@stringU
     '0
     })
-    mut Outer0.Varps varps=Outer0.Varps.#apply(inner:ps)
-    mut Outer0.VarpNum varpNum=Outer0.VarpNum.#apply(inner:pNum)
+    mut This.Varps varps=This.Varps.#apply(inner:ps)
+    mut This.VarpNum varpNum=This.VarpNum.#apply(inner:pNum)
     Void unused0=(
       Void unused2=loop (
         Void unused3=Outer2.True.#apply().#checkTrue()
@@ -680,21 +680,21 @@ Parameter:{ #apply(Outer1.Method myMethod, Outer2.N num, Outer2.S name)
 method 
 Outer2.Name class() Outer2.Name.#apply(isExternal:Outer2.True.#apply(), adapter:using Outer2.IntrospectionPlugin check getTypePathOrElse(that:this.myMethod().myClass().that(), methodNum:this.myMethod().num().that(), parameterNum:this.num().that(), node:this.myMethod().myClass().node().that()) error { invalidMethodNumber()})}
 Parameters:{' generic linked list class, elements of type Elem
- _new(Outer0.Cell head)
+ _new(This.Cell head)
 Varres1:{mut #apply(var Outer1 inner)}
 Varres2:{mut #apply(var Outer1.#apply()  inner)}
 type method 
-Outer0 #apply() Outer0._new(head:Outer0.CellEnd.#apply())
+This #apply() This._new(head:This.CellEnd.#apply())
 method 
 Outer2.Bool isEmpty() (
   Void unused=(
     Void unused0=(
-      Outer0.head() x=this.head()
+      This.head() x=this.head()
       (
-        Outer0.CellEnd x0=(
+        This.CellEnd x0=(
           Void unused1=return x
           catch return casted (
-            on Outer0.CellEnd casted
+            on This.CellEnd casted
             
             on Any exception void
             )
@@ -723,13 +723,13 @@ Outer2.Bool isEmpty() (
 method 
 Outer1.Parameter top() this.head().#inner()
 method 
-mut Outer0.Iterator vals() this.head().vals(terminate:Outer2.True.#apply())
+mut This.Iterator vals() this.head().vals(terminate:Outer2.True.#apply())
 method 
-mut Outer0.Iterator valsCut() this.head().vals(terminate:Outer2.False.#apply())
+mut This.Iterator valsCut() this.head().vals(terminate:Outer2.False.#apply())
 method 
-Outer0 pop() (
+This pop() (
   Void unused=(
-    Void unused0=return Outer0._new(head:this.head().#next())
+    Void unused0=return This._new(head:this.head().#next())
     catch exception unused1 (
       on Void error Outer2.S.#stringParser(that:{'@stringU
       'PopOnEmpyList
@@ -738,19 +738,19 @@ Outer0 pop() (
     void
     )
   catch return result (
-    on Outer0 result
+    on This result
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
   }
   )
 method 
-Outer0 #plusplus(Outer0 that) (
+This #plusplus(This that) (
   Void unused=(
-    Outer0 res=this
-    mut Outer0.Varres1 varres=Outer0.Varres1.#apply(inner:res)
+    This res=this
+    mut This.Varres1 varres=This.Varres1.#apply(inner:res)
     Void unused0=(
-      Outer0.vals() e=that.vals()
+      This.vals() e=that.vals()
       (
         Void unused2=(
           Void unused3=(
@@ -784,7 +784,7 @@ Outer0 #plusplus(Outer0 that) (
           void
           )
         catch return propagated0 (
-          on Outer0 (
+          on This (
             Void unused12=e.#close()
             return propagated0
             )
@@ -796,22 +796,22 @@ Outer0 #plusplus(Outer0 that) (
     void
     )
   catch return result (
-    on Outer0 result
+    on This result
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
   }
   )
 type method 
-Outer0 #begin() Outer0.#apply()
+This #begin() This.#apply()
 method 
-Outer0 #add(Outer1.Parameter that) Outer0._new(head:Outer0.CellNext.#apply(elem:that, nextCell:this.head()))
+This #add(Outer1.Parameter that) This._new(head:This.CellNext.#apply(elem:that, nextCell:this.head()))
 method 
-Outer0 #end() (
-  Outer0.#apply() res=Outer0.#apply()
-  mut Outer0.Varres2 varres=Outer0.Varres2.#apply(inner:res)
+This #end() (
+  This.#apply() res=This.#apply()
+  mut This.Varres2 varres=This.Varres2.#apply(inner:res)
   Void unused=(
-    Outer0.vals() elem=this.vals()
+    This.vals() elem=this.vals()
     (
       Void unused0=(
         Void unused1=(
@@ -879,7 +879,7 @@ method vals(terminate ) (
     void
     )
   catch return result (
-    on Outer0.vals(terminate ) result
+    on This.vals(terminate ) result
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
@@ -888,7 +888,7 @@ method vals(terminate ) (
 method #next() this.nextCell()
 method #inner() this.elem()
 method #checkEnd() (
-  Outer0.#checkEnd() .this.nextCell() cell=this.nextCell()
+  This.#checkEnd() .this.nextCell() cell=this.nextCell()
   (
     Outer1.CellNext cell0=(
       Void unused=return cell
@@ -916,7 +916,7 @@ Iterator:{mut #apply(var Outer1.Cell that, Outer3.Bool terminate)
 mut method 
 Void #next() exception Void (
   Void unused=(
-    Outer0.that() .#next() x=this.that().#next()
+    This.that() .#next() x=this.that().#next()
     Void unused0=(
       Outer1.CellEnd x0=(
         Void unused2=return x
@@ -949,7 +949,7 @@ Void #next() exception Void (
   )
 read method 
 Void #checkEnd() (
-  Outer0.terminate() cond=this.terminate()
+  This.terminate() cond=this.terminate()
   (
     Void unused=cond.#checkTrue()
     catch exception unused0 (
@@ -963,21 +963,21 @@ Outer2.Parameter #inner() this.that().#inner()
 read method 
 Void #close() void}}
 Methods:{' generic linked list class, elements of type Elem
- _new(Outer0.Cell head)
+ _new(This.Cell head)
 Varres1:{mut #apply(var Outer1 inner)}
 Varres2:{mut #apply(var Outer1.#apply()  inner)}
 type method 
-Outer0 #apply() Outer0._new(head:Outer0.CellEnd.#apply())
+This #apply() This._new(head:This.CellEnd.#apply())
 method 
 Outer2.Bool isEmpty() (
   Void unused=(
     Void unused0=(
-      Outer0.head() x=this.head()
+      This.head() x=this.head()
       (
-        Outer0.CellEnd x0=(
+        This.CellEnd x0=(
           Void unused1=return x
           catch return casted (
-            on Outer0.CellEnd casted
+            on This.CellEnd casted
             
             on Any exception void
             )
@@ -1006,13 +1006,13 @@ Outer2.Bool isEmpty() (
 method 
 Outer1.Method top() this.head().#inner()
 method 
-mut Outer0.Iterator vals() this.head().vals(terminate:Outer2.True.#apply())
+mut This.Iterator vals() this.head().vals(terminate:Outer2.True.#apply())
 method 
-mut Outer0.Iterator valsCut() this.head().vals(terminate:Outer2.False.#apply())
+mut This.Iterator valsCut() this.head().vals(terminate:Outer2.False.#apply())
 method 
-Outer0 pop() (
+This pop() (
   Void unused=(
-    Void unused0=return Outer0._new(head:this.head().#next())
+    Void unused0=return This._new(head:this.head().#next())
     catch exception unused1 (
       on Void error Outer2.S.#stringParser(that:{'@stringU
       'PopOnEmpyList
@@ -1021,19 +1021,19 @@ Outer0 pop() (
     void
     )
   catch return result (
-    on Outer0 result
+    on This result
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
   }
   )
 method 
-Outer0 #plusplus(Outer0 that) (
+This #plusplus(This that) (
   Void unused=(
-    Outer0 res=this
-    mut Outer0.Varres1 varres=Outer0.Varres1.#apply(inner:res)
+    This res=this
+    mut This.Varres1 varres=This.Varres1.#apply(inner:res)
     Void unused0=(
-      Outer0.vals() e=that.vals()
+      This.vals() e=that.vals()
       (
         Void unused2=(
           Void unused3=(
@@ -1067,7 +1067,7 @@ Outer0 #plusplus(Outer0 that) (
           void
           )
         catch return propagated0 (
-          on Outer0 (
+          on This (
             Void unused12=e.#close()
             return propagated0
             )
@@ -1079,22 +1079,22 @@ Outer0 #plusplus(Outer0 that) (
     void
     )
   catch return result (
-    on Outer0 result
+    on This result
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
   }
   )
 type method 
-Outer0 #begin() Outer0.#apply()
+This #begin() This.#apply()
 method 
-Outer0 #add(Outer1.Method that) Outer0._new(head:Outer0.CellNext.#apply(elem:that, nextCell:this.head()))
+This #add(Outer1.Method that) This._new(head:This.CellNext.#apply(elem:that, nextCell:this.head()))
 method 
-Outer0 #end() (
-  Outer0.#apply() res=Outer0.#apply()
-  mut Outer0.Varres2 varres=Outer0.Varres2.#apply(inner:res)
+This #end() (
+  This.#apply() res=This.#apply()
+  mut This.Varres2 varres=This.Varres2.#apply(inner:res)
   Void unused=(
-    Outer0.vals() elem=this.vals()
+    This.vals() elem=this.vals()
     (
       Void unused0=(
         Void unused1=(
@@ -1162,7 +1162,7 @@ method vals(terminate ) (
     void
     )
   catch return result (
-    on Outer0.vals(terminate ) result
+    on This.vals(terminate ) result
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
@@ -1171,7 +1171,7 @@ method vals(terminate ) (
 method #next() this.nextCell()
 method #inner() this.elem()
 method #checkEnd() (
-  Outer0.#checkEnd() .this.nextCell() cell=this.nextCell()
+  This.#checkEnd() .this.nextCell() cell=this.nextCell()
   (
     Outer1.CellNext cell0=(
       Void unused=return cell
@@ -1199,7 +1199,7 @@ Iterator:{mut #apply(var Outer1.Cell that, Outer3.Bool terminate)
 mut method 
 Void #next() exception Void (
   Void unused=(
-    Outer0.that() .#next() x=this.that().#next()
+    This.that() .#next() x=this.that().#next()
     Void unused0=(
       Outer1.CellEnd x0=(
         Void unused2=return x
@@ -1232,7 +1232,7 @@ Void #next() exception Void (
   )
 read method 
 Void #checkEnd() (
-  Outer0.terminate() cond=this.terminate()
+  This.terminate() cond=this.terminate()
   (
     Void unused=cond.#checkTrue()
     catch exception unused0 (
@@ -1246,14 +1246,14 @@ Outer2.Method #inner() this.that().#inner()
 read method 
 Void #close() void}}
 method 
-Outer0.Methods methods() (
+This.Methods methods() (
   Void unused=(
-    Outer0.Methods ms=Outer0.Methods.#begin().#end()
+    This.Methods ms=This.Methods.#begin().#end()
     Outer1.N mNum=Outer1.N.#numberParser(that:{'@stringU
     '0
     })
-    mut Outer0.Varms varms=Outer0.Varms.#apply(inner:ms)
-    mut Outer0.VarmNum varmNum=Outer0.VarmNum.#apply(inner:mNum)
+    mut This.Varms varms=This.Varms.#apply(inner:ms)
+    mut This.VarmNum varmNum=This.VarmNum.#apply(inner:mNum)
     Void unused0=(
       Void unused2=loop (
         Void unused3=Outer1.True.#apply().#checkTrue()
@@ -1273,20 +1273,20 @@ Outer0.Methods methods() (
     void
     )
   catch return result (
-    on Outer0.Methods result
+    on This.Methods result
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
   }
   )
 method 
-Outer0.Parameters fields() (
+This.Parameters fields() (
   Void unused=(
-    Outer0.methods() ms=this.methods()
-    Outer0.Method ctor=(
+    This.methods() ms=this.methods()
+    This.Method ctor=(
       Void unused1=(
         Void unused2=(
-          Outer0.methods() .vals() m=ms.vals()
+          This.methods() .vals() m=ms.vals()
           (
             Void unused4=(
               Void unused5=(
@@ -1305,7 +1305,7 @@ Outer0.Parameters fields() (
                       )
                     )
                   (
-                    Outer0.methods() .vals() .#inner() .isField() .#and(that ) cond=m.#inner().isField().#and(that:m.#inner().getMdf().#equalequal(that:Outer1.S.#stringParser(that:{'@stringU
+                    This.methods() .vals() .#inner() .isField() .#and(that ) cond=m.#inner().isField().#and(that:m.#inner().getMdf().#equalequal(that:Outer1.S.#stringParser(that:{'@stringU
                     'Type
                     })))
                     (
@@ -1331,7 +1331,7 @@ Outer0.Parameters fields() (
               void
               )
             catch return propagated0 (
-              on Outer0.Method (
+              on This.Method (
                 Void unused16=m.#close()
                 return propagated0
                 )
@@ -1345,7 +1345,7 @@ Outer0.Parameters fields() (
         void
         )
       catch return result0 (
-        on Outer0.Method result0
+        on This.Method result0
         )
       error {'@stringU
       'CurlyBlock-Should be unreachable code
@@ -1355,7 +1355,7 @@ Outer0.Parameters fields() (
     void
     )
   catch return result (
-    on Outer0.Parameters result
+    on This.Parameters result
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
@@ -1404,10 +1404,10 @@ Void set(Outer1.S that, Outer1.S id) (
   })).#plusplus(that:Outer1.Gui.jsEscape(that:that)).#plusplus(that:Outer1.S.#stringParser(that:{'@stringU
   '');
   }))
-  Outer0.executeJs(that ) x=this.executeJs(that:cmd)
+  This.executeJs(that ) x=this.executeJs(that:cmd)
   Void unused=using Outer1.Alu check stringDebug(that:cmd.that()) void
   Void unused0=(
-    Outer0.executeJs(that ) .#bangequal(that ) cond=x.#bangequal(that:Outer1.S.#stringParser(that:{'@stringU
+    This.executeJs(that ) .#bangequal(that ) cond=x.#bangequal(that:Outer1.S.#stringParser(that:{'@stringU
     }))
     (
       Void unused1=cond.#checkTrue()
@@ -1422,7 +1422,7 @@ Void set(Outer1.S that, Outer1.S id) (
 method 
 Outer1.S executeJs(Outer1.S that) Outer1.S.#stringParser(that:using Outer1.Gui check executeJs(wName:this.id().that(), command:that.that()) error void)
 method 
-mut Outer0.Iterator events() Outer0.Iterator.#apply(id:this.id(), current:Outer1.S.#stringParser(that:{'@stringU
+mut This.Iterator events() This.Iterator.#apply(id:this.id(), current:Outer1.S.#stringParser(that:{'@stringU
 }))
 Iterator:{mut #apply(Outer2.S id, var Outer2.S current)
 type method 
@@ -1468,7 +1468,7 @@ Opt:{ unused()
 type method 
 Library #apply(type Any that) Outer1.Adapt.#begin().#add(that:Outer1.Name.#stringParser(that:{'@stringU
 'T
-}), into:Outer1.Name.#apply(that:that)).#end().#left(that:{ #new(Outer0.TOpt that)
+}), into:Outer1.Name.#apply(that:that)).#end().#left(that:{ #new(This.TOpt that)
 T:{}
 TOpt:{interface 
 method 
@@ -1480,11 +1480,11 @@ method get() error Outer3.S.#stringParser(that:{'@stringU
 TOf:{ #apply(Outer1.T that)<:Outer1.TOpt
 method get() this.that()}
 method 
-Outer0.T #bang() this.that().get()
+This.T #bang() this.that().get()
 method 
 Outer2.Bool isPresent() (
   Void unused=(
-    Outer0.#bang() aux=this.#bang()
+    This.#bang() aux=this.#bang()
     Void unused0=return Outer2.True.#apply()
     catch error unused1 (
       on Any return Outer2.False.#apply()
@@ -1499,12 +1499,12 @@ Outer2.Bool isPresent() (
   }
   )
 type method 
-Outer0 #apply() Outer0.#new(that:Outer0.TEmpty.#apply())
+This #apply() This.#new(that:This.TEmpty.#apply())
 type method 
-Outer0 #apply(Outer0.T that) Outer0.#new(that:Outer0.TOf.#apply(that:that))})}
-Use:{ #apply(Outer0.Resolver resolver, Outer0.Libs myLibs)
+This #apply(This.T that) This.#new(that:This.TOf.#apply(that:that))})}
+Use:{ #apply(This.Resolver resolver, This.Libs myLibs)
 Varresult1:{mut #apply(var Library inner)}
-Resolver:{ #new(Outer0.TOpt that)
+Resolver:{ #new(This.TOpt that)
 TOpt:{interface 
 method 
 Library get() }
@@ -1519,7 +1519,7 @@ Library #bang() this.that().get()
 method 
 Outer2.Bool isPresent() (
   Void unused=(
-    Outer0.#bang() aux=this.#bang()
+    This.#bang() aux=this.#bang()
     Void unused0=return Outer2.True.#apply()
     catch error unused1 (
       on Any return Outer2.False.#apply()
@@ -1534,25 +1534,25 @@ Outer2.Bool isPresent() (
   }
   )
 type method 
-Outer0 #apply() Outer0.#new(that:Outer0.TEmpty.#apply())
+This #apply() This.#new(that:This.TEmpty.#apply())
 type method 
-Outer0 #apply(Library that) Outer0.#new(that:Outer0.TOf.#apply(that:that))}
+This #apply(Library that) This.#new(that:This.TOf.#apply(that:that))}
 Libs:{' generic linked list class, elements of type Elem
- _new(Outer0.Cell head)
+ _new(This.Cell head)
 Varres1:{mut #apply(var Outer1 inner)}
 Varres2:{mut #apply(var Outer1.#apply()  inner)}
 type method 
-Outer0 #apply() Outer0._new(head:Outer0.CellEnd.#apply())
+This #apply() This._new(head:This.CellEnd.#apply())
 method 
 Outer2.Bool isEmpty() (
   Void unused=(
     Void unused0=(
-      Outer0.head() x=this.head()
+      This.head() x=this.head()
       (
-        Outer0.CellEnd x0=(
+        This.CellEnd x0=(
           Void unused1=return x
           catch return casted (
-            on Outer0.CellEnd casted
+            on This.CellEnd casted
             
             on Any exception void
             )
@@ -1581,13 +1581,13 @@ Outer2.Bool isEmpty() (
 method 
 Library top() this.head().#inner()
 method 
-mut Outer0.Iterator vals() this.head().vals(terminate:Outer2.True.#apply())
+mut This.Iterator vals() this.head().vals(terminate:Outer2.True.#apply())
 method 
-mut Outer0.Iterator valsCut() this.head().vals(terminate:Outer2.False.#apply())
+mut This.Iterator valsCut() this.head().vals(terminate:Outer2.False.#apply())
 method 
-Outer0 pop() (
+This pop() (
   Void unused=(
-    Void unused0=return Outer0._new(head:this.head().#next())
+    Void unused0=return This._new(head:this.head().#next())
     catch exception unused1 (
       on Void error Outer2.S.#stringParser(that:{'@stringU
       'PopOnEmpyList
@@ -1596,19 +1596,19 @@ Outer0 pop() (
     void
     )
   catch return result (
-    on Outer0 result
+    on This result
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
   }
   )
 method 
-Outer0 #plusplus(Outer0 that) (
+This #plusplus(This that) (
   Void unused=(
-    Outer0 res=this
-    mut Outer0.Varres1 varres=Outer0.Varres1.#apply(inner:res)
+    This res=this
+    mut This.Varres1 varres=This.Varres1.#apply(inner:res)
     Void unused0=(
-      Outer0.vals() e=that.vals()
+      This.vals() e=that.vals()
       (
         Void unused2=(
           Void unused3=(
@@ -1642,7 +1642,7 @@ Outer0 #plusplus(Outer0 that) (
           void
           )
         catch return propagated0 (
-          on Outer0 (
+          on This (
             Void unused12=e.#close()
             return propagated0
             )
@@ -1654,22 +1654,22 @@ Outer0 #plusplus(Outer0 that) (
     void
     )
   catch return result (
-    on Outer0 result
+    on This result
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
   }
   )
 type method 
-Outer0 #begin() Outer0.#apply()
+This #begin() This.#apply()
 method 
-Outer0 #add(Library that) Outer0._new(head:Outer0.CellNext.#apply(elem:that, nextCell:this.head()))
+This #add(Library that) This._new(head:This.CellNext.#apply(elem:that, nextCell:this.head()))
 method 
-Outer0 #end() (
-  Outer0.#apply() res=Outer0.#apply()
-  mut Outer0.Varres2 varres=Outer0.Varres2.#apply(inner:res)
+This #end() (
+  This.#apply() res=This.#apply()
+  mut This.Varres2 varres=This.Varres2.#apply(inner:res)
   Void unused=(
-    Outer0.vals() elem=this.vals()
+    This.vals() elem=this.vals()
     (
       Void unused0=(
         Void unused1=(
@@ -1737,7 +1737,7 @@ method vals(terminate ) (
     void
     )
   catch return result (
-    on Outer0.vals(terminate ) result
+    on This.vals(terminate ) result
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
@@ -1746,7 +1746,7 @@ method vals(terminate ) (
 method #next() this.nextCell()
 method #inner() this.elem()
 method #checkEnd() (
-  Outer0.#checkEnd() .this.nextCell() cell=this.nextCell()
+  This.#checkEnd() .this.nextCell() cell=this.nextCell()
   (
     Outer1.CellNext cell0=(
       Void unused=return cell
@@ -1774,7 +1774,7 @@ Iterator:{mut #apply(var Outer1.Cell that, Outer3.Bool terminate)
 mut method 
 Void #next() exception Void (
   Void unused=(
-    Outer0.that() .#next() x=this.that().#next()
+    This.that() .#next() x=this.that().#next()
     Void unused0=(
       Outer1.CellEnd x0=(
         Void unused2=return x
@@ -1807,7 +1807,7 @@ Void #next() exception Void (
   )
 read method 
 Void #checkEnd() (
-  Outer0.terminate() cond=this.terminate()
+  This.terminate() cond=this.terminate()
   (
     Void unused=cond.#checkTrue()
     catch exception unused0 (
@@ -1821,25 +1821,25 @@ Library #inner() this.that().#inner()
 read method 
 Void #close() void}}
 type method 
-Outer0 #apply() Outer0.#apply(resolver:Outer0.Resolver.#apply(), myLibs:Outer0.Libs.#begin().#end())
+This #apply() This.#apply(resolver:This.Resolver.#apply(), myLibs:This.Libs.#begin().#end())
 method 
-Outer0 #add(Library that) (
-  Outer0.myLibs() .#add(that ) ls=this.myLibs().#add(that:that)
-  Outer0.#apply(resolver:this.resolver(), myLibs:ls)
+This #add(Library that) (
+  This.myLibs() .#add(that ) ls=this.myLibs().#add(that:that)
+  This.#apply(resolver:this.resolver(), myLibs:ls)
   )
 method 
-Outer0 #add(Library resolver) Outer0.#apply(resolver:Outer0.Resolver.#apply(that:resolver), myLibs:this.myLibs())
+This #add(Library resolver) This.#apply(resolver:This.Resolver.#apply(that:resolver), myLibs:this.myLibs())
 type method 
-Outer0 #begin() Outer0.#apply()
+This #begin() This.#apply()
 method 
-Outer0 #end() this
+This #end() this
 method 
 Library #left(Library that) (
   Void unused=(
     Library result=that
-    mut Outer0.Varresult1 varresult=Outer0.Varresult1.#apply(inner:result)
+    mut This.Varresult1 varresult=This.Varresult1.#apply(inner:result)
     Void unused0=(
-      Outer0.myLibs() .vals() libi=this.myLibs().vals()
+      This.myLibs() .vals() libi=this.myLibs().vals()
       (
         Void unused2=(
           Void unused3=(
@@ -1898,7 +1898,7 @@ Library accumulate(Library l1, Library l2) (
     catch error x (
       on Any (
         Void unused1=(
-          Outer0.resolver() .isPresent() .#bang() cond=this.resolver().isPresent().#bang()
+          This.resolver() .isPresent() .#bang() cond=this.resolver().isPresent().#bang()
           (
             Void unused2=cond.#checkTrue()
             catch exception unused3 (
@@ -1930,13 +1930,13 @@ Library accumulate(Library l1, Library l2) (
   }
   )
 method 
-Outer0 #plusplus(Outer0 that) (
+This #plusplus(This that) (
   Void unused=(
-    Outer0.myLibs() .#plusplus(that ) list=this.myLibs().#plusplus(that:that.myLibs())
-    Outer0.Resolver res=(
+    This.myLibs() .#plusplus(that ) list=this.myLibs().#plusplus(that:that.myLibs())
+    This.Resolver res=(
       Void unused1=(
         Void unused2=(
-          Outer0.resolver() .isPresent() cond=that.resolver().isPresent()
+          This.resolver() .isPresent() cond=that.resolver().isPresent()
           (
             Void unused4=cond.#checkTrue()
             catch exception unused5 (
@@ -1949,17 +1949,17 @@ Outer0 #plusplus(Outer0 that) (
         void
         )
       catch return result0 (
-        on Outer0.Resolver result0
+        on This.Resolver result0
         )
       error {'@stringU
       'CurlyBlock-Should be unreachable code
       }
       )
-    Void unused0=return Outer0.#apply(resolver:res, myLibs:list)
+    Void unused0=return This.#apply(resolver:res, myLibs:list)
     void
     )
   catch return result (
-    on Outer0 result
+    on This result
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
@@ -1967,9 +1967,9 @@ Outer0 #plusplus(Outer0 that) (
   )}
 Adapt:{ #apply(Library adapter)
 type method 
-Outer0 #apply() Outer0.#apply(adapter:{})
+This #apply() This.#apply(adapter:{})
 method 
-Outer0 #add(Outer1.Name that, Outer1.Name into) (
+This #add(Outer1.Name that, Outer1.Name into) (
   Void unused=(
     Void unused0=(
       Outer1.Name.isExternal() cond=that.isExternal()
@@ -1991,60 +1991,60 @@ Outer0 #add(Outer1.Name that, Outer1.Name into) (
           on Void void
           )
         return this.#add(that:that, of:Outer1.Name.#stringParser(that:{'@stringU
-        'Outer0
+        'This
         }), into:into)
         )
       )
     Outer1.IntrospectionPlugin.adaptLib(l1 l2 ) map=Outer1.IntrospectionPlugin.adaptLib(l1:into.adapter(), l2:that.adapter())
     Outer1.IntrospectionPlugin.sumLib(l1 l2 ) lib=Outer1.IntrospectionPlugin.sumLib(l1:this.adapter(), l2:map)
-    Void unused2=return Outer0.#apply(adapter:lib)
+    Void unused2=return This.#apply(adapter:lib)
     void
     )
   catch return result (
-    on Outer0 result
+    on This result
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
   }
   )
 method 
-Outer0 #add(Outer1.Name that, Outer1.Name of, Outer1.Name into) (
+This #add(Outer1.Name that, Outer1.Name of, Outer1.Name into) (
   Void unused=(
     Outer1.IntrospectionPlugin.adaptLib(l1 l2 ) map1=Outer1.IntrospectionPlugin.adaptLib(l1:into.adapter(), l2:that.adapter())
     Outer1.IntrospectionPlugin.adaptLib(l1 l2 ) map2=Outer1.IntrospectionPlugin.adaptLib(l1:map1, l2:of.adapter())
     Outer1.IntrospectionPlugin.sumLib(l1 l2 ) lib=Outer1.IntrospectionPlugin.sumLib(l1:this.adapter(), l2:map2)
-    Void unused0=return Outer0.#apply(adapter:lib)
+    Void unused0=return This.#apply(adapter:lib)
     void
     )
   catch return result (
-    on Outer0 result
+    on This result
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
   }
   )
 method 
-Outer0 #add(Outer1.Name makePrivate) (
+This #add(Outer1.Name makePrivate) (
   Void unused=(
     Outer1.Name.#apply(isExternal adapter ) fName=Outer1.Name.#apply(isExternal:Outer1.False.#apply(), adapter:Outer1.IntrospectionPlugin.getFreshName(that:makePrivate.adapter()))
     Void unused0=return this.#add(that:makePrivate, into:fName)
     void
     )
   catch return result (
-    on Outer0 result
+    on This result
     )
   error {'@stringU
   'CurlyBlock-Should be unreachable code
   }
   )
 type method 
-Outer0 #begin() Outer0.#apply()
+This #begin() This.#apply()
 method 
-Outer0 #end() this
+This #end() this
 method 
-Outer0 #plusplus(Outer0 that) (
+This #plusplus(This that) (
   Outer1.IntrospectionPlugin.sumLib(l1 l2 ) lib=Outer1.IntrospectionPlugin.sumLib(l1:this.adapter(), l2:that.adapter())
-  Outer0.#apply(adapter:lib)
+  This.#apply(adapter:lib)
   )
 method 
 Library #left(Library that) Outer1.IntrospectionPlugin.adaptLib(l1:that, l2:this.adapter())}
@@ -2052,9 +2052,9 @@ Data:{ #apply()
 Vardecorator:{mut #apply(var Outer2.Use.#begin() .#end()  inner)}
 Varaccumulator:{mut #apply(var Outer2.Use.#begin()  inner)}
 type method 
-Outer0 #begin() Outer0.#apply()
+This #begin() This.#apply()
 method 
-Outer0 #end() this
+This #end() this
 method 
 Library #left(Library that) Outer1.Use.#begin().#add(that:this.addEquals(l:that)).#end().#left(that:that)
 method 
@@ -2067,15 +2067,15 @@ T:{
 method 
 Outer3.Bool #equalequal(Any that) }
 read method 
-Outer0.T f() 
+This.T f() 
 method 
-Outer2.Bool current(Outer0 that) this.f().#equalequal(that:that.f())})
+Outer2.Bool current(This that) this.f().#equalequal(that:that.f())})
 method 
 Library addEquals(Library l) (
   Void unused=(
     Outer1.Use.#begin() .#end() decorator=(
       Outer1.Use.#begin() accumulator=Outer1.Use.#begin()
-      mut Outer0.Varaccumulator varaccumulator=Outer0.Varaccumulator.#apply(inner:accumulator)
+      mut This.Varaccumulator varaccumulator=This.Varaccumulator.#apply(inner:accumulator)
       Void unused2=(
         Outer1.Introspection.#apply(that ) .fields() .vals() field=Outer1.Introspection.#apply(that:l).fields().vals()
         (
@@ -2121,26 +2121,26 @@ Library addEquals(Library l) (
         )
       varaccumulator.#inner().#end()
       )
-    mut Outer0.Vardecorator vardecorator=Outer0.Vardecorator.#apply(inner:decorator)
+    mut This.Vardecorator vardecorator=This.Vardecorator.#apply(inner:decorator)
     Void unused0=vardecorator.inner(that:vardecorator.#inner().#plusplus(that:Outer1.Use.#begin().#add(resolver:{
     method 
-    Outer2.Bool current(Outer0 that) this.left(that:that).#and(that:this.right(that:that))
+    Outer2.Bool current(This that) this.left(that:that).#and(that:this.right(that:that))
     method 
-    Outer2.Bool left(Outer0 that) 
+    Outer2.Bool left(This that) 
     method 
-    Outer2.Bool right(Outer0 that) }).#end()))
+    Outer2.Bool right(This that) }).#end()))
     Outer1.Use.#begin() .#end() .#left(that ) libAcc1=vardecorator.#inner().#left(that:{})
     Outer1.Use.#begin() .#add(that ) .#end() .#left(that ) libAcc2=Outer1.Use.#begin().#add(that:libAcc1).#end().#left(that:{
     method 
-    Outer2.Bool current(Outer0 that) 
+    Outer2.Bool current(This that) 
     method 
     Outer2.Bool #equalequal(Any that) (
       Void unused=(
         Void unused0=(
-          Outer0 that0=(
+          This that0=(
             Void unused1=return that
             catch return casted (
-              on Outer0 casted
+              on This casted
               
               on Any exception void
               )

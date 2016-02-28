@@ -1,23 +1,23 @@
 {()
 type method Library stringableTrait(){
   (S inner)<:Concept.ToS, Concept.Named, Concept
-  type method Outer0 (Concept.ToS that) 
-    Outer0(inner:that.toS())
+  type method This (Concept.ToS that) 
+    This(inner:that.toS())
 
   method S ~() this.inner()
 
   type method S myName() 
-  method toS()  Outer0.myName()[]"["[this.inner()]"]"
+  method toS()  This.myName()[]"["[this.inner()]"]"
   method Library binaryRepr() this.inner().binaryRepr()
-  method Bool != (Outer0 that) !(this==that)
-  method Bool == (Outer0 that) this.inner()==that.inner()
+  method Bool != (This that) !(this==that)
+  method Bool == (This that) this.inner()==that.inner()
   method Bool equals(Any that) {
-    with that (on Outer0 return this==that)
+    with that (on This return this==that)
     return Bool.false()
     }
   }
-type method Outer0 #begin() Outer0()
-method Outer0 #end() this
+type method This #begin() This()
+method This #end() this
 method Library <<(Library that)
-  SafeOperatorsAccess.compose(left:that, right:Outer0.stringableTrait())
+  SafeOperatorsAccess.compose(left:that, right:This.stringableTrait())
 }

@@ -9,7 +9,7 @@ public interface Visitor<T> {
   T visit(While s);
   T visit(With s);
   T visit(X s);
-  T visit(HashId s);
+  T visit(ContextId s);
   T visit(BinOp s);
   T visit(DocE s);
   T visit(UnOp s);

@@ -1,13 +1,13 @@
 {reuse L42.is/miniBase
 'NameList:Collections.list(Name)
 'Generalize:{(NameList internals)
-'  type method Outer0 #begin() Outer0(internals:NameList())
-'  method Outer0 #add(Name that) Outer0(internals:this.internals.#add(that))
-'  method Outer0 #end() this
+'  type method This #begin() This(internals:NameList())
+'  method This #add(Name that) This(internals:this.internals.#add(that))
+'  method This #end() this
   
 Generalize:{()
-  type method Outer0 #begin() Outer0()
-  method Outer0 #end() this
+  type method This #begin() This()
+  method This #end() this
   method Library <(Library that){
     var result=that
     result:=Adapt[
@@ -16,8 +16,8 @@ Generalize:{()
       Name"S" into:Name(Template.S);
       Name"Debug" into:Name(Template.Debug);
       ]<result
-    result:=Adapt[Name"Outer0" into:Name"PrivateImpl"]<result
-    result:=Adapt[Name"PrivateImpl.Exported" into:Name"Outer0"]<result
+    result:=Adapt[Name"This" into:Name"PrivateImpl"]<result
+    result:=Adapt[Name"PrivateImpl.Exported" into:Name"This"]<result
     result:=MakePrivate(Name"PrivateImpl" into:result)
     'result:=IntrospectionPlugin.purgePrivates(result)
     Debug(S"###############---Generating")
@@ -30,11 +30,11 @@ Generalize:{()
 Template:{
   Bool:{<:S.ToS
     method Void #checkTrue() exception Void 
-    type method Outer0 true()
-    type method Outer0 false()
-    method Outer0 &(Outer0 that)
-    method Outer0 |(Outer0 that)
-    method Outer0 !()
+    type method This true()
+    type method This false()
+    method This &(This that)
+    method This |(This that)
+    method This !()
     }
   N:{<:S.ToS
     type method N #numberParser(Library that)       
@@ -52,7 +52,7 @@ Template:{
     }
   
   S:{<: ToS  
-    type method Outer0 #stringParser(Library that)    
+    type method This #stringParser(Library that)    
     ToS:{interface method S toS()}  
     method S ++ (ToS that)  
     method Bool != (S that)  

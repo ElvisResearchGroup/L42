@@ -50,16 +50,16 @@ Library <<(Library that) exception MetaGuard.ClassClash,MetaGuard.MethodClash
  (Libs myLibs)<:$ '@private
 
   method
-  Outer0 #add(Library that)
-    Outer0(myLibs:this.myLibs().#add(that))
+  This #add(Library that)
+    This(myLibs:this.myLibs().#add(that))
     
   type method
-  Outer0 #begin()
-    Outer0(myLibs:Libs[])
+  This #begin()
+    This(myLibs:Libs[])
 
   method
-  Outer0 #end()
-    Outer0(myLibs:this.myLibs().#end())
+  This #end()
+    This(myLibs:this.myLibs().#end())
 
     
   method
@@ -70,7 +70,7 @@ Library <<(Library that) exception MetaGuard.ClassClash,MetaGuard.MethodClash
     var acc={}
     with lib in this.myLibs().vals(), index in 1N.vals() (
       var libi=lib
-      rens=Outer1.renameMap(lib,prefix:S"#"[index]"", intros:i.transitivelyNestedClasses())
+      rens=This1.renameMap(lib,prefix:S"#"[index]"", intros:i.transitivelyNestedClasses())
       with ren in rens.vals() (
         map:=map.#add(ren)
         libi:=this.solveConflict(libi,location:ren)
@@ -85,7 +85,7 @@ Library <<(Library that) exception MetaGuard.ClassClash,MetaGuard.MethodClash
     error on MetaGuard.MemberUnavailable
       Assert.CodeNotReachable"PreferentialComposition1"
     }  
-  method Outer0 ++ (Outer0 that)
-    Outer0(myLibs:this.myLibs()++that.myLibs())
+  method This ++ (This that)
+    This(myLibs:this.myLibs()++that.myLibs())
   })
 }

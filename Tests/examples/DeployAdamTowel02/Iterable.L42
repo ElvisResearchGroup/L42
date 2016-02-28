@@ -2,17 +2,17 @@
 
 type method Library opt() {
   Opt:{#new(TOpt that)
-      TOpt:{interface method Outer2 get() }
+      TOpt:{interface method This2 get() }
       TEmpty:{()<:TOpt method get() error Guard.Operation"TEmpty.get() Value not present in Optional" }
-      TOf:{(Outer2 that)<:TOpt method get() this.that()}
+      TOf:{(This2 that)<:TOpt method get() this.that()}
       method T ~() this.that().get()
       method Bool isPresent() {
         unused=~this
         return Bool.true()
         catch error Any return Bool.false()
         }
-      type method Outer0 () Outer0.#new(TEmpty())
-      type method Outer0 (T that) Outer0.#new(TOf(that))
+      type method This () This.#new(TEmpty())
+      type method This (T that) This.#new(TOf(that))
       }
   Iterator:{interface 
     mut method
@@ -20,7 +20,7 @@ type method Library opt() {
     read method
     Void #checkEnd()
     read method
-    Outer1 #inner()
+    This1 #inner()
     read method
     Void #close()
   }

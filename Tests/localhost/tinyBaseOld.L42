@@ -1,10 +1,10 @@
 {()
 Bool:{interface <:S.ToS
-  type method Outer0 ()
+  type method This ()
   method Void #checkTrue() exception Void
-  method Outer0 & (Outer0 that)
-  method Outer0 | (Outer0 that)
-  method Outer0 ! ()
+  method This & (This that)
+  method This | (This that)
+  method This ! ()
   }
 True:{_private() <:Bool
   method () (this._private())
@@ -146,11 +146,11 @@ Debug:{unused()
 IntrospectionPlugin:{'@plugin
   'L42.is/connected/withItself
   ()
-  type method Library sumLib(Library l1,Library l2) using Outer0 check sumLib(l1:l1,l2:l2) error {sumLib()}
-  type method Library adaptLib(Library l1 Library l2) using Outer0 check adaptLib(l1:l1,l2:l2) error {adaptLib()}
-  type method Library nameToAdapter(Library that) using Outer0 check nameToAdapter(that) error {nameToAdapter()}
-  type method Library typeNameToAdapter(type Any that) using Outer0 check typeNameToAdapter(that) error {typeNameToAdapter()}
-  type method Library getFreshName(Library that) using Outer0 check getFreshName(that) error{getFreshName()}
+  type method Library sumLib(Library l1,Library l2) using This check sumLib(l1:l1,l2:l2) error {sumLib()}
+  type method Library adaptLib(Library l1 Library l2) using This check adaptLib(l1:l1,l2:l2) error {adaptLib()}
+  type method Library nameToAdapter(Library that) using This check nameToAdapter(that) error {nameToAdapter()}
+  type method Library typeNameToAdapter(type Any that) using This check typeNameToAdapter(that) error {typeNameToAdapter()}
+  type method Library getFreshName(Library that) using This check getFreshName(that) error{getFreshName()}
   }
 Collections:{()
   type method Library listRow() { _new(Cell head)
@@ -180,18 +180,18 @@ Collections:{()
         error {iterationNotComplete()})
       }
     type method
-    Outer0 () (Outer0._new(head:CellEnd()))
+    This () (This._new(head:CellEnd()))
     type method
-    Outer0 #begin() Outer0()
+    This #begin() This()
     method
-    Outer0 #add(T that) (
-      Outer0._new(head:CellNext(
+    This #add(T that) (
+      This._new(head:CellNext(
         elem:that,
         _next:this.head()))
       )
     method
-    Outer0 #end() (
-      var res=Outer0()
+    This #end() (
+      var res=This()
       with elem in this.vals() (
         res:=res.#add(elem)
         )
@@ -200,14 +200,14 @@ Collections:{()
     method Bool isEmpty() { with x=this.head() (on CellEnd  return True() default return False() )}
     method T top() ( this.head().#inner() )
     method mut Iterator vals() ( this.head().#vals(True()))
-    method Outer0 ++(Outer0 that) {
-      var Outer0 res=this
+    method This ++(This that) {
+      var This res=this
       with e in that.vals() (res:=res.#add(e))
       return res
       }
     method mut Iterator valsCut() ( this.head().#vals(False()))
-    method Outer0 pop() {
-      return Outer0._new(head:this.head().#next())
+    method This pop() {
+      return This._new(head:this.head().#next())
       catch exception (on Void error {popOnEmpyList()})}
     Iterator:{mut (var Cell that,Bool terminate)
       mut method Void #next() exception Void ( x=this.that().#next(),x.checkEmpty() this.that(x) )
@@ -242,7 +242,7 @@ Name:{(Bool isExternal, Library adapter)
   }
 Introspection:{
   (Library that, S node)
-  type method Outer0(Library that) Outer0(that,node:S"Outer0")
+  type method This(Library that) This(that,node:S"This")
   method S get() (S.#stringParser(using IntrospectionPlugin check get(this.that(),node:this.node().that()) error {getThatNode()}))
   method Library getIfExists(N interfaceNum)exception Void (using IntrospectionPlugin check getOrElse(this.that(),interfaceNum:interfaceNum.that(),node:this.node().that()) exception void)
   method Method get(N methodNum)exception Void (
@@ -360,8 +360,8 @@ Opt:{unused()
         return True()
         catch error (on Any return False())
         }
-      type method Outer0 () Outer0.#new(TEmpty())
-      type method Outer0 (T that) Outer0.#new(TOf(that))
+      type method This () This.#new(TEmpty())
+      type method This (T that) This.#new(TOf(that))
       }
   }
 
@@ -370,16 +370,16 @@ Opt:{unused()
 Use:{ (Resolver resolver,Libs myLibs)
   Resolver: Opt(Library)
   Libs: Collections.list(Library)
-  type method Outer0 () Outer0(resolver:Resolver(), myLibs:Libs[])
-  method Outer0 #add(Library that) (
+  type method This () This(resolver:Resolver(), myLibs:Libs[])
+  method This #add(Library that) (
     ls=this.myLibs().#add(that)
-    Outer0(resolver:this.resolver(),myLibs:ls)
+    This(resolver:this.resolver(),myLibs:ls)
     )
-  method Outer0 #add(Library resolver)
-    Outer0(resolver:Resolver(resolver),myLibs:this.myLibs())
+  method This #add(Library resolver)
+    This(resolver:Resolver(resolver),myLibs:this.myLibs())
   type method
-  Outer0 #begin() Outer0()
-  method Outer0 #end() this
+  This #begin() This()
+  method This #end() this
   method Library < (Library that) {
     var result=that
     with libi in this.myLibs().vals() (
@@ -408,72 +408,72 @@ Use:{ (Resolver resolver,Libs myLibs)
         IntrospectionPlugin.sumLib(l1:!this.resolver(),l2:lRes)
       ))
     }
-  method Outer0 ++ (Outer0 that) {
+  method This ++ (This that) {
     list=this.myLibs()++that.myLibs()
     Resolver res={
       if that.resolver().isPresent() (return that.resolver())
       return this.resolver()
       }
-    return Outer0(resolver:res, myLibs:list)
+    return This(resolver:res, myLibs:list)
     }
   }
 Adapt:{(Library adapter)
-  type method Outer0 () Outer0(adapter:{})
-  method Outer0 #add(Name that, Name into) {
+  type method This () This(adapter:{})
+  method This #add(Name that, Name into) {
     if that.isExternal() (error S"start name must be internal")
-    if !that.isInternalPath() (return this.#add(that,of:Name"Outer0",into:into))
+    if !that.isInternalPath() (return this.#add(that,of:Name"This",into:into))
     map=IntrospectionPlugin.adaptLib(
       l1:into.adapter(), l2:that.adapter())
     lib=IntrospectionPlugin.sumLib(l1:this.adapter(), l2:map)
-    return Outer0(adapter:lib)
+    return This(adapter:lib)
     }
-  method Outer0 #add(Name that, Name of, Name into) {
+  method This #add(Name that, Name of, Name into) {
     map1=IntrospectionPlugin.adaptLib(
       l1:into.adapter(), l2:that.adapter())
     map2=IntrospectionPlugin.adaptLib(
       l1:map1, l2:of.adapter())
     lib=IntrospectionPlugin.sumLib(l1:this.adapter(), l2:map2)
-    return Outer0(adapter:lib)
+    return This(adapter:lib)
     }
-  method Outer0 #add(Name makePrivate){
+  method This #add(Name makePrivate){
     fName=Name(isExternal:False(),adapter:IntrospectionPlugin.getFreshName(makePrivate.adapter()))
     return this.#add(makePrivate into:fName)
     }
-  type method Outer0 #begin() Outer0()
-  method Outer0 #end() this
-  method Outer0 ++ (Outer0 that) (
+  type method This #begin() This()
+  method This #end() this
+  method This ++ (This that) (
     lib=IntrospectionPlugin.sumLib(l1:this.adapter(), l2:that.adapter())
-    Outer0(adapter:lib)
+    This(adapter:lib)
     )
   method Library < (Library that) IntrospectionPlugin.adaptLib(
       l1:that, l2:this.adapter())
   }
 
 Data:{()
-  type method Outer0 #begin() Outer0()
-  method Outer0 #end() this
+  type method This #begin() This()
+  method This #end() this
   method Library < (Library that) Use[this.addEquals(l:that);]<that
   method Library equalsOnField(Name c,Name n)
     Adapt[Name"T" into: c; Name"f" into:n;]<{
       T:{ method Bool ==(Any that)}
       read method T f()
-      method Bool current(Outer0 that) this.f()==that.f()
+      method Bool current(This that) this.f()==that.f()
       }
   method Library addEquals(Library l){
     var decorator=Use[ with field in Introspection(l).fields().vals() (
       this.equalsOnField(c:field.class(), n:Name.#stringParser(field.name().that()))
       )]
     decorator++=Use[resolver:{
-      method Bool current(Outer0 that) this.left(that) & this.right(that)
-      method Bool left(Outer0 that)
-      method Bool right(Outer0 that)
+      method Bool current(This that) this.left(that) & this.right(that)
+      method Bool left(This that)
+      method Bool right(This that)
       };]
     libAcc1=decorator<{}
     libAcc2=Use[libAcc1;]<{
-      method Bool current(Outer0 that)
+      method Bool current(This that)
       method Bool ==(Any that){
         with that (
-          on Outer0 return this.current(that)
+          on This return this.current(that)
           default return False()
           )}
       }
