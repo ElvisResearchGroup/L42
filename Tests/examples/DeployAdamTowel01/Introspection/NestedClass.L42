@@ -44,7 +44,7 @@ method type Any externalType(){
     )
   with mirror=this.mirror() (
     on MirrorPr.Class return mirror.lib()
-    on MirrorPr.Lib 
+    on MirrorPr.Lib
       error Guard.Operation
         "NestedClass.externalType() The NestedClass Object is unbound"
     default error Assert.CodeNotReachable"NestedClass1"
@@ -58,10 +58,10 @@ method S externalTypeToS() {
   nameAndPrefix=doc.annotations().top().toS()
   sep=nameAndPrefix.firstIndexOf(S".")
   name= nameAndPrefix(start:sep+1N)
-  prefix=N.fromS(nameAndPrefix(start:5N, end:sep)) '5N== S"Outer".size()
+  prefix=N.fromS(nameAndPrefix(start:4N, end:sep)) '4N== S"This".size()
   Assert.$[prefix>0N]
-  'if prefix == 1N (return name)
-  return S"Outer"[prefix-1N]"."++name
+  if prefix == 1N (return S"This."++name)
+  return S"This"[prefix-1N]"."++name
 }
 
 method S classKind() this.record()"ClassKind"
@@ -110,7 +110,7 @@ method Types implementedInterfaces() (
     '  )]
     sr=ti.strRepr()
     Assert.$[sr!=S"@.This";sr!=S"This";sr!=S""]
-    
+
     result:=result.#add(ti)
     tN+=1N
     )
@@ -127,7 +127,7 @@ method Types transitivelyImplementedInterfaces() {
       )
     if extra.isEmpty() (return result)
     new:=extra
-    result++=extra    
+    result++=extra
     )
   }
 method'@private
@@ -146,7 +146,7 @@ Bool select(Type that,Types from) (
 method'@private
 Types remove(Types that,Types from)
   Types[with t in that.vals() (if this.select(t,from:from) (use[t]))]
-  
+
 method
 Methods stateCandidate() (
   var havePrivate=Bool.false()
@@ -162,7 +162,7 @@ Methods stateCandidate() (
       )]
     )
   absMethods
-  )  
+  )
 method
 Methods state() {
   var result=Methods[]
@@ -203,7 +203,7 @@ Bool has(Selector selector){
   catch exception MetaGuard.MemberUnavailable return Bool.false()
   return Bool.true()
   }
-  
+
 method
 NestedClass nestedClassFromRoot(Path that) exception MetaGuard.NestedClassUnavailable {
   if that==Path"This" (return this.root())
@@ -213,14 +213,14 @@ NestedClass nestedClassFromRoot(Path that) exception MetaGuard.NestedClassUnavai
     )
   return Introspection(clazz:myClass.referredClass(),path:that)
   }
-  
+
 method
 Bool has(Path fromRoot) (
   unused=this.nestedClassFromRoot(fromRoot)
-  catch exception MetaGuard.MemberUnavailable Bool.false() 
+  catch exception MetaGuard.MemberUnavailable Bool.false()
   Bool.true()
   )
-  
+
 method
 Bool isPrivate() {
   with ann in this.nestedDoc().annotations().vals() (

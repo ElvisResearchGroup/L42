@@ -116,10 +116,10 @@ public class TestBase01 {
    L42.main(new String[]{"examples/testsForAdamTowel01/UseIntrospectionAdamTowel3.L42"});
    Assert.assertEquals(L42.record.toString(),TestHelper.multiLine(
   "Foo!"
- ,"This0.External"
- ,"This0.Generated"
- ,"This0.Generated.Foo"
- ,"This0.Debug"
+ ,"This.External"
+ ,"This.Generated"
+ ,"This.Generated.Foo"
+ ,"This.Debug"
 ));
    }
  @Test
@@ -131,14 +131,14 @@ public class TestBase01 {
 ,"true"
 ,"m6(), methRootExternal:false, typeExternal:false, typeRefExternal:false"
 ,"m6(), methRootExternal:true, typeExternal:true, typeRefExternal:true"
-,"This0.Generated.Foo"
+,"This.Generated.Foo"
 ,"m5(), methRootExternal:false, typeExternal:true, typeRefExternal:true"
-,"This0.External"
+,"This.External"
 ,"m5(), methRootExternal:true, typeExternal:true, typeRefExternal:true"
-,"This0.External"
+,"This.External"
 ,"m4(), methRootExternal:false, typeExternal:false, typeRefExternal:false"
 ,"m4(), methRootExternal:true, typeExternal:true, typeRefExternal:true"
-,"This0.Generated"
+,"This.Generated"
 ));
    }
 

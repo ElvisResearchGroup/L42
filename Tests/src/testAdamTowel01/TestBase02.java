@@ -30,7 +30,7 @@ public class TestBase02 {
     TestHelper.configureForTest();
     L42.main(new String[]{"examples/testsForAdamTowel01/UseAdamTowel01.L42"});
     }
-  
+
   @Test
   public  void _02_00DeployAdamTowel02() throws Throwable{
     TestHelper.configureForTest();
@@ -75,7 +75,7 @@ public class TestBase02 {
      TestHelper.configureForTest();
      L42.main(new String[]{"examples/testsForAdamTowel02/UseOperators2.L42"});
      Assert.assertEquals(L42.record.toString(),
-         "This0.A.B.C\nSecret\nFailed\n");
+         "This.A.B.C\nSecret\nFailed\n");
      }
 
    @Test
@@ -96,8 +96,8 @@ public class TestBase02 {
      }
    //B00000000000000000000000000000000
 
-   
-   
+
+
    @Test
    public  void _02_07addInvariant() throws Throwable{
      TestHelper.configureForTest();
@@ -106,8 +106,8 @@ public class TestBase02 {
      L42.main(new String[]{"examples/testsForAdamTowel02/TestAddInvariant.L42"});
      Assert.assertEquals(L42.record.toString(),
          "OK\n");
-     }  
- 
+     }
+
    @Test
    public  void _02_08PostOperation() throws Throwable{
      TestHelper.configureForTest();
@@ -116,7 +116,7 @@ public class TestBase02 {
      L42.main(new String[]{"examples/testsForAdamTowel02/TestPostOperation.L42"});
      Assert.assertEquals(L42.record.toString(),
          "Hello\nWorld\nHello\n");
-     }  
+     }
    @Test
    public  void _02_09Patch() throws Throwable{
      TestHelper.configureForTest();
@@ -125,8 +125,8 @@ public class TestBase02 {
      L42.main(new String[]{"examples/testsForAdamTowel02/TestPatch.L42"});
      Assert.assertEquals(L42.record.toString(),
          "Hello\nWorld\nHello-\nWorld\nOK\n");
-     }  
- 
+     }
+
    @Test
    public  void _02_10DefaultParameter() throws Throwable{
      TestHelper.configureForTest();
@@ -135,8 +135,8 @@ public class TestBase02 {
      L42.main(new String[]{"examples/testsForAdamTowel02/TestDefaultParameter.L42"});
      Assert.assertEquals(L42.record.toString(),
          "Hello\nWorld -- 42\n");
-     }   
-   
+     }
+
    @Test
    public  void _02_11Wither() throws Throwable{
      TestHelper.configureForTest();
@@ -145,6 +145,6 @@ public class TestBase02 {
      L42.main(new String[]{"examples/testsForAdamTowel02/TestWither.L42"});
      Assert.assertEquals(L42.record.toString(),
          "20\n20\n20\n10\n10\n20\n10\n10\n");
-     }   
-   
+     }
+
   }

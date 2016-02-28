@@ -22,8 +22,8 @@ CheckSubtype1:{
       )
     if result!=expected (Debug(S"expected:"[expected]" computed:"[result]""))
     )
-  }  
-  
+  }
+
 CheckSubtype:{
   type method Void(Library lib,S expected )(
     i=Introspection(lib:lib)
@@ -48,7 +48,7 @@ CheckNested:{
   }
 
 EA:{interface }
-EB:{interface <:EA}  
+EB:{interface <:EA}
 Main:{
   CheckState(lib:{foo(Bar b, var Foo f) Bar:{} Foo:{}}
     expected:S"foo(b,f)b()#b()f()#f()f(that)")
@@ -92,7 +92,7 @@ Main:{
       {C:{}}}
     expected:S"@.A,@.B,@.This,")
   Debug(S"OK")
-  catch exception Concept.Classable x 
+  catch exception Concept.Classable x
     error Debug(Introspection(clazz:x.classAny()).externalTypeToS())
   return ExitCode.normal()
   }
