@@ -12,14 +12,14 @@ mut method Void bottom(that)
 
 read method TR val(N that)
 mut method T #val(N that)
-mut method Void (N that Tval)
+mut method Void (N that, T val)
 
 mut method remove(index)
-mut method removeTop
-mut method removeBottom
+mut method removeTop()
+mut method removeBottom()
 mut method removeAll(elem:)
-mut method removeFirst(elem:)
-mut method removeLast(elem:)
+mut method removeFirst(elem:)  removeLeft()
+mut method removeLast(elem:)  removeRight()
 
 method pop(N index)//need to be imm to be optimizable
 method popTop  need imm constr
@@ -42,14 +42,15 @@ method List -(T that) //removeAll
 method List --(List that)//set remove
 
 method List &(List that)//set intersection
-method List |(List that)//set union
+method List |(List that)//set union// do we need | since we have ++
 
 method Bool >(T that)  //contains
 method Bool !>(T that)
-method Bool >=(T that)  //superseteq
-method Bool >>(T that) //superset
-method Bool !>>(T that)
-method Bool !>=(T that)
+method Bool >=(List that)  //superseteq
+method Bool >>(List that) //superset
+method Bool !>>(List that)
+method Bool !>=(List that)
+
 class method mut List []
 
 read method N size()
