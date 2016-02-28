@@ -64,7 +64,7 @@ public class ErrorFormatter {
         },
       mt->{
         if(mt.getInner().isPresent()){return null;}
-        if(mt.getMt().getMdf()==Mdf.Type){return null;}
+        if(mt.getMt().getMdf()==Mdf.Class){return null;}
         result.append(nesting);
         result.append(ToFormattedText.of(mt).replace("\n", "\n"+nesting));
         result.append("\n");

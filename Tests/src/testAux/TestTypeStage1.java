@@ -72,12 +72,12 @@ public class TestTypeStage1 {
            new NormType(Mdf.Capsule,Path.Void(),Ph.None),
            new String[]{"{ D:{k()}}"}
        },{lineNumber(),"Any",
-         new NormType(Mdf.Type,Path.Any(),Ph.None),
-         new NormType(Mdf.Type,Path.Any(),Ph.None),
+         new NormType(Mdf.Class,Path.Any(),Ph.None),
+         new NormType(Mdf.Class,Path.Any(),Ph.None),
          new String[]{"{ C:{k()}}"}
        },{lineNumber(),"Library",
          new Ast.FreeType(),
-         new NormType(Mdf.Type,Path.Library(),Ph.None),
+         new NormType(Mdf.Class,Path.Library(),Ph.None),
          new String[]{"{ C:{k()}}"}
        },{lineNumber(),"C.k()",
          new NormType(Mdf.Immutable,Path.parse("This0.C"),Ph.None),
@@ -90,11 +90,11 @@ public class TestTypeStage1 {
        },{lineNumber(),"C.k(f:D.k(),ft:D)",
          new NormType(Mdf.Mutable,Path.parse("This0.C"),Ph.None),
          new NormType(Mdf.Mutable,Path.parse("This0.C"),Ph.None),
-         new String[]{"{ C:{mut k(var D f, type D ft)}, D:{k()}}"}
+         new String[]{"{ C:{mut k(var D f, class D ft)}, D:{k()}}"}
        },{lineNumber(),"( D x=D.k(), C.k(f:x,ft:D))",
          new NormType(Mdf.Mutable,Path.parse("This0.C"),Ph.None),
          new NormType(Mdf.Mutable,Path.parse("This0.C"),Ph.None),
-         new String[]{"{ C:{mut k(var D f, type D ft)}, D:{k()}}"}
+         new String[]{"{ C:{mut k(var D f, class D ft)}, D:{k()}}"}
 
        },{lineNumber(),"error D.k()",
          new Ast.FreeType(),
@@ -110,12 +110,12 @@ public class TestTypeStage1 {
          new Ast.FreeType(),
          new NormType(Mdf.Immutable,Path.parse("This0.List"),Ph.None),
          new String[]{listExample}
-       },{lineNumber(),"(type List this=List, N that=N.k(), List x=this.factoryAux(that,top:x)  x)",
+       },{lineNumber(),"(class List this=List, N that=N.k(), List x=this.factoryAux(that,top:x)  x)",
          new Ast.FreeType(),
          new NormType(Mdf.Immutable,Path.parse("This0.List"),Ph.None),
          new String[]{listExample}
        },{lineNumber(),TestHelper.multiLine(""
-,"(type List this=List,"
+,"(class List this=List,"
 ," N that=N.k(),"
 ," fwd List top=List.factory(N.k())"
 ," ( Void z=that.checkZero(),"
@@ -173,11 +173,11 @@ new String[]{"{ C:{ k()}, D:{k()}}"}
 static String listExample=TestHelper.multiLine(
     "{N:{k() method Void checkZero() (void) method N lessOne() (this)}"
     ,"List:{k(fwd List next, N elem)"
-    ,"  type method List factory(N that) ("
+    ,"  class method List factory(N that) ("
     ,"    List x=this.factoryAux(that,top:x)"
     ,"    x"
     ,"    )"
-    ,"type method List factoryAux(N that,fwd List top)"
+    ,"class method List factoryAux(N that,fwd List top)"
     ,"  (Void z=that.checkZero()"
     ,"   catch error Void x"
     ,"     List.k("
@@ -283,7 +283,7 @@ public static class TestStage2 {
       new Ast.FreeType(),
       new NormType(Mdf.Capsule,Path.parse("This0.Customer"),Ph.None),
       new String[]{"{ () \n Customer:{ mut () }\n Reader :{()\n"
-      +" type method capsule Customer readCustomer() (\n"
+      +" class method capsule Customer readCustomer() (\n"
       +"   mut Customer c=Customer()\n"
       +"   c 'ok, capsule promotion here\n"
       +" )}}"}
@@ -292,7 +292,7 @@ public static class TestStage2 {
         new Ast.FreeType(),
         new NormType(Mdf.Capsule,Path.parse("This0.Customer"),Ph.None),
         new String[]{"{() \n Customer:{ mut () }\n Reader :{()\n"
-        +" type method capsule Customer readCustomer() {\n"
+        +" class method capsule Customer readCustomer() {\n"
         +" return Customer()"
         +" }}}"}
     },{lineNumber(), 
@@ -300,7 +300,7 @@ public static class TestStage2 {
       new Ast.FreeType(),
       new NormType(Mdf.Capsule,Path.parse("This0.Customer"),Ph.None),
       new String[]{"{() \n Customer:{ mut () }\n Reader :{()\n"
-      +" type method capsule Customer readCustomer() (\n"
+      +" class method capsule Customer readCustomer() (\n"
       +"   mut Customer c=Customer()\n"
       +"   return c 'ok, capsule promotion here\n"
       +"   catch return mut Customer x x"
@@ -310,7 +310,7 @@ public static class TestStage2 {
       new Ast.FreeType(),
       new NormType(Mdf.Capsule,Path.parse("This0.Customer"),Ph.None),
       new String[]{"{() \n Customer:{ mut () }\n Reader :{()\n"
-      +" type method capsule Customer readCustomer() {\n"
+      +" class method capsule Customer readCustomer() {\n"
       +"   mut Customer c=Customer()\n"
       +"   return c 'ok, capsule promotion here\n"
       +" }}}"}

@@ -6,21 +6,21 @@ ExitCode:...
 Url:{(Library binaryRepr)
   SBuilder:...  
   
-  type method
+  class method
   This #from(SBuilder builder) 
     This(binaryRepr:builder.binaryRepr())
     
-  type method
+  class method
   mut SBuilder #builder()
     SBuilder.empty()
   }
 DeployTowel:...
-ResourceDeploy:{type method Library (){
+ResourceDeploy:{class method Library (){
   ExitCode:...' TODO:need to add a check that deployed code is self consistent/self contained.
   'otherwise removing exitCode give errors only on the user side
   DeployTowel:...
   }}
-AdamTowel01:{type method Library () ...}
+AdamTowel01:{class method Library () ...}
 Task0:DeployTowel(fileName:Url"localhost/DeployTowel.L42")
   <<ResourceDeploy()
 Task1: DeployTowel(fileName:Url"localhost/AdamTowel01.L42")

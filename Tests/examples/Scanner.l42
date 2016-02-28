@@ -11,7 +11,7 @@ Scanner:{mut (var mut InputStream stream)
 Customer:{ mut () 
 mut method Void addShopHistory(N that) void}
 Reader :{()
-  type method
+  class method
   capsule Customer readCustomer(lent Scanner s) {
     mut Customer c=Customer()
     while s.hasNextNum() (

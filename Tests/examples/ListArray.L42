@@ -14,7 +14,7 @@ ListArray:{mut (var mut Cell head,var N size)
     if that>=this.size() (this.reportError(that))
     This.auxGet(that,cell:this.head())
     )
-  type method
+  class method
   S auxGet(N that,read Cell cell){
     with cell (
       on read CellNext case that==0N return cell.val()
@@ -28,7 +28,7 @@ ListArray:{mut (var mut Cell head,var N size)
     if that>=this.size() (this.reportError(that))
     this.head(This.auxSet(that,val:val,cell:this.#head()))
     )
-  type method
+  class method
   mut CellNext auxSet(N that,S val,mut Cell cell){
     with cell (
       on mut CellNext case that==0N return CellNext(val:val,next:cell.#next())
@@ -37,7 +37,7 @@ ListArray:{mut (var mut Cell head,var N size)
     error S"Unreachable"
     }
   'EMPTY
-  type method 
+  class method 
   mut This () This(head:CellEnd(),size:0N)
   'ADDING
   mut method
@@ -46,7 +46,7 @@ ListArray:{mut (var mut Cell head,var N size)
     this.head(This.auxAdd(that,cell:this.#head()))
     this
     )
-  type method
+  class method
   mut Cell auxAdd(S that,mut Cell cell){
     with cell (
       on mut CellEnd return CellNext(val:that,next:cell)
@@ -61,7 +61,7 @@ ListArray:{mut (var mut Cell head,var N size)
   '*******************  
   '*******************
     
-  type method 
+  class method 
   mut This #begin() This()
   mut method
   mut This #end() this
@@ -220,7 +220,7 @@ ListArray:{mut (var mut Cell head,var N size)
   }
 
 Tests:{
-  type method Void t1(){
+  class method Void t1(){
     l=ListArray[S"hello";S"world"]
     Debug(S"size is "++l.size()++S" "++l(0N)++S" "++l(1N))
     with x in l.vals() (
@@ -248,7 +248,7 @@ Tests:{
     return void
     }
     '*******************
-  type method Void t2(){
+  class method Void t2(){
     l=ListArray[S"hello";S"world"]
     Debug(S"size is "++l.size()++S" "++l(0N)++S" "++l(1N))
     with var x in l.vars() (

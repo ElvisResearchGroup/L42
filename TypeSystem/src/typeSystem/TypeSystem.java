@@ -124,15 +124,15 @@ public class TypeSystem implements Visitor<Type>, Reporter{
   @Override
   public Type visit(Path s) {
     return collectEnvs(()->{
-      if( s.isPrimitive()){return new NormType(Mdf.Type,s,Ph.None);}
+      if( s.isPrimitive()){return new NormType(Mdf.Class,s,Ph.None);}
       ClassB ct=p.extractCb(s);
       if(ct.isInterface()){
-        return new NormType(Mdf.Type,Path.Any(),Ph.None);
+        return new NormType(Mdf.Class,Path.Any(),Ph.None);
         }
       if(isPathPath(p,ct)){
-        return new NormType(Mdf.Type,s,Ph.None);
+        return new NormType(Mdf.Class,s,Ph.None);
         }
-      return new NormType(Mdf.Type,Path.Any(),Ph.None);
+      return new NormType(Mdf.Class,Path.Any(),Ph.None);
       });
     }
  private boolean isPathPath(Program p,ClassB cb) {

@@ -11,7 +11,7 @@ Name:{
   method Bool isInternalPathName() this.internalPath()
   method Bool isMethodName() !this.externalPath()  & !this.internalPath()
   
-  type method
+  class method
   Name #stringParser(Library that) {
     Library adapter=using IntrospectionPlugin 
       check nameToAdapter(that)
@@ -23,8 +23,8 @@ Name:{
       adapter: adapter
       )
     }
-  type method
-  Name (type Any that) {
+  class method
+  Name (class Any that) {
     Library adapter=using IntrospectionPlugin 
       check typeNameToAdapter(that)
       error {typeNameToAdapter()}
@@ -35,7 +35,7 @@ Name:{
       adapter:adapter
       )
     }
-  type method This (Library adapter){
+  class method This (Library adapter){
     internalName=This.getInternalAdapterStringOrEmpty(adapter:adapter)
       isExternal=internalName.size()==0N
       S repr={
@@ -48,7 +48,7 @@ Name:{
         repr:repr 'try to put repr definition here
         adapter:adapter
         )}
-  type method '@private
+  class method '@private
     S getInternalAdapterStringOrEmpty(Library adapter){
       Library result= using IntrospectionPlugin 
         check getInternalAdapterPathOrElse(adapter)
@@ -56,7 +56,7 @@ Name:{
       return S.#stringParser(result)
       }
     
-  type method '@private
+  class method '@private
   Bool computeIsInternalPath(Library adapter) {
     ms=Introspection(adapter,node:S"%o_0%").methods()
     return ms.isEmpty()
@@ -76,7 +76,7 @@ Name:{
 Introspection:{
   (Library that, S node)
   
-  type method
+  class method
   This(Library that) This(that,node:S"This")
   
   method

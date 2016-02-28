@@ -4,7 +4,7 @@ Ss:Collections.vector(of:S)
 'MyMut:{(var S field)}
 'Ss0:Collections.vector(ofMut:MyMut)
 Tests:{
-  type method Void t1(){
+  class method Void t1(){
     l=Ss[S"hello";S"world"]
     Debug(S"size is "[l.size()]" "[l(0N)]" "[l(1N)]"")
     with x in l.vals() (

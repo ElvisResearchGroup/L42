@@ -52,7 +52,7 @@ private void computeNewName(HashMap<Locator, String> map, Locator mL) {
     map.put(locator,s);
   }
   String newPedex=s;
-  List<String> names = (mwt.getMt().getMdf()!=Mdf.Type)?mwt.getMs().getNames():Map.of(si->NormalizePrivates.freshName(si,newPedex),mwt.getMs().getNames());
+  List<String> names = (mwt.getMt().getMdf()!=Mdf.Class)?mwt.getMs().getNames():Map.of(si->NormalizePrivates.freshName(si,newPedex),mwt.getMs().getNames());
   ast.Ast.MethodSelector ms=new ast.Ast.MethodSelector(
       NormalizePrivates.freshName(mwt.getMs().getName(),newPedex),names);
   mL.setAnnotation(ms);

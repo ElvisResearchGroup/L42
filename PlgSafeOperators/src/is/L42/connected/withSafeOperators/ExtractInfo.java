@@ -192,7 +192,7 @@ public class ExtractInfo {
      for(Member m:cb.getMs()){
        if(!(m instanceof MethodWithType)){continue;}
        MethodWithType mwt=(MethodWithType)m;
-       if(mwt.getMt().getMdf()!=Mdf.Type){return false;}
+       if(mwt.getMt().getMdf()!=Mdf.Class){return false;}
        Type rt = mwt.getMt().getReturnType();
        if(!(rt instanceof NormType)){continue;}
        NormType nt=(NormType)rt;

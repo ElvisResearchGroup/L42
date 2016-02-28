@@ -1,8 +1,8 @@
 { reuse L42.is/nanoBase1
 
 Deploy:{ (S node, S fileName)
-  type method type This #begin() This
-  type method This #add(S that, S fileName) This(node:that, fileName:fileName)
+  class method class This #begin() This
+  class method This #add(S that, S fileName) This(node:that, fileName:fileName)
   method This #end() this
   method Library <(Library that){
     adapter=IntrospectionPlugin.adapter(nameDest:this.node(),nameSrc:S"Template")
@@ -20,13 +20,13 @@ Deploy:{ (S node, S fileName)
   'Top:Generalize[]<{reuse L42.is/miniBase
 
   
-  type method
+  class method
   S _get(Library that,S node) 
     S.#stringParser(
       using IntrospectionPlugin check get(that,node:node.binaryRepr()) error {getThatNode()}
       )
 
-  type method
+  class method
   Void (S fileName, Library code, S node)
     Debug(fileName:fileName, content:This._get(code,node:node) )
   }

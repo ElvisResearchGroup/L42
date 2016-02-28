@@ -1,29 +1,29 @@
 {(Library _binaryRepr)<:Concept.ToS Concept.Equals Concept.Named'@private
   method myName()GetMyName(This)
-  type method
+  class method
   This fromS(Concept.ToS that) (
     s=that.toS()
     N(_binaryRepr: use Alu
       check stringToInt32(s.binaryRepr())
       error This.parseError(s))
     )
-  type method
+  class method
   This #from(Library binaryRepr)
     N(_binaryRepr:binaryRepr)
   method
   Library binaryRepr() this._binaryRepr()
   
-  type method
+  class method
   mut S.SBuilder #builder()
     S.SBuilder.empty()
      
-  type method
+  class method
   N #from(S.SBuilder builder)
     N(_binaryRepr: use Alu
       check stringToInt32(builder.binaryRepr())
       error This.parseError(S.#from(builder: builder)))
       
-  type method
+  class method
   Any parseError(S that)
     S"N.UnsatisfactoryErrorToAvoidCycle, replace in AdamT2"
 

@@ -10,7 +10,7 @@ Main:{
     Debug(ann)
     (
       with t=ann.referredClass() (
-        on type External Debug(S"External found")
+        on class External Debug(S"External found")
         default Debug(S"something Else")
         )
       catch error System.Guard.PluginFailure x Debug(S"Report plgFailure as "++x.toS())

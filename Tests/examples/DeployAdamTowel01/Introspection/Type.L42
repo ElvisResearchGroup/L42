@@ -12,7 +12,7 @@ method S strRepr() { 'should become toS? is toS ok?
 method S typeKind() this.record()"TypeKind" '{Normal,Alias,AliasUnresolvable}
 method S mdf() {'error on AliasUnresolvable
   if this.typeKind()!=S"AliasUnresolvable" (return this.record()"Mdf")
-  error Guard.Operation"AliasUnresolvable type, mdf unknown" 
+  error Guard.Operation"AliasUnresolvable class, mdf unknown" 
   }
 
 method '@private
@@ -31,7 +31,7 @@ method NestedClass resolvedReferencedPath() {'error on AliasUnresolvable
   if this.typeKind()!=S"AliasUnresolvable" (
     return this.referencedPath(ann:this.record().docOf(path:Path"ResolvedPath").annotations().top())
     )
-  error Guard.Operation"AliasUnresolvable type, mdf unknown" 
+  error Guard.Operation"AliasUnresolvable class, mdf unknown" 
   }
 
 method Bool partial() this.record()"Ph"==S"true"

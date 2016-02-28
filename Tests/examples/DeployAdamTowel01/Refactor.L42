@@ -1,5 +1,5 @@
 {
-  type method
+  class method
   Library compose(Library left,Library right)
   exception MetaGuard.ClassClash, MetaGuard.MethodClash {
     return SafeOperators.compose(left:left,right:right)
@@ -8,7 +8,7 @@
       MetaGuard.MethodClash(lift:err)
       error err)
     }
-  type method
+  class method
   Void checkTargetExists(Library that,Path path) exception MetaGuard.NestedClassUnavailable (
     unused=AddDocumentationPath(path doc:Introspection.Doc"JustToSeeIfItIsThere")<<that
     catch exception MetaGuard.InvalidOnTopLevel x
@@ -16,7 +16,7 @@
     void
     )
     
-  Redirect:{(Path that, type Any to)
+  Redirect:{(Path that, class Any to)
     method
     Library << (Library that)
     exception

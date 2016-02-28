@@ -2,7 +2,7 @@
 Main:Deploy[S"Top", fileName:S"localhost/SimpleLib.L42"]<{reuse L42.is/templateBNS
   Top:This.Generalize[]<{reuse L42.is/miniBase
     Exported:{
-      type method Void printHelloWorld()
+      class method Void printHelloWorld()
         This1.Debug(This1.S"Hello World "++42This1.N)
         }
       }

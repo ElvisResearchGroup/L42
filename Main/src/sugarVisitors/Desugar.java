@@ -824,7 +824,7 @@ public class Desugar extends CloneVisitor{
     if(resT.getMdf()==Mdf.Immutable && hasMut){//otherwise user is overriding the constructor mdf
       resT=resT.withMdf(hasLentRead?Mdf.Lent:Mdf.Mutable);
     }
-    MethodType mt=new MethodType(Doc.empty(),ast.Ast.Mdf.Type,ts,tDocss,resT,Collections.emptyList());
+    MethodType mt=new MethodType(Doc.empty(),ast.Ast.Mdf.Class,ts,tDocss,resT,Collections.emptyList());
     MethodSelector ms=new MethodSelector(h.getName(),names);
     result.add(new MethodWithType(doc, ms,mt, Optional.empty(),h.getP()));
   }

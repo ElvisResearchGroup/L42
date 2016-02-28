@@ -2,32 +2,32 @@
 NList:Collections.list(N)
 
 Exercise1:{()
-  type method N max1( NList that) {
+  class method N max1( NList that) {
     if that.isEmpty() (error S"Max undefined on empty lists")
     var result=that.top()
     with current in that.vals() ( case current>result  result:=current )
     return result
     }
-  type method N max2( NList that) {
+  class method N max2( NList that) {
     if that.isEmpty() (error S"Max undefined on empty lists")
     var result=that.top()
     with current in that.vals() ( on Any case current>result  result:=current )
     return result
     }
-  type method N max3( NList that) {
+  class method N max3( NList that) {
     if that.isEmpty() (error S"Max undefined on empty lists")
     var result=that.top()
     with current in that.vals() ( if current>result  (result:=current ))
     return result
     }
-  type method N max4( NList that) {
+  class method N max4( NList that) {
     if that.isEmpty() (error S"Max undefined on empty lists")
     if that.pop().isEmpty() ( return that.top())
     result=This.max4(that.pop())
     if result <that.top() ( return that.top())
     return result
     }
-  type method N max5( NList that) {
+  class method N max5( NList that) {
     if that.isEmpty() (error S"Max undefined on empty lists")
     var list=that
     var result=that.top()
@@ -40,9 +40,9 @@ Exercise1:{()
   Accumulator:...
   Accumulate:Accumulator(itType:NList.Iterator,elemType:N,
     better:{
-      type  method
+      class  method
       N (N a, N b){ if b>a (return b) return a }})
-  type method N max6(NList that){    
+  class method N max6(NList that){    
     return Accumulate(that.vals())
     }
   }

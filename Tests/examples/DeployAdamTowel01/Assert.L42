@@ -17,7 +17,7 @@ CodeNotReachable:Message.$<<{<:This1}
   ' a method not respecting its own postcondition
   
 $:{(N that)
-  type method This #begin() This(0N)
+  class method This #begin() This(0N)
   method Void #end() void
   method This #add(Bool that){
     if that (return This(this.that()+1N))

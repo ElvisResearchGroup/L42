@@ -22,7 +22,7 @@ public @interface ActionType {
     Library(new Ast.NormType(Mdf.Immutable,Path.Library(),Ph.None)),
     Void(new Ast.NormType(Mdf.Immutable,Path.Void(),Ph.None)),
     ImmAny(new Ast.NormType(Mdf.Immutable,Path.Any(),Ph.None)),
-    TypeAny(new Ast.NormType(Mdf.Type,Path.Any(),Ph.None)),
+    TypeAny(new Ast.NormType(Mdf.Class,Path.Any(),Ph.None)),
     CapsuleAny(new Ast.NormType(Mdf.Capsule,Path.Any(),Ph.None)),
     MutAny(new Ast.NormType(Mdf.Mutable,Path.Any(),Ph.None)),
     LentAny(new Ast.NormType(Mdf.Lent,Path.Any(),Ph.None)),

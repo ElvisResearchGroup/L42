@@ -115,11 +115,11 @@ public static boolean isSubtype(Program p, Path path1, Path path2) {
 }
 public static boolean isSubtype(Mdf mdf1, Mdf mdf2) {
   if(mdf1==mdf2){return true;}
-  if(mdf1==Mdf.Type || mdf2==Mdf.Type){return false;}
+  if(mdf1==Mdf.Class || mdf2==Mdf.Class){return false;}
   if(mdf2==Mdf.Readable){return true;}
   if(mdf1==Mdf.Capsule){return true;}
-  //mdf1 not type, capsule
-  //mdf2 not type, readable
+  //mdf1 not class, capsule
+  //mdf2 not class, readable
   if(mdf1==Mdf.Mutable && mdf2==Mdf.Lent){return true;}
   return false;
 }
@@ -202,7 +202,7 @@ static{
   //keywords.add("Library");
   keywords.add("void");
   keywords.add("case");
-  keywords.add("type");
+  keywords.add("class");
   keywords.add("mut");
   keywords.add("read");
   keywords.add("lent");
@@ -358,7 +358,7 @@ public static List<InvalidMwtAsState> coherent(Program p, ClassB ct) {
   List<MethodWithType> mwts= collectAbstractMethods(ct);
   if(mwts.isEmpty()){return Collections.emptyList();}
   List<MethodWithType> typeMethods=new ArrayList<>();
-  for(MethodWithType mwt:mwts){if(mwt.getMt().getMdf()==Ast.Mdf.Type){typeMethods.add(mwt);}}
+  for(MethodWithType mwt:mwts){if(mwt.getMt().getMdf()==Ast.Mdf.Class){typeMethods.add(mwt);}}
   if(typeMethods.size()>1){
     return mwts.stream().map(m->new InvalidMwtAsState("More than one constructor candidate",m)).collect(Collectors.toList());
     }
@@ -381,7 +381,7 @@ public static List<InvalidMwtAsState> coherent(Program p, ClassB ct) {
   List<InvalidMwtAsState> result=new ArrayList<>();
   for(Type t:constr.getMt().getTs()){
     Mdf tMdf=((NormType)t).getMdf();
-    if(tMdf!=Mdf.Capsule && tMdf!=Mdf.Immutable  && tMdf!=Mdf.Type){canBeImmCaps=false;}
+    if(tMdf!=Mdf.Capsule && tMdf!=Mdf.Immutable  && tMdf!=Mdf.Class){canBeImmCaps=false;}
     if(tMdf==Mdf.Lent ||tMdf==Mdf.Readable){mustBeLentRead=true;}
   }
   Mdf retMdf=retType.getMdf();
@@ -422,7 +422,7 @@ private static NormType selectCorrespondingFieldType(MethodWithType constr, Stri
 public static boolean coherent(Program p, Mdf mdf, Path path, MethodWithType mwt) {
   if(!checkVoidAndThatOk(p,mwt)){return false;}
   //group1
-  if(mdf==Mdf.Type || mdf==Mdf.Immutable || mdf==Mdf.Readable){
+  if(mdf==Mdf.Class || mdf==Mdf.Immutable || mdf==Mdf.Readable){
   //case a
     if(mwt.getMt().getTs().isEmpty()){ return okSubtypeGet(p, mdf, path, mwt); }
     //case b
@@ -440,13 +440,13 @@ public static boolean coherent(Program p, Mdf mdf, Path path, MethodWithType mwt
     }else   if(mwt.getMt().getMdf()==Mdf.Lent && !mwt.getMt().getTs().isEmpty()){
         //case f
       return okSubtypeSet(p,Mdf.Capsule,path,mwt);
-    } else if(mwt.getMt().getMdf()!=Mdf.Type && mwt.getMt().getMdf()!=Mdf.Mutable){
+    } else if(mwt.getMt().getMdf()!=Mdf.Class && mwt.getMt().getMdf()!=Mdf.Mutable){
     //case d
       return okSubtypeGet(p,mwt.getMt().getMdf(),path,mwt);
     }
   }
   //group3
-  assert mwt.getMt().getMdf()!=Mdf.Type;//from call conditions
+  assert mwt.getMt().getMdf()!=Mdf.Class;//from call conditions
   if(mdf!=Mdf.Capsule){return false;}
   if(mwt.getMt().getTs().isEmpty()){
     //g

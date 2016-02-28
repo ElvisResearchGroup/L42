@@ -101,19 +101,19 @@ public class TestParseAndDesugar {
    " (This0.T a=void  Void unused=a.#times(that:b)   Void unused0=a.#plus(that:b)  catch error This0.Foo x (x.bar()    )  (    Void unused1=a    Void unused2=b    c  ) )"
 },{lineNumber(), " (T a=void a+=a +a)",
    " (This0.T a=void a.inner(that:a.#inner().#plus(that:a.#plus(that:a))))"
-//TOO UNSTABLE},{"{ reuse L42.is/base }","{Bool:{interface type method Void #checkTrue() exception Void} True:{ _private()<:This1.Bool method #checkTrue() ( void )} False:{ _private()<:This1.Bool method #checkTrue() (exception  void )}}"
+//TOO UNSTABLE},{"{ reuse L42.is/base }","{Bool:{interface class method Void #checkTrue() exception Void} True:{ _private()<:This1.Bool method #checkTrue() ( void )} False:{ _private()<:This1.Bool method #checkTrue() (exception  void )}}"
 },{lineNumber(), "if X (Bla) else (Foo)",
    " (Void unused=This0.X.#checkTrue() catch exception Void catched (This0.Foo ) (This0.Bla) )"
 },{lineNumber(), "if X (Bla) ",
    " (Void unused=This0.X.#checkTrue() catch exception Void catched  void  (This0.Bla) )"
 },{lineNumber(), "if Foo+Bar (bla) ",
    " ( This0.Foo::#plus(that ) cond=This0.Foo.#plus(that:This0.Bar) ( Void unused=cond.#checkTrue() catch exception Void catched0  void  (bla)))"
-},{lineNumber(), "{ <(T bar) }'bla\n"," ('bla\n{ type method This0 #left(This0.T bar)mut method This0.T #bar()read method This0.T bar()})"
-},{lineNumber(), "{ (T bar) }"," {type method This0 #apply(This0.T bar) mut method This0.T #bar() read method This0.T bar() }"
+},{lineNumber(), "{ <(T bar) }'bla\n"," ('bla\n{ class method This0 #left(This0.T bar)mut method This0.T #bar()read method This0.T bar()})"
+},{lineNumber(), "{ (T bar) }"," {class method This0 #apply(This0.T bar) mut method This0.T #bar() read method This0.T bar() }"
 },{lineNumber(), " (T x={ if A (return B) return C } x)",
    " (This0.T x=( Void unused=( Void unused0=( Void unused2=This0.A.#checkTrue() catch exception  Void catched void  (return This0.B)) Void unused1=return This0.C void ) catch return This0.T result result error  {'@stringU\n'CurlyBlock-Should be unreachable code\n } )x )"
 },{lineNumber(), "{ Vara: {} method a() (var T a=a+c c=a Fuffa(a:=a(a)) c ) }",
-  " {Vara0:'@private\n{type method \n"
+  " {Vara0:'@private\n{class method \n"
 +"mut This0 #apply(This1.T inner) \n"
 +"mut method \n"
 +"Void inner(This1.T that) \n"
@@ -125,7 +125,7 @@ public class TestParseAndDesugar {
 
 },{lineNumber(),"{a( This0.A a, var This0.B b)}",
   "{"
- +" type method mut This0 a( This0.A  a, This0.B b) "
+ +" class method mut This0 a( This0.A  a, This0.B b) "
  +" mut method This0.A #a() "
  +" read method This0.A a()"
  +" mut method Void b(This0.B that)"
@@ -134,7 +134,7 @@ public class TestParseAndDesugar {
  +" }"
 },{lineNumber(),"{a( This0.A a, var This0.B b)'@private\n}",
     "{"
-   +" type method'@private\n mut This0 a( This0.A a, This0.B b) "
+   +" class method'@private\n mut This0 a( This0.A a, This0.B b) "
    +" mut method'@private\n This0.A #a() "
    +" read method'@private\n This0.A a()"
    +" mut method'@private\n Void b(This0.B that)"

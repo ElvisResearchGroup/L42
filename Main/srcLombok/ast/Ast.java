@@ -622,7 +622,7 @@ public interface Ast {
 	}
 
 	public static enum Mdf {
-		Immutable(""), Mutable("mut"), Readable("read"), Lent("lent"), Capsule("capsule"), Type("type");
+		Immutable(""), Mutable("mut"), Readable("read"), Lent("lent"), Capsule("capsule"), Class("class");
 		public final String inner;
 
 		Mdf(String inner) {

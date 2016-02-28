@@ -5,11 +5,11 @@ Collections:{_private()'@private
 
   ListCode: {
    _private()'@private
-   type method Library () ...
+   class method Library () ...
    }
    
-  type method
-  Library list(type Any that){ 
+  class method
+  Library list(class Any that){ 
     map=IntrospectionPlugin.typeNameToAdapter(that) 'TODO: use IntrospectionPlugin.adapt
     tRen=IntrospectionPlugin.nameToAdapter(S"Elem".binaryRepr())
     'If I remove this. from under, I get a stupid error msg
@@ -17,7 +17,7 @@ Collections:{_private()'@private
     return this.list(adapter:IntrospectionPlugin.adaptLib(l1:map,l2:tRen))
     }
     
-  type method
+  class method
   Library list(Library adapter)
     IntrospectionPlugin.adaptLib(l1:ListCode(),l2:adapter)
   }

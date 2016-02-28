@@ -1,6 +1,6 @@
 {()
 Bool:{interface
-  type method This ()
+  class method This ()
   method Void #checkTrue() exception Void
   method This & (This that)
   method This | (This that)
@@ -22,11 +22,11 @@ False:{_private() <:Bool
   }
 
 ExitCode:{()
-  type method
+  class method
   Library normal(){return {'@exitStatus
      '0
     ()}}
-  type method
+  class method
   Library failure(){return {'@exitStatus
      '42000
     ()}}
@@ -35,7 +35,7 @@ Alu:{'@plugin
   'L42.is/connected/withAlu
   ()}
 N:{(Library that)
-  type method N #numberParser(Library that) (
+  class method N #numberParser(Library that) (
     N(using Alu
       check stringToInt32(that)
       error void))
@@ -118,20 +118,20 @@ S:{#stringParser(Library that)
       error void) )
   }
 Debug:{unused()
-  type method Void (S that) using Alu check stringDebug(that.that()) void
-  type method Void (S fileName, S content) using Alu check fileDebug(fileName:fileName.that(),content:content.that()) void
+  class method Void (S that) using Alu check stringDebug(that.that()) void
+  class method Void (S fileName, S content) using Alu check fileDebug(fileName:fileName.that(),content:content.that()) void
   }
 IntrospectionPlugin:{'@plugin
   'L42.is/connected/withItself
   ()
-  type method Library sumLib(Library l1,Library l2) using This check sumLib(l1:l1,l2:l2) error {sumLib()}
-  type method Library adaptLib(Library l1 Library l2) using This check adaptLib(l1:l1,l2:l2) error {adaptLib()}
-  type method Library nameToAdapter(Library that) using This check nameToAdapter(that) error {nameToAdapter()}
-  type method Library typeNameToAdapter(type Any that) using This check typeNameToAdapter(that) error {typeNameToAdapter()}
-  type method Library getFreshName(Library that) using This check getFreshName(that) error{getFreshName()}
+  class method Library sumLib(Library l1,Library l2) using This check sumLib(l1:l1,l2:l2) error {sumLib()}
+  class method Library adaptLib(Library l1 Library l2) using This check adaptLib(l1:l1,l2:l2) error {adaptLib()}
+  class method Library nameToAdapter(Library that) using This check nameToAdapter(that) error {nameToAdapter()}
+  class method Library typeNameToAdapter(class Any that) using This check typeNameToAdapter(that) error {typeNameToAdapter()}
+  class method Library getFreshName(Library that) using This check getFreshName(that) error{getFreshName()}
   }  
 Collections:{()
-  type method Library listRow() { _new(Cell head)
+  class method Library listRow() { _new(Cell head)
    T:{}
     Cell:{interface
       method mut Iterator #elems(Bool that) 
@@ -157,7 +157,7 @@ Collections:{()
         catch exception (on Void void)
         error {iterationNotComplete()})
       }
-    type method
+    class method
     This () (This._new(head:CellEnd()))
     method
     This #add(T that) (
@@ -184,23 +184,23 @@ Collections:{()
       read method Void #close() (void)
       }
     }
-  type method Library list(type Any that){ 
+  class method Library list(class Any that){ 
     map=IntrospectionPlugin.typeNameToAdapter(that)
     tRen=IntrospectionPlugin.nameToAdapter(S"T".that())
     'If I remove this. from under, I get a stupid error msg
     ' vars MUST have positions too :(
     return this.list(adapter: IntrospectionPlugin.adaptLib(l1:map,l2:tRen))
     }
-  type method Library list(Library adapter){
+  class method Library list(Library adapter){
     return IntrospectionPlugin.adaptLib(l1:this.listRow(),l2:adapter)
     }
   }
     
 Name:{(Bool isExternal, Library adapter)
-  type method Name #stringParser(Library that) (Name(isExternal:False(),adapter:
+  class method Name #stringParser(Library that) (Name(isExternal:False(),adapter:
     using IntrospectionPlugin check nameToAdapter(that) error {nameToAdapter()}
     ))
-  type method Name (type Any that) (Name(isExternal:True(),adapter:
+  class method Name (class Any that) (Name(isExternal:True(),adapter:
     using IntrospectionPlugin check typeNameToAdapter(that) error {typeNameToAdapter()}
     ))
   method Bool isInternalPath(){
@@ -210,7 +210,7 @@ Name:{(Bool isExternal, Library adapter)
   }
 Introspection:{
   (Library that, S node)
-  type method This(Library that) This(that,node:S"This")
+  class method This(Library that) This(that,node:S"This")
   method S get() (S.#stringParser(using IntrospectionPlugin check get(this.that(),node:this.node().that()) error {getThatNode()}))
   method Library getIfExists(N interfaceNum)exception Void (using IntrospectionPlugin check getOrElse(this.that(),interfaceNum:interfaceNum.that(),node:this.node().that()) exception void)
   method Method get(N methodNum)exception Void (
@@ -316,7 +316,7 @@ Introspection:{
   }
   
 Opt:{unused()
-  type method Library (type Any that) 
+  class method Library (class Any that) 
     Adapt[Name"T" into:Name(that);]<{#new(TOpt that)
       T:{}
       TOpt:{interface method T get() }
@@ -328,8 +328,8 @@ Opt:{unused()
         return True()
         catch error (on Any return False())
         }
-      type method This () This.#new(TEmpty())
-      type method This (T that) This.#new(TOf(that))
+      class method This () This.#new(TEmpty())
+      class method This (T that) This.#new(TOf(that))
       }
   }
   
@@ -338,7 +338,7 @@ Opt:{unused()
 Use:{ (Resolver resolver,Libs myLibs)
   Resolver: Opt(Library)
   Libs: Collections.list(Library)
-  type method This () This(resolver:Resolver(), myLibs:Libs[])
+  class method This () This(resolver:Resolver(), myLibs:Libs[])
   method This #add(Library that) (
     ls=this.myLibs().#add(that)
     This(resolver:this.resolver(),myLibs:ls)
@@ -383,7 +383,7 @@ Use:{ (Resolver resolver,Libs myLibs)
     }
   }
 Adapt:{(Library adapter)
-  type method This () This(adapter:{})
+  class method This () This(adapter:{})
   method This #add(Name that, Name into) {
     if that.isExternal() (error S"start name must be internal")
     if !that.isInternalPath() (return this.#add(that,of:Name"This",into:into))

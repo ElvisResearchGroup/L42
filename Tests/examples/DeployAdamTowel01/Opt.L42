@@ -1,5 +1,5 @@
 {
-  type method Library (type Any that)
+  class method Library (class Any that)
     SafeOperators.redirect({#new(TOpt that)
       T:{}
       TOpt:{interface method T get() }
@@ -13,8 +13,8 @@
         return Bool.true()
         catch error Any return Bool.false()
         }
-      type method This () This.#new(TEmpty())
-      type method This (T that) This.#new(TOf(that))
+      class method This () This.#new(TEmpty())
+      class method This (T that) This.#new(TOf(that))
       },
       src:Path"T",dest:that)
   }

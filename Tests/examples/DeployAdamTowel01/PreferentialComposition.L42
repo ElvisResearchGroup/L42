@@ -9,7 +9,7 @@ SrcDests:LinkedList.list(SrcDest)
 Libs:'@private
   LinkedList.list(Library)
 
-type method '@private
+class method '@private
 SrcDests renameMap(Library that,S prefix,Introspection.NestedClasses intros) {
   var acc=SrcDests[]
   with intro in intros.vals() (
@@ -19,7 +19,7 @@ SrcDests renameMap(Library that,S prefix,Introspection.NestedClasses intros) {
     )
   return acc
   }
-type method
+class method
 SrcDests renameMap(
 Library that,S prefix,Path path, Introspection.Methods ms) {
   thatI=Introspection(lib:that, path:path)
@@ -30,7 +30,7 @@ Library that,S prefix,Path path, Introspection.Methods ms) {
       use[SrcDest(path:path,src:meth.selector(),dest:destSel)]
       ))]
   }      
-type method
+class method
 Bool needRename(
 Introspection.NestedClass that,Introspection.Method meth) {
   if meth.isPrivate() (return Bool.false() )
@@ -43,7 +43,7 @@ Introspection.NestedClass that,Introspection.Method meth) {
   return Bool.true()
   }
  
-type method
+class method
 Library <<(Library that) exception MetaGuard.ClassClash,MetaGuard.MethodClash
   Refactor.compose(left:that,right:{
   'members of each produced class
@@ -53,7 +53,7 @@ Library <<(Library that) exception MetaGuard.ClassClash,MetaGuard.MethodClash
   This #add(Library that)
     This(myLibs:this.myLibs().#add(that))
     
-  type method
+  class method
   This #begin()
     This(myLibs:Libs[])
 

@@ -4,16 +4,16 @@ Alu:{'@plugin
 'L42.is/connected/withAlu
 }
 ExitCode:{
-type method 
+class method 
 Library normal() {'@exitStatus
 '0
 }
-type method 
+class method 
 Library failure() {'@exitStatus
 '42000
 }}
 Bool:{<:This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Named
-type method '@private
+class method '@private
 This0 #apply__39_0(Library binaryRepr__39_0) 
 mut method '@private
 Library #binaryRepr__39_0() 
@@ -26,13 +26,13 @@ Void #checkTrue() exception Void use This1.Alu check ifInt32EqualDo(n1:this.bina
   Void unused=b.#0()
   b
   )).binaryRepr()) exception void
-type method 
+class method 
 This0 true() This0.#apply__39_0(binaryRepr__39_0:This1.N.#from(builder:(
   This1.N::#builder() b=This1.N.#builder()
   Void unused=b.#1()
   b
   )).binaryRepr())
-type method 
+class method 
 This0 false() This0.#apply__39_0(binaryRepr__39_0:This1.N.#from(builder:(
   This1.N::#builder() b=This1.N.#builder()
   Void unused=b.#0()
@@ -124,7 +124,7 @@ method toS() (
   'CurlyBlock-Should be unreachable code
   }
   )
-type method 
+class method 
 This0 fromS(read This1.Concept.ToS that) (
   Void unused=(
     Void unused0=(
@@ -217,7 +217,7 @@ method equals(that ) (
   'CurlyBlock-Should be unreachable code
   }
   )
-type method 
+class method 
 Any parseError(This1.S that) This1.S.#from(builder:(
   This1.S::#builder() b=This1.S.#builder()
   Void unused=b.#B()
@@ -278,27 +278,27 @@ Any parseError(This1.S that) This1.S.#from(builder:(
   b
   ))}
 N:{<:This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Named
-type method '@private
+class method '@private
 This0 #apply__40_0(Library _binaryRepr__40_0) 
 mut method '@private
 Library #_binaryRepr__40_0() 
 read method '@private
 Library _binaryRepr__40_0() 
 method myName() This1.GetMyName.#apply(that:This0)
-type method 
+class method 
 This0 fromS(This1.Concept.ToS that) (
   This1.Concept.ToS::toS() s=that.toS()
   This1.N.#apply__40_0(_binaryRepr__40_0:use This1.Alu check stringToInt32(that:s.binaryRepr()) error This0.parseError(that:s))
   )
-type method 
+class method 
 This0 #from(Library binaryRepr) This1.N.#apply__40_0(_binaryRepr__40_0:binaryRepr)
 method 
 Library binaryRepr() this._binaryRepr__40_0()
-type method 
+class method 
 mut This1.S.SBuilder #builder() This1.S.SBuilder.empty()
-type method 
+class method 
 This1.N #from(This1.S.SBuilder builder) This1.N.#apply__40_0(_binaryRepr__40_0:use This1.Alu check stringToInt32(that:builder.binaryRepr()) error This0.parseError(that:This1.S.#from(builder:builder)))
-type method 
+class method 
 Any parseError(This1.S that) This1.S.#from(builder:(
   This1.S::#builder() b=This1.S.#builder()
   Void unused=b.#N()
@@ -447,7 +447,7 @@ mut This0.Iterator vals() This0.Iterator.#apply(start:this, end:This1.N.#from(bu
 method 
 mut This0.Iterator vals(This1.N upTo) This0.Iterator.#apply(start:this, end:upTo)
 Iterator:{
-type method 
+class method 
 mut This0 #apply(This1 start, This1 end) 
 mut method 
 Void start(This1 that) 
@@ -490,20 +490,20 @@ Void #close() void}}
 S:{<:This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Named
 Varcurrent__60_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This2.N::#from(builder ) inner) 
 mut method 
 Void inner(This2.N::#from(builder ) that) 
 mut method 
 This2.N::#from(builder ) #inner() }
-type method '@private
+class method '@private
 This0 _private__41_0(Library _binaryRepr__41_0) 
 mut method '@private
 Library #_binaryRepr__41_0() 
 read method '@private
 Library _binaryRepr__41_0() 
 method myName() This1.GetMyName.#apply(that:This0)
-type method 
+class method 
 This0 #from(Library binaryRepr) This0._private__41_0(_binaryRepr__41_0:binaryRepr)
 method 
 Library binaryRepr() this._binaryRepr__41_0()
@@ -649,7 +649,7 @@ This1.N firstIndexOf(This1.S that) (
   'CurlyBlock-Should be unreachable code
   }
   )
-type method 
+class method 
 Void subStringNotPresent(This1.S string, This1.S subString) void
 method 
 This1.Bool contains(This1.S that) (
@@ -741,7 +741,7 @@ This1.Bool isASCIIUpperCase(This1.N that) This1.S.#from(builder:(
   )).contains(that:this.#apply(that:that))
 method 
 This1.N size() This1.N.#apply__40_0(_binaryRepr__40_0:use This1.Alu check stringSize(that:this.binaryRepr()) error void)
-type method 
+class method 
 This1.S doubleQuote() This1.S.#from(builder:(
   This1.S::#builder() b=This1.S.#builder()
   Void unused=b.#dQuote()
@@ -752,7 +752,7 @@ This1.S doubleQuote() This1.S.#from(builder:(
   Void unused1=b0.#0()
   b0
   )))
-type method 
+class method 
 This1.S nl() This1.S.#from(builder:(
   This1.S::#builder() b=This1.S.#builder()
   Void unused=b.#newline()
@@ -768,13 +768,13 @@ This0.SConcat #begin() This0.SConcat.#apply(old:this, accumulator:This1.S.#from(
 SConcat:{
 VarnewAcc__61_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This3.Concept.ToS::toS() inner) 
 mut method 
 Void inner(This3.Concept.ToS::toS() that) 
 mut method 
 This3.Concept.ToS::toS() #inner() }
-type method 
+class method 
 This0 #apply(This2.S old, This2.S accumulator) 
 mut method 
 This2.S #old() 
@@ -811,7 +811,7 @@ mut This2.S.SBuilder #builder() This2.S.SBuilder.empty()
 method 
 This2.S #from(This2.S.SBuilder builder) this.old().#plusplus(that:this.accumulator().#plusplus(that:This2.S.#from(builder:builder)))}
 SBuilder:{
-type method '@private
+class method '@private
 mut This0 _private__43_0(Library _binaryRepr__43_0) 
 mut method '@private
 Void _binaryRepr__43_0(Library that) 
@@ -823,7 +823,7 @@ read method
 Library binaryRepr() this._binaryRepr__43_0()
 mut method 
 Void acc(Library that) this._binaryRepr__43_0(that:use This2.Alu check stringConcat(s1:this.binaryRepr(), s2:that) error void)
-type method 
+class method 
 mut This0 empty() This0._private__43_0(_binaryRepr__43_0:{'@stringU
 '
 })
@@ -1212,14 +1212,14 @@ Void #newline() this.acc(that:{'@stringU
 '
 '
 })}
-type method 
+class method 
 This0 #from(This1.S.SBuilder builder) This0._private__41_0(_binaryRepr__41_0:builder.binaryRepr())
-type method 
+class method 
 mut This1.S.SBuilder #builder() This1.S.SBuilder.empty()}
 Debug:{
-type method 
+class method 
 Void #apply(This1.Concept.ToS that) use This1.Alu check stringDebug(that:that.toS().binaryRepr()) void
-type method 
+class method 
 Void #apply(Library lib) error This1.S.#from(builder:(
   This1.S::#builder() b=This1.S.#builder()
   Void unused=b.#t()
@@ -1244,16 +1244,16 @@ Void #apply(Library lib) error This1.S.#from(builder:(
   Void unused18=b.#2()
   b
   ))
-type method 
+class method 
 Void #apply(This1.Concept.ToS fileName, This1.Concept.ToS content) use This1.Alu check fileDebug(fileName:fileName.toS().binaryRepr(), content:content.toS().binaryRepr()) void}
 Count:{
-type method '@private
+class method '@private
 This0 #apply__44_0(This1.N counter__44_0) 
 mut method '@private
 This1.N #counter__44_0() 
 read method '@private
 This1.N counter__44_0() 
-type method 
+class method 
 This0 #begin() This0.#apply__44_0(counter__44_0:This1.N.#from(builder:(
   This1.N::#builder() b=This1.N.#builder()
   Void unused=b.#0()
@@ -1290,7 +1290,7 @@ SafeOperatorsAccess__62_0:'@private
 {'@plugin
 'L42.is/connected/withSafeOperators
 
-type method 
+class method 
 Library compose(Library left, Library right) use This0 check compose(left:left, right:right) error This1.S.#from(builder:(
   This1.S::#builder() b=This1.S.#builder()
   Void unused=b.#S()
@@ -1322,8 +1322,8 @@ Library compose(Library left, Library right) use This0 check compose(left:left, 
   Void unused25=b.#e()
   b
   ))
-type method 
-Library redirect(Library that, Library srcBinaryRepr, type Any dest) use This1.SafeOperatorsAccess__62_0 check redirect(that:that, src:srcBinaryRepr, dest:dest) error This1.S.#from(builder:(
+class method 
+Library redirect(Library that, Library srcBinaryRepr, class Any dest) use This1.SafeOperatorsAccess__62_0 check redirect(that:that, src:srcBinaryRepr, dest:dest) error This1.S.#from(builder:(
   This1.S::#builder() b=This1.S.#builder()
   Void unused=b.#S()
   Void unused0=b.#a()
@@ -1361,16 +1361,16 @@ read method
 This2.S toS() }
 Classable:{interface 
 read method 
-type Any classAny() }
+class Any classAny() }
 Named:{interface 
-type method 
+class method 
 This2.S myName() }
 Wrapper:{interface 
 read method 
 Any inner() }
 TypeWrapper:{interface 
 read method 
-type Any inner() }
+class Any inner() }
 ReadWrapper:{interface 
 read method 
 read Any inner() }
@@ -1396,8 +1396,8 @@ Contains:{interface 'read method Bool >>(read Elem that)
 
 read method 
 This2.Bool contains(read Any that) }
-Parsable:{interface 'type method capsule This fromS(S that) exception Guard.Parameter(specific) invalid string
-'''type method capsule This #fromS(S that) exception Guard.Parameter
+Parsable:{interface 'class method capsule This fromS(S that) exception Guard.Parameter(specific) invalid string
+'''class method capsule This #fromS(S that) exception Guard.Parameter
 }
 Invariant:{interface 
 read method ' can throw error or return false, as more opportune
@@ -1422,8 +1422,8 @@ Void #checkEnd()
 read method 
 Void #close() }}
 GetMyName:{
-type method 
-This1.S #apply(type Any that) This1.S.#from(builder:(
+class method 
+This1.S #apply(class Any that) This1.S.#from(builder:(
   This1.S::#builder() b=This1.S.#builder()
   Void unused=b.#less()
   Void unused0=b.#less()
@@ -1446,16 +1446,16 @@ This1.S #apply(type Any that) This1.S.#from(builder:(
   b
   ))}
 Message:{interface <:This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Classable, This1.Concept.Named
-type method 
+class method 
 This1.S kind() 
 method 
 This1.S text() 
 method 
 This0.Opt responseOf() 
 read method 
-type This0 clazz() 
+class This0 clazz() 
 Opt:{
-type method 
+class method 
 This0 #new(This0.TOpt that) 
 mut method 
 This0.TOpt #that() 
@@ -1465,7 +1465,7 @@ TOpt:{interface
 method 
 This2 get() }
 TEmpty:{<:This1.TOpt
-type method 
+class method 
 This0 #apply() 
 method get() error This3.S.#from(builder:(
   This3.S::#builder() b=This3.S.#builder()
@@ -1521,7 +1521,7 @@ method get() error This3.S.#from(builder:(
   b
   ))}
 TOf:{<:This1.TOpt
-type method 
+class method 
 This0 #apply(This2 that) 
 mut method 
 This2 #that() 
@@ -1545,14 +1545,14 @@ This2.Bool isPresent() (
   'CurlyBlock-Should be unreachable code
   }
   )
-type method 
+class method 
 This0 #apply() This0.#new(that:This0.TEmpty.#apply())
-type method 
+class method 
 This0 #apply(This1 that) This0.#new(that:This0.TOf.#apply(that:that))}
 EqualMessages:{
-type method 
+class method 
 This2.Bool #apply(This2.Message that, This2.Message other) (
-  Void unused=('assuming they have the same type
+  Void unused=('assuming they have the same class
   
     This2.Message::clazz() ::kind() ::#equalequal(that ) ::#and(that ) ::#and(that ) res=that.clazz().kind().#equalequal(that:other.clazz().kind()).#and(that:that.text().#equalequal(that:other.text())).#and(that:that.responseOf().isPresent().#equalequal(that:other.responseOf().isPresent()))
     Void unused0=(
@@ -1583,21 +1583,21 @@ This2.Bool #apply(This2.Message that, This2.Message other) (
   }
   )}
 $:{
-type method 
+class method 
 This0 #apply() 
-type method 
+class method 
 Library #leftleft(Library that) This2.SafeOperatorsAccess__62_0.compose(left:that, right:This0.messageTrait())
-type method 
+class method 
 Library messageTrait() {<:This3.Message
 Varres__63_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This1::kind() inner) 
 mut method 
 Void inner(This1::kind() that) 
 mut method 
 This1::kind() #inner() }
-type method 
+class method 
 This0 #apply(This3.S _text, This3.Message.Opt cause) 
 mut method 
 This3.S #_text() 
@@ -1712,13 +1712,13 @@ method
 This3.Bool #equalequal(This0 that) This3.Message.EqualMessages.#apply(that:this, other:that)
 method classAny() This0
 method clazz() This0
-type method 
+class method 
 This0 #apply(This3.S text) This0.#apply(_text:text, cause:This3.Message.Opt.#apply())
-type method 
+class method 
 This0 #apply(This3.S text, This3.Message cause) This0.#apply(_text:text, cause:This3.Message.Opt.#apply(that:cause))
-type method 
+class method 
 mut This3.S.SBuilder #builder() This3.S.SBuilder.empty()
-type method 
+class method 
 This0 #from(This3.S.SBuilder builder) This0.#apply(text:This3.S.#from(builder:builder))
 method 
 This0.SConcat #begin() This0.SConcat.#apply(old:this, accumulator:This3.S.#from(builder:(
@@ -1728,13 +1728,13 @@ This0.SConcat #begin() This0.SConcat.#apply(old:this, accumulator:This3.S.#from(
 SConcat:{
 VarnewAcc0__64_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This5.Concept.ToS::toS() inner) 
 mut method 
 Void inner(This5.Concept.ToS::toS() that) 
 mut method 
 This5.Concept.ToS::toS() #inner() }
-type method 
+class method 
 This0 #apply(This4.Concept.ToS old, This4.S accumulator) 
 mut method 
 This4.Concept.ToS #old() 
@@ -1783,13 +1783,13 @@ interface <:This1.Message'all other guards should implement this one
 Operation:{<:This2.Guard, This2.Message
 Varres_$%0_0__65_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This1::kind() inner) 
 mut method 
 Void inner(This1::kind() that) 
 mut method 
 This1::kind() #inner() }
-type method 
+class method 
 This0 #apply(This2.S _text, This2.Message.Opt cause) 
 mut method 
 This2.S #_text() 
@@ -1904,13 +1904,13 @@ method
 This2.Bool #equalequal(This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
 method classAny() This0
 method clazz() This0
-type method 
+class method 
 This0 #apply(This2.S text) This0.#apply(_text:text, cause:This2.Message.Opt.#apply())
-type method 
+class method 
 This0 #apply(This2.S text, This2.Message cause) This0.#apply(_text:text, cause:This2.Message.Opt.#apply(that:cause))
-type method 
+class method 
 mut This2.S.SBuilder #builder() This2.S.SBuilder.empty()
-type method 
+class method 
 This0 #from(This2.S.SBuilder builder) This0.#apply(text:This2.S.#from(builder:builder))
 method 
 This0.SConcat #begin() This0.SConcat.#apply(old:this, accumulator:This2.S.#from(builder:(
@@ -1920,13 +1920,13 @@ This0.SConcat #begin() This0.SConcat.#apply(old:this, accumulator:This2.S.#from(
 SConcat:{
 VarnewAcc0_$%1_0__66_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This4.Concept.ToS::toS() inner) 
 mut method 
 Void inner(This4.Concept.ToS::toS() that) 
 mut method 
 This4.Concept.ToS::toS() #inner() }
-type method 
+class method 
 This0 #apply(This3.Concept.ToS old, This3.S accumulator) 
 mut method 
 This3.Concept.ToS #old() 
@@ -1965,13 +1965,13 @@ This1 #from(This3.S.SBuilder builder) This1.#apply(text:this.old().toS().#pluspl
 Parameter:{<:This2.Guard, This2.Message
 Varres_$%2_0__67_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This1::kind() inner) 
 mut method 
 Void inner(This1::kind() that) 
 mut method 
 This1::kind() #inner() }
-type method 
+class method 
 This0 #apply(This2.S _text, This2.Message.Opt cause) 
 mut method 
 This2.S #_text() 
@@ -2086,13 +2086,13 @@ method
 This2.Bool #equalequal(This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
 method classAny() This0
 method clazz() This0
-type method 
+class method 
 This0 #apply(This2.S text) This0.#apply(_text:text, cause:This2.Message.Opt.#apply())
-type method 
+class method 
 This0 #apply(This2.S text, This2.Message cause) This0.#apply(_text:text, cause:This2.Message.Opt.#apply(that:cause))
-type method 
+class method 
 mut This2.S.SBuilder #builder() This2.S.SBuilder.empty()
-type method 
+class method 
 This0 #from(This2.S.SBuilder builder) This0.#apply(text:This2.S.#from(builder:builder))
 method 
 This0.SConcat #begin() This0.SConcat.#apply(old:this, accumulator:This2.S.#from(builder:(
@@ -2102,13 +2102,13 @@ This0.SConcat #begin() This0.SConcat.#apply(old:this, accumulator:This2.S.#from(
 SConcat:{
 VarnewAcc0_$%3_0__68_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This4.Concept.ToS::toS() inner) 
 mut method 
 Void inner(This4.Concept.ToS::toS() that) 
 mut method 
 This4.Concept.ToS::toS() #inner() }
-type method 
+class method 
 This0 #apply(This3.Concept.ToS old, This3.S accumulator) 
 mut method 
 This3.Concept.ToS #old() 
@@ -2147,13 +2147,13 @@ This1 #from(This3.S.SBuilder builder) This1.#apply(text:this.old().toS().#pluspl
 Precondition:{<:This2.Guard, This2.Message
 Varres_$%4_0__69_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This1::kind() inner) 
 mut method 
 Void inner(This1::kind() that) 
 mut method 
 This1::kind() #inner() }
-type method 
+class method 
 This0 #apply(This2.S _text, This2.Message.Opt cause) 
 mut method 
 This2.S #_text() 
@@ -2268,13 +2268,13 @@ method
 This2.Bool #equalequal(This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
 method classAny() This0
 method clazz() This0
-type method 
+class method 
 This0 #apply(This2.S text) This0.#apply(_text:text, cause:This2.Message.Opt.#apply())
-type method 
+class method 
 This0 #apply(This2.S text, This2.Message cause) This0.#apply(_text:text, cause:This2.Message.Opt.#apply(that:cause))
-type method 
+class method 
 mut This2.S.SBuilder #builder() This2.S.SBuilder.empty()
-type method 
+class method 
 This0 #from(This2.S.SBuilder builder) This0.#apply(text:This2.S.#from(builder:builder))
 method 
 This0.SConcat #begin() This0.SConcat.#apply(old:this, accumulator:This2.S.#from(builder:(
@@ -2284,13 +2284,13 @@ This0.SConcat #begin() This0.SConcat.#apply(old:this, accumulator:This2.S.#from(
 SConcat:{
 VarnewAcc0_$%5_0__70_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This4.Concept.ToS::toS() inner) 
 mut method 
 Void inner(This4.Concept.ToS::toS() that) 
 mut method 
 This4.Concept.ToS::toS() #inner() }
-type method 
+class method 
 This0 #apply(This3.Concept.ToS old, This3.S accumulator) 
 mut method 
 This3.Concept.ToS #old() 
@@ -2332,13 +2332,13 @@ interface <:This2.Guard
 PluginFailure:{<:This2.Guard, This3.Message
 Varres_$%6_0__71_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This1::kind() inner) 
 mut method 
 Void inner(This1::kind() that) 
 mut method 
 This1::kind() #inner() }
-type method 
+class method 
 This0 #apply(This3.S _text, This3.Message.Opt cause) 
 mut method 
 This3.S #_text() 
@@ -2453,13 +2453,13 @@ method
 This3.Bool #equalequal(This0 that) This3.Message.EqualMessages.#apply(that:this, other:that)
 method classAny() This0
 method clazz() This0
-type method 
+class method 
 This0 #apply(This3.S text) This0.#apply(_text:text, cause:This3.Message.Opt.#apply())
-type method 
+class method 
 This0 #apply(This3.S text, This3.Message cause) This0.#apply(_text:text, cause:This3.Message.Opt.#apply(that:cause))
-type method 
+class method 
 mut This3.S.SBuilder #builder() This3.S.SBuilder.empty()
-type method 
+class method 
 This0 #from(This3.S.SBuilder builder) This0.#apply(text:This3.S.#from(builder:builder))
 method 
 This0.SConcat #begin() This0.SConcat.#apply(old:this, accumulator:This3.S.#from(builder:(
@@ -2469,13 +2469,13 @@ This0.SConcat #begin() This0.SConcat.#apply(old:this, accumulator:This3.S.#from(
 SConcat:{
 VarnewAcc0_$%7_0__72_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This5.Concept.ToS::toS() inner) 
 mut method 
 Void inner(This5.Concept.ToS::toS() that) 
 mut method 
 This5.Concept.ToS::toS() #inner() }
-type method 
+class method 
 This0 #apply(This4.Concept.ToS old, This4.S accumulator) 
 mut method 
 This4.Concept.ToS #old() 
@@ -2515,13 +2515,13 @@ Assert:{interface <:This1.Message
 NotImplementedYet:{<:This1, This2.Message
 Varres_$%8_0__73_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This1::kind() inner) 
 mut method 
 Void inner(This1::kind() that) 
 mut method 
 This1::kind() #inner() }
-type method 
+class method 
 This0 #apply(This2.S _text, This2.Message.Opt cause) 
 mut method 
 This2.S #_text() 
@@ -2636,13 +2636,13 @@ method
 This2.Bool #equalequal(This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
 method classAny() This0
 method clazz() This0
-type method 
+class method 
 This0 #apply(This2.S text) This0.#apply(_text:text, cause:This2.Message.Opt.#apply())
-type method 
+class method 
 This0 #apply(This2.S text, This2.Message cause) This0.#apply(_text:text, cause:This2.Message.Opt.#apply(that:cause))
-type method 
+class method 
 mut This2.S.SBuilder #builder() This2.S.SBuilder.empty()
-type method 
+class method 
 This0 #from(This2.S.SBuilder builder) This0.#apply(text:This2.S.#from(builder:builder))
 method 
 This0.SConcat #begin() This0.SConcat.#apply(old:this, accumulator:This2.S.#from(builder:(
@@ -2652,13 +2652,13 @@ This0.SConcat #begin() This0.SConcat.#apply(old:this, accumulator:This2.S.#from(
 SConcat:{
 VarnewAcc0_$%9_0__74_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This4.Concept.ToS::toS() inner) 
 mut method 
 Void inner(This4.Concept.ToS::toS() that) 
 mut method 
 This4.Concept.ToS::toS() #inner() }
-type method 
+class method 
 This0 #apply(This3.Concept.ToS old, This3.S accumulator) 
 mut method 
 This3.Concept.ToS #old() 
@@ -2697,13 +2697,13 @@ This1 #from(This3.S.SBuilder builder) This1.#apply(text:this.old().toS().#pluspl
 ObservedBug:{<:This1, This2.Message
 Varres_$%10_0__75_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This1::kind() inner) 
 mut method 
 Void inner(This1::kind() that) 
 mut method 
 This1::kind() #inner() }
-type method 
+class method 
 This0 #apply(This2.S _text, This2.Message.Opt cause) 
 mut method 
 This2.S #_text() 
@@ -2818,13 +2818,13 @@ method
 This2.Bool #equalequal(This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
 method classAny() This0
 method clazz() This0
-type method 
+class method 
 This0 #apply(This2.S text) This0.#apply(_text:text, cause:This2.Message.Opt.#apply())
-type method 
+class method 
 This0 #apply(This2.S text, This2.Message cause) This0.#apply(_text:text, cause:This2.Message.Opt.#apply(that:cause))
-type method 
+class method 
 mut This2.S.SBuilder #builder() This2.S.SBuilder.empty()
-type method 
+class method 
 This0 #from(This2.S.SBuilder builder) This0.#apply(text:This2.S.#from(builder:builder))
 method 
 This0.SConcat #begin() This0.SConcat.#apply(old:this, accumulator:This2.S.#from(builder:(
@@ -2834,13 +2834,13 @@ This0.SConcat #begin() This0.SConcat.#apply(old:this, accumulator:This2.S.#from(
 SConcat:{
 VarnewAcc0_$%11_0__76_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This4.Concept.ToS::toS() inner) 
 mut method 
 Void inner(This4.Concept.ToS::toS() that) 
 mut method 
 This4.Concept.ToS::toS() #inner() }
-type method 
+class method 
 This0 #apply(This3.Concept.ToS old, This3.S accumulator) 
 mut method 
 This3.Concept.ToS #old() 
@@ -2879,13 +2879,13 @@ This1 #from(This3.S.SBuilder builder) This1.#apply(text:this.old().toS().#pluspl
 CodeNotReachable:{<:This1, This2.Message
 Varres_$%12_0__77_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This1::kind() inner) 
 mut method 
 Void inner(This1::kind() that) 
 mut method 
 This1::kind() #inner() }
-type method 
+class method 
 This0 #apply(This2.S _text, This2.Message.Opt cause) 
 mut method 
 This2.S #_text() 
@@ -3000,13 +3000,13 @@ method
 This2.Bool #equalequal(This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
 method classAny() This0
 method clazz() This0
-type method 
+class method 
 This0 #apply(This2.S text) This0.#apply(_text:text, cause:This2.Message.Opt.#apply())
-type method 
+class method 
 This0 #apply(This2.S text, This2.Message cause) This0.#apply(_text:text, cause:This2.Message.Opt.#apply(that:cause))
-type method 
+class method 
 mut This2.S.SBuilder #builder() This2.S.SBuilder.empty()
-type method 
+class method 
 This0 #from(This2.S.SBuilder builder) This0.#apply(text:This2.S.#from(builder:builder))
 method 
 This0.SConcat #begin() This0.SConcat.#apply(old:this, accumulator:This2.S.#from(builder:(
@@ -3016,13 +3016,13 @@ This0.SConcat #begin() This0.SConcat.#apply(old:this, accumulator:This2.S.#from(
 SConcat:{
 VarnewAcc0_$%13_0__78_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This4.Concept.ToS::toS() inner) 
 mut method 
 Void inner(This4.Concept.ToS::toS() that) 
 mut method 
 This4.Concept.ToS::toS() #inner() }
-type method 
+class method 
 This0 #apply(This3.Concept.ToS old, This3.S accumulator) 
 mut method 
 This3.Concept.ToS #old() 
@@ -3059,13 +3059,13 @@ mut This3.S.SBuilder #builder() This3.S.SBuilder.empty()
 method 
 This1 #from(This3.S.SBuilder builder) This1.#apply(text:this.old().toS().#plusplus(that:this.accumulator().#plusplus(that:This3.S.#from(builder:builder))))}}
 $:{
-type method 
+class method 
 This0 #apply(This2.N that) 
 mut method 
 This2.N #that() 
 read method 
 This2.N that() 
-type method 
+class method 
 This0 #begin() This0.#apply(that:This2.N.#from(builder:(
   This2.N::#builder() b=This2.N.#builder()
   Void unused=b.#0()
@@ -3182,13 +3182,13 @@ This0 #add(This2.Bool that, This2.Concept.ToS msg) (
 AssertMessage:{<:This1, This2.Message
 Varres_$%14_0__79_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This1::kind() inner) 
 mut method 
 Void inner(This1::kind() that) 
 mut method 
 This1::kind() #inner() }
-type method 
+class method 
 This0 #apply(This2.S _text, This2.Message.Opt cause) 
 mut method 
 This2.S #_text() 
@@ -3303,13 +3303,13 @@ method
 This2.Bool #equalequal(This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
 method classAny() This0
 method clazz() This0
-type method 
+class method 
 This0 #apply(This2.S text) This0.#apply(_text:text, cause:This2.Message.Opt.#apply())
-type method 
+class method 
 This0 #apply(This2.S text, This2.Message cause) This0.#apply(_text:text, cause:This2.Message.Opt.#apply(that:cause))
-type method 
+class method 
 mut This2.S.SBuilder #builder() This2.S.SBuilder.empty()
-type method 
+class method 
 This0 #from(This2.S.SBuilder builder) This0.#apply(text:This2.S.#from(builder:builder))
 method 
 This0.SConcat #begin() This0.SConcat.#apply(old:this, accumulator:This2.S.#from(builder:(
@@ -3319,13 +3319,13 @@ This0.SConcat #begin() This0.SConcat.#apply(old:this, accumulator:This2.S.#from(
 SConcat:{
 VarnewAcc0_$%15_0__80_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This4.Concept.ToS::toS() inner) 
 mut method 
 Void inner(This4.Concept.ToS::toS() that) 
 mut method 
 This4.Concept.ToS::toS() #inner() }
-type method 
+class method 
 This0 #apply(This3.Concept.ToS old, This3.S accumulator) 
 mut method 
 This3.Concept.ToS #old() 
@@ -3363,12 +3363,12 @@ method
 This1 #from(This3.S.SBuilder builder) This1.#apply(text:this.old().toS().#plusplus(that:this.accumulator().#plusplus(that:This3.S.#from(builder:builder))))}}}
 LinkedList:{
 ListCode:{
-type method 
-Library #apply() {' generic linked list class, elements of type Elem
+class method 
+Library #apply() {' generic linked list class, elements of class Elem
 <:This3.Concept.Named
 Varres0__81_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This1 inner) 
 mut method 
 Void inner(This1 that) 
@@ -3378,20 +3378,20 @@ read method
 This1 inner() }
 Varres1__82_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This1::#apply() inner) 
 mut method 
 Void inner(This1::#apply() that) 
 mut method 
 This1::#apply() #inner() }
-type method 
+class method 
 This0 _new(This0.Cell head) 
 mut method 
 This0.Cell #head() 
 read method 
 This0.Cell head() 
 method myName() This3.GetMyName.#apply(that:This0)
-type method 
+class method 
 This0 #apply() This0._new(head:This0.CellEnd.#apply())
 method 
 This3.Bool isEmpty() (
@@ -3519,7 +3519,7 @@ This0 #plusplus(This0 that) (
   'CurlyBlock-Should be unreachable code
   }
   )
-type method 
+class method 
 This0 #begin() This0.#apply()
 method 
 This0 #add(This0.Elem that) This0._new(head:This0.CellNext.#apply(elem:that, nextCell:this.head()))
@@ -3578,7 +3578,7 @@ This1.Elem #inner()
 method 
 Void #checkEnd() }
 CellEnd:{<:This1.Cell
-type method 
+class method 
 This0 #apply() 
 method vals(terminate ) This1.Iterator.#apply(that:this, terminate:terminate)
 method #next() exception void
@@ -3602,7 +3602,7 @@ method #inner() error This4.Assert.ObservedBug.#from(builder:(
   ))
 method #checkEnd() void}
 CellNext:{<:This1.Cell
-type method 
+class method 
 This0 #apply(This1.Elem elem, This1.Cell nextCell) 
 mut method 
 This1.Elem #elem() 
@@ -3727,7 +3727,7 @@ method #checkEnd() (
     )
   )}
 Iterator:{
-type method 
+class method 
 mut This0 #apply(This1.Cell that, This4.Bool terminate) 
 mut method 
 Void that(This1.Cell that) 
@@ -3783,8 +3783,8 @@ read method
 This1.Elem #inner() this.that().#inner()
 read method 
 Void #close() void}}}
-type method 
-Library list(type Any that) This1.SafeOperatorsAccess__62_0.redirect(that:This0.ListCode.#apply(), srcBinaryRepr:This1.S.#from(builder:(
+class method 
+Library list(class Any that) This1.SafeOperatorsAccess__62_0.redirect(that:This0.ListCode.#apply(), srcBinaryRepr:This1.S.#from(builder:(
   This1.S::#builder() b=This1.S.#builder()
   Void unused=b.#E()
   Void unused0=b.#l()
@@ -3792,8 +3792,8 @@ Library list(type Any that) This1.SafeOperatorsAccess__62_0.redirect(that:This0.
   Void unused2=b.#m()
   b
   )).binaryRepr(), dest:that)
-type method 
-Library eqList(type Any that) (
+class method 
+Library eqList(class Any that) (
   This1.SafeOperatorsAccess__62_0::compose(left right ) lib=This1.SafeOperatorsAccess__62_0.compose(left:This0.ListCode.#apply(), right:This0.ListCodeEq.#apply())
   This1.SafeOperatorsAccess__62_0.redirect(that:lib, srcBinaryRepr:This1.S.#from(builder:(
     This1.S::#builder() b=This1.S.#builder()
@@ -3805,18 +3805,18 @@ Library eqList(type Any that) (
     )).binaryRepr(), dest:that)
   )
 ListCodeEq:{
-type method 
+class method 
 Library #apply() {
 Varaccumulator__83_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This1::#begin() inner) 
 mut method 
 Void inner(This1::#begin() that) 
 mut method 
 This1::#begin() #inner() }
 Elem:{<:This4.Concept.Equals}
-type method 
+class method 
 This0 #begin() 
 method 
 This0 #add(This0.Elem that) 
@@ -4080,11 +4080,11 @@ This3.Bool equals(Any that) (
   'CurlyBlock-Should be unreachable code
   }
   )}}}
-Strings:{' generic linked list class, elements of type Elem
+Strings:{' generic linked list class, elements of class Elem
 <:This1.Concept.Named
 Varres0_$%16_0__84_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This1 inner) 
 mut method 
 Void inner(This1 that) 
@@ -4094,20 +4094,20 @@ read method
 This1 inner() }
 Varres1_$%17_0__85_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This1::#apply() inner) 
 mut method 
 Void inner(This1::#apply() that) 
 mut method 
 This1::#apply() #inner() }
-type method 
+class method 
 This0 _new(This0.Cell head) 
 mut method 
 This0.Cell #head() 
 read method 
 This0.Cell head() 
 method myName() This1.GetMyName.#apply(that:This0)
-type method 
+class method 
 This0 #apply() This0._new(head:This0.CellEnd.#apply())
 method 
 This1.Bool isEmpty() (
@@ -4235,7 +4235,7 @@ This0 #plusplus(This0 that) (
   'CurlyBlock-Should be unreachable code
   }
   )
-type method 
+class method 
 This0 #begin() This0.#apply()
 method 
 This0 #add(This1.S that) This0._new(head:This0.CellNext.#apply(elem:that, nextCell:this.head()))
@@ -4293,7 +4293,7 @@ This2.S #inner()
 method 
 Void #checkEnd() }
 CellEnd:{<:This1.Cell
-type method 
+class method 
 This0 #apply() 
 method vals(terminate ) This1.Iterator.#apply(that:this, terminate:terminate)
 method #next() exception void
@@ -4317,7 +4317,7 @@ method #inner() error This2.Assert.ObservedBug.#from(builder:(
   ))
 method #checkEnd() void}
 CellNext:{<:This1.Cell
-type method 
+class method 
 This0 #apply(This2.S elem, This1.Cell nextCell) 
 mut method 
 This2.S #elem() 
@@ -4442,7 +4442,7 @@ method #checkEnd() (
     )
   )}
 Iterator:{
-type method 
+class method 
 mut This0 #apply(This1.Cell that, This2.Bool terminate) 
 mut method 
 Void that(This1.Cell that) 
@@ -4500,7 +4500,7 @@ read method
 Void #close() void}
 Varaccumulator_$%18_0__86_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This1::#begin() inner) 
 mut method 
 Void inner(This1::#begin() that) 
@@ -4756,7 +4756,7 @@ This1.Bool equals(Any that) (
 Path:{<:This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Named
 Varresult__87_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This2.Strings::#begin() ::#end() inner) 
 mut method 
 Void inner(This2.Strings::#begin() ::#end() that) 
@@ -4764,7 +4764,7 @@ mut method
 This2.Strings::#begin() ::#end() #inner() }
 Varstr__88_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This1::toS() inner) 
 mut method 
 Void inner(This1::toS() that) 
@@ -4772,7 +4772,7 @@ mut method
 This1::toS() #inner() }
 Varaccumulator0__89_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This2.S::#from(builder ) ::#begin() inner) 
 mut method 
 Void inner(This2.S::#from(builder ) ::#begin() that) 
@@ -4780,7 +4780,7 @@ mut method
 This2.S::#from(builder ) ::#begin() #inner() }
 Varacc__90_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This2.Path inner) 
 mut method 
 Void inner(This2.Path that) 
@@ -4788,14 +4788,14 @@ mut method
 This2.Path #inner() 
 read method 
 This2.Path inner() }
-type method '@private
+class method '@private
 This0 _private__45_0(Library _binaryRepr__45_0) 
 mut method '@private
 Library #_binaryRepr__45_0() 
 read method '@private
 Library _binaryRepr__45_0() 
 method myName() This1.GetMyName.#apply(that:This0)
-type method 
+class method 
 This0 fromDocInternalizedS(This1.S that) (
   Void unused=(
     Void unused0=(
@@ -4838,18 +4838,18 @@ This0 fromDocInternalizedS(This1.S that) (
   'CurlyBlock-Should be unreachable code
   }
   )
-type method 
+class method 
 This0 fromS(This1.Concept.ToS that) This0.#from(binaryRepr:that.toS().binaryRepr())
-type method 
+class method 
 This0 #from(This1.S.SBuilder builder) This0.#from(binaryRepr:builder.binaryRepr())
-type method 
+class method 
 mut This1.S.SBuilder #builder() This1.S.SBuilder.empty()
-type method 
+class method 
 This0 #from(Library binaryRepr) (
   Void unused=use This1.SafeOperators check ifInvalidDo(path:binaryRepr) error This0.parseError(that:This1.S.#from(binaryRepr:binaryRepr))
   This0._private__45_0(_binaryRepr__45_0:binaryRepr)
   )
-type method 
+class method 
 Any parseError(This1.S that) (
   This1.S::#from(builder ) ::#begin() ::#add(that ) ::#end() listKind=This1.S.#from(builder:(
     This1.S::#builder() b0=This1.S.#builder()
@@ -4919,7 +4919,7 @@ Any parseError(This1.S that) (
     b
     ))
   )
-type method 
+class method 
 Any parseError(This1.S that, This1.Message cause) (
   This1.S::#from(builder ) ::#begin() ::#add(that ) ::#end() listKind=This1.S.#from(builder:(
     This1.S::#builder() b0=This1.S.#builder()
@@ -5150,7 +5150,7 @@ This1.Strings names() (
   'CurlyBlock-Should be unreachable code
   }
   )
-type method 
+class method 
 This1.Path from(This1.Strings names) (
   Void unused=(
     Void unused0=(
@@ -5234,9 +5234,9 @@ This1.Path from(This1.Strings names) (
   'CurlyBlock-Should be unreachable code
   }
   )
-type method 
+class method 
 This1.Path fresh(This1.S name) This1.Path.fromS(that:This1.SafeOperators.freshName(that:name))
-type method 
+class method 
 This1.Path fresh() this.fresh(name:This1.S.#from(builder:(
   This1.S::#builder() b=This1.S.#builder()
   Void unused=b.#F()
@@ -5246,7 +5246,7 @@ This1.Path fresh() this.fresh(name:This1.S.#from(builder:(
   Void unused3=b.#h()
   b
   )))
-type method 
+class method 
 This1.Path fresh(This1.Path path) (
   Void unused=(
     This1.Path::names() ::#end() names=path.names().#end()
@@ -5320,7 +5320,7 @@ This1.Path fresh(This1.Path path) (
 Selector:{<:This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Named
 Varaccumulator1__91_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This2.S::#from(builder ) ::#begin() inner) 
 mut method 
 Void inner(This2.S::#from(builder ) ::#begin() that) 
@@ -5328,7 +5328,7 @@ mut method
 This2.S::#from(builder ) ::#begin() #inner() }
 Varresult0__92_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This2.Strings::#begin() ::#end() inner) 
 mut method 
 Void inner(This2.Strings::#begin() ::#end() that) 
@@ -5336,7 +5336,7 @@ mut method
 This2.Strings::#begin() ::#end() #inner() }
 Varstr0__93_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This1::toS() inner) 
 mut method 
 Void inner(This1::toS() that) 
@@ -5344,7 +5344,7 @@ mut method
 This1::toS() #inner() }
 Vartot__94_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This2.SafeOperators::freshName(that ) ::#plusplus(that ) inner) 
 mut method 
 Void inner(This2.SafeOperators::freshName(that ) ::#plusplus(that ) that) 
@@ -5352,31 +5352,31 @@ mut method
 This2.SafeOperators::freshName(that ) ::#plusplus(that ) #inner() }
 Varname__95_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This2.Selector::name() inner) 
 mut method 
 Void inner(This2.Selector::name() that) 
 mut method 
 This2.Selector::name() #inner() }
-type method '@private
+class method '@private
 This0 _private__46_0(Library _binaryRepr__46_0) 
 mut method '@private
 Library #_binaryRepr__46_0() 
 read method '@private
 Library _binaryRepr__46_0() 
 method myName() This1.GetMyName.#apply(that:This0)
-type method 
+class method 
 This0 fromS(This1.Concept.ToS that) This0.#from(binaryRepr:that.toS().binaryRepr())
-type method 
+class method 
 This0 #from(This1.S.SBuilder builder) This0.#from(binaryRepr:builder.binaryRepr())
-type method 
+class method 
 mut This1.S.SBuilder #builder() This1.S.SBuilder.empty()
-type method 
+class method 
 This0 #from(Library binaryRepr) (
   Void unused=use This1.SafeOperators check ifInvalidDo(selector:binaryRepr) error This0.parseError(that:This1.S.#from(binaryRepr:binaryRepr))
   This0._private__46_0(_binaryRepr__46_0:binaryRepr)
   )
-type method 
+class method 
 Any parseError(This1.S that) This1.S.#from(builder:(
   This1.S::#builder() b=This1.S.#builder()
   Void unused=b.#S()
@@ -5440,7 +5440,7 @@ Any parseError(This1.S that) This1.S.#from(builder:(
   Void unused57=b.#2()
   b
   ))
-type method 
+class method 
 This0 from(This1.S name, This1.Strings names) (
   Void unused=(
     Void unused0=(
@@ -5759,7 +5759,7 @@ This1.Strings names() (
   'CurlyBlock-Should be unreachable code
   }
   )
-type method 
+class method 
 This1.Selector fresh(This1.Selector that) (
   Void unused=(
     This1.Selector::name() name=that.name()
@@ -5858,7 +5858,7 @@ This1.Selector fresh(This1.Selector that) (
 SafeOperators:{'@plugin
 'L42.is/connected/withSafeOperators
 
-type method 
+class method 
 Library compose(Library left, Library right) use This0 check compose(left:left, right:right) error This1.System.Guard.PluginFailure.#from(builder:(
   This1.System.Guard.PluginFailure::#builder() b=This1.System.Guard.PluginFailure.#builder()
   Void unused=b.#S()
@@ -5884,7 +5884,7 @@ Library compose(Library left, Library right) use This0 check compose(left:left, 
   Void unused19=b.#e()
   b
   ))
-type method 
+class method 
 Library renameClass(Library that, This1.Path src, This1.Path dest) use This0 check renameClass(that:that, src:src.binaryRepr(), dest:dest.binaryRepr()) error This1.System.Guard.PluginFailure.#from(builder:(
   This1.System.Guard.PluginFailure::#builder() b=This1.System.Guard.PluginFailure.#builder()
   Void unused=b.#S()
@@ -5914,7 +5914,7 @@ Library renameClass(Library that, This1.Path src, This1.Path dest) use This0 che
   Void unused23=b.#s()
   b
   ))
-type method 
+class method 
 Library renameMethod(Library that, This1.Path path, This1.Selector src, This1.Selector dest) use This0 check renameMethod(that:that, path:path.binaryRepr(), src:src.binaryRepr(), dest:dest.binaryRepr()) error This1.System.Guard.PluginFailure.#from(builder:(
   This1.System.Guard.PluginFailure::#builder() b=This1.System.Guard.PluginFailure.#builder()
   Void unused=b.#S()
@@ -5945,7 +5945,7 @@ Library renameMethod(Library that, This1.Path path, This1.Selector src, This1.Se
   Void unused24=b.#d()
   b
   ))
-type method 
+class method 
 Library sumMethods(Library that, This1.Path path, This1.Selector src1, This1.Selector src2, This1.Selector dest, This1.S name) use This0 check sumMethods(that:that, path:path.binaryRepr(), src1:src1.binaryRepr(), src2:src2.binaryRepr(), dest:dest.binaryRepr(), name:name.binaryRepr()) error This1.System.Guard.PluginFailure.#from(builder:(
   This1.System.Guard.PluginFailure::#builder() b=This1.System.Guard.PluginFailure.#builder()
   Void unused=b.#S()
@@ -5976,8 +5976,8 @@ Library sumMethods(Library that, This1.Path path, This1.Selector src1, This1.Sel
   Void unused24=b.#d()
   b
   ))
-type method 
-Library redirect(Library that, This1.Path src, type Any dest) use This0 check redirect(that:that, src:src.binaryRepr(), dest:dest) error This1.System.Guard.PluginFailure.#from(builder:(
+class method 
+Library redirect(Library that, This1.Path src, class Any dest) use This0 check redirect(that:that, src:src.binaryRepr(), dest:dest) error This1.System.Guard.PluginFailure.#from(builder:(
   This1.System.Guard.PluginFailure::#builder() b=This1.System.Guard.PluginFailure.#builder()
   Void unused=b.#S()
   Void unused0=b.#a()
@@ -6003,7 +6003,7 @@ Library redirect(Library that, This1.Path src, type Any dest) use This0 check re
   Void unused20=b.#t()
   b
   ))
-type method 
+class method 
 Library removeImplementation(Library that, This1.Path path) use This0 check removeImplementation(that:that, path:path.binaryRepr()) error This1.System.Guard.PluginFailure.#from(builder:(
   This1.System.Guard.PluginFailure::#builder() b=This1.System.Guard.PluginFailure.#builder()
   Void unused=b.#S()
@@ -6048,7 +6048,7 @@ Library removeImplementation(Library that, This1.Path path) use This0 check remo
   Void unused38=b.#cRound()
   b
   ))
-type method 
+class method 
 Library moveImplementation(Library that, This1.Path path, This1.Selector src, This1.Selector dest) use This0 check moveImplementation(that:that, path:path.binaryRepr(), src:src.binaryRepr(), dest:dest.binaryRepr()) error This1.System.Guard.PluginFailure.#from(builder:(
   This1.System.Guard.PluginFailure::#builder() b=This1.System.Guard.PluginFailure.#builder()
   Void unused=b.#S()
@@ -6085,7 +6085,7 @@ Library moveImplementation(Library that, This1.Path path, This1.Selector src, Th
   Void unused30=b.#n()
   b
   ))
-type method 
+class method 
 Library removeImplementation(Library that, This1.Path path, This1.Selector selector) use This0 check removeImplementation(that:that, path:path.binaryRepr(), selector:selector.binaryRepr()) error This1.System.Guard.PluginFailure.#from(builder:(
   This1.System.Guard.PluginFailure::#builder() b=This1.System.Guard.PluginFailure.#builder()
   Void unused=b.#S()
@@ -6139,7 +6139,7 @@ Library removeImplementation(Library that, This1.Path path, This1.Selector selec
   Void unused47=b.#cRound()
   b
   ))
-type method 
+class method 
 Library addDocumentation(Library that, This1.Path path, This1.Introspection.Doc doc) use This0 check addDocumentation(that:that, path:path.binaryRepr(), doc:doc.binaryRepr()) error This1.System.Guard.PluginFailure.#from(builder:(
   This1.System.Guard.PluginFailure::#builder() b=This1.System.Guard.PluginFailure.#builder()
   Void unused=b.#S()
@@ -6180,7 +6180,7 @@ Library addDocumentation(Library that, This1.Path path, This1.Introspection.Doc 
   Void unused34=b.#cRound()
   b
   ))
-type method 
+class method 
 Library addDocumentation(Library that, This1.Path path, This1.Selector selector, This1.Introspection.Doc doc) use This0 check addDocumentation(that:that, path:path.binaryRepr(), selector:selector.binaryRepr(), doc:doc.binaryRepr()) error This1.System.Guard.PluginFailure.#from(builder:(
   This1.System.Guard.PluginFailure::#builder() b=This1.System.Guard.PluginFailure.#builder()
   Void unused=b.#S()
@@ -6230,7 +6230,7 @@ Library addDocumentation(Library that, This1.Path path, This1.Selector selector,
   Void unused43=b.#cRound()
   b
   ))
-type method 
+class method 
 This1.S freshName(This1.S that) This1.S.#from(binaryRepr:use This0 check freshName(that:that.binaryRepr()) error This1.System.Guard.PluginFailure.#from(builder:(
   This1.System.Guard.PluginFailure::#builder() b=This1.System.Guard.PluginFailure.#builder()
   Void unused=b.#S()
@@ -6267,7 +6267,7 @@ This1.S freshName(This1.S that) This1.S.#from(binaryRepr:use This0 check freshNa
 MetaGuard:{interface <:This1.Guard
 RecordWrapper:' can not be private, I need to Patch it.
 {
-type method 
+class method 
 This2.S libToS(Library that) This2.S.#from(builder:(
   This2.S::#builder() b=This2.S.#builder()
   Void unused=b.#T()
@@ -6278,12 +6278,12 @@ This2.S libToS(Library that) This2.S.#from(builder:(
   Void unused4=b.#X()
   b
   ))
-type method 
+class method 
 Library recordWrapperToSTrait() {<:This3.MetaGuard
 method toS() This0.myName().#plusplus(that:This1.libToS(that:this.lib()))
 method 
 Library lib() }
-type method 
+class method 
 Library recordWrapperTrait() {<:This3.MetaGuard
 method kind() This0.myName()
 method text() This3.S.#from(builder:(
@@ -6322,15 +6322,15 @@ method equals(that ) (
   )
 method clazz() This0
 method classAny() This0
-type method 
+class method 
 This0 #apply(This3.Introspection.Record record, Library lib) 
 method 
 This3.Bool #bangequal(This0 that) this.#equalequal(that:that).#bang()
 method 
 This3.Bool #equalequal(This0 that) This3.Message.EqualMessages.#apply(that:this, other:that)
-type method 
+class method 
 This3.S libName() 
-type method 
+class method 
 Void #apply(Library lift) exception This0 (
   This3.Introspection.Record::#apply(lib ) record=This3.Introspection.Record.#apply(lib:lift)
   This3.Introspection.Record::#apply(lib ) ::#from(builder ) x=record.#from(builder:(
@@ -6351,7 +6351,7 @@ Void #apply(Library lift) exception This0 (
       )
     )
   )}
-type method 
+class method 
 Library #leftleft(Library that) ('either that provides a toS, or I have a default impl, that requires lib()
 
   This2.SafeOperatorsAccess__62_0::compose(left right ) res=This2.SafeOperatorsAccess__62_0.compose(left:that, right:This0.recordWrapperTrait())
@@ -6370,7 +6370,7 @@ Library #leftleft(Library that) ('either that provides a toS, or I have a defaul
     )
   )}
 SourceUnfit:{<:This2.MetaGuard, This2.MetaGuard
-type method 
+class method 
 This2.S libName() This2.S.#from(builder:(
   This2.S::#builder() b=This2.S.#builder()
   Void unused=b.#S()
@@ -6423,13 +6423,13 @@ method equals(that ) (
   )
 method clazz() This0
 method classAny() This0
-type method 
+class method 
 This0 #apply(This2.Introspection.Record record, Library lib) 
 method 
 This2.Bool #bangequal(This0 that) this.#equalequal(that:that).#bang()
 method 
 This2.Bool #equalequal(This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
-type method 
+class method 
 Void #apply(Library lift) exception This0 (
   This2.Introspection.Record::#apply(lib ) record=This2.Introspection.Record.#apply(lib:lift)
   This2.Introspection.Record::#apply(lib ) ::#from(builder ) x=record.#from(builder:(
@@ -6454,7 +6454,7 @@ method toS() This0.myName().#plusplus(that:This1.RecordWrapper.libToS(that:this.
 method 
 Library lib() }
 IncoherentRedirectMapping:{<:This2.MetaGuard, This2.MetaGuard
-type method 
+class method 
 This2.S libName() This2.S.#from(builder:(
   This2.S::#builder() b=This2.S.#builder()
   Void unused=b.#I()
@@ -6521,13 +6521,13 @@ method equals(that ) (
   )
 method clazz() This0
 method classAny() This0
-type method 
+class method 
 This0 #apply(This2.Introspection.Record record, Library lib) 
 method 
 This2.Bool #bangequal(This0 that) this.#equalequal(that:that).#bang()
 method 
 This2.Bool #equalequal(This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
-type method 
+class method 
 Void #apply(Library lift) exception This0 (
   This2.Introspection.Record::#apply(lib ) record=This2.Introspection.Record.#apply(lib:lift)
   This2.Introspection.Record::#apply(lib ) ::#from(builder ) x=record.#from(builder:(
@@ -6552,7 +6552,7 @@ method toS() This0.myName().#plusplus(that:This1.RecordWrapper.libToS(that:this.
 method 
 Library lib() }
 ClassClash:{<:This2.MetaGuard, This2.MetaGuard
-type method 
+class method 
 This2.S libName() This2.S.#from(builder:(
   This2.S::#builder() b=This2.S.#builder()
   Void unused=b.#C()
@@ -6604,13 +6604,13 @@ method equals(that ) (
   )
 method clazz() This0
 method classAny() This0
-type method 
+class method 
 This0 #apply(This2.Introspection.Record record, Library lib) 
 method 
 This2.Bool #bangequal(This0 that) this.#equalequal(that:that).#bang()
 method 
 This2.Bool #equalequal(This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
-type method 
+class method 
 Void #apply(Library lift) exception This0 (
   This2.Introspection.Record::#apply(lib ) record=This2.Introspection.Record.#apply(lib:lift)
   This2.Introspection.Record::#apply(lib ) ::#from(builder ) x=record.#from(builder:(
@@ -6635,7 +6635,7 @@ method toS() This0.myName().#plusplus(that:This1.RecordWrapper.libToS(that:this.
 method 
 Library lib() }
 MethodClash:{<:This2.MetaGuard, This2.MetaGuard
-type method 
+class method 
 This2.S libName() This2.S.#from(builder:(
   This2.S::#builder() b=This2.S.#builder()
   Void unused=b.#M()
@@ -6688,13 +6688,13 @@ method equals(that ) (
   )
 method clazz() This0
 method classAny() This0
-type method 
+class method 
 This0 #apply(This2.Introspection.Record record, Library lib) 
 method 
 This2.Bool #bangequal(This0 that) this.#equalequal(that:that).#bang()
 method 
 This2.Bool #equalequal(This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
-type method 
+class method 
 Void #apply(Library lift) exception This0 (
   This2.Introspection.Record::#apply(lib ) record=This2.Introspection.Record.#apply(lib:lift)
   This2.Introspection.Record::#apply(lib ) ::#from(builder ) x=record.#from(builder:(
@@ -6719,7 +6719,7 @@ method toS() This0.myName().#plusplus(that:This1.RecordWrapper.libToS(that:this.
 method 
 Library lib() }
 InvalidOnTopLevel:{<:This2.MetaGuard, This2.MetaGuard
-type method 
+class method 
 This2.S libName() This2.S.#from(builder:(
   This2.S::#builder() b=This2.S.#builder()
   Void unused=b.#I()
@@ -6778,13 +6778,13 @@ method equals(that ) (
   )
 method clazz() This0
 method classAny() This0
-type method 
+class method 
 This0 #apply(This2.Introspection.Record record, Library lib) 
 method 
 This2.Bool #bangequal(This0 that) this.#equalequal(that:that).#bang()
 method 
 This2.Bool #equalequal(This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
-type method 
+class method 
 Void #apply(Library lift) exception This0 (
   This2.Introspection.Record::#apply(lib ) record=This2.Introspection.Record.#apply(lib:lift)
   This2.Introspection.Record::#apply(lib ) ::#from(builder ) x=record.#from(builder:(
@@ -6809,7 +6809,7 @@ method toS() This0.myName().#plusplus(that:This1.RecordWrapper.libToS(that:this.
 method 
 Library lib() }
 PrivacyCoupuled:{<:This2.MetaGuard, This2.MetaGuard
-type method 
+class method 
 This2.S libName() This2.S.#from(builder:(
   This2.S::#builder() b=This2.S.#builder()
   Void unused=b.#P()
@@ -6866,13 +6866,13 @@ method equals(that ) (
   )
 method clazz() This0
 method classAny() This0
-type method 
+class method 
 This0 #apply(This2.Introspection.Record record, Library lib) 
 method 
 This2.Bool #bangequal(This0 that) this.#equalequal(that:that).#bang()
 method 
 This2.Bool #equalequal(This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
-type method 
+class method 
 Void #apply(Library lift) exception This0 (
   This2.Introspection.Record::#apply(lib ) record=This2.Introspection.Record.#apply(lib:lift)
   This2.Introspection.Record::#apply(lib ) ::#from(builder ) x=record.#from(builder:(
@@ -6897,7 +6897,7 @@ method toS() This0.myName().#plusplus(that:This1.RecordWrapper.libToS(that:this.
 method 
 Library lib() }
 ParameterMismatch:{<:This2.MetaGuard, This2.MetaGuard
-type method 
+class method 
 This2.S libName() This2.S.#from(builder:(
   This2.S::#builder() b=This2.S.#builder()
   Void unused=b.#P()
@@ -6956,13 +6956,13 @@ method equals(that ) (
   )
 method clazz() This0
 method classAny() This0
-type method 
+class method 
 This0 #apply(This2.Introspection.Record record, Library lib) 
 method 
 This2.Bool #bangequal(This0 that) this.#equalequal(that:that).#bang()
 method 
 This2.Bool #equalequal(This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
-type method 
+class method 
 Void #apply(Library lift) exception This0 (
   This2.Introspection.Record::#apply(lib ) record=This2.Introspection.Record.#apply(lib:lift)
   This2.Introspection.Record::#apply(lib ) ::#from(builder ) x=record.#from(builder:(
@@ -6988,7 +6988,7 @@ method
 Library lib() }
 MemberUnavailable:{interface <:This2.MetaGuard}
 DispatchMemberUnavailable:{
-type method 
+class method 
 Void #apply(Library that) exception This1.MemberUnavailable (
   This2.Introspection.Record::#apply(lib ) record=This2.Introspection.Record.#apply(lib:that)
   This2.Introspection.Record::#apply(lib ) ::#from(builder ) x=record.#from(builder:(
@@ -7064,7 +7064,7 @@ Void #apply(Library that) exception This1.MemberUnavailable (
     )
   )}
 NestedClassUnavailable:{<:This1.MemberUnavailable, This2.MetaGuard
-type method 
+class method 
 This0 #apply(This2.Path path, This2.Bool isPrivate) 
 mut method 
 This2.Path #path() 
@@ -7108,7 +7108,7 @@ method toS() This0.myName().#plusplus(that:(
     b
     ))
   ))
-type method 
+class method 
 This0 #apply(This2.Introspection.Record record, Library lib) This0.#apply(path:This2.Path.fromDocInternalizedS(that:record.#from(builder:(
   This2.Introspection.Record::#builder() b=record.#builder()
   Void unused=b.#P()
@@ -7129,7 +7129,7 @@ This0 #apply(This2.Introspection.Record record, Library lib) This0.#apply(path:T
   Void unused11=b0.#e()
   b0
   ))))
-type method 
+class method 
 This2.S libName() This2.S.#from(builder:(
   This2.S::#builder() b=This2.S.#builder()
   Void unused=b.#M()
@@ -7192,7 +7192,7 @@ method
 This2.Bool #bangequal(This0 that) this.#equalequal(that:that).#bang()
 method 
 This2.Bool #equalequal(This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
-type method 
+class method 
 Void #apply(Library lift) exception This0 (
   This2.Introspection.Record::#apply(lib ) record=This2.Introspection.Record.#apply(lib:lift)
   This2.Introspection.Record::#apply(lib ) ::#from(builder ) x=record.#from(builder:(
@@ -7214,7 +7214,7 @@ Void #apply(Library lift) exception This0 (
     )
   )}
 MethodUnavailable:{<:This1.MemberUnavailable, This2.MetaGuard
-type method 
+class method 
 This0 #apply(This2.Path path, This2.Selector selector, This2.Bool isPrivate) 
 mut method 
 This2.Path #path() 
@@ -7279,7 +7279,7 @@ method toS() This0.myName().#plusplus(that:(
     b
     ))
   ))
-type method 
+class method 
 This0 #apply(This2.Introspection.Record record, Library lib) This0.#apply(path:This2.Path.fromDocInternalizedS(that:record.#from(builder:(
   This2.Introspection.Record::#builder() b=record.#builder()
   Void unused=b.#P()
@@ -7311,7 +7311,7 @@ This0 #apply(This2.Introspection.Record record, Library lib) This0.#apply(path:T
   Void unused19=b1.#e()
   b1
   ))))
-type method 
+class method 
 This2.S libName() This2.S.#from(builder:(
   This2.S::#builder() b=This2.S.#builder()
   Void unused=b.#M()
@@ -7374,7 +7374,7 @@ method
 This2.Bool #bangequal(This0 that) this.#equalequal(that:that).#bang()
 method 
 This2.Bool #equalequal(This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
-type method 
+class method 
 Void #apply(Library lift) exception This0 (
   This2.Introspection.Record::#apply(lib ) record=This2.Introspection.Record.#apply(lib:lift)
   This2.Introspection.Record::#apply(lib ) ::#from(builder ) x=record.#from(builder:(
@@ -7397,7 +7397,7 @@ Void #apply(Library lift) exception This0 (
   )}}
 Introspection:{'findMeIntrospection
 
-type method 
+class method 
 This0.NestedClass #apply(Library lib) (
   This0.MirrorPr.Lib::#apply(lib ) ::introspectReport(root path ) root=This0.MirrorPr.Lib.#apply(lib:lib).introspectReport(root:root, path:This1.Path.#from(builder:(
     This1.Path::#builder() b=This1.Path.#builder()
@@ -7428,13 +7428,13 @@ This0.NestedClass #apply(Library lib) (
     ))
   root
   )
-type method 
+class method 
 This0.NestedClass #apply(Library lib, This1.Path path) exception This1.MetaGuard.NestedClassUnavailable (
   This0::#apply(lib ) root=This0.#apply(lib:lib)
   root.mirror__49_0().introspectReport(root:root, path:path)
   )
-type method 
-This0.NestedClass #apply(type Any clazz) (
+class method 
+This0.NestedClass #apply(class Any clazz) (
   This0.MirrorPr.Class::#apply(lib ) ::introspectReport(root path ) root=This0.MirrorPr.Class.#apply(lib:clazz).introspectReport(root:root, path:This1.Path.#from(builder:(
     This1.Path::#builder() b=This1.Path.#builder()
     Void unused=b.#T()
@@ -7464,8 +7464,8 @@ This0.NestedClass #apply(type Any clazz) (
     ))
   root
   )
-type method 
-This0.NestedClass #apply(type Any clazz, This1.Path path) (
+class method 
+This0.NestedClass #apply(class Any clazz, This1.Path path) (
   This0.MirrorPr.Class::#apply(lib ) ::introspectReport(root path ) root=This0.MirrorPr.Class.#apply(lib:clazz).introspectReport(root:root, path:path)
   
   catch exception This1.MetaGuard.NestedClassUnavailable x error This1.Assert.CodeNotReachable.#from(builder:(
@@ -7500,9 +7500,9 @@ This2.S introspectDocAsString(This2.Path path) exception This2.MetaGuard.NestedC
 method 
 This2.S introspectDocAsString(This2.Path path, This2.N annotationN) exception This2.MetaGuard.NestedClassUnavailable, Void 
 method 
-type Any introspectDocPath(This2.Path path, This2.N annotationN) exception This2.MetaGuard.NestedClassUnavailable, Void 
+class Any introspectDocPath(This2.Path path, This2.N annotationN) exception This2.MetaGuard.NestedClassUnavailable, Void 
 Lib:{<:This1
-type method 
+class method 
 This0 #apply(Library lib) 
 mut method 
 Library #lib() 
@@ -7629,7 +7629,7 @@ method introspectDocAsString(path ) (
   result
   )
 method introspectDocPath(path annotationN ) (
-  type Any result=use This3.SafeOperators check introspectLibraryDocPath(that:this.lib(), path:path.binaryRepr(), annotationN:annotationN.binaryRepr()) error This3.System.Guard.PluginFailure.#from(builder:(
+  class Any result=use This3.SafeOperators check introspectLibraryDocPath(that:this.lib(), path:path.binaryRepr(), annotationN:annotationN.binaryRepr()) error This3.System.Guard.PluginFailure.#from(builder:(
     This3.System.Guard.PluginFailure::#builder() b=This3.System.Guard.PluginFailure.#builder()
     Void unused=b.#S()
     Void unused0=b.#a()
@@ -7676,12 +7676,12 @@ method introspectDocPath(path annotationN ) (
   result
   )}
 Class:{<:This1
-type method 
-This0 #apply(type Any lib) 
+class method 
+This0 #apply(class Any lib) 
 mut method 
-type Any #lib() 
+class Any #lib() 
 read method 
-type Any lib() 
+class Any lib() 
 method toS() This3.Introspection.#apply(clazz:this.lib()).toS()
 method introspectReport(root path ) (
   This2.Record::#apply(lib ) record=This2.Record.#apply(lib:use This3.SafeOperators check introspectTypeReport(that:this.lib(), path:path.binaryRepr()) error This3.System.Guard.PluginFailure.#from(builder:(
@@ -7816,7 +7816,7 @@ method introspectDocAsString(path ) (
   result
   )
 method introspectDocPath(path annotationN ) (
-  type Any result=use This3.SafeOperators check introspectTypeDocPath(that:this.lib(), path:path.binaryRepr(), annotationN:annotationN.binaryRepr()) error This3.System.Guard.PluginFailure.#from(builder:(
+  class Any result=use This3.SafeOperators check introspectTypeDocPath(that:this.lib(), path:path.binaryRepr(), annotationN:annotationN.binaryRepr()) error This3.System.Guard.PluginFailure.#from(builder:(
     This3.System.Guard.PluginFailure::#builder() b=This3.System.Guard.PluginFailure.#builder()
     Void unused=b.#S()
     Void unused0=b.#a()
@@ -7862,7 +7862,7 @@ method introspectDocPath(path annotationN ) (
 Doc:{<:This2.Concept.ToS, This2.Concept.Named
 VaraN__96_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This3.N::#from(builder ) inner) 
 mut method 
 Void inner(This3.N::#from(builder ) that) 
@@ -7870,13 +7870,13 @@ mut method
 This3.N::#from(builder ) #inner() }
 Varresult1__97_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This1.Annotations::#begin() ::#end() inner) 
 mut method 
 Void inner(This1.Annotations::#begin() ::#end() that) 
 mut method 
 This1.Annotations::#begin() ::#end() #inner() }
-type method '@private
+class method '@private
 This0 _private__47_0(Library _binaryRepr__47_0, This0.Annotations _annotations__47_0) 
 mut method '@private
 Library #_binaryRepr__47_0() 
@@ -7888,7 +7888,7 @@ read method '@private
 This0.Annotations _annotations__47_0() 
 method myName() This2.GetMyName.#apply(that:This0)
 Annotation:{<:This3.Concept.ToS, This3.Concept.Named
-type method 
+class method 
 This0 #apply(Library _binaryRepr, This3.S text, This3.N index) 
 mut method 
 Library #_binaryRepr() 
@@ -7905,7 +7905,7 @@ This3.N index()
 method myName() This3.GetMyName.#apply(that:This0)
 method toS() this.text()
 method 
-type Any referredClass() (
+class Any referredClass() (
   Void unused=(
     Void unused0=return This3.Introspection.Record.#apply(lib:this._binaryRepr()).that().introspectDocPath(path:This3.Path.#from(builder:(
       This3.Path::#builder() b=This3.Path.#builder()
@@ -7955,7 +7955,7 @@ type Any referredClass() (
     void
     )
   
-  catch return type Any result result
+  catch return class Any result result
   error {'@stringU
   'CurlyBlock-Should be unreachable code
   }
@@ -7972,11 +7972,11 @@ This3.Bool hasReferredClass() (
     ))))
   res
   )}
-Annotations:{' generic linked list class, elements of type Elem
+Annotations:{' generic linked list class, elements of class Elem
 <:This3.Concept.Named
 Varres0__98_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This1 inner) 
 mut method 
 Void inner(This1 that) 
@@ -7986,20 +7986,20 @@ read method
 This1 inner() }
 Varres1__99_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This1::#apply() inner) 
 mut method 
 Void inner(This1::#apply() that) 
 mut method 
 This1::#apply() #inner() }
-type method 
+class method 
 This0 _new(This0.Cell head) 
 mut method 
 This0.Cell #head() 
 read method 
 This0.Cell head() 
 method myName() This3.GetMyName.#apply(that:This0)
-type method 
+class method 
 This0 #apply() This0._new(head:This0.CellEnd.#apply())
 method 
 This3.Bool isEmpty() (
@@ -8127,7 +8127,7 @@ This0 #plusplus(This0 that) (
   'CurlyBlock-Should be unreachable code
   }
   )
-type method 
+class method 
 This0 #begin() This0.#apply()
 method 
 This0 #add(This1.Annotation that) This0._new(head:This0.CellNext.#apply(elem:that, nextCell:this.head()))
@@ -8185,7 +8185,7 @@ This2.Annotation #inner()
 method 
 Void #checkEnd() }
 CellEnd:{<:This1.Cell
-type method 
+class method 
 This0 #apply() 
 method vals(terminate ) This1.Iterator.#apply(that:this, terminate:terminate)
 method #next() exception void
@@ -8209,7 +8209,7 @@ method #inner() error This4.Assert.ObservedBug.#from(builder:(
   ))
 method #checkEnd() void}
 CellNext:{<:This1.Cell
-type method 
+class method 
 This0 #apply(This2.Annotation elem, This1.Cell nextCell) 
 mut method 
 This2.Annotation #elem() 
@@ -8334,7 +8334,7 @@ method #checkEnd() (
     )
   )}
 Iterator:{
-type method 
+class method 
 mut This0 #apply(This1.Cell that, This4.Bool terminate) 
 mut method 
 Void that(This1.Cell that) 
@@ -8390,7 +8390,7 @@ read method
 This2.Annotation #inner() this.that().#inner()
 read method 
 Void #close() void}}
-type method 
+class method 
 This0 #apply(Library that) (
   This0.Annotations::#begin() ::#end() result=This0.Annotations.#begin().#end()
   This2.N::#from(builder ) aN=This2.N.#from(builder:(
@@ -8438,9 +8438,9 @@ This0 #apply(Library that) (
     This0._private__47_0(_binaryRepr__47_0:that, _annotations__47_0:varresult.#inner())
     )
   )
-type method 
+class method 
 mut This2.S.SBuilder #builder() This2.S.SBuilder.empty()
-type method 
+class method 
 This0 #from(This2.S.SBuilder builder) This0.#apply(that:builder.binaryRepr())
 method 
 Library binaryRepr() this._binaryRepr__47_0()
@@ -8474,15 +8474,15 @@ method toS() (
 method 
 This0.Annotations annotations() this._annotations__47_0()}
 Record:{
-type method 
+class method 
 This0 #apply(This1.MirrorPr that) 
 mut method 
 This1.MirrorPr #that() 
 read method 
 This1.MirrorPr that() 
-type method 
-This0 #apply(type Any clazz) This0.#apply(that:This1.MirrorPr.Class.#apply(lib:clazz))
-type method 
+class method 
+This0 #apply(class Any clazz) This0.#apply(that:This1.MirrorPr.Class.#apply(lib:clazz))
+class method 
 This0 #apply(Library lib) This0.#apply(that:This1.MirrorPr.Lib.#apply(lib:lib))
 method 
 Void dbg() (
@@ -8630,7 +8630,7 @@ method
 This2.Member #apply(fwd This2.NestedClass root) }
 RootForNested:' toPutAs private
 {<:This1.RootForMember
-type method 
+class method 
 This0 #apply(This3.Path path, This2.MirrorPr mirror, This2.Record _report) 
 mut method 
 This3.Path #path() 
@@ -8659,7 +8659,7 @@ method #apply(root ) (
   )}
 RootForMethod:' toPutAs private
 {<:This1.RootForMember
-type method 
+class method 
 This0 #apply(This3.Path path, This3.N memberN, This2.Record _report) 
 mut method 
 This3.Path #path() 
@@ -8674,7 +8674,7 @@ This2.Record #_report()
 read method 
 This2.Record _report() 
 method #apply(root ) This2.Method.#apply__48_0(_root__48_0:root, path__48_0:this.path(), memberN__48_0:this.memberN(), record__48_0:this._report())}
-type method 
+class method 
 This1.Member dispatch(fwd This1.NestedClass root, This2.Path path, This1.MirrorPr mirror, This2.N memberN, Library record) (
   This1.Record::#apply(lib ) _report=This1.Record.#apply(lib:record)
   This0.RootForMember result=(
@@ -8850,11 +8850,11 @@ This1.Member dispatch(fwd This1.NestedClass root, This2.Path path, This1.MirrorP
   result.#apply(root:root)
   )}
 Member:{interface <:This2.Concept.ToS, This2.Concept.Named, This2.Concept.Equals}
-Members:{' generic linked list class, elements of type Elem
+Members:{' generic linked list class, elements of class Elem
 <:This2.Concept.Named
 Varres0_$%19_0__100_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This1 inner) 
 mut method 
 Void inner(This1 that) 
@@ -8864,20 +8864,20 @@ read method
 This1 inner() }
 Varres1_$%20_0__101_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This1::#apply() inner) 
 mut method 
 Void inner(This1::#apply() that) 
 mut method 
 This1::#apply() #inner() }
-type method 
+class method 
 This0 _new(This0.Cell head) 
 mut method 
 This0.Cell #head() 
 read method 
 This0.Cell head() 
 method myName() This2.GetMyName.#apply(that:This0)
-type method 
+class method 
 This0 #apply() This0._new(head:This0.CellEnd.#apply())
 method 
 This2.Bool isEmpty() (
@@ -9005,7 +9005,7 @@ This0 #plusplus(This0 that) (
   'CurlyBlock-Should be unreachable code
   }
   )
-type method 
+class method 
 This0 #begin() This0.#apply()
 method 
 This0 #add(This1.Member that) This0._new(head:This0.CellNext.#apply(elem:that, nextCell:this.head()))
@@ -9063,7 +9063,7 @@ This2.Member #inner()
 method 
 Void #checkEnd() }
 CellEnd:{<:This1.Cell
-type method 
+class method 
 This0 #apply() 
 method vals(terminate ) This1.Iterator.#apply(that:this, terminate:terminate)
 method #next() exception void
@@ -9087,7 +9087,7 @@ method #inner() error This3.Assert.ObservedBug.#from(builder:(
   ))
 method #checkEnd() void}
 CellNext:{<:This1.Cell
-type method 
+class method 
 This0 #apply(This2.Member elem, This1.Cell nextCell) 
 mut method 
 This2.Member #elem() 
@@ -9212,7 +9212,7 @@ method #checkEnd() (
     )
   )}
 Iterator:{
-type method 
+class method 
 mut This0 #apply(This1.Cell that, This3.Bool terminate) 
 mut method 
 Void that(This1.Cell that) 
@@ -9270,7 +9270,7 @@ read method
 Void #close() void}
 Varaccumulator_$%21_0__102_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This1::#begin() inner) 
 mut method 
 Void inner(This1::#begin() that) 
@@ -9526,7 +9526,7 @@ This2.Bool equals(Any that) (
 Method:{<:This1.Member, This2.Concept.Equals
 VarpN__103_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This3.N::#from(builder ) inner) 
 mut method 
 Void inner(This3.N::#from(builder ) that) 
@@ -9534,13 +9534,13 @@ mut method
 This3.N::#from(builder ) #inner() }
 Varresult2__104_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This2.Types::#begin() ::#end() inner) 
 mut method 
 Void inner(This2.Types::#begin() ::#end() that) 
 mut method 
 This2.Types::#begin() ::#end() #inner() }
-type method '@private
+class method '@private
 This0 #apply__48_0(fwd This1.NestedClass _root__48_0, This2.Path path__48_0, This2.N memberN__48_0, This1.Record record__48_0) 
 mut method '@private
 This1.NestedClass #_root__48_0() 
@@ -9882,11 +9882,11 @@ This2.Bool isPrivate() (
   )
 method 
 This1.NestedClass root() this._root__48_0()}
-Methods:{' generic linked list class, elements of type Elem
+Methods:{' generic linked list class, elements of class Elem
 <:This2.Concept.Named
 Varres0_$%22_0__105_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This1 inner) 
 mut method 
 Void inner(This1 that) 
@@ -9896,20 +9896,20 @@ read method
 This1 inner() }
 Varres1_$%23_0__106_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This1::#apply() inner) 
 mut method 
 Void inner(This1::#apply() that) 
 mut method 
 This1::#apply() #inner() }
-type method 
+class method 
 This0 _new(This0.Cell head) 
 mut method 
 This0.Cell #head() 
 read method 
 This0.Cell head() 
 method myName() This2.GetMyName.#apply(that:This0)
-type method 
+class method 
 This0 #apply() This0._new(head:This0.CellEnd.#apply())
 method 
 This2.Bool isEmpty() (
@@ -10037,7 +10037,7 @@ This0 #plusplus(This0 that) (
   'CurlyBlock-Should be unreachable code
   }
   )
-type method 
+class method 
 This0 #begin() This0.#apply()
 method 
 This0 #add(This1.Method that) This0._new(head:This0.CellNext.#apply(elem:that, nextCell:this.head()))
@@ -10095,7 +10095,7 @@ This2.Method #inner()
 method 
 Void #checkEnd() }
 CellEnd:{<:This1.Cell
-type method 
+class method 
 This0 #apply() 
 method vals(terminate ) This1.Iterator.#apply(that:this, terminate:terminate)
 method #next() exception void
@@ -10119,7 +10119,7 @@ method #inner() error This3.Assert.ObservedBug.#from(builder:(
   ))
 method #checkEnd() void}
 CellNext:{<:This1.Cell
-type method 
+class method 
 This0 #apply(This2.Method elem, This1.Cell nextCell) 
 mut method 
 This2.Method #elem() 
@@ -10244,7 +10244,7 @@ method #checkEnd() (
     )
   )}
 Iterator:{
-type method 
+class method 
 mut This0 #apply(This1.Cell that, This3.Bool terminate) 
 mut method 
 Void that(This1.Cell that) 
@@ -10302,7 +10302,7 @@ read method
 Void #close() void}
 Varaccumulator_$%24_0__107_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This1::#begin() inner) 
 mut method 
 Void inner(This1::#begin() that) 
@@ -10559,7 +10559,7 @@ NestedClass:{'findMeNestedClass
 <:This1.Member, This2.Concept.Equals
 VarmN__108_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This3.N::#from(builder ) inner) 
 mut method 
 Void inner(This3.N::#from(builder ) that) 
@@ -10567,7 +10567,7 @@ mut method
 This3.N::#from(builder ) #inner() }
 Varresult3__109_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This2.Members::#begin() ::#end() inner) 
 mut method 
 Void inner(This2.Members::#begin() ::#end() that) 
@@ -10575,7 +10575,7 @@ mut method
 This2.Members::#begin() ::#end() #inner() }
 Varaccumulator2__110_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This2.Methods::#begin() inner) 
 mut method 
 Void inner(This2.Methods::#begin() that) 
@@ -10583,7 +10583,7 @@ mut method
 This2.Methods::#begin() #inner() }
 Varaccumulator3__111_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This2.NestedClasses::#begin() inner) 
 mut method 
 Void inner(This2.NestedClasses::#begin() that) 
@@ -10591,7 +10591,7 @@ mut method
 This2.NestedClasses::#begin() #inner() }
 Varresult4__112_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This2.NestedClasses::#begin() ::#add(that ) ::#end() inner) 
 mut method 
 Void inner(This2.NestedClasses::#begin() ::#add(that ) ::#end() that) 
@@ -10599,7 +10599,7 @@ mut method
 This2.NestedClasses::#begin() ::#add(that ) ::#end() #inner() }
 VartN__113_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This3.N::#from(builder ) inner) 
 mut method 
 Void inner(This3.N::#from(builder ) that) 
@@ -10607,7 +10607,7 @@ mut method
 This3.N::#from(builder ) #inner() }
 Varresult5__114_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This2.Types::#begin() ::#end() inner) 
 mut method 
 Void inner(This2.Types::#begin() ::#end() that) 
@@ -10615,7 +10615,7 @@ mut method
 This2.Types::#begin() ::#end() #inner() }
 Varnew__115_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This1::removeDup__50_0(that ) inner) 
 mut method 
 Void inner(This1::removeDup__50_0(that ) that) 
@@ -10623,7 +10623,7 @@ mut method
 This1::removeDup__50_0(that ) #inner() }
 Varresult6__116_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This1::removeDup__50_0(that ) inner) 
 mut method 
 Void inner(This1::removeDup__50_0(that ) that) 
@@ -10631,7 +10631,7 @@ mut method
 This1::removeDup__50_0(that ) #inner() }
 Varextra__117_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This2.Types::#begin() ::#end() inner) 
 mut method 
 Void inner(This2.Types::#begin() ::#end() that) 
@@ -10639,7 +10639,7 @@ mut method
 This2.Types::#begin() ::#end() #inner() }
 Varresult7__118_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This2.Types::#begin() ::#end() inner) 
 mut method 
 Void inner(This2.Types::#begin() ::#end() that) 
@@ -10647,7 +10647,7 @@ mut method
 This2.Types::#begin() ::#end() #inner() }
 Varaccumulator4__119_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This3.Count::#begin() inner) 
 mut method 
 Void inner(This3.Count::#begin() that) 
@@ -10655,7 +10655,7 @@ mut method
 This3.Count::#begin() #inner() }
 Varaccumulator5__120_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This2.Types::#begin() inner) 
 mut method 
 Void inner(This2.Types::#begin() that) 
@@ -10663,7 +10663,7 @@ mut method
 This2.Types::#begin() #inner() }
 VarabsMethods__121_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This2.Methods::#begin() ::#end() inner) 
 mut method 
 Void inner(This2.Methods::#begin() ::#end() that) 
@@ -10671,7 +10671,7 @@ mut method
 This2.Methods::#begin() ::#end() #inner() }
 VarhavePrivate__122_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This3.Bool::false() inner) 
 mut method 
 Void inner(This3.Bool::false() that) 
@@ -10679,7 +10679,7 @@ mut method
 This3.Bool::false() #inner() }
 Varaccumulator6__123_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This2.Methods::#begin() inner) 
 mut method 
 Void inner(This2.Methods::#begin() that) 
@@ -10687,7 +10687,7 @@ mut method
 This2.Methods::#begin() #inner() }
 Varaccumulator7__124_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This2.Methods::#begin() inner) 
 mut method 
 Void inner(This2.Methods::#begin() that) 
@@ -10695,7 +10695,7 @@ mut method
 This2.Methods::#begin() #inner() }
 Varresult8__125_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This2.Methods::#begin() ::#end() inner) 
 mut method 
 Void inner(This2.Methods::#begin() ::#end() that) 
@@ -10703,13 +10703,13 @@ mut method
 This2.Methods::#begin() ::#end() #inner() }
 Varaccumulator8__126_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This2.Methods::#begin() inner) 
 mut method 
 Void inner(This2.Methods::#begin() that) 
 mut method 
 This2.Methods::#begin() #inner() }
-type method '@private
+class method '@private
 This0 #apply__49_0(fwd This1.NestedClass _root__49_0, This2.Path path__49_0, This1.MirrorPr mirror__49_0, This1.Record record__49_0) 
 mut method '@private
 This1.NestedClass #_root__49_0() 
@@ -10988,7 +10988,7 @@ This2.Bool hasExternalType() (
   }
   )
 method 
-type Any externalType() (
+class Any externalType() (
   Void unused=(
     Void unused0=(
       This0::path__49_0() ::#bangequal(that ) cond=this.path__49_0().#bangequal(that:This2.Path.#from(builder:(
@@ -11192,7 +11192,7 @@ type Any externalType() (
     void
     )
   
-  catch return type Any result result
+  catch return class Any result result
   error {'@stringU
   'CurlyBlock-Should be unreachable code
   }
@@ -12064,14 +12064,15 @@ This1.Methods state() (
                   (
                     This0::stateCandidate() ::vals() ::#inner() ::thisMdf() ::#equalequal(that ) cond=m.#inner().thisMdf().#equalequal(that:This2.S.#from(builder:(
                       This2.S::#builder() b=This2.S.#builder()
-                      Void unused12=b.#t()
-                      Void unused13=b.#y()
-                      Void unused14=b.#p()
-                      Void unused15=b.#e()
+                      Void unused12=b.#c()
+                      Void unused13=b.#l()
+                      Void unused14=b.#a()
+                      Void unused15=b.#s()
+                      Void unused16=b.#s()
                       b
                       )))
                     (
-                      Void unused16=cond.#checkTrue()
+                      Void unused17=cond.#checkTrue()
                       
                       catch exception Void catched5 void
                       varaccumulator.inner(that:varaccumulator.#inner().#add(that:m.#inner()))
@@ -12084,14 +12085,14 @@ This1.Methods state() (
                 )
               
               catch exception Any propagated (
-                Void unused17=m.#close()
+                Void unused18=m.#close()
                 exception propagated
                 )
               void
               )
             
             catch return This1.Methods propagated0 (
-              Void unused18=m.#close()
+              Void unused19=m.#close()
               return propagated0
               )
             m.#close()
@@ -12102,7 +12103,7 @@ This1.Methods state() (
       Void unused3=(
         This1.Methods::#begin() ::#end() ::isEmpty() cond0=classMethods.isEmpty()
         (
-          Void unused19=cond0.#checkTrue()
+          Void unused20=cond0.#checkTrue()
           
           catch exception Void catched13 void
           return result
@@ -12111,7 +12112,7 @@ This1.Methods state() (
       Void unused4=(
         This1.Methods::#begin() ::#end() ::pop() ::isEmpty() ::#bang() cond1=classMethods.pop().isEmpty().#bang()
         (
-          Void unused20=cond1.#checkTrue()
+          Void unused21=cond1.#checkTrue()
           
           catch exception Void catched15 void
           return result
@@ -12125,14 +12126,14 @@ This1.Methods state() (
     Void unused1=(
       This1.Methods::#begin() ::#end() ::top() ::selector() ::names() ::vals() name=names.vals()
       (
-        Void unused21=(
-          Void unused22=(
-            Void unused23=loop (
-              Void unused24=name.#next()
+        Void unused22=(
+          Void unused23=(
+            Void unused24=loop (
+              Void unused25=name.#next()
               
               catch exception Void catched18 (
-                Void unused25=(
-                  Void unused26=name.#checkEnd()
+                Void unused26=(
+                  Void unused27=name.#checkEnd()
                   
                   catch exception Void catched19 void
                   void
@@ -12142,41 +12143,41 @@ This1.Methods state() (
               (
                 This2.Selector::fromS(that ) getter=This2.Selector.fromS(that:name.#inner().#plusplus(that:This2.S.#from(builder:(
                   This2.S::#builder() b0=This2.S.#builder()
-                  Void unused27=b0.#oRound()
-                  Void unused28=b0.#cRound()
+                  Void unused28=b0.#oRound()
+                  Void unused29=b0.#cRound()
                   b0
                   ))))
                 This2.Selector::fromS(that ) exposer=This2.Selector.fromS(that:This2.S.#from(builder:(
                   This2.S::#builder() b1=This2.S.#builder()
-                  Void unused29=b1.#hash()
+                  Void unused30=b1.#hash()
                   b1
                   )).#plusplus(that:name.#inner().#plusplus(that:This2.S.#from(builder:(
                   This2.S::#builder() b2=This2.S.#builder()
-                  Void unused30=b2.#oRound()
-                  Void unused31=b2.#cRound()
+                  Void unused31=b2.#oRound()
+                  Void unused32=b2.#cRound()
                   b2
                   )))))
                 This2.Selector::fromS(that ) setter=This2.Selector.fromS(that:name.#inner().#plusplus(that:This2.S.#from(builder:(
                   This2.S::#builder() b3=This2.S.#builder()
-                  Void unused32=b3.#oRound()
-                  Void unused33=b3.#t()
-                  Void unused34=b3.#h()
-                  Void unused35=b3.#a()
-                  Void unused36=b3.#t()
-                  Void unused37=b3.#cRound()
+                  Void unused33=b3.#oRound()
+                  Void unused34=b3.#t()
+                  Void unused35=b3.#h()
+                  Void unused36=b3.#a()
+                  Void unused37=b3.#t()
+                  Void unused38=b3.#cRound()
                   b3
                   ))))
                 (
                   This0::stateCandidate() ::vals() f=stateCandidate.vals()
                   (
-                    Void unused38=(
-                      Void unused39=(
-                        Void unused40=loop (
-                          Void unused41=f.#next()
+                    Void unused39=(
+                      Void unused40=(
+                        Void unused41=loop (
+                          Void unused42=f.#next()
                           
                           catch exception Void catched27 (
-                            Void unused42=(
-                              Void unused43=f.#checkEnd()
+                            Void unused43=(
+                              Void unused44=f.#checkEnd()
                               
                               catch exception Void catched28 void
                               void
@@ -12186,7 +12187,7 @@ This1.Methods state() (
                           (
                             This0::stateCandidate() ::vals() ::#inner() ::selector() ::#equalequal(that ) ::#or(that ) ::#or(that ) cond2=f.#inner().selector().#equalequal(that:getter).#or(that:f.#inner().selector().#equalequal(that:exposer)).#or(that:f.#inner().selector().#equalequal(that:setter))
                             (
-                              Void unused44=cond2.#checkTrue()
+                              Void unused45=cond2.#checkTrue()
                               
                               catch exception Void catched31 void
                               varresult.inner(that:varresult.#inner().#add(that:f.#inner()))
@@ -12199,14 +12200,14 @@ This1.Methods state() (
                         )
                       
                       catch exception Any propagated1 (
-                        Void unused45=f.#close()
+                        Void unused46=f.#close()
                         exception propagated1
                         )
                       void
                       )
                     
                     catch return This1.Methods propagated2 (
-                      Void unused46=f.#close()
+                      Void unused47=f.#close()
                       return propagated2
                       )
                     f.#close()
@@ -12220,14 +12221,14 @@ This1.Methods state() (
             )
           
           catch exception Any propagated3 (
-            Void unused47=name.#close()
+            Void unused48=name.#close()
             exception propagated3
             )
           void
           )
         
         catch return This1.Methods propagated4 (
-          Void unused48=name.#close()
+          Void unused49=name.#close()
           return propagated4
           )
         name.#close()
@@ -12440,11 +12441,11 @@ This2.Bool isPrivate() (
   'CurlyBlock-Should be unreachable code
   }
   )}
-NestedClasses:{' generic linked list class, elements of type Elem
+NestedClasses:{' generic linked list class, elements of class Elem
 <:This2.Concept.Named
 Varres0_$%25_0__127_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This1 inner) 
 mut method 
 Void inner(This1 that) 
@@ -12454,20 +12455,20 @@ read method
 This1 inner() }
 Varres1_$%26_0__128_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This1::#apply() inner) 
 mut method 
 Void inner(This1::#apply() that) 
 mut method 
 This1::#apply() #inner() }
-type method 
+class method 
 This0 _new(This0.Cell head) 
 mut method 
 This0.Cell #head() 
 read method 
 This0.Cell head() 
 method myName() This2.GetMyName.#apply(that:This0)
-type method 
+class method 
 This0 #apply() This0._new(head:This0.CellEnd.#apply())
 method 
 This2.Bool isEmpty() (
@@ -12595,7 +12596,7 @@ This0 #plusplus(This0 that) (
   'CurlyBlock-Should be unreachable code
   }
   )
-type method 
+class method 
 This0 #begin() This0.#apply()
 method 
 This0 #add(This1.NestedClass that) This0._new(head:This0.CellNext.#apply(elem:that, nextCell:this.head()))
@@ -12653,7 +12654,7 @@ This2.NestedClass #inner()
 method 
 Void #checkEnd() }
 CellEnd:{<:This1.Cell
-type method 
+class method 
 This0 #apply() 
 method vals(terminate ) This1.Iterator.#apply(that:this, terminate:terminate)
 method #next() exception void
@@ -12677,7 +12678,7 @@ method #inner() error This3.Assert.ObservedBug.#from(builder:(
   ))
 method #checkEnd() void}
 CellNext:{<:This1.Cell
-type method 
+class method 
 This0 #apply(This2.NestedClass elem, This1.Cell nextCell) 
 mut method 
 This2.NestedClass #elem() 
@@ -12802,7 +12803,7 @@ method #checkEnd() (
     )
   )}
 Iterator:{
-type method 
+class method 
 mut This0 #apply(This1.Cell that, This3.Bool terminate) 
 mut method 
 Void that(This1.Cell that) 
@@ -12860,7 +12861,7 @@ read method
 Void #close() void}
 Varaccumulator_$%27_0__129_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This1::#begin() inner) 
 mut method 
 Void inner(This1::#begin() that) 
@@ -13114,7 +13115,7 @@ This2.Bool equals(Any that) (
   }
   )}
 Type:{<:This2.Concept.ToS, This2.Concept.Named
-type method '@private
+class method '@private
 This0 #apply__53_0(fwd This1.NestedClass root__53_0, This2.Path path__53_0, This2.N memberN__53_0, This2.N typeN__53_0, This1.Record record__53_0) 
 mut method '@private
 This1.NestedClass #root__53_0() 
@@ -13295,23 +13296,24 @@ This2.S mdf() (
       Void unused38=b1.#l()
       Void unused39=b1.#e()
       Void unused40=b1.#space()
-      Void unused41=b1.#t()
-      Void unused42=b1.#y()
-      Void unused43=b1.#p()
-      Void unused44=b1.#e()
-      Void unused45=b1.#comma()
-      Void unused46=b1.#space()
-      Void unused47=b1.#m()
-      Void unused48=b1.#d()
-      Void unused49=b1.#f()
-      Void unused50=b1.#space()
-      Void unused51=b1.#u()
-      Void unused52=b1.#n()
-      Void unused53=b1.#k()
-      Void unused54=b1.#n()
-      Void unused55=b1.#o()
-      Void unused56=b1.#w()
-      Void unused57=b1.#n()
+      Void unused41=b1.#c()
+      Void unused42=b1.#l()
+      Void unused43=b1.#a()
+      Void unused44=b1.#s()
+      Void unused45=b1.#s()
+      Void unused46=b1.#comma()
+      Void unused47=b1.#space()
+      Void unused48=b1.#m()
+      Void unused49=b1.#d()
+      Void unused50=b1.#f()
+      Void unused51=b1.#space()
+      Void unused52=b1.#u()
+      Void unused53=b1.#n()
+      Void unused54=b1.#k()
+      Void unused55=b1.#n()
+      Void unused56=b1.#o()
+      Void unused57=b1.#w()
+      Void unused58=b1.#n()
       b1
       ))
     void
@@ -13473,23 +13475,24 @@ This1.NestedClass resolvedReferencedPath() (
       Void unused47=b1.#l()
       Void unused48=b1.#e()
       Void unused49=b1.#space()
-      Void unused50=b1.#t()
-      Void unused51=b1.#y()
-      Void unused52=b1.#p()
-      Void unused53=b1.#e()
-      Void unused54=b1.#comma()
-      Void unused55=b1.#space()
-      Void unused56=b1.#m()
-      Void unused57=b1.#d()
-      Void unused58=b1.#f()
-      Void unused59=b1.#space()
-      Void unused60=b1.#u()
-      Void unused61=b1.#n()
-      Void unused62=b1.#k()
-      Void unused63=b1.#n()
-      Void unused64=b1.#o()
-      Void unused65=b1.#w()
-      Void unused66=b1.#n()
+      Void unused50=b1.#c()
+      Void unused51=b1.#l()
+      Void unused52=b1.#a()
+      Void unused53=b1.#s()
+      Void unused54=b1.#s()
+      Void unused55=b1.#comma()
+      Void unused56=b1.#space()
+      Void unused57=b1.#m()
+      Void unused58=b1.#d()
+      Void unused59=b1.#f()
+      Void unused60=b1.#space()
+      Void unused61=b1.#u()
+      Void unused62=b1.#n()
+      Void unused63=b1.#k()
+      Void unused64=b1.#n()
+      Void unused65=b1.#o()
+      Void unused66=b1.#w()
+      Void unused67=b1.#n()
       b1
       ))
     void
@@ -13619,11 +13622,11 @@ This1.Doc doc() this.record__53_0().docOf(path:This2.Path.#from(builder:(
   Void unused1=b.#c()
   b
   )))}
-Types:{' generic linked list class, elements of type Elem
+Types:{' generic linked list class, elements of class Elem
 <:This2.Concept.Named
 Varres0__130_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This1 inner) 
 mut method 
 Void inner(This1 that) 
@@ -13633,20 +13636,20 @@ read method
 This1 inner() }
 Varres1__131_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This1::#apply() inner) 
 mut method 
 Void inner(This1::#apply() that) 
 mut method 
 This1::#apply() #inner() }
-type method 
+class method 
 This0 _new(This0.Cell head) 
 mut method 
 This0.Cell #head() 
 read method 
 This0.Cell head() 
 method myName() This2.GetMyName.#apply(that:This0)
-type method 
+class method 
 This0 #apply() This0._new(head:This0.CellEnd.#apply())
 method 
 This2.Bool isEmpty() (
@@ -13774,7 +13777,7 @@ This0 #plusplus(This0 that) (
   'CurlyBlock-Should be unreachable code
   }
   )
-type method 
+class method 
 This0 #begin() This0.#apply()
 method 
 This0 #add(This1.Type that) This0._new(head:This0.CellNext.#apply(elem:that, nextCell:this.head()))
@@ -13832,7 +13835,7 @@ This2.Type #inner()
 method 
 Void #checkEnd() }
 CellEnd:{<:This1.Cell
-type method 
+class method 
 This0 #apply() 
 method vals(terminate ) This1.Iterator.#apply(that:this, terminate:terminate)
 method #next() exception void
@@ -13856,7 +13859,7 @@ method #inner() error This3.Assert.ObservedBug.#from(builder:(
   ))
 method #checkEnd() void}
 CellNext:{<:This1.Cell
-type method 
+class method 
 This0 #apply(This2.Type elem, This1.Cell nextCell) 
 mut method 
 This2.Type #elem() 
@@ -13981,7 +13984,7 @@ method #checkEnd() (
     )
   )}
 Iterator:{
-type method 
+class method 
 mut This0 #apply(This1.Cell that, This3.Bool terminate) 
 mut method 
 Void that(This1.Cell that) 
@@ -14038,7 +14041,7 @@ This2.Type #inner() this.that().#inner()
 read method 
 Void #close() void}}}
 Refactor:{
-type method 
+class method 
 Library compose(Library left, Library right) exception This1.MetaGuard.ClassClash, This1.MetaGuard.MethodClash (
   Void unused=(
     Void unused0=return This1.SafeOperators.compose(left:left, right:right)
@@ -14056,7 +14059,7 @@ Library compose(Library left, Library right) exception This1.MetaGuard.ClassClas
   'CurlyBlock-Should be unreachable code
   }
   )
-type method 
+class method 
 Void checkTargetExists(Library that, This1.Path path) exception This1.MetaGuard.NestedClassUnavailable (
   This0.AddDocumentationPath::#apply(that doc ) ::#leftleft(that ) unused=This0.AddDocumentationPath.#apply(that:path, doc:This1.Introspection.Doc.#from(builder:(
     This1.Introspection.Doc::#builder() b=This1.Introspection.Doc.#builder()
@@ -14099,16 +14102,16 @@ Void checkTargetExists(Library that, This1.Path path) exception This1.MetaGuard.
   void
   )
 Redirect:{
-type method 
-This0 #apply(This2.Path that, type Any to) 
+class method 
+This0 #apply(This2.Path that, class Any to) 
 mut method 
 This2.Path #that() 
 read method 
 This2.Path that() 
 mut method 
-type Any #to() 
+class Any #to() 
 read method 
-type Any to() 
+class Any to() 
 method 
 Library #leftleft(Library that) exception This2.MetaGuard.NestedClassUnavailable, This2.MetaGuard.InvalidOnTopLevel, This2.MetaGuard.SourceUnfit, This2.MetaGuard.MethodClash, This2.MetaGuard.IncoherentRedirectMapping (
   Void unused=(
@@ -14131,7 +14134,7 @@ Library #leftleft(Library that) exception This2.MetaGuard.NestedClassUnavailable
   }
   )}
 RenameSelector:{
-type method 
+class method 
 This0 #apply(This2.Selector that, This2.Path of, This2.Selector to) 
 mut method 
 This2.Selector #that() 
@@ -14164,7 +14167,7 @@ Library #leftleft(Library that) exception This2.MetaGuard.MemberUnavailable, Thi
   }
   )}
 RenamePath:{
-type method 
+class method 
 This0 #apply(This2.Path that, This2.Path to) 
 mut method 
 This2.Path #that() 
@@ -14194,7 +14197,7 @@ Library #leftleft(Library that) exception This2.MetaGuard.NestedClassUnavailable
   }
   )}
 RemoveImplementationSelector:{
-type method 
+class method 
 This0 #apply(This2.Selector that, This2.Path of) 
 mut method 
 This2.Selector #that() 
@@ -14222,7 +14225,7 @@ Library #leftleft(Library that) exception This2.MetaGuard.MemberUnavailable (
   }
   )}
 MoveImplementationSelector:{
-type method 
+class method 
 This0 #apply(This2.Selector that, This2.Path of, This2.Selector to) 
 mut method 
 This2.Selector #that() 
@@ -14255,7 +14258,7 @@ Library #leftleft(Library that) exception This2.MetaGuard.MemberUnavailable, Thi
   }
   )}
 RemoveImplementationPath:{
-type method 
+class method 
 This0 #apply(This2.Path that) 
 mut method 
 This2.Path #that() 
@@ -14280,7 +14283,7 @@ Library #leftleft(Library that) exception This2.MetaGuard.NestedClassUnavailable
   }
   )}
 AddDocumentationSelector:{
-type method 
+class method 
 This0 #apply(This2.Selector that, This2.Path of, This2.Introspection.Doc doc) 
 mut method 
 This2.Selector #that() 
@@ -14312,7 +14315,7 @@ Library #leftleft(Library that) exception This2.MetaGuard.MemberUnavailable (
   }
   )}
 AddDocumentationPath:{
-type method 
+class method 
 This0 #apply(This2.Path that, This2.Introspection.Doc doc) 
 mut method 
 This2.Path #that() 
@@ -14341,7 +14344,7 @@ Library #leftleft(Library that) exception This2.MetaGuard.NestedClassUnavailable
   }
   )}
 MakePrivatePath:{
-type method 
+class method 
 This0 #apply(This2.Path that) 
 mut method 
 This2.Path #that() 
@@ -14351,7 +14354,7 @@ method
 Library #leftleft(Library that) exception This2.MetaGuard.MemberUnavailable, This2.MetaGuard.InvalidOnTopLevel This1.AddDocumentationPath.#apply(that:this.that(), doc:This2.Introspection.Doc.#apply(that:{'@private
 })).#leftleft(that:that)}
 MakePrivateSelector:{
-type method 
+class method 
 This0 #apply(This2.Selector that, This2.Path of) 
 mut method 
 This2.Selector #that() 
@@ -14365,7 +14368,7 @@ method
 Library #leftleft(Library that) exception This2.MetaGuard.MemberUnavailable This1.AddDocumentationSelector.#apply(that:this.that(), of:this.of(), doc:This2.Introspection.Doc.#apply(that:{'@private
 })).#leftleft(that:that)}
 SumMethods:{
-type method 
+class method 
 This0 #apply(This2.Selector that, This2.Selector and, This2.Path of, This2.S over, This2.Selector to) 
 mut method 
 This2.Selector #that() 
@@ -14407,7 +14410,7 @@ Library #leftleft(Library that) exception This2.MetaGuard.MemberUnavailable, Thi
   }
   )}
 Tools:{
-type method 
+class method 
 This2.S getToSOrName(read Any that) (
   Void unused=(
     Void unused0=(
@@ -14496,9 +14499,9 @@ This2.S getToSOrName(read Any that) (
   }
   )}}
 Opt:{
-type method 
-Library #apply(type Any that) This1.SafeOperators.redirect(that:{
-type method 
+class method 
+Library #apply(class Any that) This1.SafeOperators.redirect(that:{
+class method 
 This0 #new(This0.TOpt that) 
 mut method 
 This0.TOpt #that() 
@@ -14509,7 +14512,7 @@ TOpt:{interface
 method 
 This1.T get() }
 TEmpty:{<:This1.TOpt
-type method 
+class method 
 This0 #apply() 
 method get() error This3.Guard.Operation.#from(builder:(
   This3.Guard.Operation::#builder() b=This3.Guard.Operation.#builder()
@@ -14558,7 +14561,7 @@ method get() error This3.Guard.Operation.#from(builder:(
   b
   ))}
 TOf:{<:This1.TOpt
-type method 
+class method 
 This0 #apply(This1.T that) 
 mut method 
 This1.T #that() 
@@ -14582,9 +14585,9 @@ This2.Bool isPresent() (
   'CurlyBlock-Should be unreachable code
   }
   )
-type method 
+class method 
 This0 #apply() This0.#new(that:This0.TEmpty.#apply())
-type method 
+class method 
 This0 #apply(This0.T that) This0.#new(that:This0.TOf.#apply(that:that))}, src:This1.Path.#from(builder:(
   This1.Path::#builder() b=This1.Path.#builder()
   Void unused=b.#T()
@@ -14594,7 +14597,7 @@ PreferentialComposition:{'members of PreferentialComposition
 
 Varacc0__132_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This1.SrcDests::#begin() ::#end() inner) 
 mut method 
 Void inner(This1.SrcDests::#begin() ::#end() that) 
@@ -14602,7 +14605,7 @@ mut method
 This1.SrcDests::#begin() ::#end() #inner() }
 Varaccumulator9__133_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This1.SrcDests::#begin() inner) 
 mut method 
 Void inner(This1.SrcDests::#begin() that) 
@@ -14612,7 +14615,7 @@ $:{interface
 method 
 Library solveConflict(Library that, This1.SrcDest location) }
 SrcDest:{
-type method 
+class method 
 This0 #apply(This2.Path path, This2.Selector src, This2.Selector dest) 
 mut method 
 This2.Path #path() 
@@ -14626,11 +14629,11 @@ mut method
 This2.Selector #dest() 
 read method 
 This2.Selector dest() }
-SrcDests:{' generic linked list class, elements of type Elem
+SrcDests:{' generic linked list class, elements of class Elem
 <:This2.Concept.Named
 Varres0__134_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This1 inner) 
 mut method 
 Void inner(This1 that) 
@@ -14640,20 +14643,20 @@ read method
 This1 inner() }
 Varres1__135_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This1::#apply() inner) 
 mut method 
 Void inner(This1::#apply() that) 
 mut method 
 This1::#apply() #inner() }
-type method 
+class method 
 This0 _new(This0.Cell head) 
 mut method 
 This0.Cell #head() 
 read method 
 This0.Cell head() 
 method myName() This2.GetMyName.#apply(that:This0)
-type method 
+class method 
 This0 #apply() This0._new(head:This0.CellEnd.#apply())
 method 
 This2.Bool isEmpty() (
@@ -14781,7 +14784,7 @@ This0 #plusplus(This0 that) (
   'CurlyBlock-Should be unreachable code
   }
   )
-type method 
+class method 
 This0 #begin() This0.#apply()
 method 
 This0 #add(This1.SrcDest that) This0._new(head:This0.CellNext.#apply(elem:that, nextCell:this.head()))
@@ -14839,7 +14842,7 @@ This2.SrcDest #inner()
 method 
 Void #checkEnd() }
 CellEnd:{<:This1.Cell
-type method 
+class method 
 This0 #apply() 
 method vals(terminate ) This1.Iterator.#apply(that:this, terminate:terminate)
 method #next() exception void
@@ -14863,7 +14866,7 @@ method #inner() error This3.Assert.ObservedBug.#from(builder:(
   ))
 method #checkEnd() void}
 CellNext:{<:This1.Cell
-type method 
+class method 
 This0 #apply(This2.SrcDest elem, This1.Cell nextCell) 
 mut method 
 This2.SrcDest #elem() 
@@ -14988,7 +14991,7 @@ method #checkEnd() (
     )
   )}
 Iterator:{
-type method 
+class method 
 mut This0 #apply(This1.Cell that, This3.Bool terminate) 
 mut method 
 Void that(This1.Cell that) 
@@ -15045,11 +15048,11 @@ This2.SrcDest #inner() this.that().#inner()
 read method 
 Void #close() void}}
 Libs__136_0:'@private
-{' generic linked list class, elements of type Elem
+{' generic linked list class, elements of class Elem
 <:This2.Concept.Named
 Varres0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This1 inner) 
 mut method 
 Void inner(This1 that) 
@@ -15059,20 +15062,20 @@ read method
 This1 inner() }
 Varres1:'@private
 {
-type method 
+class method 
 mut This0 #apply(This1::#apply() inner) 
 mut method 
 Void inner(This1::#apply() that) 
 mut method 
 This1::#apply() #inner() }
-type method 
+class method 
 This0 _new(This0.Cell head) 
 mut method 
 This0.Cell #head() 
 read method 
 This0.Cell head() 
 method myName() This2.GetMyName.#apply(that:This0)
-type method 
+class method 
 This0 #apply() This0._new(head:This0.CellEnd.#apply())
 method 
 This2.Bool isEmpty() (
@@ -15200,7 +15203,7 @@ This0 #plusplus(This0 that) (
   'CurlyBlock-Should be unreachable code
   }
   )
-type method 
+class method 
 This0 #begin() This0.#apply()
 method 
 This0 #add(Library that) This0._new(head:This0.CellNext.#apply(elem:that, nextCell:this.head()))
@@ -15258,7 +15261,7 @@ Library #inner()
 method 
 Void #checkEnd() }
 CellEnd:{<:This1.Cell
-type method 
+class method 
 This0 #apply() 
 method vals(terminate ) This1.Iterator.#apply(that:this, terminate:terminate)
 method #next() exception void
@@ -15282,7 +15285,7 @@ method #inner() error This3.Assert.ObservedBug.#from(builder:(
   ))
 method #checkEnd() void}
 CellNext:{<:This1.Cell
-type method 
+class method 
 This0 #apply(Library elem, This1.Cell nextCell) 
 mut method 
 Library #elem() 
@@ -15407,7 +15410,7 @@ method #checkEnd() (
     )
   )}
 Iterator:{
-type method 
+class method 
 mut This0 #apply(This1.Cell that, This3.Bool terminate) 
 mut method 
 Void that(This1.Cell that) 
@@ -15463,7 +15466,7 @@ read method
 Library #inner() this.that().#inner()
 read method 
 Void #close() void}}
-type method '@private
+class method '@private
 This0.SrcDests renameMap__55_0(Library that, This1.S prefix, This1.Introspection.NestedClasses intros) (
   Void unused=(
     This0.SrcDests::#begin() ::#end() acc=This0.SrcDests.#begin().#end()
@@ -15515,7 +15518,7 @@ This0.SrcDests renameMap__55_0(Library that, This1.S prefix, This1.Introspection
   'CurlyBlock-Should be unreachable code
   }
   )
-type method 
+class method 
 This0.SrcDests renameMap(Library that, This1.S prefix, This1.Path path, This1.Introspection.Methods ms) (
   Void unused=(
     This1.Introspection::#apply(lib path ) thatI=This1.Introspection.#apply(lib:that, path:path)
@@ -15585,7 +15588,7 @@ This0.SrcDests renameMap(Library that, This1.S prefix, This1.Path path, This1.In
   'CurlyBlock-Should be unreachable code
   }
   )
-type method 
+class method 
 This1.Bool needRename(This1.Introspection.NestedClass that, This1.Introspection.Method meth) (
   Void unused=(
     Void unused0=(
@@ -15672,12 +15675,12 @@ This1.Bool needRename(This1.Introspection.NestedClass that, This1.Introspection.
   'CurlyBlock-Should be unreachable code
   }
   )
-type method 
+class method 
 Library #leftleft(Library that) exception This1.MetaGuard.ClassClash, This1.MetaGuard.MethodClash This1.Refactor.compose(left:that, right:{'members of each produced class
 <:This1.$
 Varacc1__139_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(Library inner) 
 mut method 
 Void inner(Library that) 
@@ -15687,7 +15690,7 @@ read method
 Library inner() }
 Varmap__140_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This2.SrcDests::#begin() ::#end() inner) 
 mut method 
 Void inner(This2.SrcDests::#begin() ::#end() that) 
@@ -15695,13 +15698,13 @@ mut method
 This2.SrcDests::#begin() ::#end() #inner() }
 Varlibi__141_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This1::myLibs__56_0() ::vals() ::#inner() inner) 
 mut method 
 Void inner(This1::myLibs__56_0() ::vals() ::#inner() that) 
 mut method 
 This1::myLibs__56_0() ::vals() ::#inner() #inner() }
-type method '@private
+class method '@private
 This0 #apply__56_0(This1.Libs__136_0 myLibs__56_0) 
 mut method '@private
 This1.Libs__136_0 #myLibs__56_0() 
@@ -15709,7 +15712,7 @@ read method '@private
 This1.Libs__136_0 myLibs__56_0() 
 method 
 This0 #add(Library that) This0.#apply__56_0(myLibs__56_0:this.myLibs__56_0().#add(that:that))
-type method 
+class method 
 This0 #begin() This0.#apply__56_0(myLibs__56_0:This1.Libs__136_0.#begin().#end())
 method 
 This0 #end() This0.#apply__56_0(myLibs__56_0:this.myLibs__56_0().#end())
@@ -15968,7 +15971,7 @@ method solveConflict(that location ) (
   )
 Varacc1_$%29_0__142_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(Library inner) 
 mut method 
 Void inner(Library that) 
@@ -15978,7 +15981,7 @@ read method
 Library inner() }
 Varmap_$%30_0__143_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This2.PreferentialComposition.SrcDests::#begin() ::#end() inner) 
 mut method 
 Void inner(This2.PreferentialComposition.SrcDests::#begin() ::#end() that) 
@@ -15986,13 +15989,13 @@ mut method
 This2.PreferentialComposition.SrcDests::#begin() ::#end() #inner() }
 Varlibi_$%31_0__144_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This1::myLibs_$%28_0__57_0() ::vals() ::#inner() inner) 
 mut method 
 Void inner(This1::myLibs_$%28_0__57_0() ::vals() ::#inner() that) 
 mut method 
 This1::myLibs_$%28_0__57_0() ::vals() ::#inner() #inner() }
-type method '@private
+class method '@private
 This0 #apply_$%28_0__57_0(This1.PreferentialComposition.Libs__136_0 myLibs_$%28_0__57_0) 
 mut method '@private
 This1.PreferentialComposition.Libs__136_0 #myLibs_$%28_0__57_0() 
@@ -16000,7 +16003,7 @@ read method '@private
 This1.PreferentialComposition.Libs__136_0 myLibs_$%28_0__57_0() 
 method 
 This0 #add(Library that) This0.#apply_$%28_0__57_0(myLibs_$%28_0__57_0:this.myLibs_$%28_0__57_0().#add(that:that))
-type method 
+class method 
 This0 #begin() This0.#apply_$%28_0__57_0(myLibs_$%28_0__57_0:This1.PreferentialComposition.Libs__136_0.#begin().#end())
 method 
 This0 #end() This0.#apply_$%28_0__57_0(myLibs_$%28_0__57_0:this.myLibs_$%28_0__57_0().#end())
@@ -16259,7 +16262,7 @@ method solveConflict(that location ) (
   )
 Varacc1_$%33_0__145_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(Library inner) 
 mut method 
 Void inner(Library that) 
@@ -16269,7 +16272,7 @@ read method
 Library inner() }
 Varmap_$%34_0__146_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This2.PreferentialComposition.SrcDests::#begin() ::#end() inner) 
 mut method 
 Void inner(This2.PreferentialComposition.SrcDests::#begin() ::#end() that) 
@@ -16277,13 +16280,13 @@ mut method
 This2.PreferentialComposition.SrcDests::#begin() ::#end() #inner() }
 Varlibi_$%35_0__147_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This1::myLibs_$%32_0__58_0() ::vals() ::#inner() inner) 
 mut method 
 Void inner(This1::myLibs_$%32_0__58_0() ::vals() ::#inner() that) 
 mut method 
 This1::myLibs_$%32_0__58_0() ::vals() ::#inner() #inner() }
-type method '@private
+class method '@private
 This0 #apply_$%32_0__58_0(This1.PreferentialComposition.Libs__136_0 myLibs_$%32_0__58_0) 
 mut method '@private
 This1.PreferentialComposition.Libs__136_0 #myLibs_$%32_0__58_0() 
@@ -16291,7 +16294,7 @@ read method '@private
 This1.PreferentialComposition.Libs__136_0 myLibs_$%32_0__58_0() 
 method 
 This0 #add(Library that) This0.#apply_$%32_0__58_0(myLibs_$%32_0__58_0:this.myLibs_$%32_0__58_0().#add(that:that))
-type method 
+class method 
 This0 #begin() This0.#apply_$%32_0__58_0(myLibs_$%32_0__58_0:This1.PreferentialComposition.Libs__136_0.#begin().#end())
 method 
 This0 #end() This0.#apply_$%32_0__58_0(myLibs_$%32_0__58_0:this.myLibs_$%32_0__58_0().#end())
@@ -16533,7 +16536,7 @@ This0 #plusplus(This0 that) This0.#apply_$%32_0__58_0(myLibs_$%32_0__58_0:this.m
 Patch:{
 Varacc2__148_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(Library inner) 
 mut method 
 Void inner(Library that) 
@@ -16543,7 +16546,7 @@ read method
 Library inner() }
 Varmap0__149_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This2.PreferentialComposition.SrcDests::#begin() ::#end() inner) 
 mut method 
 Void inner(This2.PreferentialComposition.SrcDests::#begin() ::#end() that) 
@@ -16551,13 +16554,13 @@ mut method
 This2.PreferentialComposition.SrcDests::#begin() ::#end() #inner() }
 Varacc3__150_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This2.PreferentialComposition.SrcDests::#begin() ::#end() inner) 
 mut method 
 Void inner(This2.PreferentialComposition.SrcDests::#begin() ::#end() that) 
 mut method 
 This2.PreferentialComposition.SrcDests::#begin() ::#end() #inner() }
-type method 
+class method 
 This0 #apply(This1.Path that) 
 mut method 
 This1.Path #that() 
@@ -16710,7 +16713,7 @@ Library #leftleft(Library that) exception This1.MetaGuard.ClassClash, This1.Meta
   'CurlyBlock-Should be unreachable code
   }
   )
-type method '@private
+class method '@private
 This1.PreferentialComposition.SrcDests renameMap__59_0(Library that, This1.S prefix, This1.Introspection.NestedClasses intros) (
   Void unused=(
     This1.PreferentialComposition.SrcDests::#begin() ::#end() acc=This1.PreferentialComposition.SrcDests.#begin().#end()
@@ -16770,13 +16773,13 @@ Default:{
 DecorationUnfeasable:{<:This2.MetaGuard, This2.Message
 Varres_$%36_0__151_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This1::kind() inner) 
 mut method 
 Void inner(This1::kind() that) 
 mut method 
 This1::kind() #inner() }
-type method 
+class method 
 This0 #apply(This2.S _text, This2.Message.Opt cause) 
 mut method 
 This2.S #_text() 
@@ -16891,13 +16894,13 @@ method
 This2.Bool #equalequal(This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
 method classAny() This0
 method clazz() This0
-type method 
+class method 
 This0 #apply(This2.S text) This0.#apply(_text:text, cause:This2.Message.Opt.#apply())
-type method 
+class method 
 This0 #apply(This2.S text, This2.Message cause) This0.#apply(_text:text, cause:This2.Message.Opt.#apply(that:cause))
-type method 
+class method 
 mut This2.S.SBuilder #builder() This2.S.SBuilder.empty()
-type method 
+class method 
 This0 #from(This2.S.SBuilder builder) This0.#apply(text:This2.S.#from(builder:builder))
 method 
 This0.SConcat #begin() This0.SConcat.#apply(old:this, accumulator:This2.S.#from(builder:(
@@ -16907,13 +16910,13 @@ This0.SConcat #begin() This0.SConcat.#apply(old:this, accumulator:This2.S.#from(
 SConcat:{
 VarnewAcc0_$%37_0__152_0:'@private
 {
-type method 
+class method 
 mut This0 #apply(This4.Concept.ToS::toS() inner) 
 mut method 
 Void inner(This4.Concept.ToS::toS() that) 
 mut method 
 This4.Concept.ToS::toS() #inner() }
-type method 
+class method 
 This0 #apply(This3.Concept.ToS old, This3.S accumulator) 
 mut method 
 This3.Concept.ToS #old() 
@@ -16950,16 +16953,16 @@ mut This3.S.SBuilder #builder() This3.S.SBuilder.empty()
 method 
 This1 #from(This3.S.SBuilder builder) This1.#apply(text:this.old().toS().#plusplus(that:this.accumulator().#plusplus(that:This3.S.#from(builder:builder))))}}
 Parsable:{
-type method 
+class method 
 Library #leftleft(Library that) exception This1.DecorationUnfeasable (
   Void unused=(
     Void unused0=return This2.Extends.#begin().#add(that:{'ParseFailure:Message:S[]<<{<:Guard} no need, related to invariant?
     
-    type method ' if you do not implement it, it is a constructor?
+    class method ' if you do not implement it, it is a constructor?
     This0 fromS(read This3.Concept.ToS that) 
-    type method 
+    class method 
     This0 #from(This3.S.SBuilder builder) This0.fromS(that:This3.S.#from(binaryRepr:builder.binaryRepr()))
-    type method 
+    class method 
     mut This3.S.SBuilder #builder() This3.S.SBuilder.empty()}).#end().#leftleft(that:that)
     
     catch exception This2.MetaGuard catched exception This1.DecorationUnfeasable.#from(builder:(
@@ -16984,7 +16987,7 @@ Library #leftleft(Library that) exception This1.DecorationUnfeasable (
   )}
 SealState:{' how to specify which factory to keep out? what getters
 
-type method 
+class method 
 Library #leftleft(Library that) (
   Void unused=(
     This2.Introspection::#apply(lib ) i=This2.Introspection.#apply(lib:that)
@@ -16999,7 +17002,7 @@ Library #leftleft(Library that) (
   )}
 DataFromToS:{' in the future we can add also hashCode and > =>
 
-type method 
+class method 
 Library #leftleft(Library that) exception This1.DecorationUnfeasable (
   Void unused=(
     Void unused0=return This2.Extends.#begin().#add(that:{<:This3.Concept.ToS
@@ -17022,7 +17025,7 @@ Library #leftleft(Library that) exception This1.DecorationUnfeasable (
   }
   )}
 Equals:{
-type method 
+class method 
 Library #leftleft(Library that) exception This1.DecorationUnfeasable (
   Void unused=(
     Void unused0=return This2.Extends.#begin().#add(that:{<:This3.Concept.Equals
@@ -17076,7 +17079,7 @@ Library #leftleft(Library that) exception This1.DecorationUnfeasable (
   }
   )}
 Named:{
-type method 
+class method 
 Library #leftleft(Library that) exception This1.DecorationUnfeasable (
   Void unused=(
     Void unused0=return This2.Extends.#begin().#add(that:{<:This3.Concept.Named
@@ -17101,13 +17104,13 @@ Library #leftleft(Library that) exception This1.DecorationUnfeasable (
   )}}
 Url:{'ParseFailure:Message:S[]<<{<:Guard} no need, related to invariant?
 <:This1.Concept.ToS
-type method ' if you do not implement it, it is a constructor?
+class method ' if you do not implement it, it is a constructor?
 This0 fromS(read This1.Concept.ToS that) This0.#apply(inner:that.toS())
-type method 
+class method 
 This0 #from(This1.S.SBuilder builder) This0.fromS(that:This1.S.#from(binaryRepr:builder.binaryRepr()))
-type method 
+class method 
 mut This1.S.SBuilder #builder() This1.S.SBuilder.empty()
-type method 
+class method 
 This0 #apply(This1.S inner) 
 mut method 
 This1.S #inner() 
@@ -17117,34 +17120,34 @@ method toS() this.inner()
 method 
 Library binaryRepr() this.inner().binaryRepr()}
 DeployTowel:{
-type method '(Any fileName)
+class method '(Any fileName)
 This0 #apply(This1.Url fileName) 
 mut method '(Any fileName)
 This1.Url #fileName() 
 read method '(Any fileName)
 This1.Url fileName() 
-type method 
+class method 
 Library binaryReprFrom(Library lib) (
   Library norm=use This0.SafeOperatorsAccess__153_0 check privateNormalize(that:lib) error {
-  type method 
+  class method 
   This0 privateNormalize() }
   Library record=use This0.SafeOperatorsAccess__153_0 check introspectLibraryReport(that:norm, path:{'@stringU
   'This
   }) error {
-  type method 
+  class method 
   This0 introspectLibraryReport() }
   use This0.SafeOperatorsAccess__153_0 check introspectLibraryDocAsString(that:record, path:{'@stringU
   'AllAsString
   }, annotationN:{'@int32
   '0
   }) error {
-  type method 
+  class method 
   This0 introspectLibraryDocAsString() }
   )
 method 
 Library #leftleft(Library that) (
   Void unused=use This1.Alu check fileDebug(fileName:this.fileName().binaryRepr(), content:This0.binaryReprFrom(lib:that)) error {
-  type method 
+  class method 
   This0 fileDebug() }
   This1.ExitCode.normal()
   )

@@ -213,7 +213,7 @@ private ExpCore methCall(Program p, ExpCore ctxVal, MethCall r) {
       }
     }
   //case new
-  if(mwt.getMt().getMdf()==ast.Ast.Mdf.Type){
+  if(mwt.getMt().getMdf()==ast.Ast.Mdf.Class){
     return ReplaceCtx.of(ctxVal,rNew(mc,mwt,usedNames));
   }
   //assert IsValue.of(Resources.getP(),mc.getReceiver());

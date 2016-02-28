@@ -3,20 +3,20 @@ DecorationUnfeasable:Message.$<<{<:MetaGuard}
 
 
 Parsable:{
-  type method Library<<(Library that)
+  class method Library<<(Library that)
   exception DecorationUnfeasable{
     return Extends[{
       'ParseFailure:Message:S[]<<{<:Guard} no need, related to invariant?
-      type method' if you do not implement it, it is a constructor?
+      class method' if you do not implement it, it is a constructor?
       This fromS(read Concept.ToS that)    
-      'will be in the interface when there is type refinement,
+      'will be in the interface when there is class refinement,
       'and will be imm in the interface, and classes can refine to their outer0, and to capsule if makes sense
       
-      type method
+      class method
       This #from(S.SBuilder builder)
         This.fromS(S.#from(binaryRepr: builder.binaryRepr()))
     
-      type method
+      class method
       mut S.SBuilder #builder() S.SBuilder.empty()
      }]<<that
     exception on MetaGuard
@@ -25,14 +25,14 @@ Parsable:{
   }
 SealState:{
   ' how to specify which factory to keep out? what getters
-  type method Library<<(Library that){
+  class method Library<<(Library that){
     i=Introspection(lib:that)
     return that
     }
   }
   
 DataFromToS:{' in the future we can add also hashCode and > =>
-  type method Library<<(Library that) exception DecorationUnfeasable{
+  class method Library<<(Library that) exception DecorationUnfeasable{
     return Extends[{<:Concept.ToS
     method Bool != (This that) !(this==that)
     read method Bool ==(read This that) this.toS()==that.toS()
@@ -45,7 +45,7 @@ DataFromToS:{' in the future we can add also hashCode and > =>
   }
 
 Equals:{
-  type method Library<<(Library that) exception DecorationUnfeasable{
+  class method Library<<(Library that) exception DecorationUnfeasable{
     return Extends[{<:Concept.Equals
       method equals(that){
         with that (on This return this==that)
@@ -58,7 +58,7 @@ Equals:{
     }
   }
 Named:{
-  type method Library<<(Library that) exception DecorationUnfeasable{
+  class method Library<<(Library that) exception DecorationUnfeasable{
     return Extends[{<:Concept.Named
         method myName()
           Introspection(clazz:This).externalTypeToS()

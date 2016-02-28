@@ -13,7 +13,7 @@ S2List:{
 'Concat:Accumulate(SList)<{ method S (S a,S b) a++b }
 
 Util:{()
-  type method S max(SList that){
+  class method S max(SList that){
     if that.isEmpty() (error S"Empty lists have no max")
     var S candidate=S""
     with ei in that.vals() (

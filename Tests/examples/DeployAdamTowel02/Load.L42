@@ -3,7 +3,7 @@
 ' This contains actual library, but
 ' Abstract:{} contains abstract classes, and 
 ' Abstract.ConceptMap mapps concepts names to abstract classes
-  type method This #begin()'constructor
+  class method This #begin()'constructor
   method This #end() this
   ConceptMapMismatch:Message.$<<{<:MetaGuard}
   ConceptMapUnavailable:Message.$<<{<:MetaGuard}

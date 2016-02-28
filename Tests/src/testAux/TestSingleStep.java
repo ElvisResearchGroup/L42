@@ -89,12 +89,12 @@ public class TestSingleStep {
        },{lineNumber(),"( This0.C x= (This0.C z=This0.C.new() z) catch error This0.C y y catch error This0.D y y x)",
          "( This0.C x= (This0.C z=This0.C.new() z)  x)"
 
-       },{lineNumber(),"This0.C.foo(bar:This0.C)","(type This0.C this0=This0.C,type This0.C bar=This0.C (bar.foo(bar:this0)))"
+       },{lineNumber(),"This0.C.foo(bar:This0.C)","(class This0.C this0=This0.C,class This0.C bar=This0.C (bar.foo(bar:this0)))"
 
-       },{lineNumber()," (type This0.C this0=This0.C,type This0.C bar=This0.C (bar.foo(bar:this0)))",
-          " (type This0.C bar=This0.C ( bar.foo(bar:This0.C) ) )"
+       },{lineNumber()," (class This0.C this0=This0.C,class This0.C bar=This0.C (bar.foo(bar:this0)))",
+          " (class This0.C bar=This0.C ( bar.foo(bar:This0.C) ) )"
 
-       },{lineNumber()," (type This0.C bar=This0.C ( bar.foo(bar:This0.C) ) )",
+       },{lineNumber()," (class This0.C bar=This0.C ( bar.foo(bar:This0.C) ) )",
           " ((This0.C.foo(bar:This0.C)))"
 
 
@@ -130,10 +130,10 @@ public class TestSingleStep {
           "( mut D r=D.new(x:r2) mut D r1a=D.new(x:r1b) mut D r1b=D.new(x:r1b) mut D r2=D.new(x:r1a) ((void)))"
        },{lineNumber(),"( mut D r=D.new(x:r) (mut D r1a=D.new(x:r1b) mut D r1b=D.new(x:r1b) (mut D r2a=D.new(x:r2b)mut D r2b=D.new(x:r1a) r.x(r2a))))",
           "( mut D r=D.new(x:r2a)mut D r1a=D.new(x:r1b)mut D r1b=D.new(x:r1b) mut D r2a=D.new(x:r2b)  mut D r2b=D.new(x:r1a) ((void)))"
-       },{lineNumber(),"{outer() C: {new() type method Library m() {inner()}} D: C.m()}",
-            "{outer() C: {new() type method Library m() {inner()}##star ^##}##star ^## D:(type C this0=C { inner()}##star ^## )}"
-       },{lineNumber(),"{ method Library m() ({outer() C: {new() type method Library m() ({inner()})} D: C.m()})}",
-         "{ method Library m() ({ outer()C:{ new()type method Library m() ({ inner()}##star ^##)}##star ^## D:(type C this0=C ({ inner()}##star ^## ))})}"
+       },{lineNumber(),"{outer() C: {new() class method Library m() {inner()}} D: C.m()}",
+            "{outer() C: {new() class method Library m() {inner()}##star ^##}##star ^## D:(class C this0=C { inner()}##star ^## )}"
+       },{lineNumber(),"{ method Library m() ({outer() C: {new() class method Library m() ({inner()})} D: C.m()})}",
+         "{ method Library m() ({ outer()C:{ new()class method Library m() ({ inner()}##star ^##)}##star ^## D:(class C this0=C ({ inner()}##star ^## ))})}"
 
 
          //can not work without the normalization
@@ -141,8 +141,8 @@ public class TestSingleStep {
          },{lineNumber(),"{ C:( Library result=( ( ( Library result0=  {'@exitStatus\n'0\n}  result0 ) ) ) result )}",
            " { C:( Library result=( ( ( {'@exitStatus\n'0\n}##star ^## ) ) ) result )}"
        },{lineNumber(),TestHelper.multiLine("{"
-        ,"C:{ k() type method Library ok() ({'@oK\n})"
-        ,"        type method Library ko() ({'@kO\n})"
+        ,"C:{ k() class method Library ok() ({'@oK\n})"
+        ,"        class method Library ko() ({'@kO\n})"
         ,"  }"
         ,"I:{interface }"
         ,"AI:{ k()<:This1.I}"
@@ -152,10 +152,10 @@ public class TestSingleStep {
         ,"  This0.C.ko()"
         ,"  )}"),
         TestHelper.multiLine(
-         "{C:{ k()type method Library ok() ("
+         "{C:{ k()class method Library ok() ("
         ,"  {'@oK"
         ,"}##star ^##"
-        ,"  )type method Library ko() ("
+        ,"  )class method Library ko() ("
         ,"  {'@kO"
         ,"}##star ^##"
         ,"  )}##star ^## I:{interface }##star ^## AI:{ k()<:This1.I}##star ^## D:("

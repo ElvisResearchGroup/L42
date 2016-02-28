@@ -29,7 +29,7 @@ public class TestCoherentClass {
     return Arrays.asList(new Object[][] {           //a
          {Mdf.Immutable,Path.Any(),"{method Any foo()}",true
       },{Mdf.Immutable,Path.Any(),"{method Void foo()}",false
-      },{Mdf.Type,Path.Void(),"{method type Void foo()}",true
+      },{Mdf.Class,Path.Void(),"{method class Void foo()}",true
       },{Mdf.Readable,Path.Void(),"{method read Void foo()}",true
         //b
       },{Mdf.Immutable,Path.Void(),"{mut method  Void foo( Void that)}",true

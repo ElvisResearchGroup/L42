@@ -1,6 +1,6 @@
 {
 
-type method Library opt() {
+class method Library opt() {
   Opt:{#new(TOpt that)
       TOpt:{interface method This2 get() }
       TEmpty:{()<:TOpt method get() error Guard.Operation"TEmpty.get() Value not present in Optional" }
@@ -11,8 +11,8 @@ type method Library opt() {
         return Bool.true()
         catch error Any return Bool.false()
         }
-      type method This () This.#new(TEmpty())
-      type method This (T that) This.#new(TOf(that))
+      class method This () This.#new(TEmpty())
+      class method This (T that) This.#new(TOf(that))
       }
   Iterator:{interface 
     mut method

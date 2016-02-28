@@ -1,24 +1,24 @@
 {reuse L42.is/AdamTowel02
 
 C:Patch(Path"P")<<{
-  A:{type method Void foo()Debug(S"World")}
+  A:{class method Void foo()Debug(S"World")}
   P:{
-    A:{type method Void foo() (Debug(S"Hello") this.#1foo() )}
-    B:{type method Void foo() (Debug(S"Hello-") A.#1foo() )}
+    A:{class method Void foo() (Debug(S"Hello") this.#1foo() )}
+    B:{class method Void foo() (Debug(S"Hello-") A.#1foo() )}
     }
   }
 D:Patch(Path"P")<<{
   A:{
-    type method A foo(A that)this.foo(that)
-    type method B bar(B that)this.bar(that)
+    class method A foo(A that)this.foo(that)
+    class method B bar(B that)this.bar(that)
     }
   B:{}
   P:{
     A:{
-      type method A foo(A that)that
-      type method B bar(B that)that
+      class method A foo(A that)that
+      class method B bar(B that)that
       }       
-    B:{type method B bar(B that)that} 
+    B:{class method B bar(B that)that} 
     }
   }
 Main:{

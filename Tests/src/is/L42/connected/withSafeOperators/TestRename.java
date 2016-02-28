@@ -50,26 +50,26 @@ public class TestRename {
             + " method '@private\n"
             + "Void mm__0_0() void}", false //
           }, { //
-         "{ type method '@private\n"
+         "{ class method '@private\n"
             +" This0 a(Any n) \n"
             +"   mut method '@private\n"
             +"  Any #n() \n"
             +"  read method '@private\n"
             +"   Any n() \n"
-            +"  type method\n"
+            +"  class method\n"
             +"  This0 _1(This0 new)  new\n"
-            +"  type method \n"
+            +"  class method \n"
             +"  This0 a_1(Any n) This0._1(new:This0.a(n:n))}\n",
             "This0", "a_1(n)", "a(n)", 
-            "{type method '@private\n"
+            "{class method '@private\n"
             +"This0 a__0_0(Any n__0_0)\n"
             +"mut method '@private\n"
             +"Any #n__0_0()\n"
             +"read method '@private\n"
             +"Any n__0_0()\n"
-            +"type method\n"
+            +"class method\n"
             +"This0 _1(This0 new) new\n"
-            +"type method\n"
+            +"class method\n"
             +"This0 a(Any n) This0._1(new:This0.a__0_0(n__0_0:n))}",false
                       
           }, { //
@@ -263,35 +263,35 @@ public class TestRename {
         }, {lineNumber(),//
         "{A:{}}","A","B","{B:{}}",false//
         }, {lineNumber(),//
-          "{A:{ type method type A m() A}}","A","B", "{B:{type method type This0 m() This0}}"    ,false//
+          "{A:{ class method class A m() A}}","A","B", "{B:{class method class This0 m() This0}}"    ,false//
         }, {lineNumber(),//
-          "{A:{ type method type A m() {return A}}}","A","B", "{B:{type method type This0 m() {return This0}}}"    ,false//
+          "{A:{ class method class A m() {return A}}}","A","B", "{B:{class method class This0 m() {return This0}}}"    ,false//
         }, {lineNumber(),//
-          "{A:{ method A ()} B:{foo()}}","A","B",  "{B:{ type method This0 foo()  method This0 ()}}"   ,false//
+          "{A:{ method A ()} B:{foo()}}","A","B",  "{B:{ class method This0 foo()  method This0 ()}}"   ,false//
         }, {lineNumber(),//
-          "{C:{A:{ method A ()}} B:{foo()}}","C.A","B",  "{C:{} B:{ type method This0 foo() method This0 ()  }}"    ,false//
+          "{C:{A:{ method A ()}} B:{foo()}}","C.A","B",  "{C:{} B:{ class method This0 foo() method This0 ()  }}"    ,false//
         }, {lineNumber(),//
-          "{D:{C:{A:{ method A ()}}} B:{foo()}}","D.C.A","B",  "{D:{C:{}} B:{ type method This0 foo()  method This0 ()}}"   ,false//
+          "{D:{C:{A:{ method A ()}}} B:{foo()}}","D.C.A","B",  "{D:{C:{}} B:{ class method This0 foo()  method This0 ()}}"   ,false//
         }, {lineNumber(),//
-          "{A:{ method A ()} C:{B:{foo()}}}","A","C.B",  "{C:{B:{ type method This0 foo() method This0 () }}}"   ,false//
+          "{A:{ method A ()} C:{B:{foo()}}}","A","C.B",  "{C:{B:{ class method This0 foo() method This0 () }}}"   ,false//
         }, {lineNumber(),//
-          "{A:{ method A ()} D:{C:{B:{foo()}}}}","A","D.C.B",  "{D:{C:{B:{  type method This0 foo()  method This0 ()}}}}"   ,false//
+          "{A:{ method A ()} D:{C:{B:{foo()}}}}","A","D.C.B",  "{D:{C:{B:{  class method This0 foo()  method This0 ()}}}}"   ,false//
         }, {lineNumber(),//        ////
-          "{ A:{ type method This1.B () } B:{ }}","A","This0", "{ B:{ } type method This0.B ()  }"    ,false//
+          "{ A:{ class method This1.B () } B:{ }}","A","This0", "{ B:{ } class method This0.B ()  }"    ,false//
         }, {lineNumber(),//
-          "{ A:{ type method This1.B () } B:{ }}" ,"A","C", "{ B:{ }  C:{type method This1.B () }}"    ,false//
+          "{ A:{ class method This1.B () } B:{ }}" ,"A","C", "{ B:{ }  C:{class method This1.B () }}"    ,false//
         }, {lineNumber(),//
-          "{ A1:{ A2:{ type method B () }} B:{ }}","A1.A2","A1",   "{ A1:{ type method B () } B:{ }}"   ,false//
+          "{ A1:{ A2:{ class method B () }} B:{ }}","A1.A2","A1",   "{ A1:{ class method B () } B:{ }}"   ,false//
         }, {lineNumber(),//
-          "{ A1:{ A2:{ type method B () }} B:{ }}" ,"A1.A2","This0",  "{ A1:{ } B:{ } type method B () }"   ,false//
+          "{ A1:{ A2:{ class method B () }} B:{ }}" ,"A1.A2","This0",  "{ A1:{ } B:{ } class method B () }"   ,false//
         }, {lineNumber(),//
-          "{ A1:{ A2:{ type method B () } B:{ } }}","A1.A2","A1",  "{ A1:{B:{ } type method B () }}"   ,false//
+          "{ A1:{ A2:{ class method B () } B:{ } }}","A1.A2","A1",  "{ A1:{B:{ } class method B () }}"   ,false//
         }, {lineNumber(),//
-          "{ A1:{ A2:{ type method This1.B () } B:{ } }}","A1.A2","This0",   "{ A1:{B:{ }} type method This0.A1.B () }"   ,false//
+          "{ A1:{ A2:{ class method This1.B () } B:{ } }}","A1.A2","This0",   "{ A1:{B:{ }} class method This0.A1.B () }"   ,false//
         }, {lineNumber(),//
-          "{ A:{ D:{ type method This0 d() This0.d() } type method This1.B foo()This0.foo() } B:{ }}" ,
+          "{ A:{ D:{ class method This0 d() This0.d() } class method This1.B foo()This0.foo() } B:{ }}" ,
           "A","This0",
-          "{ B:{ } D:{ type method This0 d() This0.d() } type method This0.B foo()This0.foo()  }"   ,false//
+          "{ B:{ } D:{ class method This0 d() This0.d() } class method This0.B foo()This0.foo()  }"   ,false//
         }, {lineNumber(),//
           helpers.TestHelper.multiLine(""
               ,"{ A:{"
@@ -316,7 +316,7 @@ public class TestRename {
               "A","This0",
               helpers.TestHelper.multiLine(""
               ,"{"
-              ,"type method "
+              ,"class method "
               ,"mut This0 #apply(mut This0.Cell head"
               ,") "
               ,"mut method"
@@ -329,29 +329,29 @@ public class TestRename {
               ,"CellEnd:{<:This1.Cell}"
               ,"}") ,false//
         }, {lineNumber(),//
-          "{ A:{type method This1.B ()}  B:{ }}",
+          "{ A:{class method This1.B ()}  B:{ }}",
           "A","A.C",
-          "{ B:{} A:{ C:{type method This2.B #apply() }}}"  ,false//
+          "{ B:{} A:{ C:{class method This2.B #apply() }}}"  ,false//
         }, {lineNumber(),//
-          "{ A:{type method This0.B ()  B:{ }}}"
+          "{ A:{class method This0.B ()  B:{ }}}"
           ,"A","A.C",
-          "{ A:{ C:{type method This0.B #apply() B:{} }}}",false//
+          "{ A:{ C:{class method This0.B #apply() B:{} }}}",false//
           
        },{lineNumber(),////the sub parts of test above
-        "{ Result:{ A:{ type method This0.B #apply() B:{}}}}",
+        "{ Result:{ A:{ class method This0.B #apply() B:{}}}}",
        "Result.A","Tmp",
-       "{Result:{} Tmp:{ type method This0.B #apply() B:{}}}",false
+       "{Result:{} Tmp:{ class method This0.B #apply() B:{}}}",false
 /*
           "{  Result:{}
             Tmp:{
-            type method 
+            class method 
             This2.Tmp #apply() 
             B:{}}}
         "Tmp","Result.A.C",false*/
         }, {lineNumber(),//
-          "{ type method This0.B ()  B:{ }}"
+          "{ class method This0.B ()  B:{ }}"
           ,"This0","C",
-          "{ C:{ type method This0.B #apply() B:{}}}",false//
+          "{ C:{ class method This0.B #apply() B:{}}}",false//
         }, {lineNumber(),//
           "{ A:{B:{ method A m(B x)}} }"
           ,"A.B","C.B",

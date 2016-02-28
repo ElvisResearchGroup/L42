@@ -210,19 +210,19 @@ public static class TestAbstractClass {//add more test for error cases
 	  "{C:{ method '@private\n Void m() void D:{}}}",
 	  false
   },{lineNumber(),//
-    "{C:{ method Void m() D.m() D:{ type method Void m() void}}}",
+    "{C:{ method Void m() D.m() D:{ class method Void m() void}}}",
     "C.D",
-    "{C:{ method Void m() D.m() D:{ type method Void m() }}}",
+    "{C:{ method Void m() D.m() D:{ class method Void m() }}}",
     false
   },{lineNumber(),//
-    "{C:{ method Void m() A.D.m() A:{D:{ type method Void m() void}}}}",
+    "{C:{ method Void m() A.D.m() A:{D:{ class method Void m() void}}}}",
     "C.A.D",
-    "{C:{ method Void m() A.D.m() A:{D:{ type method Void m() }}}}",
+    "{C:{ method Void m() A.D.m() A:{D:{ class method Void m() }}}}",
     false
   },{lineNumber(),//
-    "{C:{ method Void m() A.D.m()} A:{D:{ type method Void m() void type method'@private\n Void k() void}}}",
+    "{C:{ method Void m() A.D.m()} A:{D:{ class method Void m() void class method'@private\n Void k() void}}}",
     "A.D",
-    "{C:{ method Void m() A.D.m()} A:{D:{ type method Void m() }}}",
+    "{C:{ method Void m() A.D.m()} A:{D:{ class method Void m() }}}",
     false
   },{lineNumber(),//
     "{C:{ B:'@private\n{}}}","C.B",

@@ -5,12 +5,12 @@ Load:{'shape of a loadable library:
 ' Abstract:{} contains abstract classes, and 
 ' Abstract.ConceptMap mapps concepts names to abstract classes
 
-type method 
+class method 
 This #begin() 
 method 
 This #end() 
 ConceptMapMismatch:{<:Outer2.MetaGuard, Outer2.Message
-type method 
+class method 
 This #apply(Outer2.S _text, Outer2.Message.Opt cause) 
 mut method 
 Outer2.S #_text() 
@@ -26,18 +26,18 @@ method
 Outer2.Bool #bangequal(This that) 
 method 
 Outer2.Bool #equalequal(This that) 
-type method 
+class method 
 This #apply(Outer2.S text) 
-type method 
+class method 
 This #apply(Outer2.S text, Outer2.Message cause) 
-type method 
+class method 
 mut Outer2.S.SBuilder #builder() 
-type method 
+class method 
 This #from(Outer2.S.SBuilder builder) 
 method 
 This.SConcat #begin() 
 SConcat:{
-type method 
+class method 
 This #apply(Outer3.Concept.ToS old, Outer3.S accumulator) 
 mut method 
 Outer3.Concept.ToS #old() 
@@ -58,7 +58,7 @@ mut Outer3.S.SBuilder #builder()
 method 
 Outer1 #from(Outer3.S.SBuilder builder) }}
 ConceptMapUnavailable:{<:Outer2.MetaGuard, Outer2.Message
-type method 
+class method 
 This #apply(Outer2.S _text, Outer2.Message.Opt cause) 
 mut method 
 Outer2.S #_text() 
@@ -74,18 +74,18 @@ method
 Outer2.Bool #bangequal(This that) 
 method 
 Outer2.Bool #equalequal(This that) 
-type method 
+class method 
 This #apply(Outer2.S text) 
-type method 
+class method 
 This #apply(Outer2.S text, Outer2.Message cause) 
-type method 
+class method 
 mut Outer2.S.SBuilder #builder() 
-type method 
+class method 
 This #from(Outer2.S.SBuilder builder) 
 method 
 This.SConcat #begin() 
 SConcat:{
-type method 
+class method 
 This #apply(Outer3.Concept.ToS old, Outer3.S accumulator) 
 mut method 
 Outer3.Concept.ToS #old() 
@@ -108,7 +108,7 @@ Outer1 #from(Outer3.S.SBuilder builder) }}
 method 
 Library #leftleft(Library that) exception This.ConceptMapMismatch, This.ConceptMapUnavailable 
 DeployLibrary:{
-type method 
+class method 
 This #apply(Outer2.Path path, Outer2.Url url) 
 mut method 
 Outer2.Path #path() 
@@ -118,17 +118,17 @@ mut method
 Outer2.Url #url() 
 read method 
 Outer2.Url url() 
-type method 
+class method 
 Library moveToAbstract(Outer2.Path that, Library of) 
-type method 
+class method 
 Library exposeAsLibrary(Library that, Outer2.Path path) exception Outer2.MetaGuard.NestedClassUnavailable, Outer2.MetaGuard.PrivacyCoupuled 
-type method 
+class method 
 Void checkTargetExists(Library that, Outer2.Path path) exception Outer2.MetaGuard.NestedClassUnavailable 
-type method 
-type This #begin() 
+class method 
+class This #begin() 
 method 
 This #end() 
-type method 
+class method 
 This #add(Outer2.Path that, Outer2.Url url) 
 method 
 Library #leftleft(Library that) exception Outer2.MetaGuard.NestedClassUnavailable, Outer2.MetaGuard.PrivacyCoupuled }}
@@ -138,7 +138,7 @@ $:{interface
 method 
 Library solveConflict(Library that, Outer1.SrcDest location) }
 SrcDest:{
-type method 
+class method 
 This #apply(Outer2.Path path, Outer2.Selector src, Outer2.Selector dest) 
 mut method 
 Outer2.Path #path() 
@@ -152,15 +152,15 @@ mut method
 Outer2.Selector #dest() 
 read method 
 Outer2.Selector dest() }
-SrcDests:{' generic linked list class, elements of type Elem
+SrcDests:{' generic linked list class, elements of class Elem
 <:Outer2.Concept.Named
-type method 
+class method 
 This _new(This.Cell head) 
 mut method 
 This.Cell #head() 
 read method 
 This.Cell head() 
-type method 
+class method 
 This #apply() 
 method 
 Outer2.Bool isEmpty() 
@@ -174,7 +174,7 @@ method
 This pop() 
 method 
 This #plusplus(This that) 
-type method 
+class method 
 This #begin() 
 method 
 This #add(Outer1.SrcDest that) 
@@ -190,10 +190,10 @@ Outer2.SrcDest #inner()
 method 
 Void #checkEnd() }
 CellEnd:{<:Outer1.Cell
-type method 
+class method 
 This #apply() }
 CellNext:{<:Outer1.Cell
-type method 
+class method 
 This #apply(Outer2.SrcDest elem, Outer1.Cell nextCell) 
 mut method 
 Outer2.SrcDest #elem() 
@@ -204,7 +204,7 @@ Outer1.Cell #nextCell()
 read method 
 Outer1.Cell nextCell() }
 Iterator:{
-type method 
+class method 
 mut This #apply(Outer1.Cell that, Outer3.Bool terminate) 
 mut method 
 Void that(Outer1.Cell that) 
@@ -224,37 +224,37 @@ read method
 Outer2.SrcDest #inner() 
 read method 
 Void #close() }}
-type method 
+class method 
 This.SrcDests renameMap(Library that, Outer1.S prefix, Outer1.Path path, Outer1.Introspection.Methods ms) 
-type method 
+class method 
 Outer1.Bool needRename(Outer1.Introspection.NestedClass that, Outer1.Introspection.Method meth) 
-type method 
+class method 
 Library #leftleft(Library that) exception Outer1.MetaGuard.ClassClash, Outer1.MetaGuard.MethodClash }
 DeployTowel:{
-type method '(Any fileName)
+class method '(Any fileName)
 This #apply(Outer1.Url fileName) 
 mut method '(Any fileName)
 Outer1.Url #fileName() 
 read method '(Any fileName)
 Outer1.Url fileName() 
-type method 
+class method 
 Library binaryReprFrom(Library lib) 
 method 
 Library #leftleft(Library that) }
 LinkedList:{
 ListCode:{
-type method 
+class method 
 Library #apply() }
-type method 
-Library list(type Any that) 
-type method 
-Library eqList(type Any that) 
+class method 
+Library list(class Any that) 
+class method 
+Library eqList(class Any that) 
 ListCodeEq:{
-type method 
+class method 
 Library #apply() }}
 Default:{
 DecorationUnfeasable:{<:Outer2.MetaGuard, Outer2.Message
-type method 
+class method 
 This #apply(Outer2.S _text, Outer2.Message.Opt cause) 
 mut method 
 Outer2.S #_text() 
@@ -270,18 +270,18 @@ method
 Outer2.Bool #bangequal(This that) 
 method 
 Outer2.Bool #equalequal(This that) 
-type method 
+class method 
 This #apply(Outer2.S text) 
-type method 
+class method 
 This #apply(Outer2.S text, Outer2.Message cause) 
-type method 
+class method 
 mut Outer2.S.SBuilder #builder() 
-type method 
+class method 
 This #from(Outer2.S.SBuilder builder) 
 method 
 This.SConcat #begin() 
 SConcat:{
-type method 
+class method 
 This #apply(Outer3.Concept.ToS old, Outer3.S accumulator) 
 mut method 
 Outer3.Concept.ToS #old() 
@@ -302,27 +302,27 @@ mut Outer3.S.SBuilder #builder()
 method 
 Outer1 #from(Outer3.S.SBuilder builder) }}
 Parsable:{
-type method 
+class method 
 Library #leftleft(Library that) exception Outer1.DecorationUnfeasable }
 SealState:{' how to specify which factory to keep out? what getters
 
-type method 
+class method 
 Library #leftleft(Library that) }
 DataFromToS:{' in the future we can add also hashCode and > =>
 
-type method 
+class method 
 Library #leftleft(Library that) exception Outer1.DecorationUnfeasable }
 Equals:{
-type method 
+class method 
 Library #leftleft(Library that) exception Outer1.DecorationUnfeasable }
 Named:{
-type method 
+class method 
 Library #leftleft(Library that) exception Outer1.DecorationUnfeasable }}
 Use:{'members of each produced class
 <:Outer1.PreferentialComposition.$, Outer1.PreferentialComposition.$
 method 
 This #add(Library that) 
-type method 
+class method 
 This #begin() 
 method 
 This #end() 
@@ -334,7 +334,7 @@ Extends:{'members of each produced class
 <:Outer1.PreferentialComposition.$, Outer1.PreferentialComposition.$
 method 
 This #add(Library that) 
-type method 
+class method 
 This #begin() 
 method 
 This #end() 
@@ -343,38 +343,38 @@ Library #leftleft(Library that) exception Outer1.MetaGuard.ClassClash, Outer1.Me
 method 
 This #plusplus(This that) }
 Opt:{
-type method 
-Library #apply(type Any that) }
+class method 
+Library #apply(class Any that) }
 Optimize:{
 RemoveUnreachableCode:{
-type method 
+class method 
 This #apply() 
-type method 
+class method 
 This #begin() 
 method 
 This #end() 
 method 
 Library #leftleft(Library that) }}
 Refactor:{
-type method 
+class method 
 Library compose(Library left, Library right) exception Outer1.MetaGuard.ClassClash, Outer1.MetaGuard.MethodClash 
-type method 
+class method 
 Void checkTargetExists(Library that, Outer1.Path path) exception Outer1.MetaGuard.NestedClassUnavailable 
 Redirect:{
-type method 
-This #apply(Outer2.Path that, type Any to) 
+class method 
+This #apply(Outer2.Path that, class Any to) 
 mut method 
 Outer2.Path #that() 
 read method 
 Outer2.Path that() 
 mut method 
-type Any #to() 
+class Any #to() 
 read method 
-type Any to() 
+class Any to() 
 method 
 Library #leftleft(Library that) exception Outer2.MetaGuard.NestedClassUnavailable, Outer2.MetaGuard.InvalidOnTopLevel, Outer2.MetaGuard.SourceUnfit, Outer2.MetaGuard.MethodClash, Outer2.MetaGuard.IncoherentRedirectMapping }
 RenameSelector:{
-type method 
+class method 
 This #apply(Outer2.Selector that, Outer2.Path of, Outer2.Selector to) 
 mut method 
 Outer2.Selector #that() 
@@ -391,7 +391,7 @@ Outer2.Selector to()
 method 
 Library #leftleft(Library that) exception Outer2.MetaGuard.MemberUnavailable, Outer2.MetaGuard.MethodClash }
 RenamePath:{
-type method 
+class method 
 This #apply(Outer2.Path that, Outer2.Path to) 
 mut method 
 Outer2.Path #that() 
@@ -404,7 +404,7 @@ Outer2.Path to()
 method 
 Library #leftleft(Library that) exception Outer2.MetaGuard.NestedClassUnavailable, Outer2.MetaGuard.MethodClash, Outer2.MetaGuard.ClassClash }
 RemoveImplementationSelector:{
-type method 
+class method 
 This #apply(Outer2.Selector that, Outer2.Path of) 
 mut method 
 Outer2.Selector #that() 
@@ -417,7 +417,7 @@ Outer2.Path of()
 method 
 Library #leftleft(Library that) exception Outer2.MetaGuard.MemberUnavailable }
 MoveImplementationSelector:{
-type method 
+class method 
 This #apply(Outer2.Selector that, Outer2.Path of, Outer2.Selector to) 
 mut method 
 Outer2.Selector #that() 
@@ -434,7 +434,7 @@ Outer2.Selector to()
 method 
 Library #leftleft(Library that) exception Outer2.MetaGuard.MemberUnavailable, Outer2.MetaGuard.MethodClash }
 RemoveImplementationPath:{
-type method 
+class method 
 This #apply(Outer2.Path that) 
 mut method 
 Outer2.Path #that() 
@@ -443,7 +443,7 @@ Outer2.Path that()
 method 
 Library #leftleft(Library that) exception Outer2.MetaGuard.NestedClassUnavailable, Outer2.MetaGuard.PrivacyCoupuled }
 AddDocumentationSelector:{
-type method 
+class method 
 This #apply(Outer2.Selector that, Outer2.Path of, Outer2.Introspection.Doc doc) 
 mut method 
 Outer2.Selector #that() 
@@ -460,7 +460,7 @@ Outer2.Introspection.Doc doc()
 method 
 Library #leftleft(Library that) exception Outer2.MetaGuard.MemberUnavailable }
 AddDocumentationPath:{
-type method 
+class method 
 This #apply(Outer2.Path that, Outer2.Introspection.Doc doc) 
 mut method 
 Outer2.Path #that() 
@@ -473,7 +473,7 @@ Outer2.Introspection.Doc doc()
 method 
 Library #leftleft(Library that) exception Outer2.MetaGuard.NestedClassUnavailable, Outer2.MetaGuard.InvalidOnTopLevel }
 MakePrivatePath:{
-type method 
+class method 
 This #apply(Outer2.Path that) 
 mut method 
 Outer2.Path #that() 
@@ -482,7 +482,7 @@ Outer2.Path that()
 method 
 Library #leftleft(Library that) exception Outer2.MetaGuard.MemberUnavailable, Outer2.MetaGuard.InvalidOnTopLevel }
 MakePrivateSelector:{
-type method 
+class method 
 This #apply(Outer2.Selector that, Outer2.Path of) 
 mut method 
 Outer2.Selector #that() 
@@ -495,7 +495,7 @@ Outer2.Path of()
 method 
 Library #leftleft(Library that) exception Outer2.MetaGuard.MemberUnavailable }
 SumMethods:{
-type method 
+class method 
 This #apply(Outer2.Selector that, Outer2.Selector and, Outer2.Path of, Outer2.S over, Outer2.Selector to) 
 mut method 
 Outer2.Selector #that() 
@@ -520,18 +520,18 @@ Outer2.Selector to()
 method 
 Library #leftleft(Library that) exception Outer2.MetaGuard.MemberUnavailable, Outer2.MetaGuard.MethodClash, Outer2.MetaGuard.ParameterMismatch }
 Tools:{
-type method 
+class method 
 Outer2.S getToSOrName(read Any that) }}
 Introspection:{'findMeIntrospection
 
-type method 
+class method 
 This.NestedClass #apply(Library lib) 
-type method 
+class method 
 This.NestedClass #apply(Library lib, Outer1.Path path) exception Outer1.MetaGuard.NestedClassUnavailable 
-type method 
-This.NestedClass #apply(type Any clazz) 
-type method 
-This.NestedClass #apply(type Any clazz, Outer1.Path path) 
+class method 
+This.NestedClass #apply(class Any clazz) 
+class method 
+This.NestedClass #apply(class Any clazz, Outer1.Path path) 
 MirrorPr:{interface <:Outer2.Concept.ToS
 method 
 Outer1.NestedClass introspectReport(fwd Outer1.NestedClass root, Outer2.Path path) exception Outer2.MetaGuard.NestedClassUnavailable 
@@ -544,24 +544,24 @@ Outer2.S introspectDocAsString(Outer2.Path path) exception Outer2.MetaGuard.Nest
 method 
 Outer2.S introspectDocAsString(Outer2.Path path, Outer2.N annotationN) exception Outer2.MetaGuard.NestedClassUnavailable, Void 
 method 
-type Any introspectDocPath(Outer2.Path path, Outer2.N annotationN) exception Outer2.MetaGuard.NestedClassUnavailable, Void 
+class Any introspectDocPath(Outer2.Path path, Outer2.N annotationN) exception Outer2.MetaGuard.NestedClassUnavailable, Void 
 Lib:{<:Outer1
-type method 
+class method 
 This #apply(Library lib) 
 mut method 
 Library #lib() 
 read method 
 Library lib() }
 Class:{<:Outer1
-type method 
-This #apply(type Any lib) 
+class method 
+This #apply(class Any lib) 
 mut method 
-type Any #lib() 
+class Any #lib() 
 read method 
-type Any lib() }}
+class Any lib() }}
 Doc:{<:Outer2.Concept.ToS, Outer2.Concept.Named
 Annotation:{<:Outer3.Concept.ToS, Outer3.Concept.Named
-type method 
+class method 
 This #apply(Library _binaryRepr, Outer3.S text, Outer3.N index) 
 mut method 
 Library #_binaryRepr() 
@@ -576,18 +576,18 @@ Outer3.N #index()
 read method 
 Outer3.N index() 
 method 
-type Any referredClass() 
+class Any referredClass() 
 method 
 Outer3.Bool hasReferredClass() }
-Annotations:{' generic linked list class, elements of type Elem
+Annotations:{' generic linked list class, elements of class Elem
 <:Outer3.Concept.Named
-type method 
+class method 
 This _new(This.Cell head) 
 mut method 
 This.Cell #head() 
 read method 
 This.Cell head() 
-type method 
+class method 
 This #apply() 
 method 
 Outer3.Bool isEmpty() 
@@ -601,7 +601,7 @@ method
 This pop() 
 method 
 This #plusplus(This that) 
-type method 
+class method 
 This #begin() 
 method 
 This #add(Outer1.Annotation that) 
@@ -617,10 +617,10 @@ Outer2.Annotation #inner()
 method 
 Void #checkEnd() }
 CellEnd:{<:Outer1.Cell
-type method 
+class method 
 This #apply() }
 CellNext:{<:Outer1.Cell
-type method 
+class method 
 This #apply(Outer2.Annotation elem, Outer1.Cell nextCell) 
 mut method 
 Outer2.Annotation #elem() 
@@ -631,7 +631,7 @@ Outer1.Cell #nextCell()
 read method 
 Outer1.Cell nextCell() }
 Iterator:{
-type method 
+class method 
 mut This #apply(Outer1.Cell that, This4.Bool terminate) 
 mut method 
 Void that(Outer1.Cell that) 
@@ -651,26 +651,26 @@ read method
 Outer2.Annotation #inner() 
 read method 
 Void #close() }}
-type method 
+class method 
 This #apply(Library that) 
-type method 
+class method 
 mut Outer2.S.SBuilder #builder() 
-type method 
+class method 
 This #from(Outer2.S.SBuilder builder) 
 method 
 Library binaryRepr() 
 method 
 This.Annotations annotations() }
 Record:{
-type method 
+class method 
 This #apply(Outer1.MirrorPr that) 
 mut method 
 Outer1.MirrorPr #that() 
 read method 
 Outer1.MirrorPr that() 
-type method 
-This #apply(type Any clazz) 
-type method 
+class method 
+This #apply(class Any clazz) 
+class method 
 This #apply(Library lib) 
 method 
 Void dbg() 
@@ -686,7 +686,7 @@ method
 Outer2.Member #apply(fwd Outer2.NestedClass root) }
 RootForNested:' toPutAs private
 {<:Outer1.RootForMember
-type method 
+class method 
 This #apply(Outer3.Path path, Outer2.MirrorPr mirror, Outer1 _report) 
 mut method 
 Outer3.Path #path() 
@@ -702,7 +702,7 @@ read method
 Outer1 _report() }
 RootForMethod:' toPutAs private
 {<:Outer1.RootForMember
-type method 
+class method 
 This #apply(Outer3.Path path, Outer3.N memberN, Outer1 _report) 
 mut method 
 Outer3.Path #path() 
@@ -716,18 +716,18 @@ mut method
 Outer1 #_report() 
 read method 
 Outer1 _report() }
-type method 
+class method 
 Outer1.Member dispatch(fwd Outer1.NestedClass root, Outer2.Path path, Outer1.MirrorPr mirror, Outer2.N memberN, Library record) }
 Member:{interface <:Outer2.Concept.ToS, Outer2.Concept.Named, Outer2.Concept.Equals}
-Members:{' generic linked list class, elements of type Elem
+Members:{' generic linked list class, elements of class Elem
 <:Outer2.Concept.Named
-type method 
+class method 
 This _new(This.Cell head) 
 mut method 
 This.Cell #head() 
 read method 
 This.Cell head() 
-type method 
+class method 
 This #apply() 
 method 
 Outer2.Bool isEmpty() 
@@ -741,7 +741,7 @@ method
 This pop() 
 method 
 This #plusplus(This that) 
-type method 
+class method 
 This #begin() 
 method 
 This #add(Outer1.Member that) 
@@ -757,10 +757,10 @@ Outer2.Member #inner()
 method 
 Void #checkEnd() }
 CellEnd:{<:Outer1.Cell
-type method 
+class method 
 This #apply() }
 CellNext:{<:Outer1.Cell
-type method 
+class method 
 This #apply(Outer2.Member elem, Outer1.Cell nextCell) 
 mut method 
 Outer2.Member #elem() 
@@ -771,7 +771,7 @@ Outer1.Cell #nextCell()
 read method 
 Outer1.Cell nextCell() }
 Iterator:{
-type method 
+class method 
 mut This #apply(Outer1.Cell that, Outer3.Bool terminate) 
 mut method 
 Void that(Outer1.Cell that) 
@@ -826,15 +826,15 @@ method
 Outer2.Bool isPrivate() 
 method 
 Outer1.NestedClass root() }
-Methods:{' generic linked list class, elements of type Elem
+Methods:{' generic linked list class, elements of class Elem
 <:Outer2.Concept.Named
-type method 
+class method 
 This _new(This.Cell head) 
 mut method 
 This.Cell #head() 
 read method 
 This.Cell head() 
-type method 
+class method 
 This #apply() 
 method 
 Outer2.Bool isEmpty() 
@@ -848,7 +848,7 @@ method
 This pop() 
 method 
 This #plusplus(This that) 
-type method 
+class method 
 This #begin() 
 method 
 This #add(Outer1.Method that) 
@@ -864,10 +864,10 @@ Outer2.Method #inner()
 method 
 Void #checkEnd() }
 CellEnd:{<:Outer1.Cell
-type method 
+class method 
 This #apply() }
 CellNext:{<:Outer1.Cell
-type method 
+class method 
 This #apply(Outer2.Method elem, Outer1.Cell nextCell) 
 mut method 
 Outer2.Method #elem() 
@@ -878,7 +878,7 @@ Outer1.Cell #nextCell()
 read method 
 Outer1.Cell nextCell() }
 Iterator:{
-type method 
+class method 
 mut This #apply(Outer1.Cell that, Outer3.Bool terminate) 
 mut method 
 Void that(Outer1.Cell that) 
@@ -923,7 +923,7 @@ Outer2.Path pathFromRoot()
 method 
 Outer2.Bool hasExternalType() 
 method 
-type Any externalType() 
+class Any externalType() 
 method 
 Outer2.S externalTypeToS() 
 method 
@@ -956,15 +956,15 @@ method
 Outer2.Bool has(Outer2.Path fromRoot) 
 method 
 Outer2.Bool isPrivate() }
-NestedClasses:{' generic linked list class, elements of type Elem
+NestedClasses:{' generic linked list class, elements of class Elem
 <:Outer2.Concept.Named
-type method 
+class method 
 This _new(This.Cell head) 
 mut method 
 This.Cell #head() 
 read method 
 This.Cell head() 
-type method 
+class method 
 This #apply() 
 method 
 Outer2.Bool isEmpty() 
@@ -978,7 +978,7 @@ method
 This pop() 
 method 
 This #plusplus(This that) 
-type method 
+class method 
 This #begin() 
 method 
 This #add(Outer1.NestedClass that) 
@@ -994,10 +994,10 @@ Outer2.NestedClass #inner()
 method 
 Void #checkEnd() }
 CellEnd:{<:Outer1.Cell
-type method 
+class method 
 This #apply() }
 CellNext:{<:Outer1.Cell
-type method 
+class method 
 This #apply(Outer2.NestedClass elem, Outer1.Cell nextCell) 
 mut method 
 Outer2.NestedClass #elem() 
@@ -1008,7 +1008,7 @@ Outer1.Cell #nextCell()
 read method 
 Outer1.Cell nextCell() }
 Iterator:{
-type method 
+class method 
 mut This #apply(Outer1.Cell that, Outer3.Bool terminate) 
 mut method 
 Void that(Outer1.Cell that) 
@@ -1055,15 +1055,15 @@ method
 Outer2.S suffix() 
 method 
 Outer1.Doc doc() }
-Types:{' generic linked list class, elements of type Elem
+Types:{' generic linked list class, elements of class Elem
 <:Outer2.Concept.Named
-type method 
+class method 
 This _new(This.Cell head) 
 mut method 
 This.Cell #head() 
 read method 
 This.Cell head() 
-type method 
+class method 
 This #apply() 
 method 
 Outer2.Bool isEmpty() 
@@ -1077,7 +1077,7 @@ method
 This pop() 
 method 
 This #plusplus(This that) 
-type method 
+class method 
 This #begin() 
 method 
 This #add(Outer1.Type that) 
@@ -1093,10 +1093,10 @@ Outer2.Type #inner()
 method 
 Void #checkEnd() }
 CellEnd:{<:Outer1.Cell
-type method 
+class method 
 This #apply() }
 CellNext:{<:Outer1.Cell
-type method 
+class method 
 This #apply(Outer2.Type elem, Outer1.Cell nextCell) 
 mut method 
 Outer2.Type #elem() 
@@ -1107,7 +1107,7 @@ Outer1.Cell #nextCell()
 read method 
 Outer1.Cell nextCell() }
 Iterator:{
-type method 
+class method 
 mut This #apply(Outer1.Cell that, Outer3.Bool terminate) 
 mut method 
 Void that(Outer1.Cell that) 
@@ -1130,111 +1130,111 @@ Void #close() }}}
 MetaGuard:{interface <:Outer1.Guard
 RecordWrapper:' can not be private, I need to Patch it.
 {
-type method 
+class method 
 Outer2.S libToS(Library that) 
-type method 
+class method 
 Library recordWrapperToSTrait() 
-type method 
+class method 
 Library recordWrapperTrait() 
-type method 
+class method 
 Library #leftleft(Library that) }
 SourceUnfit:{<:Outer1, Outer1
-type method 
+class method 
 Outer2.S libName() 
-type method 
+class method 
 This #apply(Outer2.Introspection.Record record, Library lib) 
 method 
 Outer2.Bool #bangequal(This that) 
 method 
 Outer2.Bool #equalequal(This that) 
-type method 
+class method 
 Void #apply(Library lift) exception This 
 method 
 Library lib() }
 IncoherentRedirectMapping:{<:Outer1, Outer1
-type method 
+class method 
 Outer2.S libName() 
-type method 
+class method 
 This #apply(Outer2.Introspection.Record record, Library lib) 
 method 
 Outer2.Bool #bangequal(This that) 
 method 
 Outer2.Bool #equalequal(This that) 
-type method 
+class method 
 Void #apply(Library lift) exception This 
 method 
 Library lib() }
 ClassClash:{<:Outer1, Outer1
-type method 
+class method 
 Outer2.S libName() 
-type method 
+class method 
 This #apply(Outer2.Introspection.Record record, Library lib) 
 method 
 Outer2.Bool #bangequal(This that) 
 method 
 Outer2.Bool #equalequal(This that) 
-type method 
+class method 
 Void #apply(Library lift) exception This 
 method 
 Library lib() }
 MethodClash:{<:Outer1, Outer1
-type method 
+class method 
 Outer2.S libName() 
-type method 
+class method 
 This #apply(Outer2.Introspection.Record record, Library lib) 
 method 
 Outer2.Bool #bangequal(This that) 
 method 
 Outer2.Bool #equalequal(This that) 
-type method 
+class method 
 Void #apply(Library lift) exception This 
 method 
 Library lib() }
 InvalidOnTopLevel:{<:Outer1, Outer1
-type method 
+class method 
 Outer2.S libName() 
-type method 
+class method 
 This #apply(Outer2.Introspection.Record record, Library lib) 
 method 
 Outer2.Bool #bangequal(This that) 
 method 
 Outer2.Bool #equalequal(This that) 
-type method 
+class method 
 Void #apply(Library lift) exception This 
 method 
 Library lib() }
 PrivacyCoupuled:{<:Outer1, Outer1
-type method 
+class method 
 Outer2.S libName() 
-type method 
+class method 
 This #apply(Outer2.Introspection.Record record, Library lib) 
 method 
 Outer2.Bool #bangequal(This that) 
 method 
 Outer2.Bool #equalequal(This that) 
-type method 
+class method 
 Void #apply(Library lift) exception This 
 method 
 Library lib() }
 ParameterMismatch:{<:Outer1, Outer1
-type method 
+class method 
 Outer2.S libName() 
-type method 
+class method 
 This #apply(Outer2.Introspection.Record record, Library lib) 
 method 
 Outer2.Bool #bangequal(This that) 
 method 
 Outer2.Bool #equalequal(This that) 
-type method 
+class method 
 Void #apply(Library lift) exception This 
 method 
 Library lib() }
 MemberUnavailable:{interface <:Outer1}
 DispatchMemberUnavailable:{
-type method 
+class method 
 Void #apply(Library that) exception Outer1.MemberUnavailable }
 NestedClassUnavailable:{<:Outer1.MemberUnavailable, Outer1
-type method 
+class method 
 This #apply(Outer2.Path path, Outer2.Bool isPrivate) 
 mut method 
 Outer2.Path #path() 
@@ -1244,18 +1244,18 @@ mut method
 Outer2.Bool #isPrivate() 
 read method 
 Outer2.Bool isPrivate() 
-type method 
+class method 
 This #apply(Outer2.Introspection.Record record, Library lib) 
-type method 
+class method 
 Outer2.S libName() 
 method 
 Outer2.Bool #bangequal(This that) 
 method 
 Outer2.Bool #equalequal(This that) 
-type method 
+class method 
 Void #apply(Library lift) exception This }
 MethodUnavailable:{<:Outer1.MemberUnavailable, Outer1
-type method 
+class method 
 This #apply(Outer2.Path path, Outer2.Selector selector, Outer2.Bool isPrivate) 
 mut method 
 Outer2.Path #path() 
@@ -1269,28 +1269,28 @@ mut method
 Outer2.Bool #isPrivate() 
 read method 
 Outer2.Bool isPrivate() 
-type method 
+class method 
 This #apply(Outer2.Introspection.Record record, Library lib) 
-type method 
+class method 
 Outer2.S libName() 
 method 
 Outer2.Bool #bangequal(This that) 
 method 
 Outer2.Bool #equalequal(This that) 
-type method 
+class method 
 Void #apply(Library lift) exception This }}
 Selector:{<:Outer1.Concept.ToS, Outer1.Concept.Equals, Outer1.Concept.Named
-type method 
+class method 
 This fromS(Outer1.Concept.ToS that) 
-type method 
+class method 
 This #from(Outer1.S.SBuilder builder) 
-type method 
+class method 
 mut Outer1.S.SBuilder #builder() 
-type method 
+class method 
 This #from(Library binaryRepr) 
-type method 
+class method 
 Any parseError(Outer1.S that) 
-type method 
+class method 
 This from(Outer1.S name, Outer1.Strings names) 
 method 
 Outer1.S nameAsField() 
@@ -1308,10 +1308,10 @@ method
 Outer1.S name() 
 method 
 Outer1.Strings names() 
-type method 
+class method 
 This fresh(This that) 
 ParseFail:{<:Outer2.Guard.ParseFail, Outer2.Message
-type method 
+class method 
 This #apply(Outer2.S _text, Outer2.Message.Opt cause) 
 mut method 
 Outer2.S #_text() 
@@ -1327,18 +1327,18 @@ method
 Outer2.Bool #bangequal(This that) 
 method 
 Outer2.Bool #equalequal(This that) 
-type method 
+class method 
 This #apply(Outer2.S text) 
-type method 
+class method 
 This #apply(Outer2.S text, Outer2.Message cause) 
-type method 
+class method 
 mut Outer2.S.SBuilder #builder() 
-type method 
+class method 
 This #from(Outer2.S.SBuilder builder) 
 method 
 This.SConcat #begin() 
 SConcat:{
-type method 
+class method 
 This #apply(Outer3.Concept.ToS old, Outer3.S accumulator) 
 mut method 
 Outer3.Concept.ToS #old() 
@@ -1359,19 +1359,19 @@ mut Outer3.S.SBuilder #builder()
 method 
 Outer1 #from(Outer3.S.SBuilder builder) }}}
 Path:{<:Outer1.Concept.ToS, Outer1.Concept.Equals, Outer1.Concept.Named
-type method 
+class method 
 This fromDocInternalizedS(Outer1.S that) 
-type method 
+class method 
 This fromS(Outer1.Concept.ToS that) 
-type method 
+class method 
 This #from(Outer1.S.SBuilder builder) 
-type method 
+class method 
 mut Outer1.S.SBuilder #builder() 
-type method 
+class method 
 This #from(Library binaryRepr) 
-type method 
+class method 
 Any parseError(Outer1.S that) 
-type method 
+class method 
 Any parseError(Outer1.S that, Outer1.Message cause) 
 method 
 Library binaryRepr() 
@@ -1383,16 +1383,16 @@ method
 This #plusplus(This that) 
 method 
 Outer1.Strings names() 
-type method 
+class method 
 This from(Outer1.Strings names) 
-type method 
+class method 
 This fresh(Outer1.S name) 
-type method 
+class method 
 This fresh() 
-type method 
+class method 
 This fresh(This path) 
 ParseFail:{<:Outer2.Guard.ParseFail, Outer2.Message
-type method 
+class method 
 This #apply(Outer2.S _text, Outer2.Message.Opt cause) 
 mut method 
 Outer2.S #_text() 
@@ -1408,18 +1408,18 @@ method
 Outer2.Bool #bangequal(This that) 
 method 
 Outer2.Bool #equalequal(This that) 
-type method 
+class method 
 This #apply(Outer2.S text) 
-type method 
+class method 
 This #apply(Outer2.S text, Outer2.Message cause) 
-type method 
+class method 
 mut Outer2.S.SBuilder #builder() 
-type method 
+class method 
 This #from(Outer2.S.SBuilder builder) 
 method 
 This.SConcat #begin() 
 SConcat:{
-type method 
+class method 
 This #apply(Outer3.Concept.ToS old, Outer3.S accumulator) 
 mut method 
 Outer3.Concept.ToS #old() 
@@ -1441,13 +1441,13 @@ method
 Outer1 #from(Outer3.S.SBuilder builder) }}}
 Url:{'ParseFailure:Message:S[]<<{<:Guard} no need, related to invariant?
 <:Outer1.Concept.ToS
-type method ' if you do not implement it, it is a constructor?
+class method ' if you do not implement it, it is a constructor?
 This fromS(read Outer1.Concept.ToS that) 
-type method 
+class method 
 This #from(Outer1.S.SBuilder builder) 
-type method 
+class method 
 mut Outer1.S.SBuilder #builder() 
-type method 
+class method 
 This #apply(Outer1.S inner) 
 mut method 
 Outer1.S #inner() 
@@ -1513,21 +1513,21 @@ Outer1.PreferentialComposition _PreferentialComposition()
 method 
 Outer1.Load _Load() }
 Debug:{
-type method 
+class method 
 Void #apply(Outer1.Concept.ToS that) 
-type method 
+class method 
 Void #apply(Library lib) 
-type method 
+class method 
 Void #apply(Outer1.Concept.ToS fileName, Outer1.Concept.ToS content) }
-Strings:{' generic linked list class, elements of type Elem
+Strings:{' generic linked list class, elements of class Elem
 <:Outer1.Concept.Named
-type method 
+class method 
 This _new(This.Cell head) 
 mut method 
 This.Cell #head() 
 read method 
 This.Cell head() 
-type method 
+class method 
 This #apply() 
 method 
 Outer1.Bool isEmpty() 
@@ -1541,7 +1541,7 @@ method
 This pop() 
 method 
 This #plusplus(This that) 
-type method 
+class method 
 This #begin() 
 method 
 This #add(Outer1.S that) 
@@ -1557,10 +1557,10 @@ Outer2.S #inner()
 method 
 Void #checkEnd() }
 CellEnd:{<:Outer1.Cell
-type method 
+class method 
 This #apply() }
 CellNext:{<:Outer1.Cell
-type method 
+class method 
 This #apply(Outer2.S elem, Outer1.Cell nextCell) 
 mut method 
 Outer2.S #elem() 
@@ -1571,7 +1571,7 @@ Outer1.Cell #nextCell()
 read method 
 Outer1.Cell nextCell() }
 Iterator:{
-type method 
+class method 
 mut This #apply(Outer1.Cell that, Outer2.Bool terminate) 
 mut method 
 Void that(Outer1.Cell that) 
@@ -1601,7 +1601,7 @@ method
 Outer1.Bool equals(Any that) }
 Assert:{interface <:Outer1.Message
 NotImplementedYet:{<:Outer1, Outer2.Message
-type method 
+class method 
 This #apply(Outer2.S _text, Outer2.Message.Opt cause) 
 mut method 
 Outer2.S #_text() 
@@ -1617,18 +1617,18 @@ method
 Outer2.Bool #bangequal(This that) 
 method 
 Outer2.Bool #equalequal(This that) 
-type method 
+class method 
 This #apply(Outer2.S text) 
-type method 
+class method 
 This #apply(Outer2.S text, Outer2.Message cause) 
-type method 
+class method 
 mut Outer2.S.SBuilder #builder() 
-type method 
+class method 
 This #from(Outer2.S.SBuilder builder) 
 method 
 This.SConcat #begin() 
 SConcat:{
-type method 
+class method 
 This #apply(Outer3.Concept.ToS old, Outer3.S accumulator) 
 mut method 
 Outer3.Concept.ToS #old() 
@@ -1649,7 +1649,7 @@ mut Outer3.S.SBuilder #builder()
 method 
 Outer1 #from(Outer3.S.SBuilder builder) }}
 ObservedBug:{<:Outer1, Outer2.Message
-type method 
+class method 
 This #apply(Outer2.S _text, Outer2.Message.Opt cause) 
 mut method 
 Outer2.S #_text() 
@@ -1665,18 +1665,18 @@ method
 Outer2.Bool #bangequal(This that) 
 method 
 Outer2.Bool #equalequal(This that) 
-type method 
+class method 
 This #apply(Outer2.S text) 
-type method 
+class method 
 This #apply(Outer2.S text, Outer2.Message cause) 
-type method 
+class method 
 mut Outer2.S.SBuilder #builder() 
-type method 
+class method 
 This #from(Outer2.S.SBuilder builder) 
 method 
 This.SConcat #begin() 
 SConcat:{
-type method 
+class method 
 This #apply(Outer3.Concept.ToS old, Outer3.S accumulator) 
 mut method 
 Outer3.Concept.ToS #old() 
@@ -1697,7 +1697,7 @@ mut Outer3.S.SBuilder #builder()
 method 
 Outer1 #from(Outer3.S.SBuilder builder) }}
 CodeNotReachable:{<:Outer1, Outer2.Message
-type method 
+class method 
 This #apply(Outer2.S _text, Outer2.Message.Opt cause) 
 mut method 
 Outer2.S #_text() 
@@ -1713,18 +1713,18 @@ method
 Outer2.Bool #bangequal(This that) 
 method 
 Outer2.Bool #equalequal(This that) 
-type method 
+class method 
 This #apply(Outer2.S text) 
-type method 
+class method 
 This #apply(Outer2.S text, Outer2.Message cause) 
-type method 
+class method 
 mut Outer2.S.SBuilder #builder() 
-type method 
+class method 
 This #from(Outer2.S.SBuilder builder) 
 method 
 This.SConcat #begin() 
 SConcat:{
-type method 
+class method 
 This #apply(Outer3.Concept.ToS old, Outer3.S accumulator) 
 mut method 
 Outer3.Concept.ToS #old() 
@@ -1745,13 +1745,13 @@ mut Outer3.S.SBuilder #builder()
 method 
 Outer1 #from(Outer3.S.SBuilder builder) }}
 $:{
-type method 
+class method 
 This #apply(Outer2.N that) 
 mut method 
 Outer2.N #that() 
 read method 
 Outer2.N that() 
-type method 
+class method 
 This #begin() 
 method 
 Void #end() 
@@ -1760,7 +1760,7 @@ This #add(Outer2.Bool that)
 method 
 This #add(Outer2.Bool that, Outer2.Concept.ToS msg) }
 AssertMessage:{<:Outer1, Outer2.Message
-type method 
+class method 
 This #apply(Outer2.S _text, Outer2.Message.Opt cause) 
 mut method 
 Outer2.S #_text() 
@@ -1776,18 +1776,18 @@ method
 Outer2.Bool #bangequal(This that) 
 method 
 Outer2.Bool #equalequal(This that) 
-type method 
+class method 
 This #apply(Outer2.S text) 
-type method 
+class method 
 This #apply(Outer2.S text, Outer2.Message cause) 
-type method 
+class method 
 mut Outer2.S.SBuilder #builder() 
-type method 
+class method 
 This #from(Outer2.S.SBuilder builder) 
 method 
 This.SConcat #begin() 
 SConcat:{
-type method 
+class method 
 This #apply(Outer3.Concept.ToS old, Outer3.S accumulator) 
 mut method 
 Outer3.Concept.ToS #old() 
@@ -1811,7 +1811,7 @@ System:{
 Guard:{'<:Outer.Guard soon (remove "interface" for a bad translation bug: Outer1_System_Guard is not abstract and does not override abstract method MtoS()
 interface <:Outer2.Guard
 PluginFailure:{<:Outer1, Outer3.Message
-type method 
+class method 
 This #apply(Outer3.S _text, Outer3.Message.Opt cause) 
 mut method 
 Outer3.S #_text() 
@@ -1827,18 +1827,18 @@ method
 Outer3.Bool #bangequal(This that) 
 method 
 Outer3.Bool #equalequal(This that) 
-type method 
+class method 
 This #apply(Outer3.S text) 
-type method 
+class method 
 This #apply(Outer3.S text, Outer3.Message cause) 
-type method 
+class method 
 mut Outer3.S.SBuilder #builder() 
-type method 
+class method 
 This #from(Outer3.S.SBuilder builder) 
 method 
 This.SConcat #begin() 
 SConcat:{
-type method 
+class method 
 This #apply(This4.Concept.ToS old, This4.S accumulator) 
 mut method 
 This4.Concept.ToS #old() 
@@ -1869,7 +1869,7 @@ Guard:{' exception as Guard bureocracy, error as Guard detection
 interface <:Outer1.Message'all other guards should implement this one
 
 Operation:{<:Outer1, Outer2.Message
-type method 
+class method 
 This #apply(Outer2.S _text, Outer2.Message.Opt cause) 
 mut method 
 Outer2.S #_text() 
@@ -1885,18 +1885,18 @@ method
 Outer2.Bool #bangequal(This that) 
 method 
 Outer2.Bool #equalequal(This that) 
-type method 
+class method 
 This #apply(Outer2.S text) 
-type method 
+class method 
 This #apply(Outer2.S text, Outer2.Message cause) 
-type method 
+class method 
 mut Outer2.S.SBuilder #builder() 
-type method 
+class method 
 This #from(Outer2.S.SBuilder builder) 
 method 
 This.SConcat #begin() 
 SConcat:{
-type method 
+class method 
 This #apply(Outer3.Concept.ToS old, Outer3.S accumulator) 
 mut method 
 Outer3.Concept.ToS #old() 
@@ -1917,7 +1917,7 @@ mut Outer3.S.SBuilder #builder()
 method 
 Outer1 #from(Outer3.S.SBuilder builder) }}
 Parameter:{<:Outer1, Outer2.Message
-type method 
+class method 
 This #apply(Outer2.S _text, Outer2.Message.Opt cause) 
 mut method 
 Outer2.S #_text() 
@@ -1933,18 +1933,18 @@ method
 Outer2.Bool #bangequal(This that) 
 method 
 Outer2.Bool #equalequal(This that) 
-type method 
+class method 
 This #apply(Outer2.S text) 
-type method 
+class method 
 This #apply(Outer2.S text, Outer2.Message cause) 
-type method 
+class method 
 mut Outer2.S.SBuilder #builder() 
-type method 
+class method 
 This #from(Outer2.S.SBuilder builder) 
 method 
 This.SConcat #begin() 
 SConcat:{
-type method 
+class method 
 This #apply(Outer3.Concept.ToS old, Outer3.S accumulator) 
 mut method 
 Outer3.Concept.ToS #old() 
@@ -1965,7 +1965,7 @@ mut Outer3.S.SBuilder #builder()
 method 
 Outer1 #from(Outer3.S.SBuilder builder) }}
 Precondition:{<:Outer1, Outer2.Message
-type method 
+class method 
 This #apply(Outer2.S _text, Outer2.Message.Opt cause) 
 mut method 
 Outer2.S #_text() 
@@ -1981,18 +1981,18 @@ method
 Outer2.Bool #bangequal(This that) 
 method 
 Outer2.Bool #equalequal(This that) 
-type method 
+class method 
 This #apply(Outer2.S text) 
-type method 
+class method 
 This #apply(Outer2.S text, Outer2.Message cause) 
-type method 
+class method 
 mut Outer2.S.SBuilder #builder() 
-type method 
+class method 
 This #from(Outer2.S.SBuilder builder) 
 method 
 This.SConcat #begin() 
 SConcat:{
-type method 
+class method 
 This #apply(Outer3.Concept.ToS old, Outer3.S accumulator) 
 mut method 
 Outer3.Concept.ToS #old() 
@@ -2014,16 +2014,16 @@ method
 Outer1 #from(Outer3.S.SBuilder builder) }}
 ParseFail:{interface <:Outer1}}
 Message:{interface <:Outer1.Concept.ToS, Outer1.Concept.Equals, Outer1.Concept.Classable, Outer1.Concept.Named
-type method 
+class method 
 Outer1.S kind() 
 method 
 Outer1.S text() 
 method 
 This.Opt responseOf() 
 read method 
-type This clazz() 
+class This clazz() 
 Opt:{
-type method 
+class method 
 This #new(This.TOpt that) 
 mut method 
 This.TOpt #that() 
@@ -2033,10 +2033,10 @@ TOpt:{interface
 method 
 Outer2 get() }
 TEmpty:{<:Outer1.TOpt, Outer1.TOpt
-type method 
+class method 
 This #apply() }
 TOf:{<:Outer1.TOpt
-type method 
+class method 
 This #apply(Outer2 that) 
 mut method 
 Outer2 #that() 
@@ -2046,19 +2046,19 @@ method
 Outer1 #tilde() 
 method 
 Outer2.Bool isPresent() 
-type method 
+class method 
 This #apply() 
-type method 
+class method 
 This #apply(Outer1 that) }
 EqualMessages:{
-type method 
+class method 
 Outer2.Bool #apply(Outer1 that, Outer1 other) }
 $:{
-type method 
+class method 
 This #apply() 
-type method 
+class method 
 Library #leftleft(Library that) 
-type method 
+class method 
 Library messageTrait() }}
 Concept:{
 ToS:{interface 
@@ -2066,16 +2066,16 @@ read method
 Outer2.S toS() }
 Classable:{interface 
 read method 
-type Any classAny() }
+class Any classAny() }
 Named:{interface 
-type method 
+class method 
 Outer2.S myName() }
 Wrapper:{interface 
 read method 
 Any inner() }
 TypeWrapper:{interface 
 read method 
-type Any inner() }
+class Any inner() }
 ReadWrapper:{interface 
 read method 
 read Any inner() }
@@ -2101,8 +2101,8 @@ Contains:{interface 'read method Bool >>(read Elem that)
 
 read method 
 Outer2.Bool contains(read Any that) }
-Parsable:{interface 'type method capsule This fromS(S that) exception Guard.Parameter(specific) invalid string
-'''type method capsule This #fromS(S that) exception Guard.Parameter
+Parsable:{interface 'class method capsule This fromS(S that) exception Guard.Parameter(specific) invalid string
+'''class method capsule This #fromS(S that) exception Guard.Parameter
 }
 Invariant:{interface 
 read method ' can throw error or return false, as more opportune
@@ -2127,7 +2127,7 @@ Void #checkEnd()
 read method 
 Void #close() }}
 S:{<:Outer1.Concept.ToS, Outer1.Concept.Equals, Outer1.Concept.Named
-type method 
+class method 
 This #from(Library binaryRepr) 
 method 
 Library binaryRepr() 
@@ -2149,7 +2149,7 @@ method
 Outer1.Bool beginsWith(This that) 
 method 
 Outer1.N firstIndexOf(This that) 
-type method 
+class method 
 Void subStringNotPresent(This string, This subString) 
 method 
 Outer1.Bool contains(This that) 
@@ -2159,16 +2159,16 @@ method
 Outer1.Bool isASCIIUpperCase(Outer1.N that) 
 method 
 Outer1.N size() 
-type method 
+class method 
 This doubleQuote() 
-type method 
+class method 
 This nl() 
 method 
 This replace(This that, This into) 
 method 
 This.SConcat #begin() 
 SConcat:{
-type method 
+class method 
 This #apply(Outer1 old, Outer1 accumulator) 
 mut method 
 Outer1 #old() 
@@ -2193,7 +2193,7 @@ read method
 Library binaryRepr() 
 mut method 
 Void acc(Library that) 
-type method 
+class method 
 mut This empty() 
 mut method 
 Void #0() 
@@ -2387,12 +2387,12 @@ mut method
 Void #space() 
 mut method 
 Void #newline() }
-type method 
+class method 
 This #from(This.SBuilder builder) 
-type method 
+class method 
 mut This.SBuilder #builder() 
 SubStringNotPresent:{<:Outer2.Guard, Outer2.Message
-type method 
+class method 
 This #apply(Outer1 _text, Outer2.Message.Opt cause) 
 mut method 
 Outer1 #_text() 
@@ -2408,18 +2408,18 @@ method
 Outer2.Bool #bangequal(This that) 
 method 
 Outer2.Bool #equalequal(This that) 
-type method 
+class method 
 This #apply(Outer1 text) 
-type method 
+class method 
 This #apply(Outer1 text, Outer2.Message cause) 
-type method 
+class method 
 mut Outer1.SBuilder #builder() 
-type method 
+class method 
 This #from(Outer1.SBuilder builder) 
 method 
 This.SConcat #begin() 
 SConcat:{
-type method 
+class method 
 This #apply(Outer3.Concept.ToS old, Outer2 accumulator) 
 mut method 
 Outer3.Concept.ToS #old() 
@@ -2440,17 +2440,17 @@ mut Outer2.SBuilder #builder()
 method 
 Outer1 #from(Outer2.SBuilder builder) }}}
 N:{<:Outer1.Concept.ToS, Outer1.Concept.Equals, Outer1.Concept.Named
-type method 
+class method 
 This fromS(Outer1.Concept.ToS that) 
-type method 
+class method 
 This #from(Library binaryRepr) 
 method 
 Library binaryRepr() 
-type method 
+class method 
 mut Outer1.S.SBuilder #builder() 
-type method 
+class method 
 This #from(Outer1.S.SBuilder builder) 
-type method 
+class method 
 Any parseError(Outer1.S that) 
 method 
 This #plus(This that) 
@@ -2477,7 +2477,7 @@ mut This.Iterator vals()
 method 
 mut This.Iterator vals(This upTo) 
 Iterator:{
-type method 
+class method 
 mut This #apply(Outer1 start, Outer1 end) 
 mut method 
 Void start(Outer1 that) 
@@ -2498,7 +2498,7 @@ Outer1 #inner()
 read method 
 Void #close() }
 ParseFail:{<:Outer2.Guard.ParseFail, Outer2.Message
-type method 
+class method 
 This #apply(Outer2.S _text, Outer2.Message.Opt cause) 
 mut method 
 Outer2.S #_text() 
@@ -2514,18 +2514,18 @@ method
 Outer2.Bool #bangequal(This that) 
 method 
 Outer2.Bool #equalequal(This that) 
-type method 
+class method 
 This #apply(Outer2.S text) 
-type method 
+class method 
 This #apply(Outer2.S text, Outer2.Message cause) 
-type method 
+class method 
 mut Outer2.S.SBuilder #builder() 
-type method 
+class method 
 This #from(Outer2.S.SBuilder builder) 
 method 
 This.SConcat #begin() 
 SConcat:{
-type method 
+class method 
 This #apply(Outer3.Concept.ToS old, Outer3.S accumulator) 
 mut method 
 Outer3.Concept.ToS #old() 
@@ -2548,9 +2548,9 @@ Outer1 #from(Outer3.S.SBuilder builder) }}}
 Bool:{<:Outer1.Concept.ToS, Outer1.Concept.Equals, Outer1.Concept.Named
 method 
 Void #checkTrue() exception Void 
-type method 
+class method 
 This true() 
-type method 
+class method 
 This false() 
 method 
 This #and(This that) 
@@ -2558,16 +2558,16 @@ method
 This #or(This that) 
 method 
 This #bang() 
-type method 
+class method 
 This fromS(read Outer1.Concept.ToS that) 
 method 
 This #equalequal(This that) 
 method 
 This #bangequal(This that) 
-type method 
+class method 
 Any parseError(Outer1.S that) 
 ParseFail:{<:Outer2.Guard.ParseFail, Outer2.Message
-type method 
+class method 
 This #apply(Outer2.S _text, Outer2.Message.Opt cause) 
 mut method 
 Outer2.S #_text() 
@@ -2583,18 +2583,18 @@ method
 Outer1 #bangequal(This that) 
 method 
 Outer1 #equalequal(This that) 
-type method 
+class method 
 This #apply(Outer2.S text) 
-type method 
+class method 
 This #apply(Outer2.S text, Outer2.Message cause) 
-type method 
+class method 
 mut Outer2.S.SBuilder #builder() 
-type method 
+class method 
 This #from(Outer2.S.SBuilder builder) 
 method 
 This.SConcat #begin() 
 SConcat:{
-type method 
+class method 
 This #apply(Outer3.Concept.ToS old, Outer3.S accumulator) 
 mut method 
 Outer3.Concept.ToS #old() 
@@ -2615,14 +2615,14 @@ mut Outer3.S.SBuilder #builder()
 method 
 Outer1 #from(Outer3.S.SBuilder builder) }}}
 ExitCode:{
-type method 
+class method 
 Library normal() 
-type method 
+class method 
 Library failure() }
 Alu:{'@plugin
 'L42.is/connected/withAlu
 }}
-type method 
+class method 
 This #apply(This.Abstract.S id) 
 mut method 
 This.Abstract.S #id() 
@@ -2631,7 +2631,7 @@ This.Abstract.S id()
 GuiPlugin:{'@plugin
 'L42.is/connected/withHtml
 }
-type method 
+class method 
 This.Abstract.S jsEscape(This.Abstract.S that) (
   This.Abstract.S.replace(that into ) tmp=that.replace(that:This.Abstract.S.doubleQuote(), into:This.Abstract.S.#from(builder:(
     This.Abstract.S.#builder() b=This.Abstract.S.#builder()
@@ -2726,7 +2726,7 @@ Void open(This.Abstract.S title, This.Abstract.S basePath, This.Abstract.S body,
   Void unused56=b3.#right()
   b3
   )))))), x:x, y:y)
-type method 
+class method 
 This.Abstract.S htmlHeader() This.Abstract.S.#from(builder:(
   This.Abstract.S.#builder() b=This.Abstract.S.#builder()
   Void unused=b.#left()
@@ -117997,7 +117997,7 @@ mut This.Iterator events() This.Iterator.#apply(id:this.id(), current:This.Abstr
   b
   )))
 Iterator:{
-type method 
+class method 
 mut This #apply(Outer1.Abstract.S id, Outer1.Abstract.S current) 
 mut method 
 Outer1.Abstract.S #id() 
@@ -118009,7 +118009,7 @@ mut method
 Outer1.Abstract.S #current() 
 read method 
 Outer1.Abstract.S current() 
-type method 
+class method 
 Outer1.Abstract.S auxFetchEvent(Outer1.Abstract.S id) exception Void (
   Void unused=(
     Library s=use Outer1.GuiPlugin check eventPending(wName:id.binaryRepr()) exception void

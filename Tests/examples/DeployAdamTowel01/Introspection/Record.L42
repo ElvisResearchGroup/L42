@@ -1,8 +1,8 @@
 {(MirrorPr that)
-  type method
-  This(type Any clazz)
+  class method
+  This(class Any clazz)
     This(MirrorPr.Class(lib:clazz))
-  type method
+  class method
   This (Library lib)
     This(MirrorPr.Lib(lib:lib))
     'This(Introspection(lib:lib).mirror())
@@ -30,7 +30,7 @@
     error Assert.CodeNotReachable"Record2"
     }
   'this is how I would like it to be
-  'type method Member dispatch(fwd NestedClass root,Path path,MirrorPr mirror, N memberN,Library record) {
+  'class method Member dispatch(fwd NestedClass root,Path path,MirrorPr mirror, N memberN,Library record) {
   '  _report =Introspection(lib:report).record()
   '  with x=_report"MemberKind" (
   '    if x== S"NestedClass"  (return NestedClass(_root:root,path:path,mirror:mirror,record:_report))
@@ -54,7 +54,7 @@
       method (root) (
         Method(_root:root,path:this.path(),memberN:this.memberN(),record:this._report())
         )}
-  type method Member dispatch(fwd NestedClass root,Path path,MirrorPr mirror, N memberN,Library record) (
+  class method Member dispatch(fwd NestedClass root,Path path,MirrorPr mirror, N memberN,Library record) (
     _report =Record(lib:record)
     RootForMember result={
       x=_report"MemberKind"

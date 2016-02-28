@@ -1,7 +1,7 @@
 {
 (Url fileName)
 '(Any fileName)
- type method Library binaryReprFrom(Library lib)(
+ class method Library binaryReprFrom(Library lib)(
   Library norm=use SafeOperatorsAccess
     check privateNormalize(lib)
     error {privateNormalize()}

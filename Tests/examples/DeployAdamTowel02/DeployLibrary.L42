@@ -1,6 +1,6 @@
 {(Path path,Url url)
 
-type method Library moveToAbstract(Path that,Library of){
+class method Library moveToAbstract(Path that,Library of){
   return Refactor.RenamePath(
     Path"PrImpl"++that to:Path"Abstract"++that)<<of
   error on MetaGuard.NestedClassUnavailable (
@@ -16,7 +16,7 @@ type method Library moveToAbstract(Path that,Library of){
     Assert.CodeNotReachable"DeployLibrary3"
   }
 
-type method
+class method
 Library  exposeAsLibrary(Library that, Path path)
 exception
     MetaGuard.NestedClassUnavailable,
@@ -47,7 +47,7 @@ exception
   error on MetaGuard 
     Assert.CodeNotReachable"DeployLibrary4"
   }
-type method
+class method
 Void checkTargetExists(Library that,Path path)
 exception MetaGuard.NestedClassUnavailable (
   unused=Refactor.AddDocumentationPath(path doc:Introspection.Doc"JustToSeeIfItIsThere")<<that
@@ -56,9 +56,9 @@ exception MetaGuard.NestedClassUnavailable (
   void
   )
 
-type method type This #begin() This
+class method class This #begin() This
 method This #end() this
-type method This #add(Path that,Url url) This(path:that,url:url)
+class method This #add(Path that,Url url) This(path:that,url:url)
 
 method
 Library <<(Library that)

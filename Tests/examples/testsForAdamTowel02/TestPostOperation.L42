@@ -1,9 +1,9 @@
 {reuse L42.is/AdamTowel02
 C:PostAction(Selector"foo()"
   of:Path"This",
-  action:{ type method Void (Void that) Debug(S"World")}
+  action:{ class method Void (Void that) Debug(S"World")}
   deprecated:Selector"bar()"
-  )<<{type method Void foo() Debug(S"Hello")}
+  )<<{class method Void foo() Debug(S"Hello")}
 Main:{
   C.foo()
   C.bar()

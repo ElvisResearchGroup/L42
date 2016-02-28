@@ -82,7 +82,7 @@ import auxiliaryGrammar.Program;
       
     },{    lineNumber(),"{(B x)'@private\nB:{}}","{(B x) B:{}}",
       "{#apply__0_0(This0.B x__0_0)'@private\nB:{}"
-      + "type method This0 (This0.B x)"
+      + "class method This0 (This0.B x)"
       + "mut method B #x()"
       + "read method B x() }",
       false

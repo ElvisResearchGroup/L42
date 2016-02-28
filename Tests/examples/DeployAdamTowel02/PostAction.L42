@@ -19,7 +19,7 @@ exception InvalidAction{
   acc:=this.composeAction(acc,fresh:fresh)
   acc:={return Refactor.SumMethods(dest and:fresh of:p over:S"that" to:src)<<acc
     exception on MetaGuard.ParameterMismatch 
-      InvalidAction"Action type signature does not fit decorated method"
+      InvalidAction"Action class signature does not fit decorated method"
     }
   acc:=Refactor.MakePrivateSelector(fresh of:p)<<acc
   'we do not need to refer to the action any more
@@ -49,7 +49,7 @@ exception InvalidAction (
   pt=defM.parameterTypes().top()
   rt=defM.returnType()
   if pt.toS()!=rt.toS() (
-    exception InvalidAction"action return type need to be equal to parameter type" 
+    exception InvalidAction"action return class need to be equal to parameter class" 
     )
   ) 
 'InvalidAction: Message.$ <>< { implements MetaGuard} 

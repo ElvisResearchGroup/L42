@@ -2,7 +2,7 @@
 <: Concept.ToS Concept.Equals Concept.Named'@private
   method myName()GetMyName(This)
 
-  type method This #from(Library binaryRepr) This._private(_binaryRepr:binaryRepr)
+  class method This #from(Library binaryRepr) This._private(_binaryRepr:binaryRepr)
 
   method Library binaryRepr() this._binaryRepr()
 
@@ -61,7 +61,7 @@
     if res>=0N (return res)
     error This.subStringNotPresent(string:this,subString:that)
     }
-  type method Void subStringNotPresent(S string, S subString) void
+  class method Void subStringNotPresent(S string, S subString) void
   
   method
   Bool contains(S that){
@@ -84,13 +84,13 @@
       check stringSize(this.binaryRepr())
       error void)
 
-  type method
+  class method
   S doubleQuote()
     S"
     '"
     "(0N)
   
-  type method
+  class method
   S nl()
     S"
     '
@@ -129,7 +129,7 @@
     }
     
   SBuilder:...
-  type method This #from(S.SBuilder builder) 
+  class method This #from(S.SBuilder builder) 
     This._private(_binaryRepr:builder.binaryRepr())
-  type method mut S.SBuilder #builder() S.SBuilder.empty()
+  class method mut S.SBuilder #builder() S.SBuilder.empty()
   }

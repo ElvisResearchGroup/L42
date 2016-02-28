@@ -1,5 +1,5 @@
 {
-  type method Void t1(){
+  class method Void t1(){
     l=ListArray[S"hello";S"world"]
     Debug(S"size is "[l.size()]" "[l(0N)]" "[l(1N)]"")
     with x in l.vals() (
@@ -27,7 +27,7 @@
     return void
     }
     '*******************
-  type method Void t2(){
+  class method Void t2(){
     l=ListArray[S"hello";S"world"]
     Debug(S"size is "[l.size()]" "[l(0N)]" "[l(1N)]"")
     with var x in l.vars() (

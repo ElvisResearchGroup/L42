@@ -102,8 +102,8 @@ public class SumMethods {
   
   
   static ExpCore eU(int index,Position pos,MethodType mt1,MethodType mt2,MethodSelector m1,MethodSelector m2,MethodSelector mRes){
-    ExpCore r1=(mt1.getMdf()==Mdf.Type)?Path.outer(0):new ExpCore.X("this");
-    ExpCore r2=(mt2.getMdf()==Mdf.Type)?Path.outer(0):new ExpCore.X("this");
+    ExpCore r1=(mt1.getMdf()==Mdf.Class)?Path.outer(0):new ExpCore.X("this");
+    ExpCore r2=(mt2.getMdf()==Mdf.Class)?Path.outer(0):new ExpCore.X("this");
     //this/outer0 . m2(this/outer0 .m1(ps1),ps2)
     List<ExpCore> ps1=new ArrayList<>();
     for(String x:mRes.getNames().subList(0,m1.getNames().size())){ps1.add(new ExpCore.X(x));}
@@ -121,8 +121,8 @@ public class SumMethods {
   private static Mdf mdfU(Mdf mdf1, Mdf mdf2) {
     if(mdf1==Mdf.Capsule && mdf2==Mdf.Capsule){return null;}
     if(mdf1==mdf2){return mdf1;}
-    if(mdf1==Mdf.Type){return mdf2;}
-    if(mdf2==Mdf.Type){return mdf1;}
+    if(mdf1==Mdf.Class){return mdf2;}
+    if(mdf2==Mdf.Class){return mdf1;}
     if(mdf1==Mdf.Capsule|| mdf2==Mdf.Capsule){return null;}
     if(mdf1==Mdf.Immutable|| mdf2==Mdf.Immutable){
       if(mdf1==Mdf.Readable ||mdf2==Mdf.Readable){return Mdf.Immutable;}

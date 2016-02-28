@@ -62,10 +62,10 @@ import auxiliaryGrammar.Program;
     + "method Void m2(Void that, This0.C c) "
     + "method Void m1m2(This0.A a, This0.B b, This0.C c)"
     + "   this.m2(that:this.m1(a:a, b:b), c:c)}",false
-  },{    lineNumber(),"{A:{} B:{} C:{} type method Void m1(A a) method Void m2(Void that, B b,C c)}",
+  },{    lineNumber(),"{A:{} B:{} C:{} class method Void m1(A a) method Void m2(Void that, B b,C c)}",
     "This0","m1(a)", "m2(that,b,c)","m1m2(a,b,c)","that",
     "{A:{} B:{} C:{}"
-    + "type method Void m1(This0.A a) "
+    + "class method Void m1(This0.A a) "
     + "method Void m2(Void that, This0.B b, This0.C c) "
     + "method Void m1m2(This0.A a, This0.B b, This0.C c)"
     + "   this.m2(that:This0.m1(a:a), b:b, c:c)}",false
@@ -78,18 +78,18 @@ import auxiliaryGrammar.Program;
     "{method Void noArg() method Void m(Void a,Void b) "
     + "method Void m(Void c) this.m(a:c,b:this.noArg())}",false
     
-  },{    lineNumber(),"{A:{} B:{} C:{} type method Void m1(A a) method Void m2(B b,Void that, C c)}",
+  },{    lineNumber(),"{A:{} B:{} C:{} class method Void m1(A a) method Void m2(B b,Void that, C c)}",
     "This0","m1(a)", "m2(b,that,c)","m1m2(a,b,c)","that",
     "{A:{} B:{} C:{}"
-    + "type method Void m1(This0.A a) "
+    + "class method Void m1(This0.A a) "
     + "method Void m2(This0.B b,Void that, This0.C c) "
     + "method Void m1m2(This0.A a, This0.B b, This0.C c)"
     + "   this.m2(b:b,that:This0.m1(a:a), c:c)}",false
     
-  },{    lineNumber(),"{A:{} B:{} C:{} type method Void m1(A a) method Void m2(B b, C c,Void that)}",
+  },{    lineNumber(),"{A:{} B:{} C:{} class method Void m1(A a) method Void m2(B b, C c,Void that)}",
     "This0","m1(a)", "m2(b,c,that)","m1m2(a,b,c)","that",
     "{A:{} B:{} C:{}"
-    + "type method Void m1(This0.A a) "
+    + "class method Void m1(This0.A a) "
     + "method Void m2(This0.B b, This0.C c,Void that) "
     + "method Void m1m2(This0.A a, This0.B b, This0.C c)"
     + "   this.m2(b:b,c:c,that:This0.m1(a:a))}",false

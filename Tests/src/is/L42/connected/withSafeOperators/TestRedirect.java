@@ -100,63 +100,63 @@ public static class TestRedirect1 {//add more test for error cases
         "This0.InnerA","This1.A","{ method Void multiUse(This2.B x, This2.B y, This2.B z)}",false
     },{lineNumber(), new String[]{      // redirection of a method containing a library literal
     "{A:{()}}" },
-    "{InnerA:{()} M:{type method Library defA_maker() {type method InnerA beA_maker() InnerA()}}}",
+    "{InnerA:{()} M:{class method Library defA_maker() {class method InnerA beA_maker() InnerA()}}}",
     "This0.InnerA","This1.A",
-    "{M:{type method Library defA_maker() {type method This3.A beA_maker() This3.A.#apply()}}}",false
+    "{M:{class method Library defA_maker() {class method This3.A beA_maker() This3.A.#apply()}}}",false
     },{lineNumber(), new String[]{      // redirecting a nested library, into a differently nested target
-                                        // This0 vs explicit type
-                    "{X:{Y:{A:{()  type method A fun()}}}}" },
-        "{InnerZ:{InnerA:{()  type method This0 fun()}}"
-        + " M:{type method Library defA_maker() {type method InnerZ.InnerA beA_maker() InnerZ.InnerA()}}"
+                                        // This0 vs explicit class
+                    "{X:{Y:{A:{()  class method A fun()}}}}" },
+        "{InnerZ:{InnerA:{()  class method This0 fun()}}"
+        + " M:{class method Library defA_maker() {class method InnerZ.InnerA beA_maker() InnerZ.InnerA()}}"
         + "}",
         "This0.InnerZ.InnerA","This1.X.Y.A",
         "{InnerZ:{}"
-        + "M:{type method Library defA_maker() {type method This3.X.Y.A beA_maker() This3.X.Y.A.#apply()}} "
+        + "M:{class method Library defA_maker() {class method This3.X.Y.A beA_maker() This3.X.Y.A.#apply()}} "
         + "}",false
     },{lineNumber(), new String[]{      // same, but swapping the This0 on fun()
-                    "{X:{Y:{A:{()  type method This0 fun()}}}}" },
-        "{InnerZ:{InnerA:{()  type method InnerA fun()}}"
-        + " M:{type method Library defA_maker() {type method InnerZ.InnerA beA_maker() InnerZ.InnerA()}}"
+                    "{X:{Y:{A:{()  class method This0 fun()}}}}" },
+        "{InnerZ:{InnerA:{()  class method InnerA fun()}}"
+        + " M:{class method Library defA_maker() {class method InnerZ.InnerA beA_maker() InnerZ.InnerA()}}"
         + "B:{C: {} }"  //  So this call to get a library value is imaginary, as shown below
         + "}",
         "This0.InnerZ.InnerA","This1.X.Y.A",
         "{InnerZ:{}"
-        + "M:{type method Library defA_maker() {type method This3.X.Y.A beA_maker() This3.X.Y.A.#apply()}} "
+        + "M:{class method Library defA_maker() {class method This3.X.Y.A beA_maker() This3.X.Y.A.#apply()}} "
         + "B:{C:{}}}",false
     },{lineNumber(), new String[]{      // same, with two explicit classes on fun()
-                    "{X:{Y:{A:{()  type method A fun()}}}}" },
-        "{InnerZ:{InnerA:{()  type method InnerA fun()}}"
-        + " M:{type method Library defA_maker() {type method InnerZ.InnerA beA_maker() InnerZ.InnerA()}}"
+                    "{X:{Y:{A:{()  class method A fun()}}}}" },
+        "{InnerZ:{InnerA:{()  class method InnerA fun()}}"
+        + " M:{class method Library defA_maker() {class method InnerZ.InnerA beA_maker() InnerZ.InnerA()}}"
         + "B:{C: {} }"  
         + "}",
         "This0.InnerZ.InnerA","This1.X.Y.A",
         "{InnerZ:{}"
-        + "M:{type method Library defA_maker() {type method This3.X.Y.A beA_maker() This3.X.Y.A.#apply()}} "
+        + "M:{class method Library defA_maker() {class method This3.X.Y.A beA_maker() This3.X.Y.A.#apply()}} "
         + "B:{C:{}}}",false
     },{lineNumber(), new String[]{      // same, with two outers on fun()
-                    "{X:{Y:{A:{()  type method This0 fun()}}}}" },
-        "{InnerZ:{InnerA:{()  type method This0 fun()}}"
-        + " M:{type method Library defA_maker() {type method InnerZ.InnerA beA_maker() InnerZ.InnerA()}}"
+                    "{X:{Y:{A:{()  class method This0 fun()}}}}" },
+        "{InnerZ:{InnerA:{()  class method This0 fun()}}"
+        + " M:{class method Library defA_maker() {class method InnerZ.InnerA beA_maker() InnerZ.InnerA()}}"
         + "B:{C: {} }" 
         + "}",
         "This0.InnerZ.InnerA","This1.X.Y.A",
         "{InnerZ:{}"
-        + "M:{type method Library defA_maker() {type method This3.X.Y.A beA_maker() This3.X.Y.A.#apply()}} "
+        + "M:{class method Library defA_maker() {class method This3.X.Y.A beA_maker() This3.X.Y.A.#apply()}} "
         + "B:{C:{}}}",false
-    },{lineNumber(), new String[]{      // writing methods and type methods that presume the surrounding program
-                    "{X:{Y:{A:{()  type method This1 fun(This2 that)}}}}" },
-        "{InnerZ:{InnerA:{()  type method This3.X.Y fun(This3.X that)}}"
-        + "InnerB:{type method Library makeLib() {type method InnerZ.InnerA fred(This3.X.Y that)}}"
+    },{lineNumber(), new String[]{      // writing methods and class methods that presume the surrounding program
+                    "{X:{Y:{A:{()  class method This1 fun(This2 that)}}}}" },
+        "{InnerZ:{InnerA:{()  class method This3.X.Y fun(This3.X that)}}"
+        + "InnerB:{class method Library makeLib() {class method InnerZ.InnerA fred(This3.X.Y that)}}"
         + "}",
         "This0.InnerZ.InnerA","This1.X.Y.A",
         "{InnerZ:{}"
-        + "InnerB:{type method Library makeLib() {type method This3.X.Y.A fred(This3.X.Y that)}}"
+        + "InnerB:{class method Library makeLib() {class method This3.X.Y.A fred(This3.X.Y that)}}"
         + "}",false
     },{lineNumber(), new String[]{   // Cascade coherently from a class to its surrounding class.
                                      // Requires matching subtrees of names, except at the root.
-                    "{X:{Y:{FluffyA:{ type method This1 fun()}"
+                    "{X:{Y:{FluffyA:{ class method This1 fun()}"
                     + "}}}" },
-        "{InnerZ:{FluffyA:{ type method This1 fun()}}"
+        "{InnerZ:{FluffyA:{ class method This1 fun()}}"
         + "B:{method InnerZ moreFun() "
         + "   method InnerZ.FluffyA mostFun() InnerZ.FluffyA.fun()}"
         + "}",
@@ -164,9 +164,9 @@ public static class TestRedirect1 {//add more test for error cases
         "{B:{method This2.X.Y moreFun() "
         + "method This2.X.Y.FluffyA mostFun() This2.X.Y.FluffyA.fun()}}",false
     },{lineNumber(), new String[]{  // Redirect a FreeTemplate to an Interface
-        "{A:{interface type method Void fun(Void that)}}"
+        "{A:{interface class method Void fun(Void that)}}"
         },
-        "{InnerA:{type method Void fun(Void that)}"
+        "{InnerA:{class method Void fun(Void that)}"
         + "TestB:{method InnerA moreFun()}"
         + "}",
         "This0.InnerA","This1.A",
@@ -227,13 +227,13 @@ public static class TestRedirect1 {//add more test for error cases
         + "InnerA:{<:InnerI2 This2.I1} \n"  // again, no implementation
         + "%Redirect:{method InnerI2 _I2() method InnerA _A()}\n"
         + "TestB:{<:InnerI2 method moreFun(that, other) void \n"
-        + "       type method Library () {} }\n"
+        + "       class method Library () {} }\n"
         + "TestC:{method This1.%Redirect::_I2() notSoFun() {} }\n"
         + "TestD:{method This1.%Redirect::_I2()::moreFun(that,other)::other mostFun() {} }\n"
         + "}",
         "This0.%Redirect","This1.%Redirect",
         "{TestB:{<:This2.I2 method moreFun(that, other) void\n"
-        + "      type method Library () {}}\n"
+        + "      class method Library () {}}\n"
         + "TestC:{method This2.%Redirect::_I2() notSoFun() {}}\n"
         + "TestD:{method This2.%Redirect::_I2()::moreFun(that,other)::other mostFun() {} }\n"
         + "}",false
@@ -248,12 +248,12 @@ public static class TestRedirect1 {//add more test for error cases
         + "InnerA:{<:InnerI2 This2.I1} \n"  // again, no implementation
         + "%Redirect:{method InnerI2 _I2() method InnerA _A()}\n"
         + "TestB:{<:InnerI2 method moreFun(that, other) void \n"
-        + "       type method Library () {} }\n"
+        + "       class method Library () {} }\n"
         + "TestC:{method This1.InnerI2::moreFun() notSoFun() {} }\n"
         + "}",
         "This0.%Redirect","This1.%Redirect",
         "{TestB:{<:This2.I2 method moreFun(that, other) void\n"
-        + "      type method Library () {}}\n"
+        + "      class method Library () {}}\n"
         + "TestC:{method This2.I2::moreFun() notSoFun() {}}\n"
         + "}",false
     },{lineNumber(), new String[]{   // Redirect, via aliases,
@@ -339,7 +339,7 @@ public static class TestRedirect1 {//add more test for error cases
     // SourceUnfit: SrcPath(1), DestExternalPath(1), PrivatePath(t/f), SrcKind(enum(5)), DestKind(enum(5)),
     //   UnexpectedMethods(0..), UnexpectedImplementedInterfaces(0..)
     },{lineNumber(), new String[]{"{A:{ }}"},  // from module with an unexpected function
-        "{InnerA:{type method Void fun()} }","This0.InnerA","This1.A",
+        "{InnerA:{class method Void fun()} }","This0.InnerA","This1.A",
         "{"+"Kind:{'@stringU\n'SourceUnfit\n}"
            +"SrcPath:{'@.InnerA\n}"
            +"DestExternalPath:{'@This2.A\n}"
@@ -349,7 +349,7 @@ public static class TestRedirect1 {//add more test for error cases
            +"UnexpectedImplementedInterfaces:{'[]\n}"
         + "}",true
     },{lineNumber(), new String[]{"{A:{ }}"},  // same test, but with a method argument, using the new mechanism
-        "{InnerA:{type method Void fun(Void that)} }","This0.InnerA","This1.A",
+        "{InnerA:{class method Void fun(Void that)} }","This0.InnerA","This1.A",
         ec.load("SourceUnfit",
                 "SrcPath", "'@.InnerA",
                 "DestExternalPath", "'@This2.A",
@@ -360,9 +360,9 @@ public static class TestRedirect1 {//add more test for error cases
                 )
           .str(), true
     },{lineNumber(), new String[]{  // FreeTemplate -> Interface, with some matching methods
-        "{A:{interface type method Void fun(Void that)  method Void mostFun(Void that, Library other) }}"
+        "{A:{interface class method Void fun(Void that)  method Void mostFun(Void that, Library other) }}"
         },
-        "{InnerA:{type method Void fun(Void that) type method Void moreFun(Void that)"
+        "{InnerA:{class method Void fun(Void that) class method Void moreFun(Void that)"
         + "method Void mostFun(Void that, Library other) method Void notSoFun() } }",
         "This0.InnerA","This1.A",
         ec
@@ -371,10 +371,10 @@ public static class TestRedirect1 {//add more test for error cases
           .str(), true
     },{lineNumber(), new String[]{  // with a mismatch on parameter names in the method selector
                                     // Also Template (by return value) -> Interface, which is infeasible
-        "{A:{interface type method Void fun(Void that) type method Void moreFun()"
+        "{A:{interface class method Void fun(Void that) class method Void moreFun()"
         + "method Void mostFun(Void that, Library mineAllMine) method Void notSoFun() } }",
         },
-        "{InnerA:{type method Void fun(Void that) type method Void moreFun(Void that)"
+        "{InnerA:{class method Void fun(Void that) class method Void moreFun(Void that)"
         + "method Void mostFun(Void that, Library other) method Void notSoFun() } "
         + "D:{method This1.InnerA makeA() InnerA.fun(void)} "
         + "}",
@@ -387,8 +387,8 @@ public static class TestRedirect1 {//add more test for error cases
         "     B:{ method Void ignoreMe() void} } }",
         },
         "{InnerA:{ C:{} } "
-        + "D:{type method Void useType(type Any that) void"
-        + "   type method Void useA() D.useType(InnerA) } "
+        + "D:{class method Void useType(class Any that) void"
+        + "   class method Void useA() D.useType(InnerA) } "
         + "}",
         "This0.InnerA","This1.A",
         ec
@@ -396,11 +396,11 @@ public static class TestRedirect1 {//add more test for error cases
                "UnexpectedMembers", "[C]")
           .str(), true
     },{lineNumber(), new String[]{  // Template (by exception) -> OpenClass extra subclass
-        "{A:{ type method Void ignoreMe() void " +
+        "{A:{ class method Void ignoreMe() void " +
         "     B:{ method Void ignoreMe() void} } }",
         },
-        "{InnerA:{ type method Void ignoreMe() C:{} } "
-        + "D:{type method Void doWithoutA() exception Void  exception InnerA.ignoreMe() } "
+        "{InnerA:{ class method Void ignoreMe() C:{} } "
+        + "D:{class method Void doWithoutA() exception Void  exception InnerA.ignoreMe() } "
         + "}",
         "This0.InnerA","This1.A",
         ec
@@ -418,7 +418,7 @@ public static class TestRedirect1 {//add more test for error cases
         + "InnerA:{<:InnerI2 This2.I1 method fun(that) void} \n"
         + "D_Source:{method InnerI2 _I2() method InnerA _A()}\n"
         + "TestB:{<:InnerI2 method moreFun(that, other) void \n"
-        + "       type method Library () {} }\n"
+        + "       class method Library () {} }\n"
         + "TestC:{method This1.D_Source::_I2() notSoFun() {} }\n"
         + "TestD:{method This1.D_Source::_I2()::moreFun(that,other)::other mostFun() {} }\n"
         + "}",
@@ -450,9 +450,9 @@ public static class TestRedirect1 {//add more test for error cases
           .set("SrcKind", "ClosedClass", "DestKind", "ClosedClass")
           .str(), true
     },{lineNumber(), new String[]{  // Interface with extra method
-        "{A:{interface type method Void fun(Void that)  method Void moreFun(Void that, Library other) }}"
+        "{A:{interface class method Void fun(Void that)  method Void moreFun(Void that, Library other) }}"
         },
-        "{InnerA:{interface type method Void fun(Void that)  method Void moreFun(Void that, Library other) "
+        "{InnerA:{interface class method Void fun(Void that)  method Void moreFun(Void that, Library other) "
         + "method Void mostFun(Void that, Library other) method Void notSoFun() } }",
         "This0.InnerA","This1.A",
         ec
@@ -460,26 +460,26 @@ public static class TestRedirect1 {//add more test for error cases
                "UnexpectedMembers", "[mostFun(that,other), notSoFun()]")
           .str(), true
     },{lineNumber(), new String[]{  // Interface with inner class
-        "{A:{interface type method Void fun(Void that)  method Void moreFun(Void that, Library other) }}"
+        "{A:{interface class method Void fun(Void that)  method Void moreFun(Void that, Library other) }}"
         },
-        "{InnerA:{interface type method Void fun(Void that)  method Void moreFun(Void that, Library other) "
+        "{InnerA:{interface class method Void fun(Void that)  method Void moreFun(Void that, Library other) "
         + "C:{} } }",
         "This0.InnerA","This1.A",
         ec
           .set("UnexpectedMembers", "[C]")
           .str(), true
     },{lineNumber(), new String[]{  // Interface with unexpected inner interface
-        "{A:{interface type method Void fun(Void that)  method Void moreFun(Void that, Library other) }}"
+        "{A:{interface class method Void fun(Void that)  method Void moreFun(Void that, Library other) }}"
         },
-        "{InnerA:{interface type method Void fun(Void that)  method Void moreFun(Void that, Library other) "
+        "{InnerA:{interface class method Void fun(Void that)  method Void moreFun(Void that, Library other) "
         + "C:{interface} } }",
         "This0.InnerA","This1.A",
         ec
           .str(), true
     },{lineNumber(), new String[]{  // Implementing the interface does not change the error
-        "{A:{interface type method Void fun(Void that)  method Void moreFun(Void that, Library other) }}"
+        "{A:{interface class method Void fun(Void that)  method Void moreFun(Void that, Library other) }}"
         },
-        "{InnerA:{interface type method Void fun(Void that)  method Void moreFun(Void that, Library other)\n"
+        "{InnerA:{interface class method Void fun(Void that)  method Void moreFun(Void that, Library other)\n"
         + "C:{interface method Void mostFun() } } \n"
         + "C_impl:{<:InnerA.C} "
         + "}",
@@ -487,10 +487,10 @@ public static class TestRedirect1 {//add more test for error cases
         ec
           .str(), true
      },{lineNumber(), new String[]{  // Expected interface, with unexpected method, implemented in implementing class
-        "{A:{interface type method Void fun(Void that)  method Void moreFun(Void that, Library other) \n"
+        "{A:{interface class method Void fun(Void that)  method Void moreFun(Void that, Library other) \n"
         + " C:{interface}}}"
         },
-        "{InnerA:{interface type method Void fun(Void that)  method Void moreFun(Void that, Library other)\n"
+        "{InnerA:{interface class method Void fun(Void that)  method Void moreFun(Void that, Library other)\n"
         + "C:{interface method Void mostFun() } } \n"
         + "C_impl:{<:InnerA.C"
         + "         method mostFun() void"    // With implementation and without respecified types
@@ -515,11 +515,11 @@ public static class TestRedirect1 {//add more test for error cases
                )
           .str(), true
     },{lineNumber(), new String[]{  // One unimplemented interface; no unexpected members
-        "{A:{interface type method Void fun(Void that)  method Void moreFun(Void that, Library other) \n"
+        "{A:{interface class method Void fun(Void that)  method Void moreFun(Void that, Library other) \n"
         + " C:{interface}}}"
         },
         "{BlockingInterface1:{interface} "
-        + "InnerA:{interface type method Void fun(Void that)  method Void moreFun(Void that, Library other)\n"
+        + "InnerA:{interface class method Void fun(Void that)  method Void moreFun(Void that, Library other)\n"
         + "C:{interface <:BlockingInterface1 } } \n"
         + "C_impl:{<:InnerA.C"
         + "       } "
@@ -535,12 +535,12 @@ public static class TestRedirect1 {//add more test for error cases
           .str(), true
     },{lineNumber(), new String[]{  // Matching nested interfaces, the inner of which implements two internal and one external blocking interfaces
                                     // NB: in the test harness, must specify outer numbers for outers.
-        "{A:{interface type method Void fun(Void that)  method Void moreFun(Void that, Library other) \n"
+        "{A:{interface class method Void fun(Void that)  method Void moreFun(Void that, Library other) \n"
         + " C:{interface}}}"
         },
         "{BlockingInterface1:{interface} \n"
         + "BlockingInterface2:{interface} \n"
-        + "InnerA:{interface type method Void fun(Void that)  method Void moreFun(Void that, Library other)\n"
+        + "InnerA:{interface class method Void fun(Void that)  method Void moreFun(Void that, Library other)\n"
         + "C:{interface <:BlockingInterface1 This2.BlockingInterface2 This3.A.C"
         + "  } } \n"
         + "C_impl:{<:InnerA.C"
@@ -554,11 +554,11 @@ public static class TestRedirect1 {//add more test for error cases
           .str(), true
 
     },{lineNumber(), new String[]{  // When a cascade redirect renames another interface, the reported unexpected interface is the name before the rename.
-        "{  A:{interface type method C fun(Void that)  method Void moreFun(Void that, Library other)} \n"
+        "{  A:{interface class method C fun(Void that)  method Void moreFun(Void that, Library other)} \n"
         + " C:{interface}"
         + " }"
         },
-        "{ InnerA:{interface type method InnerC fun(Void that)  method Void moreFun(Void that, Library other)} \n"
+        "{ InnerA:{interface class method InnerC fun(Void that)  method Void moreFun(Void that, Library other)} \n"
         + "InnerC:{interface <:InnerA"
         + "       }  \n"
         + "C_impl:{<:InnerC"
@@ -592,11 +592,11 @@ public static class TestRedirect1 {//add more test for error cases
                 "IncoherentDest", "'[@This2.A, @This2.B]").str(), true
     },{lineNumber(), new String[]{   // Incoherent redirect: Matching functions (FluffyA.fun()) disagree about the position of their return value
                                      // NB: There is no reliable theory to filter out only nested redirects, so all redirects up to the failure are include in the error.
-                    "{X:{Y:{FluffyA:{ type method This2 fun()}" // Target of original redirect
+                    "{X:{Y:{FluffyA:{ class method This2 fun()}" // Target of original redirect
                     + "    }"
-                    + "FluffyA:{type method This1 fun()}"  // The phantom required for the redirect to avoid SourceUnfit.
+                    + "FluffyA:{class method This1 fun()}"  // The phantom required for the redirect to avoid SourceUnfit.
                     + "}}" },
-        "{InnerZ:{FluffyA:{ type method This1 fun()}}"
+        "{InnerZ:{FluffyA:{ class method This1 fun()}}"
         + "}",
         "This0.InnerZ.FluffyA","This1.X.Y.FluffyA",
         ec.set(
@@ -634,7 +634,7 @@ public static class TestRedirect1 {//add more test for error cases
     // MethodClash: Path(1), Left(1), Right(1), LeftKind(enum(4)), RightKind(enum(4)),
     // DifferentParameters(0..), DifferentReturnType(t/f), DifferentThisMdf(t/f), IncompatibleException(t/f)
 
-    },{lineNumber(), new String[]{   // Redirect, using the matching-alias rule, one primitive type onto another
+    },{lineNumber(), new String[]{   // Redirect, using the matching-alias rule, one primitive class onto another
                     "{"
                     + "X:{Y:{\n"
                     + "       FluffyA:{method Library fun(Void that)}\n"
@@ -676,11 +676,11 @@ public static class TestRedirect1 {//add more test for error cases
 // TODO@James: play properly with redirects and primitive types        
 
 /* TODO@James : try this test, when I get to method clashes
-    },{lineNumber(), new String[]{ // mismatches in type vs instance method
-        "{A:{type method Void fun(Void that) method Void moreFun(Void that)"
-        + "type method Void mostFun(Void that, Library other) method Void notSoFun() } }",
+    },{lineNumber(), new String[]{ // mismatches in class vs instance method
+        "{A:{class method Void fun(Void that) method Void moreFun(Void that)"
+        + "class method Void mostFun(Void that, Library other) method Void notSoFun() } }",
         },
-        "{InnerA:{type method Void fun(Void that) type method Void moreFun(Void that)"
+        "{InnerA:{class method Void fun(Void that) class method Void moreFun(Void that)"
         + "method Void mostFun(Void that, Library other) method Void notSoFun() } }",
         "This0.InnerA","This1.A",
         ec
@@ -689,10 +689,10 @@ public static class TestRedirect1 {//add more test for error cases
 
           /* TODO@James: with this test, I get MemberUnavailable, which I don't understand yet
     },{lineNumber(), new String[]{  // Matched inner interface shows as non-free
-        "{A:{interface type method Void fun(Void that)  method Void moreFun(Void that, Library other) \n"
+        "{A:{interface class method Void fun(Void that)  method Void moreFun(Void that, Library other) \n"
         + " C:{interface}}}"
         },
-        "{InnerA:{interface type method Void fun(Void that)  method Void moreFun(Void that, Library other)\n"
+        "{InnerA:{interface class method Void fun(Void that)  method Void moreFun(Void that, Library other)\n"
         + "C:{interface method Void mostFun() } } \n"
         + "C_impl:{<:InnerA.C"
         + "         method Void mostFun()"    // Uncommenting this line changes from SourceUnfit to MemberUnavailable
@@ -711,7 +711,7 @@ public static class TestRedirect1 {//add more test for error cases
     // because all of the other cases are reported as SourceUnfit 
     },{lineNumber(),   // Redirect a private class
         new String[]{"{A:{ }}"},
-        "{InnerA:'@private\n {type method Void fun(Void that)} }",
+        "{InnerA:'@private\n {class method Void fun(Void that)} }",
         "This0.InnerA","This1.A",
         ec.load("MemberUnavailable",
                 "Path", "'@.InnerA",
@@ -736,9 +736,9 @@ public static class TestRedirect1 {//add more test for error cases
                 "InvalidKind", "PrivatePath"
                ).str(), true
     },{lineNumber(),      // Redirect a class with method, for which the target has a private matching method
-       new String[]{"{A:{type method '@private\n Void fun(Void that) }}"},
-        "{InnerA:{type method Void fun(Void that)} "
-        + "InnerB:{type method Void moreFun(Void that) InnerA.fun(that)}"
+       new String[]{"{A:{class method '@private\n Void fun(Void that) }}"},
+        "{InnerA:{class method Void fun(Void that)} "
+        + "InnerB:{class method Void moreFun(Void that) InnerA.fun(that)}"
         + "}",
         "This0.InnerA","This1.A",
         ec.set("Selector", "fun(that)"

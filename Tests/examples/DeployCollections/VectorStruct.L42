@@ -3,7 +3,7 @@
   CellNext:{(Kind.elem() val,mut Cell next)<:Cell
     read method Kind.elemRead() val()
     }
-  CellEnd:{<:Cell type method mut This()}
+  CellEnd:{<:Cell class method mut This()}
   read method Void reportError(N that)
     error S"IndexOutOfBound: max is "[this.size()]" proposed is "[that]""
   read method Void reportUnexpected(N that)
@@ -14,7 +14,7 @@
     if that>=this.size() (this.reportError(that))
     This.auxGet(that,cell:this.head())
     )
-  type method
+  class method
   Kind.elemRead() auxGet(N that,read Cell cell){
     with cell (
       on read CellNext case that==0N return cell.val()
@@ -28,7 +28,7 @@
     if that>=this.size() (this.reportError(that))
     this.head(This.auxSet(that,val:val,cell:this.#head()))
     )
-  type method
+  class method
   mut CellNext auxSet(N that,Kind.elem() val,mut Cell cell){
     with cell (
       on mut CellNext case that==0N return CellNext(val:val,next:cell.#next())
@@ -37,7 +37,7 @@
     error S"Unreachable"
     }
   'EMPTY
-  type method 
+  class method 
   mut This () This(head:CellEnd(),size:0N)
   'ADDING
   mut method
@@ -46,7 +46,7 @@
     this.head(This.auxAdd(that,cell:this.#head()))
     this
     )
-  type method
+  class method
   mut Cell auxAdd(Kind.elem() that,mut Cell cell){
     with cell (
       on mut CellEnd return CellNext(val:that,next:cell)
@@ -61,7 +61,7 @@
   '*******************  
   '*******************
     
-  type method 
+  class method 
   mut This #begin() This()
   mut method
   mut This #end() this

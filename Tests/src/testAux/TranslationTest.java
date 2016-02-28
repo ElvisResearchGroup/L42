@@ -32,10 +32,10 @@ public class TranslationTest {
     "{  }"," void","platformSpecific.javaTranslation.Resources$Void");}
 
   @Test public void t2a(){tester(
-      "{ C:{ type method Void foo() void } }"," C.foo()","platformSpecific.javaTranslation.Resources$Void");}
+      "{ C:{ class method Void foo() void } }"," C.foo()","platformSpecific.javaTranslation.Resources$Void");}
 
   @Test public void t2b(){tester(
-      "{ C:{k() type method Void foo() void } }"," C.foo()","platformSpecific.javaTranslation.Resources$Void");}
+      "{ C:{k() class method Void foo() void } }"," C.foo()","platformSpecific.javaTranslation.Resources$Void");}
 
   @Test public void t3(){tester(
       "{ C:{k() method Void foo() void } }"," C.k().foo()","platformSpecific.javaTranslation.Resources$Void");}

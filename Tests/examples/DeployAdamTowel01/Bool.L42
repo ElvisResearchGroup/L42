@@ -6,10 +6,10 @@
     use Alu
       check ifInt32EqualDo(n1:this.binaryRepr() n2:0N.binaryRepr())
       exception void
-  type method
+  class method
   This true()
     This(binaryRepr:1N.binaryRepr())
-  type method
+  class method
   This false()
     This(binaryRepr:0N.binaryRepr())
 
@@ -33,7 +33,7 @@
     if this (return S"true")
     return S"false"
     }
-  type method
+  class method
   This fromS(read Concept.ToS that){
     if that.toS()==S"true" (return This.true())
     if that.toS()==S"false" (return This.false())
@@ -51,7 +51,7 @@
     with that (on This return this==that)
     return Bool.false()
     }
-  type method
+  class method
   Any parseError(S that)
     S"Bool.UnsatisfactoryErrorToAvoidCycle, replace in AdamT2"
 }

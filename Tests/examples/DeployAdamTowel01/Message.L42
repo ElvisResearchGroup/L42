@@ -1,8 +1,8 @@
 {interface<:Concept.ToS, Concept.Equals, Concept.Classable, Concept.Named
-type method S kind()
+class method S kind()
 method S text()
 method Opt responseOf()
-read method type This clazz()
+read method class This clazz()
 Opt:{#new(TOpt that)
   TOpt:{interface method This2 get() }
   TEmpty:{()<:TOpt method get() 
@@ -16,12 +16,12 @@ Opt:{#new(TOpt that)
     return Bool.true()
     catch error Any return Bool.false()
     }
-  type method This () This.#new(TEmpty())
-  type method This (This1 that) This.#new(TOf(that))
+  class method This () This.#new(TEmpty())
+  class method This (This1 that) This.#new(TOf(that))
   }
 EqualMessages:{
-  type method Bool (Message that,Message other){
-  'assuming they have the same type
+  class method Bool (Message that,Message other){
+  'assuming they have the same class
   res=that.clazz().kind()==other.clazz().kind() 
     & that.text()==other.text()
     & that.responseOf().isPresent()==other.responseOf().isPresent()
@@ -29,12 +29,12 @@ EqualMessages:{
   if !that.responseOf().isPresent() (return Bool.true())
   'i know both are present
   return (~that.responseOf()).equals(~other.responseOf()) ' this calls  equals in message,
-  'that check for equal type and then call EqualMessages
+  'that check for equal class and then call EqualMessages
   }}
 $:{()
-  type method Library <<(Library that)
+  class method Library <<(Library that)
     SafeOperatorsAccess.compose(left:that, right:This.messageTrait())
-  type method Library messageTrait() {(S _text, Message.Opt cause)<:Message
+  class method Library messageTrait() {(S _text, Message.Opt cause)<:Message
     method myName()GetMyName(This)
     method kind() this.myName()
     method text() this._text()
@@ -65,16 +65,16 @@ $:{()
       Message.EqualMessages(this,other:that)
     method classAny() This
     method clazz() This
-    type method
+    class method
     This (S text)
       This(_text:text,cause:Message.Opt())
-    type method
+    class method
     This(S text, Message cause)
       This(_text:text,cause:Message.Opt(cause))
     'next part could become a trait on its own (but S must keep its version)
     
-    type method mut S.SBuilder #builder()S.SBuilder.empty()
-      type method This #from(S.SBuilder builder)
+    class method mut S.SBuilder #builder()S.SBuilder.empty()
+      class method This #from(S.SBuilder builder)
         This(text:S.#from(builder:builder))
         
     method

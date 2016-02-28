@@ -1,12 +1,12 @@
 {reuse L42.is/miniBase
 'NameList:Collections.list(Name)
 'Generalize:{(NameList internals)
-'  type method This #begin() This(internals:NameList())
+'  class method This #begin() This(internals:NameList())
 '  method This #add(Name that) This(internals:this.internals.#add(that))
 '  method This #end() this
   
 Generalize:{()
-  type method This #begin() This()
+  class method This #begin() This()
   method This #end() this
   method Library <(Library that){
     var result=that
@@ -30,14 +30,14 @@ Generalize:{()
 Template:{
   Bool:{<:S.ToS
     method Void #checkTrue() exception Void 
-    type method This true()
-    type method This false()
+    class method This true()
+    class method This false()
     method This &(This that)
     method This |(This that)
     method This !()
     }
   N:{<:S.ToS
-    type method N #numberParser(Library that)       
+    class method N #numberParser(Library that)       
     method N +(N that)       
     method N -(N that)       
     method N *(N that)       
@@ -52,20 +52,20 @@ Template:{
     }
   
   S:{<: ToS  
-    type method This #stringParser(Library that)    
+    class method This #stringParser(Library that)    
     ToS:{interface method S toS()}  
     method S ++ (ToS that)  
     method Bool != (S that)  
     method Bool == (S that)     
     method S (N that) 
     method N size ()   
-    type method S doubleQuote()  
+    class method S doubleQuote()  
     method S replace(S that, S into)
     method Library binaryRepr()  
     }
     
   Debug:{
-    type method Void (S that)
+    class method Void (S that)
     }
   }
 }

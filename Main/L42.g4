@@ -38,7 +38,7 @@ fragment NumNext:Digit|'-'Digit|'.'Digit;
 S:
     'return'|'error'|'exception';
 Mdf:
-    'type'|'mut'|'read'|'lent'|'capsule';
+    'class'|'mut'|'read'|'lent'|'capsule';
 ORoundNoSpace:'(';
 ORoundSpace:'\t';
 CRound:')';

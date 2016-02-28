@@ -1,6 +1,6 @@
 {
 Bool:{interface
-  type method This ()
+  class method This ()
   method Void #checkTrue() exception Void
   method This & (This that)
   method This | (This that)
@@ -22,11 +22,11 @@ False:{_private() <:Bool
   }
 
 ExitCode:{
-  type method
+  class method
   Library normal(){return {'@exitStatus
      '0
     }}
-  type method
+  class method
   Library failure(){return {'@exitStatus
      '42000
     }}
@@ -35,7 +35,7 @@ Alu:{'@plugin
   'L42.is/connected/withAlu
   }
 N:{(Library that)
-  type method N #numberParser(Library that) (
+  class method N #numberParser(Library that) (
     N(using Alu
       check stringToInt32(that)
       error void))
@@ -121,13 +121,13 @@ S:{#stringParser(Library that)
 IntrospectionPlugin:{'@plugin
   'L42.is/connected/withItself
   ()
-  type method Library sumLib(Library l1,Library l2) using This check sumLib(l1:l1,l2:l2) error {sumLib()}
-  type method Library adaptLib(Library l1 Library l2) using This check adaptLib(l1:l1,l2:l2) error {adaptLib()}
-  type method Library nameToAdapter(Library that) using This check nameToAdapter(that) error {nameToAdapter()}
-  type method Library typeNameToAdapter(type Any that) using This check typeNameToAdapter(that) error {typeNameToAdapter()}
+  class method Library sumLib(Library l1,Library l2) using This check sumLib(l1:l1,l2:l2) error {sumLib()}
+  class method Library adaptLib(Library l1 Library l2) using This check adaptLib(l1:l1,l2:l2) error {adaptLib()}
+  class method Library nameToAdapter(Library that) using This check nameToAdapter(that) error {nameToAdapter()}
+  class method Library typeNameToAdapter(class Any that) using This check typeNameToAdapter(that) error {typeNameToAdapter()}
   }
 Collections:{()
-  type method Library listRow() { _new(Cell head)
+  class method Library listRow() { _new(Cell head)
    T:{}
     Cell:{interface
       method mut Iterator #vals(Bool that)
@@ -153,7 +153,7 @@ Collections:{()
         catch exception (on Void void)
         error {iterationNotComplete()})
       }
-    type method
+    class method
     This () (This._new(head:CellEnd()))
     method
     This #add(T that) (
@@ -161,7 +161,7 @@ Collections:{()
         elem:that,
         _next:this.head()))
       )
-    type method
+    class method
     This #begin() This()
     method
     This #end() (
@@ -187,23 +187,23 @@ Collections:{()
       read method Void #close() (void)
       }
     }
-type method Library list(type Any that){
+class method Library list(class Any that){
   map=IntrospectionPlugin.typeNameToAdapter(that)
   tRen=IntrospectionPlugin.nameToAdapter(S"T".that())
   'If I remove this. from under, I get a stupid error msg
   ' vars MUST have positions too :(
   return this.list(adapter: IntrospectionPlugin.adaptLib(l1:map,l2:tRen))
   }
-type method Library list(Library adapter){
+class method Library list(Library adapter){
   return IntrospectionPlugin.adaptLib(l1:this.listRow(),l2:adapter)
   }
 }
 
 Name:{(Library adapter)
-  type method Name #stringParser(Library that) (Name(adapter:
+  class method Name #stringParser(Library that) (Name(adapter:
     using IntrospectionPlugin check nameToAdapter(that) error {nameToAdapter()}
     ))
-  type method Name (type Any that) (Name(adapter:
+  class method Name (class Any that) (Name(adapter:
     using IntrospectionPlugin check typeNameToAdapter(that) error {typeNameToAdapter()}
     ))
   }

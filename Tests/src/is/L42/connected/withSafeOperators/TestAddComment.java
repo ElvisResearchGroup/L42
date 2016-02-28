@@ -37,7 +37,7 @@ public class TestAddComment {
     },{"{B:{ method Void m() void}}","B","m()","@private\n","{B:{ method'@private\n Void m__0_0() void}}",false
     },{"{B:{ method Void m() void}}","B","m()","@private\n","{B:{ method'@private\n Void m__0_0() void}}",false
     },{"{B:{k(B b)}}",
-      "B","k(b)","@private\n","{B:{type method '@private\n"
+      "B","k(b)","@private\n","{B:{class method '@private\n"
           + "This0 k__0_0(This1.B b__0_0)mut method '@private\n"
           + "This1.B #b__0_0() read method '@private\n"
           + "This1.B b__0_0() }}",false

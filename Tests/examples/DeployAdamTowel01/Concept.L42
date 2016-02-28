@@ -3,18 +3,18 @@ ToS:{interface
   read method S toS()
   }
 Classable:{interface
-  read method type Any classAny()
-  'read method type This clazz()
+  read method class Any classAny()
+  'read method class This clazz()
   }
 Named:{interface
-  type method S myName()
+  class method S myName()
   }
   
-'boxes: type capsule imm mut lent read & var novar
+'boxes: class capsule imm mut lent read & var novar
 'but to avoid initialization/update cast: novar, capsule==lent
-'type imm mut lent read
+'class imm mut lent read
 Wrapper:{interface read method Any inner() }
-TypeWrapper:{interface read method type Any inner() }
+TypeWrapper:{interface read method class Any inner() }
 ReadWrapper:{interface read method read Any inner() }
 MutWrapper:{interface <:ReadWrapper mut method mut Any #inner()}
 LentWrapper:{interface <:ReadWrapper mut method lent Any #inner()}
@@ -40,8 +40,8 @@ Contains:{interface
   read method Bool contains(read Any that)
   }
 Parsable:{interface
-  'type method capsule This fromS(S that) exception Guard.Parameter(specific) invalid string
-  '''type method capsule This #fromS(S that) exception Guard.Parameter
+  'class method capsule This fromS(S that) exception Guard.Parameter(specific) invalid string
+  '''class method capsule This #fromS(S that) exception Guard.Parameter
   }
 Invariant:{interface
   read method ' can throw error or return false, as more opportune

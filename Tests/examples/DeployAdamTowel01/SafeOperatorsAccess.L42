@@ -1,12 +1,12 @@
 {'@plugin
    'L42.is/connected/withSafeOperators
-type method
+class method
 Library compose(Library left,Library right)
   use This
     check compose(left:left,right:right)
     error S"SafeOperatorsAccess.compose"
-type method
-Library redirect(Library that,Library srcBinaryRepr,type Any dest)
+class method
+Library redirect(Library that,Library srcBinaryRepr,class Any dest)
     use SafeOperatorsAccess
       check redirect(that,src:srcBinaryRepr,dest:dest)
       error S"SafeOperatorsAccess.redirect"

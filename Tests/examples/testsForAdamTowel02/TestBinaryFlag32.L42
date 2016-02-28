@@ -12,7 +12,7 @@ BinaryFlag32:{(N that)
       else (use[S"0"])
     )]"")
   
-  type method
+  class method
   This fromS(Concept.ToS that) this.#from(builder:(
     s=that.toS()
     b=this.#builder()
@@ -27,13 +27,13 @@ BinaryFlag32:{(N that)
     b
     ))
     
-  type method  
+  class method  
   mut BBuilder #builder()
     BBuilder.empty()
   
   ParseFail:Message.$<<{<:Guard.ParseFail}
   BBuilder:{(var Library that, var N count)
-    type method
+    class method
     mut This empty()
       This(0N.binaryRepr(),count:0N)
   
@@ -51,7 +51,7 @@ BinaryFlag32:{(N that)
         )
       )    
     }  
-  type method
+  class method
   This #from(BBuilder builder) (
     if builder.count()>32N (error ParseFail
       "BinaryFlag32 too long:"[builder.count()]" bits was required."

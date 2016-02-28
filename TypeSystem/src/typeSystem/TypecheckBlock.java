@@ -148,8 +148,8 @@ public class TypecheckBlock {
       NormType nt1=nt.withPath(Path.Library());
       NormType nt2=nt.withPath(Path.Void());
       if(kind==SignalKind.Return){
-        if(nt2.getMdf()==Mdf.Type){nt2=nt2.withMdf(Mdf.Immutable);}
-        else {nt2=nt2.withMdf(Mdf.Type);}
+        if(nt2.getMdf()==Mdf.Class){nt2=nt2.withMdf(Mdf.Immutable);}
+        else {nt2=nt2.withMdf(Mdf.Class);}
       }
       checkCatchAnyButUsing(nt1,kind, x, on.withT(nt1), p, varEnv2, sealEnv2, throwEnv2,
           newSuggested, results, err);

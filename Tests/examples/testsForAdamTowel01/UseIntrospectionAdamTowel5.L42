@@ -1,7 +1,7 @@
 {reuse L42.is/AdamTowel01
 
 CheckState:{
-  type method Void(Library lib,S expected )(
+  class method Void(Library lib,S expected )(
     i=Introspection(lib:lib)
     var result=S""
     with m in i.state().vals() (
@@ -12,7 +12,7 @@ CheckState:{
   }
 
 CheckSubtype1:{
-  type method Void(Library lib,S expected )(
+  class method Void(Library lib,S expected )(
     i=Introspection(lib:lib)
     var result=S""
     with t in i.implementedInterfaces().vals() (
@@ -25,7 +25,7 @@ CheckSubtype1:{
   }
 
 CheckSubtype:{
-  type method Void(Library lib,S expected )(
+  class method Void(Library lib,S expected )(
     i=Introspection(lib:lib)
     var result=S""
     with t in i.transitivelyImplementedInterfaces().vals() (
@@ -37,7 +37,7 @@ CheckSubtype:{
     )
   }
 CheckNested:{
-  type method Void(Library lib,S expected )(
+  class method Void(Library lib,S expected )(
     i=Introspection(lib:lib)
     var result=S""
     with n in i.transitivelyNestedClasses().vals() (

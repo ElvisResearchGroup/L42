@@ -10,7 +10,7 @@
   method
   S introspectDocAsString(Path path, N annotationN) exception MetaGuard.NestedClassUnavailable,Void
   method
-  type Any introspectDocPath(Path path, N annotationN) exception MetaGuard.NestedClassUnavailable, Void
+  class Any introspectDocPath(Path path, N annotationN) exception MetaGuard.NestedClassUnavailable, Void
 
   Lib:{(Library lib)<:This1
     method toS() Introspection(lib:this.lib()).toS()
@@ -62,7 +62,7 @@
 
     method
     introspectDocPath(path,annotationN) (
-      type Any result=use SafeOperators
+      class Any result=use SafeOperators
         check introspectLibraryDocPath(this.lib(), path:path.binaryRepr(),annotationN:annotationN.binaryRepr())
         error System.Guard.PluginFailure"SafeOperators.introspectLibraryDocPath"
       catch error Library x exception MetaGuard.NestedClassUnavailable(record:Record(lib:x),lib:x)
@@ -70,7 +70,7 @@
     }
 
 
-  Class:{(type Any lib)<:This1
+  Class:{(class Any lib)<:This1
   method toS() Introspection(clazz:this.lib()).toS()
   method
     introspectReport(root, path) (
@@ -121,7 +121,7 @@
 
     method
     introspectDocPath(path,annotationN) (
-      type Any result=use SafeOperators
+      class Any result=use SafeOperators
         check introspectTypeDocPath(this.lib(), path:path.binaryRepr(),annotationN:annotationN.binaryRepr())
         error System.Guard.PluginFailure"SafeOperators.introspectTypeDocPath"
       catch error Library x exception MetaGuard.NestedClassUnavailable(record:Record(lib:x),lib:x)

@@ -1,7 +1,7 @@
-{' generic linked list class, elements of type Elem
+{' generic linked list class, elements of class Elem
  _new(Cell head)<:Concept.Named
 method myName()GetMyName(This)
-type method
+class method
 This ()
   This._new(head:CellEnd())
 method
@@ -38,7 +38,7 @@ This ++(This that) {
   return res
   }
 
-type method
+class method
 This #begin()
   This()
 

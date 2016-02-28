@@ -2,13 +2,13 @@
   
  RecordWrapper:' can not be private, I need to Patch it.
     {
-    type method S libToS(Library that) S"TO FIX"
+    class method S libToS(Library that) S"TO FIX"
     
-    type method Library recordWrapperToSTrait(){<:MetaGuard 
+    class method Library recordWrapperToSTrait(){<:MetaGuard 
       method toS() This.myName()++This1.libToS(this.lib())
       method Library lib()      
       }
-    type method Library recordWrapperTrait(){<:MetaGuard
+    class method Library recordWrapperTrait(){<:MetaGuard
       method kind() This.myName()
       method text() S""
       method responseOf() Message.Opt()
@@ -19,13 +19,13 @@
         }
       method clazz() This
       method classAny() This
-      type method This(Introspection.Record record, Library lib)
+      class method This(Introspection.Record record, Library lib)
       method Bool != (This that)
         !(this==that)
       method Bool == (This that)
         Message.EqualMessages(this,other:that)
-      type method S libName()
-      type method Void (Library lift) exception This (
+      class method S libName()
+      class method Void (Library lift) exception This (
         record=Introspection.Record(lib:lift)
         x=record"Kind"
         if x==This.libName() (
@@ -34,7 +34,7 @@
         )
       }
       
-    type method Library <<(Library that) (
+    class method Library <<(Library that) (
       'either that provides a toS, or I have a default impl, that requires lib()
       res=SafeOperatorsAccess.compose(left:that,right:This.recordWrapperTrait())
         {
@@ -43,17 +43,17 @@
         }
       )
     }
-SourceUnfit:RecordWrapper<<{type method S libName()S"SourceUnfit"}
-IncoherentRedirectMapping:RecordWrapper<<{type method S libName()S"IncoherentRedirectMapping"}
-ClassClash:RecordWrapper<<{type method S libName()S"ClassClash"}
-MethodClash:RecordWrapper<<{type method S libName()S"MethodClash"}
-InvalidOnTopLevel:RecordWrapper<<{type method S libName()S"InvalidOnTopLevel"}
-PrivacyCoupuled:RecordWrapper<<{type method S libName()S"PrivacyCoupuled"}
-ParameterMismatch:RecordWrapper<<{type method S libName()S"ParameterMismatch"}
+SourceUnfit:RecordWrapper<<{class method S libName()S"SourceUnfit"}
+IncoherentRedirectMapping:RecordWrapper<<{class method S libName()S"IncoherentRedirectMapping"}
+ClassClash:RecordWrapper<<{class method S libName()S"ClassClash"}
+MethodClash:RecordWrapper<<{class method S libName()S"MethodClash"}
+InvalidOnTopLevel:RecordWrapper<<{class method S libName()S"InvalidOnTopLevel"}
+PrivacyCoupuled:RecordWrapper<<{class method S libName()S"PrivacyCoupuled"}
+ParameterMismatch:RecordWrapper<<{class method S libName()S"ParameterMismatch"}
 
 MemberUnavailable:{interface<:MetaGuard}
 DispatchMemberUnavailable:{
-  type method Void(Library that)
+  class method Void(Library that)
   exception MemberUnavailable(
     record=Introspection.Record(lib:that)
     x=record"Kind"
@@ -66,14 +66,14 @@ DispatchMemberUnavailable:{
   }
 NestedClassUnavailable:RecordWrapper<<{(Path path,Bool isPrivate)<:MemberUnavailable
   method toS() This.myName()++S"[path:"[this.path()]",isPrivate:"[this.isPrivate()]"]"
-  type method This (Introspection.Record record, Library lib) 
+  class method This (Introspection.Record record, Library lib) 
     This(path:Path.fromDocInternalizedS(record"Path"),isPrivate:Bool.fromS(record"IsPrivate"))
-  type method S libName()S"MemberUnavailable"
+  class method S libName()S"MemberUnavailable"
   }
 MethodUnavailable:RecordWrapper<<{(Path path,Selector selector,Bool isPrivate)<:MemberUnavailable
   method toS() This.myName()++S"[path:"[this.path()]", selector:"[this.selector()]",isPrivate:"[this.isPrivate()]"]"
-  type method This (Introspection.Record record, Library lib) 
+  class method This (Introspection.Record record, Library lib) 
     This(path:Path.fromDocInternalizedS(record"Path"),selector:Selector.fromS(record"Selector"),isPrivate:Bool.fromS(record"IsPrivate"))
-  type method S libName()S"MemberUnavailable"
+  class method S libName()S"MemberUnavailable"
   }
 }

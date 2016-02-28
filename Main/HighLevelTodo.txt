@@ -1,4 +1,4 @@
-todo: 
+todo:
 constructors understanding
 new desugaring for []
 consider e0[e1;e2] desugared in (x=e0 x.#fromSequence(x.#sequenceFactory().#add(e1).#add(e2))
@@ -13,7 +13,7 @@ decorator MakeMethod[m; m0; m1 x1, mn xn; excNum]
 Assert::Pre[] preconditions
 and
 Assert::Bug[] postconditions/checks in the middle
-and 
+and
 Assert::Pre""()
 and
 Assert::Bug""()  also for code unreachable? error on Bla Assert::Bug""
@@ -21,10 +21,24 @@ NotImplementedYet
 Unreachable //error in the language or (another) method do not respect its postcondition
 or Bug can have a (broken:S"localPaht.selector")
 
-should != be desugared in !(==)    > norm for <=, => <,  >> <<, 
+should != be desugared in !(==)    > norm for <=, => <,  >> <<,
 This==This0, This1... Thisn for outers, and outer for outside with scope.
 
 Many constructor is ok for a class?
+
+
+if all fields are mut/imm/type, generate 4 k:
+class method mut This #mutK(..) (capsule to mut), all to fwd
+class method lent This #lentK(..) (mut to lent)(capsule to mut), all to fwd
+class method read This #readK(..) (mut,lent to read)(capsule to mut), all to fwd
+class method ? This (..) This.#?(..)
+  ? is imm if all fields are imm no var
+  ? is mut if no field is lent/read
+  ? is lent otherwise
+
+if some field is lent/mut do not generate #mutK
+getters/exposer for all as usual
+setters take as the field and are mut
 
 
 //isFactory, isGetter, isSetter ensure invariants as seen later
@@ -55,7 +69,7 @@ Void checkCoherent(Library lib) (
  with g in gs (restrictG(
    acc:this.extrat(fMap, ifPresent:g),
    oM:g.mdf(), fM:g.returnType().mdf()
-   ))  
+   ))
  with s in ss (restrictS(
    acc:this.extrat(fMap, ifPresent:g),
    oM:s.mdf(), fM:s.parameters().top().type().mdf()
@@ -64,7 +78,7 @@ Void checkCoherent(Library lib) (
 with p in fMap.pairs() (
   if p.val().isEmpty() (error _)
   )
-  //otherwise, is coherent! 
+  //otherwise, is coherent!
  )
 
 class method
@@ -77,7 +91,7 @@ mut Introspection.Mdf.Set extract(mut FMap that,Introspection.Method ifPresent) 
 
 class method
 Void restrictK(mut Introspection.Mdf.Set acc, Introspection.Mdf oM, Introspection.Mdf fM)
-  acc.retain(all:{  
+  acc.retain(all:{
     //oM never type,
     //oM==#mut implies fM !< #[#lent; #read]
     //oM<#[#imm;#capsule] implies fM<#[#imm;#capsule;#type]
@@ -98,22 +112,22 @@ Void restrictS(mut Introspection.Mdf.Set acc, Introspection.Mdf oM, Introspectio
   acc.retain(all:{//oM only mut,lent;  oM==mut implies fM !< #[#lent; #read]  6+4=10
   if fM==#type return #[#type]   //2
   if fM==#imm return #[#imm;#read] //2
-  if fM==#capsule return #all-#type //2 
+  if fM==#capsule return #all-#type //2
   if fM==#read return #[#read] //1
   if fM==#lent return #[#lent;#read] //1
   Assert.Bug[fM==#mut]
   if oM==#lent return #[#lent;#read] //1
   return #[#mut;#lent;#read]//1
  )}
- 
+
  method
- Void restrictG(mut Introspection.Mdf.Set acc, Introspection.Mdf oM, Introspection.Mdf fM) 
+ Void restrictG(mut Introspection.Mdf.Set acc, Introspection.Mdf oM, Introspection.Mdf fM)
   acc.retain({
   //oM not type, fM ==capsule implies oM==capsule
   //oM< \[\read; \imm] implies  fM !< #[#mut; #lent]
   //oM== #lent implies  fM != #mut
  // 6caps+ 4lent+3read +3Imm+5mut   =21
-    if fM==#type return #[#type]   //5     // 5caps+ 3lent+2read +2Imm+4mut 
+    if fM==#type return #[#type]   //5     // 5caps+ 3lent+2read +2Imm+4mut
     if fM==#imm return #[#imm] //5      // 4caps+ 2lent+1read +1Imm+3mut
     Assert.Bug[oM==#read -> fM==#read]
     Assert.Bug[fM==#lent -> oM<#[#mut;#lent;#capsule]]
@@ -128,17 +142,17 @@ carefull in mdf+ includes capsule? yes, a "capsule" field is a capsule/mut/lent 
 Then a state is consistent if all fields have 1 or more candidate mdf.
 
 
-for example 
+for example
 type method mut Outer0 k1(mut Foo n) ' with the actual type of the fields
 type method Outer0 k2(Foo n) ' the imm constructor, can always take imm fields
  the imm constructor is ok even in case of lent fields.
- 
+
  multiple constr must agree on the names of fields, and on their path, but the mdf may differ.
- fields getters, 
+ fields getters,
  method Foo n() ' the imm getters can always return imm stuff
- 
+
  go by cases:
- imm F x: can have 
+ imm F x: can have
    read-imm-/lent-imm-/mut-imm-/imm-imm- getter,
    lent-imm+/mut-imm+ setter,
    mut-imm+/capsule-imm+/lent-imm+/read-imm+/imm-imm+ constr
@@ -202,8 +216,8 @@ x:e in ps becomes x=e
 'boolean privateNormalized=false;//to avoid re normalization - if operators remove cache, is not usefull.
 'Would it disappear in the new idea? replaced with min-max with -1 default?
 'final java.util.List<Integer> families=- //to merge two classes easier with sum, again same problem as before//Would disappear
-	
-prviati: 
+
+prviati:
 method selector contiene un long int. -1 per non privato
 @private non ha semantica nel linguaggio,
 una library compilata e' ben formata se tutti i nomi dichiarati con forma a__n sono dichiarati una volta sola al suo interno, e non ridichiara nomi dichiarati fuori. (quindi hiding is ok)
@@ -211,7 +225,7 @@ operatori che prendono cose ben formate (in un certo programa)producono cose ben
 su chiamata di metodo(small step) o su resource.get() on compiled i nomi sono rimpiazzati.
 
 una classB e' normalizata (non solo ben formata) se
-ha nomi privati consegutivi e ordinati nei sottoalberi, 
+ha nomi privati consegutivi e ordinati nei sottoalberi,
 e ogni classB cachia min e max (non solo le normalizzate).
 Per efficiacia di implementazione, normalizziamo tutte le librerie del programma iniziale (reused).
 
@@ -230,7 +244,7 @@ On add private, just extend the interval by 1 and use such index.
 ' for all public nc lv*, if not annotated '@importanceX with x 1-*, with indented methods
 ' otherwise with all methods inline, nested after?
 
-'Patch:{'no, remove metaguard entirelly, make methClash and co as 
+'Patch:{'no, remove metaguard entirelly, make methClash and co as
 'nested in Refactor, and specific errors as nested in the operator?
 'remove also the general DecorationUnfeasable?
 'or on the opposite, have DecorationUnfeasable take a class, and print itself in a fancy way to look like a nested?
@@ -239,7 +253,7 @@ On add private, just extend the interval by 1 and use such index.
 '    }
 'throws shortcuts: return { return }  exception errorOn/exceptionOn
     ' on Metaguard, Guard error e
-    ' exceptionOn Metaguard InvalidAction"YEP"  
+    ' exceptionOn Metaguard InvalidAction"YEP"
 ' method Bool isConcrete() true iff all non state methods are implemented and
 ' all the interface methods are implemented.
 
@@ -263,26 +277,26 @@ Obsolete(
     -is it coherent that on external is frommed from the specific node, while from internal
     is frommed from the root?
   -we need to reorganize the errors, we need to add the ambigus redirect.
-  -make opt have checktrue, ! & and | ? 
+  -make opt have checktrue, ! & and | ?
   //complex: what should & second parameter be? boolable would prevent optimizations or not?
    -for collections, error S" still report stuff that should be done better.
   -opt and iterator: version generic, version to sum with outer0 and get a nested.
-  -method from interfaces? just all interfaces - this will miss from? 
+  -method from interfaces? just all interfaces - this will miss from?
 Caching
    -desugaring import library, assume verified//done?
    -how it interact with trusted plugins?
     -is private normalized
     -get the set of used families
-    
-    
+
+
     -Sum and interfaces: sum can make interfaces circular. I think I will make this OK
-    -sum must give error if sum class implementing interface with class directly defining an 
+    -sum must give error if sum class implementing interface with class directly defining an
     interface method of the first one. check this case
-    
+
  Other plugins
     -db plugin
       design of resources: make connection string "is" resource handler?
- 
+
  Language
   - method of interfaces can be refined, method refine T m(xs) eOpt
   -yeld? [with .... yeld(e) or yeld(v, separator:S", ")
@@ -290,7 +304,7 @@ Caching
  Syntax
     -concrete header have doc ('here fs)'and here  -- one of the two must be the place for @private?
     -all implemented interface names have docs, also simpler @ann syntax no new line
-    
+
     - put << normalization in the sugar
     -use @as default? instead of #?
      so Map[   @[a;b;c];       @[a;b;c];       ]
@@ -303,8 +317,8 @@ Caching
 Parsing errors:
   variable declare multiple times do not give any info, not even the file
  -'Add that a file can be also a commented class? but then this comment would be lost.
-   on the other side, is ok that can not have comments at the start? -just do {' ? 
-  
+   on the other side, is ok that can not have comments at the start? -just do {' ?
+
 
 Well formedness
   -well formedness, state must be all private or all public.
@@ -315,12 +329,12 @@ Well formedness
 well formedness: implemented or exceptions must be with no repetition, and with no Any.
 Operators should preserve this
 interfaces can be circular, check that no bug happens
-  
+
 
 ------------------
    Check if what is under is done
     -private rename normalization
-    collect privates: 
+    collect privates:
      MethodLocator:{List<Member> mTail; List<Integer> mPos; Ms that, Ms newName}
      NestedLocator:{List<Member> mTail; List<Integer> mPos; String that, String newName}
      collectPrivates(cb)->set of MethodLocator,NestedLocator
@@ -338,5 +352,4 @@ interfaces can be circular, check that no bug happens
        replace all the name__N_0 in name__N'_redirectIndex
     normalizePrivates(newIndex) rename all the name__N_K in name__N'_index
     reuse on Uppercase, do desugar and do not do private renaming at all.// just for testing
-         
-   
+

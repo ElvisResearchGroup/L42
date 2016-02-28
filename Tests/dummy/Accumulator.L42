@@ -1,6 +1,6 @@
 {_new()
-type method
-Library( type Any itType, type Any elemType, Library better)
+class method
+Library( class Any itType, class Any elemType, Library better)
   Use[better]< (Adapt[Name"IT" into:Name(itType);Name"ET" into:Name(elemType)]<{_new()
     IT:{
       mut method
@@ -16,9 +16,9 @@ Library( type Any itType, type Any elemType, Library better)
       Void #close()
       }
     ET:{}
-    type method
+    class method
     ET (ET a, ET b)
-    type method ET (mut IT that){
+    class method ET (mut IT that){
       that.#next()
       catch exception ( on Void error S"Max undefined on empty lists")
       var result=that.#inner()

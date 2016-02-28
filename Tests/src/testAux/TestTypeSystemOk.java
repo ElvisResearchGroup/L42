@@ -43,31 +43,31 @@ public class TestTypeSystemOk {
  {lineNumber(),"This0.C","{C:{method Void()}}","{C:{method Void()}##plus^##}##plus^##"
 },{lineNumber(),"This0.C","{C:{method Void()} D:{}}","{C:{method Void()}##plus^## D:{}##star ^##}##plus^##"
 },{lineNumber(),"This0.C",
-  "{C:{type method Void foo() (This0.foo())} }",
-  "{C:{type method Void foo() (This0.foo())}##star^## }##star^##"
+  "{C:{class method Void foo() (This0.foo())} }",
+  "{C:{class method Void foo() (This0.foo())}##star^## }##star^##"
 },{lineNumber(),"This0.C",
-  "{C:{type method Void foo() (D.foo())} D:{method Void() type method Void foo() (void)}}",
-  "{C:{type method Void foo() (D.foo())}##plus^## D:{method Void()type method Void foo() (void)}##plus ^##}##plus^##"
+  "{C:{class method Void foo() (D.foo())} D:{method Void() class method Void foo() (void)}}",
+  "{C:{class method Void foo() (D.foo())}##plus^## D:{method Void()class method Void foo() (void)}##plus ^##}##plus^##"
 },{lineNumber(),"This0.C",
-  "{C:{E:{type method Void foo() (This1.foo())} type method Void foo() (D.foo())} D:{type method Void foo() (C.E.foo())}}",
-  "{C:{E:{type method Void foo() (This1.foo())}##star^## type method Void foo() (D.foo())}##star^## D:{type method Void foo() (C.E.foo())}##star^##}##star^##"
+  "{C:{E:{class method Void foo() (This1.foo())} class method Void foo() (D.foo())} D:{class method Void foo() (C.E.foo())}}",
+  "{C:{E:{class method Void foo() (This1.foo())}##star^## class method Void foo() (D.foo())}##star^## D:{class method Void foo() (C.E.foo())}##star^##}##star^##"
 },{lineNumber(),"This0.C",
-  "{C:{E:{type method Void foo() (This1.foo())} type method Void foo() (D.foo())} D:{method Void() type method Void foo() (C.E.foo())}}",
-  "{C:{E:{type method Void foo() (This1.foo())}##plus^## type method Void foo() (D.foo())}##plus^## D:{method Void()  type method Void foo() (C.E.foo())}##plus^##}##plus^##"
+  "{C:{E:{class method Void foo() (This1.foo())} class method Void foo() (D.foo())} D:{method Void() class method Void foo() (C.E.foo())}}",
+  "{C:{E:{class method Void foo() (This1.foo())}##plus^## class method Void foo() (D.foo())}##plus^## D:{method Void()  class method Void foo() (C.E.foo())}##plus^##}##plus^##"
 
 },{lineNumber(),"This0.C",
-  "{K:{E:{type method Void foo() (This2.C.foo())}} C:{type method Void foo() (D.foo())} D:{type method Void foo() (K.E.foo())}}",
-  "{K:{E:{type method Void foo() (This2.C.foo())}##star^##}##star ^## C:{type method Void foo() (D.foo())}##star^## D:{type method Void foo() (K.E.foo())}##star^##}##star^##"
+  "{K:{E:{class method Void foo() (This2.C.foo())}} C:{class method Void foo() (D.foo())} D:{class method Void foo() (K.E.foo())}}",
+  "{K:{E:{class method Void foo() (This2.C.foo())}##star^##}##star ^## C:{class method Void foo() (D.foo())}##star^## D:{class method Void foo() (K.E.foo())}##star^##}##star^##"
 },{lineNumber(),"This0.C",
-  "{K:{method Void() E:{type method C foo() (C.foo())}} C:{type method C foo() (D.foo())} D:{type method C foo() (K.E.foo())}}",
-  "{K:{method Void() E:{type method C foo() (C.foo())}##star^##}##plus ^## C:{type method C foo() (D.foo())}##star^## D:{type method C foo() (K.E.foo())}##star^##}##plus^##"
+  "{K:{method Void() E:{class method C foo() (C.foo())}} C:{class method C foo() (D.foo())} D:{class method C foo() (K.E.foo())}}",
+  "{K:{method Void() E:{class method C foo() (C.foo())}##star^##}##plus ^## C:{class method C foo() (D.foo())}##star^## D:{class method C foo() (K.E.foo())}##star^##}##plus^##"
   //norm//NO, Norm is executed only in the extracted method
 //},{"This0.C",
-//  "{K:{E:{type method C.foo() foo() (C.foo())}} C:{type method C foo() (D.foo())} D:{type method C foo() (K.E.foo())}}",
-//  "{K:{E:{type method C foo() (C.foo())}##plus^##}##plus ^## C:{type method C foo() (D.foo())}##plus^## D:{type method C foo() (K.E.foo())}##plus^##}##plus^##"
+//  "{K:{E:{class method C.foo() foo() (C.foo())}} C:{class method C foo() (D.foo())} D:{class method C foo() (K.E.foo())}}",
+//  "{K:{E:{class method C foo() (C.foo())}##plus^##}##plus ^## C:{class method C foo() (D.foo())}##plus^## D:{class method C foo() (K.E.foo())}##plus^##}##plus^##"
 //},{"This0.C",
-//  "{K:{E:{type method C.foo().foo() foo() (C.foo())}} C:{type method C foo() (D.foo())} D:{type method C foo() (K.E.foo())}}",
-//  "{K:{E:{type method C foo() (C.foo())}##plus^##}##plus^## C:{type method C foo() (D.foo())}##plus^## D:{type method C foo() (K.E.foo())}##plus^##}##plus^##"
+//  "{K:{E:{class method C.foo().foo() foo() (C.foo())}} C:{class method C foo() (D.foo())} D:{class method C foo() (K.E.foo())}}",
+//  "{K:{E:{class method C foo() (C.foo())}##plus^##}##plus^## C:{class method C foo() (D.foo())}##plus^## D:{class method C foo() (K.E.foo())}##plus^##}##plus^##"
 },{lineNumber(),"This0.C",
   "{C:{ method Void foo() (This0 x= this void)} }",
   "{C:{ method Void foo() (This0 x= this void)}##star^## }##star^##"
@@ -95,13 +95,13 @@ public static class TesFail {
   public static List<Object[]> createData() {
     return Arrays.asList(new Object[][] {
     {"This0.C",
-    "{C:{type method Void foo() (D.foo())} D:{type method Void bar() (void)}}"
+    "{C:{class method Void foo() (D.foo())} D:{class method Void bar() (void)}}"
   },{"This0.C",
-   "{C:{E:{type method Void foo() (This1.foo())} type method Library foo() (D.foo())} D:{type method Void foo() (C.E.foo())}}"
+   "{C:{E:{class method Void foo() (This1.foo())} class method Library foo() (D.foo())} D:{class method Void foo() (C.E.foo())}}"
   },{"This0.C",
-    "{C:{E:{type method Void foo() (This1.foo())} type method Library foo() (D.foo())} D:{type method Void foo() (C.E.foo())}}"
+    "{C:{E:{class method Void foo() (This1.foo())} class method Library foo() (D.foo())} D:{class method Void foo() (C.E.foo())}}"
  },{"This0.C",
-  "{K:{E:{type method Any  foo() (This1.foo())}} C:{type method Void foo() (D.foo())} D:{type method Library foo() (K.E.foo())}}"
+  "{K:{E:{class method Any  foo() (This1.foo())}} C:{class method Void foo() (D.foo())} D:{class method Library foo() (K.E.foo())}}"
 
        }});}
 

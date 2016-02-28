@@ -61,13 +61,13 @@ public class AddDocumentation {
       }
     boolean prState=ExtractInfo.hasPrivateState(cb);
     if(prState){throw Errors42.errorInvalidOnMember(doc);}
-    if(mwt.getMt().getMdf()!=Mdf.Type){throw Errors42.errorInvalidOnMember(doc);}
+    if(mwt.getMt().getMdf()!=Mdf.Class){throw Errors42.errorInvalidOnMember(doc);}
     //is an abstract type method in a non private state class.
     //discover all potential getters/setters
     List<MethodWithType> abstrGetExposerSet = 
         cb.getMs().stream()
         .filter(m->m instanceof MethodWithType).map(m->(MethodWithType)m)
-        .filter(m->m.getMt().getMdf()!=Mdf.Type)
+        .filter(m->m.getMt().getMdf()!=Mdf.Class)
         .filter(m->!m.getInner().isPresent())
         .collect(Collectors.toCollection(ArrayList::new));
     abstrGetExposerSet.add(mwt);//the chosen constructor

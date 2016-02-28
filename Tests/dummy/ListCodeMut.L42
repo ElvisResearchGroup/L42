@@ -1,7 +1,7 @@
-{' generic linked list class, elements of type Elem
+{' generic linked list class, elements of class Elem
  mut _new(var mut Cell head)
 
-type method
+class method
 This ()
   This._new(head:CellEnd())
 mut method
@@ -40,7 +40,7 @@ capsule This ++(read This that) {
   return res
   }
 
-type method
+class method
 mut This #begin()
   This()
 

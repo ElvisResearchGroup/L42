@@ -1,6 +1,6 @@
 {
 Bool:{interface
-  type method This0 ()
+  class method This0 ()
   method Void #checkTrue() exception Void
   method This0 &(This0 that)
   }
@@ -15,11 +15,11 @@ False:{_private() <:Bool
   method &(that) (this)
   }
 ExitCode:{
-  type method
+  class method
   Library normal(){return {'@exitStatus
      '0
     }}
-  type method
+  class method
   Library failure(){return {'@exitStatus
      '42000
     }}

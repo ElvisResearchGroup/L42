@@ -1,7 +1,7 @@
 {
 GetMyName:{
-  type method
-  This2.S (type Any that)
+  class method
+  This2.S (class Any that)
     Introspection(clazz:that).externalTypeToS()
   }
 Message:{Opt:{
@@ -14,39 +14,39 @@ Message:{Opt:{
 Guard:{interface ParseFail:{interface <:Guard}}
 Bool:{
   ParseFail:This2.Message.$<<{<:Guard.ParseFail}
-  type method
+  class method
   Any parseError(This2.S that)
     ParseFail"The provided string is not a valid bool: "[that]""
   }
 N:{
   ParseFail:This2.Message.$<<{<:Guard.ParseFail}
-  type method
+  class method
   Any parseError(This2.S that)
     ParseFail"The provided string is not a valid Int32: "[that]""
   }
 S:{
   SubStringNotPresent:This2.Message.$<<{<:Guard}  
-  type method Void subStringNotPresent(This2.S string, This2.S subString)
+  class method Void subStringNotPresent(This2.S string, This2.S subString)
     error SubStringNotPresent"string["[string]"] do not contains ["[subString]"" 
   }
 Selector:{
   ParseFail:This2.Message.$<<{<:Guard.ParseFail}
-  type method
+  class method
   Any parseError(This2.S that)
     ParseFail"The provided string is not a valid selector: "[that]""
   }
 Path:{
   ParseFail:This2.Message.$<<{<:Guard.ParseFail}
-  type method
+  class method
   Any parseError(This2.S that)
     ParseFail"The provided string is not a valid path: "[that]""
-  type method
+  class method
   Any parseError(This2.S that,This2.Message cause)
     ParseFail"The provided string is not a valid internalized path: "[that]""(cause)
   }
   
   Debug:{
-    type method
+    class method
     Void (Library lib)
       use Alu
         check stringDebug(DeployTowel.binaryReprFrom(lib:lib))
@@ -54,7 +54,7 @@ Path:{
     }
   MetaGuard:{interface
     RecordWrapper:{
-    type method This3.S libToS(Library that) (
+    class method This3.S libToS(Library that) (
       i=Introspection(lib:that)
       ncs=i.nestedClasses().vals()
       This3.S"["[This3.S.nl()]""[with nc in ncs (

@@ -19,9 +19,9 @@ Main:{
   with m in ms.vals() (
    Debug(S"selector is: "[m.selector()]"")
    ti=m.returnType()
-   Debug(S"return type is:"[ti]"")
+   Debug(S"return class is:"[ti]"")
    with parT in m.parameterTypes().vals() (
-     Debug(S"parameter type is:"[parT]"")  
+     Debug(S"parameter class is:"[parT]"")  
      )
    'ti.record().dbg()
    )

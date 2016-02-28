@@ -1,19 +1,19 @@
 {
-  ListCode: { type method Library () ... }
+  ListCode: { class method Library () ... }
 
-  type method
-  Library list(type Any that)
+  class method
+  Library list(class Any that)
     SafeOperatorsAccess.redirect(ListCode(),srcBinaryRepr:S"Elem".binaryRepr(),dest:that)
     
-  type method
-  Library eqList(type Any that) (
+  class method
+  Library eqList(class Any that) (
     lib=SafeOperatorsAccess.compose(left:ListCode(),right:ListCodeEq())
     SafeOperatorsAccess.redirect(lib,srcBinaryRepr:S"Elem".binaryRepr(),dest:that)
     )
   
-  ListCodeEq:{ type method Library() {
+  ListCodeEq:{ class method Library() {
     Elem:{<:Concept.Equals}
-    type method This #begin()
+    class method This #begin()
     method This #add(Elem that)
     method This #end()
     method mut Iterator vals()

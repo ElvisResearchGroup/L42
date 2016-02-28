@@ -5,8 +5,8 @@ Bool:{(Library binaryRepr)<:S.ToS '@private
     using Alu
       check ifInt32EqualDo(n1:this.binaryRepr() n2:0N.binaryRepr())
       exception void
-  type method This true() This(binaryRepr:1N.binaryRepr())
-  type method This false() This(binaryRepr:0N.binaryRepr())
+  class method This true() This(binaryRepr:1N.binaryRepr())
+  class method This false() This(binaryRepr:0N.binaryRepr())
 
   method This &(This that){
     if this (return that)
@@ -28,11 +28,11 @@ Bool:{(Library binaryRepr)<:S.ToS '@private
 
 
 ExitCode:{
-  type method
+  class method
   Library normal() {'@exitStatus
      '0
     }
-  type method
+  class method
   Library failure() {'@exitStatus
      '42000
     }
@@ -45,7 +45,7 @@ Alu:{'@plugin
 
 N:{(Library binaryRepr)<:S.ToS
 
-  type method
+  class method
   N #numberParser(Library that)
     N(binaryRepr:using Alu
       check stringToInt32(that)
@@ -114,7 +114,7 @@ N:{(Library binaryRepr)<:S.ToS
 
 S:{ _private(Library _binaryRepr)<: ToS
 
-  type method This #stringParser(Library that) This._private(_binaryRepr:that)
+  class method This #stringParser(Library that) This._private(_binaryRepr:that)
 
   method Library binaryRepr() this._binaryRepr()
 
@@ -151,7 +151,7 @@ S:{ _private(Library _binaryRepr)<: ToS
       check stringSize(this.binaryRepr())
       error void)
 
-  type method
+  class method
   S doubleQuote()
     S"
     '"
@@ -171,13 +171,13 @@ S:{ _private(Library _binaryRepr)<: ToS
   }
 
 Debug:{_private() '@private
-  type method
+  class method
   Void (S that)
     using Alu
       check stringDebug(that.binaryRepr())
       void
 
-  type method
+  class method
   Void (S fileName, S content)
     using Alu
       check fileDebug(

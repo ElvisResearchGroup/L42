@@ -83,11 +83,11 @@ public class Norm {
        Map.of(pi->of(p,pi),t.getExceptions())
        );
     Optional<ExpCore> eInner =mt.getInner();
-    if(isOnlyType && eInner.isPresent()){Optional.of((ExpCore)forOnlyType);}
+    if(isOnlyType && eInner.isPresent()){Optional.of((ExpCore)forOnlyClass);}
     if(!isOnlyType){eInner = Map.of(e->of(p,e),mt.getInner());}
     return new MethodWithType(mt.getDoc(),mt.getMs(),mt2,eInner,mt.getP());
   }
-  private static final ClassB forOnlyType=new ClassB(Doc.factory("Only the type was asked\n"),Doc.empty(),false,Collections.emptyList(),Collections.emptyList(),new CachedStage());
+  private static final ClassB forOnlyClass=new ClassB(Doc.factory("Only the class obj was asked\n"),Doc.empty(),false,Collections.emptyList(),Collections.emptyList(),new CachedStage());
 
 
   public static NormType of(Program p, Type t) {
@@ -160,60 +160,7 @@ public class Norm {
     result.addAll(path.getRowData().subList(2,path.getRowData().size()));
     return of(p,new Path(result));
   }
-  /*public static void ctorOkAndAllCanBeNormalized(Program p,ClassB ct){
-    //also check that all the members can be normalized!
 
-    if(ct.getStage()==Stage.Less){throw new ErrorMessage.NotOkToStar(ct,null,"Is still StageLess");}
-    if(!Configuration.typeExtraction.isCt(ct)){throw new ErrorMessage.NotOkToStar(ct,null,"Full type can not  be extracted yet");}
-    if(!IsCompiled.of(ct)){throw new ErrorMessage.NotOkToStar(ct,null,"Not fully compiled");}
-    //classTypes well formedness:
-    HashSet<Object>domCt=new HashSet<>();
-    for(Member m:ct.getMs()){m.match(
-      nc->domCt.add(nc.getName()),
-      mi->domCt.add(mi.getS()),
-      mt->domCt.add(mt.getMs())
-      );}
-    if(domCt.size()!=ct.getMs().size()){
-      throw new ErrorMessage.NotWellFormed(ct.accept(new InjectionOnSugar()),null,"repetition in nested class name or method selectors");
-      }
-
-    //All nested class names $\C$ in a class must be unique.
-//All methods in a given class must be uniquely identified by their name $\m$ and the sequence of their parameter names $\xMany$.
-    checkCtorAndThatAllCanBeNormalized(p, ct);
-  }*/
-  /*public static void checkCtorAndThatAllCanBeNormalized(Program p, ClassB ct) {
-    MethodWithType ctor=null;
-    Program p2=p.addAtTop(ct);
-    for(Member m:ct.getMs()){
-      if(!(m instanceof MethodWithType)){continue;}
-      MethodWithType mt=(MethodWithType)m;
-      mt = normMethodOrRetrow(ct, mt, p2,false);
-      if(mt.getMt().getMdf()!=Mdf.Type){continue;}
-      if(!mt.isFieldGenerated()){continue;}
-      ctor=mt;
-      }
-    if(ctor==null){return;}
-    //ctor = normMethodOrRetrow(ct, ctor, p2);
-    boolean haveNotImmOrType=false;
-    boolean haveLentRead=false;
-    for(Type t:ctor.getMt().getTs()){
-      assert t instanceof NormType;
-      NormType nt=(NormType)t;
-      if(nt.getMdf()!=Mdf.Immutable&&nt.getMdf()!=Mdf.Type){
-        haveNotImmOrType=true;
-        }
-      if(nt.getMdf()==Mdf.Lent||nt.getMdf()==Mdf.Readable){
-        haveLentRead=true;
-        }
-      }
-    Mdf mdf=((NormType)ctor.getMt().getReturnType()).getMdf();
-    if(mdf==Mdf.Capsule||mdf==Mdf.Immutable){
-      if(haveNotImmOrType){throw new ErrorMessage.NotOkToStar(ct,ctor,"Not valid to declare immutable or capsule constructor");}
-    }
-    if(haveLentRead){
-      if(mdf!=Mdf.Lent && mdf!=Mdf.Readable){throw new ErrorMessage.NotOkToStar(ct,ctor,"Declared constructor must be lent or read");}
-    }
-  }*/
   public static MethodWithType normMethodOrRetrow(ClassB ct,
       MethodWithType mt, Program p2,boolean isOnlyType) {
     try{mt=of(p2, mt,isOnlyType);}

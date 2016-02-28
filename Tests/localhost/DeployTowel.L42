@@ -1,42 +1,42 @@
 {
 ExitCode:{
-type method 
+class method 
 Library normal() {'@exitStatus
 '0
 }
-type method 
+class method 
 Library failure() {'@exitStatus
 '42000
 }}
 DeployTowel:{
-type method '(Any fileName)
+class method '(Any fileName)
 This0 #apply(This2.Url fileName) 
 mut method '(Any fileName)
 This2.Url #fileName() 
 read method '(Any fileName)
 This2.Url fileName() 
-type method 
+class method 
 Library binaryReprFrom(Library lib) (
   Library norm=use This0.SafeOperatorsAccess__38_0 check privateNormalize(that:lib) error {
-  type method 
+  class method 
   This0 privateNormalize() }
   Library record=use This0.SafeOperatorsAccess__38_0 check introspectLibraryReport(that:norm, path:{'@stringU
   'This
   }) error {
-  type method 
+  class method 
   This0 introspectLibraryReport() }
   use This0.SafeOperatorsAccess__38_0 check introspectLibraryDocAsString(that:record, path:{'@stringU
   'AllAsString
   }, annotationN:{'@int32
   '0
   }) error {
-  type method 
+  class method 
   This0 introspectLibraryDocAsString() }
   )
 method 
 Library #leftleft(Library that) (
   Void unused=use This2.Alu check fileDebug(fileName:this.fileName().binaryRepr(), content:This0.binaryReprFrom(lib:that)) error {
-  type method 
+  class method 
   This0 fileDebug() }
   This1.ExitCode.normal()
   )

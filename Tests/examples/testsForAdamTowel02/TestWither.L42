@@ -6,7 +6,7 @@ ConstructorUnavailable:Message.$<<{<:MetaGuard}
 
 Selectors:LinkedList.list(Selector)
 
-type method
+class method
 Library<<(Library that) 
 exception ConstructorUnavailable, MetaGuard{
   i=Introspection(lib:that)
@@ -31,7 +31,7 @@ exception ConstructorUnavailable, MetaGuard{
   return acc
   }
 
-type method 
+class method 
 Library addWithAllArgs(Library that,Introspection.Method k)
 exception ConstructorUnavailable, MetaGuard{
   p=Path"This"  

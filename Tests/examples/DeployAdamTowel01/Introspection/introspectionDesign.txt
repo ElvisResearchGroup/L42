@@ -1,7 +1,7 @@
 Introspection:{
-  type method NestedClass (Library lib)
-  type method NestedClass (Library lib,Path path) exception MemberUnavailable
-  type method NestedClass (type Any cls)
+  class method NestedClass (Library lib)
+  class method NestedClass (Library lib,Path path) exception MemberUnavailable
+  class method NestedClass (class Any cls)
 
   Member:{interface}
   NestedClass:{<:Member
@@ -10,7 +10,7 @@ Introspection:{
     method Doc nestedDoc()' error  for This
     method Doc doc() 'of the library literal
     method Path pathFromRoot() ' invariant NestedClass(...).nestedClassFromRoot(path).pathFromRoot()==path
-    method type Any externalType() 'error if  root()!=this or root() is literal, otherwise contains the type Any used to initialize root/this.
+    method class Any externalType() 'error if  root()!=this or root() is literal, otherwise contains the class Any used to initialize root/this.
     method S classKind()
     method S allAsString()  'just the library literal
     method Members members()

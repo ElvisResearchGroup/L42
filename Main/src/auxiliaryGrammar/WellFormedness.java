@@ -202,7 +202,7 @@ public class WellFormedness {
     if(fnames.size()!=h.getFs().size()){
       throw new ErrorMessage.NotWellFormedMsk(cb,null, "Some field name is repeated.");
       }
-    if(h.getMdf()==Mdf.Type){
+    if(h.getMdf()==Mdf.Class){
       throw new ErrorMessage.NotWellFormedMsk(cb,null, "Constructors can not return types");
       }
     boolean haveVar=false;

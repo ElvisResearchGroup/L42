@@ -160,7 +160,7 @@ public class EncodingHelper{
   public static Ast.MethodType mtType(Path result){
     List<Doc> docs=new ArrayList<>();
     List<Type> ts=new ArrayList<>();
-    ts.add(new Ast.NormType(Mdf.Type,Path.Any(),Ph.None));
+    ts.add(new Ast.NormType(Mdf.Class,Path.Any(),Ph.None));
     docs.add(Doc.empty());
     return new Ast.MethodType(Doc.empty(),Mdf.Immutable,ts,docs,new Ast.NormType(Mdf.Immutable,result,Ph.None),Collections.emptyList());    
   }

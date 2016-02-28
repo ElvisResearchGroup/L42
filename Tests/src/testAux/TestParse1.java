@@ -29,8 +29,8 @@ public class TestParse1 {
 //},{lineNumber(),"{'@ExpectedClass :( \n}"//TODO: the ( is turned in \t, and \t is not accepted in comments.
 //    more important: should ' be accepted in single line strings?
 },{lineNumber(),TestHelper.multiLine("{"
-        ,"C:{ k() type method Library ok() ({'@OK\n})"
-        ,"        type method Library ko() ({'@KO\n})"
+        ,"C:{ k() class method Library ok() ({'@OK\n})"
+        ,"        class method Library ko() ({'@KO\n})"
         ,"  }"
         ,"I:{interface }"
         ,"AI:{ k()<:This1.I}"
@@ -44,12 +44,12 @@ public class TestParse1 {
   },{lineNumber(),"{ reuse L42.is/nanoBase }"
   },{lineNumber(),"{ reuse L42.is/base(2) }"//I test that that is a well formed url
   },{lineNumber(),"{ reuse L42.is/nanoBase \n method foo() (void)}"
-},{lineNumber(),"{ C:{k() type method Library m() ({'@OK\n} )} D:C.m() }"
-},{lineNumber(),"{outer() C: {new() type method Library m() ({inner()})} D: C.m()}"
-},{lineNumber(),"{outer() C: {new() type method Library m() ({inner()})} D: ({inner()})}"
+},{lineNumber(),"{ C:{k() class method Library m() ({'@OK\n} )} D:C.m() }"
+},{lineNumber(),"{outer() C: {new() class method Library m() ({inner()})} D: C.m()}"
+},{lineNumber(),"{outer() C: {new() class method Library m() ({inner()})} D: ({inner()})}"
 
 },{lineNumber()," (This0.C).foo(bar:This0.C)"
-},{lineNumber()," (type This0.C c=(This0.C) c.foo(bar:This0.C))"
+},{lineNumber()," (class This0.C c=(This0.C) c.foo(bar:This0.C))"
 },{lineNumber()," (This0.C c=This0.C.new() This0.D r=This0.D.new(x:c) (r).x())"
 },{lineNumber()," (This0.C c=This0.C.new() This0.D r=This0.D.new(x:c) (This0.D d=(r) d.x()))"
 },{lineNumber(),"void"
@@ -127,7 +127,7 @@ public class TestParse1 {
 },{lineNumber()," (a-a)()"
 },{lineNumber(),  "{ method () (b)}"
 },{lineNumber(),  "{a( This0.A a)"
-    +" type method This0 a( This0.A a) ##field"
+    +" class method This0 a( This0.A a) ##field"
     +" mut method This0.A a() ##field"
     +" read method This0.A #a() ##field"
     +" mut method Void a(This0.A that) ##field"

@@ -1,27 +1,27 @@
 { _private(Library _binaryRepr)<:Concept.ToS Concept.Equals Concept.Named'@private
   method myName()GetMyName(This)
 
-  type method
+  class method
   This fromS(Concept.ToS that)
     This.#from(binaryRepr: that.toS().binaryRepr())
   
-  type method This #from(S.SBuilder builder) 
+  class method This #from(S.SBuilder builder) 
     This.#from(binaryRepr: builder.binaryRepr())
   
-  type method mut S.SBuilder #builder() S.SBuilder.empty()
+  class method mut S.SBuilder #builder() S.SBuilder.empty()
   
-  type method
+  class method
   This #from(Library binaryRepr) (
     use SafeOperators
       check ifInvalidDo(selector:binaryRepr)
       error This.parseError(S.#from(binaryRepr: binaryRepr))
     This._private(_binaryRepr:binaryRepr)
     )
-  type method
+  class method
   Any parseError(S that)
     S"Selector.UnsatisfactoryErrorToAvoidCycle, replace in AdamT2"
   
-  type method 
+  class method 
   This from(S name,Strings names) {
     if names.isEmpty() (return This.fromS(name++S"()"))
     pars=S"("[with n in names.vals() (use[n++S","])]""
@@ -83,7 +83,7 @@
     return result.#end()'reverse the linked list
   }
   
-  type method
+  class method
   Selector fresh(Selector that) {
     var name=that.name()
     if name==S"" (name:= S"fresh")

@@ -15,14 +15,14 @@ import auxiliaryGrammar.Program;
 
 public class TranslateClass {
   public static void of(Program p, String s, ClassB ct, StringBuilder res) {
-  //classes that should exists only as type any for metaprogramming, are also interfaces here
+  //classes that should exists only as class obj any for metaprogramming, are also interfaces here
     boolean isInterface=getClassOpen(s,ct,res);
     res.append("{\n");
     if(!isInterface){
       generateClassFacade(s, ct, res);
     }
     else{
-      generateInterfaceFacade(s, ct, res);      
+      generateInterfaceFacade(s, ct, res);
     }
     getMethods(p,ct,res,isInterface);
     res.append("}");
@@ -52,7 +52,7 @@ public class TranslateClass {
   private static void getTypeForNotInstantiableClass(String s, StringBuilder res) {
       assert !s.contains("%"):
           "break";
-    res.append("public static final "+s+" type=new "+s+"();");    
+    res.append("public static final "+s+" type=new "+s+"();");
   }
 
   private static void getITReverter(String s,StringBuilder res) {
@@ -70,7 +70,7 @@ public class TranslateClass {
     res.append("throw new Error(\"Impossible to revert an instance of a not instantiable class, how you get this instance?\");");
     res.append("}\n");
   }
-  
+
   private static void getReverter(String s, MethodWithType ctor,StringBuilder res) {
     res.append("public ast.ExpCore revert(){\n");
     res.append("ast.Ast.Path receiver=ast.Ast.Path.parse(\"");
@@ -108,7 +108,7 @@ public class TranslateClass {
       //if (pi.equals(Path.outer(0))){continue;}
       res.append(", ");
       res.append(Resources.nameOf(pi));
-    }      
+    }
     return isInterface;
   }
 
@@ -117,9 +117,9 @@ public class TranslateClass {
       assert m instanceof MethodWithType;
       MethodWithType mt=(MethodWithType)m;
       if(mt.getInner().isPresent()){continue;}
-      if(mt.getMt().getMdf()!=Ast.Mdf.Type){continue;}
-      return mt;      
-    }   
+      if(mt.getMt().getMdf()!=Ast.Mdf.Class){continue;}
+      return mt;
+    }
     return null;
   }
   private static void getFields(MethodWithType ctor, StringBuilder res) {
@@ -172,16 +172,16 @@ public class TranslateClass {
       assert m instanceof MethodWithType;
       MethodWithType mt=(MethodWithType)m;
       if(mt.getInner().isPresent()){continue;}
-      if(mt.getMt().getMdf()==Ast.Mdf.Type){continue;}//constructor
+      if(mt.getMt().getMdf()==Ast.Mdf.Class){continue;}//constructor
       if(mt.getMt().getTs().isEmpty()){
         getGetterOrExposer(mt,res);
       }
       else {getSetter(mt,res);}
-    }   
-   
+    }
+
   }
 
-  
+
   private static void getSetter(MethodWithType mt, StringBuilder res) {
     getMethodHeader(mt, res);
     res.append("{this.");
@@ -226,7 +226,7 @@ public class TranslateClass {
     res.append("  public Ph() {super(");
     StringBuilders.formatSequence(res, ctor.getMs().getNames().iterator(),
       ", ",n->res.append("null"));
-    res.append(");}\n  }\n");    
+    res.append(");}\n  }\n");
     }
   private static void getPhNestedNotIntantiable(String s,ClassB cb, StringBuilder res,boolean isInterface) {
     if(isInterface){
@@ -247,13 +247,13 @@ public class TranslateClass {
       getMethodHeader(mt, res);
       res.append("{throw new Error(\"PhInvocation\");}\n");
     }
-    res.append("  public Ph(){ }\n  }\n");    
+    res.append("  public Ph(){ }\n  }\n");
     }
 
   private static void getType(String s, MethodWithType ctor, StringBuilder res) {
     res.append("public static final "+s+" type=new "+s+"(");
     StringBuilders.formatSequence(res,ctor.getMs().getNames().iterator(),
-        ", ",n->res.append("null"));  
+        ", ",n->res.append("null"));
     res.append(");\n");
     getMethodHeader(ctor, res);
     res.append("{return new "+s+"(");
@@ -268,7 +268,7 @@ public class TranslateClass {
       MethodWithType mt=(MethodWithType)m;
       getMethodHeader(mt, res);
       res.append("{throw new Error(\""+"Calling an interface method"+":"+mt.getMs()+"\");}\n");
-      }    
+      }
     res.append("};\n");
     }
 
@@ -278,7 +278,7 @@ public class TranslateClass {
       MethodWithType mt=(MethodWithType)m;
       if( !isInterface && !mt.getInner().isPresent()){continue;}
       //if(mt.getMt().getMdf()!=Ast.Mdf.Type){continue;}
-      getMethod(p,mt,res);      
+      getMethod(p,mt,res);
     }
   }
   private static void getMethod(Program p,MethodWithType mt, StringBuilder res) {

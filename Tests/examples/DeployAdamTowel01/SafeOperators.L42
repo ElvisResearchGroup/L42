@@ -1,13 +1,13 @@
 {'@plugin
   'L42.is/connected/withSafeOperators
 
-  type method
+  class method
   Library compose(Library left,Library right)
     use This
       check compose(left:left,right:right)
       error System.Guard.PluginFailure"SafeOperators.compose"
 
-  type method
+  class method
   Library renameClass(Library that,Path src, Path dest)
     use This
       check renameClass(that
@@ -16,7 +16,7 @@
         )
       error System.Guard.PluginFailure"SafeOperators.renameClass"
 
-  type method
+  class method
   Library renameMethod(Library that,Path path,Selector src,Selector dest)
     use This
       check renameMethod(that
@@ -25,7 +25,7 @@
         dest:dest.binaryRepr()
         )
       error System.Guard.PluginFailure"SafeOperators.renameMethod"
-  type method
+  class method
   Library sumMethods(Library that,Path path,Selector src1,Selector src2,Selector dest, S name)
     use This
       check sumMethods(that
@@ -37,8 +37,8 @@
         )
       error System.Guard.PluginFailure"SafeOperators.renameMethod"
 
-  type method
-  Library redirect(Library that,Path src, type Any dest)
+  class method
+  Library redirect(Library that,Path src, class Any dest)
     use This
       check redirect(that
         src:src.binaryRepr()
@@ -46,7 +46,7 @@
         )
       error System.Guard.PluginFailure"SafeOperators.redirect"
 
-  type method
+  class method
   Library removeImplementation(Library that,Path path)
     use This
       check removeImplementation(that
@@ -54,7 +54,7 @@
         )
       error System.Guard.PluginFailure"SafeOperators.removeImplementation(path)"
   
-  type method
+  class method
   Library moveImplementation(Library that,Path path,Selector src,Selector dest)
     use This
       check moveImplementation(that
@@ -64,7 +64,7 @@
         )
       error System.Guard.PluginFailure"SafeOperators.moveImplementation"
   
-  type method
+  class method
   Library removeImplementation(Library that,Path path,Selector selector)
     use This
       check removeImplementation(that
@@ -73,7 +73,7 @@
         )
       error System.Guard.PluginFailure"SafeOperators.removeImplementation(path,selector)"
 
-  type method
+  class method
   Library addDocumentation(Library that,Path path,Introspection.Doc doc)
     use This
       check addDocumentation(that
@@ -82,7 +82,7 @@
         )
       error System.Guard.PluginFailure"SafeOperators.addDocumentation(path)"
 
-  type method
+  class method
   Library addDocumentation(Library that,Path path,Selector selector,Introspection.Doc doc)
     use This
       check addDocumentation(that
@@ -92,7 +92,7 @@
         )
       error System.Guard.PluginFailure"SafeOperators.addDocumentation(path,selector)"
 
-  type method
+  class method
   S freshName(S that) S.#from(binaryRepr: use This
       check freshName(that.binaryRepr())
       error System.Guard.PluginFailure"SafeOperators.freshName(that)"

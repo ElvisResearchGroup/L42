@@ -1,7 +1,7 @@
 { reuse L42.is/tinyBase0
 
 Load:{
-  type method This #begin()'constructor
+  class method This #begin()'constructor
   method This #end() this
   method Library < (Library that) {
     'assume that have abstract Bool N and S
@@ -16,7 +16,7 @@ Load:{
 }
 
 Opt:{unused()
-  type method Library (type Any that) 
+  class method Library (class Any that) 
     Adapt[Name"T" into:Name(that);]<{#new(TOpt that)
       T:{}
       TOpt:{interface method T get() }
@@ -28,15 +28,15 @@ Opt:{unused()
         return Bool.true()
         catch error (on Any return Bool.false())
         }
-      type method This () This.#new(TEmpty())
-      type method This (T that) This.#new(TOf(that))
+      class method This () This.#new(TEmpty())
+      class method This (T that) This.#new(TOf(that))
       }
   }
 Use:{ (Resolver resolver,Libs myLibs)
   Resolver: Opt(Library)
   Libs:'@private
     Collections.list(Library)
-  type method
+  class method
   This () This(resolver:Resolver(), myLibs:Libs[])
   
   method
@@ -46,7 +46,7 @@ Use:{ (Resolver resolver,Libs myLibs)
     )
   method This #add(Library resolver)
     This(resolver:Resolver(resolver),myLibs:this.myLibs())
-  type method
+  class method
   This #begin() This()
   
   method
@@ -98,7 +98,7 @@ Use:{ (Resolver resolver,Libs myLibs)
   }
 Adapt:{(Library adapter)'@private
 
-  type method
+  class method
   This () This(adapter:{})
   
   method
@@ -119,7 +119,7 @@ Adapt:{(Library adapter)'@private
     lib=IntrospectionPlugin.sumLib(l1:this.adapter(), l2:map2)
     return This(adapter:lib)
     }
-  type method
+  class method
   This #begin() This()
   
   method
@@ -135,7 +135,7 @@ Adapt:{(Library adapter)'@private
     IntrospectionPlugin.adaptLib(l1:that, l2:this.adapter())
   }
 MakePrivate:{
-type method
+class method
   Library (Name that, Library into){
     if that.isExternalPathName() (error S"start name must be internal")
     if !that.isInternalPathName() (return This(that:that,of:Name"This", into:into))
@@ -144,7 +144,7 @@ type method
     fName=Name(adapter:IntrospectionPlugin.getFreshName(that.adapter()))
     return Adapt[that into:fName]<res
     }
-  type method
+  class method
     Library (Name that, Name of, Library into){
     pName=IntrospectionPlugin.adaptLib(
       l1:that.adapter(), l2:of.adapter())
@@ -156,7 +156,7 @@ type method
   }
 
 Data:{()
-  type method This #begin() This()
+  class method This #begin() This()
   method This #end() this
   method Library < (Library that) Use[this.addEquals(l:that);]<that
   method Library equalsOnField(Name c,Name n)

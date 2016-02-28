@@ -38,7 +38,7 @@ method Bool hasExternalType(){
     )
   return Bool.false()
   }
-method type Any externalType(){
+method class Any externalType(){
   if this.path()!=Path"This" (
     error Guard.Operation(text:S"NestedClass.externalType() The NestedClass Object refers to "[this.path()]"")
     )
@@ -169,7 +169,7 @@ Methods state() {
   stateCandidate=this.stateCandidate()
   constr=(
     classMethods=Methods[with m in stateCandidate.vals() (
-      if m.thisMdf()==S"type" (use[m])
+      if m.thisMdf()==S"class" (use[m])
       )]
     if classMethods.isEmpty() (return result)
     if !classMethods.pop().isEmpty() (return result)
