@@ -154,7 +154,7 @@ public class TestParseAndDoAst {
 },{"a**b**c**d","(a**(b**(c**d)))"
 },{"a**b**c**d**e","(a**(b**(c**(d**e))))"
 },{"a**b<<c++d>>e","(a**(b<<(c++(d>>e))))"
-  
+
 },{" (a=b c)","Expression.RoundBlock(doc=, inner=c, contents=[Expression.BlockContent(decs=[Ast.VarDecXE(isVar=false, t=Optional.empty, x=a, inner=b)], _catch=[])])"
 },{" (var a=b c)","Expression.RoundBlock(doc=, inner=c, contents=[Expression.BlockContent(decs=[Ast.VarDecXE(isVar=true, t=Optional.empty, x=a, inner=b)], _catch=[])])"
 },{" (A::b() a=b c)","Expression.RoundBlock(doc=, inner=c, contents=[Expression.BlockContent(decs=[Ast.VarDecXE(isVar=false, t=Optional[Ast.HistoricType(path=A, selectors=[Ast.MethodSelectorX(ms=b(), x=)], forcePlaceholder=false)], x=a, inner=b)], _catch=[])])"

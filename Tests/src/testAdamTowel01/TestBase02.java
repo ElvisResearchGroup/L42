@@ -20,7 +20,7 @@ public class TestBase02 {
     //TestHelper.configureForTest();
     System.out.println("AssertionsDisabled");
     //ClassLoader.getSystemClassLoader().setDefaultAssertionStatus(false);
-    L42.trustPluginsAndFinalProgram=true;
+    //L42.trustPluginsAndFinalProgram=true;
     //_02_00DeployAdamTowel02();
     }
   //not run when single test executed?

@@ -529,6 +529,7 @@ public class ToFormattedText implements Visitor<Void>{
         return null;
       },
       tH->{
+        if(tH.isForcePlaceholder()){c("fwd ");}
         visit(tH.getPath());
         for( MethodSelectorX s:tH.getSelectors()){
           c("::");
@@ -538,7 +539,6 @@ public class ToFormattedText implements Visitor<Void>{
             c(s.getX());
           }
         }
-        if(tH.isForcePlaceholder()){c("^");}
         return null;
       });
   }

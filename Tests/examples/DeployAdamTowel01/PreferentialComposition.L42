@@ -15,7 +15,7 @@ SrcDests renameMap(Library that,S prefix,Introspection.NestedClasses intros) {
   with intro in intros.vals() (
     acc++=this.renameMap(that,prefix:prefix,
       path:intro.pathFromRoot()
-      ms:intro.methods()) 
+      ms:intro.methods())
     )
   return acc
   }
@@ -29,7 +29,7 @@ Library that,S prefix,Path path, Introspection.Methods ms) {
       destSel=Selector.fromS(prefix++meth.selector().toS())
       use[SrcDest(path:path,src:meth.selector(),dest:destSel)]
       ))]
-  }      
+  }
 class method
 Bool needRename(
 Introspection.NestedClass that,Introspection.Method meth) {
@@ -39,10 +39,10 @@ Introspection.NestedClass that,Introspection.Method meth) {
   catch exception  MetaGuard.MemberUnavailable
     return Bool.false()
   if meth2.isPrivate() (return Bool.false() )
-  if meth2.methodKind()==S"AbstractMethod" (return Bool.false() )    
+  if meth2.methodKind()==S"AbstractMethod" (return Bool.false() )
   return Bool.true()
   }
- 
+
 class method
 Library <<(Library that) exception MetaGuard.ClassClash,MetaGuard.MethodClash
   Refactor.compose(left:that,right:{
@@ -52,7 +52,7 @@ Library <<(Library that) exception MetaGuard.ClassClash,MetaGuard.MethodClash
   method
   This #add(Library that)
     This(myLibs:this.myLibs().#add(that))
-    
+
   class method
   This #begin()
     This(myLibs:Libs[])
@@ -61,7 +61,7 @@ Library <<(Library that) exception MetaGuard.ClassClash,MetaGuard.MethodClash
   This #end()
     This(myLibs:this.myLibs().#end())
 
-    
+
   method
   Library << (Library that)
   exception MetaGuard.ClassClash,MetaGuard.MethodClash{
@@ -84,7 +84,7 @@ Library <<(Library that) exception MetaGuard.ClassClash,MetaGuard.MethodClash
     return acc
     error on MetaGuard.MemberUnavailable
       Assert.CodeNotReachable"PreferentialComposition1"
-    }  
+    }
   method This ++ (This that)
     This(myLibs:this.myLibs()++that.myLibs())
   })

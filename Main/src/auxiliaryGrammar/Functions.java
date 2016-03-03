@@ -1,6 +1,7 @@
 package auxiliaryGrammar;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -355,61 +356,97 @@ public static List<InvalidMwtAsState> coherent(Program p, ClassB ct) {
   if(!mwtsNI.isEmpty()){
     return mwtsNI.stream().map(m->new InvalidMwtAsState("Method from interface not implemented",m)).collect(Collectors.toList());
   }
-  List<MethodWithType> mwts= collectAbstractMethods(ct);
+  List<MethodWithType> mwts= collectAbstractMethods(p1,ct);
   if(mwts.isEmpty()){return Collections.emptyList();}
   List<MethodWithType> typeMethods=new ArrayList<>();
   for(MethodWithType mwt:mwts){if(mwt.getMt().getMdf()==Ast.Mdf.Class){typeMethods.add(mwt);}}
-  if(typeMethods.size()>1){
+  /*if(typeMethods.size()>1){
     return mwts.stream().map(m->new InvalidMwtAsState("More than one constructor candidate",m)).collect(Collectors.toList());
-    }
+    }*/
+
   if(typeMethods.size()==0){
     return mwts.stream().map(m->new InvalidMwtAsState("No constructor candidate",m)).collect(Collectors.toList());
     }
-
-  MethodWithType constr=typeMethods.get(0);
-  mwts.remove(constr);
-  constr=Norm.of(p1, constr,true);
-  NormType retType=(NormType)constr.getMt().getReturnType();
-  if(!retType.getPath().equals(Path.outer(0))){
+  MethodWithType mutK=null;
+  MethodWithType lentK=null;
+  MethodWithType readK=null;
+  MethodWithType immK=null;
+  List<InvalidMwtAsState> result=new ArrayList<>();
+  for(MethodWithType constr: typeMethods){
+    mwts.remove(constr);
+    NormType retType=(NormType)constr.getMt().getReturnType();
+    if(!retType.getPath().equals(Path.outer(0))){
     return Collections.singletonList(new InvalidMwtAsState(" return path must be This",constr));
     }
-  if(retType.getPh()!=Ph.None){
-    return Collections.singletonList(new InvalidMwtAsState(" return type fwd invalid for constructor",constr));
-  }
-  boolean mustBeLentRead=false;
-  boolean canBeImmCaps=true;
-  List<InvalidMwtAsState> result=new ArrayList<>();
-  for(Type t:constr.getMt().getTs()){
-    Mdf tMdf=((NormType)t).getMdf();
-    if(tMdf!=Mdf.Capsule && tMdf!=Mdf.Immutable  && tMdf!=Mdf.Class){canBeImmCaps=false;}
-    if(tMdf==Mdf.Lent ||tMdf==Mdf.Readable){mustBeLentRead=true;}
-  }
-  Mdf retMdf=retType.getMdf();
-  if(mustBeLentRead){
-    if(retMdf!=Mdf.Lent && retMdf!=Mdf.Readable){
-      result.add(new InvalidMwtAsState(" a field is lent/read, constructor result must be lent",constr));
-      }
-  }
-  if(!canBeImmCaps){
-    if(retMdf==Mdf.Immutable || retMdf==Mdf.Capsule){
-      result.add(new InvalidMwtAsState(" field shape prevent immutable/capsule constructor result",constr));
-      }
-  }
-  //now we have a fully normalized constr
-  for(MethodWithType mwt:mwts){//for all the other h
+    if(retType.getPh()!=Ph.None){
+      return Collections.singletonList(new InvalidMwtAsState(" return type fwd invalid for constructor",constr));
+    }
+    if(retType.getMdf()==Mdf.Mutable){ mutK=setIfFree(mutK,constr,result);}
+    if(retType.getMdf()==Mdf.Lent){ lentK=setIfFree(lentK,constr,result);}
+    if(retType.getMdf()==Mdf.Readable){ readK=setIfFree(readK,constr,result);}
+    if(retType.getMdf()==Mdf.Immutable){ immK=setIfFree(immK,constr,result);}
+    }
+  //we know typeMethods is not empty
+  MethodWithType oneK = mutK!=null?mutK:(lentK!=null?lentK:(readK!=null?readK:immK));
+  assert oneK!=null;
+  List<Path> paths = oneK.getMt().getTs().stream().map(t->((NormType)t).getPath()).collect(Collectors.toList());
+  kFieldEquals(oneK,paths,mutK,result);
+  kFieldEquals(oneK,paths,lentK,result);
+  kFieldEquals(oneK,paths,readK,result);
+  kFieldEquals(oneK,paths,immK,result);
+  kNotHave(mutK,result,Mdf.Capsule,Mdf.Lent,Mdf.Readable);
+  kNotHave(lentK,result,Mdf.Capsule,Mdf.Mutable);
+  kNotHave(readK,result,Mdf.Capsule,Mdf.Mutable,Mdf.Lent);
+  kNotHave(immK,result,Mdf.Capsule,Mdf.Mutable,Mdf.Lent,Mdf.Readable);
+  for(  MethodWithType mwt:mwts){//for all the other h
     String name=mwt.getMs().getName();
     if(name.startsWith("#")){name=name.substring(1);}
     //select satisfying parameter
-    NormType nt=selectCorrespondingFieldType(constr,  name);
+    NormType nt=selectCorrespondingFieldType(oneK,  name);
     if(nt==null){
       result.add(new InvalidMwtAsState(" Abstract method not a field of the constructor",mwt));
       }
-    else if(!coherent(p1, nt.getMdf(),nt.getPath(),mwt)){
+    else if(!coherent(p1, nt,mwt,oneK)){
       result.add(new InvalidMwtAsState(" Abstract method has invalid shape to be part of the state",mwt));
       }
     }
   return result;
   }
+  private static void kNotHave(MethodWithType constr, List<InvalidMwtAsState> result, Mdf... mdfs) {
+    if(constr==null){return;}
+    for(Type t:constr.getMt().getTs()){
+      NormType nt=(NormType)t;
+      if(Arrays.asList(mdfs).contains(nt.getMdf())){
+        result.add(new InvalidMwtAsState(" constructor has invalid mdf for its fields ",constr));
+      }
+    }
+  }
+
+private static MethodWithType setIfFree(MethodWithType oldK, MethodWithType constr,List<InvalidMwtAsState> result) {
+  if (oldK==null){return constr;}
+  result.add(new InvalidMwtAsState(" More than one constructor with the same return type:",oldK));
+  result.add(new InvalidMwtAsState(" More than one constructor with the same return type:",constr));
+  return oldK;
+}
+private static Path mapHelp(MethodWithType oneK,  MethodWithType otherK, List<InvalidMwtAsState> result,Type t){
+  NormType nt=(NormType)t;
+  if(nt.getPh()!=Ph.Ph){result.add(new InvalidMwtAsState(" constructor parameters must all be fwd ",otherK ));}
+  return nt.getPath();
+}
+private static void kFieldEquals(MethodWithType oneK, List<Path> paths, MethodWithType otherK, List<InvalidMwtAsState> result) {
+  if (otherK==null){return;}
+  if (!oneK.getMs().getNames().equals(otherK.getMs().getNames())){
+    result.add(new InvalidMwtAsState(" Different number or names of parameters for two candidate constructors: ",oneK));
+    result.add(new InvalidMwtAsState(" Different number or names of parameters for two candidate constructors: ",otherK));
+  }
+  List<Path> otherP = otherK.getMt().getTs().stream().map(t->mapHelp(oneK,otherK,result,t)).collect(Collectors.toList());
+
+  if(!paths.equals(otherP)){
+    result.add(new InvalidMwtAsState(" Different number or paths of parameters for two candidate constructors: ",oneK));
+    result.add(new InvalidMwtAsState(" Different number or paths of parameters for two candidate constructors: ",otherK));
+  }
+}
+
 /**null if no corresponding field is found*/
 private static NormType selectCorrespondingFieldType(MethodWithType constr, String name) {
   int i=-1;for(String ni:constr.getMs().getNames()){i+=1;
@@ -419,9 +456,47 @@ private static NormType selectCorrespondingFieldType(MethodWithType constr, Stri
     }
   return null;
 }
-public static boolean coherent(Program p, Mdf mdf, Path path, MethodWithType mwt) {
+public static boolean getterOkMdf(Mdf k,Mdf mnt,Mdf expected){
+  switch (mnt){
+    case Class:return Mdf.Class==expected;
+    case Immutable:
+      if (k==Mdf.Immutable){return Mdf.Readable==expected || Mdf.Immutable==expected;}
+      return Mdf.Immutable==expected;
+    case Mutable:
+    case Lent:
+    case Readable:return Mdf.Readable==expected;
+    default: throw Assertions.codeNotReachable();
+  }
+}
+public static boolean exposerSetterOkMdf(Mdf k,Mdf mnt,Mdf expected){
+  if( k==Mdf.Immutable){return false;}
+  if( k==Mdf.Readable){return false;}
+  switch (mnt){
+    case Class:
+    case Immutable:
+    case Mutable:
+    case Readable: return mnt==expected;
+    case Lent:if(k==Mdf.Lent){return Mdf.Lent==expected || Mdf.Mutable==expected;}
+    default: throw Assertions.codeNotReachable();
+  }
+}
+public static boolean coherent(Program p, NormType nt, MethodWithType mwt,MethodWithType oneK) {
   if(!checkVoidAndThatOk(p,mwt)){return false;}
-  //group1
+  //itid=imm->imm,type->type
+  //getter: read to itid,*->read/itid,*->read/tid, imm->(read/imm)
+  //exposer mut to allid/lent->(lent,mut),allid/ NO/NO
+  //setter is mut from allid/lent->(lent,mut),allid/NO/NO
+  Mdf kMdf=((NormType)oneK.getMt().getReturnType()).getMdf();
+  Mdf expected=((NormType)mwt.getMt().getReturnType()).getMdf();
+  if(mwt.getMt().getMdf()==Mdf.Readable){
+    return getterOkMdf(kMdf,nt.getMdf(),expected);
+  }
+  if(!mwt.getMt().getTs().isEmpty()){
+    expected=((NormType)mwt.getMt().getTs().get(0)).getMdf();
+    }
+  return exposerSetterOkMdf(kMdf,nt.getMdf(),expected);
+
+  /*//group1
   if(mdf==Mdf.Class || mdf==Mdf.Immutable || mdf==Mdf.Readable){
   //case a
     if(mwt.getMt().getTs().isEmpty()){ return okSubtypeGet(p, mdf, path, mwt); }
@@ -456,14 +531,15 @@ public static boolean coherent(Program p, Mdf mdf, Path path, MethodWithType mwt
     //h
     return okSubtypeSet(p,Mdf.Mutable,path,mwt);
   }
-  return false;
+  return false;*/
 }
+/*
 private static boolean okSubtypeGet(Program p, Mdf mdf, Path path, MethodWithType mwt) {
   return isSubtype(p, new NormType(mdf,path,Ph.None),Norm.of(p,mwt.getMt().getReturnType()));
 }
 private static boolean okSubtypeSet(Program p, Mdf mdf, Path path, MethodWithType mwt) {
   return isSubtype(p, Norm.of(p,mwt.getMt().getTs().get(0)),new NormType(mdf,path,Ph.None));
-}
+}*/
 private static boolean checkVoidAndThatOk(Program p,MethodWithType mwt) {
   if(mwt.getMt().getTs().size()>1){return false;}
   if(mwt.getMt().getTs().isEmpty()){return true;}
@@ -482,13 +558,13 @@ private static List<MethodWithType> collectNotImplementedMethods(ClassB cb) {
   return mwts;
 }
 
-private static List<MethodWithType> collectAbstractMethods(ClassB cb) {
+private static List<MethodWithType> collectAbstractMethods(Program p,ClassB cb) {
   List<MethodWithType> mwts=new ArrayList<>();
   for(Member m:cb.getMs()){
     if(!(m instanceof MethodWithType)){continue;}
     MethodWithType mwt=(MethodWithType)m;
     if(mwt.getInner().isPresent()){continue;}
-    mwts.add(mwt);
+    mwts.add(Norm.of(p,mwt,false));
     }
   return mwts;
 }

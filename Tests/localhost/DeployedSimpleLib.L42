@@ -12,6 +12,8 @@ method
 This0 #end() 
 ConceptMapMismatch:{<:This2.MetaGuard, This2.Message
 class method 
+mut This0 #mutK(fwd This2.S _text, fwd This2.Message.Opt cause) 
+class method 
 This0 #apply(This2.S _text, This2.Message.Opt cause) 
 mut method 
 This2.S #_text() 
@@ -38,6 +40,8 @@ This0 #from(This2.S.SBuilder builder)
 method 
 This0.SConcat #begin() 
 SConcat:{
+class method 
+mut This0 #mutK(fwd This3.Concept.ToS old, fwd This3.S accumulator) 
 class method 
 This0 #apply(This3.Concept.ToS old, This3.S accumulator) 
 mut method 
@@ -60,6 +64,8 @@ method
 This1 #from(This3.S.SBuilder builder) }}
 ConceptMapUnavailable:{<:This2.MetaGuard, This2.Message
 class method 
+mut This0 #mutK(fwd This2.S _text, fwd This2.Message.Opt cause) 
+class method 
 This0 #apply(This2.S _text, This2.Message.Opt cause) 
 mut method 
 This2.S #_text() 
@@ -86,6 +92,8 @@ This0 #from(This2.S.SBuilder builder)
 method 
 This0.SConcat #begin() 
 SConcat:{
+class method 
+mut This0 #mutK(fwd This3.Concept.ToS old, fwd This3.S accumulator) 
 class method 
 This0 #apply(This3.Concept.ToS old, This3.S accumulator) 
 mut method 
@@ -109,6 +117,8 @@ This1 #from(This3.S.SBuilder builder) }}
 method 
 Library #leftleft(Library that) exception This0.ConceptMapMismatch, This0.ConceptMapUnavailable 
 DeployLibrary:{
+class method 
+mut This0 #mutK(fwd This2.Path path, fwd This2.Url url) 
 class method 
 This0 #apply(This2.Path path, This2.Url url) 
 mut method 
@@ -140,6 +150,8 @@ method
 Library solveConflict(Library that, This1.SrcDest location) }
 SrcDest:{
 class method 
+mut This0 #mutK(fwd This2.Path path, fwd This2.Selector src, fwd This2.Selector dest) 
+class method 
 This0 #apply(This2.Path path, This2.Selector src, This2.Selector dest) 
 mut method 
 This2.Path #path() 
@@ -155,6 +167,8 @@ read method
 This2.Selector dest() }
 SrcDests:{' generic linked list class, elements of class Elem
 <:This2.Concept.Named
+class method 
+mut This0 #mutK(fwd This0.Cell head) 
 class method 
 This0 _new(This0.Cell head) 
 mut method 
@@ -192,8 +206,12 @@ method
 Void #checkEnd() }
 CellEnd:{<:This1.Cell
 class method 
+mut This0 #mutK() 
+class method 
 This0 #apply() }
 CellNext:{<:This1.Cell
+class method 
+mut This0 #mutK(fwd This2.SrcDest elem, fwd This1.Cell nextCell) 
 class method 
 This0 #apply(This2.SrcDest elem, This1.Cell nextCell) 
 mut method 
@@ -205,6 +223,8 @@ This1.Cell #nextCell()
 read method 
 This1.Cell nextCell() }
 Iterator:{
+class method 
+mut This0 #mutK(fwd This1.Cell that, fwd This3.Bool terminate) 
 class method 
 mut This0 #apply(This1.Cell that, This3.Bool terminate) 
 mut method 
@@ -233,6 +253,8 @@ class method
 Library #leftleft(Library that) exception This1.MetaGuard.ClassClash, This1.MetaGuard.MethodClash }
 DeployTowel:{
 class method '(Any fileName)
+mut This0 #mutK(fwd This1.Url fileName) 
+class method '(Any fileName)
 This0 #apply(This1.Url fileName) 
 mut method '(Any fileName)
 This1.Url #fileName() 
@@ -255,6 +277,8 @@ class method
 Library #apply() }}
 Default:{
 DecorationUnfeasable:{<:This2.MetaGuard, This2.Message
+class method 
+mut This0 #mutK(fwd This2.S _text, fwd This2.Message.Opt cause) 
 class method 
 This0 #apply(This2.S _text, This2.Message.Opt cause) 
 mut method 
@@ -282,6 +306,8 @@ This0 #from(This2.S.SBuilder builder)
 method 
 This0.SConcat #begin() 
 SConcat:{
+class method 
+mut This0 #mutK(fwd This3.Concept.ToS old, fwd This3.S accumulator) 
 class method 
 This0 #apply(This3.Concept.ToS old, This3.S accumulator) 
 mut method 
@@ -349,6 +375,8 @@ Library #apply(class Any that) }
 Optimize:{
 RemoveUnreachableCode:{
 class method 
+mut This0 #mutK() 
+class method 
 This0 #apply() 
 class method 
 This0 #begin() 
@@ -363,6 +391,8 @@ class method
 Void checkTargetExists(Library that, This1.Path path) exception This1.MetaGuard.NestedClassUnavailable 
 Redirect:{
 class method 
+mut This0 #mutK(fwd This2.Path that, fwd class Any to) 
+class method 
 This0 #apply(This2.Path that, class Any to) 
 mut method 
 This2.Path #that() 
@@ -375,6 +405,8 @@ class Any to()
 method 
 Library #leftleft(Library that) exception This2.MetaGuard.NestedClassUnavailable, This2.MetaGuard.InvalidOnTopLevel, This2.MetaGuard.SourceUnfit, This2.MetaGuard.MethodClash, This2.MetaGuard.IncoherentRedirectMapping }
 RenameSelector:{
+class method 
+mut This0 #mutK(fwd This2.Selector that, fwd This2.Path of, fwd This2.Selector to) 
 class method 
 This0 #apply(This2.Selector that, This2.Path of, This2.Selector to) 
 mut method 
@@ -393,6 +425,8 @@ method
 Library #leftleft(Library that) exception This2.MetaGuard.MemberUnavailable, This2.MetaGuard.MethodClash }
 RenamePath:{
 class method 
+mut This0 #mutK(fwd This2.Path that, fwd This2.Path to) 
+class method 
 This0 #apply(This2.Path that, This2.Path to) 
 mut method 
 This2.Path #that() 
@@ -406,6 +440,8 @@ method
 Library #leftleft(Library that) exception This2.MetaGuard.NestedClassUnavailable, This2.MetaGuard.MethodClash, This2.MetaGuard.ClassClash }
 RemoveImplementationSelector:{
 class method 
+mut This0 #mutK(fwd This2.Selector that, fwd This2.Path of) 
+class method 
 This0 #apply(This2.Selector that, This2.Path of) 
 mut method 
 This2.Selector #that() 
@@ -418,6 +454,8 @@ This2.Path of()
 method 
 Library #leftleft(Library that) exception This2.MetaGuard.MemberUnavailable }
 MoveImplementationSelector:{
+class method 
+mut This0 #mutK(fwd This2.Selector that, fwd This2.Path of, fwd This2.Selector to) 
 class method 
 This0 #apply(This2.Selector that, This2.Path of, This2.Selector to) 
 mut method 
@@ -436,6 +474,8 @@ method
 Library #leftleft(Library that) exception This2.MetaGuard.MemberUnavailable, This2.MetaGuard.MethodClash }
 RemoveImplementationPath:{
 class method 
+mut This0 #mutK(fwd This2.Path that) 
+class method 
 This0 #apply(This2.Path that) 
 mut method 
 This2.Path #that() 
@@ -444,6 +484,8 @@ This2.Path that()
 method 
 Library #leftleft(Library that) exception This2.MetaGuard.NestedClassUnavailable, This2.MetaGuard.PrivacyCoupuled }
 AddDocumentationSelector:{
+class method 
+mut This0 #mutK(fwd This2.Selector that, fwd This2.Path of, fwd This2.Introspection.Doc doc) 
 class method 
 This0 #apply(This2.Selector that, This2.Path of, This2.Introspection.Doc doc) 
 mut method 
@@ -462,6 +504,8 @@ method
 Library #leftleft(Library that) exception This2.MetaGuard.MemberUnavailable }
 AddDocumentationPath:{
 class method 
+mut This0 #mutK(fwd This2.Path that, fwd This2.Introspection.Doc doc) 
+class method 
 This0 #apply(This2.Path that, This2.Introspection.Doc doc) 
 mut method 
 This2.Path #that() 
@@ -475,6 +519,8 @@ method
 Library #leftleft(Library that) exception This2.MetaGuard.NestedClassUnavailable, This2.MetaGuard.InvalidOnTopLevel }
 MakePrivatePath:{
 class method 
+mut This0 #mutK(fwd This2.Path that) 
+class method 
 This0 #apply(This2.Path that) 
 mut method 
 This2.Path #that() 
@@ -483,6 +529,8 @@ This2.Path that()
 method 
 Library #leftleft(Library that) exception This2.MetaGuard.MemberUnavailable, This2.MetaGuard.InvalidOnTopLevel }
 MakePrivateSelector:{
+class method 
+mut This0 #mutK(fwd This2.Selector that, fwd This2.Path of) 
 class method 
 This0 #apply(This2.Selector that, This2.Path of) 
 mut method 
@@ -496,6 +544,8 @@ This2.Path of()
 method 
 Library #leftleft(Library that) exception This2.MetaGuard.MemberUnavailable }
 SumMethods:{
+class method 
+mut This0 #mutK(fwd This2.Selector that, fwd This2.Selector and, fwd This2.Path of, fwd This2.S over, fwd This2.Selector to) 
 class method 
 This0 #apply(This2.Selector that, This2.Selector and, This2.Path of, This2.S over, This2.Selector to) 
 mut method 
@@ -548,12 +598,16 @@ method
 class Any introspectDocPath(This2.Path path, This2.N annotationN) exception This2.MetaGuard.NestedClassUnavailable, Void 
 Lib:{<:This1
 class method 
+mut This0 #mutK(fwd Library lib) 
+class method 
 This0 #apply(Library lib) 
 mut method 
 Library #lib() 
 read method 
 Library lib() }
 Class:{<:This1
+class method 
+mut This0 #mutK(fwd class Any lib) 
 class method 
 This0 #apply(class Any lib) 
 mut method 
@@ -562,6 +616,8 @@ read method
 class Any lib() }}
 Doc:{<:This2.Concept.ToS, This2.Concept.Named
 Annotation:{<:This3.Concept.ToS, This3.Concept.Named
+class method 
+mut This0 #mutK(fwd Library _binaryRepr, fwd This3.S text, fwd This3.N index) 
 class method 
 This0 #apply(Library _binaryRepr, This3.S text, This3.N index) 
 mut method 
@@ -582,6 +638,8 @@ method
 This3.Bool hasReferredClass() }
 Annotations:{' generic linked list class, elements of class Elem
 <:This3.Concept.Named
+class method 
+mut This0 #mutK(fwd This0.Cell head) 
 class method 
 This0 _new(This0.Cell head) 
 mut method 
@@ -619,8 +677,12 @@ method
 Void #checkEnd() }
 CellEnd:{<:This1.Cell
 class method 
+mut This0 #mutK() 
+class method 
 This0 #apply() }
 CellNext:{<:This1.Cell
+class method 
+mut This0 #mutK(fwd This2.Annotation elem, fwd This1.Cell nextCell) 
 class method 
 This0 #apply(This2.Annotation elem, This1.Cell nextCell) 
 mut method 
@@ -632,6 +694,8 @@ This1.Cell #nextCell()
 read method 
 This1.Cell nextCell() }
 Iterator:{
+class method 
+mut This0 #mutK(fwd This1.Cell that, fwd This4.Bool terminate) 
 class method 
 mut This0 #apply(This1.Cell that, This4.Bool terminate) 
 mut method 
@@ -664,6 +728,8 @@ method
 This0.Annotations annotations() }
 Record:{
 class method 
+mut This0 #mutK(fwd This1.MirrorPr that) 
+class method 
 This0 #apply(This1.MirrorPr that) 
 mut method 
 This1.MirrorPr #that() 
@@ -688,6 +754,8 @@ This2.Member #apply(fwd This2.NestedClass root) }
 RootForNested:' toPutAs private
 {<:This1.RootForMember
 class method 
+mut This0 #mutK(fwd This3.Path path, fwd This2.MirrorPr mirror, fwd This1 _report) 
+class method 
 This0 #apply(This3.Path path, This2.MirrorPr mirror, This1 _report) 
 mut method 
 This3.Path #path() 
@@ -703,6 +771,8 @@ read method
 This1 _report() }
 RootForMethod:' toPutAs private
 {<:This1.RootForMember
+class method 
+mut This0 #mutK(fwd This3.Path path, fwd This3.N memberN, fwd This1 _report) 
 class method 
 This0 #apply(This3.Path path, This3.N memberN, This1 _report) 
 mut method 
@@ -722,6 +792,8 @@ This1.Member dispatch(fwd This1.NestedClass root, This2.Path path, This1.MirrorP
 Member:{interface <:This2.Concept.ToS, This2.Concept.Named, This2.Concept.Equals}
 Members:{' generic linked list class, elements of class Elem
 <:This2.Concept.Named
+class method 
+mut This0 #mutK(fwd This0.Cell head) 
 class method 
 This0 _new(This0.Cell head) 
 mut method 
@@ -759,8 +831,12 @@ method
 Void #checkEnd() }
 CellEnd:{<:This1.Cell
 class method 
+mut This0 #mutK() 
+class method 
 This0 #apply() }
 CellNext:{<:This1.Cell
+class method 
+mut This0 #mutK(fwd This2.Member elem, fwd This1.Cell nextCell) 
 class method 
 This0 #apply(This2.Member elem, This1.Cell nextCell) 
 mut method 
@@ -772,6 +848,8 @@ This1.Cell #nextCell()
 read method 
 This1.Cell nextCell() }
 Iterator:{
+class method 
+mut This0 #mutK(fwd This1.Cell that, fwd This3.Bool terminate) 
 class method 
 mut This0 #apply(This1.Cell that, This3.Bool terminate) 
 mut method 
@@ -830,6 +908,8 @@ This1.NestedClass root() }
 Methods:{' generic linked list class, elements of class Elem
 <:This2.Concept.Named
 class method 
+mut This0 #mutK(fwd This0.Cell head) 
+class method 
 This0 _new(This0.Cell head) 
 mut method 
 This0.Cell #head() 
@@ -866,8 +946,12 @@ method
 Void #checkEnd() }
 CellEnd:{<:This1.Cell
 class method 
+mut This0 #mutK() 
+class method 
 This0 #apply() }
 CellNext:{<:This1.Cell
+class method 
+mut This0 #mutK(fwd This2.Method elem, fwd This1.Cell nextCell) 
 class method 
 This0 #apply(This2.Method elem, This1.Cell nextCell) 
 mut method 
@@ -879,6 +963,8 @@ This1.Cell #nextCell()
 read method 
 This1.Cell nextCell() }
 Iterator:{
+class method 
+mut This0 #mutK(fwd This1.Cell that, fwd This3.Bool terminate) 
 class method 
 mut This0 #apply(This1.Cell that, This3.Bool terminate) 
 mut method 
@@ -960,6 +1046,8 @@ This2.Bool isPrivate() }
 NestedClasses:{' generic linked list class, elements of class Elem
 <:This2.Concept.Named
 class method 
+mut This0 #mutK(fwd This0.Cell head) 
+class method 
 This0 _new(This0.Cell head) 
 mut method 
 This0.Cell #head() 
@@ -996,8 +1084,12 @@ method
 Void #checkEnd() }
 CellEnd:{<:This1.Cell
 class method 
+mut This0 #mutK() 
+class method 
 This0 #apply() }
 CellNext:{<:This1.Cell
+class method 
+mut This0 #mutK(fwd This2.NestedClass elem, fwd This1.Cell nextCell) 
 class method 
 This0 #apply(This2.NestedClass elem, This1.Cell nextCell) 
 mut method 
@@ -1009,6 +1101,8 @@ This1.Cell #nextCell()
 read method 
 This1.Cell nextCell() }
 Iterator:{
+class method 
+mut This0 #mutK(fwd This1.Cell that, fwd This3.Bool terminate) 
 class method 
 mut This0 #apply(This1.Cell that, This3.Bool terminate) 
 mut method 
@@ -1061,6 +1155,8 @@ This1.Doc doc() }
 Types:{' generic linked list class, elements of class Elem
 <:This2.Concept.Named
 class method 
+mut This0 #mutK(fwd This0.Cell head) 
+class method 
 This0 _new(This0.Cell head) 
 mut method 
 This0.Cell #head() 
@@ -1097,8 +1193,12 @@ method
 Void #checkEnd() }
 CellEnd:{<:This1.Cell
 class method 
+mut This0 #mutK() 
+class method 
 This0 #apply() }
 CellNext:{<:This1.Cell
+class method 
+mut This0 #mutK(fwd This2.Type elem, fwd This1.Cell nextCell) 
 class method 
 This0 #apply(This2.Type elem, This1.Cell nextCell) 
 mut method 
@@ -1110,6 +1210,8 @@ This1.Cell #nextCell()
 read method 
 This1.Cell nextCell() }
 Iterator:{
+class method 
+mut This0 #mutK(fwd This1.Cell that, fwd This3.Bool terminate) 
 class method 
 mut This0 #apply(This1.Cell that, This3.Bool terminate) 
 mut method 
@@ -1153,7 +1255,9 @@ This2.Bool #equalequal(This0 that)
 class method 
 Void #apply(Library lift) exception This0 
 method 
-Library lib() }
+Library lib() 
+class method 
+mut This0 #mut(fwd This2.Introspection.Record record, fwd Library lib) }
 IncoherentRedirectMapping:{<:This1, This1
 class method 
 This2.S libName() 
@@ -1166,7 +1270,9 @@ This2.Bool #equalequal(This0 that)
 class method 
 Void #apply(Library lift) exception This0 
 method 
-Library lib() }
+Library lib() 
+class method 
+mut This0 #mut(fwd This2.Introspection.Record record, fwd Library lib) }
 ClassClash:{<:This1, This1
 class method 
 This2.S libName() 
@@ -1179,7 +1285,9 @@ This2.Bool #equalequal(This0 that)
 class method 
 Void #apply(Library lift) exception This0 
 method 
-Library lib() }
+Library lib() 
+class method 
+mut This0 #mut(fwd This2.Introspection.Record record, fwd Library lib) }
 MethodClash:{<:This1, This1
 class method 
 This2.S libName() 
@@ -1192,7 +1300,9 @@ This2.Bool #equalequal(This0 that)
 class method 
 Void #apply(Library lift) exception This0 
 method 
-Library lib() }
+Library lib() 
+class method 
+mut This0 #mut(fwd This2.Introspection.Record record, fwd Library lib) }
 InvalidOnTopLevel:{<:This1, This1
 class method 
 This2.S libName() 
@@ -1205,7 +1315,9 @@ This2.Bool #equalequal(This0 that)
 class method 
 Void #apply(Library lift) exception This0 
 method 
-Library lib() }
+Library lib() 
+class method 
+mut This0 #mut(fwd This2.Introspection.Record record, fwd Library lib) }
 PrivacyCoupuled:{<:This1, This1
 class method 
 This2.S libName() 
@@ -1218,7 +1330,9 @@ This2.Bool #equalequal(This0 that)
 class method 
 Void #apply(Library lift) exception This0 
 method 
-Library lib() }
+Library lib() 
+class method 
+mut This0 #mut(fwd This2.Introspection.Record record, fwd Library lib) }
 ParameterMismatch:{<:This1, This1
 class method 
 This2.S libName() 
@@ -1231,12 +1345,16 @@ This2.Bool #equalequal(This0 that)
 class method 
 Void #apply(Library lift) exception This0 
 method 
-Library lib() }
+Library lib() 
+class method 
+mut This0 #mut(fwd This2.Introspection.Record record, fwd Library lib) }
 MemberUnavailable:{interface <:This1}
 DispatchMemberUnavailable:{
 class method 
 Void #apply(Library that) exception This1.MemberUnavailable }
 NestedClassUnavailable:{<:This1.MemberUnavailable, This1
+class method 
+mut This0 #mutK(fwd This2.Path path, fwd This2.Bool isPrivate) 
 class method 
 This0 #apply(This2.Path path, This2.Bool isPrivate) 
 mut method 
@@ -1258,6 +1376,8 @@ This2.Bool #equalequal(This0 that)
 class method 
 Void #apply(Library lift) exception This0 }
 MethodUnavailable:{<:This1.MemberUnavailable, This1
+class method 
+mut This0 #mutK(fwd This2.Path path, fwd This2.Selector selector, fwd This2.Bool isPrivate) 
 class method 
 This0 #apply(This2.Path path, This2.Selector selector, This2.Bool isPrivate) 
 mut method 
@@ -1315,6 +1435,8 @@ class method
 This0 fresh(This0 that) 
 ParseFail:{<:This2.Guard.ParseFail, This2.Message
 class method 
+mut This0 #mutK(fwd This2.S _text, fwd This2.Message.Opt cause) 
+class method 
 This0 #apply(This2.S _text, This2.Message.Opt cause) 
 mut method 
 This2.S #_text() 
@@ -1341,6 +1463,8 @@ This0 #from(This2.S.SBuilder builder)
 method 
 This0.SConcat #begin() 
 SConcat:{
+class method 
+mut This0 #mutK(fwd This3.Concept.ToS old, fwd This3.S accumulator) 
 class method 
 This0 #apply(This3.Concept.ToS old, This3.S accumulator) 
 mut method 
@@ -1396,6 +1520,8 @@ class method
 This0 fresh(This0 path) 
 ParseFail:{<:This2.Guard.ParseFail, This2.Message
 class method 
+mut This0 #mutK(fwd This2.S _text, fwd This2.Message.Opt cause) 
+class method 
 This0 #apply(This2.S _text, This2.Message.Opt cause) 
 mut method 
 This2.S #_text() 
@@ -1422,6 +1548,8 @@ This0 #from(This2.S.SBuilder builder)
 method 
 This0.SConcat #begin() 
 SConcat:{
+class method 
+mut This0 #mutK(fwd This3.Concept.ToS old, fwd This3.S accumulator) 
 class method 
 This0 #apply(This3.Concept.ToS old, This3.S accumulator) 
 mut method 
@@ -1450,6 +1578,8 @@ class method
 This0 #from(This1.S.SBuilder builder) 
 class method 
 mut This1.S.SBuilder #builder() 
+class method 
+mut This0 #mutK(fwd This1.S inner) 
 class method 
 This0 #apply(This1.S inner) 
 mut method 
@@ -1525,6 +1655,8 @@ Void #apply(This1.Concept.ToS fileName, This1.Concept.ToS content) }
 Strings:{' generic linked list class, elements of class Elem
 <:This1.Concept.Named
 class method 
+mut This0 #mutK(fwd This0.Cell head) 
+class method 
 This0 _new(This0.Cell head) 
 mut method 
 This0.Cell #head() 
@@ -1561,8 +1693,12 @@ method
 Void #checkEnd() }
 CellEnd:{<:This1.Cell
 class method 
+mut This0 #mutK() 
+class method 
 This0 #apply() }
 CellNext:{<:This1.Cell
+class method 
+mut This0 #mutK(fwd This2.S elem, fwd This1.Cell nextCell) 
 class method 
 This0 #apply(This2.S elem, This1.Cell nextCell) 
 mut method 
@@ -1574,6 +1710,8 @@ This1.Cell #nextCell()
 read method 
 This1.Cell nextCell() }
 Iterator:{
+class method 
+mut This0 #mutK(fwd This1.Cell that, fwd This2.Bool terminate) 
 class method 
 mut This0 #apply(This1.Cell that, This2.Bool terminate) 
 mut method 
@@ -1605,6 +1743,8 @@ This1.Bool equals(Any that) }
 Assert:{interface <:This1.Message
 NotImplementedYet:{<:This1, This2.Message
 class method 
+mut This0 #mutK(fwd This2.S _text, fwd This2.Message.Opt cause) 
+class method 
 This0 #apply(This2.S _text, This2.Message.Opt cause) 
 mut method 
 This2.S #_text() 
@@ -1631,6 +1771,8 @@ This0 #from(This2.S.SBuilder builder)
 method 
 This0.SConcat #begin() 
 SConcat:{
+class method 
+mut This0 #mutK(fwd This3.Concept.ToS old, fwd This3.S accumulator) 
 class method 
 This0 #apply(This3.Concept.ToS old, This3.S accumulator) 
 mut method 
@@ -1653,6 +1795,8 @@ method
 This1 #from(This3.S.SBuilder builder) }}
 ObservedBug:{<:This1, This2.Message
 class method 
+mut This0 #mutK(fwd This2.S _text, fwd This2.Message.Opt cause) 
+class method 
 This0 #apply(This2.S _text, This2.Message.Opt cause) 
 mut method 
 This2.S #_text() 
@@ -1679,6 +1823,8 @@ This0 #from(This2.S.SBuilder builder)
 method 
 This0.SConcat #begin() 
 SConcat:{
+class method 
+mut This0 #mutK(fwd This3.Concept.ToS old, fwd This3.S accumulator) 
 class method 
 This0 #apply(This3.Concept.ToS old, This3.S accumulator) 
 mut method 
@@ -1701,6 +1847,8 @@ method
 This1 #from(This3.S.SBuilder builder) }}
 CodeNotReachable:{<:This1, This2.Message
 class method 
+mut This0 #mutK(fwd This2.S _text, fwd This2.Message.Opt cause) 
+class method 
 This0 #apply(This2.S _text, This2.Message.Opt cause) 
 mut method 
 This2.S #_text() 
@@ -1727,6 +1875,8 @@ This0 #from(This2.S.SBuilder builder)
 method 
 This0.SConcat #begin() 
 SConcat:{
+class method 
+mut This0 #mutK(fwd This3.Concept.ToS old, fwd This3.S accumulator) 
 class method 
 This0 #apply(This3.Concept.ToS old, This3.S accumulator) 
 mut method 
@@ -1749,6 +1899,8 @@ method
 This1 #from(This3.S.SBuilder builder) }}
 $:{
 class method 
+mut This0 #mutK(fwd This2.N that) 
+class method 
 This0 #apply(This2.N that) 
 mut method 
 This2.N #that() 
@@ -1763,6 +1915,8 @@ This0 #add(This2.Bool that)
 method 
 This0 #add(This2.Bool that, This2.Concept.ToS msg) }
 AssertMessage:{<:This1, This2.Message
+class method 
+mut This0 #mutK(fwd This2.S _text, fwd This2.Message.Opt cause) 
 class method 
 This0 #apply(This2.S _text, This2.Message.Opt cause) 
 mut method 
@@ -1790,6 +1944,8 @@ This0 #from(This2.S.SBuilder builder)
 method 
 This0.SConcat #begin() 
 SConcat:{
+class method 
+mut This0 #mutK(fwd This3.Concept.ToS old, fwd This3.S accumulator) 
 class method 
 This0 #apply(This3.Concept.ToS old, This3.S accumulator) 
 mut method 
@@ -1814,6 +1970,8 @@ System:{
 Guard:{'<:Outer.Guard soon (remove "interface" for a bad translation bug: This1_System_Guard is not abstract and does not override abstract method MtoS()
 interface <:This2.Guard
 PluginFailure:{<:This1, This3.Message
+class method 
+mut This0 #mutK(fwd This3.S _text, fwd This3.Message.Opt cause) 
 class method 
 This0 #apply(This3.S _text, This3.Message.Opt cause) 
 mut method 
@@ -1841,6 +1999,8 @@ This0 #from(This3.S.SBuilder builder)
 method 
 This0.SConcat #begin() 
 SConcat:{
+class method 
+mut This0 #mutK(fwd This4.Concept.ToS old, fwd This4.S accumulator) 
 class method 
 This0 #apply(This4.Concept.ToS old, This4.S accumulator) 
 mut method 
@@ -1873,6 +2033,8 @@ interface <:This1.Message'all other guards should implement this one
 
 Operation:{<:This1, This2.Message
 class method 
+mut This0 #mutK(fwd This2.S _text, fwd This2.Message.Opt cause) 
+class method 
 This0 #apply(This2.S _text, This2.Message.Opt cause) 
 mut method 
 This2.S #_text() 
@@ -1899,6 +2061,8 @@ This0 #from(This2.S.SBuilder builder)
 method 
 This0.SConcat #begin() 
 SConcat:{
+class method 
+mut This0 #mutK(fwd This3.Concept.ToS old, fwd This3.S accumulator) 
 class method 
 This0 #apply(This3.Concept.ToS old, This3.S accumulator) 
 mut method 
@@ -1921,6 +2085,8 @@ method
 This1 #from(This3.S.SBuilder builder) }}
 Parameter:{<:This1, This2.Message
 class method 
+mut This0 #mutK(fwd This2.S _text, fwd This2.Message.Opt cause) 
+class method 
 This0 #apply(This2.S _text, This2.Message.Opt cause) 
 mut method 
 This2.S #_text() 
@@ -1947,6 +2113,8 @@ This0 #from(This2.S.SBuilder builder)
 method 
 This0.SConcat #begin() 
 SConcat:{
+class method 
+mut This0 #mutK(fwd This3.Concept.ToS old, fwd This3.S accumulator) 
 class method 
 This0 #apply(This3.Concept.ToS old, This3.S accumulator) 
 mut method 
@@ -1969,6 +2137,8 @@ method
 This1 #from(This3.S.SBuilder builder) }}
 Precondition:{<:This1, This2.Message
 class method 
+mut This0 #mutK(fwd This2.S _text, fwd This2.Message.Opt cause) 
+class method 
 This0 #apply(This2.S _text, This2.Message.Opt cause) 
 mut method 
 This2.S #_text() 
@@ -1995,6 +2165,8 @@ This0 #from(This2.S.SBuilder builder)
 method 
 This0.SConcat #begin() 
 SConcat:{
+class method 
+mut This0 #mutK(fwd This3.Concept.ToS old, fwd This3.S accumulator) 
 class method 
 This0 #apply(This3.Concept.ToS old, This3.S accumulator) 
 mut method 
@@ -2027,6 +2199,8 @@ read method
 class This0 clazz() 
 Opt:{
 class method 
+mut This0 #mutK(fwd This0.TOpt that) 
+class method 
 This0 #new(This0.TOpt that) 
 mut method 
 This0.TOpt #that() 
@@ -2037,8 +2211,12 @@ method
 This2 get() }
 TEmpty:{<:This1.TOpt, This1.TOpt
 class method 
+mut This0 #mutK() 
+class method 
 This0 #apply() }
 TOf:{<:This1.TOpt
+class method 
+mut This0 #mutK(fwd This2 that) 
 class method 
 This0 #apply(This2 that) 
 mut method 
@@ -2057,6 +2235,8 @@ EqualMessages:{
 class method 
 This2.Bool #apply(This1 that, This1 other) }
 $:{
+class method 
+mut This0 #mutK() 
 class method 
 This0 #apply() 
 class method 
@@ -2171,6 +2351,8 @@ This0 replace(This0 that, This0 into)
 method 
 This0.SConcat #begin() 
 SConcat:{
+class method 
+mut This0 #mutK(fwd This1 old, fwd This1 accumulator) 
 class method 
 This0 #apply(This1 old, This1 accumulator) 
 mut method 
@@ -2396,6 +2578,8 @@ class method
 mut This0.SBuilder #builder() 
 SubStringNotPresent:{<:This2.Guard, This2.Message
 class method 
+mut This0 #mutK(fwd This1 _text, fwd This2.Message.Opt cause) 
+class method 
 This0 #apply(This1 _text, This2.Message.Opt cause) 
 mut method 
 This1 #_text() 
@@ -2422,6 +2606,8 @@ This0 #from(This1.SBuilder builder)
 method 
 This0.SConcat #begin() 
 SConcat:{
+class method 
+mut This0 #mutK(fwd This3.Concept.ToS old, fwd This2 accumulator) 
 class method 
 This0 #apply(This3.Concept.ToS old, This2 accumulator) 
 mut method 
@@ -2481,6 +2667,8 @@ method
 mut This0.Iterator vals(This0 upTo) 
 Iterator:{
 class method 
+mut This0 #mutK(fwd This1 start, fwd This1 end) 
+class method 
 mut This0 #apply(This1 start, This1 end) 
 mut method 
 Void start(This1 that) 
@@ -2501,6 +2689,8 @@ This1 #inner()
 read method 
 Void #close() }
 ParseFail:{<:This2.Guard.ParseFail, This2.Message
+class method 
+mut This0 #mutK(fwd This2.S _text, fwd This2.Message.Opt cause) 
 class method 
 This0 #apply(This2.S _text, This2.Message.Opt cause) 
 mut method 
@@ -2528,6 +2718,8 @@ This0 #from(This2.S.SBuilder builder)
 method 
 This0.SConcat #begin() 
 SConcat:{
+class method 
+mut This0 #mutK(fwd This3.Concept.ToS old, fwd This3.S accumulator) 
 class method 
 This0 #apply(This3.Concept.ToS old, This3.S accumulator) 
 mut method 
@@ -2571,6 +2763,8 @@ class method
 Any parseError(This1.S that) 
 ParseFail:{<:This2.Guard.ParseFail, This2.Message
 class method 
+mut This0 #mutK(fwd This2.S _text, fwd This2.Message.Opt cause) 
+class method 
 This0 #apply(This2.S _text, This2.Message.Opt cause) 
 mut method 
 This2.S #_text() 
@@ -2597,6 +2791,8 @@ This0 #from(This2.S.SBuilder builder)
 method 
 This0.SConcat #begin() 
 SConcat:{
+class method 
+mut This0 #mutK(fwd This3.Concept.ToS old, fwd This3.S accumulator) 
 class method 
 This0 #apply(This3.Concept.ToS old, This3.S accumulator) 
 mut method 

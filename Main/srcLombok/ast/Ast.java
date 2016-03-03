@@ -129,7 +129,7 @@ public interface Ast {
 		Ph ph;
     public static final NormType immVoid=new NormType(Mdf.Immutable,Path.Void(),Ph.None);
 		public String toString() {
-			return "" + mdf.name() + "" + this.path.rowData + ((ph == Ph.Ph) ? "^" : (ph == Ph.None) ? "" : "%");
+			return (((ph == Ph.Ph) ? "fwd " : (ph == Ph.None) ? "" : "fwd% ") + mdf.name() + "" + this.path.rowData);
 		}
 
 		public <T> T match(Function<NormType, T> normType, Function<HistoricType, T> hType) {

@@ -108,11 +108,11 @@ public class TestParseAndDesugar {
    " (Void unused=This0.X.#checkTrue() catch exception Void catched  void  (This0.Bla) )"
 },{lineNumber(), "if Foo+Bar (bla) ",
    " ( This0.Foo::#plus(that ) cond=This0.Foo.#plus(that:This0.Bar) ( Void unused=cond.#checkTrue() catch exception Void catched0  void  (bla)))"
-},{lineNumber(), "{ <(T bar) }'bla\n"," ('bla\n{ class method This0 #left(This0.T bar)mut method This0.T #bar()read method This0.T bar()})"
-},{lineNumber(), "{ (T bar) }"," {class method This0 #apply(This0.T bar) mut method This0.T #bar() read method This0.T bar() }"
+//},{lineNumber(), "{ <(T bar) }'bla\n"," ('bla\n{ class method This0 #left(This0.T bar)mut method This0.T #bar()read method This0.T bar()})"
+//},{lineNumber(), "{ (T bar) }"," {class method This0 #apply(This0.T bar) mut method This0.T #bar() read method This0.T bar() }"
 },{lineNumber(), " (T x={ if A (return B) return C } x)",
    " (This0.T x=( Void unused=( Void unused0=( Void unused2=This0.A.#checkTrue() catch exception  Void catched void  (return This0.B)) Void unused1=return This0.C void ) catch return This0.T result result error  {'@stringU\n'CurlyBlock-Should be unreachable code\n } )x )"
-},{lineNumber(), "{ Vara: {} method a() (var T a=a+c c=a Fuffa(a:=a(a)) c ) }",
+/*},{lineNumber(), "{ Vara: {} method a() (var T a=a+c c=a Fuffa(a:=a(a)) c ) }",
   " {Vara0:'@private\n{class method \n"
 +"mut This0 #apply(This1.T inner) \n"
 +"mut method \n"
@@ -121,7 +121,6 @@ public class TestParseAndDesugar {
 +"This1.T #inner() \n"
 +"read method \n"
 +"This1.T inner() } Vara:{} method a() ( This0.T a=a.#plus(that:c) This0.T c=a mut This0.Vara0 vara=This0.Vara0.#apply(inner:a) Void unused=This0.Fuffa.#apply(that:vara.inner(that:vara.#inner().#apply(that:vara.#inner()))) c )}"
-
 
 },{lineNumber(),"{a( This0.A a, var This0.B b)}",
   "{"
@@ -141,7 +140,8 @@ public class TestParseAndDesugar {
    +" mut method'@private\n This0.B #b()"
    +" read method'@private\n This0.B b()"
    +" }"
-},{lineNumber(),"{ method Any(Any a,Any b) a+ b}",
+*/
+  },{lineNumber(),"{ method Any(Any a,Any b) a+ b}",
   "{ method Any #apply(Any a, Any b) a.#plus(that:b)}"
 },{lineNumber(),"{ method Any() this!=this &   this}",
   "{ method Any #apply() this.#bangequal(that:this).#and(that:this)}"

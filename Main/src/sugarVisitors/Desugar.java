@@ -8,10 +8,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
+
 import platformSpecific.fakeInternet.OnLineCode;
 import privateMangling.PrivateHelper;
 import tools.Assertions;
 import ast.Ast;
+import ast.ErrorMessage;
 import ast.Ast.ConcreteHeader;
 import ast.Ast.Doc;
 import ast.Ast.FieldDec;
@@ -319,10 +322,19 @@ public class Desugar extends CloneVisitor{
         newDecs.add(_dec);continue;}
       VarDecXE dec=(VarDecXE)_dec;
       if(dec.getT().isPresent()){
-        localVarEnv.put(dec.getX(),dec.getT().get());
+        Type ti=dec.getT().get();
+        /*TODO: will  be in future?  if (dec.isVar() & !(ti instanceof NormType)){
+          throw new ErrorMessage.NotWellFormedMsk(s,new Expression.X(dec.getX()),
+          "Variable bindings need to specify their type.");
+        }*/
+        localVarEnv.put(dec.getX(),ti);
         newDecs.add(dec);
         continue;
         }
+      /*TODO: will  be in future?if (dec.isVar()){
+        throw new ErrorMessage.NotWellFormedMsk(s,new Expression.X(dec.getX()),
+        "Variable bindings need to specify their type."); }
+      */
       Type t=GuessType.of(dec.getInner(),localVarEnv);
       localVarEnv.put(dec.getX(),t);
       newDecs.add(dec.withT(Optional.of(t)));
@@ -794,15 +806,79 @@ public class Desugar extends CloneVisitor{
   public static List<Member> cfType(ConcreteHeader h,Doc doc){
     //doc=Doc.factory("@private");
     List<Member> result=new  ArrayList<Member>();
-    cfType1(h,doc, result);
+    MethodWithType k = cfMutK(doc,h);
+    Mdf nameMdf=mdfForNamedK(h);
+    if(nameMdf==Mdf.Lent){k=cfLentK(k);}
+    MethodWithType kOut =cfNameK(doc,nameMdf==Mdf.Lent, nameMdf, h, k.getMs());
+    result.add(k);
+    result.add(kOut);
+    //cfType1(h,doc, result);
     for(FieldDec f:h.getFs()){
       Doc fDoc=doc.sum(f.getDoc());
-      cfType2(h.getP(),f,fDoc,result);
-      cfType3(h.getP(),f,fDoc,result);
-      cfType4(h.getP(),f,fDoc,result);
+      cfSetter(h.getP(),f,fDoc,result);
+      cfExposer(h.getP(),f,fDoc,result);
+      cfGetter(h.getP(),f,fDoc,result);
     }
     return result;
   }
+
+  static private MethodWithType cfNameK(Doc doc,boolean lent,Mdf mdf,ast.Ast.ConcreteHeader h,MethodSelector called) {
+    List<Doc> tDocss=new ArrayList<>();
+    List<Type> ts=new ArrayList<Type>();
+      for(FieldDec f:h.getFs()){
+        tDocss.add(f.getDoc());
+        ts.add(f.getT().match(nt->lent&nt.getMdf()==Mdf.Mutable?nt.withMdf(Mdf.Lent):nt, hT->hT));
+        //TODO: will be as under, but now is as former line
+        //NormType nt=(NormType)f.getT();
+        //if(lent & nt.getMdf()==Mdf.Mutable){nt=nt.withMdf(Mdf.Lent);}
+        //ts.add(nt);
+        }
+    MethodSelector ms=called.withName(h.getName());
+    NormType resT=new ast.Ast.NormType(mdf,ast.Ast.Path.outer(0),Ph.None);
+    MethodType mt=new MethodType(Doc.empty(),ast.Ast.Mdf.Class,ts,tDocss,resT,Collections.emptyList());
+    Parameters ps=new Parameters(Optional.empty(),called.getNames(), called.getNames().stream().map(n->new X(n)).collect(Collectors.toList()));
+    MCall body=new MCall(Path.outer(0),called.getName(),Doc.empty(),ps,h.getP());
+    return new MethodWithType(doc, ms,mt, Optional.of(body),h.getP());
+  }
+  static private MethodWithType cfLentK(MethodWithType mutK) {
+    mutK=mutK.withMs(mutK.getMs().withName("#lentK"));
+    NormType resT=new ast.Ast.NormType(Mdf.Lent,ast.Ast.Path.outer(0),Ph.None);
+    MethodType mt = mutK.getMt();
+    mt=mt.withReturnType(resT).withTs(mt.getTs().stream()
+        .map(t->(NormType)t)
+        .map(nt->nt.withMdf(nt.getMdf()==Mdf.Mutable?Mdf.Lent:nt.getMdf()))
+        .collect(Collectors.toList()));
+    mutK=mutK.withMt(mt);
+    return mutK;
+  }
+
+  static private MethodWithType cfMutK(Doc doc,ast.Ast.ConcreteHeader h) {
+    List<String> names= new ArrayList<String>();
+    List<Doc> tDocss=new ArrayList<>();
+    List<Type> ts=new ArrayList<Type>();
+    for(FieldDec f:h.getFs()){
+      tDocss.add(f.getDoc());
+      ts.add(f.getT().match(nt->nt.withPh(Ph.Ph),ht->ht.withForcePlaceholder(true)));
+      names.add(f.getName());
+      }
+    MethodSelector ms=new MethodSelector("#mutK",names);
+    NormType resT=new ast.Ast.NormType(Mdf.Mutable,ast.Ast.Path.outer(0),Ph.None);
+    MethodType mt=new MethodType(Doc.empty(),ast.Ast.Mdf.Class,ts,tDocss,resT,Collections.emptyList());
+    return new MethodWithType(doc, ms,mt, Optional.empty(),h.getP());
+    }
+  static private Mdf mdfForNamedK(ast.Ast.ConcreteHeader h){
+    boolean canImm=true;
+    for(FieldDec f:h.getFs()){
+      if(!(f.getT() instanceof NormType)){return Mdf.Mutable;}//TODO: will disappear?
+      NormType nt=(NormType)f.getT();
+      if(nt.getMdf()==Mdf.Lent || nt.getMdf()==Mdf.Readable){return Mdf.Lent;}
+      if(nt.getMdf()!=Mdf.Immutable && nt.getMdf()!=Mdf.Class){canImm=false;}
+      if(f.isVar()){canImm=false;}
+      }
+    if(canImm){return Mdf.Immutable;}
+    return Mdf.Mutable;
+  }
+
   static private void cfType1(ast.Ast.ConcreteHeader h, Doc doc,List<Member> result) {
     List<Doc> tDocss=new ArrayList<>();
     List<Type> ts=new ArrayList<Type>();
@@ -828,20 +904,20 @@ public class Desugar extends CloneVisitor{
     MethodSelector ms=new MethodSelector(h.getName(),names);
     result.add(new MethodWithType(doc, ms,mt, Optional.empty(),h.getP()));
   }
-  static private void cfType2(Expression.Position pos,ast.Ast.FieldDec f, Doc doc,List<Member> result) {
+  static private void cfSetter(Expression.Position pos,ast.Ast.FieldDec f, Doc doc,List<Member> result) {
     if(!f.isVar()){return;}
     Type tt=f.getT().match(nt->nt.withPh(Ph.None), hType->hType);
     MethodType mti=new MethodType(Doc.empty(),Mdf.Mutable,Collections.singletonList(tt),Collections.singletonList(Doc.empty()),NormType.immVoid,Collections.emptyList());
     MethodSelector msi=new MethodSelector(f.getName(),Collections.singletonList("that"));
     result.add(new MethodWithType(doc, msi, mti, Optional.empty(),pos));
   }
-  static private void cfType3(Expression.Position pos,FieldDec f,Doc doc, List<Member> result) {
+  static private void cfExposer(Expression.Position pos,FieldDec f,Doc doc, List<Member> result) {
     Type tt=f.getT().match(nt->nt.withPh(Ph.None), hType->hType);
     MethodType mti=new MethodType(Doc.empty(),Mdf.Mutable,Collections.emptyList(),Collections.emptyList(),tt,Collections.emptyList());
     MethodSelector msi=new MethodSelector("#"+f.getName(),Collections.emptyList());
     result.add(new MethodWithType(doc, msi, mti, Optional.empty(),pos));
   }
-  static private void cfType4(Expression.Position pos,FieldDec f,Doc doc, List<Member> result) {
+  static private void cfGetter(Expression.Position pos,FieldDec f,Doc doc, List<Member> result) {
     if(!( f.getT() instanceof NormType)){return;}
     NormType fieldNt=(NormType)f.getT();
     fieldNt=fieldNt.withPh(Ph.None);

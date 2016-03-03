@@ -932,7 +932,7 @@ public interface Ast {
 			// not good enought, it can also be empty or operator
 			// assert checkX(name,true);
 			for (String n : names) {
-				assert checkX(n, false);
+				assert checkX(n, false):n;
 			}
 			return true;
 		}

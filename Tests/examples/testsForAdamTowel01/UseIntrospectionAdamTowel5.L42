@@ -51,10 +51,10 @@ EA:{interface }
 EB:{interface <:EA}
 Main:{
   CheckState(lib:{foo(Bar b, var Foo f) Bar:{} Foo:{}}
-    expected:S"foo(b,f)b()#b()f()#f()f(that)")
+    expected:S"#mutK(b,f)b()#b()f()#f()f(that)")
   Debug(S"a")
   CheckState(lib:{(Bar b, Foo f) Bar:{} Foo:{}}
-    expected:S"#apply(b,f)b()#b()f()#f()")
+    expected:S"#mutK(b,f)b()#b()f()#f()")
   Debug(S"b")
   CheckSubtype(lib:{}
     expected:S"")

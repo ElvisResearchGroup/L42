@@ -10,37 +10,47 @@ Library failure() {'@exitStatus
 }}
 DeployTowel:{
 class method '(Any fileName)
-This0 #apply(This2.Url fileName) 
+mut This0 #mutK(fwd This2.Url fileName) 
+class method '(Any fileName)
+This0 #apply(This2.Url fileName) This0.#mutK(fileName:fileName)
 mut method '(Any fileName)
 This2.Url #fileName() 
 read method '(Any fileName)
 This2.Url fileName() 
 class method 
 Library binaryReprFrom(Library lib) (
-  Library norm=use This0.SafeOperatorsAccess__38_0 check privateNormalize(that:lib) error {
+  Library norm=use This0.SafeOperatorsAccess__40_0 check privateNormalize(that:lib) error {
   class method 
-  This0 privateNormalize() }
-  Library record=use This0.SafeOperatorsAccess__38_0 check introspectLibraryReport(that:norm, path:{'@stringU
+  mut This0 #mutK() 
+  class method 
+  This0 privateNormalize() This0.#mutK()}
+  Library record=use This0.SafeOperatorsAccess__40_0 check introspectLibraryReport(that:norm, path:{'@stringU
   'This
   }) error {
   class method 
-  This0 introspectLibraryReport() }
-  use This0.SafeOperatorsAccess__38_0 check introspectLibraryDocAsString(that:record, path:{'@stringU
+  mut This0 #mutK() 
+  class method 
+  This0 introspectLibraryReport() This0.#mutK()}
+  use This0.SafeOperatorsAccess__40_0 check introspectLibraryDocAsString(that:record, path:{'@stringU
   'AllAsString
   }, annotationN:{'@int32
   '0
   }) error {
   class method 
-  This0 introspectLibraryDocAsString() }
+  mut This0 #mutK() 
+  class method 
+  This0 introspectLibraryDocAsString() This0.#mutK()}
   )
 method 
 Library #leftleft(Library that) (
   Void unused=use This2.Alu check fileDebug(fileName:this.fileName().binaryRepr(), content:This0.binaryReprFrom(lib:that)) error {
   class method 
-  This0 fileDebug() }
+  mut This0 #mutK() 
+  class method 
+  This0 fileDebug() This0.#mutK()}
   This1.ExitCode.normal()
   )
-SafeOperatorsAccess__38_0:'@private
+SafeOperatorsAccess__40_0:'@private
 {'@plugin
 'L42.is/connected/withSafeOperators
 }}}

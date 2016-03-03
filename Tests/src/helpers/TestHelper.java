@@ -99,7 +99,15 @@ public class TestHelper {
     }finally{System.setErr(lpsErr.underlying);}
     }*/
   public static Program getProgramCD(){
-    return getProgram(new String[]{"{C:{new() class method This1.C foo(class This1.C bar) (bar.foo(bar:this))}, D:{new(var This1.C x)}}"});
+    return getProgram(new String[]{
+        "{C:{"
+        + "class method This new() class method This1.C foo(class This1.C bar) (bar.foo(bar:this))}, D:{"
+        + "class method This new(fwd This1.C x)"
+        + "read method This1.C x()"
+        + "mut method This1.C #x()"
+        + "mut method Void x(This1.C that)"
+        + "}}"
+        });
   }
 
   public static ClassB getClassB(String source, String e1) {
@@ -221,7 +229,7 @@ public class TestHelper {
        */
       if (null == value)
         return "";
-        
+
       if (value.startsWith("'@") || value.startsWith("'[@")  || value.startsWith("'[]"))
         return  value;
       else
@@ -315,7 +323,7 @@ public class TestHelper {
   public static int lineNumber() {
     return Thread.currentThread().getStackTrace()[2].getLineNumber();
   }
-  
+
   public static List<Object[]> skipUntilLine(List<Object[]> tests, int startLine) {
     // Element 0 of each test must be an int,
     // being the line number in the test file at which the test starts.

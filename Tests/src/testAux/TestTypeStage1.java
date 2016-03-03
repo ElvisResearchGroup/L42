@@ -83,7 +83,7 @@ public class TestTypeStage1 {
          new NormType(Mdf.Immutable,Path.parse("This0.C"),Ph.None),
          new NormType(Mdf.Immutable,Path.parse("This0.C"),Ph.None),
          new String[]{"{ C:{k()}}"}
-       },{lineNumber(),"C.k()",
+       },{lineNumber(),"C.#mutK()",
          new NormType(Mdf.Mutable,Path.parse("This0.C"),Ph.None),
          new NormType(Mdf.Mutable,Path.parse("This0.C"),Ph.None),
          new String[]{"{ C:{mut k()}}"}
@@ -212,24 +212,24 @@ public static class TestStage2 {
         NormType.immVoid,
       new NormType(Mdf.Capsule,Path.Void(),Ph.None),
       new String[]{"{ C:{k()}}"}
-    },{lineNumber(), "C.k()",
+    },{lineNumber(), "C.#mutK()",
       new NormType(Mdf.Capsule,Path.parse("This0.C"),Ph.None),
       new NormType(Mdf.Capsule,Path.parse("This0.C"),Ph.None),
       new String[]{"{ C:{mut k()}}"}
-    },{lineNumber(), "C.k(f:D.k()).f()",
+    },{lineNumber(), "C.#mutK(f:D.#mutK()).f()",
       new NormType(Mdf.Readable,Path.parse("This0.D"),Ph.None),
       new NormType(Mdf.Readable,Path.parse("This0.D"),Ph.None),
       new String[]{"{ C:{mut k(var mut D f)} D:{mut k()}}"}
-    },{lineNumber(), "C.k(f:D.k()).#f()",
+    },{lineNumber(), "C.#mutK(f:D.#mutK()).#f()",
       new NormType(Mdf.Mutable,Path.parse("This0.D"),Ph.None),
       new NormType(Mdf.Mutable,Path.parse("This0.D"),Ph.None),
       new String[]{"{ C:{mut k(var mut D f)} D:{mut k()}}"}
-    },{lineNumber(), "C.k(f:D.k()).f()",
+    },{lineNumber(), "C.#mutK(f:D.#mutK()).f()",
       new NormType(Mdf.Immutable,Path.parse("This0.D"),Ph.None),
       new NormType(Mdf.Immutable,Path.parse("This0.D"),Ph.None),
       new String[]{"{ C:{mut k(var mut D f)} D:{mut k()}}"}
 
-    },{lineNumber(), "(lent Vector v=Vector.k(), mut B b=B.k(N.k()),v.add(b.clone()))",
+    },{lineNumber(), "(lent Vector v=Vector.#mutK(), mut B b=B.#mutK(N.#mutK()),v.add(b.clone()))",
       NormType.immVoid,
       NormType.immVoid,
       new String[]{cloneExample}
@@ -257,7 +257,7 @@ public static class TestStage2 {
       new NormType(Mdf.Immutable,Path.parse("This0.B"),Ph.None),
       new NormType(Mdf.Immutable,Path.parse("This0.B"),Ph.None),
       new String[]{cloneExample}
-    },{lineNumber(), " (AI any=(mut AI aI=AI.k() aI) any)",
+    },{lineNumber(), " (AI any=(mut AI aI=AI.#mutK() aI) any)",
     new NormType(Mdf.Immutable,Path.parse("This0.AI"),Ph.None),
     new NormType(Mdf.Immutable,Path.parse("This0.AI"),Ph.None),
     new String[]{"{ AI:{mut k()} }"}
@@ -266,52 +266,52 @@ public static class TestStage2 {
       new Ast.FreeType(),
       new Ast.FreeType(),
       new String[]{"{ D:{ mut k()}}"}
-    },{lineNumber(), "( D().m(D()) )",
+    },{lineNumber(), "( D.#mutK().m(D.#mutK()) )",
       new Ast.FreeType(),
       NormType.immVoid,
       new String[]{"{() D:{ mut () mut method Void m(mut D that) error void }}"}
-    },{lineNumber(), "( mut D x=D() mut D y=D() x.m(y)  )",
+    },{lineNumber(), "( mut D x=D.#mutK() mut D y=D.#mutK() x.m(y)  )",
       new Ast.FreeType(),
       NormType.immVoid,
       new String[]{"{() D:{ mut () mut method Void m(mut D that) error void }}"}
-    },{lineNumber(), "( lent D x=D() mut D y=D() x.m(y)  )",//Deceiving, but it should pass! as for ( lent D x=D() ( mut D y=D() x.m(y) ) )
+    },{lineNumber(), "( lent D x=D.#mutK() mut D y=D.#mutK() x.m(y)  )",//Deceiving, but it should pass! as for ( lent D x=D() ( mut D y=D() x.m(y) ) )
       new Ast.FreeType(),
       NormType.immVoid,
       new String[]{"{() D:{ mut () mut method Void m(mut D that) error void }}"}
-    },{lineNumber(), 
+    },{lineNumber(),
       "Reader.readCustomer()",
       new Ast.FreeType(),
       new NormType(Mdf.Capsule,Path.parse("This0.Customer"),Ph.None),
       new String[]{"{ () \n Customer:{ mut () }\n Reader :{()\n"
       +" class method capsule Customer readCustomer() (\n"
-      +"   mut Customer c=Customer()\n"
+      +"   mut Customer c=Customer.#mutK()\n"
       +"   c 'ok, capsule promotion here\n"
       +" )}}"}
-    },{lineNumber(), 
+    },{lineNumber(),
         "Reader.readCustomer()",
         new Ast.FreeType(),
         new NormType(Mdf.Capsule,Path.parse("This0.Customer"),Ph.None),
         new String[]{"{() \n Customer:{ mut () }\n Reader :{()\n"
         +" class method capsule Customer readCustomer() {\n"
-        +" return Customer()"
+        +" return Customer.#mutK()"
         +" }}}"}
-    },{lineNumber(), 
+    },{lineNumber(),
       "Reader.readCustomer()",
       new Ast.FreeType(),
       new NormType(Mdf.Capsule,Path.parse("This0.Customer"),Ph.None),
       new String[]{"{() \n Customer:{ mut () }\n Reader :{()\n"
       +" class method capsule Customer readCustomer() (\n"
-      +"   mut Customer c=Customer()\n"
+      +"   mut Customer c=Customer.#mutK()\n"
       +"   return c 'ok, capsule promotion here\n"
       +"   catch return mut Customer x x"
       +"   error void)}}"}
-    },{lineNumber(), 
+    },{lineNumber(),
       "Reader.readCustomer()",
       new Ast.FreeType(),
       new NormType(Mdf.Capsule,Path.parse("This0.Customer"),Ph.None),
       new String[]{"{() \n Customer:{ mut () }\n Reader :{()\n"
       +" class method capsule Customer readCustomer() {\n"
-      +"   mut Customer c=Customer()\n"
+      +"   mut Customer c=Customer.#mutK()\n"
       +"   return c 'ok, capsule promotion here\n"
       +" }}}"}
     }});}
@@ -357,7 +357,7 @@ public static class TestStage3_notOk {
         new NormType(Mdf.Immutable,Path.parse("This0.A"),Ph.None),
         new String[]{cloneExample}
 
-      },{lineNumber(),"error D.k()",
+  /*now k mdf is ignored    },{lineNumber(),"error D.k()",
         new Ast.FreeType(),
         new Ast.FreeType(),
         new String[]{"{ D:{ lent k()}}"}
@@ -365,7 +365,7 @@ public static class TestStage3_notOk {
         new Ast.FreeType(),
         new Ast.FreeType(),
         new String[]{"{ D:{ mut k()}}"}
-
+*/
       },{lineNumber(),"use A check sumInt32(n1:void n2:{}) error void",
           new Ast.FreeType(),
           new Ast.FreeType(),

@@ -82,7 +82,7 @@ public class EncodingHelper{
     return new ClassB(Doc.factory("@stringU\n"+produceStringUnicode(s)+"\n"),Doc.empty(),false,Collections.emptyList(),Collections.emptyList(),verifiedStage.copyMostStableInfo());
   }
 
- 
+
   public static Doc ensureExtractDoc(Object e) {
     if(e instanceof Doc){return (Doc)e;}
     ClassB cb=ensureExtractClassB(e);
@@ -116,7 +116,7 @@ public class EncodingHelper{
     try{return Integer.parseInt(code);}
     catch(NumberFormatException nfe){return null;}
     }
-  
+
   public static Path ensureExtractPathFromJava(Object e) {
     Path res=_extractPathFromJava(e);
     if (res==null ){throw new Resources.Error("InvalidPath");}
@@ -162,9 +162,9 @@ public class EncodingHelper{
     List<Type> ts=new ArrayList<>();
     ts.add(new Ast.NormType(Mdf.Class,Path.Any(),Ph.None));
     docs.add(Doc.empty());
-    return new Ast.MethodType(Doc.empty(),Mdf.Immutable,ts,docs,new Ast.NormType(Mdf.Immutable,result,Ph.None),Collections.emptyList());    
+    return new Ast.MethodType(Doc.empty(),Mdf.Immutable,ts,docs,new Ast.NormType(Mdf.Immutable,result,Ph.None),Collections.emptyList());
   }
-  
+
   public static Ast.MethodType mt(Path result,Path ...paths){
     List<Doc> docs=new ArrayList<>();
     List<Type> ts=new ArrayList<>();
@@ -205,7 +205,7 @@ public class EncodingHelper{
     throw Assertions.codeNotReachable("I may have to expand to handle paths:"+o);
   }
 
-  
+
   private static final CachedStage verifiedStage=new CachedStage();
   static{verifiedStage.setVerified(true);}
 }

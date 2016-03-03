@@ -1,8 +1,58 @@
 (// means still to implement)
+
+var T x=e NEED the T, is no more optional, T is of form NormType
+**Desugar state:
+*if all fields are mut/imm/type/capsule, generate #mutK
+*if some field are lent/read, generate #lentK
+
+kinds of ks:
+class method mut This #mutK(..) (capsule to mut), all to fwd
+class method lent This #lentK(..) (mut to lent)(capsule to mut), all to fwd
+class method read This #readK(..) (mut,lent to read)(capsule to mut), all to fwd
+
+*Always generate
+class method mdfR This #apply(..) This.#mdfK(..),
+where
+  mdfR is imm if all fields are imm/type and no var
+  mdfR is mut if no field is lent/read
+  mdfR is lent otherwise
+  mdfK is mut if no field is lent/read, and lent otherwise.
+
+*generate getter, exposers (always) and setters only for vars.
+
+**coherent:
+*ok to have many k, max 4, with "roles"
+*all k have Outer0 and all parameters with fwd types
+*all k must have same named parameters, with same paths
+*all par in mut must be not capsule/lent/read
+*all par in lent must be not capsule/mut
+*all par in read must be not capsule/mut/lent
+*all par in imm must be imm/type
+
+*if there is any lent/read setter, then mutK must not exist
+----
+
 *Syntactic sugar
-S"foo"    =    S.#from(builder:S.#builder().#f().#o().#o())
-12N       =    N.#from(builder:N.#builder().#1().#2())
-//V[a;b]     =    V.#from(builder:V.#builder().#add(a).#add(b))
+S"foo"    =    S.#from(builder:(
+  b=S.#builder()
+  b.#f()
+  b.#o()
+  b.#o()
+  b
+  ))
+12N       =    N.#from(builder:...)
+//V[a;b]     =    V.#from(builder:(
+  b=V.#builder()
+  b.#add(a)
+  b.#add(b)
+  b
+  ))
+//V[with x in e (..use[ps]..) =
+//V.#from(builder:(
+  b=V.#builder()
+  with x in e ( ..b.#add(ps)..)
+  b
+  ))
 *Syntax
 Catch T x e
 Catch Ts e
@@ -17,7 +67,7 @@ sugar expression hash #_,
    #id/x.m(xi) = x.id()
    #/x.m(xi) = x.m_default(xi:void)
 is Ill formed if # is out of any scope
-shuld be \   
+shuld be \
 bla[\row[  ]]
 scope:
 a.b(..#.)
@@ -31,25 +81,25 @@ member::=  C:e | method ms e | mdf method optRefine T m(Txs) optExceptions optE
 classB: {label optInterface optImplements members }
 -if a class is not normalized, label must be empty
 *compiled: all C:e of form C:classB
-*normalized: 
- -compiled 
+*normalized:
+ -compiled
  -no historic/indirect types
- -no method ms e 
+ -no method ms e
  -label is either - + or *
- 
+
 *a well formed normalized class
  -all implemented interfaces are normalized_p
- -all implemented interface methods are reported as refine 
+ -all implemented interface methods are reported as refine
  -if label is + or * it is well typed
  -if label is * all referred paths are * too.
- 
+
  we write Le for not compiled L
  Lc for compiled L,
- Ln for normalized L, 
+ Ln for normalized L,
  L-, L+, L* for specifically labelled normalized L
  CLs* for a sequence of C:L*
- 
- L -->p L' 
+
+ L -->p L'
     L={ ms_1, C:e ms_2 }
     p'=p,{CLs*^L}
     L'={ ms_1, C:e' ms_2 }

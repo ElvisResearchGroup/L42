@@ -74,7 +74,7 @@ private static void checkCoherent(List<PathMwt> mwts, List<String> explored,Clas
      if(!pmwt.getMwt().getMs().equals(mwt.getMs())){continue;}
      throw new ErrorMessage.IncoherentMwts(mwt.getMs(),explored,completeMwts(mwts,cb),
          CollapsePositions.of(cb.accept(new InjectionOnSugar())));
-   } 
+   }
   }
   for(Member m:cb.getMs()){
     if(!(m instanceof MethodImplemented)){continue;}
@@ -82,7 +82,7 @@ private static void checkCoherent(List<PathMwt> mwts, List<String> explored,Clas
     boolean find=false;
     for(PathMwt pmwt: mwts){
       if(pmwt.getMwt().getMs().equals(mi.getS())){ find=true; break;}
-    } 
+    }
     if(!find){throw new ErrorMessage.IncoherentMwts(mi.getS(),explored,completeMwts(mwts,cb),
         CollapsePositions.of(cb.accept(new InjectionOnSugar())));}
   }
@@ -194,12 +194,12 @@ public static boolean progress(List<CachedStage>again){
      catch(PathNonExistant pne){
        assert pne.getPos()==null;
        Position pos=CollapsePositions.of(cb.accept(new InjectionOnSugar()));
-       throw pne.withPos(pos);  
+       throw pne.withPos(pos);
        }
       }
     return es;
   }
- 
+
   static Ast.Stage stage(Program p,ClassB cb,Collection<ClassB>es/*can have nulls*/){
     if(!IsCompiled.of(cb)){return Stage.None;}
     for(ClassB cbi: es){

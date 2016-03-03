@@ -3,8 +3,10 @@ constructors understanding
 new desugaring for []
 consider e0[e1;e2] desugared in (x=e0 x.#fromSequence(x.#sequenceFactory().#add(e1).#add(e2))
 in deploy towel, check code is self contained (see AT1 outer0)
-= vs: . vs:: // vs ' plus /**/
+= vs:
+// vs ' plus /**/
 use check vs use m(xes) with
+
 decorator MakeMethod[m; m0; m1 x1, mn xn; excNum]
 ={m method m0 T0 (m1 T1 x1, ...,mn Tn xn) exception Tn+1,...Tn+excNum}
 //can be done with sum method+make abstract, but would be very slow
@@ -22,24 +24,18 @@ Unreachable //error in the language or (another) method do not respect its postc
 or Bug can have a (broken:S"localPaht.selector")
 
 should != be desugared in !(==)    > norm for <=, => <,  >> <<,
-This==This0, This1... Thisn for outers, and outer for outside with scope.
+
+-use outer for outside with scope.
 
 Many constructor is ok for a class?
 
+Remove mdf from concrete header
 
-if all fields are mut/imm/type, generate 4 k:
-class method mut This #mutK(..) (capsule to mut), all to fwd
-class method lent This #lentK(..) (mut to lent)(capsule to mut), all to fwd
-class method read This #readK(..) (mut,lent to read)(capsule to mut), all to fwd
-class method ? This (..) This.#?(..)
-  ? is imm if all fields are imm no var
-  ? is mut if no field is lent/read
-  ? is lent otherwise
-
-if some field is lent/mut do not generate #mutK
-getters/exposer for all as usual
-setters take as the field and are mut
-
+se ho una classe che ha metodi astratti class non fwd, posso aggiungere i fwd e non rompo nulla?
+potrebbe essere un passo nella normalizzazione? o nel tipaggio?
+in ogni caso, non fwd dovrebbe generare non fwd costruttori?
+almeno per il caso historic type?
+o ritornano gli ht con ph? forse non e' mai stato tolto?
 
 //isFactory, isGetter, isSetter ensure invariants as seen later
 Void checkCoherent(Library lib) (
@@ -199,7 +195,6 @@ make @id == /*@id*/
 
 new desugaring for string and number literals!!
 x:e in ps becomes x=e
-:: becomes .
 
 
 'caching is getting out of control

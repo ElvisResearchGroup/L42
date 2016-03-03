@@ -109,7 +109,7 @@ docsOpt: Doc?;
 t:concreteT|historicalT;
 concreteT: Ph? Mdf? Path;
 historicalSeq: ClassMethSep methSelector (ClassMethSep x)?;
-historicalT:Path historicalSeq+;
+historicalT:Ph? Path historicalSeq+;
 methSelector: (mDec| ORoundNoSpace|ORoundSpace) x* CRound;
 
 x: X;

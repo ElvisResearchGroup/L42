@@ -163,7 +163,7 @@ public class Resources {
       Configuration.typeSystem.computeStage(p,cb);
       try{Configuration.typeSystem.checkCt( p, cb);}
       catch(ErrorMessage msg){
-        System.err.println("PLUGIN error identified");
+        System.err.println("__________PLUGIN error identified_________");
         throw msg;//to breakpoint here
         }
       if(strict && (cb.getStage().getStage()==Stage.Less || cb.getStage().getStage()==Stage.None)){
