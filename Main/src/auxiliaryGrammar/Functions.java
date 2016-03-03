@@ -430,7 +430,8 @@ private static MethodWithType setIfFree(MethodWithType oldK, MethodWithType cons
 }
 private static Path mapHelp(MethodWithType oneK,  MethodWithType otherK, List<InvalidMwtAsState> result,Type t){
   NormType nt=(NormType)t;
-  if(nt.getPh()!=Ph.Ph){result.add(new InvalidMwtAsState(" constructor parameters must all be fwd ",otherK ));}
+  //can not be required fwd, we need invariants to replace constructos if needed, should make ts more flexible?
+  //if(nt.getPh()!=Ph.Ph){result.add(new InvalidMwtAsState(" constructor parameters must all be fwd ",otherK ));}
   return nt.getPath();
 }
 private static void kFieldEquals(MethodWithType oneK, List<Path> paths, MethodWithType otherK, List<InvalidMwtAsState> result) {

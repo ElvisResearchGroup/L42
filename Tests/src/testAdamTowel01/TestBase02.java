@@ -19,8 +19,8 @@ public class TestBase02 {
   public void initialize() throws Throwable {
     //TestHelper.configureForTest();
     System.out.println("AssertionsDisabled");
-    //ClassLoader.getSystemClassLoader().setDefaultAssertionStatus(false);
-    //L42.trustPluginsAndFinalProgram=true;
+    ClassLoader.getSystemClassLoader().setDefaultAssertionStatus(false);
+    L42.trustPluginsAndFinalProgram=true;
     //_02_00DeployAdamTowel02();
     }
   //not run when single test executed?

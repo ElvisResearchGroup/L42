@@ -14,7 +14,7 @@ Library failure() {'@exitStatus
 }}
 Bool:{<:This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Named
 class method '@private
-mut This0 #mutK__41_0(fwd Library binaryRepr__41_0) 
+mut This0 #mutK__41_0(Library binaryRepr__41_0) 
 class method '@private
 This0 #apply__42_0(Library binaryRepr) This0.#mutK__41_0(binaryRepr__41_0:binaryRepr)
 mut method '@private
@@ -281,7 +281,7 @@ Any parseError(This1.S that) This1.S.#from(builder:(
   ))}
 N:{<:This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Named
 class method '@private
-mut This0 #mutK__43_0(fwd Library _binaryRepr__43_0) 
+mut This0 #mutK__43_0(Library _binaryRepr__43_0) 
 class method '@private
 This0 #apply__44_0(Library _binaryRepr) This0.#mutK__43_0(_binaryRepr__43_0:_binaryRepr)
 mut method '@private
@@ -452,7 +452,7 @@ method
 mut This0.Iterator vals(This1.N upTo) This0.Iterator.#apply(start:this, end:upTo)
 Iterator:{
 class method 
-mut This0 #mutK(fwd This1 start, fwd This1 end) 
+mut This0 #mutK(This1 start, This1 end) 
 class method 
 mut This0 #apply(This1 start, This1 end) This0.#mutK(start:start, end:end)
 mut method 
@@ -505,7 +505,7 @@ Void inner(This2.N::#from(builder ) that)
 mut method 
 This2.N::#from(builder ) #inner() }
 class method '@private
-mut This0 #mutK__45_0(fwd Library _binaryRepr__45_0) 
+mut This0 #mutK__45_0(Library _binaryRepr__45_0) 
 class method '@private
 This0 _private__46_0(Library _binaryRepr) This0.#mutK__45_0(_binaryRepr__45_0:_binaryRepr)
 mut method '@private
@@ -787,7 +787,7 @@ Void inner(This3.Concept.ToS::toS() that)
 mut method 
 This3.Concept.ToS::toS() #inner() }
 class method 
-mut This0 #mutK(fwd This2.S old, fwd This2.S accumulator) 
+mut This0 #mutK(This2.S old, This2.S accumulator) 
 class method 
 This0 #apply(This2.S old, This2.S accumulator) This0.#mutK(old:old, accumulator:accumulator)
 mut method 
@@ -826,7 +826,7 @@ method
 This2.S #from(This2.S.SBuilder builder) this.old().#plusplus(that:this.accumulator().#plusplus(that:This2.S.#from(builder:builder)))}
 SBuilder:{
 class method '@private
-mut This0 #mutK__48_0(fwd Library _binaryRepr__48_0) 
+mut This0 #mutK__48_0(Library _binaryRepr__48_0) 
 class method '@private
 mut This0 _private__49_0(Library _binaryRepr) This0.#mutK__48_0(_binaryRepr__48_0:_binaryRepr)
 mut method '@private
@@ -1264,7 +1264,7 @@ class method
 Void #apply(This1.Concept.ToS fileName, This1.Concept.ToS content) use This1.Alu check fileDebug(fileName:fileName.toS().binaryRepr(), content:content.toS().binaryRepr()) void}
 Count:{
 class method '@private
-mut This0 #mutK__50_0(fwd This1.N counter__50_0) 
+mut This0 #mutK__50_0(This1.N counter__50_0) 
 class method '@private
 This0 #apply__51_0(This1.N counter) This0.#mutK__50_0(counter__50_0:counter)
 mut method '@private
@@ -1474,7 +1474,7 @@ read method
 class This0 clazz() 
 Opt:{
 class method 
-mut This0 #mutK(fwd This0.TOpt that) 
+mut This0 #mutK(This0.TOpt that) 
 class method 
 This0 #new(This0.TOpt that) This0.#mutK(that:that)
 mut method 
@@ -1544,7 +1544,7 @@ method get() error This3.S.#from(builder:(
   ))}
 TOf:{<:This1.TOpt
 class method 
-mut This0 #mutK(fwd This2 that) 
+mut This0 #mutK(This2 that) 
 class method 
 This0 #apply(This2 that) This0.#mutK(that:that)
 mut method 
@@ -1626,7 +1626,7 @@ Void inner(This1::kind() that)
 mut method 
 This1::kind() #inner() }
 class method 
-mut This0 #mutK(fwd This3.S _text, fwd This3.Message.Opt cause) 
+mut This0 #mutK(This3.S _text, This3.Message.Opt cause) 
 class method 
 This0 #apply(This3.S _text, This3.Message.Opt cause) This0.#mutK(_text:_text, cause:cause)
 mut method 
@@ -1767,7 +1767,7 @@ Void inner(This5.Concept.ToS::toS() that)
 mut method 
 This5.Concept.ToS::toS() #inner() }
 class method 
-mut This0 #mutK(fwd This4.Concept.ToS old, fwd This4.S accumulator) 
+mut This0 #mutK(This4.Concept.ToS old, This4.S accumulator) 
 class method 
 This0 #apply(This4.Concept.ToS old, This4.S accumulator) This0.#mutK(old:old, accumulator:accumulator)
 mut method 
@@ -1826,7 +1826,7 @@ Void inner(This1::kind() that)
 mut method 
 This1::kind() #inner() }
 class method 
-mut This0 #mutK(fwd This2.S _text, fwd This2.Message.Opt cause) 
+mut This0 #mutK(This2.S _text, This2.Message.Opt cause) 
 class method 
 This0 #apply(This2.S _text, This2.Message.Opt cause) This0.#mutK(_text:_text, cause:cause)
 mut method 
@@ -1967,7 +1967,7 @@ Void inner(This4.Concept.ToS::toS() that)
 mut method 
 This4.Concept.ToS::toS() #inner() }
 class method 
-mut This0 #mutK(fwd This3.Concept.ToS old, fwd This3.S accumulator) 
+mut This0 #mutK(This3.Concept.ToS old, This3.S accumulator) 
 class method 
 This0 #apply(This3.Concept.ToS old, This3.S accumulator) This0.#mutK(old:old, accumulator:accumulator)
 mut method 
@@ -2016,7 +2016,7 @@ Void inner(This1::kind() that)
 mut method 
 This1::kind() #inner() }
 class method 
-mut This0 #mutK(fwd This2.S _text, fwd This2.Message.Opt cause) 
+mut This0 #mutK(This2.S _text, This2.Message.Opt cause) 
 class method 
 This0 #apply(This2.S _text, This2.Message.Opt cause) This0.#mutK(_text:_text, cause:cause)
 mut method 
@@ -2157,7 +2157,7 @@ Void inner(This4.Concept.ToS::toS() that)
 mut method 
 This4.Concept.ToS::toS() #inner() }
 class method 
-mut This0 #mutK(fwd This3.Concept.ToS old, fwd This3.S accumulator) 
+mut This0 #mutK(This3.Concept.ToS old, This3.S accumulator) 
 class method 
 This0 #apply(This3.Concept.ToS old, This3.S accumulator) This0.#mutK(old:old, accumulator:accumulator)
 mut method 
@@ -2206,7 +2206,7 @@ Void inner(This1::kind() that)
 mut method 
 This1::kind() #inner() }
 class method 
-mut This0 #mutK(fwd This2.S _text, fwd This2.Message.Opt cause) 
+mut This0 #mutK(This2.S _text, This2.Message.Opt cause) 
 class method 
 This0 #apply(This2.S _text, This2.Message.Opt cause) This0.#mutK(_text:_text, cause:cause)
 mut method 
@@ -2347,7 +2347,7 @@ Void inner(This4.Concept.ToS::toS() that)
 mut method 
 This4.Concept.ToS::toS() #inner() }
 class method 
-mut This0 #mutK(fwd This3.Concept.ToS old, fwd This3.S accumulator) 
+mut This0 #mutK(This3.Concept.ToS old, This3.S accumulator) 
 class method 
 This0 #apply(This3.Concept.ToS old, This3.S accumulator) This0.#mutK(old:old, accumulator:accumulator)
 mut method 
@@ -2399,7 +2399,7 @@ Void inner(This1::kind() that)
 mut method 
 This1::kind() #inner() }
 class method 
-mut This0 #mutK(fwd This3.S _text, fwd This3.Message.Opt cause) 
+mut This0 #mutK(This3.S _text, This3.Message.Opt cause) 
 class method 
 This0 #apply(This3.S _text, This3.Message.Opt cause) This0.#mutK(_text:_text, cause:cause)
 mut method 
@@ -2540,7 +2540,7 @@ Void inner(This5.Concept.ToS::toS() that)
 mut method 
 This5.Concept.ToS::toS() #inner() }
 class method 
-mut This0 #mutK(fwd This4.Concept.ToS old, fwd This4.S accumulator) 
+mut This0 #mutK(This4.Concept.ToS old, This4.S accumulator) 
 class method 
 This0 #apply(This4.Concept.ToS old, This4.S accumulator) This0.#mutK(old:old, accumulator:accumulator)
 mut method 
@@ -2590,7 +2590,7 @@ Void inner(This1::kind() that)
 mut method 
 This1::kind() #inner() }
 class method 
-mut This0 #mutK(fwd This2.S _text, fwd This2.Message.Opt cause) 
+mut This0 #mutK(This2.S _text, This2.Message.Opt cause) 
 class method 
 This0 #apply(This2.S _text, This2.Message.Opt cause) This0.#mutK(_text:_text, cause:cause)
 mut method 
@@ -2731,7 +2731,7 @@ Void inner(This4.Concept.ToS::toS() that)
 mut method 
 This4.Concept.ToS::toS() #inner() }
 class method 
-mut This0 #mutK(fwd This3.Concept.ToS old, fwd This3.S accumulator) 
+mut This0 #mutK(This3.Concept.ToS old, This3.S accumulator) 
 class method 
 This0 #apply(This3.Concept.ToS old, This3.S accumulator) This0.#mutK(old:old, accumulator:accumulator)
 mut method 
@@ -2780,7 +2780,7 @@ Void inner(This1::kind() that)
 mut method 
 This1::kind() #inner() }
 class method 
-mut This0 #mutK(fwd This2.S _text, fwd This2.Message.Opt cause) 
+mut This0 #mutK(This2.S _text, This2.Message.Opt cause) 
 class method 
 This0 #apply(This2.S _text, This2.Message.Opt cause) This0.#mutK(_text:_text, cause:cause)
 mut method 
@@ -2921,7 +2921,7 @@ Void inner(This4.Concept.ToS::toS() that)
 mut method 
 This4.Concept.ToS::toS() #inner() }
 class method 
-mut This0 #mutK(fwd This3.Concept.ToS old, fwd This3.S accumulator) 
+mut This0 #mutK(This3.Concept.ToS old, This3.S accumulator) 
 class method 
 This0 #apply(This3.Concept.ToS old, This3.S accumulator) This0.#mutK(old:old, accumulator:accumulator)
 mut method 
@@ -2970,7 +2970,7 @@ Void inner(This1::kind() that)
 mut method 
 This1::kind() #inner() }
 class method 
-mut This0 #mutK(fwd This2.S _text, fwd This2.Message.Opt cause) 
+mut This0 #mutK(This2.S _text, This2.Message.Opt cause) 
 class method 
 This0 #apply(This2.S _text, This2.Message.Opt cause) This0.#mutK(_text:_text, cause:cause)
 mut method 
@@ -3111,7 +3111,7 @@ Void inner(This4.Concept.ToS::toS() that)
 mut method 
 This4.Concept.ToS::toS() #inner() }
 class method 
-mut This0 #mutK(fwd This3.Concept.ToS old, fwd This3.S accumulator) 
+mut This0 #mutK(This3.Concept.ToS old, This3.S accumulator) 
 class method 
 This0 #apply(This3.Concept.ToS old, This3.S accumulator) This0.#mutK(old:old, accumulator:accumulator)
 mut method 
@@ -3150,7 +3150,7 @@ method
 This1 #from(This3.S.SBuilder builder) This1.#apply(text:this.old().toS().#plusplus(that:this.accumulator().#plusplus(that:This3.S.#from(builder:builder))))}}
 $:{
 class method 
-mut This0 #mutK(fwd This2.N that) 
+mut This0 #mutK(This2.N that) 
 class method 
 This0 #apply(This2.N that) This0.#mutK(that:that)
 mut method 
@@ -3283,7 +3283,7 @@ Void inner(This1::kind() that)
 mut method 
 This1::kind() #inner() }
 class method 
-mut This0 #mutK(fwd This2.S _text, fwd This2.Message.Opt cause) 
+mut This0 #mutK(This2.S _text, This2.Message.Opt cause) 
 class method 
 This0 #apply(This2.S _text, This2.Message.Opt cause) This0.#mutK(_text:_text, cause:cause)
 mut method 
@@ -3424,7 +3424,7 @@ Void inner(This4.Concept.ToS::toS() that)
 mut method 
 This4.Concept.ToS::toS() #inner() }
 class method 
-mut This0 #mutK(fwd This3.Concept.ToS old, fwd This3.S accumulator) 
+mut This0 #mutK(This3.Concept.ToS old, This3.S accumulator) 
 class method 
 This0 #apply(This3.Concept.ToS old, This3.S accumulator) This0.#mutK(old:old, accumulator:accumulator)
 mut method 
@@ -3469,7 +3469,7 @@ Library #apply() {' generic linked list class, elements of class Elem
 Varres0__97_0:'@private
 {
 class method 
-mut This0 #mutK(fwd This1 inner) 
+mut This0 #mutK(This1 inner) 
 class method 
 mut This0 #apply(This1 inner) This0.#mutK(inner:inner)
 mut method 
@@ -3489,7 +3489,7 @@ Void inner(This1::#apply() that)
 mut method 
 This1::#apply() #inner() }
 class method 
-mut This0 #mutK(fwd This0.Cell head) 
+mut This0 #mutK(This0.Cell head) 
 class method 
 This0 _new(This0.Cell head) This0.#mutK(head:head)
 mut method 
@@ -3711,7 +3711,7 @@ method #inner() error This4.Assert.ObservedBug.#from(builder:(
 method #checkEnd() void}
 CellNext:{<:This1.Cell
 class method 
-mut This0 #mutK(fwd This1.Elem elem, fwd This1.Cell nextCell) 
+mut This0 #mutK(This1.Elem elem, This1.Cell nextCell) 
 class method 
 This0 #apply(This1.Elem elem, This1.Cell nextCell) This0.#mutK(elem:elem, nextCell:nextCell)
 mut method 
@@ -3838,7 +3838,7 @@ method #checkEnd() (
   )}
 Iterator:{
 class method 
-mut This0 #mutK(fwd This1.Cell that, fwd This4.Bool terminate) 
+mut This0 #mutK(This1.Cell that, This4.Bool terminate) 
 class method 
 mut This0 #apply(This1.Cell that, This4.Bool terminate) This0.#mutK(that:that, terminate:terminate)
 mut method 
@@ -4199,7 +4199,7 @@ Strings:{' generic linked list class, elements of class Elem
 Varres0_$%16_0__100_0:'@private
 {
 class method 
-mut This0 #mutK(fwd This1 inner) 
+mut This0 #mutK(This1 inner) 
 class method 
 mut This0 #apply(This1 inner) This0.#mutK(inner:inner)
 mut method 
@@ -4219,7 +4219,7 @@ Void inner(This1::#apply() that)
 mut method 
 This1::#apply() #inner() }
 class method 
-mut This0 #mutK(fwd This0.Cell head) 
+mut This0 #mutK(This0.Cell head) 
 class method 
 This0 _new(This0.Cell head) This0.#mutK(head:head)
 mut method 
@@ -4440,7 +4440,7 @@ method #inner() error This2.Assert.ObservedBug.#from(builder:(
 method #checkEnd() void}
 CellNext:{<:This1.Cell
 class method 
-mut This0 #mutK(fwd This2.S elem, fwd This1.Cell nextCell) 
+mut This0 #mutK(This2.S elem, This1.Cell nextCell) 
 class method 
 This0 #apply(This2.S elem, This1.Cell nextCell) This0.#mutK(elem:elem, nextCell:nextCell)
 mut method 
@@ -4567,7 +4567,7 @@ method #checkEnd() (
   )}
 Iterator:{
 class method 
-mut This0 #mutK(fwd This1.Cell that, fwd This2.Bool terminate) 
+mut This0 #mutK(This1.Cell that, This2.Bool terminate) 
 class method 
 mut This0 #apply(This1.Cell that, This2.Bool terminate) This0.#mutK(that:that, terminate:terminate)
 mut method 
@@ -4920,7 +4920,7 @@ This2.S::#from(builder ) ::#begin() #inner() }
 Varacc__106_0:'@private
 {
 class method 
-mut This0 #mutK(fwd This2.Path inner) 
+mut This0 #mutK(This2.Path inner) 
 class method 
 mut This0 #apply(This2.Path inner) This0.#mutK(inner:inner)
 mut method 
@@ -4930,7 +4930,7 @@ This2.Path #inner()
 read method 
 This2.Path inner() }
 class method '@private
-mut This0 #mutK__52_0(fwd Library _binaryRepr__52_0) 
+mut This0 #mutK__52_0(Library _binaryRepr__52_0) 
 class method '@private
 This0 _private__53_0(Library _binaryRepr) This0.#mutK__52_0(_binaryRepr__52_0:_binaryRepr)
 mut method '@private
@@ -5512,7 +5512,7 @@ Void inner(This2.Selector::name() that)
 mut method 
 This2.Selector::name() #inner() }
 class method '@private
-mut This0 #mutK__54_0(fwd Library _binaryRepr__54_0) 
+mut This0 #mutK__54_0(Library _binaryRepr__54_0) 
 class method '@private
 This0 _private__55_0(Library _binaryRepr) This0.#mutK__54_0(_binaryRepr__54_0:_binaryRepr)
 mut method '@private
@@ -6527,7 +6527,7 @@ method
 class Any introspectDocPath(This2.Path path, This2.N annotationN) exception This2.MetaGuard.NestedClassUnavailable, Void 
 Lib:{<:This1
 class method 
-mut This0 #mutK(fwd Library lib) 
+mut This0 #mutK(Library lib) 
 class method 
 This0 #apply(Library lib) This0.#mutK(lib:lib)
 mut method 
@@ -6703,7 +6703,7 @@ method introspectDocPath(path annotationN ) (
   )}
 Class:{<:This1
 class method 
-mut This0 #mutK(fwd class Any lib) 
+mut This0 #mutK(class Any lib) 
 class method 
 This0 #apply(class Any lib) This0.#mutK(lib:lib)
 mut method 
@@ -6909,7 +6909,7 @@ Void inner(This1.Annotations::#begin() ::#end() that)
 mut method 
 This1.Annotations::#begin() ::#end() #inner() }
 class method '@private
-mut This0 #mutK__56_0(fwd Library _binaryRepr__56_0, fwd This0.Annotations _annotations__56_0) 
+mut This0 #mutK__56_0(Library _binaryRepr__56_0, This0.Annotations _annotations__56_0) 
 class method '@private
 This0 _private__57_0(Library _binaryRepr, This0.Annotations _annotations) This0.#mutK__56_0(_binaryRepr__56_0:_binaryRepr, _annotations__56_0:_annotations)
 mut method '@private
@@ -6923,7 +6923,7 @@ This0.Annotations _annotations__56_0()
 method myName() This2.GetMyName.#apply(that:This0)
 Annotation:{<:This3.Concept.ToS, This3.Concept.Named
 class method 
-mut This0 #mutK(fwd Library _binaryRepr, fwd This3.S text, fwd This3.N index) 
+mut This0 #mutK(Library _binaryRepr, This3.S text, This3.N index) 
 class method 
 This0 #apply(Library _binaryRepr, This3.S text, This3.N index) This0.#mutK(_binaryRepr:_binaryRepr, text:text, index:index)
 mut method 
@@ -7013,7 +7013,7 @@ Annotations:{' generic linked list class, elements of class Elem
 Varres0__114_0:'@private
 {
 class method 
-mut This0 #mutK(fwd This1 inner) 
+mut This0 #mutK(This1 inner) 
 class method 
 mut This0 #apply(This1 inner) This0.#mutK(inner:inner)
 mut method 
@@ -7033,7 +7033,7 @@ Void inner(This1::#apply() that)
 mut method 
 This1::#apply() #inner() }
 class method 
-mut This0 #mutK(fwd This0.Cell head) 
+mut This0 #mutK(This0.Cell head) 
 class method 
 This0 _new(This0.Cell head) This0.#mutK(head:head)
 mut method 
@@ -7254,7 +7254,7 @@ method #inner() error This4.Assert.ObservedBug.#from(builder:(
 method #checkEnd() void}
 CellNext:{<:This1.Cell
 class method 
-mut This0 #mutK(fwd This2.Annotation elem, fwd This1.Cell nextCell) 
+mut This0 #mutK(This2.Annotation elem, This1.Cell nextCell) 
 class method 
 This0 #apply(This2.Annotation elem, This1.Cell nextCell) This0.#mutK(elem:elem, nextCell:nextCell)
 mut method 
@@ -7381,7 +7381,7 @@ method #checkEnd() (
   )}
 Iterator:{
 class method 
-mut This0 #mutK(fwd This1.Cell that, fwd This4.Bool terminate) 
+mut This0 #mutK(This1.Cell that, This4.Bool terminate) 
 class method 
 mut This0 #apply(This1.Cell that, This4.Bool terminate) This0.#mutK(that:that, terminate:terminate)
 mut method 
@@ -7523,7 +7523,7 @@ method
 This0.Annotations annotations() this._annotations__56_0()}
 Record:{
 class method 
-mut This0 #mutK(fwd This1.MirrorPr that) 
+mut This0 #mutK(This1.MirrorPr that) 
 class method 
 This0 #apply(This1.MirrorPr that) This0.#mutK(that:that)
 mut method 
@@ -7681,7 +7681,7 @@ This2.Member #apply(fwd This2.NestedClass root) }
 RootForNested:' toPutAs private
 {<:This1.RootForMember
 class method 
-mut This0 #mutK(fwd This3.Path path, fwd This2.MirrorPr mirror, fwd This2.Record _report) 
+mut This0 #mutK(This3.Path path, This2.MirrorPr mirror, This2.Record _report) 
 class method 
 This0 #apply(This3.Path path, This2.MirrorPr mirror, This2.Record _report) This0.#mutK(path:path, mirror:mirror, _report:_report)
 mut method 
@@ -7712,7 +7712,7 @@ method #apply(root ) (
 RootForMethod:' toPutAs private
 {<:This1.RootForMember
 class method 
-mut This0 #mutK(fwd This3.Path path, fwd This3.N memberN, fwd This2.Record _report) 
+mut This0 #mutK(This3.Path path, This3.N memberN, This2.Record _report) 
 class method 
 This0 #apply(This3.Path path, This3.N memberN, This2.Record _report) This0.#mutK(path:path, memberN:memberN, _report:_report)
 mut method 
@@ -7909,7 +7909,7 @@ Members:{' generic linked list class, elements of class Elem
 Varres0_$%19_0__116_0:'@private
 {
 class method 
-mut This0 #mutK(fwd This1 inner) 
+mut This0 #mutK(This1 inner) 
 class method 
 mut This0 #apply(This1 inner) This0.#mutK(inner:inner)
 mut method 
@@ -7929,7 +7929,7 @@ Void inner(This1::#apply() that)
 mut method 
 This1::#apply() #inner() }
 class method 
-mut This0 #mutK(fwd This0.Cell head) 
+mut This0 #mutK(This0.Cell head) 
 class method 
 This0 _new(This0.Cell head) This0.#mutK(head:head)
 mut method 
@@ -8150,7 +8150,7 @@ method #inner() error This3.Assert.ObservedBug.#from(builder:(
 method #checkEnd() void}
 CellNext:{<:This1.Cell
 class method 
-mut This0 #mutK(fwd This2.Member elem, fwd This1.Cell nextCell) 
+mut This0 #mutK(This2.Member elem, This1.Cell nextCell) 
 class method 
 This0 #apply(This2.Member elem, This1.Cell nextCell) This0.#mutK(elem:elem, nextCell:nextCell)
 mut method 
@@ -8277,7 +8277,7 @@ method #checkEnd() (
   )}
 Iterator:{
 class method 
-mut This0 #mutK(fwd This1.Cell that, fwd This3.Bool terminate) 
+mut This0 #mutK(This1.Cell that, This3.Bool terminate) 
 class method 
 mut This0 #apply(This1.Cell that, This3.Bool terminate) This0.#mutK(that:that, terminate:terminate)
 mut method 
@@ -8613,7 +8613,7 @@ Void inner(This2.Types::#begin() ::#end() that)
 mut method 
 This2.Types::#begin() ::#end() #inner() }
 class method '@private
-mut This0 #mutK__58_0(fwd This1.NestedClass _root__58_0, fwd This2.Path path__58_0, fwd This2.N memberN__58_0, fwd This1.Record record__58_0) 
+mut This0 #mutK__58_0(fwd This1.NestedClass _root__58_0, This2.Path path__58_0, This2.N memberN__58_0, This1.Record record__58_0) 
 class method '@private
 This0 #apply__59_0(fwd This1.NestedClass _root, This2.Path path, This2.N memberN, This1.Record record) This0.#mutK__58_0(_root__58_0:_root, path__58_0:path, memberN__58_0:memberN, record__58_0:record)
 mut method '@private
@@ -8961,7 +8961,7 @@ Methods:{' generic linked list class, elements of class Elem
 Varres0_$%22_0__121_0:'@private
 {
 class method 
-mut This0 #mutK(fwd This1 inner) 
+mut This0 #mutK(This1 inner) 
 class method 
 mut This0 #apply(This1 inner) This0.#mutK(inner:inner)
 mut method 
@@ -8981,7 +8981,7 @@ Void inner(This1::#apply() that)
 mut method 
 This1::#apply() #inner() }
 class method 
-mut This0 #mutK(fwd This0.Cell head) 
+mut This0 #mutK(This0.Cell head) 
 class method 
 This0 _new(This0.Cell head) This0.#mutK(head:head)
 mut method 
@@ -9202,7 +9202,7 @@ method #inner() error This3.Assert.ObservedBug.#from(builder:(
 method #checkEnd() void}
 CellNext:{<:This1.Cell
 class method 
-mut This0 #mutK(fwd This2.Method elem, fwd This1.Cell nextCell) 
+mut This0 #mutK(This2.Method elem, This1.Cell nextCell) 
 class method 
 This0 #apply(This2.Method elem, This1.Cell nextCell) This0.#mutK(elem:elem, nextCell:nextCell)
 mut method 
@@ -9329,7 +9329,7 @@ method #checkEnd() (
   )}
 Iterator:{
 class method 
-mut This0 #mutK(fwd This1.Cell that, fwd This3.Bool terminate) 
+mut This0 #mutK(This1.Cell that, This3.Bool terminate) 
 class method 
 mut This0 #apply(This1.Cell that, This3.Bool terminate) This0.#mutK(that:that, terminate:terminate)
 mut method 
@@ -9836,7 +9836,7 @@ Void inner(This2.Methods::#begin() that)
 mut method 
 This2.Methods::#begin() #inner() }
 class method '@private
-mut This0 #mutK__60_0(fwd This1.NestedClass _root__60_0, fwd This2.Path path__60_0, fwd This1.MirrorPr mirror__60_0, fwd This1.Record record__60_0) 
+mut This0 #mutK__60_0(fwd This1.NestedClass _root__60_0, This2.Path path__60_0, This1.MirrorPr mirror__60_0, This1.Record record__60_0) 
 class method '@private
 This0 #apply__61_0(fwd This1.NestedClass _root, This2.Path path, This1.MirrorPr mirror, This1.Record record) This0.#mutK__60_0(_root__60_0:_root, path__60_0:path, mirror__60_0:mirror, record__60_0:record)
 mut method '@private
@@ -11574,7 +11574,7 @@ NestedClasses:{' generic linked list class, elements of class Elem
 Varres0_$%25_0__143_0:'@private
 {
 class method 
-mut This0 #mutK(fwd This1 inner) 
+mut This0 #mutK(This1 inner) 
 class method 
 mut This0 #apply(This1 inner) This0.#mutK(inner:inner)
 mut method 
@@ -11594,7 +11594,7 @@ Void inner(This1::#apply() that)
 mut method 
 This1::#apply() #inner() }
 class method 
-mut This0 #mutK(fwd This0.Cell head) 
+mut This0 #mutK(This0.Cell head) 
 class method 
 This0 _new(This0.Cell head) This0.#mutK(head:head)
 mut method 
@@ -11815,7 +11815,7 @@ method #inner() error This3.Assert.ObservedBug.#from(builder:(
 method #checkEnd() void}
 CellNext:{<:This1.Cell
 class method 
-mut This0 #mutK(fwd This2.NestedClass elem, fwd This1.Cell nextCell) 
+mut This0 #mutK(This2.NestedClass elem, This1.Cell nextCell) 
 class method 
 This0 #apply(This2.NestedClass elem, This1.Cell nextCell) This0.#mutK(elem:elem, nextCell:nextCell)
 mut method 
@@ -11942,7 +11942,7 @@ method #checkEnd() (
   )}
 Iterator:{
 class method 
-mut This0 #mutK(fwd This1.Cell that, fwd This3.Bool terminate) 
+mut This0 #mutK(This1.Cell that, This3.Bool terminate) 
 class method 
 mut This0 #apply(This1.Cell that, This3.Bool terminate) This0.#mutK(that:that, terminate:terminate)
 mut method 
@@ -12258,7 +12258,7 @@ This2.Bool equals(Any that) (
   )}
 Type:{<:This2.Concept.ToS, This2.Concept.Named
 class method '@private
-mut This0 #mutK__65_0(fwd This1.NestedClass root__65_0, fwd This2.Path path__65_0, fwd This2.N memberN__65_0, fwd This2.N typeN__65_0, fwd This1.Record record__65_0) 
+mut This0 #mutK__65_0(fwd This1.NestedClass root__65_0, This2.Path path__65_0, This2.N memberN__65_0, This2.N typeN__65_0, This1.Record record__65_0) 
 class method '@private
 This0 #apply__66_0(fwd This1.NestedClass root, This2.Path path, This2.N memberN, This2.N typeN, This1.Record record) This0.#mutK__65_0(root__65_0:root, path__65_0:path, memberN__65_0:memberN, typeN__65_0:typeN, record__65_0:record)
 mut method '@private
@@ -12771,7 +12771,7 @@ Types:{' generic linked list class, elements of class Elem
 Varres0__146_0:'@private
 {
 class method 
-mut This0 #mutK(fwd This1 inner) 
+mut This0 #mutK(This1 inner) 
 class method 
 mut This0 #apply(This1 inner) This0.#mutK(inner:inner)
 mut method 
@@ -12791,7 +12791,7 @@ Void inner(This1::#apply() that)
 mut method 
 This1::#apply() #inner() }
 class method 
-mut This0 #mutK(fwd This0.Cell head) 
+mut This0 #mutK(This0.Cell head) 
 class method 
 This0 _new(This0.Cell head) This0.#mutK(head:head)
 mut method 
@@ -13012,7 +13012,7 @@ method #inner() error This3.Assert.ObservedBug.#from(builder:(
 method #checkEnd() void}
 CellNext:{<:This1.Cell
 class method 
-mut This0 #mutK(fwd This2.Type elem, fwd This1.Cell nextCell) 
+mut This0 #mutK(This2.Type elem, This1.Cell nextCell) 
 class method 
 This0 #apply(This2.Type elem, This1.Cell nextCell) This0.#mutK(elem:elem, nextCell:nextCell)
 mut method 
@@ -13139,7 +13139,7 @@ method #checkEnd() (
   )}
 Iterator:{
 class method 
-mut This0 #mutK(fwd This1.Cell that, fwd This3.Bool terminate) 
+mut This0 #mutK(This1.Cell that, This3.Bool terminate) 
 class method 
 mut This0 #apply(This1.Cell that, This3.Bool terminate) This0.#mutK(that:that, terminate:terminate)
 mut method 
@@ -14028,7 +14028,7 @@ Void #apply(Library that) exception This1.MemberUnavailable (
   )}
 NestedClassUnavailable:{<:This1.MemberUnavailable, This2.MetaGuard
 class method 
-mut This0 #mutK(fwd This2.Path path, fwd This2.Bool isPrivate) 
+mut This0 #mutK(This2.Path path, This2.Bool isPrivate) 
 class method 
 This0 #apply(This2.Path path, This2.Bool isPrivate) This0.#mutK(path:path, isPrivate:isPrivate)
 mut method 
@@ -14180,7 +14180,7 @@ Void #apply(Library lift) exception This0 (
   )}
 MethodUnavailable:{<:This1.MemberUnavailable, This2.MetaGuard
 class method 
-mut This0 #mutK(fwd This2.Path path, fwd This2.Selector selector, fwd This2.Bool isPrivate) 
+mut This0 #mutK(This2.Path path, This2.Selector selector, This2.Bool isPrivate) 
 class method 
 This0 #apply(This2.Path path, This2.Selector selector, This2.Bool isPrivate) This0.#mutK(path:path, selector:selector, isPrivate:isPrivate)
 mut method 
@@ -14425,7 +14425,7 @@ Void checkTargetExists(Library that, This1.Path path) exception This1.MetaGuard.
   )
 Redirect:{
 class method 
-mut This0 #mutK(fwd This2.Path that, fwd class Any to) 
+mut This0 #mutK(This2.Path that, class Any to) 
 class method 
 This0 #apply(This2.Path that, class Any to) This0.#mutK(that:that, to:to)
 mut method 
@@ -14459,7 +14459,7 @@ Library #leftleft(Library that) exception This2.MetaGuard.NestedClassUnavailable
   )}
 RenameSelector:{
 class method 
-mut This0 #mutK(fwd This2.Selector that, fwd This2.Path of, fwd This2.Selector to) 
+mut This0 #mutK(This2.Selector that, This2.Path of, This2.Selector to) 
 class method 
 This0 #apply(This2.Selector that, This2.Path of, This2.Selector to) This0.#mutK(that:that, of:of, to:to)
 mut method 
@@ -14494,7 +14494,7 @@ Library #leftleft(Library that) exception This2.MetaGuard.MemberUnavailable, Thi
   )}
 RenamePath:{
 class method 
-mut This0 #mutK(fwd This2.Path that, fwd This2.Path to) 
+mut This0 #mutK(This2.Path that, This2.Path to) 
 class method 
 This0 #apply(This2.Path that, This2.Path to) This0.#mutK(that:that, to:to)
 mut method 
@@ -14526,7 +14526,7 @@ Library #leftleft(Library that) exception This2.MetaGuard.NestedClassUnavailable
   )}
 RemoveImplementationSelector:{
 class method 
-mut This0 #mutK(fwd This2.Selector that, fwd This2.Path of) 
+mut This0 #mutK(This2.Selector that, This2.Path of) 
 class method 
 This0 #apply(This2.Selector that, This2.Path of) This0.#mutK(that:that, of:of)
 mut method 
@@ -14556,7 +14556,7 @@ Library #leftleft(Library that) exception This2.MetaGuard.MemberUnavailable (
   )}
 MoveImplementationSelector:{
 class method 
-mut This0 #mutK(fwd This2.Selector that, fwd This2.Path of, fwd This2.Selector to) 
+mut This0 #mutK(This2.Selector that, This2.Path of, This2.Selector to) 
 class method 
 This0 #apply(This2.Selector that, This2.Path of, This2.Selector to) This0.#mutK(that:that, of:of, to:to)
 mut method 
@@ -14591,7 +14591,7 @@ Library #leftleft(Library that) exception This2.MetaGuard.MemberUnavailable, Thi
   )}
 RemoveImplementationPath:{
 class method 
-mut This0 #mutK(fwd This2.Path that) 
+mut This0 #mutK(This2.Path that) 
 class method 
 This0 #apply(This2.Path that) This0.#mutK(that:that)
 mut method 
@@ -14618,7 +14618,7 @@ Library #leftleft(Library that) exception This2.MetaGuard.NestedClassUnavailable
   )}
 AddDocumentationSelector:{
 class method 
-mut This0 #mutK(fwd This2.Selector that, fwd This2.Path of, fwd This2.Introspection.Doc doc) 
+mut This0 #mutK(This2.Selector that, This2.Path of, This2.Introspection.Doc doc) 
 class method 
 This0 #apply(This2.Selector that, This2.Path of, This2.Introspection.Doc doc) This0.#mutK(that:that, of:of, doc:doc)
 mut method 
@@ -14652,7 +14652,7 @@ Library #leftleft(Library that) exception This2.MetaGuard.MemberUnavailable (
   )}
 AddDocumentationPath:{
 class method 
-mut This0 #mutK(fwd This2.Path that, fwd This2.Introspection.Doc doc) 
+mut This0 #mutK(This2.Path that, This2.Introspection.Doc doc) 
 class method 
 This0 #apply(This2.Path that, This2.Introspection.Doc doc) This0.#mutK(that:that, doc:doc)
 mut method 
@@ -14683,7 +14683,7 @@ Library #leftleft(Library that) exception This2.MetaGuard.NestedClassUnavailable
   )}
 MakePrivatePath:{
 class method 
-mut This0 #mutK(fwd This2.Path that) 
+mut This0 #mutK(This2.Path that) 
 class method 
 This0 #apply(This2.Path that) This0.#mutK(that:that)
 mut method 
@@ -14695,7 +14695,7 @@ Library #leftleft(Library that) exception This2.MetaGuard.MemberUnavailable, Thi
 })).#leftleft(that:that)}
 MakePrivateSelector:{
 class method 
-mut This0 #mutK(fwd This2.Selector that, fwd This2.Path of) 
+mut This0 #mutK(This2.Selector that, This2.Path of) 
 class method 
 This0 #apply(This2.Selector that, This2.Path of) This0.#mutK(that:that, of:of)
 mut method 
@@ -14711,7 +14711,7 @@ Library #leftleft(Library that) exception This2.MetaGuard.MemberUnavailable This
 })).#leftleft(that:that)}
 SumMethods:{
 class method 
-mut This0 #mutK(fwd This2.Selector that, fwd This2.Selector and, fwd This2.Path of, fwd This2.S over, fwd This2.Selector to) 
+mut This0 #mutK(This2.Selector that, This2.Selector and, This2.Path of, This2.S over, This2.Selector to) 
 class method 
 This0 #apply(This2.Selector that, This2.Selector and, This2.Path of, This2.S over, This2.Selector to) This0.#mutK(that:that, and:and, of:of, over:over, to:to)
 mut method 
@@ -14846,7 +14846,7 @@ Opt:{
 class method 
 Library #apply(class Any that) This1.SafeOperators.redirect(that:{
 class method 
-mut This0 #mutK(fwd This0.TOpt that) 
+mut This0 #mutK(This0.TOpt that) 
 class method 
 This0 #new(This0.TOpt that) This0.#mutK(that:that)
 mut method 
@@ -14910,7 +14910,7 @@ method get() error This3.Guard.Operation.#from(builder:(
   ))}
 TOf:{<:This1.TOpt
 class method 
-mut This0 #mutK(fwd This1.T that) 
+mut This0 #mutK(This1.T that) 
 class method 
 This0 #apply(This1.T that) This0.#mutK(that:that)
 mut method 
@@ -14970,7 +14970,7 @@ method
 Library solveConflict(Library that, This1.SrcDest location) }
 SrcDest:{
 class method 
-mut This0 #mutK(fwd This2.Path path, fwd This2.Selector src, fwd This2.Selector dest) 
+mut This0 #mutK(This2.Path path, This2.Selector src, This2.Selector dest) 
 class method 
 This0 #apply(This2.Path path, This2.Selector src, This2.Selector dest) This0.#mutK(path:path, src:src, dest:dest)
 mut method 
@@ -14990,7 +14990,7 @@ SrcDests:{' generic linked list class, elements of class Elem
 Varres0__150_0:'@private
 {
 class method 
-mut This0 #mutK(fwd This1 inner) 
+mut This0 #mutK(This1 inner) 
 class method 
 mut This0 #apply(This1 inner) This0.#mutK(inner:inner)
 mut method 
@@ -15010,7 +15010,7 @@ Void inner(This1::#apply() that)
 mut method 
 This1::#apply() #inner() }
 class method 
-mut This0 #mutK(fwd This0.Cell head) 
+mut This0 #mutK(This0.Cell head) 
 class method 
 This0 _new(This0.Cell head) This0.#mutK(head:head)
 mut method 
@@ -15231,7 +15231,7 @@ method #inner() error This3.Assert.ObservedBug.#from(builder:(
 method #checkEnd() void}
 CellNext:{<:This1.Cell
 class method 
-mut This0 #mutK(fwd This2.SrcDest elem, fwd This1.Cell nextCell) 
+mut This0 #mutK(This2.SrcDest elem, This1.Cell nextCell) 
 class method 
 This0 #apply(This2.SrcDest elem, This1.Cell nextCell) This0.#mutK(elem:elem, nextCell:nextCell)
 mut method 
@@ -15358,7 +15358,7 @@ method #checkEnd() (
   )}
 Iterator:{
 class method 
-mut This0 #mutK(fwd This1.Cell that, fwd This3.Bool terminate) 
+mut This0 #mutK(This1.Cell that, This3.Bool terminate) 
 class method 
 mut This0 #apply(This1.Cell that, This3.Bool terminate) This0.#mutK(that:that, terminate:terminate)
 mut method 
@@ -15421,7 +15421,7 @@ Libs__152_0:'@private
 Varres0:'@private
 {
 class method 
-mut This0 #mutK(fwd This1 inner) 
+mut This0 #mutK(This1 inner) 
 class method 
 mut This0 #apply(This1 inner) This0.#mutK(inner:inner)
 mut method 
@@ -15441,7 +15441,7 @@ Void inner(This1::#apply() that)
 mut method 
 This1::#apply() #inner() }
 class method 
-mut This0 #mutK(fwd This0.Cell head) 
+mut This0 #mutK(This0.Cell head) 
 class method 
 This0 _new(This0.Cell head) This0.#mutK(head:head)
 mut method 
@@ -15662,7 +15662,7 @@ method #inner() error This3.Assert.ObservedBug.#from(builder:(
 method #checkEnd() void}
 CellNext:{<:This1.Cell
 class method 
-mut This0 #mutK(fwd Library elem, fwd This1.Cell nextCell) 
+mut This0 #mutK(Library elem, This1.Cell nextCell) 
 class method 
 This0 #apply(Library elem, This1.Cell nextCell) This0.#mutK(elem:elem, nextCell:nextCell)
 mut method 
@@ -15789,7 +15789,7 @@ method #checkEnd() (
   )}
 Iterator:{
 class method 
-mut This0 #mutK(fwd This1.Cell that, fwd This3.Bool terminate) 
+mut This0 #mutK(This1.Cell that, This3.Bool terminate) 
 class method 
 mut This0 #apply(This1.Cell that, This3.Bool terminate) This0.#mutK(that:that, terminate:terminate)
 mut method 
@@ -16061,7 +16061,7 @@ Library #leftleft(Library that) exception This1.MetaGuard.ClassClash, This1.Meta
 Varacc1__155_0:'@private
 {
 class method 
-mut This0 #mutK(fwd Library inner) 
+mut This0 #mutK(Library inner) 
 class method 
 mut This0 #apply(Library inner) This0.#mutK(inner:inner)
 mut method 
@@ -16091,7 +16091,7 @@ Void inner(This1::myLibs__69_0() ::vals() ::#inner() that)
 mut method 
 This1::myLibs__69_0() ::vals() ::#inner() #inner() }
 class method '@private
-mut This0 #mutK__69_0(fwd This1.Libs__152_0 myLibs__69_0) 
+mut This0 #mutK__69_0(This1.Libs__152_0 myLibs__69_0) 
 class method '@private
 This0 #apply__70_0(This1.Libs__152_0 myLibs) This0.#mutK__69_0(myLibs__69_0:myLibs)
 mut method '@private
@@ -16360,7 +16360,7 @@ method solveConflict(that location ) (
 Varacc1_$%30_0__158_0:'@private
 {
 class method 
-mut This0 #mutK(fwd Library inner) 
+mut This0 #mutK(Library inner) 
 class method 
 mut This0 #apply(Library inner) This0.#mutK(inner:inner)
 mut method 
@@ -16390,7 +16390,7 @@ Void inner(This1::myLibs_$%28_0__71_0() ::vals() ::#inner() that)
 mut method 
 This1::myLibs_$%28_0__71_0() ::vals() ::#inner() #inner() }
 class method '@private
-mut This0 #mutK_$%28_0__71_0(fwd This1.PreferentialComposition.Libs__152_0 myLibs_$%28_0__71_0) 
+mut This0 #mutK_$%28_0__71_0(This1.PreferentialComposition.Libs__152_0 myLibs_$%28_0__71_0) 
 class method '@private
 This0 #apply_$%29_0__72_0(This1.PreferentialComposition.Libs__152_0 myLibs) This0.#mutK_$%28_0__71_0(myLibs_$%28_0__71_0:myLibs)
 mut method '@private
@@ -16659,7 +16659,7 @@ method solveConflict(that location ) (
 Varacc1_$%35_0__161_0:'@private
 {
 class method 
-mut This0 #mutK(fwd Library inner) 
+mut This0 #mutK(Library inner) 
 class method 
 mut This0 #apply(Library inner) This0.#mutK(inner:inner)
 mut method 
@@ -16689,7 +16689,7 @@ Void inner(This1::myLibs_$%33_0__73_0() ::vals() ::#inner() that)
 mut method 
 This1::myLibs_$%33_0__73_0() ::vals() ::#inner() #inner() }
 class method '@private
-mut This0 #mutK_$%33_0__73_0(fwd This1.PreferentialComposition.Libs__152_0 myLibs_$%33_0__73_0) 
+mut This0 #mutK_$%33_0__73_0(This1.PreferentialComposition.Libs__152_0 myLibs_$%33_0__73_0) 
 class method '@private
 This0 #apply_$%34_0__74_0(This1.PreferentialComposition.Libs__152_0 myLibs) This0.#mutK_$%33_0__73_0(myLibs_$%33_0__73_0:myLibs)
 mut method '@private
@@ -16941,7 +16941,7 @@ Patch:{
 Varacc2__164_0:'@private
 {
 class method 
-mut This0 #mutK(fwd Library inner) 
+mut This0 #mutK(Library inner) 
 class method 
 mut This0 #apply(Library inner) This0.#mutK(inner:inner)
 mut method 
@@ -16971,7 +16971,7 @@ Void inner(This2.PreferentialComposition.SrcDests::#begin() ::#end() that)
 mut method 
 This2.PreferentialComposition.SrcDests::#begin() ::#end() #inner() }
 class method 
-mut This0 #mutK(fwd This1.Path that) 
+mut This0 #mutK(This1.Path that) 
 class method 
 This0 #apply(This1.Path that) This0.#mutK(that:that)
 mut method 
@@ -17194,7 +17194,7 @@ Void inner(This1::kind() that)
 mut method 
 This1::kind() #inner() }
 class method 
-mut This0 #mutK(fwd This2.S _text, fwd This2.Message.Opt cause) 
+mut This0 #mutK(This2.S _text, This2.Message.Opt cause) 
 class method 
 This0 #apply(This2.S _text, This2.Message.Opt cause) This0.#mutK(_text:_text, cause:cause)
 mut method 
@@ -17335,7 +17335,7 @@ Void inner(This4.Concept.ToS::toS() that)
 mut method 
 This4.Concept.ToS::toS() #inner() }
 class method 
-mut This0 #mutK(fwd This3.Concept.ToS old, fwd This3.S accumulator) 
+mut This0 #mutK(This3.Concept.ToS old, This3.S accumulator) 
 class method 
 This0 #apply(This3.Concept.ToS old, This3.S accumulator) This0.#mutK(old:old, accumulator:accumulator)
 mut method 
@@ -17531,7 +17531,7 @@ This0 #from(This1.S.SBuilder builder) This0.fromS(that:This1.S.#from(binaryRepr:
 class method 
 mut This1.S.SBuilder #builder() This1.S.SBuilder.empty()
 class method 
-mut This0 #mutK(fwd This1.S inner) 
+mut This0 #mutK(This1.S inner) 
 class method 
 This0 #apply(This1.S inner) This0.#mutK(inner:inner)
 mut method 
@@ -17543,7 +17543,7 @@ method
 Library binaryRepr() this.inner().binaryRepr()}
 DeployTowel:{
 class method '(Any fileName)
-mut This0 #mutK(fwd This1.Url fileName) 
+mut This0 #mutK(This1.Url fileName) 
 class method '(Any fileName)
 This0 #apply(This1.Url fileName) This0.#mutK(fileName:fileName)
 mut method '(Any fileName)

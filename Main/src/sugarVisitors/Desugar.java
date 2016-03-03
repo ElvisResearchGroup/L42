@@ -809,7 +809,7 @@ public class Desugar extends CloneVisitor{
     MethodWithType k = cfMutK(doc,h);
     Mdf nameMdf=mdfForNamedK(h);
     if(nameMdf==Mdf.Lent){k=cfLentK(k);}
-    MethodWithType kOut =cfNameK(doc,nameMdf==Mdf.Lent, nameMdf, h, k.getMs());
+    MethodWithType kOut =cfNameK(doc, nameMdf, h, k.getMs());
     result.add(k);
     result.add(kOut);
     //cfType1(h,doc, result);
@@ -822,16 +822,12 @@ public class Desugar extends CloneVisitor{
     return result;
   }
 
-  static private MethodWithType cfNameK(Doc doc,boolean lent,Mdf mdf,ast.Ast.ConcreteHeader h,MethodSelector called) {
+  static private MethodWithType cfNameK(Doc doc,Mdf mdf,ast.Ast.ConcreteHeader h,MethodSelector called) {
     List<Doc> tDocss=new ArrayList<>();
     List<Type> ts=new ArrayList<Type>();
       for(FieldDec f:h.getFs()){
         tDocss.add(f.getDoc());
-        ts.add(f.getT().match(nt->lent&nt.getMdf()==Mdf.Mutable?nt.withMdf(Mdf.Lent):nt, hT->hT));
-        //TODO: will be as under, but now is as former line
-        //NormType nt=(NormType)f.getT();
-        //if(lent & nt.getMdf()==Mdf.Mutable){nt=nt.withMdf(Mdf.Lent);}
-        //ts.add(nt);
+        ts.add(f.getT());
         }
     MethodSelector ms=called.withName(h.getName());
     NormType resT=new ast.Ast.NormType(mdf,ast.Ast.Path.outer(0),Ph.None);
@@ -858,7 +854,12 @@ public class Desugar extends CloneVisitor{
     List<Type> ts=new ArrayList<Type>();
     for(FieldDec f:h.getFs()){
       tDocss.add(f.getDoc());
-      ts.add(f.getT().match(nt->nt.withPh(Ph.Ph),ht->ht.withForcePlaceholder(true)));
+      ts.add(f.getT().match(nt->{
+        //can not be put fwd, we need invariants to replace constructos if needed
+        //if (nt.getPh()!=Ph.Ph){nt=nt.withPh(Ph.Ph);}
+        if(nt.getMdf()==Mdf.Capsule){nt=nt.withMdf(Mdf.Mutable);}
+        return nt;
+        },ht->ht.withForcePlaceholder(true)));
       names.add(f.getName());
       }
     MethodSelector ms=new MethodSelector("#mutK",names);

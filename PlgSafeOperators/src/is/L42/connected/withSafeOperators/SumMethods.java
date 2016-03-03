@@ -4,6 +4,7 @@ import ast.Ast.Mdf;
 import ast.Ast.MethodSelector;
 import ast.Ast.MethodType;
 import ast.Ast.Path;
+import ast.Ast.Ph;
 import ast.Ast.Position;
 import ast.Ast.Type;
 import ast.ExpCore;
@@ -19,6 +20,7 @@ import coreVisitors.From;
 import tools.Assertions;
 
 import java.util.*;
+import java.util.stream.Collectors;
 public class SumMethods {
   public static ClassB sumMethods(ClassB lib, List<String> path, MethodSelector m1,MethodSelector m2,MethodSelector mRes,String name){
     ClassB pathCb = pathCb(lib, path);
@@ -34,11 +36,11 @@ public class SumMethods {
     MethodType mtU=mtU(index,mt1,mt2);
     if(mtU==null){throw Errors42.errorParameterMismatch(path, mem1,mem2, isReplacedParOk(index,mt1,mt2),false,true);}
     ExpCore eU=eU(index,mem2.getP(),mt1,mt2,m1,m2, mRes);
-    MethodWithType mwtU=new MethodWithType(Doc.empty(),mRes,mtU,Optional.of(eU),mem2.getP() );   
+    MethodWithType mwtU=new MethodWithType(Doc.empty(),mRes,mtU,Optional.of(eU),mem2.getP() );
     checkConflict(path, mRes, pathCb, mwtU);
     boolean replOk=isReplacedParOk(index,mt1,mt2);
     if(!replOk){throw Errors42.errorParameterMismatch(path, mem1,mem2, false,true,true);}
-    return finalResult(lib, path, mwtU);    
+    return finalResult(lib, path, mwtU);
   }
   private static ClassB finalResult(ClassB lib, List<String> path, MethodWithType mwtU) {
     if(path.isEmpty()){
@@ -66,19 +68,27 @@ public class SumMethods {
         Errors42.checkMethodClash(path, mwtU,mtConflict,false);
         }
     }
-    Optional<Member> optConflict = Program.getIfInDom(pathCb.getMs(),mRes);    
+    Optional<Member> optConflict = Program.getIfInDom(pathCb.getMs(),mRes);
     if(optConflict.isPresent()){
       if(optConflict.get() instanceof MethodImplemented){
-        throw Errors42.errorMethodClash(path,mwtU, optConflict.get(), true,Collections.emptyList(),true,true,false);    
+        throw Errors42.errorMethodClash(path,mwtU, optConflict.get(), true,Collections.emptyList(),true,true,false);
       }
       MethodWithType mwtC=(MethodWithType)optConflict.get();
-      Errors42.checkMethodClash(path, mwtU,mwtC,false);   
+      Errors42.checkMethodClash(path, mwtU,mwtC,false);
     }
   }
   static MethodType mtU(int index,MethodType mt1,MethodType mt2){
     Mdf mdfU=mdfU(mt1.getMdf(),mt2.getMdf());
     if(mdfU==null){return null;}
-    List<Type> totTypes=new ArrayList<>(mt1.getTs());
+    Type removed=mt2.getTs().get(index);
+    boolean isRemovedPh=removed.match(nt->nt.getPh()==Ph.Ph, hType->false);
+    List<Type> totTypes;
+    if(isRemovedPh){
+      totTypes=new ArrayList<>(mt1.getTs());
+    }
+    else{
+      totTypes=mt1.getTs().stream().map(t->t.match(nt->nt.withPh(Ph.None), hType->hType)).collect(Collectors.toList());
+    }
     List<Doc> totDocs=new ArrayList<>(mt1.getTDocs());
     totTypes.addAll(mt2.getTs());
     totDocs.addAll(mt2.getTDocs());
@@ -99,8 +109,8 @@ public class SumMethods {
     Type r = mt1.getReturnType();
     return p1.equals(r);
     }
-  
-  
+
+
   static ExpCore eU(int index,Position pos,MethodType mt1,MethodType mt2,MethodSelector m1,MethodSelector m2,MethodSelector mRes){
     ExpCore r1=(mt1.getMdf()==Mdf.Class)?Path.outer(0):new ExpCore.X("this");
     ExpCore r2=(mt2.getMdf()==Mdf.Class)?Path.outer(0):new ExpCore.X("this");
@@ -108,7 +118,7 @@ public class SumMethods {
     List<ExpCore> ps1=new ArrayList<>();
     for(String x:mRes.getNames().subList(0,m1.getNames().size())){ps1.add(new ExpCore.X(x));}
     ExpCore eInner=new ExpCore.MCall(r1, m1,Doc.empty(), ps1, pos);
-    
+
     ArrayList<ExpCore> ps2=new ArrayList<>();
     for(int i=1;i<m2.getNames().size();i++){
       String x=mRes.getNames().get(m1.getNames().size()+i-1);
