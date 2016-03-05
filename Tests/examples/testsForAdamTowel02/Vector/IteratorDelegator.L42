@@ -1,0 +1,36 @@
+{
+read method
+read MutListAny that()
+
+read method
+N from()
+
+mut method
+Void from(N that)
+
+read method
+N to()
+
+read method
+N stopOk()
+
+mut method
+Void #next() exception Void (
+  this.from(\from+1N)
+  if this.to()>0N & this.from()>=this.to() (exception void)
+  if this.from()>=this.that().size() (exception void)
+  )
+
+read method  Void #checkEnd()
+  if this.from()<this.stopOk() (
+    error CollectionErrors.iterationTermination(from:this.from(),stopOk:this.stopOk(),size:this.that().size())
+    )
+
+read method
+Elem #inner()
+  This2.cast(this.that().val(this.from()))
+
+read method
+Void #close()
+  void
+}

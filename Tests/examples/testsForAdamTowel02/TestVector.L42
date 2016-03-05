@@ -1,0 +1,24 @@
+{reuse L42.is/AdamTowel01
+
+Vector:...
+SV:Vector.of(S)
+SV2:Vector.of(eq:S)
+
+Main:{
+  mut SV sv=SV.#builder()
+  sv.#use(S"a")
+  sv.#use(S"b")
+  Debug(S"Hello-"[with si in sv.vals() ( use[si separedBy:S"@@"])]"")
+  Debug(S"Hello-"[with var si in sv.#vals() ( use[si separedBy:S"@@"]   si:=si++S"#")]"")
+  Debug(S"Hello-"[with var si in sv.#vals() ( use[si separedBy:S"@@"]   si:=si++S"#")]"")
+  Debug(S"Hello")
+  Debug(sv.val(0N))
+  Debug(sv.val(1N))
+  var SV2 s2=SV2[S"c";S"d"]
+  s2:=s2.withoutAll(S"c")
+  Debug(S"Hello-"[with si in s2.vals() ( use[si separedBy:S"@@"])]"")
+  return ExitCode.normal()
+  }
+' method Bool isConcrete() true iff all non state methods are implemented and
+' all the interface methods are implemented.
+}

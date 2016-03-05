@@ -1322,7 +1322,8 @@ public interface Ast {
 		}
 
 		public int outerNumber() {
-			assert isCore() : this;
+			assert isCore() :
+			  this;
 			return this.n;
 		}
 		private static final Path _Outer0 = new Path(0, Arrays.asList("This0"));

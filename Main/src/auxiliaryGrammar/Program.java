@@ -373,6 +373,7 @@ public class Program {
   private static void accumulateAllSupertypes(ClassB forErr,List<Path> ps,Program p,Path pi){
     if(ps.contains(pi)){return;}
     ps.add(pi);
+    if(pi.isPrimitive()){return;}
     ClassB cbi=p.extractCb(pi);
     if (!cbi.isInterface()){
       throw new ErrorMessage.MalformedSubtypeDeclaration(forErr,cbi, pi, p.getInnerData());

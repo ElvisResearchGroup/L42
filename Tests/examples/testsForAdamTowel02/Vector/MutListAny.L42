@@ -1,0 +1,93 @@
+{(var Cell head,var N size)
+
+  Cell:{interface Any
+    method Any get(N that)
+    method Cell set(N that, Any val,Bool add)
+    method Cell remove(N that)
+    }
+
+  CellNext:{(Any val,Cell next)<:Cell
+    method get(that) {
+      if that==0N (return this.val())
+      return  this.next().get(that-1N)
+      }
+    method set(that,val,add) {
+      if that!=0N ( return This(val:this.val(),next:this.next().set(that-1N, val:val,add:add)) )
+      if add (return This(val:val,next:this) )
+      return This(val:val,next:this.next())
+      }
+    method remove(that) {
+      if that!=0N ( return This(val:this.val(),next:this.next().remove(that-1N)))
+      return this.next()
+      }
+    }
+
+  CellEnd:{()<:Cell
+    method get(that) error CollectionErrors.unreachable()
+    method set(that,val,add) {
+      if !add (error CollectionErrors.unreachable())
+      if that==0N (return CellNext(val:val,next:this) )
+      error CollectionErrors.unreachable()
+      }
+    method remove(that)
+      error CollectionErrors.unreachable()
+    }
+
+  class method
+  mut This empty()
+     This(head:CellEnd(),size:0N)
+
+  read method
+  Any val(N that) (
+    this.checkBound(that)
+    this.head().get(that)
+    )
+
+  mut method
+  Void (N that,Any val) (
+    this.checkBound(that)
+    this.head(this.head().set(that,val:val,add:Bool.false()))
+    )
+
+  mut method
+  Void add(N that, Any val) (
+    this.checkBoundAdd(that)
+    this.head( this.head().set(that, val:val,add:Bool.true()) )
+    this.size(this.size()+1N)
+    )
+  mut method
+  Void remove(N that) (
+    this.checkBound(that)
+    this.head( this.head().remove(that) )
+    this.size(this.size()-1N)
+    )
+
+  method
+  This without(N that) (
+    this.checkBound(that)
+    This(head: this.head().remove(that), size:this.size()-1N )
+    )
+
+  method
+  This withAlso(N that, Any val) (
+    this.checkBoundAdd(that)
+    This(head: this.head().set(that,val:val, add:Bool.true()), size:this.size()+1N )
+    )
+
+  method
+  This with(N that, Any val) (
+    this.checkBound(that)
+    This(head: this.head().set(that,val:val, add:Bool.false()), size:this.size()+1N )
+    )
+
+  read method
+  Void checkBound(N that) (
+    if that<0N (error CollectionErrors.negBound(that, list:this) )
+    if this.size()<=that (error CollectionErrors.outBound(that, list:this) )
+    )
+  read method
+  Void checkBoundAdd(N that) (
+    if that<0N (error CollectionErrors.negBound(that, list:this) )
+    if this.size()<that (error CollectionErrors.outBound(that, list:this) )
+    )
+  }

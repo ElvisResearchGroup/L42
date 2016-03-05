@@ -23,6 +23,7 @@ public class From extends CloneVisitor {
     return FromInClass.of(s,path);
   }
   public static Path normalizeShort(Path p0,List<String>explored){
+    if(p0.isPrimitive()){return p0;}
     int n=Math.min(p0.outerNumber(),explored.size());
     if(n==0){return p0;}
     List<String> cs = p0.getCBar();

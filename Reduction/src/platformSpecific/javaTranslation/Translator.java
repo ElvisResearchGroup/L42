@@ -50,6 +50,7 @@ public class Translator {
       }
     catch(CompilationError| IllegalAccessException| IllegalArgumentException| NoSuchMethodException| SecurityException| ClassNotFoundException e){
       //try {Files.write(Paths.get("C:\\Users\\marco\\Desktop\\eclipseMars\\L42Local\\Tests\\src\\generated\\Program42.java"), s.getBytes());}catch (IOException _e) {throw new Error(_e);}
+      try {Files.write(Paths.get("/u/staff/servetto/git/L42/Tests/src/generated/Program42.java"), s.getBytes());}catch (IOException _e) {throw new Error(_e);}
       throw new Error(e);
       }
     }

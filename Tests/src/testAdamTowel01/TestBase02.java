@@ -18,8 +18,8 @@ public class TestBase02 {
   @Before
   public void initialize() throws Throwable {
     //TestHelper.configureForTest();
-    System.out.println("AssertionsDisabled");
-    ClassLoader.getSystemClassLoader().setDefaultAssertionStatus(false);
+    //System.out.println("AssertionsDisabled");
+    //ClassLoader.getSystemClassLoader().setDefaultAssertionStatus(false);
     L42.trustPluginsAndFinalProgram=true;
     //_02_00DeployAdamTowel02();
     }
@@ -84,6 +84,14 @@ public class TestBase02 {
      L42.main(new String[]{"examples/testsForAdamTowel02/TestIsConcrete.L42"});
      Assert.assertEquals(L42.record.toString(),
          "DanielWriteHere\n");
+     }
+   @Test
+   public  void _02_201Vector() throws Throwable{
+     TestHelper.configureForTest();
+     //new TestBase01()._01_00DeployAdamTowel01();
+     L42.main(new String[]{"examples/testsForAdamTowel02/TestVector.L42"});
+     Assert.assertEquals(L42.record.toString(),
+         "Hello-a@@b\nHello-a@@b\nHello-a#@@b#\nHello\na##\nb##\nHello-d\n");
      }
    @Test
    public  void _02_101BinaryFlag32() throws Throwable{

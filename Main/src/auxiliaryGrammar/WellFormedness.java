@@ -233,7 +233,7 @@ public class WellFormedness {
   }
   static void checkMs(ClassB cb ,MethodSelector s, HashSet<MethodSelector> usedSelector) {
     if(usedSelector.contains(s)){
-      throw new ErrorMessage.NotWellFormedMsk(cb,null, "Some method selector is repeated");
+      throw new ErrorMessage.NotWellFormedMsk(cb,null, "Some method selector is repeated: "+s+" is repeated. Other selector in the same scope: "+usedSelector);
       }
     usedSelector.add(s);
     //All parameter names declared within a given method header must be unique.

@@ -1,0 +1,55 @@
+{
+class method This #begin()
+method  This #end()
+method This #add(Elem that)
+read method N size()
+
+Elem:{<:Concept.Equals}
+
+read method lent IteratorVal vals()
+IteratorVal:{
+  mut method Void #next() exception Void
+  read method Void #checkEnd()
+  read method Elem #inner()
+  read method Void #close()
+  }
+
+read method
+Bool contains(Elem that){
+  with e in this.vals() (
+    if e.equals(that) (return Bool.true())
+    )
+  return Bool.false()
+  }
+
+'mut method
+'removeAll(Elem that)
+'mut method
+'removeLeft(Elem that)
+'mut method
+'removeRight(Elem that)
+
+'method
+'This withoutLeft(Elem that)
+'method
+'This withoutRight(Elem that)
+
+method
+This withoutAll(Elem that)
+  This[with e in this.vals() (if !e.equals(that) (use[e]))]
+
+
+read method
+Bool ==(This that){
+  with e1 in this.vals(), e2 in that.vals() (
+    if !e1.equals(e2) (return Bool.false())
+    )
+  catch error IterationFailure ( return Bool.false() )
+  return Bool.true()
+  }
+method
+Bool equals(Any that){
+  with that (on This return this==that)
+  return Bool.false()
+  }
+}

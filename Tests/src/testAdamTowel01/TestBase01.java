@@ -19,7 +19,7 @@ public class TestBase01 {
   public void initialize() throws Throwable {
     //TestHelper.configureForTest();
     //System.out.println("AssertionsDisabled");
-    //ClassLoader.getSystemClassLoader().setDefaultAssertionStatus(false);
+    ClassLoader.getSystemClassLoader().setDefaultAssertionStatus(false);
     L42.trustPluginsAndFinalProgram=true;
     //_01_00DeployAdamTowel01();
     }

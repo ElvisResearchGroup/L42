@@ -34,19 +34,20 @@ public class TranslateClass {
   }
 
   private static void generateClassFacade(String s, ClassB ct, StringBuilder res) {
-    MethodWithType ctor = extractConstructor(ct);
-    if(ctor==null){
+    List<MethodWithType> ctors = extractConstructors(ct);
+    if(ctors.isEmpty()){
       getReverterForNotInstantiableClass(s,res);
       getPhNestedNotIntantiable(s,ct,res,false);
       getTypeForNotInstantiableClass(s,res);
       return;
       }
+    MethodWithType ctor=ctors.get(0);
     getFields(ctor,res);
     getConstructor(s,ctor,res);
     getReverter(s,ctor,res);
     getGettesSettersAndExposers(ct,res);
     getPhNested(s,ctor,res);
-    getType(s,ctor,res);
+    getType(s,ctors,res);
   }
 
   private static void getTypeForNotInstantiableClass(String s, StringBuilder res) {
@@ -105,22 +106,24 @@ public class TranslateClass {
     else{res.append(" implements ");}
     res.append("platformSpecific.javaTranslation.Resources.Revertable");
     for(Path pi:ct.getStage().getInheritedPaths()){
-      //if (pi.equals(Path.outer(0))){continue;}
+      if (pi.equals(Path.Any())){continue;}
+      assert !pi.isPrimitive();
       res.append(", ");
       res.append(Resources.nameOf(pi));
     }
     return isInterface;
   }
 
-  private static MethodWithType extractConstructor(ClassB ct) {
+  private static List<MethodWithType> extractConstructors(ClassB ct) {
+    List<MethodWithType> result=new ArrayList<>();
     for(Member m:ct.getMs()){
       assert m instanceof MethodWithType;
       MethodWithType mt=(MethodWithType)m;
       if(mt.getInner().isPresent()){continue;}
       if(mt.getMt().getMdf()!=Ast.Mdf.Class){continue;}
-      return mt;
+      result.add(mt);
     }
-    return null;
+    return result;
   }
   private static void getFields(MethodWithType ctor, StringBuilder res) {
     List<String> ns = ctor.getMs().getNames();
@@ -250,17 +253,19 @@ public class TranslateClass {
     res.append("  public Ph(){ }\n  }\n");
     }
 
-  private static void getType(String s, MethodWithType ctor, StringBuilder res) {
+  private static void getType(String s, List<MethodWithType>ctors, StringBuilder res) {
     res.append("public static final "+s+" type=new "+s+"(");
-    StringBuilders.formatSequence(res,ctor.getMs().getNames().iterator(),
+    StringBuilders.formatSequence(res,ctors.get(0).getMs().getNames().iterator(),
         ", ",n->res.append("null"));
     res.append(");\n");
-    getMethodHeader(ctor, res);
-    res.append("{return new "+s+"(");
-    StringBuilders.formatSequence(res,ctor.getMs().getNames().iterator(),
-      ", ",n->res.append("P"+Resources.nameOf(n)));
-    res.append(");}\n");
-    }
+    for(MethodWithType cti:ctors){
+      getMethodHeader(cti, res);
+      res.append("{return new "+s+"(");
+      StringBuilders.formatSequence(res,cti.getMs().getNames().iterator(),
+        ", ",n->res.append("P"+Resources.nameOf(n)));
+      res.append(");}\n");
+      }
+  }
   private static void getIType(String s, ClassB cb, StringBuilder res) {
     res.append("public static final "+s+" type=new "+s+"(){\n");
     getITReverter(s,res);

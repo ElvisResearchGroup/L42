@@ -98,6 +98,10 @@ private static List<PathMwt> completeMwts(List<PathMwt> mwts, ClassB cb) {
 private static  List<PathMwt> computeMwts(Program p, List<Path> allSup) {
   List<PathMwt> mwts=new ArrayList<>();
   for(Path pi:allSup){
+    if(pi.isPrimitive()){
+      assert pi.equals(Path.Any());
+      continue;
+      }
     ClassB cbi=p.extractCb(pi);
     assert cbi.isInterface():
       cbi;
