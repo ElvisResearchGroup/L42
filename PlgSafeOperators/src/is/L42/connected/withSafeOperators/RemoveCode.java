@@ -148,6 +148,7 @@ public class RemoveCode {
     List<Path> dep = new UsedPaths().of(depSource);
     List<List<String>>result=new ArrayList<>();
     for(Path pi:new HashSet<>(dep)){
+      if(pi.isPrimitive()){continue;}
       Path piF=From.fromP(pi, Path.outer(0, origin));
       if(piF.outerNumber()==0){result.add(piF.getCBar());}
       }

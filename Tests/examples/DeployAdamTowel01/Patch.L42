@@ -29,13 +29,13 @@
   PreferentialComposition.SrcDests renameMap(Library that,S prefix,Introspection.NestedClasses intros) {
     var acc=PreferentialComposition.SrcDests[]
     with intro in intros.vals() (
-      ns=intro.pathFromRoot().names()
+      Strings ns=intro.pathFromRoot().names()
       Assert.$[!ns.isEmpty()]
       acc++=PreferentialComposition.renameMap(that,
         prefix:prefix,
-        path:Path.from(names:ns.pop())
-        ms:intro.methods()) 
+        path:Path.from(names:ns.withoutLeft())
+        ms:intro.methods())
       )
     return acc
-    }  
+    }
   }

@@ -1,0 +1,19 @@
+{
+
+CollectionErrors:...
+IterationFailure:{}'will be fixed
+MutListAny:...
+
+class method
+Library vector(class Any of)
+  SafeOperatorsAccess.redirect(VectorTrait(),srcBinaryRepr:S"Elem".binaryRepr(),dest:of)
+
+class method
+Library vector(class Any ofEq) (
+    lib=SafeOperatorsAccess.compose(left:VectorTrait(),right:CodeEq())
+    SafeOperatorsAccess.redirect(lib,srcBinaryRepr:S"Elem".binaryRepr(),dest:ofEq)
+    )
+
+  VectorTrait:{class method Library()...}
+  CodeEq:{class method Library()...}
+  }

@@ -4,12 +4,12 @@
   class method
   This fromS(Concept.ToS that)
     This.#from(binaryRepr: that.toS().binaryRepr())
-  
-  class method This #from(S.SBuilder builder) 
+
+  class method This #from(S.SBuilder builder)
     This.#from(binaryRepr: builder.binaryRepr())
-  
+
   class method mut S.SBuilder #builder() S.SBuilder.empty()
-  
+
   class method
   This #from(Library binaryRepr) (
     use SafeOperators
@@ -20,8 +20,8 @@
   class method
   Any parseError(S that)
     S"Selector.UnsatisfactoryErrorToAvoidCycle, replace in AdamT2"
-  
-  class method 
+
+  class method
   This from(S name,Strings names) {
     if names.isEmpty() (return This.fromS(name++S"()"))
     pars=S"("[with n in names.vals() (use[n++S","])]""
@@ -80,9 +80,9 @@
       result:=result.#add(str(end:pos))
       str:=str(start:pos+1N)
       )
-    return result.#end()'reverse the linked list
+    return result
   }
-  
+
   class method
   Selector fresh(Selector that) {
     var name=that.name()

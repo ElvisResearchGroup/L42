@@ -83,6 +83,7 @@ public class Desugar extends CloneVisitor{
     d.usedVars.addAll(CollectDeclaredVars.of(e));
     e=DesugarPaths.of(e);
     e=DesugarContext.of(d.usedVars, e);
+    assert DesugarContext.checkRemoved(e);
     e=DesugarW.of(d.usedVars,e);
     //understand what is the current folder
     //replace ... recursively

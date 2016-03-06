@@ -25,11 +25,11 @@ NestedClass  referencedPath(Doc.Annotation ann) {
   catch exception MetaGuard.NestedClassUnavailable x error Assert.ObservedBug"Type refers to unexistent path"
   }
 method NestedClass referencedPath()
-  this.referencedPath(ann:this.record().docOf(path:Path"Path").annotations().top())
+  this.referencedPath(ann:this.record().docOf(path:Path"Path").annotations().left())
   
 method NestedClass resolvedReferencedPath() {'error on AliasUnresolvable
   if this.typeKind()!=S"AliasUnresolvable" (
-    return this.referencedPath(ann:this.record().docOf(path:Path"ResolvedPath").annotations().top())
+    return this.referencedPath(ann:this.record().docOf(path:Path"ResolvedPath").annotations().left())
     )
   error Guard.Operation"AliasUnresolvable class, mdf unknown" 
   }

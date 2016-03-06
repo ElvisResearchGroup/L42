@@ -157,24 +157,24 @@ class ContextReplace extends ContextLocator{
     }
   return new Ast.Parameters(fp,xs, es);
   }
-  public static Expression ofRestOf(Ast.HasReceiver s){
+  public static Ast.HasReceiver ofRestOf(Ast.HasReceiver s,DesugarContext v){
       Expression receiver=s.getReceiver();
       Position pos=s.getP();
       String mName=s.accept(new ReceiverExcluder<String>() {
-      public String visit(MCall s) {return s.getName();}
-      public String visit(FCall s) {return "#apply";}
-      public String visit(SquareCall s) { return "#square";}
-      public String visit(SquareWithCall s) { return "#square";}
-    });
-      return s.accept(new ReceiverExcluder<Expression>() {
-      public Expression visit(MCall s) {return s.withPs(of(pos, receiver, mName, s.getPs()));}
-      public Expression visit(FCall s) {return s.withPs(of(pos, receiver, mName, s.getPs()));}
-      public Expression visit(SquareCall s) {
-        List<Parameters> pss=new ArrayList<>();
-        for(Parameters ps:s.getPss()){pss.add(of(pos, receiver, mName, ps));}
-        return s.withPss(pss);
-      }
-      public Expression visit(SquareWithCall s) { return s.withWith((With)of(pos, receiver, mName, mName, s.getWith()));}
+        public String visit(MCall s) {return s.getName();}
+        public String visit(FCall s) {return "#apply";}
+        public String visit(SquareCall s) { return "#square";}
+        public String visit(SquareWithCall s) { return "#square";}
+      });
+      return (Ast.HasReceiver)s.accept(new ReceiverExcluder<Expression>() {
+        public Expression visit(MCall s) {return v.visitS(s.withPs(of(pos, receiver, mName, s.getPs())));}
+        public Expression visit(FCall s) {return v.visitS(s.withPs(of(pos, receiver, mName, s.getPs())));}
+        public Expression visit(SquareCall s) {
+          List<Parameters> pss=new ArrayList<>();
+          for(Parameters ps:s.getPss()){pss.add(of(pos, receiver, mName, ps));}
+          return v.visitS(s.withPss(pss));
+        }
+      public Expression visit(SquareWithCall s) { return v.visitS(s.withWith((With)of(pos, receiver, mName, mName, s.getWith())));}
     });
     }
   }
@@ -182,6 +182,13 @@ class ContextReplace extends ContextLocator{
 
 class DesugarContext extends CloneVisitor{
   Set<String> usedVars=new HashSet<String>();
+  public static boolean checkRemoved(Expression e){
+    class AssertContextNotPresent extends CloneVisitor{ @Override public Expression visit(ContextId s) {
+      assert false:s;
+      return s; }}
+    e.accept(new AssertContextNotPresent());
+    return true;
+  }
   public static Expression of(Set<String> usedVars,Expression e){
     DesugarContext d=new DesugarContext();
     d.usedVars=usedVars;
@@ -196,13 +203,27 @@ class DesugarContext extends CloneVisitor{
     String x=Functions.freshName("rcv", usedVars);
     return visit(Desugar.getBlock(s.getP(),x, s.getReceiver(),s.withReceiver(new X(x))));
       }
+  private Expression visitS(Ast.HasReceiver s){
+    return s.accept(new ReceiverExcluder<Expression>() {
+      public Expression visit(MCall s) {return visitS(s);}
+      public Expression visit(FCall s) {return visitS(s);}
+      public Expression visit(SquareCall s) {return visitS(s);}
+      public Expression visit(SquareWithCall s) { return visitS(s);}
+  });
+  }
   private Expression visitHasReceiver(Ast.HasReceiver s){
     if(!(s.getReceiver() instanceof Ast.Atom)){   return normalizeReceiver(s);   }
-    if(!ContextDirectlyIn.ofRestOf(s)){return s;}
-    return ContextReplace.ofRestOf(s);
+    if(!ContextDirectlyIn.ofRestOf(s)){return visitS(s);}
+    s=ContextReplace.ofRestOf(s,this);
+    return s;
   }
   public Expression visit(Expression.MCall s) { return visitHasReceiver(s);}
   public Expression visit(FCall s) { return visitHasReceiver(s);}
   public Expression visit(SquareCall s) { return visitHasReceiver(s);}
   public Expression visit(SquareWithCall s) { return visitHasReceiver(s);}
+
+  public Expression visitS(Expression.MCall s) { return super.visit(s);}
+  public Expression visitS(FCall s) { return super.visit(s);}
+  public Expression visitS(SquareCall s) { return super.visit(s);}
+  public Expression visitS(SquareWithCall s) { return super.visit(s);}
 }

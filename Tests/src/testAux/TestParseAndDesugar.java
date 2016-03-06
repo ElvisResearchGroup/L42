@@ -62,10 +62,14 @@ public class TestParseAndDesugar {
   +" ( Void unused0=loop void void ) ) )"
 
 },{lineNumber(), "A.m(that: \\foo)","This0.A.m(that:This0.A.foo())"
+},{lineNumber(), "B.m(A.m(that: \\foo))","This0.B.m(that:This0.A.m(that:This0.A.foo()))"
 },{lineNumber(), "A.m(that: \\foo+void)","This0.A.m(that:This0.A.foo().#plus(that:void))"
 },{lineNumber(), "A.m(that: \\+void)","This0.A.m(that:This0.A.#default#m(that:void).#plus(that:void))"
 },{lineNumber(), "A(\\+void)","This0.A.#apply(that:This0.A.#default##apply(that:void).#plus(that:void))"
 },{lineNumber(), "A[\\a;\\a]","This0.A.#begin().#add(that:This0.A.a()).#add(that:This0.A.a()).#end()"
+
+},{lineNumber(), "{method Library(){ method This bar() method This foo(This that) this.foo(\\bar) } }","{method Library #apply(){ method This0 bar() method This0 foo(This0 that) this.foo(that:this.bar()) } }"
+},{lineNumber(), "{method Library(){ method This bar() method This foo(This that) this.foo(\\bar+void) } }","{method Library #apply(){ method This0 bar() method This0 foo(This0 that) this.foo(that:this.bar().#plus(that:void)) } }"
   //in this test setting, we can not generate This0.A for method local nested classes introduced desugaring vars, and other stuff :(
   //thus we use a classB literal however
   //},{lineNumber(), "{method foo() A[with x in \\a ( void )]}","would be super long"

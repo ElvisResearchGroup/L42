@@ -11,22 +11,22 @@ Main:{
   Debug(S"--------------------------")
   Debug(S"for all the methods of Bar:")
   ms=i.methods()
-  
+
   if !Selector"foo()".names().isEmpty() (Debug(S"fail"))
   if !Selector"f()".names().isEmpty() (Debug(S"fail"
     [with ni in Selector"f()".names().vals() (use[S"{"++ni++S"}"])]"!!"))
-  
+
   with m in ms.vals() (
    Debug(S"selector is: "[m.selector()]"")
    ti=m.returnType()
    Debug(S"return class is:"[ti]"")
    with parT in m.parameterTypes().vals() (
-     Debug(S"parameter class is:"[parT]"")  
+     Debug(S"parameter class is:"[parT]"")
      )
    'ti.record().dbg()
    )
   Debug(S"--------------------------")
-  Debug(S"for all the nested classes of Bar:")
+  Debug(S"for all the nested classes of Root:")
   with nc in i.root().nestedClasses().vals() (
     Debug(S"Nested class path is:"[nc.pathFromRoot()]"")
     Debug(nc)

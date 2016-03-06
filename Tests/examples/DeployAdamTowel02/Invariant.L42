@@ -21,7 +21,7 @@
     if !isInv (return Introspection.Methods[])
     state=i.state()
     if state.isEmpty() (exception Default.DecorationUnfeasable"State is empty")
-    k=state.top()
+    k=state.left()
     if k.isPrivate() (exception Default.DecorationUnfeasable"State is private")
     return state
     }
@@ -117,7 +117,7 @@
   Library stateDecoration(Library that,Introspection.Methods state){
     if state.isEmpty() (return that)
     p=Path"This"
-    kSel=state.top().selector()
+    kSel=state.left().selector()
     kName=kSel.name()
     kNames=kSel.names()
     kNameF=SafeOperators.freshName(kName)

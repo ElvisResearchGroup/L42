@@ -1,6 +1,7 @@
 {  (mut MutListAny inner)
 class method This #immK(MutListAny inner)
-class method mut This #builder() This(inner:MutListAny.empty())
+class method mut This empty() This(inner:MutListAny.empty())
+class method mut This #builder() this.empty()
 class method mut This #from(mut This builder) builder
 mut method Void #use(Elem that) this.add(right:that)
 
@@ -13,26 +14,46 @@ Elem:{}
 class method Elem cast(Any that) {with that (on Elem return that   default error CollectionErrors.cast())}
 
 read method  Elem val(N that) This.cast(this.inner().val(that) )
+read method  Elem left() This.cast(this.inner().val(0N) )
+read method  Elem right() This.cast(this.inner().val(\size-1N) )
 mut method  Void (N that,Elem val) this.#inner()(that, val:val)
 mut method  Void add(N that, Elem val) this.#inner().add(that,val:val)
 mut method  Void add(Elem right) this.#inner().add(\size,val:right)
+mut method  Void add(Elem left) this.#inner().add(0N,val:left)
 mut method  Void remove(N that) this.#inner().remove(that)
+mut method  Void left(Elem that) this.#inner()(0N,val:that)
+mut method  Void right(Elem that) this.#inner()(\size-1N,val:that)
 
 method This without(N that) This.#immK(inner:this.inner().without(that))
+method This withoutLeft() This.#immK(inner:this.inner().without(0N))
+
 method This withAlso(N that, Any val) This.#immK(inner:this.inner().withAlso(that,val:val))
 method This with(N that, Any val) This.#immK(inner:this.inner().with(that,val:val))
 
-read method N size() this.inner().size()
-read method Bool isEmpty() this.size()!=0N
+read method  mut This reverse() (
+  result=This.empty()
+  with e in this.vals()   (result.add(left:e))
+  result
+  )
 
-IteratorDelegator:{class method Library () ...}
+read method N size() this.inner().size()
+read method Bool isEmpty() this.size()==0N
+
+
+method This ++(This that){
+  var This res=this
+  with e in that.vals() (res:=res.#add(e))
+  return res
+  }
+
+IteratorTrait:{class method Library () ...}
 
 'not offering fill yet :(
 read method  lent IteratorVal vals(N from, N to, N stopOk) IteratorVal(this.inner(), from:from,to:to,stopOk:stopOk)
 read method lent IteratorVal vals(N stopOk) this.vals(from:0N-1N, to:0N-2N, stopOk:stopOk)
 read method lent IteratorVal vals(N from, N to) this.vals(from:from, to:to, stopOk:this.inner().size() )
 read method lent IteratorVal vals() this.vals(from:0N-1N, to:0N-2N, stopOk:this.inner().size() )
-IteratorVal: SafeOperatorsAccess.compose(left:IteratorDelegator(),
+IteratorVal: SafeOperatorsAccess.compose(left:IteratorTrait(),
    right:  { (read MutListAny that, var N from, N to, N stopOk)} )
 
 
@@ -40,7 +61,7 @@ mut method  lent IteratorVar #vals(N from, N to, N stopOk) IteratorVar(this.#inn
 mut method lent IteratorVar #vals(N stopOk) this.#vals(from:0N-1N, to:0N-2N, stopOk:stopOk)
 mut method lent IteratorVar #vals(N from, N to) this.#vals(from:from, to:to, stopOk:this.inner().size() )
 mut method lent IteratorVar #vals() this.#vals(from:0N-1N, to:0N-2N, stopOk:this.inner().size() )
-IteratorVar: SafeOperatorsAccess.compose(left:IteratorDelegator(),
+IteratorVar: SafeOperatorsAccess.compose(left:IteratorTrait(),
   right:  { (mut MutListAny that, var N from, N to, N stopOk)
     mut method Void inner(Elem that) this.#that()(this.from(),val:that)})
 }

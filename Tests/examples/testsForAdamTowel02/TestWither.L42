@@ -2,17 +2,17 @@
 
 Wither:{
 
-ConstructorUnavailable:Message.$<<{<:MetaGuard}  
+ConstructorUnavailable:Message.$<<{<:MetaGuard}
 
-Selectors:LinkedList.list(Selector)
+Selectors:Collections.vector(ofEq:Selector)
 
 class method
-Library<<(Library that) 
+Library<<(Library that)
 exception ConstructorUnavailable, MetaGuard{
   i=Introspection(lib:that)
   s=i.state()
   if s.isEmpty() (exception ConstructorUnavailable"")
-  k=s.top()
+  k=s.left()
   names=k.selector().names()
   var acc=that
   withK=Selector.from(name:S"with",names:names)
@@ -31,10 +31,10 @@ exception ConstructorUnavailable, MetaGuard{
   return acc
   }
 
-class method 
+class method
 Library addWithAllArgs(Library that,Introspection.Method k)
 exception ConstructorUnavailable, MetaGuard{
-  p=Path"This"  
+  p=Path"This"
   freshK=Selector.fresh(k.selector())
   freshW=Selector.fresh(Selector"with(that)")
   withK=Selector.from(name:S"with",names:k.selector().names())
@@ -44,7 +44,7 @@ exception ConstructorUnavailable, MetaGuard{
     right:Refactor.RenameSelector(
       Selector"with(that)" of:p to:freshW)<<action)
   acc:=Refactor.SumMethods(k.selector() and:freshW of:p over:S"that" to:withK)<<acc
-  return acc  
+  return acc
   }
 }
 

@@ -16,7 +16,7 @@
       res
       )
     }
-  Annotations:LinkedList.list(Annotation)
+  Annotations:Collections.vector(of:Annotation)
   class method This (Library that) (
     var result=Annotations[]
     var aN=1N
@@ -30,19 +30,18 @@
       aN+=1N
       )
     catch exception MetaGuard.NestedClassUnavailable x error Assert.CodeNotReachable"Doc2"(x)
-    result:=result.#end() 'reverse the list
     This._private(_binaryRepr:that, _annotations:result)
     )
   class method mut S.SBuilder #builder()S.SBuilder.empty()
   class method This #from(S.SBuilder builder)
     This(builder.binaryRepr())
   method Library binaryRepr() this._binaryRepr()
-  
-  
+
+
   method toS() {
     return Introspection.Record(lib:this._binaryRepr()).that()
       .introspectDocAsString(path:Path"This")
-    catch exception MetaGuard.NestedClassUnavailable x error Assert.CodeNotReachable"Doc3"(x) 
+    catch exception MetaGuard.NestedClassUnavailable x error Assert.CodeNotReachable"Doc3"(x)
    }
    method Annotations annotations()this._annotations()
   }

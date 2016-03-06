@@ -64,7 +64,7 @@ Types parameterTypes() {
     result:=result.#add(ti)
     pN+=1N
     )
-  return result.#end()
+  return result
   catch exception MetaGuard.MemberUnavailable err error Assert.CodeNotReachable"Method2"(err)
   }
 

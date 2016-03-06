@@ -29,7 +29,7 @@
         use SafeOperators
           check introspectLibraryReportMember(this.lib(), path:path.binaryRepr(),memberN:memberN.binaryRepr())
           exception void)
-      catch error Library x exception MetaGuard.DispatchMemberUnavailable(x) 
+      catch error Library x exception MetaGuard.DispatchMemberUnavailable(x)
       result)
 
     method
@@ -77,7 +77,7 @@
       record=Record(lib:use SafeOperators
         check introspectTypeReport(this.lib(), path:path.binaryRepr())
         error System.Guard.PluginFailure"SafeOperators.introspectTypeReport")
-      realRootType=record.docOf(path:Path"MyClass").annotations().top().referredClass()
+      realRootType=record.docOf(path:Path"MyClass").annotations().left().referredClass()
       result=NestedClass(_root:result,path:Path"This",mirror:This(lib:realRootType),record: record)
       catch error Library x exception MetaGuard.NestedClassUnavailable(record:Record(lib:x),lib:x)
       result)

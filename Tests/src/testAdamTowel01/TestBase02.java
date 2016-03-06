@@ -31,7 +31,7 @@ public class TestBase02 {
     L42.main(new String[]{"examples/testsForAdamTowel01/UseAdamTowel01.L42"});
     }
 
-  @Test
+  //@Test
   public  void _02_00DeployAdamTowel02() throws Throwable{
     TestHelper.configureForTest();
     Paths.get("localhost","AdamTowel02.L42").toFile().delete();
@@ -39,7 +39,7 @@ public class TestBase02 {
     Assert.assertTrue(Paths.get("localhost","AdamTowel02.L42").toFile().exists());
   }
 
-  @Test
+  //@Test
   public  void _02_01UseLib() throws Throwable{
     TestHelper.configureForTest();
     L42.main(new String[]{"examples/testsForAdamTowel02/UseLib.L42"});
@@ -61,7 +61,7 @@ public class TestBase02 {
     L42.main(new String[]{"examples/testsForAdamTowel02/UseDeployedSimpleLib.L42"});
     Assert.assertEquals(L42.record.toString(),"Hello World Deployed\n");
     }
-   @Test
+   //@Test
   public  void _02_04UseOperators1() throws Throwable{
     TestHelper.configureForTest();
     //new TestBase01()._01_00DeployAdamTowel01();
@@ -70,7 +70,7 @@ public class TestBase02 {
     Assert.assertEquals(L42.record.toString(),
         "c1c2c3\nc1c2c3\nic1ic2ic3\nc1c2c3\nc1c2c3\nc1c2c3c1c2c3c1c2c3\n");
     }
-   @Test
+   //@Test
    public  void _02_05UseOperators2() throws Throwable{
      TestHelper.configureForTest();
      L42.main(new String[]{"examples/testsForAdamTowel02/UseOperators2.L42"});
@@ -78,20 +78,12 @@ public class TestBase02 {
          "This.A.B.C\nSecret\nFailed\n");
      }
 
-   @Test
+   //@Test
    public  void _02_06IsConcrete() throws Throwable{
      TestHelper.configureForTest();
      L42.main(new String[]{"examples/testsForAdamTowel02/TestIsConcrete.L42"});
      Assert.assertEquals(L42.record.toString(),
          "DanielWriteHere\n");
-     }
-   @Test
-   public  void _02_201Vector() throws Throwable{
-     TestHelper.configureForTest();
-     //new TestBase01()._01_00DeployAdamTowel01();
-     L42.main(new String[]{"examples/testsForAdamTowel02/TestVector.L42"});
-     Assert.assertEquals(L42.record.toString(),
-         "Hello-a@@b\nHello-a@@b\nHello-a#@@b#\nHello\na##\nb##\nHello-d\n");
      }
    @Test
    public  void _02_101BinaryFlag32() throws Throwable{
@@ -106,7 +98,7 @@ public class TestBase02 {
 
 
 
-   @Test
+   //@Test
    public  void _02_07addInvariant() throws Throwable{
      TestHelper.configureForTest();
      //new TestBase01()._01_00DeployAdamTowel01();

@@ -19,7 +19,7 @@ public class TestBase01 {
   public void initialize() throws Throwable {
     //TestHelper.configureForTest();
     //System.out.println("AssertionsDisabled");
-    ClassLoader.getSystemClassLoader().setDefaultAssertionStatus(false);
+    //ClassLoader.getSystemClassLoader().setDefaultAssertionStatus(false);
     L42.trustPluginsAndFinalProgram=true;
     //_01_00DeployAdamTowel01();
     }
@@ -81,13 +81,13 @@ public class TestBase01 {
       ,"parameter class is:--NameStillToFix--[Void]"
       ,"parameter class is:--NameStillToFix--[Any]"
       ,"--------------------------"
-      ,"for all the nested classes of Bar:"
-      ,"Nested class path is:Beer"
-      ,"--NameStillToFix--[{}]"
+      ,"for all the nested classes of Root:"
       ,"Nested class path is:Bar"
       ,"--NameStillToFix--[{"
       ,"method "
       ,"Void foo(Void par1, Any par2) }]"
+      ,"Nested class path is:Beer"
+      ,"--NameStillToFix--[{}]"
       //,""
        ));
    }
@@ -129,16 +129,16 @@ public class TestBase01 {
    Assert.assertEquals(L42.record.toString(),TestHelper.multiLine(
 "false"
 ,"true"
-,"m6(), methRootExternal:false, typeExternal:false, typeRefExternal:false"
-,"m6(), methRootExternal:true, typeExternal:true, typeRefExternal:true"
-,"This.Generated.Foo"
+,"m4(), methRootExternal:false, typeExternal:false, typeRefExternal:false"
+,"m4(), methRootExternal:true, typeExternal:true, typeRefExternal:true"
+,"This.Generated"
 ,"m5(), methRootExternal:false, typeExternal:true, typeRefExternal:true"
 ,"This.External"
 ,"m5(), methRootExternal:true, typeExternal:true, typeRefExternal:true"
 ,"This.External"
-,"m4(), methRootExternal:false, typeExternal:false, typeRefExternal:false"
-,"m4(), methRootExternal:true, typeExternal:true, typeRefExternal:true"
-,"This.Generated"
+,"m6(), methRootExternal:false, typeExternal:false, typeRefExternal:false"
+,"m6(), methRootExternal:true, typeExternal:true, typeRefExternal:true"
+,"This.Generated.Foo"
 ));
    }
 
@@ -157,6 +157,15 @@ public class TestBase01 {
    L42.main(new String[]{"examples/testsForAdamTowel01/UseAdamTowel_SBuilder.L42"});
    Assert.assertEquals(L42.record.toString(),
        "a@b\n");}
+
+@Test
+ public  void _01_101Vector() throws Throwable{
+   TestHelper.configureForTest();
+   //new TestBase01()._01_00DeployAdamTowel01();
+   L42.main(new String[]{"examples/testsForAdamTowel01/TestVector.L42"});
+   Assert.assertEquals(L42.record.toString(),
+       "Hello-a@@b\nHello-a@@b\nHello-a#@@b#\nHello\na##\nb##\nHello-d\n");
+   }
 
 
 }
