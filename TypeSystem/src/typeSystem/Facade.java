@@ -35,7 +35,7 @@ public class Facade implements facade.TypeSystem{
     String label="TypeSystem.checkAll in ";
     label+=L42.getStage();
     Timer.record(label,()->{
-    TypeSystemOK.checkAll(p);   
+    TypeSystemOK.checkAll(p);
     return null;});
     }
 
@@ -67,7 +67,7 @@ public class Facade implements facade.TypeSystem{
     Program p; ClassB cb;
     }
   */
- 
+
   /*
   @Override public ClassB typeExtraction(Program p, ClassB cb) {
     Par par=new Par(p,cb);
@@ -80,5 +80,5 @@ public class Facade implements facade.TypeSystem{
     cache.put(par, old);
     return old;
   }*/
-  
+
 }

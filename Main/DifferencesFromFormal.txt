@@ -1,14 +1,25 @@
 (// means still to implement)
 
-var T x=e NEED the T, is no more optional, T is of form NormType
+//Booh? var T x=e NEED the T, is no more optional, T is of form NormType
+
+
+**Desugar: division in various kinds of desugar
+  DesugarPaths:
+  DesugarVars:  (k is kOpt)
+    {ds1 k1 ... dsn kn}={ (ds1 k1 ... dsn kn)} //if not already of form { e }
+    (ds1 k1 ... dsn kn e)=(ds1 k1 (...( dsn kn e)))
+    (ds1 var T x=e ds2 ds3 k e1)=
+    (ds1 T x =e ds2  mut Outer0::C z =Outer0::C(inner:x) (ds3 k e1)[x eqOp := z eqOp][x := z.#inner()] )
+    where ds2 max such that not x :=_ inside ds2
+  DesugsarNormalizeReceiver
+  DesugarContext
+  DesugarW
+//DesugarOp?
+
+
 **Desugar state:
 *if all fields are mut/imm/type/capsule, generate #mutK
 *if some field are lent/read, generate #lentK
-
-kinds of ks:
-class method mut This #mutK(..) (capsule to mut), all to fwd
-class method lent This #lentK(..) (mut to lent)(capsule to mut), all to fwd
-class method read This #readK(..) (mut,lent to read)(capsule to mut), all to fwd
 
 *Always generate
 class method mdfR This #apply(..) This.#mdfK(..),
@@ -17,8 +28,12 @@ where
   mdfR is mut if no field is lent/read
   mdfR is lent otherwise
   mdfK is mut if no field is lent/read, and lent otherwise.
-
 *generate getter, exposers (always) and setters only for vars.
+existing kinds of ks:
+class method mut This #mutK(..) (capsule to mut),
+class method lent This #lentK(..) (mut to lent)(capsule to mut)
+class method read This #readK(..) (mut,lent to read)(capsule to mut)
+class method read This #readK(..) (mut,lent,read,capsule to imm)
 
 **coherent:
 *ok to have many k, max 4, with "roles"
@@ -41,18 +56,20 @@ S"foo"    =    S.#from(builder:(
   b
   ))
 12N       =    N.#from(builder:...)
-//V[a;b]     =    V.#from(builder:(
-  b=V.#builder()
+V[a;b]     =    V.#from(seqBuilder:(
+  b=V.#seqBbuilder()
   b.#add(a)
   b.#add(b)
   b
   ))
-//V[with x in e (..use[ps]..) =
-//V.#from(builder:(
-  b=V.#builder()
-  with x in e ( ..b.#add(ps)..)
+V[with x in e body =
+V.#from(seqBuilder:(
+  b=V.#seqBuilder()
+  with x in e body [use[ps1..psn]:= (  b.#add(ps1)...b.#add(psn) void) ]
   b
   ))
+
+
 *Syntax
 Catch T x e
 Catch Ts e

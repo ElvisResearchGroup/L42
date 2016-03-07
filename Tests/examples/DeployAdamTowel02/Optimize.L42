@@ -1,10 +1,6 @@
 {
-RemoveUnreachableCode:{()
+RemoveUnreachableCode:{
   class method
-  This #begin() This()
-  method
-  This #end() this
-  method
   Library << (Library that)
     use SafeOperators
       check removeUnreachableCode(that)

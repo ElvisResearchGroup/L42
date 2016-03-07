@@ -253,6 +253,7 @@ public class ErrorFormatter {
     return errorTxt;
   }
   public static String errorFormat(Object obj,ArrayList<Ast.Position>ps) {
+    if(obj instanceof ast.Ast.HasPos){ps.add(((ast.Ast.HasPos)obj).getP());   }
     if(obj instanceof String){return (String)obj;}
     if(obj instanceof Integer){return obj.toString();}
     if(obj instanceof Expression){
@@ -261,6 +262,8 @@ public class ErrorFormatter {
       return ToFormattedText.ofCompact((Expression)obj);
       }
     if(obj instanceof ExpCore){//thanks to Path, this have to be after Expression
+      Ast.Position p=CollapsePositions.of((ExpCore)obj);
+      ps.add(p);
       ExpCore exp=(ExpCore)obj;
       //Expression expression=exp.accept(new RecoverStoredSugar());
       Expression expression=exp.accept(new InjectionOnSugar());

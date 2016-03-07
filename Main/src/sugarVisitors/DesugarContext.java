@@ -58,75 +58,6 @@ import ast.Expression.ClassB.MethodWithType;
 import ast.Expression.ClassB.NestedClass;
 import auxiliaryGrammar.Functions;
 
-abstract class ContextLocator extends CloneVisitor{
-  public Expression visit(ClassB s) {return s;}
-  public Expression visit(Expression.MCall s) {
-    return s.withReceiver(s.getReceiver().accept(this));
-    }
-  public Expression visit(Expression.FCall s) {
-    return s.withReceiver(s.getReceiver().accept(this));
-    }
-  public Expression visit(Expression.SquareCall s) {
-    return s.withReceiver(s.getReceiver().accept(this));
-    }
-  public Expression visit(Expression.SquareWithCall s) {
-    return s.withReceiver(s.getReceiver().accept(this));
-    }
-}
-abstract class ReceiverExcluder<T> implements Visitor<T>{
-  public T visit(Signal s){throw Assertions.codeNotReachable();}
-  public T visit(If s){throw Assertions.codeNotReachable();}
-  public T visit(While s){throw Assertions.codeNotReachable();}
-  public T visit(With s){throw Assertions.codeNotReachable();}
-  public T visit(X s){throw Assertions.codeNotReachable();}
-  public T visit(ContextId s){throw Assertions.codeNotReachable();}
-  public T visit(BinOp s){throw Assertions.codeNotReachable();}
-  public T visit(DocE s){throw Assertions.codeNotReachable();}
-  public T visit(UnOp s){throw Assertions.codeNotReachable();}
-  public T visit(RoundBlock s){throw Assertions.codeNotReachable();}
-  public T visit(CurlyBlock s){throw Assertions.codeNotReachable();}
-  public T visit(Using s){throw Assertions.codeNotReachable();}
-  public T visit(ClassB s){throw Assertions.codeNotReachable();}
-  public T visit(DotDotDot s){throw Assertions.codeNotReachable();}
-  public T visit(WalkBy s){throw Assertions.codeNotReachable();}
-  public T visit(_void s){throw Assertions.codeNotReachable();}
-  public T visit(Literal s){throw Assertions.codeNotReachable();}
-  public T visit(Ast.Path s){throw Assertions.codeNotReachable();}
-  public T visit(Loop s){throw Assertions.codeNotReachable();}
-  public T visit(ClassReuse s){throw Assertions.codeNotReachable();}
-  public T visit(UseSquare s){throw Assertions.codeNotReachable();}
-}
-
-class ContextDirectlyIn extends ContextLocator{
-  boolean found=false;
-
-  public Expression visit(Expression.ContextId s) {found=true;return s;}
-  public static boolean of(Expression e){
-    ContextDirectlyIn v=new ContextDirectlyIn();
-    e.accept(v);
-    return v.found;
-  }
-  public static boolean of(Ast.Parameters ps){
-    if(ps.getE().isPresent()){
-      if(of(ps.getE().get())){return true;}
-    }
-    for (Expression e:ps.getEs()){
-      if(of(e)){return true;}
-    }
-    return false;
-  }
-  public static boolean ofRestOf(Ast.HasReceiver s){
-    return (s).accept(new ReceiverExcluder<Boolean>() {
-    public Boolean visit(MCall s) {return of(s.getPs());}
-    public Boolean visit(FCall s) {return of(s.getPs());}
-    public Boolean visit(SquareCall s) {
-      for(Parameters ps:s.getPss()){if(of(ps)){return true;}}
-      return false;
-    }
-    public Boolean visit(SquareWithCall s) { return of(s.getWith());}
-  });
-  }
-}
 class ContextReplace extends ContextLocator{
   Position pos;Expression receiver; String mName; String fName;
 
@@ -157,31 +88,10 @@ class ContextReplace extends ContextLocator{
     }
   return new Ast.Parameters(fp,xs, es);
   }
-  public static Ast.HasReceiver ofRestOf(Ast.HasReceiver s,DesugarContext v){
-      Expression receiver=s.getReceiver();
-      Position pos=s.getP();
-      String mName=s.accept(new ReceiverExcluder<String>() {
-        public String visit(MCall s) {return s.getName();}
-        public String visit(FCall s) {return "#apply";}
-        public String visit(SquareCall s) { return "#square";}
-        public String visit(SquareWithCall s) { return "#square";}
-      });
-      return (Ast.HasReceiver)s.accept(new ReceiverExcluder<Expression>() {
-        public Expression visit(MCall s) {return v.visitS(s.withPs(of(pos, receiver, mName, s.getPs())));}
-        public Expression visit(FCall s) {return v.visitS(s.withPs(of(pos, receiver, mName, s.getPs())));}
-        public Expression visit(SquareCall s) {
-          List<Parameters> pss=new ArrayList<>();
-          for(Parameters ps:s.getPss()){pss.add(of(pos, receiver, mName, ps));}
-          return v.visitS(s.withPss(pss));
-        }
-      public Expression visit(SquareWithCall s) { return v.visitS(s.withWith((With)of(pos, receiver, mName, mName, s.getWith())));}
-    });
-    }
-  }
-
-
+}
 class DesugarContext extends CloneVisitor{
   Set<String> usedVars=new HashSet<String>();
+
   public static boolean checkRemoved(Expression e){
     class AssertContextNotPresent extends CloneVisitor{ @Override public Expression visit(ContextId s) {
       assert false:s;
@@ -195,35 +105,25 @@ class DesugarContext extends CloneVisitor{
     Expression result= e.accept(d);
     return result;
     //TODO: need to check there is no \ out of scope, that would be ill formed
+    //it is a subset of what is asserted now with checkRemoved.
   }
 
-  private Expression normalizeReceiver(Ast.HasReceiver s){
-    assert !(s.getReceiver() instanceof Ast.Atom);
-    if(!ContextDirectlyIn.ofRestOf(s)){return s;}
-    String x=Functions.freshName("rcv", usedVars);
-    return visit(Desugar.getBlock(s.getP(),x, s.getReceiver(),s.withReceiver(new X(x))));
-      }
-  private Expression visitS(Ast.HasReceiver s){
-    return s.accept(new ReceiverExcluder<Expression>() {
-      public Expression visit(MCall s) {return visitS(s);}
-      public Expression visit(FCall s) {return visitS(s);}
-      public Expression visit(SquareCall s) {return visitS(s);}
-      public Expression visit(SquareWithCall s) { return visitS(s);}
-  });
-  }
-  private Expression visitHasReceiver(Ast.HasReceiver s){
-    if(!(s.getReceiver() instanceof Ast.Atom)){   return normalizeReceiver(s);   }
-    if(!ContextDirectlyIn.ofRestOf(s)){return visitS(s);}
-    s=ContextReplace.ofRestOf(s,this);
-    return s;
-  }
-  public Expression visit(Expression.MCall s) { return visitHasReceiver(s);}
-  public Expression visit(FCall s) { return visitHasReceiver(s);}
-  public Expression visit(SquareCall s) { return visitHasReceiver(s);}
-  public Expression visit(SquareWithCall s) { return visitHasReceiver(s);}
-
-  public Expression visitS(Expression.MCall s) { return super.visit(s);}
-  public Expression visitS(FCall s) { return super.visit(s);}
-  public Expression visitS(SquareCall s) { return super.visit(s);}
-  public Expression visitS(SquareWithCall s) { return super.visit(s);}
+  public Expression visit(Expression.MCall s) {
+    s=s.withPs(ContextReplace.of(s.getP(),s.getReceiver(), s.getName(), s.getPs()));
+    return super.visit(s);
+    }
+  public Expression visit(FCall s) {
+    s=s.withPs(ContextReplace.of(s.getP(),s.getReceiver(), "#apply", s.getPs()));
+    return super.visit(s);
+    }
+  public Expression visit(SquareCall s) {
+    List<Parameters> pss=new ArrayList<>();
+    for(Parameters ps:s.getPss()){pss.add(ContextReplace.of(s.getP(), s.getReceiver(),"#square", ps));}
+    s=s.withPss(pss);
+    return super.visit(s);
+    }
+  public Expression visit(SquareWithCall s) {
+    s=s.withWith((With)ContextReplace.of(s.getP(),s.getReceiver(),"#square","#square", s.getWith()));
+    return super.visit(s);
+    }
 }

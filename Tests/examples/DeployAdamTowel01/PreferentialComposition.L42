@@ -6,19 +6,16 @@ $:{interface
   }
 SrcDest:{(Path path, Selector src,Selector dest)}
 SrcDests:Collections.vector(of:SrcDest)
-Libs:'@private
-  Collections.vector(of:Library)
+Libs: Collections.vector(of:Library)
 
 class method '@private
-SrcDests renameMap(Library that,S prefix,Introspection.NestedClasses intros) {
-  var acc=SrcDests[]
-  with intro in intros.vals() (
-    acc++=this.renameMap(that,prefix:prefix,
+SrcDests renameMap(Library that,S prefix,Introspection.NestedClasses intros)
+  SrcDests[with intro in intros.vals() (
+    round=this.renameMap(that,prefix:prefix,
       path:intro.pathFromRoot()
       ms:intro.methods())
-    )
-  return acc
-  }
+    with r in round.vals() (use[r])
+    )]
 class method
 SrcDests renameMap(
 Library that,S prefix,Path path, Introspection.Methods ms) {
@@ -49,30 +46,27 @@ Library <<(Library that) exception MetaGuard.ClassClash,MetaGuard.MethodClash
   'members of each produced class
  (Libs myLibs)<:$ '@private
 
-  method
-  This #add(Library that)
-    This(myLibs:this.myLibs().#add(that))
 
   class method
-  This #begin()
-    This(myLibs:Libs[])
+  mut Libs #seqBuilder()
+    Libs.empty()
 
-  method
-  This #end()
-    This(myLibs:this.myLibs().#end())
+  class method
+  This #from(Libs seqBuilder)
+    This(myLibs:seqBuilder)
 
 
   method
   Library << (Library that)
   exception MetaGuard.ClassClash,MetaGuard.MethodClash{
     i=Introspection(lib:that)
-    var map=SrcDests[]
-    var acc={}
+    map=SrcDests.empty()
+    var Library acc={}
     with lib in this.myLibs().vals(), index in 1N.vals() (
-      var libi=lib
+      var Library libi=lib
       rens=This1.renameMap(lib,prefix:S"#"[index]"", intros:i.transitivelyNestedClasses())
       with ren in rens.vals() (
-        map:=map.#add(ren)
+        map.add(right:ren)
         libi:=this.solveConflict(libi,location:ren)
         )
       acc:=Refactor.compose(left:acc,right:libi)

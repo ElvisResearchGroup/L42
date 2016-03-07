@@ -25,7 +25,7 @@
     if k.isPrivate() (exception Default.DecorationUnfeasable"State is private")
     return state
     }
-  
+
   'invariant checking and actions
   class method
   Void checkInvariant(read Concept.Invariant that) (
@@ -36,25 +36,25 @@
     )
   class method
   Library constructorAction(Introspection.Type that) {
-    immA={<:Concept.Invariant 
+    immA={<:Concept.Invariant
       class method
       This (This that) ( Invariant.checkInvariant(that) that )
       }
-    mutA={<:Concept.Invariant 
+    mutA={<:Concept.Invariant
       class method
       mut This (mut This that) ( Invariant.checkInvariant(that) that )
       }
-    lentA={<:Concept.Invariant 
+    lentA={<:Concept.Invariant
       class method
       mut This (mut This that) ( Invariant.checkInvariant(that) that )
       }
-    readA={<:Concept.Invariant 
+    readA={<:Concept.Invariant
       class method
       mut This (mut This that) ( Invariant.checkInvariant(that) that )
       }
-    capsuleA={<:Concept.Invariant 
+    capsuleA={<:Concept.Invariant
       class method
-      capsule This (capsule This that) ( 
+      capsule This (capsule This that) (
         mut This open=that
         Invariant.checkInvariant(open)
         open
@@ -70,14 +70,14 @@
         text:S"unidentified mdf:"[mdf]"!")
     }
   class method
-  Library setterAction() {<:Concept.Invariant 
+  Library setterAction() {<:Concept.Invariant
     mut method
     Void (Void that) (
-      Invariant.checkInvariant(this) 
+      Invariant.checkInvariant(this)
       that
       )
     }
-  
+
   class method
   Library idAction(Introspection.Type that){
     classA={ class method class T (class T that) that T:{}}
@@ -105,13 +105,13 @@
     catch exception MetaGuard cnr
       error Assert.CodeNotReachable"idAction"(cnr)
     }
-    
+
   'main decoration method
   class method
   Library<<(Library that)
   exception Default.DecorationUnfeasable
     this.stateDecoration(that,state:this.extractOkState(that))
-  
+
   'decoration after pre checking
   class method
   Library stateDecoration(Library that,Introspection.Methods state){
@@ -124,7 +124,7 @@
     kNamesF=Strings[with n in kNames.vals() (
       use[SafeOperators.freshName(n)])]
     kSelF=Selector.from(name:kNameF,names:kNamesF)
-    var acc=that
+    var Library acc=that
     with m in state.vals() (
       s=m.selector()
       mdf=m.thisMdf()
@@ -132,7 +132,7 @@
       'Debug(S"zeroArgs"[zeroArgs]"")
       if mdf==S"class" (
         'Debug(S"is k "[s]"")
-        acc:=PostAction(s of:p 
+        acc:=PostAction(s of:p
           action:this.constructorAction(m.returnType())
           deprecated: kSelF)<<acc
         )
@@ -141,14 +141,14 @@
         'Debug(S"!!")
         if zeroArgs (
           'Debug(S"is getter/exposer "[s]" "[newSel]"")
-          acc:=PostAction(s of:p 
+          acc:=PostAction(s of:p
             action:this.idAction(m.returnType())
             deprecated:newSel
             )<<acc
           )
         else (
           'Debug(S"is setter "[s]" "[newSel]" "[with ni in s.names().vals() (use[S"{"++ni++S"}"])]"!!")
-          acc:=PostAction(s of:p 
+          acc:=PostAction(s of:p
             action:this.setterAction()
             deprecated:newSel
             )<<acc
@@ -161,7 +161,7 @@
     catch exception  MetaGuard cnr
       error Assert.CodeNotReachable"Invariant"(cnr)
     }
-    
+
   class method
   Selector stateFName(
   Selector that, Strings old,Strings fresh){
@@ -172,6 +172,6 @@
       if name==o (return Selector.from(name:prefix++f,names:names))
       )
     error Assert.CodeNotReachable(text:S"stateFName ["[name]"]"
-    [with o1 in old.vals(), f1 in fresh.vals() (use[o1++S"!"++f1])]"")     
+    [with o1 in old.vals(), f1 in fresh.vals() (use[o1++S"!"++f1])]"")
     }
   }

@@ -5,9 +5,9 @@ method Opt responseOf()
 read method class This clazz()
 Opt:{#new(TOpt that)
   TOpt:{interface method This2 get() }
-  TEmpty:{()<:TOpt method get() 
+  TEmpty:{()<:TOpt method get()
     error S"UnsatisfactoryErrorToAvoidCycle, replace in Adam2"
-    'error Guard.Operation"TEmpty.get() Value not present in Optional" 
+    'error Guard.Operation"TEmpty.get() Value not present in Optional"
     }
   TOf:{(This2 that)<:TOpt method get() this.that()}
   method This1 ~() this.that().get()
@@ -22,7 +22,7 @@ Opt:{#new(TOpt that)
 EqualMessages:{
   class method Bool (Message that,Message other){
   'assuming they have the same class
-  res=that.clazz().kind()==other.clazz().kind() 
+  res=that.clazz().kind()==other.clazz().kind()
     & that.text()==other.text()
     & that.responseOf().isPresent()==other.responseOf().isPresent()
   if !res (return Bool.false())
@@ -51,7 +51,7 @@ $:{()
       if !this.cause().isPresent() (
         return This.kind()++S.doubleQuote()++this.text()++S.doubleQuote()
         )
-      var res=This.kind()
+      var S res=This.kind()
       if this.text()!=S"" (
         res:=res++S"[text:"++S.doubleQuote()++this.text()++S.doubleQuote()
           ++S", cause:"
@@ -72,31 +72,25 @@ $:{()
     This(S text, Message cause)
       This(_text:text,cause:Message.Opt(cause))
     'next part could become a trait on its own (but S must keep its version)
-    
+
     class method mut S.SBuilder #builder()S.SBuilder.empty()
       class method This #from(S.SBuilder builder)
         This(text:S.#from(builder:builder))
-        
-    method
-    SConcat #begin()
-      SConcat(old:this,accumulator:S"")
-      
-    SConcat:{(Concept.ToS old,S accumulator)
-      method SConcat #add(Concept.ToS that)
-        SConcat(old:this.old(),accumulator:this.accumulator()++that.toS())
-      method SConcat #add(Concept.ToS that, Concept.ToS separedBy) (
-        var newAcc=that.toS()
-        if this.accumulator()!=S"" (
-          newAcc:=this.accumulator()++separedBy.toS()++newAcc
-          )
-        SConcat(old:this.old(),accumulator:newAcc)
-        )
-      method
-      SConcat #end() this
-      method mut S.SBuilder #builder()S.SBuilder.empty()
-      method This1 #from(S.SBuilder builder)
-        This1(text:this.old().toS()++this.accumulator()++S.#from(builder:builder))
-      }
+
+  method
+  Continue #from(S.SConcat seqBuilder)
+    Continue(seqBuilder.old()++seqBuilder.accumulator())
+
+  Continue:{(S that)
+    method mut S.SBuilder #builder() S.SBuilder.empty()
+    method This1 #from(S.SBuilder builder)
+      This1(text:this.that()++S.#from(builder:builder) )
+    }
+
+  method
+  mut S.SConcat #seqBuilder()
+    S.SConcat(old:this.text(),accumulator:S"")
+
     }
   }
 }

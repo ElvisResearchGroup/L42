@@ -20,6 +20,7 @@ import org.junit.runners.Parameterized.Parameters;
 import facade.L42;
 import facade.Parser;
 import sugarVisitors.Desugar;
+import sugarVisitors.DesugarVars;
 import sugarVisitors.InjectionOnCore;
 import sugarVisitors.ToFormattedText;
 import ast.ExpCore;
@@ -30,6 +31,44 @@ import coreVisitors.InjectionOnSugar;
 public class TestParseAndDesugar {
 
   @RunWith(Parameterized.class)
+  public static class TestDesugarVars {
+    @Parameter(0) public int _lineNumber;
+    @Parameter(1) public String _p1;
+    @Parameter(2) public String _p2;
+    @Parameters(name = "{index}: line {0}")
+    public static List<Object[]> createData() {
+      return Arrays.asList(new Object[][] {
+   {lineNumber(), "a","a"
+ },{lineNumber(), " ( a=void a)"," ( a=void a)"
+ },{lineNumber(), " ( var Void a=void a)"," ("
+  +" Vara:'@private\n {mut (var Void inner)} "
+  +" Void a=void "
+  +" mut This0.Vara vara=This0.Vara.#apply(inner:a) "
+  +" vara.#inner() "
+  +" )"
+
+ },{lineNumber(), "  (   var Library lib={} (x={} lib:=x)  (x={ } lib:=x  ) lib   )",
+   " (  Varlib:'@private\n  {mut (var Library inner)}"
+  +" Library lib={}"
+  +" mut This0.Varlib varlib=This0.Varlib.#apply(inner:lib) "
+  +" (  x={}   varlib:=x   ) "
+  +" (  x={}   varlib:=x  ) "
+  +" varlib.#inner() "
+  +" )"
+   }});}
+      @Test
+      public void testDesugarVars() {
+        TestHelper.configureForTest();
+        L42.setRootPath(Paths.get("dummy"));
+        L42.usedNames.clear();
+        Expression es1=Parser.parse(null,_p1);
+        Expression es2=Parser.parse(null,_p2);
+        Expression result=DesugarVars.of(L42.usedNames,es1);
+        TestHelper.assertEqualExp(result,es2);
+        }
+
+}
+  @RunWith(Parameterized.class)
   public static class Test1 {
     @Parameter(0) public int _lineNumber;
     @Parameter(1) public String _p1;
@@ -39,7 +78,7 @@ public class TestParseAndDesugar {
       return Arrays.asList(new Object[][] {
    {lineNumber(), "a","a"
    },{lineNumber(), " This","This0"
-   },{lineNumber(), " (var x=void x:=void)",
+   },{lineNumber(), " (var Void x=void x:=void)",
     " ( Varx:'@private\n{mut (var Void inner)}  Void x=void"
    +"   mut This0.Varx varx=This0.Varx.#apply(inner:x)"
    +"   varx.inner(that:void) )"
@@ -66,7 +105,9 @@ public class TestParseAndDesugar {
 },{lineNumber(), "A.m(that: \\foo+void)","This0.A.m(that:This0.A.foo().#plus(that:void))"
 },{lineNumber(), "A.m(that: \\+void)","This0.A.m(that:This0.A.#default#m(that:void).#plus(that:void))"
 },{lineNumber(), "A(\\+void)","This0.A.#apply(that:This0.A.#default##apply(that:void).#plus(that:void))"
-},{lineNumber(), "A[\\a;\\a]","This0.A.#begin().#add(that:This0.A.a()).#add(that:This0.A.a()).#end()"
+},{lineNumber(), "A[\\a;\\a]",
+  //"This0.A.#begin().#add(that:This0.A.a()).#add(that:This0.A.a()).#end()"
+  "This0.A.#from(seqBuilder:( This0.A::#seqBuilder() b=This0.A.#seqBuilder()   Void unused=b.#add(that:This0.A.a())   Void unused0=b.#add(that:This0.A.a())     b   ))"
 
 },{lineNumber(), "{method Library(){ method This bar() method This foo(This that) this.foo(\\bar) } }","{method Library #apply(){ method This0 bar() method This0 foo(This0 that) this.foo(that:this.bar()) } }"
 },{lineNumber(), "{method Library(){ method This bar() method This foo(This that) this.foo(\\bar+void) } }","{method Library #apply(){ method This0 bar() method This0 foo(This0 that) this.foo(that:this.bar().#plus(that:void)) } }"
@@ -77,7 +118,7 @@ public class TestParseAndDesugar {
 },{lineNumber(), "A*b","This0.A.#times(that:b)"
 },{lineNumber(), "A(b)","This0.A.#apply(that:b)"
 },{lineNumber(), " ( Void a=void a(b))"," (Void a=void a.#apply(that:b))"
-},{lineNumber(), " ( Void a=void (a)(b) )"," ( Void a=void (a).#apply(that:b))"
+},{lineNumber(), " ( Void a=void (a)(b) )"," ( Void a=void ( Void rcv=(a)  rcv.#apply(that:b)))"
 },{lineNumber(), " ( T a=b T b=c catch error  Foo x x T a2=b2 T b2=c2 c )"," ( This0.T a=b This0.T b=c catch error This0.Foo x x     (   This0.T a2=b2 This0.T b2=c2  c  ) )"
 },{lineNumber(), " (A*b a b c )"," ( Void unused=This0.A.#times(that:b) Void unused0=a Void unused1=b c )"
 },{lineNumber(), " (T a=b c=a c )"," (This0.T a=b This0.T c=a c )"
@@ -89,13 +130,13 @@ public class TestParseAndDesugar {
   +"  Void unused=vara.inner(that:This0.C.#apply(that:vara.#inner()))"
   +"  Void unused0=fuffa"
   +"  c)"
-},{lineNumber(), " (var This0.T a=a+c c=a Fuffa(a:=a(a)) c )",//ok outer 0 can not be desugared since there is not outer nested class.
+},{lineNumber(), " (var This0.T a=a+c c=a Fuffa(a:=a.foo(a)) c )",//ok outer 0 can not be desugared since there is not outer nested class.
   " ("
   +" Vara:'@private\n{mut (var This1.T inner)}"
   +" This0.T a=a.#plus(that:c)"
   +" This0.T c=a"
   +" mut This0.Vara vara=This0.Vara.#apply(inner:a)"
-  +" Void unused=This0.Fuffa.#apply(that:vara.inner(that:vara.#inner().#apply(that:vara.#inner())))"
+  +" Void unused=This0.Fuffa.#apply(that:vara.inner(that:vara.#inner().foo(that:vara.#inner())))"
   +"c"
   +")"
 },{lineNumber(), " (T a=b (c=a c ))"," (This0.T a=b (This0.T c=a c ))"

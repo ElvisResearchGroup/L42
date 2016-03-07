@@ -47,7 +47,7 @@
 
   method '@private
   N auxFirstIndexOf(S that) {
-    var current=0N
+    var N current=0N
     while current<this.size() (
       if this(start:current).beginsWith(that) (return current)
       current+=1N
@@ -62,7 +62,7 @@
     error This.subStringNotPresent(string:this,subString:that)
     }
   class method Void subStringNotPresent(S string, S subString) void
-  
+
   method
   Bool contains(S that){
     res=this.auxFirstIndexOf(that)
@@ -78,7 +78,7 @@
     'Debug(S"S.isASCIIUpperCase(this:"[this]" that:"[that]")")
     S"QWERTYUIOPASDFGHJKLZXCVBNM".contains(this(that))
     )
-    
+
   method N size()
     N(_binaryRepr: use Alu
       check stringSize(this.binaryRepr())
@@ -89,7 +89,7 @@
     S"
     '"
     "(0N)
-  
+
   class method
   S nl()
     S"
@@ -104,32 +104,35 @@
       error void)
 
   method
-  SConcat #begin()
-    SConcat(old:this,accumulator:S"")
-    
-  SConcat:{(S old,S accumulator)
-    method
-    SConcat #add(Concept.ToS that)
-      SConcat(old:this.old(),
-        accumulator:this.accumulator()++that.toS())
-    method
-    SConcat #add(Concept.ToS that, Concept.ToS separedBy) (
-      var newAcc=that.toS()
+  Continue #from(S.SConcat seqBuilder)
+    Continue(seqBuilder.old()++seqBuilder.accumulator())
+
+  Continue:{(S that)
+    method mut S.SBuilder #builder() S.SBuilder.empty()
+    method This1 #from(S.SBuilder builder)
+      this.that()++S.#from(builder:builder)
+    }
+
+  method
+  mut SConcat #seqBuilder()
+    S.SConcat(old:this,accumulator:S"")
+
+  SConcat:{(S old,var S accumulator)
+    mut method
+    Void #add(Concept.ToS that)
+      this.accumulator(\accumulator++that.toS())
+    mut method
+    Void #add(Concept.ToS that, Concept.ToS separedBy) (
+      var S newAcc=that.toS()
       if this.accumulator()!=S"" (
         newAcc:=this.accumulator()++separedBy.toS()++newAcc
         )
-      SConcat(old:this.old(),accumulator:newAcc)
+      this.accumulator(newAcc)
       )
-    method
-    SConcat #end()
-      this
-    method mut S.SBuilder #builder()S.SBuilder.empty()
-    method S #from(S.SBuilder builder)
-      this.old()++this.accumulator()++S.#from(builder:builder)
     }
-    
+
   SBuilder:...
-  class method This #from(S.SBuilder builder) 
+  class method This #from(S.SBuilder builder)
     This._private(_binaryRepr:builder.binaryRepr())
   class method mut S.SBuilder #builder() S.SBuilder.empty()
   }

@@ -1,12 +1,12 @@
-{()
+{
 class method Library stringableTrait(){
   (S inner)<:Concept.ToS, Concept.Named, Concept
-  class method This (Concept.ToS that) 
+  class method This (Concept.ToS that)
     This(inner:that.toS())
 
   method S ~() this.inner()
 
-  class method S myName() 
+  class method S myName()
   method toS()  This.myName()[]"["[this.inner()]"]"
   method Library binaryRepr() this.inner().binaryRepr()
   method Bool != (This that) !(this==that)
@@ -16,8 +16,8 @@ class method Library stringableTrait(){
     return Bool.false()
     }
   }
-class method This #begin() This()
-method This #end() this
-method Library <<(Library that)
+
+class method
+Library <<(Library that)
   SafeOperatorsAccess.compose(left:that, right:This.stringableTrait())
 }

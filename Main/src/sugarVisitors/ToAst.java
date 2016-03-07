@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
+
 import antlrGenerated.L42Lexer;
 import antlrGenerated.L42Parser.*;
 import ast.Ast;
@@ -256,7 +257,8 @@ public class ToAst extends AbstractVisitor<Expression>{
   private VarDecXE parseRealVDec(VarDecContext vd) {
     TContext tt=vd.t();
     Optional<Type> t=(tt==null)?Optional.<Type>empty():Optional.of(parseType(tt));
-    return new Ast.VarDecXE(vd.Var()!=null,t,nameL(vd.x()),vd.eTop().accept(this));
+    Expression inner=vd.eTop().accept(this);
+    return new Ast.VarDecXE(vd.Var()!=null,t,nameL(vd.x()),inner);
     }
   private VarDecXE parseI(IContext vd) {
     TContext tt=vd.t();

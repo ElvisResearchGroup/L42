@@ -2,7 +2,7 @@
 
   ParameterNameNotPresent:Message.$<<{<:MetaGuard}
   DefaultValueInvalid:Message.$<<{<:MetaGuard}
-  
+
   method
   Library <<(Library that)
   exception ParameterNameNotPresent,DefaultValueInvalid{
@@ -11,8 +11,8 @@
     name=this.name()
     provider=this.by()
     newSelector= (
-      var found=Bool.false()
-      newNames=Strings[with n in origin.names().vals() (
+      var Bool found=Bool.false()
+      Strings newNames=Strings[with n in origin.names().vals() (
         if n!=name (use[n])
         else found:=Bool.true()
         )]

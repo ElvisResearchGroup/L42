@@ -82,9 +82,12 @@ public class Desugar extends CloneVisitor{
     Desugar d=new Desugar();
     d.usedVars.addAll(CollectDeclaredVars.of(e));
     e=DesugarPaths.of(e);
+    e=DesugarNormalizeReceiver.of(d.usedVars, e);
     e=DesugarContext.of(d.usedVars, e);
     assert DesugarContext.checkRemoved(e);
     e=DesugarW.of(d.usedVars,e);
+    e=DesugarVars.of(d.usedVars,e);
+    assert DesugarVars.assertVarsRemoved(e);
     //understand what is the current folder
     //replace ... recursively
     //replaceDots(currentFolder,e)-> clone visitor
@@ -151,11 +154,8 @@ public class Desugar extends CloneVisitor{
   HashMap<String,Type> varEnv=new HashMap<String,Type>();
 
   public Expression visit(RoundBlock s) {
-    //assert L42.checkWellFormedness(s);
-    s=blockContentSepare(s);
     s=blockEtoXE(s);
     s=blockInferVar(s);
-    s=blockVarClass(s);
     HashMap<String, Type> oldVarEnv = new HashMap<String, Type>(varEnv);
     try{
       if(!s.getContents().isEmpty()){addAllDec(s.getContents().get(0).getDecs());}
@@ -184,13 +184,6 @@ public class Desugar extends CloneVisitor{
       this.varEnv.put(dec.getX(), dec.getT().get());
     }
   }
-  private RoundBlock blockContentSepare(RoundBlock s) {
-    if(s.getContents().size()<=1){return s;}
-    List<Expression.BlockContent> ctxTop = new ArrayList<>(s.getContents().subList(0,1));
-    List<Expression.BlockContent> ctxPop = new ArrayList<>(s.getContents().subList(1, s.getContents().size()));
-    RoundBlock next=blockContentSepare(s.withContents(ctxPop));
-    return s.withContents(ctxTop).withInner(next);
-  }
   private RoundBlock blockEtoXE(RoundBlock s) {
     if(s.getContents().isEmpty()){return s;}
     List<VarDec> decs = s.getContents().get(0).getDecs();
@@ -211,95 +204,13 @@ public class Desugar extends CloneVisitor{
   }
 
   private RoundBlock blockWithDec(RoundBlock s, List<VarDec> decs) {
-    assert s.getContents().size()==1: s.getContents().size();
+    assert s.getContents().size()==1:
+      s.getContents().size();
     List<Expression.BlockContent> ctx = new ArrayList<>();
     ctx.add(new Expression.BlockContent(decs, s.getContents().get(0).get_catch()));
     return s.withContents(ctx);
   }
-  private int firstVar(List<VarDec> varDecs){
-    {int i=-1;
-    for(VarDec _dec:varDecs){i+=1;
-      if(!(_dec instanceof VarDecXE)){continue;}
-      VarDecXE dec=(VarDecXE)_dec;
-      assert dec.getT().isPresent();
-      if(!dec.isVar()){continue;}
-      return i;
-      }}
-    return -1;
-    }
-  private RoundBlock blockVarClass(RoundBlock s) {
-   RoundBlock res=_blockVarClass(s);
-   if(res.equals(s)){return res;}
-   return blockVarClass(res);
-  }
-  private RoundBlock _blockVarClass(RoundBlock s) {
-    if(s.getContents().isEmpty()){return s;}
-    List<VarDec> varDecs = new ArrayList<VarDec>(s.getContents().get(0).getDecs());
-    int pos=firstVar(varDecs);
-    if(pos==-1){return s;}
-    VarDecXE varDec=(VarDecXE)varDecs.get(pos);
-    varDecs.set(pos,varDec.withVar(false));
-    VarDecCE ce=getClassBForVar(varDec);
-    VarDecXE d=getDecForVar(ce.getInner().getName(),varDec);
-    X x=new X(varDec.getX());
-    X z=new X(d.getX());
-    int d3First=findD2(x,pos,varDecs);
-    RoundBlock fake = getFakeBlock(s,x,z,s, varDecs, d3First);
-    List<VarDec> trueDecs=new ArrayList<VarDec>();
-    trueDecs.add(ce);
-    if(d3First!=-1){trueDecs.addAll(varDecs.subList(0, d3First));}
-    else{trueDecs.addAll(varDecs);}
-    trueDecs.add(d);
-    trueDecs.addAll(fake.getContents().get(0).getDecs());
-    List<Expression.BlockContent> trueContent=new ArrayList<>();
-    trueContent.add(new Expression.BlockContent(trueDecs,fake.getContents().get(0).get_catch()));
-    return fake.withContents(trueContent);
-    }
-  private RoundBlock getFakeBlock(Expression src,X x, X z,RoundBlock s, List<VarDec> varDecs,
-      int d3First) {
-    List<Expression.BlockContent> fakeContent=new ArrayList<>();
-    List<VarDec> fakeDecs=new ArrayList<VarDec>();
-    if(d3First!=-1){//d3 not empty
-      fakeDecs.addAll(varDecs.subList(d3First, varDecs.size()));
-    }
-    fakeContent.add(new Expression.BlockContent(fakeDecs,s.getContents().get(0).get_catch()));
-    RoundBlock fake=new RoundBlock(s.getP(),s.getDoc(),s.getInner(),fakeContent);
-    fake=(RoundBlock) XEqOpInZEqOp.of(x, z, fake);
-    fake=(RoundBlock) XInE.of(x,getMCall(getPosition(src),z,"#inner", getPs()),fake);
-    return fake;
-  }
 
-  private int findD2(X x,int pos, List<VarDec> decs) {
-    for(VarDec _dec:decs.subList(pos+1,decs.size())){
-      pos+=1;
-      if(!(_dec instanceof VarDecXE)){continue;}
-      VarDecXE dec=(VarDecXE)_dec;
-      boolean isAssigned=Exists.of(dec.getInner(),e->{
-        if(!(e instanceof BinOp)){return false;}
-        BinOp bo=(BinOp)e;
-        if(bo.getOp().kind!=Ast.OpKind.EqOp){return false;}
-        return bo.getLeft().equals(x);
-      });
-      if (isAssigned){return pos;}
-    }
-    return -1;
-  }
-  private VarDecXE getDecForVar(String cName,VarDecXE varDec) {
-    NormType nt=new NormType(Mdf.Mutable,Path.outer(0).pushC(cName),Ph.None);
-    FCall right=new FCall(getPosition(varDec.getInner()),nt.getPath(),Doc.empty(), getPs("inner",new X(varDec.getX())));
-    String nameZ=Functions.freshName(nt.getPath(), usedVars);
-    //usedVars.add(nameZ);
-    return new VarDecXE(false,Optional.of(nt),nameZ,right);
-  }
-
-  private VarDecCE getClassBForVar(VarDecXE varDec) {
-    List<FieldDec> fs=new ArrayList<FieldDec>();
-    fs.add(new FieldDec(true,_computeTypeForClassBForVar(varDec),"inner",Doc.empty()));
-    ClassB cb=new ClassB(Doc.empty(),Doc.empty(),new Ast.ConcreteHeader(Mdf.Mutable, "",fs,Position.noInfo),Collections.emptyList(),Collections.emptyList(),Stage.None);
-    String nameC=Functions.freshName("Var"+varDec.getX(), L42.usedNames);
-    //usedCnames.add(nameC);
-    return new VarDecCE(new NestedClass(Doc.getPrivate(),nameC,cb,null));
-  }
   public Type _computeTypeForClassBForVar(VarDecXE varDec) {
     Type t=varDec.getT().get();
     t=t.match(
@@ -522,13 +433,15 @@ public class Desugar extends CloneVisitor{
   return new Expression.Catch1(pos,kind,t,x,inner);
   }
   public Expression visit(CurlyBlock s) {
-    RoundBlock inner=new RoundBlock(s.getP(),s.getDoc(),Expression._void.instance,s.getContents());
+    assert s.getContents().size()==1;
+    assert s.getContents().get(0).get_catch().isEmpty();
+    assert s.getContents().get(0).getDecs().size()==1;
+    assert s.getContents().get(0).getDecs().get(0) instanceof VarDecE;
+    Expression inner=((VarDecE)s.getContents().get(0).getDecs().get(0)).getInner();
     String y=Functions.freshName("result",this.usedVars);
-    //usedVars.add(y);
     Expression.Catch k=getK(s.getP(),SignalKind.Return,y,this.t,new X(y));
     Expression termination= Desugar.errorMsg("CurlyBlock-Should be unreachable code");
     RoundBlock outer=getBlock(s.getP(),inner, Collections.singletonList(k),termination);
-    //assert L42.checkWellFormedness(outer);
     return visit(outer);
   }
   public Expression visit(DocE s) {
@@ -566,11 +479,23 @@ public class Desugar extends CloneVisitor{
   public Expression visit(SquareCall s) {
     return visit(visit1Step(s));
   }
-  static public MCall visit1Step(SquareCall s) {
-    Expression result=getMCall(s.getP(),s.getReceiver(),"#begin",getPs());
-    result = appendAddMethods(s, result);
-    return (MCall)appendEndMethod(s.getP(),result,s);
-  }
+  public MCall visit1Step(SquareCall s) {
+    //we can assumethe receivers are normalized after DesugarContext
+    //assert s.getReceiver() instanceof Ast.Atom:      s.getReceiver();
+    //but nor really, since vars accesses are replaced by meth calls. In that case is fine to not have an atom.
+    //(b=r.builder() b.a() b.b() b.c() .... b)
+    List<VarDec> vd=new ArrayList<>();
+    Expression k=getMCall(s.getP(),s.getReceiver(),"#seqBuilder",getPs());
+    String x=Functions.freshName("b", usedVars);
+    X b=new X(x);
+    vd.add(new VarDecXE(false, Optional.empty(), x, k));
+    for(Parameters ps:s.getPss()){
+      vd.add(new VarDecE(getMCall(s.getP(),b,"#add",ps)));
+    }
+    Expression inner=getBlock(s.getP(), vd, b);
+    Parameters ps=new Parameters(Optional.empty(), Collections.singletonList("seqBuilder"),Collections.singletonList(inner));
+    return getMCall(s.getP(),s.getReceiver(),"#from",ps);
+    }
   public static Expression appendAddMethods(SquareCall s, Expression result) {
     for(Parameters ps: s.getPss()){
       result=getMCall(s.getP(),result,"#add",ps);
@@ -588,14 +513,10 @@ public class Desugar extends CloneVisitor{
     return super.visit(s);
   }
   public Expression visit(Literal s) {
-    return normalizeReceiver(s).accept(this);//and visit1step
+    //we can assumethe receivers are normalized after DesugarContext
+    return visit1Step(s).accept(this);
   }
-  public Expression normalizeReceiver(Literal s) {
-    Expression rcv=s.getReceiver();
-    if (rcv instanceof Ast.Atom){return visit1Step(s);}
-    String x=Functions.freshName("listKind", usedVars);
-    return getBlock(s.getP(),x, rcv,visit1Step(s.withReceiver(new X(x))));
-  }
+
   public MCall visit1Step(Literal s) {
     //(b=r.builder() b.a() b.b() b.c() .... b)
     List<VarDec> vd=new ArrayList<>();
@@ -617,8 +538,12 @@ public class Desugar extends CloneVisitor{
   static Ast.MethodSelector literalGuessedSelector(){
     return new Ast.MethodSelector("#from",Collections.singletonList("builder"));
   }
+  static Ast.MethodSelector squareGuessedSelector(){
+    return new Ast.MethodSelector("#from",Collections.singletonList("seqBuilder"));
+  }
   protected ast.Ast.VarDecXE liftVarDecXE(ast.Ast.VarDecXE d) {
-    assert !d.isVar();
+    assert !d.isVar():
+      d;
     assert d.getT().isPresent();
     return withExpectedType(d.getT().get(),()->super.liftVarDecXE(d));
   }
@@ -881,31 +806,7 @@ public class Desugar extends CloneVisitor{
     return Mdf.Mutable;
   }
 
-  static private void cfType1(ast.Ast.ConcreteHeader h, Doc doc,List<Member> result) {
-    List<Doc> tDocss=new ArrayList<>();
-    List<Type> ts=new ArrayList<Type>();
-    List<String> names= new ArrayList<String>();
-    boolean hasMut=false;
-    boolean hasLentRead=false;
-    for(FieldDec f:h.getFs()){
-      if(f.isVar()){hasMut=true;}
-      if(f.getT() instanceof NormType){
-        Mdf mdf=((NormType)f.getT()).getMdf();
-        if(mdf==Mdf.Lent || mdf==Mdf.Readable){hasLentRead=true;hasMut=true;}
-        if(mdf==Mdf.Mutable){hasMut=true;}
-        }
-      tDocss.add(f.getDoc());
-      ts.add(f.getT());
-      names.add(f.getName());
-      }
-    NormType resT=new ast.Ast.NormType(h.getMdf(),ast.Ast.Path.outer(0),Ph.None);
-    if(resT.getMdf()==Mdf.Immutable && hasMut){//otherwise user is overriding the constructor mdf
-      resT=resT.withMdf(hasLentRead?Mdf.Lent:Mdf.Mutable);
-    }
-    MethodType mt=new MethodType(Doc.empty(),ast.Ast.Mdf.Class,ts,tDocss,resT,Collections.emptyList());
-    MethodSelector ms=new MethodSelector(h.getName(),names);
-    result.add(new MethodWithType(doc, ms,mt, Optional.empty(),h.getP()));
-  }
+
   static private void cfSetter(Expression.Position pos,ast.Ast.FieldDec f, Doc doc,List<Member> result) {
     if(!f.isVar()){return;}
     Type tt=f.getT().match(nt->nt.withPh(Ph.None), hType->hType);

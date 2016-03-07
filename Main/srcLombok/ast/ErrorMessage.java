@@ -98,12 +98,12 @@ import ast.Util.PathMwt;
     ExpCore ctxVal;
     String x;
   }
-  @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class IllegalAttemptedModification extends ErrorMessage {  
+  @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class IllegalAttemptedModification extends ErrorMessage {
     ExpCore ctxVal;
     Block.Dec dec;
     ExpCore.MCall mc;
   }
-  @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class NormalForm extends ErrorMessage {   
+  @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class NormalForm extends ErrorMessage {
     ExpCore e;
     List<ClassB> p;
   }

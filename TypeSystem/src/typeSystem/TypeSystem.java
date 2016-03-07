@@ -16,6 +16,7 @@ import coreVisitors.Visitor;
 import facade.Configuration;
 import facade.ErrorFormatter;
 import facade.ErrorFormatter.Reporter;
+import sugarVisitors.CollapsePositions;
 import sugarVisitors.ToFormattedText;
 import tools.Assertions;
 import ast.Ast;
@@ -26,6 +27,7 @@ import ast.Ast.Type;
 import ast.Ast.Mdf;
 import ast.Ast.Path;
 import ast.Ast.Ph;
+import ast.Ast.Position;
 import ast.Ast.SignalKind;
 import ast.Ast.Stage;
 import ast.ErrorMessage;
@@ -46,7 +48,7 @@ import ast.Util.CachedStage;
 import ast.Ast.NormType;
 import auxiliaryGrammar.*;
 
-public class TypeSystem implements Visitor<Type>, Reporter{
+public class TypeSystem implements Visitor<Type>, Reporter, ast.Ast.HasPos{
   private TypeSystem(Program p, HashMap<String, NormType> varEnv, SealEnv sealEnv, ThrowEnv throwEnv, Type suggested,ExpCore e) {
     this.p = p;
     this.varEnv = varEnv;
@@ -453,6 +455,10 @@ public class TypeSystem implements Visitor<Type>, Reporter{
   @Override
   public String toReport(ArrayList<Ast.Position>ps) {
     return ErrorFormatter.errorFormat(submittedExp,ps);
+  }
+  @Override
+  public Position getP() {
+    return CollapsePositions.of(this.submittedExp);
   }
 }
 

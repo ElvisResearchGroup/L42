@@ -18,19 +18,22 @@
     }
   Annotations:Collections.vector(of:Annotation)
   class method This (Library that) (
-    var result=Annotations[]
-    var aN=1N
-    while Bool.true() (' to be able to break
-      result:=result.#add(Annotation(
-        _binaryRepr:that,
-        text:Introspection.Record(lib:that).that()
-          .introspectDocAsString(path:Path"This",annotationN:aN)
-        index:aN
-        ))
-      aN+=1N
+    Annotations res=(
+      result=Annotations.empty()
+      var N aN=1N
+      while Bool.true() (' to be able to break
+        result.add(right:Annotation(
+          _binaryRepr:that,
+          text:Introspection.Record(lib:that).that()
+            .introspectDocAsString(path:Path"This",annotationN:aN)
+          index:aN
+          ))
+        aN+=1N
+        )
+      catch exception MetaGuard.NestedClassUnavailable x error Assert.CodeNotReachable"Doc2"(x)
+      result
       )
-    catch exception MetaGuard.NestedClassUnavailable x error Assert.CodeNotReachable"Doc2"(x)
-    This._private(_binaryRepr:that, _annotations:result)
+    This._private(_binaryRepr:that, _annotations:res)
     )
   class method mut S.SBuilder #builder()S.SBuilder.empty()
   class method This #from(S.SBuilder builder)

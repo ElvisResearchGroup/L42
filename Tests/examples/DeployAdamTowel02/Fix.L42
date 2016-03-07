@@ -25,9 +25,9 @@ N:{
     ParseFail"The provided string is not a valid Int32: "[that]""
   }
 S:{
-  SubStringNotPresent:This2.Message.$<<{<:Guard}  
+  SubStringNotPresent:This2.Message.$<<{<:Guard}
   class method Void subStringNotPresent(This2.S string, This2.S subString)
-    error SubStringNotPresent"string["[string]"] do not contains ["[subString]"" 
+    error SubStringNotPresent"string["[string]"] do not contains ["[subString]""
   }
 Selector:{
   ParseFail:This2.Message.$<<{<:Guard.ParseFail}
@@ -44,7 +44,7 @@ Path:{
   Any parseError(This2.S that,This2.Message cause)
     ParseFail"The provided string is not a valid internalized path: "[that]""(cause)
   }
-  
+
   Debug:{
     class method
     Void (Library lib)
@@ -62,5 +62,23 @@ Path:{
         )]"]"
       )
     }
-  }'Ho messo This4.S e ora da un errore senza info che devo debuggare
-} 
+  }
+  'Assert:{
+  '  $:{(B that, S msg)
+  '  $s:Use[Collections.vector(of:This)]<<{
+  '    mut method
+  '    Void #add(Bool that, Concept.ToS msg)
+  '        this.add(right: $(that,msg:S""[msg;S.nl()]"number:"[this.size()]" failed") )
+  '    mut method
+  '    Void #add(Bool that)
+  '        this.add(right: $(that,msg:S"Condition number "[this.size()]" failed") )
+  '    }
+  '  class method mut $s #seqBuilder() $s.empty()
+  '  class method Void #from($s seqBuilder) (
+  '      res=S""[with a in seqBuilder.vals() (
+  '        if a.that() ( use[a.msg(), separedBy:S.nl()] )
+  '        )]""
+  '    )
+  '  }
+  '}
+}

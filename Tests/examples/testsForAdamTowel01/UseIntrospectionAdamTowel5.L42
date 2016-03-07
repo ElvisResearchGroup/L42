@@ -3,7 +3,7 @@
 CheckState:{
   class method Void(Library lib,S expected )(
     i=Introspection(lib:lib)
-    var result=S""
+    var S result=S""
     with m in i.state().vals() (
       result++=m.selector().toS()
       )
@@ -14,7 +14,7 @@ CheckState:{
 CheckSubtype1:{
   class method Void(Library lib,S expected )(
     i=Introspection(lib:lib)
-    var result=S""
+    var S result=S""
     with t in i.implementedInterfaces().vals() (
       n=t.referencedPath()
       if n.hasExternalType() (result++=n.externalTypeToS()++S",")
@@ -27,7 +27,7 @@ CheckSubtype1:{
 CheckSubtype:{
   class method Void(Library lib,S expected )(
     i=Introspection(lib:lib)
-    var result=S""
+    var S result=S""
     with t in i.transitivelyImplementedInterfaces().vals() (
       n=t.referencedPath()
       if n.hasExternalType() (result++=n.externalTypeToS()++S",")
@@ -39,7 +39,7 @@ CheckSubtype:{
 CheckNested:{
   class method Void(Library lib,S expected )(
     i=Introspection(lib:lib)
-    var result=S""
+    var S result=S""
     with n in i.transitivelyNestedClasses().vals() (
       result++=S"@."[n.pathFromRoot()]","
       )

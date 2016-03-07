@@ -4,28 +4,33 @@ import ast.Expression;
 import ast.Ast.FieldDec;
 import ast.Ast.Header;
 import ast.Ast.Position;
-import ast.Expression.ClassB.Member;;
+import ast.ExpCore;
+import ast.Expression.ClassB.Member;
+import coreVisitors.InjectionOnSugar;;
 
 public class CollapsePositions extends CloneVisitor{
   Position p=Position.noInfo;
+  public static Position of(ExpCore e){
+    return of(e.accept(new InjectionOnSugar()));
+  }
   public static Position of(Expression e){
     CollapsePositions cp=new CollapsePositions();
     e.accept(cp);
     return cp.p;
   }
-  
+
   protected Header liftH(Header h){
     accumulatePos(h);
     return super.liftH(h);
-  } 
+  }
   protected FieldDec liftF(FieldDec f){
     accumulatePos(f);
     return super.liftF(f);
-  } 
+  }
   protected Member liftM(Member m){
     accumulatePos(m);
     return super.liftM(m);
-  } 
+  }
   protected <T extends Expression>T lift(T e){
    accumulatePos(e);
     return super.lift(e);

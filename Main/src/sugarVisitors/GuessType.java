@@ -39,7 +39,8 @@ public class GuessType implements Visitor<Type> {
   public Type visit(Using s) {return s.getInner().accept(this); }
 
   public Type visit(X s) {
-    assert (this.varEnv.containsKey(s.getInner())):s;
+    assert (this.varEnv.containsKey(s.getInner())):
+      s;
     assert this.varEnv.get(s.getInner())!=null;
     return this.varEnv.get(s.getInner());
     }
@@ -93,14 +94,14 @@ public class GuessType implements Visitor<Type> {
 
   public Type visit(UnOp s) { return visit(Desugar.visit1Step(s));}
   public Type visit(FCall s) { return visit(Desugar.visit1Step(s));}
-  public Type visit(SquareCall s) { return visit(Desugar.visit1Step(s));}
+  public Type visit(SquareCall s) { return GuessType.concatHistoricType(s.getReceiver().accept(this),Desugar.squareGuessedSelector());}
   public Type visit(Literal s) { return GuessType.concatHistoricType(s.getReceiver().accept(this),Desugar.literalGuessedSelector());}
   public Type visit(BinOp s) {
     if(s.getOp().kind==Ast.OpKind.EqOp){return NormType.immVoid;}
     return visit(Desugar.visit1Step(s));
     }
   public Type visit(SquareWithCall s) {
-    return visit(new MCall(s.getReceiver(),"#apply",Doc.empty(),Desugar.getPs(),s.getP()));
+    { return GuessType.concatHistoricType(s.getReceiver().accept(this),Desugar.squareGuessedSelector());}
   }
   public Type visit(DotDotDot s)  {throw Assertions.codeNotReachable();}
   public Type visit(WalkBy s) {throw Assertions.codeNotReachable();}

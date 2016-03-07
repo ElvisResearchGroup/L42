@@ -5,10 +5,10 @@
     ip=Introspection(lib:that,path:this.that())
     itr=ip.transitivelyNestedClasses()
     rens=This.renameMap(that,prefix:S"#1", intros:itr)
-    var map=PreferentialComposition.SrcDests[]
-    var acc=that
+    map=PreferentialComposition.SrcDests.empty()
+    var Library acc=that
     with ren in rens.vals() (
-      map:=map.#add(ren)
+      map.add(right:ren)
       acc:=Refactor.MoveImplementationSelector(
         ren.src() of:ren.path() to:ren.dest())<<acc
       catch exception MetaGuard err
@@ -26,16 +26,15 @@
       error Assert.CodeNotReachable"Path2"(err)
     }
   class method '@private
-  PreferentialComposition.SrcDests renameMap(Library that,S prefix,Introspection.NestedClasses intros) {
-    var acc=PreferentialComposition.SrcDests[]
-    with intro in intros.vals() (
+  PreferentialComposition.SrcDests renameMap(Library that,S prefix,Introspection.NestedClasses intros)
+    PreferentialComposition.SrcDests[ with intro in intros.vals() (
       Strings ns=intro.pathFromRoot().names()
-      Assert.$[!ns.isEmpty()]
-      acc++=PreferentialComposition.renameMap(that,
+      'Assert.$[!ns.isEmpty()]
+      round=PreferentialComposition.renameMap(that,
         prefix:prefix,
         path:Path.from(names:ns.withoutLeft())
         ms:intro.methods())
-      )
-    return acc
-    }
+      with r in round.vals() (use[r])
+      )]
+
   }

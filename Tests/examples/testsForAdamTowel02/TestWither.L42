@@ -14,9 +14,9 @@ exception ConstructorUnavailable, MetaGuard{
   if s.isEmpty() (exception ConstructorUnavailable"")
   k=s.left()
   names=k.selector().names()
-  var acc=that
+  var Library acc=that
   withK=Selector.from(name:S"with",names:names)
-  var ss=Selectors[withK]
+  var Selectors ss=Selectors[withK]
   acc:=this.addWithAllArgs(that,k:k)
   with n in withK.names().vals() (
     ' I know all names in ss contains n
@@ -39,7 +39,7 @@ exception ConstructorUnavailable, MetaGuard{
   freshW=Selector.fresh(Selector"with(that)")
   withK=Selector.from(name:S"with",names:k.selector().names())
   action={ read method capsule This with(capsule This that) that} 'discussion on k modifiers
-  var acc=that
+  var Library acc=that
   acc:=Refactor.compose(left:acc
     right:Refactor.RenameSelector(
       Selector"with(that)" of:p to:freshW)<<action)

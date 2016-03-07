@@ -6,6 +6,7 @@ import java.util.List;
 
 import ast.Ast;
 import ast.ErrorMessage;
+import ast.ErrorMessage.NotWellFormedMsk;
 import ast.Ast.ConcreteHeader;
 import ast.Ast.FieldDec;
 import ast.Ast.Mdf;
@@ -14,6 +15,7 @@ import ast.Ast.VarDecXE;
 import ast.ExpCore;
 import ast.Expression;
 import ast.Ast.SignalKind;
+import ast.Ast.VarDec;
 import ast.Expression.*;
 import sugarVisitors.CheckNoVarDeclaredTwice;
 import sugarVisitors.CheckTerminatingBlock;
@@ -29,6 +31,7 @@ class Found extends RuntimeException{
 public class WellFormedness {
   public static boolean checkAll(Expression e){
     WellFormedness.operatorPrecedenceCheck(e);
+    WellFormedness.noVarAndNoTypeCheck(e);
     WellFormedness.returnCheck(e);
     WellFormedness.blockCheck(e);
     WellFormedness.withCheck(e);
@@ -61,6 +64,33 @@ public class WellFormedness {
         }
       });
     }
+
+  public static void noVarAndNoTypeCheck(Expression _e){
+    _e.accept(new CloneVisitor(){
+      //Ok liftVarDec since With uses liftVarDecXE
+      @Override protected ast.Ast.VarDec liftVarDec(ast.Ast.VarDec d) {
+        return d.match(
+            vdxe->{
+              if(vdxe.isVar() & !vdxe.getT().isPresent()){
+                throw new ErrorMessage.NotWellFormedMsk(vdxe.getInner(),vdxe.getInner(),
+                  "Variable local binding can not infer their type");
+              }
+              return this.liftVarDecXE(vdxe);
+            },
+            this::liftVarDecE,
+            this::liftVarDecCE);
+      }
+      @Override public Expression visit(Expression.RoundBlock s) {
+        try{return super.visit(s);}
+        catch(NotWellFormedMsk nwf){ throw nwf.withCtx(s);}
+      }
+      @Override public Expression visit(Expression.CurlyBlock s) {
+        try{return super.visit(s);}
+        catch(NotWellFormedMsk nwf){ throw nwf.withCtx(s);}
+      }
+    });
+  }
+
   //returns:
   //The \Q@return@ keyword can not be used inside any \Q@if@ or while condition or inside the expression of a $\x$\Q@in@$\e$.
   public static void returnCheck(Expression _e){

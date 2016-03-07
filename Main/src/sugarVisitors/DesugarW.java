@@ -15,6 +15,7 @@ import ast.Ast.Doc;
 import ast.Ast.Mdf;
 import ast.Ast.NormType;
 import ast.Ast.Op;
+import ast.Ast.Parameters;
 import ast.Ast.Path;
 import ast.Ast.Ph;
 import ast.Ast.Position;
@@ -98,26 +99,28 @@ class DesugarW extends CloneVisitor{
   return e.withDefaultE(Optional.of(Expression._void.instance));
   }
   public Expression visit(SquareWithCall s) {
-    String x=Functions.freshName("accumulator", this.usedVars);
-    X xX=new X(x);
-    //var dec
-    VarDecXE xe=new VarDecXE(true,Optional.empty(),x,
-        Desugar.getMCall(s.getP(),s.getReceiver(),"#begin",Desugar.getPs())
-        );
-    List<VarDec> decs=new ArrayList<VarDec>();
-    decs.add(xe);    
-    //oldWith_noUseKw(s, xX, decs);
+    //we can assumethe receivers are normalized after DesugarContext
+    assert s.getReceiver() instanceof Ast.Atom: s;
+    //(b=r.builder() b.a() b.b() b.c() .... b)
+    List<VarDec> vd=new ArrayList<>();
+    Expression k=Desugar.getMCall(s.getP(),s.getReceiver(),"#seqBuilder",Desugar.getPs());
+    String x=Functions.freshName("b", usedVars);
+    X b=new X(x);
+    vd.add(new VarDecXE(false, Optional.empty(), x, k));
     Expression ew=s.getWith().accept(this);
     ew=ew.accept(new CloneVisitor(){
       @Override public Expression visit(Expression.UseSquare u){
-        Expression result=Desugar.appendAddMethods(
-            (SquareCall) u.getInner(), xX);
-        result=new BinOp(s.getP(),xX,Op.ColonEqual,result);        
-        return result.accept(this);
+        SquareCall sq=(SquareCall)u.getInner();
+        List<VarDec> vd=new ArrayList<>();//inner, hide external one to prevent use (was a bug before)
+        for(Parameters ps:sq.getPss()){
+          vd.add(new VarDecE(Desugar.getMCall(s.getP(),b,"#add",ps)));
         }
-    });
-    decs.add(new VarDecE(ew));
-    return Desugar.getBlock(s.getP(),decs,Desugar.appendEndMethod(s.getP(),xX,s)).accept(this);
+        return Desugar.getBlock(s.getP(),vd,Expression._void.instance);
+    }});
+   vd.add(new VarDecE(ew));
+    Expression inner=Desugar.getBlock(s.getP(), vd, b);
+    Parameters ps=new Parameters(Optional.empty(), Collections.singletonList("seqBuilder"),Collections.singletonList(inner));
+    return Desugar.getMCall(s.getP(),s.getReceiver(),"#from",ps);
     }
   private void oldWith_noUseKw(SquareWithCall s, X xX, List<VarDec> decs) {
     List<With.On> ons = s.getWith().getOns();
@@ -181,7 +184,7 @@ class DesugarW extends CloneVisitor{
     for(String x:xs){ys.add(Functions.freshName(x, usedVars));}
     //(
     List<VarDec> decs=new ArrayList<>();
-   
+
     //casts: every cast is a block content e+catch
     {int i=-1;for(Type ti:on0.getTs()){i+=1;
     String xi=xs.get(i);

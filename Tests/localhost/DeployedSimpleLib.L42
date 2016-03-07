@@ -58,30 +58,22 @@ mut This2.S.SBuilder #builder()
 class method 
 This0 #from(This2.S.SBuilder builder) 
 method 
-This0.SConcat #begin() 
-SConcat:{
+This0.Continue #from(This2.S.SConcat seqBuilder) 
+Continue:{
 class method 
-mut This0 #mutK(This3.Concept.ToS old, This3.S accumulator) 
+mut This0 #mutK(This3.S that) 
 class method 
-This0 #apply(This3.Concept.ToS old, This3.S accumulator) 
+This0 #apply(This3.S that) 
 mut method 
-This3.Concept.ToS #old() 
+This3.S #that() 
 read method 
-This3.Concept.ToS old() 
-mut method 
-This3.S #accumulator() 
-read method 
-This3.S accumulator() 
-method 
-This0 #add(This3.Concept.ToS that) 
-method 
-This0 #add(This3.Concept.ToS that, This3.Concept.ToS separedBy) 
-method 
-This0 #end() 
+This3.S that() 
 method 
 mut This3.S.SBuilder #builder() 
 method 
-This1 #from(This3.S.SBuilder builder) }}}
+This1 #from(This3.S.SBuilder builder) }
+method 
+mut This2.S.SConcat #seqBuilder() }}
 N:{<:This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Named
 class method 
 This0 fromS(This1.Concept.ToS that) 
@@ -170,30 +162,22 @@ mut This2.S.SBuilder #builder()
 class method 
 This0 #from(This2.S.SBuilder builder) 
 method 
-This0.SConcat #begin() 
-SConcat:{
+This0.Continue #from(This2.S.SConcat seqBuilder) 
+Continue:{
 class method 
-mut This0 #mutK(This3.Concept.ToS old, This3.S accumulator) 
+mut This0 #mutK(This3.S that) 
 class method 
-This0 #apply(This3.Concept.ToS old, This3.S accumulator) 
+This0 #apply(This3.S that) 
 mut method 
-This3.Concept.ToS #old() 
+This3.S #that() 
 read method 
-This3.Concept.ToS old() 
-mut method 
-This3.S #accumulator() 
-read method 
-This3.S accumulator() 
-method 
-This0 #add(This3.Concept.ToS that) 
-method 
-This0 #add(This3.Concept.ToS that, This3.Concept.ToS separedBy) 
-method 
-This0 #end() 
+This3.S that() 
 method 
 mut This3.S.SBuilder #builder() 
 method 
-This1 #from(This3.S.SBuilder builder) }}}
+This1 #from(This3.S.SBuilder builder) }
+method 
+mut This2.S.SConcat #seqBuilder() }}
 S:{<:This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Named
 class method 
 This0 #from(Library binaryRepr) 
@@ -234,30 +218,41 @@ This0 nl()
 method 
 This0 replace(This0 that, This0 into) 
 method 
-This0.SConcat #begin() 
+This0.Continue #from(This0.SConcat seqBuilder) 
+Continue:{
+class method 
+mut This0 #mutK(This1 that) 
+class method 
+This0 #apply(This1 that) 
+mut method 
+This1 #that() 
+read method 
+This1 that() 
+method 
+mut This1.SBuilder #builder() 
+method 
+This1 #from(This1.SBuilder builder) }
+method 
+mut This0.SConcat #seqBuilder() 
 SConcat:{
 class method 
 mut This0 #mutK(This1 old, This1 accumulator) 
 class method 
-This0 #apply(This1 old, This1 accumulator) 
+mut This0 #apply(This1 old, This1 accumulator) 
 mut method 
 This1 #old() 
 read method 
 This1 old() 
 mut method 
+Void accumulator(This1 that) 
+mut method 
 This1 #accumulator() 
 read method 
 This1 accumulator() 
-method 
-This0 #add(This2.Concept.ToS that) 
-method 
-This0 #add(This2.Concept.ToS that, This2.Concept.ToS separedBy) 
-method 
-This0 #end() 
-method 
-mut This1.SBuilder #builder() 
-method 
-This1 #from(This1.SBuilder builder) }
+mut method 
+Void #add(This2.Concept.ToS that) 
+mut method 
+Void #add(This2.Concept.ToS that, This2.Concept.ToS separedBy) }
 SBuilder:{
 read method 
 Library binaryRepr() 
@@ -489,30 +484,22 @@ mut This1.SBuilder #builder()
 class method 
 This0 #from(This1.SBuilder builder) 
 method 
-This0.SConcat #begin() 
-SConcat:{
+This0.Continue #from(This1.SConcat seqBuilder) 
+Continue:{
 class method 
-mut This0 #mutK(This3.Concept.ToS old, This2 accumulator) 
+mut This0 #mutK(This2 that) 
 class method 
-This0 #apply(This3.Concept.ToS old, This2 accumulator) 
+This0 #apply(This2 that) 
 mut method 
-This3.Concept.ToS #old() 
+This2 #that() 
 read method 
-This3.Concept.ToS old() 
-mut method 
-This2 #accumulator() 
-read method 
-This2 accumulator() 
-method 
-This0 #add(This3.Concept.ToS that) 
-method 
-This0 #add(This3.Concept.ToS that, This3.Concept.ToS separedBy) 
-method 
-This0 #end() 
+This2 that() 
 method 
 mut This2.SBuilder #builder() 
 method 
-This1 #from(This2.SBuilder builder) }}}
+This1 #from(This2.SBuilder builder) }
+method 
+mut This1.SConcat #seqBuilder() }}
 Concept:{
 ToS:{interface 
 read method 
@@ -672,30 +659,22 @@ mut This2.S.SBuilder #builder()
 class method 
 This0 #from(This2.S.SBuilder builder) 
 method 
-This0.SConcat #begin() 
-SConcat:{
+This0.Continue #from(This2.S.SConcat seqBuilder) 
+Continue:{
 class method 
-mut This0 #mutK(This3.Concept.ToS old, This3.S accumulator) 
+mut This0 #mutK(This3.S that) 
 class method 
-This0 #apply(This3.Concept.ToS old, This3.S accumulator) 
+This0 #apply(This3.S that) 
 mut method 
-This3.Concept.ToS #old() 
+This3.S #that() 
 read method 
-This3.Concept.ToS old() 
-mut method 
-This3.S #accumulator() 
-read method 
-This3.S accumulator() 
-method 
-This0 #add(This3.Concept.ToS that) 
-method 
-This0 #add(This3.Concept.ToS that, This3.Concept.ToS separedBy) 
-method 
-This0 #end() 
+This3.S that() 
 method 
 mut This3.S.SBuilder #builder() 
 method 
-This1 #from(This3.S.SBuilder builder) }}
+This1 #from(This3.S.SBuilder builder) }
+method 
+mut This2.S.SConcat #seqBuilder() }
 Parameter:{<:This1, This2.Message
 class method 
 mut This0 #mutK(This2.S _text, This2.Message.Opt cause) 
@@ -724,30 +703,22 @@ mut This2.S.SBuilder #builder()
 class method 
 This0 #from(This2.S.SBuilder builder) 
 method 
-This0.SConcat #begin() 
-SConcat:{
+This0.Continue #from(This2.S.SConcat seqBuilder) 
+Continue:{
 class method 
-mut This0 #mutK(This3.Concept.ToS old, This3.S accumulator) 
+mut This0 #mutK(This3.S that) 
 class method 
-This0 #apply(This3.Concept.ToS old, This3.S accumulator) 
+This0 #apply(This3.S that) 
 mut method 
-This3.Concept.ToS #old() 
+This3.S #that() 
 read method 
-This3.Concept.ToS old() 
-mut method 
-This3.S #accumulator() 
-read method 
-This3.S accumulator() 
-method 
-This0 #add(This3.Concept.ToS that) 
-method 
-This0 #add(This3.Concept.ToS that, This3.Concept.ToS separedBy) 
-method 
-This0 #end() 
+This3.S that() 
 method 
 mut This3.S.SBuilder #builder() 
 method 
-This1 #from(This3.S.SBuilder builder) }}
+This1 #from(This3.S.SBuilder builder) }
+method 
+mut This2.S.SConcat #seqBuilder() }
 Precondition:{<:This1, This2.Message
 class method 
 mut This0 #mutK(This2.S _text, This2.Message.Opt cause) 
@@ -776,30 +747,22 @@ mut This2.S.SBuilder #builder()
 class method 
 This0 #from(This2.S.SBuilder builder) 
 method 
-This0.SConcat #begin() 
-SConcat:{
+This0.Continue #from(This2.S.SConcat seqBuilder) 
+Continue:{
 class method 
-mut This0 #mutK(This3.Concept.ToS old, This3.S accumulator) 
+mut This0 #mutK(This3.S that) 
 class method 
-This0 #apply(This3.Concept.ToS old, This3.S accumulator) 
+This0 #apply(This3.S that) 
 mut method 
-This3.Concept.ToS #old() 
+This3.S #that() 
 read method 
-This3.Concept.ToS old() 
-mut method 
-This3.S #accumulator() 
-read method 
-This3.S accumulator() 
-method 
-This0 #add(This3.Concept.ToS that) 
-method 
-This0 #add(This3.Concept.ToS that, This3.Concept.ToS separedBy) 
-method 
-This0 #end() 
+This3.S that() 
 method 
 mut This3.S.SBuilder #builder() 
 method 
-This1 #from(This3.S.SBuilder builder) }}
+This1 #from(This3.S.SBuilder builder) }
+method 
+mut This2.S.SConcat #seqBuilder() }
 ParseFail:{interface <:This1}}
 System:{
 Guard:{'<:Outer.Guard soon (remove "interface" for a bad translation bug: This1_System_Guard is not abstract and does not override abstract method MtoS()
@@ -832,30 +795,22 @@ mut This3.S.SBuilder #builder()
 class method 
 This0 #from(This3.S.SBuilder builder) 
 method 
-This0.SConcat #begin() 
-SConcat:{
+This0.Continue #from(This3.S.SConcat seqBuilder) 
+Continue:{
 class method 
-mut This0 #mutK(This4.Concept.ToS old, This4.S accumulator) 
+mut This0 #mutK(This4.S that) 
 class method 
-This0 #apply(This4.Concept.ToS old, This4.S accumulator) 
+This0 #apply(This4.S that) 
 mut method 
-This4.Concept.ToS #old() 
+This4.S #that() 
 read method 
-This4.Concept.ToS old() 
-mut method 
-This4.S #accumulator() 
-read method 
-This4.S accumulator() 
-method 
-This0 #add(This4.Concept.ToS that) 
-method 
-This0 #add(This4.Concept.ToS that, This4.Concept.ToS separedBy) 
-method 
-This0 #end() 
+This4.S that() 
 method 
 mut This4.S.SBuilder #builder() 
 method 
-This1 #from(This4.S.SBuilder builder) }}}}
+This1 #from(This4.S.SBuilder builder) }
+method 
+mut This3.S.SConcat #seqBuilder() }}}
 Assert:{interface <:This1.Message
 NotImplementedYet:{<:This1, This2.Message
 class method 
@@ -885,30 +840,22 @@ mut This2.S.SBuilder #builder()
 class method 
 This0 #from(This2.S.SBuilder builder) 
 method 
-This0.SConcat #begin() 
-SConcat:{
+This0.Continue #from(This2.S.SConcat seqBuilder) 
+Continue:{
 class method 
-mut This0 #mutK(This3.Concept.ToS old, This3.S accumulator) 
+mut This0 #mutK(This3.S that) 
 class method 
-This0 #apply(This3.Concept.ToS old, This3.S accumulator) 
+This0 #apply(This3.S that) 
 mut method 
-This3.Concept.ToS #old() 
+This3.S #that() 
 read method 
-This3.Concept.ToS old() 
-mut method 
-This3.S #accumulator() 
-read method 
-This3.S accumulator() 
-method 
-This0 #add(This3.Concept.ToS that) 
-method 
-This0 #add(This3.Concept.ToS that, This3.Concept.ToS separedBy) 
-method 
-This0 #end() 
+This3.S that() 
 method 
 mut This3.S.SBuilder #builder() 
 method 
-This1 #from(This3.S.SBuilder builder) }}
+This1 #from(This3.S.SBuilder builder) }
+method 
+mut This2.S.SConcat #seqBuilder() }
 ObservedBug:{<:This1, This2.Message
 class method 
 mut This0 #mutK(This2.S _text, This2.Message.Opt cause) 
@@ -937,30 +884,22 @@ mut This2.S.SBuilder #builder()
 class method 
 This0 #from(This2.S.SBuilder builder) 
 method 
-This0.SConcat #begin() 
-SConcat:{
+This0.Continue #from(This2.S.SConcat seqBuilder) 
+Continue:{
 class method 
-mut This0 #mutK(This3.Concept.ToS old, This3.S accumulator) 
+mut This0 #mutK(This3.S that) 
 class method 
-This0 #apply(This3.Concept.ToS old, This3.S accumulator) 
+This0 #apply(This3.S that) 
 mut method 
-This3.Concept.ToS #old() 
+This3.S #that() 
 read method 
-This3.Concept.ToS old() 
-mut method 
-This3.S #accumulator() 
-read method 
-This3.S accumulator() 
-method 
-This0 #add(This3.Concept.ToS that) 
-method 
-This0 #add(This3.Concept.ToS that, This3.Concept.ToS separedBy) 
-method 
-This0 #end() 
+This3.S that() 
 method 
 mut This3.S.SBuilder #builder() 
 method 
-This1 #from(This3.S.SBuilder builder) }}
+This1 #from(This3.S.SBuilder builder) }
+method 
+mut This2.S.SConcat #seqBuilder() }
 CodeNotReachable:{<:This1, This2.Message
 class method 
 mut This0 #mutK(This2.S _text, This2.Message.Opt cause) 
@@ -989,47 +928,22 @@ mut This2.S.SBuilder #builder()
 class method 
 This0 #from(This2.S.SBuilder builder) 
 method 
-This0.SConcat #begin() 
-SConcat:{
+This0.Continue #from(This2.S.SConcat seqBuilder) 
+Continue:{
 class method 
-mut This0 #mutK(This3.Concept.ToS old, This3.S accumulator) 
+mut This0 #mutK(This3.S that) 
 class method 
-This0 #apply(This3.Concept.ToS old, This3.S accumulator) 
+This0 #apply(This3.S that) 
 mut method 
-This3.Concept.ToS #old() 
+This3.S #that() 
 read method 
-This3.Concept.ToS old() 
-mut method 
-This3.S #accumulator() 
-read method 
-This3.S accumulator() 
-method 
-This0 #add(This3.Concept.ToS that) 
-method 
-This0 #add(This3.Concept.ToS that, This3.Concept.ToS separedBy) 
-method 
-This0 #end() 
+This3.S that() 
 method 
 mut This3.S.SBuilder #builder() 
 method 
-This1 #from(This3.S.SBuilder builder) }}
-$:{
-class method 
-mut This0 #mutK(This2.N that) 
-class method 
-This0 #apply(This2.N that) 
-mut method 
-This2.N #that() 
-read method 
-This2.N that() 
-class method 
-This0 #begin() 
+This1 #from(This3.S.SBuilder builder) }
 method 
-Void #end() 
-method 
-This0 #add(This2.Bool that) 
-method 
-This0 #add(This2.Bool that, This2.Concept.ToS msg) }
+mut This2.S.SConcat #seqBuilder() }
 AssertMessage:{<:This1, This2.Message
 class method 
 mut This0 #mutK(This2.S _text, This2.Message.Opt cause) 
@@ -1058,30 +972,22 @@ mut This2.S.SBuilder #builder()
 class method 
 This0 #from(This2.S.SBuilder builder) 
 method 
-This0.SConcat #begin() 
-SConcat:{
+This0.Continue #from(This2.S.SConcat seqBuilder) 
+Continue:{
 class method 
-mut This0 #mutK(This3.Concept.ToS old, This3.S accumulator) 
+mut This0 #mutK(This3.S that) 
 class method 
-This0 #apply(This3.Concept.ToS old, This3.S accumulator) 
+This0 #apply(This3.S that) 
 mut method 
-This3.Concept.ToS #old() 
+This3.S #that() 
 read method 
-This3.Concept.ToS old() 
-mut method 
-This3.S #accumulator() 
-read method 
-This3.S accumulator() 
-method 
-This0 #add(This3.Concept.ToS that) 
-method 
-This0 #add(This3.Concept.ToS that, This3.Concept.ToS separedBy) 
-method 
-This0 #end() 
+This3.S that() 
 method 
 mut This3.S.SBuilder #builder() 
 method 
-This1 #from(This3.S.SBuilder builder) }}}
+This1 #from(This3.S.SBuilder builder) }
+method 
+mut This2.S.SConcat #seqBuilder() }}
 Strings:{
 class method 
 mut This0 #mutK(mut This1.Collections.MutListAny inner) 
@@ -1096,17 +1002,11 @@ This0 #immK(This1.Collections.MutListAny inner)
 class method 
 mut This0 empty() 
 class method 
-mut This0 #builder() 
+mut This0 #seqBuilder() 
 class method 
-mut This0 #from(mut This0 builder) 
+This0 #from(This0 seqBuilder) 
 mut method 
-Void #use(This1.S that) 
-class method 
-This0 #begin() 
-method 
-This0 #end() 
-method 
-This0 #add(This1.S that) 
+Void #add(This1.S that) 
 class method 
 This1.S cast(Any that) 
 read method 
@@ -1379,30 +1279,22 @@ mut This2.S.SBuilder #builder()
 class method 
 This0 #from(This2.S.SBuilder builder) 
 method 
-This0.SConcat #begin() 
-SConcat:{
+This0.Continue #from(This2.S.SConcat seqBuilder) 
+Continue:{
 class method 
-mut This0 #mutK(This3.Concept.ToS old, This3.S accumulator) 
+mut This0 #mutK(This3.S that) 
 class method 
-This0 #apply(This3.Concept.ToS old, This3.S accumulator) 
+This0 #apply(This3.S that) 
 mut method 
-This3.Concept.ToS #old() 
+This3.S #that() 
 read method 
-This3.Concept.ToS old() 
-mut method 
-This3.S #accumulator() 
-read method 
-This3.S accumulator() 
-method 
-This0 #add(This3.Concept.ToS that) 
-method 
-This0 #add(This3.Concept.ToS that, This3.Concept.ToS separedBy) 
-method 
-This0 #end() 
+This3.S that() 
 method 
 mut This3.S.SBuilder #builder() 
 method 
-This1 #from(This3.S.SBuilder builder) }}}
+This1 #from(This3.S.SBuilder builder) }
+method 
+mut This2.S.SConcat #seqBuilder() }}
 Selector:{<:This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Named
 class method 
 This0 fromS(This1.Concept.ToS that) 
@@ -1462,30 +1354,22 @@ mut This2.S.SBuilder #builder()
 class method 
 This0 #from(This2.S.SBuilder builder) 
 method 
-This0.SConcat #begin() 
-SConcat:{
+This0.Continue #from(This2.S.SConcat seqBuilder) 
+Continue:{
 class method 
-mut This0 #mutK(This3.Concept.ToS old, This3.S accumulator) 
+mut This0 #mutK(This3.S that) 
 class method 
-This0 #apply(This3.Concept.ToS old, This3.S accumulator) 
+This0 #apply(This3.S that) 
 mut method 
-This3.Concept.ToS #old() 
+This3.S #that() 
 read method 
-This3.Concept.ToS old() 
-mut method 
-This3.S #accumulator() 
-read method 
-This3.S accumulator() 
-method 
-This0 #add(This3.Concept.ToS that) 
-method 
-This0 #add(This3.Concept.ToS that, This3.Concept.ToS separedBy) 
-method 
-This0 #end() 
+This3.S that() 
 method 
 mut This3.S.SBuilder #builder() 
 method 
-This1 #from(This3.S.SBuilder builder) }}}
+This1 #from(This3.S.SBuilder builder) }
+method 
+mut This2.S.SConcat #seqBuilder() }}
 MetaGuard:{interface <:This1.Guard
 RecordWrapper:' can not be private, I need to Patch it.
 {
@@ -1733,17 +1617,11 @@ This0 #immK(This3.Collections.MutListAny inner)
 class method 
 mut This0 empty() 
 class method 
-mut This0 #builder() 
+mut This0 #seqBuilder() 
 class method 
-mut This0 #from(mut This0 builder) 
+This0 #from(This0 seqBuilder) 
 mut method 
-Void #use(This1.Annotation that) 
-class method 
-This0 #begin() 
-method 
-This0 #end() 
-method 
-This0 #add(This1.Annotation that) 
+Void #add(This1.Annotation that) 
 class method 
 This1.Annotation cast(Any that) 
 read method 
@@ -1953,17 +1831,11 @@ This0 #immK(This2.Collections.MutListAny inner)
 class method 
 mut This0 empty() 
 class method 
-mut This0 #builder() 
+mut This0 #seqBuilder() 
 class method 
-mut This0 #from(mut This0 builder) 
+This0 #from(This0 seqBuilder) 
 mut method 
-Void #use(This1.Member that) 
-class method 
-This0 #begin() 
-method 
-This0 #end() 
-method 
-This0 #add(This1.Member that) 
+Void #add(This1.Member that) 
 class method 
 This1.Member cast(Any that) 
 read method 
@@ -2134,17 +2006,11 @@ This0 #immK(This2.Collections.MutListAny inner)
 class method 
 mut This0 empty() 
 class method 
-mut This0 #builder() 
+mut This0 #seqBuilder() 
 class method 
-mut This0 #from(mut This0 builder) 
+This0 #from(This0 seqBuilder) 
 mut method 
-Void #use(This1.Method that) 
-class method 
-This0 #begin() 
-method 
-This0 #end() 
-method 
-This0 #add(This1.Method that) 
+Void #add(This1.Method that) 
 class method 
 This1.Method cast(Any that) 
 read method 
@@ -2338,17 +2204,11 @@ This0 #immK(This2.Collections.MutListAny inner)
 class method 
 mut This0 empty() 
 class method 
-mut This0 #builder() 
+mut This0 #seqBuilder() 
 class method 
-mut This0 #from(mut This0 builder) 
+This0 #from(This0 seqBuilder) 
 mut method 
-Void #use(This1.NestedClass that) 
-class method 
-This0 #begin() 
-method 
-This0 #end() 
-method 
-This0 #add(This1.NestedClass that) 
+Void #add(This1.NestedClass that) 
 class method 
 This1.NestedClass cast(Any that) 
 read method 
@@ -2513,17 +2373,11 @@ This0 #immK(This2.Collections.MutListAny inner)
 class method 
 mut This0 empty() 
 class method 
-mut This0 #builder() 
+mut This0 #seqBuilder() 
 class method 
-mut This0 #from(mut This0 builder) 
+This0 #from(This0 seqBuilder) 
 mut method 
-Void #use(This1.Type that) 
-class method 
-This0 #begin() 
-method 
-This0 #end() 
-method 
-This0 #add(This1.Type that) 
+Void #add(This1.Type that) 
 class method 
 This1.Type cast(Any that) 
 read method 
@@ -2837,38 +2691,26 @@ This2.S getToSOrName(read Any that) }}
 Optimize:{
 RemoveUnreachableCode:{
 class method 
-mut This0 #mutK() 
-class method 
-This0 #apply() 
-class method 
-This0 #begin() 
-method 
-This0 #end() 
-method 
 Library #leftleft(Library that) }}
 Opt:{
 class method 
 Library #apply(class Any that) }
 Extends:{'members of each produced class
 <:This1.PreferentialComposition.$, This1.PreferentialComposition.$
-method 
-This0 #add(Library that) 
 class method 
-This0 #begin() 
-method 
-This0 #end() 
+mut This1.PreferentialComposition.Libs #seqBuilder() 
+class method 
+This0 #from(This1.PreferentialComposition.Libs seqBuilder) 
 method 
 Library #leftleft(Library that) exception This1.MetaGuard.ClassClash, This1.MetaGuard.MethodClash 
 method 
 This0 #plusplus(This0 that) }
 Use:{'members of each produced class
 <:This1.PreferentialComposition.$, This1.PreferentialComposition.$
-method 
-This0 #add(Library that) 
 class method 
-This0 #begin() 
-method 
-This0 #end() 
+mut This1.PreferentialComposition.Libs #seqBuilder() 
+class method 
+This0 #from(This1.PreferentialComposition.Libs seqBuilder) 
 method 
 Library #leftleft(Library that) exception This1.MetaGuard.ClassClash, This1.MetaGuard.MethodClash 
 method 
@@ -2902,30 +2744,22 @@ mut This2.S.SBuilder #builder()
 class method 
 This0 #from(This2.S.SBuilder builder) 
 method 
-This0.SConcat #begin() 
-SConcat:{
+This0.Continue #from(This2.S.SConcat seqBuilder) 
+Continue:{
 class method 
-mut This0 #mutK(This3.Concept.ToS old, This3.S accumulator) 
+mut This0 #mutK(This3.S that) 
 class method 
-This0 #apply(This3.Concept.ToS old, This3.S accumulator) 
+This0 #apply(This3.S that) 
 mut method 
-This3.Concept.ToS #old() 
+This3.S #that() 
 read method 
-This3.Concept.ToS old() 
-mut method 
-This3.S #accumulator() 
-read method 
-This3.S accumulator() 
-method 
-This0 #add(This3.Concept.ToS that) 
-method 
-This0 #add(This3.Concept.ToS that, This3.Concept.ToS separedBy) 
-method 
-This0 #end() 
+This3.S that() 
 method 
 mut This3.S.SBuilder #builder() 
 method 
-This1 #from(This3.S.SBuilder builder) }}
+This1 #from(This3.S.SBuilder builder) }
+method 
+mut This2.S.SConcat #seqBuilder() }
 Parsable:{
 class method 
 Library #leftleft(Library that) exception This1.DecorationUnfeasable }
@@ -3077,17 +2911,11 @@ This0 #immK(This2.Collections.MutListAny inner)
 class method 
 mut This0 empty() 
 class method 
-mut This0 #builder() 
+mut This0 #seqBuilder() 
 class method 
-mut This0 #from(mut This0 builder) 
+This0 #from(This0 seqBuilder) 
 mut method 
-Void #use(This1.SrcDest that) 
-class method 
-This0 #begin() 
-method 
-This0 #end() 
-method 
-This0 #add(This1.SrcDest that) 
+Void #add(This1.SrcDest that) 
 class method 
 This1.SrcDest cast(Any that) 
 read method 
@@ -3209,6 +3037,146 @@ mut method
 This3.N #stopOk() 
 mut method 
 Void inner(This2.SrcDest that) }}
+Libs:{
+class method 
+mut This0 #mutK(mut This2.Collections.MutListAny inner) 
+class method 
+mut This0 #apply(mut This2.Collections.MutListAny inner) 
+mut method 
+mut This2.Collections.MutListAny #inner() 
+read method 
+read This2.Collections.MutListAny inner() 
+class method 
+This0 #immK(This2.Collections.MutListAny inner) 
+class method 
+mut This0 empty() 
+class method 
+mut This0 #seqBuilder() 
+class method 
+This0 #from(This0 seqBuilder) 
+mut method 
+Void #add(Library that) 
+class method 
+Library cast(Any that) 
+read method 
+Library val(This2.N that) 
+read method 
+Library left() 
+read method 
+Library right() 
+mut method 
+Void #apply(This2.N that, Library val) 
+mut method 
+Void add(This2.N that, Library val) 
+mut method 
+Void add(Library right) 
+mut method 
+Void add(Library left) 
+mut method 
+Void remove(This2.N that) 
+mut method 
+Void left(Library that) 
+mut method 
+Void right(Library that) 
+method 
+This0 without(This2.N that) 
+method 
+This0 withoutLeft() 
+method 
+This0 withAlso(This2.N that, Any val) 
+method 
+This0 with(This2.N that, Any val) 
+read method 
+mut This0 reverse() 
+read method 
+This2.N size() 
+read method 
+This2.Bool isEmpty() 
+method 
+This0 #plusplus(This0 that) 
+IteratorTrait:{
+class method 
+Library #apply() }
+read method 
+lent This0.IteratorVal vals(This2.N from, This2.N to, This2.N stopOk) 
+read method 
+lent This0.IteratorVal vals(This2.N stopOk) 
+read method 
+lent This0.IteratorVal vals(This2.N from, This2.N to) 
+read method 
+lent This0.IteratorVal vals() 
+IteratorVal:{
+read method 
+read This3.Collections.MutListAny that() 
+read method 
+This3.N from() 
+mut method 
+Void from(This3.N that) 
+read method 
+This3.N to() 
+read method 
+This3.N stopOk() 
+mut method 
+Void #next() exception Void 
+read method 
+Void #checkEnd() 
+read method 
+Library #inner() 
+read method 
+Void #close() 
+class method 
+lent This0 #lentK(read This3.Collections.MutListAny that, This3.N from, This3.N to, This3.N stopOk) 
+class method 
+lent This0 #apply(read This3.Collections.MutListAny that, This3.N from, This3.N to, This3.N stopOk) 
+mut method 
+read This3.Collections.MutListAny #that() 
+mut method 
+This3.N #from() 
+mut method 
+This3.N #to() 
+mut method 
+This3.N #stopOk() }
+mut method 
+lent This0.IteratorVar #vals(This2.N from, This2.N to, This2.N stopOk) 
+mut method 
+lent This0.IteratorVar #vals(This2.N stopOk) 
+mut method 
+lent This0.IteratorVar #vals(This2.N from, This2.N to) 
+mut method 
+lent This0.IteratorVar #vals() 
+IteratorVar:{
+read method 
+read This3.Collections.MutListAny that() 
+read method 
+This3.N from() 
+mut method 
+Void from(This3.N that) 
+read method 
+This3.N to() 
+read method 
+This3.N stopOk() 
+mut method 
+Void #next() exception Void 
+read method 
+Void #checkEnd() 
+read method 
+Library #inner() 
+read method 
+Void #close() 
+class method 
+mut This0 #mutK(mut This3.Collections.MutListAny that, This3.N from, This3.N to, This3.N stopOk) 
+class method 
+mut This0 #apply(mut This3.Collections.MutListAny that, This3.N from, This3.N to, This3.N stopOk) 
+mut method 
+mut This3.Collections.MutListAny #that() 
+mut method 
+This3.N #from() 
+mut method 
+This3.N #to() 
+mut method 
+This3.N #stopOk() 
+mut method 
+Void inner(Library that) }}
 class method 
 This0.SrcDests renameMap(Library that, This1.S prefix, This1.Path path, This1.Introspection.Methods ms) 
 class method 
@@ -3217,13 +3185,9 @@ class method
 Library #leftleft(Library that) exception This1.MetaGuard.ClassClash, This1.MetaGuard.MethodClash }
 Load:{'shape of a loadable library:
 ' This contains actual library, but
-' Abstract:{} contains abstract classes, and 
+' Abstract:{} contains abstract classes, and
 ' Abstract.ConceptMap mapps concepts names to abstract classes
 
-class method 
-This0 #begin() 
-method 
-This0 #end() 
 ConceptMapMismatch:{<:This2.MetaGuard, This2.Message
 class method 
 mut This0 #mutK(This2.S _text, This2.Message.Opt cause) 
@@ -3252,30 +3216,22 @@ mut This2.S.SBuilder #builder()
 class method 
 This0 #from(This2.S.SBuilder builder) 
 method 
-This0.SConcat #begin() 
-SConcat:{
+This0.Continue #from(This2.S.SConcat seqBuilder) 
+Continue:{
 class method 
-mut This0 #mutK(This3.Concept.ToS old, This3.S accumulator) 
+mut This0 #mutK(This3.S that) 
 class method 
-This0 #apply(This3.Concept.ToS old, This3.S accumulator) 
+This0 #apply(This3.S that) 
 mut method 
-This3.Concept.ToS #old() 
+This3.S #that() 
 read method 
-This3.Concept.ToS old() 
-mut method 
-This3.S #accumulator() 
-read method 
-This3.S accumulator() 
-method 
-This0 #add(This3.Concept.ToS that) 
-method 
-This0 #add(This3.Concept.ToS that, This3.Concept.ToS separedBy) 
-method 
-This0 #end() 
+This3.S that() 
 method 
 mut This3.S.SBuilder #builder() 
 method 
-This1 #from(This3.S.SBuilder builder) }}
+This1 #from(This3.S.SBuilder builder) }
+method 
+mut This2.S.SConcat #seqBuilder() }
 ConceptMapUnavailable:{<:This2.MetaGuard, This2.Message
 class method 
 mut This0 #mutK(This2.S _text, This2.Message.Opt cause) 
@@ -3304,31 +3260,23 @@ mut This2.S.SBuilder #builder()
 class method 
 This0 #from(This2.S.SBuilder builder) 
 method 
-This0.SConcat #begin() 
-SConcat:{
+This0.Continue #from(This2.S.SConcat seqBuilder) 
+Continue:{
 class method 
-mut This0 #mutK(This3.Concept.ToS old, This3.S accumulator) 
+mut This0 #mutK(This3.S that) 
 class method 
-This0 #apply(This3.Concept.ToS old, This3.S accumulator) 
+This0 #apply(This3.S that) 
 mut method 
-This3.Concept.ToS #old() 
+This3.S #that() 
 read method 
-This3.Concept.ToS old() 
-mut method 
-This3.S #accumulator() 
-read method 
-This3.S accumulator() 
-method 
-This0 #add(This3.Concept.ToS that) 
-method 
-This0 #add(This3.Concept.ToS that, This3.Concept.ToS separedBy) 
-method 
-This0 #end() 
+This3.S that() 
 method 
 mut This3.S.SBuilder #builder() 
 method 
-This1 #from(This3.S.SBuilder builder) }}
+This1 #from(This3.S.SBuilder builder) }
 method 
+mut This2.S.SConcat #seqBuilder() }
+class method 
 Library #leftleft(Library that) exception This0.ConceptMapMismatch, This0.ConceptMapUnavailable 
 DeployLibrary:{
 class method 
@@ -3349,12 +3297,6 @@ class method
 Library exposeAsLibrary(Library that, This2.Path path) exception This2.MetaGuard.NestedClassUnavailable, This2.MetaGuard.PrivacyCoupuled 
 class method 
 Void checkTargetExists(Library that, This2.Path path) exception This2.MetaGuard.NestedClassUnavailable 
-class method 
-class This0 #begin() 
-method 
-This0 #end() 
-class method 
-This0 #add(This2.Path that, This2.Url url) 
 method 
 Library #leftleft(Library that) exception This2.MetaGuard.NestedClassUnavailable, This2.MetaGuard.PrivacyCoupuled }}}
 class method 

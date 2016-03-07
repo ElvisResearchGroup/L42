@@ -59,7 +59,7 @@ method S externalTypeToS() {
   sep=nameAndPrefix.firstIndexOf(S".")
   name= nameAndPrefix(start:sep+1N)
   prefix=N.fromS(nameAndPrefix(start:4N, end:sep)) '4N== S"This".size()
-  Assert.$[prefix>0N]
+  'Assert.$[prefix>0N]
   if prefix == 1N (return S"This."++name)
   return S"This"[prefix-1N]"."++name
 }
@@ -68,11 +68,11 @@ method S classKind() this.record()"ClassKind"
 method S allAsString() this.record()"AllAsString"  'just the library literal
 method
 Members members() (
-  var result=Members[]
-  var mN=1N
+  result=Members.empty()
+  var N mN=1N
   while Bool.true() (' to be able to break
     'Debug(S"Iteration "[mN]"")
-    result:=result.#add(this.mirror()
+    result.add(right:this.mirror()
       .introspectReportMember(root:this,path:this.path(),memberN:mN))
     'this was a private member
     catch exception MetaGuard.MemberUnavailable exception void
@@ -91,17 +91,15 @@ NestedClasses nestedClasses()
   NestedClasses[with m in this.members().vals() ( on NestedClass use[m])]
 
 method
-NestedClasses transitivelyNestedClasses() (
-  var result=NestedClasses[this]
-  with nc in this.nestedClasses().vals() (
-    result++=nc.transitivelyNestedClasses()
-    )
-  result
-  )
+NestedClasses transitivelyNestedClasses()
+  NestedClasses[this]++
+  NestedClasses[with nc in this.nestedClasses().vals() (
+    with nci in nc.transitivelyNestedClasses().vals() (use[nci])
+    )]
 
 method Types implementedInterfaces() (
-  var result=Types[]
-  var tN=1N
+  result=Types.empty()
+  var N tN=1N
   while Bool.true() (' to be able to break
     ti=this.mirror()
       .introspectReportType(root:this,path:this.path(),memberN:0N,typeN:tN)
@@ -109,18 +107,18 @@ method Types implementedInterfaces() (
     '  use[sr!=S"This";sr!=S""]
     '  )]
     sr=ti.strRepr()
-    Assert.$[sr!=S"@.This";sr!=S"This";sr!=S""]
+    'Assert.$[sr!=S"@.This";sr!=S"This";sr!=S""]
 
-    result:=result.#add(ti)
+    result.add(right:ti)
     tN+=1N
     )
   catch exception MetaGuard.MemberUnavailable x error Assert.CodeNotReachable"NestedClass3"(x)
   result)
 method Types transitivelyImplementedInterfaces() {
-  var result=this.removeDup(this.implementedInterfaces())
-  var new=result
+  var Types result=this.removeDup(this.implementedInterfaces())
+  var Types new=result
   loop (
-    var extra=Types[]
+    var Types extra=Types[]
     with t in new.vals() (
       impl=t.referencedPath().implementedInterfaces()
       extra++=this.remove(impl, from:result)
@@ -132,14 +130,14 @@ method Types transitivelyImplementedInterfaces() {
   }
 method'@private
 Types removeDup(Types that) (
-  var result=Types[]
+  var mut Types result=Types.empty() 'can not use [with since we need to check in results
   with t in that.vals() (
-    if this.select(t,from:result) (result:=result.#add(t))
+    if this.select(t,from:result) (result.add(right:t))
     )
   result
   )
 method'@private
-Bool select(Type that,Types from) (
+Bool select(Type that,read Types from) (
   rp=that.referencedPath()
   Count[with t in from.vals() (use[t.referencedPath() == rp])]==0N
   )
@@ -149,8 +147,8 @@ Types remove(Types that,Types from)
 
 method
 Methods stateCandidate() (
-  var havePrivate=Bool.false()
-  var absMethods=Methods[with m in this.methods().vals() (
+  var Bool havePrivate=Bool.false()
+  var Methods absMethods=Methods[with m in this.methods().vals() (
     if m.methodKind()==S"AbstractMethod" (
       havePrivate|=m.isPrivate()
       use[m]
@@ -165,7 +163,7 @@ Methods stateCandidate() (
   )
 method
 Methods state() {
-  var result=Methods[]
+  mut Methods result=Methods.empty()
   stateCandidate=this.stateCandidate()
   constr=(
     classMethods=Methods[with m in stateCandidate.vals() (
@@ -175,7 +173,7 @@ Methods state() {
     if classMethods.size()>1N (return result)
     classMethods.left()
     )
-  result:=result.#add(constr)
+  result.add(right:constr)
   names=constr.selector().names()
   with name in names.vals() (
     getter=Selector.fromS(name++S"()")
@@ -183,7 +181,7 @@ Methods state() {
     setter=Selector.fromS(name++S"(that)")
     with f in stateCandidate.vals() (
       if f.selector()==getter |f.selector()==exposer |f.selector()==setter (
-        result:=result.#add(f)
+        result.add(right:f)
         )
       )
     )

@@ -368,6 +368,7 @@ public class ToFormattedText implements Visitor<Void>{
           return null;
         }
         );
+    nl();
   }
   @Override
   public Void visit(CurlyBlock arg0) {

@@ -8,8 +8,8 @@ class method Library moveToAbstract(Path that,Library of){
     error on MetaGuard.NestedClassUnavailable
       Assert.CodeNotReachable"DeployLibrary2"
     Assert.ObservedBug"map and library mismatch on "[that]" available paths are "[
-      with av in available.vals() ( 
-        use[S.nl()++av.pathFromRoot().toS()(start:8N)]  
+      with av in available.vals() (
+        use[S.nl()++av.pathFromRoot().toS()(start:8N)]
       )]""
     )
   error on MetaGuard
@@ -21,9 +21,9 @@ Library  exposeAsLibrary(Library that, Path path)
 exception
     MetaGuard.NestedClassUnavailable,
     MetaGuard.PrivacyCoupuled {
-  Assert.$[path!=Path"This"]
+  'Assert.$[path!=Path"This"]
   this.checkTargetExists(that,path:path)'throws MetaGuard.NestedClassUnavailable
-  var res=that
+  var Library res=that
   Debug(S"1.1")
   res:=Refactor.RenamePath(Path"This" to:Path"PrImpl")<<res
   error on MetaGuard
@@ -44,29 +44,25 @@ exception
   res:=Refactor.MakePrivatePath(Path"PrImpl")<<res
   Debug(S"1.6")
   return res
-  error on MetaGuard 
+  error on MetaGuard
     Assert.CodeNotReachable"DeployLibrary4"
   }
 class method
 Void checkTargetExists(Library that,Path path)
 exception MetaGuard.NestedClassUnavailable (
   unused=Refactor.AddDocumentationPath(path doc:Introspection.Doc"JustToSeeIfItIsThere")<<that
-  error on MetaGuard.InvalidOnTopLevel 
+  error on MetaGuard.InvalidOnTopLevel
     Assert.CodeNotReachable"DeployLibrary5"
   void
   )
-
-class method class This #begin() This
-method This #end() this
-class method This #add(Path that,Url url) This(path:that,url:url)
 
 method
 Library <<(Library that)
 exception MetaGuard.NestedClassUnavailable, MetaGuard.PrivacyCoupuled {
   Debug(S"1")
-  var res=This.exposeAsLibrary(that,path:this.path())
+  var Library res=This.exposeAsLibrary(that,path:this.path())
   Debug(S"2")
-  res:=Optimize.RemoveUnreachableCode[]<<res
+  res:=Optimize.RemoveUnreachableCode<<res
   Debug(S"3")
   return DeployTowel(fileName:this.url())<<res
   }

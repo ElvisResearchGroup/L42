@@ -70,14 +70,14 @@
 
   method
   Strings names(){
-    var str=this.toS()
+    var S str=this.toS()
     str:=str(start:str.firstIndexOf(S"(")+1N, end:str.size()-1N)++S","
     ' from foo(a,b,c) to a,b,c,
-    var result=Strings[]
+    result=Strings.empty()
     if str==S"," (return result)
     while str!=S"" (
       pos=str.firstIndexOf(S",")
-      result:=result.#add(str(end:pos))
+      result.add(right:str(end:pos))
       str:=str(start:pos+1N)
       )
     return result
@@ -85,10 +85,10 @@
 
   class method
   Selector fresh(Selector that) {
-    var name=that.name()
+    var S name=that.name()
     if name==S"" (name:= S"fresh")
     fName=SafeOperators.freshName(name)
-    var tot=fName++S"("
+    var S tot=fName++S"("
     with n in that.names().vals() (
       tot++=n++S","
       )

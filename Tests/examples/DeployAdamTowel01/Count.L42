@@ -1,8 +1,9 @@
-{(N counter)'@private
-class method This #begin() This(counter:0N)
-method N #end()this.counter()
-method This #add(Bool that) {
-  if !that (return this)
-  return This(counter:this.counter()+1N)
-  }
+{(var N counter)'@private
+
+class method mut This #seqBuilder() This(counter:0N)
+
+class method N #from(mut This seqBuilder) seqBuilder.counter()
+
+mut method Void #add(Bool that)  if that (this.counter(\counter+1N))
+
 }

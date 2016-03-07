@@ -59,7 +59,7 @@
     }
   method
   mut Strings names(){
-    var str=this.toS()
+    var S str=this.toS()
     if str==S"This" (return Strings.empty())
     str++=S"."
     result=Strings.empty()
