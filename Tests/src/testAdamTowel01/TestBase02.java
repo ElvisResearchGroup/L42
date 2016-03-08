@@ -148,7 +148,7 @@ public class TestBase02 {
      }
 
   @Test
-   public  void _02_001HelloWorld() throws Throwable{
+   public  void _02_101HelloWorld() throws Throwable{
      TestHelper.configureForTest();
      L42.main(new String[]{"examples/testsForAdamTowel02/TestHelloWorld.L42"});
      Assert.assertEquals(L42.record.toString(),

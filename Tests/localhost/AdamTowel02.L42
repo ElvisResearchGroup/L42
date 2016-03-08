@@ -5123,7 +5123,7 @@ Void inner(This1.Elem that) (
   )}}}
 CodeEq:{
 class method 
-Library #apply() {
+Library #apply() {<:This3.Concept.Equals
 read method 
 This3.N size() 
 class method 
@@ -5270,7 +5270,7 @@ This0 withoutAll(This0.Elem that) This0.#from(seqBuilder:(
   b
   ))
 read method 
-This3.Bool #equalequal(This0 that) (
+This3.Bool #equalequal(read This0 that) (
   Void unused=(
     Void unused0=(
       This0::vals() e1=this.vals()
@@ -5396,16 +5396,15 @@ This3.Bool #equalequal(This0 that) (
   'CurlyBlock-Should be unreachable code
   }
   )
-method 
-This3.Bool equals(Any that) (
+method equals(that ) (
   Void unused=(
     Void unused0=(
-      This0 that0=(
+      read This0 that0=(
         Void unused2=return that
         
-        catch return This0 casted casted
+        catch return read This0 casted casted
         
-        catch return Any casted exception void
+        catch return read Any casted exception void
         
         error {'@stringU
         'CastT-Should be unreachable code
@@ -5423,13 +5422,13 @@ This3.Bool equals(Any that) (
     void
     )
   
-  catch return This3.Bool result result
+  catch return This0::equals(that )  result result
   
   error {'@stringU
   'CurlyBlock-Should be unreachable code
   }
   )}}}
-Strings:{
+Strings:{<:This1.Concept.Equals
 class method 
 mut This0 #mutK(mut This1.Collections.MutListAny inner) 
 class method 
@@ -6111,7 +6110,7 @@ This0 withoutAll(This1.S that) This0.#from(seqBuilder:(
   b
   ))
 read method 
-This1.Bool #equalequal(This0 that) (
+This1.Bool #equalequal(read This0 that) (
   Void unused=(
     Void unused0=(
       This0::vals() e1=this.vals()
@@ -6237,16 +6236,15 @@ This1.Bool #equalequal(This0 that) (
   'CurlyBlock-Should be unreachable code
   }
   )
-method 
-This1.Bool equals(Any that) (
+method equals(that ) (
   Void unused=(
     Void unused0=(
-      This0 that0=(
+      read This0 that0=(
         Void unused2=return that
         
-        catch return This0 casted casted
+        catch return read This0 casted casted
         
-        catch return Any casted exception void
+        catch return read Any casted exception void
         
         error {'@stringU
         'CastT-Should be unreachable code
@@ -6264,7 +6262,7 @@ This1.Bool equals(Any that) (
     void
     )
   
-  catch return This1.Bool result result
+  catch return This0::equals(that )  result result
   
   error {'@stringU
   'CurlyBlock-Should be unreachable code
@@ -10000,7 +9998,7 @@ This1.Member dispatch(fwd This1.NestedClass root, This2.Path path, This1.MirrorP
   result.#apply(root:root)
   )}
 Member:{interface <:This2.Concept.ToS, This2.Concept.Named, This2.Concept.Equals}
-Members:{
+Members:{<:This2.Concept.Equals
 class method 
 mut This0 #mutK(mut This2.Collections.MutListAny inner) 
 class method 
@@ -10682,7 +10680,7 @@ This0 withoutAll(This1.Member that) This0.#from(seqBuilder:(
   b
   ))
 read method 
-This2.Bool #equalequal(This0 that) (
+This2.Bool #equalequal(read This0 that) (
   Void unused=(
     Void unused0=(
       This0::vals() e1=this.vals()
@@ -10808,16 +10806,15 @@ This2.Bool #equalequal(This0 that) (
   'CurlyBlock-Should be unreachable code
   }
   )
-method 
-This2.Bool equals(Any that) (
+method equals(that ) (
   Void unused=(
     Void unused0=(
-      This0 that0=(
+      read This0 that0=(
         Void unused2=return that
         
-        catch return This0 casted casted
+        catch return read This0 casted casted
         
-        catch return Any casted exception void
+        catch return read Any casted exception void
         
         error {'@stringU
         'CastT-Should be unreachable code
@@ -10835,7 +10832,7 @@ This2.Bool equals(Any that) (
     void
     )
   
-  catch return This2.Bool result result
+  catch return This0::equals(that )  result result
   
   error {'@stringU
   'CurlyBlock-Should be unreachable code
@@ -11230,7 +11227,7 @@ This2.Bool isPrivate() (
   )
 method 
 This1.NestedClass root() this._root_$%$%35_1_$%$%$%17_1_$%$%$%$%106_1_$%$%$%$%$%196_1_$%$%$%$%$%$%287_1_$%$%$%$%$%$%$%379_1_$%$%$%$%$%$%$%$%472_1_$%$%$%$%$%$%$%$%$%566_1_$%$%$%$%$%$%$%$%$%$%661_1_$%$%$%$%$%$%$%$%$%$%$%757_1_$%$%$%$%$%$%$%$%$%$%$%$%854_1__951_1()}
-Methods:{
+Methods:{<:This2.Concept.Equals
 class method 
 mut This0 #mutK(mut This2.Collections.MutListAny inner) 
 class method 
@@ -11912,7 +11909,7 @@ This0 withoutAll(This1.Method that) This0.#from(seqBuilder:(
   b
   ))
 read method 
-This2.Bool #equalequal(This0 that) (
+This2.Bool #equalequal(read This0 that) (
   Void unused=(
     Void unused0=(
       This0::vals() e1=this.vals()
@@ -12038,16 +12035,15 @@ This2.Bool #equalequal(This0 that) (
   'CurlyBlock-Should be unreachable code
   }
   )
-method 
-This2.Bool equals(Any that) (
+method equals(that ) (
   Void unused=(
     Void unused0=(
-      This0 that0=(
+      read This0 that0=(
         Void unused2=return that
         
-        catch return This0 casted casted
+        catch return read This0 casted casted
         
-        catch return Any casted exception void
+        catch return read Any casted exception void
         
         error {'@stringU
         'CastT-Should be unreachable code
@@ -12065,7 +12061,7 @@ This2.Bool equals(Any that) (
     void
     )
   
-  catch return This2.Bool result result
+  catch return This0::equals(that )  result result
   
   error {'@stringU
   'CurlyBlock-Should be unreachable code
@@ -14103,7 +14099,7 @@ This2.Bool isPrivate() (
   'CurlyBlock-Should be unreachable code
   }
   )}
-NestedClasses:{
+NestedClasses:{<:This2.Concept.Equals
 class method 
 mut This0 #mutK(mut This2.Collections.MutListAny inner) 
 class method 
@@ -14785,7 +14781,7 @@ This0 withoutAll(This1.NestedClass that) This0.#from(seqBuilder:(
   b
   ))
 read method 
-This2.Bool #equalequal(This0 that) (
+This2.Bool #equalequal(read This0 that) (
   Void unused=(
     Void unused0=(
       This0::vals() e1=this.vals()
@@ -14911,16 +14907,15 @@ This2.Bool #equalequal(This0 that) (
   'CurlyBlock-Should be unreachable code
   }
   )
-method 
-This2.Bool equals(Any that) (
+method equals(that ) (
   Void unused=(
     Void unused0=(
-      This0 that0=(
+      read This0 that0=(
         Void unused2=return that
         
-        catch return This0 casted casted
+        catch return read This0 casted casted
         
-        catch return Any casted exception void
+        catch return read Any casted exception void
         
         error {'@stringU
         'CastT-Should be unreachable code
@@ -14938,7 +14933,7 @@ This2.Bool equals(Any that) (
     void
     )
   
-  catch return This2.Bool result result
+  catch return This0::equals(that )  result result
   
   error {'@stringU
   'CurlyBlock-Should be unreachable code

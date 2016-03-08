@@ -153,7 +153,8 @@ public class TestParseAndDoAst {
 },{"a**b**c","(a**(b**c))"
 },{"a**b**c**d","(a**(b**(c**d)))"
 },{"a**b**c**d**e","(a**(b**(c**(d**e))))"
-},{"a**b<<c++d>>e","(a**(b<<(c++(d>>e))))"
+//},{"a+ b -c","(a)" is this not giving error since it is captured later? how?
+},{"a*b < c+d","((a*b)<(c+d))"
 
 },{" (a=b c)","Expression.RoundBlock(doc=, inner=c, contents=[Expression.BlockContent(decs=[Ast.VarDecXE(isVar=false, t=Optional.empty, x=a, inner=b)], _catch=[])])"
 },{" (var a=b c)","Expression.RoundBlock(doc=, inner=c, contents=[Expression.BlockContent(decs=[Ast.VarDecXE(isVar=true, t=Optional.empty, x=a, inner=b)], _catch=[])])"

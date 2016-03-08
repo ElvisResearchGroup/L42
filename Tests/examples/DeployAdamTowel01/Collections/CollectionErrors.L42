@@ -1,21 +1,17 @@
 {
   class method
-  Any unreachable()
-     S"unreachable/to be replaced in AdamTowel2"
-
-  class method
   Any negBound(N that, MutListAny list)
-    S"IndexOutOfBound: negative index provided; max is "[list.size()]" proposed is "[that]""
+    Guard.Parameter"IndexOutOfBound: negative index provided; max is "[list.size()]" proposed is "[that]""
 
   class method
   Any outBound(N that, MutListAny list)
-    S"IndexOutOfBound: max is "[list.size()]" proposed is "[that]""
+    Guard.Parameter"IndexOutOfBound: max is "[list.size()]" proposed is "[that]""
 
   class method
   Any cast()
-    S"cast failure"
+    Guard.Operation"cast failure"
 
   class method
   Any iterationTermination(N from, N stopOk, N size)
-    S"Unexpected termination of iteration, reached "[from]" instead of "[stopOk]""
+    IterationFailure"Unexpected termination of iteration, reached "[from]" instead of "[stopOk]""
   }

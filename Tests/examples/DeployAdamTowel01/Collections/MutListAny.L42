@@ -23,14 +23,14 @@
     }
 
   CellEnd:{()<:Cell
-    method get(that) error CollectionErrors.unreachable()
+    method get(that) error Assert.CodeNotReachable"CellEnd.get"
     method set(that,val,add) {
-      if !add (error CollectionErrors.unreachable())
+      if !add (error Assert.CodeNotReachable"CellEnd.set1")
       if that==0N (return CellNext(val:val,next:this) )
-      error CollectionErrors.unreachable()
+      error Assert.CodeNotReachable"CellEnd.set2"
       }
     method remove(that)
-      error CollectionErrors.unreachable()
+      error Assert.CodeNotReachable"CellEnd.remove"
     }
 
   class method

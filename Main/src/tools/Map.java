@@ -4,30 +4,23 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class Map {
-  public static <E, T extends Collection<E>>
-  T of(Function<E,E>f,T seq){
-    try {
-      T result = getInstance(seq);
-      for(E e:seq){result.add(f.apply(e));}
-      return result;}
-    catch (InstantiationException | IllegalAccessException e1) {
-      throw Assertions.codeNotReachable(e1.toString());}
-    }
-  @SuppressWarnings("unchecked") private static <E,T extends Collection<E>> T getInstance(T seq) throws InstantiationException, IllegalAccessException {
-    if(seq instanceof List<?>){
-      return (T) new ArrayList<E>();
-      }
-    T result = (T)seq.getClass().newInstance();
-    return result;
-  }
-  public static <E>
-  Optional<E> of(Function<E,E>f,Optional<E> el){
+  public static <E1,E2, T extends List<E2>>
+  List<E1> of(Function<E2,E1>f,T seq){  return seq.stream().map(f).collect(Collectors.toList());   }
+
+  public static <E1,E2, T extends Set<E2>>
+  Set<E1> of(Function<E2,E1>f,T seq){  return seq.stream().map(f).collect(Collectors.toSet());   }
+
+
+  public static <E1,E2>
+  Optional<E1> of(Function<E2,E1>f,Optional<E2> el){
       if(!el.isPresent()){return Optional.empty();}
       return Optional.of(f.apply(el.get()));
     }
-    
+
   }
 

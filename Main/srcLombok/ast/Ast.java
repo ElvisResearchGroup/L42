@@ -646,31 +646,37 @@ public interface Ast {
 	public static enum Op {
 		Tilde("~", OpKind.Unary, true, true),//
 		Bang("!", OpKind.Unary, true, true),//
+
 		And("&", OpKind.BoolOp, true,true),//
 		Or("|", OpKind.BoolOp, true, true),//
+
 		LTEqual("<=", OpKind.RelationalOp, false, true),//
 		GTEqual(">=", OpKind.RelationalOp, true, true),//
 		LT("<", OpKind.RelationalOp, false, true),//
 		GT(">",OpKind.RelationalOp, true,true),//
+		LTLT("<<", OpKind.RelationalOp, false, false),//
+                        GTGT(">>",OpKind.RelationalOp, true, false),//
+                        LTLTEqual("<<=",OpKind.RelationalOp,true,true),//
+                        GTGTEqual(">>=",OpKind.RelationalOp,true,true),//
 		EqualEqual("==", OpKind.RelationalOp, true, false),//
 		BangEqual("!=",OpKind.RelationalOp, true,true),//
+
 		Plus("+", OpKind.DataOp, true, true),//
 		Minus("-", OpKind.DataOp, true,true),//
 		Times("*", OpKind.DataOp, true, true),//
 		Divide("/", OpKind.DataOp,true, true),//
-		LTLT("<<", OpKind.DataOp, false, false),//
-		GTGT(">>",OpKind.DataOp, true, false),//
 		PlusPlus("++",OpKind.DataOp, true, false),//
+		MinusMinus("--",OpKind.DataOp, true, false),//
 		TimesTimes("**",OpKind.DataOp, true,false),//
+
 		PlusEqual("+=", OpKind.EqOp,true, true),//
 		MinusEqual("-=",OpKind.EqOp, true,true),//
 		TimesEqual("*=",OpKind.EqOp,true,true),//
 		DivideEqual("/=",OpKind.EqOp,true,true),//
 		AndEqual("&=",OpKind.EqOp,true,true),//
 		OrEqual("|=",OpKind.EqOp,true,true),//
-		LTLTEqual("<<=",OpKind.EqOp,true,true),//
-		GTGTEqual(">>=",OpKind.EqOp,true,true),//
 		PlusPlusEqual("++=",OpKind.EqOp,true,true),//
+		MinusMinusEqual("--=",OpKind.EqOp,true,true),//
 		TimesTimesEqual("**=",OpKind.EqOp,true,true),//
 		ColonEqual(":=",OpKind.EqOp,true,true);//
 

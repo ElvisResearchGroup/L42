@@ -988,7 +988,7 @@ method
 This1 #from(This3.S.SBuilder builder) }
 method 
 mut This2.S.SConcat #seqBuilder() }}
-Strings:{
+Strings:{<:This1.Concept.Equals
 class method 
 mut This0 #mutK(mut This1.Collections.MutListAny inner) 
 class method 
@@ -1133,9 +1133,7 @@ This1.Bool contains(This1.S that)
 method 
 This0 withoutAll(This1.S that) 
 read method 
-This1.Bool #equalequal(This0 that) 
-method 
-This1.Bool equals(Any that) }
+This1.Bool #equalequal(read This0 that) }
 Debug:{
 class method 
 Void #apply(This1.Concept.ToS that) 
@@ -1817,7 +1815,7 @@ This1 _report() }
 class method 
 This1.Member dispatch(fwd This1.NestedClass root, This2.Path path, This1.MirrorPr mirror, This2.N memberN, Library record) }
 Member:{interface <:This2.Concept.ToS, This2.Concept.Named, This2.Concept.Equals}
-Members:{
+Members:{<:This2.Concept.Equals
 class method 
 mut This0 #mutK(mut This2.Collections.MutListAny inner) 
 class method 
@@ -1962,9 +1960,7 @@ This2.Bool contains(This1.Member that)
 method 
 This0 withoutAll(This1.Member that) 
 read method 
-This2.Bool #equalequal(This0 that) 
-method 
-This2.Bool equals(Any that) }
+This2.Bool #equalequal(read This0 that) }
 Method:{<:This1.Member, This2.Concept.Equals
 method 
 This2.Bool #equalequal(This0 that) 
@@ -1992,7 +1988,7 @@ method
 This2.Bool isPrivate() 
 method 
 This1.NestedClass root() }
-Methods:{
+Methods:{<:This2.Concept.Equals
 class method 
 mut This0 #mutK(mut This2.Collections.MutListAny inner) 
 class method 
@@ -2137,9 +2133,7 @@ This2.Bool contains(This1.Method that)
 method 
 This0 withoutAll(This1.Method that) 
 read method 
-This2.Bool #equalequal(This0 that) 
-method 
-This2.Bool equals(Any that) }
+This2.Bool #equalequal(read This0 that) }
 NestedClass:{'findMeNestedClass
 <:This1.Member, This2.Concept.Equals
 method 
@@ -2190,7 +2184,7 @@ method
 This2.Bool has(This2.Path fromRoot) 
 method 
 This2.Bool isPrivate() }
-NestedClasses:{
+NestedClasses:{<:This2.Concept.Equals
 class method 
 mut This0 #mutK(mut This2.Collections.MutListAny inner) 
 class method 
@@ -2335,9 +2329,7 @@ This2.Bool contains(This1.NestedClass that)
 method 
 This0 withoutAll(This1.NestedClass that) 
 read method 
-This2.Bool #equalequal(This0 that) 
-method 
-This2.Bool equals(Any that) }
+This2.Bool #equalequal(read This0 that) }
 Type:{<:This2.Concept.ToS, This2.Concept.Named
 method 
 This2.S allAsString() 
