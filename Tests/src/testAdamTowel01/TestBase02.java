@@ -147,4 +147,12 @@ public class TestBase02 {
          "20\n20\n20\n10\n10\n20\n10\n10\n");
      }
 
+  @Test
+   public  void _02_001HelloWorld() throws Throwable{
+     TestHelper.configureForTest();
+     L42.main(new String[]{"examples/testsForAdamTowel02/TestHelloWorld.L42"});
+     Assert.assertEquals(L42.record.toString(),
+         "DanielWriteHere\n");
+     }
+
   }

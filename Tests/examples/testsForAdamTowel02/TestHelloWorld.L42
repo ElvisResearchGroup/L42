@@ -1,0 +1,24 @@
+{reuse L42.is/AdamTowel02
+
+NL:Collections.vector(ofEq:N)
+
+UndefinedOnEmptyList: Message.$<<{<:Guard}
+$:{
+  class method N max(NL that) (
+    if that.isEmpty() (error UndefinedOnEmptyList"on $.max")
+    var N maxCandidate=that.left()
+    with elem in that.vals() (
+      if maxCandidate<elem (maxCandidate:=elem)
+      )
+    maxCandidate
+    )
+  }
+
+Main:{
+  myList=NL[1N;2N;3N]
+  max=$.max(myList)
+  Debug(S"the max is "[max]"!")
+  return ExitCode.normal()
+  }
+
+}
