@@ -1,9 +1,14 @@
 {reuse L42.is/AdamTowel02
 
-NL:Collections.vector(ofEq:N)
+NL:Use[Collections.vector(ofEq:N)]<<{<:Concept.ToS
+  method toS()
+    S"["[with e in this.vals() (
+      use[e separedBy:S";"]
+      )]"]"
+  }
 
 UndefinedOnEmptyList: Message.$<<{<:Guard}
-$:{
+$:{    
   class method N max(NL that) (
     if that.isEmpty() (error UndefinedOnEmptyList"on $.max")
     var N maxCandidate=that.left()
@@ -17,7 +22,7 @@ $:{
 Main:{
   myList=NL[1N;2N;3N]
   max=$.max(myList)
-  Debug(S"the max is "[max]"!")
+  Debug(S"the max for "[myList]" is "[max]"!")
   return ExitCode.normal()
   }
 

@@ -1,4 +1,4 @@
-{
+{<:Concept.Equals
 read method N size()
 class method mut This #seqBuilder()
 class method This #from(This seqBuilder)
@@ -40,16 +40,15 @@ This withoutAll(Elem that)
 
 
 read method
-Bool ==(This that){
+Bool ==(read This that){
   with e1 in this.vals(), e2 in that.vals() (
     if !e1.equals(e2) (return Bool.false())
     )
   catch error IterationFailure ( return Bool.false() )
   return Bool.true()
   }
-method
-Bool equals(Any that){
-  with that (on This return this==that)
+method equals(that){
+  with that (on read This return this==that)
   return Bool.false()
   }
 }
