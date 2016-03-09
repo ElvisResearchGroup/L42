@@ -16,12 +16,12 @@ False:{_private() <:Bool
   }
 ExitCode:{
   class method
-  Library normal(){return {'@exitStatus
-     '0
+  Library normal(){return {//@exitStatus
+     //0
     }}
   class method
-  Library failure(){return {'@exitStatus
-     '42000
+  Library failure(){return {//@exitStatus
+     //42000
     }}
   }
 }

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Stack;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
@@ -87,86 +88,163 @@ public class Parser {
     return p;
   }
 
-  private static class ParData{
+static final class Pos  {
+    Pos(int line, int pos, facade.Parser.ParData.State state) {
+      this.line = line;   this.pos = pos;   this.state = state;  }
+    final int line;
+    final int pos;
+    final ParData.State state;
+    }
+  static class ParData{
     int currentLine=1;
     int currentPos=0;
-    boolean inComment=false;
-    int inStringSize=-1;
-    boolean inStringMultiL=false;
-    Stack<ErrorMessage.ParsingError>lastPar=new Stack<ErrorMessage.ParsingError>();
-    void push(String s){
-      if(this.inStringSize>=0){increaseStrLen();return;}
-      if(this.inComment){return;}
-      lastPar.push(new ErrorMessage.ParsingError(currentLine,currentPos,s));
+    public static enum State{ None,CommSL,CommML,StrSL,StrMLText,StrMLPadding,Round,Square,Curly}
+    Stack<Pos>s=new Stack<>(); {push(State.None);}
+     //Stack<ErrorMessage.ParsingError>lastPar=new Stack<ErrorMessage.ParsingError>();
+
+
+    void nextPos(){currentPos+=1;}
+
+    boolean fails(State... fs){
+      Pos cs=s.peek();
+      for (State si:fs){if (si==cs.state){return true;}  }
+      return false;
+      }
+    void failPadding(String token){
+      if(fails(State.StrMLPadding)){
+        throw new ErrorMessage.InvalidCharacterInMultilineStringIndentation(
+          Parser.fileName,this.currentLine,this.currentPos,token);}}
+    boolean popIf(State ...ps){
+      Pos cs=s.peek();
+      for (State si:ps){
+        if (si==cs.state){s.pop();return true;}
+        }
+      return false;
+      }
+    void swapIf(State ns,State ...ss){
+      Pos cs=s.peek();
+      for (State si:ss){
+        if (si==cs.state){s.pop();push(ns);return;}
+        }
+      }
+    boolean pushIf(State pushed,State ... ps){
+      Pos cs=s.peek();
+      for (State si:ps){
+        if (si==cs.state){push(pushed);return true;}
+        }
+      return false;
+      }
+    void push(State state){
+      s.push(new Pos(this.currentLine,this.currentPos,state));
+      }
+
+    private void parMismatch(State s2) {
+      String token2=s2==State.Round?")":s.peek().state==State.Square?"]":"}";
+      if(s.peek().state==State.None){
+        throw new ErrorMessage.UnopenedParenthesis(Parser.fileName,currentLine,currentPos,token2);}
+      String token1=s.peek().state==State.Round?"(":s.peek().state==State.Square?"[":"{";
+      throw new ErrorMessage.ParenthesisMismatchRange(fileName,
+        s.peek().line,s.peek().pos, token1, this.currentLine,this.currentPos, token2);
     }
-    void newLine(){
+
+    void newLine(){//\n
       currentLine+=1;
       currentPos=0;
-      if(this.inStringSize==0){
-        this.inStringMultiL=true;
-        inComment=false;
-        return;
+      //fail in StrSL
+      if(fails(State.StrSL)){throw new ErrorMessage.UnclosedStringLiteral(
+        fileName, currentLine,currentPos,"\n");}
+      //swap StrMLPadding if State.StrMLText
+      swapIf(State.StrMLPadding,State.StrMLText);
+      //pop inCommSL
+      popIf(State.CommSL);
+      }
+
+    void singleQuote(){// '
+      //fail in Round,Square,Curly
+      if(fails(State.Round,State.Square,State.Curly)){
+        throw new ErrorMessage.InvalidCharacterOutOfString(
+          Parser.fileName,this.currentLine,this.currentPos,"\'");
         }
-      if(this.inStringSize==-1){inComment=false;return;}
-      if(!inComment){
-        throw new ErrorMessage.UnclosedStringLiteral(Parser.fileName,currentLine,currentPos,"\"");
-        }
-      inComment=false;
+      //swap in StrMLPadding, push StrMLText
+      swapIf(State.StrMLText,State.StrMLPadding);
       }
-    void startComment(){
-      if(this.inStringSize>=0 && !this.inStringMultiL){
-        increaseStrLen();
-        return;
-        }
-      this.inComment=true;
-      increaseStrLen();
+    void doubleQuote(){// "
+      //pop in StrSL,StrMLPadding
+      if(popIf(State.StrSL,State.StrMLPadding)){return;}
+      //push State.StrSL if State.Round,State.Square,State.Curly
+      if(pushIf(State.StrSL,State.Round,State.Square,State.Curly)){return;}
       }
-    void nextPos(){currentPos+=1;}
-    public void commit(String s,String token2) {
-      if(this.inStringSize>=0){increaseStrLen();return;}
-      if(this.inComment){return;}
-      if(this.lastPar.isEmpty()){
-        throw new ErrorMessage.UnopenedParenthesis(Parser.fileName,currentLine,currentPos,token2);
+    void doubleQuoteNL(){// "
+      //pop in StrSL,StrMLPadding
+      if(popIf(State.StrSL,State.StrMLPadding)){return;}
+      //push State.StrSL if State.Round,State.Square,State.Curly
+      if(pushIf(State.StrMLPadding,State.Round,State.Square,State.Curly)){return;}
       }
-      ErrorMessage.ParsingError last=this.lastPar.peek();
-      if (last.getToken().equals(s)){this.lastPar.pop();}
-      else{
-        throw new ErrorMessage.ParenthesisMismatchRange(Parser.fileName,
-            last.getLine(),last.getPos(),last.getToken(),
-            currentLine,currentPos,token2);
+    void barBar(){// //
+      //fail in StrMLPadding
+      failPadding("//");
+      //push CommSL in Round,Square,Curly
+      if(pushIf(State.CommSL,State.Round,State.Square,State.Curly)){return;}
       }
-    }
-    private void increaseStrLen(){
-      if(this.inStringSize==-1){return;}
-      this.inStringSize+=1;
+    void barStarO(){// /*
+      //fail in StrMLPadding
+      failPadding("/*");
+      //push CommML in Round,Square,Curly
+      if(pushIf(State.CommML,State.Round,State.Square,State.Curly)){return;}
       }
-    public void stringSign() {
-      if(inComment){increaseStrLen();return;}
-      this.inStringMultiL=false;
-      if(this.inStringSize==-1){this.inStringSize=0;}
-      else{this.inStringSize=-1;}
-    }
-  }
-  private static void checkForBalancedParenthesis(String s) {
-    ParData d=new ParData();
-    for(char c:s.toCharArray()){
-      d.nextPos();
-      switch (c){
-              case '\n':d.newLine();
-        break;case '\"':d.stringSign();
-        break;case '\'':d.startComment();
-        break;case '{':d.push("{");
-        break;case '[':d.push("[");
-        break;case '(':d.push("(");
-        break;case '}':d.commit("{","}");
-        break;case ']':d.commit("[","]");
-        break;case ')':d.commit("(",")");
+    void barStarC(){// */
+      //fail in StrMLPadding, Round,Square,Curly
+      failPadding("*/");
+      //pop in CommML
+      if(popIf(State.StrSL,State.StrMLPadding)){return;}
       }
-    }
-    if(!d.lastPar.isEmpty()){
-      ParsingError m = d.lastPar.get(0);
-      throw new ErrorMessage.UnclosedParenthesis(Parser.fileName,m.getLine(),m.getPos(),m.getToken());
-    }
+    void oRound(){// (
+      //fail in StrMLPadding
+      failPadding("(");
+      //push Round in Round,Square,Curly
+      if(pushIf(State.Round,State.Round,State.Square,State.Curly)){return;}
+      }
+    void cRound(){// )
+      //fail in StrMLPadding
+      failPadding(")");
+      //pop in Round
+      if(popIf(State.Round)){return;}
+      if(fails(State.Square,State.Curly)){ parMismatch(State.Round);}
+      }
+   void oSquare(){// [
+      //fail in StrMLPadding
+      failPadding("(");
+      //push Square in Round,Square,Curly
+      if(pushIf(State.Square,State.Round,State.Square,State.Curly)){return;}
+      }
+    void cSquare(){// ]
+      //fail in StrMLPadding
+      failPadding("(");
+      //pop in Square
+      if(popIf(State.Square)){return;}
+      if(fails(State.Round,State.Curly)){ parMismatch(State.Square);}
+      }
+  void oCurly(){// {
+      //fail in StrMLPadding
+      failPadding("(");
+      //push Curly in Round,Square,Curly
+      if(pushIf(State.Curly,State.Round,State.Square,State.Curly)){return;}
+      }
+    void cCurly(){// }
+      //fail in StrMLPadding
+      failPadding("(");
+      //pop in Curly
+      if(popIf(State.Curly)){return;}
+      if(fails(State.Round,State.Square)){ parMismatch(State.Curly);}
+
+      }
+    void space(){//all ok
+      }
+    void comma(){//all ok
+      }
+    void nonSpacing(String c){
+      failPadding(c);
+      }
   }
 
   private static String replaceORoundWithTab(String s) {
@@ -230,4 +308,43 @@ public class Parser {
     catch (NoSuchFieldException|IllegalArgumentException |IllegalAccessException e) {
       throw Assertions.codeNotReachable();
       }}}
+
+  static void checkForBalancedParenthesis(String s) {
+  ParData d=new ParData();
+  char[] cs=s.toCharArray();
+  for(int i=0;i<cs.length;i++){
+    char c=cs[i];
+    char cp1=' ';
+    d.nextPos();
+    if(i+1<cs.length){cp1=cs[i+1];}
+      switch (c){
+      case '\n': d.newLine();
+      break;case '/':
+        if(cp1=='/'){i++;d.barBar();}
+        else if(cp1=='*'){i++;d.barStarO();}
+        else d.nonSpacing("/");
+      break;case '{':d.oCurly();
+      break;case '[':d.oSquare();
+      break;case '(':d.oRound();
+      break;case '}':d.cCurly();
+      break;case ']':d.cSquare();
+      break;case ')':d.cRound();
+      break;case '\"':
+        if(cp1=='\n'){i++;d.doubleQuoteNL();}
+        else d.doubleQuote();
+      break;case '\'':d.singleQuote();
+      break;case '*':
+        if(cp1=='/'){i++;d.barStarC();}
+        else d.nonSpacing("*");
+      break;case ' ':d.space();
+      break;case ',':d.comma();
+      default: d.nonSpacing(c+"");
+    }
+  }
+  if(d.s.peek().state!=ParData.State.None){
+  ParData.State f=d.s.peek().state;
+  String token=f==ParData.State.Round?"(":f==ParData.State.Square?"[":f==ParData.State.Curly?"{":f==ParData.State.CommML?"/*":"string literal";
+    throw new ErrorMessage.UnclosedParenthesis(fileName,d.s.peek().line,d.s.peek().pos,token);
+    }
+  }
 }

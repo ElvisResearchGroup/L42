@@ -7,12 +7,12 @@ Opt:{#new(TOpt that)
   TOpt:{interface method This2 get() }
   TEmpty:{()<:TOpt method get()
     error S"UnsatisfactoryErrorToAvoidCycle, replace in Adam2"
-    'error Guard.Operation"TEmpty.get() Value not present in Optional"
+    //error Guard.Operation"TEmpty.get() Value not present in Optional"
     }
   TOf:{(This2 that)<:TOpt method get() this.that()}
   method This1 ~() this.that().get()
   method Bool isPresent() {
-    unused=~this  'unused=~this
+    unused=~this  //unused=~this
     return Bool.true()
     catch error Any return Bool.false()
     }
@@ -21,15 +21,15 @@ Opt:{#new(TOpt that)
   }
 EqualMessages:{
   class method Bool (Message that,Message other){
-  'assuming they have the same class
+  //assuming they have the same class
   res=that.clazz().kind()==other.clazz().kind()
     & that.text()==other.text()
     & that.responseOf().isPresent()==other.responseOf().isPresent()
   if !res (return Bool.false())
   if !that.responseOf().isPresent() (return Bool.true())
-  'i know both are present
-  return (~that.responseOf()).equals(~other.responseOf()) ' this calls  equals in message,
-  'that check for equal class and then call EqualMessages
+  //i know both are present
+  return (~that.responseOf()).equals(~other.responseOf()) // this calls  equals in message,
+  //that check for equal class and then call EqualMessages
   }}
 $:{()
   class method Library <<(Library that)
@@ -71,7 +71,7 @@ $:{()
     class method
     This(S text, Message cause)
       This(_text:text,cause:Message.Opt(cause))
-    'next part could become a trait on its own (but S must keep its version)
+    //next part could become a trait on its own (but S must keep its version)
 
     class method mut S.SBuilder #builder()S.SBuilder.empty()
       class method This #from(S.SBuilder builder)

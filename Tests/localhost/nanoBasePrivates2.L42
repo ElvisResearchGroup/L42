@@ -1,7 +1,7 @@
 {()
-Foo:{  new()'@private
+Foo:{  new()//@private
     }
-Bar:{ mut new(Foo a, var Foo b)'@private
+Bar:{ mut new(Foo a, var Foo b)//@private
   method Void () ( this.b(this.a()) this.b(Foo.new()))  
   }
 }

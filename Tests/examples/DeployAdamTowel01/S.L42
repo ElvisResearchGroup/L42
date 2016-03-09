@@ -1,5 +1,5 @@
 { _private(Library _binaryRepr)
-<: Concept.ToS Concept.Equals Concept.Named'@private
+<: Concept.ToS Concept.Equals Concept.Named//@private
   method myName()GetMyName(This)
 
   class method This #from(Library binaryRepr) This._private(_binaryRepr:binaryRepr)
@@ -45,7 +45,7 @@
   method
   Bool beginsWith(S that) this(end:that.size())==that
 
-  method '@private
+  method //@private
   N auxFirstIndexOf(S that) {
     var N current=0N
     while current<this.size() (
@@ -56,7 +56,7 @@
     error This.subStringNotPresent(string:this,subString:that)
     }
   method
-  N firstIndexOf(S that) { 'TODO: discuss if should be exception or error
+  N firstIndexOf(S that) { //TODO: discuss if should be exception or error
     res=this.auxFirstIndexOf(that)
     if res>=0N (return res)
     error This.subStringNotPresent(string:this,subString:that)
@@ -66,7 +66,7 @@
   method
   Bool contains(S that){
     res=this.auxFirstIndexOf(that)
-    'Debug(S"S.contains(this:"[this]" that:"[that]")="[res]"")
+    //Debug(S"S.contains(this:"[this]" that:"[that]")="[res]"")
     if res>=0N (return Bool.true())
     return Bool.false()
     }
@@ -75,7 +75,7 @@
     S"qwertyuiopasdfghjklzxcvbnm".contains(this(that))
   method
   Bool isASCIIUpperCase(N that) (
-    'Debug(S"S.isASCIIUpperCase(this:"[this]" that:"[that]")")
+    //Debug(S"S.isASCIIUpperCase(this:"[this]" that:"[that]")")
     S"QWERTYUIOPASDFGHJKLZXCVBNM".contains(this(that))
     )
 

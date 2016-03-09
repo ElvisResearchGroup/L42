@@ -1,4 +1,4 @@
-{ _private(Library _binaryRepr, Annotations _annotations)<:Concept.ToS,Concept.Named '@private
+{ _private(Library _binaryRepr, Annotations _annotations)<:Concept.ToS,Concept.Named //@private
   method myName()GetMyName(This)
   Annotation:{(Library _binaryRepr, S text, N index)<:Concept.ToS,Concept.Named
     method myName()GetMyName(This)
@@ -12,7 +12,7 @@
     method Bool hasReferredClass() (
       res=this.text()!=S"" &
         this.text().isASCIIUpperCase(0N)
-      'Debug(S"Doc.hasReferredClass(this:"[this]")="[res]"")
+      //Debug(S"Doc.hasReferredClass(this:"[this]")="[res]"")
       res
       )
     }
@@ -21,7 +21,7 @@
     Annotations res=(
       result=Annotations.empty()
       var N aN=1N
-      while Bool.true() (' to be able to break
+      while Bool.true() (// to be able to break
         result.add(right:Annotation(
           _binaryRepr:that,
           text:Introspection.Record(lib:that).that()

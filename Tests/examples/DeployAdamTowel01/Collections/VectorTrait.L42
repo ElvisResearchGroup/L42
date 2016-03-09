@@ -44,7 +44,7 @@ method This ++(This that){
 
 IteratorTrait:{class method Library () ...}
 
-'not offering fill yet :(
+//not offering fill yet :(
 read method  lent IteratorVal vals(N from, N to, N stopOk) IteratorVal(this.inner(), from:from,to:to,stopOk:stopOk)
 read method lent IteratorVal vals(N stopOk) this.vals(from:0N-1N, to:0N-2N, stopOk:stopOk)
 read method lent IteratorVal vals(N from, N to) this.vals(from:from, to:to, stopOk:this.inner().size() )

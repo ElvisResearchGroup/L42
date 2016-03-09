@@ -8,9 +8,9 @@ Exercise1:{()
   }
 
 RunExercise1:{
-  Debug(S"max is "++Exercise1.max(a:10N, b:100N))'notice, named parameters
+  Debug(S"max is "++Exercise1.max(a:10N, b:100N))//notice, named parameters
   Debug(S"Is the result the expected one? "++(Exercise1.max(a:10N, b:100N)==100N))
-  Debug(S"max is "++Exercise1.max(a:20N, b:1N))'notice N and Bool can be string concatenated
+  Debug(S"max is "++Exercise1.max(a:20N, b:1N))//notice N and Bool can be string concatenated
   Debug(S"Is the result the expected one? "++(Exercise1.max(a:20N, b:1N)==20N))
   return ExitCode.normal()
   }

@@ -63,22 +63,22 @@ Path:{
       )
     }
   }
-  'Assert:{
-  '  $:{(B that, S msg)
-  '  $s:Use[Collections.vector(of:This)]<<{
-  '    mut method
-  '    Void #add(Bool that, Concept.ToS msg)
-  '        this.add(right: $(that,msg:S""[msg;S.nl()]"number:"[this.size()]" failed") )
-  '    mut method
-  '    Void #add(Bool that)
-  '        this.add(right: $(that,msg:S"Condition number "[this.size()]" failed") )
-  '    }
-  '  class method mut $s #seqBuilder() $s.empty()
-  '  class method Void #from($s seqBuilder) (
-  '      res=S""[with a in seqBuilder.vals() (
-  '        if a.that() ( use[a.msg(), separedBy:S.nl()] )
-  '        )]""
-  '    )
-  '  }
-  '}
+  //Assert:{
+  //  $:{(B that, S msg)
+  //  $s:Use[Collections.vector(of:This)]<<{
+  //    mut method
+  //    Void #add(Bool that, Concept.ToS msg)
+  //        this.add(right: $(that,msg:S""[msg;S.nl()]"number:"[this.size()]" failed") )
+  //    mut method
+  //    Void #add(Bool that)
+  //        this.add(right: $(that,msg:S"Condition number "[this.size()]" failed") )
+  //    }
+  //  class method mut $s #seqBuilder() $s.empty()
+  //  class method Void #from($s seqBuilder) (
+  //      res=S""[with a in seqBuilder.vals() (
+  //        if a.that() ( use[a.msg(), separedBy:S.nl()] )
+  //        )]""
+  //    )
+  //  }
+  //}
 }

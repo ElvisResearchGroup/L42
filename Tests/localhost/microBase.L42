@@ -23,16 +23,16 @@ False:{_private() <:Bool
 
 ExitCode:{
   class method
-  Library normal(){return {'@exitStatus
-     '0
+  Library normal(){return {//@exitStatus
+     //0
     }}
   class method
-  Library failure(){return {'@exitStatus
-     '42000
+  Library failure(){return {//@exitStatus
+     //42000
     }}
   }
-Alu:{'@plugin
-  'L42.is/connected/withAlu
+Alu:{//@plugin
+  //L42.is/connected/withAlu
   }
 N:{(Library that)
   class method N #numberParser(Library that) (
@@ -118,8 +118,8 @@ S:{#stringParser(Library that)
       error void) )
   }
 
-IntrospectionPlugin:{'@plugin
-  'L42.is/connected/withItself
+IntrospectionPlugin:{//@plugin
+  //L42.is/connected/withItself
   ()
   class method Library sumLib(Library l1,Library l2) using This check sumLib(l1:l1,l2:l2) error {sumLib()}
   class method Library adaptLib(Library l1 Library l2) using This check adaptLib(l1:l1,l2:l2) error {adaptLib()}
@@ -190,8 +190,8 @@ Collections:{()
 class method Library list(class Any that){
   map=IntrospectionPlugin.typeNameToAdapter(that)
   tRen=IntrospectionPlugin.nameToAdapter(S"T".that())
-  'If I remove this. from under, I get a stupid error msg
-  ' vars MUST have positions too :(
+  //If I remove this. from under, I get a stupid error msg
+  // vars MUST have positions too :(
   return this.list(adapter: IntrospectionPlugin.adaptLib(l1:map,l2:tRen))
   }
 class method Library list(Library adapter){

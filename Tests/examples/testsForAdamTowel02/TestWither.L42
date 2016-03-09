@@ -19,7 +19,7 @@ exception ConstructorUnavailable, MetaGuard{
   var Selectors ss=Selectors[withK]
   acc:=this.addWithAllArgs(that,k:k)
   with n in withK.names().vals() (
-    ' I know all names in ss contains n
+    // I know all names in ss contains n
     with sel in ss.vals() (
       newSelNames=sel.names().remove(n)
       newSel=Selector.from(name:S"with",names:newSelNames)
@@ -38,7 +38,7 @@ exception ConstructorUnavailable, MetaGuard{
   freshK=Selector.fresh(k.selector())
   freshW=Selector.fresh(Selector"with(that)")
   withK=Selector.from(name:S"with",names:k.selector().names())
-  action={ read method capsule This with(capsule This that) that} 'discussion on k modifiers
+  action={ read method capsule This with(capsule This that) that} //discussion on k modifiers
   var Library acc=that
   acc:=Refactor.compose(left:acc
     right:Refactor.RenameSelector(

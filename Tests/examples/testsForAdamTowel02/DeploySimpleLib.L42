@@ -1,7 +1,7 @@
 {reuse L42.is/AdamTowel02
 Resource:{class method Library(){
   reuse L42.is/AdamTowel02
-  MyLib:{'could be in another file
+  MyLib:{//could be in another file
     class method
     Void printHelloWorld() Debug(S"Hello World Deployed")
     }
@@ -15,8 +15,8 @@ Main:{
     )<<Resource()
   return ExitCode.normal()
 }
-'Task:Load.DeployLibrary[
-'  Path"MyLib",
-'  url:Url"localhost/DeployedSimpleLib.L42"
-'  ]<<Resource()
+//Task:Load.DeployLibrary[
+//  Path"MyLib",
+//  url:Url"localhost/DeployedSimpleLib.L42"
+//  ]<<Resource()
 }

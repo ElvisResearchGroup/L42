@@ -12,7 +12,7 @@
   Void checkTargetExists(Library that,Path path) exception MetaGuard.NestedClassUnavailable (
     unused=AddDocumentationPath(path doc:Introspection.Doc"JustToSeeIfItIsThere")<<that
     catch exception MetaGuard.InvalidOnTopLevel x
-      error Assert.CodeNotReachable"Refactor4" 'TODO: if you omit Assert. the error reporting is horrible
+      error Assert.CodeNotReachable"Refactor4" //TODO: if you omit Assert. the error reporting is horrible
     void
     )
     
@@ -120,14 +120,14 @@
     exception 
         MetaGuard.MemberUnavailable,
         MetaGuard.InvalidOnTopLevel
-      AddDocumentationPath(this.that(),doc:Introspection.Doc({'@private
+      AddDocumentationPath(this.that(),doc:Introspection.Doc({//@private
         }))<<that
     }
   MakePrivateSelector:{(Selector that, Path of)
     method
     Library << (Library that)
     exception MetaGuard.MemberUnavailable
-      AddDocumentationSelector(this.that() of:this.of() doc:Introspection.Doc({'@private
+      AddDocumentationSelector(this.that() of:this.of() doc:Introspection.Doc({//@private
         }))<<that
     }
   

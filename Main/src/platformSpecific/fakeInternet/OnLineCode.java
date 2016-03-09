@@ -109,12 +109,3 @@ class OnLineCodeHelper{
   }
 
 }
-
-
-/*
-
-error S"
-  'IterationNotComplete,
-  'use valsCut() to allows incomplete iterations
-  "
-*/

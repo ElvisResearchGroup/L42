@@ -23,16 +23,16 @@ False:{_private() <:Bool
 
 ExitCode:{()
   class method
-  Library normal(){return {'@exitStatus
-     '0
+  Library normal(){return {//@exitStatus
+     //0
     ()}}
   class method
-  Library failure(){return {'@exitStatus
-     '42000
+  Library failure(){return {//@exitStatus
+     //42000
     ()}}
   }
-Alu:{'@plugin
-  'L42.is/connected/withAlu
+Alu:{//@plugin
+  //L42.is/connected/withAlu
   ()}
 N:{(Library that)
   class method N #numberParser(Library that) (
@@ -121,8 +121,8 @@ Debug:{unused()
   class method Void (S that) using Alu check stringDebug(that.that()) void
   class method Void (S fileName, S content) using Alu check fileDebug(fileName:fileName.that(),content:content.that()) void
   }
-IntrospectionPlugin:{'@plugin
-  'L42.is/connected/withItself
+IntrospectionPlugin:{//@plugin
+  //L42.is/connected/withItself
   ()
   class method Library sumLib(Library l1,Library l2) using This check sumLib(l1:l1,l2:l2) error {sumLib()}
   class method Library adaptLib(Library l1 Library l2) using This check adaptLib(l1:l1,l2:l2) error {adaptLib()}
@@ -187,8 +187,8 @@ Collections:{()
   class method Library list(class Any that){ 
     map=IntrospectionPlugin.typeNameToAdapter(that)
     tRen=IntrospectionPlugin.nameToAdapter(S"T".that())
-    'If I remove this. from under, I get a stupid error msg
-    ' vars MUST have positions too :(
+    //If I remove this. from under, I get a stupid error msg
+    // vars MUST have positions too :(
     return this.list(adapter: IntrospectionPlugin.adaptLib(l1:map,l2:tRen))
     }
   class method Library list(Library adapter){
@@ -239,7 +239,7 @@ Introspection:{
         node:this.myClass().node().that())
       error {invalidMethodNumber()}
       ))
-    method Name returnClass() (Name(isExternal:True(),'TODO: this is a bug, should be computed
+    method Name returnClass() (Name(isExternal:True(),//TODO: this is a bug, should be computed
       adapter: using IntrospectionPlugin 
       check  getTypePathOrElse(
         this.myClass().that(),
@@ -247,7 +247,7 @@ Introspection:{
         node:this.myClass().node().that())
       error {invalidMethodNumber()}
       ))
-    method Name getName() (Name.#stringParser('get name? unuseful!
+    method Name getName() (Name.#stringParser(//get name? unuseful!
       using IntrospectionPlugin 
       check getNameOrElse(
         this.myClass().that(),
@@ -285,7 +285,7 @@ Introspection:{
       }
     }
   Parameter:{(Method myMethod, N num, S name)
-    method Name class() (Name(isExternal:True(),'TODO: this is a bug, should be computed
+    method Name class() (Name(isExternal:True(),//TODO: this is a bug, should be computed
       adapter: using IntrospectionPlugin 
       check  getTypePathOrElse(
         this.myMethod().myClass().that(),
@@ -333,8 +333,8 @@ Opt:{unused()
       }
   }
   
-  '-------------------------------------------
-  '--------------DECORATORS-------------------
+  //-------------------------------------------
+  //--------------DECORATORS-------------------
 Use:{ (Resolver resolver,Libs myLibs)
   Resolver: Opt(Library)
   Libs: Collections.list(Library)
@@ -360,9 +360,9 @@ Use:{ (Resolver resolver,Libs myLibs)
       S _name=ms.pop().pop().top().name()
       S _nameLeft=ms.pop().top().name()
       S _nameRight=ms.top().name()
-      'Debug(S"name is: "++_name)
-      'Debug(S"nameLeft is: "++_nameLeft)
-      'Debug(S"nameRight is: "++_nameRight)
+      //Debug(S"name is: "++_name)
+      //Debug(S"nameLeft is: "++_nameLeft)
+      //Debug(S"nameRight is: "++_nameRight)
       Name name=Name.#stringParser(_name.that())
       Name nameLeft=Name.#stringParser(_nameLeft.that())
       Name nameRight=Name.#stringParser(_nameRight.that())
@@ -434,7 +434,7 @@ Data:{()
       method Bool current(This that)
       method Bool ==(Any that){
         with that (
-          on This return this.current(that)'marked
+          on This return this.current(that)//marked
           default return False()
           )}
       }

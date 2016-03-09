@@ -1,25 +1,25 @@
-{'--layer-- Bool N S -     and first layer of unsafe operators
+{//--layer-- Bool N S -     and first layer of unsafe operators
 
-Alu:{'@plugin
-'L42.is/connected/withAlu
+Alu:{//@plugin
+//L42.is/connected/withAlu
 }
 ExitCode:{
 class method 
-Library normal() {'@exitStatus
-'0
+Library normal() {//@exitStatus
+//0
 }
 class method 
-Library failure() {'@exitStatus
-'42000
+Library failure() {//@exitStatus
+//42000
 }}
 Bool:{<:This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Named
-class method '@private
+class method //@private
 mut This0 #mutK__19_0(Library binaryRepr__19_0) 
-class method '@private
+class method //@private
 This0 #apply__20_0(Library binaryRepr) This0.#mutK__19_0(binaryRepr__19_0:binaryRepr)
-mut method '@private
+mut method //@private
 Library #binaryRepr__19_0() 
-read method '@private
+read method //@private
 Library binaryRepr__19_0() 
 method myName() This1.GetMyName.#apply(that:This0)
 method 
@@ -56,8 +56,8 @@ This0 #and(This0 that) (
   
   catch return This0 result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
@@ -76,8 +76,8 @@ This0 #or(This0 that) (
   
   catch return This0 result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
@@ -96,8 +96,8 @@ This0 #bang() (
   
   catch return This0 result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method toS() (
@@ -130,8 +130,8 @@ method toS() (
   
   catch return This0::toS()  result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 class method 
@@ -178,8 +178,8 @@ This0 fromS(read This1.Concept.ToS that) (
   
   catch return This0 result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
@@ -198,8 +198,8 @@ This0 #equalequal(This0 that) (
   
   catch return This0 result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
@@ -214,8 +214,8 @@ method equals(that ) (
         
         catch return Any casted exception void
         
-        error {'@stringU
-        'CastT-Should be unreachable code
+        error {//@stringU
+        //CastT-Should be unreachable code
         }
         )
       
@@ -232,8 +232,8 @@ method equals(that ) (
   
   catch return This0::equals(that )  result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 class method 
@@ -297,13 +297,13 @@ Any parseError(This1.S that) This1.S.#from(builder:(
   b
   ))}
 N:{<:This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Named
-class method '@private
+class method //@private
 mut This0 #mutK__21_0(Library _binaryRepr__21_0) 
-class method '@private
+class method //@private
 This0 #apply__22_0(Library _binaryRepr) This0.#mutK__21_0(_binaryRepr__21_0:_binaryRepr)
-mut method '@private
+mut method //@private
 Library #_binaryRepr__21_0() 
-read method '@private
+read method //@private
 Library _binaryRepr__21_0() 
 method myName() This1.GetMyName.#apply(that:This0)
 class method 
@@ -395,8 +395,8 @@ This1.Bool #equalequal(This0 that) (
   
   catch return This1.Bool result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method equals(that ) (
@@ -409,8 +409,8 @@ method equals(that ) (
         
         catch return Any casted exception void
         
-        error {'@stringU
-        'CastT-Should be unreachable code
+        error {//@stringU
+        //CastT-Should be unreachable code
         }
         )
       
@@ -427,8 +427,8 @@ method equals(that ) (
   
   catch return This0::equals(that )  result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
@@ -441,8 +441,8 @@ This1.Bool #left(This1.N that) (
   
   catch return This1.Bool result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
@@ -455,8 +455,8 @@ This1.Bool #leftequal(This1.N that) (
   
   catch return This1.Bool result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
@@ -519,7 +519,7 @@ This1 #inner() this.start().#less(that:This2.N.#from(builder:(
 read method 
 Void #close() void}}
 S:{<:This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Named
-Varcurrent__54_0:'@private
+Varcurrent__54_0://@private
 {
 class method 
 mut This0 #mutK(This2.N inner) 
@@ -531,13 +531,13 @@ mut method
 This2.N #inner() 
 read method 
 This2.N inner() }
-class method '@private
+class method //@private
 mut This0 #mutK__23_0(Library _binaryRepr__23_0) 
-class method '@private
+class method //@private
 This0 _private__24_0(Library _binaryRepr) This0.#mutK__23_0(_binaryRepr__23_0:_binaryRepr)
-mut method '@private
+mut method //@private
 Library #_binaryRepr__23_0() 
-read method '@private
+read method //@private
 Library _binaryRepr__23_0() 
 method myName() This1.GetMyName.#apply(that:This0)
 class method 
@@ -559,8 +559,8 @@ This1.Bool #equalequal(This0 that) (
   
   catch return This1.Bool result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method equals(that ) (
@@ -573,8 +573,8 @@ method equals(that ) (
         
         catch return Any casted exception void
         
-        error {'@stringU
-        'CastT-Should be unreachable code
+        error {//@stringU
+        //CastT-Should be unreachable code
         }
         )
       
@@ -591,8 +591,8 @@ method equals(that ) (
   
   catch return This0::equals(that )  result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
@@ -613,7 +613,7 @@ This1.S #apply(This1.N end) this.#apply(start:This1.N.#from(builder:(
   )), end:end)
 method 
 This1.Bool beginsWith(This1.S that) this.#apply(end:that.size()).#equalequal(that:that)
-method '@private
+method //@private
 This1.N auxFirstIndexOf__25_0(This1.S that) (
   Void unused=(
     This1.N current=This1.N.#from(builder:(
@@ -663,13 +663,13 @@ This1.N auxFirstIndexOf__25_0(This1.S that) (
   
   catch return This1.N result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
 This1.N firstIndexOf(This1.S that) (
-  Void unused=('TODO: discuss if should be exception or error
+  Void unused=(//TODO: discuss if should be exception or error
   
     This0::auxFirstIndexOf__25_0(that ) res=this.auxFirstIndexOf__25_0(that:that)
     Void unused0=(
@@ -692,8 +692,8 @@ This1.N firstIndexOf(This1.S that) (
   
   catch return This1.N result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 class method 
@@ -722,8 +722,8 @@ This1.Bool contains(This1.S that) (
   
   catch return This1.Bool result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
@@ -833,7 +833,7 @@ mut This0.SConcat #seqBuilder() This1.S.SConcat.#apply(old:this, accumulator:Thi
   b
   )))
 SConcat:{
-VarnewAcc__55_0:'@private
+VarnewAcc__55_0://@private
 {
 class method 
 mut This0 #mutK(This3.S inner) 
@@ -881,408 +881,408 @@ Void #add(This2.Concept.ToS that, This2.Concept.ToS separedBy) (
   this.accumulator(that:varnewAcc.#inner())
   )}
 SBuilder:{
-class method '@private
+class method //@private
 mut This0 #mutK__26_0(Library _binaryRepr__26_0) 
-class method '@private
+class method //@private
 mut This0 _private__27_0(Library _binaryRepr) This0.#mutK__26_0(_binaryRepr__26_0:_binaryRepr)
-mut method '@private
+mut method //@private
 Void _binaryRepr__26_0(Library that) 
-mut method '@private
+mut method //@private
 Library #_binaryRepr__26_0() 
-read method '@private
+read method //@private
 Library _binaryRepr__26_0() 
 read method 
 Library binaryRepr() this._binaryRepr__26_0()
 mut method 
 Void acc(Library that) this._binaryRepr__26_0(that:use This2.Alu check stringConcat(s1:this.binaryRepr(), s2:that) error void)
 class method 
-mut This0 empty() This0._private__27_0(_binaryRepr:{'@stringU
-'
+mut This0 empty() This0._private__27_0(_binaryRepr:{//@stringU
+//
 })
 mut method 
-Void #0() this.acc(that:{'@stringU
-'0
+Void #0() this.acc(that:{//@stringU
+//0
 })
 mut method 
-Void #1() this.acc(that:{'@stringU
-'1
+Void #1() this.acc(that:{//@stringU
+//1
 })
 mut method 
-Void #2() this.acc(that:{'@stringU
-'2
+Void #2() this.acc(that:{//@stringU
+//2
 })
 mut method 
-Void #3() this.acc(that:{'@stringU
-'3
+Void #3() this.acc(that:{//@stringU
+//3
 })
 mut method 
-Void #4() this.acc(that:{'@stringU
-'4
+Void #4() this.acc(that:{//@stringU
+//4
 })
 mut method 
-Void #5() this.acc(that:{'@stringU
-'5
+Void #5() this.acc(that:{//@stringU
+//5
 })
 mut method 
-Void #6() this.acc(that:{'@stringU
-'6
+Void #6() this.acc(that:{//@stringU
+//6
 })
 mut method 
-Void #7() this.acc(that:{'@stringU
-'7
+Void #7() this.acc(that:{//@stringU
+//7
 })
 mut method 
-Void #8() this.acc(that:{'@stringU
-'8
+Void #8() this.acc(that:{//@stringU
+//8
 })
 mut method 
-Void #9() this.acc(that:{'@stringU
-'9
+Void #9() this.acc(that:{//@stringU
+//9
 })
 mut method 
-Void #q() this.acc(that:{'@stringU
-'q
+Void #q() this.acc(that:{//@stringU
+//q
 })
 mut method 
-Void #w() this.acc(that:{'@stringU
-'w
+Void #w() this.acc(that:{//@stringU
+//w
 })
 mut method 
-Void #e() this.acc(that:{'@stringU
-'e
+Void #e() this.acc(that:{//@stringU
+//e
 })
 mut method 
-Void #r() this.acc(that:{'@stringU
-'r
+Void #r() this.acc(that:{//@stringU
+//r
 })
 mut method 
-Void #t() this.acc(that:{'@stringU
-'t
+Void #t() this.acc(that:{//@stringU
+//t
 })
 mut method 
-Void #y() this.acc(that:{'@stringU
-'y
+Void #y() this.acc(that:{//@stringU
+//y
 })
 mut method 
-Void #u() this.acc(that:{'@stringU
-'u
+Void #u() this.acc(that:{//@stringU
+//u
 })
 mut method 
-Void #i() this.acc(that:{'@stringU
-'i
+Void #i() this.acc(that:{//@stringU
+//i
 })
 mut method 
-Void #o() this.acc(that:{'@stringU
-'o
+Void #o() this.acc(that:{//@stringU
+//o
 })
 mut method 
-Void #p() this.acc(that:{'@stringU
-'p
+Void #p() this.acc(that:{//@stringU
+//p
 })
 mut method 
-Void #a() this.acc(that:{'@stringU
-'a
+Void #a() this.acc(that:{//@stringU
+//a
 })
 mut method 
-Void #s() this.acc(that:{'@stringU
-'s
+Void #s() this.acc(that:{//@stringU
+//s
 })
 mut method 
-Void #d() this.acc(that:{'@stringU
-'d
+Void #d() this.acc(that:{//@stringU
+//d
 })
 mut method 
-Void #f() this.acc(that:{'@stringU
-'f
+Void #f() this.acc(that:{//@stringU
+//f
 })
 mut method 
-Void #g() this.acc(that:{'@stringU
-'g
+Void #g() this.acc(that:{//@stringU
+//g
 })
 mut method 
-Void #h() this.acc(that:{'@stringU
-'h
+Void #h() this.acc(that:{//@stringU
+//h
 })
 mut method 
-Void #j() this.acc(that:{'@stringU
-'j
+Void #j() this.acc(that:{//@stringU
+//j
 })
 mut method 
-Void #k() this.acc(that:{'@stringU
-'k
+Void #k() this.acc(that:{//@stringU
+//k
 })
 mut method 
-Void #l() this.acc(that:{'@stringU
-'l
+Void #l() this.acc(that:{//@stringU
+//l
 })
 mut method 
-Void #z() this.acc(that:{'@stringU
-'z
+Void #z() this.acc(that:{//@stringU
+//z
 })
 mut method 
-Void #x() this.acc(that:{'@stringU
-'x
+Void #x() this.acc(that:{//@stringU
+//x
 })
 mut method 
-Void #c() this.acc(that:{'@stringU
-'c
+Void #c() this.acc(that:{//@stringU
+//c
 })
 mut method 
-Void #v() this.acc(that:{'@stringU
-'v
+Void #v() this.acc(that:{//@stringU
+//v
 })
 mut method 
-Void #b() this.acc(that:{'@stringU
-'b
+Void #b() this.acc(that:{//@stringU
+//b
 })
 mut method 
-Void #n() this.acc(that:{'@stringU
-'n
+Void #n() this.acc(that:{//@stringU
+//n
 })
 mut method 
-Void #m() this.acc(that:{'@stringU
-'m
+Void #m() this.acc(that:{//@stringU
+//m
 })
 mut method 
-Void #Q() this.acc(that:{'@stringU
-'Q
+Void #Q() this.acc(that:{//@stringU
+//Q
 })
 mut method 
-Void #W() this.acc(that:{'@stringU
-'W
+Void #W() this.acc(that:{//@stringU
+//W
 })
 mut method 
-Void #E() this.acc(that:{'@stringU
-'E
+Void #E() this.acc(that:{//@stringU
+//E
 })
 mut method 
-Void #R() this.acc(that:{'@stringU
-'R
+Void #R() this.acc(that:{//@stringU
+//R
 })
 mut method 
-Void #T() this.acc(that:{'@stringU
-'T
+Void #T() this.acc(that:{//@stringU
+//T
 })
 mut method 
-Void #Y() this.acc(that:{'@stringU
-'Y
+Void #Y() this.acc(that:{//@stringU
+//Y
 })
 mut method 
-Void #U() this.acc(that:{'@stringU
-'U
+Void #U() this.acc(that:{//@stringU
+//U
 })
 mut method 
-Void #I() this.acc(that:{'@stringU
-'I
+Void #I() this.acc(that:{//@stringU
+//I
 })
 mut method 
-Void #O() this.acc(that:{'@stringU
-'O
+Void #O() this.acc(that:{//@stringU
+//O
 })
 mut method 
-Void #P() this.acc(that:{'@stringU
-'P
+Void #P() this.acc(that:{//@stringU
+//P
 })
 mut method 
-Void #A() this.acc(that:{'@stringU
-'A
+Void #A() this.acc(that:{//@stringU
+//A
 })
 mut method 
-Void #S() this.acc(that:{'@stringU
-'S
+Void #S() this.acc(that:{//@stringU
+//S
 })
 mut method 
-Void #D() this.acc(that:{'@stringU
-'D
+Void #D() this.acc(that:{//@stringU
+//D
 })
 mut method 
-Void #F() this.acc(that:{'@stringU
-'F
+Void #F() this.acc(that:{//@stringU
+//F
 })
 mut method 
-Void #G() this.acc(that:{'@stringU
-'G
+Void #G() this.acc(that:{//@stringU
+//G
 })
 mut method 
-Void #H() this.acc(that:{'@stringU
-'H
+Void #H() this.acc(that:{//@stringU
+//H
 })
 mut method 
-Void #J() this.acc(that:{'@stringU
-'J
+Void #J() this.acc(that:{//@stringU
+//J
 })
 mut method 
-Void #K() this.acc(that:{'@stringU
-'K
+Void #K() this.acc(that:{//@stringU
+//K
 })
 mut method 
-Void #L() this.acc(that:{'@stringU
-'L
+Void #L() this.acc(that:{//@stringU
+//L
 })
 mut method 
-Void #Z() this.acc(that:{'@stringU
-'Z
+Void #Z() this.acc(that:{//@stringU
+//Z
 })
 mut method 
-Void #X() this.acc(that:{'@stringU
-'X
+Void #X() this.acc(that:{//@stringU
+//X
 })
 mut method 
-Void #C() this.acc(that:{'@stringU
-'C
+Void #C() this.acc(that:{//@stringU
+//C
 })
 mut method 
-Void #V() this.acc(that:{'@stringU
-'V
+Void #V() this.acc(that:{//@stringU
+//V
 })
 mut method 
-Void #B() this.acc(that:{'@stringU
-'B
+Void #B() this.acc(that:{//@stringU
+//B
 })
 mut method 
-Void #N() this.acc(that:{'@stringU
-'N
+Void #N() this.acc(that:{//@stringU
+//N
 })
 mut method 
-Void #M() this.acc(that:{'@stringU
-'M
+Void #M() this.acc(that:{//@stringU
+//M
 })
 mut method 
-Void #%() this.acc(that:{'@stringU
-'%
+Void #%() this.acc(that:{//@stringU
+//%
 })
 mut method 
-Void #$() this.acc(that:{'@stringU
-'$
+Void #$() this.acc(that:{//@stringU
+//$
 })
 mut method 
-Void #left() this.acc(that:{'@stringU
-'<
+Void #left() this.acc(that:{//@stringU
+//<
 })
 mut method 
-Void #right() this.acc(that:{'@stringU
-'>
+Void #right() this.acc(that:{//@stringU
+//>
 })
 mut method 
-Void #bang() this.acc(that:{'@stringU
-'!
+Void #bang() this.acc(that:{//@stringU
+//!
 })
 mut method 
-Void #tilde() this.acc(that:{'@stringU
-'~
+Void #tilde() this.acc(that:{//@stringU
+//~
 })
 mut method 
-Void #plus() this.acc(that:{'@stringU
-'+
+Void #plus() this.acc(that:{//@stringU
+//+
 })
 mut method 
-Void #times() this.acc(that:{'@stringU
-'*
+Void #times() this.acc(that:{//@stringU
+//*
 })
 mut method 
-Void #divide() this.acc(that:{'@stringU
-'/
+Void #divide() this.acc(that:{//@stringU
+///
 })
 mut method 
-Void #less() this.acc(that:{'@stringU
-'-
+Void #less() this.acc(that:{//@stringU
+//-
 })
 mut method 
-Void #and() this.acc(that:{'@stringU
-'&
+Void #and() this.acc(that:{//@stringU
+//&
 })
 mut method 
-Void #or() this.acc(that:{'@stringU
-'|
+Void #or() this.acc(that:{//@stringU
+//|
 })
 mut method 
-Void #oRound() this.acc(that:{'@stringU
-'(
+Void #oRound() this.acc(that:{//@stringU
+//(
 })
 mut method 
-Void #cRound() this.acc(that:{'@stringU
-')
+Void #cRound() this.acc(that:{//@stringU
+//)
 })
 mut method 
-Void #oSquare() this.acc(that:{'@stringU
-'[
+Void #oSquare() this.acc(that:{//@stringU
+//[
 })
 mut method 
-Void #cSquare() this.acc(that:{'@stringU
-']
+Void #cSquare() this.acc(that:{//@stringU
+//]
 })
 mut method 
-Void #oCurly() this.acc(that:{'@stringU
-'{
+Void #oCurly() this.acc(that:{//@stringU
+//{
 })
 mut method 
-Void #cCurly() this.acc(that:{'@stringU
-'}
+Void #cCurly() this.acc(that:{//@stringU
+//}
 })
 mut method 
-Void #dQuote() this.acc(that:{'@stringU
-'"
+Void #dQuote() this.acc(that:{//@stringU
+//"
 })
 mut method 
-Void #sQuote() this.acc(that:{'@stringU
-''
+Void #sQuote() this.acc(that:{//@stringU
+////
 })
 mut method 
-Void #hQuote() this.acc(that:{'@stringU
-'`
+Void #hQuote() this.acc(that:{//@stringU
+//`
 })
 mut method 
-Void #equal() this.acc(that:{'@stringU
-'=
+Void #equal() this.acc(that:{//@stringU
+//=
 })
 mut method 
-Void #qMark() this.acc(that:{'@stringU
-'?
+Void #qMark() this.acc(that:{//@stringU
+//?
 })
 mut method 
-Void #hat() this.acc(that:{'@stringU
-'^
+Void #hat() this.acc(that:{//@stringU
+//^
 })
 mut method 
-Void #comma() this.acc(that:{'@stringU
-',
+Void #comma() this.acc(that:{//@stringU
+//,
 })
 mut method 
-Void #semicolon() this.acc(that:{'@stringU
-';
+Void #semicolon() this.acc(that:{//@stringU
+//;
 })
 mut method 
-Void #colon() this.acc(that:{'@stringU
-':
+Void #colon() this.acc(that:{//@stringU
+//:
 })
 mut method 
-Void #dot() this.acc(that:{'@stringU
-'.
+Void #dot() this.acc(that:{//@stringU
+//.
 })
 mut method 
-Void #underscore() this.acc(that:{'@stringU
-'_
+Void #underscore() this.acc(that:{//@stringU
+//_
 })
 mut method 
-Void #hash() this.acc(that:{'@stringU
-'#
+Void #hash() this.acc(that:{//@stringU
+//#
 })
 mut method 
-Void #at() this.acc(that:{'@stringU
-'\u0040
+Void #at() this.acc(that:{//@stringU
+//\u0040
 })
 mut method 
-Void #backslash() this.acc(that:{'@stringU
-'\
+Void #backslash() this.acc(that:{//@stringU
+//\
 })
 mut method 
-Void #space() this.acc(that:{'@stringU
-' 
+Void #space() this.acc(that:{//@stringU
+// 
 })
 mut method 
-Void #newline() this.acc(that:{'@stringU
-'
-'
+Void #newline() this.acc(that:{//@stringU
+//
+//
 })}
 class method 
 This0 #from(This1.S.SBuilder builder) This0._private__24_0(_binaryRepr:builder.binaryRepr())
@@ -1319,15 +1319,15 @@ Void #apply(Library lib) error This1.S.#from(builder:(
 class method 
 Void #apply(This1.Concept.ToS fileName, This1.Concept.ToS content) use This1.Alu check fileDebug(fileName:fileName.toS().binaryRepr(), content:content.toS().binaryRepr()) void}
 Count:{
-class method '@private
+class method //@private
 mut This0 #mutK__28_0(This1.N counter__28_0) 
-class method '@private
+class method //@private
 mut This0 #apply__29_0(This1.N counter) This0.#mutK__28_0(counter__28_0:counter)
-mut method '@private
+mut method //@private
 Void counter__28_0(This1.N that) 
-mut method '@private
+mut method //@private
 This1.N #counter__28_0() 
-read method '@private
+read method //@private
 This1.N counter__28_0() 
 class method 
 mut This0 #seqBuilder() This0.#apply__29_0(counter:This1.N.#from(builder:(
@@ -1349,8 +1349,8 @@ Void #add(This1.Bool that) (
     b
     ))))
   )}
-SafeOperatorsAccess:{'@plugin
-'L42.is/connected/withSafeOperators
+SafeOperatorsAccess:{//@plugin
+//L42.is/connected/withSafeOperators
 
 class method 
 Library compose(Library left, Library right) use This0 check compose(left:left, right:right) error This1.S.#from(builder:(
@@ -1451,21 +1451,21 @@ This2.Bool greater(read Any that) }
 Boollable:{interface 
 read method 
 Void #checkTrue() exception Void }
-Decorator:{interface 'method Library>>(Library that) exception MetaGuard(specific)
-'method Library decorate(Library that) exception MetaGuard I can link metaguard for circularity
+Decorator:{interface //method Library>>(Library that) exception MetaGuard(specific)
+//method Library decorate(Library that) exception MetaGuard I can link metaguard for circularity
 }
-Contains:{interface 'read method Bool >>(read Elem that)
+Contains:{interface //read method Bool >>(read Elem that)
 
 read method 
 This2.Bool contains(read Any that) }
-Parsable:{interface 'class method capsule This fromS(S that) exception Guard.Parameter(specific) invalid string
-'''class method capsule This #fromS(S that) exception Guard.Parameter
+Parsable:{interface //class method capsule This fromS(S that) exception Guard.Parameter(specific) invalid string
+//////class method capsule This #fromS(S that) exception Guard.Parameter
 }
 Invariant:{interface 
-read method ' can throw error or return false, as more opportune
+read method // can throw error or return false, as more opportune
 This2.Bool invariant() }
-RandomAccess:{interface 'read method read Elem (N that)
-'mut method mut Elem #(N that)
+RandomAccess:{interface //read method read Elem (N that)
+//mut method mut Elem #(N that)
 
 read method 
 read Any get(This2.N that) 
@@ -1611,8 +1611,8 @@ This2.Bool isPresent() (
   
   catch return This2.Bool result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 class method 
@@ -1622,7 +1622,7 @@ This0 #apply(This1 that) This0.#new(that:This0.TOf.#apply(that:that))}
 EqualMessages:{
 class method 
 This2.Bool #apply(This2.Message that, This2.Message other) (
-  Void unused=('assuming they have the same class
+  Void unused=(//assuming they have the same class
   
     This2.Message::clazz() ::kind() ::#equalequal(that ) ::#and(that ) ::#and(that ) res=that.clazz().kind().#equalequal(that:other.clazz().kind()).#and(that:that.text().#equalequal(that:other.text())).#and(that:that.responseOf().isPresent().#equalequal(that:other.responseOf().isPresent()))
     Void unused0=(
@@ -1651,8 +1651,8 @@ This2.Bool #apply(This2.Message that, This2.Message other) (
   
   catch return This2.Bool result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )}
 $:{
@@ -1664,7 +1664,7 @@ class method
 Library #leftleft(Library that) This2.SafeOperatorsAccess.compose(left:that, right:This0.messageTrait())
 class method 
 Library messageTrait() {<:This3.Message
-Varres__56_0:'@private
+Varres__56_0://@private
 {
 class method 
 mut This0 #mutK(This4.S inner) 
@@ -1702,8 +1702,8 @@ method equals(that ) (
         
         catch return Any casted exception void
         
-        error {'@stringU
-        'CastT-Should be unreachable code
+        error {//@stringU
+        //CastT-Should be unreachable code
         }
         )
       
@@ -1720,8 +1720,8 @@ method equals(that ) (
   
   catch return This0::equals(that )  result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
@@ -1794,8 +1794,8 @@ method toS() (
   
   catch return This0::toS()  result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
@@ -1832,18 +1832,18 @@ mut This3.S.SConcat #seqBuilder() This3.S.SConcat.#apply(old:this.text(), accumu
   This3.S::#builder() b=This3.S.#builder()
   b
   )))}}}
-Guard:{' exception as Guard bureocracy, error as Guard detection
-'-is a check guarenteed to be performed, program logic can rely on this being enforced.
-'  as exceptions, Guards objects are a way to report/guard complex operations,
-' where checking the shape of the input can be unconvenient.
-'as errors, they represent precondition violations. 
-'Turning an exception Guard into an error Guard
-' is equivalent of declaring that such misuse should not happen (blame on the caller),
-' still, there is no bug in the program at this stage. Is legit for the caller to try and be blamed
-interface <:This1.Message'all other guards should implement this one
+Guard:{// exception as Guard bureocracy, error as Guard detection
+//-is a check guarenteed to be performed, program logic can rely on this being enforced.
+//  as exceptions, Guards objects are a way to report/guard complex operations,
+// where checking the shape of the input can be unconvenient.
+//as errors, they represent precondition violations. 
+//Turning an exception Guard into an error Guard
+// is equivalent of declaring that such misuse should not happen (blame on the caller),
+// still, there is no bug in the program at this stage. Is legit for the caller to try and be blamed
+interface <:This1.Message//all other guards should implement this one
 
 Operation:{<:This2.Guard, This2.Message
-Varres_$%0_0__57_0:'@private
+Varres_$%0_0__57_0://@private
 {
 class method 
 mut This0 #mutK(This3.S inner) 
@@ -1881,8 +1881,8 @@ method equals(that ) (
         
         catch return Any casted exception void
         
-        error {'@stringU
-        'CastT-Should be unreachable code
+        error {//@stringU
+        //CastT-Should be unreachable code
         }
         )
       
@@ -1899,8 +1899,8 @@ method equals(that ) (
   
   catch return This0::equals(that )  result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
@@ -1973,8 +1973,8 @@ method toS() (
   
   catch return This0::toS()  result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
@@ -2012,7 +2012,7 @@ mut This2.S.SConcat #seqBuilder() This2.S.SConcat.#apply(old:this.text(), accumu
   b
   )))}
 Parameter:{<:This2.Guard, This2.Message
-Varres_$%1_0__58_0:'@private
+Varres_$%1_0__58_0://@private
 {
 class method 
 mut This0 #mutK(This3.S inner) 
@@ -2050,8 +2050,8 @@ method equals(that ) (
         
         catch return Any casted exception void
         
-        error {'@stringU
-        'CastT-Should be unreachable code
+        error {//@stringU
+        //CastT-Should be unreachable code
         }
         )
       
@@ -2068,8 +2068,8 @@ method equals(that ) (
   
   catch return This0::equals(that )  result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
@@ -2142,8 +2142,8 @@ method toS() (
   
   catch return This0::toS()  result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
@@ -2181,7 +2181,7 @@ mut This2.S.SConcat #seqBuilder() This2.S.SConcat.#apply(old:this.text(), accumu
   b
   )))}
 Precondition:{<:This2.Guard, This2.Message
-Varres_$%2_0__59_0:'@private
+Varres_$%2_0__59_0://@private
 {
 class method 
 mut This0 #mutK(This3.S inner) 
@@ -2219,8 +2219,8 @@ method equals(that ) (
         
         catch return Any casted exception void
         
-        error {'@stringU
-        'CastT-Should be unreachable code
+        error {//@stringU
+        //CastT-Should be unreachable code
         }
         )
       
@@ -2237,8 +2237,8 @@ method equals(that ) (
   
   catch return This0::equals(that )  result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
@@ -2311,8 +2311,8 @@ method toS() (
   
   catch return This0::toS()  result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
@@ -2350,10 +2350,10 @@ mut This2.S.SConcat #seqBuilder() This2.S.SConcat.#apply(old:this.text(), accumu
   b
   )))}}
 System:{
-Guard:{'<:Outer.Guard soon (remove "interface" for a bad translation bug: This1_System_Guard is not abstract and does not override abstract method MtoS()
+Guard:{//<:Outer.Guard soon (remove "interface" for a bad translation bug: This1_System_Guard is not abstract and does not override abstract method MtoS()
 interface <:This2.Guard
 PluginFailure:{<:This2.Guard, This3.Message
-Varres_$%3_0__60_0:'@private
+Varres_$%3_0__60_0://@private
 {
 class method 
 mut This0 #mutK(This4.S inner) 
@@ -2391,8 +2391,8 @@ method equals(that ) (
         
         catch return Any casted exception void
         
-        error {'@stringU
-        'CastT-Should be unreachable code
+        error {//@stringU
+        //CastT-Should be unreachable code
         }
         )
       
@@ -2409,8 +2409,8 @@ method equals(that ) (
   
   catch return This0::equals(that )  result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
@@ -2483,8 +2483,8 @@ method toS() (
   
   catch return This0::toS()  result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
@@ -2523,7 +2523,7 @@ mut This3.S.SConcat #seqBuilder() This3.S.SConcat.#apply(old:this.text(), accumu
   )))}}}
 Assert:{interface <:This1.Message
 NotImplementedYet:{<:This1, This2.Message
-Varres_$%4_0__61_0:'@private
+Varres_$%4_0__61_0://@private
 {
 class method 
 mut This0 #mutK(This3.S inner) 
@@ -2561,8 +2561,8 @@ method equals(that ) (
         
         catch return Any casted exception void
         
-        error {'@stringU
-        'CastT-Should be unreachable code
+        error {//@stringU
+        //CastT-Should be unreachable code
         }
         )
       
@@ -2579,8 +2579,8 @@ method equals(that ) (
   
   catch return This0::equals(that )  result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
@@ -2653,8 +2653,8 @@ method toS() (
   
   catch return This0::toS()  result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
@@ -2692,7 +2692,7 @@ mut This2.S.SConcat #seqBuilder() This2.S.SConcat.#apply(old:this.text(), accumu
   b
   )))}
 ObservedBug:{<:This1, This2.Message
-Varres_$%5_0__62_0:'@private
+Varres_$%5_0__62_0://@private
 {
 class method 
 mut This0 #mutK(This3.S inner) 
@@ -2730,8 +2730,8 @@ method equals(that ) (
         
         catch return Any casted exception void
         
-        error {'@stringU
-        'CastT-Should be unreachable code
+        error {//@stringU
+        //CastT-Should be unreachable code
         }
         )
       
@@ -2748,8 +2748,8 @@ method equals(that ) (
   
   catch return This0::equals(that )  result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
@@ -2822,8 +2822,8 @@ method toS() (
   
   catch return This0::toS()  result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
@@ -2861,7 +2861,7 @@ mut This2.S.SConcat #seqBuilder() This2.S.SConcat.#apply(old:this.text(), accumu
   b
   )))}
 CodeNotReachable:{<:This1, This2.Message
-Varres_$%6_0__63_0:'@private
+Varres_$%6_0__63_0://@private
 {
 class method 
 mut This0 #mutK(This3.S inner) 
@@ -2899,8 +2899,8 @@ method equals(that ) (
         
         catch return Any casted exception void
         
-        error {'@stringU
-        'CastT-Should be unreachable code
+        error {//@stringU
+        //CastT-Should be unreachable code
         }
         )
       
@@ -2917,8 +2917,8 @@ method equals(that ) (
   
   catch return This0::equals(that )  result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
@@ -2991,8 +2991,8 @@ method toS() (
   
   catch return This0::toS()  result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
@@ -3030,7 +3030,7 @@ mut This2.S.SConcat #seqBuilder() This2.S.SConcat.#apply(old:this.text(), accumu
   b
   )))}
 AssertMessage:{<:This1, This2.Message
-Varres_$%7_0__64_0:'@private
+Varres_$%7_0__64_0://@private
 {
 class method 
 mut This0 #mutK(This3.S inner) 
@@ -3068,8 +3068,8 @@ method equals(that ) (
         
         catch return Any casted exception void
         
-        error {'@stringU
-        'CastT-Should be unreachable code
+        error {//@stringU
+        //CastT-Should be unreachable code
         }
         )
       
@@ -3086,8 +3086,8 @@ method equals(that ) (
   
   catch return This0::equals(that )  result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
@@ -3160,8 +3160,8 @@ method toS() (
   
   catch return This0::toS()  result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
@@ -3467,7 +3467,7 @@ Any iterationTermination(This2.N from, This2.N stopOk, This2.N size) (
     ))
   )}
 IterationFailure:{<:This2.Guard, This2.Message
-Varres_$%8_0__65_0:'@private
+Varres_$%8_0__65_0://@private
 {
 class method 
 mut This0 #mutK(This3.S inner) 
@@ -3505,8 +3505,8 @@ method equals(that ) (
         
         catch return Any casted exception void
         
-        error {'@stringU
-        'CastT-Should be unreachable code
+        error {//@stringU
+        //CastT-Should be unreachable code
         }
         )
       
@@ -3523,8 +3523,8 @@ method equals(that ) (
   
   catch return This0::equals(that )  result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
@@ -3597,8 +3597,8 @@ method toS() (
   
   catch return This0::toS()  result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
@@ -3698,8 +3698,8 @@ method get(that ) (
   
   catch return This0::get(that )  result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method set(that val add ) (
@@ -3735,8 +3735,8 @@ method set(that val add ) (
   
   catch return This0::set(that val add )  result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method remove(that ) (
@@ -3765,8 +3765,8 @@ method remove(that ) (
   
   catch return This0::remove(that )  result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )}
 CellEnd:{<:This1.Cell
@@ -3851,8 +3851,8 @@ method set(that val add ) (
   
   catch return This0::set(that val add )  result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method remove(that ) error This3.Assert.CodeNotReachable.#from(builder:(
@@ -4043,8 +4043,8 @@ This0.Elem cast(Any that) (
       
       catch return Any casted exception void
       
-      error {'@stringU
-      'CastT-Should be unreachable code
+      error {//@stringU
+      //CastT-Should be unreachable code
       }
       )
     
@@ -4058,8 +4058,8 @@ This0.Elem cast(Any that) (
   
   catch return This0.Elem result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 read method 
@@ -4281,8 +4281,8 @@ This0 #plusplus(This0 that) (
   
   catch return This0 result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 IteratorTrait:{
@@ -4654,8 +4654,8 @@ This3.Bool contains(This0.Elem that) (
   
   catch return This3.Bool result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
@@ -4841,8 +4841,8 @@ This3.Bool #equalequal(read This0 that) (
   
   catch return This3.Bool result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method equals(that ) (
@@ -4855,8 +4855,8 @@ method equals(that ) (
         
         catch return read Any casted exception void
         
-        error {'@stringU
-        'CastT-Should be unreachable code
+        error {//@stringU
+        //CastT-Should be unreachable code
         }
         )
       
@@ -4873,8 +4873,8 @@ method equals(that ) (
   
   catch return This0::equals(that )  result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )}}}
 Strings:{<:This1.Concept.Equals
@@ -4906,8 +4906,8 @@ This1.S cast(Any that) (
       
       catch return Any casted exception void
       
-      error {'@stringU
-      'CastT-Should be unreachable code
+      error {//@stringU
+      //CastT-Should be unreachable code
       }
       )
     
@@ -4921,8 +4921,8 @@ This1.S cast(Any that) (
   
   catch return This1.S result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 read method 
@@ -5144,8 +5144,8 @@ This0 #plusplus(This0 that) (
   
   catch return This0 result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 IteratorTrait:{
@@ -5494,8 +5494,8 @@ This1.Bool contains(This1.S that) (
   
   catch return This1.Bool result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
@@ -5681,8 +5681,8 @@ This1.Bool #equalequal(read This0 that) (
   
   catch return This1.Bool result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method equals(that ) (
@@ -5695,8 +5695,8 @@ method equals(that ) (
         
         catch return read Any casted exception void
         
-        error {'@stringU
-        'CastT-Should be unreachable code
+        error {//@stringU
+        //CastT-Should be unreachable code
         }
         )
       
@@ -5713,8 +5713,8 @@ method equals(that ) (
   
   catch return This0::equals(that )  result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )}
 CTest:{
@@ -5723,7 +5723,7 @@ mut This0 #mutK()
 class method 
 This0 #apply() This0.#mutK()}
 Path:{<:This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Named
-Varstr__66_0:'@private
+Varstr__66_0://@private
 {
 class method 
 mut This0 #mutK(This2.S inner) 
@@ -5735,13 +5735,13 @@ mut method
 This2.S #inner() 
 read method 
 This2.S inner() }
-class method '@private
+class method //@private
 mut This0 #mutK__30_0(Library _binaryRepr__30_0) 
-class method '@private
+class method //@private
 This0 _private__31_0(Library _binaryRepr) This0.#mutK__30_0(_binaryRepr__30_0:_binaryRepr)
-mut method '@private
+mut method //@private
 Library #_binaryRepr__30_0() 
-read method '@private
+read method //@private
 Library _binaryRepr__30_0() 
 method myName() This1.GetMyName.#apply(that:This0)
 class method 
@@ -5786,8 +5786,8 @@ This0 fromDocInternalizedS(This1.S that) (
   
   catch return This0 result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 class method 
@@ -5970,8 +5970,8 @@ This1.Bool #equalequal(This0 that) (
   
   catch return This1.Bool result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method equals(that ) (
@@ -5984,8 +5984,8 @@ method equals(that ) (
         
         catch return Any casted exception void
         
-        error {'@stringU
-        'CastT-Should be unreachable code
+        error {//@stringU
+        //CastT-Should be unreachable code
         }
         )
       
@@ -6002,8 +6002,8 @@ method equals(that ) (
   
   catch return This0::equals(that )  result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
@@ -6067,8 +6067,8 @@ This1.Path #plusplus(This1.Path that) (
   
   catch return This1.Path result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
@@ -6130,8 +6130,8 @@ mut This1.Strings names() (
   
   catch return mut This1.Strings result0 result0
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 class method 
@@ -6226,8 +6226,8 @@ This1.Path from(read This1.Strings names) (
   
   catch return This1.Path result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 class method 
@@ -6264,12 +6264,12 @@ This1.Path fresh(This1.Path path) (
   
   catch return This1.Path result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )}
 Selector:{<:This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Named
-Varstr0__67_0:'@private
+Varstr0__67_0://@private
 {
 class method 
 mut This0 #mutK(This2.S inner) 
@@ -6281,7 +6281,7 @@ mut method
 This2.S #inner() 
 read method 
 This2.S inner() }
-Vartot__68_0:'@private
+Vartot__68_0://@private
 {
 class method 
 mut This0 #mutK(This2.S inner) 
@@ -6293,7 +6293,7 @@ mut method
 This2.S #inner() 
 read method 
 This2.S inner() }
-Varname__69_0:'@private
+Varname__69_0://@private
 {
 class method 
 mut This0 #mutK(This2.S inner) 
@@ -6305,13 +6305,13 @@ mut method
 This2.S #inner() 
 read method 
 This2.S inner() }
-class method '@private
+class method //@private
 mut This0 #mutK__32_0(Library _binaryRepr__32_0) 
-class method '@private
+class method //@private
 This0 _private__33_0(Library _binaryRepr) This0.#mutK__32_0(_binaryRepr__32_0:_binaryRepr)
-mut method '@private
+mut method //@private
 Library #_binaryRepr__32_0() 
-read method '@private
+read method //@private
 Library _binaryRepr__32_0() 
 method myName() This1.GetMyName.#apply(that:This0)
 class method 
@@ -6488,8 +6488,8 @@ This0 from(This1.S name, This1.Strings names) (
   
   catch return This0 result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
@@ -6524,8 +6524,8 @@ This1.S nameAsField() (
   
   catch return This1.S result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
@@ -6565,8 +6565,8 @@ This1.S prefixAsField() (
   
   catch return This1.S result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
@@ -6584,8 +6584,8 @@ This1.Bool #equalequal(This0 that) (
   
   catch return This1.Bool result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method equals(that ) (
@@ -6598,8 +6598,8 @@ method equals(that ) (
         
         catch return Any casted exception void
         
-        error {'@stringU
-        'CastT-Should be unreachable code
+        error {//@stringU
+        //CastT-Should be unreachable code
         }
         )
       
@@ -6616,8 +6616,8 @@ method equals(that ) (
   
   catch return This0::equals(that )  result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
@@ -6654,8 +6654,8 @@ This1.Bool isOperator() (
   
   catch return This1.Bool result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
@@ -6735,8 +6735,8 @@ This1.Strings names() (
   
   catch return This1.Strings result0 result0
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 class method 
@@ -6838,12 +6838,12 @@ This1.Selector fresh(This1.Selector that) (
   
   catch return This1.Selector result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )}
-SafeOperators:{'@plugin
-'L42.is/connected/withSafeOperators
+SafeOperators:{//@plugin
+//L42.is/connected/withSafeOperators
 
 class method 
 Library compose(Library left, Library right) use This0 check compose(left:left, right:right) error This1.System.Guard.PluginFailure.#from(builder:(
@@ -7251,7 +7251,7 @@ This1.S freshName(This1.S that) This1.S.#from(binaryRepr:use This0 check freshNa
   Void unused27=b.#cRound()
   b
   )))}
-Introspection:{'findMeIntrospection
+Introspection:{//findMeIntrospection
 
 class method 
 This0.NestedClass #apply(Library lib) (
@@ -7735,7 +7735,7 @@ method introspectDocPath(path annotationN ) (
   result
   )}}
 Doc:{<:This2.Concept.ToS, This2.Concept.Named
-VaraN__70_0:'@private
+VaraN__70_0://@private
 {
 class method 
 mut This0 #mutK(This3.N inner) 
@@ -7747,17 +7747,17 @@ mut method
 This3.N #inner() 
 read method 
 This3.N inner() }
-class method '@private
+class method //@private
 mut This0 #mutK__34_0(Library _binaryRepr__34_0, This0.Annotations _annotations__34_0) 
-class method '@private
+class method //@private
 This0 _private__35_0(Library _binaryRepr, This0.Annotations _annotations) This0.#mutK__34_0(_binaryRepr__34_0:_binaryRepr, _annotations__34_0:_annotations)
-mut method '@private
+mut method //@private
 Library #_binaryRepr__34_0() 
-read method '@private
+read method //@private
 Library _binaryRepr__34_0() 
-mut method '@private
+mut method //@private
 This0.Annotations #_annotations__34_0() 
-read method '@private
+read method //@private
 This0.Annotations _annotations__34_0() 
 method myName() This2.GetMyName.#apply(that:This0)
 Annotation:{<:This3.Concept.ToS, This3.Concept.Named
@@ -7837,8 +7837,8 @@ class Any referredClass() (
   
   catch return class Any result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
@@ -7882,8 +7882,8 @@ This1.Annotation cast(Any that) (
       
       catch return Any casted exception void
       
-      error {'@stringU
-      'CastT-Should be unreachable code
+      error {//@stringU
+      //CastT-Should be unreachable code
       }
       )
     
@@ -7897,8 +7897,8 @@ This1.Annotation cast(Any that) (
   
   catch return This1.Annotation result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 read method 
@@ -8120,8 +8120,8 @@ This0 #plusplus(This0 that) (
   
   catch return This0 result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 IteratorTrait:{
@@ -8422,7 +8422,7 @@ This0 #apply(Library that) (
     Void unused=(
       Void unused1=loop (
         Void unused2=This2.Bool.true().#checkTrue()
-        (' to be able to break
+        (// to be able to break
         
           Void unused3=result.add(right:This0.Annotation.#apply(_binaryRepr:that, text:This2.Introspection.Record.#apply(lib:that).that().introspectDocAsString(path:This2.Path.#from(builder:(
             This2.Path::#builder() b0=This2.Path.#builder()
@@ -8495,8 +8495,8 @@ method toS() (
   
   catch return This0::toS()  result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
@@ -8525,8 +8525,8 @@ Void dbg() (
       
       catch return Any casted exception void
       
-      error {'@stringU
-      'CastT-Should be unreachable code
+      error {//@stringU
+      //CastT-Should be unreachable code
       }
       )
     
@@ -8613,8 +8613,8 @@ This2.S #from(This2.S.SBuilder builder) (
   
   catch return This2.S result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
@@ -8630,8 +8630,8 @@ This1.Doc docOf(This2.Path path) (
           
           catch return Any casted exception void
           
-          error {'@stringU
-          'CastT-Should be unreachable code
+          error {//@stringU
+          //CastT-Should be unreachable code
           }
           )
         
@@ -8666,15 +8666,15 @@ This1.Doc docOf(This2.Path path) (
   
   catch return This1.Doc result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
-RootForMember:' toPutAs private
+RootForMember:// toPutAs private
 {interface 
 method 
 This2.Member #apply(fwd This2.NestedClass root) }
-RootForNested:' toPutAs private
+RootForNested:// toPutAs private
 {<:This1.RootForMember
 class method 
 mut This0 #mutK(This3.Path path, This2.MirrorPr mirror, This2.Record _report) 
@@ -8705,7 +8705,7 @@ method #apply(root ) (
     ))
   This2.NestedClass.#apply__39_0(_root:root, path:path, mirror:this.mirror(), record:this._report())
   )}
-RootForMethod:' toPutAs private
+RootForMethod:// toPutAs private
 {<:This1.RootForMember
 class method 
 mut This0 #mutK(This3.Path path, This3.N memberN, This2.Record _report) 
@@ -8905,8 +8905,8 @@ This1.Member dispatch(fwd This1.NestedClass root, This2.Path path, This1.MirrorP
     
     catch return This0.RootForMember result0 result0
     
-    error {'@stringU
-    'CurlyBlock-Should be unreachable code
+    error {//@stringU
+    //CurlyBlock-Should be unreachable code
     }
     )
   result.#apply(root:root)
@@ -8941,8 +8941,8 @@ This1.Member cast(Any that) (
       
       catch return Any casted exception void
       
-      error {'@stringU
-      'CastT-Should be unreachable code
+      error {//@stringU
+      //CastT-Should be unreachable code
       }
       )
     
@@ -8956,8 +8956,8 @@ This1.Member cast(Any that) (
   
   catch return This1.Member result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 read method 
@@ -9179,8 +9179,8 @@ This0 #plusplus(This0 that) (
   
   catch return This0 result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 IteratorTrait:{
@@ -9529,8 +9529,8 @@ This2.Bool contains(This1.Member that) (
   
   catch return This2.Bool result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
@@ -9716,8 +9716,8 @@ This2.Bool #equalequal(read This0 that) (
   
   catch return This2.Bool result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method equals(that ) (
@@ -9730,8 +9730,8 @@ method equals(that ) (
         
         catch return read Any casted exception void
         
-        error {'@stringU
-        'CastT-Should be unreachable code
+        error {//@stringU
+        //CastT-Should be unreachable code
         }
         )
       
@@ -9748,12 +9748,12 @@ method equals(that ) (
   
   catch return This0::equals(that )  result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )}
 Method:{<:This1.Member, This2.Concept.Equals
-VarpN__71_0:'@private
+VarpN__71_0://@private
 {
 class method 
 mut This0 #mutK(This3.N inner) 
@@ -9765,25 +9765,25 @@ mut method
 This3.N #inner() 
 read method 
 This3.N inner() }
-class method '@private
+class method //@private
 mut This0 #mutK__36_0(fwd This1.NestedClass _root__36_0, This2.Path path__36_0, This2.N memberN__36_0, This1.Record record__36_0) 
-class method '@private
+class method //@private
 This0 #apply__37_0(fwd This1.NestedClass _root, This2.Path path, This2.N memberN, This1.Record record) This0.#mutK__36_0(_root__36_0:_root, path__36_0:path, memberN__36_0:memberN, record__36_0:record)
-mut method '@private
+mut method //@private
 This1.NestedClass #_root__36_0() 
-read method '@private
+read method //@private
 This1.NestedClass _root__36_0() 
-mut method '@private
+mut method //@private
 This2.Path #path__36_0() 
-read method '@private
+read method //@private
 This2.Path path__36_0() 
-mut method '@private
+mut method //@private
 This2.N #memberN__36_0() 
-read method '@private
+read method //@private
 This2.N memberN__36_0() 
-mut method '@private
+mut method //@private
 This1.Record #record__36_0() 
-read method '@private
+read method //@private
 This1.Record record__36_0() 
 method myName() This2.GetMyName.#apply(that:This0)
 method toS() This0.myName().#plusplus(that:(
@@ -9834,8 +9834,8 @@ This2.Bool #equalequal(This0 that) (
   
   catch return This2.Bool result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
@@ -9850,8 +9850,8 @@ method equals(that ) (
         
         catch return Any casted exception void
         
-        error {'@stringU
-        'CastT-Should be unreachable code
+        error {//@stringU
+        //CastT-Should be unreachable code
         }
         )
       
@@ -9868,8 +9868,8 @@ method equals(that ) (
   
   catch return This0::equals(that )  result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
@@ -9901,7 +9901,7 @@ This2.S thisMdf() (
     b
     ))
   )
-method ' invariant NestedClass(...).nestedClassFromRoot(path).pathFromRoot()==path
+method // invariant NestedClass(...).nestedClassFromRoot(path).pathFromRoot()==path
 This2.Path pathFromRoot() this.path__36_0()
 method 
 This2.Selector selector() This2.Selector.fromS(that:(
@@ -10000,8 +10000,8 @@ This1.Type returnType() (
   
   catch return This1.Type result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
@@ -10022,7 +10022,7 @@ This1.Types parameterTypes() (
     Void unused0=(
       Void unused3=loop (
         Void unused4=This2.Bool.true().#checkTrue()
-        (' to be able to break
+        (// to be able to break
         
           This1.Type ti=this.root().mirror__38_0().introspectReportType(root:this.root(), path:this.pathFromRoot(), memberN:this.memberN__36_0(), typeN:varpN.#inner())
           Void unused5=result.add(right:ti)
@@ -10060,8 +10060,8 @@ This1.Types parameterTypes() (
   
   catch return This1.Types result0 result0
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
@@ -10135,8 +10135,8 @@ This2.Bool isPrivate() (
   
   catch return This2.Bool result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
@@ -10170,8 +10170,8 @@ This1.Method cast(Any that) (
       
       catch return Any casted exception void
       
-      error {'@stringU
-      'CastT-Should be unreachable code
+      error {//@stringU
+      //CastT-Should be unreachable code
       }
       )
     
@@ -10185,8 +10185,8 @@ This1.Method cast(Any that) (
   
   catch return This1.Method result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 read method 
@@ -10408,8 +10408,8 @@ This0 #plusplus(This0 that) (
   
   catch return This0 result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 IteratorTrait:{
@@ -10758,8 +10758,8 @@ This2.Bool contains(This1.Method that) (
   
   catch return This2.Bool result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
@@ -10945,8 +10945,8 @@ This2.Bool #equalequal(read This0 that) (
   
   catch return This2.Bool result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method equals(that ) (
@@ -10959,8 +10959,8 @@ method equals(that ) (
         
         catch return read Any casted exception void
         
-        error {'@stringU
-        'CastT-Should be unreachable code
+        error {//@stringU
+        //CastT-Should be unreachable code
         }
         )
       
@@ -10977,13 +10977,13 @@ method equals(that ) (
   
   catch return This0::equals(that )  result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )}
-NestedClass:{'findMeNestedClass
+NestedClass:{//findMeNestedClass
 <:This1.Member, This2.Concept.Equals
-VarmN__72_0:'@private
+VarmN__72_0://@private
 {
 class method 
 mut This0 #mutK(This3.N inner) 
@@ -10995,7 +10995,7 @@ mut method
 This3.N #inner() 
 read method 
 This3.N inner() }
-VartN__73_0:'@private
+VartN__73_0://@private
 {
 class method 
 mut This0 #mutK(This3.N inner) 
@@ -11007,7 +11007,7 @@ mut method
 This3.N #inner() 
 read method 
 This3.N inner() }
-Varnew__74_0:'@private
+Varnew__74_0://@private
 {
 class method 
 mut This0 #mutK(This2.Types inner) 
@@ -11019,7 +11019,7 @@ mut method
 This2.Types #inner() 
 read method 
 This2.Types inner() }
-Varresult__75_0:'@private
+Varresult__75_0://@private
 {
 class method 
 mut This0 #mutK(This2.Types inner) 
@@ -11031,7 +11031,7 @@ mut method
 This2.Types #inner() 
 read method 
 This2.Types inner() }
-Varextra__76_0:'@private
+Varextra__76_0://@private
 {
 class method 
 mut This0 #mutK(This2.Types inner) 
@@ -11043,7 +11043,7 @@ mut method
 This2.Types #inner() 
 read method 
 This2.Types inner() }
-Varresult0__77_0:'@private
+Varresult0__77_0://@private
 {
 class method 
 mut This0 #mutK(mut This2.Types inner) 
@@ -11055,7 +11055,7 @@ mut method
 mut This2.Types #inner() 
 read method 
 read This2.Types inner() }
-VarabsMethods__78_0:'@private
+VarabsMethods__78_0://@private
 {
 class method 
 mut This0 #mutK(This2.Methods inner) 
@@ -11067,7 +11067,7 @@ mut method
 This2.Methods #inner() 
 read method 
 This2.Methods inner() }
-VarhavePrivate__79_0:'@private
+VarhavePrivate__79_0://@private
 {
 class method 
 mut This0 #mutK(This3.Bool inner) 
@@ -11079,25 +11079,25 @@ mut method
 This3.Bool #inner() 
 read method 
 This3.Bool inner() }
-class method '@private
+class method //@private
 mut This0 #mutK__38_0(fwd This1.NestedClass _root__38_0, This2.Path path__38_0, This1.MirrorPr mirror__38_0, This1.Record record__38_0) 
-class method '@private
+class method //@private
 This0 #apply__39_0(fwd This1.NestedClass _root, This2.Path path, This1.MirrorPr mirror, This1.Record record) This0.#mutK__38_0(_root__38_0:_root, path__38_0:path, mirror__38_0:mirror, record__38_0:record)
-mut method '@private
+mut method //@private
 This1.NestedClass #_root__38_0() 
-read method '@private
+read method //@private
 This1.NestedClass _root__38_0() 
-mut method '@private
+mut method //@private
 This2.Path #path__38_0() 
-read method '@private
+read method //@private
 This2.Path path__38_0() 
-mut method '@private
+mut method //@private
 This1.MirrorPr #mirror__38_0() 
-read method '@private
+read method //@private
 This1.MirrorPr mirror__38_0() 
-mut method '@private
+mut method //@private
 This1.Record #record__38_0() 
-read method '@private
+read method //@private
 This1.Record record__38_0() 
 method myName() This2.GetMyName.#apply(that:This0)
 method toS() This0.myName().#plusplus(that:(
@@ -11173,8 +11173,8 @@ This2.Bool #equalequal(This0 that) (
   
   catch return This2.Bool result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
@@ -11189,8 +11189,8 @@ method equals(that ) (
         
         catch return Any casted exception void
         
-        error {'@stringU
-        'CastT-Should be unreachable code
+        error {//@stringU
+        //CastT-Should be unreachable code
         }
         )
       
@@ -11207,13 +11207,13 @@ method equals(that ) (
   
   catch return This0::equals(that )  result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
 This0 root() this._root__38_0()
-method 'error for This
+method //error for This
 This1.Doc nestedDoc() (
   Void unused=(
     This0::path__38_0() ::#equalequal(that ) cond=this.path__38_0().#equalequal(that:This2.Path.#from(builder:(
@@ -11311,7 +11311,7 @@ This1.Doc nestedDoc() (
     b1
     )))
   )
-method 'of the library literal
+method //of the library literal
 This1.Doc doc() this.record__38_0().docOf(path:This2.Path.#from(builder:(
   This2.Path::#builder() b=This2.Path.#builder()
   Void unused=b.#L()
@@ -11358,8 +11358,8 @@ This2.Bool hasExternalType() (
           
           catch return Any casted exception void
           
-          error {'@stringU
-          'CastT-Should be unreachable code
+          error {//@stringU
+          //CastT-Should be unreachable code
           }
           )
         
@@ -11377,8 +11377,8 @@ This2.Bool hasExternalType() (
   
   catch return This2.Bool result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
@@ -11487,8 +11487,8 @@ class Any externalType() (
           
           catch return Any casted0 exception void
           
-          error {'@stringU
-          'CastT-Should be unreachable code
+          error {//@stringU
+          //CastT-Should be unreachable code
           }
           )
         
@@ -11500,8 +11500,8 @@ class Any externalType() (
             
             catch return Any casted exception void
             
-            error {'@stringU
-            'CastT-Should be unreachable code
+            error {//@stringU
+            //CastT-Should be unreachable code
             }
             )
           
@@ -11602,8 +11602,8 @@ class Any externalType() (
   
   catch return class Any result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
@@ -11785,8 +11785,8 @@ This2.S externalTypeToS() (
   
   catch return This2.S result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
@@ -11837,8 +11837,8 @@ This1.Members members() (
   Void unused=(
     Void unused1=loop (
       Void unused2=This2.Bool.true().#checkTrue()
-      (' to be able to break
-      'Debug(S"Iteration "[mN]"")
+      (// to be able to break
+      //Debug(S"Iteration "[mN]"")
       
         Void unused3=result.add(right:this.mirror__38_0().introspectReportMember(root:this, path:this.path__38_0(), memberN:varmN.#inner()))
         
@@ -11888,8 +11888,8 @@ This1.Methods methods() This1.Methods.#from(seqBuilder:(
                 
                 catch return Any casted exception void
                 
-                error {'@stringU
-                'CastT-Should be unreachable code
+                error {//@stringU
+                //CastT-Should be unreachable code
                 }
                 )
               
@@ -11958,8 +11958,8 @@ This1.NestedClasses nestedClasses() This1.NestedClasses.#from(seqBuilder:(
                 
                 catch return Any casted exception void
                 
-                error {'@stringU
-                'CastT-Should be unreachable code
+                error {//@stringU
+                //CastT-Should be unreachable code
                 }
                 )
               
@@ -12107,7 +12107,7 @@ This1.Types implementedInterfaces() (
   Void unused=(
     Void unused1=loop (
       Void unused2=This2.Bool.true().#checkTrue()
-      (' to be able to break
+      (// to be able to break
       
         This0::mirror__38_0() ::introspectReportType(root path memberN typeN ) ti=this.mirror__38_0().introspectReportType(root:this, path:this.path__38_0(), memberN:This2.N.#from(builder:(
           This2.N::#builder() b0=This2.N.#builder()
@@ -12228,11 +12228,11 @@ This1.Types transitivelyImplementedInterfaces() (
   
   catch return This1.Types result0 result0
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
-method '@private
+method //@private
 This1.Types removeDup__40_0(This1.Types that) (
   mut This1.Types result=This1.Types.empty()
   Void unused=(
@@ -12290,7 +12290,7 @@ This1.Types removeDup__40_0(This1.Types that) (
   mut This0.Varresult0__77_0 varresult0=This0.Varresult0__77_0.#apply(inner:result)
   varresult0.#inner()
   )
-method '@private
+method //@private
 This2.Bool select__41_0(This1.Type that, read This1.Types from) (
   This1.Type::referencedPath() rp=that.referencedPath()
   This2.Count.#from(seqBuilder:(
@@ -12348,7 +12348,7 @@ This2.Bool select__41_0(This1.Type that, read This1.Types from) (
     b0
     )))
   )
-method '@private
+method //@private
 This1.Types remove__42_0(This1.Types that, This1.Types from) This1.Types.#from(seqBuilder:(
   This1.Types::#seqBuilder() b=This1.Types.#seqBuilder()
   Void unused=(
@@ -12791,8 +12791,8 @@ This1.Methods state() (
   
   catch return This1.Methods result0 result0
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
@@ -12856,8 +12856,8 @@ This1.Method methodFromSelector(This2.Selector that) exception This2.MetaGuard.M
   
   catch return This1.Method result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
@@ -12875,8 +12875,8 @@ This2.Bool has(This2.Selector selector) (
   
   catch return This2.Bool result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
@@ -12926,8 +12926,8 @@ This1.NestedClass nestedClassFromRoot(This2.Path that) exception This2.MetaGuard
   
   catch return This1.NestedClass result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
@@ -13009,8 +13009,8 @@ This2.Bool isPrivate() (
   
   catch return This2.Bool result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )}
 NestedClasses:{<:This2.Concept.Equals
@@ -13042,8 +13042,8 @@ This1.NestedClass cast(Any that) (
       
       catch return Any casted exception void
       
-      error {'@stringU
-      'CastT-Should be unreachable code
+      error {//@stringU
+      //CastT-Should be unreachable code
       }
       )
     
@@ -13057,8 +13057,8 @@ This1.NestedClass cast(Any that) (
   
   catch return This1.NestedClass result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 read method 
@@ -13280,8 +13280,8 @@ This0 #plusplus(This0 that) (
   
   catch return This0 result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 IteratorTrait:{
@@ -13630,8 +13630,8 @@ This2.Bool contains(This1.NestedClass that) (
   
   catch return This2.Bool result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
@@ -13817,8 +13817,8 @@ This2.Bool #equalequal(read This0 that) (
   
   catch return This2.Bool result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method equals(that ) (
@@ -13831,8 +13831,8 @@ method equals(that ) (
         
         catch return read Any casted exception void
         
-        error {'@stringU
-        'CastT-Should be unreachable code
+        error {//@stringU
+        //CastT-Should be unreachable code
         }
         )
       
@@ -13849,34 +13849,34 @@ method equals(that ) (
   
   catch return This0::equals(that )  result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )}
 Type:{<:This2.Concept.ToS, This2.Concept.Named
-class method '@private
+class method //@private
 mut This0 #mutK__43_0(fwd This1.NestedClass root__43_0, This2.Path path__43_0, This2.N memberN__43_0, This2.N typeN__43_0, This1.Record record__43_0) 
-class method '@private
+class method //@private
 This0 #apply__44_0(fwd This1.NestedClass root, This2.Path path, This2.N memberN, This2.N typeN, This1.Record record) This0.#mutK__43_0(root__43_0:root, path__43_0:path, memberN__43_0:memberN, typeN__43_0:typeN, record__43_0:record)
-mut method '@private
+mut method //@private
 This1.NestedClass #root__43_0() 
-read method '@private
+read method //@private
 This1.NestedClass root__43_0() 
-mut method '@private
+mut method //@private
 This2.Path #path__43_0() 
-read method '@private
+read method //@private
 This2.Path path__43_0() 
-mut method '@private
+mut method //@private
 This2.N #memberN__43_0() 
-read method '@private
+read method //@private
 This2.N memberN__43_0() 
-mut method '@private
+mut method //@private
 This2.N #typeN__43_0() 
-read method '@private
+read method //@private
 This2.N typeN__43_0() 
-mut method '@private
+mut method //@private
 This1.Record #record__43_0() 
-read method '@private
+read method //@private
 This1.Record record__43_0() 
 method myName() This2.GetMyName.#apply(that:This0)
 method toS() This0.myName().#plusplus(that:(
@@ -13919,7 +13919,7 @@ This2.S allAsString() (
   )
 method 
 This2.S strRepr() (
-  Void unused=('should become toS? is toS ok?
+  Void unused=(//should become toS? is toS ok?
   
     This0::referencedPath() n=this.referencedPath()
     This2.S s=(
@@ -13958,8 +13958,8 @@ This2.S strRepr() (
       
       catch return This2.S result0 result0
       
-      error {'@stringU
-      'CurlyBlock-Should be unreachable code
+      error {//@stringU
+      //CurlyBlock-Should be unreachable code
       }
       )
     Void unused0=return this.mdf().#plusplus(that:This2.S.#from(builder:(
@@ -13972,8 +13972,8 @@ This2.S strRepr() (
   
   catch return This2.S result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
@@ -13994,7 +13994,7 @@ This2.S typeKind() (
   )
 method 
 This2.S mdf() (
-  Void unused=('error on AliasUnresolvable
+  Void unused=(//error on AliasUnresolvable
   
     Void unused0=(
       This0::typeKind() ::#bangequal(that ) cond=this.typeKind().#bangequal(that:This2.S.#from(builder:(
@@ -14080,11 +14080,11 @@ This2.S mdf() (
   
   catch return This2.S result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
-method '@private
+method //@private
 This1.NestedClass referencedPath__45_0(This1.Doc.Annotation ann) (
   Void unused=(
     Void unused0=(
@@ -14161,8 +14161,8 @@ This1.NestedClass referencedPath__45_0(This1.Doc.Annotation ann) (
   
   catch return This1.NestedClass result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
@@ -14176,7 +14176,7 @@ This1.NestedClass referencedPath() this.referencedPath__45_0(ann:this.record__43
   ))).annotations().left())
 method 
 This1.NestedClass resolvedReferencedPath() (
-  Void unused=('error on AliasUnresolvable
+  Void unused=(//error on AliasUnresolvable
   
     Void unused0=(
       This0::typeKind() ::#bangequal(that ) cond=this.typeKind().#bangequal(that:This2.S.#from(builder:(
@@ -14268,8 +14268,8 @@ This1.NestedClass resolvedReferencedPath() (
   
   catch return This1.NestedClass result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
@@ -14316,7 +14316,7 @@ This2.Bool resolvedPartial() (
   )))
 method 
 This2.S suffix() (
-  Void unused=('error on Normal
+  Void unused=(//error on Normal
   
     Void unused0=(
       This0::typeKind() ::#equalequal(that ) cond=this.typeKind().#equalequal(that:This2.S.#from(builder:(
@@ -14381,8 +14381,8 @@ This2.S suffix() (
   
   catch return This2.S result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
@@ -14422,8 +14422,8 @@ This1.Type cast(Any that) (
       
       catch return Any casted exception void
       
-      error {'@stringU
-      'CastT-Should be unreachable code
+      error {//@stringU
+      //CastT-Should be unreachable code
       }
       )
     
@@ -14437,8 +14437,8 @@ This1.Type cast(Any that) (
   
   catch return This1.Type result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 read method 
@@ -14660,8 +14660,8 @@ This0 #plusplus(This0 that) (
   
   catch return This0 result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 IteratorTrait:{
@@ -14950,7 +14950,7 @@ Void inner(This2.Type that) (
   rcv18.#apply(that:this.from(), val:that)
   )}}}
 MetaGuard:{interface <:This1.Guard
-RecordWrapper:' can not be private, I need to Patch it.
+RecordWrapper:// can not be private, I need to Patch it.
 {
 class method 
 This2.S libToS(Library that) This2.S.#from(builder:(
@@ -14987,8 +14987,8 @@ method equals(that ) (
         
         catch return Any casted exception void
         
-        error {'@stringU
-        'CastT-Should be unreachable code
+        error {//@stringU
+        //CastT-Should be unreachable code
         }
         )
       
@@ -15005,8 +15005,8 @@ method equals(that ) (
   
   catch return This0::equals(that )  result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method clazz() This0
@@ -15042,7 +15042,7 @@ Void #apply(Library lift) exception This0 (
     )
   )}
 class method 
-Library #leftleft(Library that) ('either that provides a toS, or I have a default impl, that requires lib()
+Library #leftleft(Library that) (//either that provides a toS, or I have a default impl, that requires lib()
 
   This2.SafeOperatorsAccess::compose(left right ) res=This2.SafeOperatorsAccess.compose(left:that, right:This0.recordWrapperTrait())
   Library open=(
@@ -15056,8 +15056,8 @@ Library #leftleft(Library that) ('either that provides a toS, or I have a defaul
     
     catch return Library result result
     
-    error {'@stringU
-    'CurlyBlock-Should be unreachable code
+    error {//@stringU
+    //CurlyBlock-Should be unreachable code
     }
     )
   (
@@ -15075,8 +15075,8 @@ Library #leftleft(Library that) ('either that provides a toS, or I have a defaul
     
     catch return Library result0 result0
     
-    error {'@stringU
-    'CurlyBlock-Should be unreachable code
+    error {//@stringU
+    //CurlyBlock-Should be unreachable code
     }
     )
   )}
@@ -15114,8 +15114,8 @@ method equals(that ) (
         
         catch return Any casted exception void
         
-        error {'@stringU
-        'CastT-Should be unreachable code
+        error {//@stringU
+        //CastT-Should be unreachable code
         }
         )
       
@@ -15132,8 +15132,8 @@ method equals(that ) (
   
   catch return This0::equals(that )  result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method clazz() This0
@@ -15219,8 +15219,8 @@ method equals(that ) (
         
         catch return Any casted exception void
         
-        error {'@stringU
-        'CastT-Should be unreachable code
+        error {//@stringU
+        //CastT-Should be unreachable code
         }
         )
       
@@ -15237,8 +15237,8 @@ method equals(that ) (
   
   catch return This0::equals(that )  result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method clazz() This0
@@ -15309,8 +15309,8 @@ method equals(that ) (
         
         catch return Any casted exception void
         
-        error {'@stringU
-        'CastT-Should be unreachable code
+        error {//@stringU
+        //CastT-Should be unreachable code
         }
         )
       
@@ -15327,8 +15327,8 @@ method equals(that ) (
   
   catch return This0::equals(that )  result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method clazz() This0
@@ -15400,8 +15400,8 @@ method equals(that ) (
         
         catch return Any casted exception void
         
-        error {'@stringU
-        'CastT-Should be unreachable code
+        error {//@stringU
+        //CastT-Should be unreachable code
         }
         )
       
@@ -15418,8 +15418,8 @@ method equals(that ) (
   
   catch return This0::equals(that )  result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method clazz() This0
@@ -15497,8 +15497,8 @@ method equals(that ) (
         
         catch return Any casted exception void
         
-        error {'@stringU
-        'CastT-Should be unreachable code
+        error {//@stringU
+        //CastT-Should be unreachable code
         }
         )
       
@@ -15515,8 +15515,8 @@ method equals(that ) (
   
   catch return This0::equals(that )  result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method clazz() This0
@@ -15592,8 +15592,8 @@ method equals(that ) (
         
         catch return Any casted exception void
         
-        error {'@stringU
-        'CastT-Should be unreachable code
+        error {//@stringU
+        //CastT-Should be unreachable code
         }
         )
       
@@ -15610,8 +15610,8 @@ method equals(that ) (
   
   catch return This0::equals(that )  result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method clazz() This0
@@ -15689,8 +15689,8 @@ method equals(that ) (
         
         catch return Any casted exception void
         
-        error {'@stringU
-        'CastT-Should be unreachable code
+        error {//@stringU
+        //CastT-Should be unreachable code
         }
         )
       
@@ -15707,8 +15707,8 @@ method equals(that ) (
   
   catch return This0::equals(that )  result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method clazz() This0
@@ -15946,8 +15946,8 @@ method equals(that ) (
         
         catch return Any casted exception void
         
-        error {'@stringU
-        'CastT-Should be unreachable code
+        error {//@stringU
+        //CastT-Should be unreachable code
         }
         )
       
@@ -15964,8 +15964,8 @@ method equals(that ) (
   
   catch return This0::equals(that )  result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method clazz() This0
@@ -16156,8 +16156,8 @@ method equals(that ) (
         
         catch return Any casted exception void
         
-        error {'@stringU
-        'CastT-Should be unreachable code
+        error {//@stringU
+        //CastT-Should be unreachable code
         }
         )
       
@@ -16174,8 +16174,8 @@ method equals(that ) (
   
   catch return This0::equals(that )  result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method clazz() This0
@@ -16223,8 +16223,8 @@ Library compose(Library left, Library right) exception This1.MetaGuard.ClassClas
   
   catch return Library result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 class method 
@@ -16302,8 +16302,8 @@ Library #leftleft(Library that) exception This2.MetaGuard.NestedClassUnavailable
   
   catch return Library result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )}
 RenameSelector:{
@@ -16339,8 +16339,8 @@ Library #leftleft(Library that) exception This2.MetaGuard.MemberUnavailable, Thi
   
   catch return Library result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )}
 RenamePath:{
@@ -16373,8 +16373,8 @@ Library #leftleft(Library that) exception This2.MetaGuard.NestedClassUnavailable
   
   catch return Library result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )}
 RemoveImplementationSelector:{
@@ -16405,8 +16405,8 @@ Library #leftleft(Library that) exception This2.MetaGuard.MemberUnavailable (
   
   catch return Library result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )}
 MoveImplementationSelector:{
@@ -16442,8 +16442,8 @@ Library #leftleft(Library that) exception This2.MetaGuard.MemberUnavailable, Thi
   
   catch return Library result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )}
 RemoveImplementationPath:{
@@ -16471,8 +16471,8 @@ Library #leftleft(Library that) exception This2.MetaGuard.NestedClassUnavailable
   
   catch return Library result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )}
 AddDocumentationSelector:{
@@ -16507,8 +16507,8 @@ Library #leftleft(Library that) exception This2.MetaGuard.MemberUnavailable (
   
   catch return Library result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )}
 AddDocumentationPath:{
@@ -16540,8 +16540,8 @@ Library #leftleft(Library that) exception This2.MetaGuard.NestedClassUnavailable
   
   catch return Library result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )}
 MakePrivatePath:{
@@ -16554,7 +16554,7 @@ This2.Path #that()
 read method 
 This2.Path that() 
 method 
-Library #leftleft(Library that) exception This2.MetaGuard.MemberUnavailable, This2.MetaGuard.InvalidOnTopLevel This1.AddDocumentationPath.#apply(that:this.that(), doc:This2.Introspection.Doc.#apply(that:{'@private
+Library #leftleft(Library that) exception This2.MetaGuard.MemberUnavailable, This2.MetaGuard.InvalidOnTopLevel This1.AddDocumentationPath.#apply(that:this.that(), doc:This2.Introspection.Doc.#apply(that:{//@private
 })).#leftleft(that:that)}
 MakePrivateSelector:{
 class method 
@@ -16570,7 +16570,7 @@ This2.Path #of()
 read method 
 This2.Path of() 
 method 
-Library #leftleft(Library that) exception This2.MetaGuard.MemberUnavailable This1.AddDocumentationSelector.#apply(that:this.that(), of:this.of(), doc:This2.Introspection.Doc.#apply(that:{'@private
+Library #leftleft(Library that) exception This2.MetaGuard.MemberUnavailable This1.AddDocumentationSelector.#apply(that:this.that(), of:this.of(), doc:This2.Introspection.Doc.#apply(that:{//@private
 })).#leftleft(that:that)}
 SumMethods:{
 class method 
@@ -16614,8 +16614,8 @@ Library #leftleft(Library that) exception This2.MetaGuard.MemberUnavailable, Thi
   
   catch return Library result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )}
 Tools:{
@@ -16629,8 +16629,8 @@ This2.S getToSOrName(read Any that) (
       
       catch return Any casted0 exception void
       
-      error {'@stringU
-      'CastT-Should be unreachable code
+      error {//@stringU
+      //CastT-Should be unreachable code
       }
       )
     
@@ -16642,8 +16642,8 @@ This2.S getToSOrName(read Any that) (
         
         catch return Any casted exception void
         
-        error {'@stringU
-        'CastT-Should be unreachable code
+        error {//@stringU
+        //CastT-Should be unreachable code
         }
         )
       
@@ -16707,8 +16707,8 @@ This2.S getToSOrName(read Any that) (
   
   catch return This2.S result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )}}
 Opt:{
@@ -16802,8 +16802,8 @@ This2.Bool isPresent() (
   
   catch return This2.Bool result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 class method 
@@ -16814,7 +16814,7 @@ This0 #apply(This0.T that) This0.#new(that:This0.TOf.#apply(that:that))}, src:Th
   Void unused=b.#T()
   b
   )), dest:that)}
-PreferentialComposition:{'members of PreferentialComposition
+PreferentialComposition:{//members of PreferentialComposition
 
 $:{interface 
 method 
@@ -16865,8 +16865,8 @@ This1.SrcDest cast(Any that) (
       
       catch return Any casted exception void
       
-      error {'@stringU
-      'CastT-Should be unreachable code
+      error {//@stringU
+      //CastT-Should be unreachable code
       }
       )
     
@@ -16880,8 +16880,8 @@ This1.SrcDest cast(Any that) (
   
   catch return This1.SrcDest result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 read method 
@@ -17103,8 +17103,8 @@ This0 #plusplus(This0 that) (
   
   catch return This0 result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 IteratorTrait:{
@@ -17421,8 +17421,8 @@ Library cast(Any that) (
       
       catch return Any casted exception void
       
-      error {'@stringU
-      'CastT-Should be unreachable code
+      error {//@stringU
+      //CastT-Should be unreachable code
       }
       )
     
@@ -17436,8 +17436,8 @@ Library cast(Any that) (
   
   catch return Library result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 read method 
@@ -17659,8 +17659,8 @@ This0 #plusplus(This0 that) (
   
   catch return This0 result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 IteratorTrait:{
@@ -17948,7 +17948,7 @@ Void inner(Library that) (
   This0::#that() rcv18=this.#that()
   rcv18.#apply(that:this.from(), val:that)
   )}}
-class method '@private
+class method //@private
 This0.SrcDests renameMap__46_0(Library that, This1.S prefix, This1.Introspection.NestedClasses intros) This0.SrcDests.#from(seqBuilder:(
   This0.SrcDests::#seqBuilder() b=This0.SrcDests.#seqBuilder()
   Void unused=(
@@ -18123,8 +18123,8 @@ This0.SrcDests renameMap(Library that, This1.S prefix, This1.Path path, This1.In
   
   catch return This0.SrcDests result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 class method 
@@ -18216,14 +18216,14 @@ This1.Bool needRename(This1.Introspection.NestedClass that, This1.Introspection.
   
   catch return This1.Bool result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 class method 
-Library #leftleft(Library that) exception This1.MetaGuard.ClassClash, This1.MetaGuard.MethodClash This1.Refactor.compose(left:that, right:{'members of each produced class
+Library #leftleft(Library that) exception This1.MetaGuard.ClassClash, This1.MetaGuard.MethodClash This1.Refactor.compose(left:that, right:{//members of each produced class
 <:This1.$
-Varacc__80_0:'@private
+Varacc__80_0://@private
 {
 class method 
 mut This0 #mutK(Library inner) 
@@ -18235,7 +18235,7 @@ mut method
 Library #inner() 
 read method 
 Library inner() }
-Varlibi__81_0:'@private
+Varlibi__81_0://@private
 {
 class method 
 mut This0 #mutK(Library inner) 
@@ -18247,13 +18247,13 @@ mut method
 Library #inner() 
 read method 
 Library inner() }
-class method '@private
+class method //@private
 mut This0 #mutK__47_0(This1.Libs myLibs__47_0) 
-class method '@private
+class method //@private
 This0 #apply__48_0(This1.Libs myLibs) This0.#mutK__47_0(myLibs__47_0:myLibs)
-mut method '@private
+mut method //@private
 This1.Libs #myLibs__47_0() 
-read method '@private
+read method //@private
 This1.Libs myLibs__47_0() 
 class method 
 mut This1.Libs #seqBuilder() This1.Libs.empty()
@@ -18518,13 +18518,13 @@ Library #leftleft(Library that) exception This2.MetaGuard.ClassClash, This2.Meta
   
   catch return Library result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
 This0 #plusplus(This0 that) This0.#apply__48_0(myLibs:this.myLibs__47_0().#plusplus(that:that.myLibs__47_0()))})}
-Extends:{'members of each produced class
+Extends:{//members of each produced class
 <:This1.PreferentialComposition.$, This1.PreferentialComposition.$
 method solveConflict(that location ) (
   Void unused=(
@@ -18540,11 +18540,11 @@ method solveConflict(that location ) (
   
   catch return This0::solveConflict(that location )  result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
-Varacc_$%11_0__82_0:'@private
+Varacc_$%11_0__82_0://@private
 {
 class method 
 mut This0 #mutK(Library inner) 
@@ -18556,7 +18556,7 @@ mut method
 Library #inner() 
 read method 
 Library inner() }
-Varlibi_$%12_0__83_0:'@private
+Varlibi_$%12_0__83_0://@private
 {
 class method 
 mut This0 #mutK(Library inner) 
@@ -18568,13 +18568,13 @@ mut method
 Library #inner() 
 read method 
 Library inner() }
-class method '@private
+class method //@private
 mut This0 #mutK_$%9_0__49_0(This1.PreferentialComposition.Libs myLibs_$%9_0__49_0) 
-class method '@private
+class method //@private
 This0 #apply_$%10_0__50_0(This1.PreferentialComposition.Libs myLibs) This0.#mutK_$%9_0__49_0(myLibs_$%9_0__49_0:myLibs)
-mut method '@private
+mut method //@private
 This1.PreferentialComposition.Libs #myLibs_$%9_0__49_0() 
-read method '@private
+read method //@private
 This1.PreferentialComposition.Libs myLibs_$%9_0__49_0() 
 class method 
 mut This1.PreferentialComposition.Libs #seqBuilder() This1.PreferentialComposition.Libs.empty()
@@ -18839,13 +18839,13 @@ Library #leftleft(Library that) exception This1.MetaGuard.ClassClash, This1.Meta
   
   catch return Library result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
 This0 #plusplus(This0 that) This0.#apply_$%10_0__50_0(myLibs:this.myLibs_$%9_0__49_0().#plusplus(that:that.myLibs_$%9_0__49_0()))}
-Use:{'members of each produced class
+Use:{//members of each produced class
 <:This1.PreferentialComposition.$, This1.PreferentialComposition.$
 method solveConflict(that location ) (
   Void unused=(
@@ -18861,11 +18861,11 @@ method solveConflict(that location ) (
   
   catch return This0::solveConflict(that location )  result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
-Varacc_$%15_0__84_0:'@private
+Varacc_$%15_0__84_0://@private
 {
 class method 
 mut This0 #mutK(Library inner) 
@@ -18877,7 +18877,7 @@ mut method
 Library #inner() 
 read method 
 Library inner() }
-Varlibi_$%16_0__85_0:'@private
+Varlibi_$%16_0__85_0://@private
 {
 class method 
 mut This0 #mutK(Library inner) 
@@ -18889,13 +18889,13 @@ mut method
 Library #inner() 
 read method 
 Library inner() }
-class method '@private
+class method //@private
 mut This0 #mutK_$%13_0__51_0(This1.PreferentialComposition.Libs myLibs_$%13_0__51_0) 
-class method '@private
+class method //@private
 This0 #apply_$%14_0__52_0(This1.PreferentialComposition.Libs myLibs) This0.#mutK_$%13_0__51_0(myLibs_$%13_0__51_0:myLibs)
-mut method '@private
+mut method //@private
 This1.PreferentialComposition.Libs #myLibs_$%13_0__51_0() 
-read method '@private
+read method //@private
 This1.PreferentialComposition.Libs myLibs_$%13_0__51_0() 
 class method 
 mut This1.PreferentialComposition.Libs #seqBuilder() This1.PreferentialComposition.Libs.empty()
@@ -19160,14 +19160,14 @@ Library #leftleft(Library that) exception This1.MetaGuard.ClassClash, This1.Meta
   
   catch return Library result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
 This0 #plusplus(This0 that) This0.#apply_$%14_0__52_0(myLibs:this.myLibs_$%13_0__51_0().#plusplus(that:that.myLibs_$%13_0__51_0()))}
 Patch:{
-Varacc0__86_0:'@private
+Varacc0__86_0://@private
 {
 class method 
 mut This0 #mutK(Library inner) 
@@ -19348,11 +19348,11 @@ Library #leftleft(Library that) exception This1.MetaGuard.ClassClash, This1.Meta
   
   catch return Library result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
-class method '@private
+class method //@private
 This1.PreferentialComposition.SrcDests renameMap__53_0(Library that, This1.S prefix, This1.Introspection.NestedClasses intros) This1.PreferentialComposition.SrcDests.#from(seqBuilder:(
   This1.PreferentialComposition.SrcDests::#seqBuilder() b=This1.PreferentialComposition.SrcDests.#seqBuilder()
   Void unused=(
@@ -19451,7 +19451,7 @@ This1.PreferentialComposition.SrcDests renameMap__53_0(Library that, This1.S pre
   ))}
 Default:{
 DecorationUnfeasable:{<:This2.MetaGuard, This2.Message
-Varres_$%17_0__87_0:'@private
+Varres_$%17_0__87_0://@private
 {
 class method 
 mut This0 #mutK(This3.S inner) 
@@ -19489,8 +19489,8 @@ method equals(that ) (
         
         catch return Any casted exception void
         
-        error {'@stringU
-        'CastT-Should be unreachable code
+        error {//@stringU
+        //CastT-Should be unreachable code
         }
         )
       
@@ -19507,8 +19507,8 @@ method equals(that ) (
   
   catch return This0::equals(that )  result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
@@ -19581,8 +19581,8 @@ method toS() (
   
   catch return This0::toS()  result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )
 method 
@@ -19625,9 +19625,9 @@ Library #leftleft(Library that) exception This1.DecorationUnfeasable (
   Void unused=(
     Void unused0=return This2.Extends.#from(seqBuilder:(
       This2.Extends::#seqBuilder() b=This2.Extends.#seqBuilder()
-      Void unused1=b.#add(that:{'ParseFailure:Message:S[]<<{<:Guard} no need, related to invariant?
+      Void unused1=b.#add(that:{//ParseFailure:Message:S[]<<{<:Guard} no need, related to invariant?
       
-      class method ' if you do not implement it, it is a constructor?
+      class method // if you do not implement it, it is a constructor?
       This0 fromS(read This3.Concept.ToS that) 
       class method 
       This0 #from(This3.S.SBuilder builder) This0.fromS(that:This3.S.#from(binaryRepr:builder.binaryRepr()))
@@ -19654,11 +19654,11 @@ Library #leftleft(Library that) exception This1.DecorationUnfeasable (
   
   catch return Library result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )}
-SealState:{' how to specify which factory to keep out? what getters
+SealState:{// how to specify which factory to keep out? what getters
 
 class method 
 Library #leftleft(Library that) (
@@ -19670,11 +19670,11 @@ Library #leftleft(Library that) (
   
   catch return Library result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )}
-DataFromToS:{' in the future we can add also hashCode and > =>
+DataFromToS:{// in the future we can add also hashCode and > =>
 
 class method 
 Library #leftleft(Library that) exception This1.DecorationUnfeasable (
@@ -19701,8 +19701,8 @@ Library #leftleft(Library that) exception This1.DecorationUnfeasable (
   
   catch return Library result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )}
 Equals:{
@@ -19722,8 +19722,8 @@ Library #leftleft(Library that) exception This1.DecorationUnfeasable (
               
               catch return Any casted exception void
               
-              error {'@stringU
-              'CastT-Should be unreachable code
+              error {//@stringU
+              //CastT-Should be unreachable code
               }
               )
             
@@ -19740,8 +19740,8 @@ Library #leftleft(Library that) exception This1.DecorationUnfeasable (
         
         catch return This0::equals(that )  result result
         
-        error {'@stringU
-        'CurlyBlock-Should be unreachable code
+        error {//@stringU
+        //CurlyBlock-Should be unreachable code
         }
         )
       read method 
@@ -19765,8 +19765,8 @@ Library #leftleft(Library that) exception This1.DecorationUnfeasable (
   
   catch return Library result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )}
 Named:{
@@ -19795,13 +19795,13 @@ Library #leftleft(Library that) exception This1.DecorationUnfeasable (
   
   catch return Library result result
   
-  error {'@stringU
-  'CurlyBlock-Should be unreachable code
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
   }
   )}}
-Url:{'ParseFailure:Message:S[]<<{<:Guard} no need, related to invariant?
+Url:{//ParseFailure:Message:S[]<<{<:Guard} no need, related to invariant?
 <:This1.Concept.ToS
-class method ' if you do not implement it, it is a constructor?
+class method // if you do not implement it, it is a constructor?
 This0 fromS(read This1.Concept.ToS that) This0.#apply(inner:that.toS())
 class method 
 This0 #from(This1.S.SBuilder builder) This0.fromS(that:This1.S.#from(binaryRepr:builder.binaryRepr()))
@@ -19819,13 +19819,13 @@ method toS() this.inner()
 method 
 Library binaryRepr() this.inner().binaryRepr()}
 DeployTowel:{
-class method '(Any fileName)
+class method //(Any fileName)
 mut This0 #mutK(This1.Url fileName) 
-class method '(Any fileName)
+class method //(Any fileName)
 This0 #apply(This1.Url fileName) This0.#mutK(fileName:fileName)
-mut method '(Any fileName)
+mut method //(Any fileName)
 This1.Url #fileName() 
-read method '(Any fileName)
+read method //(Any fileName)
 This1.Url fileName() 
 class method 
 Library binaryReprFrom(Library lib) (
@@ -19834,17 +19834,17 @@ Library binaryReprFrom(Library lib) (
   mut This0 #mutK() 
   class method 
   This0 privateNormalize() This0.#mutK()}
-  Library record=use This0.SafeOperatorsAccess__88_0 check introspectLibraryReport(that:norm, path:{'@stringU
-  'This
+  Library record=use This0.SafeOperatorsAccess__88_0 check introspectLibraryReport(that:norm, path:{//@stringU
+  //This
   }) error {
   class method 
   mut This0 #mutK() 
   class method 
   This0 introspectLibraryReport() This0.#mutK()}
-  use This0.SafeOperatorsAccess__88_0 check introspectLibraryDocAsString(that:record, path:{'@stringU
-  'AllAsString
-  }, annotationN:{'@int32
-  '0
+  use This0.SafeOperatorsAccess__88_0 check introspectLibraryDocAsString(that:record, path:{//@stringU
+  //AllAsString
+  }, annotationN:{//@int32
+  //0
   }) error {
   class method 
   mut This0 #mutK() 
@@ -19860,7 +19860,7 @@ Library #leftleft(Library that) (
   This0 fileDebug() This0.#mutK()}
   This1.ExitCode.normal()
   )
-SafeOperatorsAccess__88_0:'@private
-{'@plugin
-'L42.is/connected/withSafeOperators
+SafeOperatorsAccess__88_0://@private
+{//@plugin
+//L42.is/connected/withSafeOperators
 }}}

@@ -1,10 +1,10 @@
-{ _private(Library _binaryRepr)<:Concept.ToS Concept.Equals Concept.Named'@private
+{ _private(Library _binaryRepr)<:Concept.ToS Concept.Equals Concept.Named//@private
   method myName()GetMyName(This)
 
   class method
   This fromDocInternalizedS(S that){
     if that==S"@."++S.nl() (return This.fromS(S"This"))
-    'Debug(S"["++that++S"]")
+    //Debug(S"["++that++S"]")
     return This.fromS(that(start:2N end:that.size()-1N))
     catch error Message x
       error This.parseError(that,cause:x)
@@ -74,7 +74,7 @@
   Path from(read Strings names) {
     if names.isEmpty() (return Path"This")
     s=S""[with n in names.vals() (use[n separedBy:S"."])]""
-    return This.fromS(s) '(end:s.size()-1N)
+    return This.fromS(s) //(end:s.size()-1N)
     }
   class method
   Path fresh(S name)

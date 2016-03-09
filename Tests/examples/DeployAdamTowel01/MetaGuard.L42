@@ -1,6 +1,6 @@
 { interface<:Guard
 
- RecordWrapper:' can not be private, I need to Patch it.
+ RecordWrapper:// can not be private, I need to Patch it.
     {
     class method S libToS(Library that) S"TO FIX"
 
@@ -35,7 +35,7 @@
       }
 
     class method Library <<(Library that) (
-      'either that provides a toS, or I have a default impl, that requires lib()
+      //either that provides a toS, or I have a default impl, that requires lib()
       res=SafeOperatorsAccess.compose(left:that,right:This.recordWrapperTrait())
       Library open=  {
         return SafeOperatorsAccess.compose(left:res,right:This.recordWrapperToSTrait())

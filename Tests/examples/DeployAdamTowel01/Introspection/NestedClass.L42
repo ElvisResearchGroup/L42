@@ -1,12 +1,12 @@
-{'findMeNestedClass
-(fwd NestedClass _root,Path path,MirrorPr mirror, Record record)<:Member,Concept.Equals '@private
+{//findMeNestedClass
+(fwd NestedClass _root,Path path,MirrorPr mirror, Record record)<:Member,Concept.Equals //@private
 method myName()GetMyName(This)
 method toS() This.myName()++S"["[this.allAsString()]"]"
 method Bool ==(This that){
   if this.path()!=that.path() (return Bool.false())
-  'else equal paths
+  //else equal paths
   if this.path()!=Path"This" (return this.root()==that.root())
-  'else, both paths are This
+  //else, both paths are This
   ext=this.hasExternalType()
   if ext!=that.hasExternalType() (return Bool.false())
   if ext (return this.externalTypeToS()==that.externalTypeToS())
@@ -18,18 +18,18 @@ method equals(that){
   return Bool.false()
   }
 method This root()this._root()
-method 'error for This
+method //error for This
 Doc nestedDoc()(
   if this.path()==Path"This" (
     error Guard.Operation"NestedClass.nestedDoc()  The NestedClass Object refers to This"
     )
   this.record().docOf(path:Path"MemberDoc")
   )
-method 'of the library literal
+method //of the library literal
 Doc doc() this.record().docOf(path:Path"LibraryDoc")
 
 method Path pathFromRoot()
-  this.path() ' invariant NestedClass(...).nestedClassFromRoot(path).pathFromRoot()==path
+  this.path() // invariant NestedClass(...).nestedClassFromRoot(path).pathFromRoot()==path
 
 method Bool hasExternalType(){
   if this.path()!=Path"This" (return Bool.false())
@@ -58,29 +58,29 @@ method S externalTypeToS() {
   nameAndPrefix=doc.annotations().left().toS()
   sep=nameAndPrefix.firstIndexOf(S".")
   name= nameAndPrefix(start:sep+1N)
-  prefix=N.fromS(nameAndPrefix(start:4N, end:sep)) '4N== S"This".size()
-  'Assert.$[prefix>0N]
+  prefix=N.fromS(nameAndPrefix(start:4N, end:sep)) //4N== S"This".size()
+  //Assert.$[prefix>0N]
   if prefix == 1N (return S"This."++name)
   return S"This"[prefix-1N]"."++name
 }
 
 method S classKind() this.record()"ClassKind"
-method S allAsString() this.record()"AllAsString"  'just the library literal
+method S allAsString() this.record()"AllAsString"  //just the library literal
 method
 Members members() (
   result=Members.empty()
   var N mN=1N
-  while Bool.true() (' to be able to break
-    'Debug(S"Iteration "[mN]"")
+  while Bool.true() (// to be able to break
+    //Debug(S"Iteration "[mN]"")
     result.add(right:this.mirror()
       .introspectReportMember(root:this,path:this.path(),memberN:mN))
-    'this was a private member
+    //this was a private member
     catch exception MetaGuard.MemberUnavailable exception void
     mN+=1N
     )
   result)
-  'TODO: this method goes in loop for private members.
-  'different result with compiled or bigstep see test introspection5
+  //TODO: this method goes in loop for private members.
+  //different result with compiled or bigstep see test introspection5
 
 method
 Methods methods()
@@ -100,14 +100,14 @@ NestedClasses transitivelyNestedClasses()
 method Types implementedInterfaces() (
   result=Types.empty()
   var N tN=1N
-  while Bool.true() (' to be able to break
+  while Bool.true() (// to be able to break
     ti=this.mirror()
       .introspectReportType(root:this,path:this.path(),memberN:0N,typeN:tN)
-    'Assert.$[with sr=ti.strRepr() (
-    '  use[sr!=S"This";sr!=S""]
-    '  )]
+    //Assert.$[with sr=ti.strRepr() (
+    //  use[sr!=S"This";sr!=S""]
+    //  )]
     sr=ti.strRepr()
-    'Assert.$[sr!=S"@.This";sr!=S"This";sr!=S""]
+    //Assert.$[sr!=S"@.This";sr!=S"This";sr!=S""]
 
     result.add(right:ti)
     tN+=1N
@@ -128,20 +128,20 @@ method Types transitivelyImplementedInterfaces() {
     result++=extra
     )
   }
-method'@private
+method//@private
 Types removeDup(Types that) (
-  var mut Types result=Types.empty() 'can not use [with since we need to check in results
+  var mut Types result=Types.empty() //can not use [with since we need to check in results
   with t in that.vals() (
     if this.select(t,from:result) (result.add(right:t))
     )
   result
   )
-method'@private
+method//@private
 Bool select(Type that,read Types from) (
   rp=that.referencedPath()
   Count[with t in from.vals() (use[t.referencedPath() == rp])]==0N
   )
-method'@private
+method//@private
 Types remove(Types that,Types from)
   Types[with t in that.vals() (if this.select(t,from:from) (use[t]))]
 
@@ -193,7 +193,7 @@ Method methodFromSelector(Selector that) exception MetaGuard.MethodUnavailable {
     if meth.selector()==that (return meth)
     )
   exception MetaGuard.MethodUnavailable(path:this.pathFromRoot(),selector:that,isPrivate:Bool.false())
-  'note: it can return a private method
+  //note: it can return a private method
   }
 method
 Bool has(Selector selector){

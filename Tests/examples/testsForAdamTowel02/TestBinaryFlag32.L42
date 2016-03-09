@@ -1,6 +1,6 @@
 {reuse L42.is/AdamTowel02
 BinaryFlag32:{(N that)
-  <:Concept.ToS Concept.Equals Concept.Named'@private
+  <:Concept.ToS Concept.Equals Concept.Named//@private
   
   method myName()GetMyName(This)
   
@@ -59,9 +59,9 @@ BinaryFlag32:{(N that)
     This(N.#from(binaryRepr:builder.that()))
     )
       
-  method'@private
+  method//@private
   This res(Library that) This(N.#from(binaryRepr:that))
-  method'@private
+  method//@private
   Library br() this.that().binaryRepr()
   method
   This &(This that) this.res(use Alu

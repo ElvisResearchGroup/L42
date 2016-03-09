@@ -5,7 +5,7 @@
   class method
   This (Library lib)
     This(MirrorPr.Lib(lib:lib))
-    'This(Introspection(lib:lib).mirror())
+    //This(Introspection(lib:lib).mirror())
   method Void dbg()
     with x=this.that() (
       on MirrorPr.Lib Debug(lib:x.lib())
@@ -17,39 +17,39 @@
     path=Path.#from(builder:builder)
     return this.that().introspectDocAsString(path:path)
     error on MetaGuard.MemberUnavailable 
-      Assert.CodeNotReachable"Record1"[this.that()]"" 'TODO: not the right error? 
+      Assert.CodeNotReachable"Record1"[this.that()]"" //TODO: not the right error? 
     }
   method
   Doc docOf(Path path){
     with mirror=this.that() (
       on MirrorPr.Lib return Doc(
         SafeOperators.renameClass(mirror.lib(), src:path, dest:Path"This")
-        'This can not be done for circular reference Refactor.RenamePath(path to:Path"This")<<mirror.lib()
+        //This can not be done for circular reference Refactor.RenamePath(path to:Path"This")<<mirror.lib()
         )
       )
     error Assert.CodeNotReachable"Record2"
     }
-  'this is how I would like it to be
-  'class method Member dispatch(fwd NestedClass root,Path path,MirrorPr mirror, N memberN,Library record) {
-  '  _report =Introspection(lib:report).record()
-  '  with x=_report"MemberKind" (
-  '    if x== S"NestedClass"  (return NestedClass(_root:root,path:path,mirror:mirror,record:_report))
-  '    if x== S"InterfaceImplementedMethod" (return Method(_root:root,path:path,memberN:memberN,record:_report))
-  '    if x== S"ImplementedMethod" (return Method(_root:root,path:path,memberN:memberN,record:_report))
-  '    if x== S"AbstractMethod" (return Method(_root:root,path:path,memberN:memberN,record:_report))
-  '    default error Assert.ObservedBug(S"invalid member kind "[x]"")
-  '    )
-  '  }
-  'instead, I have to write this :-(
-  RootForMember:' toPutAs private
+  //this is how I would like it to be
+  //class method Member dispatch(fwd NestedClass root,Path path,MirrorPr mirror, N memberN,Library record) {
+  //  _report =Introspection(lib:report).record()
+  //  with x=_report"MemberKind" (
+  //    if x== S"NestedClass"  (return NestedClass(_root:root,path:path,mirror:mirror,record:_report))
+  //    if x== S"InterfaceImplementedMethod" (return Method(_root:root,path:path,memberN:memberN,record:_report))
+  //    if x== S"ImplementedMethod" (return Method(_root:root,path:path,memberN:memberN,record:_report))
+  //    if x== S"AbstractMethod" (return Method(_root:root,path:path,memberN:memberN,record:_report))
+  //    default error Assert.ObservedBug(S"invalid member kind "[x]"")
+  //    )
+  //  }
+  //instead, I have to write this :-(
+  RootForMember:// toPutAs private
     {interface method Member (fwd NestedClass root)}
-  RootForNested:' toPutAs private
+  RootForNested:// toPutAs private
     {(Path path,MirrorPr mirror,Record _report)<:RootForMember
       method (root) (
       path=Path.fromS(this._report()"Key")
       NestedClass(_root:root,path:path,mirror:this.mirror(),record: this._report())
       )}
-  RootForMethod:' toPutAs private
+  RootForMethod:// toPutAs private
     {(Path path,N memberN,Record _report)<:RootForMember
       method (root) (
         Method(_root:root,path:this.path(),memberN:this.memberN(),record:this._report())

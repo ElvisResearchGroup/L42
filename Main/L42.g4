@@ -26,6 +26,7 @@ fragment CharsAllStrLine:
  '\t'| 'A'..'Z'|'a'..'z'|'0'..'9' | '(' | ')' | '[' | ']' | '<' | '>' |'&'|'|'|'*'|'+'|'-'|'=' | '/' | '!' | '?' | ';' | ':' | ',' | '.' | ' ' | '~' | '@' | '#' | '$' | '%' | '`' | '^' | '_' | '\\' | '{' | '}' | '\"' | '\'' ;
 fragment CharsAllString:
  '\t'| 'A'..'Z'|'a'..'z'|'0'..'9' | '(' | ')' | '[' | ']' | '<' | '>' |'&'|'|'|'*'|'+'|'-'|'=' | '/' | '!' | '?' | ';' | ':' | ',' | '.' | ' ' | '~' | '@' | '#' | '$' | '%' | '`' | '^' | '_' | '\\' | '{' | '}' | '\'' ;
+fragment DocLine: '//' CharsAllStrLine* '\n'; // tab not valid in 42, used to encode ( with space in initial rewriting
 fragment StrLine: '\'' CharsAllStrLine* '\n'; // tab not valid in 42, used to encode ( with space in initial rewriting
 fragment String: CharsAllString*;
 //fragment Num:Digit|'-'|'.';
@@ -87,7 +88,7 @@ UrlNL: 'reuse' ' '+ CharsUrl+'\n';
 Url: 'reuse' ' '+ CharsUrl+;
 //UrlNL: '##urlNL';
 //Url: '##url';
-Doc: (StrLine WS?)+;
+Doc: (DocLine WS?)+;
 WS:
     (( ' ' | ',' | '\n' )+)-> channel(HIDDEN);
 

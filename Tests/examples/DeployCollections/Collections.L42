@@ -1,5 +1,5 @@
 {
-class method '@private
+class method //@private
 Library generateVector(class Any that, Library lib){
   var res=lib
   res:=Refactor.RenamePath(Path"VectorStruct" to:Path"This")<<res
@@ -7,14 +7,14 @@ Library generateVector(class Any that, Library lib){
   res:=Refactor.MakePrivatePath(Path"Cell")<<res
   res:=Refactor.MakePrivatePath(Path"CellNext")<<res
   res:=Refactor.MakePrivatePath(Path"CellEnd")<<res
-  'res:=Refactor.MakePrivatePath(Path"Iterator")<<res
-  'res:=Refactor.MakePrivatePath(Path"VarIterator")<<res
+  //res:=Refactor.MakePrivatePath(Path"Iterator")<<res
+  //res:=Refactor.MakePrivatePath(Path"VarIterator")<<res
   return res
   catch exception Guard err error err
   }
   
 class method Library vector(class Any of)
-  This.generateVector(of,lib:{Elem:{} Kind:'@private
+  This.generateVector(of,lib:{Elem:{} Kind://@private
       {interface 
       class method Elem elem() 
       class method Elem elemRead()
@@ -22,7 +22,7 @@ class method Library vector(class Any of)
   VectorStruct:...
   })
 class method Library vector(class Any ofMut)
-  This.generateVector(ofMut,lib:{Elem:{} Kind:'@private
+  This.generateVector(ofMut,lib:{Elem:{} Kind://@private
       {interface 
       class method mut Elem elem() 
       class method read Elem elemRead()
@@ -30,14 +30,14 @@ class method Library vector(class Any ofMut)
   VectorStruct:...
   })
 
-'class method Library vector(class Any ofType) This.generateVector(ofType,lib:{
-'  Elem:{} Kind:'@private
-'    {interface 
-'    class method class Elem elem() 
-'    class method class Elem elemRead()
-'    }
-'  VectorStruct:...
-'  })
-      'read/lent/mut/class/capsule/
+//class method Library vector(class Any ofType) This.generateVector(ofType,lib:{
+//  Elem:{} Kind://@private
+//    {interface 
+//    class method class Elem elem() 
+//    class method class Elem elemRead()
+//    }
+//  VectorStruct:...
+//  })
+      //read/lent/mut/class/capsule/
 
 }

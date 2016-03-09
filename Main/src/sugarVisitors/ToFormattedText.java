@@ -507,7 +507,7 @@ public class ToFormattedText implements Visitor<Void>{
     String[] splitted=d.substring(0,d.length()-1).split("\n",-1);//on its line for ease of testing//This was a bad move, javaSplit, you despicable bastard
     {int i=-1;for(String s:splitted){i+=1;
       if(s.isEmpty()&& i==0){continue;}
-      c("'");
+      c("//");
       c(s);
       nl();
     }}

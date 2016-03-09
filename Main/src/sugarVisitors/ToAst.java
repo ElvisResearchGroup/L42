@@ -147,13 +147,15 @@ public class ToAst extends AbstractVisitor<Expression>{
   }
   public static Doc comm(String c){
     if(c.isEmpty()){return Doc.empty();}
-    assert c.startsWith("\'"):c;
+    assert c.startsWith("//"):c;
     StringBuffer res=new StringBuffer();
     boolean skip=false;
-    for(char cc:c.substring(1).toCharArray()){
+    char[] chs=c.toCharArray();
+    for(int i=2; i<chs.length;i++){
+      char cc=chs[i];
       if(!skip){res.append(cc);}
       if(cc=='\n'){skip=true;}
-      if(cc=='\''){skip=false;}
+      if(i>3 && cc=='/' && chs[i-1]=='/'){skip=false;}
     }
     String result=res.toString();
     assert result.charAt(result.length()-1)=='\n':result;

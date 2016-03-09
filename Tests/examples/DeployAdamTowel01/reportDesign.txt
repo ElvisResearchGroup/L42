@@ -16,8 +16,8 @@ Guard:{
   Precondition: if it is about multiple parameters
   }
 Refactor::Guard::{ all the metaprogramming guards
-  ' like MetaprogrammingGuard: for composition operators
-'all misuse?
+  // like MetaprogrammingGuard: for composition operators
+//all misuse?
 SourceUnfit:
 ClassClash:
 MethodClash:
@@ -28,20 +28,20 @@ NSBMissing:
 }
 
 System::Guard{
-  PluginFailure:'to report the inability of a plugin to act
+  PluginFailure://to report the inability of a plugin to act
   Memory/Stack overflow? how to handle them?
   }
 
 
 
- 'assert is a class, offers functionalities
+ //assert is a class, offers functionalities
 Assert: only as error, logic error detected
 -can be omitted for perfomance
 Assert::ObservedBug:
- 'if this happens, then the programmer had wrong assumption on the code behaviour.
- 'is about logic errors
+ //if this happens, then the programmer had wrong assumption on the code behaviour.
+ //is about logic errors
 Assert::CodeNotReachable: 
- 'in an ideal world, a static analysis would verify this
+ //in an ideal world, a static analysis would verify this
 Assert::CodeNotReachable:
  code not reachable can wrap a Report (often a Misuse) to declare that such Report should
     happen (responsabilty on the code logic)

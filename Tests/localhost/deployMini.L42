@@ -7,17 +7,17 @@ Deploy:{ (S node, S fileName)
   method Library <(Library that){
     adapter=IntrospectionPlugin.adapter(nameDest:this.node(),nameSrc:S"Template")
     code=IntrospectionPlugin.adaptLib(l1:that,l2:adapter)
-    'equivalent to code=Adapt[Name"Template" into Name.#stringParser(this.node().binaryRep())]<that
+    //equivalent to code=Adapt[Name"Template" into Name.#stringParser(this.node().binaryRep())]<that
     This(fileName:this.fileName(),code:code,node:this.node())    
-    'code=that
-    'This(fileName:this.fileName(),code:code,node:S"This")    
+    //code=that
+    //This(fileName:this.fileName(),code:code,node:S"This")    
     return ExitCode.normal()
     }
     
-  'deploy mini contains new Deploy and Generalize, and some form of Adapt
-  ' and templateBNS only BNS
-  'Main:Deploy[S"Top.Exported", fileName:S"examples/Gui.L42"]<{reuse L42.is/templateBNS
-  'Top:Generalize[]<{reuse L42.is/miniBase
+  //deploy mini contains new Deploy and Generalize, and some form of Adapt
+  // and templateBNS only BNS
+  //Main:Deploy[S"Top.Exported", fileName:S"examples/Gui.L42"]<{reuse L42.is/templateBNS
+  //Top:Generalize[]<{reuse L42.is/miniBase
 
   
   class method

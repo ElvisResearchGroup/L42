@@ -1,8 +1,8 @@
 {
-'shape of a loadable library:
-' This contains actual library, but
-' Abstract:{} contains abstract classes, and
-' Abstract.ConceptMap mapps concepts names to abstract classes
+//shape of a loadable library:
+// This contains actual library, but
+// Abstract:{} contains abstract classes, and
+// Abstract.ConceptMap mapps concepts names to abstract classes
 
   ConceptMapMismatch:Message.$<<{<:MetaGuard}
   ConceptMapUnavailable:Message.$<<{<:MetaGuard}
@@ -17,7 +17,7 @@
       exception ConceptMapUnavailable
           "provided library do not offers Abstract.ConceptMap or "[err.path()]
           " available paths are "[with av in Introspection(lib:that).transitivelyNestedClasses().vals() (
-              use[S.nl()++av.pathFromRoot().toS()] '(start:8N)
+              use[S.nl()++av.pathFromRoot().toS()] //(start:8N)
             )]""
     exception on MetaGuard.SourceUnfit, MetaGuard.MethodClash, MetaGuard.IncoherentRedirectMapping
       ConceptMapMismatch""

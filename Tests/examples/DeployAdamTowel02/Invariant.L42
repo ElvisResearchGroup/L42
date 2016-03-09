@@ -1,6 +1,6 @@
 {
 
-  ' error handling
+  // error handling
   InvariantFailure:Message.$<<{<:MetaGuard}
   class method Bool isInvariant(Introspection.NestedClass that) {
     interf=that.transitivelyImplementedInterfaces()
@@ -26,7 +26,7 @@
     return state
     }
 
-  'invariant checking and actions
+  //invariant checking and actions
   class method
   Void checkInvariant(read Concept.Invariant that) (
     if !that.invariant() (
@@ -106,13 +106,13 @@
       error Assert.CodeNotReachable"idAction"(cnr)
     }
 
-  'main decoration method
+  //main decoration method
   class method
   Library<<(Library that)
   exception Default.DecorationUnfeasable
     this.stateDecoration(that,state:this.extractOkState(that))
 
-  'decoration after pre checking
+  //decoration after pre checking
   class method
   Library stateDecoration(Library that,Introspection.Methods state){
     if state.isEmpty() (return that)
@@ -129,25 +129,25 @@
       s=m.selector()
       mdf=m.thisMdf()
       zeroArgs=s.names().isEmpty()
-      'Debug(S"zeroArgs"[zeroArgs]"")
+      //Debug(S"zeroArgs"[zeroArgs]"")
       if mdf==S"class" (
-        'Debug(S"is k "[s]"")
+        //Debug(S"is k "[s]"")
         acc:=PostAction(s of:p
           action:this.constructorAction(m.returnType())
           deprecated: kSelF)<<acc
         )
       else (
         newSel=This.stateFName(s,old:kNames, fresh:kNamesF)
-        'Debug(S"!!")
+        //Debug(S"!!")
         if zeroArgs (
-          'Debug(S"is getter/exposer "[s]" "[newSel]"")
+          //Debug(S"is getter/exposer "[s]" "[newSel]"")
           acc:=PostAction(s of:p
             action:this.idAction(m.returnType())
             deprecated:newSel
             )<<acc
           )
         else (
-          'Debug(S"is setter "[s]" "[newSel]" "[with ni in s.names().vals() (use[S"{"++ni++S"}"])]"!!")
+          //Debug(S"is setter "[s]" "[newSel]" "[with ni in s.names().vals() (use[S"{"++ni++S"}"])]"!!")
           acc:=PostAction(s of:p
             action:this.setterAction()
             deprecated:newSel
@@ -155,7 +155,7 @@
           )
         )
       )
-    'Debug(Introspection(lib:acc).allAsString())
+    //Debug(Introspection(lib:acc).allAsString())
     acc:=Refactor.MakePrivateSelector(kSelF of:p)<<acc
     return acc
     catch exception  MetaGuard cnr

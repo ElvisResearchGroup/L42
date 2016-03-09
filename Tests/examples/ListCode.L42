@@ -1,4 +1,4 @@
-{' generic linked list class, elements of class Elem
+{// generic linked list class, elements of class Elem
  _new(Cell head)
 
 class method
@@ -88,14 +88,14 @@ CellEnd:{()<:Cell
     
   method
   #checkEnd() 
-    void 'ok, is the end
+    void //ok, is the end
   }
   
 CellNext:{(Elem elem, Cell nextCell)<:Cell
   
   method
   vals(terminate) {
-    startPoint=CellNext(elem:this.elem(), nextCell:this), 'needed, at the start needs to be in "-1"
+    startPoint=CellNext(elem:this.elem(), nextCell:this), //needed, at the start needs to be in "-1"
     return Iterator(startPoint,terminate:terminate)
     }
     
@@ -111,8 +111,8 @@ CellNext:{(Elem elem, Cell nextCell)<:Cell
   #checkEnd()
     with cell=this.nextCell() (
       on CellNext error S"
-      'IterationNotComplete,
-      '  use valsCut() to allows incomplete iterations
+      //IterationNotComplete,
+      //  use valsCut() to allows incomplete iterations
       "
       )
   }
@@ -122,7 +122,7 @@ Iterator:{mut (var Cell that,Bool terminate)
   mut method
   Void #next() exception Void {
     x=this.that().#next()
-    with x ( on CellEnd exception void ) 'it is already over
+    with x ( on CellEnd exception void ) //it is already over
     return this.that(x) 
     }
   
@@ -132,7 +132,7 @@ Iterator:{mut (var Cell that,Bool terminate)
   
   read method
   Elem #inner()
-    this.that().#inner()' we never call this on CellEnd, #next prevents it
+    this.that().#inner()// we never call this on CellEnd, #next prevents it
   
   read method
   Void #close()

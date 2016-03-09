@@ -38,8 +38,8 @@ public void test1() throws IOException{
     //L42.setRootPath(Paths.get("dummy"));
     Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
 ,"{reuse L42.is/nanoBase1"
-,"  Time:{'@plugin"
-,"    'L42.is/connected/withLimitations"
+,"  Time:{//@plugin"
+,"    //L42.is/connected/withLimitations"
 ,"    ()}"
 ,"  Main:{"
 ,"    use Time check executionTime(lessThan:200N.binaryRepr()) ("

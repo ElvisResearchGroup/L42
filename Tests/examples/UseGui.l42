@@ -2,22 +2,22 @@
 Gui:Load[]<<{reuse L42.is/GuiLib}
 C:{
   list=Strings[S"4.png";S"2.png";S"bang.jpg";S"bang.jpg";S"bang.jpg"]
-  var msg=S"<div id='Alpha'>"
+  var msg=S"<div id=//Alpha//>"
   Gui gui=Gui(id:S"a1")
   gui.open(
     title:S"FIRST!"
     basePath:S"file:///C:\Users\marco\Desktop\eclipseMars\L42Local\Tests\examples\Img"
-    'put here any folder with the right images in
+    //put here any folder with the right images in
     body:S"
-      '<div id="Alpha"> </div>
-      '<font size="3" color="blue">Press the button to make stuff happens! (slowly)</font>
-      '<button class="button" onclick="event42('Pressed!')">Click Me!</button>
+      //<div id="Alpha"> </div>
+      //<font size="3" color="blue">Press the button to make stuff happens! (slowly)</font>
+      //<button class="button" onclick="event42(//Pressed!//)">Click Me!</button>
       "
     x:600N
     y:400N
     )
   with event in gui.events(), h in list.valsCut() (
-    msg++=S"<img src='"++h++S"' height='100' width='100'/>"
+    msg++=S"<img src=//"++h++S"// height=//100// width=//100///>"
     gui.set(msg++S"</div>", id:S"Alpha")
     )
   gui.close() 

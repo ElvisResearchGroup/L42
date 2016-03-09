@@ -126,6 +126,19 @@ import ast.Util.PathMwt;
     String file;
     String message;
   }
+    @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class InvalidCharacterOutOfString extends ErrorMessage {
+    String file;
+    int line;
+    int pos;
+    String token;
+  }
+    @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class InvalidCharacterInMultilineStringIndentation extends ErrorMessage {
+    String file;
+    int line;
+    int pos;
+    String token;
+  }
+
 
   @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class UnclosedStringLiteral extends ErrorMessage {
     String file;

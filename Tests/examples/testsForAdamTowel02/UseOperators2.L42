@@ -13,19 +13,19 @@ Main:{
   void)
   return ExitCode.normal()
   }
-'Operator method composition:
-' sum two methods: cb m1,m2 
-' A1 m1(ps1)E1 + A2 m2(A1 that, ps2)E2 
-'   = m1,m2, A2 m1+m2(ps1,ps2)E1,E2 m2(this.m1(ps1),ps2)
-' method Bool isConcrete() true iff all non state methods are implemented and
-' all the interface methods are implemented.
-'use Named and Invariat to implement Stringable (not U)
+//Operator method composition:
+// sum two methods: cb m1,m2 
+// A1 m1(ps1)E1 + A2 m2(A1 that, ps2)E2 
+//   = m1,m2, A2 m1+m2(ps1,ps2)E1,E2 m2(this.m1(ps1),ps2)
+// method Bool isConcrete() true iff all non state methods are implemented and
+// all the interface methods are implemented.
+//use Named and Invariat to implement Stringable (not U)
 
-'we need to check capsule fields are encapsulated:
-'add operator check fields sealed?
-' isUsed Path,mSel, in: mSel of:path ->extend the rename also usage?
-'well, need to check is used only on this - isUsed and isUsedAsClient? 
-'forall methods outside path, not isUsed exposer,
-' forall method in path, not isUsedAsClient, if isUsed then return class is not lent
-'discuss: is != to be desugared as ! == ?
+//we need to check capsule fields are encapsulated:
+//add operator check fields sealed?
+// isUsed Path,mSel, in: mSel of:path ->extend the rename also usage?
+//well, need to check is used only on this - isUsed and isUsedAsClient? 
+//forall methods outside path, not isUsed exposer,
+// forall method in path, not isUsedAsClient, if isUsed then return class is not lent
+//discuss: is != to be desugared as ! == ?
 }

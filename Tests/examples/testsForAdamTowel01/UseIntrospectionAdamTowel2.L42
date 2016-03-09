@@ -1,7 +1,7 @@
 {reuse L42.is/AdamTowel01
 External:{}
 Main:{
-  i2=Introspection(lib:{ Internal:{} method 'fuffa @a beer @External bar @Internal fuzz
+  i2=Introspection(lib:{ Internal:{} method //fuffa @a beer @External bar @Internal fuzz
     Void foo()})
   mFoo=i2.methodFromSelector(Selector"foo()")
   doc=mFoo.doc()

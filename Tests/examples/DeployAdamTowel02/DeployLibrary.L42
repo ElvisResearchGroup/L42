@@ -21,8 +21,8 @@ Library  exposeAsLibrary(Library that, Path path)
 exception
     MetaGuard.NestedClassUnavailable,
     MetaGuard.PrivacyCoupuled {
-  'Assert.$[path!=Path"This"]
-  this.checkTargetExists(that,path:path)'throws MetaGuard.NestedClassUnavailable
+  //Assert.$[path!=Path"This"]
+  this.checkTargetExists(that,path:path)//throws MetaGuard.NestedClassUnavailable
   var Library res=that
   Debug(S"1.1")
   res:=Refactor.RenamePath(Path"This" to:Path"PrImpl")<<res
@@ -35,7 +35,7 @@ exception
     Debug(S"1.2b "[p]" renamed")
     )
   Debug(S"1.3")
-  res:=Refactor.RemoveImplementationPath(Path"Abstract")<<res'leak PrivacyCoupuled
+  res:=Refactor.RemoveImplementationPath(Path"Abstract")<<res//leak PrivacyCoupuled
   Debug(S"1.4")
   error on MetaGuard.MemberUnavailable
     Assert.CodeNotReachable"DeployLibrary3"

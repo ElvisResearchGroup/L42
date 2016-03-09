@@ -285,7 +285,7 @@ public static class TestStage2 {
       new String[]{"{ () \n Customer:{ mut () }\n Reader :{()\n"
       +" class method capsule Customer readCustomer() (\n"
       +"   mut Customer c=Customer.#mutK()\n"
-      +"   c 'ok, capsule promotion here\n"
+      +"   c //ok, capsule promotion here\n"
       +" )}}"}
     },{lineNumber(),
         "Reader.readCustomer()",
@@ -302,7 +302,7 @@ public static class TestStage2 {
       new String[]{"{() \n Customer:{ mut () }\n Reader :{()\n"
       +" class method capsule Customer readCustomer() (\n"
       +"   mut Customer c=Customer.#mutK()\n"
-      +"   return c 'ok, capsule promotion here\n"
+      +"   return c //ok, capsule promotion here\n"
       +"   catch return mut Customer x x"
       +"   error void)}}"}
     },{lineNumber(),
@@ -312,7 +312,7 @@ public static class TestStage2 {
       new String[]{"{() \n Customer:{ mut () }\n Reader :{()\n"
       +" class method capsule Customer readCustomer() {\n"
       +"   mut Customer c=Customer.#mutK()\n"
-      +"   return c 'ok, capsule promotion here\n"
+      +"   return c //ok, capsule promotion here\n"
       +" }}}"}
     }});}
 
@@ -369,7 +369,7 @@ public static class TestStage3_notOk {
       },{lineNumber(),"use A check sumInt32(n1:void n2:{}) error void",
           new Ast.FreeType(),
           new Ast.FreeType(),
-          new String[]{"{ A:{'@plugin\n'L42.is/connected/withAlu\n}}"}
+          new String[]{"{ A:{//@plugin\n//L42.is/connected/withAlu\n}}"}
       //test to check that exception Any can not be captured
       },{lineNumber(),"( exception D() catch exception Any x void void)",
         NormType.immVoid,

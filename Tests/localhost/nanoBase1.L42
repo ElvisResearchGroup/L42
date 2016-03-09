@@ -1,6 +1,6 @@
 {
 
-Bool:{(Library binaryRepr)<:S.ToS '@private
+Bool:{(Library binaryRepr)<:S.ToS //@private
   method Void #checkTrue() exception Void
     using Alu
       check ifInt32EqualDo(n1:this.binaryRepr() n2:0N.binaryRepr())
@@ -29,18 +29,18 @@ Bool:{(Library binaryRepr)<:S.ToS '@private
 
 ExitCode:{
   class method
-  Library normal() {'@exitStatus
-     '0
+  Library normal() {//@exitStatus
+     //0
     }
   class method
-  Library failure() {'@exitStatus
-     '42000
+  Library failure() {//@exitStatus
+     //42000
     }
   }
 
-Alu:{'@plugin
-  'L42.is/connected/withAlu
-  _private()'@private
+Alu:{//@plugin
+  //L42.is/connected/withAlu
+  _private()//@private
   }
 
 N:{(Library binaryRepr)<:S.ToS
@@ -154,11 +154,11 @@ S:{ _private(Library _binaryRepr)<: ToS
   class method
   S doubleQuote()
     S"
-    '"
+    //"
     "(0N)
 
   method
-  S replace(S that, S into){'that must be of size 1
+  S replace(S that, S into){//that must be of size 1
     var N i=0N
     var S result=S""
     while i<this.size() (
@@ -170,7 +170,7 @@ S:{ _private(Library _binaryRepr)<: ToS
     }
   }
 
-Debug:{_private() '@private
+Debug:{_private() //@private
   class method
   Void (S that)
     using Alu

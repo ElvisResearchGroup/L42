@@ -1,10 +1,10 @@
 { reuse L42.is/tinyBase0
 
 Load:{
-  class method This #begin()'constructor
+  class method This #begin()//constructor
   method This #end() this
   method Library < (Library that) {
-    'assume that have abstract Bool N and S
+    //assume that have abstract Bool N and S
     return Adapt[
       Name"N" into:Name(N);
       Name"S" into:Name(S);
@@ -34,7 +34,7 @@ Opt:{unused()
   }
 Use:{ (Resolver resolver,Libs myLibs)
   Resolver: Opt(Library)
-  Libs:'@private
+  Libs://@private
     Collections.list(Library)
   class method
   This () This(resolver:Resolver(), myLibs:Libs[])
@@ -72,9 +72,9 @@ Use:{ (Resolver resolver,Libs myLibs)
       S _name=ms.pop().pop().top().name()
       S _nameLeft=ms.pop().top().name()
       S _nameRight=ms.top().name()
-      'Debug(S"name is: "++_name)
-      'Debug(S"nameLeft is: "++_nameLeft)
-      'Debug(S"nameRight is: "++_nameRight)
+      //Debug(S"name is: "++_name)
+      //Debug(S"nameLeft is: "++_nameLeft)
+      //Debug(S"nameRight is: "++_nameRight)
       Name name=Name.#stringParser(_name.binaryRepr())
       Name nameLeft=Name.#stringParser(_nameLeft.binaryRepr())
       Name nameRight=Name.#stringParser(_nameRight.binaryRepr())
@@ -96,7 +96,7 @@ Use:{ (Resolver resolver,Libs myLibs)
     return This(resolver:res, myLibs:list)
     }
   }
-Adapt:{(Library adapter)'@private
+Adapt:{(Library adapter)//@private
 
   class method
   This () This(adapter:{})
@@ -139,7 +139,7 @@ class method
   Library (Name that, Library into){
     if that.isExternalPathName() (error S"start name must be internal")
     if !that.isInternalPathName() (return This(that:that,of:Name"This", into:into))
-    res=IntrospectionPlugin.sumComment(into, comment:{'@private      
+    res=IntrospectionPlugin.sumComment(into, comment:{//@private      
       },adapter:that.adapter())
     fName=Name(adapter:IntrospectionPlugin.getFreshName(that.adapter()))
     return Adapt[that into:fName]<res
@@ -148,7 +148,7 @@ class method
     Library (Name that, Name of, Library into){
     pName=IntrospectionPlugin.adaptLib(
       l1:that.adapter(), l2:of.adapter())
-    res=IntrospectionPlugin.sumComment(into,comment:{'@private      
+    res=IntrospectionPlugin.sumComment(into,comment:{//@private      
       },adapter:pName)
     fName=Name(adapter:IntrospectionPlugin.getFreshName(that.adapter()))
     return Adapt[that of:of into:fName]<res

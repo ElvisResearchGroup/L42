@@ -54,15 +54,15 @@ public class TestSingleStep {
           + " This0.C zz= This0.C.new()"
           + " mut This0.D x= y"
           + " x)"
-       },{lineNumber(),"{ A:{'@plugin\n'L42.is/connected/withAlu\n()}"
+       },{lineNumber(),"{ A:{//@plugin\n//L42.is/connected/withAlu\n()}"
         + " C: use A check sumInt32(n1:{} n2:{}) error void}",
-          "{ A:{'@plugin\n'L42.is/connected/withAlu\n()}##star ^##"
-        + " C:error {'@stringU\n'InvalidInt32\n}##star ^##}"
+          "{ A:{//@plugin\n//L42.is/connected/withAlu\n()}##star ^##"
+        + " C:error {//@stringU\n//InvalidInt32\n}##star ^##}"
 
-       },{lineNumber(),"{ A:{'@plugin\n'L42.is/connected/withAlu\n()}"
-           + " C: use A check sumInt32(n1:{'@int32\n'5\n} n2:{'@int32\n'3\n}) error void}",
-             "{ A:{'@plugin\n'L42.is/connected/withAlu\n()}##star ^##"
-           + " C:{'@int32\n'8\n}}"
+       },{lineNumber(),"{ A:{//@plugin\n//L42.is/connected/withAlu\n()}"
+           + " C: use A check sumInt32(n1:{//@int32\n//5\n} n2:{//@int32\n//3\n}) error void}",
+             "{ A:{//@plugin\n//L42.is/connected/withAlu\n()}##star ^##"
+           + " C:{//@int32\n//8\n}}"
 
 
        },{lineNumber(),"(This0.C x= This0.C.new() void)","(void)"
@@ -137,12 +137,12 @@ public class TestSingleStep {
 
 
          //can not work without the normalization
-       //},{"{ C:( Library result=( ( ( Library result0=(  {'@exitStatus\n'0\n} ) result0 ) ) ) result )}",
-         },{lineNumber(),"{ C:( Library result=( ( ( Library result0=  {'@exitStatus\n'0\n}  result0 ) ) ) result )}",
-           " { C:( Library result=( ( ( {'@exitStatus\n'0\n}##star ^## ) ) ) result )}"
+       //},{"{ C:( Library result=( ( ( Library result0=(  {//@exitStatus\n//0\n} ) result0 ) ) ) result )}",
+         },{lineNumber(),"{ C:( Library result=( ( ( Library result0=  {//@exitStatus\n//0\n}  result0 ) ) ) result )}",
+           " { C:( Library result=( ( ( {//@exitStatus\n//0\n}##star ^## ) ) ) result )}"
        },{lineNumber(),TestHelper.multiLine("{"
-        ,"C:{ k() class method Library ok() ({'@oK\n})"
-        ,"        class method Library ko() ({'@kO\n})"
+        ,"C:{ k() class method Library ok() ({//@oK\n})"
+        ,"        class method Library ko() ({//@kO\n})"
         ,"  }"
         ,"I:{interface }"
         ,"AI:{ k()<:This1.I}"
@@ -153,10 +153,10 @@ public class TestSingleStep {
         ,"  )}"),
         TestHelper.multiLine(
          "{C:{ k()class method Library ok() ("
-        ,"  {'@oK"
+        ,"  {//@oK"
         ,"}##star ^##"
         ,"  )class method Library ko() ("
-        ,"  {'@kO"
+        ,"  {//@kO"
         ,"}##star ^##"
         ,"  )}##star ^## I:{interface }##star ^## AI:{ k()<:This1.I}##star ^## D:("
         ,"  Any z=error ("

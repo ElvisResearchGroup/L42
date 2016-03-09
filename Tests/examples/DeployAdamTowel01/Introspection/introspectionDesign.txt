@@ -5,14 +5,14 @@ Introspection:{
 
   Member:{interface}
   NestedClass:{<:Member
-    (NestedClass root, Path path,Mirror mainMirror, Record report)'@private
+    (NestedClass root, Path path,Mirror mainMirror, Record report)//@private
     method NestedClass root()
-    method Doc nestedDoc()' error  for This
-    method Doc doc() 'of the library literal
-    method Path pathFromRoot() ' invariant NestedClass(...).nestedClassFromRoot(path).pathFromRoot()==path
-    method class Any externalType() 'error if  root()!=this or root() is literal, otherwise contains the class Any used to initialize root/this.
+    method Doc nestedDoc()// error  for This
+    method Doc doc() //of the library literal
+    method Path pathFromRoot() // invariant NestedClass(...).nestedClassFromRoot(path).pathFromRoot()==path
+    method class Any externalType() //error if  root()!=this or root() is literal, otherwise contains the class Any used to initialize root/this.
     method S classKind()
-    method S allAsString()  'just the library literal
+    method S allAsString()  //just the library literal
     method Members members()
     method Methods methods()
     method NestedClasses nestedClasses()
@@ -29,9 +29,9 @@ Introspection:{
     method NestedClass nestedClass()
     method Doc doc()
     method S thisMdf()
-    method Path pathFromRoot()' invariant NestedClass(...).nestedClassFromRoot(path).pathFromRoot()==path
+    method Path pathFromRoot()// invariant NestedClass(...).nestedClassFromRoot(path).pathFromRoot()==path
     method Selector selector()
-    method S memberKind() 'one of NestedClass,InterfaceImplementedMethod,ImplementedMethod,AbstractMethod
+    method S memberKind() //one of NestedClass,InterfaceImplementedMethod,ImplementedMethod,AbstractMethod
     method S allAsString()
     method Type returnType()
     method Types exceptions()
@@ -40,13 +40,13 @@ Introspection:{
 
   Type:{
     method NestedClass root()
-    method S typeKind() '{Normal,Alias,AliasUnresolvable}
-    method S mdf()'error on AliasUnresolvable
+    method S typeKind() //{Normal,Alias,AliasUnresolvable}
+    method S mdf()//error on AliasUnresolvable
     method NestedClass referencedPath()
-    method NestedClass resolvedReferencedPath() 'error on AliasUnresolvable
+    method NestedClass resolvedReferencedPath() //error on AliasUnresolvable
     method Bool partial()
-    method Bool resolvedPartial() 'error on Normal? or the same of partial()
-    method S suffix()  'error on Normal
+    method Bool resolvedPartial() //error on Normal? or the same of partial()
+    method S suffix()  //error on Normal
     method Doc doc()
     method S allAsString()
     }

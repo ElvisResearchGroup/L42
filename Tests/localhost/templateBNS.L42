@@ -1,9 +1,9 @@
 {reuse L42.is/miniBase
-'NameList:Collections.list(Name)
-'Generalize:{(NameList internals)
-'  class method This #begin() This(internals:NameList())
-'  method This #add(Name that) This(internals:this.internals.#add(that))
-'  method This #end() this
+//NameList:Collections.list(Name)
+//Generalize:{(NameList internals)
+//  class method This #begin() This(internals:NameList())
+//  method This #add(Name that) This(internals:this.internals.#add(that))
+//  method This #end() this
   
 Generalize:{()
   class method This #begin() This()
@@ -19,7 +19,7 @@ Generalize:{()
     result:=Adapt[Name"This" into:Name"PrivateImpl"]<result
     result:=Adapt[Name"PrivateImpl.Exported" into:Name"This"]<result
     result:=MakePrivate(Name"PrivateImpl" into:result)
-    'result:=IntrospectionPlugin.purgePrivates(result)
+    //result:=IntrospectionPlugin.purgePrivates(result)
     Debug(S"###############---Generating")
     Debug(Introspection(result).get())
     Debug(S"###############---End")

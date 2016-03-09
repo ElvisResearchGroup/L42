@@ -6,11 +6,11 @@ Parsable:{
   class method Library<<(Library that)
   exception DecorationUnfeasable{
     return Extends[{
-      'ParseFailure:Message:S[]<<{<:Guard} no need, related to invariant?
-      class method' if you do not implement it, it is a constructor?
+      //ParseFailure:Message:S[]<<{<:Guard} no need, related to invariant?
+      class method// if you do not implement it, it is a constructor?
       This fromS(read Concept.ToS that)    
-      'will be in the interface when there is class refinement,
-      'and will be imm in the interface, and classes can refine to their outer0, and to capsule if makes sense
+      //will be in the interface when there is class refinement,
+      //and will be imm in the interface, and classes can refine to their outer0, and to capsule if makes sense
       
       class method
       This #from(S.SBuilder builder)
@@ -24,14 +24,14 @@ Parsable:{
     }
   }
 SealState:{
-  ' how to specify which factory to keep out? what getters
+  // how to specify which factory to keep out? what getters
   class method Library<<(Library that){
     i=Introspection(lib:that)
     return that
     }
   }
   
-DataFromToS:{' in the future we can add also hashCode and > =>
+DataFromToS:{// in the future we can add also hashCode and > =>
   class method Library<<(Library that) exception DecorationUnfeasable{
     return Extends[{<:Concept.ToS
     method Bool != (This that) !(this==that)
@@ -63,7 +63,7 @@ Named:{
         method myName()
           Introspection(clazz:This).externalTypeToS()
         }]<<that
-    'can improve error: if is method defined against method implemented
+    //can improve error: if is method defined against method implemented
     exception on MetaGuard
       DecorationUnfeasable"Named"
     }

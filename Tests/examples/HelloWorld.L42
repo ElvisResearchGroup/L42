@@ -1,8 +1,8 @@
 {reuse L42.is/miniBase
 
-Main:{' do not need to be called main
+Main:{// do not need to be called main
   Debug(S"Hello world!")
   return ExitCode.normal()
-  'return ExitCode.failure()'this is a comment
+  //return ExitCode.failure()//this is a comment
   }
 }

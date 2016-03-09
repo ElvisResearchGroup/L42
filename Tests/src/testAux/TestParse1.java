@@ -26,11 +26,11 @@ public class TestParse1 {
       return Arrays.asList(new Object[][] {
   {lineNumber(), "a"
   },{lineNumber()," (This0.that().#next() x=this.that().#next() x)"
-//},{lineNumber(),"{'@ExpectedClass :( \n}"//TODO: the ( is turned in \t, and \t is not accepted in comments.
-//    more important: should ' be accepted in single line strings?
+//},{lineNumber(),"{//@ExpectedClass :( \n}"//TODO: the ( is turned in \t, and \t is not accepted in comments.
+//    more important: should // be accepted in single line strings?
 },{lineNumber(),TestHelper.multiLine("{"
-        ,"C:{ k() class method Library ok() ({'@OK\n})"
-        ,"        class method Library ko() ({'@KO\n})"
+        ,"C:{ k() class method Library ok() ({//@OK\n})"
+        ,"        class method Library ko() ({//@KO\n})"
         ,"  }"
         ,"I:{interface }"
         ,"AI:{ k()<:This1.I}"
@@ -44,7 +44,8 @@ public class TestParse1 {
   },{lineNumber(),"{ reuse L42.is/nanoBase }"
   },{lineNumber(),"{ reuse L42.is/base(2) }"//I test that that is a well formed url
   },{lineNumber(),"{ reuse L42.is/nanoBase \n method foo() (void)}"
-},{lineNumber(),"{ C:{k() class method Library m() ({'@OK\n} )} D:C.m() }"
+},{lineNumber(),"{ C:{k() class method Library m() ({//@OK\n} )} D:C.m() }"
+},{lineNumber(),"{ C:{k() class method Library m() ({//@oK\n} )} D:C.m() }"
 },{lineNumber(),"{outer() C: {new() class method Library m() ({inner()})} D: C.m()}"
 },{lineNumber(),"{outer() C: {new() class method Library m() ({inner()})} D: ({inner()})}"
 
@@ -84,12 +85,12 @@ public class TestParse1 {
 },{lineNumber(),"a .foo( a: !b b: c7d )"
 },{lineNumber(),"a .foo(a:b ).bar()"
 },{lineNumber(),"a .foo(a:b ) .bar( )"
-},{lineNumber(),"a '.foo(a$$:b ) .bar( )\n"
-},{lineNumber(),"a 'b\n 'c\n "
+},{lineNumber(),"a //.foo(a$$:b ) .bar( )\n"
+},{lineNumber(),"a //b\n //c\n "
 },{lineNumber(),"a[]"
 },{lineNumber(),"a []"
 },{lineNumber(),"a [ ]"
-},{lineNumber(),"a ['foo\n ]"
+},{lineNumber(),"a [//foo\n ]"
 },{lineNumber(),"a [x:a;]"
 },{lineNumber(),"a [a;]"
 },{lineNumber(),"a [a; ]"
@@ -100,7 +101,7 @@ public class TestParse1 {
 },{lineNumber(),"a[;]"
 },{lineNumber(),"a [;;]"
 },{lineNumber(),"a [;;a]"
-},{lineNumber(),"a [;'foo\n ]"
+},{lineNumber(),"a [;//foo\n ]"
 },{lineNumber(),"a [x:a;a]"
 },{lineNumber(),"a [x:a]"
 },{lineNumber(),"a [a]"
@@ -122,7 +123,7 @@ public class TestParse1 {
 },{lineNumber()," {foo()}"
 },{lineNumber()," {mut ()}"
 },{lineNumber()," {mut foo()}"
-},{lineNumber()," {'bla bla \n mut foo()}"
+},{lineNumber()," {//bla bla \n mut foo()}"
 },{lineNumber()," (a )(b,x:c)"
 },{lineNumber()," (a-a)()"
 },{lineNumber(),  "{ method () (b)}"
@@ -132,9 +133,9 @@ public class TestParse1 {
     +" read method This0.A #a() ##field"
     +" mut method Void a(This0.A that) ##field"
     +" }"
-},{lineNumber(),"a'bla\n"//test that is not ok without newline
+},{lineNumber(),"a//bla\n"//test that is not ok without newline
 },{lineNumber()," S\"aaa\""
-},{lineNumber()," S\"a'aa\""
+},{lineNumber()," S\"a//aa\""
 },{lineNumber()," S\"+\""
 },{lineNumber()," S\"(\""
 },{lineNumber()," S\")\""
@@ -144,12 +145,12 @@ public class TestParse1 {
 },{lineNumber()," S\"((\""
 },{lineNumber()," S\"))\""
 },{lineNumber()," S\"+foo(\""
-},{lineNumber(),"Gui.executeJs(S\"alert'Hello\")"
+},{lineNumber(),"Gui.executeJs(S\"alert//Hello\")"
 },{lineNumber()," { method Foo foo()(this)}"
-},{lineNumber()," { method Foo foo()(this)'bla\n}"
+},{lineNumber()," { method Foo foo()(this)//bla\n}"
 },{lineNumber()," { method Foo foo()(this)[x:this();]}"
-},{lineNumber()," { method Foo foo()(this)[]()()'bla\n}"
-//No more ok},{lineNumber()," {'bla bla \n shared 'blue blue \n foo()}"
+},{lineNumber()," { method Foo foo()(this)[]()()//bla\n}"
+//No more ok},{lineNumber()," {//bla bla \n shared //blue blue \n foo()}"
 }});}
   @Test public void termsOk(){TestHelper.isETop(s);}
   }
@@ -160,7 +161,7 @@ public class TestParse1 {
     @Parameterized.Parameters
     public static List<Object[]> createData() {
       return Arrays.asList(new Object[][] {
-  {"a ['foo ]"
+  {"a [//foo ]"
 },{"a .foo (a:b ) .bar( )"
 //??notETop("12 a+b<c-d|h");
 },{"a+b ))c"
@@ -173,7 +174,7 @@ public class TestParse1 {
 },{"(a+ (c)"
 },{"(a+(c)"
 },{"(a))+c)"
-},{"a'bla"
+},{"a//bla"
 //},{"a+b*c" is ok, is captured as a well formedness
   //now is fine instead//"a + ((b < (c))) - d |, h");}//space is required before parenthesis
 }});}

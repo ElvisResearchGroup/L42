@@ -26,8 +26,8 @@ public class TestL42Short {
     TestHelper.configureForTest();
     Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
 ,"{ reuse L42.is/nanoBase0"
-,"C:{'@exitStatus"
-," '0"
+,"C:{//@exitStatus"
+," //0"
 ,"}"
 ,"}"
         )).getErrCode(),0);
@@ -39,8 +39,8 @@ public class TestL42Short {
     Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
 ,"{reuse L42.is/nanoBase0"
 ,"    C:{"
-//,"    'if True() (return ExitCore.normal())"
-//,"    'return ExitCode.failure()"
+//,"    //if True() (return ExitCore.normal())"
+//,"    //return ExitCode.failure()"
 ,"    return ExitCode.normal()"
 ,"    }"
 ,"  }"

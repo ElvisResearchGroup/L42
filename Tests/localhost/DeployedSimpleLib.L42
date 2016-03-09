@@ -1,8 +1,8 @@
-{'could be in another file
+{//could be in another file
 
 Abstract:{
-Alu:{'@plugin
-'L42.is/connected/withAlu
+Alu:{//@plugin
+//L42.is/connected/withAlu
 }
 ExitCode:{
 class method 
@@ -534,21 +534,21 @@ This2.Bool greater(read Any that) }
 Boollable:{interface 
 read method 
 Void #checkTrue() exception Void }
-Decorator:{interface 'method Library>>(Library that) exception MetaGuard(specific)
-'method Library decorate(Library that) exception MetaGuard I can link metaguard for circularity
+Decorator:{interface //method Library>>(Library that) exception MetaGuard(specific)
+//method Library decorate(Library that) exception MetaGuard I can link metaguard for circularity
 }
-Contains:{interface 'read method Bool >>(read Elem that)
+Contains:{interface //read method Bool >>(read Elem that)
 
 read method 
 This2.Bool contains(read Any that) }
-Parsable:{interface 'class method capsule This fromS(S that) exception Guard.Parameter(specific) invalid string
-'''class method capsule This #fromS(S that) exception Guard.Parameter
+Parsable:{interface //class method capsule This fromS(S that) exception Guard.Parameter(specific) invalid string
+//////class method capsule This #fromS(S that) exception Guard.Parameter
 }
 Invariant:{interface 
-read method ' can throw error or return false, as more opportune
+read method // can throw error or return false, as more opportune
 This2.Bool invariant() }
-RandomAccess:{interface 'read method read Elem (N that)
-'mut method mut Elem #(N that)
+RandomAccess:{interface //read method read Elem (N that)
+//mut method mut Elem #(N that)
 
 read method 
 read Any get(This2.N that) 
@@ -621,15 +621,15 @@ class method
 Library #leftleft(Library that) 
 class method 
 Library messageTrait() }}
-Guard:{' exception as Guard bureocracy, error as Guard detection
-'-is a check guarenteed to be performed, program logic can rely on this being enforced.
-'  as exceptions, Guards objects are a way to report/guard complex operations,
-' where checking the shape of the input can be unconvenient.
-'as errors, they represent precondition violations. 
-'Turning an exception Guard into an error Guard
-' is equivalent of declaring that such misuse should not happen (blame on the caller),
-' still, there is no bug in the program at this stage. Is legit for the caller to try and be blamed
-interface <:This1.Message'all other guards should implement this one
+Guard:{// exception as Guard bureocracy, error as Guard detection
+//-is a check guarenteed to be performed, program logic can rely on this being enforced.
+//  as exceptions, Guards objects are a way to report/guard complex operations,
+// where checking the shape of the input can be unconvenient.
+//as errors, they represent precondition violations. 
+//Turning an exception Guard into an error Guard
+// is equivalent of declaring that such misuse should not happen (blame on the caller),
+// still, there is no bug in the program at this stage. Is legit for the caller to try and be blamed
+interface <:This1.Message//all other guards should implement this one
 
 Operation:{<:This1, This2.Message
 class method 
@@ -765,7 +765,7 @@ method
 mut This2.S.SConcat #seqBuilder() }
 ParseFail:{interface <:This1}}
 System:{
-Guard:{'<:Outer.Guard soon (remove "interface" for a bad translation bug: This1_System_Guard is not abstract and does not override abstract method MtoS()
+Guard:{//<:Outer.Guard soon (remove "interface" for a bad translation bug: This1_System_Guard is not abstract and does not override abstract method MtoS()
 interface <:This2.Guard
 PluginFailure:{<:This1, This3.Message
 class method 
@@ -1198,9 +1198,9 @@ method
 This1.PreferentialComposition _PreferentialComposition() 
 method 
 This1.Load _Load() }
-Url:{'ParseFailure:Message:S[]<<{<:Guard} no need, related to invariant?
+Url:{//ParseFailure:Message:S[]<<{<:Guard} no need, related to invariant?
 <:This1.Concept.ToS
-class method ' if you do not implement it, it is a constructor?
+class method // if you do not implement it, it is a constructor?
 This0 fromS(read This1.Concept.ToS that) 
 class method 
 This0 #from(This1.S.SBuilder builder) 
@@ -1369,7 +1369,7 @@ This1 #from(This3.S.SBuilder builder) }
 method 
 mut This2.S.SConcat #seqBuilder() }}
 MetaGuard:{interface <:This1.Guard
-RecordWrapper:' can not be private, I need to Patch it.
+RecordWrapper:// can not be private, I need to Patch it.
 {
 class method 
 This2.S libToS(Library that) 
@@ -1538,7 +1538,7 @@ method
 This2.Bool #equalequal(This0 that) 
 class method 
 Void #apply(Library lift) exception This0 }}
-Introspection:{'findMeIntrospection
+Introspection:{//findMeIntrospection
 
 class method 
 This0.NestedClass #apply(Library lib) 
@@ -1772,11 +1772,11 @@ method
 This2.S #from(This2.S.SBuilder builder) 
 method 
 This1.Doc docOf(This2.Path path) 
-RootForMember:' toPutAs private
+RootForMember:// toPutAs private
 {interface 
 method 
 This2.Member #apply(fwd This2.NestedClass root) }
-RootForNested:' toPutAs private
+RootForNested:// toPutAs private
 {<:This1.RootForMember
 class method 
 mut This0 #mutK(This3.Path path, This2.MirrorPr mirror, This1 _report) 
@@ -1794,7 +1794,7 @@ mut method
 This1 #_report() 
 read method 
 This1 _report() }
-RootForMethod:' toPutAs private
+RootForMethod:// toPutAs private
 {<:This1.RootForMember
 class method 
 mut This0 #mutK(This3.Path path, This3.N memberN, This1 _report) 
@@ -1970,7 +1970,7 @@ method
 This1.Doc doc() 
 method 
 This2.S thisMdf() 
-method ' invariant NestedClass(...).nestedClassFromRoot(path).pathFromRoot()==path
+method // invariant NestedClass(...).nestedClassFromRoot(path).pathFromRoot()==path
 This2.Path pathFromRoot() 
 method 
 This2.Selector selector() 
@@ -2134,7 +2134,7 @@ method
 This0 withoutAll(This1.Method that) 
 read method 
 This2.Bool #equalequal(read This0 that) }
-NestedClass:{'findMeNestedClass
+NestedClass:{//findMeNestedClass
 <:This1.Member, This2.Concept.Equals
 method 
 This2.Bool #equalequal(This0 that) 
@@ -2142,9 +2142,9 @@ method
 This2.Bool #bangequal(This0 that) 
 method 
 This0 root() 
-method 'error for This
+method //error for This
 This1.Doc nestedDoc() 
-method 'of the library literal
+method //of the library literal
 This1.Doc doc() 
 method 
 This2.Path pathFromRoot() 
@@ -2687,7 +2687,7 @@ Library #leftleft(Library that) }}
 Opt:{
 class method 
 Library #apply(class Any that) }
-Extends:{'members of each produced class
+Extends:{//members of each produced class
 <:This1.PreferentialComposition.$, This1.PreferentialComposition.$
 class method 
 mut This1.PreferentialComposition.Libs #seqBuilder() 
@@ -2697,7 +2697,7 @@ method
 Library #leftleft(Library that) exception This1.MetaGuard.ClassClash, This1.MetaGuard.MethodClash 
 method 
 This0 #plusplus(This0 that) }
-Use:{'members of each produced class
+Use:{//members of each produced class
 <:This1.PreferentialComposition.$, This1.PreferentialComposition.$
 class method 
 mut This1.PreferentialComposition.Libs #seqBuilder() 
@@ -2755,11 +2755,11 @@ mut This2.S.SConcat #seqBuilder() }
 Parsable:{
 class method 
 Library #leftleft(Library that) exception This1.DecorationUnfeasable }
-SealState:{' how to specify which factory to keep out? what getters
+SealState:{// how to specify which factory to keep out? what getters
 
 class method 
 Library #leftleft(Library that) }
-DataFromToS:{' in the future we can add also hashCode and > =>
+DataFromToS:{// in the future we can add also hashCode and > =>
 
 class method 
 Library #leftleft(Library that) exception This1.DecorationUnfeasable }
@@ -2772,8 +2772,6 @@ Library #leftleft(Library that) exception This1.DecorationUnfeasable }}
 Collections:{
 CollectionErrors:{
 class method 
-Any unreachable() 
-class method 
 Any negBound(This2.N that, This1.MutListAny list) 
 class method 
 Any outBound(This2.N that, This1.MutListAny list) 
@@ -2781,7 +2779,50 @@ class method
 Any cast() 
 class method 
 Any iterationTermination(This2.N from, This2.N stopOk, This2.N size) }
-IterationFailure:{}
+IterationFailure:{<:This2.Guard, This2.Message
+class method 
+mut This0 #mutK(This2.S _text, This2.Message.Opt cause) 
+class method 
+This0 #apply(This2.S _text, This2.Message.Opt cause) 
+mut method 
+This2.S #_text() 
+read method 
+This2.S _text() 
+mut method 
+This2.Message.Opt #cause() 
+read method 
+This2.Message.Opt cause() 
+method 
+This0 #apply(This2.Message that) 
+method 
+This2.Bool #bangequal(This0 that) 
+method 
+This2.Bool #equalequal(This0 that) 
+class method 
+This0 #apply(This2.S text) 
+class method 
+This0 #apply(This2.S text, This2.Message cause) 
+class method 
+mut This2.S.SBuilder #builder() 
+class method 
+This0 #from(This2.S.SBuilder builder) 
+method 
+This0.Continue #from(This2.S.SConcat seqBuilder) 
+Continue:{
+class method 
+mut This0 #mutK(This3.S that) 
+class method 
+This0 #apply(This3.S that) 
+mut method 
+This3.S #that() 
+read method 
+This3.S that() 
+method 
+mut This3.S.SBuilder #builder() 
+method 
+This1 #from(This3.S.SBuilder builder) }
+method 
+mut This2.S.SConcat #seqBuilder() }
 MutListAny:{
 class method 
 mut This0 #mutK(This0.Cell head, This2.N size) 
@@ -2855,19 +2896,19 @@ CodeEq:{
 class method 
 Library #apply() }}
 DeployTowel:{
-class method '(Any fileName)
+class method //(Any fileName)
 mut This0 #mutK(This1.Url fileName) 
-class method '(Any fileName)
+class method //(Any fileName)
 This0 #apply(This1.Url fileName) 
-mut method '(Any fileName)
+mut method //(Any fileName)
 This1.Url #fileName() 
-read method '(Any fileName)
+read method //(Any fileName)
 This1.Url fileName() 
 class method 
 Library binaryReprFrom(Library lib) 
 method 
 Library #leftleft(Library that) }
-PreferentialComposition:{'members of PreferentialComposition
+PreferentialComposition:{//members of PreferentialComposition
 
 $:{interface 
 method 
@@ -3175,10 +3216,10 @@ class method
 This1.Bool needRename(This1.Introspection.NestedClass that, This1.Introspection.Method meth) 
 class method 
 Library #leftleft(Library that) exception This1.MetaGuard.ClassClash, This1.MetaGuard.MethodClash }
-Load:{'shape of a loadable library:
-' This contains actual library, but
-' Abstract:{} contains abstract classes, and
-' Abstract.ConceptMap mapps concepts names to abstract classes
+Load:{//shape of a loadable library:
+// This contains actual library, but
+// Abstract:{} contains abstract classes, and
+// Abstract.ConceptMap mapps concepts names to abstract classes
 
 ConceptMapMismatch:{<:This2.MetaGuard, This2.Message
 class method 

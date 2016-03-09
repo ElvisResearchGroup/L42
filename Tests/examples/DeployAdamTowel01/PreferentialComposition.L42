@@ -1,5 +1,5 @@
 {
-'members of PreferentialComposition
+//members of PreferentialComposition
 $:{interface
   method
   Library solveConflict(Library that,SrcDest location)
@@ -8,7 +8,7 @@ SrcDest:{(Path path, Selector src,Selector dest)}
 SrcDests:Collections.vector(of:SrcDest)
 Libs: Collections.vector(of:Library)
 
-class method '@private
+class method //@private
 SrcDests renameMap(Library that,S prefix,Introspection.NestedClasses intros)
   SrcDests[with intro in intros.vals() (
     round=this.renameMap(that,prefix:prefix,
@@ -43,8 +43,8 @@ Introspection.NestedClass that,Introspection.Method meth) {
 class method
 Library <<(Library that) exception MetaGuard.ClassClash,MetaGuard.MethodClash
   Refactor.compose(left:that,right:{
-  'members of each produced class
- (Libs myLibs)<:$ '@private
+  //members of each produced class
+ (Libs myLibs)<:$ //@private
 
 
   class method

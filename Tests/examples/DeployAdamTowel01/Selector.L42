@@ -1,4 +1,4 @@
-{ _private(Library _binaryRepr)<:Concept.ToS Concept.Equals Concept.Named'@private
+{ _private(Library _binaryRepr)<:Concept.ToS Concept.Equals Concept.Named//@private
   method myName()GetMyName(This)
 
   class method
@@ -26,7 +26,7 @@
     if names.isEmpty() (return This.fromS(name++S"()"))
     pars=S"("[with n in names.vals() (use[n++S","])]""
     return This.fromS(name++pars(end:pars.size()-1N)++S")")
-    'This.fromS(name[pars(end:#-1N)]")")
+    //This.fromS(name[pars(end:#-1N)]")")
     }
   method S nameAsField() {
     n=this.name()
@@ -72,7 +72,7 @@
   Strings names(){
     var S str=this.toS()
     str:=str(start:str.firstIndexOf(S"(")+1N, end:str.size()-1N)++S","
-    ' from foo(a,b,c) to a,b,c,
+    // from foo(a,b,c) to a,b,c,
     result=Strings.empty()
     if str==S"," (return result)
     while str!=S"" (
@@ -95,5 +95,5 @@
     tot:=tot(start:0N end:tot.size()-1N)++S")"
     return Selector.fromS(tot)
     }
-  'we still need to add check validity, and fields name, list parameters, and ways to add/remove parameters
+  //we still need to add check validity, and fields name, list parameters, and ways to add/remove parameters
   }

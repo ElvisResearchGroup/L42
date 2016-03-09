@@ -1,6 +1,6 @@
 {
-Alu:{'@plugin
-  'L42.is/connected/withAlu
+Alu:{//@plugin
+  //L42.is/connected/withAlu
   }
 ExitCode:...
 Url:{(Library binaryRepr)
@@ -16,8 +16,8 @@ Url:{(Library binaryRepr)
   }
 DeployTowel:...
 ResourceDeploy:{class method Library (){
-  ExitCode:...' TODO:need to add a check that deployed code is self consistent/self contained.
-  'otherwise removing exitCode give errors only on the user side
+  ExitCode:...// TODO:need to add a check that deployed code is self consistent/self contained.
+  //otherwise removing exitCode give errors only on the user side
   DeployTowel:...
   }}
 AdamTowel01:{class method Library () ...}

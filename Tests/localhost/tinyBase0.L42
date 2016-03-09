@@ -1,12 +1,12 @@
 {reuse L42.is/nanoBase2
 
 Name:{
-'(Bool isExternal, Library adapter)
-'external is "pointing out"
-'internal is " A.B.C"
-'not external and not internal is a method name
+//(Bool isExternal, Library adapter)
+//external is "pointing out"
+//internal is " A.B.C"
+//not external and not internal is a method name
 
-  new(Bool externalPath, Bool internalPath,S repr, Library adapter)'@private
+  new(Bool externalPath, Bool internalPath,S repr, Library adapter)//@private
   method Bool isExternalPathName() this.externalPath()
   method Bool isInternalPathName() this.internalPath()
   method Bool isMethodName() !this.externalPath()  & !this.internalPath()
@@ -44,11 +44,11 @@ Name:{
           }
       return This.new(
         externalPath:isExternal
-        internalPath:!isExternal 'can not be a methodName
-        repr:repr 'try to put repr definition here
+        internalPath:!isExternal //can not be a methodName
+        repr:repr //try to put repr definition here
         adapter:adapter
         )}
-  class method '@private
+  class method //@private
     S getInternalAdapterStringOrEmpty(Library adapter){
       Library result= using IntrospectionPlugin 
         check getInternalAdapterPathOrElse(adapter)
@@ -56,7 +56,7 @@ Name:{
       return S.#stringParser(result)
       }
     
-  class method '@private
+  class method //@private
   Bool computeIsInternalPath(Library adapter) {
     ms=Introspection(adapter,node:S"%o_0%").methods()
     return ms.isEmpty()
@@ -148,7 +148,7 @@ Introspection:{
       }   
     method
     Name getName()
-      Name.#stringParser('get name? unuseful! -- why unuseful?
+      Name.#stringParser(//get name? unuseful! -- why unuseful?
         using IntrospectionPlugin 
           check getNameOrElse(
             this.myClass().that(),
@@ -237,7 +237,7 @@ Introspection:{
     ms=this.methods()
     Method ctor= {
       with m in ms.vals() (
-        case m.isAbstract() & (m.getMdf()==S"Type") return m 'still problems with precedence?
+        case m.isAbstract() & (m.getMdf()==S"Type") return m //still problems with precedence?
         )
       error S"Not an instantiable class"
       }

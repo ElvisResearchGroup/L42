@@ -2,13 +2,13 @@
 ListArray:{mut (var mut Cell head,var N size)
   Cell:{interface}
   CellNext:{mut (S val,mut Cell next)<:Cell}
-  'CellNextMut:{mut (mut S val,mut Cell next)<:Cell}
+  //CellNextMut:{mut (mut S val,mut Cell next)<:Cell}
   CellEnd:{mut ()<:Cell}
   read method Void reportError(N that)
     error S"IndexOutOfBound: max is "++this.size()++S" proposed is "++that
   read method Void reportUnexpected(N that)
     error S"Unexpected failure like IndexOutOfBound: max is "++this.size()++S" proposed is "++that
-  'GETTING
+  //GETTING
   read method 
   S (N that) (
     if that>=this.size() (this.reportError(that))
@@ -22,7 +22,7 @@ ListArray:{mut (var mut Cell head,var N size)
       )
     error S"Unreachable"
     }
-  'SETTING
+  //SETTING
   mut method 
   Void (N that,S val) (
     if that>=this.size() (this.reportError(that))
@@ -36,10 +36,10 @@ ListArray:{mut (var mut Cell head,var N size)
       )
     error S"Unreachable"
     }
-  'EMPTY
+  //EMPTY
   class method 
   mut This () This(head:CellEnd(),size:0N)
-  'ADDING
+  //ADDING
   mut method
   mut This add(S that) (
     this.size(this.size()+1N)
@@ -58,8 +58,8 @@ ListArray:{mut (var mut Cell head,var N size)
     error S"Unreachable"
     }
     
-  '*******************  
-  '*******************
+  //*******************  
+  //*******************
     
   class method 
   mut This #begin() This()
@@ -70,47 +70,47 @@ ListArray:{mut (var mut Cell head,var N size)
   
   
   
-  'read method N validateMin(N that) ??
+  //read method N validateMin(N that) ??
   
   OptMax:Opt(N)
   OptFill:Opt(S)
 
   
-  read method lent Iterator vals(N min, N ok, N max, S fill) '0
+  read method lent Iterator vals(N min, N ok, N max, S fill) //0
     Iterator(this,min:min-1N,ok:ok, max:OptMax(max),fill:OptFill(fill))
-  read method lent Iterator vals(N min, N ok, N max) '1
+  read method lent Iterator vals(N min, N ok, N max) //1
     Iterator(this,min:min-1N,ok:ok, max:OptMax(max),fill:OptFill())
-  read method lent Iterator vals(N min, N ok, S fill)'2
+  read method lent Iterator vals(N min, N ok, S fill)//2
     Iterator(this,min:min-1N,ok:ok, max:OptMax(),fill:OptFill(fill))
-  read method lent Iterator vals(N min, N ok)'3
+  read method lent Iterator vals(N min, N ok)//3
     Iterator(this,min:min-1N,ok:ok, max:OptMax(),fill:OptFill())
 
-  read method lent Iterator vals(N min, N max, S fill) '4
+  read method lent Iterator vals(N min, N max, S fill) //4
     Iterator(this,min:min-1N,ok:max, max:OptMax(max),fill:OptFill(fill))
-  read method lent Iterator vals(N min, N max) '5
+  read method lent Iterator vals(N min, N max) //5
     Iterator(this,min:min-1N,ok:max, max:OptMax(max),fill:OptFill())
-  read method lent Iterator vals(N min, S fill)'6
+  read method lent Iterator vals(N min, S fill)//6
     Iterator(this,min:min-1N,ok:this.size(), max:OptMax(),fill:OptFill(fill))
-  read method lent Iterator vals(N min)'7
+  read method lent Iterator vals(N min)//7
     Iterator(this,min:min-1N,ok:this.size(), max:OptMax(),fill:OptFill())
     
 
-  read method lent Iterator vals(N ok, N max, S fill) '9
+  read method lent Iterator vals(N ok, N max, S fill) //9
     Iterator(this,min:-1N,ok:ok, max:OptMax(max),fill:OptFill(fill))
-  read method lent Iterator vals(N ok, N max) '9
+  read method lent Iterator vals(N ok, N max) //9
     Iterator(this,min:-1N,ok:ok, max:OptMax(max),fill:OptFill())
-  read method lent Iterator vals(N ok, S fill)'10
+  read method lent Iterator vals(N ok, S fill)//10
     Iterator(this,min:-1N,ok:ok, max:OptMax(),fill:OptFill(fill))
-  read method lent Iterator vals(N ok)'11
+  read method lent Iterator vals(N ok)//11
     Iterator(this,min:-1N,ok:ok, max:OptMax(),fill:OptFill())
 
-  read method lent Iterator vals(N max, S fill) '12
+  read method lent Iterator vals(N max, S fill) //12
     Iterator(this,min:-1N,ok:max, max:OptMax(max),fill:OptFill(fill))
-  read method lent Iterator vals(N max) '13
+  read method lent Iterator vals(N max) //13
     Iterator(this,min:-1N,ok:max, max:OptMax(max),fill:OptFill())
-  read method lent Iterator vals(S fill)'14
+  read method lent Iterator vals(S fill)//14
     Iterator(this,min:-1N,ok:this.size(), max:OptMax(),fill:OptFill(fill))
-  read method lent Iterator vals()'15
+  read method lent Iterator vals()//15
     Iterator(this,min:-1N,ok:this.size(), max:OptMax(),fill:OptFill())
 
   
@@ -143,43 +143,43 @@ ListArray:{mut (var mut Cell head,var N size)
     read method
     Void #close() void
     }
-  '*************************************
-  '*************************************
-  mut method mut VarIterator vars(N min, N ok, N max, S fill) '0
+  //*************************************
+  //*************************************
+  mut method mut VarIterator vars(N min, N ok, N max, S fill) //0
     VarIterator(this,min:min-1N,ok:ok, max:OptMax(max),fill:OptFill(fill))
-  mut method mut VarIterator vars(N min, N ok, N max) '1
+  mut method mut VarIterator vars(N min, N ok, N max) //1
     VarIterator(this,min:min-1N,ok:ok, max:OptMax(max),fill:OptFill())
-  mut method mut VarIterator vars(N min, N ok, S fill)'2
+  mut method mut VarIterator vars(N min, N ok, S fill)//2
     VarIterator(this,min:min-1N,ok:ok, max:OptMax(),fill:OptFill(fill))
-  mut method mut VarIterator vars(N min, N ok)'3
+  mut method mut VarIterator vars(N min, N ok)//3
     VarIterator(this,min:min-1N,ok:ok, max:OptMax(),fill:OptFill())
 
-  mut method mut VarIterator vars(N min, N max, S fill) '4
+  mut method mut VarIterator vars(N min, N max, S fill) //4
     VarIterator(this,min:min-1N,ok:max, max:OptMax(max),fill:OptFill(fill))
-  mut method mut VarIterator vars(N min, N max) '5
+  mut method mut VarIterator vars(N min, N max) //5
     VarIterator(this,min:min-1N,ok:max, max:OptMax(max),fill:OptFill())
-  mut method mut VarIterator vars(N min, S fill)'6
+  mut method mut VarIterator vars(N min, S fill)//6
     VarIterator(this,min:min-1N,ok:this.size(), max:OptMax(),fill:OptFill(fill))
-  mut method mut VarIterator vars(N min)'7
+  mut method mut VarIterator vars(N min)//7
     VarIterator(this,min:min-1N,ok:this.size(), max:OptMax(),fill:OptFill())
     
 
-  mut method mut VarIterator vars(N ok, N max, S fill) '9
+  mut method mut VarIterator vars(N ok, N max, S fill) //9
     VarIterator(this,min:-1N,ok:ok, max:OptMax(max),fill:OptFill(fill))
-  mut method mut VarIterator vars(N ok, N max) '9
+  mut method mut VarIterator vars(N ok, N max) //9
     VarIterator(this,min:-1N,ok:ok, max:OptMax(max),fill:OptFill())
-  mut method mut VarIterator vars(N ok, S fill)'10
+  mut method mut VarIterator vars(N ok, S fill)//10
     VarIterator(this,min:-1N,ok:ok, max:OptMax(),fill:OptFill(fill))
-  mut method mut VarIterator vars(N ok)'11
+  mut method mut VarIterator vars(N ok)//11
     VarIterator(this,min:-1N,ok:ok, max:OptMax(),fill:OptFill())
 
-  mut method mut VarIterator vars(N max, S fill) '12
+  mut method mut VarIterator vars(N max, S fill) //12
     VarIterator(this,min:-1N,ok:max, max:OptMax(max),fill:OptFill(fill))
-  mut method mut VarIterator vars(N max) '13
+  mut method mut VarIterator vars(N max) //13
     VarIterator(this,min:-1N,ok:max, max:OptMax(max),fill:OptFill())
-  mut method mut VarIterator vars(S fill)'14
+  mut method mut VarIterator vars(S fill)//14
     VarIterator(this,min:-1N,ok:this.size(), max:OptMax(),fill:OptFill(fill))
-  mut method mut VarIterator vars()'15
+  mut method mut VarIterator vars()//15
     VarIterator(this,min:-1N,ok:this.size(), max:OptMax(),fill:OptFill())
 
   
@@ -187,7 +187,7 @@ ListArray:{mut (var mut Cell head,var N size)
     mut method
     Void inner(S that) this.#that()(this.min(), val:that)
 
-    'all here is the same?
+    //all here is the same?
     mut method
     Void #next() exception Void {
       this.min(this.min()+1N)
@@ -228,7 +228,7 @@ Tests:{
       )    
     l1=ListArray[S"hello";S"world"]
     l2=ListArray[S"a";S"b";S"c"]
-    'with e1 in l1.vals(), e2 in l2.vals() ( fails properly
+    //with e1 in l1.vals(), e2 in l2.vals() ( fails properly
     with e1 in l1.vals(), e2 in l2.vals(ok:1N) (
       Debug(e1++S"   "++e2)
       )
@@ -247,7 +247,7 @@ Tests:{
       ) 
     return void
     }
-    '*******************
+    //*******************
   class method Void t2(){
     l=ListArray[S"hello";S"world"]
     Debug(S"size is "++l.size()++S" "++l(0N)++S" "++l(1N))
@@ -263,7 +263,7 @@ Tests:{
       )
     with var e01 in l1.vars(fill:S"extra"), var e02 in l2.vars() (
       Debug(e01++S"   "++e02)
-      'e01:=e01++S"!" 'no, we can not write on extra cells
+      //e01:=e01++S"!" //no, we can not write on extra cells
       e02:=e02++S"!"
       )    
     with var e11 in l1.vars(), var e12 in l2.vars(max:2N) (

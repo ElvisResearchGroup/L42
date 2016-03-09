@@ -17,16 +17,16 @@ Reader :{()
     while s.hasNextNum() (
       c.addShopHistory(s.nextNum())
       )
-    return c 'ok, capsule promotion here
+    return c //ok, capsule promotion here
     }
   }
   
 Main:{
   mut InputStream stream=InputStream()
   lent Scanner s=Scanner(stream:InputStream())
-  's.setInput(stream) 'wrong
-  N n=s.nextNum() 'ok, lent viewpoint adaptation 
-  s.setInput(InputStream()) 'ok, lent viewpoint adaptation
+  //s.setInput(stream) //wrong
+  N n=s.nextNum() //ok, lent viewpoint adaptation 
+  s.setInput(InputStream()) //ok, lent viewpoint adaptation
   return ExitCode.normal() 
   }
 }
