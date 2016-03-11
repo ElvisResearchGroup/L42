@@ -1482,7 +1482,52 @@ Void #next() exception Void
 read method 
 Void #checkEnd() 
 read method 
-Void #close() }}
+Void #close() }
+class method 
+Library solidTrait() {//Data is more than Solid, and Liquid, Gas, Plasma can be good methafores
+//data: toS == class named, fromS, invariant, with clone mutk
+<:This1.ToS, This1.Equals, This1.Classable, This1.Named//may be Parsable?
+
+method classAny() This0
+read method 
+class This0 class() This0
+method myName() This2.GetMyName.#apply(that:This0)
+method equals(that ) (
+  Void unused=(
+    Void unused0=(
+      This0 that0=(
+        Void unused2=return that
+        
+        catch return This0 casted casted
+        
+        catch return Any casted exception void
+        
+        error {//@stringU
+        //CastT-Should be unreachable code
+        }
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return that0.#equalequal(that:this)
+        void
+        )
+      )
+    Void unused1=return This2.Bool.false()
+    void
+    )
+  
+  catch return This0::equals(that )  result result
+  
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
+  }
+  )
+read method 
+This2.Bool #equalequal(read This0 that) this.toS().#equalequal(that:that.toS())
+read method 
+This2.Bool #bangequal(read This0 that) this.#equalequal(that:that).#bang()}}
 GetMyName:{
 class method 
 This1.S #apply(class Any that) This1.S.#from(builder:(
@@ -1515,7 +1560,7 @@ This1.S text()
 method 
 This0.Opt responseOf() 
 read method 
-class This0 clazz() 
+class This0 class() 
 Opt:{
 class method 
 mut This0 #mutK(This0.TOpt that) 
@@ -1624,9 +1669,9 @@ class method
 This2.Bool #apply(This2.Message that, This2.Message other) (
   Void unused=(//assuming they have the same class
   
-    This2.Message::clazz() ::kind() ::#equalequal(that ) ::#and(that ) ::#and(that ) res=that.clazz().kind().#equalequal(that:other.clazz().kind()).#and(that:that.text().#equalequal(that:other.text())).#and(that:that.responseOf().isPresent().#equalequal(that:other.responseOf().isPresent()))
+    This2.Message::class() ::kind() ::#equalequal(that ) ::#and(that ) ::#and(that ) res=that.class().kind().#equalequal(that:other.class().kind()).#and(that:that.text().#equalequal(that:other.text())).#and(that:that.responseOf().isPresent().#equalequal(that:other.responseOf().isPresent()))
     Void unused0=(
-      This2.Message::clazz() ::kind() ::#equalequal(that ) ::#and(that ) ::#and(that ) ::#bang() cond=res.#bang()
+      This2.Message::class() ::kind() ::#equalequal(that ) ::#and(that ) ::#and(that ) ::#bang() cond=res.#bang()
       (
         Void unused3=cond.#checkTrue()
         
@@ -1803,7 +1848,7 @@ This3.Bool #bangequal(This0 that) this.#equalequal(that:that).#bang()
 method 
 This3.Bool #equalequal(This0 that) This3.Message.EqualMessages.#apply(that:this, other:that)
 method classAny() This0
-method clazz() This0
+method class() This0
 class method 
 This0 #apply(This3.S text) This0.#apply(_text:text, cause:This3.Message.Opt.#apply())
 class method 
@@ -1982,7 +2027,7 @@ This2.Bool #bangequal(This0 that) this.#equalequal(that:that).#bang()
 method 
 This2.Bool #equalequal(This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
 method classAny() This0
-method clazz() This0
+method class() This0
 class method 
 This0 #apply(This2.S text) This0.#apply(_text:text, cause:This2.Message.Opt.#apply())
 class method 
@@ -2151,7 +2196,7 @@ This2.Bool #bangequal(This0 that) this.#equalequal(that:that).#bang()
 method 
 This2.Bool #equalequal(This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
 method classAny() This0
-method clazz() This0
+method class() This0
 class method 
 This0 #apply(This2.S text) This0.#apply(_text:text, cause:This2.Message.Opt.#apply())
 class method 
@@ -2320,7 +2365,7 @@ This2.Bool #bangequal(This0 that) this.#equalequal(that:that).#bang()
 method 
 This2.Bool #equalequal(This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
 method classAny() This0
-method clazz() This0
+method class() This0
 class method 
 This0 #apply(This2.S text) This0.#apply(_text:text, cause:This2.Message.Opt.#apply())
 class method 
@@ -2492,7 +2537,7 @@ This3.Bool #bangequal(This0 that) this.#equalequal(that:that).#bang()
 method 
 This3.Bool #equalequal(This0 that) This3.Message.EqualMessages.#apply(that:this, other:that)
 method classAny() This0
-method clazz() This0
+method class() This0
 class method 
 This0 #apply(This3.S text) This0.#apply(_text:text, cause:This3.Message.Opt.#apply())
 class method 
@@ -2662,7 +2707,7 @@ This2.Bool #bangequal(This0 that) this.#equalequal(that:that).#bang()
 method 
 This2.Bool #equalequal(This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
 method classAny() This0
-method clazz() This0
+method class() This0
 class method 
 This0 #apply(This2.S text) This0.#apply(_text:text, cause:This2.Message.Opt.#apply())
 class method 
@@ -2831,7 +2876,7 @@ This2.Bool #bangequal(This0 that) this.#equalequal(that:that).#bang()
 method 
 This2.Bool #equalequal(This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
 method classAny() This0
-method clazz() This0
+method class() This0
 class method 
 This0 #apply(This2.S text) This0.#apply(_text:text, cause:This2.Message.Opt.#apply())
 class method 
@@ -3000,7 +3045,7 @@ This2.Bool #bangequal(This0 that) this.#equalequal(that:that).#bang()
 method 
 This2.Bool #equalequal(This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
 method classAny() This0
-method clazz() This0
+method class() This0
 class method 
 This0 #apply(This2.S text) This0.#apply(_text:text, cause:This2.Message.Opt.#apply())
 class method 
@@ -3169,7 +3214,7 @@ This2.Bool #bangequal(This0 that) this.#equalequal(that:that).#bang()
 method 
 This2.Bool #equalequal(This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
 method classAny() This0
-method clazz() This0
+method class() This0
 class method 
 This0 #apply(This2.S text) This0.#apply(_text:text, cause:This2.Message.Opt.#apply())
 class method 
@@ -3606,7 +3651,7 @@ This2.Bool #bangequal(This0 that) this.#equalequal(that:that).#bang()
 method 
 This2.Bool #equalequal(This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
 method classAny() This0
-method clazz() This0
+method class() This0
 class method 
 This0 #apply(This2.S text) This0.#apply(_text:text, cause:This2.Message.Opt.#apply())
 class method 
@@ -15009,7 +15054,7 @@ method equals(that ) (
   //CurlyBlock-Should be unreachable code
   }
   )
-method clazz() This0
+method class() This0
 method classAny() This0
 class method 
 This0 #apply(This3.Introspection.Record record, Library lib) 
@@ -15136,7 +15181,7 @@ method equals(that ) (
   //CurlyBlock-Should be unreachable code
   }
   )
-method clazz() This0
+method class() This0
 method classAny() This0
 class method 
 This0 #apply(This2.Introspection.Record record, Library lib) This0.#mut(record:record, lib:lib)
@@ -15241,7 +15286,7 @@ method equals(that ) (
   //CurlyBlock-Should be unreachable code
   }
   )
-method clazz() This0
+method class() This0
 method classAny() This0
 class method 
 This0 #apply(This2.Introspection.Record record, Library lib) This0.#mut(record:record, lib:lib)
@@ -15331,7 +15376,7 @@ method equals(that ) (
   //CurlyBlock-Should be unreachable code
   }
   )
-method clazz() This0
+method class() This0
 method classAny() This0
 class method 
 This0 #apply(This2.Introspection.Record record, Library lib) This0.#mut(record:record, lib:lib)
@@ -15422,7 +15467,7 @@ method equals(that ) (
   //CurlyBlock-Should be unreachable code
   }
   )
-method clazz() This0
+method class() This0
 method classAny() This0
 class method 
 This0 #apply(This2.Introspection.Record record, Library lib) This0.#mut(record:record, lib:lib)
@@ -15519,7 +15564,7 @@ method equals(that ) (
   //CurlyBlock-Should be unreachable code
   }
   )
-method clazz() This0
+method class() This0
 method classAny() This0
 class method 
 This0 #apply(This2.Introspection.Record record, Library lib) This0.#mut(record:record, lib:lib)
@@ -15614,7 +15659,7 @@ method equals(that ) (
   //CurlyBlock-Should be unreachable code
   }
   )
-method clazz() This0
+method class() This0
 method classAny() This0
 class method 
 This0 #apply(This2.Introspection.Record record, Library lib) This0.#mut(record:record, lib:lib)
@@ -15711,7 +15756,7 @@ method equals(that ) (
   //CurlyBlock-Should be unreachable code
   }
   )
-method clazz() This0
+method class() This0
 method classAny() This0
 class method 
 This0 #apply(This2.Introspection.Record record, Library lib) This0.#mut(record:record, lib:lib)
@@ -15968,7 +16013,7 @@ method equals(that ) (
   //CurlyBlock-Should be unreachable code
   }
   )
-method clazz() This0
+method class() This0
 method classAny() This0
 method 
 This2.Bool #bangequal(This0 that) this.#equalequal(that:that).#bang()
@@ -16178,7 +16223,7 @@ method equals(that ) (
   //CurlyBlock-Should be unreachable code
   }
   )
-method clazz() This0
+method class() This0
 method classAny() This0
 method 
 This2.Bool #bangequal(This0 that) this.#equalequal(that:that).#bang()
@@ -19590,7 +19635,7 @@ This2.Bool #bangequal(This0 that) this.#equalequal(that:that).#bang()
 method 
 This2.Bool #equalequal(This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
 method classAny() This0
-method clazz() This0
+method class() This0
 class method 
 This0 #apply(This2.S text) This0.#apply(_text:text, cause:This2.Message.Opt.#apply())
 class method 

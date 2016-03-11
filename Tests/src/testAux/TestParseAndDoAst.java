@@ -17,6 +17,7 @@ import org.junit.runners.Parameterized.Parameters;
 import facade.Parser;
 import sugarVisitors.Desugar;
 import sugarVisitors.InjectionOnCore;
+import ast.ErrorMessage;
 import ast.Expression;
 
 public class TestParseAndDoAst {
@@ -166,8 +167,12 @@ public class TestParseAndDoAst {
 },{"if a (b) else c.h()","Expression.If(cond=a, then=Expression.RoundBlock(doc=, inner=b, contents=[]), _else=Optional[Expression.MCall(receiver=c, name=h, doc=, ps=Ast.Parameters(e=Optional.empty, xs=[], es=[]))])"
 },{"Foo\"bla\"","Expression.Literal(receiver=Foo, inner=bla, isNumber=false)"
 },{"Foo\"  bla  \"","Expression.Literal(receiver=Foo, inner=  bla  , isNumber=false)"
+
+//22
 },{"Foo\"\n  'bla\n  , \"","Expression.Literal(receiver=Foo, inner=bla\n, isNumber=false)"
+//23
 },{"Foo\"\n  'bla\n 'ble\n , \"","Expression.Literal(receiver=Foo, inner=bla\nble\n, isNumber=false)"
+
 },{" { }","Expression.ClassB(doc1=, doc2=, h=Ast.TraitHeader(), supertypes=[], ms=[], stage=None)"
 },{" {()}","Expression.ClassB(doc1=, doc2=, h=Ast.ConcreteHeader(mdf=Immutable, name=, fs=[]), supertypes=[], ms=[], stage=None)"
 },{" {mut ()}","Expression.ClassB(doc1=, doc2=, h=Ast.ConcreteHeader(mdf=Mutable, name=, fs=[]), supertypes=[], ms=[], stage=None)"
@@ -216,6 +221,26 @@ public class TestParseAndDoAst {
       }
     catch(ParseCancellationException e){}
     catch(IllegalArgumentException e){}
+    catch(ErrorMessage.UnclosedParenthesis e){}
+    }
+
+  }
+
+@RunWith(Parameterized.class)
+  public static class TestBalancedPar {
+    @Parameter(0) public String s;
+    @Parameterized.Parameters
+    public static List<Object[]> createData() {
+      return Arrays.asList(new Object[][] {
+  {"a"
+  },{"a \"aa\""
+  },{"a(b)"
+  },{" ( (a[]))"
+}});}
+  @Test
+  public void testOk() {
+      Expression e1 = Parser.parse(null,s);
+      String rep=e1.toString();
     }
 
   }
@@ -236,5 +261,5 @@ public class TestParseAndDoAst {
     ast.ExpCore y=x.accept(new InjectionOnCore());
     Assert.assertEquals(y.toString(),y.toString());
   }
-  }
+ }
 }

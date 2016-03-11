@@ -6,6 +6,12 @@ ConstructorUnavailable:Message.$<<{<:MetaGuard}
 
 Selectors:Collections.vector(ofEq:Selector)
 
+class method Introspection.Method immK(Introspection.Methods that){
+    with m in that.vals() (
+      if m.thisMdf()==S"class" & m.returnType().mdf()==S""
+      )
+  }
+
 class method
 Library<<(Library that)
 exception ConstructorUnavailable, MetaGuard{

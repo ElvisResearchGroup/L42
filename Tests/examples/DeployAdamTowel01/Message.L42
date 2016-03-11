@@ -2,7 +2,7 @@
 class method S kind()
 method S text()
 method Opt responseOf()
-read method class This clazz()
+read method class This class()
 Opt:{#new(TOpt that)
   TOpt:{interface method This2 get() }
   TEmpty:{()<:TOpt method get()
@@ -22,7 +22,7 @@ Opt:{#new(TOpt that)
 EqualMessages:{
   class method Bool (Message that,Message other){
   //assuming they have the same class
-  res=that.clazz().kind()==other.clazz().kind()
+  res=that.class().kind()==other.class().kind()
     & that.text()==other.text()
     & that.responseOf().isPresent()==other.responseOf().isPresent()
   if !res (return Bool.false())
@@ -64,7 +64,7 @@ $:{()
     method Bool == (This that)
       Message.EqualMessages(this,other:that)
     method classAny() This
-    method clazz() This
+    method class() This
     class method
     This (S text)
       This(_text:text,cause:Message.Opt())

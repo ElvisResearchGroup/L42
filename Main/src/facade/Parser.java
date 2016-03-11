@@ -23,6 +23,7 @@ import antlrGenerated.L42Parser.NudeEContext;
 import ast.ErrorMessage;
 import ast.ErrorMessage.ParsingError;
 import ast.Expression;
+import facade.Parser.ParData.State;
 /*
  **NOT WHAT I'm doing**
 Implement the interface ANTLRErrorListener. You may extend BaseErrorListener for that. Collect the errors and append them to a list.
@@ -172,25 +173,25 @@ static final class Pos  {
       //pop in StrSL,StrMLPadding
       if(popIf(State.StrSL,State.StrMLPadding)){return;}
       //push State.StrSL if State.Round,State.Square,State.Curly
-      if(pushIf(State.StrSL,State.Round,State.Square,State.Curly)){return;}
+      if(pushIf(State.StrSL,State.None,State.Round,State.Square,State.Curly)){return;}
       }
     void doubleQuoteNL(){// "
       //pop in StrSL,StrMLPadding
       if(popIf(State.StrSL,State.StrMLPadding)){return;}
       //push State.StrSL if State.Round,State.Square,State.Curly
-      if(pushIf(State.StrMLPadding,State.Round,State.Square,State.Curly)){return;}
+      if(pushIf(State.StrMLPadding,State.None,State.Round,State.Square,State.Curly)){return;}
       }
     void barBar(){// //
       //fail in StrMLPadding
       failPadding("//");
       //push CommSL in Round,Square,Curly
-      if(pushIf(State.CommSL,State.Round,State.Square,State.Curly)){return;}
+      if(pushIf(State.CommSL,State.None,State.Round,State.Square,State.Curly)){return;}
       }
     void barStarO(){// /*
       //fail in StrMLPadding
       failPadding("/*");
       //push CommML in Round,Square,Curly
-      if(pushIf(State.CommML,State.Round,State.Square,State.Curly)){return;}
+      if(pushIf(State.CommML,State.None,State.Round,State.Square,State.Curly)){return;}
       }
     void barStarC(){// */
       //fail in StrMLPadding, Round,Square,Curly
@@ -202,7 +203,7 @@ static final class Pos  {
       //fail in StrMLPadding
       failPadding("(");
       //push Round in Round,Square,Curly
-      if(pushIf(State.Round,State.Round,State.Square,State.Curly)){return;}
+      if(pushIf(State.Round,State.None,State.Round,State.Square,State.Curly)){return;}
       }
     void cRound(){// )
       //fail in StrMLPadding
@@ -215,20 +216,20 @@ static final class Pos  {
       //fail in StrMLPadding
       failPadding("(");
       //push Square in Round,Square,Curly
-      if(pushIf(State.Square,State.Round,State.Square,State.Curly)){return;}
+      if(pushIf(State.Square,State.None,State.Round,State.Square,State.Curly)){return;}
       }
     void cSquare(){// ]
       //fail in StrMLPadding
-      failPadding("(");
+      failPadding("[");
       //pop in Square
       if(popIf(State.Square)){return;}
       if(fails(State.Round,State.Curly)){ parMismatch(State.Square);}
       }
   void oCurly(){// {
       //fail in StrMLPadding
-      failPadding("(");
+      failPadding("{");
       //push Curly in Round,Square,Curly
-      if(pushIf(State.Curly,State.Round,State.Square,State.Curly)){return;}
+      if(pushIf(State.Curly,State.None,State.Round,State.Square,State.Curly)){return;}
       }
     void cCurly(){// }
       //fail in StrMLPadding
@@ -330,7 +331,10 @@ static final class Pos  {
       break;case ']':d.cSquare();
       break;case ')':d.cRound();
       break;case '\"':
-        if(cp1=='\n'){i++;d.doubleQuoteNL();}
+        if(cp1=='\n'
+        && ( d.s.peek().state==State.Round
+        || d.s.peek().state==State.Square
+        || d.s.peek().state==State.Curly)){i++;d.doubleQuoteNL();}
         else d.doubleQuote();
       break;case '\'':d.singleQuote();
       break;case '*':
@@ -338,7 +342,7 @@ static final class Pos  {
         else d.nonSpacing("*");
       break;case ' ':d.space();
       break;case ',':d.comma();
-      default: d.nonSpacing(c+"");
+      break;default: d.nonSpacing(c+"");
     }
   }
   if(d.s.peek().state!=ParData.State.None){

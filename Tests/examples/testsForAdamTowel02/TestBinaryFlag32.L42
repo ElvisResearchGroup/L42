@@ -1,17 +1,17 @@
 {reuse L42.is/AdamTowel02
 BinaryFlag32:{(N that)
   <:Concept.ToS Concept.Equals Concept.Named//@private
-  
+
   method myName()GetMyName(This)
-  
-  method toS() ( 
+
+  method toS() (
     one=This(1N)
     S"B"[with i in 0N.vals(upTo:32N) (
       twoi=one<<(31N-i)
       if (twoi & this) ==twoi ( use[S"1"] )
       else (use[S"0"])
     )]"")
-  
+
   class method
   This fromS(Concept.ToS that) this.#from(builder:(
     s=that.toS()
@@ -26,31 +26,31 @@ BinaryFlag32:{(N that)
       )
     b
     ))
-    
-  class method  
+
+  class method
   mut BBuilder #builder()
     BBuilder.empty()
-  
+
   ParseFail:Message.$<<{<:Guard.ParseFail}
   BBuilder:{(var Library that, var N count)
     class method
     mut This empty()
       This(0N.binaryRepr(),count:0N)
-  
+
     mut method Void #0() (
       this.count(this.count()+1N)
       this.that(use Alu
         check leftShiftInt32(n1:this.that() n2:1N.binaryRepr())
         error void)
-      )    
+      )
     mut method Void #1() (
       this.#0()
       this.that(use Alu
         check orInt32(n1:this.that(), n2:1N.binaryRepr())
         error void
         )
-      )    
-    }  
+      )
+    }
   class method
   This #from(BBuilder builder) (
     if builder.count()>32N (error ParseFail
@@ -58,7 +58,7 @@ BinaryFlag32:{(N that)
       )
     This(N.#from(binaryRepr:builder.that()))
     )
-      
+
   method//@private
   This res(Library that) This(N.#from(binaryRepr:that))
   method//@private
@@ -87,15 +87,15 @@ BinaryFlag32:{(N that)
   This ~() this.res(use Alu
       check notInt32(n1:this.br())
       error void)
-    
+
   method
   Bool ==(This that) this.that()==that.that()
-  
+
   method equals(that){
     with that (on This return this==that)
     return Bool.false()
     }
-  
+
   method
   Bool <(This that) {
     use Alu
@@ -120,13 +120,64 @@ BinaryFlag32:{(N that)
   method Bool >=(This that) !(this<that)
   }
 
+Enum:{
+  class method Library<<(Library that) exception MetaGuard//TODO: handle errors
+    Use[Refactor.RenamePath(Path"Top" to:Path"This")<<this.enumTrait()]<<that
+
+  class method Library enumTrait() {
+    ParseFail:Message.$<<{<:Guard.ParseFail}
+    Top:Use[Concept.solidTrait()]<<{(N that)
+      method toS()
+        this.myName()++S"."++this.names().val(this.that())
+      read method Bool ==(read This that) this.that()==that.that()
+      class method Strings names()
+      class method mut Seq seqBuilder() Seq.empty()
+      class method
+      This fromS(S that){
+        with n in 0N.vals(), d in Top.names().vals() (
+          if d==that (return This(n))
+          )
+        error ParseFail"The provided string is not valid: "[that]""
+      }
+    Set:Use[Concept.solidTrait()]<<{(var BinaryFlag32 that)
+      class method mut This seqBuilder() this.empty()
+      class method mut This empty() This(0BinaryFlag32)
+      class method This from(This seqBuilder) this
+      mut method Void #add(Top that) this.that(\that | (1BinaryFlag32<<that.that()))
+      method This ++(This that) This(this.that() | that.that())
+      method This --(This that) This(this.that() & ~that.that())
+      method This &(This that) This(this.that() & that.that())
+      method Bool >(Top that)  this.that() == (this.that() | 1BinaryFlag32<<that.that())
+      method toS()
+        this.myName()++S"["[
+          with n in 0N.vals(), d in Top.names().vals() (
+            if this>This(n) (use[ d separedBy:S";"])
+            )]"]"
+
+      read method Bool ==(read This that) this.that()==that.that()
+      }
+    }
+  }
+}
+
+Mdf:Enum<<{
+  class method Strings names()Strings[S"capsule";S"mutable";S"lent";S"readable";S"immutable";S"class"]
+  class method This capsule() This(0N)
+  class method This mutable() This(1N)
+  class method This lent() This(2N)
+  class method This readable() This(3N)
+  class method This immutable() This(4N)
+  class method This class() This(5N)
+  }
 
 Main:{
   bf=101BinaryFlag32
   Debug(bf)
   Debug(bf.that())
   Debug(bf | 10100000BinaryFlag32)
-  
+  Debug(Mdf.mutable()!=Mdf.class())
+  Debug(Mdf.mutable())
+  Debug(Mdf[\mutable;\readable])
   return ExitCode.normal()
   }
 }
