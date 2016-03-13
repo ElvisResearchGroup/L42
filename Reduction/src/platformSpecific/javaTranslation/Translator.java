@@ -41,7 +41,7 @@ import ast.Util;
 import ast.Util.PathMwt;
 import ast.ExpCore.*;
 public class Translator {
-  public static Object runString(String s){
+  public static Object runString( String s){
     try{return runStringExc(s);}
     catch (InvocationTargetException ex) {
       if (ex.getCause() instanceof RuntimeException) throw (RuntimeException)ex.getCause();
