@@ -1,4 +1,4 @@
-package testAux;
+package platformSpecific.inMemoryCompiler;
 
 
 import platformSpecific.inMemoryCompiler.InMemoryJavaCompiler;
@@ -81,7 +81,7 @@ public class CompilationInMemoryTest {
         "package math;"
         + "public class Calculator { "
         + "  public static void main(String[] args) { "
-        + "    testAux.CompilationInMemoryTest.TestClass cal = new testAux.CompilationInMemoryTest.TestClass(); "
+        + TestClass.class.getCanonicalName() +" cal = new "+TestClass.class.getCanonicalName()+"(); "
         + "    cal.testMeth(); "
         + "  } "
         + "} "
