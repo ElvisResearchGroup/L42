@@ -140,7 +140,7 @@ Enum:{
       }
     }
     class method mut Set #seqBuilder() Set.empty()
-    class method mut Set #from(Set seqBuilder)seqBuilder
+    class method Set #from(Set seqBuilder)seqBuilder
     Set:Use[Concept.solidTrait()]<<{(var BinaryFlag32 that)<:Concept.ToS
       class method mut This #seqBuilder() this.empty()
       class method mut This empty() This(0BinaryFlag32)

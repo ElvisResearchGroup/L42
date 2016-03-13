@@ -135,7 +135,10 @@ public class TypeSystemOK {
     assert ct.getStage().getGivenName()!=null;
     String name=ct.getStage().getGivenName();
     if(!name.isEmpty()){Timer.activate("TypeSystem.checkCt2."+name);}try{
-    for(Member m:ct.getMs()){checkCt2Member(p, ct, m);}
+    for(Member m:ct.getMs()){
+      try{checkCt2Member(p, ct, m);}
+      catch(ErrorMessage err){ throw ErrorMessage.PosImprove.improve(err, m.getP());}
+      }
     }finally{if(!name.isEmpty()){Timer.deactivate("TypeSystem.checkCt2."+name);}}
     ct.getStage().setVerified(true);
   }

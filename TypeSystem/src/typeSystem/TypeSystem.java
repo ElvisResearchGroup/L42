@@ -76,14 +76,14 @@ public class TypeSystem implements Visitor<Type>, Reporter, ast.Ast.HasPos{
 
   @Override
   public Type visit(_void s) {
-    return collectEnvs(()->{
+    return collectEnvs(null,()->{
       return new NormType(Mdf.Capsule,Path.Void(),Ph.None);
     });
   }
 
   @Override
   public Type visit(X s) {
-    return collectEnvs(()->{
+    return collectEnvs(null,()->{
       assert varEnv.containsKey(s.getInner()):s.getInner()+" "+varEnv;
       if(sealEnv.xInXs(s.getInner())){
         throw new ErrorMessage.VariableSealed(s);
@@ -105,7 +105,7 @@ public class TypeSystem implements Visitor<Type>, Reporter, ast.Ast.HasPos{
   public Type visit(ClassB s) {
     //Program pOld=this.p;
     //try{if (this.p.isExecutableStar()){this.p=p.removeExecutableStar();}
-      return collectEnvs(()->{
+      return collectEnvs(null,()->{
         assert IsCompiled.of(s);
         Configuration.typeSystem.computeStage(p,s);
        /* if(p.executablePlus()){
@@ -126,7 +126,7 @@ public class TypeSystem implements Visitor<Type>, Reporter, ast.Ast.HasPos{
   }
   @Override
   public Type visit(Path s) {
-    return collectEnvs(()->{
+    return collectEnvs(null,()->{
       if( s.isPrimitive()){return new NormType(Mdf.Class,s,Ph.None);}
       ClassB ct=p.extractCb(s);
       if(ct.isInterface()){
@@ -148,7 +148,7 @@ public class TypeSystem implements Visitor<Type>, Reporter, ast.Ast.HasPos{
 
   @Override
   public Type visit(Signal s) {
-    return collectEnvs(()->{
+    return collectEnvs(null,()->{
       Mdf suggestedMdf=Mdf.Immutable;
       if(s.getKind()==SignalKind.Return){
         suggestedMdf=throwEnv.mdfOfRes();
@@ -292,11 +292,11 @@ public class TypeSystem implements Visitor<Type>, Reporter, ast.Ast.HasPos{
     //catch (ErrorMessage.TypeError e){throw new ErrorMessage.UnlockImpossible(e);}
     //catch (ErrorMessage e){throw e;}
     }
-  private Type collectEnvs(Supplier<Type> t){
+  private Type collectEnvs(Position pos,Supplier<Type> t){
     try{return t.get();}
     catch(ErrorMessage.TypeError typeE){
       typeE.envs.add(this);
-      throw typeE;
+      throw ErrorMessage.PosImprove.improve(typeE, pos);
     }
   }
   public static Type _typecheckTollerant(Program p,HashMap<String, NormType> varEnv, SealEnv sealEnv, ThrowEnv throwEnv, Type suggested,ExpCore inner) {
@@ -380,7 +380,7 @@ public class TypeSystem implements Visitor<Type>, Reporter, ast.Ast.HasPos{
 
   @Override
   public Type visit(MCall s) {
-    return collectEnvs(()->{
+    return collectEnvs(s.getP(),()->{
       assert noFreeVar(s,varEnv);
       List<HashMap<String, NormType>> varEnvs = TypeCheckMethod.splitAllVarEnvForMethod(s.getReceiver(), s.getEs(),varEnv);
       //Type recTOpt = _typecheckTollerant(p,varEnvs.get(0),sealEnv,throwEnv,new Ast.FreeType(),s.getReceiver());
@@ -419,7 +419,7 @@ public class TypeSystem implements Visitor<Type>, Reporter, ast.Ast.HasPos{
 
   @Override
   public Type visit(Block s) {
-    return collectEnvs(()->{
+    return collectEnvs(s.getP(),()->{
       Type t= TypecheckBlock.typecheckBlock(this,s);
       assert t!=null;
       return t;
@@ -427,7 +427,7 @@ public class TypeSystem implements Visitor<Type>, Reporter, ast.Ast.HasPos{
   }
   @Override
   public Type visit(Using s) {
-    return collectEnvs(()->{
+    return collectEnvs(null,()->{
       if (s.getPath().isPrimitive()){
         throw new ErrorMessage.InvalidURL("No plug-in url present for primitive path "+s.getPath(),null);
       }
@@ -444,7 +444,7 @@ public class TypeSystem implements Visitor<Type>, Reporter, ast.Ast.HasPos{
 
   @Override
   public Type visit(Loop s) {
-    return collectEnvs(()->{
+    return collectEnvs(null,()->{
       NormType v=NormType.immVoid;
       checkSuggested(p,v,suggested,s);
       Type preciseTOpt=typecheckSure(false,p,varEnv,sealEnv,throwEnv,v,s.getInner());
