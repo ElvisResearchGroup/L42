@@ -38,7 +38,7 @@ public interface OnLineCode {
   }
   public static PluginType plugin(Program p,ExpCore.Using u){
     String url=p.extractCb(u.getPath()).getDoc1().toString();
-    if(!url.startsWith("@plugin\n")){throw new ErrorMessage.InvalidURL(url);}
+    if(!url.startsWith("@plugin\n")){throw new ErrorMessage.InvalidURL(url,null);}
     url=url.substring("@plugin\n".length());
     url=url.trim();
     PluginType pt = OnLineCodeHelper.getPluginType(url);
@@ -72,7 +72,7 @@ class OnLineCodeHelper{
       Class<?> clazz=Class.forName(className);
       return (PluginType)clazz.newInstance();
     } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-      throw new ErrorMessage.InvalidURL("L42.is/connected/"+url);
+      throw new ErrorMessage.InvalidURL("L42.is/connected/"+url,null);
     }
     //is.L42.connected.withSystem.Plugin;
     /*if(url.startsWith("withSandboxingOver/")){

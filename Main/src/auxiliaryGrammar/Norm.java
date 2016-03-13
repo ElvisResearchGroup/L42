@@ -65,7 +65,7 @@ public class Norm {
     try{return auxOf(p,mt,isOnlyType);}
     catch(ErrorMessage.MethodNotPresent mnp){
       if(mt.getInner().isPresent()){
-        throw new ErrorMessage.MethodNotPresent(mnp.getPath(),mnp.getMs(),mnp.getCall(),CollapsePositions.of(mt.getInner().get().accept(new InjectionOnSugar())), mnp.getP());
+        throw new ErrorMessage.MethodNotPresent(mnp.getPath(),mnp.getMs(),mnp.getCall(),mnp.getP(), CollapsePositions.of(mt.getInner().get().accept(new InjectionOnSugar())));
       }
       throw mnp;
     }
@@ -165,12 +165,12 @@ public class Norm {
       MethodWithType mt, Program p2,boolean isOnlyType) {
     try{mt=of(p2, mt,isOnlyType);}
     catch(ErrorMessage em){
-      ErrorMessage e=new ErrorMessage.NotOkToStar(ct,mt,"Norm impossible");
+      ErrorMessage e=new ErrorMessage.NotOkToStar(ct,mt,"Norm impossible",mt.getP());
       e.initCause(em);
       throw e;
     }
     catch(StackOverflowError em){
-      ErrorMessage e=new ErrorMessage.NotOkToStar(ct,mt,"Norm impossible");
+      ErrorMessage e=new ErrorMessage.NotOkToStar(ct,mt,"Norm impossible",mt.getP());
       e.initCause(em);
       throw e;
     }

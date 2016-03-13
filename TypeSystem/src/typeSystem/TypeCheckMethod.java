@@ -38,14 +38,14 @@ public class TypeCheckMethod {
     for(Path path2:exceptions2){
       if(Functions.isSubtype(p, path1,path2)){return true;}
     }
-    return false;    
+    return false;
   }
 
   public static void checkExceptions(Program p,MCall s,List<Path> exceptions1,HashSet<Path> exceptions2) {
   for(Path path1:exceptions1){
     if(checkExceptions1(p,path1,exceptions2)){continue;}
-    throw new ErrorMessage.ExceptionThrownNotCaptured(s,path1,exceptions2);
-    }  
+    throw new ErrorMessage.ExceptionThrownNotCaptured(s,path1,exceptions2,s.getP());
+    }
   }
 
   public static Type methCallT(TypeSystem that, List<HashMap<String, NormType>> varEnvs,MCall s,NormType recExpected, MethodWithType mwt) {
@@ -98,5 +98,5 @@ public class TypeCheckMethod {
     }}
     return result;
   }
-  
+
 }

@@ -28,12 +28,12 @@ public interface PluginType {
         if(m.getName().contains("eft")){
           System.out.print("");
         }
-        
+
         if(m.getName().equals(mName)){
           System.out.print("");
         }
       }
-      throw new ErrorMessage.PluginMethodUndefined(options,u,p.getInnerData());
+      throw new ErrorMessage.PluginMethodUndefined(options,u,p.getInnerData(),null);
       }
     catch (SecurityException e) { throw new Error(e);}
     }

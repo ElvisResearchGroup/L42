@@ -332,7 +332,8 @@ static final class Pos  {
       break;case ')':d.cRound();
       break;case '\"':
         if(cp1=='\n'
-        && ( d.s.peek().state==State.Round
+        && ( d.s.peek().state==State.None
+        ||d.s.peek().state==State.Round
         || d.s.peek().state==State.Square
         || d.s.peek().state==State.Curly)){i++;d.doubleQuoteNL();}
         else d.doubleQuote();

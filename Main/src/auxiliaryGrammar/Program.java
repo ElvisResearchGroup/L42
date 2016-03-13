@@ -198,7 +198,7 @@ public class Program {
   }
   public MethodWithType method(Path path,MethodSelector ms,ExpCore.MCall forError,boolean isOnlyType){
     if(path.isPrimitive()){
-      throw new ErrorMessage.MethodNotPresent(path,ms,forError,null,this.getInnerData());
+      throw new ErrorMessage.MethodNotPresent(path,ms,forError,this.getInnerData(),forError.getP());
       }
     ClassB classB=extractCb(path);
     if(classB==null){classB=extractCb(path);}
@@ -210,7 +210,7 @@ public class Program {
         if(!mt.getMwt().getMs().equals(ms)){continue;}
         return From.from(mt.getMwt(), path);
         }
-      throw new ErrorMessage.MethodNotPresent(path,ms,forError,null,this.getInnerData());
+      throw new ErrorMessage.MethodNotPresent(path,ms,forError,this.getInnerData(),forError.getP());
       }
     MethodWithType mwt=Program.extractMwt(result.get(),classB);
     mwt=From.from(mwt, path);
@@ -352,7 +352,7 @@ public class Program {
     for(NormType nt:varEnv.values()){
       if(nt.getPath().isPrimitive()){continue;}
       if(this.getStage(nt.getPath())!=Stage.Less){continue;}
-      throw new ErrorMessage.PathNonStar(nt.getPath(),varEnv);
+      throw new ErrorMessage.PathNonStar(nt.getPath(),varEnv,null);
     }
   }
   public boolean checkComplete(){

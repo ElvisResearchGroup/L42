@@ -10,7 +10,9 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.Value;
 import lombok.experimental.Wither;
+import sugarVisitors.CollapsePositions;
 import ast.Ast;
+import ast.Ast.Position;
 import ast.ExpCore;
 import ast.Ast.HistoricType;
 import ast.Ast.MethodSelector;
@@ -20,13 +22,27 @@ import ast.ExpCore.Block;
 import ast.ExpCore.ClassB;
 import ast.Util.CachedStage;
 import ast.Util.PathMwt;
+import coreVisitors.InjectionOnSugar;
 
 @SuppressWarnings("serial") public abstract class ErrorMessage extends RuntimeException {
+  public static interface PosImprove{
+    Position getPos();
+    PosImprove withPos(Position val);
+    default PosImprove improvePos(Position val){
+      if(this.getPos()!=null){val=CollapsePositions.accumulatePos(this.getPos(),val);}
+      return this.withPos(val);
+      }
+    static ErrorMessage improve(ErrorMessage err,Position val){
+       if(! (err instanceof ErrorMessage.PosImprove)){return err;}
+       return (ErrorMessage)((ErrorMessage.PosImprove)err).improvePos(val);
+
+      }
+    }
   @Override public String getMessage() {
     return super.getMessage();//+this.toString();
   }
 
-  @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class UserLevelError extends ErrorMessage {
+  @Value @Wither @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class UserLevelError extends ErrorMessage implements PosImprove {
     static public enum Kind {
       WellFormedness, TypeError, MetaError, Unclassified
     }
@@ -53,7 +69,7 @@ import ast.Util.PathMwt;
     List<ClassB.Member> inherited;
     List<ClassB.Member> alreadyOffered;
   }
-  @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class IncoherentMwts extends ErrorMessage {
+  @Value @Wither @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class IncoherentMwts extends ErrorMessage implements PosImprove{
   ast.Ast.MethodSelector guilty;
   List<String> exploredPath;
   List<PathMwt> incoherent;
@@ -107,7 +123,7 @@ import ast.Util.PathMwt;
     ExpCore e;
     List<ClassB> p;
   }
-  @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class ParsingError extends ErrorMessage {
+  @Value  @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class ParsingError extends ErrorMessage {
     //others should extend it? but some have a range position!
     int line;
     int pos;
@@ -168,21 +184,23 @@ import ast.Util.PathMwt;
     String token2;
   }
 
-  @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class LibraryRefersToIncompleteClasses extends TypeError {
+  @Value @Wither @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class LibraryRefersToIncompleteClasses extends TypeError {
     List<ClassB> p;
     ClassB cb;
+    Position pos;
   }
-  @Value @Wither @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class PathNonExistant extends TypeError {
+  @Value @Wither @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class PathNonExistant extends TypeError implements PosImprove{
     List<String> listOfNodeNames;
     ClassB cb;
-    Ast.Position pos;
+    Position pos;
   }
-  @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class PathNonStar extends TypeError {
+  @Value @Wither @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class PathNonStar extends TypeError {
     Path path;
     HashMap<String, Ast.NormType> varEnv;
+    Position pos;
   }
 
-  @Value @Wither @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class VariableDeclaredMultipleTimes extends ErrorMessage {
+  @Value @Wither @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class VariableDeclaredMultipleTimes extends ErrorMessage implements ErrorMessage.PosImprove{
     String x;
     Ast.Position pos;
   }
@@ -211,29 +229,28 @@ import ast.Util.PathMwt;
   }
   //Type system
   //@ToString(callSuper=false, includeFieldNames=true)
-  public static abstract class TypeError extends ErrorMessage {
+  @Wither
+  public static abstract class TypeError extends ErrorMessage implements ErrorMessage.PosImprove {
     public final List<facade.ErrorFormatter.Reporter> envs = new ArrayList<>();
     @Override public String getMessage() {
       return this.envs.toString();
     }
   }
 
-  @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class NotOkToStar extends TypeError {
+  @Value @Wither @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class NotOkToStar extends TypeError {
     ClassB ct;
     ExpCore.ClassB.MethodWithType ctor;
     String reason;
+    Position pos;
   }
 
-  @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class PluginMethodUndefined extends TypeError {
+  @Value @Wither @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class PluginMethodUndefined extends TypeError {
     List<String> validMethods;
     ExpCore.Using using;
     List<ClassB> p;
+    Position pos;
   }
-  /*@Value @EqualsAndHashCode(callSuper=false)@ToString(callSuper=true, includeFieldNames=true)
-  public static class PluginNotResolvedByPath extends TypeError{
-    public int getErrCode(){return 3002;}
-    ExpCore.Using using;List<ClassB> p;
-  }*/
+
 
   @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class NormImpossible extends ErrorMessage {
     Type notNorm;
@@ -246,76 +263,88 @@ import ast.Util.PathMwt;
   @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class VariableSealed extends ErrorMessage {
     ExpCore.X var;
   }
-  @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class InvalidTypeForThrowe extends TypeError {
+  @Value @Wither @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class InvalidTypeForThrowe extends TypeError {
     ExpCore.Signal e;
     Ast.NormType computedType;
+    Position pos;
   }
-  @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class CapsuleUsedMoreThenOne extends TypeError {
+  @Value @Wither @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class CapsuleUsedMoreThenOne extends TypeError {
     List<ExpCore> es;
     String varName;
+    Position pos;
   }
-  @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class UnresolvedType extends TypeError {
+  @Value @Wither @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class UnresolvedType extends TypeError {
     HistoricType t;
     ExpCore e;
+    Position pos;
   }
-  @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class IncompleteClassIsRequired extends TypeError {
+  @Value @Wither @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class IncompleteClassIsRequired extends TypeError {
     String reason;
     ExpCore e;
     Path path;
     List<ClassB> p;
+    Position pos;
   }
-  @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class ExceptionThrownNotCaptured extends TypeError {
+  @Value @Wither @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class ExceptionThrownNotCaptured extends TypeError {
     ExpCore e;
     Path path1;
     HashSet<Path> exceptions2;
+    Position pos;
   }
 
-  @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class ConfusedResultingTypeForMultiCatch extends TypeError {
+  @Value @Wither @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class ConfusedResultingTypeForMultiCatch extends TypeError {
     List<ExpCore.Block.On> k;
     HashSet<Type> options;
+    Position pos;
   }
 
-  @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class ConfusedResultingTypeForCatchAndBlock extends TypeError {
+  @Value @Wither @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class ConfusedResultingTypeForCatchAndBlock extends TypeError {
     ExpCore.Block e;
     Type te;
     Type tk;
+    Position pos;
   }
 
-  @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class PathsNotSubtype extends TypeError {
+  @Value @Wither @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class PathsNotSubtype extends TypeError {
     Type tActual;
     Type tExpected;
     ExpCore e;
     List<ClassB> p;
     CachedStage cachedInfo;
+    Position pos;
   }
 
-  @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class TypesNotSubtype extends TypeError {
+  @Value @Wither @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class TypesNotSubtype extends TypeError {
     Type tActual;
     Type tExpected;
     ExpCore e;
     Throwable promotionAttemptedBut;
+    Position pos;
   }
 
-  @Value @Wither @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class MethodNotPresent extends TypeError {
+  @Value @Wither @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class MethodNotPresent extends TypeError implements PosImprove{
     Path path;
     MethodSelector ms;
     ExpCore.MCall call;
-    Ast.Position pos;
     List<ClassB> p;
+    Position pos;
   }
 
   //not used right now, may be is not useful
-  @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class UnlockImpossible extends TypeError {
+  @Value @Wither @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class UnlockImpossible extends TypeError {
     Throwable unlockAttemptedBut;
+    Position pos;
   }
 
-  @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class InvalidURL extends TypeError {
+  @Value @Wither @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class InvalidURL extends TypeError {
     String url;
+    Position pos;
   }
-  @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class PromotionImpossible extends TypeError {
+  @Value @Wither @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class PromotionImpossible extends TypeError {
     Type pFrom;
     Type pTo;
     Throwable sealCause;
     ExpCore inner;
+    Position pos;
   }
 }

@@ -195,10 +195,8 @@ public static boolean progress(List<CachedStage>again){
         }
       catch(ErrorMessage.ProgramExtractOnMetaExpression meta){es.add(null);}
       catch(ErrorMessage.ProgramExtractOnWalkBy walk){ es.add(null);}
-     catch(PathNonExistant pne){
-       assert pne.getPos()==null;
-       Position pos=CollapsePositions.of(cb.accept(new InjectionOnSugar()));
-       throw pne.withPos(pos);
+     catch(ErrorMessage err){
+       throw ErrorMessage.PosImprove.improve(err,CollapsePositions.of(cb.accept(new InjectionOnSugar())));
        }
       }
     return es;

@@ -11,6 +11,7 @@ import com.sun.org.apache.xalan.internal.xsltc.compiler.util.ErrorMessages;
 
 import coreVisitors.FreeVariables;
 import coreVisitors.GuessTypeCore;
+import coreVisitors.InjectionOnSugar;
 import coreVisitors.IsCompiled;
 import coreVisitors.Visitor;
 import facade.Configuration;
@@ -158,10 +159,10 @@ public class TypeSystem implements Visitor<Type>, Reporter, ast.Ast.HasPos{
       if (preciseTOpt instanceof Ast.FreeType){return preciseTOpt;}
       NormType preciseT = Functions.forceNormType(this.p,s.getInner(), preciseTOpt);
       if(preciseT.getPh()!=Ph.None){
-        throw new ErrorMessage.InvalidTypeForThrowe(s, preciseT);
+        throw new ErrorMessage.InvalidTypeForThrowe(s, preciseT,null);
       }
       if(!Functions.isSubtype(preciseT.getMdf(),suggestedMdf)){
-        throw new ErrorMessage.InvalidTypeForThrowe(s, preciseT);
+        throw new ErrorMessage.InvalidTypeForThrowe(s, preciseT,null);
       }
       if(s.getKind()==SignalKind.Error){return new Ast.FreeType();}
       if(s.getKind()==SignalKind.Return){
@@ -174,7 +175,7 @@ public class TypeSystem implements Visitor<Type>, Reporter, ast.Ast.HasPos{
           if(Functions.isSubtype(p, preciseT.getPath(),path)){
             return new Ast.FreeType();
           }}}
-      throw new ErrorMessage.InvalidTypeForThrowe(s, preciseT);
+      throw new ErrorMessage.InvalidTypeForThrowe(s, preciseT,null);
       });
     }
 
@@ -205,7 +206,7 @@ public class TypeSystem implements Visitor<Type>, Reporter, ast.Ast.HasPos{
       if(iPath!=null &&!iPath.isPrimitive()){
     	  cs=p.extractCb(iPath).getStage();
     	  }
-	  throw new ErrorMessage.PathsNotSubtype(nt,nts,inner,p.getInnerData(),cs);
+	  throw new ErrorMessage.PathsNotSubtype(nt,nts,inner,p.getInnerData(),cs,null);
       }
     if(Functions.isSubtype(p, nt,nts)){return result;}
 
@@ -218,7 +219,7 @@ public class TypeSystem implements Visitor<Type>, Reporter, ast.Ast.HasPos{
           try{return typecheckSureInner(unlocking,p,varEnv,sealEnv,throwEnv,suggested,suggested,inner);}
           catch(ErrorMessage.TypeError ignore){}
           }
-        throw new ErrorMessage.TypesNotSubtype(nt,nts,inner,e);
+        throw new ErrorMessage.TypesNotSubtype(nt,nts,inner,e,e.getPos());
         }
       }
     if(nt.getMdf()==Mdf.Readable && nts.getMdf()==Mdf.Immutable){
@@ -227,12 +228,13 @@ public class TypeSystem implements Visitor<Type>, Reporter, ast.Ast.HasPos{
       newSealEnv.addLayer(varEnv);
       try{return typecheckPromotion(unlocking,p, varEnv, throwEnv, inner, nts.withMdf(Mdf.Readable), nt,newSealEnv,sealEnv).withMdf(Mdf.Immutable);}
       catch(ErrorMessage.TypeError e){
-        if(inner instanceof Block){try{return typecheckSureInner(unlocking,p,varEnv,sealEnv,throwEnv,suggested,suggested,inner);}
+        if(inner instanceof Block){
+          try{return typecheckSureInner(unlocking,p,varEnv,sealEnv,throwEnv,suggested,suggested,inner);}
         catch(ErrorMessage.TypeError ignore){}}
-        throw new ErrorMessage.TypesNotSubtype(nt,nts,inner,e);
+        throw new ErrorMessage.TypesNotSubtype(nt,nts,inner,e,e.getPos());
         }
       }
-    throw new ErrorMessage.TypesNotSubtype(nt,nts,inner,null);
+    throw new ErrorMessage.TypesNotSubtype(nt,nts,inner, null, null);
     }
 
   public static Type typecheckSure(boolean unlocking,Program p,HashMap<String, NormType> varEnv, SealEnv sealEnv, ThrowEnv throwEnv, Type suggested,ExpCore inner) {
@@ -251,7 +253,7 @@ public class TypeSystem implements Visitor<Type>, Reporter, ast.Ast.HasPos{
         if(unlocking){throw v;}
         String x=v.getVar().getInner();
         if(!varEnv.containsKey(x)){
-          throw new ErrorMessage.UnlockImpossible(v);
+          throw new ErrorMessage.UnlockImpossible(v,null);
           //TODO: is need also below?
         }
         assert varEnv.get(x).getMdf()!=Mdf.Lent;
@@ -259,7 +261,7 @@ public class TypeSystem implements Visitor<Type>, Reporter, ast.Ast.HasPos{
           assert false:sealEnv.xss;
           //we are out of the scope of capsule promotion that made x lent.
           //No swap is possible, give a good error
-          throw new ErrorMessage.UnlockImpossible(v);
+          throw new ErrorMessage.UnlockImpossible(v,null);
         }
         assert sealEnv.xInXss(x): x+" "+sealEnv.xss;
         SealEnv newSealEnv=new SealEnv(sealEnv);
@@ -317,7 +319,7 @@ public class TypeSystem implements Visitor<Type>, Reporter, ast.Ast.HasPos{
       String x=v.getVar().getInner();
       assert newSealEnv.xInXss(x):x;
       if(oldSealEnv.xInXss(x)){v.fillInStackTrace();throw v;}
-      throw new ErrorMessage.PromotionImpossible(nt,nts,v,inner);
+      throw new ErrorMessage.PromotionImpossible(nt,nts,v,inner,null);
     }
   }
 
@@ -356,7 +358,7 @@ public class TypeSystem implements Visitor<Type>, Reporter, ast.Ast.HasPos{
           if(a.get(s).getMdf()!=Mdf.Capsule){continue;}
           if(!b.containsKey(s)){continue;}
           // just for debug assert false: a+" -- "+b;
-          throw new ErrorMessage.CapsuleUsedMoreThenOne(es, s);
+          throw new ErrorMessage.CapsuleUsedMoreThenOne(es, s,null);
           }
         }
       }
@@ -388,16 +390,19 @@ public class TypeSystem implements Visitor<Type>, Reporter, ast.Ast.HasPos{
         catch(ErrorMessage.NormImpossible ni){return methodUnknownT(varEnvs,s);}
         if(recOpt==null){return methodUnknownT(varEnvs,s);}
         if(recOpt.isPrimitive()){
-          throw new ErrorMessage.MethodNotPresent(recOpt,s.getS(),s,null,p.getInnerData());}
+          throw new ErrorMessage.MethodNotPresent(recOpt,s.getS(),s,p.getInnerData(),s.getP());
+          }
         if(p.isNotClassB(recOpt)){return methodUnknownT(varEnvs,s);}
         }
       if(recOpt==null){recOpt=GuessTypeCore.of(p, new HashMap<String,Ast.Type>(varEnv), s.getReceiver());}
       if(recOpt==null){return methodUnknownT(varEnvs,s);}
       if(recOpt.isPrimitive()){//TODO: method not present thrown only for primitives?
-        throw new ErrorMessage.MethodNotPresent(recOpt,s.getS(),s,null,p.getInnerData());}
+        throw new ErrorMessage.MethodNotPresent(recOpt,s.getS(),s,p.getInnerData(),s.getP());}
       MethodWithType mwt;
       try{mwt= p.method(recOpt,s.getS(),s,true);}
-      catch(MethodNotPresent mnp){throw mnp.withPos(s.getP());}
+      catch(ErrorMessage err){
+       throw ErrorMessage.PosImprove.improve(err,s.getP());
+        }
       NormType recExpected=new NormType(mwt.getMt().getMdf(),recOpt,Ph.None);
       return TypeCheckMethod.methCallT(this,varEnvs,s,recExpected,mwt);
     });
@@ -424,7 +429,7 @@ public class TypeSystem implements Visitor<Type>, Reporter, ast.Ast.HasPos{
   public Type visit(Using s) {
     return collectEnvs(()->{
       if (s.getPath().isPrimitive()){
-        throw new ErrorMessage.InvalidURL("No plug-in url present for primitive path "+s.getPath());
+        throw new ErrorMessage.InvalidURL("No plug-in url present for primitive path "+s.getPath(),null);
       }
       MethodType mt = platformSpecific.fakeInternet.OnLineCode.pluginType(p, s);
       assert s.getEs().size()==mt.getTs().size();
@@ -450,7 +455,7 @@ public class TypeSystem implements Visitor<Type>, Reporter, ast.Ast.HasPos{
   private static void checkSuggested(Program p,NormType actual,Type expected,ExpCore inner){
     if(expected instanceof FreeType){return;}
     if(Functions.isSubtype(p, actual,(NormType)expected)){return;};
-    throw new ErrorMessage.TypesNotSubtype(actual,expected,inner,null);
+    throw new ErrorMessage.TypesNotSubtype(actual,expected,inner,null,null);
   }
   @Override
   public String toReport(ArrayList<Ast.Position>ps) {

@@ -15,6 +15,7 @@ import ast.Ast.Mdf;
 import ast.Ast.NormType;
 import ast.Ast.Path;
 import ast.Ast.Ph;
+import ast.Ast.Position;
 import ast.Ast.SignalKind;
 import ast.Ast.Type;
 import ast.ErrorMessage;
@@ -32,7 +33,7 @@ public class TypecheckBlock {
   public static Type typecheckBlock(TypeSystem that,Block s) {
     //assert suggested instanceof Ast.FreeType || !((NormType)suggested).getPath().equals(Path.Any());
     //it can happen correctly with signal!
-    
+
     int splitPoint=splitPoint(s);//0 or -1 for no split
     if(splitPoint>0){return typecheckBlock(that,splitBlock(s,splitPoint));}
     return typeCheckMinimalBlockAdaptCatch(that, s);
@@ -82,7 +83,7 @@ public class TypecheckBlock {
     }}
     Type res1=checkBlockBody(that,varEnvs.get(0),s);
     that.p.exePlusOk(varEnvs.get(0));
-    Type res2=checkCatch(that.p,varEnvs.get(0),that.sealEnv,that.throwEnv,that.suggested,s.getDecs(),s.getOns());
+    Type res2=checkCatch(that.p,s.getP(),varEnvs.get(0),that.sealEnv,that.throwEnv,that.suggested,s.getDecs(),s.getOns());
     return searchCommonSupertype(that, s, res1, res2);
   }
 
@@ -96,13 +97,13 @@ public class TypecheckBlock {
     if(Functions.isSubtype(that.p, (NormType)res1,(NormType)res2)){return res2;}
     if(Functions.isSubtype(that.p, (NormType)res2,(NormType)res1)){return res1;}
     if(that.suggested instanceof Ast.FreeType){
-      throw new ErrorMessage.ConfusedResultingTypeForCatchAndBlock(s,res1,res2);
+      throw new ErrorMessage.ConfusedResultingTypeForCatchAndBlock(s,res1,res2,s.getP());
     }
     if(
       Functions.isSubtype(that.p, (NormType)res1,(NormType)that.suggested)
       && Functions.isSubtype(that.p, (NormType)res2,(NormType)that.suggested)
       ){return that.suggested;}
-    throw new ErrorMessage.ConfusedResultingTypeForCatchAndBlock(s,res1,res2);
+    throw new ErrorMessage.ConfusedResultingTypeForCatchAndBlock(s,res1,res2,s.getP());
   }
 
   private static Type checkBlockBody(TypeSystem that,HashMap<String, NormType> varEnv, ExpCore.Block block) {
@@ -115,7 +116,7 @@ public class TypecheckBlock {
     //TODO:was tollerant
     return TypeSystem.typecheckSure(false,that.p,varEnv,newSealEnv,that.throwEnv,that.suggested,block.getInner());
   }
-  private static Type checkCatch(Program p, HashMap<String, NormType> varEnv2, SealEnv sealEnv2,ThrowEnv throwEnv2, Type newSuggested, List<Dec> decs, List<On> k) {
+  private static Type checkCatch(Program p,Position pos, HashMap<String, NormType> varEnv2, SealEnv sealEnv2,ThrowEnv throwEnv2, Type newSuggested, List<Dec> decs, List<On> k) {
     if(k.isEmpty()){return new FreeType();}
     varEnv2=new HashMap<String, NormType>(varEnv2);
     for(Dec d:decs){varEnv2.remove(d.getX());}
@@ -126,7 +127,7 @@ public class TypecheckBlock {
     if(results.isEmpty()){return new FreeType();}//all free types
     if(results.size()==1){return results.iterator().next();}
     if(newSuggested instanceof Ast.FreeType){
-      throw new ErrorMessage.ConfusedResultingTypeForMultiCatch(k,results);
+      throw new ErrorMessage.ConfusedResultingTypeForMultiCatch(k,results,pos);
     }
       return newSuggested;
   }
@@ -329,7 +330,7 @@ public class TypecheckBlock {
   boolean allEq=true;
   for(On on:k){ if(on.getKind()!=kind){allEq=false;}}
   assert allEq;//TODO: for now ok, then we will capture a more general exception on need.
- 
+
   if(kind==SignalKind.Error){return throwEnv;}
   ThrowEnv result=new ThrowEnv();
   if(kind==SignalKind.Exception){
