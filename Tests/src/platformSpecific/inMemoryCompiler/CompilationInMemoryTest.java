@@ -26,7 +26,7 @@ public class CompilationInMemoryTest {
         + "  } "
         + "} ");
     List<SourceFile> files = Arrays.asList(file);
-    ClassLoader classes=InMemoryJavaCompiler.compile(files);
+    ClassLoader classes=InMemoryJavaCompiler.compile(ClassLoader.getSystemClassLoader(),files);
     RunningUtils.runMain(classes,"math.Calculator");
     RunningUtils.runMainStrictSecurity(classes,"math.Calculator",1000);
   }
@@ -45,7 +45,7 @@ public class CompilationInMemoryTest {
         + "  } "
         + "} ");
     List<SourceFile> files = Arrays.asList(file);
-    ClassLoader classes=InMemoryJavaCompiler.compile(files);
+    ClassLoader classes=InMemoryJavaCompiler.compile(ClassLoader.getSystemClassLoader(),files);
     RunningUtils.runMain(classes,"math.Calculator");
     RunningUtils.runMainStrictSecurity(classes,"math.Calculator",1000);
   }
@@ -65,7 +65,7 @@ public class CompilationInMemoryTest {
         + "  }} "
         );
     List<SourceFile> files = Arrays.asList(file);
-    ClassLoader classes=InMemoryJavaCompiler.compile(files);
+    ClassLoader classes=InMemoryJavaCompiler.compile(ClassLoader.getSystemClassLoader(),files);
     RunningUtils.runMain(classes,"math.Calculator");
     RunningUtils.runMainStrictSecurity(classes,"math.Calculator",1000);
   }
@@ -87,7 +87,7 @@ public class CompilationInMemoryTest {
         + "} "
         );
     List<SourceFile> files = Arrays.asList(file);
-    ClassLoader classes=InMemoryJavaCompiler.compile(files);
+    ClassLoader classes=InMemoryJavaCompiler.compile(ClassLoader.getSystemClassLoader(),files);
     RunningUtils.runMain(classes,"math.Calculator");
     RunningUtils.runMainStrictSecurity(classes,"math.Calculator",1000);
   }
@@ -112,7 +112,7 @@ public class CompilationInMemoryTest {
         + "} "
         )};
     List<SourceFile> files = Arrays.asList(file);
-    ClassLoader classes=InMemoryJavaCompiler.compile(files);
+    ClassLoader classes=InMemoryJavaCompiler.compile(ClassLoader.getSystemClassLoader(),files);
     RunningUtils.runMain(classes,"math.Calculator");
     RunningUtils.runMainStrictSecurity(classes,"math.Calculator",1000);
   }
@@ -136,7 +136,7 @@ public class CompilationInMemoryTest {
         + "} "
         )};
     List<SourceFile> files = Arrays.asList(file);
-    ClassLoader classes=InMemoryJavaCompiler.compile(files);
+    ClassLoader classes=InMemoryJavaCompiler.compile(ClassLoader.getSystemClassLoader(),files);
     RunningUtils.runMainStrictSecurity(classes,"math.Calculator",1000);
   }
 }

@@ -61,7 +61,7 @@ public class Translator {
     //System.out.println("Compilation Iteration ready to compile");
     ClassLoader cl;
     Timer.activate("InMemoryJavaCompiler.compile");try{
-    cl=InMemoryJavaCompiler.compile(files);//can throw, no closure possible
+    cl=InMemoryJavaCompiler.compile(ClassLoader.getSystemClassLoader(),files);//can throw, no closure possible
     Facade.setLastLoader(cl);
     }finally{ Timer.deactivate("InMemoryJavaCompiler.compile");}
     //System.out.println("Compilation Iteration complete compilation, start class loading");
