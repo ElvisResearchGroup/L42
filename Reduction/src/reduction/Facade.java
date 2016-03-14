@@ -18,14 +18,14 @@ public class Facade implements Reduction{
     //we need to use this kind of stuff.
       String s=Resources.nameOf(p);
       try {
-        Class<?> c=lastLoader.loadClass("generated.Program42$"+s);
+        Class<?> c=lastLoader.loadClass("generated."+s);
         return c.getField("type").get(null);
       } catch (ClassNotFoundException | IllegalAccessException | IllegalArgumentException  | SecurityException | NoSuchFieldException e) {throw new Error(e);   }
       //test returning paths and then throw catch them,
       //test especially difference between Library and Any.
     }
     return p;
-  } 
+  }
   //private static final Executor myExecutor=getExecutor();
   private static final Executor myExecutor=new CompiledStep();
   //private static final Executor myExecutor=new BigStep();
@@ -42,7 +42,7 @@ public class Facade implements Reduction{
     }
   @Override
   public ClassB of(ClassB topLevel) {
-    return Timer.record("Reduction.execute",()->{    
+    return Timer.record("Reduction.execute",()->{
     return (ClassB)Executor.stepStar(myExecutor, topLevel);
   });}
 }

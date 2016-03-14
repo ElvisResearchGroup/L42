@@ -58,16 +58,16 @@ public class TranslationTest {
   @Test public void t9(){tester(
       "{ A:{()<:IA method foo() void} IA:{interface method Void foo() } }"," A().foo()","platformSpecific.javaTranslation.Resources$Void");}
 
- 
+
 
   public void tester(String cbStr,String eStr,String nameRes) {
     TestHelper.configureForTest();
     Program p=runTypeSystem(cbStr);
     ExpCore e=Desugar.of(Parser.parse(null,eStr)).accept(new InjectionOnCore());
     ExpCore e2=Functions.setMinimalCache(p,Norm.of(p, e));
-    String code=Resources.withPDo(p,()->Translator.translateProgram(p, e2));
+    Translator code=Resources.withPDo(p,()->Translator.translateProgram(p, e2));
     System.out.println(code);
-    Object o=Resources.withPDo(p,()->Translator.runString(code));
+    Object o=Resources.withPDo(p,()->code.runMap());
     Assert.assertEquals(o.getClass().getName(), nameRes);
     }
 

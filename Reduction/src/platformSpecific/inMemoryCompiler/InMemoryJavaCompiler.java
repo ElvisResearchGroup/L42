@@ -67,7 +67,9 @@ public class InMemoryJavaCompiler {
       @Override
       protected Class<?> findClass(String name)throws ClassNotFoundException {
         System.out.println("search For "+name);
-        if(!map.containsKey(name))return super.findClass(name);
+        if(!map.containsKey(name)){
+          return super.findClass(name);
+          }
         ClassFile jclassObject = map.get(name);
         return super.defineClass(name, jclassObject.getBytes(), 0, jclassObject.getBytes().length);
         }

@@ -151,7 +151,9 @@ public class L42 {
     if(!lastC.getMs().isEmpty()){finalErr(result,"The last class contains members");}
     if(!lastC.getDoc2().isEmpty()){finalErr(result,"The last class have non empty second documentation: "+lastC.getDoc2());}
     String errCode=lastC.getDoc1().toString();
-    if(!errCode.startsWith("@exitStatus\n")){finalErr(result,"The last class is not an exitStatus class:"+errCode);}
+    if(!errCode.startsWith("@exitStatus\n")){
+      finalErr(result,"The last class is not an exitStatus class:"+errCode);
+    }
     errCode=errCode.substring("@exitStatus\n".length());
     int errCodeInt=0;
     try{errCodeInt=Integer.parseInt(errCode.substring(0,errCode.length()-1));}

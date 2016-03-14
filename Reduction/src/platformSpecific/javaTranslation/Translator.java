@@ -24,6 +24,7 @@ import tools.Assertions;
 import coreVisitors.From;
 import coreVisitors.IsCompiled;
 import facade.Configuration;
+import facade.L42;
 import auxiliaryGrammar.Functions;
 import auxiliaryGrammar.Norm;
 import auxiliaryGrammar.Program;
@@ -41,23 +42,23 @@ import ast.Util;
 import ast.Util.PathMwt;
 import ast.ExpCore.*;
 public class Translator {
-  public static Object runString( String s){
-    try{return runStringExc(s);}
+  public Object runMap(){
+    try{return runStringExc();}
     catch (InvocationTargetException ex) {
       if (ex.getCause() instanceof RuntimeException) throw (RuntimeException)ex.getCause();
       if (ex.getCause() instanceof Error) throw (Error)ex.getCause();
       throw new Error(ex.getCause());
       }
     catch(CompilationError| IllegalAccessException| IllegalArgumentException| NoSuchMethodException| SecurityException| ClassNotFoundException e){
-      //try {Files.write(Paths.get("C:\\Users\\marco\\Desktop\\eclipseMars\\L42Local\\Tests\\src\\generated\\Program42.java"), s.getBytes());}catch (IOException _e) {throw new Error(_e);}
-      try {Files.write(Paths.get("/u/staff/servetto/git/L42/Tests/src/generated/Program42.java"), s.getBytes());}catch (IOException _e) {throw new Error(_e);}
       throw new Error(e);
       }
     }
-  public static Object runStringExc(String s) throws CompilationError, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, ClassNotFoundException {
-    String fileName="generated.Program42";
-    SourceFile file = new SourceFile(fileName,s);
-    List<SourceFile> files = Arrays.asList(file);
+  public Object runStringExc() throws CompilationError, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, ClassNotFoundException {
+    List<SourceFile> files =new ArrayList<>();
+    for(String k :map.keySet()){//"generated.Program42";
+      files.add(new SourceFile(k,map.get(k)));
+      //try {Files.write(Paths.get("/u/staff/servetto/git/L42/Tests/src/generated/"+k+".java"), map.get(k).getBytes());}catch (IOException _e) {throw new Error(_e);}
+      }
     //System.out.println("Compilation Iteration ready to compile");
     ClassLoader cl;
     Timer.activate("InMemoryJavaCompiler.compile");try{
@@ -65,7 +66,7 @@ public class Translator {
     Facade.setLastLoader(cl);
     }finally{ Timer.deactivate("InMemoryJavaCompiler.compile");}
     //System.out.println("Compilation Iteration complete compilation, start class loading");
-    Class<?> cl0 = cl.loadClass(fileName);
+    Class<?> cl0 = cl.loadClass("generated."+this.mainName);
     //System.out.println("Compilation Iteration start method retrival");
     Method m0 = cl0.getDeclaredMethod("execute0");
     //System.out.println("Compilation Iteration ready to execute");
@@ -77,29 +78,39 @@ public class Translator {
     }finally{Timer.deactivate("InMemoryJavaCompiler.execute");}
 
   }
-  public static String translateProgram(Program p,ExpCore e){
+  HashMap<String,String> map;
+  String mainName;
+  public static  Translator translateProgram(Program p,ExpCore e){
+    Translator t=new Translator();
+    t.map=new HashMap<>();
     Resources.clearRes();
     Map<String,ClassB> map=new LinkedHashMap<String,ClassB>();
     Map<String,ClassB> mapNorm=new LinkedHashMap<String,ClassB>();
     addP(0,p,map,p);
-    StringBuilder res=new StringBuilder();
-    res.append("package generated;");
-    res.append("@SuppressWarnings(\"all\")");
-    res.append("public class Program42{\n");
-    //res.append("public static <T> T block(java.util.function.Supplier<T> p){return p.get();}\n");
-    //res.append("public static platformSpecific.javaTranslation.Resources.Void Unused=null;\n");
-    //res.append("public static Object getRes(String s){return  javaTranslation.Resources.getRes(s);}\n");
-    res.append("public static Object execute0()");
-    TranslateExpression.of(e, res);
-    res.append("\n");
+    {
+      StringBuilder res=new StringBuilder();
+      t.mainName=Functions.freshName("Execute_",L42.usedNames);
+      res.append("package generated;");
+      res.append("@SuppressWarnings(\"all\")");
+      res.append("public class "+t.mainName+"{\n");
+      res.append("public static Object execute0()");
+      TranslateExpression.of(e, res);
+      res.append("\n");
+      res.append("}");
+      t.map.put(t.mainName, res.toString());
+      }
     for(String s:map.keySet()){
       mapNorm.put(s,normalizeClass(p,map.get(s)));
     }
+
     for(String s:mapNorm.keySet()){
-      TranslateClass.of(p,s,mapNorm.get(s),res);
+      StringBuilder resi=new StringBuilder();
+      resi.append("package generated;");
+      resi.append("@SuppressWarnings(\"all\")");
+      TranslateClass.of(p,s,mapNorm.get(s),resi);
+      t.map.put(s, resi.toString());
     }
-    res.append("}");
-    return res.toString();
+    return t;
     }
   public static void addP(int level,Program p,Map<String,ClassB> map,Program original){
     if(p.isEmpty()){return;}
