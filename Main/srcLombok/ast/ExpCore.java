@@ -64,7 +64,7 @@ public interface ExpCore {
       }
       return dom;
     }
-   
+
     @Value @Wither @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") public static class On implements HasPos{
       SignalKind kind;
       String x;
@@ -74,17 +74,18 @@ public interface ExpCore {
     }
   }
 
-  @Value @Wither @EqualsAndHashCode(exclude = "stage") public static class ClassB implements ExpCore, Ast.Atom {
+  @Value @Wither @EqualsAndHashCode(exclude = {"stage","p"}) public static class ClassB implements ExpCore, Ast.Atom,HasPos {
 	  /*public ClassB(Doc doc1, Doc doc2, boolean isInterface, List<Path> supertypes, List<Member> ms) {
 		  this(doc1,doc2,isInterface,supertypes,ms,new ast.Util.CachedStage());
 		  }*/
-	  public ClassB(Doc doc1, Doc doc2, boolean isInterface, List<Path> supertypes, List<Member> ms,ast.Util.CachedStage stage) {
+	  public ClassB(Doc doc1, Doc doc2, boolean isInterface, List<Path> supertypes, List<Member> ms,Position p,ast.Util.CachedStage stage) {
       this.doc1 = doc1;
       this.doc2 = doc2;
       this.isInterface = isInterface;
       this.supertypes = supertypes;
       this.ms = ms;
       this.stage=stage;
+      this.p=p;
       assert stage!=null;
       isConsistent();
     }//lombock fails me here :-(
@@ -93,6 +94,7 @@ public interface ExpCore {
     boolean isInterface;
     List<Ast.Path> supertypes;
     List<Member> ms;
+    Position p;
     ast.Util.CachedStage stage;
     public String toString() {
       return sugarVisitors.ToFormattedText.of(this);

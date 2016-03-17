@@ -11,7 +11,9 @@ import tools.Assertions;
 import tools.StringBuilders;
 import ast.Ast.NormType;
 import ast.Ast.Path;
+import ast.Ast.Position;
 import ast.Ast.SignalKind;
+import ast.Ast.Stage;
 import ast.ErrorMessage;
 import ast.ExpCore;
 import ast.ExpCore.Block;
@@ -27,6 +29,7 @@ import ast.ExpCore.X;
 import ast.ExpCore._void;
 import auxiliaryGrammar.Functions;
 import auxiliaryGrammar.Program;
+import coreVisitors.IsCompiled;
 
 /*class A{ A m(A a){return a;}
   A mm(){
@@ -60,7 +63,21 @@ public class TranslateExpression implements coreVisitors.Visitor<Void>{
       if(s.equals(Path.Void())){res.append("platformSpecific.javaTranslation.Resources.Void.type");}
       return null;
     }
-    res.append(Resources.nameOf(s)+".type");
+    ClassB cbs=Resources.getP().extractCb(s);
+    if(cbs.getStage().getStage()==Stage.Star  && IsCompiled.of(cbs)){
+        if(s.toString().contains("Message")){
+          System.out.println(s);
+        }
+      res.append(Resources.nameOf(s)+".type ");
+      }
+    else{
+      Position pos=Resources.getP().getCb(s.getN()).getP();
+      int hash=System.identityHashCode(pos);
+      String cs=s.toString();
+      cs=cs.substring(cs.indexOf("."));
+      res.append(
+        "platformSpecific.javaTranslation.Resources.fromHash("+hash+",\""+cs+"\")");
+      }
     return null;
   }
 
@@ -139,7 +156,7 @@ public class TranslateExpression implements coreVisitors.Visitor<Void>{
     res.append(");\n");
     return null;
   }
-  
+
   @Override
   public Void visit(MCall s) {
     res.append("(");
@@ -164,7 +181,7 @@ public class TranslateExpression implements coreVisitors.Visitor<Void>{
     Set<String> domPhs=declareVarsAndPh(s.getDecs());
     if(!s.getOns().isEmpty()){
       res.append("try{\n");
-      initializeVars(domPhs,s.getDecs(),kVar);  
+      initializeVars(domPhs,s.getDecs(),kVar);
       res.append("\n}");
       getCatches(s.getOns(),asReturn,kVar);
     }
@@ -177,7 +194,7 @@ public class TranslateExpression implements coreVisitors.Visitor<Void>{
       produceThrow((Signal)s.getInner());
     }else{
       res.append(asReturn);
-      s.getInner().accept(this);   
+      s.getInner().accept(this);
       res.append(";");
       }
     res.append("}}");
@@ -201,6 +218,7 @@ public class TranslateExpression implements coreVisitors.Visitor<Void>{
     Path p=((NormType)on.getT()).getPath();
     String tn=Resources.nameOf(p);
     if(p.equals(Path.Library())){res.append(getCatchHeaderForLibrary(kVar));}
+    else if(!p.isPrimitive() && tn.equals("Object")){res.append(getCatchHeaderForPathNotStar(kVar,p));}
     else {res.append("if("+kVar+".unbox instanceof "+tn+"){\n");}
     res.append("  "+tn+" P"+on.getX()+"=("+tn+")"+kVar+".unbox;\n");
     res.append(asReturn);
@@ -210,7 +228,7 @@ public class TranslateExpression implements coreVisitors.Visitor<Void>{
     res.append("\n  }\nelse ");
   }
 
-  
+
   private Object getCatchHeaderForLibrary(String xName) {
     String iOf=xName+".unbox instanceof ";
     return "if("
@@ -219,6 +237,11 @@ public class TranslateExpression implements coreVisitors.Visitor<Void>{
         +iOf+"  ast.ExpCore.ClassB||"
         +iOf+"  ast.Ast.Doc"
         +"){\n";
+  }
+
+  private Object getCatchHeaderForPathNotStar(String xName,Path path) {
+    String cond="((platformSpecific.javaTranslation.Resources.Revertable)"+xName+".unbox).revert().toString().equals(\""+path.toString()+"\")";
+    return "if("+cond+"){\n";
   }
 
   private void initializeVars(Set<String> domPhs, List<Dec> decs,String kVar) {
@@ -286,7 +309,7 @@ public class TranslateExpression implements coreVisitors.Visitor<Void>{
   @Override
   public Void visit(ClassB s) {
     String k=Resources.submitRes(s);
-    res.append("platformSpecific.javaTranslation.Resources.getRes(\""+k+"\")");
+    res.append("platformSpecific.javaTranslation.Resources.getRes(\""+k+"\""+Resources.pKeysString()+")");
     return null;
   }
 
@@ -298,5 +321,5 @@ public class TranslateExpression implements coreVisitors.Visitor<Void>{
     res.append(";\n}})\n");
     return null;
   }
-  
+
 }

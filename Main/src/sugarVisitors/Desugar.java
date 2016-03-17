@@ -143,6 +143,9 @@ public class Desugar extends CloneVisitor{
             }
         });
         Desugar.this.importedLibs.put(s.getUrl(),dataCore);
+        //Using a hash map as over means that if we import the same library twice, we get a single copy.
+        //This is "ok" but then we can not rely on the identities of the positions.
+        //This is why we refresh position identities at the end of desugaring.
         return super.visit(s);
       }
     });
@@ -555,7 +558,7 @@ public class Desugar extends CloneVisitor{
   }
   static ClassB encodePrimitiveString(String s){
     //return EncodingHelper.wrapStringU(s);//no, this produces a ExpCoreClassB
-    return new ClassB(Doc.factory("@stringU\n"+EncodingHelper.produceStringUnicode(s)+"\n"),Doc.empty(),new Ast.TraitHeader(),Collections.emptyList(),Collections.emptyList(),Stage.None);
+    return new ClassB(Doc.factory("@stringU\n"+EncodingHelper.produceStringUnicode(s)+"\n"),Doc.empty(),new Ast.TraitHeader(),Collections.emptyList(),Collections.emptyList(),Position.noInfo,Stage.None);
   }
   public static String desugarName(String n){
     if(n.isEmpty())return "#apply";

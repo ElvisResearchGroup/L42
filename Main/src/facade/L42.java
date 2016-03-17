@@ -18,6 +18,7 @@ import java.util.stream.Stream;
 
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 
+import coreVisitors.CloneVisitor;
 import coreVisitors.InjectionOnSugar;
 import profiling.Timer;
 import sugarVisitors.CollapsePositions;
@@ -176,6 +177,15 @@ public class L42 {
       //L42.usedNames.addAll(CollectDeclaredClassNamesAndMethodNames.of(code2));
       L42.setExecutionStage(ExecutionStage.MetaExecution);
       //ClassB result= (ClassB)Executor.stepStar(exe,code3);
+
+       //Refresh of position identities, it is used to generate correct Java code.
+      code3=(ClassB)code3.accept(new CloneVisitor(){
+          @Override public ExpCore visit(ClassB cb){
+            Position p=cb.getP();
+            cb=cb.withP(new Position(p.getFile(),p.getLine1(),p.getPos1(),p.getLine2(),p.getPos2()));
+            return super.visit(cb);
+            }
+          });
       ClassB result= Configuration.reduction.of(code3);
       //System.out.println("--------------------------");
       //System.out.println(ToFormattedText.of(result));

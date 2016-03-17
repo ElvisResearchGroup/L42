@@ -20,6 +20,7 @@ import ast.Ast.MethodSelector;
 import ast.Ast.MethodSelectorX;
 import ast.Ast.Parameters;
 import ast.Ast.Path;
+import ast.Ast.Position;
 import ast.Ast.Stage;
 import ast.Ast.Type;
 import ast.Ast.VarDec;
@@ -89,7 +90,7 @@ public class ToFormattedText implements Visitor<Void>{
   public static String of(ExpCore.ClassB.Member m){
     List<ExpCore.ClassB.Member> ms=new ArrayList<>();
     ms.add(m);
-    ExpCore e=new ExpCore.ClassB(Doc.empty(),Doc.empty(),false,Collections.emptyList(),ms,new CachedStage());
+    ExpCore e=new ExpCore.ClassB(Doc.empty(),Doc.empty(),false,Collections.emptyList(),ms,m.getP(),new CachedStage());
     Expression.ClassB es=(ClassB) e.accept(new InjectionOnSugar());
     ToFormattedText tft=new ToFormattedText();
     tft.formatMembers(es.getMs());//for the injection

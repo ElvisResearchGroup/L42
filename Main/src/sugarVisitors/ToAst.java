@@ -339,7 +339,7 @@ public class ToAst extends AbstractVisitor<Expression>{
     String url=ctx.getChild(2).getText();
     url=url.trim();
     List<Member> ms=visitMembers(ctx.member());
-    ClassB inner=new ClassB(doc1, doc2, new Ast.TraitHeader(),Collections.emptyList(), ms, Stage.None);
+    ClassB inner=new ClassB(doc1, doc2, new Ast.TraitHeader(),Collections.emptyList(), ms, position(ctx),Stage.None);
     return new Expression.ClassReuse(inner,url,null);
   }
   @Override public Expression visitClassB(ClassBContext ctx) {
@@ -356,7 +356,7 @@ public class ToAst extends AbstractVisitor<Expression>{
         }
       //for( TerminalNode sp:ctx.classBExtra().Path()){allP.add(Path.parse(nameU(sp)));}
     }
-    return new Expression.ClassB(doc1,doc2, h,supertypes, ms,s);
+    return new Expression.ClassB(doc1,doc2, h,supertypes, ms,position(ctx),s);
   }
   public List<Member> visitMembers(List<MemberContext> ctxms){
     List<Member> members=new ArrayList<Member>();

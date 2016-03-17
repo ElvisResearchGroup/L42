@@ -15,6 +15,7 @@ import platformSpecific.fakeInternet.ActionType;
 import ast.ErrorMessage;
 import ast.Ast.Doc;
 import ast.Ast.Path;
+import ast.Ast.Position;
 import ast.Ast.Stage;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
@@ -141,7 +142,7 @@ public class RemoveCode {
       ClassB newInner=removeAllButPath(path.subList(1, path.size()),(ClassB)nc.getInner());
       ms.add(nc.withInner(newInner));
       }
-    return new ClassB(Doc.empty(),Doc.empty(),false,Collections.emptyList(),ms,new CachedStage());
+    return new ClassB(Doc.empty(),Doc.empty(),false,Collections.emptyList(),ms,Position.noInfo,new CachedStage());
   }
 
   private static List<List<String>> collectDep(ClassB depSource, List<String> origin) {

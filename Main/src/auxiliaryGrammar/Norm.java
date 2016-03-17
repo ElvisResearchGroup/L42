@@ -20,6 +20,7 @@ import ast.Ast.MethodType;
 import ast.Ast.NormType;
 import ast.Ast.Path;
 import ast.Ast.Ph;
+import ast.Ast.Position;
 import ast.Ast.Stage;
 import ast.Ast.Type;
 import ast.ErrorMessage;
@@ -87,7 +88,7 @@ public class Norm {
     if(!isOnlyType){eInner = Map.of(e->of(p,e),mt.getInner());}
     return new MethodWithType(mt.getDoc(),mt.getMs(),mt2,eInner,mt.getP());
   }
-  private static final ClassB forOnlyClass=new ClassB(Doc.factory("Only the class obj was asked\n"),Doc.empty(),false,Collections.emptyList(),Collections.emptyList(),new CachedStage());
+  private static final ClassB forOnlyClass=new ClassB(Doc.factory("Only the class obj was asked\n"),Doc.empty(),false,Collections.emptyList(),Collections.emptyList(),Position.noInfo,new CachedStage());
 
 
   public static NormType of(Program p, Type t) {

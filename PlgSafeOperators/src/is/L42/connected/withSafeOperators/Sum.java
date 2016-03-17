@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import platformSpecific.javaTranslation.Resources;
+import sugarVisitors.CollapsePositions;
 import facade.Configuration;
 import is.L42.connected.withSafeOperators.ExtractInfo.ClassKind;
 import ast.Ast.Doc;
@@ -67,16 +68,16 @@ public class Sum {
      }
      assert !ps.isEmpty();
      Member  notInterf=null;
+     Program p1=p.addAtTop(candidate);
      for(Path pi:ps){
-       assert pi.outerNumber()==0;
-       ClassB cb=Program.extractCBar(pi.getCBar(), candidate);
+       ClassB cb=p1.extractCb(pi);
        System.out.println(pi);
        System.out.println(i);
        System.out.println(cb.getStage());
        System.out.println(candidate.getStage());
        Optional<Member> currentOpt=Program.getIfInDom(cb.getMs(),i.getGuilty());
        Member current=currentOpt.get();
-       
+
        if(cb.isInterface()){
          mems.add(current);
        }
@@ -107,7 +108,7 @@ public class Sum {
       if(!stage.getFamilies().contains(fam)){stage.getFamilies().add(fam);}
     }
     if(a.getStage().isVerified() && b.getStage().isVerified()){stage.setVerified(true);}
-    return new ClassB(doc1, doc2, isInterface, superT, ms,stage);
+    return new ClassB(doc1, doc2, isInterface, superT, ms,CollapsePositions.accumulatePos(a.getP(), b.getP()),stage);
     }
   /*
   private static void checkMethodClashInterfaceAbstract(List<String> pathForError,List<PathMwt> aInh, List<PathMwt> bInh, List<Member> ms) {
@@ -146,7 +147,7 @@ public class Sum {
 
   public static void doubleSimmetricalMatch(Program p, ClassB topA, ClassB topB, List<Member> ms, List<String> current, Member m, Member oms) {
     m.match(
-        nc -> matchNC(p,topA,topB,nc, ms, (NestedClass) oms, current), 
+        nc -> matchNC(p,topA,topB,nc, ms, (NestedClass) oms, current),
         mi -> matchMi(current, mi, ms, oms),
         mt -> matchMt(current, mt, ms, oms));
   }
@@ -201,7 +202,7 @@ public class Sum {
       Program p,List<String>current,
       ClassB topA,ClassB topB,
       ClassB currentA,ClassB currentB){
-  
+
    //*sum of two classes with private state
    //*sum class/interface invalid
    boolean privateA=ExtractInfo.hasPrivateState(currentA);
@@ -220,7 +221,7 @@ public class Sum {
    throw Errors42.errorClassClash(current, Collections.emptyList());
   }
 /*
-  public static List<Path> 
+  public static List<Path>
     conflictingImplementedInterfaces(
         Program p,List<String>current,ClassB cba,ClassB cbb){
       List<Path> cc=new ArrayList<>();

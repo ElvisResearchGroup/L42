@@ -126,13 +126,13 @@ public class Rename {
         Path pathUser=Path.outer(0,this.getLocator().getClassNamesPath());
         result1.add(new PathMx(pathUser,msUser));
         return original;
-      }      
+      }
     };
    ren.visit(cb);
    return new UserForMethodResult(){{asClient=new ArrayList<>(result1);asThis=new ArrayList<>(result2);}};
   }
 
-  
+
   private static ClassB redirectDefinition(List<String>src,List<String>dest, ClassB lprime) {
     assert !src.isEmpty();
     assert !dest.isEmpty();
@@ -142,9 +142,9 @@ public class Rename {
     cb=(ClassB)FromInClass.of(cb, toFrom);
     List<Member>ms=new ArrayList<>();
     ms.add(Functions.encapsulateIn(dest, cb,docCb[0]));
-    return new ClassB(Doc.empty(),Doc.empty(),false,Collections.emptyList(),ms,new CachedStage());
+    return new ClassB(Doc.empty(),Doc.empty(),false,Collections.emptyList(),ms,Position.noInfo,new CachedStage());
   }
- 
+
   //TODO: replace with same mechanism of private normalization when is completed
   static ClassB renameUsage(List<PathPath> mapPath, ClassB cb) {
     return (ClassB)cb.accept(new coreVisitors.CloneWithPath(){

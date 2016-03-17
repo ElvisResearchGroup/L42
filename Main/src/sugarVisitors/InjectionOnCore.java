@@ -13,6 +13,7 @@ import ast.Ast.MethodSelector;
 import ast.Ast.MethodType;
 import ast.ExpCore;
 import ast.Ast.Path;
+import ast.Ast.Position;
 import ast.Ast.SignalKind;
 import ast.Ast.Type;
 import ast.Expression.Catch;
@@ -82,7 +83,7 @@ public class InjectionOnCore implements Visitor<ExpCore> {
           })
        );
     }
-    ClassB result=new ClassB(doc1,doc2,isInterface,supertypes,members,new CachedStage());
+    ClassB result=new ClassB(doc1,doc2,isInterface,supertypes,members,s.getP(),new CachedStage());
     result.getStage().setStage(s.getStage());
     return result;
     }

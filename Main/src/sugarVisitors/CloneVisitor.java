@@ -152,7 +152,7 @@ public class CloneVisitor implements Visitor<Expression>{
     Header h = liftH(s.getH());
     List<Path> superT = Map.of(this::lift,s.getSupertypes());
     List<Member> ms = Map.of(this::liftM,s.getMs());
-    return new ClassB(liftDoc(s.getDoc1()),liftDoc(s.getDoc2()),h,superT,ms,s.getStage());
+    return new ClassB(liftDoc(s.getDoc1()),liftDoc(s.getDoc2()),h,superT,ms,s.getP(),s.getStage());
   }
   @Override
   public Expression visit(If s) {

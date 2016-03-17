@@ -2772,15 +2772,6 @@ Named:{
 class method 
 Library #leftleft(Library that) exception This1.DecorationUnfeasable }}
 Collections:{
-CollectionErrors:{
-class method 
-Any negBound(This2.N that, This1.MutListAny list) 
-class method 
-Any outBound(This2.N that, This1.MutListAny list) 
-class method 
-Any cast() 
-class method 
-Any iterationTermination(This2.N from, This2.N stopOk, This2.N size) }
 IterationFailure:{<:This2.Guard, This2.Message
 class method 
 mut This0 #mutK(This2.S _text, This2.Message.Opt cause) 
@@ -2825,6 +2816,15 @@ method
 This1 #from(This3.S.SBuilder builder) }
 method 
 mut This2.S.SConcat #seqBuilder() }
+CollectionErrors:{
+class method 
+Any negBound(This2.N that, This1.MutListAny list) 
+class method 
+Any outBound(This2.N that, This1.MutListAny list) 
+class method 
+Any cast() 
+class method 
+Any iterationTermination(This2.N from, This2.N stopOk, This2.N size) }
 MutListAny:{
 class method 
 mut This0 #mutK(This0.Cell head, This2.N size) 

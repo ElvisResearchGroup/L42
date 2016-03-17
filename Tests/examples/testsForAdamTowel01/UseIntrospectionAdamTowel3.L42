@@ -1,4 +1,4 @@
-{reuse L42.is/AdamTowel01
+{ reuse L42.is/AdamTowel01
 External:{ class method Library (){
   method Void m1()
   method Library m2()
@@ -18,7 +18,7 @@ Main:{
   et=i3.externalType()
   with et (
     on class Generated.Foo Debug(S"Foo!")
-    on class Generated Debug(S"Generated!")   
+    on class Generated Debug(S"Generated!")
     default Debug(S"other")
     )
   Debug(Introspection(clazz:External).externalTypeToS())

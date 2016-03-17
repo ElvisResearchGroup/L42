@@ -17,6 +17,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import platformSpecific.inMemoryCompiler.InMemoryJavaCompiler;
 import platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.CompilationError;
+import platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.MapClassLoader;
 import platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.SourceFile;
 import profiling.Timer;
 import reduction.Facade;
@@ -60,10 +61,10 @@ public class Translator {
       //try {Files.write(Paths.get("/u/staff/servetto/git/L42/Tests/src/generated/"+k+".java"), map.get(k).getBytes());}catch (IOException _e) {throw new Error(_e);}
       }
     //System.out.println("Compilation Iteration ready to compile");
-    ClassLoader cl;
+    MapClassLoader cl=((Facade)Configuration.reduction).getLastLoader();
     Timer.activate("InMemoryJavaCompiler.compile");try{
-    cl=InMemoryJavaCompiler.compile(ClassLoader.getSystemClassLoader(),files);//can throw, no closure possible
-    Facade.setLastLoader(cl);
+    cl=InMemoryJavaCompiler.compile(cl==null?ClassLoader.getSystemClassLoader():cl,files);//can throw, no closure possible
+    ((Facade)Configuration.reduction).setLastLoader(cl);
     }finally{ Timer.deactivate("InMemoryJavaCompiler.compile");}
     //System.out.println("Compilation Iteration complete compilation, start class loading");
     Class<?> cl0 = cl.loadClass("generated."+this.mainName);
@@ -83,7 +84,7 @@ public class Translator {
   public static  Translator translateProgram(Program p,ExpCore e){
     Translator t=new Translator();
     t.map=new HashMap<>();
-    Resources.clearRes();
+    //Resources.clearRes();
     Map<String,ClassB> map=new LinkedHashMap<String,ClassB>();
     Map<String,ClassB> mapNorm=new LinkedHashMap<String,ClassB>();
     addP(0,p,map,p);
@@ -99,7 +100,13 @@ public class Translator {
       res.append("}");
       t.map.put(t.mainName, res.toString());
       }
+    MapClassLoader cl=((Facade)Configuration.reduction).getLastLoader();
     for(String s:map.keySet()){
+      if (cl!=null && cl.map().containsKey("generated."+s)){
+        continue;
+        //ClassB cb=map.get(s);
+        //if(!cb.getDoc1().getS().contains("##@")){continue;}
+      }
       mapNorm.put(s,normalizeClass(p,map.get(s)));
     }
 
@@ -121,22 +128,23 @@ public class Translator {
 
   public static void add(int level,List<String> cs,ClassB cb, Map<String,ClassB> map,Program original){
     Ast.Path p=Ast.Path.outer(level, cs);
+
     if(cb.getStage().getStage()==Stage.Star  && IsCompiled.of(cb)){//otherwise is "meta"
       assert cb.getStage().getInheritedPaths()!=null;
       ClassB cbUF=useFrom(cb,p);
       assert cbUF.getStage().getInheritedPaths()!=null;
       map.put(Resources.nameOf(level,cs),cbUF);
       }
-    else{//generate only for metaprogramming
-      ExpCore.ClassB cbMP = new ExpCore.ClassB(
-          Doc.factory("DebugInfo: is interface since (cb.getStage()!=Stage.Star :"
+    else{//generate only for metaprogramming //Can be ignored now with typemap
+      /*ExpCore.ClassB cbMP = new ExpCore.ClassB(
+          Doc.factory("##@DebugInfo: is interface since (cb.getStage()!=Stage.Star :"
             +(cb.getStage().getStage()!=Stage.Star)+") or since !IsCompiled.of(cb) :"+!IsCompiled.of(cb)+")"
           ),Doc.empty(),true,Collections.emptyList(),Collections.emptyList(),new Util.CachedStage());
       cbMP.getStage().setInheritedPaths(Collections.emptyList());
       cbMP.getStage().setInherited(Collections.emptyList());
       assert cbMP.getStage().getInheritedPaths()!=null;
       map.put(Resources.nameOf(level,cs),cbMP);
-      }
+      */}
     for(Member m:cb.getMs()){
       if (!(m instanceof NestedClass)){continue;}
       NestedClass nc=(NestedClass)m;
@@ -151,7 +159,8 @@ public class Translator {
     }
   }
 
-  private static ClassB useFrom(ClassB ct, Path p) {
+  //this should take a class, strip out nested and 'from' it so that it is as at top level
+  static ClassB useFrom(ClassB ct, Path p) {
     ArrayList<Member> ms=new ArrayList<Member>();
     for(Member m:ct.getMs()){
       m.match(nc->null,

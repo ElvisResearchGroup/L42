@@ -1,13 +1,16 @@
 package testAux;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import helpers.TestHelper;
 import facade.Configuration;
 import facade.ErrorFormatter;
+import facade.L42;
 import facade.Parser;
 import sugarVisitors.Desugar;
 import sugarVisitors.InjectionOnCore;
+import testAdamTowel01.TestBase01;
 import ast.Ast;
 import ast.ErrorMessage;
 import ast.ErrorMessage.FinalResult;
@@ -355,5 +358,141 @@ public void test14RelaxVarableSameName2(){tp("{",
     " A:{class method Library foo() (   var Library lib={}  (x={//@exitStatus\n//0\n\n} lib:=x  )  (x={} lib:=x) lib   )}",
     "Main:A.foo()",
     " }");}
+
+@Test
+public void test2levels(){tp("{",
+    " A:( void {B: ( void {class method Library foo() {//@exitStatus\n//0\n\n}   })})",
+    "Main:A.B.foo()",
+    " }");}
+
+@Test
+public void test5levels(){tp("{",
+    " A:( void {B: ( void {C:( void {D:( void {E:( void {class method Library foo() {//@exitStatus\n//0\n\n}   })})})})})",
+    "Main:A.B.C.D.E.foo()",
+    " }");}
+
+
+@Test
+public void testComposition1(){tp("{",
+    "Op:"+operatorAccess(),
+    " A:{interface method Void m()}",
+    " B:{ class method Library (){ <:A method m()void} }",
+    " C:Op.compose(left:B(),right:{<:A})",
+    " D1:{D2:Op.compose(left:B(),right:{<:A})}",
+    " D:Op.compose(left:B(),right:{<:A})",
+    "Main:{//@exitStatus\n//0\n\n}",
+    " }");}
+
+@Test
+public void testComposition2(){tp("{",
+    "Op:"+operatorAccess(),
+    " A:{interface method A m(A that)}",
+    " B:{ class method Library (){ <:A method m(that)that} }",
+    " C:Op.compose(left:B(),right:{<:A})",
+    " D1:{D2:Op.compose(left:B(),right:{<:A})}",
+    " D:Op.compose(left:B(),right:{<:A})",
+    "Main:{//@exitStatus\n//0\n\n}",
+    " }");}
+
+@Test
+public void testComposition3(){tp("{",
+    "Op:"+operatorAccess(),
+    " A:{interface method A m1(A that)  method A m2(A that)}",
+    " B:{ class method Library (){ <:A method m1(that) this.m2(that)} }",
+    " C:Op.compose(left:B(),right:{<:A method m2(that) this})",
+    " D1:{D2:Op.compose(left:B(),right:{<:A method m2(that) this})}",
+    " D:Op.compose(left:B(),right:{<:A method m2(that) this})",
+    "Main:{//@exitStatus\n//0\n\n}",
+    " }");}
+
+
+@Test
+public void testComposition4(){tp("{",
+    "Op:"+operatorAccess(),
+    " A:{interface method A m1(A that)  method A m2(A that)}",
+    " B:{ class method Library (){ <:A method m1(that) this.m2(that)} }",
+    " C:Op.compose(left:B(),right:{<:A method m2(that) this})",
+    " N:{class method Library (){",
+    "    Op:"+operatorAccess(),
+    "     A:{interface method A m1(A that)  method A m2(A that)}",
+    "     B:{ class method Library (){ <:A method m1(that) this.m2(that)} }",
+    "     C:Op.compose(left:B(),right:{<:A method m2(that) this})",
+    " }}",
+    " D:Op.compose(left:B(),right:{<:A method m2(that) this})",
+    "Main:{//@exitStatus\n//0\n\n}",
+    " }");}
+
+
+@Test
+public void testComposition5(){tp("{",
+    "Op:"+operatorAccess(),
+    " A:{interface method Void m() }",
+    " B:{ class method Library (){ <:A method m() void } }",
+    " N:Op.compose(left:B(),right:{ ",
+    "     A:{interface method Void m() }",
+    "     B:{ class method Library (){ <:A method m() void } }",
+    "     C:Op.compose(left:B(),right:{<:A })",
+    " })",
+    "Main:{//@exitStatus\n//0\n\n}",
+    " }");}
+
+
+@Test
+public void testComposition6(){tp("{",
+    "Op:"+operatorAccess(),
+    " A:{interface method A m1(A that)  method A m2(A that)}",
+    " B:{ class method Library (){ <:A method m1(that) this.m2(that)} }",
+    " N:Op.compose(left:{},right:{ ",
+    "    Op:"+operatorAccess(),
+    "     A:{interface method A m1(A that)  method A m2(A that)}",
+    "     B:{ class method Library (){ <:A method m1(that) this.m2(that)} }",
+    "     C:Op.compose(left:B(),right:{<:A method m2(that) this})",
+    " })",
+    "Main:{//@exitStatus\n//0\n\n}",
+    " }");}
+
+
+@Test
+public void testComposition7(){tp("{",
+    "Op:"+operatorAccess(),
+    " Q:{ interface method Void m() }",
+    " A:{interface <: Q   B:{ class method Library (Library that) Op.compose(left:that,right:{ <:A method m() void }) }}",
+    " N:Op.compose(left:{},right:{ ",
+    "     Q:{ interface method Void m() }",
+    "     A:{interface <:Q B:{ class method Library (Library that) Op.compose(left:that,right:{ <:A method m() void }) }}",
+    "     BB:{C:A.B({<:A })}",
+    " })",
+    "Main:{//@exitStatus\n//0\n\n}",
+    " }");}
+
+
+@Test
+public void testCompositionAT2() throws Throwable{
+  L42.trustPluginsAndFinalProgram=true;
+  //new TestBase01()._01_00DeployAdamTowel01();
+  tp("{TOP:{reuse L42.is/AdamTowel01",
+    "Resource:{  reuse L42.is/AdamTowel01",
+    "   A:{ Foo:This1.Message.$<<{<:This2.Message} }    }}",
+    "Main:{//@exitStatus\n//0\n\n}",
+    " }");}
+
+
+
+
+public static final String operatorAccess(){return
+"{//@plugin\n"
++"   //L42.is/connected/withSafeOperators\n"
++"class method\n"
++"Library compose(Library left,Library right)\n"
++"  use This\n"
++"    check compose(left:left,right:right)\n"
++"    error void\n"
++"class method\n"
++"Library redirect(Library that,Library srcBinaryRepr,class Any dest)\n"
++"    use This\n"
++"      check redirect(that,src:srcBinaryRepr,dest:dest)\n"
++"      error void\n"
++"  }\n";
+}
 
 }

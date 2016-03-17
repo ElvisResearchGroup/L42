@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
-
+import ast.Ast.Position;
 import ast.Ast.SignalKind;
 import ast.Ast.Type;
 import ast.Ast.VarDec;
@@ -245,14 +245,15 @@ public interface Expression extends Ast {
   }
 
   //TODO: for decent error messages, eventually we have to admit duplicated members in Expression, so that the well formedess function can have an input
-  @Value @Wither public static class ClassB implements Expression, Ast.Atom {
-    public ClassB(Doc doc1, Doc doc2, Header h, List<Path> supertypes, List<Member> ms, Stage stage) {
+  @Value @Wither @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") public static class ClassB implements Expression, Ast.Atom, HasPos{
+    public ClassB(Doc doc1, Doc doc2, Header h, List<Path> supertypes, List<Member> ms,Position p, Stage stage) {
       this.doc1 = doc1;
       this.doc2 = doc2;
       this.h = h;
       this.supertypes = supertypes;
       this.ms = ms;
       this.stage = stage;
+      this.p=p;
       isConsistent();
     }
 
@@ -261,6 +262,7 @@ public interface Expression extends Ast {
     Header h;
     List<Path> supertypes;
     List<Member> ms;
+    Position p;
     Stage stage;
     public boolean isConsistent() {
       int countWalkBy = 0;

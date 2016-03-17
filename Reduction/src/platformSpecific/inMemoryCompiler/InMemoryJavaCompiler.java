@@ -19,8 +19,8 @@ public class InMemoryJavaCompiler {
   }
   @SuppressWarnings("serial")
   public static class CompilationError extends Exception{
-    public final Diagnostic<? extends JavaFileObject> diagnostic;
-    CompilationError(Diagnostic<? extends JavaFileObject> diagnostic){
+    public final MyDiagnosticListener diagnostic;
+    CompilationError(MyDiagnosticListener diagnostic){
       super(diagnostic.toString()); this.diagnostic=diagnostic;}
   }
   private static class ClassFile extends SimpleJavaFileObject {
@@ -42,9 +42,17 @@ public class InMemoryJavaCompiler {
     public OutputStream openOutputStream() throws IOException { return byteCode; }
   }
   private static class MyDiagnosticListener implements DiagnosticListener<JavaFileObject> {
-    public Diagnostic<? extends JavaFileObject> diagnostic=null;
+    public List<Diagnostic<? extends JavaFileObject>> diagnostic=new ArrayList<>();
     public void report(Diagnostic<? extends JavaFileObject> diagnostic) {
-      this.diagnostic=diagnostic;
+      this.diagnostic.add(diagnostic);
+      }
+    public String toString(){
+      StringBuilder res=new StringBuilder();
+      for(Diagnostic<? extends JavaFileObject> d: diagnostic){
+        res.append(d.toString());
+        res.append("\n\n");
+        }
+      return res.toString();
       }
     }
   private static String plugins(){
@@ -66,7 +74,6 @@ public class InMemoryJavaCompiler {
       public HashMap<String,ClassFile> map(){return map;}
       @Override
       protected Class<?> findClass(String name)throws ClassNotFoundException {
-        System.out.println("search For "+name);
         if(!map.containsKey(name)){
           return super.findClass(name);
           }
@@ -75,14 +82,14 @@ public class InMemoryJavaCompiler {
         }
       };
 
-  public static ClassLoader compile(ClassLoader env,List<SourceFile> files) throws CompilationError {
+  public static MapClassLoader compile(ClassLoader env,List<SourceFile> files) throws CompilationError {
     JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
     if (compiler == null) throw new Error("Only JDK contains the JavaCompiler, you are running a Java JRE");
     MyDiagnosticListener diagnisticListenerForErrors=new MyDiagnosticListener();
     final HashMap<String,ClassFile> map;
     if(!(env instanceof MapClassLoader)){map= new HashMap<>();}
     else{map=((MapClassLoader)env).map();}
-    final ClassLoader classLoader=new MapClassLoader(map,env);
+    final MapClassLoader classLoader=new MapClassLoader(map,env);
     final ForwardingJavaFileManager<StandardJavaFileManager>  classFileManager=
         new ForwardingJavaFileManager<StandardJavaFileManager>(compiler.getStandardFileManager(diagnisticListenerForErrors,Locale.ENGLISH, null)){
       @Override
@@ -126,7 +133,9 @@ public class InMemoryJavaCompiler {
     if(!compiler.getTask(/*out:*/null,classFileManager,diagnisticListenerForErrors,
         /*compilerOptions:*/Arrays.asList("-Xlint:unchecked","-classpath",plugins()),/*StringsClasses??:*/null,files
       ).call()
-        )throw new CompilationError(diagnisticListenerForErrors.diagnostic);
+        ){
+        throw new CompilationError(diagnisticListenerForErrors);
+        }
     return classLoader;
     }
   }

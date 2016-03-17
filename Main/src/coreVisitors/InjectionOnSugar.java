@@ -95,7 +95,7 @@ public class InjectionOnSugar implements Visitor<ast.Expression> {
   }
 
   private List<Expression.Catch> injectionCatch(List<ast.ExpCore.Block.On> list) {
-    if(list.isEmpty()){return Collections.emptyList();} 
+    if(list.isEmpty()){return Collections.emptyList();}
     List<Expression.Catch> ks=new ArrayList<>();
     for( ast.ExpCore.Block.On on:list){
       Expression inner = lift(on.getInner());
@@ -121,7 +121,7 @@ public class InjectionOnSugar implements Visitor<ast.Expression> {
          return new Expression.ClassB.MethodWithType(idoc, is, mt, lift(mwt.getInner()),mwt.getP());
          }
         ));    }
-    return new Expression.ClassB(doc1,doc2, h, supertypes, members,s.getStage().getStage());
+    return new Expression.ClassB(doc1,doc2, h, supertypes, members,s.getP(),s.getStage().getStage());
   }
   public Expression visit(WalkBy s) {
     return new Expression.WalkBy();

@@ -31,7 +31,7 @@ public class RetainOnlyAndRenameAs extends CloneVisitor{
     this.path = new ArrayList<>(path.getCBar());
     this.ms1=ms1;
     this.ms2=ms2;
-    }  
+    }
   public List<Member> liftMembers(List<Member> s) {
     if(!path.isEmpty()){
       String name=path.get(0);
@@ -68,7 +68,7 @@ public class RetainOnlyAndRenameAs extends CloneVisitor{
   }
   public ExpCore visit(ClassB cb){
     ClassB cb2=new ClassB(Doc.empty(),Doc.empty(),cb.isInterface(),Collections.emptyList(),
-        cb.getMs(),cb.getStage());
+        cb.getMs(),cb.getP(),cb.getStage());
     return super.visit(cb2);
   }
   public ClassB.NestedClass visit(ClassB.NestedClass nc){

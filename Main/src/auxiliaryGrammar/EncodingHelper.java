@@ -13,6 +13,7 @@ import ast.Ast.Doc;
 import ast.Ast.Mdf;
 import ast.Ast.Path;
 import ast.Ast.Ph;
+import ast.Ast.Position;
 import ast.Ast.SignalKind;
 import ast.Ast.Stage;
 import ast.Ast.Type;
@@ -76,10 +77,10 @@ public class EncodingHelper{
     return wrapInt32(""+i);
   }
   public static ClassB wrapInt32(String i) {
-    return new ClassB(Doc.factory("@int32\n"+i+"\n"),Doc.empty(),false,Collections.emptyList(),Collections.emptyList(),verifiedStage.copyMostStableInfo());
+    return new ClassB(Doc.factory("@int32\n"+i+"\n"),Doc.empty(),false,Collections.emptyList(),Collections.emptyList(),Position.noInfo,verifiedStage.copyMostStableInfo());
   }
   public static ClassB wrapStringU(String s) {
-    return new ClassB(Doc.factory("@stringU\n"+produceStringUnicode(s)+"\n"),Doc.empty(),false,Collections.emptyList(),Collections.emptyList(),verifiedStage.copyMostStableInfo());
+    return new ClassB(Doc.factory("@stringU\n"+produceStringUnicode(s)+"\n"),Doc.empty(),false,Collections.emptyList(),Collections.emptyList(),Position.noInfo,verifiedStage.copyMostStableInfo());
   }
 
 

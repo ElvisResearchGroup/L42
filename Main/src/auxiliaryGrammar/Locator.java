@@ -7,6 +7,7 @@ import java.util.List;
 import ast.Ast.Doc;
 import ast.Ast.MethodSelector;
 import ast.Ast.Path;
+import ast.Ast.Position;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
 import ast.Util.CachedStage;
@@ -17,7 +18,7 @@ public class Locator {
   public static enum Kind {
     Node, Nested, Method
   };
-  
+
   final List<ClassB.Member> ms = new ArrayList<>();
   final List<Integer> indexes = new ArrayList<>();
   ClassB initialCb=null;
@@ -48,7 +49,7 @@ public class Locator {
     if (ms.get(size - 1) instanceof ClassB.NestedClass) { return Kind.Nested; }
     return Kind.Method;
   }
-  
+
   public int size() {
     int size = ms.size();
     assert size == indexes.size();
@@ -56,7 +57,7 @@ public class Locator {
     assert size==0 ||!cbs.subList(0, size - 1).contains(null) : cbs;
     return size;
   }
-  
+
   public Locator copy() {
     Locator result = new Locator();
     result.ms.addAll(this.ms);
@@ -64,7 +65,7 @@ public class Locator {
     result.cbs.addAll(this.cbs);
     return result;
   }
-  
+
   public boolean moveInPath(Path path) {
     if (!this.cutUpTo(path.outerNumber())) { return false; }
     this.addCs(path.getCBar());
@@ -127,11 +128,11 @@ public class Locator {
     this.cbs.subList(cutIndex, size).clear();
     return true;
   }
-  
+
   static class LocatorSupport {
-    private static final ClassB dumbCb = new ClassB(Doc.empty(), Doc.empty(), false, Collections.emptyList(), Collections.emptyList(),new CachedStage());
+    private static final ClassB dumbCb = new ClassB(Doc.empty(), Doc.empty(), false, Collections.emptyList(), Collections.emptyList(),Position.noInfo,new CachedStage());
   }
-  
+
   public boolean prefixOf(Locator nl) {
     int size = nl.size();
     if (this.size() < size) { return false; }
@@ -154,7 +155,7 @@ public class Locator {
     }
     return true;
   }
-  
+
   public String toStringNoAnnotation() {
     return coreVisitors.PathAnnotateClass.computeComment(this.ms, this.indexes);
   }

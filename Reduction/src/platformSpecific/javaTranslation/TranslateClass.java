@@ -7,6 +7,7 @@ import tools.StringBuilders;
 import ast.Ast;
 import ast.Ast.Type;
 import ast.Ast.Path;
+import ast.Ast.Position;
 import ast.Ast.NormType;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
@@ -16,6 +17,7 @@ import auxiliaryGrammar.Program;
 public class TranslateClass {
   public static void of(Program p, String s, ClassB ct, StringBuilder res) {
   //classes that should exists only as class obj any for metaprogramming, are also interfaces here
+  //not any more as 14 03/2016?
     boolean isInterface=getClassOpen(s,ct,res);
     res.append("{\n");
     if(!isInterface){
@@ -58,25 +60,32 @@ public class TranslateClass {
 
   private static void getITReverter(String s,StringBuilder res) {
     res.append("public ast.ExpCore revert(){\n");
-    res.append("return ast.Ast.Path.parse(\"");
-    res.append(Resources.name42Of(s));
-    res.append("\");}\n");
+    pathReverter(s, res);
     }
   private static void getReverterForNotInstantiableClass(String s,StringBuilder res) {
     res.append("public ast.ExpCore revert(){\n");
-    res.append("ast.Ast.Path receiver=ast.Ast.Path.parse(\"");
-    res.append(Resources.name42Of(s));
-    res.append("\");\n");
-    res.append("if(this==type){return receiver;}\n");
-    res.append("throw new Error(\"Impossible to revert an instance of a not instantiable class, how you get this instance?\");");
+    res.append("if(this!=type){throw new Error(\"Impossible to revert an instance of a not instantiable class, how you get this instance?\");}\n");
+    pathReverter(s, res);
+  }
+
+  private static void pathReverter(String s, StringBuilder res) {
+    Path path=Path.parse(Resources.name42Of(s));
+    int hash=path.getN();
+    String cs=path.toString();
+    cs=cs.substring(cs.indexOf("."));
+    res.append(
+      "return platformSpecific.javaTranslation.Resources.fromHash("+hash+",\""+cs+"\").revert();\n");
     res.append("}\n");
   }
 
   private static void getReverter(String s, MethodWithType ctor,StringBuilder res) {
     res.append("public ast.ExpCore revert(){\n");
-    res.append("ast.Ast.Path receiver=ast.Ast.Path.parse(\"");
-    res.append(Resources.name42Of(s));
-    res.append("\");\n");
+    //pathReverter(s, res);//no, much worst here
+    Path path=Path.parse(Resources.name42Of(s));
+    int hash=path.getN();
+    String cs=path.toString();
+    cs=cs.substring(cs.indexOf("."));
+    res.append( "ast.Ast.Path receiver= (ast.Ast.Path)platformSpecific.javaTranslation.Resources.fromHash("+hash+",\""+cs+"\").revert();\n");
     res.append("if(this==type){return receiver;}\n");
     //res.append("java.util.ArrayList<String> xs=new java.util.ArrayList<>(java.util.Arrays.asList(");
     List<String> ns = ctor.getMs().getNames();
@@ -274,7 +283,8 @@ public class TranslateClass {
       getMethodHeader(mt, res);
       res.append("{throw new Error(\""+"Calling an interface method"+":"+mt.getMs()+"\");}\n");
       }
-    res.append("};\n");
+    res.append("};\n"
+      );
     }
 
   private static void getMethods(Program p,ClassB ct, StringBuilder res,boolean isInterface) {

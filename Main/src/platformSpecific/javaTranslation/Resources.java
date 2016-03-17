@@ -22,8 +22,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Supplier;
 
+import coreVisitors.CloneVisitorWithProgram;
 import coreVisitors.CollectClassBs0;
 import coreVisitors.CollectPaths0;
+import coreVisitors.FromInClass;
+import coreVisitors.IsCompiled;
 import platformSpecific.fakeInternet.PluginType;
 import platformSpecific.javaTranslation.Resources.Error;
 import sugarVisitors.ToFormattedText;
@@ -37,6 +40,7 @@ import ast.ExpCore;
 import ast.Ast.Doc;
 import ast.Ast.NormType;
 import ast.Ast.Path;
+import ast.Ast.Position;
 import ast.Ast.SignalKind;
 import ast.Ast.Stage;
 import ast.ExpCore.ClassB;
@@ -49,6 +53,21 @@ public class Resources {
   public static final ErrorMessage.PluginActionUndefined notAct=new ErrorMessage.PluginActionUndefined(-2);
   public static final ErrorMessage.PluginActionUndefined actInEnd=new ErrorMessage.PluginActionUndefined(-1);
   private static final HashMap<String,Object> usedRes=new HashMap<>();
+  /*public static class TypeMap{
+    HashMap<String,Object> types=new HashMap<>();
+    public void put(String k,Object val){types.put(k,val);}
+    public<T> T get(Class<T> clazz,String k){
+      Object val=types.get(k);
+      if(val!=null){return (T)val;}
+      return (T)new Revertable(){
+        public ast.ExpCore revert() {
+          return ast.Ast.Path.parse(k);
+          }
+        };
+      }
+    }
+  public static final TypeMap types=new TypeMap();
+  */
   public static String submitRes(Object cb){
     HashSet<String> hs=new HashSet<>(usedRes.keySet());
     String newK=Functions.freshName("key", hs);
@@ -69,10 +88,40 @@ public class Resources {
       }
     finally{p=null;}
     }
-  public static Object getRes(String key){
+
+  public static String pKeysString(){
+    String result="";
+    int[] data=pKeys();
+    for(int d:data){result+=","+d;}
+    return result;
+    }
+  public static int[] pKeys(){
+    List<ClassB> cs = getP().getInnerData();
+    Collections.reverse(cs);
+    int[] result=new int[cs.size()];
+    for(int i=0;i<cs.size();i++){
+       result[i]=System.identityHashCode(cs.get(i).getP());
+      }
+    return result;
+    }
+  public static Object getRes(String key,int... ks){
     Object o=usedRes.get(key);
     if(o==null){throw new Error("Invalid resource "+key+" Valid resources are: "+usedRes.keySet());}
-    return o;
+    if(!(o instanceof ClassB)){return o;}
+    int[] newK = pKeys();
+    int common=0;
+    while(common<newK.length && common<ks.length){
+      if(newK[common]==ks[common]){common++;}
+      else{break;}
+      }
+    int shift=newK.length-common;
+    int padding=ks.length-common;
+    if(shift==0 && padding==0){return o;}
+    List<String>csPadding=new ArrayList<>();
+    for(int i=0;i<padding;i++){csPadding.add("Padding"+i);}
+    ClassB cb= (ClassB)FromInClass.of((ClassB)o,Path.outer(shift,csPadding));
+    //Configuration.typeSystem.computeStage(p, cb);
+    return cb;
     }
   public static void clearRes() {
     usedRes.clear();
@@ -99,12 +148,12 @@ public class Resources {
         ClassB inner;
         if(map[i+1] instanceof String){inner=EncodingHelper.wrapStringU((String)map[i+1]);}
         else{//for now, just doc.
-          inner=new ClassB((Doc)map[i+1],Doc.empty(),false,Collections.emptyList(),Collections.emptyList(),new CachedStage());
+          inner=new ClassB((Doc)map[i+1],Doc.empty(),false,Collections.emptyList(),Collections.emptyList(),Position.noInfo,new CachedStage());
           }
         if(!Path.isValidClassName(cName)){throw Assertions.codeNotReachable("Invalid name in multiPartStringError:"+cName);}
         ms.add(new ExpCore.ClassB.NestedClass(Doc.empty(), cName, inner,null));
       }
-      ExpCore.ClassB cb=new ExpCore.ClassB(Doc.empty(), Doc.empty(), false, Collections.emptyList(), ms,new CachedStage());
+      ExpCore.ClassB cb=new ExpCore.ClassB(Doc.empty(), Doc.empty(), false, Collections.emptyList(), ms,Position.noInfo,new CachedStage());
       return cb;
     }
     }
@@ -308,14 +357,35 @@ public class Resources {
     for(String x:names){result+="£x"+x;}
     return nameOf(result);
     }
-  public static String nameOf(Path p) {
-    if (p.equals(Path.Any())){return "Object";}
-    if (p.equals(Path.Library())){return "Object";}
-    if (p.equals(Path.Void())){return "platformSpecific.javaTranslation.Resources.Void";}
-    return nameOf(p.outerNumber(),p.getCBar());
-  }
+  public static String nameOf(Path path) {
+    if (path.equals(Path.Any())){return "Object";}
+    if (path.equals(Path.Library())){return "Object";}
+    if (path.equals(Path.Void())){return "platformSpecific.javaTranslation.Resources.Void";}
+    Program p=Resources.getP();
+    try{ClassB cb=p.extractCb(path);
+    if( cb.getStage().getStage()==Stage.Star && IsCompiled.of(cb)){ return nameOf(path.outerNumber(),path.getCBar()); }
+    }catch (ErrorMessage em){}
+    return "Object";
+    }
+
+
+  public static Revertable fromHash(int hash,String path){
+      return new platformSpecific.javaTranslation.Resources.Revertable(){
+        public ast.ExpCore revert() {
+          Program p=getP();
+          int dept=0;
+          while(System.identityHashCode(p.topCb().getP())!=hash){dept++;p=p.pop();}
+          return ast.Ast.Path.parse("This"+dept+path);
+           }};
+      }
+
   public static String nameOf(int level, List<String> cs) {
-    String res="This"+level;
+    Program p=Resources.getP();
+    Position pos=p.getCb(level).getP();
+    int hc = System.identityHashCode(pos);//ok, all relevant positions existed together at the same moment.
+    assert !pos.equals(Position.noInfo);
+    String res="This"+hc;
+    //String res="This"+level;
     for(String s:cs){res+="."+s;}
     return nameOf(res);
   }
@@ -332,6 +402,7 @@ public class Resources {
       s=s.replace("£h","#");
       return s;
   }
+
   public static void cacheMessage(L42Throwable err) {
    String s=extractMessage(err);
    L42.messageOfLastTopLevelError=s;

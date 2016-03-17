@@ -75,7 +75,8 @@ public class Plugin implements PluginType{
       ClassB that=ensureExtractClassB(_that);
       List<String> src=Path.parseValidCs(ensureExtractStringU(_src));
       Path dest=ensureExtractPathFromJava(_dest);
-      assert dest.isCore() || dest.isPrimitive();
+      assert dest.isCore() || dest.isPrimitive():
+        dest;
       if(dest.isCore()){dest=dest.setNewOuter(dest.outerNumber()+1);}//TODO: see if extractPath should be changed
       return Redirect.redirect(Resources.getP(),that,Path.outer(0,src),dest);
       }
@@ -116,7 +117,7 @@ public class Plugin implements PluginType{
       Doc doc=ensureExtractDoc(_doc);
       return AddDocumentation.addDocumentationOnMethod(Resources.getP(),that,path,sel,doc);
       }
-    
+
     @ActionType({ActionType.Type.Library,ActionType.Type.Library})
     public Object MremoveUnreachableCode£xthat(Object _that){
       ClassB that=ensureExtractClassB(_that);
@@ -135,13 +136,13 @@ public class Plugin implements PluginType{
      try{Ast.Path.parseValidCs(s);}
      catch(Resources.Error err){
        throw Resources.notAct;
-       }      
+       }
       return Resources.Void.instance;
     }
-    
+
 //--------------------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------------------
-//--------------------------------------------------------------------------------------------------    
+//--------------------------------------------------------------------------------------------------
     //-----5 +5 introspections //lib
     @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
     public Object MintrospectLibraryReport£xthat£xpath(Object _that,Object _path){
@@ -182,7 +183,7 @@ public class Plugin implements PluginType{
       int annotationN=ensureExtractInt32(_annotationN);
       return Configuration.reduction.convertPath(Introspection.extractDocPath(that, path, annotationN));
     }
-    
+
     //-----5 +5 introspections //type
     @ActionType({ActionType.Type.Library,ActionType.Type.TypeAny,ActionType.Type.Library})
     public Object MintrospectTypeReport£xthat£xpath(Object _that,Object _path){
@@ -241,7 +242,7 @@ public class Plugin implements PluginType{
       //if(that.getStage().isPrivateNormalized()){return that;}
       return NormalizePrivates.normalize(Resources.getP(),that);
     }
-    
+
     @ActionType({ActionType.Type.Library,ActionType.Type.Library})
     public  Object MfreshName£xthat(Object _s){
       String name=ensureExtractStringU(_s);

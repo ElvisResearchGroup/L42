@@ -88,6 +88,8 @@ public class Program {
     assert cb.getMs().isEmpty() ||
       cb.getMs().get(0) !=this.topCb().getMs().get(0);
     //this can actually happen assert !cb.getMs().get(0).equals(this.topCb().getMs().get(0));
+    //assert cb.getP()!=Position.noInfo;
+    //assert !cb.getP().equals(Position.noInfo);
     return true;
   }
   public Program addAtTop(ClassB cb){
@@ -198,7 +200,7 @@ public class Program {
   }
   public MethodWithType method(Path path,MethodSelector ms,ExpCore.MCall forError,boolean isOnlyType){
     if(path.isPrimitive()){
-      throw new ErrorMessage.MethodNotPresent(path,ms,forError,this.getInnerData(),forError.getP());
+      throw new ErrorMessage.MethodNotPresent(path,ms,forError,this.getInnerData(),forError==null?null:forError.getP());
       }
     ClassB classB=extractCb(path);
     if(classB==null){classB=extractCb(path);}
@@ -210,7 +212,7 @@ public class Program {
         if(!mt.getMwt().getMs().equals(ms)){continue;}
         return From.from(mt.getMwt(), path);
         }
-      throw new ErrorMessage.MethodNotPresent(path,ms,forError,this.getInnerData(),forError.getP());
+      throw new ErrorMessage.MethodNotPresent(path,ms,forError,this.getInnerData(),forError==null?null:forError.getP());
       }
     MethodWithType mwt=Program.extractMwt(result.get(),classB);
     mwt=From.from(mwt, path);
