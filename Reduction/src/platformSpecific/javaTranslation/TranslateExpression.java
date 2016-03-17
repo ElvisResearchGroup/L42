@@ -65,9 +65,6 @@ public class TranslateExpression implements coreVisitors.Visitor<Void>{
     }
     ClassB cbs=Resources.getP().extractCb(s);
     if(cbs.getStage().getStage()==Stage.Star  && IsCompiled.of(cbs)){
-        if(s.toString().contains("Message")){
-          System.out.println(s);
-        }
       res.append(Resources.nameOf(s)+".type ");
       }
     else{
