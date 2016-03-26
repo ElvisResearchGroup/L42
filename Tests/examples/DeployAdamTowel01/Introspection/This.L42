@@ -36,4 +36,15 @@ NestedClass:...
 NestedClasses:Collections.vector(ofEq:NestedClass)
 Type:...
 Types:Collections.vector(of:Type)
+
+Mdf:Enum<<{
+  class method Strings names()Strings[S"Capsule";S"Mutable";S"Lent";S"Readable";S"Immutable";S"Class"]
+  class method This _Capsule() This(0N)
+  class method This _Mutable() This(1N)
+  class method This _Lent() This(2N)
+  class method This _Readable() This(3N)
+  class method This _Immutable() This(4N)
+  class method This _Class() This(5N)
+  }
+
 }

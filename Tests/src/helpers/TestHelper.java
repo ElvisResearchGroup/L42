@@ -232,10 +232,10 @@ public class TestHelper {
       if (null == value)
         return "";
 
-      if (value.startsWith("'@") || value.startsWith("'[@")  || value.startsWith("'[]"))
+      if (value.startsWith("//@") || value.startsWith("//[@")  || value.startsWith("//[]"))
         return  value;
       else
-        return "'@stringU\n'" + value;
+        return "//@stringU\n//" + value;
     }
 
     public String str() {

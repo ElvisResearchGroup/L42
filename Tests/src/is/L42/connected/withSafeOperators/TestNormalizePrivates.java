@@ -38,44 +38,31 @@ public static class TestCollectPrivates {
   },{
     lineNumber(),"{method Void foo()}","[]\n[]\n[]\ntrue"
   },{
-    lineNumber(),"{method'@private\n Void foo()}","[]\n[This0.foo()[0]foo__0_0()]\n[]\nfalse"
+    lineNumber(),"{method//@private\n Void foo()}","[]\n[This0.foo()[0]foo__0_0()]\n[]\nfalse"
   },{
-    lineNumber(),"{method'@private\n Void foo__42()}","[42]\n[This0.foo__42()[0]null]\n[]\nfalse"
+    lineNumber(),"{method//@private\n Void foo__42()}","[42]\n[This0.foo__42()[0]null]\n[]\nfalse"
   },{
-    lineNumber(),"{method'@private\n Void foo__42()method'@private\n Void foo__43()}",
+    lineNumber(),"{method//@private\n Void foo__42()method//@private\n Void foo__43()}",
     "[42, 43]\n[This0.foo__42()[0]null, This0.foo__43()[0]null]\n[]\nfalse"
   },{
     lineNumber(),
-    "{method'@private\n Void foo__42_0()"
-    + " this({ method '@private\n Void bla__33_1()  }, second:{})"
+    "{method//@private\n Void foo__42_0()"
+    + " this({ method //@private\n Void bla__33_1()  }, second:{})"
     + "}",
     "[33_1, 42_0]\n[This0.foo__42_0()[0]null, This0.foo__42_0()[1]bla__33_1()[0]null]\n[]\ntrue"
   },{
+
     lineNumber(),
-    "{ make(Foo f)'@private\n method'@private\n Void foo()"
-    + " this({ method '@private\n Void bla() void }, second:{mut kame(mut Hame ha)'@private\n})"
-    + "}",
-    "[]\n"
-    + "[This0.make(f)[0]make__0_0(f__0_0),"
-    + " This0.#f()[0]#f__0_0(),"
-    + " This0.f()[0]f__0_0(),"
-    + " This0.foo()[0]foo__1_0(),"
-    + " This0.foo()[1]bla()[0]bla__2_0(),"
-    + " This0.foo()[2]kame(ha)[0]kame__3_0(ha__3_0),"
-    + " This0.foo()[2]#ha()[0]#ha__3_0(),"
-    + " This0.foo()[2]ha()[0]ha__3_0()]\n[]\nfalse"
-  },{
-    lineNumber(),
-    "{method'@private\n Void foo__42()"
-    + " this({ method '@private\n Void bla()  }, second:{})"
+    "{method//@private\n Void foo__42()"
+    + " this({ method //@private\n Void bla()  }, second:{})"
     + "}",
     "[42]\n[This0.foo__42()[0]null, This0.foo__42()[1]bla()[0]null]\n[]\nfalse"
-  
+
   },{
     lineNumber(),
-    "{method'@private\n Void foo( This0::foo() x)}",
+    "{method//@private\n Void foo( This0::foo() x)}",
     "[]\n[This0.foo(x)[0]foo__0_0(x)]\n[]\nfalse"
-  
+
   }});}
 
 
@@ -111,70 +98,71 @@ public static class TestNormalizePrivates1 {
   },{
     lineNumber(),"{method Void fo$%$%o__a()}","{method Void fo$%$%o_$%$%$%a()}"
   },{
-    lineNumber(),"{ C__A:{interface <:C__A }}","{ C_$%A:{interface <:This1.C_$%A }}"      
+    lineNumber(),"{ C__A:{interface <:C__A }}","{ C_$%A:{interface <:This1.C_$%A }}"
   },{
-    lineNumber(),"{ C:'@private\n{interface <:C }}","{ C__0_0:'@private\n{interface <:This1.C__0_0}}"                                                           
+    lineNumber(),"{ C://@private\n{interface <:C }}","{ C__0_0://@private\n{interface <:This1.C__0_0}}"
   },{
-    lineNumber(),"{ C:'@private\n{interface D:{<:C} }}","{ C__0_0:'@private\n{interface D:{<:This2.C__0_0} }}"
+    lineNumber(),"{ C://@private\n{interface D:{<:C} }}","{ C__0_0://@private\n{interface D:{<:This2.C__0_0} }}"
   },{
-    lineNumber(),"{ C:'@private\n{interface A:{B:{<:C }}}}","{ C__0_0:'@private\n{interface A:{B:{<:This3.C__0_0}}}}"   
+    lineNumber(),"{ C://@private\n{interface A:{B:{<:C }}}}","{ C__0_0://@private\n{interface A:{B:{<:This3.C__0_0}}}}"
   },{
-    lineNumber(),"{ D:{<:C} C:'@private\n{interface <:C }}","{ D:{<:C__0_0 } C__0_0:'@private\n{interface <:This1.C__0_0}}" 
+    lineNumber(),"{ D:{<:C} C://@private\n{interface <:C }}","{ D:{<:C__0_0 } C__0_0://@private\n{interface <:This1.C__0_0}}"
   },{
-    lineNumber(),"{ D:{<:A.C} A:{C:'@private\n{interface <:C }}}","{ D:{<:A.C__0_0 } A:{C__0_0:'@private\n{interface <:This1.C__0_0}}}" 
+    lineNumber(),"{ D:{<:A.C} A:{C://@private\n{interface <:C }}}","{ D:{<:A.C__0_0 } A:{C__0_0://@private\n{interface <:This1.C__0_0}}}"
   },{
-    lineNumber(),"{ D:{<: A.C.D} A:{C:'@private\n{ D:{interface}}}}","{ D:{<:A.C__0_0.D } A:{C__0_0:'@private\n{ D:{interface}}}}" 
+    lineNumber(),"{ D:{<: A.C.D} A:{C://@private\n{ D:{interface}}}}","{ D:{<:A.C__0_0.D } A:{C__0_0://@private\n{ D:{interface}}}}"
   },{
-    lineNumber(),"{ D:{<:A.C, A.C.D} A:{C:'@private\n{interface <:C D:{interface}}}}","{ D:{<:A.C__0_0,A.C__0_0.D } A:{C__0_0:'@private\n{interface <:C__0_0 D:{interface}}}}" 
-  
+    lineNumber(),"{ D:{<:A.C, A.C.D} A:{C://@private\n{interface <:C D:{interface}}}}","{ D:{<:A.C__0_0,A.C__0_0.D } A:{C__0_0://@private\n{interface <:C__0_0 D:{interface}}}}"
+
   },{
-    lineNumber(),"{ A:{ method '@private\n Void foo() void}}","{ A:{ method '@private\n Void foo__0_0() void}}" 
+    lineNumber(),"{ A:{ method //@private\n Void foo() void}}","{ A:{ method //@private\n Void foo__0_0() void}}"
   },{
-    lineNumber(),"{  method '@private\n Void foo() void}","{  method '@private\n Void foo__0_0() void}" 
+    lineNumber(),"{  method //@private\n Void foo() void}","{  method //@private\n Void foo__0_0() void}"
   },{
-    lineNumber(),"{ method Library bar() {  method '@private\n Void foo() void}}","{ method Library bar() {  method '@private\n Void foo__0_0() void}}" 
-  },{
-    lineNumber(),
-    "{method'@private\n Void foo( This0::foo(x) x)}",
-    "{\nmethod '@private\nVoid foo__0_0(This0::foo__0_0(x ) x) }"
-  
+    lineNumber(),"{ method Library bar() {  method //@private\n Void foo() void}}","{ method Library bar() {  method //@private\n Void foo__0_0() void}}"
   },{
     lineNumber(),
-    "{ A:'@private\n{method A a()} method A foo( A::a() x)}",
-    "{ A__0_0:'@private\n{method A__0_0 a()} method  A__0_0 foo( A__0_0::a() x)}"
-  
+    "{method//@private\n Void foo( This0::foo(x) x)}",
+    "{\nmethod //@private\nVoid foo__0_0(This0::foo__0_0(x ) x) }"
+
   },{
     lineNumber(),
-    "{ A__1_12:'@private\n{method A__1_12 a()} method A__1_12 foo()}",
-    "{ A__1_12:'@private\n{method A__1_12 a()} method  A__1_12 foo()}"
+    "{ A://@private\n{method A a()} method A foo( A::a() x)}",
+    "{ A__0_0://@private\n{method A__0_0 a()} method  A__0_0 foo( A__0_0::a() x)}"
+
   },{
     lineNumber(),
-    "{ A:{method'@private\n A a__1_12()}}",
-    "{ A:{method'@private\n A a__1_12()}}"
+    "{ A__1_12://@private\n{method A__1_12 a()} method A__1_12 foo()}",
+    "{ A__1_12://@private\n{method A__1_12 a()} method  A__1_12 foo()}"
   },{
-    lineNumber(),    
-    "{ A:{(A a)'@private\n}  B:{method A::a() fuffa()} }",
-    "{ A:{#apply__0_0(A a__0_0)'@private\n}  B:{method A::a__0_0() fuffa()} }"
+    lineNumber(),
+    "{ A:{method//@private\n A a__1_12()}}",
+    "{ A:{method//@private\n A a__1_12()}}"
+  /*},{
+    lineNumber(),
+    "{ A:{(A a)//@private\n}  B:{method A::a() fuffa()} }",
+    "{ A:{#apply__0_0(A a__0_0)//@private\n}  B:{method A::a__0_0() fuffa()} }"
   },{
-    lineNumber(),    
-    "{ A:{(A a)'@private\n}  B:{method A fuffa(A a) a.a()} }",
-    "{ A:{#apply__0_0(A a__0_0)'@private\n}  B:{method A fuffa(A a) a.a__0_0()} }"
+    lineNumber(),
+    "{ A:{(A a)//@private\n}  B:{method A fuffa(A a) a.a()} }",
+    "{ A:{#apply__0_0(A a__0_0)//@private\n}  B:{method A fuffa(A a) a.a__0_0()} }"
   },{
-    lineNumber(),    
-    "{ A:{(A a)'@private\n}  B:{(A a) method A fuffa(B a) a.a().a()} }",
-    "{ A:{#apply__0_0(A a__0_0)'@private\n}  B:{(A a) method A fuffa(B a) a.a().a__0_0()} }"
+    lineNumber(),
+    "{ A:{(A a)//@private\n}  B:{(A a) method A fuffa(B a) a.a().a()} }",
+    "{ A:{#apply__0_0(A a__0_0)//@private\n}  B:{(A a) method A fuffa(B a) a.a().a__0_0()} }"
   },{
-    lineNumber(),    
-    "{ A:{(A a)'@private\n}  B:{(A a)'@private\n method A fuffa(B a) a.a().a()} }",
-    "{ A:{#apply__0_0(A a__0_0)'@private\n}  B:{#apply__1_0(A a__1_0)'@private\n method A fuffa(B a) a.a__1_0().a__0_0()} }"
+    lineNumber(),
+    "{ A:{(A a)//@private\n}  B:{(A a)//@private\n method A fuffa(B a) a.a().a()} }",
+    "{ A:{#apply__0_0(A a__0_0)//@private\n}  B:{#apply__1_0(A a__1_0)//@private\n method A fuffa(B a) a.a__1_0().a__0_0()} }"
   },{
-    lineNumber(),    
-    "{ A:{(A a)'@private\n}  B:{(A _a)'@private\n method A a()this._a() method A fuffa(B a) a.a().a()} }",
-    "{ A:{#apply__0_0(A a__0_0)'@private\n}  B:{#apply__1_0(A _a__1_0)'@private\n method A a()this._a__1_0() method A fuffa(B a) a.a().a__0_0()} }"
+    lineNumber(),
+    "{ A:{(A a)//@private\n}  B:{(A _a)//@private\n method A a()this._a() method A fuffa(B a) a.a().a()} }",
+    "{ A:{#apply__0_0(A a__0_0)//@private\n}  B:{#apply__1_0(A _a__1_0)//@private\n method A a()this._a__1_0() method A fuffa(B a) a.a().a__0_0()} }"
+  */
   },{
-    lineNumber(),    
+    lineNumber(),
     "{reuse L42.is/NanoBasePrivates6\n  B2:{ } }",
-    "{C:{method '@private\nVoid foo__1_1() void\nmethod Void bar() this.foo__1_1()}B2:{}}"
+    "{C:{method //@private\nVoid foo__1_1() void\nmethod Void bar() this.foo__1_1()}B2:{}}"
 
   }});}
 

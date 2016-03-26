@@ -2492,7 +2492,85 @@ This3.N #to()
 mut method 
 This3.N #stopOk() 
 mut method 
-Void inner(This2.Type that) }}}
+Void inner(This2.Type that) }}
+Mdf:{//Data is more than Solid, and Liquid, Gas, Plasma can be good methafores
+//data: toS == class named, fromS, invariant, with clone mutk
+<:This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable, This2.Concept.Named, This2.Concept.ToS//may be Parsable?
+
+ParseFail:{<:This3.Guard.ParseFail, This3.Message
+class method 
+mut This0 #mutK(This3.S _text, This3.Message.Opt cause) 
+class method 
+This0 #apply(This3.S _text, This3.Message.Opt cause) 
+mut method 
+This3.S #_text() 
+read method 
+This3.S _text() 
+mut method 
+This3.Message.Opt #cause() 
+read method 
+This3.Message.Opt cause() 
+method 
+This0 #apply(This3.Message that) 
+method 
+This3.Bool #bangequal(This0 that) 
+method 
+This3.Bool #equalequal(This0 that) 
+class method 
+This0 #apply(This3.S text) 
+class method 
+This0 #apply(This3.S text, This3.Message cause) 
+class method 
+mut This3.S.SBuilder #builder() 
+class method 
+This0 #from(This3.S.SBuilder builder) 
+method 
+This0.Continue #from(This3.S.SConcat seqBuilder) 
+Continue:{
+class method 
+mut This0 #mutK(This4.S that) 
+class method 
+This0 #apply(This4.S that) 
+mut method 
+This4.S #that() 
+read method 
+This4.S that() 
+method 
+mut This4.S.SBuilder #builder() 
+method 
+This1 #from(This4.S.SBuilder builder) }
+method 
+mut This3.S.SConcat #seqBuilder() }
+read method 
+class This0 class() 
+read method 
+This2.Bool #equalequal(read This0 that) 
+read method 
+This2.Bool #bangequal(read This0 that) 
+class method 
+mut This0 #mutK(This2.N that) 
+class method 
+This0 #apply(This2.N that) 
+mut method 
+This2.N #that() 
+read method 
+This2.N that() 
+class method 
+This2.Strings names() 
+class method 
+This0 fromS(This2.S that) 
+class method 
+This0 _Capsule() 
+class method 
+This0 _Mutable() 
+class method 
+This0 _Lent() 
+class method 
+This0 _Readable() 
+class method 
+This0 _Immutable() 
+class method 
+This0 _Class() }}
 Refactor:{
 class method 
 Library compose(Library left, Library right) exception This1.MetaGuard.ClassClash, This1.MetaGuard.MethodClash 

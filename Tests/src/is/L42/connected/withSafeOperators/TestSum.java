@@ -35,58 +35,52 @@ import auxiliaryGrammar.Program;
       return Arrays.asList(new Object[][] {
       {    lineNumber(),"{B:{}}","{C:{}}","{B:{} C:{}}",false
     },{    lineNumber(),"{()}","{B:{()}}","{() B:{()} }",false
-    },{    lineNumber(),"{B:'@private\n{}}","{}","{B__0_0:'@private\n{}}",false
-    },{    lineNumber(),"{B:'@private\n{}}","{}","{B__0_0:'@private\n{}}",false//twice the same, to test that we clear the used names
-    },{    lineNumber(),"{B:'@private\n{}}","{B:'@private\n{}}","{B__0_0:'@private\n{} B__1_0:'@private\n{} }",false
+    },{    lineNumber(),"{B://@private\n{}}","{}","{B__0_0://@private\n{}}",false
+    },{    lineNumber(),"{B://@private\n{}}","{}","{B__0_0://@private\n{}}",false//twice the same, to test that we clear the used names
+    },{    lineNumber(),"{B://@private\n{}}","{B://@private\n{}}","{B__0_0://@private\n{} B__1_0://@private\n{} }",false
     },{    lineNumber(),"{B:{method Void m()}}","{B:{method B m()}}",
-      "{Kind:{'@stringU\n'MethodClash\n}"
-      +"Path:{'@.B\n}"
-      +"Left:{'@stringU\n'method Void m()\n}"
-      +"Right:{'@stringU\n'method This0 m()\n}"
-      +"LeftKind:{'@stringU\n'AbstractMethod\n}"
-      +"RightKind:{'@stringU\n'AbstractMethod\n}"
-      +"DifferentParameters:{'@stringU\n'[]\n}"
-      +"DifferentReturnType:{'@stringU\n'true\n}"
-      +"DifferentThisMdf:{'@stringU\n'false\n}"
-      +"IncompatibleException:{'@stringU\n'false\n}}",
+      "{Kind:{//@stringU\n//MethodClash\n}"
+      +"Path:{//@.B\n}"
+      +"Left:{//@stringU\n//method Void m()\n}"
+      +"Right:{//@stringU\n//method This0 m()\n}"
+      +"LeftKind:{//@stringU\n//AbstractMethod\n}"
+      +"RightKind:{//@stringU\n//AbstractMethod\n}"
+      +"DifferentParameters:{//@stringU\n//[]\n}"
+      +"DifferentReturnType:{//@stringU\n//true\n}"
+      +"DifferentThisMdf:{//@stringU\n//false\n}"
+      +"IncompatibleException:{//@stringU\n//false\n}}",
       true
     },{    lineNumber(),"{B:{method Void m()}}","{I:{interface method Void m()}B:{<:I}}",
-      "{Kind:{'@stringU\n'MethodClash\n}"
-      +"Path:{'@.B\n}"
-      +"Left:{'@stringU\n'method Void m()\n}"
-      +"Right:{'@stringU\n'method Void m()\n}"
-      +"LeftKind:{'@stringU\n'AbstractMethod\n}"
-      +"RightKind:{'@stringU\n'InterfaceAbstractMethod\n}"
-      +"DifferentParameters:{'@stringU\n'[]\n}"
-      +"DifferentReturnType:{'@stringU\n'false\n}"
-      +"DifferentThisMdf:{'@stringU\n'false\n}"
-      +"IncompatibleException:{'@stringU\n'false\n}}",
+      "{Kind:{//@stringU\n//MethodClash\n}"
+      +"Path:{//@.B\n}"
+      +"Left:{//@stringU\n//method Void m()\n}"
+      +"Right:{//@stringU\n//method Void m()\n}"
+      +"LeftKind:{//@stringU\n//AbstractMethod\n}"
+      +"RightKind:{//@stringU\n//InterfaceAbstractMethod\n}"
+      +"DifferentParameters:{//@stringU\n//[]\n}"
+      +"DifferentReturnType:{//@stringU\n//false\n}"
+      +"DifferentThisMdf:{//@stringU\n//false\n}"
+      +"IncompatibleException:{//@stringU\n//false\n}}",
       true
     },{    lineNumber(),"{J:{interface method Void m()} B:{<:J}}","{I:{interface method Void m()}B:{<:I}}",
-      "{Kind:{'@stringU\n'ClassClash\n}"
-     +"Path:{'@.B\n}"
-     +"ConflictingImplementedInterfaces:{'[@.J, @.I]\n}}",
+      "{Kind:{//@stringU\n//ClassClash\n}"
+     +"Path:{//@.B\n}"
+     +"ConflictingImplementedInterfaces:{//[@.J, @.I]\n}}",
       true
 
     },{    lineNumber(),"{B:{method This0 m()}}","{B:{method B m()}}","{B:{method This0 m()} }",false
 
-    },{    lineNumber(),"{B__0fred:'@private\n{}}","{}",
-      "{B_$%0fred__0_0:'@private\n{}}",false
-      
-    },{    lineNumber(),"{B__0_0:'@private\n{}}","{B__0_1:'@private\n{}}",
-      "{B__0_0:'@private\n{} B__0_1:'@private\n{}}",false
-      
+    },{    lineNumber(),"{B__0fred://@private\n{}}","{}",
+      "{B_$%0fred__0_0://@private\n{}}",false
 
-    },{    lineNumber(),"{B__0_0:'@private\n{}}","{B__1_0:'@private\n{}}",
-      "{B__0_0:'@private\n{} B__0_1:'@private\n{}}",false
-      
-    },{    lineNumber(),"{(B x)'@private\nB:{}}","{(B x) B:{}}",
-      "{#apply__0_0(This0.B x__0_0)'@private\nB:{}"
-      + "class method This0 (This0.B x)"
-      + "mut method B #x()"
-      + "read method B x() }",
-      false
-      
+    },{    lineNumber(),"{B__0_0://@private\n{}}","{B__0_1://@private\n{}}",
+      "{B__0_0://@private\n{} B__0_1://@private\n{}}",false
+
+
+    },{    lineNumber(),"{B__0_0://@private\n{}}","{B__1_0://@private\n{}}",
+      "{B__0_0://@private\n{} B__0_1://@private\n{}}",false
+
+    //TODO: test sum private state plus public state is ok
     },{    lineNumber(),
       "{I1:{interface <: I2} I2:{interface} }",
       "{I1:{interface } I2:{interface<: I1} }",

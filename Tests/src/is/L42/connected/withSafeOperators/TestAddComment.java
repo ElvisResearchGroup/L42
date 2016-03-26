@@ -33,15 +33,15 @@ public class TestAddComment {
     @Parameterized.Parameters
     public static List<Object[]> createData() {
       return Arrays.asList(new Object[][] {
-      {"{B:{ method Void m() void}}","B","m()","fuffa\n","{B:{ method'fuffa\n Void m() void}}",false
-    },{"{B:{ method Void m() void}}","B","m()","@private\n","{B:{ method'@private\n Void m__0_0() void}}",false
-    },{"{B:{ method Void m() void}}","B","m()","@private\n","{B:{ method'@private\n Void m__0_0() void}}",false
-    },{"{B:{k(B b)}}",
-      "B","k(b)","@private\n","{B:{class method '@private\n"
-          + "This0 k__0_0(This1.B b__0_0)mut method '@private\n"
-          + "This1.B #b__0_0() read method '@private\n"
+      {"{B:{ method Void m() void}}","B","m()","fuffa\n","{B:{ method//fuffa\n Void m() void}}",false
+    },{"{B:{ method Void m() void}}","B","m()","@private\n","{B:{ method//@private\n Void m__0_0() void}}",false
+    },{"{B:{ method Void m() void}}","B","m()","@private\n","{B:{ method//@private\n Void m__0_0() void}}",false
+    /*},{"{B:{k(B b)}}",
+      "B","k(b)","@private\n","{B:{class method //@private\n"
+          + "This0 k__0_0(This1.B b__0_0)mut method //@private\n"
+          + "This1.B #b__0_0() read method //@private\n"
           + "This1.B b__0_0() }}",false
-     
+     */
       //TODO: make test that check that making private allows for name replacement if sum is used
   }});}
   @Test  public void test() {
@@ -77,8 +77,8 @@ public class TestAddComment {
     @Parameterized.Parameters
     public static List<Object[]> createData() {
       return Arrays.asList(new Object[][] {
-      {"{B:{ method Void m() void}}","B","foo\n","{B:'foo\n{ method Void m() void}}",false
-    },{"{B:{ method Void m() void}}","B","@private\n","{B__0_0:'@private\n{ method Void m() void}}",false
+      {"{B:{ method Void m() void}}","B","foo\n","{B://foo\n{ method Void m() void}}",false
+    },{"{B:{ method Void m() void}}","B","@private\n","{B__0_0://@private\n{ method Void m() void}}",false
   }});}
   @Test  public void test() {
     TestHelper.configureForTest();

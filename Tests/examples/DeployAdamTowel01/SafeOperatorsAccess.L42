@@ -10,4 +10,13 @@ Library redirect(Library that,Library srcBinaryRepr,class Any dest)
     use SafeOperatorsAccess
       check redirect(that,src:srcBinaryRepr,dest:dest)
       error S"SafeOperatorsAccess.redirect"
+
+class method
+Library renameClass(Library that,S src, S dest)
+  use SafeOperatorsAccess
+    check renameClass(that
+      src:src.binaryRepr()
+      dest:dest.binaryRepr()
+      )
+    error S"SafeOperatorsAccess.renameClass"
   }

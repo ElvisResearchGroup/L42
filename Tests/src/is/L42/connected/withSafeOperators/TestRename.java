@@ -44,70 +44,70 @@ public class TestRename {
           }, { //
           "{ method Void m() void method This0::m() mm() void}", "This0", "m()", "k()", "{ method Void k() void method This0::k() mm() void}", false //
           }, { //
-            "{ method Void m() void method'@private\n Void mm() void}",
-            "This0", "m()", "mm()", 
+            "{ method Void m() void method//@private\n Void mm() void}",
+            "This0", "m()", "mm()",
             "{method Void mm() void"
-            + " method '@private\n"
+            + " method //@private\n"
             + "Void mm__0_0() void}", false //
           }, { //
-         "{ class method '@private\n"
+         "{ class method //@private\n"
             +" This0 a(Any n) \n"
-            +"   mut method '@private\n"
+            +"   mut method //@private\n"
             +"  Any #n() \n"
-            +"  read method '@private\n"
+            +"  read method //@private\n"
             +"   Any n() \n"
             +"  class method\n"
             +"  This0 _1(This0 new)  new\n"
             +"  class method \n"
             +"  This0 a_1(Any n) This0._1(new:This0.a(n:n))}\n",
-            "This0", "a_1(n)", "a(n)", 
-            "{class method '@private\n"
+            "This0", "a_1(n)", "a(n)",
+            "{class method //@private\n"
             +"This0 a__0_0(Any n__0_0)\n"
-            +"mut method '@private\n"
+            +"mut method //@private\n"
             +"Any #n__0_0()\n"
-            +"read method '@private\n"
+            +"read method //@private\n"
             +"Any n__0_0()\n"
             +"class method\n"
             +"This0 _1(This0 new) new\n"
             +"class method\n"
             +"This0 a(Any n) This0._1(new:This0.a__0_0(n__0_0:n))}",false
-                      
+
           }, { //
-          "{ method Void m() void}", "This0", "m()", "k(x)", 
-"{ Kind:{'@stringU\n"+
-"'MethodClash\n"+
+          "{ method Void m() void}", "This0", "m()", "k(x)",
+"{ Kind:{//@stringU\n"+
+"//MethodClash\n"+
 "}\n"+
-"Path:{'@.\n"+ 
+"Path:{//@.\n"+
 "}\n"+
-"Left:{'@stringU\n"+
-"'method Void m() void\n"+
+"Left:{//@stringU\n"+
+"//method Void m() void\n"+
 "}\n"+
-"Right:{'@stringU\n"+
-"'method Void k(Void x) void\n"+
+"Right:{//@stringU\n"+
+"//method Void k(Void x) void\n"+
 "}\n"+
-"LeftKind:{'@stringU\n"+
-"'ImplementedMethod\n"+
+"LeftKind:{//@stringU\n"+
+"//ImplementedMethod\n"+
 "}\n"+
-"RightKind:{'@stringU\n"+
-"'ImplementedMethod\n"+
+"RightKind:{//@stringU\n"+
+"//ImplementedMethod\n"+
 "}\n"+
-"DifferentParameters:{'@stringU\n"+
-"'[0]\n"+
+"DifferentParameters:{//@stringU\n"+
+"//[0]\n"+
 "}\n"+
-"DifferentReturnType:{'@stringU\n"+
-"'false\n"+
+"DifferentReturnType:{//@stringU\n"+
+"//false\n"+
 "}\n"+
-"DifferentThisMdf:{'@stringU\n"+
-"'false\n"+
+"DifferentThisMdf:{//@stringU\n"+
+"//false\n"+
 "}\n"+
-"IncompatibleException:{'@stringU\n"+
-"'false\n"+
+"IncompatibleException:{//@stringU\n"+
+"//false\n"+
 "}}",
           true //
-       
-            
-            
-            
+
+
+
+
           } });
     }
 
@@ -191,10 +191,10 @@ public class TestRename {
         "{B:{ method Void m() void}}", "B", "C", "{C:{ method Void m() void}}", false//
         }, {//
         "{B:{ method Void m() void}}", "B", "C.D", "{C:{ D:{method Void m() void}}}", false//
-        },{// 
+        },{//
         "{A:{interface method This0 m()  } B:{<:A method m() this.m().m()}   User:{ method A mm(B b) b.m().m()}}","B","C",
         "{A:{interface method This0 m()  } User:{ method A mm(C b) b.m().m()}  C:{<:A method m() this.m().m()} }",false
-        },{// 
+        },{//
           "{A:{interface method This0 m()  } B:{<:A method m() this.m().m()}   User:{ method A mm(B b) b.m().m()} }","A","C",
           "{B:{<:C method m() this.m().m()}  User:{ method C mm(B b) b.m().m()} C:{interface method This0 m()  }    }",false
         } });
@@ -267,15 +267,15 @@ public class TestRename {
         }, {lineNumber(),//
           "{A:{ class method class A m() {return A}}}","A","B", "{B:{class method class This0 m() {return This0}}}"    ,false//
         }, {lineNumber(),//
-          "{A:{ method A ()} B:{foo()}}","A","B",  "{B:{ class method This0 foo()  method This0 ()}}"   ,false//
+          "{A:{ method A ()} B:{method Void foo()}}","A","B",  "{B:{ method Void  foo()  method This0 ()}}"   ,false//
         }, {lineNumber(),//
-          "{C:{A:{ method A ()}} B:{foo()}}","C.A","B",  "{C:{} B:{ class method This0 foo() method This0 ()  }}"    ,false//
+          "{C:{A:{ method A ()}} B:{method Void  foo()}}","C.A","B",  "{C:{} B:{ method Void  foo() method This0 ()  }}"    ,false//
         }, {lineNumber(),//
-          "{D:{C:{A:{ method A ()}}} B:{foo()}}","D.C.A","B",  "{D:{C:{}} B:{ class method This0 foo()  method This0 ()}}"   ,false//
+          "{D:{C:{A:{ method A ()}}} B:{method Void  foo()}}","D.C.A","B",  "{D:{C:{}} B:{ method Void  foo()  method This0 ()}}"   ,false//
         }, {lineNumber(),//
-          "{A:{ method A ()} C:{B:{foo()}}}","A","C.B",  "{C:{B:{ class method This0 foo() method This0 () }}}"   ,false//
+          "{A:{ method A ()} C:{B:{method Void  foo()}}}","A","C.B",  "{C:{B:{ method Void  foo() method This0 () }}}"   ,false//
         }, {lineNumber(),//
-          "{A:{ method A ()} D:{C:{B:{foo()}}}}","A","D.C.B",  "{D:{C:{B:{  class method This0 foo()  method This0 ()}}}}"   ,false//
+          "{A:{ method A ()} D:{C:{B:{method Void foo()}}}}","A","D.C.B",  "{D:{C:{B:{  method Void  foo()  method This0 ()}}}}"   ,false//
         }, {lineNumber(),//        ////
           "{ A:{ class method This1.B () } B:{ }}","A","This0", "{ B:{ } class method This0.B ()  }"    ,false//
         }, {lineNumber(),//
@@ -307,28 +307,7 @@ public class TestRename {
               ,"  TOpt:{interface }"
               ,"  TEmpty:{<:This1.TOpt}"
               ,"}}")    ,false//
-        }, {lineNumber(),//        ////18
-          helpers.TestHelper.multiLine(""
-              ,"{ A:{mut (var mut Cell head)"
-              ,"  Cell:{interface}"
-              ,"  CellEnd:{<:Cell}"
-              ,"  }}"),
-              "A","This0",
-              helpers.TestHelper.multiLine(""
-              ,"{"
-              ,"class method "
-              ,"mut This0 #apply(mut This0.Cell head"
-              ,") "
-              ,"mut method"
-              ,"Void head(mut This0.Cell that)"
-              ,"mut method"
-              ,"mut This0.Cell #head()"
-              ,"read method"
-              ,"read This0.Cell head()"
-              ,"Cell:{interface }"
-              ,"CellEnd:{<:This1.Cell}"
-              ,"}") ,false//
-        }, {lineNumber(),//
+      }, {lineNumber(),//
           "{ A:{class method This1.B ()}  B:{ }}",
           "A","A.C",
           "{ B:{} A:{ C:{class method This2.B #apply() }}}"  ,false//
@@ -336,7 +315,7 @@ public class TestRename {
           "{ A:{class method This0.B ()  B:{ }}}"
           ,"A","A.C",
           "{ A:{ C:{class method This0.B #apply() B:{} }}}",false//
-          
+
        },{lineNumber(),////the sub parts of test above
         "{ Result:{ A:{ class method This0.B #apply() B:{}}}}",
        "Result.A","Tmp",
@@ -344,8 +323,8 @@ public class TestRename {
 /*
           "{  Result:{}
             Tmp:{
-            class method 
-            This2.Tmp #apply() 
+            class method
+            This2.Tmp #apply()
             B:{}}}
         "Tmp","Result.A.C",false*/
         }, {lineNumber(),//
@@ -364,7 +343,7 @@ public class TestRename {
           "{ A:{B:{ method A mab(B x)} method A ma(B x)} method A m(A.B x) }"
           ,"A.B","C.D",
           "{ A:{method This0 ma(This1.C.D x)} method A m(C.D x) C:{D:{ method This2.A mab(This0 x)}}}",false//
-       
+
         }, {lineNumber(),//
           "{ A:{B:{ method A mab(B x)} method A ma(B x)} method A m(A.B x) }"
           ,"A","C.D",

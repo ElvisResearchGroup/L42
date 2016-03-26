@@ -40,25 +40,25 @@ public static class TestAbstractMeth {//add more test for error cases
   },{"{C:{B:{ method Void m(Any x) void}}}","C.B","m(x)","{C:{B:{ method Void m(Any x)}}}",false
   },{"{ method Void m()}","This0","m()","{ method Void m()}",false
   },{"{B:{ method Void m(Any x) void}}", "C", "m(x)",
-    "{Kind:{'@stringU\n'MemberUnavailable\n}"+
-    "Path:{'@.C\n}"+
-    "Selector:{'@stringU\n'm(x)\n}"+
-    "InvalidKind:{'@stringU\n'NonExistentPath\n}"+
-    "IsPrivate:{'@stringU\n'false\n}}",
+    "{Kind:{//@stringU\n//MemberUnavailable\n}"+
+    "Path:{//@.C\n}"+
+    "Selector:{//@stringU\n//m(x)\n}"+
+    "InvalidKind:{//@stringU\n//NonExistentPath\n}"+
+    "IsPrivate:{//@stringU\n//false\n}}",
 	  true
   },{"{B:{ method Void m(Any x) void}}", "B", "k()",
-    "{Kind:{'@stringU\n'MemberUnavailable\n}"+
-	  "Path:{'@.B\n}"+
-	  "Selector:{'@stringU\n'k()\n}"+
-    "InvalidKind:{'@stringU\n'NonExistentMethod\n}"+
-    "IsPrivate:{'@stringU\n'false\n}}",
+    "{Kind:{//@stringU\n//MemberUnavailable\n}"+
+	  "Path:{//@.B\n}"+
+	  "Selector:{//@stringU\n//k()\n}"+
+    "InvalidKind:{//@stringU\n//NonExistentMethod\n}"+
+    "IsPrivate:{//@stringU\n//false\n}}",
 	  true
   },{"{B:{ method Void m(Any x) void}}", "B", "m()",
-    "{Kind:{'@stringU\n'MemberUnavailable\n}"+
-	  "Path:{'@.B\n}"+
-	  "Selector:{'@stringU\n'm()\n}"+
-    "InvalidKind:{'@stringU\n'NonExistentMethod\n}"+
-    "IsPrivate:{'@stringU\n'false\n}}",
+    "{Kind:{//@stringU\n//MemberUnavailable\n}"+
+	  "Path:{//@.B\n}"+
+	  "Selector:{//@stringU\n//m()\n}"+
+    "InvalidKind:{//@stringU\n//NonExistentMethod\n}"+
+    "IsPrivate:{//@stringU\n//false\n}}",
 	  true
 }});}
 @Test  public void test() {
@@ -106,25 +106,25 @@ public static class TestMoveMeth {//add more test for error cases
   },{
     lineNumber(),//
     "{ method Void m()}","This0","m()","k(x)",
-    "    {Kind:{'@stringU\n"+
-        "      'MethodClash\n"+
-        "    }Path:{'@.\n"+
-        "    }Left:{'@stringU\n"+
-        "      'method Void m()\n"+
-        "    }Right:{'@stringU\n"+
-        "      'method Void k(Void x)\n"+
-        "    }LeftKind:{'@stringU\n"+
-        "      'AbstractMethod\n"+
-        "    }RightKind:{'@stringU\n"+
-        "      'AbstractMethod\n"+
-        "    }DifferentParameters:{'@stringU\n"+
-        "      '[0]\n"+
-        "    }DifferentReturnType:{'@stringU\n"+
-        "      'false\n"+
-        "    }DifferentThisMdf:{'@stringU\n"+
-        "      'false\n"+
-        "    }IncompatibleException:{'@stringU\n"+
-        "      'false\n"+
+    "    {Kind:{//@stringU\n"+
+        "      //MethodClash\n"+
+        "    }Path:{//@.\n"+
+        "    }Left:{//@stringU\n"+
+        "      //method Void m()\n"+
+        "    }Right:{//@stringU\n"+
+        "      //method Void k(Void x)\n"+
+        "    }LeftKind:{//@stringU\n"+
+        "      //AbstractMethod\n"+
+        "    }RightKind:{//@stringU\n"+
+        "      //AbstractMethod\n"+
+        "    }DifferentParameters:{//@stringU\n"+
+        "      //[0]\n"+
+        "    }DifferentReturnType:{//@stringU\n"+
+        "      //false\n"+
+        "    }DifferentThisMdf:{//@stringU\n"+
+        "      //false\n"+
+        "    }IncompatibleException:{//@stringU\n"+
+        "      //false\n"+
             "}}"
     ,true
 }});}
@@ -166,21 +166,21 @@ public static class TestAbstractClass {//add more test for error cases
     {lineNumber(),//
       "{B:{ method Void m() void}}","B","{B:{ method Void m()}}",false
   },{lineNumber(),//
-    "{B:{ method '@private\n Void m() void}}","B","{B:{}}",false
+    "{B:{ method //@private\n Void m() void}}","B","{B:{}}",false
   },{lineNumber(),//
     "{B:{ method Void m(Any x) void}}","B","{B:{ method Void m(Any x)}}",false
   },{lineNumber(),//
     "{ method Void m(Any x) void}","This0","{ method Void m(Any x)}",false
   },{lineNumber(),//
-    "{B:{ method '@private\n Void m() void method Void n() void}}","B","{B:{ method Void n()}}",false
+    "{B:{ method //@private\n Void m() void method Void n() void}}","B","{B:{ method Void n()}}",false
   },{lineNumber(),//
-    "{ method '@private\n Void m(Any x) void}","This0","{}",false
+    "{ method //@private\n Void m(Any x) void}","This0","{}",false
   },{lineNumber(),//
     "{C:{B:{ method Void m(Any x) void}}}","C.B","{C:{B:{ method Void m(Any x)}}}",false
   },{lineNumber(),//
-    "{C:{B:{ method '@private\n  Void m(Any x) void}}}","C.B","{C:{B:{}}}",false
+    "{C:{B:{ method //@private\n  Void m(Any x) void}}}","C.B","{C:{B:{}}}",false
   },{lineNumber(),//
-    "{C:{B:{ method Void m(Any x) void  method '@private\nVoid foo() void }}}",
+    "{C:{B:{ method Void m(Any x) void  method //@private\nVoid foo() void }}}",
 	  "C.B",
 	  "{C:{B:{ method Void m(Any x)}}}",
 	  false
@@ -190,24 +190,24 @@ public static class TestAbstractClass {//add more test for error cases
   },{lineNumber(),//
     "{B:{interface method Void m() void}}","B","{B:{interface method Void m()}}",false
   },{lineNumber(),//
-    "{C:{B:{ A:'@private\n{} }}}","C","{C:{B:{}}}",false
+    "{C:{B:{ A://@private\n{} }}}","C","{C:{B:{}}}",false
   },{lineNumber(),//
-    "{C:{B:{ A:'@private\n{} }}}","C.B","{C:{B:{}}}",false
+    "{C:{B:{ A://@private\n{} }}}","C.B","{C:{B:{}}}",false
   },{lineNumber(),//
-    "{C:{B:'@private\n{}}}","C","{C:{}}",false
+    "{C:{B://@private\n{}}}","C","{C:{}}",false
   },{lineNumber(),//
-    "{C:{B:'@private\n{} D:{}}}","C","{C:{D:{}}}",false
+    "{C:{B://@private\n{} D:{}}}","C","{C:{D:{}}}",false
   },{lineNumber(),//
-    "{C:{B:'@private\n{} D:{E:'@private\n{} }}}","C.D","{C:{B:'@private\n{} D:{}}}",false
+    "{C:{B://@private\n{} D:{E://@private\n{} }}}","C.D","{C:{B://@private\n{} D:{}}}",false
   },{lineNumber(),//
-    "{C:{ method '@private\n Void m() void D:{E:'@private\n{} }}}",
+    "{C:{ method //@private\n Void m() void D:{E://@private\n{} }}}",
 	  "C.D",
-	  "{C:{ method '@private\n Void m() void D:{}}}",
+	  "{C:{ method //@private\n Void m() void D:{}}}",
 	  false
   },{lineNumber(),//
-    "{C:{ method '@private\n Void m() void D:{method '@private\n Void m() void}}}",
+    "{C:{ method //@private\n Void m() void D:{method //@private\n Void m() void}}}",
 	  "C.D",
-	  "{C:{ method '@private\n Void m() void D:{}}}",
+	  "{C:{ method //@private\n Void m() void D:{}}}",
 	  false
   },{lineNumber(),//
     "{C:{ method Void m() D.m() D:{ class method Void m() void}}}",
@@ -220,51 +220,51 @@ public static class TestAbstractClass {//add more test for error cases
     "{C:{ method Void m() A.D.m() A:{D:{ class method Void m() }}}}",
     false
   },{lineNumber(),//
-    "{C:{ method Void m() A.D.m()} A:{D:{ class method Void m() void class method'@private\n Void k() void}}}",
+    "{C:{ method Void m() A.D.m()} A:{D:{ class method Void m() void class method//@private\n Void k() void}}}",
     "A.D",
     "{C:{ method Void m() A.D.m()} A:{D:{ class method Void m() }}}",
     false
   },{lineNumber(),//
-    "{C:{ B:'@private\n{}}}","C.B",
-    "{Kind:{'@stringU\n'MemberUnavailable\n}"+
-    "Path:{'@.C.B\n}"+
-    "Selector:{'@stringU\n'\n}"+
-    "InvalidKind:{'@stringU\n'PrivatePath\n}"+
-    "IsPrivate:{'@stringU\n'true\n}}",
+    "{C:{ B://@private\n{}}}","C.B",
+    "{Kind:{//@stringU\n//MemberUnavailable\n}"+
+    "Path:{//@.C.B\n}"+
+    "Selector:{//@stringU\n//\n}"+
+    "InvalidKind:{//@stringU\n//PrivatePath\n}"+
+    "IsPrivate:{//@stringU\n//true\n}}",
 	  true
 
   },{lineNumber(),//
     "{C:{}}","C.B",
-    "{Kind:{'@stringU\n'MemberUnavailable\n}"+
-    "Path:{'@.C.B\n}"+
-    "Selector:{'@stringU\n'\n}"+
-    "InvalidKind:{'@stringU\n'NonExistentPath\n}"+
-    "IsPrivate:{'@stringU\n'false\n}}",
+    "{Kind:{//@stringU\n//MemberUnavailable\n}"+
+    "Path:{//@.C.B\n}"+
+    "Selector:{//@stringU\n//\n}"+
+    "InvalidKind:{//@stringU\n//NonExistentPath\n}"+
+    "IsPrivate:{//@stringU\n//false\n}}",
 	  true
   },{lineNumber(),//
     "{C:{}}","B",
-    "{Kind:{'@stringU\n'MemberUnavailable\n}"+
-    "Path:{'@.B\n}"+
-    "Selector:{'@stringU\n'\n}"+
-    "InvalidKind:{'@stringU\n'NonExistentPath\n}"+
-    "IsPrivate:{'@stringU\n'false\n}}",
+    "{Kind:{//@stringU\n//MemberUnavailable\n}"+
+    "Path:{//@.B\n}"+
+    "Selector:{//@stringU\n//\n}"+
+    "InvalidKind:{//@stringU\n//NonExistentPath\n}"+
+    "IsPrivate:{//@stringU\n//false\n}}",
 	  true
 
   },{lineNumber(),//
-    "{C:{B:{ method Void m(Any x) void  method '@private\nVoid foo() void } D:{ method Void bar() B.foo() }}}",
+    "{C:{B:{ method Void m(Any x) void  method //@private\nVoid foo() void } D:{ method Void bar() B.foo() }}}",
 	  "C.B",
-	  "{Kind:{'@stringU\n'PrivacyCoupuled\n}"+
-	  "CoupuledPath:{'@stringU\n'[]\n}"+
-	  "CoupuledMethods:{'@stringU\n'"
+	  "{Kind:{//@stringU\n//PrivacyCoupuled\n}"+
+	  "CoupuledPath:{//@stringU\n//[]\n}"+
+	  "CoupuledMethods:{//@stringU\n//"
 	  //+ "[This2.C.B.foo()]\n}}",the user or the used??
 	  +"[This0.C.D::bar()]\n}}",
 	  true
   },{lineNumber(),//
-    "{C:{B:'@private\n{} D:{ method B bar() void }}}",
+    "{C:{B://@private\n{} D:{ method B bar() void }}}",
 	  "C",
-	  "{Kind:{'@stringU\n'PrivacyCoupuled\n}"+
-	   "CoupuledPath:{'@stringU\n'[This0.C.B]\n}"+
-	   "CoupuledMethods:{'@stringU\n'[]\n}}",
+	  "{Kind:{//@stringU\n//PrivacyCoupuled\n}"+
+	   "CoupuledPath:{//@stringU\n//[This0.C.B]\n}"+
+	   "CoupuledMethods:{//@stringU\n//[]\n}}",
 	   true
 }});}
 @Test  public void test() {

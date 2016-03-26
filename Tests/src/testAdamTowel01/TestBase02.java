@@ -93,7 +93,7 @@ public class TestBase02 {
      L42.main(new String[]{"examples/testsForAdamTowel02/TestBinaryFlag32.L42"});
      Assert.assertEquals(L42.record.toString(),
          "B00000000000000000000000000000101\n5\nB00000000000000000000000010100101\n"+
-         "true\nThis.Mdf.mutable\nThis.Mdf.Set[mutable;readable]\n");
+         "true\nThis.Mdf.Mutable\nThis.Mdf.Set[Mutable;Readable]\n");
      }
    //B00000000000000000000000000000000
 

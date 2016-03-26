@@ -31,11 +31,11 @@ public class TestPop {//add more test for error cases
   },{"{B:{(This0.C a,This1.B.C b,This2.C c ) C:{}}}",
     "{(This0.C a,This0.C b,This1.C c ) C:{}}",false
   },{"{B:{(This0.C a,This1 b,This2.C c ) C:{}}}",
-    "{Kind:{'@stringU\n'NotBox\n}"
-    +"UsedBy:{'@stringU\n'[This0.B]\n}"
-    +"Supertypes:{'@stringU\n'[]\n}"
-    +"ContainsMethods:{'@stringU\n'[]\n}"
-    +"ActualKind:{'@stringU\n'Template\n}}",true
+    "{Kind:{//@stringU\n//NotBox\n}"
+    +"UsedBy:{//@stringU\n//[This0.B]\n}"
+    +"Supertypes:{//@stringU\n//[]\n}"
+    +"ContainsMethods:{//@stringU\n//[]\n}"
+    +"ActualKind:{//@stringU\n//Template\n}}",true
 }});}
 @Test  public void test() {
   ClassB cb1=getClassB(_cb1);

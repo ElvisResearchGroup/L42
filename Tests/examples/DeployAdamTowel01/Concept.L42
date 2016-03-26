@@ -84,7 +84,7 @@ class method Library solidTrait(){//Data is more than Solid, and Liquid, Gas, Pl
       return Bool.false()
       }
     read method
-    Bool ==(read This that) this.toS()==that.toS()
+    Bool ==(read This that) // this.toS()==that.toS()
     read method
     Bool !=(read This that) !(this==that)
   }
