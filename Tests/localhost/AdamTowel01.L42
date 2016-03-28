@@ -4208,9 +4208,9 @@ This0 withoutLeft() This0.#immK(inner:this.inner().without(that:This3.N.#from(bu
   b
   ))))
 method 
-This0 withAlso(This3.N that, Any val) This0.#immK(inner:this.inner().withAlso(that:that, val:val))
+This0 withAlso(This3.N that, This0.Elem val) This0.#immK(inner:this.inner().withAlso(that:that, val:val))
 method 
-This0 with(This3.N that, Any val) This0.#immK(inner:this.inner().with(that:that, val:val))
+This0 with(This3.N that, This0.Elem val) This0.#immK(inner:this.inner().with(that:that, val:val))
 read method 
 mut This0 reverse() (
   This0::empty() result=This0.empty()
@@ -4267,6 +4267,8 @@ This3.Bool isEmpty() this.size().#equalequal(that:This3.N.#from(builder:(
   Void unused=b.#0()
   b
   )))
+method 
+This0 #plus(This0.Elem that) this.withAlso(that:this.size(), val:that)
 method 
 This0 #plusplus(This0 that) (
   Void unused=(
@@ -4800,6 +4802,68 @@ This0 withoutAll(This0.Elem that) This0.#from(seqBuilder:(
     )
   b
   ))
+method 
+This0 #less(This0.Elem that) this.withoutAll(that:that)
+method 
+This0 #lessless(This0 that) This0.#from(seqBuilder:(
+  This0::#seqBuilder() b=This0.#seqBuilder()
+  Void unused=(
+    This0::vals() e=this.vals()
+    (
+      Void unused0=(
+        Void unused1=(
+          Void unused2=loop (
+            Void unused3=e.#next()
+            
+            catch exception Void catched0 (
+              Void unused4=(
+                Void unused5=e.#checkEnd()
+                
+                catch exception Void catched1 void
+                
+                void
+                )
+              exception void
+              )
+            
+            (
+              This0::contains(that ) ::#bang() cond=that.contains(that:e.#inner()).#bang()
+              (
+                Void unused6=cond.#checkTrue()
+                
+                catch exception Void catched4 void
+                
+                (
+                  Void unused7=b.#add(that:e.#inner())
+                  void
+                  )
+                )
+              )
+            )
+          
+          catch exception Void catched6 void
+          
+          void
+          )
+        
+        catch exception Any propagated (
+          Void unused8=e.#close()
+          exception propagated
+          )
+        
+        void
+        )
+      
+      catch return Any propagated0 (
+        Void unused9=e.#close()
+        return propagated0
+        )
+      
+      e.#close()
+      )
+    )
+  b
+  ))
 read method 
 This3.Bool #bangequal(read This0 that) this.#equalequal(that:that).#bang()
 read method 
@@ -5073,9 +5137,9 @@ This0 withoutLeft() This0.#immK(inner:this.inner().without(that:This1.N.#from(bu
   b
   ))))
 method 
-This0 withAlso(This1.N that, Any val) This0.#immK(inner:this.inner().withAlso(that:that, val:val))
+This0 withAlso(This1.N that, This1.S val) This0.#immK(inner:this.inner().withAlso(that:that, val:val))
 method 
-This0 with(This1.N that, Any val) This0.#immK(inner:this.inner().with(that:that, val:val))
+This0 with(This1.N that, This1.S val) This0.#immK(inner:this.inner().with(that:that, val:val))
 read method 
 mut This0 reverse() (
   This0::empty() result=This0.empty()
@@ -5132,6 +5196,8 @@ This1.Bool isEmpty() this.size().#equalequal(that:This1.N.#from(builder:(
   Void unused=b.#0()
   b
   )))
+method 
+This0 #plus(This1.S that) this.withAlso(that:this.size(), val:that)
 method 
 This0 #plusplus(This0 that) (
   Void unused=(
@@ -5606,6 +5672,68 @@ This0 withoutAll(This1.S that) This0.#from(seqBuilder:(
             
             (
               This0::vals() ::#inner() ::equals(that ) ::#bang() cond=e.#inner().equals(that:that).#bang()
+              (
+                Void unused6=cond.#checkTrue()
+                
+                catch exception Void catched4 void
+                
+                (
+                  Void unused7=b.#add(that:e.#inner())
+                  void
+                  )
+                )
+              )
+            )
+          
+          catch exception Void catched6 void
+          
+          void
+          )
+        
+        catch exception Any propagated (
+          Void unused8=e.#close()
+          exception propagated
+          )
+        
+        void
+        )
+      
+      catch return Any propagated0 (
+        Void unused9=e.#close()
+        return propagated0
+        )
+      
+      e.#close()
+      )
+    )
+  b
+  ))
+method 
+This0 #less(This1.S that) this.withoutAll(that:that)
+method 
+This0 #lessless(This0 that) This0.#from(seqBuilder:(
+  This0::#seqBuilder() b=This0.#seqBuilder()
+  Void unused=(
+    This0::vals() e=this.vals()
+    (
+      Void unused0=(
+        Void unused1=(
+          Void unused2=loop (
+            Void unused3=e.#next()
+            
+            catch exception Void catched0 (
+              Void unused4=(
+                Void unused5=e.#checkEnd()
+                
+                catch exception Void catched1 void
+                
+                void
+                )
+              exception void
+              )
+            
+            (
+              This0::contains(that ) ::#bang() cond=that.contains(that:e.#inner()).#bang()
               (
                 Void unused6=cond.#checkTrue()
                 
@@ -8473,9 +8601,9 @@ This0 withoutLeft() This0.#immK(inner:this.inner().without(that:This3.N.#from(bu
   b
   ))))
 method 
-This0 withAlso(This3.N that, Any val) This0.#immK(inner:this.inner().withAlso(that:that, val:val))
+This0 withAlso(This3.N that, This1.Annotation val) This0.#immK(inner:this.inner().withAlso(that:that, val:val))
 method 
-This0 with(This3.N that, Any val) This0.#immK(inner:this.inner().with(that:that, val:val))
+This0 with(This3.N that, This1.Annotation val) This0.#immK(inner:this.inner().with(that:that, val:val))
 read method 
 mut This0 reverse() (
   This0::empty() result=This0.empty()
@@ -8532,6 +8660,8 @@ This3.Bool isEmpty() this.size().#equalequal(that:This3.N.#from(builder:(
   Void unused=b.#0()
   b
   )))
+method 
+This0 #plus(This1.Annotation that) this.withAlso(that:this.size(), val:that)
 method 
 This0 #plusplus(This0 that) (
   Void unused=(
@@ -9532,9 +9662,9 @@ This0 withoutLeft() This0.#immK(inner:this.inner().without(that:This2.N.#from(bu
   b
   ))))
 method 
-This0 withAlso(This2.N that, Any val) This0.#immK(inner:this.inner().withAlso(that:that, val:val))
+This0 withAlso(This2.N that, This1.Member val) This0.#immK(inner:this.inner().withAlso(that:that, val:val))
 method 
-This0 with(This2.N that, Any val) This0.#immK(inner:this.inner().with(that:that, val:val))
+This0 with(This2.N that, This1.Member val) This0.#immK(inner:this.inner().with(that:that, val:val))
 read method 
 mut This0 reverse() (
   This0::empty() result=This0.empty()
@@ -9591,6 +9721,8 @@ This2.Bool isEmpty() this.size().#equalequal(that:This2.N.#from(builder:(
   Void unused=b.#0()
   b
   )))
+method 
+This0 #plus(This1.Member that) this.withAlso(that:this.size(), val:that)
 method 
 This0 #plusplus(This0 that) (
   Void unused=(
@@ -10065,6 +10197,68 @@ This0 withoutAll(This1.Member that) This0.#from(seqBuilder:(
             
             (
               This0::vals() ::#inner() ::equals(that ) ::#bang() cond=e.#inner().equals(that:that).#bang()
+              (
+                Void unused6=cond.#checkTrue()
+                
+                catch exception Void catched4 void
+                
+                (
+                  Void unused7=b.#add(that:e.#inner())
+                  void
+                  )
+                )
+              )
+            )
+          
+          catch exception Void catched6 void
+          
+          void
+          )
+        
+        catch exception Any propagated (
+          Void unused8=e.#close()
+          exception propagated
+          )
+        
+        void
+        )
+      
+      catch return Any propagated0 (
+        Void unused9=e.#close()
+        return propagated0
+        )
+      
+      e.#close()
+      )
+    )
+  b
+  ))
+method 
+This0 #less(This1.Member that) this.withoutAll(that:that)
+method 
+This0 #lessless(This0 that) This0.#from(seqBuilder:(
+  This0::#seqBuilder() b=This0.#seqBuilder()
+  Void unused=(
+    This0::vals() e=this.vals()
+    (
+      Void unused0=(
+        Void unused1=(
+          Void unused2=loop (
+            Void unused3=e.#next()
+            
+            catch exception Void catched0 (
+              Void unused4=(
+                Void unused5=e.#checkEnd()
+                
+                catch exception Void catched1 void
+                
+                void
+                )
+              exception void
+              )
+            
+            (
+              This0::contains(that ) ::#bang() cond=that.contains(that:e.#inner()).#bang()
               (
                 Void unused6=cond.#checkTrue()
                 
@@ -10763,9 +10957,9 @@ This0 withoutLeft() This0.#immK(inner:this.inner().without(that:This2.N.#from(bu
   b
   ))))
 method 
-This0 withAlso(This2.N that, Any val) This0.#immK(inner:this.inner().withAlso(that:that, val:val))
+This0 withAlso(This2.N that, This1.Method val) This0.#immK(inner:this.inner().withAlso(that:that, val:val))
 method 
-This0 with(This2.N that, Any val) This0.#immK(inner:this.inner().with(that:that, val:val))
+This0 with(This2.N that, This1.Method val) This0.#immK(inner:this.inner().with(that:that, val:val))
 read method 
 mut This0 reverse() (
   This0::empty() result=This0.empty()
@@ -10822,6 +11016,8 @@ This2.Bool isEmpty() this.size().#equalequal(that:This2.N.#from(builder:(
   Void unused=b.#0()
   b
   )))
+method 
+This0 #plus(This1.Method that) this.withAlso(that:this.size(), val:that)
 method 
 This0 #plusplus(This0 that) (
   Void unused=(
@@ -11296,6 +11492,68 @@ This0 withoutAll(This1.Method that) This0.#from(seqBuilder:(
             
             (
               This0::vals() ::#inner() ::equals(that ) ::#bang() cond=e.#inner().equals(that:that).#bang()
+              (
+                Void unused6=cond.#checkTrue()
+                
+                catch exception Void catched4 void
+                
+                (
+                  Void unused7=b.#add(that:e.#inner())
+                  void
+                  )
+                )
+              )
+            )
+          
+          catch exception Void catched6 void
+          
+          void
+          )
+        
+        catch exception Any propagated (
+          Void unused8=e.#close()
+          exception propagated
+          )
+        
+        void
+        )
+      
+      catch return Any propagated0 (
+        Void unused9=e.#close()
+        return propagated0
+        )
+      
+      e.#close()
+      )
+    )
+  b
+  ))
+method 
+This0 #less(This1.Method that) this.withoutAll(that:that)
+method 
+This0 #lessless(This0 that) This0.#from(seqBuilder:(
+  This0::#seqBuilder() b=This0.#seqBuilder()
+  Void unused=(
+    This0::vals() e=this.vals()
+    (
+      Void unused0=(
+        Void unused1=(
+          Void unused2=loop (
+            Void unused3=e.#next()
+            
+            catch exception Void catched0 (
+              Void unused4=(
+                Void unused5=e.#checkEnd()
+                
+                catch exception Void catched1 void
+                
+                void
+                )
+              exception void
+              )
+            
+            (
+              This0::contains(that ) ::#bang() cond=that.contains(that:e.#inner()).#bang()
               (
                 Void unused6=cond.#checkTrue()
                 
@@ -13648,9 +13906,9 @@ This0 withoutLeft() This0.#immK(inner:this.inner().without(that:This2.N.#from(bu
   b
   ))))
 method 
-This0 withAlso(This2.N that, Any val) This0.#immK(inner:this.inner().withAlso(that:that, val:val))
+This0 withAlso(This2.N that, This1.NestedClass val) This0.#immK(inner:this.inner().withAlso(that:that, val:val))
 method 
-This0 with(This2.N that, Any val) This0.#immK(inner:this.inner().with(that:that, val:val))
+This0 with(This2.N that, This1.NestedClass val) This0.#immK(inner:this.inner().with(that:that, val:val))
 read method 
 mut This0 reverse() (
   This0::empty() result=This0.empty()
@@ -13707,6 +13965,8 @@ This2.Bool isEmpty() this.size().#equalequal(that:This2.N.#from(builder:(
   Void unused=b.#0()
   b
   )))
+method 
+This0 #plus(This1.NestedClass that) this.withAlso(that:this.size(), val:that)
 method 
 This0 #plusplus(This0 that) (
   Void unused=(
@@ -14181,6 +14441,68 @@ This0 withoutAll(This1.NestedClass that) This0.#from(seqBuilder:(
             
             (
               This0::vals() ::#inner() ::equals(that ) ::#bang() cond=e.#inner().equals(that:that).#bang()
+              (
+                Void unused6=cond.#checkTrue()
+                
+                catch exception Void catched4 void
+                
+                (
+                  Void unused7=b.#add(that:e.#inner())
+                  void
+                  )
+                )
+              )
+            )
+          
+          catch exception Void catched6 void
+          
+          void
+          )
+        
+        catch exception Any propagated (
+          Void unused8=e.#close()
+          exception propagated
+          )
+        
+        void
+        )
+      
+      catch return Any propagated0 (
+        Void unused9=e.#close()
+        return propagated0
+        )
+      
+      e.#close()
+      )
+    )
+  b
+  ))
+method 
+This0 #less(This1.NestedClass that) this.withoutAll(that:that)
+method 
+This0 #lessless(This0 that) This0.#from(seqBuilder:(
+  This0::#seqBuilder() b=This0.#seqBuilder()
+  Void unused=(
+    This0::vals() e=this.vals()
+    (
+      Void unused0=(
+        Void unused1=(
+          Void unused2=loop (
+            Void unused3=e.#next()
+            
+            catch exception Void catched0 (
+              Void unused4=(
+                Void unused5=e.#checkEnd()
+                
+                catch exception Void catched1 void
+                
+                void
+                )
+              exception void
+              )
+            
+            (
+              This0::contains(that ) ::#bang() cond=that.contains(that:e.#inner()).#bang()
               (
                 Void unused6=cond.#checkTrue()
                 
@@ -14990,9 +15312,9 @@ This0 withoutLeft() This0.#immK(inner:this.inner().without(that:This2.N.#from(bu
   b
   ))))
 method 
-This0 withAlso(This2.N that, Any val) This0.#immK(inner:this.inner().withAlso(that:that, val:val))
+This0 withAlso(This2.N that, This1.Type val) This0.#immK(inner:this.inner().withAlso(that:that, val:val))
 method 
-This0 with(This2.N that, Any val) This0.#immK(inner:this.inner().with(that:that, val:val))
+This0 with(This2.N that, This1.Type val) This0.#immK(inner:this.inner().with(that:that, val:val))
 read method 
 mut This0 reverse() (
   This0::empty() result=This0.empty()
@@ -15049,6 +15371,8 @@ This2.Bool isEmpty() this.size().#equalequal(that:This2.N.#from(builder:(
   Void unused=b.#0()
   b
   )))
+method 
+This0 #plus(This1.Type that) this.withAlso(that:this.size(), val:that)
 method 
 This0 #plusplus(This0 that) (
   Void unused=(
@@ -19406,9 +19730,9 @@ This0 withoutLeft() This0.#immK(inner:this.inner().without(that:This2.N.#from(bu
   b
   ))))
 method 
-This0 withAlso(This2.N that, Any val) This0.#immK(inner:this.inner().withAlso(that:that, val:val))
+This0 withAlso(This2.N that, This1.SrcDest val) This0.#immK(inner:this.inner().withAlso(that:that, val:val))
 method 
-This0 with(This2.N that, Any val) This0.#immK(inner:this.inner().with(that:that, val:val))
+This0 with(This2.N that, This1.SrcDest val) This0.#immK(inner:this.inner().with(that:that, val:val))
 read method 
 mut This0 reverse() (
   This0::empty() result=This0.empty()
@@ -19465,6 +19789,8 @@ This2.Bool isEmpty() this.size().#equalequal(that:This2.N.#from(builder:(
   Void unused=b.#0()
   b
   )))
+method 
+This0 #plus(This1.SrcDest that) this.withAlso(that:this.size(), val:that)
 method 
 This0 #plusplus(This0 that) (
   Void unused=(
@@ -19962,9 +20288,9 @@ This0 withoutLeft() This0.#immK(inner:this.inner().without(that:This2.N.#from(bu
   b
   ))))
 method 
-This0 withAlso(This2.N that, Any val) This0.#immK(inner:this.inner().withAlso(that:that, val:val))
+This0 withAlso(This2.N that, Library val) This0.#immK(inner:this.inner().withAlso(that:that, val:val))
 method 
-This0 with(This2.N that, Any val) This0.#immK(inner:this.inner().with(that:that, val:val))
+This0 with(This2.N that, Library val) This0.#immK(inner:this.inner().with(that:that, val:val))
 read method 
 mut This0 reverse() (
   This0::empty() result=This0.empty()
@@ -20021,6 +20347,8 @@ This2.Bool isEmpty() this.size().#equalequal(that:This2.N.#from(builder:(
   Void unused=b.#0()
   b
   )))
+method 
+This0 #plus(Library that) this.withAlso(that:this.size(), val:that)
 method 
 This0 #plusplus(This0 that) (
   Void unused=(

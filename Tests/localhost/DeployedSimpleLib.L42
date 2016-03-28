@@ -1036,15 +1036,17 @@ This0 without(This1.N that)
 method 
 This0 withoutLeft() 
 method 
-This0 withAlso(This1.N that, Any val) 
+This0 withAlso(This1.N that, This1.S val) 
 method 
-This0 with(This1.N that, Any val) 
+This0 with(This1.N that, This1.S val) 
 read method 
 mut This0 reverse() 
 read method 
 This1.N size() 
 read method 
 This1.Bool isEmpty() 
+method 
+This0 #plus(This1.S that) 
 method 
 This0 #plusplus(This0 that) 
 IteratorTrait:{
@@ -1134,6 +1136,10 @@ read method
 This1.Bool contains(This1.S that) 
 method 
 This0 withoutAll(This1.S that) 
+method 
+This0 #less(This1.S that) 
+method 
+This0 #lessless(This0 that) 
 read method 
 This1.Bool #bangequal(read This0 that) 
 read method 
@@ -1651,15 +1657,17 @@ This0 without(This3.N that)
 method 
 This0 withoutLeft() 
 method 
-This0 withAlso(This3.N that, Any val) 
+This0 withAlso(This3.N that, This1.Annotation val) 
 method 
-This0 with(This3.N that, Any val) 
+This0 with(This3.N that, This1.Annotation val) 
 read method 
 mut This0 reverse() 
 read method 
 This3.N size() 
 read method 
 This3.Bool isEmpty() 
+method 
+This0 #plus(This1.Annotation that) 
 method 
 This0 #plusplus(This0 that) 
 IteratorTrait:{
@@ -1865,15 +1873,17 @@ This0 without(This2.N that)
 method 
 This0 withoutLeft() 
 method 
-This0 withAlso(This2.N that, Any val) 
+This0 withAlso(This2.N that, This1.Member val) 
 method 
-This0 with(This2.N that, Any val) 
+This0 with(This2.N that, This1.Member val) 
 read method 
 mut This0 reverse() 
 read method 
 This2.N size() 
 read method 
 This2.Bool isEmpty() 
+method 
+This0 #plus(This1.Member that) 
 method 
 This0 #plusplus(This0 that) 
 IteratorTrait:{
@@ -1963,6 +1973,10 @@ read method
 This2.Bool contains(This1.Member that) 
 method 
 This0 withoutAll(This1.Member that) 
+method 
+This0 #less(This1.Member that) 
+method 
+This0 #lessless(This0 that) 
 read method 
 This2.Bool #bangequal(read This0 that) 
 read method 
@@ -2040,15 +2054,17 @@ This0 without(This2.N that)
 method 
 This0 withoutLeft() 
 method 
-This0 withAlso(This2.N that, Any val) 
+This0 withAlso(This2.N that, This1.Method val) 
 method 
-This0 with(This2.N that, Any val) 
+This0 with(This2.N that, This1.Method val) 
 read method 
 mut This0 reverse() 
 read method 
 This2.N size() 
 read method 
 This2.Bool isEmpty() 
+method 
+This0 #plus(This1.Method that) 
 method 
 This0 #plusplus(This0 that) 
 IteratorTrait:{
@@ -2138,6 +2154,10 @@ read method
 This2.Bool contains(This1.Method that) 
 method 
 This0 withoutAll(This1.Method that) 
+method 
+This0 #less(This1.Method that) 
+method 
+This0 #lessless(This0 that) 
 read method 
 This2.Bool #bangequal(read This0 that) 
 read method 
@@ -2238,15 +2258,17 @@ This0 without(This2.N that)
 method 
 This0 withoutLeft() 
 method 
-This0 withAlso(This2.N that, Any val) 
+This0 withAlso(This2.N that, This1.NestedClass val) 
 method 
-This0 with(This2.N that, Any val) 
+This0 with(This2.N that, This1.NestedClass val) 
 read method 
 mut This0 reverse() 
 read method 
 This2.N size() 
 read method 
 This2.Bool isEmpty() 
+method 
+This0 #plus(This1.NestedClass that) 
 method 
 This0 #plusplus(This0 that) 
 IteratorTrait:{
@@ -2336,6 +2358,10 @@ read method
 This2.Bool contains(This1.NestedClass that) 
 method 
 This0 withoutAll(This1.NestedClass that) 
+method 
+This0 #less(This1.NestedClass that) 
+method 
+This0 #lessless(This0 that) 
 read method 
 This2.Bool #bangequal(read This0 that) 
 read method 
@@ -2407,15 +2433,17 @@ This0 without(This2.N that)
 method 
 This0 withoutLeft() 
 method 
-This0 withAlso(This2.N that, Any val) 
+This0 withAlso(This2.N that, This1.Type val) 
 method 
-This0 with(This2.N that, Any val) 
+This0 with(This2.N that, This1.Type val) 
 read method 
 mut This0 reverse() 
 read method 
 This2.N size() 
 read method 
 This2.Bool isEmpty() 
+method 
+This0 #plus(This1.Type that) 
 method 
 This0 #plusplus(This0 that) 
 IteratorTrait:{
@@ -3285,15 +3313,17 @@ This0 without(This2.N that)
 method 
 This0 withoutLeft() 
 method 
-This0 withAlso(This2.N that, Any val) 
+This0 withAlso(This2.N that, This1.SrcDest val) 
 method 
-This0 with(This2.N that, Any val) 
+This0 with(This2.N that, This1.SrcDest val) 
 read method 
 mut This0 reverse() 
 read method 
 This2.N size() 
 read method 
 This2.Bool isEmpty() 
+method 
+This0 #plus(This1.SrcDest that) 
 method 
 This0 #plusplus(This0 that) 
 IteratorTrait:{
@@ -3425,15 +3455,17 @@ This0 without(This2.N that)
 method 
 This0 withoutLeft() 
 method 
-This0 withAlso(This2.N that, Any val) 
+This0 withAlso(This2.N that, Library val) 
 method 
-This0 with(This2.N that, Any val) 
+This0 with(This2.N that, Library val) 
 read method 
 mut This0 reverse() 
 read method 
 This2.N size() 
 read method 
 This2.Bool isEmpty() 
+method 
+This0 #plus(Library that) 
 method 
 This0 #plusplus(This0 that) 
 IteratorTrait:{

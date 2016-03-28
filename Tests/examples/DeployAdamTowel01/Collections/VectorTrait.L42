@@ -22,8 +22,8 @@ mut method  Void right(Elem that) this.#inner()(\size-1N,val:that)
 method This without(N that) This.#immK(inner:this.inner().without(that))
 method This withoutLeft() This.#immK(inner:this.inner().without(0N))
 
-method This withAlso(N that, Any val) This.#immK(inner:this.inner().withAlso(that,val:val))
-method This with(N that, Any val) This.#immK(inner:this.inner().with(that,val:val))
+method This withAlso(N that, Elem val) This.#immK(inner:this.inner().withAlso(that,val:val))
+method This with(N that, Elem val) This.#immK(inner:this.inner().with(that,val:val))
 
 read method  mut This reverse() (
   result=This.empty()
@@ -34,6 +34,7 @@ read method  mut This reverse() (
 read method N size() this.inner().size()
 read method Bool isEmpty() this.size()==0N
 
+method This +(Elem that) this.withAlso(\size,val:that)
 
 method This ++(This that){
   mut This res=This.empty()

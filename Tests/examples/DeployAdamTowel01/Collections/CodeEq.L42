@@ -38,6 +38,14 @@ method
 This withoutAll(Elem that)
   This[with e in this.vals() (if !e.equals(that) (use[e]))]
 
+method
+This -(Elem that)
+  this.withoutAll(that)
+
+
+method
+This --(This that)
+  This[with e in this.vals() ( if !that.contains(e)  (use[e])  )]
 
 read method
 Bool !=(read This that) !(this==that)

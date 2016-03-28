@@ -1,9 +1,16 @@
 todo:
-constructors understanding
-new desugaring for []
-consider e0[e1;e2] desugared in (x=e0 x.#fromSequence(x.#sequenceFactory().#add(e1).#add(e2))
-in deploy towel, check code is self contained (see AT1 outer0)
+
+Near to Data:
+ we have:
+   with assuming immK
+   invariant for imm and mut to imm classes.
+
+   we need: equals/toS/clone/add immK
+
+
+
 = vs:
+
 // vs ' plus /**/
 use check vs use m(xes) with
 
@@ -29,7 +36,6 @@ should != be desugared in !(==)    > norm for <=, => <,  >> <<,
 
 Many constructor is ok for a class?
 
-Remove mdf from concrete header
 
 se ho una classe che ha metodi astratti class non fwd, posso aggiungere i fwd e non rompo nulla?
 potrebbe essere un passo nella normalizzazione? o nel tipaggio?

@@ -6,10 +6,15 @@ ConstructorUnavailable:Message.$<<{<:MetaGuard}
 
 Selectors:Collections.vector(ofEq:Selector)
 
-class method Introspection.Method immK(Introspection.Methods that){
+class method
+Introspection.Method immK(Introspection.Methods that)
+exception ConstructorUnavailable{
     with m in that.vals() (
-      if m.thisMdf()==S"class" & m.returnType().mdf()==S""
+      if m.thisMdf().equals(\class._Class()) & m.returnType().mdf().equals(\class._Immutable()) (
+        return m
+        )
       )
+    exception ConstructorUnavailable"immutable constructor not found"
   }
 
 class method
@@ -17,8 +22,7 @@ Library<<(Library that)
 exception ConstructorUnavailable, MetaGuard{
   i=Introspection(lib:that)
   s=i.state()
-  if s.isEmpty() (exception ConstructorUnavailable"")
-  k=s.left()
+  k=this.immK(s)
   names=k.selector().names()
   var Library acc=that
   withK=Selector.from(name:S"with",names:names)
@@ -27,10 +31,10 @@ exception ConstructorUnavailable, MetaGuard{
   with n in withK.names().vals() (
     // I know all names in ss contains n
     with sel in ss.vals() (
-      newSelNames=sel.names().remove(n)
+      newSelNames=sel.names() - n
       newSel=Selector.from(name:S"with",names:newSelNames)
       defP=Selector.from(name:n,names:Strings[])
-      ss:=ss.#add(newSel)
+      ss:=ss + newSel
       acc:=DefaultParameter(sel, of:Path"This",name:n, by:defP)<<acc
       )
     )
@@ -44,7 +48,7 @@ exception ConstructorUnavailable, MetaGuard{
   freshK=Selector.fresh(k.selector())
   freshW=Selector.fresh(Selector"with(that)")
   withK=Selector.from(name:S"with",names:k.selector().names())
-  action={ read method capsule This with(capsule This that) that} //discussion on k modifiers
+  action={ read method This with(This that) that}
   var Library acc=that
   acc:=Refactor.compose(left:acc
     right:Refactor.RenameSelector(
@@ -54,7 +58,7 @@ exception ConstructorUnavailable, MetaGuard{
   }
 }
 
-C:Wither<<{(N n, S s)}
+C:Wither<<{(N n, S s)  class method This immK(N n, S s) }
 
 
 Main:{
