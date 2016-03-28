@@ -86,7 +86,7 @@ public class Introspection {//TODO: we keep 5 methods, but we merge the PathRepo
         result[0]=Resources.Error.multiPartStringClassB("MemberReport",
           "MemberKind",ExtractInfo.memberKind(mN),
           "MemberDoc",liftDoc(path,mt.getDoc(),1),
-          "ThisMdf",""+mt.getMt().getMdf().inner,
+          "ThisMdf",""+mt.getMt().getMdf().name(),
           "Key",""+mt.getMs(),//Selector/Path
           "AllAsString",ToFormattedText.of(mt),
           "ExceptionNumber",""+mt.getMt().getExceptions().size(),
@@ -185,7 +185,7 @@ public class Introspection {//TODO: we keep 5 methods, but we merge the PathRepo
     }
     return Resources.Error.multiPartStringClassB("TypeReport",
       "TypeKind",""+kind,//:Normal, Alias, AliasUnresolvable
-      "Mdf",""+((mdf==Mdf.Immutable)?resMdf:mdf).inner,//:String
+      "Mdf",""+((mdf==Mdf.Immutable)?resMdf:mdf).name(),//:String
       //"ResolvedMdf",""+resMdf,//:String
       "Path",dPi,//:Doc with one annotation, can be typeAny or not
       "ResolvedPath",dResPi,//:Doc with one annotation, can be typeAny or not

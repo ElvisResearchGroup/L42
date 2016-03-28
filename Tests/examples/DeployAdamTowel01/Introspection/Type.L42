@@ -7,12 +7,12 @@ method S strRepr() { //should become toS? is toS ok?
   S s={if n.hasExternalType() (return n.externalTypeToS())
     return S"@."[n.pathFromRoot()]""
     }
-  return this.mdf()++S" "++s
+  return this.mdf().toS()++S" "++s
   }
-method S typeKind() this.record()"TypeKind" //{Normal,Alias,AliasUnresolvable}
-method S mdf() {//error on AliasUnresolvable
-  if this.typeKind()!=S"AliasUnresolvable" (return this.record()"Mdf")
-  error Guard.Operation"AliasUnresolvable class, mdf unknown" 
+method TypeKind typeKind() TypeKind.fromS(this.record()"TypeKind") //{Normal,Alias,AliasUnresolvable}
+method Mdf mdf() {//error on AliasUnresolvable
+  if !( this.typeKind().equals(\class._AliasUnresolvable())) (return Mdf.fromS(this.record()"Mdf"))
+  error Guard.Operation"AliasUnresolvable class, mdf unknown"
   }
 
 method //@private
@@ -26,19 +26,19 @@ NestedClass  referencedPath(Doc.Annotation ann) {
   }
 method NestedClass referencedPath()
   this.referencedPath(ann:this.record().docOf(path:Path"Path").annotations().left())
-  
+
 method NestedClass resolvedReferencedPath() {//error on AliasUnresolvable
-  if this.typeKind()!=S"AliasUnresolvable" (
+  if !(this.typeKind().equals(\class._AliasUnresolvable())) (
     return this.referencedPath(ann:this.record().docOf(path:Path"ResolvedPath").annotations().left())
     )
-  error Guard.Operation"AliasUnresolvable class, mdf unknown" 
+  error Guard.Operation"AliasUnresolvable class, mdf unknown"
   }
 
 method Bool partial() this.record()"Ph"==S"true"
 method Bool resolvedPartial() this.record()"ResolvedPh"==S"true" //error on Normal? or the same of partial()
 method S suffix() { //error on Normal
-  if this.typeKind()==S"Normal" (
-    error Guard.Operation"Normal types have no suffix" 
+  if this.typeKind().equals(\class._Normal()) (
+    error Guard.Operation"Normal types have no suffix"
     )
   return this.record()"Ph"
   }

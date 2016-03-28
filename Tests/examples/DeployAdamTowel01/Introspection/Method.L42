@@ -17,8 +17,8 @@ Doc doc()
   this.record().docOf(path:Path"MemberDoc")
 
 method
-S thisMdf()
-  this.record()"ThisMdf"
+Mdf thisMdf()
+  Mdf.fromS(this.record()"ThisMdf")
 
 method // invariant NestedClass(...).nestedClassFromRoot(path).pathFromRoot()==path
 Path pathFromRoot()
@@ -30,8 +30,8 @@ Selector selector()
   Selector.fromS(this.record()"Key")
 
 method
-S methodKind()
-  this.record()"MemberKind"
+MethodKind methodKind()
+  MethodKind.fromS(this.record()"MemberKind")
 
 method
 S allAsString()

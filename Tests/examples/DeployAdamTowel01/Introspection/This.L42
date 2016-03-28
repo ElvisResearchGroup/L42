@@ -47,4 +47,26 @@ Mdf:Enum<<{
   class method This _Class() This(5N)
   }
 
+MethodKind:Enum<<{
+  class method Strings names()Strings[S"InterfaceImplementedMethod"; S"ImplementedMethod"; S"AbstractMethod"]
+  class method This _InterfaceImplementedMethod() This(0N)
+  class method This _ImplementedMethod() This(1N)
+  class method This _AbstractMethod() This(2N)
+  }
+
+ClassKind:Enum<<{
+  class method Strings names()Strings[S"Interface";S"ClosedClass";S"OpenClass";S"Template";S"FreeTemplate";]
+  class method This _Interface() This(0N)
+  class method This _ClosedClass() This(1N)
+  class method This _OpenClass() This(2N)
+  class method This _Template() This(3N)
+  class method This _FreeTemplate() This(4N)
+  }
+
+TypeKind:Enum<<{//may disappear
+  class method Strings names()Strings[S"Normal";S"Alias";S"AliasUnresolvable";]
+  class method This _Normal() This(0N)
+  class method This _Alias() This(1N)
+  class method This _AliasUnresolvable() This(2N)
+  }
 }

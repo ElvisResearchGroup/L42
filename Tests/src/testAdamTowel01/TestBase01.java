@@ -44,8 +44,8 @@ public class TestBase01 {
     TestHelper.configureForTest();
     L42.main(new String[]{"examples/testsForAdamTowel01/UseAdamTowel01.L42"});
     Assert.assertEquals(L42.record.toString(),
-        "FreeTemplate\n"
-        + "FreeTemplate\n"
+        "--NameStillToFix--.FreeTemplate\n"
+        + "--NameStillToFix--.FreeTemplate\n"
         + "Hello Adam 0\n"
         + "azz\nbzz\nczz\n"
         + "foo(azz,bzz,czz)\n"
@@ -63,12 +63,12 @@ public class TestBase01 {
    TestHelper.configureForTest();
    L42.main(new String[]{"examples/testsForAdamTowel01/UseIntrospectionAdamTowel.L42"});
    Assert.assertEquals(L42.record.toString(),TestHelper.multiLine(
-       "classkind of Bar is FreeTemplate"
+       "classkind of Bar is --NameStillToFix--.FreeTemplate"
       ,"Bas as string: {"
       ,"method "
       ,"Void foo(Void par1, Any par2) }"
       ,"--------------------------"
-      ,"classkind of This is FreeTemplate"
+      ,"classkind of This is --NameStillToFix--.FreeTemplate"
       ,"This as string: {"
       ,"Bar:{"
       ,"method "

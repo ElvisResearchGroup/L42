@@ -31,12 +31,12 @@ class method
 Bool needRename(
 Introspection.NestedClass that,Introspection.Method meth) {
   if meth.isPrivate() (return Bool.false() )
-  if meth.methodKind()==S"AbstractMethod" (return Bool.false() )
-  meth2=that.methodFromSelector(meth.selector())
+  if meth.methodKind().equals(\class._AbstractMethod()) (return Bool.false() )
+  meth2=that.method(meth.selector())
   catch exception  MetaGuard.MemberUnavailable
     return Bool.false()
   if meth2.isPrivate() (return Bool.false() )
-  if meth2.methodKind()==S"AbstractMethod" (return Bool.false() )
+  if meth2.methodKind().equals(\class._AbstractMethod()) (return Bool.false() )
   return Bool.true()
   }
 

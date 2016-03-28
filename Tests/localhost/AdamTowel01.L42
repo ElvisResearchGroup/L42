@@ -4801,6 +4801,8 @@ This0 withoutAll(This0.Elem that) This0.#from(seqBuilder:(
   b
   ))
 read method 
+This3.Bool #bangequal(read This0 that) this.#equalequal(that:that).#bang()
+read method 
 This3.Bool #equalequal(read This0 that) (
   Void unused=(
     Void unused0=(
@@ -5640,6 +5642,8 @@ This0 withoutAll(This1.S that) This0.#from(seqBuilder:(
     )
   b
   ))
+read method 
+This1.Bool #bangequal(read This0 that) this.#equalequal(that:that).#bang()
 read method 
 This1.Bool #equalequal(read This0 that) (
   Void unused=(
@@ -10098,6 +10102,8 @@ This0 withoutAll(This1.Member that) This0.#from(seqBuilder:(
   b
   ))
 read method 
+This2.Bool #bangequal(read This0 that) this.#equalequal(that:that).#bang()
+read method 
 This2.Bool #equalequal(read This0 that) (
   Void unused=(
     Void unused0=(
@@ -10391,7 +10397,7 @@ This1.Doc doc() this.record__37_0().docOf(path:This2.Path.#from(builder:(
   b
   )))
 method 
-This2.S thisMdf() (
+This1.Mdf thisMdf() This1.Mdf.fromS(that:(
   This0::record__37_0() rcv43=this.record__37_0()
   rcv43.#from(builder:(
     This0::record__37_0() ::#builder() b=rcv43.#builder()
@@ -10404,7 +10410,7 @@ This2.S thisMdf() (
     Void unused5=b.#f()
     b
     ))
-  )
+  ))
 method // invariant NestedClass(...).nestedClassFromRoot(path).pathFromRoot()==path
 This2.Path pathFromRoot() this.path__37_0()
 method 
@@ -10419,7 +10425,7 @@ This2.Selector selector() This2.Selector.fromS(that:(
     ))
   ))
 method 
-This2.S methodKind() (
+This1.MethodKind methodKind() This1.MethodKind.fromS(that:(
   This0::record__37_0() rcv45=this.record__37_0()
   rcv45.#from(builder:(
     This0::record__37_0() ::#builder() b=rcv45.#builder()
@@ -10435,7 +10441,7 @@ This2.S methodKind() (
     Void unused8=b.#d()
     b
     ))
-  )
+  ))
 method 
 This2.S allAsString() (
   This0::record__37_0() rcv46=this.record__37_0()
@@ -11327,6 +11333,8 @@ This0 withoutAll(This1.Method that) This0.#from(seqBuilder:(
   b
   ))
 read method 
+This2.Bool #bangequal(read This0 that) this.#equalequal(that:that).#bang()
+read method 
 This2.Bool #equalequal(read This0 that) (
   Void unused=(
     Void unused0=(
@@ -11559,19 +11567,7 @@ mut method
 mut This2.Types #inner() 
 read method 
 read This2.Types inner() }
-VarabsMethods__80_0://@private
-{
-class method 
-mut This0 #mutK(This2.Methods inner) 
-class method 
-mut This0 #apply(This2.Methods inner) This0.#mutK(inner:inner)
-mut method 
-Void inner(This2.Methods that) 
-mut method 
-This2.Methods #inner() 
-read method 
-This2.Methods inner() }
-VarhavePrivate__81_0://@private
+VarhavePrivate__80_0://@private
 {
 class method 
 mut This0 #mutK(This3.Bool inner) 
@@ -12294,7 +12290,7 @@ This2.S externalTypeToS() (
   }
   )
 method 
-This2.S classKind() (
+This1.ClassKind classKind() This1.ClassKind.fromS(that:(
   This0::record__39_0() rcv57=this.record__39_0()
   rcv57.#from(builder:(
     This0::record__39_0() ::#builder() b=rcv57.#builder()
@@ -12309,7 +12305,7 @@ This2.S classKind() (
     Void unused7=b.#d()
     b
     ))
-  )
+  ))
 method 
 This2.S allAsString() (
   This0::record__39_0() rcv58=this.record__39_0()
@@ -12914,23 +12910,240 @@ This1.Types remove__43_0(This1.Types that, This1.Types from) This1.Types.#from(s
   ))
 method 
 This1.Methods stateCandidate() (
-  This2.Bool havePrivate=This2.Bool.false()
-  mut This0.VarhavePrivate__81_0 varhavePrivate=This0.VarhavePrivate__81_0.#apply(inner:havePrivate)
-  This1.Methods absMethods=This1.Methods.#from(seqBuilder:(
-    This1.Methods::#seqBuilder() b=This1.Methods.#seqBuilder()
-    Void unused0=(
-      This0::methods() ::vals() m=this.methods().vals()
-      (
-        Void unused1=(
-          Void unused2=(
-            Void unused3=loop (
-              Void unused4=m.#next()
+  Void unused=(
+    This2.Bool havePrivate=This2.Bool.false()
+    mut This0.VarhavePrivate__80_0 varhavePrivate=This0.VarhavePrivate__80_0.#apply(inner:havePrivate)
+    This1.Methods::#from(seqBuilder ) absMethods=This1.Methods.#from(seqBuilder:(
+      This1.Methods::#seqBuilder() b=This1.Methods.#seqBuilder()
+      Void unused2=(
+        This0::methods() ::vals() m=this.methods().vals()
+        (
+          Void unused3=(
+            Void unused4=(
+              Void unused5=loop (
+                Void unused6=m.#next()
+                
+                catch exception Void catched0 (
+                  Void unused7=(
+                    Void unused8=m.#checkEnd()
+                    
+                    catch exception Void catched1 void
+                    
+                    void
+                    )
+                  exception void
+                  )
+                
+                (
+                  This0::methods() ::vals() ::#inner() ::methodKind() ::equals(that ) cond=(
+                    This0::methods() ::vals() ::#inner() ::methodKind() rcv60=m.#inner().methodKind()
+                    rcv60.equals(that:rcv60.class()._AbstractMethod())
+                    )
+                  (
+                    Void unused9=cond.#checkTrue()
+                    
+                    catch exception Void catched5 void
+                    
+                    (
+                      Void unused10=varhavePrivate.inner(that:varhavePrivate.#inner().#or(that:m.#inner().isPrivate()))
+                      (
+                        Void unused11=b.#add(that:m.#inner())
+                        void
+                        )
+                      )
+                    )
+                  )
+                )
               
-              catch exception Void catched0 (
-                Void unused5=(
-                  Void unused6=m.#checkEnd()
+              catch exception Void catched8 void
+              
+              void
+              )
+            
+            catch exception Any propagated (
+              Void unused12=m.#close()
+              exception propagated
+              )
+            
+            void
+            )
+          
+          catch return This1.Methods propagated0 (
+            Void unused13=m.#close()
+            return propagated0
+            )
+          
+          m.#close()
+          )
+        )
+      b
+      ))
+    Void unused0=(
+      This0.VarhavePrivate__80_0::#inner() ::#bang() cond0=varhavePrivate.#inner().#bang()
+      (
+        Void unused14=cond0.#checkTrue()
+        
+        catch exception Void catched15 void
+        
+        return absMethods
+        )
+      )
+    Void unused1=return This1.Methods.#from(seqBuilder:(
+      This1.Methods::#seqBuilder() b0=This1.Methods.#seqBuilder()
+      Void unused15=(
+        This1.Methods::#from(seqBuilder ) ::vals() a=absMethods.vals()
+        (
+          Void unused16=(
+            Void unused17=(
+              Void unused18=loop (
+                Void unused19=a.#next()
+                
+                catch exception Void catched17 (
+                  Void unused20=(
+                    Void unused21=a.#checkEnd()
+                    
+                    catch exception Void catched18 void
+                    
+                    void
+                    )
+                  exception void
+                  )
+                
+                (
+                  This1.Methods::#from(seqBuilder ) ::vals() ::#inner() ::isPrivate() cond1=a.#inner().isPrivate()
+                  (
+                    Void unused22=cond1.#checkTrue()
+                    
+                    catch exception Void catched21 void
+                    
+                    (
+                      Void unused23=b0.#add(that:a.#inner())
+                      void
+                      )
+                    )
+                  )
+                )
+              
+              catch exception Void catched23 void
+              
+              void
+              )
+            
+            catch exception Any propagated1 (
+              Void unused24=a.#close()
+              exception propagated1
+              )
+            
+            void
+            )
+          
+          catch return This1.Methods propagated2 (
+            Void unused25=a.#close()
+            return propagated2
+            )
+          
+          a.#close()
+          )
+        )
+      b0
+      ))
+    void
+    )
+  
+  catch return This1.Methods result result
+  
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
+  }
+  )
+method 
+This1.Methods state() (
+  Void unused=(
+    This0::stateCandidate() stateCandidate=this.stateCandidate()
+    This1.Methods::#from(seqBuilder ) classMethods=This1.Methods.#from(seqBuilder:(
+      This1.Methods::#seqBuilder() b=This1.Methods.#seqBuilder()
+      Void unused4=(
+        This0::stateCandidate() ::vals() m=stateCandidate.vals()
+        (
+          Void unused5=(
+            Void unused6=(
+              Void unused7=loop (
+                Void unused8=m.#next()
+                
+                catch exception Void catched0 (
+                  Void unused9=(
+                    Void unused10=m.#checkEnd()
+                    
+                    catch exception Void catched1 void
+                    
+                    void
+                    )
+                  exception void
+                  )
+                
+                (
+                  This0::stateCandidate() ::vals() ::#inner() ::thisMdf() ::#equalequal(that ) cond=m.#inner().thisMdf().#equalequal(that:This1.Mdf._Class())
+                  (
+                    Void unused11=cond.#checkTrue()
+                    
+                    catch exception Void catched4 void
+                    
+                    (
+                      Void unused12=b.#add(that:m.#inner())
+                      void
+                      )
+                    )
+                  )
+                )
+              
+              catch exception Void catched6 void
+              
+              void
+              )
+            
+            catch exception Any propagated (
+              Void unused13=m.#close()
+              exception propagated
+              )
+            
+            void
+            )
+          
+          catch return This1.Methods propagated0 (
+            Void unused14=m.#close()
+            return propagated0
+            )
+          
+          m.#close()
+          )
+        )
+      b
+      ))
+    Void unused0=(
+      This1.Methods::#from(seqBuilder ) ::isEmpty() cond0=classMethods.isEmpty()
+      (
+        Void unused15=cond0.#checkTrue()
+        
+        catch exception Void catched13 void
+        
+        return This1.Methods.empty()
+        )
+      )
+    This1.Methods::#from(seqBuilder ) ::left() ::selector() ::names() names=classMethods.left().selector().names()
+    mut This1.Methods result=This1.Methods.empty()
+    Void unused1=(
+      This1.Methods::#from(seqBuilder ) ::vals() c=classMethods.vals()
+      (
+        Void unused16=(
+          Void unused17=(
+            Void unused18=loop (
+              Void unused19=c.#next()
+              
+              catch exception Void catched15 (
+                Void unused20=(
+                  Void unused21=c.#checkEnd()
                   
-                  catch exception Void catched1 void
+                  catch exception Void catched16 void
                   
                   void
                   )
@@ -12938,248 +13151,54 @@ This1.Methods stateCandidate() (
                 )
               
               (
-                This0::methods() ::vals() ::#inner() ::methodKind() ::#equalequal(that ) cond=m.#inner().methodKind().#equalequal(that:This2.S.#from(builder:(
-                  This2.S::#builder() b1=This2.S.#builder()
-                  Void unused7=b1.#A()
-                  Void unused8=b1.#b()
-                  Void unused9=b1.#s()
-                  Void unused10=b1.#t()
-                  Void unused11=b1.#r()
-                  Void unused12=b1.#a()
-                  Void unused13=b1.#c()
-                  Void unused14=b1.#t()
-                  Void unused15=b1.#M()
-                  Void unused16=b1.#e()
-                  Void unused17=b1.#t()
-                  Void unused18=b1.#h()
-                  Void unused19=b1.#o()
-                  Void unused20=b1.#d()
-                  b1
-                  )))
-                (
-                  Void unused21=cond.#checkTrue()
-                  
-                  catch exception Void catched5 void
-                  
+                Void unused22=(
+                  This1.Methods::#from(seqBuilder ) ::left() ::selector() ::names() ::#bangequal(that ) cond1=names.#bangequal(that:c.#inner().selector().names())
                   (
-                    Void unused22=varhavePrivate.inner(that:varhavePrivate.#inner().#or(that:m.#inner().isPrivate()))
-                    (
-                      Void unused23=b.#add(that:m.#inner())
-                      void
-                      )
+                    Void unused23=cond1.#checkTrue()
+                    
+                    catch exception Void catched19 void
+                    
+                    return This1.Methods.empty()
                     )
                   )
+                result.add(right:c.#inner())
                 )
               )
             
-            catch exception Void catched8 void
+            catch exception Void catched21 void
             
             void
             )
           
-          catch exception Any propagated (
-            Void unused24=m.#close()
-            exception propagated
+          catch exception Any propagated1 (
+            Void unused24=c.#close()
+            exception propagated1
             )
           
           void
           )
         
-        catch return Any propagated0 (
-          Void unused25=m.#close()
-          return propagated0
+        catch return This1.Methods propagated2 (
+          Void unused25=c.#close()
+          return propagated2
           )
         
-        m.#close()
+        c.#close()
         )
       )
-    b
-    ))
-  mut This0.VarabsMethods__80_0 varabsMethods=This0.VarabsMethods__80_0.#apply(inner:absMethods)
-  Void unused=(
-    This0.VarhavePrivate__81_0::#inner() cond0=varhavePrivate.#inner()
-    (
-      Void unused26=cond0.#checkTrue()
-      
-      catch exception Void catched15 void
-      
-      varabsMethods.inner(that:This1.Methods.#from(seqBuilder:(
-        This1.Methods::#seqBuilder() b0=This1.Methods.#seqBuilder()
-        Void unused27=(
-          This0.VarabsMethods__80_0::#inner() ::vals() a=varabsMethods.#inner().vals()
-          (
-            Void unused28=(
-              Void unused29=(
-                Void unused30=loop (
-                  Void unused31=a.#next()
-                  
-                  catch exception Void catched17 (
-                    Void unused32=(
-                      Void unused33=a.#checkEnd()
-                      
-                      catch exception Void catched18 void
-                      
-                      void
-                      )
-                    exception void
-                    )
-                  
-                  (
-                    This0.VarabsMethods__80_0::#inner() ::vals() ::#inner() ::isPrivate() cond1=a.#inner().isPrivate()
-                    (
-                      Void unused34=cond1.#checkTrue()
-                      
-                      catch exception Void catched21 void
-                      
-                      (
-                        Void unused35=b0.#add(that:a.#inner())
-                        void
-                        )
-                      )
-                    )
-                  )
-                
-                catch exception Void catched23 void
-                
-                void
-                )
-              
-              catch exception Any propagated1 (
-                Void unused36=a.#close()
-                exception propagated1
-                )
-              
-              void
-              )
-            
-            catch return Any propagated2 (
-              Void unused37=a.#close()
-              return propagated2
-              )
-            
-            a.#close()
-            )
-          )
-        b0
-        )))
-      )
-    )
-  varabsMethods.#inner()
-  )
-method 
-This1.Methods state() (
-  Void unused=(
-    mut This1.Methods result=This1.Methods.empty()
-    This0::stateCandidate() stateCandidate=this.stateCandidate()
-    This1.Methods::#from(seqBuilder ) ::left() constr=(
-      This1.Methods::#from(seqBuilder ) classMethods=This1.Methods.#from(seqBuilder:(
-        This1.Methods::#seqBuilder() b=This1.Methods.#seqBuilder()
-        Void unused5=(
-          This0::stateCandidate() ::vals() m=stateCandidate.vals()
-          (
-            Void unused6=(
-              Void unused7=(
-                Void unused8=loop (
-                  Void unused9=m.#next()
-                  
-                  catch exception Void catched0 (
-                    Void unused10=(
-                      Void unused11=m.#checkEnd()
-                      
-                      catch exception Void catched1 void
-                      
-                      void
-                      )
-                    exception void
-                    )
-                  
-                  (
-                    This0::stateCandidate() ::vals() ::#inner() ::thisMdf() ::#equalequal(that ) cond=m.#inner().thisMdf().#equalequal(that:This2.S.#from(builder:(
-                      This2.S::#builder() b0=This2.S.#builder()
-                      Void unused12=b0.#c()
-                      Void unused13=b0.#l()
-                      Void unused14=b0.#a()
-                      Void unused15=b0.#s()
-                      Void unused16=b0.#s()
-                      b0
-                      )))
-                    (
-                      Void unused17=cond.#checkTrue()
-                      
-                      catch exception Void catched5 void
-                      
-                      (
-                        Void unused18=b.#add(that:m.#inner())
-                        void
-                        )
-                      )
-                    )
-                  )
-                
-                catch exception Void catched7 void
-                
-                void
-                )
-              
-              catch exception Any propagated (
-                Void unused19=m.#close()
-                exception propagated
-                )
-              
-              void
-              )
-            
-            catch return This1.Methods propagated0 (
-              Void unused20=m.#close()
-              return propagated0
-              )
-            
-            m.#close()
-            )
-          )
-        b
-        ))
-      Void unused3=(
-        This1.Methods::#from(seqBuilder ) ::isEmpty() cond0=classMethods.isEmpty()
-        (
-          Void unused21=cond0.#checkTrue()
-          
-          catch exception Void catched14 void
-          
-          return result
-          )
-        )
-      Void unused4=(
-        This1.Methods::#from(seqBuilder ) ::size() ::#right(that ) cond1=classMethods.size().#right(that:This2.N.#from(builder:(
-          This2.N::#builder() b1=This2.N.#builder()
-          Void unused22=b1.#1()
-          b1
-          )))
-        (
-          Void unused23=cond1.#checkTrue()
-          
-          catch exception Void catched17 void
-          
-          return result
-          )
-        )
-      classMethods.left()
-      )
-    Void unused0=result.add(right:constr)
-    This1.Methods::#from(seqBuilder ) ::left() ::selector() ::names() names=constr.selector().names()
-    Void unused1=(
+    Void unused2=(
       This1.Methods::#from(seqBuilder ) ::left() ::selector() ::names() ::vals() name=names.vals()
       (
-        Void unused24=(
-          Void unused25=(
-            Void unused26=loop (
-              Void unused27=name.#next()
+        Void unused26=(
+          Void unused27=(
+            Void unused28=loop (
+              Void unused29=name.#next()
               
-              catch exception Void catched20 (
-                Void unused28=(
-                  Void unused29=name.#checkEnd()
+              catch exception Void catched27 (
+                Void unused30=(
+                  Void unused31=name.#checkEnd()
                   
-                  catch exception Void catched21 void
+                  catch exception Void catched28 void
                   
                   void
                   )
@@ -13188,44 +13207,44 @@ This1.Methods state() (
               
               (
                 This2.Selector::fromS(that ) getter=This2.Selector.fromS(that:name.#inner().#plusplus(that:This2.S.#from(builder:(
-                  This2.S::#builder() b2=This2.S.#builder()
-                  Void unused30=b2.#oRound()
-                  Void unused31=b2.#cRound()
-                  b2
+                  This2.S::#builder() b0=This2.S.#builder()
+                  Void unused32=b0.#oRound()
+                  Void unused33=b0.#cRound()
+                  b0
                   ))))
                 This2.Selector::fromS(that ) exposer=This2.Selector.fromS(that:This2.S.#from(builder:(
-                  This2.S::#builder() b3=This2.S.#builder()
-                  Void unused32=b3.#hash()
-                  b3
+                  This2.S::#builder() b1=This2.S.#builder()
+                  Void unused34=b1.#hash()
+                  b1
                   )).#plusplus(that:name.#inner().#plusplus(that:This2.S.#from(builder:(
-                  This2.S::#builder() b4=This2.S.#builder()
-                  Void unused33=b4.#oRound()
-                  Void unused34=b4.#cRound()
-                  b4
+                  This2.S::#builder() b2=This2.S.#builder()
+                  Void unused35=b2.#oRound()
+                  Void unused36=b2.#cRound()
+                  b2
                   )))))
                 This2.Selector::fromS(that ) setter=This2.Selector.fromS(that:name.#inner().#plusplus(that:This2.S.#from(builder:(
-                  This2.S::#builder() b5=This2.S.#builder()
-                  Void unused35=b5.#oRound()
-                  Void unused36=b5.#t()
-                  Void unused37=b5.#h()
-                  Void unused38=b5.#a()
-                  Void unused39=b5.#t()
-                  Void unused40=b5.#cRound()
-                  b5
+                  This2.S::#builder() b3=This2.S.#builder()
+                  Void unused37=b3.#oRound()
+                  Void unused38=b3.#t()
+                  Void unused39=b3.#h()
+                  Void unused40=b3.#a()
+                  Void unused41=b3.#t()
+                  Void unused42=b3.#cRound()
+                  b3
                   ))))
                 (
                   This0::stateCandidate() ::vals() f=stateCandidate.vals()
                   (
-                    Void unused41=(
-                      Void unused42=(
-                        Void unused43=loop (
-                          Void unused44=f.#next()
+                    Void unused43=(
+                      Void unused44=(
+                        Void unused45=loop (
+                          Void unused46=f.#next()
                           
-                          catch exception Void catched29 (
-                            Void unused45=(
-                              Void unused46=f.#checkEnd()
+                          catch exception Void catched36 (
+                            Void unused47=(
+                              Void unused48=f.#checkEnd()
                               
-                              catch exception Void catched30 void
+                              catch exception Void catched37 void
                               
                               void
                               )
@@ -13235,31 +13254,31 @@ This1.Methods state() (
                           (
                             This0::stateCandidate() ::vals() ::#inner() ::selector() ::#equalequal(that ) ::#or(that ) ::#or(that ) cond2=f.#inner().selector().#equalequal(that:getter).#or(that:f.#inner().selector().#equalequal(that:exposer)).#or(that:f.#inner().selector().#equalequal(that:setter))
                             (
-                              Void unused47=cond2.#checkTrue()
+                              Void unused49=cond2.#checkTrue()
                               
-                              catch exception Void catched33 void
+                              catch exception Void catched40 void
                               
                               result.add(right:f.#inner())
                               )
                             )
                           )
                         
-                        catch exception Void catched34 void
+                        catch exception Void catched41 void
                         
                         void
                         )
                       
-                      catch exception Any propagated1 (
-                        Void unused48=f.#close()
-                        exception propagated1
+                      catch exception Any propagated3 (
+                        Void unused50=f.#close()
+                        exception propagated3
                         )
                       
                       void
                       )
                     
-                    catch return This1.Methods propagated2 (
-                      Void unused49=f.#close()
-                      return propagated2
+                    catch return This1.Methods propagated4 (
+                      Void unused51=f.#close()
+                      return propagated4
                       )
                     
                     f.#close()
@@ -13268,28 +13287,28 @@ This1.Methods state() (
                 )
               )
             
-            catch exception Void catched39 void
+            catch exception Void catched46 void
             
             void
             )
           
-          catch exception Any propagated3 (
-            Void unused50=name.#close()
-            exception propagated3
+          catch exception Any propagated5 (
+            Void unused52=name.#close()
+            exception propagated5
             )
           
           void
           )
         
-        catch return This1.Methods propagated4 (
-          Void unused51=name.#close()
-          return propagated4
+        catch return This1.Methods propagated6 (
+          Void unused53=name.#close()
+          return propagated6
           )
         
         name.#close()
         )
       )
-    Void unused2=return result
+    Void unused3=return result
     void
     )
   
@@ -13300,7 +13319,7 @@ This1.Methods state() (
   }
   )
 method 
-This1.Method methodFromSelector(This2.Selector that) exception This2.MetaGuard.MethodUnavailable (
+This1.Method method(This2.Selector that) exception This2.MetaGuard.MethodUnavailable (
   Void unused=(
     Void unused0=(
       This0::methods() ::vals() meth=this.methods().vals()
@@ -13367,7 +13386,7 @@ This1.Method methodFromSelector(This2.Selector that) exception This2.MetaGuard.M
 method 
 This2.Bool has(This2.Selector selector) (
   Void unused0=(
-    This0::methodFromSelector(that ) unused=this.methodFromSelector(that:selector)
+    This0::method(that ) unused=this.method(that:selector)
     
     catch exception This2.MetaGuard.MemberUnavailable catched return This2.Bool.false()
     
@@ -14199,6 +14218,8 @@ This0 withoutAll(This1.NestedClass that) This0.#from(seqBuilder:(
   b
   ))
 read method 
+This2.Bool #bangequal(read This0 that) this.#equalequal(that:that).#bang()
+read method 
 This2.Bool #equalequal(read This0 that) (
   Void unused=(
     Void unused0=(
@@ -14384,29 +14405,29 @@ read method //@private
 This1.Record record__44_0() 
 method myName() This2.GetMyName.#apply(that:This0)
 method toS() This0.myName().#plusplus(that:(
-  This2.S::#from(builder ) ::#from(seqBuilder ) rcv60=(
-    This2.S::#from(builder ) rcv61=This2.S.#from(builder:(
+  This2.S::#from(builder ) ::#from(seqBuilder ) rcv61=(
+    This2.S::#from(builder ) rcv62=This2.S.#from(builder:(
       This2.S::#builder() b=This2.S.#builder()
       Void unused=b.#oSquare()
       b
       ))
-    rcv61.#from(seqBuilder:(
-      This2.S::#from(builder ) ::#seqBuilder() b0=rcv61.#seqBuilder()
+    rcv62.#from(seqBuilder:(
+      This2.S::#from(builder ) ::#seqBuilder() b0=rcv62.#seqBuilder()
       Void unused0=b0.#add(that:this.allAsString())
       b0
       ))
     )
-  rcv60.#from(builder:(
-    This2.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b1=rcv60.#builder()
+  rcv61.#from(builder:(
+    This2.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b1=rcv61.#builder()
     Void unused1=b1.#cSquare()
     b1
     ))
   ))
 method 
 This2.S allAsString() (
-  This0::record__44_0() rcv62=this.record__44_0()
-  rcv62.#from(builder:(
-    This0::record__44_0() ::#builder() b=rcv62.#builder()
+  This0::record__44_0() rcv63=this.record__44_0()
+  rcv63.#from(builder:(
+    This0::record__44_0() ::#builder() b=rcv63.#builder()
     Void unused=b.#A()
     Void unused0=b.#l()
     Void unused1=b.#l()
@@ -14439,21 +14460,21 @@ This2.S strRepr() (
             )
           )
         Void unused3=return (
-          This2.S::#from(builder ) ::#from(seqBuilder ) rcv63=(
-            This2.S::#from(builder ) rcv64=This2.S.#from(builder:(
+          This2.S::#from(builder ) ::#from(seqBuilder ) rcv64=(
+            This2.S::#from(builder ) rcv65=This2.S.#from(builder:(
               This2.S::#builder() b=This2.S.#builder()
               Void unused5=b.#at()
               Void unused6=b.#dot()
               b
               ))
-            rcv64.#from(seqBuilder:(
-              This2.S::#from(builder ) ::#seqBuilder() b0=rcv64.#seqBuilder()
+            rcv65.#from(seqBuilder:(
+              This2.S::#from(builder ) ::#seqBuilder() b0=rcv65.#seqBuilder()
               Void unused7=b0.#add(that:n.pathFromRoot())
               b0
               ))
             )
-          rcv63.#from(builder:(
-            This2.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b1=rcv63.#builder()
+          rcv64.#from(builder:(
+            This2.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b1=rcv64.#builder()
             b1
             ))
           )
@@ -14466,7 +14487,7 @@ This2.S strRepr() (
       //CurlyBlock-Should be unreachable code
       }
       )
-    Void unused0=return this.mdf().#plusplus(that:This2.S.#from(builder:(
+    Void unused0=return this.mdf().toS().#plusplus(that:This2.S.#from(builder:(
       This2.S::#builder() b2=This2.S.#builder()
       Void unused8=b2.#space()
       b2
@@ -14481,10 +14502,10 @@ This2.S strRepr() (
   }
   )
 method 
-This2.S typeKind() (
-  This0::record__44_0() rcv65=this.record__44_0()
-  rcv65.#from(builder:(
-    This0::record__44_0() ::#builder() b=rcv65.#builder()
+This1.TypeKind typeKind() This1.TypeKind.fromS(that:(
+  This0::record__44_0() rcv66=this.record__44_0()
+  rcv66.#from(builder:(
+    This0::record__44_0() ::#builder() b=rcv66.#builder()
     Void unused=b.#T()
     Void unused0=b.#y()
     Void unused1=b.#p()
@@ -14495,94 +14516,77 @@ This2.S typeKind() (
     Void unused6=b.#d()
     b
     ))
-  )
+  ))
 method 
-This2.S mdf() (
+This1.Mdf mdf() (
   Void unused=(//error on AliasUnresolvable
   
     Void unused0=(
-      This0::typeKind() ::#bangequal(that ) cond=this.typeKind().#bangequal(that:This2.S.#from(builder:(
-        This2.S::#builder() b=This2.S.#builder()
-        Void unused2=b.#A()
-        Void unused3=b.#l()
-        Void unused4=b.#i()
-        Void unused5=b.#a()
-        Void unused6=b.#s()
-        Void unused7=b.#U()
-        Void unused8=b.#n()
-        Void unused9=b.#r()
-        Void unused10=b.#e()
-        Void unused11=b.#s()
-        Void unused12=b.#o()
-        Void unused13=b.#l()
-        Void unused14=b.#v()
-        Void unused15=b.#a()
-        Void unused16=b.#b()
-        Void unused17=b.#l()
-        Void unused18=b.#e()
-        b
-        )))
+      This0::typeKind() ::equals(that ) ::#bang() cond=(
+        This0::typeKind() rcv67=this.typeKind()
+        rcv67.equals(that:rcv67.class()._AliasUnresolvable())
+        ).#bang()
       (
-        Void unused19=cond.#checkTrue()
+        Void unused2=cond.#checkTrue()
         
         catch exception Void catched1 void
         
-        return (
-          This0::record__44_0() rcv66=this.record__44_0()
-          rcv66.#from(builder:(
-            This0::record__44_0() ::#builder() b0=rcv66.#builder()
-            Void unused20=b0.#M()
-            Void unused21=b0.#d()
-            Void unused22=b0.#f()
-            b0
+        return This1.Mdf.fromS(that:(
+          This0::record__44_0() rcv68=this.record__44_0()
+          rcv68.#from(builder:(
+            This0::record__44_0() ::#builder() b=rcv68.#builder()
+            Void unused3=b.#M()
+            Void unused4=b.#d()
+            Void unused5=b.#f()
+            b
             ))
-          )
+          ))
         )
       )
     Void unused1=error This2.Guard.Operation.#from(builder:(
-      This2.Guard.Operation::#builder() b1=This2.Guard.Operation.#builder()
-      Void unused23=b1.#A()
-      Void unused24=b1.#l()
-      Void unused25=b1.#i()
-      Void unused26=b1.#a()
-      Void unused27=b1.#s()
-      Void unused28=b1.#U()
-      Void unused29=b1.#n()
-      Void unused30=b1.#r()
-      Void unused31=b1.#e()
-      Void unused32=b1.#s()
-      Void unused33=b1.#o()
-      Void unused34=b1.#l()
-      Void unused35=b1.#v()
-      Void unused36=b1.#a()
-      Void unused37=b1.#b()
-      Void unused38=b1.#l()
-      Void unused39=b1.#e()
-      Void unused40=b1.#space()
-      Void unused41=b1.#c()
-      Void unused42=b1.#l()
-      Void unused43=b1.#a()
-      Void unused44=b1.#s()
-      Void unused45=b1.#s()
-      Void unused46=b1.#comma()
-      Void unused47=b1.#space()
-      Void unused48=b1.#m()
-      Void unused49=b1.#d()
-      Void unused50=b1.#f()
-      Void unused51=b1.#space()
-      Void unused52=b1.#u()
-      Void unused53=b1.#n()
-      Void unused54=b1.#k()
-      Void unused55=b1.#n()
-      Void unused56=b1.#o()
-      Void unused57=b1.#w()
-      Void unused58=b1.#n()
-      b1
+      This2.Guard.Operation::#builder() b0=This2.Guard.Operation.#builder()
+      Void unused6=b0.#A()
+      Void unused7=b0.#l()
+      Void unused8=b0.#i()
+      Void unused9=b0.#a()
+      Void unused10=b0.#s()
+      Void unused11=b0.#U()
+      Void unused12=b0.#n()
+      Void unused13=b0.#r()
+      Void unused14=b0.#e()
+      Void unused15=b0.#s()
+      Void unused16=b0.#o()
+      Void unused17=b0.#l()
+      Void unused18=b0.#v()
+      Void unused19=b0.#a()
+      Void unused20=b0.#b()
+      Void unused21=b0.#l()
+      Void unused22=b0.#e()
+      Void unused23=b0.#space()
+      Void unused24=b0.#c()
+      Void unused25=b0.#l()
+      Void unused26=b0.#a()
+      Void unused27=b0.#s()
+      Void unused28=b0.#s()
+      Void unused29=b0.#comma()
+      Void unused30=b0.#space()
+      Void unused31=b0.#m()
+      Void unused32=b0.#d()
+      Void unused33=b0.#f()
+      Void unused34=b0.#space()
+      Void unused35=b0.#u()
+      Void unused36=b0.#n()
+      Void unused37=b0.#k()
+      Void unused38=b0.#n()
+      Void unused39=b0.#o()
+      Void unused40=b0.#w()
+      Void unused41=b0.#n()
+      b0
       ))
     void
     )
   
-  catch return This2.S result result
+  catch return This1.Mdf result result
   
   error {//@stringU
   //CurlyBlock-Should be unreachable code
@@ -14602,8 +14606,8 @@ This1.NestedClass referencedPath__46_0(This1.Doc.Annotation ann) (
         )
       )
     This2.S sPath=(
-      This1.Doc.Annotation::toS() rcv67=ann.toS()
-      rcv67.#apply(start:This2.N.#from(builder:(
+      This1.Doc.Annotation::toS() rcv69=ann.toS()
+      rcv69.#apply(start:This2.N.#from(builder:(
         This2.N::#builder() b=This2.N.#builder()
         Void unused4=b.#1()
         b
@@ -14683,89 +14687,72 @@ This1.NestedClass resolvedReferencedPath() (
   Void unused=(//error on AliasUnresolvable
   
     Void unused0=(
-      This0::typeKind() ::#bangequal(that ) cond=this.typeKind().#bangequal(that:This2.S.#from(builder:(
-        This2.S::#builder() b=This2.S.#builder()
-        Void unused2=b.#A()
-        Void unused3=b.#l()
-        Void unused4=b.#i()
-        Void unused5=b.#a()
-        Void unused6=b.#s()
-        Void unused7=b.#U()
-        Void unused8=b.#n()
-        Void unused9=b.#r()
-        Void unused10=b.#e()
-        Void unused11=b.#s()
-        Void unused12=b.#o()
-        Void unused13=b.#l()
-        Void unused14=b.#v()
-        Void unused15=b.#a()
-        Void unused16=b.#b()
-        Void unused17=b.#l()
-        Void unused18=b.#e()
-        b
-        )))
+      This0::typeKind() ::equals(that ) ::#bang() cond=(
+        This0::typeKind() rcv70=this.typeKind()
+        rcv70.equals(that:rcv70.class()._AliasUnresolvable())
+        ).#bang()
       (
-        Void unused19=cond.#checkTrue()
+        Void unused2=cond.#checkTrue()
         
         catch exception Void catched1 void
         
         return this.referencedPath__46_0(ann:this.record__44_0().docOf(path:This2.Path.#from(builder:(
-          This2.Path::#builder() b0=This2.Path.#builder()
-          Void unused20=b0.#R()
-          Void unused21=b0.#e()
-          Void unused22=b0.#s()
-          Void unused23=b0.#o()
-          Void unused24=b0.#l()
-          Void unused25=b0.#v()
-          Void unused26=b0.#e()
-          Void unused27=b0.#d()
-          Void unused28=b0.#P()
-          Void unused29=b0.#a()
-          Void unused30=b0.#t()
-          Void unused31=b0.#h()
-          b0
+          This2.Path::#builder() b=This2.Path.#builder()
+          Void unused3=b.#R()
+          Void unused4=b.#e()
+          Void unused5=b.#s()
+          Void unused6=b.#o()
+          Void unused7=b.#l()
+          Void unused8=b.#v()
+          Void unused9=b.#e()
+          Void unused10=b.#d()
+          Void unused11=b.#P()
+          Void unused12=b.#a()
+          Void unused13=b.#t()
+          Void unused14=b.#h()
+          b
           ))).annotations().left())
         )
       )
     Void unused1=error This2.Guard.Operation.#from(builder:(
-      This2.Guard.Operation::#builder() b1=This2.Guard.Operation.#builder()
-      Void unused32=b1.#A()
-      Void unused33=b1.#l()
-      Void unused34=b1.#i()
-      Void unused35=b1.#a()
-      Void unused36=b1.#s()
-      Void unused37=b1.#U()
-      Void unused38=b1.#n()
-      Void unused39=b1.#r()
-      Void unused40=b1.#e()
-      Void unused41=b1.#s()
-      Void unused42=b1.#o()
-      Void unused43=b1.#l()
-      Void unused44=b1.#v()
-      Void unused45=b1.#a()
-      Void unused46=b1.#b()
-      Void unused47=b1.#l()
-      Void unused48=b1.#e()
-      Void unused49=b1.#space()
-      Void unused50=b1.#c()
-      Void unused51=b1.#l()
-      Void unused52=b1.#a()
-      Void unused53=b1.#s()
-      Void unused54=b1.#s()
-      Void unused55=b1.#comma()
-      Void unused56=b1.#space()
-      Void unused57=b1.#m()
-      Void unused58=b1.#d()
-      Void unused59=b1.#f()
-      Void unused60=b1.#space()
-      Void unused61=b1.#u()
-      Void unused62=b1.#n()
-      Void unused63=b1.#k()
-      Void unused64=b1.#n()
-      Void unused65=b1.#o()
-      Void unused66=b1.#w()
-      Void unused67=b1.#n()
-      b1
+      This2.Guard.Operation::#builder() b0=This2.Guard.Operation.#builder()
+      Void unused15=b0.#A()
+      Void unused16=b0.#l()
+      Void unused17=b0.#i()
+      Void unused18=b0.#a()
+      Void unused19=b0.#s()
+      Void unused20=b0.#U()
+      Void unused21=b0.#n()
+      Void unused22=b0.#r()
+      Void unused23=b0.#e()
+      Void unused24=b0.#s()
+      Void unused25=b0.#o()
+      Void unused26=b0.#l()
+      Void unused27=b0.#v()
+      Void unused28=b0.#a()
+      Void unused29=b0.#b()
+      Void unused30=b0.#l()
+      Void unused31=b0.#e()
+      Void unused32=b0.#space()
+      Void unused33=b0.#c()
+      Void unused34=b0.#l()
+      Void unused35=b0.#a()
+      Void unused36=b0.#s()
+      Void unused37=b0.#s()
+      Void unused38=b0.#comma()
+      Void unused39=b0.#space()
+      Void unused40=b0.#m()
+      Void unused41=b0.#d()
+      Void unused42=b0.#f()
+      Void unused43=b0.#space()
+      Void unused44=b0.#u()
+      Void unused45=b0.#n()
+      Void unused46=b0.#k()
+      Void unused47=b0.#n()
+      Void unused48=b0.#o()
+      Void unused49=b0.#w()
+      Void unused50=b0.#n()
+      b0
       ))
     void
     )
@@ -14778,9 +14765,9 @@ This1.NestedClass resolvedReferencedPath() (
   )
 method 
 This2.Bool partial() (
-  This0::record__44_0() rcv68=this.record__44_0()
-  rcv68.#from(builder:(
-    This0::record__44_0() ::#builder() b=rcv68.#builder()
+  This0::record__44_0() rcv71=this.record__44_0()
+  rcv71.#from(builder:(
+    This0::record__44_0() ::#builder() b=rcv71.#builder()
     Void unused=b.#P()
     Void unused0=b.#h()
     b
@@ -14795,9 +14782,9 @@ This2.Bool partial() (
   )))
 method 
 This2.Bool resolvedPartial() (
-  This0::record__44_0() rcv69=this.record__44_0()
-  rcv69.#from(builder:(
-    This0::record__44_0() ::#builder() b=rcv69.#builder()
+  This0::record__44_0() rcv72=this.record__44_0()
+  rcv72.#from(builder:(
+    This0::record__44_0() ::#builder() b=rcv72.#builder()
     Void unused=b.#R()
     Void unused0=b.#e()
     Void unused1=b.#s()
@@ -14823,61 +14810,55 @@ This2.S suffix() (
   Void unused=(//error on Normal
   
     Void unused0=(
-      This0::typeKind() ::#equalequal(that ) cond=this.typeKind().#equalequal(that:This2.S.#from(builder:(
-        This2.S::#builder() b=This2.S.#builder()
-        Void unused2=b.#N()
-        Void unused3=b.#o()
-        Void unused4=b.#r()
-        Void unused5=b.#m()
-        Void unused6=b.#a()
-        Void unused7=b.#l()
-        b
-        )))
+      This0::typeKind() ::equals(that ) cond=(
+        This0::typeKind() rcv73=this.typeKind()
+        rcv73.equals(that:rcv73.class()._Normal())
+        )
       (
-        Void unused8=cond.#checkTrue()
+        Void unused2=cond.#checkTrue()
         
         catch exception Void catched1 void
         
         error This2.Guard.Operation.#from(builder:(
-          This2.Guard.Operation::#builder() b0=This2.Guard.Operation.#builder()
-          Void unused9=b0.#N()
-          Void unused10=b0.#o()
-          Void unused11=b0.#r()
-          Void unused12=b0.#m()
-          Void unused13=b0.#a()
-          Void unused14=b0.#l()
-          Void unused15=b0.#space()
-          Void unused16=b0.#t()
-          Void unused17=b0.#y()
-          Void unused18=b0.#p()
-          Void unused19=b0.#e()
-          Void unused20=b0.#s()
-          Void unused21=b0.#space()
-          Void unused22=b0.#h()
-          Void unused23=b0.#a()
-          Void unused24=b0.#v()
-          Void unused25=b0.#e()
-          Void unused26=b0.#space()
-          Void unused27=b0.#n()
-          Void unused28=b0.#o()
-          Void unused29=b0.#space()
-          Void unused30=b0.#s()
-          Void unused31=b0.#u()
-          Void unused32=b0.#f()
-          Void unused33=b0.#f()
-          Void unused34=b0.#i()
-          Void unused35=b0.#x()
-          b0
+          This2.Guard.Operation::#builder() b=This2.Guard.Operation.#builder()
+          Void unused3=b.#N()
+          Void unused4=b.#o()
+          Void unused5=b.#r()
+          Void unused6=b.#m()
+          Void unused7=b.#a()
+          Void unused8=b.#l()
+          Void unused9=b.#space()
+          Void unused10=b.#t()
+          Void unused11=b.#y()
+          Void unused12=b.#p()
+          Void unused13=b.#e()
+          Void unused14=b.#s()
+          Void unused15=b.#space()
+          Void unused16=b.#h()
+          Void unused17=b.#a()
+          Void unused18=b.#v()
+          Void unused19=b.#e()
+          Void unused20=b.#space()
+          Void unused21=b.#n()
+          Void unused22=b.#o()
+          Void unused23=b.#space()
+          Void unused24=b.#s()
+          Void unused25=b.#u()
+          Void unused26=b.#f()
+          Void unused27=b.#f()
+          Void unused28=b.#i()
+          Void unused29=b.#x()
+          b
           ))
         )
       )
     Void unused1=return (
-      This0::record__44_0() rcv70=this.record__44_0()
-      rcv70.#from(builder:(
-        This0::record__44_0() ::#builder() b1=rcv70.#builder()
-        Void unused36=b1.#P()
-        Void unused37=b1.#h()
-        b1
+      This0::record__44_0() rcv74=this.record__44_0()
+      rcv74.#from(builder:(
+        This0::record__44_0() ::#builder() b0=rcv74.#builder()
+        Void unused30=b0.#P()
+        Void unused31=b0.#h()
+        b0
         ))
       )
     void
@@ -15458,7 +15439,7 @@ Mdf:{//Data is more than Solid, and Liquid, Gas, Plasma can be good methafores
 <:This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable, This2.Concept.Named, This2.Concept.ToS//may be Parsable?
 
 ParseFail:{<:This3.Guard.ParseFail, This3.Message
-Varres_$%9_0__82_0://@private
+Varres_$%9_0__81_0://@private
 {
 class method 
 mut This0 #mutK(This4.S inner) 
@@ -15533,7 +15514,7 @@ method toS() (
         )
       )
     This3.S res=This0.kind()
-    mut This0.Varres_$%9_0__82_0 varres=This0.Varres_$%9_0__82_0.#apply(inner:res)
+    mut This0.Varres_$%9_0__81_0 varres=This0.Varres_$%9_0__81_0.#apply(inner:res)
     Void unused1=(
       This0::toS() ::this::text() ::#bangequal(that ) cond0=this.text().#bangequal(that:This3.S.#from(builder:(
         This3.S::#builder() b=This3.S.#builder()
@@ -15572,13 +15553,13 @@ method toS() (
         )
       )
     Void unused2=return (
-      This0.Varres_$%9_0__82_0::#inner() ::#from(seqBuilder ) rcv0=varres.#inner().#from(seqBuilder:(
-        This0.Varres_$%9_0__82_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
+      This0.Varres_$%9_0__81_0::#inner() ::#from(seqBuilder ) rcv0=varres.#inner().#from(seqBuilder:(
+        This0.Varres_$%9_0__81_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
         Void unused20=b3.#add(that:this.cause().#tilde())
         b3
         ))
       rcv0.#from(builder:(
-        This0.Varres_$%9_0__82_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv0.#builder()
+        This0.Varres_$%9_0__81_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv0.#builder()
         Void unused21=b4.#cSquare()
         b4
         ))
@@ -15958,6 +15939,1472 @@ class method
 This0 _Class() This0.#apply(that:This2.N.#from(builder:(
   This2.N::#builder() b=This2.N.#builder()
   Void unused=b.#5()
+  b
+  )))}
+MethodKind:{//Data is more than Solid, and Liquid, Gas, Plasma can be good methafores
+//data: toS == class named, fromS, invariant, with clone mutk
+<:This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable, This2.Concept.Named, This2.Concept.ToS//may be Parsable?
+
+ParseFail:{<:This3.Guard.ParseFail, This3.Message
+Varres_$%9_0__82_0://@private
+{
+class method 
+mut This0 #mutK(This4.S inner) 
+class method 
+mut This0 #apply(This4.S inner) This0.#mutK(inner:inner)
+mut method 
+Void inner(This4.S that) 
+mut method 
+This4.S #inner() 
+read method 
+This4.S inner() }
+class method 
+mut This0 #mutK(This3.S _text, This3.Message.Opt cause) 
+class method 
+This0 #apply(This3.S _text, This3.Message.Opt cause) This0.#mutK(_text:_text, cause:cause)
+mut method 
+This3.S #_text() 
+read method 
+This3.S _text() 
+mut method 
+This3.Message.Opt #cause() 
+read method 
+This3.Message.Opt cause() 
+method myName() This3.GetMyName.#apply(that:This0)
+method kind() this.myName()
+method text() this._text()
+method responseOf() this.cause()
+method equals(that ) (
+  Void unused=(
+    Void unused0=(
+      This0 that0=(
+        Void unused2=return that
+        
+        catch return This0 casted casted
+        
+        catch return Any casted exception void
+        
+        error {//@stringU
+        //CastT-Should be unreachable code
+        }
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return this.#equalequal(that:that0)
+        void
+        )
+      )
+    Void unused1=return This3.Bool.false()
+    void
+    )
+  
+  catch return This0::equals(that )  result result
+  
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
+  }
+  )
+method 
+This0 #apply(This3.Message that) This0.#apply(text:this.text(), cause:that)
+method toS() (
+  Void unused=(
+    Void unused0=(
+      This0::toS() ::this::cause() ::isPresent() ::#bang() cond=this.cause().isPresent().#bang()
+      (
+        Void unused3=cond.#checkTrue()
+        
+        catch exception Void catched0 void
+        
+        return This0.kind().#plusplus(that:This3.S.doubleQuote().#plusplus(that:this.text().#plusplus(that:This3.S.doubleQuote())))
+        )
+      )
+    This3.S res=This0.kind()
+    mut This0.Varres_$%9_0__82_0 varres=This0.Varres_$%9_0__82_0.#apply(inner:res)
+    Void unused1=(
+      This0::toS() ::this::text() ::#bangequal(that ) cond0=this.text().#bangequal(that:This3.S.#from(builder:(
+        This3.S::#builder() b=This3.S.#builder()
+        b
+        )))
+      (
+        Void unused4=cond0.#checkTrue()
+        
+        catch exception Void catched3 varres.inner(that:varres.#inner().#plusplus(that:This3.S.#from(builder:(
+          This3.S::#builder() b0=This3.S.#builder()
+          Void unused5=b0.#oSquare()
+          b0
+          ))))
+        
+        varres.inner(that:varres.#inner().#plusplus(that:This3.S.#from(builder:(
+          This3.S::#builder() b1=This3.S.#builder()
+          Void unused6=b1.#oSquare()
+          Void unused7=b1.#t()
+          Void unused8=b1.#e()
+          Void unused9=b1.#x()
+          Void unused10=b1.#t()
+          Void unused11=b1.#colon()
+          b1
+          ))).#plusplus(that:This3.S.doubleQuote().#plusplus(that:this.text().#plusplus(that:This3.S.doubleQuote().#plusplus(that:This3.S.#from(builder:(
+          This3.S::#builder() b2=This3.S.#builder()
+          Void unused12=b2.#comma()
+          Void unused13=b2.#space()
+          Void unused14=b2.#c()
+          Void unused15=b2.#a()
+          Void unused16=b2.#u()
+          Void unused17=b2.#s()
+          Void unused18=b2.#e()
+          Void unused19=b2.#colon()
+          b2
+          )))))))
+        )
+      )
+    Void unused2=return (
+      This0.Varres_$%9_0__82_0::#inner() ::#from(seqBuilder ) rcv0=varres.#inner().#from(seqBuilder:(
+        This0.Varres_$%9_0__82_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
+        Void unused20=b3.#add(that:this.cause().#tilde())
+        b3
+        ))
+      rcv0.#from(builder:(
+        This0.Varres_$%9_0__82_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv0.#builder()
+        Void unused21=b4.#cSquare()
+        b4
+        ))
+      )
+    void
+    )
+  
+  catch return This0::toS()  result result
+  
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
+  }
+  )
+method 
+This3.Bool #bangequal(This0 that) this.#equalequal(that:that).#bang()
+method 
+This3.Bool #equalequal(This0 that) This3.Message.EqualMessages.#apply(that:this, other:that)
+method classAny() This0
+method class() This0
+class method 
+This0 #apply(This3.S text) This0.#apply(_text:text, cause:This3.Message.Opt.#apply())
+class method 
+This0 #apply(This3.S text, This3.Message cause) This0.#apply(_text:text, cause:This3.Message.Opt.#apply(that:cause))
+class method 
+mut This3.S.SBuilder #builder() This3.S.SBuilder.empty()
+class method 
+This0 #from(This3.S.SBuilder builder) This0.#apply(text:This3.S.#from(builder:builder))
+method 
+This0.Continue #from(This3.S.SConcat seqBuilder) This0.Continue.#apply(that:seqBuilder.old().#plusplus(that:seqBuilder.accumulator()))
+Continue:{
+class method 
+mut This0 #mutK(This4.S that) 
+class method 
+This0 #apply(This4.S that) This0.#mutK(that:that)
+mut method 
+This4.S #that() 
+read method 
+This4.S that() 
+method 
+mut This4.S.SBuilder #builder() This4.S.SBuilder.empty()
+method 
+This1 #from(This4.S.SBuilder builder) This1.#apply(text:this.that().#plusplus(that:This4.S.#from(builder:builder)))}
+method 
+mut This3.S.SConcat #seqBuilder() This3.S.SConcat.#apply(old:this.text(), accumulator:This3.S.#from(builder:(
+  This3.S::#builder() b=This3.S.#builder()
+  b
+  )))}
+method classAny() This0
+read method 
+class This0 class() This0
+method myName() This2.GetMyName.#apply(that:This0)
+method equals(that ) (
+  Void unused=(
+    Void unused0=(
+      This0 that0=(
+        Void unused2=return that
+        
+        catch return This0 casted casted
+        
+        catch return Any casted exception void
+        
+        error {//@stringU
+        //CastT-Should be unreachable code
+        }
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return that0.#equalequal(that:this)
+        void
+        )
+      )
+    Void unused1=return This2.Bool.false()
+    void
+    )
+  
+  catch return This0::equals(that )  result result
+  
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
+  }
+  )
+read method 
+This2.Bool #equalequal(read This0 that) this.that().#equalequal(that:that.that())
+read method 
+This2.Bool #bangequal(read This0 that) this.#equalequal(that:that).#bang()
+class method 
+mut This0 #mutK(This2.N that) 
+class method 
+This0 #apply(This2.N that) This0.#mutK(that:that)
+mut method 
+This2.N #that() 
+read method 
+This2.N that() 
+method toS() This0.myName().#plusplus(that:This2.S.#from(builder:(
+  This2.S::#builder() b=This2.S.#builder()
+  Void unused=b.#dot()
+  b
+  )).#plusplus(that:This0.names().val(that:this.that())))
+class method 
+This2.Strings names() This2.Strings.#from(seqBuilder:(
+  This2.Strings::#seqBuilder() b=This2.Strings.#seqBuilder()
+  Void unused=b.#add(that:This2.S.#from(builder:(
+    This2.S::#builder() b0=This2.S.#builder()
+    Void unused2=b0.#I()
+    Void unused3=b0.#n()
+    Void unused4=b0.#t()
+    Void unused5=b0.#e()
+    Void unused6=b0.#r()
+    Void unused7=b0.#f()
+    Void unused8=b0.#a()
+    Void unused9=b0.#c()
+    Void unused10=b0.#e()
+    Void unused11=b0.#I()
+    Void unused12=b0.#m()
+    Void unused13=b0.#p()
+    Void unused14=b0.#l()
+    Void unused15=b0.#e()
+    Void unused16=b0.#m()
+    Void unused17=b0.#e()
+    Void unused18=b0.#n()
+    Void unused19=b0.#t()
+    Void unused20=b0.#e()
+    Void unused21=b0.#d()
+    Void unused22=b0.#M()
+    Void unused23=b0.#e()
+    Void unused24=b0.#t()
+    Void unused25=b0.#h()
+    Void unused26=b0.#o()
+    Void unused27=b0.#d()
+    b0
+    )))
+  Void unused0=b.#add(that:This2.S.#from(builder:(
+    This2.S::#builder() b1=This2.S.#builder()
+    Void unused28=b1.#I()
+    Void unused29=b1.#m()
+    Void unused30=b1.#p()
+    Void unused31=b1.#l()
+    Void unused32=b1.#e()
+    Void unused33=b1.#m()
+    Void unused34=b1.#e()
+    Void unused35=b1.#n()
+    Void unused36=b1.#t()
+    Void unused37=b1.#e()
+    Void unused38=b1.#d()
+    Void unused39=b1.#M()
+    Void unused40=b1.#e()
+    Void unused41=b1.#t()
+    Void unused42=b1.#h()
+    Void unused43=b1.#o()
+    Void unused44=b1.#d()
+    b1
+    )))
+  Void unused1=b.#add(that:This2.S.#from(builder:(
+    This2.S::#builder() b2=This2.S.#builder()
+    Void unused45=b2.#A()
+    Void unused46=b2.#b()
+    Void unused47=b2.#s()
+    Void unused48=b2.#t()
+    Void unused49=b2.#r()
+    Void unused50=b2.#a()
+    Void unused51=b2.#c()
+    Void unused52=b2.#t()
+    Void unused53=b2.#M()
+    Void unused54=b2.#e()
+    Void unused55=b2.#t()
+    Void unused56=b2.#h()
+    Void unused57=b2.#o()
+    Void unused58=b2.#d()
+    b2
+    )))
+  b
+  ))
+class method 
+This0 fromS(This2.S that) (
+  Void unused=(
+    Void unused0=(
+      This2.N::#from(builder ) ::vals() n=This2.N.#from(builder:(
+        This2.N::#builder() b=This2.N.#builder()
+        Void unused2=b.#0()
+        b
+        )).vals()
+      (
+        Void unused3=(
+          Void unused4=(
+            This0::names() ::vals() d=This0.names().vals()
+            (
+              Void unused5=(
+                Void unused6=(
+                  Void unused7=loop (
+                    Void unused8=n.#next()
+                    
+                    catch exception Void catched2 (
+                      Void unused9=(
+                        Void unused12=d.#next()
+                        
+                        catch exception Void catched3 void
+                        
+                        void
+                        )
+                      Void unused10=(
+                        Void unused13=n.#checkEnd()
+                        
+                        catch exception Void catched4 void
+                        
+                        void
+                        )
+                      Void unused11=(
+                        Void unused14=d.#checkEnd()
+                        
+                        catch exception Void catched5 void
+                        
+                        void
+                        )
+                      exception void
+                      )
+                    
+                    (
+                      Void unused15=d.#next()
+                      
+                      catch exception Void catched7 (
+                        Void unused16=(
+                          Void unused18=n.#checkEnd()
+                          
+                          catch exception Void catched8 void
+                          
+                          void
+                          )
+                        Void unused17=(
+                          Void unused19=d.#checkEnd()
+                          
+                          catch exception Void catched9 void
+                          
+                          void
+                          )
+                        exception void
+                        )
+                      
+                      (
+                        This0::names() ::vals() ::#inner() ::#equalequal(that ) cond=d.#inner().#equalequal(that:that)
+                        (
+                          Void unused20=cond.#checkTrue()
+                          
+                          catch exception Void catched12 void
+                          
+                          return This0.#apply(that:n.#inner())
+                          )
+                        )
+                      )
+                    )
+                  
+                  catch exception Void catched13 void
+                  
+                  void
+                  )
+                
+                catch exception Any propagated (
+                  Void unused21=d.#close()
+                  exception propagated
+                  )
+                
+                void
+                )
+              
+              catch return This0 propagated0 (
+                Void unused22=d.#close()
+                return propagated0
+                )
+              
+              d.#close()
+              )
+            )
+          
+          catch exception Any propagated1 (
+            Void unused23=n.#close()
+            exception propagated1
+            )
+          
+          void
+          )
+        
+        catch return This0 propagated2 (
+          Void unused24=n.#close()
+          return propagated2
+          )
+        
+        n.#close()
+        )
+      )
+    Void unused1=error (
+      This0.ParseFail::#from(builder ) ::#from(seqBuilder ) rcv31=(
+        This0.ParseFail::#from(builder ) rcv32=This0.ParseFail.#from(builder:(
+          This0.ParseFail::#builder() b0=This0.ParseFail.#builder()
+          Void unused25=b0.#T()
+          Void unused26=b0.#h()
+          Void unused27=b0.#e()
+          Void unused28=b0.#space()
+          Void unused29=b0.#p()
+          Void unused30=b0.#r()
+          Void unused31=b0.#o()
+          Void unused32=b0.#v()
+          Void unused33=b0.#i()
+          Void unused34=b0.#d()
+          Void unused35=b0.#e()
+          Void unused36=b0.#d()
+          Void unused37=b0.#space()
+          Void unused38=b0.#s()
+          Void unused39=b0.#t()
+          Void unused40=b0.#r()
+          Void unused41=b0.#i()
+          Void unused42=b0.#n()
+          Void unused43=b0.#g()
+          Void unused44=b0.#space()
+          Void unused45=b0.#i()
+          Void unused46=b0.#s()
+          Void unused47=b0.#space()
+          Void unused48=b0.#n()
+          Void unused49=b0.#o()
+          Void unused50=b0.#t()
+          Void unused51=b0.#space()
+          Void unused52=b0.#v()
+          Void unused53=b0.#a()
+          Void unused54=b0.#l()
+          Void unused55=b0.#i()
+          Void unused56=b0.#d()
+          Void unused57=b0.#colon()
+          Void unused58=b0.#space()
+          b0
+          ))
+        rcv32.#from(seqBuilder:(
+          This0.ParseFail::#from(builder ) ::#seqBuilder() b1=rcv32.#seqBuilder()
+          Void unused59=b1.#add(that:that)
+          b1
+          ))
+        )
+      rcv31.#from(builder:(
+        This0.ParseFail::#from(builder ) ::#from(seqBuilder ) ::#builder() b2=rcv31.#builder()
+        b2
+        ))
+      )
+    void
+    )
+  
+  catch return This0 result result
+  
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
+  }
+  )
+class method 
+This0 _InterfaceImplementedMethod() This0.#apply(that:This2.N.#from(builder:(
+  This2.N::#builder() b=This2.N.#builder()
+  Void unused=b.#0()
+  b
+  )))
+class method 
+This0 _ImplementedMethod() This0.#apply(that:This2.N.#from(builder:(
+  This2.N::#builder() b=This2.N.#builder()
+  Void unused=b.#1()
+  b
+  )))
+class method 
+This0 _AbstractMethod() This0.#apply(that:This2.N.#from(builder:(
+  This2.N::#builder() b=This2.N.#builder()
+  Void unused=b.#2()
+  b
+  )))}
+ClassKind:{//Data is more than Solid, and Liquid, Gas, Plasma can be good methafores
+//data: toS == class named, fromS, invariant, with clone mutk
+<:This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable, This2.Concept.Named, This2.Concept.ToS//may be Parsable?
+
+ParseFail:{<:This3.Guard.ParseFail, This3.Message
+Varres_$%9_0__83_0://@private
+{
+class method 
+mut This0 #mutK(This4.S inner) 
+class method 
+mut This0 #apply(This4.S inner) This0.#mutK(inner:inner)
+mut method 
+Void inner(This4.S that) 
+mut method 
+This4.S #inner() 
+read method 
+This4.S inner() }
+class method 
+mut This0 #mutK(This3.S _text, This3.Message.Opt cause) 
+class method 
+This0 #apply(This3.S _text, This3.Message.Opt cause) This0.#mutK(_text:_text, cause:cause)
+mut method 
+This3.S #_text() 
+read method 
+This3.S _text() 
+mut method 
+This3.Message.Opt #cause() 
+read method 
+This3.Message.Opt cause() 
+method myName() This3.GetMyName.#apply(that:This0)
+method kind() this.myName()
+method text() this._text()
+method responseOf() this.cause()
+method equals(that ) (
+  Void unused=(
+    Void unused0=(
+      This0 that0=(
+        Void unused2=return that
+        
+        catch return This0 casted casted
+        
+        catch return Any casted exception void
+        
+        error {//@stringU
+        //CastT-Should be unreachable code
+        }
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return this.#equalequal(that:that0)
+        void
+        )
+      )
+    Void unused1=return This3.Bool.false()
+    void
+    )
+  
+  catch return This0::equals(that )  result result
+  
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
+  }
+  )
+method 
+This0 #apply(This3.Message that) This0.#apply(text:this.text(), cause:that)
+method toS() (
+  Void unused=(
+    Void unused0=(
+      This0::toS() ::this::cause() ::isPresent() ::#bang() cond=this.cause().isPresent().#bang()
+      (
+        Void unused3=cond.#checkTrue()
+        
+        catch exception Void catched0 void
+        
+        return This0.kind().#plusplus(that:This3.S.doubleQuote().#plusplus(that:this.text().#plusplus(that:This3.S.doubleQuote())))
+        )
+      )
+    This3.S res=This0.kind()
+    mut This0.Varres_$%9_0__83_0 varres=This0.Varres_$%9_0__83_0.#apply(inner:res)
+    Void unused1=(
+      This0::toS() ::this::text() ::#bangequal(that ) cond0=this.text().#bangequal(that:This3.S.#from(builder:(
+        This3.S::#builder() b=This3.S.#builder()
+        b
+        )))
+      (
+        Void unused4=cond0.#checkTrue()
+        
+        catch exception Void catched3 varres.inner(that:varres.#inner().#plusplus(that:This3.S.#from(builder:(
+          This3.S::#builder() b0=This3.S.#builder()
+          Void unused5=b0.#oSquare()
+          b0
+          ))))
+        
+        varres.inner(that:varres.#inner().#plusplus(that:This3.S.#from(builder:(
+          This3.S::#builder() b1=This3.S.#builder()
+          Void unused6=b1.#oSquare()
+          Void unused7=b1.#t()
+          Void unused8=b1.#e()
+          Void unused9=b1.#x()
+          Void unused10=b1.#t()
+          Void unused11=b1.#colon()
+          b1
+          ))).#plusplus(that:This3.S.doubleQuote().#plusplus(that:this.text().#plusplus(that:This3.S.doubleQuote().#plusplus(that:This3.S.#from(builder:(
+          This3.S::#builder() b2=This3.S.#builder()
+          Void unused12=b2.#comma()
+          Void unused13=b2.#space()
+          Void unused14=b2.#c()
+          Void unused15=b2.#a()
+          Void unused16=b2.#u()
+          Void unused17=b2.#s()
+          Void unused18=b2.#e()
+          Void unused19=b2.#colon()
+          b2
+          )))))))
+        )
+      )
+    Void unused2=return (
+      This0.Varres_$%9_0__83_0::#inner() ::#from(seqBuilder ) rcv0=varres.#inner().#from(seqBuilder:(
+        This0.Varres_$%9_0__83_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
+        Void unused20=b3.#add(that:this.cause().#tilde())
+        b3
+        ))
+      rcv0.#from(builder:(
+        This0.Varres_$%9_0__83_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv0.#builder()
+        Void unused21=b4.#cSquare()
+        b4
+        ))
+      )
+    void
+    )
+  
+  catch return This0::toS()  result result
+  
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
+  }
+  )
+method 
+This3.Bool #bangequal(This0 that) this.#equalequal(that:that).#bang()
+method 
+This3.Bool #equalequal(This0 that) This3.Message.EqualMessages.#apply(that:this, other:that)
+method classAny() This0
+method class() This0
+class method 
+This0 #apply(This3.S text) This0.#apply(_text:text, cause:This3.Message.Opt.#apply())
+class method 
+This0 #apply(This3.S text, This3.Message cause) This0.#apply(_text:text, cause:This3.Message.Opt.#apply(that:cause))
+class method 
+mut This3.S.SBuilder #builder() This3.S.SBuilder.empty()
+class method 
+This0 #from(This3.S.SBuilder builder) This0.#apply(text:This3.S.#from(builder:builder))
+method 
+This0.Continue #from(This3.S.SConcat seqBuilder) This0.Continue.#apply(that:seqBuilder.old().#plusplus(that:seqBuilder.accumulator()))
+Continue:{
+class method 
+mut This0 #mutK(This4.S that) 
+class method 
+This0 #apply(This4.S that) This0.#mutK(that:that)
+mut method 
+This4.S #that() 
+read method 
+This4.S that() 
+method 
+mut This4.S.SBuilder #builder() This4.S.SBuilder.empty()
+method 
+This1 #from(This4.S.SBuilder builder) This1.#apply(text:this.that().#plusplus(that:This4.S.#from(builder:builder)))}
+method 
+mut This3.S.SConcat #seqBuilder() This3.S.SConcat.#apply(old:this.text(), accumulator:This3.S.#from(builder:(
+  This3.S::#builder() b=This3.S.#builder()
+  b
+  )))}
+method classAny() This0
+read method 
+class This0 class() This0
+method myName() This2.GetMyName.#apply(that:This0)
+method equals(that ) (
+  Void unused=(
+    Void unused0=(
+      This0 that0=(
+        Void unused2=return that
+        
+        catch return This0 casted casted
+        
+        catch return Any casted exception void
+        
+        error {//@stringU
+        //CastT-Should be unreachable code
+        }
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return that0.#equalequal(that:this)
+        void
+        )
+      )
+    Void unused1=return This2.Bool.false()
+    void
+    )
+  
+  catch return This0::equals(that )  result result
+  
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
+  }
+  )
+read method 
+This2.Bool #equalequal(read This0 that) this.that().#equalequal(that:that.that())
+read method 
+This2.Bool #bangequal(read This0 that) this.#equalequal(that:that).#bang()
+class method 
+mut This0 #mutK(This2.N that) 
+class method 
+This0 #apply(This2.N that) This0.#mutK(that:that)
+mut method 
+This2.N #that() 
+read method 
+This2.N that() 
+method toS() This0.myName().#plusplus(that:This2.S.#from(builder:(
+  This2.S::#builder() b=This2.S.#builder()
+  Void unused=b.#dot()
+  b
+  )).#plusplus(that:This0.names().val(that:this.that())))
+class method 
+This2.Strings names() This2.Strings.#from(seqBuilder:(
+  This2.Strings::#seqBuilder() b=This2.Strings.#seqBuilder()
+  Void unused=b.#add(that:This2.S.#from(builder:(
+    This2.S::#builder() b0=This2.S.#builder()
+    Void unused4=b0.#I()
+    Void unused5=b0.#n()
+    Void unused6=b0.#t()
+    Void unused7=b0.#e()
+    Void unused8=b0.#r()
+    Void unused9=b0.#f()
+    Void unused10=b0.#a()
+    Void unused11=b0.#c()
+    Void unused12=b0.#e()
+    b0
+    )))
+  Void unused0=b.#add(that:This2.S.#from(builder:(
+    This2.S::#builder() b1=This2.S.#builder()
+    Void unused13=b1.#C()
+    Void unused14=b1.#l()
+    Void unused15=b1.#o()
+    Void unused16=b1.#s()
+    Void unused17=b1.#e()
+    Void unused18=b1.#d()
+    Void unused19=b1.#C()
+    Void unused20=b1.#l()
+    Void unused21=b1.#a()
+    Void unused22=b1.#s()
+    Void unused23=b1.#s()
+    b1
+    )))
+  Void unused1=b.#add(that:This2.S.#from(builder:(
+    This2.S::#builder() b2=This2.S.#builder()
+    Void unused24=b2.#O()
+    Void unused25=b2.#p()
+    Void unused26=b2.#e()
+    Void unused27=b2.#n()
+    Void unused28=b2.#C()
+    Void unused29=b2.#l()
+    Void unused30=b2.#a()
+    Void unused31=b2.#s()
+    Void unused32=b2.#s()
+    b2
+    )))
+  Void unused2=b.#add(that:This2.S.#from(builder:(
+    This2.S::#builder() b3=This2.S.#builder()
+    Void unused33=b3.#T()
+    Void unused34=b3.#e()
+    Void unused35=b3.#m()
+    Void unused36=b3.#p()
+    Void unused37=b3.#l()
+    Void unused38=b3.#a()
+    Void unused39=b3.#t()
+    Void unused40=b3.#e()
+    b3
+    )))
+  Void unused3=b.#add(that:This2.S.#from(builder:(
+    This2.S::#builder() b4=This2.S.#builder()
+    Void unused41=b4.#F()
+    Void unused42=b4.#r()
+    Void unused43=b4.#e()
+    Void unused44=b4.#e()
+    Void unused45=b4.#T()
+    Void unused46=b4.#e()
+    Void unused47=b4.#m()
+    Void unused48=b4.#p()
+    Void unused49=b4.#l()
+    Void unused50=b4.#a()
+    Void unused51=b4.#t()
+    Void unused52=b4.#e()
+    b4
+    )))
+  b
+  ))
+class method 
+This0 fromS(This2.S that) (
+  Void unused=(
+    Void unused0=(
+      This2.N::#from(builder ) ::vals() n=This2.N.#from(builder:(
+        This2.N::#builder() b=This2.N.#builder()
+        Void unused2=b.#0()
+        b
+        )).vals()
+      (
+        Void unused3=(
+          Void unused4=(
+            This0::names() ::vals() d=This0.names().vals()
+            (
+              Void unused5=(
+                Void unused6=(
+                  Void unused7=loop (
+                    Void unused8=n.#next()
+                    
+                    catch exception Void catched2 (
+                      Void unused9=(
+                        Void unused12=d.#next()
+                        
+                        catch exception Void catched3 void
+                        
+                        void
+                        )
+                      Void unused10=(
+                        Void unused13=n.#checkEnd()
+                        
+                        catch exception Void catched4 void
+                        
+                        void
+                        )
+                      Void unused11=(
+                        Void unused14=d.#checkEnd()
+                        
+                        catch exception Void catched5 void
+                        
+                        void
+                        )
+                      exception void
+                      )
+                    
+                    (
+                      Void unused15=d.#next()
+                      
+                      catch exception Void catched7 (
+                        Void unused16=(
+                          Void unused18=n.#checkEnd()
+                          
+                          catch exception Void catched8 void
+                          
+                          void
+                          )
+                        Void unused17=(
+                          Void unused19=d.#checkEnd()
+                          
+                          catch exception Void catched9 void
+                          
+                          void
+                          )
+                        exception void
+                        )
+                      
+                      (
+                        This0::names() ::vals() ::#inner() ::#equalequal(that ) cond=d.#inner().#equalequal(that:that)
+                        (
+                          Void unused20=cond.#checkTrue()
+                          
+                          catch exception Void catched12 void
+                          
+                          return This0.#apply(that:n.#inner())
+                          )
+                        )
+                      )
+                    )
+                  
+                  catch exception Void catched13 void
+                  
+                  void
+                  )
+                
+                catch exception Any propagated (
+                  Void unused21=d.#close()
+                  exception propagated
+                  )
+                
+                void
+                )
+              
+              catch return This0 propagated0 (
+                Void unused22=d.#close()
+                return propagated0
+                )
+              
+              d.#close()
+              )
+            )
+          
+          catch exception Any propagated1 (
+            Void unused23=n.#close()
+            exception propagated1
+            )
+          
+          void
+          )
+        
+        catch return This0 propagated2 (
+          Void unused24=n.#close()
+          return propagated2
+          )
+        
+        n.#close()
+        )
+      )
+    Void unused1=error (
+      This0.ParseFail::#from(builder ) ::#from(seqBuilder ) rcv31=(
+        This0.ParseFail::#from(builder ) rcv32=This0.ParseFail.#from(builder:(
+          This0.ParseFail::#builder() b0=This0.ParseFail.#builder()
+          Void unused25=b0.#T()
+          Void unused26=b0.#h()
+          Void unused27=b0.#e()
+          Void unused28=b0.#space()
+          Void unused29=b0.#p()
+          Void unused30=b0.#r()
+          Void unused31=b0.#o()
+          Void unused32=b0.#v()
+          Void unused33=b0.#i()
+          Void unused34=b0.#d()
+          Void unused35=b0.#e()
+          Void unused36=b0.#d()
+          Void unused37=b0.#space()
+          Void unused38=b0.#s()
+          Void unused39=b0.#t()
+          Void unused40=b0.#r()
+          Void unused41=b0.#i()
+          Void unused42=b0.#n()
+          Void unused43=b0.#g()
+          Void unused44=b0.#space()
+          Void unused45=b0.#i()
+          Void unused46=b0.#s()
+          Void unused47=b0.#space()
+          Void unused48=b0.#n()
+          Void unused49=b0.#o()
+          Void unused50=b0.#t()
+          Void unused51=b0.#space()
+          Void unused52=b0.#v()
+          Void unused53=b0.#a()
+          Void unused54=b0.#l()
+          Void unused55=b0.#i()
+          Void unused56=b0.#d()
+          Void unused57=b0.#colon()
+          Void unused58=b0.#space()
+          b0
+          ))
+        rcv32.#from(seqBuilder:(
+          This0.ParseFail::#from(builder ) ::#seqBuilder() b1=rcv32.#seqBuilder()
+          Void unused59=b1.#add(that:that)
+          b1
+          ))
+        )
+      rcv31.#from(builder:(
+        This0.ParseFail::#from(builder ) ::#from(seqBuilder ) ::#builder() b2=rcv31.#builder()
+        b2
+        ))
+      )
+    void
+    )
+  
+  catch return This0 result result
+  
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
+  }
+  )
+class method 
+This0 _Interface() This0.#apply(that:This2.N.#from(builder:(
+  This2.N::#builder() b=This2.N.#builder()
+  Void unused=b.#0()
+  b
+  )))
+class method 
+This0 _ClosedClass() This0.#apply(that:This2.N.#from(builder:(
+  This2.N::#builder() b=This2.N.#builder()
+  Void unused=b.#1()
+  b
+  )))
+class method 
+This0 _OpenClass() This0.#apply(that:This2.N.#from(builder:(
+  This2.N::#builder() b=This2.N.#builder()
+  Void unused=b.#2()
+  b
+  )))
+class method 
+This0 _Template() This0.#apply(that:This2.N.#from(builder:(
+  This2.N::#builder() b=This2.N.#builder()
+  Void unused=b.#3()
+  b
+  )))
+class method 
+This0 _FreeTemplate() This0.#apply(that:This2.N.#from(builder:(
+  This2.N::#builder() b=This2.N.#builder()
+  Void unused=b.#4()
+  b
+  )))}
+TypeKind:{//Data is more than Solid, and Liquid, Gas, Plasma can be good methafores
+//data: toS == class named, fromS, invariant, with clone mutk
+//may disappear
+<:This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable, This2.Concept.Named, This2.Concept.ToS//may be Parsable?
+
+ParseFail:{<:This3.Guard.ParseFail, This3.Message
+Varres_$%9_0__84_0://@private
+{
+class method 
+mut This0 #mutK(This4.S inner) 
+class method 
+mut This0 #apply(This4.S inner) This0.#mutK(inner:inner)
+mut method 
+Void inner(This4.S that) 
+mut method 
+This4.S #inner() 
+read method 
+This4.S inner() }
+class method 
+mut This0 #mutK(This3.S _text, This3.Message.Opt cause) 
+class method 
+This0 #apply(This3.S _text, This3.Message.Opt cause) This0.#mutK(_text:_text, cause:cause)
+mut method 
+This3.S #_text() 
+read method 
+This3.S _text() 
+mut method 
+This3.Message.Opt #cause() 
+read method 
+This3.Message.Opt cause() 
+method myName() This3.GetMyName.#apply(that:This0)
+method kind() this.myName()
+method text() this._text()
+method responseOf() this.cause()
+method equals(that ) (
+  Void unused=(
+    Void unused0=(
+      This0 that0=(
+        Void unused2=return that
+        
+        catch return This0 casted casted
+        
+        catch return Any casted exception void
+        
+        error {//@stringU
+        //CastT-Should be unreachable code
+        }
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return this.#equalequal(that:that0)
+        void
+        )
+      )
+    Void unused1=return This3.Bool.false()
+    void
+    )
+  
+  catch return This0::equals(that )  result result
+  
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
+  }
+  )
+method 
+This0 #apply(This3.Message that) This0.#apply(text:this.text(), cause:that)
+method toS() (
+  Void unused=(
+    Void unused0=(
+      This0::toS() ::this::cause() ::isPresent() ::#bang() cond=this.cause().isPresent().#bang()
+      (
+        Void unused3=cond.#checkTrue()
+        
+        catch exception Void catched0 void
+        
+        return This0.kind().#plusplus(that:This3.S.doubleQuote().#plusplus(that:this.text().#plusplus(that:This3.S.doubleQuote())))
+        )
+      )
+    This3.S res=This0.kind()
+    mut This0.Varres_$%9_0__84_0 varres=This0.Varres_$%9_0__84_0.#apply(inner:res)
+    Void unused1=(
+      This0::toS() ::this::text() ::#bangequal(that ) cond0=this.text().#bangequal(that:This3.S.#from(builder:(
+        This3.S::#builder() b=This3.S.#builder()
+        b
+        )))
+      (
+        Void unused4=cond0.#checkTrue()
+        
+        catch exception Void catched3 varres.inner(that:varres.#inner().#plusplus(that:This3.S.#from(builder:(
+          This3.S::#builder() b0=This3.S.#builder()
+          Void unused5=b0.#oSquare()
+          b0
+          ))))
+        
+        varres.inner(that:varres.#inner().#plusplus(that:This3.S.#from(builder:(
+          This3.S::#builder() b1=This3.S.#builder()
+          Void unused6=b1.#oSquare()
+          Void unused7=b1.#t()
+          Void unused8=b1.#e()
+          Void unused9=b1.#x()
+          Void unused10=b1.#t()
+          Void unused11=b1.#colon()
+          b1
+          ))).#plusplus(that:This3.S.doubleQuote().#plusplus(that:this.text().#plusplus(that:This3.S.doubleQuote().#plusplus(that:This3.S.#from(builder:(
+          This3.S::#builder() b2=This3.S.#builder()
+          Void unused12=b2.#comma()
+          Void unused13=b2.#space()
+          Void unused14=b2.#c()
+          Void unused15=b2.#a()
+          Void unused16=b2.#u()
+          Void unused17=b2.#s()
+          Void unused18=b2.#e()
+          Void unused19=b2.#colon()
+          b2
+          )))))))
+        )
+      )
+    Void unused2=return (
+      This0.Varres_$%9_0__84_0::#inner() ::#from(seqBuilder ) rcv0=varres.#inner().#from(seqBuilder:(
+        This0.Varres_$%9_0__84_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
+        Void unused20=b3.#add(that:this.cause().#tilde())
+        b3
+        ))
+      rcv0.#from(builder:(
+        This0.Varres_$%9_0__84_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv0.#builder()
+        Void unused21=b4.#cSquare()
+        b4
+        ))
+      )
+    void
+    )
+  
+  catch return This0::toS()  result result
+  
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
+  }
+  )
+method 
+This3.Bool #bangequal(This0 that) this.#equalequal(that:that).#bang()
+method 
+This3.Bool #equalequal(This0 that) This3.Message.EqualMessages.#apply(that:this, other:that)
+method classAny() This0
+method class() This0
+class method 
+This0 #apply(This3.S text) This0.#apply(_text:text, cause:This3.Message.Opt.#apply())
+class method 
+This0 #apply(This3.S text, This3.Message cause) This0.#apply(_text:text, cause:This3.Message.Opt.#apply(that:cause))
+class method 
+mut This3.S.SBuilder #builder() This3.S.SBuilder.empty()
+class method 
+This0 #from(This3.S.SBuilder builder) This0.#apply(text:This3.S.#from(builder:builder))
+method 
+This0.Continue #from(This3.S.SConcat seqBuilder) This0.Continue.#apply(that:seqBuilder.old().#plusplus(that:seqBuilder.accumulator()))
+Continue:{
+class method 
+mut This0 #mutK(This4.S that) 
+class method 
+This0 #apply(This4.S that) This0.#mutK(that:that)
+mut method 
+This4.S #that() 
+read method 
+This4.S that() 
+method 
+mut This4.S.SBuilder #builder() This4.S.SBuilder.empty()
+method 
+This1 #from(This4.S.SBuilder builder) This1.#apply(text:this.that().#plusplus(that:This4.S.#from(builder:builder)))}
+method 
+mut This3.S.SConcat #seqBuilder() This3.S.SConcat.#apply(old:this.text(), accumulator:This3.S.#from(builder:(
+  This3.S::#builder() b=This3.S.#builder()
+  b
+  )))}
+method classAny() This0
+read method 
+class This0 class() This0
+method myName() This2.GetMyName.#apply(that:This0)
+method equals(that ) (
+  Void unused=(
+    Void unused0=(
+      This0 that0=(
+        Void unused2=return that
+        
+        catch return This0 casted casted
+        
+        catch return Any casted exception void
+        
+        error {//@stringU
+        //CastT-Should be unreachable code
+        }
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return that0.#equalequal(that:this)
+        void
+        )
+      )
+    Void unused1=return This2.Bool.false()
+    void
+    )
+  
+  catch return This0::equals(that )  result result
+  
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
+  }
+  )
+read method 
+This2.Bool #equalequal(read This0 that) this.that().#equalequal(that:that.that())
+read method 
+This2.Bool #bangequal(read This0 that) this.#equalequal(that:that).#bang()
+class method 
+mut This0 #mutK(This2.N that) 
+class method 
+This0 #apply(This2.N that) This0.#mutK(that:that)
+mut method 
+This2.N #that() 
+read method 
+This2.N that() 
+method toS() This0.myName().#plusplus(that:This2.S.#from(builder:(
+  This2.S::#builder() b=This2.S.#builder()
+  Void unused=b.#dot()
+  b
+  )).#plusplus(that:This0.names().val(that:this.that())))
+class method 
+This2.Strings names() This2.Strings.#from(seqBuilder:(
+  This2.Strings::#seqBuilder() b=This2.Strings.#seqBuilder()
+  Void unused=b.#add(that:This2.S.#from(builder:(
+    This2.S::#builder() b0=This2.S.#builder()
+    Void unused2=b0.#N()
+    Void unused3=b0.#o()
+    Void unused4=b0.#r()
+    Void unused5=b0.#m()
+    Void unused6=b0.#a()
+    Void unused7=b0.#l()
+    b0
+    )))
+  Void unused0=b.#add(that:This2.S.#from(builder:(
+    This2.S::#builder() b1=This2.S.#builder()
+    Void unused8=b1.#A()
+    Void unused9=b1.#l()
+    Void unused10=b1.#i()
+    Void unused11=b1.#a()
+    Void unused12=b1.#s()
+    b1
+    )))
+  Void unused1=b.#add(that:This2.S.#from(builder:(
+    This2.S::#builder() b2=This2.S.#builder()
+    Void unused13=b2.#A()
+    Void unused14=b2.#l()
+    Void unused15=b2.#i()
+    Void unused16=b2.#a()
+    Void unused17=b2.#s()
+    Void unused18=b2.#U()
+    Void unused19=b2.#n()
+    Void unused20=b2.#r()
+    Void unused21=b2.#e()
+    Void unused22=b2.#s()
+    Void unused23=b2.#o()
+    Void unused24=b2.#l()
+    Void unused25=b2.#v()
+    Void unused26=b2.#a()
+    Void unused27=b2.#b()
+    Void unused28=b2.#l()
+    Void unused29=b2.#e()
+    b2
+    )))
+  b
+  ))
+class method 
+This0 fromS(This2.S that) (
+  Void unused=(
+    Void unused0=(
+      This2.N::#from(builder ) ::vals() n=This2.N.#from(builder:(
+        This2.N::#builder() b=This2.N.#builder()
+        Void unused2=b.#0()
+        b
+        )).vals()
+      (
+        Void unused3=(
+          Void unused4=(
+            This0::names() ::vals() d=This0.names().vals()
+            (
+              Void unused5=(
+                Void unused6=(
+                  Void unused7=loop (
+                    Void unused8=n.#next()
+                    
+                    catch exception Void catched2 (
+                      Void unused9=(
+                        Void unused12=d.#next()
+                        
+                        catch exception Void catched3 void
+                        
+                        void
+                        )
+                      Void unused10=(
+                        Void unused13=n.#checkEnd()
+                        
+                        catch exception Void catched4 void
+                        
+                        void
+                        )
+                      Void unused11=(
+                        Void unused14=d.#checkEnd()
+                        
+                        catch exception Void catched5 void
+                        
+                        void
+                        )
+                      exception void
+                      )
+                    
+                    (
+                      Void unused15=d.#next()
+                      
+                      catch exception Void catched7 (
+                        Void unused16=(
+                          Void unused18=n.#checkEnd()
+                          
+                          catch exception Void catched8 void
+                          
+                          void
+                          )
+                        Void unused17=(
+                          Void unused19=d.#checkEnd()
+                          
+                          catch exception Void catched9 void
+                          
+                          void
+                          )
+                        exception void
+                        )
+                      
+                      (
+                        This0::names() ::vals() ::#inner() ::#equalequal(that ) cond=d.#inner().#equalequal(that:that)
+                        (
+                          Void unused20=cond.#checkTrue()
+                          
+                          catch exception Void catched12 void
+                          
+                          return This0.#apply(that:n.#inner())
+                          )
+                        )
+                      )
+                    )
+                  
+                  catch exception Void catched13 void
+                  
+                  void
+                  )
+                
+                catch exception Any propagated (
+                  Void unused21=d.#close()
+                  exception propagated
+                  )
+                
+                void
+                )
+              
+              catch return This0 propagated0 (
+                Void unused22=d.#close()
+                return propagated0
+                )
+              
+              d.#close()
+              )
+            )
+          
+          catch exception Any propagated1 (
+            Void unused23=n.#close()
+            exception propagated1
+            )
+          
+          void
+          )
+        
+        catch return This0 propagated2 (
+          Void unused24=n.#close()
+          return propagated2
+          )
+        
+        n.#close()
+        )
+      )
+    Void unused1=error (
+      This0.ParseFail::#from(builder ) ::#from(seqBuilder ) rcv31=(
+        This0.ParseFail::#from(builder ) rcv32=This0.ParseFail.#from(builder:(
+          This0.ParseFail::#builder() b0=This0.ParseFail.#builder()
+          Void unused25=b0.#T()
+          Void unused26=b0.#h()
+          Void unused27=b0.#e()
+          Void unused28=b0.#space()
+          Void unused29=b0.#p()
+          Void unused30=b0.#r()
+          Void unused31=b0.#o()
+          Void unused32=b0.#v()
+          Void unused33=b0.#i()
+          Void unused34=b0.#d()
+          Void unused35=b0.#e()
+          Void unused36=b0.#d()
+          Void unused37=b0.#space()
+          Void unused38=b0.#s()
+          Void unused39=b0.#t()
+          Void unused40=b0.#r()
+          Void unused41=b0.#i()
+          Void unused42=b0.#n()
+          Void unused43=b0.#g()
+          Void unused44=b0.#space()
+          Void unused45=b0.#i()
+          Void unused46=b0.#s()
+          Void unused47=b0.#space()
+          Void unused48=b0.#n()
+          Void unused49=b0.#o()
+          Void unused50=b0.#t()
+          Void unused51=b0.#space()
+          Void unused52=b0.#v()
+          Void unused53=b0.#a()
+          Void unused54=b0.#l()
+          Void unused55=b0.#i()
+          Void unused56=b0.#d()
+          Void unused57=b0.#colon()
+          Void unused58=b0.#space()
+          b0
+          ))
+        rcv32.#from(seqBuilder:(
+          This0.ParseFail::#from(builder ) ::#seqBuilder() b1=rcv32.#seqBuilder()
+          Void unused59=b1.#add(that:that)
+          b1
+          ))
+        )
+      rcv31.#from(builder:(
+        This0.ParseFail::#from(builder ) ::#from(seqBuilder ) ::#builder() b2=rcv31.#builder()
+        b2
+        ))
+      )
+    void
+    )
+  
+  catch return This0 result result
+  
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
+  }
+  )
+class method 
+This0 _Normal() This0.#apply(that:This2.N.#from(builder:(
+  This2.N::#builder() b=This2.N.#builder()
+  Void unused=b.#0()
+  b
+  )))
+class method 
+This0 _Alias() This0.#apply(that:This2.N.#from(builder:(
+  This2.N::#builder() b=This2.N.#builder()
+  Void unused=b.#1()
+  b
+  )))
+class method 
+This0 _AliasUnresolvable() This0.#apply(that:This2.N.#from(builder:(
+  This2.N::#builder() b=This2.N.#builder()
+  Void unused=b.#2()
   b
   )))}}
 MetaGuard:{interface <:This1.Guard
@@ -16850,10 +18297,10 @@ This2.Bool #isPrivate()
 read method 
 This2.Bool isPrivate() 
 method toS() This0.myName().#plusplus(that:(
-  This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) rcv71=(
-    This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) rcv72=(
-      This2.S::#from(builder ) ::#from(seqBuilder ) rcv73=(
-        This2.S::#from(builder ) rcv74=This2.S.#from(builder:(
+  This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) rcv75=(
+    This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) rcv76=(
+      This2.S::#from(builder ) ::#from(seqBuilder ) rcv77=(
+        This2.S::#from(builder ) rcv78=This2.S.#from(builder:(
           This2.S::#builder() b=This2.S.#builder()
           Void unused=b.#oSquare()
           Void unused0=b.#p()
@@ -16863,14 +18310,14 @@ method toS() This0.myName().#plusplus(that:(
           Void unused4=b.#colon()
           b
           ))
-        rcv74.#from(seqBuilder:(
-          This2.S::#from(builder ) ::#seqBuilder() b0=rcv74.#seqBuilder()
+        rcv78.#from(seqBuilder:(
+          This2.S::#from(builder ) ::#seqBuilder() b0=rcv78.#seqBuilder()
           Void unused5=b0.#add(that:this.path())
           b0
           ))
         )
-      rcv73.#from(builder:(
-        This2.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b1=rcv73.#builder()
+      rcv77.#from(builder:(
+        This2.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b1=rcv77.#builder()
         Void unused6=b1.#comma()
         Void unused7=b1.#i()
         Void unused8=b1.#s()
@@ -16885,14 +18332,14 @@ method toS() This0.myName().#plusplus(that:(
         b1
         ))
       )
-    rcv72.#from(seqBuilder:(
-      This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#seqBuilder() b2=rcv72.#seqBuilder()
+    rcv76.#from(seqBuilder:(
+      This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#seqBuilder() b2=rcv76.#seqBuilder()
       Void unused17=b2.#add(that:this.isPrivate())
       b2
       ))
     )
-  rcv71.#from(builder:(
-    This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) ::#builder() b3=rcv71.#builder()
+  rcv75.#from(builder:(
+    This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) ::#builder() b3=rcv75.#builder()
     Void unused18=b3.#cSquare()
     b3
     ))
@@ -17025,12 +18472,12 @@ This2.Bool #isPrivate()
 read method 
 This2.Bool isPrivate() 
 method toS() This0.myName().#plusplus(that:(
-  This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) rcv75=(
-    This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) rcv76=(
-      This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) rcv77=(
-        This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) rcv78=(
-          This2.S::#from(builder ) ::#from(seqBuilder ) rcv79=(
-            This2.S::#from(builder ) rcv80=This2.S.#from(builder:(
+  This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) rcv79=(
+    This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) rcv80=(
+      This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) rcv81=(
+        This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) rcv82=(
+          This2.S::#from(builder ) ::#from(seqBuilder ) rcv83=(
+            This2.S::#from(builder ) rcv84=This2.S.#from(builder:(
               This2.S::#builder() b=This2.S.#builder()
               Void unused=b.#oSquare()
               Void unused0=b.#p()
@@ -17040,14 +18487,14 @@ method toS() This0.myName().#plusplus(that:(
               Void unused4=b.#colon()
               b
               ))
-            rcv80.#from(seqBuilder:(
-              This2.S::#from(builder ) ::#seqBuilder() b0=rcv80.#seqBuilder()
+            rcv84.#from(seqBuilder:(
+              This2.S::#from(builder ) ::#seqBuilder() b0=rcv84.#seqBuilder()
               Void unused5=b0.#add(that:this.path())
               b0
               ))
             )
-          rcv79.#from(builder:(
-            This2.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b1=rcv79.#builder()
+          rcv83.#from(builder:(
+            This2.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b1=rcv83.#builder()
             Void unused6=b1.#comma()
             Void unused7=b1.#space()
             Void unused8=b1.#s()
@@ -17062,14 +18509,14 @@ method toS() This0.myName().#plusplus(that:(
             b1
             ))
           )
-        rcv78.#from(seqBuilder:(
-          This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#seqBuilder() b2=rcv78.#seqBuilder()
+        rcv82.#from(seqBuilder:(
+          This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#seqBuilder() b2=rcv82.#seqBuilder()
           Void unused17=b2.#add(that:this.selector())
           b2
           ))
         )
-      rcv77.#from(builder:(
-        This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) ::#builder() b3=rcv77.#builder()
+      rcv81.#from(builder:(
+        This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) ::#builder() b3=rcv81.#builder()
         Void unused18=b3.#comma()
         Void unused19=b3.#i()
         Void unused20=b3.#s()
@@ -17084,14 +18531,14 @@ method toS() This0.myName().#plusplus(that:(
         b3
         ))
       )
-    rcv76.#from(seqBuilder:(
-      This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#seqBuilder() b4=rcv76.#seqBuilder()
+    rcv80.#from(seqBuilder:(
+      This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#seqBuilder() b4=rcv80.#seqBuilder()
       Void unused29=b4.#add(that:this.isPrivate())
       b4
       ))
     )
-  rcv75.#from(builder:(
-    This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) ::#builder() b5=rcv75.#builder()
+  rcv79.#from(builder:(
+    This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) ::#builder() b5=rcv79.#builder()
     Void unused30=b5.#cSquare()
     b5
     ))
@@ -19152,75 +20599,47 @@ This1.Bool needRename(This1.Introspection.NestedClass that, This1.Introspection.
         )
       )
     Void unused1=(
-      This1.Introspection.Method::methodKind() ::#equalequal(that ) cond0=meth.methodKind().#equalequal(that:This1.S.#from(builder:(
-        This1.S::#builder() b=This1.S.#builder()
-        Void unused3=b.#A()
-        Void unused4=b.#b()
-        Void unused5=b.#s()
-        Void unused6=b.#t()
-        Void unused7=b.#r()
-        Void unused8=b.#a()
-        Void unused9=b.#c()
-        Void unused10=b.#t()
-        Void unused11=b.#M()
-        Void unused12=b.#e()
-        Void unused13=b.#t()
-        Void unused14=b.#h()
-        Void unused15=b.#o()
-        Void unused16=b.#d()
-        b
-        )))
+      This1.Introspection.Method::methodKind() ::equals(that ) cond0=(
+        This1.Introspection.Method::methodKind() rcv85=meth.methodKind()
+        rcv85.equals(that:rcv85.class()._AbstractMethod())
+        )
       (
-        Void unused17=cond0.#checkTrue()
+        Void unused3=cond0.#checkTrue()
         
         catch exception Void catched3 void
         
         return This1.Bool.false()
         )
       )
-    This1.Introspection.NestedClass::methodFromSelector(that ) meth2=that.methodFromSelector(that:meth.selector())
+    This1.Introspection.NestedClass::method(that ) meth2=that.method(that:meth.selector())
     
     catch exception This1.MetaGuard.MemberUnavailable catched4 return This1.Bool.false()
     
     (
-      Void unused18=(
-        This1.Introspection.NestedClass::methodFromSelector(that ) ::isPrivate() cond1=meth2.isPrivate()
+      Void unused4=(
+        This1.Introspection.NestedClass::method(that ) ::isPrivate() cond1=meth2.isPrivate()
         (
-          Void unused21=cond1.#checkTrue()
+          Void unused7=cond1.#checkTrue()
           
           catch exception Void catched6 void
           
           return This1.Bool.false()
           )
         )
-      Void unused19=(
-        This1.Introspection.NestedClass::methodFromSelector(that ) ::methodKind() ::#equalequal(that ) cond2=meth2.methodKind().#equalequal(that:This1.S.#from(builder:(
-          This1.S::#builder() b0=This1.S.#builder()
-          Void unused22=b0.#A()
-          Void unused23=b0.#b()
-          Void unused24=b0.#s()
-          Void unused25=b0.#t()
-          Void unused26=b0.#r()
-          Void unused27=b0.#a()
-          Void unused28=b0.#c()
-          Void unused29=b0.#t()
-          Void unused30=b0.#M()
-          Void unused31=b0.#e()
-          Void unused32=b0.#t()
-          Void unused33=b0.#h()
-          Void unused34=b0.#o()
-          Void unused35=b0.#d()
-          b0
-          )))
+      Void unused5=(
+        This1.Introspection.NestedClass::method(that ) ::methodKind() ::equals(that ) cond2=(
+          This1.Introspection.NestedClass::method(that ) ::methodKind() rcv86=meth2.methodKind()
+          rcv86.equals(that:rcv86.class()._AbstractMethod())
+          )
         (
-          Void unused36=cond2.#checkTrue()
+          Void unused8=cond2.#checkTrue()
           
           catch exception Void catched9 void
           
           return This1.Bool.false()
           )
         )
-      Void unused20=return This1.Bool.true()
+      Void unused6=return This1.Bool.true()
       void
       )
     )
@@ -19234,7 +20653,7 @@ This1.Bool needRename(This1.Introspection.NestedClass that, This1.Introspection.
 class method 
 Library #leftleft(Library that) exception This1.MetaGuard.ClassClash, This1.MetaGuard.MethodClash This1.Refactor.compose(left:that, right:{//members of each produced class
 <:This1.$
-Varacc__83_0://@private
+Varacc__85_0://@private
 {
 class method 
 mut This0 #mutK(Library inner) 
@@ -19246,7 +20665,7 @@ mut method
 Library #inner() 
 read method 
 Library inner() }
-Varlibi__84_0://@private
+Varlibi__86_0://@private
 {
 class method 
 mut This0 #mutK(Library inner) 
@@ -19276,7 +20695,7 @@ Library #leftleft(Library that) exception This2.MetaGuard.ClassClash, This2.Meta
     This2.Introspection::#apply(lib ) i=This2.Introspection.#apply(lib:that)
     This1.SrcDests::empty() map=This1.SrcDests.empty()
     Library acc={}
-    mut This0.Varacc__83_0 varacc=This0.Varacc__83_0.#apply(inner:acc)
+    mut This0.Varacc__85_0 varacc=This0.Varacc__85_0.#apply(inner:acc)
     Void unused0=(
       This0::myLibs__48_0() ::vals() lib=this.myLibs__48_0().vals()
       (
@@ -19342,24 +20761,24 @@ Library #leftleft(Library that) exception This2.MetaGuard.ClassClash, This2.Meta
                       (
                         Library libi=lib.#inner()
                         This1::renameMap__47_0(that prefix intros ) rens=This1.renameMap__47_0(that:lib.#inner(), prefix:(
-                          This2.S::#from(builder ) ::#from(seqBuilder ) rcv81=(
-                            This2.S::#from(builder ) rcv82=This2.S.#from(builder:(
+                          This2.S::#from(builder ) ::#from(seqBuilder ) rcv87=(
+                            This2.S::#from(builder ) rcv88=This2.S.#from(builder:(
                               This2.S::#builder() b0=This2.S.#builder()
                               Void unused23=b0.#hash()
                               b0
                               ))
-                            rcv82.#from(seqBuilder:(
-                              This2.S::#from(builder ) ::#seqBuilder() b1=rcv82.#seqBuilder()
+                            rcv88.#from(seqBuilder:(
+                              This2.S::#from(builder ) ::#seqBuilder() b1=rcv88.#seqBuilder()
                               Void unused24=b1.#add(that:index.#inner())
                               b1
                               ))
                             )
-                          rcv81.#from(builder:(
-                            This2.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b2=rcv81.#builder()
+                          rcv87.#from(builder:(
+                            This2.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b2=rcv87.#builder()
                             b2
                             ))
                           ), intros:i.transitivelyNestedClasses())
-                        mut This0.Varlibi__84_0 varlibi=This0.Varlibi__84_0.#apply(inner:libi)
+                        mut This0.Varlibi__86_0 varlibi=This0.Varlibi__86_0.#apply(inner:libi)
                         Void unused22=(
                           This1::renameMap__47_0(that prefix intros ) ::vals() ren=rens.vals()
                           (
@@ -19555,7 +20974,7 @@ method solveConflict(that location ) (
   //CurlyBlock-Should be unreachable code
   }
   )
-Varacc_$%12_0__85_0://@private
+Varacc_$%12_0__87_0://@private
 {
 class method 
 mut This0 #mutK(Library inner) 
@@ -19567,7 +20986,7 @@ mut method
 Library #inner() 
 read method 
 Library inner() }
-Varlibi_$%13_0__86_0://@private
+Varlibi_$%13_0__88_0://@private
 {
 class method 
 mut This0 #mutK(Library inner) 
@@ -19597,7 +21016,7 @@ Library #leftleft(Library that) exception This1.MetaGuard.ClassClash, This1.Meta
     This1.Introspection::#apply(lib ) i=This1.Introspection.#apply(lib:that)
     This1.PreferentialComposition.SrcDests::empty() map=This1.PreferentialComposition.SrcDests.empty()
     Library acc={}
-    mut This0.Varacc_$%12_0__85_0 varacc=This0.Varacc_$%12_0__85_0.#apply(inner:acc)
+    mut This0.Varacc_$%12_0__87_0 varacc=This0.Varacc_$%12_0__87_0.#apply(inner:acc)
     Void unused0=(
       This0::myLibs_$%10_0__50_0() ::vals() lib=this.myLibs_$%10_0__50_0().vals()
       (
@@ -19663,24 +21082,24 @@ Library #leftleft(Library that) exception This1.MetaGuard.ClassClash, This1.Meta
                       (
                         Library libi=lib.#inner()
                         This1.PreferentialComposition::renameMap__47_0(that prefix intros ) rens=This1.PreferentialComposition.renameMap__47_0(that:lib.#inner(), prefix:(
-                          This1.S::#from(builder ) ::#from(seqBuilder ) rcv81=(
-                            This1.S::#from(builder ) rcv82=This1.S.#from(builder:(
+                          This1.S::#from(builder ) ::#from(seqBuilder ) rcv87=(
+                            This1.S::#from(builder ) rcv88=This1.S.#from(builder:(
                               This1.S::#builder() b0=This1.S.#builder()
                               Void unused23=b0.#hash()
                               b0
                               ))
-                            rcv82.#from(seqBuilder:(
-                              This1.S::#from(builder ) ::#seqBuilder() b1=rcv82.#seqBuilder()
+                            rcv88.#from(seqBuilder:(
+                              This1.S::#from(builder ) ::#seqBuilder() b1=rcv88.#seqBuilder()
                               Void unused24=b1.#add(that:index.#inner())
                               b1
                               ))
                             )
-                          rcv81.#from(builder:(
-                            This1.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b2=rcv81.#builder()
+                          rcv87.#from(builder:(
+                            This1.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b2=rcv87.#builder()
                             b2
                             ))
                           ), intros:i.transitivelyNestedClasses())
-                        mut This0.Varlibi_$%13_0__86_0 varlibi=This0.Varlibi_$%13_0__86_0.#apply(inner:libi)
+                        mut This0.Varlibi_$%13_0__88_0 varlibi=This0.Varlibi_$%13_0__88_0.#apply(inner:libi)
                         Void unused22=(
                           This1.PreferentialComposition::renameMap__47_0(that prefix intros ) ::vals() ren=rens.vals()
                           (
@@ -19876,7 +21295,7 @@ method solveConflict(that location ) (
   //CurlyBlock-Should be unreachable code
   }
   )
-Varacc_$%16_0__87_0://@private
+Varacc_$%16_0__89_0://@private
 {
 class method 
 mut This0 #mutK(Library inner) 
@@ -19888,7 +21307,7 @@ mut method
 Library #inner() 
 read method 
 Library inner() }
-Varlibi_$%17_0__88_0://@private
+Varlibi_$%17_0__90_0://@private
 {
 class method 
 mut This0 #mutK(Library inner) 
@@ -19918,7 +21337,7 @@ Library #leftleft(Library that) exception This1.MetaGuard.ClassClash, This1.Meta
     This1.Introspection::#apply(lib ) i=This1.Introspection.#apply(lib:that)
     This1.PreferentialComposition.SrcDests::empty() map=This1.PreferentialComposition.SrcDests.empty()
     Library acc={}
-    mut This0.Varacc_$%16_0__87_0 varacc=This0.Varacc_$%16_0__87_0.#apply(inner:acc)
+    mut This0.Varacc_$%16_0__89_0 varacc=This0.Varacc_$%16_0__89_0.#apply(inner:acc)
     Void unused0=(
       This0::myLibs_$%14_0__52_0() ::vals() lib=this.myLibs_$%14_0__52_0().vals()
       (
@@ -19984,24 +21403,24 @@ Library #leftleft(Library that) exception This1.MetaGuard.ClassClash, This1.Meta
                       (
                         Library libi=lib.#inner()
                         This1.PreferentialComposition::renameMap__47_0(that prefix intros ) rens=This1.PreferentialComposition.renameMap__47_0(that:lib.#inner(), prefix:(
-                          This1.S::#from(builder ) ::#from(seqBuilder ) rcv81=(
-                            This1.S::#from(builder ) rcv82=This1.S.#from(builder:(
+                          This1.S::#from(builder ) ::#from(seqBuilder ) rcv87=(
+                            This1.S::#from(builder ) rcv88=This1.S.#from(builder:(
                               This1.S::#builder() b0=This1.S.#builder()
                               Void unused23=b0.#hash()
                               b0
                               ))
-                            rcv82.#from(seqBuilder:(
-                              This1.S::#from(builder ) ::#seqBuilder() b1=rcv82.#seqBuilder()
+                            rcv88.#from(seqBuilder:(
+                              This1.S::#from(builder ) ::#seqBuilder() b1=rcv88.#seqBuilder()
                               Void unused24=b1.#add(that:index.#inner())
                               b1
                               ))
                             )
-                          rcv81.#from(builder:(
-                            This1.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b2=rcv81.#builder()
+                          rcv87.#from(builder:(
+                            This1.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b2=rcv87.#builder()
                             b2
                             ))
                           ), intros:i.transitivelyNestedClasses())
-                        mut This0.Varlibi_$%17_0__88_0 varlibi=This0.Varlibi_$%17_0__88_0.#apply(inner:libi)
+                        mut This0.Varlibi_$%17_0__90_0 varlibi=This0.Varlibi_$%17_0__90_0.#apply(inner:libi)
                         Void unused22=(
                           This1.PreferentialComposition::renameMap__47_0(that prefix intros ) ::vals() ren=rens.vals()
                           (
@@ -20178,7 +21597,7 @@ Library #leftleft(Library that) exception This1.MetaGuard.ClassClash, This1.Meta
 method 
 This0 #plusplus(This0 that) This0.#apply_$%15_0__53_0(myLibs:this.myLibs_$%14_0__52_0().#plusplus(that:that.myLibs_$%14_0__52_0()))}
 Patch:{
-Varacc0__89_0://@private
+Varacc0__91_0://@private
 {
 class method 
 mut This0 #mutK(Library inner) 
@@ -20211,7 +21630,7 @@ Library #leftleft(Library that) exception This1.MetaGuard.ClassClash, This1.Meta
       )), intros:itr)
     This1.PreferentialComposition.SrcDests::empty() map=This1.PreferentialComposition.SrcDests.empty()
     Library acc=that
-    mut This0.Varacc0__89_0 varacc0=This0.Varacc0__89_0.#apply(inner:acc)
+    mut This0.Varacc0__91_0 varacc0=This0.Varacc0__91_0.#apply(inner:acc)
     Void unused0=(
       This0::renameMap__54_0(that prefix intros ) ::vals() ren=rens.vals()
       (
@@ -20236,7 +21655,7 @@ Library #leftleft(Library that) exception This1.MetaGuard.ClassClash, This1.Meta
                 Void unused13=varacc0.inner(that:This1.Refactor.MoveImplementationSelector.#apply(that:ren.#inner().src(), of:ren.#inner().path(), to:ren.#inner().dest()).#leftleft(that:varacc0.#inner()))
                 
                 catch exception This1.MetaGuard err error (
-                  This1.Assert.ObservedBug::#from(builder ) rcv83=This1.Assert.ObservedBug.#from(builder:(
+                  This1.Assert.ObservedBug::#from(builder ) rcv89=This1.Assert.ObservedBug.#from(builder:(
                     This1.Assert.ObservedBug::#builder() b0=This1.Assert.ObservedBug.#builder()
                     Void unused14=b0.#P()
                     Void unused15=b0.#a()
@@ -20260,7 +21679,7 @@ Library #leftleft(Library that) exception This1.MetaGuard.ClassClash, This1.Meta
                     Void unused33=b0.#cRound()
                     b0
                     ))
-                  rcv83.#apply(that:err)
+                  rcv89.#apply(that:err)
                   )
                 
                 void
@@ -20342,7 +21761,7 @@ Library #leftleft(Library that) exception This1.MetaGuard.ClassClash, This1.Meta
     Void unused3=return varacc0.#inner()
     
     catch exception This1.MetaGuard.MemberUnavailable err error (
-      This1.Assert.CodeNotReachable::#from(builder ) rcv84=This1.Assert.CodeNotReachable.#from(builder:(
+      This1.Assert.CodeNotReachable::#from(builder ) rcv90=This1.Assert.CodeNotReachable.#from(builder:(
         This1.Assert.CodeNotReachable::#builder() b2=This1.Assert.CodeNotReachable.#builder()
         Void unused48=b2.#P()
         Void unused49=b2.#a()
@@ -20351,7 +21770,7 @@ Library #leftleft(Library that) exception This1.MetaGuard.ClassClash, This1.Meta
         Void unused52=b2.#2()
         b2
         ))
-      rcv84.#apply(that:err)
+      rcv90.#apply(that:err)
       )
     
     void
@@ -20462,7 +21881,7 @@ This1.PreferentialComposition.SrcDests renameMap__54_0(Library that, This1.S pre
   ))}
 Default:{
 DecorationUnfeasable:{<:This2.MetaGuard, This2.Message
-Varres_$%18_0__90_0://@private
+Varres_$%18_0__92_0://@private
 {
 class method 
 mut This0 #mutK(This3.S inner) 
@@ -20537,7 +21956,7 @@ method toS() (
         )
       )
     This2.S res=This0.kind()
-    mut This0.Varres_$%18_0__90_0 varres=This0.Varres_$%18_0__90_0.#apply(inner:res)
+    mut This0.Varres_$%18_0__92_0 varres=This0.Varres_$%18_0__92_0.#apply(inner:res)
     Void unused1=(
       This0::toS() ::this::text() ::#bangequal(that ) cond0=this.text().#bangequal(that:This2.S.#from(builder:(
         This2.S::#builder() b=This2.S.#builder()
@@ -20576,13 +21995,13 @@ method toS() (
         )
       )
     Void unused2=return (
-      This0.Varres_$%18_0__90_0::#inner() ::#from(seqBuilder ) rcv0=varres.#inner().#from(seqBuilder:(
-        This0.Varres_$%18_0__90_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
+      This0.Varres_$%18_0__92_0::#inner() ::#from(seqBuilder ) rcv0=varres.#inner().#from(seqBuilder:(
+        This0.Varres_$%18_0__92_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
         Void unused20=b3.#add(that:this.cause().#tilde())
         b3
         ))
       rcv0.#from(builder:(
-        This0.Varres_$%18_0__90_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv0.#builder()
+        This0.Varres_$%18_0__92_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv0.#builder()
         Void unused21=b4.#cSquare()
         b4
         ))
@@ -20840,19 +22259,19 @@ read method //(Any fileName)
 This1.Url fileName() 
 class method 
 Library binaryReprFrom(Library lib) (
-  Library norm=use This0.SafeOperatorsAccess__91_0 check privateNormalize(that:lib) error {
+  Library norm=use This0.SafeOperatorsAccess__93_0 check privateNormalize(that:lib) error {
   class method 
   mut This0 #mutK() 
   class method 
   This0 privateNormalize() This0.#mutK()}
-  Library record=use This0.SafeOperatorsAccess__91_0 check introspectLibraryReport(that:norm, path:{//@stringU
+  Library record=use This0.SafeOperatorsAccess__93_0 check introspectLibraryReport(that:norm, path:{//@stringU
   //This
   }) error {
   class method 
   mut This0 #mutK() 
   class method 
   This0 introspectLibraryReport() This0.#mutK()}
-  use This0.SafeOperatorsAccess__91_0 check introspectLibraryDocAsString(that:record, path:{//@stringU
+  use This0.SafeOperatorsAccess__93_0 check introspectLibraryDocAsString(that:record, path:{//@stringU
   //AllAsString
   }, annotationN:{//@int32
   //0
@@ -20871,7 +22290,7 @@ Library #leftleft(Library that) (
   This0 fileDebug() This0.#mutK()}
   This1.ExitCode.normal()
   )
-SafeOperatorsAccess__91_0://@private
+SafeOperatorsAccess__93_0://@private
 {//@plugin
 //L42.is/connected/withSafeOperators
 }}}

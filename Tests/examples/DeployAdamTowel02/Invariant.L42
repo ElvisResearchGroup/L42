@@ -61,11 +61,12 @@
         )
       }
     mdf=that.mdf()
-    if mdf==S"" (return immA)
-    if mdf==S"mut" (return mutA)
-    if mdf==S"lent" (return lentA)
-    if mdf==S"read" (return readA)
-    if mdf==S"capsule" (return capsuleA)
+    m=Introspection.Mdf
+    if mdf==m._Immutable() (return immA)
+    if mdf==m._Mutable() (return mutA)
+    if mdf==m._Lent() (return lentA)
+    if mdf==m._Readable() (return readA)
+    if mdf==m._Capsule() (return capsuleA)
     error Default.DecorationUnfeasable(
         text:S"unidentified mdf:"[mdf]"!")
     }
@@ -87,11 +88,12 @@
     readA={ class method read T (read T that) that T:{}}
     Library mdfA={
       mdf=that.mdf()
-      if mdf==S"class" (return classA)
-      if mdf==S"" (return immA)
-      if mdf==S"mut" (return mutA)
-      if mdf==S"lent" (return lentA)
-      if mdf==S"read" (return readA)
+      m=Introspection.Mdf
+      if mdf==m._Class() (return classA)
+      if mdf==m._Immutable() (return immA)
+      if mdf==m._Mutable() (return mutA)
+      if mdf==m._Lent() (return lentA)
+      if mdf==m._Readable() (return readA)
       error Default.DecorationUnfeasable(
         text:S"unidentified mdf:"[mdf]"!")
       }
@@ -130,7 +132,7 @@
       mdf=m.thisMdf()
       zeroArgs=s.names().isEmpty()
       //Debug(S"zeroArgs"[zeroArgs]"")
-      if mdf==S"class" (
+      if mdf==Introspection.Mdf._Class() (
         //Debug(S"is k "[s]"")
         acc:=PostAction(s of:p
           action:this.constructorAction(m.returnType())

@@ -43,7 +43,7 @@ Library composeAction(Library that,Selector fresh){
 method //@private
 Void checkAction(Library that)
 exception InvalidAction (
-  defM=Introspection(lib: that).methodFromSelector(Selector"#apply(that)")
+  defM=Introspection(lib: that).method(Selector"#apply(that)")
   exception on MetaGuard
     InvalidAction"action method not present"
   pt=defM.parameterTypes().left()

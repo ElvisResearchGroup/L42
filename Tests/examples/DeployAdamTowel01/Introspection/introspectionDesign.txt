@@ -11,14 +11,14 @@ Introspection:{
     method Doc doc() //of the library literal
     method Path pathFromRoot() // invariant NestedClass(...).nestedClassFromRoot(path).pathFromRoot()==path
     method class Any externalType() //error if  root()!=this or root() is literal, otherwise contains the class Any used to initialize root/this.
-    method S classKind()
+    method ClassKind classKind()
     method S allAsString()  //just the library literal
     method Members members()
     method Methods methods()
     method NestedClasses nestedClasses()
     method Types implementedInterfaces()
     method Method constructor()
-    method Method methodFromSelector(Selector that) exception MemberUnavailable
+    method Method method(Selector that) exception MemberUnavailable
     method Bool has(Selector selector)
     method NestedClass nestedClassFromRoot(Path that) exception MemberUnavailable
     method Bool has(Path pathFromRoot)
@@ -28,10 +28,10 @@ Introspection:{
     method NestedClass root()
     method NestedClass nestedClass()
     method Doc doc()
-    method S thisMdf()
+    method Mdf thisMdf()
     method Path pathFromRoot()// invariant NestedClass(...).nestedClassFromRoot(path).pathFromRoot()==path
     method Selector selector()
-    method S memberKind() //one of NestedClass,InterfaceImplementedMethod,ImplementedMethod,AbstractMethod
+    method MethodKind methodKind() //one of InterfaceImplementedMethod,ImplementedMethod,AbstractMethod
     method S allAsString()
     method Type returnType()
     method Types exceptions()
@@ -40,8 +40,8 @@ Introspection:{
 
   Type:{
     method NestedClass root()
-    method S typeKind() //{Normal,Alias,AliasUnresolvable}
-    method S mdf()//error on AliasUnresolvable
+    method TypeKind typeKind() //{Normal,Alias,AliasUnresolvable}
+    method Mdf mdf()//error on AliasUnresolvable
     method NestedClass referencedPath()
     method NestedClass resolvedReferencedPath() //error on AliasUnresolvable
     method Bool partial()

@@ -40,6 +40,9 @@ This withoutAll(Elem that)
 
 
 read method
+Bool !=(read This that) !(this==that)
+
+read method
 Bool ==(read This that){
   with e1 in this.vals(), e2 in that.vals() (
     if !e1.equals(e2) (return Bool.false())

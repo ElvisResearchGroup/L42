@@ -1135,6 +1135,8 @@ This1.Bool contains(This1.S that)
 method 
 This0 withoutAll(This1.S that) 
 read method 
+This1.Bool #bangequal(read This0 that) 
+read method 
 This1.Bool #equalequal(read This0 that) }
 Debug:{
 class method 
@@ -1962,6 +1964,8 @@ This2.Bool contains(This1.Member that)
 method 
 This0 withoutAll(This1.Member that) 
 read method 
+This2.Bool #bangequal(read This0 that) 
+read method 
 This2.Bool #equalequal(read This0 that) }
 Method:{<:This1.Member, This2.Concept.Equals
 method 
@@ -1971,13 +1975,13 @@ This2.Bool #bangequal(This0 that)
 method 
 This1.Doc doc() 
 method 
-This2.S thisMdf() 
+This1.Mdf thisMdf() 
 method // invariant NestedClass(...).nestedClassFromRoot(path).pathFromRoot()==path
 This2.Path pathFromRoot() 
 method 
 This2.Selector selector() 
 method 
-This2.S methodKind() 
+This1.MethodKind methodKind() 
 method 
 This2.S allAsString() 
 method 
@@ -2135,6 +2139,8 @@ This2.Bool contains(This1.Method that)
 method 
 This0 withoutAll(This1.Method that) 
 read method 
+This2.Bool #bangequal(read This0 that) 
+read method 
 This2.Bool #equalequal(read This0 that) }
 NestedClass:{//findMeNestedClass
 <:This1.Member, This2.Concept.Equals
@@ -2157,7 +2163,7 @@ class Any externalType()
 method 
 This2.S externalTypeToS() 
 method 
-This2.S classKind() 
+This1.ClassKind classKind() 
 method 
 This2.S allAsString() 
 method 
@@ -2177,7 +2183,7 @@ This1.Methods stateCandidate()
 method 
 This1.Methods state() 
 method 
-This1.Method methodFromSelector(This2.Selector that) exception This2.MetaGuard.MethodUnavailable 
+This1.Method method(This2.Selector that) exception This2.MetaGuard.MethodUnavailable 
 method 
 This2.Bool has(This2.Selector selector) 
 method 
@@ -2331,6 +2337,8 @@ This2.Bool contains(This1.NestedClass that)
 method 
 This0 withoutAll(This1.NestedClass that) 
 read method 
+This2.Bool #bangequal(read This0 that) 
+read method 
 This2.Bool #equalequal(read This0 that) }
 Type:{<:This2.Concept.ToS, This2.Concept.Named
 method 
@@ -2338,9 +2346,9 @@ This2.S allAsString()
 method 
 This2.S strRepr() 
 method 
-This2.S typeKind() 
+This1.TypeKind typeKind() 
 method 
-This2.S mdf() 
+This1.Mdf mdf() 
 method 
 This1.NestedClass referencedPath() 
 method 
@@ -2570,7 +2578,228 @@ This0 _Readable()
 class method 
 This0 _Immutable() 
 class method 
-This0 _Class() }}
+This0 _Class() }
+MethodKind:{//Data is more than Solid, and Liquid, Gas, Plasma can be good methafores
+//data: toS == class named, fromS, invariant, with clone mutk
+<:This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable, This2.Concept.Named, This2.Concept.ToS//may be Parsable?
+
+ParseFail:{<:This3.Guard.ParseFail, This3.Message
+class method 
+mut This0 #mutK(This3.S _text, This3.Message.Opt cause) 
+class method 
+This0 #apply(This3.S _text, This3.Message.Opt cause) 
+mut method 
+This3.S #_text() 
+read method 
+This3.S _text() 
+mut method 
+This3.Message.Opt #cause() 
+read method 
+This3.Message.Opt cause() 
+method 
+This0 #apply(This3.Message that) 
+method 
+This3.Bool #bangequal(This0 that) 
+method 
+This3.Bool #equalequal(This0 that) 
+class method 
+This0 #apply(This3.S text) 
+class method 
+This0 #apply(This3.S text, This3.Message cause) 
+class method 
+mut This3.S.SBuilder #builder() 
+class method 
+This0 #from(This3.S.SBuilder builder) 
+method 
+This0.Continue #from(This3.S.SConcat seqBuilder) 
+Continue:{
+class method 
+mut This0 #mutK(This4.S that) 
+class method 
+This0 #apply(This4.S that) 
+mut method 
+This4.S #that() 
+read method 
+This4.S that() 
+method 
+mut This4.S.SBuilder #builder() 
+method 
+This1 #from(This4.S.SBuilder builder) }
+method 
+mut This3.S.SConcat #seqBuilder() }
+read method 
+class This0 class() 
+read method 
+This2.Bool #equalequal(read This0 that) 
+read method 
+This2.Bool #bangequal(read This0 that) 
+class method 
+mut This0 #mutK(This2.N that) 
+class method 
+This0 #apply(This2.N that) 
+mut method 
+This2.N #that() 
+read method 
+This2.N that() 
+class method 
+This2.Strings names() 
+class method 
+This0 fromS(This2.S that) 
+class method 
+This0 _InterfaceImplementedMethod() 
+class method 
+This0 _ImplementedMethod() 
+class method 
+This0 _AbstractMethod() }
+ClassKind:{//Data is more than Solid, and Liquid, Gas, Plasma can be good methafores
+//data: toS == class named, fromS, invariant, with clone mutk
+<:This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable, This2.Concept.Named, This2.Concept.ToS//may be Parsable?
+
+ParseFail:{<:This3.Guard.ParseFail, This3.Message
+class method 
+mut This0 #mutK(This3.S _text, This3.Message.Opt cause) 
+class method 
+This0 #apply(This3.S _text, This3.Message.Opt cause) 
+mut method 
+This3.S #_text() 
+read method 
+This3.S _text() 
+mut method 
+This3.Message.Opt #cause() 
+read method 
+This3.Message.Opt cause() 
+method 
+This0 #apply(This3.Message that) 
+method 
+This3.Bool #bangequal(This0 that) 
+method 
+This3.Bool #equalequal(This0 that) 
+class method 
+This0 #apply(This3.S text) 
+class method 
+This0 #apply(This3.S text, This3.Message cause) 
+class method 
+mut This3.S.SBuilder #builder() 
+class method 
+This0 #from(This3.S.SBuilder builder) 
+method 
+This0.Continue #from(This3.S.SConcat seqBuilder) 
+Continue:{
+class method 
+mut This0 #mutK(This4.S that) 
+class method 
+This0 #apply(This4.S that) 
+mut method 
+This4.S #that() 
+read method 
+This4.S that() 
+method 
+mut This4.S.SBuilder #builder() 
+method 
+This1 #from(This4.S.SBuilder builder) }
+method 
+mut This3.S.SConcat #seqBuilder() }
+read method 
+class This0 class() 
+read method 
+This2.Bool #equalequal(read This0 that) 
+read method 
+This2.Bool #bangequal(read This0 that) 
+class method 
+mut This0 #mutK(This2.N that) 
+class method 
+This0 #apply(This2.N that) 
+mut method 
+This2.N #that() 
+read method 
+This2.N that() 
+class method 
+This2.Strings names() 
+class method 
+This0 fromS(This2.S that) 
+class method 
+This0 _Interface() 
+class method 
+This0 _ClosedClass() 
+class method 
+This0 _OpenClass() 
+class method 
+This0 _Template() 
+class method 
+This0 _FreeTemplate() }
+TypeKind:{//Data is more than Solid, and Liquid, Gas, Plasma can be good methafores
+//data: toS == class named, fromS, invariant, with clone mutk
+//may disappear
+<:This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable, This2.Concept.Named, This2.Concept.ToS//may be Parsable?
+
+ParseFail:{<:This3.Guard.ParseFail, This3.Message
+class method 
+mut This0 #mutK(This3.S _text, This3.Message.Opt cause) 
+class method 
+This0 #apply(This3.S _text, This3.Message.Opt cause) 
+mut method 
+This3.S #_text() 
+read method 
+This3.S _text() 
+mut method 
+This3.Message.Opt #cause() 
+read method 
+This3.Message.Opt cause() 
+method 
+This0 #apply(This3.Message that) 
+method 
+This3.Bool #bangequal(This0 that) 
+method 
+This3.Bool #equalequal(This0 that) 
+class method 
+This0 #apply(This3.S text) 
+class method 
+This0 #apply(This3.S text, This3.Message cause) 
+class method 
+mut This3.S.SBuilder #builder() 
+class method 
+This0 #from(This3.S.SBuilder builder) 
+method 
+This0.Continue #from(This3.S.SConcat seqBuilder) 
+Continue:{
+class method 
+mut This0 #mutK(This4.S that) 
+class method 
+This0 #apply(This4.S that) 
+mut method 
+This4.S #that() 
+read method 
+This4.S that() 
+method 
+mut This4.S.SBuilder #builder() 
+method 
+This1 #from(This4.S.SBuilder builder) }
+method 
+mut This3.S.SConcat #seqBuilder() }
+read method 
+class This0 class() 
+read method 
+This2.Bool #equalequal(read This0 that) 
+read method 
+This2.Bool #bangequal(read This0 that) 
+class method 
+mut This0 #mutK(This2.N that) 
+class method 
+This0 #apply(This2.N that) 
+mut method 
+This2.N #that() 
+read method 
+This2.N that() 
+class method 
+This2.Strings names() 
+class method 
+This0 fromS(This2.S that) 
+class method 
+This0 _Normal() 
+class method 
+This0 _Alias() 
+class method 
+This0 _AliasUnresolvable() }}
 Refactor:{
 class method 
 Library compose(Library left, Library right) exception This1.MetaGuard.ClassClash, This1.MetaGuard.MethodClash 

@@ -3,7 +3,7 @@ External:{}
 Main:{
   i2=Introspection(lib:{ Internal:{} method //fuffa @a beer @External bar @Internal fuzz
     Void foo()})
-  mFoo=i2.methodFromSelector(Selector"foo()")
+  mFoo=i2.method(Selector"foo()")
   doc=mFoo.doc()
   Debug(doc)
   with ann in doc.annotations().vals() (

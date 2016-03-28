@@ -64,7 +64,7 @@ method S externalTypeToS() {
   return S"This"[prefix-1N]"."++name
 }
 
-method S classKind() this.record()"ClassKind"
+method ClassKind classKind() ClassKind.fromS(this.record()"ClassKind")
 method S allAsString() this.record()"AllAsString"  //just the library literal
 method
 Members members() (
@@ -146,35 +146,32 @@ Types remove(Types that,Types from)
   Types[with t in that.vals() (if this.select(t,from:from) (use[t]))]
 
 method
-Methods stateCandidate() (
+Methods stateCandidate() {
   var Bool havePrivate=Bool.false()
-  var Methods absMethods=Methods[with m in this.methods().vals() (
-    if m.methodKind()==S"AbstractMethod" (
+  absMethods=Methods[with m in this.methods().vals() (
+    if m.methodKind().equals(\class._AbstractMethod())  (
       havePrivate|=m.isPrivate()
       use[m]
       )
     )]
-  if havePrivate (
-    absMethods:=Methods[with a in absMethods.vals() (
-      if a.isPrivate() (use[a])
-      )]
-    )
-  absMethods
-  )
+  if !havePrivate (return absMethods)
+  return Methods[with a in absMethods.vals() (   if a.isPrivate() (use[a])   )]
+  }
 method
 Methods state() {
-  mut Methods result=Methods.empty()
   stateCandidate=this.stateCandidate()
-  constr=(
-    classMethods=Methods[with m in stateCandidate.vals() (
-      if m.thisMdf()==S"class" (use[m])
+  classMethods=Methods[with m in stateCandidate.vals() (
+      if m.thisMdf()==Mdf._Class() (use[m])
       )]
-    if classMethods.isEmpty() (return result)
-    if classMethods.size()>1N (return result)
-    classMethods.left()
+  if classMethods.isEmpty() (return Methods.empty())
+  names=classMethods.left().selector().names()//the first constructor names
+  //check that all constr have the same names.
+  //We do not check same types, that would be part of coherent
+  mut Methods result=Methods.empty()
+  with c in classMethods.vals() (
+    if names!=c.selector().names() (return Methods.empty() )
+    result.add(right:c)
     )
-  result.add(right:constr)
-  names=constr.selector().names()
   with name in names.vals() (
     getter=Selector.fromS(name++S"()")
     exposer=Selector.fromS(S"#"++name++S"()")
@@ -185,10 +182,11 @@ Methods state() {
         )
       )
     )
+
   return result
   }
 method
-Method methodFromSelector(Selector that) exception MetaGuard.MethodUnavailable {
+Method method(Selector that) exception MetaGuard.MethodUnavailable {
   with meth in this.methods().vals() (
     if meth.selector()==that (return meth)
     )
@@ -197,7 +195,7 @@ Method methodFromSelector(Selector that) exception MetaGuard.MethodUnavailable {
   }
 method
 Bool has(Selector selector){
-  unused=this.methodFromSelector(selector)
+  unused=this.method(selector)
   catch exception MetaGuard.MemberUnavailable return Bool.false()
   return Bool.true()
   }
