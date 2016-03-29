@@ -167,12 +167,22 @@ public class Resources {
     public String toString() {return "Return["+ unbox +"]";}
     public Return(Object u){super(u);}
     }
-  public static class Void{
+  public static class Void implements Revertable{
     public static final Void instance=new Void();
     public static final Void type=new Void();
+    @Override
+    public ExpCore revert() {
+      return Path.Void();
     }
-  public static class Any{public static final Any type=new Any();}
-  public static class Library{public static final Library type=new Library();}
+    }
+  public static class Any implements Revertable{
+    public static final Any type=new Any();
+    @Override
+    public ExpCore revert() {return Path.Any();  }}
+  public static class Library implements Revertable{
+    public static final Library type=new Library();
+    @Override
+    public ExpCore revert() {return Path.Library();  }}
   public static interface PhI<T>{
     public void commit(T t);
     public void addAction(java.util.function.Consumer<T> r);

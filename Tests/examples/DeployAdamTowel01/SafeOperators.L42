@@ -53,7 +53,7 @@
         path:path.binaryRepr()
         )
       error System.Guard.PluginFailure"SafeOperators.removeImplementation(path)"
-  
+
   class method
   Library moveImplementation(Library that,Path path,Selector src,Selector dest)
     use This
@@ -63,7 +63,7 @@
         dest:dest.binaryRepr()
         )
       error System.Guard.PluginFailure"SafeOperators.moveImplementation"
-  
+
   class method
   Library removeImplementation(Library that,Path path,Selector selector)
     use This
@@ -96,6 +96,15 @@
   S freshName(S that) S.#from(binaryRepr: use This
       check freshName(that.binaryRepr())
       error System.Guard.PluginFailure"SafeOperators.freshName(that)"
-    )    
-      
+    )
+  class method
+  Library makeMethod(Library that,Path path,Selector selector, S mdfs, N exceptionN)
+      use This
+      check makeMethod(that,
+        path:path.binaryRepr(),
+        selector:selector.binaryRepr(),
+        mdfs:mdfs.binaryRepr(),
+        exceptionN:exceptionN.binaryRepr()
+        )
+      error System.Guard.PluginFailure"SafeOperators.makeMethod(that,path,selector,mdfs,exceptionN)"
   }

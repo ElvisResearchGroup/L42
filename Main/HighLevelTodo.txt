@@ -17,6 +17,7 @@ use check vs use m(xes) with
 decorator MakeMethod[m; m0; m1 x1, mn xn; excNum]
 ={m method m0 T0 (m1 T1 x1, ...,mn Tn xn) exception Tn+1,...Tn+excNum}
 //can be done with sum method+make abstract, but would be very slow
+//m,m0,m1,..mn   x1,..xn    excNum
 
 
 Assert::Pre[] preconditions

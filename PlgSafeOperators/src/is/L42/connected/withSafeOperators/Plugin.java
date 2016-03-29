@@ -252,4 +252,13 @@ public class Plugin implements PluginType{
       //good for current operators, but for tomorrow ones?
     }
 
+   @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+    public  Object MmakeMethod£xthat£xpath£xselector£xmdfs£xexceptionN(Object _lib,Object _path,Object _selector, Object _mdfs, Object _execptionN){
+      ClassB lib=ensureExtractClassB(_lib);
+      List<String> path = Path.parseValidCs(ensureExtractStringU(_path));
+      MethodSelector selector=MethodSelector.parse(ensureExtractStringU(_selector));
+      String mdfs= ensureExtractStringU(_mdfs);
+      int exceptionN=ensureExtractInt32(_execptionN);
+      return MakeMethod.addMethod(lib, path, selector, mdfs, exceptionN);
+    }
   }

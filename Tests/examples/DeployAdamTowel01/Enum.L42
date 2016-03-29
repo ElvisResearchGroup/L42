@@ -10,7 +10,10 @@
     Top: SafeOperatorsAccess.compose(left:Concept.solidTrait() //Use[Concept.solidTrait()]<<
       right:{(N that)<:Concept.ToS
       method toS()
-        This.myName()++S"."++This.names().val(this.that())
+        This.myName()++S"."++this.name()
+      method
+      S name()
+        This.names().val(this.that())
       read method Bool ==(read This that) this.that()==that.that()
       class method Strings names()
       class method
@@ -21,6 +24,7 @@
         error ParseFail"The provided string is not valid: "[that]""
       }
     })//end compose
+    List:Collections.vector(ofEq:Top)
     //class method mut Set #seqBuilder() Set.empty()
     //class method Set #from(Set seqBuilder)seqBuilder
     //Set: SafeOperatorsAccess.compose(left:Concept.solidTrait() //Use[Concept.solidTrait()]<<

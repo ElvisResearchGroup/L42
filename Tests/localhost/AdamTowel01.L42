@@ -7464,7 +7464,72 @@ This1.S freshName(This1.S that) This1.S.#from(binaryRepr:use This0 check freshNa
   Void unused26=b.#t()
   Void unused27=b.#cRound()
   b
-  )))}
+  )))
+class method 
+Library makeMethod(Library that, This1.Path path, This1.Selector selector, This1.S mdfs, This1.N exceptionN) use This0 check makeMethod(that:that, path:path.binaryRepr(), selector:selector.binaryRepr(), mdfs:mdfs.binaryRepr(), exceptionN:exceptionN.binaryRepr()) error This1.System.Guard.PluginFailure.#from(builder:(
+  This1.System.Guard.PluginFailure::#builder() b=This1.System.Guard.PluginFailure.#builder()
+  Void unused=b.#S()
+  Void unused0=b.#a()
+  Void unused1=b.#f()
+  Void unused2=b.#e()
+  Void unused3=b.#O()
+  Void unused4=b.#p()
+  Void unused5=b.#e()
+  Void unused6=b.#r()
+  Void unused7=b.#a()
+  Void unused8=b.#t()
+  Void unused9=b.#o()
+  Void unused10=b.#r()
+  Void unused11=b.#s()
+  Void unused12=b.#dot()
+  Void unused13=b.#m()
+  Void unused14=b.#a()
+  Void unused15=b.#k()
+  Void unused16=b.#e()
+  Void unused17=b.#M()
+  Void unused18=b.#e()
+  Void unused19=b.#t()
+  Void unused20=b.#h()
+  Void unused21=b.#o()
+  Void unused22=b.#d()
+  Void unused23=b.#oRound()
+  Void unused24=b.#t()
+  Void unused25=b.#h()
+  Void unused26=b.#a()
+  Void unused27=b.#t()
+  Void unused28=b.#comma()
+  Void unused29=b.#p()
+  Void unused30=b.#a()
+  Void unused31=b.#t()
+  Void unused32=b.#h()
+  Void unused33=b.#comma()
+  Void unused34=b.#s()
+  Void unused35=b.#e()
+  Void unused36=b.#l()
+  Void unused37=b.#e()
+  Void unused38=b.#c()
+  Void unused39=b.#t()
+  Void unused40=b.#o()
+  Void unused41=b.#r()
+  Void unused42=b.#comma()
+  Void unused43=b.#m()
+  Void unused44=b.#d()
+  Void unused45=b.#f()
+  Void unused46=b.#s()
+  Void unused47=b.#comma()
+  Void unused48=b.#e()
+  Void unused49=b.#x()
+  Void unused50=b.#c()
+  Void unused51=b.#e()
+  Void unused52=b.#p()
+  Void unused53=b.#t()
+  Void unused54=b.#i()
+  Void unused55=b.#o()
+  Void unused56=b.#n()
+  Void unused57=b.#N()
+  Void unused58=b.#cRound()
+  b
+  ))}
 Enum:{
 class method 
 Library #leftleft(Library that) This1.SafeOperatorsAccess.compose(left:This1.SafeOperatorsAccess.renameClass(that:this.enumTrait(), src:This1.S.#from(builder:(
@@ -7708,7 +7773,9 @@ method toS() This0.myName().#plusplus(that:This3.S.#from(builder:(
   This3.S::#builder() b=This3.S.#builder()
   Void unused=b.#dot()
   b
-  )).#plusplus(that:This0.names().val(that:this.that())))
+  )).#plusplus(that:this.name()))
+method 
+This3.S name() This0.names().val(that:this.that())
 class method 
 This3.Strings names() 
 class method 
@@ -7882,6 +7949,912 @@ This0 fromS(This3.S that) (
     )
   
   catch return This0 result result
+  
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
+  }
+  )}
+List:{<:This3.Concept.Equals
+class method 
+mut This0 #mutK(mut This3.Collections.MutListAny inner) 
+class method 
+mut This0 #apply(mut This3.Collections.MutListAny inner) This0.#mutK(inner:inner)
+mut method 
+mut This3.Collections.MutListAny #inner() 
+read method 
+read This3.Collections.MutListAny inner() 
+class method 
+This0 #immK(This3.Collections.MutListAny inner) 
+class method 
+mut This0 empty() This0.#apply(inner:This3.Collections.MutListAny.empty())
+class method 
+mut This0 #seqBuilder() this.empty()
+class method 
+This0 #from(This0 seqBuilder) seqBuilder
+mut method 
+Void #add(This1.Top that) this.add(right:that)
+class method 
+This1.Top cast(Any that) (
+  Void unused=(
+    This1.Top that0=(
+      Void unused0=return that
+      
+      catch return This1.Top casted casted
+      
+      catch return Any casted exception void
+      
+      error {//@stringU
+      //CastT-Should be unreachable code
+      }
+      )
+    
+    catch exception Void catched0 error This3.Collections.CollectionErrors.cast()
+    
+    (
+      Void unused1=return that0
+      void
+      )
+    )
+  
+  catch return This1.Top result result
+  
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
+  }
+  )
+read method 
+This1.Top val(This3.N that) This0.cast(that:this.inner().val(that:that))
+read method 
+This1.Top left() This0.cast(that:this.inner().val(that:This3.N.#from(builder:(
+  This3.N::#builder() b=This3.N.#builder()
+  Void unused=b.#0()
+  b
+  ))))
+read method 
+This1.Top right() This0.cast(that:(
+  This0::inner() rcv13=this.inner()
+  rcv13.val(that:rcv13.size().#less(that:This3.N.#from(builder:(
+    This3.N::#builder() b=This3.N.#builder()
+    Void unused=b.#1()
+    b
+    ))))
+  ))
+mut method 
+Void #apply(This3.N that, This1.Top val) (
+  This0::#inner() rcv14=this.#inner()
+  rcv14.#apply(that:that, val:val)
+  )
+mut method 
+Void add(This3.N that, This1.Top val) this.#inner().add(that:that, val:val)
+mut method 
+Void add(This1.Top right) (
+  This0::#inner() rcv15=this.#inner()
+  rcv15.add(that:rcv15.size(), val:right)
+  )
+mut method 
+Void add(This1.Top left) this.#inner().add(that:This3.N.#from(builder:(
+  This3.N::#builder() b=This3.N.#builder()
+  Void unused=b.#0()
+  b
+  )), val:left)
+mut method 
+Void remove(This3.N that) this.#inner().remove(that:that)
+mut method 
+Void left(This1.Top that) (
+  This0::#inner() rcv16=this.#inner()
+  rcv16.#apply(that:This3.N.#from(builder:(
+    This3.N::#builder() b=This3.N.#builder()
+    Void unused=b.#0()
+    b
+    )), val:that)
+  )
+mut method 
+Void right(This1.Top that) (
+  This0::#inner() rcv17=this.#inner()
+  rcv17.#apply(that:rcv17.size().#less(that:This3.N.#from(builder:(
+    This3.N::#builder() b=This3.N.#builder()
+    Void unused=b.#1()
+    b
+    ))), val:that)
+  )
+method 
+This0 without(This3.N that) This0.#immK(inner:this.inner().without(that:that))
+method 
+This0 withoutLeft() This0.#immK(inner:this.inner().without(that:This3.N.#from(builder:(
+  This3.N::#builder() b=This3.N.#builder()
+  Void unused=b.#0()
+  b
+  ))))
+method 
+This0 withAlso(This3.N that, This1.Top val) This0.#immK(inner:this.inner().withAlso(that:that, val:val))
+method 
+This0 with(This3.N that, This1.Top val) This0.#immK(inner:this.inner().with(that:that, val:val))
+read method 
+mut This0 reverse() (
+  This0::empty() result=This0.empty()
+  Void unused=(
+    This0::vals() e=this.vals()
+    (
+      Void unused0=(
+        Void unused1=(
+          Void unused2=loop (
+            Void unused3=e.#next()
+            
+            catch exception Void catched0 (
+              Void unused4=(
+                Void unused5=e.#checkEnd()
+                
+                catch exception Void catched1 void
+                
+                void
+                )
+              exception void
+              )
+            
+            result.add(left:e.#inner())
+            )
+          
+          catch exception Void catched3 void
+          
+          void
+          )
+        
+        catch exception Any propagated (
+          Void unused6=e.#close()
+          exception propagated
+          )
+        
+        void
+        )
+      
+      catch return Any propagated0 (
+        Void unused7=e.#close()
+        return propagated0
+        )
+      
+      e.#close()
+      )
+    )
+  result
+  )
+read method 
+This3.N size() this.inner().size()
+read method 
+This3.Bool isEmpty() this.size().#equalequal(that:This3.N.#from(builder:(
+  This3.N::#builder() b=This3.N.#builder()
+  Void unused=b.#0()
+  b
+  )))
+method 
+This0 #plus(This1.Top that) this.withAlso(that:this.size(), val:that)
+method 
+This0 #plusplus(This0 that) (
+  Void unused=(
+    mut This0 res=This0.empty()
+    Void unused0=(
+      This0::vals() e=this.vals()
+      (
+        Void unused3=(
+          Void unused4=(
+            Void unused5=loop (
+              Void unused6=e.#next()
+              
+              catch exception Void catched0 (
+                Void unused7=(
+                  Void unused8=e.#checkEnd()
+                  
+                  catch exception Void catched1 void
+                  
+                  void
+                  )
+                exception void
+                )
+              
+              res.add(right:e.#inner())
+              )
+            
+            catch exception Void catched3 void
+            
+            void
+            )
+          
+          catch exception Any propagated (
+            Void unused9=e.#close()
+            exception propagated
+            )
+          
+          void
+          )
+        
+        catch return This0 propagated0 (
+          Void unused10=e.#close()
+          return propagated0
+          )
+        
+        e.#close()
+        )
+      )
+    Void unused1=(
+      This0::vals() e=that.vals()
+      (
+        Void unused11=(
+          Void unused12=(
+            Void unused13=loop (
+              Void unused14=e.#next()
+              
+              catch exception Void catched9 (
+                Void unused15=(
+                  Void unused16=e.#checkEnd()
+                  
+                  catch exception Void catched10 void
+                  
+                  void
+                  )
+                exception void
+                )
+              
+              res.add(right:e.#inner())
+              )
+            
+            catch exception Void catched12 void
+            
+            void
+            )
+          
+          catch exception Any propagated1 (
+            Void unused17=e.#close()
+            exception propagated1
+            )
+          
+          void
+          )
+        
+        catch return This0 propagated2 (
+          Void unused18=e.#close()
+          return propagated2
+          )
+        
+        e.#close()
+        )
+      )
+    Void unused2=return res
+    void
+    )
+  
+  catch return This0 result result
+  
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
+  }
+  )
+IteratorTrait:{
+class method 
+Library #apply() {
+read method 
+read This5.Collections.MutListAny that() 
+read method 
+This5.N from() 
+mut method 
+Void from(This5.N that) 
+read method 
+This5.N to() 
+read method 
+This5.N stopOk() 
+mut method 
+Void #next() exception Void (
+  Void unused=this.from(that:this.from().#plus(that:This5.N.#from(builder:(
+    This5.N::#builder() b=This5.N.#builder()
+    Void unused1=b.#1()
+    b
+    ))))
+  Void unused0=(
+    This0::to() ::#right(that ) ::#and(that ) cond=this.to().#right(that:This5.N.#from(builder:(
+      This5.N::#builder() b0=This5.N.#builder()
+      Void unused2=b0.#0()
+      b0
+      ))).#and(that:this.from().#rightequal(that:this.to()))
+    (
+      Void unused3=cond.#checkTrue()
+      
+      catch exception Void catched2 void
+      
+      exception void
+      )
+    )
+  (
+    This0::from() ::#rightequal(that ) cond0=this.from().#rightequal(that:this.that().size())
+    (
+      Void unused4=cond0.#checkTrue()
+      
+      catch exception Void catched5 void
+      
+      exception void
+      )
+    )
+  )
+read method 
+Void #checkEnd() (
+  This0::from() ::#left(that ) cond=this.from().#left(that:this.stopOk())
+  (
+    Void unused=cond.#checkTrue()
+    
+    catch exception Void catched0 void
+    
+    error This5.Collections.CollectionErrors.iterationTermination(from:this.from(), stopOk:this.stopOk(), size:this.that().size())
+    )
+  )
+read method 
+This3.Top #inner() This2.cast(that:this.that().val(that:this.from()))
+read method 
+Void #close() void}}
+read method 
+lent This0.IteratorVal vals(This3.N from, This3.N to, This3.N stopOk) This0.IteratorVal.#apply(that:this.inner(), from:from, to:to, stopOk:stopOk)
+read method 
+lent This0.IteratorVal vals(This3.N stopOk) this.vals(from:This3.N.#from(builder:(
+  This3.N::#builder() b=This3.N.#builder()
+  Void unused=b.#0()
+  b
+  )).#less(that:This3.N.#from(builder:(
+  This3.N::#builder() b0=This3.N.#builder()
+  Void unused0=b0.#1()
+  b0
+  ))), to:This3.N.#from(builder:(
+  This3.N::#builder() b1=This3.N.#builder()
+  Void unused1=b1.#0()
+  b1
+  )).#less(that:This3.N.#from(builder:(
+  This3.N::#builder() b2=This3.N.#builder()
+  Void unused2=b2.#2()
+  b2
+  ))), stopOk:stopOk)
+read method 
+lent This0.IteratorVal vals(This3.N from, This3.N to) this.vals(from:from, to:to, stopOk:this.inner().size())
+read method 
+lent This0.IteratorVal vals() this.vals(from:This3.N.#from(builder:(
+  This3.N::#builder() b=This3.N.#builder()
+  Void unused=b.#0()
+  b
+  )).#less(that:This3.N.#from(builder:(
+  This3.N::#builder() b0=This3.N.#builder()
+  Void unused0=b0.#1()
+  b0
+  ))), to:This3.N.#from(builder:(
+  This3.N::#builder() b1=This3.N.#builder()
+  Void unused1=b1.#0()
+  b1
+  )).#less(that:This3.N.#from(builder:(
+  This3.N::#builder() b2=This3.N.#builder()
+  Void unused2=b2.#2()
+  b2
+  ))), stopOk:this.inner().size())
+IteratorVal:{
+read method 
+read This4.Collections.MutListAny that() 
+read method 
+This4.N from() 
+mut method 
+Void from(This4.N that) 
+read method 
+This4.N to() 
+read method 
+This4.N stopOk() 
+mut method 
+Void #next() exception Void (
+  Void unused=this.from(that:this.from().#plus(that:This4.N.#from(builder:(
+    This4.N::#builder() b=This4.N.#builder()
+    Void unused1=b.#1()
+    b
+    ))))
+  Void unused0=(
+    This0::to() ::#right(that ) ::#and(that ) cond=this.to().#right(that:This4.N.#from(builder:(
+      This4.N::#builder() b0=This4.N.#builder()
+      Void unused2=b0.#0()
+      b0
+      ))).#and(that:this.from().#rightequal(that:this.to()))
+    (
+      Void unused3=cond.#checkTrue()
+      
+      catch exception Void catched2 void
+      
+      exception void
+      )
+    )
+  (
+    This0::from() ::#rightequal(that ) cond0=this.from().#rightequal(that:this.that().size())
+    (
+      Void unused4=cond0.#checkTrue()
+      
+      catch exception Void catched5 void
+      
+      exception void
+      )
+    )
+  )
+read method 
+Void #checkEnd() (
+  This0::from() ::#left(that ) cond=this.from().#left(that:this.stopOk())
+  (
+    Void unused=cond.#checkTrue()
+    
+    catch exception Void catched0 void
+    
+    error This4.Collections.CollectionErrors.iterationTermination(from:this.from(), stopOk:this.stopOk(), size:this.that().size())
+    )
+  )
+read method 
+This2.Top #inner() This1.cast(that:this.that().val(that:this.from()))
+read method 
+Void #close() void
+class method 
+lent This0 #lentK(read This4.Collections.MutListAny that, This4.N from, This4.N to, This4.N stopOk) 
+class method 
+lent This0 #apply(read This4.Collections.MutListAny that, This4.N from, This4.N to, This4.N stopOk) This0.#lentK(that:that, from:from, to:to, stopOk:stopOk)
+mut method 
+read This4.Collections.MutListAny #that() 
+mut method 
+This4.N #from() 
+mut method 
+This4.N #to() 
+mut method 
+This4.N #stopOk() }
+mut method 
+lent This0.IteratorVar #vals(This3.N from, This3.N to, This3.N stopOk) This0.IteratorVar.#apply(that:this.#inner(), from:from, to:to, stopOk:stopOk)
+mut method 
+lent This0.IteratorVar #vals(This3.N stopOk) this.#vals(from:This3.N.#from(builder:(
+  This3.N::#builder() b=This3.N.#builder()
+  Void unused=b.#0()
+  b
+  )).#less(that:This3.N.#from(builder:(
+  This3.N::#builder() b0=This3.N.#builder()
+  Void unused0=b0.#1()
+  b0
+  ))), to:This3.N.#from(builder:(
+  This3.N::#builder() b1=This3.N.#builder()
+  Void unused1=b1.#0()
+  b1
+  )).#less(that:This3.N.#from(builder:(
+  This3.N::#builder() b2=This3.N.#builder()
+  Void unused2=b2.#2()
+  b2
+  ))), stopOk:stopOk)
+mut method 
+lent This0.IteratorVar #vals(This3.N from, This3.N to) this.#vals(from:from, to:to, stopOk:this.inner().size())
+mut method 
+lent This0.IteratorVar #vals() this.#vals(from:This3.N.#from(builder:(
+  This3.N::#builder() b=This3.N.#builder()
+  Void unused=b.#0()
+  b
+  )).#less(that:This3.N.#from(builder:(
+  This3.N::#builder() b0=This3.N.#builder()
+  Void unused0=b0.#1()
+  b0
+  ))), to:This3.N.#from(builder:(
+  This3.N::#builder() b1=This3.N.#builder()
+  Void unused1=b1.#0()
+  b1
+  )).#less(that:This3.N.#from(builder:(
+  This3.N::#builder() b2=This3.N.#builder()
+  Void unused2=b2.#2()
+  b2
+  ))), stopOk:this.inner().size())
+IteratorVar:{
+read method 
+read This4.Collections.MutListAny that() 
+read method 
+This4.N from() 
+mut method 
+Void from(This4.N that) 
+read method 
+This4.N to() 
+read method 
+This4.N stopOk() 
+mut method 
+Void #next() exception Void (
+  Void unused=this.from(that:this.from().#plus(that:This4.N.#from(builder:(
+    This4.N::#builder() b=This4.N.#builder()
+    Void unused1=b.#1()
+    b
+    ))))
+  Void unused0=(
+    This0::to() ::#right(that ) ::#and(that ) cond=this.to().#right(that:This4.N.#from(builder:(
+      This4.N::#builder() b0=This4.N.#builder()
+      Void unused2=b0.#0()
+      b0
+      ))).#and(that:this.from().#rightequal(that:this.to()))
+    (
+      Void unused3=cond.#checkTrue()
+      
+      catch exception Void catched2 void
+      
+      exception void
+      )
+    )
+  (
+    This0::from() ::#rightequal(that ) cond0=this.from().#rightequal(that:this.that().size())
+    (
+      Void unused4=cond0.#checkTrue()
+      
+      catch exception Void catched5 void
+      
+      exception void
+      )
+    )
+  )
+read method 
+Void #checkEnd() (
+  This0::from() ::#left(that ) cond=this.from().#left(that:this.stopOk())
+  (
+    Void unused=cond.#checkTrue()
+    
+    catch exception Void catched0 void
+    
+    error This4.Collections.CollectionErrors.iterationTermination(from:this.from(), stopOk:this.stopOk(), size:this.that().size())
+    )
+  )
+read method 
+This2.Top #inner() This1.cast(that:this.that().val(that:this.from()))
+read method 
+Void #close() void
+class method 
+mut This0 #mutK(mut This4.Collections.MutListAny that, This4.N from, This4.N to, This4.N stopOk) 
+class method 
+mut This0 #apply(mut This4.Collections.MutListAny that, This4.N from, This4.N to, This4.N stopOk) This0.#mutK(that:that, from:from, to:to, stopOk:stopOk)
+mut method 
+mut This4.Collections.MutListAny #that() 
+mut method 
+This4.N #from() 
+mut method 
+This4.N #to() 
+mut method 
+This4.N #stopOk() 
+mut method 
+Void inner(This2.Top that) (
+  This0::#that() rcv18=this.#that()
+  rcv18.#apply(that:this.from(), val:that)
+  )}
+read method 
+This3.Bool contains(This1.Top that) (
+  Void unused=(
+    Void unused0=(
+      This0::vals() e=this.vals()
+      (
+        Void unused2=(
+          Void unused3=(
+            Void unused4=loop (
+              Void unused5=e.#next()
+              
+              catch exception Void catched0 (
+                Void unused6=(
+                  Void unused7=e.#checkEnd()
+                  
+                  catch exception Void catched1 void
+                  
+                  void
+                  )
+                exception void
+                )
+              
+              (
+                This0::vals() ::#inner() ::equals(that ) cond=e.#inner().equals(that:that)
+                (
+                  Void unused8=cond.#checkTrue()
+                  
+                  catch exception Void catched4 void
+                  
+                  return This3.Bool.true()
+                  )
+                )
+              )
+            
+            catch exception Void catched5 void
+            
+            void
+            )
+          
+          catch exception Any propagated (
+            Void unused9=e.#close()
+            exception propagated
+            )
+          
+          void
+          )
+        
+        catch return This3.Bool propagated0 (
+          Void unused10=e.#close()
+          return propagated0
+          )
+        
+        e.#close()
+        )
+      )
+    Void unused1=return This3.Bool.false()
+    void
+    )
+  
+  catch return This3.Bool result result
+  
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
+  }
+  )
+method 
+This0 withoutAll(This1.Top that) This0.#from(seqBuilder:(
+  This0::#seqBuilder() b=This0.#seqBuilder()
+  Void unused=(
+    This0::vals() e=this.vals()
+    (
+      Void unused0=(
+        Void unused1=(
+          Void unused2=loop (
+            Void unused3=e.#next()
+            
+            catch exception Void catched0 (
+              Void unused4=(
+                Void unused5=e.#checkEnd()
+                
+                catch exception Void catched1 void
+                
+                void
+                )
+              exception void
+              )
+            
+            (
+              This0::vals() ::#inner() ::equals(that ) ::#bang() cond=e.#inner().equals(that:that).#bang()
+              (
+                Void unused6=cond.#checkTrue()
+                
+                catch exception Void catched4 void
+                
+                (
+                  Void unused7=b.#add(that:e.#inner())
+                  void
+                  )
+                )
+              )
+            )
+          
+          catch exception Void catched6 void
+          
+          void
+          )
+        
+        catch exception Any propagated (
+          Void unused8=e.#close()
+          exception propagated
+          )
+        
+        void
+        )
+      
+      catch return Any propagated0 (
+        Void unused9=e.#close()
+        return propagated0
+        )
+      
+      e.#close()
+      )
+    )
+  b
+  ))
+method 
+This0 #less(This1.Top that) this.withoutAll(that:that)
+method 
+This0 #lessless(This0 that) This0.#from(seqBuilder:(
+  This0::#seqBuilder() b=This0.#seqBuilder()
+  Void unused=(
+    This0::vals() e=this.vals()
+    (
+      Void unused0=(
+        Void unused1=(
+          Void unused2=loop (
+            Void unused3=e.#next()
+            
+            catch exception Void catched0 (
+              Void unused4=(
+                Void unused5=e.#checkEnd()
+                
+                catch exception Void catched1 void
+                
+                void
+                )
+              exception void
+              )
+            
+            (
+              This0::contains(that ) ::#bang() cond=that.contains(that:e.#inner()).#bang()
+              (
+                Void unused6=cond.#checkTrue()
+                
+                catch exception Void catched4 void
+                
+                (
+                  Void unused7=b.#add(that:e.#inner())
+                  void
+                  )
+                )
+              )
+            )
+          
+          catch exception Void catched6 void
+          
+          void
+          )
+        
+        catch exception Any propagated (
+          Void unused8=e.#close()
+          exception propagated
+          )
+        
+        void
+        )
+      
+      catch return Any propagated0 (
+        Void unused9=e.#close()
+        return propagated0
+        )
+      
+      e.#close()
+      )
+    )
+  b
+  ))
+read method 
+This3.Bool #bangequal(read This0 that) this.#equalequal(that:that).#bang()
+read method 
+This3.Bool #equalequal(read This0 that) (
+  Void unused=(
+    Void unused0=(
+      This0::vals() e1=this.vals()
+      (
+        Void unused1=(
+          Void unused2=(
+            This0::vals() e2=that.vals()
+            (
+              Void unused3=(
+                Void unused4=(
+                  Void unused5=loop (
+                    Void unused6=e1.#next()
+                    
+                    catch exception Void catched1 (
+                      Void unused7=(
+                        Void unused10=e2.#next()
+                        
+                        catch exception Void catched2 void
+                        
+                        void
+                        )
+                      Void unused8=(
+                        Void unused11=e1.#checkEnd()
+                        
+                        catch exception Void catched3 void
+                        
+                        void
+                        )
+                      Void unused9=(
+                        Void unused12=e2.#checkEnd()
+                        
+                        catch exception Void catched4 void
+                        
+                        void
+                        )
+                      exception void
+                      )
+                    
+                    (
+                      Void unused13=e2.#next()
+                      
+                      catch exception Void catched6 (
+                        Void unused14=(
+                          Void unused16=e1.#checkEnd()
+                          
+                          catch exception Void catched7 void
+                          
+                          void
+                          )
+                        Void unused15=(
+                          Void unused17=e2.#checkEnd()
+                          
+                          catch exception Void catched8 void
+                          
+                          void
+                          )
+                        exception void
+                        )
+                      
+                      (
+                        This0::vals() ::#inner() ::equals(that ) ::#bang() cond=e1.#inner().equals(that:e2.#inner()).#bang()
+                        (
+                          Void unused18=cond.#checkTrue()
+                          
+                          catch exception Void catched11 void
+                          
+                          return This3.Bool.false()
+                          )
+                        )
+                      )
+                    )
+                  
+                  catch exception Void catched12 void
+                  
+                  void
+                  )
+                
+                catch exception Any propagated (
+                  Void unused19=e2.#close()
+                  exception propagated
+                  )
+                
+                void
+                )
+              
+              catch return This3.Bool propagated0 (
+                Void unused20=e2.#close()
+                return propagated0
+                )
+              
+              e2.#close()
+              )
+            )
+          
+          catch exception Any propagated1 (
+            Void unused21=e1.#close()
+            exception propagated1
+            )
+          
+          void
+          )
+        
+        catch return This3.Bool propagated2 (
+          Void unused22=e1.#close()
+          return propagated2
+          )
+        
+        e1.#close()
+        )
+      )
+    
+    catch error This3.Collections.IterationFailure catched21 return This3.Bool.false()
+    
+    (
+      Void unused23=return This3.Bool.true()
+      void
+      )
+    )
+  
+  catch return This3.Bool result result
+  
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
+  }
+  )
+method equals(that ) (
+  Void unused=(
+    Void unused0=(
+      read This0 that0=(
+        Void unused2=return that
+        
+        catch return read This0 casted casted
+        
+        catch return read Any casted exception void
+        
+        error {//@stringU
+        //CastT-Should be unreachable code
+        }
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return this.#equalequal(that:that0)
+        void
+        )
+      )
+    Void unused1=return This3.Bool.false()
+    void
+    )
+  
+  catch return This0::equals(that )  result result
   
   error {//@stringU
   //CurlyBlock-Should be unreachable code
@@ -15931,6 +16904,912 @@ mut This3.S.SConcat #seqBuilder() This3.S.SConcat.#apply(old:this.text(), accumu
   This3.S::#builder() b=This3.S.#builder()
   b
   )))}
+List:{<:This3.Concept.Equals
+class method 
+mut This0 #mutK(mut This3.Collections.MutListAny inner) 
+class method 
+mut This0 #apply(mut This3.Collections.MutListAny inner) This0.#mutK(inner:inner)
+mut method 
+mut This3.Collections.MutListAny #inner() 
+read method 
+read This3.Collections.MutListAny inner() 
+class method 
+This0 #immK(This3.Collections.MutListAny inner) 
+class method 
+mut This0 empty() This0.#apply(inner:This3.Collections.MutListAny.empty())
+class method 
+mut This0 #seqBuilder() this.empty()
+class method 
+This0 #from(This0 seqBuilder) seqBuilder
+mut method 
+Void #add(This1 that) this.add(right:that)
+class method 
+This1 cast(Any that) (
+  Void unused=(
+    This1 that0=(
+      Void unused0=return that
+      
+      catch return This1 casted casted
+      
+      catch return Any casted exception void
+      
+      error {//@stringU
+      //CastT-Should be unreachable code
+      }
+      )
+    
+    catch exception Void catched0 error This3.Collections.CollectionErrors.cast()
+    
+    (
+      Void unused1=return that0
+      void
+      )
+    )
+  
+  catch return This1 result result
+  
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
+  }
+  )
+read method 
+This1 val(This3.N that) This0.cast(that:this.inner().val(that:that))
+read method 
+This1 left() This0.cast(that:this.inner().val(that:This3.N.#from(builder:(
+  This3.N::#builder() b=This3.N.#builder()
+  Void unused=b.#0()
+  b
+  ))))
+read method 
+This1 right() This0.cast(that:(
+  This0::inner() rcv13=this.inner()
+  rcv13.val(that:rcv13.size().#less(that:This3.N.#from(builder:(
+    This3.N::#builder() b=This3.N.#builder()
+    Void unused=b.#1()
+    b
+    ))))
+  ))
+mut method 
+Void #apply(This3.N that, This1 val) (
+  This0::#inner() rcv14=this.#inner()
+  rcv14.#apply(that:that, val:val)
+  )
+mut method 
+Void add(This3.N that, This1 val) this.#inner().add(that:that, val:val)
+mut method 
+Void add(This1 right) (
+  This0::#inner() rcv15=this.#inner()
+  rcv15.add(that:rcv15.size(), val:right)
+  )
+mut method 
+Void add(This1 left) this.#inner().add(that:This3.N.#from(builder:(
+  This3.N::#builder() b=This3.N.#builder()
+  Void unused=b.#0()
+  b
+  )), val:left)
+mut method 
+Void remove(This3.N that) this.#inner().remove(that:that)
+mut method 
+Void left(This1 that) (
+  This0::#inner() rcv16=this.#inner()
+  rcv16.#apply(that:This3.N.#from(builder:(
+    This3.N::#builder() b=This3.N.#builder()
+    Void unused=b.#0()
+    b
+    )), val:that)
+  )
+mut method 
+Void right(This1 that) (
+  This0::#inner() rcv17=this.#inner()
+  rcv17.#apply(that:rcv17.size().#less(that:This3.N.#from(builder:(
+    This3.N::#builder() b=This3.N.#builder()
+    Void unused=b.#1()
+    b
+    ))), val:that)
+  )
+method 
+This0 without(This3.N that) This0.#immK(inner:this.inner().without(that:that))
+method 
+This0 withoutLeft() This0.#immK(inner:this.inner().without(that:This3.N.#from(builder:(
+  This3.N::#builder() b=This3.N.#builder()
+  Void unused=b.#0()
+  b
+  ))))
+method 
+This0 withAlso(This3.N that, This1 val) This0.#immK(inner:this.inner().withAlso(that:that, val:val))
+method 
+This0 with(This3.N that, This1 val) This0.#immK(inner:this.inner().with(that:that, val:val))
+read method 
+mut This0 reverse() (
+  This0::empty() result=This0.empty()
+  Void unused=(
+    This0::vals() e=this.vals()
+    (
+      Void unused0=(
+        Void unused1=(
+          Void unused2=loop (
+            Void unused3=e.#next()
+            
+            catch exception Void catched0 (
+              Void unused4=(
+                Void unused5=e.#checkEnd()
+                
+                catch exception Void catched1 void
+                
+                void
+                )
+              exception void
+              )
+            
+            result.add(left:e.#inner())
+            )
+          
+          catch exception Void catched3 void
+          
+          void
+          )
+        
+        catch exception Any propagated (
+          Void unused6=e.#close()
+          exception propagated
+          )
+        
+        void
+        )
+      
+      catch return Any propagated0 (
+        Void unused7=e.#close()
+        return propagated0
+        )
+      
+      e.#close()
+      )
+    )
+  result
+  )
+read method 
+This3.N size() this.inner().size()
+read method 
+This3.Bool isEmpty() this.size().#equalequal(that:This3.N.#from(builder:(
+  This3.N::#builder() b=This3.N.#builder()
+  Void unused=b.#0()
+  b
+  )))
+method 
+This0 #plus(This1 that) this.withAlso(that:this.size(), val:that)
+method 
+This0 #plusplus(This0 that) (
+  Void unused=(
+    mut This0 res=This0.empty()
+    Void unused0=(
+      This0::vals() e=this.vals()
+      (
+        Void unused3=(
+          Void unused4=(
+            Void unused5=loop (
+              Void unused6=e.#next()
+              
+              catch exception Void catched0 (
+                Void unused7=(
+                  Void unused8=e.#checkEnd()
+                  
+                  catch exception Void catched1 void
+                  
+                  void
+                  )
+                exception void
+                )
+              
+              res.add(right:e.#inner())
+              )
+            
+            catch exception Void catched3 void
+            
+            void
+            )
+          
+          catch exception Any propagated (
+            Void unused9=e.#close()
+            exception propagated
+            )
+          
+          void
+          )
+        
+        catch return This0 propagated0 (
+          Void unused10=e.#close()
+          return propagated0
+          )
+        
+        e.#close()
+        )
+      )
+    Void unused1=(
+      This0::vals() e=that.vals()
+      (
+        Void unused11=(
+          Void unused12=(
+            Void unused13=loop (
+              Void unused14=e.#next()
+              
+              catch exception Void catched9 (
+                Void unused15=(
+                  Void unused16=e.#checkEnd()
+                  
+                  catch exception Void catched10 void
+                  
+                  void
+                  )
+                exception void
+                )
+              
+              res.add(right:e.#inner())
+              )
+            
+            catch exception Void catched12 void
+            
+            void
+            )
+          
+          catch exception Any propagated1 (
+            Void unused17=e.#close()
+            exception propagated1
+            )
+          
+          void
+          )
+        
+        catch return This0 propagated2 (
+          Void unused18=e.#close()
+          return propagated2
+          )
+        
+        e.#close()
+        )
+      )
+    Void unused2=return res
+    void
+    )
+  
+  catch return This0 result result
+  
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
+  }
+  )
+IteratorTrait:{
+class method 
+Library #apply() {
+read method 
+read This5.Collections.MutListAny that() 
+read method 
+This5.N from() 
+mut method 
+Void from(This5.N that) 
+read method 
+This5.N to() 
+read method 
+This5.N stopOk() 
+mut method 
+Void #next() exception Void (
+  Void unused=this.from(that:this.from().#plus(that:This5.N.#from(builder:(
+    This5.N::#builder() b=This5.N.#builder()
+    Void unused1=b.#1()
+    b
+    ))))
+  Void unused0=(
+    This0::to() ::#right(that ) ::#and(that ) cond=this.to().#right(that:This5.N.#from(builder:(
+      This5.N::#builder() b0=This5.N.#builder()
+      Void unused2=b0.#0()
+      b0
+      ))).#and(that:this.from().#rightequal(that:this.to()))
+    (
+      Void unused3=cond.#checkTrue()
+      
+      catch exception Void catched2 void
+      
+      exception void
+      )
+    )
+  (
+    This0::from() ::#rightequal(that ) cond0=this.from().#rightequal(that:this.that().size())
+    (
+      Void unused4=cond0.#checkTrue()
+      
+      catch exception Void catched5 void
+      
+      exception void
+      )
+    )
+  )
+read method 
+Void #checkEnd() (
+  This0::from() ::#left(that ) cond=this.from().#left(that:this.stopOk())
+  (
+    Void unused=cond.#checkTrue()
+    
+    catch exception Void catched0 void
+    
+    error This5.Collections.CollectionErrors.iterationTermination(from:this.from(), stopOk:this.stopOk(), size:this.that().size())
+    )
+  )
+read method 
+This3 #inner() This2.cast(that:this.that().val(that:this.from()))
+read method 
+Void #close() void}}
+read method 
+lent This0.IteratorVal vals(This3.N from, This3.N to, This3.N stopOk) This0.IteratorVal.#apply(that:this.inner(), from:from, to:to, stopOk:stopOk)
+read method 
+lent This0.IteratorVal vals(This3.N stopOk) this.vals(from:This3.N.#from(builder:(
+  This3.N::#builder() b=This3.N.#builder()
+  Void unused=b.#0()
+  b
+  )).#less(that:This3.N.#from(builder:(
+  This3.N::#builder() b0=This3.N.#builder()
+  Void unused0=b0.#1()
+  b0
+  ))), to:This3.N.#from(builder:(
+  This3.N::#builder() b1=This3.N.#builder()
+  Void unused1=b1.#0()
+  b1
+  )).#less(that:This3.N.#from(builder:(
+  This3.N::#builder() b2=This3.N.#builder()
+  Void unused2=b2.#2()
+  b2
+  ))), stopOk:stopOk)
+read method 
+lent This0.IteratorVal vals(This3.N from, This3.N to) this.vals(from:from, to:to, stopOk:this.inner().size())
+read method 
+lent This0.IteratorVal vals() this.vals(from:This3.N.#from(builder:(
+  This3.N::#builder() b=This3.N.#builder()
+  Void unused=b.#0()
+  b
+  )).#less(that:This3.N.#from(builder:(
+  This3.N::#builder() b0=This3.N.#builder()
+  Void unused0=b0.#1()
+  b0
+  ))), to:This3.N.#from(builder:(
+  This3.N::#builder() b1=This3.N.#builder()
+  Void unused1=b1.#0()
+  b1
+  )).#less(that:This3.N.#from(builder:(
+  This3.N::#builder() b2=This3.N.#builder()
+  Void unused2=b2.#2()
+  b2
+  ))), stopOk:this.inner().size())
+IteratorVal:{
+read method 
+read This4.Collections.MutListAny that() 
+read method 
+This4.N from() 
+mut method 
+Void from(This4.N that) 
+read method 
+This4.N to() 
+read method 
+This4.N stopOk() 
+mut method 
+Void #next() exception Void (
+  Void unused=this.from(that:this.from().#plus(that:This4.N.#from(builder:(
+    This4.N::#builder() b=This4.N.#builder()
+    Void unused1=b.#1()
+    b
+    ))))
+  Void unused0=(
+    This0::to() ::#right(that ) ::#and(that ) cond=this.to().#right(that:This4.N.#from(builder:(
+      This4.N::#builder() b0=This4.N.#builder()
+      Void unused2=b0.#0()
+      b0
+      ))).#and(that:this.from().#rightequal(that:this.to()))
+    (
+      Void unused3=cond.#checkTrue()
+      
+      catch exception Void catched2 void
+      
+      exception void
+      )
+    )
+  (
+    This0::from() ::#rightequal(that ) cond0=this.from().#rightequal(that:this.that().size())
+    (
+      Void unused4=cond0.#checkTrue()
+      
+      catch exception Void catched5 void
+      
+      exception void
+      )
+    )
+  )
+read method 
+Void #checkEnd() (
+  This0::from() ::#left(that ) cond=this.from().#left(that:this.stopOk())
+  (
+    Void unused=cond.#checkTrue()
+    
+    catch exception Void catched0 void
+    
+    error This4.Collections.CollectionErrors.iterationTermination(from:this.from(), stopOk:this.stopOk(), size:this.that().size())
+    )
+  )
+read method 
+This2 #inner() This1.cast(that:this.that().val(that:this.from()))
+read method 
+Void #close() void
+class method 
+lent This0 #lentK(read This4.Collections.MutListAny that, This4.N from, This4.N to, This4.N stopOk) 
+class method 
+lent This0 #apply(read This4.Collections.MutListAny that, This4.N from, This4.N to, This4.N stopOk) This0.#lentK(that:that, from:from, to:to, stopOk:stopOk)
+mut method 
+read This4.Collections.MutListAny #that() 
+mut method 
+This4.N #from() 
+mut method 
+This4.N #to() 
+mut method 
+This4.N #stopOk() }
+mut method 
+lent This0.IteratorVar #vals(This3.N from, This3.N to, This3.N stopOk) This0.IteratorVar.#apply(that:this.#inner(), from:from, to:to, stopOk:stopOk)
+mut method 
+lent This0.IteratorVar #vals(This3.N stopOk) this.#vals(from:This3.N.#from(builder:(
+  This3.N::#builder() b=This3.N.#builder()
+  Void unused=b.#0()
+  b
+  )).#less(that:This3.N.#from(builder:(
+  This3.N::#builder() b0=This3.N.#builder()
+  Void unused0=b0.#1()
+  b0
+  ))), to:This3.N.#from(builder:(
+  This3.N::#builder() b1=This3.N.#builder()
+  Void unused1=b1.#0()
+  b1
+  )).#less(that:This3.N.#from(builder:(
+  This3.N::#builder() b2=This3.N.#builder()
+  Void unused2=b2.#2()
+  b2
+  ))), stopOk:stopOk)
+mut method 
+lent This0.IteratorVar #vals(This3.N from, This3.N to) this.#vals(from:from, to:to, stopOk:this.inner().size())
+mut method 
+lent This0.IteratorVar #vals() this.#vals(from:This3.N.#from(builder:(
+  This3.N::#builder() b=This3.N.#builder()
+  Void unused=b.#0()
+  b
+  )).#less(that:This3.N.#from(builder:(
+  This3.N::#builder() b0=This3.N.#builder()
+  Void unused0=b0.#1()
+  b0
+  ))), to:This3.N.#from(builder:(
+  This3.N::#builder() b1=This3.N.#builder()
+  Void unused1=b1.#0()
+  b1
+  )).#less(that:This3.N.#from(builder:(
+  This3.N::#builder() b2=This3.N.#builder()
+  Void unused2=b2.#2()
+  b2
+  ))), stopOk:this.inner().size())
+IteratorVar:{
+read method 
+read This4.Collections.MutListAny that() 
+read method 
+This4.N from() 
+mut method 
+Void from(This4.N that) 
+read method 
+This4.N to() 
+read method 
+This4.N stopOk() 
+mut method 
+Void #next() exception Void (
+  Void unused=this.from(that:this.from().#plus(that:This4.N.#from(builder:(
+    This4.N::#builder() b=This4.N.#builder()
+    Void unused1=b.#1()
+    b
+    ))))
+  Void unused0=(
+    This0::to() ::#right(that ) ::#and(that ) cond=this.to().#right(that:This4.N.#from(builder:(
+      This4.N::#builder() b0=This4.N.#builder()
+      Void unused2=b0.#0()
+      b0
+      ))).#and(that:this.from().#rightequal(that:this.to()))
+    (
+      Void unused3=cond.#checkTrue()
+      
+      catch exception Void catched2 void
+      
+      exception void
+      )
+    )
+  (
+    This0::from() ::#rightequal(that ) cond0=this.from().#rightequal(that:this.that().size())
+    (
+      Void unused4=cond0.#checkTrue()
+      
+      catch exception Void catched5 void
+      
+      exception void
+      )
+    )
+  )
+read method 
+Void #checkEnd() (
+  This0::from() ::#left(that ) cond=this.from().#left(that:this.stopOk())
+  (
+    Void unused=cond.#checkTrue()
+    
+    catch exception Void catched0 void
+    
+    error This4.Collections.CollectionErrors.iterationTermination(from:this.from(), stopOk:this.stopOk(), size:this.that().size())
+    )
+  )
+read method 
+This2 #inner() This1.cast(that:this.that().val(that:this.from()))
+read method 
+Void #close() void
+class method 
+mut This0 #mutK(mut This4.Collections.MutListAny that, This4.N from, This4.N to, This4.N stopOk) 
+class method 
+mut This0 #apply(mut This4.Collections.MutListAny that, This4.N from, This4.N to, This4.N stopOk) This0.#mutK(that:that, from:from, to:to, stopOk:stopOk)
+mut method 
+mut This4.Collections.MutListAny #that() 
+mut method 
+This4.N #from() 
+mut method 
+This4.N #to() 
+mut method 
+This4.N #stopOk() 
+mut method 
+Void inner(This2 that) (
+  This0::#that() rcv18=this.#that()
+  rcv18.#apply(that:this.from(), val:that)
+  )}
+read method 
+This3.Bool contains(This1 that) (
+  Void unused=(
+    Void unused0=(
+      This0::vals() e=this.vals()
+      (
+        Void unused2=(
+          Void unused3=(
+            Void unused4=loop (
+              Void unused5=e.#next()
+              
+              catch exception Void catched0 (
+                Void unused6=(
+                  Void unused7=e.#checkEnd()
+                  
+                  catch exception Void catched1 void
+                  
+                  void
+                  )
+                exception void
+                )
+              
+              (
+                This0::vals() ::#inner() ::equals(that ) cond=e.#inner().equals(that:that)
+                (
+                  Void unused8=cond.#checkTrue()
+                  
+                  catch exception Void catched4 void
+                  
+                  return This3.Bool.true()
+                  )
+                )
+              )
+            
+            catch exception Void catched5 void
+            
+            void
+            )
+          
+          catch exception Any propagated (
+            Void unused9=e.#close()
+            exception propagated
+            )
+          
+          void
+          )
+        
+        catch return This3.Bool propagated0 (
+          Void unused10=e.#close()
+          return propagated0
+          )
+        
+        e.#close()
+        )
+      )
+    Void unused1=return This3.Bool.false()
+    void
+    )
+  
+  catch return This3.Bool result result
+  
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
+  }
+  )
+method 
+This0 withoutAll(This1 that) This0.#from(seqBuilder:(
+  This0::#seqBuilder() b=This0.#seqBuilder()
+  Void unused=(
+    This0::vals() e=this.vals()
+    (
+      Void unused0=(
+        Void unused1=(
+          Void unused2=loop (
+            Void unused3=e.#next()
+            
+            catch exception Void catched0 (
+              Void unused4=(
+                Void unused5=e.#checkEnd()
+                
+                catch exception Void catched1 void
+                
+                void
+                )
+              exception void
+              )
+            
+            (
+              This0::vals() ::#inner() ::equals(that ) ::#bang() cond=e.#inner().equals(that:that).#bang()
+              (
+                Void unused6=cond.#checkTrue()
+                
+                catch exception Void catched4 void
+                
+                (
+                  Void unused7=b.#add(that:e.#inner())
+                  void
+                  )
+                )
+              )
+            )
+          
+          catch exception Void catched6 void
+          
+          void
+          )
+        
+        catch exception Any propagated (
+          Void unused8=e.#close()
+          exception propagated
+          )
+        
+        void
+        )
+      
+      catch return Any propagated0 (
+        Void unused9=e.#close()
+        return propagated0
+        )
+      
+      e.#close()
+      )
+    )
+  b
+  ))
+method 
+This0 #less(This1 that) this.withoutAll(that:that)
+method 
+This0 #lessless(This0 that) This0.#from(seqBuilder:(
+  This0::#seqBuilder() b=This0.#seqBuilder()
+  Void unused=(
+    This0::vals() e=this.vals()
+    (
+      Void unused0=(
+        Void unused1=(
+          Void unused2=loop (
+            Void unused3=e.#next()
+            
+            catch exception Void catched0 (
+              Void unused4=(
+                Void unused5=e.#checkEnd()
+                
+                catch exception Void catched1 void
+                
+                void
+                )
+              exception void
+              )
+            
+            (
+              This0::contains(that ) ::#bang() cond=that.contains(that:e.#inner()).#bang()
+              (
+                Void unused6=cond.#checkTrue()
+                
+                catch exception Void catched4 void
+                
+                (
+                  Void unused7=b.#add(that:e.#inner())
+                  void
+                  )
+                )
+              )
+            )
+          
+          catch exception Void catched6 void
+          
+          void
+          )
+        
+        catch exception Any propagated (
+          Void unused8=e.#close()
+          exception propagated
+          )
+        
+        void
+        )
+      
+      catch return Any propagated0 (
+        Void unused9=e.#close()
+        return propagated0
+        )
+      
+      e.#close()
+      )
+    )
+  b
+  ))
+read method 
+This3.Bool #bangequal(read This0 that) this.#equalequal(that:that).#bang()
+read method 
+This3.Bool #equalequal(read This0 that) (
+  Void unused=(
+    Void unused0=(
+      This0::vals() e1=this.vals()
+      (
+        Void unused1=(
+          Void unused2=(
+            This0::vals() e2=that.vals()
+            (
+              Void unused3=(
+                Void unused4=(
+                  Void unused5=loop (
+                    Void unused6=e1.#next()
+                    
+                    catch exception Void catched1 (
+                      Void unused7=(
+                        Void unused10=e2.#next()
+                        
+                        catch exception Void catched2 void
+                        
+                        void
+                        )
+                      Void unused8=(
+                        Void unused11=e1.#checkEnd()
+                        
+                        catch exception Void catched3 void
+                        
+                        void
+                        )
+                      Void unused9=(
+                        Void unused12=e2.#checkEnd()
+                        
+                        catch exception Void catched4 void
+                        
+                        void
+                        )
+                      exception void
+                      )
+                    
+                    (
+                      Void unused13=e2.#next()
+                      
+                      catch exception Void catched6 (
+                        Void unused14=(
+                          Void unused16=e1.#checkEnd()
+                          
+                          catch exception Void catched7 void
+                          
+                          void
+                          )
+                        Void unused15=(
+                          Void unused17=e2.#checkEnd()
+                          
+                          catch exception Void catched8 void
+                          
+                          void
+                          )
+                        exception void
+                        )
+                      
+                      (
+                        This0::vals() ::#inner() ::equals(that ) ::#bang() cond=e1.#inner().equals(that:e2.#inner()).#bang()
+                        (
+                          Void unused18=cond.#checkTrue()
+                          
+                          catch exception Void catched11 void
+                          
+                          return This3.Bool.false()
+                          )
+                        )
+                      )
+                    )
+                  
+                  catch exception Void catched12 void
+                  
+                  void
+                  )
+                
+                catch exception Any propagated (
+                  Void unused19=e2.#close()
+                  exception propagated
+                  )
+                
+                void
+                )
+              
+              catch return This3.Bool propagated0 (
+                Void unused20=e2.#close()
+                return propagated0
+                )
+              
+              e2.#close()
+              )
+            )
+          
+          catch exception Any propagated1 (
+            Void unused21=e1.#close()
+            exception propagated1
+            )
+          
+          void
+          )
+        
+        catch return This3.Bool propagated2 (
+          Void unused22=e1.#close()
+          return propagated2
+          )
+        
+        e1.#close()
+        )
+      )
+    
+    catch error This3.Collections.IterationFailure catched21 return This3.Bool.false()
+    
+    (
+      Void unused23=return This3.Bool.true()
+      void
+      )
+    )
+  
+  catch return This3.Bool result result
+  
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
+  }
+  )
+method equals(that ) (
+  Void unused=(
+    Void unused0=(
+      read This0 that0=(
+        Void unused2=return that
+        
+        catch return read This0 casted casted
+        
+        catch return read Any casted exception void
+        
+        error {//@stringU
+        //CastT-Should be unreachable code
+        }
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return this.#equalequal(that:that0)
+        void
+        )
+      )
+    Void unused1=return This3.Bool.false()
+    void
+    )
+  
+  catch return This0::equals(that )  result result
+  
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
+  }
+  )}
 method classAny() This0
 read method 
 class This0 class() This0
@@ -15983,7 +17862,9 @@ method toS() This0.myName().#plusplus(that:This2.S.#from(builder:(
   This2.S::#builder() b=This2.S.#builder()
   Void unused=b.#dot()
   b
-  )).#plusplus(that:This0.names().val(that:this.that())))
+  )).#plusplus(that:this.name()))
+method 
+This2.S name() This0.names().val(that:this.that())
 class method 
 This2.Strings names() This2.Strings.#from(seqBuilder:(
   This2.Strings::#seqBuilder() b=This2.Strings.#seqBuilder()
@@ -16438,6 +18319,912 @@ mut This3.S.SConcat #seqBuilder() This3.S.SConcat.#apply(old:this.text(), accumu
   This3.S::#builder() b=This3.S.#builder()
   b
   )))}
+List:{<:This3.Concept.Equals
+class method 
+mut This0 #mutK(mut This3.Collections.MutListAny inner) 
+class method 
+mut This0 #apply(mut This3.Collections.MutListAny inner) This0.#mutK(inner:inner)
+mut method 
+mut This3.Collections.MutListAny #inner() 
+read method 
+read This3.Collections.MutListAny inner() 
+class method 
+This0 #immK(This3.Collections.MutListAny inner) 
+class method 
+mut This0 empty() This0.#apply(inner:This3.Collections.MutListAny.empty())
+class method 
+mut This0 #seqBuilder() this.empty()
+class method 
+This0 #from(This0 seqBuilder) seqBuilder
+mut method 
+Void #add(This1 that) this.add(right:that)
+class method 
+This1 cast(Any that) (
+  Void unused=(
+    This1 that0=(
+      Void unused0=return that
+      
+      catch return This1 casted casted
+      
+      catch return Any casted exception void
+      
+      error {//@stringU
+      //CastT-Should be unreachable code
+      }
+      )
+    
+    catch exception Void catched0 error This3.Collections.CollectionErrors.cast()
+    
+    (
+      Void unused1=return that0
+      void
+      )
+    )
+  
+  catch return This1 result result
+  
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
+  }
+  )
+read method 
+This1 val(This3.N that) This0.cast(that:this.inner().val(that:that))
+read method 
+This1 left() This0.cast(that:this.inner().val(that:This3.N.#from(builder:(
+  This3.N::#builder() b=This3.N.#builder()
+  Void unused=b.#0()
+  b
+  ))))
+read method 
+This1 right() This0.cast(that:(
+  This0::inner() rcv13=this.inner()
+  rcv13.val(that:rcv13.size().#less(that:This3.N.#from(builder:(
+    This3.N::#builder() b=This3.N.#builder()
+    Void unused=b.#1()
+    b
+    ))))
+  ))
+mut method 
+Void #apply(This3.N that, This1 val) (
+  This0::#inner() rcv14=this.#inner()
+  rcv14.#apply(that:that, val:val)
+  )
+mut method 
+Void add(This3.N that, This1 val) this.#inner().add(that:that, val:val)
+mut method 
+Void add(This1 right) (
+  This0::#inner() rcv15=this.#inner()
+  rcv15.add(that:rcv15.size(), val:right)
+  )
+mut method 
+Void add(This1 left) this.#inner().add(that:This3.N.#from(builder:(
+  This3.N::#builder() b=This3.N.#builder()
+  Void unused=b.#0()
+  b
+  )), val:left)
+mut method 
+Void remove(This3.N that) this.#inner().remove(that:that)
+mut method 
+Void left(This1 that) (
+  This0::#inner() rcv16=this.#inner()
+  rcv16.#apply(that:This3.N.#from(builder:(
+    This3.N::#builder() b=This3.N.#builder()
+    Void unused=b.#0()
+    b
+    )), val:that)
+  )
+mut method 
+Void right(This1 that) (
+  This0::#inner() rcv17=this.#inner()
+  rcv17.#apply(that:rcv17.size().#less(that:This3.N.#from(builder:(
+    This3.N::#builder() b=This3.N.#builder()
+    Void unused=b.#1()
+    b
+    ))), val:that)
+  )
+method 
+This0 without(This3.N that) This0.#immK(inner:this.inner().without(that:that))
+method 
+This0 withoutLeft() This0.#immK(inner:this.inner().without(that:This3.N.#from(builder:(
+  This3.N::#builder() b=This3.N.#builder()
+  Void unused=b.#0()
+  b
+  ))))
+method 
+This0 withAlso(This3.N that, This1 val) This0.#immK(inner:this.inner().withAlso(that:that, val:val))
+method 
+This0 with(This3.N that, This1 val) This0.#immK(inner:this.inner().with(that:that, val:val))
+read method 
+mut This0 reverse() (
+  This0::empty() result=This0.empty()
+  Void unused=(
+    This0::vals() e=this.vals()
+    (
+      Void unused0=(
+        Void unused1=(
+          Void unused2=loop (
+            Void unused3=e.#next()
+            
+            catch exception Void catched0 (
+              Void unused4=(
+                Void unused5=e.#checkEnd()
+                
+                catch exception Void catched1 void
+                
+                void
+                )
+              exception void
+              )
+            
+            result.add(left:e.#inner())
+            )
+          
+          catch exception Void catched3 void
+          
+          void
+          )
+        
+        catch exception Any propagated (
+          Void unused6=e.#close()
+          exception propagated
+          )
+        
+        void
+        )
+      
+      catch return Any propagated0 (
+        Void unused7=e.#close()
+        return propagated0
+        )
+      
+      e.#close()
+      )
+    )
+  result
+  )
+read method 
+This3.N size() this.inner().size()
+read method 
+This3.Bool isEmpty() this.size().#equalequal(that:This3.N.#from(builder:(
+  This3.N::#builder() b=This3.N.#builder()
+  Void unused=b.#0()
+  b
+  )))
+method 
+This0 #plus(This1 that) this.withAlso(that:this.size(), val:that)
+method 
+This0 #plusplus(This0 that) (
+  Void unused=(
+    mut This0 res=This0.empty()
+    Void unused0=(
+      This0::vals() e=this.vals()
+      (
+        Void unused3=(
+          Void unused4=(
+            Void unused5=loop (
+              Void unused6=e.#next()
+              
+              catch exception Void catched0 (
+                Void unused7=(
+                  Void unused8=e.#checkEnd()
+                  
+                  catch exception Void catched1 void
+                  
+                  void
+                  )
+                exception void
+                )
+              
+              res.add(right:e.#inner())
+              )
+            
+            catch exception Void catched3 void
+            
+            void
+            )
+          
+          catch exception Any propagated (
+            Void unused9=e.#close()
+            exception propagated
+            )
+          
+          void
+          )
+        
+        catch return This0 propagated0 (
+          Void unused10=e.#close()
+          return propagated0
+          )
+        
+        e.#close()
+        )
+      )
+    Void unused1=(
+      This0::vals() e=that.vals()
+      (
+        Void unused11=(
+          Void unused12=(
+            Void unused13=loop (
+              Void unused14=e.#next()
+              
+              catch exception Void catched9 (
+                Void unused15=(
+                  Void unused16=e.#checkEnd()
+                  
+                  catch exception Void catched10 void
+                  
+                  void
+                  )
+                exception void
+                )
+              
+              res.add(right:e.#inner())
+              )
+            
+            catch exception Void catched12 void
+            
+            void
+            )
+          
+          catch exception Any propagated1 (
+            Void unused17=e.#close()
+            exception propagated1
+            )
+          
+          void
+          )
+        
+        catch return This0 propagated2 (
+          Void unused18=e.#close()
+          return propagated2
+          )
+        
+        e.#close()
+        )
+      )
+    Void unused2=return res
+    void
+    )
+  
+  catch return This0 result result
+  
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
+  }
+  )
+IteratorTrait:{
+class method 
+Library #apply() {
+read method 
+read This5.Collections.MutListAny that() 
+read method 
+This5.N from() 
+mut method 
+Void from(This5.N that) 
+read method 
+This5.N to() 
+read method 
+This5.N stopOk() 
+mut method 
+Void #next() exception Void (
+  Void unused=this.from(that:this.from().#plus(that:This5.N.#from(builder:(
+    This5.N::#builder() b=This5.N.#builder()
+    Void unused1=b.#1()
+    b
+    ))))
+  Void unused0=(
+    This0::to() ::#right(that ) ::#and(that ) cond=this.to().#right(that:This5.N.#from(builder:(
+      This5.N::#builder() b0=This5.N.#builder()
+      Void unused2=b0.#0()
+      b0
+      ))).#and(that:this.from().#rightequal(that:this.to()))
+    (
+      Void unused3=cond.#checkTrue()
+      
+      catch exception Void catched2 void
+      
+      exception void
+      )
+    )
+  (
+    This0::from() ::#rightequal(that ) cond0=this.from().#rightequal(that:this.that().size())
+    (
+      Void unused4=cond0.#checkTrue()
+      
+      catch exception Void catched5 void
+      
+      exception void
+      )
+    )
+  )
+read method 
+Void #checkEnd() (
+  This0::from() ::#left(that ) cond=this.from().#left(that:this.stopOk())
+  (
+    Void unused=cond.#checkTrue()
+    
+    catch exception Void catched0 void
+    
+    error This5.Collections.CollectionErrors.iterationTermination(from:this.from(), stopOk:this.stopOk(), size:this.that().size())
+    )
+  )
+read method 
+This3 #inner() This2.cast(that:this.that().val(that:this.from()))
+read method 
+Void #close() void}}
+read method 
+lent This0.IteratorVal vals(This3.N from, This3.N to, This3.N stopOk) This0.IteratorVal.#apply(that:this.inner(), from:from, to:to, stopOk:stopOk)
+read method 
+lent This0.IteratorVal vals(This3.N stopOk) this.vals(from:This3.N.#from(builder:(
+  This3.N::#builder() b=This3.N.#builder()
+  Void unused=b.#0()
+  b
+  )).#less(that:This3.N.#from(builder:(
+  This3.N::#builder() b0=This3.N.#builder()
+  Void unused0=b0.#1()
+  b0
+  ))), to:This3.N.#from(builder:(
+  This3.N::#builder() b1=This3.N.#builder()
+  Void unused1=b1.#0()
+  b1
+  )).#less(that:This3.N.#from(builder:(
+  This3.N::#builder() b2=This3.N.#builder()
+  Void unused2=b2.#2()
+  b2
+  ))), stopOk:stopOk)
+read method 
+lent This0.IteratorVal vals(This3.N from, This3.N to) this.vals(from:from, to:to, stopOk:this.inner().size())
+read method 
+lent This0.IteratorVal vals() this.vals(from:This3.N.#from(builder:(
+  This3.N::#builder() b=This3.N.#builder()
+  Void unused=b.#0()
+  b
+  )).#less(that:This3.N.#from(builder:(
+  This3.N::#builder() b0=This3.N.#builder()
+  Void unused0=b0.#1()
+  b0
+  ))), to:This3.N.#from(builder:(
+  This3.N::#builder() b1=This3.N.#builder()
+  Void unused1=b1.#0()
+  b1
+  )).#less(that:This3.N.#from(builder:(
+  This3.N::#builder() b2=This3.N.#builder()
+  Void unused2=b2.#2()
+  b2
+  ))), stopOk:this.inner().size())
+IteratorVal:{
+read method 
+read This4.Collections.MutListAny that() 
+read method 
+This4.N from() 
+mut method 
+Void from(This4.N that) 
+read method 
+This4.N to() 
+read method 
+This4.N stopOk() 
+mut method 
+Void #next() exception Void (
+  Void unused=this.from(that:this.from().#plus(that:This4.N.#from(builder:(
+    This4.N::#builder() b=This4.N.#builder()
+    Void unused1=b.#1()
+    b
+    ))))
+  Void unused0=(
+    This0::to() ::#right(that ) ::#and(that ) cond=this.to().#right(that:This4.N.#from(builder:(
+      This4.N::#builder() b0=This4.N.#builder()
+      Void unused2=b0.#0()
+      b0
+      ))).#and(that:this.from().#rightequal(that:this.to()))
+    (
+      Void unused3=cond.#checkTrue()
+      
+      catch exception Void catched2 void
+      
+      exception void
+      )
+    )
+  (
+    This0::from() ::#rightequal(that ) cond0=this.from().#rightequal(that:this.that().size())
+    (
+      Void unused4=cond0.#checkTrue()
+      
+      catch exception Void catched5 void
+      
+      exception void
+      )
+    )
+  )
+read method 
+Void #checkEnd() (
+  This0::from() ::#left(that ) cond=this.from().#left(that:this.stopOk())
+  (
+    Void unused=cond.#checkTrue()
+    
+    catch exception Void catched0 void
+    
+    error This4.Collections.CollectionErrors.iterationTermination(from:this.from(), stopOk:this.stopOk(), size:this.that().size())
+    )
+  )
+read method 
+This2 #inner() This1.cast(that:this.that().val(that:this.from()))
+read method 
+Void #close() void
+class method 
+lent This0 #lentK(read This4.Collections.MutListAny that, This4.N from, This4.N to, This4.N stopOk) 
+class method 
+lent This0 #apply(read This4.Collections.MutListAny that, This4.N from, This4.N to, This4.N stopOk) This0.#lentK(that:that, from:from, to:to, stopOk:stopOk)
+mut method 
+read This4.Collections.MutListAny #that() 
+mut method 
+This4.N #from() 
+mut method 
+This4.N #to() 
+mut method 
+This4.N #stopOk() }
+mut method 
+lent This0.IteratorVar #vals(This3.N from, This3.N to, This3.N stopOk) This0.IteratorVar.#apply(that:this.#inner(), from:from, to:to, stopOk:stopOk)
+mut method 
+lent This0.IteratorVar #vals(This3.N stopOk) this.#vals(from:This3.N.#from(builder:(
+  This3.N::#builder() b=This3.N.#builder()
+  Void unused=b.#0()
+  b
+  )).#less(that:This3.N.#from(builder:(
+  This3.N::#builder() b0=This3.N.#builder()
+  Void unused0=b0.#1()
+  b0
+  ))), to:This3.N.#from(builder:(
+  This3.N::#builder() b1=This3.N.#builder()
+  Void unused1=b1.#0()
+  b1
+  )).#less(that:This3.N.#from(builder:(
+  This3.N::#builder() b2=This3.N.#builder()
+  Void unused2=b2.#2()
+  b2
+  ))), stopOk:stopOk)
+mut method 
+lent This0.IteratorVar #vals(This3.N from, This3.N to) this.#vals(from:from, to:to, stopOk:this.inner().size())
+mut method 
+lent This0.IteratorVar #vals() this.#vals(from:This3.N.#from(builder:(
+  This3.N::#builder() b=This3.N.#builder()
+  Void unused=b.#0()
+  b
+  )).#less(that:This3.N.#from(builder:(
+  This3.N::#builder() b0=This3.N.#builder()
+  Void unused0=b0.#1()
+  b0
+  ))), to:This3.N.#from(builder:(
+  This3.N::#builder() b1=This3.N.#builder()
+  Void unused1=b1.#0()
+  b1
+  )).#less(that:This3.N.#from(builder:(
+  This3.N::#builder() b2=This3.N.#builder()
+  Void unused2=b2.#2()
+  b2
+  ))), stopOk:this.inner().size())
+IteratorVar:{
+read method 
+read This4.Collections.MutListAny that() 
+read method 
+This4.N from() 
+mut method 
+Void from(This4.N that) 
+read method 
+This4.N to() 
+read method 
+This4.N stopOk() 
+mut method 
+Void #next() exception Void (
+  Void unused=this.from(that:this.from().#plus(that:This4.N.#from(builder:(
+    This4.N::#builder() b=This4.N.#builder()
+    Void unused1=b.#1()
+    b
+    ))))
+  Void unused0=(
+    This0::to() ::#right(that ) ::#and(that ) cond=this.to().#right(that:This4.N.#from(builder:(
+      This4.N::#builder() b0=This4.N.#builder()
+      Void unused2=b0.#0()
+      b0
+      ))).#and(that:this.from().#rightequal(that:this.to()))
+    (
+      Void unused3=cond.#checkTrue()
+      
+      catch exception Void catched2 void
+      
+      exception void
+      )
+    )
+  (
+    This0::from() ::#rightequal(that ) cond0=this.from().#rightequal(that:this.that().size())
+    (
+      Void unused4=cond0.#checkTrue()
+      
+      catch exception Void catched5 void
+      
+      exception void
+      )
+    )
+  )
+read method 
+Void #checkEnd() (
+  This0::from() ::#left(that ) cond=this.from().#left(that:this.stopOk())
+  (
+    Void unused=cond.#checkTrue()
+    
+    catch exception Void catched0 void
+    
+    error This4.Collections.CollectionErrors.iterationTermination(from:this.from(), stopOk:this.stopOk(), size:this.that().size())
+    )
+  )
+read method 
+This2 #inner() This1.cast(that:this.that().val(that:this.from()))
+read method 
+Void #close() void
+class method 
+mut This0 #mutK(mut This4.Collections.MutListAny that, This4.N from, This4.N to, This4.N stopOk) 
+class method 
+mut This0 #apply(mut This4.Collections.MutListAny that, This4.N from, This4.N to, This4.N stopOk) This0.#mutK(that:that, from:from, to:to, stopOk:stopOk)
+mut method 
+mut This4.Collections.MutListAny #that() 
+mut method 
+This4.N #from() 
+mut method 
+This4.N #to() 
+mut method 
+This4.N #stopOk() 
+mut method 
+Void inner(This2 that) (
+  This0::#that() rcv18=this.#that()
+  rcv18.#apply(that:this.from(), val:that)
+  )}
+read method 
+This3.Bool contains(This1 that) (
+  Void unused=(
+    Void unused0=(
+      This0::vals() e=this.vals()
+      (
+        Void unused2=(
+          Void unused3=(
+            Void unused4=loop (
+              Void unused5=e.#next()
+              
+              catch exception Void catched0 (
+                Void unused6=(
+                  Void unused7=e.#checkEnd()
+                  
+                  catch exception Void catched1 void
+                  
+                  void
+                  )
+                exception void
+                )
+              
+              (
+                This0::vals() ::#inner() ::equals(that ) cond=e.#inner().equals(that:that)
+                (
+                  Void unused8=cond.#checkTrue()
+                  
+                  catch exception Void catched4 void
+                  
+                  return This3.Bool.true()
+                  )
+                )
+              )
+            
+            catch exception Void catched5 void
+            
+            void
+            )
+          
+          catch exception Any propagated (
+            Void unused9=e.#close()
+            exception propagated
+            )
+          
+          void
+          )
+        
+        catch return This3.Bool propagated0 (
+          Void unused10=e.#close()
+          return propagated0
+          )
+        
+        e.#close()
+        )
+      )
+    Void unused1=return This3.Bool.false()
+    void
+    )
+  
+  catch return This3.Bool result result
+  
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
+  }
+  )
+method 
+This0 withoutAll(This1 that) This0.#from(seqBuilder:(
+  This0::#seqBuilder() b=This0.#seqBuilder()
+  Void unused=(
+    This0::vals() e=this.vals()
+    (
+      Void unused0=(
+        Void unused1=(
+          Void unused2=loop (
+            Void unused3=e.#next()
+            
+            catch exception Void catched0 (
+              Void unused4=(
+                Void unused5=e.#checkEnd()
+                
+                catch exception Void catched1 void
+                
+                void
+                )
+              exception void
+              )
+            
+            (
+              This0::vals() ::#inner() ::equals(that ) ::#bang() cond=e.#inner().equals(that:that).#bang()
+              (
+                Void unused6=cond.#checkTrue()
+                
+                catch exception Void catched4 void
+                
+                (
+                  Void unused7=b.#add(that:e.#inner())
+                  void
+                  )
+                )
+              )
+            )
+          
+          catch exception Void catched6 void
+          
+          void
+          )
+        
+        catch exception Any propagated (
+          Void unused8=e.#close()
+          exception propagated
+          )
+        
+        void
+        )
+      
+      catch return Any propagated0 (
+        Void unused9=e.#close()
+        return propagated0
+        )
+      
+      e.#close()
+      )
+    )
+  b
+  ))
+method 
+This0 #less(This1 that) this.withoutAll(that:that)
+method 
+This0 #lessless(This0 that) This0.#from(seqBuilder:(
+  This0::#seqBuilder() b=This0.#seqBuilder()
+  Void unused=(
+    This0::vals() e=this.vals()
+    (
+      Void unused0=(
+        Void unused1=(
+          Void unused2=loop (
+            Void unused3=e.#next()
+            
+            catch exception Void catched0 (
+              Void unused4=(
+                Void unused5=e.#checkEnd()
+                
+                catch exception Void catched1 void
+                
+                void
+                )
+              exception void
+              )
+            
+            (
+              This0::contains(that ) ::#bang() cond=that.contains(that:e.#inner()).#bang()
+              (
+                Void unused6=cond.#checkTrue()
+                
+                catch exception Void catched4 void
+                
+                (
+                  Void unused7=b.#add(that:e.#inner())
+                  void
+                  )
+                )
+              )
+            )
+          
+          catch exception Void catched6 void
+          
+          void
+          )
+        
+        catch exception Any propagated (
+          Void unused8=e.#close()
+          exception propagated
+          )
+        
+        void
+        )
+      
+      catch return Any propagated0 (
+        Void unused9=e.#close()
+        return propagated0
+        )
+      
+      e.#close()
+      )
+    )
+  b
+  ))
+read method 
+This3.Bool #bangequal(read This0 that) this.#equalequal(that:that).#bang()
+read method 
+This3.Bool #equalequal(read This0 that) (
+  Void unused=(
+    Void unused0=(
+      This0::vals() e1=this.vals()
+      (
+        Void unused1=(
+          Void unused2=(
+            This0::vals() e2=that.vals()
+            (
+              Void unused3=(
+                Void unused4=(
+                  Void unused5=loop (
+                    Void unused6=e1.#next()
+                    
+                    catch exception Void catched1 (
+                      Void unused7=(
+                        Void unused10=e2.#next()
+                        
+                        catch exception Void catched2 void
+                        
+                        void
+                        )
+                      Void unused8=(
+                        Void unused11=e1.#checkEnd()
+                        
+                        catch exception Void catched3 void
+                        
+                        void
+                        )
+                      Void unused9=(
+                        Void unused12=e2.#checkEnd()
+                        
+                        catch exception Void catched4 void
+                        
+                        void
+                        )
+                      exception void
+                      )
+                    
+                    (
+                      Void unused13=e2.#next()
+                      
+                      catch exception Void catched6 (
+                        Void unused14=(
+                          Void unused16=e1.#checkEnd()
+                          
+                          catch exception Void catched7 void
+                          
+                          void
+                          )
+                        Void unused15=(
+                          Void unused17=e2.#checkEnd()
+                          
+                          catch exception Void catched8 void
+                          
+                          void
+                          )
+                        exception void
+                        )
+                      
+                      (
+                        This0::vals() ::#inner() ::equals(that ) ::#bang() cond=e1.#inner().equals(that:e2.#inner()).#bang()
+                        (
+                          Void unused18=cond.#checkTrue()
+                          
+                          catch exception Void catched11 void
+                          
+                          return This3.Bool.false()
+                          )
+                        )
+                      )
+                    )
+                  
+                  catch exception Void catched12 void
+                  
+                  void
+                  )
+                
+                catch exception Any propagated (
+                  Void unused19=e2.#close()
+                  exception propagated
+                  )
+                
+                void
+                )
+              
+              catch return This3.Bool propagated0 (
+                Void unused20=e2.#close()
+                return propagated0
+                )
+              
+              e2.#close()
+              )
+            )
+          
+          catch exception Any propagated1 (
+            Void unused21=e1.#close()
+            exception propagated1
+            )
+          
+          void
+          )
+        
+        catch return This3.Bool propagated2 (
+          Void unused22=e1.#close()
+          return propagated2
+          )
+        
+        e1.#close()
+        )
+      )
+    
+    catch error This3.Collections.IterationFailure catched21 return This3.Bool.false()
+    
+    (
+      Void unused23=return This3.Bool.true()
+      void
+      )
+    )
+  
+  catch return This3.Bool result result
+  
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
+  }
+  )
+method equals(that ) (
+  Void unused=(
+    Void unused0=(
+      read This0 that0=(
+        Void unused2=return that
+        
+        catch return read This0 casted casted
+        
+        catch return read Any casted exception void
+        
+        error {//@stringU
+        //CastT-Should be unreachable code
+        }
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return this.#equalequal(that:that0)
+        void
+        )
+      )
+    Void unused1=return This3.Bool.false()
+    void
+    )
+  
+  catch return This0::equals(that )  result result
+  
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
+  }
+  )}
 method classAny() This0
 read method 
 class This0 class() This0
@@ -16490,7 +19277,9 @@ method toS() This0.myName().#plusplus(that:This2.S.#from(builder:(
   This2.S::#builder() b=This2.S.#builder()
   Void unused=b.#dot()
   b
-  )).#plusplus(that:This0.names().val(that:this.that())))
+  )).#plusplus(that:this.name()))
+method 
+This2.S name() This0.names().val(that:this.that())
 class method 
 This2.Strings names() This2.Strings.#from(seqBuilder:(
   This2.Strings::#seqBuilder() b=This2.Strings.#seqBuilder()
@@ -16932,6 +19721,912 @@ mut This3.S.SConcat #seqBuilder() This3.S.SConcat.#apply(old:this.text(), accumu
   This3.S::#builder() b=This3.S.#builder()
   b
   )))}
+List:{<:This3.Concept.Equals
+class method 
+mut This0 #mutK(mut This3.Collections.MutListAny inner) 
+class method 
+mut This0 #apply(mut This3.Collections.MutListAny inner) This0.#mutK(inner:inner)
+mut method 
+mut This3.Collections.MutListAny #inner() 
+read method 
+read This3.Collections.MutListAny inner() 
+class method 
+This0 #immK(This3.Collections.MutListAny inner) 
+class method 
+mut This0 empty() This0.#apply(inner:This3.Collections.MutListAny.empty())
+class method 
+mut This0 #seqBuilder() this.empty()
+class method 
+This0 #from(This0 seqBuilder) seqBuilder
+mut method 
+Void #add(This1 that) this.add(right:that)
+class method 
+This1 cast(Any that) (
+  Void unused=(
+    This1 that0=(
+      Void unused0=return that
+      
+      catch return This1 casted casted
+      
+      catch return Any casted exception void
+      
+      error {//@stringU
+      //CastT-Should be unreachable code
+      }
+      )
+    
+    catch exception Void catched0 error This3.Collections.CollectionErrors.cast()
+    
+    (
+      Void unused1=return that0
+      void
+      )
+    )
+  
+  catch return This1 result result
+  
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
+  }
+  )
+read method 
+This1 val(This3.N that) This0.cast(that:this.inner().val(that:that))
+read method 
+This1 left() This0.cast(that:this.inner().val(that:This3.N.#from(builder:(
+  This3.N::#builder() b=This3.N.#builder()
+  Void unused=b.#0()
+  b
+  ))))
+read method 
+This1 right() This0.cast(that:(
+  This0::inner() rcv13=this.inner()
+  rcv13.val(that:rcv13.size().#less(that:This3.N.#from(builder:(
+    This3.N::#builder() b=This3.N.#builder()
+    Void unused=b.#1()
+    b
+    ))))
+  ))
+mut method 
+Void #apply(This3.N that, This1 val) (
+  This0::#inner() rcv14=this.#inner()
+  rcv14.#apply(that:that, val:val)
+  )
+mut method 
+Void add(This3.N that, This1 val) this.#inner().add(that:that, val:val)
+mut method 
+Void add(This1 right) (
+  This0::#inner() rcv15=this.#inner()
+  rcv15.add(that:rcv15.size(), val:right)
+  )
+mut method 
+Void add(This1 left) this.#inner().add(that:This3.N.#from(builder:(
+  This3.N::#builder() b=This3.N.#builder()
+  Void unused=b.#0()
+  b
+  )), val:left)
+mut method 
+Void remove(This3.N that) this.#inner().remove(that:that)
+mut method 
+Void left(This1 that) (
+  This0::#inner() rcv16=this.#inner()
+  rcv16.#apply(that:This3.N.#from(builder:(
+    This3.N::#builder() b=This3.N.#builder()
+    Void unused=b.#0()
+    b
+    )), val:that)
+  )
+mut method 
+Void right(This1 that) (
+  This0::#inner() rcv17=this.#inner()
+  rcv17.#apply(that:rcv17.size().#less(that:This3.N.#from(builder:(
+    This3.N::#builder() b=This3.N.#builder()
+    Void unused=b.#1()
+    b
+    ))), val:that)
+  )
+method 
+This0 without(This3.N that) This0.#immK(inner:this.inner().without(that:that))
+method 
+This0 withoutLeft() This0.#immK(inner:this.inner().without(that:This3.N.#from(builder:(
+  This3.N::#builder() b=This3.N.#builder()
+  Void unused=b.#0()
+  b
+  ))))
+method 
+This0 withAlso(This3.N that, This1 val) This0.#immK(inner:this.inner().withAlso(that:that, val:val))
+method 
+This0 with(This3.N that, This1 val) This0.#immK(inner:this.inner().with(that:that, val:val))
+read method 
+mut This0 reverse() (
+  This0::empty() result=This0.empty()
+  Void unused=(
+    This0::vals() e=this.vals()
+    (
+      Void unused0=(
+        Void unused1=(
+          Void unused2=loop (
+            Void unused3=e.#next()
+            
+            catch exception Void catched0 (
+              Void unused4=(
+                Void unused5=e.#checkEnd()
+                
+                catch exception Void catched1 void
+                
+                void
+                )
+              exception void
+              )
+            
+            result.add(left:e.#inner())
+            )
+          
+          catch exception Void catched3 void
+          
+          void
+          )
+        
+        catch exception Any propagated (
+          Void unused6=e.#close()
+          exception propagated
+          )
+        
+        void
+        )
+      
+      catch return Any propagated0 (
+        Void unused7=e.#close()
+        return propagated0
+        )
+      
+      e.#close()
+      )
+    )
+  result
+  )
+read method 
+This3.N size() this.inner().size()
+read method 
+This3.Bool isEmpty() this.size().#equalequal(that:This3.N.#from(builder:(
+  This3.N::#builder() b=This3.N.#builder()
+  Void unused=b.#0()
+  b
+  )))
+method 
+This0 #plus(This1 that) this.withAlso(that:this.size(), val:that)
+method 
+This0 #plusplus(This0 that) (
+  Void unused=(
+    mut This0 res=This0.empty()
+    Void unused0=(
+      This0::vals() e=this.vals()
+      (
+        Void unused3=(
+          Void unused4=(
+            Void unused5=loop (
+              Void unused6=e.#next()
+              
+              catch exception Void catched0 (
+                Void unused7=(
+                  Void unused8=e.#checkEnd()
+                  
+                  catch exception Void catched1 void
+                  
+                  void
+                  )
+                exception void
+                )
+              
+              res.add(right:e.#inner())
+              )
+            
+            catch exception Void catched3 void
+            
+            void
+            )
+          
+          catch exception Any propagated (
+            Void unused9=e.#close()
+            exception propagated
+            )
+          
+          void
+          )
+        
+        catch return This0 propagated0 (
+          Void unused10=e.#close()
+          return propagated0
+          )
+        
+        e.#close()
+        )
+      )
+    Void unused1=(
+      This0::vals() e=that.vals()
+      (
+        Void unused11=(
+          Void unused12=(
+            Void unused13=loop (
+              Void unused14=e.#next()
+              
+              catch exception Void catched9 (
+                Void unused15=(
+                  Void unused16=e.#checkEnd()
+                  
+                  catch exception Void catched10 void
+                  
+                  void
+                  )
+                exception void
+                )
+              
+              res.add(right:e.#inner())
+              )
+            
+            catch exception Void catched12 void
+            
+            void
+            )
+          
+          catch exception Any propagated1 (
+            Void unused17=e.#close()
+            exception propagated1
+            )
+          
+          void
+          )
+        
+        catch return This0 propagated2 (
+          Void unused18=e.#close()
+          return propagated2
+          )
+        
+        e.#close()
+        )
+      )
+    Void unused2=return res
+    void
+    )
+  
+  catch return This0 result result
+  
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
+  }
+  )
+IteratorTrait:{
+class method 
+Library #apply() {
+read method 
+read This5.Collections.MutListAny that() 
+read method 
+This5.N from() 
+mut method 
+Void from(This5.N that) 
+read method 
+This5.N to() 
+read method 
+This5.N stopOk() 
+mut method 
+Void #next() exception Void (
+  Void unused=this.from(that:this.from().#plus(that:This5.N.#from(builder:(
+    This5.N::#builder() b=This5.N.#builder()
+    Void unused1=b.#1()
+    b
+    ))))
+  Void unused0=(
+    This0::to() ::#right(that ) ::#and(that ) cond=this.to().#right(that:This5.N.#from(builder:(
+      This5.N::#builder() b0=This5.N.#builder()
+      Void unused2=b0.#0()
+      b0
+      ))).#and(that:this.from().#rightequal(that:this.to()))
+    (
+      Void unused3=cond.#checkTrue()
+      
+      catch exception Void catched2 void
+      
+      exception void
+      )
+    )
+  (
+    This0::from() ::#rightequal(that ) cond0=this.from().#rightequal(that:this.that().size())
+    (
+      Void unused4=cond0.#checkTrue()
+      
+      catch exception Void catched5 void
+      
+      exception void
+      )
+    )
+  )
+read method 
+Void #checkEnd() (
+  This0::from() ::#left(that ) cond=this.from().#left(that:this.stopOk())
+  (
+    Void unused=cond.#checkTrue()
+    
+    catch exception Void catched0 void
+    
+    error This5.Collections.CollectionErrors.iterationTermination(from:this.from(), stopOk:this.stopOk(), size:this.that().size())
+    )
+  )
+read method 
+This3 #inner() This2.cast(that:this.that().val(that:this.from()))
+read method 
+Void #close() void}}
+read method 
+lent This0.IteratorVal vals(This3.N from, This3.N to, This3.N stopOk) This0.IteratorVal.#apply(that:this.inner(), from:from, to:to, stopOk:stopOk)
+read method 
+lent This0.IteratorVal vals(This3.N stopOk) this.vals(from:This3.N.#from(builder:(
+  This3.N::#builder() b=This3.N.#builder()
+  Void unused=b.#0()
+  b
+  )).#less(that:This3.N.#from(builder:(
+  This3.N::#builder() b0=This3.N.#builder()
+  Void unused0=b0.#1()
+  b0
+  ))), to:This3.N.#from(builder:(
+  This3.N::#builder() b1=This3.N.#builder()
+  Void unused1=b1.#0()
+  b1
+  )).#less(that:This3.N.#from(builder:(
+  This3.N::#builder() b2=This3.N.#builder()
+  Void unused2=b2.#2()
+  b2
+  ))), stopOk:stopOk)
+read method 
+lent This0.IteratorVal vals(This3.N from, This3.N to) this.vals(from:from, to:to, stopOk:this.inner().size())
+read method 
+lent This0.IteratorVal vals() this.vals(from:This3.N.#from(builder:(
+  This3.N::#builder() b=This3.N.#builder()
+  Void unused=b.#0()
+  b
+  )).#less(that:This3.N.#from(builder:(
+  This3.N::#builder() b0=This3.N.#builder()
+  Void unused0=b0.#1()
+  b0
+  ))), to:This3.N.#from(builder:(
+  This3.N::#builder() b1=This3.N.#builder()
+  Void unused1=b1.#0()
+  b1
+  )).#less(that:This3.N.#from(builder:(
+  This3.N::#builder() b2=This3.N.#builder()
+  Void unused2=b2.#2()
+  b2
+  ))), stopOk:this.inner().size())
+IteratorVal:{
+read method 
+read This4.Collections.MutListAny that() 
+read method 
+This4.N from() 
+mut method 
+Void from(This4.N that) 
+read method 
+This4.N to() 
+read method 
+This4.N stopOk() 
+mut method 
+Void #next() exception Void (
+  Void unused=this.from(that:this.from().#plus(that:This4.N.#from(builder:(
+    This4.N::#builder() b=This4.N.#builder()
+    Void unused1=b.#1()
+    b
+    ))))
+  Void unused0=(
+    This0::to() ::#right(that ) ::#and(that ) cond=this.to().#right(that:This4.N.#from(builder:(
+      This4.N::#builder() b0=This4.N.#builder()
+      Void unused2=b0.#0()
+      b0
+      ))).#and(that:this.from().#rightequal(that:this.to()))
+    (
+      Void unused3=cond.#checkTrue()
+      
+      catch exception Void catched2 void
+      
+      exception void
+      )
+    )
+  (
+    This0::from() ::#rightequal(that ) cond0=this.from().#rightequal(that:this.that().size())
+    (
+      Void unused4=cond0.#checkTrue()
+      
+      catch exception Void catched5 void
+      
+      exception void
+      )
+    )
+  )
+read method 
+Void #checkEnd() (
+  This0::from() ::#left(that ) cond=this.from().#left(that:this.stopOk())
+  (
+    Void unused=cond.#checkTrue()
+    
+    catch exception Void catched0 void
+    
+    error This4.Collections.CollectionErrors.iterationTermination(from:this.from(), stopOk:this.stopOk(), size:this.that().size())
+    )
+  )
+read method 
+This2 #inner() This1.cast(that:this.that().val(that:this.from()))
+read method 
+Void #close() void
+class method 
+lent This0 #lentK(read This4.Collections.MutListAny that, This4.N from, This4.N to, This4.N stopOk) 
+class method 
+lent This0 #apply(read This4.Collections.MutListAny that, This4.N from, This4.N to, This4.N stopOk) This0.#lentK(that:that, from:from, to:to, stopOk:stopOk)
+mut method 
+read This4.Collections.MutListAny #that() 
+mut method 
+This4.N #from() 
+mut method 
+This4.N #to() 
+mut method 
+This4.N #stopOk() }
+mut method 
+lent This0.IteratorVar #vals(This3.N from, This3.N to, This3.N stopOk) This0.IteratorVar.#apply(that:this.#inner(), from:from, to:to, stopOk:stopOk)
+mut method 
+lent This0.IteratorVar #vals(This3.N stopOk) this.#vals(from:This3.N.#from(builder:(
+  This3.N::#builder() b=This3.N.#builder()
+  Void unused=b.#0()
+  b
+  )).#less(that:This3.N.#from(builder:(
+  This3.N::#builder() b0=This3.N.#builder()
+  Void unused0=b0.#1()
+  b0
+  ))), to:This3.N.#from(builder:(
+  This3.N::#builder() b1=This3.N.#builder()
+  Void unused1=b1.#0()
+  b1
+  )).#less(that:This3.N.#from(builder:(
+  This3.N::#builder() b2=This3.N.#builder()
+  Void unused2=b2.#2()
+  b2
+  ))), stopOk:stopOk)
+mut method 
+lent This0.IteratorVar #vals(This3.N from, This3.N to) this.#vals(from:from, to:to, stopOk:this.inner().size())
+mut method 
+lent This0.IteratorVar #vals() this.#vals(from:This3.N.#from(builder:(
+  This3.N::#builder() b=This3.N.#builder()
+  Void unused=b.#0()
+  b
+  )).#less(that:This3.N.#from(builder:(
+  This3.N::#builder() b0=This3.N.#builder()
+  Void unused0=b0.#1()
+  b0
+  ))), to:This3.N.#from(builder:(
+  This3.N::#builder() b1=This3.N.#builder()
+  Void unused1=b1.#0()
+  b1
+  )).#less(that:This3.N.#from(builder:(
+  This3.N::#builder() b2=This3.N.#builder()
+  Void unused2=b2.#2()
+  b2
+  ))), stopOk:this.inner().size())
+IteratorVar:{
+read method 
+read This4.Collections.MutListAny that() 
+read method 
+This4.N from() 
+mut method 
+Void from(This4.N that) 
+read method 
+This4.N to() 
+read method 
+This4.N stopOk() 
+mut method 
+Void #next() exception Void (
+  Void unused=this.from(that:this.from().#plus(that:This4.N.#from(builder:(
+    This4.N::#builder() b=This4.N.#builder()
+    Void unused1=b.#1()
+    b
+    ))))
+  Void unused0=(
+    This0::to() ::#right(that ) ::#and(that ) cond=this.to().#right(that:This4.N.#from(builder:(
+      This4.N::#builder() b0=This4.N.#builder()
+      Void unused2=b0.#0()
+      b0
+      ))).#and(that:this.from().#rightequal(that:this.to()))
+    (
+      Void unused3=cond.#checkTrue()
+      
+      catch exception Void catched2 void
+      
+      exception void
+      )
+    )
+  (
+    This0::from() ::#rightequal(that ) cond0=this.from().#rightequal(that:this.that().size())
+    (
+      Void unused4=cond0.#checkTrue()
+      
+      catch exception Void catched5 void
+      
+      exception void
+      )
+    )
+  )
+read method 
+Void #checkEnd() (
+  This0::from() ::#left(that ) cond=this.from().#left(that:this.stopOk())
+  (
+    Void unused=cond.#checkTrue()
+    
+    catch exception Void catched0 void
+    
+    error This4.Collections.CollectionErrors.iterationTermination(from:this.from(), stopOk:this.stopOk(), size:this.that().size())
+    )
+  )
+read method 
+This2 #inner() This1.cast(that:this.that().val(that:this.from()))
+read method 
+Void #close() void
+class method 
+mut This0 #mutK(mut This4.Collections.MutListAny that, This4.N from, This4.N to, This4.N stopOk) 
+class method 
+mut This0 #apply(mut This4.Collections.MutListAny that, This4.N from, This4.N to, This4.N stopOk) This0.#mutK(that:that, from:from, to:to, stopOk:stopOk)
+mut method 
+mut This4.Collections.MutListAny #that() 
+mut method 
+This4.N #from() 
+mut method 
+This4.N #to() 
+mut method 
+This4.N #stopOk() 
+mut method 
+Void inner(This2 that) (
+  This0::#that() rcv18=this.#that()
+  rcv18.#apply(that:this.from(), val:that)
+  )}
+read method 
+This3.Bool contains(This1 that) (
+  Void unused=(
+    Void unused0=(
+      This0::vals() e=this.vals()
+      (
+        Void unused2=(
+          Void unused3=(
+            Void unused4=loop (
+              Void unused5=e.#next()
+              
+              catch exception Void catched0 (
+                Void unused6=(
+                  Void unused7=e.#checkEnd()
+                  
+                  catch exception Void catched1 void
+                  
+                  void
+                  )
+                exception void
+                )
+              
+              (
+                This0::vals() ::#inner() ::equals(that ) cond=e.#inner().equals(that:that)
+                (
+                  Void unused8=cond.#checkTrue()
+                  
+                  catch exception Void catched4 void
+                  
+                  return This3.Bool.true()
+                  )
+                )
+              )
+            
+            catch exception Void catched5 void
+            
+            void
+            )
+          
+          catch exception Any propagated (
+            Void unused9=e.#close()
+            exception propagated
+            )
+          
+          void
+          )
+        
+        catch return This3.Bool propagated0 (
+          Void unused10=e.#close()
+          return propagated0
+          )
+        
+        e.#close()
+        )
+      )
+    Void unused1=return This3.Bool.false()
+    void
+    )
+  
+  catch return This3.Bool result result
+  
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
+  }
+  )
+method 
+This0 withoutAll(This1 that) This0.#from(seqBuilder:(
+  This0::#seqBuilder() b=This0.#seqBuilder()
+  Void unused=(
+    This0::vals() e=this.vals()
+    (
+      Void unused0=(
+        Void unused1=(
+          Void unused2=loop (
+            Void unused3=e.#next()
+            
+            catch exception Void catched0 (
+              Void unused4=(
+                Void unused5=e.#checkEnd()
+                
+                catch exception Void catched1 void
+                
+                void
+                )
+              exception void
+              )
+            
+            (
+              This0::vals() ::#inner() ::equals(that ) ::#bang() cond=e.#inner().equals(that:that).#bang()
+              (
+                Void unused6=cond.#checkTrue()
+                
+                catch exception Void catched4 void
+                
+                (
+                  Void unused7=b.#add(that:e.#inner())
+                  void
+                  )
+                )
+              )
+            )
+          
+          catch exception Void catched6 void
+          
+          void
+          )
+        
+        catch exception Any propagated (
+          Void unused8=e.#close()
+          exception propagated
+          )
+        
+        void
+        )
+      
+      catch return Any propagated0 (
+        Void unused9=e.#close()
+        return propagated0
+        )
+      
+      e.#close()
+      )
+    )
+  b
+  ))
+method 
+This0 #less(This1 that) this.withoutAll(that:that)
+method 
+This0 #lessless(This0 that) This0.#from(seqBuilder:(
+  This0::#seqBuilder() b=This0.#seqBuilder()
+  Void unused=(
+    This0::vals() e=this.vals()
+    (
+      Void unused0=(
+        Void unused1=(
+          Void unused2=loop (
+            Void unused3=e.#next()
+            
+            catch exception Void catched0 (
+              Void unused4=(
+                Void unused5=e.#checkEnd()
+                
+                catch exception Void catched1 void
+                
+                void
+                )
+              exception void
+              )
+            
+            (
+              This0::contains(that ) ::#bang() cond=that.contains(that:e.#inner()).#bang()
+              (
+                Void unused6=cond.#checkTrue()
+                
+                catch exception Void catched4 void
+                
+                (
+                  Void unused7=b.#add(that:e.#inner())
+                  void
+                  )
+                )
+              )
+            )
+          
+          catch exception Void catched6 void
+          
+          void
+          )
+        
+        catch exception Any propagated (
+          Void unused8=e.#close()
+          exception propagated
+          )
+        
+        void
+        )
+      
+      catch return Any propagated0 (
+        Void unused9=e.#close()
+        return propagated0
+        )
+      
+      e.#close()
+      )
+    )
+  b
+  ))
+read method 
+This3.Bool #bangequal(read This0 that) this.#equalequal(that:that).#bang()
+read method 
+This3.Bool #equalequal(read This0 that) (
+  Void unused=(
+    Void unused0=(
+      This0::vals() e1=this.vals()
+      (
+        Void unused1=(
+          Void unused2=(
+            This0::vals() e2=that.vals()
+            (
+              Void unused3=(
+                Void unused4=(
+                  Void unused5=loop (
+                    Void unused6=e1.#next()
+                    
+                    catch exception Void catched1 (
+                      Void unused7=(
+                        Void unused10=e2.#next()
+                        
+                        catch exception Void catched2 void
+                        
+                        void
+                        )
+                      Void unused8=(
+                        Void unused11=e1.#checkEnd()
+                        
+                        catch exception Void catched3 void
+                        
+                        void
+                        )
+                      Void unused9=(
+                        Void unused12=e2.#checkEnd()
+                        
+                        catch exception Void catched4 void
+                        
+                        void
+                        )
+                      exception void
+                      )
+                    
+                    (
+                      Void unused13=e2.#next()
+                      
+                      catch exception Void catched6 (
+                        Void unused14=(
+                          Void unused16=e1.#checkEnd()
+                          
+                          catch exception Void catched7 void
+                          
+                          void
+                          )
+                        Void unused15=(
+                          Void unused17=e2.#checkEnd()
+                          
+                          catch exception Void catched8 void
+                          
+                          void
+                          )
+                        exception void
+                        )
+                      
+                      (
+                        This0::vals() ::#inner() ::equals(that ) ::#bang() cond=e1.#inner().equals(that:e2.#inner()).#bang()
+                        (
+                          Void unused18=cond.#checkTrue()
+                          
+                          catch exception Void catched11 void
+                          
+                          return This3.Bool.false()
+                          )
+                        )
+                      )
+                    )
+                  
+                  catch exception Void catched12 void
+                  
+                  void
+                  )
+                
+                catch exception Any propagated (
+                  Void unused19=e2.#close()
+                  exception propagated
+                  )
+                
+                void
+                )
+              
+              catch return This3.Bool propagated0 (
+                Void unused20=e2.#close()
+                return propagated0
+                )
+              
+              e2.#close()
+              )
+            )
+          
+          catch exception Any propagated1 (
+            Void unused21=e1.#close()
+            exception propagated1
+            )
+          
+          void
+          )
+        
+        catch return This3.Bool propagated2 (
+          Void unused22=e1.#close()
+          return propagated2
+          )
+        
+        e1.#close()
+        )
+      )
+    
+    catch error This3.Collections.IterationFailure catched21 return This3.Bool.false()
+    
+    (
+      Void unused23=return This3.Bool.true()
+      void
+      )
+    )
+  
+  catch return This3.Bool result result
+  
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
+  }
+  )
+method equals(that ) (
+  Void unused=(
+    Void unused0=(
+      read This0 that0=(
+        Void unused2=return that
+        
+        catch return read This0 casted casted
+        
+        catch return read Any casted exception void
+        
+        error {//@stringU
+        //CastT-Should be unreachable code
+        }
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return this.#equalequal(that:that0)
+        void
+        )
+      )
+    Void unused1=return This3.Bool.false()
+    void
+    )
+  
+  catch return This0::equals(that )  result result
+  
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
+  }
+  )}
 method classAny() This0
 read method 
 class This0 class() This0
@@ -16984,7 +20679,9 @@ method toS() This0.myName().#plusplus(that:This2.S.#from(builder:(
   This2.S::#builder() b=This2.S.#builder()
   Void unused=b.#dot()
   b
-  )).#plusplus(that:This0.names().val(that:this.that())))
+  )).#plusplus(that:this.name()))
+method 
+This2.S name() This0.names().val(that:this.that())
 class method 
 This2.Strings names() This2.Strings.#from(seqBuilder:(
   This2.Strings::#seqBuilder() b=This2.Strings.#seqBuilder()
@@ -17439,6 +21136,912 @@ mut This3.S.SConcat #seqBuilder() This3.S.SConcat.#apply(old:this.text(), accumu
   This3.S::#builder() b=This3.S.#builder()
   b
   )))}
+List:{<:This3.Concept.Equals
+class method 
+mut This0 #mutK(mut This3.Collections.MutListAny inner) 
+class method 
+mut This0 #apply(mut This3.Collections.MutListAny inner) This0.#mutK(inner:inner)
+mut method 
+mut This3.Collections.MutListAny #inner() 
+read method 
+read This3.Collections.MutListAny inner() 
+class method 
+This0 #immK(This3.Collections.MutListAny inner) 
+class method 
+mut This0 empty() This0.#apply(inner:This3.Collections.MutListAny.empty())
+class method 
+mut This0 #seqBuilder() this.empty()
+class method 
+This0 #from(This0 seqBuilder) seqBuilder
+mut method 
+Void #add(This1 that) this.add(right:that)
+class method 
+This1 cast(Any that) (
+  Void unused=(
+    This1 that0=(
+      Void unused0=return that
+      
+      catch return This1 casted casted
+      
+      catch return Any casted exception void
+      
+      error {//@stringU
+      //CastT-Should be unreachable code
+      }
+      )
+    
+    catch exception Void catched0 error This3.Collections.CollectionErrors.cast()
+    
+    (
+      Void unused1=return that0
+      void
+      )
+    )
+  
+  catch return This1 result result
+  
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
+  }
+  )
+read method 
+This1 val(This3.N that) This0.cast(that:this.inner().val(that:that))
+read method 
+This1 left() This0.cast(that:this.inner().val(that:This3.N.#from(builder:(
+  This3.N::#builder() b=This3.N.#builder()
+  Void unused=b.#0()
+  b
+  ))))
+read method 
+This1 right() This0.cast(that:(
+  This0::inner() rcv13=this.inner()
+  rcv13.val(that:rcv13.size().#less(that:This3.N.#from(builder:(
+    This3.N::#builder() b=This3.N.#builder()
+    Void unused=b.#1()
+    b
+    ))))
+  ))
+mut method 
+Void #apply(This3.N that, This1 val) (
+  This0::#inner() rcv14=this.#inner()
+  rcv14.#apply(that:that, val:val)
+  )
+mut method 
+Void add(This3.N that, This1 val) this.#inner().add(that:that, val:val)
+mut method 
+Void add(This1 right) (
+  This0::#inner() rcv15=this.#inner()
+  rcv15.add(that:rcv15.size(), val:right)
+  )
+mut method 
+Void add(This1 left) this.#inner().add(that:This3.N.#from(builder:(
+  This3.N::#builder() b=This3.N.#builder()
+  Void unused=b.#0()
+  b
+  )), val:left)
+mut method 
+Void remove(This3.N that) this.#inner().remove(that:that)
+mut method 
+Void left(This1 that) (
+  This0::#inner() rcv16=this.#inner()
+  rcv16.#apply(that:This3.N.#from(builder:(
+    This3.N::#builder() b=This3.N.#builder()
+    Void unused=b.#0()
+    b
+    )), val:that)
+  )
+mut method 
+Void right(This1 that) (
+  This0::#inner() rcv17=this.#inner()
+  rcv17.#apply(that:rcv17.size().#less(that:This3.N.#from(builder:(
+    This3.N::#builder() b=This3.N.#builder()
+    Void unused=b.#1()
+    b
+    ))), val:that)
+  )
+method 
+This0 without(This3.N that) This0.#immK(inner:this.inner().without(that:that))
+method 
+This0 withoutLeft() This0.#immK(inner:this.inner().without(that:This3.N.#from(builder:(
+  This3.N::#builder() b=This3.N.#builder()
+  Void unused=b.#0()
+  b
+  ))))
+method 
+This0 withAlso(This3.N that, This1 val) This0.#immK(inner:this.inner().withAlso(that:that, val:val))
+method 
+This0 with(This3.N that, This1 val) This0.#immK(inner:this.inner().with(that:that, val:val))
+read method 
+mut This0 reverse() (
+  This0::empty() result=This0.empty()
+  Void unused=(
+    This0::vals() e=this.vals()
+    (
+      Void unused0=(
+        Void unused1=(
+          Void unused2=loop (
+            Void unused3=e.#next()
+            
+            catch exception Void catched0 (
+              Void unused4=(
+                Void unused5=e.#checkEnd()
+                
+                catch exception Void catched1 void
+                
+                void
+                )
+              exception void
+              )
+            
+            result.add(left:e.#inner())
+            )
+          
+          catch exception Void catched3 void
+          
+          void
+          )
+        
+        catch exception Any propagated (
+          Void unused6=e.#close()
+          exception propagated
+          )
+        
+        void
+        )
+      
+      catch return Any propagated0 (
+        Void unused7=e.#close()
+        return propagated0
+        )
+      
+      e.#close()
+      )
+    )
+  result
+  )
+read method 
+This3.N size() this.inner().size()
+read method 
+This3.Bool isEmpty() this.size().#equalequal(that:This3.N.#from(builder:(
+  This3.N::#builder() b=This3.N.#builder()
+  Void unused=b.#0()
+  b
+  )))
+method 
+This0 #plus(This1 that) this.withAlso(that:this.size(), val:that)
+method 
+This0 #plusplus(This0 that) (
+  Void unused=(
+    mut This0 res=This0.empty()
+    Void unused0=(
+      This0::vals() e=this.vals()
+      (
+        Void unused3=(
+          Void unused4=(
+            Void unused5=loop (
+              Void unused6=e.#next()
+              
+              catch exception Void catched0 (
+                Void unused7=(
+                  Void unused8=e.#checkEnd()
+                  
+                  catch exception Void catched1 void
+                  
+                  void
+                  )
+                exception void
+                )
+              
+              res.add(right:e.#inner())
+              )
+            
+            catch exception Void catched3 void
+            
+            void
+            )
+          
+          catch exception Any propagated (
+            Void unused9=e.#close()
+            exception propagated
+            )
+          
+          void
+          )
+        
+        catch return This0 propagated0 (
+          Void unused10=e.#close()
+          return propagated0
+          )
+        
+        e.#close()
+        )
+      )
+    Void unused1=(
+      This0::vals() e=that.vals()
+      (
+        Void unused11=(
+          Void unused12=(
+            Void unused13=loop (
+              Void unused14=e.#next()
+              
+              catch exception Void catched9 (
+                Void unused15=(
+                  Void unused16=e.#checkEnd()
+                  
+                  catch exception Void catched10 void
+                  
+                  void
+                  )
+                exception void
+                )
+              
+              res.add(right:e.#inner())
+              )
+            
+            catch exception Void catched12 void
+            
+            void
+            )
+          
+          catch exception Any propagated1 (
+            Void unused17=e.#close()
+            exception propagated1
+            )
+          
+          void
+          )
+        
+        catch return This0 propagated2 (
+          Void unused18=e.#close()
+          return propagated2
+          )
+        
+        e.#close()
+        )
+      )
+    Void unused2=return res
+    void
+    )
+  
+  catch return This0 result result
+  
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
+  }
+  )
+IteratorTrait:{
+class method 
+Library #apply() {
+read method 
+read This5.Collections.MutListAny that() 
+read method 
+This5.N from() 
+mut method 
+Void from(This5.N that) 
+read method 
+This5.N to() 
+read method 
+This5.N stopOk() 
+mut method 
+Void #next() exception Void (
+  Void unused=this.from(that:this.from().#plus(that:This5.N.#from(builder:(
+    This5.N::#builder() b=This5.N.#builder()
+    Void unused1=b.#1()
+    b
+    ))))
+  Void unused0=(
+    This0::to() ::#right(that ) ::#and(that ) cond=this.to().#right(that:This5.N.#from(builder:(
+      This5.N::#builder() b0=This5.N.#builder()
+      Void unused2=b0.#0()
+      b0
+      ))).#and(that:this.from().#rightequal(that:this.to()))
+    (
+      Void unused3=cond.#checkTrue()
+      
+      catch exception Void catched2 void
+      
+      exception void
+      )
+    )
+  (
+    This0::from() ::#rightequal(that ) cond0=this.from().#rightequal(that:this.that().size())
+    (
+      Void unused4=cond0.#checkTrue()
+      
+      catch exception Void catched5 void
+      
+      exception void
+      )
+    )
+  )
+read method 
+Void #checkEnd() (
+  This0::from() ::#left(that ) cond=this.from().#left(that:this.stopOk())
+  (
+    Void unused=cond.#checkTrue()
+    
+    catch exception Void catched0 void
+    
+    error This5.Collections.CollectionErrors.iterationTermination(from:this.from(), stopOk:this.stopOk(), size:this.that().size())
+    )
+  )
+read method 
+This3 #inner() This2.cast(that:this.that().val(that:this.from()))
+read method 
+Void #close() void}}
+read method 
+lent This0.IteratorVal vals(This3.N from, This3.N to, This3.N stopOk) This0.IteratorVal.#apply(that:this.inner(), from:from, to:to, stopOk:stopOk)
+read method 
+lent This0.IteratorVal vals(This3.N stopOk) this.vals(from:This3.N.#from(builder:(
+  This3.N::#builder() b=This3.N.#builder()
+  Void unused=b.#0()
+  b
+  )).#less(that:This3.N.#from(builder:(
+  This3.N::#builder() b0=This3.N.#builder()
+  Void unused0=b0.#1()
+  b0
+  ))), to:This3.N.#from(builder:(
+  This3.N::#builder() b1=This3.N.#builder()
+  Void unused1=b1.#0()
+  b1
+  )).#less(that:This3.N.#from(builder:(
+  This3.N::#builder() b2=This3.N.#builder()
+  Void unused2=b2.#2()
+  b2
+  ))), stopOk:stopOk)
+read method 
+lent This0.IteratorVal vals(This3.N from, This3.N to) this.vals(from:from, to:to, stopOk:this.inner().size())
+read method 
+lent This0.IteratorVal vals() this.vals(from:This3.N.#from(builder:(
+  This3.N::#builder() b=This3.N.#builder()
+  Void unused=b.#0()
+  b
+  )).#less(that:This3.N.#from(builder:(
+  This3.N::#builder() b0=This3.N.#builder()
+  Void unused0=b0.#1()
+  b0
+  ))), to:This3.N.#from(builder:(
+  This3.N::#builder() b1=This3.N.#builder()
+  Void unused1=b1.#0()
+  b1
+  )).#less(that:This3.N.#from(builder:(
+  This3.N::#builder() b2=This3.N.#builder()
+  Void unused2=b2.#2()
+  b2
+  ))), stopOk:this.inner().size())
+IteratorVal:{
+read method 
+read This4.Collections.MutListAny that() 
+read method 
+This4.N from() 
+mut method 
+Void from(This4.N that) 
+read method 
+This4.N to() 
+read method 
+This4.N stopOk() 
+mut method 
+Void #next() exception Void (
+  Void unused=this.from(that:this.from().#plus(that:This4.N.#from(builder:(
+    This4.N::#builder() b=This4.N.#builder()
+    Void unused1=b.#1()
+    b
+    ))))
+  Void unused0=(
+    This0::to() ::#right(that ) ::#and(that ) cond=this.to().#right(that:This4.N.#from(builder:(
+      This4.N::#builder() b0=This4.N.#builder()
+      Void unused2=b0.#0()
+      b0
+      ))).#and(that:this.from().#rightequal(that:this.to()))
+    (
+      Void unused3=cond.#checkTrue()
+      
+      catch exception Void catched2 void
+      
+      exception void
+      )
+    )
+  (
+    This0::from() ::#rightequal(that ) cond0=this.from().#rightequal(that:this.that().size())
+    (
+      Void unused4=cond0.#checkTrue()
+      
+      catch exception Void catched5 void
+      
+      exception void
+      )
+    )
+  )
+read method 
+Void #checkEnd() (
+  This0::from() ::#left(that ) cond=this.from().#left(that:this.stopOk())
+  (
+    Void unused=cond.#checkTrue()
+    
+    catch exception Void catched0 void
+    
+    error This4.Collections.CollectionErrors.iterationTermination(from:this.from(), stopOk:this.stopOk(), size:this.that().size())
+    )
+  )
+read method 
+This2 #inner() This1.cast(that:this.that().val(that:this.from()))
+read method 
+Void #close() void
+class method 
+lent This0 #lentK(read This4.Collections.MutListAny that, This4.N from, This4.N to, This4.N stopOk) 
+class method 
+lent This0 #apply(read This4.Collections.MutListAny that, This4.N from, This4.N to, This4.N stopOk) This0.#lentK(that:that, from:from, to:to, stopOk:stopOk)
+mut method 
+read This4.Collections.MutListAny #that() 
+mut method 
+This4.N #from() 
+mut method 
+This4.N #to() 
+mut method 
+This4.N #stopOk() }
+mut method 
+lent This0.IteratorVar #vals(This3.N from, This3.N to, This3.N stopOk) This0.IteratorVar.#apply(that:this.#inner(), from:from, to:to, stopOk:stopOk)
+mut method 
+lent This0.IteratorVar #vals(This3.N stopOk) this.#vals(from:This3.N.#from(builder:(
+  This3.N::#builder() b=This3.N.#builder()
+  Void unused=b.#0()
+  b
+  )).#less(that:This3.N.#from(builder:(
+  This3.N::#builder() b0=This3.N.#builder()
+  Void unused0=b0.#1()
+  b0
+  ))), to:This3.N.#from(builder:(
+  This3.N::#builder() b1=This3.N.#builder()
+  Void unused1=b1.#0()
+  b1
+  )).#less(that:This3.N.#from(builder:(
+  This3.N::#builder() b2=This3.N.#builder()
+  Void unused2=b2.#2()
+  b2
+  ))), stopOk:stopOk)
+mut method 
+lent This0.IteratorVar #vals(This3.N from, This3.N to) this.#vals(from:from, to:to, stopOk:this.inner().size())
+mut method 
+lent This0.IteratorVar #vals() this.#vals(from:This3.N.#from(builder:(
+  This3.N::#builder() b=This3.N.#builder()
+  Void unused=b.#0()
+  b
+  )).#less(that:This3.N.#from(builder:(
+  This3.N::#builder() b0=This3.N.#builder()
+  Void unused0=b0.#1()
+  b0
+  ))), to:This3.N.#from(builder:(
+  This3.N::#builder() b1=This3.N.#builder()
+  Void unused1=b1.#0()
+  b1
+  )).#less(that:This3.N.#from(builder:(
+  This3.N::#builder() b2=This3.N.#builder()
+  Void unused2=b2.#2()
+  b2
+  ))), stopOk:this.inner().size())
+IteratorVar:{
+read method 
+read This4.Collections.MutListAny that() 
+read method 
+This4.N from() 
+mut method 
+Void from(This4.N that) 
+read method 
+This4.N to() 
+read method 
+This4.N stopOk() 
+mut method 
+Void #next() exception Void (
+  Void unused=this.from(that:this.from().#plus(that:This4.N.#from(builder:(
+    This4.N::#builder() b=This4.N.#builder()
+    Void unused1=b.#1()
+    b
+    ))))
+  Void unused0=(
+    This0::to() ::#right(that ) ::#and(that ) cond=this.to().#right(that:This4.N.#from(builder:(
+      This4.N::#builder() b0=This4.N.#builder()
+      Void unused2=b0.#0()
+      b0
+      ))).#and(that:this.from().#rightequal(that:this.to()))
+    (
+      Void unused3=cond.#checkTrue()
+      
+      catch exception Void catched2 void
+      
+      exception void
+      )
+    )
+  (
+    This0::from() ::#rightequal(that ) cond0=this.from().#rightequal(that:this.that().size())
+    (
+      Void unused4=cond0.#checkTrue()
+      
+      catch exception Void catched5 void
+      
+      exception void
+      )
+    )
+  )
+read method 
+Void #checkEnd() (
+  This0::from() ::#left(that ) cond=this.from().#left(that:this.stopOk())
+  (
+    Void unused=cond.#checkTrue()
+    
+    catch exception Void catched0 void
+    
+    error This4.Collections.CollectionErrors.iterationTermination(from:this.from(), stopOk:this.stopOk(), size:this.that().size())
+    )
+  )
+read method 
+This2 #inner() This1.cast(that:this.that().val(that:this.from()))
+read method 
+Void #close() void
+class method 
+mut This0 #mutK(mut This4.Collections.MutListAny that, This4.N from, This4.N to, This4.N stopOk) 
+class method 
+mut This0 #apply(mut This4.Collections.MutListAny that, This4.N from, This4.N to, This4.N stopOk) This0.#mutK(that:that, from:from, to:to, stopOk:stopOk)
+mut method 
+mut This4.Collections.MutListAny #that() 
+mut method 
+This4.N #from() 
+mut method 
+This4.N #to() 
+mut method 
+This4.N #stopOk() 
+mut method 
+Void inner(This2 that) (
+  This0::#that() rcv18=this.#that()
+  rcv18.#apply(that:this.from(), val:that)
+  )}
+read method 
+This3.Bool contains(This1 that) (
+  Void unused=(
+    Void unused0=(
+      This0::vals() e=this.vals()
+      (
+        Void unused2=(
+          Void unused3=(
+            Void unused4=loop (
+              Void unused5=e.#next()
+              
+              catch exception Void catched0 (
+                Void unused6=(
+                  Void unused7=e.#checkEnd()
+                  
+                  catch exception Void catched1 void
+                  
+                  void
+                  )
+                exception void
+                )
+              
+              (
+                This0::vals() ::#inner() ::equals(that ) cond=e.#inner().equals(that:that)
+                (
+                  Void unused8=cond.#checkTrue()
+                  
+                  catch exception Void catched4 void
+                  
+                  return This3.Bool.true()
+                  )
+                )
+              )
+            
+            catch exception Void catched5 void
+            
+            void
+            )
+          
+          catch exception Any propagated (
+            Void unused9=e.#close()
+            exception propagated
+            )
+          
+          void
+          )
+        
+        catch return This3.Bool propagated0 (
+          Void unused10=e.#close()
+          return propagated0
+          )
+        
+        e.#close()
+        )
+      )
+    Void unused1=return This3.Bool.false()
+    void
+    )
+  
+  catch return This3.Bool result result
+  
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
+  }
+  )
+method 
+This0 withoutAll(This1 that) This0.#from(seqBuilder:(
+  This0::#seqBuilder() b=This0.#seqBuilder()
+  Void unused=(
+    This0::vals() e=this.vals()
+    (
+      Void unused0=(
+        Void unused1=(
+          Void unused2=loop (
+            Void unused3=e.#next()
+            
+            catch exception Void catched0 (
+              Void unused4=(
+                Void unused5=e.#checkEnd()
+                
+                catch exception Void catched1 void
+                
+                void
+                )
+              exception void
+              )
+            
+            (
+              This0::vals() ::#inner() ::equals(that ) ::#bang() cond=e.#inner().equals(that:that).#bang()
+              (
+                Void unused6=cond.#checkTrue()
+                
+                catch exception Void catched4 void
+                
+                (
+                  Void unused7=b.#add(that:e.#inner())
+                  void
+                  )
+                )
+              )
+            )
+          
+          catch exception Void catched6 void
+          
+          void
+          )
+        
+        catch exception Any propagated (
+          Void unused8=e.#close()
+          exception propagated
+          )
+        
+        void
+        )
+      
+      catch return Any propagated0 (
+        Void unused9=e.#close()
+        return propagated0
+        )
+      
+      e.#close()
+      )
+    )
+  b
+  ))
+method 
+This0 #less(This1 that) this.withoutAll(that:that)
+method 
+This0 #lessless(This0 that) This0.#from(seqBuilder:(
+  This0::#seqBuilder() b=This0.#seqBuilder()
+  Void unused=(
+    This0::vals() e=this.vals()
+    (
+      Void unused0=(
+        Void unused1=(
+          Void unused2=loop (
+            Void unused3=e.#next()
+            
+            catch exception Void catched0 (
+              Void unused4=(
+                Void unused5=e.#checkEnd()
+                
+                catch exception Void catched1 void
+                
+                void
+                )
+              exception void
+              )
+            
+            (
+              This0::contains(that ) ::#bang() cond=that.contains(that:e.#inner()).#bang()
+              (
+                Void unused6=cond.#checkTrue()
+                
+                catch exception Void catched4 void
+                
+                (
+                  Void unused7=b.#add(that:e.#inner())
+                  void
+                  )
+                )
+              )
+            )
+          
+          catch exception Void catched6 void
+          
+          void
+          )
+        
+        catch exception Any propagated (
+          Void unused8=e.#close()
+          exception propagated
+          )
+        
+        void
+        )
+      
+      catch return Any propagated0 (
+        Void unused9=e.#close()
+        return propagated0
+        )
+      
+      e.#close()
+      )
+    )
+  b
+  ))
+read method 
+This3.Bool #bangequal(read This0 that) this.#equalequal(that:that).#bang()
+read method 
+This3.Bool #equalequal(read This0 that) (
+  Void unused=(
+    Void unused0=(
+      This0::vals() e1=this.vals()
+      (
+        Void unused1=(
+          Void unused2=(
+            This0::vals() e2=that.vals()
+            (
+              Void unused3=(
+                Void unused4=(
+                  Void unused5=loop (
+                    Void unused6=e1.#next()
+                    
+                    catch exception Void catched1 (
+                      Void unused7=(
+                        Void unused10=e2.#next()
+                        
+                        catch exception Void catched2 void
+                        
+                        void
+                        )
+                      Void unused8=(
+                        Void unused11=e1.#checkEnd()
+                        
+                        catch exception Void catched3 void
+                        
+                        void
+                        )
+                      Void unused9=(
+                        Void unused12=e2.#checkEnd()
+                        
+                        catch exception Void catched4 void
+                        
+                        void
+                        )
+                      exception void
+                      )
+                    
+                    (
+                      Void unused13=e2.#next()
+                      
+                      catch exception Void catched6 (
+                        Void unused14=(
+                          Void unused16=e1.#checkEnd()
+                          
+                          catch exception Void catched7 void
+                          
+                          void
+                          )
+                        Void unused15=(
+                          Void unused17=e2.#checkEnd()
+                          
+                          catch exception Void catched8 void
+                          
+                          void
+                          )
+                        exception void
+                        )
+                      
+                      (
+                        This0::vals() ::#inner() ::equals(that ) ::#bang() cond=e1.#inner().equals(that:e2.#inner()).#bang()
+                        (
+                          Void unused18=cond.#checkTrue()
+                          
+                          catch exception Void catched11 void
+                          
+                          return This3.Bool.false()
+                          )
+                        )
+                      )
+                    )
+                  
+                  catch exception Void catched12 void
+                  
+                  void
+                  )
+                
+                catch exception Any propagated (
+                  Void unused19=e2.#close()
+                  exception propagated
+                  )
+                
+                void
+                )
+              
+              catch return This3.Bool propagated0 (
+                Void unused20=e2.#close()
+                return propagated0
+                )
+              
+              e2.#close()
+              )
+            )
+          
+          catch exception Any propagated1 (
+            Void unused21=e1.#close()
+            exception propagated1
+            )
+          
+          void
+          )
+        
+        catch return This3.Bool propagated2 (
+          Void unused22=e1.#close()
+          return propagated2
+          )
+        
+        e1.#close()
+        )
+      )
+    
+    catch error This3.Collections.IterationFailure catched21 return This3.Bool.false()
+    
+    (
+      Void unused23=return This3.Bool.true()
+      void
+      )
+    )
+  
+  catch return This3.Bool result result
+  
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
+  }
+  )
+method equals(that ) (
+  Void unused=(
+    Void unused0=(
+      read This0 that0=(
+        Void unused2=return that
+        
+        catch return read This0 casted casted
+        
+        catch return read Any casted exception void
+        
+        error {//@stringU
+        //CastT-Should be unreachable code
+        }
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return this.#equalequal(that:that0)
+        void
+        )
+      )
+    Void unused1=return This3.Bool.false()
+    void
+    )
+  
+  catch return This0::equals(that )  result result
+  
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
+  }
+  )}
 method classAny() This0
 read method 
 class This0 class() This0
@@ -17491,7 +22094,9 @@ method toS() This0.myName().#plusplus(that:This2.S.#from(builder:(
   This2.S::#builder() b=This2.S.#builder()
   Void unused=b.#dot()
   b
-  )).#plusplus(that:This0.names().val(that:this.that())))
+  )).#plusplus(that:this.name()))
+method 
+This2.S name() This0.names().val(that:this.that())
 class method 
 This2.Strings names() This2.Strings.#from(seqBuilder:(
   This2.Strings::#seqBuilder() b=This2.Strings.#seqBuilder()
@@ -19052,6 +23657,97 @@ Void checkTargetExists(Library that, This1.Path path) exception This1.MetaGuard.
   
   void
   )
+RedirectType:{
+class method 
+mut This0 #mutK(This2.Path that, This2.Introspection.Type to) 
+class method 
+This0 #apply(This2.Path that, This2.Introspection.Type to) This0.#mutK(that:that, to:to)
+mut method 
+This2.Path #that() 
+read method 
+This2.Path that() 
+mut method 
+This2.Introspection.Type #to() 
+read method 
+This2.Introspection.Type to() 
+method 
+Library #leftleft(Library that) exception This2.MetaGuard.NestedClassUnavailable, This2.MetaGuard.InvalidOnTopLevel, This2.MetaGuard.SourceUnfit, This2.MetaGuard.MethodClash, This2.MetaGuard.ClassClash, This2.MetaGuard.IncoherentRedirectMapping (
+  Void unused=(
+    This0::to() ::allAsString() str=this.to().allAsString()
+    Void unused0=(
+      This0::to() ::allAsString() ::#equalequal(that ) cond=str.#equalequal(that:This2.S.#from(builder:(
+        This2.S::#builder() b=This2.S.#builder()
+        Void unused5=b.#V()
+        Void unused6=b.#o()
+        Void unused7=b.#i()
+        Void unused8=b.#d()
+        b
+        )))
+      (
+        Void unused9=cond.#checkTrue()
+        
+        catch exception Void catched1 void
+        
+        return This1.Redirect.#apply(that:this.that(), to:Void).#leftleft(that:that)
+        )
+      )
+    Void unused1=(
+      This0::to() ::allAsString() ::#equalequal(that ) cond0=str.#equalequal(that:This2.S.#from(builder:(
+        This2.S::#builder() b0=This2.S.#builder()
+        Void unused10=b0.#A()
+        Void unused11=b0.#n()
+        Void unused12=b0.#y()
+        b0
+        )))
+      (
+        Void unused13=cond0.#checkTrue()
+        
+        catch exception Void catched4 void
+        
+        return This1.Redirect.#apply(that:this.that(), to:Any).#leftleft(that:that)
+        )
+      )
+    Void unused2=(
+      This0::to() ::allAsString() ::#equalequal(that ) cond1=str.#equalequal(that:This2.S.#from(builder:(
+        This2.S::#builder() b1=This2.S.#builder()
+        Void unused14=b1.#L()
+        Void unused15=b1.#i()
+        Void unused16=b1.#b()
+        Void unused17=b1.#r()
+        Void unused18=b1.#a()
+        Void unused19=b1.#r()
+        Void unused20=b1.#y()
+        b1
+        )))
+      (
+        Void unused21=cond1.#checkTrue()
+        
+        catch exception Void catched7 void
+        
+        return This1.Redirect.#apply(that:this.that(), to:Library).#leftleft(that:that)
+        )
+      )
+    This0::to() ::referencedPath() nc=this.to().referencedPath()
+    Void unused3=(
+      This0::to() ::referencedPath() ::hasExternalType() cond2=nc.hasExternalType()
+      (
+        Void unused22=cond2.#checkTrue()
+        
+        catch exception Void catched9 void
+        
+        return This1.Redirect.#apply(that:this.that(), to:nc.externalType()).#leftleft(that:that)
+        )
+      )
+    Void unused4=return This1.RenamePath.#apply(that:this.that(), to:nc.pathFromRoot()).#leftleft(that:that)
+    void
+    )
+  
+  catch return Library result result
+  
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
+  }
+  )}
 Redirect:{
 class method 
 mut This0 #mutK(This2.Path that, class Any to) 
@@ -19065,6 +23761,8 @@ mut method
 class Any #to() 
 read method 
 class Any to() 
+class method 
+This1.RedirectType #apply(This2.Path that, This2.Introspection.Type toType) This1.RedirectType.#apply(that:that, to:toType)
 method 
 Library #leftleft(Library that) exception This2.MetaGuard.NestedClassUnavailable, This2.MetaGuard.InvalidOnTopLevel, This2.MetaGuard.SourceUnfit, This2.MetaGuard.MethodClash, This2.MetaGuard.IncoherentRedirectMapping (
   Void unused=(
@@ -19388,6 +24086,112 @@ Library #leftleft(Library that) exception This2.MetaGuard.MemberUnavailable, Thi
       Void unused1=This2.MetaGuard.DispatchMemberUnavailable.#apply(that:err)
       Void unused2=This2.MetaGuard.MethodClash.#apply(lift:err)
       Void unused3=This2.MetaGuard.ParameterMismatch.#apply(lift:err)
+      error err
+      )
+    
+    void
+    )
+  
+  catch return Library result result
+  
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
+  }
+  )}
+MakeMethod:{
+class method 
+mut This0 #mutK(This2.Selector that, This2.Path of, This2.Introspection.Mdf.List mdfs, This2.N exceptionN) 
+class method 
+This0 #apply(This2.Selector that, This2.Path of, This2.Introspection.Mdf.List mdfs, This2.N exceptionN) This0.#mutK(that:that, of:of, mdfs:mdfs, exceptionN:exceptionN)
+mut method 
+This2.Selector #that() 
+read method 
+This2.Selector that() 
+mut method 
+This2.Path #of() 
+read method 
+This2.Path of() 
+mut method 
+This2.Introspection.Mdf.List #mdfs() 
+read method 
+This2.Introspection.Mdf.List mdfs() 
+mut method 
+This2.N #exceptionN() 
+read method 
+This2.N exceptionN() 
+method 
+Library #leftleft(Library that) exception This2.MetaGuard.NestedClassUnavailable, This2.MetaGuard.MethodClash (
+  Void unused=(
+    Void unused0=return This2.SafeOperators.makeMethod(that:that, path:this.of(), selector:this.that(), mdfs:(
+      This2.S::#from(builder ) ::#from(seqBuilder ) rcv85=(
+        This2.S::#from(builder ) rcv86=This2.S.#from(builder:(
+          This2.S::#builder() b0=This2.S.#builder()
+          b0
+          ))
+        rcv86.#from(seqBuilder:(
+          This2.S::#from(builder ) ::#seqBuilder() b=rcv86.#seqBuilder()
+          Void unused1=(
+            This0::mdfs() ::vals() m=this.mdfs().vals()
+            (
+              Void unused2=(
+                Void unused3=(
+                  Void unused4=loop (
+                    Void unused5=m.#next()
+                    
+                    catch exception Void catched2 (
+                      Void unused6=(
+                        Void unused7=m.#checkEnd()
+                        
+                        catch exception Void catched3 void
+                        
+                        void
+                        )
+                      exception void
+                      )
+                    
+                    (
+                      Void unused8=b.#add(that:m.#inner().name(), separedBy:This2.S.#from(builder:(
+                        This2.S::#builder() b1=This2.S.#builder()
+                        Void unused9=b1.#space()
+                        b1
+                        )))
+                      void
+                      )
+                    )
+                  
+                  catch exception Void catched7 void
+                  
+                  void
+                  )
+                
+                catch exception Any propagated (
+                  Void unused10=m.#close()
+                  exception propagated
+                  )
+                
+                void
+                )
+              
+              catch return Library propagated0 (
+                Void unused11=m.#close()
+                return propagated0
+                )
+              
+              m.#close()
+              )
+            )
+          b
+          ))
+        )
+      rcv85.#from(builder:(
+        This2.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b2=rcv85.#builder()
+        b2
+        ))
+      ), exceptionN:this.exceptionN())
+    
+    catch error Library err (
+      Void unused12=This2.MetaGuard.NestedClassUnavailable.#apply(lift:err)
+      Void unused13=This2.MetaGuard.MethodClash.#apply(lift:err)
       error err
       )
     
@@ -20928,8 +25732,8 @@ This1.Bool needRename(This1.Introspection.NestedClass that, This1.Introspection.
       )
     Void unused1=(
       This1.Introspection.Method::methodKind() ::equals(that ) cond0=(
-        This1.Introspection.Method::methodKind() rcv85=meth.methodKind()
-        rcv85.equals(that:rcv85.class()._AbstractMethod())
+        This1.Introspection.Method::methodKind() rcv87=meth.methodKind()
+        rcv87.equals(that:rcv87.class()._AbstractMethod())
         )
       (
         Void unused3=cond0.#checkTrue()
@@ -20956,8 +25760,8 @@ This1.Bool needRename(This1.Introspection.NestedClass that, This1.Introspection.
         )
       Void unused5=(
         This1.Introspection.NestedClass::method(that ) ::methodKind() ::equals(that ) cond2=(
-          This1.Introspection.NestedClass::method(that ) ::methodKind() rcv86=meth2.methodKind()
-          rcv86.equals(that:rcv86.class()._AbstractMethod())
+          This1.Introspection.NestedClass::method(that ) ::methodKind() rcv88=meth2.methodKind()
+          rcv88.equals(that:rcv88.class()._AbstractMethod())
           )
         (
           Void unused8=cond2.#checkTrue()
@@ -21089,20 +25893,20 @@ Library #leftleft(Library that) exception This2.MetaGuard.ClassClash, This2.Meta
                       (
                         Library libi=lib.#inner()
                         This1::renameMap__47_0(that prefix intros ) rens=This1.renameMap__47_0(that:lib.#inner(), prefix:(
-                          This2.S::#from(builder ) ::#from(seqBuilder ) rcv87=(
-                            This2.S::#from(builder ) rcv88=This2.S.#from(builder:(
+                          This2.S::#from(builder ) ::#from(seqBuilder ) rcv89=(
+                            This2.S::#from(builder ) rcv90=This2.S.#from(builder:(
                               This2.S::#builder() b0=This2.S.#builder()
                               Void unused23=b0.#hash()
                               b0
                               ))
-                            rcv88.#from(seqBuilder:(
-                              This2.S::#from(builder ) ::#seqBuilder() b1=rcv88.#seqBuilder()
+                            rcv90.#from(seqBuilder:(
+                              This2.S::#from(builder ) ::#seqBuilder() b1=rcv90.#seqBuilder()
                               Void unused24=b1.#add(that:index.#inner())
                               b1
                               ))
                             )
-                          rcv87.#from(builder:(
-                            This2.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b2=rcv87.#builder()
+                          rcv89.#from(builder:(
+                            This2.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b2=rcv89.#builder()
                             b2
                             ))
                           ), intros:i.transitivelyNestedClasses())
@@ -21410,20 +26214,20 @@ Library #leftleft(Library that) exception This1.MetaGuard.ClassClash, This1.Meta
                       (
                         Library libi=lib.#inner()
                         This1.PreferentialComposition::renameMap__47_0(that prefix intros ) rens=This1.PreferentialComposition.renameMap__47_0(that:lib.#inner(), prefix:(
-                          This1.S::#from(builder ) ::#from(seqBuilder ) rcv87=(
-                            This1.S::#from(builder ) rcv88=This1.S.#from(builder:(
+                          This1.S::#from(builder ) ::#from(seqBuilder ) rcv89=(
+                            This1.S::#from(builder ) rcv90=This1.S.#from(builder:(
                               This1.S::#builder() b0=This1.S.#builder()
                               Void unused23=b0.#hash()
                               b0
                               ))
-                            rcv88.#from(seqBuilder:(
-                              This1.S::#from(builder ) ::#seqBuilder() b1=rcv88.#seqBuilder()
+                            rcv90.#from(seqBuilder:(
+                              This1.S::#from(builder ) ::#seqBuilder() b1=rcv90.#seqBuilder()
                               Void unused24=b1.#add(that:index.#inner())
                               b1
                               ))
                             )
-                          rcv87.#from(builder:(
-                            This1.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b2=rcv87.#builder()
+                          rcv89.#from(builder:(
+                            This1.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b2=rcv89.#builder()
                             b2
                             ))
                           ), intros:i.transitivelyNestedClasses())
@@ -21731,20 +26535,20 @@ Library #leftleft(Library that) exception This1.MetaGuard.ClassClash, This1.Meta
                       (
                         Library libi=lib.#inner()
                         This1.PreferentialComposition::renameMap__47_0(that prefix intros ) rens=This1.PreferentialComposition.renameMap__47_0(that:lib.#inner(), prefix:(
-                          This1.S::#from(builder ) ::#from(seqBuilder ) rcv87=(
-                            This1.S::#from(builder ) rcv88=This1.S.#from(builder:(
+                          This1.S::#from(builder ) ::#from(seqBuilder ) rcv89=(
+                            This1.S::#from(builder ) rcv90=This1.S.#from(builder:(
                               This1.S::#builder() b0=This1.S.#builder()
                               Void unused23=b0.#hash()
                               b0
                               ))
-                            rcv88.#from(seqBuilder:(
-                              This1.S::#from(builder ) ::#seqBuilder() b1=rcv88.#seqBuilder()
+                            rcv90.#from(seqBuilder:(
+                              This1.S::#from(builder ) ::#seqBuilder() b1=rcv90.#seqBuilder()
                               Void unused24=b1.#add(that:index.#inner())
                               b1
                               ))
                             )
-                          rcv87.#from(builder:(
-                            This1.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b2=rcv87.#builder()
+                          rcv89.#from(builder:(
+                            This1.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b2=rcv89.#builder()
                             b2
                             ))
                           ), intros:i.transitivelyNestedClasses())
@@ -21983,7 +26787,7 @@ Library #leftleft(Library that) exception This1.MetaGuard.ClassClash, This1.Meta
                 Void unused13=varacc0.inner(that:This1.Refactor.MoveImplementationSelector.#apply(that:ren.#inner().src(), of:ren.#inner().path(), to:ren.#inner().dest()).#leftleft(that:varacc0.#inner()))
                 
                 catch exception This1.MetaGuard err error (
-                  This1.Assert.ObservedBug::#from(builder ) rcv89=This1.Assert.ObservedBug.#from(builder:(
+                  This1.Assert.ObservedBug::#from(builder ) rcv91=This1.Assert.ObservedBug.#from(builder:(
                     This1.Assert.ObservedBug::#builder() b0=This1.Assert.ObservedBug.#builder()
                     Void unused14=b0.#P()
                     Void unused15=b0.#a()
@@ -22007,7 +26811,7 @@ Library #leftleft(Library that) exception This1.MetaGuard.ClassClash, This1.Meta
                     Void unused33=b0.#cRound()
                     b0
                     ))
-                  rcv89.#apply(that:err)
+                  rcv91.#apply(that:err)
                   )
                 
                 void
@@ -22089,7 +26893,7 @@ Library #leftleft(Library that) exception This1.MetaGuard.ClassClash, This1.Meta
     Void unused3=return varacc0.#inner()
     
     catch exception This1.MetaGuard.MemberUnavailable err error (
-      This1.Assert.CodeNotReachable::#from(builder ) rcv90=This1.Assert.CodeNotReachable.#from(builder:(
+      This1.Assert.CodeNotReachable::#from(builder ) rcv92=This1.Assert.CodeNotReachable.#from(builder:(
         This1.Assert.CodeNotReachable::#builder() b2=This1.Assert.CodeNotReachable.#builder()
         Void unused48=b2.#P()
         Void unused49=b2.#a()
@@ -22098,7 +26902,7 @@ Library #leftleft(Library that) exception This1.MetaGuard.ClassClash, This1.Meta
         Void unused52=b2.#2()
         b2
         ))
-      rcv90.#apply(that:err)
+      rcv92.#apply(that:err)
       )
     
     void

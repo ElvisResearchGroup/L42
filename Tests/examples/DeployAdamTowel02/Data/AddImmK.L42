@@ -1,0 +1,48 @@
+{//Just immK for now
+  UncoherentState:Message.$<<{<:MetaGuard}
+  PrivateState:Message.$<<{<:MetaGuard}
+  class method
+  Library<<(Library that)
+  exception UncoherentState, PrivateState{//TODO: manage errors
+    i=Introspection(lib:that)
+    s=i.state()
+    if s.isEmpty() (exception UncoherentState"")
+    k=s.left()
+    if k.isPrivate() (exception PrivateState"")
+    with m in s.vals() (//already present
+      if m.thisMdf().equals(\class._Class()) & m.returnType().mdf().equals(\class._Immutable()) (
+        return that
+        )
+      )
+   return this.addImmK(that,otherK:s.left())
+   catch exception MetaGuard error Assert.CodeNotReachable"<< boh?"
+   }
+
+  class method
+  Library addImmK(Library that, Introspection.Method otherK) (
+    //adds with no placeholders for now
+    Introspection.Mdf.List allImm=(
+      ns=otherK.selector().names()
+      res=Introspection.Mdf.List.empty()
+      res.add(right:Introspection.Mdf._Class())//class method
+      res.add(right:Introspection.Mdf._Immutable())// imm This
+      with n in ns.vals() ( res.add(right:Introspection.Mdf._Immutable()) )
+      res
+      )
+  var Library immK$=Refactor.MakeMethod(Selector.fresh(otherK.selector())
+     of:Path"This"
+     mdfs:allImm
+     exceptionN:0N
+     )<<{}
+  var N count=0N
+  immK$:=Refactor.Redirect(Path"$0" toType:otherK.returnType())<<immK$
+  with ti in otherK.parameterTypes().vals() (
+    count+=1N
+    immK$:=Refactor.Redirect(Path.fromS(S"$"[count]"") toType:ti)<<immK$
+    )
+  r=Use[that]<<immK$
+  error on MetaGuard
+    Assert.CodeNotReachable"addImmK"
+  r
+  )
+}

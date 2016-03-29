@@ -142,10 +142,23 @@ public class TestBase02 {
    public  void _02_11Wither() throws Throwable{
      TestHelper.configureForTest();
      //new TestBase01()._01_00DeployAdamTowel01();
-     //this._02_00DeployAdamTowel02();
+     this._02_00DeployAdamTowel02();
      L42.main(new String[]{"examples/testsForAdamTowel02/TestWither.L42"});
      Assert.assertEquals(L42.record.toString(),
          "20\n20\n20\n10\n10\n20\n10\n10\n");
+     }
+
+   @Test
+   public  void _02_12TestRedirectType() throws Throwable{
+     TestHelper.configureForTest();
+     //new TestBase01()._01_00DeployAdamTowel01();
+     //this._02_00DeployAdamTowel02();
+     L42.main(new String[]{"examples/testsForAdamTowel02/TestRedirectType.L42"});
+     Assert.assertEquals(L42.record.toString(),
+         "{\nmethod \nThis0.C c() \nC:{}}\n"+
+         "{\nmethod \nThis1.A c() }\n"+
+         "{\nmethod \nThis0.B c() \nB:{}}\n"+
+         "{\nmethod \nVoid c() }\n");
      }
 
   @Test
