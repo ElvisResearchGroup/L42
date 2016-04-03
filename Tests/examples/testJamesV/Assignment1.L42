@@ -1,0 +1,349 @@
+{reuse L42.is/AdamTowel02
+
+// [a] write a class method max returning the max from a list of numbers.
+MyMath:{
+
+  // Takes two numbers and returns the biggest
+  class method N maxN(N one, N two){
+    if one<two (return two)
+    return one
+  }
+  
+  // Takes a list of numbers and returns the largest number
+  class method N maxL(NL list){
+    var N result=list.left()
+    with k in list.vals() (
+        result := MyMath.maxN(one: k, two: result)
+    )
+    return result
+  }
+}
+
+
+// [b] write a class method map producing a string from two lists of strings of the same lenght.
+// map(keys:Strings[S"a";S"b";S"c"],vals:Strings[S"z";S"y";S"z"]) should produce S"a->z, b->y, c->z"
+// Method called map, which takes two parameters named keys and vals of which both take a list of Strings
+MyMap:{
+  class method S map(SL keys, SL values){
+    if keys.size() == values.size() (
+        var S result=S""
+        with k in keys.vals(), v in values.vals() (
+          if result != S"" ( result := result ++ S", " )
+            result := result ++ k ++ S"->" ++ v
+        )
+        return S"["[result]"]"
+    )
+    return S"Bad Sizing"
+  }
+
+}
+
+
+// [c] write a class method Strings upTo(Strings that, N size) that filters out from a list of strings the ones longer than size.
+UndefinedOnEmptyList: Message.$<<{<:Guard}
+CoreC:{
+    class method SL upTo(SL list, N size){
+        if list.isEmpty() (error UndefinedOnEmptyList"on CoreC.upTo")
+        
+        filtered = SL[with e in list.vals() (
+            if e.size() <= size ( use[e] )
+        )]
+        
+        return filtered
+    }
+}
+
+
+//
+// Creates a Number List from the given elements
+//
+SL:Use[Collections.vector(ofEq:S)]<<{<:Concept.ToS
+  method toS()
+    S"["[with e in this.vals() (
+      use[e separedBy:S";"]
+      )]"]"
+}
+
+//
+// Creates a Number List from the given elements
+//
+NL:Use[Collections.vector(ofEq:N)]<<{<:Concept.ToS
+  method toS()
+    S"["[with e in this.vals() (
+      use[e separedBy:S";"]
+      )]"]"
+}
+
+//
+// A collection that contains Numbers
+// Contains additional operators such as <<, <<=, >>, >>=
+//
+CompletionB_OLD:Use[Collections.vector(ofEq:N)]<<{<:Concept.ToS
+  method toS()
+    S"["[with e in this.vals() (
+      use[e separedBy:S"; "]
+      )]"]"
+
+  method Bool <<(CompletionB_OLD that){
+    // Don't bother if this list is bigger
+    if this.size() >= that.size() ( return Bool.false() )
+
+    with a in this.vals() (
+      with b in that.vals() (
+        Debug(S"Do Stuff")
+      )
+    )
+
+
+    // This set is a proper set of the given set
+    return Bool.true()
+  }
+
+  method Bool <<=(CompletionB_OLD that){
+    return Bool.false()
+  }
+
+  method Bool >>(CompletionB_OLD that){
+    return that<<this
+  }
+
+  method Bool >>=(CompletionB_OLD that){
+    return that<<=this
+  }
+}
+
+//
+// A collection that contains Numbers
+// Contains additional operators such as <<, <<=, >>, >>=
+//
+CompletionB:Use[Collections.vector(ofEq:N)]<<{<:Concept.ToS
+  method toS()
+    S"["[with e in this.vals() (
+      use[e separedBy:S"; "]
+      )]"]"
+
+  method Bool <<(CompletionB that){
+    // Don't bother if this list is bigger
+    if this.size() >= that.size() ( return Bool.false() )
+    
+    //list = that.vals()-this.vals()
+
+    with a in this.vals() (
+      with b in that.vals() (
+        Debug(S"Do Stuff")
+      )
+    )
+
+
+    // This set is a proper set of the given set
+    return Bool.true()
+  }
+
+  method Bool <<=(CompletionB that){
+    return Bool.false()
+  }
+
+  method Bool >>(CompletionB that){
+    return that<<this
+  }
+
+  method Bool >>=(CompletionB that){
+    return that<<=this
+  }
+}
+
+CoreD:{
+    class method Persons from(SL names, NL ages){
+        return Persons[
+          with n in names.vals(), a in ages.vals() (
+            use[Person(name:n, age:a)]
+          )
+        ]
+    }
+}
+
+
+//
+// Person classs
+//
+//
+
+
+Person:Invariant<<{(S name, N age) <:Concept.ToS, Concept.Invariant
+    method toS(){
+        return S"["[this.name()]","[this.age()]"]"
+    }
+
+    method invariant(){
+        return this.age() >0N & this.name() != S""
+    }
+}
+
+
+Persons:Use[Collections.vector(of:Person)]<<{<:Concept.ToS
+  method toS()
+    S"["[with e in this.vals() (
+      use[e separedBy:S";"]
+      )]"]"
+      
+  class method Persons from(SL names, NL ages){
+        return Persons[
+            with n in names.vals(), a in ages.vals() (
+                use[Person(name:n, age:a)]
+            )
+        ]
+    }
+}
+
+Output:{
+
+  //
+  // This method tests the given string against the expected string and will print
+  // Accordingly to what is expected of the outcome.
+  // If expected != given. Then it will print a failed message with given and expected to be viewed
+  //    [FAIL] Max[1,2,3,4]: 9 != 4
+  // If the test passes. It will print the message along with the given outcome
+  //    [PASS] Max[1,2,3,4] = 4
+  //
+  class method Void testS(S message, S expected, S given)(
+
+    if expected != given (
+      // [FAIL] message: given != expected
+      Debug(S"[FAIL] "[message]": "[given]" != "[expected]"")
+    )
+    else (
+      // [PASS] message = given
+      Debug(S"[PASS] "[message]" = "[given]"")      
+    )
+  )
+
+  class method Void testN(S message, N expected, N given)(
+    Output.testS(message: message, expected: expected.toS(), given: given.toS())
+  )
+}
+
+//
+// Main Method
+//
+Main:{
+  Debug(S"Nothing is here to be read")
+
+  Debug(S"Core A:")
+  // [a] write a class method max returning the max from a list of numbers.
+  Output.testN(message: S"Max[1,2,3,4]", expected: 4N, given: MyMath.maxL(list:NL[1N;2N;3N;4N]))
+  Output.testN(message: S"Max[4,3,2,1]", expected: 4N, given: MyMath.maxL(list:NL[4N;3N;2N;1N]))
+  Output.testN(message: S"Max[-1,-2,-3,-4]", expected: -1N, given: MyMath.maxL(list:NL[-1N;-2N;-3N;-4N]))
+  Output.testN(message: S"Max[-4,-3,-2,-1]", expected: -1N, given: MyMath.maxL(list:NL[-4N;-3N;-2N;-1N]))
+  
+  Debug(S"")
+  
+  
+  Debug(S"Core B:")
+  // map(keys:Strings[S"a";S"b";S"c"],vals:Strings[S"z";S"y";S"z"]) should produce S"a->z, b->y, c->z"
+  // Make Varaible from class
+  Output.testS(message: S"Map keys:[a],values:[z]", expected: S"[a->z]", given: MyMap.map(keys:SL[S"a"],values:SL[S"z"]).toS())
+  Output.testS(message: S"Map keys:[a;b;c],values:[z;y;x]", expected: S"[a->z, b->y, c->x]", given: MyMap.map(keys:SL[S"a";S"b";S"c"],values:SL[S"z";S"y";S"x"]).toS())
+  Output.testS(message: S"Map keys:[a;b],values:[z;y;x]", expected: S"Bad Sizing", given: MyMap.map(keys:SL[S"a";S"b"],values:SL[S"z";S"y";S"x"]).toS())
+  Output.testS(message: S"Map keys:[a;b;c],values:[z;y]", expected: S"Bad Sizing", given: MyMap.map(keys:SL[S"a";S"b";S"c"],values:SL[S"z";S"y"]).toS())
+
+  Debug(S"")
+  
+  
+  Debug(S"Core C:")
+  Output.testS(message: S"Upto([a],2)", expected: S"[a]", given: CoreC.upTo(list:SL[S"a"],size:2N).toS())
+  Output.testS(message: S"Upto([a,bb],2)", expected: S"[a;bb]", given: CoreC.upTo(list:SL[S"a";S"bb"],size:2N).toS())
+  Output.testS(message: S"Upto([a,bb,ccc],2)", expected: S"[a;bb]", given: CoreC.upTo(list:SL[S"a";S"bb";S"ccc"],size:2N).toS())
+  Output.testS(message: S"Upto([aaa,bb,c],2)", expected: S"[bb;c]", given: CoreC.upTo(list:SL[S"aaa";S"bb";S"c"],size:2N).toS())
+  
+  Debug(S"")
+  
+  
+  // [d] declare a class person with String name and N age, declare a list of persons Persons.
+  // write a class method from(names,ages) producing a list of persons from a list of strings and a list of ages.
+  
+  
+  Debug(S"Core D:")
+  personNames1 = SL[S"John"]
+  personAges1 = NL[22N]
+  Persons group1 = CoreD.from(names:personNames1,ages:personAges1)
+  Output.testS(message: S"Persons("[personNames1]","[personAges1]")", expected: S"[[John,22]]", given: group1.toS())
+  
+  personNames2 = SL[S"John";S"Stacey";S"Timmy"]
+  personAges2 = NL[22N;24N;13N]
+  Persons group2 = CoreD.from(names:personNames2,ages:personAges2)
+  Output.testS(message: S"Persons("[personNames2]","[personAges2]")", expected: S"[[John,22];[Stacey,24];[Timmy,13]]", given: group2.toS())
+  
+
+
+  Debug(S"")
+  
+  // COMPLETION
+  // [a] This is a variation of Core.d We ask you to to two changes:
+  // Using Use or Extends declare Persons so that the class method from(names,ages) is a member of Persons.
+
+  
+  Debug(S"Completion A Persons.from():")
+
+  personNames3 = SL[S"John"]
+  personAges3 = NL[22N]
+  Persons group3 = Persons.from(names:personNames3,ages:personAges3)
+  Output.testS(message: S"Persons("[personNames3]","[personAges3]")", expected: S"[[John,22]]", given: group3.toS())
+  
+  personNames4 = SL[S"John";S"Stacey";S"Timmy"]
+  personAges4 = NL[22N;24N;13N]
+  Persons group4 = CoreD.from(names:personNames4,ages:personAges4)
+  Output.testS(message: S"Persons("[personNames4]","[personAges4]")", expected: S"[[John,22];[Stacey,24];[Timmy,13]]", given: group4.toS())
+
+  Debug(S"")
+
+  
+  Debug(S"Completion A Person.Invariant:")
+ // Using Invariant declare Person so that valid persons only have positive ages and not empty names. Add more test cases to check the invariant is holding.
+
+
+  // Valid Person with Age 10N
+  p1 = Person(name: S"Thomas", age: 10N)
+  Output.testS(message: S"Person(Thomas,10)", expected: S"[Thomas,10]", given: p1.toS())
+
+  // Invalid Person with 0N Age
+  (
+    Person pp2 = Person(name: S"Crystal", age: 0N)
+    catch error Invariant.InvariantFailure Output.testS(message: S"Person(Crystal,0N)", expected: S"error", given: S"error")
+    Output.testS(message: S"Person(Crystal,0N)", expected: S"error", given: pp2.toS())
+  )
+
+  // Invalid Person with -10N Age
+  (
+    Person pp2 = Person(name: S"Johann", age: -10N)
+    catch error Invariant.InvariantFailure Output.testS(message: S"Person(Johann,-10N)", expected: S"error", given: S"error")
+    Output.testS(message: S"Person(Johann,-10N)", expected: S"error", given: pp2.toS())
+  )
+
+  // Invalid Person with name : ""
+  (
+    Person pp3 = Person(name: S"", age: 42N)
+    catch error Invariant.InvariantFailure Output.testS(message: S"Person('',42N)", expected: S"error", given: S"error")
+    Output.testS(message: S"Person('',42N)", expected: S"error", given: pp3.toS())
+  )
+  
+  Debug(S"")
+
+
+  // [b] Define a new kind of list generator, 
+  // producing lists that also offers operators >>, <<. >>= and <<= for strictly 
+  // superset/subset and superset/subset
+  
+  Debug(S"Completion B Superset/subsets:")
+
+  //CompletionB aList = CompletionB[1N;2N;3N]
+  //CompletionB bList = CompletionB[1N;2N;6N;4N;5N]
+  //Debug(S"aList:"[aList]"")
+  //Debug(S"bList:"[bList]"")
+  //Debug(S""[aList]"<<"[bList]" = "[aList<<bList]"") // false
+
+  Debug(S"")  
+  
+  Debug(S"I Have no errors ^,^")
+  return ExitCode.normal()
+  }
+}
