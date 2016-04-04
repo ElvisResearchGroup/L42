@@ -1225,7 +1225,7 @@ Void #dQuote() this.acc(that:{//@stringU
 })
 mut method 
 Void #sQuote() this.acc(that:{//@stringU
-////
+//'
 })
 mut method 
 Void #hQuote() this.acc(that:{//@stringU
@@ -1273,7 +1273,7 @@ Void #at() this.acc(that:{//@stringU
 })
 mut method 
 Void #backslash() this.acc(that:{//@stringU
-//\
+//\u005C
 })
 mut method 
 Void #space() this.acc(that:{//@stringU
@@ -1317,7 +1317,218 @@ Void #apply(Library lib) error This1.S.#from(builder:(
   b
   ))
 class method 
-Void #apply(This1.Concept.ToS fileName, This1.Concept.ToS content) use This1.Alu check fileDebug(fileName:fileName.toS().binaryRepr(), content:content.toS().binaryRepr()) void}
+Void #apply(This1.Concept.ToS fileName, This1.Concept.ToS content) use This1.Alu check fileDebug(fileName:fileName.toS().binaryRepr(), content:content.toS().binaryRepr()) void
+class method 
+This1.S readFile(This1.Concept.ToS fileName) This1.S.#from(binaryRepr:use This1.Alu check fileReadDebug(fileName:fileName.toS().binaryRepr()) error (
+  This1.S::#from(builder ) ::#from(seqBuilder ) rcv0=(
+    This1.S::#from(builder ) rcv1=This1.S.#from(builder:(
+      This1.S::#builder() b=This1.S.#builder()
+      Void unused=b.#A()
+      Void unused0=b.#l()
+      Void unused1=b.#u()
+      Void unused2=b.#dot()
+      Void unused3=b.#f()
+      Void unused4=b.#i()
+      Void unused5=b.#l()
+      Void unused6=b.#e()
+      Void unused7=b.#R()
+      Void unused8=b.#e()
+      Void unused9=b.#a()
+      Void unused10=b.#d()
+      Void unused11=b.#D()
+      Void unused12=b.#e()
+      Void unused13=b.#b()
+      Void unused14=b.#u()
+      Void unused15=b.#g()
+      Void unused16=b.#space()
+      Void unused17=b.#r()
+      Void unused18=b.#e()
+      Void unused19=b.#a()
+      Void unused20=b.#d()
+      Void unused21=b.#i()
+      Void unused22=b.#n()
+      Void unused23=b.#g()
+      Void unused24=b.#space()
+      Void unused25=b.#f()
+      Void unused26=b.#i()
+      Void unused27=b.#l()
+      Void unused28=b.#e()
+      Void unused29=b.#colon()
+      b
+      ))
+    rcv1.#from(seqBuilder:(
+      This1.S::#from(builder ) ::#seqBuilder() b0=rcv1.#seqBuilder()
+      Void unused30=b0.#add(that:fileName)
+      b0
+      ))
+    )
+  rcv0.#from(builder:(
+    This1.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b1=rcv0.#builder()
+    b1
+    ))
+  ))
+class method 
+This1.S localToAbsolute(This1.Concept.ToS fileName) This1.S.#from(binaryRepr:use This1.Alu check localToAbsolute(fileName:fileName.toS().binaryRepr()) error (
+  This1.S::#from(builder ) ::#from(seqBuilder ) rcv2=(
+    This1.S::#from(builder ) rcv3=This1.S.#from(builder:(
+      This1.S::#builder() b=This1.S.#builder()
+      Void unused=b.#A()
+      Void unused0=b.#l()
+      Void unused1=b.#u()
+      Void unused2=b.#dot()
+      Void unused3=b.#f()
+      Void unused4=b.#i()
+      Void unused5=b.#l()
+      Void unused6=b.#e()
+      Void unused7=b.#R()
+      Void unused8=b.#e()
+      Void unused9=b.#a()
+      Void unused10=b.#d()
+      Void unused11=b.#D()
+      Void unused12=b.#e()
+      Void unused13=b.#b()
+      Void unused14=b.#u()
+      Void unused15=b.#g()
+      Void unused16=b.#space()
+      Void unused17=b.#r()
+      Void unused18=b.#e()
+      Void unused19=b.#a()
+      Void unused20=b.#d()
+      Void unused21=b.#i()
+      Void unused22=b.#n()
+      Void unused23=b.#g()
+      Void unused24=b.#space()
+      Void unused25=b.#f()
+      Void unused26=b.#i()
+      Void unused27=b.#l()
+      Void unused28=b.#e()
+      Void unused29=b.#colon()
+      b
+      ))
+    rcv3.#from(seqBuilder:(
+      This1.S::#from(builder ) ::#seqBuilder() b0=rcv3.#seqBuilder()
+      Void unused30=b0.#add(that:fileName)
+      b0
+      ))
+    )
+  rcv2.#from(builder:(
+    This1.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b1=rcv2.#builder()
+    b1
+    ))
+  ))
+class method 
+Void test(This1.Concept.ToS that, This1.Concept.ToS expected, This1.S message) (
+  This1.Concept.ToS::toS() sExpected=expected.toS()
+  This1.Concept.ToS::toS() given=that.toS()
+  (
+    This1.Concept.ToS::toS() ::#bangequal(that ) cond=sExpected.#bangequal(that:given)
+    (
+      Void unused=cond.#checkTrue()
+      
+      catch exception Void catched1 This1.Debug.#apply(that:(
+        This1.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) rcv10=(
+          This1.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) rcv11=(
+            This1.S::#from(builder ) ::#from(seqBuilder ) rcv12=(
+              This1.S::#from(builder ) rcv13=This1.S.#from(builder:(
+                This1.S::#builder() b=This1.S.#builder()
+                Void unused0=b.#oSquare()
+                Void unused1=b.#P()
+                Void unused2=b.#A()
+                Void unused3=b.#S()
+                Void unused4=b.#S()
+                Void unused5=b.#cSquare()
+                Void unused6=b.#space()
+                b
+                ))
+              rcv13.#from(seqBuilder:(
+                This1.S::#from(builder ) ::#seqBuilder() b0=rcv13.#seqBuilder()
+                Void unused7=b0.#add(that:message)
+                b0
+                ))
+              )
+            rcv12.#from(builder:(
+              This1.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b1=rcv12.#builder()
+              Void unused8=b1.#colon()
+              Void unused9=b1.#space()
+              b1
+              ))
+            )
+          rcv11.#from(seqBuilder:(
+            This1.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#seqBuilder() b2=rcv11.#seqBuilder()
+            Void unused10=b2.#add(that:given)
+            b2
+            ))
+          )
+        rcv10.#from(builder:(
+          This1.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) ::#builder() b3=rcv10.#builder()
+          b3
+          ))
+        ))
+      
+      This1.Debug.#apply(that:(
+        This1.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) rcv4=(
+          This1.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) rcv5=(
+            This1.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) rcv6=(
+              This1.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) rcv7=(
+                This1.S::#from(builder ) ::#from(seqBuilder ) rcv8=(
+                  This1.S::#from(builder ) rcv9=This1.S.#from(builder:(
+                    This1.S::#builder() b4=This1.S.#builder()
+                    Void unused11=b4.#oSquare()
+                    Void unused12=b4.#F()
+                    Void unused13=b4.#A()
+                    Void unused14=b4.#I()
+                    Void unused15=b4.#L()
+                    Void unused16=b4.#cSquare()
+                    Void unused17=b4.#space()
+                    b4
+                    ))
+                  rcv9.#from(seqBuilder:(
+                    This1.S::#from(builder ) ::#seqBuilder() b5=rcv9.#seqBuilder()
+                    Void unused18=b5.#add(that:message)
+                    b5
+                    ))
+                  )
+                rcv8.#from(builder:(
+                  This1.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b6=rcv8.#builder()
+                  Void unused19=b6.#colon()
+                  Void unused20=b6.#space()
+                  b6
+                  ))
+                )
+              rcv7.#from(seqBuilder:(
+                This1.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#seqBuilder() b7=rcv7.#seqBuilder()
+                Void unused21=b7.#add(that:given)
+                b7
+                ))
+              )
+            rcv6.#from(builder:(
+              This1.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) ::#builder() b8=rcv6.#builder()
+              Void unused22=b8.#space()
+              Void unused23=b8.#bang()
+              Void unused24=b8.#equal()
+              Void unused25=b8.#space()
+              b8
+              ))
+            )
+          rcv5.#from(seqBuilder:(
+            This1.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#seqBuilder() b9=rcv5.#seqBuilder()
+            Void unused26=b9.#add(that:expected)
+            b9
+            ))
+          )
+        rcv4.#from(builder:(
+          This1.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) ::#builder() b10=rcv4.#builder()
+          b10
+          ))
+        ))
+      )
+    )
+  )
+class method 
+Void test(This1.Concept.ToS that, This1.Concept.ToS expected) This1.Debug.test(that:that, expected:expected, message:This1.S.#from(builder:(
+  This1.S::#builder() b=This1.S.#builder()
+  b
+  )))}
 Count:{
 class method //@private
 mut This0 #mutK__29_0(This1.N counter__29_0) 
@@ -1859,13 +2070,13 @@ method toS() (
         )
       )
     Void unused2=return (
-      This0.Varres__57_0::#inner() ::#from(seqBuilder ) rcv0=varres.#inner().#from(seqBuilder:(
+      This0.Varres__57_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres__57_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
         Void unused20=b3.#add(that:this.cause().#tilde())
         b3
         ))
-      rcv0.#from(builder:(
-        This0.Varres__57_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv0.#builder()
+      rcv14.#from(builder:(
+        This0.Varres__57_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv14.#builder()
         Void unused21=b4.#cSquare()
         b4
         ))
@@ -2038,13 +2249,13 @@ method toS() (
         )
       )
     Void unused2=return (
-      This0.Varres_$%0_0__58_0::#inner() ::#from(seqBuilder ) rcv0=varres.#inner().#from(seqBuilder:(
+      This0.Varres_$%0_0__58_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%0_0__58_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
         Void unused20=b3.#add(that:this.cause().#tilde())
         b3
         ))
-      rcv0.#from(builder:(
-        This0.Varres_$%0_0__58_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv0.#builder()
+      rcv14.#from(builder:(
+        This0.Varres_$%0_0__58_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv14.#builder()
         Void unused21=b4.#cSquare()
         b4
         ))
@@ -2207,13 +2418,13 @@ method toS() (
         )
       )
     Void unused2=return (
-      This0.Varres_$%1_0__59_0::#inner() ::#from(seqBuilder ) rcv0=varres.#inner().#from(seqBuilder:(
+      This0.Varres_$%1_0__59_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%1_0__59_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
         Void unused20=b3.#add(that:this.cause().#tilde())
         b3
         ))
-      rcv0.#from(builder:(
-        This0.Varres_$%1_0__59_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv0.#builder()
+      rcv14.#from(builder:(
+        This0.Varres_$%1_0__59_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv14.#builder()
         Void unused21=b4.#cSquare()
         b4
         ))
@@ -2376,13 +2587,13 @@ method toS() (
         )
       )
     Void unused2=return (
-      This0.Varres_$%2_0__60_0::#inner() ::#from(seqBuilder ) rcv0=varres.#inner().#from(seqBuilder:(
+      This0.Varres_$%2_0__60_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%2_0__60_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
         Void unused20=b3.#add(that:this.cause().#tilde())
         b3
         ))
-      rcv0.#from(builder:(
-        This0.Varres_$%2_0__60_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv0.#builder()
+      rcv14.#from(builder:(
+        This0.Varres_$%2_0__60_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv14.#builder()
         Void unused21=b4.#cSquare()
         b4
         ))
@@ -2549,13 +2760,13 @@ method toS() (
         )
       )
     Void unused2=return (
-      This0.Varres_$%3_0__61_0::#inner() ::#from(seqBuilder ) rcv0=varres.#inner().#from(seqBuilder:(
+      This0.Varres_$%3_0__61_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%3_0__61_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
         Void unused20=b3.#add(that:this.cause().#tilde())
         b3
         ))
-      rcv0.#from(builder:(
-        This0.Varres_$%3_0__61_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv0.#builder()
+      rcv14.#from(builder:(
+        This0.Varres_$%3_0__61_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv14.#builder()
         Void unused21=b4.#cSquare()
         b4
         ))
@@ -2719,13 +2930,13 @@ method toS() (
         )
       )
     Void unused2=return (
-      This0.Varres_$%4_0__62_0::#inner() ::#from(seqBuilder ) rcv0=varres.#inner().#from(seqBuilder:(
+      This0.Varres_$%4_0__62_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%4_0__62_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
         Void unused20=b3.#add(that:this.cause().#tilde())
         b3
         ))
-      rcv0.#from(builder:(
-        This0.Varres_$%4_0__62_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv0.#builder()
+      rcv14.#from(builder:(
+        This0.Varres_$%4_0__62_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv14.#builder()
         Void unused21=b4.#cSquare()
         b4
         ))
@@ -2888,13 +3099,13 @@ method toS() (
         )
       )
     Void unused2=return (
-      This0.Varres_$%5_0__63_0::#inner() ::#from(seqBuilder ) rcv0=varres.#inner().#from(seqBuilder:(
+      This0.Varres_$%5_0__63_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%5_0__63_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
         Void unused20=b3.#add(that:this.cause().#tilde())
         b3
         ))
-      rcv0.#from(builder:(
-        This0.Varres_$%5_0__63_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv0.#builder()
+      rcv14.#from(builder:(
+        This0.Varres_$%5_0__63_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv14.#builder()
         Void unused21=b4.#cSquare()
         b4
         ))
@@ -3057,13 +3268,13 @@ method toS() (
         )
       )
     Void unused2=return (
-      This0.Varres_$%6_0__64_0::#inner() ::#from(seqBuilder ) rcv0=varres.#inner().#from(seqBuilder:(
+      This0.Varres_$%6_0__64_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%6_0__64_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
         Void unused20=b3.#add(that:this.cause().#tilde())
         b3
         ))
-      rcv0.#from(builder:(
-        This0.Varres_$%6_0__64_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv0.#builder()
+      rcv14.#from(builder:(
+        This0.Varres_$%6_0__64_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv14.#builder()
         Void unused21=b4.#cSquare()
         b4
         ))
@@ -3226,13 +3437,13 @@ method toS() (
         )
       )
     Void unused2=return (
-      This0.Varres_$%7_0__65_0::#inner() ::#from(seqBuilder ) rcv0=varres.#inner().#from(seqBuilder:(
+      This0.Varres_$%7_0__65_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%7_0__65_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
         Void unused20=b3.#add(that:this.cause().#tilde())
         b3
         ))
-      rcv0.#from(builder:(
-        This0.Varres_$%7_0__65_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv0.#builder()
+      rcv14.#from(builder:(
+        This0.Varres_$%7_0__65_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv14.#builder()
         Void unused21=b4.#cSquare()
         b4
         ))
@@ -3396,13 +3607,13 @@ method toS() (
         )
       )
     Void unused2=return (
-      This0.Varres_$%8_0__66_0::#inner() ::#from(seqBuilder ) rcv0=varres.#inner().#from(seqBuilder:(
+      This0.Varres_$%8_0__66_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%8_0__66_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
         Void unused20=b3.#add(that:this.cause().#tilde())
         b3
         ))
-      rcv0.#from(builder:(
-        This0.Varres_$%8_0__66_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv0.#builder()
+      rcv14.#from(builder:(
+        This0.Varres_$%8_0__66_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv14.#builder()
         Void unused21=b4.#cSquare()
         b4
         ))
@@ -3453,10 +3664,10 @@ mut This2.S.SConcat #seqBuilder() This2.S.SConcat.#apply(old:this.text(), accumu
 CollectionErrors:{
 class method 
 Any negBound(This2.N that, This1.MutListAny list) (
-  This2.Guard.Parameter::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) rcv1=(
-    This2.Guard.Parameter::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) rcv2=(
-      This2.Guard.Parameter::#from(builder ) ::#from(seqBuilder ) rcv3=(
-        This2.Guard.Parameter::#from(builder ) rcv4=This2.Guard.Parameter.#from(builder:(
+  This2.Guard.Parameter::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) rcv15=(
+    This2.Guard.Parameter::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) rcv16=(
+      This2.Guard.Parameter::#from(builder ) ::#from(seqBuilder ) rcv17=(
+        This2.Guard.Parameter::#from(builder ) rcv18=This2.Guard.Parameter.#from(builder:(
           This2.Guard.Parameter::#builder() b=This2.Guard.Parameter.#builder()
           Void unused=b.#I()
           Void unused0=b.#n()
@@ -3509,14 +3720,14 @@ Any negBound(This2.N that, This1.MutListAny list) (
           Void unused47=b.#space()
           b
           ))
-        rcv4.#from(seqBuilder:(
-          This2.Guard.Parameter::#from(builder ) ::#seqBuilder() b0=rcv4.#seqBuilder()
+        rcv18.#from(seqBuilder:(
+          This2.Guard.Parameter::#from(builder ) ::#seqBuilder() b0=rcv18.#seqBuilder()
           Void unused48=b0.#add(that:list.size())
           b0
           ))
         )
-      rcv3.#from(builder:(
-        This2.Guard.Parameter::#from(builder ) ::#from(seqBuilder ) ::#builder() b1=rcv3.#builder()
+      rcv17.#from(builder:(
+        This2.Guard.Parameter::#from(builder ) ::#from(seqBuilder ) ::#builder() b1=rcv17.#builder()
         Void unused49=b1.#space()
         Void unused50=b1.#p()
         Void unused51=b1.#r()
@@ -3533,23 +3744,23 @@ Any negBound(This2.N that, This1.MutListAny list) (
         b1
         ))
       )
-    rcv2.#from(seqBuilder:(
-      This2.Guard.Parameter::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#seqBuilder() b2=rcv2.#seqBuilder()
+    rcv16.#from(seqBuilder:(
+      This2.Guard.Parameter::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#seqBuilder() b2=rcv16.#seqBuilder()
       Void unused62=b2.#add(that:that)
       b2
       ))
     )
-  rcv1.#from(builder:(
-    This2.Guard.Parameter::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) ::#builder() b3=rcv1.#builder()
+  rcv15.#from(builder:(
+    This2.Guard.Parameter::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) ::#builder() b3=rcv15.#builder()
     b3
     ))
   )
 class method 
 Any outBound(This2.N that, This1.MutListAny list) (
-  This2.Guard.Parameter::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) rcv5=(
-    This2.Guard.Parameter::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) rcv6=(
-      This2.Guard.Parameter::#from(builder ) ::#from(seqBuilder ) rcv7=(
-        This2.Guard.Parameter::#from(builder ) rcv8=This2.Guard.Parameter.#from(builder:(
+  This2.Guard.Parameter::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) rcv19=(
+    This2.Guard.Parameter::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) rcv20=(
+      This2.Guard.Parameter::#from(builder ) ::#from(seqBuilder ) rcv21=(
+        This2.Guard.Parameter::#from(builder ) rcv22=This2.Guard.Parameter.#from(builder:(
           This2.Guard.Parameter::#builder() b=This2.Guard.Parameter.#builder()
           Void unused=b.#I()
           Void unused0=b.#n()
@@ -3577,14 +3788,14 @@ Any outBound(This2.N that, This1.MutListAny list) (
           Void unused22=b.#space()
           b
           ))
-        rcv8.#from(seqBuilder:(
-          This2.Guard.Parameter::#from(builder ) ::#seqBuilder() b0=rcv8.#seqBuilder()
+        rcv22.#from(seqBuilder:(
+          This2.Guard.Parameter::#from(builder ) ::#seqBuilder() b0=rcv22.#seqBuilder()
           Void unused23=b0.#add(that:list.size())
           b0
           ))
         )
-      rcv7.#from(builder:(
-        This2.Guard.Parameter::#from(builder ) ::#from(seqBuilder ) ::#builder() b1=rcv7.#builder()
+      rcv21.#from(builder:(
+        This2.Guard.Parameter::#from(builder ) ::#from(seqBuilder ) ::#builder() b1=rcv21.#builder()
         Void unused24=b1.#space()
         Void unused25=b1.#p()
         Void unused26=b1.#r()
@@ -3601,14 +3812,14 @@ Any outBound(This2.N that, This1.MutListAny list) (
         b1
         ))
       )
-    rcv6.#from(seqBuilder:(
-      This2.Guard.Parameter::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#seqBuilder() b2=rcv6.#seqBuilder()
+    rcv20.#from(seqBuilder:(
+      This2.Guard.Parameter::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#seqBuilder() b2=rcv20.#seqBuilder()
       Void unused37=b2.#add(that:that)
       b2
       ))
     )
-  rcv5.#from(builder:(
-    This2.Guard.Parameter::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) ::#builder() b3=rcv5.#builder()
+  rcv19.#from(builder:(
+    This2.Guard.Parameter::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) ::#builder() b3=rcv19.#builder()
     b3
     ))
   )
@@ -3631,10 +3842,10 @@ Any cast() This2.Guard.Operation.#from(builder:(
   ))
 class method 
 Any iterationTermination(This2.N from, This2.N stopOk, This2.N size) (
-  This1.IterationFailure::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) rcv9=(
-    This1.IterationFailure::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) rcv10=(
-      This1.IterationFailure::#from(builder ) ::#from(seqBuilder ) rcv11=(
-        This1.IterationFailure::#from(builder ) rcv12=This1.IterationFailure.#from(builder:(
+  This1.IterationFailure::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) rcv23=(
+    This1.IterationFailure::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) rcv24=(
+      This1.IterationFailure::#from(builder ) ::#from(seqBuilder ) rcv25=(
+        This1.IterationFailure::#from(builder ) rcv26=This1.IterationFailure.#from(builder:(
           This1.IterationFailure::#builder() b=This1.IterationFailure.#builder()
           Void unused=b.#U()
           Void unused0=b.#n()
@@ -3683,14 +3894,14 @@ Any iterationTermination(This2.N from, This2.N stopOk, This2.N size) (
           Void unused43=b.#space()
           b
           ))
-        rcv12.#from(seqBuilder:(
-          This1.IterationFailure::#from(builder ) ::#seqBuilder() b0=rcv12.#seqBuilder()
+        rcv26.#from(seqBuilder:(
+          This1.IterationFailure::#from(builder ) ::#seqBuilder() b0=rcv26.#seqBuilder()
           Void unused44=b0.#add(that:from)
           b0
           ))
         )
-      rcv11.#from(builder:(
-        This1.IterationFailure::#from(builder ) ::#from(seqBuilder ) ::#builder() b1=rcv11.#builder()
+      rcv25.#from(builder:(
+        This1.IterationFailure::#from(builder ) ::#from(seqBuilder ) ::#builder() b1=rcv25.#builder()
         Void unused45=b1.#space()
         Void unused46=b1.#i()
         Void unused47=b1.#n()
@@ -3706,14 +3917,14 @@ Any iterationTermination(This2.N from, This2.N stopOk, This2.N size) (
         b1
         ))
       )
-    rcv10.#from(seqBuilder:(
-      This1.IterationFailure::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#seqBuilder() b2=rcv10.#seqBuilder()
+    rcv24.#from(seqBuilder:(
+      This1.IterationFailure::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#seqBuilder() b2=rcv24.#seqBuilder()
       Void unused57=b2.#add(that:stopOk)
       b2
       ))
     )
-  rcv9.#from(builder:(
-    This1.IterationFailure::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) ::#builder() b3=rcv9.#builder()
+  rcv23.#from(builder:(
+    This1.IterationFailure::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) ::#builder() b3=rcv23.#builder()
     b3
     ))
   )}
@@ -4154,8 +4365,8 @@ This0.Elem left() This0.cast(that:this.inner().val(that:This3.N.#from(builder:(
   ))))
 read method 
 This0.Elem right() This0.cast(that:(
-  This0::inner() rcv13=this.inner()
-  rcv13.val(that:rcv13.size().#less(that:This3.N.#from(builder:(
+  This0::inner() rcv27=this.inner()
+  rcv27.val(that:rcv27.size().#less(that:This3.N.#from(builder:(
     This3.N::#builder() b=This3.N.#builder()
     Void unused=b.#1()
     b
@@ -4163,15 +4374,15 @@ This0.Elem right() This0.cast(that:(
   ))
 mut method 
 Void #apply(This3.N that, This0.Elem val) (
-  This0::#inner() rcv14=this.#inner()
-  rcv14.#apply(that:that, val:val)
+  This0::#inner() rcv28=this.#inner()
+  rcv28.#apply(that:that, val:val)
   )
 mut method 
 Void add(This3.N that, This0.Elem val) this.#inner().add(that:that, val:val)
 mut method 
 Void add(This0.Elem right) (
-  This0::#inner() rcv15=this.#inner()
-  rcv15.add(that:rcv15.size(), val:right)
+  This0::#inner() rcv29=this.#inner()
+  rcv29.add(that:rcv29.size(), val:right)
   )
 mut method 
 Void add(This0.Elem left) this.#inner().add(that:This3.N.#from(builder:(
@@ -4183,8 +4394,8 @@ mut method
 Void remove(This3.N that) this.#inner().remove(that:that)
 mut method 
 Void left(This0.Elem that) (
-  This0::#inner() rcv16=this.#inner()
-  rcv16.#apply(that:This3.N.#from(builder:(
+  This0::#inner() rcv30=this.#inner()
+  rcv30.#apply(that:This3.N.#from(builder:(
     This3.N::#builder() b=This3.N.#builder()
     Void unused=b.#0()
     b
@@ -4192,8 +4403,8 @@ Void left(This0.Elem that) (
   )
 mut method 
 Void right(This0.Elem that) (
-  This0::#inner() rcv17=this.#inner()
-  rcv17.#apply(that:rcv17.size().#less(that:This3.N.#from(builder:(
+  This0::#inner() rcv31=this.#inner()
+  rcv31.#apply(that:rcv31.size().#less(that:This3.N.#from(builder:(
     This3.N::#builder() b=This3.N.#builder()
     Void unused=b.#1()
     b
@@ -4651,8 +4862,8 @@ mut method
 This4.N #stopOk() 
 mut method 
 Void inner(This1.Elem that) (
-  This0::#that() rcv18=this.#that()
-  rcv18.#apply(that:this.from(), val:that)
+  This0::#that() rcv32=this.#that()
+  rcv32.#apply(that:this.from(), val:that)
   )}}}
 CodeEq:{
 class method 
@@ -5083,8 +5294,8 @@ This1.S left() This0.cast(that:this.inner().val(that:This1.N.#from(builder:(
   ))))
 read method 
 This1.S right() This0.cast(that:(
-  This0::inner() rcv13=this.inner()
-  rcv13.val(that:rcv13.size().#less(that:This1.N.#from(builder:(
+  This0::inner() rcv27=this.inner()
+  rcv27.val(that:rcv27.size().#less(that:This1.N.#from(builder:(
     This1.N::#builder() b=This1.N.#builder()
     Void unused=b.#1()
     b
@@ -5092,15 +5303,15 @@ This1.S right() This0.cast(that:(
   ))
 mut method 
 Void #apply(This1.N that, This1.S val) (
-  This0::#inner() rcv14=this.#inner()
-  rcv14.#apply(that:that, val:val)
+  This0::#inner() rcv28=this.#inner()
+  rcv28.#apply(that:that, val:val)
   )
 mut method 
 Void add(This1.N that, This1.S val) this.#inner().add(that:that, val:val)
 mut method 
 Void add(This1.S right) (
-  This0::#inner() rcv15=this.#inner()
-  rcv15.add(that:rcv15.size(), val:right)
+  This0::#inner() rcv29=this.#inner()
+  rcv29.add(that:rcv29.size(), val:right)
   )
 mut method 
 Void add(This1.S left) this.#inner().add(that:This1.N.#from(builder:(
@@ -5112,8 +5323,8 @@ mut method
 Void remove(This1.N that) this.#inner().remove(that:that)
 mut method 
 Void left(This1.S that) (
-  This0::#inner() rcv16=this.#inner()
-  rcv16.#apply(that:This1.N.#from(builder:(
+  This0::#inner() rcv30=this.#inner()
+  rcv30.#apply(that:This1.N.#from(builder:(
     This1.N::#builder() b=This1.N.#builder()
     Void unused=b.#0()
     b
@@ -5121,8 +5332,8 @@ Void left(This1.S that) (
   )
 mut method 
 Void right(This1.S that) (
-  This0::#inner() rcv17=this.#inner()
-  rcv17.#apply(that:rcv17.size().#less(that:This1.N.#from(builder:(
+  This0::#inner() rcv31=this.#inner()
+  rcv31.#apply(that:rcv31.size().#less(that:This1.N.#from(builder:(
     This1.N::#builder() b=This1.N.#builder()
     Void unused=b.#1()
     b
@@ -5580,8 +5791,8 @@ mut method
 This2.N #stopOk() 
 mut method 
 Void inner(This2.S that) (
-  This0::#that() rcv18=this.#that()
-  rcv18.#apply(that:this.from(), val:that)
+  This0::#that() rcv32=this.#that()
+  rcv32.#apply(that:this.from(), val:that)
   )}
 read method 
 This1.Bool contains(This1.S that) (
@@ -6017,8 +6228,8 @@ This0 #from(Library binaryRepr) (
   )
 class method 
 Any parseError(This1.S that) (
-  This1.S::#from(builder ) ::#from(seqBuilder ) rcv19=(
-    This1.S::#from(builder ) rcv20=This1.S.#from(builder:(
+  This1.S::#from(builder ) ::#from(seqBuilder ) rcv33=(
+    This1.S::#from(builder ) rcv34=This1.S.#from(builder:(
       This1.S::#builder() b=This1.S.#builder()
       Void unused=b.#P()
       Void unused0=b.#a()
@@ -6029,14 +6240,14 @@ Any parseError(This1.S that) (
       Void unused5=b.#oSquare()
       b
       ))
-    rcv20.#from(seqBuilder:(
-      This1.S::#from(builder ) ::#seqBuilder() b0=rcv20.#seqBuilder()
+    rcv34.#from(seqBuilder:(
+      This1.S::#from(builder ) ::#seqBuilder() b0=rcv34.#seqBuilder()
       Void unused6=b0.#add(that:that)
       b0
       ))
     )
-  rcv19.#from(builder:(
-    This1.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b1=rcv19.#builder()
+  rcv33.#from(builder:(
+    This1.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b1=rcv33.#builder()
     Void unused7=b1.#cSquare()
     Void unused8=b1.#space()
     Void unused9=b1.#U()
@@ -6094,8 +6305,8 @@ Any parseError(This1.S that) (
   )
 class method 
 Any parseError(This1.S that, This1.Message cause) (
-  This1.S::#from(builder ) ::#from(seqBuilder ) rcv21=(
-    This1.S::#from(builder ) rcv22=This1.S.#from(builder:(
+  This1.S::#from(builder ) ::#from(seqBuilder ) rcv35=(
+    This1.S::#from(builder ) rcv36=This1.S.#from(builder:(
       This1.S::#builder() b=This1.S.#builder()
       Void unused=b.#P()
       Void unused0=b.#a()
@@ -6106,14 +6317,14 @@ Any parseError(This1.S that, This1.Message cause) (
       Void unused5=b.#oSquare()
       b
       ))
-    rcv22.#from(seqBuilder:(
-      This1.S::#from(builder ) ::#seqBuilder() b0=rcv22.#seqBuilder()
+    rcv36.#from(seqBuilder:(
+      This1.S::#from(builder ) ::#seqBuilder() b0=rcv36.#seqBuilder()
       Void unused6=b0.#add(that:that)
       b0
       ))
     )
-  rcv21.#from(builder:(
-    This1.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b1=rcv21.#builder()
+  rcv35.#from(builder:(
+    This1.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b1=rcv35.#builder()
     Void unused7=b1.#cSquare()
     Void unused8=b1.#space()
     Void unused9=b1.#U()
@@ -6258,10 +6469,10 @@ This1.Path #plusplus(This1.Path that) (
         )
       )
     Void unused2=return This1.Path.#from(binaryRepr:(
-      This0::toS() ::#from(seqBuilder ) rcv23=(
-        This0::toS() rcv24=this.toS()
-        rcv24.#from(seqBuilder:(
-          This0::toS() ::#seqBuilder() b1=rcv24.#seqBuilder()
+      This0::toS() ::#from(seqBuilder ) rcv37=(
+        This0::toS() rcv38=this.toS()
+        rcv38.#from(seqBuilder:(
+          This0::toS() ::#seqBuilder() b1=rcv38.#seqBuilder()
           Void unused13=b1.#add(that:This1.S.#from(builder:(
             This1.S::#builder() b2=This1.S.#builder()
             Void unused15=b2.#dot()
@@ -6271,8 +6482,8 @@ This1.Path #plusplus(This1.Path that) (
           b1
           ))
         )
-      rcv23.#from(builder:(
-        This0::toS() ::#from(seqBuilder ) ::#builder() b3=rcv23.#builder()
+      rcv37.#from(builder:(
+        This0::toS() ::#from(seqBuilder ) ::#builder() b3=rcv37.#builder()
         b3
         ))
       ).binaryRepr())
@@ -6369,13 +6580,13 @@ This1.Path from(read This1.Strings names) (
         )
       )
     This1.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) s=(
-      This1.S::#from(builder ) ::#from(seqBuilder ) rcv25=(
-        This1.S::#from(builder ) rcv26=This1.S.#from(builder:(
+      This1.S::#from(builder ) ::#from(seqBuilder ) rcv39=(
+        This1.S::#from(builder ) rcv40=This1.S.#from(builder:(
           This1.S::#builder() b1=This1.S.#builder()
           b1
           ))
-        rcv26.#from(seqBuilder:(
-          This1.S::#from(builder ) ::#seqBuilder() b=rcv26.#seqBuilder()
+        rcv40.#from(seqBuilder:(
+          This1.S::#from(builder ) ::#seqBuilder() b=rcv40.#seqBuilder()
           Void unused7=(
             This1.Strings::vals() n=names.vals()
             (
@@ -6429,8 +6640,8 @@ This1.Path from(read This1.Strings names) (
           b
           ))
         )
-      rcv25.#from(builder:(
-        This1.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b3=rcv25.#builder()
+      rcv39.#from(builder:(
+        This1.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b3=rcv39.#builder()
         b3
         ))
       )
@@ -6622,14 +6833,14 @@ This0 from(This1.S name, This1.Strings names) (
         )
       )
     This1.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) pars=(
-      This1.S::#from(builder ) ::#from(seqBuilder ) rcv27=(
-        This1.S::#from(builder ) rcv28=This1.S.#from(builder:(
+      This1.S::#from(builder ) ::#from(seqBuilder ) rcv41=(
+        This1.S::#from(builder ) rcv42=This1.S.#from(builder:(
           This1.S::#builder() b1=This1.S.#builder()
           Void unused5=b1.#oRound()
           b1
           ))
-        rcv28.#from(seqBuilder:(
-          This1.S::#from(builder ) ::#seqBuilder() b=rcv28.#seqBuilder()
+        rcv42.#from(seqBuilder:(
+          This1.S::#from(builder ) ::#seqBuilder() b=rcv42.#seqBuilder()
           Void unused6=(
             This1.Strings::vals() n=names.vals()
             (
@@ -6683,8 +6894,8 @@ This0 from(This1.S name, This1.Strings names) (
           b
           ))
         )
-      rcv27.#from(builder:(
-        This1.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b3=rcv27.#builder()
+      rcv41.#from(builder:(
+        This1.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b3=rcv41.#builder()
         b3
         ))
       )
@@ -6747,8 +6958,8 @@ This1.S prefixAsField() (
   Void unused=(
     Void unused0=(
       This0::toS() ::#apply(that ) ::#equalequal(that ) cond=(
-        This0::toS() rcv29=this.toS()
-        rcv29.#apply(that:This1.N.#from(builder:(
+        This0::toS() rcv43=this.toS()
+        rcv43.#apply(that:This1.N.#from(builder:(
           This1.N::#builder() b=This1.N.#builder()
           Void unused2=b.#0()
           b
@@ -6852,8 +7063,8 @@ This1.Bool isOperator() (
         )
       )
     Void unused1=return (
-      This0::name() rcv30=this.name()
-      rcv30.#apply(that:This1.N.#from(builder:(
+      This0::name() rcv44=this.name()
+      rcv44.#apply(that:This1.N.#from(builder:(
         This1.N::#builder() b0=This1.N.#builder()
         Void unused4=b0.#0()
         b0
@@ -7663,13 +7874,13 @@ method toS() (
         )
       )
     Void unused2=return (
-      This0.Varres_$%9_0__71_0::#inner() ::#from(seqBuilder ) rcv0=varres.#inner().#from(seqBuilder:(
+      This0.Varres_$%9_0__71_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%9_0__71_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
         Void unused20=b3.#add(that:this.cause().#tilde())
         b3
         ))
-      rcv0.#from(builder:(
-        This0.Varres_$%9_0__71_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv0.#builder()
+      rcv14.#from(builder:(
+        This0.Varres_$%9_0__71_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv14.#builder()
         Void unused21=b4.#cSquare()
         b4
         ))
@@ -7895,8 +8106,8 @@ This0 fromS(This3.S that) (
         )
       )
     Void unused1=error (
-      This1.ParseFail::#from(builder ) ::#from(seqBuilder ) rcv31=(
-        This1.ParseFail::#from(builder ) rcv32=This1.ParseFail.#from(builder:(
+      This1.ParseFail::#from(builder ) ::#from(seqBuilder ) rcv45=(
+        This1.ParseFail::#from(builder ) rcv46=This1.ParseFail.#from(builder:(
           This1.ParseFail::#builder() b0=This1.ParseFail.#builder()
           Void unused25=b0.#T()
           Void unused26=b0.#h()
@@ -7934,14 +8145,14 @@ This0 fromS(This3.S that) (
           Void unused58=b0.#space()
           b0
           ))
-        rcv32.#from(seqBuilder:(
-          This1.ParseFail::#from(builder ) ::#seqBuilder() b1=rcv32.#seqBuilder()
+        rcv46.#from(seqBuilder:(
+          This1.ParseFail::#from(builder ) ::#seqBuilder() b1=rcv46.#seqBuilder()
           Void unused59=b1.#add(that:that)
           b1
           ))
         )
-      rcv31.#from(builder:(
-        This1.ParseFail::#from(builder ) ::#from(seqBuilder ) ::#builder() b2=rcv31.#builder()
+      rcv45.#from(builder:(
+        This1.ParseFail::#from(builder ) ::#from(seqBuilder ) ::#builder() b2=rcv45.#builder()
         b2
         ))
       )
@@ -8012,8 +8223,8 @@ This1.Top left() This0.cast(that:this.inner().val(that:This3.N.#from(builder:(
   ))))
 read method 
 This1.Top right() This0.cast(that:(
-  This0::inner() rcv13=this.inner()
-  rcv13.val(that:rcv13.size().#less(that:This3.N.#from(builder:(
+  This0::inner() rcv27=this.inner()
+  rcv27.val(that:rcv27.size().#less(that:This3.N.#from(builder:(
     This3.N::#builder() b=This3.N.#builder()
     Void unused=b.#1()
     b
@@ -8021,15 +8232,15 @@ This1.Top right() This0.cast(that:(
   ))
 mut method 
 Void #apply(This3.N that, This1.Top val) (
-  This0::#inner() rcv14=this.#inner()
-  rcv14.#apply(that:that, val:val)
+  This0::#inner() rcv28=this.#inner()
+  rcv28.#apply(that:that, val:val)
   )
 mut method 
 Void add(This3.N that, This1.Top val) this.#inner().add(that:that, val:val)
 mut method 
 Void add(This1.Top right) (
-  This0::#inner() rcv15=this.#inner()
-  rcv15.add(that:rcv15.size(), val:right)
+  This0::#inner() rcv29=this.#inner()
+  rcv29.add(that:rcv29.size(), val:right)
   )
 mut method 
 Void add(This1.Top left) this.#inner().add(that:This3.N.#from(builder:(
@@ -8041,8 +8252,8 @@ mut method
 Void remove(This3.N that) this.#inner().remove(that:that)
 mut method 
 Void left(This1.Top that) (
-  This0::#inner() rcv16=this.#inner()
-  rcv16.#apply(that:This3.N.#from(builder:(
+  This0::#inner() rcv30=this.#inner()
+  rcv30.#apply(that:This3.N.#from(builder:(
     This3.N::#builder() b=This3.N.#builder()
     Void unused=b.#0()
     b
@@ -8050,8 +8261,8 @@ Void left(This1.Top that) (
   )
 mut method 
 Void right(This1.Top that) (
-  This0::#inner() rcv17=this.#inner()
-  rcv17.#apply(that:rcv17.size().#less(that:This3.N.#from(builder:(
+  This0::#inner() rcv31=this.#inner()
+  rcv31.#apply(that:rcv31.size().#less(that:This3.N.#from(builder:(
     This3.N::#builder() b=This3.N.#builder()
     Void unused=b.#1()
     b
@@ -8509,8 +8720,8 @@ mut method
 This4.N #stopOk() 
 mut method 
 Void inner(This2.Top that) (
-  This0::#that() rcv18=this.#that()
-  rcv18.#apply(that:this.from(), val:that)
+  This0::#that() rcv32=this.#that()
+  rcv32.#apply(that:this.from(), val:that)
   )}
 read method 
 This3.Bool contains(This1.Top that) (
@@ -9401,7 +9612,7 @@ class Any referredClass() (
       )), annotationN:this.index())
     
     catch exception This3.MetaGuard.NestedClassUnavailable x error (
-      This3.Assert.CodeNotReachable::#from(builder ) rcv33=This3.Assert.CodeNotReachable.#from(builder:(
+      This3.Assert.CodeNotReachable::#from(builder ) rcv47=This3.Assert.CodeNotReachable.#from(builder:(
         This3.Assert.CodeNotReachable::#builder() b0=This3.Assert.CodeNotReachable.#builder()
         Void unused5=b0.#D()
         Void unused6=b0.#o()
@@ -9409,7 +9620,7 @@ class Any referredClass() (
         Void unused8=b0.#1()
         b0
         ))
-      rcv33.#apply(that:x)
+      rcv47.#apply(that:x)
       )
     
     catch exception Void x error This3.Assert.ObservedBug.#from(builder:(
@@ -9520,8 +9731,8 @@ This1.Annotation left() This0.cast(that:this.inner().val(that:This3.N.#from(buil
   ))))
 read method 
 This1.Annotation right() This0.cast(that:(
-  This0::inner() rcv13=this.inner()
-  rcv13.val(that:rcv13.size().#less(that:This3.N.#from(builder:(
+  This0::inner() rcv27=this.inner()
+  rcv27.val(that:rcv27.size().#less(that:This3.N.#from(builder:(
     This3.N::#builder() b=This3.N.#builder()
     Void unused=b.#1()
     b
@@ -9529,15 +9740,15 @@ This1.Annotation right() This0.cast(that:(
   ))
 mut method 
 Void #apply(This3.N that, This1.Annotation val) (
-  This0::#inner() rcv14=this.#inner()
-  rcv14.#apply(that:that, val:val)
+  This0::#inner() rcv28=this.#inner()
+  rcv28.#apply(that:that, val:val)
   )
 mut method 
 Void add(This3.N that, This1.Annotation val) this.#inner().add(that:that, val:val)
 mut method 
 Void add(This1.Annotation right) (
-  This0::#inner() rcv15=this.#inner()
-  rcv15.add(that:rcv15.size(), val:right)
+  This0::#inner() rcv29=this.#inner()
+  rcv29.add(that:rcv29.size(), val:right)
   )
 mut method 
 Void add(This1.Annotation left) this.#inner().add(that:This3.N.#from(builder:(
@@ -9549,8 +9760,8 @@ mut method
 Void remove(This3.N that) this.#inner().remove(that:that)
 mut method 
 Void left(This1.Annotation that) (
-  This0::#inner() rcv16=this.#inner()
-  rcv16.#apply(that:This3.N.#from(builder:(
+  This0::#inner() rcv30=this.#inner()
+  rcv30.#apply(that:This3.N.#from(builder:(
     This3.N::#builder() b=This3.N.#builder()
     Void unused=b.#0()
     b
@@ -9558,8 +9769,8 @@ Void left(This1.Annotation that) (
   )
 mut method 
 Void right(This1.Annotation that) (
-  This0::#inner() rcv17=this.#inner()
-  rcv17.#apply(that:rcv17.size().#less(that:This3.N.#from(builder:(
+  This0::#inner() rcv31=this.#inner()
+  rcv31.#apply(that:rcv31.size().#less(that:This3.N.#from(builder:(
     This3.N::#builder() b=This3.N.#builder()
     Void unused=b.#1()
     b
@@ -10017,8 +10228,8 @@ mut method
 This4.N #stopOk() 
 mut method 
 Void inner(This2.Annotation that) (
-  This0::#that() rcv18=this.#that()
-  rcv18.#apply(that:this.from(), val:that)
+  This0::#that() rcv32=this.#that()
+  rcv32.#apply(that:this.from(), val:that)
   )}}
 class method 
 This0 #apply(Library that) (
@@ -10057,7 +10268,7 @@ This0 #apply(Library that) (
       )
     
     catch exception This2.MetaGuard.NestedClassUnavailable x error (
-      This2.Assert.CodeNotReachable::#from(builder ) rcv34=This2.Assert.CodeNotReachable.#from(builder:(
+      This2.Assert.CodeNotReachable::#from(builder ) rcv48=This2.Assert.CodeNotReachable.#from(builder:(
         This2.Assert.CodeNotReachable::#builder() b2=This2.Assert.CodeNotReachable.#builder()
         Void unused9=b2.#D()
         Void unused10=b2.#o()
@@ -10065,7 +10276,7 @@ This0 #apply(Library that) (
         Void unused12=b2.#2()
         b2
         ))
-      rcv34.#apply(that:x)
+      rcv48.#apply(that:x)
       )
     
     result
@@ -10090,7 +10301,7 @@ method toS() (
       )))
     
     catch exception This2.MetaGuard.NestedClassUnavailable x error (
-      This2.Assert.CodeNotReachable::#from(builder ) rcv35=This2.Assert.CodeNotReachable.#from(builder:(
+      This2.Assert.CodeNotReachable::#from(builder ) rcv49=This2.Assert.CodeNotReachable.#from(builder:(
         This2.Assert.CodeNotReachable::#builder() b0=This2.Assert.CodeNotReachable.#builder()
         Void unused5=b0.#D()
         Void unused6=b0.#o()
@@ -10098,7 +10309,7 @@ method toS() (
         Void unused8=b0.#3()
         b0
         ))
-      rcv35.#apply(that:x)
+      rcv49.#apply(that:x)
       )
     
     void
@@ -10195,8 +10406,8 @@ This2.S #from(This2.S.SBuilder builder) (
     Void unused0=return this.that().introspectDocAsString(path:path)
     
     catch exception This2.MetaGuard.MemberUnavailable catched error (
-      This2.Assert.CodeNotReachable::#from(builder ) ::#from(seqBuilder ) rcv36=(
-        This2.Assert.CodeNotReachable::#from(builder ) rcv37=This2.Assert.CodeNotReachable.#from(builder:(
+      This2.Assert.CodeNotReachable::#from(builder ) ::#from(seqBuilder ) rcv50=(
+        This2.Assert.CodeNotReachable::#from(builder ) rcv51=This2.Assert.CodeNotReachable.#from(builder:(
           This2.Assert.CodeNotReachable::#builder() b=This2.Assert.CodeNotReachable.#builder()
           Void unused1=b.#R()
           Void unused2=b.#e()
@@ -10207,14 +10418,14 @@ This2.S #from(This2.S.SBuilder builder) (
           Void unused7=b.#1()
           b
           ))
-        rcv37.#from(seqBuilder:(
-          This2.Assert.CodeNotReachable::#from(builder ) ::#seqBuilder() b0=rcv37.#seqBuilder()
+        rcv51.#from(seqBuilder:(
+          This2.Assert.CodeNotReachable::#from(builder ) ::#seqBuilder() b0=rcv51.#seqBuilder()
           Void unused8=b0.#add(that:this.that())
           b0
           ))
         )
-      rcv36.#from(builder:(
-        This2.Assert.CodeNotReachable::#from(builder ) ::#from(seqBuilder ) ::#builder() b1=rcv36.#builder()
+      rcv50.#from(builder:(
+        This2.Assert.CodeNotReachable::#from(builder ) ::#from(seqBuilder ) ::#builder() b1=rcv50.#builder()
         b1
         ))
       ).#apply(that:catched)
@@ -10305,9 +10516,9 @@ read method
 This2.Record _report() 
 method #apply(root ) (
   This3.Path::fromS(that ) path=This3.Path.fromS(that:(
-    This0::#apply(root ) ::this::_report() rcv38=this._report()
-    rcv38.#from(builder:(
-      This0::#apply(root ) ::this::_report() ::#builder() b=rcv38.#builder()
+    This0::#apply(root ) ::this::_report() rcv52=this._report()
+    rcv52.#from(builder:(
+      This0::#apply(root ) ::this::_report() ::#builder() b=rcv52.#builder()
       Void unused=b.#K()
       Void unused0=b.#e()
       Void unused1=b.#y()
@@ -10475,8 +10686,8 @@ This1.Member dispatch(fwd This1.NestedClass root, This2.Path path, This1.MirrorP
           )
         )
       Void unused4=error This2.Assert.ObservedBug.#apply(text:(
-        This2.S::#from(builder ) ::#from(seqBuilder ) rcv39=(
-          This2.S::#from(builder ) rcv40=This2.S.#from(builder:(
+        This2.S::#from(builder ) ::#from(seqBuilder ) rcv53=(
+          This2.S::#from(builder ) rcv54=This2.S.#from(builder:(
             This2.S::#builder() b4=This2.S.#builder()
             Void unused87=b4.#i()
             Void unused88=b4.#n()
@@ -10500,14 +10711,14 @@ This1.Member dispatch(fwd This1.NestedClass root, This2.Path path, This1.MirrorP
             Void unused106=b4.#space()
             b4
             ))
-          rcv40.#from(seqBuilder:(
-            This2.S::#from(builder ) ::#seqBuilder() b5=rcv40.#seqBuilder()
+          rcv54.#from(seqBuilder:(
+            This2.S::#from(builder ) ::#seqBuilder() b5=rcv54.#seqBuilder()
             Void unused107=b5.#add(that:x)
             b5
             ))
           )
-        rcv39.#from(builder:(
-          This2.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b6=rcv39.#builder()
+        rcv53.#from(builder:(
+          This2.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b6=rcv53.#builder()
           b6
           ))
         ))
@@ -10581,8 +10792,8 @@ This1.Member left() This0.cast(that:this.inner().val(that:This2.N.#from(builder:
   ))))
 read method 
 This1.Member right() This0.cast(that:(
-  This0::inner() rcv13=this.inner()
-  rcv13.val(that:rcv13.size().#less(that:This2.N.#from(builder:(
+  This0::inner() rcv27=this.inner()
+  rcv27.val(that:rcv27.size().#less(that:This2.N.#from(builder:(
     This2.N::#builder() b=This2.N.#builder()
     Void unused=b.#1()
     b
@@ -10590,15 +10801,15 @@ This1.Member right() This0.cast(that:(
   ))
 mut method 
 Void #apply(This2.N that, This1.Member val) (
-  This0::#inner() rcv14=this.#inner()
-  rcv14.#apply(that:that, val:val)
+  This0::#inner() rcv28=this.#inner()
+  rcv28.#apply(that:that, val:val)
   )
 mut method 
 Void add(This2.N that, This1.Member val) this.#inner().add(that:that, val:val)
 mut method 
 Void add(This1.Member right) (
-  This0::#inner() rcv15=this.#inner()
-  rcv15.add(that:rcv15.size(), val:right)
+  This0::#inner() rcv29=this.#inner()
+  rcv29.add(that:rcv29.size(), val:right)
   )
 mut method 
 Void add(This1.Member left) this.#inner().add(that:This2.N.#from(builder:(
@@ -10610,8 +10821,8 @@ mut method
 Void remove(This2.N that) this.#inner().remove(that:that)
 mut method 
 Void left(This1.Member that) (
-  This0::#inner() rcv16=this.#inner()
-  rcv16.#apply(that:This2.N.#from(builder:(
+  This0::#inner() rcv30=this.#inner()
+  rcv30.#apply(that:This2.N.#from(builder:(
     This2.N::#builder() b=This2.N.#builder()
     Void unused=b.#0()
     b
@@ -10619,8 +10830,8 @@ Void left(This1.Member that) (
   )
 mut method 
 Void right(This1.Member that) (
-  This0::#inner() rcv17=this.#inner()
-  rcv17.#apply(that:rcv17.size().#less(that:This2.N.#from(builder:(
+  This0::#inner() rcv31=this.#inner()
+  rcv31.#apply(that:rcv31.size().#less(that:This2.N.#from(builder:(
     This2.N::#builder() b=This2.N.#builder()
     Void unused=b.#1()
     b
@@ -11078,8 +11289,8 @@ mut method
 This3.N #stopOk() 
 mut method 
 Void inner(This2.Member that) (
-  This0::#that() rcv18=this.#that()
-  rcv18.#apply(that:this.from(), val:that)
+  This0::#that() rcv32=this.#that()
+  rcv32.#apply(that:this.from(), val:that)
   )}
 read method 
 This2.Bool contains(This1.Member that) (
@@ -11464,20 +11675,20 @@ read method //@private
 This1.Record record__37_0() 
 method myName() This2.GetMyName.#apply(that:This0)
 method toS() This0.myName().#plusplus(that:(
-  This2.S::#from(builder ) ::#from(seqBuilder ) rcv41=(
-    This2.S::#from(builder ) rcv42=This2.S.#from(builder:(
+  This2.S::#from(builder ) ::#from(seqBuilder ) rcv55=(
+    This2.S::#from(builder ) rcv56=This2.S.#from(builder:(
       This2.S::#builder() b=This2.S.#builder()
       Void unused=b.#oSquare()
       b
       ))
-    rcv42.#from(seqBuilder:(
-      This2.S::#from(builder ) ::#seqBuilder() b0=rcv42.#seqBuilder()
+    rcv56.#from(seqBuilder:(
+      This2.S::#from(builder ) ::#seqBuilder() b0=rcv56.#seqBuilder()
       Void unused0=b0.#add(that:this.allAsString())
       b0
       ))
     )
-  rcv41.#from(builder:(
-    This2.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b1=rcv41.#builder()
+  rcv55.#from(builder:(
+    This2.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b1=rcv55.#builder()
     Void unused1=b1.#cSquare()
     b1
     ))
@@ -11565,9 +11776,9 @@ This1.Doc doc() this.record__37_0().docOf(path:This2.Path.#from(builder:(
   )))
 method 
 This1.Mdf thisMdf() This1.Mdf.fromS(that:(
-  This0::record__37_0() rcv43=this.record__37_0()
-  rcv43.#from(builder:(
-    This0::record__37_0() ::#builder() b=rcv43.#builder()
+  This0::record__37_0() rcv57=this.record__37_0()
+  rcv57.#from(builder:(
+    This0::record__37_0() ::#builder() b=rcv57.#builder()
     Void unused=b.#T()
     Void unused0=b.#h()
     Void unused1=b.#i()
@@ -11582,9 +11793,9 @@ method // invariant NestedClass(...).nestedClassFromRoot(path).pathFromRoot()==p
 This2.Path pathFromRoot() this.path__37_0()
 method 
 This2.Selector selector() This2.Selector.fromS(that:(
-  This0::record__37_0() rcv44=this.record__37_0()
-  rcv44.#from(builder:(
-    This0::record__37_0() ::#builder() b=rcv44.#builder()
+  This0::record__37_0() rcv58=this.record__37_0()
+  rcv58.#from(builder:(
+    This0::record__37_0() ::#builder() b=rcv58.#builder()
     Void unused=b.#K()
     Void unused0=b.#e()
     Void unused1=b.#y()
@@ -11593,9 +11804,9 @@ This2.Selector selector() This2.Selector.fromS(that:(
   ))
 method 
 This1.MethodKind methodKind() This1.MethodKind.fromS(that:(
-  This0::record__37_0() rcv45=this.record__37_0()
-  rcv45.#from(builder:(
-    This0::record__37_0() ::#builder() b=rcv45.#builder()
+  This0::record__37_0() rcv59=this.record__37_0()
+  rcv59.#from(builder:(
+    This0::record__37_0() ::#builder() b=rcv59.#builder()
     Void unused=b.#M()
     Void unused0=b.#e()
     Void unused1=b.#m()
@@ -11611,9 +11822,9 @@ This1.MethodKind methodKind() This1.MethodKind.fromS(that:(
   ))
 method 
 This2.S allAsString() (
-  This0::record__37_0() rcv46=this.record__37_0()
-  rcv46.#from(builder:(
-    This0::record__37_0() ::#builder() b=rcv46.#builder()
+  This0::record__37_0() rcv60=this.record__37_0()
+  rcv60.#from(builder:(
+    This0::record__37_0() ::#builder() b=rcv60.#builder()
     Void unused=b.#A()
     Void unused0=b.#l()
     Void unused1=b.#l()
@@ -11638,7 +11849,7 @@ This1.Type returnType() (
       )))
     
     catch exception This2.MetaGuard.MemberUnavailable x error (
-      This2.Assert.CodeNotReachable::#from(builder ) rcv47=This2.Assert.CodeNotReachable.#from(builder:(
+      This2.Assert.CodeNotReachable::#from(builder ) rcv61=This2.Assert.CodeNotReachable.#from(builder:(
         This2.Assert.CodeNotReachable::#builder() b0=This2.Assert.CodeNotReachable.#builder()
         Void unused2=b0.#M()
         Void unused3=b0.#e()
@@ -11649,7 +11860,7 @@ This1.Type returnType() (
         Void unused8=b0.#1()
         b0
         ))
-      rcv47.#apply(that:x)
+      rcv61.#apply(that:x)
       )
     
     catch exception Void catched0 error This2.Assert.CodeNotReachable.#from(builder:(
@@ -11718,7 +11929,7 @@ This1.Types parameterTypes() (
     Void unused1=return result
     
     catch exception This2.MetaGuard.MemberUnavailable err error (
-      This2.Assert.CodeNotReachable::#from(builder ) rcv48=This2.Assert.CodeNotReachable.#from(builder:(
+      This2.Assert.CodeNotReachable::#from(builder ) rcv62=This2.Assert.CodeNotReachable.#from(builder:(
         This2.Assert.CodeNotReachable::#builder() b1=This2.Assert.CodeNotReachable.#builder()
         Void unused7=b1.#M()
         Void unused8=b1.#e()
@@ -11729,7 +11940,7 @@ This1.Types parameterTypes() (
         Void unused13=b1.#2()
         b1
         ))
-      rcv48.#apply(that:err)
+      rcv62.#apply(that:err)
       )
     
     void
@@ -11876,8 +12087,8 @@ This1.Method left() This0.cast(that:this.inner().val(that:This2.N.#from(builder:
   ))))
 read method 
 This1.Method right() This0.cast(that:(
-  This0::inner() rcv13=this.inner()
-  rcv13.val(that:rcv13.size().#less(that:This2.N.#from(builder:(
+  This0::inner() rcv27=this.inner()
+  rcv27.val(that:rcv27.size().#less(that:This2.N.#from(builder:(
     This2.N::#builder() b=This2.N.#builder()
     Void unused=b.#1()
     b
@@ -11885,15 +12096,15 @@ This1.Method right() This0.cast(that:(
   ))
 mut method 
 Void #apply(This2.N that, This1.Method val) (
-  This0::#inner() rcv14=this.#inner()
-  rcv14.#apply(that:that, val:val)
+  This0::#inner() rcv28=this.#inner()
+  rcv28.#apply(that:that, val:val)
   )
 mut method 
 Void add(This2.N that, This1.Method val) this.#inner().add(that:that, val:val)
 mut method 
 Void add(This1.Method right) (
-  This0::#inner() rcv15=this.#inner()
-  rcv15.add(that:rcv15.size(), val:right)
+  This0::#inner() rcv29=this.#inner()
+  rcv29.add(that:rcv29.size(), val:right)
   )
 mut method 
 Void add(This1.Method left) this.#inner().add(that:This2.N.#from(builder:(
@@ -11905,8 +12116,8 @@ mut method
 Void remove(This2.N that) this.#inner().remove(that:that)
 mut method 
 Void left(This1.Method that) (
-  This0::#inner() rcv16=this.#inner()
-  rcv16.#apply(that:This2.N.#from(builder:(
+  This0::#inner() rcv30=this.#inner()
+  rcv30.#apply(that:This2.N.#from(builder:(
     This2.N::#builder() b=This2.N.#builder()
     Void unused=b.#0()
     b
@@ -11914,8 +12125,8 @@ Void left(This1.Method that) (
   )
 mut method 
 Void right(This1.Method that) (
-  This0::#inner() rcv17=this.#inner()
-  rcv17.#apply(that:rcv17.size().#less(that:This2.N.#from(builder:(
+  This0::#inner() rcv31=this.#inner()
+  rcv31.#apply(that:rcv31.size().#less(that:This2.N.#from(builder:(
     This2.N::#builder() b=This2.N.#builder()
     Void unused=b.#1()
     b
@@ -12373,8 +12584,8 @@ mut method
 This3.N #stopOk() 
 mut method 
 Void inner(This2.Method that) (
-  This0::#that() rcv18=this.#that()
-  rcv18.#apply(that:this.from(), val:that)
+  This0::#that() rcv32=this.#that()
+  rcv32.#apply(that:this.from(), val:that)
   )}
 read method 
 This2.Bool contains(This1.Method that) (
@@ -12832,20 +13043,20 @@ read method //@private
 This1.Record record__39_0() 
 method myName() This2.GetMyName.#apply(that:This0)
 method toS() This0.myName().#plusplus(that:(
-  This2.S::#from(builder ) ::#from(seqBuilder ) rcv49=(
-    This2.S::#from(builder ) rcv50=This2.S.#from(builder:(
+  This2.S::#from(builder ) ::#from(seqBuilder ) rcv63=(
+    This2.S::#from(builder ) rcv64=This2.S.#from(builder:(
       This2.S::#builder() b=This2.S.#builder()
       Void unused=b.#oSquare()
       b
       ))
-    rcv50.#from(seqBuilder:(
-      This2.S::#from(builder ) ::#seqBuilder() b0=rcv50.#seqBuilder()
+    rcv64.#from(seqBuilder:(
+      This2.S::#from(builder ) ::#seqBuilder() b0=rcv64.#seqBuilder()
       Void unused0=b0.#add(that:this.allAsString())
       b0
       ))
     )
-  rcv49.#from(builder:(
-    This2.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b1=rcv49.#builder()
+  rcv63.#from(builder:(
+    This2.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b1=rcv63.#builder()
     Void unused1=b1.#cSquare()
     b1
     ))
@@ -13130,8 +13341,8 @@ class Any externalType() (
         catch exception Void catched1 void
         
         error This2.Guard.Operation.#apply(text:(
-          This2.S::#from(builder ) ::#from(seqBuilder ) rcv51=(
-            This2.S::#from(builder ) rcv52=This2.S.#from(builder:(
+          This2.S::#from(builder ) ::#from(seqBuilder ) rcv65=(
+            This2.S::#from(builder ) rcv66=This2.S.#from(builder:(
               This2.S::#builder() b0=This2.S.#builder()
               Void unused7=b0.#N()
               Void unused8=b0.#e()
@@ -13195,14 +13406,14 @@ class Any externalType() (
               Void unused66=b0.#space()
               b0
               ))
-            rcv52.#from(seqBuilder:(
-              This2.S::#from(builder ) ::#seqBuilder() b1=rcv52.#seqBuilder()
+            rcv66.#from(seqBuilder:(
+              This2.S::#from(builder ) ::#seqBuilder() b1=rcv66.#seqBuilder()
               Void unused67=b1.#add(that:this.path__39_0())
               b1
               ))
             )
-          rcv51.#from(builder:(
-            This2.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b2=rcv51.#builder()
+          rcv65.#from(builder:(
+            This2.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b2=rcv65.#builder()
             b2
             ))
           ))
@@ -13355,8 +13566,8 @@ This2.S externalTypeToS() (
         catch exception Void catched1 void
         
         error This2.Guard.Operation.#apply(text:(
-          This2.S::#from(builder ) ::#from(seqBuilder ) rcv53=(
-            This2.S::#from(builder ) rcv54=This2.S.#from(builder:(
+          This2.S::#from(builder ) ::#from(seqBuilder ) rcv67=(
+            This2.S::#from(builder ) rcv68=This2.S.#from(builder:(
               This2.S::#builder() b0=This2.S.#builder()
               Void unused8=b0.#N()
               Void unused9=b0.#e()
@@ -13423,14 +13634,14 @@ This2.S externalTypeToS() (
               Void unused70=b0.#space()
               b0
               ))
-            rcv54.#from(seqBuilder:(
-              This2.S::#from(builder ) ::#seqBuilder() b1=rcv54.#seqBuilder()
+            rcv68.#from(seqBuilder:(
+              This2.S::#from(builder ) ::#seqBuilder() b1=rcv68.#seqBuilder()
               Void unused71=b1.#add(that:this.path__39_0())
               b1
               ))
             )
-          rcv53.#from(builder:(
-            This2.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b2=rcv53.#builder()
+          rcv67.#from(builder:(
+            This2.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b2=rcv67.#builder()
             b2
             ))
           ))
@@ -13486,8 +13697,8 @@ This2.S externalTypeToS() (
         )
       )
     Void unused2=return (
-      This2.S::#from(builder ) ::#from(seqBuilder ) rcv55=(
-        This2.S::#from(builder ) rcv56=This2.S.#from(builder:(
+      This2.S::#from(builder ) ::#from(seqBuilder ) rcv69=(
+        This2.S::#from(builder ) rcv70=This2.S.#from(builder:(
           This2.S::#builder() b9=This2.S.#builder()
           Void unused89=b9.#T()
           Void unused90=b9.#h()
@@ -13495,8 +13706,8 @@ This2.S externalTypeToS() (
           Void unused92=b9.#s()
           b9
           ))
-        rcv56.#from(seqBuilder:(
-          This2.S::#from(builder ) ::#seqBuilder() b10=rcv56.#seqBuilder()
+        rcv70.#from(seqBuilder:(
+          This2.S::#from(builder ) ::#seqBuilder() b10=rcv70.#seqBuilder()
           Void unused93=b10.#add(that:prefix.#less(that:This2.N.#from(builder:(
             This2.N::#builder() b11=This2.N.#builder()
             Void unused94=b11.#1()
@@ -13505,8 +13716,8 @@ This2.S externalTypeToS() (
           b10
           ))
         )
-      rcv55.#from(builder:(
-        This2.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b12=rcv55.#builder()
+      rcv69.#from(builder:(
+        This2.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b12=rcv69.#builder()
         Void unused95=b12.#dot()
         b12
         ))
@@ -13522,9 +13733,9 @@ This2.S externalTypeToS() (
   )
 method 
 This1.ClassKind classKind() This1.ClassKind.fromS(that:(
-  This0::record__39_0() rcv57=this.record__39_0()
-  rcv57.#from(builder:(
-    This0::record__39_0() ::#builder() b=rcv57.#builder()
+  This0::record__39_0() rcv71=this.record__39_0()
+  rcv71.#from(builder:(
+    This0::record__39_0() ::#builder() b=rcv71.#builder()
     Void unused=b.#C()
     Void unused0=b.#l()
     Void unused1=b.#a()
@@ -13539,9 +13750,9 @@ This1.ClassKind classKind() This1.ClassKind.fromS(that:(
   ))
 method 
 This2.S allAsString() (
-  This0::record__39_0() rcv58=this.record__39_0()
-  rcv58.#from(builder:(
-    This0::record__39_0() ::#builder() b=rcv58.#builder()
+  This0::record__39_0() rcv72=this.record__39_0()
+  rcv72.#from(builder:(
+    This0::record__39_0() ::#builder() b=rcv72.#builder()
     Void unused=b.#A()
     Void unused0=b.#l()
     Void unused1=b.#l()
@@ -13861,7 +14072,7 @@ This1.Types implementedInterfaces() (
     )
   
   catch exception This2.MetaGuard.MemberUnavailable x error (
-    This2.Assert.CodeNotReachable::#from(builder ) rcv59=This2.Assert.CodeNotReachable.#from(builder:(
+    This2.Assert.CodeNotReachable::#from(builder ) rcv73=This2.Assert.CodeNotReachable.#from(builder:(
       This2.Assert.CodeNotReachable::#builder() b2=This2.Assert.CodeNotReachable.#builder()
       Void unused6=b2.#N()
       Void unused7=b2.#e()
@@ -13877,7 +14088,7 @@ This1.Types implementedInterfaces() (
       Void unused17=b2.#3()
       b2
       ))
-    rcv59.#apply(that:x)
+    rcv73.#apply(that:x)
     )
   
   result
@@ -14167,8 +14378,8 @@ This1.Methods stateCandidate() (
                 
                 (
                   This0::methods() ::vals() ::#inner() ::methodKind() ::equals(that ) cond=(
-                    This0::methods() ::vals() ::#inner() ::methodKind() rcv60=m.#inner().methodKind()
-                    rcv60.equals(that:rcv60.class()._AbstractMethod())
+                    This0::methods() ::vals() ::#inner() ::methodKind() rcv74=m.#inner().methodKind()
+                    rcv74.equals(that:rcv74.class()._AbstractMethod())
                     )
                   (
                     Void unused9=cond.#checkTrue()
@@ -14825,8 +15036,8 @@ This1.NestedClass left() This0.cast(that:this.inner().val(that:This2.N.#from(bui
   ))))
 read method 
 This1.NestedClass right() This0.cast(that:(
-  This0::inner() rcv13=this.inner()
-  rcv13.val(that:rcv13.size().#less(that:This2.N.#from(builder:(
+  This0::inner() rcv27=this.inner()
+  rcv27.val(that:rcv27.size().#less(that:This2.N.#from(builder:(
     This2.N::#builder() b=This2.N.#builder()
     Void unused=b.#1()
     b
@@ -14834,15 +15045,15 @@ This1.NestedClass right() This0.cast(that:(
   ))
 mut method 
 Void #apply(This2.N that, This1.NestedClass val) (
-  This0::#inner() rcv14=this.#inner()
-  rcv14.#apply(that:that, val:val)
+  This0::#inner() rcv28=this.#inner()
+  rcv28.#apply(that:that, val:val)
   )
 mut method 
 Void add(This2.N that, This1.NestedClass val) this.#inner().add(that:that, val:val)
 mut method 
 Void add(This1.NestedClass right) (
-  This0::#inner() rcv15=this.#inner()
-  rcv15.add(that:rcv15.size(), val:right)
+  This0::#inner() rcv29=this.#inner()
+  rcv29.add(that:rcv29.size(), val:right)
   )
 mut method 
 Void add(This1.NestedClass left) this.#inner().add(that:This2.N.#from(builder:(
@@ -14854,8 +15065,8 @@ mut method
 Void remove(This2.N that) this.#inner().remove(that:that)
 mut method 
 Void left(This1.NestedClass that) (
-  This0::#inner() rcv16=this.#inner()
-  rcv16.#apply(that:This2.N.#from(builder:(
+  This0::#inner() rcv30=this.#inner()
+  rcv30.#apply(that:This2.N.#from(builder:(
     This2.N::#builder() b=This2.N.#builder()
     Void unused=b.#0()
     b
@@ -14863,8 +15074,8 @@ Void left(This1.NestedClass that) (
   )
 mut method 
 Void right(This1.NestedClass that) (
-  This0::#inner() rcv17=this.#inner()
-  rcv17.#apply(that:rcv17.size().#less(that:This2.N.#from(builder:(
+  This0::#inner() rcv31=this.#inner()
+  rcv31.#apply(that:rcv31.size().#less(that:This2.N.#from(builder:(
     This2.N::#builder() b=This2.N.#builder()
     Void unused=b.#1()
     b
@@ -15322,8 +15533,8 @@ mut method
 This3.N #stopOk() 
 mut method 
 Void inner(This2.NestedClass that) (
-  This0::#that() rcv18=this.#that()
-  rcv18.#apply(that:this.from(), val:that)
+  This0::#that() rcv32=this.#that()
+  rcv32.#apply(that:this.from(), val:that)
   )}
 read method 
 This2.Bool contains(This1.NestedClass that) (
@@ -15700,29 +15911,29 @@ read method //@private
 This1.Record record__44_0() 
 method myName() This2.GetMyName.#apply(that:This0)
 method toS() This0.myName().#plusplus(that:(
-  This2.S::#from(builder ) ::#from(seqBuilder ) rcv61=(
-    This2.S::#from(builder ) rcv62=This2.S.#from(builder:(
+  This2.S::#from(builder ) ::#from(seqBuilder ) rcv75=(
+    This2.S::#from(builder ) rcv76=This2.S.#from(builder:(
       This2.S::#builder() b=This2.S.#builder()
       Void unused=b.#oSquare()
       b
       ))
-    rcv62.#from(seqBuilder:(
-      This2.S::#from(builder ) ::#seqBuilder() b0=rcv62.#seqBuilder()
+    rcv76.#from(seqBuilder:(
+      This2.S::#from(builder ) ::#seqBuilder() b0=rcv76.#seqBuilder()
       Void unused0=b0.#add(that:this.allAsString())
       b0
       ))
     )
-  rcv61.#from(builder:(
-    This2.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b1=rcv61.#builder()
+  rcv75.#from(builder:(
+    This2.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b1=rcv75.#builder()
     Void unused1=b1.#cSquare()
     b1
     ))
   ))
 method 
 This2.S allAsString() (
-  This0::record__44_0() rcv63=this.record__44_0()
-  rcv63.#from(builder:(
-    This0::record__44_0() ::#builder() b=rcv63.#builder()
+  This0::record__44_0() rcv77=this.record__44_0()
+  rcv77.#from(builder:(
+    This0::record__44_0() ::#builder() b=rcv77.#builder()
     Void unused=b.#A()
     Void unused0=b.#l()
     Void unused1=b.#l()
@@ -15755,21 +15966,21 @@ This2.S strRepr() (
             )
           )
         Void unused3=return (
-          This2.S::#from(builder ) ::#from(seqBuilder ) rcv64=(
-            This2.S::#from(builder ) rcv65=This2.S.#from(builder:(
+          This2.S::#from(builder ) ::#from(seqBuilder ) rcv78=(
+            This2.S::#from(builder ) rcv79=This2.S.#from(builder:(
               This2.S::#builder() b=This2.S.#builder()
               Void unused5=b.#at()
               Void unused6=b.#dot()
               b
               ))
-            rcv65.#from(seqBuilder:(
-              This2.S::#from(builder ) ::#seqBuilder() b0=rcv65.#seqBuilder()
+            rcv79.#from(seqBuilder:(
+              This2.S::#from(builder ) ::#seqBuilder() b0=rcv79.#seqBuilder()
               Void unused7=b0.#add(that:n.pathFromRoot())
               b0
               ))
             )
-          rcv64.#from(builder:(
-            This2.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b1=rcv64.#builder()
+          rcv78.#from(builder:(
+            This2.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b1=rcv78.#builder()
             b1
             ))
           )
@@ -15798,9 +16009,9 @@ This2.S strRepr() (
   )
 method 
 This1.TypeKind typeKind() This1.TypeKind.fromS(that:(
-  This0::record__44_0() rcv66=this.record__44_0()
-  rcv66.#from(builder:(
-    This0::record__44_0() ::#builder() b=rcv66.#builder()
+  This0::record__44_0() rcv80=this.record__44_0()
+  rcv80.#from(builder:(
+    This0::record__44_0() ::#builder() b=rcv80.#builder()
     Void unused=b.#T()
     Void unused0=b.#y()
     Void unused1=b.#p()
@@ -15818,8 +16029,8 @@ This1.Mdf mdf() (
   
     Void unused0=(
       This0::typeKind() ::equals(that ) ::#bang() cond=(
-        This0::typeKind() rcv67=this.typeKind()
-        rcv67.equals(that:rcv67.class()._AliasUnresolvable())
+        This0::typeKind() rcv81=this.typeKind()
+        rcv81.equals(that:rcv81.class()._AliasUnresolvable())
         ).#bang()
       (
         Void unused2=cond.#checkTrue()
@@ -15827,9 +16038,9 @@ This1.Mdf mdf() (
         catch exception Void catched1 void
         
         return This1.Mdf.fromS(that:(
-          This0::record__44_0() rcv68=this.record__44_0()
-          rcv68.#from(builder:(
-            This0::record__44_0() ::#builder() b=rcv68.#builder()
+          This0::record__44_0() rcv82=this.record__44_0()
+          rcv82.#from(builder:(
+            This0::record__44_0() ::#builder() b=rcv82.#builder()
             Void unused3=b.#M()
             Void unused4=b.#d()
             Void unused5=b.#f()
@@ -15901,8 +16112,8 @@ This1.NestedClass referencedPath__46_0(This1.Doc.Annotation ann) (
         )
       )
     This2.S sPath=(
-      This1.Doc.Annotation::toS() rcv69=ann.toS()
-      rcv69.#apply(start:This2.N.#from(builder:(
+      This1.Doc.Annotation::toS() rcv83=ann.toS()
+      rcv83.#apply(start:This2.N.#from(builder:(
         This2.N::#builder() b=This2.N.#builder()
         Void unused4=b.#1()
         b
@@ -15983,8 +16194,8 @@ This1.NestedClass resolvedReferencedPath() (
   
     Void unused0=(
       This0::typeKind() ::equals(that ) ::#bang() cond=(
-        This0::typeKind() rcv70=this.typeKind()
-        rcv70.equals(that:rcv70.class()._AliasUnresolvable())
+        This0::typeKind() rcv84=this.typeKind()
+        rcv84.equals(that:rcv84.class()._AliasUnresolvable())
         ).#bang()
       (
         Void unused2=cond.#checkTrue()
@@ -16060,9 +16271,9 @@ This1.NestedClass resolvedReferencedPath() (
   )
 method 
 This2.Bool partial() (
-  This0::record__44_0() rcv71=this.record__44_0()
-  rcv71.#from(builder:(
-    This0::record__44_0() ::#builder() b=rcv71.#builder()
+  This0::record__44_0() rcv85=this.record__44_0()
+  rcv85.#from(builder:(
+    This0::record__44_0() ::#builder() b=rcv85.#builder()
     Void unused=b.#P()
     Void unused0=b.#h()
     b
@@ -16077,9 +16288,9 @@ This2.Bool partial() (
   )))
 method 
 This2.Bool resolvedPartial() (
-  This0::record__44_0() rcv72=this.record__44_0()
-  rcv72.#from(builder:(
-    This0::record__44_0() ::#builder() b=rcv72.#builder()
+  This0::record__44_0() rcv86=this.record__44_0()
+  rcv86.#from(builder:(
+    This0::record__44_0() ::#builder() b=rcv86.#builder()
     Void unused=b.#R()
     Void unused0=b.#e()
     Void unused1=b.#s()
@@ -16106,8 +16317,8 @@ This2.S suffix() (
   
     Void unused0=(
       This0::typeKind() ::equals(that ) cond=(
-        This0::typeKind() rcv73=this.typeKind()
-        rcv73.equals(that:rcv73.class()._Normal())
+        This0::typeKind() rcv87=this.typeKind()
+        rcv87.equals(that:rcv87.class()._Normal())
         )
       (
         Void unused2=cond.#checkTrue()
@@ -16148,9 +16359,9 @@ This2.S suffix() (
         )
       )
     Void unused1=return (
-      This0::record__44_0() rcv74=this.record__44_0()
-      rcv74.#from(builder:(
-        This0::record__44_0() ::#builder() b0=rcv74.#builder()
+      This0::record__44_0() rcv88=this.record__44_0()
+      rcv88.#from(builder:(
+        This0::record__44_0() ::#builder() b0=rcv88.#builder()
         Void unused30=b0.#P()
         Void unused31=b0.#h()
         b0
@@ -16231,8 +16442,8 @@ This1.Type left() This0.cast(that:this.inner().val(that:This2.N.#from(builder:(
   ))))
 read method 
 This1.Type right() This0.cast(that:(
-  This0::inner() rcv13=this.inner()
-  rcv13.val(that:rcv13.size().#less(that:This2.N.#from(builder:(
+  This0::inner() rcv27=this.inner()
+  rcv27.val(that:rcv27.size().#less(that:This2.N.#from(builder:(
     This2.N::#builder() b=This2.N.#builder()
     Void unused=b.#1()
     b
@@ -16240,15 +16451,15 @@ This1.Type right() This0.cast(that:(
   ))
 mut method 
 Void #apply(This2.N that, This1.Type val) (
-  This0::#inner() rcv14=this.#inner()
-  rcv14.#apply(that:that, val:val)
+  This0::#inner() rcv28=this.#inner()
+  rcv28.#apply(that:that, val:val)
   )
 mut method 
 Void add(This2.N that, This1.Type val) this.#inner().add(that:that, val:val)
 mut method 
 Void add(This1.Type right) (
-  This0::#inner() rcv15=this.#inner()
-  rcv15.add(that:rcv15.size(), val:right)
+  This0::#inner() rcv29=this.#inner()
+  rcv29.add(that:rcv29.size(), val:right)
   )
 mut method 
 Void add(This1.Type left) this.#inner().add(that:This2.N.#from(builder:(
@@ -16260,8 +16471,8 @@ mut method
 Void remove(This2.N that) this.#inner().remove(that:that)
 mut method 
 Void left(This1.Type that) (
-  This0::#inner() rcv16=this.#inner()
-  rcv16.#apply(that:This2.N.#from(builder:(
+  This0::#inner() rcv30=this.#inner()
+  rcv30.#apply(that:This2.N.#from(builder:(
     This2.N::#builder() b=This2.N.#builder()
     Void unused=b.#0()
     b
@@ -16269,8 +16480,8 @@ Void left(This1.Type that) (
   )
 mut method 
 Void right(This1.Type that) (
-  This0::#inner() rcv17=this.#inner()
-  rcv17.#apply(that:rcv17.size().#less(that:This2.N.#from(builder:(
+  This0::#inner() rcv31=this.#inner()
+  rcv31.#apply(that:rcv31.size().#less(that:This2.N.#from(builder:(
     This2.N::#builder() b=This2.N.#builder()
     Void unused=b.#1()
     b
@@ -16728,8 +16939,8 @@ mut method
 This3.N #stopOk() 
 mut method 
 Void inner(This2.Type that) (
-  This0::#that() rcv18=this.#that()
-  rcv18.#apply(that:this.from(), val:that)
+  This0::#that() rcv32=this.#that()
+  rcv32.#apply(that:this.from(), val:that)
   )}}
 Mdf:{//Data is more than Solid, and Liquid, Gas, Plasma can be good methafores
 //data: toS == class named, fromS, invariant, with clone mutk
@@ -16850,13 +17061,13 @@ method toS() (
         )
       )
     Void unused2=return (
-      This0.Varres_$%9_0__81_0::#inner() ::#from(seqBuilder ) rcv0=varres.#inner().#from(seqBuilder:(
+      This0.Varres_$%9_0__81_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%9_0__81_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
         Void unused20=b3.#add(that:this.cause().#tilde())
         b3
         ))
-      rcv0.#from(builder:(
-        This0.Varres_$%9_0__81_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv0.#builder()
+      rcv14.#from(builder:(
+        This0.Varres_$%9_0__81_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv14.#builder()
         Void unused21=b4.#cSquare()
         b4
         ))
@@ -16962,8 +17173,8 @@ This1 left() This0.cast(that:this.inner().val(that:This3.N.#from(builder:(
   ))))
 read method 
 This1 right() This0.cast(that:(
-  This0::inner() rcv13=this.inner()
-  rcv13.val(that:rcv13.size().#less(that:This3.N.#from(builder:(
+  This0::inner() rcv27=this.inner()
+  rcv27.val(that:rcv27.size().#less(that:This3.N.#from(builder:(
     This3.N::#builder() b=This3.N.#builder()
     Void unused=b.#1()
     b
@@ -16971,15 +17182,15 @@ This1 right() This0.cast(that:(
   ))
 mut method 
 Void #apply(This3.N that, This1 val) (
-  This0::#inner() rcv14=this.#inner()
-  rcv14.#apply(that:that, val:val)
+  This0::#inner() rcv28=this.#inner()
+  rcv28.#apply(that:that, val:val)
   )
 mut method 
 Void add(This3.N that, This1 val) this.#inner().add(that:that, val:val)
 mut method 
 Void add(This1 right) (
-  This0::#inner() rcv15=this.#inner()
-  rcv15.add(that:rcv15.size(), val:right)
+  This0::#inner() rcv29=this.#inner()
+  rcv29.add(that:rcv29.size(), val:right)
   )
 mut method 
 Void add(This1 left) this.#inner().add(that:This3.N.#from(builder:(
@@ -16991,8 +17202,8 @@ mut method
 Void remove(This3.N that) this.#inner().remove(that:that)
 mut method 
 Void left(This1 that) (
-  This0::#inner() rcv16=this.#inner()
-  rcv16.#apply(that:This3.N.#from(builder:(
+  This0::#inner() rcv30=this.#inner()
+  rcv30.#apply(that:This3.N.#from(builder:(
     This3.N::#builder() b=This3.N.#builder()
     Void unused=b.#0()
     b
@@ -17000,8 +17211,8 @@ Void left(This1 that) (
   )
 mut method 
 Void right(This1 that) (
-  This0::#inner() rcv17=this.#inner()
-  rcv17.#apply(that:rcv17.size().#less(that:This3.N.#from(builder:(
+  This0::#inner() rcv31=this.#inner()
+  rcv31.#apply(that:rcv31.size().#less(that:This3.N.#from(builder:(
     This3.N::#builder() b=This3.N.#builder()
     Void unused=b.#1()
     b
@@ -17459,8 +17670,8 @@ mut method
 This4.N #stopOk() 
 mut method 
 Void inner(This2 that) (
-  This0::#that() rcv18=this.#that()
-  rcv18.#apply(that:this.from(), val:that)
+  This0::#that() rcv32=this.#that()
+  rcv32.#apply(that:this.from(), val:that)
   )}
 read method 
 This3.Bool contains(This1 that) (
@@ -18051,8 +18262,8 @@ This0 fromS(This2.S that) (
         )
       )
     Void unused1=error (
-      This0.ParseFail::#from(builder ) ::#from(seqBuilder ) rcv31=(
-        This0.ParseFail::#from(builder ) rcv32=This0.ParseFail.#from(builder:(
+      This0.ParseFail::#from(builder ) ::#from(seqBuilder ) rcv45=(
+        This0.ParseFail::#from(builder ) rcv46=This0.ParseFail.#from(builder:(
           This0.ParseFail::#builder() b0=This0.ParseFail.#builder()
           Void unused25=b0.#T()
           Void unused26=b0.#h()
@@ -18090,14 +18301,14 @@ This0 fromS(This2.S that) (
           Void unused58=b0.#space()
           b0
           ))
-        rcv32.#from(seqBuilder:(
-          This0.ParseFail::#from(builder ) ::#seqBuilder() b1=rcv32.#seqBuilder()
+        rcv46.#from(seqBuilder:(
+          This0.ParseFail::#from(builder ) ::#seqBuilder() b1=rcv46.#seqBuilder()
           Void unused59=b1.#add(that:that)
           b1
           ))
         )
-      rcv31.#from(builder:(
-        This0.ParseFail::#from(builder ) ::#from(seqBuilder ) ::#builder() b2=rcv31.#builder()
+      rcv45.#from(builder:(
+        This0.ParseFail::#from(builder ) ::#from(seqBuilder ) ::#builder() b2=rcv45.#builder()
         b2
         ))
       )
@@ -18265,13 +18476,13 @@ method toS() (
         )
       )
     Void unused2=return (
-      This0.Varres_$%9_0__82_0::#inner() ::#from(seqBuilder ) rcv0=varres.#inner().#from(seqBuilder:(
+      This0.Varres_$%9_0__82_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%9_0__82_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
         Void unused20=b3.#add(that:this.cause().#tilde())
         b3
         ))
-      rcv0.#from(builder:(
-        This0.Varres_$%9_0__82_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv0.#builder()
+      rcv14.#from(builder:(
+        This0.Varres_$%9_0__82_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv14.#builder()
         Void unused21=b4.#cSquare()
         b4
         ))
@@ -18377,8 +18588,8 @@ This1 left() This0.cast(that:this.inner().val(that:This3.N.#from(builder:(
   ))))
 read method 
 This1 right() This0.cast(that:(
-  This0::inner() rcv13=this.inner()
-  rcv13.val(that:rcv13.size().#less(that:This3.N.#from(builder:(
+  This0::inner() rcv27=this.inner()
+  rcv27.val(that:rcv27.size().#less(that:This3.N.#from(builder:(
     This3.N::#builder() b=This3.N.#builder()
     Void unused=b.#1()
     b
@@ -18386,15 +18597,15 @@ This1 right() This0.cast(that:(
   ))
 mut method 
 Void #apply(This3.N that, This1 val) (
-  This0::#inner() rcv14=this.#inner()
-  rcv14.#apply(that:that, val:val)
+  This0::#inner() rcv28=this.#inner()
+  rcv28.#apply(that:that, val:val)
   )
 mut method 
 Void add(This3.N that, This1 val) this.#inner().add(that:that, val:val)
 mut method 
 Void add(This1 right) (
-  This0::#inner() rcv15=this.#inner()
-  rcv15.add(that:rcv15.size(), val:right)
+  This0::#inner() rcv29=this.#inner()
+  rcv29.add(that:rcv29.size(), val:right)
   )
 mut method 
 Void add(This1 left) this.#inner().add(that:This3.N.#from(builder:(
@@ -18406,8 +18617,8 @@ mut method
 Void remove(This3.N that) this.#inner().remove(that:that)
 mut method 
 Void left(This1 that) (
-  This0::#inner() rcv16=this.#inner()
-  rcv16.#apply(that:This3.N.#from(builder:(
+  This0::#inner() rcv30=this.#inner()
+  rcv30.#apply(that:This3.N.#from(builder:(
     This3.N::#builder() b=This3.N.#builder()
     Void unused=b.#0()
     b
@@ -18415,8 +18626,8 @@ Void left(This1 that) (
   )
 mut method 
 Void right(This1 that) (
-  This0::#inner() rcv17=this.#inner()
-  rcv17.#apply(that:rcv17.size().#less(that:This3.N.#from(builder:(
+  This0::#inner() rcv31=this.#inner()
+  rcv31.#apply(that:rcv31.size().#less(that:This3.N.#from(builder:(
     This3.N::#builder() b=This3.N.#builder()
     Void unused=b.#1()
     b
@@ -18874,8 +19085,8 @@ mut method
 This4.N #stopOk() 
 mut method 
 Void inner(This2 that) (
-  This0::#that() rcv18=this.#that()
-  rcv18.#apply(that:this.from(), val:that)
+  This0::#that() rcv32=this.#that()
+  rcv32.#apply(that:this.from(), val:that)
   )}
 read method 
 This3.Bool contains(This1 that) (
@@ -19471,8 +19682,8 @@ This0 fromS(This2.S that) (
         )
       )
     Void unused1=error (
-      This0.ParseFail::#from(builder ) ::#from(seqBuilder ) rcv31=(
-        This0.ParseFail::#from(builder ) rcv32=This0.ParseFail.#from(builder:(
+      This0.ParseFail::#from(builder ) ::#from(seqBuilder ) rcv45=(
+        This0.ParseFail::#from(builder ) rcv46=This0.ParseFail.#from(builder:(
           This0.ParseFail::#builder() b0=This0.ParseFail.#builder()
           Void unused25=b0.#T()
           Void unused26=b0.#h()
@@ -19510,14 +19721,14 @@ This0 fromS(This2.S that) (
           Void unused58=b0.#space()
           b0
           ))
-        rcv32.#from(seqBuilder:(
-          This0.ParseFail::#from(builder ) ::#seqBuilder() b1=rcv32.#seqBuilder()
+        rcv46.#from(seqBuilder:(
+          This0.ParseFail::#from(builder ) ::#seqBuilder() b1=rcv46.#seqBuilder()
           Void unused59=b1.#add(that:that)
           b1
           ))
         )
-      rcv31.#from(builder:(
-        This0.ParseFail::#from(builder ) ::#from(seqBuilder ) ::#builder() b2=rcv31.#builder()
+      rcv45.#from(builder:(
+        This0.ParseFail::#from(builder ) ::#from(seqBuilder ) ::#builder() b2=rcv45.#builder()
         b2
         ))
       )
@@ -19667,13 +19878,13 @@ method toS() (
         )
       )
     Void unused2=return (
-      This0.Varres_$%9_0__83_0::#inner() ::#from(seqBuilder ) rcv0=varres.#inner().#from(seqBuilder:(
+      This0.Varres_$%9_0__83_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%9_0__83_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
         Void unused20=b3.#add(that:this.cause().#tilde())
         b3
         ))
-      rcv0.#from(builder:(
-        This0.Varres_$%9_0__83_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv0.#builder()
+      rcv14.#from(builder:(
+        This0.Varres_$%9_0__83_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv14.#builder()
         Void unused21=b4.#cSquare()
         b4
         ))
@@ -19779,8 +19990,8 @@ This1 left() This0.cast(that:this.inner().val(that:This3.N.#from(builder:(
   ))))
 read method 
 This1 right() This0.cast(that:(
-  This0::inner() rcv13=this.inner()
-  rcv13.val(that:rcv13.size().#less(that:This3.N.#from(builder:(
+  This0::inner() rcv27=this.inner()
+  rcv27.val(that:rcv27.size().#less(that:This3.N.#from(builder:(
     This3.N::#builder() b=This3.N.#builder()
     Void unused=b.#1()
     b
@@ -19788,15 +19999,15 @@ This1 right() This0.cast(that:(
   ))
 mut method 
 Void #apply(This3.N that, This1 val) (
-  This0::#inner() rcv14=this.#inner()
-  rcv14.#apply(that:that, val:val)
+  This0::#inner() rcv28=this.#inner()
+  rcv28.#apply(that:that, val:val)
   )
 mut method 
 Void add(This3.N that, This1 val) this.#inner().add(that:that, val:val)
 mut method 
 Void add(This1 right) (
-  This0::#inner() rcv15=this.#inner()
-  rcv15.add(that:rcv15.size(), val:right)
+  This0::#inner() rcv29=this.#inner()
+  rcv29.add(that:rcv29.size(), val:right)
   )
 mut method 
 Void add(This1 left) this.#inner().add(that:This3.N.#from(builder:(
@@ -19808,8 +20019,8 @@ mut method
 Void remove(This3.N that) this.#inner().remove(that:that)
 mut method 
 Void left(This1 that) (
-  This0::#inner() rcv16=this.#inner()
-  rcv16.#apply(that:This3.N.#from(builder:(
+  This0::#inner() rcv30=this.#inner()
+  rcv30.#apply(that:This3.N.#from(builder:(
     This3.N::#builder() b=This3.N.#builder()
     Void unused=b.#0()
     b
@@ -19817,8 +20028,8 @@ Void left(This1 that) (
   )
 mut method 
 Void right(This1 that) (
-  This0::#inner() rcv17=this.#inner()
-  rcv17.#apply(that:rcv17.size().#less(that:This3.N.#from(builder:(
+  This0::#inner() rcv31=this.#inner()
+  rcv31.#apply(that:rcv31.size().#less(that:This3.N.#from(builder:(
     This3.N::#builder() b=This3.N.#builder()
     Void unused=b.#1()
     b
@@ -20276,8 +20487,8 @@ mut method
 This4.N #stopOk() 
 mut method 
 Void inner(This2 that) (
-  This0::#that() rcv18=this.#that()
-  rcv18.#apply(that:this.from(), val:that)
+  This0::#that() rcv32=this.#that()
+  rcv32.#apply(that:this.from(), val:that)
   )}
 read method 
 This3.Bool contains(This1 that) (
@@ -20873,8 +21084,8 @@ This0 fromS(This2.S that) (
         )
       )
     Void unused1=error (
-      This0.ParseFail::#from(builder ) ::#from(seqBuilder ) rcv31=(
-        This0.ParseFail::#from(builder ) rcv32=This0.ParseFail.#from(builder:(
+      This0.ParseFail::#from(builder ) ::#from(seqBuilder ) rcv45=(
+        This0.ParseFail::#from(builder ) rcv46=This0.ParseFail.#from(builder:(
           This0.ParseFail::#builder() b0=This0.ParseFail.#builder()
           Void unused25=b0.#T()
           Void unused26=b0.#h()
@@ -20912,14 +21123,14 @@ This0 fromS(This2.S that) (
           Void unused58=b0.#space()
           b0
           ))
-        rcv32.#from(seqBuilder:(
-          This0.ParseFail::#from(builder ) ::#seqBuilder() b1=rcv32.#seqBuilder()
+        rcv46.#from(seqBuilder:(
+          This0.ParseFail::#from(builder ) ::#seqBuilder() b1=rcv46.#seqBuilder()
           Void unused59=b1.#add(that:that)
           b1
           ))
         )
-      rcv31.#from(builder:(
-        This0.ParseFail::#from(builder ) ::#from(seqBuilder ) ::#builder() b2=rcv31.#builder()
+      rcv45.#from(builder:(
+        This0.ParseFail::#from(builder ) ::#from(seqBuilder ) ::#builder() b2=rcv45.#builder()
         b2
         ))
       )
@@ -21082,13 +21293,13 @@ method toS() (
         )
       )
     Void unused2=return (
-      This0.Varres_$%9_0__84_0::#inner() ::#from(seqBuilder ) rcv0=varres.#inner().#from(seqBuilder:(
+      This0.Varres_$%9_0__84_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%9_0__84_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
         Void unused20=b3.#add(that:this.cause().#tilde())
         b3
         ))
-      rcv0.#from(builder:(
-        This0.Varres_$%9_0__84_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv0.#builder()
+      rcv14.#from(builder:(
+        This0.Varres_$%9_0__84_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv14.#builder()
         Void unused21=b4.#cSquare()
         b4
         ))
@@ -21194,8 +21405,8 @@ This1 left() This0.cast(that:this.inner().val(that:This3.N.#from(builder:(
   ))))
 read method 
 This1 right() This0.cast(that:(
-  This0::inner() rcv13=this.inner()
-  rcv13.val(that:rcv13.size().#less(that:This3.N.#from(builder:(
+  This0::inner() rcv27=this.inner()
+  rcv27.val(that:rcv27.size().#less(that:This3.N.#from(builder:(
     This3.N::#builder() b=This3.N.#builder()
     Void unused=b.#1()
     b
@@ -21203,15 +21414,15 @@ This1 right() This0.cast(that:(
   ))
 mut method 
 Void #apply(This3.N that, This1 val) (
-  This0::#inner() rcv14=this.#inner()
-  rcv14.#apply(that:that, val:val)
+  This0::#inner() rcv28=this.#inner()
+  rcv28.#apply(that:that, val:val)
   )
 mut method 
 Void add(This3.N that, This1 val) this.#inner().add(that:that, val:val)
 mut method 
 Void add(This1 right) (
-  This0::#inner() rcv15=this.#inner()
-  rcv15.add(that:rcv15.size(), val:right)
+  This0::#inner() rcv29=this.#inner()
+  rcv29.add(that:rcv29.size(), val:right)
   )
 mut method 
 Void add(This1 left) this.#inner().add(that:This3.N.#from(builder:(
@@ -21223,8 +21434,8 @@ mut method
 Void remove(This3.N that) this.#inner().remove(that:that)
 mut method 
 Void left(This1 that) (
-  This0::#inner() rcv16=this.#inner()
-  rcv16.#apply(that:This3.N.#from(builder:(
+  This0::#inner() rcv30=this.#inner()
+  rcv30.#apply(that:This3.N.#from(builder:(
     This3.N::#builder() b=This3.N.#builder()
     Void unused=b.#0()
     b
@@ -21232,8 +21443,8 @@ Void left(This1 that) (
   )
 mut method 
 Void right(This1 that) (
-  This0::#inner() rcv17=this.#inner()
-  rcv17.#apply(that:rcv17.size().#less(that:This3.N.#from(builder:(
+  This0::#inner() rcv31=this.#inner()
+  rcv31.#apply(that:rcv31.size().#less(that:This3.N.#from(builder:(
     This3.N::#builder() b=This3.N.#builder()
     Void unused=b.#1()
     b
@@ -21691,8 +21902,8 @@ mut method
 This4.N #stopOk() 
 mut method 
 Void inner(This2 that) (
-  This0::#that() rcv18=this.#that()
-  rcv18.#apply(that:this.from(), val:that)
+  This0::#that() rcv32=this.#that()
+  rcv32.#apply(that:this.from(), val:that)
   )}
 read method 
 This3.Bool contains(This1 that) (
@@ -22259,8 +22470,8 @@ This0 fromS(This2.S that) (
         )
       )
     Void unused1=error (
-      This0.ParseFail::#from(builder ) ::#from(seqBuilder ) rcv31=(
-        This0.ParseFail::#from(builder ) rcv32=This0.ParseFail.#from(builder:(
+      This0.ParseFail::#from(builder ) ::#from(seqBuilder ) rcv45=(
+        This0.ParseFail::#from(builder ) rcv46=This0.ParseFail.#from(builder:(
           This0.ParseFail::#builder() b0=This0.ParseFail.#builder()
           Void unused25=b0.#T()
           Void unused26=b0.#h()
@@ -22298,14 +22509,14 @@ This0 fromS(This2.S that) (
           Void unused58=b0.#space()
           b0
           ))
-        rcv32.#from(seqBuilder:(
-          This0.ParseFail::#from(builder ) ::#seqBuilder() b1=rcv32.#seqBuilder()
+        rcv46.#from(seqBuilder:(
+          This0.ParseFail::#from(builder ) ::#seqBuilder() b1=rcv46.#seqBuilder()
           Void unused59=b1.#add(that:that)
           b1
           ))
         )
-      rcv31.#from(builder:(
-        This0.ParseFail::#from(builder ) ::#from(seqBuilder ) ::#builder() b2=rcv31.#builder()
+      rcv45.#from(builder:(
+        This0.ParseFail::#from(builder ) ::#from(seqBuilder ) ::#builder() b2=rcv45.#builder()
         b2
         ))
       )
@@ -23226,10 +23437,10 @@ This2.Bool #isPrivate()
 read method 
 This2.Bool isPrivate() 
 method toS() This0.myName().#plusplus(that:(
-  This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) rcv75=(
-    This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) rcv76=(
-      This2.S::#from(builder ) ::#from(seqBuilder ) rcv77=(
-        This2.S::#from(builder ) rcv78=This2.S.#from(builder:(
+  This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) rcv89=(
+    This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) rcv90=(
+      This2.S::#from(builder ) ::#from(seqBuilder ) rcv91=(
+        This2.S::#from(builder ) rcv92=This2.S.#from(builder:(
           This2.S::#builder() b=This2.S.#builder()
           Void unused=b.#oSquare()
           Void unused0=b.#p()
@@ -23239,14 +23450,14 @@ method toS() This0.myName().#plusplus(that:(
           Void unused4=b.#colon()
           b
           ))
-        rcv78.#from(seqBuilder:(
-          This2.S::#from(builder ) ::#seqBuilder() b0=rcv78.#seqBuilder()
+        rcv92.#from(seqBuilder:(
+          This2.S::#from(builder ) ::#seqBuilder() b0=rcv92.#seqBuilder()
           Void unused5=b0.#add(that:this.path())
           b0
           ))
         )
-      rcv77.#from(builder:(
-        This2.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b1=rcv77.#builder()
+      rcv91.#from(builder:(
+        This2.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b1=rcv91.#builder()
         Void unused6=b1.#comma()
         Void unused7=b1.#i()
         Void unused8=b1.#s()
@@ -23261,14 +23472,14 @@ method toS() This0.myName().#plusplus(that:(
         b1
         ))
       )
-    rcv76.#from(seqBuilder:(
-      This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#seqBuilder() b2=rcv76.#seqBuilder()
+    rcv90.#from(seqBuilder:(
+      This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#seqBuilder() b2=rcv90.#seqBuilder()
       Void unused17=b2.#add(that:this.isPrivate())
       b2
       ))
     )
-  rcv75.#from(builder:(
-    This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) ::#builder() b3=rcv75.#builder()
+  rcv89.#from(builder:(
+    This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) ::#builder() b3=rcv89.#builder()
     Void unused18=b3.#cSquare()
     b3
     ))
@@ -23401,12 +23612,12 @@ This2.Bool #isPrivate()
 read method 
 This2.Bool isPrivate() 
 method toS() This0.myName().#plusplus(that:(
-  This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) rcv79=(
-    This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) rcv80=(
-      This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) rcv81=(
-        This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) rcv82=(
-          This2.S::#from(builder ) ::#from(seqBuilder ) rcv83=(
-            This2.S::#from(builder ) rcv84=This2.S.#from(builder:(
+  This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) rcv93=(
+    This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) rcv94=(
+      This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) rcv95=(
+        This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) rcv96=(
+          This2.S::#from(builder ) ::#from(seqBuilder ) rcv97=(
+            This2.S::#from(builder ) rcv98=This2.S.#from(builder:(
               This2.S::#builder() b=This2.S.#builder()
               Void unused=b.#oSquare()
               Void unused0=b.#p()
@@ -23416,14 +23627,14 @@ method toS() This0.myName().#plusplus(that:(
               Void unused4=b.#colon()
               b
               ))
-            rcv84.#from(seqBuilder:(
-              This2.S::#from(builder ) ::#seqBuilder() b0=rcv84.#seqBuilder()
+            rcv98.#from(seqBuilder:(
+              This2.S::#from(builder ) ::#seqBuilder() b0=rcv98.#seqBuilder()
               Void unused5=b0.#add(that:this.path())
               b0
               ))
             )
-          rcv83.#from(builder:(
-            This2.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b1=rcv83.#builder()
+          rcv97.#from(builder:(
+            This2.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b1=rcv97.#builder()
             Void unused6=b1.#comma()
             Void unused7=b1.#space()
             Void unused8=b1.#s()
@@ -23438,14 +23649,14 @@ method toS() This0.myName().#plusplus(that:(
             b1
             ))
           )
-        rcv82.#from(seqBuilder:(
-          This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#seqBuilder() b2=rcv82.#seqBuilder()
+        rcv96.#from(seqBuilder:(
+          This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#seqBuilder() b2=rcv96.#seqBuilder()
           Void unused17=b2.#add(that:this.selector())
           b2
           ))
         )
-      rcv81.#from(builder:(
-        This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) ::#builder() b3=rcv81.#builder()
+      rcv95.#from(builder:(
+        This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) ::#builder() b3=rcv95.#builder()
         Void unused18=b3.#comma()
         Void unused19=b3.#i()
         Void unused20=b3.#s()
@@ -23460,14 +23671,14 @@ method toS() This0.myName().#plusplus(that:(
         b3
         ))
       )
-    rcv80.#from(seqBuilder:(
-      This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#seqBuilder() b4=rcv80.#seqBuilder()
+    rcv94.#from(seqBuilder:(
+      This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#seqBuilder() b4=rcv94.#seqBuilder()
       Void unused29=b4.#add(that:this.isPrivate())
       b4
       ))
     )
-  rcv79.#from(builder:(
-    This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) ::#builder() b5=rcv79.#builder()
+  rcv93.#from(builder:(
+    This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) ::#builder() b5=rcv93.#builder()
     Void unused30=b5.#cSquare()
     b5
     ))
@@ -24123,13 +24334,13 @@ method
 Library #leftleft(Library that) exception This2.MetaGuard.NestedClassUnavailable, This2.MetaGuard.MethodClash (
   Void unused=(
     Void unused0=return This2.SafeOperators.makeMethod(that:that, path:this.of(), selector:this.that(), mdfs:(
-      This2.S::#from(builder ) ::#from(seqBuilder ) rcv85=(
-        This2.S::#from(builder ) rcv86=This2.S.#from(builder:(
+      This2.S::#from(builder ) ::#from(seqBuilder ) rcv99=(
+        This2.S::#from(builder ) rcv100=This2.S.#from(builder:(
           This2.S::#builder() b0=This2.S.#builder()
           b0
           ))
-        rcv86.#from(seqBuilder:(
-          This2.S::#from(builder ) ::#seqBuilder() b=rcv86.#seqBuilder()
+        rcv100.#from(seqBuilder:(
+          This2.S::#from(builder ) ::#seqBuilder() b=rcv100.#seqBuilder()
           Void unused1=(
             This0::mdfs() ::vals() m=this.mdfs().vals()
             (
@@ -24183,8 +24394,8 @@ Library #leftleft(Library that) exception This2.MetaGuard.NestedClassUnavailable
           b
           ))
         )
-      rcv85.#from(builder:(
-        This2.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b2=rcv85.#builder()
+      rcv99.#from(builder:(
+        This2.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b2=rcv99.#builder()
         b2
         ))
       ), exceptionN:this.exceptionN())
@@ -24480,8 +24691,8 @@ This1.SrcDest left() This0.cast(that:this.inner().val(that:This2.N.#from(builder
   ))))
 read method 
 This1.SrcDest right() This0.cast(that:(
-  This0::inner() rcv13=this.inner()
-  rcv13.val(that:rcv13.size().#less(that:This2.N.#from(builder:(
+  This0::inner() rcv27=this.inner()
+  rcv27.val(that:rcv27.size().#less(that:This2.N.#from(builder:(
     This2.N::#builder() b=This2.N.#builder()
     Void unused=b.#1()
     b
@@ -24489,15 +24700,15 @@ This1.SrcDest right() This0.cast(that:(
   ))
 mut method 
 Void #apply(This2.N that, This1.SrcDest val) (
-  This0::#inner() rcv14=this.#inner()
-  rcv14.#apply(that:that, val:val)
+  This0::#inner() rcv28=this.#inner()
+  rcv28.#apply(that:that, val:val)
   )
 mut method 
 Void add(This2.N that, This1.SrcDest val) this.#inner().add(that:that, val:val)
 mut method 
 Void add(This1.SrcDest right) (
-  This0::#inner() rcv15=this.#inner()
-  rcv15.add(that:rcv15.size(), val:right)
+  This0::#inner() rcv29=this.#inner()
+  rcv29.add(that:rcv29.size(), val:right)
   )
 mut method 
 Void add(This1.SrcDest left) this.#inner().add(that:This2.N.#from(builder:(
@@ -24509,8 +24720,8 @@ mut method
 Void remove(This2.N that) this.#inner().remove(that:that)
 mut method 
 Void left(This1.SrcDest that) (
-  This0::#inner() rcv16=this.#inner()
-  rcv16.#apply(that:This2.N.#from(builder:(
+  This0::#inner() rcv30=this.#inner()
+  rcv30.#apply(that:This2.N.#from(builder:(
     This2.N::#builder() b=This2.N.#builder()
     Void unused=b.#0()
     b
@@ -24518,8 +24729,8 @@ Void left(This1.SrcDest that) (
   )
 mut method 
 Void right(This1.SrcDest that) (
-  This0::#inner() rcv17=this.#inner()
-  rcv17.#apply(that:rcv17.size().#less(that:This2.N.#from(builder:(
+  This0::#inner() rcv31=this.#inner()
+  rcv31.#apply(that:rcv31.size().#less(that:This2.N.#from(builder:(
     This2.N::#builder() b=This2.N.#builder()
     Void unused=b.#1()
     b
@@ -24977,8 +25188,8 @@ mut method
 This3.N #stopOk() 
 mut method 
 Void inner(This2.SrcDest that) (
-  This0::#that() rcv18=this.#that()
-  rcv18.#apply(that:this.from(), val:that)
+  This0::#that() rcv32=this.#that()
+  rcv32.#apply(that:this.from(), val:that)
   )}}
 Libs:{
 class method 
@@ -25038,8 +25249,8 @@ Library left() This0.cast(that:this.inner().val(that:This2.N.#from(builder:(
   ))))
 read method 
 Library right() This0.cast(that:(
-  This0::inner() rcv13=this.inner()
-  rcv13.val(that:rcv13.size().#less(that:This2.N.#from(builder:(
+  This0::inner() rcv27=this.inner()
+  rcv27.val(that:rcv27.size().#less(that:This2.N.#from(builder:(
     This2.N::#builder() b=This2.N.#builder()
     Void unused=b.#1()
     b
@@ -25047,15 +25258,15 @@ Library right() This0.cast(that:(
   ))
 mut method 
 Void #apply(This2.N that, Library val) (
-  This0::#inner() rcv14=this.#inner()
-  rcv14.#apply(that:that, val:val)
+  This0::#inner() rcv28=this.#inner()
+  rcv28.#apply(that:that, val:val)
   )
 mut method 
 Void add(This2.N that, Library val) this.#inner().add(that:that, val:val)
 mut method 
 Void add(Library right) (
-  This0::#inner() rcv15=this.#inner()
-  rcv15.add(that:rcv15.size(), val:right)
+  This0::#inner() rcv29=this.#inner()
+  rcv29.add(that:rcv29.size(), val:right)
   )
 mut method 
 Void add(Library left) this.#inner().add(that:This2.N.#from(builder:(
@@ -25067,8 +25278,8 @@ mut method
 Void remove(This2.N that) this.#inner().remove(that:that)
 mut method 
 Void left(Library that) (
-  This0::#inner() rcv16=this.#inner()
-  rcv16.#apply(that:This2.N.#from(builder:(
+  This0::#inner() rcv30=this.#inner()
+  rcv30.#apply(that:This2.N.#from(builder:(
     This2.N::#builder() b=This2.N.#builder()
     Void unused=b.#0()
     b
@@ -25076,8 +25287,8 @@ Void left(Library that) (
   )
 mut method 
 Void right(Library that) (
-  This0::#inner() rcv17=this.#inner()
-  rcv17.#apply(that:rcv17.size().#less(that:This2.N.#from(builder:(
+  This0::#inner() rcv31=this.#inner()
+  rcv31.#apply(that:rcv31.size().#less(that:This2.N.#from(builder:(
     This2.N::#builder() b=This2.N.#builder()
     Void unused=b.#1()
     b
@@ -25535,8 +25746,8 @@ mut method
 This3.N #stopOk() 
 mut method 
 Void inner(Library that) (
-  This0::#that() rcv18=this.#that()
-  rcv18.#apply(that:this.from(), val:that)
+  This0::#that() rcv32=this.#that()
+  rcv32.#apply(that:this.from(), val:that)
   )}}
 class method //@private
 This0.SrcDests renameMap__47_0(Library that, This1.S prefix, This1.Introspection.NestedClasses intros) This0.SrcDests.#from(seqBuilder:(
@@ -25732,8 +25943,8 @@ This1.Bool needRename(This1.Introspection.NestedClass that, This1.Introspection.
       )
     Void unused1=(
       This1.Introspection.Method::methodKind() ::equals(that ) cond0=(
-        This1.Introspection.Method::methodKind() rcv87=meth.methodKind()
-        rcv87.equals(that:rcv87.class()._AbstractMethod())
+        This1.Introspection.Method::methodKind() rcv101=meth.methodKind()
+        rcv101.equals(that:rcv101.class()._AbstractMethod())
         )
       (
         Void unused3=cond0.#checkTrue()
@@ -25760,8 +25971,8 @@ This1.Bool needRename(This1.Introspection.NestedClass that, This1.Introspection.
         )
       Void unused5=(
         This1.Introspection.NestedClass::method(that ) ::methodKind() ::equals(that ) cond2=(
-          This1.Introspection.NestedClass::method(that ) ::methodKind() rcv88=meth2.methodKind()
-          rcv88.equals(that:rcv88.class()._AbstractMethod())
+          This1.Introspection.NestedClass::method(that ) ::methodKind() rcv102=meth2.methodKind()
+          rcv102.equals(that:rcv102.class()._AbstractMethod())
           )
         (
           Void unused8=cond2.#checkTrue()
@@ -25893,20 +26104,20 @@ Library #leftleft(Library that) exception This2.MetaGuard.ClassClash, This2.Meta
                       (
                         Library libi=lib.#inner()
                         This1::renameMap__47_0(that prefix intros ) rens=This1.renameMap__47_0(that:lib.#inner(), prefix:(
-                          This2.S::#from(builder ) ::#from(seqBuilder ) rcv89=(
-                            This2.S::#from(builder ) rcv90=This2.S.#from(builder:(
+                          This2.S::#from(builder ) ::#from(seqBuilder ) rcv103=(
+                            This2.S::#from(builder ) rcv104=This2.S.#from(builder:(
                               This2.S::#builder() b0=This2.S.#builder()
                               Void unused23=b0.#hash()
                               b0
                               ))
-                            rcv90.#from(seqBuilder:(
-                              This2.S::#from(builder ) ::#seqBuilder() b1=rcv90.#seqBuilder()
+                            rcv104.#from(seqBuilder:(
+                              This2.S::#from(builder ) ::#seqBuilder() b1=rcv104.#seqBuilder()
                               Void unused24=b1.#add(that:index.#inner())
                               b1
                               ))
                             )
-                          rcv89.#from(builder:(
-                            This2.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b2=rcv89.#builder()
+                          rcv103.#from(builder:(
+                            This2.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b2=rcv103.#builder()
                             b2
                             ))
                           ), intros:i.transitivelyNestedClasses())
@@ -26214,20 +26425,20 @@ Library #leftleft(Library that) exception This1.MetaGuard.ClassClash, This1.Meta
                       (
                         Library libi=lib.#inner()
                         This1.PreferentialComposition::renameMap__47_0(that prefix intros ) rens=This1.PreferentialComposition.renameMap__47_0(that:lib.#inner(), prefix:(
-                          This1.S::#from(builder ) ::#from(seqBuilder ) rcv89=(
-                            This1.S::#from(builder ) rcv90=This1.S.#from(builder:(
+                          This1.S::#from(builder ) ::#from(seqBuilder ) rcv103=(
+                            This1.S::#from(builder ) rcv104=This1.S.#from(builder:(
                               This1.S::#builder() b0=This1.S.#builder()
                               Void unused23=b0.#hash()
                               b0
                               ))
-                            rcv90.#from(seqBuilder:(
-                              This1.S::#from(builder ) ::#seqBuilder() b1=rcv90.#seqBuilder()
+                            rcv104.#from(seqBuilder:(
+                              This1.S::#from(builder ) ::#seqBuilder() b1=rcv104.#seqBuilder()
                               Void unused24=b1.#add(that:index.#inner())
                               b1
                               ))
                             )
-                          rcv89.#from(builder:(
-                            This1.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b2=rcv89.#builder()
+                          rcv103.#from(builder:(
+                            This1.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b2=rcv103.#builder()
                             b2
                             ))
                           ), intros:i.transitivelyNestedClasses())
@@ -26535,20 +26746,20 @@ Library #leftleft(Library that) exception This1.MetaGuard.ClassClash, This1.Meta
                       (
                         Library libi=lib.#inner()
                         This1.PreferentialComposition::renameMap__47_0(that prefix intros ) rens=This1.PreferentialComposition.renameMap__47_0(that:lib.#inner(), prefix:(
-                          This1.S::#from(builder ) ::#from(seqBuilder ) rcv89=(
-                            This1.S::#from(builder ) rcv90=This1.S.#from(builder:(
+                          This1.S::#from(builder ) ::#from(seqBuilder ) rcv103=(
+                            This1.S::#from(builder ) rcv104=This1.S.#from(builder:(
                               This1.S::#builder() b0=This1.S.#builder()
                               Void unused23=b0.#hash()
                               b0
                               ))
-                            rcv90.#from(seqBuilder:(
-                              This1.S::#from(builder ) ::#seqBuilder() b1=rcv90.#seqBuilder()
+                            rcv104.#from(seqBuilder:(
+                              This1.S::#from(builder ) ::#seqBuilder() b1=rcv104.#seqBuilder()
                               Void unused24=b1.#add(that:index.#inner())
                               b1
                               ))
                             )
-                          rcv89.#from(builder:(
-                            This1.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b2=rcv89.#builder()
+                          rcv103.#from(builder:(
+                            This1.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b2=rcv103.#builder()
                             b2
                             ))
                           ), intros:i.transitivelyNestedClasses())
@@ -26787,7 +26998,7 @@ Library #leftleft(Library that) exception This1.MetaGuard.ClassClash, This1.Meta
                 Void unused13=varacc0.inner(that:This1.Refactor.MoveImplementationSelector.#apply(that:ren.#inner().src(), of:ren.#inner().path(), to:ren.#inner().dest()).#leftleft(that:varacc0.#inner()))
                 
                 catch exception This1.MetaGuard err error (
-                  This1.Assert.ObservedBug::#from(builder ) rcv91=This1.Assert.ObservedBug.#from(builder:(
+                  This1.Assert.ObservedBug::#from(builder ) rcv105=This1.Assert.ObservedBug.#from(builder:(
                     This1.Assert.ObservedBug::#builder() b0=This1.Assert.ObservedBug.#builder()
                     Void unused14=b0.#P()
                     Void unused15=b0.#a()
@@ -26811,7 +27022,7 @@ Library #leftleft(Library that) exception This1.MetaGuard.ClassClash, This1.Meta
                     Void unused33=b0.#cRound()
                     b0
                     ))
-                  rcv91.#apply(that:err)
+                  rcv105.#apply(that:err)
                   )
                 
                 void
@@ -26893,7 +27104,7 @@ Library #leftleft(Library that) exception This1.MetaGuard.ClassClash, This1.Meta
     Void unused3=return varacc0.#inner()
     
     catch exception This1.MetaGuard.MemberUnavailable err error (
-      This1.Assert.CodeNotReachable::#from(builder ) rcv92=This1.Assert.CodeNotReachable.#from(builder:(
+      This1.Assert.CodeNotReachable::#from(builder ) rcv106=This1.Assert.CodeNotReachable.#from(builder:(
         This1.Assert.CodeNotReachable::#builder() b2=This1.Assert.CodeNotReachable.#builder()
         Void unused48=b2.#P()
         Void unused49=b2.#a()
@@ -26902,7 +27113,7 @@ Library #leftleft(Library that) exception This1.MetaGuard.ClassClash, This1.Meta
         Void unused52=b2.#2()
         b2
         ))
-      rcv92.#apply(that:err)
+      rcv106.#apply(that:err)
       )
     
     void
@@ -27127,13 +27338,13 @@ method toS() (
         )
       )
     Void unused2=return (
-      This0.Varres_$%18_0__92_0::#inner() ::#from(seqBuilder ) rcv0=varres.#inner().#from(seqBuilder:(
+      This0.Varres_$%18_0__92_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%18_0__92_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
         Void unused20=b3.#add(that:this.cause().#tilde())
         b3
         ))
-      rcv0.#from(builder:(
-        This0.Varres_$%18_0__92_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv0.#builder()
+      rcv14.#from(builder:(
+        This0.Varres_$%18_0__92_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv14.#builder()
         Void unused21=b4.#cSquare()
         b4
         ))

@@ -59,7 +59,7 @@ public class Plugin implements PluginType {
     Integer i1=ensureExtractInt32(cb1);
     Integer i2=ensureExtractInt32(cb2);
     return i1 ^ i2;
-  } 
+  }
   // <<
   @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
   public  Object MleftShiftInt32£xn1£xn2(Object cb1,Object cb2){
@@ -81,7 +81,7 @@ public class Plugin implements PluginType {
   public  Object MnotInt32£xn1(Object cb1){
     Integer i1=ensureExtractInt32(cb1);
     return ~i1 ;
-  } 
+  }
   //==
   @ActionType({ActionType.Type.Void,ActionType.Type.Library,ActionType.Type.Library})
   public  Resources.Void MifInt32EqualDo£xn1£xn2(Object cb1,Object cb2){
@@ -149,6 +149,27 @@ public class Plugin implements PluginType {
     catch (IOException e) {throw new Error(e);}
     return Resources.Void.instance;
   }
+
+  @ActionType({ActionType.Type.Library,ActionType.Type.Library})
+  public Object MfileReadDebug£xfileName(Object _fName){
+    String fName=ensureExtractStringU(_fName);
+    java.nio.file.Path p=Paths.get(fName);
+    try {
+      byte[] res = Files.readAllBytes(p);
+      return new String(res);
+      }
+    catch (IOException e) {throw new Error(e);}
+  }
+  @ActionType({ActionType.Type.Library,ActionType.Type.Library})
+  public Object MlocalToAbsolute£xfileName(Object _fName){
+    String fName=ensureExtractStringU(_fName);
+    java.nio.file.Path p= Paths.get(fName);
+    String s = p.toAbsolutePath().normalize().toString();
+    return s;
+  }
+
+
+
   @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
   public  Object MstringConcat£xs1£xs2(Object cb1,Object cb2){
     String s1=ensureExtractStringU(cb1);

@@ -32,6 +32,8 @@ public class TestGui {
     @Test
   public  void _00_00DeployGui() throws Throwable{
     TestHelper.configureForTest();
+    //new TestBase01()._01_00DeployAdamTowel01();
+    //new TestBase02()._02_00DeployAdamTowel02();
     Paths.get("localhost","GuiLib.L42").toFile().delete();
     L42.main(new String[]{"examples/DeployGui.L42"});
     Assert.assertTrue(Paths.get("localhost","GuiLib.L42").toFile().exists());
@@ -43,8 +45,8 @@ public class TestGui {
     L42.main(new String[]{"examples/UseGui.L42"});
     Assert.assertTrue(L42.record.toString().contains("#@Success@#"));
     }
-  
-   
- 
-  
+
+
+
+
   }

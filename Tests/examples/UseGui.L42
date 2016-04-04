@@ -1,0 +1,31 @@
+{reuse L42.is/AdamTowel02
+Gui:Load<<{reuse L42.is/GuiLib}
+C:{
+  list=Strings[S"4.png";S"2.png";S"bang.jpg";S"bang.jpg";S"bang.jpg"]
+  var S msg=S"<div id='Alpha'>"
+  Gui gui=Gui(id:S"a1")
+  initialState=S"
+      '<div id="Alpha"> </div>
+      '<font size="3" color="blue">Press the button to make stuff happens! </font>
+      '<button class="button" onclick="event42('Pressed!')">Click Me!</button>
+      "
+  Debug(initialState)
+  gui.open(
+    title:S"FIRST!"
+    basePath:Debug.localToAbsolute(fileName:S"examples/resources")++S"/"
+    //put here any folder with the right images in
+    body:initialState
+    x:600N
+    y:400N
+    )
+  with event in gui.events(), h in list.vals(stopOk:0N) (
+    Debug(S"#@ActionBefore:"++ msg)
+    msg++=S"<img src='"++h++S"' height='100' width='100'/>"
+    gui.set(msg++S"</div>", id:S"Alpha")
+    Debug(S"#@ActionAfter:"++ msg)
+    )
+  gui.close()
+  Debug(S"#@Success@#")
+  return ExitCode.normal()
+  }
+}

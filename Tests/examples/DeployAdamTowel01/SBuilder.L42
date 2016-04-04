@@ -1,5 +1,5 @@
 { _private(var Library _binaryRepr)//@private
- 
+
   read method Library binaryRepr() this._binaryRepr()
 
   mut method Void acc(Library that) this._binaryRepr(
@@ -11,9 +11,9 @@
     //@stringU
     //
     })
-  
+
   //NUMBERS:
-  
+
      mut method Void #0() this.acc({//@stringU
     //0
   }) mut method Void #1() this.acc({//@stringU
@@ -36,7 +36,7 @@
     //9
   })
     //LOWERCASE:
-    
+
      mut method Void #q() this.acc({//@stringU
     //q
   }) mut method Void #w() this.acc({//@stringU
@@ -90,7 +90,7 @@
   }) mut method Void #m() this.acc({//@stringU
     //m
   })
-  
+
   //UPPERCASE:
 
      mut method Void #Q() this.acc({//@stringU
@@ -149,7 +149,7 @@
     //%
   }) mut method Void #$() this.acc({//@stringU
     //$
-  })    
+  })
   //OPERATORS:
    mut method Void <() this.acc({//@stringU
     //<
@@ -172,7 +172,7 @@
   }) mut method Void |() this.acc({//@stringU
     //|
   })
-  
+
   //SYMBOLS- Parenthesis:
 
      mut method Void #oRound() this.acc({//@stringU
@@ -190,11 +190,11 @@
   }) mut method Void #dQuote() this.acc({//@stringU
     //"
   }) mut method Void #sQuote() this.acc({//@stringU
-    ////
+    //'
   }) mut method Void #hQuote() this.acc({//@stringU
     //`
   })
-  
+
   //SYMBOLS- Unused operators:
      mut method Void #equal() this.acc({//@stringU
     //=
@@ -217,7 +217,7 @@
   }) mut method Void #at() this.acc({//@stringU
     //\u0040
   }) mut method Void #backslash() this.acc({//@stringU
-    //\
+    //\u005C
   }) mut method Void #space() this.acc({//@stringU
     // 
   }) mut method Void #newline() this.acc({//@stringU

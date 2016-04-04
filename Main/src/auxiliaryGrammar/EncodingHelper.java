@@ -34,8 +34,8 @@ public class EncodingHelper{
     for(int i=0;i<s.length();i++){
       char c=s.charAt(i);
       if(c!='\\'){result.append(c);continue;}
-      if(i+5>=s.length()){throw Assertions.codeNotReachable("Better error here");}
-      if(s.charAt(i+1)!='u'){throw Assertions.codeNotReachable("Better error here");}
+      if(i+5>=s.length()){throw Assertions.codeNotReachable("Invalid string encoding:\n"+s);}
+      if(s.charAt(i+1)!='u'){throw Assertions.codeNotReachable("Invalid string encoding:\n"+s);}
       char uc = (char)Integer.parseInt( s.substring(i+2,i+6), 16 );
       result.append(uc);i=i+5;
       }

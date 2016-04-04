@@ -16,4 +16,34 @@
         )
       void
 
+  class method
+  S readFile(Concept.ToS fileName)
+    S.#from(binaryRepr:use Alu
+      check fileReadDebug(   fileName:fileName.toS().binaryRepr()  )
+      error S"Alu.fileReadDebug reading file:"[fileName]""
+      )
+
+  class method
+  S localToAbsolute(Concept.ToS fileName)
+    S.#from(binaryRepr:use Alu
+      check localToAbsolute(   fileName:fileName.toS().binaryRepr()  )
+      error S"Alu.fileReadDebug reading file:"[fileName]""
+      )
+
+  class method
+  Void test(Concept.ToS that, Concept.ToS expected,S message)(
+    sExpected=expected.toS()
+    given=that.toS()
+    if sExpected != given (
+      Debug(S"[FAIL] "[message]": "[given]" != "[expected]"")
+      )
+    else (
+      // message = given
+      Debug(S"[PASS] "[message]": "[given]"")
+      )
+    )
+
+  class method
+  Void test(Concept.ToS that, Concept.ToS expected)
+    Debug.test(that,expected:expected, message:S"")
   }
