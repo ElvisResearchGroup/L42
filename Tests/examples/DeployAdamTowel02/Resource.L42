@@ -1,0 +1,22 @@
+{
+ProvidedValueNotOfExpectedType:Message.$<<{<:Guard}
+class method Library(Any that) {
+  with that (
+    on Concept.Classable return this(that, clazz:that.classAny())
+    on Library return this(that,clazz:Library)
+    on Void return this(that,clazz:Void)
+    )
+  return this(that,clazz:Any)
+  }
+
+class method Library castTrait(){
+  T:{}
+  class method Any val()
+  class method T () {with val=this.val() (on T return val) error ProvidedValueNotOfExpectedType"" }
+   }
+class method Library(Any that, class Any clazz) (
+  trait=Refactor.Redirect(Path"T" to:clazz)<<this.castTrait()
+  error on MetaGuard Assert.CodeNotReachable"Resource usage of redirect failed"
+  SafeOperators.liftValue(that,selector:Selector"val()"  lib:trait)
+  )
+  }

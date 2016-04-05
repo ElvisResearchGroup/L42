@@ -1,5 +1,5 @@
 {reuse L42.is/AdamTowel02
-Resource:{class method Library (){
+GuiLib:{class method Library (){
   reuse L42.is/AdamTowel02
     Exported:{(S id)
       GuiPlugin:{//@plugin
@@ -100,7 +100,7 @@ Task: (
   Load.DeployLibrary(
     path:Path"Exported",
     url:Url"localhost/GuiLib.L42"
-    )<<Resource()
+    )<<GuiLib()
     )
 
 }

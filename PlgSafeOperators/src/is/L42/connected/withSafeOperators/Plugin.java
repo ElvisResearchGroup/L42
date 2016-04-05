@@ -261,4 +261,12 @@ public class Plugin implements PluginType{
       int exceptionN=ensureExtractInt32(_execptionN);
       return MakeMethod.addMethod(lib, path, selector, mdfs, exceptionN);
     }
+    @ActionType({ActionType.Type.Library,ActionType.Type.ImmAny,ActionType.Type.Library,ActionType.Type.Library})
+    public  Object MliftValue£xthat£xselector£xlib(Object _that,Object _selector, Object _lib){
+      ClassB lib=ensureExtractClassB(_lib);
+      MethodSelector selector=MethodSelector.parse(ensureExtractStringU(_selector));
+      ExpCore val=Revertable.doRevert(_that);//TODO: would go in loop for circular graphs?
+      return LiftValue.liftValue(val,  selector, lib);
+    }
+
   }

@@ -107,4 +107,9 @@
         exceptionN:exceptionN.binaryRepr()
         )
       error System.Guard.PluginFailure"SafeOperators.makeMethod(that,path,selector,mdfs,exceptionN)"
+   class method
+  Library liftValue(Any that, Selector selector, Library lib)
+      use  This
+      check liftValue(that,selector:selector.binaryRepr(), lib:lib)
+      error System.Guard.PluginFailure"SafeOperators.liftValue(that,selector,lib)"
   }

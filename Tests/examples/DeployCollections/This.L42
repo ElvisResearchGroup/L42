@@ -1,5 +1,5 @@
 {reuse L42.is/AdamTowel02
-Resource:{class method Library (){
+CollectionsLib:{class method Library (){
   reuse L42.is/AdamTowel02
   Collections:...
   }}
@@ -8,6 +8,6 @@ Task: (
   Load.DeployLibrary[
     Path"Collections",
     url:Url"localhost/Collections.L42"
-    ]<<Resource()
+    ]<<CollectionsLib()
     )
 }

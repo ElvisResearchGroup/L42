@@ -1,6 +1,6 @@
 {reuse L42.is/AdamTowel01
 
-Resource:{class method Library (){
+AdamTowel02:{class method Library (){
   reuse L42.is/AdamTowel01
   PostAction:... //should go in a patch nested class? to inject into Refactor?
   DefaultParameter:...//should go in a patch nested class? to inject into Refactor?
@@ -9,11 +9,12 @@ Resource:{class method Library (){
   Ontology:...
   ConceptMap:Use[Ontology.ontologicMap()]<<{interface method Load _Load()}
   Load:...
+  Resource:...
   Data:...
   Fix:...
   }}
 Task: {
-  r=Patch(Path"Fix")<<Resource()
+  r=Patch(Path"Fix")<<AdamTowel02()
   return DeployTowel(fileName:Url"localhost/AdamTowel02.L42")<<r
   }
 }
