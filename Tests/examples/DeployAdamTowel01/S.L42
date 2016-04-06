@@ -1,6 +1,7 @@
 { _private(Library _binaryRepr)
-<: Concept.ToS Concept.Equals Concept.Named//@private
+<: Concept.ToS Concept.Equals Concept.Named, Concept.Classable//@private
   method myName()GetMyName(This)
+  method classAny() This
 
   class method This #from(Library binaryRepr) This._private(_binaryRepr:binaryRepr)
 

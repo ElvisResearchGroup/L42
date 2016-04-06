@@ -46,7 +46,7 @@ GuiLib:{class method Library (){
           error void
           )
       method
-      Void set(S that,S id) {
+      Void set(S that,S id) {   //$('#Alpha').replaceWith('htmlstring')
         cmd=S"$('#"++This.jsEscape(id)
         ++S"').replaceWith('"++This.jsEscape(that)++S"');"
         x=this.executeJs(cmd)

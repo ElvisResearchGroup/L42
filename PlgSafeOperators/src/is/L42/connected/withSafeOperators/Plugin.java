@@ -23,6 +23,7 @@ import auxiliaryGrammar.Functions;
 import auxiliaryGrammar.Norm;
 import auxiliaryGrammar.Program;
 import coreVisitors.CloneVisitorWithProgram;
+import coreVisitors.From;
 import facade.Configuration;
 import facade.L42;
 import platformSpecific.fakeInternet.ActionType;
@@ -266,6 +267,7 @@ public class Plugin implements PluginType{
       ClassB lib=ensureExtractClassB(_lib);
       MethodSelector selector=MethodSelector.parse(ensureExtractStringU(_selector));
       ExpCore val=Revertable.doRevert(_that);//TODO: would go in loop for circular graphs?
+      val=From.from(val,Path.outer(Resources.getP().getInnerData().size()));
       return LiftValue.liftValue(val,  selector, lib);
     }
 

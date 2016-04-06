@@ -24,6 +24,7 @@ exception InvalidAction{
   acc:=Refactor.MakePrivateSelector(fresh of:p)<<acc
   //we do not need to refer to the action any more
   return acc
+  catch exception InvalidAction x exception x
   error on MetaGuard
     Assert.CodeNotReachable"PostAct.Action1"
   }

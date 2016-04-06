@@ -43,6 +43,20 @@ method S suffix() { //error on Normal
   return this.record()"Ph"
   }
 method Doc doc() this.record().docOf(path:Path"Doc")
+
+method Bool isInterface(){
+  str=this.allAsString()
+  if str==S"Void" (return Bool.false())
+  if str==S"Any" (return Bool.true())
+  if str==S"Library" (return Bool.false())
+  nc=this.referencedPath()
+  return nc.classKind().equals(\class._Interface())
+  }
+method Bool isPrimitive() (
+  str=this.allAsString()
+  str==S"Void" | str==S"Any" | str==S"Library"
+  )
+
 }
 
 

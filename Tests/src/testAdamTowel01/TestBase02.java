@@ -161,6 +161,17 @@ public class TestBase02 {
          "{\nmethod \nVoid c() }\n");
      }
 
+@Test
+   public  void _02_13AddToS() throws Throwable{
+     TestHelper.configureForTest();
+     //new TestBase01()._01_00DeployAdamTowel01();
+     //this._02_00DeployAdamTowel02();
+     L42.main(new String[]{"examples/testsForAdamTowel02/TestToS.L42"});
+     Assert.assertEquals(L42.record.toString(),
+         "20\n20\n20\n10\n10\n20\n10\n10\n");
+     }
+
+
   @Test
    public  void _02_101HelloWorld() throws Throwable{
      TestHelper.configureForTest();

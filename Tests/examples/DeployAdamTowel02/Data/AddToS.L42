@@ -1,4 +1,69 @@
-{//Just immK for now
+{
+
+//no need to generate thoseN, S is just the string
+//else, generated ones:
+//initial delegation
+class method Library<<(Library that) Use[that]<<this.toSTrait(Introspection(lib:that))
+
+class method Library toSTrait(Introspection.NestecClass that) {
+  state=that.state()
+  if state.isEmpty() (error S"TODO")
+  fs=state.left()
+  //base of induction
+  var Library lib={read method S baseToS(S rest) rest}
+  //accumulation
+  with fn in fs.selector().names().vals(), ft in fs.parameterTypes().vals() (
+    fSel=Selector.fromS(fn++S"()")
+    // with meth in that.methods().vals() (    if meth.selector()==that (...)      )//we may want to see if we need to add an #
+    lib:=PostAction(Selector"baseToS(rest)" of:Path"This"
+      action:this.action(f:fn, fSel:fSel, type:ft) deprecated:Selector"_baseToS(rest)")<<lib
+    lib:=Refactor.MakeSelectorPrivate(Selector"_baseToS(rest)" of:Path"This")<<lib
+    )
+  //final wrapping
+  return Refactor.MakeSelectorPrivate(Selector"baseToS(rest)" of:Path"This")<<Use[lib]<<{<:Concept.ToS
+    method toS() S"["[this.baseToS(rest:S"")]"]"
+    read method S baseToS(S rest)
+    }
+  }
+
+class method Library action(S f,Selector fSel,Introspection.Type type){
+  var Library action= this.selectAction(!type.isInterface(),this.mdf())
+  action:=Redirect(Path"T" to:pathOf(type))<<action
+  action:=Rename(Selector"fName()" to:fSel)<<action
+  action:=Use[action]<<Resource(f)
+  return action
+  }
+
+class method Library selectAction(Introspection.Mdf fMdf, Bool needClass){
+    if !needClass & fMdf.equals(\class._Readable()) (return {
+      read method S baseToS(S rest) {
+        res=S""[This()]":"[ this.fName().toS() ]""
+        if rest==S"" (return   res)
+        return res++S", "++res
+        }
+      class method S ()
+      T:{<:Concept.ToS}
+      read method read T fName()
+      })
+    else if !needClass & fMdf.equals(\class._Immutable()) (return {
+      read method S baseToS(S rest) {
+        res=S""[This()]":"[ this.fName().toS() ]""
+        if rest==S"" (return   res)
+        return res++S", "++res
+        }
+      class method S ()
+      T:{<:Concept.ToS}
+      read method T fName()
+      })
+      else error S"TODO: complete"
+    }
+
+print(fieldName,class type, val) fieldName :val.toS()
+print(fieldName,interface type, val) fieldName:val.classAny().toS()++val.toS()
+
+fields:
+
+
   UncoherentState:Message.$<<{<:MetaGuard}
   PrivateState:Message.$<<{<:MetaGuard}
   class method
