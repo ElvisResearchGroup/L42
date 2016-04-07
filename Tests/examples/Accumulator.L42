@@ -4,8 +4,8 @@ Library( class Any itType, class Any elemType, Library better)
   Use[better]< (Adapt[Name"IT" into:Name(itType);Name"ET" into:Name(elemType)]<{_new()
     IT:{
       mut method
-      Void #next() exception Void 
-      
+      Void #next() exception Void
+
       read method
       Void #checkEnd()
 

@@ -8,7 +8,6 @@ import ast.Ast.Position;
 import ast.Ast.SignalKind;
 import ast.Ast.Type;
 import ast.Ast.VarDec;
-import lombok.NonNull;
 
 public interface Expression extends Ast {
 

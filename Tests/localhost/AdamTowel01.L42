@@ -14,28 +14,28 @@ Library failure() {//@exitStatus
 }}
 Bool:{<:This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Named
 class method //@private
-mut This0 #mutK__20_0(Library binaryRepr__20_0) 
+mut This0 #mutK__22_0(Library binaryRepr__22_0) 
 class method //@private
-This0 #apply__21_0(Library binaryRepr) This0.#mutK__20_0(binaryRepr__20_0:binaryRepr)
+This0 #apply__23_0(Library binaryRepr) This0.#mutK__22_0(binaryRepr__22_0:binaryRepr)
 mut method //@private
-Library #binaryRepr__20_0() 
+Library #binaryRepr__22_0() 
 read method //@private
-Library binaryRepr__20_0() 
+Library binaryRepr__22_0() 
 method myName() This1.GetMyName.#apply(that:This0)
 method 
-Void #checkTrue() exception Void use This1.Alu check ifInt32EqualDo(n1:this.binaryRepr__20_0(), n2:This1.N.#from(builder:(
+Void #checkTrue() exception Void use This1.Alu check ifInt32EqualDo(n1:this.binaryRepr__22_0(), n2:This1.N.#from(builder:(
   This1.N::#builder() b=This1.N.#builder()
   Void unused=b.#0()
   b
   )).binaryRepr()) exception void
 class method 
-This0 true() This0.#apply__21_0(binaryRepr:This1.N.#from(builder:(
+This0 true() This0.#apply__23_0(binaryRepr:This1.N.#from(builder:(
   This1.N::#builder() b=This1.N.#builder()
   Void unused=b.#1()
   b
   )).binaryRepr())
 class method 
-This0 false() This0.#apply__21_0(binaryRepr:This1.N.#from(builder:(
+This0 false() This0.#apply__23_0(binaryRepr:This1.N.#from(builder:(
   This1.N::#builder() b=This1.N.#builder()
   Void unused=b.#0()
   b
@@ -298,27 +298,27 @@ Any parseError(This1.S that) This1.S.#from(builder:(
   ))}
 N:{<:This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Named
 class method //@private
-mut This0 #mutK__22_0(Library _binaryRepr__22_0) 
+mut This0 #mutK__24_0(Library _binaryRepr__24_0) 
 class method //@private
-This0 #apply__23_0(Library _binaryRepr) This0.#mutK__22_0(_binaryRepr__22_0:_binaryRepr)
+This0 #apply__25_0(Library _binaryRepr) This0.#mutK__24_0(_binaryRepr__24_0:_binaryRepr)
 mut method //@private
-Library #_binaryRepr__22_0() 
+Library #_binaryRepr__24_0() 
 read method //@private
-Library _binaryRepr__22_0() 
+Library _binaryRepr__24_0() 
 method myName() This1.GetMyName.#apply(that:This0)
 class method 
 This0 fromS(This1.Concept.ToS that) (
   This1.Concept.ToS::toS() s=that.toS()
-  This1.N.#apply__23_0(_binaryRepr:use This1.Alu check stringToInt32(that:s.binaryRepr()) error This0.parseError(that:s))
+  This1.N.#apply__25_0(_binaryRepr:use This1.Alu check stringToInt32(that:s.binaryRepr()) error This0.parseError(that:s))
   )
 class method 
-This0 #from(Library binaryRepr) This1.N.#apply__23_0(_binaryRepr:binaryRepr)
+This0 #from(Library binaryRepr) This1.N.#apply__25_0(_binaryRepr:binaryRepr)
 method 
-Library binaryRepr() this._binaryRepr__22_0()
+Library binaryRepr() this._binaryRepr__24_0()
 class method 
 mut This1.S.SBuilder #builder() This1.S.SBuilder.empty()
 class method 
-This1.N #from(This1.S.SBuilder builder) This1.N.#apply__23_0(_binaryRepr:use This1.Alu check stringToInt32(that:builder.binaryRepr()) error This0.parseError(that:This1.S.#from(builder:builder)))
+This1.N #from(This1.S.SBuilder builder) This1.N.#apply__25_0(_binaryRepr:use This1.Alu check stringToInt32(that:builder.binaryRepr()) error This0.parseError(that:This1.S.#from(builder:builder)))
 class method 
 Any parseError(This1.S that) This1.S.#from(builder:(
   This1.S::#builder() b=This1.S.#builder()
@@ -378,13 +378,13 @@ Any parseError(This1.S that) This1.S.#from(builder:(
   ))
 method toS() This1.S.#from(binaryRepr:use This1.Alu check int32ToString(that:this.binaryRepr()) error void)
 method 
-This1.N #plus(This1.N that) This1.N.#apply__23_0(_binaryRepr:use This1.Alu check sumInt32(n1:this.binaryRepr(), n2:that.binaryRepr()) error void)
+This1.N #plus(This1.N that) This1.N.#apply__25_0(_binaryRepr:use This1.Alu check sumInt32(n1:this.binaryRepr(), n2:that.binaryRepr()) error void)
 method 
-This1.N #less(This1.N that) This1.N.#apply__23_0(_binaryRepr:use This1.Alu check subInt32(n1:this.binaryRepr(), n2:that.binaryRepr()) error void)
+This1.N #less(This1.N that) This1.N.#apply__25_0(_binaryRepr:use This1.Alu check subInt32(n1:this.binaryRepr(), n2:that.binaryRepr()) error void)
 method 
-This1.N #times(This1.N that) This1.N.#apply__23_0(_binaryRepr:use This1.Alu check mulInt32(n1:this.binaryRepr(), n2:that.binaryRepr()) error void)
+This1.N #times(This1.N that) This1.N.#apply__25_0(_binaryRepr:use This1.Alu check mulInt32(n1:this.binaryRepr(), n2:that.binaryRepr()) error void)
 method 
-This1.N #divide(This1.N that) This1.N.#apply__23_0(_binaryRepr:use This1.Alu check divInt32(n1:this.binaryRepr(), n2:that.binaryRepr()) error void)
+This1.N #divide(This1.N that) This1.N.#apply__25_0(_binaryRepr:use This1.Alu check divInt32(n1:this.binaryRepr(), n2:that.binaryRepr()) error void)
 method 
 This1.Bool #equalequal(This0 that) (
   Void unused=(
@@ -531,20 +531,20 @@ mut method
 This2.N #inner() 
 read method 
 This2.N inner() }
-class method //@private
-mut This0 #mutK__24_0(Library _binaryRepr__24_0) 
-class method //@private
-This0 _private__25_0(Library _binaryRepr) This0.#mutK__24_0(_binaryRepr__24_0:_binaryRepr)
-mut method //@private
-Library #_binaryRepr__24_0() 
-read method //@private
-Library _binaryRepr__24_0() 
+class method // will be private
+mut This0 #mutK(Library _binaryRepr) 
+class method // will be private
+This0 _private(Library _binaryRepr) This0.#mutK(_binaryRepr:_binaryRepr)
+mut method // will be private
+Library #_binaryRepr() 
+read method // will be private
+Library _binaryRepr() 
 method myName() This1.GetMyName.#apply(that:This0)
 method classAny() This0
 class method 
-This0 #from(Library binaryRepr) This0._private__25_0(_binaryRepr:binaryRepr)
+This0 #from(Library binaryRepr) This0._private(_binaryRepr:binaryRepr)
 method 
-Library binaryRepr() this._binaryRepr__24_0()
+Library binaryRepr() this._binaryRepr()
 method toS() this
 method 
 This1.S #plusplus(This1.S that) This1.S.#from(binaryRepr:use This1.Alu check stringConcat(s1:this.binaryRepr(), s2:that.toS().binaryRepr()) error void)
@@ -790,7 +790,7 @@ This1.Bool isASCIIUpperCase(This1.N that) This1.S.#from(builder:(
   b
   )).contains(that:this.#apply(that:that))
 method 
-This1.N size() This1.N.#apply__23_0(_binaryRepr:use This1.Alu check stringSize(that:this.binaryRepr()) error void)
+This1.N size() This1.N.#apply__25_0(_binaryRepr:use This1.Alu check stringSize(that:this.binaryRepr()) error void)
 class method 
 This1.S doubleQuote() (
   This1.S::#from(builder ) rcv=This1.S.#from(builder:(
@@ -1286,7 +1286,7 @@ Void #newline() this.acc(that:{//@stringU
 //
 })}
 class method 
-This0 #from(This1.S.SBuilder builder) This0._private__25_0(_binaryRepr:builder.binaryRepr())
+This0 #from(This1.S.SBuilder builder) This0._private(_binaryRepr:builder.binaryRepr())
 class method 
 mut This1.S.SBuilder #builder() This1.S.SBuilder.empty()}
 Debug:{
@@ -2136,7 +2136,7 @@ Guard:{// exception as Guard bureocracy, error as Guard detection
 interface <:This1.Message//all other guards should implement this one
 
 Operation:{<:This2.Guard, This2.Message
-Varres_$%0_0__58_0://@private
+Varres__58_0://@private
 {
 class method 
 mut This0 #mutK(This3.S inner) 
@@ -2211,7 +2211,7 @@ method toS() (
         )
       )
     This2.S res=This0.kind()
-    mut This0.Varres_$%0_0__58_0 varres=This0.Varres_$%0_0__58_0.#apply(inner:res)
+    mut This0.Varres__58_0 varres=This0.Varres__58_0.#apply(inner:res)
     Void unused1=(
       This0::toS() ::this::text() ::#bangequal(that ) cond0=this.text().#bangequal(that:This2.S.#from(builder:(
         This2.S::#builder() b=This2.S.#builder()
@@ -2250,13 +2250,13 @@ method toS() (
         )
       )
     Void unused2=return (
-      This0.Varres_$%0_0__58_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
-        This0.Varres_$%0_0__58_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
+      This0.Varres__58_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
+        This0.Varres__58_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
         Void unused20=b3.#add(that:this.cause().#tilde())
         b3
         ))
       rcv14.#from(builder:(
-        This0.Varres_$%0_0__58_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv14.#builder()
+        This0.Varres__58_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv14.#builder()
         Void unused21=b4.#cSquare()
         b4
         ))
@@ -2305,7 +2305,7 @@ mut This2.S.SConcat #seqBuilder() This2.S.SConcat.#apply(old:this.text(), accumu
   b
   )))}
 Parameter:{<:This2.Guard, This2.Message
-Varres_$%1_0__59_0://@private
+Varres__59_0://@private
 {
 class method 
 mut This0 #mutK(This3.S inner) 
@@ -2380,7 +2380,7 @@ method toS() (
         )
       )
     This2.S res=This0.kind()
-    mut This0.Varres_$%1_0__59_0 varres=This0.Varres_$%1_0__59_0.#apply(inner:res)
+    mut This0.Varres__59_0 varres=This0.Varres__59_0.#apply(inner:res)
     Void unused1=(
       This0::toS() ::this::text() ::#bangequal(that ) cond0=this.text().#bangequal(that:This2.S.#from(builder:(
         This2.S::#builder() b=This2.S.#builder()
@@ -2419,13 +2419,13 @@ method toS() (
         )
       )
     Void unused2=return (
-      This0.Varres_$%1_0__59_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
-        This0.Varres_$%1_0__59_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
+      This0.Varres__59_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
+        This0.Varres__59_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
         Void unused20=b3.#add(that:this.cause().#tilde())
         b3
         ))
       rcv14.#from(builder:(
-        This0.Varres_$%1_0__59_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv14.#builder()
+        This0.Varres__59_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv14.#builder()
         Void unused21=b4.#cSquare()
         b4
         ))
@@ -2474,7 +2474,7 @@ mut This2.S.SConcat #seqBuilder() This2.S.SConcat.#apply(old:this.text(), accumu
   b
   )))}
 Precondition:{<:This2.Guard, This2.Message
-Varres_$%2_0__60_0://@private
+Varres__60_0://@private
 {
 class method 
 mut This0 #mutK(This3.S inner) 
@@ -2549,7 +2549,7 @@ method toS() (
         )
       )
     This2.S res=This0.kind()
-    mut This0.Varres_$%2_0__60_0 varres=This0.Varres_$%2_0__60_0.#apply(inner:res)
+    mut This0.Varres__60_0 varres=This0.Varres__60_0.#apply(inner:res)
     Void unused1=(
       This0::toS() ::this::text() ::#bangequal(that ) cond0=this.text().#bangequal(that:This2.S.#from(builder:(
         This2.S::#builder() b=This2.S.#builder()
@@ -2588,13 +2588,13 @@ method toS() (
         )
       )
     Void unused2=return (
-      This0.Varres_$%2_0__60_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
-        This0.Varres_$%2_0__60_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
+      This0.Varres__60_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
+        This0.Varres__60_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
         Void unused20=b3.#add(that:this.cause().#tilde())
         b3
         ))
       rcv14.#from(builder:(
-        This0.Varres_$%2_0__60_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv14.#builder()
+        This0.Varres__60_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv14.#builder()
         Void unused21=b4.#cSquare()
         b4
         ))
@@ -2647,7 +2647,7 @@ System:{
 Guard:{//<:Outer.Guard soon (remove "interface" for a bad translation bug: This1_System_Guard is not abstract and does not override abstract method MtoS()
 interface <:This2.Guard
 PluginFailure:{<:This2.Guard, This3.Message
-Varres_$%3_0__61_0://@private
+Varres__61_0://@private
 {
 class method 
 mut This0 #mutK(This4.S inner) 
@@ -2722,7 +2722,7 @@ method toS() (
         )
       )
     This3.S res=This0.kind()
-    mut This0.Varres_$%3_0__61_0 varres=This0.Varres_$%3_0__61_0.#apply(inner:res)
+    mut This0.Varres__61_0 varres=This0.Varres__61_0.#apply(inner:res)
     Void unused1=(
       This0::toS() ::this::text() ::#bangequal(that ) cond0=this.text().#bangequal(that:This3.S.#from(builder:(
         This3.S::#builder() b=This3.S.#builder()
@@ -2761,13 +2761,13 @@ method toS() (
         )
       )
     Void unused2=return (
-      This0.Varres_$%3_0__61_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
-        This0.Varres_$%3_0__61_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
+      This0.Varres__61_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
+        This0.Varres__61_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
         Void unused20=b3.#add(that:this.cause().#tilde())
         b3
         ))
       rcv14.#from(builder:(
-        This0.Varres_$%3_0__61_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv14.#builder()
+        This0.Varres__61_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv14.#builder()
         Void unused21=b4.#cSquare()
         b4
         ))
@@ -2817,7 +2817,7 @@ mut This3.S.SConcat #seqBuilder() This3.S.SConcat.#apply(old:this.text(), accumu
   )))}}}
 Assert:{interface <:This1.Message
 NotImplementedYet:{<:This1, This2.Message
-Varres_$%4_0__62_0://@private
+Varres__62_0://@private
 {
 class method 
 mut This0 #mutK(This3.S inner) 
@@ -2892,7 +2892,7 @@ method toS() (
         )
       )
     This2.S res=This0.kind()
-    mut This0.Varres_$%4_0__62_0 varres=This0.Varres_$%4_0__62_0.#apply(inner:res)
+    mut This0.Varres__62_0 varres=This0.Varres__62_0.#apply(inner:res)
     Void unused1=(
       This0::toS() ::this::text() ::#bangequal(that ) cond0=this.text().#bangequal(that:This2.S.#from(builder:(
         This2.S::#builder() b=This2.S.#builder()
@@ -2931,13 +2931,13 @@ method toS() (
         )
       )
     Void unused2=return (
-      This0.Varres_$%4_0__62_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
-        This0.Varres_$%4_0__62_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
+      This0.Varres__62_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
+        This0.Varres__62_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
         Void unused20=b3.#add(that:this.cause().#tilde())
         b3
         ))
       rcv14.#from(builder:(
-        This0.Varres_$%4_0__62_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv14.#builder()
+        This0.Varres__62_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv14.#builder()
         Void unused21=b4.#cSquare()
         b4
         ))
@@ -2986,7 +2986,7 @@ mut This2.S.SConcat #seqBuilder() This2.S.SConcat.#apply(old:this.text(), accumu
   b
   )))}
 ObservedBug:{<:This1, This2.Message
-Varres_$%5_0__63_0://@private
+Varres__63_0://@private
 {
 class method 
 mut This0 #mutK(This3.S inner) 
@@ -3061,7 +3061,7 @@ method toS() (
         )
       )
     This2.S res=This0.kind()
-    mut This0.Varres_$%5_0__63_0 varres=This0.Varres_$%5_0__63_0.#apply(inner:res)
+    mut This0.Varres__63_0 varres=This0.Varres__63_0.#apply(inner:res)
     Void unused1=(
       This0::toS() ::this::text() ::#bangequal(that ) cond0=this.text().#bangequal(that:This2.S.#from(builder:(
         This2.S::#builder() b=This2.S.#builder()
@@ -3100,13 +3100,13 @@ method toS() (
         )
       )
     Void unused2=return (
-      This0.Varres_$%5_0__63_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
-        This0.Varres_$%5_0__63_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
+      This0.Varres__63_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
+        This0.Varres__63_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
         Void unused20=b3.#add(that:this.cause().#tilde())
         b3
         ))
       rcv14.#from(builder:(
-        This0.Varres_$%5_0__63_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv14.#builder()
+        This0.Varres__63_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv14.#builder()
         Void unused21=b4.#cSquare()
         b4
         ))
@@ -3155,7 +3155,7 @@ mut This2.S.SConcat #seqBuilder() This2.S.SConcat.#apply(old:this.text(), accumu
   b
   )))}
 CodeNotReachable:{<:This1, This2.Message
-Varres_$%6_0__64_0://@private
+Varres__64_0://@private
 {
 class method 
 mut This0 #mutK(This3.S inner) 
@@ -3230,7 +3230,7 @@ method toS() (
         )
       )
     This2.S res=This0.kind()
-    mut This0.Varres_$%6_0__64_0 varres=This0.Varres_$%6_0__64_0.#apply(inner:res)
+    mut This0.Varres__64_0 varres=This0.Varres__64_0.#apply(inner:res)
     Void unused1=(
       This0::toS() ::this::text() ::#bangequal(that ) cond0=this.text().#bangequal(that:This2.S.#from(builder:(
         This2.S::#builder() b=This2.S.#builder()
@@ -3269,13 +3269,13 @@ method toS() (
         )
       )
     Void unused2=return (
-      This0.Varres_$%6_0__64_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
-        This0.Varres_$%6_0__64_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
+      This0.Varres__64_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
+        This0.Varres__64_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
         Void unused20=b3.#add(that:this.cause().#tilde())
         b3
         ))
       rcv14.#from(builder:(
-        This0.Varres_$%6_0__64_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv14.#builder()
+        This0.Varres__64_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv14.#builder()
         Void unused21=b4.#cSquare()
         b4
         ))
@@ -3324,7 +3324,7 @@ mut This2.S.SConcat #seqBuilder() This2.S.SConcat.#apply(old:this.text(), accumu
   b
   )))}
 AssertMessage:{<:This1, This2.Message
-Varres_$%7_0__65_0://@private
+Varres__65_0://@private
 {
 class method 
 mut This0 #mutK(This3.S inner) 
@@ -3399,7 +3399,7 @@ method toS() (
         )
       )
     This2.S res=This0.kind()
-    mut This0.Varres_$%7_0__65_0 varres=This0.Varres_$%7_0__65_0.#apply(inner:res)
+    mut This0.Varres__65_0 varres=This0.Varres__65_0.#apply(inner:res)
     Void unused1=(
       This0::toS() ::this::text() ::#bangequal(that ) cond0=this.text().#bangequal(that:This2.S.#from(builder:(
         This2.S::#builder() b=This2.S.#builder()
@@ -3438,13 +3438,13 @@ method toS() (
         )
       )
     Void unused2=return (
-      This0.Varres_$%7_0__65_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
-        This0.Varres_$%7_0__65_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
+      This0.Varres__65_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
+        This0.Varres__65_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
         Void unused20=b3.#add(that:this.cause().#tilde())
         b3
         ))
       rcv14.#from(builder:(
-        This0.Varres_$%7_0__65_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv14.#builder()
+        This0.Varres__65_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv14.#builder()
         Void unused21=b4.#cSquare()
         b4
         ))
@@ -3494,7 +3494,7 @@ mut This2.S.SConcat #seqBuilder() This2.S.SConcat.#apply(old:this.text(), accumu
   )))}}
 Collections:{
 IterationFailure:{<:This2.Guard, This2.Message
-Varres_$%8_0__66_0://@private
+Varres__66_0://@private
 {
 class method 
 mut This0 #mutK(This3.S inner) 
@@ -3569,7 +3569,7 @@ method toS() (
         )
       )
     This2.S res=This0.kind()
-    mut This0.Varres_$%8_0__66_0 varres=This0.Varres_$%8_0__66_0.#apply(inner:res)
+    mut This0.Varres__66_0 varres=This0.Varres__66_0.#apply(inner:res)
     Void unused1=(
       This0::toS() ::this::text() ::#bangequal(that ) cond0=this.text().#bangequal(that:This2.S.#from(builder:(
         This2.S::#builder() b=This2.S.#builder()
@@ -3608,13 +3608,13 @@ method toS() (
         )
       )
     Void unused2=return (
-      This0.Varres_$%8_0__66_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
-        This0.Varres_$%8_0__66_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
+      This0.Varres__66_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
+        This0.Varres__66_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
         Void unused20=b3.#add(that:this.cause().#tilde())
         b3
         ))
       rcv14.#from(builder:(
-        This0.Varres_$%8_0__66_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv14.#builder()
+        This0.Varres__66_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv14.#builder()
         Void unused21=b4.#cSquare()
         b4
         ))
@@ -7808,7 +7808,7 @@ Library #leftleft(Library that) This1.SafeOperatorsAccess.compose(left:This1.Saf
 class method 
 Library enumTrait() {
 ParseFail:{<:This3.Guard.ParseFail, This3.Message
-Varres_$%9_0__71_0://@private
+Varres__71_0://@private
 {
 class method 
 mut This0 #mutK(This4.S inner) 
@@ -7883,7 +7883,7 @@ method toS() (
         )
       )
     This3.S res=This0.kind()
-    mut This0.Varres_$%9_0__71_0 varres=This0.Varres_$%9_0__71_0.#apply(inner:res)
+    mut This0.Varres__71_0 varres=This0.Varres__71_0.#apply(inner:res)
     Void unused1=(
       This0::toS() ::this::text() ::#bangequal(that ) cond0=this.text().#bangequal(that:This3.S.#from(builder:(
         This3.S::#builder() b=This3.S.#builder()
@@ -7922,13 +7922,13 @@ method toS() (
         )
       )
     Void unused2=return (
-      This0.Varres_$%9_0__71_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
-        This0.Varres_$%9_0__71_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
+      This0.Varres__71_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
+        This0.Varres__71_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
         Void unused20=b3.#add(that:this.cause().#tilde())
         b3
         ))
       rcv14.#from(builder:(
-        This0.Varres_$%9_0__71_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv14.#builder()
+        This0.Varres__71_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv14.#builder()
         Void unused21=b4.#cSquare()
         b4
         ))
@@ -17094,7 +17094,7 @@ Mdf:{//Data is more than Solid, and Liquid, Gas, Plasma can be good methafores
 <:This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable, This2.Concept.Named, This2.Concept.ToS//may be Parsable?
 
 ParseFail:{<:This3.Guard.ParseFail, This3.Message
-Varres_$%9_0__81_0://@private
+Varres__81_0://@private
 {
 class method 
 mut This0 #mutK(This4.S inner) 
@@ -17169,7 +17169,7 @@ method toS() (
         )
       )
     This3.S res=This0.kind()
-    mut This0.Varres_$%9_0__81_0 varres=This0.Varres_$%9_0__81_0.#apply(inner:res)
+    mut This0.Varres__81_0 varres=This0.Varres__81_0.#apply(inner:res)
     Void unused1=(
       This0::toS() ::this::text() ::#bangequal(that ) cond0=this.text().#bangequal(that:This3.S.#from(builder:(
         This3.S::#builder() b=This3.S.#builder()
@@ -17208,13 +17208,13 @@ method toS() (
         )
       )
     Void unused2=return (
-      This0.Varres_$%9_0__81_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
-        This0.Varres_$%9_0__81_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
+      This0.Varres__81_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
+        This0.Varres__81_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
         Void unused20=b3.#add(that:this.cause().#tilde())
         b3
         ))
       rcv14.#from(builder:(
-        This0.Varres_$%9_0__81_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv14.#builder()
+        This0.Varres__81_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv14.#builder()
         Void unused21=b4.#cSquare()
         b4
         ))
@@ -18509,7 +18509,7 @@ MethodKind:{//Data is more than Solid, and Liquid, Gas, Plasma can be good metha
 <:This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable, This2.Concept.Named, This2.Concept.ToS//may be Parsable?
 
 ParseFail:{<:This3.Guard.ParseFail, This3.Message
-Varres_$%9_0__82_0://@private
+Varres__82_0://@private
 {
 class method 
 mut This0 #mutK(This4.S inner) 
@@ -18584,7 +18584,7 @@ method toS() (
         )
       )
     This3.S res=This0.kind()
-    mut This0.Varres_$%9_0__82_0 varres=This0.Varres_$%9_0__82_0.#apply(inner:res)
+    mut This0.Varres__82_0 varres=This0.Varres__82_0.#apply(inner:res)
     Void unused1=(
       This0::toS() ::this::text() ::#bangequal(that ) cond0=this.text().#bangequal(that:This3.S.#from(builder:(
         This3.S::#builder() b=This3.S.#builder()
@@ -18623,13 +18623,13 @@ method toS() (
         )
       )
     Void unused2=return (
-      This0.Varres_$%9_0__82_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
-        This0.Varres_$%9_0__82_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
+      This0.Varres__82_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
+        This0.Varres__82_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
         Void unused20=b3.#add(that:this.cause().#tilde())
         b3
         ))
       rcv14.#from(builder:(
-        This0.Varres_$%9_0__82_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv14.#builder()
+        This0.Varres__82_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv14.#builder()
         Void unused21=b4.#cSquare()
         b4
         ))
@@ -19911,7 +19911,7 @@ ClassKind:{//Data is more than Solid, and Liquid, Gas, Plasma can be good methaf
 <:This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable, This2.Concept.Named, This2.Concept.ToS//may be Parsable?
 
 ParseFail:{<:This3.Guard.ParseFail, This3.Message
-Varres_$%9_0__83_0://@private
+Varres__83_0://@private
 {
 class method 
 mut This0 #mutK(This4.S inner) 
@@ -19986,7 +19986,7 @@ method toS() (
         )
       )
     This3.S res=This0.kind()
-    mut This0.Varres_$%9_0__83_0 varres=This0.Varres_$%9_0__83_0.#apply(inner:res)
+    mut This0.Varres__83_0 varres=This0.Varres__83_0.#apply(inner:res)
     Void unused1=(
       This0::toS() ::this::text() ::#bangequal(that ) cond0=this.text().#bangequal(that:This3.S.#from(builder:(
         This3.S::#builder() b=This3.S.#builder()
@@ -20025,13 +20025,13 @@ method toS() (
         )
       )
     Void unused2=return (
-      This0.Varres_$%9_0__83_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
-        This0.Varres_$%9_0__83_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
+      This0.Varres__83_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
+        This0.Varres__83_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
         Void unused20=b3.#add(that:this.cause().#tilde())
         b3
         ))
       rcv14.#from(builder:(
-        This0.Varres_$%9_0__83_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv14.#builder()
+        This0.Varres__83_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv14.#builder()
         Void unused21=b4.#cSquare()
         b4
         ))
@@ -21326,7 +21326,7 @@ TypeKind:{//Data is more than Solid, and Liquid, Gas, Plasma can be good methafo
 <:This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable, This2.Concept.Named, This2.Concept.ToS//may be Parsable?
 
 ParseFail:{<:This3.Guard.ParseFail, This3.Message
-Varres_$%9_0__84_0://@private
+Varres__84_0://@private
 {
 class method 
 mut This0 #mutK(This4.S inner) 
@@ -21401,7 +21401,7 @@ method toS() (
         )
       )
     This3.S res=This0.kind()
-    mut This0.Varres_$%9_0__84_0 varres=This0.Varres_$%9_0__84_0.#apply(inner:res)
+    mut This0.Varres__84_0 varres=This0.Varres__84_0.#apply(inner:res)
     Void unused1=(
       This0::toS() ::this::text() ::#bangequal(that ) cond0=this.text().#bangequal(that:This3.S.#from(builder:(
         This3.S::#builder() b=This3.S.#builder()
@@ -21440,13 +21440,13 @@ method toS() (
         )
       )
     Void unused2=return (
-      This0.Varres_$%9_0__84_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
-        This0.Varres_$%9_0__84_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
+      This0.Varres__84_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
+        This0.Varres__84_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
         Void unused20=b3.#add(that:this.cause().#tilde())
         b3
         ))
       rcv14.#from(builder:(
-        This0.Varres_$%9_0__84_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv14.#builder()
+        This0.Varres__84_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv14.#builder()
         Void unused21=b4.#cSquare()
         b4
         ))
@@ -26167,6 +26167,18 @@ mut method
 Library #inner() 
 read method 
 Library inner() }
+Varres0__87_0://@private
+{
+class method 
+mut This0 #mutK(Library inner) 
+class method 
+mut This0 #apply(Library inner) This0.#mutK(inner:inner)
+mut method 
+Void inner(Library that) 
+mut method 
+Library #inner() 
+read method 
+Library inner() }
 class method //@private
 mut This0 #mutK__48_0(This1.Libs myLibs__48_0) 
 class method //@private
@@ -26443,7 +26455,80 @@ Library #leftleft(Library that) exception This2.MetaGuard.ClassClash, This2.Meta
   }
   )
 method 
-This0 #plusplus(This0 that) This0.#apply__49_0(myLibs:this.myLibs__48_0().#plusplus(that:that.myLibs__48_0()))})}
+This0 #plusplus(This0 that) This0.#apply__49_0(myLibs:this.myLibs__48_0().#plusplus(that:that.myLibs__48_0()))
+method 
+Library foldLeft(Library resolver) exception This2.MetaGuard.ClassClash, This2.MetaGuard.MethodClash (
+  Void unused=(
+    Void unused0=(
+      This0::myLibs__48_0() ::isEmpty() cond=this.myLibs__48_0().isEmpty()
+      (
+        Void unused3=cond.#checkTrue()
+        
+        catch exception Void catched0 void
+        
+        return {}
+        )
+      )
+    Library res=this.myLibs__48_0().left()
+    mut This0.Varres0__87_0 varres0=This0.Varres0__87_0.#apply(inner:res)
+    Void unused1=(
+      This0::myLibs__48_0() ::withoutLeft() ::vals() libi=this.myLibs__48_0().withoutLeft().vals()
+      (
+        Void unused4=(
+          Void unused5=(
+            Void unused6=loop (
+              Void unused7=libi.#next()
+              
+              catch exception Void catched2 (
+                Void unused8=(
+                  Void unused9=libi.#checkEnd()
+                  
+                  catch exception Void catched3 void
+                  
+                  void
+                  )
+                exception void
+                )
+              
+              varres0.inner(that:This0.#from(seqBuilder:(
+                This0::#seqBuilder() b=This0.#seqBuilder()
+                Void unused10=b.#add(that:varres0.#inner())
+                Void unused11=b.#add(that:libi.#inner())
+                b
+                )).#leftleft(that:resolver))
+              )
+            
+            catch exception Void catched6 void
+            
+            void
+            )
+          
+          catch exception Any propagated (
+            Void unused12=libi.#close()
+            exception propagated
+            )
+          
+          void
+          )
+        
+        catch return Library propagated0 (
+          Void unused13=libi.#close()
+          return propagated0
+          )
+        
+        libi.#close()
+        )
+      )
+    Void unused2=return varres0.#inner()
+    void
+    )
+  
+  catch return Library result result
+  
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
+  }
+  )})}
 Extends:{//members of each produced class
 <:This1.PreferentialComposition.$, This1.PreferentialComposition.$
 method solveConflict(that location ) (
@@ -26464,7 +26549,7 @@ method solveConflict(that location ) (
   //CurlyBlock-Should be unreachable code
   }
   )
-Varacc_$%12_0__87_0://@private
+Varacc__88_0://@private
 {
 class method 
 mut This0 #mutK(Library inner) 
@@ -26476,7 +26561,19 @@ mut method
 Library #inner() 
 read method 
 Library inner() }
-Varlibi_$%13_0__88_0://@private
+Varlibi__89_0://@private
+{
+class method 
+mut This0 #mutK(Library inner) 
+class method 
+mut This0 #apply(Library inner) This0.#mutK(inner:inner)
+mut method 
+Void inner(Library that) 
+mut method 
+Library #inner() 
+read method 
+Library inner() }
+Varres0__90_0://@private
 {
 class method 
 mut This0 #mutK(Library inner) 
@@ -26491,7 +26588,7 @@ Library inner() }
 class method //@private
 mut This0 #mutK_$%10_0__50_0(This1.PreferentialComposition.Libs myLibs_$%10_0__50_0) 
 class method //@private
-This0 #apply_$%11_0__51_0(This1.PreferentialComposition.Libs myLibs) This0.#mutK_$%10_0__50_0(myLibs_$%10_0__50_0:myLibs)
+This0 #apply__51_0(This1.PreferentialComposition.Libs myLibs) This0.#mutK_$%10_0__50_0(myLibs_$%10_0__50_0:myLibs)
 mut method //@private
 This1.PreferentialComposition.Libs #myLibs_$%10_0__50_0() 
 read method //@private
@@ -26499,14 +26596,14 @@ This1.PreferentialComposition.Libs myLibs_$%10_0__50_0()
 class method 
 mut This1.PreferentialComposition.Libs #seqBuilder() This1.PreferentialComposition.Libs.empty()
 class method 
-This0 #from(This1.PreferentialComposition.Libs seqBuilder) This0.#apply_$%11_0__51_0(myLibs:seqBuilder)
+This0 #from(This1.PreferentialComposition.Libs seqBuilder) This0.#apply__51_0(myLibs:seqBuilder)
 method 
 Library #leftleft(Library that) exception This1.MetaGuard.ClassClash, This1.MetaGuard.MethodClash (
   Void unused=(
     This1.Introspection::#apply(lib ) i=This1.Introspection.#apply(lib:that)
     This1.PreferentialComposition.SrcDests::empty() map=This1.PreferentialComposition.SrcDests.empty()
     Library acc={}
-    mut This0.Varacc_$%12_0__87_0 varacc=This0.Varacc_$%12_0__87_0.#apply(inner:acc)
+    mut This0.Varacc__88_0 varacc=This0.Varacc__88_0.#apply(inner:acc)
     Void unused0=(
       This0::myLibs_$%10_0__50_0() ::vals() lib=this.myLibs_$%10_0__50_0().vals()
       (
@@ -26589,7 +26686,7 @@ Library #leftleft(Library that) exception This1.MetaGuard.ClassClash, This1.Meta
                             b2
                             ))
                           ), intros:i.transitivelyNestedClasses())
-                        mut This0.Varlibi_$%13_0__88_0 varlibi=This0.Varlibi_$%13_0__88_0.#apply(inner:libi)
+                        mut This0.Varlibi__89_0 varlibi=This0.Varlibi__89_0.#apply(inner:libi)
                         Void unused22=(
                           This1.PreferentialComposition::renameMap__47_0(that prefix intros ) ::vals() ren=rens.vals()
                           (
@@ -26764,7 +26861,80 @@ Library #leftleft(Library that) exception This1.MetaGuard.ClassClash, This1.Meta
   }
   )
 method 
-This0 #plusplus(This0 that) This0.#apply_$%11_0__51_0(myLibs:this.myLibs_$%10_0__50_0().#plusplus(that:that.myLibs_$%10_0__50_0()))}
+This0 #plusplus(This0 that) This0.#apply__51_0(myLibs:this.myLibs_$%10_0__50_0().#plusplus(that:that.myLibs_$%10_0__50_0()))
+method 
+Library foldLeft(Library resolver) exception This1.MetaGuard.ClassClash, This1.MetaGuard.MethodClash (
+  Void unused=(
+    Void unused0=(
+      This0::myLibs_$%10_0__50_0() ::isEmpty() cond=this.myLibs_$%10_0__50_0().isEmpty()
+      (
+        Void unused3=cond.#checkTrue()
+        
+        catch exception Void catched0 void
+        
+        return {}
+        )
+      )
+    Library res=this.myLibs_$%10_0__50_0().left()
+    mut This0.Varres0__90_0 varres0=This0.Varres0__90_0.#apply(inner:res)
+    Void unused1=(
+      This0::myLibs_$%10_0__50_0() ::withoutLeft() ::vals() libi=this.myLibs_$%10_0__50_0().withoutLeft().vals()
+      (
+        Void unused4=(
+          Void unused5=(
+            Void unused6=loop (
+              Void unused7=libi.#next()
+              
+              catch exception Void catched2 (
+                Void unused8=(
+                  Void unused9=libi.#checkEnd()
+                  
+                  catch exception Void catched3 void
+                  
+                  void
+                  )
+                exception void
+                )
+              
+              varres0.inner(that:This0.#from(seqBuilder:(
+                This0::#seqBuilder() b=This0.#seqBuilder()
+                Void unused10=b.#add(that:varres0.#inner())
+                Void unused11=b.#add(that:libi.#inner())
+                b
+                )).#leftleft(that:resolver))
+              )
+            
+            catch exception Void catched6 void
+            
+            void
+            )
+          
+          catch exception Any propagated (
+            Void unused12=libi.#close()
+            exception propagated
+            )
+          
+          void
+          )
+        
+        catch return Library propagated0 (
+          Void unused13=libi.#close()
+          return propagated0
+          )
+        
+        libi.#close()
+        )
+      )
+    Void unused2=return varres0.#inner()
+    void
+    )
+  
+  catch return Library result result
+  
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
+  }
+  )}
 Use:{//members of each produced class
 <:This1.PreferentialComposition.$, This1.PreferentialComposition.$
 method solveConflict(that location ) (
@@ -26785,7 +26955,7 @@ method solveConflict(that location ) (
   //CurlyBlock-Should be unreachable code
   }
   )
-Varacc_$%16_0__89_0://@private
+Varacc__91_0://@private
 {
 class method 
 mut This0 #mutK(Library inner) 
@@ -26797,7 +26967,19 @@ mut method
 Library #inner() 
 read method 
 Library inner() }
-Varlibi_$%17_0__90_0://@private
+Varlibi__92_0://@private
+{
+class method 
+mut This0 #mutK(Library inner) 
+class method 
+mut This0 #apply(Library inner) This0.#mutK(inner:inner)
+mut method 
+Void inner(Library that) 
+mut method 
+Library #inner() 
+read method 
+Library inner() }
+Varres0__93_0://@private
 {
 class method 
 mut This0 #mutK(Library inner) 
@@ -26810,26 +26992,26 @@ Library #inner()
 read method 
 Library inner() }
 class method //@private
-mut This0 #mutK_$%14_0__52_0(This1.PreferentialComposition.Libs myLibs_$%14_0__52_0) 
+mut This0 #mutK_$%15_0__52_0(This1.PreferentialComposition.Libs myLibs_$%15_0__52_0) 
 class method //@private
-This0 #apply_$%15_0__53_0(This1.PreferentialComposition.Libs myLibs) This0.#mutK_$%14_0__52_0(myLibs_$%14_0__52_0:myLibs)
+This0 #apply__53_0(This1.PreferentialComposition.Libs myLibs) This0.#mutK_$%15_0__52_0(myLibs_$%15_0__52_0:myLibs)
 mut method //@private
-This1.PreferentialComposition.Libs #myLibs_$%14_0__52_0() 
+This1.PreferentialComposition.Libs #myLibs_$%15_0__52_0() 
 read method //@private
-This1.PreferentialComposition.Libs myLibs_$%14_0__52_0() 
+This1.PreferentialComposition.Libs myLibs_$%15_0__52_0() 
 class method 
 mut This1.PreferentialComposition.Libs #seqBuilder() This1.PreferentialComposition.Libs.empty()
 class method 
-This0 #from(This1.PreferentialComposition.Libs seqBuilder) This0.#apply_$%15_0__53_0(myLibs:seqBuilder)
+This0 #from(This1.PreferentialComposition.Libs seqBuilder) This0.#apply__53_0(myLibs:seqBuilder)
 method 
 Library #leftleft(Library that) exception This1.MetaGuard.ClassClash, This1.MetaGuard.MethodClash (
   Void unused=(
     This1.Introspection::#apply(lib ) i=This1.Introspection.#apply(lib:that)
     This1.PreferentialComposition.SrcDests::empty() map=This1.PreferentialComposition.SrcDests.empty()
     Library acc={}
-    mut This0.Varacc_$%16_0__89_0 varacc=This0.Varacc_$%16_0__89_0.#apply(inner:acc)
+    mut This0.Varacc__91_0 varacc=This0.Varacc__91_0.#apply(inner:acc)
     Void unused0=(
-      This0::myLibs_$%14_0__52_0() ::vals() lib=this.myLibs_$%14_0__52_0().vals()
+      This0::myLibs_$%15_0__52_0() ::vals() lib=this.myLibs_$%15_0__52_0().vals()
       (
         Void unused4=(
           Void unused5=(
@@ -26910,7 +27092,7 @@ Library #leftleft(Library that) exception This1.MetaGuard.ClassClash, This1.Meta
                             b2
                             ))
                           ), intros:i.transitivelyNestedClasses())
-                        mut This0.Varlibi_$%17_0__90_0 varlibi=This0.Varlibi_$%17_0__90_0.#apply(inner:libi)
+                        mut This0.Varlibi__92_0 varlibi=This0.Varlibi__92_0.#apply(inner:libi)
                         Void unused22=(
                           This1.PreferentialComposition::renameMap__47_0(that prefix intros ) ::vals() ren=rens.vals()
                           (
@@ -27085,9 +27267,82 @@ Library #leftleft(Library that) exception This1.MetaGuard.ClassClash, This1.Meta
   }
   )
 method 
-This0 #plusplus(This0 that) This0.#apply_$%15_0__53_0(myLibs:this.myLibs_$%14_0__52_0().#plusplus(that:that.myLibs_$%14_0__52_0()))}
+This0 #plusplus(This0 that) This0.#apply__53_0(myLibs:this.myLibs_$%15_0__52_0().#plusplus(that:that.myLibs_$%15_0__52_0()))
+method 
+Library foldLeft(Library resolver) exception This1.MetaGuard.ClassClash, This1.MetaGuard.MethodClash (
+  Void unused=(
+    Void unused0=(
+      This0::myLibs_$%15_0__52_0() ::isEmpty() cond=this.myLibs_$%15_0__52_0().isEmpty()
+      (
+        Void unused3=cond.#checkTrue()
+        
+        catch exception Void catched0 void
+        
+        return {}
+        )
+      )
+    Library res=this.myLibs_$%15_0__52_0().left()
+    mut This0.Varres0__93_0 varres0=This0.Varres0__93_0.#apply(inner:res)
+    Void unused1=(
+      This0::myLibs_$%15_0__52_0() ::withoutLeft() ::vals() libi=this.myLibs_$%15_0__52_0().withoutLeft().vals()
+      (
+        Void unused4=(
+          Void unused5=(
+            Void unused6=loop (
+              Void unused7=libi.#next()
+              
+              catch exception Void catched2 (
+                Void unused8=(
+                  Void unused9=libi.#checkEnd()
+                  
+                  catch exception Void catched3 void
+                  
+                  void
+                  )
+                exception void
+                )
+              
+              varres0.inner(that:This0.#from(seqBuilder:(
+                This0::#seqBuilder() b=This0.#seqBuilder()
+                Void unused10=b.#add(that:varres0.#inner())
+                Void unused11=b.#add(that:libi.#inner())
+                b
+                )).#leftleft(that:resolver))
+              )
+            
+            catch exception Void catched6 void
+            
+            void
+            )
+          
+          catch exception Any propagated (
+            Void unused12=libi.#close()
+            exception propagated
+            )
+          
+          void
+          )
+        
+        catch return Library propagated0 (
+          Void unused13=libi.#close()
+          return propagated0
+          )
+        
+        libi.#close()
+        )
+      )
+    Void unused2=return varres0.#inner()
+    void
+    )
+  
+  catch return Library result result
+  
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
+  }
+  )}
 Patch:{
-Varacc0__91_0://@private
+Varacc0__94_0://@private
 {
 class method 
 mut This0 #mutK(Library inner) 
@@ -27120,7 +27375,7 @@ Library #leftleft(Library that) exception This1.MetaGuard.ClassClash, This1.Meta
       )), intros:itr)
     This1.PreferentialComposition.SrcDests::empty() map=This1.PreferentialComposition.SrcDests.empty()
     Library acc=that
-    mut This0.Varacc0__91_0 varacc0=This0.Varacc0__91_0.#apply(inner:acc)
+    mut This0.Varacc0__94_0 varacc0=This0.Varacc0__94_0.#apply(inner:acc)
     Void unused0=(
       This0::renameMap__54_0(that prefix intros ) ::vals() ren=rens.vals()
       (
@@ -27371,7 +27626,7 @@ This1.PreferentialComposition.SrcDests renameMap__54_0(Library that, This1.S pre
   ))}
 Default:{
 DecorationUnfeasable:{<:This2.MetaGuard, This2.Message
-Varres_$%18_0__92_0://@private
+Varres__95_0://@private
 {
 class method 
 mut This0 #mutK(This3.S inner) 
@@ -27446,7 +27701,7 @@ method toS() (
         )
       )
     This2.S res=This0.kind()
-    mut This0.Varres_$%18_0__92_0 varres=This0.Varres_$%18_0__92_0.#apply(inner:res)
+    mut This0.Varres__95_0 varres=This0.Varres__95_0.#apply(inner:res)
     Void unused1=(
       This0::toS() ::this::text() ::#bangequal(that ) cond0=this.text().#bangequal(that:This2.S.#from(builder:(
         This2.S::#builder() b=This2.S.#builder()
@@ -27485,13 +27740,13 @@ method toS() (
         )
       )
     Void unused2=return (
-      This0.Varres_$%18_0__92_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
-        This0.Varres_$%18_0__92_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
+      This0.Varres__95_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
+        This0.Varres__95_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
         Void unused20=b3.#add(that:this.cause().#tilde())
         b3
         ))
       rcv14.#from(builder:(
-        This0.Varres_$%18_0__92_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv14.#builder()
+        This0.Varres__95_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv14.#builder()
         Void unused21=b4.#cSquare()
         b4
         ))
@@ -27749,19 +28004,19 @@ read method //(Any fileName)
 This1.Url fileName() 
 class method 
 Library binaryReprFrom(Library lib) (
-  Library norm=use This0.SafeOperatorsAccess__93_0 check privateNormalize(that:lib) error {
+  Library norm=use This0.SafeOperatorsAccess__96_0 check privateNormalize(that:lib) error {
   class method 
   mut This0 #mutK() 
   class method 
   This0 privateNormalize() This0.#mutK()}
-  Library record=use This0.SafeOperatorsAccess__93_0 check introspectLibraryReport(that:norm, path:{//@stringU
+  Library record=use This0.SafeOperatorsAccess__96_0 check introspectLibraryReport(that:norm, path:{//@stringU
   //This
   }) error {
   class method 
   mut This0 #mutK() 
   class method 
   This0 introspectLibraryReport() This0.#mutK()}
-  use This0.SafeOperatorsAccess__93_0 check introspectLibraryDocAsString(that:record, path:{//@stringU
+  use This0.SafeOperatorsAccess__96_0 check introspectLibraryDocAsString(that:record, path:{//@stringU
   //AllAsString
   }, annotationN:{//@int32
   //0
@@ -27780,7 +28035,7 @@ Library #leftleft(Library that) (
   This0 fileDebug() This0.#mutK()}
   This1.ExitCode.normal()
   )
-SafeOperatorsAccess__93_0://@private
+SafeOperatorsAccess__96_0://@private
 {//@plugin
 //L42.is/connected/withSafeOperators
 }}}

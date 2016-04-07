@@ -1,90 +1,128 @@
 {
-
 //no need to generate thoseN, S is just the string
 //else, generated ones:
-//initial delegation
-class method Library<<(Library that) Use[that]<<this.toSTrait(Introspection(lib:that))
 
-class method Library toSTrait(Introspection.NestecClass that) {
+//initial delegation
+class method
+Library<<(Library that) {
+  return Use[that]<<this.toSTrait(Introspection(lib:that))
+  error on MetaGuard
+    Assert.CodeNotReachable"AddToS.<<"
+  }
+
+//code generation
+class method
+Library toSTrait(Introspection.NestedClass that) {
   state=that.state()
   if state.isEmpty() (error S"TODO")
   fs=state.left()
-  //base of induction
-  var Library lib={read method S baseToS(S rest) rest}
+
   //accumulation
-  with fn in fs.selector().names().vals(), ft in fs.parameterTypes().vals() (
+  acc=Use[with fn in fs.selector().names().vals(), ft in fs.parameterTypes().vals() (
     fSel=Selector.fromS(fn++S"()")
     // with meth in that.methods().vals() (    if meth.selector()==that (...)      )//we may want to see if we need to add an #
-    lib:=PostAction(Selector"baseToS(rest)" of:Path"This"
-      action:this.action(f:fn, fSel:fSel, type:ft) deprecated:Selector"_baseToS(rest)")<<lib
-    lib:=Refactor.MakeSelectorPrivate(Selector"_baseToS(rest)" of:Path"This")<<lib
-    )
+    use[ this.makeBaseToS(f:fn, fSel:fSel, type:ft) ]
+    )]
+  lib=acc.foldLeft(resolver:{
+      read method S #1baseToS()
+      read method S #2baseToS()
+      read method S baseToS() S""[this.#1baseToS()]", "[this.#2baseToS()]""
+     })
+
   //final wrapping
-  return Refactor.MakeSelectorPrivate(Selector"baseToS(rest)" of:Path"This")<<Use[lib]<<{<:Concept.ToS
-    method toS() S"["[this.baseToS(rest:S"")]"]"
-    read method S baseToS(S rest)
+  miniToS={<:Concept.ToS
+    method toS() S"["[this.baseToS()]"]"
+    read method S baseToS() S""
     }
+  //lib can override baseToS to provid the real behaviour, the empty baseToS is used for classes wiht no fields
+  return Refactor.MakePrivateSelector(Selector"baseToS()" of:Path"This")<<Extends[miniToS]<<lib
+  error on MetaGuard Assert.CodeNotReachable"AddToS.finalWrapping - MakePrivate"
   }
 
-class method Library action(S f,Selector fSel,Introspection.Type type){
-  var Library action= this.selectAction(!type.isInterface(),this.mdf())
-  action:=Redirect(Path"T" to:pathOf(type))<<action
-  action:=Rename(Selector"fName()" to:fSel)<<action
-  action:=Use[action]<<Resource(f)
+class method Library makeBaseToS(S f,Selector fSel,Introspection.Type type){
+  var Library action= this.selectBase(fSel:fSel, type:type)
+  action:=Use[action]<<Refactor.RenamePath(Path"This" to:Path"FN")<<Resource(f)
+  action:=Refactor.MakePrivatePath(Path"FN")<<action
+   error on MetaGuard
+     Assert.CodeNotReachable"AddToS.action"
   return action
   }
 
-class method Library selectAction(Introspection.Mdf fMdf, Bool needClass){
-    if !needClass & fMdf.equals(\class._Readable()) (return {
-      read method S baseToS(S rest) {
-        res=S""[This()]":"[ this.fName().toS() ]""
-        if rest==S"" (return   res)
-        return res++S", "++res
-        }
-      class method S ()
-      T:{<:Concept.ToS}
-      read method read T fName()
-      })
-    else if !needClass & fMdf.equals(\class._Immutable()) (return {
-      read method S baseToS(S rest) {
-        res=S""[This()]":"[ this.fName().toS() ]""
-        if rest==S"" (return   res)
-        return res++S", "++res
-        }
-      class method S ()
-      T:{<:Concept.ToS}
-      read method T fName()
-      })
-      else error S"TODO: complete"
+class method Library selectBase(Selector fSel,Introspection.Type type){
+    mdf=type.mdf()
+    needClass=type.isInterface()
+    var Library res={
+      if mdf.equals(\class._Class()) (   return this.classField()   )
+      return this.yesToSField(mdf:mdf,needClass:needClass)
+      }
+    res:=Refactor.Redirect(Path"T" toType: type)<<res
+    res:=Refactor.RenameSelector(Selector"fName()" of:Path"This" to:fSel)<<res
+    return res
+    error on MetaGuard
+        Assert.CodeNotReachable"AddToS.selectBase"
     }
 
-print(fieldName,class type, val) fieldName :val.toS()
-print(fieldName,interface type, val) fieldName:val.classAny().toS()++val.toS()
+class method
+Library yesToSField(Introspection.Mdf mdf,Bool needClass){
+      if !needClass (
+        if mdf.equals(\class._Readable()) (return {
+          read method S baseToS() S""[This.FN()]":"[This1.valToS(this.fName())]""
+          FN:{class method S()}
+          T:{}
+          read method read T fName()
+          })
+        else if mdf.equals(\class._Immutable()) (return {
+          read method S baseToS() S""[This.FN()]":"[This1.valToS(this.fName())]""
+          FN:{class method S ()}
+          T:{}
+          read method T fName()
+          })
+        error Assert.CodeNotReachable""
+        )
+        else if mdf.equals(\class._Readable()) (return {
+          read method S baseToS() S""[This.FN()]":"[This1.nodeNameAndValToS(this.fName())]""
+          FN:{class method S()}
+          T:{}
+          read method read T fName()
+          })
+        else if mdf.equals(\class._Immutable()) (return {
+          read method S baseToS() S""[This.FN()]":"[This1.nodeNameAndValToS(this.fName())]""
+          FN:{class method S ()}
+          T:{}
+          read method T fName()
+          })
+        error Assert.CodeNotReachable""
+      }
 
-fields:
-
-
-  UncoherentState:Message.$<<{<:MetaGuard}
-  PrivateState:Message.$<<{<:MetaGuard}
-  class method
-  Library<<(Library that)
-  exception UncoherentState, PrivateState{//TODO: manage errors
-
+class method
+Library classField() {
+    read method S baseToS() S""[This.FN()]": class "[Introspection(clazz:this.fName()).externalTypeToS()]""
+    FN:{class method S ()}
+    T:{}
+    read method class T fName()
+    }
+ class method
+ S nodeName(read Any that){
+   with that (on read Concept.Classable
+     return Introspection(clazz:that.classAny()).externalTypeToS()
+     )
+   return S"?"
+  }
+class method
+ S valToS(read Any that){
+   with that (on read Concept.ToS
+     return that.toS()
+     )
+   return S"?"
+  }
+class method
+ S nodeNameAndValToS(read Any that){
+   S nn=this.nodeName(that)
+   S ts=this.valToS(that)
+   if ts==S"?" & nn==S"?" (return S"?")
+   if ts==S"?" (return nn)
+   if nn==S"?" (return ts)
+   if ts.beginsWith(S"[") ( return nn++ts)
+   return nn++S.doubleQuote()++ts++S.doubleQuote()
+   }
 }
-
-
-Name[a=10,b=20]
-
-Name a=10, b=20
-
-toS(Bool className)
-
- if equals then toS
- but
-  toS== but not equals?
-  toString(true)== then equals
-
-
-
-
-

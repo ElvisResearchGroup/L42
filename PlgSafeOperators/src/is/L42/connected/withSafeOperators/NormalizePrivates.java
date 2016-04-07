@@ -30,11 +30,14 @@ public class NormalizePrivates {
     doubleUnderscoreReplacement="$%";
     }
   public static void updateDoubleUnderscoreReplacement(String name){
-    if(!name.contains(doubleUnderscoreReplacement)){return;}
-    doubleUnderscoreReplacement+="$%";
-    updateDoubleUnderscoreReplacement(name);
+     //TODO: commented now since it grow like creazy
+    //if(!name.contains(doubleUnderscoreReplacement)){return;}
+    //doubleUnderscoreReplacement+="$%";
+    //updateDoubleUnderscoreReplacement(name);
   }
   public static String freshName(String name){
+   int index=name.indexOf('_');
+   if(index>0){name=name.substring(0,index);}
    return freshName(name,"__"+countPrivates++ +"_"+PrivateHelper.countFamilies);
   }
   public static String freshName(String name,String newPedex){
@@ -80,7 +83,7 @@ public class NormalizePrivates {
     }
     return result;
     }
-  
+
   static Util.PrivatePedex isValidPedex(String uniquePexed) {
     if(uniquePexed==null){return null;}
     int pos_=uniquePexed.indexOf("_");
@@ -98,7 +101,7 @@ public class NormalizePrivates {
     int index=name.indexOf("__");
     if(index==-1){return null;}
     updateDoubleUnderscoreReplacement(name);
-    
+
     String pedex=name.substring(index+2,name.length());
     boolean wasAdded=collected.add(pedex);
     if(wasAdded){return pedex;}
@@ -117,7 +120,7 @@ public class NormalizePrivates {
       cb.getStage().setPrivateNormalized(true);
       return super.visit(cb);}});
     return cb;
-  
+
     }
   private static ClassB auxNormalize(Program p, ClassB cb, CollectedLocatorsMap result) {
     if (result.normalized ){return cb;}//put && result.pedexes.isEmpty() for renormalization

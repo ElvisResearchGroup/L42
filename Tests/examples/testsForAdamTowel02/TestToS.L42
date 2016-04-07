@@ -1,84 +1,19 @@
 {reuse L42.is/AdamTowel02
 
-AddToS:{
-//no need to generate thoseN, S is just the string
-//else, generated ones:
-//initial delegation
-class method Library<<(Library that) {
-  return Use[that]<<this.toSTrait(Introspection(lib:that))
-  error on MetaGuard
-    Assert.CodeNotReachable"AddToS.<<"
-  }
+NotStringable:{(N that)}
 
-class method Library toSTrait(Introspection.NestedClass that) {
-  state=that.state()
-  if state.isEmpty() (error S"TODO")
-  fs=state.left()
-  //base of induction
-  var Library lib={read method S baseToS(S rest) rest}
-  //accumulation
-  with fn in fs.selector().names().vals(), ft in fs.parameterTypes().vals() (
-    fSel=Selector.fromS(fn++S"()")
-    // with meth in that.methods().vals() (    if meth.selector()==that (...)      )//we may want to see if we need to add an #
-    lib:={return PostAction(Selector"baseToS(rest)" of:Path"This"
-      action:this.action(f:fn, fSel:fSel, type:ft) deprecated:Selector"_baseToS(rest)")<<lib
-      error on MetaGuard Assert.CodeNotReachable"AddToS.accumulation -PostAction"}
-    lib:={return Refactor.MakePrivateSelector(Selector"_baseToS(rest)" of:Path"This")<<lib
-    error on MetaGuard Assert.CodeNotReachable"AddToS.accumulation - MakePrivate"}
-    )
-  //final wrapping
-  return Refactor.MakePrivateSelector(Selector"baseToS(rest)" of:Path"This")<<Use[lib]<<{<:Concept.ToS
-    method toS() S"["[this.baseToS(rest:S"")]"]"
-    read method S baseToS(S rest)
-    }
-  error on MetaGuard Assert.CodeNotReachable"AddToS.finalWrapping - MakePrivate"
-  }
 
-class method Library action(S f,Selector fSel,Introspection.Type type){
-  var Library action= this.selectAction(fMdf:type.mdf(), needClass:type.isInterface())
-
-  action:={
-    return Refactor.Redirect(Path"T" toType: type)<<action
-    catch exception MetaGuard.SourceUnfit return action
-    }
-  action:=Refactor.RenameSelector(Selector"fName()" of:Path"This" to:fSel)<<action
-  action:=Use[action]<<Refactor.RenamePath(Path"This" to:Path"FN")<<Resource(f)
-  action:=Refactor.MakePrivatePath(Path"FN")<<action
-   error on MetaGuard
-     Assert.CodeNotReachable"AddToS.action"
-  return action
-  }
-
-class method Library selectAction(Introspection.Mdf fMdf, Bool needClass){
-    if !needClass & fMdf.equals(\class._Readable()) (return {
-      read method S (S that) {
-        res=S""[This.FN()]":"[ this.fName().toS() ]""
-        if that==S"" (return   res)
-        return res++S", "++that
-        }
-      FN:{class method S()}
-      T:{<:Concept.ToS}
-      read method read T fName()
-      })
-    else if !needClass & fMdf.equals(\class._Immutable()) (return {
-      read method S (S that) {
-        res=S""[This.FN()]":"[ this.fName().toS() ]""
-        if that==S"" (return   res)
-        return res++S", "++that
-        }
-      FN:{class method S()}
-      T:{<:Concept.ToS}
-      read method T fName()
-      })
-      else error S"TODO: complete"[fMdf;needClass]""
-    }
-}
-
-C:AddToS<<{(S name, N age)}
+Person:Data.AddToS<<{(S name, N age)}
+Person2:Data.AddToS<<{(S name, NotStringable age)}
+Person3:Data.AddToS<<{(Concept.ToS name, Any age)}
 
 Main:{
-  C c=C(name:S"Bob",age:10N)
-  Debug(c)
+   p=Person(name:S"Bob",age:10N)
+  Debug(p)
+  p2=Person2(name:S"Bob",age:NotStringable(10N))
+  Debug(p2)
+  p3=Person3(name:S"Bob",age:NotStringable(10N))
+  Debug(p3)
   return ExitCode.normal()
   }
 }

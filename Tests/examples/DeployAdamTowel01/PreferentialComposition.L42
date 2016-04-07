@@ -81,5 +81,15 @@ Library <<(Library that) exception MetaGuard.ClassClash,MetaGuard.MethodClash
     }
   method This ++ (This that)
     This(myLibs:this.myLibs()++that.myLibs())
+  method
+  Library foldLeft(Library resolver)
+  exception MetaGuard.ClassClash,MetaGuard.MethodClash {
+    if this.myLibs().isEmpty() (return {})
+    var Library res=this.myLibs().left()
+    with libi in this.myLibs().withoutLeft().vals() (
+      res:=This[res;libi]<<resolver
+      )
+    return res
+    }
   })
 }

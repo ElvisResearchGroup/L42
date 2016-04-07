@@ -11,8 +11,6 @@ import ast.Ast.Position;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
 import ast.Util.CachedStage;
-import lombok.Data;
-import lombok.NonNull;
 
 public class Locator {
   public static enum Kind {
