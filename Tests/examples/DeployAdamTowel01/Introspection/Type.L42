@@ -46,15 +46,20 @@ method Doc doc() this.record().docOf(path:Path"Doc")
 
 method Bool isInterface(){
   str=this.allAsString()
-  if str==S"Void" (return Bool.false())
-  if str==S"Any" (return Bool.true())
-  if str==S"Library" (return Bool.false())
+  if str.contains(S"Void") (return Bool.false())
+  if str.contains(S"Any") (return Bool.true())
+  if str.contains(S"Library") (return Bool.false())
   nc=this.referencedPath()
   return nc.classKind().equals(\class._Interface())
   }
+
+method Bool isAny()  this.allAsString().contains(S"Any")
+method Bool isVoid()  this.allAsString().contains(S"Void")
+method Bool isLibrary()  this.allAsString().contains(S"Library")
+
 method Bool isPrimitive() (
   str=this.allAsString()
-  str==S"Void" | str==S"Any" | str==S"Library"
+  str.contains(S"Void") | str.contains(S"Any") | str.contains(S"Library")
   )
 
 }

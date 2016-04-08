@@ -26,10 +26,9 @@
         MetaGuard.MethodClash,
         MetaGuard.ClassClash,
         MetaGuard.IncoherentRedirectMapping{
-    str=this.to().allAsString()
-    if str==S"Void" (return Redirect(this.that() to: Void)<<that)
-    if str==S"Any" (return Redirect(this.that() to: Any)<<that)
-    if str==S"Library" (return Redirect(this.that() to: Library)<<that)
+    if this.to().isVoid() (return Redirect(this.that() to: Void)<<that)
+    if this.to().isAny() (return Redirect(this.that() to: Any)<<that)
+    if this.to().isLibrary() (return Redirect(this.that() to: Library)<<that)
     nc=this.to().referencedPath()
     if nc.hasExternalType() (return Redirect(this.that() to: nc.externalType())<<that )
     return RenamePath(this.that() to:nc.pathFromRoot())<<that
@@ -143,7 +142,7 @@
         error err)
       }
     }
-  MakePrivatePath:{(Path that)
+  MakePrivatePath:{(Path that) //Can be called Hide
     method
     Library << (Library that)
     exception
