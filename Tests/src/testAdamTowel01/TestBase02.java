@@ -164,8 +164,8 @@ public class TestBase02 {
 @Test
    public  void _02_13AddToS() throws Throwable{
      TestHelper.configureForTest();
-     new TestBase01()._01_00DeployAdamTowel01();
-     this._02_00DeployAdamTowel02();
+     //new TestBase01()._01_00DeployAdamTowel01();
+     //this._02_00DeployAdamTowel02();
      L42.main(new String[]{"examples/testsForAdamTowel02/TestToS.L42"});
      Assert.assertEquals(L42.record.toString(),
      "[name:\"Bob\", age:\"10\"]\n"+
@@ -179,16 +179,11 @@ public class TestBase02 {
 @Test
    public  void _02_14AddEquals() throws Throwable{
      TestHelper.configureForTest();
-     new TestBase01()._01_00DeployAdamTowel01();
+     //new TestBase01()._01_00DeployAdamTowel01();
      this._02_00DeployAdamTowel02();
      L42.main(new String[]{"examples/testsForAdamTowel02/TestAddEquals.L42"});
-     Assert.assertEquals(L42.record.toString(),
-     "[name:\"Bob\", age:\"10\"]\n"+
-     "[name:\"Bob\", age:?]\n"+
-     "[name:This.S\"Bob\", age:??]\n"+
-     "[p:[name:\"Bob\", age:\"10\"]]\n"+
-     "[p:This.Person[name:\"Bob\", age:\"10\"]]\n"
-     ); }
+     TestHelper.check42Fails(L42.record.toString());
+     }
 
   @Test
    public  void _02_101HelloWorld() throws Throwable{

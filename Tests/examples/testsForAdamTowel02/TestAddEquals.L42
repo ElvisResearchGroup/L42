@@ -1,28 +1,24 @@
 {reuse L42.is/AdamTowel02
 
 
-NotStringable:{(N that)}
 
-
-Person:Data.AddToS<<{(S name, var N age) <:Concept.Classable  method classAny() This  }
+Person:Data.AddEquals<<{(S name, var N age)  }
 //Person:Data.AddToS<<{(S name, var N age)}
-Person2:Data.AddToS<<{(S name, NotStringable age)}
-Person3:Data.AddToS<<{(Concept.ToS name, Any age)}
+//Person2:Data.AddToS<<{(S name, NotStringable age)}
+//Person3:Data.AddToS<<{(Concept.ToS name, Any age)}
 
 PP:Data.AddToS<<{(mut Person p)}
 PP2:Data.AddToS<<{(mut Any p)}
 
 Main:{
-   p=Person(name:S"Bob",age:10N)
-  Debug(p)
-  p2=Person2(name:S"Bob",age:NotStringable(10N))
-  Debug(p2)
-  p3=Person3(name:S"Bob",age:NotStringable(10N))
-  Debug(p3)
-  pp=PP(p:p)
-  Debug(pp)
-  pp2=PP2(p:p)
-  Debug(pp2)
+  Person p1=Person(name:S"Bob",age:10N)
+  Person p2=Person(name:S"Bob",age:12N)
+  Person p3=Person(name:S"Bob",age:10N)
+  Debug.test(p1==p1 expected:Bool.true())
+  Debug.test(p2==p2 expected:Bool.true())
+  Debug.test(p1==p2 expected:Bool.false())
+  Debug.test(p2==p1 expected:Bool.false())
+  Debug.test(p1==p3  expected:Bool.true())
   return ExitCode.normal()
   }
 }

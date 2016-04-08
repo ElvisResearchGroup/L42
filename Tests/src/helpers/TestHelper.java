@@ -1,6 +1,8 @@
 package helpers;
 
 
+import static org.junit.Assert.fail;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -34,6 +36,17 @@ import platformSpecific.javaTranslation.Resources;
 import profiling.Timer;
 
 public class TestHelper {
+  public static void check42Fails(String s){
+    final String failString = "[FAIL] ";
+    int fails = 0;
+    int index = s.indexOf(failString);
+    while( index != -1 ){
+      fails++;
+      index = s.indexOf(failString, index+1);
+      }
+    if(fails > 0){fail(fails+ " error(s) have occured in the test cases!"); throw new Error();}
+  }
+
   public static void assertEqualExp(ExpCore e1,ExpCore e2){
     assert e1!=null;
     assert e2!=null;
