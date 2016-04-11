@@ -1,16 +1,14 @@
 {//Just immK for now
-  UncoherentState:Message.$<<{<:MetaGuard}
-  PrivateState:Message.$<<{<:MetaGuard}
   class method
   Library<<(Library that)
-  exception UncoherentState, PrivateState{//TODO: manage errors
+  exception StateUnfit {
     i=Introspection(lib:that)
     s=i.state()
-    if s.isEmpty() (exception UncoherentState"")
+    if s.isEmpty() (exception StateUnfit"Empty state")
     k=s.left()
-    if k.isPrivate() (exception PrivateState"")
+    if k.isPrivate() (exception StateUnfit"Private state")
     with m in s.vals() (//already present
-      if m.thisMdf().equals(\class._Class()) & m.returnType().mdf().equals(\class._Immutable()) (
+      if m.thisMdf().isClass() & m.returnType().mdf().isImmutable() (
         return that
         )
       )

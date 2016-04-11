@@ -78,7 +78,7 @@ public class TestBase02 {
          "This.A.B.C\nSecret\nFailed\n");
      }
 
-   @Test
+   //OLD unused @Test
    public  void _02_06IsConcrete() throws Throwable{
      TestHelper.configureForTest();
      L42.main(new String[]{"examples/testsForAdamTowel02/TestIsConcrete.L42"});
@@ -99,7 +99,7 @@ public class TestBase02 {
 
 
 
-   //@Test
+   @Test
    public  void _02_07addInvariant() throws Throwable{
      TestHelper.configureForTest();
      //new TestBase01()._01_00DeployAdamTowel01();
@@ -109,7 +109,7 @@ public class TestBase02 {
          "OK\n");
      }
 
-   //@Test
+   @Test
    public  void _02_08PostOperation() throws Throwable{
      TestHelper.configureForTest();
      //new TestBase01()._01_00DeployAdamTowel01();
@@ -118,7 +118,7 @@ public class TestBase02 {
      Assert.assertEquals(L42.record.toString(),
          "Hello\nWorld\nHello\n");
      }
-   //@Test
+   @Test
    public  void _02_09Patch() throws Throwable{
      TestHelper.configureForTest();
      //new TestBase01()._01_00DeployAdamTowel01();
@@ -180,8 +180,17 @@ public class TestBase02 {
    public  void _02_14AddEquals() throws Throwable{
      TestHelper.configureForTest();
      //new TestBase01()._01_00DeployAdamTowel01();
-     this._02_00DeployAdamTowel02();
+     //this._02_00DeployAdamTowel02();
      L42.main(new String[]{"examples/testsForAdamTowel02/TestAddEquals.L42"});
+     TestHelper.check42Fails(L42.record.toString());
+     }
+
+@Test
+   public  void _02_15Data() throws Throwable{
+     TestHelper.configureForTest();
+     //new TestBase01()._01_00DeployAdamTowel01();
+     //this._02_00DeployAdamTowel02();
+     L42.main(new String[]{"examples/testsForAdamTowel02/TestData.L42"});
      TestHelper.check42Fails(L42.record.toString());
      }
 
@@ -190,7 +199,7 @@ public class TestBase02 {
      TestHelper.configureForTest();
      L42.main(new String[]{"examples/testsForAdamTowel02/TestHelloWorld.L42"});
      Assert.assertEquals(L42.record.toString(),
-         "DanielWriteHere\n");
+         "the max for [1;2;3] is 3!\n");
      }
 
   }

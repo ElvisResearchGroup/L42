@@ -1,23 +1,21 @@
 {
 
-ConstructorUnavailable:Message.$<<{<:MetaGuard}
-
 Selectors:Collections.vector(ofEq:Selector)
 
 class method
 Introspection.Method immK(Introspection.Methods that)
-exception ConstructorUnavailable{
+exception StateUnfit{
     with m in that.vals() (
       if m.thisMdf().equals(\class._Class()) & m.returnType().mdf().equals(\class._Immutable()) (
         return m
         )
       )
-    exception ConstructorUnavailable"immutable constructor not found"
+    exception StateUnfit"immutable constructor not found"
   }
 
 class method
 Library<<(Library that)
-exception ConstructorUnavailable, MetaGuard{
+exception StateUnfit, MetaGuard{
   i=Introspection(lib:that)
   s=i.state()
   k=this.immK(s)
@@ -41,7 +39,7 @@ exception ConstructorUnavailable, MetaGuard{
 
 class method
 Library addWithAllArgs(Library that,Introspection.Method k)
-exception ConstructorUnavailable, MetaGuard{
+exception StateUnfit, MetaGuard{
   p=Path"This"
   freshK=Selector.fresh(k.selector())
   freshW=Selector.fresh(Selector"with(that)")

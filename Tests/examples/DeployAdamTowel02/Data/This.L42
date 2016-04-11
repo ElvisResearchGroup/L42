@@ -1,7 +1,23 @@
 {
+StateUnfit:Message.$<<{<:MetaGuard}
+ //make state private will be another decorator now
 Invariant:...
 AddImmK:...
 Wither:...
 AddToS:...
 AddEquals:...
+
+class method
+Library << (Library that)
+exception StateUnfit, MetaGuard
+ {
+  var Library res=that
+  res:=AddImmK<<res
+  res:=Wither<<res
+  res:=AddToS<<res
+  res:=AddEquals<<res
+  res:=Invariant<<res
+  return res
+  }
+
 }

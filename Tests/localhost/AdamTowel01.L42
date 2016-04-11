@@ -14222,6 +14222,71 @@ This1.Types transitivelyImplementedInterfaces() (
   //CurlyBlock-Should be unreachable code
   }
   )
+method 
+This2.Bool implements(This0 that) (
+  Void unused=(
+    Void unused0=(
+      This0::transitivelyImplementedInterfaces() ::vals() ti=this.transitivelyImplementedInterfaces().vals()
+      (
+        Void unused2=(
+          Void unused3=(
+            Void unused4=loop (
+              Void unused5=ti.#next()
+              
+              catch exception Void catched0 (
+                Void unused6=(
+                  Void unused7=ti.#checkEnd()
+                  
+                  catch exception Void catched1 void
+                  
+                  void
+                  )
+                exception void
+                )
+              
+              (
+                This0::transitivelyImplementedInterfaces() ::vals() ::#inner() ::referencedPath() ::#equalequal(that ) cond=ti.#inner().referencedPath().#equalequal(that:that)
+                (
+                  Void unused8=cond.#checkTrue()
+                  
+                  catch exception Void catched4 void
+                  
+                  return This2.Bool.true()
+                  )
+                )
+              )
+            
+            catch exception Void catched5 void
+            
+            void
+            )
+          
+          catch exception Any propagated (
+            Void unused9=ti.#close()
+            exception propagated
+            )
+          
+          void
+          )
+        
+        catch return This2.Bool propagated0 (
+          Void unused10=ti.#close()
+          return propagated0
+          )
+        
+        ti.#close()
+        )
+      )
+    Void unused1=return This2.Bool.false()
+    void
+    )
+  
+  catch return This2.Bool result result
+  
+  error {//@stringU
+  //CurlyBlock-Should be unreachable code
+  }
+  )
 method //@private
 This1.Types removeDup__42_0(This1.Types that) (
   mut This1.Types result=This1.Types.empty()
@@ -18529,6 +18594,42 @@ This0 _Immutable() This0.#apply(that:This2.N.#from(builder:(
   )))
 class method 
 This0 _Class() This0.#apply(that:This2.N.#from(builder:(
+  This2.N::#builder() b=This2.N.#builder()
+  Void unused=b.#5()
+  b
+  )))
+method 
+This2.Bool isCapsule() this.that().#equalequal(that:This2.N.#from(builder:(
+  This2.N::#builder() b=This2.N.#builder()
+  Void unused=b.#0()
+  b
+  )))
+method 
+This2.Bool isMutable() this.that().#equalequal(that:This2.N.#from(builder:(
+  This2.N::#builder() b=This2.N.#builder()
+  Void unused=b.#1()
+  b
+  )))
+method 
+This2.Bool isLent() this.that().#equalequal(that:This2.N.#from(builder:(
+  This2.N::#builder() b=This2.N.#builder()
+  Void unused=b.#2()
+  b
+  )))
+method 
+This2.Bool isReadable() this.that().#equalequal(that:This2.N.#from(builder:(
+  This2.N::#builder() b=This2.N.#builder()
+  Void unused=b.#3()
+  b
+  )))
+method 
+This2.Bool isImmutable() this.that().#equalequal(that:This2.N.#from(builder:(
+  This2.N::#builder() b=This2.N.#builder()
+  Void unused=b.#4()
+  b
+  )))
+method 
+This2.Bool isClass() this.that().#equalequal(that:This2.N.#from(builder:(
   This2.N::#builder() b=This2.N.#builder()
   Void unused=b.#5()
   b

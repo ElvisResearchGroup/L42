@@ -8,7 +8,7 @@ MyMath:{
     if one<two (return two)
     return one
   }
-  
+
   // Takes a list of numbers and returns the largest number
   class method N maxL(NL list){
     var N result=list.left()
@@ -44,11 +44,11 @@ UndefinedOnEmptyList: Message.$<<{<:Guard}
 CoreC:{
     class method SL upTo(SL list, N size){
         if list.isEmpty() (error UndefinedOnEmptyList"on CoreC.upTo")
-        
+
         filtered = SL[with e in list.vals() (
             if e.size() <= size ( use[e] )
         )]
-        
+
         return filtered
     }
 }
@@ -125,7 +125,7 @@ CompletionB:Use[Collections.vector(ofEq:N)]<<{<:Concept.ToS
   method Bool <<(CompletionB that){
     // Don't bother if this list is bigger
     if this.size() >= that.size() ( return Bool.false() )
-    
+
     //list = that.vals()-this.vals()
 
     with a in this.vals() (
@@ -169,7 +169,7 @@ CoreD:{
 //
 
 
-Person:Invariant<<{(S name, N age) <:Concept.ToS, Concept.Invariant
+Person:Data.Invariant<<{(S name, N age) <:Concept.ToS, Concept.Invariant
     method toS(){
         return S"["[this.name()]","[this.age()]"]"
     }
@@ -185,7 +185,7 @@ Persons:Use[Collections.vector(of:Person)]<<{<:Concept.ToS
     S"["[with e in this.vals() (
       use[e separedBy:S";"]
       )]"]"
-      
+
   class method Persons from(SL names, NL ages){
         return Persons[
             with n in names.vals(), a in ages.vals() (
@@ -213,7 +213,7 @@ Output:{
     )
     else (
       // [PASS] message = given
-      Debug(S"[PASS] "[message]" = "[given]"")      
+      Debug(S"[PASS] "[message]" = "[given]"")
     )
   )
 
@@ -234,10 +234,10 @@ Main:{
   Output.testN(message: S"Max[4,3,2,1]", expected: 4N, given: MyMath.maxL(list:NL[4N;3N;2N;1N]))
   Output.testN(message: S"Max[-1,-2,-3,-4]", expected: -1N, given: MyMath.maxL(list:NL[-1N;-2N;-3N;-4N]))
   Output.testN(message: S"Max[-4,-3,-2,-1]", expected: -1N, given: MyMath.maxL(list:NL[-4N;-3N;-2N;-1N]))
-  
+
   Debug(S"")
-  
-  
+
+
   Debug(S"Core B:")
   // map(keys:Strings[S"a";S"b";S"c"],vals:Strings[S"z";S"y";S"z"]) should produce S"a->z, b->y, c->z"
   // Make Varaible from class
@@ -247,48 +247,48 @@ Main:{
   Output.testS(message: S"Map keys:[a;b;c],values:[z;y]", expected: S"Bad Sizing", given: MyMap.map(keys:SL[S"a";S"b";S"c"],values:SL[S"z";S"y"]).toS())
 
   Debug(S"")
-  
-  
+
+
   Debug(S"Core C:")
   Output.testS(message: S"Upto([a],2)", expected: S"[a]", given: CoreC.upTo(list:SL[S"a"],size:2N).toS())
   Output.testS(message: S"Upto([a,bb],2)", expected: S"[a;bb]", given: CoreC.upTo(list:SL[S"a";S"bb"],size:2N).toS())
   Output.testS(message: S"Upto([a,bb,ccc],2)", expected: S"[a;bb]", given: CoreC.upTo(list:SL[S"a";S"bb";S"ccc"],size:2N).toS())
   Output.testS(message: S"Upto([aaa,bb,c],2)", expected: S"[bb;c]", given: CoreC.upTo(list:SL[S"aaa";S"bb";S"c"],size:2N).toS())
-  
+
   Debug(S"")
-  
-  
+
+
   // [d] declare a class person with String name and N age, declare a list of persons Persons.
   // write a class method from(names,ages) producing a list of persons from a list of strings and a list of ages.
-  
-  
+
+
   Debug(S"Core D:")
   personNames1 = SL[S"John"]
   personAges1 = NL[22N]
   Persons group1 = CoreD.from(names:personNames1,ages:personAges1)
   Output.testS(message: S"Persons("[personNames1]","[personAges1]")", expected: S"[[John,22]]", given: group1.toS())
-  
+
   personNames2 = SL[S"John";S"Stacey";S"Timmy"]
   personAges2 = NL[22N;24N;13N]
   Persons group2 = CoreD.from(names:personNames2,ages:personAges2)
   Output.testS(message: S"Persons("[personNames2]","[personAges2]")", expected: S"[[John,22];[Stacey,24];[Timmy,13]]", given: group2.toS())
-  
+
 
 
   Debug(S"")
-  
+
   // COMPLETION
   // [a] This is a variation of Core.d We ask you to to two changes:
   // Using Use or Extends declare Persons so that the class method from(names,ages) is a member of Persons.
 
-  
+
   Debug(S"Completion A Persons.from():")
 
   personNames3 = SL[S"John"]
   personAges3 = NL[22N]
   Persons group3 = Persons.from(names:personNames3,ages:personAges3)
   Output.testS(message: S"Persons("[personNames3]","[personAges3]")", expected: S"[[John,22]]", given: group3.toS())
-  
+
   personNames4 = SL[S"John";S"Stacey";S"Timmy"]
   personAges4 = NL[22N;24N;13N]
   Persons group4 = CoreD.from(names:personNames4,ages:personAges4)
@@ -296,7 +296,7 @@ Main:{
 
   Debug(S"")
 
-  
+
   Debug(S"Completion A Person.Invariant:")
  // Using Invariant declare Person so that valid persons only have positive ages and not empty names. Add more test cases to check the invariant is holding.
 
@@ -308,31 +308,31 @@ Main:{
   // Invalid Person with 0N Age
   (
     Person pp2 = Person(name: S"Crystal", age: 0N)
-    catch error Invariant.InvariantFailure Output.testS(message: S"Person(Crystal,0N)", expected: S"error", given: S"error")
+    catch error Data.Invariant.InvariantFailure Output.testS(message: S"Person(Crystal,0N)", expected: S"error", given: S"error")
     Output.testS(message: S"Person(Crystal,0N)", expected: S"error", given: pp2.toS())
   )
 
   // Invalid Person with -10N Age
   (
     Person pp2 = Person(name: S"Johann", age: -10N)
-    catch error Invariant.InvariantFailure Output.testS(message: S"Person(Johann,-10N)", expected: S"error", given: S"error")
+    catch error Data.Invariant.InvariantFailure Output.testS(message: S"Person(Johann,-10N)", expected: S"error", given: S"error")
     Output.testS(message: S"Person(Johann,-10N)", expected: S"error", given: pp2.toS())
   )
 
   // Invalid Person with name : ""
   (
     Person pp3 = Person(name: S"", age: 42N)
-    catch error Invariant.InvariantFailure Output.testS(message: S"Person('',42N)", expected: S"error", given: S"error")
+    catch error Data.Invariant.InvariantFailure Output.testS(message: S"Person('',42N)", expected: S"error", given: S"error")
     Output.testS(message: S"Person('',42N)", expected: S"error", given: pp3.toS())
   )
-  
+
   Debug(S"")
 
 
-  // [b] Define a new kind of list generator, 
-  // producing lists that also offers operators >>, <<. >>= and <<= for strictly 
+  // [b] Define a new kind of list generator,
+  // producing lists that also offers operators >>, <<. >>= and <<= for strictly
   // superset/subset and superset/subset
-  
+
   Debug(S"Completion B Superset/subsets:")
 
   //CompletionB aList = CompletionB[1N;2N;3N]
@@ -341,8 +341,8 @@ Main:{
   //Debug(S"bList:"[bList]"")
   //Debug(S""[aList]"<<"[bList]" = "[aList<<bList]"") // false
 
-  Debug(S"")  
-  
+  Debug(S"")
+
   Debug(S"I Have no errors ^,^")
   return ExitCode.normal()
   }

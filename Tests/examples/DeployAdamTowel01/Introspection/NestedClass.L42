@@ -128,6 +128,14 @@ method Types transitivelyImplementedInterfaces() {
     result++=extra
     )
   }
+
+method
+Bool implements(This that){
+    with ti in this.transitivelyImplementedInterfaces().vals() (
+        if ti.referencedPath()==that (return Bool.true())
+        )
+    return Bool.false()
+  }
 method//@private
 Types removeDup(Types that) (
   var mut Types result=Types.empty() //can not use [with since we need to check in results
