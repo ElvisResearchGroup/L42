@@ -1,9 +1,9 @@
 {reuse L42.is/AdamTowel02
 
-C:Data.Invariant<<{a(N n)<:Concept.Invariant
+C:Data.Invariant<<{a(N n) implements Concept.Invariant
   method invariant() this.n()>10N
   }
-D:Data.Invariant<<{( var C c)<:Concept.Invariant
+D:Data.Invariant<<{( var C c) implements Concept.Invariant
   method invariant() this.c().n()>15N
   }
 

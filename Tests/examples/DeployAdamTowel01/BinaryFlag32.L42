@@ -1,5 +1,5 @@
 {(N that)
-  <:Concept.ToS Concept.Equals Concept.Named
+   implements Concept.ToS Concept.Equals Concept.Named
 
   method myName()GetMyName(This)
 
@@ -30,7 +30,7 @@
   mut BBuilder #builder()
     BBuilder.empty()
 
-  ParseFail:Message.$<<{<:Guard.ParseFail}
+  ParseFail:Message.$<<{ implements Guard.ParseFail}
   BBuilder:{(var Library that, var N count)
     class method
     mut This empty()

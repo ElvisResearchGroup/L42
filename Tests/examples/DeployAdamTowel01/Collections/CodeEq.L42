@@ -1,10 +1,10 @@
-{<:Concept.Equals
+{ implements Concept.Equals
 read method N size()
 class method mut This #seqBuilder()
 class method This #from(This seqBuilder)
 mut method Void #add(Elem that)
 
-Elem:{<:Concept.Equals}
+Elem:{ implements Concept.Equals}
 
 read method lent IteratorVal vals()
 IteratorVal:{

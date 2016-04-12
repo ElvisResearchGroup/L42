@@ -35,13 +35,13 @@ Refactor:...
 // more composition
 Opt:...
 PreferentialComposition:...
-Extends:PreferentialComposition<<{<:PreferentialComposition.$
+Extends:PreferentialComposition<<{ implements PreferentialComposition.$
   method solveConflict(that,location){
     return Refactor.MoveImplementationSelector(location.src() of:location.path() to:location.dest())<<that
     error on MetaGuard Assert.CodeNotReachable""
     }
   }
-Use:PreferentialComposition<<{<:PreferentialComposition.$
+Use:PreferentialComposition<<{ implements PreferentialComposition.$
   method solveConflict(that,location){
     return Refactor.RenameSelector(location.src() of:location.path() to:location.dest())<<that
     error on MetaGuard Assert.CodeNotReachable""

@@ -76,7 +76,7 @@ Cell:{interface
   Void #checkEnd()
   }
   
-CellEnd:{()<:Cell
+CellEnd:{() implements Cell
   method
   vals(terminate)
     Iterator(this,terminate:terminate)
@@ -94,7 +94,7 @@ CellEnd:{()<:Cell
     void 'ok, is the end
   }
   
-CellNext:{(Elem elem, Cell nextCell)<:Cell
+CellNext:{(Elem elem, Cell nextCell) implements Cell
   
   method
   vals(terminate) {

@@ -3,10 +3,10 @@
     SafeOperators.redirect({#new(TOpt that)
       T:{}
       TOpt:{interface method T get() }
-      TEmpty:{()<:TOpt method get()
+      TEmpty:{() implements TOpt method get()
         error Guard.Operation
           "TEmpty.get() Value not present in Optional" }
-      TOf:{(T that)<:TOpt method get() this.that()}
+      TOf:{(T that) implements TOpt method get() this.that()}
       method T ~() this.that().get()
       method Bool isPresent(){
         aux=~this

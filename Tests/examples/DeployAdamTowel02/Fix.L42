@@ -6,37 +6,37 @@ GetMyName:{
   }
 Message:{Opt:{
   TOpt:{interface method This2 get() }
-  TEmpty:{<:TOpt
+  TEmpty:{ implements TOpt
     method get()
       error This4.Guard.Operation
         "TEmpty.get() Value not present in Optional"
   }}}
-Guard:{interface ParseFail:{interface <:Guard}}
+Guard:{interface ParseFail:{interface  implements Guard}}
 Bool:{
-  ParseFail:This2.Message.$<<{<:Guard.ParseFail}
+  ParseFail:This2.Message.$<<{ implements Guard.ParseFail}
   class method
   Any parseError(This2.S that)
     ParseFail"The provided string is not a valid bool: "[that]""
   }
 N:{
-  ParseFail:This2.Message.$<<{<:Guard.ParseFail}
+  ParseFail:This2.Message.$<<{ implements Guard.ParseFail}
   class method
   Any parseError(This2.S that)
     ParseFail"The provided string is not a valid Int32: "[that]""
   }
 S:{
-  SubStringNotPresent:This2.Message.$<<{<:Guard}
+  SubStringNotPresent:This2.Message.$<<{ implements Guard}
   class method Void subStringNotPresent(This2.S string, This2.S subString)
     error SubStringNotPresent"string["[string]"] do not contains ["[subString]""
   }
 Selector:{
-  ParseFail:This2.Message.$<<{<:Guard.ParseFail}
+  ParseFail:This2.Message.$<<{ implements Guard.ParseFail}
   class method
   Any parseError(This2.S that)
     ParseFail"The provided string is not a valid selector: "[that]""
   }
 Path:{
-  ParseFail:This2.Message.$<<{<:Guard.ParseFail}
+  ParseFail:This2.Message.$<<{ implements Guard.ParseFail}
   class method
   Any parseError(This2.S that)
     ParseFail"The provided string is not a valid path: "[that]""

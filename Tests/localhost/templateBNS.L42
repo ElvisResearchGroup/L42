@@ -28,7 +28,7 @@ Generalize:{()
   }
 
 Template:{
-  Bool:{<:S.ToS
+  Bool:{ implements S.ToS
     method Void #checkTrue() exception Void 
     class method This true()
     class method This false()
@@ -36,7 +36,7 @@ Template:{
     method This |(This that)
     method This !()
     }
-  N:{<:S.ToS
+  N:{ implements S.ToS
     class method N #numberParser(Library that)       
     method N +(N that)       
     method N -(N that)       
@@ -51,7 +51,7 @@ Template:{
     method Library binaryRepr()
     }
   
-  S:{<: ToS  
+  S:{ implements  ToS  
     class method This #stringParser(Library that)    
     ToS:{interface method S toS()}  
     method S ++ (ToS that)  

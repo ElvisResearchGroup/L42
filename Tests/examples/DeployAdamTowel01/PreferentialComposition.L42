@@ -44,7 +44,7 @@ class method
 Library <<(Library that) exception MetaGuard.ClassClash,MetaGuard.MethodClash
   Refactor.compose(left:that,right:{
   //members of each produced class
- (Libs myLibs)<:$ //@private
+ (Libs myLibs) implements $ //@private
 
 
   class method

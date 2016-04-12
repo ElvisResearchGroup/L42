@@ -8,7 +8,7 @@ S getToSOrName(read Any that){
     )
   }
 
-  CanNotSpecializeOperation:Message.$<<{<:MetaGuard}
+  CanNotSpecializeOperation:Message.$<<{ implements MetaGuard}
   class method
   Library specializeField(Selector selector, Introspection.Type type, Library forReadable, Library forClass)
   exception CanNotSpecializeOperation {

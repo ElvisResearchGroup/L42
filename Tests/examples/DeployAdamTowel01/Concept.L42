@@ -15,8 +15,8 @@ Named:{interface
 Wrapper:{interface read method Any inner() }
 TypeWrapper:{interface read method class Any inner() }
 ReadWrapper:{interface read method read Any inner() }
-MutWrapper:{interface <:ReadWrapper mut method mut Any #inner()}
-LentWrapper:{interface <:ReadWrapper mut method lent Any #inner()}
+MutWrapper:{interface  implements ReadWrapper mut method mut Any #inner()}
+LentWrapper:{interface  implements ReadWrapper mut method lent Any #inner()}
 
 Equals:{interface
   read method Bool equals(read Any that)

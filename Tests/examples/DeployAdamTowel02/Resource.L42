@@ -1,5 +1,5 @@
 {
-ProvidedValueNotOfExpectedType:Message.$<<{<:Guard}
+ProvidedValueNotOfExpectedType:Message.$<<{ implements Guard}
 class method Library(Any that) {
   with that (
     on Concept.Classable return this(that, clazz:that.classAny())

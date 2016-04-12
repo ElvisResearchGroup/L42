@@ -6,7 +6,7 @@
     method Cell remove(N that)
     }
 
-  CellNext:{(Any val,Cell next)<:Cell
+  CellNext:{(Any val,Cell next) implements Cell
     method get(that) {
       if that==0N (return this.val())
       return  this.next().get(that-1N)
@@ -22,7 +22,7 @@
       }
     }
 
-  CellEnd:{()<:Cell
+  CellEnd:{() implements Cell
     method get(that) error Assert.CodeNotReachable"CellEnd.get"
     method set(that,val,add) {
       if !add (error Assert.CodeNotReachable"CellEnd.set1")

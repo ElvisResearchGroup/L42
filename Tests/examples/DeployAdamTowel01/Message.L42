@@ -1,15 +1,15 @@
-{interface<:Concept.ToS, Concept.Equals, Concept.Classable, Concept.Named
+{interface implements Concept.ToS, Concept.Equals, Concept.Classable, Concept.Named
 class method S kind()
 method S text()
 method Opt responseOf()
 read method class This class()
 Opt:{#new(TOpt that)
   TOpt:{interface method This2 get() }
-  TEmpty:{()<:TOpt method get()
+  TEmpty:{() implements TOpt method get()
     error S"UnsatisfactoryErrorToAvoidCycle, replace in Adam2"
     //error Guard.Operation"TEmpty.get() Value not present in Optional"
     }
-  TOf:{(This2 that)<:TOpt method get() this.that()}
+  TOf:{(This2 that) implements TOpt method get() this.that()}
   method This1 ~() this.that().get()
   method Bool isPresent() {
     unused=~this  //unused=~this
@@ -34,7 +34,7 @@ EqualMessages:{
 $:{()
   class method Library <<(Library that)
     SafeOperatorsAccess.compose(left:that, right:This.messageTrait())
-  class method Library messageTrait() {(S _text, Message.Opt cause)<:Message
+  class method Library messageTrait() {(S _text, Message.Opt cause) implements Message
     method myName()GetMyName(This)
     method kind() this.myName()
     method text() this._text()

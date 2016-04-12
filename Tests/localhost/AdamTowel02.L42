@@ -12,7 +12,7 @@ class method
 Library failure() {//@exitStatus
 //42000
 }}
-Bool:{<:This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Named
+Bool:{implements This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Named
 class method //@private
 mut This0 #mutK_$%23_1_$%0_1_$%106_1_$%213_1_$%321_1_$%430_1_$%540_1_$%651_1_$%763_1_$%876_1_$%990_1__1105_1(Library binaryRepr_$%23_1_$%0_1_$%106_1_$%213_1_$%321_1_$%430_1_$%540_1_$%651_1_$%763_1_$%876_1_$%990_1__1105_1) 
 class method //@private
@@ -355,7 +355,7 @@ Any #1parseError__1107_1(This1.S that) This1.S.#from(builder:(
   Void unused53=b.#2()
   b
   ))
-ParseFail:{<:This2.Guard.ParseFail, This2.Message
+ParseFail:{implements This2.Guard.ParseFail, This2.Message
 Varres__1150_1://@private
 {
 class method 
@@ -524,7 +524,7 @@ mut This2.S.SConcat #seqBuilder() This2.S.SConcat.#apply(old:this.text(), accumu
   This2.S::#builder() b=This2.S.#builder()
   b
   )))}}
-N:{<:This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Named
+N:{implements This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Named
 class method //@private
 mut This0 #mutK_$%25_1_$%2_1_$%108_1_$%215_1_$%324_1_$%433_1_$%543_1_$%654_1_$%766_1_$%879_1_$%993_1__1108_1(Library _binaryRepr_$%25_1_$%2_1_$%108_1_$%215_1_$%324_1_$%433_1_$%543_1_$%654_1_$%766_1_$%879_1_$%993_1__1108_1) 
 class method //@private
@@ -806,7 +806,7 @@ Any #1parseError__1110_1(This1.S that) This1.S.#from(builder:(
   Void unused50=b.#2()
   b
   ))
-ParseFail:{<:This2.Guard.ParseFail, This2.Message
+ParseFail:{implements This2.Guard.ParseFail, This2.Message
 Varres__1151_1://@private
 {
 class method 
@@ -975,7 +975,7 @@ mut This2.S.SConcat #seqBuilder() This2.S.SConcat.#apply(old:this.text(), accumu
   This2.S::#builder() b=This2.S.#builder()
   b
   )))}}
-S:{<:This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Named, This1.Concept.Classable
+S:{implements This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Named, This1.Concept.Classable
 Varcurrent__1152_1://@private
 {
 class method 
@@ -1803,7 +1803,7 @@ class method
 mut This0.SBuilder #builder() This0.SBuilder.empty()
 class method //@private
 Void #1subStringNotPresent__1114_1(This0 string, This0 subString) void
-SubStringNotPresent:{<:This2.Guard, This2.Message
+SubStringNotPresent:{implements This2.Guard, This2.Message
 Varres__1154_1://@private
 {
 class method 
@@ -2369,10 +2369,10 @@ class Any inner() }
 ReadWrapper:{interface 
 read method 
 read Any inner() }
-MutWrapper:{interface <:This1.ReadWrapper
+MutWrapper:{interface implements This1.ReadWrapper
 mut method 
 mut Any #inner() }
-LentWrapper:{interface <:This1.ReadWrapper
+LentWrapper:{interface implements This1.ReadWrapper
 mut method 
 lent Any #inner() }
 Equals:{interface 
@@ -2442,7 +2442,7 @@ This1.S #1#apply__1118_1(class Any that) This1.S.#from(builder:(
   Void unused16=b.#less()
   b
   ))}
-Message:{interface <:This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Classable, This1.Concept.Named
+Message:{interface implements This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Classable, This1.Concept.Named
 class method 
 This1.S kind() 
 method 
@@ -2463,7 +2463,7 @@ This0.TOpt that()
 TOpt:{interface 
 method 
 This2 get() }
-TEmpty:{<:This1.TOpt, This1.TOpt
+TEmpty:{implements This1.TOpt, This1.TOpt
 class method 
 mut This0 #mutK() 
 class method 
@@ -2568,7 +2568,7 @@ method get() error This3.Guard.Operation.#from(builder:(
   Void unused40=b.#l()
   b
   ))}
-TOf:{<:This1.TOpt
+TOf:{implements This1.TOpt
 class method 
 mut This0 #mutK(This2 that) 
 class method 
@@ -2645,7 +2645,7 @@ This0 #apply() This0.#mutK()
 class method 
 Library #leftleft(Library that) This2.SafeOperatorsAccess.compose(left:that, right:This0.messageTrait())
 class method 
-Library messageTrait() {<:This2
+Library messageTrait() {implements This2
 Varres__1155_1://@private
 {
 class method 
@@ -2822,9 +2822,9 @@ Guard:{// exception as Guard bureocracy, error as Guard detection
 //Turning an exception Guard into an error Guard
 // is equivalent of declaring that such misuse should not happen (blame on the caller),
 // still, there is no bug in the program at this stage. Is legit for the caller to try and be blamed
-interface <:This1.Message//all other guards should implement this one
+interface implements This1.Message//all other guards should implement this one
 
-Operation:{<:This1, This2.Message
+Operation:{implements This1, This2.Message
 Varres__1156_1://@private
 {
 class method 
@@ -2993,7 +2993,7 @@ mut This2.S.SConcat #seqBuilder() This2.S.SConcat.#apply(old:this.text(), accumu
   This2.S::#builder() b=This2.S.#builder()
   b
   )))}
-Parameter:{<:This1, This2.Message
+Parameter:{implements This1, This2.Message
 Varres__1157_1://@private
 {
 class method 
@@ -3162,7 +3162,7 @@ mut This2.S.SConcat #seqBuilder() This2.S.SConcat.#apply(old:this.text(), accumu
   This2.S::#builder() b=This2.S.#builder()
   b
   )))}
-Precondition:{<:This1, This2.Message
+Precondition:{implements This1, This2.Message
 Varres__1158_1://@private
 {
 class method 
@@ -3331,11 +3331,11 @@ mut This2.S.SConcat #seqBuilder() This2.S.SConcat.#apply(old:this.text(), accumu
   This2.S::#builder() b=This2.S.#builder()
   b
   )))}
-ParseFail:{interface <:This1, This1}}
+ParseFail:{interface implements This1, This1}}
 System:{
-Guard:{//<:Outer.Guard soon (remove "interface" for a bad translation bug: This1_System_Guard is not abstract and does not override abstract method MtoS()
-interface <:This2.Guard
-PluginFailure:{<:This1, This3.Message
+Guard:{// implements Outer.Guard soon (remove "interface" for a bad translation bug: This1_System_Guard is not abstract and does not override abstract method MtoS()
+interface implements This2.Guard
+PluginFailure:{implements This1, This3.Message
 Varres__1159_1://@private
 {
 class method 
@@ -3504,8 +3504,8 @@ mut This3.S.SConcat #seqBuilder() This3.S.SConcat.#apply(old:this.text(), accumu
   This3.S::#builder() b=This3.S.#builder()
   b
   )))}}}
-Assert:{interface <:This1.Message
-NotImplementedYet:{<:This1, This2.Message
+Assert:{interface implements This1.Message
+NotImplementedYet:{implements This1, This2.Message
 Varres__1160_1://@private
 {
 class method 
@@ -3674,7 +3674,7 @@ mut This2.S.SConcat #seqBuilder() This2.S.SConcat.#apply(old:this.text(), accumu
   This2.S::#builder() b=This2.S.#builder()
   b
   )))}
-ObservedBug:{<:This1, This2.Message
+ObservedBug:{implements This1, This2.Message
 Varres__1161_1://@private
 {
 class method 
@@ -3843,7 +3843,7 @@ mut This2.S.SConcat #seqBuilder() This2.S.SConcat.#apply(old:this.text(), accumu
   This2.S::#builder() b=This2.S.#builder()
   b
   )))}
-CodeNotReachable:{<:This1, This2.Message
+CodeNotReachable:{implements This1, This2.Message
 Varres__1162_1://@private
 {
 class method 
@@ -4012,7 +4012,7 @@ mut This2.S.SConcat #seqBuilder() This2.S.SConcat.#apply(old:this.text(), accumu
   This2.S::#builder() b=This2.S.#builder()
   b
   )))}
-AssertMessage:{<:This1, This2.Message
+AssertMessage:{implements This1, This2.Message
 Varres__1163_1://@private
 {
 class method 
@@ -4182,7 +4182,7 @@ mut This2.S.SConcat #seqBuilder() This2.S.SConcat.#apply(old:this.text(), accumu
   b
   )))}}
 Collections:{
-IterationFailure:{<:This2.Guard, This2.Message
+IterationFailure:{implements This2.Guard, This2.Message
 Varres__1164_1://@private
 {
 class method 
@@ -4635,14 +4635,14 @@ mut method
 This2.N #size() 
 read method 
 This2.N size() 
-Cell:{interface <:Any
+Cell:{interface implements Any
 method 
 Any get(This3.N that) 
 method 
 This0 set(This3.N that, Any val, This3.Bool add) 
 method 
 This0 remove(This3.N that) }
-CellNext:{<:This1.Cell
+CellNext:{implements This1.Cell
 class method 
 mut This0 #mutK(Any val, This1.Cell next) 
 class method 
@@ -4752,7 +4752,7 @@ method remove(that ) (
   //CurlyBlock-Should be unreachable code
   }
   )}
-CellEnd:{<:This1.Cell
+CellEnd:{implements This1.Cell
 class method 
 mut This0 #mutK() 
 class method 
@@ -5557,7 +5557,7 @@ Void inner(This1.Elem that) (
   )}}}
 CodeEq:{
 class method 
-Library #apply() {<:This3.Concept.Equals
+Library #apply() {implements This3.Concept.Equals
 read method 
 This3.N size() 
 class method 
@@ -5566,7 +5566,7 @@ class method
 This0 #from(This0 seqBuilder) 
 mut method 
 Void #add(This0.Elem that) 
-Elem:{<:This4.Concept.Equals}
+Elem:{implements This4.Concept.Equals}
 read method 
 lent This0.IteratorVal vals() 
 IteratorVal:{
@@ -5926,7 +5926,7 @@ method equals(that ) (
   //CurlyBlock-Should be unreachable code
   }
   )}}}
-Strings:{<:This1.Concept.Equals
+Strings:{implements This1.Concept.Equals
 class method 
 mut This0 #mutK(mut This1.Collections.MutListAny inner) 
 class method 
@@ -6837,7 +6837,7 @@ class method
 mut This0 #mutK() 
 class method 
 This0 #apply() This0.#mutK()}
-Path:{<:This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Named
+Path:{implements This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Named
 Varstr__1165_1://@private
 {
 class method 
@@ -7517,7 +7517,7 @@ Any #1parseError__1123_1(This1.S that, This1.Message cause) (
     b1
     ))
   )
-ParseFail:{<:This2.Guard.ParseFail, This2.Message
+ParseFail:{implements This2.Guard.ParseFail, This2.Message
 Varres__1166_1://@private
 {
 class method 
@@ -7686,7 +7686,7 @@ mut This2.S.SConcat #seqBuilder() This2.S.SConcat.#apply(old:this.text(), accumu
   This2.S::#builder() b=This2.S.#builder()
   b
   )))}}
-Selector:{<:This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Named
+Selector:{implements This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Named
 Varstr0__1167_1://@private
 {
 class method 
@@ -8323,7 +8323,7 @@ Any #1parseError__1126_1(This1.S that) This1.S.#from(builder:(
   Void unused57=b.#2()
   b
   ))
-ParseFail:{<:This2.Guard.ParseFail, This2.Message
+ParseFail:{implements This2.Guard.ParseFail, This2.Message
 Varres__1170_1://@private
 {
 class method 
@@ -9032,7 +9032,7 @@ Library #leftleft(Library that) This1.SafeOperatorsAccess.compose(left:This1.Saf
 SolidTrait:{
 class method 
 Library #apply() {//Data is more than Solid, and Liquid, Gas, Plasma can be good methafores
-<:This3.Concept.ToS, This3.Concept.Equals, This3.Concept.Classable, This3.Concept.Named//may be Parsable?
+implements This3.Concept.ToS, This3.Concept.Equals, This3.Concept.Classable, This3.Concept.Named//may be Parsable?
 
 method classAny() This0
 read method 
@@ -9076,7 +9076,7 @@ read method
 This3.Bool #bangequal(read This0 that) this.#equalequal(that:that).#bang()}}
 class method 
 Library enumTrait() {
-ParseFail:{<:This3.Guard.ParseFail, This3.Message
+ParseFail:{implements This3.Guard.ParseFail, This3.Message
 Varres__1171_1://@private
 {
 class method 
@@ -9246,7 +9246,7 @@ mut This3.S.SConcat #seqBuilder() This3.S.SConcat.#apply(old:this.text(), accumu
   b
   )))}
 Top:{//Data is more than Solid, and Liquid, Gas, Plasma can be good methafores
-<:This3.Concept.ToS, This3.Concept.Equals, This3.Concept.Classable, This3.Concept.Named, This3.Concept.ToS//may be Parsable?
+implements This3.Concept.ToS, This3.Concept.Equals, This3.Concept.Classable, This3.Concept.Named, This3.Concept.ToS//may be Parsable?
 
 method classAny() This0
 read method 
@@ -9481,7 +9481,7 @@ This0 fromS(This3.S that) (
   //CurlyBlock-Should be unreachable code
   }
   )}
-List:{<:This3.Concept.Equals
+List:{implements This3.Concept.Equals
 class method 
 mut This0 #mutK(mut This3.Collections.MutListAny inner) 
 class method 
@@ -10483,7 +10483,7 @@ This0.NestedClass #apply(class Any clazz, This1.Path path) (
   
   root
   )
-MirrorPr:{interface <:This2.Concept.ToS
+MirrorPr:{interface implements This2.Concept.ToS
 method 
 This1.NestedClass introspectReport(fwd This1.NestedClass root, This2.Path path) exception This2.MetaGuard.NestedClassUnavailable 
 method 
@@ -10496,7 +10496,7 @@ method
 This2.S introspectDocAsString(This2.Path path, This2.N annotationN) exception This2.MetaGuard.NestedClassUnavailable, Void 
 method 
 class Any introspectDocPath(This2.Path path, This2.N annotationN) exception This2.MetaGuard.NestedClassUnavailable, Void 
-Lib:{<:This1
+Lib:{implements This1
 class method 
 mut This0 #mutK(Library lib) 
 class method 
@@ -10678,7 +10678,7 @@ method introspectDocPath(path annotationN ) (
   
   result
   )}
-Class:{<:This1
+Class:{implements This1
 class method 
 mut This0 #mutK(class Any lib) 
 class method 
@@ -10870,7 +10870,7 @@ method introspectDocPath(path annotationN ) (
   
   result
   )}}
-Doc:{<:This2.Concept.ToS, This2.Concept.Named
+Doc:{implements This2.Concept.ToS, This2.Concept.Named
 VaraN__1172_1://@private
 {
 class method 
@@ -10896,7 +10896,7 @@ This0.Annotations #_annotations_$%36_1_$%13_1_$%120_1_$%228_1_$%337_1_$%447_1_$%
 read method //@private
 This0.Annotations _annotations_$%36_1_$%13_1_$%120_1_$%228_1_$%337_1_$%447_1_$%558_1_$%670_1_$%783_1_$%897_1_$%1012_1__1127_1() 
 method myName() This2.GetMyName.#apply(that:This0)
-Annotation:{<:This3.Concept.ToS, This3.Concept.Named
+Annotation:{implements This3.Concept.ToS, This3.Concept.Named
 class method 
 mut This0 #mutK(Library _binaryRepr, This3.S text, This3.N index) 
 class method 
@@ -11813,7 +11813,7 @@ RootForMember:// toPutAs private
 method 
 This2.Member #apply(fwd This2.NestedClass root) }
 RootForNested:// toPutAs private
-{<:This1.RootForMember
+{implements This1.RootForMember
 class method 
 mut This0 #mutK(This3.Path path, This2.MirrorPr mirror, This1 _report) 
 class method 
@@ -11844,7 +11844,7 @@ method #apply(root ) (
   This2.NestedClass.#apply__1132_1(_root:root, path:path, mirror:this.mirror(), record:this._report())
   )}
 RootForMethod:// toPutAs private
-{<:This1.RootForMember
+{implements This1.RootForMember
 class method 
 mut This0 #mutK(This3.Path path, This3.N memberN, This1 _report) 
 class method 
@@ -12049,8 +12049,8 @@ This1.Member dispatch(fwd This1.NestedClass root, This2.Path path, This1.MirrorP
     )
   result.#apply(root:root)
   )}
-Member:{interface <:This2.Concept.ToS, This2.Concept.Named, This2.Concept.Equals}
-Members:{<:This2.Concept.Equals
+Member:{interface implements This2.Concept.ToS, This2.Concept.Named, This2.Concept.Equals}
+Members:{implements This2.Concept.Equals
 class method 
 mut This0 #mutK(mut This2.Collections.MutListAny inner) 
 class method 
@@ -12956,7 +12956,7 @@ method equals(that ) (
   //CurlyBlock-Should be unreachable code
   }
   )}
-Method:{<:This1.Member, This2.Concept.Equals
+Method:{implements This1.Member, This2.Concept.Equals
 VarpN__1173_1://@private
 {
 class method 
@@ -13345,7 +13345,7 @@ This2.Bool isPrivate() (
   )
 method 
 This1.NestedClass root() this._root_$%38_1_$%15_1_$%122_1_$%230_1_$%339_1_$%449_1_$%560_1_$%672_1_$%785_1_$%899_1_$%1014_1__1129_1()}
-Methods:{<:This2.Concept.Equals
+Methods:{implements This2.Concept.Equals
 class method 
 mut This0 #mutK(mut This2.Collections.MutListAny inner) 
 class method 
@@ -14252,7 +14252,7 @@ method equals(that ) (
   }
   )}
 NestedClass:{//findMeNestedClass
-<:This1.Member, This2.Concept.Equals
+implements This1.Member, This2.Concept.Equals
 VarmN__1174_1://@private
 {
 class method 
@@ -16359,7 +16359,7 @@ This2.Bool isPrivate() (
   //CurlyBlock-Should be unreachable code
   }
   )}
-NestedClasses:{<:This2.Concept.Equals
+NestedClasses:{implements This2.Concept.Equals
 class method 
 mut This0 #mutK(mut This2.Collections.MutListAny inner) 
 class method 
@@ -17265,7 +17265,7 @@ method equals(that ) (
   //CurlyBlock-Should be unreachable code
   }
   )}
-Type:{<:This2.Concept.ToS, This2.Concept.Named
+Type:{implements This2.Concept.ToS, This2.Concept.Named
 class method //@private
 mut This0 #mutK_$%45_1_$%22_1_$%129_1_$%237_1_$%346_1_$%456_1_$%567_1_$%679_1_$%792_1_$%906_1_$%1021_1__1136_1(fwd This1.NestedClass root_$%45_1_$%22_1_$%129_1_$%237_1_$%346_1_$%456_1_$%567_1_$%679_1_$%792_1_$%906_1_$%1021_1__1136_1, This2.Path path_$%45_1_$%22_1_$%129_1_$%237_1_$%346_1_$%456_1_$%567_1_$%679_1_$%792_1_$%906_1_$%1021_1__1136_1, This2.N memberN_$%45_1_$%22_1_$%129_1_$%237_1_$%346_1_$%456_1_$%567_1_$%679_1_$%792_1_$%906_1_$%1021_1__1136_1, This2.N typeN_$%45_1_$%22_1_$%129_1_$%237_1_$%346_1_$%456_1_$%567_1_$%679_1_$%792_1_$%906_1_$%1021_1__1136_1, This1.Record record_$%45_1_$%22_1_$%129_1_$%237_1_$%346_1_$%456_1_$%567_1_$%679_1_$%792_1_$%906_1_$%1021_1__1136_1) 
 class method //@private
@@ -18452,9 +18452,9 @@ Void inner(This2.Type that) (
   rcv32.#apply(that:this.from(), val:that)
   )}}
 Mdf:{//Data is more than Solid, and Liquid, Gas, Plasma can be good methafores
-<:This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable, This2.Concept.Named, This2.Concept.ToS//may be Parsable?
+implements This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable, This2.Concept.Named, This2.Concept.ToS//may be Parsable?
 
-ParseFail:{<:This3.Guard.ParseFail, This3.Message
+ParseFail:{implements This3.Guard.ParseFail, This3.Message
 Varres__1181_1://@private
 {
 class method 
@@ -18623,7 +18623,7 @@ mut This3.S.SConcat #seqBuilder() This3.S.SConcat.#apply(old:this.text(), accumu
   This3.S::#builder() b=This3.S.#builder()
   b
   )))}
-List:{<:This3.Concept.Equals
+List:{implements This3.Concept.Equals
 class method 
 mut This0 #mutK(mut This3.Collections.MutListAny inner) 
 class method 
@@ -19902,9 +19902,9 @@ This2.Bool isClass() this.that().#equalequal(that:This2.N.#from(builder:(
   b
   )))}
 MethodKind:{//Data is more than Solid, and Liquid, Gas, Plasma can be good methafores
-<:This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable, This2.Concept.Named, This2.Concept.ToS//may be Parsable?
+implements This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable, This2.Concept.Named, This2.Concept.ToS//may be Parsable?
 
-ParseFail:{<:This3.Guard.ParseFail, This3.Message
+ParseFail:{implements This3.Guard.ParseFail, This3.Message
 Varres__1182_1://@private
 {
 class method 
@@ -20073,7 +20073,7 @@ mut This3.S.SConcat #seqBuilder() This3.S.SConcat.#apply(old:this.text(), accumu
   This3.S::#builder() b=This3.S.#builder()
   b
   )))}
-List:{<:This3.Concept.Equals
+List:{implements This3.Concept.Equals
 class method 
 mut This0 #mutK(mut This3.Collections.MutListAny inner) 
 class method 
@@ -21303,9 +21303,9 @@ This0 _AbstractMethod() This0.#apply(that:This2.N.#from(builder:(
   b
   )))}
 ClassKind:{//Data is more than Solid, and Liquid, Gas, Plasma can be good methafores
-<:This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable, This2.Concept.Named, This2.Concept.ToS//may be Parsable?
+implements This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable, This2.Concept.Named, This2.Concept.ToS//may be Parsable?
 
-ParseFail:{<:This3.Guard.ParseFail, This3.Message
+ParseFail:{implements This3.Guard.ParseFail, This3.Message
 Varres__1183_1://@private
 {
 class method 
@@ -21474,7 +21474,7 @@ mut This3.S.SConcat #seqBuilder() This3.S.SConcat.#apply(old:this.text(), accumu
   This3.S::#builder() b=This3.S.#builder()
   b
   )))}
-List:{<:This3.Concept.Equals
+List:{implements This3.Concept.Equals
 class method 
 mut This0 #mutK(mut This3.Collections.MutListAny inner) 
 class method 
@@ -22717,9 +22717,9 @@ This0 _FreeTemplate() This0.#apply(that:This2.N.#from(builder:(
   )))}
 TypeKind:{//Data is more than Solid, and Liquid, Gas, Plasma can be good methafores
 //may disappear
-<:This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable, This2.Concept.Named, This2.Concept.ToS//may be Parsable?
+implements This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable, This2.Concept.Named, This2.Concept.ToS//may be Parsable?
 
-ParseFail:{<:This3.Guard.ParseFail, This3.Message
+ParseFail:{implements This3.Guard.ParseFail, This3.Message
 Varres__1184_1://@private
 {
 class method 
@@ -22888,7 +22888,7 @@ mut This3.S.SConcat #seqBuilder() This3.S.SConcat.#apply(old:this.text(), accumu
   This3.S::#builder() b=This3.S.#builder()
   b
   )))}
-List:{<:This3.Concept.Equals
+List:{implements This3.Concept.Equals
 class method 
 mut This0 #mutK(mut This3.Collections.MutListAny inner) 
 class method 
@@ -24088,7 +24088,7 @@ This0 _AliasUnresolvable() This0.#apply(that:This2.N.#from(builder:(
   Void unused=b.#2()
   b
   )))}}
-MetaGuard:{interface <:This1.Guard
+MetaGuard:{interface implements This1.Guard
 RecordWrapper:// can not be private, I need to Patch it.
 {
 class method 
@@ -24181,12 +24181,12 @@ This2.S libToS(Library that) (
     )
   )
 class method 
-Library recordWrapperToSTrait() {<:This2
+Library recordWrapperToSTrait() {implements This2
 method toS() This0.myName().#plusplus(that:This1.libToS(that:this.lib()))
 method 
 Library lib() }
 class method 
-Library recordWrapperTrait() {<:This2
+Library recordWrapperTrait() {implements This2
 method kind() This0.myName()
 method text() This3.S.#from(builder:(
   This3.S::#builder() b=This3.S.#builder()
@@ -24308,7 +24308,7 @@ This2.S #1libToS__1139_1(Library that) This2.S.#from(builder:(
   Void unused4=b.#X()
   b
   ))}
-SourceUnfit:{<:This1, This1
+SourceUnfit:{implements This1, This1
 class method 
 This2.S libName() This2.S.#from(builder:(
   This2.S::#builder() b=This2.S.#builder()
@@ -24399,7 +24399,7 @@ method
 Library lib() 
 class method 
 mut This0 #mut(fwd This2.Introspection.Record record, fwd Library lib) }
-IncoherentRedirectMapping:{<:This1, This1
+IncoherentRedirectMapping:{implements This1, This1
 class method 
 This2.S libName() This2.S.#from(builder:(
   This2.S::#builder() b=This2.S.#builder()
@@ -24504,7 +24504,7 @@ method
 Library lib() 
 class method 
 mut This0 #mut(fwd This2.Introspection.Record record, fwd Library lib) }
-ClassClash:{<:This1, This1
+ClassClash:{implements This1, This1
 class method 
 This2.S libName() This2.S.#from(builder:(
   This2.S::#builder() b=This2.S.#builder()
@@ -24594,7 +24594,7 @@ method
 Library lib() 
 class method 
 mut This0 #mut(fwd This2.Introspection.Record record, fwd Library lib) }
-MethodClash:{<:This1, This1
+MethodClash:{implements This1, This1
 class method 
 This2.S libName() This2.S.#from(builder:(
   This2.S::#builder() b=This2.S.#builder()
@@ -24685,7 +24685,7 @@ method
 Library lib() 
 class method 
 mut This0 #mut(fwd This2.Introspection.Record record, fwd Library lib) }
-InvalidOnTopLevel:{<:This1, This1
+InvalidOnTopLevel:{implements This1, This1
 class method 
 This2.S libName() This2.S.#from(builder:(
   This2.S::#builder() b=This2.S.#builder()
@@ -24782,7 +24782,7 @@ method
 Library lib() 
 class method 
 mut This0 #mut(fwd This2.Introspection.Record record, fwd Library lib) }
-PrivacyCoupuled:{<:This1, This1
+PrivacyCoupuled:{implements This1, This1
 class method 
 This2.S libName() This2.S.#from(builder:(
   This2.S::#builder() b=This2.S.#builder()
@@ -24877,7 +24877,7 @@ method
 Library lib() 
 class method 
 mut This0 #mut(fwd This2.Introspection.Record record, fwd Library lib) }
-ParameterMismatch:{<:This1, This1
+ParameterMismatch:{implements This1, This1
 class method 
 This2.S libName() This2.S.#from(builder:(
   This2.S::#builder() b=This2.S.#builder()
@@ -24974,7 +24974,7 @@ method
 Library lib() 
 class method 
 mut This0 #mut(fwd This2.Introspection.Record record, fwd Library lib) }
-MemberUnavailable:{interface <:This1}
+MemberUnavailable:{interface implements This1}
 DispatchMemberUnavailable:{
 class method 
 Void #apply(Library that) exception This1.MemberUnavailable (
@@ -25053,7 +25053,7 @@ Void #apply(Library that) exception This1.MemberUnavailable (
       )
     )
   )}
-NestedClassUnavailable:{<:This1.MemberUnavailable, This1
+NestedClassUnavailable:{implements This1.MemberUnavailable, This1
 class method 
 mut This0 #mutK(This2.Path path, This2.Bool isPrivate) 
 class method 
@@ -25224,7 +25224,7 @@ Void #apply(Library lift) exception This0 (
       )
     )
   )}
-MethodUnavailable:{<:This1.MemberUnavailable, This1
+MethodUnavailable:{implements This1.MemberUnavailable, This1
 class method 
 mut This0 #mutK(This2.Path path, This2.Selector selector, This2.Bool isPrivate) 
 class method 
@@ -26126,7 +26126,7 @@ This2.S getToSOrName(read Any that) (
   //CurlyBlock-Should be unreachable code
   }
   )
-CanNotSpecializeOperation:{<:This3.MetaGuard, This3.Message
+CanNotSpecializeOperation:{implements This3.MetaGuard, This3.Message
 Varres__1186_1://@private
 {
 class method 
@@ -26480,7 +26480,7 @@ T:{}
 TOpt:{interface 
 method 
 This1.T get() }
-TEmpty:{<:This1.TOpt
+TEmpty:{implements This1.TOpt
 class method 
 mut This0 #mutK() 
 class method 
@@ -26531,7 +26531,7 @@ method get() error This3.Guard.Operation.#from(builder:(
   Void unused40=b.#l()
   b
   ))}
-TOf:{<:This1.TOpt
+TOf:{implements This1.TOpt
 class method 
 mut This0 #mutK(This1.T that) 
 class method 
@@ -27952,7 +27952,7 @@ This1.Bool needRename(This1.Introspection.NestedClass that, This1.Introspection.
   )
 class method 
 Library #leftleft(Library that) exception This1.MetaGuard.ClassClash, This1.MetaGuard.MethodClash This1.Refactor.compose(left:that, right:{//members of each produced class
-<:This1.$
+implements This1.$
 Varacc__1187_1://@private
 {
 class method 
@@ -28340,7 +28340,7 @@ Library foldLeft(Library resolver) exception This2.MetaGuard.ClassClash, This2.M
   }
   )})}
 Extends:{//members of each produced class
-<:This1.PreferentialComposition.$, This1.PreferentialComposition.$
+implements This1.PreferentialComposition.$, This1.PreferentialComposition.$
 method solveConflict(that location ) (
   Void unused=(
     Void unused0=return This1.Refactor.MoveImplementationSelector.#apply(that:location.src(), of:location.path(), to:location.dest()).#leftleft(that:that)
@@ -28746,7 +28746,7 @@ Library foldLeft(Library resolver) exception This1.MetaGuard.ClassClash, This1.M
   }
   )}
 Use:{//members of each produced class
-<:This1.PreferentialComposition.$, This1.PreferentialComposition.$
+implements This1.PreferentialComposition.$, This1.PreferentialComposition.$
 method solveConflict(that location ) (
   Void unused=(
     Void unused0=return This1.Refactor.RenameSelector.#apply(that:location.src(), of:location.path(), to:location.dest()).#leftleft(that:that)
@@ -29435,7 +29435,7 @@ This1.PreferentialComposition.SrcDests renameMap__1147_1(Library that, This1.S p
   b
   ))}
 Default:{
-DecorationUnfeasable:{<:This2.MetaGuard, This2.Message
+DecorationUnfeasable:{implements This2.MetaGuard, This2.Message
 Varres__1197_1://@private
 {
 class method 
@@ -29610,7 +29610,7 @@ Library #leftleft(Library that) exception This1.DecorationUnfeasable (
   Void unused=(
     Void unused0=return This2.Extends.#from(seqBuilder:(
       This2.Extends::#seqBuilder() b=This2.Extends.#seqBuilder()
-      Void unused1=b.#add(that:{//ParseFailure:Message:S[]<<{<:Guard} no need, related to invariant?
+      Void unused1=b.#add(that:{//ParseFailure:Message:S[]<<{ implements Guard} no need, related to invariant?
       
       class method // if you do not implement it, it is a constructor?
       This0 fromS(read This3.Concept.ToS that) 
@@ -29666,7 +29666,7 @@ Library #leftleft(Library that) exception This1.DecorationUnfeasable (
   Void unused=(
     Void unused0=return This2.Extends.#from(seqBuilder:(
       This2.Extends::#seqBuilder() b=This2.Extends.#seqBuilder()
-      Void unused1=b.#add(that:{<:This3.Concept.ToS
+      Void unused1=b.#add(that:{implements This3.Concept.ToS
       method 
       This3.Bool #bangequal(This0 that) this.#equalequal(that:that).#bang()
       read method 
@@ -29696,7 +29696,7 @@ Library #leftleft(Library that) exception This1.DecorationUnfeasable (
   Void unused=(
     Void unused0=return This2.Extends.#from(seqBuilder:(
       This2.Extends::#seqBuilder() b=This2.Extends.#seqBuilder()
-      Void unused1=b.#add(that:{<:This3.Concept.Equals
+      Void unused1=b.#add(that:{implements This3.Concept.Equals
       method equals(that ) (
         Void unused=(
           Void unused0=(
@@ -29760,7 +29760,7 @@ Library #leftleft(Library that) exception This1.DecorationUnfeasable (
   Void unused=(
     Void unused0=return This2.Extends.#from(seqBuilder:(
       This2.Extends::#seqBuilder() b=This2.Extends.#seqBuilder()
-      Void unused1=b.#add(that:{<:This3.Concept.Named
+      Void unused1=b.#add(that:{implements This3.Concept.Named
       method myName() This3.Introspection.#apply(clazz:This0).externalTypeToS()})
       b
       )).#leftleft(that:that)
@@ -29784,8 +29784,8 @@ Library #leftleft(Library that) exception This1.DecorationUnfeasable (
   //CurlyBlock-Should be unreachable code
   }
   )}}
-Url:{//ParseFailure:Message:S[]<<{<:Guard} no need, related to invariant?
-<:This1.Concept.ToS
+Url:{//ParseFailure:Message:S[]<<{ implements Guard} no need, related to invariant?
+implements This1.Concept.ToS
 class method // if you do not implement it, it is a constructor?
 This0 fromS(read This1.Concept.ToS that) This0.#apply(inner:that.toS())
 class method 
@@ -30251,7 +30251,7 @@ Void checkAction__1149_1(Library that) exception This0.InvalidAction (
       )
     )
   )
-InvalidAction:{<:This2.MetaGuard, This2.Message
+InvalidAction:{implements This2.MetaGuard, This2.Message
 Varres__1201_1://@private
 {
 class method 
@@ -30453,7 +30453,7 @@ mut method
 This1.Selector #by() 
 read method 
 This1.Selector by() 
-ParameterNameNotPresent:{<:This2.MetaGuard, This2.Message
+ParameterNameNotPresent:{implements This2.MetaGuard, This2.Message
 Varres__1203_1://@private
 {
 class method 
@@ -30622,7 +30622,7 @@ mut This2.S.SConcat #seqBuilder() This2.S.SConcat.#apply(old:this.text(), accumu
   This2.S::#builder() b=This2.S.#builder()
   b
   )))}
-DefaultValueInvalid:{<:This2.MetaGuard, This2.Message
+DefaultValueInvalid:{implements This2.MetaGuard, This2.Message
 Varres__1204_1://@private
 {
 class method 
@@ -31117,7 +31117,7 @@ Load:{//shape of a loadable library:
 // Abstract:{} contains abstract classes, and
 // Abstract.ConceptMap mapps concepts names to abstract classes
 
-ConceptMapMismatch:{<:This2.MetaGuard, This2.Message
+ConceptMapMismatch:{implements This2.MetaGuard, This2.Message
 Varres__1205_1://@private
 {
 class method 
@@ -31286,7 +31286,7 @@ mut This2.S.SConcat #seqBuilder() This2.S.SConcat.#apply(old:this.text(), accumu
   This2.S::#builder() b=This2.S.#builder()
   b
   )))}
-ConceptMapUnavailable:{<:This2.MetaGuard, This2.Message
+ConceptMapUnavailable:{implements This2.MetaGuard, This2.Message
 Varres__1206_1://@private
 {
 class method 
@@ -32271,7 +32271,7 @@ Library #leftleft(Library that) exception This2.MetaGuard.NestedClassUnavailable
   }
   )}}
 Resource:{
-ProvidedValueNotOfExpectedType:{<:This2.Guard, This2.Message
+ProvidedValueNotOfExpectedType:{implements This2.Guard, This2.Message
 Varres__1209_1://@private
 {
 class method 
@@ -32624,7 +32624,7 @@ mut method
 Library #inner() 
 read method 
 Library inner() }
-StateUnfit:{<:This2.MetaGuard, This2.Message
+StateUnfit:{implements This2.MetaGuard, This2.Message
 Varres__1211_1://@private
 {
 class method 
@@ -32806,7 +32806,7 @@ mut method
 Library #inner() 
 read method 
 Library inner() }
-Failure:{<:This3.MetaGuard, This3.Message
+Failure:{implements This3.MetaGuard, This3.Message
 Varres__1213_1://@private
 {
 class method 
@@ -33024,7 +33024,7 @@ Library constructorAction(This2.Introspection.Type that) (
         
         catch exception Void catched0 void
         
-        return {<:This3.Concept.Invariant
+        return {implements This3.Concept.Invariant
         class method 
         This0 #apply(This0 that) (
           Void unused=This1.checkInvariant(that:that)
@@ -33039,7 +33039,7 @@ Library constructorAction(This2.Introspection.Type that) (
         
         catch exception Void catched2 void
         
-        return {<:This3.Concept.Invariant
+        return {implements This3.Concept.Invariant
         class method 
         mut This0 #apply(mut This0 that) (
           Void unused=This1.checkInvariant(that:that)
@@ -33054,7 +33054,7 @@ Library constructorAction(This2.Introspection.Type that) (
         
         catch exception Void catched4 void
         
-        return {<:This3.Concept.Invariant
+        return {implements This3.Concept.Invariant
         class method 
         lent This0 #apply(lent This0 that) (
           Void unused=This1.checkInvariant(that:that)
@@ -33069,7 +33069,7 @@ Library constructorAction(This2.Introspection.Type that) (
         
         catch exception Void catched6 void
         
-        return {<:This3.Concept.Invariant
+        return {implements This3.Concept.Invariant
         class method 
         read This0 #apply(read This0 that) (
           Void unused=This1.checkInvariant(that:that)
@@ -33084,7 +33084,7 @@ Library constructorAction(This2.Introspection.Type that) (
         
         catch exception Void catched8 void
         
-        return {<:This3.Concept.Invariant
+        return {implements This3.Concept.Invariant
         class method 
         capsule This0 #apply(capsule This0 that) (
           mut This0 open=that
@@ -33138,7 +33138,7 @@ Library constructorAction(This2.Introspection.Type that) (
   }
   )
 class method 
-Library setterAction() {<:This3.Concept.Invariant
+Library setterAction() {implements This3.Concept.Invariant
 mut method 
 Void #apply(Void that) (
   Void unused=This1.checkInvariant(that:this)
@@ -34183,7 +34183,7 @@ mut method
 Library #inner() 
 read method 
 Library inner() }
-Selectors:{<:This3.Concept.Equals
+Selectors:{implements This3.Concept.Equals
 class method 
 mut This0 #mutK(mut This3.Collections.MutListAny inner) 
 class method 
@@ -35798,7 +35798,7 @@ Library toSTrait(This2.Introspection.NestedClass that) (
         b3
         ))
       )})
-    Library miniToS={<:This3.Concept.ToS
+    Library miniToS={implements This3.Concept.ToS
     method toS() (
       This3.S::#from(builder ) ::#from(seqBuilder ) rcv44=(
         This3.S::#from(builder ) rcv45=This3.S.#from(builder:(
@@ -36141,7 +36141,7 @@ Library equalsTrait(This2.Introspection.NestedClass that) (
                           Library action=This2.Refactor.Tools.specializeField(selector:fSel, type:ft.#inner(), forReadable:{
                           read method 
                           This3.Bool baseEquals(read This0 that) this.f().equals(that:that.f())
-                          T:{<:This4.Concept.Equals}
+                          T:{implements This4.Concept.Equals}
                           read method 
                           read This0.T f() }, forClass:{
                           read method 
@@ -36226,7 +36226,7 @@ Library equalsTrait(This2.Introspection.NestedClass that) (
       //CurlyBlock-Should be unreachable code
       }
       )})
-    Library miniEquals={<:This3.Concept.Equals
+    Library miniEquals={implements This3.Concept.Equals
     read method 
     This3.Bool baseEquals(read This0 that) This3.Bool.true()
     method equals(that ) (
@@ -36349,7 +36349,7 @@ Library equalsTrait(This2.Introspection.NestedClass that) (
   }
   )}
 class method 
-Library nameTrait() {<:This2.Concept.Classable, This2.Concept.Named//may be Parsable?
+Library nameTrait() {implements This2.Concept.Classable, This2.Concept.Named//may be Parsable?
 
 method classAny() This0
 read method 

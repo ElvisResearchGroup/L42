@@ -40,7 +40,7 @@ MyMap:{
 
 
 // [c] write a class method Strings upTo(Strings that, N size) that filters out from a list of strings the ones longer than size.
-UndefinedOnEmptyList: Message.$<<{<:Guard}
+UndefinedOnEmptyList: Message.$<<{ implements Guard}
 CoreC:{
     class method SL upTo(SL list, N size){
         if list.isEmpty() (error UndefinedOnEmptyList"on CoreC.upTo")
@@ -57,7 +57,7 @@ CoreC:{
 //
 // Creates a Number List from the given elements
 //
-SL:Use[Collections.vector(ofEq:S)]<<{<:Concept.ToS
+SL:Use[Collections.vector(ofEq:S)]<<{ implements Concept.ToS
   method toS()
     S"["[with e in this.vals() (
       use[e separedBy:S";"]
@@ -67,7 +67,7 @@ SL:Use[Collections.vector(ofEq:S)]<<{<:Concept.ToS
 //
 // Creates a Number List from the given elements
 //
-NL:Use[Collections.vector(ofEq:N)]<<{<:Concept.ToS
+NL:Use[Collections.vector(ofEq:N)]<<{ implements Concept.ToS
   method toS()
     S"["[with e in this.vals() (
       use[e separedBy:S";"]
@@ -78,7 +78,7 @@ NL:Use[Collections.vector(ofEq:N)]<<{<:Concept.ToS
 // A collection that contains Numbers
 // Contains additional operators such as <<, <<=, >>, >>=
 //
-CompletionB_OLD:Use[Collections.vector(ofEq:N)]<<{<:Concept.ToS
+CompletionB_OLD:Use[Collections.vector(ofEq:N)]<<{ implements Concept.ToS
   method toS()
     S"["[with e in this.vals() (
       use[e separedBy:S"; "]
@@ -116,7 +116,7 @@ CompletionB_OLD:Use[Collections.vector(ofEq:N)]<<{<:Concept.ToS
 // A collection that contains Numbers
 // Contains additional operators such as <<, <<=, >>, >>=
 //
-CompletionB:Use[Collections.vector(ofEq:N)]<<{<:Concept.ToS
+CompletionB:Use[Collections.vector(ofEq:N)]<<{ implements Concept.ToS
   method toS()
     S"["[with e in this.vals() (
       use[e separedBy:S"; "]
@@ -169,7 +169,7 @@ CoreD:{
 //
 
 
-Person:Data.Invariant<<{(S name, N age) <:Concept.ToS, Concept.Invariant
+Person:Data.Invariant<<{(S name, N age)  implements Concept.ToS, Concept.Invariant
     method toS(){
         return S"["[this.name()]","[this.age()]"]"
     }
@@ -180,7 +180,7 @@ Person:Data.Invariant<<{(S name, N age) <:Concept.ToS, Concept.Invariant
 }
 
 
-Persons:Use[Collections.vector(of:Person)]<<{<:Concept.ToS
+Persons:Use[Collections.vector(of:Person)]<<{ implements Concept.ToS
   method toS()
     S"["[with e in this.vals() (
       use[e separedBy:S";"]

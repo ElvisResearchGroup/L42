@@ -1,6 +1,6 @@
 {
 
-Bool:{(Library binaryRepr)<:S.ToS //@private
+Bool:{(Library binaryRepr) implements S.ToS //@private
   method Void #checkTrue() exception Void
     using Alu
       check ifInt32EqualDo(n1:this.binaryRepr() n2:0N.binaryRepr())
@@ -43,7 +43,7 @@ Alu:{//@plugin
   _private()//@private
   }
 
-N:{(Library binaryRepr)<:S.ToS
+N:{(Library binaryRepr) implements S.ToS
 
   class method
   N #numberParser(Library that)
@@ -112,7 +112,7 @@ N:{(Library binaryRepr)<:S.ToS
   method Bool >=(N that) !(this<that)
   }
 
-S:{ _private(Library _binaryRepr)<: ToS
+S:{ _private(Library _binaryRepr) implements  ToS
 
   class method This #stringParser(Library that) This._private(_binaryRepr:that)
 

@@ -25,7 +25,7 @@ public class L42Parser extends Parser {
 		DataOp=52, NumParse=53;
 	public static final String[] tokenNames = {
 		"<INVALID>", "S", "Mdf", "'('", "'\t'", "')'", "'['", "']'", "'{'", "'...'", 
-		"'^##'", "'}'", "':'", "';'", "Dot", "'='", "'fwd'", "'<:'", "'case'", 
+		"'^##'", "'}'", "':'", "';'", "Dot", "'='", "'fwd'", "'implements'", "'case'", 
 		"'if'", "'else'", "'while'", "'loop'", "'with'", "'on'", "'in'", "'catch'", 
 		"'var'", "'default'", "'interface'", "'method'", "'use'", "'check'", "'##field'", 
 		"'##walkBy'", "Stage", "Path", "ClassSep", "'::'", "MX", "X", "HashX", 

@@ -1,9 +1,9 @@
 {mut (var mut Cell head,var N size)// size should be computed?
   Cell:{interface}
-  CellNext:{(Kind.elem() val,mut Cell next)<:Cell
+  CellNext:{(Kind.elem() val,mut Cell next) implements Cell
     read method Kind.elemRead() val()
     }
-  CellEnd:{<:Cell class method mut This()}
+  CellEnd:{ implements Cell class method mut This()}
   read method Void reportError(N that)
     error S"IndexOutOfBound: max is "[this.size()]" proposed is "[that]""
   read method Void reportUnexpected(N that)

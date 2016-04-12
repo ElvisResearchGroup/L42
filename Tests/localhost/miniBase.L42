@@ -1,5 +1,5 @@
 {
-Bool:{<:Outer1.S.ToS
+Bool:{ implements Outer1.S.ToS
 method 
 Void #checkTrue() exception Void using Outer1.Alu check ifInt32EqualDo(n1:this.binaryRepr2(), n2:Outer1.N.#numberParser(that:{//@stringU
 //0
@@ -116,7 +116,7 @@ Alu:{//@plugin
 
 class method //@private
 This _private8() }
-N:{<:Outer1.S.ToS
+N:{ implements Outer1.S.ToS
 class method 
 This #apply(Library^binaryRepr//@private @consistent
 ) 
@@ -183,7 +183,7 @@ method
 Outer1.Bool #right(This that) this.#leftequal(that:that).#bang()
 method 
 Outer1.Bool #rightequal(This that) this.#left(that:that).#bang()}
-S:{<:This.ToS
+S:{ implements This.ToS
 Varresult0:{
 class method 
 mut This #apply(Outer1^inner//@private @consistent
@@ -579,7 +579,7 @@ method
 Outer1.Elem #inner() 
 method 
 Void #checkEnd() }
-CellEnd:{<:Outer1.Cell
+CellEnd:{ implements Outer1.Cell
 class method 
 This #apply() 
 method vals(terminate ) Outer1.Iterator.#apply(that:this, terminate:terminate)
@@ -588,7 +588,7 @@ method #inner() error This4.S.#stringParser(that:{//@stringU
 //InnerOnCellEnd, should not happen
 })
 method #checkEnd() void}
-CellNext:{<:Outer1.Cell
+CellNext:{ implements Outer1.Cell
 class method 
 This #apply(Outer1.Elem^elem//@private @consistent
 , Outer1.Cell^nextCell//@private @consistent
@@ -1358,7 +1358,7 @@ method
 Outer2.Parameter #inner() 
 method 
 Void #checkEnd() }
-CellEnd:{<:Outer1.Cell
+CellEnd:{ implements Outer1.Cell
 class method 
 This #apply() 
 method vals(terminate ) Outer1.Iterator.#apply(that:this, terminate:terminate)
@@ -1367,7 +1367,7 @@ method #inner() error Outer3.S.#stringParser(that:{//@stringU
 //InnerOnCellEnd, should not happen
 })
 method #checkEnd() void}
-CellNext:{<:Outer1.Cell
+CellNext:{ implements Outer1.Cell
 class method 
 This #apply(Outer2.Parameter^elem//@private @consistent
 , Outer1.Cell^nextCell//@private @consistent
@@ -1692,7 +1692,7 @@ method
 Outer2.Method #inner() 
 method 
 Void #checkEnd() }
-CellEnd:{<:Outer1.Cell
+CellEnd:{ implements Outer1.Cell
 class method 
 This #apply() 
 method vals(terminate ) Outer1.Iterator.#apply(that:this, terminate:terminate)
@@ -1701,7 +1701,7 @@ method #inner() error Outer3.S.#stringParser(that:{//@stringU
 //InnerOnCellEnd, should not happen
 })
 method #checkEnd() void}
-CellNext:{<:Outer1.Cell
+CellNext:{ implements Outer1.Cell
 class method 
 This #apply(Outer2.Method^elem//@private @consistent
 , Outer1.Cell^nextCell//@private @consistent
@@ -2026,7 +2026,7 @@ method
 Outer3.Name #inner() 
 method 
 Void #checkEnd() }
-CellEnd:{<:Outer1.Cell
+CellEnd:{ implements Outer1.Cell
 class method 
 This #apply() 
 method vals(terminate ) Outer1.Iterator.#apply(that:this, terminate:terminate)
@@ -2035,7 +2035,7 @@ method #inner() error Outer3.S.#stringParser(that:{//@stringU
 //InnerOnCellEnd, should not happen
 })
 method #checkEnd() void}
-CellNext:{<:Outer1.Cell
+CellNext:{ implements Outer1.Cell
 class method 
 This #apply(Outer3.Name^elem//@private @consistent
 , Outer1.Cell^nextCell//@private @consistent
@@ -2349,13 +2349,13 @@ T:{}
 TOpt:{interface 
 method 
 Outer1.T get() }
-TEmpty:{<:Outer1.TOpt
+TEmpty:{ implements Outer1.TOpt
 class method 
 This #apply() 
 method get() error Outer3.S.#stringParser(that:{//@stringU
 //Value not present
 })}
-TOf:{<:Outer1.TOpt
+TOf:{ implements Outer1.TOpt
 class method 
 This #apply(Outer1.T^that//@private @consistent
 ) 
@@ -2427,13 +2427,13 @@ This.TOpt that()
 TOpt:{interface 
 method 
 Library get() }
-TEmpty:{<:Outer1.TOpt
+TEmpty:{ implements Outer1.TOpt
 class method 
 This #apply() 
 method get() error Outer3.S.#stringParser(that:{//@stringU
 //Value not present
 })}
-TOf:{<:Outer1.TOpt
+TOf:{ implements Outer1.TOpt
 class method 
 This #apply(Library^that//@private @consistent
 ) 
@@ -2674,7 +2674,7 @@ method
 Library #inner() 
 method 
 Void #checkEnd() }
-CellEnd:{<:Outer1.Cell
+CellEnd:{ implements Outer1.Cell
 class method 
 This #apply() 
 method vals(terminate ) Outer1.Iterator.#apply(that:this, terminate:terminate)
@@ -2683,7 +2683,7 @@ method #inner() error Outer3.S.#stringParser(that:{//@stringU
 //InnerOnCellEnd, should not happen
 })
 method #checkEnd() void}
-CellNext:{<:Outer1.Cell
+CellNext:{ implements Outer1.Cell
 class method 
 This #apply(Library^elem//@private @consistent
 , Outer1.Cell^nextCell//@private @consistent

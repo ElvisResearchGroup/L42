@@ -20,8 +20,8 @@ Opt:{unused()
     Adapt[Name"T" into:Name(that);]<{#new(TOpt that)
       T:{}
       TOpt:{interface method T get() }
-      TEmpty:{()<:TOpt method get() error S"Value not present" }
-      TOf:{(T that)<:TOpt method get() this.that()}
+      TEmpty:{() implements TOpt method get() error S"Value not present" }
+      TOf:{(T that) implements TOpt method get() this.that()}
       method T !() this.that().get()
       method Bool isPresent(){
         aux=!this

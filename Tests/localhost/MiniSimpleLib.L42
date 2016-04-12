@@ -5,14 +5,14 @@ Void printHelloWorld() This.Debug.#apply(that:This.S.#stringParser(that:{//@stri
 }).#plusplus(that:This.N.#numberParser(that:{//@stringU
 //42
 }).toS()))
-Bool:{<:Outer1.S.ToS
+Bool:{ implements Outer1.S.ToS
   method Void #checkTrue() exception Void 
   class method This true() 
   class method This false() 
   method This #and(This that) 
   method This #or(This that) 
   method This #bang() }
-N:{<:Outer1.S.ToS
+N:{ implements Outer1.S.ToS
   class method This #numberParser(Library that) 
   method This #plus(This that) 
   method This #less(This that) 
@@ -25,7 +25,7 @@ N:{<:Outer1.S.ToS
   method Outer1.Bool #right(This that) 
   method Outer1.Bool #rightequal(This that) 
   method Library binaryRepr() }
-S:{<:This.ToS
+S:{ implements This.ToS
   class method This #stringParser(Library that) 
   ToS:{interface method Outer1 toS() }
   method This #plusplus(This that) 

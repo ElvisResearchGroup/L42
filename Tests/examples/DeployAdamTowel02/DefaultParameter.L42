@@ -1,7 +1,7 @@
 {(Selector that, Path of,S name, Selector by)
 
-  ParameterNameNotPresent:Message.$<<{<:MetaGuard}
-  DefaultValueInvalid:Message.$<<{<:MetaGuard}
+  ParameterNameNotPresent:Message.$<<{ implements MetaGuard}
+  DefaultValueInvalid:Message.$<<{ implements MetaGuard}
 
   method
   Library <<(Library that)

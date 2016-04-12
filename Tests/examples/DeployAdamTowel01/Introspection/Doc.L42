@@ -1,6 +1,6 @@
-{ _private(Library _binaryRepr, Annotations _annotations)<:Concept.ToS,Concept.Named //@private
+{ _private(Library _binaryRepr, Annotations _annotations) implements Concept.ToS,Concept.Named //@private
   method myName()GetMyName(This)
-  Annotation:{(Library _binaryRepr, S text, N index)<:Concept.ToS,Concept.Named
+  Annotation:{(Library _binaryRepr, S text, N index) implements Concept.ToS,Concept.Named
     method myName()GetMyName(This)
     method toS() this.text()
     method class Any referredClass() {

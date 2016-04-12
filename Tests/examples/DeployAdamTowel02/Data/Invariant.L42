@@ -1,5 +1,5 @@
 {
-Failure:Message.$<<{<:MetaGuard}
+Failure:Message.$<<{ implements MetaGuard}
   //invariant checking, used into the actions
   class method
   Void checkInvariant(read Concept.Invariant that) (
@@ -12,11 +12,11 @@ Failure:Message.$<<{<:MetaGuard}
 class method
 Library constructorAction(Introspection.Type that) {
     m=that.mdf()
-    if m.isImmutable() (return {<:Concept.Invariant,,,,class method,,,,                   This (             This that),,,,( Invariant.checkInvariant(that) that )  })
-    if m.isMutable()     (return {<:Concept.Invariant,,,,class method,,,,            mut  This (      mut This that),,,,( Invariant.checkInvariant(that) that )  })
-    if m.isLent()           (return {<:Concept.Invariant,,,,class method,,,,            lent  This (      lent  This that),,,,( Invariant.checkInvariant(that) that )  })
-    if m.isReadable()   (return {<:Concept.Invariant,,,,class method,,,,           read This (     read This that),,,,( Invariant.checkInvariant(that) that )  })
-    if m.isCapsule()     (return {<:Concept.Invariant,,,,class method,,,,capsule This (capsule This that) (
+    if m.isImmutable() (return { implements Concept.Invariant,,,,class method,,,,                   This (             This that),,,,( Invariant.checkInvariant(that) that )  })
+    if m.isMutable()     (return { implements Concept.Invariant,,,,class method,,,,            mut  This (      mut This that),,,,( Invariant.checkInvariant(that) that )  })
+    if m.isLent()           (return { implements Concept.Invariant,,,,class method,,,,            lent  This (      lent  This that),,,,( Invariant.checkInvariant(that) that )  })
+    if m.isReadable()   (return { implements Concept.Invariant,,,,class method,,,,           read This (     read This that),,,,( Invariant.checkInvariant(that) that )  })
+    if m.isCapsule()     (return { implements Concept.Invariant,,,,class method,,,,capsule This (capsule This that) (
         mut This open=that
         Invariant.checkInvariant(open)
         open    )   })
@@ -24,7 +24,7 @@ Library constructorAction(Introspection.Type that) {
     }
 
 class method
-Library setterAction() {<:Concept.Invariant
+Library setterAction() { implements Concept.Invariant
     mut method
     Void (Void that) (
         Invariant.checkInvariant(this)

@@ -1,4 +1,4 @@
-{(fwd NestedClass _root,Path path,N memberN,Record record)<:Member,Concept.Equals //@private
+{(fwd NestedClass _root,Path path,N memberN,Record record) implements Member,Concept.Equals //@private
 method myName()GetMyName(This)
 method toS() This.myName()++S"["[this.allAsString()]"]"
 method Bool ==(This that){

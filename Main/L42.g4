@@ -54,7 +54,7 @@ Semicolon:';';
 Dot:'.';
 Equal:'=';
 Ph:'fwd';
-Implements:'<:';
+Implements:'implements';
 Case:'case';
 If:'if';
 Else:'else';

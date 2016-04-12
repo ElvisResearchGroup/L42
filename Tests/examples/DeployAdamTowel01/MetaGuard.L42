@@ -1,14 +1,14 @@
-{ interface<:Guard
+{ interface implements Guard
 
  RecordWrapper:// can not be private, I need to Patch it.
     {
     class method S libToS(Library that) S"TO FIX"
 
-    class method Library recordWrapperToSTrait(){<:MetaGuard
+    class method Library recordWrapperToSTrait(){ implements MetaGuard
       method toS() This.myName()++This1.libToS(this.lib())
       method Library lib()
       }
-    class method Library recordWrapperTrait(){<:MetaGuard
+    class method Library recordWrapperTrait(){ implements MetaGuard
       method kind() This.myName()
       method text() S""
       method responseOf() Message.Opt()
@@ -60,7 +60,7 @@ InvalidOnTopLevel:RecordWrapper<<{class method S libName()S"InvalidOnTopLevel"}
 PrivacyCoupuled:RecordWrapper<<{class method S libName()S"PrivacyCoupuled"}
 ParameterMismatch:RecordWrapper<<{class method S libName()S"ParameterMismatch"}
 
-MemberUnavailable:{interface<:MetaGuard}
+MemberUnavailable:{interface implements MetaGuard}
 DispatchMemberUnavailable:{
   class method Void(Library that)
   exception MemberUnavailable(
@@ -73,13 +73,13 @@ DispatchMemberUnavailable:{
       )
     )
   }
-NestedClassUnavailable:RecordWrapper<<{(Path path,Bool isPrivate)<:MemberUnavailable
+NestedClassUnavailable:RecordWrapper<<{(Path path,Bool isPrivate) implements MemberUnavailable
   method toS() This.myName()++S"[path:"[this.path()]",isPrivate:"[this.isPrivate()]"]"
   class method This (Introspection.Record record, Library lib)
     This(path:Path.fromDocInternalizedS(record"Path"),isPrivate:Bool.fromS(record"IsPrivate"))
   class method S libName()S"MemberUnavailable"
   }
-MethodUnavailable:RecordWrapper<<{(Path path,Selector selector,Bool isPrivate)<:MemberUnavailable
+MethodUnavailable:RecordWrapper<<{(Path path,Selector selector,Bool isPrivate) implements MemberUnavailable
   method toS() This.myName()++S"[path:"[this.path()]", selector:"[this.selector()]",isPrivate:"[this.isPrivate()]"]"
   class method This (Introspection.Record record, Library lib)
     This(path:Path.fromDocInternalizedS(record"Path"),selector:Selector.fromS(record"Selector"),isPrivate:Bool.fromS(record"IsPrivate"))

@@ -3,8 +3,8 @@
 class method Library opt() {
   Opt:{#new(TOpt that)
       TOpt:{interface method This2 get() }
-      TEmpty:{()<:TOpt method get() error Guard.Operation"TEmpty.get() Value not present in Optional" }
-      TOf:{(This2 that)<:TOpt method get() this.that()}
+      TEmpty:{() implements TOpt method get() error Guard.Operation"TEmpty.get() Value not present in Optional" }
+      TOf:{(This2 that) implements TOpt method get() this.that()}
       method T ~() this.that().get()
       method Bool isPresent() {
         unused=~this

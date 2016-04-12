@@ -1,12 +1,12 @@
 {
-DecorationUnfeasable:Message.$<<{<:MetaGuard}
+DecorationUnfeasable:Message.$<<{ implements MetaGuard}
 
 
 Parsable:{
   class method Library<<(Library that)
   exception DecorationUnfeasable{
     return Extends[{
-      //ParseFailure:Message:S[]<<{<:Guard} no need, related to invariant?
+      //ParseFailure:Message:S[]<<{ implements Guard} no need, related to invariant?
       class method// if you do not implement it, it is a constructor?
       This fromS(read Concept.ToS that)    
       //will be in the interface when there is class refinement,
@@ -33,7 +33,7 @@ SealState:{
   
 DataFromToS:{// in the future we can add also hashCode and > =>
   class method Library<<(Library that) exception DecorationUnfeasable{
-    return Extends[{<:Concept.ToS
+    return Extends[{ implements Concept.ToS
     method Bool != (This that) !(this==that)
     read method Bool ==(read This that) this.toS()==that.toS()
     }]<<Equals<<that
@@ -46,7 +46,7 @@ DataFromToS:{// in the future we can add also hashCode and > =>
 
 Equals:{
   class method Library<<(Library that) exception DecorationUnfeasable{
-    return Extends[{<:Concept.Equals
+    return Extends[{ implements Concept.Equals
       method equals(that){
         with that (on This return this==that)
         return Bool.false()
@@ -59,7 +59,7 @@ Equals:{
   }
 Named:{
   class method Library<<(Library that) exception DecorationUnfeasable{
-    return Extends[{<:Concept.Named
+    return Extends[{ implements Concept.Named
         method myName()
           Introspection(clazz:This).externalTypeToS()
         }]<<that

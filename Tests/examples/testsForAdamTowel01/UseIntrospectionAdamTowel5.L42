@@ -48,7 +48,7 @@ CheckNested:{
   }
 
 EA:{interface }
-EB:{interface <:EA}
+EB:{interface  implements EA}
 Main:{
   CheckState(lib:{foo(Bar b, var Foo f) Bar:{} Foo:{}}
     expected:S"#mutK(b,f)#b()b()f(that)#f()f()")
@@ -59,20 +59,20 @@ Main:{
   CheckSubtype(lib:{}
     expected:S"")
   Debug(S"c1")
-  CheckSubtype1(lib:{interface <:A A:{interface}}
+  CheckSubtype1(lib:{interface  implements A A:{interface}}
     expected:S"@.A,")
   Debug(S"c2")
-  CheckSubtype(lib:{interface <:A A:{interface}}
+  CheckSubtype(lib:{interface  implements A A:{interface}}
     expected:S"@.A,")
 
   Debug(S"d")
-  CheckSubtype(lib:{interface <:EA }
+  CheckSubtype(lib:{interface  implements EA }
     expected:S"This.EA,")
   Debug(S"e")
-    CheckSubtype(lib:{interface <:B B:{interface<:A} A:{interface}}
+    CheckSubtype(lib:{interface  implements B B:{interface implements A} A:{interface}}
     expected:S"@.B,@.A,")
   Debug(S"f")
-  CheckSubtype(lib:{interface <:EB }
+  CheckSubtype(lib:{interface  implements EB }
     expected:S"This.EB,This.EA,")
   Debug(S"g")
   CheckNested(lib:{}

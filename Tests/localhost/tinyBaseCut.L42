@@ -6,14 +6,14 @@ Bool:{interface
   method This | (This that)
   method This ! ()
   }
-True:{_private() <:Bool
+True:{_private()  implements Bool
   method () (this._private())
   method #checkTrue() (void)
   method &(that) (that)
   method |(that) (this)
   method !() (False())
   }
-False:{_private() <:Bool
+False:{_private()  implements Bool
   method () (this._private())
   method #checkTrue() (exception void)
   method &(that) (this)
@@ -140,14 +140,14 @@ Collections:{()
       method T #inner()
       method Void #checkEnd()
       }
-    CellEnd:{()<:Cell
+    CellEnd:{() implements Cell
       method #elems(that) (Iterator(this,terminate:that))
       method #next() (exception void)
       method checkEmpty() (exception void)
       method #inner() (error {innerOnCellEnd()})
       method #checkEnd() (void)
       }
-    CellNext:{(T elem, Cell _next)<:Cell
+    CellNext:{(T elem, Cell _next) implements Cell
       method #elems(that) (Iterator(CellNext(elem:this.elem(), _next:this), terminate:that))
       method #next() ( this._next() )
       method checkEmpty() (void)
@@ -320,8 +320,8 @@ Opt:{unused()
     Adapt[Name"T" into:Name(that);]<{#new(TOpt that)
       T:{}
       TOpt:{interface method T get() }
-      TEmpty:{()<:TOpt method get() error S"Value not present" }
-      TOf:{(T that)<:TOpt method get() this.that()}
+      TEmpty:{() implements TOpt method get() error S"Value not present" }
+      TOf:{(T that) implements TOpt method get() this.that()}
       method T !() this.that().get()
       method Bool isPresent(){
         aux=!this

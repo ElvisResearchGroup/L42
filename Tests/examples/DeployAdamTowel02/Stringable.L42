@@ -1,6 +1,6 @@
 {
 class method Library stringableTrait(){
-  (S inner)<:Concept.ToS, Concept.Named, Concept
+  (S inner) implements Concept.ToS, Concept.Named, Concept
   class method This (Concept.ToS that)
     This(inner:that.toS())
 

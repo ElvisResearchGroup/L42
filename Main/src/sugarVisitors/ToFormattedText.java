@@ -495,7 +495,7 @@ public class ToFormattedText implements Visitor<Void>{
       //inteface
       h->{return c("interface ");});
     if(!arg0.getSupertypes().isEmpty()){
-      c("<:");
+      c("implements ");
       StringBuilders.formatSequence(this.result,arg0.getSupertypes().iterator(),", ",
         p->visit(p));
       }

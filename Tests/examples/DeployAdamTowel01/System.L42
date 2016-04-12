@@ -1,7 +1,7 @@
 {
-Guard:{ //<:Outer.Guard soon (remove "interface" for a bad translation bug: This1_System_Guard is not abstract and does not override abstract method MtoS()
-  interface <:This2.Guard
-  PluginFailure:Message.$<<{<:Guard}//to report the inability of a plugin to act
+Guard:{ // implements Outer.Guard soon (remove "interface" for a bad translation bug: This1_System_Guard is not abstract and does not override abstract method MtoS()
+  interface  implements This2.Guard
+  PluginFailure:Message.$<<{ implements Guard}//to report the inability of a plugin to act
 
   //Memory/Stack overflow? how to handle them?
   }
