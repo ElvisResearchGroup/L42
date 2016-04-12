@@ -7,6 +7,12 @@ Wither:...
 AddToS:...
 AddEquals:...
 
+class method Library nameTrait(){<: Concept.Classable, Concept.Named  //may be Parsable?
+    method classAny() This
+    read method class This class() This
+    method myName() GetMyName(This)
+  }
+
 class method
 Library << (Library that)
 exception StateUnfit, MetaGuard
@@ -17,7 +23,9 @@ exception StateUnfit, MetaGuard
   res:=AddToS<<res
   res:=AddEquals<<res
   res:=Invariant<<res
+  res:=Use[this.nameTrait()]<<res
   return res
+  //data: toS == class named,  invariant, with  ---  Still missing: fromS, clone mutk
   }
 
 }

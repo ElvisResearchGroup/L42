@@ -5,9 +5,24 @@
         left:SafeOperatorsAccess.renameClass(this.enumTrait(), src:S"Top" , dest:S"This")
         right:that)
 
+SolidTrait:{class method Library (){//Data is more than Solid, and Liquid, Gas, Plasma can be good methafores
+    <:Concept.ToS,Concept.Equals,Concept.Classable,Concept.Named  //may be Parsable?
+    method classAny() This
+    read method class This class() This
+    method myName() GetMyName(This)
+    method equals(that) {
+      with that (on This return that==this)
+      return Bool.false()
+      }
+    read method
+    Bool ==(read This that) // this.toS()==that.toS()
+    read method
+    Bool !=(read This that) !(this==that)
+  }}
+
   class method Library enumTrait() {
     ParseFail:Message.$<<{<:Guard.ParseFail}
-    Top: SafeOperatorsAccess.compose(left:Concept.solidTrait() //Use[Concept.solidTrait()]<<
+    Top: SafeOperatorsAccess.compose(left:SolidTrait() //Use[SolidTrait()]<<
       right:{(N that)<:Concept.ToS
       method toS()
         This.myName()++S"."++this.name()
@@ -27,7 +42,7 @@
     List:Collections.vector(ofEq:Top)
     //class method mut Set #seqBuilder() Set.empty()
     //class method Set #from(Set seqBuilder)seqBuilder
-    //Set: SafeOperatorsAccess.compose(left:Concept.solidTrait() //Use[Concept.solidTrait()]<<
+    //Set: SafeOperatorsAccess.compose(left:SolidTrait() //Use[SolidTrait()]<<
     //  right:{(var BinaryFlag32 that)<:Concept.ToS
     //  class method mut This #seqBuilder() this.empty()
     //  class method mut This empty() This(0BinaryFlag32)

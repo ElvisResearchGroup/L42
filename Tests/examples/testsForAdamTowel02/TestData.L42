@@ -7,7 +7,6 @@ Person:Data<<{(S name, var N age) <:Concept.Invariant
     this.name()!=S"" & this.age()>= 0N
    }
 
-
 Main:{
   Person p1=Person(name:S"Bob",age:10N)
   Debug(p1==p1)

@@ -72,20 +72,4 @@ Iterator:{interface
   // no idea how to put the unsatisfactory version
   //iterator, iterexposer, variterator, variterexposer???
   }
-
-class method Library solidTrait(){//Data is more than Solid, and Liquid, Gas, Plasma can be good methafores
-//data: toS == class named, fromS, invariant, with clone mutk
-    <:ToS,Equals,Classable,Named  //may be Parsable?
-    method classAny() This
-    read method class This class() This
-    method myName() GetMyName(This)
-    method equals(that) {
-      with that (on This return that==this)
-      return Bool.false()
-      }
-    read method
-    Bool ==(read This that) // this.toS()==that.toS()
-    read method
-    Bool !=(read This that) !(this==that)
-  }
 }
