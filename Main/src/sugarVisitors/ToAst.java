@@ -46,8 +46,8 @@ public class ToAst extends AbstractVisitor<Expression>{
 
     @Override public Member visitMethodWithType(MethodWithTypeContext ctx) {
       MhtContext h = ctx.mht();
-      Doc doc1=(h.docsOpt().get(0)==null)?Doc.empty():comm(h.docsOpt().get(0));
-      Doc doc2=(ctx.docsOpt()==null)?Doc.empty():comm(ctx.docsOpt());
+      Doc doc1=(h.docsOpt().get(0)==null)?Doc.empty():parseDoc(h.docsOpt().get(0));
+      Doc doc2=(ctx.docsOpt()==null)?Doc.empty():parseDoc(ctx.docsOpt());
       String name=(h.mDec()==null)?"":h.mDec().getText();
       if(name.endsWith("(")){name=name.substring(0,name.length()-1);}
       Mdf mdf=Ast.Mdf.fromString((h.Mdf()==null)?"":h.Mdf().getText());
@@ -61,7 +61,7 @@ public class ToAst extends AbstractVisitor<Expression>{
       for(XContext x : h.x()){
         names.add(x.getText());
         ts.add(parseType(tit.next()));
-        tdocs.add(comm(dit.next()));
+        tdocs.add(parseDoc(dit.next()));
       }
       MethodSelector s=new MethodSelector(name, names);
       List<Path> exceptions=new ArrayList<Path>();
@@ -73,7 +73,7 @@ public class ToAst extends AbstractVisitor<Expression>{
     }
 
     @Override public Member visitNestedClass(NestedClassContext ctx) {
-      Doc doc=comm(ctx.docsOpt());
+      Doc doc=parseDoc(ctx.docsOpt());
       if(ctx.Path().getText().contains("::")){throw Assertions.userErrorAssert("no ::");}//TODO:improve
       String name=ctx.Path().getText();
       Expression inner=ctx.eTop().accept(ToAst.this);
@@ -81,7 +81,7 @@ public class ToAst extends AbstractVisitor<Expression>{
     }
 
     @Override public Member visitMethodImplemented(MethodImplementedContext ctx) {
-      Doc doc=(ctx.mhs().docsOpt()==null)?Doc.empty():comm(ctx.mhs().docsOpt());
+      Doc doc=(ctx.mhs().docsOpt()==null)?Doc.empty():parseDoc(ctx.mhs().docsOpt());
       return new MethodImplemented(doc,parseMethSelector(ctx.mhs().methSelector()),ctx.eTopForMethod().accept(ToAst.this),position(ctx));
       }
   }
@@ -141,27 +141,36 @@ public class ToAst extends AbstractVisitor<Expression>{
   public static String nameU(String c){
     return c;
   }
-  public static Doc comm(ParseTree s){
+  public static Doc parseDoc(ParseTree s){
     if(s==null){return Doc.empty();}//as for empty comment string
-    return comm(s.getText());
+    return parseDoc(s.getText());
   }
-  public static Doc comm(String c){
+  public static Doc parseDoc(String c){
     if(c.isEmpty()){return Doc.empty();}
-    assert c.startsWith("//"):c;
-    StringBuffer res=new StringBuffer();
-    boolean skip=false;
-    char[] chs=c.toCharArray();
-    for(int i=2; i<chs.length;i++){
-      char cc=chs[i];
-      if(!skip){res.append(cc);}
-      if(cc=='\n'){skip=true;}
-      if(i>3 && cc=='/' && chs[i-1]=='/'){skip=false;}
+    if(c.startsWith("/*")){
+      assert c.contains("*/");
+      c=c.substring(2,c.indexOf("*/"));
+      //c=c.substring(2,c.length()-2);
+      c=c.replace('\t','(');
+      return Doc.factory(true,c);
+      }
+    else{
+      assert c.startsWith("//"):c;
+      StringBuffer res=new StringBuffer();
+      boolean skip=false;
+      char[] chs=c.toCharArray();
+      for(int i=2; i<chs.length;i++){
+        char cc=chs[i];
+        if(!skip){res.append(cc);}
+        if(cc=='\n'){skip=true;}
+        if(i>3 && cc=='/' && chs[i-1]=='/'){skip=false;}
+      }
+      String result=res.toString();
+      assert result.charAt(result.length()-1)=='\n':result;
+  //    res.append("\n");
+      result=result.replace('\t','(');
+      return Doc.factory(false,result);
     }
-    String result=res.toString();
-    assert result.charAt(result.length()-1)=='\n':result;
-//    res.append("\n");
-    result=result.replace('\t','(');
-    return Doc.factory(result);
   }
 
   //TODO: check if is needed
@@ -178,7 +187,7 @@ public class ToAst extends AbstractVisitor<Expression>{
     return ctx.children.get(0).accept(this);
     }
   @Override public Expression visitCurlyBlock(CurlyBlockContext ctx) {
-    Doc doc=comm(ctx.docsOpt());
+    Doc doc=parseDoc(ctx.docsOpt());
     List<BlockContent> contents=new ArrayList<BlockContent>();
     for( BbContext b:ctx.bb()){
       List<VarDec> decs=new ArrayList<VarDec>();
@@ -190,7 +199,7 @@ public class ToAst extends AbstractVisitor<Expression>{
     return new Expression.CurlyBlock(position(ctx),doc, contents);
   }
   private Expression visitRoundBlockAux(ParserRuleContext ctx,DocsOptContext docsOpt, List<BbContext> bB,ETopContext eTop) {
-    Doc doc=comm(docsOpt);
+    Doc doc=parseDoc(docsOpt);
     List<BlockContent> contents=new ArrayList<BlockContent>();
     for( BbContext b:bB){
       List<VarDec> decs=new ArrayList<VarDec>();
@@ -317,7 +326,7 @@ public class ToAst extends AbstractVisitor<Expression>{
     assert mx.endsWith("(");
     mx=mx.substring(0,mx.length()-1);
     RoundContext r = ctx.round();
-    Doc doc=comm(r.docsOpt());
+    Doc doc=parseDoc(r.docsOpt());
     assert !mx.startsWith("#");
     assert !mx.startsWith("\\");
     Expression rcv=new Expression.X(mx);
@@ -331,9 +340,9 @@ public class ToAst extends AbstractVisitor<Expression>{
 
   @Override public Expression visitClassBReuse(ClassBReuseContext ctx) {
     Doc doc1=Doc.empty();
-    if(ctx.docsOpt().size()>=1){doc1=comm(ctx.docsOpt().get(0));}
+    if(ctx.docsOpt().size()>=1){doc1=parseDoc(ctx.docsOpt().get(0));}
     Doc doc2=Doc.empty();
-    if(ctx.docsOpt().size()>=2){doc2=comm(ctx.docsOpt().get(1));}
+    if(ctx.docsOpt().size()>=2){doc2=parseDoc(ctx.docsOpt().get(1));}
     assert ctx.getChild(0).getText().equals("{");
     assert ctx.getChild(2).getText().startsWith("reuse");
     String url=ctx.getChild(2).getText();
@@ -343,8 +352,8 @@ public class ToAst extends AbstractVisitor<Expression>{
     return new Expression.ClassReuse(inner,url,null);
   }
   @Override public Expression visitClassB(ClassBContext ctx) {
-    Doc doc1=comm(ctx.docsOpt().get(0));
-    Doc doc2=comm(ctx.docsOpt().get(1));
+    Doc doc1=parseDoc(ctx.docsOpt().get(0));
+    Doc doc2=parseDoc(ctx.docsOpt().get(1));
     Header h=parseHeader(ctx.header());
     List<Path> supertypes= new ArrayList<Path>();
     for(TerminalNode p: ctx.Path()){supertypes.add(Path.parse(nameU(p)));}
@@ -381,7 +390,7 @@ public class ToAst extends AbstractVisitor<Expression>{
     return new Ast.ConcreteHeader(mdf,name, fields,position(header));
   }
   private FieldDec parseFieldDec(FieldDecContext f) {
-    return new Ast.FieldDec(f.Var()!=null, parseType(f.t()),nameL(f.x()),comm(f.docsOpt()));
+    return new Ast.FieldDec(f.Var()!=null, parseType(f.t()),nameL(f.x()),parseDoc(f.docsOpt()));
   }
   @Override public Expression visitSignalExpr(SignalExprContext ctx) {
     Expression inner=ctx.eTop().accept(this);
@@ -467,7 +476,7 @@ public class ToAst extends AbstractVisitor<Expression>{
     Expression inner=ctx.eTop().accept(this);
     String name=nameL(ctx.mCall().m());
     Parameters parameters=this.parseMParameters(ctx.mCall().round().ps());
-    Doc docs=comm(ctx.mCall().round().docsOpt());
+    Doc docs=parseDoc(ctx.mCall().round().docsOpt());
     return new Expression.Using(path, name, docs,parameters, inner);
   }
 
@@ -477,14 +486,14 @@ public class ToAst extends AbstractVisitor<Expression>{
     private class VisitEPost extends AbstractVisitor<Expression>{
       Expression e0; VisitEPost(Expression e0){this.e0=e0;}
       @Override public Expression visitDocs(DocsContext ctx) {
-        return new Expression.DocE(e0,comm(ctx.Doc()));
+        return new Expression.DocE(e0,parseDoc(ctx.Doc()));
       }
       @Override public Expression visitSquare(SquareContext ctx) {
-      Doc doc=comm(ctx.docsOpt(0));
+      Doc doc=parseDoc(ctx.docsOpt(0));
       List<Doc> docs=new ArrayList<>();
       List<Parameters> parameterss=new ArrayList<>();
       for(int i=0;i<ctx.ps().size();i++){
-        docs.add(comm(ctx.docsOpt(i+1)));
+        docs.add(parseDoc(ctx.docsOpt(i+1)));
         parameterss.add(parseMParameters(ctx.ps(i)));
       }
       assert parameterss.size()>=1:"last empty one at least should be there";
@@ -501,7 +510,7 @@ public class ToAst extends AbstractVisitor<Expression>{
       }
 
       @Override public Expression visitRound(RoundContext ctx) {
-        Doc doc=comm(ctx.docsOpt());
+        Doc doc=parseDoc(ctx.docsOpt());
         return new Expression.FCall(position(ctx),this.e0,doc,
             parseMParameters(ctx.ps()));
       }

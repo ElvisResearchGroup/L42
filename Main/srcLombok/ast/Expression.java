@@ -9,7 +9,6 @@ import ast.Ast.SignalKind;
 import ast.Ast.Type;
 import ast.Ast.VarDec;
 import lombok.EqualsAndHashCode;
-import lombok.NonNull;
 import lombok.ToString;
 import lombok.Value;
 import lombok.experimental.Wither;

@@ -556,9 +556,14 @@ public class Desugar extends CloneVisitor{
   protected ast.Ast.VarDecCE liftVarDecCE(ast.Ast.VarDecCE d) {
     return d;//ok, it have to happen after, when is lifted out of the expression
   }
+
+  protected Doc liftDoc(Doc doc) {
+    return super.liftDoc(doc.withMultiline(true));
+  }
+
   static ClassB encodePrimitiveString(String s){
     //return EncodingHelper.wrapStringU(s);//no, this produces a ExpCoreClassB
-    return new ClassB(Doc.factory("@stringU\n"+EncodingHelper.produceStringUnicode(s)+"\n"),Doc.empty(),new Ast.TraitHeader(),Collections.emptyList(),Collections.emptyList(),Position.noInfo,Stage.None);
+    return new ClassB(Doc.factory(true,"@stringU\n"+EncodingHelper.produceStringUnicode(s)+"\n"),Doc.empty(),new Ast.TraitHeader(),Collections.emptyList(),Collections.emptyList(),Position.noInfo,Stage.None);
   }
   public static String desugarName(String n){
     if(n.isEmpty())return "#apply";

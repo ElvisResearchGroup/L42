@@ -56,7 +56,7 @@ public class TranslationTest {
       "{ A:{(A a, Void v)} }"," (aa=A(a:aa,v:void) aa.a().a().a().v()  )","platformSpecific.javaTranslation.Resources$Void");}
 
   @Test public void t9(){tester(
-      "{ A:{()<:IA method foo() void} IA:{interface method Void foo() } }"," A().foo()","platformSpecific.javaTranslation.Resources$Void");}
+      "{ A:{() implements IA method foo() void} IA:{interface method Void foo() } }"," A().foo()","platformSpecific.javaTranslation.Resources$Void");}
 
 
 

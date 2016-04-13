@@ -50,7 +50,7 @@ import auxiliaryGrammar.Program;
       +"DifferentThisMdf:{//@stringU\n//false\n}"
       +"IncompatibleException:{//@stringU\n//false\n}}",
       true
-    },{    lineNumber(),"{B:{method Void m()}}","{I:{interface method Void m()}B:{<:I}}",
+    },{    lineNumber(),"{B:{method Void m()}}","{I:{interface method Void m()}B:{ implements I}}",
       "{Kind:{//@stringU\n//MethodClash\n}"
       +"Path:{//@.B\n}"
       +"Left:{//@stringU\n//method Void m()\n}"
@@ -62,7 +62,7 @@ import auxiliaryGrammar.Program;
       +"DifferentThisMdf:{//@stringU\n//false\n}"
       +"IncompatibleException:{//@stringU\n//false\n}}",
       true
-    },{    lineNumber(),"{J:{interface method Void m()} B:{<:J}}","{I:{interface method Void m()}B:{<:I}}",
+    },{    lineNumber(),"{J:{interface method Void m()} B:{ implements J}}","{I:{interface method Void m()}B:{ implements I}}",
       "{Kind:{//@stringU\n//ClassClash\n}"
      +"Path:{//@.B\n}"
      +"ConflictingImplementedInterfaces:{//[@.J, @.I]\n}}",
@@ -82,9 +82,9 @@ import auxiliaryGrammar.Program;
 
     //TODO: test sum private state plus public state is ok
     },{    lineNumber(),
-      "{I1:{interface <: I2} I2:{interface} }",
-      "{I1:{interface } I2:{interface<: I1} }",
-      "{I1:{interface <:I2} I2:{interface<:I1} }",
+      "{I1:{interface  implements  I2} I2:{interface} }",
+      "{I1:{interface } I2:{interface implements  I1} }",
+      "{I1:{interface  implements I2} I2:{interface implements I1} }",
       false
   }});}
   @Test  public void test() {

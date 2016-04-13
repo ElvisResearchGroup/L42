@@ -142,7 +142,7 @@ public class Errors42 {
      "Prefix",""+shorter,
      "Clashing",""+longer);}
 
-  
+
   //"InvalidOnMember", caused by pop if there is more then one nested class
   static Error errorInvalidOnMember(Doc doc) {
     return Resources.Error.multiPartStringError("InvalidOnMember",
@@ -178,7 +178,7 @@ public class Errors42 {
     // getPath1() is the path in the library before redirecting.
     // getPath2() is the proposed path in the redirected library.
     // We will allow many paths to be redirected into a single new path,
-    // but not vice-versa. 
+    // but not vice-versa.
     for(PathPath p1:setVisited){
       for(PathPath p2:setVisited){
         if(p1.equals(p2)){continue;}
@@ -220,7 +220,7 @@ public class Errors42 {
   }
   static Doc formatPathIn(List<String> path){
     //if(path.isEmpty()){return Doc.factory(Path.outer(0));}
-    return Doc.factory("@."+String.join(".", path));
+    return Doc.factory(true,"@."+String.join(".", path));
   }
   static Doc formatPathOut(Path path){
     if(path.isPrimitive()){return Doc.factory(path);}
@@ -252,6 +252,6 @@ public class Errors42 {
     }
     MethodWithType memb = mem.withMs(dest).withMt(mem.getMt().withTs(ts).withTDocs(tsd));
     throw errorMethodClash(pathForError, mem,memb, true, parsWrong,true, true, false);
-    
+
   }
 }

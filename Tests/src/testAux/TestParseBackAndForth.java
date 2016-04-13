@@ -35,7 +35,7 @@ public class TestParseBackAndForth {
 },{"{(A a)}","{ (A a)}"
 },{"{(A a//foo\n)}","{ (A a//foo\n)}"
 },{"{(A a)//ee\n}","{ (A a)//ee\n}"
-},{"{(A a)<:A}","{ (A a)<:A}"
+},{"{(A a) implements A}","{ (A a)implements A}"
 },{"{ method a(b c) {d e f}}","{\nmethod a(b c ) {\n  d\n  e\n  f\n  }}"
 },{"{ method a(b c) (d e f)}","{\nmethod a(b c ) (\n  d\n  e\n  f\n  )}"
 },{"if a (b) else c.h()","if a (b)else c.h()"
@@ -47,7 +47,7 @@ public class TestParseBackAndForth {
 },{" { }","{}"
 },{" {()}","{ ()}"
 },{" {interface}","{interface }"
-},{" {<: A.B, C}","{<:A.B, C}"
+},{" { implements  A.B, C}","{implements A.B, C}"
 
 },{" a //bar\n ","a//bar\n"
 },{"!a","!a"

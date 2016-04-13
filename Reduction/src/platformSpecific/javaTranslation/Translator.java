@@ -133,7 +133,9 @@ public class Translator {
       assert cb.getStage().getInheritedPaths()!=null;
       ClassB cbUF=useFrom(cb,p);
       assert cbUF.getStage().getInheritedPaths()!=null;
-      map.put(Resources.nameOf(level,cs),cbUF);
+      if(!cs.isEmpty()){//ok to ignore empty ones, since not complete?
+        map.put(Resources.nameOf(level,cs),cbUF);
+      }
       }
     else{//generate only for metaprogramming //Can be ignored now with typemap
       /*ExpCore.ClassB cbMP = new ExpCore.ClassB(

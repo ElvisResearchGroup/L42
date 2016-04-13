@@ -192,11 +192,11 @@ public class TestRename {
         }, {//
         "{B:{ method Void m() void}}", "B", "C.D", "{C:{ D:{method Void m() void}}}", false//
         },{//
-        "{A:{interface method This0 m()  } B:{<:A method m() this.m().m()}   User:{ method A mm(B b) b.m().m()}}","B","C",
-        "{A:{interface method This0 m()  } User:{ method A mm(C b) b.m().m()}  C:{<:A method m() this.m().m()} }",false
+        "{A:{interface method This0 m()  } B:{ implements A method m() this.m().m()}   User:{ method A mm(B b) b.m().m()}}","B","C",
+        "{A:{interface method This0 m()  } User:{ method A mm(C b) b.m().m()}  C:{ implements A method m() this.m().m()} }",false
         },{//
-          "{A:{interface method This0 m()  } B:{<:A method m() this.m().m()}   User:{ method A mm(B b) b.m().m()} }","A","C",
-          "{B:{<:C method m() this.m().m()}  User:{ method C mm(B b) b.m().m()} C:{interface method This0 m()  }    }",false
+          "{A:{interface method This0 m()  } B:{ implements A method m() this.m().m()}   User:{ method A mm(B b) b.m().m()} }","A","C",
+          "{B:{ implements C method m() this.m().m()}  User:{ method C mm(B b) b.m().m()} C:{interface method This0 m()  }    }",false
         } });
     }
 
@@ -297,7 +297,7 @@ public class TestRename {
               ,"{ A:{"
               ,"  OptMax:{"
               ,"    TOpt:{interface}"
-              ,"    TEmpty:{<:This1.TOpt}"
+              ,"    TEmpty:{ implements This1.TOpt}"
               ,"    }"
               ,"  }}"),
               "A","This0",
@@ -305,7 +305,7 @@ public class TestRename {
               ,"{"
               ,"OptMax:{"
               ,"  TOpt:{interface }"
-              ,"  TEmpty:{<:This1.TOpt}"
+              ,"  TEmpty:{ implements This1.TOpt}"
               ,"}}")    ,false//
       }, {lineNumber(),//
           "{ A:{class method This1.B ()}  B:{ }}",

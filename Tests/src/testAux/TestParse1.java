@@ -33,7 +33,7 @@ public class TestParse1 {
         ,"        class method Library ko() ({//@KO\n})"
         ,"  }"
         ,"I:{interface }"
-        ,"AI:{ k()<:This1.I}"
+        ,"AI:{ k() implements This1.I}"
         ,"D:("
         ,"  Any z=error This0.AI.k()"
         ,"  catch error This0.AI x This0.C.ok()"

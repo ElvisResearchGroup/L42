@@ -49,7 +49,7 @@ public class TestAddComment {
     ClassB cb1=getClassB(_cb1);
     Path path=Path.parse(_path);
     MethodSelector ms=MethodSelector.parse(_ms);
-    Doc doc=Doc.factory(_doc);
+    Doc doc=Doc.factory(true,_doc);
     assert ms!=null;
     ClassB expected=getClassB(_expected);
     if(!isError){
@@ -84,7 +84,7 @@ public class TestAddComment {
     TestHelper.configureForTest();
     ClassB cb1=getClassB(_cb1);
     Path path=Path.parse(_path);
-    Doc doc=Doc.factory(_doc);
+    Doc doc=Doc.factory(true,_doc);
     ClassB expected=getClassB(_expected);
     if(!isError){
       ClassB res=AddDocumentation.addDocumentationOnNestedClass(Program.empty(),cb1, path.getCBar(),doc);

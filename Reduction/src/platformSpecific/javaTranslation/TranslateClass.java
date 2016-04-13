@@ -72,6 +72,8 @@ public class TranslateClass {
     Path path=Path.parse(Resources.name42Of(s));
     int hash=path.getN();
     String cs=path.toString();
+    assert cs.contains("."):
+      cs;
     cs=cs.substring(cs.indexOf("."));
     res.append(
       "return platformSpecific.javaTranslation.Resources.fromHash("+hash+",\""+cs+"\").revert();\n");

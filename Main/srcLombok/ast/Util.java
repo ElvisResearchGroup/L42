@@ -1,7 +1,8 @@
 package ast;
 
-import lombok.*;
 import lombok.experimental.Wither;
+import lombok.Data;
+import lombok.Value;
 
 import java.util.ArrayList;
 import java.util.Collections;

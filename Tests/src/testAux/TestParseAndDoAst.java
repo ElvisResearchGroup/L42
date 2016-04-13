@@ -104,7 +104,7 @@ public class TestParseAndDoAst {
 },{lineNumber()," { }"
 },{lineNumber()," {()}"
 },{lineNumber()," {interface}"
-},{lineNumber()," {<: A.B, C}"
+},{lineNumber()," { implements  A.B, C}"
 },{lineNumber(),"with x (on T y)"
 },{lineNumber(),"with x (on T y on T case e z)"
 },{lineNumber(),"with x (on T y default e+e)"
@@ -178,10 +178,10 @@ public class TestParseAndDoAst {
 },{" {mut ()}","Expression.ClassB(doc1=, doc2=, h=Ast.ConcreteHeader(mdf=Mutable, name=, fs=[]), supertypes=[], ms=[], stage=None)"
 },{" {//aa\n mut foo()//bb\n}","Expression.ClassB(doc1=aa\n, doc2=bb\n, h=Ast.ConcreteHeader(mdf=Mutable, name=foo, fs=[]), supertypes=[], ms=[], stage=None)"
 },{" {interface}","Expression.ClassB(doc1=, doc2=, h=Ast.InterfaceHeader(), supertypes=[], ms=[], stage=None)"
-},{" {<: A.B, C}","Expression.ClassB(doc1=, doc2=, h=Ast.TraitHeader(), supertypes=[A.B, C], ms=[], stage=None)"
-},{" {//foo\n<: A.B, C //bar\n}","Expression.ClassB(doc1=foo\n, doc2=bar\n, h=Ast.TraitHeader(), supertypes=[A.B, C], ms=[], stage=None)"
-},{" {//foo\n<: A.B, C }","Expression.ClassB(doc1=foo\n, doc2=, h=Ast.TraitHeader(), supertypes=[A.B, C], ms=[], stage=None)"
-},{" {<: A.B, C //bar\n}","Expression.ClassB(doc1=, doc2=bar\n, h=Ast.TraitHeader(), supertypes=[A.B, C], ms=[], stage=None)"
+},{" { implements  A.B, C}","Expression.ClassB(doc1=, doc2=, h=Ast.TraitHeader(), supertypes=[A.B, C], ms=[], stage=None)"
+},{" {//foo\n implements  A.B, C //bar\n}","Expression.ClassB(doc1=foo\n, doc2=bar\n, h=Ast.TraitHeader(), supertypes=[A.B, C], ms=[], stage=None)"
+},{" {//foo\n implements  A.B, C }","Expression.ClassB(doc1=foo\n, doc2=, h=Ast.TraitHeader(), supertypes=[A.B, C], ms=[], stage=None)"
+},{" { implements  A.B, C //bar\n}","Expression.ClassB(doc1=, doc2=bar\n, h=Ast.TraitHeader(), supertypes=[A.B, C], ms=[], stage=None)"
 },{"{ method Any a()}","Expression.ClassB(doc1=, doc2=, h=Ast.TraitHeader(), supertypes=[], ms=[Expression.ClassB.MethodWithType(doc=, ms=a(), mt=Ast.MethodType(docExceptions=, mdf=Immutable, ts=[], tDocs=[], returnType=Immutable[Any], exceptions=[]), inner=Optional.empty)], stage=None)"
 },{"{ method //a\nAny a()}","Expression.ClassB(doc1=, doc2=, h=Ast.TraitHeader(), supertypes=[], ms=[Expression.ClassB.MethodWithType(doc=a\n, ms=a(), mt=Ast.MethodType(docExceptions=, mdf=Immutable, ts=[], tDocs=[], returnType=Immutable[Any], exceptions=[]), inner=Optional.empty)], stage=None)"
 },{"{ method Any a()//b\n}","Expression.ClassB(doc1=, doc2=, h=Ast.TraitHeader(), supertypes=[], ms=[Expression.ClassB.MethodWithType(doc=, ms=a(), mt=Ast.MethodType(docExceptions=b\n, mdf=Immutable, ts=[], tDocs=[], returnType=Immutable[Any], exceptions=[]), inner=Optional.empty)], stage=None)"
@@ -236,6 +236,7 @@ public class TestParseAndDoAst {
   },{"a \"aa\""
   },{"a(b)"
   },{" ( (a[]))"
+  },{"a /*a*/ "
 }});}
   @Test
   public void testOk() {

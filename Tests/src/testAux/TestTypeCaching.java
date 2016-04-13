@@ -54,35 +54,35 @@ public class TestTypeCaching {
        },{lineNumber(),"{a( This0.A a, var This0.B b) A:{}  B:{}}","This0",
         "[]",true
              //interface inside
-       },{lineNumber(),"{interface method Void m() A:{interface <:This1}}","This0.A",
+       },{lineNumber(),"{interface method Void m() A:{interface  implements This1}}","This0.A",
          "[This1::method Void m()]"
           ,true
        //check normal from
-       },{lineNumber(),"{interface method This0.A m() A:{interface <:This1}}","This0.A",
+       },{lineNumber(),"{interface method This0.A m() A:{interface implements This1}}","This0.A",
       "[This1::method This1.A m()]"
              ,true
            //interface outside
-       },{lineNumber(),"{interface <: This0.A A:{interface method This0 m() }}","This0",
+       },{lineNumber(),"{interface  implements  This0.A A:{interface method This0 m() }}","This0",
       "[This0.A::method This0.A m()]"
          ,true
        //two interfaces implemented
-       },{lineNumber(),"{interface <: This0.A, This0.B A:{interface method This0 ma() }##less ^## B:{interface method This0 mb() }}","This0",
+       },{lineNumber(),"{interface  implements  This0.A, This0.B A:{interface method This0 ma() }##less ^## B:{interface method This0 mb() }}","This0",
           "[This0.A::method This0.A ma(), This0.B::method This0.B mb()]"
            ,true
            //two interfaces implemented nested simple
-         },{lineNumber(),"{interface <: This0.A, This0.A.B A:{interface method This0 ma()  B:{interface method This0 mb() }}}","This0",
+         },{lineNumber(),"{interface  implements  This0.A, This0.A.B A:{interface method This0 ma()  B:{interface method This0 mb() }}}","This0",
              "[This0.A::method This0.A ma(), This0.A.B::method This0.A.B mb()]"
              ,true
              //two interfaces implemented nested transitive
-           },{lineNumber(),"{interface <: This0.A A:{interface<: This0.B method This0 ma()  B:{interface method This0 mb() }}}","This0",
+           },{lineNumber(),"{interface  implements  This0.A A:{interface implements  This0.B method This0 ma()  B:{interface method This0 mb() }}}","This0",
                "[This0.A::method This0.A ma(), This0.A.B::method This0.A.B mb()]"
                ,true
                //good self diamond//TODO: may become not well formed.
-       },{lineNumber(),"{interface <: This0.B, This0.B B:{interface method This0 mb()}}","This0",
+       },{lineNumber(),"{interface  implements  This0.B, This0.B B:{interface method This0 mb()}}","This0",
          "[This0.B::method This0.B mb()]"
           ,true
           //good standard diamond
-       },{lineNumber(),"{interface <: This0.A, This0.B A:{interface <:This1.C } B:{interface <:This1.C } C:{interface method This0 mc()}}","This0",
+       },{lineNumber(),"{interface  implements  This0.A, This0.B A:{interface  implements This1.C } B:{interface  implements This1.C } C:{interface method This0 mc()}}","This0",
           "[This0.C::method This0.C mc()]"
           ,true
           //check transitive plusness

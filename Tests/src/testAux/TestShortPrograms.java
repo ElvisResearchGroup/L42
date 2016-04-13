@@ -20,7 +20,7 @@ import ast.ExpCore.ClassB;
 import auxiliaryGrammar.Functions;
 
 public class TestShortPrograms {
-  public void tp(String ...code) {
+  public static void tp(String ...code) {
     TestHelper.configureForTest();
     FinalResult res0;
     try{
@@ -34,7 +34,6 @@ public class TestShortPrograms {
     ExpCore ee2=Desugar.of(Parser.parse(null,"{//@exitStatus\n//0\n\n}")).accept(new InjectionOnCore());
     TestHelper.assertEqualExp(Functions.clearCache(nc.getInner(),Ast.Stage.None),ee2);
   }
-
 
 @Test public void test1(){tp(""
 ,"{() C:{//@exitStatus\n//0\n"
@@ -51,7 +50,7 @@ public class TestShortPrograms {
 ,"    class method Library ko() ({//@exitStatus\n//42000\n\n} )"
 ,"    }"
 ,"  I:{interface}"
-,"  AI:{k()<:I}"
+,"  AI:{k() implements I}"
 ,"  D:("
 ,"    Any z=error AI.k()"
 ,"    catch error AI x ("
@@ -67,7 +66,7 @@ public class TestShortPrograms {
 ,"    class method Library ko() ({//@exitStatus\n//42000\n\n} )"
 ,"    }"
 ,"  I:{interface}"
-,"  AI:{k()<:I}"
+,"  AI:{k() implements I}"
 ,"  D:("
 ,"    Any z=error AI.k()"
 ,"    catch error I x ("
@@ -83,7 +82,7 @@ public class TestShortPrograms {
 ,"    class method Library ko() ({//@exitStatus\n//42000\n\n} )"
 ,"    }"
 ,"  I:{interface}"
-,"  AI:{k()}"//removed <:I
+,"  AI:{k()}"//removed  implements I
 ,"  D:(Library res=("
 ,"    Any z=error AI.k()"
 ,"    catch error I x ("
@@ -101,7 +100,7 @@ public class TestShortPrograms {
 ,"    class method Library ko() ({//@exitStatus\n//42000\n\n} )"
 ,"    }"
 ,"  I:{interface}"
-,"  AI:{k()}"//removed <:I
+,"  AI:{k()}"//removed  implements I
 ,"  D:("
 ,"    Any z=error AI.k()"
 ,"    catch error I x ("
@@ -119,7 +118,7 @@ public class TestShortPrograms {
 ,"    }"
 ,"  I:{interface}"
 ,"  Box:{mut k(var fwd mut Any f)}"
-,"  AI:{k()<:I}"
+,"  AI:{k() implements I}"
 ,"  D:("
 ,"    mut Box box=Box.k(f:box)"
 ,"    catch error I x ("
@@ -136,7 +135,7 @@ public class TestShortPrograms {
 ,"    }"
 ,"  I:{interface}"
 ,"  Box:{lent k(var fwd read Any f)}"
-,"  AI:{k()<:I}"
+,"  AI:{k() implements I}"
 ,"  D:("
 ,"    lent Box box=Box.k(f:box)"
 ,"    Any z1=box.f(AI.k())"
@@ -194,7 +193,6 @@ public void test8f(){tp("{"
     ," Main:( c=C {//@exitStatus"
     ," //0"
     ," })}");}
-
 
 
 @Test(expected=PathNonExistant.class)
@@ -264,10 +262,9 @@ public void testClassMethods1(){tp("{"
 @Test
 public void testClassMethods2(){tp("{"
     ," I: { interface class method Library a()  class method Library b() }"
-    ," D:{ <:I  method a() This.b()   method  b() {()} }"
+    ," D:{  implements I  method a() This.b()   method  b() {()} }"
     ," E: ( c=D.a() {//@exitStatus\n//0\n\n})"
     ,"}");}
-
 
 
 @Test public void testPlaceHolder(){tp(""
@@ -327,23 +324,23 @@ public void testDeepTyping2(){tp("{"
     ," D: { class method Library wrong()  { A:{method Void v() this.notDeclared() } } }"
     ," E: ( Library ignore=D.wrong(), {//@exitStatus\n//0\n\n})"
     ,"}");}
+
 @Test(expected=ErrorMessage.MethodNotPresent.class)
 public void testDeepTyping3(){tp("{"
     ," D: { class method Library wrong()  { A:{method Void v() this.notDeclared() } } }"
     ," E: ( Void ignore=D.wrong(), {//@exitStatus\n//0\n\n})"//we check that methodNotPresent has priority over PathsNotSubtype in this case
     ,"}");}
-
 @Test(expected=ErrorMessage.MalformedFinalResult.class)
 public void test13(){tp("{",
     " I:{ interface method I foo() }",
-    "A:{ ()<:I  method I beer()}",
+    "A:{ () implements I  method I beer()}",
     "Main:(x={} {//@exitStatus\n//0\n\n})",
     " }");}
 
 @Test(expected=ErrorMessage.MalformedFinalResult.class)
 public void test13b(){tp("{",
     " I:{ interface method I foo() }",
-    "A:{ ()<:I  }",
+    "A:{ () implements I  }",
     "Main:(x={} {//@exitStatus\n//0\n\n})",
     " }");}
 
@@ -376,10 +373,10 @@ public void test5levels(){tp("{",
 public void testComposition1(){tp("{",
     "Op:"+operatorAccess(),
     " A:{interface method Void m()}",
-    " B:{ class method Library (){ <:A method m()void} }",
-    " C:Op.compose(left:B(),right:{<:A})",
-    " D1:{D2:Op.compose(left:B(),right:{<:A})}",
-    " D:Op.compose(left:B(),right:{<:A})",
+    " B:{ class method Library (){  implements A method m()void} }",
+    " C:Op.compose(left:B(),right:{ implements A})",
+    " D1:{D2:Op.compose(left:B(),right:{ implements A})}",
+    " D:Op.compose(left:B(),right:{ implements A})",
     "Main:{//@exitStatus\n//0\n\n}",
     " }");}
 
@@ -387,10 +384,10 @@ public void testComposition1(){tp("{",
 public void testComposition2(){tp("{",
     "Op:"+operatorAccess(),
     " A:{interface method A m(A that)}",
-    " B:{ class method Library (){ <:A method m(that)that} }",
-    " C:Op.compose(left:B(),right:{<:A})",
-    " D1:{D2:Op.compose(left:B(),right:{<:A})}",
-    " D:Op.compose(left:B(),right:{<:A})",
+    " B:{ class method Library (){  implements A method m(that)that} }",
+    " C:Op.compose(left:B(),right:{ implements A})",
+    " D1:{D2:Op.compose(left:B(),right:{ implements A})}",
+    " D:Op.compose(left:B(),right:{ implements A})",
     "Main:{//@exitStatus\n//0\n\n}",
     " }");}
 
@@ -398,10 +395,10 @@ public void testComposition2(){tp("{",
 public void testComposition3(){tp("{",
     "Op:"+operatorAccess(),
     " A:{interface method A m1(A that)  method A m2(A that)}",
-    " B:{ class method Library (){ <:A method m1(that) this.m2(that)} }",
-    " C:Op.compose(left:B(),right:{<:A method m2(that) this})",
-    " D1:{D2:Op.compose(left:B(),right:{<:A method m2(that) this})}",
-    " D:Op.compose(left:B(),right:{<:A method m2(that) this})",
+    " B:{ class method Library (){  implements A method m1(that) this.m2(that)} }",
+    " C:Op.compose(left:B(),right:{ implements A method m2(that) this})",
+    " D1:{D2:Op.compose(left:B(),right:{ implements A method m2(that) this})}",
+    " D:Op.compose(left:B(),right:{ implements A method m2(that) this})",
     "Main:{//@exitStatus\n//0\n\n}",
     " }");}
 
@@ -410,15 +407,15 @@ public void testComposition3(){tp("{",
 public void testComposition4(){tp("{",
     "Op:"+operatorAccess(),
     " A:{interface method A m1(A that)  method A m2(A that)}",
-    " B:{ class method Library (){ <:A method m1(that) this.m2(that)} }",
-    " C:Op.compose(left:B(),right:{<:A method m2(that) this})",
+    " B:{ class method Library (){  implements A method m1(that) this.m2(that)} }",
+    " C:Op.compose(left:B(),right:{ implements A method m2(that) this})",
     " N:{class method Library (){",
     "    Op:"+operatorAccess(),
     "     A:{interface method A m1(A that)  method A m2(A that)}",
-    "     B:{ class method Library (){ <:A method m1(that) this.m2(that)} }",
-    "     C:Op.compose(left:B(),right:{<:A method m2(that) this})",
+    "     B:{ class method Library (){  implements A method m1(that) this.m2(that)} }",
+    "     C:Op.compose(left:B(),right:{ implements A method m2(that) this})",
     " }}",
-    " D:Op.compose(left:B(),right:{<:A method m2(that) this})",
+    " D:Op.compose(left:B(),right:{ implements A method m2(that) this})",
     "Main:{//@exitStatus\n//0\n\n}",
     " }");}
 
@@ -427,11 +424,11 @@ public void testComposition4(){tp("{",
 public void testComposition5(){tp("{",
     "Op:"+operatorAccess(),
     " A:{interface method Void m() }",
-    " B:{ class method Library (){ <:A method m() void } }",
+    " B:{ class method Library (){  implements A method m() void } }",
     " N:Op.compose(left:B(),right:{ ",
     "     A:{interface method Void m() }",
-    "     B:{ class method Library (){ <:A method m() void } }",
-    "     C:Op.compose(left:B(),right:{<:A })",
+    "     B:{ class method Library (){  implements A method m() void } }",
+    "     C:Op.compose(left:B(),right:{ implements A })",
     " })",
     "Main:{//@exitStatus\n//0\n\n}",
     " }");}
@@ -441,12 +438,12 @@ public void testComposition5(){tp("{",
 public void testComposition6(){tp("{",
     "Op:"+operatorAccess(),
     " A:{interface method A m1(A that)  method A m2(A that)}",
-    " B:{ class method Library (){ <:A method m1(that) this.m2(that)} }",
+    " B:{ class method Library (){  implements A method m1(that) this.m2(that)} }",
     " N:Op.compose(left:{},right:{ ",
     "    Op:"+operatorAccess(),
     "     A:{interface method A m1(A that)  method A m2(A that)}",
-    "     B:{ class method Library (){ <:A method m1(that) this.m2(that)} }",
-    "     C:Op.compose(left:B(),right:{<:A method m2(that) this})",
+    "     B:{ class method Library (){  implements A method m1(that) this.m2(that)} }",
+    "     C:Op.compose(left:B(),right:{ implements A method m2(that) this})",
     " })",
     "Main:{//@exitStatus\n//0\n\n}",
     " }");}
@@ -456,25 +453,26 @@ public void testComposition6(){tp("{",
 public void testComposition7(){tp("{",
     "Op:"+operatorAccess(),
     " Q:{ interface method Void m() }",
-    " A:{interface <: Q   B:{ class method Library (Library that) Op.compose(left:that,right:{ <:A method m() void }) }}",
+    " A:{interface  implements  Q   B:{ class method Library (Library that) Op.compose(left:that,right:{  implements A method m() void }) }}",
     " N:Op.compose(left:{},right:{ ",
     "     Q:{ interface method Void m() }",
-    "     A:{interface <:Q B:{ class method Library (Library that) Op.compose(left:that,right:{ <:A method m() void }) }}",
-    "     BB:{C:A.B({<:A })}",
+    "     A:{interface  implements Q B:{ class method Library (Library that) Op.compose(left:that,right:{  implements A method m() void }) }}",
+    "     BB:{C:A.B({ implements A })}",
     " })",
     "Main:{//@exitStatus\n//0\n\n}",
     " }");}
-
 
 @Test
 public void testCompositionAT2() throws Throwable{
   L42.trustPluginsAndFinalProgram=true;
   //new TestBase01()._01_00DeployAdamTowel01();
-  tp("{TOP:{reuse L42.is/AdamTowel01",
+  try{tp("{TOP:{reuse L42.is/AdamTowel01",
     "Resource:{  reuse L42.is/AdamTowel01",
-    "   A:{ Foo:This1.Message.$<<{<:This2.Message} }    }}",
+    "   A:{ Foo:This1.Message.$<<{ implements This2.Message} }    }}",
     "Main:{//@exitStatus\n//0\n\n}",
     " }");}
+    finally{L42.trustPluginsAndFinalProgram=false;}
+    }
 
 
 
@@ -494,5 +492,4 @@ public static final String operatorAccess(){return
 +"      error void\n"
 +"  }\n";
 }
-
 }

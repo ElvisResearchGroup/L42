@@ -501,19 +501,7 @@ public class ToFormattedText implements Visitor<Void>{
       }
     formatDoc(arg0.getDoc2());
   }
-  private Void formatDoc(Doc d) {return formatDoc(d.toString());}
-  private Void formatDoc(String d) {
-    if(d.isEmpty()){return null;}
-    assert d.endsWith("\n"):"|"+d+"|";
-    String[] splitted=d.substring(0,d.length()-1).split("\n",-1);//on its line for ease of testing//This was a bad move, javaSplit, you despicable bastard
-    {int i=-1;for(String s:splitted){i+=1;
-      if(s.isEmpty()&& i==0){continue;}
-      c("//");
-      c(s);
-      nl();
-    }}
-    return null;
-  }
+  private Void formatDoc(Doc d) {return c(d.toCodeFormattedString());}
   private Void formatType(Optional<Type> t) {
   if(t.isPresent()){
     return formatType(t.get());
@@ -562,8 +550,9 @@ public class ToFormattedText implements Visitor<Void>{
         c(arg0.getInner());
         return c("\"");
         }
-      formatDoc(arg0.getInner());
-      return c("\"");
+        String[] splitted = arg0.getInner().split("\n", -1);
+        for(String s:splitted){c("'");c(s);nl();}
+        return c("\"");
       }
     c(arg0.getInner());
     return arg0.getReceiver().accept(this);

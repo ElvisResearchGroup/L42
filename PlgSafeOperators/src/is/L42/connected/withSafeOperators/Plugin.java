@@ -151,7 +151,7 @@ public class Plugin implements PluginType{
       List<String> path=Path.parseValidCs(ensureExtractStringU(_path));
       List<Object> result= new ArrayList<>(Introspection.giveInfo(that, path));
       result.add("MyClass");
-      result.add(Doc.factory("@."+String.join(".",path)));
+      result.add(Doc.factory(true,"@."+String.join(".",path)));
       return Resources.Error.multiPartStringClassB("MemberReport",result.toArray());
     }
     @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})

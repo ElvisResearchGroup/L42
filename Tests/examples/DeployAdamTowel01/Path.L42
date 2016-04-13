@@ -4,8 +4,8 @@
   class method
   This fromDocInternalizedS(S that){
     if that==S"@."++S.nl() (return This.fromS(S"This"))
-    //Debug(S"["++that++S"]")
-    return This.fromS(that(start:2N end:that.size()-1N))
+    //Debug(S"Calling fromDocInternalizedS on ["[that]"]")
+    return This.fromS(that(start:2N))
     catch error Message x
       error This.parseError(that,cause:x)
     }

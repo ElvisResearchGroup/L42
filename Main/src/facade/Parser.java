@@ -197,7 +197,7 @@ static final class Pos  {
       //fail in StrMLPadding, Round,Square,Curly
       failPadding("*/");
       //pop in CommML
-      if(popIf(State.StrSL,State.StrMLPadding)){return;}
+      if(popIf(State.CommML)){return;}
       }
     void oRound(){// (
       //fail in StrMLPadding

@@ -103,23 +103,23 @@ public class TestFrom {
     public static List<Object[]> createData() {
       return Arrays.asList(new Object[][] {{"{ method Void m() exception Void void}", "This2.B","{ method Void m() exception Void void}"
 },{"{method This2.B #apply() }", "This1.C.A","{method This1.B #apply() }"
-},{"{ method Void m() This0<{ <: This1 } }",
+},{"{ method Void m() This0<{  implements  This1 } }",
    "This0.C",
-   "{ method Void m() This0.C <{ <: This1.C }  }"
-},{"{ method Void m() This0.B<This1.B<This2.B<This0<{ <: This1, This0.A, This1.A,This2.A } }",
-   "This0.C",//as in D:C.m()  C:{ m {<:This1.A,This2.A }}
-   "{ method Void m() This0.C.B<This0.B<This1.B<This0.C <{ <: This1.C, This0.A, This1.C.A,This1.A }  }"
-},{"{ method Void m() This0.B<This1.B<This2.B<This0<{ D:{<: This2, This1.A, This2.A,This3.A } }}",
-    "This0.C",//as in D:C.m()  C:{ m {<:This1.A,This2.A }}
-    "{ method Void m() This0.C.B<This0.B<This1.B<This0.C <{ D:{<: This2.C, This1.A, This2.C.A,This2.A } } }"
+   "{ method Void m() This0.C <{  implements  This1.C }  }"
+},{"{ method Void m() This0.B<This1.B<This2.B<This0<{  implements  This1, This0.A, This1.A,This2.A } }",
+   "This0.C",//as in D:C.m()  C:{ m { implements This1.A,This2.A }}
+   "{ method Void m() This0.C.B<This0.B<This1.B<This0.C <{  implements  This1.C, This0.A, This1.C.A,This1.A }  }"
+},{"{ method Void m() This0.B<This1.B<This2.B<This0<{ D:{ implements  This2, This1.A, This2.A,This3.A } }}",
+    "This0.C",//as in D:C.m()  C:{ m { implements This1.A,This2.A }}
+    "{ method Void m() This0.C.B<This0.B<This1.B<This0.C <{ D:{ implements  This2.C, This1.A, This2.C.A,This2.A } } }"
 
 
-},{"{ method Void m() This0.B<This1.B<This2.B<This0<{ <: This1, This0.A, This1.A,This2.A } }",
-    "This1.C",//as in D:This1.C.m()  C:{ m {<:This1.A,This2.A }}
-    "{ method Void m() This1.C.B<This1.B<This2.B<This1.C <{ <: This2.C, This0.A, This2.C.A,This2.A }  }"
- },{"{ method Void m() This0.B<This1.B<This2.B<This0<{ D:{<: This2, This1.A, This2.A,This3.A } }}",
-     "This1.C",//as in D:This1.C.m()  C:{ m {<:This1.A,This2.A }}
-     "{ method Void m() This1.C.B<This1.B<This2.B<This1.C <{ D:{<: This3.C, This1.A, This3.C.A,This3.A } } }"
+},{"{ method Void m() This0.B<This1.B<This2.B<This0<{  implements  This1, This0.A, This1.A,This2.A } }",
+    "This1.C",//as in D:This1.C.m()  C:{ m { implements This1.A,This2.A }}
+    "{ method Void m() This1.C.B<This1.B<This2.B<This1.C <{  implements  This2.C, This0.A, This2.C.A,This2.A }  }"
+ },{"{ method Void m() This0.B<This1.B<This2.B<This0<{ D:{ implements  This2, This1.A, This2.A,This3.A } }}",
+     "This1.C",//as in D:This1.C.m()  C:{ m { implements This1.A,This2.A }}
+     "{ method Void m() This1.C.B<This1.B<This2.B<This1.C <{ D:{ implements  This3.C, This1.A, This3.C.A,This3.A } } }"
 
 
 

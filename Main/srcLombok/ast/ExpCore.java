@@ -8,7 +8,6 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import lombok.EqualsAndHashCode;
-import lombok.NonNull;
 import lombok.ToString;
 import lombok.Value;
 import lombok.experimental.Wither;

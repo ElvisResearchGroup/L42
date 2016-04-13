@@ -176,10 +176,10 @@ public static class TestRedirect1 {//add more test for error cases
                                     // which is a logical consequence of the intersecting-to-one-target-is-unambiguous rule,
                                     // this should combine the two interfaces
         "{I:{interface}\n"
-        + "A:{<:I method Void fun(Void that) void}}"
+        + "A:{ implements I method Void fun(Void that) void}}"
         },
         "{InnerI1:{interface} InnerI2:{interface}"
-        + "InnerA:{<:InnerI1 InnerI2\n"
+        + "InnerA:{ implements InnerI1 InnerI2\n"
         + "method Void fun(Void that)\n"
         + "}"
         + "TestB:{method InnerI1 fun() method InnerI2 moreFun()}"
@@ -192,47 +192,47 @@ public static class TestRedirect1 {//add more test for error cases
     },{lineNumber(), new String[]{   // Cascade redirect an interface, via a redirect-my-pile-of-stuff class
                     "{I1:{interface method Void fun()}\n"
                     + "I2:{interface method Void moreFun()}\n"
-                    + "A:{<:I1 I2 method fun() void method moreFun() void}"
-                    + "%Redirect:{D_I1:{<:I1} D_I2:{<:I2} method A d_A()}"
+                    + "A:{ implements I1 I2 method fun() void method moreFun() void}"
+                    + "%Redirect:{D_I1:{ implements I1} D_I2:{ implements I2} method A d_A()}"
                     + "}"},
         "{InnerI2:{interface method Void moreFun()}\n"
-        + "InnerA:{<:This2.I1 InnerI2} "  // redirected class can//t have implementation, so it can//t mention methods
-        + "%Redirect:{D_I2:{<:InnerI2} method InnerA d_A()}"
-        + "TestB:{<:InnerI2 method moreFun() void}\n"
+        + "InnerA:{ implements This2.I1 InnerI2} "  // redirected class can//t have implementation, so it can//t mention methods
+        + "%Redirect:{D_I2:{ implements InnerI2} method InnerA d_A()}"
+        + "TestB:{ implements InnerI2 method moreFun() void}\n"
         + "}",
         "This0.%Redirect","This1.%Redirect",
-        "{TestB:{<:This2.I2 method moreFun() void}}",false
+        "{TestB:{ implements This2.I2 method moreFun() void}}",false
     },{lineNumber(), new String[]{   // Same test as above, with more interesting method selectors and trivial order changes
                     "{"
                     + "I1:{interface method Void fun(Void that)}\n"
                     + "I2:{interface method Void moreFun(Library that, Void other)}\n"
-                    + "A:{<:I1 I2 method fun(that) that method moreFun(that, other) other}"
-                    + "%Redirect:{D_I1:{<:I1} D_I2:{<:I2} method A d_A()}"
+                    + "A:{ implements I1 I2 method fun(that) that method moreFun(that, other) other}"
+                    + "%Redirect:{D_I1:{ implements I1} D_I2:{ implements I2} method A d_A()}"
                     + "}"},
         "{InnerI2:{interface method Void moreFun(Library that, Void other)}\n"
-        + "InnerA:{<:InnerI2 This2.I1} \n"  // again, no implementation
-        + "%Redirect:{D_I2:{<:InnerI2} method InnerA d_A()}"
-        + "TestB:{<:InnerI2 method moreFun(that, other) void}\n"
+        + "InnerA:{ implements InnerI2 This2.I1} \n"  // again, no implementation
+        + "%Redirect:{D_I2:{ implements InnerI2} method InnerA d_A()}"
+        + "TestB:{ implements InnerI2 method moreFun(that, other) void}\n"
         + "}",
         "This0.%Redirect","This1.%Redirect",
-        "{TestB:{<:This2.I2 method moreFun(that, other) void}}",false
+        "{TestB:{ implements This2.I2 method moreFun(that, other) void}}",false
     },{lineNumber(), new String[]{   // Redirect, via a pile, when the underlying types are used in aliases
                     "{"
                     + "I1:{interface method Void fun(Void that)}\n"
                     + "I2:{interface method Void moreFun(Library that, Void other)}\n"
-                    + "A:{<:I1 I2 method fun(that) that method moreFun(that, other) other}"
+                    + "A:{ implements I1 I2 method fun(that) that method moreFun(that, other) other}"
                     + "%Redirect:{method I1 _I1() method I2 _I2() method A _A()}"
                     + "}"},
         "{InnerI2:{interface method Void moreFun(Library that, Void other)}\n"
-        + "InnerA:{<:InnerI2 This2.I1} \n"  // again, no implementation
+        + "InnerA:{ implements InnerI2 This2.I1} \n"  // again, no implementation
         + "%Redirect:{method InnerI2 _I2() method InnerA _A()}\n"
-        + "TestB:{<:InnerI2 method moreFun(that, other) void \n"
+        + "TestB:{ implements InnerI2 method moreFun(that, other) void \n"
         + "       class method Library () {} }\n"
         + "TestC:{method This1.%Redirect::_I2() notSoFun() {} }\n"
         + "TestD:{method This1.%Redirect::_I2()::moreFun(that,other)::other mostFun() {} }\n"
         + "}",
         "This0.%Redirect","This1.%Redirect",
-        "{TestB:{<:This2.I2 method moreFun(that, other) void\n"
+        "{TestB:{ implements This2.I2 method moreFun(that, other) void\n"
         + "      class method Library () {}}\n"
         + "TestC:{method This2.%Redirect::_I2() notSoFun() {}}\n"
         + "TestD:{method This2.%Redirect::_I2()::moreFun(that,other)::other mostFun() {} }\n"
@@ -241,18 +241,18 @@ public static class TestRedirect1 {//add more test for error cases
                     "{"
                     + "I1:{interface method Void fun(Void that)}\n"
                     + "I2:{interface method Void moreFun(Library that, Void other)}\n"
-                    + "A:{<:I1 I2 method fun(that) that method moreFun(that, other) other}"
+                    + "A:{ implements I1 I2 method fun(that) that method moreFun(that, other) other}"
                     + "%Redirect:{method I1 _I1() method I2 _I2() method A _A()}"
                     + "}"},
         "{InnerI2:{interface method Void moreFun(Library that, Void other)}\n"
-        + "InnerA:{<:InnerI2 This2.I1} \n"  // again, no implementation
+        + "InnerA:{ implements InnerI2 This2.I1} \n"  // again, no implementation
         + "%Redirect:{method InnerI2 _I2() method InnerA _A()}\n"
-        + "TestB:{<:InnerI2 method moreFun(that, other) void \n"
+        + "TestB:{ implements InnerI2 method moreFun(that, other) void \n"
         + "       class method Library () {} }\n"
         + "TestC:{method This1.InnerI2::moreFun() notSoFun() {} }\n"
         + "}",
         "This0.%Redirect","This1.%Redirect",
-        "{TestB:{<:This2.I2 method moreFun(that, other) void\n"
+        "{TestB:{ implements This2.I2 method moreFun(that, other) void\n"
         + "      class method Library () {}}\n"
         + "TestC:{method This2.I2::moreFun() notSoFun() {}}\n"
         + "}",false
@@ -282,20 +282,20 @@ public static class TestRedirect1 {//add more test for error cases
                                      // via a pile that explicitly directs both
                     "{I1:{interface method Void fun()}\n"
                     + "I2:{interface method Void moreFun()}\n"
-                    + "A:{<:I1 I2 }\n"
+                    + "A:{ implements I1 I2 }\n"
                     + "%Redirect:{method I1 _I1() method I2 _I2() method A _A()}\n"
                     + "}"},
         "{InnerI1:{interface method Void fun()}\n"
         + "InnerI2:{interface method Void moreFun()}\n"
-        + "InnerA:{<:InnerI1 InnerI2}\n"  // redirected class can//t have implementation, so it can//t mention methods
+        + "InnerA:{ implements InnerI1 InnerI2}\n"  // redirected class can//t have implementation, so it can//t mention methods
         + "%Redirect:{method InnerI1 _I1() method InnerI2 _I2() method InnerA _A()}\n"
         + "TestA:{method InnerA aFun()}"
-        + "TestB:{<:InnerI1 InnerI2  method fun() void method moreFun() void}\n"
+        + "TestB:{ implements InnerI1 InnerI2  method fun() void method moreFun() void}\n"
         + "}",
         "This0.%Redirect","This1.%Redirect",
         "{"
         + "TestA:{method This2.A aFun()}"
-        + "TestB:{<:This2.I1 This2.I2 method fun() void method moreFun() void}"
+        + "TestB:{ implements This2.I1 This2.I2 method fun() void method moreFun() void}"
         + "}",false
 
     },{lineNumber(), new String[]{   // Redirect three classes, via a pile, so that the
@@ -303,17 +303,17 @@ public static class TestRedirect1 {//add more test for error cases
                                      // implemented interfaces and method errors unambiguous
                     "{Iab:{interface} Ibc:{interface} Ica:{interface}\n"
                     + "Eab:{} Ebc:{} Eca:{}\n"
-                    + "A:{<:Ica Iab method Void fun() error Eca Eab}\n"
-                    + "B:{<:Iab Ibc method Void fun() error Eab Ebc}\n"
-                    + "C:{<:Ibc Ica method Void fun() error Ebc Eca}\n"
+                    + "A:{ implements Ica Iab method Void fun() error Eca Eab}\n"
+                    + "B:{ implements Iab Ibc method Void fun() error Eab Ebc}\n"
+                    + "C:{ implements Ibc Ica method Void fun() error Ebc Eca}\n"
                     + "%Redirect:{method A _A() method B _B() method C _C() }\n"
                     + "}"},
         "{InnerIab:{interface} InnerIbc:{interface} InnerIca:{interface}\n"
         + "InnerEab:{} InnerEbc:{} InnerEca:{}\n"
         // same order, then interfaces swapped, then errors swapped, just in case it matters
-        + "InnerA:{<:InnerIca InnerIab method Void fun() error InnerEca InnerEab}\n"
-        + "InnerB:{<:InnerIbc InnerIab method Void fun() error InnerEab InnerEbc}\n"
-        + "InnerC:{<:InnerIbc InnerIca method Void fun() error InnerEca InnerEbc}\n"
+        + "InnerA:{ implements InnerIca InnerIab method Void fun() error InnerEca InnerEab}\n"
+        + "InnerB:{ implements InnerIbc InnerIab method Void fun() error InnerEab InnerEbc}\n"
+        + "InnerC:{ implements InnerIbc InnerIca method Void fun() error InnerEca InnerEbc}\n"
         + "%Redirect:{method InnerA _A() method InnerB _B() method InnerC _C()}\n"
         + "TestX:{method InnerIab abFun() error InnerEab\n"
         + "       method InnerIbc bcFun() error InnerEbc\n"
@@ -411,13 +411,13 @@ public static class TestRedirect1 {//add more test for error cases
                     "{"
                     + "I1:{interface method Void fun(Void that)}\n"
                     + "I2:{interface method Void moreFun(Library that, Void other)}\n"
-                    + "A:{<:I1 I2 method fun(that) that method moreFun(that, other) other}"
+                    + "A:{ implements I1 I2 method fun(that) that method moreFun(that, other) other}"
                     + "D_Target:{method I1 _I1() method I2 _I2() method A _A()}"
                     + "}"},
         "{InnerI2:{interface method Void moreFun(Library that, Void other)}\n"
-        + "InnerA:{<:InnerI2 This2.I1 method fun(that) void} \n"
+        + "InnerA:{ implements InnerI2 This2.I1 method fun(that) void} \n"
         + "D_Source:{method InnerI2 _I2() method InnerA _A()}\n"
-        + "TestB:{<:InnerI2 method moreFun(that, other) void \n"
+        + "TestB:{ implements InnerI2 method moreFun(that, other) void \n"
         + "       class method Library () {} }\n"
         + "TestC:{method This1.D_Source::_I2() notSoFun() {} }\n"
         + "TestD:{method This1.D_Source::_I2()::moreFun(that,other)::other mostFun() {} }\n"
@@ -481,7 +481,7 @@ public static class TestRedirect1 {//add more test for error cases
         },
         "{InnerA:{interface class method Void fun(Void that)  method Void moreFun(Void that, Library other)\n"
         + "C:{interface method Void mostFun() } } \n"
-        + "C_impl:{<:InnerA.C} "
+        + "C_impl:{ implements InnerA.C} "
         + "}",
         "This0.InnerA","This1.A",
         ec
@@ -492,7 +492,7 @@ public static class TestRedirect1 {//add more test for error cases
         },
         "{InnerA:{interface class method Void fun(Void that)  method Void moreFun(Void that, Library other)\n"
         + "C:{interface method Void mostFun() } } \n"
-        + "C_impl:{<:InnerA.C"
+        + "C_impl:{ implements InnerA.C"
         + "         method mostFun() void"    // With implementation and without respecified types
         + "       } "
         + "}",
@@ -520,8 +520,8 @@ public static class TestRedirect1 {//add more test for error cases
         },
         "{BlockingInterface1:{interface} "
         + "InnerA:{interface class method Void fun(Void that)  method Void moreFun(Void that, Library other)\n"
-        + "C:{interface <:BlockingInterface1 } } \n"
-        + "C_impl:{<:InnerA.C"
+        + "C:{interface  implements BlockingInterface1 } } \n"
+        + "C_impl:{ implements InnerA.C"
         + "       } "
         + "}",
         "This0.InnerA","This1.A",
@@ -541,9 +541,9 @@ public static class TestRedirect1 {//add more test for error cases
         "{BlockingInterface1:{interface} \n"
         + "BlockingInterface2:{interface} \n"
         + "InnerA:{interface class method Void fun(Void that)  method Void moreFun(Void that, Library other)\n"
-        + "C:{interface <:BlockingInterface1 This2.BlockingInterface2 This3.A.C"
+        + "C:{interface  implements BlockingInterface1 This2.BlockingInterface2 This3.A.C"
         + "  } } \n"
-        + "C_impl:{<:InnerA.C"
+        + "C_impl:{ implements InnerA.C"
         + "         method Void mostFun()"    //
         + "       } "
         + "}",
@@ -559,9 +559,9 @@ public static class TestRedirect1 {//add more test for error cases
         + " }"
         },
         "{ InnerA:{interface class method InnerC fun(Void that)  method Void moreFun(Void that, Library other)} \n"
-        + "InnerC:{interface <:InnerA"
+        + "InnerC:{interface  implements InnerA"
         + "       }  \n"
-        + "C_impl:{<:InnerC"
+        + "C_impl:{ implements InnerC"
         + "       } "
         + "}"
         + "",
@@ -609,12 +609,12 @@ public static class TestRedirect1 {//add more test for error cases
                                      // disambiguating it turned out to be prohibitive.
                     "{I1:{interface method Void fun()}\n"
                     + "I2:{interface method Void moreFun()}\n"
-                    + "A:{<:I1 I2 }"
+                    + "A:{ implements I1 I2 }"
                     + "}"},
         "{InnerI1:{interface method Void fun()}\n"
         + "InnerI2:{interface method Void moreFun()}\n"
-        + "InnerA:{<:InnerI1 InnerI2}"
-        + "TestB:{<:InnerI1 InnerI2  method fun() void method Void moreFun() void}\n"
+        + "InnerA:{ implements InnerI1 InnerI2}"
+        + "TestB:{ implements InnerI1 InnerI2  method fun() void method Void moreFun() void}\n"
         + "}",
         "This0.InnerA","This1.A",
         ec.set(
@@ -694,7 +694,7 @@ public static class TestRedirect1 {//add more test for error cases
         },
         "{InnerA:{interface class method Void fun(Void that)  method Void moreFun(Void that, Library other)\n"
         + "C:{interface method Void mostFun() } } \n"
-        + "C_impl:{<:InnerA.C"
+        + "C_impl:{ implements InnerA.C"
         + "         method Void mostFun()"    // Uncommenting this line changes from SourceUnfit to MemberUnavailable
         + "       } "
         + "}",

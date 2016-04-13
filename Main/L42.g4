@@ -27,6 +27,8 @@ fragment CharsAllStrLine:
 fragment CharsAllString:
  '\t'| 'A'..'Z'|'a'..'z'|'0'..'9' | '(' | ')' | '[' | ']' | '<' | '>' |'&'|'|'|'*'|'+'|'-'|'=' | '/' | '!' | '?' | ';' | ':' | ',' | '.' | ' ' | '~' | '@' | '#' | '$' | '%' | '`' | '^' | '_' | '\\' | '{' | '}' | '\'' ;
 fragment DocLine: '//' CharsAllStrLine* '\n'; // tab not valid in 42, used to encode ( with space in initial rewriting
+fragment DocMultiLine:   '/*' (CharsAllStrLine|'\n')*?  '*/' ;// can be that *? is the non greedy *
+//fragment DocMultiLine:   '/*' .*?  '*/' ;// can be that *? is the non greedy *
 fragment StrLine: '\'' CharsAllStrLine* '\n'; // tab not valid in 42, used to encode ( with space in initial rewriting
 fragment String: CharsAllString*;
 //fragment Num:Digit|'-'|'.';
@@ -88,7 +90,7 @@ UrlNL: 'reuse' ' '+ CharsUrl+'\n';
 Url: 'reuse' ' '+ CharsUrl+;
 //UrlNL: '##urlNL';
 //Url: '##url';
-Doc: (DocLine WS?)+;
+Doc: (DocLine WS?)+ | DocMultiLine WS?;
 WS:
     (( ' ' | ',' | '\n' )+)-> channel(HIDDEN);
 
