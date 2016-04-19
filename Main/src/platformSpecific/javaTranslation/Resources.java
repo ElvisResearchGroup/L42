@@ -148,7 +148,8 @@ public class Resources {
         ClassB inner;
         if(map[i+1] instanceof String){inner=EncodingHelper.wrapStringU((String)map[i+1]);}
         else{//for now, just doc.
-          inner=new ClassB((Doc)map[i+1],Doc.empty(),false,Collections.emptyList(),Collections.emptyList(),Position.noInfo,new CachedStage());
+        Doc docip1=(Doc)map[i+1];
+          inner=new ClassB(docip1,Doc.empty(),false,Collections.emptyList(),Collections.emptyList(),Position.noInfo,new CachedStage());
           }
         if(!Path.isValidClassName(cName)){throw Assertions.codeNotReachable("Invalid name in multiPartStringError:"+cName);}
         ms.add(new ExpCore.ClassB.NestedClass(Doc.empty(), cName, inner,null));

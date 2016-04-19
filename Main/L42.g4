@@ -165,7 +165,7 @@ onPlus: On t+ (Case eTop)? eTop | Case eTop eTop;
 nudeE: eTop EOF;
 classBExtra:Stage? Path* EndType;
 classBReuse: OCurly docsOpt  Url CCurly |OCurly docsOpt UrlNL docsOpt member+ CCurly;
-classB:OCurly docsOpt header Implements? Path* docsOpt member* CCurly classBExtra?;
+classB:OCurly docsOpt header Implements? Path* docsOpt fieldDec* member* CCurly classBExtra?;
 mhs: Method docsOpt methSelector (EndType Path mht)?;
 mht: Mdf? Method docsOpt t (mDec |ORoundNoSpace|ORoundSpace) (t x docsOpt)* CRound (S Path+)?;
 member: methodWithType|methodImplemented|nestedClass;

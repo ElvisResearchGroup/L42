@@ -240,7 +240,7 @@ public interface Ast {
 			return new MethodSelector(name, xs);
 		}
 
-		private static boolean checkX(String s, boolean allowHash) {
+		public static boolean checkX(String s, boolean allowHash) {
 			if (s.isEmpty()) {return false;}
 			char c0 = s.charAt(0);
 			if (allowHash && c0 == '#') {
@@ -506,6 +506,10 @@ public interface Ast {
 			}
 			return result;
 		}
+		public Doc withNewlineTerminator(){
+		  if(s.endsWith("\n")){return this;}
+		  return this.withS(s+"\n");
+		  }
 
 		public boolean isPrivate() {
 			if (this.annotations.contains("private")) {

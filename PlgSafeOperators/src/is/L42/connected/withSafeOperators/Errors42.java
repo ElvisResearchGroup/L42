@@ -220,15 +220,15 @@ public class Errors42 {
   }
   static Doc formatPathIn(List<String> path){
     //if(path.isEmpty()){return Doc.factory(Path.outer(0));}
-    return Doc.factory(true,"@."+String.join(".", path));
+    return Doc.factory(true,"@."+String.join(".", path)+"\n");
   }
   static Doc formatPathOut(Path path){
     if(path.isPrimitive()){return Doc.factory(path);}
     assert path.outerNumber()>0;
-    return Doc.factory(Path.outer(path.outerNumber()+1,path.getCBar()));
+    return Doc.factory(Path.outer(path.outerNumber()+1,path.getCBar())).withNewlineTerminator();
   }
   static Doc formatPath(Path path){
-    if(path.isPrimitive()){return Doc.factory(path);}
+    if(path.isPrimitive()){return Doc.factory(path).withNewlineTerminator();}
     if(path.outerNumber()==0){return formatPathIn(path.getCBar());}
     return formatPathOut(path);
   }

@@ -770,7 +770,7 @@ public class Desugar extends CloneVisitor{
     MCall body=new MCall(Path.outer(0),called.getName(),Doc.empty(),ps,h.getP());
     return new MethodWithType(doc, ms,mt, Optional.of(body),h.getP());
   }
-  static private MethodWithType cfLentK(MethodWithType mutK) {
+  static public MethodWithType cfLentK(MethodWithType mutK) {
     mutK=mutK.withMs(mutK.getMs().withName("#lentK"));
     NormType resT=new ast.Ast.NormType(Mdf.Lent,ast.Ast.Path.outer(0),Ph.None);
     MethodType mt = mutK.getMt();
@@ -781,12 +781,14 @@ public class Desugar extends CloneVisitor{
     mutK=mutK.withMt(mt);
     return mutK;
   }
-
-  static private MethodWithType cfMutK(Doc doc,ast.Ast.ConcreteHeader h) {
+  static public MethodWithType cfMutK(Doc doc,ast.Ast.ConcreteHeader h) {
+    return cfMutK(doc,h.getFs(),h.getP());
+    }
+  static public MethodWithType cfMutK(Doc doc,List<FieldDec>fields,Position pos) {
     List<String> names= new ArrayList<String>();
     List<Doc> tDocss=new ArrayList<>();
     List<Type> ts=new ArrayList<Type>();
-    for(FieldDec f:h.getFs()){
+    for(FieldDec f:fields){
       tDocss.add(f.getDoc());
       ts.add(f.getT().match(nt->{
         //can not be put fwd, we need invariants to replace constructos if needed
@@ -799,7 +801,7 @@ public class Desugar extends CloneVisitor{
     MethodSelector ms=new MethodSelector("#mutK",names);
     NormType resT=new ast.Ast.NormType(Mdf.Mutable,ast.Ast.Path.outer(0),Ph.None);
     MethodType mt=new MethodType(Doc.empty(),ast.Ast.Mdf.Class,ts,tDocss,resT,Collections.emptyList());
-    return new MethodWithType(doc, ms,mt, Optional.empty(),h.getP());
+    return new MethodWithType(doc, ms,mt, Optional.empty(),pos);
     }
   static private Mdf mdfForNamedK(ast.Ast.ConcreteHeader h){
     boolean canImm=true;

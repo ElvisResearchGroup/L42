@@ -462,7 +462,7 @@ public void testComposition7(){tp("{",
     "Main:{//@exitStatus\n//0\n\n}",
     " }");}
 
-@Test
+/*@Test
 public void testCompositionAT2() throws Throwable{
   L42.trustPluginsAndFinalProgram=true;
   //new TestBase01()._01_00DeployAdamTowel01();
@@ -473,7 +473,7 @@ public void testCompositionAT2() throws Throwable{
     " }");}
     finally{L42.trustPluginsAndFinalProgram=false;}
     }
-
+*/
 
 
 

@@ -3,9 +3,12 @@
 
   class method
   This fromDocInternalizedS(S that){
-    if that==S"@."++S.nl() (return This.fromS(S"This"))
-    //Debug(S"Calling fromDocInternalizedS on ["[that]"]")
-    return This.fromS(that(start:2N))
+    S internal={
+      if that(\size-1N)!=S.nl() (return that)
+      return that(end:\size-1N)
+      }
+    if internal==S"@." (return This.fromS(S"This"))
+    return This.fromS(internal(start:2N))
     catch error Message x
       error This.parseError(that,cause:x)
     }

@@ -30,14 +30,14 @@ public class NormalizePrivates {
     doubleUnderscoreReplacement="$%";
     }
   public static void updateDoubleUnderscoreReplacement(String name){
-     //TODO: commented now since it grow like creazy
-    //if(!name.contains(doubleUnderscoreReplacement)){return;}
-    //doubleUnderscoreReplacement+="$%";
-    //updateDoubleUnderscoreReplacement(name);
+     //TODO: do something about it, now  it grow like creazy
+    if(!name.contains(doubleUnderscoreReplacement)){return;}
+    doubleUnderscoreReplacement+="$%";
+    updateDoubleUnderscoreReplacement(name);
   }
   public static String freshName(String name){
-   int index=name.indexOf('_');
-   if(index>0){name=name.substring(0,index);}
+   //int index=name.indexOf('_');
+   //if(index>0){name=name.substring(0,index);}
    return freshName(name,"__"+countPrivates++ +"_"+PrivateHelper.countFamilies);
   }
   public static String freshName(String name,String newPedex){
