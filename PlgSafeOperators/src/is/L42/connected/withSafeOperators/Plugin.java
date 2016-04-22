@@ -7,6 +7,7 @@ import static auxiliaryGrammar.EncodingHelper.ensureExtractPathFromJava;
 import static auxiliaryGrammar.EncodingHelper.ensureExtractDoc;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -269,6 +270,21 @@ public class Plugin implements PluginType{
       ExpCore val=Revertable.doRevert(_that);//TODO: would go in loop for circular graphs?
       val=From.from(val,Path.outer(Resources.getP().getInnerData().size()));
       return LiftValue.liftValue(val,  selector, lib);
+    }
+
+    @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+    public  Object MaddKs£xthat£xpath£xfields£xmutK£xlentK£xreadK£ximmK£xisFwd(
+        Object _that,Object _path, Object _fields, Object _mutK,Object _lentK,Object _readK,Object _immK,Object _fwd
+        ){
+      ClassB that=ensureExtractClassB(_that);
+      List<String> path = Path.parseValidCs(ensureExtractStringU(_path));
+      String[] fieldNames=ensureExtractStringU(_fields).split(",");
+      String mutK=ensureExtractStringU(_mutK);
+      String lentK=ensureExtractStringU(_lentK);
+      String readK=ensureExtractStringU(_readK);
+      String immK=ensureExtractStringU(_immK);
+      boolean fwd=ensureExtractInt32(_fwd)==0?false:true;
+      return MakeKs.makeKs(that, path, Arrays.asList(fieldNames), mutK, lentK, readK, immK, fwd);
     }
 
   }

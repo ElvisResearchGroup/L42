@@ -7753,7 +7753,106 @@ Library liftValue(Any that, This1.Selector selector, Library lib) use This0 chec
   Void unused39=b.#b()
   Void unused40=b.#cRound()
   b
-  ))}
+  ))
+class method 
+Library addKs(Library that, This1.Path path, This1.S fields, This1.S mutK, This1.S lentK, This1.S readK, This1.S immK, This1.Bool isFwd) (
+  Library fwdRepr=(
+    Void unused=(
+      Void unused0=(
+        Void unused2=isFwd.#checkTrue()
+        
+        catch exception Void catched void
+        
+        return This1.N.#from(builder:(
+          This1.N::#builder() b=This1.N.#builder()
+          Void unused3=b.#1()
+          b
+          )).binaryRepr()
+        )
+      Void unused1=return This1.N.#from(builder:(
+        This1.N::#builder() b0=This1.N.#builder()
+        Void unused4=b0.#0()
+        b0
+        )).binaryRepr()
+      void
+      )
+    
+    catch return Library result result
+    
+    error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+    )
+  use This0 check addKs(that:that, path:path.binaryRepr(), fields:fields.binaryRepr(), mutK:mutK.binaryRepr(), lentK:lentK.binaryRepr(), readK:readK.binaryRepr(), immK:immK.binaryRepr(), isFwd:fwdRepr) error This1.System.Guard.PluginFailure.#from(builder:(
+    This1.System.Guard.PluginFailure::#builder() b1=This1.System.Guard.PluginFailure.#builder()
+    Void unused5=b1.#S()
+    Void unused6=b1.#a()
+    Void unused7=b1.#f()
+    Void unused8=b1.#e()
+    Void unused9=b1.#O()
+    Void unused10=b1.#p()
+    Void unused11=b1.#e()
+    Void unused12=b1.#r()
+    Void unused13=b1.#a()
+    Void unused14=b1.#t()
+    Void unused15=b1.#o()
+    Void unused16=b1.#r()
+    Void unused17=b1.#s()
+    Void unused18=b1.#dot()
+    Void unused19=b1.#a()
+    Void unused20=b1.#d()
+    Void unused21=b1.#d()
+    Void unused22=b1.#K()
+    Void unused23=b1.#s()
+    Void unused24=b1.#oRound()
+    Void unused25=b1.#t()
+    Void unused26=b1.#h()
+    Void unused27=b1.#a()
+    Void unused28=b1.#t()
+    Void unused29=b1.#comma()
+    Void unused30=b1.#p()
+    Void unused31=b1.#a()
+    Void unused32=b1.#t()
+    Void unused33=b1.#h()
+    Void unused34=b1.#comma()
+    Void unused35=b1.#f()
+    Void unused36=b1.#i()
+    Void unused37=b1.#e()
+    Void unused38=b1.#l()
+    Void unused39=b1.#d()
+    Void unused40=b1.#s()
+    Void unused41=b1.#comma()
+    Void unused42=b1.#m()
+    Void unused43=b1.#u()
+    Void unused44=b1.#t()
+    Void unused45=b1.#K()
+    Void unused46=b1.#comma()
+    Void unused47=b1.#l()
+    Void unused48=b1.#e()
+    Void unused49=b1.#n()
+    Void unused50=b1.#t()
+    Void unused51=b1.#K()
+    Void unused52=b1.#comma()
+    Void unused53=b1.#r()
+    Void unused54=b1.#e()
+    Void unused55=b1.#a()
+    Void unused56=b1.#d()
+    Void unused57=b1.#K()
+    Void unused58=b1.#comma()
+    Void unused59=b1.#i()
+    Void unused60=b1.#m()
+    Void unused61=b1.#m()
+    Void unused62=b1.#K()
+    Void unused63=b1.#comma()
+    Void unused64=b1.#i()
+    Void unused65=b1.#s()
+    Void unused66=b1.#F()
+    Void unused67=b1.#w()
+    Void unused68=b1.#d()
+    Void unused69=b1.#cRound()
+    b1
+    ))
+  )}
 Enum:{
 class method 
 Library #leftleft(Library that) This1.SafeOperatorsAccess.compose(left:This1.SafeOperatorsAccess.renameClass(that:this.enumTrait(), src:This1.S.#from(builder:(
@@ -28473,4 +28572,238 @@ Library #leftleft(Library that) (
 SafeOperatorsAccess__99_0:/*@private
 */{/*@plugin
 L42.is/connected/withSafeOperators
-*/}}}
+*/}}
+K:{
+$:{
+class method 
+mut This0 #mutK(This2.S names, This2.Bool isFwd, This2.S mutK, This2.S lentK, This2.S readK, This2.S immK) 
+class method 
+This0 #apply(This2.S names, This2.Bool isFwd, This2.S mutK, This2.S lentK, This2.S readK, This2.S immK) This0.#mutK(names:names, isFwd:isFwd, mutK:mutK, lentK:lentK, readK:readK, immK:immK)
+mut method 
+This2.S #names() 
+read method 
+This2.S names() 
+mut method 
+This2.Bool #isFwd() 
+read method 
+This2.Bool isFwd() 
+mut method 
+This2.S #mutK() 
+read method 
+This2.S mutK() 
+mut method 
+This2.S #lentK() 
+read method 
+This2.S lentK() 
+mut method 
+This2.S #readK() 
+read method 
+This2.S readK() 
+mut method 
+This2.S #immK() 
+read method 
+This2.S immK() 
+method 
+This0 fwd() This0.#apply(names:this.names(), isFwd:This2.Bool.true(), mutK:this.mutK(), lentK:this.lentK(), readK:this.readK(), immK:this.immK())
+method 
+Library #leftleft(Library that) exception This2.MetaGuard.MethodUnavailable/*if names are wrong
+MetaGuard.NestedClassUnavailable//no since we use Path"This"
+*/ (
+  Void unused=(
+    Void unused0=return This2.SafeOperators.addKs(that:that, path:This2.Path.#from(builder:(
+      This2.Path::#builder() b=This2.Path.#builder()
+      Void unused1=b.#T()
+      Void unused2=b.#h()
+      Void unused3=b.#i()
+      Void unused4=b.#s()
+      b
+      )), fields:this.names(), mutK:this.mutK(), lentK:this.lentK(), readK:this.readK(), immK:this.immK(), isFwd:this.isFwd())
+    
+    catch error Library err (/*MetaGuard.NestedClassUnavailable(lift:err)
+*/
+      Void unused5=This2.MetaGuard.MethodUnavailable.#apply(lift:err)
+      error err
+      )
+    
+    void
+    )
+  
+  catch return Library result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )}
+class method 
+This0.$#from(This1.S.SBuilder builder) This0.$.#apply(names:This1.S.#from(builder:builder), isFwd:This1.Bool.false(), mutK:This1.S.#from(builder:(
+  This1.S::#builder() b=This1.S.#builder()
+  Void unused=b.#hash()
+  Void unused0=b.#a()
+  Void unused1=b.#p()
+  Void unused2=b.#p()
+  Void unused3=b.#l()
+  Void unused4=b.#y()
+  b
+  )), lentK:This1.S.#from(builder:(
+  This1.S::#builder() b0=This1.S.#builder()
+  Void unused5=b0.#l()
+  Void unused6=b0.#e()
+  Void unused7=b0.#n()
+  Void unused8=b0.#t()
+  Void unused9=b0.#K()
+  b0
+  )), readK:This1.S.#from(builder:(
+  This1.S::#builder() b1=This1.S.#builder()
+  Void unused10=b1.#r()
+  Void unused11=b1.#e()
+  Void unused12=b1.#a()
+  Void unused13=b1.#d()
+  Void unused14=b1.#K()
+  b1
+  )), immK:This1.S.#from(builder:(
+  This1.S::#builder() b2=This1.S.#builder()
+  Void unused15=b2.#i()
+  Void unused16=b2.#m()
+  Void unused17=b2.#m()
+  Void unused18=b2.#K()
+  b2
+  )))
+class method 
+mut This1.S.SBuilder #builder() This1.S.SBuilder.empty()
+class method 
+Library #leftleft(Library that) (
+  Void unused=(/*compute names
+*/
+    This1.Introspection::#apply(lib ) i=This1.Introspection.#apply(lib:that)
+    This1.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) names=(
+      This1.S::#from(builder ) ::#from(seqBuilder ) rcv110=(
+        This1.S::#from(builder ) rcv111=This1.S.#from(builder:(
+          This1.S::#builder() b0=This1.S.#builder()
+          b0
+          ))
+        rcv111.#from(seqBuilder:(
+          This1.S::#from(builder ) ::#seqBuilder() b=rcv111.#seqBuilder()
+          Void unused1=(
+            This1.Introspection::#apply(lib ) ::methods() ::vals() m=i.methods().vals()
+            (
+              Void unused2=(
+                Void unused3=(
+                  Void unused4=loop (
+                    Void unused5=m.#next()
+                    
+                    catch exception Void catched2 (
+                      Void unused6=(
+                        Void unused7=m.#checkEnd()
+                        
+                        catch exception Void catched3 void
+                        
+                        void
+                        )
+                      exception void
+                      )
+                    
+                    (
+                      This1.Introspection::#apply(lib ) ::methods() ::vals() ::#inner() ::selector() sel=m.#inner().selector()
+                      This1.Introspection::#apply(lib ) ::methods() ::vals() ::#inner() ::methodKind() ::equals(that ) isAbs=(
+                        This1.Introspection::#apply(lib ) ::methods() ::vals() ::#inner() ::methodKind() rcv112=m.#inner().methodKind()
+                        rcv112.equals(that:rcv112.class()._AbstractMethod())
+                        )
+                      This1.Introspection::#apply(lib ) ::methods() ::vals() ::#inner() ::isPrivate() ::#bang() isVis=m.#inner().isPrivate().#bang()
+                      This1.Introspection::#apply(lib ) ::methods() ::vals() ::#inner() ::selector() ::names() ::isEmpty() isNoArg=sel.names().isEmpty()
+                      (
+                        This1.Introspection::#apply(lib ) ::methods() ::vals() ::#inner() ::methodKind() ::equals(that ) ::#and(that ) ::#and(that ) cond=isAbs.#and(that:isVis).#and(that:isNoArg)
+                        (
+                          Void unused8=cond.#checkTrue()
+                          
+                          catch exception Void catched8 void
+                          
+                          (
+                            Void unused9=b.#add(that:sel.nameAsField(), separedBy:This1.S.#from(builder:(
+                              This1.S::#builder() b1=This1.S.#builder()
+                              Void unused10=b1.#comma()
+                              b1
+                              )))
+                            void
+                            )
+                          )
+                        )
+                      )
+                    )
+                  
+                  catch exception Void catched11 void
+                  
+                  void
+                  )
+                
+                catch exception Any propagated (
+                  Void unused11=m.#close()
+                  exception propagated
+                  )
+                
+                void
+                )
+              
+              catch return Library propagated0 (
+                Void unused12=m.#close()
+                return propagated0
+                )
+              
+              m.#close()
+              )
+            )
+          b
+          ))
+        )
+      rcv110.#from(builder:(
+        This1.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b2=rcv110.#builder()
+        b2
+        ))
+      )
+    Void unused0=return This0.$.#apply(names:names, isFwd:This1.Bool.false(), mutK:This1.S.#from(builder:(
+      This1.S::#builder() b3=This1.S.#builder()
+      Void unused13=b3.#hash()
+      Void unused14=b3.#a()
+      Void unused15=b3.#p()
+      Void unused16=b3.#p()
+      Void unused17=b3.#l()
+      Void unused18=b3.#y()
+      b3
+      )), lentK:This1.S.#from(builder:(
+      This1.S::#builder() b4=This1.S.#builder()
+      Void unused19=b4.#l()
+      Void unused20=b4.#e()
+      Void unused21=b4.#n()
+      Void unused22=b4.#t()
+      Void unused23=b4.#K()
+      b4
+      )), readK:This1.S.#from(builder:(
+      This1.S::#builder() b5=This1.S.#builder()
+      Void unused24=b5.#r()
+      Void unused25=b5.#e()
+      Void unused26=b5.#a()
+      Void unused27=b5.#d()
+      Void unused28=b5.#K()
+      b5
+      )), immK:This1.S.#from(builder:(
+      This1.S::#builder() b6=This1.S.#builder()
+      Void unused29=b6.#i()
+      Void unused30=b6.#m()
+      Void unused31=b6.#m()
+      Void unused32=b6.#K()
+      b6
+      ))).#leftleft(that:that)
+    
+    catch exception This1.MetaGuard.MethodUnavailable catched23 error This1.Assert.CodeNotReachable.#from(builder:(
+      This1.Assert.CodeNotReachable::#builder() b7=This1.Assert.CodeNotReachable.#builder()
+      b7
+      )).#apply(that:catched23)
+    
+    void
+    )
+  
+  catch return Library result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )}}

@@ -166,6 +166,13 @@ public class TestBase01 {
    Assert.assertEquals(L42.record.toString(),
        "Hello-a@@b\nHello-a@@b\nHello-a#@@b#\nHello\na##\nb##\nHello-d\n");
    }
+@Test
+ public  void _01_102K() throws Throwable{
+   TestHelper.configureForTest();
+   //new TestBase01()._01_00DeployAdamTowel01();
+   L42.main(new String[]{"examples/testsForAdamTowel01/TestK.L42"});
+   TestHelper.check42Fails(L42.record.toString());
+   }
 
 
 }

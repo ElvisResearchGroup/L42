@@ -121,7 +121,7 @@ public class InjectionOnSugar implements Visitor<ast.Expression> {
          return new Expression.ClassB.MethodWithType(idoc, is, mt, lift(mwt.getInner()),mwt.getP());
          }
         ));    }
-    return new Expression.ClassB(doc1,doc2, h, supertypes, members,s.getP(),s.getStage().getStage());
+    return new Expression.ClassB(doc1,doc2, h,Collections.emptyList(), supertypes, members,s.getP(),s.getStage().getStage());
   }
   public Expression visit(WalkBy s) {
     return new Expression.WalkBy();

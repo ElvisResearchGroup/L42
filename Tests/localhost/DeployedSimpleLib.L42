@@ -1217,6 +1217,8 @@ This1.Default _Default()
 method 
 This1.Collections _Collections() 
 method 
+This1.K _K() 
+method 
 This1.DeployTowel _DeployTowel() 
 method 
 This1.PreferentialComposition _PreferentialComposition() 
@@ -3984,6 +3986,48 @@ Library #apply() }
 CodeEq:{
 class method 
 Library #apply() }}
+K:{
+$:{
+class method 
+mut This0 #mutK(This2.S names, This2.Bool isFwd, This2.S mutK, This2.S lentK, This2.S readK, This2.S immK) 
+class method 
+This0 #apply(This2.S names, This2.Bool isFwd, This2.S mutK, This2.S lentK, This2.S readK, This2.S immK) 
+mut method 
+This2.S #names() 
+read method 
+This2.S names() 
+mut method 
+This2.Bool #isFwd() 
+read method 
+This2.Bool isFwd() 
+mut method 
+This2.S #mutK() 
+read method 
+This2.S mutK() 
+mut method 
+This2.S #lentK() 
+read method 
+This2.S lentK() 
+mut method 
+This2.S #readK() 
+read method 
+This2.S readK() 
+mut method 
+This2.S #immK() 
+read method 
+This2.S immK() 
+method 
+This0 fwd() 
+method 
+Library #leftleft(Library that) exception This2.MetaGuard.MethodUnavailable/*if names are wrong
+MetaGuard.NestedClassUnavailable//no since we use Path"This"
+*/ }
+class method 
+This0.$#from(This1.S.SBuilder builder) 
+class method 
+mut This1.S.SBuilder #builder() 
+class method 
+Library #leftleft(Library that) }
 DeployTowel:{
 class method /*(Any fileName)
 */mut This0 #mutK(This1.Url fileName) 

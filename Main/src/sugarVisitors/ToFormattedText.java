@@ -400,6 +400,7 @@ public class ToFormattedText implements Visitor<Void>{
   public Void visit(ClassB cb) {
     c("{");
     formatH(cb);
+    cb.getFields().forEach(this::formatField);
     formatMembers(cb.getMs());
     c("}");
     if (cb.getStage()!=Stage.None){c(cb.getStage().inner);}
@@ -482,13 +483,7 @@ public class ToFormattedText implements Visitor<Void>{
         c(h.getName());
         c("(");
         StringBuilders.formatSequence(result,h.getFs().iterator(),
-            ", ",v->{
-          if(v.isVar()){c("var ");}
-          formatType(v.getT());
-          sp();
-          c(v.getName());
-          formatDoc(v.getDoc());
-          });
+            ", ",this::formatField);
         return c(")");},
       //trait
       h->{return null;},
@@ -500,6 +495,15 @@ public class ToFormattedText implements Visitor<Void>{
         p->visit(p));
       }
     formatDoc(arg0.getDoc2());
+  }
+  private void formatField(FieldDec v) {
+   sp();
+   if(v.isVar()){c("var ");}
+   formatType(v.getT());
+   sp();
+   c(v.getName());
+   formatDoc(v.getDoc());
+   sp();
   }
   private Void formatDoc(Doc d) {return c(d.toCodeFormattedString());}
   private Void formatType(Optional<Type> t) {

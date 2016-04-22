@@ -2,7 +2,8 @@
 
 
 
-Person:Data<<{(S name, var N age)  implements Concept.Invariant
+Person:Data<<{ implements Concept.Invariant
+  S name, var N age
   method invariant()
     this.name()!=S"" & this.age()>= 0N
    }
@@ -13,8 +14,12 @@ Main:{
   Debug(p1)
   Debug(p1.with(age:20N))
 
-  (Debug(Person(name:S"", age:2N))
-  catch error Data.Invariant.Failure x void Debug(S"Fail") )
+  (
+    unused=Debug(Person(name:S"", age:2N))
+    catch error Data.Invariant.Failure x
+      void
+    Debug(S"Fail")
+    )
   return ExitCode.normal()
   }
 }

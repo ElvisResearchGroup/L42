@@ -38,6 +38,7 @@ public class MakeKs {
       List<String> fieldNames, String mutK, String lentK, String readK,String immK,boolean fwd) {
     List<Type>fieldTypes=new ArrayList<>();
     for(String f :fieldNames){
+      if(!MethodSelector.checkX(f,true)){throw new Error("Invalid field name provided:["+f+"]");}
       fieldTypes.add(candidate(that.getMs(),f));
       }
     List<MethodWithType> toAdd=new  ArrayList<>();

@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import platformSpecific.fakeInternet.OnLineCode;
 import privateMangling.PrivateHelper;
@@ -258,12 +259,19 @@ public class Desugar extends CloneVisitor{
   }
 
 
+
   public Expression visit(ClassB s) {
+    Position pos=s.getP();
     if(s.getH() instanceof ConcreteHeader){
       List<Member> ms = Desugar.cfType((ConcreteHeader)s.getH(),s.getDoc2());
       ms.addAll(s.getMs());
       s=s.withDoc2(Doc.empty()).withMs(ms).withH(new Ast.TraitHeader());
     }
+    if(!s.getFields().isEmpty()){
+      List<Member> ms =s.getFields().stream().flatMap(f->Desugar.field(pos,f)).collect(Collectors.toList());
+      ms.addAll(s.getMs());
+      s=s.withDoc2(Doc.empty()).withMs(ms).withH(new Ast.TraitHeader());
+      }
     Set<String> oldUsedVars = this.usedVars;
     HashMap<String, Type> oldVarEnv = this.varEnv;
     try{
@@ -563,7 +571,7 @@ public class Desugar extends CloneVisitor{
 
   static ClassB encodePrimitiveString(String s){
     //return EncodingHelper.wrapStringU(s);//no, this produces a ExpCoreClassB
-    return new ClassB(Doc.factory(true,"@stringU\n"+EncodingHelper.produceStringUnicode(s)+"\n"),Doc.empty(),new Ast.TraitHeader(),Collections.emptyList(),Collections.emptyList(),Position.noInfo,Stage.None);
+    return new ClassB(Doc.factory(true,"@stringU\n"+EncodingHelper.produceStringUnicode(s)+"\n"),Doc.empty(),new Ast.TraitHeader(),Collections.emptyList(),Collections.emptyList(),Collections.emptyList(),Position.noInfo,Stage.None);
   }
   public static String desugarName(String n){
     if(n.isEmpty())return "#apply";
@@ -816,27 +824,78 @@ public class Desugar extends CloneVisitor{
     return Mdf.Mutable;
   }
 
+  static private Stream<Member> field(Position pos,Ast.FieldDec f){
+    Stream<Member> s=Stream.of();
+    //if var, do setter
+    if(f.isVar()){s=Stream.concat(s,Stream.of(generateSetter(pos,f,f.getDoc())));}
+    //if #, do getter and exposer, else only exposer
+    if(f.getName().startsWith("#")){
+      s=Stream.concat(s, Stream.of(
+        generateExposer(pos,f,f.getDoc()),
+        generateGetter(pos,f,f.getDoc())
+        ));
+      }
+    else if (requireExposer(f.getT())){
+      s=Stream.concat(s, Stream.of(
+        generateExposer(pos,f,f.getDoc())
+        ));
+      }
+    else {s=Stream.concat(s, Stream.of(  generateGetter(pos,f,f.getDoc())  ));}
+    //Careful with capsule
+    return s;
+    }
+  private static boolean requireExposer(Type t) {
+    Mdf mdf= ((NormType)t).getMdf();
+    return mdf==Mdf.Mutable || mdf==Mdf.Capsule|| mdf==Mdf.Lent;
+
+  }
 
   static private void cfSetter(Expression.Position pos,ast.Ast.FieldDec f, Doc doc,List<Member> result) {
     if(!f.isVar()){return;}
+    result.add(generateSetter(pos, f, doc));
+  }
+  private static MethodWithType generateSetter(Expression.Position pos, ast.Ast.FieldDec f, Doc doc) {
     Type tt=f.getT().match(nt->nt.withPh(Ph.None), hType->hType);
     MethodType mti=new MethodType(Doc.empty(),Mdf.Mutable,Collections.singletonList(tt),Collections.singletonList(Doc.empty()),NormType.immVoid,Collections.emptyList());
     MethodSelector msi=new MethodSelector(f.getName(),Collections.singletonList("that"));
-    result.add(new MethodWithType(doc, msi, mti, Optional.empty(),pos));
+    MethodWithType mwt = new MethodWithType(doc, msi, mti, Optional.empty(),pos);
+    return mwt;
   }
+  //left cfExposer generating exposer since is different from generateExposer code for # and capsule
   static private void cfExposer(Expression.Position pos,FieldDec f,Doc doc, List<Member> result) {
     Type tt=f.getT().match(nt->nt.withPh(Ph.None), hType->hType);
     MethodType mti=new MethodType(Doc.empty(),Mdf.Mutable,Collections.emptyList(),Collections.emptyList(),tt,Collections.emptyList());
     MethodSelector msi=new MethodSelector("#"+f.getName(),Collections.emptyList());
     result.add(new MethodWithType(doc, msi, mti, Optional.empty(),pos));
   }
+    private static MethodWithType generateExposer(Expression.Position pos, FieldDec f, Doc doc) {
+    Type tt=f.getT().match(nt->{
+      nt=nt.withPh(Ph.None);
+      if(nt.getMdf()==Mdf.Capsule){nt=nt.withMdf(Mdf.Lent);}
+      return nt;
+      }, hType->hType);
+    MethodType mti=new MethodType(Doc.empty(),Mdf.Mutable,Collections.emptyList(),Collections.emptyList(),tt,Collections.emptyList());
+    MethodSelector msi=new MethodSelector(f.getName(),Collections.emptyList());
+    MethodWithType mwt = new MethodWithType(doc, msi, mti, Optional.empty(),pos);
+    return mwt;
+  }
   static private void cfGetter(Expression.Position pos,FieldDec f,Doc doc, List<Member> result) {
     if(!( f.getT() instanceof NormType)){return;}
+    MethodWithType mwt = generateGetter(pos, f, doc);
+    result.add(mwt);
+    }
+  private static MethodWithType generateGetter(Expression.Position pos, FieldDec f, Doc doc) {
     NormType fieldNt=(NormType)f.getT();
     fieldNt=fieldNt.withPh(Ph.None);
-    fieldNt=Functions.sharedAndLentToReadable(fieldNt);
+    Mdf mdf=fieldNt.getMdf();
+    if(mdf==Mdf.Capsule || mdf==Mdf.Mutable || mdf==Mdf.Lent){
+      fieldNt=fieldNt.withMdf(Mdf.Readable);
+      }
     MethodType mti=new MethodType(Doc.empty(),Mdf.Readable,Collections.emptyList(),Collections.emptyList(),fieldNt,Collections.emptyList());
-    MethodSelector msi=new MethodSelector(f.getName(),Collections.emptyList());
-    result.add(new MethodWithType(doc, msi, mti, Optional.empty(),pos));
-    }
+    String name=f.getName();
+    if(name.startsWith("#")){name=name.substring(1);}
+    MethodSelector msi=new MethodSelector(name,Collections.emptyList());
+    MethodWithType mwt=new MethodWithType(doc, msi, mti, Optional.empty(),pos);
+    return mwt;
+  }
 }

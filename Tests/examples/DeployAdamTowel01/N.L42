@@ -12,23 +12,24 @@
     N(_binaryRepr:binaryRepr)
   method
   Library binaryRepr() this._binaryRepr()
-  
+
   class method
   mut S.SBuilder #builder()
     S.SBuilder.empty()
-     
+
   class method
   N #from(S.SBuilder builder)
     N(_binaryRepr: use Alu
       check stringToInt32(builder.binaryRepr())
       error This.parseError(S.#from(builder: builder)))
-      
+
   class method
   Any parseError(S that)
     S"N.UnsatisfactoryErrorToAvoidCycle, replace in AdamT2"
 
   method
-  toS() S.#from(binaryRepr: use Alu
+  toS()
+    S.#from(binaryRepr: use Alu
       check int32ToString(this.binaryRepr())
       error void)
 
@@ -90,25 +91,25 @@
 
 
   method Bool >=(N that) !(this<that)
-  
-  method 
+
+  method
   mut Iterator vals()
     Iterator(start:this,end:-1N)
-  
-  method 
+
+  method
   mut Iterator vals(N upTo)
     Iterator(start:this,end:upTo)
-  
+
   Iterator:{mut (var This1 start, This1 end)
     mut method
     Void #next() exception Void (
       if this.end() <0N | this.start()<this.end() (this.start(this.start()+1N))
-      else exception void 
+      else exception void
       )
-     
+
     read method
     Void #checkEnd() void
-    
+
     read method
     This1 #inner() this.start()-1N
 
