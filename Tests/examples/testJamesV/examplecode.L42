@@ -1,0 +1,28 @@
+// [a] write a class method max returning the max from a list of numbers.
+MyMath:{
+
+  // Takes two numbers and returns the biggest
+  class method N maxN(N one, N two){
+    if one<two (return two)
+    return one
+  }
+  
+  // Takes a list of numbers and returns the largest number
+  class method N maxL(NL list){
+    var N result=list.left()
+    with k in list.vals() (
+        result := MyMath.maxN(one: k, two: result)
+    )
+    return result
+  }
+}
+
+Main{
+  // This code doesn't do anything amazing. Just Shows colouring
+  var N numberN = 200N
+  var N otherN = 5467N
+  var N biggestN = Math.maxN(one: numberN, two: otherN)
+  
+  var S string = S"This text"
+  Debug(S"Message: " ++ string ++ " does lots and lots of stuff ")
+}
