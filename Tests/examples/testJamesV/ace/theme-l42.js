@@ -25,10 +25,11 @@ background: #424242\
 box-shadow: 0 0 3px 0px black;\
 }\
 .ace-l42-theme .ace_marker-layer .ace_step {\
-background: rgb(0, 0, 0)\
+background: rgb(0, 0, 255)\
 }\
-.ace-l42-theme .ace_marker-layer .ace_bracket {\
-background: #090;\
+.ace-l42-sublime .ace_marker-layer .ace_bracket {\
+margin: -1px 0 0 -1px;\
+border: 1px solid rgb(192, 192, 192);\
 }\
 .ace-l42-theme .ace_marker-layer .ace_bracket-start {\
 background: #090;\
@@ -58,21 +59,9 @@ color: #343434\
 color: blue;\
 font-weight: bold;\
 }\
-.ace-l42-theme .ace_testerx{\
+.ace-l42-theme .ace_errorHighlight{\
 color: yellow;\
 background-color: red;\
-font-weight: bold;\
-}\
-.ace-l42-theme .ace_testers{\
-color: red;\
-font-weight: bold;\
-}\
-.ace-l42-theme .ace_testerm{\
-color: gray;\
-font-weight: bold;\
-}\
-.ace-l42-theme .ace_testere{\
-color: blue;\
 font-weight: bold;\
 }\
 .ace-l42-theme .ace_keyword.ace_operator {\
@@ -121,10 +110,6 @@ color: darkred\
 .ace-l42-theme .ace_upperIdentifiers {\
 font-weight: bold\
 }\
-.ace-l42-theme .ace_lowerIdentifiers {\
-color: pink;\
-font-style: italic;\
-}\
 .ace-l42-theme .ace_methodParameters {\
 color: darkgreen;\
 font-style: italic;\
@@ -133,17 +118,9 @@ font-style: italic;\
 color: darkgreen;\
 font-style: italic;\
 }\
-.ace-l42-theme .ace_entity.ace_name.ace_tag,\
-.ace-l42-theme .ace_entity.ace_other.ace_attribute-name,\
-.ace-l42-theme .ace_meta.ace_tag,\
-.ace-l42-theme .ace_string.ace_regexp,\
-.ace-l42-theme .ace_variable {\
-color: #D54E53\
-}\
 .ace-l42-theme .ace_comment {\
 color: green;\
-font-family: \"New Times Roman\",\
-font-size: \"10pt\"\
+font-family: \"New Times Roman\";\
 }\
 .ace-l42-theme .ace_indent-guide {\
 background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAACCAYAAACZgbYnAAAAEklEQVQImWNgYGBgYLBWV/8PAAK4AYnhiq+xAAAAAElFTkSuQmCC) right repeat-y;\

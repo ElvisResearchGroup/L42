@@ -12,7 +12,7 @@ width: 1px;\
 background: #1a1a1a\
 }\
 .ace-l42-sublime {\
-background-color: black;\
+background-color: #1b1c17;\
 color: #DEDEDE\
 }\
 .ace-l42-sublime .ace_cursor {\
@@ -24,18 +24,9 @@ background: #424242\
 .ace-l42-sublime.ace_multiselect .ace_selection.ace_start {\
 box-shadow: 0 0 3px 0px black;\
 }\
-.ace-l42-sublime .ace_marker-layer .ace_step {\
-background: rgb(0, 0, 0)\
-}\
 .ace-l42-sublime .ace_marker-layer .ace_bracket {\
-background: #090;\
-}\
-.ace-l42-sublime .ace_marker-layer .ace_bracket-start {\
-background: #090;\
-}\
-.ace-l42-sublime .ace_marker-layer .ace_bracket-unmatched {\
 margin: -1px 0 0 -1px;\
-border: 1px solid #900\
+border: 1px solid rgb(192, 192, 192);\
 }\
 .ace-l42-sublime .ace_marker-layer .ace_active-line {\
 background: #2A2A2A\
@@ -54,7 +45,7 @@ color: #343434\
 .ace-l42-sublime .ace_storage,\
 .ace-l42-sublime .ace_storage.ace_type,\
 .ace-l42-sublime .ace_support.ace_type {\
-color: blue;\
+color: #f92672;\
 font-weight: bold;\
 }\
 .ace-l42-sublime .ace_keyword.ace_operator {\
@@ -87,7 +78,7 @@ border-color: #DEDEDE\
 .ace-l42-sublime .ace_entity.ace_name.ace_function,\
 .ace-l42-sublime .ace_support.ace_function,\
 .ace-l42-sublime .ace_variable {\
-color: #7AA6DA\
+color: #ae81ff\
 }\
 .ace-l42-sublime .ace_support.ace_class,\
 .ace-l42-sublime .ace_support.ace_type {\
@@ -95,24 +86,26 @@ color: #E7C547\
 }\
 .ace-l42-sublime .ace_heading,\
 .ace-l42-sublime .ace_string {\
-color: darkred\
+color: #e6db74\
 }\
 .ace-l42-sublime .ace_multistring {\
-color: red\
+color: #e6db74\
 }\
-.ace-l42-sublime .ace_upperIdentifiers {\
+.ace-l42-sublime .ace_errorHighlight {\
+color: yellow;\
+background-color: red;\
 font-weight: bold\
 }\
-.ace-l42-sublime .ace_lowerIdentifiers {\
-color: pink;\
-font-style: italic;\
+.ace-l42-sublime .ace_upperIdentifiers {\
+color: steelblue;\
+font-weight: bold\
 }\
 .ace-l42-sublime .ace_methodParameters {\
-color: darkgreen;\
+color: #e25a2c;\
 font-style: italic;\
 }\
 .ace-l42-sublime .ace_objectCall {\
-color: darkgreen;\
+color: #a6e22e;\
 font-style: italic;\
 }\
 .ace-l42-sublime .ace_entity.ace_name.ace_tag,\
@@ -123,8 +116,8 @@ font-style: italic;\
 color: #D54E53\
 }\
 .ace-l42-sublime .ace_comment {\
-color: green;\
-font-family: \"New Times Roman\",\
+color: #75715e;\
+font-family: \"New Times Roman\";\
 font-size: \"10pt\"\
 }\
 .ace-l42-sublime .ace_indent-guide {\

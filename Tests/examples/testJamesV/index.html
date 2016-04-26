@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-      <title>ACE in Action</title>
+      <TITLE>ACE in Action</TITLE>
+      <base href="./examples/testJamesV"><base/>
+
       <script src="ace/ace.js"></script> 
       <script src="js.js"></script> 
       <style type="text/css" media="screen">
@@ -89,6 +91,7 @@
       <textarea  class="col-2-2" rows="8">Lots and lots of text Messages</textarea>
         
     </div>
+</html>
     <script>
       document.getElementById("alpha").innerHTML = "Yes Javascript IS running";
       var editor = ace.edit("editor");
@@ -96,4 +99,3 @@
       editor.getSession().setMode("ace/mode/l42");
     </script>
 </body>
-</html>
