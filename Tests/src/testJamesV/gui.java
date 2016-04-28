@@ -27,7 +27,8 @@ public class gui {
 	  public  void _01_01UseJamesGui() throws Throwable{
 	    TestHelper.configureForTest();
 	    //L42.setRootPath(Paths.get("dummy"));
-	    L42.main(new String[]{"examples/testJamesV/jamesGUI.L42"});
+	    //L42.main(new String[]{"examples/testJamesV/miniCode.L42"});
+	    L42.main(new String[]{"examples/testJamesV/oldJamesGUI.L42"});
 	    Assert.assertTrue(L42.record.toString().contains("#@Success@#"));
 	    }
   }

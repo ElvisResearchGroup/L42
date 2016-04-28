@@ -1,101 +1,54 @@
-<!DOCTYPE html>
-<html lang="en">
     <head>
-      <TITLE>ACE in Action</TITLE>
-      <base href="./examples/testJamesV"><base/>
-
-      <script src="ace/ace.js"></script> 
-      <script src="js.js"></script> 
-      <style type="text/css" media="screen">
-            .ace_editor {
-              border: 1px solid lightgray;
-              height: 600px;
-              width: auto;
-            }
-            .scrollmargin {
-              height: 80px;
-              text-align: center;
-            }
-
-            #fileList{
-              height: 100px;
-              width: 100px;
-            }
-
-            [class*='col-'] {
-              float: left;
-              background-color: gray;
-            }
-
-            /* Package Browser */
-            .col-2-1 {
-              width: 100.00px;
-              background-color: gray;
-            }
-
-            /* Ace */
-            .col-2-3 {
-              width: 80%;
-              background-color: red;
-            }
-
-            /* Messages */
-            .col-2-2 {
-              width: 100.00%;
-              background-color: #ffffcc;
-              display: block;
-            }
-
-            /* Buttons */
-            .col-1-1 {
-              width: 100.00%;
-              background-color: black;
-            }
-            .grid{
-              background-color: gray;
-
-            }
-
-            .grid:after {
-              content: "";
-              display: table;
-              clear: both;
-            }
-      </style>
+    <script src="ace/ace.js"></script>
+    <script> function onLoadDo(){
+      var editor = ace.edit("editor");
+      var dbgScreen=document.getElementById("alpha");
+      dbgScreen.innerHTML = "Yes Javascript IS running, step0";
+      if (typeof ace === 'undefined') {  	  dbgScreen.innerHTML ="--   ace is: undefined";   	}
+      dbgScreen.innerHTML ="Yes Javascript IS running, --   ace is: "+ace;
+      editor.setOptions({
+          fontSize:"80%",
+          maxLines:3000,
+          mode:"ace/mode/l42",
+          theme:"ace/theme/l42_eclipse"
+          });
+    dbgScreen.innerHTML = "Yes Javascript IS STILL running, step1";
+    }
+    </script>
+    <link rel="stylesheet" type="text/css" href="style.css" media="all"/>
     </head>
-    <body>
+    <body onLoad="onLoadDo();">
 
     <div class="grid">
       <div class="col-1-1">
-            <button class="New" onclick="event42(newPressed)">New</button>
-            <button class="Save" onclick="event42(savePressed)">Save</button>
-            <button class="Save As" onclick="event42(saveAsPressed)">Save As</button>
-            <button class="Load" onclick="event42(loadPressed)">Load</button>
-            <button class="Quit" onclick="event42(quitPressed)">Quit</button>
+            <button class="New" onclick="event42('newPressed')">New</button>
+            <button class="Save" onclick="event42('savePressed')">Save</button>
+            <button class="Save As" onclick="event42('saveAsPressed')">Save As</button>
+            <button class="Load" onclick="event42('loadPressed')">Load</button>
+            <button class="Quit" onclick="event42('quitPressed')">Quit</button>
           </div>
         <div class="col-2-1" id="alpha">
           File Browser
         </div>
-        <div class="col-2-3" id="editor">
+        <img src="2.png" alt="the2NotThere" height="42" width="42">
+         <img src="./ace/2.png" alt="the2NotThere" height="42" width="42">
+         <img src="ace/2.png" alt="the2NotThere" height="42" width="42">
+        <div class="col-2-3" >
+        <pre class="java" id="editor">
           Main{
             // This code doesnt do anything amazing. Just Shows colouring
             var N numberN = 200N
             var N otherN = 5467N
             var N biggestN = Math.maxN(one: numberN, two: otherN)
-          
+
             var S string = S"This text"
             Debug(S"Message: " ++ string ++ " does lots and lots of stuff ")
           }
+        </pre>
         </div>
-          
+
       <textarea  class="col-2-2" rows="8">Lots and lots of text Messages</textarea>
-        
+
     </div>
-</html>
-    <script>
-      document.getElementById("alpha").innerHTML = "Yes Javascript IS running";
-      var editor = ace.edit("editor");
-      editor.setTheme("ace/theme/l42");
-      editor.getSession().setMode("ace/mode/l42");
-    </script>
 </body>
+</html>
