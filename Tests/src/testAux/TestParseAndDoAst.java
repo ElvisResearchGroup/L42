@@ -18,6 +18,7 @@ import facade.Parser;
 import sugarVisitors.Desugar;
 import sugarVisitors.InjectionOnCore;
 import ast.ErrorMessage;
+import ast.ErrorMessage.PreParserError;
 import ast.Expression;
 
 public class TestParseAndDoAst {
@@ -237,13 +238,33 @@ public class TestParseAndDoAst {
   },{"a(b)"
   },{" ( (a[]))"
   },{"a /*a*/ "
+  },{"{ class method Library traitUnit() {  } } "
 }});}
   @Test
-  public void testOk() {
+  public void test() {
+      Parser.checkForBalancedParenthesis(s);
       Expression e1 = Parser.parse(null,s);
       String rep=e1.toString();
     }
+  }
 
+  @RunWith(Parameterized.class)
+  public static class TestUnBalancedPar {
+    @Parameter(0) public String s;
+    @Parameterized.Parameters
+    public static List<Object[]> createData() {
+      return Arrays.asList(new Object[][] {
+  {"a)"
+  },{"a{{} \"aa\""
+  },{"a(b"
+  },{" ( a[]))"
+  },{"a( /*a*/ "
+  },{"{ class method Library traitUnit() {  } } }"
+}});}
+  @Test(expected=PreParserError.class)
+  public void test() {
+      Parser.checkForBalancedParenthesis(s);
+    }
   }
   @RunWith(Parameterized.class)
   public static class Test4_TermsToCore {

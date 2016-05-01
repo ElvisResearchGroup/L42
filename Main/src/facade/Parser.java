@@ -210,7 +210,7 @@ static final class Pos  {
       failPadding(")");
       //pop in Round
       if(popIf(State.Round)){return;}
-      if(fails(State.Square,State.Curly)){ parMismatch(State.Round);}
+      if(fails(State.None,State.Square,State.Curly)){ parMismatch(State.Round);}
       }
    void oSquare(){// [
       //fail in StrMLPadding
@@ -223,7 +223,7 @@ static final class Pos  {
       failPadding("[");
       //pop in Square
       if(popIf(State.Square)){return;}
-      if(fails(State.Round,State.Curly)){ parMismatch(State.Square);}
+      if(fails(State.None,State.Round,State.Curly)){ parMismatch(State.Square);}
       }
   void oCurly(){// {
       //fail in StrMLPadding
@@ -236,7 +236,7 @@ static final class Pos  {
       failPadding("(");
       //pop in Curly
       if(popIf(State.Curly)){return;}
-      if(fails(State.Round,State.Square)){ parMismatch(State.Curly);}
+      if(fails(State.None,State.Round,State.Square)){ parMismatch(State.Curly);}
 
       }
     void space(){//all ok
@@ -310,7 +310,7 @@ static final class Pos  {
       throw Assertions.codeNotReachable();
       }}}
 
-  static void checkForBalancedParenthesis(String s) {
+  public static void checkForBalancedParenthesis(String s) {
   ParData d=new ParData();
   char[] cs=s.toCharArray();
   for(int i=0;i<cs.length;i++){

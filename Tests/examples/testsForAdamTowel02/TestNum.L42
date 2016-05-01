@@ -1,0 +1,25 @@
+{reuse L42.is/AdamTowel02
+
+Meter:Units.of(Num)
+
+Main:{
+  n1=123000Num
+  n2=456Num
+  n3=n1+n2
+  n4=Num"123456789/987654321"
+  n5=n4*n4*n4
+  Debug(n1)
+  Debug(n2)
+  Debug(n3)
+  Debug(n4)
+  Debug(n5)
+  Debug.test(n3 expected:123456Num)
+  Debug.test(n3 expected:Num"123456")
+  Debug.test(n3!=123455Num expected:Bool.true())
+  var Meter lots=Meter"1234453/4009.43"
+  lots+=lots
+  lots*=30Num
+  Debug(lots)
+  return ExitCode.normal()
+  }
+}

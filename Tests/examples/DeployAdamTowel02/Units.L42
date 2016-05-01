@@ -1,0 +1,132 @@
+{
+//of(that)//base
+//of(that and) comp*
+//of(that on) comp/
+
+class method
+Library traitUnit() { implements Support.Box, Concept.Equals, Concept.ToS
+  Support that
+
+  class method
+  This (Support that)//factory
+
+  method #inner()
+    this.that()
+
+  method toS() this.that().toS()
+
+  method equals(that){
+    with that (on This return this.that().equals(that.that()) )
+    return Bool.false()
+    }
+
+  Support:{ implements Concept.ToS Concept.Equals Concept.Named, Box
+    Box:{interface
+      method
+      This1 #inner()
+      }
+    class method
+    This #from(S.SBuilder builder)
+
+    method
+    This +(This that)
+
+    method
+    This -(This that)
+
+    method
+    This *(This that)
+
+    method
+    This /(This that)
+
+    method
+    Bool ==(This that)
+
+    method
+    Bool <(This that)
+
+    method
+    Bool <=(This that)
+
+    method
+    Bool !=(This that)
+
+    method
+    Bool >(This that)
+
+    method
+    Bool >=(This that)
+
+    }
+//***********************
+  class method
+  mut S.SBuilder #builder()
+    S.SBuilder.empty()
+
+  class method
+  This #from(S.SBuilder builder)
+    This(Support.#from(builder:builder))
+
+
+  method
+  This +(This that)
+    This(this.that()+that.that())
+
+  method
+  This -(This that)
+    This(this.that()-that.that())
+
+  method
+  This *(Support that)
+    This(this.that()*that)
+
+  method
+  This /(Support that)
+    This(this.that()/that)
+
+  method
+  Bool ==(This that)
+    this.that()==that.that()
+
+  method
+  Bool <(This that)
+    this.that()<that.that()
+
+  method
+  Bool <=(This that)
+    this.that()<=that.that()
+
+  method
+  Bool !=(This that)
+    this.that()!=that.that()
+
+  method
+  Bool >(This that)
+    this.that()>that.that()
+
+  method
+  Bool >=(This that)
+    this.that()>=that.that()
+
+  method
+  Support div(This that)
+    this.that()/that.that()
+  //*********
+  }
+NotValidSupport:Message.$<<{implements MetaGuard}
+class method
+Library of(class Any that) exception NotValidSupport{
+  return Data.Solid<<Refactor.Redirect(Path"Support" to:that)<<this.traitUnit()
+  exception on MetaGuard
+    NotValidSupport"The provided class is not a valid support class for a unit of measure: "[GetMyName(that)]""
+  }
+
+//Meter[a;b div:c]   no?
+//Meter2(a:m1,b:m2)
+//3Meter.
+//Meter2:Unit(Meter and:Meter)
+//Meter2(m1 and:m2)
+//Speed:Unit(Meter on:Second)
+
+}

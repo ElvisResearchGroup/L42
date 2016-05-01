@@ -7,10 +7,21 @@ Wither:...
 AddToS:...
 AddEquals:...
 
-class method Library nameTrait(){ implements  Concept.Classable, Concept.Named  //may be Parsable?
+Solid:{
+  //class, ToS ==, != required
+  class method Library solidTrait(){ implements
+        Concept.Classable, Concept.Named, Concept.ToS, Concept.Equals //may be Parsable?
     method classAny() This
     read method class This class() This
     method myName() GetMyName(This)
+    method
+    Bool == (This that)
+    method
+    Bool !=(This that)
+    }
+  class method
+  Library<<(Library that) exception MetaGuard.ClassClash,MetaGuard.MethodClash
+    Extends[this.solidTrait()]<<that
   }
 
 class method
@@ -23,7 +34,7 @@ exception StateUnfit, MetaGuard
   res:=AddToS<<res
   res:=AddEquals<<res
   res:=Invariant<<res
-  res:=Use[this.nameTrait()]<<res
+  res:=Solid<<res
   return res
   //data: toS == class named,  invariant, with  ---  Still missing: fromS, clone mutk
   }

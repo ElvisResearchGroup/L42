@@ -138,17 +138,20 @@ import coreVisitors.InjectionOnSugar;
     java.nio.file.Path path;
   }
 
-  @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class InvalidCharacter extends ErrorMessage {
+  //*****************************
+  public static abstract class PreParserError extends ErrorMessage {  }
+
+  @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class InvalidCharacter extends PreParserError {
     String file;
     String message;
   }
-    @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class InvalidCharacterOutOfString extends ErrorMessage {
+    @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class InvalidCharacterOutOfString extends PreParserError {
     String file;
     int line;
     int pos;
     String token;
   }
-    @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class InvalidCharacterInMultilineStringIndentation extends ErrorMessage {
+    @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class InvalidCharacterInMultilineStringIndentation extends PreParserError {
     String file;
     int line;
     int pos;
@@ -156,25 +159,26 @@ import coreVisitors.InjectionOnSugar;
   }
 
 
-  @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class UnclosedStringLiteral extends ErrorMessage {
+  @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class UnclosedStringLiteral extends PreParserError {
     String file;
     int line;
     int pos;
     String token;
   }
-  @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class UnclosedParenthesis extends ErrorMessage {
+
+  @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class UnclosedParenthesis extends PreParserError {
     String file;
     int line;
     int pos;
     String token;
   }
-  @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class UnopenedParenthesis extends ErrorMessage {
+  @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class UnopenedParenthesis extends PreParserError {
     String file;
     int line;
     int pos;
     String token;
   }
-  @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class ParenthesisMismatchRange extends ErrorMessage {
+  @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class ParenthesisMismatchRange extends PreParserError {
     String file;
     int line1;
     int pos1;

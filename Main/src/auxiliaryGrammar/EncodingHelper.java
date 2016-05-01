@@ -103,6 +103,14 @@ public class EncodingHelper{
     if(e instanceof String){return wrapStringU((String)e);}
     return null;
     }
+  public static <T> T ensureExtract(Class<T> clazz,Object e){
+    assert clazz!=null;
+    if (e==null ){throw new Resources.Error("Invalid null "+clazz);}
+    try{
+    return clazz.cast(e);
+    }
+    catch(ClassCastException cce){throw new Resources.Error("Invalid:"+clazz+" expected, but was: "+e.getClass());}
+    }
   public static Integer ensureExtractInt32(Object e) {
     Integer res=_extractInt32(e);
     if (res==null ){throw new Resources.Error("InvalidInt32");}
