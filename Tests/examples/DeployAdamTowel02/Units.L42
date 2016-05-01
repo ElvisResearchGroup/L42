@@ -4,13 +4,13 @@
 //of(that on) comp/
 
 class method
-Library traitUnit() { implements Support.Box, Concept.Equals, Concept.ToS
+Library traitUnit() { Concept.Equals, Concept.ToS
   Support that
 
   class method
   This (Support that)//factory
 
-  method #inner()
+  method Support #inner()
     this.that()
 
   method toS() this.that().toS()
@@ -20,11 +20,8 @@ Library traitUnit() { implements Support.Box, Concept.Equals, Concept.ToS
     return Bool.false()
     }
 
-  Support:{ implements Concept.ToS Concept.Equals Concept.Named, Box
-    Box:{interface
-      method
-      This1 #inner()
-      }
+  Support:{ implements Concept.ToS Concept.Equals Concept.Named,
+
     class method
     This #from(S.SBuilder builder)
 
@@ -115,6 +112,9 @@ Library traitUnit() { implements Support.Box, Concept.Equals, Concept.ToS
   //*********
   }
 NotValidSupport:Message.$<<{implements MetaGuard}
+NotSameSupport:Message.$<<{implements MetaGuard}
+NotValidUnit:Message.$<<{implements MetaGuard}
+
 class method
 Library of(class Any that) exception NotValidSupport{
   return Data.Solid<<Refactor.Redirect(Path"Support" to:that)<<this.traitUnit()
@@ -122,9 +122,62 @@ Library of(class Any that) exception NotValidSupport{
     NotValidSupport"The provided class is not a valid support class for a unit of measure: "[GetMyName(that)]""
   }
 
-//Meter[a;b div:c]   no?
-//Meter2(a:m1,b:m2)
-//3Meter.
+class method
+Library traitAnd(){
+    T1:{method S #inner()}
+    T2:{method S #inner()}
+    S:{ method This *(This that)}
+    class method
+    This(S that)
+    class method
+    This (T1 that, T2 and)
+      This(that.#inner()*and.#inner())
+    }
+
+class method
+Library traitPer(){
+    T1:{method S #inner()}
+    T2:{method S #inner()}
+    S:{ method This /(This that)}
+    class method
+    This(S that)
+    class method
+    This (T1 that, T2 per)
+      This(that.#inner()/per.#inner())
+    }
+
+
+class method
+Library of(class Any that, class Any and) exception NotValidUnit, NotSameSupport
+  this.of(c1:that,c2:and, trait:this.traitAnd())
+
+class method
+Library of(class Any that, class Any per) exception NotValidUnit, NotSameSupport
+  this.of(c1:that,c2:per, trait:this.traitPer())
+
+
+class method
+Library of(class Any c1, class Any c2,Library trait) exception NotValidUnit, NotSameSupport{
+  //check c1.#inner() and c2.#inner() are same type t
+  t1=Introspection(clazz:c1).method(Selector"#inner()").returnType()
+  exception on MetaGuard.MethodUnavailable
+    NotValidUnit"Provided class "[GetMyName(c1)]" do not offers 'method Support #inner()'"
+  t2=Introspection(clazz:c2).method(Selector"#inner()").returnType()
+  exception on MetaGuard.MethodUnavailable
+    NotValidUnit"Provided class "[GetMyName(c2)]" do not offers 'method Support #inner()'"
+  if t1.referencedPath()!=t2.referencedPath() (exception NotSameSupport
+    "Provided classes "[GetMyName(c1)]" and "[GetMyName(c2)]" have different supports."
+    )
+  t=t1 //==t2
+  res=Data.Solid<<Refactor.Redirect(Path"Support" toType:t)<<this.traitUnit()
+  var Library traitAnd=Refactor.Redirect(Path"S" toType:t)<<trait
+  traitAnd:=Refactor.Redirect(Path"T1" to:c1)<<traitAnd
+  traitAnd:=Refactor.Redirect(Path"T2" to:c2)<<traitAnd
+  return Use[res]<<traitAnd
+  exception on MetaGuard
+    NotValidUnit"The provided classes "[GetMyName(c1)]" and "[GetMyName(c2)]" are not  valid Unit classes."
+  }
+
 //Meter2:Unit(Meter and:Meter)
 //Meter2(m1 and:m2)
 //Speed:Unit(Meter on:Second)

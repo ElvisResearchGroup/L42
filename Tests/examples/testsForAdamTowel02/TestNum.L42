@@ -1,6 +1,10 @@
 {reuse L42.is/AdamTowel02
 
 Meter:Units.of(Num)
+Kg:Units.of(Num)
+
+MeterKg:Units.of(Meter and:Kg)
+MeterPerKg:Units.of(Meter per:Kg)
 
 Main:{
   n1=123000Num
@@ -20,6 +24,10 @@ Main:{
   lots+=lots
   lots*=30Num
   Debug(lots)
+  mk=MeterKg(lots and:123Kg)
+  mpk=MeterPerKg(lots per:123Kg)
+  Debug(mk)
+  Debug(mpk)
   return ExitCode.normal()
   }
 }
