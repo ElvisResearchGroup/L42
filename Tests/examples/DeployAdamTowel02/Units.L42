@@ -124,26 +124,36 @@ Library of(class Any that) exception NotValidSupport{
 
 class method
 Library traitAnd(){
-    T1:{method S #inner()}
-    T2:{method S #inner()}
-    S:{ method This *(This that)}
-    class method
-    This(S that)
+    T1:{method S #inner()  class method This(S that) }
+    T2:{method S #inner()  class method This(S that) }
+    S:{ method This *(This that)  method This /(This that)}
+    method S #inner()  class method  This(S that)
+
     class method
     This (T1 that, T2 and)
       This(that.#inner()*and.#inner())
+    method
+    T1 div2(T2 that)
+      T1(this.#inner()/that.#inner())
+    method
+    T2 div1(T1 that)
+      T2(this.#inner()/that.#inner())
     }
 
 class method
 Library traitPer(){
-    T1:{method S #inner()}
-    T2:{method S #inner()}
-    S:{ method This /(This that)}
-    class method
-    This(S that)
+    T1:{method S #inner()  class method This(S that) }
+    T2:{method S #inner()  class method This(S that) }
+    S:{ method This *(This that)  method This /(This that)}
+    method S #inner()  class method  This(S that)
+
     class method
     This (T1 that, T2 per)
       This(that.#inner()/per.#inner())
+    method
+    T1 per(T2 that)
+      T1(this.#inner()*that.#inner())
+
     }
 
 

@@ -37433,32 +37433,54 @@ class method
 Library traitAnd() {
 T1:{
 method 
-This1.S #inner() }
+This1.S #inner() 
+class method 
+This0 #apply(This1.S that) }
 T2:{
 method 
-This1.S #inner() }
+This1.S #inner() 
+class method 
+This0 #apply(This1.S that) }
 S:{
 method 
-This0 #times(This0 that) }
+This0 #times(This0 that) 
+method 
+This0 #divide(This0 that) }
+method 
+This0.S #inner() 
 class method 
 This0 #apply(This0.S that) 
 class method 
-This0 #apply(This0.T1 that, This0.T2 and) This0.#apply(that:that.#inner().#times(that:and.#inner()))}
+This0 #apply(This0.T1 that, This0.T2 and) This0.#apply(that:that.#inner().#times(that:and.#inner()))
+method 
+This0.T1 div2(This0.T2 that) This0.T1.#apply(that:this.#inner().#divide(that:that.#inner()))
+method 
+This0.T2 div1(This0.T1 that) This0.T2.#apply(that:this.#inner().#divide(that:that.#inner()))}
 class method 
 Library traitPer() {
 T1:{
 method 
-This1.S #inner() }
+This1.S #inner() 
+class method 
+This0 #apply(This1.S that) }
 T2:{
 method 
-This1.S #inner() }
+This1.S #inner() 
+class method 
+This0 #apply(This1.S that) }
 S:{
 method 
+This0 #times(This0 that) 
+method 
 This0 #divide(This0 that) }
+method 
+This0.S #inner() 
 class method 
 This0 #apply(This0.S that) 
 class method 
-This0 #apply(This0.T1 that, This0.T2 per) This0.#apply(that:that.#inner().#divide(that:per.#inner()))}
+This0 #apply(This0.T1 that, This0.T2 per) This0.#apply(that:that.#inner().#divide(that:per.#inner()))
+method 
+This0.T1 per(This0.T2 that) This0.T1.#apply(that:this.#inner().#times(that:that.#inner()))}
 class method 
 Library of(class Any that, class Any and) exception This0.NotValidUnit, This0.NotSameSupport this.of(c1:that, c2:and, trait:this.traitAnd())
 class method 

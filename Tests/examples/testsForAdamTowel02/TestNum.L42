@@ -6,6 +6,30 @@ Kg:Units.of(Num)
 MeterKg:Units.of(Meter and:Kg)
 MeterPerKg:Units.of(Meter per:Kg)
 
+
+Second:Units.of(Num)
+Speed:Units.of(Meter per:Second)
+Acc:Units.of(Speed per:Second)
+Newton:Units.of(Kg and:Acc)//Kg*m/s2
+
+TestGS:{
+  res=(6Meter + 4Meter)*2Num //20Meter
+  fast1=Speed(42Meter per:0.1Second)
+  fast2=Speed"42/0.1"
+  distance1=fast1.per(60Second)
+  g=Acc"9.8"
+  speedAfter=g.per(10Second)//98 m/s
+  distance2=speedAfter.per(10Second)/2Num //490 m after 10s free fall
+
+  myRoket=900Newton
+  gForceOnMe=Newton(78Kg and:g)//little less than 780
+  myLift=myRoket-gForceOnMe
+  if myLift>0Newton (Debug(S"I can fly"))
+  myAcc=myLift.div1(78Kg)//get second component
+  reachedHeight=myAcc.per(10Second).per(10Second)/2Num
+  return ExitCode.normal()
+  }
+
 Main:{
   n1=123000Num
   n2=456Num

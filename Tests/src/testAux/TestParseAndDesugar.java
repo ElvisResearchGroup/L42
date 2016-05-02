@@ -46,7 +46,6 @@ public class TestParseAndDesugar {
   +" mut This0.Vara vara=This0.Vara.#apply(inner:a) "
   +" vara.#inner() "
   +" )"
-
  },{lineNumber(), "  (   var Library lib={} (x={} lib:=x)  (x={ } lib:=x  ) lib   )",
    " (  Varlib:/*@private*/\n  {mut (var Library inner)}"
   +" Library lib={}"
@@ -82,6 +81,13 @@ public class TestParseAndDesugar {
     " ( Varx:/*@private*/\n{mut (var Void inner)}  Void x=void"
    +"   mut This0.Varx varx=This0.Varx.#apply(inner:x)"
    +"   varx.inner(that:void) )"
+
+},{lineNumber(), " (A +B)*C"," (This0.A.#plus(that:This0.B)).#times(that:This0.C)"
+  },{lineNumber(), " (6Meter +A)*B"," (This0.Meter.#from(builder:(  This0.Meter::#builder() b=This0.Meter.#builder() "
+  +" Void unused=b.#6()  b  )).#plus(that:This0.A)).#times(that:This0.B)"
+
+},{lineNumber(), " (A + 1B)*C",
+  " (This0.A.#plus(that:This0.B.#from(builder:(  This0.B::#builder() b=This0.B.#builder()  Void unused=b.#1()  b  )))).#times(that:This0.C)"
 
 },{lineNumber(), "with x=void (on Void void)",
    " ( Void x=void ("

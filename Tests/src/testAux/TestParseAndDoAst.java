@@ -145,9 +145,9 @@ public class TestParseAndDoAst {
       return Arrays.asList(new Object[][] {
 {"a","a"
 },{"5N","Expression.Literal(receiver=N, inner=5, isNumber=true)"
-},{"+5-5N","Expression.Literal(receiver=N, inner=+5-5, isNumber=true)"
+},{"5-5N","Expression.Literal(receiver=N, inner=5-5, isNumber=true)"
 },{"a-5N","(a-Expression.Literal(receiver=N, inner=5, isNumber=true))"
-},{" (a (-5N) e)","Expression.RoundBlock(doc=, inner=e, contents=[Expression.BlockContent(decs=[Ast.VarDecE(inner=a), Ast.VarDecE(inner=Expression.RoundBlock(doc=, inner=Expression.Literal(receiver=N, inner=-5, isNumber=true), contents=[]))], _catch=[])])"
+},{" (a (5N) e)","Expression.RoundBlock(doc=, inner=e, contents=[Expression.BlockContent(decs=[Ast.VarDecE(inner=a), Ast.VarDecE(inner=Expression.RoundBlock(doc=, inner=Expression.Literal(receiver=N, inner=5, isNumber=true), contents=[]))], _catch=[])])"
 },{"a*b","(a*b)"
 },{"a*b*c","((a*b)*c)"
 },{"a*b*c*d","(((a*b)*c)*d)"
