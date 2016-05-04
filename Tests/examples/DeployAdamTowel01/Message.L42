@@ -3,6 +3,8 @@ class method S kind()
 method S text()
 method Opt responseOf()
 read method class This class()
+//change? remove opt, use fwd and method isResponse()?
+//error fixed in adam 2 as usual?
 Opt:{#new(TOpt that)
   TOpt:{interface method This2 get() }
   TEmpty:{() implements TOpt method get()
