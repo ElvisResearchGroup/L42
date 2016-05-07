@@ -47,17 +47,17 @@ IteratorTrait:{class method Library () ...}
 
 //not offering fill yet :(
 read method  lent IteratorVal vals(N from, N to, N stopOk) IteratorVal(this.inner(), from:from,to:to,stopOk:stopOk)
-read method lent IteratorVal vals(N stopOk) this.vals(from:0N-1N, to:0N-2N, stopOk:stopOk)
+read method lent IteratorVal vals(N stopOk) this.vals(from:N"-1", to:N"-2", stopOk:stopOk)
 read method lent IteratorVal vals(N from, N to) this.vals(from:from, to:to, stopOk:this.inner().size() )
-read method lent IteratorVal vals() this.vals(from:0N-1N, to:0N-2N, stopOk:this.inner().size() )
+read method lent IteratorVal vals() this.vals(from:N"-1", to:N"-2", stopOk:this.inner().size() )
 IteratorVal: SafeOperatorsAccess.compose(left:IteratorTrait(),
    right:  { (read MutListAny that, var N from, N to, N stopOk)} )
 
 
 mut method  lent IteratorVar #vals(N from, N to, N stopOk) IteratorVar(this.#inner(), from:from,to:to,stopOk:stopOk)
-mut method lent IteratorVar #vals(N stopOk) this.#vals(from:0N-1N, to:0N-2N, stopOk:stopOk)
+mut method lent IteratorVar #vals(N stopOk) this.#vals(from:N"-1", to:N"-2", stopOk:stopOk)
 mut method lent IteratorVar #vals(N from, N to) this.#vals(from:from, to:to, stopOk:this.inner().size() )
-mut method lent IteratorVar #vals() this.#vals(from:0N-1N, to:0N-2N, stopOk:this.inner().size() )
+mut method lent IteratorVar #vals() this.#vals(from:0N-1N, to:N"-2", stopOk:this.inner().size() )
 IteratorVar: SafeOperatorsAccess.compose(left:IteratorTrait(),
   right:  { (mut MutListAny that, var N from, N to, N stopOk)
     mut method Void inner(Elem that) this.#that()(this.from(),val:that)})
