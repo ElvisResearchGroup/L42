@@ -1,0 +1,66 @@
+{reuse L42.is/AdamTowel02
+  DatabaseLib:{class method Library(){
+    reuse L42.is/AdamTowel02
+    Exported:{(S id)
+      Plg:{//@plugin
+        //L42.is/connected/withDatabase
+      }
+
+
+      method myName()GetMyName(This)
+      class method
+      This fromS(Concept.ToS that) (
+        s=that.toS()
+        This(_binaryRepr: use Plg
+          check stringToNum(s.binaryRepr())
+          error This.parseError(s))
+        )
+      class method
+      This #from(Library binaryRepr)
+        This(_binaryRepr:binaryRepr)
+      method
+      Library binaryRepr() this._binaryRepr()
+
+      class method
+      mut S.SBuilder #builder()
+        S.SBuilder.empty()
+
+      class method
+      This #from(S.SBuilder builder)
+        This(_binaryRepr: use Plg
+          check stringToNum(builder.binaryRepr())
+          error This.parseError(S.#from(builder: builder)))
+
+      ParseFail:Message.$<<{ implements Guard.ParseFail}
+      class method
+      Any parseError(S that)
+        ParseFail"The provided string is not a valid Rational: "[that]""
+      method
+      toS()
+        S.#from(binaryRepr: use Plg
+          check numToString(this.binaryRepr())
+          error void)
+
+      method
+      Bool ==(This that) {
+        use Plg
+          check ifNumEqualDo(n1:this.binaryRepr() n2:that.binaryRepr())
+          return Bool.true()
+        return Bool.false()
+        }
+      method equals(that){
+        with that (on This return this==that)
+        return Bool.false()
+        }
+    }
+  }}
+
+  Task: (
+      Debug(S"Starting deployment")
+      Load.DeployLibrary(
+          path:Path"Exported",
+          url:Url"localhost/DatabaseLib.L42"
+      )<<DatabaseLib()
+  )
+
+}
