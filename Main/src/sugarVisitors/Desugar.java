@@ -616,9 +616,11 @@ public class Desugar extends CloneVisitor{
         case '\\':res+="backslash";break;
         case ' ':res+="space";break;
         case '\n':res+="newline";break;
+        case '\t':
+        throw new AssertionError("Tab in string?");
       }
     }
-    assert res.length()>0;
+    assert res.length()>0:"\""+n+"\"";
     return res;
   }
   private static boolean isNormalName(String n) {

@@ -252,12 +252,8 @@ static final class Pos  {
     char[] toReplace=" ,\n+-*/({[<>=!~:".toCharArray();
     char[] source=s.toCharArray();
     char[] result=s.toCharArray();
-    boolean inComment=false;
     for(char c:toReplace){
       for(int i=1;i<source.length;i++){
-        if(source[i]=='\''){inComment=true;}
-        if(source[i]=='\n'){inComment=false;}
-        if (inComment){continue;}
         if (source[i]!='('){continue;}
         if (source[i-1]==c){result[i]='\t';}
       }

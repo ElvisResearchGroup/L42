@@ -48,7 +48,7 @@ public class ToAst extends AbstractVisitor<Expression>{
       MhtContext h = ctx.mht();
       Doc doc1=(h.docsOpt().get(0)==null)?Doc.empty():parseDoc(h.docsOpt().get(0));
       Doc doc2=(ctx.docsOpt()==null)?Doc.empty():parseDoc(ctx.docsOpt());
-      String name=(h.mDec()==null)?"":h.mDec().getText();
+      String name=(h.mDec()==null)?"":h.mDec().getText().replace('\t', '(');
       if(name.endsWith("(")){name=name.substring(0,name.length()-1);}
       Mdf mdf=Ast.Mdf.fromString((h.Mdf()==null)?"":h.Mdf().getText());
       List<Type> ts=new ArrayList<>();
@@ -143,7 +143,7 @@ public class ToAst extends AbstractVisitor<Expression>{
   }
   public static Doc parseDoc(ParseTree s){
     if(s==null){return Doc.empty();}//as for empty comment string
-    return parseDoc(s.getText());
+    return parseDoc(s.getText().replace('\t','('));
   }
   public static Doc parseDoc(String c){
     if(c.isEmpty()){return Doc.empty();}
@@ -151,7 +151,6 @@ public class ToAst extends AbstractVisitor<Expression>{
       assert c.contains("*/");
       c=c.substring(2,c.indexOf("*/"));
       //c=c.substring(2,c.length()-2);
-      c=c.replace('\t','(');
       return Doc.factory(true,c);
       }
     else{
@@ -168,7 +167,6 @@ public class ToAst extends AbstractVisitor<Expression>{
       String result=res.toString();
       assert result.charAt(result.length()-1)=='\n':result;
   //    res.append("\n");
-      result=result.replace('\t','(');
       return Doc.factory(false,result);
     }
   }
@@ -421,7 +419,7 @@ public class ToAst extends AbstractVisitor<Expression>{
 
   private Expression addNumParse(EAtomContext ctx,Expression e){
     if(ctx.numParse()!=null){
-      e=new Expression.Literal(position(ctx),e, ctx.numParse().getText(),true);
+      e=new Expression.Literal(position(ctx),e, ctx.numParse().getText().replace('\t','('),true);
       }
     return e;
   }
@@ -526,7 +524,7 @@ public class ToAst extends AbstractVisitor<Expression>{
         String s=ctx.StringQuote().getText();
         s=s.substring(1,s.length()-1);
         if (!s.contains("\n")){
-          return new Expression.Literal(position(ctx),e0,s,false);
+          return new Expression.Literal(position(ctx),e0,s.replace('\t','('),false);
           }
         String[] ss=s.split("\n");
         for(int i=1; i<ss.length-1;i++){

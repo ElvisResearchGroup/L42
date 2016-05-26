@@ -89,6 +89,24 @@ public class TestParseAndDesugar {
 },{lineNumber(), " (A + 1B)*C",
   " (This0.A.#plus(that:This0.B.#from(builder:(  This0.B::#builder() b=This0.B.#builder()  Void unused=b.#1()  b  )))).#times(that:This0.C)"
 
+},{lineNumber(), " S\"foo\"",
+  " This0.S.#from(builder:("+
+  "This0.S::#builder() b=This0.S.#builder()"+
+  "Void unused=b.#f()"+
+  "Void unused0=b.#o()"+
+  "Void unused1=b.#o()"+
+  "b"+
+  "))"
+},{lineNumber(), " S\"foo (\"",
+  " This0.S.#from(builder:("+
+  "This0.S::#builder() b=This0.S.#builder()"+
+  "Void unused=b.#f()"+
+  "Void unused0=b.#o()"+
+  "Void unused1=b.#o()"+
+  "Void unused2=b.#space()"+
+  "Void unused3=b.#oRound()"+
+  "b"+
+  "))"
 },{lineNumber(), "with x=void (on Void void)",
    " ( Void x=void ("
    + " Void x0=("
