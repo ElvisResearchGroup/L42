@@ -19,7 +19,7 @@ public class gui {
 	  public void initialize() {
 	    //TestHelper.configureForTest();
 	    System.out.println("AssertionsDisabled");
-	    ClassLoader.getSystemClassLoader().setDefaultAssertionStatus(false);
+	    //ClassLoader.getSystemClassLoader().setDefaultAssertionStatus(false);
 	    L42.trustPluginsAndFinalProgram=true;
 	    }
 

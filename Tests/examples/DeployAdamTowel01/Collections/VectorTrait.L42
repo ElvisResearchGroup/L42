@@ -2,7 +2,7 @@
 class method This #immK(MutListAny inner)
 class method mut This empty() This(inner:MutListAny.empty())
 class method mut This #seqBuilder() this.empty()
-class method This #from(This seqBuilder) seqBuilder
+class method mut This #from(mut This seqBuilder) seqBuilder
 mut method Void #add(Elem that) this.add(right:that)
 
 Elem:{}

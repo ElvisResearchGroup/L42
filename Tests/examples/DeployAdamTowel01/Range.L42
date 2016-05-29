@@ -1,0 +1,34 @@
+{
+  class method
+  mut Iterator (N that)
+    Iterator(start:0N,end:that)
+
+  class method
+  mut Iterator (N start, N stop)
+    Iterator(start:start,end:stop)
+    
+  class method
+  mut Iterator (N start)
+    Iterator(start:start,end:N"-1")
+    
+  class method class N #default##apply(Void that) N
+  class method class N #default##apply(Void stop) N
+  class method class N #default##apply(Void start) N
+  
+  Iterator:{mut (var N start, N end)
+    mut method
+    Void #next() exception Void (
+      if this.end() <0N | this.start()<this.end() (this.start(this.start()+1N))
+      else exception void
+      )
+
+    read method
+    Void #checkEnd() void
+
+    read method
+    N #inner() this.start()-1N
+
+    read method
+    Void #close() void
+    }
+  }

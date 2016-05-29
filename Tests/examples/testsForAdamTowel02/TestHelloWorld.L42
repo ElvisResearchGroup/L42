@@ -20,7 +20,7 @@ $:{
   }
 
 Main:{
-  myList=NL[1N;2N;3N]
+  NL myList=NL[1N;2N;3N]
   max=$.max(myList)
   Debug(S"the max for "[myList]" is "[max]"!")
   return ExitCode.normal()

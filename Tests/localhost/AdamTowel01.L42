@@ -1287,6 +1287,72 @@ class method
 This0 #from(This1.S.SBuilder builder) This0._private(_binaryRepr:builder.binaryRepr())
 class method 
 mut This1.S.SBuilder #builder() This1.S.SBuilder.empty()}
+Range:{
+class method 
+mut This0.Iterator #apply(This1.N that) This0.Iterator.#apply(start:This1.N.#from(builder:(
+  This1.N::#builder() b=This1.N.#builder()
+  Void unused=b.#0()
+  b
+  )), end:that)
+class method 
+mut This0.Iterator #apply(This1.N start, This1.N stop) This0.Iterator.#apply(start:start, end:stop)
+class method 
+mut This0.Iterator #apply(This1.N start) This0.Iterator.#apply(start:start, end:This1.N.#from(builder:(
+  This1.N::#builder() b=This1.N.#builder()
+  Void unused=b.#less()
+  Void unused0=b.#1()
+  b
+  )))
+class method 
+class This1.N #default##apply(Void that) This1.N
+class method 
+class This1.N #default##apply(Void stop) This1.N
+class method 
+class This1.N #default##apply(Void start) This1.N
+Iterator:{
+class method 
+mut This0 #mutK(This2.N start, This2.N end) 
+class method 
+mut This0 #apply(This2.N start, This2.N end) This0.#mutK(start:start, end:end)
+mut method 
+Void start(This2.N that) 
+mut method 
+This2.N #start() 
+read method 
+This2.N start() 
+mut method 
+This2.N #end() 
+read method 
+This2.N end() 
+mut method 
+Void #next() exception Void (
+  This0::end() ::#left(that ) ::#or(that ) cond=this.end().#left(that:This2.N.#from(builder:(
+    This2.N::#builder() b=This2.N.#builder()
+    Void unused=b.#0()
+    b
+    ))).#or(that:this.start().#left(that:this.end()))
+  (
+    Void unused0=cond.#checkTrue()
+    
+    catch exception Void catched1 exception void
+    
+    this.start(that:this.start().#plus(that:This2.N.#from(builder:(
+      This2.N::#builder() b0=This2.N.#builder()
+      Void unused1=b0.#1()
+      b0
+      ))))
+    )
+  )
+read method 
+Void #checkEnd() void
+read method 
+This2.N #inner() this.start().#less(that:This2.N.#from(builder:(
+  This2.N::#builder() b=This2.N.#builder()
+  Void unused=b.#1()
+  b
+  )))
+read method 
+Void #close() void}}
 Debug:{
 class method 
 Void #apply(read This1.Concept.ToS that) use This1.Alu check stringDebug(that:that.toS().binaryRepr()) void
@@ -4266,7 +4332,7 @@ mut This0 empty() This0.#apply(inner:This2.MutListAny.empty())
 class method 
 mut This0 #seqBuilder() this.empty()
 class method 
-This0 #from(This0 seqBuilder) seqBuilder
+mut This0 #from(mut This0 seqBuilder) seqBuilder
 mut method 
 Void #add(This0.Elem that) this.add(right:that)
 Elem:{}
@@ -4796,7 +4862,7 @@ This3.N size()
 class method 
 mut This0 #seqBuilder() 
 class method 
-This0 #from(This0 seqBuilder) 
+mut This0 #from(mut This0 seqBuilder) 
 mut method 
 Void #add(This0.Elem that) 
 Elem:{implements This4.Concept.Equals}
@@ -5175,7 +5241,7 @@ mut This0 empty() This0.#apply(inner:This1.Collections.MutListAny.empty())
 class method 
 mut This0 #seqBuilder() this.empty()
 class method 
-This0 #from(This0 seqBuilder) seqBuilder
+mut This0 #from(mut This0 seqBuilder) seqBuilder
 mut method 
 Void #add(This1.S that) this.add(right:that)
 class method 
@@ -8294,7 +8360,7 @@ mut This0 empty() This0.#apply(inner:This3.Collections.MutListAny.empty())
 class method 
 mut This0 #seqBuilder() this.empty()
 class method 
-This0 #from(This0 seqBuilder) seqBuilder
+mut This0 #from(mut This0 seqBuilder) seqBuilder
 mut method 
 Void #add(This1.Top that) this.add(right:that)
 class method 
@@ -9780,7 +9846,7 @@ mut This0 empty() This0.#apply(inner:This3.Collections.MutListAny.empty())
 class method 
 mut This0 #seqBuilder() this.empty()
 class method 
-This0 #from(This0 seqBuilder) seqBuilder
+mut This0 #from(mut This0 seqBuilder) seqBuilder
 mut method 
 Void #add(This1.Annotation that) this.add(right:that)
 class method 
@@ -10820,7 +10886,7 @@ mut This0 empty() This0.#apply(inner:This2.Collections.MutListAny.empty())
 class method 
 mut This0 #seqBuilder() this.empty()
 class method 
-This0 #from(This0 seqBuilder) seqBuilder
+mut This0 #from(mut This0 seqBuilder) seqBuilder
 mut method 
 Void #add(This1.Member that) this.add(right:that)
 class method 
@@ -12093,7 +12159,7 @@ mut This0 empty() This0.#apply(inner:This2.Collections.MutListAny.empty())
 class method 
 mut This0 #seqBuilder() this.empty()
 class method 
-This0 #from(This0 seqBuilder) seqBuilder
+mut This0 #from(mut This0 seqBuilder) seqBuilder
 mut method 
 Void #add(This1.Method that) this.add(right:that)
 class method 
@@ -15079,7 +15145,7 @@ mut This0 empty() This0.#apply(inner:This2.Collections.MutListAny.empty())
 class method 
 mut This0 #seqBuilder() this.empty()
 class method 
-This0 #from(This0 seqBuilder) seqBuilder
+mut This0 #from(mut This0 seqBuilder) seqBuilder
 mut method 
 Void #add(This1.NestedClass that) this.add(right:that)
 class method 
@@ -16592,7 +16658,7 @@ mut This0 empty() This0.#apply(inner:This2.Collections.MutListAny.empty())
 class method 
 mut This0 #seqBuilder() this.empty()
 class method 
-This0 #from(This0 seqBuilder) seqBuilder
+mut This0 #from(mut This0 seqBuilder) seqBuilder
 mut method 
 Void #add(This1.Type that) this.add(right:that)
 class method 
@@ -17300,7 +17366,7 @@ mut This0 empty() This0.#apply(inner:This3.Collections.MutListAny.empty())
 class method 
 mut This0 #seqBuilder() this.empty()
 class method 
-This0 #from(This0 seqBuilder) seqBuilder
+mut This0 #from(mut This0 seqBuilder) seqBuilder
 mut method 
 Void #add(This1 that) this.add(right:that)
 class method 
@@ -18728,7 +18794,7 @@ mut This0 empty() This0.#apply(inner:This3.Collections.MutListAny.empty())
 class method 
 mut This0 #seqBuilder() this.empty()
 class method 
-This0 #from(This0 seqBuilder) seqBuilder
+mut This0 #from(mut This0 seqBuilder) seqBuilder
 mut method 
 Void #add(This1 that) this.add(right:that)
 class method 
@@ -20107,7 +20173,7 @@ mut This0 empty() This0.#apply(inner:This3.Collections.MutListAny.empty())
 class method 
 mut This0 #seqBuilder() this.empty()
 class method 
-This0 #from(This0 seqBuilder) seqBuilder
+mut This0 #from(mut This0 seqBuilder) seqBuilder
 mut method 
 Void #add(This1 that) this.add(right:that)
 class method 
@@ -21499,7 +21565,7 @@ mut This0 empty() This0.#apply(inner:This3.Collections.MutListAny.empty())
 class method 
 mut This0 #seqBuilder() this.empty()
 class method 
-This0 #from(This0 seqBuilder) seqBuilder
+mut This0 #from(mut This0 seqBuilder) seqBuilder
 mut method 
 Void #add(This1 that) this.add(right:that)
 class method 
@@ -25089,7 +25155,7 @@ mut This0 empty() This0.#apply(inner:This2.Collections.MutListAny.empty())
 class method 
 mut This0 #seqBuilder() this.empty()
 class method 
-This0 #from(This0 seqBuilder) seqBuilder
+mut This0 #from(mut This0 seqBuilder) seqBuilder
 mut method 
 Void #add(This1.SrcDest that) this.add(right:that)
 class method 
@@ -25626,7 +25692,7 @@ mut This0 empty() This0.#apply(inner:This2.Collections.MutListAny.empty())
 class method 
 mut This0 #seqBuilder() this.empty()
 class method 
-This0 #from(This0 seqBuilder) seqBuilder
+mut This0 #from(mut This0 seqBuilder) seqBuilder
 mut method 
 Void #add(Library that) this.add(right:that)
 class method 

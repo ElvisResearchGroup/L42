@@ -69,7 +69,7 @@ class method
 Library stateDecoration(Library that,Introspection.Methods state) {
     p=Path"This"//just a shortcut
     kNames=state.left().selector().names()//all ks have the same argument names
-    kNamesF=Strings[with n in kNames.vals() (    use[SafeOperators.freshName(n)]    )]
+    Strings kNamesF=Strings[with n in kNames.vals() (    use[SafeOperators.freshName(n)]    )]
     var Library acc=that
     with m in state.vals() (
       s=m.selector()
