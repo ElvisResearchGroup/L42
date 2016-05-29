@@ -1,6 +1,6 @@
 {reuse L42.is/AdamTowel02
 
-NL:Use[Collections.vector(ofEq:N)]<<{ implements Concept.ToS
+NL:Use[Collections.vector(of:N)]<<{ implements Concept.ToS
   method toS()
     S"["[with e in this.vals() (
       use[e separedBy:S";"]

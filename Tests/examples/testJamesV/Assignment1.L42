@@ -57,7 +57,7 @@ CoreC:{
 //
 // Creates a Number List from the given elements
 //
-SL:Use[Collections.vector(ofEq:S)]<<{ implements Concept.ToS
+SL:Use[Collections.vector(of:S)]<<{ implements Concept.ToS
   method toS()
     S"["[with e in this.vals() (
       use[e separedBy:S";"]
@@ -67,7 +67,7 @@ SL:Use[Collections.vector(ofEq:S)]<<{ implements Concept.ToS
 //
 // Creates a Number List from the given elements
 //
-NL:Use[Collections.vector(ofEq:N)]<<{ implements Concept.ToS
+NL:Use[Collections.vector(of:N)]<<{ implements Concept.ToS
   method toS()
     S"["[with e in this.vals() (
       use[e separedBy:S";"]
@@ -78,7 +78,7 @@ NL:Use[Collections.vector(ofEq:N)]<<{ implements Concept.ToS
 // A collection that contains Numbers
 // Contains additional operators such as <<, <<=, >>, >>=
 //
-CompletionB_OLD:Use[Collections.vector(ofEq:N)]<<{ implements Concept.ToS
+CompletionB_OLD:Use[Collections.vector(of:N)]<<{ implements Concept.ToS
   method toS()
     S"["[with e in this.vals() (
       use[e separedBy:S"; "]
@@ -116,7 +116,7 @@ CompletionB_OLD:Use[Collections.vector(ofEq:N)]<<{ implements Concept.ToS
 // A collection that contains Numbers
 // Contains additional operators such as <<, <<=, >>, >>=
 //
-CompletionB:Use[Collections.vector(ofEq:N)]<<{ implements Concept.ToS
+CompletionB:Use[Collections.vector(of:N)]<<{ implements Concept.ToS
   method toS()
     S"["[with e in this.vals() (
       use[e separedBy:S"; "]

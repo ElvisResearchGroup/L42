@@ -5025,16 +5025,34 @@ Void checkBoundAdd(This2.N that) (
     )
   )}
 class method 
-Library vector(class Any of) This1.SafeOperatorsAccess.redirect(that:This0.VectorTrait.#apply(), srcBinaryRepr:This1.S.#from(builder:(
+Library vector(class Any of) (
+  Void unused=(
+    Void unused0=return this.eq(that:of)
+    
+    catch error Library catched return this.minimal(that:of)
+    
+    catch error This1.S catched return this.minimal(that:of)
+    
+    void
+    )
+  
+  catch return Library result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+class method 
+Library minimal(class Any that) This1.SafeOperatorsAccess.redirect(that:This0.VectorTrait.#apply(), srcBinaryRepr:This1.S.#from(builder:(
   This1.S::#builder() b=This1.S.#builder()
   Void unused=b.#E()
   Void unused0=b.#l()
   Void unused1=b.#e()
   Void unused2=b.#m()
   b
-  )).binaryRepr(), dest:of)
+  )).binaryRepr(), dest:that)
 class method 
-Library vector(class Any ofEq) (
+Library eq(class Any that) (
   This1.SafeOperatorsAccess::compose(left right ) lib=This1.SafeOperatorsAccess.compose(left:This0.VectorTrait.#apply(), right:This0.CodeEq.#apply())
   This1.SafeOperatorsAccess.redirect(that:lib, srcBinaryRepr:This1.S.#from(builder:(
     This1.S::#builder() b=This1.S.#builder()
@@ -5043,7 +5061,7 @@ Library vector(class Any ofEq) (
     Void unused1=b.#e()
     Void unused2=b.#m()
     b
-    )).binaryRepr(), dest:ofEq)
+    )).binaryRepr(), dest:that)
   )
 VectorTrait:{
 class method 

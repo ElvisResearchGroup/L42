@@ -8,9 +8,6 @@ mut method Void #add(Elem that) this.add(right:that)
 Elem:{}
 class method Elem cast(Any that) {with that (on Elem return that   default error CollectionErrors.cast())}
 
-read method  Elem val(N that) This.cast(this.inner().val(that) )
-read method  Elem left() This.cast(this.inner().val(0N) )
-read method  Elem right() This.cast(this.inner().val(\size-1N) )
 mut method  Void (N that,Elem val) this.#inner()(that, val:val)
 mut method  Void add(N that, Elem val) this.#inner().add(that,val:val)
 mut method  Void add(Elem right) this.#inner().add(\size,val:right)
@@ -25,6 +22,7 @@ method This withoutLeft() This.#immK(inner:this.inner().without(0N))
 method This withAlso(N that, Elem val) This.#immK(inner:this.inner().withAlso(that,val:val))
 method This with(N that, Elem val) This.#immK(inner:this.inner().with(that,val:val))
 
+//#################READ METHODS
 read method  mut This reverse() (
   result=This.empty()
   with e in this.vals()  (result.add(left:e))
@@ -33,7 +31,12 @@ read method  mut This reverse() (
 
 read method N size() this.inner().size()
 read method Bool isEmpty() this.size()==0N
+read method  Elem val(N that) This.cast(this.inner().val(that) )
+read method  Elem left() This.cast(this.inner().val(0N) )
+read method  Elem right() This.cast(this.inner().val(\size-1N) )
+//#################MUT METHODS
 
+//#################OPERATORS
 method This +(Elem that) this.withAlso(\size,val:that)
 
 method This ++(This that){
