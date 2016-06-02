@@ -1018,6 +1018,12 @@ Void #add(This1.S that)
 class method 
 This1.S cast(Any that) 
 read method 
+mut This0 reverse() 
+read method 
+This1.N size() 
+read method 
+This1.Bool isEmpty() 
+read method 
 This1.S val(This1.N that) 
 read method 
 This1.S left() 
@@ -1026,35 +1032,43 @@ This1.S right()
 mut method 
 Void #apply(This1.N that, This1.S val) 
 mut method 
+Void left(This1.S that) 
+mut method 
+Void right(This1.S that) 
+mut method 
 Void add(This1.N that, This1.S val) 
 mut method 
 Void add(This1.S right) 
 mut method 
 Void add(This1.S left) 
+mut method /*from VectorTrait
+*/Void remove(This1.N that) 
 mut method 
-Void remove(This1.N that) 
+Void removeLeft() 
 mut method 
-Void left(This1.S that) 
-mut method 
-Void right(This1.S that) 
-method 
-This0 without(This1.N that) 
-method 
-This0 withoutLeft() 
-method 
-This0 withAlso(This1.N that, This1.S val) 
-method 
-This0 with(This1.N that, This1.S val) 
-read method 
-mut This0 reverse() 
-read method 
-This1.N size() 
-read method 
-This1.Bool isEmpty() 
+Void removeRight() 
 method 
 This0 #plus(This1.S that) 
 method 
 This0 #plusplus(This0 that) 
+method 
+This0 with(This1.N that, This1.S val) 
+method 
+This0 withLeft(This1.S that) 
+method 
+This0 withRight(This1.S that) 
+method 
+This0 withAlso(This1.N that, This1.S val) 
+method 
+This0 withAlsoLeft(This1.S that) 
+method 
+This0 withAlsoRight(This1.S that) 
+method /*from VectorTrait
+*/This0 without(This1.N index) 
+method 
+This0 withoutLeft() 
+method 
+This0 withoutRight() 
 IteratorTrait:{
 class method 
 Library #apply() }
@@ -1141,15 +1155,37 @@ Void inner(This2.S that) }
 read method 
 This1.Bool contains(This1.S that) 
 method 
-This0 withoutAll(This1.S that) 
-method 
 This0 #less(This1.S that) 
 method 
 This0 #lessless(This0 that) 
+method 
+This0 #and(This0 that) 
+method 
+This1.Bool #rightright(This0 that) 
+method 
+This1.Bool #rightrightequal(This0 that) 
+method 
+This1.Bool #right(This1.S that) 
 read method 
 This1.Bool #bangequal(read This0 that) 
 read method 
-This1.Bool #equalequal(read This0 that) }
+This1.Bool #equalequal(read This0 that) 
+read method 
+This1.N indexOfLeft(This1.S val) 
+read method 
+This1.N indexOfRight(This1.S val) 
+method 
+This0 withoutLeft(This1.S val) 
+method 
+This0 withoutRight(This1.S val) 
+method 
+This0 withoutAll(This1.S val) 
+mut method 
+Void removeAll(This1.S val) 
+mut method 
+Void removeLeft(This1.S val) 
+mut method 
+Void removeRight(This1.S val) }
 Debug:{
 class method 
 Void #apply(read This1.Concept.ToS that) 
@@ -1649,6 +1685,12 @@ Void #add(This1.Annotation that)
 class method 
 This1.Annotation cast(Any that) 
 read method 
+mut This0 reverse() 
+read method 
+This3.N size() 
+read method 
+This3.Bool isEmpty() 
+read method 
 This1.Annotation val(This3.N that) 
 read method 
 This1.Annotation left() 
@@ -1656,6 +1698,10 @@ read method
 This1.Annotation right() 
 mut method 
 Void #apply(This3.N that, This1.Annotation val) 
+mut method 
+Void left(This1.Annotation that) 
+mut method 
+Void right(This1.Annotation that) 
 mut method 
 Void add(This3.N that, This1.Annotation val) 
 mut method 
@@ -1665,27 +1711,31 @@ Void add(This1.Annotation left)
 mut method 
 Void remove(This3.N that) 
 mut method 
-Void left(This1.Annotation that) 
+Void removeLeft() 
 mut method 
-Void right(This1.Annotation that) 
-method 
-This0 without(This3.N that) 
-method 
-This0 withoutLeft() 
-method 
-This0 withAlso(This3.N that, This1.Annotation val) 
-method 
-This0 with(This3.N that, This1.Annotation val) 
-read method 
-mut This0 reverse() 
-read method 
-This3.N size() 
-read method 
-This3.Bool isEmpty() 
+Void removeRight() 
 method 
 This0 #plus(This1.Annotation that) 
 method 
 This0 #plusplus(This0 that) 
+method 
+This0 with(This3.N that, This1.Annotation val) 
+method 
+This0 withLeft(This1.Annotation that) 
+method 
+This0 withRight(This1.Annotation that) 
+method 
+This0 withAlso(This3.N that, This1.Annotation val) 
+method 
+This0 withAlsoLeft(This1.Annotation that) 
+method 
+This0 withAlsoRight(This1.Annotation that) 
+method 
+This0 without(This3.N index) 
+method 
+This0 withoutLeft() 
+method 
+This0 withoutRight() 
 IteratorTrait:{
 class method 
 Library #apply() }
@@ -1865,6 +1915,12 @@ Void #add(This1.Member that)
 class method 
 This1.Member cast(Any that) 
 read method 
+mut This0 reverse() 
+read method 
+This2.N size() 
+read method 
+This2.Bool isEmpty() 
+read method 
 This1.Member val(This2.N that) 
 read method 
 This1.Member left() 
@@ -1873,35 +1929,43 @@ This1.Member right()
 mut method 
 Void #apply(This2.N that, This1.Member val) 
 mut method 
+Void left(This1.Member that) 
+mut method 
+Void right(This1.Member that) 
+mut method 
 Void add(This2.N that, This1.Member val) 
 mut method 
 Void add(This1.Member right) 
 mut method 
 Void add(This1.Member left) 
+mut method /*from VectorTrait
+*/Void remove(This2.N that) 
 mut method 
-Void remove(This2.N that) 
+Void removeLeft() 
 mut method 
-Void left(This1.Member that) 
-mut method 
-Void right(This1.Member that) 
-method 
-This0 without(This2.N that) 
-method 
-This0 withoutLeft() 
-method 
-This0 withAlso(This2.N that, This1.Member val) 
-method 
-This0 with(This2.N that, This1.Member val) 
-read method 
-mut This0 reverse() 
-read method 
-This2.N size() 
-read method 
-This2.Bool isEmpty() 
+Void removeRight() 
 method 
 This0 #plus(This1.Member that) 
 method 
 This0 #plusplus(This0 that) 
+method 
+This0 with(This2.N that, This1.Member val) 
+method 
+This0 withLeft(This1.Member that) 
+method 
+This0 withRight(This1.Member that) 
+method 
+This0 withAlso(This2.N that, This1.Member val) 
+method 
+This0 withAlsoLeft(This1.Member that) 
+method 
+This0 withAlsoRight(This1.Member that) 
+method /*from VectorTrait
+*/This0 without(This2.N index) 
+method 
+This0 withoutLeft() 
+method 
+This0 withoutRight() 
 IteratorTrait:{
 class method 
 Library #apply() }
@@ -1988,15 +2052,37 @@ Void inner(This2.Member that) }
 read method 
 This2.Bool contains(This1.Member that) 
 method 
-This0 withoutAll(This1.Member that) 
-method 
 This0 #less(This1.Member that) 
 method 
 This0 #lessless(This0 that) 
+method 
+This0 #and(This0 that) 
+method 
+This2.Bool #rightright(This0 that) 
+method 
+This2.Bool #rightrightequal(This0 that) 
+method 
+This2.Bool #right(This1.Member that) 
 read method 
 This2.Bool #bangequal(read This0 that) 
 read method 
-This2.Bool #equalequal(read This0 that) }
+This2.Bool #equalequal(read This0 that) 
+read method 
+This2.N indexOfLeft(This1.Member val) 
+read method 
+This2.N indexOfRight(This1.Member val) 
+method 
+This0 withoutLeft(This1.Member val) 
+method 
+This0 withoutRight(This1.Member val) 
+method 
+This0 withoutAll(This1.Member val) 
+mut method 
+Void removeAll(This1.Member val) 
+mut method 
+Void removeLeft(This1.Member val) 
+mut method 
+Void removeRight(This1.Member val) }
 Method:{implements This1.Member, This2.Concept.Equals
 method 
 This2.Bool #equalequal(This0 that) 
@@ -2046,6 +2132,12 @@ Void #add(This1.Method that)
 class method 
 This1.Method cast(Any that) 
 read method 
+mut This0 reverse() 
+read method 
+This2.N size() 
+read method 
+This2.Bool isEmpty() 
+read method 
 This1.Method val(This2.N that) 
 read method 
 This1.Method left() 
@@ -2054,35 +2146,43 @@ This1.Method right()
 mut method 
 Void #apply(This2.N that, This1.Method val) 
 mut method 
+Void left(This1.Method that) 
+mut method 
+Void right(This1.Method that) 
+mut method 
 Void add(This2.N that, This1.Method val) 
 mut method 
 Void add(This1.Method right) 
 mut method 
 Void add(This1.Method left) 
+mut method /*from VectorTrait
+*/Void remove(This2.N that) 
 mut method 
-Void remove(This2.N that) 
+Void removeLeft() 
 mut method 
-Void left(This1.Method that) 
-mut method 
-Void right(This1.Method that) 
-method 
-This0 without(This2.N that) 
-method 
-This0 withoutLeft() 
-method 
-This0 withAlso(This2.N that, This1.Method val) 
-method 
-This0 with(This2.N that, This1.Method val) 
-read method 
-mut This0 reverse() 
-read method 
-This2.N size() 
-read method 
-This2.Bool isEmpty() 
+Void removeRight() 
 method 
 This0 #plus(This1.Method that) 
 method 
 This0 #plusplus(This0 that) 
+method 
+This0 with(This2.N that, This1.Method val) 
+method 
+This0 withLeft(This1.Method that) 
+method 
+This0 withRight(This1.Method that) 
+method 
+This0 withAlso(This2.N that, This1.Method val) 
+method 
+This0 withAlsoLeft(This1.Method that) 
+method 
+This0 withAlsoRight(This1.Method that) 
+method /*from VectorTrait
+*/This0 without(This2.N index) 
+method 
+This0 withoutLeft() 
+method 
+This0 withoutRight() 
 IteratorTrait:{
 class method 
 Library #apply() }
@@ -2169,15 +2269,37 @@ Void inner(This2.Method that) }
 read method 
 This2.Bool contains(This1.Method that) 
 method 
-This0 withoutAll(This1.Method that) 
-method 
 This0 #less(This1.Method that) 
 method 
 This0 #lessless(This0 that) 
+method 
+This0 #and(This0 that) 
+method 
+This2.Bool #rightright(This0 that) 
+method 
+This2.Bool #rightrightequal(This0 that) 
+method 
+This2.Bool #right(This1.Method that) 
 read method 
 This2.Bool #bangequal(read This0 that) 
 read method 
-This2.Bool #equalequal(read This0 that) }
+This2.Bool #equalequal(read This0 that) 
+read method 
+This2.N indexOfLeft(This1.Method val) 
+read method 
+This2.N indexOfRight(This1.Method val) 
+method 
+This0 withoutLeft(This1.Method val) 
+method 
+This0 withoutRight(This1.Method val) 
+method 
+This0 withoutAll(This1.Method val) 
+mut method 
+Void removeAll(This1.Method val) 
+mut method 
+Void removeLeft(This1.Method val) 
+mut method 
+Void removeRight(This1.Method val) }
 NestedClass:{/*findMeNestedClass
 */implements This1.Member, This2.Concept.Equals
 method 
@@ -2252,6 +2374,12 @@ Void #add(This1.NestedClass that)
 class method 
 This1.NestedClass cast(Any that) 
 read method 
+mut This0 reverse() 
+read method 
+This2.N size() 
+read method 
+This2.Bool isEmpty() 
+read method 
 This1.NestedClass val(This2.N that) 
 read method 
 This1.NestedClass left() 
@@ -2260,35 +2388,43 @@ This1.NestedClass right()
 mut method 
 Void #apply(This2.N that, This1.NestedClass val) 
 mut method 
+Void left(This1.NestedClass that) 
+mut method 
+Void right(This1.NestedClass that) 
+mut method 
 Void add(This2.N that, This1.NestedClass val) 
 mut method 
 Void add(This1.NestedClass right) 
 mut method 
 Void add(This1.NestedClass left) 
+mut method /*from VectorTrait
+*/Void remove(This2.N that) 
 mut method 
-Void remove(This2.N that) 
+Void removeLeft() 
 mut method 
-Void left(This1.NestedClass that) 
-mut method 
-Void right(This1.NestedClass that) 
-method 
-This0 without(This2.N that) 
-method 
-This0 withoutLeft() 
-method 
-This0 withAlso(This2.N that, This1.NestedClass val) 
-method 
-This0 with(This2.N that, This1.NestedClass val) 
-read method 
-mut This0 reverse() 
-read method 
-This2.N size() 
-read method 
-This2.Bool isEmpty() 
+Void removeRight() 
 method 
 This0 #plus(This1.NestedClass that) 
 method 
 This0 #plusplus(This0 that) 
+method 
+This0 with(This2.N that, This1.NestedClass val) 
+method 
+This0 withLeft(This1.NestedClass that) 
+method 
+This0 withRight(This1.NestedClass that) 
+method 
+This0 withAlso(This2.N that, This1.NestedClass val) 
+method 
+This0 withAlsoLeft(This1.NestedClass that) 
+method 
+This0 withAlsoRight(This1.NestedClass that) 
+method /*from VectorTrait
+*/This0 without(This2.N index) 
+method 
+This0 withoutLeft() 
+method 
+This0 withoutRight() 
 IteratorTrait:{
 class method 
 Library #apply() }
@@ -2375,15 +2511,37 @@ Void inner(This2.NestedClass that) }
 read method 
 This2.Bool contains(This1.NestedClass that) 
 method 
-This0 withoutAll(This1.NestedClass that) 
-method 
 This0 #less(This1.NestedClass that) 
 method 
 This0 #lessless(This0 that) 
+method 
+This0 #and(This0 that) 
+method 
+This2.Bool #rightright(This0 that) 
+method 
+This2.Bool #rightrightequal(This0 that) 
+method 
+This2.Bool #right(This1.NestedClass that) 
 read method 
 This2.Bool #bangequal(read This0 that) 
 read method 
-This2.Bool #equalequal(read This0 that) }
+This2.Bool #equalequal(read This0 that) 
+read method 
+This2.N indexOfLeft(This1.NestedClass val) 
+read method 
+This2.N indexOfRight(This1.NestedClass val) 
+method 
+This0 withoutLeft(This1.NestedClass val) 
+method 
+This0 withoutRight(This1.NestedClass val) 
+method 
+This0 withoutAll(This1.NestedClass val) 
+mut method 
+Void removeAll(This1.NestedClass val) 
+mut method 
+Void removeLeft(This1.NestedClass val) 
+mut method 
+Void removeRight(This1.NestedClass val) }
 Type:{implements This2.Concept.ToS, This2.Concept.Named
 method 
 This2.S allAsString() 
@@ -2437,6 +2595,12 @@ Void #add(This1.Type that)
 class method 
 This1.Type cast(Any that) 
 read method 
+mut This0 reverse() 
+read method 
+This2.N size() 
+read method 
+This2.Bool isEmpty() 
+read method 
 This1.Type val(This2.N that) 
 read method 
 This1.Type left() 
@@ -2444,6 +2608,10 @@ read method
 This1.Type right() 
 mut method 
 Void #apply(This2.N that, This1.Type val) 
+mut method 
+Void left(This1.Type that) 
+mut method 
+Void right(This1.Type that) 
 mut method 
 Void add(This2.N that, This1.Type val) 
 mut method 
@@ -2453,27 +2621,31 @@ Void add(This1.Type left)
 mut method 
 Void remove(This2.N that) 
 mut method 
-Void left(This1.Type that) 
+Void removeLeft() 
 mut method 
-Void right(This1.Type that) 
-method 
-This0 without(This2.N that) 
-method 
-This0 withoutLeft() 
-method 
-This0 withAlso(This2.N that, This1.Type val) 
-method 
-This0 with(This2.N that, This1.Type val) 
-read method 
-mut This0 reverse() 
-read method 
-This2.N size() 
-read method 
-This2.Bool isEmpty() 
+Void removeRight() 
 method 
 This0 #plus(This1.Type that) 
 method 
 This0 #plusplus(This0 that) 
+method 
+This0 with(This2.N that, This1.Type val) 
+method 
+This0 withLeft(This1.Type that) 
+method 
+This0 withRight(This1.Type that) 
+method 
+This0 withAlso(This2.N that, This1.Type val) 
+method 
+This0 withAlsoLeft(This1.Type that) 
+method 
+This0 withAlsoRight(This1.Type that) 
+method 
+This0 without(This2.N index) 
+method 
+This0 withoutLeft() 
+method 
+This0 withoutRight() 
 IteratorTrait:{
 class method 
 Library #apply() }
@@ -2626,6 +2798,12 @@ Void #add(This1 that)
 class method 
 This1 cast(Any that) 
 read method 
+mut This0 reverse() 
+read method 
+This3.N size() 
+read method 
+This3.Bool isEmpty() 
+read method 
 This1 val(This3.N that) 
 read method 
 This1 left() 
@@ -2634,35 +2812,43 @@ This1 right()
 mut method 
 Void #apply(This3.N that, This1 val) 
 mut method 
+Void left(This1 that) 
+mut method 
+Void right(This1 that) 
+mut method 
 Void add(This3.N that, This1 val) 
 mut method 
 Void add(This1 right) 
 mut method 
 Void add(This1 left) 
+mut method /*from VectorTrait
+*/Void remove(This3.N that) 
 mut method 
-Void remove(This3.N that) 
+Void removeLeft() 
 mut method 
-Void left(This1 that) 
-mut method 
-Void right(This1 that) 
-method 
-This0 without(This3.N that) 
-method 
-This0 withoutLeft() 
-method 
-This0 withAlso(This3.N that, This1 val) 
-method 
-This0 with(This3.N that, This1 val) 
-read method 
-mut This0 reverse() 
-read method 
-This3.N size() 
-read method 
-This3.Bool isEmpty() 
+Void removeRight() 
 method 
 This0 #plus(This1 that) 
 method 
 This0 #plusplus(This0 that) 
+method 
+This0 with(This3.N that, This1 val) 
+method 
+This0 withLeft(This1 that) 
+method 
+This0 withRight(This1 that) 
+method 
+This0 withAlso(This3.N that, This1 val) 
+method 
+This0 withAlsoLeft(This1 that) 
+method 
+This0 withAlsoRight(This1 that) 
+method /*from VectorTrait
+*/This0 without(This3.N index) 
+method 
+This0 withoutLeft() 
+method 
+This0 withoutRight() 
 IteratorTrait:{
 class method 
 Library #apply() }
@@ -2749,15 +2935,37 @@ Void inner(This2 that) }
 read method 
 This3.Bool contains(This1 that) 
 method 
-This0 withoutAll(This1 that) 
-method 
 This0 #less(This1 that) 
 method 
 This0 #lessless(This0 that) 
+method 
+This0 #and(This0 that) 
+method 
+This3.Bool #rightright(This0 that) 
+method 
+This3.Bool #rightrightequal(This0 that) 
+method 
+This3.Bool #right(This1 that) 
 read method 
 This3.Bool #bangequal(read This0 that) 
 read method 
-This3.Bool #equalequal(read This0 that) }
+This3.Bool #equalequal(read This0 that) 
+read method 
+This3.N indexOfLeft(This1 val) 
+read method 
+This3.N indexOfRight(This1 val) 
+method 
+This0 withoutLeft(This1 val) 
+method 
+This0 withoutRight(This1 val) 
+method 
+This0 withoutAll(This1 val) 
+mut method 
+Void removeAll(This1 val) 
+mut method 
+Void removeLeft(This1 val) 
+mut method 
+Void removeRight(This1 val) }
 read method 
 class This0 class() 
 read method 
@@ -2871,6 +3079,12 @@ Void #add(This1 that)
 class method 
 This1 cast(Any that) 
 read method 
+mut This0 reverse() 
+read method 
+This3.N size() 
+read method 
+This3.Bool isEmpty() 
+read method 
 This1 val(This3.N that) 
 read method 
 This1 left() 
@@ -2879,35 +3093,43 @@ This1 right()
 mut method 
 Void #apply(This3.N that, This1 val) 
 mut method 
+Void left(This1 that) 
+mut method 
+Void right(This1 that) 
+mut method 
 Void add(This3.N that, This1 val) 
 mut method 
 Void add(This1 right) 
 mut method 
 Void add(This1 left) 
+mut method /*from VectorTrait
+*/Void remove(This3.N that) 
 mut method 
-Void remove(This3.N that) 
+Void removeLeft() 
 mut method 
-Void left(This1 that) 
-mut method 
-Void right(This1 that) 
-method 
-This0 without(This3.N that) 
-method 
-This0 withoutLeft() 
-method 
-This0 withAlso(This3.N that, This1 val) 
-method 
-This0 with(This3.N that, This1 val) 
-read method 
-mut This0 reverse() 
-read method 
-This3.N size() 
-read method 
-This3.Bool isEmpty() 
+Void removeRight() 
 method 
 This0 #plus(This1 that) 
 method 
 This0 #plusplus(This0 that) 
+method 
+This0 with(This3.N that, This1 val) 
+method 
+This0 withLeft(This1 that) 
+method 
+This0 withRight(This1 that) 
+method 
+This0 withAlso(This3.N that, This1 val) 
+method 
+This0 withAlsoLeft(This1 that) 
+method 
+This0 withAlsoRight(This1 that) 
+method /*from VectorTrait
+*/This0 without(This3.N index) 
+method 
+This0 withoutLeft() 
+method 
+This0 withoutRight() 
 IteratorTrait:{
 class method 
 Library #apply() }
@@ -2994,15 +3216,37 @@ Void inner(This2 that) }
 read method 
 This3.Bool contains(This1 that) 
 method 
-This0 withoutAll(This1 that) 
-method 
 This0 #less(This1 that) 
 method 
 This0 #lessless(This0 that) 
+method 
+This0 #and(This0 that) 
+method 
+This3.Bool #rightright(This0 that) 
+method 
+This3.Bool #rightrightequal(This0 that) 
+method 
+This3.Bool #right(This1 that) 
 read method 
 This3.Bool #bangequal(read This0 that) 
 read method 
-This3.Bool #equalequal(read This0 that) }
+This3.Bool #equalequal(read This0 that) 
+read method 
+This3.N indexOfLeft(This1 val) 
+read method 
+This3.N indexOfRight(This1 val) 
+method 
+This0 withoutLeft(This1 val) 
+method 
+This0 withoutRight(This1 val) 
+method 
+This0 withoutAll(This1 val) 
+mut method 
+Void removeAll(This1 val) 
+mut method 
+Void removeLeft(This1 val) 
+mut method 
+Void removeRight(This1 val) }
 read method 
 class This0 class() 
 read method 
@@ -3098,6 +3342,12 @@ Void #add(This1 that)
 class method 
 This1 cast(Any that) 
 read method 
+mut This0 reverse() 
+read method 
+This3.N size() 
+read method 
+This3.Bool isEmpty() 
+read method 
 This1 val(This3.N that) 
 read method 
 This1 left() 
@@ -3106,35 +3356,43 @@ This1 right()
 mut method 
 Void #apply(This3.N that, This1 val) 
 mut method 
+Void left(This1 that) 
+mut method 
+Void right(This1 that) 
+mut method 
 Void add(This3.N that, This1 val) 
 mut method 
 Void add(This1 right) 
 mut method 
 Void add(This1 left) 
+mut method /*from VectorTrait
+*/Void remove(This3.N that) 
 mut method 
-Void remove(This3.N that) 
+Void removeLeft() 
 mut method 
-Void left(This1 that) 
-mut method 
-Void right(This1 that) 
-method 
-This0 without(This3.N that) 
-method 
-This0 withoutLeft() 
-method 
-This0 withAlso(This3.N that, This1 val) 
-method 
-This0 with(This3.N that, This1 val) 
-read method 
-mut This0 reverse() 
-read method 
-This3.N size() 
-read method 
-This3.Bool isEmpty() 
+Void removeRight() 
 method 
 This0 #plus(This1 that) 
 method 
 This0 #plusplus(This0 that) 
+method 
+This0 with(This3.N that, This1 val) 
+method 
+This0 withLeft(This1 that) 
+method 
+This0 withRight(This1 that) 
+method 
+This0 withAlso(This3.N that, This1 val) 
+method 
+This0 withAlsoLeft(This1 that) 
+method 
+This0 withAlsoRight(This1 that) 
+method /*from VectorTrait
+*/This0 without(This3.N index) 
+method 
+This0 withoutLeft() 
+method 
+This0 withoutRight() 
 IteratorTrait:{
 class method 
 Library #apply() }
@@ -3221,15 +3479,37 @@ Void inner(This2 that) }
 read method 
 This3.Bool contains(This1 that) 
 method 
-This0 withoutAll(This1 that) 
-method 
 This0 #less(This1 that) 
 method 
 This0 #lessless(This0 that) 
+method 
+This0 #and(This0 that) 
+method 
+This3.Bool #rightright(This0 that) 
+method 
+This3.Bool #rightrightequal(This0 that) 
+method 
+This3.Bool #right(This1 that) 
 read method 
 This3.Bool #bangequal(read This0 that) 
 read method 
-This3.Bool #equalequal(read This0 that) }
+This3.Bool #equalequal(read This0 that) 
+read method 
+This3.N indexOfLeft(This1 val) 
+read method 
+This3.N indexOfRight(This1 val) 
+method 
+This0 withoutLeft(This1 val) 
+method 
+This0 withoutRight(This1 val) 
+method 
+This0 withoutAll(This1 val) 
+mut method 
+Void removeAll(This1 val) 
+mut method 
+Void removeLeft(This1 val) 
+mut method 
+Void removeRight(This1 val) }
 read method 
 class This0 class() 
 read method 
@@ -3330,6 +3610,12 @@ Void #add(This1 that)
 class method 
 This1 cast(Any that) 
 read method 
+mut This0 reverse() 
+read method 
+This3.N size() 
+read method 
+This3.Bool isEmpty() 
+read method 
 This1 val(This3.N that) 
 read method 
 This1 left() 
@@ -3338,35 +3624,43 @@ This1 right()
 mut method 
 Void #apply(This3.N that, This1 val) 
 mut method 
+Void left(This1 that) 
+mut method 
+Void right(This1 that) 
+mut method 
 Void add(This3.N that, This1 val) 
 mut method 
 Void add(This1 right) 
 mut method 
 Void add(This1 left) 
+mut method /*from VectorTrait
+*/Void remove(This3.N that) 
 mut method 
-Void remove(This3.N that) 
+Void removeLeft() 
 mut method 
-Void left(This1 that) 
-mut method 
-Void right(This1 that) 
-method 
-This0 without(This3.N that) 
-method 
-This0 withoutLeft() 
-method 
-This0 withAlso(This3.N that, This1 val) 
-method 
-This0 with(This3.N that, This1 val) 
-read method 
-mut This0 reverse() 
-read method 
-This3.N size() 
-read method 
-This3.Bool isEmpty() 
+Void removeRight() 
 method 
 This0 #plus(This1 that) 
 method 
 This0 #plusplus(This0 that) 
+method 
+This0 with(This3.N that, This1 val) 
+method 
+This0 withLeft(This1 that) 
+method 
+This0 withRight(This1 that) 
+method 
+This0 withAlso(This3.N that, This1 val) 
+method 
+This0 withAlsoLeft(This1 that) 
+method 
+This0 withAlsoRight(This1 that) 
+method /*from VectorTrait
+*/This0 without(This3.N index) 
+method 
+This0 withoutLeft() 
+method 
+This0 withoutRight() 
 IteratorTrait:{
 class method 
 Library #apply() }
@@ -3453,15 +3747,37 @@ Void inner(This2 that) }
 read method 
 This3.Bool contains(This1 that) 
 method 
-This0 withoutAll(This1 that) 
-method 
 This0 #less(This1 that) 
 method 
 This0 #lessless(This0 that) 
+method 
+This0 #and(This0 that) 
+method 
+This3.Bool #rightright(This0 that) 
+method 
+This3.Bool #rightrightequal(This0 that) 
+method 
+This3.Bool #right(This1 that) 
 read method 
 This3.Bool #bangequal(read This0 that) 
 read method 
-This3.Bool #equalequal(read This0 that) }
+This3.Bool #equalequal(read This0 that) 
+read method 
+This3.N indexOfLeft(This1 val) 
+read method 
+This3.N indexOfRight(This1 val) 
+method 
+This0 withoutLeft(This1 val) 
+method 
+This0 withoutRight(This1 val) 
+method 
+This0 withoutAll(This1 val) 
+mut method 
+Void removeAll(This1 val) 
+mut method 
+Void removeLeft(This1 val) 
+mut method 
+Void removeRight(This1 val) }
 read method 
 class This0 class() 
 read method 
@@ -4087,6 +4403,12 @@ Void #add(This1.SrcDest that)
 class method 
 This1.SrcDest cast(Any that) 
 read method 
+mut This0 reverse() 
+read method 
+This2.N size() 
+read method 
+This2.Bool isEmpty() 
+read method 
 This1.SrcDest val(This2.N that) 
 read method 
 This1.SrcDest left() 
@@ -4094,6 +4416,10 @@ read method
 This1.SrcDest right() 
 mut method 
 Void #apply(This2.N that, This1.SrcDest val) 
+mut method 
+Void left(This1.SrcDest that) 
+mut method 
+Void right(This1.SrcDest that) 
 mut method 
 Void add(This2.N that, This1.SrcDest val) 
 mut method 
@@ -4103,27 +4429,31 @@ Void add(This1.SrcDest left)
 mut method 
 Void remove(This2.N that) 
 mut method 
-Void left(This1.SrcDest that) 
+Void removeLeft() 
 mut method 
-Void right(This1.SrcDest that) 
-method 
-This0 without(This2.N that) 
-method 
-This0 withoutLeft() 
-method 
-This0 withAlso(This2.N that, This1.SrcDest val) 
-method 
-This0 with(This2.N that, This1.SrcDest val) 
-read method 
-mut This0 reverse() 
-read method 
-This2.N size() 
-read method 
-This2.Bool isEmpty() 
+Void removeRight() 
 method 
 This0 #plus(This1.SrcDest that) 
 method 
 This0 #plusplus(This0 that) 
+method 
+This0 with(This2.N that, This1.SrcDest val) 
+method 
+This0 withLeft(This1.SrcDest that) 
+method 
+This0 withRight(This1.SrcDest that) 
+method 
+This0 withAlso(This2.N that, This1.SrcDest val) 
+method 
+This0 withAlsoLeft(This1.SrcDest that) 
+method 
+This0 withAlsoRight(This1.SrcDest that) 
+method 
+This0 without(This2.N index) 
+method 
+This0 withoutLeft() 
+method 
+This0 withoutRight() 
 IteratorTrait:{
 class method 
 Library #apply() }
@@ -4229,6 +4559,12 @@ Void #add(Library that)
 class method 
 Library cast(Any that) 
 read method 
+mut This0 reverse() 
+read method 
+This2.N size() 
+read method 
+This2.Bool isEmpty() 
+read method 
 Library val(This2.N that) 
 read method 
 Library left() 
@@ -4236,6 +4572,10 @@ read method
 Library right() 
 mut method 
 Void #apply(This2.N that, Library val) 
+mut method 
+Void left(Library that) 
+mut method 
+Void right(Library that) 
 mut method 
 Void add(This2.N that, Library val) 
 mut method 
@@ -4245,27 +4585,31 @@ Void add(Library left)
 mut method 
 Void remove(This2.N that) 
 mut method 
-Void left(Library that) 
+Void removeLeft() 
 mut method 
-Void right(Library that) 
-method 
-This0 without(This2.N that) 
-method 
-This0 withoutLeft() 
-method 
-This0 withAlso(This2.N that, Library val) 
-method 
-This0 with(This2.N that, Library val) 
-read method 
-mut This0 reverse() 
-read method 
-This2.N size() 
-read method 
-This2.Bool isEmpty() 
+Void removeRight() 
 method 
 This0 #plus(Library that) 
 method 
 This0 #plusplus(This0 that) 
+method 
+This0 with(This2.N that, Library val) 
+method 
+This0 withLeft(Library that) 
+method 
+This0 withRight(Library that) 
+method 
+This0 withAlso(This2.N that, Library val) 
+method 
+This0 withAlsoLeft(Library that) 
+method 
+This0 withAlsoRight(Library that) 
+method 
+This0 without(This2.N index) 
+method 
+This0 withoutLeft() 
+method 
+This0 withoutRight() 
 IteratorTrait:{
 class method 
 Library #apply() }

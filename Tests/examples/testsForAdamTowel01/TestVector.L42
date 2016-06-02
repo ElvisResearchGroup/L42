@@ -14,7 +14,7 @@ Main:{
   Debug(sv.val(0N))
   Debug(sv.val(1N))
   var SV2 s2=SV2[S"c";S"d"]
-  s2:=s2.withoutAll(S"c")
+  s2:=s2.withoutAll(val:S"c")
   Debug(S"Hello-"[with si in s2.vals() ( use[si separedBy:S"@@"])]"")
   return ExitCode.normal()
   }

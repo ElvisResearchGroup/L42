@@ -266,8 +266,8 @@ public class Resources {
     catch(ErrorMessage.PluginActionUndefined undF){throw undF;}
    //catch(java.lang.Error |RuntimeException msg){//eclipse debugger can not hande it
     catch(AssertionError msg){ throw msg;}
-    catch(PathNonExistant msg){throw msg;}//comment this line after testing
-    catch(TypeError msg){throw msg;}//comment this line after testing
+    //catch(PathNonExistant msg){throw msg;}//comment this line after testing
+    //catch(TypeError msg){throw msg;}//comment this line after testing
     catch(ErrorMessage msg){
       System.out.println("###################RES#############");
       System.out.println(res);
