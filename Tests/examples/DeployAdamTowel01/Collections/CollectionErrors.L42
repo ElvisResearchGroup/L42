@@ -12,6 +12,7 @@
     Guard.Operation"cast failure"
 
   class method
-  Any iterationTermination(N from, N stopOk, N size)
-    IterationFailure"Unexpected termination of iteration, reached "[from]" instead of "[stopOk]""
+  Any iterationTermination(N from, N minTo, N size)
+    IterationFailure"Unexpected termination of iteration, reached "[from]" instead of "[minTo]""
+
   }

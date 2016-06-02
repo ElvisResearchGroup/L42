@@ -1073,9 +1073,9 @@ IteratorTrait:{
 class method 
 Library #apply() }
 read method 
-lent This0.IteratorVal vals(This1.N from, This1.N to, This1.N stopOk) 
+lent This0.IteratorVal vals(This1.N from, This1.N maxTo, This1.N minTo) 
 read method 
-lent This0.IteratorVal vals(This1.N stopOk) 
+lent This0.IteratorVal vals(This1.N minTo) 
 read method 
 lent This0.IteratorVal vals(This1.N from, This1.N to) 
 read method 
@@ -1088,9 +1088,13 @@ This2.N from()
 mut method 
 Void from(This2.N that) 
 read method 
-This2.N to() 
+This2.N maxTo() 
 read method 
-This2.N stopOk() 
+This2.N minTo() 
+read method 
+This2.Bool isFill() 
+read method 
+This2.S filled() 
 mut method 
 Void #next() exception Void 
 read method 
@@ -1100,21 +1104,66 @@ This2.S #inner()
 read method 
 Void #close() 
 class method 
-lent This0 #lentK(read This2.Collections.MutListAny that, This2.N from, This2.N to, This2.N stopOk) 
+lent This0 #lentK(read This2.Collections.MutListAny that, This2.N from, This2.N maxTo, This2.N minTo) 
 class method 
-lent This0 #apply(read This2.Collections.MutListAny that, This2.N from, This2.N to, This2.N stopOk) 
+lent This0 #apply(read This2.Collections.MutListAny that, This2.N from, This2.N maxTo, This2.N minTo) 
 mut method 
 read This2.Collections.MutListAny #that() 
 mut method 
 This2.N #from() 
 mut method 
-This2.N #to() 
+This2.N #maxTo() 
 mut method 
-This2.N #stopOk() }
+This2.N #minTo() }
+read method 
+lent This0.IteratorValFill vals(This1.N from, This1.N maxTo, This1.N minTo, This1.S filled) 
+read method 
+lent This0.IteratorValFill vals(This1.N minTo, This1.S filled) 
+read method 
+lent This0.IteratorValFill vals(This1.N from, This1.N to, This1.S filled) 
+read method 
+lent This0.IteratorValFill vals(This1.S filled) 
+IteratorValFill:{
+read method 
+read This2.Collections.MutListAny that() 
+read method 
+This2.N from() 
 mut method 
-lent This0.IteratorVar #vals(This1.N from, This1.N to, This1.N stopOk) 
+Void from(This2.N that) 
+read method 
+This2.N maxTo() 
+read method 
+This2.N minTo() 
+read method 
+This2.Bool isFill() 
+read method 
+This2.S filled() 
 mut method 
-lent This0.IteratorVar #vals(This1.N stopOk) 
+Void #next() exception Void 
+read method 
+Void #checkEnd() 
+read method 
+This2.S #inner() 
+read method 
+Void #close() 
+class method 
+lent This0 #lentK(read This2.Collections.MutListAny that, This2.N from, This2.N maxTo, This2.N minTo, This2.S filled) 
+class method 
+lent This0 #apply(read This2.Collections.MutListAny that, This2.N from, This2.N maxTo, This2.N minTo, This2.S filled) 
+mut method 
+read This2.Collections.MutListAny #that() 
+mut method 
+This2.N #from() 
+mut method 
+This2.N #maxTo() 
+mut method 
+This2.N #minTo() 
+mut method 
+This2.S #filled() }
+mut method 
+lent This0.IteratorVar #vals(This1.N from, This1.N maxTo, This1.N minTo) 
+mut method 
+lent This0.IteratorVar #vals(This1.N minTo) 
 mut method 
 lent This0.IteratorVar #vals(This1.N from, This1.N to) 
 mut method 
@@ -1127,9 +1176,13 @@ This2.N from()
 mut method 
 Void from(This2.N that) 
 read method 
-This2.N to() 
+This2.N maxTo() 
 read method 
-This2.N stopOk() 
+This2.N minTo() 
+read method 
+This2.Bool isFill() 
+read method 
+This2.S filled() 
 mut method 
 Void #next() exception Void 
 read method 
@@ -1139,17 +1192,17 @@ This2.S #inner()
 read method 
 Void #close() 
 class method 
-mut This0 #mutK(mut This2.Collections.MutListAny that, This2.N from, This2.N to, This2.N stopOk) 
+mut This0 #mutK(mut This2.Collections.MutListAny that, This2.N from, This2.N maxTo, This2.N minTo) 
 class method 
-mut This0 #apply(mut This2.Collections.MutListAny that, This2.N from, This2.N to, This2.N stopOk) 
+mut This0 #apply(mut This2.Collections.MutListAny that, This2.N from, This2.N maxTo, This2.N minTo) 
 mut method 
 mut This2.Collections.MutListAny #that() 
 mut method 
 This2.N #from() 
 mut method 
-This2.N #to() 
+This2.N #maxTo() 
 mut method 
-This2.N #stopOk() 
+This2.N #minTo() 
 mut method 
 Void inner(This2.S that) }
 read method 
@@ -1740,9 +1793,9 @@ IteratorTrait:{
 class method 
 Library #apply() }
 read method 
-lent This0.IteratorVal vals(This3.N from, This3.N to, This3.N stopOk) 
+lent This0.IteratorVal vals(This3.N from, This3.N maxTo, This3.N minTo) 
 read method 
-lent This0.IteratorVal vals(This3.N stopOk) 
+lent This0.IteratorVal vals(This3.N minTo) 
 read method 
 lent This0.IteratorVal vals(This3.N from, This3.N to) 
 read method 
@@ -1755,9 +1808,13 @@ This4.N from()
 mut method 
 Void from(This4.N that) 
 read method 
-This4.N to() 
+This4.N maxTo() 
 read method 
-This4.N stopOk() 
+This4.N minTo() 
+read method 
+This4.Bool isFill() 
+read method 
+This2.Annotation filled() 
 mut method 
 Void #next() exception Void 
 read method 
@@ -1767,21 +1824,66 @@ This2.Annotation #inner()
 read method 
 Void #close() 
 class method 
-lent This0 #lentK(read This4.Collections.MutListAny that, This4.N from, This4.N to, This4.N stopOk) 
+lent This0 #lentK(read This4.Collections.MutListAny that, This4.N from, This4.N maxTo, This4.N minTo) 
 class method 
-lent This0 #apply(read This4.Collections.MutListAny that, This4.N from, This4.N to, This4.N stopOk) 
+lent This0 #apply(read This4.Collections.MutListAny that, This4.N from, This4.N maxTo, This4.N minTo) 
 mut method 
 read This4.Collections.MutListAny #that() 
 mut method 
 This4.N #from() 
 mut method 
-This4.N #to() 
+This4.N #maxTo() 
 mut method 
-This4.N #stopOk() }
+This4.N #minTo() }
+read method 
+lent This0.IteratorValFill vals(This3.N from, This3.N maxTo, This3.N minTo, This1.Annotation filled) 
+read method 
+lent This0.IteratorValFill vals(This3.N minTo, This1.Annotation filled) 
+read method 
+lent This0.IteratorValFill vals(This3.N from, This3.N to, This1.Annotation filled) 
+read method 
+lent This0.IteratorValFill vals(This1.Annotation filled) 
+IteratorValFill:{
+read method 
+read This4.Collections.MutListAny that() 
+read method 
+This4.N from() 
 mut method 
-lent This0.IteratorVar #vals(This3.N from, This3.N to, This3.N stopOk) 
+Void from(This4.N that) 
+read method 
+This4.N maxTo() 
+read method 
+This4.N minTo() 
+read method 
+This4.Bool isFill() 
+read method 
+This2.Annotation filled() 
 mut method 
-lent This0.IteratorVar #vals(This3.N stopOk) 
+Void #next() exception Void 
+read method 
+Void #checkEnd() 
+read method 
+This2.Annotation #inner() 
+read method 
+Void #close() 
+class method 
+lent This0 #lentK(read This4.Collections.MutListAny that, This4.N from, This4.N maxTo, This4.N minTo, This2.Annotation filled) 
+class method 
+lent This0 #apply(read This4.Collections.MutListAny that, This4.N from, This4.N maxTo, This4.N minTo, This2.Annotation filled) 
+mut method 
+read This4.Collections.MutListAny #that() 
+mut method 
+This4.N #from() 
+mut method 
+This4.N #maxTo() 
+mut method 
+This4.N #minTo() 
+mut method 
+This2.Annotation #filled() }
+mut method 
+lent This0.IteratorVar #vals(This3.N from, This3.N maxTo, This3.N minTo) 
+mut method 
+lent This0.IteratorVar #vals(This3.N minTo) 
 mut method 
 lent This0.IteratorVar #vals(This3.N from, This3.N to) 
 mut method 
@@ -1794,9 +1896,13 @@ This4.N from()
 mut method 
 Void from(This4.N that) 
 read method 
-This4.N to() 
+This4.N maxTo() 
 read method 
-This4.N stopOk() 
+This4.N minTo() 
+read method 
+This4.Bool isFill() 
+read method 
+This2.Annotation filled() 
 mut method 
 Void #next() exception Void 
 read method 
@@ -1806,17 +1912,17 @@ This2.Annotation #inner()
 read method 
 Void #close() 
 class method 
-mut This0 #mutK(mut This4.Collections.MutListAny that, This4.N from, This4.N to, This4.N stopOk) 
+mut This0 #mutK(mut This4.Collections.MutListAny that, This4.N from, This4.N maxTo, This4.N minTo) 
 class method 
-mut This0 #apply(mut This4.Collections.MutListAny that, This4.N from, This4.N to, This4.N stopOk) 
+mut This0 #apply(mut This4.Collections.MutListAny that, This4.N from, This4.N maxTo, This4.N minTo) 
 mut method 
 mut This4.Collections.MutListAny #that() 
 mut method 
 This4.N #from() 
 mut method 
-This4.N #to() 
+This4.N #maxTo() 
 mut method 
-This4.N #stopOk() 
+This4.N #minTo() 
 mut method 
 Void inner(This2.Annotation that) }}
 class method 
@@ -1970,9 +2076,9 @@ IteratorTrait:{
 class method 
 Library #apply() }
 read method 
-lent This0.IteratorVal vals(This2.N from, This2.N to, This2.N stopOk) 
+lent This0.IteratorVal vals(This2.N from, This2.N maxTo, This2.N minTo) 
 read method 
-lent This0.IteratorVal vals(This2.N stopOk) 
+lent This0.IteratorVal vals(This2.N minTo) 
 read method 
 lent This0.IteratorVal vals(This2.N from, This2.N to) 
 read method 
@@ -1985,9 +2091,13 @@ This3.N from()
 mut method 
 Void from(This3.N that) 
 read method 
-This3.N to() 
+This3.N maxTo() 
 read method 
-This3.N stopOk() 
+This3.N minTo() 
+read method 
+This3.Bool isFill() 
+read method 
+This2.Member filled() 
 mut method 
 Void #next() exception Void 
 read method 
@@ -1997,21 +2107,66 @@ This2.Member #inner()
 read method 
 Void #close() 
 class method 
-lent This0 #lentK(read This3.Collections.MutListAny that, This3.N from, This3.N to, This3.N stopOk) 
+lent This0 #lentK(read This3.Collections.MutListAny that, This3.N from, This3.N maxTo, This3.N minTo) 
 class method 
-lent This0 #apply(read This3.Collections.MutListAny that, This3.N from, This3.N to, This3.N stopOk) 
+lent This0 #apply(read This3.Collections.MutListAny that, This3.N from, This3.N maxTo, This3.N minTo) 
 mut method 
 read This3.Collections.MutListAny #that() 
 mut method 
 This3.N #from() 
 mut method 
-This3.N #to() 
+This3.N #maxTo() 
 mut method 
-This3.N #stopOk() }
+This3.N #minTo() }
+read method 
+lent This0.IteratorValFill vals(This2.N from, This2.N maxTo, This2.N minTo, This1.Member filled) 
+read method 
+lent This0.IteratorValFill vals(This2.N minTo, This1.Member filled) 
+read method 
+lent This0.IteratorValFill vals(This2.N from, This2.N to, This1.Member filled) 
+read method 
+lent This0.IteratorValFill vals(This1.Member filled) 
+IteratorValFill:{
+read method 
+read This3.Collections.MutListAny that() 
+read method 
+This3.N from() 
 mut method 
-lent This0.IteratorVar #vals(This2.N from, This2.N to, This2.N stopOk) 
+Void from(This3.N that) 
+read method 
+This3.N maxTo() 
+read method 
+This3.N minTo() 
+read method 
+This3.Bool isFill() 
+read method 
+This2.Member filled() 
 mut method 
-lent This0.IteratorVar #vals(This2.N stopOk) 
+Void #next() exception Void 
+read method 
+Void #checkEnd() 
+read method 
+This2.Member #inner() 
+read method 
+Void #close() 
+class method 
+lent This0 #lentK(read This3.Collections.MutListAny that, This3.N from, This3.N maxTo, This3.N minTo, This2.Member filled) 
+class method 
+lent This0 #apply(read This3.Collections.MutListAny that, This3.N from, This3.N maxTo, This3.N minTo, This2.Member filled) 
+mut method 
+read This3.Collections.MutListAny #that() 
+mut method 
+This3.N #from() 
+mut method 
+This3.N #maxTo() 
+mut method 
+This3.N #minTo() 
+mut method 
+This2.Member #filled() }
+mut method 
+lent This0.IteratorVar #vals(This2.N from, This2.N maxTo, This2.N minTo) 
+mut method 
+lent This0.IteratorVar #vals(This2.N minTo) 
 mut method 
 lent This0.IteratorVar #vals(This2.N from, This2.N to) 
 mut method 
@@ -2024,9 +2179,13 @@ This3.N from()
 mut method 
 Void from(This3.N that) 
 read method 
-This3.N to() 
+This3.N maxTo() 
 read method 
-This3.N stopOk() 
+This3.N minTo() 
+read method 
+This3.Bool isFill() 
+read method 
+This2.Member filled() 
 mut method 
 Void #next() exception Void 
 read method 
@@ -2036,17 +2195,17 @@ This2.Member #inner()
 read method 
 Void #close() 
 class method 
-mut This0 #mutK(mut This3.Collections.MutListAny that, This3.N from, This3.N to, This3.N stopOk) 
+mut This0 #mutK(mut This3.Collections.MutListAny that, This3.N from, This3.N maxTo, This3.N minTo) 
 class method 
-mut This0 #apply(mut This3.Collections.MutListAny that, This3.N from, This3.N to, This3.N stopOk) 
+mut This0 #apply(mut This3.Collections.MutListAny that, This3.N from, This3.N maxTo, This3.N minTo) 
 mut method 
 mut This3.Collections.MutListAny #that() 
 mut method 
 This3.N #from() 
 mut method 
-This3.N #to() 
+This3.N #maxTo() 
 mut method 
-This3.N #stopOk() 
+This3.N #minTo() 
 mut method 
 Void inner(This2.Member that) }
 read method 
@@ -2187,9 +2346,9 @@ IteratorTrait:{
 class method 
 Library #apply() }
 read method 
-lent This0.IteratorVal vals(This2.N from, This2.N to, This2.N stopOk) 
+lent This0.IteratorVal vals(This2.N from, This2.N maxTo, This2.N minTo) 
 read method 
-lent This0.IteratorVal vals(This2.N stopOk) 
+lent This0.IteratorVal vals(This2.N minTo) 
 read method 
 lent This0.IteratorVal vals(This2.N from, This2.N to) 
 read method 
@@ -2202,9 +2361,13 @@ This3.N from()
 mut method 
 Void from(This3.N that) 
 read method 
-This3.N to() 
+This3.N maxTo() 
 read method 
-This3.N stopOk() 
+This3.N minTo() 
+read method 
+This3.Bool isFill() 
+read method 
+This2.Method filled() 
 mut method 
 Void #next() exception Void 
 read method 
@@ -2214,21 +2377,66 @@ This2.Method #inner()
 read method 
 Void #close() 
 class method 
-lent This0 #lentK(read This3.Collections.MutListAny that, This3.N from, This3.N to, This3.N stopOk) 
+lent This0 #lentK(read This3.Collections.MutListAny that, This3.N from, This3.N maxTo, This3.N minTo) 
 class method 
-lent This0 #apply(read This3.Collections.MutListAny that, This3.N from, This3.N to, This3.N stopOk) 
+lent This0 #apply(read This3.Collections.MutListAny that, This3.N from, This3.N maxTo, This3.N minTo) 
 mut method 
 read This3.Collections.MutListAny #that() 
 mut method 
 This3.N #from() 
 mut method 
-This3.N #to() 
+This3.N #maxTo() 
 mut method 
-This3.N #stopOk() }
+This3.N #minTo() }
+read method 
+lent This0.IteratorValFill vals(This2.N from, This2.N maxTo, This2.N minTo, This1.Method filled) 
+read method 
+lent This0.IteratorValFill vals(This2.N minTo, This1.Method filled) 
+read method 
+lent This0.IteratorValFill vals(This2.N from, This2.N to, This1.Method filled) 
+read method 
+lent This0.IteratorValFill vals(This1.Method filled) 
+IteratorValFill:{
+read method 
+read This3.Collections.MutListAny that() 
+read method 
+This3.N from() 
 mut method 
-lent This0.IteratorVar #vals(This2.N from, This2.N to, This2.N stopOk) 
+Void from(This3.N that) 
+read method 
+This3.N maxTo() 
+read method 
+This3.N minTo() 
+read method 
+This3.Bool isFill() 
+read method 
+This2.Method filled() 
 mut method 
-lent This0.IteratorVar #vals(This2.N stopOk) 
+Void #next() exception Void 
+read method 
+Void #checkEnd() 
+read method 
+This2.Method #inner() 
+read method 
+Void #close() 
+class method 
+lent This0 #lentK(read This3.Collections.MutListAny that, This3.N from, This3.N maxTo, This3.N minTo, This2.Method filled) 
+class method 
+lent This0 #apply(read This3.Collections.MutListAny that, This3.N from, This3.N maxTo, This3.N minTo, This2.Method filled) 
+mut method 
+read This3.Collections.MutListAny #that() 
+mut method 
+This3.N #from() 
+mut method 
+This3.N #maxTo() 
+mut method 
+This3.N #minTo() 
+mut method 
+This2.Method #filled() }
+mut method 
+lent This0.IteratorVar #vals(This2.N from, This2.N maxTo, This2.N minTo) 
+mut method 
+lent This0.IteratorVar #vals(This2.N minTo) 
 mut method 
 lent This0.IteratorVar #vals(This2.N from, This2.N to) 
 mut method 
@@ -2241,9 +2449,13 @@ This3.N from()
 mut method 
 Void from(This3.N that) 
 read method 
-This3.N to() 
+This3.N maxTo() 
 read method 
-This3.N stopOk() 
+This3.N minTo() 
+read method 
+This3.Bool isFill() 
+read method 
+This2.Method filled() 
 mut method 
 Void #next() exception Void 
 read method 
@@ -2253,17 +2465,17 @@ This2.Method #inner()
 read method 
 Void #close() 
 class method 
-mut This0 #mutK(mut This3.Collections.MutListAny that, This3.N from, This3.N to, This3.N stopOk) 
+mut This0 #mutK(mut This3.Collections.MutListAny that, This3.N from, This3.N maxTo, This3.N minTo) 
 class method 
-mut This0 #apply(mut This3.Collections.MutListAny that, This3.N from, This3.N to, This3.N stopOk) 
+mut This0 #apply(mut This3.Collections.MutListAny that, This3.N from, This3.N maxTo, This3.N minTo) 
 mut method 
 mut This3.Collections.MutListAny #that() 
 mut method 
 This3.N #from() 
 mut method 
-This3.N #to() 
+This3.N #maxTo() 
 mut method 
-This3.N #stopOk() 
+This3.N #minTo() 
 mut method 
 Void inner(This2.Method that) }
 read method 
@@ -2429,9 +2641,9 @@ IteratorTrait:{
 class method 
 Library #apply() }
 read method 
-lent This0.IteratorVal vals(This2.N from, This2.N to, This2.N stopOk) 
+lent This0.IteratorVal vals(This2.N from, This2.N maxTo, This2.N minTo) 
 read method 
-lent This0.IteratorVal vals(This2.N stopOk) 
+lent This0.IteratorVal vals(This2.N minTo) 
 read method 
 lent This0.IteratorVal vals(This2.N from, This2.N to) 
 read method 
@@ -2444,9 +2656,13 @@ This3.N from()
 mut method 
 Void from(This3.N that) 
 read method 
-This3.N to() 
+This3.N maxTo() 
 read method 
-This3.N stopOk() 
+This3.N minTo() 
+read method 
+This3.Bool isFill() 
+read method 
+This2.NestedClass filled() 
 mut method 
 Void #next() exception Void 
 read method 
@@ -2456,21 +2672,66 @@ This2.NestedClass #inner()
 read method 
 Void #close() 
 class method 
-lent This0 #lentK(read This3.Collections.MutListAny that, This3.N from, This3.N to, This3.N stopOk) 
+lent This0 #lentK(read This3.Collections.MutListAny that, This3.N from, This3.N maxTo, This3.N minTo) 
 class method 
-lent This0 #apply(read This3.Collections.MutListAny that, This3.N from, This3.N to, This3.N stopOk) 
+lent This0 #apply(read This3.Collections.MutListAny that, This3.N from, This3.N maxTo, This3.N minTo) 
 mut method 
 read This3.Collections.MutListAny #that() 
 mut method 
 This3.N #from() 
 mut method 
-This3.N #to() 
+This3.N #maxTo() 
 mut method 
-This3.N #stopOk() }
+This3.N #minTo() }
+read method 
+lent This0.IteratorValFill vals(This2.N from, This2.N maxTo, This2.N minTo, This1.NestedClass filled) 
+read method 
+lent This0.IteratorValFill vals(This2.N minTo, This1.NestedClass filled) 
+read method 
+lent This0.IteratorValFill vals(This2.N from, This2.N to, This1.NestedClass filled) 
+read method 
+lent This0.IteratorValFill vals(This1.NestedClass filled) 
+IteratorValFill:{
+read method 
+read This3.Collections.MutListAny that() 
+read method 
+This3.N from() 
 mut method 
-lent This0.IteratorVar #vals(This2.N from, This2.N to, This2.N stopOk) 
+Void from(This3.N that) 
+read method 
+This3.N maxTo() 
+read method 
+This3.N minTo() 
+read method 
+This3.Bool isFill() 
+read method 
+This2.NestedClass filled() 
 mut method 
-lent This0.IteratorVar #vals(This2.N stopOk) 
+Void #next() exception Void 
+read method 
+Void #checkEnd() 
+read method 
+This2.NestedClass #inner() 
+read method 
+Void #close() 
+class method 
+lent This0 #lentK(read This3.Collections.MutListAny that, This3.N from, This3.N maxTo, This3.N minTo, This2.NestedClass filled) 
+class method 
+lent This0 #apply(read This3.Collections.MutListAny that, This3.N from, This3.N maxTo, This3.N minTo, This2.NestedClass filled) 
+mut method 
+read This3.Collections.MutListAny #that() 
+mut method 
+This3.N #from() 
+mut method 
+This3.N #maxTo() 
+mut method 
+This3.N #minTo() 
+mut method 
+This2.NestedClass #filled() }
+mut method 
+lent This0.IteratorVar #vals(This2.N from, This2.N maxTo, This2.N minTo) 
+mut method 
+lent This0.IteratorVar #vals(This2.N minTo) 
 mut method 
 lent This0.IteratorVar #vals(This2.N from, This2.N to) 
 mut method 
@@ -2483,9 +2744,13 @@ This3.N from()
 mut method 
 Void from(This3.N that) 
 read method 
-This3.N to() 
+This3.N maxTo() 
 read method 
-This3.N stopOk() 
+This3.N minTo() 
+read method 
+This3.Bool isFill() 
+read method 
+This2.NestedClass filled() 
 mut method 
 Void #next() exception Void 
 read method 
@@ -2495,17 +2760,17 @@ This2.NestedClass #inner()
 read method 
 Void #close() 
 class method 
-mut This0 #mutK(mut This3.Collections.MutListAny that, This3.N from, This3.N to, This3.N stopOk) 
+mut This0 #mutK(mut This3.Collections.MutListAny that, This3.N from, This3.N maxTo, This3.N minTo) 
 class method 
-mut This0 #apply(mut This3.Collections.MutListAny that, This3.N from, This3.N to, This3.N stopOk) 
+mut This0 #apply(mut This3.Collections.MutListAny that, This3.N from, This3.N maxTo, This3.N minTo) 
 mut method 
 mut This3.Collections.MutListAny #that() 
 mut method 
 This3.N #from() 
 mut method 
-This3.N #to() 
+This3.N #maxTo() 
 mut method 
-This3.N #stopOk() 
+This3.N #minTo() 
 mut method 
 Void inner(This2.NestedClass that) }
 read method 
@@ -2650,9 +2915,9 @@ IteratorTrait:{
 class method 
 Library #apply() }
 read method 
-lent This0.IteratorVal vals(This2.N from, This2.N to, This2.N stopOk) 
+lent This0.IteratorVal vals(This2.N from, This2.N maxTo, This2.N minTo) 
 read method 
-lent This0.IteratorVal vals(This2.N stopOk) 
+lent This0.IteratorVal vals(This2.N minTo) 
 read method 
 lent This0.IteratorVal vals(This2.N from, This2.N to) 
 read method 
@@ -2665,9 +2930,13 @@ This3.N from()
 mut method 
 Void from(This3.N that) 
 read method 
-This3.N to() 
+This3.N maxTo() 
 read method 
-This3.N stopOk() 
+This3.N minTo() 
+read method 
+This3.Bool isFill() 
+read method 
+This2.Type filled() 
 mut method 
 Void #next() exception Void 
 read method 
@@ -2677,21 +2946,66 @@ This2.Type #inner()
 read method 
 Void #close() 
 class method 
-lent This0 #lentK(read This3.Collections.MutListAny that, This3.N from, This3.N to, This3.N stopOk) 
+lent This0 #lentK(read This3.Collections.MutListAny that, This3.N from, This3.N maxTo, This3.N minTo) 
 class method 
-lent This0 #apply(read This3.Collections.MutListAny that, This3.N from, This3.N to, This3.N stopOk) 
+lent This0 #apply(read This3.Collections.MutListAny that, This3.N from, This3.N maxTo, This3.N minTo) 
 mut method 
 read This3.Collections.MutListAny #that() 
 mut method 
 This3.N #from() 
 mut method 
-This3.N #to() 
+This3.N #maxTo() 
 mut method 
-This3.N #stopOk() }
+This3.N #minTo() }
+read method 
+lent This0.IteratorValFill vals(This2.N from, This2.N maxTo, This2.N minTo, This1.Type filled) 
+read method 
+lent This0.IteratorValFill vals(This2.N minTo, This1.Type filled) 
+read method 
+lent This0.IteratorValFill vals(This2.N from, This2.N to, This1.Type filled) 
+read method 
+lent This0.IteratorValFill vals(This1.Type filled) 
+IteratorValFill:{
+read method 
+read This3.Collections.MutListAny that() 
+read method 
+This3.N from() 
 mut method 
-lent This0.IteratorVar #vals(This2.N from, This2.N to, This2.N stopOk) 
+Void from(This3.N that) 
+read method 
+This3.N maxTo() 
+read method 
+This3.N minTo() 
+read method 
+This3.Bool isFill() 
+read method 
+This2.Type filled() 
 mut method 
-lent This0.IteratorVar #vals(This2.N stopOk) 
+Void #next() exception Void 
+read method 
+Void #checkEnd() 
+read method 
+This2.Type #inner() 
+read method 
+Void #close() 
+class method 
+lent This0 #lentK(read This3.Collections.MutListAny that, This3.N from, This3.N maxTo, This3.N minTo, This2.Type filled) 
+class method 
+lent This0 #apply(read This3.Collections.MutListAny that, This3.N from, This3.N maxTo, This3.N minTo, This2.Type filled) 
+mut method 
+read This3.Collections.MutListAny #that() 
+mut method 
+This3.N #from() 
+mut method 
+This3.N #maxTo() 
+mut method 
+This3.N #minTo() 
+mut method 
+This2.Type #filled() }
+mut method 
+lent This0.IteratorVar #vals(This2.N from, This2.N maxTo, This2.N minTo) 
+mut method 
+lent This0.IteratorVar #vals(This2.N minTo) 
 mut method 
 lent This0.IteratorVar #vals(This2.N from, This2.N to) 
 mut method 
@@ -2704,9 +3018,13 @@ This3.N from()
 mut method 
 Void from(This3.N that) 
 read method 
-This3.N to() 
+This3.N maxTo() 
 read method 
-This3.N stopOk() 
+This3.N minTo() 
+read method 
+This3.Bool isFill() 
+read method 
+This2.Type filled() 
 mut method 
 Void #next() exception Void 
 read method 
@@ -2716,17 +3034,17 @@ This2.Type #inner()
 read method 
 Void #close() 
 class method 
-mut This0 #mutK(mut This3.Collections.MutListAny that, This3.N from, This3.N to, This3.N stopOk) 
+mut This0 #mutK(mut This3.Collections.MutListAny that, This3.N from, This3.N maxTo, This3.N minTo) 
 class method 
-mut This0 #apply(mut This3.Collections.MutListAny that, This3.N from, This3.N to, This3.N stopOk) 
+mut This0 #apply(mut This3.Collections.MutListAny that, This3.N from, This3.N maxTo, This3.N minTo) 
 mut method 
 mut This3.Collections.MutListAny #that() 
 mut method 
 This3.N #from() 
 mut method 
-This3.N #to() 
+This3.N #maxTo() 
 mut method 
-This3.N #stopOk() 
+This3.N #minTo() 
 mut method 
 Void inner(This2.Type that) }}
 Mdf:{/*Data is more than Solid, and Liquid, Gas, Plasma can be good methafores
@@ -2853,9 +3171,9 @@ IteratorTrait:{
 class method 
 Library #apply() }
 read method 
-lent This0.IteratorVal vals(This3.N from, This3.N to, This3.N stopOk) 
+lent This0.IteratorVal vals(This3.N from, This3.N maxTo, This3.N minTo) 
 read method 
-lent This0.IteratorVal vals(This3.N stopOk) 
+lent This0.IteratorVal vals(This3.N minTo) 
 read method 
 lent This0.IteratorVal vals(This3.N from, This3.N to) 
 read method 
@@ -2868,9 +3186,13 @@ This4.N from()
 mut method 
 Void from(This4.N that) 
 read method 
-This4.N to() 
+This4.N maxTo() 
 read method 
-This4.N stopOk() 
+This4.N minTo() 
+read method 
+This4.Bool isFill() 
+read method 
+This2 filled() 
 mut method 
 Void #next() exception Void 
 read method 
@@ -2880,21 +3202,66 @@ This2 #inner()
 read method 
 Void #close() 
 class method 
-lent This0 #lentK(read This4.Collections.MutListAny that, This4.N from, This4.N to, This4.N stopOk) 
+lent This0 #lentK(read This4.Collections.MutListAny that, This4.N from, This4.N maxTo, This4.N minTo) 
 class method 
-lent This0 #apply(read This4.Collections.MutListAny that, This4.N from, This4.N to, This4.N stopOk) 
+lent This0 #apply(read This4.Collections.MutListAny that, This4.N from, This4.N maxTo, This4.N minTo) 
 mut method 
 read This4.Collections.MutListAny #that() 
 mut method 
 This4.N #from() 
 mut method 
-This4.N #to() 
+This4.N #maxTo() 
 mut method 
-This4.N #stopOk() }
+This4.N #minTo() }
+read method 
+lent This0.IteratorValFill vals(This3.N from, This3.N maxTo, This3.N minTo, This1 filled) 
+read method 
+lent This0.IteratorValFill vals(This3.N minTo, This1 filled) 
+read method 
+lent This0.IteratorValFill vals(This3.N from, This3.N to, This1 filled) 
+read method 
+lent This0.IteratorValFill vals(This1 filled) 
+IteratorValFill:{
+read method 
+read This4.Collections.MutListAny that() 
+read method 
+This4.N from() 
 mut method 
-lent This0.IteratorVar #vals(This3.N from, This3.N to, This3.N stopOk) 
+Void from(This4.N that) 
+read method 
+This4.N maxTo() 
+read method 
+This4.N minTo() 
+read method 
+This4.Bool isFill() 
+read method 
+This2 filled() 
 mut method 
-lent This0.IteratorVar #vals(This3.N stopOk) 
+Void #next() exception Void 
+read method 
+Void #checkEnd() 
+read method 
+This2 #inner() 
+read method 
+Void #close() 
+class method 
+lent This0 #lentK(read This4.Collections.MutListAny that, This4.N from, This4.N maxTo, This4.N minTo, This2 filled) 
+class method 
+lent This0 #apply(read This4.Collections.MutListAny that, This4.N from, This4.N maxTo, This4.N minTo, This2 filled) 
+mut method 
+read This4.Collections.MutListAny #that() 
+mut method 
+This4.N #from() 
+mut method 
+This4.N #maxTo() 
+mut method 
+This4.N #minTo() 
+mut method 
+This2 #filled() }
+mut method 
+lent This0.IteratorVar #vals(This3.N from, This3.N maxTo, This3.N minTo) 
+mut method 
+lent This0.IteratorVar #vals(This3.N minTo) 
 mut method 
 lent This0.IteratorVar #vals(This3.N from, This3.N to) 
 mut method 
@@ -2907,9 +3274,13 @@ This4.N from()
 mut method 
 Void from(This4.N that) 
 read method 
-This4.N to() 
+This4.N maxTo() 
 read method 
-This4.N stopOk() 
+This4.N minTo() 
+read method 
+This4.Bool isFill() 
+read method 
+This2 filled() 
 mut method 
 Void #next() exception Void 
 read method 
@@ -2919,17 +3290,17 @@ This2 #inner()
 read method 
 Void #close() 
 class method 
-mut This0 #mutK(mut This4.Collections.MutListAny that, This4.N from, This4.N to, This4.N stopOk) 
+mut This0 #mutK(mut This4.Collections.MutListAny that, This4.N from, This4.N maxTo, This4.N minTo) 
 class method 
-mut This0 #apply(mut This4.Collections.MutListAny that, This4.N from, This4.N to, This4.N stopOk) 
+mut This0 #apply(mut This4.Collections.MutListAny that, This4.N from, This4.N maxTo, This4.N minTo) 
 mut method 
 mut This4.Collections.MutListAny #that() 
 mut method 
 This4.N #from() 
 mut method 
-This4.N #to() 
+This4.N #maxTo() 
 mut method 
-This4.N #stopOk() 
+This4.N #minTo() 
 mut method 
 Void inner(This2 that) }
 read method 
@@ -3134,9 +3505,9 @@ IteratorTrait:{
 class method 
 Library #apply() }
 read method 
-lent This0.IteratorVal vals(This3.N from, This3.N to, This3.N stopOk) 
+lent This0.IteratorVal vals(This3.N from, This3.N maxTo, This3.N minTo) 
 read method 
-lent This0.IteratorVal vals(This3.N stopOk) 
+lent This0.IteratorVal vals(This3.N minTo) 
 read method 
 lent This0.IteratorVal vals(This3.N from, This3.N to) 
 read method 
@@ -3149,9 +3520,13 @@ This4.N from()
 mut method 
 Void from(This4.N that) 
 read method 
-This4.N to() 
+This4.N maxTo() 
 read method 
-This4.N stopOk() 
+This4.N minTo() 
+read method 
+This4.Bool isFill() 
+read method 
+This2 filled() 
 mut method 
 Void #next() exception Void 
 read method 
@@ -3161,21 +3536,66 @@ This2 #inner()
 read method 
 Void #close() 
 class method 
-lent This0 #lentK(read This4.Collections.MutListAny that, This4.N from, This4.N to, This4.N stopOk) 
+lent This0 #lentK(read This4.Collections.MutListAny that, This4.N from, This4.N maxTo, This4.N minTo) 
 class method 
-lent This0 #apply(read This4.Collections.MutListAny that, This4.N from, This4.N to, This4.N stopOk) 
+lent This0 #apply(read This4.Collections.MutListAny that, This4.N from, This4.N maxTo, This4.N minTo) 
 mut method 
 read This4.Collections.MutListAny #that() 
 mut method 
 This4.N #from() 
 mut method 
-This4.N #to() 
+This4.N #maxTo() 
 mut method 
-This4.N #stopOk() }
+This4.N #minTo() }
+read method 
+lent This0.IteratorValFill vals(This3.N from, This3.N maxTo, This3.N minTo, This1 filled) 
+read method 
+lent This0.IteratorValFill vals(This3.N minTo, This1 filled) 
+read method 
+lent This0.IteratorValFill vals(This3.N from, This3.N to, This1 filled) 
+read method 
+lent This0.IteratorValFill vals(This1 filled) 
+IteratorValFill:{
+read method 
+read This4.Collections.MutListAny that() 
+read method 
+This4.N from() 
 mut method 
-lent This0.IteratorVar #vals(This3.N from, This3.N to, This3.N stopOk) 
+Void from(This4.N that) 
+read method 
+This4.N maxTo() 
+read method 
+This4.N minTo() 
+read method 
+This4.Bool isFill() 
+read method 
+This2 filled() 
 mut method 
-lent This0.IteratorVar #vals(This3.N stopOk) 
+Void #next() exception Void 
+read method 
+Void #checkEnd() 
+read method 
+This2 #inner() 
+read method 
+Void #close() 
+class method 
+lent This0 #lentK(read This4.Collections.MutListAny that, This4.N from, This4.N maxTo, This4.N minTo, This2 filled) 
+class method 
+lent This0 #apply(read This4.Collections.MutListAny that, This4.N from, This4.N maxTo, This4.N minTo, This2 filled) 
+mut method 
+read This4.Collections.MutListAny #that() 
+mut method 
+This4.N #from() 
+mut method 
+This4.N #maxTo() 
+mut method 
+This4.N #minTo() 
+mut method 
+This2 #filled() }
+mut method 
+lent This0.IteratorVar #vals(This3.N from, This3.N maxTo, This3.N minTo) 
+mut method 
+lent This0.IteratorVar #vals(This3.N minTo) 
 mut method 
 lent This0.IteratorVar #vals(This3.N from, This3.N to) 
 mut method 
@@ -3188,9 +3608,13 @@ This4.N from()
 mut method 
 Void from(This4.N that) 
 read method 
-This4.N to() 
+This4.N maxTo() 
 read method 
-This4.N stopOk() 
+This4.N minTo() 
+read method 
+This4.Bool isFill() 
+read method 
+This2 filled() 
 mut method 
 Void #next() exception Void 
 read method 
@@ -3200,17 +3624,17 @@ This2 #inner()
 read method 
 Void #close() 
 class method 
-mut This0 #mutK(mut This4.Collections.MutListAny that, This4.N from, This4.N to, This4.N stopOk) 
+mut This0 #mutK(mut This4.Collections.MutListAny that, This4.N from, This4.N maxTo, This4.N minTo) 
 class method 
-mut This0 #apply(mut This4.Collections.MutListAny that, This4.N from, This4.N to, This4.N stopOk) 
+mut This0 #apply(mut This4.Collections.MutListAny that, This4.N from, This4.N maxTo, This4.N minTo) 
 mut method 
 mut This4.Collections.MutListAny #that() 
 mut method 
 This4.N #from() 
 mut method 
-This4.N #to() 
+This4.N #maxTo() 
 mut method 
-This4.N #stopOk() 
+This4.N #minTo() 
 mut method 
 Void inner(This2 that) }
 read method 
@@ -3397,9 +3821,9 @@ IteratorTrait:{
 class method 
 Library #apply() }
 read method 
-lent This0.IteratorVal vals(This3.N from, This3.N to, This3.N stopOk) 
+lent This0.IteratorVal vals(This3.N from, This3.N maxTo, This3.N minTo) 
 read method 
-lent This0.IteratorVal vals(This3.N stopOk) 
+lent This0.IteratorVal vals(This3.N minTo) 
 read method 
 lent This0.IteratorVal vals(This3.N from, This3.N to) 
 read method 
@@ -3412,9 +3836,13 @@ This4.N from()
 mut method 
 Void from(This4.N that) 
 read method 
-This4.N to() 
+This4.N maxTo() 
 read method 
-This4.N stopOk() 
+This4.N minTo() 
+read method 
+This4.Bool isFill() 
+read method 
+This2 filled() 
 mut method 
 Void #next() exception Void 
 read method 
@@ -3424,21 +3852,66 @@ This2 #inner()
 read method 
 Void #close() 
 class method 
-lent This0 #lentK(read This4.Collections.MutListAny that, This4.N from, This4.N to, This4.N stopOk) 
+lent This0 #lentK(read This4.Collections.MutListAny that, This4.N from, This4.N maxTo, This4.N minTo) 
 class method 
-lent This0 #apply(read This4.Collections.MutListAny that, This4.N from, This4.N to, This4.N stopOk) 
+lent This0 #apply(read This4.Collections.MutListAny that, This4.N from, This4.N maxTo, This4.N minTo) 
 mut method 
 read This4.Collections.MutListAny #that() 
 mut method 
 This4.N #from() 
 mut method 
-This4.N #to() 
+This4.N #maxTo() 
 mut method 
-This4.N #stopOk() }
+This4.N #minTo() }
+read method 
+lent This0.IteratorValFill vals(This3.N from, This3.N maxTo, This3.N minTo, This1 filled) 
+read method 
+lent This0.IteratorValFill vals(This3.N minTo, This1 filled) 
+read method 
+lent This0.IteratorValFill vals(This3.N from, This3.N to, This1 filled) 
+read method 
+lent This0.IteratorValFill vals(This1 filled) 
+IteratorValFill:{
+read method 
+read This4.Collections.MutListAny that() 
+read method 
+This4.N from() 
 mut method 
-lent This0.IteratorVar #vals(This3.N from, This3.N to, This3.N stopOk) 
+Void from(This4.N that) 
+read method 
+This4.N maxTo() 
+read method 
+This4.N minTo() 
+read method 
+This4.Bool isFill() 
+read method 
+This2 filled() 
 mut method 
-lent This0.IteratorVar #vals(This3.N stopOk) 
+Void #next() exception Void 
+read method 
+Void #checkEnd() 
+read method 
+This2 #inner() 
+read method 
+Void #close() 
+class method 
+lent This0 #lentK(read This4.Collections.MutListAny that, This4.N from, This4.N maxTo, This4.N minTo, This2 filled) 
+class method 
+lent This0 #apply(read This4.Collections.MutListAny that, This4.N from, This4.N maxTo, This4.N minTo, This2 filled) 
+mut method 
+read This4.Collections.MutListAny #that() 
+mut method 
+This4.N #from() 
+mut method 
+This4.N #maxTo() 
+mut method 
+This4.N #minTo() 
+mut method 
+This2 #filled() }
+mut method 
+lent This0.IteratorVar #vals(This3.N from, This3.N maxTo, This3.N minTo) 
+mut method 
+lent This0.IteratorVar #vals(This3.N minTo) 
 mut method 
 lent This0.IteratorVar #vals(This3.N from, This3.N to) 
 mut method 
@@ -3451,9 +3924,13 @@ This4.N from()
 mut method 
 Void from(This4.N that) 
 read method 
-This4.N to() 
+This4.N maxTo() 
 read method 
-This4.N stopOk() 
+This4.N minTo() 
+read method 
+This4.Bool isFill() 
+read method 
+This2 filled() 
 mut method 
 Void #next() exception Void 
 read method 
@@ -3463,17 +3940,17 @@ This2 #inner()
 read method 
 Void #close() 
 class method 
-mut This0 #mutK(mut This4.Collections.MutListAny that, This4.N from, This4.N to, This4.N stopOk) 
+mut This0 #mutK(mut This4.Collections.MutListAny that, This4.N from, This4.N maxTo, This4.N minTo) 
 class method 
-mut This0 #apply(mut This4.Collections.MutListAny that, This4.N from, This4.N to, This4.N stopOk) 
+mut This0 #apply(mut This4.Collections.MutListAny that, This4.N from, This4.N maxTo, This4.N minTo) 
 mut method 
 mut This4.Collections.MutListAny #that() 
 mut method 
 This4.N #from() 
 mut method 
-This4.N #to() 
+This4.N #maxTo() 
 mut method 
-This4.N #stopOk() 
+This4.N #minTo() 
 mut method 
 Void inner(This2 that) }
 read method 
@@ -3665,9 +4142,9 @@ IteratorTrait:{
 class method 
 Library #apply() }
 read method 
-lent This0.IteratorVal vals(This3.N from, This3.N to, This3.N stopOk) 
+lent This0.IteratorVal vals(This3.N from, This3.N maxTo, This3.N minTo) 
 read method 
-lent This0.IteratorVal vals(This3.N stopOk) 
+lent This0.IteratorVal vals(This3.N minTo) 
 read method 
 lent This0.IteratorVal vals(This3.N from, This3.N to) 
 read method 
@@ -3680,9 +4157,13 @@ This4.N from()
 mut method 
 Void from(This4.N that) 
 read method 
-This4.N to() 
+This4.N maxTo() 
 read method 
-This4.N stopOk() 
+This4.N minTo() 
+read method 
+This4.Bool isFill() 
+read method 
+This2 filled() 
 mut method 
 Void #next() exception Void 
 read method 
@@ -3692,21 +4173,66 @@ This2 #inner()
 read method 
 Void #close() 
 class method 
-lent This0 #lentK(read This4.Collections.MutListAny that, This4.N from, This4.N to, This4.N stopOk) 
+lent This0 #lentK(read This4.Collections.MutListAny that, This4.N from, This4.N maxTo, This4.N minTo) 
 class method 
-lent This0 #apply(read This4.Collections.MutListAny that, This4.N from, This4.N to, This4.N stopOk) 
+lent This0 #apply(read This4.Collections.MutListAny that, This4.N from, This4.N maxTo, This4.N minTo) 
 mut method 
 read This4.Collections.MutListAny #that() 
 mut method 
 This4.N #from() 
 mut method 
-This4.N #to() 
+This4.N #maxTo() 
 mut method 
-This4.N #stopOk() }
+This4.N #minTo() }
+read method 
+lent This0.IteratorValFill vals(This3.N from, This3.N maxTo, This3.N minTo, This1 filled) 
+read method 
+lent This0.IteratorValFill vals(This3.N minTo, This1 filled) 
+read method 
+lent This0.IteratorValFill vals(This3.N from, This3.N to, This1 filled) 
+read method 
+lent This0.IteratorValFill vals(This1 filled) 
+IteratorValFill:{
+read method 
+read This4.Collections.MutListAny that() 
+read method 
+This4.N from() 
 mut method 
-lent This0.IteratorVar #vals(This3.N from, This3.N to, This3.N stopOk) 
+Void from(This4.N that) 
+read method 
+This4.N maxTo() 
+read method 
+This4.N minTo() 
+read method 
+This4.Bool isFill() 
+read method 
+This2 filled() 
 mut method 
-lent This0.IteratorVar #vals(This3.N stopOk) 
+Void #next() exception Void 
+read method 
+Void #checkEnd() 
+read method 
+This2 #inner() 
+read method 
+Void #close() 
+class method 
+lent This0 #lentK(read This4.Collections.MutListAny that, This4.N from, This4.N maxTo, This4.N minTo, This2 filled) 
+class method 
+lent This0 #apply(read This4.Collections.MutListAny that, This4.N from, This4.N maxTo, This4.N minTo, This2 filled) 
+mut method 
+read This4.Collections.MutListAny #that() 
+mut method 
+This4.N #from() 
+mut method 
+This4.N #maxTo() 
+mut method 
+This4.N #minTo() 
+mut method 
+This2 #filled() }
+mut method 
+lent This0.IteratorVar #vals(This3.N from, This3.N maxTo, This3.N minTo) 
+mut method 
+lent This0.IteratorVar #vals(This3.N minTo) 
 mut method 
 lent This0.IteratorVar #vals(This3.N from, This3.N to) 
 mut method 
@@ -3719,9 +4245,13 @@ This4.N from()
 mut method 
 Void from(This4.N that) 
 read method 
-This4.N to() 
+This4.N maxTo() 
 read method 
-This4.N stopOk() 
+This4.N minTo() 
+read method 
+This4.Bool isFill() 
+read method 
+This2 filled() 
 mut method 
 Void #next() exception Void 
 read method 
@@ -3731,17 +4261,17 @@ This2 #inner()
 read method 
 Void #close() 
 class method 
-mut This0 #mutK(mut This4.Collections.MutListAny that, This4.N from, This4.N to, This4.N stopOk) 
+mut This0 #mutK(mut This4.Collections.MutListAny that, This4.N from, This4.N maxTo, This4.N minTo) 
 class method 
-mut This0 #apply(mut This4.Collections.MutListAny that, This4.N from, This4.N to, This4.N stopOk) 
+mut This0 #apply(mut This4.Collections.MutListAny that, This4.N from, This4.N maxTo, This4.N minTo) 
 mut method 
 mut This4.Collections.MutListAny #that() 
 mut method 
 This4.N #from() 
 mut method 
-This4.N #to() 
+This4.N #maxTo() 
 mut method 
-This4.N #stopOk() 
+This4.N #minTo() 
 mut method 
 Void inner(This2 that) }
 read method 
@@ -4229,7 +4759,7 @@ Any outBound(This2.N that, This1.MutListAny list)
 class method 
 Any cast() 
 class method 
-Any iterationTermination(This2.N from, This2.N stopOk, This2.N size) }
+Any iterationTermination(This2.N from, This2.N minTo, This2.N size) }
 MutListAny:{
 class method 
 mut This0 #mutK(This0.Cell head, This2.N size) 
@@ -4458,9 +4988,9 @@ IteratorTrait:{
 class method 
 Library #apply() }
 read method 
-lent This0.IteratorVal vals(This2.N from, This2.N to, This2.N stopOk) 
+lent This0.IteratorVal vals(This2.N from, This2.N maxTo, This2.N minTo) 
 read method 
-lent This0.IteratorVal vals(This2.N stopOk) 
+lent This0.IteratorVal vals(This2.N minTo) 
 read method 
 lent This0.IteratorVal vals(This2.N from, This2.N to) 
 read method 
@@ -4473,9 +5003,13 @@ This3.N from()
 mut method 
 Void from(This3.N that) 
 read method 
-This3.N to() 
+This3.N maxTo() 
 read method 
-This3.N stopOk() 
+This3.N minTo() 
+read method 
+This3.Bool isFill() 
+read method 
+This2.SrcDest filled() 
 mut method 
 Void #next() exception Void 
 read method 
@@ -4485,21 +5019,66 @@ This2.SrcDest #inner()
 read method 
 Void #close() 
 class method 
-lent This0 #lentK(read This3.Collections.MutListAny that, This3.N from, This3.N to, This3.N stopOk) 
+lent This0 #lentK(read This3.Collections.MutListAny that, This3.N from, This3.N maxTo, This3.N minTo) 
 class method 
-lent This0 #apply(read This3.Collections.MutListAny that, This3.N from, This3.N to, This3.N stopOk) 
+lent This0 #apply(read This3.Collections.MutListAny that, This3.N from, This3.N maxTo, This3.N minTo) 
 mut method 
 read This3.Collections.MutListAny #that() 
 mut method 
 This3.N #from() 
 mut method 
-This3.N #to() 
+This3.N #maxTo() 
 mut method 
-This3.N #stopOk() }
+This3.N #minTo() }
+read method 
+lent This0.IteratorValFill vals(This2.N from, This2.N maxTo, This2.N minTo, This1.SrcDest filled) 
+read method 
+lent This0.IteratorValFill vals(This2.N minTo, This1.SrcDest filled) 
+read method 
+lent This0.IteratorValFill vals(This2.N from, This2.N to, This1.SrcDest filled) 
+read method 
+lent This0.IteratorValFill vals(This1.SrcDest filled) 
+IteratorValFill:{
+read method 
+read This3.Collections.MutListAny that() 
+read method 
+This3.N from() 
 mut method 
-lent This0.IteratorVar #vals(This2.N from, This2.N to, This2.N stopOk) 
+Void from(This3.N that) 
+read method 
+This3.N maxTo() 
+read method 
+This3.N minTo() 
+read method 
+This3.Bool isFill() 
+read method 
+This2.SrcDest filled() 
 mut method 
-lent This0.IteratorVar #vals(This2.N stopOk) 
+Void #next() exception Void 
+read method 
+Void #checkEnd() 
+read method 
+This2.SrcDest #inner() 
+read method 
+Void #close() 
+class method 
+lent This0 #lentK(read This3.Collections.MutListAny that, This3.N from, This3.N maxTo, This3.N minTo, This2.SrcDest filled) 
+class method 
+lent This0 #apply(read This3.Collections.MutListAny that, This3.N from, This3.N maxTo, This3.N minTo, This2.SrcDest filled) 
+mut method 
+read This3.Collections.MutListAny #that() 
+mut method 
+This3.N #from() 
+mut method 
+This3.N #maxTo() 
+mut method 
+This3.N #minTo() 
+mut method 
+This2.SrcDest #filled() }
+mut method 
+lent This0.IteratorVar #vals(This2.N from, This2.N maxTo, This2.N minTo) 
+mut method 
+lent This0.IteratorVar #vals(This2.N minTo) 
 mut method 
 lent This0.IteratorVar #vals(This2.N from, This2.N to) 
 mut method 
@@ -4512,9 +5091,13 @@ This3.N from()
 mut method 
 Void from(This3.N that) 
 read method 
-This3.N to() 
+This3.N maxTo() 
 read method 
-This3.N stopOk() 
+This3.N minTo() 
+read method 
+This3.Bool isFill() 
+read method 
+This2.SrcDest filled() 
 mut method 
 Void #next() exception Void 
 read method 
@@ -4524,17 +5107,17 @@ This2.SrcDest #inner()
 read method 
 Void #close() 
 class method 
-mut This0 #mutK(mut This3.Collections.MutListAny that, This3.N from, This3.N to, This3.N stopOk) 
+mut This0 #mutK(mut This3.Collections.MutListAny that, This3.N from, This3.N maxTo, This3.N minTo) 
 class method 
-mut This0 #apply(mut This3.Collections.MutListAny that, This3.N from, This3.N to, This3.N stopOk) 
+mut This0 #apply(mut This3.Collections.MutListAny that, This3.N from, This3.N maxTo, This3.N minTo) 
 mut method 
 mut This3.Collections.MutListAny #that() 
 mut method 
 This3.N #from() 
 mut method 
-This3.N #to() 
+This3.N #maxTo() 
 mut method 
-This3.N #stopOk() 
+This3.N #minTo() 
 mut method 
 Void inner(This2.SrcDest that) }}
 Libs:{
@@ -4614,9 +5197,9 @@ IteratorTrait:{
 class method 
 Library #apply() }
 read method 
-lent This0.IteratorVal vals(This2.N from, This2.N to, This2.N stopOk) 
+lent This0.IteratorVal vals(This2.N from, This2.N maxTo, This2.N minTo) 
 read method 
-lent This0.IteratorVal vals(This2.N stopOk) 
+lent This0.IteratorVal vals(This2.N minTo) 
 read method 
 lent This0.IteratorVal vals(This2.N from, This2.N to) 
 read method 
@@ -4629,9 +5212,13 @@ This3.N from()
 mut method 
 Void from(This3.N that) 
 read method 
-This3.N to() 
+This3.N maxTo() 
 read method 
-This3.N stopOk() 
+This3.N minTo() 
+read method 
+This3.Bool isFill() 
+read method 
+Library filled() 
 mut method 
 Void #next() exception Void 
 read method 
@@ -4641,21 +5228,66 @@ Library #inner()
 read method 
 Void #close() 
 class method 
-lent This0 #lentK(read This3.Collections.MutListAny that, This3.N from, This3.N to, This3.N stopOk) 
+lent This0 #lentK(read This3.Collections.MutListAny that, This3.N from, This3.N maxTo, This3.N minTo) 
 class method 
-lent This0 #apply(read This3.Collections.MutListAny that, This3.N from, This3.N to, This3.N stopOk) 
+lent This0 #apply(read This3.Collections.MutListAny that, This3.N from, This3.N maxTo, This3.N minTo) 
 mut method 
 read This3.Collections.MutListAny #that() 
 mut method 
 This3.N #from() 
 mut method 
-This3.N #to() 
+This3.N #maxTo() 
 mut method 
-This3.N #stopOk() }
+This3.N #minTo() }
+read method 
+lent This0.IteratorValFill vals(This2.N from, This2.N maxTo, This2.N minTo, Library filled) 
+read method 
+lent This0.IteratorValFill vals(This2.N minTo, Library filled) 
+read method 
+lent This0.IteratorValFill vals(This2.N from, This2.N to, Library filled) 
+read method 
+lent This0.IteratorValFill vals(Library filled) 
+IteratorValFill:{
+read method 
+read This3.Collections.MutListAny that() 
+read method 
+This3.N from() 
 mut method 
-lent This0.IteratorVar #vals(This2.N from, This2.N to, This2.N stopOk) 
+Void from(This3.N that) 
+read method 
+This3.N maxTo() 
+read method 
+This3.N minTo() 
+read method 
+This3.Bool isFill() 
+read method 
+Library filled() 
 mut method 
-lent This0.IteratorVar #vals(This2.N stopOk) 
+Void #next() exception Void 
+read method 
+Void #checkEnd() 
+read method 
+Library #inner() 
+read method 
+Void #close() 
+class method 
+lent This0 #lentK(read This3.Collections.MutListAny that, This3.N from, This3.N maxTo, This3.N minTo, Library filled) 
+class method 
+lent This0 #apply(read This3.Collections.MutListAny that, This3.N from, This3.N maxTo, This3.N minTo, Library filled) 
+mut method 
+read This3.Collections.MutListAny #that() 
+mut method 
+This3.N #from() 
+mut method 
+This3.N #maxTo() 
+mut method 
+This3.N #minTo() 
+mut method 
+Library #filled() }
+mut method 
+lent This0.IteratorVar #vals(This2.N from, This2.N maxTo, This2.N minTo) 
+mut method 
+lent This0.IteratorVar #vals(This2.N minTo) 
 mut method 
 lent This0.IteratorVar #vals(This2.N from, This2.N to) 
 mut method 
@@ -4668,9 +5300,13 @@ This3.N from()
 mut method 
 Void from(This3.N that) 
 read method 
-This3.N to() 
+This3.N maxTo() 
 read method 
-This3.N stopOk() 
+This3.N minTo() 
+read method 
+This3.Bool isFill() 
+read method 
+Library filled() 
 mut method 
 Void #next() exception Void 
 read method 
@@ -4680,17 +5316,17 @@ Library #inner()
 read method 
 Void #close() 
 class method 
-mut This0 #mutK(mut This3.Collections.MutListAny that, This3.N from, This3.N to, This3.N stopOk) 
+mut This0 #mutK(mut This3.Collections.MutListAny that, This3.N from, This3.N maxTo, This3.N minTo) 
 class method 
-mut This0 #apply(mut This3.Collections.MutListAny that, This3.N from, This3.N to, This3.N stopOk) 
+mut This0 #apply(mut This3.Collections.MutListAny that, This3.N from, This3.N maxTo, This3.N minTo) 
 mut method 
 mut This3.Collections.MutListAny #that() 
 mut method 
 This3.N #from() 
 mut method 
-This3.N #to() 
+This3.N #maxTo() 
 mut method 
-This3.N #stopOk() 
+This3.N #minTo() 
 mut method 
 Void inner(Library that) }}
 class method 

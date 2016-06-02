@@ -9,27 +9,36 @@ mut method
 Void from(N that)
 
 read method
-N to()
+N maxTo()
 
 read method
-N stopOk()
+N minTo()
+
+read method
+Bool isFill()
+
+read method
+Elem filled()
 
 mut method
 Void #next() exception Void (
   this.from(\from+1N)
-  if this.to()>0N & this.from()>=this.to() (exception void)
-  if this.from()>=this.that().size() (exception void)
+  if this.maxTo()>0N & this.from()>=this.maxTo() (exception void)
+  if !this.isFill() & this.from()>=this.that().size() (exception void)
   )
 
 read method  Void #checkEnd()
-  if this.from()<this.stopOk() (
-    error CollectionErrors.iterationTermination(from:this.from(),stopOk:this.stopOk(),size:this.that().size())
+  if this.from()<this.minTo() (
+    error CollectionErrors.iterationTermination(from:this.from(),minTo:this.minTo(),size:this.that().size())
     )
 
 read method
-Elem #inner()
-  This2.cast(this.that().val(this.from()))
-
+Elem #inner() {
+  if this.from()<this.that().size() (
+    return This2.cast(this.that().val(this.from()))
+    )
+  return this.filled()
+  }
 read method
 Void #close()
   void

@@ -95,20 +95,38 @@ This withoutRight()
 //################# Iterators
 IteratorTrait:{class method Library () ...}
 
-//not offering fill yet :(
-read method  lent IteratorVal vals(N from, N to, N stopOk) IteratorVal(this.inner(), from:from,to:to,stopOk:stopOk)
-read method lent IteratorVal vals(N stopOk) this.vals(from:N"-1", to:N"-2", stopOk:stopOk)
-read method lent IteratorVal vals(N from, N to) this.vals(from:from, to:to, stopOk:this.inner().size() )
-read method lent IteratorVal vals() this.vals(from:N"-1", to:N"-2", stopOk:this.inner().size() )
+//first chunk, no fill
+read method  lent IteratorVal vals(N from, N maxTo, N minTo) IteratorVal(this.inner(), from:from,maxTo:maxTo,minTo:minTo)
+read method lent IteratorVal vals(N minTo) this.vals(from:N"-1", maxTo:N"-2", minTo:minTo)
+read method lent IteratorVal vals(N from, N to) this.vals(from:from, maxTo:to, minTo:this.inner().size() )
+read method lent IteratorVal vals() this.vals(from:N"-1", maxTo:N"-2", minTo:this.inner().size() )
+
 IteratorVal: SafeOperatorsAccess.compose(left:IteratorTrait(),
-   right:  { (read MutListAny that, var N from, N to, N stopOk)} )
+   right:  { (read MutListAny that, var N from, N maxTo, N minTo)
+     read method Bool isFill() Bool.false()
+     read method Elem filled() error Assert.CodeNotReachable"Filled called on not fill iterator, should never happen"
+     } )
+//now with fill
+read method  lent IteratorValFill vals(N from, N maxTo, N minTo, Elem filled) IteratorValFill(this.inner(), from:from,maxTo:maxTo,minTo:minTo, filled:filled)
+read method lent IteratorValFill vals(N minTo, Elem filled) this.vals(from:N"-1", maxTo:N"-2", minTo:minTo, filled:filled)
+read method lent IteratorValFill vals(N from, N to, Elem filled) this.vals(from:from, maxTo:to, minTo:this.inner().size(), filled:filled )
+read method lent IteratorValFill vals(Elem filled) this.vals(from:N"-1", maxTo:N"-2", minTo:this.inner().size(), filled:filled )
+
+IteratorValFill: SafeOperatorsAccess.compose(left:IteratorTrait(),
+   right:  { (read MutListAny that, var N from, N maxTo, N minTo, Elem filled)
+     read method Bool isFill() Bool.true()
+     } )
 
 
-mut method  lent IteratorVar #vals(N from, N to, N stopOk) IteratorVar(this.#inner(), from:from,to:to,stopOk:stopOk)
-mut method lent IteratorVar #vals(N stopOk) this.#vals(from:N"-1", to:N"-2", stopOk:stopOk)
-mut method lent IteratorVar #vals(N from, N to) this.#vals(from:from, to:to, stopOk:this.inner().size() )
-mut method lent IteratorVar #vals() this.#vals(from:0N-1N, to:N"-2", stopOk:this.inner().size() )
+mut method  lent IteratorVar #vals(N from, N maxTo, N minTo) IteratorVar(this.#inner(), from:from,maxTo:maxTo,minTo:minTo)
+mut method lent IteratorVar #vals(N minTo) this.#vals(from:N"-1", maxTo:N"-2", minTo:minTo)
+mut method lent IteratorVar #vals(N from, N to) this.#vals(from:from, maxTo:to, minTo:this.inner().size() )
+mut method lent IteratorVar #vals() this.#vals(from:0N-1N, maxTo:N"-2", minTo:this.inner().size() )
+
 IteratorVar: SafeOperatorsAccess.compose(left:IteratorTrait(),
-  right:  { (mut MutListAny that, var N from, N to, N stopOk)
-    mut method Void inner(Elem that) this.#that()(this.from(),val:that)})
+  right:  { (mut MutListAny that, var N from, N maxTo, N minTo)
+    mut method Void inner(Elem that) this.#that()(this.from(),val:that)
+    read method Bool isFill() Bool.false()
+    read method Elem filled() error Assert.CodeNotReachable"Filled called on not fill iterator, should never happen"
+    })
 }
