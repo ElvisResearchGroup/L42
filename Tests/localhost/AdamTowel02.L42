@@ -46560,7 +46560,7 @@ This2.Bool #right(This0 that) this.that().#right(that:that.that())
 method 
 This2.Bool #rightequal(This0 that) this.that().#rightequal(that:that.that())
 method 
-This0.Support div(This0 that) this.that().#divide(that:that.that())}
+This0.Support divide(This0 that) this.that().#divide(that:that.that())}
 NotValidSupport:{implements This2.MetaGuard, This2.Message
 Varres_$%$%85_1_$%$%$%136_1_$%$%$%$%286_1_$%$%$%$%$%432_1_$%$%$%$%$%$%579_1_$%$%$%$%$%$%$%727_1_$%$%$%$%$%$%$%$%876_1_$%$%$%$%$%$%$%$%$%1026_1_$%$%$%$%$%$%$%$%$%$%1177_1_$%$%$%$%$%$%$%$%$%$%$%1329_1_$%$%$%$%$%$%$%$%$%$%$%$%1482_1__1636_1:/*@private*/{
 class method 
@@ -47202,9 +47202,9 @@ This0 #apply(This0.S that)
 class method 
 This0 #apply(This0.T1 that, This0.T2 and) This0.#apply(that:that.#inner().#times(that:and.#inner()))
 method 
-This0.T1 div2(This0.T2 that) This0.T1.#apply(that:this.#inner().#divide(that:that.#inner()))
+This0.T1 left(This0.T2 right) This0.T1.#apply(that:this.#inner().#divide(that:right.#inner()))
 method 
-This0.T2 div1(This0.T1 that) This0.T2.#apply(that:this.#inner().#divide(that:that.#inner()))}
+This0.T2 right(This0.T1 left) This0.T2.#apply(that:this.#inner().#divide(that:left.#inner()))}
 class method 
 Library traitPer() {
 T1:{
@@ -47229,7 +47229,9 @@ This0 #apply(This0.S that)
 class method 
 This0 #apply(This0.T1 that, This0.T2 per) This0.#apply(that:that.#inner().#divide(that:per.#inner()))
 method 
-This0.T1 per(This0.T2 that) This0.T1.#apply(that:this.#inner().#times(that:that.#inner()))}
+This0.T1 left(This0.T2 right) This0.T1.#apply(that:this.#inner().#times(that:right.#inner()))
+method 
+This0.T1 right(This0.T2 left) This0.T1.#apply(that:left.#inner().#divide(that:this.#inner()))}
 class method 
 Library of(class Any that, class Any and) exception This0.NotValidUnit, This0.NotSameSupport this.of(c1:that, c2:and, trait:this.traitAnd())
 class method 

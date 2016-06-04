@@ -107,7 +107,7 @@ Library traitUnit() { Concept.Equals, Concept.ToS
     this.that()>=that.that()
 
   method
-  Support div(This that)
+  Support divide(This that)
     this.that()/that.that()
   //*********
   }
@@ -133,11 +133,11 @@ Library traitAnd(){
     This (T1 that, T2 and)
       This(that.#inner()*and.#inner())
     method
-    T1 div2(T2 that)
-      T1(this.#inner()/that.#inner())
+    T1 left(T2 right)
+      T1(this.#inner()/right.#inner())
     method
-    T2 div1(T1 that)
-      T2(this.#inner()/that.#inner())
+    T2 right(T1 left)
+      T2(this.#inner()/left.#inner())
     }
 
 class method
@@ -150,10 +150,14 @@ Library traitPer(){
     class method
     This (T1 that, T2 per)
       This(that.#inner()/per.#inner())
+    
     method
-    T1 per(T2 that)
-      T1(this.#inner()*that.#inner())
-
+    T1 left(T2 right)
+      T1(this.#inner()*right.#inner())
+    
+    method
+    T1 right(T2 left)
+      T1(left.#inner()/this.#inner())
     }
 
 
