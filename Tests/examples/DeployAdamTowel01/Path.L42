@@ -67,7 +67,7 @@
     str++=S"."
     result=Strings.empty()
     while str!=S"" (
-      pos=str.firstIndexOf(S".")
+      pos=str.indexOfLeft(val:S".")
       result.add(right:str(end:pos))
       str:=str(start:pos+1N)
       )

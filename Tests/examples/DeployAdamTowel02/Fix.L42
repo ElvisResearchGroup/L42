@@ -24,11 +24,11 @@ N:{
   Any parseError(This2.S that)
     ParseFail"The provided string is not a valid Int32: "[that]""
   }
-S:{
-  SubStringNotPresent:This2.Message.$<<{ implements Guard}
-  class method Void subStringNotPresent(This2.S string, This2.S subString)
-    error SubStringNotPresent"string["[string]"] do not contains ["[subString]""
-  }
+//S:{
+//  SubStringNotPresent:This2.Message.$<<{ implements Guard}
+//  class method Void subStringNotPresent(This2.S string, This2.S subString)
+//    error SubStringNotPresent"string["[string]"] do not contains ["[subString]""
+//  }
 Selector:{
   ParseFail:This2.Message.$<<{ implements Guard.ParseFail}
   class method

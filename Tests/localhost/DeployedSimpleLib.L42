@@ -178,14 +178,18 @@ method
 This1 #from(This3.S.SBuilder builder) }
 method 
 mut This2.S.SConcat #seqBuilder() }}
-S:{implements This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Named, This1.Concept.Classable
-class method /* will be private
+S:{implements This1.Concept.Base, This1.Concept.Equals
+class method /*needed until we do (also refine) normalization
+#####Implemented
 */mut This0 #mutK(Library _binaryRepr) 
-class method /* will be private
+class method /*needed until we do (also refine) normalization
+#####Implemented
 */This0 _private(Library _binaryRepr) 
-mut method /* will be private
+mut method /*needed until we do (also refine) normalization
+#####Implemented
 */Library #_binaryRepr() 
-read method /* will be private
+read method /*needed until we do (also refine) normalization
+#####Implemented
 */Library _binaryRepr() 
 class method 
 This0 #from(Library binaryRepr) 
@@ -198,6 +202,54 @@ This1.Bool #bangequal(This0 that)
 method 
 This1.Bool #equalequal(This0 that) 
 method 
+This0 #less(This0 that) 
+method 
+This1.Bool #rightright(This0 that) 
+method 
+This1.Bool #rightrightequal(This0 that) 
+method 
+This1.Bool #right(This0 that) 
+method 
+This1.N indexOfLeft(This0 val) 
+method 
+This1.N indexOfRight(This0 val) 
+method 
+This0 withoutLeft(This0 val) 
+method 
+This0 withoutRight(This0 val) 
+method 
+This0 withoutAll(This0 val) 
+method 
+This1.Bool isEmpty() 
+method 
+This0 val(This1.N that) 
+method 
+This0 left() 
+method 
+This0 right() 
+method 
+This0 with(This1.N that, This0 val) 
+method 
+This0 withLeft(This0 that) 
+method 
+This0 withRight(This0 that) 
+method 
+This0 withAlso(This1.N that, This0 val) 
+method 
+This0 withAlsoLeft(This0 that) 
+method 
+This0 withAlsoRight(This0 that) 
+method 
+This0 without(This1.N index) 
+method 
+This0 without(This1.N index, This1.N skipNum) 
+method 
+This0 withoutLeft() 
+method 
+This0 withoutRight() 
+method 
+This1.Bool contains(This0 that) 
+method 
 This0 #apply(This1.N start, This1.N end) 
 method 
 This0 #apply(This1.N that) 
@@ -206,19 +258,13 @@ This0 #apply(This1.N start)
 method 
 This0 #apply(This1.N end) 
 method 
+This1.N size() 
+method 
 This1.Bool beginsWith(This0 that) 
-method 
-This1.N firstIndexOf(This0 that) 
-class method 
-Void subStringNotPresent(This0 string, This0 subString) 
-method 
-This1.Bool contains(This0 that) 
 method 
 This1.Bool isASCIILowerCase(This1.N that) 
 method 
 This1.Bool isASCIIUpperCase(This1.N that) 
-method 
-This1.N size() 
 class method 
 This0 doubleQuote() 
 class method 
@@ -463,51 +509,7 @@ Void #newline() }
 class method 
 This0 #from(This0.SBuilder builder) 
 class method 
-mut This0.SBuilder #builder() 
-SubStringNotPresent:{implements This2.Guard, This2.Message
-class method 
-mut This0 #mutK(This1 _text, This2.Message.Opt cause) 
-class method 
-This0 #apply(This1 _text, This2.Message.Opt cause) 
-mut method 
-This1 #_text() 
-read method 
-This1 _text() 
-mut method 
-This2.Message.Opt #cause() 
-read method 
-This2.Message.Opt cause() 
-method 
-This0 #apply(This2.Message that) 
-method 
-This2.Bool #bangequal(This0 that) 
-method 
-This2.Bool #equalequal(This0 that) 
-class method 
-This0 #apply(This1 text) 
-class method 
-This0 #apply(This1 text, This2.Message cause) 
-class method 
-mut This1.SBuilder #builder() 
-class method 
-This0 #from(This1.SBuilder builder) 
-method 
-This0.Continue #from(This1.SConcat seqBuilder) 
-Continue:{
-class method 
-mut This0 #mutK(This2 that) 
-class method 
-This0 #apply(This2 that) 
-mut method 
-This2 #that() 
-read method 
-This2 that() 
-method 
-mut This2.SBuilder #builder() 
-method 
-This1 #from(This2.SBuilder builder) }
-method 
-mut This1.SConcat #seqBuilder() }}
+mut This0.SBuilder #builder() }
 Concept:{
 ToS:{interface 
 read method 
@@ -518,21 +520,20 @@ class Any classAny() }
 Named:{interface 
 class method 
 This2.S myName() }
+Base:{interface implements This1.ToS, This1.Classable, This1.Equals, This1.Named/*class method This from(Base base)
+*/}
 Wrapper:{interface 
 read method 
 Any inner() }
-TypeWrapper:{interface 
+ClassWrapper:{interface 
 read method 
 class Any inner() }
-ReadWrapper:{interface 
+MutWrapper:{interface /*implements ReadWrapper
+*/
 read method 
-read Any inner() }
-MutWrapper:{interface implements This1.ReadWrapper
+read Any inner() 
 mut method 
 mut Any #inner() }
-LentWrapper:{interface implements This1.ReadWrapper
-mut method 
-lent Any #inner() }
 Equals:{interface 
 read method 
 This2.Bool equals(read Any that) }

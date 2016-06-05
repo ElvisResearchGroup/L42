@@ -518,8 +518,8 @@ This1 #inner() this.start().#less(that:This2.N.#from(builder:(
   )))
 read method 
 Void #close() void}}
-S:{implements This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Named, This1.Concept.Classable
-Varcurrent__83_0:/*@private*/{
+S:{implements This1.Concept.Base, This1.Concept.Equals
+Varcurrent__82_0:/*@private*/{
 class method 
 mut This0 #mutK(This2.N inner) 
 class method 
@@ -530,13 +530,28 @@ mut method
 This2.N #inner() 
 read method 
 This2.N inner() }
-class method /* will be private
+Varcurrent0__83_0:/*@private*/{
+class method 
+mut This0 #mutK(This2.N inner) 
+class method 
+mut This0 #apply(This2.N inner) This0.#mutK(inner:inner)
+mut method 
+Void inner(This2.N that) 
+mut method 
+This2.N #inner() 
+read method 
+This2.N inner() }
+class method /*needed until we do (also refine) normalization
+#####Implemented
 */mut This0 #mutK(Library _binaryRepr) 
-class method /* will be private
+class method /*needed until we do (also refine) normalization
+#####Implemented
 */This0 _private(Library _binaryRepr) This0.#mutK(_binaryRepr:_binaryRepr)
-mut method /* will be private
+mut method /*needed until we do (also refine) normalization
+#####Implemented
 */Library #_binaryRepr() 
-read method /* will be private
+read method /*needed until we do (also refine) normalization
+#####Implemented
 */Library _binaryRepr() 
 method myName() This1.GetMyName.#apply(that:This0)
 method classAny() This0
@@ -545,24 +560,6 @@ This0 #from(Library binaryRepr) This0._private(_binaryRepr:binaryRepr)
 method 
 Library binaryRepr() this._binaryRepr()
 method toS() this
-method 
-This1.S #plusplus(This1.S that) This1.S.#from(binaryRepr:use This1.Alu check stringConcat(s1:this.binaryRepr(), s2:that.toS().binaryRepr()) error void)
-method 
-This1.Bool #bangequal(This0 that) this.#equalequal(that:that).#bang()
-method 
-This1.Bool #equalequal(This0 that) (
-  Void unused=(
-    Void unused0=use This1.Alu check ifStringEqualDo(s1:this.binaryRepr(), s2:that.binaryRepr()) return This1.Bool.true()
-    Void unused1=return This1.Bool.false()
-    void
-    )
-  
-  catch return This1.Bool result result
-  
-  error {/*@stringU
-CurlyBlock-Should be unreachable code
-*/}
-  )
 method equals(that ) (
   Void unused=(
     Void unused0=(
@@ -596,40 +593,49 @@ CurlyBlock-Should be unreachable code
 */}
   )
 method 
-This1.S #apply(This1.N start, This1.N end) This1.S.#from(binaryRepr:use This1.Alu check stringSubstring(that:this.binaryRepr(), start:start.binaryRepr(), end:end.binaryRepr()) error void)
+This1.S #plusplus(This1.S that) This1.S.#from(binaryRepr:use This1.Alu check stringConcat(s1:this.binaryRepr(), s2:that.toS().binaryRepr()) error void)
 method 
-This1.S #apply(This1.N that) this.#apply(start:that, end:that.#plus(that:This1.N.#from(builder:(
-  This1.N::#builder() b=This1.N.#builder()
-  Void unused=b.#1()
-  b
-  ))))
+This1.Bool #bangequal(This0 that) this.#equalequal(that:that).#bang()
 method 
-This1.S #apply(This1.N start) this.#apply(start:start, end:this.size())
-method 
-This1.S #apply(This1.N end) this.#apply(start:This1.N.#from(builder:(
-  This1.N::#builder() b=This1.N.#builder()
-  Void unused=b.#0()
-  b
-  )), end:end)
-method 
-This1.Bool beginsWith(This1.S that) this.#apply(end:that.size()).#equalequal(that:that)
-method /*@private
-*/This1.N auxFirstIndexOf__54_0(This1.S that) (
+This1.Bool #equalequal(This0 that) (
   Void unused=(
+    Void unused0=use This1.Alu check ifStringEqualDo(s1:this.binaryRepr(), s2:that.binaryRepr()) return This1.Bool.true()
+    Void unused1=return This1.Bool.false()
+    void
+    )
+  
+  catch return This1.Bool result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+method 
+This0 #less(This0 that) this.withoutAll(val:that)
+method 
+This1.Bool #rightright(This0 that) this.#rightrightequal(that:that).#and(that:this.size().#right(that:that.size()))
+method 
+This1.Bool #rightrightequal(This0 that) this.contains(that:that)
+method 
+This1.Bool #right(This0 that) this.contains(that:that)
+method 
+This1.N indexOfLeft(This1.S val) (
+  Void unused=(/*val must be not empty, TODO: error here?
+*/
     This1.N current=This1.N.#from(builder:(
       This1.N::#builder() b=This1.N.#builder()
-      Void unused3=b.#0()
+      Void unused2=b.#0()
       b
       ))
-    mut This0.Varcurrent__83_0 varcurrent=This0.Varcurrent__83_0.#apply(inner:current)
+    mut This0.Varcurrent__82_0 varcurrent=This0.Varcurrent__82_0.#apply(inner:current)
     Void unused0=(
-      Void unused4=loop (
-        Void unused5=varcurrent.#inner().#left(that:this.size()).#checkTrue()
+      Void unused3=loop (
+        Void unused4=varcurrent.#inner().#left(that:this.size()).#checkTrue()
         (
-          Void unused6=(
-            This0::#apply(start ) ::beginsWith(that ) cond=this.#apply(start:varcurrent.#inner()).beginsWith(that:that)
+          Void unused5=(
+            This0::#apply(start ) ::beginsWith(that ) cond=this.#apply(start:varcurrent.#inner()).beginsWith(that:val)
             (
-              Void unused7=cond.#checkTrue()
+              Void unused6=cond.#checkTrue()
               
               catch exception Void catched2 void
               
@@ -638,7 +644,7 @@ method /*@private
             )
           varcurrent.inner(that:varcurrent.#inner().#plus(that:This1.N.#from(builder:(
             This1.N::#builder() b0=This1.N.#builder()
-            Void unused8=b0.#1()
+            Void unused7=b0.#1()
             b0
             ))))
           )
@@ -650,14 +656,10 @@ method /*@private
       )
     Void unused1=return This1.N.#from(builder:(
       This1.N::#builder() b1=This1.N.#builder()
-      Void unused9=b1.#0()
+      Void unused8=b1.#less()
+      Void unused9=b1.#1()
       b1
-      )).#less(that:This1.N.#from(builder:(
-      This1.N::#builder() b2=This1.N.#builder()
-      Void unused10=b2.#1()
-      b2
-      )))
-    Void unused2=error This0.subStringNotPresent(string:this, subString:that)
+      ))
     void
     )
   
@@ -668,12 +670,62 @@ CurlyBlock-Should be unreachable code
 */}
   )
 method 
-This1.N firstIndexOf(This1.S that) (
-  Void unused=(/*TODO: discuss if should be exception or error
+This1.N indexOfRight(This0 val) (
+  Void unused=(/*val must be not empty, TODO: error here?
 */
-    This0::auxFirstIndexOf__54_0(that ) res=this.auxFirstIndexOf__54_0(that:that)
+    This1.N current=this.size().#less(that:val.size())
+    mut This0.Varcurrent0__83_0 varcurrent0=This0.Varcurrent0__83_0.#apply(inner:current)
     Void unused0=(
-      This0::auxFirstIndexOf__54_0(that ) ::#rightequal(that ) cond=res.#rightequal(that:This1.N.#from(builder:(
+      Void unused2=loop (
+        Void unused3=varcurrent0.#inner().#rightequal(that:This1.N.#from(builder:(
+          This1.N::#builder() b=This1.N.#builder()
+          Void unused4=b.#0()
+          b
+          ))).#checkTrue()
+        (
+          Void unused5=(
+            This0::#apply(start ) ::beginsWith(that ) cond=this.#apply(start:varcurrent0.#inner()).beginsWith(that:val)
+            (
+              Void unused6=cond.#checkTrue()
+              
+              catch exception Void catched2 void
+              
+              return varcurrent0.#inner()
+              )
+            )
+          varcurrent0.inner(that:varcurrent0.#inner().#less(that:This1.N.#from(builder:(
+            This1.N::#builder() b0=This1.N.#builder()
+            Void unused7=b0.#1()
+            b0
+            ))))
+          )
+        )
+      
+      catch exception Void catched5 void
+      
+      void
+      )
+    Void unused1=return This1.N.#from(builder:(
+      This1.N::#builder() b1=This1.N.#builder()
+      Void unused8=b1.#less()
+      Void unused9=b1.#1()
+      b1
+      ))
+    void
+    )
+  
+  catch return This1.N result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+method 
+This0 withoutLeft(This0 val) (
+  Void unused=(
+    This0::indexOfLeft(val ) pos=this.indexOfLeft(val:val)
+    Void unused0=(
+      This0::indexOfLeft(val ) ::#left(that ) cond=pos.#left(that:This1.N.#from(builder:(
         This1.N::#builder() b=This1.N.#builder()
         Void unused2=b.#0()
         b
@@ -683,27 +735,122 @@ This1.N firstIndexOf(This1.S that) (
         
         catch exception Void catched1 void
         
-        return res
+        return this
         )
       )
-    Void unused1=error This0.subStringNotPresent(string:this, subString:that)
+    Void unused1=return this.without(index:pos, skipNum:val.size())
     void
     )
   
-  catch return This1.N result result
+  catch return This0 result result
   
   error {/*@stringU
 CurlyBlock-Should be unreachable code
 */}
   )
-class method 
-Void subStringNotPresent(This1.S string, This1.S subString) void
+method 
+This0 withoutRight(This0 val) (
+  Void unused=(
+    This0::indexOfRight(val ) pos=this.indexOfRight(val:val)
+    Void unused0=(
+      This0::indexOfRight(val ) ::#left(that ) cond=pos.#left(that:This1.N.#from(builder:(
+        This1.N::#builder() b=This1.N.#builder()
+        Void unused2=b.#0()
+        b
+        )))
+      (
+        Void unused3=cond.#checkTrue()
+        
+        catch exception Void catched1 void
+        
+        return this
+        )
+      )
+    Void unused1=return this.without(index:pos, skipNum:val.size())
+    void
+    )
+  
+  catch return This0 result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+method 
+This0 withoutAll(This0 val) this.replace(that:val, into:This1.S.#from(builder:(
+  This1.S::#builder() b=This1.S.#builder()
+  b
+  )))
+method 
+This1.Bool isEmpty() this.size().#equalequal(that:This1.N.#from(builder:(
+  This1.N::#builder() b=This1.N.#builder()
+  Void unused=b.#0()
+  b
+  )))
+method 
+This0 val(This1.N that) this.#apply(that:that)
+method 
+This0 left() this.val(that:This1.N.#from(builder:(
+  This1.N::#builder() b=This1.N.#builder()
+  Void unused=b.#0()
+  b
+  )))
+method 
+This0 right() this.val(that:this.size().#less(that:This1.N.#from(builder:(
+  This1.N::#builder() b=This1.N.#builder()
+  Void unused=b.#1()
+  b
+  ))))
+method 
+This0 with(This1.N that, This0 val) this.#apply(end:that).#plusplus(that:val.#plusplus(that:this.#apply(start:that.#plus(that:val.size()))))
+method 
+This0 withLeft(This0 that) this.with(that:This1.N.#from(builder:(
+  This1.N::#builder() b=This1.N.#builder()
+  Void unused=b.#0()
+  b
+  )), val:that)
+method 
+This0 withRight(This0 that) this.with(that:this.size().#less(that:This1.N.#from(builder:(
+  This1.N::#builder() b=This1.N.#builder()
+  Void unused=b.#1()
+  b
+  ))), val:that)
+method 
+This0 withAlso(This1.N that, This0 val) this.#apply(end:that).#plusplus(that:val.#plusplus(that:this.#apply(start:that)))
+method 
+This0 withAlsoLeft(This0 that) this.withAlso(that:This1.N.#from(builder:(
+  This1.N::#builder() b=This1.N.#builder()
+  Void unused=b.#0()
+  b
+  )), val:that)
+method 
+This0 withAlsoRight(This0 that) this.withAlso(that:this.size(), val:that)
+method 
+This0 without(This1.N index) this.#apply(end:index).#plusplus(that:this.#apply(start:index.#plus(that:This1.N.#from(builder:(
+  This1.N::#builder() b=This1.N.#builder()
+  Void unused=b.#1()
+  b
+  )))))
+method 
+This0 without(This1.N index, This1.N skipNum) this.#apply(end:index).#plusplus(that:this.#apply(start:skipNum.#plus(that:index)))
+method 
+This0 withoutLeft() this.without(index:This1.N.#from(builder:(
+  This1.N::#builder() b=This1.N.#builder()
+  Void unused=b.#0()
+  b
+  )))
+method 
+This0 withoutRight() this.without(index:this.size().#less(that:This1.N.#from(builder:(
+  This1.N::#builder() b=This1.N.#builder()
+  Void unused=b.#1()
+  b
+  ))))
 method 
 This1.Bool contains(This1.S that) (
   Void unused=(
-    This0::auxFirstIndexOf__54_0(that ) res=this.auxFirstIndexOf__54_0(that:that)
+    This0::indexOfLeft(val ) res=this.indexOfLeft(val:that)
     Void unused0=(
-      This0::auxFirstIndexOf__54_0(that ) ::#rightequal(that ) cond=res.#rightequal(that:This1.N.#from(builder:(
+      This0::indexOfLeft(val ) ::#rightequal(that ) cond=res.#rightequal(that:This1.N.#from(builder:(
         This1.N::#builder() b=This1.N.#builder()
         Void unused2=b.#0()
         b
@@ -726,6 +873,26 @@ This1.Bool contains(This1.S that) (
 CurlyBlock-Should be unreachable code
 */}
   )
+method 
+This1.S #apply(This1.N start, This1.N end) This1.S.#from(binaryRepr:use This1.Alu check stringSubstring(that:this.binaryRepr(), start:start.binaryRepr(), end:end.binaryRepr()) error void)
+method 
+This1.S #apply(This1.N that) this.#apply(start:that, end:that.#plus(that:This1.N.#from(builder:(
+  This1.N::#builder() b=This1.N.#builder()
+  Void unused=b.#1()
+  b
+  ))))
+method 
+This1.S #apply(This1.N start) this.#apply(start:start, end:this.size())
+method 
+This1.S #apply(This1.N end) this.#apply(start:This1.N.#from(builder:(
+  This1.N::#builder() b=This1.N.#builder()
+  Void unused=b.#0()
+  b
+  )), end:end)
+method 
+This1.N size() This1.N.#apply__53_0(_binaryRepr:use This1.Alu check stringSize(that:this.binaryRepr()) error void)
+method 
+This1.Bool beginsWith(This1.S that) this.#apply(end:that.size()).#equalequal(that:that)
 method 
 This1.Bool isASCIILowerCase(This1.N that) This1.S.#from(builder:(
   This1.S::#builder() b=This1.S.#builder()
@@ -788,8 +955,6 @@ This1.Bool isASCIIUpperCase(This1.N that) This1.S.#from(builder:(
   Void unused24=b.#M()
   b
   )).contains(that:this.#apply(that:that))
-method 
-This1.N size() This1.N.#apply__53_0(_binaryRepr:use This1.Alu check stringSize(that:this.binaryRepr()) error void)
 class method 
 This1.S doubleQuote() (
   This1.S::#from(builder ) rcv=This1.S.#from(builder:(
@@ -881,21 +1046,21 @@ Void #add(This2.Concept.ToS that, This2.Concept.ToS separedBy) (
   )}
 SBuilder:{
 class method /*@private
-*/mut This0 #mutK__55_0(Library _binaryRepr__55_0) 
+*/mut This0 #mutK__54_0(Library _binaryRepr__54_0) 
 class method /*@private
-*/mut This0 _private__56_0(Library _binaryRepr) This0.#mutK__55_0(_binaryRepr__55_0:_binaryRepr)
+*/mut This0 _private__55_0(Library _binaryRepr) This0.#mutK__54_0(_binaryRepr__54_0:_binaryRepr)
 mut method /*@private
-*/Void _binaryRepr__55_0(Library that) 
+*/Void _binaryRepr__54_0(Library that) 
 mut method /*@private
-*/Library #_binaryRepr__55_0() 
+*/Library #_binaryRepr__54_0() 
 read method /*@private
-*/Library _binaryRepr__55_0() 
+*/Library _binaryRepr__54_0() 
 read method 
-Library binaryRepr() this._binaryRepr__55_0()
+Library binaryRepr() this._binaryRepr__54_0()
 mut method 
-Void acc(Library that) this._binaryRepr__55_0(that:use This2.Alu check stringConcat(s1:this.binaryRepr(), s2:that) error void)
+Void acc(Library that) this._binaryRepr__54_0(that:use This2.Alu check stringConcat(s1:this.binaryRepr(), s2:that) error void)
 class method 
-mut This0 empty() This0._private__56_0(_binaryRepr:{/*@stringU
+mut This0 empty() This0._private__55_0(_binaryRepr:{/*@stringU
 
 */})
 mut method 
@@ -1596,30 +1761,30 @@ Void test(This1.Concept.ToS that, This1.Concept.ToS expected) This1.Debug.test(t
   )))}
 Count:{
 class method /*@private
-*/mut This0 #mutK__57_0(This1.N counter__57_0) 
+*/mut This0 #mutK__56_0(This1.N counter__56_0) 
 class method /*@private
-*/mut This0 #apply__58_0(This1.N counter) This0.#mutK__57_0(counter__57_0:counter)
+*/mut This0 #apply__57_0(This1.N counter) This0.#mutK__56_0(counter__56_0:counter)
 mut method /*@private
-*/Void counter__57_0(This1.N that) 
+*/Void counter__56_0(This1.N that) 
 mut method /*@private
-*/This1.N #counter__57_0() 
+*/This1.N #counter__56_0() 
 read method /*@private
-*/This1.N counter__57_0() 
+*/This1.N counter__56_0() 
 class method 
-mut This0 #seqBuilder() This0.#apply__58_0(counter:This1.N.#from(builder:(
+mut This0 #seqBuilder() This0.#apply__57_0(counter:This1.N.#from(builder:(
   This1.N::#builder() b=This1.N.#builder()
   Void unused=b.#0()
   b
   )))
 class method 
-This1.N #from(mut This0 seqBuilder) seqBuilder.counter__57_0()
+This1.N #from(mut This0 seqBuilder) seqBuilder.counter__56_0()
 mut method 
 Void #add(This1.Bool that) (
   Void unused=that.#checkTrue()
   
   catch exception Void catched void
   
-  this.counter__57_0(that:this.counter__57_0().#plus(that:This1.N.#from(builder:(
+  this.counter__56_0(that:this.counter__56_0().#plus(that:This1.N.#from(builder:(
     This1.N::#builder() b=This1.N.#builder()
     Void unused0=b.#1()
     b
@@ -1739,21 +1904,20 @@ class Any classAny() }
 Named:{interface 
 class method 
 This2.S myName() }
+Base:{interface implements This1.ToS, This1.Classable, This1.Equals, This1.Named/*class method This from(Base base)
+*/}
 Wrapper:{interface 
 read method 
 Any inner() }
-TypeWrapper:{interface 
+ClassWrapper:{interface 
 read method 
 class Any inner() }
-ReadWrapper:{interface 
+MutWrapper:{interface /*implements ReadWrapper
+*/
 read method 
-read Any inner() }
-MutWrapper:{interface implements This1.ReadWrapper
+read Any inner() 
 mut method 
 mut Any #inner() }
-LentWrapper:{interface implements This1.ReadWrapper
-mut method 
-lent Any #inner() }
 Equals:{interface 
 read method 
 This2.Bool equals(read Any that) }
@@ -7708,13 +7872,13 @@ This2.S #inner()
 read method 
 This2.S inner() }
 class method /*@private
-*/mut This0 #mutK__59_0(Library _binaryRepr__59_0) 
+*/mut This0 #mutK__58_0(Library _binaryRepr__58_0) 
 class method /*@private
-*/This0 _private__60_0(Library _binaryRepr) This0.#mutK__59_0(_binaryRepr__59_0:_binaryRepr)
+*/This0 _private__59_0(Library _binaryRepr) This0.#mutK__58_0(_binaryRepr__58_0:_binaryRepr)
 mut method /*@private
-*/Library #_binaryRepr__59_0() 
+*/Library #_binaryRepr__58_0() 
 read method /*@private
-*/Library _binaryRepr__59_0() 
+*/Library _binaryRepr__58_0() 
 method myName() This1.GetMyName.#apply(that:This0)
 class method 
 This0 fromDocInternalizedS(This1.S that) (
@@ -7797,7 +7961,7 @@ mut This1.S.SBuilder #builder() This1.S.SBuilder.empty()
 class method 
 This0 #from(Library binaryRepr) (
   Void unused=use This1.SafeOperators check ifInvalidDo(path:binaryRepr) error This0.parseError(that:This1.S.#from(binaryRepr:binaryRepr))
-  This0._private__60_0(_binaryRepr:binaryRepr)
+  This0._private__59_0(_binaryRepr:binaryRepr)
   )
 class method 
 Any parseError(This1.S that) (
@@ -7954,8 +8118,8 @@ Any parseError(This1.S that, This1.Message cause) (
     ))
   )
 method 
-Library binaryRepr() this._binaryRepr__59_0()
-method toS() This1.S.#from(binaryRepr:this._binaryRepr__59_0())
+Library binaryRepr() this._binaryRepr__58_0()
+method toS() This1.S.#from(binaryRepr:this._binaryRepr__58_0())
 method 
 This1.Bool #bangequal(This0 that) this.#equalequal(that:that).#bang()
 method 
@@ -8104,7 +8268,7 @@ mut This1.Strings names() (
           b1
           ))).#checkTrue()
         (
-          This0.Varstr__101_0::#inner() ::firstIndexOf(that ) pos=varstr.#inner().firstIndexOf(that:This1.S.#from(builder:(
+          This0.Varstr__101_0::#inner() ::indexOfLeft(val ) pos=varstr.#inner().indexOfLeft(val:This1.S.#from(builder:(
             This1.S::#builder() b2=This1.S.#builder()
             Void unused13=b2.#dot()
             b2
@@ -8301,13 +8465,13 @@ This2.S #inner()
 read method 
 This2.S inner() }
 class method /*@private
-*/mut This0 #mutK__61_0(Library _binaryRepr__61_0) 
+*/mut This0 #mutK__60_0(Library _binaryRepr__60_0) 
 class method /*@private
-*/This0 _private__62_0(Library _binaryRepr) This0.#mutK__61_0(_binaryRepr__61_0:_binaryRepr)
+*/This0 _private__61_0(Library _binaryRepr) This0.#mutK__60_0(_binaryRepr__60_0:_binaryRepr)
 mut method /*@private
-*/Library #_binaryRepr__61_0() 
+*/Library #_binaryRepr__60_0() 
 read method /*@private
-*/Library _binaryRepr__61_0() 
+*/Library _binaryRepr__60_0() 
 method myName() This1.GetMyName.#apply(that:This0)
 class method 
 This0 fromS(This1.Concept.ToS that) This0.#from(binaryRepr:that.toS().binaryRepr())
@@ -8318,7 +8482,7 @@ mut This1.S.SBuilder #builder() This1.S.SBuilder.empty()
 class method 
 This0 #from(Library binaryRepr) (
   Void unused=use This1.SafeOperators check ifInvalidDo(selector:binaryRepr) error This0.parseError(that:This1.S.#from(binaryRepr:binaryRepr))
-  This0._private__62_0(_binaryRepr:binaryRepr)
+  This0._private__61_0(_binaryRepr:binaryRepr)
   )
 class method 
 Any parseError(This1.S that) This1.S.#from(builder:(
@@ -8565,8 +8729,8 @@ CurlyBlock-Should be unreachable code
 */}
   )
 method 
-Library binaryRepr() this._binaryRepr__61_0()
-method toS() This1.S.#from(binaryRepr:this._binaryRepr__61_0())
+Library binaryRepr() this._binaryRepr__60_0()
+method toS() This1.S.#from(binaryRepr:this._binaryRepr__60_0())
 method 
 This1.Bool #bangequal(This0 that) this.#equalequal(that:that).#bang()
 method 
@@ -8656,7 +8820,7 @@ CurlyBlock-Should be unreachable code
 method 
 This1.S name() (
   This0::toS() str=this.toS()
-  str.#apply(end:str.firstIndexOf(that:This1.S.#from(builder:(
+  str.#apply(end:str.indexOfLeft(val:This1.S.#from(builder:(
     This1.S::#builder() b=This1.S.#builder()
     Void unused=b.#oRound()
     b
@@ -8667,7 +8831,7 @@ This1.Strings names() (
   Void unused=(
     This1.S str=this.toS()
     mut This0.Varstr0__102_0 varstr0=This0.Varstr0__102_0.#apply(inner:str)
-    Void unused0=varstr0.inner(that:varstr0.#inner().#apply(start:varstr0.#inner().firstIndexOf(that:This1.S.#from(builder:(
+    Void unused0=varstr0.inner(that:varstr0.#inner().#apply(start:varstr0.#inner().indexOfLeft(val:This1.S.#from(builder:(
       This1.S::#builder() b=This1.S.#builder()
       Void unused4=b.#oRound()
       b
@@ -8706,7 +8870,7 @@ This1.Strings names() (
           b4
           ))).#checkTrue()
         (
-          This0.Varstr0__102_0::#inner() ::firstIndexOf(that ) pos=varstr0.#inner().firstIndexOf(that:This1.S.#from(builder:(
+          This0.Varstr0__102_0::#inner() ::indexOfLeft(val ) pos=varstr0.#inner().indexOfLeft(val:This1.S.#from(builder:(
             This1.S::#builder() b5=This1.S.#builder()
             Void unused13=b5.#comma()
             b5
@@ -11624,7 +11788,7 @@ This0.NestedClass #apply(Library lib) (
 class method 
 This0.NestedClass #apply(Library lib, This1.Path path) exception This1.MetaGuard.NestedClassUnavailable (
   This0::#apply(lib ) root=This0.#apply(lib:lib)
-  root.mirror__67_0().introspectReport(root:root, path:path)
+  root.mirror__66_0().introspectReport(root:root, path:path)
   )
 class method 
 This0.NestedClass #apply(class Any clazz) (
@@ -11707,7 +11871,7 @@ read method
 Library lib() 
 method toS() This3.Introspection.#apply(lib:this.lib()).toS()
 method introspectReport(root path ) (
-  This2.NestedClass::#apply__68_0(_root path mirror record ) result=This2.NestedClass.#apply__68_0(_root:root, path:path, mirror:this, record:This2.Record.#apply(that:This1.Lib.#apply(lib:use This3.SafeOperators check introspectLibraryReport(that:this.lib(), path:path.binaryRepr()) error This3.System.Guard.PluginFailure.#from(builder:(
+  This2.NestedClass::#apply__67_0(_root path mirror record ) result=This2.NestedClass.#apply__67_0(_root:root, path:path, mirror:this, record:This2.Record.#apply(that:This1.Lib.#apply(lib:use This3.SafeOperators check introspectLibraryReport(that:this.lib(), path:path.binaryRepr()) error This3.System.Guard.PluginFailure.#from(builder:(
     This3.System.Guard.PluginFailure::#builder() b=This3.System.Guard.PluginFailure.#builder()
     Void unused=b.#S()
     Void unused0=b.#a()
@@ -11761,7 +11925,7 @@ method introspectReportMember(root path memberN ) (
   result
   )
 method introspectReportType(root path memberN typeN ) (
-  This2.Type::#apply__73_0(root path memberN typeN record ) result=This2.Type.#apply__73_0(root:root, path:path, memberN:memberN, typeN:typeN, record:This2.Record.#apply(that:This1.Lib.#apply(lib:use This3.SafeOperators check introspectLibraryReportType(that:this.lib(), path:path.binaryRepr(), memberN:memberN.binaryRepr(), typeN:typeN.binaryRepr()) exception void)))
+  This2.Type::#apply__72_0(root path memberN typeN record ) result=This2.Type.#apply__72_0(root:root, path:path, memberN:memberN, typeN:typeN, record:This2.Record.#apply(that:This1.Lib.#apply(lib:use This3.SafeOperators check introspectLibraryReportType(that:this.lib(), path:path.binaryRepr(), memberN:memberN.binaryRepr(), typeN:typeN.binaryRepr()) exception void)))
   
   catch error Library x exception This3.MetaGuard.DispatchMemberUnavailable.#apply(that:x)
   
@@ -11938,7 +12102,7 @@ method introspectReport(root path ) (
     Void unused39=b0.#s()
     b0
     ))).annotations().left().referredClass()
-  This2.NestedClass::#apply__68_0(_root path mirror record ) result=This2.NestedClass.#apply__68_0(_root:result, path:This3.Path.#from(builder:(
+  This2.NestedClass::#apply__67_0(_root path mirror record ) result=This2.NestedClass.#apply__67_0(_root:result, path:This3.Path.#from(builder:(
     This3.Path::#builder() b1=This3.Path.#builder()
     Void unused40=b1.#T()
     Void unused41=b1.#h()
@@ -11959,7 +12123,7 @@ method introspectReportMember(root path memberN ) (
   result
   )
 method introspectReportType(root path memberN typeN ) (
-  This2.Type::#apply__73_0(root path memberN typeN record ) result=This2.Type.#apply__73_0(root:root, path:path, memberN:memberN, typeN:typeN, record:This2.Record.#apply(that:This1.Lib.#apply(lib:use This3.SafeOperators check introspectTypeReportType(that:this.lib(), path:path.binaryRepr(), memberN:memberN.binaryRepr(), typeN:typeN.binaryRepr()) exception void)))
+  This2.Type::#apply__72_0(root path memberN typeN record ) result=This2.Type.#apply__72_0(root:root, path:path, memberN:memberN, typeN:typeN, record:This2.Record.#apply(that:This1.Lib.#apply(lib:use This3.SafeOperators check introspectTypeReportType(that:this.lib(), path:path.binaryRepr(), memberN:memberN.binaryRepr(), typeN:typeN.binaryRepr()) exception void)))
   
   catch error Library x exception This3.MetaGuard.DispatchMemberUnavailable.#apply(that:x)
   
@@ -12083,17 +12247,17 @@ This3.N #inner()
 read method 
 This3.N inner() }
 class method /*@private
-*/mut This0 #mutK__63_0(Library _binaryRepr__63_0, This0.Annotations _annotations__63_0) 
+*/mut This0 #mutK__62_0(Library _binaryRepr__62_0, This0.Annotations _annotations__62_0) 
 class method /*@private
-*/This0 _private__64_0(Library _binaryRepr, This0.Annotations _annotations) This0.#mutK__63_0(_binaryRepr__63_0:_binaryRepr, _annotations__63_0:_annotations)
+*/This0 _private__63_0(Library _binaryRepr, This0.Annotations _annotations) This0.#mutK__62_0(_binaryRepr__62_0:_binaryRepr, _annotations__62_0:_annotations)
 mut method /*@private
-*/Library #_binaryRepr__63_0() 
+*/Library #_binaryRepr__62_0() 
 read method /*@private
-*/Library _binaryRepr__63_0() 
+*/Library _binaryRepr__62_0() 
 mut method /*@private
-*/This0.Annotations #_annotations__63_0() 
+*/This0.Annotations #_annotations__62_0() 
 read method /*@private
-*/This0.Annotations _annotations__63_0() 
+*/This0.Annotations _annotations__62_0() 
 method myName() This2.GetMyName.#apply(that:This0)
 Annotation:{implements This3.Concept.ToS, This3.Concept.Named
 class method 
@@ -13129,17 +13293,17 @@ This0 #apply(Library that) (
     
     result
     )
-  This0._private__64_0(_binaryRepr:that, _annotations:res)
+  This0._private__63_0(_binaryRepr:that, _annotations:res)
   )
 class method 
 mut This2.S.SBuilder #builder() This2.S.SBuilder.empty()
 class method 
 This0 #from(This2.S.SBuilder builder) This0.#apply(that:builder.binaryRepr())
 method 
-Library binaryRepr() this._binaryRepr__63_0()
+Library binaryRepr() this._binaryRepr__62_0()
 method toS() (
   Void unused=(
-    Void unused0=return This2.Introspection.Record.#apply(lib:this._binaryRepr__63_0()).that().introspectDocAsString(path:This2.Path.#from(builder:(
+    Void unused0=return This2.Introspection.Record.#apply(lib:this._binaryRepr__62_0()).that().introspectDocAsString(path:This2.Path.#from(builder:(
       This2.Path::#builder() b=This2.Path.#builder()
       Void unused1=b.#T()
       Void unused2=b.#h()
@@ -13170,7 +13334,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 method 
-This0.Annotations annotations() this._annotations__63_0()}
+This0.Annotations annotations() this._annotations__62_0()}
 Record:{
 class method 
 mut This0 #mutK(This1.MirrorPr that) 
@@ -13373,7 +13537,7 @@ method #apply(root ) (
       b
       ))
     ))
-  This2.NestedClass.#apply__68_0(_root:root, path:path, mirror:this.mirror(), record:this._report())
+  This2.NestedClass.#apply__67_0(_root:root, path:path, mirror:this.mirror(), record:this._report())
   )}
 RootForMethod:/* toPutAs private
 */{implements This1.RootForMember
@@ -13393,7 +13557,7 @@ mut method
 This2.Record #_report() 
 read method 
 This2.Record _report() 
-method #apply(root ) This2.Method.#apply__66_0(_root:root, path:this.path(), memberN:this.memberN(), record:this._report())}
+method #apply(root ) This2.Method.#apply__65_0(_root:root, path:this.path(), memberN:this.memberN(), record:this._report())}
 class method 
 This1.Member dispatch(fwd This1.NestedClass root, This2.Path path, This1.MirrorPr mirror, This2.N memberN, Library record) (
   This1.Record::#apply(lib ) _report=This1.Record.#apply(lib:record)
@@ -15258,25 +15422,25 @@ This3.N #inner()
 read method 
 This3.N inner() }
 class method /*@private
-*/mut This0 #mutK__65_0(fwd This1.NestedClass _root__65_0, This2.Path path__65_0, This2.N memberN__65_0, This1.Record record__65_0) 
+*/mut This0 #mutK__64_0(fwd This1.NestedClass _root__64_0, This2.Path path__64_0, This2.N memberN__64_0, This1.Record record__64_0) 
 class method /*@private
-*/This0 #apply__66_0(fwd This1.NestedClass _root, This2.Path path, This2.N memberN, This1.Record record) This0.#mutK__65_0(_root__65_0:_root, path__65_0:path, memberN__65_0:memberN, record__65_0:record)
+*/This0 #apply__65_0(fwd This1.NestedClass _root, This2.Path path, This2.N memberN, This1.Record record) This0.#mutK__64_0(_root__64_0:_root, path__64_0:path, memberN__64_0:memberN, record__64_0:record)
 mut method /*@private
-*/This1.NestedClass #_root__65_0() 
+*/This1.NestedClass #_root__64_0() 
 read method /*@private
-*/This1.NestedClass _root__65_0() 
+*/This1.NestedClass _root__64_0() 
 mut method /*@private
-*/This2.Path #path__65_0() 
+*/This2.Path #path__64_0() 
 read method /*@private
-*/This2.Path path__65_0() 
+*/This2.Path path__64_0() 
 mut method /*@private
-*/This2.N #memberN__65_0() 
+*/This2.N #memberN__64_0() 
 read method /*@private
-*/This2.N memberN__65_0() 
+*/This2.N memberN__64_0() 
 mut method /*@private
-*/This1.Record #record__65_0() 
+*/This1.Record #record__64_0() 
 read method /*@private
-*/This1.Record record__65_0() 
+*/This1.Record record__64_0() 
 method myName() This2.GetMyName.#apply(that:This0)
 method toS() This0.myName().#plusplus(that:(
   This2.S::#from(builder ) ::#from(seqBuilder ) rcv55=(
@@ -15301,7 +15465,7 @@ method
 This2.Bool #equalequal(This0 that) (
   Void unused=(
     Void unused0=(
-      This0::path__65_0() ::#bangequal(that ) cond=this.path__65_0().#bangequal(that:that.path__65_0())
+      This0::path__64_0() ::#bangequal(that ) cond=this.path__64_0().#bangequal(that:that.path__64_0())
       (
         Void unused3=cond.#checkTrue()
         
@@ -15311,7 +15475,7 @@ This2.Bool #equalequal(This0 that) (
         )
       )
     Void unused1=(
-      This0::memberN__65_0() ::#bangequal(that ) cond0=this.memberN__65_0().#bangequal(that:this.memberN__65_0())
+      This0::memberN__64_0() ::#bangequal(that ) cond0=this.memberN__64_0().#bangequal(that:this.memberN__64_0())
       (
         Void unused4=cond0.#checkTrue()
         
@@ -15365,7 +15529,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 method 
-This1.Doc doc() this.record__65_0().docOf(path:This2.Path.#from(builder:(
+This1.Doc doc() this.record__64_0().docOf(path:This2.Path.#from(builder:(
   This2.Path::#builder() b=This2.Path.#builder()
   Void unused=b.#M()
   Void unused0=b.#e()
@@ -15380,9 +15544,9 @@ This1.Doc doc() this.record__65_0().docOf(path:This2.Path.#from(builder:(
   )))
 method 
 This1.Mdf thisMdf() This1.Mdf.fromS(that:(
-  This0::record__65_0() rcv57=this.record__65_0()
+  This0::record__64_0() rcv57=this.record__64_0()
   rcv57.#from(builder:(
-    This0::record__65_0() ::#builder() b=rcv57.#builder()
+    This0::record__64_0() ::#builder() b=rcv57.#builder()
     Void unused=b.#T()
     Void unused0=b.#h()
     Void unused1=b.#i()
@@ -15394,12 +15558,12 @@ This1.Mdf thisMdf() This1.Mdf.fromS(that:(
     ))
   ))
 method /* invariant NestedClass(...).nestedClassFromRoot(path).pathFromRoot()==path
-*/This2.Path pathFromRoot() this.path__65_0()
+*/This2.Path pathFromRoot() this.path__64_0()
 method 
 This2.Selector selector() This2.Selector.fromS(that:(
-  This0::record__65_0() rcv58=this.record__65_0()
+  This0::record__64_0() rcv58=this.record__64_0()
   rcv58.#from(builder:(
-    This0::record__65_0() ::#builder() b=rcv58.#builder()
+    This0::record__64_0() ::#builder() b=rcv58.#builder()
     Void unused=b.#K()
     Void unused0=b.#e()
     Void unused1=b.#y()
@@ -15408,9 +15572,9 @@ This2.Selector selector() This2.Selector.fromS(that:(
   ))
 method 
 This1.MethodKind methodKind() This1.MethodKind.fromS(that:(
-  This0::record__65_0() rcv59=this.record__65_0()
+  This0::record__64_0() rcv59=this.record__64_0()
   rcv59.#from(builder:(
-    This0::record__65_0() ::#builder() b=rcv59.#builder()
+    This0::record__64_0() ::#builder() b=rcv59.#builder()
     Void unused=b.#M()
     Void unused0=b.#e()
     Void unused1=b.#m()
@@ -15426,9 +15590,9 @@ This1.MethodKind methodKind() This1.MethodKind.fromS(that:(
   ))
 method 
 This2.S allAsString() (
-  This0::record__65_0() rcv60=this.record__65_0()
+  This0::record__64_0() rcv60=this.record__64_0()
   rcv60.#from(builder:(
-    This0::record__65_0() ::#builder() b=rcv60.#builder()
+    This0::record__64_0() ::#builder() b=rcv60.#builder()
     Void unused=b.#A()
     Void unused0=b.#l()
     Void unused1=b.#l()
@@ -15446,7 +15610,7 @@ This2.S allAsString() (
 method 
 This1.Type returnType() (
   Void unused=(
-    Void unused0=return this.root().mirror__67_0().introspectReportType(root:this.root(), path:this.path__65_0(), memberN:this.memberN__65_0(), typeN:This2.N.#from(builder:(
+    Void unused0=return this.root().mirror__66_0().introspectReportType(root:this.root(), path:this.path__64_0(), memberN:this.memberN__64_0(), typeN:This2.N.#from(builder:(
       This2.N::#builder() b=This2.N.#builder()
       Void unused1=b.#0()
       b
@@ -15516,7 +15680,7 @@ This1.Types parameterTypes() (
         Void unused4=This2.Bool.true().#checkTrue()
         (/* to be able to break
 */
-          This1.Type ti=this.root().mirror__67_0().introspectReportType(root:this.root(), path:this.pathFromRoot(), memberN:this.memberN__65_0(), typeN:varpN.#inner())
+          This1.Type ti=this.root().mirror__66_0().introspectReportType(root:this.root(), path:this.pathFromRoot(), memberN:this.memberN__64_0(), typeN:varpN.#inner())
           Void unused5=result.add(right:ti)
           varpN.inner(that:varpN.#inner().#plus(that:This2.N.#from(builder:(
             This2.N::#builder() b0=This2.N.#builder()
@@ -15632,7 +15796,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 method 
-This1.NestedClass root() this._root__65_0()}
+This1.NestedClass root() this._root__64_0()}
 Methods:{implements This2.Concept.Equals
 class method 
 mut This0 #mutK(mut This2.Collections.MutListAny inner) 
@@ -17376,25 +17540,25 @@ This3.Bool #inner()
 read method 
 This3.Bool inner() }
 class method /*@private
-*/mut This0 #mutK__67_0(fwd This1.NestedClass _root__67_0, This2.Path path__67_0, This1.MirrorPr mirror__67_0, This1.Record record__67_0) 
+*/mut This0 #mutK__66_0(fwd This1.NestedClass _root__66_0, This2.Path path__66_0, This1.MirrorPr mirror__66_0, This1.Record record__66_0) 
 class method /*@private
-*/This0 #apply__68_0(fwd This1.NestedClass _root, This2.Path path, This1.MirrorPr mirror, This1.Record record) This0.#mutK__67_0(_root__67_0:_root, path__67_0:path, mirror__67_0:mirror, record__67_0:record)
+*/This0 #apply__67_0(fwd This1.NestedClass _root, This2.Path path, This1.MirrorPr mirror, This1.Record record) This0.#mutK__66_0(_root__66_0:_root, path__66_0:path, mirror__66_0:mirror, record__66_0:record)
 mut method /*@private
-*/This1.NestedClass #_root__67_0() 
+*/This1.NestedClass #_root__66_0() 
 read method /*@private
-*/This1.NestedClass _root__67_0() 
+*/This1.NestedClass _root__66_0() 
 mut method /*@private
-*/This2.Path #path__67_0() 
+*/This2.Path #path__66_0() 
 read method /*@private
-*/This2.Path path__67_0() 
+*/This2.Path path__66_0() 
 mut method /*@private
-*/This1.MirrorPr #mirror__67_0() 
+*/This1.MirrorPr #mirror__66_0() 
 read method /*@private
-*/This1.MirrorPr mirror__67_0() 
+*/This1.MirrorPr mirror__66_0() 
 mut method /*@private
-*/This1.Record #record__67_0() 
+*/This1.Record #record__66_0() 
 read method /*@private
-*/This1.Record record__67_0() 
+*/This1.Record record__66_0() 
 method myName() This2.GetMyName.#apply(that:This0)
 method toS() This0.myName().#plusplus(that:(
   This2.S::#from(builder ) ::#from(seqBuilder ) rcv63=(
@@ -17419,7 +17583,7 @@ method
 This2.Bool #equalequal(This0 that) (
   Void unused=(
     Void unused0=(
-      This0::path__67_0() ::#bangequal(that ) cond=this.path__67_0().#bangequal(that:that.path__67_0())
+      This0::path__66_0() ::#bangequal(that ) cond=this.path__66_0().#bangequal(that:that.path__66_0())
       (
         Void unused5=cond.#checkTrue()
         
@@ -17429,7 +17593,7 @@ This2.Bool #equalequal(This0 that) (
         )
       )
     Void unused1=(
-      This0::path__67_0() ::#bangequal(that ) cond0=this.path__67_0().#bangequal(that:This2.Path.#from(builder:(
+      This0::path__66_0() ::#bangequal(that ) cond0=this.path__66_0().#bangequal(that:This2.Path.#from(builder:(
         This2.Path::#builder() b=This2.Path.#builder()
         Void unused6=b.#T()
         Void unused7=b.#h()
@@ -17508,11 +17672,11 @@ CurlyBlock-Should be unreachable code
 */}
   )
 method 
-This0 root() this._root__67_0()
+This0 root() this._root__66_0()
 method /*error for This
 */This1.Doc nestedDoc() (
   Void unused=(
-    This0::path__67_0() ::#equalequal(that ) cond=this.path__67_0().#equalequal(that:This2.Path.#from(builder:(
+    This0::path__66_0() ::#equalequal(that ) cond=this.path__66_0().#equalequal(that:This2.Path.#from(builder:(
       This2.Path::#builder() b=This2.Path.#builder()
       Void unused0=b.#T()
       Void unused1=b.#h()
@@ -17593,7 +17757,7 @@ method /*error for This
         ))
       )
     )
-  this.record__67_0().docOf(path:This2.Path.#from(builder:(
+  this.record__66_0().docOf(path:This2.Path.#from(builder:(
     This2.Path::#builder() b1=This2.Path.#builder()
     Void unused67=b1.#M()
     Void unused68=b1.#e()
@@ -17608,7 +17772,7 @@ method /*error for This
     )))
   )
 method /*of the library literal
-*/This1.Doc doc() this.record__67_0().docOf(path:This2.Path.#from(builder:(
+*/This1.Doc doc() this.record__66_0().docOf(path:This2.Path.#from(builder:(
   This2.Path::#builder() b=This2.Path.#builder()
   Void unused=b.#L()
   Void unused0=b.#i()
@@ -17623,12 +17787,12 @@ method /*of the library literal
   b
   )))
 method 
-This2.Path pathFromRoot() this.path__67_0()
+This2.Path pathFromRoot() this.path__66_0()
 method 
 This2.Bool hasExternalType() (
   Void unused=(
     Void unused0=(
-      This0::path__67_0() ::#bangequal(that ) cond=this.path__67_0().#bangequal(that:This2.Path.#from(builder:(
+      This0::path__66_0() ::#bangequal(that ) cond=this.path__66_0().#bangequal(that:This2.Path.#from(builder:(
         This2.Path::#builder() b=This2.Path.#builder()
         Void unused3=b.#T()
         Void unused4=b.#h()
@@ -17645,7 +17809,7 @@ This2.Bool hasExternalType() (
         )
       )
     Void unused1=(
-      This0::mirror__67_0() mirror=this.mirror__67_0()
+      This0::mirror__66_0() mirror=this.mirror__66_0()
       (
         This1.MirrorPr.Class mirror0=(
           Void unused8=return mirror
@@ -17681,7 +17845,7 @@ method
 class Any externalType() (
   Void unused=(
     Void unused0=(
-      This0::path__67_0() ::#bangequal(that ) cond=this.path__67_0().#bangequal(that:This2.Path.#from(builder:(
+      This0::path__66_0() ::#bangequal(that ) cond=this.path__66_0().#bangequal(that:This2.Path.#from(builder:(
         This2.Path::#builder() b=This2.Path.#builder()
         Void unused2=b.#T()
         Void unused3=b.#h()
@@ -17762,7 +17926,7 @@ class Any externalType() (
               ))
             rcv66.#from(seqBuilder:(
               This2.S::#from(builder ) ::#seqBuilder() b1=rcv66.#seqBuilder()
-              Void unused67=b1.#add(that:this.path__67_0())
+              Void unused67=b1.#add(that:this.path__66_0())
               b1
               ))
             )
@@ -17774,7 +17938,7 @@ class Any externalType() (
         )
       )
     Void unused1=(
-      This0::mirror__67_0() mirror=this.mirror__67_0()
+      This0::mirror__66_0() mirror=this.mirror__66_0()
       (
         This1.MirrorPr.Class mirror1=(
           Void unused68=return mirror
@@ -17906,7 +18070,7 @@ method
 This2.S externalTypeToS() (
   Void unused=(
     Void unused0=(
-      This0::path__67_0() ::#bangequal(that ) cond=this.path__67_0().#bangequal(that:This2.Path.#from(builder:(
+      This0::path__66_0() ::#bangequal(that ) cond=this.path__66_0().#bangequal(that:This2.Path.#from(builder:(
         This2.Path::#builder() b=This2.Path.#builder()
         Void unused3=b.#T()
         Void unused4=b.#h()
@@ -17990,7 +18154,7 @@ This2.S externalTypeToS() (
               ))
             rcv68.#from(seqBuilder:(
               This2.S::#from(builder ) ::#seqBuilder() b1=rcv68.#seqBuilder()
-              Void unused71=b1.#add(that:this.path__67_0())
+              Void unused71=b1.#add(that:this.path__66_0())
               b1
               ))
             )
@@ -18001,7 +18165,7 @@ This2.S externalTypeToS() (
           ))
         )
       )
-    This0::record__67_0() ::docOf(path ) doc=this.record__67_0().docOf(path:This2.Path.#from(builder:(
+    This0::record__66_0() ::docOf(path ) doc=this.record__66_0().docOf(path:This2.Path.#from(builder:(
       This2.Path::#builder() b3=This2.Path.#builder()
       Void unused72=b3.#M()
       Void unused73=b3.#y()
@@ -18012,13 +18176,13 @@ This2.S externalTypeToS() (
       Void unused78=b3.#s()
       b3
       )))
-    This0::record__67_0() ::docOf(path ) ::annotations() ::left() ::toS() nameAndPrefix=doc.annotations().left().toS()
-    This0::record__67_0() ::docOf(path ) ::annotations() ::left() ::toS() ::firstIndexOf(that ) sep=nameAndPrefix.firstIndexOf(that:This2.S.#from(builder:(
+    This0::record__66_0() ::docOf(path ) ::annotations() ::left() ::toS() nameAndPrefix=doc.annotations().left().toS()
+    This0::record__66_0() ::docOf(path ) ::annotations() ::left() ::toS() ::indexOfLeft(val ) sep=nameAndPrefix.indexOfLeft(val:This2.S.#from(builder:(
       This2.S::#builder() b4=This2.S.#builder()
       Void unused79=b4.#dot()
       b4
       )))
-    This0::record__67_0() ::docOf(path ) ::annotations() ::left() ::toS() ::#apply(start ) name=nameAndPrefix.#apply(start:sep.#plus(that:This2.N.#from(builder:(
+    This0::record__66_0() ::docOf(path ) ::annotations() ::left() ::toS() ::#apply(start ) name=nameAndPrefix.#apply(start:sep.#plus(that:This2.N.#from(builder:(
       This2.N::#builder() b5=This2.N.#builder()
       Void unused80=b5.#1()
       b5
@@ -18087,9 +18251,9 @@ CurlyBlock-Should be unreachable code
   )
 method 
 This1.ClassKind classKind() This1.ClassKind.fromS(that:(
-  This0::record__67_0() rcv71=this.record__67_0()
+  This0::record__66_0() rcv71=this.record__66_0()
   rcv71.#from(builder:(
-    This0::record__67_0() ::#builder() b=rcv71.#builder()
+    This0::record__66_0() ::#builder() b=rcv71.#builder()
     Void unused=b.#C()
     Void unused0=b.#l()
     Void unused1=b.#a()
@@ -18104,9 +18268,9 @@ This1.ClassKind classKind() This1.ClassKind.fromS(that:(
   ))
 method 
 This2.S allAsString() (
-  This0::record__67_0() rcv72=this.record__67_0()
+  This0::record__66_0() rcv72=this.record__66_0()
   rcv72.#from(builder:(
-    This0::record__67_0() ::#builder() b=rcv72.#builder()
+    This0::record__66_0() ::#builder() b=rcv72.#builder()
     Void unused=b.#A()
     Void unused0=b.#l()
     Void unused1=b.#l()
@@ -18136,7 +18300,7 @@ This1.Members members() (
       (/* to be able to break
 Debug(S"Iteration "[mN]"")
 */
-        Void unused3=result.add(right:this.mirror__67_0().introspectReportMember(root:this, path:this.path__67_0(), memberN:varmN.#inner()))
+        Void unused3=result.add(right:this.mirror__66_0().introspectReportMember(root:this, path:this.path__66_0(), memberN:varmN.#inner()))
         
         catch exception This2.MetaGuard.MemberUnavailable catched1 exception void
         
@@ -18405,12 +18569,12 @@ This1.Types implementedInterfaces() (
       Void unused2=This2.Bool.true().#checkTrue()
       (/* to be able to break
 */
-        This0::mirror__67_0() ::introspectReportType(root path memberN typeN ) ti=this.mirror__67_0().introspectReportType(root:this, path:this.path__67_0(), memberN:This2.N.#from(builder:(
+        This0::mirror__66_0() ::introspectReportType(root path memberN typeN ) ti=this.mirror__66_0().introspectReportType(root:this, path:this.path__66_0(), memberN:This2.N.#from(builder:(
           This2.N::#builder() b0=This2.N.#builder()
           Void unused4=b0.#0()
           b0
           )), typeN:vartN.#inner())
-        This0::mirror__67_0() ::introspectReportType(root path memberN typeN ) ::strRepr() sr=ti.strRepr()
+        This0::mirror__66_0() ::introspectReportType(root path memberN typeN ) ::strRepr() sr=ti.strRepr()
         Void unused3=result.add(right:ti)
         vartN.inner(that:vartN.#inner().#plus(that:This2.N.#from(builder:(
           This2.N::#builder() b1=This2.N.#builder()
@@ -18450,7 +18614,7 @@ This1.Types implementedInterfaces() (
 method 
 This1.Types transitivelyImplementedInterfaces() (
   Void unused=(
-    This1.Types result=this.removeDup__69_0(that:this.implementedInterfaces())
+    This1.Types result=this.removeDup__68_0(that:this.implementedInterfaces())
     This1.Types new=result
     mut This0.Varresult__120_0 varresult=This0.Varresult__120_0.#apply(inner:result)
     mut This0.Varnew__119_0 varnew=This0.Varnew__119_0.#apply(inner:new)
@@ -18481,7 +18645,7 @@ This1.Types transitivelyImplementedInterfaces() (
                 
                 (
                   This0.Varnew__119_0::#inner() ::vals() ::#inner() ::referencedPath() ::implementedInterfaces() impl=t.#inner().referencedPath().implementedInterfaces()
-                  varextra.inner(that:varextra.#inner().#plusplus(that:this.remove__71_0(that:impl, from:varresult.#inner())))
+                  varextra.inner(that:varextra.#inner().#plusplus(that:this.remove__70_0(that:impl, from:varresult.#inner())))
                   )
                 )
               
@@ -18594,7 +18758,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 method /*@private
-*/This1.Types removeDup__69_0(This1.Types that) (
+*/This1.Types removeDup__68_0(This1.Types that) (
   mut This1.Types result=This1.Types.empty()
   Void unused=(
     This1.Types::vals() t=that.vals()
@@ -18616,7 +18780,7 @@ method /*@private
               )
             
             (
-              This0::select__70_0(that from ) cond=this.select__70_0(that:t.#inner(), from:result)
+              This0::select__69_0(that from ) cond=this.select__69_0(that:t.#inner(), from:result)
               (
                 Void unused6=cond.#checkTrue()
                 
@@ -18652,7 +18816,7 @@ method /*@private
   varresult0.#inner()
   )
 method /*@private
-*/This2.Bool select__70_0(This1.Type that, read This1.Types from) (
+*/This2.Bool select__69_0(This1.Type that, read This1.Types from) (
   This1.Type::referencedPath() rp=that.referencedPath()
   This2.Count.#from(seqBuilder:(
     This2.Count::#seqBuilder() b=This2.Count.#seqBuilder()
@@ -18710,7 +18874,7 @@ method /*@private
     )))
   )
 method /*@private
-*/This1.Types remove__71_0(This1.Types that, This1.Types from) This1.Types.#from(seqBuilder:(
+*/This1.Types remove__70_0(This1.Types that, This1.Types from) This1.Types.#from(seqBuilder:(
   This1.Types::#seqBuilder() b=This1.Types.#seqBuilder()
   Void unused=(
     This1.Types::vals() t=that.vals()
@@ -18732,7 +18896,7 @@ method /*@private
               )
             
             (
-              This0::select__70_0(that from ) cond=this.select__70_0(that:t.#inner(), from:from)
+              This0::select__69_0(that from ) cond=this.select__69_0(that:t.#inner(), from:from)
               (
                 Void unused6=cond.#checkTrue()
                 
@@ -19283,7 +19447,7 @@ This1.NestedClass nestedClassFromRoot(This2.Path that) exception This2.MetaGuard
         return this.root()
         )
       )
-    This0::record__67_0() ::docOf(path ) ::annotations() ::left() myClass=this.record__67_0().docOf(path:This2.Path.#from(builder:(
+    This0::record__66_0() ::docOf(path ) ::annotations() ::left() myClass=this.record__66_0().docOf(path:This2.Path.#from(builder:(
       This2.Path::#builder() b0=This2.Path.#builder()
       Void unused8=b0.#M()
       Void unused9=b0.#y()
@@ -19295,13 +19459,13 @@ This1.NestedClass nestedClassFromRoot(This2.Path that) exception This2.MetaGuard
       b0
       ))).annotations().left()
     Void unused1=(
-      This0::record__67_0() ::docOf(path ) ::annotations() ::left() ::hasReferredClass() ::#bang() cond0=myClass.hasReferredClass().#bang()
+      This0::record__66_0() ::docOf(path ) ::annotations() ::left() ::hasReferredClass() ::#bang() cond0=myClass.hasReferredClass().#bang()
       (
         Void unused15=cond0.#checkTrue()
         
         catch exception Void catched4 void
         
-        return this.mirror__67_0().introspectReport(root:this.root(), path:that)
+        return this.mirror__66_0().introspectReport(root:this.root(), path:that)
         )
       )
     Void unused2=return This2.Introspection.#apply(clazz:myClass.referredClass(), path:that)
@@ -21062,29 +21226,29 @@ CurlyBlock-Should be unreachable code
   )}
 Type:{implements This2.Concept.ToS, This2.Concept.Named
 class method /*@private
-*/mut This0 #mutK__72_0(fwd This1.NestedClass root__72_0, This2.Path path__72_0, This2.N memberN__72_0, This2.N typeN__72_0, This1.Record record__72_0) 
+*/mut This0 #mutK__71_0(fwd This1.NestedClass root__71_0, This2.Path path__71_0, This2.N memberN__71_0, This2.N typeN__71_0, This1.Record record__71_0) 
 class method /*@private
-*/This0 #apply__73_0(fwd This1.NestedClass root, This2.Path path, This2.N memberN, This2.N typeN, This1.Record record) This0.#mutK__72_0(root__72_0:root, path__72_0:path, memberN__72_0:memberN, typeN__72_0:typeN, record__72_0:record)
+*/This0 #apply__72_0(fwd This1.NestedClass root, This2.Path path, This2.N memberN, This2.N typeN, This1.Record record) This0.#mutK__71_0(root__71_0:root, path__71_0:path, memberN__71_0:memberN, typeN__71_0:typeN, record__71_0:record)
 mut method /*@private
-*/This1.NestedClass #root__72_0() 
+*/This1.NestedClass #root__71_0() 
 read method /*@private
-*/This1.NestedClass root__72_0() 
+*/This1.NestedClass root__71_0() 
 mut method /*@private
-*/This2.Path #path__72_0() 
+*/This2.Path #path__71_0() 
 read method /*@private
-*/This2.Path path__72_0() 
+*/This2.Path path__71_0() 
 mut method /*@private
-*/This2.N #memberN__72_0() 
+*/This2.N #memberN__71_0() 
 read method /*@private
-*/This2.N memberN__72_0() 
+*/This2.N memberN__71_0() 
 mut method /*@private
-*/This2.N #typeN__72_0() 
+*/This2.N #typeN__71_0() 
 read method /*@private
-*/This2.N typeN__72_0() 
+*/This2.N typeN__71_0() 
 mut method /*@private
-*/This1.Record #record__72_0() 
+*/This1.Record #record__71_0() 
 read method /*@private
-*/This1.Record record__72_0() 
+*/This1.Record record__71_0() 
 method myName() This2.GetMyName.#apply(that:This0)
 method toS() This0.myName().#plusplus(that:(
   This2.S::#from(builder ) ::#from(seqBuilder ) rcv75=(
@@ -21107,9 +21271,9 @@ method toS() This0.myName().#plusplus(that:(
   ))
 method 
 This2.S allAsString() (
-  This0::record__72_0() rcv77=this.record__72_0()
+  This0::record__71_0() rcv77=this.record__71_0()
   rcv77.#from(builder:(
-    This0::record__72_0() ::#builder() b=rcv77.#builder()
+    This0::record__71_0() ::#builder() b=rcv77.#builder()
     Void unused=b.#A()
     Void unused0=b.#l()
     Void unused1=b.#l()
@@ -21185,9 +21349,9 @@ CurlyBlock-Should be unreachable code
   )
 method 
 This1.TypeKind typeKind() This1.TypeKind.fromS(that:(
-  This0::record__72_0() rcv80=this.record__72_0()
+  This0::record__71_0() rcv80=this.record__71_0()
   rcv80.#from(builder:(
-    This0::record__72_0() ::#builder() b=rcv80.#builder()
+    This0::record__71_0() ::#builder() b=rcv80.#builder()
     Void unused=b.#T()
     Void unused0=b.#y()
     Void unused1=b.#p()
@@ -21214,9 +21378,9 @@ This1.Mdf mdf() (
         catch exception Void catched1 void
         
         return This1.Mdf.fromS(that:(
-          This0::record__72_0() rcv82=this.record__72_0()
+          This0::record__71_0() rcv82=this.record__71_0()
           rcv82.#from(builder:(
-            This0::record__72_0() ::#builder() b=rcv82.#builder()
+            This0::record__71_0() ::#builder() b=rcv82.#builder()
             Void unused3=b.#M()
             Void unused4=b.#d()
             Void unused5=b.#f()
@@ -21275,7 +21439,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 method /*@private
-*/This1.NestedClass referencedPath__74_0(This1.Doc.Annotation ann) (
+*/This1.NestedClass referencedPath__73_0(This1.Doc.Annotation ann) (
   Void unused=(
     Void unused0=(
       This1.Doc.Annotation::hasReferredClass() cond=ann.hasReferredClass()
@@ -21305,11 +21469,11 @@ method /*@private
         
         catch exception Void catched5 void
         
-        return this.root__72_0()
+        return this.root__71_0()
         )
       )
     This2.Path path=This2.Path.fromS(that:sPath)
-    Void unused2=return this.root__72_0().nestedClassFromRoot(that:path)
+    Void unused2=return this.root__71_0().nestedClassFromRoot(that:path)
     
     catch exception This2.MetaGuard.NestedClassUnavailable x error This2.Assert.ObservedBug.#from(builder:(
       This2.Assert.ObservedBug::#builder() b1=This2.Assert.ObservedBug.#builder()
@@ -21356,7 +21520,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 method 
-This1.NestedClass referencedPath() this.referencedPath__74_0(ann:this.record__72_0().docOf(path:This2.Path.#from(builder:(
+This1.NestedClass referencedPath() this.referencedPath__73_0(ann:this.record__71_0().docOf(path:This2.Path.#from(builder:(
   This2.Path::#builder() b=This2.Path.#builder()
   Void unused=b.#P()
   Void unused0=b.#a()
@@ -21378,7 +21542,7 @@ This1.NestedClass resolvedReferencedPath() (
         
         catch exception Void catched1 void
         
-        return this.referencedPath__74_0(ann:this.record__72_0().docOf(path:This2.Path.#from(builder:(
+        return this.referencedPath__73_0(ann:this.record__71_0().docOf(path:This2.Path.#from(builder:(
           This2.Path::#builder() b=This2.Path.#builder()
           Void unused3=b.#R()
           Void unused4=b.#e()
@@ -21447,9 +21611,9 @@ CurlyBlock-Should be unreachable code
   )
 method 
 This2.Bool partial() (
-  This0::record__72_0() rcv85=this.record__72_0()
+  This0::record__71_0() rcv85=this.record__71_0()
   rcv85.#from(builder:(
-    This0::record__72_0() ::#builder() b=rcv85.#builder()
+    This0::record__71_0() ::#builder() b=rcv85.#builder()
     Void unused=b.#P()
     Void unused0=b.#h()
     b
@@ -21464,9 +21628,9 @@ This2.Bool partial() (
   )))
 method 
 This2.Bool resolvedPartial() (
-  This0::record__72_0() rcv86=this.record__72_0()
+  This0::record__71_0() rcv86=this.record__71_0()
   rcv86.#from(builder:(
-    This0::record__72_0() ::#builder() b=rcv86.#builder()
+    This0::record__71_0() ::#builder() b=rcv86.#builder()
     Void unused=b.#R()
     Void unused0=b.#e()
     Void unused1=b.#s()
@@ -21535,9 +21699,9 @@ This2.S suffix() (
         )
       )
     Void unused1=return (
-      This0::record__72_0() rcv88=this.record__72_0()
+      This0::record__71_0() rcv88=this.record__71_0()
       rcv88.#from(builder:(
-        This0::record__72_0() ::#builder() b0=rcv88.#builder()
+        This0::record__71_0() ::#builder() b0=rcv88.#builder()
         Void unused30=b0.#P()
         Void unused31=b0.#h()
         b0
@@ -21553,7 +21717,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 method 
-This1.Doc doc() this.record__72_0().docOf(path:This2.Path.#from(builder:(
+This1.Doc doc() this.record__71_0().docOf(path:This2.Path.#from(builder:(
   This2.Path::#builder() b=This2.Path.#builder()
   Void unused=b.#D()
   Void unused0=b.#o()
@@ -35434,7 +35598,7 @@ Void inner(Library that) (
   rcv32.#apply(that:this.from(), val:that)
   )}}
 class method /*@private
-*/This0.SrcDests renameMap__75_0(Library that, This1.S prefix, This1.Introspection.NestedClasses intros) This0.SrcDests.#from(seqBuilder:(
+*/This0.SrcDests renameMap__74_0(Library that, This1.S prefix, This1.Introspection.NestedClasses intros) This0.SrcDests.#from(seqBuilder:(
   This0.SrcDests::#seqBuilder() b=This0.SrcDests.#seqBuilder()
   Void unused=(
     This1.Introspection.NestedClasses::vals() intro=intros.vals()
@@ -35714,17 +35878,17 @@ Library #inner()
 read method 
 Library inner() }
 class method /*@private
-*/mut This0 #mutK__76_0(This1.Libs myLibs__76_0) 
+*/mut This0 #mutK__75_0(This1.Libs myLibs__75_0) 
 class method /*@private
-*/This0 #apply__77_0(This1.Libs myLibs) This0.#mutK__76_0(myLibs__76_0:myLibs)
+*/This0 #apply__76_0(This1.Libs myLibs) This0.#mutK__75_0(myLibs__75_0:myLibs)
 mut method /*@private
-*/This1.Libs #myLibs__76_0() 
+*/This1.Libs #myLibs__75_0() 
 read method /*@private
-*/This1.Libs myLibs__76_0() 
+*/This1.Libs myLibs__75_0() 
 class method 
 mut This1.Libs #seqBuilder() This1.Libs.empty()
 class method 
-This0 #from(This1.Libs seqBuilder) This0.#apply__77_0(myLibs:seqBuilder)
+This0 #from(This1.Libs seqBuilder) This0.#apply__76_0(myLibs:seqBuilder)
 method 
 Library #leftleft(Library that) exception This2.MetaGuard.ClassClash, This2.MetaGuard.MethodClash (
   Void unused=(
@@ -35733,7 +35897,7 @@ Library #leftleft(Library that) exception This2.MetaGuard.ClassClash, This2.Meta
     Library acc={}
     mut This0.Varacc__145_0 varacc=This0.Varacc__145_0.#apply(inner:acc)
     Void unused0=(
-      This0::myLibs__76_0() ::vals() lib=this.myLibs__76_0().vals()
+      This0::myLibs__75_0() ::vals() lib=this.myLibs__75_0().vals()
       (
         Void unused4=(
           Void unused5=(
@@ -35796,7 +35960,7 @@ Library #leftleft(Library that) exception This2.MetaGuard.ClassClash, This2.Meta
                       
                       (
                         Library libi=lib.#inner()
-                        This1::renameMap__75_0(that prefix intros ) rens=This1.renameMap__75_0(that:lib.#inner(), prefix:(
+                        This1::renameMap__74_0(that prefix intros ) rens=This1.renameMap__74_0(that:lib.#inner(), prefix:(
                           This2.S::#from(builder ) ::#from(seqBuilder ) rcv106=(
                             This2.S::#from(builder ) rcv107=This2.S.#from(builder:(
                               This2.S::#builder() b0=This2.S.#builder()
@@ -35816,7 +35980,7 @@ Library #leftleft(Library that) exception This2.MetaGuard.ClassClash, This2.Meta
                           ), intros:i.transitivelyNestedClasses())
                         mut This0.Varlibi__146_0 varlibi=This0.Varlibi__146_0.#apply(inner:libi)
                         Void unused22=(
-                          This1::renameMap__75_0(that prefix intros ) ::vals() ren=rens.vals()
+                          This1::renameMap__74_0(that prefix intros ) ::vals() ren=rens.vals()
                           (
                             Void unused25=(
                               Void unused26=(
@@ -35989,12 +36153,12 @@ CurlyBlock-Should be unreachable code
 */}
   )
 method 
-This0 #plusplus(This0 that) This0.#apply__77_0(myLibs:this.myLibs__76_0().#plusplus(that:that.myLibs__76_0()))
+This0 #plusplus(This0 that) This0.#apply__76_0(myLibs:this.myLibs__75_0().#plusplus(that:that.myLibs__75_0()))
 method 
 Library foldLeft(Library resolver) exception This2.MetaGuard.ClassClash, This2.MetaGuard.MethodClash (
   Void unused=(
     Void unused0=(
-      This0::myLibs__76_0() ::isEmpty() cond=this.myLibs__76_0().isEmpty()
+      This0::myLibs__75_0() ::isEmpty() cond=this.myLibs__75_0().isEmpty()
       (
         Void unused3=cond.#checkTrue()
         
@@ -36003,10 +36167,10 @@ Library foldLeft(Library resolver) exception This2.MetaGuard.ClassClash, This2.M
         return {}
         )
       )
-    Library res=this.myLibs__76_0().left()
+    Library res=this.myLibs__75_0().left()
     mut This0.Varres1__147_0 varres1=This0.Varres1__147_0.#apply(inner:res)
     Void unused1=(
-      This0::myLibs__76_0() ::withoutLeft() ::vals() libi=this.myLibs__76_0().withoutLeft().vals()
+      This0::myLibs__75_0() ::withoutLeft() ::vals() libi=this.myLibs__75_0().withoutLeft().vals()
       (
         Void unused4=(
           Void unused5=(
@@ -36117,17 +36281,17 @@ Library #inner()
 read method 
 Library inner() }
 class method /*@private
-*/mut This0 #mutK_$%38_0__78_0(This1.PreferentialComposition.Libs myLibs_$%38_0__78_0) 
+*/mut This0 #mutK_$%38_0__77_0(This1.PreferentialComposition.Libs myLibs_$%38_0__77_0) 
 class method /*@private
-*/This0 #apply_$%39_0__79_0(This1.PreferentialComposition.Libs myLibs) This0.#mutK_$%38_0__78_0(myLibs_$%38_0__78_0:myLibs)
+*/This0 #apply_$%39_0__78_0(This1.PreferentialComposition.Libs myLibs) This0.#mutK_$%38_0__77_0(myLibs_$%38_0__77_0:myLibs)
 mut method /*@private
-*/This1.PreferentialComposition.Libs #myLibs_$%38_0__78_0() 
+*/This1.PreferentialComposition.Libs #myLibs_$%38_0__77_0() 
 read method /*@private
-*/This1.PreferentialComposition.Libs myLibs_$%38_0__78_0() 
+*/This1.PreferentialComposition.Libs myLibs_$%38_0__77_0() 
 class method 
 mut This1.PreferentialComposition.Libs #seqBuilder() This1.PreferentialComposition.Libs.empty()
 class method 
-This0 #from(This1.PreferentialComposition.Libs seqBuilder) This0.#apply_$%39_0__79_0(myLibs:seqBuilder)
+This0 #from(This1.PreferentialComposition.Libs seqBuilder) This0.#apply_$%39_0__78_0(myLibs:seqBuilder)
 method 
 Library #leftleft(Library that) exception This1.MetaGuard.ClassClash, This1.MetaGuard.MethodClash (
   Void unused=(
@@ -36136,7 +36300,7 @@ Library #leftleft(Library that) exception This1.MetaGuard.ClassClash, This1.Meta
     Library acc={}
     mut This0.Varacc_$%40_0__148_0 varacc=This0.Varacc_$%40_0__148_0.#apply(inner:acc)
     Void unused0=(
-      This0::myLibs_$%38_0__78_0() ::vals() lib=this.myLibs_$%38_0__78_0().vals()
+      This0::myLibs_$%38_0__77_0() ::vals() lib=this.myLibs_$%38_0__77_0().vals()
       (
         Void unused4=(
           Void unused5=(
@@ -36199,7 +36363,7 @@ Library #leftleft(Library that) exception This1.MetaGuard.ClassClash, This1.Meta
                       
                       (
                         Library libi=lib.#inner()
-                        This1.PreferentialComposition::renameMap__75_0(that prefix intros ) rens=This1.PreferentialComposition.renameMap__75_0(that:lib.#inner(), prefix:(
+                        This1.PreferentialComposition::renameMap__74_0(that prefix intros ) rens=This1.PreferentialComposition.renameMap__74_0(that:lib.#inner(), prefix:(
                           This1.S::#from(builder ) ::#from(seqBuilder ) rcv106=(
                             This1.S::#from(builder ) rcv107=This1.S.#from(builder:(
                               This1.S::#builder() b0=This1.S.#builder()
@@ -36219,7 +36383,7 @@ Library #leftleft(Library that) exception This1.MetaGuard.ClassClash, This1.Meta
                           ), intros:i.transitivelyNestedClasses())
                         mut This0.Varlibi_$%41_0__149_0 varlibi=This0.Varlibi_$%41_0__149_0.#apply(inner:libi)
                         Void unused22=(
-                          This1.PreferentialComposition::renameMap__75_0(that prefix intros ) ::vals() ren=rens.vals()
+                          This1.PreferentialComposition::renameMap__74_0(that prefix intros ) ::vals() ren=rens.vals()
                           (
                             Void unused25=(
                               Void unused26=(
@@ -36392,12 +36556,12 @@ CurlyBlock-Should be unreachable code
 */}
   )
 method 
-This0 #plusplus(This0 that) This0.#apply_$%39_0__79_0(myLibs:this.myLibs_$%38_0__78_0().#plusplus(that:that.myLibs_$%38_0__78_0()))
+This0 #plusplus(This0 that) This0.#apply_$%39_0__78_0(myLibs:this.myLibs_$%38_0__77_0().#plusplus(that:that.myLibs_$%38_0__77_0()))
 method 
 Library foldLeft(Library resolver) exception This1.MetaGuard.ClassClash, This1.MetaGuard.MethodClash (
   Void unused=(
     Void unused0=(
-      This0::myLibs_$%38_0__78_0() ::isEmpty() cond=this.myLibs_$%38_0__78_0().isEmpty()
+      This0::myLibs_$%38_0__77_0() ::isEmpty() cond=this.myLibs_$%38_0__77_0().isEmpty()
       (
         Void unused3=cond.#checkTrue()
         
@@ -36406,10 +36570,10 @@ Library foldLeft(Library resolver) exception This1.MetaGuard.ClassClash, This1.M
         return {}
         )
       )
-    Library res=this.myLibs_$%38_0__78_0().left()
+    Library res=this.myLibs_$%38_0__77_0().left()
     mut This0.Varres1_$%42_0__150_0 varres1=This0.Varres1_$%42_0__150_0.#apply(inner:res)
     Void unused1=(
-      This0::myLibs_$%38_0__78_0() ::withoutLeft() ::vals() libi=this.myLibs_$%38_0__78_0().withoutLeft().vals()
+      This0::myLibs_$%38_0__77_0() ::withoutLeft() ::vals() libi=this.myLibs_$%38_0__77_0().withoutLeft().vals()
       (
         Void unused4=(
           Void unused5=(
@@ -36520,17 +36684,17 @@ Library #inner()
 read method 
 Library inner() }
 class method /*@private
-*/mut This0 #mutK_$%43_0__80_0(This1.PreferentialComposition.Libs myLibs_$%43_0__80_0) 
+*/mut This0 #mutK_$%43_0__79_0(This1.PreferentialComposition.Libs myLibs_$%43_0__79_0) 
 class method /*@private
-*/This0 #apply_$%44_0__81_0(This1.PreferentialComposition.Libs myLibs) This0.#mutK_$%43_0__80_0(myLibs_$%43_0__80_0:myLibs)
+*/This0 #apply_$%44_0__80_0(This1.PreferentialComposition.Libs myLibs) This0.#mutK_$%43_0__79_0(myLibs_$%43_0__79_0:myLibs)
 mut method /*@private
-*/This1.PreferentialComposition.Libs #myLibs_$%43_0__80_0() 
+*/This1.PreferentialComposition.Libs #myLibs_$%43_0__79_0() 
 read method /*@private
-*/This1.PreferentialComposition.Libs myLibs_$%43_0__80_0() 
+*/This1.PreferentialComposition.Libs myLibs_$%43_0__79_0() 
 class method 
 mut This1.PreferentialComposition.Libs #seqBuilder() This1.PreferentialComposition.Libs.empty()
 class method 
-This0 #from(This1.PreferentialComposition.Libs seqBuilder) This0.#apply_$%44_0__81_0(myLibs:seqBuilder)
+This0 #from(This1.PreferentialComposition.Libs seqBuilder) This0.#apply_$%44_0__80_0(myLibs:seqBuilder)
 method 
 Library #leftleft(Library that) exception This1.MetaGuard.ClassClash, This1.MetaGuard.MethodClash (
   Void unused=(
@@ -36539,7 +36703,7 @@ Library #leftleft(Library that) exception This1.MetaGuard.ClassClash, This1.Meta
     Library acc={}
     mut This0.Varacc_$%45_0__151_0 varacc=This0.Varacc_$%45_0__151_0.#apply(inner:acc)
     Void unused0=(
-      This0::myLibs_$%43_0__80_0() ::vals() lib=this.myLibs_$%43_0__80_0().vals()
+      This0::myLibs_$%43_0__79_0() ::vals() lib=this.myLibs_$%43_0__79_0().vals()
       (
         Void unused4=(
           Void unused5=(
@@ -36602,7 +36766,7 @@ Library #leftleft(Library that) exception This1.MetaGuard.ClassClash, This1.Meta
                       
                       (
                         Library libi=lib.#inner()
-                        This1.PreferentialComposition::renameMap__75_0(that prefix intros ) rens=This1.PreferentialComposition.renameMap__75_0(that:lib.#inner(), prefix:(
+                        This1.PreferentialComposition::renameMap__74_0(that prefix intros ) rens=This1.PreferentialComposition.renameMap__74_0(that:lib.#inner(), prefix:(
                           This1.S::#from(builder ) ::#from(seqBuilder ) rcv106=(
                             This1.S::#from(builder ) rcv107=This1.S.#from(builder:(
                               This1.S::#builder() b0=This1.S.#builder()
@@ -36622,7 +36786,7 @@ Library #leftleft(Library that) exception This1.MetaGuard.ClassClash, This1.Meta
                           ), intros:i.transitivelyNestedClasses())
                         mut This0.Varlibi_$%46_0__152_0 varlibi=This0.Varlibi_$%46_0__152_0.#apply(inner:libi)
                         Void unused22=(
-                          This1.PreferentialComposition::renameMap__75_0(that prefix intros ) ::vals() ren=rens.vals()
+                          This1.PreferentialComposition::renameMap__74_0(that prefix intros ) ::vals() ren=rens.vals()
                           (
                             Void unused25=(
                               Void unused26=(
@@ -36795,12 +36959,12 @@ CurlyBlock-Should be unreachable code
 */}
   )
 method 
-This0 #plusplus(This0 that) This0.#apply_$%44_0__81_0(myLibs:this.myLibs_$%43_0__80_0().#plusplus(that:that.myLibs_$%43_0__80_0()))
+This0 #plusplus(This0 that) This0.#apply_$%44_0__80_0(myLibs:this.myLibs_$%43_0__79_0().#plusplus(that:that.myLibs_$%43_0__79_0()))
 method 
 Library foldLeft(Library resolver) exception This1.MetaGuard.ClassClash, This1.MetaGuard.MethodClash (
   Void unused=(
     Void unused0=(
-      This0::myLibs_$%43_0__80_0() ::isEmpty() cond=this.myLibs_$%43_0__80_0().isEmpty()
+      This0::myLibs_$%43_0__79_0() ::isEmpty() cond=this.myLibs_$%43_0__79_0().isEmpty()
       (
         Void unused3=cond.#checkTrue()
         
@@ -36809,10 +36973,10 @@ Library foldLeft(Library resolver) exception This1.MetaGuard.ClassClash, This1.M
         return {}
         )
       )
-    Library res=this.myLibs_$%43_0__80_0().left()
+    Library res=this.myLibs_$%43_0__79_0().left()
     mut This0.Varres1_$%47_0__153_0 varres1=This0.Varres1_$%47_0__153_0.#apply(inner:res)
     Void unused1=(
-      This0::myLibs_$%43_0__80_0() ::withoutLeft() ::vals() libi=this.myLibs_$%43_0__80_0().withoutLeft().vals()
+      This0::myLibs_$%43_0__79_0() ::withoutLeft() ::vals() libi=this.myLibs_$%43_0__79_0().withoutLeft().vals()
       (
         Void unused4=(
           Void unused5=(
@@ -36894,7 +37058,7 @@ Library #leftleft(Library that) exception This1.MetaGuard.ClassClash, This1.Meta
   Void unused=(
     This1.Introspection::#apply(lib path ) ip=This1.Introspection.#apply(lib:that, path:this.that())
     This1.Introspection::#apply(lib path ) ::transitivelyNestedClasses() itr=ip.transitivelyNestedClasses()
-    This0::renameMap__82_0(that prefix intros ) rens=This0.renameMap__82_0(that:that, prefix:This1.S.#from(builder:(
+    This0::renameMap__81_0(that prefix intros ) rens=This0.renameMap__81_0(that:that, prefix:This1.S.#from(builder:(
       This1.S::#builder() b=This1.S.#builder()
       Void unused4=b.#hash()
       Void unused5=b.#1()
@@ -36904,7 +37068,7 @@ Library #leftleft(Library that) exception This1.MetaGuard.ClassClash, This1.Meta
     Library acc=that
     mut This0.Varacc0__154_0 varacc0=This0.Varacc0__154_0.#apply(inner:acc)
     Void unused0=(
-      This0::renameMap__82_0(that prefix intros ) ::vals() ren=rens.vals()
+      This0::renameMap__81_0(that prefix intros ) ::vals() ren=rens.vals()
       (
         Void unused6=(
           Void unused7=(
@@ -37055,7 +37219,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 class method /*@private
-*/This1.PreferentialComposition.SrcDests renameMap__82_0(Library that, This1.S prefix, This1.Introspection.NestedClasses intros) This1.PreferentialComposition.SrcDests.#from(seqBuilder:(
+*/This1.PreferentialComposition.SrcDests renameMap__81_0(Library that, This1.S prefix, This1.Introspection.NestedClasses intros) This1.PreferentialComposition.SrcDests.#from(seqBuilder:(
   This1.PreferentialComposition.SrcDests::#seqBuilder() b=This1.PreferentialComposition.SrcDests.#seqBuilder()
   Void unused=(
     This1.Introspection.NestedClasses::vals() intro=intros.vals()

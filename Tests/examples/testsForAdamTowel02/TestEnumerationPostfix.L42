@@ -1,0 +1,34 @@
+{reuse L42.is/AdamTowel02
+
+//reorganize refactor, add default for no path and /
+//add #0, #1,...,#64 to N
+//methods of string similar to vector.
+
+Enumeration:{
+  class method Selector numToSel(that)
+  class method Selector sToSel(that)
+  class method Selector sToIsSel(that)
+  class method Strings sToSs(that)
+  
+  class method traitMeth() {
+    T:{ class method T ord()}
+    class method This n() This(inner:T.ord())
+    method Bool isN() this.inner()==T.ord()
+    }
+  class method from(ToS base){
+    ss=sToSs(base.toS())
+    
+    acc=Refactor.Redirect(\"T" into:N)<<
+      Extends[with ord in Range(0N), s in ss.vals() (use[
+      Refactor.RenameSelector(/"ord" of: /"T" into:this.numToSel(ord))
+      Refactor.RenameSelector(/"n" into:this.sToSel(s))
+      Refactor.RenameSelector(/"n" into:this.sToIsSel(s))    
+      <<traitMeth()
+      ])]<<{}
+      return Enum/*the old one*/<<acc
+    }
+  }
+Main:{
+  return ExitCode.normal()
+  }
+}

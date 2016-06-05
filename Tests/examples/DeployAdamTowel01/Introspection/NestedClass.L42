@@ -56,7 +56,7 @@ method S externalTypeToS() {
     )
   doc=this.record().docOf(path:Path"MyClass")
   nameAndPrefix=doc.annotations().left().toS()
-  sep=nameAndPrefix.firstIndexOf(S".")
+  sep=nameAndPrefix.indexOfLeft(val:S".")
   name= nameAndPrefix(start:sep+1N)
   prefix=N.fromS(nameAndPrefix(start:4N, end:sep)) //4N== S"This".size()
   //Assert.$[prefix>0N]

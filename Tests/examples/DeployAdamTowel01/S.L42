@@ -1,5 +1,7 @@
 { _private(Library _binaryRepr)
- implements  Concept.ToS Concept.Equals Concept.Named, Concept.Classable// will be private
+ implements  Concept.Base, Concept.Equals //needed until we do (also refine) normalization
+ 
+  //#####Implemented
   method myName()GetMyName(This)
   method classAny() This
 
@@ -9,6 +11,14 @@
 
   method toS() this
 
+  method equals(that){
+    with that (on This return this==that)
+    return Bool.false()
+    }
+
+
+  
+  //#####operators
   method
   S ++ (S that) S.#from(binaryRepr: use Alu
       check stringConcat(s1:this.binaryRepr(),s2:that.toS().binaryRepr())
@@ -23,11 +33,141 @@
       return Bool.true()
     return Bool.false()
     }
-  method equals(that){
-    with that (on This return this==that)
+
+method
+This -(This that)
+  this.withoutAll(val:that)
+
+
+method
+Bool >>(This that)
+  this >>=that & this.size()>that.size()
+
+method
+Bool >>=(This that)
+  this.contains(that)
+
+method
+Bool >(This that)
+  this.contains(that)
+  
+    
+  //#####other sequence like methods
+  
+
+method
+N indexOfLeft(S val){
+  //val must be not empty, TODO: error here?
+  var N current=0N
+  while current<this.size() (
+    if this(start:current).beginsWith(val) (return current)
+    current+=1N
+    )
+  return N"-1"
+  }
+
+method
+N indexOfRight(This val){
+  //val must be not empty, TODO: error here?
+  var N current=this.size()-val.size()
+  while current>=0N (
+    if this(start:current).beginsWith(val) (return current)
+    current-=1N
+    )
+  return N"-1"
+  }
+
+method
+This withoutLeft(This val) {
+  pos=this.indexOfLeft(val:val)
+  if pos<0N (return this)
+  return this.without(index:pos, skipNum:val.size())
+  }
+
+method
+This withoutRight(This val){
+  pos=this.indexOfRight(val:val)
+  if pos<0N (return this)
+  return this.without(index:pos, skipNum:val.size())
+  }
+
+method
+This withoutAll(This val)
+  this.replace(val, into:S"")
+
+
+method
+Bool isEmpty()
+  this.size()==0N
+
+method
+This val(N that)
+  this(that)
+
+method
+This left()
+  this.val(0N)
+
+method
+This right()
+  this.val(this.size()-1N)
+
+
+//#################Withs
+
+method
+This with(N that, This val)
+  this(end:that)++val++this(start:that+val.size())
+
+method
+This withLeft(This that)
+  this.with(0N, val:that)
+
+method
+This withRight(This that)
+  this.with(this.size()-1N, val:that)
+
+//insertion
+method
+This withAlso(N that, This val)
+  this(end:that)++val++this(start:that)
+
+method
+This withAlsoLeft(This that)
+  this.withAlso(0N, val:that)
+
+method
+This withAlsoRight(This that)
+  this.withAlso(this.size(), val:that)
+
+
+//skipping/filtering
+method
+This without(N index)
+  this(end:index)++this(start:index+1N)
+
+method
+This without(N index, N skipNum)
+  this(end:index)++this(start:skipNum+index)
+method
+This withoutLeft()
+  this.without(index:0N)
+
+method
+This withoutRight()
+  this.without(index:this.size()-1N)
+
+    
+  method
+  Bool contains(S that){
+    res=this.indexOfLeft(val:that)
+    //Debug(S"S.contains(this:"[this]" that:"[that]")="[res]"")
+    if res>=0N (return Bool.true())
     return Bool.false()
     }
-
+    
+    
+    
   method
   S (N start, N end)
     S.#from(binaryRepr:use Alu
@@ -43,34 +183,18 @@
   method
   S (N end) this(start:0N, end:end)
 
+
+  method N size()
+    N(_binaryRepr: use Alu
+      check stringSize(this.binaryRepr())
+      error void)
+    
+    
+  //##### string special
+  
   method
   Bool beginsWith(S that) this(end:that.size())==that
-
-  method //@private
-  N auxFirstIndexOf(S that) {
-    var N current=0N
-    while current<this.size() (
-      if this(start:current).beginsWith(that) (return current)
-      current+=1N
-      )
-    return 0N-1N
-    error This.subStringNotPresent(string:this,subString:that)
-    }
-  method
-  N firstIndexOf(S that) { //TODO: discuss if should be exception or error
-    res=this.auxFirstIndexOf(that)
-    if res>=0N (return res)
-    error This.subStringNotPresent(string:this,subString:that)
-    }
-  class method Void subStringNotPresent(S string, S subString) void
-
-  method
-  Bool contains(S that){
-    res=this.auxFirstIndexOf(that)
-    //Debug(S"S.contains(this:"[this]" that:"[that]")="[res]"")
-    if res>=0N (return Bool.true())
-    return Bool.false()
-    }
+  
   method
   Bool isASCIILowerCase(N that)
     S"qwertyuiopasdfghjklzxcvbnm".contains(this(that))
@@ -79,11 +203,6 @@
     //Debug(S"S.isASCIIUpperCase(this:"[this]" that:"[that]")")
     S"QWERTYUIOPASDFGHJKLZXCVBNM".contains(this(that))
     )
-
-  method N size()
-    N(_binaryRepr: use Alu
-      check stringSize(this.binaryRepr())
-      error void)
 
   class method
   S doubleQuote()
@@ -96,6 +215,7 @@
     S"
     '
     "
+    
   method
   S replace(S that, S into)
     S.#from(binaryRepr:use Alu
@@ -136,4 +256,6 @@
   class method This #from(S.SBuilder builder)
     This._private(_binaryRepr:builder.binaryRepr())
   class method mut S.SBuilder #builder() S.SBuilder.empty()
+  
+  
   }

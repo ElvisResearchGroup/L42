@@ -9,14 +9,22 @@ Classable:{interface
 Named:{interface
   class method S myName() //className? merge with Classable?
   }
+Base:{interface 
+  implements ToS, Classable, Equals, Named
+  //class method This from(Base base)
+  }
  //boxes: class capsule imm mut lent read & var novar
 //but to avoid initialization/update cast: novar, capsule==lent
 //class imm mut lent read
 Wrapper:{interface read method Any inner() }
-TypeWrapper:{interface read method class Any inner() }
-ReadWrapper:{interface read method read Any inner() }
-MutWrapper:{interface  implements ReadWrapper mut method mut Any #inner()}
-LentWrapper:{interface  implements ReadWrapper mut method lent Any #inner()}
+ClassWrapper:{interface read method class Any inner() }
+//ReadWrapper:{interface read method read Any inner() }
+MutWrapper:{interface  
+ //implements ReadWrapper
+ read method read Any inner()
+ mut method mut Any #inner()
+ }
+//LentWrapper:{interface  implements ReadWrapper mut method lent Any #inner()}
 
 Equals:{interface
   read method Bool equals(read Any that)

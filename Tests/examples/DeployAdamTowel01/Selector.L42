@@ -65,18 +65,18 @@
   method
   S name() (
     str=this.toS()
-    str(end:str.firstIndexOf(S"("))
+    str(end:str.indexOfLeft(val:S"("))
     )
 
   method
   Strings names(){
     var S str=this.toS()
-    str:=str(start:str.firstIndexOf(S"(")+1N, end:str.size()-1N)++S","
+    str:=str(start:str.indexOfLeft(val:S"(")+1N, end:str.size()-1N)++S","
     // from foo(a,b,c) to a,b,c,
     result=Strings.empty()
     if str==S"," (return result)
     while str!=S"" (
-      pos=str.firstIndexOf(S",")
+      pos=str.indexOfLeft(val:S",")
       result.add(right:str(end:pos))
       str:=str(start:pos+1N)
       )
