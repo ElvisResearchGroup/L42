@@ -200,4 +200,17 @@
 
   Tools:...
 
+//########### new interface with \  and better syntax:
+Rename:{
+  class method  RenamePath path(Path that, Path to) RenamePath(that, to:to)
+ class method class Path #default#path(Void that) Path
+ class method class Path #default#path(Void to) Path
+ class method RenameSelector  selector(Selector that, Path of, Selector to) RenameSelector(that,of:of,to:to)
+ class method RenameSelector  selector(Selector that, Selector to) RenameSelector(that,of:Path"This0",to:to)
+ //still throw general exceptions
+ class method class Selector #default#selector(Void that) Selector
+ class method class Selector #default#selector(Void to) Selector
+ class method class Path #default#selector(Void of) Path
+
+  }
 }
