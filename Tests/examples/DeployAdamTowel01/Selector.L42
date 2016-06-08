@@ -95,5 +95,20 @@
     tot:=tot(start:0N end:tot.size()-1N)++S")"
     return Selector.fromS(tot)
     }
+
+
+    class method //will be private
+    S leftAsASCIIUpperCase(S that){
+      index=S.aSCIILowerCase().indexOfLeft(val:that.left())
+      if index>=0N  ( return that.withLeft(S.aSCIIUpperCase()(index) ))
+      return that
+      }
+
+    method
+    This with(S prefix) {
+      S newName=prefix++This.leftAsASCIIUpperCase(this.name())
+      return Selector.from(name:newName, names:this.names())
+      }
+
   //we still need to add check validity, and fields name, list parameters, and ways to add/remove parameters
   }

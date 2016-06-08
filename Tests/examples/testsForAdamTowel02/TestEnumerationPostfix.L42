@@ -1,26 +1,34 @@
 {reuse L42.is/AdamTowel02
 
-//reorganize refactor, add default for no path and /
+//insert from(base)
 
 Enumeration:{
-  class method Selector numToSel(that)
-  class method Selector sToSel(that)
-  class method Selector sToIsSel(that)
+  InvalidElements:Message.$<<{}
+
+  class method Selector numToSel(N that){
+    if that>=64N (error InvalidElements"too many enumeration elements:"[that+1N]", max is 64")
+    return Selector.fromS(S"#"++that.toS())
+    }
+  class method Selector sToSel(S that){
+    return Selector.fromS(that++S"()")
+    catch Selector.ParseFail pf ( error InvalidElements"invalid enumeration name:"[that]"")
+    }
+
   class method Strings sToSs(that)
 
-  class method traitMeth() {
+  class method traitMeth() (,{
     T:{ class method T ord()}
     class method This n() This(inner:T.ord())
     method Bool isN() this.inner()==T.ord()
-    }
-  class method from(ToS base){
-    ss=sToSs(base.toS())
+    },)
 
+  class method from(ToS base){
+    sel=this.sToSel(s)
     acc=Refactor.Redirect(\"T" into:N)<<
-      Extends[with ord in Range(0N), s in ss.vals() (use[
-      Refactor.RenameSelector(/"ord" of: /"T" into:this.numToSel(ord))
-      Refactor.RenameSelector(/"n" into:this.sToSel(s))
-      Refactor.RenameSelector(/"n" into:this.sToIsSel(s))
+      Extends[with ord in Range(0N), s in sToSs(base.toS()).vals() (use[
+      Refactor.Rename.selector(/"ord" of: /"T" to:this.numToSel(ord))
+      Refactor.Rename.selector(/"n" to:sel)
+      Refactor.Rename.selector(/"n" to:sel.add(prefix:S"is"))
       <<traitMeth()
       ])]<<{}
       return Enum/*the old one*/<<acc
@@ -35,30 +43,24 @@ Main:{
 
 
 
-
+//reorganize refactor, add default for no path and /, done for rename
+/*
 1  Redirect:{ that->Path
-
 Rename.selector(   .path(  .selector(of
 2  RenameSelector:{(Selector that, Path of, Selector to)   that->Selector, of->Path to->Selector,   shortcut no of
 3  RenamePath:{(Path that, Path to)  that,to->Path
-
 RemoveImplementation. selector( .selector(of  .selector( of: andMoveTo: .selector( andMoveTo: .path(
 4  RemoveImplementationSelector:{(Selector that, Path of)
 5  RemoveImplementationPath:{(Path that)
 6  MoveImplementationSelector:{(Selector that, Path of,Selector to)
-
 Documentation .addSelector .addSelector(of .addPath .removeSelector( .removeSelector(of .removePath(
 7  AddDocumentationSelector:{(Selector that, Path of,Introspection.Doc doc)
 8  AddDocumentationPath:{(Path that,Introspection.Doc doc)
-
 Hide.path( .selector( .selector(of
 9  MakePrivatePath:{(Path that) //Can be called Hide
 10  MakePrivateSelector:{(Selector that, Path of)
-
 Call it ComposeMethods?
 11  SumMethods:{   (Selector that,Selector and, Path of, S over, Selector to)
-
-
 12  MakeMethod:{    (Selector that, Path of, Introspection.Mdf.List mdfs, N exceptionN)
-
+*/
 

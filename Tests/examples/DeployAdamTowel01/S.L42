@@ -1,6 +1,6 @@
 { _private(Library _binaryRepr)
  implements  Concept.Base, Concept.Equals //needed until we do (also refine) normalization
- 
+
   //#####Implemented
   method myName()GetMyName(This)
   method classAny() This
@@ -17,7 +17,7 @@
     }
 
 
-  
+
   //#####operators
   method
   S ++ (S that) S.#from(binaryRepr: use Alu
@@ -50,10 +50,10 @@ Bool >>=(This that)
 method
 Bool >(This that)
   this.contains(that)
-  
-    
+
+
   //#####other sequence like methods
-  
+
 
 method
 N indexOfLeft(S val){
@@ -121,7 +121,7 @@ This with(N that, This val)
 
 method
 This withLeft(This that)
-  this.with(0N, val:that)
+  this.with(0N, val:that) //TODO: should be with(left)??
 
 method
 This withRight(This that)
@@ -157,7 +157,7 @@ method
 This withoutRight()
   this.without(index:this.size()-1N)
 
-    
+
   method
   Bool contains(S that){
     res=this.indexOfLeft(val:that)
@@ -165,9 +165,9 @@ This withoutRight()
     if res>=0N (return Bool.true())
     return Bool.false()
     }
-    
-    
-    
+
+
+
   method
   S (N start, N end)
     S.#from(binaryRepr:use Alu
@@ -188,20 +188,24 @@ This withoutRight()
     N(_binaryRepr: use Alu
       check stringSize(this.binaryRepr())
       error void)
-    
-    
+
+
   //##### string special
-  
+
   method
   Bool beginsWith(S that) this(end:that.size())==that
-  
+
+
+  class method S aSCIILowerCase() S"qwertyuiopasdfghjklzxcvbnm"
+  class method S aSCIIUpperCase() S"QWERTYUIOPASDFGHJKLZXCVBNM"
+
   method
   Bool isASCIILowerCase(N that)
-    S"qwertyuiopasdfghjklzxcvbnm".contains(this(that))
+    S.aSCIILowerCase().contains(this(that))
   method
   Bool isASCIIUpperCase(N that) (
     //Debug(S"S.isASCIIUpperCase(this:"[this]" that:"[that]")")
-    S"QWERTYUIOPASDFGHJKLZXCVBNM".contains(this(that))
+    S.aSCIIUpperCase().contains(this(that))
     )
 
   class method
@@ -215,7 +219,7 @@ This withoutRight()
     S"
     '
     "
-    
+
   method
   S replace(S that, S into)
     S.#from(binaryRepr:use Alu
@@ -256,6 +260,6 @@ This withoutRight()
   class method This #from(S.SBuilder builder)
     This._private(_binaryRepr:builder.binaryRepr())
   class method mut S.SBuilder #builder() S.SBuilder.empty()
-  
-  
+
+
   }
