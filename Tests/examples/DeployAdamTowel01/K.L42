@@ -27,7 +27,8 @@ This.$ #from(S.SBuilder builder)
 class method
 mut S.SBuilder #builder()
     S.SBuilder.empty()
-class method Library<< (Library that){
+class method
+Library<< (Library that){
     //compute names
     i=Introspection(lib:that)
     names=S""[with m in i.methods().vals() (
