@@ -3,14 +3,13 @@ ToS:{interface
   read method S toS()
   }
 Classable:{interface
-  read method class Any classAny()
+  read method class Classable classAny()
   //read method class This class()
+  class method S readableName()
   }
-Named:{interface
-  class method S myName() //className? merge with Classable?
-  }
-Base:{interface 
-  implements ToS, Classable, Equals, Named
+
+Base:{interface
+  implements ToS, Classable, Equals
   //class method This from(Base base)
   }
  //boxes: class capsule imm mut lent read & var novar
@@ -19,7 +18,7 @@ Base:{interface
 Wrapper:{interface read method Any inner() }
 ClassWrapper:{interface read method class Any inner() }
 //ReadWrapper:{interface read method read Any inner() }
-MutWrapper:{interface  
+MutWrapper:{interface
  //implements ReadWrapper
  read method read Any inner()
  mut method mut Any #inner()

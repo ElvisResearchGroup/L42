@@ -20,7 +20,7 @@ Library traitUnit() { Concept.Equals, Concept.ToS
     return Bool.false()
     }
 
-  Support:{ implements Concept.ToS Concept.Equals Concept.Named,
+  Support:{ implements Concept.ToS Concept.Equals
 
     class method
     This #from(S.SBuilder builder)
@@ -150,11 +150,11 @@ Library traitPer(){
     class method
     This (T1 that, T2 per)
       This(that.#inner()/per.#inner())
-    
+
     method
     T1 left(T2 right)
       T1(this.#inner()*right.#inner())
-    
+
     method
     T1 right(T2 left)
       T1(left.#inner()/this.#inner())

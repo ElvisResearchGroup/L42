@@ -10,10 +10,10 @@ AddEquals:...
 Solid:{
   //class, ToS ==, != required
   class method Library solidTrait(){ implements
-        Concept.Classable, Concept.Named, Concept.ToS, Concept.Equals //may be Parsable?
+        Concept.Classable, Concept.ToS, Concept.Equals //may be Parsable?
     method classAny() This
     read method class This class() This
-    method myName() GetMyName(This)
+    method readableName() GetMyName(This)
     method
     Bool == (This that)
     method

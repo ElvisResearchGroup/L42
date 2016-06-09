@@ -1,8 +1,22 @@
-{(Library binaryRepr) implements Concept.ToS Concept.Equals Concept.Named//@private
+{(Library binaryRepr)
+ implements Concept.Equals, Concept.ToS, Concept.Classable//@private
+
+  method classAny() This
+  method readableName()GetMyName(This)
   method
-  myName()GetMyName(This)
+  toS(){
+    if this (return S"true")
+    return S"false"
+    }
+
   method
-  Void #checkTrue() exception Void 
+  equals(that){
+    with that (on This return this==that)
+    return Bool.false()
+    }
+
+  method
+  Void #checkTrue() exception Void
     use Alu
       check ifInt32EqualDo(n1:this.binaryRepr() n2:0N.binaryRepr())
       exception void
@@ -28,17 +42,7 @@
     if this (return This.false())
     return This.true()
     }
-  method
-  toS(){
-    if this (return S"true")
-    return S"false"
-    }
-  class method
-  This fromS(read Concept.ToS that){
-    if that.toS()==S"true" (return This.true())
-    if that.toS()==S"false" (return This.false())
-    error This.parseError(that.toS())
-    }
+
   method
   This ==(This that) {
     if this (return that)
@@ -46,12 +50,17 @@
     }
   method
   This !=(This that) !(this==that)
-  method
-  equals(that){
-    with that (on This return this==that)
-    return Bool.false()
+
+
+  class method
+  This fromS(read Concept.ToS that){
+    if that.toS()==S"true" (return This.true())
+    if that.toS()==S"false" (return This.false())
+    error This.parseError(that.toS())
     }
+
   class method
   Any parseError(S that)
     S"Bool.UnsatisfactoryErrorToAvoidCycle, replace in AdamT2"
+
 }

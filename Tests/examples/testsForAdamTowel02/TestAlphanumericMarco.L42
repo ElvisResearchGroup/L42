@@ -7,26 +7,24 @@ Alphanumeric:{
   Library <<(Library that) exception LiteralMethodConflict{
     lib=(,{implements Concept.Base
       S that
-      
+
       class method
       This #from(S.SBuilder builder)
         This.parse(S.#from(builder:builder))
-        
+
       class method
       mut S.SBuilder #builder()
         S.SBuilder.empty()
-      
+
       class method
       This parse(S that)
       },)
     return K<<Extends[lib]<<that
-    exception on MetaGuard.MethodClash
-      LiteralMethodConflict""
-    error on MetaGuard.ClassClash 
-      Assert.CodeNotReachable""//???
+    exception on MetaGuard.MethodClash, MetaGuard.ClassClash
+      LiteralMethodConflict"Invalid components into provided code"
     }
   }
-Email: Alphanumeric << { 
+Email: Alphanumeric << {
   S local //fields
   S domain
 
@@ -45,7 +43,7 @@ Main:{
   b1=myEmail.local() ==S"arthur.dent" //holds
   b2=myEmail.domain() ==S"gmail.com" //holds
   b3=myEmail.toS() ==S"arthur.dent@gmail.com" //holds
-  
+
   with n in Range(3N) (Debug(S"hi"++n.toS()))
   with n in Range(3\) (Debug(S"hi"++n.toS()))
   return ExitCode.normal()

@@ -1,10 +1,10 @@
-{(Library _binaryRepr) implements Concept.ToS Concept.Equals Concept.Named//@private
+{(Library _binaryRepr) implements Concept.ToS Concept.Equals, Concept.Classable //@private
   Plg:{//@plugin
     //L42.is/connected/withNumbers
     }
 
-
-  method myName()GetMyName(This)
+  method classAny() This
+  method readableName()GetMyName(This)
   class method
   This fromS(Concept.ToS that) (
     s=that.toS()

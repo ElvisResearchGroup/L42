@@ -1,4 +1,4 @@
-{interface implements Concept.ToS, Concept.Equals, Concept.Classable, Concept.Named
+{interface implements Concept.ToS, Concept.Equals, Concept.Classable
 class method S kind()
 method S text()
 method Opt responseOf()
@@ -37,8 +37,8 @@ $:{()
   class method Library <<(Library that)
     SafeOperatorsAccess.compose(left:that, right:This.messageTrait())
   class method Library messageTrait() {(S _text, Message.Opt cause) implements Message
-    method myName()GetMyName(This)
-    method kind() this.myName()
+    method readableName()GetMyName(This)
+    method kind() this.readableName()
     method text() this._text()
     method responseOf() this.cause()
     method equals(that){

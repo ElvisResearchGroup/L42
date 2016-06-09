@@ -4,7 +4,11 @@
 NotStringable:{(N that)}
 
 
-Person:Data.AddToS<<{(S name, var N age)  implements Concept.Classable  method classAny() This  }
+Person:Data.AddToS<<{(S name, var N age)
+  implements Concept.Classable
+  method classAny() This
+  method readableName()GetMyName(This)
+  }
 //Person:Data.AddToS<<{(S name, var N age)}
 Person2:Data.AddToS<<{(S name, NotStringable age)}
 Person3:Data.AddToS<<{(Concept.ToS name, Any age)}

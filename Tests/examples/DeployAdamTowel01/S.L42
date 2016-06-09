@@ -2,8 +2,8 @@
  implements  Concept.Base, Concept.Equals //needed until we do (also refine) normalization
 
   //#####Implemented
-  method myName()GetMyName(This)
   method classAny() This
+  method readableName()GetMyName(This)
 
   class method This #from(Library binaryRepr) This._private(_binaryRepr:binaryRepr)
 

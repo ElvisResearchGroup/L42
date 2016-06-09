@@ -1,6 +1,8 @@
-{(fwd NestedClass root,Path path, N memberN, N typeN,Record record) implements Concept.ToS,Concept.Named //@private
-method myName()GetMyName(This)
-method toS() This.myName()++S"["[this.allAsString()]"]"
+{(fwd NestedClass root,Path path, N memberN, N typeN,Record record) implements Concept.ToS, Concept.Classable //@private
+
+ method classAny() This
+method readableName()GetMyName(This)
+method toS() This.readableName()++S"["[this.allAsString()]"]"
 method S allAsString() this.record()"AllAsString"  //just the library literal
 method S strRepr() { //should become toS? is toS ok?
   n=this.referencedPath()

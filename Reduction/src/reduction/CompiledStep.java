@@ -23,7 +23,9 @@ import auxiliaryGrammar.Program;
 
 public class CompiledStep extends SmallStep{
   @Override protected void log(String s) { }
-  protected ExpCore executeAtomicStep(Program p1, ExpCore _e1) {
+
+  @Override
+  protected ExpCore executeAtomicStep(Program p1, ExpCore _e1,String nestedName) {
     if(!IsCompiled.of(_e1)){return step(p1, _e1);}
     return Resources.withPDo(p1,()->{
       ExpCore e1=NormalizeBlocks.of(_e1);
@@ -33,9 +35,9 @@ public class CompiledStep extends SmallStep{
       Translator code=Timer.record("Translator.translateProgram",()->Translator.translateProgram(p1, e1));
       try{
         L42.compilationRounds++;
-        System.out.println("Compilation Iteration: "+L42.compilationRounds+ "");
+        System.out.println("Compilation Iteration-- "+nestedName+":"+L42.compilationRounds+ "");
         Object o=code.runMap();
-        System.out.println("Compilation Iteration complete: "+L42.compilationRounds+ "");
+        System.out.println("Compilation Iteration complete-- "+nestedName+":"+L42.compilationRounds+ "");
         assert o instanceof ClassB;
         return (ClassB)o;
         }

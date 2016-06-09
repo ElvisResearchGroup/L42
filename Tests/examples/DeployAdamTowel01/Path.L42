@@ -1,5 +1,7 @@
-{ _private(Library _binaryRepr) implements Concept.ToS Concept.Equals Concept.Named//@private
-  method myName()GetMyName(This)
+{ _private(Library _binaryRepr) implements Concept.ToS Concept.Equals, Concept.Classable//@private
+
+  method classAny() This
+  method readableName()GetMyName(This)
 
   class method
   This fromDocInternalizedS(S that){

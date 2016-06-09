@@ -8,14 +8,14 @@ Parsable:{
     return Extends[{
       //ParseFailure:Message:S[]<<{ implements Guard} no need, related to invariant?
       class method// if you do not implement it, it is a constructor?
-      This fromS(read Concept.ToS that)    
+      This fromS(read Concept.ToS that)
       //will be in the interface when there is class refinement,
       //and will be imm in the interface, and classes can refine to their outer0, and to capsule if makes sense
-      
+
       class method
       This #from(S.SBuilder builder)
         This.fromS(S.#from(binaryRepr: builder.binaryRepr()))
-    
+
       class method
       mut S.SBuilder #builder() S.SBuilder.empty()
      }]<<that
@@ -30,7 +30,7 @@ SealState:{
     return that
     }
   }
-  
+
 DataFromToS:{// in the future we can add also hashCode and > =>
   class method Library<<(Library that) exception DecorationUnfeasable{
     return Extends[{ implements Concept.ToS
@@ -55,17 +55,6 @@ Equals:{
       }]<<that
     exception on MetaGuard
       DecorationUnfeasable"Equals"
-    }
-  }
-Named:{
-  class method Library<<(Library that) exception DecorationUnfeasable{
-    return Extends[{ implements Concept.Named
-        method myName()
-          Introspection(clazz:This).externalTypeToS()
-        }]<<that
-    //can improve error: if is method defined against method implemented
-    exception on MetaGuard
-      DecorationUnfeasable"Named"
     }
   }
 }

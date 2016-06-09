@@ -6,10 +6,10 @@
         right:that)
 
 SolidTrait:{class method Library (){//Data is more than Solid, and Liquid, Gas, Plasma can be good methafores
-     implements Concept.ToS,Concept.Equals,Concept.Classable,Concept.Named  //may be Parsable?
+     implements Concept.ToS,Concept.Equals,Concept.Classable  //may be Parsable?
     method classAny() This
     read method class This class() This
-    method myName() GetMyName(This)
+    method readableName() GetMyName(This)
     method equals(that) {
       with that (on This return that==this)
       return Bool.false()
@@ -25,7 +25,7 @@ SolidTrait:{class method Library (){//Data is more than Solid, and Liquid, Gas, 
     Top: SafeOperatorsAccess.compose(left:SolidTrait() //Use[SolidTrait()]<<
       right:{(N that) implements Concept.ToS
       method toS()
-        This.myName()++S"."++this.name()
+        This.readableName()++S"."++this.name()
       method
       S name()
         This.names().val(this.that())
