@@ -5,7 +5,11 @@ Main:{
     1N==1N;
     2N==2N
     ]
-//add negative case too
+  (
+  Assert.Pre[1N!=1N]
+  catch error Assert.Bug Debug(S"pass")
+  error S"FAIL"
+  )
   return ExitCode.normal()
   }
 

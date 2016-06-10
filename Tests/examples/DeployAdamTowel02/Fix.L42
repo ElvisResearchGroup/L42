@@ -63,7 +63,7 @@ Path:{
       )
     }
   }
-  /*Assert:{interface
+  Assert:{interface
     Bug:This2.Message.$<<{ implements This1}
     Pre:{
       class method mut Tests #seqBuilder() Tests.empty()
@@ -80,20 +80,22 @@ Path:{
         )
       }
    Test: {(This3.Bool that, S msg)}
-   Tests: Use[Collections.vector(of:Test)]<<{ //need use to hide add(Test that)
+   Tests: Refactor.compose(//do not use Use to save compilation time
+     left:Refactor.Hide.selector(\"#add(that)")<<Collections.vector(of:Test)
+     right:{ 
 
      mut method
-     Void #add(Bool that, Concept.ToS msg)
+     Void #add(This3.Bool that, Concept.ToS msg)
          this.add(right: Test(that,msg:S""[msg;S.nl()]"number:"[this.size()]" failed") )
 
-//     mut method//take 30 min!
-//     Void #add(Bool that)
-//         this.add(right: Test(that,msg:S"Condition number "[this.size()]" failed") )
+     mut method
+     Void #add(This3.Bool that)
+         this.add(right: Test(that,msg:S"Condition number "[this.size()]" failed") )
 
      read method
      S collapse() S""[with a in this.vals() (
-          if a.that() ( use[a.msg(), separedBy:S.nl()] )
+          if !a.that() ( use[a.msg(), separedBy:S.nl()] )
           )]""
-     }
-  }*/
+     })
+  }
 }

@@ -73,10 +73,10 @@ public class TestBase02 {
    @Test
    public  void _02_05UseAssertPreHold() throws Throwable{
      TestHelper.configureForTest();
+     //new TestBase01()._01_00DeployAdamTowel01();
      //this._02_00DeployAdamTowel02();
      L42.main(new String[]{"examples/testsForAdamTowel02/TestAssertPreHold.L42"});
-     Assert.assertEquals(L42.record.toString(),
-         "This.A.B.C\nSecret\nFailed\n");
+     TestHelper.check42Fails(L42.record.toString());
      }
 
    //OLD unused @Test
