@@ -7,6 +7,8 @@
 
 SolidTrait:{class method Library (){//Data is more than Solid, and Liquid, Gas, Plasma can be good methafores
      implements Concept.ToS,Concept.Equals,Concept.Classable  //may be Parsable?
+    
+    method is(subtype) {  with subtype (on class This return Bool.true()) return Bool.false()}     
     method classAny() This
     read method class This class() This
     method readableName() GetMyName(This)

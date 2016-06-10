@@ -1,6 +1,7 @@
 {(fwd NestedClass root,Path path, N memberN, N typeN,Record record) implements Concept.ToS, Concept.Classable //@private
 
- method classAny() This
+method is(subtype) {  with subtype (on class This return Bool.true()) return Bool.false()}
+method classAny() This
 method readableName()GetMyName(This)
 method toS() This.readableName()++S"["[this.allAsString()]"]"
 method S allAsString() this.record()"AllAsString"  //just the library literal

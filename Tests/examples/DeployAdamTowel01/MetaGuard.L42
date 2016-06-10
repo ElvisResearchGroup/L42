@@ -12,6 +12,7 @@
       method kind() This.readableName()
       method text() S""
       method responseOf() Message.Opt()
+      method is(subtype) {  with subtype (on class This return Bool.true()) return Bool.false()}
       method readableName()GetMyName(This)
       method equals(that){
         with that (on This return this==that)

@@ -37,6 +37,8 @@ $:{()
   class method Library <<(Library that)
     SafeOperatorsAccess.compose(left:that, right:This.messageTrait())
   class method Library messageTrait() {(S _text, Message.Opt cause) implements Message
+    
+    method is(subtype) {  with subtype (on class This return Bool.true()) return Bool.false()}
     method readableName()GetMyName(This)
     method kind() this.readableName()
     method text() this._text()

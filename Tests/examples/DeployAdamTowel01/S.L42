@@ -2,6 +2,7 @@
  implements  Concept.Base, Concept.Equals //needed until we do (also refine) normalization
 
   //#####Implemented
+  method is(subtype) {  with subtype (on class This return Bool.true()) return Bool.false()}
   method classAny() This
   method readableName()GetMyName(This)
 

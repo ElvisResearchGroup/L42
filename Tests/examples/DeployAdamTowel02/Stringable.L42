@@ -6,6 +6,7 @@ class method Library stringableTrait(){
 
   method S ~() this.inner()
 
+  method is(subtype) {  with subtype (on class This return Bool.true()) return Bool.false()}
   class method S readableName()
   method toS()  This.readableName()[]"["[this.inner()]"]"
   method Library binaryRepr() this.inner().binaryRepr()

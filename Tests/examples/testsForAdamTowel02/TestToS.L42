@@ -6,6 +6,7 @@ NotStringable:{(N that)}
 
 Person:Data.AddToS<<{(S name, var N age)
   implements Concept.Classable
+  method is(subtype) {  with subtype (on class This return Bool.true()) return Bool.false()}
   method classAny() This
   method readableName()GetMyName(This)
   }
