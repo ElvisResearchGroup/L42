@@ -1,7 +1,8 @@
 {(N that)
-   implements Concept.ToS Concept.Equals Concept.Named
+   implements Concept.ToS Concept.Equals
 
-  method myName()GetMyName(This)
+  method is(subtype) {  with subtype (on class This return Bool.true()) return Bool.false()}
+  method readableName()GetMyName(This)
 
   method toS() (
     one=This(1N)

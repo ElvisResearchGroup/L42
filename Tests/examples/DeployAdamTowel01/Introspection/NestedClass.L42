@@ -1,7 +1,10 @@
 {//findMeNestedClass
-(fwd NestedClass _root,Path path,MirrorPr mirror, Record record) implements Member,Concept.Equals //@private
-method myName()GetMyName(This)
-method toS() This.myName()++S"["[this.allAsString()]"]"
+(fwd NestedClass _root,Path path,MirrorPr mirror, Record record) implements Member,Concept.Equals, Concept.Classable //@private
+
+method is(subtype) {  with subtype (on class This return Bool.true()) return Bool.false()}
+method classAny() This
+method readableName()GetMyName(This)
+method toS() This.readableName()++S"["[this.allAsString()]"]"
 method Bool ==(This that){
   if this.path()!=that.path() (return Bool.false())
   //else equal paths

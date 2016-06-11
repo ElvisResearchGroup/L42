@@ -2,37 +2,37 @@
 
 Alphanumeric:{
   ParseFail: Message.$<<{implements Guard.ParseFail}
-  
+
   class method
   Library <<(Library that){
     lib=(,{
       S that
-      
+
       class method
       This #from(S.SBuilder builder)
         This.parse(S.#from(builder:builder))
-        
+
       class method
       mut S.SBuilder #builder()
         S.SBuilder.empty()
-        
+
       class method
       This parse(S that)
       },)
-      
+
     res=Extends[lib]<<that
-    
+
     error on MetaGuard.ClassClash
       Assert.ObservedBug"Someone redefined part of the implementation of AlphaNumeric"
-      
+
     error on MetaGuard.MethodClash
       Assert.ObservedBug"Someone redefined parts of the implementation of Alphanumeric badly"
-      
+
     return K<<res
     }
   }
 
-Email: Data << Alphanumeric << { 
+Email: Data << Alphanumeric << {
   S local //fields
   S domain
 
@@ -59,8 +59,8 @@ Assert.Holds[
   myEmail.toS() ==S"arthur.dent@gmail.com" msg: S"Original string does not round-trip";
   ]
 
-  Debug(S"Email parsing complete")  
-  
+  Debug(S"Email parsing complete")
+
   // Try to exercise the catch on ClassClash
 
   var Assert.ObservedBug bb={
@@ -69,20 +69,20 @@ Assert.Holds[
     error S"unable to exercise ClassClash in Alphanumeric"
   }
   var Message.Opt e = bb.responseOf()  // TODO: understand why this unexpectedly needed a stated type
-  
+
   if !e.isPresent() (
     error S"ClassClash result does not have a responseOf()"
-    )  
- 
+    )
+
  // TODO: the #tilde method will become a get() method
  // TODO: some time, it will be possible to get a name from the class of an arbitrary instance
  /*
-  if e.#tilde().classAny().myName() != MetaGuard.ClassClash.myName() (
+  if e.#tilde().classAny().readableName() != MetaGuard.ClassClash.readableName() (
     error S"Alphanumeric{interface} response != ClassClash"
     )
   */
-    
-  // Try to exercise the catch on MethodClash  
+
+  // Try to exercise the catch on MethodClash
   bb := {
     lib=Alphanumeric << {class method Void #builder()}
     catch error Assert.ObservedBug b (return b)
@@ -92,11 +92,11 @@ Assert.Holds[
 
   if !e.isPresent() (
     error S"MethodClash result does not have a responseOf()"
-    )  
+    )
   // TODO: some time it will be possible to test the type of e.get()
-  
-  Debug(S"Mis-metaprogramming tests complete")  
-    
+
+  Debug(S"Mis-metaprogramming tests complete")
+
   return ExitCode.normal()
   }
 }

@@ -1,13 +1,14 @@
 {
 class method Library stringableTrait(){
-  (S inner) implements Concept.ToS, Concept.Named, Concept
+  (S inner) implements Concept.ToS
   class method This (Concept.ToS that)
     This(inner:that.toS())
 
   method S ~() this.inner()
 
-  class method S myName()
-  method toS()  This.myName()[]"["[this.inner()]"]"
+  method is(subtype) {  with subtype (on class This return Bool.true()) return Bool.false()}
+  class method S readableName()
+  method toS()  This.readableName()[]"["[this.inner()]"]"
   method Library binaryRepr() this.inner().binaryRepr()
   method Bool != (This that) !(this==that)
   method Bool == (This that) this.inner()==that.inner()

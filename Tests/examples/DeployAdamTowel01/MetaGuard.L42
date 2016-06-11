@@ -5,14 +5,15 @@
     class method S libToS(Library that) S"TO FIX"
 
     class method Library recordWrapperToSTrait(){ implements MetaGuard
-      method toS() This.myName()++This1.libToS(this.lib())
+      method toS() This.readableName()++This1.libToS(this.lib())
       method Library lib()
       }
     class method Library recordWrapperTrait(){ implements MetaGuard
-      method kind() This.myName()
+      method kind() This.readableName()
       method text() S""
       method responseOf() Message.Opt()
-      method myName()GetMyName(This)
+      method is(subtype) {  with subtype (on class This return Bool.true()) return Bool.false()}
+      method readableName()GetMyName(This)
       method equals(that){
         with that (on This return this==that)
         return Bool.false()
@@ -74,13 +75,13 @@ DispatchMemberUnavailable:{
     )
   }
 NestedClassUnavailable:RecordWrapper<<{(Path path,Bool isPrivate) implements MemberUnavailable
-  method toS() This.myName()++S"[path:"[this.path()]",isPrivate:"[this.isPrivate()]"]"
+  method toS() This.readableName()++S"[path:"[this.path()]",isPrivate:"[this.isPrivate()]"]"
   class method This (Introspection.Record record, Library lib)
     This(path:Path.fromDocInternalizedS(record"Path"),isPrivate:Bool.fromS(record"IsPrivate"))
   class method S libName()S"MemberUnavailable"
   }
 MethodUnavailable:RecordWrapper<<{(Path path,Selector selector,Bool isPrivate) implements MemberUnavailable
-  method toS() This.myName()++S"[path:"[this.path()]", selector:"[this.selector()]",isPrivate:"[this.isPrivate()]"]"
+  method toS() This.readableName()++S"[path:"[this.path()]", selector:"[this.selector()]",isPrivate:"[this.isPrivate()]"]"
   class method This (Introspection.Record record, Library lib)
     This(path:Path.fromDocInternalizedS(record"Path"),selector:Selector.fromS(record"Selector"),isPrivate:Bool.fromS(record"IsPrivate"))
   class method S libName()S"MemberUnavailable"

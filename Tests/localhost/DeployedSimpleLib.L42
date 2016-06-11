@@ -9,7 +9,7 @@ class method
 Library normal() 
 class method 
 Library failure() }
-Bool:{implements This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Named
+Bool:{implements This1.Concept.Equals, This1.Concept.ToS, This1.Concept.Classable
 method 
 Void #checkTrue() exception Void 
 class method 
@@ -22,12 +22,12 @@ method
 This0 #or(This0 that) 
 method 
 This0 #bang() 
-class method 
-This0 fromS(read This1.Concept.ToS that) 
 method 
 This0 #equalequal(This0 that) 
 method 
 This0 #bangequal(This0 that) 
+class method 
+This0 fromS(read This1.Concept.ToS that) 
 class method 
 Any parseError(This1.S that) 
 ParseFail:{implements This2.Guard.ParseFail, This2.Message
@@ -74,7 +74,7 @@ method
 This1 #from(This3.S.SBuilder builder) }
 method 
 mut This2.S.SConcat #seqBuilder() }}
-N:{implements This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Named
+N:{implements This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Classable
 class method 
 This0 fromS(This1.Concept.ToS that) 
 class method 
@@ -134,6 +134,134 @@ read method
 This1 #inner() 
 read method 
 Void #close() }
+class method 
+This0 #0() 
+class method 
+This0 #1() 
+class method 
+This0 #2() 
+class method 
+This0 #3() 
+class method 
+This0 #4() 
+class method 
+This0 #5() 
+class method 
+This0 #6() 
+class method 
+This0 #7() 
+class method 
+This0 #8() 
+class method 
+This0 #9() 
+class method 
+This0 #10() 
+class method 
+This0 #11() 
+class method 
+This0 #12() 
+class method 
+This0 #13() 
+class method 
+This0 #14() 
+class method 
+This0 #15() 
+class method 
+This0 #16() 
+class method 
+This0 #17() 
+class method 
+This0 #18() 
+class method 
+This0 #19() 
+class method 
+This0 #20() 
+class method 
+This0 #21() 
+class method 
+This0 #22() 
+class method 
+This0 #23() 
+class method 
+This0 #24() 
+class method 
+This0 #25() 
+class method 
+This0 #26() 
+class method 
+This0 #27() 
+class method 
+This0 #28() 
+class method 
+This0 #29() 
+class method 
+This0 #30() 
+class method 
+This0 #31() 
+class method 
+This0 #32() 
+class method 
+This0 #33() 
+class method 
+This0 #34() 
+class method 
+This0 #35() 
+class method 
+This0 #36() 
+class method 
+This0 #37() 
+class method 
+This0 #38() 
+class method 
+This0 #39() 
+class method 
+This0 #40() 
+class method 
+This0 #41() 
+class method 
+This0 #42() 
+class method 
+This0 #43() 
+class method 
+This0 #44() 
+class method 
+This0 #45() 
+class method 
+This0 #46() 
+class method 
+This0 #47() 
+class method 
+This0 #48() 
+class method 
+This0 #49() 
+class method 
+This0 #50() 
+class method 
+This0 #51() 
+class method 
+This0 #52() 
+class method 
+This0 #53() 
+class method 
+This0 #54() 
+class method 
+This0 #55() 
+class method 
+This0 #56() 
+class method 
+This0 #57() 
+class method 
+This0 #58() 
+class method 
+This0 #59() 
+class method 
+This0 #60() 
+class method 
+This0 #61() 
+class method 
+This0 #62() 
+class method 
+This0 #63() 
 ParseFail:{implements This2.Guard.ParseFail, This2.Message
 class method 
 mut This0 #mutK(This2.S _text, This2.Message.Opt cause) 
@@ -261,6 +389,10 @@ method
 This1.N size() 
 method 
 This1.Bool beginsWith(This0 that) 
+class method 
+This0 aSCIILowerCase() 
+class method 
+This0 aSCIIUpperCase() 
 method 
 This1.Bool isASCIILowerCase(This1.N that) 
 method 
@@ -516,11 +648,12 @@ read method
 This2.S toS() }
 Classable:{interface 
 read method 
-class Any classAny() }
-Named:{interface 
+class This0 classAny() 
 class method 
-This2.S myName() }
-Base:{interface implements This1.ToS, This1.Classable, This1.Equals, This1.Named/*class method This from(Base base)
+This2.S readableName() 
+class method 
+This2.Bool is(class Any subtype) }
+Base:{interface implements This1.ToS, This1.Classable, This1.Equals/*class method This from(Base base)
 */}
 Wrapper:{interface 
 read method 
@@ -575,7 +708,7 @@ read method
 Void #checkEnd() 
 read method 
 Void #close() }}
-Message:{interface implements This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Classable, This1.Concept.Named
+Message:{interface implements This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Classable
 class method 
 This1.S kind() 
 method 
@@ -996,7 +1129,287 @@ mut This3.S.SBuilder #builder()
 method 
 This1 #from(This3.S.SBuilder builder) }
 method 
-mut This2.S.SConcat #seqBuilder() }}
+mut This2.S.SConcat #seqBuilder() }
+Bug:{implements This1, This2.Message
+class method 
+mut This0 #mutK(This2.S _text, This2.Message.Opt cause) 
+class method 
+This0 #apply(This2.S _text, This2.Message.Opt cause) 
+mut method 
+This2.S #_text() 
+read method 
+This2.S _text() 
+mut method 
+This2.Message.Opt #cause() 
+read method 
+This2.Message.Opt cause() 
+method 
+This0 #apply(This2.Message that) 
+method 
+This2.Bool #bangequal(This0 that) 
+method 
+This2.Bool #equalequal(This0 that) 
+class method 
+This0 #apply(This2.S text) 
+class method 
+This0 #apply(This2.S text, This2.Message cause) 
+class method 
+mut This2.S.SBuilder #builder() 
+class method 
+This0 #from(This2.S.SBuilder builder) 
+method 
+This0.Continue #from(This2.S.SConcat seqBuilder) 
+Continue:{
+class method 
+mut This0 #mutK(This3.S that) 
+class method 
+This0 #apply(This3.S that) 
+mut method 
+This3.S #that() 
+read method 
+This3.S that() 
+method 
+mut This3.S.SBuilder #builder() 
+method 
+This1 #from(This3.S.SBuilder builder) }
+method 
+mut This2.S.SConcat #seqBuilder() }
+Pre:{
+class method 
+mut This1.Tests #seqBuilder() 
+class method 
+Void #from(This1.Tests seqBuilder) }
+Holds:{
+class method 
+mut This1.Tests #seqBuilder() 
+class method 
+Void #from(This1.Tests seqBuilder) }
+Test:{
+class method 
+mut This0 #mutK(This2.Bool that, This2.S msg) 
+class method 
+This0 #apply(This2.Bool that, This2.S msg) 
+mut method 
+This2.Bool #that() 
+read method 
+This2.Bool that() 
+mut method 
+This2.S #msg() 
+read method 
+This2.S msg() }
+Tests:{
+class method 
+mut This0 #mutK(mut This2.Collections.MutListAny inner) 
+class method 
+mut This0 #apply(mut This2.Collections.MutListAny inner) 
+mut method 
+mut This2.Collections.MutListAny #inner() 
+read method 
+read This2.Collections.MutListAny inner() 
+class method 
+This0 #immK(This2.Collections.MutListAny inner) 
+class method 
+mut This0 empty() 
+class method 
+mut This0 #seqBuilder() 
+class method 
+mut This0 #from(mut This0 seqBuilder) 
+class method 
+This1.Test cast(Any that) 
+read method 
+mut This0 reverse() 
+read method 
+This2.N size() 
+read method 
+This2.Bool isEmpty() 
+read method 
+This1.Test val(This2.N that) 
+read method 
+This1.Test left() 
+read method 
+This1.Test right() 
+mut method 
+Void #apply(This2.N that, This1.Test val) 
+mut method 
+Void left(This1.Test that) 
+mut method 
+Void right(This1.Test that) 
+mut method 
+Void add(This2.N that, This1.Test val) 
+mut method 
+Void add(This1.Test right) 
+mut method 
+Void add(This1.Test left) 
+mut method 
+Void remove(This2.N that) 
+mut method 
+Void removeLeft() 
+mut method 
+Void removeRight() 
+method 
+This0 #plus(This1.Test that) 
+method 
+This0 #plusplus(This0 that) 
+method 
+This0 with(This2.N that, This1.Test val) 
+method 
+This0 withLeft(This1.Test that) 
+method 
+This0 withRight(This1.Test that) 
+method 
+This0 withAlso(This2.N that, This1.Test val) 
+method 
+This0 withAlsoLeft(This1.Test that) 
+method 
+This0 withAlsoRight(This1.Test that) 
+method 
+This0 without(This2.N index) 
+method 
+This0 withoutLeft() 
+method 
+This0 withoutRight() 
+IteratorTrait:{
+class method 
+Library #apply() }
+read method 
+lent This0.IteratorVal vals(This2.N from, This2.N maxTo, This2.N minTo) 
+read method 
+lent This0.IteratorVal vals(This2.N minTo) 
+read method 
+lent This0.IteratorVal vals(This2.N from, This2.N to) 
+read method 
+lent This0.IteratorVal vals() 
+IteratorVal:{
+read method 
+read This3.Collections.MutListAny that() 
+read method 
+This3.N from() 
+mut method 
+Void from(This3.N that) 
+read method 
+This3.N maxTo() 
+read method 
+This3.N minTo() 
+read method 
+This3.Bool isFill() 
+read method 
+This2.Test filled() 
+mut method 
+Void #next() exception Void 
+read method 
+Void #checkEnd() 
+read method 
+This2.Test #inner() 
+read method 
+Void #close() 
+class method 
+lent This0 #lentK(read This3.Collections.MutListAny that, This3.N from, This3.N maxTo, This3.N minTo) 
+class method 
+lent This0 #apply(read This3.Collections.MutListAny that, This3.N from, This3.N maxTo, This3.N minTo) 
+mut method 
+read This3.Collections.MutListAny #that() 
+mut method 
+This3.N #from() 
+mut method 
+This3.N #maxTo() 
+mut method 
+This3.N #minTo() }
+read method 
+lent This0.IteratorValFill vals(This2.N from, This2.N maxTo, This2.N minTo, This1.Test filled) 
+read method 
+lent This0.IteratorValFill vals(This2.N minTo, This1.Test filled) 
+read method 
+lent This0.IteratorValFill vals(This2.N from, This2.N to, This1.Test filled) 
+read method 
+lent This0.IteratorValFill vals(This1.Test filled) 
+IteratorValFill:{
+read method 
+read This3.Collections.MutListAny that() 
+read method 
+This3.N from() 
+mut method 
+Void from(This3.N that) 
+read method 
+This3.N maxTo() 
+read method 
+This3.N minTo() 
+read method 
+This3.Bool isFill() 
+read method 
+This2.Test filled() 
+mut method 
+Void #next() exception Void 
+read method 
+Void #checkEnd() 
+read method 
+This2.Test #inner() 
+read method 
+Void #close() 
+class method 
+lent This0 #lentK(read This3.Collections.MutListAny that, This3.N from, This3.N maxTo, This3.N minTo, This2.Test filled) 
+class method 
+lent This0 #apply(read This3.Collections.MutListAny that, This3.N from, This3.N maxTo, This3.N minTo, This2.Test filled) 
+mut method 
+read This3.Collections.MutListAny #that() 
+mut method 
+This3.N #from() 
+mut method 
+This3.N #maxTo() 
+mut method 
+This3.N #minTo() 
+mut method 
+This2.Test #filled() }
+mut method 
+lent This0.IteratorVar #vals(This2.N from, This2.N maxTo, This2.N minTo) 
+mut method 
+lent This0.IteratorVar #vals(This2.N minTo) 
+mut method 
+lent This0.IteratorVar #vals(This2.N from, This2.N to) 
+mut method 
+lent This0.IteratorVar #vals() 
+IteratorVar:{
+read method 
+read This3.Collections.MutListAny that() 
+read method 
+This3.N from() 
+mut method 
+Void from(This3.N that) 
+read method 
+This3.N maxTo() 
+read method 
+This3.N minTo() 
+read method 
+This3.Bool isFill() 
+read method 
+This2.Test filled() 
+mut method 
+Void #next() exception Void 
+read method 
+Void #checkEnd() 
+read method 
+This2.Test #inner() 
+read method 
+Void #close() 
+class method 
+mut This0 #mutK(mut This3.Collections.MutListAny that, This3.N from, This3.N maxTo, This3.N minTo) 
+class method 
+mut This0 #apply(mut This3.Collections.MutListAny that, This3.N from, This3.N maxTo, This3.N minTo) 
+mut method 
+mut This3.Collections.MutListAny #that() 
+mut method 
+This3.N #from() 
+mut method 
+This3.N #maxTo() 
+mut method 
+This3.N #minTo() 
+mut method 
+Void inner(This2.Test that) }
+mut method 
+Void #add(This2.Bool that, This2.Concept.ToS msg) 
+mut method 
+Void #add(This2.Bool that) 
+read method 
+This2.S collapse() }}
 Strings:{implements This1.Concept.Equals
 class method 
 mut This0 #mutK(mut This1.Collections.MutListAny inner) 
@@ -1332,7 +1745,7 @@ read method
 This1.S inner() 
 method 
 Library binaryRepr() }
-Path:{implements This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Named
+Path:{implements This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Classable
 class method 
 This0 fromDocInternalizedS(This1.S that) 
 class method 
@@ -1409,7 +1822,7 @@ method
 This1 #from(This3.S.SBuilder builder) }
 method 
 mut This2.S.SConcat #seqBuilder() }}
-Selector:{implements This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Named
+Selector:{implements This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Classable
 class method 
 This0 fromS(This1.Concept.ToS that) 
 class method 
@@ -1440,6 +1853,10 @@ method
 This1.Strings names() 
 class method 
 This0 fresh(This0 that) 
+class method /*will be private
+*/This1.S leftAsASCIIUpperCase(This1.S that) 
+method 
+This0 with(This1.S prefix) 
 ParseFail:{implements This2.Guard.ParseFail, This2.Message
 class method 
 mut This0 #mutK(This2.S _text, This2.Message.Opt cause) 
@@ -1695,8 +2112,8 @@ mut method
 class Any #lib() 
 read method 
 class Any lib() }}
-Doc:{implements This2.Concept.ToS, This2.Concept.Named
-Annotation:{implements This3.Concept.ToS, This3.Concept.Named
+Doc:{implements This2.Concept.ToS, This2.Concept.Classable
+Annotation:{implements This3.Concept.ToS, This3.Concept.Classable
 class method 
 mut This0 #mutK(Library _binaryRepr, This3.S text, This3.N index) 
 class method 
@@ -1999,7 +2416,7 @@ read method
 This1 _report() }
 class method 
 This1.Member dispatch(fwd This1.NestedClass root, This2.Path path, This1.MirrorPr mirror, This2.N memberN, Library record) }
-Member:{interface implements This2.Concept.ToS, This2.Concept.Named, This2.Concept.Equals}
+Member:{interface implements This2.Concept.ToS, This2.Concept.Equals}
 Members:{implements This2.Concept.Equals
 class method 
 mut This0 #mutK(mut This2.Collections.MutListAny inner) 
@@ -2243,7 +2660,7 @@ mut method
 Void removeLeft(This1.Member val) 
 mut method 
 Void removeRight(This1.Member val) }
-Method:{implements This1.Member, This2.Concept.Equals
+Method:{implements This1.Member, This2.Concept.Equals, This2.Concept.Classable
 method 
 This2.Bool #equalequal(This0 that) 
 method 
@@ -2514,7 +2931,7 @@ Void removeLeft(This1.Method val)
 mut method 
 Void removeRight(This1.Method val) }
 NestedClass:{/*findMeNestedClass
-*/implements This1.Member, This2.Concept.Equals
+*/implements This1.Member, This2.Concept.Equals, This2.Concept.Classable
 method 
 This2.Bool #equalequal(This0 that) 
 method 
@@ -2808,7 +3225,7 @@ mut method
 Void removeLeft(This1.NestedClass val) 
 mut method 
 Void removeRight(This1.NestedClass val) }
-Type:{implements This2.Concept.ToS, This2.Concept.Named
+Type:{implements This2.Concept.ToS, This2.Concept.Classable
 method 
 This2.S allAsString() 
 method 
@@ -3049,7 +3466,7 @@ This3.N #minTo()
 mut method 
 Void inner(This2.Type that) }}
 Mdf:{/*Data is more than Solid, and Liquid, Gas, Plasma can be good methafores
-*/implements This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable, This2.Concept.Named, This2.Concept.ToS/*may be Parsable?
+*/implements This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable, This2.Concept.ToS/*may be Parsable?
 */
 ParseFail:{implements This3.Guard.ParseFail, This3.Message
 class method 
@@ -3383,7 +3800,7 @@ This2.Bool isImmutable()
 method 
 This2.Bool isClass() }
 MethodKind:{/*Data is more than Solid, and Liquid, Gas, Plasma can be good methafores
-*/implements This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable, This2.Concept.Named, This2.Concept.ToS/*may be Parsable?
+*/implements This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable, This2.Concept.ToS/*may be Parsable?
 */
 ParseFail:{implements This3.Guard.ParseFail, This3.Message
 class method 
@@ -3699,7 +4116,7 @@ This0 _ImplementedMethod()
 class method 
 This0 _AbstractMethod() }
 ClassKind:{/*Data is more than Solid, and Liquid, Gas, Plasma can be good methafores
-*/implements This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable, This2.Concept.Named, This2.Concept.ToS/*may be Parsable?
+*/implements This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable, This2.Concept.ToS/*may be Parsable?
 */
 ParseFail:{implements This3.Guard.ParseFail, This3.Message
 class method 
@@ -4020,7 +4437,7 @@ class method
 This0 _FreeTemplate() }
 TypeKind:{/*Data is more than Solid, and Liquid, Gas, Plasma can be good methafores
 may disappear
-*/implements This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable, This2.Concept.Named, This2.Concept.ToS/*may be Parsable?
+*/implements This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable, This2.Concept.ToS/*may be Parsable?
 */
 ParseFail:{implements This3.Guard.ParseFail, This3.Message
 class method 
@@ -4613,7 +5030,33 @@ Library specializeField(This2.Selector selector, This2.Introspection.Type type, 
 class method /* maybe private
 */Library specialize(Library that, This2.Selector selector, This2.Introspection.Type type) exception This0.CanNotSpecializeOperation 
 class method /* maybe private
-*/Library readToImm(Library that) exception This0.CanNotSpecializeOperation }}
+*/Library readToImm(Library that) exception This0.CanNotSpecializeOperation }
+Rename:{
+class method 
+This1.RenamePath path(This2.Path that, This2.Path to) 
+class method 
+class This2.Path #default#path(Void that) 
+class method 
+class This2.Path #default#path(Void to) 
+class method 
+This1.RenameSelector selector(This2.Selector that, This2.Path of, This2.Selector to) 
+class method 
+This1.RenameSelector selector(This2.Selector that, This2.Selector to) 
+class method 
+class This2.Selector #default#selector(Void that) 
+class method 
+class This2.Selector #default#selector(Void to) 
+class method 
+class This2.Path #default#selector(Void of) }
+Hide:{
+class method 
+This1.MakePrivateSelector selector(This2.Selector that, This2.Path of) 
+class method 
+This1.MakePrivateSelector selector(This2.Selector that) 
+class method 
+class This2.Selector #default#selector(Void that) 
+class method 
+class This2.Path #default#selector(Void of) }}
 Optimize:{
 RemoveUnreachableCode:{
 class method 
@@ -4702,9 +5145,6 @@ DataFromToS:{/* in the future we can add also hashCode and > =>
 class method 
 Library #leftleft(Library that) exception This1.DecorationUnfeasable }
 Equals:{
-class method 
-Library #leftleft(Library that) exception This1.DecorationUnfeasable }
-Named:{
 class method 
 Library #leftleft(Library that) exception This1.DecorationUnfeasable }}
 Collections:{

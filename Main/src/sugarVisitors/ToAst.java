@@ -148,8 +148,9 @@ public class ToAst extends AbstractVisitor<Expression>{
   public static Doc parseDoc(String c){
     if(c.isEmpty()){return Doc.empty();}
     if(c.startsWith("/*")){
-      assert c.contains("*/");
-      c=c.substring(2,c.indexOf("*/"));
+      c=c.trim();
+      assert c.endsWith("*/"):c+"|";
+      c=c.substring(2,c.length()-2);
       //c=c.substring(2,c.length()-2);
       return Doc.factory(true,c);
       }

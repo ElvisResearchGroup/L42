@@ -12,7 +12,7 @@ class method
 Library failure() {/*@exitStatus
 42000
 */}}
-Bool:{implements This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Named
+Bool:{implements This1.Concept.Equals, This1.Concept.ToS, This1.Concept.Classable
 class method /*@private
 */mut This0 #mutK__50_0(Library binaryRepr__50_0) 
 class method /*@private
@@ -21,7 +21,106 @@ mut method /*@private
 */Library #binaryRepr__50_0() 
 read method /*@private
 */Library binaryRepr__50_0() 
-method myName() This1.GetMyName.#apply(that:This0)
+method is(subtype ) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This1.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This1.Bool.false()
+    void
+    )
+  
+  catch return This0::is(subtype )  result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+method classAny() This0
+method readableName() This1.GetMyName.#apply(that:This0)
+method toS() (
+  Void unused=(
+    Void unused0=(
+      Void unused2=this.#checkTrue()
+      
+      catch exception Void catched void
+      
+      return This1.S.#from(builder:(
+        This1.S::#builder() b=This1.S.#builder()
+        Void unused3=b.#t()
+        Void unused4=b.#r()
+        Void unused5=b.#u()
+        Void unused6=b.#e()
+        b
+        ))
+      )
+    Void unused1=return This1.S.#from(builder:(
+      This1.S::#builder() b0=This1.S.#builder()
+      Void unused7=b0.#f()
+      Void unused8=b0.#a()
+      Void unused9=b0.#l()
+      Void unused10=b0.#s()
+      Void unused11=b0.#e()
+      b0
+      ))
+    void
+    )
+  
+  catch return This0::toS()  result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+method equals(that ) (
+  Void unused=(
+    Void unused0=(
+      This0 that0=(
+        Void unused2=return that
+        
+        catch return This0 casted casted
+        
+        catch return Any casted exception void
+        
+        error {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return this.#equalequal(that:that0)
+        void
+        )
+      )
+    Void unused1=return This1.Bool.false()
+    void
+    )
+  
+  catch return This0::equals(that )  result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
 method 
 Void #checkTrue() exception Void use This1.Alu check ifInt32EqualDo(n1:this.binaryRepr__50_0(), n2:This1.N.#from(builder:(
   This1.N::#builder() b=This1.N.#builder()
@@ -100,40 +199,28 @@ This0 #bang() (
 CurlyBlock-Should be unreachable code
 */}
   )
-method toS() (
+method 
+This0 #equalequal(This0 that) (
   Void unused=(
     Void unused0=(
       Void unused2=this.#checkTrue()
       
       catch exception Void catched void
       
-      return This1.S.#from(builder:(
-        This1.S::#builder() b=This1.S.#builder()
-        Void unused3=b.#t()
-        Void unused4=b.#r()
-        Void unused5=b.#u()
-        Void unused6=b.#e()
-        b
-        ))
+      return that
       )
-    Void unused1=return This1.S.#from(builder:(
-      This1.S::#builder() b0=This1.S.#builder()
-      Void unused7=b0.#f()
-      Void unused8=b0.#a()
-      Void unused9=b0.#l()
-      Void unused10=b0.#s()
-      Void unused11=b0.#e()
-      b0
-      ))
+    Void unused1=return that.#bang()
     void
     )
   
-  catch return This0::toS()  result result
+  catch return This0 result result
   
   error {/*@stringU
 CurlyBlock-Should be unreachable code
 */}
   )
+method 
+This0 #bangequal(This0 that) this.#equalequal(that:that).#bang()
 class method 
 This0 fromS(read This1.Concept.ToS that) (
   Void unused=(
@@ -177,60 +264,6 @@ This0 fromS(read This1.Concept.ToS that) (
     )
   
   catch return This0 result result
-  
-  error {/*@stringU
-CurlyBlock-Should be unreachable code
-*/}
-  )
-method 
-This0 #equalequal(This0 that) (
-  Void unused=(
-    Void unused0=(
-      Void unused2=this.#checkTrue()
-      
-      catch exception Void catched void
-      
-      return that
-      )
-    Void unused1=return that.#bang()
-    void
-    )
-  
-  catch return This0 result result
-  
-  error {/*@stringU
-CurlyBlock-Should be unreachable code
-*/}
-  )
-method 
-This0 #bangequal(This0 that) this.#equalequal(that:that).#bang()
-method equals(that ) (
-  Void unused=(
-    Void unused0=(
-      This0 that0=(
-        Void unused2=return that
-        
-        catch return This0 casted casted
-        
-        catch return Any casted exception void
-        
-        error {/*@stringU
-CastT-Should be unreachable code
-*/}
-        )
-      
-      catch exception Void catched0 void
-      
-      (
-        Void unused3=return this.#equalequal(that:that0)
-        void
-        )
-      )
-    Void unused1=return This1.Bool.false()
-    void
-    )
-  
-  catch return This0::equals(that )  result result
   
   error {/*@stringU
 CurlyBlock-Should be unreachable code
@@ -296,7 +329,7 @@ Any parseError(This1.S that) This1.S.#from(builder:(
   Void unused53=b.#2()
   b
   ))}
-N:{implements This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Named
+N:{implements This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Classable
 class method /*@private
 */mut This0 #mutK__52_0(Library _binaryRepr__52_0) 
 class method /*@private
@@ -305,7 +338,40 @@ mut method /*@private
 */Library #_binaryRepr__52_0() 
 read method /*@private
 */Library _binaryRepr__52_0() 
-method myName() This1.GetMyName.#apply(that:This0)
+method is(subtype ) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This1.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This1.Bool.false()
+    void
+    )
+  
+  catch return This0::is(subtype )  result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+method classAny() This0
+method readableName() This1.GetMyName.#apply(that:This0)
 class method 
 This0 fromS(This1.Concept.ToS that) (
   This1.Concept.ToS::toS() s=that.toS()
@@ -991,8 +1057,40 @@ mut method /*needed until we do (also refine) normalization
 read method /*needed until we do (also refine) normalization
 #####Implemented
 */Library _binaryRepr() 
-method myName() This1.GetMyName.#apply(that:This0)
+method is(subtype ) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This1.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This1.Bool.false()
+    void
+    )
+  
+  catch return This0::is(subtype )  result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
 method classAny() This0
+method readableName() This1.GetMyName.#apply(that:This0)
 class method 
 This0 #from(Library binaryRepr) This0._private(_binaryRepr:binaryRepr)
 method 
@@ -2342,11 +2440,12 @@ read method
 This2.S toS() }
 Classable:{interface 
 read method 
-class Any classAny() }
-Named:{interface 
+class This1.Classable classAny() 
 class method 
-This2.S myName() }
-Base:{interface implements This1.ToS, This1.Classable, This1.Equals, This1.Named/*class method This from(Base base)
+This2.S readableName() 
+class method 
+This2.Bool is(class Any subtype) }
+Base:{interface implements This1.ToS, This1.Classable, This1.Equals/*class method This from(Base base)
 */}
 Wrapper:{interface 
 read method 
@@ -2425,7 +2524,7 @@ This1.S #apply(class Any that) This1.S.#from(builder:(
   Void unused16=b.#less()
   b
   ))}
-Message:{interface implements This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Classable, This1.Concept.Named
+Message:{interface implements This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Classable
 class method 
 This1.S kind() 
 method 
@@ -2605,8 +2704,40 @@ mut method
 This3.Message.Opt #cause() 
 read method 
 This3.Message.Opt cause() 
-method myName() This3.GetMyName.#apply(that:This0)
-method kind() this.myName()
+method is(subtype ) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This3.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This3.Bool.false()
+    void
+    )
+  
+  catch return This0::is(subtype )  result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+method readableName() This3.GetMyName.#apply(that:This0)
+method kind() this.readableName()
 method text() this._text()
 method responseOf() this.cause()
 method equals(that ) (
@@ -2783,8 +2914,40 @@ mut method
 This2.Message.Opt #cause() 
 read method 
 This2.Message.Opt cause() 
-method myName() This2.GetMyName.#apply(that:This0)
-method kind() this.myName()
+method is(subtype ) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This2.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This2.Bool.false()
+    void
+    )
+  
+  catch return This0::is(subtype )  result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+method readableName() This2.GetMyName.#apply(that:This0)
+method kind() this.readableName()
 method text() this._text()
 method responseOf() this.cause()
 method equals(that ) (
@@ -2951,8 +3114,40 @@ mut method
 This2.Message.Opt #cause() 
 read method 
 This2.Message.Opt cause() 
-method myName() This2.GetMyName.#apply(that:This0)
-method kind() this.myName()
+method is(subtype ) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This2.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This2.Bool.false()
+    void
+    )
+  
+  catch return This0::is(subtype )  result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+method readableName() This2.GetMyName.#apply(that:This0)
+method kind() this.readableName()
 method text() this._text()
 method responseOf() this.cause()
 method equals(that ) (
@@ -3119,8 +3314,40 @@ mut method
 This2.Message.Opt #cause() 
 read method 
 This2.Message.Opt cause() 
-method myName() This2.GetMyName.#apply(that:This0)
-method kind() this.myName()
+method is(subtype ) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This2.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This2.Bool.false()
+    void
+    )
+  
+  catch return This0::is(subtype )  result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+method readableName() This2.GetMyName.#apply(that:This0)
+method kind() this.readableName()
 method text() this._text()
 method responseOf() this.cause()
 method equals(that ) (
@@ -3291,8 +3518,40 @@ mut method
 This3.Message.Opt #cause() 
 read method 
 This3.Message.Opt cause() 
-method myName() This3.GetMyName.#apply(that:This0)
-method kind() this.myName()
+method is(subtype ) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This3.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This3.Bool.false()
+    void
+    )
+  
+  catch return This0::is(subtype )  result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+method readableName() This3.GetMyName.#apply(that:This0)
+method kind() this.readableName()
 method text() this._text()
 method responseOf() this.cause()
 method equals(that ) (
@@ -3460,8 +3719,40 @@ mut method
 This2.Message.Opt #cause() 
 read method 
 This2.Message.Opt cause() 
-method myName() This2.GetMyName.#apply(that:This0)
-method kind() this.myName()
+method is(subtype ) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This2.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This2.Bool.false()
+    void
+    )
+  
+  catch return This0::is(subtype )  result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+method readableName() This2.GetMyName.#apply(that:This0)
+method kind() this.readableName()
 method text() this._text()
 method responseOf() this.cause()
 method equals(that ) (
@@ -3628,8 +3919,40 @@ mut method
 This2.Message.Opt #cause() 
 read method 
 This2.Message.Opt cause() 
-method myName() This2.GetMyName.#apply(that:This0)
-method kind() this.myName()
+method is(subtype ) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This2.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This2.Bool.false()
+    void
+    )
+  
+  catch return This0::is(subtype )  result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+method readableName() This2.GetMyName.#apply(that:This0)
+method kind() this.readableName()
 method text() this._text()
 method responseOf() this.cause()
 method equals(that ) (
@@ -3796,8 +4119,40 @@ mut method
 This2.Message.Opt #cause() 
 read method 
 This2.Message.Opt cause() 
-method myName() This2.GetMyName.#apply(that:This0)
-method kind() this.myName()
+method is(subtype ) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This2.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This2.Bool.false()
+    void
+    )
+  
+  catch return This0::is(subtype )  result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+method readableName() This2.GetMyName.#apply(that:This0)
+method kind() this.readableName()
 method text() this._text()
 method responseOf() this.cause()
 method equals(that ) (
@@ -3964,8 +4319,40 @@ mut method
 This2.Message.Opt #cause() 
 read method 
 This2.Message.Opt cause() 
-method myName() This2.GetMyName.#apply(that:This0)
-method kind() this.myName()
+method is(subtype ) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This2.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This2.Bool.false()
+    void
+    )
+  
+  catch return This0::is(subtype )  result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+method readableName() This2.GetMyName.#apply(that:This0)
+method kind() this.readableName()
 method text() this._text()
 method responseOf() this.cause()
 method equals(that ) (
@@ -4133,8 +4520,40 @@ mut method
 This2.Message.Opt #cause() 
 read method 
 This2.Message.Opt cause() 
-method myName() This2.GetMyName.#apply(that:This0)
-method kind() this.myName()
+method is(subtype ) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This2.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This2.Bool.false()
+    void
+    )
+  
+  catch return This0::is(subtype )  result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+method readableName() This2.GetMyName.#apply(that:This0)
+method kind() this.readableName()
 method text() this._text()
 method responseOf() this.cause()
 method equals(that ) (
@@ -8301,7 +8720,7 @@ class method
 mut This0 #mutK() 
 class method 
 This0 #apply() This0.#mutK()}
-Path:{implements This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Named
+Path:{implements This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Classable
 Varstr__101_0:/*@private*/{
 class method 
 mut This0 #mutK(This2.S inner) 
@@ -8321,7 +8740,40 @@ mut method /*@private
 */Library #_binaryRepr__58_0() 
 read method /*@private
 */Library _binaryRepr__58_0() 
-method myName() This1.GetMyName.#apply(that:This0)
+method is(subtype ) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This1.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This1.Bool.false()
+    void
+    )
+  
+  catch return This0::is(subtype )  result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+method classAny() This0
+method readableName() This1.GetMyName.#apply(that:This0)
 class method 
 This0 fromDocInternalizedS(This1.S that) (
   Void unused=(
@@ -8872,7 +9324,7 @@ This1.Path fresh(This1.Path path) (
 CurlyBlock-Should be unreachable code
 */}
   )}
-Selector:{implements This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Named
+Selector:{implements This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Classable
 Varstr0__102_0:/*@private*/{
 class method 
 mut This0 #mutK(This2.S inner) 
@@ -8914,7 +9366,40 @@ mut method /*@private
 */Library #_binaryRepr__60_0() 
 read method /*@private
 */Library _binaryRepr__60_0() 
-method myName() This1.GetMyName.#apply(that:This0)
+method is(subtype ) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This1.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This1.Bool.false()
+    void
+    )
+  
+  catch return This0::is(subtype )  result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+method classAny() This0
+method readableName() This1.GetMyName.#apply(that:This0)
 class method 
 This0 fromS(This1.Concept.ToS that) This0.#from(binaryRepr:that.toS().binaryRepr())
 class method 
@@ -10127,12 +10612,44 @@ Library #leftleft(Library that) This1.SafeOperatorsAccess.compose(left:This1.Saf
 SolidTrait:{
 class method 
 Library #apply() {/*Data is more than Solid, and Liquid, Gas, Plasma can be good methafores
-*/implements This3.Concept.ToS, This3.Concept.Equals, This3.Concept.Classable, This3.Concept.Named/*may be Parsable?
+*/implements This3.Concept.ToS, This3.Concept.Equals, This3.Concept.Classable/*may be Parsable?
 */
+method is(subtype ) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This3.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This3.Bool.false()
+    void
+    )
+  
+  catch return This0::is(subtype )  result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
 method classAny() This0
 read method 
 class This0 class() This0
-method myName() This3.GetMyName.#apply(that:This0)
+method readableName() This3.GetMyName.#apply(that:This0)
 method equals(that ) (
   Void unused=(
     Void unused0=(
@@ -10195,8 +10712,40 @@ mut method
 This3.Message.Opt #cause() 
 read method 
 This3.Message.Opt cause() 
-method myName() This3.GetMyName.#apply(that:This0)
-method kind() this.myName()
+method is(subtype ) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This3.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This3.Bool.false()
+    void
+    )
+  
+  catch return This0::is(subtype )  result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+method readableName() This3.GetMyName.#apply(that:This0)
+method kind() this.readableName()
 method text() this._text()
 method responseOf() this.cause()
 method equals(that ) (
@@ -10340,12 +10889,44 @@ mut This3.S.SConcat #seqBuilder() This3.S.SConcat.#apply(old:this.text(), accumu
   b
   )))}
 Top:{/*Data is more than Solid, and Liquid, Gas, Plasma can be good methafores
-*/implements This3.Concept.ToS, This3.Concept.Equals, This3.Concept.Classable, This3.Concept.Named, This3.Concept.ToS/*may be Parsable?
+*/implements This3.Concept.ToS, This3.Concept.Equals, This3.Concept.Classable, This3.Concept.ToS/*may be Parsable?
 */
+method is(subtype ) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This3.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This3.Bool.false()
+    void
+    )
+  
+  catch return This0::is(subtype )  result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
 method classAny() This0
 read method 
 class This0 class() This0
-method myName() This3.GetMyName.#apply(that:This0)
+method readableName() This3.GetMyName.#apply(that:This0)
 method equals(that ) (
   Void unused=(
     Void unused0=(
@@ -10390,7 +10971,7 @@ mut method
 This3.N #that() 
 read method 
 This3.N that() 
-method toS() This0.myName().#plusplus(that:This3.S.#from(builder:(
+method toS() This0.readableName().#plusplus(that:This3.S.#from(builder:(
   This3.S::#builder() b=This3.S.#builder()
   Void unused=b.#dot()
   b
@@ -12721,7 +13302,7 @@ method introspectDocPath(path annotationN ) (
   
   result
   )}}
-Doc:{implements This2.Concept.ToS, This2.Concept.Named
+Doc:{implements This2.Concept.ToS, This2.Concept.Classable
 VaraN__109_0:/*@private*/{
 class method 
 mut This0 #mutK(This3.N inner) 
@@ -12745,8 +13326,41 @@ mut method /*@private
 */This0.Annotations #_annotations__62_0() 
 read method /*@private
 */This0.Annotations _annotations__62_0() 
-method myName() This2.GetMyName.#apply(that:This0)
-Annotation:{implements This3.Concept.ToS, This3.Concept.Named
+method is(subtype ) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This2.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This2.Bool.false()
+    void
+    )
+  
+  catch return This0::is(subtype )  result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+method classAny() This0
+method readableName() This2.GetMyName.#apply(that:This0)
+Annotation:{implements This3.Concept.ToS, This3.Concept.Classable
 class method 
 mut This0 #mutK(Library _binaryRepr, This3.S text, This3.N index) 
 class method 
@@ -12763,7 +13377,40 @@ mut method
 This3.N #index() 
 read method 
 This3.N index() 
-method myName() This3.GetMyName.#apply(that:This0)
+method is(subtype ) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This3.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This3.Bool.false()
+    void
+    )
+  
+  catch return This0::is(subtype )  result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+method classAny() This0
+method readableName() This3.GetMyName.#apply(that:This0)
 method toS() this.text()
 method 
 class Any referredClass() (
@@ -14232,7 +14879,7 @@ CurlyBlock-Should be unreachable code
     )
   result.#apply(root:root)
   )}
-Member:{interface implements This2.Concept.ToS, This2.Concept.Named, This2.Concept.Equals}
+Member:{interface implements This2.Concept.ToS, This2.Concept.Equals}
 Members:{implements This2.Concept.Equals
 class method 
 mut This0 #mutK(mut This2.Collections.MutListAny inner) 
@@ -15896,7 +16543,7 @@ Void removeRight(This1.Member val) (
 CurlyBlock-Should be unreachable code
 */}
   )}
-Method:{implements This1.Member, This2.Concept.Equals
+Method:{implements This1.Member, This2.Concept.Equals, This2.Concept.Classable
 VarpN__113_0:/*@private*/{
 class method 
 mut This0 #mutK(This3.N inner) 
@@ -15928,8 +16575,41 @@ mut method /*@private
 */This1.Record #record__64_0() 
 read method /*@private
 */This1.Record record__64_0() 
-method myName() This2.GetMyName.#apply(that:This0)
-method toS() This0.myName().#plusplus(that:(
+method is(subtype ) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This2.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This2.Bool.false()
+    void
+    )
+  
+  catch return This0::is(subtype )  result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+method classAny() This0
+method readableName() This2.GetMyName.#apply(that:This0)
+method toS() This0.readableName().#plusplus(that:(
   This2.S::#from(builder ) ::#from(seqBuilder ) rcv56=(
     This2.S::#from(builder ) rcv57=This2.S.#from(builder:(
       This2.S::#builder() b=This2.S.#builder()
@@ -17948,7 +18628,7 @@ CurlyBlock-Should be unreachable code
 */}
   )}
 NestedClass:{/*findMeNestedClass
-*/implements This1.Member, This2.Concept.Equals
+*/implements This1.Member, This2.Concept.Equals, This2.Concept.Classable
 VarmN__117_0:/*@private*/{
 class method 
 mut This0 #mutK(This3.N inner) 
@@ -18046,8 +18726,41 @@ mut method /*@private
 */This1.Record #record__66_0() 
 read method /*@private
 */This1.Record record__66_0() 
-method myName() This2.GetMyName.#apply(that:This0)
-method toS() This0.myName().#plusplus(that:(
+method is(subtype ) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This2.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This2.Bool.false()
+    void
+    )
+  
+  catch return This0::is(subtype )  result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+method classAny() This0
+method readableName() This2.GetMyName.#apply(that:This0)
+method toS() This0.readableName().#plusplus(that:(
   This2.S::#from(builder ) ::#from(seqBuilder ) rcv64=(
     This2.S::#from(builder ) rcv65=This2.S.#from(builder:(
       This2.S::#builder() b=This2.S.#builder()
@@ -21711,7 +22424,7 @@ Void removeRight(This1.NestedClass val) (
 CurlyBlock-Should be unreachable code
 */}
   )}
-Type:{implements This2.Concept.ToS, This2.Concept.Named
+Type:{implements This2.Concept.ToS, This2.Concept.Classable
 class method /*@private
 */mut This0 #mutK__71_0(fwd This1.NestedClass root__71_0, This2.Path path__71_0, This2.N memberN__71_0, This2.N typeN__71_0, This1.Record record__71_0) 
 class method /*@private
@@ -21736,8 +22449,41 @@ mut method /*@private
 */This1.Record #record__71_0() 
 read method /*@private
 */This1.Record record__71_0() 
-method myName() This2.GetMyName.#apply(that:This0)
-method toS() This0.myName().#plusplus(that:(
+method is(subtype ) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This2.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This2.Bool.false()
+    void
+    )
+  
+  catch return This0::is(subtype )  result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+method classAny() This0
+method readableName() This2.GetMyName.#apply(that:This0)
+method toS() This0.readableName().#plusplus(that:(
   This2.S::#from(builder ) ::#from(seqBuilder ) rcv76=(
     This2.S::#from(builder ) rcv77=This2.S.#from(builder:(
       This2.S::#builder() b=This2.S.#builder()
@@ -23231,7 +23977,7 @@ Void inner(This2.Type that) (
   rcv32.#apply(that:this.from(), val:that)
   )}}
 Mdf:{/*Data is more than Solid, and Liquid, Gas, Plasma can be good methafores
-*/implements This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable, This2.Concept.Named, This2.Concept.ToS/*may be Parsable?
+*/implements This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable, This2.Concept.ToS/*may be Parsable?
 */
 ParseFail:{implements This3.Guard.ParseFail, This3.Message
 Varres_$%12_0__127_0:/*@private*/{
@@ -23257,8 +24003,40 @@ mut method
 This3.Message.Opt #cause() 
 read method 
 This3.Message.Opt cause() 
-method myName() This3.GetMyName.#apply(that:This0)
-method kind() this.myName()
+method is(subtype ) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This3.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This3.Bool.false()
+    void
+    )
+  
+  catch return This0::is(subtype )  result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+method readableName() This3.GetMyName.#apply(that:This0)
+method kind() this.readableName()
 method text() this._text()
 method responseOf() this.cause()
 method equals(that ) (
@@ -25064,10 +25842,42 @@ Void removeRight(This1 val) (
 CurlyBlock-Should be unreachable code
 */}
   )}
+method is(subtype ) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This2.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This2.Bool.false()
+    void
+    )
+  
+  catch return This0::is(subtype )  result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
 method classAny() This0
 read method 
 class This0 class() This0
-method myName() This2.GetMyName.#apply(that:This0)
+method readableName() This2.GetMyName.#apply(that:This0)
 method equals(that ) (
   Void unused=(
     Void unused0=(
@@ -25112,7 +25922,7 @@ mut method
 This2.N #that() 
 read method 
 This2.N that() 
-method toS() This0.myName().#plusplus(that:This2.S.#from(builder:(
+method toS() This0.readableName().#plusplus(that:This2.S.#from(builder:(
   This2.S::#builder() b=This2.S.#builder()
   Void unused=b.#dot()
   b
@@ -25437,7 +26247,7 @@ This2.Bool isClass() this.that().#equalequal(that:This2.N.#from(builder:(
   b
   )))}
 MethodKind:{/*Data is more than Solid, and Liquid, Gas, Plasma can be good methafores
-*/implements This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable, This2.Concept.Named, This2.Concept.ToS/*may be Parsable?
+*/implements This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable, This2.Concept.ToS/*may be Parsable?
 */
 ParseFail:{implements This3.Guard.ParseFail, This3.Message
 Varres_$%12_0__131_0:/*@private*/{
@@ -25463,8 +26273,40 @@ mut method
 This3.Message.Opt #cause() 
 read method 
 This3.Message.Opt cause() 
-method myName() This3.GetMyName.#apply(that:This0)
-method kind() this.myName()
+method is(subtype ) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This3.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This3.Bool.false()
+    void
+    )
+  
+  catch return This0::is(subtype )  result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+method readableName() This3.GetMyName.#apply(that:This0)
+method kind() this.readableName()
 method text() this._text()
 method responseOf() this.cause()
 method equals(that ) (
@@ -27270,10 +28112,42 @@ Void removeRight(This1 val) (
 CurlyBlock-Should be unreachable code
 */}
   )}
+method is(subtype ) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This2.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This2.Bool.false()
+    void
+    )
+  
+  catch return This0::is(subtype )  result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
 method classAny() This0
 read method 
 class This0 class() This0
-method myName() This2.GetMyName.#apply(that:This0)
+method readableName() This2.GetMyName.#apply(that:This0)
 method equals(that ) (
   Void unused=(
     Void unused0=(
@@ -27318,7 +28192,7 @@ mut method
 This2.N #that() 
 read method 
 This2.N that() 
-method toS() This0.myName().#plusplus(that:This2.S.#from(builder:(
+method toS() This0.readableName().#plusplus(that:This2.S.#from(builder:(
   This2.S::#builder() b=This2.S.#builder()
   Void unused=b.#dot()
   b
@@ -27594,7 +28468,7 @@ This0 _AbstractMethod() This0.#apply(that:This2.N.#from(builder:(
   b
   )))}
 ClassKind:{/*Data is more than Solid, and Liquid, Gas, Plasma can be good methafores
-*/implements This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable, This2.Concept.Named, This2.Concept.ToS/*may be Parsable?
+*/implements This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable, This2.Concept.ToS/*may be Parsable?
 */
 ParseFail:{implements This3.Guard.ParseFail, This3.Message
 Varres_$%12_0__135_0:/*@private*/{
@@ -27620,8 +28494,40 @@ mut method
 This3.Message.Opt #cause() 
 read method 
 This3.Message.Opt cause() 
-method myName() This3.GetMyName.#apply(that:This0)
-method kind() this.myName()
+method is(subtype ) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This3.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This3.Bool.false()
+    void
+    )
+  
+  catch return This0::is(subtype )  result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+method readableName() This3.GetMyName.#apply(that:This0)
+method kind() this.readableName()
 method text() this._text()
 method responseOf() this.cause()
 method equals(that ) (
@@ -29427,10 +30333,42 @@ Void removeRight(This1 val) (
 CurlyBlock-Should be unreachable code
 */}
   )}
+method is(subtype ) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This2.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This2.Bool.false()
+    void
+    )
+  
+  catch return This0::is(subtype )  result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
 method classAny() This0
 read method 
 class This0 class() This0
-method myName() This2.GetMyName.#apply(that:This0)
+method readableName() This2.GetMyName.#apply(that:This0)
 method equals(that ) (
   Void unused=(
     Void unused0=(
@@ -29475,7 +30413,7 @@ mut method
 This2.N #that() 
 read method 
 This2.N that() 
-method toS() This0.myName().#plusplus(that:This2.S.#from(builder:(
+method toS() This0.readableName().#plusplus(that:This2.S.#from(builder:(
   This2.S::#builder() b=This2.S.#builder()
   Void unused=b.#dot()
   b
@@ -29764,7 +30702,7 @@ This0 _FreeTemplate() This0.#apply(that:This2.N.#from(builder:(
   )))}
 TypeKind:{/*Data is more than Solid, and Liquid, Gas, Plasma can be good methafores
 may disappear
-*/implements This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable, This2.Concept.Named, This2.Concept.ToS/*may be Parsable?
+*/implements This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable, This2.Concept.ToS/*may be Parsable?
 */
 ParseFail:{implements This3.Guard.ParseFail, This3.Message
 Varres_$%12_0__139_0:/*@private*/{
@@ -29790,8 +30728,40 @@ mut method
 This3.Message.Opt #cause() 
 read method 
 This3.Message.Opt cause() 
-method myName() This3.GetMyName.#apply(that:This0)
-method kind() this.myName()
+method is(subtype ) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This3.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This3.Bool.false()
+    void
+    )
+  
+  catch return This0::is(subtype )  result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+method readableName() This3.GetMyName.#apply(that:This0)
+method kind() this.readableName()
 method text() this._text()
 method responseOf() this.cause()
 method equals(that ) (
@@ -31597,10 +32567,42 @@ Void removeRight(This1 val) (
 CurlyBlock-Should be unreachable code
 */}
   )}
+method is(subtype ) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This2.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This2.Bool.false()
+    void
+    )
+  
+  catch return This0::is(subtype )  result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
 method classAny() This0
 read method 
 class This0 class() This0
-method myName() This2.GetMyName.#apply(that:This0)
+method readableName() This2.GetMyName.#apply(that:This0)
 method equals(that ) (
   Void unused=(
     Void unused0=(
@@ -31645,7 +32647,7 @@ mut method
 This2.N #that() 
 read method 
 This2.N that() 
-method toS() This0.myName().#plusplus(that:This2.S.#from(builder:(
+method toS() This0.readableName().#plusplus(that:This2.S.#from(builder:(
   This2.S::#builder() b=This2.S.#builder()
   Void unused=b.#dot()
   b
@@ -31907,18 +32909,50 @@ This2.S libToS(Library that) This2.S.#from(builder:(
   ))
 class method 
 Library recordWrapperToSTrait() {implements This3.MetaGuard
-method toS() This0.myName().#plusplus(that:This1.libToS(that:this.lib()))
+method toS() This0.readableName().#plusplus(that:This1.libToS(that:this.lib()))
 method 
 Library lib() }
 class method 
 Library recordWrapperTrait() {implements This3.MetaGuard
-method kind() This0.myName()
+method kind() This0.readableName()
 method text() This3.S.#from(builder:(
   This3.S::#builder() b=This3.S.#builder()
   b
   ))
 method responseOf() This3.Message.Opt.#apply()
-method myName() This3.GetMyName.#apply(that:This0)
+method is(subtype ) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This3.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This3.Bool.false()
+    void
+    )
+  
+  catch return This0::is(subtype )  result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+method readableName() This3.GetMyName.#apply(that:This0)
 method equals(that ) (
   Void unused=(
     Void unused0=(
@@ -32039,13 +33073,45 @@ This2.S libName() This2.S.#from(builder:(
   Void unused9=b.#t()
   b
   ))
-method kind() This0.myName()
+method kind() This0.readableName()
 method text() This2.S.#from(builder:(
   This2.S::#builder() b=This2.S.#builder()
   b
   ))
 method responseOf() This2.Message.Opt.#apply()
-method myName() This2.GetMyName.#apply(that:This0)
+method is(subtype ) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This2.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This2.Bool.false()
+    void
+    )
+  
+  catch return This0::is(subtype )  result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+method readableName() This2.GetMyName.#apply(that:This0)
 method equals(that ) (
   Void unused=(
     Void unused0=(
@@ -32108,7 +33174,7 @@ Void #apply(Library lift) exception This0 (
       )
     )
   )
-method toS() This0.myName().#plusplus(that:This1.RecordWrapper.libToS(that:this.lib()))
+method toS() This0.readableName().#plusplus(that:This1.RecordWrapper.libToS(that:this.lib()))
 method 
 Library lib() 
 class method 
@@ -32144,13 +33210,45 @@ This2.S libName() This2.S.#from(builder:(
   Void unused23=b.#g()
   b
   ))
-method kind() This0.myName()
+method kind() This0.readableName()
 method text() This2.S.#from(builder:(
   This2.S::#builder() b=This2.S.#builder()
   b
   ))
 method responseOf() This2.Message.Opt.#apply()
-method myName() This2.GetMyName.#apply(that:This0)
+method is(subtype ) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This2.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This2.Bool.false()
+    void
+    )
+  
+  catch return This0::is(subtype )  result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+method readableName() This2.GetMyName.#apply(that:This0)
 method equals(that ) (
   Void unused=(
     Void unused0=(
@@ -32213,7 +33311,7 @@ Void #apply(Library lift) exception This0 (
       )
     )
   )
-method toS() This0.myName().#plusplus(that:This1.RecordWrapper.libToS(that:this.lib()))
+method toS() This0.readableName().#plusplus(that:This1.RecordWrapper.libToS(that:this.lib()))
 method 
 Library lib() 
 class method 
@@ -32234,13 +33332,45 @@ This2.S libName() This2.S.#from(builder:(
   Void unused8=b.#h()
   b
   ))
-method kind() This0.myName()
+method kind() This0.readableName()
 method text() This2.S.#from(builder:(
   This2.S::#builder() b=This2.S.#builder()
   b
   ))
 method responseOf() This2.Message.Opt.#apply()
-method myName() This2.GetMyName.#apply(that:This0)
+method is(subtype ) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This2.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This2.Bool.false()
+    void
+    )
+  
+  catch return This0::is(subtype )  result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+method readableName() This2.GetMyName.#apply(that:This0)
 method equals(that ) (
   Void unused=(
     Void unused0=(
@@ -32303,7 +33433,7 @@ Void #apply(Library lift) exception This0 (
       )
     )
   )
-method toS() This0.myName().#plusplus(that:This1.RecordWrapper.libToS(that:this.lib()))
+method toS() This0.readableName().#plusplus(that:This1.RecordWrapper.libToS(that:this.lib()))
 method 
 Library lib() 
 class method 
@@ -32325,13 +33455,45 @@ This2.S libName() This2.S.#from(builder:(
   Void unused9=b.#h()
   b
   ))
-method kind() This0.myName()
+method kind() This0.readableName()
 method text() This2.S.#from(builder:(
   This2.S::#builder() b=This2.S.#builder()
   b
   ))
 method responseOf() This2.Message.Opt.#apply()
-method myName() This2.GetMyName.#apply(that:This0)
+method is(subtype ) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This2.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This2.Bool.false()
+    void
+    )
+  
+  catch return This0::is(subtype )  result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+method readableName() This2.GetMyName.#apply(that:This0)
 method equals(that ) (
   Void unused=(
     Void unused0=(
@@ -32394,7 +33556,7 @@ Void #apply(Library lift) exception This0 (
       )
     )
   )
-method toS() This0.myName().#plusplus(that:This1.RecordWrapper.libToS(that:this.lib()))
+method toS() This0.readableName().#plusplus(that:This1.RecordWrapper.libToS(that:this.lib()))
 method 
 Library lib() 
 class method 
@@ -32422,13 +33584,45 @@ This2.S libName() This2.S.#from(builder:(
   Void unused15=b.#l()
   b
   ))
-method kind() This0.myName()
+method kind() This0.readableName()
 method text() This2.S.#from(builder:(
   This2.S::#builder() b=This2.S.#builder()
   b
   ))
 method responseOf() This2.Message.Opt.#apply()
-method myName() This2.GetMyName.#apply(that:This0)
+method is(subtype ) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This2.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This2.Bool.false()
+    void
+    )
+  
+  catch return This0::is(subtype )  result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+method readableName() This2.GetMyName.#apply(that:This0)
 method equals(that ) (
   Void unused=(
     Void unused0=(
@@ -32491,7 +33685,7 @@ Void #apply(Library lift) exception This0 (
       )
     )
   )
-method toS() This0.myName().#plusplus(that:This1.RecordWrapper.libToS(that:this.lib()))
+method toS() This0.readableName().#plusplus(that:This1.RecordWrapper.libToS(that:this.lib()))
 method 
 Library lib() 
 class method 
@@ -32517,13 +33711,45 @@ This2.S libName() This2.S.#from(builder:(
   Void unused13=b.#d()
   b
   ))
-method kind() This0.myName()
+method kind() This0.readableName()
 method text() This2.S.#from(builder:(
   This2.S::#builder() b=This2.S.#builder()
   b
   ))
 method responseOf() This2.Message.Opt.#apply()
-method myName() This2.GetMyName.#apply(that:This0)
+method is(subtype ) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This2.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This2.Bool.false()
+    void
+    )
+  
+  catch return This0::is(subtype )  result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+method readableName() This2.GetMyName.#apply(that:This0)
 method equals(that ) (
   Void unused=(
     Void unused0=(
@@ -32586,7 +33812,7 @@ Void #apply(Library lift) exception This0 (
       )
     )
   )
-method toS() This0.myName().#plusplus(that:This1.RecordWrapper.libToS(that:this.lib()))
+method toS() This0.readableName().#plusplus(that:This1.RecordWrapper.libToS(that:this.lib()))
 method 
 Library lib() 
 class method 
@@ -32614,13 +33840,45 @@ This2.S libName() This2.S.#from(builder:(
   Void unused15=b.#h()
   b
   ))
-method kind() This0.myName()
+method kind() This0.readableName()
 method text() This2.S.#from(builder:(
   This2.S::#builder() b=This2.S.#builder()
   b
   ))
 method responseOf() This2.Message.Opt.#apply()
-method myName() This2.GetMyName.#apply(that:This0)
+method is(subtype ) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This2.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This2.Bool.false()
+    void
+    )
+  
+  catch return This0::is(subtype )  result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+method readableName() This2.GetMyName.#apply(that:This0)
 method equals(that ) (
   Void unused=(
     Void unused0=(
@@ -32683,7 +33941,7 @@ Void #apply(Library lift) exception This0 (
       )
     )
   )
-method toS() This0.myName().#plusplus(that:This1.RecordWrapper.libToS(that:this.lib()))
+method toS() This0.readableName().#plusplus(that:This1.RecordWrapper.libToS(that:this.lib()))
 method 
 Library lib() 
 class method 
@@ -32780,7 +34038,7 @@ mut method
 This2.Bool #isPrivate() 
 read method 
 This2.Bool isPrivate() 
-method toS() This0.myName().#plusplus(that:(
+method toS() This0.readableName().#plusplus(that:(
   This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) rcv91=(
     This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) rcv92=(
       This2.S::#from(builder ) ::#from(seqBuilder ) rcv93=(
@@ -32871,13 +34129,45 @@ This2.S libName() This2.S.#from(builder:(
   Void unused15=b.#e()
   b
   ))
-method kind() This0.myName()
+method kind() This0.readableName()
 method text() This2.S.#from(builder:(
   This2.S::#builder() b=This2.S.#builder()
   b
   ))
 method responseOf() This2.Message.Opt.#apply()
-method myName() This2.GetMyName.#apply(that:This0)
+method is(subtype ) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This2.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This2.Bool.false()
+    void
+    )
+  
+  catch return This0::is(subtype )  result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+method readableName() This2.GetMyName.#apply(that:This0)
 method equals(that ) (
   Void unused=(
     Void unused0=(
@@ -32955,7 +34245,7 @@ mut method
 This2.Bool #isPrivate() 
 read method 
 This2.Bool isPrivate() 
-method toS() This0.myName().#plusplus(that:(
+method toS() This0.readableName().#plusplus(that:(
   This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) rcv95=(
     This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) rcv96=(
       This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) rcv97=(
@@ -33081,13 +34371,45 @@ This2.S libName() This2.S.#from(builder:(
   Void unused15=b.#e()
   b
   ))
-method kind() This0.myName()
+method kind() This0.readableName()
 method text() This2.S.#from(builder:(
   This2.S::#builder() b=This2.S.#builder()
   b
   ))
 method responseOf() This2.Message.Opt.#apply()
-method myName() This2.GetMyName.#apply(that:This0)
+method is(subtype ) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This2.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This2.Bool.false()
+    void
+    )
+  
+  catch return This0::is(subtype )  result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+method readableName() This2.GetMyName.#apply(that:This0)
 method equals(that ) (
   Void unused=(
     Void unused0=(
@@ -33863,8 +35185,40 @@ mut method
 This3.Message.Opt #cause() 
 read method 
 This3.Message.Opt cause() 
-method myName() This3.GetMyName.#apply(that:This0)
-method kind() this.myName()
+method is(subtype ) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This3.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This3.Bool.false()
+    void
+    )
+  
+  catch return This0::is(subtype )  result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+method readableName() This3.GetMyName.#apply(that:This0)
+method kind() this.readableName()
 method text() this._text()
 method responseOf() this.cause()
 method equals(that ) (
@@ -34200,6 +35554,23 @@ class method
 class This2.Selector #default#selector(Void that) This2.Selector
 class method 
 class This2.Selector #default#selector(Void to) This2.Selector
+class method 
+class This2.Path #default#selector(Void of) This2.Path}
+Hide:{
+class method 
+This1.MakePrivateSelector selector(This2.Selector that, This2.Path of) This1.MakePrivateSelector.#apply(that:that, of:of)
+class method 
+This1.MakePrivateSelector selector(This2.Selector that) This1.MakePrivateSelector.#apply(that:that, of:This2.Path.#from(builder:(
+  This2.Path::#builder() b=This2.Path.#builder()
+  Void unused=b.#T()
+  Void unused0=b.#h()
+  Void unused1=b.#i()
+  Void unused2=b.#s()
+  Void unused3=b.#0()
+  b
+  )))
+class method 
+class This2.Selector #default#selector(Void that) This2.Selector
 class method 
 class This2.Path #default#selector(Void of) This2.Path}}
 Opt:{
@@ -37852,8 +39223,40 @@ mut method
 This2.Message.Opt #cause() 
 read method 
 This2.Message.Opt cause() 
-method myName() This2.GetMyName.#apply(that:This0)
-method kind() this.myName()
+method is(subtype ) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This2.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This2.Bool.false()
+    void
+    )
+  
+  catch return This0::is(subtype )  result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+method readableName() This2.GetMyName.#apply(that:This0)
+method kind() this.readableName()
 method text() this._text()
 method responseOf() this.cause()
 method equals(that ) (
@@ -38134,36 +39537,6 @@ CurlyBlock-Should be unreachable code
       Void unused5=b0.#a()
       Void unused6=b0.#l()
       Void unused7=b0.#s()
-      b0
-      )).#apply(that:catched0)
-    
-    void
-    )
-  
-  catch return Library result result
-  
-  error {/*@stringU
-CurlyBlock-Should be unreachable code
-*/}
-  )}
-Named:{
-class method 
-Library #leftleft(Library that) exception This1.DecorationUnfeasable (
-  Void unused=(
-    Void unused0=return This2.Extends.#from(seqBuilder:(
-      This2.Extends::#seqBuilder() b=This2.Extends.#seqBuilder()
-      Void unused1=b.#add(that:{implements This3.Concept.Named
-      method myName() This3.Introspection.#apply(clazz:This0).externalTypeToS()})
-      b
-      )).#leftleft(that:that)
-    
-    catch exception This2.MetaGuard catched0 exception This1.DecorationUnfeasable.#from(builder:(
-      This1.DecorationUnfeasable::#builder() b0=This1.DecorationUnfeasable.#builder()
-      Void unused2=b0.#N()
-      Void unused3=b0.#a()
-      Void unused4=b0.#m()
-      Void unused5=b0.#e()
-      Void unused6=b0.#d()
       b0
       )).#apply(that:catched0)
     

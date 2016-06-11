@@ -63,22 +63,39 @@ Path:{
       )
     }
   }
-  //Assert:{
-  //  $:{(B that, S msg)
-  //  $s:Use[Collections.vector(of:This)]<<{
-  //    mut method
-  //    Void #add(Bool that, Concept.ToS msg)
-  //        this.add(right: $(that,msg:S""[msg;S.nl()]"number:"[this.size()]" failed") )
-  //    mut method
-  //    Void #add(Bool that)
-  //        this.add(right: $(that,msg:S"Condition number "[this.size()]" failed") )
-  //    }
-  //  class method mut $s #seqBuilder() $s.empty()
-  //  class method Void #from($s seqBuilder) (
-  //      res=S""[with a in seqBuilder.vals() (
-  //        if a.that() ( use[a.msg(), separedBy:S.nl()] )
-  //        )]""
-  //    )
-  //  }
-  //}
+  Assert:{interface
+    Bug:This2.Message.$<<{ implements This1}
+    Pre:{
+      class method mut Tests #seqBuilder() Tests.empty()
+      class method Void #from(Tests seqBuilder) (
+        res=seqBuilder.collapse()
+        if !res.isEmpty() (error Bug"Precondition violation: "[res]"")
+        )
+      }
+    Holds:{
+      class method mut Tests #seqBuilder() Tests.empty()
+      class method Void #from(Tests seqBuilder) (
+        res=seqBuilder.collapse()
+        if !res.isEmpty() (error Bug"Observed bug: "[res]"")
+        )
+      }
+   Test: {(This3.Bool that, S msg)}
+   Tests: Refactor.compose(//do not use Use to save compilation time
+     left:Refactor.Hide.selector(\"#add(that)")<<Collections.vector(of:Test)
+     right:{ 
+
+     mut method
+     Void #add(This3.Bool that, Concept.ToS msg)
+         this.add(right: Test(that,msg:S""[msg;S.nl()]"number:"[this.size()]" failed") )
+
+     mut method
+     Void #add(This3.Bool that)
+         this.add(right: Test(that,msg:S"Condition number "[this.size()]" failed") )
+
+     read method
+     S collapse() S""[with a in this.vals() (
+          if !a.that() ( use[a.msg(), separedBy:S.nl()] )
+          )]""
+     })
+  }
 }

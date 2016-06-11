@@ -211,6 +211,11 @@ Rename:{
  class method class Selector #default#selector(Void that) Selector
  class method class Selector #default#selector(Void to) Selector
  class method class Path #default#selector(Void of) Path
-
+  }
+Hide:{
+  class method MakePrivateSelector  selector(Selector that, Path of) MakePrivateSelector(that,of:of)
+  class method MakePrivateSelector  selector(Selector that) MakePrivateSelector(that,of:Path"This0")
+  class method class Selector #default#selector(Void that) Selector
+  class method class Path #default#selector(Void of) Path
   }
 }

@@ -71,7 +71,9 @@ public class TranslateExpression implements coreVisitors.Visitor<Void>{
       Position pos=Resources.getP().getCb(s.getN()).getP();
       int hash=System.identityHashCode(pos);
       String cs=s.toString();
-      cs=cs.substring(cs.indexOf("."));
+      int dotPos=cs.indexOf(".");
+      assert dotPos>=0;
+        cs=cs.substring(dotPos);
       res.append(
         "platformSpecific.javaTranslation.Resources.fromHash("+hash+",\""+cs+"\")");
       }

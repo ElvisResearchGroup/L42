@@ -71,11 +71,12 @@ public class TestBase02 {
         "c1c2c3\nc1c2c3\nic1ic2ic3\nc1c2c3\nc1c2c3\nc1c2c3c1c2c3c1c2c3\n");
     }
    @Test
-   public  void _02_05UseOperators2() throws Throwable{
+   public  void _02_05UseAssertPreHold() throws Throwable{
      TestHelper.configureForTest();
-     L42.main(new String[]{"examples/testsForAdamTowel02/UseOperators2.L42"});
-     Assert.assertEquals(L42.record.toString(),
-         "This.A.B.C\nSecret\nFailed\n");
+     //new TestBase01()._01_00DeployAdamTowel01();
+     //this._02_00DeployAdamTowel02();
+     L42.main(new String[]{"examples/testsForAdamTowel02/TestAssertPreHold.L42"});
+     TestHelper.check42Fails(L42.record.toString());
      }
 
    //OLD unused @Test
@@ -218,6 +219,16 @@ public class TestBase02 {
     L42.main(new String[]{"examples/testsForAdamTowel02/TestRange.L42"});
     TestHelper.check42Fails(L42.record.toString());
     }
+
+  @Test
+  public  void _02_18AlphanumericMarco() throws Throwable{
+    TestHelper.configureForTest();
+    //new TestBase01()._01_00DeployAdamTowel01();
+    //this._02_00DeployAdamTowel02();
+    L42.main(new String[]{"examples/testsForAdamTowel02/TestAlphanumericMarco.L42"});
+    TestHelper.check42Fails(L42.record.toString());
+    }
+
 
   @Test
   public  void _02_19AlphanumericJames() throws Throwable{
