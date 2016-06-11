@@ -5,9 +5,22 @@ Alphanumeric:{
   LiteralMethodConflict: Message.$<<{implements MetaGuard}
   class method
   Library <<(Library that) exception LiteralMethodConflict{
-    lib=(,{implements Concept.Base
+    lib=(,{
+      implements Concept.Base
       S that
-
+    
+      method toS() this.that()
+      method classAny() This
+      method class() This
+      method readableName()GetMyName(This)
+      method is(subtype){  with subtype (on class This return Bool.true()) return Bool.false()}
+      method equals(that){
+        with that (on This return this==that)
+        return Bool.false()
+        }
+      method ==(that) this.that()==that.that()
+      method !=(that) !(this==that)
+      
       class method
       This #from(S.SBuilder builder)
         This.parse(S.#from(builder:builder))
