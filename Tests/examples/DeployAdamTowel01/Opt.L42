@@ -7,11 +7,10 @@
         error Guard.Operation
           "TEmpty.get() Value not present in Optional" }
       TOf:{(T that) implements TOpt method get() this.that()}
-      method T ~() this.that().get()
+      method T #get() this.that().get()
       method Bool isPresent(){
-        aux=~this
-        return Bool.true()
-        catch error Any return Bool.false()
+        with cell=this.that() (on TOf return Bool.true())
+        return Bool.false()
         }
       class method This () This.#new(TEmpty())
       class method This (T that) This.#new(TOf(that))

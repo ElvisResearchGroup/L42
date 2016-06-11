@@ -340,6 +340,8 @@ This1.Bool #right(This0 that)
 method 
 This1.N indexOfLeft(This0 val) 
 method 
+This1.N indexOfLeft(This0 val, This1.N start) 
+method 
 This1.N indexOfRight(This0 val) 
 method 
 This0 withoutLeft(This0 val) 
@@ -387,6 +389,8 @@ method
 This0 #apply(This1.N end) 
 method 
 This1.N size() 
+method 
+This1.Bool subStrEq(This0 that, This1.N start) 
 method 
 This1.Bool beginsWith(This0 that) 
 class method 
@@ -744,7 +748,7 @@ This2 #that()
 read method 
 This2 that() }
 method 
-This1 #tilde() 
+This1 #get() 
 method 
 This2.Bool isPresent() 
 class method 

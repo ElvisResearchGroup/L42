@@ -12,11 +12,10 @@ Opt:{#new(TOpt that)
     //error Guard.Operation"TEmpty.get() Value not present in Optional"
     }
   TOf:{(This2 that) implements TOpt method get() this.that()}
-  method This1 ~() this.that().get()
+  method This1 #get() this.that().get()
   method Bool isPresent() {
-    unused=~this  //unused=~this
-    return Bool.true()
-    catch error Any return Bool.false()
+    with cell=this.that() (on TOf return Bool.true())
+    return Bool.false()
     }
   class method This () This.#new(TEmpty())
   class method This (This1 that) This.#new(TOf(that))
@@ -30,7 +29,7 @@ EqualMessages:{
   if !res (return Bool.false())
   if !that.responseOf().isPresent() (return Bool.true())
   //i know both are present
-  return (~that.responseOf()).equals(~other.responseOf()) // this calls  equals in message,
+  return that.responseOf().#get().equals(other.responseOf().#get()) // this calls  equals in message,
   //that check for equal class and then call EqualMessages
   }}
 $:{()
@@ -61,7 +60,7 @@ $:{()
           ++S", cause:"
         )
       else (res:=res++S"[")
-      return res[~this.cause()]"]"
+      return res[this.cause().#get()]"]"
       }
     method Bool != (This that)
       !(this==that)

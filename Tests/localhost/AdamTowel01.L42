@@ -2622,15 +2622,34 @@ read method
 This2 that() 
 method get() this.that()}
 method 
-This1 #tilde() this.that().get()
+This1 #get() this.that().get()
 method 
 This2.Bool isPresent() (
-  Void unused0=(
-    This0::#tilde() unused=this.#tilde()
-    Void unused1=return This2.Bool.true()
-    
-    catch error Any catched return This2.Bool.false()
-    
+  Void unused=(
+    Void unused0=(
+      This0::that() cell=this.that()
+      (
+        This0.TOf cell0=(
+          Void unused2=return cell
+          
+          catch return This0.TOf casted casted
+          
+          catch return Any casted exception void
+          
+          error {/*@stringU
+CastT-Should be unreachable code
+*/}
+          )
+        
+        catch exception Void catched1 void
+        
+        (
+          Void unused3=return This2.Bool.true()
+          void
+          )
+        )
+      )
+    Void unused1=return This2.Bool.false()
     void
     )
   
@@ -2670,7 +2689,7 @@ This2.Bool #apply(This2.Message that, This2.Message other) (
         return This2.Bool.true()
         )
       )
-    Void unused2=return that.responseOf().#tilde().equals(that:other.responseOf().#tilde())
+    Void unused2=return that.responseOf().#get().equals(that:other.responseOf().#get())
     void
     )
   
@@ -2836,7 +2855,7 @@ method toS() (
     Void unused2=return (
       This0.Varres__85_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres__85_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
-        Void unused20=b3.#add(that:this.cause().#tilde())
+        Void unused20=b3.#add(that:this.cause().#get())
         b3
         ))
       rcv14.#from(builder:(
@@ -3046,7 +3065,7 @@ method toS() (
     Void unused2=return (
       This0.Varres_$%0_0__86_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%0_0__86_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
-        Void unused20=b3.#add(that:this.cause().#tilde())
+        Void unused20=b3.#add(that:this.cause().#get())
         b3
         ))
       rcv14.#from(builder:(
@@ -3246,7 +3265,7 @@ method toS() (
     Void unused2=return (
       This0.Varres_$%1_0__87_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%1_0__87_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
-        Void unused20=b3.#add(that:this.cause().#tilde())
+        Void unused20=b3.#add(that:this.cause().#get())
         b3
         ))
       rcv14.#from(builder:(
@@ -3446,7 +3465,7 @@ method toS() (
     Void unused2=return (
       This0.Varres_$%2_0__88_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%2_0__88_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
-        Void unused20=b3.#add(that:this.cause().#tilde())
+        Void unused20=b3.#add(that:this.cause().#get())
         b3
         ))
       rcv14.#from(builder:(
@@ -3650,7 +3669,7 @@ method toS() (
     Void unused2=return (
       This0.Varres_$%3_0__89_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%3_0__89_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
-        Void unused20=b3.#add(that:this.cause().#tilde())
+        Void unused20=b3.#add(that:this.cause().#get())
         b3
         ))
       rcv14.#from(builder:(
@@ -3851,7 +3870,7 @@ method toS() (
     Void unused2=return (
       This0.Varres_$%4_0__90_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%4_0__90_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
-        Void unused20=b3.#add(that:this.cause().#tilde())
+        Void unused20=b3.#add(that:this.cause().#get())
         b3
         ))
       rcv14.#from(builder:(
@@ -4051,7 +4070,7 @@ method toS() (
     Void unused2=return (
       This0.Varres_$%5_0__91_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%5_0__91_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
-        Void unused20=b3.#add(that:this.cause().#tilde())
+        Void unused20=b3.#add(that:this.cause().#get())
         b3
         ))
       rcv14.#from(builder:(
@@ -4251,7 +4270,7 @@ method toS() (
     Void unused2=return (
       This0.Varres_$%6_0__92_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%6_0__92_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
-        Void unused20=b3.#add(that:this.cause().#tilde())
+        Void unused20=b3.#add(that:this.cause().#get())
         b3
         ))
       rcv14.#from(builder:(
@@ -4451,7 +4470,7 @@ method toS() (
     Void unused2=return (
       This0.Varres_$%7_0__93_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%7_0__93_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
-        Void unused20=b3.#add(that:this.cause().#tilde())
+        Void unused20=b3.#add(that:this.cause().#get())
         b3
         ))
       rcv14.#from(builder:(
@@ -4652,7 +4671,7 @@ method toS() (
     Void unused2=return (
       This0.Varres_$%8_0__94_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%8_0__94_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
-        Void unused20=b3.#add(that:this.cause().#tilde())
+        Void unused20=b3.#add(that:this.cause().#get())
         b3
         ))
       rcv14.#from(builder:(
@@ -10844,7 +10863,7 @@ method toS() (
     Void unused2=return (
       This0.Varres_$%12_0__105_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%12_0__105_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
-        Void unused20=b3.#add(that:this.cause().#tilde())
+        Void unused20=b3.#add(that:this.cause().#get())
         b3
         ))
       rcv14.#from(builder:(
@@ -24135,7 +24154,7 @@ method toS() (
     Void unused2=return (
       This0.Varres_$%12_0__127_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%12_0__127_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
-        Void unused20=b3.#add(that:this.cause().#tilde())
+        Void unused20=b3.#add(that:this.cause().#get())
         b3
         ))
       rcv14.#from(builder:(
@@ -26405,7 +26424,7 @@ method toS() (
     Void unused2=return (
       This0.Varres_$%12_0__131_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%12_0__131_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
-        Void unused20=b3.#add(that:this.cause().#tilde())
+        Void unused20=b3.#add(that:this.cause().#get())
         b3
         ))
       rcv14.#from(builder:(
@@ -28626,7 +28645,7 @@ method toS() (
     Void unused2=return (
       This0.Varres_$%12_0__135_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%12_0__135_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
-        Void unused20=b3.#add(that:this.cause().#tilde())
+        Void unused20=b3.#add(that:this.cause().#get())
         b3
         ))
       rcv14.#from(builder:(
@@ -30860,7 +30879,7 @@ method toS() (
     Void unused2=return (
       This0.Varres_$%12_0__139_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%12_0__139_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
-        Void unused20=b3.#add(that:this.cause().#tilde())
+        Void unused20=b3.#add(that:this.cause().#get())
         b3
         ))
       rcv14.#from(builder:(
@@ -35317,7 +35336,7 @@ method toS() (
     Void unused2=return (
       This0.Varres_$%31_0__144_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%31_0__144_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
-        Void unused20=b3.#add(that:this.cause().#tilde())
+        Void unused20=b3.#add(that:this.cause().#get())
         b3
         ))
       rcv14.#from(builder:(
@@ -35658,15 +35677,34 @@ read method
 This1.T that() 
 method get() this.that()}
 method 
-This0.T #tilde() this.that().get()
+This0.T #get() this.that().get()
 method 
 This2.Bool isPresent() (
   Void unused=(
-    This0::#tilde() aux=this.#tilde()
-    Void unused0=return This2.Bool.true()
-    
-    catch error Any catched return This2.Bool.false()
-    
+    Void unused0=(
+      This0::that() cell=this.that()
+      (
+        This0.TOf cell0=(
+          Void unused2=return cell
+          
+          catch return This0.TOf casted casted
+          
+          catch return Any casted exception void
+          
+          error {/*@stringU
+CastT-Should be unreachable code
+*/}
+          )
+        
+        catch exception Void catched1 void
+        
+        (
+          Void unused3=return This2.Bool.true()
+          void
+          )
+        )
+      )
+    Void unused1=return This2.Bool.false()
     void
     )
   
@@ -39355,7 +39393,7 @@ method toS() (
     Void unused2=return (
       This0.Varres_$%48_0__155_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%48_0__155_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
-        Void unused20=b3.#add(that:this.cause().#tilde())
+        Void unused20=b3.#add(that:this.cause().#get())
         b3
         ))
       rcv14.#from(builder:(

@@ -536,7 +536,7 @@ method toS() (
     Void unused2=return (
       This0.Varres_$%$%85_1_$%$%$%141_1_$%$%$%$%184_1_$%$%$%$%$%331_1_$%$%$%$%$%$%479_1_$%$%$%$%$%$%$%628_1_$%$%$%$%$%$%$%$%778_1_$%$%$%$%$%$%$%$%$%929_1_$%$%$%$%$%$%$%$%$%$%1081_1_$%$%$%$%$%$%$%$%$%$%$%1234_1__1388_1::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%$%85_1_$%$%$%141_1_$%$%$%$%184_1_$%$%$%$%$%331_1_$%$%$%$%$%$%479_1_$%$%$%$%$%$%$%628_1_$%$%$%$%$%$%$%$%778_1_$%$%$%$%$%$%$%$%$%929_1_$%$%$%$%$%$%$%$%$%$%1081_1_$%$%$%$%$%$%$%$%$%$%$%1234_1__1388_1::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
-        Void unused20=b3.#add(that:this.cause().#tilde())
+        Void unused20=b3.#add(that:this.cause().#get())
         b3
         ))
       rcv14.#from(builder:(
@@ -1489,7 +1489,7 @@ method toS() (
     Void unused2=return (
       This0.Varres_$%$%85_1_$%$%$%142_1_$%$%$%$%185_1_$%$%$%$%$%332_1_$%$%$%$%$%$%480_1_$%$%$%$%$%$%$%629_1_$%$%$%$%$%$%$%$%779_1_$%$%$%$%$%$%$%$%$%930_1_$%$%$%$%$%$%$%$%$%$%1082_1_$%$%$%$%$%$%$%$%$%$%$%1235_1__1389_1::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%$%85_1_$%$%$%142_1_$%$%$%$%185_1_$%$%$%$%$%332_1_$%$%$%$%$%$%480_1_$%$%$%$%$%$%$%629_1_$%$%$%$%$%$%$%$%779_1_$%$%$%$%$%$%$%$%$%930_1_$%$%$%$%$%$%$%$%$%$%1082_1_$%$%$%$%$%$%$%$%$%$%$%1235_1__1389_1::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
-        Void unused20=b3.#add(that:this.cause().#tilde())
+        Void unused20=b3.#add(that:this.cause().#get())
         b3
         ))
       rcv14.#from(builder:(
@@ -1674,46 +1674,48 @@ This1.Bool #rightrightequal(This0 that) this.contains(that:that)
 method 
 This1.Bool #right(This0 that) this.contains(that:that)
 method 
-This1.N indexOfLeft(This0 val) (
+This1.N indexOfLeft(This0 val) this.indexOfLeft(val:val, start:This1.N.#from(builder:(
+  This1.N::#builder() b=This1.N.#builder()
+  Void unused=b.#0()
+  b
+  )))
+method 
+This1.N indexOfLeft(This0 val, This1.N start) (
   Void unused=(/*val must be not empty, TODO: error here?
 */
-    This1.N current=This1.N.#from(builder:(
-      This1.N::#builder() b=This1.N.#builder()
-      Void unused2=b.#0()
-      b
-      ))
+    This1.N current=start
     mut This0.Varcurrent_$%$%82_1_$%$%$%38_1_$%$%$%$%186_1_$%$%$%$%$%333_1_$%$%$%$%$%$%481_1_$%$%$%$%$%$%$%630_1_$%$%$%$%$%$%$%$%780_1_$%$%$%$%$%$%$%$%$%931_1_$%$%$%$%$%$%$%$%$%$%1083_1_$%$%$%$%$%$%$%$%$%$%$%1236_1__1390_1 varcurrent=This0.Varcurrent_$%$%82_1_$%$%$%38_1_$%$%$%$%186_1_$%$%$%$%$%333_1_$%$%$%$%$%$%481_1_$%$%$%$%$%$%$%630_1_$%$%$%$%$%$%$%$%780_1_$%$%$%$%$%$%$%$%$%931_1_$%$%$%$%$%$%$%$%$%$%1083_1_$%$%$%$%$%$%$%$%$%$%$%1236_1__1390_1.#apply(inner:current)
     Void unused0=(
-      Void unused3=loop (
-        Void unused4=varcurrent.#inner().#left(that:this.size()).#checkTrue()
+      Void unused2=loop (
+        Void unused3=varcurrent.#inner().#left(that:this.size()).#checkTrue()
         (
-          Void unused5=(
-            This0::#apply(start ) ::beginsWith(that ) cond=this.#apply(start:varcurrent.#inner()).beginsWith(that:val)
+          Void unused4=(
+            This0::subStrEq(that start ) cond=this.subStrEq(that:val, start:varcurrent.#inner())
             (
-              Void unused6=cond.#checkTrue()
+              Void unused5=cond.#checkTrue()
               
-              catch exception Void catched2 void
+              catch exception Void catched1 void
               
               return varcurrent.#inner()
               )
             )
           varcurrent.inner(that:varcurrent.#inner().#plus(that:This1.N.#from(builder:(
-            This1.N::#builder() b0=This1.N.#builder()
-            Void unused7=b0.#1()
-            b0
+            This1.N::#builder() b=This1.N.#builder()
+            Void unused6=b.#1()
+            b
             ))))
           )
         )
       
-      catch exception Void catched5 void
+      catch exception Void catched4 void
       
       void
       )
     Void unused1=return This1.N.#from(builder:(
-      This1.N::#builder() b1=This1.N.#builder()
-      Void unused8=b1.#less()
-      Void unused9=b1.#1()
-      b1
+      This1.N::#builder() b0=This1.N.#builder()
+      Void unused7=b0.#less()
+      Void unused8=b0.#1()
+      b0
       ))
     void
     )
@@ -1947,7 +1949,13 @@ This0 #apply(This1.N end) this.#apply(start:This1.N.#from(builder:(
 method 
 This1.N size() This1.N.#apply_$%$%53_1_$%$%$%4_1_$%$%$%$%149_1_$%$%$%$%$%295_1_$%$%$%$%$%$%443_1_$%$%$%$%$%$%$%591_1_$%$%$%$%$%$%$%$%740_1_$%$%$%$%$%$%$%$%$%890_1_$%$%$%$%$%$%$%$%$%$%1041_1_$%$%$%$%$%$%$%$%$%$%$%1193_1__1346_1(_binaryRepr:use This1.Alu check stringSize(that:this.binaryRepr()) error void)
 method 
-This1.Bool beginsWith(This0 that) this.#apply(end:that.size()).#equalequal(that:that)
+This1.Bool subStrEq(This0 that, This1.N start) this.#apply(start:start, end:that.size().#plus(that:start)).#equalequal(that:that)
+method 
+This1.Bool beginsWith(This0 that) this.subStrEq(that:that, start:This1.N.#from(builder:(
+  This1.N::#builder() b=This1.N.#builder()
+  Void unused=b.#0()
+  b
+  )))
 class method 
 This0 aSCIILowerCase() This0.#from(builder:(
   This0::#builder() b=This0.#builder()
@@ -3184,15 +3192,34 @@ read method
 This2 that() 
 method get() this.that()}
 method 
-This1 #tilde() this.that().get()
+This1 #get() this.that().get()
 method 
 This2.Bool isPresent() (
-  Void unused0=(
-    This0::#tilde() unused=this.#tilde()
-    Void unused1=return This2.Bool.true()
-    
-    catch error Any catched return This2.Bool.false()
-    
+  Void unused=(
+    Void unused0=(
+      This0::that() cell=this.that()
+      (
+        This0.TOf cell0=(
+          Void unused2=return cell
+          
+          catch return This0.TOf casted casted
+          
+          catch return Any casted exception void
+          
+          error {/*@stringU
+CastT-Should be unreachable code
+*/}
+          )
+        
+        catch exception Void catched1 void
+        
+        (
+          Void unused3=return This2.Bool.true()
+          void
+          )
+        )
+      )
+    Void unused1=return This2.Bool.false()
     void
     )
   
@@ -3232,7 +3259,7 @@ This2.Bool #apply(This1 that, This1 other) (
         return This2.Bool.true()
         )
       )
-    Void unused2=return that.responseOf().#tilde().equals(that:other.responseOf().#tilde())
+    Void unused2=return that.responseOf().#get().equals(that:other.responseOf().#get())
     void
     )
   
@@ -3398,7 +3425,7 @@ method toS() (
     Void unused2=return (
       This0.Varres_$%$%85_1_$%$%$%41_1_$%$%$%$%189_1_$%$%$%$%$%336_1_$%$%$%$%$%$%484_1_$%$%$%$%$%$%$%633_1_$%$%$%$%$%$%$%$%783_1_$%$%$%$%$%$%$%$%$%934_1_$%$%$%$%$%$%$%$%$%$%1086_1_$%$%$%$%$%$%$%$%$%$%$%1239_1__1393_1::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%$%85_1_$%$%$%41_1_$%$%$%$%189_1_$%$%$%$%$%336_1_$%$%$%$%$%$%484_1_$%$%$%$%$%$%$%633_1_$%$%$%$%$%$%$%$%783_1_$%$%$%$%$%$%$%$%$%934_1_$%$%$%$%$%$%$%$%$%$%1086_1_$%$%$%$%$%$%$%$%$%$%$%1239_1__1393_1::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
-        Void unused20=b3.#add(that:this.cause().#tilde())
+        Void unused20=b3.#add(that:this.cause().#get())
         b3
         ))
       rcv14.#from(builder:(
@@ -3608,7 +3635,7 @@ method toS() (
     Void unused2=return (
       This0.Varres_$%0_0_$%$%86_1_$%$%$%42_1_$%$%$%$%190_1_$%$%$%$%$%337_1_$%$%$%$%$%$%485_1_$%$%$%$%$%$%$%634_1_$%$%$%$%$%$%$%$%784_1_$%$%$%$%$%$%$%$%$%935_1_$%$%$%$%$%$%$%$%$%$%1087_1_$%$%$%$%$%$%$%$%$%$%$%1240_1__1394_1::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%0_0_$%$%86_1_$%$%$%42_1_$%$%$%$%190_1_$%$%$%$%$%337_1_$%$%$%$%$%$%485_1_$%$%$%$%$%$%$%634_1_$%$%$%$%$%$%$%$%784_1_$%$%$%$%$%$%$%$%$%935_1_$%$%$%$%$%$%$%$%$%$%1087_1_$%$%$%$%$%$%$%$%$%$%$%1240_1__1394_1::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
-        Void unused20=b3.#add(that:this.cause().#tilde())
+        Void unused20=b3.#add(that:this.cause().#get())
         b3
         ))
       rcv14.#from(builder:(
@@ -3808,7 +3835,7 @@ method toS() (
     Void unused2=return (
       This0.Varres_$%1_0_$%$%87_1_$%$%$%43_1_$%$%$%$%191_1_$%$%$%$%$%338_1_$%$%$%$%$%$%486_1_$%$%$%$%$%$%$%635_1_$%$%$%$%$%$%$%$%785_1_$%$%$%$%$%$%$%$%$%936_1_$%$%$%$%$%$%$%$%$%$%1088_1_$%$%$%$%$%$%$%$%$%$%$%1241_1__1395_1::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%1_0_$%$%87_1_$%$%$%43_1_$%$%$%$%191_1_$%$%$%$%$%338_1_$%$%$%$%$%$%486_1_$%$%$%$%$%$%$%635_1_$%$%$%$%$%$%$%$%785_1_$%$%$%$%$%$%$%$%$%936_1_$%$%$%$%$%$%$%$%$%$%1088_1_$%$%$%$%$%$%$%$%$%$%$%1241_1__1395_1::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
-        Void unused20=b3.#add(that:this.cause().#tilde())
+        Void unused20=b3.#add(that:this.cause().#get())
         b3
         ))
       rcv14.#from(builder:(
@@ -4008,7 +4035,7 @@ method toS() (
     Void unused2=return (
       This0.Varres_$%2_0_$%$%88_1_$%$%$%44_1_$%$%$%$%192_1_$%$%$%$%$%339_1_$%$%$%$%$%$%487_1_$%$%$%$%$%$%$%636_1_$%$%$%$%$%$%$%$%786_1_$%$%$%$%$%$%$%$%$%937_1_$%$%$%$%$%$%$%$%$%$%1089_1_$%$%$%$%$%$%$%$%$%$%$%1242_1__1396_1::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%2_0_$%$%88_1_$%$%$%44_1_$%$%$%$%192_1_$%$%$%$%$%339_1_$%$%$%$%$%$%487_1_$%$%$%$%$%$%$%636_1_$%$%$%$%$%$%$%$%786_1_$%$%$%$%$%$%$%$%$%937_1_$%$%$%$%$%$%$%$%$%$%1089_1_$%$%$%$%$%$%$%$%$%$%$%1242_1__1396_1::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
-        Void unused20=b3.#add(that:this.cause().#tilde())
+        Void unused20=b3.#add(that:this.cause().#get())
         b3
         ))
       rcv14.#from(builder:(
@@ -4212,7 +4239,7 @@ method toS() (
     Void unused2=return (
       This0.Varres_$%3_0_$%$%89_1_$%$%$%45_1_$%$%$%$%193_1_$%$%$%$%$%340_1_$%$%$%$%$%$%488_1_$%$%$%$%$%$%$%637_1_$%$%$%$%$%$%$%$%787_1_$%$%$%$%$%$%$%$%$%938_1_$%$%$%$%$%$%$%$%$%$%1090_1_$%$%$%$%$%$%$%$%$%$%$%1243_1__1397_1::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%3_0_$%$%89_1_$%$%$%45_1_$%$%$%$%193_1_$%$%$%$%$%340_1_$%$%$%$%$%$%488_1_$%$%$%$%$%$%$%637_1_$%$%$%$%$%$%$%$%787_1_$%$%$%$%$%$%$%$%$%938_1_$%$%$%$%$%$%$%$%$%$%1090_1_$%$%$%$%$%$%$%$%$%$%$%1243_1__1397_1::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
-        Void unused20=b3.#add(that:this.cause().#tilde())
+        Void unused20=b3.#add(that:this.cause().#get())
         b3
         ))
       rcv14.#from(builder:(
@@ -4413,7 +4440,7 @@ method toS() (
     Void unused2=return (
       This0.Varres_$%4_0_$%$%90_1_$%$%$%46_1_$%$%$%$%194_1_$%$%$%$%$%341_1_$%$%$%$%$%$%489_1_$%$%$%$%$%$%$%638_1_$%$%$%$%$%$%$%$%788_1_$%$%$%$%$%$%$%$%$%939_1_$%$%$%$%$%$%$%$%$%$%1091_1_$%$%$%$%$%$%$%$%$%$%$%1244_1__1398_1::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%4_0_$%$%90_1_$%$%$%46_1_$%$%$%$%194_1_$%$%$%$%$%341_1_$%$%$%$%$%$%489_1_$%$%$%$%$%$%$%638_1_$%$%$%$%$%$%$%$%788_1_$%$%$%$%$%$%$%$%$%939_1_$%$%$%$%$%$%$%$%$%$%1091_1_$%$%$%$%$%$%$%$%$%$%$%1244_1__1398_1::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
-        Void unused20=b3.#add(that:this.cause().#tilde())
+        Void unused20=b3.#add(that:this.cause().#get())
         b3
         ))
       rcv14.#from(builder:(
@@ -4613,7 +4640,7 @@ method toS() (
     Void unused2=return (
       This0.Varres_$%5_0_$%$%91_1_$%$%$%47_1_$%$%$%$%195_1_$%$%$%$%$%342_1_$%$%$%$%$%$%490_1_$%$%$%$%$%$%$%639_1_$%$%$%$%$%$%$%$%789_1_$%$%$%$%$%$%$%$%$%940_1_$%$%$%$%$%$%$%$%$%$%1092_1_$%$%$%$%$%$%$%$%$%$%$%1245_1__1399_1::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%5_0_$%$%91_1_$%$%$%47_1_$%$%$%$%195_1_$%$%$%$%$%342_1_$%$%$%$%$%$%490_1_$%$%$%$%$%$%$%639_1_$%$%$%$%$%$%$%$%789_1_$%$%$%$%$%$%$%$%$%940_1_$%$%$%$%$%$%$%$%$%$%1092_1_$%$%$%$%$%$%$%$%$%$%$%1245_1__1399_1::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
-        Void unused20=b3.#add(that:this.cause().#tilde())
+        Void unused20=b3.#add(that:this.cause().#get())
         b3
         ))
       rcv14.#from(builder:(
@@ -4813,7 +4840,7 @@ method toS() (
     Void unused2=return (
       This0.Varres_$%6_0_$%$%92_1_$%$%$%48_1_$%$%$%$%196_1_$%$%$%$%$%343_1_$%$%$%$%$%$%491_1_$%$%$%$%$%$%$%640_1_$%$%$%$%$%$%$%$%790_1_$%$%$%$%$%$%$%$%$%941_1_$%$%$%$%$%$%$%$%$%$%1093_1_$%$%$%$%$%$%$%$%$%$%$%1246_1__1400_1::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%6_0_$%$%92_1_$%$%$%48_1_$%$%$%$%196_1_$%$%$%$%$%343_1_$%$%$%$%$%$%491_1_$%$%$%$%$%$%$%640_1_$%$%$%$%$%$%$%$%790_1_$%$%$%$%$%$%$%$%$%941_1_$%$%$%$%$%$%$%$%$%$%1093_1_$%$%$%$%$%$%$%$%$%$%$%1246_1__1400_1::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
-        Void unused20=b3.#add(that:this.cause().#tilde())
+        Void unused20=b3.#add(that:this.cause().#get())
         b3
         ))
       rcv14.#from(builder:(
@@ -5013,7 +5040,7 @@ method toS() (
     Void unused2=return (
       This0.Varres_$%7_0_$%$%93_1_$%$%$%49_1_$%$%$%$%197_1_$%$%$%$%$%344_1_$%$%$%$%$%$%492_1_$%$%$%$%$%$%$%641_1_$%$%$%$%$%$%$%$%791_1_$%$%$%$%$%$%$%$%$%942_1_$%$%$%$%$%$%$%$%$%$%1094_1_$%$%$%$%$%$%$%$%$%$%$%1247_1__1401_1::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%7_0_$%$%93_1_$%$%$%49_1_$%$%$%$%197_1_$%$%$%$%$%344_1_$%$%$%$%$%$%492_1_$%$%$%$%$%$%$%641_1_$%$%$%$%$%$%$%$%791_1_$%$%$%$%$%$%$%$%$%942_1_$%$%$%$%$%$%$%$%$%$%1094_1_$%$%$%$%$%$%$%$%$%$%$%1247_1__1401_1::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
-        Void unused20=b3.#add(that:this.cause().#tilde())
+        Void unused20=b3.#add(that:this.cause().#get())
         b3
         ))
       rcv14.#from(builder:(
@@ -5213,7 +5240,7 @@ method toS() (
     Void unused2=return (
       This0.Varres_$%$%85_1_$%$%$%145_1_$%$%$%$%198_1_$%$%$%$%$%345_1_$%$%$%$%$%$%493_1_$%$%$%$%$%$%$%642_1_$%$%$%$%$%$%$%$%792_1_$%$%$%$%$%$%$%$%$%943_1_$%$%$%$%$%$%$%$%$%$%1095_1_$%$%$%$%$%$%$%$%$%$%$%1248_1__1402_1::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%$%85_1_$%$%$%145_1_$%$%$%$%198_1_$%$%$%$%$%345_1_$%$%$%$%$%$%493_1_$%$%$%$%$%$%$%642_1_$%$%$%$%$%$%$%$%792_1_$%$%$%$%$%$%$%$%$%943_1_$%$%$%$%$%$%$%$%$%$%1095_1_$%$%$%$%$%$%$%$%$%$%$%1248_1__1402_1::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
-        Void unused20=b3.#add(that:this.cause().#tilde())
+        Void unused20=b3.#add(that:this.cause().#get())
         b3
         ))
       rcv14.#from(builder:(
@@ -6582,7 +6609,7 @@ method toS() (
     Void unused2=return (
       This0.Varres_$%8_0_$%$%94_1_$%$%$%50_1_$%$%$%$%199_1_$%$%$%$%$%346_1_$%$%$%$%$%$%494_1_$%$%$%$%$%$%$%643_1_$%$%$%$%$%$%$%$%793_1_$%$%$%$%$%$%$%$%$%944_1_$%$%$%$%$%$%$%$%$%$%1096_1_$%$%$%$%$%$%$%$%$%$%$%1249_1__1403_1::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%8_0_$%$%94_1_$%$%$%50_1_$%$%$%$%199_1_$%$%$%$%$%346_1_$%$%$%$%$%$%494_1_$%$%$%$%$%$%$%643_1_$%$%$%$%$%$%$%$%793_1_$%$%$%$%$%$%$%$%$%944_1_$%$%$%$%$%$%$%$%$%$%1096_1_$%$%$%$%$%$%$%$%$%$%$%1249_1__1403_1::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
-        Void unused20=b3.#add(that:this.cause().#tilde())
+        Void unused20=b3.#add(that:this.cause().#get())
         b3
         ))
       rcv14.#from(builder:(
@@ -11544,7 +11571,7 @@ method toS() (
     Void unused2=return (
       This0.Varres_$%$%85_1_$%$%$%144_1_$%$%$%$%207_1_$%$%$%$%$%354_1_$%$%$%$%$%$%502_1_$%$%$%$%$%$%$%651_1_$%$%$%$%$%$%$%$%801_1_$%$%$%$%$%$%$%$%$%952_1_$%$%$%$%$%$%$%$%$%$%1104_1_$%$%$%$%$%$%$%$%$%$%$%1257_1__1411_1::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%$%85_1_$%$%$%144_1_$%$%$%$%207_1_$%$%$%$%$%354_1_$%$%$%$%$%$%502_1_$%$%$%$%$%$%$%651_1_$%$%$%$%$%$%$%$%801_1_$%$%$%$%$%$%$%$%$%952_1_$%$%$%$%$%$%$%$%$%$%1104_1_$%$%$%$%$%$%$%$%$%$%$%1257_1__1411_1::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
-        Void unused20=b3.#add(that:this.cause().#tilde())
+        Void unused20=b3.#add(that:this.cause().#get())
         b3
         ))
       rcv14.#from(builder:(
@@ -12456,7 +12483,7 @@ method toS() (
     Void unused2=return (
       This0.Varres_$%$%85_1_$%$%$%143_1_$%$%$%$%211_1_$%$%$%$%$%358_1_$%$%$%$%$%$%506_1_$%$%$%$%$%$%$%655_1_$%$%$%$%$%$%$%$%805_1_$%$%$%$%$%$%$%$%$%956_1_$%$%$%$%$%$%$%$%$%$%1108_1_$%$%$%$%$%$%$%$%$%$%$%1261_1__1415_1::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%$%85_1_$%$%$%143_1_$%$%$%$%211_1_$%$%$%$%$%358_1_$%$%$%$%$%$%506_1_$%$%$%$%$%$%$%655_1_$%$%$%$%$%$%$%$%805_1_$%$%$%$%$%$%$%$%$%956_1_$%$%$%$%$%$%$%$%$%$%1108_1_$%$%$%$%$%$%$%$%$%$%$%1261_1__1415_1::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
-        Void unused20=b3.#add(that:this.cause().#tilde())
+        Void unused20=b3.#add(that:this.cause().#get())
         b3
         ))
       rcv14.#from(builder:(
@@ -13371,7 +13398,7 @@ method toS() (
     Void unused2=return (
       This0.Varres_$%12_0_$%$%105_1_$%$%$%61_1_$%$%$%$%212_1_$%$%$%$%$%359_1_$%$%$%$%$%$%507_1_$%$%$%$%$%$%$%656_1_$%$%$%$%$%$%$%$%806_1_$%$%$%$%$%$%$%$%$%957_1_$%$%$%$%$%$%$%$%$%$%1109_1_$%$%$%$%$%$%$%$%$%$%$%1262_1__1416_1::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%12_0_$%$%105_1_$%$%$%61_1_$%$%$%$%212_1_$%$%$%$%$%359_1_$%$%$%$%$%$%507_1_$%$%$%$%$%$%$%656_1_$%$%$%$%$%$%$%$%806_1_$%$%$%$%$%$%$%$%$%957_1_$%$%$%$%$%$%$%$%$%$%1109_1_$%$%$%$%$%$%$%$%$%$%$%1262_1__1416_1::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
-        Void unused20=b3.#add(that:this.cause().#tilde())
+        Void unused20=b3.#add(that:this.cause().#get())
         b3
         ))
       rcv14.#from(builder:(
@@ -26662,7 +26689,7 @@ method toS() (
     Void unused2=return (
       This0.Varres_$%12_0_$%$%127_1_$%$%$%83_1_$%$%$%$%234_1_$%$%$%$%$%381_1_$%$%$%$%$%$%529_1_$%$%$%$%$%$%$%678_1_$%$%$%$%$%$%$%$%828_1_$%$%$%$%$%$%$%$%$%979_1_$%$%$%$%$%$%$%$%$%$%1131_1_$%$%$%$%$%$%$%$%$%$%$%1284_1__1438_1::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%12_0_$%$%127_1_$%$%$%83_1_$%$%$%$%234_1_$%$%$%$%$%381_1_$%$%$%$%$%$%529_1_$%$%$%$%$%$%$%678_1_$%$%$%$%$%$%$%$%828_1_$%$%$%$%$%$%$%$%$%979_1_$%$%$%$%$%$%$%$%$%$%1131_1_$%$%$%$%$%$%$%$%$%$%$%1284_1__1438_1::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
-        Void unused20=b3.#add(that:this.cause().#tilde())
+        Void unused20=b3.#add(that:this.cause().#get())
         b3
         ))
       rcv14.#from(builder:(
@@ -28932,7 +28959,7 @@ method toS() (
     Void unused2=return (
       This0.Varres_$%12_0_$%$%131_1_$%$%$%87_1_$%$%$%$%238_1_$%$%$%$%$%385_1_$%$%$%$%$%$%533_1_$%$%$%$%$%$%$%682_1_$%$%$%$%$%$%$%$%832_1_$%$%$%$%$%$%$%$%$%983_1_$%$%$%$%$%$%$%$%$%$%1135_1_$%$%$%$%$%$%$%$%$%$%$%1288_1__1442_1::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%12_0_$%$%131_1_$%$%$%87_1_$%$%$%$%238_1_$%$%$%$%$%385_1_$%$%$%$%$%$%533_1_$%$%$%$%$%$%$%682_1_$%$%$%$%$%$%$%$%832_1_$%$%$%$%$%$%$%$%$%983_1_$%$%$%$%$%$%$%$%$%$%1135_1_$%$%$%$%$%$%$%$%$%$%$%1288_1__1442_1::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
-        Void unused20=b3.#add(that:this.cause().#tilde())
+        Void unused20=b3.#add(that:this.cause().#get())
         b3
         ))
       rcv14.#from(builder:(
@@ -31153,7 +31180,7 @@ method toS() (
     Void unused2=return (
       This0.Varres_$%12_0_$%$%135_1_$%$%$%91_1_$%$%$%$%242_1_$%$%$%$%$%389_1_$%$%$%$%$%$%537_1_$%$%$%$%$%$%$%686_1_$%$%$%$%$%$%$%$%836_1_$%$%$%$%$%$%$%$%$%987_1_$%$%$%$%$%$%$%$%$%$%1139_1_$%$%$%$%$%$%$%$%$%$%$%1292_1__1446_1::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%12_0_$%$%135_1_$%$%$%91_1_$%$%$%$%242_1_$%$%$%$%$%389_1_$%$%$%$%$%$%537_1_$%$%$%$%$%$%$%686_1_$%$%$%$%$%$%$%$%836_1_$%$%$%$%$%$%$%$%$%987_1_$%$%$%$%$%$%$%$%$%$%1139_1_$%$%$%$%$%$%$%$%$%$%$%1292_1__1446_1::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
-        Void unused20=b3.#add(that:this.cause().#tilde())
+        Void unused20=b3.#add(that:this.cause().#get())
         b3
         ))
       rcv14.#from(builder:(
@@ -33387,7 +33414,7 @@ method toS() (
     Void unused2=return (
       This0.Varres_$%12_0_$%$%139_1_$%$%$%95_1_$%$%$%$%246_1_$%$%$%$%$%393_1_$%$%$%$%$%$%541_1_$%$%$%$%$%$%$%690_1_$%$%$%$%$%$%$%$%840_1_$%$%$%$%$%$%$%$%$%991_1_$%$%$%$%$%$%$%$%$%$%1143_1_$%$%$%$%$%$%$%$%$%$%$%1296_1__1450_1::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%12_0_$%$%139_1_$%$%$%95_1_$%$%$%$%246_1_$%$%$%$%$%393_1_$%$%$%$%$%$%541_1_$%$%$%$%$%$%$%690_1_$%$%$%$%$%$%$%$%840_1_$%$%$%$%$%$%$%$%$%991_1_$%$%$%$%$%$%$%$%$%$%1143_1_$%$%$%$%$%$%$%$%$%$%$%1296_1__1450_1::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
-        Void unused20=b3.#add(that:this.cause().#tilde())
+        Void unused20=b3.#add(that:this.cause().#get())
         b3
         ))
       rcv14.#from(builder:(
@@ -37933,7 +37960,7 @@ method toS() (
     Void unused2=return (
       This0.Varres_$%31_0_$%$%144_1_$%$%$%100_1_$%$%$%$%251_1_$%$%$%$%$%398_1_$%$%$%$%$%$%546_1_$%$%$%$%$%$%$%695_1_$%$%$%$%$%$%$%$%845_1_$%$%$%$%$%$%$%$%$%996_1_$%$%$%$%$%$%$%$%$%$%1148_1_$%$%$%$%$%$%$%$%$%$%$%1301_1__1455_1::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%31_0_$%$%144_1_$%$%$%100_1_$%$%$%$%251_1_$%$%$%$%$%398_1_$%$%$%$%$%$%546_1_$%$%$%$%$%$%$%695_1_$%$%$%$%$%$%$%$%845_1_$%$%$%$%$%$%$%$%$%996_1_$%$%$%$%$%$%$%$%$%$%1148_1_$%$%$%$%$%$%$%$%$%$%$%1301_1__1455_1::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
-        Void unused20=b3.#add(that:this.cause().#tilde())
+        Void unused20=b3.#add(that:this.cause().#get())
         b3
         ))
       rcv14.#from(builder:(
@@ -38274,15 +38301,34 @@ read method
 This1.T that() 
 method get() this.that()}
 method 
-This0.T #tilde() this.that().get()
+This0.T #get() this.that().get()
 method 
 This2.Bool isPresent() (
   Void unused=(
-    This0::#tilde() aux=this.#tilde()
-    Void unused0=return This2.Bool.true()
-    
-    catch error Any catched return This2.Bool.false()
-    
+    Void unused0=(
+      This0::that() cell=this.that()
+      (
+        This0.TOf cell0=(
+          Void unused2=return cell
+          
+          catch return This0.TOf casted casted
+          
+          catch return Any casted exception void
+          
+          error {/*@stringU
+CastT-Should be unreachable code
+*/}
+          )
+        
+        catch exception Void catched1 void
+        
+        (
+          Void unused3=return This2.Bool.true()
+          void
+          )
+        )
+      )
+    Void unused1=return This2.Bool.false()
     void
     )
   
@@ -41971,7 +42017,7 @@ method toS() (
     Void unused2=return (
       This0.Varres_$%48_0_$%$%155_1_$%$%$%111_1_$%$%$%$%262_1_$%$%$%$%$%409_1_$%$%$%$%$%$%557_1_$%$%$%$%$%$%$%706_1_$%$%$%$%$%$%$%$%856_1_$%$%$%$%$%$%$%$%$%1007_1_$%$%$%$%$%$%$%$%$%$%1159_1_$%$%$%$%$%$%$%$%$%$%$%1312_1__1466_1::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%48_0_$%$%155_1_$%$%$%111_1_$%$%$%$%262_1_$%$%$%$%$%409_1_$%$%$%$%$%$%557_1_$%$%$%$%$%$%$%706_1_$%$%$%$%$%$%$%$%856_1_$%$%$%$%$%$%$%$%$%1007_1_$%$%$%$%$%$%$%$%$%$%1159_1_$%$%$%$%$%$%$%$%$%$%$%1312_1__1466_1::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
-        Void unused20=b3.#add(that:this.cause().#tilde())
+        Void unused20=b3.#add(that:this.cause().#get())
         b3
         ))
       rcv14.#from(builder:(
@@ -43020,7 +43066,7 @@ method toS() (
     Void unused2=return (
       This0.Varres_$%$%85_1_$%$%$%115_1_$%$%$%$%266_1_$%$%$%$%$%413_1_$%$%$%$%$%$%561_1_$%$%$%$%$%$%$%710_1_$%$%$%$%$%$%$%$%860_1_$%$%$%$%$%$%$%$%$%1011_1_$%$%$%$%$%$%$%$%$%$%1163_1_$%$%$%$%$%$%$%$%$%$%$%1316_1__1470_1::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%$%85_1_$%$%$%115_1_$%$%$%$%266_1_$%$%$%$%$%413_1_$%$%$%$%$%$%561_1_$%$%$%$%$%$%$%710_1_$%$%$%$%$%$%$%$%860_1_$%$%$%$%$%$%$%$%$%1011_1_$%$%$%$%$%$%$%$%$%$%1163_1_$%$%$%$%$%$%$%$%$%$%$%1316_1__1470_1::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
-        Void unused20=b3.#add(that:this.cause().#tilde())
+        Void unused20=b3.#add(that:this.cause().#get())
         b3
         ))
       rcv14.#from(builder:(
@@ -43252,7 +43298,7 @@ method toS() (
     Void unused2=return (
       This0.Varres_$%$%85_1_$%$%$%117_1_$%$%$%$%268_1_$%$%$%$%$%415_1_$%$%$%$%$%$%563_1_$%$%$%$%$%$%$%712_1_$%$%$%$%$%$%$%$%862_1_$%$%$%$%$%$%$%$%$%1013_1_$%$%$%$%$%$%$%$%$%$%1165_1_$%$%$%$%$%$%$%$%$%$%$%1318_1__1472_1::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%$%85_1_$%$%$%117_1_$%$%$%$%268_1_$%$%$%$%$%415_1_$%$%$%$%$%$%563_1_$%$%$%$%$%$%$%712_1_$%$%$%$%$%$%$%$%862_1_$%$%$%$%$%$%$%$%$%1013_1_$%$%$%$%$%$%$%$%$%$%1165_1_$%$%$%$%$%$%$%$%$%$%$%1318_1__1472_1::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
-        Void unused20=b3.#add(that:this.cause().#tilde())
+        Void unused20=b3.#add(that:this.cause().#get())
         b3
         ))
       rcv14.#from(builder:(
@@ -43452,7 +43498,7 @@ method toS() (
     Void unused2=return (
       This0.Varres_$%$%85_1_$%$%$%118_1_$%$%$%$%269_1_$%$%$%$%$%416_1_$%$%$%$%$%$%564_1_$%$%$%$%$%$%$%713_1_$%$%$%$%$%$%$%$%863_1_$%$%$%$%$%$%$%$%$%1014_1_$%$%$%$%$%$%$%$%$%$%1166_1_$%$%$%$%$%$%$%$%$%$%$%1319_1__1473_1::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%$%85_1_$%$%$%118_1_$%$%$%$%269_1_$%$%$%$%$%416_1_$%$%$%$%$%$%564_1_$%$%$%$%$%$%$%713_1_$%$%$%$%$%$%$%$%863_1_$%$%$%$%$%$%$%$%$%1014_1_$%$%$%$%$%$%$%$%$%$%1166_1_$%$%$%$%$%$%$%$%$%$%$%1319_1__1473_1::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
-        Void unused20=b3.#add(that:this.cause().#tilde())
+        Void unused20=b3.#add(that:this.cause().#get())
         b3
         ))
       rcv14.#from(builder:(
@@ -43982,7 +44028,7 @@ method toS() (
     Void unused2=return (
       This0.Varres_$%$%85_1_$%$%$%119_1_$%$%$%$%270_1_$%$%$%$%$%417_1_$%$%$%$%$%$%565_1_$%$%$%$%$%$%$%714_1_$%$%$%$%$%$%$%$%864_1_$%$%$%$%$%$%$%$%$%1015_1_$%$%$%$%$%$%$%$%$%$%1167_1_$%$%$%$%$%$%$%$%$%$%$%1320_1__1474_1::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%$%85_1_$%$%$%119_1_$%$%$%$%270_1_$%$%$%$%$%417_1_$%$%$%$%$%$%565_1_$%$%$%$%$%$%$%714_1_$%$%$%$%$%$%$%$%864_1_$%$%$%$%$%$%$%$%$%1015_1_$%$%$%$%$%$%$%$%$%$%1167_1_$%$%$%$%$%$%$%$%$%$%$%1320_1__1474_1::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
-        Void unused20=b3.#add(that:this.cause().#tilde())
+        Void unused20=b3.#add(that:this.cause().#get())
         b3
         ))
       rcv14.#from(builder:(
@@ -44182,7 +44228,7 @@ method toS() (
     Void unused2=return (
       This0.Varres_$%$%85_1_$%$%$%120_1_$%$%$%$%271_1_$%$%$%$%$%418_1_$%$%$%$%$%$%566_1_$%$%$%$%$%$%$%715_1_$%$%$%$%$%$%$%$%865_1_$%$%$%$%$%$%$%$%$%1016_1_$%$%$%$%$%$%$%$%$%$%1168_1_$%$%$%$%$%$%$%$%$%$%$%1321_1__1475_1::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%$%85_1_$%$%$%120_1_$%$%$%$%271_1_$%$%$%$%$%418_1_$%$%$%$%$%$%566_1_$%$%$%$%$%$%$%715_1_$%$%$%$%$%$%$%$%865_1_$%$%$%$%$%$%$%$%$%1016_1_$%$%$%$%$%$%$%$%$%$%1168_1_$%$%$%$%$%$%$%$%$%$%$%1321_1__1475_1::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
-        Void unused20=b3.#add(that:this.cause().#tilde())
+        Void unused20=b3.#add(that:this.cause().#get())
         b3
         ))
       rcv14.#from(builder:(
@@ -45196,7 +45242,7 @@ method toS() (
     Void unused2=return (
       This0.Varres_$%$%85_1_$%$%$%123_1_$%$%$%$%274_1_$%$%$%$%$%421_1_$%$%$%$%$%$%569_1_$%$%$%$%$%$%$%718_1_$%$%$%$%$%$%$%$%868_1_$%$%$%$%$%$%$%$%$%1019_1_$%$%$%$%$%$%$%$%$%$%1171_1_$%$%$%$%$%$%$%$%$%$%$%1324_1__1478_1::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%$%85_1_$%$%$%123_1_$%$%$%$%274_1_$%$%$%$%$%421_1_$%$%$%$%$%$%569_1_$%$%$%$%$%$%$%718_1_$%$%$%$%$%$%$%$%868_1_$%$%$%$%$%$%$%$%$%1019_1_$%$%$%$%$%$%$%$%$%$%1171_1_$%$%$%$%$%$%$%$%$%$%$%1324_1__1478_1::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
-        Void unused20=b3.#add(that:this.cause().#tilde())
+        Void unused20=b3.#add(that:this.cause().#get())
         b3
         ))
       rcv14.#from(builder:(
@@ -45581,7 +45627,7 @@ method toS() (
     Void unused2=return (
       This0.Varres_$%$%85_1_$%$%$%125_1_$%$%$%$%276_1_$%$%$%$%$%423_1_$%$%$%$%$%$%571_1_$%$%$%$%$%$%$%720_1_$%$%$%$%$%$%$%$%870_1_$%$%$%$%$%$%$%$%$%1021_1_$%$%$%$%$%$%$%$%$%$%1173_1_$%$%$%$%$%$%$%$%$%$%$%1326_1__1480_1::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%$%85_1_$%$%$%125_1_$%$%$%$%276_1_$%$%$%$%$%423_1_$%$%$%$%$%$%571_1_$%$%$%$%$%$%$%720_1_$%$%$%$%$%$%$%$%870_1_$%$%$%$%$%$%$%$%$%1021_1_$%$%$%$%$%$%$%$%$%$%1173_1_$%$%$%$%$%$%$%$%$%$%$%1326_1__1480_1::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
-        Void unused20=b3.#add(that:this.cause().#tilde())
+        Void unused20=b3.#add(that:this.cause().#get())
         b3
         ))
       rcv14.#from(builder:(
@@ -45793,7 +45839,7 @@ method toS() (
     Void unused2=return (
       This0.Varres_$%$%85_1_$%$%$%127_1_$%$%$%$%278_1_$%$%$%$%$%425_1_$%$%$%$%$%$%573_1_$%$%$%$%$%$%$%722_1_$%$%$%$%$%$%$%$%872_1_$%$%$%$%$%$%$%$%$%1023_1_$%$%$%$%$%$%$%$%$%$%1175_1_$%$%$%$%$%$%$%$%$%$%$%1328_1__1482_1::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%$%85_1_$%$%$%127_1_$%$%$%$%278_1_$%$%$%$%$%425_1_$%$%$%$%$%$%573_1_$%$%$%$%$%$%$%722_1_$%$%$%$%$%$%$%$%872_1_$%$%$%$%$%$%$%$%$%1023_1_$%$%$%$%$%$%$%$%$%$%1175_1_$%$%$%$%$%$%$%$%$%$%$%1328_1__1482_1::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
-        Void unused20=b3.#add(that:this.cause().#tilde())
+        Void unused20=b3.#add(that:this.cause().#get())
         b3
         ))
       rcv14.#from(builder:(
@@ -49927,7 +49973,7 @@ method toS() (
     Void unused2=return (
       This0.Varres_$%$%85_1_$%$%$%136_1_$%$%$%$%287_1_$%$%$%$%$%434_1_$%$%$%$%$%$%582_1_$%$%$%$%$%$%$%731_1_$%$%$%$%$%$%$%$%881_1_$%$%$%$%$%$%$%$%$%1032_1_$%$%$%$%$%$%$%$%$%$%1184_1_$%$%$%$%$%$%$%$%$%$%$%1337_1__1491_1::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%$%85_1_$%$%$%136_1_$%$%$%$%287_1_$%$%$%$%$%434_1_$%$%$%$%$%$%582_1_$%$%$%$%$%$%$%731_1_$%$%$%$%$%$%$%$%881_1_$%$%$%$%$%$%$%$%$%1032_1_$%$%$%$%$%$%$%$%$%$%1184_1_$%$%$%$%$%$%$%$%$%$%$%1337_1__1491_1::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
-        Void unused20=b3.#add(that:this.cause().#tilde())
+        Void unused20=b3.#add(that:this.cause().#get())
         b3
         ))
       rcv14.#from(builder:(
@@ -50384,7 +50430,7 @@ method toS() (
     Void unused2=return (
       This0.Varres_$%$%85_1_$%$%$%138_1_$%$%$%$%289_1_$%$%$%$%$%436_1_$%$%$%$%$%$%584_1_$%$%$%$%$%$%$%733_1_$%$%$%$%$%$%$%$%883_1_$%$%$%$%$%$%$%$%$%1034_1_$%$%$%$%$%$%$%$%$%$%1186_1_$%$%$%$%$%$%$%$%$%$%$%1339_1__1493_1::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%$%85_1_$%$%$%138_1_$%$%$%$%289_1_$%$%$%$%$%436_1_$%$%$%$%$%$%584_1_$%$%$%$%$%$%$%733_1_$%$%$%$%$%$%$%$%883_1_$%$%$%$%$%$%$%$%$%1034_1_$%$%$%$%$%$%$%$%$%$%1186_1_$%$%$%$%$%$%$%$%$%$%$%1339_1__1493_1::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
-        Void unused20=b3.#add(that:this.cause().#tilde())
+        Void unused20=b3.#add(that:this.cause().#get())
         b3
         ))
       rcv14.#from(builder:(
@@ -50584,7 +50630,7 @@ method toS() (
     Void unused2=return (
       This0.Varres_$%$%85_1_$%$%$%139_1_$%$%$%$%290_1_$%$%$%$%$%437_1_$%$%$%$%$%$%585_1_$%$%$%$%$%$%$%734_1_$%$%$%$%$%$%$%$%884_1_$%$%$%$%$%$%$%$%$%1035_1_$%$%$%$%$%$%$%$%$%$%1187_1_$%$%$%$%$%$%$%$%$%$%$%1340_1__1494_1::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%$%85_1_$%$%$%139_1_$%$%$%$%290_1_$%$%$%$%$%437_1_$%$%$%$%$%$%585_1_$%$%$%$%$%$%$%734_1_$%$%$%$%$%$%$%$%884_1_$%$%$%$%$%$%$%$%$%1035_1_$%$%$%$%$%$%$%$%$%$%1187_1_$%$%$%$%$%$%$%$%$%$%$%1340_1__1494_1::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
-        Void unused20=b3.#add(that:this.cause().#tilde())
+        Void unused20=b3.#add(that:this.cause().#get())
         b3
         ))
       rcv14.#from(builder:(
@@ -50784,7 +50830,7 @@ method toS() (
     Void unused2=return (
       This0.Varres_$%$%85_1_$%$%$%140_1_$%$%$%$%291_1_$%$%$%$%$%438_1_$%$%$%$%$%$%586_1_$%$%$%$%$%$%$%735_1_$%$%$%$%$%$%$%$%885_1_$%$%$%$%$%$%$%$%$%1036_1_$%$%$%$%$%$%$%$%$%$%1188_1_$%$%$%$%$%$%$%$%$%$%$%1341_1__1495_1::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
         This0.Varres_$%$%85_1_$%$%$%140_1_$%$%$%$%291_1_$%$%$%$%$%438_1_$%$%$%$%$%$%586_1_$%$%$%$%$%$%$%735_1_$%$%$%$%$%$%$%$%885_1_$%$%$%$%$%$%$%$%$%1036_1_$%$%$%$%$%$%$%$%$%$%1188_1_$%$%$%$%$%$%$%$%$%$%$%1341_1__1495_1::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
-        Void unused20=b3.#add(that:this.cause().#tilde())
+        Void unused20=b3.#add(that:this.cause().#get())
         b3
         ))
       rcv14.#from(builder:(
