@@ -1155,46 +1155,48 @@ This1.Bool #rightrightequal(This0 that) this.contains(that:that)
 method 
 This1.Bool #right(This0 that) this.contains(that:that)
 method 
-This1.N indexOfLeft(This1.S val) (
+This1.N indexOfLeft(This1.S val) this.indexOfLeft(val:val, start:This1.N.#from(builder:(
+  This1.N::#builder() b=This1.N.#builder()
+  Void unused=b.#0()
+  b
+  )))
+method 
+This1.N indexOfLeft(This1.S val, This1.N start) (
   Void unused=(/*val must be not empty, TODO: error here?
 */
-    This1.N current=This1.N.#from(builder:(
-      This1.N::#builder() b=This1.N.#builder()
-      Void unused2=b.#0()
-      b
-      ))
+    This1.N current=start
     mut This0.Varcurrent__82_0 varcurrent=This0.Varcurrent__82_0.#apply(inner:current)
     Void unused0=(
-      Void unused3=loop (
-        Void unused4=varcurrent.#inner().#left(that:this.size()).#checkTrue()
+      Void unused2=loop (
+        Void unused3=varcurrent.#inner().#left(that:this.size()).#checkTrue()
         (
-          Void unused5=(
-            This0::#apply(start ) ::beginsWith(that ) cond=this.#apply(start:varcurrent.#inner()).beginsWith(that:val)
+          Void unused4=(
+            This0::subStrEq(that start ) cond=this.subStrEq(that:val, start:varcurrent.#inner())
             (
-              Void unused6=cond.#checkTrue()
+              Void unused5=cond.#checkTrue()
               
-              catch exception Void catched2 void
+              catch exception Void catched1 void
               
               return varcurrent.#inner()
               )
             )
           varcurrent.inner(that:varcurrent.#inner().#plus(that:This1.N.#from(builder:(
-            This1.N::#builder() b0=This1.N.#builder()
-            Void unused7=b0.#1()
-            b0
+            This1.N::#builder() b=This1.N.#builder()
+            Void unused6=b.#1()
+            b
             ))))
           )
         )
       
-      catch exception Void catched5 void
+      catch exception Void catched4 void
       
       void
       )
     Void unused1=return This1.N.#from(builder:(
-      This1.N::#builder() b1=This1.N.#builder()
-      Void unused8=b1.#less()
-      Void unused9=b1.#1()
-      b1
+      This1.N::#builder() b0=This1.N.#builder()
+      Void unused7=b0.#less()
+      Void unused8=b0.#1()
+      b0
       ))
     void
     )
@@ -1428,7 +1430,13 @@ This1.S #apply(This1.N end) this.#apply(start:This1.N.#from(builder:(
 method 
 This1.N size() This1.N.#apply__53_0(_binaryRepr:use This1.Alu check stringSize(that:this.binaryRepr()) error void)
 method 
-This1.Bool beginsWith(This1.S that) this.#apply(end:that.size()).#equalequal(that:that)
+This1.Bool subStrEq(This1.S that, This1.N start) this.#apply(start:start, end:that.size().#plus(that:start)).#equalequal(that:that)
+method 
+This1.Bool beginsWith(This1.S that) this.subStrEq(that:that, start:This1.N.#from(builder:(
+  This1.N::#builder() b=This1.N.#builder()
+  Void unused=b.#0()
+  b
+  )))
 class method 
 This1.S aSCIILowerCase() This1.S.#from(builder:(
   This1.S::#builder() b=This1.S.#builder()

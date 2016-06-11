@@ -192,6 +192,7 @@ public class Plugin implements PluginType {
     String r = s1.substring(start, end);
     return r;
   }
+  
   @ActionType({ActionType.Type.Void,ActionType.Type.Library,ActionType.Type.Library})
   public Resources.Void MifStringEqualDo£xs1£xs2(Object cb1,Object cb2){
     String s1=ensureExtractStringU(cb1);

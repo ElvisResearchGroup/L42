@@ -55,17 +55,19 @@ Bool >(This that)
 
   //#####other sequence like methods
 
-
 method
-N indexOfLeft(S val){
+N indexOfLeft(S val)
+  this.indexOfLeft(val:val,start:0N)
+method
+N indexOfLeft(S val, N start){
   //val must be not empty, TODO: error here?
-  var N current=0N
+  var N current=start
   while current<this.size() (
-    if this(start:current).beginsWith(val) (return current)
+    if this.subStrEq(val,start:current) (return current)
     current+=1N
     )
   return N"-1"
-  }
+  } 
 
 method
 N indexOfRight(This val){
@@ -194,7 +196,11 @@ This withoutRight()
   //##### string special
 
   method
-  Bool beginsWith(S that) this(end:that.size())==that
+  Bool subStrEq(S that, N start)
+    this(start:start, end:that.size()+start)==that//optimizing this one may help many methods
+  method
+  Bool beginsWith(S that)
+    this.subStrEq(that,start:0N)
 
 
   class method S aSCIILowerCase() S"qwertyuiopasdfghjklzxcvbnm"

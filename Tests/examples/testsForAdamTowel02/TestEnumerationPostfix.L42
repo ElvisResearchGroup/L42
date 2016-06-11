@@ -17,25 +17,6 @@ Enumeration:{
     }
 
 
-  In String::
-  method Bool subStrEq(S that, N start)
-  //as plugin
-  method
-  Bool beginsWith(S that)
-   this.subStrEq(that,start:0N)
-method
-N indexOfLeft(S val)
-  this.indexOfLeft(val:val,start:0N)
-method
-N indexOfLeft(S val, N start){
-  //val must be not empty, TODO: error here?
-  var N current=start
-  while current<this.size() (
-    if this.subStrEq(val,start:current) (return current)
-    current+=1N
-    )
-  return N"-1"
-  } 
 
 
   Skip: {interface 
@@ -43,24 +24,30 @@ N indexOfLeft(S val, N start){
     //positive to keep and jump, negative to skip and jump,
     //never zero
     }
-  method Strings split(Skip that){
+  method Strings split(Skip skipper){
     res=Strings.empty()
     var N index= 0N
     while index< this.size() (
-      skip=that(this,index:index)
+      skip=skipper(this,index:index)
       if skip>0N (
+        res.add(right:this(start:index, end:index+skip)
         index+=skip
-        if !curr.isEmpty() (
-          res.add(right:curr)
-          curr:=S""
-          )
         )
       else (
-        curr++=this(index)
-        index+=1N
+        index-=skip
         )
       )
+    return res
     }
+  SkipChars: { implements Skip 
+    (S chars)
+    method N ( that, index) (
+      N negSkip={with r in Range(start:0N) (
+        if !this.chars().contains(this(index+r)) (return r)
+        )}
+      )   
+  method Strings splitOn(S chars)
+    split
   class method Strings sToSs(S that) {
     res=Strings.empty()
     var curr=S""
