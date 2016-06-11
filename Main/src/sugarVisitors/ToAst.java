@@ -132,7 +132,7 @@ public class ToAst extends AbstractVisitor<Expression>{
     return nameL(s.getText());
   }
   public static String nameL(String c){
-    if(c.endsWith("(")) {return c.substring(0,c.length()-1);}
+    if(c.endsWith("(") || c.endsWith("\t")) {return c.substring(0,c.length()-1);}
     return c;
   }
   public static String nameU(ParseTree s){

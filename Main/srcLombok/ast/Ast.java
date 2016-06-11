@@ -179,6 +179,8 @@ public interface Ast {
 		public boolean invariant(){
 		  // not good enought, it can also be empty or operator
 		  // assert checkX(name,true);
+		assert !name.contains("\t"):
+			name;
 		  for(String n:names){assert checkX(n,false);}
 		  return true;
 		}
@@ -486,6 +488,8 @@ public interface Ast {
 			if (c == '_') {
 				return true;
 			}
+			assert c!='\t':
+				c;
 			return Character.isUpperCase(c) || Character.isLowerCase(c) || Character.isDigit(c);
 		}
 	}

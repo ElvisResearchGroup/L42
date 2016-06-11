@@ -6,6 +6,8 @@ Alphanumeric:{
   class method
   Library <<(Library that){
     lib=(,{
+      implements Concept.Base
+      
       S that
 
       class method
@@ -18,6 +20,19 @@ Alphanumeric:{
 
       class method
       This parse(S that)
+      
+      // Marco's gathered methods to implement Base
+      method toS() this.that()  // Assumes simple, non-destructive parsing
+      method classAny() This
+      class method class This class() This
+      method readableName()GetMyName(This)
+      method is(subtype){  with subtype (on class This return Bool.true()) return Bool.false()}
+      method equals(that){
+        with that (on This return this==that)
+        return Bool.false()
+        }
+      method Bool ==(This that) this.that()==that.that()
+      method Bool !=(This that) !(this==that)
       },)
 
     res=Extends[lib]<<that
@@ -32,7 +47,7 @@ Alphanumeric:{
     }
   }
 
-Email: Data << Alphanumeric << {
+Email: Alphanumeric << {
   S local //fields
   S domain
 
@@ -56,7 +71,7 @@ myEmail= Email"arthur.dent@gmail.com"
 Assert.Holds[
   myEmail.local() ==S"arthur.dent";
   myEmail.domain() ==S"gmail.com";
-  myEmail.toS() ==S"arthur.dent@gmail.com" msg: S"Original string does not round-trip";
+  myEmail.toS() ==S"arthur.dent@gmail.com" msg: S"Original string does not round-trip:" ++ myEmail.toS();
   ]
 
   Debug(S"Email parsing complete")
