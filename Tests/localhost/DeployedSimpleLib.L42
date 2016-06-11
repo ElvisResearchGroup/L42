@@ -645,7 +645,23 @@ Void #newline() }
 class method 
 This0 #from(This0.SBuilder builder) 
 class method 
-mut This0.SBuilder #builder() }
+mut This0.SBuilder #builder() 
+Skip:{interface 
+method 
+This2.N #apply(This1 that, This2.N index) }
+method 
+This1.Strings split(This0.Skip skipper) 
+SkipChars:{implements This1.Skip
+class method 
+mut This0 #mutK(This1 chars) 
+class method 
+This0 #apply(This1 chars) 
+mut method 
+This1 #chars() 
+read method 
+This1 chars() }
+method 
+This1.Strings splitOn(This0 chars) }
 Concept:{
 ToS:{interface 
 read method 
@@ -754,7 +770,9 @@ This2.Bool isPresent()
 class method 
 This0 #apply() 
 class method 
-This0 #apply(This1 that) }
+This0 #apply(This1 that) 
+method 
+This1 get() exception This2.Guard.Operation }
 EqualMessages:{
 class method 
 This2.Bool #apply(This1 that, This1 other) }

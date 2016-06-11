@@ -35611,6 +35611,22 @@ mut method
 This0.TOpt #that() 
 read method 
 This0.TOpt that() 
+method 
+This0.T get() exception This2.Guard.Operation (
+  Void unused=(
+    Void unused0=return this.#get()
+    
+    catch error This2.Guard.Operation err exception err
+    
+    void
+    )
+  
+  catch return This0.T result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
 T:{}
 TOpt:{interface 
 method 

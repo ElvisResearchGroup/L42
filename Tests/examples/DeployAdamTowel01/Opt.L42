@@ -1,6 +1,13 @@
 {
   class method Library (class Any that)
     SafeOperators.redirect({#new(TOpt that)
+      method
+      T get()
+      exception Guard.Operation {
+        return this.#get()
+        catch error Guard.Operation err
+          exception err
+        }
       T:{}
       TOpt:{interface method T get() }
       TEmpty:{() implements TOpt method get()

@@ -5,6 +5,15 @@ GetMyName:{
     Introspection(clazz:that).externalTypeToS()
   }
 Message:{Opt:{
+  method
+  This1 #get()
+  method
+  This1 get()
+  exception This3.Guard.Operation {
+    return this.#get()
+    catch error This3.Guard.Operation err
+      exception err
+    }
   TOpt:{interface method This2 get() }
   TEmpty:{ implements TOpt
     method get()
@@ -24,11 +33,65 @@ N:{
   Any parseError(This2.S that)
     ParseFail"The provided string is not a valid Int32: "[that]""
   }
-//S:{
+S:{
+  method
+  This2.N size()
+  method
+  This2.S (This2.N start, This2.N end)
+  method
+  This2.S (This2.N that)
+  method 
+  This2.Bool contains(This2.S that)
+  
+  Skip: {interface 
+    method This3.N (S that, This3.N index)
+    //positive to keep and jump, negative to skip and jump,
+    //never zero
+    }
+  method Strings split(Skip skipper){
+    res=Strings.empty()
+    var This2.N index= 0This2.N
+    while index< this.size() (
+      skip=skipper(this,index:index)
+      if skip>0This2.N (
+        res.add(right:this(start:index, end:index+skip))
+        index+=skip
+        )
+      else (
+        index-=skip
+        )
+      )
+    return res
+    }
+  SkipChars: { (This3.S chars) implements Skip 
+    
+    method ( that, index) {
+      This3.N negSkip={
+        with r in Range(that.size()-index) (
+          if !this.chars().contains(that(index+r)) (return r)
+          )
+        //reached the end of the string
+        return that.size()
+        }
+      if negSkip>0This3.N (return 0This3.N-negSkip)
+      //Assert.Holds[
+      //  negSkip==0This3.N; 
+      //  !this.chars().contains(that(index))
+      //  ]
+      with r in Range(that.size()-index) (
+        if this.chars().contains(that(index+r)) (return r)
+        )
+      //reached the end of the string
+      return that.size()
+      }
+    }
+  method
+  Strings splitOn(This2.S chars)
+    this.split(skipper:SkipChars(chars:chars))
 //  SubStringNotPresent:This2.Message.$<<{ implements Guard}
 //  class method Void subStringNotPresent(This2.S string, This2.S subString)
 //    error SubStringNotPresent"string["[string]"] do not contains ["[subString]""
-//  }
+  }
 Selector:{
   ParseFail:This2.Message.$<<{ implements Guard.ParseFail}
   class method
@@ -79,22 +142,22 @@ Path:{
         if !res.isEmpty() (error Bug"Observed bug: "[res]"")
         )
       }
-   Test: {(This3.Bool that, S msg)}
+   Test: {(This3.Bool that, This3.S msg)}
    Tests: Refactor.compose(//do not use Use to save compilation time
      left:Refactor.Hide.selector(\"#add(that)")<<Collections.vector(of:Test)
      right:{ 
 
      mut method
      Void #add(This3.Bool that, Concept.ToS msg)
-         this.add(right: Test(that,msg:S""[msg;S.nl()]"number:"[this.size()]" failed") )
+         this.add(right: Test(that,msg:This3.S""[msg;This3.S.nl()]"number:"[this.size()]" failed") )
 
      mut method
      Void #add(This3.Bool that)
-         this.add(right: Test(that,msg:S"Condition number "[this.size()]" failed") )
+         this.add(right: Test(that,msg:This3.S"Condition number "[this.size()]" failed") )
 
      read method
-     S collapse() S""[with a in this.vals() (
-          if !a.that() ( use[a.msg(), separedBy:S.nl()] )
+     This3.S collapse() This3.S""[with a in this.vals() (
+          if !a.that() ( use[a.msg(), separedBy:This3.S.nl()] )
           )]""
      })
   }

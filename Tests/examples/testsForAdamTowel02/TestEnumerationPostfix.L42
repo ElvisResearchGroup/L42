@@ -41,13 +41,23 @@ Enumeration:{
     }
   SkipChars: { implements Skip 
     (S chars)
-    method N ( that, index) (
+    method N ( that, index) {
       N negSkip={with r in Range(start:0N) (
         if !this.chars().contains(this(index+r)) (return r)
         )}
-      )   
-  method Strings splitOn(S chars)
-    split
+      if negSkip>0N (return 0N-negSkip)
+      Assert.Holds[
+        negSkip==0N; 
+        !this.chars().contains(this(index))
+        ]
+      with r in Range(start:0N) (
+        if this.chars().contains(this(index+r)) (return r)
+        )
+      }
+  method
+  Strings splitOn(S chars)
+    split(skipper:SkipChars(chars:chars))
+    
   class method Strings sToSs(S that) {
     res=Strings.empty()
     var curr=S""
