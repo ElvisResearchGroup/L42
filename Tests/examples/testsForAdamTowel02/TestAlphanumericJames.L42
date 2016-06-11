@@ -48,12 +48,16 @@ Email: Data << Alphanumeric << {
   }
 
 Main:{
+
+Assert.Pre[1N == 1N]
+
 myEmail= Email"arthur.dent@gmail.com"
-//TODO: the three claims below should be assertions
-Debug(myEmail.local() ==S"arthur.dent") //holds
-Debug(myEmail.domain() ==S"gmail.com") //holds
-Debug(myEmail.toS() ==S"arthur.dent@gmail.com") //holds
-Debug(myEmail.toS())
+
+Assert.Holds[
+  myEmail.local() ==S"arthur.dent";
+  myEmail.domain() ==S"gmail.com";
+  myEmail.toS() ==S"arthur.dent@gmail.com" msg: S"Original string does not round-trip";
+  ]
 
   Debug(S"Email parsing complete")  
   
