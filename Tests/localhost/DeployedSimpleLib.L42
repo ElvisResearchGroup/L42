@@ -1744,6 +1744,8 @@ This1.Collections _Collections()
 method 
 This1.K _K() 
 method 
+This1.Alphanumeric _Alphanumeric() 
+method 
 This1.DeployTowel _DeployTowel() 
 method 
 This1.PreferentialComposition _PreferentialComposition() 
@@ -5337,6 +5339,53 @@ class method
 This0.$#from(This1.S.SBuilder builder) 
 class method 
 mut This1.S.SBuilder #builder() 
+class method 
+Library #leftleft(Library that) }
+Alphanumeric:{
+ParseFail:{implements This2.Guard.ParseFail, This2.Message
+class method 
+mut This0 #mutK(This2.S _text, This2.Message.Opt cause) 
+class method 
+This0 #apply(This2.S _text, This2.Message.Opt cause) 
+mut method 
+This2.S #_text() 
+read method 
+This2.S _text() 
+mut method 
+This2.Message.Opt #cause() 
+read method 
+This2.Message.Opt cause() 
+method 
+This0 #apply(This2.Message that) 
+method 
+This2.Bool #bangequal(This0 that) 
+method 
+This2.Bool #equalequal(This0 that) 
+class method 
+This0 #apply(This2.S text) 
+class method 
+This0 #apply(This2.S text, This2.Message cause) 
+class method 
+mut This2.S.SBuilder #builder() 
+class method 
+This0 #from(This2.S.SBuilder builder) 
+method 
+This0.Continue #from(This2.S.SConcat seqBuilder) 
+Continue:{
+class method 
+mut This0 #mutK(This3.S that) 
+class method 
+This0 #apply(This3.S that) 
+mut method 
+This3.S #that() 
+read method 
+This3.S that() 
+method 
+mut This3.S.SBuilder #builder() 
+method 
+This1 #from(This3.S.SBuilder builder) }
+method 
+mut This2.S.SConcat #seqBuilder() }
 class method 
 Library #leftleft(Library that) }
 DeployTowel:{
