@@ -42,6 +42,7 @@ public class L42 {
   public static enum ExecutionStage{None,Reading,Parsing,CheckingWellFormedness,Desugaring,MetaExecution,Closing;}
   private static ExecutionStage _stage=ExecutionStage.None;
   private static void setExecutionStage(ExecutionStage newStage){
+    System.out.println(newStage);
     if(_stage!=ExecutionStage.None){
       Timer.deactivate(_stage.toString());
       }
