@@ -221,21 +221,11 @@ public class TestBase02 {
     }
 
   @Test
-  public  void _02_18AlphanumericMarco() throws Throwable{
+  public  void _02_18Alphanumeric() throws Throwable{
     TestHelper.configureForTest();
     //new TestBase01()._01_00DeployAdamTowel01();
     //this._02_00DeployAdamTowel02();
-    L42.main(new String[]{"examples/testsForAdamTowel02/TestAlphanumericMarco.L42"});
-    TestHelper.check42Fails(L42.record.toString());
-    }
-
-
-  @Test
-  public  void _02_19AlphanumericJames() throws Throwable{
-    TestHelper.configureForTest();
-    //new TestBase01()._01_00DeployAdamTowel01();
-    //this._02_00DeployAdamTowel02();
-    L42.main(new String[]{"examples/testsForAdamTowel02/TestAlphanumericJames.L42"});
+    L42.main(new String[]{"examples/testsForAdamTowel02/TestAlphanumeric.L42"});
     TestHelper.check42Fails(L42.record.toString());
     }
 
