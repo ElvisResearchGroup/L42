@@ -16,58 +16,8 @@ Enumeration:{
       )
     }
 
-
-
-
-  Skip: {interface 
-    method N (String that, N index)
-    //positive to keep and jump, negative to skip and jump,
-    //never zero
-    }
-  method Strings split(Skip skipper){
-    res=Strings.empty()
-    var N index= 0N
-    while index< this.size() (
-      skip=skipper(this,index:index)
-      if skip>0N (
-        res.add(right:this(start:index, end:index+skip)
-        index+=skip
-        )
-      else (
-        index-=skip
-        )
-      )
-    return res
-    }
-  SkipChars: { implements Skip 
-    (S chars)
-    method N ( that, index) {
-      N negSkip={with r in Range(start:0N) (
-        if !this.chars().contains(this(index+r)) (return r)
-        )}
-      if negSkip>0N (return 0N-negSkip)
-      Assert.Holds[
-        negSkip==0N; 
-        !this.chars().contains(this(index))
-        ]
-      with r in Range(start:0N) (
-        if this.chars().contains(this(index+r)) (return r)
-        )
-      }
-  method
-  Strings splitOn(S chars)
-    split(skipper:SkipChars(chars:chars))
-    
-  class method Strings sToSs(S that) {
-    res=Strings.empty()
-    var curr=S""
-    with n in range(that.size()) (
-      var c=that(n)
-      if c==S"," | c==S" " | c==S.nl() (c:=S"")
-      curr++=c
-      if !curr.isEmpty() & c.isEmpty() ( ) 
-      )
-    }
+  class method Strings sToSs(S that) 
+    that.split(SkipChars(S" ,"++S.nl()))
 
   class method traitMeth() (,{
     T:{ class method T ord()}

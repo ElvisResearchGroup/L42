@@ -2093,7 +2093,7 @@ This1 accumulator()
 mut method 
 Void #add(read This2.Concept.ToS that) this.accumulator(that:this.accumulator().#plusplus(that:that.toS()))
 mut method 
-Void #add(read This2.Concept.ToS that, This2.Concept.ToS separedBy) (
+Void #add(read This2.Concept.ToS that, This2.Concept.ToS sep) (
   This1 newAcc=that.toS()
   mut This0.VarnewAcc_$%$%84_1_$%$%$%40_1_$%$%$%$%190_1_$%$%$%$%$%339_1_$%$%$%$%$%$%489_1_$%$%$%$%$%$%$%640_1_$%$%$%$%$%$%$%$%792_1_$%$%$%$%$%$%$%$%$%945_1_$%$%$%$%$%$%$%$%$%$%1099_1_$%$%$%$%$%$%$%$%$%$%$%1254_1__1410_1 varnewAcc=This0.VarnewAcc_$%$%84_1_$%$%$%40_1_$%$%$%$%190_1_$%$%$%$%$%339_1_$%$%$%$%$%$%489_1_$%$%$%$%$%$%$%640_1_$%$%$%$%$%$%$%$%792_1_$%$%$%$%$%$%$%$%$%945_1_$%$%$%$%$%$%$%$%$%$%1099_1_$%$%$%$%$%$%$%$%$%$%$%1254_1__1410_1.#apply(inner:newAcc)
   Void unused=(
@@ -2106,7 +2106,7 @@ Void #add(read This2.Concept.ToS that, This2.Concept.ToS separedBy) (
       
       catch exception Void catched1 void
       
-      varnewAcc.inner(that:this.accumulator().#plusplus(that:separedBy.toS().#plusplus(that:varnewAcc.#inner())))
+      varnewAcc.inner(that:this.accumulator().#plusplus(that:sep.toS().#plusplus(that:varnewAcc.#inner())))
       )
     )
   this.accumulator(that:varnewAcc.#inner())
@@ -6835,7 +6835,7 @@ This2.S collapse() (
                     catch exception Void catched6 void
                     
                     (
-                      Void unused7=b.#add(that:a.#inner().msg(), separedBy:This2.S.nl())
+                      Void unused7=b.#add(that:a.#inner().msg(), sep:This2.S.nl())
                       void
                       )
                     )
@@ -11594,7 +11594,7 @@ This0 from(read This1.Strings names) (
                       )
                     
                     (
-                      Void unused14=b.#add(that:n.#inner(), separedBy:This1.S.#from(builder:(
+                      Void unused14=b.#add(that:n.#inner(), sep:This1.S.#from(builder:(
                         This1.S::#builder() b2=This1.S.#builder()
                         Void unused15=b2.#dot()
                         b2
@@ -38065,7 +38065,7 @@ Library #leftleft(Library that) exception This2.MetaGuard.NestedClassUnavailable
                       )
                     
                     (
-                      Void unused8=b.#add(that:m.#inner().name(), separedBy:This2.S.#from(builder:(
+                      Void unused8=b.#add(that:m.#inner().name(), sep:This2.S.#from(builder:(
                         This2.S::#builder() b1=This2.S.#builder()
                         Void unused9=b1.#space()
                         b1
@@ -42856,7 +42856,7 @@ Library #leftleft(Library that) (
                           catch exception Void catched8 void
                           
                           (
-                            Void unused9=b.#add(that:sel.nameAsField(), separedBy:This1.S.#from(builder:(
+                            Void unused9=b.#add(that:sel.nameAsField(), sep:This1.S.#from(builder:(
                               This1.S::#builder() b1=This1.S.#builder()
                               Void unused10=b1.#comma()
                               b1

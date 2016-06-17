@@ -36,7 +36,7 @@ Library<< (Library that){
         isAbs=m.methodKind().equals(\class._AbstractMethod())
         isVis=!m.isPrivate()
         isNoArg=sel.names().isEmpty()
-        if isAbs & isVis & isNoArg ( use[sel.nameAsField() separedBy:S","] )
+        if isAbs & isVis & isNoArg ( use[sel.nameAsField() sep:S","] )
         )]""
     //just submit mutK...immK, if already there, they are not produced by the operator.
     return This.$(names:names,  isFwd:Bool.false(),
