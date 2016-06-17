@@ -167,6 +167,7 @@ public class L42 {
     try{
       L42.setExecutionStage(ExecutionStage.Parsing);
       Expression code1=Parser.parse(fileName,code);
+      assert code1 instanceof Expression.ClassB || code1 instanceof Expression.ClassReuse; 
       L42.setExecutionStage(ExecutionStage.CheckingWellFormedness);
       auxiliaryGrammar.WellFormedness.checkAll(code1);
       L42.setExecutionStage(ExecutionStage.Desugaring);

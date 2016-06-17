@@ -3,102 +3,86 @@
 //insert from(base)
 
 Enumeration:{
-  InvalidElements:Message.$<<{}
-
-  class method Selector numToSel(N that){
-    if that>=64N (error InvalidElements"too many enumeration elements:"[that+1N]", max is 64")
+  
+  InvalidElements:Message.$<<{implements MetaGuard}
+  
+  EnumTrait:Resource<<Refactor.RenamePath(Path"Top" to:Path"This")<<Enum.enumTrait()
+  
+  class method
+  Library #from(S.SBuilder builder)
+  exception InvalidElements 
+    This.from(base:S.#from(builder:builder))
+  
+  class method
+  mut S.SBuilder #builder()
+    S.SBuilder.empty()
+  
+  class method
+  Selector numToSel(N that)
+  exception InvalidElements{
+    if that>=64N (exception InvalidElements"too many enumeration elements:"[that+1N]", max is 64")
     return Selector.fromS(S"#"++that.toS())
     }
-  class method Selector sToSel(S that){
+  
+  class method
+  Selector sToSel(S that)
+  exception InvalidElements{
     return Selector.fromS(that++S"()")
     catch error Selector.ParseFail pf (
-      error InvalidElements"invalid enumeration name:"[that]""(pf)
+      exception InvalidElements"invalid enumeration name:"[that]""(pf)
       )
     }
 
 
+  class method
+  Strings sToSs(S that)
+    that.splitOn(chars:S", "++S.nl())
 
-
-  Skip: {interface 
-    method N (String that, N index)
-    //positive to keep and jump, negative to skip and jump,
-    //never zero
-    }
-  method Strings split(Skip skipper){
-    res=Strings.empty()
-    var N index= 0N
-    while index< this.size() (
-      skip=skipper(this,index:index)
-      if skip>0N (
-        res.add(right:this(start:index, end:index+skip)
-        index+=skip
-        )
-      else (
-        index-=skip
-        )
-      )
-    return res
-    }
-  SkipChars: { implements Skip 
-    (S chars)
-    method N ( that, index) {
-      N negSkip={with r in Range(start:0N) (
-        if !this.chars().contains(this(index+r)) (return r)
-        )}
-      if negSkip>0N (return 0N-negSkip)
-      Assert.Holds[
-        negSkip==0N; 
-        !this.chars().contains(this(index))
-        ]
-      with r in Range(start:0N) (
-        if this.chars().contains(this(index+r)) (return r)
-        )
-      }
-  method
-  Strings splitOn(S chars)
-    split(skipper:SkipChars(chars:chars))
-    
-  class method Strings sToSs(S that) {
-    res=Strings.empty()
-    var curr=S""
-    with n in range(that.size()) (
-      var c=that(n)
-      if c==S"," | c==S" " | c==S.nl() (c:=S"")
-      curr++=c
-      if !curr.isEmpty() & c.isEmpty() ( ) 
-      )
-    }
-
-  class method traitMeth() (,{
-    T:{ class method T ord()}
+  class method 
+  Library traitMeth() (,{ (T inner)    
+    T:{implements Concept.Equals
+     class method T ord()
+     }
     class method This n() This(inner:T.ord())
-    method Bool isN() this.inner()==T.ord()
+    method Bool isN() this.inner().equals(T.ord())
     },)
 
-  class method from(ToS base){
+  class method
+  Library enumElem(N ord, S s)
+  exception InvalidElements {
     sel=this.sToSel(s)
-    acc=Refactor.Redirect(\"T" into:N)<<
-      Extends[with ord in Range(0N), s in sToSs(base.toS()).vals() (use[
-      Refactor.Rename.selector(/"ord" of: /"T" to:this.numToSel(ord))
-      Refactor.Rename.selector(/"n" to:sel)
-      Refactor.Rename.selector(/"n" to:sel.add(prefix:S"is"))
-      <<traitMeth()
-      ])]<<{}
-      return Enum/*the old one*/<<acc
+    return Refactor.Rename.selector(\"ord" of: \"T" to:this.numToSel(ord))
+      <<Refactor.Rename.selector(\"n" to:sel)
+      <<Refactor.Rename.selector(\"n" to:sel.with(prefix:S"is"))
+      <<this.traitMeth()
+    catch exception InvalidElements e (exception e)
+    error on MetaGuard Assert.CodeNotReachable""
+    }
+  class method
+  Library from(Concept.Base base)
+  exception InvalidElements {
+    ss=this.sToSs(base.toS())
+    res=Extends[EnumTrait()]
+      <<Refactor.Redirect(Path"T" to:N)
+      <<(Extends[with ord in Range(0N), s in ss.vals() (
+        use[this.enumElem(ord:ord, s:s)]
+        )]
+      << Refactor.Rename.selector(\"#apply()" to:\"names()")
+      <<Resource(ss))
+    catch exception InvalidElements e (exception e)
+    error on MetaGuard Assert.CodeNotReachable""
+    return res
     }
   }
+Dir: Enumeration"left, right, top, down"
 Main:{
+  Debug(Dir.left()==Dir.right())
+  Debug(S"foo")
   return ExitCode.normal()
   }
-}
-
-
-
-
-
 //reorganize refactor, add default for no path and /, done for rename
 /*
-1  Redirect:{ that->Path
+1  Redirect:{ that->Path  that is Refactor.Redirect(\"T" to:N)
 Rename.selector(   .path(  .selector(of
 2  RenameSelector:{(Selector that, Path of, Selector to)   that->Selector, of->Path to->Selector,   shortcut no of
 3  RenamePath:{(Path that, Path to)  that,to->Path
@@ -116,4 +100,4 @@ Call it ComposeMethods?
 11  SumMethods:{   (Selector that,Selector and, Path of, S over, Selector to)
 12  MakeMethod:{    (Selector that, Path of, Introspection.Mdf.List mdfs, N exceptionN)
 */
-
+}
