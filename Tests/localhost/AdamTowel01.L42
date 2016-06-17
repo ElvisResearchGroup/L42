@@ -1129,7 +1129,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 method 
-This1.S #plusplus(This1.S that) This1.S.#from(binaryRepr:use This1.Alu check stringConcat(s1:this.binaryRepr(), s2:that.toS().binaryRepr()) error void)
+This1.S #plusplus(This1.S that) This1.S.#from(binaryRepr:use This1.Alu check stringConcat(s1:this.binaryRepr(), s2:that.binaryRepr()) error void)
 method 
 This1.Bool #bangequal(This0 that) this.#equalequal(that:that).#bang()
 method 
@@ -1572,9 +1572,9 @@ This2.S #accumulator()
 read method 
 This2.S accumulator() 
 mut method 
-Void #add(This2.Concept.ToS that) this.accumulator(that:this.accumulator().#plusplus(that:that.toS()))
+Void #add(read This2.Concept.ToS that) this.accumulator(that:this.accumulator().#plusplus(that:that.toS()))
 mut method 
-Void #add(This2.Concept.ToS that, This2.Concept.ToS separedBy) (
+Void #add(read This2.Concept.ToS that, This2.Concept.ToS separedBy) (
   This2.S newAcc=that.toS()
   mut This0.VarnewAcc__84_0 varnewAcc=This0.VarnewAcc__84_0.#apply(inner:newAcc)
   Void unused=(
@@ -2195,7 +2195,7 @@ This1.S localToAbsolute(This1.Concept.ToS fileName) This1.S.#from(binaryRepr:use
     ))
   ))
 class method 
-Void test(This1.Concept.ToS that, This1.Concept.ToS expected, This1.S message) (
+Void test(read This1.Concept.ToS that, read This1.Concept.ToS expected, This1.S message) (
   This1.Concept.ToS::toS() sExpected=expected.toS()
   This1.Concept.ToS::toS() given=that.toS()
   (
@@ -2303,7 +2303,7 @@ Void test(This1.Concept.ToS that, This1.Concept.ToS expected, This1.S message) (
     )
   )
 class method 
-Void test(This1.Concept.ToS that, This1.Concept.ToS expected) This1.Debug.test(that:that, expected:expected, message:This1.S.#from(builder:(
+Void test(read This1.Concept.ToS that, read This1.Concept.ToS expected) This1.Debug.test(that:that, expected:expected, message:This1.S.#from(builder:(
   This1.S::#builder() b=This1.S.#builder()
   b
   )))}
@@ -39470,7 +39470,7 @@ Library #leftleft(Library that) exception This1.DecorationUnfeasable (
       Void unused1=b.#add(that:{/*ParseFailure:Message:S[]<<{ implements Guard} no need, related to invariant?
 */
       class method /* if you do not implement it, it is a constructor?
-*/This0 fromS(read This3.Concept.ToS that) 
+*/This0 fromS(This3.Concept.ToS that) 
       class method 
       This0 #from(This3.S.SBuilder builder) This0.fromS(that:This3.S.#from(binaryRepr:builder.binaryRepr()))
       class method 
@@ -39614,7 +39614,7 @@ CurlyBlock-Should be unreachable code
 Url:{/*ParseFailure:Message:S[]<<{ implements Guard} no need, related to invariant?
 */implements This1.Concept.ToS
 class method /* if you do not implement it, it is a constructor?
-*/This0 fromS(read This1.Concept.ToS that) This0.#apply(inner:that.toS())
+*/This0 fromS(This1.Concept.ToS that) This0.#apply(inner:that.toS())
 class method 
 This0 #from(This1.S.SBuilder builder) This0.fromS(that:This1.S.#from(binaryRepr:builder.binaryRepr()))
 class method 

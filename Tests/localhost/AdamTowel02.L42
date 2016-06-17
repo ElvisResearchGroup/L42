@@ -1541,7 +1541,7 @@ mut This2.S.SConcat #seqBuilder() This2.S.SConcat.#apply(old:this.text(), accumu
   This2.S::#builder() b=This2.S.#builder()
   b
   )))}}
-S:{implements This1.Concept.Base, This1.Concept.Equals
+S:{implements This1.Concept.Base, This1.Concept.Equals, This1.Concept.ToS
 Varcurrent_$%$%82_1_$%$%$%38_1_$%$%$%$%188_1_$%$%$%$%$%337_1_$%$%$%$%$%$%487_1_$%$%$%$%$%$%$%638_1_$%$%$%$%$%$%$%$%790_1_$%$%$%$%$%$%$%$%$%943_1_$%$%$%$%$%$%$%$%$%$%1097_1_$%$%$%$%$%$%$%$%$%$%$%1252_1__1408_1:/*@private*/{
 class method 
 mut This0 #mutK(This2.N inner) 
@@ -1648,7 +1648,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 method 
-This0 #plusplus(This0 that) This0.#from(binaryRepr:use This1.Alu check stringConcat(s1:this.binaryRepr(), s2:that.toS().binaryRepr()) error void)
+This0 #plusplus(This0 that) This0.#from(binaryRepr:use This1.Alu check stringConcat(s1:this.binaryRepr(), s2:that.binaryRepr()) error void)
 method 
 This1.Bool #bangequal(This0 that) this.#equalequal(that:that).#bang()
 method 
@@ -2091,9 +2091,9 @@ This1 #accumulator()
 read method 
 This1 accumulator() 
 mut method 
-Void #add(This2.Concept.ToS that) this.accumulator(that:this.accumulator().#plusplus(that:that.toS()))
+Void #add(read This2.Concept.ToS that) this.accumulator(that:this.accumulator().#plusplus(that:that.toS()))
 mut method 
-Void #add(This2.Concept.ToS that, This2.Concept.ToS separedBy) (
+Void #add(read This2.Concept.ToS that, This2.Concept.ToS separedBy) (
   This1 newAcc=that.toS()
   mut This0.VarnewAcc_$%$%84_1_$%$%$%40_1_$%$%$%$%190_1_$%$%$%$%$%339_1_$%$%$%$%$%$%489_1_$%$%$%$%$%$%$%640_1_$%$%$%$%$%$%$%$%792_1_$%$%$%$%$%$%$%$%$%945_1_$%$%$%$%$%$%$%$%$%$%1099_1_$%$%$%$%$%$%$%$%$%$%$%1254_1__1410_1 varnewAcc=This0.VarnewAcc_$%$%84_1_$%$%$%40_1_$%$%$%$%190_1_$%$%$%$%$%339_1_$%$%$%$%$%$%489_1_$%$%$%$%$%$%$%640_1_$%$%$%$%$%$%$%$%792_1_$%$%$%$%$%$%$%$%$%945_1_$%$%$%$%$%$%$%$%$%$%1099_1_$%$%$%$%$%$%$%$%$%$%$%1254_1__1410_1.#apply(inner:newAcc)
   Void unused=(
@@ -2531,36 +2531,122 @@ This2.N #inner()
 read method 
 This2.N inner() }
 Skip:{interface 
-method 
+mut method 
 This2.N #apply(This1 that, This2.N index) }
 method 
-This1.Strings split(This0.Skip skipper) (
+This1.Strings split(capsule This0.Skip skipper) (
   Void unused=(
     This1.Strings::empty() res=This1.Strings.empty()
+    mut This0.Skip mskip=skipper
     This1.N index=This1.N.#from(builder:(
       This1.N::#builder() b=This1.N.#builder()
-      Void unused2=b.#0()
+      Void unused3=b.#0()
       b
       ))
     mut This0.Varindex_$%$%$%143_1_$%$%$%$%191_1_$%$%$%$%$%340_1_$%$%$%$%$%$%490_1_$%$%$%$%$%$%$%641_1_$%$%$%$%$%$%$%$%793_1_$%$%$%$%$%$%$%$%$%946_1_$%$%$%$%$%$%$%$%$%$%1100_1_$%$%$%$%$%$%$%$%$%$%$%1255_1__1411_1 varindex=This0.Varindex_$%$%$%143_1_$%$%$%$%191_1_$%$%$%$%$%340_1_$%$%$%$%$%$%490_1_$%$%$%$%$%$%$%641_1_$%$%$%$%$%$%$%$%793_1_$%$%$%$%$%$%$%$%$%946_1_$%$%$%$%$%$%$%$%$%$%1100_1_$%$%$%$%$%$%$%$%$%$%$%1255_1__1411_1.#apply(inner:index)
     Void unused0=(
-      Void unused3=loop (
-        Void unused4=varindex.#inner().#left(that:this.size()).#checkTrue()
+      Void unused4=loop (
+        Void unused5=varindex.#inner().#left(that:this.size()).#checkTrue()
         (
-          This0.Skip::#apply(that index ) skip=skipper.#apply(that:this, index:varindex.#inner())
+          This0.Skip::#apply(that index ) skip=mskip.#apply(that:this, index:varindex.#inner())
           (
             This0.Skip::#apply(that index ) ::#right(that ) cond=skip.#right(that:This1.N.#from(builder:(
               This1.N::#builder() b0=This1.N.#builder()
-              Void unused5=b0.#0()
+              Void unused6=b0.#0()
               b0
               )))
             (
-              Void unused6=cond.#checkTrue()
+              Void unused7=cond.#checkTrue()
               
-              catch exception Void catched4 varindex.inner(that:varindex.#inner().#less(that:skip))
+              catch exception Void catched4 (
+                This0.Skip::#apply(that index ) ::#left(that ) cond0=skip.#left(that:This1.N.#from(builder:(
+                  This1.N::#builder() b1=This1.N.#builder()
+                  Void unused8=b1.#0()
+                  b1
+                  )))
+                (
+                  Void unused9=cond0.#checkTrue()
+                  
+                  catch exception Void catched7 error (
+                    This1.Guard.Operation::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) rcv64=(
+                      This1.Guard.Operation::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) rcv65=(
+                        This1.Guard.Operation::#from(builder ) ::#from(seqBuilder ) rcv66=(
+                          This1.Guard.Operation::#from(builder ) rcv67=This1.Guard.Operation.#from(builder:(
+                            This1.Guard.Operation::#builder() b2=This1.Guard.Operation.#builder()
+                            Void unused10=b2.#S()
+                            Void unused11=b2.#t()
+                            Void unused12=b2.#r()
+                            Void unused13=b2.#i()
+                            Void unused14=b2.#n()
+                            Void unused15=b2.#g()
+                            Void unused16=b2.#dot()
+                            Void unused17=b2.#s()
+                            Void unused18=b2.#p()
+                            Void unused19=b2.#l()
+                            Void unused20=b2.#i()
+                            Void unused21=b2.#t()
+                            Void unused22=b2.#oRound()
+                            Void unused23=b2.#cRound()
+                            Void unused24=b2.#colon()
+                            Void unused25=b2.#space()
+                            Void unused26=b2.#s()
+                            Void unused27=b2.#k()
+                            Void unused28=b2.#i()
+                            Void unused29=b2.#p()
+                            Void unused30=b2.#p()
+                            Void unused31=b2.#e()
+                            Void unused32=b2.#r()
+                            Void unused33=b2.#space()
+                            Void unused34=b2.#r()
+                            Void unused35=b2.#e()
+                            Void unused36=b2.#t()
+                            Void unused37=b2.#u()
+                            Void unused38=b2.#r()
+                            Void unused39=b2.#n()
+                            Void unused40=b2.#e()
+                            Void unused41=b2.#d()
+                            Void unused42=b2.#space()
+                            Void unused43=b2.#0()
+                            Void unused44=b2.#space()
+                            Void unused45=b2.#o()
+                            Void unused46=b2.#n()
+                            Void unused47=b2.#colon()
+                            Void unused48=b2.#space()
+                            Void unused49=b2.#sQuote()
+                            b2
+                            ))
+                          rcv67.#from(seqBuilder:(
+                            This1.Guard.Operation::#from(builder ) ::#seqBuilder() b3=rcv67.#seqBuilder()
+                            Void unused50=b3.#add(that:this)
+                            b3
+                            ))
+                          )
+                        rcv66.#from(builder:(
+                          This1.Guard.Operation::#from(builder ) ::#from(seqBuilder ) ::#builder() b4=rcv66.#builder()
+                          Void unused51=b4.#sQuote()
+                          Void unused52=b4.#space()
+                          Void unused53=b4.#at()
+                          b4
+                          ))
+                        )
+                      rcv65.#from(seqBuilder:(
+                        This1.Guard.Operation::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#seqBuilder() b5=rcv65.#seqBuilder()
+                        Void unused54=b5.#add(that:varindex.#inner())
+                        b5
+                        ))
+                      )
+                    rcv64.#from(builder:(
+                      This1.Guard.Operation::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) ::#builder() b6=rcv64.#builder()
+                      b6
+                      ))
+                    )
+                  
+                  varindex.inner(that:varindex.#inner().#less(that:skip))
+                  )
+                )
               
               (
-                Void unused7=res.add(right:this.#apply(start:varindex.#inner(), end:varindex.#inner().#plus(that:skip)))
+                Void unused55=res.add(right:this.#apply(start:varindex.#inner(), end:varindex.#inner().#plus(that:skip)))
                 varindex.inner(that:varindex.#inner().#plus(that:skip))
                 )
               )
@@ -2568,11 +2654,98 @@ This1.Strings split(This0.Skip skipper) (
           )
         )
       
-      catch exception Void catched6 void
+      catch exception Void catched18 void
       
       void
       )
-    Void unused1=return res
+    Void unused1=(
+      This0.Varindex_$%$%$%143_1_$%$%$%$%191_1_$%$%$%$%$%340_1_$%$%$%$%$%$%490_1_$%$%$%$%$%$%$%641_1_$%$%$%$%$%$%$%$%793_1_$%$%$%$%$%$%$%$%$%946_1_$%$%$%$%$%$%$%$%$%$%1100_1_$%$%$%$%$%$%$%$%$%$%$%1255_1__1411_1::#inner() ::#bangequal(that ) cond1=varindex.#inner().#bangequal(that:this.size())
+      (
+        Void unused56=cond1.#checkTrue()
+        
+        catch exception Void catched20 void
+        
+        error (
+          This1.Guard.Operation::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) rcv68=(
+            This1.Guard.Operation::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) rcv69=(
+              This1.Guard.Operation::#from(builder ) ::#from(seqBuilder ) rcv70=(
+                This1.Guard.Operation::#from(builder ) rcv71=This1.Guard.Operation.#from(builder:(
+                  This1.Guard.Operation::#builder() b7=This1.Guard.Operation.#builder()
+                  Void unused57=b7.#S()
+                  Void unused58=b7.#t()
+                  Void unused59=b7.#r()
+                  Void unused60=b7.#i()
+                  Void unused61=b7.#n()
+                  Void unused62=b7.#g()
+                  Void unused63=b7.#dot()
+                  Void unused64=b7.#s()
+                  Void unused65=b7.#p()
+                  Void unused66=b7.#l()
+                  Void unused67=b7.#i()
+                  Void unused68=b7.#t()
+                  Void unused69=b7.#oRound()
+                  Void unused70=b7.#cRound()
+                  Void unused71=b7.#colon()
+                  Void unused72=b7.#space()
+                  Void unused73=b7.#s()
+                  Void unused74=b7.#k()
+                  Void unused75=b7.#i()
+                  Void unused76=b7.#p()
+                  Void unused77=b7.#p()
+                  Void unused78=b7.#e()
+                  Void unused79=b7.#r()
+                  Void unused80=b7.#space()
+                  Void unused81=b7.#i()
+                  Void unused82=b7.#n()
+                  Void unused83=b7.#d()
+                  Void unused84=b7.#e()
+                  Void unused85=b7.#x()
+                  Void unused86=b7.#e()
+                  Void unused87=b7.#s()
+                  Void unused88=b7.#space()
+                  Void unused89=b7.#s()
+                  Void unused90=b7.#u()
+                  Void unused91=b7.#m()
+                  Void unused92=b7.#m()
+                  Void unused93=b7.#e()
+                  Void unused94=b7.#d()
+                  Void unused95=b7.#space()
+                  Void unused96=b7.#t()
+                  Void unused97=b7.#o()
+                  Void unused98=b7.#space()
+                  b7
+                  ))
+                rcv71.#from(seqBuilder:(
+                  This1.Guard.Operation::#from(builder ) ::#seqBuilder() b8=rcv71.#seqBuilder()
+                  Void unused99=b8.#add(that:varindex.#inner())
+                  b8
+                  ))
+                )
+              rcv70.#from(builder:(
+                This1.Guard.Operation::#from(builder ) ::#from(seqBuilder ) ::#builder() b9=rcv70.#builder()
+                Void unused100=b9.#space()
+                Void unused101=b9.#o()
+                Void unused102=b9.#n()
+                Void unused103=b9.#space()
+                Void unused104=b9.#sQuote()
+                b9
+                ))
+              )
+            rcv69.#from(seqBuilder:(
+              This1.Guard.Operation::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#seqBuilder() b10=rcv69.#seqBuilder()
+              Void unused105=b10.#add(that:this)
+              b10
+              ))
+            )
+          rcv68.#from(builder:(
+            This1.Guard.Operation::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) ::#builder() b11=rcv68.#builder()
+            Void unused106=b11.#sQuote()
+            b11
+            ))
+          )
+        )
+      )
+    Void unused2=return res
     void
     )
   
@@ -2583,12 +2756,6 @@ CurlyBlock-Should be unreachable code
 */}
   )
 SkipChars:{implements This1.Skip
-class method 
-mut This0 #mutK(This1 chars) 
-class method 
-This0 #apply(This1 chars) This0.#mutK(chars:chars)
-mut method 
-This1 #chars() 
 read method 
 This1 chars() 
 method #apply(that index ) (
@@ -2736,7 +2903,15 @@ CurlyBlock-Should be unreachable code
   error {/*@stringU
 CurlyBlock-Should be unreachable code
 */}
-  )}
+  )
+class method 
+mut This0 #apply(This1 chars) 
+class method 
+lent This0 lentK(This1 chars) 
+class method 
+read This0 readK(This1 chars) 
+class method 
+This0 immK(This1 chars) }
 method 
 This1.Strings splitOn(This0 chars) this.split(skipper:This0.SkipChars.#apply(chars:chars))}
 Range:{
@@ -2911,7 +3086,7 @@ This1.S localToAbsolute(This1.Concept.ToS fileName) This1.S.#from(binaryRepr:use
     ))
   ))
 class method 
-Void test(This1.Concept.ToS that, This1.Concept.ToS expected, This1.S message) (
+Void test(read This1.Concept.ToS that, read This1.Concept.ToS expected, This1.S message) (
   This1.Concept.ToS::toS() sExpected=expected.toS()
   This1.Concept.ToS::toS() given=that.toS()
   (
@@ -3019,7 +3194,7 @@ Void test(This1.Concept.ToS that, This1.Concept.ToS expected, This1.S message) (
     )
   )
 class method 
-Void test(This1.Concept.ToS that, This1.Concept.ToS expected) This0.test(that:that, expected:expected, message:This1.S.#from(builder:(
+Void test(read This1.Concept.ToS that, read This1.Concept.ToS expected) This0.test(that:that, expected:expected, message:This1.S.#from(builder:(
   This1.S::#builder() b=This1.S.#builder()
   b
   )))
@@ -5542,8 +5717,8 @@ Void #from(This1.Tests seqBuilder) (
       catch exception Void catched1 void
       
       error (
-        This1.Bug::#from(builder ) ::#from(seqBuilder ) rcv75=(
-          This1.Bug::#from(builder ) rcv76=This1.Bug.#from(builder:(
+        This1.Bug::#from(builder ) ::#from(seqBuilder ) rcv83=(
+          This1.Bug::#from(builder ) rcv84=This1.Bug.#from(builder:(
             This1.Bug::#builder() b=This1.Bug.#builder()
             Void unused0=b.#P()
             Void unused1=b.#r()
@@ -5571,14 +5746,14 @@ Void #from(This1.Tests seqBuilder) (
             Void unused23=b.#space()
             b
             ))
-          rcv76.#from(seqBuilder:(
-            This1.Bug::#from(builder ) ::#seqBuilder() b0=rcv76.#seqBuilder()
+          rcv84.#from(seqBuilder:(
+            This1.Bug::#from(builder ) ::#seqBuilder() b0=rcv84.#seqBuilder()
             Void unused24=b0.#add(that:res)
             b0
             ))
           )
-        rcv75.#from(builder:(
-          This1.Bug::#from(builder ) ::#from(seqBuilder ) ::#builder() b1=rcv75.#builder()
+        rcv83.#from(builder:(
+          This1.Bug::#from(builder ) ::#from(seqBuilder ) ::#builder() b1=rcv83.#builder()
           b1
           ))
         )
@@ -5599,8 +5774,8 @@ Void #from(This1.Tests seqBuilder) (
       catch exception Void catched1 void
       
       error (
-        This1.Bug::#from(builder ) ::#from(seqBuilder ) rcv77=(
-          This1.Bug::#from(builder ) rcv78=This1.Bug.#from(builder:(
+        This1.Bug::#from(builder ) ::#from(seqBuilder ) rcv85=(
+          This1.Bug::#from(builder ) rcv86=This1.Bug.#from(builder:(
             This1.Bug::#builder() b=This1.Bug.#builder()
             Void unused0=b.#O()
             Void unused1=b.#b()
@@ -5618,14 +5793,14 @@ Void #from(This1.Tests seqBuilder) (
             Void unused13=b.#space()
             b
             ))
-          rcv78.#from(seqBuilder:(
-            This1.Bug::#from(builder ) ::#seqBuilder() b0=rcv78.#seqBuilder()
+          rcv86.#from(seqBuilder:(
+            This1.Bug::#from(builder ) ::#seqBuilder() b0=rcv86.#seqBuilder()
             Void unused14=b0.#add(that:res)
             b0
             ))
           )
-        rcv77.#from(builder:(
-          This1.Bug::#from(builder ) ::#from(seqBuilder ) ::#builder() b1=rcv77.#builder()
+        rcv85.#from(builder:(
+          This1.Bug::#from(builder ) ::#from(seqBuilder ) ::#builder() b1=rcv85.#builder()
           b1
           ))
         )
@@ -6538,22 +6713,22 @@ Void inner(This2.Test that) (
   )}
 mut method 
 Void #add(This2.Bool that, This2.Concept.ToS msg) this.add(right:This1.Test.#apply(that:that, msg:(
-  This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) rcv79=(
-    This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) rcv80=(
-      This2.S::#from(builder ) ::#from(seqBuilder ) rcv81=(
-        This2.S::#from(builder ) rcv82=This2.S.#from(builder:(
+  This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) rcv87=(
+    This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) rcv88=(
+      This2.S::#from(builder ) ::#from(seqBuilder ) rcv89=(
+        This2.S::#from(builder ) rcv90=This2.S.#from(builder:(
           This2.S::#builder() b=This2.S.#builder()
           b
           ))
-        rcv82.#from(seqBuilder:(
-          This2.S::#from(builder ) ::#seqBuilder() b0=rcv82.#seqBuilder()
+        rcv90.#from(seqBuilder:(
+          This2.S::#from(builder ) ::#seqBuilder() b0=rcv90.#seqBuilder()
           Void unused=b0.#add(that:msg)
           Void unused0=b0.#add(that:This2.S.nl())
           b0
           ))
         )
-      rcv81.#from(builder:(
-        This2.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b1=rcv81.#builder()
+      rcv89.#from(builder:(
+        This2.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b1=rcv89.#builder()
         Void unused1=b1.#n()
         Void unused2=b1.#u()
         Void unused3=b1.#m()
@@ -6564,14 +6739,14 @@ Void #add(This2.Bool that, This2.Concept.ToS msg) this.add(right:This1.Test.#app
         b1
         ))
       )
-    rcv80.#from(seqBuilder:(
-      This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#seqBuilder() b2=rcv80.#seqBuilder()
+    rcv88.#from(seqBuilder:(
+      This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#seqBuilder() b2=rcv88.#seqBuilder()
       Void unused8=b2.#add(that:this.size())
       b2
       ))
     )
-  rcv79.#from(builder:(
-    This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) ::#builder() b3=rcv79.#builder()
+  rcv87.#from(builder:(
+    This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) ::#builder() b3=rcv87.#builder()
     Void unused9=b3.#space()
     Void unused10=b3.#f()
     Void unused11=b3.#a()
@@ -6584,8 +6759,8 @@ Void #add(This2.Bool that, This2.Concept.ToS msg) this.add(right:This1.Test.#app
   )))
 mut method 
 Void #add(This2.Bool that) this.add(right:This1.Test.#apply(that:that, msg:(
-  This2.S::#from(builder ) ::#from(seqBuilder ) rcv83=(
-    This2.S::#from(builder ) rcv84=This2.S.#from(builder:(
+  This2.S::#from(builder ) ::#from(seqBuilder ) rcv91=(
+    This2.S::#from(builder ) rcv92=This2.S.#from(builder:(
       This2.S::#builder() b=This2.S.#builder()
       Void unused=b.#C()
       Void unused0=b.#o()
@@ -6606,14 +6781,14 @@ Void #add(This2.Bool that) this.add(right:This1.Test.#apply(that:that, msg:(
       Void unused15=b.#space()
       b
       ))
-    rcv84.#from(seqBuilder:(
-      This2.S::#from(builder ) ::#seqBuilder() b0=rcv84.#seqBuilder()
+    rcv92.#from(seqBuilder:(
+      This2.S::#from(builder ) ::#seqBuilder() b0=rcv92.#seqBuilder()
       Void unused16=b0.#add(that:this.size())
       b0
       ))
     )
-  rcv83.#from(builder:(
-    This2.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b1=rcv83.#builder()
+  rcv91.#from(builder:(
+    This2.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b1=rcv91.#builder()
     Void unused17=b1.#space()
     Void unused18=b1.#f()
     Void unused19=b1.#a()
@@ -6626,13 +6801,13 @@ Void #add(This2.Bool that) this.add(right:This1.Test.#apply(that:that, msg:(
   )))
 read method 
 This2.S collapse() (
-  This2.S::#from(builder ) ::#from(seqBuilder ) rcv85=(
-    This2.S::#from(builder ) rcv86=This2.S.#from(builder:(
+  This2.S::#from(builder ) ::#from(seqBuilder ) rcv93=(
+    This2.S::#from(builder ) rcv94=This2.S.#from(builder:(
       This2.S::#builder() b0=This2.S.#builder()
       b0
       ))
-    rcv86.#from(seqBuilder:(
-      This2.S::#from(builder ) ::#seqBuilder() b=rcv86.#seqBuilder()
+    rcv94.#from(seqBuilder:(
+      This2.S::#from(builder ) ::#seqBuilder() b=rcv94.#seqBuilder()
       Void unused=(
         This0::vals() a=this.vals()
         (
@@ -6691,8 +6866,8 @@ This2.S collapse() (
       b
       ))
     )
-  rcv85.#from(builder:(
-    This2.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b1=rcv85.#builder()
+  rcv93.#from(builder:(
+    This2.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b1=rcv93.#builder()
     b1
     ))
   )}}
@@ -11060,8 +11235,8 @@ This0 #from(Library binaryRepr) (
   )
 class method 
 Any parseError(This1.S that) (
-  This0.ParseFail::#from(builder ) ::#from(seqBuilder ) rcv66=(
-    This0.ParseFail::#from(builder ) rcv67=This0.ParseFail.#from(builder:(
+  This0.ParseFail::#from(builder ) ::#from(seqBuilder ) rcv74=(
+    This0.ParseFail::#from(builder ) rcv75=This0.ParseFail.#from(builder:(
       This0.ParseFail::#builder() b=This0.ParseFail.#builder()
       Void unused=b.#T()
       Void unused0=b.#h()
@@ -11106,22 +11281,22 @@ Any parseError(This1.S that) (
       Void unused39=b.#space()
       b
       ))
-    rcv67.#from(seqBuilder:(
-      This0.ParseFail::#from(builder ) ::#seqBuilder() b0=rcv67.#seqBuilder()
+    rcv75.#from(seqBuilder:(
+      This0.ParseFail::#from(builder ) ::#seqBuilder() b0=rcv75.#seqBuilder()
       Void unused40=b0.#add(that:that)
       b0
       ))
     )
-  rcv66.#from(builder:(
-    This0.ParseFail::#from(builder ) ::#from(seqBuilder ) ::#builder() b1=rcv66.#builder()
+  rcv74.#from(builder:(
+    This0.ParseFail::#from(builder ) ::#from(seqBuilder ) ::#builder() b1=rcv74.#builder()
     b1
     ))
   )
 class method 
 Any parseError(This1.S that, This1.Message cause) (
-  This0.ParseFail::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) rcv68=(
-    This0.ParseFail::#from(builder ) ::#from(seqBuilder ) rcv69=(
-      This0.ParseFail::#from(builder ) rcv70=This0.ParseFail.#from(builder:(
+  This0.ParseFail::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) rcv76=(
+    This0.ParseFail::#from(builder ) ::#from(seqBuilder ) rcv77=(
+      This0.ParseFail::#from(builder ) rcv78=This0.ParseFail.#from(builder:(
         This0.ParseFail::#builder() b=This0.ParseFail.#builder()
         Void unused=b.#T()
         Void unused0=b.#h()
@@ -11179,18 +11354,18 @@ Any parseError(This1.S that, This1.Message cause) (
         Void unused52=b.#space()
         b
         ))
-      rcv70.#from(seqBuilder:(
-        This0.ParseFail::#from(builder ) ::#seqBuilder() b0=rcv70.#seqBuilder()
+      rcv78.#from(seqBuilder:(
+        This0.ParseFail::#from(builder ) ::#seqBuilder() b0=rcv78.#seqBuilder()
         Void unused53=b0.#add(that:that)
         b0
         ))
       )
-    rcv69.#from(builder:(
-      This0.ParseFail::#from(builder ) ::#from(seqBuilder ) ::#builder() b1=rcv69.#builder()
+    rcv77.#from(builder:(
+      This0.ParseFail::#from(builder ) ::#from(seqBuilder ) ::#builder() b1=rcv77.#builder()
       b1
       ))
     )
-  rcv68.#apply(that:cause)
+  rcv76.#apply(that:cause)
   )
 method 
 Library binaryRepr() this._binaryRepr_$%$%58_1_$%$%$%9_1_$%$%$%$%158_1_$%$%$%$%$%307_1_$%$%$%$%$%$%457_1_$%$%$%$%$%$%$%608_1_$%$%$%$%$%$%$%$%759_1_$%$%$%$%$%$%$%$%$%911_1_$%$%$%$%$%$%$%$%$%$%1064_1_$%$%$%$%$%$%$%$%$%$%$%1219_1__1374_1()
@@ -11948,8 +12123,8 @@ This0 #from(Library binaryRepr) (
   )
 class method 
 Any parseError(This1.S that) (
-  This0.ParseFail::#from(builder ) ::#from(seqBuilder ) rcv64=(
-    This0.ParseFail::#from(builder ) rcv65=This0.ParseFail.#from(builder:(
+  This0.ParseFail::#from(builder ) ::#from(seqBuilder ) rcv72=(
+    This0.ParseFail::#from(builder ) rcv73=This0.ParseFail.#from(builder:(
       This0.ParseFail::#builder() b=This0.ParseFail.#builder()
       Void unused=b.#T()
       Void unused0=b.#h()
@@ -11998,14 +12173,14 @@ Any parseError(This1.S that) (
       Void unused43=b.#space()
       b
       ))
-    rcv65.#from(seqBuilder:(
-      This0.ParseFail::#from(builder ) ::#seqBuilder() b0=rcv65.#seqBuilder()
+    rcv73.#from(seqBuilder:(
+      This0.ParseFail::#from(builder ) ::#seqBuilder() b0=rcv73.#seqBuilder()
       Void unused44=b0.#add(that:that)
       b0
       ))
     )
-  rcv64.#from(builder:(
-    This0.ParseFail::#from(builder ) ::#from(seqBuilder ) ::#builder() b1=rcv64.#builder()
+  rcv72.#from(builder:(
+    This0.ParseFail::#from(builder ) ::#from(seqBuilder ) ::#builder() b1=rcv72.#builder()
     b1
     ))
   )
@@ -35699,27 +35874,27 @@ This2.S libToS(Library that) (
   This2.Introspection::#apply(lib ) i=This2.Introspection.#apply(lib:that)
   This2.Introspection::#apply(lib ) ::nestedClasses() ::vals() ncs=i.nestedClasses().vals()
   (
-    This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) rcv71=(
-      This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) rcv72=(
-        This2.S::#from(builder ) ::#from(seqBuilder ) rcv73=(
-          This2.S::#from(builder ) rcv74=This2.S.#from(builder:(
+    This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) rcv79=(
+      This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) rcv80=(
+        This2.S::#from(builder ) ::#from(seqBuilder ) rcv81=(
+          This2.S::#from(builder ) rcv82=This2.S.#from(builder:(
             This2.S::#builder() b0=This2.S.#builder()
             Void unused=b0.#oSquare()
             b0
             ))
-          rcv74.#from(seqBuilder:(
-            This2.S::#from(builder ) ::#seqBuilder() b1=rcv74.#seqBuilder()
+          rcv82.#from(seqBuilder:(
+            This2.S::#from(builder ) ::#seqBuilder() b1=rcv82.#seqBuilder()
             Void unused0=b1.#add(that:This2.S.nl())
             b1
             ))
           )
-        rcv73.#from(builder:(
-          This2.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b2=rcv73.#builder()
+        rcv81.#from(builder:(
+          This2.S::#from(builder ) ::#from(seqBuilder ) ::#builder() b2=rcv81.#builder()
           b2
           ))
         )
-      rcv72.#from(seqBuilder:(
-        This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#seqBuilder() b=rcv72.#seqBuilder()
+      rcv80.#from(seqBuilder:(
+        This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#seqBuilder() b=rcv80.#seqBuilder()
         Void unused1=(
           This2.Introspection::#apply(lib ) ::nestedClasses() ::vals() nc=ncs
           (
@@ -35776,8 +35951,8 @@ This2.S libToS(Library that) (
         b
         ))
       )
-    rcv71.#from(builder:(
-      This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) ::#builder() b4=rcv71.#builder()
+    rcv79.#from(builder:(
+      This2.S::#from(builder ) ::#from(seqBuilder ) ::#from(builder ) ::#from(seqBuilder ) ::#builder() b4=rcv79.#builder()
       Void unused15=b4.#cSquare()
       b4
       ))
@@ -42330,7 +42505,7 @@ Library #leftleft(Library that) exception This1.DecorationUnfeasable (
       Void unused1=b.#add(that:{/*ParseFailure:Message:S[]<<{ implements Guard} no need, related to invariant?
 */
       class method /* if you do not implement it, it is a constructor?
-*/This0 fromS(read This3.Concept.ToS that) 
+*/This0 fromS(This3.Concept.ToS that) 
       class method 
       This0 #from(This3.S.SBuilder builder) This0.fromS(that:This3.S.#from(binaryRepr:builder.binaryRepr()))
       class method 
@@ -42474,7 +42649,7 @@ CurlyBlock-Should be unreachable code
 Url:{/*ParseFailure:Message:S[]<<{ implements Guard} no need, related to invariant?
 */implements This1.Concept.ToS
 class method /* if you do not implement it, it is a constructor?
-*/This0 fromS(read This1.Concept.ToS that) This0.#apply(inner:that.toS())
+*/This0 fromS(This1.Concept.ToS that) This0.#apply(inner:that.toS())
 class method 
 This0 #from(This1.S.SBuilder builder) This0.fromS(that:This1.S.#from(binaryRepr:builder.binaryRepr()))
 class method 

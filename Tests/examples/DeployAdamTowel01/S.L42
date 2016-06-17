@@ -22,7 +22,7 @@
   //#####operators
   method
   S ++ (S that) S.#from(binaryRepr: use Alu
-      check stringConcat(s1:this.binaryRepr(),s2:that.toS().binaryRepr())
+      check stringConcat(s1:this.binaryRepr(),s2:that.binaryRepr())
       error void)
 
   method Bool != (This that) !(this==that)
@@ -251,10 +251,10 @@ This withoutRight()
 
   SConcat:{(S old,var S accumulator)
     mut method
-    Void #add(Concept.ToS that)
+    Void #add(read Concept.ToS that)
       this.accumulator(\accumulator++that.toS())
     mut method
-    Void #add(Concept.ToS that, Concept.ToS separedBy) (
+    Void #add(read Concept.ToS that, Concept.ToS separedBy) (
       var S newAcc=that.toS()
       if this.accumulator()!=S"" (
         newAcc:=this.accumulator()++separedBy.toS()++newAcc

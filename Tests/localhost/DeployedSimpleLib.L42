@@ -306,7 +306,7 @@ method
 This1 #from(This3.S.SBuilder builder) }
 method 
 mut This2.S.SConcat #seqBuilder() }}
-S:{implements This1.Concept.Base, This1.Concept.Equals
+S:{implements This1.Concept.Base, This1.Concept.Equals, This1.Concept.ToS
 class method /*needed until we do (also refine) normalization
 #####Implemented
 */mut This0 #mutK(Library _binaryRepr) 
@@ -440,9 +440,9 @@ This1 #accumulator()
 read method 
 This1 accumulator() 
 mut method 
-Void #add(This2.Concept.ToS that) 
+Void #add(read This2.Concept.ToS that) 
 mut method 
-Void #add(This2.Concept.ToS that, This2.Concept.ToS separedBy) }
+Void #add(read This2.Concept.ToS that, This2.Concept.ToS separedBy) }
 SBuilder:{
 read method 
 Library binaryRepr() 
@@ -647,19 +647,21 @@ This0 #from(This0.SBuilder builder)
 class method 
 mut This0.SBuilder #builder() 
 Skip:{interface 
-method 
+mut method 
 This2.N #apply(This1 that, This2.N index) }
 method 
-This1.Strings split(This0.Skip skipper) 
+This1.Strings split(capsule This0.Skip skipper) 
 SkipChars:{implements This1.Skip
-class method 
-mut This0 #mutK(This1 chars) 
-class method 
-This0 #apply(This1 chars) 
-mut method 
-This1 #chars() 
 read method 
-This1 chars() }
+This1 chars() 
+class method 
+mut This0 #apply(This1 chars) 
+class method 
+lent This0 lentK(This1 chars) 
+class method 
+read This0 readK(This1 chars) 
+class method 
+This0 immK(This1 chars) }
 method 
 This1.Strings splitOn(This0 chars) }
 Concept:{
@@ -1687,9 +1689,9 @@ This1.S readFile(This1.Concept.ToS fileName)
 class method 
 This1.S localToAbsolute(This1.Concept.ToS fileName) 
 class method 
-Void test(This1.Concept.ToS that, This1.Concept.ToS expected, This1.S message) 
+Void test(read This1.Concept.ToS that, read This1.Concept.ToS expected, This1.S message) 
 class method 
-Void test(This1.Concept.ToS that, This1.Concept.ToS expected) }
+Void test(read This1.Concept.ToS that, read This1.Concept.ToS expected) }
 ConceptMap:{interface 
 method 
 This1.Alu _Alu() 
@@ -1754,7 +1756,7 @@ This1.Load _Load() }
 Url:{/*ParseFailure:Message:S[]<<{ implements Guard} no need, related to invariant?
 */implements This1.Concept.ToS
 class method /* if you do not implement it, it is a constructor?
-*/This0 fromS(read This1.Concept.ToS that) 
+*/This0 fromS(This1.Concept.ToS that) 
 class method 
 This0 #from(This1.S.SBuilder builder) 
 class method 

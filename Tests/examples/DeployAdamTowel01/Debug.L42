@@ -31,7 +31,7 @@
       )
 
   class method
-  Void test(Concept.ToS that, Concept.ToS expected,S message)(
+  Void test(read Concept.ToS that, read Concept.ToS expected,S message)(
     sExpected=expected.toS()
     given=that.toS()
     if sExpected != given (
@@ -44,6 +44,6 @@
     )
 
   class method
-  Void test(Concept.ToS that, Concept.ToS expected)
+  Void test(read Concept.ToS that, read Concept.ToS expected)
     Debug.test(that,expected:expected, message:S"")
   }
