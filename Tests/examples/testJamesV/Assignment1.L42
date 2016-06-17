@@ -60,7 +60,7 @@ CoreC:{
 SL:Use[Collections.vector(of:S)]<<{ implements Concept.ToS
   method toS()
     S"["[with e in this.vals() (
-      use[e separedBy:S";"]
+      use[e sep:S";"]
       )]"]"
 }
 
@@ -70,7 +70,7 @@ SL:Use[Collections.vector(of:S)]<<{ implements Concept.ToS
 NL:Use[Collections.vector(of:N)]<<{ implements Concept.ToS
   method toS()
     S"["[with e in this.vals() (
-      use[e separedBy:S";"]
+      use[e sep:S";"]
       )]"]"
 }
 
@@ -81,7 +81,7 @@ NL:Use[Collections.vector(of:N)]<<{ implements Concept.ToS
 CompletionB_OLD:Use[Collections.vector(of:N)]<<{ implements Concept.ToS
   method toS()
     S"["[with e in this.vals() (
-      use[e separedBy:S"; "]
+      use[e sep:S"; "]
       )]"]"
 
   method Bool <<(CompletionB_OLD that){
@@ -119,7 +119,7 @@ CompletionB_OLD:Use[Collections.vector(of:N)]<<{ implements Concept.ToS
 CompletionB:Use[Collections.vector(of:N)]<<{ implements Concept.ToS
   method toS()
     S"["[with e in this.vals() (
-      use[e separedBy:S"; "]
+      use[e sep:S"; "]
       )]"]"
 
   method Bool <<(CompletionB that){
@@ -183,7 +183,7 @@ Person:Data.Invariant<<{(S name, N age)  implements Concept.ToS, Concept.Invaria
 Persons:Use[Collections.vector(of:Person)]<<{ implements Concept.ToS
   method toS()
     S"["[with e in this.vals() (
-      use[e separedBy:S";"]
+      use[e sep:S";"]
       )]"]"
 
   class method Persons from(SL names, NL ages){

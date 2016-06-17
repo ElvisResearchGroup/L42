@@ -3,7 +3,7 @@
 NL:Use[Collections.vector(of:N)]<<{ implements Concept.ToS
   method toS()
     S"["[with e in this.vals() (
-      use[e separedBy:S";"]
+      use[e sep:S";"]
       )]"]"
   }
 

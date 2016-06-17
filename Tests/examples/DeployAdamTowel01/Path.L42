@@ -79,7 +79,7 @@
   class method
   Path from(read Strings names) {
     if names.isEmpty() (return Path"This")
-    s=S""[with n in names.vals() (use[n separedBy:S"."])]""
+    s=S""[with n in names.vals() (use[n sep:S"."])]""
     return This.fromS(s) //(end:s.size()-1N)
     }
   class method

@@ -254,10 +254,10 @@ This withoutRight()
     Void #add(read Concept.ToS that)
       this.accumulator(\accumulator++that.toS())
     mut method
-    Void #add(read Concept.ToS that, Concept.ToS separedBy) (
+    Void #add(read Concept.ToS that, Concept.ToS sep) (
       var S newAcc=that.toS()
       if this.accumulator()!=S"" (
-        newAcc:=this.accumulator()++separedBy.toS()++newAcc
+        newAcc:=this.accumulator()++sep.toS()++newAcc
         )
       this.accumulator(newAcc)
       )

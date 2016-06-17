@@ -188,7 +188,7 @@
    return SafeOperators.makeMethod(that,
      path:this.of(),
      selector:this.that(),
-     mdfs:S""[with m in this.mdfs().vals() ( use[m.name() separedBy: S" "]  ) ]"",
+     mdfs:S""[with m in this.mdfs().vals() ( use[m.name() sep: S" "]  ) ]"",
      exceptionN:this.exceptionN()
      )
    catch error Library err (

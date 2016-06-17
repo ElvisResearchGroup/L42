@@ -7,15 +7,15 @@ Main:{
   mut SV sv=SV.#seqBuilder()
   sv.#add(S"a")
   sv.#add(S"b")
-  Debug(S"Hello-"[with si in sv.vals() ( use[si separedBy:S"@@"])]"")
-  Debug(S"Hello-"[with var si in sv.#vals() ( use[si separedBy:S"@@"]   si:=si++S"#")]"")
-  Debug(S"Hello-"[with var si in sv.#vals() ( use[si separedBy:S"@@"]   si:=si++S"#")]"")
+  Debug(S"Hello-"[with si in sv.vals() ( use[si sep:S"@@"])]"")
+  Debug(S"Hello-"[with var si in sv.#vals() ( use[si sep:S"@@"]   si:=si++S"#")]"")
+  Debug(S"Hello-"[with var si in sv.#vals() ( use[si sep:S"@@"]   si:=si++S"#")]"")
   Debug(S"Hello")
   Debug(sv.val(0N))
   Debug(sv.val(1N))
   var SV2 s2=SV2[S"c";S"d"]
   s2:=s2.withoutAll(val:S"c")
-  Debug(S"Hello-"[with si in s2.vals() ( use[si separedBy:S"@@"])]"")
+  Debug(S"Hello-"[with si in s2.vals() ( use[si sep:S"@@"])]"")
   return ExitCode.normal()
   }
 }
