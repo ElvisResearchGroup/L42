@@ -1,0 +1,47 @@
+{reuse L42.is/AdamTowel02
+
+Ns:Collections.vector(of:N)
+
+SplitList:Data<<{
+  implements S.Skip
+  var Ns initial
+  N remainder
+  
+  class method mut SplitList (N that)
+    This(initial:Ns.empty() remainder:that)
+    
+  method (that, index) {
+    if this.initial().isEmpty() (
+      return this.remainder()
+      )
+    ret = this.initial().left()
+    this.initial(this.initial().withoutLeft())
+    return ret
+    }
+  }
+  
+Main:{
+
+  // First, test your test harness
+  mut SplitList sl0 = SplitList(initial:Ns[1N; N"-2"; 4N; N"-8"] remainder:5N)
+
+  Assert.Holds[
+    sl0(S"" index:0N) == 1N;
+    sl0(S"" index:100N) == N"-2";
+    sl0(S"" index:N"-100") == 4N;
+    sl0(S"" index:50N) == (0N - 8N);
+    sl0(S"alpha" index:0N) == 5N;
+    sl0(S"beta" index:0N) == 5N;
+    sl0(S"gamma" index:0N) == 5N;
+    ]
+
+  {
+    Debug(S"SkipList with initial complete; sl0="[sl0]"")
+    SplitList sl1 = SplitList(initial:Ns[1N; 2N; 3N; 42N] remainder:5N)
+    Debug(S"SkipList with initial complete; sl1="[sl1]"")
+    return void
+    }
+
+  return ExitCode.normal()
+  }
+}

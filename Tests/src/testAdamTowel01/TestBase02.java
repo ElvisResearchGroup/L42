@@ -229,4 +229,12 @@ public class TestBase02 {
     TestHelper.check42Fails(L42.record.toString());
     }
 
+  @Test
+  public  void _02_19StringSplit() throws Throwable{
+    TestHelper.configureForTest();
+    //new TestBase01()._01_00DeployAdamTowel01();
+    //this._02_00DeployAdamTowel02();
+    L42.main(new String[]{"examples/testsForAdamTowel02/TestStringSplit.L42"});
+    TestHelper.check42Fails(L42.record.toString());
+    }
   }

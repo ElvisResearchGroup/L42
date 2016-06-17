@@ -34,6 +34,7 @@ N:{
     ParseFail"The provided string is not a valid Int32: "[that]""
   }
 S:{
+  implements Concept.ToS
   method
   This2.N size()
   method
@@ -44,26 +45,37 @@ S:{
   This2.Bool contains(This2.S that)
   
   Skip: {interface 
-    method This3.N (S that, This3.N index)
+    mut method This3.N (S that, This3.N index)
     //positive to keep and jump, negative to skip and jump,
     //never zero
     }
-  method Strings split(Skip skipper){
+  method Strings split(capsule Skip skipper){
     res=Strings.empty()
+    mut Skip mskip = skipper
     var This2.N index= 0This2.N
     while index< this.size() (
-      skip=skipper(this,index:index)
+      skip=mskip(this,index:index)
       if skip>0This2.N (
         res.add(right:this(start:index, end:index+skip))
         index+=skip
         )
-      else (
+      else if skip<0This2.N (
         index-=skip
         )
+      else (
+        error This2.Guard.Operation
+        "String.split(): skipper returned 0 on: '"[this]"' @"[index]""
+        )
+      )
+    if index != this.size() (
+      error This2.Guard.Operation
+      "String.split(): skipper indexes summed to "[index]" on '"[this]"'"
       )
     return res
     }
-  SkipChars: { (This3.S chars) implements Skip 
+  
+  SkipChars: K<<{ implements Skip 
+    This3.S chars
     
     method ( that, index) {
       This3.N negSkip={
@@ -86,11 +98,12 @@ S:{
       }
     }
   method
-  Strings splitOn(This2.S chars)
+  Strings splitOn(This2.S chars) (
     this.split(skipper:SkipChars(chars:chars))
 //  SubStringNotPresent:This2.Message.$<<{ implements Guard}
 //  class method Void subStringNotPresent(This2.S string, This2.S subString)
 //    error SubStringNotPresent"string["[string]"] do not contains ["[subString]""
+    )
   }
 Selector:{
   ParseFail:This2.Message.$<<{ implements Guard.ParseFail}
