@@ -180,6 +180,13 @@ public  void _01_101Vector02() throws Throwable{
    L42.main(new String[]{"examples/testsForAdamTowel01/TestK.L42"});
    TestHelper.check42Fails(L42.record.toString());
    }
+@Test
+public  void _01_11Annotation() throws Throwable{
+  TestHelper.configureForTest();
+  //new TestBase01()._01_00DeployAdamTowel01();
+  L42.main(new String[]{"examples/testsForAdamTowel01/TestAnnotations.L42"});
+  TestHelper.check42Fails(L42.record.toString());
+  }
 
 
 }

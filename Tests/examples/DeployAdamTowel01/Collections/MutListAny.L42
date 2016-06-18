@@ -98,9 +98,10 @@
     var Cell c = this.head()
     
     loop (
-      Debug(S"MutListAny.toS() loop pass")
+      //Debug(S"MutListAny.toS() loop pass with ret='"[ret]"', sep='"[sep]"'")
       with c (
         on CellNext (
+          ret := ret ++ sep
           with v=c.val() (
             on Concept.ToS ret := ret ++ v.toS()
             default        ret := ret ++ S"?"
@@ -110,8 +111,7 @@
         default
           return ret++S"]"
         )
-      ret := ret ++ sep
-      sep := S";"
+      sep := S"; "
       )
     }
 
