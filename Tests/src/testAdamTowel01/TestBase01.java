@@ -167,6 +167,13 @@ public class TestBase01 {
        "Hello-a@@b\nHello-a@@b\nHello-a#@@b#\nHello\na##\nb##\nHello-d\n");
    }
 @Test
+public  void _01_101Vector02() throws Throwable{
+  TestHelper.configureForTest();
+  //new TestBase01()._01_00DeployAdamTowel01();
+  L42.main(new String[]{"examples/testsForAdamTowel01/TestVector02.L42"});
+  TestHelper.check42Fails(L42.record.toString());
+  }
+@Test
  public  void _01_102K() throws Throwable{
    TestHelper.configureForTest();
    //new TestBase01()._01_00DeployAdamTowel01();

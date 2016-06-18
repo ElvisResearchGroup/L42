@@ -10,6 +10,9 @@ Confusion between curly brackets for class literals and expressions
 
 also, for parameter passing: should be "name:expr" but is very easy to write "name expr" or "name=expr"  
 
+Leaving the S off the beginning of a string.  Causes:
+  no viable alternative at input '/*code*/ [no S here]"<string contents>"'
+
 Extending the content of the file, errors during meta-execution:
 ----------------------------------------------------------------
 

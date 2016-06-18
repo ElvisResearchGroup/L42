@@ -1,4 +1,5 @@
 {(var Cell head,var N size)
+  implements Concept.ToS
 
   Cell:{interface Any
     method Any get(N that)
@@ -90,4 +91,28 @@
     if that<0N (error CollectionErrors.negBound(that, list:this) )
     if this.size()<that (error CollectionErrors.outBound(that, list:this) )
     )
+    
+  method toS() {
+    var S ret = S"["
+    var S sep = S""
+    var Cell c = this.head()
+    
+    loop (
+      Debug(S"MutListAny.toS() loop pass")
+      with c (
+        on CellNext (
+          with v=c.val() (
+            on Concept.ToS ret := ret ++ v.toS()
+            default        ret := ret ++ S"?"
+            )
+          c := c.next()
+          )
+        default
+          return ret++S"]"
+        )
+      ret := ret ++ sep
+      sep := S";"
+      )
+    }
+
   }

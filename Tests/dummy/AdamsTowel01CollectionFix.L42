@@ -1,0 +1,34 @@
+{
+  // This was going to be fixes to implement high-level features in low-level classes
+  // It was going to add working toS to MutListAny, inside adamsTowel01,
+  // but then James C found out that there was no metaprogramming support in the 
+  // context from which adamsTowel01 deployed.
+  
+  // Assume that we're inside DeployAdamTowel01/Collections
+  MutListAny {
+    (var Cell head,var N size)
+    implements Concept.ToS
+    
+    Cell:{interface Any}
+    
+    CellNext:{(Any val,Cell next) implements Cell}
+    
+    method toS (
+      var Cell c = head()
+      S"["
+      [with dummy in Range(start:0N)  // infinite loop
+        with c (
+          on CellNext (
+            v = c.val()
+            with v (
+              on Concept.ToS use[v sep:S"; "]
+              default         use[S"?" sep:S"; "]
+              )
+            c := c.next()
+            )
+          on default exception void   // loop exit
+          )  // end of with c
+        ]"]"
+        )
+    }
+}

@@ -1,4 +1,5 @@
 {  (mut MutListAny inner)
+implements Concept.ToS Concept.Classable
 class method This #immK(MutListAny inner)
 class method mut This empty() This(inner:MutListAny.empty())
 class method mut This #seqBuilder() this.empty()
@@ -129,4 +130,11 @@ IteratorVar: SafeOperatorsAccess.compose(left:IteratorTrait(),
     read method Bool isFill() Bool.false()
     read method Elem filled() error Assert.CodeNotReachable"Filled called on not fill iterator, should never happen"
     })
-}
+//################# Interfaces implemented
+  method toS()
+    this.inner().toS()
+  
+  method is(subtype) {  with subtype (on class This return Bool.true()) return Bool.false()}
+  method classAny() This
+  method readableName()GetMyName(This)
+  }

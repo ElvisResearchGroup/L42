@@ -4990,7 +4990,40 @@ Any iterationTermination(This2.N from, This2.N minTo, This2.N size) (
     b3
     ))
   )}
-MutListAny:{
+MutListAny:{implements This2.Concept.ToS
+Varc__95_0:/*@private*/{
+class method 
+mut This0 #mutK(This1.Cell inner) 
+class method 
+mut This0 #apply(This1.Cell inner) This0.#mutK(inner:inner)
+mut method 
+Void inner(This1.Cell that) 
+mut method 
+This1.Cell #inner() 
+read method 
+This1.Cell inner() }
+Varsep__96_0:/*@private*/{
+class method 
+mut This0 #mutK(This3.S inner) 
+class method 
+mut This0 #apply(This3.S inner) This0.#mutK(inner:inner)
+mut method 
+Void inner(This3.S that) 
+mut method 
+This3.S #inner() 
+read method 
+This3.S inner() }
+Varret__97_0:/*@private*/{
+class method 
+mut This0 #mutK(This3.S inner) 
+class method 
+mut This0 #apply(This3.S inner) This0.#mutK(inner:inner)
+mut method 
+Void inner(This3.S that) 
+mut method 
+This3.S #inner() 
+read method 
+This3.S inner() }
 class method 
 mut This0 #mutK(This0.Cell head, This2.N size) 
 class method 
@@ -5344,6 +5377,121 @@ Void checkBoundAdd(This2.N that) (
       error This1.CollectionErrors.outBound(that:that, list:this)
       )
     )
+  )
+method toS() (
+  Void unused=(
+    This2.S ret=This2.S.#from(builder:(
+      This2.S::#builder() b=This2.S.#builder()
+      Void unused1=b.#oSquare()
+      b
+      ))
+    This2.S sep=This2.S.#from(builder:(
+      This2.S::#builder() b0=This2.S.#builder()
+      b0
+      ))
+    This0.Cell c=this.head()
+    mut This0.Varret__97_0 varret=This0.Varret__97_0.#apply(inner:ret)
+    mut This0.Varsep__96_0 varsep=This0.Varsep__96_0.#apply(inner:sep)
+    mut This0.Varc__95_0 varc=This0.Varc__95_0.#apply(inner:c)
+    Void unused0=loop (
+      Void unused2=This2.Debug.#apply(that:This2.S.#from(builder:(
+        This2.S::#builder() b1=This2.S.#builder()
+        Void unused5=b1.#M()
+        Void unused6=b1.#u()
+        Void unused7=b1.#t()
+        Void unused8=b1.#L()
+        Void unused9=b1.#i()
+        Void unused10=b1.#s()
+        Void unused11=b1.#t()
+        Void unused12=b1.#A()
+        Void unused13=b1.#n()
+        Void unused14=b1.#y()
+        Void unused15=b1.#dot()
+        Void unused16=b1.#t()
+        Void unused17=b1.#o()
+        Void unused18=b1.#S()
+        Void unused19=b1.#oRound()
+        Void unused20=b1.#cRound()
+        Void unused21=b1.#space()
+        Void unused22=b1.#l()
+        Void unused23=b1.#o()
+        Void unused24=b1.#o()
+        Void unused25=b1.#p()
+        Void unused26=b1.#space()
+        Void unused27=b1.#p()
+        Void unused28=b1.#a()
+        Void unused29=b1.#s()
+        Void unused30=b1.#s()
+        b1
+        )))
+      Void unused3=(
+        This0.CellNext c0=(
+          Void unused31=return varc.#inner()
+          
+          catch return This0.CellNext casted casted
+          
+          catch return Any casted exception void
+          
+          error {/*@stringU
+CastT-Should be unreachable code
+*/}
+          )
+        
+        catch exception Void catched3 return varret.#inner().#plusplus(that:This2.S.#from(builder:(
+          This2.S::#builder() b2=This2.S.#builder()
+          Void unused32=b2.#cSquare()
+          b2
+          )))
+        
+        (
+          Void unused33=(
+            Void unused34=(
+              This0.CellNext::val() v=c0.val()
+              (
+                This2.Concept.ToS v0=(
+                  Void unused35=return v
+                  
+                  catch return This2.Concept.ToS casted0 casted0
+                  
+                  catch return Any casted0 exception void
+                  
+                  error {/*@stringU
+CastT-Should be unreachable code
+*/}
+                  )
+                
+                catch exception Void catched7 varret.inner(that:varret.#inner().#plusplus(that:This2.S.#from(builder:(
+                  This2.S::#builder() b3=This2.S.#builder()
+                  Void unused36=b3.#qMark()
+                  b3
+                  ))))
+                
+                (
+                  Void unused37=varret.inner(that:varret.#inner().#plusplus(that:v0.toS()))
+                  void
+                  )
+                )
+              )
+            varc.inner(that:c0.next())
+            )
+          void
+          )
+        )
+      Void unused4=varret.inner(that:varret.#inner().#plusplus(that:varsep.#inner()))
+      varsep.inner(that:This2.S.#from(builder:(
+        This2.S::#builder() b4=This2.S.#builder()
+        Void unused38=b4.#semicolon()
+        b4
+        )))
+      )
+    void
+    )
+  
+  catch return This0::toS()  result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
   )}
 class method 
 Library vector(class Any of) (
@@ -5386,7 +5534,7 @@ Library eq(class Any that) (
   )
 VectorTrait:{
 class method 
-Library #apply() {
+Library #apply() {implements This3.Concept.ToS, This3.Concept.Classable
 class method 
 mut This0 #mutK(mut This2.MutListAny inner) 
 class method 
@@ -6277,11 +6425,46 @@ mut method
 Void inner(This1.Elem that) (
   This0::#that() rcv32=this.#that()
   rcv32.#apply(that:this.from(), val:that)
-  )}}}
+  )}
+method toS() this.inner().toS()
+method is(subtype ) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This3.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This3.Bool.false()
+    void
+    )
+  
+  catch return This0::is(subtype )  result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+method classAny() This0
+method readableName() This3.GetMyName.#apply(that:This0)}}
 CodeEq:{
 class method 
 Library #apply() {implements This3.Concept.Equals
-Varpos__95_0:/*@private*/{
+Varpos__98_0:/*@private*/{
 class method 
 mut This0 #mutK(This4.N inner) 
 class method 
@@ -6292,7 +6475,7 @@ mut method
 This4.N #inner() 
 read method 
 This4.N inner() }
-Varpos0__96_0:/*@private*/{
+Varpos0__99_0:/*@private*/{
 class method 
 mut This0 #mutK(This4.N inner) 
 class method 
@@ -6303,7 +6486,7 @@ mut method
 This4.N #inner() 
 read method 
 This4.N inner() }
-Varpos1__97_0:/*@private*/{
+Varpos1__100_0:/*@private*/{
 class method 
 mut This0 #mutK(This4.N inner) 
 class method 
@@ -6762,7 +6945,7 @@ This3.N indexOfLeft(This0.Elem val) (
       Void unused1=b.#0()
       b
       ))
-    mut This0.Varpos__95_0 varpos=This0.Varpos__95_0.#apply(inner:pos)
+    mut This0.Varpos__98_0 varpos=This0.Varpos__98_0.#apply(inner:pos)
     Void unused0=loop (
       Void unused2=(
         This0::val(that ) ::equals(that ) cond=this.val(that:varpos.#inner()).equals(that:val)
@@ -6775,7 +6958,7 @@ This3.N indexOfLeft(This0.Elem val) (
           )
         )
       Void unused3=(
-        This0.Varpos__95_0::#inner() ::#rightequal(that ) cond0=varpos.#inner().#rightequal(that:size)
+        This0.Varpos__98_0::#inner() ::#rightequal(that ) cond0=varpos.#inner().#rightequal(that:size)
         (
           Void unused5=cond0.#checkTrue()
           
@@ -6812,7 +6995,7 @@ This3.N indexOfRight(This0.Elem val) (
       Void unused1=b.#1()
       b
       )))
-    mut This0.Varpos0__96_0 varpos0=This0.Varpos0__96_0.#apply(inner:pos)
+    mut This0.Varpos0__99_0 varpos0=This0.Varpos0__99_0.#apply(inner:pos)
     Void unused0=loop (
       Void unused2=(
         This0::val(that ) ::equals(that ) cond=this.val(that:varpos0.#inner()).equals(that:val)
@@ -6825,7 +7008,7 @@ This3.N indexOfRight(This0.Elem val) (
           )
         )
       Void unused3=(
-        This0.Varpos0__96_0::#inner() ::#leftequal(that ) cond0=varpos0.#inner().#leftequal(that:This3.N.#from(builder:(
+        This0.Varpos0__99_0::#inner() ::#leftequal(that ) cond0=varpos0.#inner().#leftequal(that:This3.N.#from(builder:(
           This3.N::#builder() b0=This3.N.#builder()
           Void unused5=b0.#0()
           b0
@@ -6986,7 +7169,7 @@ Void removeAll(This0.Elem val) (
       Void unused1=b.#0()
       b
       ))
-    mut This0.Varpos1__97_0 varpos1=This0.Varpos1__97_0.#apply(inner:pos)
+    mut This0.Varpos1__100_0 varpos1=This0.Varpos1__100_0.#apply(inner:pos)
     Void unused0=loop (
       Void unused2=(
         This0::val(that ) ::equals(that ) cond=this.val(that:varpos1.#inner()).equals(that:val)
@@ -6999,7 +7182,7 @@ Void removeAll(This0.Elem val) (
           )
         )
       Void unused3=(
-        This0.Varpos1__97_0::#inner() ::#rightequal(that ) cond0=varpos1.#inner().#rightequal(that:this.size())
+        This0.Varpos1__100_0::#inner() ::#rightequal(that ) cond0=varpos1.#inner().#rightequal(that:this.size())
         (
           Void unused5=cond0.#checkTrue()
           
@@ -7079,7 +7262,7 @@ Void removeRight(This0.Elem val) (
 CurlyBlock-Should be unreachable code
 */}
   )}}}
-Strings:{implements This1.Concept.Equals
+Strings:{implements This1.Concept.ToS, This1.Concept.Classable, This1.Concept.Equals
 class method 
 mut This0 #mutK(mut This1.Collections.MutListAny inner) 
 class method 
@@ -7970,7 +8153,42 @@ Void inner(This2.S that) (
   This0::#that() rcv32=this.#that()
   rcv32.#apply(that:this.from(), val:that)
   )}
-Varpos_$%9_0__98_0:/*@private*/{
+method toS() this.inner().toS()
+method is(subtype ) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This1.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This1.Bool.false()
+    void
+    )
+  
+  catch return This0::is(subtype )  result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+method classAny() This0
+method readableName() This1.GetMyName.#apply(that:This0)
+Varpos_$%9_0__101_0:/*@private*/{
 class method 
 mut This0 #mutK(This2.N inner) 
 class method 
@@ -7981,7 +8199,7 @@ mut method
 This2.N #inner() 
 read method 
 This2.N inner() }
-Varpos0_$%10_0__99_0:/*@private*/{
+Varpos0_$%10_0__102_0:/*@private*/{
 class method 
 mut This0 #mutK(This2.N inner) 
 class method 
@@ -7992,7 +8210,7 @@ mut method
 This2.N #inner() 
 read method 
 This2.N inner() }
-Varpos1_$%11_0__100_0:/*@private*/{
+Varpos1_$%11_0__103_0:/*@private*/{
 class method 
 mut This0 #mutK(This2.N inner) 
 class method 
@@ -8429,7 +8647,7 @@ This1.N indexOfLeft(This1.S val) (
       Void unused1=b.#0()
       b
       ))
-    mut This0.Varpos_$%9_0__98_0 varpos=This0.Varpos_$%9_0__98_0.#apply(inner:pos)
+    mut This0.Varpos_$%9_0__101_0 varpos=This0.Varpos_$%9_0__101_0.#apply(inner:pos)
     Void unused0=loop (
       Void unused2=(
         This0::val(that ) ::equals(that ) cond=this.val(that:varpos.#inner()).equals(that:val)
@@ -8442,7 +8660,7 @@ This1.N indexOfLeft(This1.S val) (
           )
         )
       Void unused3=(
-        This0.Varpos_$%9_0__98_0::#inner() ::#rightequal(that ) cond0=varpos.#inner().#rightequal(that:size)
+        This0.Varpos_$%9_0__101_0::#inner() ::#rightequal(that ) cond0=varpos.#inner().#rightequal(that:size)
         (
           Void unused5=cond0.#checkTrue()
           
@@ -8479,7 +8697,7 @@ This1.N indexOfRight(This1.S val) (
       Void unused1=b.#1()
       b
       )))
-    mut This0.Varpos0_$%10_0__99_0 varpos0=This0.Varpos0_$%10_0__99_0.#apply(inner:pos)
+    mut This0.Varpos0_$%10_0__102_0 varpos0=This0.Varpos0_$%10_0__102_0.#apply(inner:pos)
     Void unused0=loop (
       Void unused2=(
         This0::val(that ) ::equals(that ) cond=this.val(that:varpos0.#inner()).equals(that:val)
@@ -8492,7 +8710,7 @@ This1.N indexOfRight(This1.S val) (
           )
         )
       Void unused3=(
-        This0.Varpos0_$%10_0__99_0::#inner() ::#leftequal(that ) cond0=varpos0.#inner().#leftequal(that:This1.N.#from(builder:(
+        This0.Varpos0_$%10_0__102_0::#inner() ::#leftequal(that ) cond0=varpos0.#inner().#leftequal(that:This1.N.#from(builder:(
           This1.N::#builder() b0=This1.N.#builder()
           Void unused5=b0.#0()
           b0
@@ -8649,7 +8867,7 @@ Void removeAll(This1.S val) (
       Void unused1=b.#0()
       b
       ))
-    mut This0.Varpos1_$%11_0__100_0 varpos1=This0.Varpos1_$%11_0__100_0.#apply(inner:pos)
+    mut This0.Varpos1_$%11_0__103_0 varpos1=This0.Varpos1_$%11_0__103_0.#apply(inner:pos)
     Void unused0=loop (
       Void unused2=(
         This0::val(that ) ::equals(that ) cond=this.val(that:varpos1.#inner()).equals(that:val)
@@ -8662,7 +8880,7 @@ Void removeAll(This1.S val) (
           )
         )
       Void unused3=(
-        This0.Varpos1_$%11_0__100_0::#inner() ::#rightequal(that ) cond0=varpos1.#inner().#rightequal(that:this.size())
+        This0.Varpos1_$%11_0__103_0::#inner() ::#rightequal(that ) cond0=varpos1.#inner().#rightequal(that:this.size())
         (
           Void unused5=cond0.#checkTrue()
           
@@ -8748,7 +8966,7 @@ mut This0 #mutK()
 class method 
 This0 #apply() This0.#mutK()}
 Path:{implements This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Classable
-Varstr__101_0:/*@private*/{
+Varstr__104_0:/*@private*/{
 class method 
 mut This0 #mutK(This2.S inner) 
 class method 
@@ -9175,7 +9393,7 @@ mut This1.Strings names() (
         return This1.Strings.empty()
         )
       )
-    mut This0.Varstr__101_0 varstr=This0.Varstr__101_0.#apply(inner:str)
+    mut This0.Varstr__104_0 varstr=This0.Varstr__104_0.#apply(inner:str)
     Void unused1=varstr.inner(that:varstr.#inner().#plusplus(that:This1.S.#from(builder:(
       This1.S::#builder() b0=This1.S.#builder()
       Void unused9=b0.#dot()
@@ -9189,7 +9407,7 @@ mut This1.Strings names() (
           b1
           ))).#checkTrue()
         (
-          This0.Varstr__101_0::#inner() ::indexOfLeft(val ) pos=varstr.#inner().indexOfLeft(val:This1.S.#from(builder:(
+          This0.Varstr__104_0::#inner() ::indexOfLeft(val ) pos=varstr.#inner().indexOfLeft(val:This1.S.#from(builder:(
             This1.S::#builder() b2=This1.S.#builder()
             Void unused13=b2.#dot()
             b2
@@ -9352,7 +9570,7 @@ CurlyBlock-Should be unreachable code
 */}
   )}
 Selector:{implements This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Classable
-Varstr0__102_0:/*@private*/{
+Varstr0__105_0:/*@private*/{
 class method 
 mut This0 #mutK(This2.S inner) 
 class method 
@@ -9363,7 +9581,7 @@ mut method
 This2.S #inner() 
 read method 
 This2.S inner() }
-Vartot__103_0:/*@private*/{
+Vartot__106_0:/*@private*/{
 class method 
 mut This0 #mutK(This2.S inner) 
 class method 
@@ -9374,7 +9592,7 @@ mut method
 This2.S #inner() 
 read method 
 This2.S inner() }
-Varname__104_0:/*@private*/{
+Varname__107_0:/*@private*/{
 class method 
 mut This0 #mutK(This2.S inner) 
 class method 
@@ -9784,7 +10002,7 @@ method
 This1.Strings names() (
   Void unused=(
     This1.S str=this.toS()
-    mut This0.Varstr0__102_0 varstr0=This0.Varstr0__102_0.#apply(inner:str)
+    mut This0.Varstr0__105_0 varstr0=This0.Varstr0__105_0.#apply(inner:str)
     Void unused0=varstr0.inner(that:varstr0.#inner().#apply(start:varstr0.#inner().indexOfLeft(val:This1.S.#from(builder:(
       This1.S::#builder() b=This1.S.#builder()
       Void unused4=b.#oRound()
@@ -9804,7 +10022,7 @@ This1.Strings names() (
       ))))
     This1.Strings::empty() result=This1.Strings.empty()
     Void unused1=(
-      This0.Varstr0__102_0::#inner() ::#equalequal(that ) cond=varstr0.#inner().#equalequal(that:This1.S.#from(builder:(
+      This0.Varstr0__105_0::#inner() ::#equalequal(that ) cond=varstr0.#inner().#equalequal(that:This1.S.#from(builder:(
         This1.S::#builder() b3=This1.S.#builder()
         Void unused8=b3.#comma()
         b3
@@ -9824,7 +10042,7 @@ This1.Strings names() (
           b4
           ))).#checkTrue()
         (
-          This0.Varstr0__102_0::#inner() ::indexOfLeft(val ) pos=varstr0.#inner().indexOfLeft(val:This1.S.#from(builder:(
+          This0.Varstr0__105_0::#inner() ::indexOfLeft(val ) pos=varstr0.#inner().indexOfLeft(val:This1.S.#from(builder:(
             This1.S::#builder() b5=This1.S.#builder()
             Void unused13=b5.#comma()
             b5
@@ -9856,9 +10074,9 @@ class method
 This1.Selector fresh(This1.Selector that) (
   Void unused=(
     This1.S name=that.name()
-    mut This0.Varname__104_0 varname=This0.Varname__104_0.#apply(inner:name)
+    mut This0.Varname__107_0 varname=This0.Varname__107_0.#apply(inner:name)
     Void unused0=(
-      This0.Varname__104_0::#inner() ::#equalequal(that ) cond=varname.#inner().#equalequal(that:This1.S.#from(builder:(
+      This0.Varname__107_0::#inner() ::#equalequal(that ) cond=varname.#inner().#equalequal(that:This1.S.#from(builder:(
         This1.S::#builder() b=This1.S.#builder()
         b
         )))
@@ -9884,7 +10102,7 @@ This1.Selector fresh(This1.Selector that) (
       Void unused10=b1.#oRound()
       b1
       )))
-    mut This0.Vartot__103_0 vartot=This0.Vartot__103_0.#apply(inner:tot)
+    mut This0.Vartot__106_0 vartot=This0.Vartot__106_0.#apply(inner:tot)
     Void unused1=(
       This1.Selector::names() ::vals() n=that.names().vals()
       (
@@ -10716,7 +10934,7 @@ This3.Bool #bangequal(read This0 that) this.#equalequal(that:that).#bang()}}
 class method 
 Library enumTrait() {
 ParseFail:{implements This3.Guard.ParseFail, This3.Message
-Varres_$%12_0__105_0:/*@private*/{
+Varres_$%12_0__108_0:/*@private*/{
 class method 
 mut This0 #mutK(This4.S inner) 
 class method 
@@ -10822,7 +11040,7 @@ method toS() (
         )
       )
     This3.S res=This0.kind()
-    mut This0.Varres_$%12_0__105_0 varres=This0.Varres_$%12_0__105_0.#apply(inner:res)
+    mut This0.Varres_$%12_0__108_0 varres=This0.Varres_$%12_0__108_0.#apply(inner:res)
     Void unused1=(
       This0::toS() ::this::text() ::#bangequal(that ) cond0=this.text().#bangequal(that:This3.S.#from(builder:(
         This3.S::#builder() b=This3.S.#builder()
@@ -10861,13 +11079,13 @@ method toS() (
         )
       )
     Void unused2=return (
-      This0.Varres_$%12_0__105_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
-        This0.Varres_$%12_0__105_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
+      This0.Varres_$%12_0__108_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
+        This0.Varres_$%12_0__108_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
         Void unused20=b3.#add(that:this.cause().#get())
         b3
         ))
       rcv14.#from(builder:(
-        This0.Varres_$%12_0__105_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv14.#builder()
+        This0.Varres_$%12_0__108_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv14.#builder()
         Void unused21=b4.#cSquare()
         b4
         ))
@@ -11183,7 +11401,7 @@ This0 fromS(This3.S that) (
 CurlyBlock-Should be unreachable code
 */}
   )}
-List:{implements This3.Concept.Equals
+List:{implements This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals
 class method 
 mut This0 #mutK(mut This3.Collections.MutListAny inner) 
 class method 
@@ -12074,7 +12292,42 @@ Void inner(This2.Top that) (
   This0::#that() rcv32=this.#that()
   rcv32.#apply(that:this.from(), val:that)
   )}
-Varpos_$%13_0__106_0:/*@private*/{
+method toS() this.inner().toS()
+method is(subtype ) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This3.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This3.Bool.false()
+    void
+    )
+  
+  catch return This0::is(subtype )  result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+method classAny() This0
+method readableName() This3.GetMyName.#apply(that:This0)
+Varpos_$%13_0__109_0:/*@private*/{
 class method 
 mut This0 #mutK(This4.N inner) 
 class method 
@@ -12085,7 +12338,7 @@ mut method
 This4.N #inner() 
 read method 
 This4.N inner() }
-Varpos0_$%14_0__107_0:/*@private*/{
+Varpos0_$%14_0__110_0:/*@private*/{
 class method 
 mut This0 #mutK(This4.N inner) 
 class method 
@@ -12096,7 +12349,7 @@ mut method
 This4.N #inner() 
 read method 
 This4.N inner() }
-Varpos1_$%15_0__108_0:/*@private*/{
+Varpos1_$%15_0__111_0:/*@private*/{
 class method 
 mut This0 #mutK(This4.N inner) 
 class method 
@@ -12533,7 +12786,7 @@ This3.N indexOfLeft(This1.Top val) (
       Void unused1=b.#0()
       b
       ))
-    mut This0.Varpos_$%13_0__106_0 varpos=This0.Varpos_$%13_0__106_0.#apply(inner:pos)
+    mut This0.Varpos_$%13_0__109_0 varpos=This0.Varpos_$%13_0__109_0.#apply(inner:pos)
     Void unused0=loop (
       Void unused2=(
         This0::val(that ) ::equals(that ) cond=this.val(that:varpos.#inner()).equals(that:val)
@@ -12546,7 +12799,7 @@ This3.N indexOfLeft(This1.Top val) (
           )
         )
       Void unused3=(
-        This0.Varpos_$%13_0__106_0::#inner() ::#rightequal(that ) cond0=varpos.#inner().#rightequal(that:size)
+        This0.Varpos_$%13_0__109_0::#inner() ::#rightequal(that ) cond0=varpos.#inner().#rightequal(that:size)
         (
           Void unused5=cond0.#checkTrue()
           
@@ -12583,7 +12836,7 @@ This3.N indexOfRight(This1.Top val) (
       Void unused1=b.#1()
       b
       )))
-    mut This0.Varpos0_$%14_0__107_0 varpos0=This0.Varpos0_$%14_0__107_0.#apply(inner:pos)
+    mut This0.Varpos0_$%14_0__110_0 varpos0=This0.Varpos0_$%14_0__110_0.#apply(inner:pos)
     Void unused0=loop (
       Void unused2=(
         This0::val(that ) ::equals(that ) cond=this.val(that:varpos0.#inner()).equals(that:val)
@@ -12596,7 +12849,7 @@ This3.N indexOfRight(This1.Top val) (
           )
         )
       Void unused3=(
-        This0.Varpos0_$%14_0__107_0::#inner() ::#leftequal(that ) cond0=varpos0.#inner().#leftequal(that:This3.N.#from(builder:(
+        This0.Varpos0_$%14_0__110_0::#inner() ::#leftequal(that ) cond0=varpos0.#inner().#leftequal(that:This3.N.#from(builder:(
           This3.N::#builder() b0=This3.N.#builder()
           Void unused5=b0.#0()
           b0
@@ -12753,7 +13006,7 @@ Void removeAll(This1.Top val) (
       Void unused1=b.#0()
       b
       ))
-    mut This0.Varpos1_$%15_0__108_0 varpos1=This0.Varpos1_$%15_0__108_0.#apply(inner:pos)
+    mut This0.Varpos1_$%15_0__111_0 varpos1=This0.Varpos1_$%15_0__111_0.#apply(inner:pos)
     Void unused0=loop (
       Void unused2=(
         This0::val(that ) ::equals(that ) cond=this.val(that:varpos1.#inner()).equals(that:val)
@@ -12766,7 +13019,7 @@ Void removeAll(This1.Top val) (
           )
         )
       Void unused3=(
-        This0.Varpos1_$%15_0__108_0::#inner() ::#rightequal(that ) cond0=varpos1.#inner().#rightequal(that:this.size())
+        This0.Varpos1_$%15_0__111_0::#inner() ::#rightequal(that ) cond0=varpos1.#inner().#rightequal(that:this.size())
         (
           Void unused5=cond0.#checkTrue()
           
@@ -13330,7 +13583,7 @@ method introspectDocPath(path annotationN ) (
   result
   )}}
 Doc:{implements This2.Concept.ToS, This2.Concept.Classable
-VaraN__109_0:/*@private*/{
+VaraN__112_0:/*@private*/{
 class method 
 mut This0 #mutK(This3.N inner) 
 class method 
@@ -13513,7 +13766,7 @@ This3.Bool hasReferredClass() (
     ))))
   res
   )}
-Annotations:{
+Annotations:{implements This3.Concept.ToS, This3.Concept.Classable
 class method 
 mut This0 #mutK(mut This3.Collections.MutListAny inner) 
 class method 
@@ -14403,7 +14656,42 @@ mut method
 Void inner(This2.Annotation that) (
   This0::#that() rcv32=this.#that()
   rcv32.#apply(that:this.from(), val:that)
-  )}}
+  )}
+method toS() this.inner().toS()
+method is(subtype ) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This3.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This3.Bool.false()
+    void
+    )
+  
+  catch return This0::is(subtype )  result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+method classAny() This0
+method readableName() This3.GetMyName.#apply(that:This0)}
 class method 
 This0 #apply(Library that) (
   This0.Annotations res=(
@@ -14413,7 +14701,7 @@ This0 #apply(Library that) (
       Void unused0=b.#1()
       b
       ))
-    mut This0.VaraN__109_0 varaN=This0.VaraN__109_0.#apply(inner:aN)
+    mut This0.VaraN__112_0 varaN=This0.VaraN__112_0.#apply(inner:aN)
     Void unused=(
       Void unused1=loop (
         Void unused2=This2.Bool.true().#checkTrue()
@@ -14907,7 +15195,7 @@ CurlyBlock-Should be unreachable code
   result.#apply(root:root)
   )}
 Member:{interface implements This2.Concept.ToS, This2.Concept.Equals}
-Members:{implements This2.Concept.Equals
+Members:{implements This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals
 class method 
 mut This0 #mutK(mut This2.Collections.MutListAny inner) 
 class method 
@@ -15798,7 +16086,42 @@ Void inner(This2.Member that) (
   This0::#that() rcv32=this.#that()
   rcv32.#apply(that:this.from(), val:that)
   )}
-Varpos_$%19_0__110_0:/*@private*/{
+method toS() this.inner().toS()
+method is(subtype ) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This2.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This2.Bool.false()
+    void
+    )
+  
+  catch return This0::is(subtype )  result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+method classAny() This0
+method readableName() This2.GetMyName.#apply(that:This0)
+Varpos_$%19_0__113_0:/*@private*/{
 class method 
 mut This0 #mutK(This3.N inner) 
 class method 
@@ -15809,7 +16132,7 @@ mut method
 This3.N #inner() 
 read method 
 This3.N inner() }
-Varpos0_$%20_0__111_0:/*@private*/{
+Varpos0_$%20_0__114_0:/*@private*/{
 class method 
 mut This0 #mutK(This3.N inner) 
 class method 
@@ -15820,7 +16143,7 @@ mut method
 This3.N #inner() 
 read method 
 This3.N inner() }
-Varpos1_$%21_0__112_0:/*@private*/{
+Varpos1_$%21_0__115_0:/*@private*/{
 class method 
 mut This0 #mutK(This3.N inner) 
 class method 
@@ -16257,7 +16580,7 @@ This2.N indexOfLeft(This1.Member val) (
       Void unused1=b.#0()
       b
       ))
-    mut This0.Varpos_$%19_0__110_0 varpos=This0.Varpos_$%19_0__110_0.#apply(inner:pos)
+    mut This0.Varpos_$%19_0__113_0 varpos=This0.Varpos_$%19_0__113_0.#apply(inner:pos)
     Void unused0=loop (
       Void unused2=(
         This0::val(that ) ::equals(that ) cond=this.val(that:varpos.#inner()).equals(that:val)
@@ -16270,7 +16593,7 @@ This2.N indexOfLeft(This1.Member val) (
           )
         )
       Void unused3=(
-        This0.Varpos_$%19_0__110_0::#inner() ::#rightequal(that ) cond0=varpos.#inner().#rightequal(that:size)
+        This0.Varpos_$%19_0__113_0::#inner() ::#rightequal(that ) cond0=varpos.#inner().#rightequal(that:size)
         (
           Void unused5=cond0.#checkTrue()
           
@@ -16307,7 +16630,7 @@ This2.N indexOfRight(This1.Member val) (
       Void unused1=b.#1()
       b
       )))
-    mut This0.Varpos0_$%20_0__111_0 varpos0=This0.Varpos0_$%20_0__111_0.#apply(inner:pos)
+    mut This0.Varpos0_$%20_0__114_0 varpos0=This0.Varpos0_$%20_0__114_0.#apply(inner:pos)
     Void unused0=loop (
       Void unused2=(
         This0::val(that ) ::equals(that ) cond=this.val(that:varpos0.#inner()).equals(that:val)
@@ -16320,7 +16643,7 @@ This2.N indexOfRight(This1.Member val) (
           )
         )
       Void unused3=(
-        This0.Varpos0_$%20_0__111_0::#inner() ::#leftequal(that ) cond0=varpos0.#inner().#leftequal(that:This2.N.#from(builder:(
+        This0.Varpos0_$%20_0__114_0::#inner() ::#leftequal(that ) cond0=varpos0.#inner().#leftequal(that:This2.N.#from(builder:(
           This2.N::#builder() b0=This2.N.#builder()
           Void unused5=b0.#0()
           b0
@@ -16477,7 +16800,7 @@ Void removeAll(This1.Member val) (
       Void unused1=b.#0()
       b
       ))
-    mut This0.Varpos1_$%21_0__112_0 varpos1=This0.Varpos1_$%21_0__112_0.#apply(inner:pos)
+    mut This0.Varpos1_$%21_0__115_0 varpos1=This0.Varpos1_$%21_0__115_0.#apply(inner:pos)
     Void unused0=loop (
       Void unused2=(
         This0::val(that ) ::equals(that ) cond=this.val(that:varpos1.#inner()).equals(that:val)
@@ -16490,7 +16813,7 @@ Void removeAll(This1.Member val) (
           )
         )
       Void unused3=(
-        This0.Varpos1_$%21_0__112_0::#inner() ::#rightequal(that ) cond0=varpos1.#inner().#rightequal(that:this.size())
+        This0.Varpos1_$%21_0__115_0::#inner() ::#rightequal(that ) cond0=varpos1.#inner().#rightequal(that:this.size())
         (
           Void unused5=cond0.#checkTrue()
           
@@ -16571,7 +16894,7 @@ CurlyBlock-Should be unreachable code
 */}
   )}
 Method:{implements This1.Member, This2.Concept.Equals, This2.Concept.Classable
-VarpN__113_0:/*@private*/{
+VarpN__116_0:/*@private*/{
 class method 
 mut This0 #mutK(This3.N inner) 
 class method 
@@ -16868,7 +17191,7 @@ This1.Types parameterTypes() (
       Void unused2=b.#1()
       b
       ))
-    mut This0.VarpN__113_0 varpN=This0.VarpN__113_0.#apply(inner:pN)
+    mut This0.VarpN__116_0 varpN=This0.VarpN__116_0.#apply(inner:pN)
     Void unused0=(
       Void unused3=loop (
         Void unused4=This2.Bool.true().#checkTrue()
@@ -16991,7 +17314,7 @@ CurlyBlock-Should be unreachable code
   )
 method 
 This1.NestedClass root() this._root__64_0()}
-Methods:{implements This2.Concept.Equals
+Methods:{implements This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals
 class method 
 mut This0 #mutK(mut This2.Collections.MutListAny inner) 
 class method 
@@ -17882,7 +18205,42 @@ Void inner(This2.Method that) (
   This0::#that() rcv32=this.#that()
   rcv32.#apply(that:this.from(), val:that)
   )}
-Varpos_$%22_0__114_0:/*@private*/{
+method toS() this.inner().toS()
+method is(subtype ) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This2.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This2.Bool.false()
+    void
+    )
+  
+  catch return This0::is(subtype )  result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+method classAny() This0
+method readableName() This2.GetMyName.#apply(that:This0)
+Varpos_$%22_0__117_0:/*@private*/{
 class method 
 mut This0 #mutK(This3.N inner) 
 class method 
@@ -17893,7 +18251,7 @@ mut method
 This3.N #inner() 
 read method 
 This3.N inner() }
-Varpos0_$%23_0__115_0:/*@private*/{
+Varpos0_$%23_0__118_0:/*@private*/{
 class method 
 mut This0 #mutK(This3.N inner) 
 class method 
@@ -17904,7 +18262,7 @@ mut method
 This3.N #inner() 
 read method 
 This3.N inner() }
-Varpos1_$%24_0__116_0:/*@private*/{
+Varpos1_$%24_0__119_0:/*@private*/{
 class method 
 mut This0 #mutK(This3.N inner) 
 class method 
@@ -18341,7 +18699,7 @@ This2.N indexOfLeft(This1.Method val) (
       Void unused1=b.#0()
       b
       ))
-    mut This0.Varpos_$%22_0__114_0 varpos=This0.Varpos_$%22_0__114_0.#apply(inner:pos)
+    mut This0.Varpos_$%22_0__117_0 varpos=This0.Varpos_$%22_0__117_0.#apply(inner:pos)
     Void unused0=loop (
       Void unused2=(
         This0::val(that ) ::equals(that ) cond=this.val(that:varpos.#inner()).equals(that:val)
@@ -18354,7 +18712,7 @@ This2.N indexOfLeft(This1.Method val) (
           )
         )
       Void unused3=(
-        This0.Varpos_$%22_0__114_0::#inner() ::#rightequal(that ) cond0=varpos.#inner().#rightequal(that:size)
+        This0.Varpos_$%22_0__117_0::#inner() ::#rightequal(that ) cond0=varpos.#inner().#rightequal(that:size)
         (
           Void unused5=cond0.#checkTrue()
           
@@ -18391,7 +18749,7 @@ This2.N indexOfRight(This1.Method val) (
       Void unused1=b.#1()
       b
       )))
-    mut This0.Varpos0_$%23_0__115_0 varpos0=This0.Varpos0_$%23_0__115_0.#apply(inner:pos)
+    mut This0.Varpos0_$%23_0__118_0 varpos0=This0.Varpos0_$%23_0__118_0.#apply(inner:pos)
     Void unused0=loop (
       Void unused2=(
         This0::val(that ) ::equals(that ) cond=this.val(that:varpos0.#inner()).equals(that:val)
@@ -18404,7 +18762,7 @@ This2.N indexOfRight(This1.Method val) (
           )
         )
       Void unused3=(
-        This0.Varpos0_$%23_0__115_0::#inner() ::#leftequal(that ) cond0=varpos0.#inner().#leftequal(that:This2.N.#from(builder:(
+        This0.Varpos0_$%23_0__118_0::#inner() ::#leftequal(that ) cond0=varpos0.#inner().#leftequal(that:This2.N.#from(builder:(
           This2.N::#builder() b0=This2.N.#builder()
           Void unused5=b0.#0()
           b0
@@ -18561,7 +18919,7 @@ Void removeAll(This1.Method val) (
       Void unused1=b.#0()
       b
       ))
-    mut This0.Varpos1_$%24_0__116_0 varpos1=This0.Varpos1_$%24_0__116_0.#apply(inner:pos)
+    mut This0.Varpos1_$%24_0__119_0 varpos1=This0.Varpos1_$%24_0__119_0.#apply(inner:pos)
     Void unused0=loop (
       Void unused2=(
         This0::val(that ) ::equals(that ) cond=this.val(that:varpos1.#inner()).equals(that:val)
@@ -18574,7 +18932,7 @@ Void removeAll(This1.Method val) (
           )
         )
       Void unused3=(
-        This0.Varpos1_$%24_0__116_0::#inner() ::#rightequal(that ) cond0=varpos1.#inner().#rightequal(that:this.size())
+        This0.Varpos1_$%24_0__119_0::#inner() ::#rightequal(that ) cond0=varpos1.#inner().#rightequal(that:this.size())
         (
           Void unused5=cond0.#checkTrue()
           
@@ -18656,7 +19014,7 @@ CurlyBlock-Should be unreachable code
   )}
 NestedClass:{/*findMeNestedClass
 */implements This1.Member, This2.Concept.Equals, This2.Concept.Classable
-VarmN__117_0:/*@private*/{
+VarmN__120_0:/*@private*/{
 class method 
 mut This0 #mutK(This3.N inner) 
 class method 
@@ -18667,7 +19025,7 @@ mut method
 This3.N #inner() 
 read method 
 This3.N inner() }
-VartN__118_0:/*@private*/{
+VartN__121_0:/*@private*/{
 class method 
 mut This0 #mutK(This3.N inner) 
 class method 
@@ -18678,7 +19036,7 @@ mut method
 This3.N #inner() 
 read method 
 This3.N inner() }
-Varnew__119_0:/*@private*/{
+Varnew__122_0:/*@private*/{
 class method 
 mut This0 #mutK(This2.Types inner) 
 class method 
@@ -18689,7 +19047,7 @@ mut method
 This2.Types #inner() 
 read method 
 This2.Types inner() }
-Varresult__120_0:/*@private*/{
+Varresult__123_0:/*@private*/{
 class method 
 mut This0 #mutK(This2.Types inner) 
 class method 
@@ -18700,7 +19058,7 @@ mut method
 This2.Types #inner() 
 read method 
 This2.Types inner() }
-Varextra__121_0:/*@private*/{
+Varextra__124_0:/*@private*/{
 class method 
 mut This0 #mutK(This2.Types inner) 
 class method 
@@ -18711,7 +19069,7 @@ mut method
 This2.Types #inner() 
 read method 
 This2.Types inner() }
-Varresult0__122_0:/*@private*/{
+Varresult0__125_0:/*@private*/{
 class method 
 mut This0 #mutK(mut This2.Types inner) 
 class method 
@@ -18722,7 +19080,7 @@ mut method
 mut This2.Types #inner() 
 read method 
 read This2.Types inner() }
-VarhavePrivate__123_0:/*@private*/{
+VarhavePrivate__126_0:/*@private*/{
 class method 
 mut This0 #mutK(This3.Bool inner) 
 class method 
@@ -19520,7 +19878,7 @@ This1.Members members() (
     Void unused0=b.#1()
     b
     ))
-  mut This0.VarmN__117_0 varmN=This0.VarmN__117_0.#apply(inner:mN)
+  mut This0.VarmN__120_0 varmN=This0.VarmN__120_0.#apply(inner:mN)
   Void unused=(
     Void unused1=loop (
       Void unused2=This2.Bool.true().#checkTrue()
@@ -19790,7 +20148,7 @@ This1.Types implementedInterfaces() (
     Void unused0=b.#1()
     b
     ))
-  mut This0.VartN__118_0 vartN=This0.VartN__118_0.#apply(inner:tN)
+  mut This0.VartN__121_0 vartN=This0.VartN__121_0.#apply(inner:tN)
   Void unused=(
     Void unused1=loop (
       Void unused2=This2.Bool.true().#checkTrue()
@@ -19843,16 +20201,16 @@ This1.Types transitivelyImplementedInterfaces() (
   Void unused=(
     This1.Types result=this.removeDup__68_0(that:this.implementedInterfaces())
     This1.Types new=result
-    mut This0.Varresult__120_0 varresult=This0.Varresult__120_0.#apply(inner:result)
-    mut This0.Varnew__119_0 varnew=This0.Varnew__119_0.#apply(inner:new)
+    mut This0.Varresult__123_0 varresult=This0.Varresult__123_0.#apply(inner:result)
+    mut This0.Varnew__122_0 varnew=This0.Varnew__122_0.#apply(inner:new)
     Void unused0=loop (
       This1.Types extra=This1.Types.#from(seqBuilder:(
         This1.Types::#seqBuilder() b=This1.Types.#seqBuilder()
         b
         ))
-      mut This0.Varextra__121_0 varextra=This0.Varextra__121_0.#apply(inner:extra)
+      mut This0.Varextra__124_0 varextra=This0.Varextra__124_0.#apply(inner:extra)
       Void unused1=(
-        This0.Varnew__119_0::#inner() ::vals() t=varnew.#inner().vals()
+        This0.Varnew__122_0::#inner() ::vals() t=varnew.#inner().vals()
         (
           Void unused4=(
             Void unused5=(
@@ -19871,7 +20229,7 @@ This1.Types transitivelyImplementedInterfaces() (
                   )
                 
                 (
-                  This0.Varnew__119_0::#inner() ::vals() ::#inner() ::referencedPath() ::implementedInterfaces() impl=t.#inner().referencedPath().implementedInterfaces()
+                  This0.Varnew__122_0::#inner() ::vals() ::#inner() ::referencedPath() ::implementedInterfaces() impl=t.#inner().referencedPath().implementedInterfaces()
                   varextra.inner(that:varextra.#inner().#plusplus(that:this.remove__70_0(that:impl, from:varresult.#inner())))
                   )
                 )
@@ -19898,7 +20256,7 @@ This1.Types transitivelyImplementedInterfaces() (
           )
         )
       Void unused2=(
-        This0.Varextra__121_0::#inner() ::isEmpty() cond=varextra.#inner().isEmpty()
+        This0.Varextra__124_0::#inner() ::isEmpty() cond=varextra.#inner().isEmpty()
         (
           Void unused12=cond.#checkTrue()
           
@@ -20039,7 +20397,7 @@ method /*@private
       t.#close()
       )
     )
-  mut This0.Varresult0__122_0 varresult0=This0.Varresult0__122_0.#apply(inner:result)
+  mut This0.Varresult0__125_0 varresult0=This0.Varresult0__125_0.#apply(inner:result)
   varresult0.#inner()
   )
 method /*@private
@@ -20164,7 +20522,7 @@ method
 This1.Methods stateCandidate() (
   Void unused=(
     This2.Bool havePrivate=This2.Bool.false()
-    mut This0.VarhavePrivate__123_0 varhavePrivate=This0.VarhavePrivate__123_0.#apply(inner:havePrivate)
+    mut This0.VarhavePrivate__126_0 varhavePrivate=This0.VarhavePrivate__126_0.#apply(inner:havePrivate)
     This1.Methods::#from(seqBuilder ) absMethods=This1.Methods.#from(seqBuilder:(
       This1.Methods::#seqBuilder() b=This1.Methods.#seqBuilder()
       Void unused2=(
@@ -20231,7 +20589,7 @@ This1.Methods stateCandidate() (
       b
       ))
     Void unused0=(
-      This0.VarhavePrivate__123_0::#inner() ::#bang() cond0=varhavePrivate.#inner().#bang()
+      This0.VarhavePrivate__126_0::#inner() ::#bang() cond0=varhavePrivate.#inner().#bang()
       (
         Void unused14=cond0.#checkTrue()
         
@@ -20788,7 +21146,7 @@ This2.Bool isPrivate() (
 CurlyBlock-Should be unreachable code
 */}
   )}
-NestedClasses:{implements This2.Concept.Equals
+NestedClasses:{implements This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals
 class method 
 mut This0 #mutK(mut This2.Collections.MutListAny inner) 
 class method 
@@ -21679,7 +22037,42 @@ Void inner(This2.NestedClass that) (
   This0::#that() rcv32=this.#that()
   rcv32.#apply(that:this.from(), val:that)
   )}
-Varpos_$%25_0__124_0:/*@private*/{
+method toS() this.inner().toS()
+method is(subtype ) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This2.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This2.Bool.false()
+    void
+    )
+  
+  catch return This0::is(subtype )  result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+method classAny() This0
+method readableName() This2.GetMyName.#apply(that:This0)
+Varpos_$%25_0__127_0:/*@private*/{
 class method 
 mut This0 #mutK(This3.N inner) 
 class method 
@@ -21690,7 +22083,7 @@ mut method
 This3.N #inner() 
 read method 
 This3.N inner() }
-Varpos0_$%26_0__125_0:/*@private*/{
+Varpos0_$%26_0__128_0:/*@private*/{
 class method 
 mut This0 #mutK(This3.N inner) 
 class method 
@@ -21701,7 +22094,7 @@ mut method
 This3.N #inner() 
 read method 
 This3.N inner() }
-Varpos1_$%27_0__126_0:/*@private*/{
+Varpos1_$%27_0__129_0:/*@private*/{
 class method 
 mut This0 #mutK(This3.N inner) 
 class method 
@@ -22138,7 +22531,7 @@ This2.N indexOfLeft(This1.NestedClass val) (
       Void unused1=b.#0()
       b
       ))
-    mut This0.Varpos_$%25_0__124_0 varpos=This0.Varpos_$%25_0__124_0.#apply(inner:pos)
+    mut This0.Varpos_$%25_0__127_0 varpos=This0.Varpos_$%25_0__127_0.#apply(inner:pos)
     Void unused0=loop (
       Void unused2=(
         This0::val(that ) ::equals(that ) cond=this.val(that:varpos.#inner()).equals(that:val)
@@ -22151,7 +22544,7 @@ This2.N indexOfLeft(This1.NestedClass val) (
           )
         )
       Void unused3=(
-        This0.Varpos_$%25_0__124_0::#inner() ::#rightequal(that ) cond0=varpos.#inner().#rightequal(that:size)
+        This0.Varpos_$%25_0__127_0::#inner() ::#rightequal(that ) cond0=varpos.#inner().#rightequal(that:size)
         (
           Void unused5=cond0.#checkTrue()
           
@@ -22188,7 +22581,7 @@ This2.N indexOfRight(This1.NestedClass val) (
       Void unused1=b.#1()
       b
       )))
-    mut This0.Varpos0_$%26_0__125_0 varpos0=This0.Varpos0_$%26_0__125_0.#apply(inner:pos)
+    mut This0.Varpos0_$%26_0__128_0 varpos0=This0.Varpos0_$%26_0__128_0.#apply(inner:pos)
     Void unused0=loop (
       Void unused2=(
         This0::val(that ) ::equals(that ) cond=this.val(that:varpos0.#inner()).equals(that:val)
@@ -22201,7 +22594,7 @@ This2.N indexOfRight(This1.NestedClass val) (
           )
         )
       Void unused3=(
-        This0.Varpos0_$%26_0__125_0::#inner() ::#leftequal(that ) cond0=varpos0.#inner().#leftequal(that:This2.N.#from(builder:(
+        This0.Varpos0_$%26_0__128_0::#inner() ::#leftequal(that ) cond0=varpos0.#inner().#leftequal(that:This2.N.#from(builder:(
           This2.N::#builder() b0=This2.N.#builder()
           Void unused5=b0.#0()
           b0
@@ -22358,7 +22751,7 @@ Void removeAll(This1.NestedClass val) (
       Void unused1=b.#0()
       b
       ))
-    mut This0.Varpos1_$%27_0__126_0 varpos1=This0.Varpos1_$%27_0__126_0.#apply(inner:pos)
+    mut This0.Varpos1_$%27_0__129_0 varpos1=This0.Varpos1_$%27_0__129_0.#apply(inner:pos)
     Void unused0=loop (
       Void unused2=(
         This0::val(that ) ::equals(that ) cond=this.val(that:varpos1.#inner()).equals(that:val)
@@ -22371,7 +22764,7 @@ Void removeAll(This1.NestedClass val) (
           )
         )
       Void unused3=(
-        This0.Varpos1_$%27_0__126_0::#inner() ::#rightequal(that ) cond0=varpos1.#inner().#rightequal(that:this.size())
+        This0.Varpos1_$%27_0__129_0::#inner() ::#rightequal(that ) cond0=varpos1.#inner().#rightequal(that:this.size())
         (
           Void unused5=cond0.#checkTrue()
           
@@ -23112,7 +23505,7 @@ This2.Bool isPrimitive() (
     b1
     ))))
   )}
-Types:{
+Types:{implements This2.Concept.ToS, This2.Concept.Classable
 class method 
 mut This0 #mutK(mut This2.Collections.MutListAny inner) 
 class method 
@@ -24002,12 +24395,47 @@ mut method
 Void inner(This2.Type that) (
   This0::#that() rcv32=this.#that()
   rcv32.#apply(that:this.from(), val:that)
-  )}}
+  )}
+method toS() this.inner().toS()
+method is(subtype ) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This2.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This2.Bool.false()
+    void
+    )
+  
+  catch return This0::is(subtype )  result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+method classAny() This0
+method readableName() This2.GetMyName.#apply(that:This0)}
 Mdf:{/*Data is more than Solid, and Liquid, Gas, Plasma can be good methafores
 */implements This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable, This2.Concept.ToS/*may be Parsable?
 */
 ParseFail:{implements This3.Guard.ParseFail, This3.Message
-Varres_$%12_0__127_0:/*@private*/{
+Varres_$%12_0__130_0:/*@private*/{
 class method 
 mut This0 #mutK(This4.S inner) 
 class method 
@@ -24113,7 +24541,7 @@ method toS() (
         )
       )
     This3.S res=This0.kind()
-    mut This0.Varres_$%12_0__127_0 varres=This0.Varres_$%12_0__127_0.#apply(inner:res)
+    mut This0.Varres_$%12_0__130_0 varres=This0.Varres_$%12_0__130_0.#apply(inner:res)
     Void unused1=(
       This0::toS() ::this::text() ::#bangequal(that ) cond0=this.text().#bangequal(that:This3.S.#from(builder:(
         This3.S::#builder() b=This3.S.#builder()
@@ -24152,13 +24580,13 @@ method toS() (
         )
       )
     Void unused2=return (
-      This0.Varres_$%12_0__127_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
-        This0.Varres_$%12_0__127_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
+      This0.Varres_$%12_0__130_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
+        This0.Varres_$%12_0__130_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
         Void unused20=b3.#add(that:this.cause().#get())
         b3
         ))
       rcv14.#from(builder:(
-        This0.Varres_$%12_0__127_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv14.#builder()
+        This0.Varres_$%12_0__130_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv14.#builder()
         Void unused21=b4.#cSquare()
         b4
         ))
@@ -24206,7 +24634,7 @@ mut This3.S.SConcat #seqBuilder() This3.S.SConcat.#apply(old:this.text(), accumu
   This3.S::#builder() b=This3.S.#builder()
   b
   )))}
-List:{implements This3.Concept.Equals
+List:{implements This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals
 class method 
 mut This0 #mutK(mut This3.Collections.MutListAny inner) 
 class method 
@@ -25097,7 +25525,42 @@ Void inner(This2 that) (
   This0::#that() rcv32=this.#that()
   rcv32.#apply(that:this.from(), val:that)
   )}
-Varpos_$%13_0__128_0:/*@private*/{
+method toS() this.inner().toS()
+method is(subtype ) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This3.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This3.Bool.false()
+    void
+    )
+  
+  catch return This0::is(subtype )  result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+method classAny() This0
+method readableName() This3.GetMyName.#apply(that:This0)
+Varpos_$%13_0__131_0:/*@private*/{
 class method 
 mut This0 #mutK(This4.N inner) 
 class method 
@@ -25108,7 +25571,7 @@ mut method
 This4.N #inner() 
 read method 
 This4.N inner() }
-Varpos0_$%14_0__129_0:/*@private*/{
+Varpos0_$%14_0__132_0:/*@private*/{
 class method 
 mut This0 #mutK(This4.N inner) 
 class method 
@@ -25119,7 +25582,7 @@ mut method
 This4.N #inner() 
 read method 
 This4.N inner() }
-Varpos1_$%15_0__130_0:/*@private*/{
+Varpos1_$%15_0__133_0:/*@private*/{
 class method 
 mut This0 #mutK(This4.N inner) 
 class method 
@@ -25556,7 +26019,7 @@ This3.N indexOfLeft(This1 val) (
       Void unused1=b.#0()
       b
       ))
-    mut This0.Varpos_$%13_0__128_0 varpos=This0.Varpos_$%13_0__128_0.#apply(inner:pos)
+    mut This0.Varpos_$%13_0__131_0 varpos=This0.Varpos_$%13_0__131_0.#apply(inner:pos)
     Void unused0=loop (
       Void unused2=(
         This0::val(that ) ::equals(that ) cond=this.val(that:varpos.#inner()).equals(that:val)
@@ -25569,7 +26032,7 @@ This3.N indexOfLeft(This1 val) (
           )
         )
       Void unused3=(
-        This0.Varpos_$%13_0__128_0::#inner() ::#rightequal(that ) cond0=varpos.#inner().#rightequal(that:size)
+        This0.Varpos_$%13_0__131_0::#inner() ::#rightequal(that ) cond0=varpos.#inner().#rightequal(that:size)
         (
           Void unused5=cond0.#checkTrue()
           
@@ -25606,7 +26069,7 @@ This3.N indexOfRight(This1 val) (
       Void unused1=b.#1()
       b
       )))
-    mut This0.Varpos0_$%14_0__129_0 varpos0=This0.Varpos0_$%14_0__129_0.#apply(inner:pos)
+    mut This0.Varpos0_$%14_0__132_0 varpos0=This0.Varpos0_$%14_0__132_0.#apply(inner:pos)
     Void unused0=loop (
       Void unused2=(
         This0::val(that ) ::equals(that ) cond=this.val(that:varpos0.#inner()).equals(that:val)
@@ -25619,7 +26082,7 @@ This3.N indexOfRight(This1 val) (
           )
         )
       Void unused3=(
-        This0.Varpos0_$%14_0__129_0::#inner() ::#leftequal(that ) cond0=varpos0.#inner().#leftequal(that:This3.N.#from(builder:(
+        This0.Varpos0_$%14_0__132_0::#inner() ::#leftequal(that ) cond0=varpos0.#inner().#leftequal(that:This3.N.#from(builder:(
           This3.N::#builder() b0=This3.N.#builder()
           Void unused5=b0.#0()
           b0
@@ -25776,7 +26239,7 @@ Void removeAll(This1 val) (
       Void unused1=b.#0()
       b
       ))
-    mut This0.Varpos1_$%15_0__130_0 varpos1=This0.Varpos1_$%15_0__130_0.#apply(inner:pos)
+    mut This0.Varpos1_$%15_0__133_0 varpos1=This0.Varpos1_$%15_0__133_0.#apply(inner:pos)
     Void unused0=loop (
       Void unused2=(
         This0::val(that ) ::equals(that ) cond=this.val(that:varpos1.#inner()).equals(that:val)
@@ -25789,7 +26252,7 @@ Void removeAll(This1 val) (
           )
         )
       Void unused3=(
-        This0.Varpos1_$%15_0__130_0::#inner() ::#rightequal(that ) cond0=varpos1.#inner().#rightequal(that:this.size())
+        This0.Varpos1_$%15_0__133_0::#inner() ::#rightequal(that ) cond0=varpos1.#inner().#rightequal(that:this.size())
         (
           Void unused5=cond0.#checkTrue()
           
@@ -26277,7 +26740,7 @@ MethodKind:{/*Data is more than Solid, and Liquid, Gas, Plasma can be good metha
 */implements This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable, This2.Concept.ToS/*may be Parsable?
 */
 ParseFail:{implements This3.Guard.ParseFail, This3.Message
-Varres_$%12_0__131_0:/*@private*/{
+Varres_$%12_0__134_0:/*@private*/{
 class method 
 mut This0 #mutK(This4.S inner) 
 class method 
@@ -26383,7 +26846,7 @@ method toS() (
         )
       )
     This3.S res=This0.kind()
-    mut This0.Varres_$%12_0__131_0 varres=This0.Varres_$%12_0__131_0.#apply(inner:res)
+    mut This0.Varres_$%12_0__134_0 varres=This0.Varres_$%12_0__134_0.#apply(inner:res)
     Void unused1=(
       This0::toS() ::this::text() ::#bangequal(that ) cond0=this.text().#bangequal(that:This3.S.#from(builder:(
         This3.S::#builder() b=This3.S.#builder()
@@ -26422,13 +26885,13 @@ method toS() (
         )
       )
     Void unused2=return (
-      This0.Varres_$%12_0__131_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
-        This0.Varres_$%12_0__131_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
+      This0.Varres_$%12_0__134_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
+        This0.Varres_$%12_0__134_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
         Void unused20=b3.#add(that:this.cause().#get())
         b3
         ))
       rcv14.#from(builder:(
-        This0.Varres_$%12_0__131_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv14.#builder()
+        This0.Varres_$%12_0__134_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv14.#builder()
         Void unused21=b4.#cSquare()
         b4
         ))
@@ -26476,7 +26939,7 @@ mut This3.S.SConcat #seqBuilder() This3.S.SConcat.#apply(old:this.text(), accumu
   This3.S::#builder() b=This3.S.#builder()
   b
   )))}
-List:{implements This3.Concept.Equals
+List:{implements This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals
 class method 
 mut This0 #mutK(mut This3.Collections.MutListAny inner) 
 class method 
@@ -27367,7 +27830,42 @@ Void inner(This2 that) (
   This0::#that() rcv32=this.#that()
   rcv32.#apply(that:this.from(), val:that)
   )}
-Varpos_$%13_0__132_0:/*@private*/{
+method toS() this.inner().toS()
+method is(subtype ) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This3.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This3.Bool.false()
+    void
+    )
+  
+  catch return This0::is(subtype )  result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+method classAny() This0
+method readableName() This3.GetMyName.#apply(that:This0)
+Varpos_$%13_0__135_0:/*@private*/{
 class method 
 mut This0 #mutK(This4.N inner) 
 class method 
@@ -27378,7 +27876,7 @@ mut method
 This4.N #inner() 
 read method 
 This4.N inner() }
-Varpos0_$%14_0__133_0:/*@private*/{
+Varpos0_$%14_0__136_0:/*@private*/{
 class method 
 mut This0 #mutK(This4.N inner) 
 class method 
@@ -27389,7 +27887,7 @@ mut method
 This4.N #inner() 
 read method 
 This4.N inner() }
-Varpos1_$%15_0__134_0:/*@private*/{
+Varpos1_$%15_0__137_0:/*@private*/{
 class method 
 mut This0 #mutK(This4.N inner) 
 class method 
@@ -27826,7 +28324,7 @@ This3.N indexOfLeft(This1 val) (
       Void unused1=b.#0()
       b
       ))
-    mut This0.Varpos_$%13_0__132_0 varpos=This0.Varpos_$%13_0__132_0.#apply(inner:pos)
+    mut This0.Varpos_$%13_0__135_0 varpos=This0.Varpos_$%13_0__135_0.#apply(inner:pos)
     Void unused0=loop (
       Void unused2=(
         This0::val(that ) ::equals(that ) cond=this.val(that:varpos.#inner()).equals(that:val)
@@ -27839,7 +28337,7 @@ This3.N indexOfLeft(This1 val) (
           )
         )
       Void unused3=(
-        This0.Varpos_$%13_0__132_0::#inner() ::#rightequal(that ) cond0=varpos.#inner().#rightequal(that:size)
+        This0.Varpos_$%13_0__135_0::#inner() ::#rightequal(that ) cond0=varpos.#inner().#rightequal(that:size)
         (
           Void unused5=cond0.#checkTrue()
           
@@ -27876,7 +28374,7 @@ This3.N indexOfRight(This1 val) (
       Void unused1=b.#1()
       b
       )))
-    mut This0.Varpos0_$%14_0__133_0 varpos0=This0.Varpos0_$%14_0__133_0.#apply(inner:pos)
+    mut This0.Varpos0_$%14_0__136_0 varpos0=This0.Varpos0_$%14_0__136_0.#apply(inner:pos)
     Void unused0=loop (
       Void unused2=(
         This0::val(that ) ::equals(that ) cond=this.val(that:varpos0.#inner()).equals(that:val)
@@ -27889,7 +28387,7 @@ This3.N indexOfRight(This1 val) (
           )
         )
       Void unused3=(
-        This0.Varpos0_$%14_0__133_0::#inner() ::#leftequal(that ) cond0=varpos0.#inner().#leftequal(that:This3.N.#from(builder:(
+        This0.Varpos0_$%14_0__136_0::#inner() ::#leftequal(that ) cond0=varpos0.#inner().#leftequal(that:This3.N.#from(builder:(
           This3.N::#builder() b0=This3.N.#builder()
           Void unused5=b0.#0()
           b0
@@ -28046,7 +28544,7 @@ Void removeAll(This1 val) (
       Void unused1=b.#0()
       b
       ))
-    mut This0.Varpos1_$%15_0__134_0 varpos1=This0.Varpos1_$%15_0__134_0.#apply(inner:pos)
+    mut This0.Varpos1_$%15_0__137_0 varpos1=This0.Varpos1_$%15_0__137_0.#apply(inner:pos)
     Void unused0=loop (
       Void unused2=(
         This0::val(that ) ::equals(that ) cond=this.val(that:varpos1.#inner()).equals(that:val)
@@ -28059,7 +28557,7 @@ Void removeAll(This1 val) (
           )
         )
       Void unused3=(
-        This0.Varpos1_$%15_0__134_0::#inner() ::#rightequal(that ) cond0=varpos1.#inner().#rightequal(that:this.size())
+        This0.Varpos1_$%15_0__137_0::#inner() ::#rightequal(that ) cond0=varpos1.#inner().#rightequal(that:this.size())
         (
           Void unused5=cond0.#checkTrue()
           
@@ -28498,7 +28996,7 @@ ClassKind:{/*Data is more than Solid, and Liquid, Gas, Plasma can be good methaf
 */implements This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable, This2.Concept.ToS/*may be Parsable?
 */
 ParseFail:{implements This3.Guard.ParseFail, This3.Message
-Varres_$%12_0__135_0:/*@private*/{
+Varres_$%12_0__138_0:/*@private*/{
 class method 
 mut This0 #mutK(This4.S inner) 
 class method 
@@ -28604,7 +29102,7 @@ method toS() (
         )
       )
     This3.S res=This0.kind()
-    mut This0.Varres_$%12_0__135_0 varres=This0.Varres_$%12_0__135_0.#apply(inner:res)
+    mut This0.Varres_$%12_0__138_0 varres=This0.Varres_$%12_0__138_0.#apply(inner:res)
     Void unused1=(
       This0::toS() ::this::text() ::#bangequal(that ) cond0=this.text().#bangequal(that:This3.S.#from(builder:(
         This3.S::#builder() b=This3.S.#builder()
@@ -28643,13 +29141,13 @@ method toS() (
         )
       )
     Void unused2=return (
-      This0.Varres_$%12_0__135_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
-        This0.Varres_$%12_0__135_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
+      This0.Varres_$%12_0__138_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
+        This0.Varres_$%12_0__138_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
         Void unused20=b3.#add(that:this.cause().#get())
         b3
         ))
       rcv14.#from(builder:(
-        This0.Varres_$%12_0__135_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv14.#builder()
+        This0.Varres_$%12_0__138_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv14.#builder()
         Void unused21=b4.#cSquare()
         b4
         ))
@@ -28697,7 +29195,7 @@ mut This3.S.SConcat #seqBuilder() This3.S.SConcat.#apply(old:this.text(), accumu
   This3.S::#builder() b=This3.S.#builder()
   b
   )))}
-List:{implements This3.Concept.Equals
+List:{implements This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals
 class method 
 mut This0 #mutK(mut This3.Collections.MutListAny inner) 
 class method 
@@ -29588,7 +30086,42 @@ Void inner(This2 that) (
   This0::#that() rcv32=this.#that()
   rcv32.#apply(that:this.from(), val:that)
   )}
-Varpos_$%13_0__136_0:/*@private*/{
+method toS() this.inner().toS()
+method is(subtype ) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This3.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This3.Bool.false()
+    void
+    )
+  
+  catch return This0::is(subtype )  result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+method classAny() This0
+method readableName() This3.GetMyName.#apply(that:This0)
+Varpos_$%13_0__139_0:/*@private*/{
 class method 
 mut This0 #mutK(This4.N inner) 
 class method 
@@ -29599,7 +30132,7 @@ mut method
 This4.N #inner() 
 read method 
 This4.N inner() }
-Varpos0_$%14_0__137_0:/*@private*/{
+Varpos0_$%14_0__140_0:/*@private*/{
 class method 
 mut This0 #mutK(This4.N inner) 
 class method 
@@ -29610,7 +30143,7 @@ mut method
 This4.N #inner() 
 read method 
 This4.N inner() }
-Varpos1_$%15_0__138_0:/*@private*/{
+Varpos1_$%15_0__141_0:/*@private*/{
 class method 
 mut This0 #mutK(This4.N inner) 
 class method 
@@ -30047,7 +30580,7 @@ This3.N indexOfLeft(This1 val) (
       Void unused1=b.#0()
       b
       ))
-    mut This0.Varpos_$%13_0__136_0 varpos=This0.Varpos_$%13_0__136_0.#apply(inner:pos)
+    mut This0.Varpos_$%13_0__139_0 varpos=This0.Varpos_$%13_0__139_0.#apply(inner:pos)
     Void unused0=loop (
       Void unused2=(
         This0::val(that ) ::equals(that ) cond=this.val(that:varpos.#inner()).equals(that:val)
@@ -30060,7 +30593,7 @@ This3.N indexOfLeft(This1 val) (
           )
         )
       Void unused3=(
-        This0.Varpos_$%13_0__136_0::#inner() ::#rightequal(that ) cond0=varpos.#inner().#rightequal(that:size)
+        This0.Varpos_$%13_0__139_0::#inner() ::#rightequal(that ) cond0=varpos.#inner().#rightequal(that:size)
         (
           Void unused5=cond0.#checkTrue()
           
@@ -30097,7 +30630,7 @@ This3.N indexOfRight(This1 val) (
       Void unused1=b.#1()
       b
       )))
-    mut This0.Varpos0_$%14_0__137_0 varpos0=This0.Varpos0_$%14_0__137_0.#apply(inner:pos)
+    mut This0.Varpos0_$%14_0__140_0 varpos0=This0.Varpos0_$%14_0__140_0.#apply(inner:pos)
     Void unused0=loop (
       Void unused2=(
         This0::val(that ) ::equals(that ) cond=this.val(that:varpos0.#inner()).equals(that:val)
@@ -30110,7 +30643,7 @@ This3.N indexOfRight(This1 val) (
           )
         )
       Void unused3=(
-        This0.Varpos0_$%14_0__137_0::#inner() ::#leftequal(that ) cond0=varpos0.#inner().#leftequal(that:This3.N.#from(builder:(
+        This0.Varpos0_$%14_0__140_0::#inner() ::#leftequal(that ) cond0=varpos0.#inner().#leftequal(that:This3.N.#from(builder:(
           This3.N::#builder() b0=This3.N.#builder()
           Void unused5=b0.#0()
           b0
@@ -30267,7 +30800,7 @@ Void removeAll(This1 val) (
       Void unused1=b.#0()
       b
       ))
-    mut This0.Varpos1_$%15_0__138_0 varpos1=This0.Varpos1_$%15_0__138_0.#apply(inner:pos)
+    mut This0.Varpos1_$%15_0__141_0 varpos1=This0.Varpos1_$%15_0__141_0.#apply(inner:pos)
     Void unused0=loop (
       Void unused2=(
         This0::val(that ) ::equals(that ) cond=this.val(that:varpos1.#inner()).equals(that:val)
@@ -30280,7 +30813,7 @@ Void removeAll(This1 val) (
           )
         )
       Void unused3=(
-        This0.Varpos1_$%15_0__138_0::#inner() ::#rightequal(that ) cond0=varpos1.#inner().#rightequal(that:this.size())
+        This0.Varpos1_$%15_0__141_0::#inner() ::#rightequal(that ) cond0=varpos1.#inner().#rightequal(that:this.size())
         (
           Void unused5=cond0.#checkTrue()
           
@@ -30732,7 +31265,7 @@ may disappear
 */implements This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable, This2.Concept.ToS/*may be Parsable?
 */
 ParseFail:{implements This3.Guard.ParseFail, This3.Message
-Varres_$%12_0__139_0:/*@private*/{
+Varres_$%12_0__142_0:/*@private*/{
 class method 
 mut This0 #mutK(This4.S inner) 
 class method 
@@ -30838,7 +31371,7 @@ method toS() (
         )
       )
     This3.S res=This0.kind()
-    mut This0.Varres_$%12_0__139_0 varres=This0.Varres_$%12_0__139_0.#apply(inner:res)
+    mut This0.Varres_$%12_0__142_0 varres=This0.Varres_$%12_0__142_0.#apply(inner:res)
     Void unused1=(
       This0::toS() ::this::text() ::#bangequal(that ) cond0=this.text().#bangequal(that:This3.S.#from(builder:(
         This3.S::#builder() b=This3.S.#builder()
@@ -30877,13 +31410,13 @@ method toS() (
         )
       )
     Void unused2=return (
-      This0.Varres_$%12_0__139_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
-        This0.Varres_$%12_0__139_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
+      This0.Varres_$%12_0__142_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
+        This0.Varres_$%12_0__142_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
         Void unused20=b3.#add(that:this.cause().#get())
         b3
         ))
       rcv14.#from(builder:(
-        This0.Varres_$%12_0__139_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv14.#builder()
+        This0.Varres_$%12_0__142_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv14.#builder()
         Void unused21=b4.#cSquare()
         b4
         ))
@@ -30931,7 +31464,7 @@ mut This3.S.SConcat #seqBuilder() This3.S.SConcat.#apply(old:this.text(), accumu
   This3.S::#builder() b=This3.S.#builder()
   b
   )))}
-List:{implements This3.Concept.Equals
+List:{implements This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals
 class method 
 mut This0 #mutK(mut This3.Collections.MutListAny inner) 
 class method 
@@ -31822,7 +32355,42 @@ Void inner(This2 that) (
   This0::#that() rcv32=this.#that()
   rcv32.#apply(that:this.from(), val:that)
   )}
-Varpos_$%13_0__140_0:/*@private*/{
+method toS() this.inner().toS()
+method is(subtype ) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This3.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This3.Bool.false()
+    void
+    )
+  
+  catch return This0::is(subtype )  result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+method classAny() This0
+method readableName() This3.GetMyName.#apply(that:This0)
+Varpos_$%13_0__143_0:/*@private*/{
 class method 
 mut This0 #mutK(This4.N inner) 
 class method 
@@ -31833,7 +32401,7 @@ mut method
 This4.N #inner() 
 read method 
 This4.N inner() }
-Varpos0_$%14_0__141_0:/*@private*/{
+Varpos0_$%14_0__144_0:/*@private*/{
 class method 
 mut This0 #mutK(This4.N inner) 
 class method 
@@ -31844,7 +32412,7 @@ mut method
 This4.N #inner() 
 read method 
 This4.N inner() }
-Varpos1_$%15_0__142_0:/*@private*/{
+Varpos1_$%15_0__145_0:/*@private*/{
 class method 
 mut This0 #mutK(This4.N inner) 
 class method 
@@ -32281,7 +32849,7 @@ This3.N indexOfLeft(This1 val) (
       Void unused1=b.#0()
       b
       ))
-    mut This0.Varpos_$%13_0__140_0 varpos=This0.Varpos_$%13_0__140_0.#apply(inner:pos)
+    mut This0.Varpos_$%13_0__143_0 varpos=This0.Varpos_$%13_0__143_0.#apply(inner:pos)
     Void unused0=loop (
       Void unused2=(
         This0::val(that ) ::equals(that ) cond=this.val(that:varpos.#inner()).equals(that:val)
@@ -32294,7 +32862,7 @@ This3.N indexOfLeft(This1 val) (
           )
         )
       Void unused3=(
-        This0.Varpos_$%13_0__140_0::#inner() ::#rightequal(that ) cond0=varpos.#inner().#rightequal(that:size)
+        This0.Varpos_$%13_0__143_0::#inner() ::#rightequal(that ) cond0=varpos.#inner().#rightequal(that:size)
         (
           Void unused5=cond0.#checkTrue()
           
@@ -32331,7 +32899,7 @@ This3.N indexOfRight(This1 val) (
       Void unused1=b.#1()
       b
       )))
-    mut This0.Varpos0_$%14_0__141_0 varpos0=This0.Varpos0_$%14_0__141_0.#apply(inner:pos)
+    mut This0.Varpos0_$%14_0__144_0 varpos0=This0.Varpos0_$%14_0__144_0.#apply(inner:pos)
     Void unused0=loop (
       Void unused2=(
         This0::val(that ) ::equals(that ) cond=this.val(that:varpos0.#inner()).equals(that:val)
@@ -32344,7 +32912,7 @@ This3.N indexOfRight(This1 val) (
           )
         )
       Void unused3=(
-        This0.Varpos0_$%14_0__141_0::#inner() ::#leftequal(that ) cond0=varpos0.#inner().#leftequal(that:This3.N.#from(builder:(
+        This0.Varpos0_$%14_0__144_0::#inner() ::#leftequal(that ) cond0=varpos0.#inner().#leftequal(that:This3.N.#from(builder:(
           This3.N::#builder() b0=This3.N.#builder()
           Void unused5=b0.#0()
           b0
@@ -32501,7 +33069,7 @@ Void removeAll(This1 val) (
       Void unused1=b.#0()
       b
       ))
-    mut This0.Varpos1_$%15_0__142_0 varpos1=This0.Varpos1_$%15_0__142_0.#apply(inner:pos)
+    mut This0.Varpos1_$%15_0__145_0 varpos1=This0.Varpos1_$%15_0__145_0.#apply(inner:pos)
     Void unused0=loop (
       Void unused2=(
         This0::val(that ) ::equals(that ) cond=this.val(that:varpos1.#inner()).equals(that:val)
@@ -32514,7 +33082,7 @@ Void removeAll(This1 val) (
           )
         )
       Void unused3=(
-        This0.Varpos1_$%15_0__142_0::#inner() ::#rightequal(that ) cond0=varpos1.#inner().#rightequal(that:this.size())
+        This0.Varpos1_$%15_0__145_0::#inner() ::#rightequal(that ) cond0=varpos1.#inner().#rightequal(that:this.size())
         (
           Void unused5=cond0.#checkTrue()
           
@@ -35085,7 +35653,7 @@ CurlyBlock-Should be unreachable code
 */}
   )}
 Tools:{
-Varres0__143_0:/*@private*/{
+Varres0__146_0:/*@private*/{
 class method 
 mut This0 #mutK(Library inner) 
 class method 
@@ -35189,7 +35757,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 CanNotSpecializeOperation:{implements This3.MetaGuard, This3.Message
-Varres_$%31_0__144_0:/*@private*/{
+Varres_$%31_0__147_0:/*@private*/{
 class method 
 mut This0 #mutK(This4.S inner) 
 class method 
@@ -35295,7 +35863,7 @@ method toS() (
         )
       )
     This3.S res=This0.kind()
-    mut This0.Varres_$%31_0__144_0 varres=This0.Varres_$%31_0__144_0.#apply(inner:res)
+    mut This0.Varres_$%31_0__147_0 varres=This0.Varres_$%31_0__147_0.#apply(inner:res)
     Void unused1=(
       This0::toS() ::this::text() ::#bangequal(that ) cond0=this.text().#bangequal(that:This3.S.#from(builder:(
         This3.S::#builder() b=This3.S.#builder()
@@ -35334,13 +35902,13 @@ method toS() (
         )
       )
     Void unused2=return (
-      This0.Varres_$%31_0__144_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
-        This0.Varres_$%31_0__144_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
+      This0.Varres_$%31_0__147_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
+        This0.Varres_$%31_0__147_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
         Void unused20=b3.#add(that:this.cause().#get())
         b3
         ))
       rcv14.#from(builder:(
-        This0.Varres_$%31_0__144_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv14.#builder()
+        This0.Varres_$%31_0__147_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv14.#builder()
         Void unused21=b4.#cSquare()
         b4
         ))
@@ -35487,7 +36055,7 @@ class method /* maybe private
     read This0.T f() this.#0f()
     read method 
     This0.T #0f() }
-    mut This0.Varres0__143_0 varres0=This0.Varres0__143_0.#apply(inner:res)
+    mut This0.Varres0__146_0 varres0=This0.Varres0__146_0.#apply(inner:res)
     Void unused0=varres0.inner(that:This2.Refactor.compose(left:varres0.#inner(), right:that))
     Void unused1=varres0.inner(that:This2.Refactor.MakePrivateSelector.#apply(that:This2.Selector.#from(builder:(
       This2.Selector::#builder() b=This2.Selector.#builder()
@@ -35760,7 +36328,7 @@ mut method
 This2.Selector #dest() 
 read method 
 This2.Selector dest() }
-SrcDests:{
+SrcDests:{implements This2.Concept.ToS, This2.Concept.Classable
 class method 
 mut This0 #mutK(mut This2.Collections.MutListAny inner) 
 class method 
@@ -36650,8 +37218,43 @@ mut method
 Void inner(This2.SrcDest that) (
   This0::#that() rcv32=this.#that()
   rcv32.#apply(that:this.from(), val:that)
-  )}}
-Libs:{
+  )}
+method toS() this.inner().toS()
+method is(subtype ) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This2.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This2.Bool.false()
+    void
+    )
+  
+  catch return This0::is(subtype )  result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+method classAny() This0
+method readableName() This2.GetMyName.#apply(that:This0)}
+Libs:{implements This2.Concept.ToS, This2.Concept.Classable
 class method 
 mut This0 #mutK(mut This2.Collections.MutListAny inner) 
 class method 
@@ -37541,7 +38144,42 @@ mut method
 Void inner(Library that) (
   This0::#that() rcv32=this.#that()
   rcv32.#apply(that:this.from(), val:that)
-  )}}
+  )}
+method toS() this.inner().toS()
+method is(subtype ) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This2.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This2.Bool.false()
+    void
+    )
+  
+  catch return This0::is(subtype )  result result
+  
+  error {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+method classAny() This0
+method readableName() This2.GetMyName.#apply(that:This0)}
 class method /*@private
 */This0.SrcDests renameMap__74_0(Library that, This1.S prefix, This1.Introspection.NestedClasses intros) This0.SrcDests.#from(seqBuilder:(
   This0.SrcDests::#seqBuilder() b=This0.SrcDests.#seqBuilder()
@@ -37789,7 +38427,7 @@ CurlyBlock-Should be unreachable code
 class method 
 Library #leftleft(Library that) exception This1.MetaGuard.ClassClash, This1.MetaGuard.MethodClash This1.Refactor.compose(left:that, right:{/*members of each produced class
 */implements This1.$
-Varacc__145_0:/*@private*/{
+Varacc__148_0:/*@private*/{
 class method 
 mut This0 #mutK(Library inner) 
 class method 
@@ -37800,7 +38438,7 @@ mut method
 Library #inner() 
 read method 
 Library inner() }
-Varlibi__146_0:/*@private*/{
+Varlibi__149_0:/*@private*/{
 class method 
 mut This0 #mutK(Library inner) 
 class method 
@@ -37811,7 +38449,7 @@ mut method
 Library #inner() 
 read method 
 Library inner() }
-Varres1__147_0:/*@private*/{
+Varres1__150_0:/*@private*/{
 class method 
 mut This0 #mutK(Library inner) 
 class method 
@@ -37840,7 +38478,7 @@ Library #leftleft(Library that) exception This2.MetaGuard.ClassClash, This2.Meta
     This2.Introspection::#apply(lib ) i=This2.Introspection.#apply(lib:that)
     This1.SrcDests::empty() map=This1.SrcDests.empty()
     Library acc={}
-    mut This0.Varacc__145_0 varacc=This0.Varacc__145_0.#apply(inner:acc)
+    mut This0.Varacc__148_0 varacc=This0.Varacc__148_0.#apply(inner:acc)
     Void unused0=(
       This0::myLibs__75_0() ::vals() lib=this.myLibs__75_0().vals()
       (
@@ -37923,7 +38561,7 @@ Library #leftleft(Library that) exception This2.MetaGuard.ClassClash, This2.Meta
                             b2
                             ))
                           ), intros:i.transitivelyNestedClasses())
-                        mut This0.Varlibi__146_0 varlibi=This0.Varlibi__146_0.#apply(inner:libi)
+                        mut This0.Varlibi__149_0 varlibi=This0.Varlibi__149_0.#apply(inner:libi)
                         Void unused22=(
                           This1::renameMap__74_0(that prefix intros ) ::vals() ren=rens.vals()
                           (
@@ -38113,7 +38751,7 @@ Library foldLeft(Library resolver) exception This2.MetaGuard.ClassClash, This2.M
         )
       )
     Library res=this.myLibs__75_0().left()
-    mut This0.Varres1__147_0 varres1=This0.Varres1__147_0.#apply(inner:res)
+    mut This0.Varres1__150_0 varres1=This0.Varres1__150_0.#apply(inner:res)
     Void unused1=(
       This0::myLibs__75_0() ::withoutLeft() ::vals() libi=this.myLibs__75_0().withoutLeft().vals()
       (
@@ -38192,7 +38830,7 @@ method solveConflict(that location ) (
 CurlyBlock-Should be unreachable code
 */}
   )
-Varacc_$%40_0__148_0:/*@private*/{
+Varacc_$%40_0__151_0:/*@private*/{
 class method 
 mut This0 #mutK(Library inner) 
 class method 
@@ -38203,7 +38841,7 @@ mut method
 Library #inner() 
 read method 
 Library inner() }
-Varlibi_$%41_0__149_0:/*@private*/{
+Varlibi_$%41_0__152_0:/*@private*/{
 class method 
 mut This0 #mutK(Library inner) 
 class method 
@@ -38214,7 +38852,7 @@ mut method
 Library #inner() 
 read method 
 Library inner() }
-Varres1_$%42_0__150_0:/*@private*/{
+Varres1_$%42_0__153_0:/*@private*/{
 class method 
 mut This0 #mutK(Library inner) 
 class method 
@@ -38243,7 +38881,7 @@ Library #leftleft(Library that) exception This1.MetaGuard.ClassClash, This1.Meta
     This1.Introspection::#apply(lib ) i=This1.Introspection.#apply(lib:that)
     This1.PreferentialComposition.SrcDests::empty() map=This1.PreferentialComposition.SrcDests.empty()
     Library acc={}
-    mut This0.Varacc_$%40_0__148_0 varacc=This0.Varacc_$%40_0__148_0.#apply(inner:acc)
+    mut This0.Varacc_$%40_0__151_0 varacc=This0.Varacc_$%40_0__151_0.#apply(inner:acc)
     Void unused0=(
       This0::myLibs_$%38_0__77_0() ::vals() lib=this.myLibs_$%38_0__77_0().vals()
       (
@@ -38326,7 +38964,7 @@ Library #leftleft(Library that) exception This1.MetaGuard.ClassClash, This1.Meta
                             b2
                             ))
                           ), intros:i.transitivelyNestedClasses())
-                        mut This0.Varlibi_$%41_0__149_0 varlibi=This0.Varlibi_$%41_0__149_0.#apply(inner:libi)
+                        mut This0.Varlibi_$%41_0__152_0 varlibi=This0.Varlibi_$%41_0__152_0.#apply(inner:libi)
                         Void unused22=(
                           This1.PreferentialComposition::renameMap__74_0(that prefix intros ) ::vals() ren=rens.vals()
                           (
@@ -38516,7 +39154,7 @@ Library foldLeft(Library resolver) exception This1.MetaGuard.ClassClash, This1.M
         )
       )
     Library res=this.myLibs_$%38_0__77_0().left()
-    mut This0.Varres1_$%42_0__150_0 varres1=This0.Varres1_$%42_0__150_0.#apply(inner:res)
+    mut This0.Varres1_$%42_0__153_0 varres1=This0.Varres1_$%42_0__153_0.#apply(inner:res)
     Void unused1=(
       This0::myLibs_$%38_0__77_0() ::withoutLeft() ::vals() libi=this.myLibs_$%38_0__77_0().withoutLeft().vals()
       (
@@ -38595,7 +39233,7 @@ method solveConflict(that location ) (
 CurlyBlock-Should be unreachable code
 */}
   )
-Varacc_$%45_0__151_0:/*@private*/{
+Varacc_$%45_0__154_0:/*@private*/{
 class method 
 mut This0 #mutK(Library inner) 
 class method 
@@ -38606,7 +39244,7 @@ mut method
 Library #inner() 
 read method 
 Library inner() }
-Varlibi_$%46_0__152_0:/*@private*/{
+Varlibi_$%46_0__155_0:/*@private*/{
 class method 
 mut This0 #mutK(Library inner) 
 class method 
@@ -38617,7 +39255,7 @@ mut method
 Library #inner() 
 read method 
 Library inner() }
-Varres1_$%47_0__153_0:/*@private*/{
+Varres1_$%47_0__156_0:/*@private*/{
 class method 
 mut This0 #mutK(Library inner) 
 class method 
@@ -38646,7 +39284,7 @@ Library #leftleft(Library that) exception This1.MetaGuard.ClassClash, This1.Meta
     This1.Introspection::#apply(lib ) i=This1.Introspection.#apply(lib:that)
     This1.PreferentialComposition.SrcDests::empty() map=This1.PreferentialComposition.SrcDests.empty()
     Library acc={}
-    mut This0.Varacc_$%45_0__151_0 varacc=This0.Varacc_$%45_0__151_0.#apply(inner:acc)
+    mut This0.Varacc_$%45_0__154_0 varacc=This0.Varacc_$%45_0__154_0.#apply(inner:acc)
     Void unused0=(
       This0::myLibs_$%43_0__79_0() ::vals() lib=this.myLibs_$%43_0__79_0().vals()
       (
@@ -38729,7 +39367,7 @@ Library #leftleft(Library that) exception This1.MetaGuard.ClassClash, This1.Meta
                             b2
                             ))
                           ), intros:i.transitivelyNestedClasses())
-                        mut This0.Varlibi_$%46_0__152_0 varlibi=This0.Varlibi_$%46_0__152_0.#apply(inner:libi)
+                        mut This0.Varlibi_$%46_0__155_0 varlibi=This0.Varlibi_$%46_0__155_0.#apply(inner:libi)
                         Void unused22=(
                           This1.PreferentialComposition::renameMap__74_0(that prefix intros ) ::vals() ren=rens.vals()
                           (
@@ -38919,7 +39557,7 @@ Library foldLeft(Library resolver) exception This1.MetaGuard.ClassClash, This1.M
         )
       )
     Library res=this.myLibs_$%43_0__79_0().left()
-    mut This0.Varres1_$%47_0__153_0 varres1=This0.Varres1_$%47_0__153_0.#apply(inner:res)
+    mut This0.Varres1_$%47_0__156_0 varres1=This0.Varres1_$%47_0__156_0.#apply(inner:res)
     Void unused1=(
       This0::myLibs_$%43_0__79_0() ::withoutLeft() ::vals() libi=this.myLibs_$%43_0__79_0().withoutLeft().vals()
       (
@@ -38979,7 +39617,7 @@ CurlyBlock-Should be unreachable code
 */}
   )}
 Patch:{
-Varacc0__154_0:/*@private*/{
+Varacc0__157_0:/*@private*/{
 class method 
 mut This0 #mutK(Library inner) 
 class method 
@@ -39011,7 +39649,7 @@ Library #leftleft(Library that) exception This1.MetaGuard.ClassClash, This1.Meta
       )), intros:itr)
     This1.PreferentialComposition.SrcDests::empty() map=This1.PreferentialComposition.SrcDests.empty()
     Library acc=that
-    mut This0.Varacc0__154_0 varacc0=This0.Varacc0__154_0.#apply(inner:acc)
+    mut This0.Varacc0__157_0 varacc0=This0.Varacc0__157_0.#apply(inner:acc)
     Void unused0=(
       This0::renameMap__81_0(that prefix intros ) ::vals() ren=rens.vals()
       (
@@ -39262,7 +39900,7 @@ class method /*@private
   ))}
 Default:{
 DecorationUnfeasable:{implements This2.MetaGuard, This2.Message
-Varres_$%48_0__155_0:/*@private*/{
+Varres_$%48_0__158_0:/*@private*/{
 class method 
 mut This0 #mutK(This3.S inner) 
 class method 
@@ -39368,7 +40006,7 @@ method toS() (
         )
       )
     This2.S res=This0.kind()
-    mut This0.Varres_$%48_0__155_0 varres=This0.Varres_$%48_0__155_0.#apply(inner:res)
+    mut This0.Varres_$%48_0__158_0 varres=This0.Varres_$%48_0__158_0.#apply(inner:res)
     Void unused1=(
       This0::toS() ::this::text() ::#bangequal(that ) cond0=this.text().#bangequal(that:This2.S.#from(builder:(
         This2.S::#builder() b=This2.S.#builder()
@@ -39407,13 +40045,13 @@ method toS() (
         )
       )
     Void unused2=return (
-      This0.Varres_$%48_0__155_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
-        This0.Varres_$%48_0__155_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
+      This0.Varres_$%48_0__158_0::#inner() ::#from(seqBuilder ) rcv14=varres.#inner().#from(seqBuilder:(
+        This0.Varres_$%48_0__158_0::#inner() ::#seqBuilder() b3=varres.#inner().#seqBuilder()
         Void unused20=b3.#add(that:this.cause().#get())
         b3
         ))
       rcv14.#from(builder:(
-        This0.Varres_$%48_0__155_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv14.#builder()
+        This0.Varres_$%48_0__158_0::#inner() ::#from(seqBuilder ) ::#builder() b4=rcv14.#builder()
         Void unused21=b4.#cSquare()
         b4
         ))
@@ -39641,19 +40279,19 @@ read method /*(Any fileName)
 */This1.Url fileName() 
 class method 
 Library binaryReprFrom(Library lib) (
-  Library norm=use This0.SafeOperatorsAccess__156_0 check privateNormalize(that:lib) error {
+  Library norm=use This0.SafeOperatorsAccess__159_0 check privateNormalize(that:lib) error {
   class method 
   mut This0 #mutK() 
   class method 
   This0 privateNormalize() This0.#mutK()}
-  Library record=use This0.SafeOperatorsAccess__156_0 check introspectLibraryReport(that:norm, path:{/*@stringU
+  Library record=use This0.SafeOperatorsAccess__159_0 check introspectLibraryReport(that:norm, path:{/*@stringU
 This
 */}) error {
   class method 
   mut This0 #mutK() 
   class method 
   This0 introspectLibraryReport() This0.#mutK()}
-  use This0.SafeOperatorsAccess__156_0 check introspectLibraryDocAsString(that:record, path:{/*@stringU
+  use This0.SafeOperatorsAccess__159_0 check introspectLibraryDocAsString(that:record, path:{/*@stringU
 AllAsString
 */}, annotationN:{/*@int32
 0
@@ -39672,7 +40310,7 @@ Library #leftleft(Library that) (
   This0 fileDebug() This0.#mutK()}
   This1.ExitCode.normal()
   )
-SafeOperatorsAccess__156_0:/*@private
+SafeOperatorsAccess__159_0:/*@private
 */{/*@plugin
 L42.is/connected/withSafeOperators
 */}}

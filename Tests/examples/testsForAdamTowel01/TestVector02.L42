@@ -1,0 +1,17 @@
+{reuse L42.is/AdamTowel01
+
+// more external vector tests, stacked on top of Vector(...).toS() and Debut.expect()
+
+Main:{
+  s0 = Strings.empty()
+  Debug.test(s0.toS() expected:S"[]")
+  
+  s4 = Strings[S"a"; S"b"; S"c"; S"d"]
+  Debug.test(s4.toS() expected:S"[a; b; c; d]")
+  
+  Debug.test(S"Finished" expected: S"Finished")
+  
+  return ExitCode.normal()
+  }
+  
+}
