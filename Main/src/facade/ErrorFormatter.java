@@ -271,7 +271,7 @@ public class ErrorFormatter {
       if(exp instanceof ClassB){
         CachedStage stg = ((ClassB)exp).getStage();
         if(stg.getGivenName().isEmpty()){
-          cachedInfo+="anonimus";
+          cachedInfo+="anonymous";
         }
         else{ cachedInfo+="name: "+stg.getGivenName();}
         cachedInfo+=  " depends:[";
@@ -280,7 +280,7 @@ public class ErrorFormatter {
           if(cbd.getStage().getStage()==Stage.Less){cachedInfo+="-";}
           if(cbd.getStage().getStage()==Stage.Plus){cachedInfo+="+";}
           if(cbd.getStage().getGivenName().isEmpty()){
-            cachedInfo+="anonimus";
+            cachedInfo+="anonymous";
           }
           else {cachedInfo+=cbd.getStage().getGivenName();}
           cachedInfo  +=/*"{"+cbd.getStage().getStage().name()+"}"+*/", ";
