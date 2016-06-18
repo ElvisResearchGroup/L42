@@ -155,6 +155,9 @@ public class TestParseAndDoAst {
 },{"a**b**c","(a**(b**c))"
 },{"a**b**c**d","(a**(b**(c**d)))"
 },{"a**b**c**d**e","(a**(b**(c**(d**e))))"
+},{"a**b**c**d**e**f","(a**(b**(c**(d**(e**f)))))"
+},{"a<<b<<c<<d<<e","(a<<(b<<(c<<(d<<e))))"
+},{"a<<b<<c<<d<<e<<f","(a<<(b<<(c<<(d<<(e<<f)))))"
 //},{"a+ b -c","(a)" is this not giving error since it is captured later? how?
 },{"a*b < c+d","((a*b)<(c+d))"
 
@@ -266,22 +269,4 @@ public class TestParseAndDoAst {
       Parser.checkForBalancedParenthesis(s);
     }
   }
-  @RunWith(Parameterized.class)
-  public static class Test4_TermsToCore {
-    @Parameter(0) public String s;
-    @Parameterized.Parameters
-    public static List<Object[]> createData() {
-      return Arrays.asList(new Object[][] {
-  {"a"
-},{"a.m(x:a)"
-
-//},{"a.m(a)"ok to be wrong
-}});}
-  @Test
-  public void testOkToCore() {
-     Expression x = Parser.parse(null,s);
-    ast.ExpCore y=x.accept(new InjectionOnCore());
-    Assert.assertEquals(y.toString(),y.toString());
-  }
- }
 }

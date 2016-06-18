@@ -83,7 +83,7 @@ S:{
           if !this.chars().contains(that(index+r)) (return r)
           )
         //reached the end of the string
-        return that.size()
+        return that.size()-index
         }
       if negSkip>0This3.N (return 0This3.N-negSkip)
       //Assert.Holds[
@@ -94,7 +94,7 @@ S:{
         if this.chars().contains(that(index+r)) (return r)
         )
       //reached the end of the string
-      return that.size()
+      return that.size()-index
       }
     }
   method

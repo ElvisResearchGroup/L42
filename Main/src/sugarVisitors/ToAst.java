@@ -463,12 +463,18 @@ public class ToAst extends AbstractVisitor<Expression>{
       }
     return current;
     }
-  private Expression onNeedMakeRightAssociative(Expression.BinOp bop){
+  private Expression.BinOp onNeedMakeRightAssociative(Expression.BinOp bop){
     if(bop.getOp().leftAssociative){return bop;}
+    return makeRightAssociative(bop);
+  }
+  private Expression.BinOp makeRightAssociative(Expression.BinOp bop) {
     if(!(bop.getLeft() instanceof Expression.BinOp)){return bop;}
     Expression.BinOp left=(Expression.BinOp)bop.getLeft();
-    return left.withRight(bop.withLeft(left.getRight()));
-  }
+    left=onNeedMakeRightAssociative(left);
+    Expression.BinOp bop2=bop.withLeft(left.getRight());
+    bop2=makeRightAssociative(bop2);
+    return left.withRight(bop2);
+}
   private LinkedList<ParseTree> getStack(ParserRuleContext ctx){
       return (ctx.children!=null)?new LinkedList<ParseTree>(ctx.children):new LinkedList<ParseTree>();
   }

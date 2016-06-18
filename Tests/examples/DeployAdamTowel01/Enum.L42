@@ -25,22 +25,30 @@ SolidTrait:{class method Library (){//Data is more than Solid, and Liquid, Gas, 
   class method Library enumTrait() {
     ParseFail:Message.$<<{ implements Guard.ParseFail}
     Top: SafeOperatorsAccess.compose(left:SolidTrait() //Use[SolidTrait()]<<
-      right:{(N that) implements Concept.ToS
-      method toS()
-        This.readableName()++S"."++this.name()
-      method
-      S name()
-        This.names().val(this.that())
-      read method Bool ==(read This that) this.that()==that.that()
-      class method Strings names()
-      class method
-      This fromS(S that){
-        with n in 0N.vals(), d in This.names().vals() (
-          if d==that (return This(n))
-          )
-        error ParseFail"The provided string is not valid: "[that]""
-      }
-    })//end compose
+      right:{implements Concept.ToS
+        N inner
+        class method This(N inner)
+        //class method This(N that) This(inner:that) 
+       
+        method toS()
+          This.readableName()++S"."++this.name()
+       
+        method
+        S name()
+          This.names().val(this.inner())
+       
+        read method Bool ==(read This that) this.inner()==that.inner()
+       
+        class method Strings names()
+       
+        class method
+        This fromS(S that){
+          with n in 0N.vals(), d in This.names().vals() (
+            if d==that (return This(inner:n))
+            )
+          error ParseFail"The provided string is not valid: "[that]""
+        }
+      })//end compose
     List:Collections.vector(of:Top)
     //class method mut Set #seqBuilder() Set.empty()
     //class method Set #from(Set seqBuilder)seqBuilder

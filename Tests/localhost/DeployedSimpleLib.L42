@@ -1221,7 +1221,7 @@ mut method
 This2.S #msg() 
 read method 
 This2.S msg() }
-Tests:{
+Tests:{implements This2.Concept.ToS, This2.Concept.Classable
 class method 
 mut This0 #mutK(mut This2.Collections.MutListAny inner) 
 class method 
@@ -1434,7 +1434,7 @@ mut method
 Void #add(This2.Bool that) 
 read method 
 This2.S collapse() }}
-Strings:{implements This1.Concept.Equals
+Strings:{implements This1.Concept.ToS, This1.Concept.Classable, This1.Concept.Equals
 class method 
 mut This0 #mutK(mut This1.Collections.MutListAny inner) 
 class method 
@@ -2160,7 +2160,7 @@ method
 class Any referredClass() 
 method 
 This3.Bool hasReferredClass() }
-Annotations:{
+Annotations:{implements This3.Concept.ToS, This3.Concept.Classable
 class method 
 mut This0 #mutK(mut This3.Collections.MutListAny inner) 
 class method 
@@ -2443,7 +2443,7 @@ This1 _report() }
 class method 
 This1.Member dispatch(fwd This1.NestedClass root, This2.Path path, This1.MirrorPr mirror, This2.N memberN, Library record) }
 Member:{interface implements This2.Concept.ToS, This2.Concept.Equals}
-Members:{implements This2.Concept.Equals
+Members:{implements This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals
 class method 
 mut This0 #mutK(mut This2.Collections.MutListAny inner) 
 class method 
@@ -2713,7 +2713,7 @@ method
 This2.Bool isPrivate() 
 method 
 This1.NestedClass root() }
-Methods:{implements This2.Concept.Equals
+Methods:{implements This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals
 class method 
 mut This0 #mutK(mut This2.Collections.MutListAny inner) 
 class method 
@@ -3008,7 +3008,7 @@ method
 This2.Bool has(This2.Path fromRoot) 
 method 
 This2.Bool isPrivate() }
-NestedClasses:{implements This2.Concept.Equals
+NestedClasses:{implements This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals
 class method 
 mut This0 #mutK(mut This2.Collections.MutListAny inner) 
 class method 
@@ -3282,7 +3282,7 @@ method
 This2.Bool isLibrary() 
 method 
 This2.Bool isPrimitive() }
-Types:{
+Types:{implements This2.Concept.ToS, This2.Concept.Classable
 class method 
 mut This0 #mutK(mut This2.Collections.MutListAny inner) 
 class method 
@@ -3538,7 +3538,7 @@ method
 This1 #from(This4.S.SBuilder builder) }
 method 
 mut This3.S.SConcat #seqBuilder() }
-List:{implements This3.Concept.Equals
+List:{implements This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals
 class method 
 mut This0 #mutK(mut This3.Collections.MutListAny inner) 
 class method 
@@ -3787,14 +3787,10 @@ read method
 This2.Bool #equalequal(read This0 that) 
 read method 
 This2.Bool #bangequal(read This0 that) 
-class method 
-mut This0 #mutK(This2.N that) 
-class method 
-This0 #apply(This2.N that) 
-mut method 
-This2.N #that() 
 read method 
-This2.N that() 
+This2.N inner() 
+class method 
+This0 #apply(This2.N inner) 
 method 
 This2.S name() 
 class method 
@@ -3872,7 +3868,7 @@ method
 This1 #from(This4.S.SBuilder builder) }
 method 
 mut This3.S.SConcat #seqBuilder() }
-List:{implements This3.Concept.Equals
+List:{implements This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals
 class method 
 mut This0 #mutK(mut This3.Collections.MutListAny inner) 
 class method 
@@ -4121,14 +4117,10 @@ read method
 This2.Bool #equalequal(read This0 that) 
 read method 
 This2.Bool #bangequal(read This0 that) 
-class method 
-mut This0 #mutK(This2.N that) 
-class method 
-This0 #apply(This2.N that) 
-mut method 
-This2.N #that() 
 read method 
-This2.N that() 
+This2.N inner() 
+class method 
+This0 #apply(This2.N inner) 
 method 
 This2.S name() 
 class method 
@@ -4188,7 +4180,7 @@ method
 This1 #from(This4.S.SBuilder builder) }
 method 
 mut This3.S.SConcat #seqBuilder() }
-List:{implements This3.Concept.Equals
+List:{implements This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals
 class method 
 mut This0 #mutK(mut This3.Collections.MutListAny inner) 
 class method 
@@ -4437,14 +4429,10 @@ read method
 This2.Bool #equalequal(read This0 that) 
 read method 
 This2.Bool #bangequal(read This0 that) 
-class method 
-mut This0 #mutK(This2.N that) 
-class method 
-This0 #apply(This2.N that) 
-mut method 
-This2.N #that() 
 read method 
-This2.N that() 
+This2.N inner() 
+class method 
+This0 #apply(This2.N inner) 
 method 
 This2.S name() 
 class method 
@@ -4509,7 +4497,7 @@ method
 This1 #from(This4.S.SBuilder builder) }
 method 
 mut This3.S.SConcat #seqBuilder() }
-List:{implements This3.Concept.Equals
+List:{implements This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals
 class method 
 mut This0 #mutK(mut This3.Collections.MutListAny inner) 
 class method 
@@ -4758,14 +4746,10 @@ read method
 This2.Bool #equalequal(read This0 that) 
 read method 
 This2.Bool #bangequal(read This0 that) 
-class method 
-mut This0 #mutK(This2.N that) 
-class method 
-This0 #apply(This2.N that) 
-mut method 
-This2.N #that() 
 read method 
-This2.N that() 
+This2.N inner() 
+class method 
+This0 #apply(This2.N inner) 
 method 
 This2.S name() 
 class method 
@@ -5227,7 +5211,7 @@ class method
 Any cast() 
 class method 
 Any iterationTermination(This2.N from, This2.N minTo, This2.N size) }
-MutListAny:{
+MutListAny:{implements This2.Concept.ToS
 class method 
 mut This0 #mutK(This0.Cell head, This2.N size) 
 class method 
@@ -5425,7 +5409,7 @@ mut method
 This2.Selector #dest() 
 read method 
 This2.Selector dest() }
-SrcDests:{
+SrcDests:{implements This2.Concept.ToS, This2.Concept.Classable
 class method 
 mut This0 #mutK(mut This2.Collections.MutListAny inner) 
 class method 
@@ -5634,7 +5618,7 @@ mut method
 This3.N #minTo() 
 mut method 
 Void inner(This2.SrcDest that) }}
-Libs:{
+Libs:{implements This2.Concept.ToS, This2.Concept.Classable
 class method 
 mut This0 #mutK(mut This2.Collections.MutListAny inner) 
 class method 

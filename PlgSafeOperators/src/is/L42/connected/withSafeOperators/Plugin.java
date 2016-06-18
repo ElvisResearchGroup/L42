@@ -271,7 +271,7 @@ public class Plugin implements PluginType{
       ClassB lib=ensureExtractClassB(_lib);
       MethodSelector selector=MethodSelector.parse(ensureExtractStringU(_selector));
       ExpCore val=Revertable.doRevert(_that);//TODO: would go in loop for circular graphs?
-      val=From.from(val,Path.outer(Resources.getP().getInnerData().size()));
+      val=From.from(val,Path.outer(1));
       return LiftValue.liftValue(val,  selector, lib);
     }
 
