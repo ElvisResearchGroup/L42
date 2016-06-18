@@ -31,6 +31,7 @@ import platformSpecific.fakeInternet.ActionType;
 import platformSpecific.fakeInternet.PluginType;
 import platformSpecific.javaTranslation.Resources;
 import platformSpecific.javaTranslation.Resources.Revertable;
+import profiling.Timer;
 import sugarVisitors.ToFormattedText;
 
 //empty scheleton
@@ -38,13 +39,15 @@ public class Plugin implements PluginType{
 
     @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
     public Object Mcompose£xleft£xright(Object _left,Object _right){
-      ClassB left=ensureExtractClassB(_left);
-      ClassB right=ensureExtractClassB(_right);
-      try{return Sum.sum(Resources.getP(),left,right);
-      }catch(ArrayIndexOutOfBoundsException exc){
-        exc.printStackTrace();
-        throw exc;
-      }
+      return Timer.record("Mcompose£xleft£xright", ()-> {
+        ClassB left=ensureExtractClassB(_left);
+        ClassB right=ensureExtractClassB(_right);
+        try{return Sum.sum(Resources.getP(),left,right);
+        }catch(ArrayIndexOutOfBoundsException exc){
+          exc.printStackTrace();
+          throw exc;
+        }
+      });
       }
     @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
     public Object MrenameClass£xthat£xsrc£xdest(Object _that,Object _src,Object _dest){
