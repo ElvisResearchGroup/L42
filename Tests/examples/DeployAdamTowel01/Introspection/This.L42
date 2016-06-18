@@ -39,41 +39,41 @@ Types:Collections.vector(of:Type)
 
 Mdf:Enum<<{
   class method Strings names()Strings[S"Capsule";S"Mutable";S"Lent";S"Readable";S"Immutable";S"Class"]
-  class method This _Capsule() This(0N)
-  class method This _Mutable() This(1N)
-  class method This _Lent() This(2N)
-  class method This _Readable() This(3N)
-  class method This _Immutable() This(4N)
-  class method This _Class() This(5N)
+  class method This _Capsule() This(inner:0N)
+  class method This _Mutable() This(inner:1N)
+  class method This _Lent() This(inner:2N)
+  class method This _Readable() This(inner:3N)
+  class method This _Immutable() This(inner:4N)
+  class method This _Class() This(inner:5N)
 
-  method Bool isCapsule() this.that()==0N
-  method Bool isMutable() this.that()==1N
-  method Bool isLent() this.that()==2N
-  method Bool isReadable() this.that()==3N
-  method Bool isImmutable() this.that()==4N
-  method Bool isClass() this.that()==5N
+  method Bool isCapsule() this.inner()==0N
+  method Bool isMutable() this.inner()==1N
+  method Bool isLent() this.inner()==2N
+  method Bool isReadable() this.inner()==3N
+  method Bool isImmutable() this.inner()==4N
+  method Bool isClass() this.inner()==5N
   }
 
 MethodKind:Enum<<{
   class method Strings names()Strings[S"InterfaceImplementedMethod"; S"ImplementedMethod"; S"AbstractMethod"]
-  class method This _InterfaceImplementedMethod() This(0N)
-  class method This _ImplementedMethod() This(1N)
-  class method This _AbstractMethod() This(2N)
+  class method This _InterfaceImplementedMethod() This(inner:0N)
+  class method This _ImplementedMethod() This(inner:1N)
+  class method This _AbstractMethod() This(inner:2N)
   }
 
 ClassKind:Enum<<{
   class method Strings names()Strings[S"Interface";S"ClosedClass";S"OpenClass";S"Template";S"FreeTemplate";]
-  class method This _Interface() This(0N)
-  class method This _ClosedClass() This(1N)
-  class method This _OpenClass() This(2N)
-  class method This _Template() This(3N)
-  class method This _FreeTemplate() This(4N)
+  class method This _Interface() This(inner:0N)
+  class method This _ClosedClass() This(inner:1N)
+  class method This _OpenClass() This(inner:2N)
+  class method This _Template() This(inner:3N)
+  class method This _FreeTemplate() This(inner:4N)
   }
 
 TypeKind:Enum<<{//may disappear
   class method Strings names()Strings[S"Normal";S"Alias";S"AliasUnresolvable";]
-  class method This _Normal() This(0N)
-  class method This _Alias() This(1N)
-  class method This _AliasUnresolvable() This(2N)
+  class method This _Normal() This(inner:0N)
+  class method This _Alias() This(inner:1N)
+  class method This _AliasUnresolvable() This(inner:2N)
   }
 }

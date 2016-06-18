@@ -1,0 +1,23 @@
+{reuse L42.is/AdamTowel02
+TestCode:{
+  class method
+  Library () {method S foo() S"foo"}
+  }
+RT0:Extends[TestCode()]<<{method S foo()}
+
+R1:Resource<<TestCode()
+RT1:Extends[R1()]<<{method S foo()}
+
+R2:{RR:Resource<<TestCode()}
+R3:{RRA:{RRB:Resource<<TestCode()}}
+
+RT2:Refactor.compose(left:R2.RR(), right:{method S foo()})
+RTR:{RR:Extends[R2.RR()]<<{method S foo()} }
+
+
+Main:{
+  Debug(S"foo")
+  return ExitCode.normal()
+  }
+}
+

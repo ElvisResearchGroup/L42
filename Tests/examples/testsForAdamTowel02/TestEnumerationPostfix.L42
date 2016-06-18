@@ -21,7 +21,7 @@ Enumeration:{
   Selector numToSel(N that)
   exception InvalidElements{
     if that>=64N (exception InvalidElements"too many enumeration elements:"[that+1N]", max is 64")
-    return Selector.fromS(S"#"++that.toS())
+    return Selector.fromS(S"#"++that.toS()++S"()")
     }
   
   class method
@@ -39,7 +39,9 @@ Enumeration:{
     that.splitOn(chars:S", "++S.nl())
 
   class method 
-  Library traitMeth() (,{ (T inner)    
+  Library traitMeth() (,{
+    T inner
+    class method This(T inner)    
     T:{implements Concept.Equals
      class method T ord()
      }
@@ -51,9 +53,9 @@ Enumeration:{
   Library enumElem(N ord, S s)
   exception InvalidElements {
     sel=this.sToSel(s)
-    return Refactor.Rename.selector(\"ord" of: \"T" to:this.numToSel(ord))
-      <<Refactor.Rename.selector(\"n" to:sel)
-      <<Refactor.Rename.selector(\"n" to:sel.with(prefix:S"is"))
+    return Refactor.Rename.selector(\"ord()" of: \"T" to:this.numToSel(ord))
+      <<Refactor.Rename.selector(\"n()" to:sel)
+      <<Refactor.Rename.selector(\"isN()" to:sel.with(prefix:S"is"))
       <<this.traitMeth()
     catch exception InvalidElements e (exception e)
     error on MetaGuard Assert.CodeNotReachable""
@@ -64,7 +66,7 @@ Enumeration:{
     ss=this.sToSs(base.toS())
     res=Extends[EnumTrait()]
       <<Refactor.Redirect(Path"T" to:N)
-      <<(Extends[with ord in Range(0N), s in ss.vals() (
+      <<(Extends[with ord in Range(start:0N), s in ss.vals() (
         use[this.enumElem(ord:ord, s:s)]
         )]
       << Refactor.Rename.selector(\"#apply()" to:\"names()")
@@ -75,11 +77,17 @@ Enumeration:{
     }
   }
 Dir: Enumeration"left, right, top, down"
+      
 Main:{
-  Debug(Dir.left()==Dir.right())
+  Assert.Holds[
+    Dir.left()!=Dir.right();
+    Dir.top()!=Dir.right();
+    Dir.names().size()==4N
+    ]
   Debug(S"foo")
   return ExitCode.normal()
   }
+//bug in parser for many <<
 //reorganize refactor, add default for no path and /, done for rename
 /*
 1  Redirect:{ that->Path  that is Refactor.Redirect(\"T" to:N)

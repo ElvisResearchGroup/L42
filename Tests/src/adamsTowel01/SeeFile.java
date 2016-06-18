@@ -7,5 +7,5 @@ import org.junit.runners.Parameterized.Parameters;
 
 public class SeeFile extends helpers.SeeFile{
   @Parameters(name = "{index}:{0}")
-  public static List<Path[]> go() throws Throwable{return goInner();}
+  public static List<Object[]> go(){return goInner();}
 }
