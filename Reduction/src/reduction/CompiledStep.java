@@ -36,7 +36,9 @@ public class CompiledStep extends SmallStep{
       try{
         L42.compilationRounds++;
         System.out.println("Compilation Iteration-- "+nestedName+":"+L42.compilationRounds+ "");
+        Timer.activate("code.runMap");
         Object o=code.runMap();
+        Timer.deactivate("code.runMap");
         System.out.println("Compilation Iteration complete-- "+nestedName+":"+L42.compilationRounds+ "");
         assert o instanceof ClassB;
         return (ClassB)o;
