@@ -184,7 +184,23 @@ public  void _01_101Vector02() throws Throwable{
 public  void _01_11Annotation() throws Throwable{
   TestHelper.configureForTest();
   //new TestBase01()._01_00DeployAdamTowel01();
-  L42.main(new String[]{"examples/testsForAdamTowel01/TestAnnotations.L42"});
+  L42.main(new String[]{"examples/testsForAdamTowel01/TestParseAnnotations.L42"});
+  TestHelper.check42Fails(L42.record.toString());
+  }
+
+@Test
+public  void _01_12BadDecoration() throws Throwable{
+  TestHelper.configureForTest();
+  //new TestBase01()._01_00DeployAdamTowel01();
+  L42.main(new String[]{"examples/testsForAdamTowel01/TestParseBadDecoration.L42"});
+  TestHelper.check42Fails(L42.record.toString());
+  }
+
+@Test
+public  void _01_13NoBinding() throws Throwable{
+  TestHelper.configureForTest();
+  //new TestBase01()._01_00DeployAdamTowel01();
+  L42.main(new String[]{"examples/testsForAdamTowel01/TestParseNoBinding.L42"});
   TestHelper.check42Fails(L42.record.toString());
   }
 
