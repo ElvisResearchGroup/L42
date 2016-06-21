@@ -163,8 +163,9 @@ public class TestBase01 {
    TestHelper.configureForTest();
    //new TestBase01()._01_00DeployAdamTowel01();
    L42.main(new String[]{"examples/testsForAdamTowel01/TestVector.L42"});
-   Assert.assertEquals(L42.record.toString(),
-       "Hello-a@@b\nHello-a@@b\nHello-a#@@b#\nHello\na##\nb##\nHello-d\n");
+   TestHelper.check42Fails(L42.record.toString());
+//   Assert.assertEquals(L42.record.toString(),
+  //     "Hello-a@@b\nHello-a@@b\nHello-a#@@b#\nHello\na##\nb##\nHello-d\n");
    }
 @Test
 public  void _01_101Vector02() throws Throwable{
@@ -204,6 +205,25 @@ public  void _01_13NoBinding() throws Throwable{
   TestHelper.check42Fails(L42.record.toString());
   }
 
+@Test
+public  void _01_14Debug() throws Throwable{
+  // This test returns [FAIL] in its success case,
+  // so it needs to be tested for output content.
+  TestHelper.configureForTest();
+  //new TestBase01()._01_00DeployAdamTowel01();
+  L42.main(new String[]{"examples/testsForAdamTowel01/TestDebug.L42"});
+  Assert.assertEquals(L42.record.toString(),
+      "There should be an N after this message.\n"+
+      "12345\n"+
+      "There should be a [PASS] and a [FAIL] after this message.\n"+
+      "[PASS] : result\n"+
+      "[FAIL] : result != other\n"+
+      "[FAIL] This should be another failing test.: result != other\n"+
+      "[PASS] : result\n"+
+      "[FAIL] : result != other\n"+
+      "[FAIL] This one and the one above are expected to [FAIL].: result != other\n"+
+      "Done.\n");
+  }
 
 }
 

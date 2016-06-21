@@ -1,0 +1,23 @@
+{reuse L42.is/AdamTowel01
+
+Main: {
+  Debug(S"There should be an N after this message.")
+  Debug(12345N)
+  Debug(S"There should be a [PASS] and a [FAIL] after this message.")
+  Debug.test(S"result" expected:S"result")
+  Debug.test(S"result" expected:S"other")
+  Debug.test(S"result" expected:S"other" message:S"This should be another failing test.")
+  
+  // I seem to have decided that I want a list version of Debug.test,
+  // which should be possible because there's a way of making maps.
+  Debug.Test[
+    S"result" expected:S"result";
+    S"result" expected:S"other";
+    S"result" expected:S"other" message: S"This one and the one above are expected to [FAIL].";
+    ]
+    
+  Debug(S"Done.")
+  
+  return ExitCode.normal()
+  }
+}

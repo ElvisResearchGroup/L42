@@ -46,4 +46,18 @@
   class method
   Void test(read Concept.ToS that, read Concept.ToS expected)
     Debug.test(that,expected:expected, message:S"")
+  
+  Test:{
+    // Builder to look like a list and run a series of debug.test calls.
+    // Does not actually make an instance or store the list of calls anywhere :-)
+
+    class method class This #seqBuilder() This
+    class method Void #from(class This seqBuilder) void
+    
+    class method Void #add(read Concept.ToS that, read Concept.ToS expected)
+      Debug.test(that,expected:expected, message:S"")
+    
+    class method Void #add(read Concept.ToS that, read Concept.ToS expected,S message)
+      Debug.test(that expected:expected message:message)
+    }
   }

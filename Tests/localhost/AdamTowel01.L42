@@ -2306,7 +2306,21 @@ class method
 Void test(read This1.Concept.ToS that, read This1.Concept.ToS expected) This1.Debug.test(that:that, expected:expected, message:This1.S.#from(builder:(
   This1.S::#builder() b=This1.S.#builder()
   b
-  )))}
+  )))
+Test:{/* Builder to look like a list and run a series of debug.test calls.
+ Does not actually make an instance or store the list of calls anywhere :-)
+*/
+class method 
+class This0 #seqBuilder() This0
+class method 
+Void #from(class This0 seqBuilder) void
+class method 
+Void #add(read This2.Concept.ToS that, read This2.Concept.ToS expected) This2.Debug.test(that:that, expected:expected, message:This2.S.#from(builder:(
+  This2.S::#builder() b=This2.S.#builder()
+  b
+  )))
+class method 
+Void #add(read This2.Concept.ToS that, read This2.Concept.ToS expected, This2.S message) This2.Debug.test(that:that, expected:expected, message:message)}}
 Count:{
 class method /*@private
 */mut This0 #mutK__56_0(This1.N counter__56_0) 
