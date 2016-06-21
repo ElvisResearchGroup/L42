@@ -1,0 +1,121 @@
+{(N that)
+   implements Concept.ToS Concept.Equals
+
+  method is(subtype) {  with subtype (on class This return Bool.true()) return Bool.false()}
+  method readableName()GetMyName(This)
+
+  method toS() (
+    one=This(1N)
+    S"B"[with i in 0N.vals(upTo:32N) (
+      twoi=one<<(31N-i)
+      if (twoi & this) ==twoi ( use[S"1"] )
+      else (use[S"0"])
+    )]"")
+
+  class method
+  This fromS(Concept.ToS that) this.#from(builder:(
+    s=that.toS()
+    b=this.#builder()
+    with i in 0N.vals(upTo:s.size()) (
+      c=s(i)
+      if c==S"0" (b.#0())
+      else if c==S"1" (b.#1())
+      else error ParseFail
+        "BinaryFlag32 invalid character:["[c
+        ]"] contained in string:["[s]"]."
+      )
+    b
+    ))
+
+  class method
+  mut BBuilder #builder()
+    BBuilder.empty()
+
+  ParseFail:Message.$<<{ implements Guard.ParseFail}
+  BBuilder:{(var Library that, var N count)
+    class method
+    mut This empty()
+      This(0N.binaryRepr(),count:0N)
+
+    mut method Void #0() (
+      this.count(this.count()+1N)
+      this.that(use Alu
+        check leftShiftInt32(n1:this.that() n2:1N.binaryRepr())
+        error void)
+      )
+    mut method Void #1() (
+      this.#0()
+      this.that(use Alu
+        check orInt32(n1:this.that(), n2:1N.binaryRepr())
+        error void
+        )
+      )
+    }
+  class method
+  This #from(BBuilder builder) (
+    if builder.count()>32N (error ParseFail
+      "BinaryFlag32 too long:"[builder.count()]" bits was required."
+      )
+    This(N.#from(binaryRepr:builder.that()))
+    )
+
+  method//@private
+  This res(Library that) This(N.#from(binaryRepr:that))
+  method//@private
+  Library br() this.that().binaryRepr()
+  method
+  This &(This that) this.res(use Alu
+      check andInt32(n1:this.br() n2:that.br())
+      error void)
+  method
+  This |(This that) this.res(use Alu
+      check orInt32(n1:this.br() n2:that.br())
+      error void)
+  method
+  This <<(N that) this.res(use Alu
+      check leftShiftInt32(n1:this.br() n2:that.binaryRepr())
+      error void)
+  method
+  This >>(N that) this.res(use Alu
+      check rightShiftInt32(n1:this.br() n2:that.binaryRepr())
+      error void)
+  method
+  This xor(This that) this.res(use Alu
+      check xorInt32(n1:this.br() n2:that.br())
+      error void)
+  method
+  This ~() this.res(use Alu
+      check notInt32(n1:this.br())
+      error void)
+
+  method
+  Bool ==(This that) this.that()==that.that()
+
+  method equals(that){
+    with that (on This return this==that)
+    return Bool.false()
+    }
+
+  method
+  Bool <(This that) {
+    use Alu
+      check ifUInt32GrtDo(n1:this.br() n2:that.br())
+      return Bool.true()
+    return Bool.false()
+    }
+
+  method
+  Bool <=(This that) {
+    use Alu
+      check ifUInt32GEqDo(n1:this.br() n2:that.br())
+      return Bool.true()
+    return Bool.false()
+    }
+
+  method Bool !=(This that) !(this==that)
+
+  method Bool >(This that)  !(this<=that)
+
+
+  method Bool >=(This that) !(this<that)
+  }

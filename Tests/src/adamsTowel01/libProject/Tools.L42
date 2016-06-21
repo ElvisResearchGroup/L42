@@ -1,0 +1,44 @@
+{
+class method
+S getToSOrName(read Any that){
+  with that (
+    on Concept.ToS return that.toS()
+    on Concept.Classable return GetMyName(that.classAny())++S" instance"
+    default return S"instance not ToS or Classable"
+    )
+  }
+
+  CanNotSpecializeOperation:Message.$<<{ implements MetaGuard}
+  class method
+  Library specializeField(Selector selector, Introspection.Type type, Library forReadable, Library forClass)
+  exception CanNotSpecializeOperation {
+    if type.mdf().equals(\class._Class()) (
+      return this.specialize(forClass,selector:selector,type:type)
+      )
+    if type.mdf().equals(\class._Immutable()) (
+      return this.specialize(this.readToImm(forReadable),selector:selector,type:type)
+      )
+    return this.specialize(forReadable,selector:selector,type:type)
+    }
+   class method // maybe private
+   Library specialize(Library that, Selector selector, Introspection.Type type)
+   exception CanNotSpecializeOperation {
+    return Refactor.Redirect(Path"T" toType: type)<<Refactor.RenameSelector(Selector"f()" of:Path"This" to:selector)<<that
+    exception on MetaGuard CanNotSpecializeOperation"Unfit operation"
+    }
+  class method // maybe private
+  Library readToImm(Library that)
+  exception CanNotSpecializeOperation {
+    var Library res={
+      T:{}
+      read method read T f() this.#0f()
+      read method T #0f()
+      }
+    res:=Refactor.compose(left:res,right:that)
+    res:=Refactor.MakePrivateSelector(Selector"f()" of:Path"This")<<res
+    res:=Refactor.RenameSelector(Selector"#0f()" of:Path"This" to:Selector"f()")<<res
+    exception on MetaGuard CanNotSpecializeOperation"Unfit operation"
+    return res
+    }
+
+}

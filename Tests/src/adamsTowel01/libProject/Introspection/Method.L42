@@ -1,0 +1,84 @@
+{(fwd NestedClass _root,Path path,N memberN,Record record) implements Member,Concept.Equals, Concept.Classable //@private
+
+method is(subtype) {  with subtype (on class This return Bool.true()) return Bool.false()}
+method classAny() This
+method readableName()GetMyName(This)
+method toS() This.readableName()++S"["[this.allAsString()]"]"
+method Bool ==(This that){
+  if this.path()!=that.path() (return Bool.false())
+  if this.memberN()!=this.memberN() (return Bool.false())
+  return this.root()==that.root()
+  }
+method Bool != (This that) !(this==that)
+method equals(that){
+  with that (on This return this==that)
+  return Bool.false()
+  }
+
+method
+Doc doc()
+  this.record().docOf(path:Path"MemberDoc")
+
+method
+Mdf thisMdf()
+  Mdf.fromS(this.record()"ThisMdf")
+
+method // invariant NestedClass(...).nestedClassFromRoot(path).pathFromRoot()==path
+Path pathFromRoot()
+  this.path()
+
+
+method
+Selector selector()
+  Selector.fromS(this.record()"Key")
+
+method
+MethodKind methodKind()
+  MethodKind.fromS(this.record()"MemberKind")
+
+method
+S allAsString()
+  this.record()"AllAsString"
+
+method
+Type returnType() {
+  return this.root().mirror().introspectReportType(
+    root:this.root(),
+    path:this.path(),
+    memberN:this.memberN(),
+    typeN:0N)
+  catch exception MetaGuard.MemberUnavailable x error Assert.CodeNotReachable"Method1"(x)
+  catch exception Void  error Assert.CodeNotReachable"void was thrown"
+  }
+
+
+
+method
+Types exceptions() error Assert.NotImplementedYet""
+
+method
+Types parameterTypes() {
+  result=Types.empty()
+  var N pN=1N
+  while Bool.true() (// to be able to break
+    Type ti=this.root().mirror()
+      .introspectReportType(root:this.root(),
+      path:this.pathFromRoot(),memberN:this.memberN(),typeN:pN)
+    result.add(right:ti)
+    pN+=1N
+    )
+  return result
+  catch exception MetaGuard.MemberUnavailable err error Assert.CodeNotReachable"Method2"(err)
+  }
+
+method
+Bool isPrivate() {
+  with ann in this.doc().annotations().vals() (
+    if ann.toS()==S"private" (return Bool.true())
+    )
+  return Bool.false()
+  }
+method
+NestedClass root()this._root()
+}
+

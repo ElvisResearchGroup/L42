@@ -1,0 +1,140 @@
+{  (mut MutListAny inner)
+implements Concept.ToS Concept.Classable
+class method This #immK(MutListAny inner)
+class method mut This empty() This(inner:MutListAny.empty())
+class method mut This #seqBuilder() this.empty()
+class method mut This #from(mut This seqBuilder) seqBuilder
+mut method Void #add(Elem that) this.add(right:that)
+
+Elem:{}
+class method Elem cast(Any that) {with that (on Elem return that   default error CollectionErrors.cast())}
+
+//#################READ METHODS
+read method  mut This reverse() (
+  result=This.empty()
+  with e in this.vals()  (result.add(left:e))
+  result
+  )
+
+read method N size() this.inner().size()
+read method Bool isEmpty() this.size()==0N
+read method  Elem val(N that) This.cast(this.inner().val(that) )
+read method  Elem left() This.cast(this.inner().val(0N) )
+read method  Elem right() This.cast(this.inner().val(\size-1N) )
+
+//#################MUT METHODS
+mut method  Void (N that,Elem val) this.#inner()(that, val:val)
+mut method  Void left(Elem that) this.#inner()(0N,val:that)
+mut method  Void right(Elem that) this.#inner()(\size-1N,val:that)
+
+mut method  Void add(N that, Elem val) this.#inner().add(that,val:val)
+mut method  Void add(Elem right) this.#inner().add(\size,val:right)
+mut method  Void add(Elem left) this.#inner().add(0N,val:left)
+
+mut method  Void remove(N that) this.#inner().remove(that)
+mut method  Void removeLeft() this.remove(0N)
+mut method  Void removeRight() this.remove(this.size()-1N)
+
+
+//#################OPERATORS
+method
+This +(Elem that) this.withAlso(\size,val:that)
+
+method
+This ++(This that){
+  mut This res=This.empty()
+  with e in this.vals() (res.add(right:e))
+  with e in that.vals() (res.add(right:e))
+  return res
+  }
+
+
+
+//#################Withs
+
+method
+This with(N that, Elem val)
+  This.#immK(inner:this.inner().with(that,val:val))
+
+method
+This withLeft(Elem that)
+  this.with(0N, val:that)
+
+method
+This withRight(Elem that)
+  this.with(this.size()-1N, val:that)
+
+//insertion
+method
+This withAlso(N that, Elem val)
+  This.#immK(inner:this.inner().withAlso(that,val:val))
+
+method
+This withAlsoLeft(Elem that)
+  this.withAlso(0N, val:that)
+
+method
+This withAlsoRight(Elem that)
+  this.withAlso(this.size(), val:that)
+
+
+//skipping/filtering
+method
+This without(N index)
+  This.#immK(inner:this.inner().without(index))
+
+method
+This withoutLeft()
+  this.without(index:0N)
+
+method
+This withoutRight()
+  this.without(index:this.size()-1N)
+
+
+
+//################# Iterators
+IteratorTrait:{class method Library () ...}
+
+//first chunk, no fill
+read method  lent IteratorVal vals(N from, N maxTo, N minTo) IteratorVal(this.inner(), from:from,maxTo:maxTo,minTo:minTo)
+read method lent IteratorVal vals(N minTo) this.vals(from:N"-1", maxTo:N"-2", minTo:minTo)
+read method lent IteratorVal vals(N from, N to) this.vals(from:from, maxTo:to, minTo:this.inner().size() )
+read method lent IteratorVal vals() this.vals(from:N"-1", maxTo:N"-2", minTo:this.inner().size() )
+
+IteratorVal: SafeOperatorsAccess.compose(left:IteratorTrait(),
+   right:  { (read MutListAny that, var N from, N maxTo, N minTo)
+     read method Bool isFill() Bool.false()
+     read method Elem filled() error Assert.CodeNotReachable"Filled called on not fill iterator, should never happen"
+     } )
+//now with fill
+read method  lent IteratorValFill vals(N from, N maxTo, N minTo, Elem filled) IteratorValFill(this.inner(), from:from,maxTo:maxTo,minTo:minTo, filled:filled)
+read method lent IteratorValFill vals(N minTo, Elem filled) this.vals(from:N"-1", maxTo:N"-2", minTo:minTo, filled:filled)
+read method lent IteratorValFill vals(N from, N to, Elem filled) this.vals(from:from, maxTo:to, minTo:this.inner().size(), filled:filled )
+read method lent IteratorValFill vals(Elem filled) this.vals(from:N"-1", maxTo:N"-2", minTo:this.inner().size(), filled:filled )
+
+IteratorValFill: SafeOperatorsAccess.compose(left:IteratorTrait(),
+   right:  { (read MutListAny that, var N from, N maxTo, N minTo, Elem filled)
+     read method Bool isFill() Bool.true()
+     } )
+
+
+mut method  lent IteratorVar #vals(N from, N maxTo, N minTo) IteratorVar(this.#inner(), from:from,maxTo:maxTo,minTo:minTo)
+mut method lent IteratorVar #vals(N minTo) this.#vals(from:N"-1", maxTo:N"-2", minTo:minTo)
+mut method lent IteratorVar #vals(N from, N to) this.#vals(from:from, maxTo:to, minTo:this.inner().size() )
+mut method lent IteratorVar #vals() this.#vals(from:0N-1N, maxTo:N"-2", minTo:this.inner().size() )
+
+IteratorVar: SafeOperatorsAccess.compose(left:IteratorTrait(),
+  right:  { (mut MutListAny that, var N from, N maxTo, N minTo)
+    mut method Void inner(Elem that) this.#that()(this.from(),val:that)
+    read method Bool isFill() Bool.false()
+    read method Elem filled() error Assert.CodeNotReachable"Filled called on not fill iterator, should never happen"
+    })
+//################# Interfaces implemented
+  method toS()
+    this.inner().toS()
+  
+  method is(subtype) {  with subtype (on class This return Bool.true()) return Bool.false()}
+  method classAny() This
+  method readableName()GetMyName(This)
+  }

@@ -1,6 +1,28 @@
-{reuse L42.is/AdamTowel02
-Main:{
-  Debug(S"Hello World1")
-  return ExitCode.normal()
+{
+Alu:{//@plugin
+  //L42.is/connected/withAlu
   }
+ExitCode:...
+Url:{(Library binaryRepr)
+  SBuilder:...  
+  
+  class method
+  This #from(SBuilder builder) 
+    This(binaryRepr:builder.binaryRepr())
+    
+  class method
+  mut SBuilder #builder()
+    SBuilder.empty()
+  }
+DeployTowel:...
+ResourceDeploy:{class method Library (){
+  ExitCode:...// TODO:need to add a check that deployed code is self consistent/self contained.
+  //otherwise removing exitCode give errors only on the user side
+  DeployTowel:...
+  }}
+AdamTowel01:{class method Library () ...}
+Task0:DeployTowel(fileName:Url"localhost/DeployTowel.L42")
+  <<ResourceDeploy()
+Task1: DeployTowel(fileName:Url"localhost/AdamTowel01.L42")
+  <<AdamTowel01()
 }

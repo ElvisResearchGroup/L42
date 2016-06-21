@@ -1,0 +1,11 @@
+{ (S inner) implements Concept.ToS
+method toS()
+  this.inner()
+method
+Library binaryRepr()
+  this.inner().binaryRepr()
+class method
+This fromS(Concept.ToS that)
+  This(inner:that.toS())
+  
+}

@@ -1,0 +1,24 @@
+{
+IterationFailure:Message.$<<{ implements Guard}
+CollectionErrors:...
+MutListAny:...
+
+class method
+Library vector(class Any of){
+  return this.eq(of)
+  catch error Library return this.minimal(of)
+  catch error S return this.minimal(of)
+  }
+class method
+Library minimal(class Any that)
+  SafeOperatorsAccess.redirect(VectorTrait(),srcBinaryRepr:S"Elem".binaryRepr(),dest:that)
+
+class method
+Library eq(class Any that) (
+    lib=SafeOperatorsAccess.compose(left:VectorTrait(),right:CodeEq())
+    SafeOperatorsAccess.redirect(lib,srcBinaryRepr:S"Elem".binaryRepr(),dest:that)
+    )
+
+VectorTrait:{class method Library()...}
+CodeEq:{class method Library()...}
+}

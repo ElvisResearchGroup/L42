@@ -1,0 +1,99 @@
+{interface implements Concept.ToS, Concept.Equals, Concept.Classable
+class method S kind()
+method S text()
+method Opt responseOf()
+read method class This class()
+//change? remove opt, use fwd and method isResponse()?
+//error fixed in adam 2 as usual?
+Opt:{#new(TOpt that)
+  TOpt:{interface method This2 get() }
+  TEmpty:{() implements TOpt method get()
+    error S"UnsatisfactoryErrorToAvoidCycle, replace in Adam2"
+    //error Guard.Operation"TEmpty.get() Value not present in Optional"
+    }
+  TOf:{(This2 that) implements TOpt method get() this.that()}
+  method This1 #get() this.that().get()
+  method Bool isPresent() {
+    with cell=this.that() (on TOf return Bool.true())
+    return Bool.false()
+    }
+  class method This () This.#new(TEmpty())
+  class method This (This1 that) This.#new(TOf(that))
+  }
+EqualMessages:{
+  class method Bool (Message that,Message other){
+  //assuming they have the same class
+  res=that.class().kind()==other.class().kind()
+    & that.text()==other.text()
+    & that.responseOf().isPresent()==other.responseOf().isPresent()
+  if !res (return Bool.false())
+  if !that.responseOf().isPresent() (return Bool.true())
+  //i know both are present
+  return that.responseOf().#get().equals(other.responseOf().#get()) // this calls  equals in message,
+  //that check for equal class and then call EqualMessages
+  }}
+$:{()
+  class method Library <<(Library that)
+    SafeOperatorsAccess.compose(left:that, right:This.messageTrait())
+  class method Library messageTrait() {(S _text, Message.Opt cause) implements Message
+    
+    method is(subtype) {  with subtype (on class This return Bool.true()) return Bool.false()}
+    method readableName()GetMyName(This)
+    method kind() this.readableName()
+    method text() this._text()
+    method responseOf() this.cause()
+    method equals(that){
+      with that (on This return this==that)
+      return Bool.false()
+      }
+  method
+  This (Message that)
+    This(text:this.text(),cause:that)
+
+    method toS() {
+      if !this.cause().isPresent() (
+        return This.kind()++S.doubleQuote()++this.text()++S.doubleQuote()
+        )
+      var S res=This.kind()
+      if this.text()!=S"" (
+        res:=res++S"[text:"++S.doubleQuote()++this.text()++S.doubleQuote()
+          ++S", cause:"
+        )
+      else (res:=res++S"[")
+      return res[this.cause().#get()]"]"
+      }
+    method Bool != (This that)
+      !(this==that)
+    method Bool == (This that)
+      Message.EqualMessages(this,other:that)
+    method classAny() This
+    method class() This
+    class method
+    This (S text)
+      This(_text:text,cause:Message.Opt())
+    class method
+    This(S text, Message cause)
+      This(_text:text,cause:Message.Opt(cause))
+    //next part could become a trait on its own (but S must keep its version)
+
+    class method mut S.SBuilder #builder()S.SBuilder.empty()
+      class method This #from(S.SBuilder builder)
+        This(text:S.#from(builder:builder))
+
+  method
+  Continue #from(S.SConcat seqBuilder)
+    Continue(seqBuilder.old()++seqBuilder.accumulator())
+
+  Continue:{(S that)
+    method mut S.SBuilder #builder() S.SBuilder.empty()
+    method This1 #from(S.SBuilder builder)
+      This1(text:this.that()++S.#from(builder:builder) )
+    }
+
+  method
+  mut S.SConcat #seqBuilder()
+    S.SConcat(old:this.text(),accumulator:S"")
+
+    }
+  }
+}

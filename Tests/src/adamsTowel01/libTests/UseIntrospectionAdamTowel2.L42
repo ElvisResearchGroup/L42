@@ -1,0 +1,24 @@
+{reuse L42.is/AdamTowel01
+External:{}
+Main:{
+  i2=Introspection(lib:{ Internal:{} method //fuffa @a beer @External bar @Internal fuzz
+    Void foo()})
+  mFoo=i2.method(Selector"foo()")
+  doc=mFoo.doc()
+  Debug(doc)
+  with ann in doc.annotations().vals() (
+    Debug(ann)
+    (
+      with t=ann.referredClass() (
+        on class External Debug(S"External found")
+        default Debug(S"something Else")
+        )
+      catch error System.Guard.PluginFailure x Debug(S"Report plgFailure as "++x.toS())
+      catch error Concept.ToS x Debug(S"Report error as "++x.toS())
+      void
+      )
+    Debug(S"Iteration complete")
+    )
+  return ExitCode.normal()
+  }
+}

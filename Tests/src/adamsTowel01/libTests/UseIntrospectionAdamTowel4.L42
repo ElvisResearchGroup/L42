@@ -1,0 +1,34 @@
+{reuse L42.is/AdamTowel01
+External:{ class method Library (){
+  //method Void m1()
+  //method Library m2()
+  //method Any m3()
+  method This m4()
+  method External m5()
+  method Foo m6()
+  Foo:{}
+  }}
+Generated: External()
+Main:{
+  i1=Introspection(lib:External())
+  i2=Introspection(clazz:Generated)
+  Debug(i1.hasExternalType())
+  Debug(i2.hasExternalType())
+  with meth1 in i1.methods().vals() meth2 in i2.methods().vals() (
+    if meth1.toS()!=meth2.toS() (Debug(S"Fail"))
+    n1=meth1.returnType().referencedPath()
+    n2=meth2.returnType().referencedPath()
+    Debug(S""[meth1.selector()]
+      ", methRootExternal:"[meth1.root().hasExternalType()]
+      ", typeExternal:"[meth1.returnType().referencedPath().hasExternalType()]
+      ", typeRefExternal:"[n1.hasExternalType()]"")
+    if n1.hasExternalType() (Debug(Introspection(clazz:n1.externalType()).externalTypeToS()))
+    Debug(S""[meth2.selector()]
+      ", methRootExternal:"[meth2.root().hasExternalType()]
+      ", typeExternal:"[meth2.returnType().referencedPath().hasExternalType()]
+      ", typeRefExternal:"[n2.hasExternalType()]"")
+    if n2.hasExternalType() (Debug(Introspection(clazz:n2.externalType()).externalTypeToS()))
+    )
+  return ExitCode.normal()
+  }
+}

@@ -1,0 +1,36 @@
+{reuse L42.is/AdamTowel01
+
+// Everything about the expression in this binding is a mistake.
+// The only reason it's interesting is that the language system exercises an assertion.
+
+Ns:Extent[{}]<< {
+  Void #default##square(that)
+    void
+  }
+
+/******** Previous versions, searching for a minimal example ************
+
+Ns:Extent[Collections.vector(of:N)]<< {
+  Void #default##square(that)
+    void
+  }
+
+Ns:Extent[Collections.vector(of:N)]<< {
+  Void #default##square(that)
+    with that (
+      on Concept.ToS
+        Debug(S"Ns default took data: '"[that]"")
+      on Classable
+        Debug(S"Ns default took something of type: "[that.class().readableName()]"")
+      default
+        Debug(S"Ns default took something uninterpretable")
+      )
+  }
+*/
+
+  
+Main:{
+  Debug(S"Execution started.")
+  return ExitCode.normal()
+  }
+}

@@ -1,0 +1,13 @@
+{reuse L42.is/AdamTowel01
+
+Main:{
+  s=S.#from(builder:(
+    b=S.SBuilder.empty()
+    b.#a()
+    b.#at()
+    b.#b()
+    b))
+  Debug(s)
+  return ExitCode.normal()
+  }
+}

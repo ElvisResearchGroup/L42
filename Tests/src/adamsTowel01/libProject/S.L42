@@ -1,0 +1,272 @@
+{ _private(Library _binaryRepr)
+ implements  Concept.Base, Concept.Equals //needed until we do (also refine) normalization
+
+  //#####Implemented
+  method is(subtype) {  with subtype (on class This return Bool.true()) return Bool.false()}
+  method classAny() This
+  method readableName()GetMyName(This)
+
+  class method This #from(Library binaryRepr) This._private(_binaryRepr:binaryRepr)
+
+  method Library binaryRepr() this._binaryRepr()
+
+  method toS() this
+
+  method equals(that){
+    with that (on This return this==that)
+    return Bool.false()
+    }
+
+
+
+  //#####operators
+  method
+  S ++ (S that) S.#from(binaryRepr: use Alu
+      check stringConcat(s1:this.binaryRepr(),s2:that.binaryRepr())
+      error void)
+
+  method Bool != (This that) !(this==that)
+
+  method
+  Bool == (This that) {
+    use Alu
+      check ifStringEqualDo(s1:this.binaryRepr(),s2:that.binaryRepr())
+      return Bool.true()
+    return Bool.false()
+    }
+
+method
+This -(This that)
+  this.withoutAll(val:that)
+
+
+method
+Bool >>(This that)
+  this >>=that & this.size()>that.size()
+
+method
+Bool >>=(This that)
+  this.contains(that)
+
+method
+Bool >(This that)
+  this.contains(that)
+
+
+  //#####other sequence like methods
+
+method
+N indexOfLeft(S val)
+  this.indexOfLeft(val:val,start:0N)
+method
+N indexOfLeft(S val, N start){
+  //val must be not empty, TODO: error here?
+  var N current=start
+  while current<this.size() (
+    if this.subStrEq(val,start:current) (return current)
+    current+=1N
+    )
+  return N"-1"
+  } 
+
+method
+N indexOfRight(This val){
+  //val must be not empty, TODO: error here?
+  var N current=this.size()-val.size()
+  while current>=0N (
+    if this(start:current).beginsWith(val) (return current)
+    current-=1N
+    )
+  return N"-1"
+  }
+
+method
+This withoutLeft(This val) {
+  pos=this.indexOfLeft(val:val)
+  if pos<0N (return this)
+  return this.without(index:pos, skipNum:val.size())
+  }
+
+method
+This withoutRight(This val){
+  pos=this.indexOfRight(val:val)
+  if pos<0N (return this)
+  return this.without(index:pos, skipNum:val.size())
+  }
+
+method
+This withoutAll(This val)
+  this.replace(val, into:S"")
+
+
+method
+Bool isEmpty()
+  this.size()==0N
+
+method
+This val(N that)
+  this(that)
+
+method
+This left()
+  this.val(0N)
+
+method
+This right()
+  this.val(this.size()-1N)
+
+
+//#################Withs
+
+method
+This with(N that, This val)
+  this(end:that)++val++this(start:that+val.size())
+
+method
+This withLeft(This that)
+  this.with(0N, val:that) //TODO: should be with(left)??
+
+method
+This withRight(This that)
+  this.with(this.size()-1N, val:that)
+
+//insertion
+method
+This withAlso(N that, This val)
+  this(end:that)++val++this(start:that)
+
+method
+This withAlsoLeft(This that)
+  this.withAlso(0N, val:that)
+
+method
+This withAlsoRight(This that)
+  this.withAlso(this.size(), val:that)
+
+
+//skipping/filtering
+method
+This without(N index)
+  this(end:index)++this(start:index+1N)
+
+method
+This without(N index, N skipNum)
+  this(end:index)++this(start:skipNum+index)
+method
+This withoutLeft()
+  this.without(index:0N)
+
+method
+This withoutRight()
+  this.without(index:this.size()-1N)
+
+
+  method
+  Bool contains(S that){
+    res=this.indexOfLeft(val:that)
+    //Debug(S"S.contains(this:"[this]" that:"[that]")="[res]"")
+    if res>=0N (return Bool.true())
+    return Bool.false()
+    }
+
+
+
+  method
+  S (N start, N end)
+    S.#from(binaryRepr:use Alu
+      check stringSubstring(this.binaryRepr(),start:start.binaryRepr(),end:end.binaryRepr())
+      error void )
+
+  method
+  S (N that) this(start:that, end:that+1N)
+
+  method
+  S (N start) this(start:start, end:this.size())
+
+  method
+  S (N end) this(start:0N, end:end)
+
+
+  method N size()
+    N(_binaryRepr: use Alu
+      check stringSize(this.binaryRepr())
+      error void)
+
+
+  //##### string special
+
+  method
+  Bool subStrEq(S that, N start)
+    this(start:start, end:that.size()+start)==that//optimizing this one may help many methods
+  method
+  Bool beginsWith(S that)
+    this.subStrEq(that,start:0N)
+
+
+  class method S aSCIILowerCase() S"qwertyuiopasdfghjklzxcvbnm"
+  class method S aSCIIUpperCase() S"QWERTYUIOPASDFGHJKLZXCVBNM"
+
+  method
+  Bool isASCIILowerCase(N that)
+    S.aSCIILowerCase().contains(this(that))
+  method
+  Bool isASCIIUpperCase(N that) (
+    //Debug(S"S.isASCIIUpperCase(this:"[this]" that:"[that]")")
+    S.aSCIIUpperCase().contains(this(that))
+    )
+
+  class method
+  S doubleQuote()
+    S"
+    '"
+    "(0N)
+
+  class method
+  S nl()
+    S"
+    '
+    "
+
+  method
+  S replace(S that, S into)
+    S.#from(binaryRepr:use Alu
+      check stringReplace(this.binaryRepr(),
+        src:that.binaryRepr()
+        dest:into.binaryRepr())
+      error void)
+
+  method
+  Continue #from(S.SConcat seqBuilder)
+    Continue(seqBuilder.old()++seqBuilder.accumulator())
+
+  Continue:{(S that)
+    method mut S.SBuilder #builder() S.SBuilder.empty()
+    method This1 #from(S.SBuilder builder)
+      this.that()++S.#from(builder:builder)
+    }
+
+  method
+  mut SConcat #seqBuilder()
+    S.SConcat(old:this,accumulator:S"")
+
+  SConcat:{(S old,var S accumulator)
+    mut method
+    Void #add(read Concept.ToS that)
+      this.accumulator(\accumulator++that.toS())
+    mut method
+    Void #add(read Concept.ToS that, Concept.ToS sep) (
+      var S newAcc=that.toS()
+      if this.accumulator()!=S"" (
+        newAcc:=this.accumulator()++sep.toS()++newAcc
+        )
+      this.accumulator(newAcc)
+      )
+    }
+
+  SBuilder:...
+  class method This #from(S.SBuilder builder)
+    This._private(_binaryRepr:builder.binaryRepr())
+  class method mut S.SBuilder #builder() S.SBuilder.empty()
+
+
+  }

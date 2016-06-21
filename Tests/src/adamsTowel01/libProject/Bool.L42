@@ -1,0 +1,67 @@
+{(Library binaryRepr)
+ implements Concept.Equals, Concept.ToS, Concept.Classable//@private
+
+  method is(subtype) {  with subtype (on class This return Bool.true()) return Bool.false()}
+  method classAny() This
+  method readableName()GetMyName(This)
+  method
+  toS(){
+    if this (return S"true")
+    return S"false"
+    }
+
+  method
+  equals(that){
+    with that (on This return this==that)
+    return Bool.false()
+    }
+
+  method
+  Void #checkTrue() exception Void
+    use Alu
+      check ifInt32EqualDo(n1:this.binaryRepr() n2:0N.binaryRepr())
+      exception void
+  class method
+  This true()
+    This(binaryRepr:1N.binaryRepr())
+  class method
+  This false()
+    This(binaryRepr:0N.binaryRepr())
+
+  method
+  This &(This that){
+    if this (return that)
+    return this
+    }
+  method
+  This |(This that){
+    if this (return this)
+    return that
+    }
+  method
+  This !(){
+    if this (return This.false())
+    return This.true()
+    }
+
+  method
+  This ==(This that) {
+    if this (return that)
+    return !that
+    }
+  method
+  This !=(This that) !(this==that)
+
+
+  class method
+  This fromS(read Concept.ToS that){
+    if that.toS()==S"true" (return This.true())
+    if that.toS()==S"false" (return This.false())
+    error This.parseError(that.toS())
+    }
+
+  class method
+  Any parseError(S that)
+    S"Bool.UnsatisfactoryErrorToAvoidCycle, replace in AdamT2"
+
+}

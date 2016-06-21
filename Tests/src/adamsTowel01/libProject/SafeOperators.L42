@@ -1,0 +1,126 @@
+{//@plugin
+  //L42.is/connected/withSafeOperators
+
+  class method
+  Library compose(Library left,Library right)
+    use This
+      check compose(left:left,right:right)
+      error System.Guard.PluginFailure"SafeOperators.compose"
+
+  class method
+  Library renameClass(Library that,Path src, Path dest)
+    use This
+      check renameClass(that
+        src:src.binaryRepr()
+        dest:dest.binaryRepr()
+        )
+      error System.Guard.PluginFailure"SafeOperators.renameClass"
+
+  class method
+  Library renameMethod(Library that,Path path,Selector src,Selector dest)
+    use This
+      check renameMethod(that
+        path:path.binaryRepr()
+        src:src.binaryRepr()
+        dest:dest.binaryRepr()
+        )
+      error System.Guard.PluginFailure"SafeOperators.renameMethod"
+  class method
+  Library sumMethods(Library that,Path path,Selector src1,Selector src2,Selector dest, S name)
+    use This
+      check sumMethods(that
+        path:path.binaryRepr()
+        src1:src1.binaryRepr()
+        src2:src2.binaryRepr()
+        dest:dest.binaryRepr()
+        name:name.binaryRepr()
+        )
+      error System.Guard.PluginFailure"SafeOperators.renameMethod"
+
+  class method
+  Library redirect(Library that,Path src, class Any dest)
+    use This
+      check redirect(that
+        src:src.binaryRepr()
+        dest:dest
+        )
+      error System.Guard.PluginFailure"SafeOperators.redirect"
+
+  class method
+  Library removeImplementation(Library that,Path path)
+    use This
+      check removeImplementation(that
+        path:path.binaryRepr()
+        )
+      error System.Guard.PluginFailure"SafeOperators.removeImplementation(path)"
+
+  class method
+  Library moveImplementation(Library that,Path path,Selector src,Selector dest)
+    use This
+      check moveImplementation(that
+        path:path.binaryRepr()
+        src:src.binaryRepr()
+        dest:dest.binaryRepr()
+        )
+      error System.Guard.PluginFailure"SafeOperators.moveImplementation"
+
+  class method
+  Library removeImplementation(Library that,Path path,Selector selector)
+    use This
+      check removeImplementation(that
+        path:path.binaryRepr()
+        selector:selector.binaryRepr()
+        )
+      error System.Guard.PluginFailure"SafeOperators.removeImplementation(path,selector)"
+
+  class method
+  Library addDocumentation(Library that,Path path,Introspection.Doc doc)
+    use This
+      check addDocumentation(that
+        path:path.binaryRepr()
+        doc:doc.binaryRepr()
+        )
+      error System.Guard.PluginFailure"SafeOperators.addDocumentation(path)"
+
+  class method
+  Library addDocumentation(Library that,Path path,Selector selector,Introspection.Doc doc)
+    use This
+      check addDocumentation(that
+        path:path.binaryRepr()
+        selector:selector.binaryRepr()
+        doc:doc.binaryRepr()
+        )
+      error System.Guard.PluginFailure"SafeOperators.addDocumentation(path,selector)"
+
+  class method
+  S freshName(S that) S.#from(binaryRepr: use This
+      check freshName(that.binaryRepr())
+      error System.Guard.PluginFailure"SafeOperators.freshName(that)"
+    )
+  class method
+  Library makeMethod(Library that,Path path,Selector selector, S mdfs, N exceptionN)
+      use This
+      check makeMethod(that,
+        path:path.binaryRepr(),
+        selector:selector.binaryRepr(),
+        mdfs:mdfs.binaryRepr(),
+        exceptionN:exceptionN.binaryRepr()
+        )
+      error System.Guard.PluginFailure"SafeOperators.makeMethod(that,path,selector,mdfs,exceptionN)"
+
+  class method
+  Library liftValue(Any that, Selector selector, Library lib)
+      use  This
+      check liftValue(that,selector:selector.binaryRepr(), lib:lib)
+      error System.Guard.PluginFailure"SafeOperators.liftValue(that,selector,lib)"
+
+  class method
+  Library addKs(Library that, Path path, S fields, S mutK, S lentK, S readK, S immK, Bool isFwd) (
+      Library fwdRepr={if isFwd (return 1N.binaryRepr()) return 0N.binaryRepr()}
+      use  This
+      check addKs(that,path:path.binaryRepr(), fields:fields.binaryRepr(),
+         mutK:mutK.binaryRepr(), lentK:lentK.binaryRepr(), readK:readK.binaryRepr(), immK:immK.binaryRepr(),
+         isFwd:fwdRepr)
+      error System.Guard.PluginFailure"SafeOperators.addKs(that,path,fields,mutK,lentK,readK,immK,isFwd)"
+      )
+  }

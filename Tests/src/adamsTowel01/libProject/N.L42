@@ -1,0 +1,196 @@
+{(Library _binaryRepr) implements Concept.ToS Concept.Equals, Concept.Classable//@private
+
+  method is(subtype) {  with subtype (on class This return Bool.true()) return Bool.false()}
+  method classAny() This
+  method readableName()GetMyName(This)
+  class method
+  This fromS(Concept.ToS that) (
+    s=that.toS()
+    N(_binaryRepr: use Alu
+      check stringToInt32(s.binaryRepr())
+      error This.parseError(s))
+    )
+  class method
+  This #from(Library binaryRepr)
+    N(_binaryRepr:binaryRepr)
+  method
+  Library binaryRepr() this._binaryRepr()
+
+  class method
+  mut S.SBuilder #builder()
+    S.SBuilder.empty()
+
+  class method
+  N #from(S.SBuilder builder)
+    N(_binaryRepr: use Alu
+      check stringToInt32(builder.binaryRepr())
+      error This.parseError(S.#from(builder: builder)))
+
+  class method
+  Any parseError(S that)
+    S"N.UnsatisfactoryErrorToAvoidCycle, replace in AdamT2"
+
+  method
+  toS()
+    S.#from(binaryRepr: use Alu
+      check int32ToString(this.binaryRepr())
+      error void)
+
+  method
+  N +(N that)
+    N(_binaryRepr:use Alu
+      check sumInt32(n1:this.binaryRepr() n2:that.binaryRepr())
+      error void)
+
+  method
+  N -(N that)
+    N(_binaryRepr:use Alu
+      check subInt32(n1:this.binaryRepr() n2:that.binaryRepr())
+      error void)
+
+  method
+  N *(N that)
+    N(_binaryRepr:use Alu
+      check mulInt32(n1:this.binaryRepr() n2:that.binaryRepr())
+      error void)
+
+  method
+  N /(N that)
+    N(_binaryRepr: use Alu
+      check divInt32(n1:this.binaryRepr() n2:that.binaryRepr())
+      error void)
+
+  method
+  Bool ==(This that) {
+    use Alu
+      check ifInt32EqualDo(n1:this.binaryRepr() n2:that.binaryRepr())
+      return Bool.true()
+    return Bool.false()
+    }
+  method equals(that){
+    with that (on This return this==that)
+    return Bool.false()
+    }
+
+  method
+  Bool <(N that) {
+    use Alu
+      check ifInt32GrtDo(n1:this.binaryRepr() n2:that.binaryRepr())
+      return Bool.true()
+    return Bool.false()
+    }
+
+  method
+  Bool <=(N that) {
+    use Alu
+      check ifInt32GEqDo(n1:this.binaryRepr() n2:that.binaryRepr())
+      return Bool.true()
+    return Bool.false()
+    }
+
+  method Bool !=(This that) !(this==that)
+
+  method Bool >(N that)  !(this<=that)
+
+
+  method Bool >=(N that) !(this<that)
+
+  method
+  mut Iterator vals()
+    Iterator(start:this,end:N"-1")
+
+  method
+  mut Iterator vals(N upTo)
+    Iterator(start:this,end:upTo)
+
+  Iterator:{mut (var This1 start, This1 end)
+    mut method
+    Void #next() exception Void (
+      if this.end() <0N | this.start()<this.end() (this.start(this.start()+1N))
+      else exception void
+      )
+
+    read method
+    Void #checkEnd() void
+
+    read method
+    This1 #inner() this.start()-1N
+
+    read method
+    Void #close() void
+    }
+
+    //#########Boring id methods needed for enumerations and other generalizations; from 0 to 63
+    class method This #0() 0This
+    class method This #1() 1This
+    class method This #2() 2This
+    class method This #3() 3This
+    class method This #4() 4This
+    class method This #5() 5This
+    class method This #6() 6This
+    class method This #7() 7This
+    class method This #8() 8This
+    class method This #9() 9This
+
+    class method This #10() 10This
+    class method This #11() 11This
+    class method This #12() 12This
+    class method This #13() 13This
+    class method This #14() 14This
+    class method This #15() 15This
+    class method This #16() 16This
+    class method This #17() 17This
+    class method This #18() 18This
+    class method This #19() 19This
+
+    class method This #20() 20This
+    class method This #21() 21This
+    class method This #22() 22This
+    class method This #23() 23This
+    class method This #24() 24This
+    class method This #25() 25This
+    class method This #26() 26This
+    class method This #27() 27This
+    class method This #28() 28This
+    class method This #29() 29This
+
+    class method This #30() 30This
+    class method This #31() 31This
+    class method This #32() 32This
+    class method This #33() 33This
+    class method This #34() 34This
+    class method This #35() 35This
+    class method This #36() 36This
+    class method This #37() 37This
+    class method This #38() 38This
+    class method This #39() 39This
+
+    class method This #40() 40This
+    class method This #41() 41This
+    class method This #42() 42This
+    class method This #43() 43This
+    class method This #44() 44This
+    class method This #45() 45This
+    class method This #46() 46This
+    class method This #47() 47This
+    class method This #48() 48This
+    class method This #49() 49This
+
+    class method This #50() 50This
+    class method This #51() 51This
+    class method This #52() 52This
+    class method This #53() 53This
+    class method This #54() 54This
+    class method This #55() 55This
+    class method This #56() 56This
+    class method This #57() 57This
+    class method This #58() 58This
+    class method This #59() 59This
+
+    class method This #60() 60This
+    class method This #61() 61This
+    class method This #62() 62This
+    class method This #63() 63This
+
+
+  }

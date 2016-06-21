@@ -1,0 +1,99 @@
+{reuse L42.is/AdamTowel01
+
+CheckState:{
+  class method Void(Library lib,S expected )(
+    i=Introspection(lib:lib)
+    var S result=S""
+    with m in i.state().vals() (
+      result++=m.selector().toS()
+      )
+    if result!=expected (Debug(S"expected:"[expected]" computed:"[result]""))
+    )
+  }
+
+CheckSubtype1:{
+  class method Void(Library lib,S expected )(
+    i=Introspection(lib:lib)
+    var S result=S""
+    with t in i.implementedInterfaces().vals() (
+      n=t.referencedPath()
+      if n.hasExternalType() (result++=n.externalTypeToS()++S",")
+      else result++=S"@."[n.pathFromRoot()]","
+      )
+    if result!=expected (Debug(S"expected:"[expected]" computed:"[result]""))
+    )
+  }
+
+CheckSubtype:{
+  class method Void(Library lib,S expected )(
+    i=Introspection(lib:lib)
+    var S result=S""
+    with t in i.transitivelyImplementedInterfaces().vals() (
+      n=t.referencedPath()
+      if n.hasExternalType() (result++=n.externalTypeToS()++S",")
+      else result++=S"@."[n.pathFromRoot()]","
+      )
+    if result!=expected (Debug(S"expected:"[expected]" computed:"[result]""))
+    )
+  }
+CheckNested:{
+  class method Void(Library lib,S expected )(
+    i=Introspection(lib:lib)
+    var S result=S""
+    with n in i.transitivelyNestedClasses().vals() (
+      result++=S"@."[n.pathFromRoot()]","
+      )
+    if result!=expected (Debug(S"expected:"[expected]" computed:"[result]""))
+    )
+  }
+
+EA:{interface }
+EB:{interface  implements EA}
+Main:{
+  CheckState(lib:{foo(Bar b, var Foo f) Bar:{} Foo:{}}
+    expected:S"#mutK(b,f)#b()b()f(that)#f()f()")
+  Debug(S"a")
+  CheckState(lib:{(Bar b, Foo f) Bar:{} Foo:{}}
+    expected:S"#mutK(b,f)#b()b()#f()f()")
+  Debug(S"b")
+  CheckSubtype(lib:{}
+    expected:S"")
+  Debug(S"c1")
+  CheckSubtype1(lib:{interface  implements A A:{interface}}
+    expected:S"@.A,")
+  Debug(S"c2")
+  CheckSubtype(lib:{interface  implements A A:{interface}}
+    expected:S"@.A,")
+
+  Debug(S"d")
+  CheckSubtype(lib:{interface  implements EA }
+    expected:S"This.EA,")
+  Debug(S"e")
+    CheckSubtype(lib:{interface  implements B B:{interface implements A} A:{interface}}
+    expected:S"@.B,@.A,")
+  Debug(S"f")
+  CheckSubtype(lib:{interface  implements EB }
+    expected:S"This.EB,This.EA,")
+  Debug(S"g")
+  CheckNested(lib:{}
+    expected:S"@.This,")
+  Debug(S"h")
+  CheckNested(lib:{A:{} B:{}}
+    expected:S"@.This,@.A,@.B,")
+  Debug(S"i")
+  CheckNested(lib:{A:{ B:{}}}
+    expected:S"@.This,@.A,@.A.B,")
+  Debug(S"l")
+  CheckNested(lib:{A:{} B://@private
+      {}}
+    expected:S"@.This,@.A,@.B,")
+  Debug(S"m")
+  CheckNested(lib:{A:{} B://@private
+      {C:{}}}
+    expected:S"@.This,@.A,@.B,")
+  Debug(S"OK")
+  catch exception Concept.Classable x
+    error Debug(Introspection(clazz:x.classAny()).externalTypeToS())
+  return ExitCode.normal()
+  }
+}

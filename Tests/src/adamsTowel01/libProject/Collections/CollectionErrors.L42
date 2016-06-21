@@ -1,0 +1,18 @@
+{
+  class method
+  Any negBound(N that, MutListAny list)
+    Guard.Parameter"IndexOutOfBound: negative index provided; max is "[list.size()]" proposed is "[that]""
+
+  class method
+  Any outBound(N that, MutListAny list)
+    Guard.Parameter"IndexOutOfBound: max is "[list.size()]" proposed is "[that]""
+
+  class method
+  Any cast()
+    Guard.Operation"cast failure"
+
+  class method
+  Any iterationTermination(N from, N minTo, N size)
+    IterationFailure"Unexpected termination of iteration, reached "[from]" instead of "[minTo]""
+
+  }
