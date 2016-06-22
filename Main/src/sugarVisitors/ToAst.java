@@ -68,7 +68,7 @@ public class ToAst extends AbstractVisitor<Expression>{
       for(TerminalNode p:h.Path()){exceptions.add(Path.parse(p.getText()));}
       Optional<Expression> inner=Optional.empty();
       if(ctx.eTopForMethod()!=null){inner=Optional.of(ctx.eTopForMethod().accept(ToAst.this));}
-      MethodType mt=new MethodType(doc2,mdf,ts,tdocs,returnType,exceptions);
+      MethodType mt=new MethodType(h.Refine()!=null,doc2,mdf,ts,tdocs,returnType,exceptions);
       return new MethodWithType(doc1,s, mt, inner,position(ctx));
     }
 

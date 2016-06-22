@@ -72,6 +72,7 @@ Interface:'interface';
 Method:'method';
 Using:'use';
 Check:'check';
+Refine:'refine';
 FieldSpecial:'##field';
 WalkBy:'##walkBy';
 Stage:'##less'|'##meta'|'##plus'|'##star'|'##needable'|'##needed';
@@ -167,7 +168,7 @@ classBExtra:Stage? Path* EndType;
 classBReuse: OCurly docsOpt  Url CCurly |OCurly docsOpt UrlNL docsOpt member+ CCurly;
 classB:OCurly docsOpt header Implements? Path* docsOpt fieldDec* member* CCurly classBExtra?;
 mhs: Method docsOpt methSelector (EndType Path mht)?;
-mht: Mdf? Method docsOpt t (mDec |ORoundNoSpace|ORoundSpace) (t x docsOpt)* CRound (S Path+)?;
+mht: Refine? Mdf? Method docsOpt t (mDec |ORoundNoSpace|ORoundSpace) (t x docsOpt)* CRound (S Path+)?;
 member: methodWithType|methodImplemented|nestedClass;
 methodWithType: mht (EndType Path)? docsOpt eTopForMethod?| mht FieldSpecial;//was block?
 methodImplemented: mhs eTopForMethod;

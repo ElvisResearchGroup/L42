@@ -45,7 +45,7 @@ public static ClassB addMethod(ClassB _lib, List<String> path, MethodSelector ms
     exceptions.add(Path.outer(0,Arrays.asList(cn)));
     nc.add(cn);
     }
-  MethodType mt = new MethodType(Doc.empty(),Mdf.valueOf(_mdfs[0]),ts,docs, retT,exceptions);
+  MethodType mt = new MethodType(false,Doc.empty(),Mdf.valueOf(_mdfs[0]),ts,docs, retT,exceptions);
   MethodWithType mwt=new MethodWithType(Doc.empty(),ms,mt,Optional.empty(),innerLib.getP());
   Optional<Member> optM = Program.getIfInDom(innerLib.getMs(),ms);
   if(optM.isPresent()){

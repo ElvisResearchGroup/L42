@@ -38,7 +38,7 @@ public @interface ActionType {
         ts.add(paths[i].type);
         docs.add(Doc.empty());
         }
-      return new Ast.MethodType(Doc.empty(),mdf,ts,docs,paths[0].type,Collections.emptyList());
+      return new Ast.MethodType(false,Doc.empty(),mdf,ts,docs,paths[0].type,Collections.emptyList());
     }
   }
   Type[] value();

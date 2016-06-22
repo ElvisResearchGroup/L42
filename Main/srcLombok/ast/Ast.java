@@ -263,6 +263,7 @@ public interface Ast {
 	@Value
 	@Wither
 	public class MethodType {
+	    boolean refine;
 		Doc docExceptions;
 		Mdf mdf;
 		List<Type> ts;

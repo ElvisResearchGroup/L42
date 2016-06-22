@@ -118,7 +118,7 @@ static private MethodType immK(MethodType proto) {
     List<Doc> tDocss=fieldNames.stream().map(s->Doc.empty()).collect(Collectors.toList());
     MethodSelector ms=new MethodSelector("",fieldNames);
     NormType resT=new ast.Ast.NormType(Mdf.Mutable,ast.Ast.Path.outer(0),Ph.None);
-    MethodType mt=new MethodType(Doc.empty(),ast.Ast.Mdf.Class,fieldTypes,tDocss,resT,Collections.emptyList());
+    MethodType mt=new MethodType(false,Doc.empty(),ast.Ast.Mdf.Class,fieldTypes,tDocss,resT,Collections.emptyList());
     return new MethodWithType(doc, ms,mt, Optional.empty(),pos);
     }
 

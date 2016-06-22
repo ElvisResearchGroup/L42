@@ -98,7 +98,7 @@ public class SumMethods {
     assert totTypes.size()==totDocs.size();
     ArrayList<Path> exU = new ArrayList<>(mt1.getExceptions());
     exU.addAll(mt2.getExceptions());
-    MethodType mtU =new MethodType(
+    MethodType mtU =new MethodType(false,
         mt1.getDocExceptions().sum(mt2.getDocExceptions()),
         mdfU,totTypes,totDocs,mt2.getReturnType(),exU);
     return mtU;
