@@ -76,7 +76,7 @@ public class CloneVisitor implements Visitor<ExpCore>{
     }
 
   protected MethodType liftMT(MethodType mt) {
-    return new MethodType(liftDoc(mt.getDocExceptions()),mt.getMdf(),Map.of(this::liftT,mt.getTs()),Map.of(this::liftDoc,mt.getTDocs()),liftT(mt.getReturnType()),Map.of(this::lift,mt.getExceptions()));
+    return new MethodType(mt.isRefine(),liftDoc(mt.getDocExceptions()),mt.getMdf(),Map.of(this::liftT,mt.getTs()),Map.of(this::liftDoc,mt.getTDocs()),liftT(mt.getReturnType()),Map.of(this::lift,mt.getExceptions()));
   }
   public ExpCore visit(Path s) {return s;}
   public ExpCore visit(X s) { return s;}

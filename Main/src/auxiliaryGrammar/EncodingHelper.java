@@ -171,7 +171,7 @@ public class EncodingHelper{
     List<Type> ts=new ArrayList<>();
     ts.add(new Ast.NormType(Mdf.Class,Path.Any(),Ph.None));
     docs.add(Doc.empty());
-    return new Ast.MethodType(Doc.empty(),Mdf.Immutable,ts,docs,new Ast.NormType(Mdf.Immutable,result,Ph.None),Collections.emptyList());
+    return new Ast.MethodType(false,Doc.empty(),Mdf.Immutable,ts,docs,new Ast.NormType(Mdf.Immutable,result,Ph.None),Collections.emptyList());
   }
 
   public static Ast.MethodType mt(Path result,Path ...paths){
@@ -181,7 +181,7 @@ public class EncodingHelper{
       ts.add(new Ast.NormType(Mdf.Immutable,pi,Ph.None));
       docs.add(Doc.empty());
       }
-    return new Ast.MethodType(Doc.empty(),Mdf.Immutable,ts,docs,new Ast.NormType(Mdf.Immutable,result,Ph.None),Collections.emptyList());
+    return new Ast.MethodType(false,Doc.empty(),Mdf.Immutable,ts,docs,new Ast.NormType(Mdf.Immutable,result,Ph.None),Collections.emptyList());
   }
   public static ExpCore wrapResource(Object o) {
     if(o instanceof ClassB){return (ClassB)o;}

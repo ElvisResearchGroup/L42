@@ -19,7 +19,7 @@ import auxiliaryGrammar.Program;
 public class LiftValue {
   static ExpCore.ClassB liftValue(ExpCore val,Ast.MethodSelector sel, ExpCore.ClassB context){
     List<Member> ms = new ArrayList<>(context.getMs());
-    MethodType mt=new MethodType(Doc.empty(),Mdf.Class,
+    MethodType mt=new MethodType(false,Doc.empty(),Mdf.Class,
       Collections.emptyList(),Collections.emptyList(),new Ast.NormType(Mdf.Immutable,Path.Any(),Ph.None),Collections.emptyList()
       );
     //need to insert a "cast", or to return Any, and then fwd to a cast

@@ -117,7 +117,7 @@ public class CloneVisitor implements Visitor<Expression>{
     return ms;
   }
   protected MethodType liftMT(MethodType mt) {
-    return new MethodType(
+    return new MethodType(mt.isRefine(),
         liftDoc(mt.getDocExceptions()),
       mt.getMdf(),
       Map.of(this::liftT,mt.getTs()),
