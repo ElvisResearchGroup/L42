@@ -5,6 +5,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
+import java.util.LinkedList;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -22,15 +23,31 @@ import helpers.TestHelper;
 
 @RunWith(Parameterized.class)
 public class TestRunner {
+
   @Parameter(0) public Path p;
-  @Parameter(1) public List<Opt> opts;
-  public static List<Object[]> goInner(Opt ...opts){
-    List<Opt>_opts=Arrays.asList(opts);
-    try {
-    Class<?> clazz = Class.forName(findCaller());
-    return exploreFilesFrom(clazz,_opts);
+  @Parameter(1) public String shortName;
+  public static List<Object[]> goInner(Object ...opts){
+    // Parameters are String or Opt.
+    // The strings request a specific test.
+    // The Opts either change global parameters or add a defined set of tests.
+    Path root = findClassRoot();
+    List<Object[]> result = new LinkedList<Object[]>();
+    
+    L42.trustPluginsAndFinalProgram=true;  // If desired, one of the options will set this false
+
+    for(Object opt : opts) {
+      if (opt instanceof String) {
+        String s = (String)opt;
+        addFilesFromRoot(root, "libTests/"+s, result);
+      }else if (opt instanceof Opt) {
+        Opt oopt = (Opt)opt;
+        oopt.act(root, result);
+      }else{
+        assert false: "Parameters to goInner must be String or Opt";
+      }
     }
-    catch (Throwable e) { throw handleThrowable(e);}
+    return result;
+    //catch (Throwable e) { throw handleThrowable(e);}
   }
 
   private static String findCaller() {
@@ -40,48 +57,74 @@ public class TestRunner {
       }
       throw new Error("caller?");
   }
-
-  public static List<Object[]> goInner(String name,Opt ...opts){
-    try{
-      List<Object[]> res=goInner(opts).stream()
-        .filter(pi->((Path)pi[0]).getFileName().endsWith(name))
-        .collect(Collectors.toList());
-      if(res.isEmpty()){throw new Error("File "+name+" unavalable ");}
-      return res;
-    }
-    catch (Throwable t){throw handleThrowable(t);}
+  
+  private static Path findClassRoot() {
+    try {
+      Class <?> rootObj = Class.forName(findCaller());
+      return Paths.get(rootObj.getResource(".").toURI());
+    }catch (Throwable e) { throw handleThrowable(e);}
   }
-  public static List<Object[]> exploreFilesFrom(Class<?>clazz, List<Opt>opts) throws Throwable{
-    assert clazz!=null;
-    Path p=Paths.get(clazz.getResource("libTests").toURI());
-    L42.trustPluginsAndFinalProgram=true;
-    for(Opt o:opts)o.act();
-    if(!opts.contains(Opt.NoDeplCurrent)){ testDeploy(clazz);}
-    return StreamSupport.stream(Files.newDirectoryStream(p).spliterator(), false)
-      .map(pi->new Object[]{pi,opts}).collect(Collectors.toList());
+  
+  private static Path findTests(Path root){
+    try {
+      // The root path is probably the directory containing Test.java.
+      // Remove trailing elements until we get to the directory Test.
+      Path result = root;
+      while (!result.endsWith("Tests")) {
+//        System.out.println("findTest: removing a leaf from: "+result.toString());
+        result = result.getParent();
+        if (null == result)
+          assert false : "Test driver must be in Test subtree and isn't.";
+      }
+      return result;
+    }catch (Throwable e) { throw handleThrowable(e);}
+  }
+
+  public static void addFileFromPath(Path p, List<Object[]> files) {
+    Path normP = p.normalize();
+    files.add(new Object[]{normP, TestHelper.shortName(normP)});
+  }
+  
+  public static void addFilesFromRoot(Path root, String subPath, List<Object[]> files){
+  try {
+    assert root!=null;
+
+    Path p = root.resolve(subPath);
+    
+    if (Files.isRegularFile(p, java.nio.file.LinkOption.NOFOLLOW_LINKS)) {
+      addFileFromPath(p, files);
+      return;
     }
+    
+    if (Files.isDirectory(p, java.nio.file.LinkOption.NOFOLLOW_LINKS)) {
+      StreamSupport.stream (Files.newDirectoryStream(p).spliterator(), false)
+      .forEach(test -> addFileFromPath(test, files));
+      return;
+    }
+    
+    throw new Error("File "+p.toString()+" unavalable ");
+  }
+  catch (Throwable t){throw handleThrowable(t);}
+  }
 
 public static enum Opt{
-  NoTrust{public void act(){L42.trustPluginsAndFinalProgram=false;}},
-  NoAss{public void act(){
+  NoTrust{public void act(Path root, List<Object[]> tests){L42.trustPluginsAndFinalProgram=false;}},
+  NoAss{public void act(Path root, List<Object[]> tests){
     System.out.println("AssertionsDisabled");
     ClassLoader.getSystemClassLoader().setDefaultAssertionStatus(false);
     }},
-  DeplAT1{public void act(){assert false:"add call to deploy adamt1";}},
-  DeplAT2{public void act(){assert false:"add call to deploy adamt2";}},
-  NoDeplCurrent{public void act(){};};
-  public abstract void act();
-  }
+  DeplAT1{public void act(Path root, List<Object[]> tests){
+    addFileFromPath(findTests(root).resolve("bin/adamsTowel01/libProject/"), tests);}},
+  DeplAT2{public void act(Path root, List<Object[]> tests){
+    addFileFromPath(findTests(root).resolve("bin/adamsTowel02/libProject/"), tests);}},
+  Project{public void act(Path root, List<Object[]> tests){
+    addFileFromPath(root.resolve("libProject"), tests);}},
+  AllTests{public void act(Path root, List<Object[]> tests){
+    addFilesFromRoot(root, "libTests/", tests);}},
+  NOP{public void act(Path root, List<Object[]> tests){}};
+  public abstract void act(Path root, List<Object[]> tests);
+  };
 
-public static void testDeploy(Class<?> clazz){
-  try{
-    Path p=Paths.get(clazz.getResource("libProject").toURI());
-    System.out.println("start: "+p);
-   TestHelper.configureForTest();
-    L42.main(new String[]{p.toString()});
-  }
-  catch(Throwable t){handleThrowable(t);}
-  }
 @Test
 public void test() throws Throwable{
   System.out.println("start: "+this.p);

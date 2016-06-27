@@ -25,4 +25,13 @@ Task0:DeployTowel(fileName:Url"localhost/DeployTowel.L42")
   <<ResourceDeploy()
 Task1: DeployTowel(fileName:Url"localhost/AdamTowel01.L42")
   <<AdamTowel01()
+
+Task2:(
+  use Alu
+    check stringDebug({//@stringU
+     //[PASS] As we have not stopped on error, the towel is probably deployed.
+     })
+     void
+  ExitCode.normal()
+  )
 }
