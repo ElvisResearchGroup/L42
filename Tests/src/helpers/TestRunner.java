@@ -21,11 +21,16 @@ import org.junit.runners.Parameterized.Parameters;
 import facade.L42;
 import helpers.TestHelper;
 
-@RunWith(Parameterized.class)
+@RunWith(ParallelizedParameterized.class)
+//@RunWith(Parameterized.class)
+
 public class TestRunner {
 
   @Parameter(0) public Path p;
   @Parameter(1) public String shortName;
+  
+  private static int numThreads = 1;
+  
   public static List<Object[]> goInner(Object ...opts){
     // Parameters are String or Opt.
     // The strings request a specific test.
@@ -46,6 +51,7 @@ public class TestRunner {
         assert false: "Parameters to goInner must be String or Opt";
       }
     }
+    ParallelizedParameterized.setNumThreads(numThreads);
     return result;
     //catch (Throwable e) { throw handleThrowable(e);}
   }
@@ -112,6 +118,9 @@ public static enum Opt{
   NoAss{public void act(Path root, List<Object[]> tests){
     System.out.println("AssertionsDisabled");
     ClassLoader.getSystemClassLoader().setDefaultAssertionStatus(false);
+    }},
+  Parallel{public void act(Path root, List<Object[]> tests){
+    numThreads *= 2;
     }},
   DeplAT1{public void act(Path root, List<Object[]> tests){
     addFileFromPath(findTests(root).resolve("bin/adamsTowel01/libProject/"), tests);}},

@@ -57,7 +57,7 @@ public class Parser {
   public static String getFileName(){
     return fileName;
     }
-  public static Expression parse(String fileName,String s){
+  public synchronized static Expression parse(String fileName,String s){
     String old=Parser.fileName;
     Parser.fileName=fileName;
     try{
