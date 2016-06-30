@@ -36,13 +36,88 @@ import platformSpecific.javaTranslation.Resources;
 import profiling.Timer;
 
 public class TestHelper {
+  
+  private static class LimitString {
+    private final String parent;
+    final int start;
+    final int end;
+    
+    private LimitString(String _parent, int _start, int _end) {
+      parent = _parent;
+      start = _start;
+      end = _end;  // index of character past _end, on the C model
+    }
+    
+    public static LimitString search(String parent, int fromIndex, int startChar, int endChar) {
+      int startIndex = parent.indexOf(startChar, fromIndex);
+      int endIndex = parent.indexOf(endChar, startIndex+1);
+      
+      if (-1 == startIndex | -1 == endIndex)
+        return null;
+      
+      ++endIndex;
+      
+      try {
+        if ('\n' == parent.charAt(endIndex))
+          ++endIndex;
+      }catch (IndexOutOfBoundsException i) {};
+      
+      return new LimitString(parent, startIndex, endIndex);
+    }
+    
+    public static LimitString search(String parent, int fromIndex, String target) {
+      int index = parent.indexOf(target, fromIndex);
+      if (-1 == index)
+        return null;
+      return new LimitString(parent, index, index + target.length());
+    }
+    
+    public String contents() {
+      return parent.substring(start, end);
+    }
+  }
   public static void check42Fails(String s){
     if(s.isEmpty()){fail("String is empty, may have not even started!"); throw new Error();}
     if(s.contains("Error kind:")){fail("Error of some kind"); throw new Error();}
     //if(s.contains("Error kind: MalformedFinalResult")){fail("Error kind: MalformedFinalResult"); throw new Error();}
     final String failString = "[FAIL] ";
+    final String definedOutputString = "[Defined output between]";
     int fails = 0;
-    int index = s.indexOf(failString);
+    int index = s.indexOf(definedOutputString);
+    if (-1 != index) {
+      LimitString endOfDefinedMarker = LimitString.search(s, index + definedOutputString.length(), '[', ']');
+      LimitString endOfOutputMarker = null == endOfDefinedMarker 
+          ? null: LimitString.search(s, endOfDefinedMarker.end, '[', ']');
+      
+      if (null == endOfOutputMarker) {
+        fail("Marker text(s), delimited by [] missing after "+definedOutputString); throw new Error();
+      }
+      
+      LimitString endOfDefined = LimitString.search(s, endOfOutputMarker.end, endOfDefinedMarker.contents());
+      
+      if (null == endOfDefined) {
+        fail("End of defined output marker, "+endOfDefinedMarker.contents()+" not found."); throw new Error();
+        
+      }
+      
+      LimitString endOfOutput = LimitString.search(s, endOfDefined.end, endOfOutputMarker.contents());
+      
+      if (null == endOfOutput) {
+        fail("End of output marker, "+endOfOutput.contents()+" not found.  Tests failed early?"); throw new Error();
+      }
+      
+      if (s.length() != endOfOutput.end) {
+        fail("Junk after end of output: "+s.substring(endOfOutput.end)); throw new Error();
+      }
+      
+      Assert.assertEquals(s.substring(endOfOutputMarker.end, endOfDefined.start),
+                   s.substring(endOfDefined.end, endOfOutput.start));
+      
+      // And configure so that the next loop leaves us be
+      index = -1;
+    }else{
+       index = s.indexOf(failString);
+    }
     while( index != -1 ){
       fails++;
       index = s.indexOf(failString, index+1);

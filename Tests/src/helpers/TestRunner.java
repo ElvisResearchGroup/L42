@@ -21,8 +21,8 @@ import org.junit.runners.Parameterized.Parameters;
 import facade.L42;
 import helpers.TestHelper;
 
-@RunWith(ParallelizedParameterized.class)
-//@RunWith(Parameterized.class)
+//@RunWith(ParallelizedParameterized.class)
+@RunWith(Parameterized.class)
 
 public class TestRunner {
 
