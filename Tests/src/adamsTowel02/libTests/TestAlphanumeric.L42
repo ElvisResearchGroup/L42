@@ -1,0 +1,65 @@
+{reuse L42.is/AdamTowel02
+
+Email: Alphanumeric << {
+  S local //fields
+  S domain
+
+  class method
+  This parse(S that) {
+    index= that.indexOfLeft(val:S"@") //works only for simple emails
+    if index < 0N (error Alphanumeric.ParseFail"@ not found")
+    local= that(end: index) //string slicing
+    domain= that(start: index+1N ) //string slicing
+    if domain.contains(S"@") (error Alphanumeric.ParseFail"multiple @ found")
+    return This(that,local: local,domain: domain)
+    } //call the factory with fields plus the original string
+  }
+
+Main:{
+
+Assert.Pre[1N == 1N]  // because we went through a phase of being unsure about assertions
+
+myEmail= Email"arthur.dent@gmail.com"
+
+Assert.Holds[
+  myEmail.local() ==S"arthur.dent";
+  myEmail.domain() ==S"gmail.com";
+  myEmail.toS() ==S"arthur.dent@gmail.com" msg: S"Original string does not round-trip:" ++ myEmail.toS();
+  ]
+
+  Debug(S"Email parsing complete")
+
+  // Try to exercise the catch on ClassClash
+
+  var Assert.ObservedBug bb={
+    lib=Alphanumeric << {interface}
+    catch error Assert.ObservedBug b (return b)
+    error S"unable to exercise ClassClash in Alphanumeric"
+  }
+  var Message.Opt e = bb.responseOf()  // TODO: understand why this unexpectedly needed a stated type
+
+Assert.Holds[
+  e.isPresent() msg:S"Alphanumeric<<{interface}: (expected) error has no responseOf()";
+  MetaGuard.ClassClash.is(subtype:e.#get().classAny())
+    msg: S"Alphanumeric<<{interface} response != ClassClash";
+]
+
+  // Try to exercise the catch on MethodClash
+  bb := {
+    lib=Alphanumeric << {class method Void #builder()}
+    catch error Assert.ObservedBug b (return b)
+    error S"unable to exercise MethodClash in Alphanumeric"
+  }
+  e := bb.responseOf()
+
+Assert.Holds[
+  e.isPresent() msg:S"Alphanumeric<<{builder()}: (expected) error has no responseOf()";
+  MetaGuard.MethodClash.is(subtype:e.#get().classAny())
+    msg: S"Alphanumeric<<{builder()} response != MethodClash";
+]
+
+  Debug(S"Mis-metaprogramming tests complete")
+
+  return ExitCode.normal()
+  }
+}

@@ -1,0 +1,43 @@
+{reuse L42.is/AdamTowel02
+
+
+//C:Wither<<{(N n, S s)  class method This immK(N n, S s) }
+C:Data<<{N n, S s  }
+
+
+Main:{
+  Debug(S"
+  '[Defined output between][End of defined output]
+  '[End of output]
+  '
+  '10
+  '11
+  '20
+  '21
+  '22
+  '11
+  '10
+  '23
+  '10
+  '11
+  '[End of defined output]
+  ")
+  C c=C(n:10N,s:S"11")
+  C c1=c.with(n:20N, s:S"21")
+  C c2=c.with(n:22N)
+  C c3=c.with(s:S"23")
+  C c4=c.with()
+  Debug(c.n())
+  Debug(c.s())
+  Debug(c1.n())
+  Debug(c1.s())
+  Debug(c2.n())
+  Debug(c2.s())
+  Debug(c3.n())
+  Debug(c3.s())
+  Debug(c4.n())
+  Debug(c4.s())
+  Debug(S"[End of output]")
+  return ExitCode.normal()
+  }
+}

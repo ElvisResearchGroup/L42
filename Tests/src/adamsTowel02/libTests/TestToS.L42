@@ -1,0 +1,47 @@
+{reuse L42.is/AdamTowel02
+
+NotStringable:{(N that)}
+
+Person:Data.AddToS<<{(S name, var N age)
+  implements Concept.Classable
+  method is(subtype) {  with subtype (on class This return Bool.true()) return Bool.false()}
+  method classAny() This
+  method readableName()GetMyName(This)
+  }
+//Person:Data.AddToS<<{(S name, var N age)}
+Person2:Data.AddToS<<{(S name, NotStringable age)}
+Person3:Data.AddToS<<{(Concept.ToS name, Any age)}
+
+PP:Data.AddToS<<{(mut Person p)}
+PP2:Data.AddToS<<{(mut Any p)}
+
+Main:{
+  dq = S.doubleQuote()
+  quoteBob = dq ++ S"Bob" ++ dq
+  quoteTen = dq ++ S"10" ++ dq
+
+// original debug output, in case people read java better than 42 composition:
+//   "[name:\"Bob\", age:\"10\"]\n"+
+//   "[name:\"Bob\", age:?]\n"+
+//   "[name:This.S\"Bob\", age:??]\n"+
+//   "[p:[name:\"Bob\", age:\"10\"]]\n"+
+//   "[p:This.Person[name:\"Bob\", age:\"10\"]]\n"
+
+  p=Person(name:S"Bob",age:10N)
+  Debug.test(p expected:S"[name:"[quoteBob]", age:"[quoteTen]"]")
+  
+  p2=Person2(name:S"Bob",age:NotStringable(10N))
+  Debug.test(p2, expected:S"[name:"[quoteBob]", age:?]")
+  
+  p3=Person3(name:S"Bob",age:NotStringable(10N))
+  Debug.test(p3, expected:S"[name:This.S"[quoteBob]", age:??]")
+  
+  pp=PP(p:p)
+  Debug.test(pp, expected:S"[p:[name:"[quoteBob]", age:"[quoteTen]"]]")
+  
+  pp2=PP2(p:p)
+  Debug.test(pp2, expected:S"[p:This.Person[name:"[quoteBob]", age:"[quoteTen]"]]")
+  
+  return ExitCode.normal()
+  }
+}

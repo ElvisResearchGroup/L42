@@ -1,0 +1,199 @@
+{
+//of(that)//base
+//of(that and) comp*
+//of(that on) comp/
+
+class method
+Library traitUnit() { Concept.Equals, Concept.ToS
+  Support that
+
+  class method
+  This (Support that)//factory
+
+  method Support #inner()
+    this.that()
+
+  method toS() this.that().toS()
+
+  method equals(that){
+    with that (on This return this.that().equals(that.that()) )
+    return Bool.false()
+    }
+
+  Support:{ implements Concept.ToS Concept.Equals
+
+    class method
+    This #from(S.SBuilder builder)
+
+    method
+    This +(This that)
+
+    method
+    This -(This that)
+
+    method
+    This *(This that)
+
+    method
+    This /(This that)
+
+    method
+    Bool ==(This that)
+
+    method
+    Bool <(This that)
+
+    method
+    Bool <=(This that)
+
+    method
+    Bool !=(This that)
+
+    method
+    Bool >(This that)
+
+    method
+    Bool >=(This that)
+
+    }
+//***********************
+  class method
+  mut S.SBuilder #builder()
+    S.SBuilder.empty()
+
+  class method
+  This #from(S.SBuilder builder)
+    This(Support.#from(builder:builder))
+
+
+  method
+  This +(This that)
+    This(this.that()+that.that())
+
+  method
+  This -(This that)
+    This(this.that()-that.that())
+
+  method
+  This *(Support that)
+    This(this.that()*that)
+
+  method
+  This /(Support that)
+    This(this.that()/that)
+
+  method
+  Bool ==(This that)
+    this.that()==that.that()
+
+  method
+  Bool <(This that)
+    this.that()<that.that()
+
+  method
+  Bool <=(This that)
+    this.that()<=that.that()
+
+  method
+  Bool !=(This that)
+    this.that()!=that.that()
+
+  method
+  Bool >(This that)
+    this.that()>that.that()
+
+  method
+  Bool >=(This that)
+    this.that()>=that.that()
+
+  method
+  Support divide(This that)
+    this.that()/that.that()
+  //*********
+  }
+NotValidSupport:Message.$<<{implements MetaGuard}
+NotSameSupport:Message.$<<{implements MetaGuard}
+NotValidUnit:Message.$<<{implements MetaGuard}
+
+class method
+Library of(class Any that) exception NotValidSupport{
+  return Data.Solid<<Refactor.Redirect(Path"Support" to:that)<<this.traitUnit()
+  exception on MetaGuard
+    NotValidSupport"The provided class is not a valid support class for a unit of measure: "[GetMyName(that)]""
+  }
+
+class method
+Library traitAnd(){
+    T1:{method S #inner()  class method This(S that) }
+    T2:{method S #inner()  class method This(S that) }
+    S:{ method This *(This that)  method This /(This that)}
+    method S #inner()  class method  This(S that)
+
+    class method
+    This (T1 that, T2 and)
+      This(that.#inner()*and.#inner())
+    method
+    T1 left(T2 right)
+      T1(this.#inner()/right.#inner())
+    method
+    T2 right(T1 left)
+      T2(this.#inner()/left.#inner())
+    }
+
+class method
+Library traitPer(){
+    T1:{method S #inner()  class method This(S that) }
+    T2:{method S #inner()  class method This(S that) }
+    S:{ method This *(This that)  method This /(This that)}
+    method S #inner()  class method  This(S that)
+
+    class method
+    This (T1 that, T2 per)
+      This(that.#inner()/per.#inner())
+
+    method
+    T1 left(T2 right)
+      T1(this.#inner()*right.#inner())
+
+    method
+    T1 right(T2 left)
+      T1(left.#inner()/this.#inner())
+    }
+
+
+class method
+Library of(class Any that, class Any and) exception NotValidUnit, NotSameSupport
+  this.of(c1:that,c2:and, trait:this.traitAnd())
+
+class method
+Library of(class Any that, class Any per) exception NotValidUnit, NotSameSupport
+  this.of(c1:that,c2:per, trait:this.traitPer())
+
+
+class method
+Library of(class Any c1, class Any c2,Library trait) exception NotValidUnit, NotSameSupport{
+  //check c1.#inner() and c2.#inner() are same type t
+  t1=Introspection(clazz:c1).method(Selector"#inner()").returnType()
+  exception on MetaGuard.MethodUnavailable
+    NotValidUnit"Provided class "[GetMyName(c1)]" do not offers 'method Support #inner()'"
+  t2=Introspection(clazz:c2).method(Selector"#inner()").returnType()
+  exception on MetaGuard.MethodUnavailable
+    NotValidUnit"Provided class "[GetMyName(c2)]" do not offers 'method Support #inner()'"
+  if t1.referencedPath()!=t2.referencedPath() (exception NotSameSupport
+    "Provided classes "[GetMyName(c1)]" and "[GetMyName(c2)]" have different supports."
+    )
+  t=t1 //==t2
+  res=Data.Solid<<Refactor.Redirect(Path"Support" toType:t)<<this.traitUnit()
+  var Library traitAnd=Refactor.Redirect(Path"S" toType:t)<<trait
+  traitAnd:=Refactor.Redirect(Path"T1" to:c1)<<traitAnd
+  traitAnd:=Refactor.Redirect(Path"T2" to:c2)<<traitAnd
+  return Use[res]<<traitAnd
+  exception on MetaGuard
+    NotValidUnit"The provided classes "[GetMyName(c1)]" and "[GetMyName(c2)]" are not  valid Unit classes."
+  }
+
+//Meter2:Unit(Meter and:Meter)
+//Meter2(m1 and:m2)
+//Speed:Unit(Meter on:Second)
+
+}

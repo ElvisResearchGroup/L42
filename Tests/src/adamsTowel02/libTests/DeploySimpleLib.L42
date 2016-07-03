@@ -1,0 +1,20 @@
+{reuse L42.is/AdamTowel02
+SimpleLib:{class method Library(){
+  reuse L42.is/AdamTowel02
+  MyLib:{//could be in another file
+    class method
+    Void printHelloWorld() Debug(S"Hello World Deployed")
+    }
+  }}
+Main:{
+  dl=Load.DeployLibrary(
+    path:Path"MyLib",
+    url:Url"localhost/DeployedSimpleLib.L42"
+    )<<SimpleLib()
+  return ExitCode.normal()
+}
+//Task:Load.DeployLibrary[
+//  Path"MyLib",
+//  url:Url"localhost/DeployedSimpleLib.L42"
+//  ]<<SimpleLib()
+}

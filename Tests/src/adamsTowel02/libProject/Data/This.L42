@@ -1,0 +1,43 @@
+{
+StateUnfit:Message.$<<{ implements MetaGuard}
+ //make state private will be another decorator now
+Invariant:...
+// dead alreay? useful for future?AddImmK:...
+Wither:...
+AddToS:...
+AddEquals:...
+
+Solid:{
+  //class, ToS ==, != required
+  class method Library solidTrait(){ implements
+        Concept.Classable, Concept.ToS, Concept.Equals //may be Parsable?
+    method is(subtype) {  with subtype (on class This return Bool.true()) return Bool.false()}
+    method classAny() This
+    read method class This class() This
+    method readableName() GetMyName(This)
+    method
+    Bool == (This that)
+    method
+    Bool !=(This that)
+    }
+  class method
+  Library<<(Library that) exception MetaGuard.ClassClash,MetaGuard.MethodClash
+    Extends[this.solidTrait()]<<that
+  }
+
+class method
+Library << (Library that)
+exception StateUnfit, MetaGuard
+ {
+  var Library res=that
+  res:=K<<res
+  res:=Wither<<res
+  res:=AddToS<<res
+  res:=AddEquals<<res
+  res:=Invariant<<res
+  res:=Solid<<res
+  return res
+  //data: toS == class named,  invariant, with  ---  Still missing: fromS, clone mutk
+  }
+
+}

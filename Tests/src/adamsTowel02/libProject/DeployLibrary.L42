@@ -1,0 +1,69 @@
+{(Path path,Url url)
+
+class method Library moveToAbstract(Path that,Library of){
+  return Refactor.RenamePath(
+    Path"PrImpl"++that to:Path"Abstract"++that)<<of
+  error on MetaGuard.NestedClassUnavailable (
+    available=Introspection(lib:of, path:Path"PrImpl").nestedClasses()
+    error on MetaGuard.NestedClassUnavailable
+      Assert.CodeNotReachable"DeployLibrary2"
+    Assert.ObservedBug"map and library mismatch on "[that]" available paths are "[
+      with av in available.vals() (
+        use[S.nl()++av.pathFromRoot().toS()(start:8N)]
+      )]""
+    )
+  error on MetaGuard
+    Assert.CodeNotReachable"DeployLibrary3"
+  }
+
+class method
+Library  exposeAsLibrary(Library that, Path path)
+exception
+    MetaGuard.NestedClassUnavailable,
+    MetaGuard.PrivacyCoupuled {
+  //Assert.$[path!=Path"This"]
+  this.checkTargetExists(that,path:path)//throws MetaGuard.NestedClassUnavailable
+  var Library res=that
+  Debug(S"1.1")
+  res:=Refactor.RenamePath(Path"This" to:Path"PrImpl")<<res
+  error on MetaGuard
+    Assert.CodeNotReachable"DeployLibrary1"
+  Debug(S"1.2")
+  with m in Introspection(lib:that, path:Path"ConceptMap").methods().vals() (
+    p=m.returnType().referencedPath().pathFromRoot()
+    res:=This.moveToAbstract(p of:res)
+    Debug(S"1.2b "[p]" renamed")
+    )
+  Debug(S"1.3")
+  res:=Refactor.RemoveImplementationPath(Path"Abstract")<<res//leak PrivacyCoupuled
+  Debug(S"1.4")
+  error on MetaGuard.MemberUnavailable
+    Assert.CodeNotReachable"DeployLibrary3"
+  res:=Refactor.RenamePath(Path"PrImpl"++path to:Path"This")<<res
+  Debug(S"1.5")
+  res:=Refactor.MakePrivatePath(Path"PrImpl")<<res
+  Debug(S"1.6")
+  return res
+  error on MetaGuard
+    Assert.CodeNotReachable"DeployLibrary4"
+  }
+class method
+Void checkTargetExists(Library that,Path path)
+exception MetaGuard.NestedClassUnavailable (
+  unused=Refactor.AddDocumentationPath(path doc:Introspection.Doc"JustToSeeIfItIsThere")<<that
+  error on MetaGuard.InvalidOnTopLevel
+    Assert.CodeNotReachable"DeployLibrary5"
+  void
+  )
+
+method
+Library <<(Library that)
+exception MetaGuard.NestedClassUnavailable, MetaGuard.PrivacyCoupuled {
+  Debug(S"1")
+  var Library res=This.exposeAsLibrary(that,path:this.path())
+  Debug(S"2")
+  res:=Optimize.RemoveUnreachableCode<<res
+  Debug(S"3")
+  return DeployTowel(fileName:this.url())<<res
+  }
+}

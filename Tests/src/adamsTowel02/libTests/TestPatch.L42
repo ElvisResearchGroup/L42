@@ -1,0 +1,41 @@
+{reuse L42.is/AdamTowel02
+
+C:Patch(Path"P")<<{
+  A:{class method Void foo()Debug(S"World")}
+  P:{
+    A:{class method Void foo() (Debug(S"Hello") this.#1foo() )}
+    B:{class method Void foo() (Debug(S"Hello-") A.#1foo() )}
+    }
+  }
+D:Patch(Path"P")<<{
+  A:{
+    class method A foo(A that)this.foo(that)
+    class method B bar(B that)this.bar(that)
+    }
+  B:{}
+  P:{
+    A:{
+      class method A foo(A that)that
+      class method B bar(B that)that
+      }       
+    B:{class method B bar(B that)that} 
+    }
+  }
+Main:{
+  Debug(S"
+  '[Defined output between][End of defined output]
+  '[End of output]
+  '
+  'Hello
+  'World
+  'Hello-
+  'World
+  '[End of defined output]
+  ")
+  C.A.foo()
+  C.B.foo()
+  Debug(S"[End of output]")
+  return ExitCode.normal()
+  }
+}
+

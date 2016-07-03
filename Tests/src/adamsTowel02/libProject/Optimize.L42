@@ -1,0 +1,9 @@
+{
+RemoveUnreachableCode:{
+  class method
+  Library << (Library that)
+    use SafeOperators
+      check removeUnreachableCode(that)
+      error System.Guard.PluginFailure"SafeOperators.removeUnreachableCode"
+  }
+}

@@ -1,0 +1,15 @@
+{reuse L42.is/AdamTowel02
+Lib:Load<<{reuse L42.is/DeployedSimpleLib}
+Main:{
+  Debug(S"
+  '[Defined output between][End of defined output]
+  '[End of output]
+  '
+  'Hello World Deployed
+  '[End of defined output]
+  ")
+  Lib.printHelloWorld()
+  Debug(S"[End of output]")
+  return ExitCode.normal()
+  }
+}

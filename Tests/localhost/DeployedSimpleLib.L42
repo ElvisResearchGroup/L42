@@ -1691,7 +1691,18 @@ This1.S localToAbsolute(This1.Concept.ToS fileName)
 class method 
 Void test(read This1.Concept.ToS that, read This1.Concept.ToS expected, This1.S message) 
 class method 
-Void test(read This1.Concept.ToS that, read This1.Concept.ToS expected) }
+Void test(read This1.Concept.ToS that, read This1.Concept.ToS expected) 
+Test:{/* Builder to look like a list and run a series of debug.test calls.
+ Does not actually make an instance or store the list of calls anywhere :-)
+*/
+class method 
+class This0 #seqBuilder() 
+class method 
+Void #from(class This0 seqBuilder) 
+class method 
+Void #add(read This2.Concept.ToS that, read This2.Concept.ToS expected) 
+class method 
+Void #add(read This2.Concept.ToS that, read This2.Concept.ToS expected, This2.S message) }}
 ConceptMap:{interface 
 method 
 This1.Alu _Alu() 

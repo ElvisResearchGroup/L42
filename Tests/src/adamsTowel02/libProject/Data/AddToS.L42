@@ -1,0 +1,89 @@
+{
+//no need to generate thoseN, S is just the string
+//else, generated ones:
+
+//initial delegation
+class method
+Library<<(Library that) {
+  return Use[that]<<this.toSTrait(Introspection(lib:that))
+  error on MetaGuard
+    Assert.CodeNotReachable"AddToS.<<"
+  }
+
+//code generation
+class method
+Library toSTrait(Introspection.NestedClass that) {
+  state=that.state()
+  if state.isEmpty() (error S"TODO")
+  fs=state.left()
+
+  //accumulation
+  acc=Use[with fn in fs.selector().names().vals(), ft in fs.parameterTypes().vals() (
+    fSel=Selector.fromS(fn++S"()")
+    // with meth in that.methods().vals() (    if meth.selector()==that (...)      )//we may want to see if we need to add an #
+    needClass=ft.isInterface()
+    var Library action=Refactor.Tools.specializeField(selector:fSel, type:ft,
+      forReadable:{
+          if !needClass (return {
+            read method S baseToS() S""[This.FN()]":"[This1.valToS(this.f())]""
+            FN:{class method S()}
+            T:{}
+            read method read T f()
+            })
+          return{
+            read method S baseToS() S""[This.FN()]":"[This1.nodeNameAndValToS(this.f())]""
+            FN:{class method S()}
+            T:{}
+            read method read T f()
+            }
+          }
+      forClass:{
+        read method S baseToS() S""[This.FN()]": class "[Introspection(clazz:this.f()).externalTypeToS()]""
+        FN:{class method S ()}
+        T:{}
+        read method class T f()
+        }
+      )
+   action:=Use[action]<<Refactor.RenamePath(Path"This" to:Path"FN")<<Resource(fn)
+   action:=Refactor.MakePrivatePath(Path"FN")<<action
+   use[action]
+    )]
+  lib=acc.foldLeft(resolver:{
+      read method S #1baseToS()
+      read method S #2baseToS()
+      read method S baseToS() S""[this.#1baseToS()]", "[this.#2baseToS()]""
+     })
+
+  //final wrapping
+  miniToS={ implements Concept.ToS
+    method toS() S"["[this.baseToS()]"]"
+    read method S baseToS() S""
+    }
+  //lib can override baseToS to provid the real behaviour, the empty baseToS is used for classes wiht no fields
+  return Refactor.MakePrivateSelector(Selector"baseToS()" of:Path"This")<<Extends[miniToS]<<lib
+  error on MetaGuard Assert.CodeNotReachable"AddToS.finalWrapping - MakePrivate"
+  }
+
+ class method
+ S nodeName(read Any that){
+   with that (on read Concept.Classable
+     return Introspection(clazz:that.classAny()).externalTypeToS()
+     )
+   return S"?"
+  }
+class method
+ S valToS(read Any that){
+   with that (on read Concept.ToS (
+     ts=that.toS()
+     if ts.beginsWith(S"[") ( return ts)
+     return S.doubleQuote()++ts++S.doubleQuote()
+     ))
+   return S"?"
+  }
+class method
+ S nodeNameAndValToS(read Any that){
+   S nn=this.nodeName(that)
+   S ts=this.valToS(that)
+   return nn++ts
+   }
+}

@@ -1,0 +1,150 @@
+{reuse L42.is/AdamTowel02
+
+Ns:Collections.vector(of:N)
+
+SplitList:Data<<{
+  implements S.Skip
+  var Ns initial
+  N remainder
+  
+  class method mut SplitList (N that)
+    This(initial:Ns.empty() remainder:that)
+    
+  method (that, index) {
+    if this.initial().isEmpty() (
+      return this.remainder()
+      )
+    ret = this.initial().left()
+    this.initial(this.initial().withoutLeft())
+    return ret
+    }
+  }
+  
+  NFromError:{
+  class method N (S that, capsule S.Skip skipper, N deflt) {
+    // We know that all of the errors are strings with a number in them.
+    // Run splitter over that, expecting an error with a number, and to return the number.
+    // If there is no error, or no number, debug a fail and return the default.
+    // If there is a non-string error, re-throw it.
+    
+    junk = that.split(skipper:skipper)
+    Debug(S"[FAIL] Unexpectedly no error from splitting '"[that]"'")
+    return deflt
+    
+    catch error Guard.Operation go (
+      e = go.text()
+      var S theNum = S""
+      digits = S"0123456789"
+      
+      // There could be a miracle, where multiple digit strings look like our expected result.
+      // Right now, I'm living with it.
+      with i in Range(e.size()) (
+        chr = e.val(i)
+        if digits.contains(chr) (
+          theNum := theNum++chr
+          )
+        )
+      
+      if 0N == theNum.size() (
+        Debug(S"[FAIL] No digits in error from splitting '"[that]"'; '"[e]"'")
+        return deflt
+        )
+        
+      return N.fromS(theNum)
+      )
+    
+    catch error Any e (
+      Debug(S"[FAIL]: split of '"[that]"' returned an error of unexpected type.")
+      error e
+      )
+    }
+    }
+
+Main:{
+
+  // First, test your test harness
+  mut SplitList sl0 = SplitList(initial:Ns[1N; N"-2"; 4N; N"-8"] remainder:5N)
+
+  Debug.Test[
+    sl0(S"" index:0N) expected:1N;
+    sl0(S"" index:100N) expected:N"-2";
+    sl0(S"" index:N"-100") expected:4N;
+    sl0(S"" index:50N) expected:(0N - 8N);
+    sl0(S"alpha" index:0N) expected:5N;
+    sl0(S"beta" index:0N) expected:5N;
+    sl0(S"gamma" index:0N) expected:5N;
+    ]
+  
+  Debug(S"SplitList with initial complete; sl0="[sl0]"")
+
+  mut SplitList sl1 = SplitList(42N)
+  
+  Debug.Test[
+    sl1(S"Ford" index:0N) expected:42N;
+    sl1(S"Prefect" index:N"-42") expected:42N;
+    sl1(S"Arthur" index:42N) expected:42N;
+    ]
+
+  Debug(S"SplitList without initial complete; sl1="[sl1]"")
+  
+  fifteen = S"abcdefghijklmno"
+  
+  Debug.Test[
+    fifteen.split(skipper:SplitList(1N))
+      expected:Strings[S"a";S"b";S"c";S"d";S"e";S"f";S"g";S"h";S"i";S"j";S"k";S"l";S"m";S"n";S"o"];
+    fifteen.split(skipper:SplitList(3N))
+      expected:Strings[S"abc";S"def";S"ghi";S"jkl";S"mno"];
+    fifteen.split(skipper:SplitList(5N))
+      expected:Strings[S"abcde";S"fghij";S"klmno"];
+      
+    fifteen.split(skipper:SplitList(N"-1")) expected:Strings[];
+    fifteen.split(skipper:SplitList(N"-3")) expected:Strings.empty();
+    fifteen.split(skipper:SplitList(N"-5")) expected:Strings[];
+    ]
+
+  Debug.Test[
+    fifteen.split(skipper:SplitList(initial:Ns[1N; N"-2"; 4N; N"-8";] remainder:0N)) 
+    expected:Strings[S"a";S"defg"];
+    fifteen.split(skipper:SplitList(initial:Ns[N"-1"; 2N; N"-4"; 8N] remainder:0N)) 
+      expected:Strings[S"bc";S"hijklmno"];
+    fifteen.split(skipper:SplitList(initial:Ns[8N; N"-4"; 2N; N"-1"] remainder:0N))
+      expected:Strings[S"abcdefgh"; S"mn";];
+    fifteen.split(skipper:SplitList(initial:Ns[N"-8"; 4N; N"-2"; 1N] remainder:0N))
+      expected:Strings[S"ijkl"; S"o"];
+    ]
+  
+  Debug(S"Binary power list tests complete.")
+  
+  Debug.Test[
+    fifteen.split(skipper:S.SkipChars(chars:S"ao")) expected:Strings[S"bcdefghijklmn"];
+    fifteen.split(skipper:S.SkipChars(chars:S"bcdefghijklmn")) expected:Strings[S"a"; S"o"];
+    fifteen.split(skipper:S.SkipChars(chars:S"b d f h j l n"))
+      expected:Strings[S"a"; S"c"; S"e"; S"g"; S"i"; S"k"; S"m"; S"o"];
+    fifteen.split(skipper:S.SkipChars(chars:S"abc ghi mno"))
+      expected:Strings[S"def";S"jkl";];
+    fifteen.split(skipper:S.SkipChars(chars:S"def jkl"))
+      expected:Strings[S"abc";S"ghi";S"mno";];
+      
+    // and, slightly arbitrarily, redo the last two with the usual interface, splitOn()
+    fifteen.splitOn(chars:S"abc ghi mno")
+      expected:Strings[S"def";S"jkl";];
+    fifteen.splitOn(chars:S"def jkl")
+      expected:Strings[S"abc";S"ghi";S"mno";];
+    ]
+    
+    // Failure to error tests
+    Debug.Test[
+      NFromError(fifteen, skipper:SplitList(initial:Ns[] remainder:0N) deflt:999N) expected:0N;
+      NFromError(fifteen, skipper:SplitList(initial:Ns[] remainder:N"-4") deflt:999N) expected:16N;
+      NFromError(fifteen, skipper:SplitList(initial:Ns[] remainder:6N) deflt:999N) expected:18N;
+      NFromError(fifteen, skipper:SplitList(initial:Ns[] remainder:N"-20") deflt:999N) expected:20N;
+      NFromError(fifteen, skipper:SplitList(initial:Ns[] remainder:99N) deflt:999N) expected:99N;
+      ]
+
+  Debug(S"All tests complete.")
+
+
+  return ExitCode.normal()
+  }
+  
+}
