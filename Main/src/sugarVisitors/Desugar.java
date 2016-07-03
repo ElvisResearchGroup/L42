@@ -77,6 +77,8 @@ import coreVisitors.IsCompiled;
 import coreVisitors.Visitor;
 import facade.Configuration;
 import facade.L42;
+import profiling.Timer;
+
 public class Desugar extends CloneVisitor{
   public static Expression of(Expression e){
     if(L42.path!=null){e=ReplaceDots.of(L42.path, e);}
@@ -111,8 +113,8 @@ public class Desugar extends CloneVisitor{
     assert cutPoint!=-1;
     char first=libName.charAt(cutPoint+1);
     if(Path.isValidPathStart(first)){
-    	return PrivateHelper.updatePrivateFamilies(classB);
-    	}//we assume is going to be
+        return PrivateHelper.updatePrivateFamilies(classB);
+        }//we assume is going to be
     // -desugared, well typed and with private names normalized //TODO: do we want to check?
     /*if(!IsCompiled.of(classB)){return classB;}//TODO: just to make test easier, should be an error in production
    //else, use the old, buggy name rename, to remove later
@@ -128,6 +130,7 @@ public class Desugar extends CloneVisitor{
     */return classB;
   }
   private void collectAllUsedLibs(Expression e) {
+    profiling.Timer.activate("sugarvisitors.collectAllUsed");
     e.accept(new CloneVisitor(){
       @Override
       public Expression visit(ClassReuse s) {
@@ -150,6 +153,7 @@ public class Desugar extends CloneVisitor{
         return super.visit(s);
       }
     });
+    profiling.Timer.deactivate("sugarvisitors.collectAllUsed");
   }
 
   HashMap<String,ast.ExpCore.ClassB> importedLibs=new HashMap<>();
