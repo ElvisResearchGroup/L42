@@ -122,7 +122,7 @@ public class TestHelper {
       fails++;
       index = s.indexOf(failString, index+1);
       }
-    if(fails > 0){fail(fails+ " error(s) have occured in the test cases!"); throw new Error();}
+    if(fails > 0){fail(fails+ " error(s) have occured in the test cases!\n"+s); throw new Error();}
   }
 
   public static void assertEqualExp(ExpCore e1,ExpCore e2){
