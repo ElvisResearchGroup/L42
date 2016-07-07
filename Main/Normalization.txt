@@ -1,21 +1,89 @@
-(using s instead of overbar, so cs::=c1..cn)
-e::=.... |L
-L::={implements Pis M1..Mn}
-M::=ms e |refine mh eOpt| mh eOpt | C:e
-Pi::= This^n.Cs
-p::=L0...Ln //representing This0,...,Thisn
-Normalization will be called before type checking:
-when we today we do
-e -->_p* _  (metaprogramming)
-We will do:
-(1)p'=p # Pis, e'=norm(p',e) with Pis=usedPaths_p(e)//recursive in p
-(2)|- p':ok Pis, p';exception Any|-e':Library //all exceptions allowed 
-(3)e'-->_p'*L 
-or 
-(4)e'-->_p'* error/exception v
+Ashii notation:
+using s instead of overbar, so cs::=c1..cn
+-->p is p under the arrow
+a^i is a apex i, ai or a_i is a pedex i
+[] is the hole
+a^b extract the element of form b from a, for example (C:e1)^e=e1
+a[with b=b1] replace the element of form b in a with a new b
+a[b=c2] when b in dom(a), a(b)=c1 modify a so that a(b)=c2
+ 
 
-Step 1 is the new one
-usedPaths_p(e) already defined
+----------------------------
+Core language grammar
+e::=.... |L
+ctxC::=[] | eC.m( (x=eC)s x=ctxC, (x=e)s)| .... // compilation context, e=ctxC[L] selects an L where all the former Ls are LC. The context do not enter in libraries
+L::={interfaceOpt implements Pis M1..Mn}
+M::=ms e |refine mh eOpt| mh eOpt | C:e
+Ldom::=ms|C
+Pi::= This^n.Cs //is pronounced "Path"
+T::= mdf Pi | Pi::mss| Pi::mss::x
+LC::={implements Pis MC1..MCn}  //library compiled
+MC::=refine mh eCOpt| mh eCOpt | C:LC
+eC::=.... |LC
+TC::=mdf Pi// used in eC, MC and LC, and all Pi normalized w.r.t. a program
+r::=LC| exception v | error v
+//notice how every LC is a special kind of L (barnotation has structural subtyping)
+
+
+-----------
+program grammar
+//if we want a full information program, with i nat number we need:
+p::=L0,L1->Ldom1,ctxC1,...Ln->Ldomn,ctxCn //representing This0,...,Thisn
+pRest::=L1->Ldom1,ctxC1,...Ln->Ldomn,ctxCn
+fullPi::=(Ldom,ctxC)s
+//equivalence between p and (Ln,fullPi), that is all the other L0..L(n-1) are cached?
+//going this way would require/allow to write better CloneWthPath/Locator
+//to enforce the equivalence all the time we may have an updateTop operation, that do the hard work level by level.
+p.update(L), p.pop(), p.push(fullPi)/p.push(Ldom,ctxC) //currently push(L) is supported and should be removed
+Operation definitions:
+
+POP
+- (L,L0->Ldom0,ctxC0,pRest).pop()=L0,pRest
+
+PUSH
+- (L0,pRest).push(Ldom,ctxC)=L,L0->Ldom,ctxC,pRest
+ with
+ L0(Ldom)=M
+ e^M=ctxC1[L]
+
+UPDATE
+- L0.update(L)=L
+- p.update(L)=p'.push(Ldom1,ctxC1)
+ with
+ p=L0,L1->Ldom1,ctxC1,pRest
+ L1(Ldom1)=M
+ e^M=ctxC1[L0]
+ M'=M[with e=ctxC1[L]]
+ L'=[Ldom1=M']
+ p'=p.pop().update(L')
+ 
+ 
+----------------------
+ReductionTop:
+at top level we have a L not of form LC
+
+          eC-->p* r             L={_ implements Pis, MCs  C:e Ms}
+(top)------------------------   e not of form LC
+     L,pRest-->L'[C=r],pRest    Pis=usedPaths(p,e)
+                                eC=norm(L,pRest,e)
+                                p=L',pRest'=L,pRest # Pis
+                                p;exception Any; empty|-eC: imm Library
+
+                                 p=L,pRest
+      p.push(Ldom^M, ctxC)-->p'  L={_ implements Pis, MCs  M Ms}
+(met)-------------------------   M not of form MC
+        p-->p'.pop()             e^M=ctxC[L], L not of form LC
+
+
+                                 p=L,pRest
+                                 L={_ implements Pis, MCs  M Ms}
+(nrm)-------------------------   M not of form MC
+     p-->p.update(L(ms^M=M')     all L in e^M are of form LC
+                                 M'=norm(p,M)
+                                
+usedPaths_p(e)//recursive in p
+
+
 define # and norm
 
 define #
@@ -33,29 +101,29 @@ define #
  define norm(p,e)=e
  
  -norm(p,*localBindingDecl*)= use resolve(p,T)=T' on scheletal types.
- -norm(p,L)=  L={implements Pis M1'...Mn'}
-  L={implements Pis M1..Mn}
-  L'={implements collect(p,Pis) M1...Mn}
+ -norm(p,L)=  L={interfaceOpt implements Pis M1'...Mn'}
+  L={interfaceOpt implements Pis M1..Mn}
+  L'={interfaceOpt implements collect(p,Pis) M1...Mn}
   Mi'=norm(p L', Mi)
   -collect(p,empty)=empty
   -collect(p,Pi Pis)=Pis' if collect(p,Pis)=Pis' and Pi in Pis'
-  else collect(p,Pi Pis)=Pis' U Pis''[from Pi] if collect(p,Pis)=Pis' and p(Pi)={implements Pis'' _}
+  else collect(p,Pi Pis)=Pis' U Pis''[from Pi] if collect(p,Pis)=Pis' and p(Pi)={_ implements Pis'' _}
   //should be just collecting or should also check for multiple declaration points for methods? how?
   //how to interpret the result as a set if we do not know the nesting?
   //should norm also normalize the paths?
   //should we let the type system check that?
   
  -norm(p,ms e)=norm(p,refine mh e) 
-    p= _ {implements Pis _}
+    p= {_ implements Pis _},_
     mh= MhOf(p,Pis,ms)//here is recovering type info
     
  -norm(p,refine mh eOpt)= refine resolve(p,mh) norm(p,eOpt)
-    p= _ {implements Pis _}
+    p= {_ implements Pis _}, _
     mh=~= MhOf(p,Pis,ms^mh)//here check is refined well, that is all equal except return type,
     // no subtyping check on return type 
     
  -norm(p,mh eOpt)= resolve(p,mh) norm(p,eOpt)
-    p= _ {implements Pis _}
+    p={_ implements Pis _}, _
     undefined MhOf(p,Pis,ms^mh)//check is not an implemented method
  
  -norm(p, C:e) =C:norm(p,e)//assume we can cache if e is already normalized and avoiding repeating
