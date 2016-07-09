@@ -19,7 +19,7 @@ a[b=c2] when b in dom(a), a(b)=c1 modify a so that a(b)=c2
 
 ----------------------------
 Core language grammar
-e::=.... |L
+e::=.... |L //pg1 start of https://github.com/ElvisResearchGroup/L42Docs/blob/master/Formal/Formal.pdf
 ctxC::=[] | eC.m( (x=eC)s x=ctxC, (x=e)s)| .... // compilation context, e=ctxC[L] selects an L where all the former Ls are LC. The context do not enter in libraries
 L::={interface? implements Ps M1..Mn}
 M::=ms e |refine mh e?| mh e? | C:e
@@ -41,8 +41,8 @@ VarEnv::=(x:T)s
 
 program grammar
 //if we want a full information program, with i nat number we need:
-p::=L0,L1->Ldom1,ctxC1,...Ln->Ldomn,ctxCn //representing This0,...,Thisn
-pRest::=L1->Ldom1,ctxC1,...Ln->Ldomn,ctxCn
+p::=L0;L1->Ldom1,ctxC1;...;Ln->Ldomn,ctxCn //representing This0,...,Thisn
+pRest::=L1->Ldom1,ctxC1;...;Ln->Ldomn,ctxCn
 fullP::=(Ldom,ctxC)s
 
 We define functional notation for
