@@ -1,10 +1,19 @@
-Ashii notation:
+ASCII rendering of horizontal bar notation:
+Letters i,j,k,m,n are integers;
+usually indices into sequences or length of sequences
+
 using s instead of overbar, so cs::=c1..cn
 -->p is p under the arrow
 a^i is a apex i, ai or a_i is a pedex i
 [] is the hole
-a^b extract the element of form b from a, for example (C:e1)^e=e1
-a[with b=b1] replace the element of form b in a with a new b
+a^b extract the element of form a from b, for example e^(C:e1)=e1.
+More precise: a term of a grammar is a tree of nodes and terminals.
+The root-most node of "b" that can be represented with the metavariable "a"
+is produced.  
+
+a[with b=b1] replace the element of form b in a with a new b,
+so that b^(a[with b=b1]) = b1
+
 a[b=c2] when b in dom(a), a(b)=c1 modify a so that a(b)=c2
  
 
