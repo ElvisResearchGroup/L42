@@ -5,7 +5,7 @@ usually indices into sequences or length of sequences
 using s instead of overbar, so cs::=c1..cn
 -->p is p under the arrow
 a^i is a apex i, ai or a_i is a pedex i
-[] is the hole
+[] is the hole/square
 a^b extract the element of form a from b, for example e^(C:e1)=e1.
 More precise: a term of a grammar is a tree of nodes and terminals.
 The root-most node of "b" that can be represented with the metavariable "a"
@@ -21,29 +21,39 @@ a[b=c2] when b in dom(a), a(b)=c1 modify a so that a(b)=c2
 Core language grammar
 e::=.... |L
 ctxC::=[] | eC.m( (x=eC)s x=ctxC, (x=e)s)| .... // compilation context, e=ctxC[L] selects an L where all the former Ls are LC. The context do not enter in libraries
-L::={interfaceOpt implements Pis M1..Mn}
-M::=ms e |refine mh eOpt| mh eOpt | C:e
+L::={interface? implements Ps M1..Mn}
+M::=ms e |refine mh e?| mh e? | C:e
 Ldom::=ms|C
-Pi::= This^n.Cs //is pronounced "Path"
-T::= mdf Pi | Pi::mss| Pi::mss::x
-LC::={implements Pis MC1..MCn}  //library compiled
-MC::=refine mh eCOpt| mh eCOpt | C:LC
+P::= This^n.Cs //is pronounced "Path"
+T::= mdf P | P::mss| P::mss::x
+LC::={implements Ps MC1..MCn}  //library compiled
+MC::=refine mh eC?| mh eC? | C:LC
 eC::=.... |LC
-TC::=mdf Pi// used in eC, MC and LC, and all Pi normalized w.r.t. a program
+TC::=mdf P// used in eC, MC and LC, and all P normalized w.r.t. a program
 r::=LC| exception v | error v
 //notice how every LC is a special kind of L (barnotation has structural subtyping)
 
 
+
 -----------
+type environment:
+VarEnv::=(x:T)s
+
 program grammar
 //if we want a full information program, with i nat number we need:
 p::=L0,L1->Ldom1,ctxC1,...Ln->Ldomn,ctxCn //representing This0,...,Thisn
 pRest::=L1->Ldom1,ctxC1,...Ln->Ldomn,ctxCn
-fullPi::=(Ldom,ctxC)s
-//equivalence between p and (Ln,fullPi), that is all the other L0..L(n-1) are cached?
+fullP::=(Ldom,ctxC)s
+
+We define functional notation for
+L and LC (over Ldom domain),
+p (indexes)
+VarEnv (var names)
+
+//equivalence between p and (Ln,fullP), that is all the other L0..L(n-1) are cached?
 //going this way would require/allow to write better CloneWthPath/Locator
 //to enforce the equivalence all the time we may have an updateTop operation, that do the hard work level by level.
-p.update(L), p.pop(), p.push(fullPi)/p.push(Ldom,ctxC) //currently push(L) is supported and should be removed
+p.update(L), p.pop(), p.push(fullP)/p.push(Ldom,ctxC) //currently push(L) is supported and should be removed
 Operation definitions:
 
 POP
@@ -71,21 +81,21 @@ UPDATE
 ReductionTop:
 at top level we have a L not of form LC
 
-          eC-->p* r             L={_ implements Pis, MCs  C:e Ms}
+          eC-->p* r             L={_ implements Ps, MCs  C:e Ms}
 (top)------------------------   e not of form LC
-     L,pRest-->L'[C=r],pRest    Pis=usedPaths(p,e)
+     L,pRest-->L'[C=r],pRest    Ps=usedPaths(p,e)
                                 eC=norm(L,pRest,e)
-                                p=L',pRest'=L,pRest # Pis
+                                p=L',pRest'=L,pRest # Ps
                                 p;exception Any; empty|-eC: imm Library
 
                                  p=L,pRest
-      p.push(Ldom^M, ctxC)-->p'  L={_ implements Pis, MCs  M Ms}
+      p.push(Ldom^M, ctxC)-->p'  L={_ implements Ps, MCs  M Ms}
 (met)-------------------------   M not of form MC
         p-->p'.pop()             e^M=ctxC[L], L not of form LC
 
 
                                  p=L,pRest
-                                 L={_ implements Pis, MCs  M Ms}
+                                 L={_ implements Ps, MCs  M Ms}
 (nrm)-------------------------   M not of form MC
      p-->p.update(L(ms^M=M')     all L in e^M are of form LC
                                  M'=norm(p,M)
@@ -96,7 +106,7 @@ usedPaths_p(e)//recursive in p
 define # and norm
 
 define #
-- p#Pis = p#Csss, where Csss is  Pis organized as list of list of Cs, such that for every Csi,Csj in a Css in Csss, Csi prefix of Csj iff i=j
+- p#Ps = p#Csss, where Csss is  Ps organized as list of list of Cs, such that for every Csi,Csj in a Css in Csss, Csi prefix of Csj iff i=j
 - p#empty = p
 - L,p # css, csss = L',(p # csss)
  css = cs1..csn
@@ -110,33 +120,33 @@ define #
  define norm(p,e)=e
  
  -norm(p,*localBindingDecl*)= use resolve(p,T)=T' on scheletal types.
- -norm(p,L)=  L={interfaceOpt implements Pis M1'...Mn'}
-  L={interfaceOpt implements Pis M1..Mn}
-  L'={interfaceOpt implements collect(p,Pis) M1...Mn}
+ -norm(p,L)=  L={interface? implements Ps M1'...Mn'}
+  L={interface? implements Ps M1..Mn}
+  L'={interface? implements collect(p,Ps) M1...Mn}
   Mi'=norm(p L', Mi)
   -collect(p,empty)=empty
-  -collect(p,Pi Pis)=Pis' if collect(p,Pis)=Pis' and Pi in Pis'
-  else collect(p,Pi Pis)=Pis' U Pis''[from Pi] if collect(p,Pis)=Pis' and p(Pi)={_ implements Pis'' _}
+  -collect(p,P Ps)=Ps' if collect(p,Ps)=Ps' and P in Ps'
+  else collect(p,P Ps)=Ps' U Ps''[from P] if collect(p,Ps)=Ps' and p(P)={_ implements Ps'' _}
   //should be just collecting or should also check for multiple declaration points for methods? how?
   //how to interpret the result as a set if we do not know the nesting?
   //should norm also normalize the paths?
   //should we let the type system check that?
   
  -norm(p,ms e)=norm(p,refine mh e) 
-    p= {_ implements Pis _},_
-    mh= MhOf(p,Pis,ms)//here is recovering type info
+    p= {_ implements Ps _},_
+    mh= MhOf(p,Ps,ms)//here is recovering type info
     
- -norm(p,refine mh eOpt)= refine resolve(p,mh) norm(p,eOpt)
-    p= {_ implements Pis _}, _
-    mh=~= MhOf(p,Pis,ms^mh)//here check is refined well, that is all equal except return type,
+ -norm(p,refine mh e?)= refine resolve(p,mh) norm(p,e?)
+    p= {_ implements Ps _}, _
+    mh=~= MhOf(p,Ps,ms^mh)//here check is refined well, that is all equal except return type,
     // no subtyping check on return type 
     
- -norm(p,mh eOpt)= resolve(p,mh) norm(p,eOpt)
-    p={_ implements Pis _}, _
-    undefined MhOf(p,Pis,ms^mh)//check is not an implemented method
+ -norm(p,mh e?)= resolve(p,mh) norm(p,e?)
+    p={_ implements Ps _}, _
+    undefined MhOf(p,Ps,ms^mh)//check is not an implemented method
  
  -norm(p, C:e) =C:norm(p,e)//assume we can cache if e is already normalized and avoiding repeating
  
- -MhOf(p,Pis,ms)=mh[from Pi]
-   exists unique Pi in Pis such that
-     p(Pi)=L, L(ms)=mh//not sure is matematically ok...
+ -MhOf(p,Ps,ms)=mh[from P]
+   exists unique P in Ps such that
+     p(P)=L, L(ms)=mh//not sure is matematically ok...
