@@ -44,8 +44,8 @@ VarEnv::=(x:T)s
 
 program grammar
 //if we want a full information program, with i nat number we need:
-p::=L0;L1->Ldom1,ctxC1;...;Ln->Ldomn,ctxCn //representing This0,...,Thisn
-pRest::=L1->Ldom1,ctxC1;...;Ln->Ldomn,ctxCn
+p::=L0;L1,Ldom1,ctxC1;...;Ln,Ldomn,ctxCn //representing This0,...,Thisn
+pRest::=L1,Ldom1,ctxC1;...;Ln,Ldomn,ctxCn
 fullP::=(Ldom,ctxC)s
 /*--- James proposed representation:
 ctxL::= {interface? MCs ctxM Ms}
@@ -72,19 +72,19 @@ p.update(L), p.pop(), p.push(fullP)/p.push(Ldom,ctxC) //currently push(L) is sup
 Operation definitions:
 
 POP
-- (L,L0->Ldom0,ctxC0,pRest).pop()=L0,pRest
+- (L;L0,Ldom0,ctxC0;pRest).pop()=L0;pRest
 
 PUSH
-- (L0,pRest).push(Ldom,ctxC)=L,L0->Ldom,ctxC,pRest
+- (L0,pRest).push(Ldom,ctxC)=L;L0,Ldom,ctxC;pRest
  with
  L0(Ldom)=M
- e^M=ctxC1[L]
+ e^M=ctxC[L]
 
 UPDATE
 - L0.update(L)=L
 - p.update(L)=p'.push(Ldom1,ctxC1)
  with
- p=L0,L1->Ldom1,ctxC1,pRest
+ p=L0;L1,Ldom1,ctxC1;pRest
  L1(Ldom1)=M
  e^M=ctxC1[L0]
  M'=M[with e=ctxC1[L]]
