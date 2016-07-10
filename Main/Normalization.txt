@@ -44,7 +44,16 @@ program grammar
 p::=L0;L1->Ldom1,ctxC1;...;Ln->Ldomn,ctxCn //representing This0,...,Thisn
 pRest::=L1->Ldom1,ctxC1;...;Ln->Ldomn,ctxCn
 fullP::=(Ldom,ctxC)s
-
+/*--- James proposed representation:
+ctxL::= {interface? MCs ctxM Ms}
+ctxM::= C: ctxC |ms ctxC | refine? mh ctxC
+p::= ctxL0; ctxLs // ctxL0 of form {interface? Mcs C:[] Ms}
+Not sure what is more convenient to support
+p.update(L/ctxL)=p',
+p.pop()=p',
+p.push(L/ctxL)=p'
+and p(i)=L/ctxL  
+--*/
 We define functional notation for
 L and LC (over Ldom domain),
 p (indexes)
