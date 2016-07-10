@@ -107,13 +107,13 @@ at top level we have a L not of form LC
                                   p=L,pRest
       p.push(Ldom^M, ctxC)==> p'  L={_ implements Ps, MCs  M Ms}
 (met)-------------------------    M not of form MC
-        p ==> p'.pop()            e^M=ctxC[L], L not of form LC
+        p ==> p'.pop()            e^M=ctxC[L'], L' not of form LC
 
 
                                  p=L,pRest
                                  L={_ implements Ps, MCs  M Ms}
 (nrm)-------------------------   M not of form MC
-     p ==> p.update(L(ms^M=MC)   all L in e^M are of form LC
+     p ==> p.update(L[ms^M=MC])  all L in e^M are of form LC
                                  MC=norm(p,M)
               
 
