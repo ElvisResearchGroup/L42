@@ -96,13 +96,13 @@ UPDATE
 ReductionTop:
 at top level we have a L not of form LC
 
-          eC-->p* r             L={_ implements Ps, MCs  C:e Ms}
+          eC-->p+ r             L={_ implements Ps, MCs  C:e Ms}
 (top)------------------------   e not of form LC
      L,pRest-->L'[C=r],pRest'   eC=norm(L,pRest,e)
                                 Ps=usedPaths(p,eC)
                                 p=L',pRest'=L,pRest # Ps
                                 p;exception Any; empty|-eC: imm Library
-                                |-p:ok
+                                |-p:Ps
 
                                  p=L,pRest
       p.push(Ldom^M, ctxC)-->p'  L={_ implements Ps, MCs  M Ms}
