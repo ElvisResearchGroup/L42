@@ -1,8 +1,11 @@
 ASCII rendering of horizontal bar notation:
 Letters i,j,k,m,n are integers;
 usually indices into sequences or length of sequences
+U is the set union,
+\ is the set subtraction
+we use disjoint and intersection as words.
 
-using s instead of overbar, so cs::=c1..cn
+using s instead of overbar, so Cs::=C1..Cn
 -->p is p under the arrow
 a^i is a apex i, ai or a_i is a pedex i
 [] is the hole/square
@@ -47,12 +50,15 @@ fullP::=(Ldom,ctxC)s
 /*--- James proposed representation:
 ctxL::= {interface? MCs ctxM Ms}
 ctxM::= C: ctxC |ms ctxC | refine? mh ctxC
-p::= ctxL0; ctxLs // ctxL0 of form {interface? Mcs C:[] Ms}
+p::= ctxL0; ctxLs // ctxL0 of form {interface? MCs C:[] Ms}
 Not sure what is more convenient to support
 p.update(L/ctxL)=p',
 p.pop()=p',
 p.push(L/ctxL)=p'
 and p(i)=L/ctxL  
+James notation seams to be better/simpler at push,
+discuss if p.pop().push(ctxL)==p.update(ctxL) in jamesNotation.
+how to do a p.navigateIn(Cs) where Cs is a path local to p(0)?
 --*/
 We define functional notation for
 L and LC (over Ldom domain),
@@ -92,8 +98,8 @@ at top level we have a L not of form LC
 
           eC-->p* r             L={_ implements Ps, MCs  C:e Ms}
 (top)------------------------   e not of form LC
-     L,pRest-->L'[C=r],pRest    Ps=usedPaths(p,e)
-                                eC=norm(L,pRest,e)
+     L,pRest-->L'[C=r],pRest    eC=norm(L,pRest,e)
+                                Ps=usedPaths(p,eC)
                                 p=L',pRest'=L,pRest # Ps
                                 p;exception Any; empty|-eC: imm Library
 
@@ -108,23 +114,32 @@ at top level we have a L not of form LC
 (nrm)-------------------------   M not of form MC
      p-->p.update(L(ms^M=M')     all L in e^M are of form LC
                                  M'=norm(p,M)
-                                
-usedPaths_p(e)//recursive in p
+              
 
+------------------------------------------
 
+- eC inside eC' if eC'=ctxC[eC]      
+
+usedPaths(p,eC)//recursive in p
+- usedPaths(p,eC)=Ps U 
+  Ps={P|P inside eC}
+  Csss= reorganized Ps 
+  usedPaths(p,Csss)
+  ???
+  
 define # and norm
 
 define #
 - p#Ps = p#Csss, where Csss is  Ps organized as list of list of Cs, such that for every Csi,Csj in a Css in Csss, Csi prefix of Csj iff i=j
 - p#empty = p
-- L,p # css, csss = L',(p # csss)
- css = cs1..csn
- pi = p,L#csi
- Li = norm(pi,L(csi))
- L' = L[cs1=L1..csn=Ln] //replace the nested classes in paths csi with libraries Li.
- 
-- L#(Cs.C) = (L#Cs),L(Cs.C)
-- L#empty = L
+- p # Css, Csss = L',(p.pop() # Csss).push(L')
+ Css = Cs1..Csn
+ pi = p.navigateIn(Csi)
+ Li = norm(pi,pi(0))
+ L' = p(0)[Cs1=L1..Csn=Ln] //replace the nested classes in paths Csi with libraries Li.
+
+-p.navigateIn(empty)=p
+-p.navigateIn(C.CS)=????//how to do it in your repr? 
  
  define norm(p,e)=e
  
