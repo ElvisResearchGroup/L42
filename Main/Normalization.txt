@@ -98,19 +98,19 @@ at top level we have a L not of form LC
 
           eC -->p+ r             L={_ implements Ps, MCs  C:e Ms}
 (top)------------------------    e not of form LC
-     L,pRest ==> L'[C=r],pRest'  eC=norm(L,pRest,e)
-                                 Ps=usedPaths((L,pRest),eC)
-                                 p=L',pRest'=L,pRest # Ps
+     L;pRest ==> L'[C=r];pRest'  eC=norm(L;pRest,e)
+                                 Ps=usedPaths((L;pRest),eC)
+                                 p=L';pRest'=L;pRest # Ps
                                  p;exception Any; empty|-eC: imm Library
                                  |-p:Ps
 
-                                  p=L,pRest
+                                  p=L;pRest
       p.push(Ldom^M, ctxC)==> p'  L={_ implements Ps, MCs  M Ms}
 (met)-------------------------    M not of form MC
         p ==> p'.pop()            e^M=ctxC[L'], L' not of form LC
 
 
-                                 p=L,pRest
+                                 p=L;pRest
                                  L={_ implements Ps, MCs  M Ms}
 (nrm)-------------------------   M not of form MC
      p ==> p.update(L[ms^M=MC])  all L in e^M are of form LC
