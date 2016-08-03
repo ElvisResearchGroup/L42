@@ -3,13 +3,22 @@ Letters i,j,k,m,n are integers;
 usually indices into sequences or length of sequences
 U is the set union,
 \ is the set subtraction
-we use disjoint and intersection as words.
+we use "and" "or" "disjoint" and "intersection" as words.
 "empty" is the emptyset/sequence etc.
 
 using s instead of overbar, so Cs::=C1..Cn
 -->p is p under the arrow
-a^i is a apex i, ai or a_i is a pedex i
+a^i is a apex i, ai is a pedex i
 [] is the hole/square
+
+in latex we use two different fonts for "(" of the grammar and for
+"(" used for disambiguation. here we just hope is clear :/
+
+General Notations:
+
+When a term of the grammar can be accessed with functional notation,
+as in a(b), then dom(a) is {b | a(b) is defined}
+
 a^b extract the element of form a from b, for example e^(C:e1)=e1.
 More precise: a term of a grammar is a tree of nodes and terminals.
 The root-most node of "b" that can be represented with the metavariable "a"
@@ -24,17 +33,22 @@ a[b=c2] when b in dom(a), a(b)=c1 modify a so that a(b)=c2
 ----------------------------
 Core language grammar
 e::=.... |L //pg1 start of https://github.com/ElvisResearchGroup/L42Docs/blob/master/Formal/Formal.pdf
-ctxC::=[] | eC.m( (x=eC)s x=ctxC, (x=e)s)| .... // compilation context, e=ctxC[L] selects an L where all the former Ls are LC. The context do not enter in libraries
 L::={interface? implements Ps M1..Mn}
 M::=ms e |refine mh e?| mh e? | C:e
 Ldom::=ms|C
 P::= This^n.Cs //is pronounced "Path"
 T::= mdf P | P::mss| P::mss::x
+
 LC::={implements Ps MC1..MCn}  //library compiled
 MC::=refine mh eC?| mh eC? | C:LC
 eC::=.... |LC
 TC::=mdf P// used in eC, MC and LC, and all P normalized w.r.t. a program
 r::=LC| exception v | error v
+
+ctxC::=[] | eC.m( (x=eC)s x=ctxC, (x=e)s)| .... // compilation context, e=ctxC[L] selects an L where all the former Ls are LC. The context do not enter in libraries
+ctxL::= {interface? MCs ctxM Ms}
+ctxM::= C: ctxC |ms ctxC | refine? mh ctxC
+
 //notice how every LC is a special kind of L (barnotation has structural subtyping)
 
 
@@ -44,80 +58,70 @@ type environment:
 VarEnv::=(x:T)s
 
 program grammar
-//if we want a full information program, with i nat number we need:
-p::=L0;L1,Ldom1,ctxC1;...;Ln,Ldomn,ctxCn //representing This0,...,Thisn
-pRest::=L1,Ldom1,ctxC1;...;Ln,Ldomn,ctxCn
-fullP::=(Ldom,ctxC)s
-/*--- James proposed representation:
-ctxL::= {interface? MCs ctxM Ms}
-ctxM::= C: ctxC |ms ctxC | refine? mh ctxC
-p::= ctxL0; ctxLs // ctxL0 of form {interface? MCs C:[] Ms}
-Not sure what is more convenient to support
-p.update(L/ctxL)=p',
-p.pop()=p',
-p.push(L/ctxL)=p'
-and p(i)=L/ctxL  
-James notation seams to be better/simpler at push,
-discuss if p.pop().push(ctxL)==p.update(ctxL) in jamesNotation.
-how to do a p.navigateIn(Cs) where Cs is a path local to p(0)?
---*/
+
+p::=L0;ctxLs //representing This0,...,Thisn
+
+program operations:
+-pop
+ (L,ctxL,ctxLs).pop()=ctxL[L],ctxLs
+
+-push
+ (ctxL[L],ctxLs).push(ctxL,L)=L,ctxL,ctxLs
+
+-top
+ p.top()=p.get(0)
+ 
+-update top
+ (L,ctxLs).top(L')=L',ctxLs
+
+-get(n)
+ (L,_).get(0)=L
+ p.get(n+1)=p.pop().get(n)
+
+-push(C)
+ (L,ctxLs).push(C)=L',ctxL,ctxLs
+   with ctxL[L']=L and ctxL(C)=[]
+-navigate(P)
+ p.navigate(Outer^n.C1..Ck)=p.pop()...pop().push(C1)...push(Ck) //with n pops
+    
+//Note for marco: equivalence between p and (Ln,fullP), that is all the other L0..L(n-1) are cached?
+//going this way would require/allow to write better CloneWthPath/Locator
+//to enforce the equivalence all the time we may have an updateTop operation, that do the hard work level by level.
+//p.update(L), p.pop(), p.push(fullP)/p.push(Ldom,ctxC) //currently push(L) is supported and should be removed
+
+
+---------
 We define functional notation for
 L and LC (over Ldom domain),
 p (indexes)
 VarEnv (var names)
 
-//equivalence between p and (Ln,fullP), that is all the other L0..L(n-1) are cached?
-//going this way would require/allow to write better CloneWthPath/Locator
-//to enforce the equivalence all the time we may have an updateTop operation, that do the hard work level by level.
-p.update(L), p.pop(), p.push(fullP)/p.push(Ldom,ctxC) //currently push(L) is supported and should be removed
-Operation definitions:
 
-POP
-- (L;L0,Ldom0,ctxC0;pRest).pop()=L0;pRest
-
-PUSH
-- (L0;pRest).push(Ldom,ctxC)=L;L0,Ldom,ctxC;pRest
- with
- L0(Ldom)=M
- e^M=ctxC[L]
-
-UPDATE
-- L0.update(L)=L
-- p.update(L)=p'.push(Ldom1,ctxC1)
- with
- p=L0;L1,Ldom1,ctxC1;pRest
- L1(Ldom1)=M
- e^M=ctxC1[L0]
- M'=M[with e=ctxC1[L]]
- L'=[Ldom1=M']
- p'=p.pop().update(L')
- 
- 
 ----------------------
 ReductionTop:
 at top level we have a L not of form LC
-
-          eC -->p+ r             L={_ implements Ps, MCs  C:e Ms}
+ 
+          eC -->p+ r             p'.top()={_ implements Ps, MCs  C:e Ms}
 (top)------------------------    e not of form LC
-     L;pRest ==> L'[C=r];pRest'  eC=norm(L;pRest,e)
-                                 Ps=usedPaths((L;pRest),eC)
-                                 p=L';pRest'=L;pRest # Ps
+     p' ==> p.top(p.top()[C=r])  eC=norm(p',e)
+                                 Ps=usedPaths(p',eC)
+                                 p=p' # Ps
                                  p;exception Any; empty|-eC: imm Library
                                  |-p:Ps
 
-                                  p=L;pRest
-      p.push(Ldom^M, ctxC)==> p'  L={_ implements Ps, MCs  M Ms}
+                                  ctxL={_ implements Ps, MCs  M[with e=ctxC] Ms}
+      p.push(ctxL, L)==> p'       p.top()={_ implements Ps, MCs  M Ms}
 (met)-------------------------    M not of form MC
-        p ==> p'.pop()            e^M=ctxC[L'], L' not of form LC
+        p ==> p'.pop()            e^M=ctxC[L], L not of form LC
 
 
-                                 p=L;pRest
-                                 L={_ implements Ps, MCs  M Ms}
+                                 
+                                 p.top()=L={_ implements Ps, MCs  M Ms}
 (nrm)-------------------------   M not of form MC
      p ==> p.update(L[ms^M=MC])  all L in e^M are of form LC
                                  MC=norm(p,M)
               
-
+//Fixed new program notation up to here
 ------------------------------------------
 
 - eC inside eC' if eC'=ctxC[eC]      
