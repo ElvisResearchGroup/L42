@@ -87,7 +87,9 @@ program operations:
 
 -navigate(P)
  p.navigate(Outer^n.Cs)=p.pop()...pop().navigate(Cs) //with n pops
-    
+-p(P)
+ p(P)=p.navigate(P).top()//but some implementation could be faster
+      
 //Note for marco: equivalence between p and (Ln,fullP), that is all the other L0..L(n-1) are cached?
 //going this way would require/allow to write better CloneWthPath/Locator
 //to enforce the equivalence all the time we may have an updateTop operation, that do the hard work level by level.
@@ -136,30 +138,31 @@ define norm(p,e)=e
  -norm(p,This(n+1).C.Cs)=norm(Thisn.Cs)
    if p=L,ctxL1...ctxL(n+1) _, ctxL(n+1)[C]=[]
  -norm(p,localBindingDeclaration)= use resolve(p,T)=T' on scheletal types.
- -norm(p,L)={interface? implements norm(**p.push(L)**,Ps) M1'...Mn'}
-  no idea how to do it without p.push(L)
+ -norm(p,L)={interface? implements norm(p',Ps) M1'...Mn'}
+  no idea how to do it without p'=p.push(L)
   L={interface? implements Ps M1..Mn}
-  L'={interface? implements collect(p,Ps) M1...Mn}
-  Mi'=norm(p L', Mi)
+  L'={interface? implements collect(p',Ps) M1...Mn}
+  Mi'=norm(p', Mi)
   -collect(p,empty)=empty
-  -collect(p,P Ps)=Ps' if collect(p,Ps)=Ps' and P in Ps'
-  else collect(p,P Ps)=Ps' U Ps''[from P] if collect(p,Ps)=Ps' and p(P)={_ implements Ps'' _}
+  -collect(p,P Ps)=collect(p,Ps)=Ps0 if P in Ps0
+  otherwise collect(p,P Ps)=collect(p,Ps) U collect(p.navigate(P),Ps0)[from P]
+    if p(P)={_ implements Ps0 _} 
   //should be just collecting or should also check for multiple declaration points for methods? how?
   //how to interpret the result as a set if we do not know the nesting?
   //should norm also normalize the paths?
   //should we let the type system check that?
   
  -norm(p,ms e)=norm(p,refine mh e) 
-    p= {_ implements Ps _},_
+    p.top()= {_ implements Ps _}
     mh= MhOf(p,Ps,ms)//here is recovering type info
     
  -norm(p,refine mh e?)= refine resolve(p,mh) norm(p,e?)
-    p= {_ implements Ps _}, _
+    p.top()= {_ implements Ps _}
     mh=~= MhOf(p,Ps,ms^mh)//here check is refined well, that is all equal except return type,
     // no subtyping check on return type 
     
  -norm(p,mh e?)= resolve(p,mh) norm(p,e?)
-    p={_ implements Ps _}, _
+    p.top()={_ implements Ps _}
     undefined MhOf(p,Ps,ms^mh)//check is not an implemented method
  
  -norm(p, C:e) =C:norm(p,e)//assume we can cache if e is already normalized and avoiding repeating
@@ -168,20 +171,31 @@ define norm(p,e)=e
    exists unique P in Ps such that
      p(P)=L, L(ms)=mh//not sure is matematically ok...
 
-
 define #
-- p#Ps = p#Csss, where Csss is  Ps organized as list of list of Cs, such that for every Csi,Csj in a Css in Csss, Csi prefix of Csj iff i=j
+ - L-ctxL=L' if L=ctxL[L']
+ - L/ctxL=ctxL',L' L=ctxL'[L'], ctxL sim ctxL'
+   definition:
+   {interface? MC1..MCn M M1..Mk}/{interface? MC1'..MCn' ctxM M1'..Mk'}
+   = {interface? MC1..MCn ctxM M1..Mk}, L
+    with e-ctxM=L (the Thisn path is never used, so does not change)
+
+- p#Ps = p#Csss, where Csss is  Ps organized as list of list of Cs,
+     such that for every Csi,Csj in a Css in Csss, Csi prefix of Csj iff i=j
 - p#empty = p
-- p # Css, Csss = L',(p.pop() # Csss).push(L')
- Css = Cs1..Csn
- pi = p.navigateIn(Csi)
- Li = norm(pi,pi(0))
- L' = p(0)[Cs1=L1..Csn=Ln] //replace the nested classes in paths Csi with libraries Li.
 
+- L # Cs1..Csn=L' /*program with empty ctxLs*/
+ pi = L.navigate(Csi)
+ Li = norm(pi.pop(),pi.top())
+ L' = L[Cs1=L1..Csn=Ln] //replace the nested classes in paths Csi with libraries Li.
 
+- p0 # Css, Csss =p2.update(p2.top()#Css) 
+ p0=_,ctxL,_
+ p1=p0.pop() # Csss
+ p2=p1.push(p1.top()/ctxL)
      
-     - usedPaths(p,eC)=Ps union usedPaths(p,Csss) 
+- usedPaths(p,eC)=Ps union usedPaths(p,Csss) 
   Ps={P|P inside eC}
   Csss= reorganized Ps 
-  
+
+- usedPaths(p,Csss)
   ???
