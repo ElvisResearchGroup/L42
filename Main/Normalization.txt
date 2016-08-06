@@ -81,8 +81,12 @@ program operations:
 -push(C)
  (L,ctxLs).push(C)=L',ctxL,ctxLs
    with ctxL[L']=L and ctxL(C)=[]
+
+-navigate(Cs)
+ p.navigate(C1..Ck)=p.push(C1)...push(Ck)
+
 -navigate(P)
- p.navigate(Outer^n.C1..Ck)=p.pop()...pop().push(C1)...push(Ck) //with n pops
+ p.navigate(Outer^n.Cs)=p.pop()...pop().navigate(Cs) //with n pops
     
 //Note for marco: equivalence between p and (Ln,fullP), that is all the other L0..L(n-1) are cached?
 //going this way would require/allow to write better CloneWthPath/Locator
@@ -126,31 +130,14 @@ at top level we have a L not of form LC
 
 - eC inside eC' if eC'=ctxC[eC]      
 
-usedPaths(p,eC)//recursive in p
-- usedPaths(p,eC)=Ps U 
-  Ps={P|P inside eC}
-  Csss= reorganized Ps 
-  usedPaths(p,Csss)
-  ???
-  
-define # and norm
-
-define #
-- p#Ps = p#Csss, where Csss is  Ps organized as list of list of Cs, such that for every Csi,Csj in a Css in Csss, Csi prefix of Csj iff i=j
-- p#empty = p
-- p # Css, Csss = L',(p.pop() # Csss).push(L')
- Css = Cs1..Csn
- pi = p.navigateIn(Csi)
- Li = norm(pi,pi(0))
- L' = p(0)[Cs1=L1..Csn=Ln] //replace the nested classes in paths Csi with libraries Li.
-
--p.navigateIn(empty)=p
--p.navigateIn(C.CS)=????//how to do it in your repr? 
- 
- define norm(p,e)=e
- 
- -norm(p,*localBindingDecl*)= use resolve(p,T)=T' on scheletal types.
- -norm(p,L)=  L={interface? implements Ps M1'...Mn'}
+define norm(p,e)=e
+ -norm(p,P)=NO, better to leave it as it is?
+ -norm(p,This0.Cs)=This0.Cs
+ -norm(p,This(n+1).C.Cs)=norm(Thisn.Cs)
+   if p=L,ctxL1...ctxL(n+1) _, ctxL(n+1)[C]=[]
+ -norm(p,localBindingDeclaration)= use resolve(p,T)=T' on scheletal types.
+ -norm(p,L)={interface? implements norm(**p.push(L)**,Ps) M1'...Mn'}
+  no idea how to do it without p.push(L)
   L={interface? implements Ps M1..Mn}
   L'={interface? implements collect(p,Ps) M1...Mn}
   Mi'=norm(p L', Mi)
@@ -180,3 +167,21 @@ define #
  -MhOf(p,Ps,ms)=mh[from P]
    exists unique P in Ps such that
      p(P)=L, L(ms)=mh//not sure is matematically ok...
+
+
+define #
+- p#Ps = p#Csss, where Csss is  Ps organized as list of list of Cs, such that for every Csi,Csj in a Css in Csss, Csi prefix of Csj iff i=j
+- p#empty = p
+- p # Css, Csss = L',(p.pop() # Csss).push(L')
+ Css = Cs1..Csn
+ pi = p.navigateIn(Csi)
+ Li = norm(pi,pi(0))
+ L' = p(0)[Cs1=L1..Csn=Ln] //replace the nested classes in paths Csi with libraries Li.
+
+
+     
+     - usedPaths(p,eC)=Ps union usedPaths(p,Csss) 
+  Ps={P|P inside eC}
+  Csss= reorganized Ps 
+  
+  ???
