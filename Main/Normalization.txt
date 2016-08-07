@@ -197,5 +197,9 @@ define #
   Ps={P|P inside eC}
   Csss= reorganized Ps 
 
-- usedPaths(p,Csss)
-  ???
+- usedPaths(p,Cs1..Csn Csss)= usedPaths(p.pop(),Csss) 
+    U usedPaths(p.top(),Cs1) U ... U usedPaths(p.top(),Csn)
+
+- usedPaths(L,Cs)=usedInner(L(Cs),Cs)
+
+- usedInner({_ implements Ps, M1..Mn},Cs)=prefix(Cs,Ps U usedPaths(M1) U... U usedPaths(Mn))
