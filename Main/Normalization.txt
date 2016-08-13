@@ -152,8 +152,8 @@ at top level we have a L not of form LC
 - eC inside eC' if eC'=ctxC[eC]      
 
 define norm(p,e)=e
- -norm(p,localBindingDeclaration)= use resolve(p,T)=T' on scheletal types.
- -norm(p,L)={interface? implements norm(p',Ps) M1'...Mn'}
+ -norm(p,localBindingDeclaration)= use resolve(p,T)=T' on skeletal types
+ -norm(p,L)={interface? implements collect(p',Ps) M1'...Mn'}
   p'=p.push(L)//can be repleaced by evilPush in implementation
   L={interface? implements Ps M1..Mn}
   L'={interface? implements collect(p',Ps) M1...Mn}
