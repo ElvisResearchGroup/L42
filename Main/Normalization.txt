@@ -127,13 +127,13 @@ program derived operations:
 ReductionTop:
 at top level we have a L not of form LC
  
-          eC -->p+ r                p'.top()={_ implements Ps, MCs  C:e Ms}
-(top)------------------------       e not of form LC
-     p' ==> p.update(p.top()[C=r])  eC=norm(p',e)
-                                    Ps=usedPaths(p',eC)
-                                    p=p' # Ps
-                                    p;exception Any; empty|-eC: imm Library
-                                    |-p:Ps
+          eC' -->p'+ r              p.top()={_ implements Ps, MCs  C:eC Ms}
+(top)------------------------       eC not of form LC
+     p ==> p'.update(p'.top()[C=r]) eC'=norm(p,eC)
+                                    Ps=usedPaths(p,eC')
+                                    p'=p # Ps
+                                    p';exception Any; empty|-eC': imm Library
+                                    |-p':Ps
 
                                   ctxL={_ implements Ps, MCs  M[with e=ctxC] Ms}
       p.push(ctxL, L)==> p'       p.top()={_ implements Ps, MCs  M Ms}
