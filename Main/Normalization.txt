@@ -156,12 +156,12 @@ define norm(p,e)=e
  -norm(p,L)={interface? implements collect(p',Ps) M1'...Mn'}
   p'=p.push(L)//can be repleaced by evilPush in implementation
   L={interface? implements Ps M1..Mn}
-  L'={interface? implements collect(p',Ps) M1...Mn}
+  //L'={interface? implements collect(p',Ps) M1...Mn}
   Mi'=norm(p', Mi)
   -collect(p,empty)=empty
-  -collect(p,P Ps)=collect(p,Ps)=Ps0 if P in Ps0
-  otherwise collect(p,P Ps)=collect(p,Ps) U collect(p.navigate(P),Ps0)[from P]
-    if p(P)={_ implements Ps0 _} 
+  -collect(p,P Ps)=collect(p,Ps)=Ps' if P in Ps'
+  otherwise collect(p,P Ps)=collect(p,Ps) U collect(p.navigate(P),Ps')[from P]
+    if p(P)={_ implements Ps' _} 
   //should be just collecting or should also check for multiple declaration points for methods? how?
   //how to interpret the result as a set if we do not know the nesting?
   //should norm also normalize the paths?
