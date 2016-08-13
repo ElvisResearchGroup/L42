@@ -51,6 +51,14 @@ ctxM::= C: ctxC |ms ctxC | refine? mh ctxC
 
 //notice how every LC is a special kind of L (barnotation has structural subtyping)
 
+operations on contexts (for implementation too)
+ - L-ctxL=L' if L=ctxL[L']
+ - L/ctxL=(ctxL', L')  intuition: if L=ctxL'[L'], ctxL sim ctxL'
+   definition (for the special case we need):
+   {interface? MC1..MCn M M1..Mk}/{interface? MC1'..MCn' ctxM M1'..Mk'}
+   = {interface? MC1..MCn ctxM M1..Mk}, L
+    with M.e-ctxM=L (the Thisn path is never used, so does not change)
+
 
 
 -----------
@@ -61,26 +69,39 @@ program grammar
 
 p::=L0;ctxLs //representing This0,...,Thisn
 
-program operations:
+program operations primitive:
 -pop
  (L,ctxL,ctxLs).pop()=ctxL[L],ctxLs
 
 -push
  (ctxL[L],ctxLs).push(ctxL,L)=L,ctxL,ctxLs
-
--top
- p.top()=p.get(0)
  
--update top
- (L,ctxLs).top(L')=L',ctxLs
+-update top //this is the only one that can detect evilPush
+ (L,ctxLs).update(L')=L',ctxLs
 
 -get(n)
  (L,_).get(0)=L
  p.get(n+1)=p.pop().get(n)
 
+
+- p.equiv(P,P') //ok also this one can be messed up by evilPush
+  p.equiv(P,P) holds
+  p.equiv(P,P')=p.equiv(P',P)
+  p.equiv(This(n+1).C.Cs,P)=p.equiv(Thisn.Cs,P)
+   if p=L,ctxL1...ctxL(n+1) _ and ctxL(n+1)[C]=[]
+program derived operations:
+
 -push(C)
- (L,ctxLs).push(C)=L',ctxL,ctxLs
-   with ctxL[L']=L and ctxL(C)=[]
+ p.push(C)=p.push(ctxL,L)
+ with ctxL[L]=p.top() and ctxL(C)=[]
+
+-push(L)//non determinism is not relevant if update is not used
+ p.push(L)=p.push(ctxL,L)//an evilPush can exist in implementation
+ with ctxL[L]=p.top()
+ //with p'=p.evilPush(L)   p'.top()==L, p'.pop()==p, p'.update(..) error! 
+
+-top
+ p.top()=p.get(0)
 
 -navigate(Cs)
  p.navigate(C1..Ck)=p.push(C1)...push(Ck)
@@ -98,22 +119,23 @@ program operations:
 
 ---------
 We define functional notation for
-L and LC (over Ldom domain),
+L, ctxL and LC (over Ldom domain),
 p (indexes)
 VarEnv (var names)
+
 
 
 ----------------------
 ReductionTop:
 at top level we have a L not of form LC
  
-          eC -->p+ r             p'.top()={_ implements Ps, MCs  C:e Ms}
-(top)------------------------    e not of form LC
-     p' ==> p.top(p.top()[C=r])  eC=norm(p',e)
-                                 Ps=usedPaths(p',eC)
-                                 p=p' # Ps
-                                 p;exception Any; empty|-eC: imm Library
-                                 |-p:Ps
+          eC -->p+ r                p'.top()={_ implements Ps, MCs  C:e Ms}
+(top)------------------------       e not of form LC
+     p' ==> p.update(p.top()[C=r])  eC=norm(p',e)
+                                    Ps=usedPaths(p',eC)
+                                    p=p' # Ps
+                                    p;exception Any; empty|-eC: imm Library
+                                    |-p:Ps
 
                                   ctxL={_ implements Ps, MCs  M[with e=ctxC] Ms}
       p.push(ctxL, L)==> p'       p.top()={_ implements Ps, MCs  M Ms}
@@ -126,20 +148,15 @@ at top level we have a L not of form LC
 (nrm)-------------------------   M not of form MC
      p ==> p.update(L[ms^M=MC])  all L in e^M are of form LC
                                  MC=norm(p,M)
-              
-//Fixed new program notation up to here
+
 ------------------------------------------
 
 - eC inside eC' if eC'=ctxC[eC]      
 
 define norm(p,e)=e
- -norm(p,P)=NO, better to leave it as it is?
- -norm(p,This0.Cs)=This0.Cs
- -norm(p,This(n+1).C.Cs)=norm(Thisn.Cs)
-   if p=L,ctxL1...ctxL(n+1) _, ctxL(n+1)[C]=[]
  -norm(p,localBindingDeclaration)= use resolve(p,T)=T' on scheletal types.
  -norm(p,L)={interface? implements norm(p',Ps) M1'...Mn'}
-  no idea how to do it without p'=p.push(L)
+  p'=p.push(L)//can be repleaced by evilPush in implementation
   L={interface? implements Ps M1..Mn}
   L'={interface? implements collect(p',Ps) M1...Mn}
   Mi'=norm(p', Mi)
@@ -172,26 +189,22 @@ define norm(p,e)=e
      p(P)=L, L(ms)=mh//not sure is matematically ok...
 
 define #
- - L-ctxL=L' if L=ctxL[L']
- - L/ctxL=ctxL',L' L=ctxL'[L'], ctxL sim ctxL'
-   definition:
-   {interface? MC1..MCn M M1..Mk}/{interface? MC1'..MCn' ctxM M1'..Mk'}
-   = {interface? MC1..MCn ctxM M1..Mk}, L
-    with e-ctxM=L (the Thisn path is never used, so does not change)
 
 - p#Ps = p#Csss, where Csss is  Ps organized as list of list of Cs,
      such that for every Csi,Csj in a Css in Csss, Csi prefix of Csj iff i=j
+
 - p#empty = p
 
-- L # Cs1..Csn=L' /*program with empty ctxLs*/
+- L # Cs1..Csn= (L',empty) /*a program with empty ctxLs*/
   pi = L.navigate(Csi)
   Li = norm(pi.pop(),pi.top())
   L' = L[Cs1=L1..Csn=Ln] //replace the nested classes in paths Csi with libraries Li.
 
 - p0 # Css, Csss =p2.update(p2.top()#Css) 
- p0=_,ctxL,_
- p1=p0.pop() # Csss
+ p0=_,ctxL,_// i need to see the internal repr, should we extract a new program primitive operation here?
+ p1=p0.pop() # Csss 
  p2=p1.push(p1.top()/ctxL)
+ //like p1.growFrom(p0) defined as p.growFrom(_,ctxL,_)==p.push(p.top()/ctxL)
      
 - usedPaths(p,eC)=Ps union usedPaths(p,Csss) 
   Ps={P|P inside eC}
