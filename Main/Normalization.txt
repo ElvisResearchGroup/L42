@@ -184,9 +184,9 @@ define #
 - p#empty = p
 
 - L # Cs1..Csn=L' /*program with empty ctxLs*/
- pi = L.navigate(Csi)
- Li = norm(pi.pop(),pi.top())
- L' = L[Cs1=L1..Csn=Ln] //replace the nested classes in paths Csi with libraries Li.
+  pi = L.navigate(Csi)
+  Li = norm(pi.pop(),pi.top())
+  L' = L[Cs1=L1..Csn=Ln] //replace the nested classes in paths Csi with libraries Li.
 
 - p0 # Css, Csss =p2.update(p2.top()#Css) 
  p0=_,ctxL,_
