@@ -50,6 +50,11 @@ ctxL::= {interface? MCs ctxM Ms}
 ctxM::= C: ctxC |ms ctxC | refine? mh ctxC
 
 //notice how every LC is a special kind of L (barnotation has structural subtyping)
+---------
+We define functional notation for
+L, ctxL and LC (over Ldom domain),
+VarEnv (var names)
+
 
 operations on contexts (for implementation too)
  - L-ctxL=L' if L=ctxL[L']
@@ -57,7 +62,7 @@ operations on contexts (for implementation too)
    definition (for the special case we need):
    {interface? MC1..MCn M M1..Mk}/{interface? MC1'..MCn' ctxM M1'..Mk'}
    = {interface? MC1..MCn ctxM M1..Mk}, L
-    with M.e-ctxM=L (the Thisn path is never used, so does not change)
+    with M-ctxM=L (the Thisn path is never used, so does not change)
 
 
 
@@ -115,13 +120,6 @@ program derived operations:
 //going this way would require/allow to write better CloneWthPath/Locator
 //to enforce the equivalence all the time we may have an updateTop operation, that do the hard work level by level.
 //p.update(L), p.pop(), p.push(fullP)/p.push(Ldom,ctxC) //currently push(L) is supported and should be removed
-
-
----------
-We define functional notation for
-L, ctxL and LC (over Ldom domain),
-p (indexes)
-VarEnv (var names)
 
 
 
