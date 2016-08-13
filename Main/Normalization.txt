@@ -19,13 +19,13 @@ General Notations:
 When a term of the grammar can be accessed with functional notation,
 as in a(b), then dom(a) is {b | a(b) is defined}
 
-a^b extract the element of form a from b, for example e^(C:e1)=e1.
+DOT NOTATION b.a extract the element of form a from b, for example (C:e1).e=e1
 More precise: a term of a grammar is a tree of nodes and terminals.
 The root-most node of "b" that can be represented with the metavariable "a"
 is produced.  
 
 a[with b=b1] replace the element of form b in a with a new b,
-so that b^(a[with b=b1]) = b1
+so that (a[with b=b1]).b = b1
 
 a[b=c2] when b in dom(a), a(b)=c1 modify a so that a(b)=c2
  
@@ -36,7 +36,7 @@ e::=.... |L //pg1 start of https://github.com/ElvisResearchGroup/L42Docs/blob/ma
 L::={interface? implements Ps M1..Mn}
 M::=ms e |refine mh e?| mh e? | C:e
 Ldom::=ms|C
-P::= This^n.Cs //is pronounced "Path"
+P::= Thisn.Cs //is pronounced "Path"
 T::= mdf P | P::mss| P::mss::x
 
 LC::={implements Ps MC1..MCn}  //library compiled
@@ -93,7 +93,7 @@ program operations primitive:
   p.equiv(P,P) holds
   p.equiv(P,P')=p.equiv(P',P)
   p.equiv(This(n+1).C.Cs,P)=p.equiv(Thisn.Cs,P)
-   if p=L,ctxL1...ctxL(n+1) _ and ctxL(n+1)[C]=[]
+   if p=L,ctxL1...ctxL(n+1) _ and ctxL(n+1)(C)=[]
 program derived operations:
 
 -push(C)
@@ -112,7 +112,7 @@ program derived operations:
  p.navigate(C1..Ck)=p.push(C1)...push(Ck)
 
 -navigate(P)
- p.navigate(Outer^n.Cs)=p.pop()...pop().navigate(Cs) //with n pops
+ p.navigate(Thisn.Cs)=p.pop()...pop().navigate(Cs) //with n pops
 -p(P)
  p(P)=p.navigate(P).top()//but some implementation could be faster
       
@@ -138,13 +138,13 @@ at top level we have a L not of form LC
                                   ctxL={_ implements Ps, MCs  M[with e=ctxC] Ms}
       p.push(ctxL, L)==> p'       p.top()={_ implements Ps, MCs  M Ms}
 (met)-------------------------    M not of form MC
-        p ==> p'.pop()            e^M=ctxC[L], L not of form LC
+        p ==> p'.pop()            M.e=ctxC[L], L not of form LC
 
 
                                  
                                  p.top()=L={_ implements Ps, MCs  M Ms}
 (nrm)-------------------------   M not of form MC
-     p ==> p.update(L[ms^M=MC])  all L in e^M are of form LC
+     p ==> p.update(L[M.ms=MC])  all L inside M.e are of form LC //for M.e undefined there is no L,forall holds
                                  MC=norm(p,M)
 
 ------------------------------------------
@@ -173,12 +173,12 @@ define norm(p,e)=e
     
  -norm(p,refine mh e?)= refine resolve(p,mh) norm(p,e?)
     p.top()= {_ implements Ps _}
-    mh=~= MhOf(p,Ps,ms^mh)//here check is refined well, that is all equal except return type,
+    mh=~= MhOf(p,Ps,mh.ms)//here check is refined well, that is all equal except return type,
     // no subtyping check on return type 
     
  -norm(p,mh e?)= resolve(p,mh) norm(p,e?)
     p.top()={_ implements Ps _}
-    undefined MhOf(p,Ps,ms^mh)//check is not an implemented method
+    undefined MhOf(p,Ps,mh.ms)//check is not an implemented method
  
  -norm(p, C:e) =C:norm(p,e)//assume we can cache if e is already normalized and avoiding repeating
  
