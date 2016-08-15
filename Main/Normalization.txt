@@ -153,39 +153,56 @@ at top level we have a L not of form LC
 
 define norm(p,e)=e
  -norm(p,localBindingDeclaration)= use resolve(p,T)=T' on skeletal types
- -norm(p,L)={interface? implements collect(p',Ps) M1'...Mn'}
-  p'=p.push(L)//can be repleaced by evilPush in implementation
+ -norm(p,L)={interface? implements Ps' merge(Ms,Ms'')}
   L={interface? implements Ps M1..Mn}
-  //L'={interface? implements collect(p',Ps) M1...Mn}
-  Mi'=norm(p', Mi)
-  -collect(p,empty)=empty
-  -collect(p,P Ps)=collect(p,Ps)=Ps' if P in Ps'
-  otherwise collect(p,P Ps)=collect(p,Ps) U collect(p.navigate(P),Ps')[from P]
-    if p(P)={_ implements Ps' _} 
-  //should be just collecting or should also check for multiple declaration points for methods? how?
-  //how to interpret the result as a set if we do not know the nesting?
-  //should norm also normalize the paths?
-  //should we let the type system check that?
+  p'=p.push(L)//can be repleaced by evilPush in implementation
+  Ps'=collect(p',Ps)
+  //we need to add some M1..Mk for refine abstract interface meth.
+  Ms=norm(p', M1)..norm(p',Mn)
+  Ms'={M[from P] | P in Ps', ms in dom(p'(P)), p'(P)(ms)=M}
+  //cases: for all ms in Mis': at least 1 is mwt,zero ms e, many refine mwt.
   
- -norm(p,ms e)=norm(p,refine mh e) 
-    p.top()= {_ implements Ps _}
-    mh= MhOf(p,Ps,ms)//here is recovering type info
+  sub define Ms'':
+    refine maxSize(T0, T1... Tn) m(pars0) Pis0 in Ms''
+    if {M in Ms'| M.ms=ms}=
+      T0 m (pars0) Pis0   refine T1 m (pars1) Pis1 ... refine Tn m (parsn) Pisn
+  
+  
+  sub define maxSize:
+    maxSize(Thisn.Cs,This(n+k).C1..Ck.Cs)=This(n+k).C1..Ck.Cs
+    //In this way we preserve the possible errors.
+  
+  sub define merge:
+    merge(empty, Ms')=Ms'
+    merge(M Ms, Ms')=M merge(Ms, Ms') if M.ms not in {M.ms |M in Ms'}
+    merge(ms e Ms, refine mh Ms')=refine mh e merge(Ms, Ms') if ms=mh.ms
     
+    merge(refine mh e? Ms, refine mh' Ms')=refine mh e? merge(Ms, Ms') if mh.ms=mh'.ms
+    //This also checks for multiple declaration points for methods since there is no case for mh e? if mh.ms in Ms'
+  
+  //A>B>C
+  //if C implemens A, or A and C is different for the refine
+  //Java solve the problem, but is complex AND depends on non circularity.
+  sub define collect:
+    collect(p,empty)=empty
+    collect(p,P Ps)=collect(p,Ps)=Ps' if P in Ps'
+    otherwise collect(p,P Ps)=P U collect(p,Ps) U collect(p.navigate(P),Ps')[from P]
+      if p(P)={_ implements Ps' _}
+  //there is still some stuff checked by the ts
+  
+  //what changes under?
+ -norm(p,ms e)=ms norm(p, e) 
+    p.top()= {_ implements Ps _}
+   
  -norm(p,refine mh e?)= refine resolve(p,mh) norm(p,e?)
     p.top()= {_ implements Ps _}
-    mh=~= MhOf(p,Ps,mh.ms)//here check is refined well, that is all equal except return type,
-    // no subtyping check on return type 
-    
+   
  -norm(p,mh e?)= resolve(p,mh) norm(p,e?)
     p.top()={_ implements Ps _}
-    undefined MhOf(p,Ps,mh.ms)//check is not an implemented method
- 
+    
  -norm(p, C:e) =C:norm(p,e)//assume we can cache if e is already normalized and avoiding repeating
- 
- -MhOf(p,Ps,ms)=mh[from P]
-   exists unique P in Ps such that
-     p(P)=L, L(ms)=mh//not sure is matematically ok...
 
+//norm reviewd with fix from james
 define #
 
 - p#Ps = p#Csss, where Csss is  Ps organized as list of list of Cs,
