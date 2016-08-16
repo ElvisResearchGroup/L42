@@ -40,7 +40,7 @@ P::= Thisn.Cs //is pronounced "Path"
 T::= mdf P | P::mss| P::mss::x
 
 LC::={implements Ps MC1..MCn}  //library compiled
-MC::=refine mh eC?| mh eC? | C:LC
+MC::=refine mhC eC?| mhC eC? | C:LC
 eC::=.... |LC
 TC::=mdf P// used in eC, MC and LC, and all P normalized w.r.t. a program
 r::=LC| exception v | error v
@@ -94,6 +94,7 @@ program operations primitive:
   p.equiv(P,P')=p.equiv(P',P)
   p.equiv(This(n+1).C.Cs,P)=p.equiv(Thisn.Cs,P)
    if p=L,ctxL1...ctxL(n+1) _ and ctxL(n+1)(C)=[]
+   
 program derived operations:
 
 -top
