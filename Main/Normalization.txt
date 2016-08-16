@@ -137,17 +137,17 @@ at top level we have a L not of form LC
                                     p';exception Any; empty|-eC': imm Library //eC' is well typed
                                     |-p':Ps //the part of p' named by Ps is well typed
 
-                                  ctxL={_ implements Ps, MCs  M[with e=ctxC] Ms}
-      p.push(ctxL, L)==> p'       p.top()={_ implements Ps, MCs  M Ms}
-(met)-------------------------    M not of form MC
-        p ==> p'.pop()            M.e=ctxC[L], L not of form LC
 
+        p.push(ctxL, L)==> p'       p.top()={_ implements Ps, MCs  M Ms}
+(enter)-------------------------    M not of form MC
+          p ==> p'.pop()            M.e=ctxC[L], L not of form LC
+                                    ctxL={_ implements Ps, MCs  M[with e=ctxC] Ms}
 
                                  
-                                 p.top()=L={_ implements Ps, MCs  M Ms}
-(nrm)-------------------------   M not of form MC
-     p ==> p.update(L[M.ms=MC])  all L inside M.e are of form LC //for M.e undefined there is no L,forall holds
-                                 MC=norm(p,M)
+                                   p.top()=L0={_ implements Ps, MCs  M Ms}
+(norm)-------------------------    M not of form MC
+      p ==> p.update(L0[M.ms=MC])  all L inside M.e are of form LC //for M.e undefined there is no L,forall holds
+                                   MC=norm(p,M)
 
 ------------------------------------------
 
@@ -162,7 +162,7 @@ define norm(p,e)=e
   //we need to add some M1..Mk for refine abstract interface meth.
   Ms=norm(p', M1)..norm(p',Mn)
   Ms'={M[from P] | P in Ps', ms in dom(p'(P)), p'(P)(ms)=M}
-  //cases: for all ms in Mis': at least 1 is mh e?,zero ms e, many refine mwt.
+  //cases: for all ms in Mis': if no errors exactly 1 is mh ,zero ms e, many refine mh.
   
   sub define Ms'':
     refine maxSize(T0, T1... Tn) m(pars0) Pis0 in Ms''
@@ -183,7 +183,7 @@ define norm(p,e)=e
     //This also checks for multiple declaration points for methods since there is no case for mh e? if mh.ms in Ms'
   
   //A>B>C
-  //if C implemens A, or A and C is different for the refine
+  //if C implemens B, or A and B is different for the refine
   //Java solve the problem, but is complex AND depends on non circularity.
   sub define collect:
     collect(p,empty)=empty
