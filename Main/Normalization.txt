@@ -96,6 +96,9 @@ program operations primitive:
    if p=L,ctxL1...ctxL(n+1) _ and ctxL(n+1)(C)=[]
 program derived operations:
 
+-top
+ p.top()=p.get(0)
+ 
 -push(C)
  p.push(C)=p.push(ctxL,L)
  with ctxL[L]=p.top() and ctxL(C)=[]
@@ -105,8 +108,6 @@ program derived operations:
  with ctxL[L]=p.top()
  //with p'=p.evilPush(L)   p'.top()==L, p'.pop()==p, p'.update(..) error! 
 
--top
- p.top()=p.get(0)
 
 -navigate(Cs)
  p.navigate(C1..Ck)=p.push(C1)...push(Ck)
@@ -129,11 +130,11 @@ at top level we have a L not of form LC
  
           eC' -->p'+ r              p.top()={_ implements Ps, MCs  C:eC Ms}
 (top)------------------------       eC not of form LC
-     p ==> p'.update(p'.top()[C=r]) eC'=norm(p,eC)
+     p ==> p'.update(p'.top()[C=r]) eC'=norm(p,eC) //resolve skele types, add all refine, collect supertypes
                                     Ps=usedPaths(p,eC')
-                                    p'=p # Ps
-                                    p';exception Any; empty|-eC': imm Library
-                                    |-p':Ps
+                                    p'=p # Ps //norm the part of p named by Ps
+                                    p';exception Any; empty|-eC': imm Library //eC' is well typed
+                                    |-p':Ps //the part of p' named by Ps is well typed
 
                                   ctxL={_ implements Ps, MCs  M[with e=ctxC] Ms}
       p.push(ctxL, L)==> p'       p.top()={_ implements Ps, MCs  M Ms}
@@ -160,7 +161,7 @@ define norm(p,e)=e
   //we need to add some M1..Mk for refine abstract interface meth.
   Ms=norm(p', M1)..norm(p',Mn)
   Ms'={M[from P] | P in Ps', ms in dom(p'(P)), p'(P)(ms)=M}
-  //cases: for all ms in Mis': at least 1 is mwt,zero ms e, many refine mwt.
+  //cases: for all ms in Mis': at least 1 is mh e?,zero ms e, many refine mwt.
   
   sub define Ms'':
     refine maxSize(T0, T1... Tn) m(pars0) Pis0 in Ms''
