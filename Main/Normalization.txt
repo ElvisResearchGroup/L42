@@ -181,18 +181,19 @@ define norm(p,e)=e
     
     merge(refine mh e? Ms, refine mh' Ms')=refine mh e? merge(Ms, Ms') if mh.ms=mh'.ms
     //This also checks for multiple declaration points for methods since there is no case for mh e? if mh.ms in Ms'
+    //This also provide error for circularity (for non empty interfaces). Is this what we want?
   
   //A>B>C
   //if C implemens B, or A and B is different for the refine
   //Java solve the problem, but is complex AND depends on non circularity.
   sub define collect:
     collect(p,empty)=empty
-    collect(p,P Ps)=collect(p,Ps)=Ps' if P in Ps'
-    otherwise collect(p,P Ps)=P U collect(p,Ps) U collect(p.navigate(P),Ps')[from P]
+    //collect(p,P Ps)=collect(p,Ps)=Ps' if P in Ps' otherwise//uncomment to allow circularity;
+    //an implementation could keep a list of visited P instead of diverging, matematically is the same.
+    collect(p,P Ps)=P U collect(p,Ps) U collect(p.navigate(P),Ps')[from P]
       if p(P)={_ implements Ps' _}
   //there is still some stuff checked by the ts
-  
-  //what changes under?
+  //Note: if we remove circularity, update operator sum; plus add privatly implemented concept/error
  -norm(p,ms e)=ms norm(p, e) 
     p.top()= {_ implements Ps _}
    
@@ -204,7 +205,6 @@ define norm(p,e)=e
     
  -norm(p, C:e) =C:norm(p,e)//assume we can cache if e is already normalized and avoiding repeating
 
-//norm reviewd with fix from james
 define #
 
 - p#Ps = p#Csss, where Csss is  Ps organized as list of list of Cs,
