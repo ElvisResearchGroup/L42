@@ -212,7 +212,7 @@ define #
 
 - p#empty = p
 
-- L # Cs1..Csn= (L',empty) /*a program with empty ctxLs*/
+- L # Cs1..Csn/*a single Css*/= (L',empty) /*a program with empty ctxLs*/
   pi = L.navigate(Csi)
   Li = norm(pi.pop(),pi.top())
   L' = L[Cs1=L1..Csn=Ln] //replace the nested classes in paths Csi with libraries Li.
@@ -227,9 +227,10 @@ define #
   Ps={P|P inside eC}
   Csss= reorganized Ps 
 
-- usedPaths(p,Cs1..Csn Csss)= usedPaths(p.pop(),Csss) 
-    U usedPaths(p.top(),Cs1) U ... U usedPaths(p.top(),Csn)
+- usedPaths(p,Cs1..Csn Csss)= add1Outer(usedPaths(p.pop(),Csss)) U
+    usedInner(p.top()(Cs1),Cs1) U ... U usedInner(p.top()(Csn),Csn)
 
-- usedPaths(L,Cs)=usedInner(L(Cs),Cs)
+- usedInner({_ implements Ps, M1..Mn},Cs)=prefix(Cs,Ps U usedInner(M1) U... U usedInner(Mn))
 
-- usedInner({_ implements Ps, M1..Mn},Cs)=prefix(Cs,Ps U usedPaths(M1) U... U usedPaths(Mn))
+- usedInner(M)= {P| P inside M} U usedInner(L1,empty) U...U usedInner(Ln,empty)
+  L1..Ln={L| L inside M}
