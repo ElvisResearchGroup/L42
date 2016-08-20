@@ -46,8 +46,8 @@ TC::=mdf P// used in eC, MC and LC, and all P normalized w.r.t. a program
 r::=LC| exception v | error v
 
 ctxC::=[] | eC.m( (x=eC)s x=ctxC, (x=e)s)| .... // compilation context, e=ctxC[L] selects an L where all the former Ls are LC. The context do not enter in libraries
-ctxL::= {interface? MCs ctxM Ms}
 ctxM::= C: ctxC |ms ctxC | refine? mh ctxC
+ctxL::= {interface? MCs ctxM Ms}
 
 //notice how every LC is a special kind of L (barnotation has structural subtyping)
 ---------
@@ -102,7 +102,7 @@ program derived operations:
  
 -push(C)
  p.push(C)=p.push(ctxL,L)
- with ctxL[L]=p.top() and ctxL(C)=[]
+ where ctxL[L]=p.top() and ctxL(C)=[]
 
 -push(L)//non determinism is not relevant if update is not used
  p.push(L)=p.push(ctxL,L)//an evilPush can exist in implementation
@@ -129,7 +129,7 @@ program derived operations:
 ReductionTop:
 at top level we have a L not of form LC
  
-          eC' -->p'+ r              p.top()={_ implements Ps, MCs  C:eC Ms}
+          eC' -->p'+ r              p.top()={_ implements Ps0, MCs  C:eC Ms}
 (top)------------------------       eC not of form LC
      p ==> p'.update(p'.top()[C=r]) eC'=norm(p,eC) //resolve skele types, add all refine, collect supertypes
                                     Ps=usedPaths(p,eC')
