@@ -12,7 +12,7 @@ a^i is a apex i, ai is a pedex i
 [] is the hole/square
 
 in latex we use two different fonts for "(" of the grammar and for
-"(" used for disambiguation. here we just hope is clear :/
+"(" used for disambiguation and function call. here we just hope is clear :/
 
 General Notations:
 
@@ -138,16 +138,18 @@ at top level we have a L not of form LC
                                     |-p':Ps //the part of p' named by Ps is well typed
 
 
+                                   p.top()=L0={_ implements Ps, MCs  M Ms}
+(norm)-------------------------    M not of form MC
+      p ==> p.update(L0[M.ms=MC])  all L inside M.e are of form LC //for M.e undefined there is no L,forall holds
+                                   MC=norm(p,M)
+
+
         p.push(ctxL, L)==> p'       p.top()={_ implements Ps, MCs  M Ms}
 (enter)-------------------------    M not of form MC
           p ==> p'.pop()            M.e=ctxC[L], L not of form LC
                                     ctxL={_ implements Ps, MCs  M[with e=ctxC] Ms}
 
                                  
-                                   p.top()=L0={_ implements Ps, MCs  M Ms}
-(norm)-------------------------    M not of form MC
-      p ==> p.update(L0[M.ms=MC])  all L inside M.e are of form LC //for M.e undefined there is no L,forall holds
-                                   MC=norm(p,M)
 
 ------------------------------------------
 
@@ -165,7 +167,7 @@ define norm(p,e)=e
   //cases: for all ms in Mis': if no errors exactly 1 is mh ,zero ms e, many refine mh.
   
   sub define Ms'':
-    refine maxSize(T0, T1... Tn) m(pars0) Ps0 in Ms''
+    refine maxSize(T0, T1... Tn) m(pars0) exception Ps0 in Ms''
     if {M in Ms'| M.ms=ms}=
       T0 m (pars0) exception Ps0   refine T1 m (pars1) exception Ps1 ... refine Tn m (parsn) exception Psn
   
@@ -182,9 +184,7 @@ define norm(p,e)=e
     merge(refine mh e? Ms, refine mh' Ms')=refine mh e? merge(Ms, Ms') if mh.ms=mh'.ms
     //This also checks for multiple declaration points for methods since there is no case for mh e? if mh.ms in Ms'
     //This also provide error for circularity (for non empty interfaces). Is this what we want?
-  
-  //A>B>C
-  //if C implemens B, or A and B is different for the refine
+  //20/8 fix from skype,//A>B>C//if C implemens B, or A and B is different for the refine
   //Java solve the problem, but is complex AND depends on non circularity.
   sub define collect:
     collect(p,empty)=empty
@@ -209,7 +209,7 @@ define #
 
 - p#Ps = p#Csss, where Csss is  Ps organized as list of list of Cs,
      such that for every Csi,Csj in a Css in Csss, Csi prefix of Csj iff i=j
-
+     //write algo, remove Cs subtrees
 - p#empty = p
 
 - L # Cs1..Csn/*a single Css*/= (L',empty) /*a program with empty ctxLs*/
