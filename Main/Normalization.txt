@@ -165,9 +165,9 @@ define norm(p,e)=e
   //cases: for all ms in Mis': if no errors exactly 1 is mh ,zero ms e, many refine mh.
   
   sub define Ms'':
-    refine maxSize(T0, T1... Tn) m(pars0) Pis0 in Ms''
+    refine maxSize(T0, T1... Tn) m(pars0) Ps0 in Ms''
     if {M in Ms'| M.ms=ms}=
-      T0 m (pars0) Pis0   refine T1 m (pars1) Pis1 ... refine Tn m (parsn) Pisn
+      T0 m (pars0) exception Ps0   refine T1 m (pars1) exception Ps1 ... refine Tn m (parsn) exception Psn
   
   
   sub define maxSize:
