@@ -209,11 +209,17 @@ define norm(p,e)=e
     
  -norm(p, C:e) =C:norm(p,e)//assume we can cache if e is already normalized and avoiding repeating
 
+
+reorganize(Ps)->Csss
+  reorganize(Ps)=Css0,...,Cssn
+  shuffle(Ps)=Ps0,...,Psn
+  Psi=(Thisi.Cs)s
+  Cs in Cssi iff Thisi.Cs in Psi and forall Thisi.Cs' in Psi, Cs'!=Cs._  
+  
 define #
 
-- p#Ps = p#Csss, where Csss is  Ps organized as list of list of Cs,
-     such that for every Csi,Csj in a Css in Csss, Csi prefix of Csj iff i=j
-     //write algo, remove Cs subtrees
+- p#Ps = p#reorganize(Ps)     // Ps is organized as list of list of Cs
+
 - p#empty = p
 
 - L # Cs1..Csn/*a single Css*/= (L',empty) /*a program with empty ctxLs*/
@@ -226,8 +232,8 @@ define #
      
 - usedPaths(p,eC)=Ps union usedPaths(p,Csss) 
   Ps={P|P inside eC}
-  Csss= reorganized Ps 
-
+  Csss= reorganize(Ps)
+  
 - usedPaths(p,Cs1..Csn Csss)= add1Outer(usedPaths(p.pop(),Csss)) U
     usedInner(p.top()(Cs1),Cs1) U ... U usedInner(p.top()(Csn),Csn)
 
