@@ -60,11 +60,15 @@ operations on contexts (for implementation too)
  - L-ctxL=L' if L=ctxL[L']
  - L/ctxL=(ctxL', L')  intuition: if L=ctxL'[L'], ctxL sim ctxL'
    definition (for the special case we need):
-   {interface? MC1..MCn M M1..Mk}/{interface? MC1'..MCn' ctxM M1'..Mk'}
+ -- {interface? MC1..MCn C:L0 M1..Mk}/{interface? MC1'..MCn' C:ctxL0 M1'..Mk'}
+   = {interface? MC1..MCn C:ctxL M1..Mk}, L
+   where L0/ctxL0=ctxL,L
+ -- {interface? MC1..MCn M M1..Mk}/{interface? MC1'..MCn' ctxM M1'..Mk'}
    = {interface? MC1..MCn ctxM M1..Mk}, L
-    with M-ctxM=L (the Thisn path is never used, so does not change)
-
-
+    where M-ctxM=L and M not of form C:L 
+    //the case for C:L with "/" is enough
+    //if there was a used path This(n+1).A.B equivalent to Thisn.B (completed, compiled and usable)
+    //this would be only inside of a chain of C:L
 
 -----------
 type environment:
@@ -94,7 +98,10 @@ program operations primitive:
   p.equiv(P,P')=p.equiv(P',P)
   p.equiv(This(n+1).C.Cs,P)=p.equiv(Thisn.Cs,P)
    if p=L,ctxL1...ctxL(n+1) _ and ctxL(n+1)(C)=[]
-   
+
+- growFellow
+  (_,ctxL,_).growFellow(p)==p.push(p.top()/ctxL)
+     
 program derived operations:
 
 -top
@@ -155,6 +162,13 @@ at top level we have a L not of form LC
 
 - eC inside eC' if eC'=ctxC[eC]      
 
+-extract(p,P,ms)=p(P)(ms)[from P]
+-otherwise extract(p,P,ms)= extract(p,P'[from P],ms)  if p(P)={_ implements _ P' _ _}
+
+-mostSpecific(p,Ps',ms)=extract(p, P, ms)
+  Ps={P| P in Ps', extract(p, P, ms) defined}
+  P in Ps', forall P' in Ps', p|-P<=P'
+
 define norm(p,e)=e
  -norm(p,localBindingDeclaration)= use resolve(p,T)=T' on skeletal types
  -norm(p,L)={interface? implements Ps' merge(Ms,Ms'')}
@@ -163,37 +177,27 @@ define norm(p,e)=e
   Ps'=collect(p',Ps)
   //we need to add some M1..Mk for refine abstract interface meth.
   Ms=norm(p', M1)..norm(p',Mn)
-  Ms'={M[from P] | P in Ps', ms in dom(p'(P)), p'(P)(ms)=M}
-  //cases: for all ms in Mis': if no errors exactly 1 is mh ,zero ms e, many refine mh.
+  domOfImpl={ms| P in Ps', p( P)( ms) defined}
+  error unless forall refine mh e? in Ms, mh.ms in domOfImpl
+  error unless forall ms e in Ms, ms in domOfImpl 
+  Ms'={addRefineKw(resolve(p,mostSpecific(p,Ps', ms)))| ms in domOfImpl}
+  subdefine Ms''
+    Ms''(ms)=Ms(ms) if Ms(ms) not of form ms e
+    Ms''(ms)=Ms'(ms) if ms not in dom(Ms)
+    Ms''(ms)= refine mh e if Ms(ms)=ms e and Ms'(ms)=refine mh
+  error unless dom(Ms'') superSetEq domOfImpl
+  //this is stricter then java, since it requires explicit refine even if unrelated 
+  //parents in a diamond agrees on the return type. 
   
-  sub define Ms'':
-    refine maxSize(T0, T1... Tn) m(pars0) exception Ps0 in Ms''
-    if {M in Ms'| M.ms=ms}=
-      T0 m (pars0) exception Ps0   refine T1 m (pars1) exception Ps1 ... refine Tn m (parsn) exception Psn
-  
-  
-  sub define maxSize:
-    maxSize(Thisn.Cs,This(n+k).C1..Ck.Cs)=This(n+k).C1..Ck.Cs
-    //In this way we preserve the possible errors.
-  
-  sub define merge:
-    merge(empty, Ms')=Ms'
-    merge(M Ms, Ms')=M merge(Ms, Ms') if M.ms not in {M.ms |M in Ms'}
-    merge(ms e Ms, refine mh Ms')=refine mh e merge(Ms, Ms') if ms=mh.ms
-    
-    merge(refine mh e? Ms, refine mh' Ms')=refine mh e? merge(Ms, Ms') if mh.ms=mh'.ms
-    //This also checks for multiple declaration points for methods since there is no case for mh e? if mh.ms in Ms'
-    //This also provide error for circularity (for non empty interfaces). Is this what we want?
-  //20/8 fix from skype,//A>B>C//if C implemens B, or A and B is different for the refine
-  //Java solve the problem, but is complex AND depends on non circularity.
   sub define collect:
     collect(p,empty)=empty
-    //collect(p,P Ps)=collect(p,Ps)=Ps' if P in Ps' otherwise//uncomment to allow circularity;
-    //an implementation could keep a list of visited P instead of diverging, matematically is the same.
+    //an implementation could keep a list of visited P instead of diverging, mathematically is the same.
     collect(p,P Ps)=P U collect(p,Ps) U collect(p.navigate(P),Ps')[from P]
       if p(P)={_ implements Ps' _}
-  //there is still some stuff checked by the ts
-  //Note: if we remove circularity, update operator sum; plus add privatly implemented concept/error
+  //Note: we remove circularity; update operator sum; plus add privatly implemented concept/error
+  //may be a good strategy could be that 
+  //"sum can not add abstract implemented methods", this enforces adding either equal hierarchies with different operators, or different hierarchies with equal operators.
+  //Or we can make this kind of check happens as extra at the end of multiple sums?
  -norm(p,ms e)=ms norm(p, e) 
     p.top()= {_ implements Ps _}
    
@@ -217,11 +221,8 @@ define #
   Li = norm(pi.pop(),pi.top())
   L' = L[Cs1=L1..Csn=Ln] //replace the nested classes in paths Csi with libraries Li.
 
-- p0 # Css, Csss =p2.update(p2.top()#Css) 
- p0=_,ctxL,_// i need to see the internal repr, should we extract a new program primitive operation here?
- p1=p0.pop() # Csss 
- p2=p1.push(p1.top()/ctxL)
- //like p1.growFrom(p0) defined as p.growFrom(_,ctxL,_)==p.push(p.top()/ctxL)
+- p # Css, Csss =p'.update(p'.top()#Css) 
+  p'=p.growFellow(p.pop() # Csss)
      
 - usedPaths(p,eC)=Ps union usedPaths(p,Csss) 
   Ps={P|P inside eC}
