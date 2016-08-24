@@ -1,3 +1,6 @@
+-----------------------------------------------------------
+Part 0: notations 
+-----------------------------------------------------------
 ASCII rendering of horizontal bar notation:
 Letters i,j,k,m,n are integers;
 usually indices into sequences or length of sequences
@@ -30,8 +33,10 @@ so that (a[with b=b1]).b = b1
 a[b=c2] when b in dom(a), a(b)=c1 modify a so that a(b)=c2
  
 
-----------------------------
-Core language grammar
+-----------------------------------------------------------
+Part 1: grammar, contexts, paths and programs
+-----------------------------------------------------------
+### Core language grammar
 e::=.... |L //pg1 start of https://github.com/ElvisResearchGroup/L42Docs/blob/master/Formal/Formal.pdf
 L::={interface? implements Ps M1..Mn}
 M::=ms e |refine mh e?| mh e? | C:e
@@ -52,11 +57,18 @@ ctxL::= {interface? MCs ctxM Ms}
 //notice how every LC is a special kind of L (barnotation has structural subtyping)
 ---------
 We define functional notation for
-L, ctxL and LC (over Ldom domain),
-VarEnv (var names)
+L, ctxL and LC (over Ldom domain and Cs)
+Moreover, for convenience we define inside in the following way:
 
+- eC inside eC' if eC'=ctxC[eC]      
 
-operations on contexts (for implementation too)
+-P inside M holds iff P inside M.e 
+ or M.mh= refine? T0 m(T1 x1..Tn xn) exception Ps
+ and Ti= _ P or Ti= P::_ or P in Ps
+ 
+
+-----------------------------------------------------------
+###operations on contexts (for implementation too)
  - L-ctxL=L' if L=ctxL[L']
  - L/ctxL=(ctxL', L')  intuition: if L=ctxL'[L'], ctxL sim ctxL'
    definition (for the special case we need):
@@ -70,11 +82,42 @@ operations on contexts (for implementation too)
     //if there was a used path This(n+1).A.B equivalent to Thisn.B (completed, compiled and usable)
     //this would be only inside of a chain of C:L
 
------------
-type environment:
-VarEnv::=(x:T)s
 
-program grammar
+-----------------------------------------------------------
+### paths
+ paths::= Csss //list of set of list of C
+ operations:
+ -(Css paths).top()=Css
+ 
+ -(Css paths).pop()=paths
+ 
+ -paths.push(Css)=Css,paths
+ 
+ -(Css paths) U (Css' paths')=minimize(Css U Css') (paths U paths')
+ -empty U empty=empty
+ 
+ -empty.prefix(_)=empty
+ -(Cs1 .. Csn paths).prefix(Cs.C)= minimize(paths0.top() Cs.C.Cs1 .. Cs.C.Csn) paths.pop()
+  paths0= paths.prefix(Cs)
+ -paths.prefix(empty)= paths
+  example:
+  W.E 0A 1B 2C 3D
+  W.E.A W.B C 1D
+  
+### auxiliary paths operations:
+ -reorganize(Ps)->paths
+  reorganize(Ps)=Css0,...,Cssn
+  shuffle(Ps)=Ps0,...,Psn
+  Psi=(Thisi.Cs)s
+  Cssi=minimize(Cssi')
+  Cs in Cssi' iff Thisi.Cs in Psi
+   
+ -minimize(Cs1..Csn)={Cs in Cs1..Csn | no Csi._=Cs}
+  Cs in Cssi iff Thisi.Cs in Psi and forall Thisi.Cs' in Psi, Cs!=Cs'._  
+ 
+
+-----------------------------------------------------------
+### program
 
 p::=L0;ctxLs //representing This0,...,Thisn
 
@@ -132,17 +175,26 @@ program derived operations:
 
 
 
-----------------------
+-----------------------------------------------------------
+Part 2: reduction rules and notations
+-----------------------------------------------------------
+depend on:
+ p|-P<=P'
+ |-p:paths
+ p|-e: imm Library
+ e -->p e'
+-----------------------------------------------------------
+### reduction rules
 ReductionTop:
 at top level we have a L not of form LC
  
           eC' -->p'+ r              p.top()={_ implements Ps0, MCs  C:eC Ms}
 (top)------------------------       eC not of form LC
      p ==> p'.update(p'.top()[C=r]) eC'=norm(p,eC) //resolve skele types, add all refine, collect supertypes
-                                    Ps=usedPaths(p,eC')
-                                    p'=p # Ps //norm the part of p named by Ps
+                                    paths=usedPaths(p,eC')
+                                    p'=p # paths //norm the part of p named by Ps
                                     p';exception Any; empty|-eC': imm Library //eC' is well typed
-                                    |-p':Ps //the part of p' named by Ps is well typed
+                                    |-p':paths //the part of p' named by Ps is well typed
 
 
                                    p.top()=L0={_ implements Ps, MCs  M Ms}
@@ -151,74 +203,70 @@ at top level we have a L not of form LC
                                    MC=norm(p,M)
 
 
-        p.push(ctxL, L)==> p'       p.top()={_ implements Ps, MCs  M Ms}
+        p.push(ctxL, L)==> p'       p.top()={interface? implements Ps, MCs  M Ms}
 (enter)-------------------------    M not of form MC
           p ==> p'.pop()            M.e=ctxC[L], L not of form LC
-                                    ctxL={_ implements Ps, MCs  M[with e=ctxC] Ms}
+                                    ctxL={interface? implements Ps, MCs  M[with e=ctxC] Ms}
 
                                  
 
+
 ------------------------------------------
+###define norm(p,e)=e
+subdefinitions:
 
-- eC inside eC' if eC'=ctxC[eC]      
+  -extract(p,P,ms)=p(P)(ms)[from P]
+  -otherwise extract(p,P,ms)= extract(p,P'[from P],ms)  if p(P)={_ implements _ P' _ _}
 
--extract(p,P,ms)=p(P)(ms)[from P]
--otherwise extract(p,P,ms)= extract(p,P'[from P],ms)  if p(P)={_ implements _ P' _ _}
-
--mostSpecific(p,Ps',ms)=extract(p, P, ms)
-  Ps={P| P in Ps', extract(p, P, ms) defined}
-  P in Ps', forall P' in Ps', p|-P<=P'
-
-define norm(p,e)=e
- -norm(p,localBindingDeclaration)= use resolve(p,T)=T' on skeletal types
- -norm(p,L)={interface? implements Ps' merge(Ms,Ms'')}
-  L={interface? implements Ps M1..Mn}
-  p'=p.push(L)//can be repleaced by evilPush in implementation
-  Ps'=collect(p',Ps)
-  //we need to add some M1..Mk for refine abstract interface meth.
-  Ms=norm(p', M1)..norm(p',Mn)
-  domOfImpl={ms| P in Ps', p( P)( ms) defined}
-  error unless forall refine mh e? in Ms, mh.ms in domOfImpl
-  error unless forall ms e in Ms, ms in domOfImpl 
-  Ms'={addRefineKw(resolve(p,mostSpecific(p,Ps', ms)))| ms in domOfImpl}
-  subdefine Ms''
-    Ms''(ms)=Ms(ms) if Ms(ms) not of form ms e
-    Ms''(ms)=Ms'(ms) if ms not in dom(Ms)
-    Ms''(ms)= refine mh e if Ms(ms)=ms e and Ms'(ms)=refine mh
-  error unless dom(Ms'') superSetEq domOfImpl
-  //this is stricter then java, since it requires explicit refine even if unrelated 
-  //parents in a diamond agrees on the return type. 
+  -mostSpecific(p,Ps',ms)=extract(p, P, ms)
+   Ps={P| P in Ps', extract(p, P, ms) defined}
+   P in Ps', forall P' in Ps', p|-P<=P'
   
-  sub define collect:
-    collect(p,empty)=empty
-    //an implementation could keep a list of visited P instead of diverging, mathematically is the same.
-    collect(p,P Ps)=P U collect(p,Ps) U collect(p.navigate(P),Ps')[from P]
-      if p(P)={_ implements Ps' _}
-  //Note: we remove circularity; update operator sum; plus add privatly implemented concept/error
-  //may be a good strategy could be that 
-  //"sum can not add abstract implemented methods", this enforces adding either equal hierarchies with different operators, or different hierarchies with equal operators.
-  //Or we can make this kind of check happens as extra at the end of multiple sums?
- -norm(p,ms e)=ms norm(p, e) 
-    p.top()= {_ implements Ps _}
+  -merge(Ms,Ms')
+    merge(Ms,Ms')(ms)=Ms(ms) if Ms(ms) not of form ms e
+    merge(Ms,Ms')(ms)=Ms'(ms) if ms not in dom(Ms)
+    merge(Ms,Ms')(ms)= refine mh e if Ms(ms)=ms e and Ms'(ms)=refine mh
+
+  -collect(p,empty)=empty
+   //an implementation could keep a list of visited P instead of diverging, mathematically is the same.
+  -collect(p,P Ps)=P U collect(p,Ps) U collect(p.navigate(P),Ps')[from P]
+   if p(P)={_ implements Ps' _}
+   //Note: we remove circularity; update operator sum; plus add privatly implemented concept/error
+   //may be a good strategy could be that 
+   //"sum can not add abstract implemented methods", this enforces adding either equal hierarchies with different operators, or different hierarchies with equal operators.
+   //Or we can make this kind of check happens as extra at the end of multiple sums?
+
+maindefinition:
+-norm(p,localBindingDeclaration)= use resolve(p,T)=T' on skeletal types
+-norm(p,L)={interface? implements Ps' merge(Ms,Ms')}
+ L={interface? implements Ps M1..Mn}
+ p'=p.push(L)//can be repleaced by evilPush in implementation
+ Ps'=collect(p',Ps)
+ //we need to add some M1..Mk for refine abstract interface meth.
+ Ms=norm(p', M1)..norm(p',Mn)
+ domOfImpl={ms| P in Ps', p( P)( ms) defined}
+ error unless forall refine mh e? in Ms, mh.ms in domOfImpl
+ error unless forall ms e in Ms, ms in domOfImpl 
+ Ms'={addRefineKw(resolve(p,mostSpecific(p,Ps', ms)))| ms in domOfImpl}
+ error unless dom(merge(Ms,Ms')) superSetEq domOfImpl
+ //this is stricter then java, since it requires explicit refine even if unrelated 
+ //parents in a diamond agrees on the return type. 
+  
+-norm(p,ms e)=ms norm(p, e) 
+ p.top()= {_ implements Ps _}
    
- -norm(p,refine mh e?)= refine resolve(p,mh) norm(p,e?)
-    p.top()= {_ implements Ps _}
+-norm(p,refine mh e?)= refine resolve(p,mh) norm(p,e?) 
+ p.top()= {_ implements Ps _}
    
- -norm(p,mh e?)= resolve(p,mh) norm(p,e?)
-    p.top()={_ implements Ps _}
+-norm(p,mh e?)= resolve(p,mh) norm(p,e?)
+ p.top()={_ implements Ps _}
     
- -norm(p, C:e) =C:norm(p,e)//assume we can cache if e is already normalized and avoiding repeating
+-norm(p, C:e) =C:norm(p,e)//assume we can cache if e is already normalized and avoiding repeating
 
 
-reorganize(Ps)->Csss
-  reorganize(Ps)=Css0,...,Cssn
-  shuffle(Ps)=Ps0,...,Psn
-  Psi=(Thisi.Cs)s
-  Cs in Cssi iff Thisi.Cs in Psi and forall Thisi.Cs' in Psi, Cs'!=Cs._  
-  
-define #
 
-- p#Ps = p#reorganize(Ps)     // Ps is organized as list of list of Cs
+------------------------------------------
+### define #
 
 - p#empty = p
 
@@ -229,15 +277,25 @@ define #
 
 - p # Css, Csss =p'.update(p'.top()#Css) 
   p'=p.growFellow(p.pop() # Csss)
-     
-- usedPaths(p,eC)=Ps union usedPaths(p,Csss) 
+   
+------------------------------------------     
+###define usedPaths
+- usedPaths(p,eC)=paths U usedPathsFix(p,paths, empty) 
   Ps={P|P inside eC}
-  Csss= reorganize(Ps)
-  
-- usedPaths(p,Cs1..Csn Csss)= add1Outer(usedPaths(p.pop(),Csss)) U
-    usedInner(p.top()(Cs1),Cs1) U ... U usedInner(p.top()(Csn),Csn)
+  paths= reorganize(Ps)
+ 
+- usedPathsFix(p,paths,Css')= usedPathsFix(p, Css1, paths U paths0,minimize(paths0.top() U Css'))
+   paths0.top()\Css'!=empty
+   paths0=usedPath1(p,Css\Css')
+     
+- usedPaths(p,Css Csss,Css')= usedPathsFix(p.pop(),Csss).push(Css')
+   Css\Css'=empty
+    
+- usedPath1(p, Css)=usedInner(p.top()(Cs1),Cs1) U ... U usedInner(p.top()(Csn),Csn)
 
-- usedInner({_ implements Ps, M1..Mn},Cs)=prefix(Cs,Ps U usedInner(M1) U... U usedInner(Mn))
+- usedInner({_ implements Ps, M1..Mn},Cs)=prefix(Cs,reorganize(Ps) U usedInner(M1) U... U usedInner(Mn))
 
-- usedInner(M)= {P| P inside M} U usedInner(L1,empty) U...U usedInner(Ln,empty)
+- usedInner(M)= reorganize({P| P inside M}) U (usedInner(L1,empty) U...U usedInner(Ln,empty)).pop()
   L1..Ln={L| L inside M}
+
+ 
