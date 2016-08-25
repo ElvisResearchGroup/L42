@@ -122,6 +122,9 @@ public static enum Opt{
   Parallel{public void act(Path root, List<Object[]> tests){
     numThreads *= 2;
     }},
+  ProfilerPrintOff{public void act(Path root, List<Object[]> tests){
+    L42.profilerPrintOn=false;
+    }},
   DeplAT1{public void act(Path root, List<Object[]> tests){
     addFileFromPath(findTests(root).resolve("bin/adamsTowel01/libProject/"), tests);}},
   DeplAT2{public void act(Path root, List<Object[]> tests){
