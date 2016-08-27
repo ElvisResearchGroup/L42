@@ -97,17 +97,16 @@ Moreover, for convenience we define inside in the following way:
  -paths U empty=empty U paths = paths
  
  -empty.prefix(_)=empty
+ -paths.prefix(empty)= paths
  -(Cs1 .. Csn paths).prefix(Cs.C)= minimize(paths0.top() Cs.C.Cs1 .. Cs.C.Csn) paths.pop()
   paths0= paths.prefix(Cs)
- -paths.prefix(empty)= paths
-  example:
-  W.E 0A 1B 2C 3D
-  W.E.A W.B C 1D
+  example of prefix:
+  ((A)  (B)  (C)  (D)).prefix(W.E)
+   ((W.E.A  W.B  C) (D))
   
 ### auxiliary paths operations:
- -reorganize(Ps)->paths
-  reorganize(empty)->empty
-  reorganize(Ps)=Css0,...,Cssn
+ -reorganize(empty)=empty
+ -reorganize(Ps)=Css0,...,Cssn
   Cssn!=empty
   Cssi=minimize(Cssi')
   Cs in Cssi' iff Thisi.Cs in Ps
