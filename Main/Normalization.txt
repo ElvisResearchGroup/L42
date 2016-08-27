@@ -292,12 +292,14 @@ maindefinition:
   Ps={P|P inside eC}
   paths= reorganize(Ps)
  
-- usedPathsFix(p,paths,Css)= usedPathsFix(p, paths U paths0,minimize(paths0.top() U Css))
+- usedPathsFix(p,paths,Css)= usedPathsFix(p, paths U paths0,minimize(paths0.top() U Css)) // U on paths does minimize() internally
    paths.top()\Css!=empty
    paths0=usedPath1(p,paths.top()\Css)
      
-- usedPaths(p,paths,Css)= usedPathsFix(p.pop(),paths.pop(),empty).push(Css)
+- usedPathsFix(p,paths,Css)= usedPathsFix(p.pop(),paths.pop(),empty).push(Css)
    paths.top()\Css==empty
+
+- usedPathsFix(p,empty,empty) =empty   
     
 - usedPath1(p, Css)=usedInner(p.top()(Cs1),Cs1) U ... U usedInner(p.top()(Csn),Csn)
 
