@@ -181,7 +181,7 @@ depend on:
  p|-P<=P'
  |-p:paths
  p|-e: imm Library
- e -->p e'
+ e -->p+ r
 -----------------------------------------------------------
 ### reduction rules
 ReductionTop:
@@ -191,9 +191,9 @@ at top level we have a L not of form LC
 (top)------------------------       eC not of form LC
      p ==> p'.update(p'.top()[C=r]) eC'=norm(p,eC) //resolve skele types, add all refine, collect supertypes
                                     paths=usedPaths(p,eC')
-                                    p'=p # paths //norm the part of p named by Ps
-                                    p';exception Any; empty|-eC': imm Library //eC' is well typed
-                                    |-p':paths //the part of p' named by Ps is well typed
+                                    p'=p # paths U reorganize(hatsOf(eC'))//norm the part of p named by Ps
+                                    p'|-eC': imm Library //replace hats with Any//eC' is well typed
+                                    |-p':paths //the part of p' referred to by paths is well typed
 
 
                                    p.top()=L0={_ implements Ps, MCs  M Ms}
