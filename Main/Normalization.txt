@@ -91,10 +91,10 @@ Moreover, for convenience we define inside in the following way:
  
  -(Css paths).pop()=paths
  
- -paths.push(Css)=Css,paths
+ -paths.push(Css)=Css paths
  
  -(Css paths) U (Css' paths')=minimize(Css U Css') (paths U paths')
- -empty U empty=empty
+ -paths U empty=empty U paths = paths
  
  -empty.prefix(_)=empty
  -(Cs1 .. Csn paths).prefix(Cs.C)= minimize(paths0.top() Cs.C.Cs1 .. Cs.C.Csn) paths.pop()
@@ -220,8 +220,8 @@ subdefinitions:
   -resolve(p,P::ms)=T
     extract(p,P,ms)=refine? _ method T ms e?
   -resolve(p,P::ms::x)=T
-    extract(p,P,ms)=_ method _ _( _ T x _) e? 
-  -resolve(p,P::msx::msxs)=resolve(p,P'::msxs)  
+    extract(p,P,ms)=refine? _ method _ _( _ T x _) e? 
+  -resolve(p,P::msx::msxs)=resolve(p,P'::msxs) //here be carefull for possible infinite recursion 
     resolve(p,P::msx)= _ P'
                
   -extract(p,P,ms)=p(P)(ms)[from P]
