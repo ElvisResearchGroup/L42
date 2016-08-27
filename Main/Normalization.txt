@@ -98,11 +98,11 @@ Moreover, for convenience we define inside in the following way:
  
  -empty.prefix(_)=empty
  -paths.prefix(empty)= paths
- -(Cs1 .. Csn paths).prefix(Cs.C)= minimize(paths0.top() Cs.C.Cs1 .. Cs.C.Csn) paths.pop()
+ -(Cs1..Csn paths).prefix(Cs.C)= minimize(paths0.top() Cs.C.Cs1 .. Cs.C.Csn) paths.pop()
   paths0= paths.prefix(Cs)
   example of prefix:
   ((A)  (B)  (C)  (D)).prefix(W.E)
-   ((W.E.A  W.B  C) (D))
+   = ((W.E.A  W.B  C) (D))
   
 ### auxiliary paths operations:
  -reorganize(empty)=empty
@@ -292,12 +292,12 @@ maindefinition:
   Ps={P|P inside eC}
   paths= reorganize(Ps)
  
-- usedPathsFix(p,paths,Css')= usedPathsFix(p, Css1, paths U paths0,minimize(paths0.top() U Css'))
-   paths0.top()\Css'!=empty
-   paths0=usedPath1(p,Css\Css')
+- usedPathsFix(p,paths,Css)= usedPathsFix(p, paths U paths0,minimize(paths0.top() U Css))
+   paths.top()\Css!=empty
+   paths0=usedPath1(p,paths.top()\Css)
      
-- usedPaths(p,Css Csss,Css')= usedPathsFix(p.pop(),Csss).push(Css')
-   Css\Css'=empty
+- usedPaths(p,paths,Css)= usedPathsFix(p.pop(),paths.pop(),empty).push(Css)
+   paths.top()\Css==empty
     
 - usedPath1(p, Css)=usedInner(p.top()(Cs1),Cs1) U ... U usedInner(p.top()(Csn),Csn)
 
