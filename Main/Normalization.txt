@@ -106,10 +106,11 @@ Moreover, for convenience we define inside in the following way:
   
 ### auxiliary paths operations:
  -reorganize(Ps)->paths
-  reorganize(Ps)=Css1,...,Cssn
+  reorganize(empty)->empty
+  reorganize(Ps)=Css0,...,Cssn
   Cssn!=empty
   Cssi=minimize(Cssi')
-  Cs in Cssi' iff This(i-1).Cs in Ps
+  Cs in Cssi' iff Thisi.Cs in Ps
    
  -minimize(Cs1..Csn)={Cs in Cs1..Csn | forall Csi, Csi._!=Cs}
 
