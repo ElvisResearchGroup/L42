@@ -215,6 +215,15 @@ at top level we have a L not of form LC
 ###define norm(p,e)=e
 subdefinitions:
 
+  -resolve(p,mdf P)=mdf P
+  -resolve(p,P::mss::x?)=mdf P
+  -resolve(p,P::ms)=T
+    extract(p,P,ms)=_ method T ms e?
+  -resolve(p,P::ms::mss::x?)=resolve(p,P'::mss::x?)  
+    resolve(p,P::ms)= _ P'
+  -resolve(p,P::ms::x)=T
+    extract(p,P,ms)=_ method _ _( _ T x _) e? 
+               
   -extract(p,P,ms)=p(P)(ms)[from P]
   -otherwise extract(p,P,ms)= extract(p,P'[from P],ms)  if p(P)={_ implements _ P' _ _}
 
