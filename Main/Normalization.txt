@@ -218,7 +218,7 @@ subdefinitions:
 
   -resolve(p,mdf P)=mdf P
   -resolve(p,P::ms)=T
-    extract(p,P,ms)=_ method T ms e?
+    extract(p,P,ms)=refine? _ method T ms e?
   -resolve(p,P::ms::x)=T
     extract(p,P,ms)=_ method _ _( _ T x _) e? 
   -resolve(p,P::msx::msxs)=resolve(p,P'::msxs)  
