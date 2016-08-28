@@ -313,4 +313,9 @@ maindefinition:
   otherwise toAny(Css0..Cssn, ctxC[Thisi.Cs])=toAny(Css1..Cssn,ctxC[Any]) 
   where Cs in Cssi
   
+  //non determinism heuristic:
+  //if P.m(_) inside e, P not Any
+  //if ( _ T x=P _ _) inside e and T!=class Any, P not Any.
+  //otherwise, P is considered of type class Any.
+  // user can always force a not any by writing (x=P x)
   
