@@ -10,6 +10,8 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.runners.Parameterized.Parameters;
 
+import helpers.TestRunner.Opt;
+
 public class TestB extends helpers.TestRunner{
   @Parameters(name = "{index}:{1}")
   public static List<Object[]> go(){
@@ -17,10 +19,11 @@ public class TestB extends helpers.TestRunner{
       //// global options
       // Opt.NoAss,  // Run without assertions enabled (faster)
       // Opt.NoTrust, // Run without trusting plugins (much slower)
-      Opt.Parallel, // Double the number of threads of concurrent tests
+      //Opt.Parallel, // Double the number of threads of concurrent tests
                        // (starting from one; as many times as you like; will not wait for towels)
-      Opt.Parallel,
-      Opt.Parallel,
+      //Opt.Parallel,
+      //Opt.Parallel,
+      Opt.ProfilerPrintOff,//disable profiler print and final profiling computation
       //// big individual deployment options
       // Opt.DeplAT1, // AdamsTowel01
       // Opt.DeplAT2, // AdamsTowel02

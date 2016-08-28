@@ -10,6 +10,8 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.runners.Parameterized.Parameters;
 
+import helpers.TestRunner.Opt;
+
 public class Test02 extends helpers.TestRunner{
   @Parameters(name = "{index}:{1}")
   public static List<Object[]> go(){
@@ -20,10 +22,11 @@ public class Test02 extends helpers.TestRunner{
       // Opt.Parallel, // Double the number of threads of concurrent tests
                        // (starting from one; as many times as you like; will not wait for towels)
       // Opt.Parallel,
+      Opt.ProfilerPrintOff,//disable profiler print and final profiling computation
       //// big individual deployment options
       // Opt.DeplAT1, // AdamsTowel01
-       Opt.DeplAT2, // AdamsTowel02
-      // Opt.Project, // Run the local libProject as a folder, expecting it to deploy a project towel
+      // Opt.DeplAT2, // AdamsTowel02
+       Opt.Project, // Run the local libProject as a folder, expecting it to deploy a project towel
       //// options for deploying small things
       //"TestHelloWorld.L42", // Name of a file in libTests; edit to match your file
       // Opt.AllTests, // All files in libTests, as individual tests, in no defined order

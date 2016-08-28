@@ -10,7 +10,6 @@ import facade.L42;
 import facade.Parser;
 import sugarVisitors.Desugar;
 import sugarVisitors.InjectionOnCore;
-import testAdamTowel01.TestBase01;
 import ast.Ast;
 import ast.ErrorMessage;
 import ast.ErrorMessage.FinalResult;
