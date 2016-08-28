@@ -190,10 +190,10 @@ at top level we have a L not of form LC
           eC' -->p'+ r              p.top()={_ implements Ps0, MCs  C:eC Ms}
 (top)------------------------       eC not of form LC
      p ==> p'.update(p'.top()[C=r]) eC'=norm(p,eC) //resolve skele types, add all refine, collect supertypes
-                                    paths=usedPaths(p,eC')
-                                    p'=p # paths U reorganize(hatsOf(eC'))//norm the part of p named by Ps
-                                    p'|-eC': imm Library //replace hats with Any//eC' is well typed
-                                    |-p':paths //the part of p' referred to by paths is well typed
+                                    <paths; paths'>=usedPathsE(p,eC') //tuple notation
+                                    p'=p #paths U paths'//norm the part of p required by eC'
+                                    p'|-toAny(paths,eC'): imm Library //replace paths with Any //eC' is well typed
+                                    |-p':paths' //the part of p' referred to by paths' is well typed
 
 
                                    p.top()=L0={_ implements Ps, MCs  M Ms}
@@ -287,10 +287,10 @@ maindefinition:
   p'=p.growFellow(p.pop() # Csss)
    
 ------------------------------------------     
-###define usedPaths
-- usedPaths(p,eC)=paths U usedPathsFix(p,paths, empty) 
-  Ps={P|P inside eC}
-  paths= reorganize(Ps)
+###define usedPathsE
+- usedPathsE(p,eC)=<reorganize(Ps); paths U usedPathsFix(p,paths, empty)>//do we need to add paths or is already included in usedPathsFix(p,paths, empty)  
+  Ps,Ps'={P|P inside eC}//arbitrary split of the set; heuristic will apply in the implementation.
+  paths= reorganize(Ps')
  
 - usedPathsFix(p,paths,Css)= usedPathsFix(p, paths U paths0,minimize(paths0.top() U Css)) // U on paths does minimize() internally
    paths.top()\Css!=empty
@@ -308,4 +308,9 @@ maindefinition:
 - usedInnerM(M)= reorganize({P| P inside M}) U (usedInnerL(L1,empty) U...U usedInnerL(Ln,empty)).pop()
   L1..Ln={L| L inside M}
 
- 
+  //in the botton to not mess up line numbers
+- toAny(Css0..Cssn,e)=e iff forall i in 0..n, Cs in Cssi, not Thisi.Cs inside e
+  otherwise toAny(Css0..Cssn, ctxC[Thisi.Cs])=toAny(Css1..Cssn,ctxC[Any]) 
+  where Cs in Cssi
+  
+  
