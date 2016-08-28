@@ -1,4 +1,4 @@
-package testSpecial;
+package oldTestsNotMaintained.testSpecial;
 
 import helpers.TestHelper;
 
@@ -7,35 +7,20 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 
-
 import ast.ErrorMessage;
 import ast.ErrorMessage.FinalResult;
 import auxiliaryGrammar.Program;
 import facade.ErrorFormatter;
 import facade.L42;
 
-public class BuildLibs {
+public class TestDummyCode {
   public static void main(String [] arg) throws IOException{
     L42.setRootPath(Paths.get("dummy"));
+    System.out.println(Paths.get("dummy").toUri());
     TestHelper.configureForTest();
     try{
-      FinalResult res = L42.runSlow(null,TestHelper.multiLine(""
-//,"{reuse L42.is/nanoBase1"
-,"{reuse L42.is/deployMini"
-,"Main:{"
-//,"  l=Introspection({reuse L42.is/tinyBase1})"
-//,"  Debug(fileName:S\"localhost/miniBase.L42\""
-//,"    content:l.get()"
-//,"    )"
-,"  Deploy("
-,"    fileName:S\"localhost/miniBase.L42\","
-,"    code:{reuse L42.is/tinyBase1},"
-//,"    code:{reuse L42.is/nanoBase1},"
-,"    node:S\"This0\")"
-,"  return ExitCode.normal()"
-,"  }"
-,"}"
-));
+      Path path = Paths.get("dummy","dummy.l42");
+      FinalResult res = L42.runSlow(path.toString(),L42.pathToString(path));
       System.out.println("------------------------------");
       System.out.println("END: "+res.getErrCode());
     }
@@ -45,5 +30,18 @@ public class BuildLibs {
      //Executor.reportError(msg);
       System.out.println(ErrorFormatter.formatError(Program.empty(),msg).getErrorTxt());
       }
+/*    try{
+      FinalResult res = L42.runSlow(L42.pathToString(Paths.get("dummy","dummy.l42")));
+      System.out.println(L42.record.toString());
+      if(res.getResult()!=0){
+        System.out.println(res);
+        Executor.reportError(null);
+        }
+      }
+    catch(ErrorMessage msg){
+      System.out.println(L42.record.toString());
+      msg.printStackTrace();
+      Executor.reportError(msg);
+      }*/
   }
 }

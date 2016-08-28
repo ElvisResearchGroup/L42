@@ -23,6 +23,7 @@ public class Plugin implements PluginType {
   public  Object MexecuteJs£xwName£xcommand(Object _wName, Object _command){
     String wName=EncodingHelper.ensureExtractStringU(_wName);
     String command=EncodingHelper.ensureExtractStringU(_command);
+    System.out.println("REQUESTED executeJs on: "+command);
     String res = Frame.executeJs(wName,command);
     assert res!=null;
     return res;

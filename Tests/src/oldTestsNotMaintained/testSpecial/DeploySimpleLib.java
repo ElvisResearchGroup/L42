@@ -1,4 +1,4 @@
-package testSpecial;
+package oldTestsNotMaintained.testSpecial;
 
 import helpers.TestHelper;
 

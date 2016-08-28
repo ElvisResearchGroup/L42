@@ -1,4 +1,4 @@
-package testSlow;
+package oldTestsNotMaintained.testSlow;
 
 import helpers.TestHelper;
 

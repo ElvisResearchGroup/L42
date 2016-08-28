@@ -6,8 +6,12 @@ C:{
   Gui gui=Gui(id:S"a1")
   initialState=S"
       '<div id="Alpha"> </div>
-      '<font size="3" color="blue">Press the button to make stuff happens! </font>
+      '<font size="3" color="blue">Press the button to make stuff happens! otherwise stuff happens after a while to make the test an automated one</font>
       '<button class="button" onclick="event42('Pressed!')">Click Me!</button>
+      '<script>
+      'pressButton=function(){event42('Pressed!');setTimeout(pressButton, 1500);}
+      'setTimeout(pressButton, 10000);
+      '</script>      
       "
   Debug(initialState)
   S resources=S"file:///"++Debug.localToAbsolute(fileName:S"examples/resources")++S"\"
