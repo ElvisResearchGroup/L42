@@ -1,4 +1,4 @@
-package testAdamTowel01;
+package oldTestsNotMaintained.testAdamTowel01;
 
 import java.io.File;
 import java.nio.file.Paths;

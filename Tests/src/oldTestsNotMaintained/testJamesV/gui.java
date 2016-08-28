@@ -1,4 +1,4 @@
-package testJamesV;
+package oldTestsNotMaintained.testJamesV;
 
 import static org.junit.Assert.*;
 
