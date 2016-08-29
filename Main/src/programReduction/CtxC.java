@@ -19,91 +19,67 @@ public interface CtxC {
   ExpCore fillHole(ExpCore hole);
   ExpCore originalHole();
   CtxC divide(ExpCore all);
-  static  CtxC split (ExpCore e){
-    return null;
+  static  CtxC split (ExpCore e){return e.accept(new CtxSplitter());}
   }
-}
-abstract class CtxCAbs<T> implements CtxC{
-  T origin;CtxC ctx;
-  CtxCAbs(T origin, CtxC ctx){
-    this.origin=origin;this.ctx=ctx;
+
+abstract class CtxCAbsPos<T> implements CtxC{
+  T origin;int pos;CtxC ctx;
+  CtxCAbsPos(T origin,int pos, CtxC ctx){
+    this.origin=origin;this.pos=pos;this.ctx=ctx;
     }
   public ExpCore originalHole() {return ctx.originalHole();}
   }
-abstract class CtxCAbsPos<T> implements CtxC{
-T origin;int pos;CtxC ctx;
-CtxCAbsPos(T origin,int pos, CtxC ctx){
-  this.origin=origin;this.pos=pos;this.ctx=ctx;
+
+class CtxCInner<T extends ExpCore.WithInner<T> & ExpCore> implements CtxC{
+  T origin;CtxC ctx;
+  CtxCInner(T origin,CtxC ctx) {this.origin=origin;this.ctx=ctx;}
+  public ExpCore originalHole() {return ctx.originalHole();}
+  public T fillHole(ExpCore hole) {return origin.withInner(ctx.fillHole(hole));}
+  public CtxC divide(ExpCore all) {
+    assert origin.getClass().equals(all.getClass());
+    @SuppressWarnings("unchecked") //safe here
+    T _all=(T)all;//TODO:
+    CtxC ctxInner=ctx.divide(_all.getInner());
+    return new CtxCInner<T>(_all,ctxInner);
+    }
   }
-public ExpCore originalHole() {return ctx.originalHole();}
-}
 
 class CtxSplitter implements coreVisitors.Visitor<CtxC>{
   public CtxC visit(Path s) {return null;}
   public CtxC visit(X s) {return null;}
   public CtxC visit(_void s) {return null;}
+  public CtxC visit(ClassB s) {return null;}
   public CtxC visit(WalkBy s) {throw new AssertionError();}
-  @Override
-  public CtxC visit(Using s) {
-  // TODO Auto-generated method stub
-  return null;
-  }
-  private static class CtxCSignal extends CtxCAbs<Signal>{
-  CtxCSignal(Signal origin,CtxC ctx) {super(origin,ctx);}
-  public ExpCore fillHole(ExpCore hole) {return origin.withInner(ctx.fillHole(hole));}
-  public CtxC divide(ExpCore all) {
-    Signal _all=(Signal)all;
-    CtxC ctxInner=ctx.divide(_all.getInner());
-    return new CtxCSignal(_all,ctxInner);
-  }}
-  public CtxC visit(Signal s) {
-    return null;
-    }
-  private static class CtxCMCall extends CtxCAbs<MCall>{
-    CtxCMCall(MCall origin,CtxC ctx) {super(origin,ctx);}
-    public ExpCore fillHole(ExpCore hole) {return origin.withInner(ctx.fillHole(hole));}
+  
+  public CtxC visit(Signal s) {return new CtxCInner<Signal>(s, s.getInner().accept(this));}
+  public CtxC visit(Loop s) { return new CtxCInner<Loop>(s, s.getInner().accept(this));}
+
+  private static class CtxCMCallPos extends CtxCAbsPos<MCall>{
+    CtxCMCallPos(MCall origin,int pos,CtxC ctx) {super(origin,pos,ctx);}
+    public ExpCore fillHole(ExpCore hole) {return origin.withEsi(pos,ctx.fillHole(hole));}
     public CtxC divide(ExpCore all) {
       MCall _all=(MCall)all;
-      CtxC ctxInner=ctx.divide(_all.getInner());
-      return new CtxCMCall(_all,ctxInner);
-    }}
-  private static class CtxCMCallPos extends CtxCAbsPos<MCall>{
-  CtxCMCallPos(MCall origin,int pos,CtxC ctx) {super(origin,pos,ctx);}
-  public ExpCore fillHole(ExpCore hole) {return origin.withEsi(pos,ctx.fillHole(hole));}
-  public CtxC divide(ExpCore all) {
-    MCall _all=(MCall)all;
-    CtxC ctxInner=ctx.divide(_all.getEs().get(pos));
-    return new CtxCMCall(_all,ctxInner);
-  }}
-    public CtxC visit(MCall s) {
+      CtxC ctxInner=ctx.divide(_all.getEs().get(pos));
+      return new CtxCMCallPos(_all,pos,ctxInner);
+      }
+    }
+  public CtxC visit(MCall s) {
       ExpCore r=s.getInner();
-      if (!IsCompiled.of(r)){return new CtxCMCall(s,r.accept(this));}
+      if (!IsCompiled.of(r)){return new CtxCInner<MCall>(s,r.accept(this));}
       int pos=firstNotCompiled(s.getEs());
       return new CtxCMCallPos(s,pos,s.getEs().get(pos).accept(this));
     }
-
-    @Override
-    public CtxC visit(Block s) {
-    // TODO Auto-generated method stub
+  public CtxC visit(Using s) {
+    return null;
+    }
+  public CtxC visit(Block s) {
     return null;
     }
 
-    @Override
-    public CtxC visit(ClassB s) {
-    // TODO Auto-generated method stub
-    return null;
-    }
-
-    @Override
-    public CtxC visit(Loop s) {
-    // TODO Auto-generated method stub
-    return null;
-    }
-    private int firstNotCompiled(List<ExpCore> es) {
+  private int firstNotCompiled(List<ExpCore> es) {
     for(int i=0;i<es.size();i++){
       if(!IsCompiled.of(es.get(i))){return i;}
-    }
+      }
     return es.size();
     }
-
-}
+  }
