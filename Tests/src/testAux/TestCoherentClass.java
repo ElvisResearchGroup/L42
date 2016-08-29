@@ -73,7 +73,7 @@ public class TestCoherentClass {
       },{Mdf.Capsule,Path.Void(),"{mut method  Void foo(lent Void that)}",false
        }});}
 
-    //@Test
+    @Test
     public void testCoherence() {
       ClassB cb1=(ClassB)(Parser.parse(null,e).accept(new InjectionOnCore()));
       Program p=Program.empty();

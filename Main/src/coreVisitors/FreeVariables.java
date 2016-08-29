@@ -47,7 +47,7 @@ public class FreeVariables implements Visitor<Set<String>>{
   @Override
   public Set<String> visit(MCall s) {
     for(ExpCore e:s.getEs()){e.accept(this);}
-    return s.getReceiver().accept(this);
+    return s.getInner().accept(this);
   }
 
   private  void visitK(List<On> k) {
@@ -67,7 +67,7 @@ public class FreeVariables implements Visitor<Set<String>>{
   }
   private Set<String> inBlock(Block s) {
     for(Block.Dec di:s.getDecs()){
-      di.getE().accept(this);
+      di.getInner().accept(this);
       }
     if(!s.getOns().isEmpty()){visitK(s.getOns());}
     Set<String> res = s.getInner().accept(this);

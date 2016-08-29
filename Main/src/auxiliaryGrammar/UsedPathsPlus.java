@@ -71,9 +71,9 @@ public class UsedPathsPlus {
     return null;
   }*/
   Void collectPaths(List<Path> ps,MethodWithType mwt){
-    if(mwt.getInner().isPresent()){
-      collectPaths(ps,mwt.getInner().get());
-      ps.addAll(CollectPaths0.of(mwt.withInner(Optional.empty())));
+    if(mwt.get_inner().isPresent()){
+      collectPaths(ps,mwt.getInner());
+      ps.addAll(CollectPaths0.of(mwt.with_inner(Optional.empty())));
     }
     else ps.addAll(CollectPaths0.of(mwt));
     return null;

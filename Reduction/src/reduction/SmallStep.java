@@ -62,7 +62,7 @@ public class SmallStep extends Executor{
       ExpCore e2=executeAtomicStep(p1,e1,m.getName());
       e2=Functions.clearCache(e2,Stage.Less);
       if(!(e2 instanceof ClassB)){Configuration.typeSystem.checkMetaExpr(p1.getExecutableStar(),e2);}//TODO: as assert
-      ClassB cbRes=cb.withMember(m.withBody(e2));
+      ClassB cbRes=cb.withMember(m.withInner(e2));
       //TODO: if e2 is an error, terminate with error, do it better?
       //is it already stopping if that happens?
       //if(e2 instanceof ExpCore.Signal){throw new ErrorMessage.MalformedFinalResult(cbRes, "error raised in metaexpression evauation");}

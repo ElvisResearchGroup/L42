@@ -57,13 +57,13 @@ public class IsRedex{
     }
     
   public static Redex visit(Program p,MCall s)  {
-    if(!IsValue.of(p,s.getReceiver())){return Redex.invalid();}
+    if(!IsValue.of(p,s.getInner())){return Redex.invalid();}
     for(ExpCore ei:s.getEs()){
       if(!IsValue.of(p,ei)){return Redex.invalid();}
       }
     //after the first approximation//TODO: it is really slow, can we use this idea to redo the whole ctxExtract?, note, it is only needed for garbage
-    Garbage g=IsValue.nestedGarbage(s.getReceiver());
-    if (g!=null){return new Garbage(s.withReceiver(g.getThatLessGarbage()));}
+    Garbage g=IsValue.nestedGarbage(s.getInner());
+    if (g!=null){return new Garbage(s.withInner(g.getThatLessGarbage()));}
     List<ExpCore> newEs = esNestedGarbage(s.getEs());
     if(newEs!=null){return new Garbage(s.withEs(newEs));}
     return new Redex.MethCall(s);
@@ -90,7 +90,7 @@ public class IsRedex{
   }
   public static Redex visit(Program p,Block s)  {
     for(int i=0;i<s.getDecs().size();i++){
-      ExpCore ei=s.getDecs().get(i).getE();
+      ExpCore ei=s.getDecs().get(i).getInner();
       NormType ti=s.getDecs().get(i).getNT();
       //Here I was reasoning on missing nested garbage
       //Redex ri=redexDec(p, s, i, ei, ti);

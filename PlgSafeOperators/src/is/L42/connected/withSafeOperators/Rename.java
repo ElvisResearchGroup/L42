@@ -109,9 +109,9 @@ public class Rename {
       public ExpCore visit(MCall s) {
         List<String> localPath = this.getLocator().getClassNamesPath();
         if(!localPath.equals(path)){return super.visit(s);}
-        if(s.getReceiver().equals(Path.outer(0)) || s.getReceiver().equals(new ExpCore.X("this"))){
+        if(s.getInner().equals(Path.outer(0)) || s.getInner().equals(new ExpCore.X("this"))){
             result2.add(s.getS());
-            return s.withReceiver(s.getReceiver().accept(this)).withEs(Map.of(e->e.accept(this), s.getEs()));
+            return s.withInner(s.getInner().accept(this)).withEs(Map.of(e->e.accept(this), s.getEs()));
             }
         return super.visit(s);
         }

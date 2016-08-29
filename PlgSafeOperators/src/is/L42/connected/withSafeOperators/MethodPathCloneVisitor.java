@@ -129,14 +129,14 @@ abstract public class MethodPathCloneVisitor extends RenameMembers {
     MethodSelector ms=s.getS();
     Path guessed=null;
     try{
-      guessed=GuessTypeCore.of( ep, varEnv,s.getReceiver());
+      guessed=GuessTypeCore.of( ep, varEnv,s.getInner());
       assert guessed!=null;//{return super.visit(s);}
       guessed=Norm.of(ep, guessed);
       }
     catch(NormImpossible ignored){return super.visit(s);}
     MethodSelector ms2=visitMS(ms,guessed);
     if(ms2.equals(ms)){return super.visit(s);}
-    s=new MCall(s.getReceiver(),ms2,s.getDoc(),s.getEs(),s.getP());
+    s=new MCall(s.getInner(),ms2,s.getDoc(),s.getEs(),s.getP());
     return super.visit(s);
     }
     @Override protected MethodSelector liftMsInMetDec(MethodSelector ms){return visitMS(ms,Path.outer(0));}

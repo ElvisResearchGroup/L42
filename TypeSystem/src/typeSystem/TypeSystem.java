@@ -382,11 +382,11 @@ public class TypeSystem implements Visitor<Type>, Reporter, ast.Ast.HasPos{
   public Type visit(MCall s) {
     return collectEnvs(s.getP(),()->{
       assert noFreeVar(s,varEnv);
-      List<HashMap<String, NormType>> varEnvs = TypeCheckMethod.splitAllVarEnvForMethod(s.getReceiver(), s.getEs(),varEnv);
+      List<HashMap<String, NormType>> varEnvs = TypeCheckMethod.splitAllVarEnvForMethod(s.getInner(), s.getEs(),varEnv);
       //Type recTOpt = _typecheckTollerant(p,varEnvs.get(0),sealEnv,throwEnv,new Ast.FreeType(),s.getReceiver());
       Path recOpt=null;
       if(!p.executablePlus() && !p.isExecutableStar()){//Note: guesstype can return null as a form of free type
-        try{recOpt=GuessTypeCore.of(p, new HashMap<String,Ast.Type>(varEnv), s.getReceiver());}
+        try{recOpt=GuessTypeCore.of(p, new HashMap<String,Ast.Type>(varEnv), s.getInner());}
         catch(ErrorMessage.NormImpossible ni){return methodUnknownT(varEnvs,s);}
         if(recOpt==null){return methodUnknownT(varEnvs,s);}
         if(recOpt.isPrimitive()){
@@ -394,7 +394,7 @@ public class TypeSystem implements Visitor<Type>, Reporter, ast.Ast.HasPos{
           }
         if(p.isNotClassB(recOpt)){return methodUnknownT(varEnvs,s);}
         }
-      if(recOpt==null){recOpt=GuessTypeCore.of(p, new HashMap<String,Ast.Type>(varEnv), s.getReceiver());}
+      if(recOpt==null){recOpt=GuessTypeCore.of(p, new HashMap<String,Ast.Type>(varEnv), s.getInner());}
       if(recOpt==null){return methodUnknownT(varEnvs,s);}
       if(recOpt.isPrimitive()){//TODO: method not present thrown only for primitives?
         throw new ErrorMessage.MethodNotPresent(recOpt,s.getS(),s,p.getInnerData(),s.getP());}

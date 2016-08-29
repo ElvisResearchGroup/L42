@@ -53,7 +53,7 @@ public class CloneVisitor implements Visitor<ExpCore>{
     return new FieldDec(f.isVar(),liftT(f.getT()),f.getName(),f.getDocs());
   }*/
   protected Block.Dec liftDec(Block.Dec f) {
-    return new Block.Dec(liftT(f.getT()),f.getX(),lift(f.getE()));
+    return new Block.Dec(liftT(f.getT()),f.getX(),lift(f.getInner()));
   }
   protected Doc liftDoc(Doc doc) {
     return doc.withAnnotations(Map.of(ann->{
@@ -72,7 +72,7 @@ public class CloneVisitor implements Visitor<ExpCore>{
     return new ClassB.MethodImplemented(liftDoc(mi.getDoc()), liftMsInMetDec(mi.getS()), lift(mi.getInner()),mi.getP());
     }
   public ClassB.MethodWithType visit(ClassB.MethodWithType mt){
-    return new ClassB.MethodWithType(liftDoc(mt.getDoc()),liftMsInMetDec(mt.getMs()),liftMT(mt.getMt()), Map.of(this::lift,mt.getInner()),mt.getP());
+    return new ClassB.MethodWithType(liftDoc(mt.getDoc()),liftMsInMetDec(mt.getMs()),liftMT(mt.getMt()), Map.of(this::lift,mt.get_inner()),mt.getP());
     }
 
   protected MethodType liftMT(MethodType mt) {
@@ -89,7 +89,7 @@ public class CloneVisitor implements Visitor<ExpCore>{
     return new Signal(s.getKind(),lift(s.getInner()));
   }
   public ExpCore visit(MCall s) {
-    return new MCall(lift(s.getReceiver()),liftMs(s.getS()),liftDoc(s.getDoc()),Map.of(this::lift,s.getEs()),s.getP());
+    return new MCall(lift(s.getInner()),liftMs(s.getS()),liftDoc(s.getDoc()),Map.of(this::lift,s.getEs()),s.getP());
   }
   public ExpCore visit(Block s) {
     return new Block(liftDoc(s.getDoc()),liftDecs(s.getDecs()),lift(s.getInner()),Map.of(this::liftO,s.getOns()),s.getP());

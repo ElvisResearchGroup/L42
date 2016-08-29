@@ -163,7 +163,7 @@ public class TypeSystemOK {
   private static void methodOk(Program p, MethodImplemented mi,CachedStage c) {
     for(PathMwt mt:c.getInherited()){
       if(!mt.getMwt().getMs().equals(mi.getS())){continue;}
-      methodOk(p,mt.getMwt().withInner(Optional.of(mi.getInner())));
+      methodOk(p,mt.getMwt().withInner(mi.getInner()));
       return;
     }
     throw Assertions.codeNotReachable();
@@ -180,7 +180,7 @@ public class TypeSystemOK {
     for(Path pi:mt.getMt().getExceptions()){
       checkExists(p,pi,mt.getP());
     }
-    if(!mt.getInner().isPresent()){return;}
+    if(!mt.get_inner().isPresent()){return;}
     HashMap<String,NormType> varEnv=new HashMap<>();
     varEnv.put("this",new NormType(mt.getMt().getMdf(),Path.outer(0),Ph.None));
     {int i=-1;for(String parName:mt.getMs().getNames()){i+=1;
@@ -200,7 +200,7 @@ public class TypeSystemOK {
       sealEnv,
       throwEnv,
       suggested,
-      mt.getInner().get());
+      mt.getInner());
   }
 
   private static Void checkExists(Program p,Path pi,Ast.Position pos) {

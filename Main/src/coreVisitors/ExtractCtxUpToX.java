@@ -51,9 +51,9 @@ public class ExtractCtxUpToX implements Visitor<Ctx<Block>>{
     throw Assertions.codeNotReachable();
   }
   public Ctx<Block> visit(MCall s) {
-    if(IsCtx.of(s.getReceiver())){
-      return lift(s.getReceiver().accept(this),
-        ctx->s.withReceiver(ctx));}
+    if(IsCtx.of(s.getInner())){
+      return lift(s.getInner().accept(this),
+        ctx->s.withInner(ctx));}
     for(ExpCore ei:s.getEs()){
       if(!IsCtx.of(ei)){continue;}
       return lift(ei.accept(this),ctx->{
@@ -70,11 +70,11 @@ public class ExtractCtxUpToX implements Visitor<Ctx<Block>>{
    List<Block.Dec> newDecs=new ArrayList<Block.Dec>();
    Ctx<Block>res=null;
    for(Block.Dec dec:s.getDecs()){
-     if(!IsCtx.of(dec.getE())){
+     if(!IsCtx.of(dec.getInner())){
        newDecs.add(dec);
        continue;}
-     res=dec.getE().accept(this);
-     newDecs.add(dec.withE(res.ctx));
+     res=dec.getInner().accept(this);
+     newDecs.add(dec.withInner(res.ctx));
    }
    if(res!=null){
      res.ctx=s.withDecs(newDecs);

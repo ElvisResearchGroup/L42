@@ -61,9 +61,9 @@ public class ExtractCtxVal implements Visitor<Ctx<Redex>>{
     Ctx<Redex> res=checkRedex(s);
     if(res!=null){return res;}
     
-    if(!IsValue.of(p, s.getReceiver())){
-      return lift(s.getReceiver().accept(this),
-        ctx->s.withReceiver(ctx));}
+    if(!IsValue.of(p, s.getInner())){
+      return lift(s.getInner().accept(this),
+        ctx->s.withInner(ctx));}
     for(ExpCore ei:s.getEs()){
       if(IsValue.of(p,ei)){continue;}
       return lift(ei.accept(this),ctx->{
@@ -83,20 +83,20 @@ public class ExtractCtxVal implements Visitor<Ctx<Redex>>{
       Dec di=s.getDecs().get(i);
       boolean isDv=new IsValue(p).validDvs(di);
       Redex isGarbage=null;
-      if(isDv && di.getE() instanceof Block){
-        Block diB=(Block)di.getE();
+      if(isDv && di.getInner() instanceof Block){
+        Block diB=(Block)di.getInner();
         isGarbage=IsValue.nestedGarbage(diB);
         }
       if(isGarbage!=null){
         List<Block.Dec> ds=new ArrayList<Block.Dec>(s.getDecs());
-        ds.set(ii,di.withE(new WalkBy()));
+        ds.set(ii,di.withInner(new WalkBy()));
         return new Ctx<Redex>(s.withDecs(ds),isGarbage);
         }
       if(isDv){continue;}
       //otherwise, i is the first non dv
-      return lift(di.getE().accept(this),ctx->{
+      return lift(di.getInner().accept(this),ctx->{
         List<Block.Dec> es=new ArrayList<Block.Dec>(s.getDecs());
-        es.set(ii,es.get(ii).withE(ctx));
+        es.set(ii,es.get(ii).withInner(ctx));
         return s.withDecs(es);
         });
       }

@@ -76,11 +76,11 @@ public static Path classOf(Program p,ExpCore ctxVal,ExpCore val){
         ExpCore e=Dec.of(ctxVal, t.getInner(), false);
         if(e instanceof Block){return classOf(p,ctxVal,e);}
         assert e instanceof MCall:ToFormattedText.of(ctxVal)+" ["+ToFormattedText.of(val)+"]";
-        return (Path)((MCall)e).getReceiver();
+        return (Path)((MCall)e).getInner();
         })
       .add(MCall.class,t->{
-        assert t.getReceiver() instanceof Path;
-        return (Path)t.getReceiver();
+        assert t.getInner() instanceof Path;
+        return (Path)t.getInner();
         })
       .end();
   return res;
@@ -146,7 +146,7 @@ public static Block garbage(Block e, int n) {
 private static boolean iterateAddNeeded(Block e, int n, HashSet<String> needX, HashSet<Integer> needKeep) {
   int size=needKeep.size();
   for(int i: needKeep){
-    ExpCore ei=e.getDecs().get(i).getE();
+    ExpCore ei=e.getDecs().get(i).getInner();
     needX.addAll(FreeVariables.of(ei));
     }
   for(int i=0;i<n;i++){
@@ -159,7 +159,7 @@ private static boolean iterateAddNeeded(Block e, int n, HashSet<String> needX, H
 private static HashSet<String>  neededX(Block e,int n){
   HashSet<String> neededX=new HashSet<String>();
   for(int i=n;i<e.getDecs().size();i++){
-    ExpCore ei=e.getDecs().get(i).getE();
+    ExpCore ei=e.getDecs().get(i).getInner();
     neededX.addAll(FreeVariables.of(ei));
     }
   for(int i=n;i<e.getDecs().size();i++){
@@ -224,18 +224,18 @@ static{
   keywords.add("check");
 }
 public static List<Block.Dec> replace(List<Block.Dec> dvs,MCall mc){
-  String x=((ExpCore.X)mc.getReceiver()).getInner();
+  String x=((ExpCore.X)mc.getInner()).getInner();
   List<Block.Dec> result=new ArrayList<>();
   for(Block.Dec dv: dvs){
     if(!dv.getX().equals(x)){result.add(dv);continue;}
-    MCall inner=(MCall)dv.getE();
+    MCall inner=(MCall)dv.getInner();
     String fieldName=mc.getS().getName();
     int mIndex=inner.getS().getNames().indexOf(fieldName);
     assert mIndex!=-1 :fieldName+" / "+ToFormattedText.of(inner);
     List<ExpCore> es2 = new ArrayList<>(inner.getEs());
     ExpCore parameterAtom = mc.getEs().get(0);
     es2.set(mIndex,parameterAtom);
-    result.add(dv.withE(inner.withEs(es2)));
+    result.add(dv.withInner(inner.withEs(es2)));
   }
   return result;
 }
@@ -564,7 +564,7 @@ private static List<MethodWithType> collectAbstractMethods(Program p,ClassB cb) 
   for(Member m:cb.getMs()){
     if(!(m instanceof MethodWithType)){continue;}
     MethodWithType mwt=(MethodWithType)m;
-    if(mwt.getInner().isPresent()){continue;}
+    if(mwt.get_inner().isPresent()){continue;}
     mwts.add(Norm.of(p,mwt,false));
     }
   return mwts;

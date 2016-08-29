@@ -52,7 +52,7 @@ public class RetainOnlyAndRenameAs extends CloneVisitor{
       m=m.match(nc->{throw Assertions.codeNotReachable();},
           mi->{throw Assertions.codeNotReachable();},
         //mi->mi.withS(ms2).withInner(renameParameterAsVars(mi.getInner(),ms1,ms2)),
-        mt->mt.withMs(ms2).withInner(Map.of(eMt->renameParameterAsVars(eMt,ms1,ms2),mt.getInner()))
+        mt->mt.withMs(ms2).with_inner(Map.of(eMt->renameParameterAsVars(eMt,ms1,ms2),mt.get_inner()))
         );
       result.add(m);
       }

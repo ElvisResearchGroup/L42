@@ -191,8 +191,8 @@ public class Sum {
     Collections.sort(opc, (p1, p2) -> p1.toString().compareTo(p2.toString()));
     mt = mt.withExceptions(opc);
     MethodWithType mwt = ma.withMt(mt).withDoc(doc);
-    assert !ma.getInner().isPresent() || !mb.getInner().isPresent();
-    if (mb.getInner().isPresent()) {
+    assert !ma.get_inner().isPresent() || !mb.get_inner().isPresent();
+    if (mb.get_inner().isPresent()) {
       mwt = mwt.withInner(mb.getInner());
     }
     return mwt;

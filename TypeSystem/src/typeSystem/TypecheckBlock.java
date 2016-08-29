@@ -74,12 +74,12 @@ public class TypecheckBlock {
     //ArrayList<Type> ts=new ArrayList<Type>();
     {int i=0;for(Block.Dec di:s.getDecs()){
       i+=1;//correct to start from 1
-      NormType expectedi=Functions.forceNormType(that.p,di.getE(), di.getT());
+      NormType expectedi=Functions.forceNormType(that.p,di.getInner(), di.getT());
       expectedi=Functions.toPartial(expectedi);
       tsExp.add(expectedi);
       HashMap<String, NormType> varEnvi = varEnvs.get(i);
       varEnvi=catchRestrictions(varEnvi, s.getOns(),that.sealEnv);
-      TypeSystem.typecheckSure(false,that.p,varEnvi,that.sealEnv, throwsEnv2,expectedi,di.getE());
+      TypeSystem.typecheckSure(false,that.p,varEnvi,that.sealEnv, throwsEnv2,expectedi,di.getInner());
     }}
     Type res1=checkBlockBody(that,varEnvs.get(0),s);
     that.p.exePlusOk(varEnvs.get(0));
@@ -110,7 +110,7 @@ public class TypecheckBlock {
     SealEnv newSealEnv=new SealEnv(that.sealEnv);
     HashSet<String>fvs=new HashSet<>();
     for(Dec dec:block.getDecs()){
-      fvs.addAll(FreeVariables.of(dec.getE()));
+      fvs.addAll(FreeVariables.of(dec.getInner()));
       }
     newSealEnv.xssK.add(fvs);
     //TODO:was tollerant
@@ -191,11 +191,11 @@ public class TypecheckBlock {
     }
     es.add(ek);
     for(Block.Dec dec:s.getDecs()){
-      es.add(dec.getE());
+      es.add(dec.getInner());
     }
     HashMap<String, NormType> varEnvPrime=new HashMap<String, NormType>();
     for(Block.Dec dec:s.getDecs()){
-      varEnvPrime.put(dec.getX(),Functions.forceNormType(p,dec.getE(), dec.getT()));
+      varEnvPrime.put(dec.getX(),Functions.forceNormType(p,dec.getInner(), dec.getT()));
     }
     List<HashMap<String,NormType>> varEnvs=new ArrayList<HashMap<String,NormType>>();
     HashMap<String, NormType> varEnvPrimeForEi=Functions.toPh(Functions.complete(varEnvPrime));
@@ -268,7 +268,7 @@ public class TypecheckBlock {
     String x=decs.get(candidate).getX();//TODO: is it possible to avoid recursion here?
     int minUse=candidate;
     for(int i=0;i<candidate;i++){
-      if(FreeVariables.of(decs.get(i).getE()).contains(x)){
+      if(FreeVariables.of(decs.get(i).getInner()).contains(x)){
         minUse=i;break;
       }
     }

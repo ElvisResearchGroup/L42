@@ -54,7 +54,7 @@ public class AddDocumentation {
   }
 
   private static Void makeMwtPrivate(Program p,ClassB cb, Doc doc, List<Member> newMs, boolean docPrivate, MethodWithType mwt) {
-    if (mwt.getInner().isPresent() || !docPrivate){
+    if (mwt.get_inner().isPresent() || !docPrivate){
       mwt=mwt.withDoc(mwt.getDoc().sum(doc));
       Program.replaceIfInDom(newMs,mwt);
       return null;
@@ -68,7 +68,7 @@ public class AddDocumentation {
         cb.getMs().stream()
         .filter(m->m instanceof MethodWithType).map(m->(MethodWithType)m)
         .filter(m->m.getMt().getMdf()!=Mdf.Class)
-        .filter(m->!m.getInner().isPresent())
+        .filter(m->!m.get_inner().isPresent())
         .collect(Collectors.toCollection(ArrayList::new));
     abstrGetExposerSet.add(mwt);//the chosen constructor
     List<InvalidMwtAsState> nonWelcome = Functions.coherent(p, cb.withMs(new ArrayList<>(abstrGetExposerSet)));

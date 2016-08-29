@@ -155,11 +155,7 @@ protected ClassB meta1Prop(Program p, ClassB cb, NestedClass m) {
   //get p'
   Program p1=p.addAtTop(cb);
   //extract e
-  ExpCore e=m.match(
-      nc->nc.getInner(),
-      mi->mi.getInner(),
-      mt->mt.getInner().get()
-      );
+  ExpCore e=m.getInner();
   //extract cb
   Ctx<ClassB> ctxC=ExtractCtxCompiled.of(e);
   //run cb1-->cb2
@@ -167,7 +163,7 @@ protected ClassB meta1Prop(Program p, ClassB cb, NestedClass m) {
   ExpCore e2=ReplaceCtx.of(ctxC.ctx,cb2);
   
   //compose cb with new member
-  return cb.withMember(m.withBody(e2));
+  return cb.withMember(m.withInner(e2));
 }
 
 protected ClassB metaMethod(Program p, ClassB cb, Member m) {
@@ -177,18 +173,14 @@ protected ClassB metaMethod(Program p, ClassB cb, Member m) {
   //get p'
   Program p1=p.addAtTop(cb);
   //extract e
-  ExpCore e=m.match(
-      nc->nc.getInner(),
-      mi->mi.getInner(),
-      mt->mt.getInner().get()
-      );
+  ExpCore e=m.getInner();
   //extract cb
   Ctx<ClassB> ctxC=ExtractCtxCompiled.of(e);
   //run cb1-->cb2
   ClassB cb2=(ClassB)step(p1, ctxC.hole);
   ExpCore e2=ReplaceCtx.of(ctxC.ctx,cb2);
   //compose cb with new member
-  return cb.withMember(m.withBody(e2));
+  return cb.withMember(m.withInner(e2));
 }
 
 private static ExpCore removeCatch(ExpCore ctxVal, NoThrowRemoveOn r) {
@@ -196,15 +188,15 @@ private static ExpCore removeCatch(ExpCore ctxVal, NoThrowRemoveOn r) {
 }
 private ExpCore methCall(Program p, ExpCore ctxVal, MethCall r) {
   MCall mc = r.getThat();
-  Path pathR=Functions.classOf(p, ctxVal, mc.getReceiver());
+  Path pathR=Functions.classOf(p, ctxVal, mc.getInner());
   MethodWithType mwt = p.method(pathR,mc.getS(),mc,false);
-  if(mwt.getInner().isPresent()){
+  if(mwt.get_inner().isPresent()){
     return normalMeth(pathR,mwt,ctxVal,mc);
   }
   HashSet<String> usedNames = new HashSet<String>(HB.of(ctxVal, false));
   usedNames.add("this");
   usedNames.addAll(HB.of(mc, false));
-  if (!IsValue.isAtom(mc.getReceiver())){
+  if (!IsValue.isAtom(mc.getInner())){
     return ReplaceCtx.of(ctxVal,primCallRec( mc, pathR, mwt, usedNames));
     }
   for(int i=0;i<mc.getEs().size();i++){
@@ -227,7 +219,7 @@ private ExpCore methCall(Program p, ExpCore ctxVal, MethCall r) {
 }
 private ExpCore fieldU(ExpCore ctxVal, MCall mc) {
   log("---meth FieldU--");
-  String x=((ExpCore.X)mc.getReceiver()).getInner();
+  String x=((ExpCore.X)mc.getInner()).getInner();
   Ctx<Block> _ctx=ExtractCtxUpToX.of(x,ctxVal);
   //ctxVal[mc] --> ctxVal_0[ctxVal_1[mc]]
   //ctxVal_1 is Block, have dvs containing x mut or lent
@@ -250,9 +242,9 @@ private ExpCore fieldU(ExpCore ctxVal, MCall mc) {
 }
 private ExpCore fieldA(ExpCore ctxVal, MCall mc, MethodWithType mwt,HashSet<String> usedNames) {
   //case get-exposer
-  ExpCore decRec=coreVisitors.Dec.of(ctxVal, ((ExpCore.X)mc.getReceiver()).getInner(),false);
+  ExpCore decRec=coreVisitors.Dec.of(ctxVal, ((ExpCore.X)mc.getInner()).getInner(),false);
   if(decRec instanceof Block){
-    coreVisitors.Dec.of(ctxVal, ((ExpCore.X)mc.getReceiver()).getInner(),true);
+    coreVisitors.Dec.of(ctxVal, ((ExpCore.X)mc.getInner()).getInner(),true);
     //this may throw errors on purpose
     //fieldABlock
     Set<String> around = new HashSet<String>(HB.of(ctxVal, false));
@@ -287,7 +279,7 @@ private Block fieldABlock(Set<String> around,MCall mc, MethodWithType mwt,HashSe
   Path path1=((NormType)mwt.getMt().getReturnType()).getPath();
   Type tz=new NormType(Mdf.Immutable,path1,Ast.Ph.None);
   String z=Functions.freshName(path1, forbidden);
-  MCall mcz=mc.withReceiver(decRec.getInner());
+  MCall mcz=mc.withInner(decRec.getInner());
   ExpCore ez=decRec.withInner(mcz);
   Block result=new Block(Doc.empty(),Collections.singletonList(new Block.Dec(tz,z,ez)),new ExpCore.X(z),Collections.emptyList(),mc.getP());
   return result;
@@ -315,20 +307,20 @@ private ExpCore primCallArg(Program p,MCall mc, int i, MethodWithType mwt, HashS
 private ExpCore primCallRec(MCall mc, Path pathR,MethodWithType mwt, HashSet<String> usedNames) {  NormType t1=new NormType(mwt.getMt().getMdf(),pathR,Ast.Ph.None);
   log("---primCallRec--");
   String x1=Functions.freshName(pathR,usedNames);
-  ExpCore e1=mc.getReceiver();
+  ExpCore e1=mc.getInner();
   return new Block(Doc.empty(),Collections.singletonList(new Block.Dec(t1,x1,e1)),
-      mc.withReceiver(new ExpCore.X(x1)),Collections.emptyList(),mc.getP());
+      mc.withInner(new ExpCore.X(x1)),Collections.emptyList(),mc.getP());
 }
 private ExpCore normalMeth(Path pathR,MethodWithType mwt, ExpCore ctxVal, MCall mc) {
   log("---normalMeth--");
   HashSet<String> around = new HashSet<String>(HB.of(ctxVal, false));//TODO: it may be true in a more permissive scoping
   around.add("this");
   HashSet<String> aroundAndParameters = new HashSet<String>(around);
-  aroundAndParameters.addAll(HB.of(mc.getReceiver(), false));
+  aroundAndParameters.addAll(HB.of(mc.getInner(), false));
   for(ExpCore ei:mc.getEs()){
     aroundAndParameters.addAll(HB.of(ei, false));
   }
-  HashSet<String> inside = new HashSet<String>(HB.of(mwt.getInner().get(), false));
+  HashSet<String> inside = new HashSet<String>(HB.of(mwt.getInner(), false));
   inside.addAll(mwt.getMs().getNames());
   inside.add("this");
   HashSet<String> forbidden=new HashSet<String>(aroundAndParameters);
@@ -339,7 +331,7 @@ private ExpCore normalMeth(Path pathR,MethodWithType mwt, ExpCore ctxVal, MCall 
     String s2=Functions.freshName(s,forbidden);
     renames.put(s, s2);
   }
-  ExpCore e=RenameVars.of(mwt.getInner().get(),renames);
+  ExpCore e=RenameVars.of(mwt.getInner(),renames);
   assert checkSuccessRename(aroundAndParameters, e);
   for(String pari:mwt.getMs().getNames()){
     if(!renames.containsKey(pari)){
@@ -350,7 +342,7 @@ private ExpCore normalMeth(Path pathR,MethodWithType mwt, ExpCore ctxVal, MCall 
   decs.add( new Block.Dec(
       new NormType(mwt.getMt().getMdf(),pathR,Ast.Ph.None),
       renames.get("this"),
-      mc.getReceiver()));
+      mc.getInner()));
 
   for(int i=0;i<mc.getEs().size();i++){
     decs.add(new Block.Dec(
@@ -401,7 +393,7 @@ private static ExpCore captureOrNot(Program p,ExpCore ctxVal,Redex.CaptureOrNot 
     return ReplaceCtx.of(ctxVal,e2);
     }
   //case notCapture
-  decs.add(e1.getDecs().get(i).withE(s));
+  decs.add(e1.getDecs().get(i).withInner(s));
   return ReplaceCtx.of(ctxVal,rOnMiss(decs,e1));
 }
 private static ExpCore rOnMiss(ArrayList<Block.Dec> ds,Block b) {
@@ -420,9 +412,9 @@ private ExpCore blockElim(ExpCore ctxVal,Redex.BlockElim r){
   Block e1=r.getThat();
   int ii=r.getElimIndex();
   ArrayList<Block.Dec> decs = new ArrayList<Block.Dec>(e1.getDecs());
-  Block eInner=(Block)decs.get(ii).getE();
+  Block eInner=(Block)decs.get(ii).getInner();
   assert eInner.getOns().isEmpty();
-  decs.set(ii,decs.get(ii).withE(eInner.getInner()));
+  decs.set(ii,decs.get(ii).withInner(eInner.getInner()));
   decs.addAll(ii, eInner.getDecs());
   //Note: we lose the docs on eInner, is it ok?
   Block result=e1.withDecs(decs);
@@ -431,7 +423,7 @@ private ExpCore blockElim(ExpCore ctxVal,Redex.BlockElim r){
 public static ExpCore subst(ExpCore ctxVal,Redex.Subst r){
   Block e1=r.getThat();
   int i=r.getSubstIndex();
-  ExpCore val=e1.getDecs().get(i).getE();
+  ExpCore val=e1.getDecs().get(i).getInner();
   String x=e1.getDecs().get(i).getX();
   ArrayList<Block.Dec> decs = new ArrayList<Block.Dec>(e1.getDecs());
   decs.remove(i);
@@ -444,7 +436,7 @@ private static ExpCore ph(Program p,ExpCore ctxVal,Redex.Ph r){
   ArrayList<Block.Dec> decs = new ArrayList<Block.Dec>(b.getDecs());
   Dec deci = decs.get(r.getPhIndex());
   NormType ti=deci.getNT();
-  Path path=Functions.classOf(p, ctxVal, deci.getE());
+  Path path=Functions.classOf(p, ctxVal, deci.getInner());
   ti=ti.withPh(Ph.None).withPath(path);
   decs.set(r.getPhIndex(),deci.withT(ti));
   return ReplaceCtx.of(ctxVal,b.withDecs(decs));

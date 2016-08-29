@@ -61,7 +61,7 @@ public class InjectionOnSugar implements Visitor<ast.Expression> {
     return new Expression.Loop(lift(s.getInner()));
   }
   @Override public Expression visit(MCall s) {
-    ast.Expression receiver=lift(s.getReceiver());
+    ast.Expression receiver=lift(s.getInner());
     String name=s.getS().getName();
      Doc docs = s.getDoc();
     List<String> xs=s.getS().getNames();
@@ -80,7 +80,7 @@ public class InjectionOnSugar implements Visitor<ast.Expression> {
     for(int i=0;i<s.getDecs().size();i++){
       Type t=s.getDecs().get(i).getT();
       String x=s.getDecs().get(i).getX();
-      Expression e=lift(s.getDecs().get(i).getE());
+      Expression e=lift(s.getDecs().get(i).getInner());
       decs.add(new VarDecXE(false,Optional.of(t),x,e));
     }
     List<Expression.Catch> _catch=injectionCatch(s.getOns());
@@ -118,7 +118,7 @@ public class InjectionOnSugar implements Visitor<ast.Expression> {
          Doc idoc=mwt.getDoc();
          MethodSelector is=mwt.getMs();
          MethodType mt=mwt.getMt();
-         return new Expression.ClassB.MethodWithType(idoc, is, mt, lift(mwt.getInner()),mwt.getP());
+         return new Expression.ClassB.MethodWithType(idoc, is, mt, lift(mwt.get_inner()),mwt.getP());
          }
         ));    }
     return new Expression.ClassB(doc1,doc2, h,Collections.emptyList(), supertypes, members,s.getP(),s.getStage().getStage());

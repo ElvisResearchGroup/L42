@@ -26,9 +26,9 @@ public class NormalizeBlocks extends CloneVisitor{
       return s.getInner().accept(this);
     }
     Dec decOut=this.isTxEx(s);
-    if(decOut!=null && decOut.getE() instanceof Block){//(T x=(T y= e y) x)->(T y= e y)
-      Dec decIn=this.isTxEx((Block)decOut.getE());
-      if(validDoubleWrap(decOut,decIn)){return decIn.getE().accept(this);}
+    if(decOut!=null && decOut.getInner() instanceof Block){//(T x=(T y= e y) x)->(T y= e y)
+      Dec decIn=this.isTxEx((Block)decOut.getInner());
+      if(validDoubleWrap(decOut,decIn)){return decIn.getInner().accept(this);}
     }
     return super.visit(s);
     }
@@ -36,7 +36,7 @@ public class NormalizeBlocks extends CloneVisitor{
   private boolean validDoubleWrap(Dec decOut, Dec decIn) {
     if(decIn==null){return false;}
     if(decOut.getT().equals(decIn.getT())){
-      Set<String> fvIn = coreVisitors.FreeVariables.of(decIn.getE());
+      Set<String> fvIn = coreVisitors.FreeVariables.of(decIn.getInner());
       if(fvIn.contains(decOut.getX())){return false;}
       return true;//to put breakpoint
     }

@@ -53,8 +53,8 @@ public class ExtractCtxCompiled implements Visitor<Ctx<ClassB>>{
     return lift(s.getInner().accept(this),s::withInner);
   }
   public Ctx<ClassB> visit(MCall s) {
-    if(!IsCompiled.of(s.getReceiver())){
-      return lift(s.getReceiver().accept(this),s::withReceiver);}
+    if(!IsCompiled.of(s.getInner())){
+      return lift(s.getInner().accept(this),s::withInner);}
     for(ExpCore ei:s.getEs()){
       if(IsCompiled.of(ei)){continue;}
       return lift(ei.accept(this),ctx->{
@@ -67,12 +67,12 @@ public class ExtractCtxCompiled implements Visitor<Ctx<ClassB>>{
   }
   public Ctx<ClassB> visit(Block s) {
     for(Block.Dec dec:s.getDecs()){
-      if(IsCompiled.of(dec.getE())){continue;}
+      if(IsCompiled.of(dec.getInner())){continue;}
       //otherwise, i is the first non dv
-      return lift(dec.getE().accept(this),ctx->{
+      return lift(dec.getInner().accept(this),ctx->{
         List<Block.Dec> es=new ArrayList<Block.Dec>(s.getDecs());
         int ii=es.indexOf(dec);
-        es.set(ii,es.get(ii).withE(ctx));
+        es.set(ii,es.get(ii).withInner(ctx));
         return s.withDecs(es);
         });
       }

@@ -51,7 +51,7 @@ public class HB implements Visitor<ExpCore> {
 
   @Override
   public ExpCore visit(MCall s) {
-    ExpCore result=s.getReceiver().accept(this);
+    ExpCore result=s.getInner().accept(this);
     for(ExpCore ei:s.getEs()){
       result=acc(result,ei.accept(this));
     }
@@ -62,7 +62,7 @@ public class HB implements Visitor<ExpCore> {
   public ExpCore visit(Block s) {
     ExpCore result=null;
     for(Block.Dec di:s.getDecs()){
-      result=acc(result,di.getE().accept(this));
+      result=acc(result,di.getInner().accept(this));
     }
     result=acc(result,s.getInner().accept(this));
     if(result==null &&onlyAroundHole){return null;}

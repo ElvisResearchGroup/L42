@@ -162,14 +162,14 @@ public class Errors42 {
         "ActualKind",""+kind.name());
   }
   public static void checkMethodClash(List<String>pathForError,MethodWithType mta, MethodWithType mtb,boolean rightIsInterfaceAbstract){
-    boolean implClash=mta.getInner().isPresent() && mtb.getInner().isPresent();
+    boolean implClash=mta.get_inner().isPresent() && mtb.get_inner().isPresent();
     boolean exc=ExtractInfo.isExceptionOk(mta,mtb);
     List<Integer> pars=ExtractInfo.isParTypeOk(mta,mtb);
     boolean retType=mta.getMt().getReturnType().equals(mtb.getMt().getReturnType());
     boolean thisMdf=mta.getMt().getMdf().equals(mtb.getMt().getMdf());
     if(!implClash && exc && pars.isEmpty() && retType && thisMdf && !rightIsInterfaceAbstract){return;}
-    if(mta.getInner().isPresent()){mta=mta.withInner(Optional.of(new ExpCore.X("implementation")));}
-    if(mtb.getInner().isPresent()){mtb=mtb.withInner(Optional.of(new ExpCore.X("implementation")));}
+    if(mta.get_inner().isPresent()){mta=mta.with_inner(Optional.of(new ExpCore.X("implementation")));}
+    if(mtb.get_inner().isPresent()){mtb=mtb.with_inner(Optional.of(new ExpCore.X("implementation")));}
     throw errorMethodClash(pathForError, mta, mtb, exc, pars, retType, thisMdf,false);
   }
  /* static void checkCoherentMapping(List<PathPath> setVisited) {

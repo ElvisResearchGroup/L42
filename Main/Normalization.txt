@@ -69,8 +69,8 @@ Moreover, for convenience we define inside in the following way:
 
 -----------------------------------------------------------
 ###operations on contexts (for implementation too)
- - L-ctxL=L' if L=ctxL[L']
- - L/ctxL=(ctxL', L')  intuition: if L=ctxL'[L'], ctxL sim ctxL'
+ - L-ctxL=L' if L=ctxL[L'] // actually, L-ctxL=L' if L/ctxL=<ctxL,L'>
+ - L/ctxL=<ctxL', L'>  intuition: if L=ctxL'[L'], ctxL sim ctxL'
    definition (for the special case we need):
  -- {interface? MC1..MCn C:L0 M1..Mk}/{interface? MC1'..MCn' C:ctxL0 M1'..Mk'}
    = {interface? MC1..MCn C:ctxL M1..Mk}, L

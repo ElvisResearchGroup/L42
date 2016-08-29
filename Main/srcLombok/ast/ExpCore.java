@@ -2,6 +2,7 @@ package ast;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Optional;
@@ -13,16 +14,22 @@ import lombok.Value;
 import lombok.experimental.Wither;
 import ast.Expression;
 import ast.Ast.*;
+import ast.ExpCore.MCall;
 
 public interface ExpCore {
   <T> T accept(coreVisitors.Visitor<T> v);
 
-  @Value @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") @Wither public static class MCall implements ExpCore,HasPos {
-    ExpCore receiver;
+  @Value @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") @Wither public static class MCall implements ExpCore,HasPos, WithInner<MCall>{
+    ExpCore inner;
     MethodSelector s;
     Doc doc;
     List<ExpCore> es;
     Position p;
+    public MCall withEsi(int i,ExpCore ei){
+      List<ExpCore> es2=new ArrayList<>(es);
+      es2.set(i,ei);
+      return this.withEs(es2);
+      }
     @Override public <T> T accept(coreVisitors.Visitor<T> v) {
       return v.visit(this);
     }
@@ -38,19 +45,23 @@ public interface ExpCore {
     }
   }
 
-  @Value @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") @Wither public static class Block implements ExpCore,HasPos {
+  @Value @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") @Wither public static class Block implements ExpCore,HasPos,WithInner<Block> {
     Doc doc;
     List<Dec> decs;
     ExpCore inner;
     List<On> ons;
     Position p;
+    public ExpCore getE(){return inner;}
+    public Block withE(ExpCore e){return this.withInner(e);}
+
     @Override public <T> T accept(coreVisitors.Visitor<T> v) {
       return v.visit(this);
     }
-    @Value @Wither public static class Dec {
+    @Value @Wither public static class Dec implements WithInner<Dec>{
       Type t;
       String x;
-      ExpCore e;
+      ExpCore inner;
+
       public ast.Ast.NormType getNT() {
         assert this.t instanceof ast.Ast.NormType : t;
         return (ast.Ast.NormType) this.t;
@@ -64,12 +75,15 @@ public interface ExpCore {
       return dom;
     }
 
-    @Value @Wither @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") public static class On implements HasPos{
+    @Value @Wither @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") public static class On implements HasPos, WithInner<On>{
       SignalKind kind;
       String x;
       Type t;
       ExpCore inner;
       Position p;
+      public ExpCore getE(){return inner;}
+      public On withE(ExpCore e){return this.withInner(e);}
+
     }
   }
 
@@ -141,8 +155,8 @@ public interface ExpCore {
     @Override public <T> T accept(coreVisitors.Visitor<T> v) {
       return v.visit(this);
     }
-    public interface Member extends HasPos {
-      public Member withBody(ExpCore e);
+    public interface Member extends HasPos, WithInner<Member> {
+      //public Member withBody(ExpCore e);
       <T> T match(Function<NestedClass, T> nc, Function<MethodImplemented, T> mi, Function<MethodWithType, T> mt);
     }
     @Value @Wither @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p")public static class NestedClass implements Member {
@@ -150,9 +164,8 @@ public interface ExpCore {
       @NonNull String name;
       @NonNull ExpCore inner;
       Position p;
-      public Member withBody(ExpCore e) {
-        return this.withInner(e);
-      }
+      public ExpCore getE(){return inner;}
+      public NestedClass withE(ExpCore e) {return this.withInner(e);}
       public <T> T match(Function<NestedClass, T> nc, Function<MethodImplemented, T> mi, Function<MethodWithType, T> mt) {
         return nc.apply(this);
       }
@@ -163,9 +176,8 @@ public interface ExpCore {
       @NonNull ExpCore inner;
       //ast.Util.CachedMt mt=new ast.Util.CachedMt();
       Position p;
-      public Member withBody(ExpCore e) {
-        return this.withInner(e);
-      }
+      public ExpCore getE(){return inner;}
+      public MethodImplemented withE(ExpCore e) {return this.withInner(e);}
       public <T> T match(Function<NestedClass, T> nc, Function<MethodImplemented, T> mi, Function<MethodWithType, T> mt) {
         return mi.apply(this);
       }
@@ -174,11 +186,11 @@ public interface ExpCore {
       @NonNull Doc doc;
       @NonNull MethodSelector ms;
       @NonNull MethodType mt;
-      @NonNull Optional<ExpCore> inner;
+      @NonNull Optional<ExpCore> _inner;
       Position p;
-      public Member withBody(ExpCore e) {
-        return this.withInner(Optional.of(e));
-      }
+      public ExpCore getInner(){return _inner.get();}//and boom if there is not
+      public MethodWithType withInner(ExpCore e) {return this.with_inner(Optional.of(e));}
+
       public <T> T match(Function<NestedClass, T> nc, Function<MethodImplemented, T> mi, Function<MethodWithType, T> mt) {
         return mt.apply(this);
       }
@@ -196,30 +208,35 @@ public interface ExpCore {
     }
   }
 
-  @Value @Wither public static class Using implements ExpCore {
+  @Value @Wither public static class Using implements ExpCore, WithInner<Using> {
     Path path;
     MethodSelector s;
     Doc doc;
     List<ExpCore> es;
     ExpCore inner;
+    
     @Override public <T> T accept(coreVisitors.Visitor<T> v) {
       return v.visit(this);
     }
   }
 
-  @Value @Wither public static class Signal implements ExpCore {
+  @Value @Wither public static class Signal implements ExpCore, WithInner<Signal>{
     SignalKind kind;
     ExpCore inner;
+    
     @Override public <T> T accept(coreVisitors.Visitor<T> v) {
       return v.visit(this);
     }
   }
 
-  @Value @Wither public static class Loop implements ExpCore {
+  @Value @Wither public static class Loop implements ExpCore, WithInner<Loop> {
     ExpCore inner;
+    
     @Override public <T> T accept(coreVisitors.Visitor<T> v) {
       return v.visit(this);
     }
   }
-
+  interface WithInner<T>{
+    ExpCore getInner(); T withInner(ExpCore e);
+  }
 }

@@ -46,7 +46,7 @@ public class Dec implements Visitor<ExpCore> {
 
   @Override
   public ExpCore visit(MCall s) {
-    ExpCore result=s.getReceiver().accept(this);
+    ExpCore result=s.getInner().accept(this);
     for(ExpCore ei:s.getEs()){
       result=acc(result,ei.accept(this));
     }
@@ -57,7 +57,7 @@ public class Dec implements Visitor<ExpCore> {
   public ExpCore visit(Block s) {
     ExpCore result=null;
     for(Block.Dec ei:s.getDecs()){
-      result=acc(result,ei.getE().accept(this));
+      result=acc(result,ei.getInner().accept(this));
     }
     result=acc(result,s.getInner().accept(this));
     if(result==null){return null;}
@@ -72,7 +72,7 @@ public class Dec implements Visitor<ExpCore> {
       ast.Ast.NormType ti=s.getDecs().get(pos).getNT();
       if(ti.getMdf()!=Mdf.Immutable){throw new ErrorMessage.ExpectedImmutableVar(s,x);}
     }
-    return s.getDecs().get(pos).getE();
+    return s.getDecs().get(pos).getInner();
   }
 
   public ExpCore visit(Path s) {return null;}

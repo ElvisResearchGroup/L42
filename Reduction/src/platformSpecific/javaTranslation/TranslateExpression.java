@@ -159,7 +159,7 @@ public class TranslateExpression implements coreVisitors.Visitor<Void>{
   @Override
   public Void visit(MCall s) {
     res.append("(");
-    s.getReceiver().accept(this);
+    s.getInner().accept(this);
     res.append(")."+Resources.nameOf(s.getS().getName(),s.getS().getNames())+"(");
     StringBuilders.formatSequence(res,s.getEs().iterator(),
       ", ", ei->ei.accept(this));
@@ -257,20 +257,20 @@ public class TranslateExpression implements coreVisitors.Visitor<Void>{
     }
 
   public void initializeSingleVar(Dec d) {
-    if(d.getE() instanceof ExpCore.Signal){
+    if(d.getInner() instanceof ExpCore.Signal){
       res.append("if(true)");
-      produceThrow((ExpCore.Signal)d.getE());
+      produceThrow((ExpCore.Signal)d.getInner());
       return;
       }
-    if(d.getE() instanceof ExpCore.Block && d.getNT().getPath().equals(Path.Void())){
+    if(d.getInner() instanceof ExpCore.Block && d.getNT().getPath().equals(Path.Void())){
       //speeds up compilation time
-      /*boolean isThrow=*/produceNestedBlock((Block)d.getE(),"P"+d.getX()+"=");
+      /*boolean isThrow=*/produceNestedBlock((Block)d.getInner(),"P"+d.getX()+"=");
       res.append("\n");
       //if(isThrow){return true;}
       }
     else{
       res.append("P"+d.getX()+"=");
-      d.getE().accept(this);
+      d.getInner().accept(this);
       res.append(";\n");
       }
   }
@@ -290,7 +290,7 @@ public class TranslateExpression implements coreVisitors.Visitor<Void>{
     }
     Set<String> domPhs=new HashSet<>();
     for(Dec d:decs){
-      Set<String> fvei = coreVisitors.FreeVariables.of(d.getE());
+      Set<String> fvei = coreVisitors.FreeVariables.of(d.getInner());
       fvei.retainAll(unDeclared);
       if(!fvei.isEmpty()){domPhs.addAll(fvei);}
       unDeclared.remove(d.getX());

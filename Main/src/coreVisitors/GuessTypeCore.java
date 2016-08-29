@@ -68,7 +68,7 @@ public class GuessTypeCore implements Visitor<Path>{
   }
   @Override
   public Path visit(MCall s) {
-    Path path=s.getReceiver().accept(this);
+    Path path=s.getInner().accept(this);
     if(path==null){return null;}
     List<MethodSelectorX> msl=new ArrayList<>();
     MethodSelectorX msx=new MethodSelectorX(s.getS(), "");

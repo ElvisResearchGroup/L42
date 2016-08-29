@@ -30,7 +30,7 @@ public class CheckNoVarDeclaredTwice{
         m.match(
           nc->{CheckNoVarDeclaredTwice.of(nc.getInner(),Collections.emptyList());return null;},
           mi->{CheckNoVarDeclaredTwice.of(mi.getInner(),mi.getS().getNames());;return null;},
-          mt->{if(mt.getInner().isPresent()){CheckNoVarDeclaredTwice.of(mt.getInner().get(),mt.getMs().getNames());};return null;}
+          mt->{if(mt.get_inner().isPresent()){CheckNoVarDeclaredTwice.of(mt.getInner(),mt.getMs().getNames());};return null;}
           );
         }
       return s;

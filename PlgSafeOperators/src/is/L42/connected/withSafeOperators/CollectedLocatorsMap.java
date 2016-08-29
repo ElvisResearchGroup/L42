@@ -39,7 +39,7 @@ private void computeNewName(HashMap<Locator, String> map, Locator mL) {
   Member m=mL.getLastMember();
   assert m instanceof MethodWithType;
   MethodWithType mwt=(MethodWithType)m;
-  if( mwt.getInner().isPresent()){
+  if( mwt.get_inner().isPresent()){
     mL.setAnnotation(mwt.getMs().withName(NormalizePrivates.freshName(mwt.getMs().getName())));
     return;
   }

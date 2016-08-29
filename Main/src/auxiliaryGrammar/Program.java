@@ -290,7 +290,7 @@ public class Program {
     ClassB ct=cb;
     Optional<NestedClass> opt = findWalkBy(ct);
     if(opt.isPresent()){
-      ct=ct.withMember(opt.get().withBody(newExp));
+      ct=ct.withMember(opt.get().withInner(newExp));
     }
     return ct;
   }
@@ -433,7 +433,7 @@ public class Program {
           assert cb.getStage().isInheritedComputed();
           for(PathMwt mt:cb.getStage().getInherited()){
             if(!mt.getMwt().getMs().equals(mi.getS())){continue;}
-            return mt.getMwt().withInner(Optional.of(mi.getInner()));
+            return mt.getMwt().with_inner(Optional.of(mi.getInner()));
           }
           throw Assertions.codeNotReachable();
         },

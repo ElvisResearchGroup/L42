@@ -72,8 +72,8 @@ import auxiliaryGrammar.Functions;
   public ClassB.MethodWithType visit(ClassB.MethodWithType mt){
     liftMT(mt.getMt());//to collect paths of mtype
     paths.addAll(CollectPaths0.of(mt));
-    if(!mt.getInner().isPresent()){return mt;}
-    collectPathsFromEandCBs(mt.getInner().get());
+    if(!mt.get_inner().isPresent()){return mt;}
+    collectPathsFromEandCBs(mt.getInner());
     return mt;
     }
   public void collectPathsFromEandCBs(ExpCore inner) {

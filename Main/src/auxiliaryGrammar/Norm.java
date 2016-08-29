@@ -65,8 +65,8 @@ public class Norm {
   public static MethodWithType of(Program p,MethodWithType mt,boolean isOnlyType) {
     try{return auxOf(p,mt,isOnlyType);}
     catch(ErrorMessage.MethodNotPresent mnp){
-      if(mt.getInner().isPresent()){
-        throw new ErrorMessage.MethodNotPresent(mnp.getPath(),mnp.getMs(),mnp.getCall(),mnp.getP(), CollapsePositions.of(mt.getInner().get().accept(new InjectionOnSugar())));
+      if(mt.get_inner().isPresent()){
+        throw new ErrorMessage.MethodNotPresent(mnp.getPath(),mnp.getMs(),mnp.getCall(),mnp.getP(), CollapsePositions.of(mt.get_inner().get().accept(new InjectionOnSugar())));
       }
       throw mnp;
     }
@@ -83,9 +83,9 @@ public class Norm {
        of(p,t.getReturnType()),
        Map.of(pi->of(p,pi),t.getExceptions())
        );
-    Optional<ExpCore> eInner =mt.getInner();
+    Optional<ExpCore> eInner =mt.get_inner();
     if(isOnlyType && eInner.isPresent()){Optional.of((ExpCore)forOnlyClass);}
-    if(!isOnlyType){eInner = Map.of(e->of(p,e),mt.getInner());}
+    if(!isOnlyType){eInner = Map.of(e->of(p,e),mt.get_inner());}
     return new MethodWithType(mt.getDoc(),mt.getMs(),mt2,eInner,mt.getP());
   }
   private static final ClassB forOnlyClass=new ClassB(Doc.factory(true,"Only the class obj was asked\n"),Doc.empty(),false,Collections.emptyList(),Collections.emptyList(),Position.noInfo,new CachedStage());

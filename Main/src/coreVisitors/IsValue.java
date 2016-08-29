@@ -38,12 +38,12 @@ public class IsValue extends TestShapeVisitor{
     if(!b2.equals(b)){return new Redex.Garbage(b2);}
     //else, try nested!
     {int i=-1;for(Dec di:b.getDecs()){i+=1;
-      if (!(di.getE() instanceof Block)){continue;}
-      Block bi=(Block) di.getE();
+      if (!(di.getInner() instanceof Block)){continue;}
+      Block bi=(Block) di.getInner();
       Redex.Garbage ngi=nestedGarbage(bi);
       if(ngi==null){continue;}
       List<Block.Dec> ds=new ArrayList<Block.Dec>(b.getDecs());
-      ds.set(i,di.withE(ngi.getThatLessGarbage()));
+      ds.set(i,di.withInner(ngi.getThatLessGarbage()));
       return new Redex.Garbage(b.withDecs(ds));
     }}
     if(!(b.getInner() instanceof Block)){return null;}
@@ -72,27 +72,27 @@ public class IsValue extends TestShapeVisitor{
     if(nt.getMdf()==Mdf.Capsule){return false;}
     if(nt.getPh()!=Ph.None){return false;}
     if(Functions.isInterface(p,nt.getPath())){return false;}
-    if(validRightValue(dvs.getE())){return true;}
-    if(nt.getMdf()==Mdf.Immutable && dvs.getE() instanceof Block){
-      return dvs.getE().accept(this);
+    if(validRightValue(dvs.getInner())){return true;}
+    if(nt.getMdf()==Mdf.Immutable && dvs.getInner() instanceof Block){
+      return dvs.getInner().accept(this);
     }
     return false;
   }
   public boolean validDecForPh(Dec dvs) {
     NormType nt=dvs.getNT();
-    if(validRightValue(dvs.getE())){return true;}
-    if(nt.getMdf()==Mdf.Immutable && dvs.getE() instanceof Block){
-      return dvs.getE().accept(this);
+    if(validRightValue(dvs.getInner())){return true;}
+    if(nt.getMdf()==Mdf.Immutable && dvs.getInner() instanceof Block){
+      return dvs.getInner().accept(this);
     }
     return false;
   }
   public boolean validRightValue(ExpCore ec)  {
     if(!(ec instanceof MCall))return false;
     MCall s=(MCall)ec;
-    if(!(s.getReceiver() instanceof Path)){return false;}
+    if(!(s.getInner() instanceof Path)){return false;}
     MethodSelector ms=s.getS();
-    MethodWithType mwt=p.method((Path)s.getReceiver(),ms,s,true);
-    if(mwt.getInner().isPresent()){return false;}
+    MethodWithType mwt=p.method((Path)s.getInner(),ms,s,true);
+    if(mwt.get_inner().isPresent()){return false;}
     if(mwt.getMt().getMdf()!=ast.Ast.Mdf.Class){return false;}
     for(ExpCore ei:s.getEs()){
       if(!isAtom(ei)){return false;}

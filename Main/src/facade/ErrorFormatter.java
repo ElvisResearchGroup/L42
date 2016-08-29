@@ -63,7 +63,7 @@ public class ErrorFormatter {
         return null;
         },
       mt->{
-        if(mt.getInner().isPresent()){return null;}
+        if(mt.get_inner().isPresent()){return null;}
         if(mt.getMt().getMdf()==Mdf.Class){return null;}
         result.append(nesting);
         result.append(ToFormattedText.of(mt).replace("\n", "\n"+nesting));
@@ -143,7 +143,7 @@ public class ErrorFormatter {
         nc->nc.getName()+"\nError is:\n"+L42.messageOfLastTopLevelError+"\n"+
       "reconstructed stackTrace:"+L42.reconstructedStackTrace+"\n"+isItErrorPlace(p,nc.getInner()),
         mi->formatSelectorCompact(mi.getS())+"."+isItErrorPlace(p,mi.getInner()),
-        mt->formatSelectorCompact(mt.getMs())+"."+isItErrorPlace(p,mt.getInner().get())
+        mt->formatSelectorCompact(mt.getMs())+"."+isItErrorPlace(p,mt.getInner())
         );
       }
     for(Member m:cb.getMs()){
@@ -359,7 +359,7 @@ public class ErrorFormatter {
       if(!(m instanceof MethodWithType)){continue;}
       MethodWithType mwt=(MethodWithType)m;
       mwt=mwt.withDoc(Doc.empty());
-      mwt=mwt.withInner(Optional.empty());
+      mwt=mwt.with_inner(Optional.empty());
       String txt=sugarVisitors.ToFormattedText.of(mwt);
       txt=txt.replace("{","");
       txt=txt.replace("}","");

@@ -130,7 +130,7 @@ public class TranslateClass {
     for(Member m:ct.getMs()){
       assert m instanceof MethodWithType;
       MethodWithType mt=(MethodWithType)m;
-      if(mt.getInner().isPresent()){continue;}
+      if(mt.get_inner().isPresent()){continue;}
       if(mt.getMt().getMdf()!=Ast.Mdf.Class){continue;}
       result.add(mt);
     }
@@ -185,7 +185,7 @@ public class TranslateClass {
     for(Member m:ct.getMs()){
       assert m instanceof MethodWithType;
       MethodWithType mt=(MethodWithType)m;
-      if(mt.getInner().isPresent()){continue;}
+      if(mt.get_inner().isPresent()){continue;}
       if(mt.getMt().getMdf()==Ast.Mdf.Class){continue;}//constructor
       if(mt.getMt().getTs().isEmpty()){
         getGetterOrExposer(mt,res);
@@ -293,15 +293,15 @@ public class TranslateClass {
     for(Member m:ct.getMs()){
       assert m instanceof MethodWithType;
       MethodWithType mt=(MethodWithType)m;
-      if( !isInterface && !mt.getInner().isPresent()){continue;}
+      if( !isInterface && !mt.get_inner().isPresent()){continue;}
       //if(mt.getMt().getMdf()!=Ast.Mdf.Type){continue;}
       getMethod(p,mt,res);
     }
   }
   private static void getMethod(Program p,MethodWithType mt, StringBuilder res) {
     getMethodHeader(mt, res);
-    if(mt.getInner().isPresent()){
-      TranslateExpression.of(mt.getInner().get(),res);
+    if(mt.get_inner().isPresent()){
+      TranslateExpression.of(mt.getInner(),res);
       }
     else{res.append(";\n");}
     }

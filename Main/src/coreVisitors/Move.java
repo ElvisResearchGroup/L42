@@ -49,9 +49,9 @@ public class Move implements Visitor<Ctx<List<Block.Dec>>>{
     return null;
   }
   public Ctx<List<Block.Dec>> visit(MCall s) {
-    if(IsCtx.of(s.getReceiver())){
-      return lift(s.getReceiver().accept(this),
-        ctx->s.withReceiver(ctx));}
+    if(IsCtx.of(s.getInner())){
+      return lift(s.getInner().accept(this),
+        ctx->s.withInner(ctx));}
     for(ExpCore ei:s.getEs()){
       if(!IsCtx.of(ei)){continue;}
       return lift(ei.accept(this),ctx->{
@@ -70,7 +70,7 @@ public class Move implements Visitor<Ctx<List<Block.Dec>>>{
     iterate:while(true){
       for(Block.Dec decX:dvs2){
         for(Block.Dec decE:dvs1){
-        Set<String> fv = FreeVariables.of(decE.getE());
+        Set<String> fv = FreeVariables.of(decE.getInner());
         if(!fv.contains(decX.getX())){continue;}
         dvs1.add(decX);
         dvs2.remove(decX);
@@ -83,11 +83,11 @@ public class Move implements Visitor<Ctx<List<Block.Dec>>>{
     List<Block.Dec> dvs1=new ArrayList<Block.Dec>();
     List<Block.Dec> dvs2=new ArrayList<Block.Dec>();
     for(Block.Dec d:s.getDecs()){
-      if(ds.isEmpty() && !IsCtx.of(d.getE())){
+      if(ds.isEmpty() && !IsCtx.of(d.getInner())){
         dvs.add(d);
         }
       else{
-        assert ds.isEmpty() || !IsCtx.of(d.getE());
+        assert ds.isEmpty() || !IsCtx.of(d.getInner());
         ds.add(d);
         }
      }
@@ -95,19 +95,19 @@ public class Move implements Visitor<Ctx<List<Block.Dec>>>{
     if(ds.isEmpty()){
       nestedCtx= s.getInner().accept(this);
     }else{
-      nestedCtx=ds.get(0).getE().accept(this);
+      nestedCtx=ds.get(0).getInner().accept(this);
       }
     HashSet<String> richXs=new HashSet<String>();
     richXs.add(x);
     for(Block.Dec dv:nestedCtx.hole){
-      richXs.addAll(FreeVariables.of(dv.getE()));
+      richXs.addAll(FreeVariables.of(dv.getInner()));
     }
     split(dvs,dvs1,dvs2,richXs);
     Block s2=null;
     if(ds.isEmpty()){
       s2=s.withInner(nestedCtx.ctx);
     }else{
-      ds.set(0,ds.get(0).withE(nestedCtx.ctx));
+      ds.set(0,ds.get(0).withInner(nestedCtx.ctx));
       dvs2.addAll(ds);
       s2=s;
       }
@@ -129,12 +129,12 @@ public class Move implements Visitor<Ctx<List<Block.Dec>>>{
     int i=-1;
     for(Block.Dec dec:ctx.getDecs()){
       i+=1;
-      if(!IsCtx.of(dec.getE())){
+      if(!IsCtx.of(dec.getInner())){
         newDecs.add(dec);
         continue;}
       ctxPosition=i;
-      res=dec.getE().accept(new Move(a));
-      newDecs.add(dec.withE(res.ctx));
+      res=dec.getInner().accept(new Move(a));
+      newDecs.add(dec.withInner(res.ctx));
     }
     if(res!=null){
       //ex fieldU1,

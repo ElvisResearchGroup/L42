@@ -31,7 +31,7 @@ public class ExtractThrow implements Visitor<ExpCore>{
   }
 
   public ExpCore visit(MCall s) {
-    if(!IsValue.isAtom(s.getReceiver())){return s.getReceiver().accept(this);}
+    if(!IsValue.isAtom(s.getInner())){return s.getInner().accept(this);}
     for(ExpCore ei:s.getEs()){
       if(IsValue.isAtom(ei)){continue;}
       return ei.accept(this);
@@ -51,7 +51,7 @@ public class ExtractThrow implements Visitor<ExpCore>{
     for(int i=0;i<s.getDecs().size();i++){
       if(new IsValue(p).validDvs(s.getDecs().get(i))){continue;}
       //otherwise, i is the first non dv
-      ExpCore res=s.getDecs().get(i).getE().accept(this);
+      ExpCore res=s.getDecs().get(i).getInner().accept(this);
       if(res instanceof ExpCore.WalkBy){return res;}
       Signal res_=(Signal)res;
       List<Block.Dec> decs = s.getDecs().subList(0, i);

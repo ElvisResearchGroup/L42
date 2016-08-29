@@ -49,7 +49,7 @@ public class Abstract {
           mi->{return null;},//just implementation
           mt->{
             if(mt.getDoc().isPrivate()){return null;}
-            newMs.add(mt.withInner(Optional.empty()));return null;}
+            newMs.add(mt.with_inner(Optional.empty()));return null;}
       );}
     //create new class
     return cb.withMs(newMs);
@@ -66,7 +66,7 @@ public class Abstract {
     //make m abstract
     if(m instanceof MethodWithType){
       MethodWithType mwt=(MethodWithType)m;
-      mwt=mwt.withInner(Optional.empty());
+      mwt=mwt.with_inner(Optional.empty());
       Program.replaceIfInDom(newMs,mwt);
       }
     else{//it is method implemented

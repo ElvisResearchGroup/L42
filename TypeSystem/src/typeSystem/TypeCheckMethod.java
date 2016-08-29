@@ -55,7 +55,7 @@ public class TypeCheckMethod {
     List<Type> ts=new ArrayList<Type>();
     List<ExpCore> es = new ArrayList<ExpCore>();
     ArrayList<Set<String>> fvs=new ArrayList<>();
-    es.add(s.getReceiver());
+    es.add(s.getInner());
     es.addAll(s.getEs());
     {int i=0;
     tsExp.add(recExpected);
