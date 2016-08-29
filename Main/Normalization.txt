@@ -13,7 +13,7 @@ using s instead of overbar, so Cs::=C1..Cn
 -->p is p under the arrow
 a^i is a apex i, ai is a pedex i
 [] is the hole/square
-
+//add tuple notation <;>
 in latex we use two different fonts for "(" of the grammar and for
 "(" used for disambiguation and function call. here we just hope is clear :/
 
@@ -42,8 +42,8 @@ L::={interface? implements Ps M1..Mn}
 M::=ms e |refine mh e?| mh e? | C:e
 Ldom::=ms|C
 P::= Thisn.Cs //is pronounced "Path"
-T::= mdf P | P::mss| P::mss::x
-
+T::= mdf P | P::msxs
+msx::=ms(::x)?
 LC::={implements Ps MC1..MCn}  //library compiled
 MC::=refine mhC eC?| mhC eC? | C:LC
 eC::=.... |LC
@@ -52,7 +52,7 @@ r::=LC| exception v | error v
 
 ctxC::=[] | eC.m( (x=eC)s x=ctxC, (x=e)s)| .... // compilation context, e=ctxC[L] selects an L where all the former Ls are LC. The context do not enter in libraries
 ctxM::= C: ctxC |ms ctxC | refine? mh ctxC
-ctxL::= {interface? MCs ctxM Ms}
+ctxL::= {interface? implements Ps MCs ctxM Ms}
 
 //notice how every LC is a special kind of L (barnotation has structural subtyping)
 ---------
@@ -60,7 +60,7 @@ We define functional notation for
 L, ctxL and LC (over Ldom domain and Cs)
 Moreover, for convenience we define inside in the following way:
 
-- eC inside eC' if eC'=ctxC[eC]      
+- eC' inside eC if eC=ctxC[eC']      
 
 -P inside M holds iff P inside M.e 
  or M.mh= refine? T0 m(T1 x1..Tn xn) exception Ps
@@ -72,8 +72,8 @@ Moreover, for convenience we define inside in the following way:
  - L-ctxL=L' if L=ctxL[L'] // actually, L-ctxL=L' if L/ctxL=<ctxL,L'>
  - L/ctxL=<ctxL', L'>  intuition: if L=ctxL'[L'], ctxL sim ctxL'
    definition (for the special case we need):
- -- {interface? MC1..MCn C:L0 M1..Mk}/{interface? MC1'..MCn' C:ctxL0 M1'..Mk'}
-   = {interface? MC1..MCn C:ctxL M1..Mk}, L
+ -- {interface? implements Ps MC1..MCn C:L0 M1..Mk}/{interface? implements Ps MC1'..MCn' C:ctxL0 M1'..Mk'}
+   = {interface? implements Ps MC1..MCn C:ctxL M1..Mk}, L
    where L0/ctxL0=ctxL,L
  -- {interface? MC1..MCn M M1..Mk}/{interface? MC1'..MCn' ctxM M1'..Mk'}
    = {interface? MC1..MCn ctxM M1..Mk}, L
@@ -142,7 +142,7 @@ program operations primitive:
    if p=L,ctxL1...ctxL(n+1) _ and ctxL(n+1)(C)=[]
 
 - growFellow
-  (_,ctxL,_).growFellow(p)==p.push(p.top()/ctxL)
+  (L,ctxL,_).growFellow(p)==p.push(p.top()/ctxL)
      
 program derived operations:
 
@@ -231,7 +231,7 @@ subdefinitions:
    P in Ps', forall P' in Ps', p|-P<=P'
   
   -merge(Ms,Ms')
-    merge(Ms,Ms')(ms)=Ms(ms) if Ms(ms) not of form ms e
+    merge(Ms,Ms')(ms)=Ms(ms) if Ms(ms) of form mh e? and ms not in dom(Ms') or Ms(ms) of form refine mh e? and ms in dom(Ms') 
     merge(Ms,Ms')(ms)=Ms'(ms) if ms not in dom(Ms)
     merge(Ms,Ms')(ms)= refine mh e if Ms(ms)=ms e and Ms'(ms)=refine mh
 
@@ -239,7 +239,7 @@ subdefinitions:
    //an implementation could keep a list of visited P instead of diverging, mathematically is the same.
   -collect(p,P Ps)=P U collect(p,Ps) U collect(p.navigate(P),Ps')[from P]
    if p(P)={_ implements Ps' _}
-   //Note: we remove circularity; update operator sum; plus add privatly implemented concept/error
+   //Note for marco: we remove circularity; update operator sum; plus add privatly implemented concept/error
    //may be a good strategy could be that 
    //"sum can not add abstract implemented methods", this enforces adding either equal hierarchies with different operators, or different hierarchies with equal operators.
    //Or we can make this kind of check happens as extra at the end of multiple sums?
@@ -261,13 +261,13 @@ maindefinition:
  //parents in a diamond agrees on the return type. 
   
 -norm(p,ms e)=ms norm(p, e) 
- p.top()= {_ implements Ps _}
+ 
    
 -norm(p,refine mh e?)= refine resolve(p,mh) norm(p,e?) 
- p.top()= {_ implements Ps _}
+ 
    
 -norm(p,mh e?)= resolve(p,mh) norm(p,e?)
- p.top()={_ implements Ps _}
+ 
     
 -norm(p, C:e) =C:norm(p,e)//assume we can cache if e is already normalized and avoiding repeating
 
@@ -288,7 +288,7 @@ maindefinition:
    
 ------------------------------------------     
 ###define usedPathsE
-- usedPathsE(p,eC)=<reorganize(Ps); paths U usedPathsFix(p,paths, empty)>//do we need to add paths or is already included in usedPathsFix(p,paths, empty)  
+- usedPathsE(p,eC)=<reorganize(Ps); usedPathsFix(p,paths, empty)>//assert that the result includes paths in usedPathsFix(p,paths, empty)  
   Ps,Ps'={P|P inside eC}//arbitrary split of the set; heuristic will apply in the implementation.
   paths= reorganize(Ps')
  
