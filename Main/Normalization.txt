@@ -318,4 +318,21 @@ maindefinition:
   //if ( _ T x=P _ _) inside e and T!=class Any, P not Any.
   //otherwise, P is considered of type class Any.
   // user can always force a not any by writing (x=P x)
+  //if we have caching Typed, we can say in the heuristic that if 
+  //p(Pi).Cache=Typed, Pi is not Any
   
+  Example using caching for typing... needs growFellow :)
+  L::={.. Lab}
+  Cache::=None | Norm | Typed
+  paths |-p:p'
+  
+- Cs1..Csn paths |- p:p.growFellow(p2)
+  paths |- p.pop():p0  
+  pi=p.navigate(Csi)
+  Li=pi.top()
+  forall Csi : pi|-Li: ok //if Li.Cache=Typed, the check will be just asserted
+  Li'=Li[with Cache=Typed]
+  p1=p.growFellow(p0)
+  p2=p1.update(p2.top()[Cs1=L1',.. Csn=Ln'])
+  
+- empty |- p:p
