@@ -14,6 +14,7 @@ import ast.ExpCore.WalkBy;
 import ast.ExpCore.X;
 import ast.ExpCore._void;
 import coreVisitors.IsCompiled;
+import tools.Assertions;
 
 public interface CtxC {
   ExpCore fillHole(ExpCore hole);
@@ -45,10 +46,9 @@ class CtxCInner<T extends ExpCore.WithInner<T> & ExpCore> implements CtxC{
   }
 
 class CtxSplitter implements coreVisitors.Visitor<CtxC>{
-  public CtxC visit(Path s) {return null;}
-  public CtxC visit(X s) {return null;}
-  public CtxC visit(_void s) {return null;}
-  public CtxC visit(ClassB s) {return null;}
+  public CtxC visit(Path s) {throw Assertions.codeNotReachable();}
+  public CtxC visit(X s) {throw Assertions.codeNotReachable();}
+  public CtxC visit(_void s) {throw Assertions.codeNotReachable();}
   public CtxC visit(WalkBy s) {throw new AssertionError();}
   
   public CtxC visit(Signal s) {return new CtxCInner<Signal>(s, s.getInner().accept(this));}
@@ -73,9 +73,18 @@ class CtxSplitter implements coreVisitors.Visitor<CtxC>{
     return null;
     }
   public CtxC visit(Block s) {
-    return null;
+    return null;//need care, may be not compiled if there is skeletal type?
     }
-
+  private static class Hole implements CtxC{
+    ExpCore original; Hole(ExpCore original){this.original=original;}
+    public ExpCore fillHole(ExpCore hole) {return hole;}
+    public ExpCore originalHole() {return original;}
+    public CtxC divide(ExpCore all) {return new Hole(all);}
+  }
+  public CtxC visit(ClassB s) {
+    assert !IsCompiled.of(s);
+    return new Hole(s);
+    }
   private int firstNotCompiled(List<ExpCore> es) {
     for(int i=0;i<es.size();i++){
       if(!IsCompiled.of(es.get(i))){return i;}
