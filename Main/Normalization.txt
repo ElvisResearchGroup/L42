@@ -223,12 +223,9 @@ subdefinitions:
   -resolve(p,P::msx::msxs)=resolve(p,P'::msxs) //here be carefull for possible infinite recursion 
     resolve(p,P::msx)= _ P'
                
-  -extract(p,P,ms)=p(P)(ms)[from P]
-  -otherwise extract(p,P,ms)= extract(p,P'[from P],ms)  if p(P)={_ implements _ P' _ _}
-
-  -mostSpecific(p,Ps',ms)=extract(p, P, ms)
-   Ps={P| P in Ps', extract(p, P, ms) defined}
-   P in Ps', forall P' in Ps', p|-P<=P'
+  -extract(p,Ps0,ms)=refine?mh e?=p(P0)(ms)[from P0]
+   Ps=collect(p,Ps0)
+   P0 in Ps,forall P1 in Ps, p|-P0<=P1
   
   -merge(Ms,Ms')
     merge(Ms,Ms')(ms)=Ms(ms) if Ms(ms) of form mh e? and ms not in dom(Ms') or Ms(ms) of form refine mh e? and ms in dom(Ms') 
@@ -255,7 +252,7 @@ maindefinition:
  domOfImpl={ms| P in Ps', p( P)( ms) defined}
  error unless forall refine mh e? in Ms, mh.ms in domOfImpl
  error unless forall ms e in Ms, ms in domOfImpl 
- Ms'={addRefineKw(resolve(p,mostSpecific(p,Ps', ms)))| ms in domOfImpl}
+ Ms'={addRefineKw(resolve(p,extract(p,Ps', ms)))| ms in domOfImpl}
  error unless dom(merge(Ms,Ms')) superSetEq domOfImpl
  //this is stricter then java, since it requires explicit refine even if unrelated 
  //parents in a diamond agrees on the return type. 
