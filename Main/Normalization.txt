@@ -233,6 +233,7 @@ subdefinitions:
       if Ms(ms) of form mh e? and ms not in dom(Ms')
       or Ms(ms) of form refine mh e? and ms in dom(Ms')
     //so merge mh +refine mh undefined, merge refine mh+empty undefined, merge mh+mh undefined
+    //cases for a table: empty, ms e mh e?, refine mh e?
     merge(Ms,Ms')(ms)=Ms'(ms) if ms not in dom(Ms)
     merge(Ms,Ms')(ms)= refine mh e if Ms(ms)=ms e and Ms'(ms)=refine? mh
 
@@ -240,6 +241,7 @@ subdefinitions:
    //an implementation could keep a list of visited P instead of diverging, mathematically is the same.
   -collect(p,P Ps)=P U collect(p,Ps) U collect(p.navigate(P),Ps')[from P]
    if p(P)={_ implements Ps' _}
+   // a sensible extract with recursion + bread first seams the same of non recursi extract + dept first
    //Note for marco: we remove circularity; update operator sum; plus add privatly implemented concept/error
    //may be a good strategy could be that 
    //"sum can not add abstract implemented methods", this enforces adding either equal hierarchies with different operators, or different hierarchies with equal operators.
@@ -327,7 +329,7 @@ maindefinition:
   Cache::=None | Norm | Typed
   paths |-p:p'
   
-- Cs1..Csn paths |- p:p.growFellow(p2)
+- Cs1..Csn paths |- p:p2
   paths |- p.pop():p0  
   pi=p.navigate(Csi)
   Li=pi.top()
