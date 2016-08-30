@@ -221,14 +221,17 @@ subdefinitions:
   -resolve(p,P::ms::x)=T
     extract(p,P,ms)=refine? _ method _ _( _ T x _) e? 
   -resolve(p,P::msx::msxs)=resolve(p,P'::msxs) //here be carefull for possible infinite recursion 
-    resolve(p,P::msx)= _ P'
-               
+    resolve(p,P::msx)= _ P'              
+  
   -extract(p,Ps0,ms)=refine?mh e?=p(P0)(ms)[from P0]
    Ps=collect(p,Ps0)
    P0 in Ps,forall P1 in Ps, p|-P0<=P1 or p(P1)(ms)not of form refine?mh e?
-  
+  // collect return list, remove all the one with no ms.mh, remove all the supertype of an element in the list, than take the leftmost
+  //no, this is not stable what, we need to be recursive?
   -merge(Ms,Ms')
-    merge(Ms,Ms')(ms)=Ms(ms) if Ms(ms) of form mh e? and ms not in dom(Ms') or Ms(ms) of form refine mh e? and ms in dom(Ms') 
+    merge(Ms,Ms')(ms)=Ms(ms)
+      if Ms(ms) of form mh e? and ms not in dom(Ms')
+      or Ms(ms) of form refine mh e? and ms in dom(Ms') 
     merge(Ms,Ms')(ms)=Ms'(ms) if ms not in dom(Ms)
     merge(Ms,Ms')(ms)= refine mh e if Ms(ms)=ms e and Ms'(ms)=refine mh
 
