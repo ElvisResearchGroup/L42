@@ -118,7 +118,7 @@ Moreover, for convenience we define inside in the following way:
 -----------------------------------------------------------
 ### program
 
-p::=L0;ctxLs //representing This0,...,Thisn
+p::=L0;ctxLs //representing This0,...,Thisn // where This0.C refers to a class bound in L0, and (This1..ThisN).C to bindings in cxtL1..cxtLn respectively
 
 program operations primitive:
 -pop
