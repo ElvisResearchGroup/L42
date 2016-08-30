@@ -231,9 +231,10 @@ subdefinitions:
   -merge(Ms,Ms')
     merge(Ms,Ms')(ms)=Ms(ms)
       if Ms(ms) of form mh e? and ms not in dom(Ms')
-      or Ms(ms) of form refine mh e? and ms in dom(Ms') 
+      or Ms(ms) of form refine mh e? and ms in dom(Ms')
+    //so merge mh +refine mh undefined, merge refine mh+empty undefined, merge mh+mh undefined
     merge(Ms,Ms')(ms)=Ms'(ms) if ms not in dom(Ms)
-    merge(Ms,Ms')(ms)= refine mh e if Ms(ms)=ms e and Ms'(ms)=refine mh
+    merge(Ms,Ms')(ms)= refine mh e if Ms(ms)=ms e and Ms'(ms)=refine? mh
 
   -collect(p,empty)=empty
    //an implementation could keep a list of visited P instead of diverging, mathematically is the same.
