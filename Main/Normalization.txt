@@ -225,7 +225,7 @@ subdefinitions:
                
   -extract(p,Ps0,ms)=refine?mh e?=p(P0)(ms)[from P0]
    Ps=collect(p,Ps0)
-   P0 in Ps,forall P1 in Ps, p|-P0<=P1
+   P0 in Ps,forall P1 in Ps, p|-P0<=P1 or p(P1)(ms)not of form refine?mh e?
   
   -merge(Ms,Ms')
     merge(Ms,Ms')(ms)=Ms(ms) if Ms(ms) of form mh e? and ms not in dom(Ms') or Ms(ms) of form refine mh e? and ms in dom(Ms') 
