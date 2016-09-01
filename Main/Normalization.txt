@@ -45,7 +45,7 @@ P::= Thisn.Cs //is pronounced "Path"
 T::= mdf P | P::msxs
 msx::=ms(::x)?
 LC::={implements Ps MC1..MCn}  //library compiled
-MC::=refine mhC eC?| mhC eC? | C:LC
+MC::=refine mh eC?| mh eC? | C:LC
 eC::=.... |LC
 // No, compiled types are T, normalized types are only mdf P
 // but normalization is a different step
@@ -195,12 +195,6 @@ precondition: at top level we have a L not of form LC
                                     p'=p #paths U paths'//norm the part of p required by eC'
                                     p'|-toAny(paths,eC'): imm Library //replace paths with Any //eC' is well typed
                                     |-p':paths' //the part of p' referred to by paths' is well typed
-
-
-                                   p.top()=L0={_ implements Ps, MCs  M Ms}
-(norm)-------------------------    M not of form MC
-      p ==> p.update(L0[M.ms=MC])  all L inside M.e are of form LC //for M.e undefined there is no L,forall holds
-                                   MC=norm(p,M)
 
 
         p.push(ctxL, L)==> p'       p.top()={interface? implements Ps, MCs  M Ms}
