@@ -47,7 +47,8 @@ msx::=ms(::x)?
 LC::={implements Ps MC1..MCn}  //library compiled
 MC::=refine mhC eC?| mhC eC? | C:LC
 eC::=.... |LC
-TC::=mdf P// used in eC, MC and LC, and all P normalized w.r.t. a program
+// No, compiled types are T, normalized types are only mdf P
+// but normalization is a different step
 r::=LC| exception v | error v
 
 ctxC::=[] | eC.m( (x=eC)s x=ctxC, (x=e)s)| .... // compilation context, e=ctxC[L] selects an L where all the former Ls are LC. The context do not enter in libraries

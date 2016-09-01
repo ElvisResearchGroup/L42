@@ -73,7 +73,7 @@ class CtxSplitter implements coreVisitors.Visitor<CtxC>{
     return null;
     }
   public CtxC visit(Block s) {
-    return null;//need care, may be not compiled if there is skeletal type?
+    return null;
     }
   private static class Hole implements CtxC{
     ExpCore original; Hole(ExpCore original){this.original=original;}
