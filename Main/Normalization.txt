@@ -61,8 +61,7 @@ We define functional notation for
 L, ctxL and LC (over Ldom domain and Cs)
 Moreover, for convenience we define inside in the following way:
 
-- eC' inside eC if eC=ctxC[eC']      
-
+- eC' inside eC if eC=ctxC[eC']
 -P inside M holds iff P inside M.e 
  or M.mh= refine? T0 m(T1 x1..Tn xn) exception Ps
  and Ti= _ P or Ti= P::_ or P in Ps
@@ -70,19 +69,20 @@ Moreover, for convenience we define inside in the following way:
 
 -----------------------------------------------------------
 ###operations on contexts (for implementation too)
- - L-ctxL=L' if L=ctxL[L'] // actually, L-ctxL=L' if L/ctxL=<ctxL,L'>
+ -define ctxC sim ctxC
+  * [] sim []
+  assuming ctxC sim ctxC', then
+  * ctxC.m((x:e)s) sim ctxC'.m'((x:e)s')
+  * e.m(x1:e1..xn:en x:ctxC (x:e)s) sim e'.m'(x1':e1'..xn':en' x':ctxC' (x:e)s')
+  * (T1 x1=e1..Tn xn=en T x=ctxC (T x=e)s e) sim (T1' x1'=e1'..Tn' xn'=en' T' x'=ctxC' (T x=e)s' e')
+  * and so on        
+ 
+ -define L/ctxL'=<ctxL, e>   intuition: if L=ctxL[e], ctxL sim ctxL'
+  * {interface? implements Ps MC1..MCn C:e Ms}/{interface? implements Ps MC1'..MCn' C':ctxC' Ms'}
+   = {interface? implements Ps MC1..MCn C:ctxC Ms}, e0
+   e=ctcC[e0] and ctxC sim ctxC'
  - L/ctxL=<ctxL', L'>  intuition: if L=ctxL'[L'], ctxL sim ctxL'
    definition (for the special case we need):
- -- {interface? implements Ps MC1..MCn C:L0 M1..Mk}/{interface? implements Ps MC1'..MCn' C:ctxL0 M1'..Mk'}
-   = {interface? implements Ps MC1..MCn C:ctxL M1..Mk}, L
-   where L0/ctxL0=ctxL,L
- -- {interface? MC1..MCn M M1..Mk}/{interface? MC1'..MCn' ctxM M1'..Mk'}
-   = {interface? MC1..MCn ctxM M1..Mk}, L
-    where M-ctxM=L and M not of form C:L 
-    //the case for C:L with "/" is enough
-    //if there was a used path This(n+1).A.B equivalent to Thisn.B (completed, compiled and usable)
-    //this would be only inside of a chain of C:L
-
 
 -----------------------------------------------------------
 ### paths
