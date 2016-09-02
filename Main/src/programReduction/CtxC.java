@@ -25,10 +25,24 @@ public interface CtxC {
   ExpCore originalHole();
   CtxC divide(ExpCore all);
   static  CtxC split (ExpCore e){return e.accept(new CtxSplitter());}
+  default String _toString() {return "CtxCAbsPos ["+sugarVisitors.ToFormattedText.of(this.fillHole(new ExpCore.X("_HOLE_")))+",originalHole:"+sugarVisitors.ToFormattedText.of(this.originalHole())+"]";}
+  default int _hashCode() {return this.fillHole(new ExpCore.WalkBy()).hashCode();}
+  default boolean _equals(Object obj) {
+    if (this == obj) return true;
+    if (obj == null) return false;
+    if (getClass() != obj.getClass()) return false;
+    CtxC other = (CtxC) obj;
+    ExpCore oE=other.fillHole(new ExpCore.WalkBy());
+    ExpCore thisE=this.fillHole(new ExpCore.WalkBy());
+    return thisE.equals(oE);
+    }
   }
 
 //utility class to create CtxCs that point somewhere in a list
 abstract class CtxCAbsPos<T> implements CtxC{
+  @Override public String toString() {return _toString();}//limitation of Java8 requires methods of object
+  @Override public int hashCode() {return this._hashCode();} //to be reimplemented :(
+  @Override public boolean equals(Object obj) {return this._equals(obj);}
   T origin;int pos;CtxC ctx;
   CtxCAbsPos(T origin,int pos, CtxC ctx){
     this.origin=origin;this.pos=pos;this.ctx=ctx;
@@ -38,6 +52,9 @@ abstract class CtxCAbsPos<T> implements CtxC{
 
 //generic class allowing to contexts in a subexpression "main expression" (like the method receiver)
 class CtxCInner<T extends ExpCore.WithInner<T> & ExpCore> implements CtxC{
+  @Override public String toString() {return _toString();}//limitation of Java8 requires methods of object
+  @Override public int hashCode() {return this._hashCode();} //to be reimplemented :(
+  @Override public boolean equals(Object obj) {return this._equals(obj);}
   T origin;CtxC ctx;
   CtxCInner(T origin,CtxC ctx) {this.origin=origin;this.ctx=ctx;}
   public ExpCore originalHole() {return ctx.originalHole();}
@@ -150,6 +167,14 @@ class CtxSplitter implements coreVisitors.Visitor<CtxC>{
   
   //finally: case for L, where the hole will be
   private static class Hole implements CtxC{
+    @Override public String toString() {return _toString();}
+    @Override public int hashCode() {return 0;}
+    @Override public boolean equals(Object obj) {
+      if (this == obj) return true;
+      if (obj == null) return false;
+      if (getClass() != obj.getClass()) return false;
+      return true;//all holes are equals, and ignore the original content
+      }
     ExpCore original; Hole(ExpCore original){this.original=original;}
     public ExpCore fillHole(ExpCore hole) {return hole;}
     public ExpCore originalHole() {return original;}

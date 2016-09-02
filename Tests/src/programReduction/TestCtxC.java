@@ -50,4 +50,27 @@ public static class TestFillHole {
   TestHelper.assertEqualExp(expected,res);
   }
   }
+
+@RunWith(Parameterized.class)
+public static class TestDivide {
+  @Parameter(0) public int _lineNumber;
+  @Parameter(1) public String _e1;
+  @Parameter(2) public String _e2;
+  @Parameter(3) public String _expected;
+  @Parameterized.Parameters
+  public static List<Object[]> createData() {
+    return Arrays.asList(new Object[][] {
+    {lineNumber(),"Any.m({B:error void})","Any.m(Any)","Any"
+  },{lineNumber(),"{B:error void}.m({B:error void})","Any.m(Any)","Any"
+}});}
+@Test  public void test() {
+  ExpCore e1=TestHelper.getExpCore(this.getClass().getCanonicalName(),_e1);
+  ExpCore e2=TestHelper.getExpCore(this.getClass().getCanonicalName(),_e2);
+  ExpCore expected=TestHelper.getExpCore(this.getClass().getCanonicalName(),_expected);
+  CtxC ctxC1=CtxC.split(e1);
+  CtxC res=ctxC1.divide(e2);
+  TestHelper.assertEqualExp(expected,res.originalHole());
+  TestHelper.assertEqualExp(e2,res.fillHole(res.originalHole()));
+  }
+  }
 }
