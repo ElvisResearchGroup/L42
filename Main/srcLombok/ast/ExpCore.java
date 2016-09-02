@@ -214,7 +214,11 @@ public interface ExpCore {
     Doc doc;
     List<ExpCore> es;
     ExpCore inner;
-    
+    public Using withEsi(int i,ExpCore ei){
+    List<ExpCore> es2=new ArrayList<>(es);
+    es2.set(i,ei);
+    return this.withEs(es2);
+    }
     @Override public <T> T accept(coreVisitors.Visitor<T> v) {
       return v.visit(this);
     }

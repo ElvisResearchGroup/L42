@@ -201,7 +201,14 @@ public class TestHelper {
         + "}}"
         });
   }
-
+  
+  public static ExpCore getExpCore(String source, String _e1) {
+    Expression code1=Parser.parse("GeneratedByTestHelper_",_e1);
+    Expression code2=Desugar.of(code1);
+    ExpCore e1=code2.accept(new InjectionOnCore());
+    return e1;
+    }
+  
   public static ClassB getClassB(String source, String e1) {
     Expression code1=Parser.parse("GeneratedByTestHelper_"+source,e1);
     auxiliaryGrammar.WellFormedness.checkAll(code1);

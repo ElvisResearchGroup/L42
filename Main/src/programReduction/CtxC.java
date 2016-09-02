@@ -1,10 +1,13 @@
 package programReduction;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ast.Ast.Path;
 import ast.ExpCore;
 import ast.ExpCore.Block;
+import ast.ExpCore.Block.Dec;
+import ast.ExpCore.Block.On;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.Loop;
 import ast.ExpCore.MCall;
@@ -15,6 +18,7 @@ import ast.ExpCore.X;
 import ast.ExpCore._void;
 import coreVisitors.IsCompiled;
 import tools.Assertions;
+import tools.Map;
 
 public interface CtxC {
   ExpCore fillHole(ExpCore hole);
@@ -23,6 +27,7 @@ public interface CtxC {
   static  CtxC split (ExpCore e){return e.accept(new CtxSplitter());}
   }
 
+//utility class to create CtxCs that point somewhere in a list
 abstract class CtxCAbsPos<T> implements CtxC{
   T origin;int pos;CtxC ctx;
   CtxCAbsPos(T origin,int pos, CtxC ctx){
@@ -31,6 +36,7 @@ abstract class CtxCAbsPos<T> implements CtxC{
   public ExpCore originalHole() {return ctx.originalHole();}
   }
 
+//generic class allowing to contexts in a subexpression "main expression" (like the method receiver)
 class CtxCInner<T extends ExpCore.WithInner<T> & ExpCore> implements CtxC{
   T origin;CtxC ctx;
   CtxCInner(T origin,CtxC ctx) {this.origin=origin;this.ctx=ctx;}
@@ -39,21 +45,26 @@ class CtxCInner<T extends ExpCore.WithInner<T> & ExpCore> implements CtxC{
   public CtxC divide(ExpCore all) {
     assert origin.getClass().equals(all.getClass());
     @SuppressWarnings("unchecked") //safe here
-    T _all=(T)all;//TODO:
+    T _all=(T)all;
     CtxC ctxInner=ctx.divide(_all.getInner());
     return new CtxCInner<T>(_all,ctxInner);
     }
   }
 
+
 class CtxSplitter implements coreVisitors.Visitor<CtxC>{
+  //those are never reached by the visit
   public CtxC visit(Path s) {throw Assertions.codeNotReachable();}
   public CtxC visit(X s) {throw Assertions.codeNotReachable();}
   public CtxC visit(_void s) {throw Assertions.codeNotReachable();}
+  //this case should eventually disappear
   public CtxC visit(WalkBy s) {throw new AssertionError();}
   
+  //expressions that just wrap another
   public CtxC visit(Signal s) {return new CtxCInner<Signal>(s, s.getInner().accept(this));}
   public CtxC visit(Loop s) { return new CtxCInner<Loop>(s, s.getInner().accept(this));}
 
+  //method call: define class for pointing in parameters
   private static class CtxCMCallPos extends CtxCAbsPos<MCall>{
     CtxCMCallPos(MCall origin,int pos,CtxC ctx) {super(origin,pos,ctx);}
     public ExpCore fillHole(ExpCore hole) {return origin.withEsi(pos,ctx.fillHole(hole));}
@@ -63,18 +74,81 @@ class CtxSplitter implements coreVisitors.Visitor<CtxC>{
       return new CtxCMCallPos(_all,pos,ctxInner);
       }
     }
+  //method call: if receiver, otherwise a point in parameters
   public CtxC visit(MCall s) {
       ExpCore r=s.getInner();
       if (!IsCompiled.of(r)){return new CtxCInner<MCall>(s,r.accept(this));}
       int pos=firstNotCompiled(s.getEs());
       return new CtxCMCallPos(s,pos,s.getEs().get(pos).accept(this));
     }
+  //from now on we just repeat this pattern
+  //using: define class for pointing in parameters 
+  private static class CtxCUsingPos extends CtxCAbsPos<Using>{
+    CtxCUsingPos(Using origin,int pos,CtxC ctx) {super(origin,pos,ctx);}
+    public ExpCore fillHole(ExpCore hole) {return origin.withEsi(pos,ctx.fillHole(hole));}
+    public CtxC divide(ExpCore all) {
+      Using _all=(Using)all;
+      CtxC ctxInner=ctx.divide(_all.getEs().get(pos));
+      return new CtxCUsingPos(_all,pos,ctxInner);
+      }
+    }
+  //using: if parameters, otherwise the main expression
   public CtxC visit(Using s) {
-    return null;
+    int pos=firstNotCompiled(s.getEs());
+    if (pos<s.getEs().size()){
+      return new CtxCUsingPos(s,pos,s.getEs().get(pos).accept(this));
     }
-  public CtxC visit(Block s) {
-    return null;
+    assert !IsCompiled.of(s.getInner());
+    return new CtxCInner<Using>(s,s.getInner().accept(this));
     }
+  
+  //block is more complex since it has two sets of es:
+  //one nested in the decs, and one nested in the ons; so we define two classes
+  private static class CtxCBlock1Pos extends CtxCAbsPos<Block>{
+    CtxCBlock1Pos(Block origin,int pos,CtxC ctx) {super(origin,pos,ctx);}
+    public ExpCore fillHole(ExpCore hole) {
+      List<Dec> ds=new ArrayList<>(origin.getDecs());
+      ds.set(pos, ds.get(pos).withInner(ctx.fillHole(hole)));
+      return origin.withDecs(ds);
+      }
+    public CtxC divide(ExpCore all) {
+      Block _all=(Block)all;
+      CtxC ctxInner=ctx.divide(_all.getDecs().get(pos).getInner());
+      return new CtxCBlock1Pos(_all,pos,ctxInner);
+      }
+    }
+  private static class CtxCBlock2Pos extends CtxCAbsPos<Block>{
+    CtxCBlock2Pos(Block origin,int pos,CtxC ctx) {super(origin,pos,ctx);}
+    public ExpCore fillHole(ExpCore hole) {
+      List<On> os=new ArrayList<>(origin.getOns());
+      os.set(pos, os.get(pos).withInner(ctx.fillHole(hole)));
+      return origin.withOns(os);
+      }
+    public CtxC divide(ExpCore all) {
+      Block _all=(Block)all;
+      CtxC ctxInner=ctx.divide(_all.getDecs().get(pos).getInner());
+      return new CtxCBlock1Pos(_all,pos,ctxInner);
+      }
+    }
+  
+  //block: first in the decs, then in the ons, than in the main
+  public CtxC visit(Block s) {{//to scope variables
+    List<ExpCore> es=Map.of(d->d.getInner(),s.getDecs());
+    int pos=firstNotCompiled(es);
+    if (pos<es.size()){
+      return new CtxCBlock1Pos(s,pos,es.get(pos).accept(this));
+      }
+    }{
+    List<ExpCore> es=Map.of(o->o.getInner(),s.getOns());
+    int pos=firstNotCompiled(es);
+    if (pos<es.size()){
+      return new CtxCBlock2Pos(s,pos,es.get(pos).accept(this));
+      }
+    }{
+    return new CtxCInner<Block>(s,s.getInner().accept(this));
+    }}
+  
+  //finally: case for L, where the hole will be
   private static class Hole implements CtxC{
     ExpCore original; Hole(ExpCore original){this.original=original;}
     public ExpCore fillHole(ExpCore hole) {return hole;}
@@ -85,6 +159,8 @@ class CtxSplitter implements coreVisitors.Visitor<CtxC>{
     assert !IsCompiled.of(s);
     return new Hole(s);
     }
+  
+  //utility method
   private int firstNotCompiled(List<ExpCore> es) {
     for(int i=0;i<es.size();i++){
       if(!IsCompiled.of(es.get(i))){return i;}
