@@ -245,7 +245,7 @@ maindefinition:
  L={interface? implements Ps Ms}
  p'=p.push(L)//can be repleaced by evilPush in implementation
  Ps'=collect(p',Ps)
- Ms'=members(p',This0), {C:e in Ms} //norm now put all the nested classes in the back.
+ Ms'=methods(p',This0), {C:e in Ms} //norm now put all the nested classes in the back.
   
 //norm(p,ms e) should never be call 
 
