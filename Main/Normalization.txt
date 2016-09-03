@@ -77,7 +77,7 @@ Moreover, for convenience we define inside in the following way:
   * (T1 x1=e1..Tn xn=en T x=ctxC (T x=e)s e) sim (T1' x1'=e1'..Tn' xn'=en' T' x'=ctxC' (T x=e)s' e')
   * and so on        
  
- -define L/ctxL'=<ctxL, e>   intuition: if L=ctxL[e], ctxL sim ctxL'
+ -define L/ctxL'=<ctxL; e>   intuition: if L=ctxL[e], ctxL sim ctxL'
   * {interface? implements Ps MC1..MCn C:e Ms}/{interface? implements Ps MC1'..MCn' C':ctxC' Ms'}
    = {interface? implements Ps MC1..MCn C:ctxC Ms}, e0
    e=ctcC[e0] and ctxC sim ctxC'
@@ -174,12 +174,10 @@ program derived operations:
 //p.update(L), p.pop(), p.push(fullP)/p.push(Ldom,ctxC) //currently push(L) is supported and should be removed
 
 
-
 -----------------------------------------------------------
 Part 2: reduction rules and notations
 -----------------------------------------------------------
 depend on:
- p|-P<=P' //still needed? check!
  p|-L:ok
  p|-e: imm Library
  e -->p+ r
@@ -202,11 +200,6 @@ precondition: at top level we have a L not of form LC
           p ==> p'.pop()            M.e=ctxC[L], L not of form LC
                                     ctxL={interface? implements Ps, MCs  M[with e=ctxC] Ms}
 
-                                 
-
-
-
-
 ------------------------------------------
 ###define methods(p,P)=Ms
 
@@ -221,8 +214,6 @@ subdefinitions:
   //may be a good strategy could be that 
   //"sum can not add abstract implemented methods", this enforces adding either equal hierarchies with different operators, or different hierarchies with equal operators.
   //Or we can make this kind of check happens as extra at the end of multiple sums?
--mayAddRefine(0,M)=M,
- mayAddRefine(n+1,refine? mh e?)=refine mh e? 
 
 maindefinition:
 -methods(p,P0)=M1'..Mk'
@@ -231,10 +222,13 @@ maindefinition:
   ms1..msk={ms|p(Pi)(ms) is defined}
   forall ms in ms1..msk, there is exactly 1 j in 0..n
     such that p(Pj)=mh e? //no refine
-  Mi=mayAddRefine(j,p(Pj)(msi))[from Pj]
-    for the smallest j in 1..k such that Pj(msi) of form refine? mh e? 
+  Mi= p(P0)(msi) if is defined,
+  otherwise
+  Mi=addRefine(methods(p,Pj)(msi))
+    for the smallest j in 1..k such that methods(p,Pj)(msi) of form refine? mh e?
   Mi'=Mi[with e?=p(P0)(ms).e?] if defined,
-  otherwise Mi'=Mi
+  otherwise
+  Mi'=Mi
 
 ------------------------------------------
 ###define norm(p,e)=e
