@@ -90,14 +90,14 @@ Moreover, for convenience we define inside in the following way:
  
  -(Css paths).pop()=paths
  
- -paths.push(Css)=Css paths
+ -paths.push(Css)=minimize(Css) paths
  
- -(Css paths) U (Css' paths')=minimize(Css U Css') (paths U paths')
+ -(Css paths) U (Css' paths')=(paths U paths').push(Css U Css')
  -paths U empty=empty U paths = paths
  
  -empty.prefix(_)=empty
  -paths.prefix(empty)= paths
- -(Cs1..Csn paths).prefix(Cs.C)= minimize(paths0.top() Cs.C.Cs1 .. Cs.C.Csn) paths.pop()
+ -(Cs1..Csn paths).prefix(Cs.C)= paths0.pop().push(paths0.top() U Cs.C.Cs1 .. Cs.C.Csn)
   paths0= paths.prefix(Cs)
   //example of prefix:
   //((A)  (B)  (C)  (D)).prefix(W.E)
@@ -308,14 +308,23 @@ maindefinition:
   Cache::=None | Norm | Typed
   paths |-p:p'
   
-- Cs1..Csn paths |- p:p2
-  paths |- p.pop():p0  
-  pi=p.navigate(Csi)
-  Li=pi.top()
-  forall Csi : pi|-Li: ok //if Li.Cache=Typed, the check will be just asserted
-  Li'=Li[with Cache=Typed]
-  p1=p.growFellow(p0)
-  p2=p1.update(p2.top()[Cs1=L1',.. Csn=Ln'])
-  //manage case p.pop() does not exists
-- empty |- p:p
+      paths |- p.pop():p0
+      Css|-p1:L
+(pPop)----------------------------------  p1=p.growFellow(p0)
+      Cs1..Csn paths |- p : p1.update(L)
+  
 
+         Css|-p:L
+(pNoPop)--------------------------------  p.pop() undefined
+         Cs1..Csn paths |- p :L,empty
+
+
+(pEmpty)--------------------------------
+         empty |- p :p
+  
+
+     forall Csi : pi|-pi.top(): ok //if Li.Cache=Typed, the check will be just asserted
+(pL) ---------------------------------------   pi=p.navigate(Csi)
+     Cs1..Csn|-p:p.top()[Cs1=L1,.. Csn=Ln]     Li=pi.top()[with Cache=Typed]//also inside all somehow contained Ls
+
+ 
