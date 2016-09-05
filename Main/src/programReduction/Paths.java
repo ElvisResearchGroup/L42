@@ -1,4 +1,5 @@
 package programReduction;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -35,18 +36,23 @@ public class Paths {
   public Paths prefix(List<String>cs){
     if(this==empty){return empty;}
     if(cs.isEmpty()){return this;}
-    Paths path=this.pop();
-    List<List<String>> css=this.top();
-    List<String> csPopped=cs.subList(0, cs.size()-1);
-    String c=cs.get(cs.size()-1);
-    Paths paths0=path.prefix(csPopped);
-    List<List<String>> top0=new ArrayList<>(paths0.top());
-    for(List<String>csi:css){
-      List<String>cscsi=new ArrayList<>(cs);
-      cscsi.addAll(csi);
-      top0.add(cscsi);
+    if(this.pop()==empty){
+      List<List<String>> res=new ArrayList<>();
+      for(List<String>csi:this.top()){
+        List<String>cscsi=new ArrayList<>(cs);
+        cscsi.addAll(csi);
+        res.add(cscsi);
+        }
+      return new Paths(empty,res);
       }
-    return paths0.pop().push(top0);
+    assert this.pop()!=empty;
+    Paths path=this.pop();
+    List<String> csPopped=cs.subList(0, cs.size()-1);
+    Paths paths0=path.prefix(csPopped);
+    assert paths0!=empty;
+    Paths paths1=new Paths(empty,this.top()).prefix(cs);
+    assert paths1!=empty;
+    return paths0.union(paths1);
     }
   public static Paths reorganize(List<Ast.Path> ps){
     if(ps.isEmpty()){return empty;}
@@ -71,7 +77,7 @@ public class Paths {
       }
       res.add(csCandidate);
     }
-    return css;
+    return res;
     }
   private static boolean isPrefix(List<String>csShort,List<String>csLong){
     if(csShort.size()>=csLong.size()){return false;}
@@ -81,4 +87,16 @@ public class Paths {
     //with cs1 in csShort.vals(), cs2 in csLong.vals(maxTo:csShort.size()) ( if cs1!=cs2 (return Bool.false()))
     return true;
     }
+  public String toString(){
+    return toString(0);
+    }
+  public String toString(int n){
+  String result="";
+  for(List<String> cs:this.top()){
+    result+=Ast.Path.outer(n, cs)+" ";
+  }
+  if(this.pop()!=empty){result+=this.pop().toString(n+1);}
+  return result;
+  }
+
   }

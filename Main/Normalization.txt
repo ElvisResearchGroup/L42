@@ -97,8 +97,8 @@ Moreover, for convenience we define inside in the following way:
  
  -empty.prefix(_)=empty
  -paths.prefix(empty)= paths
- -(Cs1..Csn paths).prefix(Cs.C)= paths0.pop().push(paths0.top() U Cs.C.Cs1 .. Cs.C.Csn)
-  paths0= paths.prefix(Cs)
+ -(Cs1..Csn).prefix(Cs)=Cs.Cs1 .. Cs.Csn
+ -(Css paths).prefix(Cs.C)= paths.prefix(Cs) U Css.prefix(Cs.C)
   //example of prefix:
   //((A)  (B)  (C)  (D)).prefix(W.E)
   // = ((W.E.A  W.B  C) (D))
