@@ -62,7 +62,7 @@ L, ctxL and LC (over Ldom domain and Cs)
 Moreover, for convenience we define inside in the following way:
 
 - eC' inside eC if eC=ctxC[eC']
--P inside M holds iff P inside M.e 
+- P inside M holds iff P inside M.e 
  or M.mh= refine? T0 m(T1 x1..Tn xn) exception Ps
  and Ti= _ P or Ti= P::_ or P in Ps
  
@@ -188,9 +188,9 @@ precondition: at top level we have a L not of form LC
 (top)------------------------       eC not of form LC
      p ==> p'.update(p'.top()[C=r]) eC'=norm(p,eC) //resolve skele types, add all refine, collect supertypes
                                     <paths; paths'>=usedPathsE(p,eC') //tuple notation
-                                    p'=p #paths U paths'//norm the part of p required by eC'
+                                    p0=p #paths U paths'//norm the part of p required by eC'
+                                    paths'|-p0:p' //the part of p' referred to by paths' is well typed
                                     p'|-toAny(paths,eC'): imm Library //replace paths with Any //eC' is well typed
-                                    |-p':paths' //the part of p' referred to by paths' is well typed
 
 
         p.push(ctxL, L)==> p'       p.top()={interface? implements Ps, MCs  M Ms}
@@ -216,15 +216,15 @@ subdefinitions:
 maindefinition:
 -methods(p,P0)=M1'..Mk'
   p(P0)={interface? implements Ps Ms} 
-  P1..Pn=collect(p,Ps)
+  P1..Pn=collect(p,Ps), error unless forall i, p(Pi) is an interface
   ms1..msk={ms|p(Pi)(ms) is defined}
   forall ms in ms1..msk, there is exactly 1 j in 0..n
     such that p(Pj)=mh e? //no refine
-  Mi= p(P0)(msi) if is defined,
+  Mi= p(P0)(msi) if is of form  refine? mh e?,
   otherwise
   Mi=addRefine(methods(p,Pj)(msi))
-    for the smallest j in 1..k such that methods(p,Pj)(msi) of form refine? mh e?
-  Mi'=Mi[with e?=p(P0)(ms).e?] if defined,
+    for the smallest j in 1..k such that methods(p,Pj)(msi) of form refine? mh
+  Mi'=Mi[with e?=p(P0)(msi).e?] if defined,
   otherwise
   Mi'=Mi
 
@@ -283,7 +283,7 @@ maindefinition:
 
 - usedPathsFix(p,empty,empty) =empty   
     
-- usedPathsL(L, Cs1..Csn)=usedInner(L(Cs1),Cs1) U ... U usedInner(L(Csn),Csn)
+- usedPathsL(L, Cs1..Csn)=usedInnerL(L(Cs1),Cs1) U ... U usedInnerL(L(Csn),Csn)
 
 - usedInnerL({_ implements Ps, M1..Mn},Cs)=prefix(Cs,reorganize(Ps) U usedInnerM(M1) U... U usedInnerM(Mn))
 
@@ -304,7 +304,7 @@ maindefinition:
   //p(Pi).Cache=Typed, Pi is not Any
   
   Example using caching for typing... needs growFellow :)
-  L::={.. Lab}
+  L::={.. Cache}
   Cache::=None | Norm | Typed
   paths |-p:p'
   
