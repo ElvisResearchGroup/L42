@@ -24,8 +24,9 @@ public interface CtxC {
   ExpCore fillHole(ExpCore hole);
   ExpCore originalHole();
   CtxC divide(ExpCore all);
-  static  CtxC split (ExpCore e){return e.accept(new CtxSplitter());}
-  default String _toString() {return "CtxCAbsPos ["+sugarVisitors.ToFormattedText.of(this.fillHole(new ExpCore.X("_HOLE_")))+",originalHole:"+sugarVisitors.ToFormattedText.of(this.originalHole())+"]";}
+  static CtxC split (ExpCore e){return e.accept(new CtxSplitter());}
+  static CtxC hole(ExpCore original){return new CtxSplitter.Hole(original);} 
+  default String _toString() {return "CtxC["+sugarVisitors.ToFormattedText.of(this.fillHole(new ExpCore.X("_HOLE_")))+",originalHole:"+sugarVisitors.ToFormattedText.of(this.originalHole())+"]";}
   default int _hashCode() {return this.fillHole(new ExpCore.WalkBy()).hashCode();}
   default boolean _equals(Object obj) {
     if (this == obj) return true;
@@ -166,7 +167,7 @@ class CtxSplitter implements coreVisitors.Visitor<CtxC>{
     }}
   
   //finally: case for L, where the hole will be
-  private static class Hole implements CtxC{
+  static class Hole implements CtxC{
     @Override public String toString() {return _toString();}
     @Override public int hashCode() {return 0;}
     @Override public boolean equals(Object obj) {
@@ -186,7 +187,7 @@ class CtxSplitter implements coreVisitors.Visitor<CtxC>{
     }
   
   //utility method
-  private int firstNotCompiled(List<ExpCore> es) {
+  static int firstNotCompiled(List<ExpCore> es) {
     for(int i=0;i<es.size();i++){
       if(!IsCompiled.of(es.get(i))){return i;}
       }

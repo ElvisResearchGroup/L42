@@ -125,28 +125,27 @@ program operations primitive:
 
 -push
  (ctxL[L],ctxLs).push(ctxL,L)=L,ctxL,ctxLs
+
+-top
+ (L,_).top()=L
  
 -update top //this is the only one that can detect evilPush
  (L,ctxLs).update(L')=L',ctxLs
 
--get(n)
- (L,_).get(0)=L
- p.get(n+1)=p.pop().get(n)
-
-
-- p.equiv(P,P') //ok also this one can be messed up by evilPush
-  p.equiv(P,P) holds
-  p.equiv(P,P')=p.equiv(P',P)
-  p.equiv(This(n+1).C.Cs,P)=p.equiv(Thisn.Cs,P)
-   if p=L,ctxL1...ctxL(n+1) _ and ctxL(n+1)(C)=[]
+-p.reducePath(This1.C.Cs)=This0.Cs
+ if p=L,ctxL,_ and ctxL(C)=[] //ok also this one can be messed up by evilPush
+-p.reducePath(This(n+2).Cs)=This(k+1).Cs'//k must be <=n
+   p.pop().minimize(This(n+1).Cs)=Thisk.Cs'
 
 - growFellow
   (L,ctxL,_).growFellow(p)==p.push(p.top()/ctxL)
      
 program derived operations:
 
--top
- p.top()=p.get(0)
+-get(n)
+ p.get(0)=p.top()
+ p.get(n+1)=p.pop().get(n)
+
  
 -push(C)
  p.push(C)=p.push(ctxL,L)
@@ -165,6 +164,11 @@ program derived operations:
  p.navigate(Thisn.Cs)=p.pop()...pop().navigate(Cs) //with n pops
 -p(P)
  p(P)=p.navigate(P).top()//but some implementation could be faster
+
+- p.equiv(P,P')
+  p.equiv(P,P) holds
+  p.equiv(P,P')=p.equiv(P',P)
+  p.equiv(P,P')=p.equiv(p.reducePath(P),P')
       
 //Note for marco: equivalence between p and (Ln,fullP), that is all the other L0..L(n-1) are cached?
 //going this way would require/allow to write better CloneWthPath/Locator
