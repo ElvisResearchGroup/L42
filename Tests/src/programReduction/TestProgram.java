@@ -18,11 +18,17 @@ import helpers.TestHelper;
 
 public class TestProgram {
 public static Program p(String s){
-  ExpCore.ClassB l=(ExpCore.ClassB)TestHelper.getExpCore(s,TestProgram.class.getSimpleName());
-  CtxL first=CtxL.split(l);
-  
-  return null;
+  ExpCore.ClassB l=(ExpCore.ClassB)TestHelper.getExpCore(TestProgram.class.getSimpleName(),s);
+  Program p=new FlatProgram(l);
+  ExpCore.ClassB currentTop=l;
+  while(true){
+    CtxL first=CtxL._split(currentTop);
+    if (first==null){return p;}
+    currentTop=(ExpCore.ClassB)first.originalHole();
+    p= new PushedProgram(currentTop,first,p);
+    }
   }
+
 @RunWith(Parameterized.class)
 public static class TestIsEquivPaths {
   @Parameter(0) public int _lineNumber;
@@ -33,8 +39,13 @@ public static class TestIsEquivPaths {
   @Parameterized.Parameters
   public static List<Object[]> createData() {
     return Arrays.asList(new Object[][] {
-    {lineNumber(),"Any.m({B:error void})","void","Any.m(void)"
-  },{lineNumber(),"{B:error void}.m({B:error void})","void","void.m({B:error void})"
+    {lineNumber(),"{B:error void}","Void","Void",true
+  },{lineNumber(),"{B:error void}","Void","Library",false
+  },{lineNumber(),"{B:{C:error void}}","Void","Void",true
+  },{lineNumber(),"{B:{C:error void}}","This0.C","This1.B.C",true
+  },{lineNumber(),"{B:{C:error void}}","This0.C","This1.B",false
+
+  //  },{lineNumber(),"{B:error void}.m({B:error void})","void","void.m({B:error void})"
 }});}
 @Test  public void test() {
   Program p=p(_p);

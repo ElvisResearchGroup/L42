@@ -40,8 +40,9 @@ public class CtxL {
     ExpCore thisE=this.fillHole(new ExpCore.WalkBy());
     return thisE.equals(oE);
     }
-  public static CtxL split (ExpCore.ClassB l){
+  public static CtxL _split (ExpCore.ClassB l){
     int pos=firstNotCompiled(l.getMs());
+    if(pos==l.getMs().size()){return null;}
     CtxC innerSplit=CtxC.split(l.getMs().get(pos).getInner());
     return new CtxL(l,pos,innerSplit);
     }
