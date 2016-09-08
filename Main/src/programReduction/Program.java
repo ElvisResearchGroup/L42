@@ -39,8 +39,9 @@ public interface Program {//this class will eventually replace auxiliaryDefiniti
       Path aux=p1; p1=p; p=aux;//swap
       }
     assert p.outerNumber()>p1.outerNumber();
+    Path reduced=p;
     while(true){
-      Path reduced=this._reducePath(p);
+      reduced=this._reducePath(reduced);
       if(reduced==null){return false;}
       if(reduced.outerNumber()==p1.outerNumber()){
         return reduced.equals(p1);

@@ -44,6 +44,8 @@ public static class TestIsEquivPaths {
   },{lineNumber(),"{B:{C:error void}}","Void","Void",true
   },{lineNumber(),"{B:{C:error void}}","This0.C","This1.B.C",true
   },{lineNumber(),"{B:{C:error void}}","This0.C","This1.B",false
+  },{lineNumber(),"{B:{C:{method m() this.foo({D:error void})}}}","This2.C","This3.B.C",true
+  },{lineNumber(),"{B:{C:{method m() this.foo({D:error void})}}}","This0.D","This3.B.C.D",false
 
   //  },{lineNumber(),"{B:error void}.m({B:error void})","void","void.m({B:error void})"
 }});}
@@ -51,7 +53,7 @@ public static class TestIsEquivPaths {
   Program p=p(_p);
   Ast.Path path1=Path.parse(_path1);
   Ast.Path path2=Path.parse(_path2);
-  assertEquals(p.equiv(path1, path2),this.equiv); }
+  assertEquals(this.equiv,p.equiv(path1, path2)); }
   }
 
 }
