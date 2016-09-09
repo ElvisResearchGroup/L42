@@ -56,4 +56,29 @@ public static class TestIsEquivPaths {
   assertEquals(this.equiv,p.equiv(path1, path2)); }
   }
 
+@RunWith(Parameterized.class)
+public static class TestUpdate {
+  @Parameter(0) public int _lineNumber;
+  @Parameter(1) public String _p1;
+  @Parameter(2) public String _l;
+  @Parameter(3) public String _expected;
+  @Parameterized.Parameters
+  public static List<Object[]> createData() {
+    return Arrays.asList(new Object[][] {
+    {lineNumber(),"{B:error void}","{}","{}",//yes, here the whole is replaced; It is a flat program indeed
+  },{lineNumber(),"{A:{B:error void}}","{}","{A:{}}",
+  },{lineNumber(),"{A:{B:{C:{error void}}}}","{}","{A:{B:{}}}",
+ 
+}});}
+@Test  public void test() {
+  Program p=p(_p1);
+  ExpCore.ClassB l=(ExpCore.ClassB)TestHelper.getExpCore(TestProgram.class.getSimpleName(),_l);
+  ExpCore.ClassB expected=(ExpCore.ClassB)TestHelper.getExpCore(TestProgram.class.getSimpleName(),_expected);
+  p=p.updateTop(l);
+  try{while(true){ p=p.pop(); }}
+  catch(Program.EmptyProgram ep){}
+  TestHelper.assertEqualExp(expected,p.top()); 
+  }
+}
+
 }

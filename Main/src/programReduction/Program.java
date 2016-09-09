@@ -137,7 +137,7 @@ class PushedProgram implements Program{
       this.newTop=newTop;
       this.splitPoint=splitPoint;
       this.former=former;
-      assert splitPoint.fillHole(newTop).equals(former.top()):
+      assert (!(this.getClass().equals(PushedProgram.class))) || splitPoint.fillHole(newTop).equals(former.top()):
       "";
     }
     public Program pop() { return former;}
