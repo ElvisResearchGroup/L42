@@ -208,9 +208,9 @@ precondition: at top level we have a L not of form LC
 subdefinitions:
 -collect(p,empty)=empty 
   //an implementation could keep a list of visited P instead of diverging, mathematically is the same.
--collect(p,P0 Ps)=P, collect(p,Ps)\Ps', Ps' //that is,crucially: dept first but we avoid duplicates by keeping the rightmost occurence.  
+-collect(p,P0 Ps)=P0,Ps'\collect(p,Ps), collect(p,Ps) //that is,crucially: dept first but we avoid duplicates by keeping the rightmost occurence.  
   p(P0)={_ implements Ps0 _}
-  Ps'=collect(p.navigate(P),Ps0)[from P0]
+  Ps'=collect(p.navigate(P0),Ps0)[from P0]
   //this check absence of circularity by looping
   //Note for marco: we remove circularity; update operator sum; plus add privatly implemented concept/error
   //may be a good strategy could be that 
@@ -219,11 +219,12 @@ subdefinitions:
 
 maindefinition:
 -methods(p,P0)=M1'..Mk'
-  p(P0)={interface? implements Ps Ms} 
-  P1..Pn=collect(p,Ps), error unless forall i, p(Pi) is an interface
-  ms1..msk={ms|p(Pi)(ms) is defined}
+  p(P0)={interface? implements Ps Ms}
+  p'=p.navigateTo(P0) //!!!???? or from on Ps? what is the point of view of the result? 
+  P1..Pn=collect(p',Ps), error unless forall i, p(Pi) is an interface
+  ms1..msk={ms|p'(Pi)(ms) is defined}
   forall ms in ms1..msk, there is exactly 1 j in 0..n
-    such that p(Pj)=mh e? //no refine
+    such that p'(Pj)=mh e? //no refine
   Mi= p(P0)(msi) if is of form  refine? mh e?,
   otherwise
   Mi=addRefine(methods(p,Pj)(msi))

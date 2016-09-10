@@ -261,6 +261,9 @@ import coreVisitors.InjectionOnSugar;
     Throwable cause;
     List<ClassB> p;
   }
+  @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class CircularImplements extends ErrorMessage {
+  List<Ast.Path> visited;
+  }
   @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class LentShuldBeMutable extends ErrorMessage {
     ExpCore.X var;
   }
