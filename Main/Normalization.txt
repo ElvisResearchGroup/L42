@@ -220,16 +220,17 @@ subdefinitions:
 maindefinition:
 -methods(p,P0)=M1'..Mk'
   p(P0)={interface? implements Ps Ms}
-  p'=p.navigateTo(P0) //!!!???? or from on Ps? what is the point of view of the result? 
-  P1..Pn=collect(p',Ps), error unless forall i, p(Pi) is an interface
-  ms1..msk={ms|p'(Pi)(ms) is defined}
+  P1..Pn=collect(p,Ps[from P0]), error unless forall i, p(Pi) is an interface
+  ms1..msk={ms|p(Pi)(ms) is defined}
   forall ms in ms1..msk, there is exactly 1 j in 0..n
-    such that p'(Pj)=mh e? //no refine
-  Mi= p(P0)(msi) if is of form  refine? mh e?,
+    such that p(Pj)=mh e? //no refine
+  
+  Mi= p(P0)(msi)[from P0] if is of form  refine? mh e?,
   otherwise
-  Mi=addRefine(methods(p,Pj)(msi))
+  Mi=addRefine(methods(p,Pj)(msi))[from Pj]
     for the smallest j in 1..k such that methods(p,Pj)(msi) of form refine? mh
-  Mi'=Mi[with e?=p(P0)(msi).e?] if defined,
+  
+  Mi'=Mi[with e?=p(P0)(msi).e?[from P0]] if defined,
   otherwise
   Mi'=Mi
 
