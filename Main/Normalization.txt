@@ -208,7 +208,7 @@ precondition: at top level we have a L not of form LC
 subdefinitions:
 -collect(p,empty)=empty 
   //an implementation could keep a list of visited P instead of diverging, mathematically is the same.
--collect(p,P0 Ps)=P0,Ps'\collect(p,Ps), collect(p,Ps) //that is,crucially: dept first but we avoid duplicates by keeping the rightmost occurence.  
+-collect(p,P0 Ps)=(P0,Ps')\collect(p,Ps), collect(p,Ps) //that is,crucially: dept first but we avoid duplicates by keeping the rightmost occurence.  
   p(P0)={_ implements Ps0 _}
   Ps'=collect(p,Ps0[from P0])
   //this check absence of circularity by looping
@@ -322,12 +322,12 @@ maindefinition:
       paths |- p.pop():p0
       Css|-p1:L
 (pPop)----------------------------------  p1=p.growFellow(p0)
-      Cs1..Csn paths |- p : p1.update(L)
+      Css paths |- p : p1.update(L)
   
 
          Css|-p:L
 (pNoPop)--------------------------------  p.pop() undefined
-         Cs1..Csn paths |- p :L,empty
+         Css paths |- p :L,empty
 
 
 (pEmpty)--------------------------------
