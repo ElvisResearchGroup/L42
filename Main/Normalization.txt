@@ -135,7 +135,7 @@ program operations primitive:
 -p.reducePath(This1.C.Cs)=This0.Cs
  if p=L,ctxL,_ and ctxL(C)=[] //ok also this one can be messed up by evilPush
 -p.reducePath(This(n+2).Cs)=This(k+1).Cs'//k must be <=n
-   p.pop().minimize(This(n+1).Cs)=Thisk.Cs'
+   p.pop().reducePath(This(n+1).Cs)=Thisk.Cs'
 
 - growFellow
   (L,ctxL,_).growFellow(p)==p.push(p.top()/ctxL)
@@ -295,20 +295,24 @@ maindefinition:
 - usedInnerM(M)= reorganize({P| P inside M}) U (usedInnerL(L1,empty) U...U usedInnerL(Ln,empty)).pop()
   L1..Ln={L| L inside M}
 
-  //in the botton to not mess up line numbers
+
+  non determinism heuristic:
+  **if P.m(_) inside e, P not Any
+  **if ( _ T x=P _ _) inside e and T!=class Any, P not Any.
+  **if p(Pi).Cache=Typed, Pi is not Any
+  otherwise, P is considered of type class Any.
+  // note that user can always force a not any by writing (x=P x)
+  
+
+------------------------------------------     
+###define toAny
 - toAny(Css0..Cssn,e)=e iff forall i in 0..n, Cs in Cssi, not Thisi.Cs inside e
   otherwise toAny(Css0..Cssn, ctxC[Thisi.Cs])=toAny(Css1..Cssn,ctxC[Any]) 
   where Cs in Cssi
-  
-  //non determinism heuristic:
-  //if P.m(_) inside e, P not Any
-  //if ( _ T x=P _ _) inside e and T!=class Any, P not Any.
-  //otherwise, P is considered of type class Any.
-  // user can always force a not any by writing (x=P x)
-  //if we have caching Typed, we can say in the heuristic that if 
-  //p(Pi).Cache=Typed, Pi is not Any
-  
-  Example using caching for typing... needs growFellow :)
+
+------------------------------------------     
+###define paths|-p:p
+
   L::={.. Cache}
   Cache::=None | Norm | Typed
   paths |-p:p'
