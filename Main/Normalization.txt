@@ -134,8 +134,8 @@ program operations primitive:
 
 -p.reducePath(This1.C.Cs)=This0.Cs
  if p=L,ctxL,_ and ctxL(C)=[] //ok also this one can be messed up by evilPush
--p.reducePath(This(n+2).Cs)=This(k+1).Cs'//k must be <=n
-   p.pop().reducePath(This(n+1).Cs)=Thisk.Cs'
+-p.reducePath(This(n+2).Cs)=This(n+1).Cs'
+   p.pop().reducePath(This(n+1).Cs)=Thisn.Cs'
 
 - growFellow
   (L,ctxL,_).growFellow(p)==p.push(p.top()/ctxL)
@@ -327,7 +327,7 @@ maindefinition:
 
          Css|-p:L
 (pNoPop)--------------------------------  p.pop() undefined
-         Css paths |- p :L,empty
+         Css  |- p :L,empty
 
 
 (pEmpty)--------------------------------

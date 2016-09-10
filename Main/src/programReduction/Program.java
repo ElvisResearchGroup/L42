@@ -16,7 +16,8 @@ public interface Program {//this class will eventually replace auxiliaryDefiniti
 
   Program push(CtxL ctx, ExpCore.ClassB l);//(ctxL[L],ctxLs).push(ctxL,L)=L,ctxL,ctxLs
   
-  Program evilPush(ExpCore.ClassB l);
+  //well, it is a primitive but always has the same implementation
+  default Program evilPush(ExpCore.ClassB l){return new EvilPushed(l,this);}
   
   ExpCore.ClassB top();//(L,_).top()=L
   
@@ -107,61 +108,55 @@ public interface Program {//this class will eventually replace auxiliaryDefiniti
   }
 
 class FlatProgram implements Program{
-    ExpCore.ClassB l;
-    FlatProgram(ExpCore.ClassB l){this.l=l;}
+  ExpCore.ClassB l;
+  FlatProgram(ExpCore.ClassB l){this.l=l;}
     
-    public Program pop() { throw new Program.EmptyProgram();}
+  public Program pop() { throw new Program.EmptyProgram();}
 
-    public Program push(CtxL ctx, ClassB l) {
-      return new PushedProgram(l,ctx,this);
-      }
-    
-    public Program evilPush(ExpCore.ClassB l){return new EvilPushed(l,this);}
-
-    public ClassB top() {return l;}
-
-    public Program updateTop(ClassB l) {return new FlatProgram(l);}
-
-    public Path _reducePath(Path p){return null;}
-    
-    public boolean equiv(Path p, Path p1) {return p.equals(p1);}
-
-    public Program growFellow(Program fellow) {throw new Program.EmptyProgram();}
-
+  public Program push(CtxL ctx, ClassB l) {
+    return new PushedProgram(l,ctx,this);
     }
+    
+  public ClassB top() {return l;}
+
+  public Program updateTop(ClassB l) {return new FlatProgram(l);}
+
+  public Path _reducePath(Path p){return null;}
+    
+  public boolean equiv(Path p, Path p1) {return p.equals(p1);}
+
+  public Program growFellow(Program fellow) {throw new Program.EmptyProgram();}
+
+  }
 class PushedProgram implements Program{
-    ClassB newTop;
-    CtxL splitPoint;
-    Program former;
-    public PushedProgram(ClassB newTop, CtxL splitPoint, Program former) {
-      this.newTop=newTop;
-      this.splitPoint=splitPoint;
-      this.former=former;
-      assert (!(this.getClass().equals(PushedProgram.class))) || splitPoint.fillHole(newTop).equals(former.top()):
-      "";
+  ClassB newTop;
+  CtxL splitPoint;
+  Program former;
+  public PushedProgram(ClassB newTop, CtxL splitPoint, Program former) {
+    this.newTop=newTop;
+    this.splitPoint=splitPoint;
+    this.former=former;
+    assert (!this.getClass().equals(PushedProgram.class)) || splitPoint.fillHole(newTop).equals(former.top()):
+    "";
+  }
+  public Program pop() { return former;}
+
+  public Program push(CtxL ctx, ClassB l) {
+    return new PushedProgram(l,ctx,this);
     }
-    public Program pop() { return former;}
 
-    public Program push(CtxL ctx, ClassB l) {
-      return new PushedProgram(l,ctx,this);
-      }
-
-    public Program evilPush(ExpCore.ClassB l){return new EvilPushed(l,this);}
-
-    public ClassB top() {return newTop;}
+  public ClassB top() {return newTop;}
    
-    public Program updateTop(ClassB l) {return new UpdatedProgram(l,this.splitPoint,this.pop());}
-
+  public Program updateTop(ClassB l) {return new UpdatedProgram(l,this.splitPoint,this.pop());}
+   
+  public Path _reducePath(Path p){return _reducePath(p,this.splitPoint);}
     
-    public Path _reducePath(Path p){return _reducePath(p,this.splitPoint);}
-    
-    @Override
-    public Program growFellow(Program fellow) {
+  public Program growFellow(Program fellow) {
     CtxL ctx=this.splitPoint.divide(fellow.top());
     return fellow.push(ctx,(ClassB)ctx.originalHole());
     //(L,ctxL,_).growFellow(p)==p.push(p.top()/ctxL)
     }
-}
+  }
 class UpdatedProgram extends PushedProgram{
   public UpdatedProgram(ClassB newTop, CtxL splitPoint, Program former) {
     super(newTop, splitPoint, former);}
@@ -180,8 +175,6 @@ class EvilPushed implements Program{
   public Program pop() {return former;}
 
   public Program push(CtxL ctx, ClassB l) {throw Assertions.codeNotReachable();}
-
-  public Program evilPush(ClassB l) {return new EvilPushed(l,this);}
 
   public ClassB top() {return newTop;}
 
