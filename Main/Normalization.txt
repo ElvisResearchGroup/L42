@@ -210,7 +210,7 @@ subdefinitions:
   //an implementation could keep a list of visited P instead of diverging, mathematically is the same.
 -collect(p,P0 Ps)=P0,Ps'\collect(p,Ps), collect(p,Ps) //that is,crucially: dept first but we avoid duplicates by keeping the rightmost occurence.  
   p(P0)={_ implements Ps0 _}
-  Ps'=collect(p.navigate(P0),Ps0)[from P0]
+  Ps'=collect(p,Ps0[from P0])
   //this check absence of circularity by looping
   //Note for marco: we remove circularity; update operator sum; plus add privatly implemented concept/error
   //may be a good strategy could be that 
@@ -225,9 +225,10 @@ maindefinition:
   forall ms in ms1..msk, there is exactly 1 j in 0..n
     such that p(Pj)=mh e? //no refine
   
+  //i comes from k in ms1..msk
   Mi= p(P0)(msi)[from P0] if is of form  refine? mh e?,
   otherwise
-  Mi=addRefine(methods(p,Pj)(msi))[from Pj]
+  Mi=addRefine(methods(p,Pj)(msi))
     for the smallest j in 1..k such that methods(p,Pj)(msi) of form refine? mh
   
   Mi'=Mi[with e?=p(P0)(msi).e?[from P0]] if defined,
