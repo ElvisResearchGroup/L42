@@ -1,0 +1,154 @@
+Challenges:
+Generated Java should be 
+-incremental
+-fast to compile
+-fast to execute//the less important now
+-executable in parallel
+-the generated class files should be cachable on remote server
+
+L42N: L42 core, compiled, well typed and normalized
+[X e]
+L42X: L42 with all x as subexpressions
+[F e]
+L42F: a flattened version where every *executable*
+  class/interface have a top level name 
+[O e]
+O42: a richer language containing null, if, bool and so on..
+[J e]
+Java
+
+L42N:
+a::=x|L|void|P
+e::=a|pre e|(ds ks e)| e.m((x:e)s)| use P check m((x:e)s) e
+pre::=loop | exception | error | return
+k::=catch T x e
+d::= T x=e
+
+#### define [X e0]= e1
+
+
+miniE::=a | pre a |x.m((x:y)s)| use P check m((x:y)s) x | doStuff(es)
+ex::=miniE | (dxs kxs ex)
+kx::=catch pre T x ex
+dx::=T x=ex
+
+//note:T x=(ds e) in Java can be
+//T x;{ds  x=e}
+//note:T x=(ds ks e) in Java can be 
+//T x; labelFor_x:{ds\e try{ds\t}x=ks  x=e}
+//  where x=catch T y e is catch (T y ){x=e break labelFor_x}
+
+
+//for compactness ignore use, treated the same as mcall
+//also, assume all local variables alpharenamed to be different
+//and all newly introduced variables are fresh
+G::=p;(x:T)s
+
+####### G.typeOf(e)
+G.typeOf(P)=class P if G.p(P) not interface
+otherwise
+G.typeOf(P)=class Any
+(_, x:T,_).typeOf(x)=T
+G.typeOf(void)=imm Void
+G.typeOf(L)=imm Library
+
+
+
+G[a]= a //a atoms
+
+G[pre e]=G[e]*pre
+  a*pre=pre a
+  pre' a*pre=pre' a
+  x.m((x:y)s)*pre=pre x.m((x:y)s) //all miniE done
+  (ds ks e)*pre=(ds ks pre e)
+    
+G[e.m( (x:e)s)]= G[( G.typeOf(e) x=e x.m((x:e)s))]
+if G.typeOf(e) is defined, otherwise //must be stuff like pre e
+G[e.m( (x:e)s)]= doStuff(G[e,(x:e)s.es])
+G[x.m( (x:y)s x':e (x:e)s)]= G[( G.typeOf(e) x=e x.m( (x:y)s x':x (x:e)s))]
+if G.typeOf(e) is defined, otherwise //must be stuff like pre e
+G[x.m( (x:y)s x':e (x:e)s)]= G[doStuff((x:e)s)]
+
+G[(ds ks e)]=(G+ds[ds] G[ks] G+ds[e])
+  G[T x=e]=T x=G[e]
+  G[catch pre T x e]=catch pre T x G+x:T[e]
+  
+
+
+  
+  
+  exercise:
+  e::= x| let x=e0 in e1 | e0 e1
+  into:
+  ax::= x| x y
+  ex::= ax| let x=ax ex
+  
+  [x]=x
+
+  [let x=e0 in e1]= let x=ax in [e1]
+   where [e0]=ax
+  [let x=e0 in e1]=
+     let x1=ax1 in .. let xn=axn let y=ax in
+     let x=ax in [e1]
+   where [e0]=let x1=ax1 in .. let xn=axn in ax
+   //note, the dots can be empty
+
+  [x y]= x y
+  otherwise
+  [x e1]=
+    let x1=ax1 in .. let xn=axn in
+    let y=ax in x y
+  where [e1]=let x1=ax1 in .. let xn=axn in ax
+  otherwise
+  [e0 e1]=
+    let x1=ax1 in .. let xn=axn in
+    let x=ax in [x e1]
+  where [e0]=let x1=ax1 in .. let xn=axn in ax
+  
+  
+  
+  
+  
+  ######Flat  L42F
+
+CT::= p->id,javaCode
+
+CT.growWith(p,paths)=
+  CT,
+CT.growWith(p,Cs1..Csn paths)=
+  CT+p.navigate(Cs1)+..+p.navigate(Csn)+CT'
+  CT' =CT.growWith(p.pop(),paths) if defined,
+  otherwise CT'=empty
+
+CT+p=CT if CT(p) is defined
+otherwise
+CT+p=CT,p->freshId,CT.toJava(freshId,p)
+  NO, More complicated.. I need to update all the p anyway?
+  
+  p okPastFor p' if p.pop() and p'.pop() undefined
+  otherwise
+  p okPastFor p' if p.pop() okPastFor p'.pop()
+  and p.growFellow(p'.pop()) is defined
+  
+
+CT.execute(p,e)=loadAndExecute(ej)
+  CT.toJava("",p,e)=ej
+
+    
+   With the new program representation, is possible to see /represent a
+p, P1..Pn as a convenient FLAT bidiretional map from all the
+p1=p.navigate(P1) ...pn=p.navigate(Pn) to unique Alphanumeric
+identifiers that can become Java class names.
+
+Then, when a compilation cicle is complete and a new one is requested,
+the compilation process will receive a new p, Ps and will grow this map.
+Special care need to be kept, since the old pOld.navigate(Pi) can be
+different from the new pNew.navigate(Pi),
+indeed since we will be focusing in another point of the code, the old
+Ps are not in a direct correlation with the new ones.
+however we can pop all the level from the newP, and then use repetivly
+grow fellow to reach the same point pointed by the old pi. If my
+reasoning is correct, the old pi and the new one obtained by grow
+fellow would have
+the L of old.top() and new.top()  identical.
+We can then use the new ps to update the map.

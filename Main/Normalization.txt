@@ -168,7 +168,7 @@ program derived operations:
 - p.equiv(P,P')
   p.equiv(P,P) holds
   p.equiv(P,P')=p.equiv(P',P)
-  p.equiv(P,P')=p.equiv(p.reducePath(P),P')
+  p.equiv(P,P') if p.equiv(p.reducePath(P),P')
       
 //Note for marco: equivalence between p and (Ln,fullP), that is all the other L0..L(n-1) are cached?
 //going this way would require/allow to write better CloneWthPath/Locator
@@ -226,7 +226,7 @@ maindefinition:
     such that p(Pj)=mh e? //no refine
   
   //i comes from k in ms1..msk
-  Mi= p(P0)(msi)[from P0] if is of form  refine? mh e?,
+  Mi= p(P0)(msi)[from P0] if it is of form  refine? mh e?,
   otherwise
   Mi=addRefine(methods(p,Pj)(msi))
     for the smallest j in 1..k such that methods(p,Pj)(msi) of form refine? mh
@@ -239,9 +239,9 @@ maindefinition:
 ###define norm(p,e)=e
 subdefinitions:
 -resolve(p,mdf P)=mdf P
--resolve(p,P::ms)=T
+-resolve(p,P::ms)=resolve(p,T)//and avoid circularity
   methods(p,P)(ms)=refine? _ method T ms e?
--resolve(p,P::ms::x)=T
+-resolve(p,P::ms::x)=resolve(p,T)//and avoid circularity
   methods(p,P)(ms)=refine? _ method _ _( _ T x _) e? 
 -resolve(p,P::msx::msxs)=resolve(p,P'::msxs) //here be carefull for possible infinite recursion 
   resolve(p,P::msx)= _ P'              
@@ -267,12 +267,12 @@ maindefinition:
 
 - p#empty = p
 
-- L # Cs1..Csn/*a single Css*/= (L',empty) /*a program with empty ctxLs*/
-  pi = L.navigate(Csi)
+- p # Cs1..Csn/*a single Css*/= p.update(L)
+  pi = p.navigate(Csi)
   Li = norm(pi.pop(),pi.top())
-  L' = L[Cs1=L1..Csn=Ln] //replace the nested classes in paths Csi with libraries Li.
+  L = p.top()[Cs1=L1..Csn=Ln] //replace the nested classes in paths Csi with libraries Li.
 
-- p # Css, Csss =p'.update(p'.top()#Css) 
+- p # Css, Csss =p'#Css 
   p'=p.growFellow(p.pop() # Csss)
    
 ------------------------------------------     

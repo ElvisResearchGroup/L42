@@ -1,27 +1,15 @@
 todo:
 
+if e return/error/exception/loop e 
+should work without parenthesis around return/..
+
 collections should have all methods,
 remove become removeAll(elem:)
 without become without(index:)
 
 use check vs use m(xes) with
 
-decorator MakeMethod[m; m0; m1 x1, mn xn; excNum]
-={m method m0 T0 (m1 T1 x1, ...,mn Tn xn) exception Tn+1,...Tn+excNum}
-//can be done with sum method+make abstract, but would be very slow
-//m,m0,m1,..mn   x1,..xn    excNum
 
-
-Assert::Pre[] preconditions
-and
-Assert::Bug[] postconditions/checks in the middle
-and
-Assert::Pre""()
-and
-Assert::Bug""()  also for code unreachable? error on Bla Assert::Bug""
-NotImplementedYet
-Unreachable //error in the language or (another) method do not respect its postcondition
-or Bug can have a (broken:S"localPaht.selector")
 
 should != be desugared in !(==)    > norm for <=, => <,  >> <<,
 
@@ -33,8 +21,7 @@ Many constructor is ok for a class?
 se ho una classe che ha metodi astratti class non fwd, posso aggiungere i fwd e non rompo nulla?
 potrebbe essere un passo nella normalizzazione? o nel tipaggio?
 in ogni caso, non fwd dovrebbe generare non fwd costruttori?
-almeno per il caso historic type?
-o ritornano gli ht con ph? forse non e' mai stato tolto?
+
 
 //isFactory, isGetter, isSetter ensure invariants as seen later
 Void checkCoherent(Library lib) (

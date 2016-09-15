@@ -103,7 +103,7 @@ public interface Program {//this class will eventually replace auxiliaryDefiniti
     if(!(m instanceof ClassB.NestedClass)){return null;}
     String ncName=((ClassB.NestedClass)m).getName();
     if(!ncName.equals(cs.get(0))){return null;}
-    return Path.outer(p.outerNumber()-1, cs.subList(1, cs.size()));
+    return Path.outer(0, cs.subList(1, cs.size()));
     }
   }
 
@@ -173,7 +173,7 @@ class EvilPushed implements Program{
     }
 
   public Program pop() {return former;}
-
+  //TODO: may be next line need to not throw
   public Program push(CtxL ctx, ClassB l) {throw Assertions.codeNotReachable();}
 
   public ClassB top() {return newTop;}
