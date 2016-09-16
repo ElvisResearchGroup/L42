@@ -6,10 +6,22 @@ Generated Java should be
 -executable in parallel
 -the generated class files should be cachable on remote server
 
-L42N: L42 core, compiled, well typed and normalized
-[X e]
-L42X: L42 with all x as subexpressions
-[F e]
+key ideas:
+-every L has a unique generated name added during normalization
+-plugin application will generate new names for resulting libraries
+-every 42 execution generate a Resource class that have
+  -current program
+  -map from generate names to program view in that point
+   (no need to be the most updated program view?)
+ Thus, multiple 42 executions can run in parallel, but 
+ multiple C:e in an execution needs to be sequential.
+ 
+ 
+
+L42N: L42 core, compiled, well typed and normalized, with some types annotated.
+
+L42X: L42N with all x as subexpressions
+
 L42F: a flattened version where every *executable*
   class/interface have a top level name 
 [O e]
@@ -18,19 +30,20 @@ O42: a richer language containing null, if, bool and so on..
 Java
 
 L42N:
-a::=x|L|void|P
-e::=a|pre e|(ds ks e)| e.m((x:e)s)| use P check m((x:e)s) e
-pre::=loop | exception | error | return
+a::=x|void|P
+e::=a|L|throw[T1,T2] e|loop e|(ds ks e[T])| e.m[T]((x:e)s)| use P check m((x:e)s) e
+throw::= exception | error | return
 k::=catch T x e
 d::= T x=e
 
-#### define [X e0]= e1
+#### define G[ e0]= e1
 
 
-miniE::=a | pre a |x.m((x:y)s)| use P check m((x:y)s) x | doStuff(es)
-ex::=miniE | (dxs kxs ex)
-kx::=catch pre T x ex
+miniE::=a| L| throw[T1,T2] a |loop ex | x.m[T]((x:y)s)| use P check m((x:y)s) x
+ex::=miniE | (dxs kxs ex [T])
+kx::=catch throw T x ex
 dx::=T x=ex
+pre::=throw |loop
 
 //note:T x=(ds e) in Java can be
 //T x;{ds  x=e}
@@ -44,39 +57,159 @@ dx::=T x=ex
 //and all newly introduced variables are fresh
 G::=p;(x:T)s
 
-####### G.typeOf(e)
+####### G.typeOf(e) //is it used now?
 G.typeOf(P)=class P if G.p(P) not interface
 otherwise
 G.typeOf(P)=class Any
 (_, x:T,_).typeOf(x)=T
 G.typeOf(void)=imm Void
 G.typeOf(L)=imm Library
+G.typeOf(loop e)=imm Void
+G.typeOf(throw[T1,T2] e)=T1
+G.typeOf( (_[T]) )=T
+G.typeOf( e.m[mdf P](x1:e1..xn:en) )=P::m(x1..xn)//resolved?
 
+//Note for marco: Guess type in formal
+//case use: use the plugin information, not the e! 
 
 
 G[a]= a //a atoms
+G[L]= L //a atoms
+G[loop e]=loop G[e]
 
-G[pre e]=G[e]*pre
-  a*pre=pre a
-  pre' a*pre=pre' a
-  x.m((x:y)s)*pre=pre x.m((x:y)s) //all miniE done
-  (ds ks e)*pre=(ds ks pre e)
-    
-G[e.m( (x:e)s)]= G[( G.typeOf(e) x=e x.m((x:e)s))]
-if G.typeOf(e) is defined, otherwise //must be stuff like pre e
-G[e.m( (x:e)s)]= doStuff(G[e,(x:e)s.es])
-G[x.m( (x:y)s x':e (x:e)s)]= G[( G.typeOf(e) x=e x.m( (x:y)s x':x (x:e)s))]
-if G.typeOf(e) is defined, otherwise //must be stuff like pre e
-G[x.m( (x:y)s x':e (x:e)s)]= G[doStuff((x:e)s)]
+G[throw[T1,T2] e]=throw[T1,T2] a   if G[e]=a
+otherwise 
+G[throw[T1,T2] e]= (imm Library x=L throw[T1,T2] x)   if G[e]=L
+otherwise 
+G[throw[T1,T2] e]= (imm Void x=loop ex throw[T1,T2] x)   if G[e]=loop ex
+otherwise 
+G[throw[T1,T2] e]= (P::m(xs) z=x.m[mdf P]((x:y)s) throw[T1,T2] z)   if G[e]=x.m[mdf P]((x:y)s)
+otherwise 
+G[throw[T1,T2] e]= (T z=(dxs kxs ex [T]) throw[T1,T2] z)   if G[e]=(dxs kxs ex [T])
 
-G[(ds ks e)]=(G+ds[ds] G[ks] G+ds[e])
+G[e.m[T]( (x:e)s)]= G[( P x=e x.m[T]((x:e)s))]
+G[x.m[mdf P]( (x:y)s x':e (x:e)s)]= G[( P::m(xs)::x' x=e x.m[mdf P]( (x:y)s x':x (x:e)s))]//where xs is the list of xs of the method call
+
+G[(ds ks e[T])]=(G+ds[ds] G[ks] G+ds[e] [T])
   G[T x=e]=T x=G[e]
-  G[catch pre T x e]=catch pre T x G+x:T[e]
+  G[catch throw T x e]=catch throw T x G+x:T[e]
   
 
 
+  ######Flat  L42F
+
+CT::= CN->p,CD
+CD::=kind CN implements CNs{ Mxs }
+Mx::=refine? method T mxs((T x)s) body?//first is this
+//yes, no exceptions declared, body empty iff kind=interface
+body::=ex | setter|getter|new|newPh| nativeIntSum|nativeIntMul|...|nativeArrAcc
+kind::=class |interface | nativeInt |nativeString| nativeFloat|nativeArray[T] | ...
+
+a::=x|void|CN |null
+T::= mdf CN //Any,Library,Void are reserved CN
+miniE::=a| throw[T1,T2] a |loop ex | CN.mxs(ys)| use P check mxs(ys) x
+  | if a then e1 else e2 |while a then e1 | x:=a
+ex::=miniE | (dxs kxs ex)
+kx::=catch throw T x ex
+dx::=T x=ex
+pre::=throw |loop
+
+p,zs[x]=x
+p,zs[void]=void
+p,zs[P]=p(P).CN
+p,zs[throw[T1,T2] a]=throw[p,zs[T1],p,zs[T2]] p,zs[a]
+p,zs[loop ex]=loop p,zs[ex]
+
+//no, difference between new and newPh
+p,zs[x0.m[mdf P](x1:y1..xn:yn)]=p,zs[P].m(x1..xn)(x0,y1..yn)
+if p(P)(m(x1..xn))not candidate constructor or 
+   some y1..yn in zs 
+otherwise //we have optimized new
+p,zs[x0.m[mdf P](x1:y1..xn:yn)]=p,zs[P].New_m(x1..xn)(x0,y1..yn)
+
+p,zs[(dxs kxs ex)]=( phFix(p,zs,dom(dxs)[dxs]) p,zs[ks] p,zs[ex])
+  phFix(dxs)=dxs if dom(dxs) not in FV(dxs)
+  otherwise //a block actually using placeholders
+  phFix(T1 x1=ex1..Tn xn=exn)=
+    Fwd x1'=Fwd.New()..Fwd xn'=Fwd.New() //Fwd is a predefined class in all L42F programs
+    T1 x1=ex1[x1..xn=x1'..xn'] imm Void z1=Fwd.Fix(x1',x1)
+    ..
+    Tn xn=exn[x1..xn=x1'..xn'] imm Void zn=Fwd.Fix(xn',xn)
+p[L]=(L.CN).LoadLib() //uppercase so does not clash with 42 methods
+
+########### CT.growWith(p,paths)
+
+CT.growWith(p,Cs1..Csn paths)=
+  CT+p.navigate(Cs1)+..+p.navigate(Csn)+CT'
+  CT' =CT.growWith(p.pop(),paths) if defined,
+  otherwise CT'=empty
+
+CT+p=CT if CT(p.top().CN) is defined
+otherwise
+CT+p=CT,p.top().CN->CD',J
+  where CD=libToCD(p), CD'=optimize(CD), J=toJava(CD')
+
+
+libToCD(p)=class/interface? CN implements p[Ps]{ p[Ms]}
+  where p.top()={interface? implements Ps Ms CN}
+
+p[refine? mdf method T m(T1 x1..Tn xn)exception Ps e? =
+  refine? method p[T] mxs(mdf (p.top().CN) this,p[T1] x1..p[Tn] xn) p[ex?]
+  where ex?= (mdf This0 this,T1 x1..Tn xn)[e?]
+  and if e?=empty, p.top() is interface
+p[mdf method T m((T x)?)=
+  method p[T] mxs(mdf (p.top().CN) this,p[(T x)?]) body
+  where mdf not class and body =setter if (T x)? not empty, otherwise body=getter
+p[class method T m(T1 x1..Tn xn)=
+  method method p[T] mxs(class (p.top().CN) this,p[T1] x1..p[Tn] xn) newPh
+  method method p[T] New_mxs(class (p.top().CN) this,p[T1] x1..p[Tn] xn) new
   
+
+CT.execute(p,eC)=loadAndRun(J)
+  ex=p[empty[eC]]
+  eJ=toJava(ex)
+  J=class CN{ public static Object execute(){J}}//CN fresh
+
+
+
+-------
+Optimizations:
+CT-->CT[CN=nativeOfThatPattern(CT(CN))]
+if CT(CN)= aSpecificPattern
+something like this should work for int,float,arrays and a couple more stuff
+for Opts would work in combination with wrapper class optimization
+
+WrapperClasses:
+class is wrapper if
+- exactly one field,
+- no implements
+- never casted to Any??
+- either no setter(opt has no setter) or
+  never used in constructors and setters
   
+  then
+  replace all CN with the field type except for CN.mxs
+  CN constructors are simplified away
+  CN.f(x,z) setters are x:=z
+  CN.f(x) getter are y=x 
+  all throw where mdf CN x, use new
+  all catch throw mdf CN x, unwrap if not just rethrow
+  //check this does not break {..return..} optimization
+  
+  //note for marco: I believe/ed that this means redirect need to refuse to work on private P
+  //note for marco: if we rename all private nested classes to the top level, we can avoid most privacy coupuled; it would only stay for private methods.
+
+If/While insertion:
+If insertion:
+(T y=CN.#checkTrue(x)  catch exception Void ex1 ex2)
+  replaced with
+if x ex2 else ex1
+  if CT(CN).kind=nativeInt //just to avoid native bools too?
+   
+
+------------------------------------------------+
+
+
   exercise:
   e::= x| let x=e0 in e1 | e0 e1
   into:
@@ -106,49 +239,3 @@ G[(ds ks e)]=(G+ds[ds] G[ks] G+ds[e])
   where [e0]=let x1=ax1 in .. let xn=axn in ax
   
   
-  
-  
-  
-  ######Flat  L42F
-
-CT::= p->id,javaCode
-
-CT.growWith(p,paths)=
-  CT,
-CT.growWith(p,Cs1..Csn paths)=
-  CT+p.navigate(Cs1)+..+p.navigate(Csn)+CT'
-  CT' =CT.growWith(p.pop(),paths) if defined,
-  otherwise CT'=empty
-
-CT+p=CT if CT(p) is defined
-otherwise
-CT+p=CT,p->freshId,CT.toJava(freshId,p)
-  NO, More complicated.. I need to update all the p anyway?
-  
-  p okPastFor p' if p.pop() and p'.pop() undefined
-  otherwise
-  p okPastFor p' if p.pop() okPastFor p'.pop()
-  and p.growFellow(p'.pop()) is defined
-  
-
-CT.execute(p,e)=loadAndExecute(ej)
-  CT.toJava("",p,e)=ej
-
-    
-   With the new program representation, is possible to see /represent a
-p, P1..Pn as a convenient FLAT bidiretional map from all the
-p1=p.navigate(P1) ...pn=p.navigate(Pn) to unique Alphanumeric
-identifiers that can become Java class names.
-
-Then, when a compilation cicle is complete and a new one is requested,
-the compilation process will receive a new p, Ps and will grow this map.
-Special care need to be kept, since the old pOld.navigate(Pi) can be
-different from the new pNew.navigate(Pi),
-indeed since we will be focusing in another point of the code, the old
-Ps are not in a direct correlation with the new ones.
-however we can pop all the level from the newP, and then use repetivly
-grow fellow to reach the same point pointed by the old pi. If my
-reasoning is correct, the old pi and the new one obtained by grow
-fellow would have
-the L of old.top() and new.top()  identical.
-We can then use the new ps to update the map.
