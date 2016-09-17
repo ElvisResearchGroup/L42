@@ -201,7 +201,7 @@ precondition: at top level we have a L not of form LC
 (enter)-------------------------    M not of form MC
           p ==> p'.pop()            M.e=ctxC[L], L not of form LC
                                     ctxL={interface? implements Ps, MCs  M[with e=ctxC] Ms}
-                                    p'.top()=LC
+                                    p'.top() of form LC
 
 ------------------------------------------
 ###define methods(p,P)=Ms
@@ -249,11 +249,11 @@ subdefinitions:
   
 maindefinition:
 -norm(p,localBindingDeclaration)= use resolve(p,T)=T' on skeletal types
--norm(p,L)={interface? implements Ps' norm(p',Ms') }
- L={interface? implements Ps Ms}
- p'=p.push(L)//can be repleaced by evilPush in implementation
- Ps'=collect(p',Ps)
- Ms'=methods(p',This0), {C:e in Ms} //norm now put all the nested classes in the back.
+-norm(p,L)=norm(p.push(L))//can be evilPush
+-norm(p)={interface? implements Ps' norm(p',Ms') }
+ p.top()={interface? implements Ps Ms}
+ Ps'=collect(p,Ps)
+ Ms'=methods(p,This0), {C:e in Ms} //norm now put all the nested classes in the back.
   
 //norm(p,ms e) should never be call 
 
@@ -270,7 +270,7 @@ maindefinition:
 
 - p # Cs1..Csn/*a single Css*/= p.update(L)
   pi = p.navigate(Csi)
-  Li = norm(pi.pop(),pi.top())
+  Li = norm(pi)//norming the top
   L = p.top()[Cs1=L1..Csn=Ln] //replace the nested classes in paths Csi with libraries Li.
 
 - p # Css, Csss =p'#Css 
