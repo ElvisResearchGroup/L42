@@ -32,6 +32,9 @@ public interface Program {//this class will eventually replace auxiliaryDefiniti
     
 //program derived operations:
  
+  //hint for testing: p.equiv(p0,p1)==p.navigate(p0).equals(p.navigate(p1))
+  //provided both navigates do not throw evilPush errors
+  //and p0, p1 already exists (not still to metaprogram their outers)
   default boolean equiv(Ast.Path p, Ast.Path p1){
     if (p.equals(p1)){return true;}
     if (p.isPrimitive() ||p1.isPrimitive()){return false;}
@@ -147,7 +150,7 @@ class PushedProgram implements Program{
 
   public ClassB top() {return newTop;}
    
-  public Program updateTop(ClassB l) {return new UpdatedProgram(l,this.splitPoint,this.pop());}
+  public Program updateTop(ClassB l) {return new UpdatedProgram(l,this.splitPoint,this.former);}
    
   public Path _reducePath(Path p){return _reducePath(p,this.splitPoint);}
     
