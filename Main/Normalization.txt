@@ -192,7 +192,7 @@ precondition: at top level we have a L not of form LC
 (top)------------------------       eC not of form LC
      p ==> p'.update(p'.top()[C=r]) eC'=norm(p,eC) //resolve skele types, add all refine, collect supertypes
                                     <paths; paths'>=usedPathsE(p,eC') //tuple notation
-                                    p0=p #paths U paths'//norm the part of p required by eC'
+                                    p0=multiNorm(p,paths) U paths'//norm the part of p required by eC'
                                     paths'|-p0:p' //the part of p' referred to by paths' is well typed
                                     p'|-toAny(paths,eC'): imm Library //replace paths with Any //eC' is well typed
 
@@ -232,7 +232,7 @@ maindefinition:
   Mi=addRefine(methods(p,Pj)(msi))
     for the smallest j in 1..k such that methods(p,Pj)(msi) of form refine? mh
   
-  Mi'=Mi[with e?=p(P0)(msi).e?[from P0]] if defined,
+  Mi'=Mi[with e=p(P0)(msi).e[from P0]] if defined,
   otherwise
   Mi'=Mi
 
@@ -250,8 +250,8 @@ subdefinitions:
 maindefinition:
 -norm(p,localBindingDeclaration)= use resolve(p,T)=T' on skeletal types
 -norm(p,L)=norm(p.push(L))//can be evilPush
--norm(p)={interface? implements Ps' norm(p',Ms') }
- p.top()={interface? implements Ps Ms}
+-norm(p)={interface? implements Ps' norm(p,Ms') }
+ p.top()={interface? implements Ps Ms} //Ms is free var and is ok
  Ps'=collect(p,Ps)
  Ms'=methods(p,This0), {C:e in Ms} //norm now put all the nested classes in the back.
   
@@ -259,22 +259,22 @@ maindefinition:
 
 -norm(p,refine? mh e?)= refine? resolve(p,mh) norm(p,e?) 
     
--norm(p, C:e) =C:norm(p,e)
+-norm(p, C:e) =C:norm(p,e)//we could specify a case C:L where we do a norm(p.push(C)) to avoid an evil push
 
 -norm(p,empty)=empty
 
 ------------------------------------------
-### define #
+### define multiNorm(p,paths)
 
-- p#empty = p
+- multiNorm(p,empty) = p
 
-- p # Cs1..Csn/*a single Css*/= p.update(L)
+- multiNorm(p, Cs1..Csn)/*a single Css*/= p.update(L)
   pi = p.navigate(Csi)
   Li = norm(pi)//norming the top
   L = p.top()[Cs1=L1..Csn=Ln] //replace the nested classes in paths Csi with libraries Li.
 
-- p # Css, Csss =p'#Css 
-  p'=p.growFellow(p.pop() # Csss)
+- multiNorm(p, Css,Csss) =multiNorm(p',Css) 
+  p'=p.growFellow(multiNorm(p.pop(), Csss))
    
 ------------------------------------------     
 ###define usedPathsE
