@@ -16,8 +16,8 @@ class Methods {
     return res;
     }
   static private <T> List<T> mergeUnique(T p,List<T>before, List<T>after){
-    List<T>res=new ArrayList<T>();//fix, it can be in p too
-    res.add(p);
+    List<T>res=new ArrayList<T>();
+    if(!before.contains(p)){res.add(p);}
     for(T e:after){if(!before.contains(e)){res.add(e);}}
     res.addAll(after);
     return res;
