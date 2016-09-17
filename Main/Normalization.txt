@@ -277,7 +277,7 @@ maindefinition:
    
 ------------------------------------------     
 ###define usedPathsE
-- usedPathsE(p,eC)=<reorganize(Ps); usedPathsFix(p,paths, empty)>//assert that the result includes paths in usedPathsFix(p,paths, empty)  
+- usedPathsE(p,eC)= <reorganize(Ps); usedPathsFix(p,paths, empty)>//assert that the result includes paths in usedPathsFix(p,paths, empty)  
   Ps,Ps'={P|P inside eC}//arbitrary split of the set; heuristic will apply in the implementation.
   paths= reorganize(Ps')
  
@@ -292,7 +292,8 @@ maindefinition:
     
 - usedPathsL(L, Cs1..Csn)=usedInnerL(L(Cs1),Cs1) U ... U usedInnerL(L(Csn),Csn)
 
-- usedInnerL({_ implements Ps, M1..Mn},Cs)=prefix(Cs,reorganize(Ps) U usedInnerM(M1) U... U usedInnerM(Mn))
+- usedInnerL(LC,Cs)=prefix(Cs,reorganize(Ps) U usedInnerM(M1) U... U usedInnerM(Mn))
+  where LC={_ implements Ps, M1..Mn}//in implementation, error if not compiled
 
 - usedInnerM(M)= reorganize({P| P inside M}) U (usedInnerL(L1,empty) U...U usedInnerL(Ln,empty)).pop()
   L1..Ln={L| L inside M}
