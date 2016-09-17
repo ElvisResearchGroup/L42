@@ -197,10 +197,11 @@ precondition: at top level we have a L not of form LC
                                     p'|-toAny(paths,eC'): imm Library //replace paths with Any //eC' is well typed
 
 
-        p.push(ctxL, L)==> p'       p.top()={interface? implements Ps, MCs  M Ms}
+        p.push(ctxL, L)==>+ p'      p.top()={interface? implements Ps, MCs  M Ms}
 (enter)-------------------------    M not of form MC
           p ==> p'.pop()            M.e=ctxC[L], L not of form LC
                                     ctxL={interface? implements Ps, MCs  M[with e=ctxC] Ms}
+                                    p'.top()=LC
 
 ------------------------------------------
 ###define methods(p,P)=Ms
