@@ -224,7 +224,7 @@ maindefinition:
   P1..Pn=collect(p,Ps[from P0]), error unless forall i, p(Pi) is an interface
   ms1..msk={ms|p(Pi)(ms) is defined}
   forall ms in ms1..msk, there is exactly 1 j in 0..n
-    such that p(Pj)=mh e? //no refine
+    such that p(Pj)(ms)=mh e? //no refine
   
   //i comes from k in ms1..msk
   Mi= p(P0)(msi)[from P0] if it is of form  refine? mh e?,

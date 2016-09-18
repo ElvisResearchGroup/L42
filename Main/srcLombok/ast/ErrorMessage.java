@@ -264,6 +264,16 @@ import coreVisitors.InjectionOnSugar;
   @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class CircularImplements extends ErrorMessage {
   List<Ast.Path> visited;
   }
+  @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class NonInterfaceImplements extends ErrorMessage {
+  Ast.Path implementer;
+  Ast.Path implemented;
+  }
+  @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class NotExaclyOneMethodOrigin extends ErrorMessage {
+  Ast.Path guilty;
+  Ast.MethodSelector selector;
+  List<ExpCore.ClassB.Member>allMs;
+  }
+
   @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class LentShuldBeMutable extends ErrorMessage {
     ExpCore.X var;
   }

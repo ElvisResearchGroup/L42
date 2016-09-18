@@ -441,6 +441,7 @@ public class ToFormattedText implements Visitor<Void>{
     return new Expression.RoundBlock("",e,Collections.emptyList());
   }*/
   private void formatMts(MethodWithType methT) {
+    if(methT.getMt().isRefine()){c("refine ");}
     c(methT.getMt().getMdf().inner);
     separeFromChar();
     c("method ");

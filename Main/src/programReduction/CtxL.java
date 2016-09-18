@@ -3,6 +3,7 @@ package programReduction;
 import java.util.List;
 
 import ast.ExpCore;
+import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
 import coreVisitors.IsCompiled;
 import tools.Assertions;
@@ -63,6 +64,8 @@ public class CtxL {
     }
   private static int firstNotCompiled(List<Member> ms) {
     for(int i=0;i<ms.size();i++){
+      if(ms.get(i) instanceof ClassB.MethodWithType 
+        && !((ClassB.MethodWithType)ms.get(i)).get_inner().isPresent()){continue;}
       if(!IsCompiled.of(ms.get(i).getInner())){return i;}
       }
     return ms.size();
