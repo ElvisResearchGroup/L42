@@ -53,7 +53,16 @@ public interface ExpCore {
     Position p;
     public ExpCore getE(){return inner;}
     public Block withE(ExpCore e){return this.withInner(e);}
-
+    public Block withDeci(int i,Dec di){
+      List<Dec> decs2=new ArrayList<>(decs);
+      decs2.set(i,di);
+      return this.withDecs(decs2);
+      }
+    public Block withDeci(int i,On oi){
+    List<On> ons2=new ArrayList<>(ons);
+    ons2.set(i,oi);
+    return this.withOns(ons2);
+    }  
     @Override public <T> T accept(coreVisitors.Visitor<T> v) {
       return v.visit(this);
     }

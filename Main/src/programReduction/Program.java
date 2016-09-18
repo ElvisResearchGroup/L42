@@ -108,6 +108,9 @@ public interface Program {//this class will eventually replace auxiliaryDefiniti
     if(!ncName.equals(cs.get(0))){return null;}
     return Path.outer(0, cs.subList(1, cs.size()));
     }
+  default List<ExpCore.ClassB.MethodWithType> methods(Ast.Path p){
+    return Methods.methods(this, p);//TODO:add memoization
+    }
   }
 
 class FlatProgram implements Program{

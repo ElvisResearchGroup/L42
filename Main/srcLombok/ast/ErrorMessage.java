@@ -273,7 +273,13 @@ import coreVisitors.InjectionOnSugar;
   Ast.MethodSelector selector;
   List<ExpCore.ClassB.Member>allMs;
   }
-
+  @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class HistoricTypeNoTarget extends ErrorMessage {
+  Ast.HistoricType guilty;
+  List<ExpCore.ClassB.MethodWithType>allMs;
+  }
+  @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class HistoricTypeCircularDefinition extends ErrorMessage {
+  Ast.HistoricType guilty;
+  }
   @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class LentShuldBeMutable extends ErrorMessage {
     ExpCore.X var;
   }
