@@ -47,4 +47,29 @@ public static class TestResolve {
   TestHelper.assertEqualExp(wTypeExp,wType.withDeci(0,wType.getDecs().get(0).withT(nt)));
   }
 }
+
+@RunWith(Parameterized.class)
+public static class TestNorm1 {
+  @Parameter(0) public int _lineNumber;
+  @Parameter(1) public String _p;
+  @Parameter(2) public String _path;
+  @Parameter(3) public String _expected;
+  @Parameterized.Parameters
+  public static List<Object[]> createData() {
+    return Arrays.asList(new Object[][] {
+    {lineNumber(),"{A:{} B:error void}","This0.A","{}" 
+  },{lineNumber(),"{A:{implements I}I:{interface method Any m()} B:error void}","This0.A","{refine method Any m()}"  
+//  },{lineNumber(),"{I:{method I m() method Any m2()} B:error void}","This0.I::m()::m()::m2()","Any" 
+//  },{lineNumber(),"{I:{method I m(I x) method Any m2()} B:error void}","This0.I::m(x)::m(x)::x::m2()","Any" 
+
+    }});}
+@Test  public void test() {
+  Program p=TestProgram.p(_p);
+  Ast.Path path=Path.parse(_path);
+  ExpCore.ClassB expected=(ExpCore.ClassB)TestHelper.getExpCore(TestProgram.class.getSimpleName(),_expected);
+  ExpCore.ClassB l=Norm.norm(p.navigate(path));
+  
+  TestHelper.assertEqualExp(expected,l);
+  }
+}
 }

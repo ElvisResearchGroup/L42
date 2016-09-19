@@ -1,14 +1,25 @@
 package programReduction;
 
 import ast.Ast.NormType;
+import ast.Ast.Path;
 import ast.Ast.Ph;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import com.sun.xml.internal.txw2.output.StreamSerializer;
 
 import ast.ExpCore;
+import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.MethodWithType;
+import coreVisitors.CloneVisitor;
+import tools.Assertions;
+import tools.Map;
 import ast.Ast;
 import ast.Ast.HistoricType;
+import ast.Ast.MethodType;
 import ast.Ast.Type;
 public class Norm {
 
@@ -57,4 +68,37 @@ public class Norm {
 //-resolve(p,P::msx::msxs)=resolve(p,P'::msxs) //here be carefull for possible infinite recursion 
 //  resolve(p,P::msx)= _ P'              
   }
+  private static MethodType resolve(Program p, MethodType mt) {
+    Type rt=resolve(p,mt.getReturnType());
+    List<Type>pts=Map.of(t->resolve(p,t),mt.getTs());
+    return mt.withReturnType(rt).withTs(pts);
+    }
+  static ExpCore norm(Program p,ExpCore e){
+    return e.accept(new CloneVisitor(){
+      protected Type liftT(Type t){ return resolve(p,t); }
+      public ExpCore visit(ClassB s) {return norm(p.evilPush(s));}});
+    }
+  static ExpCore.ClassB norm(Program p){
+    //-norm(p)={interface? implements Ps' norm(p,Ms') }
+    //p.top()={interface? implements Ps Ms} //Ms is free var and is ok
+    ClassB l=p.top();
+    //Ps'=collect(p,Ps)
+    List<Path> ps1 = Methods.collect(p,l.getSupertypes());
+    //Ms'=methods(p,This0), {C:e in Ms} //norm now put all the nested classes in the back.
+    List<ClassB.Member> ms1 = Stream.concat(
+      Methods.methods(p,Path.outer(0)).stream(),
+      l.getMs().stream().filter(m->m instanceof ClassB.NestedClass)
+      ).map(m->norm(p,m)).collect(Collectors.toList());
+    return l.withSupertypes(ps1).withMs(ms1);
+    }
+  @SuppressWarnings("unchecked")
+  static <T extends ExpCore.ClassB.Member> T norm(Program p,T m){
+    return m.match(
+      nc->(T)nc.withE(norm(p,nc.getE())),//modify here to decrese performance but reduce evilpushes, by doing push(C) in case e is L
+      mi->(T)Assertions.codeNotReachable(),
+      mt->(T)mt.withMt(resolve(p,mt.getMt()))
+               .with_inner(mt.get_inner().map(e->norm(p,e)))
+      );
+    }
 }
+
