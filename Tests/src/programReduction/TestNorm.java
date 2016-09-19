@@ -58,9 +58,7 @@ public static class TestNorm1 {
   public static List<Object[]> createData() {
     return Arrays.asList(new Object[][] {
     {lineNumber(),"{A:{} B:error void}","This0.A","{}" 
-  },{lineNumber(),"{A:{implements I}I:{interface method Any m()} B:error void}","This0.A","{refine method Any m()}"  
-//  },{lineNumber(),"{I:{method I m() method Any m2()} B:error void}","This0.I::m()::m()::m2()","Any" 
-//  },{lineNumber(),"{I:{method I m(I x) method Any m2()} B:error void}","This0.I::m(x)::m(x)::x::m2()","Any" 
+  },{lineNumber(),"{A:{implements I}I:{interface method Any m()} B:error void}","This0.A","{implements This1.I refine method Any m()}"  
 
     }});}
 @Test  public void test() {

@@ -54,7 +54,7 @@ public static ClassB addMethod(ClassB _lib, List<String> path, MethodSelector ms
   CachedStage cs=new CachedStage();
   cs.setStage(Stage.Star);
   ClassB emptyCb=new ClassB(Doc.empty(),Doc.empty(),false,Collections.emptyList(),Collections.emptyList(),innerLib.getP(),cs);
-  return ClassOperations.onClassNavigateToPathAndDo(_lib,path,cbi->{
+  return _lib.onClassNavigateToPathAndDo(path,cbi->{
     List<Member> mem = new ArrayList<>(cbi.getMs());
     mem.add(mwt);
     for(String s:nc){

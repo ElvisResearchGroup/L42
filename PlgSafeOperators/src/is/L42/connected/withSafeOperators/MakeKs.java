@@ -28,7 +28,7 @@ public class MakeKs {
     MakeKs m=new MakeKs();
     if(path.isEmpty()){return m.makeKs(that,that,fieldNames,mutK,lentK,readK,immK,fwd);}
     Errors42.checkExistsPathMethod(that, path, Optional.empty());
-    return ClassOperations.onNestedNavigateToPathAndDo(that,path,
+    return that.onNestedNavigateToPathAndDo(path,
       nc->Optional.of(nc.withInner(m.makeKs(that,(ClassB)nc.getInner(),fieldNames,mutK,lentK,readK,immK,fwd)))
       );
     }

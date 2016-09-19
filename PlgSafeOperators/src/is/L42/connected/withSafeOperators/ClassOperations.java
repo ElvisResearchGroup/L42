@@ -18,13 +18,13 @@ import auxiliaryGrammar.Program;
 
 public class ClassOperations {
 
-  public static ClassB onNestedNavigateToPathAndDo(ClassB cb,List<String>cs,Function<NestedClass,Optional<NestedClass>>op){
+  public static ClassB _OLD_onNestedNavigateToPathAndDo(ClassB cb,List<String>cs,Function<NestedClass,Optional<NestedClass>>op){
     assert !cs.isEmpty();
     assert cb!=null;
     List<Member> newMs=new ArrayList<>(cb.getMs());
     if(cs.size()>1){
       NestedClass nc=(NestedClass)Program.getIfInDom(newMs, cs.get(0)).get();
-      nc=nc.withInner(onNestedNavigateToPathAndDo((ClassB)nc.getInner(),cs.subList(1,cs.size()),op));
+      nc=nc.withInner(_OLD_onNestedNavigateToPathAndDo((ClassB)nc.getInner(),cs.subList(1,cs.size()),op));
       Program.replaceIfInDom(newMs, nc);
       return cb.withMs(newMs);
     }
@@ -39,12 +39,12 @@ public class ClassOperations {
     return cb.withMs(newMs);
   }
 
-  public static ClassB onClassNavigateToPathAndDo(ClassB cb,List<String>cs,Function<ClassB,ClassB>op){
+  public static ClassB _OLD_onClassNavigateToPathAndDo(ClassB cb,List<String>cs,Function<ClassB,ClassB>op){
     if(cs.isEmpty()){return op.apply(cb);}
     List<Member> newMs=new ArrayList<>(cb.getMs());
     if(cs.size()>1){
       NestedClass nc=(NestedClass)Program.getIfInDom(newMs, cs.get(0)).get();
-      nc=nc.withInner(onClassNavigateToPathAndDo((ClassB)nc.getInner(),cs.subList(1,cs.size()),op));
+      nc=nc.withInner(_OLD_onClassNavigateToPathAndDo((ClassB)nc.getInner(),cs.subList(1,cs.size()),op));
       Program.replaceIfInDom(newMs, nc);
       return cb.withMs(newMs);
     }

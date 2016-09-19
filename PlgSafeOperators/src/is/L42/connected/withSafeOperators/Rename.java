@@ -78,7 +78,7 @@ public class Rename {
   private static ClassB directRename(Program p, ClassB cb, List<String> src, List<String> dest) {
     CollectedLocatorsMap clm=CollectedLocatorsMap.from(Path.outer(0,src), Path.outer(0,dest));
     ClassB renamedCb=(ClassB)new RenameAlsoDefinition(cb,clm,p).visit(cb);
-    ClassB clearCb=ClassOperations.onNestedNavigateToPathAndDo(renamedCb,src,nc->Optional.empty());
+    ClassB clearCb=renamedCb.onNestedNavigateToPathAndDo(src,nc->Optional.empty());
     ClassB newCb=redirectDefinition(src,dest,renamedCb);
     newCb=ClassOperations.normalizePaths(newCb);
     return Sum.normalizedTopSum(p, clearCb, newCb);

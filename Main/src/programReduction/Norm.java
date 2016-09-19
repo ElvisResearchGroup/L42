@@ -100,5 +100,33 @@ public class Norm {
                .with_inner(mt.get_inner().map(e->norm(p,e)))
       );
     }
-}
+
+  Program auxMultiNorm(Program p, List<List<String>>topPaths){
+    ClassB lTop=p.top();
+    for(List<String> csi:topPaths){
+//  pi = p.navigate(Csi)
+//  Li = norm(pi)//norming the top
+//  L = p.top()[Cs1=L1..Csn=Ln] //replace the nested classes in paths Csi with libraries Li.
+      Program pi=p.navigate(csi);
+      ClassB li=norm(pi);
+      lTop=lTop.onClassNavigateToPathAndDo(csi, _l->li);
+      }
+    return p.updateTop(lTop);
+    }
+  
+  Program multiNorm(Program p, Paths paths){
+//- multiNorm(p,empty) = p
+      if(paths.isEmpty()){return p;}
+//- multiNorm(p, Cs1..Csn)/*a single Css*/= p.update(L)
+      Paths popped=paths.pop();
+      if(popped.isEmpty()){
+        return auxMultiNorm(p,paths.current);
+        }
+//- multiNorm(p, Css,Csss) =multiNorm(p',Css) 
+//  p'=p.growFellow(multiNorm(p.pop(), Csss))
+      Program rec=multiNorm(p.pop(),popped);
+      Program p1=p.growFellow(rec);
+      return auxMultiNorm(p1,paths.current);
+      }
+    }
 

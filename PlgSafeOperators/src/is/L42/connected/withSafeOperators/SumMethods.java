@@ -46,7 +46,7 @@ public class SumMethods {
     if(path.isEmpty()){
       return lib.withMember(mwtU);
       }//if may be omitted?
-    return ClassOperations.onClassNavigateToPathAndDo(lib,path,cbi->cbi.withMember(mwtU));
+    return lib.onClassNavigateToPathAndDo(path,cbi->cbi.withMember(mwtU));
   }
   private static void checkParSize(int index,List<String> path, MethodSelector m1, MethodSelector m2, MethodSelector mRes, Member mem1, Member mem2, MethodType mt1, MethodType mt2) {
     if(m1.getNames().size()+m2.getNames().size()-1!=mRes.getNames().size()){

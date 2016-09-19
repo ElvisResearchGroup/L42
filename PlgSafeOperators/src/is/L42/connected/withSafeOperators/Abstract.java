@@ -28,7 +28,7 @@ public class Abstract {
   public static ClassB toAbstract(ClassB cb, List<String> path){
     Errors42.checkExistsPathMethod(cb, path, Optional.empty());
     //check privacy coupled
-    ClassB cbClear=ClassOperations.onClassNavigateToPathAndDo(cb, path, cbi->clear(cbi));
+    ClassB cbClear=cb.onClassNavigateToPathAndDo( path, cbi->clear(cbi));
     Abstract.checkPrivacyCoupuled(cb,cbClear, path);
     return cbClear;
   }
@@ -58,7 +58,7 @@ public class Abstract {
   public static ClassB toAbstract(Program p,ClassB cb, List<String> path,MethodSelector sel,MethodSelector newSel){
     Errors42.checkExistsPathMethod(cb, path, Optional.of(sel));
     if(path.isEmpty()){return auxToAbstract(p,cb,path,sel,newSel);}
-    return ClassOperations.onClassNavigateToPathAndDo(cb,path,cbi->auxToAbstract(p,cbi,path,sel,newSel));
+    return cb.onClassNavigateToPathAndDo(path,cbi->auxToAbstract(p,cbi,path,sel,newSel));
   }
   private static ClassB auxToAbstract(Program p,ClassB cb,List<String> pathForError,MethodSelector sel,MethodSelector newSel) {
     List<Member> newMs=new ArrayList<>(cb.getMs());

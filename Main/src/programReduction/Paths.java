@@ -15,7 +15,7 @@ public class Paths {
     }
   private static final Paths empty=new Paths(null,null);
   public static Paths empty(){return empty;}
-  
+  public boolean isEmpty(){return this==empty;}
   
   public List<List<String>> top(){return current;}
   public Paths pop(){
@@ -69,7 +69,7 @@ public class Paths {
     }
   return reorganize(level+1,nextPs).push(csi);
   }
-  private static List<List<String>> minimize(List<List<String>> css){
+  public static List<List<String>> minimize(List<List<String>> css){
     List<List<String>> res=new ArrayList<>();
     for(List<String> csCandidate: css) outCandidate:{
       for(List<String> csTest: css){

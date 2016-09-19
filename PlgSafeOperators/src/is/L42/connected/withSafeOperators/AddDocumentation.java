@@ -26,7 +26,7 @@ public class AddDocumentation {
       Program p1=p.addAtTop(cb);
       if(cs.size()>1){p1=p1.navigateInTo(cs.subList(0, cs.size()-1));}
       Program p2=p1;
-       cb= ClassOperations.onClassNavigateToPathAndDo(cb,cs,cbi->auxAddDocOnMethod(p2,cbi,sel,doc));
+       cb= cb.onClassNavigateToPathAndDo(cs,cbi->auxAddDocOnMethod(p2,cbi,sel,doc));
       }
     if(doc.isPrivate()){
       cb.getStage().setPrivateNormalized(false);
@@ -87,7 +87,7 @@ public class AddDocumentation {
     if(cs.isEmpty()){throw Errors42.errorInvalidOnTopLevel();}
     Errors42.checkExistsPathMethod(cb, cs, Optional.empty());
     if(doc.isPrivate()){cb.getStage().setPrivateNormalized(false);}
-    cb= ClassOperations.onNestedNavigateToPathAndDo(cb, cs, nc->Optional.of(nc.withDoc(nc.getDoc().sum(doc))));
+    cb= cb.onNestedNavigateToPathAndDo( cs, nc->Optional.of(nc.withDoc(nc.getDoc().sum(doc))));
     if(doc.isPrivate()){
       cb.getStage().setPrivateNormalized(false);
       cb=NormalizePrivates.normalize(p, cb);
