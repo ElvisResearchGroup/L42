@@ -76,11 +76,6 @@ public interface ExpCore {
       Type t;
       String x;
       ExpCore inner;
-
-      public ast.Ast.NormType getNT() {
-        assert this.t instanceof ast.Ast.NormType : t;
-        return (ast.Ast.NormType) this.t;
-      }
     }
     public List<String> domDecs() {
       List<String> dom = new java.util.ArrayList<String>();

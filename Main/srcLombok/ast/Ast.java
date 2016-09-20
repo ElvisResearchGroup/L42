@@ -118,8 +118,12 @@ public interface Ast {
 	}
 
 	public interface Type {
-		<T> T match(Function<NormType, T> normType, Function<HistoricType, T> hType);
-	}
+      <T> T match(Function<NormType, T> normType, Function<HistoricType, T> hType);
+      default ast.Ast.NormType getNT() {
+        assert this instanceof ast.Ast.NormType : this;
+        return (ast.Ast.NormType) this;
+        }
+	  }
 
 	@Value
 	@Wither

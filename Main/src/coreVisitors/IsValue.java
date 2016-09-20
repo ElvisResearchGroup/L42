@@ -63,26 +63,26 @@ public class IsValue extends TestShapeVisitor{
     if(!s.getOns().isEmpty()){return false;}
     int dvsn=s.getDecs().size();
     for( int i=0;i<dvsn;i++){
-      if(!validDvs(s.getDecs().get(i))){return false;}
+      if(!validDv(s.getDecs().get(i))){return false;}
     }
     return s.getInner().accept(this);
     }
-  public boolean validDvs(Block.Dec dvs) {
-    NormType nt=dvs.getNT();
+  public boolean validDv(Block.Dec dv) {
+    NormType nt=dv.getT().getNT();
     if(nt.getMdf()==Mdf.Capsule){return false;}
     if(nt.getPh()!=Ph.None){return false;}
     if(Functions.isInterface(p,nt.getPath())){return false;}
-    if(validRightValue(dvs.getInner())){return true;}
-    if(nt.getMdf()==Mdf.Immutable && dvs.getInner() instanceof Block){
-      return dvs.getInner().accept(this);
+    if(validRightValue(dv.getInner())){return true;}
+    if(nt.getMdf()==Mdf.Immutable && dv.getInner() instanceof Block){
+      return dv.getInner().accept(this);
     }
     return false;
   }
-  public boolean validDecForPh(Dec dvs) {
-    NormType nt=dvs.getNT();
-    if(validRightValue(dvs.getInner())){return true;}
-    if(nt.getMdf()==Mdf.Immutable && dvs.getInner() instanceof Block){
-      return dvs.getInner().accept(this);
+  public boolean validDecForPh(Dec dv) {
+    NormType nt=dv.getT().getNT();
+    if(validRightValue(dv.getInner())){return true;}
+    if(nt.getMdf()==Mdf.Immutable && dv.getInner() instanceof Block){
+      return dv.getInner().accept(this);
     }
     return false;
   }

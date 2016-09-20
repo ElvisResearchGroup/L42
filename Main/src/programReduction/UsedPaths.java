@@ -5,8 +5,12 @@ import java.util.Collections;
 import java.util.List;
 
 import ast.Ast;
+import ast.Ast.Type;
 import ast.ExpCore;
 import ast.ExpCore.ClassB;
+import ast.ExpCore.ClassB.Member;
+import ast.ExpCore.ClassB.MethodWithType;
+import coreVisitors.IsCompiled;
 
 class PathsPaths{
   public PathsPaths(Paths left, Paths right) {
@@ -15,6 +19,13 @@ class PathsPaths{
   final Paths left; final Paths right;}
 
 public class UsedPaths {
+  private List<Ast.Path> collectAllPaths(Ast.MethodType mt) {
+    List<Ast.Path>result=new ArrayList<>();
+    result.add(mt.getReturnType().getNT().getPath());
+    for(Type t:mt.getTs()){result.add(t.getNT().getPath());}
+    result.addAll(mt.getExceptions());
+    return result;
+    }
   private List<Ast.Path> collectAllPaths(ExpCore e) {
     //TODO Auto-generated method stub
     return null;
@@ -62,14 +73,26 @@ public class UsedPaths {
     for(List<String> csi : css){result=result.union(usedInnerL(l.getClassB(csi),csi));}
     return result;
     }
-   
-
-
-//- usedInnerL(LC,Cs)=prefix(Cs,reorganize(Ps) U usedInnerM(M1) U... U usedInnerM(Mn))
-  private Paths usedInnerL(ClassB l, List<String> css) {
-//where LC={_ implements Ps, M1..Mn}//in implementation, error if not compiled
+  
+//- usedInnerL(LC,Cs)=paths.prefix(Cs)
+  private Paths usedInnerL(ClassB lc, List<String> cs) {
+  //LC={_ implements Ps, M1..Mn}//in implementation, error if not compiled
+  assert IsCompiled.of(lc);//TODO: should it be a compilation error?
+  Paths paths=Paths.reorganize(lc.getSupertypes());
+  for(ClassB.Member mi: lc.getMs()){
+    paths=paths.union(usedInnerM(mi));
+    }
+  //paths=reorganize(Ps) U usedInnerM(M1) U... U usedInnerM(Mn))
   return null;}
+  
 //- usedInnerM(M)= reorganize({P| P inside M}) U (usedInnerL(L1,empty) U...U usedInnerL(Ln,empty)).pop()
+  private Paths usedInnerM(Member m) {
 //L1..Ln={L| L inside M}
-
+    List<Ast.Path>result=collectAllPaths(m.getInner());
+    if(m instanceof MethodWithType){
+      result.addAll(collectAllPaths(((MethodWithType)m).getMt()));
+      }
+    m.getInner().accept(new MAKEACOLLECTVISITOR?)
+  return null;
+  }
 }

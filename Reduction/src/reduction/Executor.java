@@ -226,7 +226,7 @@ private ExpCore fieldU(ExpCore ctxVal, MCall mc) {
   ExpCore ctxVal0=_ctx.ctx;
   Block   ctxVal1=_ctx.hole;
   Block.Dec xDec=ctxVal1.getDecs().get(ctxVal1.domDecs().indexOf(x));
-  Mdf xMdf=xDec.getNT().getMdf();
+  Mdf xMdf=xDec.getT().getNT().getMdf();
   if(xMdf!=Mdf.Mutable && xMdf!=Mdf.Lent){
     throw new ErrorMessage.IllegalAttemptedModification(ctxVal1,xDec,mc);
   }
@@ -435,7 +435,7 @@ private static ExpCore ph(Program p,ExpCore ctxVal,Redex.Ph r){
   Block b=r.getThat();
   ArrayList<Block.Dec> decs = new ArrayList<Block.Dec>(b.getDecs());
   Dec deci = decs.get(r.getPhIndex());
-  NormType ti=deci.getNT();
+  NormType ti=deci.getT().getNT();
   Path path=Functions.classOf(p, ctxVal, deci.getInner());
   ti=ti.withPh(Ph.None).withPath(path);
   decs.set(r.getPhIndex(),deci.withT(ti));

@@ -91,11 +91,11 @@ public class IsRedex{
   public static Redex visit(Program p,Block s)  {
     for(int i=0;i<s.getDecs().size();i++){
       ExpCore ei=s.getDecs().get(i).getInner();
-      NormType ti=s.getDecs().get(i).getNT();
+      NormType ti=s.getDecs().get(i).getT().getNT();
       //Here I was reasoning on missing nested garbage
       //Redex ri=redexDec(p, s, i, ei, ti);
       //if(!(ri instanceof Redex.NoRedex)){return ri;}
-      if(new IsValue(p).validDvs(s.getDecs().get(i))){continue;}
+      if(new IsValue(p).validDv(s.getDecs().get(i))){continue;}
       //otherwise, i is the first non dv
       //return ri;
       return redexDec(p, s, i, ei, ti);

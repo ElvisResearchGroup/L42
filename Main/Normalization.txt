@@ -293,8 +293,9 @@ maindefinition:
     
 - usedPathsL(L, Cs1..Csn)=usedInnerL(L(Cs1),Cs1) U ... U usedInnerL(L(Csn),Csn)
 
-- usedInnerL(LC,Cs)=prefix(Cs,reorganize(Ps) U usedInnerM(M1) U... U usedInnerM(Mn))
-  where LC={_ implements Ps, M1..Mn}//in implementation, error if not compiled
+- usedInnerL(LC,Cs)=paths.prefix(Cs)
+  paths=reorganize(Ps) U usedInnerM(M1) U... U usedInnerM(Mn))
+  LC={_ implements Ps, M1..Mn}//in implementation, error if not compiled
 
 - usedInnerM(M)= reorganize({P| P inside M}) U (usedInnerL(L1,empty) U...U usedInnerL(Ln,empty)).pop()
   L1..Ln={L| L inside M}

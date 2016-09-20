@@ -49,7 +49,7 @@ public class ExtractThrow implements Visitor<ExpCore>{
   public ExpCore visit(Block s) {
     if(!s.getOns().isEmpty()){return new ExpCore.WalkBy();}
     for(int i=0;i<s.getDecs().size();i++){
-      if(new IsValue(p).validDvs(s.getDecs().get(i))){continue;}
+      if(new IsValue(p).validDv(s.getDecs().get(i))){continue;}
       //otherwise, i is the first non dv
       ExpCore res=s.getDecs().get(i).getInner().accept(this);
       if(res instanceof ExpCore.WalkBy){return res;}

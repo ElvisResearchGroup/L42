@@ -69,7 +69,7 @@ public class Dec implements Visitor<ExpCore> {
     }
     if(pos==-1){return result;}
     if(ensureImmutable){
-      ast.Ast.NormType ti=s.getDecs().get(pos).getNT();
+      ast.Ast.NormType ti=s.getDecs().get(pos).getT().getNT();
       if(ti.getMdf()!=Mdf.Immutable){throw new ErrorMessage.ExpectedImmutableVar(s,x);}
     }
     return s.getDecs().get(pos).getInner();

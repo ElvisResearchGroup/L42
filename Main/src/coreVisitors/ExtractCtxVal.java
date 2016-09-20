@@ -81,7 +81,7 @@ public class ExtractCtxVal implements Visitor<Ctx<Redex>>{
     for(int i=0;i<s.getDecs().size();i++){
       int ii=i;//final restrictions
       Dec di=s.getDecs().get(i);
-      boolean isDv=new IsValue(p).validDvs(di);
+      boolean isDv=new IsValue(p).validDv(di);
       Redex isGarbage=null;
       if(isDv && di.getInner() instanceof Block){
         Block diB=(Block)di.getInner();
