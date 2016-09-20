@@ -86,8 +86,7 @@ public interface Program {//this class will eventually replace auxiliaryDefiniti
     Program res1=this;
     for(int i=0;i<p.outerNumber();i++){res1=res1.pop();}
     ExpCore.ClassB top=res1.top();
-    return auxiliaryGrammar.Program.extractCBar(p.getCBar(),top);
-    //TODO: need to become autonomous?
+    return top.getClassB(p.getCBar());
     }
   default Path _reducePath(Path p,CtxL ctx){
     if(p.isPrimitive()){return null;}

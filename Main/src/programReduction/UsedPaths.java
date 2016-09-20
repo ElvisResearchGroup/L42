@@ -59,19 +59,16 @@ public class UsedPaths {
 //- usedPathsL(L, Cs1..Csn)=usedInnerL(L(Cs1),Cs1) U ... U usedInnerL(L(Csn),Csn)
   private Paths usedPathsL(ClassB l, List<List<String>> css) {
     Paths result=Paths.empty();
-    for(List<String> cs : css){result=result.union(l.)}
-    oldProgram.extractCBar vs new methods in classB:
-    classB assume compiled class, extractCBar manage errors
-    make both better and both in classB
-    May be a observeClass, observeNested, observeListNesteds?
+    for(List<String> csi : css){result=result.union(usedInnerL(l.getClassB(csi),csi));}
     return result;
     }
    
 
 
 //- usedInnerL(LC,Cs)=prefix(Cs,reorganize(Ps) U usedInnerM(M1) U... U usedInnerM(Mn))
+  private Paths usedInnerL(ClassB l, List<String> css) {
 //where LC={_ implements Ps, M1..Mn}//in implementation, error if not compiled
-
+  return null;}
 //- usedInnerM(M)= reorganize({P| P inside M}) U (usedInnerL(L1,empty) U...U usedInnerL(Ln,empty)).pop()
 //L1..Ln={L| L inside M}
 
