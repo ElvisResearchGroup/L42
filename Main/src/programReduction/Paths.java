@@ -6,8 +6,8 @@ import java.util.stream.Collectors;
 
 import ast.Ast;
 public class Paths {
-  @SuppressWarnings("serial")
-  public static class EmptyPath extends RuntimeException{}
+  //@SuppressWarnings("serial")
+  //public static class EmptyPath extends RuntimeException{}
   final Paths next;
   final List<List<String>> current;
   private Paths(Paths next, List<List<String>> current){
@@ -19,13 +19,15 @@ public class Paths {
   
   public List<List<String>> top(){return current;}
   public Paths pop(){
-    if (this==empty){throw new EmptyPath();}
+    if (this==empty){return empty;}
     return this.next;
     }
   public Paths push(List<List<String>> css){
     return new Paths(this,minimize(css));
     }
   public Paths union(Paths other){
+    assert other!=null:
+    "";
     if (this==empty){return other;}
     if (other==empty){return this;}
     Paths rec=this.pop().union(other.pop());
@@ -70,14 +72,14 @@ public class Paths {
   return reorganize(level+1,nextPs).push(csi);
   }
   public static List<List<String>> minimize(List<List<String>> css){
-    List<List<String>> res=new ArrayList<>();
+    Set<List<String>> res=new LinkedHashSet<>();
     for(List<String> csCandidate: css) outCandidate:{
       for(List<String> csTest: css){
         if(isPrefix(csTest,csCandidate)){break outCandidate;}
       }
       res.add(csCandidate);
     }
-    return res;
+    return new ArrayList<>(res);
     }
   private static boolean isPrefix(List<String>csShort,List<String>csLong){
     if(csShort.size()>=csLong.size()){return false;}
@@ -92,6 +94,7 @@ public class Paths {
     }
   public String toString(int n){
   String result="";
+  if(this.isEmpty()){return "<Empty Paths>";}
   for(List<String> cs:this.top()){
     result+=Ast.Path.outer(n, cs)+" ";
   }

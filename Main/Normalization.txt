@@ -89,6 +89,7 @@ Moreover, for convenience we define inside in the following way:
  -(Css paths).top()=Css
  
  -(Css paths).pop()=paths
+ -empty.pop()=empty
  
  -paths.push(Css)=minimize(Css) paths
  
@@ -282,13 +283,16 @@ maindefinition:
   Ps,Ps'={P|P inside eC}//arbitrary split of the set; heuristic will apply in the implementation.
   paths= reorganize(Ps')
  
-- usedPathsFix(p,paths,Css)= usedPathsFix(p, paths U paths0,minimize(paths0.top() U Css)) // U on paths does minimize() internally
+- usedPathsFix(p,paths,Css)= usedPathsFix(p, paths U paths0,minimize(Css')) // U on paths does minimize() internally
    paths.top()\Css!=empty
    paths0=usedPathsL(p.top(),paths.top()\Css)
+   Css'=paths.top() U Css//@James, was path0 before... was wrong?
      
-- usedPathsFix(p,paths,Css)= usedPathsFix(p.pop(),paths.pop(),empty).push(Css)
+- usedPathsFix(p,paths,Css)=paths0
    paths.top()\Css==empty
-
+   paths0=usedPathsFix(p.pop(),paths.pop(),empty).push(Css)
+   if paths.pop() not empty, otherwise
+   paths0=Css//@James, new lines here
 - usedPathsFix(p,empty,empty) =empty   
     
 - usedPathsL(L, Cs1..Csn)=usedInnerL(L(Cs1),Cs1) U ... U usedInnerL(L(Csn),Csn)
@@ -297,7 +301,7 @@ maindefinition:
   paths=reorganize(Ps) U usedInnerM(M1) U... U usedInnerM(Mn))
   LC={_ implements Ps, M1..Mn}//in implementation, error if not compiled
 
-- usedInnerM(M)= reorganize({P| P inside M}) U (usedInnerL(L1,empty) U...U usedInnerL(Ln,empty)).pop()
+- usedInnerM(M)= reorganize({P| P inside M}) U (usedInnerL(L1,empty) U...U usedInnerL(Ln,empty)).pop() //leverage on empty.pop()=empty
   L1..Ln={L| L inside M}
 
 

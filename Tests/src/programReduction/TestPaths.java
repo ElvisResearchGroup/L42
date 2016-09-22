@@ -30,7 +30,9 @@ public static class TestReorganize {
   },{lineNumber(),"This0.Foo This0.Boo", "This0.Foo This0.Boo "
   },{lineNumber(),"This3.Foo This0.Boo", "This0.Boo This3.Foo "
   },{lineNumber(),"This3.Foo This2.Foo.Bar This2.Foo This2.Foo.Ber.Beer This0.Boo", "This0.Boo This2.Foo This3.Foo "
-}});}
+  },{lineNumber(),"This0.Foo This0.Foo This0.Foo", "This0.Foo "
+
+  }});}
 @Test  public void test() {
   String[] ss=_paths.split(" ");
   List<Ast.Path> ps=new ArrayList<>();
