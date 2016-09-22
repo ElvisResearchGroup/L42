@@ -7,9 +7,9 @@ import ast.ExpCore;
 import ast.Ast.*;
 import ast.ExpCore.ClassB;
 
-public class CollectPaths0 extends CloneVisitor{
+public class CollectPaths0 extends PropagatorVisitor{
 
-  List<Path> paths=new ArrayList<Path>();
+  protected List<Path> paths=new ArrayList<Path>();
   public static List<Path> of(ExpCore e){
     CollectPaths0 cp=new CollectPaths0();
     e.accept(cp);
@@ -20,9 +20,9 @@ public class CollectPaths0 extends CloneVisitor{
     cp.visit(mwt);
     return cp.paths;
   }
-  public ExpCore visit(Path s) { 
+  public Void visit(Path s) { 
     if(!s.isPrimitive()){paths.add(s);}
-    return s;
+    return null;
     }
-  public ExpCore visit(ClassB s) {return s;}  
+  public Void visit(ClassB s) {return null;}  
 }

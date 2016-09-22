@@ -5,12 +5,18 @@ import java.util.Collections;
 import java.util.List;
 
 import ast.Ast;
+import ast.Ast.Path;
 import ast.Ast.Type;
 import ast.ExpCore;
+import ast.ExpCore.Block;
 import ast.ExpCore.ClassB;
+import ast.ExpCore.MCall;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodWithType;
+import coreVisitors.CollectClassBs0;
+import coreVisitors.CollectPaths0;
 import coreVisitors.IsCompiled;
+import coreVisitors.PropagatorVisitor;
 
 class PathsPaths{
   public PathsPaths(Paths left, Paths right) {
@@ -19,28 +25,13 @@ class PathsPaths{
   final Paths left; final Paths right;}
 
 public class UsedPaths {
-  private List<Ast.Path> collectAllPaths(Ast.MethodType mt) {
-    List<Ast.Path>result=new ArrayList<>();
-    result.add(mt.getReturnType().getNT().getPath());
-    for(Type t:mt.getTs()){result.add(t.getNT().getPath());}
-    result.addAll(mt.getExceptions());
-    return result;
-    }
-  private List<Ast.Path> collectAllPaths(ExpCore e) {
-    //TODO Auto-generated method stub
-    return null;
-    }
-  private List<Ast.Path> collectNotAnyPaths(ExpCore e) {
-    //TODO Auto-generated method stub
-    return null;
-  }
 
   PathsPaths usedPathsE(Program p, ExpCore e){
 //- usedPathsE(p,eC)= <reorganize(Ps); usedPathsFix(p,paths, empty)>
 //assert that the result includes paths in usedPathsFix(p,paths, empty)  
 //Ps,Ps'={P|P inside eC}//arbitrary split of the set; heuristic will apply in the implementation.
-    List<Ast.Path>  ps1=collectAllPaths(e);
-    List<Ast.Path>  ps=collectNotAnyPaths(e);
+    List<Ast.Path>  ps1=CollectPaths0.of(e);//collect all paths
+    List<Ast.Path>  ps=collectNotAnyPaths(p,e);
     ps1.removeAll(ps);
 //paths= reorganize(Ps')
     Paths paths = Paths.reorganize(ps1);
@@ -88,11 +79,49 @@ public class UsedPaths {
 //- usedInnerM(M)= reorganize({P| P inside M}) U (usedInnerL(L1,empty) U...U usedInnerL(Ln,empty)).pop()
   private Paths usedInnerM(Member m) {
 //L1..Ln={L| L inside M}
-    List<Ast.Path>result=collectAllPaths(m.getInner());
+    List<Path> result1;
     if(m instanceof MethodWithType){
-      result.addAll(collectAllPaths(((MethodWithType)m).getMt()));
+      result1 = CollectPaths0.of((MethodWithType)m);
       }
-    m.getInner().accept(new MAKEACOLLECTVISITOR?)
-  return null;
-  }
+    else result1=CollectPaths0.of(m.getInner());
+    List<ClassB> l1n = CollectClassBs0.of(m.getInner());
+    Paths result2=Paths.reorganize(result1);
+    for(ClassB li: l1n){result2.union(usedInnerL(li,Collections.emptyList()));}
+    return result2;
+    }
+  private List<Ast.Path> collectNotAnyPaths(Program p,ExpCore e) {
+    class C extends CollectPaths0{
+    //non determinism heuristic:
+    //**if P.m(_) inside e, P not Any
+      public Void visit(MCall s) {
+        Path p=justPath(s.getInner());
+        if (p!=null){this.paths.add(p);}
+        return super.visit(s);
+        }
+    //**if ( _ T x=P _ _) inside e and T!=class Any, P not Any.
+      protected void liftDec(Block.Dec s) {
+        Path p=justPath(s.getInner());
+        if (p!=null){this.paths.add(p);}
+        super.liftDec(s);
+        }
+      private Path justPath(ExpCore e){
+        if(e instanceof Path){return (Path)e;}
+        if(e instanceof ExpCore.Block){return justPath(((ExpCore.Block)e).getInner());}
+        return null;
+        }
+    //**if p(Pi).Cache=Typed, Pi is not Any
+      public Void visit(Path s) { 
+        //TODO: update with the new caching when available
+        if(p.extractClassB(s).getStage().isVerified()){
+          return super.visit(s);
+          }
+        return null;
+        }
+      List<Path> result(ExpCore e){
+        e.accept(this);
+        return this.paths;
+        }
+      }
+    return new C().result(e);
+    }
 }
