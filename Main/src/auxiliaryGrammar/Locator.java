@@ -128,8 +128,8 @@ public class Locator {
   }
 
   static class LocatorSupport {
-    private static final ClassB dumbCb = new ClassB(Doc.empty(), Doc.empty(), false, Collections.emptyList(), Collections.emptyList(),Position.noInfo,new CachedStage());
-  }
+    private static final ClassB dumbCb = ClassB.membersClass(Collections.emptyList(),Position.noInfo);
+    }
 
   public boolean prefixOf(Locator nl) {
     int size = nl.size();

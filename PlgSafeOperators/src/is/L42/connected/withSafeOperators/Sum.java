@@ -22,6 +22,7 @@ import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodImplemented;
 import ast.ExpCore.ClassB.MethodWithType;
 import ast.ExpCore.ClassB.NestedClass;
+import ast.ExpCore.ClassB.Phase;
 import ast.Util.CachedStage;
 import ast.Util.PathMwt;
 import ast.ExpCore.*;
@@ -108,7 +109,9 @@ public class Sum {
       if(!stage.getFamilies().contains(fam)){stage.getFamilies().add(fam);}
     }
     if(a.getStage().isVerified() && b.getStage().isVerified()){stage.setVerified(true);}
-    return new ClassB(doc1, doc2, isInterface, superT, ms,CollapsePositions.accumulatePos(a.getP(), b.getP()),stage);
+    return new ClassB(doc1, doc2, isInterface, superT,
+            ms,CollapsePositions.accumulatePos(a.getP(), b.getP()),
+            stage,a.getPhase().acc(b.getPhase()),"");
     }
   /*
   private static void checkMethodClashInterfaceAbstract(List<String> pathForError,List<PathMwt> aInh, List<PathMwt> bInh, List<Member> ms) {

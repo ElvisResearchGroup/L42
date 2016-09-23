@@ -100,7 +100,16 @@ public class CloneVisitor implements Visitor<ExpCore>{
   public ExpCore visit(ClassB s) {
     List<Path> sup = liftSup(s.getSupertypes());
     List<Member> ms = liftMembers(s.getMs());
-    return new ClassB(liftDoc(s.getDoc1()),liftDoc(s.getDoc2()),s.isInterface(),sup,ms,s.getP(),s.getStage().copyMostStableInfo());
+    return new ClassB(
+      liftDoc(s.getDoc1()),
+      liftDoc(s.getDoc2()),
+      s.isInterface(),
+      sup,
+      ms,
+      s.getP(),
+      s.getStage().copyMostStableInfo(),
+      s.getPhase(),
+      s.getUniqueId());
   }
   public List<Member> liftMembers(List<Member> s) {
     return Map.of(this::liftM,s);

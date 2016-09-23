@@ -24,6 +24,7 @@ import ast.Util.CachedStage;
 import ast.ExpCore.*;
 import ast.ExpCore.Block.*;
 import ast.ExpCore.ClassB.Member;
+import ast.ExpCore.ClassB.Phase;
 import ast.Expression;
 public class InjectionOnCore implements Visitor<ExpCore> {
   public ExpCore visit(Expression.Signal s){
@@ -83,7 +84,7 @@ public class InjectionOnCore implements Visitor<ExpCore> {
           })
        );
     }
-    ClassB result=new ClassB(doc1,doc2,isInterface,supertypes,members,s.getP(),new CachedStage());
+    ClassB result=new ClassB(doc1,doc2,isInterface,supertypes,members,s.getP(),new CachedStage(),Phase.None,"");
     result.getStage().setStage(s.getStage());
     return result;
     }

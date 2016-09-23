@@ -77,10 +77,10 @@ public class EncodingHelper{
     return wrapInt32(""+i);
   }
   public static ClassB wrapInt32(String i) {
-    return new ClassB(Doc.factory(true,"@int32\n"+i+"\n"),Doc.empty(),false,Collections.emptyList(),Collections.emptyList(),Position.noInfo,verifiedStage.copyMostStableInfo());
+    return ClassB.docClass(Doc.factory(true,"@int32\n"+i+"\n"));
   }
   public static ClassB wrapStringU(String s) {
-    return new ClassB(Doc.factory(true,"@stringU\n"+produceStringUnicode(s)+"\n"),Doc.empty(),false,Collections.emptyList(),Collections.emptyList(),Position.noInfo,verifiedStage.copyMostStableInfo());
+    return ClassB.docClass(Doc.factory(true,"@stringU\n"+produceStringUnicode(s)+"\n"));
   }
 
 
@@ -213,8 +213,4 @@ public class EncodingHelper{
     if(o instanceof Resources.Revertable){return ((Resources.Revertable)o).revert();}
     throw Assertions.codeNotReachable("I may have to expand to handle paths:"+o);
   }
-
-
-  private static final CachedStage verifiedStage=new CachedStage();
-  static{verifiedStage.setVerified(true);}
 }

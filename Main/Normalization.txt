@@ -308,7 +308,7 @@ maindefinition:
   non determinism heuristic:
   **if P.m(_) inside e, P not Any
   **if ( _ T x=P _ _) inside e and T!=class Any, P not Any.
-  **if p(Pi).Cache=Typed, Pi is not Any
+  **if p(Pi).Phase=Typed, Pi is not Any
   otherwise, P is considered of type class Any.
   // note that user can always force a not any by writing (x=P x)
   
@@ -322,8 +322,8 @@ maindefinition:
 ------------------------------------------     
 ###define paths|-p:p
 
-  L::={.. Cache}
-  Cache::=None | Norm | Typed
+  L::={.. Phase}
+  Phase::=None | Norm | Typed
   paths |-p:p'
   
       paths |- p.pop():p0
@@ -341,8 +341,8 @@ maindefinition:
          empty |- p :p
   
 
-     forall Csi : pi|-pi.top(): ok //if Li.Cache=Typed, the check will be just asserted
+     forall Csi : pi|-pi.top(): ok //if Li.Phase=Typed, the check will be just asserted
 (pL) ---------------------------------------   pi=p.navigate(Csi)
-     Cs1..Csn|-p:p.top()[Cs1=L1,.. Csn=Ln]     Li=pi.top()[with Cache=Typed]//also inside all somehow contained Ls
+     Cs1..Csn|-p:p.top()[Cs1=L1,.. Csn=Ln]     Li=pi.top()[with Phase=Typed]//also inside all somehow contained Ls
 
  

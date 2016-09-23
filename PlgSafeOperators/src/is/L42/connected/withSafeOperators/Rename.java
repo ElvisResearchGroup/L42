@@ -142,7 +142,7 @@ public class Rename {
     cb=(ClassB)FromInClass.of(cb, toFrom);
     List<Member>ms=new ArrayList<>();
     ms.add(Functions.encapsulateIn(dest, cb,docCb[0]));
-    return new ClassB(Doc.empty(),Doc.empty(),false,Collections.emptyList(),ms,Position.noInfo,new CachedStage());
+    return ClassB.membersClass(ms,Position.noInfo);
   }
 
   //TODO: replace with same mechanism of private normalization when is completed

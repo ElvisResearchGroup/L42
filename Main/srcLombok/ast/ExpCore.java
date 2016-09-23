@@ -20,6 +20,7 @@ import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodImplemented;
 import ast.ExpCore.ClassB.MethodWithType;
 import ast.ExpCore.ClassB.NestedClass;
+import ast.Util.CachedStage;
 import auxiliaryGrammar.Program;
 
 public interface ExpCore {
@@ -97,8 +98,8 @@ public interface ExpCore {
     }
   }
 
-  @Value @Wither @EqualsAndHashCode(exclude = {"stage","p"}) public static class ClassB implements ExpCore, Ast.Atom,HasPos {
-    public ClassB(Doc doc1, Doc doc2, boolean isInterface, List<Path> supertypes, List<Member> ms,Position p,ast.Util.CachedStage stage) {
+  @Value @Wither @EqualsAndHashCode(exclude = {"stage","p","phase","uniqueId"}) public static class ClassB implements ExpCore, Ast.Atom,HasPos {
+    public ClassB(Doc doc1, Doc doc2, boolean isInterface, List<Path> supertypes, List<Member> ms,Position p,ast.Util.CachedStage stage, Phase phase, String uniqueId) {
       this.doc1 = doc1;
       this.doc2 = doc2;
       this.isInterface = isInterface;
@@ -106,8 +107,10 @@ public interface ExpCore {
       this.ms = ms;
       this.stage=stage;
       this.p=p;
+      this.phase=phase;
+      this.uniqueId=uniqueId;
       assert stage!=null;
-      isConsistent();
+      assert isConsistent();
       }//lombock fails me here :-(
     Doc doc1;
     Doc doc2;
@@ -116,6 +119,8 @@ public interface ExpCore {
     List<Member> ms;
     Position p;
     ast.Util.CachedStage stage;
+    Phase phase;
+    String uniqueId;
     public String toString() {return sugarVisitors.ToFormattedText.of(this);}
     public boolean isConsistent() { return _Aux.isConsistent(this);}
     public ClassB withMember(Member m) {return _Aux.withMember(this, m);}
@@ -124,9 +129,22 @@ public interface ExpCore {
     public ExpCore.ClassB.NestedClass getNested(List<String>cs){return _Aux.getNested(this, cs);}
     public List<ExpCore.ClassB.NestedClass> getNestedList(List<String>cs){return _Aux.getNestedList(this, cs);}
     public ExpCore.ClassB getClassB(List<String>cs){return _Aux.getClassB(this, cs);}
+    
+    public static ExpCore.ClassB docClass(Doc d){return new ClassB(d,Doc.empty(),false,Collections.emptyList(),Collections.emptyList(),Position.noInfo,verifiedStage.copyMostStableInfo(),Phase.Typed,"");}
+    //TODO: remove when chachd stage is out
+    private static final CachedStage verifiedStage=new CachedStage();
+    static{verifiedStage.setVerified(true);}
+    
+    public static ExpCore.ClassB membersClass(List<Member> ms,Position pos){return new ClassB(Doc.empty(),Doc.empty(),false,Collections.emptyList(),ms,pos,new CachedStage(),Phase.None,"");}    
   
     @Override public <T> T accept(coreVisitors.Visitor<T> v) {return v.visit(this);}
-   
+    public static enum Phase{None,Norm,Typed;
+    public Phase acc(Phase other){
+      if(this==other){return this;}
+      if(other==Typed){return this;}
+      if(this==Typed){return other;}
+      return None;
+      }}
     public interface Member extends HasPos, WithInner<Member> {
       <T> T match(Function<NestedClass, T> nc, Function<MethodImplemented, T> mi, Function<MethodWithType, T> mt);
       }
@@ -212,7 +230,7 @@ public interface ExpCore {
   }
   interface WithInner<T>{
     ExpCore getInner(); T withInner(ExpCore e);
-  }
+    }
   
   }
 class _Aux{
@@ -319,13 +337,12 @@ class _Aux{
     }
 
   static ClassB withMember(ClassB cb,Member m) {
-    cb.isConsistent();
+    assert cb.isConsistent();
     List<Member> newMs = new java.util.ArrayList<>(cb.getMs());
     int index=_Aux.getIndex(newMs,m);
     if(index==-1){newMs.add(m);}
     else {newMs.set(index, m);}
     ClassB result = cb.withMs(newMs);
-    result.isConsistent();
     return result;
     }
 

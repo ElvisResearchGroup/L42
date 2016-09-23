@@ -88,7 +88,7 @@ public class Norm {
     if(!isOnlyType){eInner = Map.of(e->of(p,e),mt.get_inner());}
     return new MethodWithType(mt.getDoc(),mt.getMs(),mt2,eInner,mt.getP());
   }
-  private static final ClassB forOnlyClass=new ClassB(Doc.factory(true,"Only the class obj was asked\n"),Doc.empty(),false,Collections.emptyList(),Collections.emptyList(),Position.noInfo,new CachedStage());
+  private static final ClassB forOnlyClass=ClassB.docClass(Doc.factory(true,"Only the class obj was asked\n"));
 
 
   public static NormType of(Program p, Type t) {

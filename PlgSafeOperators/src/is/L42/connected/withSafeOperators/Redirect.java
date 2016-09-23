@@ -60,7 +60,7 @@ public class Redirect {
   }
   public static ClassB remove(Path path1, ClassB l) {
     if(path1.equals(Path.outer(0))){
-      return new ClassB(Doc.empty(),Doc.empty(),false,Collections.emptyList(),Collections.emptyList(),Position.noInfo,new CachedStage());
+      return ClassB.membersClass(Collections.emptyList(),Position.noInfo);
       }
     return (ClassB)l.accept(new coreVisitors.CloneVisitor(){
       List<String> cs=path1.getCBar();
@@ -178,7 +178,7 @@ public class Redirect {
       }
     else{
       assert path.isPrimitive();
-      currentExtCb=new ClassB(Doc.empty(),Doc.empty(),path.equals(Path.Any()),Collections.emptyList(),Collections.emptyList(),Position.noInfo,new CachedStage());
+      currentExtCb=ClassB.membersClass(Collections.emptyList(),Position.noInfo).withInterface(path.equals(Path.Any()));
     }
     assert !csPrivate[0];
     boolean isPrivateState=ExtractInfo.hasPrivateState(currentIntCb);
