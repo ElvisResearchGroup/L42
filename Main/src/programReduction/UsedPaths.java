@@ -13,6 +13,7 @@ import ast.ExpCore.ClassB;
 import ast.ExpCore.MCall;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodWithType;
+import ast.ExpCore.ClassB.Phase;
 import coreVisitors.CollectClassBs0;
 import coreVisitors.CollectPaths0;
 import coreVisitors.IsCompiled;
@@ -127,9 +128,8 @@ public class UsedPaths {
         }
     //**if p(Pi).Cache=Typed, Pi is not Any
       public Void visit(Path s) { 
-        //TODO: update with the new caching when available
         if(s.isPrimitive()){return null;}
-        if(p.extractClassB(s).getStage().isVerified()){
+        if(p.extractClassB(s).getPhase()==Phase.Typed){
           return super.visit(s);
           }
         return null;

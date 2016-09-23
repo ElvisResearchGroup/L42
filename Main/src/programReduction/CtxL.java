@@ -30,6 +30,14 @@ public class CtxL {
     return new CtxL(all,pos,divided);    
   }
   public Member originalCtxM(){return origin.getMs().get(pos);}
+  
+  public String nameWhereThereisTheHole(){
+    Member m = this.origin.getMs().get(this.pos);
+    return m.match(
+      nc->nc.getName(),
+      mi->mi.getS().toString(),
+      mwt->mwt.getMs().toString());
+    }  
   public String toString() {return "CtxL["+sugarVisitors.ToFormattedText.of(this.fillHole(new ExpCore.X("_HOLE_")))+",originalHole:"+sugarVisitors.ToFormattedText.of(this.originalHole())+"]";}
   public int hashCode() {return this.fillHole(new ExpCore.WalkBy()).hashCode();}
   public boolean equals(Object obj) {

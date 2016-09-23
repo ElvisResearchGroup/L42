@@ -29,7 +29,7 @@ public interface Program {//this class will eventually replace auxiliaryDefiniti
     //ok also this one can be messed up by evilPush
   Program growFellow(Program fellow);
   //(L,ctxL,_).growFellow(p)==p.push(p.top()/ctxL)
-    
+  String getFreshId();//good for debugging and needed for reduction 
 //program derived operations:
  
   //hint for testing: p.equiv(p0,p1)==p.navigate(p0).equals(p.navigate(p1))
@@ -111,6 +111,7 @@ public interface Program {//this class will eventually replace auxiliaryDefiniti
   }
 
 class FlatProgram extends Methods{
+  int freshIds=0;
   ExpCore.ClassB l;
   FlatProgram(ExpCore.ClassB l){this.l=l;}
     
@@ -130,6 +131,7 @@ class FlatProgram extends Methods{
 
   public Program growFellow(Program fellow) {throw new Program.EmptyProgram();}
 
+  public String getFreshId(){return ""+freshIds++;}
   }
 class PushedProgram extends Methods{
   ClassB newTop;
@@ -159,6 +161,10 @@ class PushedProgram extends Methods{
     return fellow.push(ctx,(ClassB)ctx.originalHole());
     //(L,ctxL,_).growFellow(p)==p.push(p.top()/ctxL)
     }
+  public String getFreshId(){
+    String popped=this.pop().getFreshId();
+    return this.splitPoint.nameWhereThereisTheHole()+"."+popped;
+    }
   }
 class UpdatedProgram extends PushedProgram{
   public UpdatedProgram(ClassB newTop, CtxL splitPoint, Program former) {
@@ -186,4 +192,9 @@ class EvilPushed extends Methods{
   public Path _reducePath(Path p) {throw Assertions.codeNotReachable();}
 
   public Program growFellow(Program fellow) {throw Assertions.codeNotReachable();}
+  
+  public String getFreshId(){
+    String popped=this.pop().getFreshId();
+    return "<EvilPushed>."+popped;
+    }
   }
