@@ -14,6 +14,7 @@ import com.sun.xml.internal.txw2.output.StreamSerializer;
 import ast.ExpCore;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.MethodWithType;
+import ast.Util.CachedStage;
 import coreVisitors.CloneVisitor;
 import tools.Assertions;
 import tools.Map;
@@ -76,7 +77,12 @@ public class Norm {
   static ExpCore norm(Program p,ExpCore e){
     return e.accept(new CloneVisitor(){
       protected Type liftT(Type t){ return resolve(p,t); }
-      public ExpCore visit(ClassB s) {return norm(p.evilPush(s));}});
+      public ExpCore visit(ClassB s) {
+        ClassB normed=norm(p.evilPush(s));
+        CachedStage cache = normed.getStage();
+        //TODO: here to add caching
+        return normed;
+        }});
     }
   static ExpCore.ClassB norm(Program p){
     //-norm(p)={interface? implements Ps' norm(p,Ms') }

@@ -46,7 +46,7 @@ public static class TestMethodsCollect {
   Program p=TestProgram.p(_p);
   Ast.Path path1=Path.parse(_path1);
   ExpCore.ClassB l=(ExpCore.ClassB)TestHelper.getExpCore(TestProgram.class.getSimpleName(),_expectedCb);
-  List<MethodWithType> ms = Methods.methods(p, path1);
+  List<MethodWithType> ms = p.methods(path1);
   ExpCore.ClassB cb=l.withMs(Map.of(m->m,ms));//inference magic
   TestHelper.assertEqualExp(l, cb);
   }

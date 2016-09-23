@@ -98,10 +98,7 @@ public interface ExpCore {
   }
 
   @Value @Wither @EqualsAndHashCode(exclude = {"stage","p"}) public static class ClassB implements ExpCore, Ast.Atom,HasPos {
-	  /*public ClassB(Doc doc1, Doc doc2, boolean isInterface, List<Path> supertypes, List<Member> ms) {
-		  this(doc1,doc2,isInterface,supertypes,ms,new ast.Util.CachedStage());
-		  }*/
-	  public ClassB(Doc doc1, Doc doc2, boolean isInterface, List<Path> supertypes, List<Member> ms,Position p,ast.Util.CachedStage stage) {
+    public ClassB(Doc doc1, Doc doc2, boolean isInterface, List<Path> supertypes, List<Member> ms,Position p,ast.Util.CachedStage stage) {
       this.doc1 = doc1;
       this.doc2 = doc2;
       this.isInterface = isInterface;
@@ -111,7 +108,7 @@ public interface ExpCore {
       this.p=p;
       assert stage!=null;
       isConsistent();
-    }//lombock fails me here :-(
+      }//lombock fails me here :-(
     Doc doc1;
     Doc doc2;
     boolean isInterface;
@@ -119,74 +116,20 @@ public interface ExpCore {
     List<Member> ms;
     Position p;
     ast.Util.CachedStage stage;
-    public String toString() {
-      return sugarVisitors.ToFormattedText.of(this);
-    }
-    public boolean isConsistent() {
-      int countWalkBy = 0;
-      HashSet<String> keys = new HashSet<String>();
-      for (Member m : this.ms) {
-        if (m instanceof MethodWithType) {
-          MethodWithType mwt = (MethodWithType) m;
-          String key = mwt.getMs().toString();
-          assert !keys.contains(key);
-          keys.add(key);
-
-          assert mwt.mt.getTDocs().size() == mwt.mt.getTs().size();
-        }
-        if (m instanceof NestedClass) {
-          NestedClass nc = (NestedClass) m;
-          String key = nc.getName();
-          assert !keys.contains(key);
-          keys.add(key);
-
-          if (nc.inner instanceof WalkBy) {
-            countWalkBy += 1;
-          }
-        }
-        if (m instanceof MethodImplemented) {
-          MethodImplemented mi = (MethodImplemented) m;
-          String key = mi.getS().toString();
-          assert !keys.contains(key);
-          keys.add(key);
-        }
-      }
-      assert countWalkBy <= 1 : this;
-      return true;
-    }
-    public ClassB withMember(Member m) {
-      isConsistent();
-      List<Member> newMs = new java.util.ArrayList<Member>(this.getMs());
-      int index=Aux.getIndex(newMs,m);
-      if(index==-1){newMs.add(m);}
-      else {newMs.set(index, m);}
-      ClassB result = this.withMs(newMs);
-      result.isConsistent();
-      return result;
-      }
-    public ClassB onClassNavigateToPathAndDo(List<String>cs,Function<ClassB,ClassB>op){
-      return Aux.onClassNavigateToPathAndDo(this, cs, op);
-      }
-    public ClassB onNestedNavigateToPathAndDo(List<String>cs,Function<ClassB.NestedClass,Optional<ClassB.NestedClass>>op){
-      return Aux.onNestedNavigateToPathAndDo(this, cs, op);
-      }
-    public ExpCore.ClassB.NestedClass getNested(List<String>cs){
-      return Aux.getNested(this, cs);
-      }
-    public List<ExpCore.ClassB.NestedClass> getNestedList(List<String>cs){
-      return Aux.getNestedList(this, cs);
-      }
-    public ExpCore.ClassB getClassB(List<String>cs){
-      return Aux.getClassB(this, cs);
-      }
+    public String toString() {return sugarVisitors.ToFormattedText.of(this);}
+    public boolean isConsistent() { return _Aux.isConsistent(this);}
+    public ClassB withMember(Member m) {return _Aux.withMember(this, m);}
+    public ClassB onClassNavigateToPathAndDo(List<String>cs,Function<ClassB,ClassB>op){return _Aux.onClassNavigateToPathAndDo(this, cs, op);}
+    public ClassB onNestedNavigateToPathAndDo(List<String>cs,Function<ClassB.NestedClass,Optional<ClassB.NestedClass>>op){return _Aux.onNestedNavigateToPathAndDo(this, cs, op);}
+    public ExpCore.ClassB.NestedClass getNested(List<String>cs){return _Aux.getNested(this, cs);}
+    public List<ExpCore.ClassB.NestedClass> getNestedList(List<String>cs){return _Aux.getNestedList(this, cs);}
+    public ExpCore.ClassB getClassB(List<String>cs){return _Aux.getClassB(this, cs);}
   
-    @Override public <T> T accept(coreVisitors.Visitor<T> v) {
-      return v.visit(this);
-    }
+    @Override public <T> T accept(coreVisitors.Visitor<T> v) {return v.visit(this);}
+   
     public interface Member extends HasPos, WithInner<Member> {
-      //public Member withBody(ExpCore e);
       <T> T match(Function<NestedClass, T> nc, Function<MethodImplemented, T> mi, Function<MethodWithType, T> mt);
-    }
+      }
     @Value @Wither @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p")public static class NestedClass implements Member {
       @NonNull Doc doc;
       @NonNull String name;
@@ -196,20 +139,19 @@ public interface ExpCore {
       public NestedClass withE(ExpCore e) {return this.withInner(e);}
       public <T> T match(Function<NestedClass, T> nc, Function<MethodImplemented, T> mi, Function<MethodWithType, T> mt) {
         return nc.apply(this);
+        }
       }
-    }
     @Value @Wither @EqualsAndHashCode(exclude = {"p"/*,"mt"*/}) @ToString(exclude = {"p"/*,"mt"*/})public static class MethodImplemented implements Member {
       @NonNull Doc doc;
       @NonNull MethodSelector s;
       @NonNull ExpCore inner;
-      //ast.Util.CachedMt mt=new ast.Util.CachedMt();
       Position p;
       public ExpCore getE(){return inner;}
       public MethodImplemented withE(ExpCore e) {return this.withInner(e);}
       public <T> T match(Function<NestedClass, T> nc, Function<MethodImplemented, T> mi, Function<MethodWithType, T> mt) {
         return mi.apply(this);
+        }
       }
-    }
     @Value @Wither @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p")public static class MethodWithType implements Member {
       @NonNull Doc doc;
       @NonNull MethodSelector ms;
@@ -221,20 +163,20 @@ public interface ExpCore {
 
       public <T> T match(Function<NestedClass, T> nc, Function<MethodImplemented, T> mi, Function<MethodWithType, T> mt) {
         return mt.apply(this);
+        }
       }
     }
-  }
 
   @Value public static class _void implements ExpCore, Ast.Atom {
     @Override public <T> T accept(coreVisitors.Visitor<T> v) {
       return v.visit(this);
+      }
     }
-  }
   @Value public static class WalkBy implements ExpCore {
     @Override public <T> T accept(coreVisitors.Visitor<T> v) {
       return v.visit(this);
+      }
     }
-  }
 
   @Value @Wither public static class Using implements ExpCore, WithInner<Using> {
     Path path;
@@ -271,74 +213,79 @@ public interface ExpCore {
   interface WithInner<T>{
     ExpCore getInner(); T withInner(ExpCore e);
   }
-  static class Aux{
-    static ClassB wrapCast(ExpCore e){
-      try{return (ClassB)e;}
-      catch(ClassCastException cce){
-        throw new ErrorMessage.ProgramExtractOnMetaExpression(null,null);
-        }
+  
+  }
+class _Aux{
+  static ClassB wrapCast(ExpCore e){
+    try{return (ClassB)e;}
+    catch(ClassCastException cce){
+      throw new ErrorMessage.ProgramExtractOnMetaExpression(null,null);
       }
-    static void checkIndex(int index){
-      if (index==-1){
-        throw new ErrorMessage.PathNonExistant(null,null,null);
-        }
     }
-    public static ClassB onNestedNavigateToPathAndDo(ClassB cb,List<String>cs,Function<NestedClass,Optional<NestedClass>>op){
-      assert !cs.isEmpty();
-      assert cb!=null;
-      List<Member> newMs=new ArrayList<>(cb.getMs());
-      String nName=cs.get(0);
-      int index=getIndex(newMs, nName);
-      checkIndex(index);
-      NestedClass nc=(NestedClass)newMs.get(index);
-      if(cs.size()>1){
-        nc=nc.withInner(onNestedNavigateToPathAndDo(wrapCast(nc.getInner()),cs.subList(1,cs.size()),op));
-        newMs.set(index, nc);
-        return cb.withMs(newMs);
-        }
-      assert cs.size()==1;
-      Optional<NestedClass> optNc = op.apply(nc);
-      if(optNc.isPresent()){
-        newMs.set(index,optNc.get());
-        }
-      else{newMs.remove(index);}
+  static void checkIndex(int index){
+    if (index==-1){
+      throw new ErrorMessage.PathNonExistant(null,null,null);
+      }
+    }
+  static ClassB onNestedNavigateToPathAndDo(ClassB cb,List<String>cs,Function<NestedClass,Optional<NestedClass>>op){
+    assert !cs.isEmpty();
+    assert cb!=null;
+    List<Member> newMs=new ArrayList<>(cb.getMs());
+    String nName=cs.get(0);
+    int index=getIndex(newMs, nName);
+    checkIndex(index);
+    NestedClass nc=(NestedClass)newMs.get(index);
+    if(cs.size()>1){
+      nc=nc.withInner(onNestedNavigateToPathAndDo(wrapCast(nc.getInner()),cs.subList(1,cs.size()),op));
+      newMs.set(index, nc);
       return cb.withMs(newMs);
       }
+    assert cs.size()==1;
+    Optional<NestedClass> optNc = op.apply(nc);
+    if(optNc.isPresent()){
+      newMs.set(index,optNc.get());
+      }
+    else{newMs.remove(index);}
+    return cb.withMs(newMs);
+    }
 
-    public static ClassB onClassNavigateToPathAndDo(ClassB cb,List<String>cs,Function<ClassB,ClassB>op){
-      if(cs.isEmpty()){return op.apply(cb);}
-      List<Member> newMs=new ArrayList<>(cb.getMs());
-      String nName=cs.get(0);
-      int index=getIndex(newMs, nName);
-      checkIndex(index);
-      NestedClass nc=(NestedClass)newMs.get(index);
-      if(cs.size()>1){
-        nc=nc.withInner(onClassNavigateToPathAndDo(wrapCast(nc.getInner()),cs.subList(1,cs.size()),op));
-        newMs.set(index, nc);
-        return cb.withMs(newMs);
-        }
-      assert cs.size()==1;
-      ClassB newCb = op.apply(wrapCast(nc.getInner()));
-      newMs.set(index, nc.withInner(newCb));
+  static ClassB onClassNavigateToPathAndDo(ClassB cb,List<String>cs,Function<ClassB,ClassB>op){
+    if(cs.isEmpty()){return op.apply(cb);}
+    List<Member> newMs=new ArrayList<>(cb.getMs());
+    String nName=cs.get(0);
+    int index=getIndex(newMs, nName);
+    checkIndex(index);
+    NestedClass nc=(NestedClass)newMs.get(index);
+    if(cs.size()>1){
+      nc=nc.withInner(onClassNavigateToPathAndDo(wrapCast(nc.getInner()),cs.subList(1,cs.size()),op));
+      newMs.set(index, nc);
       return cb.withMs(newMs);
       }
-    
-  public static int getIndex(List<ExpCore.ClassB.Member> map, ast.Ast.MethodSelector elem){
+    assert cs.size()==1;
+    ClassB newCb = op.apply(wrapCast(nc.getInner()));
+    newMs.set(index, nc.withInner(newCb));
+    return cb.withMs(newMs);
+    }  
+  
+  static int getIndex(List<ExpCore.ClassB.Member> map, ast.Ast.MethodSelector elem){
     int i=-1;for(ExpCore.ClassB.Member m: map){i++;
     if(m.match(nc->false,mi->mi.getS().equals(elem) ,mt->mt.getMs().equals(elem))){return i;}
-    }
+      }
     return -1;  
-  }
-  public static int getIndex(List<ExpCore.ClassB.Member> map, String elem){
+    }
+  
+  static int getIndex(List<ExpCore.ClassB.Member> map, String elem){
     int i=-1;for(ExpCore.ClassB.Member m: map){i++;
       if(m.match(nc->nc.getName().equals(elem), mi->false, mt->false)){return i;}
       }
     return -1;
     }
-  public static int getIndex(List<ExpCore.ClassB.Member> map, ExpCore.ClassB.Member elem){
+  
+  static int getIndex(List<ExpCore.ClassB.Member> map, ExpCore.ClassB.Member elem){
     return elem.match(nc->getIndex(map,nc.getName()), mi->getIndex(map,mi.getS()),mt->getIndex(map,mt.getMs()));
     }
-  public static ExpCore.ClassB.NestedClass getNested(ExpCore.ClassB cb, List<String>cs){
+  
+  static ExpCore.ClassB.NestedClass getNested(ExpCore.ClassB cb, List<String>cs){
     assert !cs.isEmpty();
     String nName=cs.get(0);
     int index=getIndex(cb.getMs(), nName);
@@ -347,13 +294,15 @@ public interface ExpCore {
     if(cs.size()==1){return nc;}
     return getNested(wrapCast(nc.getInner()),cs.subList(1, cs.size()));
     }
-  public static List<ExpCore.ClassB.NestedClass> getNestedList(ExpCore.ClassB cb, List<String>cs){
+  
+  static List<ExpCore.ClassB.NestedClass> getNestedList(ExpCore.ClassB cb, List<String>cs){
     assert !cs.isEmpty();
     List<ExpCore.ClassB.NestedClass> result=new ArrayList<>();
     getNestedList(cb,cs,result);
     return result;
     }
-  public static void getNestedList(ExpCore.ClassB cb, List<String>cs,List<ExpCore.ClassB.NestedClass> result){
+
+  static void getNestedList(ExpCore.ClassB cb, List<String>cs,List<ExpCore.ClassB.NestedClass> result){
     String nName=cs.get(0);
     int index=getIndex(cb.getMs(), nName);
     checkIndex(index);
@@ -363,10 +312,51 @@ public interface ExpCore {
       getNestedList(wrapCast(nc.getInner()),cs.subList(1, cs.size()),result);
       }
     }
-  public static ExpCore.ClassB getClassB(ExpCore.ClassB cb, List<String>cs){
+  
+  static ExpCore.ClassB getClassB(ExpCore.ClassB cb, List<String>cs){
     if(cs.isEmpty()){return cb;}
     return wrapCast(getNested(cb,cs).getInner());
+    }
+
+  static ClassB withMember(ClassB cb,Member m) {
+    cb.isConsistent();
+    List<Member> newMs = new java.util.ArrayList<>(cb.getMs());
+    int index=_Aux.getIndex(newMs,m);
+    if(index==-1){newMs.add(m);}
+    else {newMs.set(index, m);}
+    ClassB result = cb.withMs(newMs);
+    result.isConsistent();
+    return result;
+    }
+
+  static boolean isConsistent(ClassB cb) {
+    int countWalkBy = 0;
+    HashSet<String> keys = new HashSet<String>();
+    for (Member m : cb.getMs()) {
+      if (m instanceof MethodWithType) {
+        MethodWithType mwt = (MethodWithType) m;
+        String key = mwt.getMs().toString();
+        assert !keys.contains(key);
+        keys.add(key);
+        assert mwt.getMt().getTDocs().size() == mwt.getMt().getTs().size();
+        }
+      if (m instanceof NestedClass) {
+        NestedClass nc = (NestedClass) m;
+        String key = nc.getName();
+        assert !keys.contains(key);
+        keys.add(key);
+        if (nc.getInner() instanceof ExpCore.WalkBy) {
+          countWalkBy += 1;
+          }
+        }
+      if (m instanceof MethodImplemented) {
+        MethodImplemented mi = (MethodImplemented) m;
+        String key = mi.getS().toString();
+        assert !keys.contains(key);
+        keys.add(key);
+        }
+      }
+    assert countWalkBy <= 1 : cb;
+    return true;
+    }
   }
-  
-  }
-}
