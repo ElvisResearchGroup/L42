@@ -3,9 +3,12 @@ package programReduction;
 import java.util.ArrayList;
 import java.util.List;
 
+import ast.Ast.NormType;
+import ast.Ast;
 import ast.ExpCore;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Phase;
+import coreVisitors.CloneVisitor;
 
 public class MultiTypeSystem {
 
@@ -49,5 +52,20 @@ private static ClassB typeSingle(Program p, ClassB l) {
       return super.visit(s.withPhase(Phase.Typed));
     }});
   return l;//TODO: replace with new TS soonish
+  }
+
+public static ExpCore toAny(Paths paths, ExpCore e) {
+  return e.accept(new CloneVisitor(){
+    public ExpCore visit(ClassB s) {return s;}
+    public ExpCore visit(Ast.Path s) {
+      if(paths.contains(s)){return Ast.Path.Any();}
+      return s;
+      } 
+    });
+}
+
+public static void typeMetaExp(Program p, ExpCore e) {
+  facade.Configuration.typeSystem.checkMetaExpr(p.oldRepr(),e);
+  //TODO: replace with new TS soonish
   }
 }

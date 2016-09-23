@@ -93,13 +93,20 @@ public class Paths {
     return toString(0);
     }
   public String toString(int n){
-  String result="";
-  if(this.isEmpty()){return "<Empty Paths>";}
-  for(List<String> cs:this.top()){
-    result+=Ast.Path.outer(n, cs)+" ";
-  }
-  if(this.pop()!=empty){result+=this.pop().toString(n+1);}
-  return result;
-  }
-
+    String result="";
+    if(this.isEmpty()){return "<Empty Paths>";}
+    for(List<String> cs:this.top()){
+      result+=Ast.Path.outer(n, cs)+" ";
+      }
+    if(this.pop()!=empty){result+=this.pop().toString(n+1);}
+    return result;
+    }
+  
+  public boolean contains(ast.Ast.Path s) {
+    Paths popped=this;
+    for(int i=0;i<s.outerNumber();i++){
+      popped=popped.pop();
+      }
+    return popped.current.contains(s.getCBar());
+    }
   }

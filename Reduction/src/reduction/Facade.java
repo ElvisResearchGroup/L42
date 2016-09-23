@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ast.Ast.Path;
+import ast.ExpCore;
 import ast.ExpCore.ClassB;
+import auxiliaryGrammar.Program;
 import facade.Configuration;
 import facade.L42;
 import facade.Reduction;
@@ -61,4 +63,8 @@ public class Facade implements Reduction{
     return Timer.record("Reduction.execute",()->{
     return (ClassB)Executor.stepStar(myExecutor, topLevel);
   });}
+@Override
+public ExpCore metaExp(Program p,ExpCore e) {
+  return  myExecutor.step(p, e);
+ }
 }

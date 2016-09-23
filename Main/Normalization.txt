@@ -193,7 +193,7 @@ precondition: at top level we have a L not of form LC
 (top)------------------------       eC not of form LC
      p ==> p'.update(p'.top()[C=r]) eC'=norm(p,eC) //resolve skele types, add all refine, collect supertypes
                                     <paths; paths'>=usedPathsE(p,eC') //tuple notation
-                                    p0=multiNorm(p,paths) U paths'//norm the part of p required by eC'
+                                    p0=multiNorm(p,paths U paths')//norm the part of p required by eC'
                                     paths'|-p0:p' //the part of p' referred to by paths' is well typed
                                     p'|-toAny(paths,eC'): imm Library //replace paths with Any //eC' is well typed
 

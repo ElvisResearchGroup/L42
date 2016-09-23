@@ -107,7 +107,7 @@ public class Norm {
       );
     }
 
-  Program auxMultiNorm(Program p, List<List<String>>topPaths){
+  static Program auxMultiNorm(Program p, List<List<String>>topPaths){
     ClassB lTop=p.top();
     for(List<String> csi:topPaths){
 //  pi = p.navigate(Csi)
@@ -120,7 +120,7 @@ public class Norm {
     return p.updateTop(lTop);
     }
   
-  Program multiNorm(Program p, Paths paths){
+  static Program multiNorm(Program p, Paths paths){
 //- multiNorm(p,empty) = p
       if(paths.isEmpty()){return p;}
 //- multiNorm(p, Cs1..Csn)/*a single Css*/= p.update(L)
