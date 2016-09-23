@@ -86,7 +86,7 @@ public class Norm {
     List<Path> ps1 = Methods.collect(p,l.getSupertypes());
     //Ms'=methods(p,This0), {C:e in Ms} //norm now put all the nested classes in the back.
     List<ClassB.Member> ms1 = Stream.concat(
-      Methods.methods(p,Path.outer(0)).stream(),
+      p.methods(Path.outer(0)).stream(),
       l.getMs().stream().filter(m->m instanceof ClassB.NestedClass)
       ).map(m->norm(p,m)).collect(Collectors.toList());
     return l.withSupertypes(ps1).withMs(ms1);

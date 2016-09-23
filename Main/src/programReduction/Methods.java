@@ -16,7 +16,7 @@ import ast.ExpCore.ClassB.MethodWithType;
 import coreVisitors.From;
 import tools.Map;
 
-class Methods {
+abstract class Methods implements Program{
   static private <T> List<T> push(List<T>es,T e){
     List<T>res=new ArrayList<T>(es);
     res.add(e);
@@ -52,7 +52,8 @@ class Methods {
   
 //  -methods(p,P0)=M1'..Mk'
 //          p(P0)={interface? implements Ps Ms} 
-  static List<MethodWithType> methods(Program p,Ast.Path p0){
+  public List<MethodWithType> methods(Ast.Path p0){
+    Program p=this;
     ClassB cb0=p.extractClassB(p0);
     List<Ast.Path> ps=cb0.getSupertypes();
 //          P1..Pn=collect(p,Ps[from P0]), error unless forall i, p(Pi) is an interface

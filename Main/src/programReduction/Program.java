@@ -107,12 +107,10 @@ public interface Program {//this class will eventually replace auxiliaryDefiniti
     if(!ncName.equals(cs.get(0))){return null;}
     return Path.outer(0, cs.subList(1, cs.size()));
     }
-  default List<ExpCore.ClassB.MethodWithType> methods(Ast.Path p){
-    return Methods.methods(this, p);//TODO:add memoization
-    }
+  List<ExpCore.ClassB.MethodWithType> methods(Ast.Path p);
   }
 
-class FlatProgram implements Program{
+class FlatProgram extends Methods{
   ExpCore.ClassB l;
   FlatProgram(ExpCore.ClassB l){this.l=l;}
     
@@ -133,7 +131,7 @@ class FlatProgram implements Program{
   public Program growFellow(Program fellow) {throw new Program.EmptyProgram();}
 
   }
-class PushedProgram implements Program{
+class PushedProgram extends Methods{
   ClassB newTop;
   CtxL splitPoint;
   Program former;
@@ -171,7 +169,7 @@ class UpdatedProgram extends PushedProgram{
     }
   }
 
-class EvilPushed implements Program{
+class EvilPushed extends Methods{
   ClassB newTop; Program former;
   public EvilPushed(ClassB newTop, Program former) {
     this.newTop=newTop; this.former=former;
