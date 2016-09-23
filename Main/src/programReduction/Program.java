@@ -30,7 +30,10 @@ public interface Program {//this class will eventually replace auxiliaryDefiniti
   Program growFellow(Program fellow);
   //(L,ctxL,_).growFellow(p)==p.push(p.top()/ctxL)
   String getFreshId();//good for debugging and needed for reduction 
-//program derived operations:
+
+  List<ExpCore.ClassB.MethodWithType> methods(Ast.Path p);
+  
+  //program derived operations:
  
   //hint for testing: p.equiv(p0,p1)==p.navigate(p0).equals(p.navigate(p1))
   //provided both navigates do not throw evilPush errors
@@ -107,7 +110,11 @@ public interface Program {//this class will eventually replace auxiliaryDefiniti
     if(!ncName.equals(cs.get(0))){return null;}
     return Path.outer(0, cs.subList(1, cs.size()));
     }
-  List<ExpCore.ClassB.MethodWithType> methods(Ast.Path p);
+  default auxiliaryGrammar.Program oldRepr(){
+    //TODO: will disappear
+    auxiliaryGrammar.Program res=this.pop().oldRepr();
+    return res.addAtTop(this.top());
+    }
   }
 
 class FlatProgram extends Methods{
@@ -116,7 +123,11 @@ class FlatProgram extends Methods{
   FlatProgram(ExpCore.ClassB l){this.l=l;}
     
   public Program pop() { throw new Program.EmptyProgram();}
-
+  @Override public auxiliaryGrammar.Program oldRepr(){
+    auxiliaryGrammar.Program res=auxiliaryGrammar.Program.empty();
+    return res.addAtTop(top());
+    }
+  
   public Program push(CtxL ctx, ClassB l) {
     return new PushedProgram(l,ctx,this);
     }

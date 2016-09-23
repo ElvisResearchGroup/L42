@@ -1,5 +1,53 @@
 package programReduction;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import ast.ExpCore;
+import ast.ExpCore.ClassB;
+import ast.ExpCore.ClassB.Phase;
+
 public class MultiTypeSystem {
 
+public static Program typeProgram(Paths paths, Program p){
+//(pEmpty)---------------------------------
+//empty |- p :p
+  if(paths.isEmpty()){return p;}
+//      Css|-p:L
+//(pNoPop)--------------------------------  p.pop() undefined
+//      Css  |- p :L,empty
+  if(p instanceof FlatProgram){
+    return new FlatProgram(typeLibrary(paths.current,p));
+  }
+//       paths |- p.pop():p0
+//       Css|-p1:L
+//(pPop)----------------------------------  p1=p.growFellow(p0)
+//       Css paths |- p : p1.update(L)
+  Program p0=typeProgram(paths.pop(),p.pop());
+  Program p1=p.growFellow(p0);
+  ClassB l=typeLibrary(paths.current,p1);
+  return p1.updateTop(l);
+  }
+
+private static ClassB typeLibrary(List<List<String>> current, Program p) {
+//forall Csi : pi|-pi.top(): Li //if Li.Phase=Typed, the check will be just asserted
+//(pL) ---------------------------------------   pi=p.navigate(Csi)
+//Cs1..Csn|-p:p.top()[Cs1=L1,.. Csn=Ln]    
+  ClassB result=p.top();
+  for(List<String> csi : current){
+    Program pi=p.navigate(csi);
+    ClassB li=typeSingle(pi,pi.top());
+    result=result.onClassNavigateToPathAndDo(csi, oldLi->li);
+  }
+  return result;
+  }
+
+private static ClassB typeSingle(Program p, ClassB l) {
+  facade.Configuration.typeSystem.checkCt(p.oldRepr(),l);
+  l=(ClassB) l.accept(new coreVisitors.CloneVisitor(){
+    public ExpCore visit(ClassB s) {
+      return super.visit(s.withPhase(Phase.Typed));
+    }});
+  return l;//TODO: replace with new TS soonish
+  }
 }

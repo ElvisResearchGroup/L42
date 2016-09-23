@@ -181,7 +181,7 @@ program derived operations:
 Part 2: reduction rules and notations
 -----------------------------------------------------------
 depend on:
- p|-L:ok
+ p|-L:L'
  p|-e: imm Library
  e -->p+ r
 -----------------------------------------------------------
@@ -341,8 +341,8 @@ maindefinition:
          empty |- p :p
   
 
-     forall Csi : pi|-pi.top(): ok //if Li.Phase=Typed, the check will be just asserted
+     forall Csi : pi|-pi.top(): Li //if Li.Phase=Typed, the check will be just asserted
 (pL) ---------------------------------------   pi=p.navigate(Csi)
-     Cs1..Csn|-p:p.top()[Cs1=L1,.. Csn=Ln]     Li=pi.top()[with Phase=Typed]//also inside all somehow contained Ls
+     Cs1..Csn|-p:p.top()[Cs1=L1,.. Csn=Ln]     //Li will have Phase=Typed also inside all somehow contained Ls
 
  
