@@ -139,11 +139,12 @@ public class TypeSystem implements Visitor<Type>, Reporter, ast.Ast.HasPos{
       });
     }
  private boolean isPathPath(Program p,ClassB cb) {
-   if(p.isExecutableStar()){return cb.getStage().getStage()==Stage.Star;}
-    if(p.executablePlus()){
-      return cb.getStage().getStage()==Stage.Plus || cb.getStage().getStage()==Stage.Star;
-    }
-    return true;
+   //if(p.isExecutableStar()){return cb.getStage().getStage()==Stage.Star;}
+   // if(p.executablePlus()){
+   //   return cb.getStage().getStage()==Stage.Plus || cb.getStage().getStage()==Stage.Star;
+   //}
+   //TODO:24/09/2016, commented to allow new normalization.txt
+   return true;
   }
 
   @Override

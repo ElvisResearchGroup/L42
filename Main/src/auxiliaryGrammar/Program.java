@@ -80,6 +80,7 @@ public class Program {
     if(this.isEmpty()){return;}
     this.pop().recomputeStage();
     Configuration.typeSystem.computeStage(this.pop(),this.topCb());
+    //Configuration.typeSystem.computeInherited(this.pop(),this.topCb();
   }
   public boolean canBeAdded(ClassB cb){
     if(this.isEmpty()){return true;}
@@ -208,10 +209,10 @@ public class Program {
     //classB=(ClassB)From.from(classB,path);
     Optional<Member> result = getIfInDom(classB.getMs(),ms);
     if(!result.isPresent()){
-      for(PathMwt mt:classB.getStage().getInherited()){
+      /*for(PathMwt mt:classB.getStage().getInherited()){
         if(!mt.getMwt().getMs().equals(ms)){continue;}
         return From.from(mt.getMwt(), path);
-        }
+        }*///TODO: to facilitate future new TS
       throw new ErrorMessage.MethodNotPresent(path,ms,forError,this.getInnerData(),forError==null?null:forError.getP());
       }
     MethodWithType mwt=Program.extractMwt(result.get(),classB);

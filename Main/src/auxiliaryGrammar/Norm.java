@@ -153,7 +153,9 @@ public class Norm {
       NestedClass m=(NestedClass)om.get();
       assert n>0;
       ClassB myLibNext=p.getCb(n-1);
-      if(m.getInner() ==myLibNext){isPass=true;};
+      if(m.getInner().equals(myLibNext)){//TODO: equals, but was ==, anyway this is all going to be removed
+        isPass=true;
+        };
       }
     if(!isPass){return path;}
     List<String> result=new ArrayList<String>();

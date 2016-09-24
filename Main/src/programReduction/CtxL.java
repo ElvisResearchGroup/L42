@@ -5,6 +5,7 @@ import java.util.List;
 import ast.ExpCore;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
+import ast.ExpCore.ClassB.NestedClass;
 import coreVisitors.IsCompiled;
 import tools.Assertions;
 
@@ -52,11 +53,11 @@ public class CtxL {
   public static CtxL _split (ExpCore.ClassB l){
     int pos=firstNotCompiled(l.getMs());
     if(pos==l.getMs().size()){return null;}
-    ExpCore inner=l.getMs().get(pos).getInner();
+    Member m=l.getMs().get(pos);
+    ExpCore inner=m.getInner();
+    boolean metaReady=m instanceof NestedClass && IsCompiled.of(m.getInner());
     CtxC innerSplit;
-    if (!(inner instanceof ExpCore.ClassB)&& l.getMs().get(pos) instanceof ExpCore.ClassB.NestedClass){
-      innerSplit=CtxC.hole(inner);
-      } 
+    if(metaReady){innerSplit=CtxC.hole(inner);} 
     else {innerSplit=CtxC.split(inner);}
     return new CtxL(l,pos,innerSplit);
     }

@@ -47,7 +47,16 @@ private static ClassB typeLibrary(List<List<String>> current, Program p) {
   }
 
 private static ClassB typeSingle(Program p, ClassB l) {
-  facade.Configuration.typeSystem.checkCt(p.oldRepr(),l);
+  auxiliaryGrammar.Program pOld = p.oldRepr();
+  //pOld=pOld.getExecutableStar();
+  pOld.recomputeStage();
+  l=(ClassB) l.accept(new coreVisitors.CloneVisitor(){
+  public ExpCore visit(ClassB s) {
+    s=(ClassB) super.visit(s);
+    s.getStage().setStage(Stage.Star);
+    return s;
+  }});
+  facade.Configuration.typeSystem.checkCt(pOld.pop(),l);
   l=(ClassB) l.accept(new coreVisitors.CloneVisitor(){
     public ExpCore visit(ClassB s) {
       s=s.withPhase(Phase.Typed);
@@ -73,6 +82,7 @@ public static ExpCore toAny(Paths paths, ExpCore e) {
 
 public static void typeMetaExp(Program p, ExpCore e) {
   auxiliaryGrammar.Program pOld = p.oldRepr();
+  pOld=pOld.getExecutableStar();
   pOld.recomputeStage();
   facade.Configuration.typeSystem.checkMetaExpr(pOld,e);
   //TODO: replace with new TS soonish

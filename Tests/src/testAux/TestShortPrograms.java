@@ -209,9 +209,9 @@ public void test9c1(){tp("{()"//focus on the difference between c1 and c2. This 
     ," F:( c=C {//@exitStatus\n//0\n\n})"//otherwise it does not fails with optimizations on
     ,"}");}
 @Test()
-public void test9c2(){tp("{()"
-    ," D: {() class method Library id(Library that) (that)}"
-    ," C: D.id({()  H:{() method Void foo() (This2.C.H x= this void)}}) "
+public void test9c2(){tp("{"
+    ," D: { class method Library id(Library that) (that)}"
+    ," C: D.id({  H:{ method Void foo() (This2.C.H x= this void)}}) "
     ," F:( c=C {//@exitStatus\n//0\n\n})"
     ,"}");}
 @Test(/*expected=ErrorMessage.PathsNotSubtype.class/*PathNonExistant.class*/)//correctly no error for trashing the error.
@@ -276,7 +276,8 @@ public void testClassMethods2(){tp("{"
 ,"{"
 ,"A:{(fwd A x)}"
 ,"Factory:{ class method A (fwd A a) A(x:a)}"
-/*,"C: {//@exitStatus\n//0\n\n}"*/," C:( A myA=Factory(a:myA)  {//@exitStatus\n//0\n})"
+/*,"C: {//@exitStatus\n//0\n\n}"*/
+," C:( A myA=Factory(a:myA)  {//@exitStatus\n//0\n})"
 ,"}"
 );}
 
@@ -329,14 +330,14 @@ public void testDeepTyping3(){tp("{"
     ," D: { class method Library wrong()  { A:{method Void v() this.notDeclared() } } }"
     ," E: ( Void ignore=D.wrong(), {//@exitStatus\n//0\n\n})"//we check that methodNotPresent has priority over PathsNotSubtype in this case
     ,"}");}
-@Test(expected=ErrorMessage.MalformedFinalResult.class)
+@Test//TODO:(expected=ErrorMessage.MalformedFinalResult.class)
 public void test13(){tp("{",
     " I:{ interface method I foo() }",
     "A:{ () implements I  method I beer()}",
     "Main:(x={} {//@exitStatus\n//0\n\n})",
     " }");}
 
-@Test(expected=ErrorMessage.MalformedFinalResult.class)
+@Test //TODO: why was (expected=ErrorMessage.MalformedFinalResult.class)
 public void test13b(){tp("{",
     " I:{ interface method I foo() }",
     "A:{ () implements I  }",
@@ -360,6 +361,7 @@ public void test2levels(){tp("{",
     " A:( void {B: ( void {class method Library foo() {//@exitStatus\n//0\n\n}   })})",
     "Main:A.B.foo()",
     " }");}
+
 
 @Test
 public void test5levels(){tp("{",

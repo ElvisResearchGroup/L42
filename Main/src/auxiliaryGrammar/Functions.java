@@ -107,7 +107,8 @@ public static boolean isSubtype(Program p, Path path1, Path path2) {
   if(path1N.equals(path2N)){return true;}
 
   ClassB cp1=p.extractCb(path1);
-  for(Path pathi:cp1.getStage().getInheritedPaths()){
+  //for(Path pathi:cp1.getStage().getInheritedPaths()){
+  for(Path pathi:cp1.getSupertypes()){
     Path pathiFrom=From.fromP(pathi, path1);
     Path pathiN=Norm.of(p,pathiFrom);//or not norm?
     if(pathiN.equals(path2N)){return true;}

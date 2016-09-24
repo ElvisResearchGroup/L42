@@ -309,6 +309,7 @@ maindefinition:
   **if P.m(_) inside e, P not Any
   **if ( _ T x=P _ _) inside e and T!=class Any, P not Any.
   **if p(Pi).Phase=Typed, Pi is not Any
+  **if (mdf P x=_ _) inside e, P not Any
   otherwise, P is considered of type class Any.
   // note that user can always force a not any by writing (x=P x)
   

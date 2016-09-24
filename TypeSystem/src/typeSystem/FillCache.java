@@ -63,6 +63,8 @@ private static void checkCoherent(List<PathMwt> mwts, List<String> explored,Clas
   for(int i=0;i<mwts.size();i++){
     for(int j=i+1;j<mwts.size();j++){
       if(!mwts.get(i).getMwt().getMs().equals(mwts.get(j).getMwt().getMs())){continue;}
+      if(mwts.get(i).getMwt().getMt().isRefine()){continue;}
+      if(mwts.get(j).getMwt().getMt().isRefine()){continue;}
       throw new ErrorMessage.IncoherentMwts(mwts.get(i).getMwt().getMs(),explored,completeMwts(mwts,cb),
           CollapsePositions.of(cb.accept(new InjectionOnSugar())));
     }
@@ -72,6 +74,7 @@ private static void checkCoherent(List<PathMwt> mwts, List<String> explored,Clas
      if(!(m instanceof MethodWithType)){continue;}
      MethodWithType mwt=(MethodWithType) m;
      if(!pmwt.getMwt().getMs().equals(mwt.getMs())){continue;}
+     if(mwt.getMt().isRefine()){continue;}
      throw new ErrorMessage.IncoherentMwts(mwt.getMs(),explored,completeMwts(mwts,cb),
          CollapsePositions.of(cb.accept(new InjectionOnSugar())));
    }

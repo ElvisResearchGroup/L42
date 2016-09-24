@@ -21,6 +21,7 @@ import org.antlr.v4.runtime.misc.ParseCancellationException;
 import coreVisitors.CloneVisitor;
 import coreVisitors.InjectionOnSugar;
 import profiling.Timer;
+import programReduction.ProgramReduction;
 import sugarVisitors.CollapsePositions;
 import sugarVisitors.CollectDeclaredClassNamesAndMethodNames;
 import sugarVisitors.Desugar;
@@ -191,7 +192,8 @@ public class L42 {
             return super.visit(cb);
             }
           });
-      ClassB result= Configuration.reduction.of(code3);
+      //ClassB result= Configuration.reduction.of(code3);
+      ClassB result= ProgramReduction.allSteps(code3);
       //System.out.println("--------------------------");
       //System.out.println(ToFormattedText.of(result));
       //System.out.println("--------------------------");

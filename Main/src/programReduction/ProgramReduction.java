@@ -8,7 +8,7 @@ import ast.ExpCore.ClassB;
 import coreVisitors.IsCompiled;
 
 public class ProgramReduction {
-  static ClassB allSteps(ClassB l){
+  public static ClassB allSteps(ClassB l){
     Program top=new FlatProgram(l);
     while(!IsCompiled.of(top.top())){
       top=step(top);
@@ -54,7 +54,9 @@ public class ProgramReduction {
     return p1.updateTop(top.fillHole(res));
     }
   static private ClassB reduceE(Program p, ExpCore e) {
-    return (ClassB) facade.Configuration.reduction.metaExp(p.oldRepr(), e);
+    ExpCore res=facade.Configuration.reduction.metaExp(p.oldRepr(), e);
+    if(res instanceof ClassB){return (ClassB)res;}
+    throw new ast.ErrorMessage.MalformedFinalResult(p.top(),"error is:\n\n"+sugarVisitors.ToFormattedText.of(res));
     //TODO: add error manager/printer
     }
   

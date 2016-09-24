@@ -103,6 +103,7 @@ public class Paths {
     }
   
   public boolean contains(ast.Ast.Path s) {
+    if(s.isPrimitive()){return false;}
     Paths popped=this;
     for(int i=0;i<s.outerNumber();i++){
       popped=popped.pop();
