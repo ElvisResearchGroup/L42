@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ast.Ast.NormType;
+import ast.Ast.Stage;
 import ast.Ast;
 import ast.ExpCore;
 import ast.ExpCore.ClassB;
@@ -20,7 +21,7 @@ public static Program typeProgram(Paths paths, Program p){
 //(pNoPop)--------------------------------  p.pop() undefined
 //      Css  |- p :L,empty
   if(p instanceof FlatProgram){
-    return new FlatProgram(typeLibrary(paths.current,p));
+    return p.updateTop(typeLibrary(paths.current,p));
   }
 //       paths |- p.pop():p0
 //       Css|-p1:L
@@ -49,7 +50,11 @@ private static ClassB typeSingle(Program p, ClassB l) {
   facade.Configuration.typeSystem.checkCt(p.oldRepr(),l);
   l=(ClassB) l.accept(new coreVisitors.CloneVisitor(){
     public ExpCore visit(ClassB s) {
-      return super.visit(s.withPhase(Phase.Typed));
+      s=s.withPhase(Phase.Typed);
+      s=(ClassB) super.visit(s);
+      s.getStage().setVerified(true);//TODO: remove when there is new TS
+      s.getStage().setStage(Stage.Star);
+      return s;
     }});
   return l;//TODO: replace with new TS soonish
   }
@@ -58,14 +63,18 @@ public static ExpCore toAny(Paths paths, ExpCore e) {
   return e.accept(new CloneVisitor(){
     public ExpCore visit(ClassB s) {return s;}
     public ExpCore visit(Ast.Path s) {
-      if(paths.contains(s)){return Ast.Path.Any();}
+      if(paths.contains(s)){
+        return Ast.Path.Any();
+        }
       return s;
       } 
     });
 }
 
 public static void typeMetaExp(Program p, ExpCore e) {
-  facade.Configuration.typeSystem.checkMetaExpr(p.oldRepr(),e);
+  auxiliaryGrammar.Program pOld = p.oldRepr();
+  pOld.recomputeStage();
+  facade.Configuration.typeSystem.checkMetaExpr(pOld,e);
   //TODO: replace with new TS soonish
   }
 }

@@ -65,6 +65,6 @@ public class Facade implements Reduction{
   });}
 @Override
 public ExpCore metaExp(Program p,ExpCore e) {
-  return  myExecutor.step(p, e);
+  return  myExecutor.executeAtomicStep(p, e,"NewReduction");
  }
 }

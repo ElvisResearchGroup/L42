@@ -44,6 +44,7 @@ import ast.Redex.*;
 import auxiliaryGrammar.*;
 
 abstract public class Executor {
+  abstract protected ExpCore executeAtomicStep(Program p1, ExpCore e1,String nestedName);
   abstract protected ClassB meta1(Program p, ClassB cb, NestedClass m);
   abstract protected void log(String s);
   static public ExpCore last1=null;

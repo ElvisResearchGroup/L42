@@ -24,7 +24,9 @@ public static Program p(String s){
   while(true){
     CtxL first=CtxL._split(currentTop);
     if (first==null){return p;}
-    currentTop=(ExpCore.ClassB)first.originalHole();
+    ExpCore hole=first.originalHole();
+    if (!(hole instanceof ExpCore.ClassB)){return p;}
+    currentTop=(ExpCore.ClassB)hole;
     p= new PushedProgram(currentTop,first,p);
     }
   }

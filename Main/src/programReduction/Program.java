@@ -134,7 +134,11 @@ class FlatProgram extends Methods{
     
   public ClassB top() {return l;}
 
-  public Program updateTop(ClassB l) {return new FlatProgram(l);}
+  public Program updateTop(ClassB l) {
+    FlatProgram fp= new FlatProgram(l);
+    fp.freshIds=this.freshIds;
+    return fp;
+    }
 
   public Path _reducePath(Path p){return null;}
     

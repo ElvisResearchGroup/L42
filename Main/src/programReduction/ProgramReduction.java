@@ -22,9 +22,11 @@ public class ProgramReduction {
     assert top!=null;
     Member m=top.originalCtxM();
     assert !IsCompiled.of(m);
-    CtxC lPos=CtxC.split(m.getInner());
-    ClassB l=(ClassB)lPos.originalHole();
-    if(!IsCompiled.of(l)){return enter(p,top,m);}
+    ExpCore hole=top.originalHole();
+    if (hole instanceof ClassB){
+      assert !IsCompiled.of(hole);
+      return enter(p,top,m);
+      }
     ClassB.NestedClass nc=(NestedClass) m;
     return top(p,top,nc.getInner());
     }

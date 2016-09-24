@@ -13,7 +13,7 @@ public class Paths {
   private Paths(Paths next, List<List<String>> current){
     this.next=next; this.current=current;
     }
-  private static final Paths empty=new Paths(null,null);
+  private static final Paths empty=new Paths(null,Collections.emptyList());
   public static Paths empty(){return empty;}
   public boolean isEmpty(){return this==empty;}
   

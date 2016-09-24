@@ -52,7 +52,12 @@ public class CtxL {
   public static CtxL _split (ExpCore.ClassB l){
     int pos=firstNotCompiled(l.getMs());
     if(pos==l.getMs().size()){return null;}
-    CtxC innerSplit=CtxC.split(l.getMs().get(pos).getInner());
+    ExpCore inner=l.getMs().get(pos).getInner();
+    CtxC innerSplit;
+    if (!(inner instanceof ExpCore.ClassB)&& l.getMs().get(pos) instanceof ExpCore.ClassB.NestedClass){
+      innerSplit=CtxC.hole(inner);
+      } 
+    else {innerSplit=CtxC.split(inner);}
     return new CtxL(l,pos,innerSplit);
     }
   public static CtxL split (ExpCore.ClassB l,String c){
@@ -72,9 +77,7 @@ public class CtxL {
     }
   private static int firstNotCompiled(List<Member> ms) {
     for(int i=0;i<ms.size();i++){
-      if(ms.get(i) instanceof ClassB.MethodWithType 
-        && !((ClassB.MethodWithType)ms.get(i)).get_inner().isPresent()){continue;}
-      if(!IsCompiled.of(ms.get(i).getInner())){return i;}
+      if (!IsCompiled.of(ms.get(i))){return i;}
       }
     return ms.size();
     }
