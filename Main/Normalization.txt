@@ -290,9 +290,10 @@ maindefinition:
      
 - usedPathsFix(p,paths,Css)=paths0
    paths.top()\Css==empty
-   paths0=usedPathsFix(p.pop(),paths.pop(),empty).push(Css)
-   if paths.pop() not empty, otherwise
-   paths0=Css//@James, new lines here
+   if paths.pop() not empty
+     paths0=usedPathsFix(p.pop(),paths.pop(),empty).push(Css)
+   otherwise
+     paths0=Css//@James, new lines here
 - usedPathsFix(p,empty,empty) =empty   
     
 - usedPathsL(L, Cs1..Csn)=usedInnerL(L(Cs1),Cs1) U ... U usedInnerL(L(Csn),Csn)

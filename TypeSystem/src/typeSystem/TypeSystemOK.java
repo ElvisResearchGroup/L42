@@ -107,7 +107,7 @@ public class TypeSystemOK {
     checkCt2(p,cb);
     //TODO: now 27/07/2015 I still get trouble for not normalizable stuff
     */
-    if(!p.isExecutableStar()){
+    if(p.isExecutableStar()){
     //if(cb.getStage().getStage()==Stage.Star || cb.getStage().getStage()==Stage.Plus){
       try{checkCt2(p,cb);return;}
       catch(ErrorMessage.NormImpossible __){checkCt1(p,cb);return;}

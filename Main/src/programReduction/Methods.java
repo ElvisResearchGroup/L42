@@ -39,6 +39,7 @@ abstract class Methods implements Program{
     if (visited.contains(p0)){
       throw new ast.ErrorMessage.CircularImplements(push(visited,p0));
       }
+    if(p0.isPrimitive()){return collect(p,ps,visited);}
     ClassB l=p.extractClassB(p0);
     List<Ast.Path> recP0=collect(p.navigate(p0),l.getSupertypes(),push(visited,p0));
     recP0=Map.of(pi->From.fromP(pi,p0),recP0);

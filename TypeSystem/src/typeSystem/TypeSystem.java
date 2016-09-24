@@ -113,7 +113,7 @@ public class TypeSystem implements Visitor<Type>, Reporter, ast.Ast.HasPos{
             throw new ErrorMessage.LibraryRefersToIncompleteClasses(p.getInnerData(), s);
             }
           }*/
-        if (!p.isExecutableStar()){
+        if (p.isExecutableStar()){
           TypeSystemOK.checkCt(p, s);
           //if(s.getStage().getStage()==Stage.Less){
           //  throw new ErrorMessage.LibraryRefersToIncompleteClasses(p.getInnerData(), s);
