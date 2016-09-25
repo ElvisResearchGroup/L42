@@ -39,6 +39,7 @@ import ast.ExpCore;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.NestedClass;
+import ast.ExpCore.ClassB.Phase;
 import ast.Util;
 import ast.Util.PathMwt;
 import ast.ExpCore.*;
@@ -59,6 +60,7 @@ public class Translator {
     for(String k :map.keySet()){//"generated.Program42";
       files.add(new SourceFile(k,map.get(k)));
       //try {Files.write(Paths.get("/u/staff/servetto/git/L42/Tests/src/generated/"+k+".java"), map.get(k).getBytes());}catch (IOException _e) {throw new Error(_e);}
+      //try {Files.write(Paths.get("C:/Users/user/git/L42/Tests/src/generated/"+k+".java"), map.get(k).getBytes());}catch (IOException _e) {throw new Error(_e);}
       }
     //System.out.println("Compilation Iteration ready to compile");
     MapClassLoader cl=((Facade)Configuration.reduction).getLastLoader();
@@ -107,13 +109,18 @@ public class Translator {
         //ClassB cb=map.get(s);
         //if(!cb.getDoc1().getS().contains("##@")){continue;}
       }
-      mapNorm.put(s,normalizeClass(p,map.get(s)));
+      if (map.get(s).getPhase()!=Phase.Typed){continue;}
+      ClassB cbNorm=normalizeClass(p,map.get(s));
+      assert cbNorm.getPhase()==Phase.Typed;
+      mapNorm.put(s,cbNorm);
     }
 
     for(String s:mapNorm.keySet()){
       StringBuilder resi=new StringBuilder();
       resi.append("package generated;");
       resi.append("@SuppressWarnings(\"all\")");
+      ClassB cbNorm = mapNorm.get(s);
+      assert cbNorm.getPhase()==Phase.Typed;
       TranslateClass.of(p,s,mapNorm.get(s),resi);
       t.map.put(s, resi.toString());
     }
@@ -129,8 +136,8 @@ public class Translator {
   public static void add(int level,List<String> cs,ClassB cb, Map<String,ClassB> map,Program original){
     Ast.Path p=Ast.Path.outer(level, cs);
 
-    if(cb.getStage().getStage()==Stage.Star  && IsCompiled.of(cb)){//otherwise is "meta"
-      assert cb.getStage().getInheritedPaths()!=null;
+    if(cb.getPhase()==Phase.Typed  && IsCompiled.of(cb)){//otherwise is "meta"
+      //assert cb.getStage().getInheritedPaths()!=null;
       ClassB cbUF=useFrom(cb,p);
       assert cbUF.getStage().getInheritedPaths()!=null;
       if(!cs.isEmpty()){//ok to ignore empty ones, since not complete?
@@ -170,12 +177,13 @@ public class Translator {
         mt->ms.add(From.from(mt, p))
         );
       }
-    for(PathMwt pmwt:ct.getStage().getInherited()){
+    //for(PathMwt pmwt:ct.getStage().getInherited()){
+    for(PathMwt pmwt:Collections.<PathMwt>emptyList()){
       if(Program.getIfInDom(ms,pmwt.getMwt().getMs()).isPresent()){continue;}
       ms.add(From.from(pmwt.getMwt(), p));
     }
     List<Path> sup = tools.Map.of(pi->(Path)From.fromP(pi,p),ct.getSupertypes());
-    List<Path> supAll = tools.Map.of(pi->(Path)From.fromP(pi,p),ct.getStage().getInheritedPaths());
+    List<Path> supAll = sup;//tools.Map.of(pi->(Path)From.fromP(pi,p),ct.getStage().getInheritedPaths());
     ClassB res= ct.withMs(ms).withSupertypes(sup);
     res=res.withStage(res.getStage().copyMostStableInfo());
     res.getStage().setInheritedPaths(supAll);

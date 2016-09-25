@@ -28,7 +28,7 @@ public class ProgramReduction {
       return enter(p,top,m);
       }
     ClassB.NestedClass nc=(NestedClass) m;
-    return top(p,top,nc.getInner());
+    return top(p,top,nc);
     }
 
 /*
@@ -40,7 +40,8 @@ public class ProgramReduction {
                                     paths'|-p0:p' //the part of p' referred to by paths' is well typed
                                     p'|-toAny(paths,eC'): imm Library //replace paths with Any //eC' is well typed
 */
-  static private Program top(Program p, CtxL top, ExpCore ec) {
+  static private Program top(Program p, CtxL top,NestedClass nc) {
+    ExpCore ec=nc.getInner();
     assert IsCompiled.of(ec);
     assert !(ec instanceof ClassB);
     ExpCore ec1=Norm.norm(p, ec);
@@ -50,11 +51,11 @@ public class ProgramReduction {
     Program p0=Norm.multiNorm(p,paths.union(paths1));
     Program p1=MultiTypeSystem.typeProgram(paths1, p0);
     MultiTypeSystem.typeMetaExp(p1,MultiTypeSystem.toAny(paths,ec1));
-    ClassB res=reduceE(p1,ec1);
+    ClassB res=reduceE(p1,ec1,p1.getFreshId()+"."+nc.getName());
     return p1.updateTop(top.fillHole(res));
     }
-  static private ClassB reduceE(Program p, ExpCore e) {
-    ExpCore res=facade.Configuration.reduction.metaExp(p.oldRepr(), e);
+  static private ClassB reduceE(Program p, ExpCore e,String nameDebug) {
+    ExpCore res=facade.Configuration.reduction.metaExp(p.oldRepr(), e,nameDebug);
     if(res instanceof ClassB){return (ClassB)res;}
     throw new ast.ErrorMessage.MalformedFinalResult(p.top(),"error is:\n\n"+sugarVisitors.ToFormattedText.of(res));
     //TODO: add error manager/printer

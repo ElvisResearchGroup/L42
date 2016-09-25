@@ -1,7 +1,12 @@
 package platformSpecific.javaTranslation;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
+
 import tools.Assertions;
 import tools.StringBuilders;
 import ast.Ast;
@@ -116,12 +121,18 @@ public class TranslateClass {
     if(isInterface){res.append(" extends ");}
     else{res.append(" implements ");}
     res.append("platformSpecific.javaTranslation.Resources.Revertable");
-    for(Path pi:ct.getStage().getInheritedPaths()){
+    Set<String> supt=new HashSet<>();
+    for(Path pi:ct.getSupertypes()/*getStage().getInheritedPaths()*/){
       if (pi.equals(Path.Any())){continue;}
       assert !pi.isPrimitive();
-      res.append(", ");
-      res.append(Resources.nameOf(pi));
-    }
+      String resName=Resources.nameOf(pi);
+      if(resName.equals("Object")){continue;}
+      boolean notThere=supt.add(resName);
+      if(notThere){
+        res.append(", ");
+        res.append(resName);
+        }
+      }
     return isInterface;
   }
 

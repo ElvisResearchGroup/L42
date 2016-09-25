@@ -27,6 +27,8 @@ public static class TestExecution {
     {lineNumber(),"{A:{class method Library const(){C:{}} } B:A.const()}","{A:{class method Library const(){C:{}} } B:{C:{}}}"  
   },{lineNumber(),"{A:{class method Library id(Library that)that } B:A.id({D:{}})}","{A:{class method Library id(Library that)that } B:{D:{}}}"
 
+  },{lineNumber(),"{I1:{interface implements I2} I2:{interface class method Library id(Library that)} A:{ implements I1  method  id( that)that } B:A.id({D:{}})}","{I1:{interface implements I2} I2:{interface class method Library id(Library that)} A:{ implements I1  method  id( that)that } B:{D:{}}}"
+
 //  },{lineNumber(),"{I:{method Any m()} B:error void}","This0.I::m()","Any"  
 //  },{lineNumber(),"{I:{method I m() method Any m2()} B:error void}","This0.I::m()::m()::m2()","Any" 
 //  },{lineNumber(),"{I:{method I m(I x) method Any m2()} B:error void}","This0.I::m(x)::m(x)::x::m2()","Any" 

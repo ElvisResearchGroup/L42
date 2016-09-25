@@ -202,7 +202,7 @@ public void test9b(){tp("{()"
     ,"}");}
 
 
-@Test(expected=PathNonExistant.class)
+@Test(expected=PathNonExistant.class)//TODO: now fail with paths not subtype, would be nice to recover the precise error
 public void test9c1(){tp("{()"//focus on the difference between c1 and c2. This is the expected behaviour.
     ," D: {() class method Library id(Library that) (that)}"
     ," C: D.id({()  H:{() method Void foo() (This2.C.E x= this void)}}) "
@@ -242,9 +242,9 @@ public void test11(){tp("{()"
     ,"}");}
 
 @Test(expected=ErrorMessage.PathNonExistant.class)
-public void test12(){tp("{()"
-,"LibList:{ #apply()"
-,"  T:{() }"
+public void test12(){tp("{"
+,"LibList:{"
+,"  T:{ }"
 ,"  class method"
 ,"  This0.GenericId.T id(This0.GenericId.T that) (that)}"
 ,"E:( c=LibList {//@exitStatus\n//0\n\n})"
@@ -376,6 +376,7 @@ public void testComposition1(){tp("{",
     " A:{interface method Void m()}",
     " B:{ class method Library (){  implements A method m()void} }",
     " C:Op.compose(left:B(),right:{ implements A})",
+    " C1:( void {})",
     " D1:{D2:Op.compose(left:B(),right:{ implements A})}",
     " D:Op.compose(left:B(),right:{ implements A})",
     "Main:{//@exitStatus\n//0\n\n}",

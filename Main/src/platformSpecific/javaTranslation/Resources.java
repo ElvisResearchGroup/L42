@@ -44,6 +44,7 @@ import ast.Ast.Position;
 import ast.Ast.SignalKind;
 import ast.Ast.Stage;
 import ast.ExpCore.ClassB;
+import ast.ExpCore.ClassB.Phase;
 import ast.Util.CachedStage;
 import auxiliaryGrammar.EncodingHelper;
 import auxiliaryGrammar.Functions;
@@ -374,7 +375,7 @@ public class Resources {
     if (path.equals(Path.Void())){return "platformSpecific.javaTranslation.Resources.Void";}
     Program p=Resources.getP();
     try{ClassB cb=p.extractCb(path);
-    if( cb.getStage().getStage()==Stage.Star && IsCompiled.of(cb)){ return nameOf(path.outerNumber(),path.getCBar()); }
+    if( cb.getPhase()==Phase.Typed && IsCompiled.of(cb)){ return nameOf(path.outerNumber(),path.getCBar()); }
     }catch (ErrorMessage em){}
     return "Object";
     }
@@ -393,9 +394,12 @@ public class Resources {
   public static String nameOf(int level, List<String> cs) {
     Program p=Resources.getP();
     Position pos=p.getCb(level).getP();
+    assert pos!=null;
+    assert pos!=Position.noInfo;
     int hc = System.identityHashCode(pos);//ok, all relevant positions existed together at the same moment.
     assert !pos.equals(Position.noInfo);
     String res="This"+hc;
+    //??String res="This"+p.getCb(level).getUniqueId();
     //String res="This"+level;
     for(String s:cs){res+="."+s;}
     return nameOf(res);

@@ -40,6 +40,8 @@ private static ClassB typeLibrary(List<List<String>> current, Program p) {
   ClassB result=p.top();
   for(List<String> csi : current){
     Program pi=p.navigate(csi);
+    assert pi.top().getPhase()!=Phase.None:
+    "";
     ClassB li=typeSingle(pi,pi.top());
     result=result.onClassNavigateToPathAndDo(csi, oldLi->li);
   }
@@ -49,7 +51,7 @@ private static ClassB typeLibrary(List<List<String>> current, Program p) {
 private static ClassB typeSingle(Program p, ClassB l) {
   auxiliaryGrammar.Program pOld = p.oldRepr();
   pOld=pOld.getExecutableStar();
-  pOld.recomputeStage();
+  //pOld.recomputeStage();
   l=(ClassB) l.accept(new coreVisitors.CloneVisitor(){
   public ExpCore visit(ClassB s) {
     s=(ClassB) super.visit(s);
@@ -83,7 +85,7 @@ public static ExpCore toAny(Paths paths, ExpCore e) {
 public static void typeMetaExp(Program p, ExpCore e) {
   auxiliaryGrammar.Program pOld = p.oldRepr();
   //pOld=pOld.getExecutableStar();
-  pOld.recomputeStage();
+  //pOld.recomputeStage();
   facade.Configuration.typeSystem.checkMetaExpr(pOld,e);
   //TODO: replace with new TS soonish
   }

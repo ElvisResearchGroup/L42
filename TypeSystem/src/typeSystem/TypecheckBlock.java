@@ -82,7 +82,7 @@ public class TypecheckBlock {
       TypeSystem.typecheckSure(false,that.p,varEnvi,that.sealEnv, throwsEnv2,expectedi,di.getInner());
     }}
     Type res1=checkBlockBody(that,varEnvs.get(0),s);
-    that.p.exePlusOk(varEnvs.get(0));
+    //TODO: suspended waiting for new ts that.p.exePlusOk(varEnvs.get(0));
     Type res2=checkCatch(that.p,s.getP(),varEnvs.get(0),that.sealEnv,that.throwEnv,that.suggested,s.getDecs(),s.getOns());
     return searchCommonSupertype(that, s, res1, res2);
   }

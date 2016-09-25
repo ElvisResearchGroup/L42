@@ -99,6 +99,8 @@ private static boolean isSubtype(Ph ph, Ph ph2) {
   return false;
 }
 public static boolean isSubtype(Program p, Path path1, Path path2) {
+  if(!path1.isPrimitive()){p.extractCb(path1);}
+  if(!path2.isPrimitive()){p.extractCb(path2);}
   if(path2.equals(Path.Any())){return true;}
   if(path1.equals(path2)){return true;}
   if(path1.isPrimitive()){return false;}

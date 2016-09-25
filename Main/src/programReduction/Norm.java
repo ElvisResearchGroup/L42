@@ -80,8 +80,7 @@ public class Norm {
       protected Type liftT(Type t){ return resolve(p,t); }
       public ExpCore visit(ClassB s) {
         if(s.getPhase()!=Phase.None){return s;}
-        ClassB normed=norm(p.evilPush(s));
-        return normed.withPhase(Phase.Norm).withUniqueId(p.getFreshId());
+        return norm(p.evilPush(s));
         }});
     }
   static ExpCore.ClassB norm(Program p){
@@ -95,7 +94,8 @@ public class Norm {
       p.methods(Path.outer(0)).stream(),
       l.getMs().stream().filter(m->m instanceof ClassB.NestedClass)
       ).map(m->norm(p,m)).collect(Collectors.toList());
-    return l.withSupertypes(ps1).withMs(ms1);
+    //return l.withSupertypes(ps1).withMs(ms1).withUniqueId(p.getFreshId()).withPhase(Phase.Norm);
+    return new ClassB(l.getDoc1(),l.getDoc2(),l.isInterface(),ps1,ms1,l.getP(),l.getStage(),Phase.Norm,p.getFreshId());
     }
   @SuppressWarnings("unchecked")
   static <T extends ExpCore.ClassB.Member> T norm(Program p,T m){

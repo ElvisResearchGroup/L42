@@ -137,6 +137,14 @@ public class UsedPaths {
           }
         return null;
         }
+      
+      //**if using P _ _ inside e, P not Any
+      public Void visit(ExpCore.Using s) {
+        if (!s.getPath().isPrimitive()){
+          this.paths.add(s.getPath());
+          }
+        return super.visit(s);
+        }
       List<Path> result(ExpCore e){
         e.accept(this);
         return this.paths;

@@ -20,6 +20,7 @@ import ast.ExpCore.Block;
 import ast.ExpCore.Block.Dec;
 import ast.ExpCore.Block.On;
 import ast.ExpCore.ClassB;
+import ast.ExpCore.ClassB.Phase;
 import ast.ExpCore.Loop;
 import ast.ExpCore.MCall;
 import ast.ExpCore.Signal;
@@ -64,7 +65,7 @@ public class TranslateExpression implements coreVisitors.Visitor<Void>{
       return null;
     }
     ClassB cbs=Resources.getP().extractCb(s);
-    if(cbs.getStage().getStage()==Stage.Star  && IsCompiled.of(cbs)){
+    if(cbs.getPhase()==Phase.Typed  && IsCompiled.of(cbs)){
       res.append(Resources.nameOf(s)+".type ");
       }
     else{

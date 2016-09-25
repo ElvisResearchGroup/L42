@@ -25,7 +25,7 @@ import auxiliaryGrammar.Program;
 
 public interface ExpCore {
   <T> T accept(coreVisitors.Visitor<T> v);
-
+  default String toS(){return sugarVisitors.ToFormattedText.of(this);}
   @Value @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") @Wither public static class MCall implements ExpCore,HasPos, WithInner<MCall>{
     ExpCore inner;
     MethodSelector s;
@@ -373,6 +373,8 @@ class _Aux{
         keys.add(key);
         }
       }
+    assert  (cb.getPhase()==ast.ExpCore.ClassB.Phase.None && cb.getUniqueId().isEmpty())
+         || ((cb.getPhase()!=ast.ExpCore.ClassB.Phase.None && !cb.getUniqueId().isEmpty()) );
     assert countWalkBy <= 1 : cb;
     return true;
     }

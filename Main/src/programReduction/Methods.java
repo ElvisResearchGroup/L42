@@ -10,6 +10,7 @@ import java.util.Set;
 
 import ast.Ast;
 import ast.Ast.MethodSelector;
+import ast.Ast.Path;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodWithType;
@@ -17,9 +18,10 @@ import coreVisitors.From;
 import tools.Map;
 
 abstract class Methods implements Program{
-  static private <T> List<T> push(List<T>es,T e){
-    List<T>res=new ArrayList<T>(es);
-    res.add(e);
+  static private  List<Ast.Path> push(List<Ast.Path>ps,Ast.Path newThis){
+    List<Ast.Path>res=new ArrayList();
+    res.add(Path.outer(0));
+    for(Ast.Path pi:ps){res.add(From.fromP(pi,newThis));}
     return res;
     }
   static private <T> List<T> mergeUnique(T p,List<T>before, List<T>after){

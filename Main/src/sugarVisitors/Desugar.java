@@ -682,12 +682,16 @@ public class Desugar extends CloneVisitor{
     return new Using(lift(s.getPath()),s.getName(),s.getDocs(),ps,lift(s.getInner()));
   }
   public NestedClass visit(NestedClass nc){
+    while(nc.getInner() instanceof Expression.DocE){
+      nc=nc.withInner(((Expression.DocE)nc.getInner()).getInner());
+      }//TODO: document stripping of comments and decide scope
+    NestedClass nc1=nc;
     this.usedVars=new HashSet<String>();
     this.varEnv=new HashMap<String, Type>();
     usedVars.addAll(CollectDeclaredVars.of(nc.getInner()));
     return withExpectedType(
       new NormType(Mdf.Immutable, Path.Library(), Ph.None),
-      ()->super.visit(nc));
+      ()->super.visit(nc1));
   }
   public MethodImplemented visit(MethodImplemented mi){
     this.usedVars=new HashSet<String>();

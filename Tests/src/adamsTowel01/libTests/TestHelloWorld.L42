@@ -1,0 +1,13 @@
+{reuse L42.is/AdamTowel01
+
+NL:Collections.vector(of:N)
+Main:{
+  NL myList=NL[1N;2N;3N]
+  Debug.test(
+    S"the max for "[myList]" is "[0N]"!"
+    expected:S"the max for [1; 2; 3] is 3!"
+    )
+  return ExitCode.normal()
+  }
+
+}

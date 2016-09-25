@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import platformSpecific.javaTranslation.Resources;
+import sugarVisitors.CloneVisitor;
 import sugarVisitors.CollapsePositions;
 import facade.Configuration;
 import is.L42.connected.withSafeOperators.ExtractInfo.ClassKind;
@@ -17,6 +18,7 @@ import ast.Ast.MethodType;
 import ast.Ast.Path;
 import ast.Ast.Stage;
 import ast.ErrorMessage;
+import ast.ExpCore;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodImplemented;
@@ -109,9 +111,16 @@ public class Sum {
       if(!stage.getFamilies().contains(fam)){stage.getFamilies().add(fam);}
     }
     if(a.getStage().isVerified() && b.getStage().isVerified()){stage.setVerified(true);}
-    return new ClassB(doc1, doc2, isInterface, superT,
+    Phase accPhase = a.getPhase().acc(b.getPhase());
+    ExpCore.ClassB res= new ClassB(doc1, doc2, isInterface, superT,
             ms,CollapsePositions.accumulatePos(a.getP(), b.getP()),
-            stage,a.getPhase().acc(b.getPhase()),"");
+            stage,accPhase,"-");
+    res=(ClassB) res.accept(new coreVisitors.CloneVisitor(){
+      public ExpCore visit(ClassB s){
+        return super.visit(s.withPhase(accPhase));
+      }
+      });//TODO: remove after new reduction introduced
+    return res;
     }
   /*
   private static void checkMethodClashInterfaceAbstract(List<String> pathForError,List<PathMwt> aInh, List<PathMwt> bInh, List<Member> ms) {

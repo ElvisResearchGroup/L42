@@ -292,8 +292,8 @@ maindefinition:
    paths.top()\Css==empty
    if paths.pop() not empty
      paths0=usedPathsFix(p.pop(),paths.pop(),empty).push(Css)
-   otherwise
-     paths0=Css//@James, new lines here
+   otherwise //this if is to avoid p.pop() undefined
+     paths0=empty.push(Css)//@James, new lines here
 - usedPathsFix(p,empty,empty) =empty   
     
 - usedPathsL(L, Cs1..Csn)=usedInnerL(L(Cs1),Cs1) U ... U usedInnerL(L(Csn),Csn)
@@ -311,6 +311,7 @@ maindefinition:
   **if ( _ T x=P _ _) inside e and T!=class Any, P not Any.
   **if p(Pi).Phase=Typed, Pi is not Any
   **if (mdf P x=_ _) inside e, P not Any
+  **if using P _ _ inside e, P not Any
   otherwise, P is considered of type class Any.
   // note that user can always force a not any by writing (x=P x)
   

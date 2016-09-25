@@ -421,8 +421,10 @@ public class ErrorFormatter {
       List<ClassB> program;
       try { program = (List<ClassB>)f.get(msg);}
       catch (IllegalArgumentException | IllegalAccessException e) { throw new Error(e);}
-      for(ClassB cb:program){
-        L42.printDebug(displayAbstractMethods(cb));
+      if(program!=null){
+        for(ClassB cb:program){
+          L42.printDebug(displayAbstractMethods(cb));
+        }
       }
     }
   }

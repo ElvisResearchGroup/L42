@@ -178,7 +178,7 @@ class PushedProgram extends Methods{
     }
   public String getFreshId(){
     String popped=this.pop().getFreshId();
-    return this.splitPoint.nameWhereThereisTheHole()+"."+popped;
+    return popped+"."+this.splitPoint.nameWhereThereisTheHole();
     }
   }
 class UpdatedProgram extends PushedProgram{
@@ -210,6 +210,6 @@ class EvilPushed extends Methods{
   
   public String getFreshId(){
     String popped=this.pop().getFreshId();
-    return "<EvilPushed>."+popped;
+    return popped+".<EvilPushed>";
     }
   }

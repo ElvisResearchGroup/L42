@@ -10,10 +10,10 @@ Generated Java should be
 
 key ideas:
 -every L has a unique generated name added during normalization
--plugin application will generate new names for resulting libraries
+-plugin application will generate new names for resulting libraries //james suggests: old names may be marked as orphans
 -every 42 execution generate a Resource class that have
-  -current program
-  -map from generate names to program view in that point
+  -current program // current program do not appear in map, current.top() always not LC
+  -map from generate names to program view in that point//programs in map,p.top() always LC
    (no need to be the most updated program view?)
  Thus, multiple 42 executions can run in parallel, but 
  multiple C:e in an execution needs to be sequential.
@@ -22,7 +22,7 @@ key ideas:
 
 L42N: L42 core, compiled, well typed and normalized, with some types annotated.
 
-L42X: L42N with all x as subexpressions
+L42X: L42N with all subexpressions are xs
 
 L42F: a flattened version where every *executable*
   class/interface have a top level name 
@@ -40,7 +40,7 @@ d::= T x=e
 
 #### define G[ e0]= e1
 
-
+L42X:
 miniE::=a| L| throw[T1,T2] a |loop ex | x.m[T]((x:y)s)| use P check m((x:y)s) x
 ex::=miniE | (dxs kxs ex [T])
 kx::=catch throw T x ex
