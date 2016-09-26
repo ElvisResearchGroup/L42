@@ -191,11 +191,11 @@ precondition: at top level we have a L not of form LC
  
           eC' -->p'+ r              p.top()={_ implements Ps0, MCs  C:eC Ms}
 (top)------------------------       eC not of form LC
-     p ==> p'.update(p'.top()[C=r]) eC'=norm(p,eC) //resolve skele types, add all refine, collect supertypes
+     p ==> p'.update(p'.top()[C=r]) eC'=norm(Norm,p,eC) //resolve skele types, add all refine, collect supertypes
                                     <paths; paths'>=usedPathsE(p,eC') //tuple notation
-                                    p0=multiNorm(p,paths U paths')//norm the part of p required by eC'
+                                    p0=multiNorm(p,<paths; paths'>)//norm the part of p required by eC'
                                     paths'|-p0:p' //the part of p' referred to by paths' is well typed
-                                    p'|-toAny(paths,eC'): imm Library //replace paths with Any //eC' is well typed
+                                    p'|-toAny(paths,eC'): _ : imm Library //replace paths with Any //eC' is well typed
 
 
         p.push(ctxL, L)==>+ p'      p.top()={interface? implements Ps, MCs  M Ms}
@@ -221,7 +221,8 @@ subdefinitions:
 
 maindefinition:
 -methods(p,P0)=M1'..Mk'
-  p(P0)={interface? implements Ps Ms}
+  p(P0)={interface? implements Ps Ms Phase}
+  if Phase!=None, M1'..Mk' are extracted from Ms[from P0]//TODO
   P1..Pn=collect(p,Ps[from P0]), error unless forall i, p(Pi) is an interface
   ms1..msk={ms|p(Pi)(ms) is defined}
   forall ms in ms1..msk, there is exactly 1 j in 0..n
@@ -249,33 +250,37 @@ subdefinitions:
   resolve(p,P::msx)= _ P'              
   
 maindefinition:
--norm(p,localBindingDeclaration)= use resolve(p,T)=T' on skeletal types
--norm(p,L)=norm(p.push(L))//can be evilPush
--norm(p)={interface? implements Ps' norm(p,Ms') }
+-norm(phase,p,localBindingDeclaration)= use resolve(p,T)=T' on skeletal types
+-norm(phase,p,L)=norm(phase,p.push(L))//can be evilPush
+-norm(phase,p)=p.top()
+  if p.top().phase>=phase
+  otherwise
+-norm(phase,p)={interface? implements Ps' norm(phase,p,Ms') phase}
  p.top()={interface? implements Ps Ms} //Ms is free var and is ok
  Ps'=collect(p,Ps)
  Ms'=methods(p,This0), {C:e in Ms} //norm now put all the nested classes in the back.
   
-//norm(p,ms e) should never be call 
+//norm(phase,p,ms e) should never be call 
 
--norm(p,refine? mh e?)= refine? resolve(p,mh) norm(p,e?) 
+-norm(phase,p,refine? mh e?)= refine? resolve(p,mh) e?'
+  e?'=e? if phase=LightNorm, otherwise e?'=norm(Norm,p,e?) 
     
--norm(p, C:e) =C:norm(p,e)//we could specify a case C:L where we do a norm(p.push(C)) to avoid an evil push
-
--norm(p,empty)=empty
-
+-norm(phase,p, C:L) =C:norm(phase,p,L)//we could do a norm(p.push(C)) to avoid an evil push
+//is it ever non C:L but C:e?? @James
+-norm(phase,p,empty)=empty
 ------------------------------------------
-### define multiNorm(p,paths)
+### define multiNorm(p,<paths;path'>)
 
-- multiNorm(p,empty) = p
+- multiNorm(p,<empty;empty>) = p
 
-- multiNorm(p, Cs1..Csn)/*a single Css*/= p.update(L)
+- multiNorm(p, <Cs1..Csn; Csn+1..Csk>)/*two single Css*/= p.update(L)
   pi = p.navigate(Csi)
-  Li = norm(pi)//norming the top
-  L = p.top()[Cs1=L1..Csn=Ln] //replace the nested classes in paths Csi with libraries Li.
+  phasei=LightNorm for i<=n, phasei=Norm otherwise 
+  Li = norm(phasei,pi)//norming the top
+  L = p.top()[Cs1=L1..Csk=Lk] //replace the nested classes in paths Csi with libraries Li.
 
-- multiNorm(p, Css,Csss) =multiNorm(p',Css) 
-  p'=p.growFellow(multiNorm(p.pop(), Csss))
+- multiNorm(p, <Css,paths;Css',paths'>) =multiNorm(p',<Css;Css'>) 
+  p'=p.growFellow(multiNorm(p.pop(), <paths;paths'>))
    
 ------------------------------------------     
 ###define usedPathsE
@@ -326,7 +331,7 @@ maindefinition:
 ###define paths|-p:p
 
   L::={.. Phase}
-  Phase::=None | Norm | Typed
+  Phase::=None | LightNorm | Norm | Typed
   paths |-p:p'
   
       paths |- p.pop():p0
