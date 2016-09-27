@@ -9,7 +9,7 @@ k::=catch T x e
 d::= T x=e
 mdf::= imm|mut|lent|read|capsule|class | fwdImm | fwdMut | fwd%Imm | fwd%Mut
 Phase::=None|Norm|Type+|Type*
-TypeJudgement::=Phase p G |- e : e : T
+TypeJudgement::=D |- e : e : T
 G::=x1:T1..xn:Tn
 D::= Phase p G Cage Tr
 Cage::= xss xs
