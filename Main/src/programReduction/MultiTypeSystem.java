@@ -8,6 +8,7 @@ import ast.Ast.Stage;
 import ast.Ast;
 import ast.ExpCore;
 import ast.ExpCore.ClassB;
+import ast.ExpCore.ClassB.MethodWithType;
 import ast.ExpCore.ClassB.Phase;
 import coreVisitors.CloneVisitor;
 
@@ -42,22 +43,28 @@ private static ClassB typeLibrary(List<List<String>> current, Program p) {
     Program pi=p.navigate(csi);
     assert pi.top().getPhase()!=Phase.None:
     "";
-    ClassB li=typeSingle(pi,pi.top());
+    ClassB li=typeSingle(pi);
     result=result.onClassNavigateToPathAndDo(csi, oldLi->li);
   }
   return result;
   }
 
-private static ClassB typeSingle(Program p, ClassB l) {
-  auxiliaryGrammar.Program pOld = p.oldRepr();
-  pOld=pOld.getExecutableStar();
-  //pOld.recomputeStage();
+private static ClassB typeSingle(Program p) {
+  ClassB l=new Norm(){//TODO: all body of this meth will change with new typing
+    protected MethodWithType normMwt(Program p,MethodWithType mwt){
+      return this.normMwtDeep(p, mwt);
+      }
+    }.norm(p);
   l=(ClassB) l.accept(new coreVisitors.CloneVisitor(){
   public ExpCore visit(ClassB s) {
     s=(ClassB) super.visit(s);
     s.getStage().setStage(Stage.Star);
     return s;
   }});
+  p=p.updateTop(l);
+  auxiliaryGrammar.Program pOld = p.oldRepr();
+  pOld=pOld.getExecutableStar();
+  //pOld.recomputeStage();
   facade.Configuration.typeSystem.checkCt(pOld.pop(),l);
   l=(ClassB) l.accept(new coreVisitors.CloneVisitor(){
     public ExpCore visit(ClassB s) {

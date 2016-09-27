@@ -1,0 +1,180 @@
+//all the L are LC
+mwt::=refine? mh e? //method with type
+nc::=C:L
+T::= mdf P
+e::=x|void|P|L|throw[T1,T2] e|loop e|(ds ks e[T])
+ | e.m[T]((x:e)s)| use P check m((x:e)s) e
+throw::= exception | error | return
+k::=catch T x e
+d::= T x=e
+mdf::= imm|mut|lent|read|capsule|class | fwdImm | fwdMut | fwd%Imm | fwd%Mut
+Phase::=None|Norm|Type+|Type*
+TypeJudgement::=Phase p G |- e : e : T
+G::=x1:T1..xn:Tn
+D::= Phase p G Cage Tr
+Cage::= xss xs
+Tr::=Ts Ps
+
+We have well formedness on capsules:
+used at most onece for each "branch"
+formally: cX(e)=xs is defined for all e
+cX(x)=x
+cX(void)=cX(P)=cX(L)=empty
+cX(throw[T1,T2] e)=cX(e)
+cX(loop e)=cX(e),cX(e)  //two times, that is enough
+cX(e0.m[T](x1:e1..xn:en) )=cX(e0)..cX(en)
+cX(use P check m(x1:e1..xn:en) e0)=cX(e0)..cX(en)
+
+cX( (T1 x1=e1..Tn xn=en k1..kj e0[T]) )=xs/x1..xn ,max(xs0,..,xs1)
+  where
+  xs=cX(e1),..,cX(en)
+  xsi=cX(ki)
+  xs0=cX(e0) 
+  if Ti=capsule _ then
+    x notin xs
+    x at most 1 in xs0
+
+max(empty,ys)=ys
+max (x xs,ys)=x max(xs,ys) if x not in xs,ys 
+?????? James, does it works?
+
+complete(G)={x:T | G(x) not fwd/fwd%}
+
+fwd T and fwd% T return the fwd/fwd% version of T
+
+
+(void)
+_ |- void: void:imm Void
+
+(Path)
+_ |- P:P:class P
+
+(library shallow norm)
+Norm p _|- L : norm(p,L) : imm Library  //light norm: ignore meth bodies
+
+(library well typed)
+Type+ p _|- L : L' : imm Library
+   where
+   L0={interface? implements Ps M1..Mn}=norm(p,L)
+   L'={interface? implements Ps M1'..Mn'}
+   Type+ p.evilPush(L0) |-Mi : Mi' 
+
+(library coherent)
+Type* p _|- L : L' : imm Library
+   where
+   Type+ p _|- L : L' : imm Library
+   coherent(L')//not abstract   
+
+(x)
+Phase p G xss xs Tr |-x:T
+  where
+  x notin xs
+  if x in xss T=lentOf(G(x))
+  otherwise T=G(x)
+
+(loop)
+D |- loop e:loop e':imm Void
+  where
+  D|- e:e':imm Void
+
+(throw)
+D|-throw[_,_] e: throw[T,mdf P] e' :  T
+  where
+  D|- e:  e' :  mdf P
+  if throw=return, p|-mdf P<=T', T' in D.Ts
+  otherwise p|-mdf P<=imm P', P' in D.Ps  
+
+(mcall)
+D|- e0.m[_](x1:e1..Xn:en) : e'0.m[mdf0 P0](x1:e'1..xn:e'n)  : T
+  where
+  D|-e0: e'0:mdf0 P0<=mdf'0 P0
+  not D|-e0: _:imm Void //makes (error x).m(...) not well typed
+  D.p(P0).m(x1..xn).mh=mdf'0 method T' m(T'1 x1,..T'n xn) exception Ps
+  p|- Ps in D.Tr.Ps
+  forall i 1..n D|- ei : e'i : Ti <=T'i
+  if no fwd in T1..Tn
+    T=T'
+  otherwise 
+    T=fwd% T'
+     
+(using)
+ D|-use P check m(x1:e1.. xn:en) e0 :use P check m(x1:e'1.. xn:e'n) e'0 :T'0
+ where
+   plugin(D.p,P,m(x1..xn))=plg, T'0..T'n
+   forall i 0..n D|- ei : e'i : Ti <=T'i
+
+
+(block)
+Phase p G Cage Tr|-(T1 x1=e1..Tn xn=en ks e0[_]) :(resolve(p,T1) x1=e1..resolve(p,Tn) xn=en ks e0[T]) : T
+  where
+  Phase p G Cage Tr|-ks: ks' :T
+  for i in 1..n Phase p G1 Cage Tr[ks]|-ei:e'i:T'i<=fwd% Ti
+  G'=x1:T1..xn:Tn
+  G1=G[ks],fwd(complete(G'))
+  Phase p G0 Cage Tr|-e0:e'0:T
+  if exists x in FV(e1..en) such that G1(x)=fwd _
+    G0=G,fwd%(G')
+  otherwise
+    G0=G,G'
+  
+(block divide scope)
+D|- (ds1 ds2 K e):(ds'1 ds'2 K' e'):T
+  where
+  D|- (ds1 K (ds2 K e) ):(ds'1 K'(ds'2 K' e')):T
+  
+
+(propagate promotions to catches)
+//dec-k-prom-t seams broken but is actually ok since use x as the catch e
+//basically is a late fix for the poor sintactic sugar...
+//should it be encoded in the sugar??
+//No, the application of this rule needs to be dynamic and failure driven
+//note, the sugar just use a single k...
+D|- (ds ks1 catch return mdf Path x x ks2 e):(ds' ks'1 catch return mdf' Path x x ks'2 e') :T
+  where
+  D|-(ds ks1 catch return mdf' Path x x ks2 e):(ds' ks'1 catch return mdf' Path x x ks'2 e') :T
+  either
+    mdf=capsule, mdf'=mut
+  or
+    mdf=imm, mdf' in {mut,read}
+  
+(catch)
+Phase p G Cage Tr|-catch throw T x e : catch throw resolve(p,T) x e' :T'
+  where
+  Phase p G,x:T Cage Tr |- e : e':T'
+
+(cath and rethrow any)  
+Phase p G Cage Tr|-k0 : catch throw resolve(p,T0) x e0 :T0
+  where
+  k0=catch throw mdf0 Any x e
+  k1=catch throw T1 x e
+  k2=catch throw T2 x e
+  for i in 0,1,2 Phase p G Cage Tr[ki]|-ki : catch throw resolve(p,Ti) x ei :Ti
+  either
+    throw=exception, mdf=imm, T0=imm Library, T1=imm Void
+  or
+    throw=return, T0=class Library, T1=read Void
+
+(lent viewpoint adaptation)
+Phase p G Cage Tr|-e:e':mdf P
+  where
+  Phase p G Cage' Tr|-e:e':mutToLent(mdf P)
+  Cage=xs0,xss;xs
+  Cage'=xss,domMut(G)\xss ; xs'
+  if mdf in {read,lent,mut} then xs'=xs
+  otherwise xs'=empty
+  
+
+(capsule promotion)
+Phase p G Cage Tr|-e:e':capsule P
+  where
+  Phase p G Cage' Tr|-e:e':mut P  
+  Cage=xss;xs
+  Cage'=xss,domMut(G)\xss;xs
+
+(imm promotion)
+Phase p G Cage Tr|-e:e':imm P
+  where
+  Phase p G Cage' Tr|-e:e':mdf P
+  mdf in {read,lent}  
+  Cage=xss;xs
+  Cage'=xss,domMut(G)\xss;domMutLentRead(G)

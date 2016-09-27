@@ -117,6 +117,7 @@ public class Sum {
             stage,accPhase,"-");
     res=(ClassB) res.accept(new coreVisitors.CloneVisitor(){
       public ExpCore visit(ClassB s){
+        if (s.getPhase()==Phase.None){return super.visit(s);}
         return super.visit(s.withPhase(accPhase));
       }
       });//TODO: remove after new reduction introduced

@@ -191,11 +191,12 @@ precondition: at top level we have a L not of form LC
  
           eC' -->p'+ r              p.top()={_ implements Ps0, MCs  C:eC Ms}
 (top)------------------------       eC not of form LC
-     p ==> p'.update(p'.top()[C=r]) eC'=norm(Norm,p,eC) //resolve skele types, add all refine, collect supertypes
-                                    <paths; paths'>=usedPathsE(p,eC') //tuple notation
-                                    p0=multiNorm(p,<paths; paths'>)//norm the part of p required by eC'
+     p ==> p'.update(p'.top()[C=r]) <paths; paths'>=usedPathsE(p,eC') //tuple notation
+                                    p0=multiNorm(p,paths U paths')//norm the part of p required by eC'
                                     paths'|-p0:p' //the part of p' referred to by paths' is well typed
-                                    p'|-toAny(paths,eC'): _ : imm Library //replace paths with Any //eC' is well typed
+                                    Norm,p'|-toAny(paths,eC): _ : imm Library //replace paths with Any //eC' is well typed
+                                    Norm,p'|-eC: eC' : imm Library //duplicated typing, so we can have eC' non with Anys
+                                    
 
 
         p.push(ctxL, L)==>+ p'      p.top()={interface? implements Ps, MCs  M Ms}
@@ -250,37 +251,36 @@ subdefinitions:
   resolve(p,P::msx)= _ P'              
   
 maindefinition:
--norm(phase,p,localBindingDeclaration)= use resolve(p,T)=T' on skeletal types
--norm(phase,p,L)=norm(phase,p.push(L))//can be evilPush
--norm(phase,p)=p.top()
-  if p.top().phase>=phase
+-norm(p,localBindingDeclaration)= use resolve(p,T)=T' on skeletal types
+-norm(p,L)=norm(phase,p.push(L))//can be evilPush
+-norm(p)=p.top()
+  if p.top().phase!=None
   otherwise
--norm(phase,p)={interface? implements Ps' norm(phase,p,Ms') phase}
+-norm(p)={interface? implements Ps' norm(p,Ms') Norm}
  p.top()={interface? implements Ps Ms} //Ms is free var and is ok
  Ps'=collect(p,Ps)
  Ms'=methods(p,This0), {C:e in Ms} //norm now put all the nested classes in the back.
   
-//norm(phase,p,ms e) should never be call 
+//norm(p,ms e) should never be call 
 
--norm(phase,p,refine? mh e?)= refine? resolve(p,mh) e?'
-  e?'=e? if phase=LightNorm, otherwise e?'=norm(Norm,p,e?) 
+-norm(p,refine? mh e?)= refine? resolve(p,mh) e? 
     
--norm(phase,p, C:L) =C:norm(phase,p,L)//we could do a norm(p.push(C)) to avoid an evil push
-//is it ever non C:L but C:e?? @James
--norm(phase,p,empty)=empty
+-norm(p, C:L) =C:norm(p,L)//we could do a norm(p.push(C)) to avoid an evil push
+
+-norm(p,empty)=empty
+
 ------------------------------------------
-### define multiNorm(p,<paths;path'>)
+### define multiNorm(p,paths)
 
-- multiNorm(p,<empty;empty>) = p
+- multiNorm(p,empty) = p
 
-- multiNorm(p, <Cs1..Csn; Csn+1..Csk>)/*two single Css*/= p.update(L)
-  pi = p.navigate(Csi)
-  phasei=LightNorm for i<=n, phasei=Norm otherwise 
-  Li = norm(phasei,pi)//norming the top
+- multiNorm(p, Cs1..Csn)/*a single Css*/= p.update(L)
+  pi = p.navigate(Csi) 
+  Li = norm(pi)//norming the top
   L = p.top()[Cs1=L1..Csk=Lk] //replace the nested classes in paths Csi with libraries Li.
 
-- multiNorm(p, <Css,paths;Css',paths'>) =multiNorm(p',<Css;Css'>) 
-  p'=p.growFellow(multiNorm(p.pop(), <paths;paths'>))
+- multiNorm(p, Css,paths) =multiNorm(p',Css) 
+  p'=p.growFellow(multiNorm(p.pop(), paths))
    
 ------------------------------------------     
 ###define usedPathsE
@@ -331,7 +331,7 @@ maindefinition:
 ###define paths|-p:p
 
   L::={.. Phase}
-  Phase::=None | LightNorm | Norm | Typed
+  Phase::=None|Norm|Type+|Type*
   paths |-p:p'
   
       paths |- p.pop():p0
@@ -349,7 +349,7 @@ maindefinition:
          empty |- p :p
   
 
-     forall Csi : pi|-pi.top(): Li //if Li.Phase=Typed, the check will be just asserted
+     forall Csi : Type*,pi|-pi.top(): Li //if Li.Phase=Typed, the check will be just asserted
 (pL) ---------------------------------------   pi=p.navigate(Csi)
      Cs1..Csn|-p:p.top()[Cs1=L1,.. Csn=Ln]     //Li will have Phase=Typed also inside all somehow contained Ls
 

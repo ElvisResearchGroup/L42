@@ -65,7 +65,7 @@ public static class TestNorm1 {
   Program p=TestProgram.p(_p);
   Ast.Path path=Path.parse(_path);
   ExpCore.ClassB expected=(ExpCore.ClassB)TestHelper.getExpCore(TestProgram.class.getSimpleName(),_expected);
-  ExpCore.ClassB l=Norm.norm(p.navigate(path));
+  ExpCore.ClassB l=new Norm().norm(p.navigate(path));
   
   TestHelper.assertEqualExp(expected,l);
   }

@@ -75,15 +75,15 @@ public class Norm {
     List<Type>pts=Map.of(t->resolve(p,t),mt.getTs());
     return mt.withReturnType(rt).withTs(pts);
     }
-  static ExpCore norm(Program p,ExpCore e){
+  ExpCore norm(Program p,ExpCore e){
     return e.accept(new CloneVisitor(){
       protected Type liftT(Type t){ return resolve(p,t); }
       public ExpCore visit(ClassB s) {
-        if(s.getPhase()!=Phase.None){return s;}
+        //TODO: enable when there is new TS if(s.getPhase()!=Phase.None){return s;}
         return norm(p.evilPush(s));
         }});
     }
-  static ExpCore.ClassB norm(Program p){
+  ExpCore.ClassB norm(Program p){
     //-norm(p)={interface? implements Ps' norm(p,Ms') }
     //p.top()={interface? implements Ps Ms} //Ms is free var and is ok
     ClassB l=p.top();
@@ -98,14 +98,21 @@ public class Norm {
     return new ClassB(l.getDoc1(),l.getDoc2(),l.isInterface(),ps1,ms1,l.getP(),l.getStage(),Phase.Norm,p.getFreshId());
     }
   @SuppressWarnings("unchecked")
-  static <T extends ExpCore.ClassB.Member> T norm(Program p,T m){
+  <T extends ExpCore.ClassB.Member> T norm(Program p,T m){
     return m.match(
       nc->(T)nc.withE(norm(p,nc.getE())),//modify here to decrese performance but reduce evilpushes, by doing push(C) in case e is L
       mi->(T)Assertions.codeNotReachable(),
-      mt->(T)mt.withMt(resolve(p,mt.getMt()))
-               .with_inner(mt.get_inner().map(e->norm(p,e)))
+      mwt->(T)normMwt(p,mwt)
       );
     }
+  protected MethodWithType normMwt(Program p,MethodWithType mwt){
+    return mwt.withMt(resolve(p,mwt.getMt()));
+    }
+  protected MethodWithType normMwtDeep(Program p,MethodWithType mwt){
+    return mwt.withMt(resolve(p,mwt.getMt()))
+      .with_inner(mwt.get_inner().map(e->norm(p,e)));
+    }
+      
 
   static Program auxMultiNorm(Program p, List<List<String>>topPaths){
     ClassB lTop=p.top();
@@ -114,7 +121,7 @@ public class Norm {
 //  Li = norm(pi)//norming the top
 //  L = p.top()[Cs1=L1..Csn=Ln] //replace the nested classes in paths Csi with libraries Li.
       Program pi=p.navigate(csi);
-      ClassB li=norm(pi);
+      ClassB li=new Norm().norm(pi);
       lTop=lTop.onClassNavigateToPathAndDo(csi, _l->li);
       }
     return p.updateTop(lTop);

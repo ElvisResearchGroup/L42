@@ -44,7 +44,7 @@ public class ProgramReduction {
     ExpCore ec=nc.getInner();
     assert IsCompiled.of(ec);
     assert !(ec instanceof ClassB);
-    ExpCore ec1=Norm.norm(p, ec);
+    ExpCore ec1=new Norm().norm(p, ec);//TODO:May disappear with new TS?
     PathsPaths pair = UsedPaths.usedPathsE(p, ec1);
     Paths paths=pair.left;
     Paths paths1=pair.right;
