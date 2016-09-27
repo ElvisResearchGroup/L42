@@ -25,6 +25,9 @@ public class TranslateClass {
   //not any more as 14 03/2016?
     boolean isInterface=getClassOpen(s,ct,res);
     res.append("{\n");
+    if(s.contains("Annotations")){
+      System.out.println("");
+    }
     if(!isInterface){
       generateClassFacade(s, ct, res);
     }

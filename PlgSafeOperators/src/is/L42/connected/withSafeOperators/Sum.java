@@ -114,7 +114,7 @@ public class Sum {
     Phase accPhase = a.getPhase().acc(b.getPhase());
     ExpCore.ClassB res= new ClassB(doc1, doc2, isInterface, superT,
             ms,CollapsePositions.accumulatePos(a.getP(), b.getP()),
-            stage,accPhase,"-");
+            stage,accPhase,accPhase==Phase.None?"":"-");
     res=(ClassB) res.accept(new coreVisitors.CloneVisitor(){
       public ExpCore visit(ClassB s){
         if (s.getPhase()==Phase.None){return super.visit(s);}

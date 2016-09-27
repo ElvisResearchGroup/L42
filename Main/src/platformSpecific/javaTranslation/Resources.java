@@ -261,7 +261,9 @@ public class Resources {
       else{throw Resources.notAct;}
       }
     catch(Resources.Error errF){
-      if(Resources.isValid(p,errF.unbox,xs)){throw errF;}
+      Object errRes = errF.unbox;
+      errRes=Functions.setMinimalCache(p, errRes);
+      if(Resources.isValid(p,errRes,xs)){throw errF;}
       else{throw Resources.notAct;}
       }
     catch(ErrorMessage.PluginActionUndefined undF){throw undF;}
@@ -377,7 +379,8 @@ public class Resources {
     try{ClassB cb=p.extractCb(path);
     if( cb.getPhase()==Phase.Typed && IsCompiled.of(cb)){ return nameOf(path.outerNumber(),path.getCBar()); }
     }catch (ErrorMessage em){}
-    return "Object";
+    //return nameOf(path.outerNumber(),path.getCBar());
+    return "Object";//TODO: boh? new reduction would fix?
     }
 
 

@@ -101,7 +101,7 @@ public class Plugin implements PluginType{
     @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
     public Object MmoveImplementation£xthat£xpath£xsrc£xdest(Object _that,Object _path,Object _sel1,Object _sel2){
       ClassB that=ensureExtractClassB(_that);
-      assert that.getStage().isInheritedComputed();
+      //assert that.getStage().isInheritedComputed();
       List<String> path=Path.parseValidCs(ensureExtractStringU(_path));
       MethodSelector sel1 = MethodSelector.parse(ensureExtractStringU(_sel1));
       MethodSelector sel2 = MethodSelector.parse(ensureExtractStringU(_sel2));

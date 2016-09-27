@@ -37,7 +37,9 @@ public class UsedPaths {
 //paths= reorganize(Ps')
     Paths paths = Paths.reorganize(ps1);
     Paths usedPathsFix = usedPathsFix(p,paths,Collections.emptyList());
-    return new PathsPaths(Paths.reorganize(ps),usedPathsFix);        
+    PathsPaths result= new PathsPaths(Paths.reorganize(ps),usedPathsFix);        
+    System.out.println("UsedPaths:\npaths:"+result.left+"\npaths':"+result.right+"\n-----------------\n");
+    return result;
     }
 
   static private Paths usedPathsFix(Program p, Paths paths, List<List<String>> css) {

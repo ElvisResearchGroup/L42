@@ -636,6 +636,17 @@ public static <T > T setMinimalCache(Program p,T e){
     @Override public ExpCore visit(ExpCore.ClassB cb){
       //cb=((ExpCore.ClassB)super.visit(cb)); we need to stop at the first layer
       Configuration.typeSystem.computeStage(p, cb);
+      //TODO: all this should disappear with new Ts+reduction
+      cb=(ClassB) cb.accept(new coreVisitors.CloneVisitor(){
+        public ExpCore visit(ClassB s) {
+          if (s.getPhase()!=Phase.None){
+            s=s.withPhase(Phase.Norm);
+            } 
+          return super.visit(s);
+          }});
+      if (cb.getPhase()!=Phase.None){
+        cb=cb.withPhase(Phase.Norm);
+        }
       return  cb;
       }
   });

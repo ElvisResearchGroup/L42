@@ -373,8 +373,9 @@ class _Aux{
         keys.add(key);
         }
       }
-    assert  (cb.getPhase()==ast.ExpCore.ClassB.Phase.None && cb.getUniqueId().isEmpty())
-         || ((cb.getPhase()!=ast.ExpCore.ClassB.Phase.None && !cb.getUniqueId().isEmpty()) );
+    //TODO: re enable with new TS/reduction
+    //assert  (cb.getPhase()==ast.ExpCore.ClassB.Phase.None && cb.getUniqueId().isEmpty())
+    //     || ((cb.getPhase()!=ast.ExpCore.ClassB.Phase.None && !cb.getUniqueId().isEmpty()) );
     assert countWalkBy <= 1 : cb;
     return true;
     }
