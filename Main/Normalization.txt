@@ -191,7 +191,7 @@ precondition: at top level we have a L not of form LC
  
           eC' -->p'+ r              p.top()={_ implements Ps0, MCs  C:eC Ms}
 (top)------------------------       eC not of form LC
-     p ==> p'.update(p'.top()[C=r]) <paths; paths'>=usedPathsE(p,eC') //tuple notation
+     p ==> p'.update(p'.top()[C=r]) <paths; paths'>=usedPathsE(p,eC) //tuple notation
                                     p0=multiNorm(p,paths U paths')//norm the part of p required by eC'
                                     paths'|-p0:p' //the part of p' referred to by paths' is well typed
                                     Norm,p'|-toAny(paths,eC): _ : imm Library //replace paths with Any //eC' is well typed
@@ -267,7 +267,7 @@ maindefinition:
     
 -norm(p, C:L) =C:norm(p,L)//we could do a norm(p.push(C)) to avoid an evil push
 
--norm(p,empty)=empty
+//-norm(p,empty)=empty
 
 ------------------------------------------
 ### define multiNorm(p,paths)
@@ -315,7 +315,8 @@ maindefinition:
   **if P.m(_) inside e, P not Any
   **if ( _ T x=P _ _) inside e and T!=class Any, P not Any.
   **if p(Pi).Phase=Typed, Pi is not Any
-  **if (mdf P x=_ _) inside e, P not Any
+  **if (T x=_ _) inside e, T.P not Any //TODO:
+  **if catch throw T x _ inside e, T.P not Any  
   **if using P _ _ inside e, P not Any
   otherwise, P is considered of type class Any.
   // note that user can always force a not any by writing (x=P x)
@@ -331,7 +332,7 @@ maindefinition:
 ###define paths|-p:p
 
   L::={.. Phase}
-  Phase::=None|Norm|Type+|Type*
+  Phase::=None|Norm|Type+|Type*//james suggest: Norm |Typed|Coherent
   paths |-p:p'
   
       paths |- p.pop():p0
