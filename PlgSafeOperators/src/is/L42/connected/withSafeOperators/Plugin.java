@@ -100,12 +100,16 @@ public class Plugin implements PluginType{
       }
     @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
     public Object MmoveImplementation£xthat£xpath£xsrc£xdest(Object _that,Object _path,Object _sel1,Object _sel2){
+      try{
       ClassB that=ensureExtractClassB(_that);
       //assert that.getStage().isInheritedComputed();
       List<String> path=Path.parseValidCs(ensureExtractStringU(_path));
       MethodSelector sel1 = MethodSelector.parse(ensureExtractStringU(_sel1));
       MethodSelector sel2 = MethodSelector.parse(ensureExtractStringU(_sel2));
       return Abstract.toAbstract(Resources.getP(),that,path,sel1,sel2);
+      }catch (RuntimeException rte ){
+      throw rte;//to put breakpoint
+      }
       }
     @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
     public Object MaddDocumentation£xthat£xpath£xdoc(Object _that,Object _path,Object _doc){

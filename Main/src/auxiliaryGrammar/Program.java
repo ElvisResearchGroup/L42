@@ -421,11 +421,11 @@ public class Program {
     Optional<Member> res1 = Program.getIfInDom(cb.getMs(),sel);
     if(res1.isPresent()){return Optional.of(extractMwt(res1.get(),cb));}
     assert cb.getStage()!=null;
-    Configuration.typeSystem.computeInherited(this, cb);
+    /*Configuration.typeSystem.computeInherited(this, cb);
     for(PathMwt mt:cb.getStage().getInherited()){
       if(!mt.getMwt().getMs().equals(sel)){continue;}
       return Optional.of(mt.getMwt());
-      }
+      }*/
     return Optional.empty();
   }
   public static MethodWithType extractMwt(Member m,ClassB cb){
