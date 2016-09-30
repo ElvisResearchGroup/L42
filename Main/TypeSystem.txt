@@ -34,8 +34,8 @@ cX( (T1 x1=e1..Tn xn=en k1..km e0[T]) )=xs/x1..xn ,max(xs0/x1..xn,..,xsm)
     xi at most 1 in xs,xs0
 
 max(empty,ys)=ys
-max (x xs,ys)=x max(xs,ys) if x not in xs,ys 
-?????? James, does it works?
+max (x xs,ys)=x max(xs,ys) if x not in ys
+max (x xs,ys)=x max(xs,removeOne(x,ys)) 
 
 complete(G)={x:T | G(x) not fwd/fwd%}
 
@@ -56,7 +56,10 @@ Type+ p _|- L : L' : imm Library
    where
    L0={interface? implements Ps M1..Mn}=norm(p,L)
    L'={interface? implements Ps M1'..Mn'}
-   Type+ p.evilPush(L0) |-Mi : Mi'//TODO: 
+   Type+ p.evilPush(L0); Ps |-Mi : Mi'
+   forall ms in dom(p.evilPush(L0))
+     ms in dom(L0)
+
 
 (library coherent)
 Type* p _|- L : L' : imm Library
@@ -177,3 +180,38 @@ Phase p G Cage Tr|-e:e':imm P
   mdf in {read,lent}  
   Cage=xss;xs
   Cage'=xss,domMut(G)\xss;domMutLentRead(G)
+
+(lent to singleton)
+Phase| p| G x:lent C G'|  xss;xs | Tr |-e:e':T
+  where 
+  Phase| p| G x:mut C G'|  xss,{x};xs| Tr |-e:e':T
+
+  
+(subtype)
+p|-mdf P<=mdf' P'
+  where
+  mdf<=mdf
+  either P=P'
+  or P' in p(P).Ps[from P]
+
+Type+ p; Ps |-C:L :  C:L'
+   where
+   Type+ p.push(C,L) |-L : L': _ //can be evilPush? may be not? consistency?
+
+
+Type+ p; Ps |-M : M'
+  where
+  M =refine? mdf method T m(T1 x1 .. Tn xn)exceptions Ps' e?
+  M'=refine? mdf method T m(T1 x1 .. Tn xn)exceptions Ps' e?'
+  if e?=e then
+    Type+ p; G;empty,empty;empty,Ps'|-e:e?' :_ <=T
+  else
+    e?=e?'
+  existsExactly 1 P in Ps,This0
+    such that p(P)(m(x1..xn)).refine? = empty
+  refine? != empty <=> 
+    forall P in Ps such that p(P)(m(x1..xn))=M //that is, is defined
+      M=mdf method T' m(T1 x1..Tn xn)exceptions Ps' and p|-T<=T'
+  
+------------------
+Dispatch //HARD
