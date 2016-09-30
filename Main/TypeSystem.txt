@@ -65,8 +65,8 @@ Type+ p _|- L : L' : imm Library
 Type* p _|- L : L' : imm Library
    where
    Type+ p _|- L : L' : imm Library
-   coherent(L')//not abstract  //TODO: also check nested 
-
+   coherent(L')//not abstract  //TODO: also check nested
+    
 (x)
 Phase p G xss xs Tr |-x:T
   where
@@ -212,6 +212,38 @@ Type+ p; Ps |-M : M'
   refine? != empty <=> 
     forall P in Ps such that p(P)(m(x1..xn))=M //that is, is defined
       M=mdf method T' m(T1 x1..Tn xn)exceptions Ps' and p|-T<=T'
+
+
+  coherent(C1:L1..Cn:Ln)=coherent(L1)..coherent(Ln)
+
+coherent({interface _ mwts ncs})
+  where
+  coherent(ncs)
+    
+coherent({implements _ mwts ncs})    
+  where
+  coherent(ncs)
+  mwt1..mwtn={mwt in mwts| mwt.e undefined }
+  either n=0
+  or
+    mwt1=refine? class method T m(T1 x1..Tn xm) exception _,
+    p|-mdf This0 <=T, T1..Tn not read/lent
+    forall mwti in mwt2..mwtn
+      in the following Ti not fwd and mi=#?xj
+      mwti=mut method Ti mi() exception _, p|-Tj<=capsuleToLent(Ti)//exposer
+      or
+      mwti=read method Ti mi() exception _, p|-Tj<=toRead(Ti)//getter
+      or
+      mwti=mut method Void mi(Ti that) exception _, p|-Ti<=Tj//setter
+      
+    read=toRead(mut)=toRead(mutFwd)=toRead(capsule)
+    imm=toRead(imm)=toRead(immFwd)
+    class=toRead(class)
+    
+    lent=capsuleToLent(capsule)
+    mut=capsuleToLent(mutFwd)
+    imm=capsuleToLent(immFwd)
+    otherwise mdf=capsuleToLent(mdf)
   
 ------------------
 Dispatch //HARD
