@@ -306,8 +306,12 @@ maindefinition:
 - usedPathsL(L, Cs1..Csn)=usedInnerL(L(Cs1),Cs1) U ... U usedInnerL(L(Csn),Csn)
 
 - usedInnerL(LC,Cs)=paths.prefix(Cs)
-  LC={_ implements Ps, M1..Mn}//in implementation, error if not compiled
+  LC={_ implements Ps, M1..Mn Phase}//in implementation, error if not compiled
   paths=reorganize(Ps) U usedInnerM(M1) U... U usedInnerM(Mn))
+  Phase in{None,Norm}
+  
+- usedInnerL(LC,Cs)=empty
+  LC.Phase not in{None,Norm}
 
 - usedInnerM(M)= reorganize({P| P inside M}) U (usedInnerL(L1,empty) U...U usedInnerL(Ln,empty)).pop() //leverage on empty.pop()=empty
   //on former line, if we pop the individual results we could save some work while miminizing
