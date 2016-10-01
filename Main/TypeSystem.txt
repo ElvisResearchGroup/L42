@@ -30,7 +30,7 @@ cX(loop e)=cX(e),cX(e)  //two times, that is enough
 cX(e0.m[T](x1:e1..xn:en) )=cX(e0)..cX(en)
 cX(use P check m(x1:e1..xn:en) e0)=cX(e0)..cX(en)
 
-cX( (T1 x1=e1..Tn xn=en k1..km e0[T]) )=ys/x1..xn ,max( (xs0/x1..xn); xs1;..;xsm)
+cX( (T1 x1=e1..Tn xn=en k1..km e0[T]) )=ys/x1..xn ,max( (xs0/x1..xn), xs1,..,xsm)
   where
   ys=cX(e1),..,cX(en)
   xsi=cX(ki)
@@ -41,6 +41,7 @@ cX( (T1 x1=e1..Tn xn=en k1..km e0[T]) )=ys/x1..xn ,max( (xs0/x1..xn); xs1;..;xsm
 max(empty,ys)=ys
 max (x xs,ys)=x max(xs,ys) if x not in ys
 max (x xs,ys)=x max(xs,removeOne(x,ys)) 
+max(xs, xs0..xsn) = max(max(xs,xs0),xs1..xsn)
 
 complete(G)={x:T | G(x) not fwd/fwd%}
 
