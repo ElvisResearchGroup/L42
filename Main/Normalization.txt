@@ -45,7 +45,7 @@ P::= Thisn.Cs //is pronounced "Path"
 T::= mdf P | P::msxs
 msx::=ms(::x)?
 LC::={implements Ps MC1..MCn}  //library compiled
-MC::=refine mh eC?| mh eC? | C:LC
+MC::=refine? mh eC?| ms eC | C:LC
 eC::=.... |LC
 // No, compiled types are T, normalized types are only mdf P
 // but normalization is a different step
@@ -53,7 +53,7 @@ r::=LC| exception v | error v
 
 ctxC::=[] | eC.m( (x=eC)s x=ctxC, (x=e)s)| .... // compilation context, e=ctxC[L] selects an L where all the former Ls are LC. The context do not enter in libraries
 ctxM::= C: ctxC |ms ctxC | refine? mh ctxC
-ctxL::= {interface? implements Ps MCs ctxM Ms}
+ctxL::= {interface? implements Ps Ms ctxM Ms'}
 
 //notice how every LC is a special kind of L (barnotation has structural subtyping)
 ---------
