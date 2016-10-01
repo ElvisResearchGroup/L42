@@ -108,9 +108,9 @@ Moreover, for convenience we define inside in the following way:
  -reorganize(empty)=empty
  -reorganize(Ps)=Css0,...,Cssn
   Cssn!=empty
-  Cssi=minimize(Cssi')
   Cs in Cssi' iff Thisi.Cs in Ps
-   
+  Cssi=minimize(Cssi')
+
  -minimize(Cs1..Csn)={Cs in Cs1..Csn | forall Csi, Csi._!=Cs}
 
  
@@ -181,9 +181,9 @@ program derived operations:
 Part 2: reduction rules and notations
 -----------------------------------------------------------
 depend on:
- p|-L:L'
- p|-e: imm Library
+ Phase|p|empty|empty|empty|-e:e':T
  e -->p+ r
+ 
 -----------------------------------------------------------
 ### reduction rules
 ReductionTop:
@@ -193,7 +193,7 @@ precondition: at top level we have a L not of form LC
 (top)------------------------       eC not of form LC
      p ==> p'.update(p'.top()[C=r]) <paths; paths'>=usedPathsE(p,eC) //tuple notation
                                     p0=multiNorm(p,paths U paths')//norm the part of p required by eC'
-                                    paths'|-p0:p' //the part of p' referred to by paths' is well typed
+                                    Type*,paths'|-p0:p' //the part of p' referred to by paths' is well typed
                                     Norm,p'|-toAny(paths,eC): _ : imm Library //replace paths with Any //eC' is well typed
                                     Norm,p'|-eC: eC' : imm Library //duplicated typing, so we can have eC' non with Anys
                                     
@@ -232,7 +232,7 @@ maindefinition:
   //i comes from k in ms1..msk
   Mi= p(P0)(msi)[from P0] if it is of form  refine? mh e?,
   otherwise
-  Mi=addRefine(methods(p,Pj)(msi))
+  Mi=addRefine(methods(p,Pj)(msi)) //ok if it stay the same since already refine
     for the smallest j in 1..k such that methods(p,Pj)(msi) of form refine? mh
   
   Mi'=Mi[with e=p(P0)(msi).e[from P0]] if defined,
@@ -251,8 +251,8 @@ subdefinitions:
   resolve(p,P::msx)= _ P'              
   
 maindefinition:
--norm(p,localBindingDeclaration)= use resolve(p,T)=T' on skeletal types
--norm(p,L)=norm(phase,p.push(L))//can be evilPush
+
+-norm(p,L)=norm(p.push(L))//can be evilPush
 -norm(p)=p.top()
   if p.top().phase!=None
   otherwise
@@ -288,10 +288,10 @@ maindefinition:
   Ps,Ps'={P|P inside eC}//arbitrary split of the set; heuristic will apply in the implementation.
   paths= reorganize(Ps')
  
-- usedPathsFix(p,paths,Css)= usedPathsFix(p, paths U paths0,minimize(Css')) // U on paths does minimize() internally
+- usedPathsFix(p,paths,Css)= usedPathsFix(p, paths U paths0,Css') // U on paths does minimize() internally
    paths.top()\Css!=empty
    paths0=usedPathsL(p.top(),paths.top()\Css)
-   Css'=paths.top() U Css//@James, was path0 before... was wrong?
+   Css'=minimize(paths.top() U Css)//@James, was path0 before... was wrong?
      
 - usedPathsFix(p,paths,Css)=paths0
    paths.top()\Css==empty
@@ -304,10 +304,11 @@ maindefinition:
 - usedPathsL(L, Cs1..Csn)=usedInnerL(L(Cs1),Cs1) U ... U usedInnerL(L(Csn),Csn)
 
 - usedInnerL(LC,Cs)=paths.prefix(Cs)
-  paths=reorganize(Ps) U usedInnerM(M1) U... U usedInnerM(Mn))
   LC={_ implements Ps, M1..Mn}//in implementation, error if not compiled
+  paths=reorganize(Ps) U usedInnerM(M1) U... U usedInnerM(Mn))
 
 - usedInnerM(M)= reorganize({P| P inside M}) U (usedInnerL(L1,empty) U...U usedInnerL(Ln,empty)).pop() //leverage on empty.pop()=empty
+  //on former line, if we pop the individual results we could save some work while miminizing
   L1..Ln={L| L inside M}
 
 
