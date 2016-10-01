@@ -1,27 +1,42 @@
 Introspection:{
   class method NestedClass (Library lib)
-  class method NestedClass (Library lib,Path path) exception MemberUnavailable
-  class method NestedClass (class Any cls)
+  class method NestedClass (Library lib,Path path) exception MetaGuard.NestedClassUnavailable
+  class method NestedClass (class Any clazz)
+  class method NestedClass (class Any clazz,Path path) exception MetaGuard.NestedClassUnavailable
 
-  Member:{interface}
+  Member:{interface implements Concepts.Base}
   NestedClass:{<:Member
-    (NestedClass root, Path path,Mirror mainMirror, Record report)//@private
-    method NestedClass root()
+    Library mirror
+    NestedClass root
+    Path path
+    Record record
+    method Bool ==(This that)
+    method Bool != (This that)
     method Doc nestedDoc()// error  for This
     method Doc doc() //of the library literal
     method Path pathFromRoot() // invariant NestedClass(...).nestedClassFromRoot(path).pathFromRoot()==path
+    method Bool hasExternalType()
     method class Any externalType() //error if  root()!=this or root() is literal, otherwise contains the class Any used to initialize root/this.
+    method S externalTypeToS()
     method ClassKind classKind()
-    method S allAsString()  //just the library literal
+    method S allAsString()  //just the library literal//badname
     method Members members()
     method Methods methods()
     method NestedClasses nestedClasses()
     method Types implementedInterfaces()
-    method Method constructor()
-    method Method method(Selector that) exception MemberUnavailable
+    method NestedClasses transitivelyNestedClasses()
+    method Bool implements(This that)//note type of argument
+    method Bool consistent()
+    method Method constructor()//is always there?
+    method Methods getters()
+    method Methods setters()
+    method Methods exposers()
+    method Methods state()//instead of the 4 before    
+    method Method method(Selector that) exception MetaGuard.MethodUnavailable
     method Bool has(Selector selector)
-    method NestedClass nestedClassFromRoot(Path that) exception MemberUnavailable
+    method NestedClass nestedClassFromRoot(Path that) exception MetaGuard.NestedClassUnavailable
     method Bool has(Path pathFromRoot)
+    method Bool isPrivate()
     }
 
   Method:{<:Member
