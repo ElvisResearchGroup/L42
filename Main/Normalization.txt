@@ -39,7 +39,7 @@ Part 1: grammar, contexts, paths and programs
 ### Core language grammar
 e::=.... |L //pg1 start of https://github.com/ElvisResearchGroup/L42Docs/blob/master/Formal/Formal.pdf
 L::={interface? implements Ps M1..Mn}
-M::=ms e |refine mh e?| mh e? | C:e
+M::=refine? mh e?| ms e | C:e
 Ldom::=ms|C
 P::= Thisn.Cs //is pronounced "Path"
 T::= mdf P | P::msxs
@@ -192,10 +192,10 @@ precondition: at top level we have a L not of form LC
           eC' -->p'+ r              p.top()={_ implements Ps0, MCs  C:eC Ms}
 (top)------------------------       eC not of form LC
      p ==> p'.update(p'.top()[C=r]) <paths; paths'>=usedPathsE(p,eC) //tuple notation
-                                    p0=multiNorm(p,paths U paths')//norm the part of p required by eC'
+                                    p0=multiNorm(p,paths U paths')//norm the part of p required by eC
                                     Type*,paths'|-p0:p' //the part of p' referred to by paths' is well typed
-                                    Norm,p'|-toAny(paths,eC): _ : imm Library //replace paths with Any //eC' is well typed
-                                    Norm,p'|-eC: eC' : imm Library //duplicated typing, so we can have eC' non with Anys
+                                    Norm,p'|-toAny(paths,eC): _ : imm Library //replace paths with Any //eC is well typed
+                                    Norm,p'|-eC: eC' : imm Library //duplicated typing, so we can have eC non with Anys
                                     
 
 
@@ -284,6 +284,8 @@ maindefinition:
    
 ------------------------------------------     
 ###define usedPathsE
+//note we could have redundant paths, like This1.C and This2.B.C and is ok
+//and this is also ok for path,path' for toAny
 - usedPathsE(p,eC)= <reorganize(Ps); usedPathsFix(p,paths, empty)>//assert that the result includes paths in usedPathsFix(p,paths, empty)  
   Ps,Ps'={P|P inside eC}//arbitrary split of the set; heuristic will apply in the implementation.
   paths= reorganize(Ps')

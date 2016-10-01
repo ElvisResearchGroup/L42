@@ -33,7 +33,7 @@ public class Norm {
       }
     int i=mwt.getMs().getNames().indexOf(x);
     assert i!=-1:
-    mwt.getMs()+" but searched for "+ x+" in "+p;
+      mwt.getMs()+" but searched for "+ x+" in "+p;
     return mwt.getMt().getTs().get(i);
     }
   static ExpCore.ClassB.MethodWithType select(Ast.MethodSelector ms, List<ExpCore.ClassB.MethodWithType> list){
