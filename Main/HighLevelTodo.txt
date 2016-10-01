@@ -14,6 +14,10 @@ use check vs use m(xes) with
 should != be desugared in !(==)    > norm for <=, => <,  >> <<,
 
 -use outer for outside with scope.
+  discussing with James about what is the right semantic: just skipping the first
+  Foo in Outer.Foo would reintroduce the Java bug Gilad bragged about?
+  James suggests to skip the first "reuse". It is drastic but seams working
+  Alternatives could be using skeletal types to introduce aliasings?
 
 Many constructor is ok for a class?
 
