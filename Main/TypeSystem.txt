@@ -5,7 +5,7 @@ nc::=C:L
 T::= mdf P|P::msxs
 msx::=ms(::x)?
 e::=x|void|P|L|throw[T1,T2] e|loop e|(ds ks e[T])
- | e.m[T]((x:e)s)| use P check m((x:e)s) e
+ | e.m[P]((x:e)s)| use P check m((x:e)s) e
 throw::= exception | error | return
 k::=catch T x e
 d::= T x=e
@@ -13,7 +13,7 @@ mdf::= imm|mut|lent|read|capsule|class | fwdImm | fwdMut | fwd%Imm | fwd%Mut
 Phase::=None|Norm|Type+|Type*
 //what about calling coherence/consistency in a better way?
 //like executable? so it would be
-Phase::=None|Norm|Typed|Executable
+Phase::=None|Norm|Typed|Executable//coherent
 
 TypeJudgement::=D |- e : e':T
 G::=x1:T1..xn:Tn
@@ -21,9 +21,10 @@ D::= Phase | p | G | Cage | Tr
 Cage::= xss; xs
 Tr::=Ts; Ps
 
-We have well formedness on capsules bindings:
+We check for well formedness on capsules bindings:
 used at most once for each "branch"
-formally: cX(e)=xs is defined for all e, and for all meth bodies, the capsule x appears 0 or 1 times
+//expand and formalize next line
+formally: cX(e)=xs is defined for all e, and for all method bodies the capsule x appears 0 or 1 times
 cX(x)=x
 cX(void)=cX(P)=cX(L)=empty
 cX(throw[T1,T2] e)=cX(e)
