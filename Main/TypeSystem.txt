@@ -2,7 +2,8 @@
 //a b, c;d |e == ((((a b), c);d) |e)
 mwt::=refine? mh e? //method with type
 nc::=C:L
-T::= mdf P
+T::= mdf P|P::msxs
+msx::=ms(::x)?
 e::=x|void|P|L|throw[T1,T2] e|loop e|(ds ks e[T])
  | e.m[T]((x:e)s)| use P check m((x:e)s) e
 throw::= exception | error | return
