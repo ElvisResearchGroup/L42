@@ -48,7 +48,7 @@ max(xs)=xs
 
 complete(G)={x:T | G(x) not fwd/fwd%}
 
-fwd T and fwd% T return the fwd/fwd% version of T
+fwd T and fwd% T return the fwd/fwd% version of T //undefined if T not imm/mut/fwdImm/fwdMut/fwd%Imm/fwd%Mut 
 
 
 (void)
