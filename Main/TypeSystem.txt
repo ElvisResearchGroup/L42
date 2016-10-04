@@ -57,26 +57,11 @@ _ |- void: void:imm Void
 (Path)
 _ |- P:P:class P
 
-(library shallow norm)
-Norm |p |_ |_ |_ |- L : norm(p,L) : imm Library  //light norm: ignore meth bodies
+(library prop)
+Phase |p |_ |_ |_ |- L : L' : imm Library
+  where
+  Phase |p.evilPush(L) |- L : L'
 
-(library well typed)
-Type+| p |_ |_ |_ |- L : L' : imm Library
-   where
-   L0={interface? implements Ps M1..Mn Phase}=norm(p,L)
-   L'={interface? implements Ps M1'..Mn' max(Phase,Type+)}
-   Type+| p.evilPush(L0)| Ps |- Mi : Mi'
-   forall ms in dom(p(P1))U..U dom(p(Pm))
-     where Ps=P1..Pn
-     ms in dom(L0)
-
-
-(library coherent)
-Type*| p| _|- L : L' : imm Library
-   where
-   Type+| p| _|- L : L' : imm Library
-   coherent(L')//not abstract//executable(L')?
-    
 (x)
 Phase| p| G| xss; xs| Tr |-x:T
   where
@@ -204,12 +189,39 @@ p|-mdf P<=mdf' P'
   either P=P'
   or P' in p(P).Ps[from P]
 
-Type+ p; Ps |-C:L :  C:L'
+
+-----------------------------------------------
+
+
+  
+(library shallow norm)
+Norm |p |- L : norm(p,L)  //light norm: ignore meth bodies
+
+(library well typed)
+Type+| p |- L : L'
    where
-   Type+ p.push(C,L) |-L : L': _ //can be evilPush? may be not? consistency?
+   L0={interface? implements Ps M1..Mn Phase}=norm(p,L)
+   L'={interface? implements Ps M1'..Mn' max(Phase,Type+)}
+   Type+| p.evilPush(L0)| Ps |- Mi : Mi'
+   forall ms in dom(p(P1))U..U dom(p(Pm))
+     where Ps=P1..Pm
+     ms in dom(L0)
 
 
-Type+ p; Ps |-M : M'
+(library coherent)
+Type*| p |- L : L'
+   where
+   Type+| p |- L : L'
+   coherent(L')//not abstract//executable(L')?
+    
+
+
+Type+| p| Ps |-C:L :  C:L'
+   where
+   Type+| p.push(C,L)|empty| empty;empty|empty;empty |-L : L': _ //can be evilPush? may be not? consistency?
+
+
+Type+| p| Ps |-M : M'
   where
   M =refine? mdf method T m(T1 x1 .. Tn xn)exceptions Ps' e?
   M'=refine? mdf method T m(T1 x1 .. Tn xn)exceptions Ps' e?'
