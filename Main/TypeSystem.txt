@@ -64,7 +64,7 @@ Norm |p |_ |_ |_ |- L : norm(p,L) : imm Library  //light norm: ignore meth bodie
 Type+| p |_ |_ |_ |- L : L' : imm Library
    where
    L0={interface? implements Ps M1..Mn Phase}=norm(p,L)
-   L'={interface? implements Ps M1'..Mn' Phase}
+   L'={interface? implements Ps M1'..Mn' max(Phase,Type+)}
    Type+| p.evilPush(L0)| Ps |-Mi : Mi'
    forall ms in dom(p.evilPush(L0))
      ms in dom(L0)
