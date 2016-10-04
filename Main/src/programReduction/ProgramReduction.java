@@ -2,6 +2,9 @@ package programReduction;
 
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.NestedClass;
+
+import java.util.Collections;
+
 import ast.Ast;
 import ast.ExpCore;
 import ast.ExpCore.ClassB;
@@ -28,7 +31,7 @@ public class ProgramReduction {
       return enter(p,top,m);
       }
     ClassB.NestedClass nc=(NestedClass) m;
-    return top(p,top,nc);
+    return top(p,nc);
     }
 
 /*
@@ -40,7 +43,7 @@ public class ProgramReduction {
                                     paths'|-p0:p' //the part of p' referred to by paths' is well typed
                                     p'|-toAny(paths,eC'): imm Library //replace paths with Any //eC' is well typed
 */
-  static private Program top(Program p, CtxL top,NestedClass nc) {
+  static private Program top(Program p,NestedClass nc) {
     ExpCore ec=nc.getInner();
     assert IsCompiled.of(ec);
     assert !(ec instanceof ClassB);
@@ -52,7 +55,10 @@ public class ProgramReduction {
     Program p1=MultiTypeSystem.typeProgram(paths1, p0);
     MultiTypeSystem.typeMetaExp(p1,MultiTypeSystem.toAny(paths,ec1));
     ClassB res=reduceE(p1,ec1,p1.getFreshId()+"."+nc.getName());
-    return p1.updateTop(top.fillHole(res));
+    ClassB top=p1.top();
+    assert top.getNested(Collections.singletonList(nc.getName()))!=null;//would actually fail if not there
+    top.withMember(nc.withE(res));
+    return p1.updateTop(top);
     }
   static private ClassB reduceE(Program p, ExpCore e,String nameDebug) {
     ExpCore res=facade.Configuration.reduction.metaExp(p.oldRepr(), e,nameDebug);

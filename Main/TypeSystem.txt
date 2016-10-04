@@ -42,6 +42,7 @@ max(empty,ys)=ys
 max (x xs,ys)=x max(xs,ys) if x not in ys
 max (x xs,ys)=x max(xs,removeOne(x,ys)) 
 max(xs, xs0..xsn) = max(max(xs,xs0),xs1..xsn)
+max(xs)=xs
 
 complete(G)={x:T | G(x) not fwd/fwd%}
 

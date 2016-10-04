@@ -17,7 +17,10 @@ public class Paths {
   public static Paths empty(){return empty;}
   public boolean isEmpty(){return this==empty;}
   
-  public List<List<String>> top(){return current;}
+  public List<List<String>> top(){
+    assert current!=null;
+    return current;
+    }
   public Paths pop(){
     if (this==empty){return empty;}
     return this.next;
