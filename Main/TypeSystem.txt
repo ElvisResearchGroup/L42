@@ -292,26 +292,47 @@ coherent({interface _ mwts ncs})
 coherent({implements _ mwts ncs})    
   where
   coherent(ncs)
-  mwt1..mwtn={mwt in mwts| mwt.e undefined }
-  either n=0
-  or
-    mwt1=refine? class method T m(T1 x1..Tn xm) exception _,
-    p|-mdf This0 <=T, T1..Tn not read/lent
-    forall mwti in mwt2..mwtn
-      in the following Ti not fwd and mi=#?xj
-      mwti=mut method Ti mi() exception _, p|-Tj<=capsuleToLent(Ti)//exposer
-      or
-      mwti=read method Ti mi() exception _, p|-Tj<=toRead(Ti)//getter
-      or
-      mwti=mut method Void mi(Ti that) exception _, p|-Ti<=Tj//setter
+  mwts={mwt in mwts| mwt.e undefined }
+    exists (T x)s such that
+      all T in (T x)s are mut, imm, class or capsule //thus, no fwd
+      forall mwti in mwts coherent(p,(T x)s, mwti)
       
-    read=toRead(mut)=toRead(mutFwd)=toRead(capsule)
-    imm=toRead(imm)=toRead(immFwd)
+      
+coherent(p,T1 x1..Tn xn,
+      refine? class method T m(T1' x1..Tn' xn) exception _)
+  where
+  either
+    p|-mut This0 <=T and p|-Ti'<=fwd Ti
+  or   
+    p|-imm This0 <=T and p|-Ti'<=fwd toImm(Ti)
+  or
+    p|-read This0 <=T and p|-Ti'<=fwd toRead(Ti)
+
+
+coherent(p,T1 x1..Tn xn,
+    refine? mdf method T m() exception _)
+  where
+  m=#?xi
+  either
+    mdf=mut and p|-capsuleToLent(Ti)<=T //exposer
+  or 
+    mdf=read and p|-toRead(Ti)<=T //getter
+  
+
+coherent(p,T1 x1..Tn xn,
+    refine? mut method Void m(T that) exception _)
+  where
+  m=#?xi
+  p|-T<=Ti//setter
+        
+    class=toImm(class)
+    otherwise, imm=toImm(mdf)
+    
+    read=toRead(mut)=toRead(capsule)
+    imm=toRead(imm)
     class=toRead(class)
     
     lent=capsuleToLent(capsule)
-    mut=capsuleToLent(mutFwd)
-    imm=capsuleToLent(immFwd)
     otherwise mdf=capsuleToLent(mdf)
   
 ------------------
