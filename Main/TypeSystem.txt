@@ -1,3 +1,28 @@
+-----------------------------
+Structure of this document:
+
+1 Grammar
+
+2 WellFormednesss
+
+3 ExpressionTypeJudgement
+  D |- e : e':T   and D |- k : k':T 
+  where e' is an annotated version of e and is of type T
+  where k' is an annotated version of k and k.e is of type T
+  D.p points to where the e is located,
+  so if P inside e, D.p(P) is a reasonable operation
+
+4 Subtyping p|- T<=T' and shortcut D |- e : e':T<=T'
+
+5 LibraryAndMemberTyping
+ Phase |- p:L   and   p |- M:M'
+ L is the typed/annotated version of p.top()
+ M' is the annotated version of M
+ and p.top() is the literal containing M
+
+-----------------------------
+1 Grammar //should it be unified with norm?
+-----------------------------
 //all the L are LC   //LC == in all C:e, e of form L
 //a b, c;d |e == ((((a b), c);d) |e)
 mwt::=refine? mh e? //method with type
@@ -10,21 +35,29 @@ throw::= exception | error | return
 k::=catch T x e
 d::= T x=e
 mdf::= imm|mut|lent|read|capsule|class | fwdImm | fwdMut | fwd%Imm | fwd%Mut
-Phase::=None|Norm|Type+|Type*
-//what about calling coherence/consistency in a better way?
-//like executable? so it would be
-Phase::=None|Norm|Typed|Executable//coherent
+Phase::=None|Norm|Typed|Coherent
 
-TypeJudgement::=D |- e : e':T //ADD all the type judgement and description
 G::=x1:T1..xn:Tn
 D::= Phase | p | G | Cage | Tr
 Cage::= xss; xs
 Tr::=Ts; Ps
 
+
+-----------------------------
+2 WellFormedness //should this be moved to norm?
+-----------------------------
 We check for well formedness on capsules bindings:
 used at most once for each "branch"
-//expand and formalize next line
-formally: cX(e)=xs is defined for all e, and for all method bodies the capsule x appears 0 or 1 times
+formally:
+-WellFormedness: capsuleWellFormed(e) 
+   iff  cX(e)=xs is defined
+   This can be applied directly after desugaring
+   
+-  capsuleWellFormed(mwt): 
+  mwt= methods refine? mdf method T m(T1 x1..Tn xn)e
+  if Ti=capsule _, xi in cX(e) 0 or 1 times
+  This can be applied after desugaring AND inside norm(p)
+
 cX(x)=x
 cX(void)=cX(P)=cX(L)=empty
 cX(throw[T1,T2] e)=cX(e)
@@ -45,6 +78,11 @@ max (x xs,ys)=x max(xs,ys) if x not in ys
 max (x xs,ys)=x max(xs,removeOne(x,ys)) 
 max(xs, xs0..xsn) = max(max(xs,xs0),xs1..xsn)
 max(xs)=xs
+
+
+--------------------------------------------
+3 ExpressionTypeJudgement
+--------------------------------------------
 
 complete(G)={x:T | G(x) not fwd/fwd%}
 
@@ -181,6 +219,10 @@ Phase| p| G x:lent C G'|  xss;xs | Tr |-e:e':T
   where 
   Phase| p| G x:mut C G'|  xss,{x};xs| Tr |-e:e':T
 
+
+------------------------------------------------------
+4 Subtyping p|- T<=T' and shortcut D |- e : e':T<=T'
+------------------------------------------------------
   
 (subtype)
 p|-mdf P<=mdf' P'
@@ -189,19 +231,25 @@ p|-mdf P<=mdf' P'
   either P=P'
   or P' in p(P).Ps[from P]
 
+(shortcut)
+D |- e : e':T<=T'
+  where
+  D |- e : e':T
+  D.p |-T<=T'
 
 -----------------------------------------------
-
+5 LibraryAndMemberTyping
+-----------------------------------------------
 
   
 (library shallow norm)
 Norm  |- p : norm(p)  //light norm: ignore meth bodies
 
 (library well typed)
-Type+ |- p : L'
+Typed |- p : L'
    where
-   L0={interface? implements Ps M1..Mn Phase}=norm(p,L)
-   L'={interface? implements Ps M1'..Mn' max(Phase,Type+)}
+   L0={interface? implements Ps M1..Mn Phase}=norm(p)
+   L'={interface? implements Ps M1'..Mn' max(Phase,Typed)}
    p| Ps |- Mi : Mi'
    forall ms in dom(p(P1))U..U dom(p(Pm))
      where Ps=P1..Pm
@@ -209,24 +257,23 @@ Type+ |- p : L'
 
 
 (library coherent)
-Type* |- p : L'
+Coherent |- p : L'
    where
-   Type+ |- p : L'
-   coherent(L')//not abstract//executable(L')?
+   Typed |- p : L'
+   coherent(L')
     
 
 
 p| Ps |-C:L :  C:L'
    where
-   Type+ |-p.push(C) : L' //can be evilPush? may be not? consistency?
-
+   Typed |-p.push(C) : L'
 
 p| Ps |-M : M'
   where
   M =refine? mdf method T m(T1 x1 .. Tn xn)exceptions Ps' e?
   M'=refine? mdf method T m(T1 x1 .. Tn xn)exceptions Ps' e?'
   if e?=e then
-    Type+ p; G;empty,empty;empty,Ps'|-e:e?' :_ <=T
+    Typed p| G|empty;empty|empty;Ps' |- e:  e?':_ <=T
   else
     e?=e?'
   existsExactly 1 P in Ps,This0
