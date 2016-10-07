@@ -1,0 +1,264 @@
+Notations and grammar
+
+0 Notations
+1 Grammar
+2 well formedness
+3 paths
+4 program
+
+-----------------------------------------------------------
+Part 0: notations 
+-----------------------------------------------------------
+ASCII rendering of horizontal bar notation:
+Letters i,j,k,m,n are integers;
+usually indices into sequences or length of sequences
+U is the set union,
+\ is the set subtraction
+we use "and" "or" "disjoint" and "intersection" as words.
+"empty" is the emptyset/sequence etc.
+
+using s instead of overbar, so Cs::=C1..Cn
+-->p is p under the arrow
+a^i is a apex i, ai is a pedex i
+[] is the hole/square
+//add tuple notation <;>
+in latex we use two different fonts for "(" of the grammar and for
+"(" used for disambiguation and function call. here we just hope is clear :/
+
+Generally, we use ,: and | to disambiguate grouping, thus
+a b, c;d |e == ((((a b), c);d) |e)
+
+General Notations:
+
+When a term of the grammar can be accessed with functional notation,
+as in a(b), then dom(a) is {b | a(b) is defined}
+
+DOT NOTATION b.a extract the element of form a from b, for example (C:e1).e=e1
+More precise: a term of a grammar is a tree of nodes and terminals.
+The root-most node of "b" that can be represented with the metavariable "a"
+is produced.  
+
+a[with b=b1] replace the element of form b in a with a new b,
+so that (a[with b=b1]).b = b1
+
+a[b=c2] when b in dom(a), a(b)=c1 modify a so that a(b)=c2
+ 
+-----------------------------------------------------------
+Part 1: grammar and contexts operations 
+-----------------------------------------------------------
+### Core language grammar
+# non recursive terms:
+throw::= exception | error | return
+mdf::= imm|mut|lent|read|capsule|class | fwdImm | fwdMut | fwd%Imm | fwd%Mut
+Phase::=None|Norm|Typed|Coherent
+ms::=m(xs) //method selector
+mh::= mdf method T m(T1 x1..Tn xn) exception Ps //mh.ms generates the corresponding ms  
+Ldom::=ms|C
+P::= Thisn.Cs | Any | Library | Void//is pronounced "Path"
+T::= mdf P | P::msxs
+msx::=ms(::x)?
+
+#core expressions
+L::={interface? implements Ps M1..Mn Phase}
+M::=refine? mh e?| ms e | C:e
+e::=x|void|P|L|throw[T1,T2] e|loop e|(ds ks e[T])
+ | e.m[P]((x:e)s)| use P check m((x:e)s) e
+//annotations [T1,T2], [P] and [T] are implicitly "?", as in [T]?
+k::=catch T x e
+d::= T x=e
+
+#Compiled terms
+LC::={implements Ps MC1..MCn Phase}  //library compiled
+MC::= mwt | ms eC |nc
+mwt::= refine? mh eC?
+nc::= C:LC
+eC::= x|void|P|L|throw[T1,T2] eC|loop eC|(dsC ksC eC[T])
+ | eC.m[P]((x:eC)s)| use P check m((x:eC)s) eC
+kC::=catch T x eC
+dC::= T x=eC
+
+// Note: compiled types are T, normalized types are only mdf P
+// but normalization is a different step
+
+# Contexts
+ctxC::=[] | eC.m( (x=eC)s x=ctxC, (x=e)s)| .... // compilation context, e=ctxC[L] selects an L where all the former Ls are LC. The context do not enter in libraries
+ctxM::= C: ctxC |ms ctxC | refine? mh ctxC
+ctxL::= {interface? implements Ps Ms ctxM Ms'}
+
+//notice how every LC is a special kind of L (barnotation has structural subtyping)
+
+-----------------------------------------------------------
+###operations on contexts (for implementation too)
+ -define ctxC sim ctxC
+  * [] sim []
+  assuming ctxC sim ctxC', then
+  * ctxC.m((x:e)s) sim ctxC'.m'((x:e)s')
+  * e.m(x1:e1..xn:en x:ctxC (x:e)s) sim e'.m'(x1':e1'..xn':en' x':ctxC' (x:e)s')
+  * (T1 x1=e1..Tn xn=en T x=ctxC (T x=e)s e) sim (T1' x1'=e1'..Tn' xn'=en' T' x'=ctxC' (T x=e)s' e')
+  * and so on        
+ 
+ -define L/ctxL'=<ctxL; e>   intuition: if L=ctxL[e], ctxL sim ctxL'
+  * {interface? implements Ps MC1..MCn C:e Ms}/{interface? implements Ps MC1'..MCn' C':ctxC' Ms'}
+   = {interface? implements Ps MC1..MCn C:ctxC Ms}, e0
+   e=ctcC[e0] and ctxC sim ctxC'
+
+---------
+We define functional notation for
+L, ctxL and LC (over Ldom domain and Cs)
+Moreover, for convenience we define inside in the following way:
+
+- eC' inside eC if eC=ctxC[eC']
+- P inside M holds iff P inside M.e 
+ or M.mh= refine? T0 m(T1 x1..Tn xn) exception Ps
+ and Ti= _ P or Ti= P::_ or P in Ps
+ 
+
+
+-----------------------------------------------------------
+Part 2: well formedness
+-----------------------------------------------------------
+
+ms: uniqe xs
+mh: mh.ms is well defined, Any notin Ps
+mdf: "%" not present in any term, will be used internally by the type system
+C: not Any, Library, Void
+T: now is allowed, but I may want to prevent Void::msxs or similar
+msx: in ms::x, x in ms.xs
+
+L: unique LDoms, Any notin Ps
+
+throw/loop: I may want to disallows throw throw' e and similar
+(ds ks e[T]): unique x in ds 
+e.m[P]((x:e)s): I may want to disallow throw and similar as es
+use P check m((x:e)s) e: P not Any/Void/Library
+
+e: variable used are in scope
+
+e: capsuleWellFormed 
+   cX(e)=xs is defined
+   //Note, this can be applied directly after desugaring
+   
+mwt:  capsuleWellFormed 
+  mwt= methods refine? mdf method T m(T1 x1..Tn xn)e
+  if Ti=capsule _, xi in cX(e) 0 or 1 times
+  //This can be applied after desugaring AND inside norm(p)
+
+cX(x)=x
+cX(void)=cX(P)=cX(L)=empty
+cX(throw[T1,T2] e)=cX(e)
+cX(loop e)=cX(e),cX(e)  //two times, that is enough
+cX(e0.m[T](x1:e1..xn:en) )=cX(e0)..cX(en)
+cX(use P check m(x1:e1..xn:en) e0)=cX(e0)..cX(en)
+
+cX( (T1 x1=e1..Tn xn=en k1..km e0[T]) )=ys/x1..xn ,max( (xs0/x1..xn), xs1,..,xsm)
+  where
+  ys=cX(e1),..,cX(en)
+  xsi=cX(ki)
+  xs0=cX(e0) 
+  if Ti=capsule _ then
+    xi at most 1 in ys,xs0
+
+max(empty,ys)=ys
+max (x xs,ys)=x max(xs,ys) if x not in ys
+max (x xs,ys)=x max(xs,removeOne(x,ys)) 
+max(xs, xs0..xsn) = max(max(xs,xs0),xs1..xsn)
+max(xs)=xs
+
+
+-----------------------------------------------------------
+Part 3: paths
+-----------------------------------------------------------
+ paths::= Csss //list of set of list of C
+ operations:
+ -(Css paths).top()=Css
+ 
+ -(Css paths).pop()=paths
+ -empty.pop()=empty
+ 
+ -paths.push(Css)=minimize(Css) paths
+ 
+ -(Css paths) U (Css' paths')=(paths U paths').push(Css U Css')
+ -paths U empty=empty U paths = paths
+ 
+ -empty.prefix(_)=empty
+ -paths.prefix(empty)= paths
+ -(Cs1..Csn).prefix(Cs)=Cs.Cs1 .. Cs.Csn
+ -(Css paths).prefix(Cs.C)= paths.prefix(Cs) U Css.prefix(Cs.C)
+  //example of prefix:
+  //((A)  (B)  (C)  (D)).prefix(W.E)
+  // = ((W.E.A  W.B  C) (D))
+  
+### auxiliary paths operations:
+ -reorganize(empty)=empty
+ -reorganize(Ps)=Css0,...,Cssn
+  Cssn!=empty
+  Cs in Cssi' iff Thisi.Cs in Ps
+  Cssi=minimize(Cssi')
+
+ -minimize(Cs1..Csn)={Cs in Cs1..Csn | forall Csi, Csi._!=Cs}
+
+ 
+
+-----------------------------------------------------------
+Part 4: program
+-----------------------------------------------------------
+
+
+p::=L0;ctxLs //representing This0,...,Thisn // where This0.C refers to a class bound in L0, and (This1..ThisN).C to bindings in cxtL1..cxtLn respectively
+
+program operations primitive:
+-pop
+ (L,ctxL,ctxLs).pop()=ctxL[L],ctxLs
+
+-push
+ (ctxL[L],ctxLs).push(ctxL,L)=L,ctxL,ctxLs
+
+-top
+ (L,_).top()=L
+ 
+-update top //this is the only one that can detect evilPush
+ (L,ctxLs).update(L')=L',ctxLs
+
+-p.reducePath(This1.C.Cs)=This0.Cs
+ if p=L,ctxL,_ and ctxL(C)=[] //ok also this one can be messed up by evilPush
+-p.reducePath(This(n+2).Cs)=This(n+1).Cs'
+   p.pop().reducePath(This(n+1).Cs)=Thisn.Cs'
+
+- growFellow
+  (L,ctxL,_).growFellow(p)==p.push(p.top()/ctxL)
+     
+program derived operations:
+
+-get(n)
+ p.get(0)=p.top()
+ p.get(n+1)=p.pop().get(n)
+
+ 
+-push(C)
+ p.push(C)=p.push(ctxL,L)
+ where ctxL[L]=p.top() and ctxL(C)=[]
+
+-push(L)//non determinism is not relevant if update is not used
+ p.push(L)=p.push(ctxL,L)//an evilPush can exist in implementation
+ with ctxL[L]=p.top()
+ //with p'=p.evilPush(L)   p'.top()==L, p'.pop()==p, p'.update(..) error! 
+
+
+-navigate(Cs)
+ p.navigate(C1..Ck)=p.push(C1)...push(Ck)
+
+-navigate(P)
+ p.navigate(Thisn.Cs)=p.pop()...pop().navigate(Cs) //with n pops
+-p(P)
+ p(P)=p.navigate(P).top()//but some implementation could be faster
+
+- p.equiv(P,P')
+  p.equiv(P,P) holds
+  p.equiv(P,P')=p.equiv(P',P)
+  p.equiv(P,P') if p.equiv(p.reducePath(P),P')
+      
+//Note for marco: equivalence between p and (Ln,fullP), that is all the other L0..L(n-1) are cached?
+//going this way would require/allow to write better CloneWthPath/Locator
+//to enforce the equivalence all the time we may have an updateTop operation, that do the hard work level by level.
+//p.update(L), p.pop(), p.push(fullP)/p.push(Ldom,ctxC) //currently push(L) is supported and should be removed
+

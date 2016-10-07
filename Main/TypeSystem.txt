@@ -1,41 +1,18 @@
 -----------------------------
 Structure of this document:
 
+1 Type Grammar
+
+2 ExpressionTypeJudgement
+
+3 Subtyping p|- T<=T' and shortcut D |- e : e':T<=T'
+
+4 LibraryAndMemberTyping
+
+-----------------------------
 1 Grammar
-
-2 WellFormednesss
-
-3 ExpressionTypeJudgement
-  D |- e : e':T   and D |- k : k':T 
-  where e' is an annotated version of e and is of type T
-  where k' is an annotated version of k and k.e is of type T
-  D.p points to where the e is located,
-  so if P inside e, D.p(P) is a reasonable operation
-
-4 Subtyping p|- T<=T' and shortcut D |- e : e':T<=T'
-
-5 LibraryAndMemberTyping
- Phase |- p:L   and   p |- M:M'
- L is the typed/annotated version of p.top()
- M' is the annotated version of M
- and p.top() is the literal containing M
-
 -----------------------------
-1 Grammar //should it be unified with norm?
------------------------------
-//all the L are LC   //LC == in all C:e, e of form L
-//a b, c;d |e == ((((a b), c);d) |e)
-mwt::=refine? mh e? //method with type
-nc::=C:L
-T::= mdf P|P::msxs
-msx::=ms(::x)?
-e::=x|void|P|L|throw[T1,T2] e|loop e|(ds ks e[T])
- | e.m[P]((x:e)s)| use P check m((x:e)s) e
-throw::= exception | error | return
-k::=catch T x e
-d::= T x=e
-mdf::= imm|mut|lent|read|capsule|class | fwdImm | fwdMut | fwd%Imm | fwd%Mut
-Phase::=None|Norm|Typed|Coherent
+//In this file, all the L are LC   //LC == in all C:e, e of form L
 
 G::=x1:T1..xn:Tn
 D::= Phase | p | G | Cage | Tr
@@ -43,46 +20,15 @@ Cage::= xss; xs
 Tr::=Ts; Ps
 
 
------------------------------
-2 WellFormedness //should this be moved to norm?
------------------------------
-We check for well formedness on capsules bindings:
-used at most once for each "branch"
-formally:
--WellFormedness: capsuleWellFormed(e) 
-   iff  cX(e)=xs is defined
-   This can be applied directly after desugaring
-   
--  capsuleWellFormed(mwt): 
-  mwt= methods refine? mdf method T m(T1 x1..Tn xn)e
-  if Ti=capsule _, xi in cX(e) 0 or 1 times
-  This can be applied after desugaring AND inside norm(p)
-
-cX(x)=x
-cX(void)=cX(P)=cX(L)=empty
-cX(throw[T1,T2] e)=cX(e)
-cX(loop e)=cX(e),cX(e)  //two times, that is enough
-cX(e0.m[T](x1:e1..xn:en) )=cX(e0)..cX(en)
-cX(use P check m(x1:e1..xn:en) e0)=cX(e0)..cX(en)
-
-cX( (T1 x1=e1..Tn xn=en k1..km e0[T]) )=ys/x1..xn ,max( (xs0/x1..xn), xs1,..,xsm)
-  where
-  ys=cX(e1),..,cX(en)
-  xsi=cX(ki)
-  xs0=cX(e0) 
-  if Ti=capsule _ then
-    xi at most 1 in ys,xs0
-
-max(empty,ys)=ys
-max (x xs,ys)=x max(xs,ys) if x not in ys
-max (x xs,ys)=x max(xs,removeOne(x,ys)) 
-max(xs, xs0..xsn) = max(max(xs,xs0),xs1..xsn)
-max(xs)=xs
-
 
 --------------------------------------------
-3 ExpressionTypeJudgement
+2 ExpressionTypeJudgement
 --------------------------------------------
+  D |- e : e':T   and D |- k : k':T 
+  where e' is an annotated version of e and is of type T
+  where k' is an annotated version of k and k.e is of type T
+  D.p points to where the e is located,
+  so if P inside e, D.p(P) is a reasonable operation
 
 complete(G)={x:T | G(x) not fwd/fwd%}
 
@@ -221,7 +167,7 @@ Phase| p| G x:lent C G'|  xss;xs | Tr |-e:e':T
 
 
 ------------------------------------------------------
-4 Subtyping p|- T<=T' and shortcut D |- e : e':T<=T'
+3 Subtyping p|- T<=T' and shortcut D |- e : e':T<=T'
 ------------------------------------------------------
   
 (subtype)
@@ -238,8 +184,12 @@ D |- e : e':T<=T'
   D.p |-T<=T'
 
 -----------------------------------------------
-5 LibraryAndMemberTyping
+4 LibraryAndMemberTyping
 -----------------------------------------------
+ Phase |- p:L   and   p |- M:M'
+ L is the typed/annotated version of p.top()
+ M' is the annotated version of M
+ and p.top() is the literal containing M
 
   
 (library shallow norm)
