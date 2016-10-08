@@ -139,11 +139,12 @@ C:e : capsuleWellFormed
    //Note, this can be applied directly after desugaring
    
 mwt:  capsuleWellFormed 
-  mwt= methods refine? mdf method T m(T1 x1..Tn xn)e
+  mwt= refine? mdf method T m(T1 x1..Tn xn)e
   FV(e)\ this,x1..xn= empty
   if Ti=capsule _, xi in cX(e) 0 or 1 times
   //This can be applied after desugaring AND inside norm(p)
-
+  //Note: this need to be repeated/reasoned when skeletal types in T1..Tn get normalized into capsules//TODO:
+  //FUCK FUCK Similarly, if e is normed and skeletal types are replaced in local bindings... no this happens slowly during TS
 cX(x)=x         //FV can be defined from cX!!
 cX(void)=cX(P)=cX(L)=empty
 cX(throw[T1,T2] e)=cX(e)
