@@ -132,7 +132,7 @@ throw/loop: I may want to disallows throw throw' e and similar
 e.m[P]((x:e)s): I may want to disallow throw and similar as es
 use P check m((x:e)s) e: P not Any/Void/Library
 
-C:e :  used xs are in scope 
+C:e :  FV(e)=empty
 
 C:e : capsuleWellFormed 
    cX(e)=xs is defined
@@ -140,7 +140,7 @@ C:e : capsuleWellFormed
    
 mwt:  capsuleWellFormed 
   mwt= methods refine? mdf method T m(T1 x1..Tn xn)e
-  inside of e :  used xs are in scope
+  FV(e)\ this,x1..xn= empty
   if Ti=capsule _, xi in cX(e) 0 or 1 times
   //This can be applied after desugaring AND inside norm(p)
 
