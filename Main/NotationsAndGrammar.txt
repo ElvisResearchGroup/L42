@@ -132,14 +132,15 @@ throw/loop: I may want to disallows throw throw' e and similar
 e.m[P]((x:e)s): I may want to disallow throw and similar as es
 use P check m((x:e)s) e: P not Any/Void/Library
 
-e: variable used are in scope
+C:e :  used xs are in scope 
 
-e: capsuleWellFormed 
+C:e : capsuleWellFormed 
    cX(e)=xs is defined
    //Note, this can be applied directly after desugaring
    
 mwt:  capsuleWellFormed 
   mwt= methods refine? mdf method T m(T1 x1..Tn xn)e
+  inside of e :  used xs are in scope
   if Ti=capsule _, xi in cX(e) 0 or 1 times
   //This can be applied after desugaring AND inside norm(p)
 
