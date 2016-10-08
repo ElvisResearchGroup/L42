@@ -50,11 +50,11 @@ Part 1: grammar and contexts operations
 # non recursive terms:
 throw::= exception | error | return
 mdf::= imm|mut|lent|read|capsule|class | fwdImm | fwdMut | fwd%Imm | fwd%Mut
-Phase::=None|Norm|Typed|Coherent
+Phase::=None|Norm|Typed|Coherent //TODO: add names that are put after norms
 ms::=m(xs) //method selector
 mh::= mdf method T m(T1 x1..Tn xn) exception Ps //mh.ms generates the corresponding ms  
 Ldom::=ms|C
-P::= Thisn.Cs | Any | Library | Void//is pronounced "Path"
+P::= Thisn.Cs | Any | Library | Void  //is pronounced "Path"
 T::= mdf P | P::msxs
 msx::=ms(::x)?
 
@@ -68,11 +68,11 @@ k::=catch T x e
 d::= T x=e
 
 #Compiled terms
-LC::={implements Ps MC1..MCn Phase}  //library compiled
+LC::={interface? implements Ps MC1..MCn Phase}  //library compiled
 MC::= mwt | ms eC |nc
-mwt::= refine? mh eC?
+mwt::= refine? mh eC? //may still contains skeletal types
 nc::= C:LC
-eC::= x|void|P|L|throw[T1,T2] eC|loop eC|(dsC ksC eC[T])
+eC::= x|void|P|L|throw[T1,T2] eC|loop eC|(dCs kCs eC[T])
  | eC.m[P]((x:eC)s)| use P check m((x:eC)s) eC
 kC::=catch T x eC
 dC::= T x=eC
@@ -83,7 +83,7 @@ dC::= T x=eC
 # Contexts
 ctxC::=[] | eC.m( (x=eC)s x=ctxC, (x=e)s)| .... // compilation context, e=ctxC[L] selects an L where all the former Ls are LC. The context do not enter in libraries
 ctxM::= C: ctxC |ms ctxC | refine? mh ctxC
-ctxL::= {interface? implements Ps Ms ctxM Ms'}
+ctxL::= {interface? implements Ps Ms ctxM Ms' Phase}
 
 //notice how every LC is a special kind of L (barnotation has structural subtyping)
 
@@ -118,12 +118,12 @@ Moreover, for convenience we define inside in the following way:
 Part 2: well formedness
 -----------------------------------------------------------
 
-ms: uniqe xs
-mh: mh.ms is well defined, Any notin Ps
+ms: unique xs
+mh: mh.ms is well defined, Any notin Ps //Ps is throwned exceptions
 mdf: "%" not present in any term, will be used internally by the type system
-C: not Any, Library, Void
+C: not Any, Library, Void, This, Thisn
 T: now is allowed, but I may want to prevent Void::msxs or similar
-msx: in ms::x, x in ms.xs
+msx: in ms::x, x in ms.xs or x is this
 
 L: unique LDoms, Any notin Ps
 
@@ -262,3 +262,8 @@ program derived operations:
 //to enforce the equivalence all the time we may have an updateTop operation, that do the hard work level by level.
 //p.update(L), p.pop(), p.push(fullP)/p.push(Ldom,ctxC) //currently push(L) is supported and should be removed
 
+------
+James comments of program navigation failure:
+First information file and position of unfound path.
+Division in found part and unfound rest
+Then location of the foundmost library literal
