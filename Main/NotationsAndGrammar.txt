@@ -144,13 +144,13 @@ mwt:  capsuleWellFormed
   if Ti=capsule _, xi in cX(e) 0 or 1 times
   //This can be applied after desugaring AND inside norm(p)
   //Note: this need to be repeated/reasoned when skeletal types in T1..Tn get normalized into capsules//TODO:
-  //FUCK FUCK Similarly, if e is normed and skeletal types are replaced in local bindings... no this happens slowly during TS
+  //FUCK FUCK Similarly, if e is normed and skeletal types are replaced in local bindings... no this happens slowly during TS// indeed ts can norm, then while the resulting mwt is created, cX can run (again or for the first time)
 cX(x)=x         //FV can be defined from cX!!
 cX(void)=cX(P)=cX(L)=empty
 cX(throw[T1,T2] e)=cX(e)
 cX(loop e)=cX(e),cX(e)  //two times, that is enough
-cX(e0.m[T](x1:e1..xn:en) )=cX(e0)..cX(en)
-cX(use P check m(x1:e1..xn:en) e0)=cX(e0)..cX(en)
+cX(e0.m[T](x1:e1..xn:en) )=cX(e0),..,cX(en)
+cX(use P check m(x1:e1..xn:en) e0)=cX(e0),..,cX(en)
 
 cX( (T1 x1=e1..Tn xn=en k1..km e0[T]) )=ys/x1..xn ,max( (xs0/x1..xn), xs1,..,xsm)
   where

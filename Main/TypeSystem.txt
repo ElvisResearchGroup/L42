@@ -233,9 +233,9 @@ p| Ps |-M : M'
       M=mdf method T' m(T1 x1..Tn xn)exceptions Ps' and p|-T<=T'
 
 
-  coherent(C1:L1..Cn:Ln)=coherent(L1)..coherent(Ln)
+coherent(C1:L1..Cn:Ln)=coherent(L1)..coherent(Ln)
 
-coherent({interface _ mwts ncs})
+coherent({interface implements _ mwts ncs})
   where
   coherent(ncs)
     
