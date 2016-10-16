@@ -239,13 +239,13 @@ coherent({interface implements _ mwts ncs})
   where
   coherent(ncs)
     
-coherent({implements _ mwts ncs})    
+coherent({implements _ mwts' ncs})    
   where
   coherent(ncs)
-  mwts={mwt in mwts| mwt.e undefined }
+  mwts={mwt in mwts'| mwt.e undefined }
     exists (T x)s such that
       all T in (T x)s are mut, imm, class or capsule //thus, no fwd
-      forall mwti in mwts coherent(p,(T x)s, mwti)
+      forall mwt in mwts coherent(p,(T x)s, mwt)
       
       
 coherent(p,T1 x1..Tn xn,
