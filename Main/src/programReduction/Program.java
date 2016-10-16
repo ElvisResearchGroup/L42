@@ -197,7 +197,7 @@ class EvilPushed extends Methods{
     }
 
   public Program pop() {return former;}
-  //TODO: may be next line need to not throw
+  //TODO: may be next line need to not throw, if allowed, then updateTop need to check if there is an evil in the tail, and throw on update
   public Program push(CtxL ctx, ClassB l) {throw Assertions.codeNotReachable();}
 
   public ClassB top() {return newTop;}

@@ -175,14 +175,24 @@ p|-mdf P<=mdf' P'
   where
   mdf<=mdf
   either P=P'
-  or P' in p(P).Ps[from P]
+  or P' in p(P).Ps[from P] //TODO use p.equiv
 
 (shortcut)
 D |- e : e':T<=T'
   where
   D |- e : e':T
   D.p |-T<=T'
-
+  
+mdf<=mdf
+mdf1<=mdf3 if mdf1<=mdf2 and mdf2<=mdf3
+capsule<=mut,imm
+imm<=read
+mut<=lent
+lent<=read
+mut<=fwd%Mut
+fwd%Mut<=fwdMut
+imm<=fwd%imm
+fwd%Imm<=fwdImm
 -----------------------------------------------
 4 LibraryAndMemberTyping
 -----------------------------------------------
@@ -232,7 +242,7 @@ p| Ps |-M : M'
     forall P in Ps such that p(P)(m(x1..xn))=M //that is, is defined
       M=mdf method T' m(T1 x1..Tn xn)exceptions Ps' and p|-T<=T'
 
-
+//Discuss with james: we need to push somewhere 235/251
 coherent(C1:L1..Cn:Ln)=coherent(L1)..coherent(Ln)
 
 coherent({interface implements _ mwts ncs})
