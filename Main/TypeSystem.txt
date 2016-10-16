@@ -243,6 +243,9 @@ coherent({implements _ mwts' ncs})
   where
   coherent(ncs)
   mwts={mwt in mwts'| mwt.e undefined }
+  either mwts is empty or
+    at least 1 mwt in mwts is class method 
+    and
     exists (T x)s such that
       all T in (T x)s are mut, imm, class or capsule //thus, no fwd
       forall mwt in mwts coherent(p,(T x)s, mwt)
