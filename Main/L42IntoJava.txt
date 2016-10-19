@@ -19,136 +19,125 @@ key ideas:
  multiple C:e in an execution needs to be sequential.
  
  
+Starting point:
+  L42N: L42 core, compiled, well typed and normalized, with some types annotated.
 
-L42N: L42 core, compiled, well typed and normalized, with some types annotated.
+Intermediate; only for expressions in meth bodies:
+  L42X: L42N with all subexpressions are xs, and L are replaced with their unique name CN
 
-L42X: L42N with all subexpressions are xs
-
-L42F: a flattened version where every *executable*
+Destinaton1:
+  L42F: a flattened version where every *executable*
   class/interface have a top level name 
-[O e]
-O42: a richer language containing null, if, bool and so on..
-[J e]
-Java
 
-L42N:
+Destination2:
+  O42: a superset of L42F containing null, if, bool and so on..
+   -design a process to optimize L42F into O42, should be so that
+    optimize(optimize(program))=optimize(program)
+
+Destination 3:
+  Java, C++, Javascript,..
+  -design process to convert O42 programs into stuff.
+
+---------------------------------------------------------
+
+L42N (should be identical to the one in NotationsAndGrammar
 a::=x|void|P
 e::=a|L|throw[T1,T2] e|loop e|(ds ks e[T])| e.m[T]((x:e)s)| use P check m((x:e)s) e
 throw::= exception | error | return
 k::=catch T x e
 d::= T x=e
 
-#### define G[ e0]= e1
+O42: 
+CT::= CN->p,CD
+CD::=kind CN implements CNs{ Mxs }
+Mx::=refine? method T mxs((T x)s) body?//first is this
+//note: no exceptions declared, body empty iff kind=interface
+body::=ex | setter|getter|new|newPh| nativeIntSum|nativeIntMul|...|nativeVectorAdd
+kind::=class |interface | nativeInt |nativeString| nativeFloat|nativeVector[CN] | ...
+ax::=x|void|P|null
+miniE::=ax| CN| throw[TX1,TX2] a |loop ex
+  |CN.mxs(ys)| use P check mxs(ys) x
+  |if ax then ex1 else ex2 |while ax then ex1 | x:=ax
+ex::=miniE | (dxs kxs ex [TX])
+kx::=catch throw TX x ex
+dx::=TX x=ex
+TX::=mdf CN
 
-L42X:
-miniE::=a| L| throw[T1,T2] a |loop ex | x.m[T]((x:y)s)| use P check m((x:y)s) x
-ex::=miniE | (dxs kxs ex [T])
-kx::=catch throw T x ex
-dx::=T x=ex
-pre::=throw |loop
-
-//note:T x=(ds e) in Java can be
-//T x;{ds  x=e}
-//note:T x=(ds ks e) in Java can be 
-//T x; labelFor_x:{ds\e try{ds\t}x=ks  x=e}
-//  where x=catch T y e is catch (T y ){x=e break labelFor_x}
-
+//note:TX x=(dxs ex) in Java can be
+//TX x;{dxs  x=ex}
+//note:TX x=(dxs kxs ex) in Java can be 
+//TX x; labelFor_x:{dxs\e try{dxs\t}x=kxs  x=ex}
+//  where x=catch TX y ex is catch (TX y ){x=ex break labelFor_x}
+//dxs\e and dxs\t removes the e and the TX from dxs to separe declarations and initializations
 
 //for compactness ignore use, treated the same as mcall
 //also, assume all local variables alpharenamed to be different
 //and all newly introduced variables are fresh
-G::=p;(x:T)s
 
-####### G.typeOf(e) //is it used now?
-G.typeOf(P)=class P if G.p(P) not interface
-otherwise
-G.typeOf(P)=class Any
-(_, x:T,_).typeOf(x)=T
-G.typeOf(void)=imm Void
-G.typeOf(L)=imm Library
-G.typeOf(loop e)=imm Void
-G.typeOf(throw[T1,T2] e)=T1
-G.typeOf( (_[T]) )=T
-G.typeOf( e.m[mdf P](x1:e1..xn:en) )=P::m(x1..xn)//resolved?
+#### define PG[ e0]= e1 with e0 in L42N and e1 in L42X
+PG::=p;(x:T)s //p;G
+p;(x:T)s + (x:T)s'=p;(x:T)s (x:T)s' //Thus I can write PG+x:T
+PG + T1 x1=e1..Tn xn=en=PG+x1:T1..xn:Tn
 
-//Note for marco: Guess type in formal
-//case use: use the plugin information, not the e! 
+PG*P=PG.p(P).CN
+
+PG*T =mdf PG*P
+where
+  mdf P=resolve(PG.p,T)
 
 
-G[a]= a //a atoms
-G[L]= L //a atoms
-G[loop e]=loop G[e]
+PG[a]= a //a atoms
+PG[L]= (L.CN).LoadLib()
+PG[loop e]=loop PG[e]
 
-G[throw[T1,T2] e]=throw[T1,T2] a   if G[e]=a
+PG[throw[T1,T2] e]=throw[PG*T1,PG*T2] a   if PG[e]=a
 otherwise 
-G[throw[T1,T2] e]= (imm Library x=L throw[T1,T2] x)   if G[e]=L
+PG[throw[T1,T2] e]= (imm Library x=CN throw[PG*T1,PG*T2] x)   if PG[e]=CN
 otherwise 
-G[throw[T1,T2] e]= (imm Void x=loop ex throw[T1,T2] x)   if G[e]=loop ex
+PG[throw[T1,T2] e]= (imm Void x=loop ex throw[PG*T1,PG*T2] x)   if PG[e]=loop ex
 otherwise 
-G[throw[T1,T2] e]= (P::m(xs) z=x.m[mdf P]((x:y)s) throw[T1,T2] z)   if G[e]=x.m[mdf P]((x:y)s)
+PG[throw[T1,T2] e]= (P::m(xs) z=x.m[CN]((x:y)s) throw[T1,T2] z)   if PG[e]=x.m[CN]((x:y)s)
 otherwise 
-G[throw[T1,T2] e]= (T z=(dxs kxs ex [T]) throw[T1,T2] z)   if G[e]=(dxs kxs ex [T])
+PG[throw[T1,T2] e]= (TX z=(dxs kxs ex [TX]) throw[PG*T1,PG*T2] z)   if PG[e]=(dxs kxs ex [TX])
 
-G[e.m[T]( (x:e)s)]= G[( P x=e x.m[T]((x:e)s))]
-G[x.m[mdf P]( (x:y)s x':e (x:e)s)]= G[( P::m(xs)::x' x=e x.m[mdf P]( (x:y)s x':x (x:e)s))]//where xs is the list of xs of the method call
+PG[e.m[P]( (x:e)s)]= PG[( P::m(xs)::this x=e x.m[P]((x:e)s))]//where xs is the list of xs of the method call
+PG[x.m[P]( (x:y)s x':e (x:e)s)]= PG[( P::m(xs)::x' x=e x.m[P]( (x:y)s x':x (x:e)s))]//where xs is the list of xs of the method call
 
-G[(ds ks e[T])]=(G+ds[ds] G[ks] G+ds[e] [T])
-  G[T x=e]=T x=G[e]
-  G[catch throw T x e]=catch throw T x G+x:T[e]
-  
-
-
-  ######Flat  L42F
-
-CT::= CN->p,CD
-CD::=kind CN implements CNs{ Mxs }
-Mx::=refine? method T mxs((T x)s) body?//first is this
-//yes, no exceptions declared, body empty iff kind=interface
-body::=ex | setter|getter|new|newPh| nativeIntSum|nativeIntMul|...|nativeArrAcc
-kind::=class |interface | nativeInt |nativeString| nativeFloat|nativeArray[T] | ...
-
-a::=x|void|CN |null
-T::= mdf CN //Any,Library,Void are reserved CN
-miniE::=a| throw[T1,T2] a |loop ex | CN.mxs(ys)| use P check mxs(ys) x
-  | if a then e1 else e2 |while a then e1 | x:=a
-ex::=miniE | (dxs kxs ex)
-kx::=catch throw T x ex
-dx::=T x=ex
-pre::=throw |loop
-
-p,zs[x]=x
-p,zs[void]=void
-p,zs[P]=p(P).CN
-p,zs[throw[T1,T2] a]=throw[p,zs[T1],p,zs[T2]] p,zs[a]
-p,zs[loop ex]=loop p,zs[ex]
-
-//no, difference between new and newPh
-p,zs[x0.m[mdf P](x1:y1..xn:yn)]=p,zs[P].m(x1..xn)(x0,y1..yn)
-if p(P)(m(x1..xn))not candidate constructor or 
-   some y1..yn in zs 
+PG[y0.m[P](x1:y1..xn:yn)]=PG*P.m(x1..xn)(y0..yn)
+if PG.p(P)(m(x1..xn)) 
+if p(P)(m(x1..xn))not candidate constructor 
+  or some y1..yn in fwd of PG.G 
 otherwise //we have optimized new
-p,zs[x0.m[mdf P](x1:y1..xn:yn)]=p,zs[P].New_m(x1..xn)(x0,y1..yn)
+PG[y0.m[P](x1:y1..xn:yn)]=PG*P.New_m(x1..xn)(y0..yn)
 
-p,zs[(dxs kxs ex)]=( phFix(p,zs,dom(dxs)[dxs]) p,zs[ks] p,zs[ex])
+
+
+PG[(ds ks e[T])]=(phFix(PG+ds[ds]) PG[ks] PG+ds[e] [PG*T])
+  PG[T x=e]=PG*T x=PG[e]
+  PG[catch throw T x e]=catch throw PG*T x PG+x:T[e]
+  
   phFix(dxs)=dxs if dom(dxs) not in FV(dxs)
   otherwise //a block actually using placeholders
-  phFix(T1 x1=ex1..Tn xn=exn)=
-    Fwd x1'=Fwd.New()..Fwd xn'=Fwd.New() //Fwd is a predefined class in all L42F programs
-    T1 x1=ex1[x1..xn=x1'..xn'] imm Void z1=Fwd.Fix(x1',x1)
+  phFix(mdf1 CN1 x1=ex1..mdfn CNn xn=exn)=
+    mdf1 Fwd x1'=Fwd.New()..mdfn Fwd xn'=Fwd.New() //Fwd is a predefined class in all L42F programs
+    mdf1 CN1 x1=ex1[x1..xn=x1'..xn'] imm Void z1=Fwd.Fix(x1',x1)
     ..
-    Tn xn=exn[x1..xn=x1'..xn'] imm Void zn=Fwd.Fix(xn',xn)
-p[L]=(L.CN).LoadLib() //uppercase so does not clash with 42 methods
+    mdfn CNn xn=exn[x1..xn=x1'..xn'] imm Void zn=Fwd.Fix(xn',xn)
+
+
+
 
 ########### CT.growWith(p,paths)
+//take an existing CT, create a bigger one where paths from p are added
 
 CT.growWith(p,Cs1..Csn paths)=
   CT+p.navigate(Cs1)+..+p.navigate(Csn)+CT'
-  CT' =CT.growWith(p.pop(),paths) if defined,
-  otherwise CT'=empty
+  CT' =CT.growWith(p.pop(),paths) if p.pop() defined,
+  otherwise CT'=empty and paths=empty
 
 CT+p=CT if CT(p.top().CN) is defined
 otherwise
-CT+p=CT,p.top().CN->CD',J
+CT+p=CT,p.top().CN->p.top(),CD',J
   where CD=libToCD(p), CD'=optimize(CD), J=toJava(CD')
 
 
@@ -240,4 +229,24 @@ if x ex2 else ex1
     let x=ax in [x e1]
   where [e0]=let x1=ax1 in .. let xn=axn in ax
   
+
+
+
+
+
+####### G.typeOf(e) //is it used now?
+G.typeOf(P)=class P if G.p(P) not interface
+otherwise
+G.typeOf(P)=class Any
+(_, x:T,_).typeOf(x)=T
+G.typeOf(void)=imm Void
+G.typeOf(L)=imm Library
+G.typeOf(loop e)=imm Void
+G.typeOf(throw[T1,T2] e)=T1
+G.typeOf( (_[T]) )=T
+G.typeOf( e.m[mdf P](x1:e1..xn:en) )=P::m(x1..xn)//resolved?
+
+//Note for marco: Guess type in formal
+//case use: use the plugin information, not the e! 
+
   
