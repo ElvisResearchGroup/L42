@@ -171,12 +171,12 @@ Phase| p| G x:lent C G'|  xss;xs | Tr |-e:e':T
 ------------------------------------------------------
   
 (subtype)
-p|-mdf P<=mdf' P'
+p|-mdf0 P0<=mdf1 P1
   where
-  mdf<=mdf
-  either P=P'
-  or P' in p(P).Ps[from P] //TODO use p.equiv
-
+  mdf0<=mdf1
+  P in P0 U (p(P0).Ps[from P0])
+  p.equiv(P,P1)
+  
 (shortcut)
 D |- e : e':T<=T'
   where
@@ -269,7 +269,7 @@ coherent(p,T1 x1..Tn xn,
   or   
     p|-imm This0 <=T and p|-Ti'<=fwd toImm(Ti)
   or
-    p|-read This0 <=T and p|-Ti'<=fwd toRead(Ti)
+    p|-read This0 <=T and p|-Ti'<=fwd toRead(Ti) //how with capsule?
 
 
 coherent(p,T1 x1..Tn xn,
@@ -288,15 +288,15 @@ coherent(p,T1 x1..Tn xn,
   m=#?xi
   p|-T<=Ti//setter
         
-    class=toImm(class)
-    otherwise, imm=toImm(mdf)
+    class P=toImm(class P)
+    otherwise, imm P=toImm(mdf P)
     
-    read=toRead(mut)=toRead(capsule)
-    imm=toRead(imm)
-    class=toRead(class)
+    read P=toRead(mut P)=toRead(capsule P)
+    imm P=toRead(imm P)
+    class P=toRead(class P)
     
-    lent=capsuleToLent(capsule)
-    otherwise mdf=capsuleToLent(mdf)
+    lent P=capsuleToLent(capsule P)
+    otherwise mdf P=capsuleToLent(mdf P)
   
 ------------------
 Dispatch //HARD
