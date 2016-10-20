@@ -220,7 +220,7 @@ Typed |- p : L'
 Coherent |- p : L'
    where
    Typed |- p : L'
-   coherent(L')
+   coherent(p)
     
 
 
@@ -242,16 +242,17 @@ p| Ps |-M : M'
     forall P in Ps such that p(P)(m(x1..xn))=M //that is, is defined
       M=mdf method T' m(T1 x1..Tn xn)exceptions Ps' and p|-T<=T'
 
-//Discuss with james: we need to push somewhere 235/251
-coherent(C1:L1..Cn:Ln)=coherent(L1)..coherent(Ln)
+coherent(p,C1:L1..Cn:Ln)=coherent(p.push(C1),L1)..coherent(p.push(Cn),Ln)
 
-coherent({interface implements _ mwts ncs})
+coherent(p)
   where
-  coherent(ncs)
+  p.top()={interface implements _ mwts ncs}
+  coherent(p,ncs)
     
-coherent({implements _ mwts' ncs})    
+coherent(p)    
   where
-  coherent(ncs)
+  p.top()={implements _ mwts' ncs} //note, no interface
+  coherent(p,ncs)
   mwts={mwt in mwts'| mwt.e undefined }
   either mwts is empty or
     at least 1 mwt in mwts is class method 

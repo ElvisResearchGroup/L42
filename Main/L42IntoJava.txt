@@ -79,6 +79,9 @@ PG::=p;(x:T)s //p;G
 p;(x:T)s + (x:T)s'=p;(x:T)s (x:T)s' //Thus I can write PG+x:T
 PG + T1 x1=e1..Tn xn=en=PG+x1:T1..xn:Tn
 
+PG*T=PG.p*T
+PG*P=PG.p*P
+
 PG*P=PG.p(P).CN
 
 PG*T =mdf PG*P
@@ -137,21 +140,21 @@ CT.growWith(p,Cs1..Csn paths)=
 
 CT+p=CT if CT(p.top().CN) is defined
 otherwise
-CT+p=CT,p.top().CN->p.top(),CD',J
+CT+p=CT,p.top().CN->p,CD',J
   where CD=libToCD(p), CD'=optimize(CD), J=toJava(CD')
 
 
-libToCD(p)=class/interface? CN implements p[Ps]{ p[Ms]}
-  where p.top()={interface? implements Ps Ms CN}
+libToCD(p)=class/interface? CN implements p*P1..p*Pn { libToCD(p,Ms)}
+  where p.top()={interface? implements P1..Pn Ms Phase CN}
 
-p[refine? mdf method T m(T1 x1..Tn xn)exception Ps e? =
-  refine? method p[T] mxs(mdf (p.top().CN) this,p[T1] x1..p[Tn] xn) p[ex?]
-  where ex?= (mdf This0 this,T1 x1..Tn xn)[e?]
+libToCD(p,refine? mdf method T m(T1 x1..Tn xn)exception Ps e?) =
+  refine? method p*T mxs(mdf (p.top().CN) this,p*T1 x1..p*Tn xn)  ex?
+  where ex?= p;(mdf This0 this,T1 x1..Tn xn)[e?]
   and if e?=empty, p.top() is interface
-p[mdf method T m((T x)?)=
+libToCD(p,mdf method T m((T x)?)  )=
   method p[T] mxs(mdf (p.top().CN) this,p[(T x)?]) body
   where mdf not class and body =setter if (T x)? not empty, otherwise body=getter
-p[class method T m(T1 x1..Tn xn)=
+libToCD(p,class method T m(T1 x1..Tn xn)  )=
   method method p[T] mxs(class (p.top().CN) this,p[T1] x1..p[Tn] xn) newPh
   method method p[T] New_mxs(class (p.top().CN) this,p[T1] x1..p[Tn] xn) new
   
