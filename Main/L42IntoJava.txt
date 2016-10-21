@@ -28,15 +28,14 @@ Intermediate; only for expressions in meth bodies:
 Destinaton1:
   L42F: a flattened version where every *executable*
   class/interface have a top level name 
-
-Destination2:
-  O42: a superset of L42F containing null, if, bool and so on..
-   -design a process to optimize L42F into O42, should be so that
+  this language also contains null, if, bool and so on..
+   -design a process to optimize L42F using those features.
+    Should be so that
     optimize(optimize(program))=optimize(program)
 
-Destination 3:
+Destination 2:
   Java, C++, Javascript,..
-  -design process to convert O42 programs into stuff.
+  -design process to convert L42F programs into stuff.
 
 ---------------------------------------------------------
 
@@ -47,12 +46,12 @@ throw::= exception | error | return
 k::=catch T x e
 d::= T x=e
 
-O42: 
+L42F 
 CT::= CN->p,CD
 CD::=kind CN implements CNs{ Mxs }
 Mx::=refine? method T mxs((T x)s) body?//first is this
 //note: no exceptions declared, body empty iff kind=interface
-body::=ex | setter|getter|new|newPh| nativeIntSum|nativeIntMul|...|nativeVectorAdd
+body::=ex | setter|getter|new|newFwd| nativeIntSum|nativeIntMul|...|nativeVectorAdd
 kind::=class |interface | nativeInt |nativeString| nativeFloat|nativeVector[CN] | ...
 ax::=x|void|P|null
 miniE::=ax| CN| throw[TX1,TX2] a |loop ex
@@ -152,21 +151,42 @@ libToCD(p,refine? mdf method T m(T1 x1..Tn xn)exception Ps e?) =
   where ex?= p;(mdf This0 this,T1 x1..Tn xn)[e?]
   and if e?=empty, p.top() is interface
 libToCD(p,mdf method T m((T x)?)  )=
-  method p[T] mxs(mdf (p.top().CN) this,p[(T x)?]) body
+  method p*T mxs(mdf (p.top().CN) this,p*(T x)?) body
   where mdf not class and body =setter if (T x)? not empty, otherwise body=getter
 libToCD(p,class method T m(T1 x1..Tn xn)  )=
-  method method p[T] mxs(class (p.top().CN) this,p[T1] x1..p[Tn] xn) newPh
-  method method p[T] New_mxs(class (p.top().CN) this,p[T1] x1..p[Tn] xn) new
+  method method p*T mxs(class (p.top().CN) this,p[T1] x1..p[Tn] xn) newFwd
+  method method p*T New_mxs(class (p.top().CN) this,p*T1 x1..p*Tn xn) new
   
 
-CT.execute(p,eC)=loadAndRun(J)
-  ex=p[empty[eC]]
+CT.execute(p,eC)=CT.loadAndRun(J)
+  ex=p;empty[eC]
   eJ=toJava(ex)
   J=class CN{ public static Object execute(){J}}//CN fresh
 
+CT.loadAndRun(CN,J)
+  CT contains/related to a class loader that access CT to load classes
+  CT.loader.load(toBytecode(J))
+  return CT.loader.usualReflectionToCall(CN.execute())
 
-
+We need to save in CT also the compiled bytecode;
+we need to make CT serializable and save it with "names" related to the "stage"
+of the program, for example the compilation of all a towel.
+should we use a db instead of files?
+I should write a simplified CT with just Java and bytecode to test those ideas...
+example caching system:
+when L42 run in a folder, near This.L42 we create a _This.db
+that contains the following info:
+-how many compilation iterations last time,
+-for each iteration:
+  -the p, the e, the used paths, the used CT, the resulting r
+when re-compiling, if the same iteraion uses the same e, the same used paths as
+cached, and for each P in paths, p(P) is the same, then we can re use the cached CT and re run e.
+If the resulting r is different, we trash all cache for following iterations. 
+Discuss advantages/disadvantages
 -------
+optimizing a local variable seams harder then adding them to the core...
+---------
+
 Optimizations:
 CT-->CT[CN=nativeOfThatPattern(CT(CN))]
 if CT(CN)= aSpecificPattern
