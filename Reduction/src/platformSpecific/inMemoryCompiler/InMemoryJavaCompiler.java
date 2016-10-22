@@ -1,9 +1,11 @@
 package platformSpecific.inMemoryCompiler;
 import java.io.*;
+import java.net.URI;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.Map.Entry;
 
 import javax.tools.*;
 import javax.tools.JavaFileManager.Location;
@@ -25,14 +27,14 @@ public class InMemoryJavaCompiler {
     CompilationError(MyDiagnosticListener diagnostic){
       super(diagnostic.toString()); this.diagnostic=diagnostic;}
   }
-  public static class ClassFile extends SimpleJavaFileObject implements Serializable {
-    private static final long serialVersionUID = 1L;
-    transient private final ByteArrayOutputStream byteCode = new ByteArrayOutputStream();
+  public static class ClassFile extends SimpleJavaFileObject{
+    private final ByteArrayOutputStream byteCode = new ByteArrayOutputStream();
     public final String name;
     private byte[] bytes=null;
     public ClassFile(String name, Kind kind) {
-        super(java.net.URI.create("string:///" + name.replace('.', '/')+kind.extension),kind);
-        this.name=name;}
+      super(java.net.URI.create("string:///" + name.replace('.', '/')+kind.extension),kind);
+      this.name=name;
+      }
     private void cacheBytes() {bytes=byteCode.toByteArray(); }
     private byte[] getBytes() {if(bytes==null) {cacheBytes();} return bytes;}
     @Override
@@ -78,12 +80,34 @@ public class InMemoryJavaCompiler {
       private final HashMap<String,ClassFile> map;
       public HashMap<String,ClassFile> map(){return map;}
       
+      private static class SClassFile implements Serializable{
+        private static final long serialVersionUID = 1L;
+        public  String name;
+        private byte[] bytes=null; 
+        private Kind kind;
+        static SClassFile fromCF(ClassFile from){
+          SClassFile res=new SClassFile();
+          res.name=from.name;
+          res.bytes=from.bytes;
+          res.kind=from.getKind();
+          return res;
+          }
+        ClassFile toCF(){
+          ClassFile res=new ClassFile(name,kind);
+          res.bytes=this.bytes;
+          return res;
+          }
+        }
       public void saveOnFile(Path file){
+        HashMap<String, SClassFile> smap =new HashMap<>();
+        for(Entry<String, ClassFile> e:map().entrySet()){
+          smap.put(e.getKey(),SClassFile.fromCF(e.getValue()));
+          }
         try (
           OutputStream os = Files.newOutputStream(file);
           ObjectOutputStream out = new ObjectOutputStream(os);
         ){
-          out.writeObject(map());
+          out.writeObject(smap);
         }catch(IOException i) {throw new Error(i);}
       }
       
@@ -94,7 +118,11 @@ public class InMemoryJavaCompiler {
         ){
           Object res = in.readObject();
           @SuppressWarnings("unchecked")
-          HashMap<String,ClassFile> map=(HashMap<String,ClassFile>)res;
+          HashMap<String,SClassFile> smap=(HashMap<String,SClassFile>)res;
+          HashMap<String, ClassFile> map =new HashMap<>();
+          for(Entry<String, SClassFile> e:smap.entrySet()){
+            map.put(e.getKey(),e.getValue().toCF());
+            }
           return new MapClassLoader(map,env);
         }
         catch(IOException i) {throw new Error(i);}
