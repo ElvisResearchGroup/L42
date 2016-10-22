@@ -183,8 +183,36 @@ when re-compiling, if the same iteraion uses the same e, the same used paths as
 cached, and for each P in paths, p(P) is the same, then we can re use the cached CT and re run e.
 If the resulting r is different, we trash all cache for following iterations. 
 Discuss advantages/disadvantages
+
+how to implement attempt:
+  loader using CT/CT can be updated/swapped (this will not influence already loaded classes)
+
+start:
+  //??desugaring will also import pre compiled used towels.
+  CT=beginning ct
+  loader=loaderOf(CT)
+  normalization(loader)
+  
+loader;paths|- eC -->p+ r   
+  loader.CT=loader.CT.growWith(p,paths)
+  r=loader.CT.execute(p,eC)
+
+CTJ is just [JBC1..JBCn]
+loader.CTJ.growWith(JBC1..JBCn)//no repetition with the ones already loaded
+loader.CTJ.execute(JBC)
+
+test
+CTJ=empty
+CTJ.growWith(stuff)
+execute stuff
+save to disc
+load
+grow more stuff
+execute more stuff
 -------
 optimizing a local variable seams harder then adding them to the core...
+In case we want to add local var to core, need to happen after /at the same time
+of implementing L42IntoJava.
 ---------
 
 Optimizations:

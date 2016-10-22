@@ -57,7 +57,7 @@ public class ProgramReduction {
     ClassB res=reduceE(p1,ec1,p1.getFreshId()+"."+nc.getName());
     ClassB top=p1.top();
     assert top.getNested(Collections.singletonList(nc.getName()))!=null;//would actually fail if not there
-    top.withMember(nc.withE(res));
+    top=top.withMember(nc.withE(res));
     return p1.updateTop(top);
     }
   static private ClassB reduceE(Program p, ExpCore e,String nameDebug) {

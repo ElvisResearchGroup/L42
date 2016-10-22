@@ -1,6 +1,8 @@
 package platformSpecific.inMemoryCompiler;
 import java.io.*;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 
 import javax.tools.*;
@@ -23,24 +25,27 @@ public class InMemoryJavaCompiler {
     CompilationError(MyDiagnosticListener diagnostic){
       super(diagnostic.toString()); this.diagnostic=diagnostic;}
   }
-  private static class ClassFile extends SimpleJavaFileObject {
-    private final ByteArrayOutputStream byteCode = new ByteArrayOutputStream();
+  public static class ClassFile extends SimpleJavaFileObject implements Serializable {
+    private static final long serialVersionUID = 1L;
+    transient private final ByteArrayOutputStream byteCode = new ByteArrayOutputStream();
     public final String name;
     private byte[] bytes=null;
     public ClassFile(String name, Kind kind) {
         super(java.net.URI.create("string:///" + name.replace('.', '/')+kind.extension),kind);
         this.name=name;}
-    public void cacheBytes() {bytes=byteCode.toByteArray(); }
-    public byte[] getBytes() {if(bytes==null) {cacheBytes();} return bytes;}
-   @Override
-   public InputStream openInputStream() {
-     return new ByteArrayInputStream(getBytes());
-     }
-
-
+    private void cacheBytes() {bytes=byteCode.toByteArray(); }
+    private byte[] getBytes() {if(bytes==null) {cacheBytes();} return bytes;}
     @Override
-    public OutputStream openOutputStream() throws IOException { return byteCode; }
-  }
+    public InputStream openInputStream() {
+      return new ByteArrayInputStream(getBytes());
+      }
+    @Override
+    public OutputStream openOutputStream() throws IOException {
+      return byteCode; 
+      }
+    }
+  
+  
   private static class MyDiagnosticListener implements DiagnosticListener<JavaFileObject> {
     public List<Diagnostic<? extends JavaFileObject>> diagnostic=new ArrayList<>();
     public void report(Diagnostic<? extends JavaFileObject> diagnostic) {
@@ -72,6 +77,31 @@ public class InMemoryJavaCompiler {
         }
       private final HashMap<String,ClassFile> map;
       public HashMap<String,ClassFile> map(){return map;}
+      
+      public void saveOnFile(Path file){
+        try (
+          OutputStream os = Files.newOutputStream(file);
+          ObjectOutputStream out = new ObjectOutputStream(os);
+        ){
+          out.writeObject(map());
+        }catch(IOException i) {throw new Error(i);}
+      }
+      
+      public static MapClassLoader readFromFile(Path file,ClassLoader env){
+        try (
+          InputStream is = Files.newInputStream(file);
+          ObjectInputStream in = new ObjectInputStream(is);
+        ){
+          Object res = in.readObject();
+          @SuppressWarnings("unchecked")
+          HashMap<String,ClassFile> map=(HashMap<String,ClassFile>)res;
+          return new MapClassLoader(map,env);
+        }
+        catch(IOException i) {throw new Error(i);}
+        catch (ClassNotFoundException e) {throw new Error(e);}
+        catch (ClassCastException e) {throw new Error(e);}//means file corrupted?
+      }
+      
       @Override
       protected Class<?> findClass(String name)throws ClassNotFoundException {
         if(!map.containsKey(name)){
@@ -87,9 +117,15 @@ public class InMemoryJavaCompiler {
     if (compiler == null) throw new Error("Only JDK contains the JavaCompiler, you are running a Java JRE");
     MyDiagnosticListener diagnisticListenerForErrors=new MyDiagnosticListener();
     final HashMap<String,ClassFile> map;
-    if(!(env instanceof MapClassLoader)){map= new HashMap<>();}
-    else{map=((MapClassLoader)env).map();}
-    final MapClassLoader classLoader=new MapClassLoader(map,env);
+    final MapClassLoader classLoader;
+    if(!(env instanceof MapClassLoader)){
+      map= new HashMap<>();
+      classLoader=new MapClassLoader(map,env);
+      }
+    else{
+      classLoader=(MapClassLoader)env;
+      map=classLoader.map();
+      }
     final ForwardingJavaFileManager<StandardJavaFileManager>  classFileManager=
         new ForwardingJavaFileManager<StandardJavaFileManager>(compiler.getStandardFileManager(diagnisticListenerForErrors,Locale.ENGLISH, null)){
       @Override

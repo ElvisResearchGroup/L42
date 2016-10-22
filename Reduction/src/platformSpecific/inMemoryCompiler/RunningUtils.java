@@ -15,6 +15,15 @@ import java.util.logging.Logger;
 
 public class RunningUtils {
   private static Logger log = Logger.getLogger(RunningUtils.class.getName());
+  public static Object runExecute(ClassLoader cl,String className)throws InvocationTargetException{
+  try {
+     return cl.loadClass(className).getDeclaredMethod("execute").invoke(null);
+    }
+  catch (ClassNotFoundException | IllegalAccessException | IllegalArgumentException | NoSuchMethodException | SecurityException e) {
+    throw new Error(e);
+    }
+  }
+
   public static void runMain(ClassLoader cl,String className)throws InvocationTargetException{
     try {
        cl.loadClass(className).getDeclaredMethod("main",String[].class).invoke(null,(Object)new String[]{});
