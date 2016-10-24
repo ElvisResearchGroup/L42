@@ -54,7 +54,7 @@ Mx::=refine? method T mxs((T x)s) body?//first is this
 body::=ex | setter|getter|new|newFwd| nativeIntSum|nativeIntMul|...|nativeVectorAdd
 kind::=class |interface | nativeInt |nativeString| nativeFloat|nativeVector[CN] | ...
 ax::=x|void|P|null
-miniE::=ax| CN| throw[TX1,TX2] a |loop ex
+miniE::=ax| CN| throw[TX1,TX2] ax |loop ex
   |CN.mxs(ys)| use P check mxs(ys) x
   |if ax then ex1 else ex2 |while ax then ex1 | x:=ax
 ex::=miniE | (dxs kxs ex [TX])
@@ -260,9 +260,11 @@ WrapperClasses:
 class is wrapper if
 - exactly one field,
 - no implements
-- never casted to Any??
+- never casted to Any??//can not be checked on an open program
+//TS may annotate T->Any(e), then that can be replace with new T? chain of news up to surviving inner type?
+//no need of the chain, wrapper classes are fixed one at the time?
 - either no setter(opt has no setter)
-  or never used in constructors and setters//may not need 
+  or never used in constructors and setters//may not need //also can not be checked on an open program 
   
   then
   replace all CN with the field type except for CN.mxs
@@ -282,7 +284,22 @@ If insertion:
   replaced with
 if x ex2 else ex1
   if CT(CN).kind=nativeInt //just to avoid native bools too?
-   
+
+
+Throw/cast simplification
+(throw[T,_] ax
+ catch throw T x x
+ _)
+   replaced with 
+   ax
+
+Throw/cast simplification
+(throw[T0,_] ax
+ catch throw T1 x x
+ ..
+ catch throw Tn x x
+ e)
+????? need casts ? ifs? type switch?
 
 ------------------------------------------------+
 

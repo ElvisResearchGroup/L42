@@ -24,6 +24,10 @@ PlgGen({
 //@PluginMethodUnresponsive
 //@int @Size
 })
+//NOTE: TODO: if Size was still undefined, it should not compile
+//ADD in normalization to collect as used path to normalize all @P in all comment in eC
+//otherwise compilation may introduce compile errors in formerly ok classes
+//TODO: in typing, a class is well typed only if all @P exists
 
 A:{/*@plugin it.bla/a.A*/
   Size b()
