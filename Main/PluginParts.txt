@@ -1,0 +1,41 @@
+Challenges:
+
+-a single plugin should map multiple mutually recursive java classes
+to 42 classes.
+-metaprogramming should be able to generate the 42 classes from the plugin only
+
+void ->Void
+int,String,... ->Library
+exceptions?
+
+class it.bla.a.A{
+ int a()
+ B toB()
+ }
+class it.bla.b.B{
+  int b()
+  void print(A a)
+  }
+
+A:PlgGen<<{/*@plugin it.bla/a.A*/} //plugin is it.bla, a.A is pluginPart 
+B:PlgGen<<{/*@plugin it.bla/b.B*/}
+
+PlgGen({
+//@PluginMethodUnresponsive
+//@int @Size
+})
+
+A:{/*@plugin it.bla/a.A*/
+  Size b()
+    Size.from(plgLibrary:
+      use This0 check b(_this:this.plgLibrary())
+      error PluginMethodUnresponsive"plugin it.bla/a.A.m(_this)"
+      )
+  B toB()
+    B.from(plgLibrary:
+      use This0 check toB(_this:this.plgLibrary())
+      error PluginMethodUnresponsive"plugin it.bla/a.A.toB(_this)"      
+      )
+  }
+B:{/*@plugin it.bla/b.B*/
+  }
