@@ -333,5 +333,33 @@ The shape of the generated datatype is decided by the expression behaviour,
 not just by its type:
 a type system on the line of MetaML would attempt to
 type e as Class<Int m(); String foo()>
+This approach requires the type of the result to be encoded in
+the expression at the type level.
+This disallow the very useful pattern
+MyData: FromXML("xml data")//could be JSon or any other data format, including a DB
+Where either the shape of the data is used to infer its type
+or the data contains its schema (as in a database).
 
-In order for our metaprogramming to generate e expressive 
+Problems tipical of circular initialization of values are lifted
+as problems of circular generation of classes:
+For example
+A:{B toB() int size()}
+B:{A toA() int size()}
+is normal -relaxing- looking code with circularity of the type level
+While
+A:if hasMethodSize(B) then {B toB() int size()} else {B toB()} 
+B:if hasMethodSize(A) then {A toA() int size()} else {A toA()}
+seams broken code, at least as much as
+a=b+1
+b=a+1
+
+To make a concrete example,
+A:IfFieldsEqualsAddEquals({ Num num; B b;}) //two fields num and b
+B:IfFieldsEqualsAddEquals({ Num num; A a;})
+IfFieldsEqualsAddEquals should add an equals method that
+propagate the check to its fields, but only if all the fields
+have an equals method.
+What should happens here? should we add equals to both A and B
+or to none of the two?  
+
+
