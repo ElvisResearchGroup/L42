@@ -110,9 +110,10 @@ maindefinition:
 ###define usedPathsE
 //note we could have redundant paths, like This1.C and This2.B.C and is ok
 //and this is also ok for path,path' for toAny
-- usedPathsE(p,eC)= <reorganize(Ps); usedPathsFix(p,paths, empty)>//assert that the result includes paths in usedPathsFix(p,paths, empty)  
+- usedPathsE(p,eC)= <path\paths';paths'>//assert that the result includes paths in usedPathsFix(p,paths, empty)  
   Ps,Ps'={P|P inside eC}//arbitrary split of the set; heuristic will apply in the implementation.
-  paths= reorganize(Ps')
+  paths=usedPathsFix(p,reorganize(Ps), empty)
+  paths'=usedPathsFix(p,reorganize(Ps'), empty)
  
 - usedPathsFix(p,paths,Css)= usedPathsFix(p, paths U paths0,Css') // U on paths does minimize() internally
    paths.top()\Css!=empty
