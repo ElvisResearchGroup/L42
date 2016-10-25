@@ -113,7 +113,7 @@ maindefinition:
 - usedPathsE(p,eC)= <path\paths';paths'>//assert that the result includes paths in usedPathsFix(p,paths, empty)  
   Ps,Ps'={P|P inside eC}//arbitrary split of the set; heuristic will apply in the implementation.
   paths=usedPathsFix(p,reorganize(Ps), empty)
-  paths'=usedPathsFix(p,reorganize(Ps'), empty)
+  paths'=usedPathsFix(p,reorganize(Ps'), empty)//TODO: fix code around here (plus, do we have setminus on Paths?)
  
 - usedPathsFix(p,paths,Css)= usedPathsFix(p, paths U paths0,Css') // U on paths does minimize() internally
    paths.top()\Css!=empty
