@@ -88,7 +88,7 @@ where
   mdf P=resolve(p,T)
 
 
-PG[a]= a //a atoms
+PG[a]= a //a atoms //TODO: P is an a, need PG*P
 PG[L]= (L.CN).LoadLib()
 PG[loop e]=loop PG[e]
 
