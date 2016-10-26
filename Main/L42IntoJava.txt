@@ -81,11 +81,11 @@ PG + T1 x1=e1..Tn xn=en=PG+x1:T1..xn:Tn
 PG*T=PG.p*T
 PG*P=PG.p*P
 
-p*P=PG.p(P).CN
+p*P=p(P).CN
 
-p*T =mdf PG*P
+p*T =mdf p*P
 where
-  mdf P=resolve(PG.p,T)
+  mdf P=resolve(p,T)
 
 
 PG[a]= a //a atoms
