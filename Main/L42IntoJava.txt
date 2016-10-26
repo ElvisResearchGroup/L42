@@ -55,7 +55,7 @@ body::=ex | setter|getter|new|newFwd| nativeIntSum|nativeIntMul|...|nativeVector
 kind::=class |interface | nativeInt |nativeString| nativeFloat|nativeVector[CN] | ...
 ax::=x|void|CN|null
 miniE::=ax| throw[TX1,TX2] ax |loop ex
-  |CN.mxs(ys)| use CN check mxs(ys) x
+  |CN.mxs(ys)| use CN check mxs(ys) ex
   |if ax then ex1 else ex2 |while ax then ex1 | x:=ax
 ex::=miniE | (dxs kxs ex [TX])
 kx::=catch throw TX x ex
