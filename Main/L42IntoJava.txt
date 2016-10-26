@@ -41,9 +41,9 @@ Destination 2:
 
 L42N (should be identical to the one in NotationsAndGrammar
 a::=x|void|P
-e::=a|L|throw[T1,T2] e|loop e|(ds ks e[T])| e.m[T]((x:e)s)| use P check m((x:e)s) e
+e::=a|L|throw[T1,T2] e|loop e|(ds ks e[T])| e.m[P]((x:e)s)| use P check m((x:e)s) e
 throw::= exception | error | return
-k::=catch T x e
+k::=catch throw T x e
 d::= T x=e
 
 L42F 
