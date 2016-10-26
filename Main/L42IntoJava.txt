@@ -53,9 +53,9 @@ Mx::=refine? method T mxs((T x)s) body?//first is this
 //note: no exceptions declared, body empty iff kind=interface
 body::=ex | setter|getter|new|newFwd| nativeIntSum|nativeIntMul|...|nativeVectorAdd
 kind::=class |interface | nativeInt |nativeString| nativeFloat|nativeVector[CN] | ...
-ax::=x|void|P|null
+ax::=x|void|CN|null
 miniE::=ax| CN| throw[TX1,TX2] ax |loop ex
-  |CN.mxs(ys)| use P check mxs(ys) x
+  |CN.mxs(ys)| use CN check mxs(ys) x
   |if ax then ex1 else ex2 |while ax then ex1 | x:=ax
 ex::=miniE | (dxs kxs ex [TX])
 kx::=catch throw TX x ex
