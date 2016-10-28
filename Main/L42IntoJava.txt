@@ -73,6 +73,22 @@ TX::=mdf CN
 //also, assume all local variables alpharenamed to be different
 //and all newly introduced variables are fresh
 
+Prefefined classes/methods in L42F
+
+nativeFwd Fwd{
+  method New()
+  method Fix(Fwd a,Any b)//replace a with b in all the places a was stored.
+  //every newFwd edits a list inside of Fwds to remember where they are stored.
+  }
+-----
+nativeResource Resource{
+  method LoadLib_CN1()
+  ..
+  method LoadLib_CNn()
+  }
+  methods returning the AST of the code corresponding
+  to library literals with unique names CN1..CNn 
+  
 #### define PG[ e0]= e1 with e0 in L42N and e1 in L42X
 PG::=p;(x:T)s //p;G
 p;(x:T)s + (x:T)s'=p;(x:T)s (x:T)s' //Thus I can write PG+x:T
@@ -87,9 +103,10 @@ p*T =mdf p*P
 where
   mdf P=resolve(p,T)
 
-
-PG[a]= a //a atoms //TODO: P is an a, need PG*P
-PG[L]= (L.CN).LoadLib()
+PG[x]=x
+PG[void]=void
+PG[P]=PG*P
+PG[L]= Resource.LoadLib_`L.CN`() //string composition for method name
 PG[loop e]=loop PG[e]
 
 PG[throw[T1,T2] e]=throw[PG*T1,PG*T2] a   if PG[e]=a

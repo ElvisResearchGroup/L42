@@ -9,34 +9,102 @@ int,String,... ->Library
 exceptions?
 
 class it.bla.a.A{
- int a()
- B toB()
- }
+  int a()
+  B toB()
+  }
 class it.bla.b.B{
   int b()
-  void print(A a)
+  A toA()
+  static void print(A a)
   }
 
 A:PlgGen<<{/*@plugin it.bla/a.A*/} //plugin is it.bla, a.A is pluginPart 
 B:PlgGen<<{/*@plugin it.bla/b.B*/}
 
+//the primitive plugin will need to know
+1 the pluging wrapper interface
+2 the plugin error message
+I the method headers are repeated, that is all?
+
 PlgGen({
-//@PluginMethodUnresponsive
+//@PlgWrapper @PluginMethodUnresponsive
 //@int @Size
 })
-//NOTE: whenever we can just use @Size before is defined is under discussion
+//NOTE: we can not use @Size before is (meta-)defined
+//Thus B toB() will not be generated
+//if the method name has less £x then parameters, additional parameters are
+going to have their number as name 
 
+PlgWrapper:{interface 
+  class method
+  mut This0 from(Library plgLibrary)//is PlgWrapper from outside
+  read method
+  Library plgLibrary()
+  }
+  
 A:{/*@plugin it.bla/a.A*/
-  Size b()
+  implements PlgWrapper
+  
+  refine class method
+  mut This0 from(Library plgLibrary)//refined to return This0
+  
+  refine read method//as normalization already add
+  Library plgLibrary()
+  
+  read method Size a()
     Size.from(plgLibrary:
-      use This0 check b(_this:this.plgLibrary())
-      error PluginMethodUnresponsive"plugin it.bla/a.A.m(_this)"
+      use This0 check a(_0:this.plgLibrary())
+      error PluginMethodUnresponsive"plugin it.bla/a.A.a(_0)"
       )
-  B toB()
+/*method B toB()//not generated
     B.from(plgLibrary:
-      use This0 check toB(_this:this.plgLibrary())
-      error PluginMethodUnresponsive"plugin it.bla/a.A.toB(_this)"      
+      use This0 check toB(_0:this.plgLibrary())
+      error PluginMethodUnresponsive"plugin it.bla/a.A.toB(_0)"      
+      )*/
+  }
+
+However, we can just write the header and force generation
+B:PlgGen<<{/*@plugin it.bla/b.B*/ 
+  method A toA()
+  class method Void print(A a) 
+  }
+  
+B:{/*@plugin it.bla/b.B*/
+  implements PlgWrapper
+  
+  refine class method
+  mut This0 from(Library plgLibrary)//refined to return This0
+
+  read Size b()
+    Size.from(plgLibrary:
+      use This0 check b(_0:this.plgLibrary())
+      error PluginMethodUnresponsive"plugin it.bla/a.B.b(_0)"
+      )
+      
+  method A toA()
+    A.from(plgLibrary:
+      use This0 check toA(_0:this.plgLibrary())
+      error PluginMethodUnresponsive"plugin it.bla/a.B.toA(_0)"      
+      )
+      
+  class method Void print(A a) //also this header is needed, to know "A" as parameter type, plus is giving the parameter the name "a"
+    use This0 check print(_1:a.plgLibrary())
+    error PluginMethodUnresponsive"plugin it.bla/a.B.print(_1)"      
       )
   }
-B:{/*@plugin it.bla/b.B*/
+  
+  
+  How to handle mut plugins?
+  
+class System42{
+  void out(String s)
+  String in()
   }
+ 
+System42:PlgWrapper.$<<{
+  //@plugin it.bla/system.System42
+  mut method Void out(S s)//we have to repeat the header and add mut..
+  mut method S in()//should we just always require headers?
+  }
+
+  
