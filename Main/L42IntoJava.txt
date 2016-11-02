@@ -113,20 +113,25 @@ PG[throw[T1,T2] x]=throw[PG*T1,PG*T2] x
 otherwise
 PG[throw[T1,T2] e]=PG[( T2 x=e throw[T1,T2] x)]
 
+//Translation method call
+//-normalizing es into xs
 In the following, whith e!=x //usare y per x receiver? 
 PG[e.m[P]( (x:e)s)]= PG[( P::m(xs)::this x=e x.m[P]((x:e)s))]//where xs is the list of xs of the method call
 PG[x.m[P]( (x:y)s x':e (x:e)s)]= PG[( P::m(xs)::x' x''=e x.m[P]( (x:y)s x':x'' (x:e)s))]//where xs is the list of xs of the method call
 
-PG[y0.m[P](x1:y1..xn:yn)]=PG*P.m`x1..xn`(y1..yn)
-if PG.p(P)(m(x1..xn))=class method _ and PG.p(P) not interface
-//no refine, we trash y0 that must be just a P
-otherwise
+//-3 cases for y.m((x:y)s)
+//--case 1: interface or non class method or some FWD-->trad normale
 PG[y0.m[P](x1:y1..xn:yn)]=PG*P.m`x1..xn`(y0..yn)
-if PG.p(P)(m(x1..xn)) not candidate constructor 
-  or some y1..yn in fwd of PG.G 
-otherwise //we have optimized new
-PG[y0.m[P](x1:y1..xn:yn)]=PG*P.New_m`x1..xn`(y0..yn)
+if PG.p(P) is interface or PG.p(P)(m(x1..xn))non class method
+or some T1..Tn parameters of PG.p(P)(m(x1..xn)) have fwd modifier 
 
+//--case 2:class method body  -->trad no this
+otherwise
+if PG.p(P)(m(x1..xn))=class method T m(T1 x1..Tn xn) e
+PG[y0.m[P](x1:y1..xn:yn)]=PG*P.m`x1..xn`(y1..yn)
+//--case 3:class method constr no Fwd  --> trad no this, New_
+otherwise //we have optimized new
+PG[y0.m[P](x1:y1..xn:yn)]=PG*P.New_m`x1..xn`(y1..yn)
 
 
 PG[(ds ks e[T])]=(phFix(PG+ds[ds]) PG[ks] PG+ds[e] [PG*T])
