@@ -112,7 +112,8 @@ PG[loop e]=loop PG[e]
 PG[throw[T1,T2] x]=throw[PG*T1,PG*T2] x
 otherwise
 PG[throw[T1,T2] e]=PG[( T2 x=e throw[T1,T2] x)]
- 
+
+In the following, whith e!=x //usare y per x receiver? 
 PG[e.m[P]( (x:e)s)]= PG[( P::m(xs)::this x=e x.m[P]((x:e)s))]//where xs is the list of xs of the method call
 PG[x.m[P]( (x:y)s x':e (x:e)s)]= PG[( P::m(xs)::x' x''=e x.m[P]( (x:y)s x':x'' (x:e)s))]//where xs is the list of xs of the method call
 
@@ -120,8 +121,7 @@ PG[y0.m[P](x1:y1..xn:yn)]=PG*P.m(x1..xn)(y1..yn)
 if PG.p(m(x1..xn))=class method _//no refine, we trash y0 that must be just a P
 otherwise
 PG[y0.m[P](x1:y1..xn:yn)]=PG*P.m(x1..xn)(y0..yn)
-if PG.p(P)(m(x1..xn)) 
-if p(P)(m(x1..xn))not candidate constructor 
+if PG.p(P)(m(x1..xn))not candidate constructor 
   or some y1..yn in fwd of PG.G 
 otherwise //we have optimized new
 PG[y0.m[P](x1:y1..xn:yn)]=PG*P.New_m(x1..xn)(y0..yn)
