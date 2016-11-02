@@ -82,14 +82,14 @@ nativeFwd Fwd{
   }
 -----
 nativeResource Resource{
-  method LoadLib_CN1()
+  method Library LoadLib_CN1()
   ..
-  method LoadLib_CNn()
+  method Library LoadLib_CNn()
   }
   methods returning the AST of the code corresponding
   to library literals with unique names CN1..CNn 
   
-#### define PG[ e0]= e1 with e0 in L42N and e1 in L42X
+#### define PG[ e0]= e1 with e0 in L42N and e1 in L42F
 PG::=p;(x:T)s //p;G
 p;(x:T)s + (x:T)s'=p;(x:T)s (x:T)s' //Thus I can write PG+x:T
 PG + T1 x1=e1..Tn xn=en=PG+x1:T1..xn:Tn
@@ -114,7 +114,7 @@ otherwise
 PG[throw[T1,T2] e]=PG[( T2 x=e throw[T1,T2] x)]
  
 PG[e.m[P]( (x:e)s)]= PG[( P::m(xs)::this x=e x.m[P]((x:e)s))]//where xs is the list of xs of the method call
-PG[x.m[P]( (x:y)s x':e (x:e)s)]= PG[( P::m(xs)::x' x=e x.m[P]( (x:y)s x':x (x:e)s))]//where xs is the list of xs of the method call
+PG[x.m[P]( (x:y)s x':e (x:e)s)]= PG[( P::m(xs)::x' x''=e x.m[P]( (x:y)s x':x'' (x:e)s))]//where xs is the list of xs of the method call
 
 PG[y0.m[P](x1:y1..xn:yn)]=PG*P.m(x1..xn)(y1..yn)
 if PG.p(m(x1..xn))=class method _//no refine, we trash y0 that must be just a P
