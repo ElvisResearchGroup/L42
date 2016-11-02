@@ -142,10 +142,11 @@ PG[(ds ks e[T])]=(phFix(PG+ds[ds]) PG+ds[ks] PG+ds[e] [PG*T])
   otherwise //a block actually using placeholders
   phFix(mdf1 CN1 x1=ex1..mdfn CNn xn=exn)=
     mdf1 Fwd x1'=Fwd.New()..mdfn Fwd xn'=Fwd.New() //Fwd is a predefined class in all L42F programs
-    mdf1 CN1 x1=ex1[x1..xn=x1'..xn'] imm Void z1=Fwd.Fix(x1',x1)
+    mdf1 CN1 x1=ex1' imm Void z1=Fwd.Fix(x1',x1)
     ..
-    mdfn CNn xn=exn[x1..xn=x1'..xn'] imm Void zn=Fwd.Fix(xn',xn)
-
+    mdfn CNn xn=exn' imm Void zn=Fwd.Fix(xn',xn)
+    with exi'=exi[xi..xn=xi'..xn']
+//FWD mi sfotte il TS di java dovrei avere molte FWD
 
 
 
