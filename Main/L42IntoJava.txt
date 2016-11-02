@@ -117,15 +117,15 @@ In the following, whith e!=x //usare y per x receiver?
 PG[e.m[P]( (x:e)s)]= PG[( P::m(xs)::this x=e x.m[P]((x:e)s))]//where xs is the list of xs of the method call
 PG[x.m[P]( (x:y)s x':e (x:e)s)]= PG[( P::m(xs)::x' x''=e x.m[P]( (x:y)s x':x'' (x:e)s))]//where xs is the list of xs of the method call
 
-PG[y0.m[P](x1:y1..xn:yn)]=PG*P.m(x1..xn)(y1..yn)
+PG[y0.m[P](x1:y1..xn:yn)]=PG*P.m`x1..xn`(y1..yn)
 if PG.p(P)(m(x1..xn))=class method _ and PG.p(P) not interface
 //no refine, we trash y0 that must be just a P
 otherwise
-PG[y0.m[P](x1:y1..xn:yn)]=PG*P.m(x1..xn)(y0..yn)
+PG[y0.m[P](x1:y1..xn:yn)]=PG*P.m`x1..xn`(y0..yn)
 if PG.p(P)(m(x1..xn)) not candidate constructor 
   or some y1..yn in fwd of PG.G 
 otherwise //we have optimized new
-PG[y0.m[P](x1:y1..xn:yn)]=PG*P.New_m(x1..xn)(y0..yn)
+PG[y0.m[P](x1:y1..xn:yn)]=PG*P.New_m`x1..xn`(y0..yn)
 
 
 
