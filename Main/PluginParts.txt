@@ -38,6 +38,46 @@ PlgGen({
 //if the method name has less £x then parameters, additional parameters are
 going to have their number as name 
 
+
+plgPart calling:
+if P plugin is plgUrl/plgPart
+then plugin(p,P,m(xs))=plg, T0,T1..Tn
+plugin(p,P,m(xs),vs, e)
+types: 
+locate Java meth plgPart.m
+void is Void
+ast.Ast.Path is class Any
+anything else is Library
+if meth is static, no _0 arg
+
+oncall:
+wrapper with all Object,
+ try-cast and catch retrow message
+  
+
+expected PlgWrapper: {
+  class method
+  mut This0 from(Library plgLibrary)
+  read method
+  Library plgLibrary()
+  class method
+  Void exceptionIf(Library plgLibrary) exception This
+    {
+    use This check specialName(plgLibrary:plgLibrary)
+    exception This.from(plgLibrary:plgLibrary)
+    }
+
+
+  mdf method Ret m(Par1 p1, Par2 p2)//provided
+    Ret.from(plgLibrary:
+      use This0 check m(_0:this.plgLibrary(), _1:p1.plgLibrary(), _2:p2.plgLibrary())
+      error PluginMethodUnresponsive.from(plgLibrary:{/*plugin it.bla/a.A.m(p1,p2)*/}"
+      )
+  class method Void m(Par1 p1, Par2 p2)//provided
+    use This0 check m(_1:p1.plgLibrary(), _2:p2.plgLibrary())
+    error PluginMethodUnresponsive.from(plgLibrary:{/*plugin it.bla/a.A.m(p1,p2)*/}"
+  }
+
 PlgWrapper:{interface 
   class method
   mut This0 from(Library plgLibrary)//is PlgWrapper from outside

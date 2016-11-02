@@ -7,52 +7,38 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import platformSpecific.fakeInternet.ActionType.Type;
 import platformSpecific.javaTranslation.Resources;
 import ast.Ast.MethodType;
+import ast.Ast;
 import ast.ErrorMessage;
 import ast.ExpCore;
 import ast.ExpCore.Using;
 import auxiliaryGrammar.Program;
-
-public interface PluginType {
-  //Object dispatch(boolean t,Program p, Using u);
+class ProtectedPluginType{
   static Method getMethod(PluginType that,Program p,Using u){
     String mName=Resources.nameOf(u.getS().getName(),u.getS().getNames());
-    Class<?>[] parameterTypes=new Class<?>[u.getS().getNames().size()];
+    return getMethod(that.getClass(),p,mName,u.getS().getNames().size(),u);
+    }
+
+  static Method getMethod(Class<?> that,Program p,String mName, int argNum,Using uForError){
+    Class<?>[] parameterTypes=new Class<?>[argNum];
     Arrays.fill(parameterTypes, Object.class);
-    try {return that.getClass().getMethod(mName, parameterTypes);}
+    try {return that.getMethod(mName, parameterTypes);}
     catch (NoSuchMethodException e) {
       List<String> options=new ArrayList<>();
       for(Method m:that.getClass().getDeclaredMethods()){
         options.add(m.getName());
-        if(m.getName().contains("eft")){
-          System.out.print("");
         }
-
-        if(m.getName().equals(mName)){
-          System.out.print("");
-        }
-      }
-      throw new ErrorMessage.PluginMethodUndefined(options,u,p.getInnerData(),null);
+      throw new ErrorMessage.PluginMethodUndefined(options,uForError,p.getInnerData(),null);
       }
     catch (SecurityException e) { throw new Error(e);}
     }
-  default ast.Ast.MethodType typeOf(Program p, Using u){//return (ast.Ast.MethodType) dispatch(true,p,u);}
-  //default MethodType dispatchType(Program p, Using u){
-    Method m=getMethod(this,p, u);
-    ActionType ann = m.getAnnotation(ActionType.class);
-    assert ann!=null;
-    MethodType mt = ActionType.Type.mt(ann.mdf(),ann.value());
-    assert mt.getTs().size()==u.getS().getNames().size(): m.getName()+" "+mt.getTs().size()+"."+u.getS().getNames().size();
-    return mt;
-    };
-  default Object execute(Program p, Using u){//return  dispatch(false,p,u);}
-  //default Object dispatchAction(Program p, Using u){
-    Method m=getMethod(this,p, u);
+  
+  static Object executeMethod(Method m,Program p,Object rec, Object[] es){
     try {
-      Object[] xs = u.getEs().toArray();
-      Object r = m.invoke(this,xs);
-      if(Resources.isValid(p, r, xs)){return r;}
+      Object r = m.invoke(rec,es);
+      if(Resources.isValid(p, r, es)){return r;}
       else{throw Resources.notAct;}
       }
     catch (IllegalAccessException | IllegalArgumentException e) {
@@ -67,17 +53,22 @@ public interface PluginType {
         }
       throw new Error(e.getCause());
       }
+    }
+  }
+public interface PluginType {
+  default List<ast.Ast.NormType> typeOf(Program p, Using u){
+    Method m=ProtectedPluginType.getMethod(this,p, u);
+    ActionType ann = m.getAnnotation(ActionType.class);
+    assert ann!=null;
+    ArrayList<Ast.NormType> ts=new ArrayList<>();
+    for(ActionType.Type path:ann.value()){
+      ts.add(path.type.getNT());
+      }
+    return ts;
     };
-  //default void setProgram(Program p){};
-}
-//for connections, like dbconnections or file connections:
-/*
-use the connection string as connection object:
-open "...."
-close "..."
-read "..."
-
-implemented as a map: each resource type is a map from string to real resource handle!
-
-
-*/
+  default Object execute(Program p, Using u){
+    assert false: "is this not called with compilation?";
+    Method m=ProtectedPluginType.getMethod(this,p, u);
+    return ProtectedPluginType.executeMethod(m, p, this, u.getEs().toArray());
+    }
+  }

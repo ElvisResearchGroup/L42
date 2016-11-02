@@ -29,18 +29,7 @@ public @interface ActionType {
     ReadAny(new Ast.NormType(Mdf.Readable,Path.Any(),Ph.None));
     Ast.Type type;
     Type(Ast.Type type){this.type=type;}
-    
-    public static final Ast.MethodType mt(Mdf mdf,Type []paths){
-      assert paths.length>0;
-      ArrayList<Doc> docs=new ArrayList<>();
-      ArrayList<Ast.Type> ts=new ArrayList<>();
-      for(int i=1;i<paths.length;i++){
-        ts.add(paths[i].type);
-        docs.add(Doc.empty());
-        }
-      return new Ast.MethodType(false,Doc.empty(),mdf,ts,docs,paths[0].type,Collections.emptyList());
-    }
   }
   Type[] value();
-  Mdf mdf() default Mdf.Immutable;
+  //Mdf mdf() default Mdf.Immutable;
 }

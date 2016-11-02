@@ -40,8 +40,8 @@ Destination 2:
 ---------------------------------------------------------
 
 L42N (should be identical to the one in NotationsAndGrammar
-a::=x|void|P
-e::=a|L|throw[T1,T2] e|loop e|(ds ks e[T])| e.m[P]((x:e)s)| use P check m((x:e)s) e
+
+e::=x|void|P|L|throw[T1,T2] e|loop e|(ds ks e[T])| e.m[P]((x:e)s)| use P check m((x:e)s) e
 throw::= exception | error | return
 k::=catch throw T x e
 d::= T x=e
@@ -53,10 +53,9 @@ Mx::=refine? method T mxs((T x)s) body?//first is this
 //note: no exceptions declared, body empty iff kind=interface
 body::=ex | setter|getter|new|newFwd| nativeIntSum|nativeIntMul|...|nativeVectorAdd
 kind::=class |interface | nativeInt |nativeString| nativeFloat|nativeVector[CN] | ...
-ax::=x|void|CN|null
-miniE::=ax| throw[TX1,TX2] ax |loop ex
+miniE::=x|void|CN|null| throw[TX1,TX2] x |loop ex
   |CN.mxs(ys)| use CN check mxs(ys) ex
-  |if ax then ex1 else ex2 |while ???x?_or_?ex?? then ex1 | x:=ax
+  |if x then ex1 else ex2 |while ???x?_or_?ex?? then ex1 | x1:=x2
 ex::=miniE | (dxs kxs ex [TX])
 kx::=catch throw TX x ex
 dx::=TX x=ex
@@ -68,6 +67,7 @@ TX::=mdf CN
 //TX x; labelFor_x:{dxs\e try{dxs\t}x=kxs  x=ex}
 //  where x=catch TX y ex is catch (TX y ){x=ex break labelFor_x}
 //dxs\e and dxs\t removes the e and the TX from dxs to separe declarations and initializations
+//x=ex is untrivial to define, for example x= throw x'== throw x'
 
 //for compactness ignore use, treated the same as mcall
 //also, assume all local variables alpharenamed to be different
@@ -109,16 +109,10 @@ PG[P]=PG*P
 PG[L]= Resource.LoadLib_`L.CN`() //string composition for method name
 PG[loop e]=loop PG[e]
 
-PG[throw[T1,T2] e]=throw[PG*T1,PG*T2] a   if PG[e]=a
-otherwise 
-PG[throw[T1,T2] e]= (imm Library x=CN throw[PG*T1,PG*T2] x)   if PG[e]=CN
-otherwise 
-PG[throw[T1,T2] e]= (imm Void x=loop ex throw[PG*T1,PG*T2] x)   if PG[e]=loop ex
-otherwise 
-PG[throw[T1,T2] e]= (P::m(xs) z=x.m[CN]((x:y)s) throw[T1,T2] z)   if PG[e]=x.m[CN]((x:y)s)
-otherwise 
-PG[throw[T1,T2] e]= (TX z=(dxs kxs ex [TX]) throw[PG*T1,PG*T2] z)   if PG[e]=(dxs kxs ex [TX])
-
+PG[throw[T1,T2] x]=throw[PG*T1,PG*T2] x
+otherwise
+PG[throw[T1,T2] e]=PG[( T2 x=e throw[T1,T2] x)]
+ 
 PG[e.m[P]( (x:e)s)]= PG[( P::m(xs)::this x=e x.m[P]((x:e)s))]//where xs is the list of xs of the method call
 PG[x.m[P]( (x:y)s x':e (x:e)s)]= PG[( P::m(xs)::x' x=e x.m[P]( (x:y)s x':x (x:e)s))]//where xs is the list of xs of the method call
 

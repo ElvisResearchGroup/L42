@@ -7,6 +7,8 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.List;
+
 import platformSpecific.javaTranslation.Resources;
 import com.sun.org.apache.xml.internal.security.utils.resolver.ResourceResolverException;
 import facade.Configuration;
@@ -19,6 +21,7 @@ import ast.Ast;
 import ast.ErrorMessage;
 import ast.ExpCore;
 import ast.Expression;
+import ast.Ast.NormType;
 import ast.Ast.SignalKind;
 import ast.Ast.Stage;
 import ast.ExpCore.ClassB;
@@ -52,7 +55,7 @@ public interface OnLineCode {
       }
     catch(Resources.Error err){return EncodingHelper.wrapResource(err);}
   }
-  public static Ast.MethodType pluginType(Program p,ExpCore.Using u){
+  public static List<NormType> pluginType(Program p,ExpCore.Using u){
     return plugin(p,u).typeOf(p,u);
   }
 }

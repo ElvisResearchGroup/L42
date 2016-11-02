@@ -432,14 +432,14 @@ public class TypeSystem implements Visitor<Type>, Reporter, ast.Ast.HasPos{
       if (s.getPath().isPrimitive()){
         throw new ErrorMessage.InvalidURL("No plug-in url present for primitive path "+s.getPath(),null);
       }
-      MethodType mt = platformSpecific.fakeInternet.OnLineCode.pluginType(p, s);
-      assert s.getEs().size()==mt.getTs().size();
+      List<NormType> lt = platformSpecific.fakeInternet.OnLineCode.pluginType(p, s);
+      assert s.getEs().size()==lt.size()-1;
       {int i=-1;for(ExpCore ei:s.getEs()){i+=1;
-        Type ti=mt.getTs().get(i);
+        Type ti=lt.get(i+1);
         typecheckSure(false, p, varEnv, sealEnv, throwEnv, ti, ei);
         }}
-      typecheckSure(false, p, varEnv, sealEnv, throwEnv, mt.getReturnType(), s.getInner());
-      return mt.getReturnType();
+      typecheckSure(false, p, varEnv, sealEnv, throwEnv, lt.get(0), s.getInner());
+      return lt.get(0);
       });
     }
 
