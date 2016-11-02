@@ -120,10 +120,10 @@ PG[e.m[P]( (x:e)s)]= PG[( P::m(xs)::this x=e x.m[P]((x:e)s))]//where xs is the l
 PG[x.m[P]( (x:y)s x':e (x:e)s)]= PG[( P::m(xs)::x' x''=e x.m[P]( (x:y)s x':x'' (x:e)s))]//where xs is the list of xs of the method call
 
 //-3 cases for y.m((x:y)s)
-//--case 1: interface or non class method or some FWD-->trad normale
-PG[y0.m[P](x1:y1..xn:yn)]=PG*P.m`x1..xn`(y0..yn)
-if PG.p(P) is interface or PG.p(P)(m(x1..xn))non class method
+//--case 1: interface or non class method or some FWD-->trad normal
+if PG.p(P) is interface or PG.p(P)(m(x1..xn)) non class method
 or some T1..Tn parameters of PG.p(P)(m(x1..xn)) have fwd modifier 
+PG[y0.m[P](x1:y1..xn:yn)]=PG*P.m`x1..xn`(y0..yn)
 
 //--case 2:class method body  -->trad no this
 otherwise
@@ -134,11 +134,11 @@ otherwise //we have optimized new
 PG[y0.m[P](x1:y1..xn:yn)]=PG*P.New_m`x1..xn`(y1..yn)
 
 
-PG[(ds ks e[T])]=(phFix(PG+ds[ds]) PG[ks] PG+ds[e] [PG*T])
+PG[(ds ks e[T])]=(phFix(PG+ds[ds]) PG+ds[ks] PG+ds[e] [PG*T])
   PG[T x=e]=PG*T x=PG[e]
   PG[catch throw T x e]=catch throw PG*T x PG+x:T[e]
   
-  phFix(dxs)=dxs if dom(dxs) not in FV(dxs)
+  phFix(dxs)=dxs if dxs.xs not in FV(dxs.es)
   otherwise //a block actually using placeholders
   phFix(mdf1 CN1 x1=ex1..mdfn CNn xn=exn)=
     mdf1 Fwd x1'=Fwd.New()..mdfn Fwd xn'=Fwd.New() //Fwd is a predefined class in all L42F programs
