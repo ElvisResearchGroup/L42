@@ -102,42 +102,19 @@ public class TranslateExpression implements coreVisitors.Visitor<Void>{
 
   @Override
   public Void visit(Using s) {
-    PluginType pt=platformSpecific.fakeInternet.OnLineCode.plugin(Resources.getP(),s);
-    String plgName=pt.getClass().getName();
-    String plF="L"+Functions.freshName("pl",TranslateExpression.labels);
-    String xsF="L"+Functions.freshName("xs",TranslateExpression.labels);
-    //String k=Resources.submitRes(pt);
-    res.append("platformSpecific.javaTranslation.Resources.plgExecutor(");
-    res.append("\""+s.getS().getName()+"\",");
-    res.append("platformSpecific.javaTranslation.Resources.getP(), ");
-    res.append("new "+plgName+"(), ");
-    res.append("("+plF+","+xsF+")->"+plF+".");
-    //MsumInt32£xn1£xn2(xsF[0],xsF[1]),
-    res.append(Resources.nameOf(s.getS().getName(),s.getS().getNames()));
-    res.append("(");
-    StringBuilders.formatSequence(res,
-        IntStream.range(0, s.getEs().size()).iterator(),
-        ", ",
-        i->res.append(xsF+"["+i+"]"));
-    //conclE,e1,e2);
-    res.append("), ()->(");
+    List<String> es=new ArrayList<>();
+    StringBuilder resOld=res;
+    res=new StringBuilder();
     s.getInner().accept(this);
-    res.append(")");
+    String e=res.toString();
     for(ExpCore ei:s.getEs()){
-      res.append(", ");
+      res=new StringBuilder();
       ei.accept(this);
+      es.add(res.toString());
       }
-    res.append(")");
-    //res.append("block(()->{\ntry{\nreturn ");
-    //res.append("(("+pt.getClass().getName()+")platformSpecific.javaTranslation.Resources.getRes(\""+k+"\")).");
-    //res.append(Translator.nameOf(s.getName(),s.getXs()));
-    //res.append("(");
-    //StringBuilders.formatSequence(res,s.getEs().iterator(),
-    //  ", ", ei->ei.accept(this));
-    //res.append(");\n}\ncatch(ast.ErrorMessage.PluginActionUndefined Unused"+k);
-    //res.append("){\nreturn ");
-    //s.getInner().accept(this);
-    //res.append(";\n}\n})");
+    res=resOld;
+    PluginType pt=platformSpecific.fakeInternet.OnLineCode.plugin(Resources.getP(),s);
+    res.append(pt.executableJ(s, e, es, TranslateExpression.labels));
     return null;
     }
 

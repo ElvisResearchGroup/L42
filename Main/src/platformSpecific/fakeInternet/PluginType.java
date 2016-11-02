@@ -6,14 +6,18 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.IntStream;
 
 import platformSpecific.fakeInternet.ActionType.Type;
 import platformSpecific.javaTranslation.Resources;
+import tools.StringBuilders;
 import ast.Ast.MethodType;
 import ast.Ast;
 import ast.ErrorMessage;
 import ast.ExpCore;
 import ast.ExpCore.Using;
+import auxiliaryGrammar.Functions;
 import auxiliaryGrammar.Program;
 class ProtectedPluginType{
   static Method getMethod(PluginType that,Program p,Using u){
@@ -70,5 +74,45 @@ public interface PluginType {
     assert false: "is this not called with compilation?";
     Method m=ProtectedPluginType.getMethod(this,p, u);
     return ProtectedPluginType.executeMethod(m, p, this, u.getEs().toArray());
+    }
+  default String executableJ(Using s,String e,List<String>es,Set<String> labels){
+    StringBuilder res=new StringBuilder();
+    String plgName=this.getClass().getName();
+    String plF="L"+Functions.freshName("pl",labels);
+    String xsF="L"+Functions.freshName("xs",labels);
+    res.append("platformSpecific.javaTranslation.Resources.plgExecutor(");
+    res.append("\""+s.getS().getName()+"\",");
+    res.append("platformSpecific.javaTranslation.Resources.getP(), ");
+    res.append("new "+plgName+"(), ");
+    res.append(executableWrapper(s, labels));
+    //plgExecutor("PathName",p,new plgName(),
+    //  (plF,xsF)->plF. 
+    //  MnameEncoded£xn1£xn2(xsF[0],..,xsF[n]),
+    //()->e,e0,..,en);
+    res.append(", ()->(");
+    res.append(e);
+    res.append(")");
+    for(String ei:es){
+      res.append(", ");
+      res.append(ei);
+      }
+    res.append(")");
+    return res.toString();
+    }
+  default String executableWrapper(Using s, Set<String> labels){
+    //  (plF,xsF)->plF. 
+    //  MnameEncoded£xn1£xn2(xsF[0],..,xsF[n]),
+    String plF="L"+Functions.freshName("pl",labels);
+    String xsF="L"+Functions.freshName("xs",labels);
+    StringBuilder res=new StringBuilder();
+    res.append("("+plF+","+xsF+")->"+plF+".");
+    res.append(Resources.nameOf(s.getS().getName(),s.getS().getNames()));
+    res.append("(");
+    StringBuilders.formatSequence(res,
+      IntStream.range(0, s.getEs().size()).iterator(),
+      ", ",
+      i->res.append(xsF+"["+i+"]"));
+    res.append(")");
+    return res.toString();
     }
   }

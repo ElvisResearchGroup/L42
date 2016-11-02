@@ -1,3 +1,29 @@
+
+How, on the inside of plugin methods we would call 
+a service class giving us access to 
+"at least" the program and the resources?
+if a method require a IResource as first argument,
+this is provided by the PlgWrapper??
+-write here the model of PlgWrapping/calling
+Old is:
+plgExecutor("PathName",p,new plgName(),
+  (plF,xsF)->plF. 
+  MnameEncoded£xn1£xn2(xsF[0],..,xsF[n]),
+  ()->transl(e),transl(e0),..,transl(en));
+
+static, no p
+plgExecutor("PathName",p,(plgName)null,
+  (plF,xsF)->{
+    T0 _0;..Tn _n;
+    try{_0=(T0)xsF[0];.._n=(T0)xsF[n];}
+    catch(ClassCastException cce){assert false; throw DoNotAct;}
+    plgName.name(_0,..,_n),
+    }
+  ()->transl(e),transl(e0),..,transl(en));
+
+
+  
+--how I handle constructors??
 Challenges:
 
 -a single plugin should map multiple mutually recursive java classes

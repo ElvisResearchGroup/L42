@@ -27,7 +27,6 @@ import coreVisitors.CollectClassBs0;
 import coreVisitors.CollectPaths0;
 import coreVisitors.FromInClass;
 import coreVisitors.IsCompiled;
-import platformSpecific.fakeInternet.PluginType;
 import platformSpecific.javaTranslation.Resources.Error;
 import sugarVisitors.ToFormattedText;
 import tools.Assertions;
@@ -239,7 +238,7 @@ public class Resources {
   public static <T> T block(java.util.function.Supplier<T> p){return p.get();}
   public static platformSpecific.javaTranslation.Resources.Void unused=null;
 
-  public static interface PlgClosure<Pt extends PluginType,T>{
+  public static interface PlgClosure<Pt,T>{
     T apply(Pt plg,Object[] xs);
   }
   /**
@@ -249,7 +248,7 @@ public class Resources {
    * @return a safe result, or a safe error, or an non-action exception
    */
 
-  public static <Pt extends PluginType,T> T plgExecuteSafe(Program p,Pt plg,PlgClosure<Pt,T> cls,Object ... xs){
+  public static <Pt,T> T plgExecuteSafe(Program p,Pt plg,PlgClosure<Pt,T> cls,Object ... xs){
     T res=null;
     //for(Object o:xs){assert Functions.verifyMinimalCache(o);}
     for(int i=0;i<xs.length;i++){xs[i]=Functions.setMinimalCache(p, xs[i]);}
@@ -299,7 +298,7 @@ public class Resources {
         (plF,xsF)->plF.MsumInt32£xn1£xn2(xsF[0],xsF[1]),
         conclE,e1,e2);
   }*/
-  public static <Pt extends PluginType,T> T plgExecutor(String plgCall,Program p,Pt plg,PlgClosure<Pt,T> cls,Callable<T> concl, Object ... es){
+  public static <Pt,T> T plgExecutor(String plgCall,Program p,Pt plg,PlgClosure<Pt,T> cls,Callable<T> concl, Object ... es){
     //System.err.println("Executing now."+plgCall);
     Future<T> exe=null;
     try{//for finally

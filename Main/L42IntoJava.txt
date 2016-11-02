@@ -76,8 +76,8 @@ TX::=mdf CN
 Prefefined classes/methods in L42F
 
 nativeFwd Fwd{
-  method New()
-  method Fix(Fwd a,Any b)//replace a with b in all the places a was stored.
+  method Fwd New() new
+  method Void Fix(Fwd a,Any b)nativeFix //replace a with b in all the places a was stored.
   //every newFwd edits a list inside of Fwds to remember where they are stored.
   }
 -----
