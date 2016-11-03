@@ -50,16 +50,35 @@ L42F
 CT::= CN->p,CD
 CD::=kind CN implements CNs{ Mxs }
 Mx::=refine? method T mxs((T x)s) body?//first is this
-//note: no exceptions declared, body empty iff kind=interface
-body::=ex | setter|getter|new|newFwd| nativeIntSum|nativeIntMul|...|nativeVectorAdd
+//note: no exceptions declared, body empty only if kind=interface
+body::=ex | setter|getter|new|newWithFwd|newFwd nativeIntSum|nativeIntMul|...|nativeVectorAdd
 kind::=class |interface | nativeInt |nativeString| nativeFloat|nativeVector[CN] | ...
 miniE::=x|void|CN|null| throw[TX1,TX2] x |loop ex
   |CN.mxs(ys)| use CN check mxs(ys) ex
-  |if x then ex1 else ex2 |while ???x?_or_?ex?? then ex1 | x1:=x2
+  |if x then ex1 else ex2 |while ???x?_or_?ex?? then ex1 | x1:=x2 |(mdf CN)x
 ex::=miniE | (dxs kxs ex [TX])
 kx::=catch throw TX x ex
 dx::=TX x=ex
 TX::=mdf CN
+
+note: methods in L42F:
+methods with refine or with no body are dynamically dispatched 
+and must have a 'this' parameter (other still can have a 'this' parameter)
+others are statically dispatched.
+CN is just an instance of class/interface CN.
+Some native bodies would fail if the 'this' parameter is the CN instance.
+
+//  CN.m(x1..xn) behave like static method with no 'this'
+//    for class methods declared in classes
+//  like static method with first 'this' parameter
+//    for non class methods declared in classes
+//  like python class methods with first 'this class' parameter
+//    for class methods declared in interfaces, with dynamic dispatch
+//  like java method with first 'this' parameter
+//    for non class methods declared in interfaces, with dynamic dispatch
+//  like java interface static methods
+//    for class methods with no 'this' parameter ( existing  only in L42F as predefined)
+
 
 //note:TX x=(dxs ex) in Java can be
 //TX x;{dxs  x=ex}
@@ -74,17 +93,14 @@ TX::=mdf CN
 //and all newly introduced variables are fresh
 
 Prefefined classes/methods in L42F
-
-nativeFwd Fwd{
-  method Fwd New() new
-  method Void Fix(Fwd a,Any b)nativeFix //replace a with b in all the places a was stored.
-  //every newFwd edits a list inside of Fwds to remember where they are stored.
+all classes/interface are expected to have
+  method CN NewFwd() newFwd //also Any have it!//yes, statically binded
   }
------
 nativeResource Resource{
-  method Library LoadLib_CN1()
-  ..
-  method Library LoadLib_CNn()
+  method Library LoadLib(class Any that)nativeLoadLib
+  method Void Fix(Any a,Any b)nativeFix //hoping a is a Fwd
+  //replace a with b in all the places a was stored.
+  //every newFwd edits a list inside of Fwds to remember where they are stored.
   }
   methods returning the AST of the code corresponding
   to library literals with unique names CN1..CNn 
@@ -106,7 +122,8 @@ where
 PG[x]=x
 PG[void]=void
 PG[P]=PG*P
-PG[L]= Resource.LoadLib_`L.CN`() //string composition for method name
+PG[L]=( class Any x=L.CN//yes, ok even if not compiled as for Collections.vector(of:P)
+        Resource.LoadLib( x ) )
 PG[loop e]=loop PG[e]
 
 PG[throw[T1,T2] x]=throw[PG*T1,PG*T2] x
@@ -117,7 +134,7 @@ PG[throw[T1,T2] e]=PG[( T2 x=e throw[T1,T2] x)]
 //-normalizing es into xs
 In the following, whith e!=x //usare y per x receiver? 
 PG[e.m[P]( (x:e)s)]= PG[( P::m(xs)::this x=e x.m[P]((x:e)s))]//where xs is the list of xs of the method call
-PG[x.m[P]( (x:y)s x':e (x:e)s)]= PG[( P::m(xs)::x' x''=e x.m[P]( (x:y)s x':x'' (x:e)s))]//where xs is the list of xs of the method call
+PG[y0.m[P]( (x:y)s x:e (x:e)s)]= PG[( P::m(xs)::x y=e y0.m[P]( (x:y)s x:y (x:e)s))]//where xs is the list of xs of the method call
 
 //-3 cases for y.m((x:y)s)
 //--case 1: interface or non class method or some FWD-->trad normal
@@ -133,7 +150,7 @@ PG[y0.m[P](x1:y1..xn:yn)]=PG*P.m`x1..xn`(y1..yn)
 otherwise //we have optimized new
 PG[y0.m[P](x1:y1..xn:yn)]=PG*P.New_m`x1..xn`(y1..yn)
 
-
+//block 
 PG[(ds ks e[T])]=(phFix(PG+ds[ds]) PG+ds[ks] PG+ds[e] [PG*T])
   PG[T x=e]=PG*T x=PG[e]
   PG[catch throw T x e]=catch throw PG*T x PG+x:T[e]
@@ -141,12 +158,11 @@ PG[(ds ks e[T])]=(phFix(PG+ds[ds]) PG+ds[ks] PG+ds[e] [PG*T])
   phFix(dxs)=dxs if dxs.xs not in FV(dxs.es)
   otherwise //a block actually using placeholders
   phFix(mdf1 CN1 x1=ex1..mdfn CNn xn=exn)=
-    mdf1 Fwd x1'=Fwd.New()..mdfn Fwd xn'=Fwd.New() //Fwd is a predefined class in all L42F programs
-    mdf1 CN1 x1=ex1' imm Void z1=Fwd.Fix(x1',x1)
+    mdf1 CN1 x1'=CN1.NewFwd()..mdfn CNn xn'=CNn.NewFwd() //Fwd is a predefined class in all L42F programs
+    mdf1 CN1 x1=ex1' imm Void z1=Resource.Fix(x1',x1)
     ..
-    mdfn CNn xn=exn' imm Void zn=Fwd.Fix(xn',xn)
+    mdfn CNn xn=exn' imm Void zn=Resource.Fix(xn',xn)
     with exi'=exi[xi..xn=xi'..xn']
-//FWD mi sfotte il TS di java dovrei avere molte FWD
 
 
 
