@@ -7,6 +7,7 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import platformSpecific.javaTranslation.Resources;
@@ -17,10 +18,13 @@ import facade.Parser;
 import sugarVisitors.Desugar;
 import sugarVisitors.InjectionOnCore;
 import tools.Assertions;
+import tools.Map;
 import ast.Ast;
 import ast.ErrorMessage;
 import ast.ExpCore;
 import ast.Expression;
+import ast.Ast.Doc;
+import ast.Ast.MethodSelector;
 import ast.Ast.NormType;
 import ast.Ast.SignalKind;
 import ast.Ast.Stage;
@@ -39,13 +43,15 @@ public interface OnLineCode {
     if(url.startsWith("L42.is/")){return OnLineCodeHelper.getL42Code(url.substring("L42.is/".length()));}
     throw Assertions.codeNotReachable();
   }
-  public static PluginType plugin(Program p,ExpCore.Using u){
+  public static String pluginString(Program p,ExpCore.Using u){
     String url=p.extractCb(u.getPath()).getDoc1().toString();
     if(!url.startsWith("@plugin\n")){throw new ErrorMessage.InvalidURL(url,null);}
     url=url.substring("@plugin\n".length());
     url=url.trim();
-    PluginType pt = OnLineCodeHelper.getPluginType(url);
-    //pt.setProgram(p);
+    return url;
+    }
+  public static PluginType plugin(Program p,ExpCore.Using u){
+    PluginType pt = OnLineCodeHelper.getPluginType(pluginString(p, u));
     return pt;
   }
   public static ExpCore pluginAction(Program p,ExpCore.Using u){
@@ -58,10 +64,22 @@ public interface OnLineCode {
   public static List<NormType> pluginType(Program p,ExpCore.Using u){
     return plugin(p,u).typeOf(p,u);
   }
+  //Unuseful variant, since program not availabe at desugaring time
+  public static List<NormType> pluginType(Program p,Expression.Using u){
+  MethodSelector ms = new MethodSelector(u.getName(),u.getPs().getXs());
+  ExpCore.Using uCore=new ExpCore.Using(u.getPath(),ms,Doc.empty(),Collections.emptyList(),new ExpCore._void()); 
+  return plugin(p,uCore).typeOf(p,uCore);
+}
 }
 
 class OnLineCodeHelper{
   static PluginType getPluginType(String url){
+    if (url.endsWith("\n")){url=url.substring(0,url.length()-1);}
+    int nl=url.indexOf('\n');
+    if(nl!=-1){
+      PluginType plugin=new PluginWithPart(url.substring(0, nl),url.substring(nl+1));
+      return plugin;
+      }
     if(url.startsWith("L42.is/connected/")){
       PluginType plugin= OnLineCodeHelper.getWellKnownPluginType(url.substring("L42.is/connected/".length()));
       return plugin;
@@ -70,7 +88,6 @@ class OnLineCodeHelper{
   }
   static PluginType getWellKnownPluginType(String url){
     String className="is.L42.connected."+url+".Plugin";
-    //TODO: it may need fix up for plugins with parameters
     try {
       Class<?> clazz=Class.forName(className);
       return (PluginType)clazz.newInstance();

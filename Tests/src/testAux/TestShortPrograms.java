@@ -463,6 +463,20 @@ public void testComposition7(){tp("{",
     " })",
     "Main:{//@exitStatus\n//0\n\n}",
     " }");}
+@Test
+public void testPluginParts1(){tp("{",
+    "L:"+listAccess(),
+    "Q:(L l=L() L.N sz=l.size()  ",
+    "  l.add(sz) L.N e=l.get(sz) {})",
+    "Main:{//@exitStatus\n//0\n\n}",
+    " }");}
+@Test(expected=AssertionError.class)//For now, should be a plugin not acting in the future
+public void testPluginParts1Fail(){tp("{",
+    "L:"+listAccess(),
+    "Q:(L l=L() L.N sz=l.size()  ",
+    "  L.N e=l.get(sz) {})",
+    "Main:{//@exitStatus\n//0\n\n}",
+    " }");}
 
 /*@Test
 public void testCompositionAT2() throws Throwable{
@@ -494,4 +508,40 @@ public static final String operatorAccess(){return
 +"      error void\n"
 +"  }\n";
 }
+
+public static final String listAccess(){return
+"{//@plugin\n"
++"   //someUrlToFix\n"
++"   //java.util.ArrayList\n"
++"class method This (Library repr)"
++"method Library repr()"
++"class method\n"
++"This ()\n"
++"  This(repr:use This\n"
++"    check new()\n"
++"    error void)\n"
++"method\n"
++"Void add(N that) (\n"
++"    Library x=use This\n"//add return a boolean
++"      check add(_this:this.repr(),_java%lang%Object:that.repr())\n"
++"      error void"
++ "   void)\n"
++"method\n"
++"N get(N that)\n"
++"    N(repr:use This\n"
++"      check get(_this:this.repr(),_int:that.repr())\n"
++"      error void)\n"
++"method\n"
++"N size()\n"
++"  N(repr:use This\n"
++"    check size(_this:this.repr())\n"
++"    error void)\n"
++"N:{//@plugin\n"
++"   //someUrlToFix\n"
++"   //java.util.ArrayList\n"
++"   class method This (Library repr)"
++"   method Library repr()}"
++"  }\n";
+}
+
 }

@@ -211,6 +211,26 @@ public class EncodingHelper{
       return Ast.Path.Any();
     }
     if(o instanceof Resources.Revertable){return ((Resources.Revertable)o).revert();}
-    throw Assertions.codeNotReachable("I may have to expand to handle paths:"+o);
+    return wrapResource(o.toString());
   }
+  
+  
+ //javaFullName can contains dots but not %
+ //"." converted in "%" and unicode weirdos converted in "%%u..."
+ //since no two dots in a row are allowed
+
+  public static String javaClassToX(String that){
+    that=produceStringUnicode(that);//now all \\u inside, no other \ inside
+    that=that.replace("\\u", "%%");
+    return "_"+that.replace(".","%");
+  }
+  public static String xToJavaClass(String that){
+    that=that.substring(1);
+    that=that.replace("%%%", ".%%");
+    that=that.replace("%%", "\\u");
+    that=that.replace("%", ".");
+    that=parseStringUnicode(that);
+    return that; 
+  }
+
 }

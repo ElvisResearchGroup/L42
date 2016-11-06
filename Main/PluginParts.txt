@@ -11,19 +11,60 @@ plgExecutor("PathName",p,new plgName(),
   MnameEncoded£xn1£xn2(xsF[0],..,xsF[n]),
   ()->transl(e),transl(e0),..,transl(en));
 
-static, no p
-plgExecutor("PathName",p,(plgName)null,
-  (plF,xsF)->{
-    T0 _0;..Tn _n;
-    try{_0=(T0)xsF[0];.._n=(T0)xsF[n];}
-    catch(ClassCastException cce){assert false; throw DoNotAct;}
-    plgName.name(_0,..,_n),
-    }
-  ()->transl(e),transl(e0),..,transl(en));
 
+
+
+  ----------
+  1--42 to Java:
+  use P check m(_this:e0, _javaFullNameParType1:e1.._javaFullNameParTypen:en)
+  if no _this, it must be static.
+  if m=#x, we want the PData//note this have nothing to do with the 42 header #m in step 2 
+  **given a using, I can get the class and the method
+  **and generate the PlgWrapper
+  **method called "new" refers to constructors
+  -----------------
+  PlgWrapperGeneration input: using, translated e te, translated expressions tes
+  we will write `` to embed result of expressions in the code
+variables:
+  T1..Tn obtained from using.xs
+  if static meth
+    tes=e1..en
+    parRec=null
+    rec=plgName
+  else
+    tes=e0..en
+    parRec=e0
+    rec=plF
+  
+  if Meth par1 of type PData
+    opt=`Resource.pData(),`
+  else
+    opt=``
+plgExecutor("`PathName`",p,(plgName)`parRec`,
+  (plF,xsF)->{
+    `T1` _1;..`Tn` _n;
+    try{_1=(`T1`)xsF[0];.._n=(`Tn`)xsF[n-1];}
+    catch(ClassCastException cce){assert false; throw DoNotAct;}
+    return plgName.name(`opt` _1,..,_n);
+    },
+  ()->`te`,`te1`,..,`ten`);
 
   
---how I handle constructors??
+
+
+
+  2--Java to 42:
+  2a-given a class I can get all the methods and group them on
+  methName/parameterCount
+  Then, I can generate all the plugin method selectors,
+  and for each group I sort them lexicographically.
+  **Result of 2a is Map<name/num,List<ms>>
+  2b-I expect the user to provide headers in the form
+  (#(num?))?x
+  where x is the meth name in Java and #num count elements in each group.
+    then, given header in 42 and using selector in 42
+    I can generate meth impl in 42.
+  
 Challenges:
 
 -a single plugin should map multiple mutually recursive java classes

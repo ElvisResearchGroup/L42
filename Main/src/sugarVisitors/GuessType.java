@@ -36,7 +36,11 @@ public class GuessType implements Visitor<Type> {
   public Type visit(Loop s) {return NormType.immVoid;}
 
   public Type visit(DocE s) {return s.getInner().accept(this);}
-  public Type visit(Using s) {return s.getInner().accept(this); }
+  public Type visit(Using s) {
+    //WE CAN NOT DO SOMETHING LIKE THAT,
+    //SINCE PROGRAM NOT AVAILABLE DURING DESUGARING
+    //List<NormType> ts = OnLineCode.pluginType(p, s);
+    return s.getInner().accept(this); }
 
   public Type visit(X s) {
     assert (this.varEnv.containsKey(s.getInner())):

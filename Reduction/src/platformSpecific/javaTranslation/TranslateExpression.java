@@ -114,7 +114,7 @@ public class TranslateExpression implements coreVisitors.Visitor<Void>{
       }
     res=resOld;
     PluginType pt=platformSpecific.fakeInternet.OnLineCode.plugin(Resources.getP(),s);
-    res.append(pt.executableJ(s, e, es, TranslateExpression.labels));
+    res.append(pt.executableJ(Resources.getP(),s, e, es, TranslateExpression.labels));
     return null;
     }
 
