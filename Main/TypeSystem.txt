@@ -25,9 +25,9 @@ Tr::=Ts; Ps //Tr reads Throws
 2 ExpressionTypeJudgement
 --------------------------------------------
   D |- e : e':T   and D |- k : k':T 
-  where e' is an annotated version of e and is of type T
-  where k' is an annotated version of k and k.e is of type T
-  D.p points to where the e is located,
+  where e' is an annotated version of expression e and is of type T
+  where k' is an annotated version of catch k and k.e is of type T
+  D.p points to where the e is located, //D.p.top()=ctxL[e]
   so if P inside e, D.p(P) is a reasonable operation
 
 complete(G)={x:T | G(x) not fwd/fwd%}
@@ -35,6 +35,8 @@ complete(G)={x:T | G(x) not fwd/fwd%}
 fwd T and fwd% T return the fwd/fwd% version of T, or the same T if T not imm/mut/fwdImm/fwdMut/fwd%Imm/fwd%Mut 
 
 noFwd T return the version of T without the fwd/fwd% or the same T if not fwd/fwd% is present
+
+lentOf(mut P)=lent P otherwise lentOf(T)=T 
 
 (void)
 _ |- void: void:imm Void
@@ -45,7 +47,7 @@ _ |- P:P:class P
 (library prop)
 Phase |p |_ |_ |_ |- L : L' : imm Library
   where
-  Phase  |- p.evilPush(L) : L'
+  Phase  |- p.evilPush(L) : L' //s it clashing on the notation in the end of Normalization.txt?
 
 (x)
 Phase| p| G| xss; xs| Tr |-x:T
