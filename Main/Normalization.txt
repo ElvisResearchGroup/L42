@@ -17,7 +17,7 @@ r::=LC| exception v | error v
 (top)------------------------       eC not of form LC
      p ==> p'.update(p'.top()[C=r]) <paths; paths'>=usedPathsE(p,eC) //tuple notation
                                     p0=multiNorm(p,paths U paths')//norm the part of p required by eC
-                                    Coherent,paths'|-p0:p' //the part of p' referred to by paths' is well typed
+                                    paths'|-p0:p' //the part of p' referred to by paths' is well typed
                                     Norm,p'|-toAny(paths,eC): _ : imm Library //replace paths with Any //eC is well typed
                                     Norm,p'|-eC: eC' : imm Library //duplicated typing, so we can have eC non with Anys
                                     
@@ -163,13 +163,12 @@ maindefinition:
 ------------------------------------------     
 ###define paths|-p:p
 
-  L::={.. Phase}
   paths |-p:p'
   
-      Phase,paths |- p.pop():p0
-      Css|-p1:L
+        paths |- p.pop():p0
+        Css|-p1:L
 (pPop)----------------------------------  p1=p.growFellow(p0)
-      Phase,Css paths |- p : p1.update(L)
+        Css paths |- p : p1.update(L)
   
 
          Css|-p:L
