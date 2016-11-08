@@ -17,7 +17,7 @@ r::=LC| exception v | error v
 (top)------------------------       eC not of form LC
      p ==> p'.update(p'.top()[C=r]) <paths; paths'>=usedPathsE(p,eC) //tuple notation
                                     p0=multiNorm(p,paths U paths')//norm the part of p required by eC
-                                    Type*,paths'|-p0:p' //the part of p' referred to by paths' is well typed
+                                    Coherent,paths'|-p0:p' //the part of p' referred to by paths' is well typed
                                     Norm,p'|-toAny(paths,eC): _ : imm Library //replace paths with Any //eC is well typed
                                     Norm,p'|-eC: eC' : imm Library //duplicated typing, so we can have eC non with Anys
                                     
@@ -164,13 +164,12 @@ maindefinition:
 ###define paths|-p:p
 
   L::={.. Phase}
-  Phase::=None|Norm|Type+|Type*//james suggest: Norm |Typed|Coherent
   paths |-p:p'
   
-      paths |- p.pop():p0
+      Phase,paths |- p.pop():p0
       Css|-p1:L
 (pPop)----------------------------------  p1=p.growFellow(p0)
-      Css paths |- p : p1.update(L)
+      Phase,Css paths |- p : p1.update(L)
   
 
          Css|-p:L
@@ -182,7 +181,7 @@ maindefinition:
          empty |- p :p
   
 
-     forall Csi : Type*,pi|-pi.top(): Li : _ //if Li.Phase=Typed, the check will be just asserted
+     forall Csi : Coherent,pi|-pi.top(): Li : _ //if Li.Phase=Typed, the check will be just asserted
 (pL) ---------------------------------------   pi=p.navigate(Csi)
      Cs1..Csn|-p:p.top()[Cs1=L1,.. Csn=Ln]     //Li will have Phase=Typed also inside all somehow contained Ls
 

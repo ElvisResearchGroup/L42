@@ -27,7 +27,7 @@ plgExecutor("PathName",p,new plgName(),
   we will write `` to embed result of expressions in the code
 variables:
   T1..Tn obtained from using.xs
-  if static meth
+  if static meth or new
     tes=e1..en
     parRec=null
     rec=plgName
@@ -36,16 +36,33 @@ variables:
     parRec=e0
     rec=plF
   
-  if Meth par1 of type PData
+  if par1 of type PData
     opt=`Resource.pData(),`
   else
     opt=``
+ 
+  if Meth return void
+    ret1=''
+    ret2=return Resources.Void.instance();
+  else 
+    ret1=return
+    ret2=''
+  
+  if static meth
+    call=plgName.name
+  if new
+    call=new plgName
+  else
+    call=plF.name
+----------    
+    
 plgExecutor("`PathName`",p,(plgName)`parRec`,
   (plF,xsF)->{
     `T1` _1;..`Tn` _n;
     try{_1=(`T1`)xsF[0];.._n=(`Tn`)xsF[n-1];}
     catch(ClassCastException cce){assert false; throw DoNotAct;}
-    return plgName.name(`opt` _1,..,_n);
+    ret1 call(`opt` _1,..,_n);
+    ret2
     },
   ()->`te`,`te1`,..,`ten`);
 
@@ -73,7 +90,6 @@ to 42 classes.
 
 void ->Void
 int,String,... ->Library
-exceptions?
 
 class it.bla.a.A{
   int a()
@@ -115,60 +131,154 @@ locate Java meth plgPart.m
 void is Void
 ast.Ast.Path is class Any
 anything else is Library
-if meth is static, no _0 arg
+if meth is static, no _this arg
 
 oncall:
 wrapper with all Object,
  try-cast and catch retrow message
   
 
-expected PlgWrapper: {
+expected Result: {/*@plugin it.bla/a.A*/ 
+//so, does it need to be on 3 lines? 
+//adding 2 extra lines on any plgclass? ok?
+//makes requiring headers looking less bad?
   class method
-  mut This0 from(Library plgLibrary)
+  mut This0 #from(Library binaryRepr)
   read method
-  Library plgLibrary()
+  Library #binaryRepr()
   class method
-  Void exceptionIf(Library plgLibrary) exception This
-    {
-    use This check specialName(plgLibrary:plgLibrary)
-    exception This.from(plgLibrary:plgLibrary)
-    }
+  Void #exceptionIf(Library binaryRepr) exception This
+    use This check _%%%(binaryRepr:binaryRepr)
+    error This.pluginUnresponsive(binaryRepr)
 
-
-  mdf method Ret m(Par1 p1, Par2 p2)//provided
-    Ret.from(plgLibrary:
-      use This0 check m(_0:this.plgLibrary(), _1:p1.plgLibrary(), _2:p2.plgLibrary())
-      error PluginMethodUnresponsive.from(plgLibrary:{/*plugin it.bla/a.A.m(p1,p2)*/}"
+  class method T #pluginUnresponsive(Library binaryRepr)//provided
+  mdf method Ret m(Par1 p1, Par2 p2)//header provided
+    Ret.from(binaryRepr:
+      use This0 check m(_this:this.binaryRepr(),
+                         _jt1:p1.binaryRepr(),
+                         _jt2:p2.binaryRepr())
+      error This.pluginUnresponsive({/*plugin it.bla/a.A.m(p1,p2)*/})
       )
   class method Void m(Par1 p1, Par2 p2)//provided
-    use This0 check m(_1:p1.plgLibrary(), _2:p2.plgLibrary())
-    error PluginMethodUnresponsive.from(plgLibrary:{/*plugin it.bla/a.A.m(p1,p2)*/}"
+    use This0 check m(_jt1:p1.binaryRepr(), _jt2:p2.binaryRepr())
+    error This.pluginUnresponsive({/*plugin it.bla/a.A.m(p1,p2)*/})
+  //if method need PData, # is added; jti computed with reflection
+  
+  class method Ret m() exception E1,E2//provided
+    Ret.from(binaryRepr:(
+      Library res=use This0 check m()
+      error This.pluginUnresponsive({/*plugin it.bla/a.A.m(p1,p2)*/})
+      catch error Library x (
+        E1.exceptionIf(binaryRepr:x)
+        E2.exceptionIf(binaryRepr:x)
+        error x
+        )
+      res
+      ))
   }
-
+   
+  in java, parse
+  { class method This m()
+    This.from(binaryRepr:(
+      Library res=use This0 check m(_:This.binaryRepr())
+        error This.from(
+          binaryRepr:{/**/}"
+      catch error Library x (
+        This.exceptionIf(binaryRepr:x)
+        error x
+        )
+      res
+      ))
+  }
+  and
+  { class method This m()
+    This.from(binaryRepr:(
+      Library res=use This0 check m()
+        error This.from(
+          binaryRepr:{/**/}"
+      res
+      ))
+  }
+  get the member, fill
+  mwt.retType
+  mwt.parameters
+  mwt.body.mcall.inner
+  b=mwt.body.mcall.par1
+  u=b.decs(0).inner
+  u.P
+  u.ms (edit the xs too)
+  u.es
+  p0=u.es.get().mcall
+  p0.inner + more p0 on need
+  u.inner.mcall.es(0).classb.doc1
+  --
+  mwt.exceptions
+  k0=b.k(0).inner.block.decs(0)
+  k0 add more on need
+  k0.mcall.inner
+  
+  need (p,pluginUrl/classB) to compute the
+  many UsingInfo/Method
+  for all Paths in method par
+    check they have binaryRepr()
+  for ret:
+    check they have from(binaryRepr)
+  for exceptions: 
+    exceptionIf(binaryRepr)
+  for PluginError:
+    check they have from(binaryRepr)
+  OR they are defined internally as plugin with part, as in
+  PlgComplete<><{
+    Foo:{/*@plugin...*/}
+    Bar:{/*@plugin...*/}
+    } 
+plgComplete(p,l){
+  for all nested cs in l: l=l.with(cs=plgComplete1(l,cs.size(),p,l(cs))
+  return l;
+  }
+plgComplete1(lTop,dept,p,l){
+  if l not plg with part, return l
+  c=locateClass(l)
+  Map<String,List<Method,mh42>> ms=..
+  List<Constructor,mh42> cs=...
+  m42s=new List
+  forall e,mh in ms,cs:
+    ui=UsingInfo(e)
+    tu=templateUsing
+    tu.updateAllStuff(ui,mh)
+    m42s.add(tu)
+    foral T in mh,
+      check either lTop(T) is pluginWithPart
+      or p(T/dept) has right method
+      //may be faster to cache?
+    }
+  return templateWrapper U m42s
+  }
+  
 PlgWrapper:{interface 
   class method
-  mut This0 from(Library plgLibrary)//is PlgWrapper from outside
+  mut This0 from(Library binaryRepr)//is PlgWrapper from outside
   read method
-  Library plgLibrary()
+  Library binaryRepr()
   }
   
 A:{/*@plugin it.bla/a.A*/
   implements PlgWrapper
   
   refine class method
-  mut This0 from(Library plgLibrary)//refined to return This0
+  mut This0 from(Library binaryRepr)//refined to return This0
   
   refine read method//as normalization already add
-  Library plgLibrary()
+  Library binaryRepr()
   
   read method Size a()
-    Size.from(plgLibrary:
-      use This0 check a(_0:this.plgLibrary())
+    Size.from(binaryRepr:
+      use This0 check a(_0:this.binaryRepr())
       error PluginMethodUnresponsive"plugin it.bla/a.A.a(_0)"
       )
 /*method B toB()//not generated
-    B.from(plgLibrary:
-      use This0 check toB(_0:this.plgLibrary())
+    B.from(binaryRepr:
+      use This0 check toB(_0:this.binaryRepr())
       error PluginMethodUnresponsive"plugin it.bla/a.A.toB(_0)"      
       )*/
   }
@@ -183,27 +293,27 @@ B:{/*@plugin it.bla/b.B*/
   implements PlgWrapper
   
   refine class method
-  mut This0 from(Library plgLibrary)//refined to return This0
+  mut This0 from(Library binaryRepr)//refined to return This0
 
   read Size b()
-    Size.from(plgLibrary:
-      use This0 check b(_0:this.plgLibrary())
+    Size.from(binaryRepr:
+      use This0 check b(_0:this.binaryRepr())
       error PluginMethodUnresponsive"plugin it.bla/a.B.b(_0)"
       )
       
   method A toA()
-    A.from(plgLibrary:
-      use This0 check toA(_0:this.plgLibrary())
+    A.from(binaryRepr:
+      use This0 check toA(_0:this.binaryRepr())
       error PluginMethodUnresponsive"plugin it.bla/a.B.toA(_0)"      
       )
       
   class method Void print(A a) //also this header is needed, to know "A" as parameter type, plus is giving the parameter the name "a"
-    use This0 check print(_1:a.plgLibrary())
+    use This0 check print(_1:a.binaryRepr())
     error PluginMethodUnresponsive"plugin it.bla/a.B.print(_1)"      
       )
-  class method Void exceptionIf(Library plgLibrary) exception This{
-    use PlgUtils check ifValidDo(plgLibrary:plgLibrary for:{/*@StringRepr\npluginUrl*/})
-    exception This.from(plgLibrary:plgLibrary)
+  class method Void exceptionIf(Library binaryRepr) exception This{
+    use PlgUtils check ifValidDo(binaryRepr:binaryRepr for:{/*@StringRepr\npluginUrl*/})
+    exception This.from(binaryRepr:binaryRepr)
     //well, better 2 methods for making This?? should we check or not
     //plg return valid stuff? 
     }
@@ -229,13 +339,13 @@ System42:PlgWrapper.$<<{
   //@plugin it.bla/system.System42
   mut method S readFile(S s) exception IOE SecurityE
     (
-    res=S.from(plgLibrary:
-      use This0 check readFile(_0:this.plgLibrary(),_1:s.plgLibrary())
+    res=S.from(binaryRepr:
+      use This0 check readFile(_0:this.binaryRepr(),_1:s.binaryRepr())
       error PluginMethodUnresponsive"plugin .."      
       )
     catch error Library x (
-      IOE.exceptionIf(plgLibrary:x)
-      SecurityE.exceptionIf(plgLibrary:x)
+      IOE.exceptionIf(binaryRepr:x)
+      SecurityE.exceptionIf(binaryRepr:x)
       error x
       )
     res

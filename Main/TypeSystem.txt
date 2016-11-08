@@ -14,10 +14,10 @@ Structure of this document:
 -----------------------------
 //In this file, all the L are LC   //LC == in all C:e, e of form L
 
-G::=x1:T1..xn:Tn
-D::= Phase | p | G | Cage | Tr
+G::=x1:T1..xn:Tn  //G reads Gamma
+D::= Phase `|` p `|` G `|` Cage `|` Tr  //D reads Delta
 Cage::= xss; xs
-Tr::=Ts; Ps
+Tr::=Ts; Ps //Tr reads Throws
 
 
 
