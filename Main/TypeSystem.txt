@@ -75,7 +75,7 @@ D|-throw[_,_] e: throw[T,mdf P] e' :  T
 D|- e0.m[_](x1:e1..Xn:en) : e'0.m[P0](x1:e'1..xn:e'n)  : T
   where
   D|-e0: e'0:mdf0 P0<=mdf'0 P0
-  not D|-e0: _:imm Void //makes (error x).m(...) not well typed
+  not D|-e0: _:imm Void //makes (error x).m(...) not well typed// talked with James, not convinced is needed, we do not have way to recognize if a block has a specific type
   D.p(P0).m(x1..xn).mh[from P0]=mdf'0 method T' m(T'1 x1,..T'n xn) exception Ps
   forall P in Ps exists P' in D.Tr.Ps such that p|- P <= P'
   forall i 1..n D|- ei : e'i : Ti <=T'i
