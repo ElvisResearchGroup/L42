@@ -68,7 +68,7 @@ D|-throw[_,_] e: throw[T,mdf P] e' :  T
   where
   D|- e:  e' :  mdf P
   if throw=return, p|-mdf P<=T', T' in D.Ts
-  otherwise p|-mdf P<=imm P', P' in D.Ps  
+  otherwise if throw=exception, p|-mdf P<=imm P', P' in D.Ps  
 
 (mcall)
 D|- e0.m[_](x1:e1..Xn:en) : e'0.m[mdf0 P0](x1:e'1..xn:e'n)  : T
