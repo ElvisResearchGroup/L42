@@ -4,7 +4,7 @@ Part 2: reduction rules and notations
 -----------------------------------------------------------
 depend on:
  Phase|p|empty|empty|empty|-e:e':T
- e -->p+ r
+ e -->p+ r //we discussued with James: should we use ~> or a kind of big step arrow for type judgment that do annotation?
  
 -----------------------------------------------------------
 ### reduction rules
@@ -161,7 +161,7 @@ maindefinition:
   where Cs in Cssi
 
 ------------------------------------------     
-###define paths|-p:p
+###define paths|-p:p    //James may like notation path ||- p~>p' to underline is an addition layer
 
   paths |-p:p'
   
