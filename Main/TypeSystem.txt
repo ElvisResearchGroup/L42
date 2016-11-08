@@ -79,7 +79,7 @@ D|- e0.m[_](x1:e1..Xn:en) : e'0.m[P0](x1:e'1..xn:e'n)  : T
   D.p(P0).m(x1..xn).mh[from P0]=mdf'0 method T' m(T'1 x1,..T'n xn) exception Ps
   forall P in Ps exists P' in D.Tr.Ps such that p|- P <= P'
   forall i 1..n D|- ei : e'i : Ti <=T'i
-  if no fwd in T1..Tn
+  if no fwd or fwd% in T1..Tn
     T=T'
   otherwise 
     T=fwd% T'
@@ -239,7 +239,7 @@ p| Ps |-M : M'
   M =refine? mdf method T m(T1 x1 .. Tn xn)exceptions Ps' e?
   M'=refine? mdf method T m(T1 x1 .. Tn xn)exceptions Ps' e?'
   if e?=e then
-    Typed p| G|empty;empty|empty;Ps' |- e:  e?':_ <=T
+    Typed p| G|empty;empty|empty;Ps' |- e:  e?':_ <=T//should it be fwd% T ?? check in formal.pdf
   else
     e?=e?'
   existsExactly 1 P in Ps,This0
