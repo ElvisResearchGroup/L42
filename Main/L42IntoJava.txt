@@ -1,3 +1,22 @@
+-----------------------------
+Structure of this document:
+
+0 Objectives
+
+1 Grammar
+
+2 L42N into L42F 
+
+3 Optimization
+
+4 L42F into Java
+
+5 execution dynamics
+
+-----------------------------
+0 Objectives
+-----------------------------
+
 Challenges:
 Generated Java should be 
 -incremental
@@ -37,9 +56,11 @@ Destination 2:
   Java, C++, Javascript,..
   -design process to convert L42F programs into stuff.
 
----------------------------------------------------------
+-----------------------------
+1 Grammar
+-----------------------------
 
-L42N (should be identical to the one in NotationsAndGrammar
+L42N //should be identical to the one in NotationsAndGrammar
 
 e::=x|void|P|L|throw[T1,T2] e|loop e|(ds ks e[T])| e.m[P]((x:e)s)| use P check m((x:e)s) e
 throw::= exception | error | return
@@ -47,7 +68,7 @@ k::=catch throw T x e
 d::= T x=e
 
 L42F 
-CT::= CN->p,CD
+CT::= CN->p,CD,Javabytecode
 CD::=kind CN implements CNs{ Mxs }
 Mx::=refine? method T mxs((T x)s) body?//first is this
 //note: no exceptions declared, body empty only if kind=interface
@@ -61,51 +82,97 @@ kx::=catch throw TX x ex
 dx::=TX x=ex
 TX::=mdf CN
 
-note: methods in L42F:
+----
+note: method calling/method dispatch in L42F:
 methods with refine or with no body are dynamically dispatched 
 and must have a 'this' parameter (other still can have a 'this' parameter)
 others are statically dispatched.
 CN is just an instance of class/interface CN.
 Some native bodies would fail if the 'this' parameter is the CN instance.
+The translation L42N to L42F will work in the following way:
+-class methods declared in classes behave like static method with no 'this'
+-non class methods declared in classes behave line static method with first 'this' parameter
+-class methods declared in interfaces, with dynamic dispatch
+  behave like python class methods with first 'this class' parameter
+-non class methods declared in interfaces, with dynamic dispatch
+  behave like java method with first 'this' parameter
 
-//  CN.m(x1..xn) behave like static method with no 'this'
-//    for class methods declared in classes
-//  like static method with first 'this' parameter
-//    for non class methods declared in classes
-//  like python class methods with first 'this class' parameter
-//    for class methods declared in interfaces, with dynamic dispatch
-//  like java method with first 'this' parameter
-//    for non class methods declared in interfaces, with dynamic dispatch
-//  like java interface static methods
-//    for class methods with no 'this' parameter ( existing  only in L42F as predefined)
+In addition, L42F can support implemented interface methods with no 'this' parameter (we use them for some predefined behavior)
+  they behave java interface static methods
 
-
-//note:TX x=(dxs ex) in Java can be
-//TX x;{dxs  x=ex}
-//note:TX x=(dxs kxs ex) in Java can be 
-//TX x; labelFor_x:{dxs\e try{dxs\t}x=kxs  x=ex}
-//  where x=catch TX y ex is catch (TX y ){x=ex break labelFor_x}
-//dxs\e and dxs\t removes the e and the TX from dxs to separe declarations and initializations
-//x=ex is untrivial to define, for example x= throw x'== throw x'
-
-//for compactness ignore use, treated the same as mcall
-//also, assume all local variables alpharenamed to be different
-//and all newly introduced variables are fresh
-
-Prefefined classes/methods in L42F
-all classes/interface are expected to have
+We assume the presence of some Prefefined classes/methods in L42F:
+  Void, Any and Library, all offering only 
   method CN NewFwd() newFwd //also Any have it!//yes, statically binded
-  }
+
+We also assume a class
 nativeResource Resource{
+  
   method Library LoadLib(class Any that)nativeLoadLib
+  //return the Library denoted by the provided CN
+  
   method Void Fix(Any a,Any b)nativeFix //hoping a is a Fwd
   //replace a with b in all the places a was stored.
   //every newFwd edits a list inside of Fwds to remember where they are stored.
   }
-  methods returning the AST of the code corresponding
-  to library literals with unique names CN1..CNn 
-  
-#### define PG[ e0]= e1 with e0 in L42N and e1 in L42F
+
+-----------------------------
+2 L42N into L42F
+-----------------------------
+//for compactness ignore use, treated the same as mcall
+//also, assume all local variables alpharenamed to be different
+//and all newly introduced variables are fresh
+
+
+################## libToCDs(p)
+translate p.top() into a set of class declarations CD for L42F.
+---
+
+libToCDs(p)=libToCDs(p,ncs),//return a list, continue in the next line
+  class/interface? CN implements p*P1..p*Pn {
+    method CN NewFwd() newFwd 
+    libToCD(p,mwts)
+    }
+  where p.top()={interface? implements P1..Pn mwts ncs Phase CN}
+
+libToCDs(p,C:L)=libToCDs(p.navigate(C)) //assert p.navigate(C).top()==L
+
+//cases for various kinds of mwt
+
+//class method into static method  -- note: PG[e] fixes the calling points
+libToCD(p,class method T m(T1 x1..Tn xn)exception Ps e) =
+  method p*T mxs(p*T1 x1..p*Tn xn)  ex?[this=p.top().CN]
+  where ex= p;(mdf This0 this,T1 x1..Tn xn)[e]
+
+//class-interface methods or instance methods, the ones needing "this"
+otherwise //that is refine?=refine, mdf!=class or e?=empty
+libToCD(p,refine? mdf method T m(T1 x1..Tn xn)exception Ps e?) =
+  refine? method p*T mxs(mdf (p.top().CN) this,p*T1 x1..p*Tn xn)  ex?
+  where ex?= p;(mdf This0 this,T1 x1..Tn xn)[e?]
+  and if e?=empty, p.top() is interface
+
+//the other rules manage abstract state; that is:p.top() not interface and e?=empty
+//getter/setter
+libToCD(p,refine? mdf method T' m((T x)?)  )=
+  refine? method p*T' mxs(mdf (p.top().CN) this,p*(T x)?) body
+  where mdf not class and body =setter if (T x)? not empty, otherwise body=getter
+
+//constructor with FWD
+libToCD(p,refine? class method T m(T1 x1..Tn xn)  )= //we could have  p.top().CN instead of T, but T should be good enough
+  refine? method method p*T mxs(class (p.top().CN) this,p*T1 x1..p*Tn xn) newFwd
+  method method p*T New_mxs(class (p.top().CN) this,p*(noFwd T1) x1..p*(noFwd Tn) xn) new
+  if exists T' in T1..Tn that is fwd, otherwise  
+//constructor with no FWD
+libToCD(p,refine? class method T m(T1 x1..Tn xn)  )=
+  refine? method method p*T mxs(class (p.top().CN) this,p*T1 x1..p*Tn xn) new //if refine? =empty, there may be no need to generate this one
+  method method p*T New_mxs(class (p.top().CN) this,p*T1 x1..p*Tn xn) new
+
+
+################## PG[ e0]= e1 with e0 in L42N and e1 in L42F
+translate an expression. Needs a program and a gamma
+---
+
+###PG grammar and auxiliary operations
+---
 PG::=p;(x:T)s //p;G
 p;(x:T)s + (x:T)s'=p;(x:T)s (x:T)s' //Thus I can write PG+x:T
 PG + T1 x1=e1..Tn xn=en=PG+x1:T1..xn:Tn
@@ -118,6 +185,10 @@ p*P=p(P).CN
 p*T =mdf p*P
 where
   mdf P=resolve(p,T)
+
+
+###PG[e] definition
+---
 
 PG[x]=x
 PG[void]=void
@@ -158,69 +229,100 @@ PG[(ds ks e[T])]=(phFix(PG+ds[ds]) PG+ds[ks] PG+ds[e] [PG*T])
   phFix(dxs)=dxs if dxs.xs not in FV(dxs.es)
   otherwise //a block actually using placeholders
   phFix(mdf1 CN1 x1=ex1..mdfn CNn xn=exn)=
-    mdf1 CN1 x1'=CN1.NewFwd()..mdfn CNn xn'=CNn.NewFwd() //Fwd is a predefined class in all L42F programs
+    mdf1 CN1 x1'=CN1.NewFwd()..mdfn CNn xn'=CNn.NewFwd()
     mdf1 CN1 x1=ex1' imm Void z1=Resource.Fix(x1',x1)
     ..
     mdfn CNn xn=exn' imm Void zn=Resource.Fix(xn',xn)
     with exi'=exi[xi..xn=xi'..xn']
 
+  
 
 
-########### CT.growWith(p,paths)
-//take an existing CT, create a bigger one where paths from p are added
+################## CT.growWith(p,paths)
+take an existing CT, create a bigger one where paths from p are added
+we assume CT empty to exists
+---
 
-CT.growWith(p,Cs1..Csn paths)=
-  CT+p.navigate(Cs1)+..+p.navigate(Csn)+CT'
-  CT' =CT.growWith(p.pop(),paths) if p.pop() defined,
-  otherwise CT'=empty and paths=empty
+CT.growWith(p,paths)=CT+p1+..+pn
+  where p1,..,pn=programsOf(p,paths)
 
+###auxiliary programsOf
+---
+programsOf(p,empty)=empty
+programsOf(p,Cs1..Csn paths)=
+    p.navigate(Cs1),..,p.navigate(Csn),programsOf(p.pop(),paths)
+  where p.pop() is defined, otherwise
+programsOf(p,Cs1..Csn paths)=
+    p.navigate(Cs1),..,p.navigate(Csn)
+    where paths=empty
+
+###auxiliary CT+p
+---
 CT+p=CT if CT(p.top().CN) is defined
 otherwise
 CT+p=CT,p.top().CN->p,CD',J
-  where CD=libToCD(p), CD'=optimize(CD), J=toJava(CD')
-
-
-libToCD(p)=class/interface? CN implements p*P1..p*Pn { libToCD(p,Ms)}
-  where p.top()={interface? implements P1..Pn Ms Phase CN}
-
-//class method  //also fixed in the calling points
-libToCD(p,class method T m(T1 x1..Tn xn)exception Ps e?) =
-  method p*T mxs(p*T1 x1..p*Tn xn)  ex?[this=p.top().CN]
-  where ex?= p;(mdf This0 this,T1 x1..Tn xn)[e?]
-  and if e?=empty, p.top() is interface
-//class-interface methods or instance methods
-otherwise (that is refine?=refine or mdf!=class
-libToCD(p,refine? mdf method T m(T1 x1..Tn xn)exception Ps e?) =
-  refine? method p*T mxs(mdf (p.top().CN) this,p*T1 x1..p*Tn xn)  ex?
-  where ex?= p;(mdf This0 this,T1 x1..Tn xn)[e?]
-  and if e?=empty, p.top() is interface
-
-libToCD(p,mdf method T m((T x)?)  )=
-  method p*T mxs(mdf (p.top().CN) this,p*(T x)?) body
-  where mdf not class and body =setter if (T x)? not empty, otherwise body=getter
-
-libToCD(p,class method T m(T1 x1..Tn xn)  )=
-  method method p*T mxs(class (p.top().CN) this,p*T1 x1..p*Tn xn) newFwd
-  method method p*T New_mxs(class (p.top().CN) this,p*(noFwd T1) x1..p*(noFwd Tn) xn) new
-  if T in T1..Tn is fwd, otherwise  
-libToCD(p,class method T m(T1 x1..Tn xn)  )=
-  method method p*T New_mxs(class (p.top().CN) this,p*T1 x1..p*Tn xn) new
+  where CD=libToCDs(p), CD'=optimize(CD), J=toJava(CD')
   
-CT.execute(p,eC)=CT.loadAndRun(J)
-  ex=p;empty[eC]
-  eJ=toJava(ex)
-  J=class CN{ public static Object execute(){J}}//CN fresh
+  
+  
+
+
+
+
+-----------------------------
+3 L42F into Java
+-----------------------------
+
+CD::=kind CN implements CNs{ Mxs }
+Mx::=refine? method T mxs((T x)s) body?
+
+body::=ex | setter|getter|new|newWithFwd|newFwd nativeIntSum|nativeIntMul|...|nativeVectorAdd
+
+miniE::=x|void|CN|null| throw[TX1,TX2] x |loop ex
+  |CN.mxs(ys)| use CN check mxs(ys) ex
+  |if x then ex1 else ex2 |while ???x?_or_?ex?? then ex1 | x1:=x2 |(mdf CN)x
+ex::=miniE | (dxs kxs ex [TX])
+kx::=catch throw TX x ex
+dx::=TX x=ex
+TX::=mdf CN
+
+top[miniE]={return [miniE]}
+top[(dxs kxs ex[TX])]={
+
+
+dx\e and dx\t
+TX x=ex\e=TX x;
+TX x=ex\t=x=[ex];
+
+//note:TX x=(dxs ex) in Java can be
+//TX x;{dxs  x=ex}
+//note:TX x=(dxs kxs ex) in Java can be 
+//TX x; labelFor_x:{dxs\e try{dxs\t}x=kxs  x=ex}
+//  where x=catch TX y ex is catch (TX y ){x=ex break labelFor_x}
+//dxs\e and dxs\t removes the e and the TX from dxs to separe declarations and initializations
+//x=ex is untrivial to define, for example x= throw x'== throw x'
+
+
+-----------------------------
+4 General execution
+-----------------------------
+Execution
+
+CT.execute(p,e)=CT.loadAndRun(J)
+  ex=p;empty[e]
+  sJ=toJava(ex)
+  J=class CN{ public static Object execute(){sJ}}//CN fresh
 
 CT.loadAndRun(CN,J)
   CT contains/related to a class loader that access CT to load classes
   CT.loader.load(toBytecode(J))
-  return CT.loader.usualReflectionToCall(CN.execute())
+  return CT.loader.usualReflectionToCall("CN.execute()")
 
+-------------
 We need to save in CT also the compiled bytecode;
 we need to make CT serializable and save it with "names" related to the "stage"
 of the program, for example the compilation of all a towel.
 should we use a db instead of files?
-I should write a simplified CT with just Java and bytecode to test those ideas...
 example caching system:
 when L42 run in a folder, near This.L42 we create a _This.db
 that contains the following info:
@@ -257,13 +359,31 @@ save to disc
 load
 grow more stuff
 execute more stuff
+
+
+
+
+-----------------------------
+5 Optimization//later?
+-----------------------------
+Goals:
+-bool/int/float etc should be types directly used in the code and
+their operations should be directly used.
+-Strings/other well known plugin imported data should be directly used too.
+-if and while should be handled without exceptions
+-Opt should be implemented with normal (optionally null) pointers
+-lists (also of mutable objects) should use a primitive vector/arraylist concept
+-classes with a single fields should be "erased" most of the times
+-method inlining should happen often
+-type cases/casts should be simplified away when possible (may be thanks to inlining?)
+
 -------
-optimizing a local variable seams harder then adding them to the core...
+Note: optimizing a local variable seams harder then adding them to the core...
 In case we want to add local var to core, need to happen after /at the same time
 of implementing L42IntoJava.
----------
 
-Optimizations:
+
+Main idea: a sequence of iteration over
 CT-->CT[CN=nativeOfThatPattern(CT(CN))]
 if CT(CN)= aSpecificPattern
 something like this should work for int,float,arrays and a couple more stuff
@@ -335,13 +455,23 @@ Throw/cast simplification
  e)
 ????? need casts ? ifs? type switch?
 
-------------------------------------------------+
+
+---------
+
+
+
+
+
+
+
+-----------------------------------------------
 
 
   exercise:
   e::= x| let x=e0 in e1 | e0 e1
   into:
   ax::= x| x y
+
   ex::= ax| let x=ax ex
   
   [x]=x
@@ -385,5 +515,7 @@ G.typeOf( e.m[mdf P](x1:e1..xn:en) )=P::m(x1..xn)//resolved?
 
 //Note for marco: Guess type in formal
 //case use: use the plugin information, not the e! 
+
+
 
   
