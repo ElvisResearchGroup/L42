@@ -295,7 +295,7 @@ statement st::=
   b
   break label
   return ej
-  throw x
+  throw new 'throw'(x)
   try b catchjs 
   
 block b::=label:{sts}
@@ -312,8 +312,11 @@ TX x=ex\t=x=[ex];
 returnX(x,label, e)=replace "return ej;" with "x=ej; break label;"
 
 addReturn(ej)=return ej
-addReturn(st)=st ???
-
+  with ej in x null mcall use cast 
+addReturn(throw ej)=throw ej 
+addReturn( while(true) b)=while(true) b
+addReturn(if x b1 (else b2)?)=if x addReturn(b1) (else addReturn(b2))?
+addReturn(x=e)= x=e; return null;//that is, void
 
 [x]=x
 [void]=null
