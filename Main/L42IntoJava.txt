@@ -286,13 +286,56 @@ kx::=catch throw TX x ex
 dx::=TX x=ex
 TX::=mdf CN
 
-top[miniE]={return [miniE]}
-top[(dxs kxs ex[TX])]={
+Java------------------
+statement st::=
+  T x;
+  x=ej;
+  if(x) b1 (else b2)?
+  while(true) b
+  b
+  break label
+  return ej
+  throw x
+  try b catchjs 
+  
+block b::=label:{sts}
 
+ej::=x|CN.m(xs)|useCall(xs)
+catchj::=catch(T x)b
+
+--------
 
 dx\e and dx\t
 TX x=ex\e=TX x;
 TX x=ex\t=x=[ex];
+
+returnX(x,label, e)=replace "return ej;" with "x=ej; break label;"
+
+addReturn(ej)=return ej
+addReturn(st)=st ???
+
+
+[x]=x
+[void]=null
+[CN]=CN.classInstance()
+[null]=null
+[throw[TX1,TX2] x]='throw' new [throw](x) //one throw is the keyword, the other the metavariable
+[loop ex]= while(true) {[ex]}
+[CN.mxs(ys)]=CN.mxs(ys)
+[use CN check mxs(ys) ex]=....(CN,ys,[ex])
+[if x then ex1 else ex2]=if (x)[ex1] else [ex2] //blocks??
+[while ???x?_or_?ex?? then ex1]=...
+[x1:=x2]= x1=x2
+[(mdf CN)x]=(mdf CN)x;//annotations no problem
+
+[(dxs ex [TX])]=label:{dxs/e dxs/t return [ex]}
+[(dxs kxs ex [TX])]=label:{ dxs/e try{ dxs/t}[kxs] addReturn([ex])}
+[catch throw TX x ex]=catch([throw] y){
+  if(!(y.inner() instanceof TX)){throw y;}
+  TX x=(TX)y.inner();
+  addReturn([ex]) 
+  }
+
 
 //note:TX x=(dxs ex) in Java can be
 //TX x;{dxs  x=ex}
