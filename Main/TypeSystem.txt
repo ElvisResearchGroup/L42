@@ -98,12 +98,12 @@ Phase| p| G| Cage| Tr|-(T1 x1=e1..Tn xn=en ks e0[_]) ~>(T'1 x1=e'1..T'n xn=e'n k
   for i in 1..n T'i=resolve(p,Ti)
   Phase p G Cage Tr|-ks~> ks' : T
   G'=x1:T'1..xn:T'n
-  G1=G[ks'],fwd(complete(G'))
+  G1=G[ks'][fwd(complete(G'))]
   for i in 1..n Phase| p| G1| Cage| Tr[ks']|-ei:e'i: _ <=fwd% T'i
   if exists x in FV(e1..en) such that G(x)=fwd _ or G(x)=fwd% _
-    G0=G,fwd%(G')
+    G0=G[fwd%(G')]
   otherwise
-    G0=G,G'
+    G0=G[G']
   Phase| p| G0| Cage| Tr|-e0:e'0:T
   
 (block divide scope)
@@ -130,9 +130,9 @@ D|- (ds ks1 catch return mdf Path x x ks2 e):(ds' ks'1 catch return mdf' Path x 
 (catch)
 Phase| p| G| Cage| Tr|-catch throw T x e : catch throw resolve(p,T) x e' :T'
   where
-  Phase| p| G,x:T| Cage| Tr |- e : e':T'
+  Phase| p| G[x:T]| Cage| Tr |- e : e':T'
 
-//TODO: add definitions for Tr[ks] and G[ks]
+//TODO: add definitions for Tr[ks] and G[ks] and G[x:T] in notations and grammar
 
 (cath and rethrow any)  
 Phase p G Cage Tr|-k0 : catch throw resolve(p,T0) x e0 :T0
