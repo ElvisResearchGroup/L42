@@ -85,10 +85,10 @@ D|- e0.m[_](x1:e1..Xn:en) ~> e'0.m[P0](x1:e'1..xn:e'n)  : T'
     T'=fwd% T
      
 (using)
- D|-use P check m(x1:e1.. xn:en) e0 ~>use P check m(x1:e'1.. xn:e'n) e'0 :T'0
+ D|-use P check m(x1:e1.. xn:en) e0 ~>use P check m(x1:e'1.. xn:e'n) e'0 :T0
  where
-   plugin(D.p,P,m(x1..xn))=plg, T'0..T'n
-   forall i 0..n D|- ei ~> e'i : Ti <=T'i
+   plugin(D.p,P,m(x1..xn))=plg, T0..Tn
+   forall i 0..n D|- ei ~> e'i : T'i <=Ti
 
 
 (block)
