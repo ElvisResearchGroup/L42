@@ -87,12 +87,12 @@ D|- e0.m[_](x1:e1..Xn:en) ~> e'0.m[P0](x1:e'1..xn:e'n)  : T'
 (using)
  D|-use P check m(x1:e1.. xn:en) e0 ~>use P check m(x1:e'1.. xn:e'n) e'0 :T0
  where
-   plugin(D.p,P,m(x1..xn))=plg, T0..Tn
+   plugin(D.p,P,m(x1..xn))=plg, T0..Tn //plg is a free variable, in the small step reduction would be the function representing the behaviour
    forall i 0..n D|- ei ~> e'i : T'i <=Ti
 
 
 (block)
-Phase p G Cage Tr|-(T1 x1=e1..Tn xn=en ks e0[_]) ~>(resolve(p,T1) x1=e1..resolve(p,Tn) xn=en ks e0[T]) : T
+Phase p G Cage Tr|-(T1 x1=e1..Tn xn=en ks e0[_]) ~>(resolve(p,T1) x1=e'1..resolve(p,Tn) xn=e'n ks' e'0 [T]) : T
   where
   Phase p G Cage Tr|-ks~> ks' :T
   for i in 1..n Phase p G1 Cage Tr[ks]|-ei:e'i:T'i<=fwd% Ti
