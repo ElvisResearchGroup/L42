@@ -109,6 +109,7 @@ Phase| p| G| Cage| Tr|-(T1 x1=e1..Tn xn=en ks e0[_]) ~>(T'1 x1=e'1..T'n xn=e'n k
 D|- (ds1 ds2 ks e):(ds'1 ds'2 ks' e'):T
   where
   D|- (ds1 ks (ds2 ks e) ):(ds'1 ks'(ds'2 ks' e')):T
+  dom(ds2) not in FV(ds1)
   
 
 (propagate promotions to catches)
