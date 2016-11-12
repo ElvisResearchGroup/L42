@@ -98,9 +98,9 @@ Phase| p| G| Cage| Tr|-(T1 x1=e1..Tn xn=en ks e0[_]) ~>(T'1 x1=e'1..T'n xn=e'n k
   for i in 1..n T'i=resolve(p,Ti)
   Phase p G Cage Tr|-ks~> ks' : T
   G'=x1:T'1..xn:T'n
-  G1=G[ks'],fwd(complete(G'))
+  G1=G[ks'],fwd(G') //  G1=G[ks'],fwd(complete(G'))
   for i in 1..n Phase| p| G1| Cage| Tr[ks']|-ei:e'i: _ <=fwd% T'i
-  if exists x in FV(e1..en) such that G(x)=fwd _ or G(x)=fwd% _ 
+  if exists x in FV(e1..en) such that G(x)=fwd _ or G(x)=fwd% _ or G'(x)=fwd _
     G0=G,fwd%(G')
   otherwise
     G0=G,G'
