@@ -92,23 +92,23 @@ D|- e0.m[_](x1:e1..Xn:en) ~> e'0.m[P0](x1:e'1..xn:e'n)  : T'
 
 
 (block)
-Phase p G Cage Tr|-(T1 x1=e1..Tn xn=en ks e0[_]) ~>(T'1 x1=e'1..T'n xn=e'n ks' e'0 [T]) : T
+Phase| p| G| Cage| Tr|-(T1 x1=e1..Tn xn=en ks e0[_]) ~>(T'1 x1=e'1..T'n xn=e'n ks' e'0 [T]) : T
   where
   T'i=resolve(p,Ti)
-  Phase p G Cage Tr|-ks~> ks' :T
+  Phase p G Cage Tr|-ks~> ks' : T
   for i in 1..n Phase p G1 Cage Tr[ks]|-ei:e'i: _ <=fwd% T'i
   G'=x1:T'1..xn:T'n
   G1=G[ks],fwd(complete(G'))
-  Phase p G0 Cage Tr|-e0:e'0:T
   if exists x in FV(e1..en) such that G1(x)=fwd _
     G0=G,fwd%(G')
   otherwise
     G0=G,G'
+  Phase| p| G0| Cage| Tr|-e0:e'0:T
   
 (block divide scope)
-D|- (ds1 ds2 K e):(ds'1 ds'2 K' e'):T
+D|- (ds1 ds2 ks e):(ds'1 ds'2 ks' e'):T
   where
-  D|- (ds1 K (ds2 K e) ):(ds'1 K'(ds'2 K' e')):T
+  D|- (ds1 ks (ds2 ks e) ):(ds'1 ks'(ds'2 ks' e')):T
   
 
 (propagate promotions to catches)
