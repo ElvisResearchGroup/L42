@@ -225,7 +225,9 @@ PG[y0.m[P](x1:y1..xn:yn)]=PG*P.New_m`x1..xn`(y1..yn)
 PG[(ds ks e[T])]=(phFix(PG+ds[ds]) PG+ds[ks] PG+ds[e] [PG*T])
   PG[T x=e]=PG*T x=PG[e]
   PG[catch throw T x e]=catch throw PG*T x PG+x:T[e]
-  
+  //TODO: if no recursive occurence happen for a variable, you do not need the fwd. 
+  //For example in A a=A(b)  B b=A(a) you only need bFwd 
+  //B bFwd=B.newFwd()   A a=A( bFwd)  B b=bFwd.fix(B( a))
   phFix(dxs)=dxs if dxs.xs not in FV(dxs.es)
   otherwise //a block actually using placeholders
   phFix(mdf1 CN1 x1=ex1..mdfn CNn xn=exn)=

@@ -32,7 +32,8 @@ Tr::=Ts; Ps //Tr reads Throws
 
 complete(G)={x:T | G(x) not fwd/fwd%}
 
-fwd T and fwd% T return the fwd/fwd% version of T, or the same T if T not imm/mut/fwdImm/fwdMut/fwd%Imm/fwd%Mut 
+fwd T and return the fwd version of T, or the same T if T not imm/mut/fwdImm/fwdMut/fwd%Imm/fwd%Mut 
+fwd% T return the fwd% version of T, or the same T if T not imm/mut/fwdImm/fwdMut/fwd%Imm/fwd%Mut ???TODO: no, fwd% fwd T =fwd T 
 
 noFwd T return the version of T without the fwd/fwd% or the same T if fwd/fwd% is not present
 
@@ -98,7 +99,7 @@ Phase| p| G| Cage| Tr|-(T1 x1=e1..Tn xn=en ks e0[_]) ~>(T'1 x1=e'1..T'n xn=e'n k
   Phase p G Cage Tr|-ks~> ks' : T
   G'=x1:T'1..xn:T'n
   G1=G[ks'],fwd(complete(G'))
-  for i in 1..n Phase p G1 Cage Tr[ks']|-ei:e'i: _ <=fwd% T'i
+  for i in 1..n Phase| p| G1| Cage| Tr[ks']|-ei:e'i: _ <=fwd% T'i
   if exists x in FV(e1..en) such that G1(x)=fwd _
     G0=G,fwd%(G')
   otherwise
