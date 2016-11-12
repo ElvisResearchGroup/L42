@@ -305,10 +305,11 @@ catchj::=catch(T x)b
 
 --------
 
-dx\e and dx\t
+dx\e, dx\t,returnX,addReturn
 TX x=ex\e=TX x;
-TX x=ex\t=x=[ex];
+TX x=ex\t=x=returnX(x,[ex]);
 
+returnX(x,label:{sts})=returnX(x,label,label:{sts})
 returnX(x,label, e)=replace "return ej;" with "x=ej; break label;"
 
 addReturn(ej)=return ej
@@ -317,9 +318,10 @@ addReturn(throw ej)=throw ej
 addReturn( while(true) b)=while(true) b
 addReturn(if x b1 (else b2)?)=if x addReturn(b1) (else addReturn(b2))?
 addReturn(x=e)= x=e; return null;//that is, void
+//addReturn(try-catch) is undefined on purpose
 
 [x]=x
-[void]=null
+[void]=Void.instance()//Void Any and Library will be imported at the start of the file
 [CN]=CN.classInstance()
 [null]=null
 [throw[TX1,TX2] x]='throw' new [throw](x) //one throw is the keyword, the other the metavariable
@@ -347,7 +349,6 @@ addReturn(x=e)= x=e; return null;//that is, void
 //  where x=catch TX y ex is catch (TX y ){x=ex break labelFor_x}
 //dxs\e and dxs\t removes the e and the TX from dxs to separe declarations and initializations
 //x=ex is untrivial to define, for example x= throw x'== throw x'
-
 
 -----------------------------
 4 General execution
@@ -422,7 +423,12 @@ their operations should be directly used.
 -classes with a single fields should be "erased" most of the times
 -method inlining should happen often
 -type cases/casts should be simplified away when possible (may be thanks to inlining?)
+-optimization of number/string literal
 
+optimization of number/string literal:
+during de sugaring make them separete functions, then all class method imm Foo are cached the first time they are executed
+(since 42 is compiled on the way, it is as fast as executing them at compile time, and for
+precompiled libraries we can have an operator forcing it)
 -------
 Note: optimizing a local variable seams harder then adding them to the core...
 In case we want to add local var to core, need to happen after /at the same time
