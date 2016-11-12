@@ -5,7 +5,7 @@ Structure of this document:
 
 2 ExpressionTypeJudgement
 
-3 Subtyping p|- T<=T' and shortcut D |- e : e':T<=T'
+3 Subtyping p|- T<=T' and shortcut D |- e ~> e':T<=T'
 
 4 LibraryAndMemberTyping
 
@@ -24,7 +24,7 @@ Tr::=Ts; Ps //Tr reads Throws
 --------------------------------------------
 2 ExpressionTypeJudgement
 --------------------------------------------
-  D |- e : e':T   and D |- k : k':T 
+  D |- e ~> e':T   and D |- k ~> k':T 
   where e' is an annotated version of expression e and is of type T
   where k' is an annotated version of catch k and k.e is of type T
   D.p points to where the e is located, //D.p.top()=ctxL[e]
@@ -34,22 +34,22 @@ complete(G)={x:T | G(x) not fwd/fwd%}
 
 fwd T and fwd% T return the fwd/fwd% version of T, or the same T if T not imm/mut/fwdImm/fwdMut/fwd%Imm/fwd%Mut 
 
-noFwd T return the version of T without the fwd/fwd% or the same T if not fwd/fwd% is present
+noFwd T return the version of T without the fwd/fwd% or the same T if fwd/fwd% is not present
 
  lentOf(mut P)=lent P,
  lentOf(mutFwd P) and lentOf(mutFwd% P) undefined;
  otherwise lentOf(T)=T 
 
 (void)
-_ |- void: void:imm Void
+_ |- void~> void:imm Void
 
 (Path)
-_ |- P:P:class P
+_ |- P~>P:class P
 
 (library prop)
-Phase |p |_ |_ |_ |- L : L' : imm Library
+Phase |p |_ |_ |_ |- L ~> L' : imm Library
   where
-  Phase  |- p.evilPush(L) : L' //s it clashing on the notation in the end of Normalization.txt?
+  Phase  |- p.evilPush(L) : L' // is it clashing on the notation in the end of Normalization.txt?
 
 (x)
 Phase| p| G| xss; xs| Tr |-x:T
@@ -59,42 +59,42 @@ Phase| p| G| xss; xs| Tr |-x:T
   otherwise T=G(x)
 
 (loop)
-D |- loop e:loop e':imm Void
+D |- loop e ~> loop e' : imm Void
   where
-  D|- e:e':imm Void
+  D|- e ~> e' : imm Void
 
 (throw)
-D|-throw[_,_] e: throw[T,mdf P] e' :  T
+D|-throw[_,_] e~> throw[T,mdf P] e' :  T
   where
-  D|- e:  e' :  mdf P
+  D|- e~>  e' :  mdf P
   if throw=exception, p|-mdf P<=imm P' and P' in D.Ps
   if throw=return, p|-mdf P<=T' and T' in D.Ts
   if throw=error, p|-mdf P<=imm Any  
 
 (mcall)
-D|- e0.m[_](x1:e1..Xn:en) : e'0.m[P0](x1:e'1..xn:e'n)  : T
+D|- e0.m[_](x1:e1..Xn:en) ~> e'0.m[P0](x1:e'1..xn:e'n)  : T
   where
-  D|-e0: e'0:mdf0 P0<=mdf'0 P0
-  not D|-e0: _:imm Void //makes (error x).m(...) not well typed// talked with James, not convinced is needed, we do not have way to recognize if a block has a specific type
+  D|-e0~> e'0:mdf0 P0<=mdf'0 P0
+  not D|-e0~> _:imm Void //makes (error x).m(...) not well typed// talked with James, not convinced is needed, we do not have way to recognize if a block has a specific type
   D.p(P0).m(x1..xn).mh[from P0]=mdf'0 method T' m(T'1 x1,..T'n xn) exception Ps
   forall P in Ps exists P' in D.Tr.Ps such that p|- P <= P'
-  forall i 1..n D|- ei : e'i : Ti <=T'i
+  forall i 1..n D|- ei ~> e'i : Ti <=T'i
   if no fwd or fwd% in T1..Tn
     T=T'
   otherwise 
     T=fwd% T'
      
 (using)
- D|-use P check m(x1:e1.. xn:en) e0 :use P check m(x1:e'1.. xn:e'n) e'0 :T'0
+ D|-use P check m(x1:e1.. xn:en) e0 ~>use P check m(x1:e'1.. xn:e'n) e'0 :T'0
  where
    plugin(D.p,P,m(x1..xn))=plg, T'0..T'n
-   forall i 0..n D|- ei : e'i : Ti <=T'i
+   forall i 0..n D|- ei ~> e'i : Ti <=T'i
 
 
 (block)
-Phase p G Cage Tr|-(T1 x1=e1..Tn xn=en ks e0[_]) :(resolve(p,T1) x1=e1..resolve(p,Tn) xn=en ks e0[T]) : T
+Phase p G Cage Tr|-(T1 x1=e1..Tn xn=en ks e0[_]) ~>(resolve(p,T1) x1=e1..resolve(p,Tn) xn=en ks e0[T]) : T
   where
-  Phase p G Cage Tr|-ks: ks' :T
+  Phase p G Cage Tr|-ks~> ks' :T
   for i in 1..n Phase p G1 Cage Tr[ks]|-ei:e'i:T'i<=fwd% Ti
   G'=x1:T1..xn:Tn
   G1=G[ks],fwd(complete(G'))
