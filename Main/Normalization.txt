@@ -3,7 +3,7 @@
 Part 2: reduction rules and notations
 -----------------------------------------------------------
 depend on:
- Phase|p|empty|empty|empty|-e:e':T
+ Phase|p|empty|empty|empty|-e ~> e' : T
  e -->p+ r //we discussued with James: should we use ~> or a kind of big step arrow for type judgment that do annotation?
  
 -----------------------------------------------------------
@@ -19,7 +19,7 @@ r::=LC| exception v | error v
                                     p0=multiNorm(p,paths U paths')//norm the part of p required by eC
                                     paths'|-p0:p' //the part of p' referred to by paths' is well typed
                                     Norm,p'|-toAny(paths,eC): _ : imm Library //replace paths with Any //eC is well typed
-                                    Norm,p'|-eC: eC' : imm Library //duplicated typing, so we can have eC non with Anys
+                                    Norm,p'|-eC ~> eC' : imm Library //duplicated typing, so we can have eC non with Anys
                                     
 
 
