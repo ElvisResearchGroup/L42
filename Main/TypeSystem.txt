@@ -115,6 +115,10 @@ Phase| p| G| Cage| Tr|-(T1 x1=e1..Tn xn=en ks e0[_]) ~>(T'1 x1=e'1..T'n xn=e'n k
   Phase| p| G0| Cage| Tr|-e0:e'0:T
   
 (block divide scope)
+//This rule is not materialized in the sugar since it would duplicate the catches (potentially exponentially)
+//type system need not to repeat the test for ks in the two context,
+//since if ks typed in the outer block, it would also type in the same way
+//in the richer context in the inner block.
 D|- (ds1 ds2 ks e):(ds'1 ds'2 ks' e'):T
   where
   D|- (ds1 ks (ds2 ks e) ):(ds'1 ks'(ds'2 ks' e')):T
@@ -122,11 +126,9 @@ D|- (ds1 ds2 ks e):(ds'1 ds'2 ks' e'):T
   
 
 (propagate promotions to catches)
-//dec-k-prom-t seams broken but is actually ok since use x as the catch e
-//basically is a late fix for the poor sintactic sugar...
-//should it be encoded in the sugar??
-//No, the application of this rule needs to be dynamic and failure driven
-//note, the sugar just use a single k...
+//This rule is basically is a fix to support the syntactic sugar
+//Can not be in the sugar since it needs to be applied dynamically and failure driven
+//note, the sugar just use a single k, here is generalized
 D|- (ds ks1 catch return mdf Path x x ks2 e):(ds' ks'1 catch return mdf' Path x x ks'2 e') :T
   where
   D|-(ds ks1 catch return mdf' Path x x ks2 e):(ds' ks'1 catch return mdf' Path x x ks'2 e') :T //Note, T will relate to mdf' not mdf
