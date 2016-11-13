@@ -32,14 +32,22 @@ Tr::=Ts; Ps //Tr reads Throws
 
 complete(G)={x:T | G(x) not fwd/fwd%}
 
-fwd T and return the fwd version of T, or the same T if T not imm/mut/fwdImm/fwdMut/fwd%Imm/fwd%Mut 
-fwd% T return the fwd% version of T, or the same T if T not imm/mut/fwdImm/fwdMut/fwd%Imm/fwd%Mut ???TODO: no, fwd% fwd T =fwd T 
 
-noFwd T return the version of T without the fwd/fwd% or the same T if fwd/fwd% is not present
+fwd imm P=fwd fwd%imm P=fwdImm P
+fwd mut P=fwd fwd%mut P=fwdMut P
+otherwise fwd T=T
 
- lentOf(mut P)=lent P,
- lentOf(mutFwd P) and lentOf(mutFwd% P) undefined;
- otherwise lentOf(T)=T 
+fwd% imm P=fwd%Imm P
+fwd% mut P=fwd%Mut P
+otherwise fwd% T=T
+ 
+noFwd imm P=noFwd fwd%imm P=Imm P
+noFwd mut P=noFwd fwd%mut P=Mut P
+otherwise noFwd T=T
+
+lentOf(mut P)=lent P,
+lentOf(mutFwd P) and lentOf(mutFwd% P) undefined;
+otherwise lentOf(T)=T 
 
 (void)
 _ |- void~> void:imm Void
@@ -121,7 +129,7 @@ D|- (ds1 ds2 ks e):(ds'1 ds'2 ks' e'):T
 //note, the sugar just use a single k...
 D|- (ds ks1 catch return mdf Path x x ks2 e):(ds' ks'1 catch return mdf' Path x x ks'2 e') :T
   where
-  D|-(ds ks1 catch return mdf' Path x x ks2 e):(ds' ks'1 catch return mdf' Path x x ks'2 e') :T
+  D|-(ds ks1 catch return mdf' Path x x ks2 e):(ds' ks'1 catch return mdf' Path x x ks'2 e') :T //Note, T will relate to mdf' not mdf
   either
     mdf=capsule, mdf'=mut
   or
@@ -132,7 +140,6 @@ Phase| p| G| Cage| Tr|-catch throw T x e : catch throw resolve(p,T) x e' :T'
   where
   Phase| p| G[x:T]| Cage| Tr |- e : e':T'
 
-//TODO: add definitions for Tr[ks] and G[ks] and G[x:T] in notations and grammar
 
 ###Definition for G[G']
 G[G'](x)=G'(x) if x in dom(G'); otherwise G[G'](x)=G(x)
