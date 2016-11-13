@@ -134,6 +134,20 @@ Phase| p| G| Cage| Tr|-catch throw T x e : catch throw resolve(p,T) x e' :T'
 
 //TODO: add definitions for Tr[ks] and G[ks] and G[x:T] in notations and grammar
 
+###Definition for G[G']
+G[G'](x)=G'(x) if x in dom(G'); otherwise G[G'](x)=G(x)
+
+###Definition for Tr[ks]
+Ts; Ps [catch error T1 x1 e1..catch error Tn xn en..]=Ts; Ps
+Ts; Ps [catch exception _ P1 x1 e1..catch exception _ Pn xn en..]=Ts; Ps,P1..Pn/Any
+Ts; Ps [catch return T1 x1 e1..catch return Tn xn en..]=Ts[T1]..[Tn];Ps
+mdf P1..mdf Pn[mdf' P0]=mdf' P0..mdf' Pn  if mdf <=mdf'
+otherwise mdf P1..mdf Pn[mdf' P0]=mdf' P0 
+
+###Definition for G[ks]
+G[catch error T x e ks]=toRead(G)
+
+
 (cath and rethrow any)  
 Phase p G Cage Tr|-k0 : catch throw resolve(p,T0) x e0 :T0
   where
@@ -299,16 +313,23 @@ coherent(p,T1 x1..Tn xn,
   where
   m=#?xi
   p|-T<=Ti//setter
-        
-    class P=toImm(class P)
-    otherwise, imm P=toImm(mdf P)
-    
-    read P=toRead(mut P)=toRead(capsule P)
-    imm P=toRead(imm P)
-    class P=toRead(class P)
-    
-    lent P=capsuleToLent(capsule P)
-    otherwise mdf P=capsuleToLent(mdf P)
+  
+
+Defintion of toImm, toRead, capsuleToLent        
+  toImm(class P)=class P
+  otherwise, toImm(mdf P)=imm P
+   
+  toRead(imm P)=imm P
+  toRead(fwdImm P)=fwdImm P
+  toRead(fwd%Imm P)=fwd%Imm P
+  toRead(fwdMut P)=toRead(fwd%Mut P)=undefined
+  toRead(class P)=class P
+  otherwise toRead(mut P)=read P//mut in read,lent,mut,capsule
+  
+  toRead(G)(x)=toRead(G(x)) //thus undefined where toRead undefined 
+  
+  capsuleToLent(capsule P)=lent P
+  otherwise capsuleToLent(mdf P)=mdf P
   
 ------------------
 Dispatch //HARD
