@@ -107,21 +107,21 @@ Phase| p| G| Cage| Tr|-(T1 x1=e1..Tn xn=en ks e0[_]) ~>(T'1 x1=e'1..T'n xn=e'n k
   Phase| p| G/x1..xn| Cage| Tr|-ks~> ks' : T
   G'=x1:T'1..xn:T'n
   G1=G[ks'][fwd(complete(G'))]
-  for i in 1..n Phase| p| G1| Cage| Tr[ks']|-ei:e'i: _ <=fwd% T'i
+  for i in 1..n Phase| p| G1| Cage| Tr[ks']|-ei~>e'i: _ <=fwd% T'i
   if exists x in FV(e1..en) such that G(x)=fwd _ or G(x)=fwd% _
     G0=G[fwd%(G')]
   otherwise
     G0=G[G']
-  Phase| p| G0| Cage| Tr|-e0:e'0:T
+  Phase| p| G0| Cage| Tr|-e0~>e'0:T
   
 (block divide scope)
 //This rule is not materialized in the sugar since it would duplicate the catches (potentially exponentially)
 //type system need not to repeat the test for ks in the two contexts,
 //since if ks typed in the outer block, it would also type in the same way
 //in the richer context in the inner block.
-D|- (ds1 ds2 ks e):(ds'1 ds'2 ks' e'):T
+D|- (ds1 ds2 ks e)~>(ds'1 ds'2 ks' e'):T
   where
-  D|- (ds1 ks (ds2 ks e) ):(ds'1 ks'(ds'2 ks' e')):T
+  D|- (ds1 ks (ds2 ks e) )~>(ds'1 ks'(ds'2 ks' e')):T
   dom(ds2) not in FV(ds1)
   
 
@@ -129,19 +129,20 @@ D|- (ds1 ds2 ks e):(ds'1 ds'2 ks' e'):T
 //This rule is basically is a fix to support the syntactic sugar
 //Can not be in the sugar since it needs to be applied dynamically and failure driven
 //note, the sugar just use a single k, here is generalized
-D|- (d catch return mdf Path x x e):(d' catch return mdf' Path x x e') :mdf' Path
+D|- (d catch return mdf Path x x e)~>(d' catch return mdf' Path x x e') :mdf' Path
   where
-  D|-(d catch return mdf' Path x x e):(d' catch return mdf' Path x x e') :mdf' Path
+  D|-(d catch return mdf' Path x x e)~>(d' catch return mdf' Path x x e') :mdf' Path
   either
     mdf=capsule, mdf'=mut
   or
     mdf=imm, mdf' in {mut,read} //mut case is needed if we need capsule promotion+subtyping
     //is there a way to make this rule more deterministic?
     //if we look in FV(d) and compare with D.Cage.xss/xs we may work out what we need?
+
 (catch)
-Phase| p| G| Cage| Tr|-catch throw T x e : catch throw resolve(p,T) x e' :T'
+Phase| p| G| Cage| Tr|-catch throw T x e ~> catch throw resolve(p,T) x e' :T'
   where
-  Phase| p| G[x:T]| Cage| Tr |- e : e':T'
+  Phase| p| G[x:T]| Cage| Tr |- e ~> e':T'
 
 
 ###Definition for G[G']
@@ -171,9 +172,9 @@ Phase p G Cage Tr|-k0 : catch throw resolve(p,T0) x e0 :T0
     throw=return, T0=class Library, T1=read Void
 
 (lent viewpoint adaptation)
-Phase p G Cage Tr|-e:e':mdf P
+Phase p G Cage Tr|-e~>e':mdf P
   where
-  Phase p G Cage' Tr|-e:e':mutToLent(mdf P)
+  Phase p G Cage' Tr|-e~>e':mutToLent(mdf P)
   Cage=xs0,xss;xs
   Cage'=xss,domMut(G)\xss ; xs'
   if mdf in {read,lent,mut} then xs'=xs
@@ -181,28 +182,28 @@ Phase p G Cage Tr|-e:e':mdf P
   
 
 (capsule promotion)
-Phase p G Cage Tr|-e:e':capsule P
+Phase p G Cage Tr|-e~>e':capsule P
   where
-  Phase p G Cage' Tr|-e:e':mut P  
+  Phase p G Cage' Tr|-e~>e':mut P  
   Cage=xss;xs
   Cage'=xss,domMut(G)\xss;xs
 
 (imm promotion)
-Phase p G Cage Tr|-e:e':imm P
+Phase p G Cage Tr|-e~>e':imm P
   where
-  Phase p G Cage' Tr|-e:e':mdf P
+  Phase p G Cage' Tr|-e~>e':mdf P
   mdf in {read,lent}  
   Cage=xss;xs
   Cage'=xss,domMut(G)\xss;domMutLentRead(G)
 
 (lent to singleton)
-Phase| p| G x:lent C G'|  xss;xs | Tr |-e:e':T
+Phase| p| G x:lent C G'|  xss;xs | Tr |-e~>e':T
   where 
-  Phase| p| G x:mut C G'|  xss,{x};xs| Tr |-e:e':T
+  Phase| p| G x:mut C G'|  xss,{x};xs| Tr |-e~>e':T
 
 
 ------------------------------------------------------
-3 Subtyping p|- T<=T' and shortcut D |- e : e':T<=T'
+3 Subtyping p|- T<=T' and shortcut D |- e ~> e':T<=T'
 ------------------------------------------------------
   
 (subtype)
@@ -213,9 +214,9 @@ p|-mdf0 P0<=mdf1 P1
   p.equiv(P,P1)
   
 (shortcut)
-D |- e : e':T<=T'
+D |- e ~> e':T<=T'
   where
-  D |- e : e':T
+  D |- e ~> e':T
   D.p |-T<=T'
   
 mdf<=mdf
