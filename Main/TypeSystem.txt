@@ -165,7 +165,7 @@ otherwise mdf P1..mdf Pn[mdf' P0]=mdf' P0
 G[catch error T x e ks]=toRead(G)
 
 
-(cath and rethrow any)  
+(cath and rethrow any)//TODO: fix this rule, what is T0? when we do resolve to get mdf0 Any out?  
 Phase p G Cage Tr|-k0 ~> catch throw resolve(p,T0) x e0 :T0
   where
   k0=catch throw mdf0 Any x e
