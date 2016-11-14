@@ -104,7 +104,7 @@ D|- e0.m[_](x1:e1..Xn:en) ~> e'0.m[P0](x1:e'1..xn:e'n)  : T'
 Phase| p| G| Cage| Tr|-(T1 x1=e1..Tn xn=en ks e0[_]) ~>(T'1 x1=e'1..T'n xn=e'n ks' e'0 [T]) : T
   where
   for i in 1..n T'i=resolve(p,Ti)
-  Phase p G Cage Tr|-ks~> ks' : T
+  Phase p G/x1..xn Cage Tr|-ks~> ks' : T
   G'=x1:T'1..xn:T'n
   G1=G[ks'][fwd(complete(G'))]
   for i in 1..n Phase| p| G1| Cage| Tr[ks']|-ei:e'i: _ <=fwd% T'i
@@ -116,7 +116,7 @@ Phase| p| G| Cage| Tr|-(T1 x1=e1..Tn xn=en ks e0[_]) ~>(T'1 x1=e'1..T'n xn=e'n k
   
 (block divide scope)
 //This rule is not materialized in the sugar since it would duplicate the catches (potentially exponentially)
-//type system need not to repeat the test for ks in the two context,
+//type system need not to repeat the test for ks in the two contexts,
 //since if ks typed in the outer block, it would also type in the same way
 //in the richer context in the inner block.
 D|- (ds1 ds2 ks e):(ds'1 ds'2 ks' e'):T
