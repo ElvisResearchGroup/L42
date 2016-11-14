@@ -149,7 +149,7 @@ D|-k1..kn ~> k'1..k'n:T
 Phase| p| G| Cage| Tr|-catch throw T0 x e ~> catch throw resolve(p,T0) x e' :T1
   where
   Phase| p| G[x:T0]| Cage| Tr |- e ~> e':T1
-
+  either throw=return or resolve(p,T0)=imm _
 
 ###Definition for G[G']
 G[G'](x)=G'(x) if x in dom(G'); otherwise G[G'](x)=G(x)
