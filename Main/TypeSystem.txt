@@ -104,7 +104,7 @@ D|- e0.m[_](x1:e1..Xn:en) ~> e'0.m[P0](x1:e'1..xn:e'n)  : T'
 Phase| p| G| Cage| Tr|-(T1 x1=e1..Tn xn=en ks e0[_]) ~>(T'1 x1=e'1..T'n xn=e'n ks' e'0 [T]) : T
   where
   for i in 1..n T'i=resolve(p,Ti)
-  Phase p G/x1..xn Cage Tr|-ks~> ks' : T
+  Phase| p| G/x1..xn| Cage| Tr|-ks~> ks' : T
   G'=x1:T'1..xn:T'n
   G1=G[ks'][fwd(complete(G'))]
   for i in 1..n Phase| p| G1| Cage| Tr[ks']|-ei:e'i: _ <=fwd% T'i
@@ -129,14 +129,14 @@ D|- (ds1 ds2 ks e):(ds'1 ds'2 ks' e'):T
 //This rule is basically is a fix to support the syntactic sugar
 //Can not be in the sugar since it needs to be applied dynamically and failure driven
 //note, the sugar just use a single k, here is generalized
-D|- (ds ks1 catch return mdf Path x x ks2 e):(ds' ks'1 catch return mdf' Path x x ks'2 e') :T
+D|- (d catch return mdf Path x x e):(d' catch return mdf' Path x x e') :mdf' Path
   where
-  D|-(ds ks1 catch return mdf' Path x x ks2 e):(ds' ks'1 catch return mdf' Path x x ks'2 e') :T //Note, T will relate to mdf' not mdf
+  D|-(d catch return mdf' Path x x e):(d' catch return mdf' Path x x e') :mdf' Path
   either
     mdf=capsule, mdf'=mut
   or
-    mdf=imm, mdf' in {mut,read}
-  
+    mdf=imm, mdf' in {mut,read} //mut case is needed if we need capsule promotion+subtyping
+    //is there a way to make this rule more deterministic?
 (catch)
 Phase| p| G| Cage| Tr|-catch throw T x e : catch throw resolve(p,T) x e' :T'
   where
