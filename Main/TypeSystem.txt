@@ -139,6 +139,12 @@ D|- (d catch return mdf Path x x e)~>(d' catch return mdf' Path x x e') :mdf' Pa
     //is there a way to make this rule more deterministic?
     //if we look in FV(d) and compare with D.Cage.xss/xs we may work out what we need?
 
+
+(catchMany)
+D|-k1..kn ~> k'1..k'n:T
+  where
+  forall i in 1..n D|-ki ~> k'i:T
+  
 (catch)
 Phase| p| G| Cage| Tr|-catch throw T x e ~> catch throw resolve(p,T) x e' :T'
   where
