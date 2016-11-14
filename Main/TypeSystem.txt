@@ -112,7 +112,7 @@ Phase| p| G| Cage| Tr|-(T1 x1=e1..Tn xn=en ks e0[_]) ~>(T'1 x1=e'1..T'n xn=e'n k
     G0=G[fwd%(G')]
   otherwise
     G0=G[G']
-  Phase| p| G0| Cage| Tr|-e0~>e'0:T
+  Phase| p| G0| Cage| Tr|-e0~>e'0:T //if the expected type is ALWAYS available, we can allow subtyping here and in catch.
   
 (block divide scope)
 //This rule is not materialized in the sugar since it would duplicate the catches (potentially exponentially)
@@ -146,9 +146,9 @@ D|-k1..kn ~> k'1..k'n:T
   forall i in 1..n D|-ki ~> k'i:T
   
 (catch)
-Phase| p| G| Cage| Tr|-catch throw T x e ~> catch throw resolve(p,T) x e' :T'
+Phase| p| G| Cage| Tr|-catch throw T0 x e ~> catch throw resolve(p,T0) x e' :T1
   where
-  Phase| p| G[x:T]| Cage| Tr |- e ~> e':T'
+  Phase| p| G[x:T0]| Cage| Tr |- e ~> e':T1
 
 
 ###Definition for G[G']
