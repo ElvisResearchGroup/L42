@@ -36,7 +36,7 @@ as in a(b), then dom(a) is {b | a(b) is defined}
 DOT NOTATION b.a extract the element of form a from b, for example (C:e1).e=e1
 More precise: a term of a grammar is a tree of nodes and terminals.
 The root-most node of "b" that can be represented with the metavariable "a"
-is produced.  
+is produced.  That is, if there are two "a"s at the same dept level, the "." operator is undefined.
 
 a[with b=b1] replace the element of form b in a with a new b,
 so that (a[with b=b1]).b = b1
