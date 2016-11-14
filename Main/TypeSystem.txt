@@ -137,6 +137,7 @@ D|- (d catch return mdf Path x x e):(d' catch return mdf' Path x x e') :mdf' Pat
   or
     mdf=imm, mdf' in {mut,read} //mut case is needed if we need capsule promotion+subtyping
     //is there a way to make this rule more deterministic?
+    //if we look in FV(d) and compare with D.Cage.xss/xs we may work out what we need?
 (catch)
 Phase| p| G| Cage| Tr|-catch throw T x e : catch throw resolve(p,T) x e' :T'
   where
