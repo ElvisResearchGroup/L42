@@ -275,18 +275,6 @@ CT+p=CT,p.top().CN->p,CD',J
 3 L42F into Java
 -----------------------------
 
-CD::=kind CN implements CNs{ Mxs }
-Mx::=refine? method T mxs((T x)s) body?
-
-body::=ex | setter|getter|new|newWithFwd|newFwd nativeIntSum|nativeIntMul|...|nativeVectorAdd
-
-miniE::=x|void|CN|null| throw[TX1,TX2] x |loop ex
-  |CN.mxs(ys)| use CN check mxs(ys) ex
-  |if x then ex1 else ex2 |while ???x?_or_?ex?? then ex1 | x1:=x2 |(mdf CN)x
-ex::=miniE | (dxs kxs ex [TX])
-kx::=catch throw TX x ex
-dx::=TX x=ex
-TX::=mdf CN
 
 Java------------------
 statement st::=
