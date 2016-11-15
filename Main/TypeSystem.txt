@@ -166,10 +166,10 @@ G[catch error T x e ks]=toRead(G)
 
 
 (cath and rethrow any)//TODO: fix this rule, what is T0? when we do resolve to get mdf0 Any out?  
-Phase p G Cage Tr|-k ~> catch throw resolve(p,T0) x e0 :T0
+Phase p G Cage Tr|-k ~> catch throw mdf0 Path0 x e0 :T0
   where
-  k=catch throw T0 x e
-  resolve(p,T0)=mdf0 Path0
+  k=catch throw T x e
+  resolve(p,T)=mdf0 Path0
   k0=catch throw mdf0 Path0 x e
   k1=catch throw T1 x e
   k2=catch throw T2 x e
