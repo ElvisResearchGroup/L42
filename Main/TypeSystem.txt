@@ -163,6 +163,7 @@ otherwise mdf P1..mdf Pn[mdf' P0]=mdf' P0 //is multi level return needed by the 
 
 ###Definition for G[ks]
 G[catch error T x e ks]=toRead(G)
+otherwise G[ks]=G 
 
 
 (cath and rethrow any)//TODO: fix this rule, what is T0? when we do resolve to get mdf0 Any out?  
@@ -343,7 +344,7 @@ Defintion of toImm, toRead, capsuleToLent
   toRead(fwd%Imm P)=fwd%Imm P
   toRead(fwdMut P)=toRead(fwd%Mut P)=undefined
   toRead(class P)=class P
-  otherwise toRead(mdf P)=read P//mdf in read,lent,mut,capsule
+  otherwise toRead(mdf P)=read P //mdf in read,lent,mut,capsule
   
   toRead(G)(x)=toRead(G(x)) //thus undefined where toRead undefined 
   
