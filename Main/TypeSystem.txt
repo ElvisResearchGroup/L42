@@ -158,7 +158,7 @@ G[G'](x)=G'(x) if x in dom(G'); otherwise G[G'](x)=G(x)
 Ts; Ps [catch error T1 x1 e1..catch error Tn xn en..]=Ts; Ps
 Ts; Ps [catch exception _ P1 x1 e1..catch exception _ Pn xn en..]=Ts; Ps,P1..Pn/Any
 Ts; Ps [catch return T1 x1 e1..catch return Tn xn en..]=Ts[T1]..[Tn];Ps
-mdf P1..mdf Pn[mdf' P0]=mdf' P0..mdf' Pn  if mdf <=mdf'
+mdf P1..mdf Pn[mdf' P0]=mdf' P0..mdf' Pn  if mdf' <=mdf
 otherwise mdf P1..mdf Pn[mdf' P0]=mdf' P0 
 
 ###Definition for G[ks]
@@ -166,10 +166,10 @@ G[catch error T x e ks]=toRead(G)
 
 
 (cath and rethrow any)//TODO: fix this rule, what is T0? when we do resolve to get mdf0 Any out?  
-Phase p G Cage Tr|-k ~> catch throw mdf0 Path0 x e0 :T'0
+Phase p G Cage Tr|-k ~> catch throw T0 x e0 :T'0
   where
   k=catch throw T x e
-  resolve(p,T)=T0=mdf0 Path0
+  resolve(p,T)=T0=mdf0 Any
   k0=catch throw T0 x e
   k1=catch throw T1 x e
   k2=catch throw T2 x e
