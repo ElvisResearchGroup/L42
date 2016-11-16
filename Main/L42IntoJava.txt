@@ -292,7 +292,8 @@ statement st::=
   
 block b::=label:{sts}
 
-ej::=x|CN.m(xs)|useCall(xs) | ej instanceof CN | !(ej instanceof CN)
+ej::=x|CN.m(xs)|useCall(xs) 
+ | (CN) CN.m(xs) | CN.m(xs) instanceof CN | !(CN.m(xs) instanceof CN)
 catchj::=catch(T x)b
 
 --------
@@ -322,7 +323,7 @@ L42F-->st
 [(dxs ex [TX])]=label:{dxs/e dxs/t [ex]}
 [(dxs kxs ex [TX])]=label:{ dxs/e try{ dxs/t}[kxs] [ex]}
 [catch throw TX x ex]=catch([throw] y){
-  boolean fresh=!(y.inner() instanceof TX);
+  boolean fresh; fresh=!(y.inner() instanceof TX);
   if(fresh){throw y;}
   TX x=(TX)y.inner();
   [ex] 
