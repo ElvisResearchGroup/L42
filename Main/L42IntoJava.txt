@@ -307,6 +307,7 @@ returnTrash(x,st)=replace
   "return x;" with empty
   "return CN.m(xs)" with CN.m(xs)
   "return useCall(xs)" with useCall(xs)
+  //What do do for return null/return cast
 
 addReturn(ej)=return ej
   with ej in x null mcall use cast 
@@ -325,7 +326,7 @@ L42F-->st
 [x1:=x2]= x1=x2
 
 
-[(dxs ex [TX])]=label:{dxs/e dxs/t addReturn([ex])}
+[(dxs ex [TX])]=label:{dxs/e dxs/t [ex]}
 [(dxs kxs ex [TX])]=label:{ dxs/e try{ dxs/t}[kxs] addReturn([ex])}
 [catch throw TX x ex]=catch([throw] y){
   if(!(y.inner() instanceof TX)){throw y;}
@@ -333,12 +334,11 @@ L42F-->st
   addReturn([ex]) 
   }
 
-
-[x]=x
-[void]=Void.instance()//Void Any and Library will be imported at the start of the file
-[CN]=CN.classInstance()
-[null]=null
-[(mdf CN)x]=(mdf CN)x;//annotations no problem
+[x]=return x
+[void]=return Void.instance()//Void Any and Library will be imported at the start of the file
+[CN]=return CN.classInstance()
+[null]=return null
+[(mdf CN)x]=return (mdf CN)x;//annotations no problem
 
 //note:TX x=(dxs ex) in Java can be
 //TX x;{dxs  x=ex}
