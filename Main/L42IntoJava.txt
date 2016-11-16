@@ -313,7 +313,7 @@ addReturn(x=e)= x=e; return null;//that is, void
 //addReturn(try-catch) is undefined on purpose
 L42F-->st
 [throw[TX1,TX2] x]='throw' new [throw](x) //one throw is the keyword, the other the metavariable
-[loop ex]= while(true) lab:{[ex]}
+[loop ex]= while(true) label1:{Object fresh; returnX(fresh,label2:{[ex]})}
 [CN.mxs(ys)]=CN.mxs(ys)
 [use CN check mxs(ys) ex]=....(CN,ys,[ex])
 [if x then ex1 else ex2]=if (x)[ex1] else [ex2] //blocks??
