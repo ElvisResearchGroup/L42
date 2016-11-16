@@ -293,7 +293,7 @@ statement st::=
 block b::=label:{sts}
 
 ej::=x|CN.m(xs)|useCall(xs) 
- | (CN) CN.m(xs) | CN.m(xs) instanceof CN | !(CN.m(xs) instanceof CN)
+ | (CN') CN.m(xs) | CN'.m(xs) instanceof CN | !(CN'.m(xs) instanceof CN)
 catchj::=catch(T x)b
 
 --------
@@ -322,12 +322,14 @@ L42F-->st
 
 [(dxs ex [TX])]=label:{dxs/e dxs/t [ex]}
 [(dxs kxs ex [TX])]=label:{ dxs/e try{ dxs/t}[kxs] [ex]}
-[catch throw TX x ex]=catch([throw] y){
-  boolean fresh; fresh=!(y.inner() instanceof TX);
-  if(fresh){throw y;}
-  TX x=(TX)y.inner();
-  [ex] 
-  }
+[catch throw TX1 x1 ex1..catch throw TXn xn exn ]=
+  catch([throw] y){[TX1 x1 ex1] ...[TXn xn exn] throw y;}
+[TX x ex]=
+  boolean fresh; fresh=y.inner() instanceof TX;
+  if(fresh){
+    TX x=(TX)y.inner();
+    [ex]
+    }
 
 [x]=return x
 [void]=return Void.instance()//Void Any and Library will be imported at the start of the file
