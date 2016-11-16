@@ -309,13 +309,6 @@ returnTrash(x,st)=replace
   "return useCall(xs)" with useCall(xs)
   //What do do for return null/return cast
 
-addReturn(ej)=return ej
-  with ej in x null mcall use cast 
-addReturn(throw ej)=throw ej 
-addReturn( while(true) b)=while(true) b
-addReturn(if x b1 (else b2)?)=if x addReturn(b1) (else addReturn(b2))?
-addReturn(x=e)= x=e; return null;//that is, void
-//addReturn(try-catch) is undefined on purpose
 L42F-->st
 [throw[TX1,TX2] x]='throw' new [throw](x) //one throw is the keyword, the other the metavariable
 [loop ex]= while(true) label1:{returnTrash([ex])}
@@ -327,11 +320,11 @@ L42F-->st
 
 
 [(dxs ex [TX])]=label:{dxs/e dxs/t [ex]}
-[(dxs kxs ex [TX])]=label:{ dxs/e try{ dxs/t}[kxs] addReturn([ex])}
+[(dxs kxs ex [TX])]=label:{ dxs/e try{ dxs/t}[kxs] [ex]}
 [catch throw TX x ex]=catch([throw] y){
   if(!(y.inner() instanceof TX)){throw y;}
   TX x=(TX)y.inner();
-  addReturn([ex]) 
+  [ex] 
   }
 
 [x]=return x
