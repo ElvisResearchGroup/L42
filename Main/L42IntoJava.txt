@@ -7,11 +7,11 @@ Structure of this document:
 
 2 L42N into L42F 
 
-3 Optimization
+3 L42F into Java
 
-4 L42F into Java
+4 execution dynamics
 
-5 execution dynamics
+5 Optimization
 
 -----------------------------
 0 Objectives
@@ -296,8 +296,8 @@ catchj::=catch(T x)b
 --------
 
 dx\e, dx\t,returnX,addReturn
-TX x=ex\e=TX x;
-TX x=ex\t=x=returnX(x,[ex]);
+TX x=ex\e= TX x;
+TX x=ex\t= returnX(x,[ex]);
 
 returnX(x,label:{sts})=returnX(x,label,label:{sts})
 returnX(x,label, e)=replace "return ej;" with "x=ej; break label;"
