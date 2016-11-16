@@ -292,12 +292,12 @@ statement st::=
   
 block b::=label:{sts}
 
-ej::=x|CN.m(xs)|useCall(xs)
+ej::=x|CN.m(xs)|useCall(xs) | ej instanceof CN | !(ej instanceof CN)
 catchj::=catch(T x)b
 
 --------
 
-dx\e, dx\t,returnX,addReturn
+dx\e, dx\t,returnX, returnTrash
 TX x=ex\e= TX x;
 TX x=ex\t= returnX(x,[ex]);
 
@@ -307,7 +307,7 @@ returnTrash(x,st)=replace
   "return x;" with empty
   "return CN.m(xs)" with CN.m(xs)
   "return useCall(xs)" with useCall(xs)
-  //What do do for return null/return cast
+  //What do do for return null/return cast? what to do for return a instanceof b
 
 L42F-->st
 [throw[TX1,TX2] x]='throw' new [throw](x) //one throw is the keyword, the other the metavariable
@@ -322,7 +322,8 @@ L42F-->st
 [(dxs ex [TX])]=label:{dxs/e dxs/t [ex]}
 [(dxs kxs ex [TX])]=label:{ dxs/e try{ dxs/t}[kxs] [ex]}
 [catch throw TX x ex]=catch([throw] y){
-  if(!(y.inner() instanceof TX)){throw y;}
+  boolean fresh=!(y.inner() instanceof TX);
+  if(fresh){throw y;}
   TX x=(TX)y.inner();
   [ex] 
   }
