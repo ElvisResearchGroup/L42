@@ -286,7 +286,7 @@ statement st::=
   |break label
   |return ej
   |throw new 'throw'(x)
-  |try b catchjs 
+  |try b catch(T x)b //one catch should be enough
   |CN.m(xs)
   |useCall(xs)
   
@@ -294,7 +294,6 @@ block b::=label:{sts}
 
 ej::=x|CN.m(xs)|useCall(xs) 
  | (CN') CN.m(xs) | CN'.m(xs) instanceof CN | !(CN'.m(xs) instanceof CN)
-catchj::=catch(T x)b
 
 --------
 

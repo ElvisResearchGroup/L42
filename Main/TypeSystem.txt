@@ -144,6 +144,7 @@ D|- (d catch return mdf Path x x e)~>(d' catch return mdf' Path x x e') :mdf' Pa
 D|-k1..kn ~> k'1..k'n:T
   where
   forall i in 1..n D|-ki ~> k'i:T
+  Any notin k'1.T.P ..k'n-1.T.P 
   
 (catch)
 Phase| p| G| Cage| Tr|-catch throw T0 x e ~> catch throw resolve(p,T0) x e' :T1
