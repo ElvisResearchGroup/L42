@@ -144,13 +144,14 @@ D|- (d catch return mdf Path x x e)~>(d' catch return mdf' Path x x e') :mdf' Pa
 D|-k1..kn ~> k'1..k'n:T
   where
   forall i in 1..n D|-ki ~> k'i:T
-  Any notin k'1.T.P ..k'n-1.T.P 
+  either n=1 or forall i 1..n Any notin k'i.T.P 
   
 (catch)
 Phase| p| G| Cage| Tr|-catch throw T0 x e ~> catch throw resolve(p,T0) x e' :T1
   where
   Phase| p| G[x:T0]| Cage| Tr |- e ~> e':T1
   either throw=return or resolve(p,T0)=imm _
+  resolve(p,T0) not of form _ Any
 
 ###Definition for G[G']
 G[G'](x)=G'(x) if x in dom(G'); otherwise G[G'](x)=G(x)
@@ -163,11 +164,21 @@ mdf P1..mdf Pn[mdf' P0]=mdf' P0..mdf' Pn  if mdf' <= mdf
 otherwise mdf P1..mdf Pn[mdf' P0]=mdf' P0 //is multi level return needed by the sugar? can we optimize more during java generation if we do not?
 
 ###Definition for G[ks]
+G[catch error _ Any x e]=G 
+otherwise 
 G[catch error T x e ks]=toRead(G)
 otherwise G[ks]=G 
 
 
-(cath and rethrow any)//TODO: fix this rule, what is T0? when we do resolve to get mdf0 Any out?  
+(cath and rethrow any)// could be sugared as "on throw doAndPropagate e"  
+Phase |p |G |Cage |Tr|-catch throw T x (e0 throw x) ~> catch throw mdf Any x (e0' throw x):T
+  where
+  resolve(p,T)=mdf Any
+  either throw =return or mdf=imm
+  e0=(imm Void y=e catch error Any z void void)
+  e0'=(imm Void y=e' catch error Any z void void)
+  Phase |p |G\x |Cage |empty |- e0 ~> e0':imm void
+
 Phase p G Cage Tr|-k ~> catch throw T0 x e0 :T'0
   where
   k=catch throw T x e
