@@ -80,9 +80,13 @@ G[ks]
 Tr[ks]
   Ts; Ps [catch error T1 x1 e1..catch error Tn xn en..]=Ts; Ps
   Ts; Ps [catch exception _ P1 x1 e1..catch exception _ Pn xn en..]=Ts; Ps,P1..Pn/Any
-  Ts; Ps [catch return mdf P1 x1 e1..catch return mdf Pn xn en..]=Ts[mdf P1]..[mdf Pn];Ps //Note: all the mdf of the various Ts are required to be the same, or the operation is undefined and we get a type error
-  mdf P1..mdf Pn[mdf' P0]=mdf' P0..mdf' Pn  if mdf' <= mdf
-  otherwise mdf P1..mdf Pn[mdf' P0]=mdf' P0 //is multi level return needed by the sugar? can we optimize more during java generation if we do not?
+  Ts; Ps [catch return mdf P1 x1 e1..catch return mdf Pn xn en..]=Ts[adaptMdfForReturn mdf P1]..[adaptMdfForReturn mdf Pn];Ps 
+  //Note: all the mdf of the various Ts are required to be the same, or the operation is undefined and we get a type error
+
+mdf P1..mdf Pn[adaptMdfForReturn mdf' P0]
+  mdf P1..mdf Pn[adaptMdfForReturn mdf' P0]=mdf' P0..mdf' Pn  if mdf' <= mdf
+  otherwise mdf P1..mdf Pn[adaptMdfForReturn mdf' P0]=mdf' P0 
+  //is multi level return needed by the sugar? can we optimize more during java generation if we do not?
 
 
 --------------------------------------------
