@@ -62,14 +62,20 @@ private ExpCore parseAndDesugar(String s) {
 //-----------------------------------------------------
 
   public ClassB plgComplete(List<String>cs,Program p,ClassB l){
-    List<NestedClass> ncs=new ArrayList<>();
+    List<Member> ms=new ArrayList<>();
     for(Member m: l.getMs()){
-      if(!(m instanceof NestedClass)){continue;}
+      if(!(m instanceof NestedClass)){
+        ms.add(m);
+        continue;
+        }
       NestedClass nc=(NestedClass)m;
       List<String>csc=new ArrayList<>(cs);
       csc.add(nc.getName());
-    }
-    return l;
+      ms.add(nc.withInner(
+        plgComplete(csc,p,(ClassB)nc.getInner()))
+        );
+      }
+    return plgComplete1(cs,p,l.withMs(ms));
     //forall nested c in l
     // l=l[with c=plgComplete(cs:c, p,l.c)
     //return plgComplete1(cs,p,l)

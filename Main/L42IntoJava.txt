@@ -343,26 +343,51 @@ CT[(T)x]=return (CT*T)x;//annotations no problem
 ###[CD]=JClass
 ---
 CT[interface CN implements CNs {Mxs}]=
-public interface CN implements CNs{CT[Mxs]}
+public interface CN implements CNs{CT,CN[Mxs]}
 otherwise
 CT[kind CN implements CNs {Mxs}]=
-public class CN implements CNs{CT[Mxs] state}
-where state=...
+public class CN implements CNs{ /*public CN(){}*/ CT,CN[Mxs]}
 
-//never happens with no this? CT[refine method T mxs((T x)s) body]
-CT[refine method TX mxs(TX' this,(TX x)s) body]=
+//never happens with no this? CT[refine method T mxs((T x)s) e]
+CT,CN[refine method TX mxs(TX' this,(TX x)s) e]=
   public static CT*TX mxs(CT*TX' _this,CT*(TX x)s) _this._mxs(xs)
-  public CT*TX _mxs(CT*(TX x)s) CT[body]
+  public CT*TX _mxs(CT*(TX x)s) CT[e]
 
-CT[refine method T mxs(TX' this,(T x)s)]
-  public static CT*TX mxs(CT*TX' _this,CT*(TX x)s) _this._mxs(xs)
+CT,CN[refine method T mxs(TX' this,(T x)s)]
+  public static CT*TX mxs(CT*TX' _this,CT*(TX x)s) {return _this._mxs(xs);}
   CT*TX _mxs(CT*(TX x)s);//is going to be in an interface
 
-CT[method T mxs((T x)s) body]
-  public static CT*TX mxs(CT*(TX x)s)CT[body]
+CT,CN[method T mxs((T x)s) e]
+  public static CT*TX mxs(CT*(TX x)s)CT[e]
 
 
 //never happens CT[method T mxs((T x)s)]
+
+CT,CN[method T mxs((T x)s) new] //there can be many new/newFwd
+  public static CT*TX mxs(CT*(TX x)s){
+    CN res=new CN();
+    res.x1=x1;..;res.xn=xn;
+    return res;
+    }//usual delegation if is refine?
+CT,CN[method T mxs((T x)s) newFwd]
+  public static CT*TX mxs(CT*(TX x)s){
+    CN res=new CN();
+    res.x1=x1;if(x1 instanceof Fwd){((Fwd)x1).rememberAssign(res,CN.FieldAssFor_x1);}
+    ..;
+    res.xn=xn;if(xn instanceof Fwd){((Fwd)xn).rememberAssign(res,CN.FieldAssFor_xn);}
+    return res;
+    }//usual delegation if is refine?
+    
+//and then the field ones?
+CT,CN[method TX x(TX' this) getter]=
+  public static CT*TX mxs(CT*TX' _this){return _this._x;}
+  CT*TX _x;
+  public static BiConsumer<Object,Object> FieldAssFor_x=(f,o)->{
+    ((CN)o)._x=(CT*TX)f;
+    } 
+CT,CN[method Void x(TX this, TX' that) setter]=
+  public static Void x(CT*TX _this, CT*TX' that){
+    _this._x=that; return Void.instance();}
 
 //note:TX x=(dxs ex) in Java can be
 //TX x;{dxs  x=ex}
