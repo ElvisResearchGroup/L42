@@ -144,7 +144,7 @@ D|- (d catch return mdf Path x x e)~>(d' catch return mdf' Path x x e') :mdf' Pa
 D|-k1..kn ~> k'1..k'n:T
   where
   forall i in 1..n D|-ki ~> k'i:T
-  either n=1 or forall i 1..n Any notin k'i.T.P 
+  either n=1 or forall i 1..n Any notEq k'i.T.P 
   
 (catch)
 Phase| p| G| Cage| Tr|-catch throw T0 x e ~> catch throw resolve(p,T0) x e' :T1
@@ -175,12 +175,12 @@ Phase |p |G |Cage |Tr|-catch throw T x (e0 throw x) ~> catch throw mdf Any x (e0
   either throw =return or mdf=imm
   e0=(imm Void y=e catch error Any z void void)
   e0'=(imm Void y=e' catch error Any z void void)
-  Phase |p |G\x |Cage |empty |- e0 ~> e0':imm void
+  Phase |p |G\x |Cage |empty |- e0 ~> e0':imm Void
 
 (lent viewpoint adaptation)
-Phase p G Cage Tr|-e~>e':mdf P
+Phase |p |G |Cage |Tr|-e~>e':lentOf(mdf P)
   where
-  Phase p G Cage' Tr|-e~>e':mutToLent(mdf P)
+  Phase |p |G |Cage' |Tr|-e~>e':mdf P
   Cage=xs0,xss;xs
   Cage'=xss,domMut(G)\xss ; xs'
   if mdf in {read,lent,mut} then xs'=xs
