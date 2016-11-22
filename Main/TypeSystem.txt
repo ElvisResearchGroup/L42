@@ -3,11 +3,13 @@ Structure of this document:
 
 1 Type Grammar
 
-2 ExpressionTypeJudgement
+2 Type manipulation
 
-3 Subtyping p|- T<=T' and shortcut D |- e ~> e':T<=T'
+3 ExpressionTypeJudgement
 
-4 LibraryAndMemberTyping
+4 Subtyping p|- T<=T' and shortcut D |- e ~> e':T<=T'
+
+5 LibraryAndMemberTyping
 
 -----------------------------
 1 Grammar
@@ -24,7 +26,53 @@ Tr::=Ts; Ps //Tr reads Throws
 //Cage.xs contains only bindings that are mut, fwd%Mut, fwdMut, lent, read in G 
 
 --------------------------------------------
-2 ExpressionTypeJudgement
+2 Type manipulation
+--------------------------------------------
+
+complete(G)={x:T | G(x) not fwd/fwd%}
+
+fwd T
+  fwd imm P=fwd fwd%imm P=fwdImm P
+  fwd mut P=fwd fwd%mut P=fwdMut P
+  otherwise fwd T=T
+
+fwd% T
+  fwd% imm P=fwd%Imm P
+  fwd% mut P=fwd%Mut P
+  otherwise fwd% T=T
+ 
+noFwd
+  noFwd imm P=noFwd fwd%imm P=Imm P
+  noFwd mut P=noFwd fwd%mut P=Mut P
+  otherwise noFwd T=T
+
+toLent(T)
+  toLent(mut P)=lent P,
+  toLent(mutFwd P) and toLent(mutFwd% P) undefined;
+  otherwise toLent(T)=T 
+
+toImm(T)        
+  toImm(class P)=class P
+  otherwise, toImm(mdf P)=imm P
+   
+toRead(T)
+  toRead(imm P)=imm P
+  toRead(fwdImm P)=fwdImm P
+  toRead(fwd%Imm P)=fwd%Imm P
+  toRead(fwdMut P)=toRead(fwd%Mut P)=undefined
+  toRead(class P)=class P
+  otherwise toRead(mdf P)=read P //mdf in read,lent,mut,capsule
+
+toRead(G)
+  toRead(G)(x)=toRead(G(x)) //thus undefined where toRead undefined 
+
+capsuleToLeant(T)  
+  capsuleToLent(capsule P)=lent P
+  otherwise capsuleToLent(mdf P)=mdf P
+
+
+--------------------------------------------
+3 ExpressionTypeJudgement
 --------------------------------------------
   D |- e ~> e':T   and D |- k ~> k':T 
   where e' is an annotated version of expression e and is of type T
@@ -32,24 +80,6 @@ Tr::=Ts; Ps //Tr reads Throws
   D.p points to where the e is located, //D.p.top()=ctxL[e]
   so if P inside e, D.p(P) is a reasonable operation
 
-complete(G)={x:T | G(x) not fwd/fwd%}
-
-
-fwd imm P=fwd fwd%imm P=fwdImm P
-fwd mut P=fwd fwd%mut P=fwdMut P
-otherwise fwd T=T
-
-fwd% imm P=fwd%Imm P
-fwd% mut P=fwd%Mut P
-otherwise fwd% T=T
- 
-noFwd imm P=noFwd fwd%imm P=Imm P
-noFwd mut P=noFwd fwd%mut P=Mut P
-otherwise noFwd T=T
-
-lentOf(mut P)=lent P,
-lentOf(mutFwd P) and lentOf(mutFwd% P) undefined;
-otherwise lentOf(T)=T 
 
 (void)
 _ |- void~> void:imm Void
@@ -66,7 +96,7 @@ Phase |p |_ |_ |_ |- L ~> L' : imm Library
 Phase| p| G| xss; xs| Tr |-x:T
   where
   x notin xs
-  if x in xss T=lentOf(G(x))
+  if x in xss T=toLent(G(x))
   otherwise T=G(x)
 
 (loop)
@@ -180,7 +210,7 @@ Phase |p |G |Cage |Tr|-catch throw T x (e0 throw x) ~> catch throw mdf Any x (e0
   Phase |p |G\x |Cage |empty |- e0 ~> e0':imm Void
 
 (lent viewpoint adaptation)//We may want to split t-swap and t-unlock again
-Phase |p |G |Cage |Tr|-e~>e':lentOf(mdf P)
+Phase |p |G |Cage |Tr|-e~>e':toLent(mdf P)
   where
   Phase |p |G |Cage' |Tr|-e~>e':mdf P
   Cage=xs0,xss;xs
@@ -210,7 +240,7 @@ Phase| p| G, x:lent C, G'|  xss;xs | Tr |-e~>e':T
 
 
 ------------------------------------------------------
-3 Subtyping p|- T<=T' and shortcut D |- e ~> e':T<=T'
+4 Subtyping p|- T<=T' and shortcut D |- e ~> e':T<=T'
 ------------------------------------------------------
   
 (subtype)
@@ -237,7 +267,7 @@ fwd%Mut<=fwdMut
 imm<=fwd%imm
 fwd%Imm<=fwdImm
 -----------------------------------------------
-4 LibraryAndMemberTyping
+5 LibraryAndMemberTyping
 -----------------------------------------------
  Phase |- p:L   and   p |- M:M'
  L is the typed/annotated version of p.top()
@@ -333,21 +363,6 @@ coherent(p,T1 x1..Tn xn,
   p|-T<=Ti//setter
   
 
-Defintion of toImm, toRead, capsuleToLent        
-  toImm(class P)=class P
-  otherwise, toImm(mdf P)=imm P
-   
-  toRead(imm P)=imm P
-  toRead(fwdImm P)=fwdImm P
-  toRead(fwd%Imm P)=fwd%Imm P
-  toRead(fwdMut P)=toRead(fwd%Mut P)=undefined
-  toRead(class P)=class P
-  otherwise toRead(mdf P)=read P //mdf in read,lent,mut,capsule
-  
-  toRead(G)(x)=toRead(G(x)) //thus undefined where toRead undefined 
-  
-  capsuleToLent(capsule P)=lent P
-  otherwise capsuleToLent(mdf P)=mdf P
   
 ------------------
 Dispatch //HARD

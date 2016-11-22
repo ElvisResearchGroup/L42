@@ -346,7 +346,8 @@ CT[interface CN implements CNs {Mxs}]=
 public interface CN implements CNs{CT[Mxs]}
 otherwise
 CT[kind CN implements CNs {Mxs}]=
-public class CN implements CNs{CT[Mxs]}
+public class CN implements CNs{CT[Mxs] state}
+where state=...
 
 //never happens with no this? CT[refine method T mxs((T x)s) body]
 CT[refine method TX mxs(TX' this,(TX x)s) body]=
