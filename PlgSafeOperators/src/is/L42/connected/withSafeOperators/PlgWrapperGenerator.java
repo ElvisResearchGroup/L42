@@ -73,8 +73,9 @@ private ExpCore parseAndDesugar(String s) {
     // l=l[with c=plgComplete(cs:c, p,l.c)
     //return plgComplete1(cs,p,l)
     }
-  public ClassB plgComplete1(List<String>cs,Program p,ClassB l){  
-  }
+  public ClassB plgComplete1(List<String>cs,Program p,ClassB l){
+    return null;//TODO:
+    }
   
 
 
