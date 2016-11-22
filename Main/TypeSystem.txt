@@ -73,6 +73,10 @@ toRead(G)
 G[G']
   G[G'](x)=G'(x) if x in dom(G'); otherwise G[G'](x)=G(x)
 
+G[ks]
+  G[catch error mdf P x e ks]=toRead(G) with P not Any
+  otherwise G[ks]=G 
+
 Tr[ks]
   Ts; Ps [catch error T1 x1 e1..catch error Tn xn en..]=Ts; Ps
   Ts; Ps [catch exception _ P1 x1 e1..catch exception _ Pn xn en..]=Ts; Ps,P1..Pn/Any
@@ -80,9 +84,6 @@ Tr[ks]
   mdf P1..mdf Pn[mdf' P0]=mdf' P0..mdf' Pn  if mdf' <= mdf
   otherwise mdf P1..mdf Pn[mdf' P0]=mdf' P0 //is multi level return needed by the sugar? can we optimize more during java generation if we do not?
 
-G[ks]
-  G[catch error mdf P x e ks]=toRead(G) with P not Any
-  otherwise G[ks]=G 
 
 --------------------------------------------
 3 ExpressionTypeJudgement
