@@ -177,19 +177,6 @@ Phase |p |G |Cage |Tr|-catch throw T x (e0 throw x) ~> catch throw mdf Any x (e0
   e0'=(imm Void y=e' catch error Any z void void)
   Phase |p |G\x |Cage |empty |- e0 ~> e0':imm void
 
-Phase p G Cage Tr|-k ~> catch throw T0 x e0 :T'0
-  where
-  k=catch throw T x e
-  resolve(p,T)=T0=mdf0 Any
-  k0=catch throw T0 x e
-  k1=catch throw T1 x e
-  k2=catch throw T2 x e
-  for i in 0,1,2 Phase p G Cage Tr[ki]|-ki ~> catch throw Ti x ei :T'i
-  either
-    throw=exception, mdf0=imm, T1=imm Library, T2=imm Void
-  or
-    throw=return, T1=class Library, T2=read Void
-
 (lent viewpoint adaptation)
 Phase p G Cage Tr|-e~>e':mdf P
   where
