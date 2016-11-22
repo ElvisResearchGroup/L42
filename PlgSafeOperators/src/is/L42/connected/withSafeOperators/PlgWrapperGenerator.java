@@ -66,7 +66,8 @@ private ExpCore parseAndDesugar(String s) {
     for(Member m: l.getMs()){
       if(!(m instanceof NestedClass)){continue;}
       NestedClass nc=(NestedClass)m;
-      List<String>csc;
+      List<String>csc=new ArrayList<>(cs);
+      csc.add(nc.getName());
     }
     return l;
     //forall nested c in l

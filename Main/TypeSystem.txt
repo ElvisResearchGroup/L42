@@ -164,9 +164,7 @@ mdf P1..mdf Pn[mdf' P0]=mdf' P0..mdf' Pn  if mdf' <= mdf
 otherwise mdf P1..mdf Pn[mdf' P0]=mdf' P0 //is multi level return needed by the sugar? can we optimize more during java generation if we do not?
 
 ###Definition for G[ks]
-G[catch error _ Any x e]=G 
-otherwise 
-G[catch error T x e ks]=toRead(G)
+G[catch error mdf P x e ks]=toRead(G) with P not Any
 otherwise G[ks]=G 
 
 
