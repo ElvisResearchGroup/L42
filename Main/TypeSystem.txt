@@ -85,7 +85,7 @@ Tr[ks]
 
 mdf P1..mdf Pn[adaptMdfForReturn mdf' P0]
   mdf P1..mdf Pn[adaptMdfForReturn mdf' P0]=mdf' P0..mdf' Pn  if mdf' <= mdf
-  otherwise mdf P1..mdf Pn[adaptMdfForReturn mdf' P0]=mdf' P0 
+  otherwise mdf P1..mdf Pn[adaptMdfForReturn mdf' P0]=mdf' P0 //this case will also be triggered for n=0 
   //is multi level return needed by the sugar? can we optimize more during java generation if we do not?
 
 
