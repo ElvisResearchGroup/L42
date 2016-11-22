@@ -177,15 +177,14 @@ Phase |p |G |Cage |Tr|-catch throw T x (e0 throw x) ~> catch throw mdf Any x (e0
   e0'=(imm Void y=e' catch error Any z void void)
   Phase |p |G\x |Cage |empty |- e0 ~> e0':imm Void
 
-(lent viewpoint adaptation)
+(lent viewpoint adaptation)//We may want to split them again
 Phase |p |G |Cage |Tr|-e~>e':lentOf(mdf P)
   where
   Phase |p |G |Cage' |Tr|-e~>e':mdf P
   Cage=xs0,xss;xs
   Cage'=xss,domMut(G)\xss ; xs'
-  if mdf in {read,lent,mut} then xs'=xs
-  otherwise xs'=empty
-  
+  if mdf in {imm,fwd%Imm,fwdImm,capsule,class} then xs'=empty
+  otherwise  xs'=xs
 
 (capsule promotion)
 Phase p G Cage Tr|-e~>e':capsule P
@@ -203,9 +202,9 @@ Phase p G Cage Tr|-e~>e':imm P
   Cage'=xss,domMut(G)\xss;domMutLentRead(G)
 
 (lent to singleton)
-Phase| p| G x:lent C G'|  xss;xs | Tr |-e~>e':T
+Phase| p| G, x:lent C, G'|  xss;xs | Tr |-e~>e':T
   where 
-  Phase| p| G x:mut C G'|  xss,{x};xs| Tr |-e~>e':T
+  Phase| p| G, x:mut C, G'|  xss,{x};xs| Tr |-e~>e':T
 
 
 ------------------------------------------------------
