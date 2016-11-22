@@ -19,7 +19,9 @@ D::= Phase `|` p `|` G `|` Cage `|` Tr  //D reads Delta
 Cage::= xss; xs
 Tr::=Ts; Ps //Tr reads Throws
 
-
+//we believe that at any moment in a D
+//Cage.xss contains only stuff that is lent in G
+//Cage.xs constains only suff that is lent, mut, read in G 
 
 --------------------------------------------
 2 ExpressionTypeJudgement
@@ -177,7 +179,7 @@ Phase |p |G |Cage |Tr|-catch throw T x (e0 throw x) ~> catch throw mdf Any x (e0
   e0'=(imm Void y=e' catch error Any z void void)
   Phase |p |G\x |Cage |empty |- e0 ~> e0':imm Void
 
-(lent viewpoint adaptation)//We may want to split them again
+(lent viewpoint adaptation)//We may want to split t-swap and t-unlock again
 Phase |p |G |Cage |Tr|-e~>e':lentOf(mdf P)
   where
   Phase |p |G |Cage' |Tr|-e~>e':mdf P
@@ -187,16 +189,16 @@ Phase |p |G |Cage |Tr|-e~>e':lentOf(mdf P)
   otherwise  xs'=xs
 
 (capsule promotion)
-Phase p G Cage Tr|-e~>e':capsule P
+Phase |p |G |Cage |Tr|-e~>e':capsule P
   where
-  Phase p G Cage' Tr|-e~>e':mut P  
+  Phase |p |G |Cage' |Tr|-e~>e':mut P  
   Cage=xss;xs
   Cage'=xss,domMut(G)\xss;xs
 
 (imm promotion)
-Phase p G Cage Tr|-e~>e':imm P
+Phase |p |G |Cage |Tr|-e~>e':imm P
   where
-  Phase p G Cage' Tr|-e~>e':mdf P
+  Phase |p |G |Cage' |Tr|-e~>e':mdf P
   mdf in {read,lent}  
   Cage=xss;xs
   Cage'=xss,domMut(G)\xss;domMutLentRead(G)
