@@ -19,9 +19,9 @@ D::= Phase `|` p `|` G `|` Cage `|` Tr  //D reads Delta
 Cage::= xss; xs
 Tr::=Ts; Ps //Tr reads Throws
 
-//we believe that at any moment in a D
-//Cage.xss contains only stuff that is lent in G
-//Cage.xs constains only suff that is lent, mut, read in G 
+//we believe that at any moment, in a D:
+//Cage.xss contains only bindings that are mut in G
+//Cage.xs contains only bindings that are mut, fwd%Mut, fwdMut, lent, read in G 
 
 --------------------------------------------
 2 ExpressionTypeJudgement
@@ -201,7 +201,7 @@ Phase |p |G |Cage |Tr|-e~>e':imm P
   Phase |p |G |Cage' |Tr|-e~>e':mdf P
   mdf in {read,lent}  
   Cage=xss;xs
-  Cage'=xss,domMut(G)\xss;domMutLentRead(G)
+  Cage'=xss,domMut(G)\xss;domMutLentRead(G)//fwd%Mut, fwdMut in xs too
 
 (lent to singleton)
 Phase| p| G, x:lent C, G'|  xss;xs | Tr |-e~>e':T
