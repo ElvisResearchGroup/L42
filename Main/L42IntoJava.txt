@@ -274,7 +274,10 @@ CT+p=CT,p.top().CN->p,CD',J
 -----------------------------
 3 L42F into Java
 -----------------------------
-
+CT*mdf CN=@mdf CN if CT(CN)=kind _ and kind in {class,interface}
+CT*mdf CN=@mdf int if CT(CN)=nativeInt _ 
+...
+CT*mdf CN=@mdf float if CT(CN)=nativeFloat _ 
 
 Java------------------
 statement st::=
@@ -297,8 +300,8 @@ ej::=x|CN.m(xs)|useCall(xs)
 
 --------
 
-dx\e, dx\t,returnX, returnTrash
-TX x=ex\e= TX x;
+CT*dx, dx\t,returnX, returnTrash
+CT* (TX x=ex)= CT*TX x;
 TX x=ex\t= returnX(x,[ex]);
 
 returnX(x,label:{sts})=returnX(x,label,label:{sts})
@@ -310,31 +313,55 @@ returnTrash(x,st)=replace
   //What do do for return null/return cast? what to do for return a instanceof b
 
 L42F-->st
-[throw[TX1,TX2] x]='throw' new [throw](x) //one throw is the keyword, the other the metavariable
-[loop ex]= while(true) label1:{returnTrash([ex])}
-[CN.mxs(ys)]=CN.mxs(ys)
-[use CN check mxs(ys) ex]=....(CN,ys,[ex])
-[if x then ex1 else ex2]=if (x)[ex1] else [ex2] //blocks??
-[while ???x?_or_?ex?? then ex1]=...
-[x1:=x2]= x1=x2
+CT[throw[TX1,TX2] x]='throw' new [throw](x) //one throw is the keyword, the other the metavariable
+CT[loop ex]= while(true) label1:{returnTrash(CT[ex])}
+CT[CN.mxs(ys)]=CN.mxs(ys) //not CT*CN on purpose
+CT[use CN check mxs(ys) ex]=....(CN,ys,CT[ex])//not CT*CN on purpose
+CT[if x then ex1 else ex2]=if (x)CT[ex1] else CT[ex2] //blocks??
+CT[while ???x?_or_?ex?? then ex1]=...
+CT[x1:=x2]= x1=x2
 
 
-[(dxs ex [TX])]=label:{dxs/e dxs/t [ex]}
-[(dxs kxs ex [TX])]=label:{ dxs/e try{ dxs/t}[kxs] [ex]}
-[catch throw TX1 x1 ex1..catch throw TXn xn exn ]=
-  catch([throw] y){[TX1 x1 ex1] ...[TXn xn exn] throw y;}
-[TX x ex]=
-  boolean fresh; fresh=y.inner() instanceof TX;
+CT[(dxs ex [TX])]=label:{CT*dxs dxs/t CT[ex]}
+CT[(dxs kxs ex [TX])]=label:{ dxs/e try{ dxs/t}CT[kxs] CT[ex]}
+CT[catch throw TX1 x1 ex1..catch throw TXn xn exn ]=
+  catch([throw] y){CT[TX1 x1 ex1] ...CT[TXn xn exn] throw y;}
+CT[TX x ex]=
+  boolean fresh; fresh=y.inner() instanceof CT*TX;//boxed version
   if(fresh){
-    TX x=(TX)y.inner();
-    [ex]
+    CT*TX x=(TX)y.inner();
+    CT[ex]
     }
 
-[x]=return x
-[void]=return Void.instance()//Void Any and Library will be imported at the start of the file
-[CN]=return CN.classInstance()
-[null]=return null
-[(mdf CN)x]=return (mdf CN)x;//annotations no problem
+CT[x]=return x
+CT[void]=return Void.instance()//Void Any and Library will be imported at the start of the file
+CT[CN]=return CN.classInstance()
+CT[null]=return null
+CT[(T)x]=return (CT*T)x;//annotations no problem
+
+
+###[CD]=JClass
+---
+CT[interface CN implements CNs {Mxs}]=
+public interface CN implements CNs{CT[Mxs]}
+otherwise
+CT[kind CN implements CNs {Mxs}]=
+public class CN implements CNs{CT[Mxs]}
+
+//never happens with no this? CT[refine method T mxs((T x)s) body]
+CT[refine method TX mxs(TX' this,(TX x)s) body]=
+  public static CT*TX mxs(CT*TX' _this,CT*(TX x)s) _this._mxs(xs)
+  public CT*TX _mxs(CT*(TX x)s) CT[body]
+
+CT[refine method T mxs(TX' this,(T x)s)]
+  public static CT*TX mxs(CT*TX' _this,CT*(TX x)s) _this._mxs(xs)
+  CT*TX _mxs(CT*(TX x)s);//is going to be in an interface
+
+CT[method T mxs((T x)s) body]
+  public static CT*TX mxs(CT*(TX x)s)CT[body]
+
+
+//never happens CT[method T mxs((T x)s)]
 
 //note:TX x=(dxs ex) in Java can be
 //TX x;{dxs  x=ex}
