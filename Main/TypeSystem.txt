@@ -168,7 +168,7 @@ G[catch error mdf P x e ks]=toRead(G) with P not Any
 otherwise G[ks]=G 
 
 
-(cath and rethrow any)// could be sugared as "on throw doAndPropagate e"  
+(catch and rethrow any)// could be sugared as "on throw mdf x doAndPropagate e"  
 Phase |p |G |Cage |Tr|-catch throw T x (e0 throw x) ~> catch throw mdf Any x (e0' throw x):T
   where
   resolve(p,T)=mdf Any
