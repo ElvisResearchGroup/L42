@@ -46,14 +46,14 @@ noFwd
   noFwd mut P=noFwd fwd%mut P=Mut P
   otherwise noFwd T=T
 
+toImm(T)        
+  toImm(class P)=class P
+  otherwise, toImm(mdf P)=imm P
+
 toLent(T)
   toLent(mut P)=lent P,
   toLent(mutFwd P) and toLent(mutFwd% P) undefined;
   otherwise toLent(T)=T 
-
-toImm(T)        
-  toImm(class P)=class P
-  otherwise, toImm(mdf P)=imm P
 
 capsuleToLent(T)  
   capsuleToLent(capsule P)=lent P
