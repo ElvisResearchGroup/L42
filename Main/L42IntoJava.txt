@@ -361,7 +361,7 @@ public class CN implements CNs{CT,CN[Mxs]
 //never happens with no this? CT[refine method T mxs((T x)s) e]
 CT,CN[refine method TX mxs(TX' this,(TX x)s) e]=
   public static CT*TX mxs(CT*TX' _this,CT*(TX x)s) CT[e[_this=this]]
-  public CT*TX _mxs(CT*(TX x)s)  CT._mxs(this,xs)
+  public CT*TX _mxs(CT*(TX x)s)  CT.mxs(this,xs)
 
 CT,CN[refine method T mxs(TX' this,(T x)s)] //no body
   CT*TX _mxs(CT*(TX x)s);//is going to be in an interface
@@ -415,7 +415,7 @@ interface Fwd{
   default void rememberAssign(Object f,BiConsumer<Object,Object> fo){
     os().add(f);
     fs().add(fo);
-    }  
+    }
   default void fix(){
     List<Object> os=os();
     List<BiConsumer<Object,Object>> fs=fs();
