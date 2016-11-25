@@ -6,6 +6,7 @@ import java.util.List;
 
 import ast.Ast.Mdf;
 import ast.Ast.MethodSelector;
+import ast.Ast.MethodType;
 import ast.ExpCore;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
@@ -89,6 +90,16 @@ private ExpCore parseAndDesugar(String s) {
     //forall nested c in l
     // l=l[with c=plgComplete(cs:c, p,l.c)
     //return plgComplete1(cs,p,l)
+    }
+  public static boolean hasPluginUnresponsive(Program p,ClassB l){
+    Member m=l._getMember(new MethodSelector("#pluginUnresponsive",Collections.singletonList("binaryRepr")));
+    if(m==null){return false;}
+    MethodWithType mwt=(MethodWithType)m;//since normalized
+    MethodType mt=mwt.getMt();
+    if(!mt.getMdf().equals(Mdf.Class)){return false;}
+    if(!mt.getReturnType().getNT().getMdf().equals(Mdf.Immutable)){return false;}
+    if(!mt.getTs().get(0).equals(NormType.i))
+    return true;//not care what is the result, since is just thrown as error
     }
   public ClassB plgComplete1(List<String>cs,Program p,ClassB l){
     PluginWithPart pwp = OnLineCode._isPluginWithPart(l.getDoc1());

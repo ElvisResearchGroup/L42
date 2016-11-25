@@ -410,9 +410,12 @@ CT,CN[method Void x(TX this, TX' that) setter]=
 ###Assumed
 ---
 interface Fwd{
-  void rememberAssign(Object f,BiConsumer<Object,Object> fo);
   List<Object> os();
   List<BiConsumer<Object,Object>> fs();
+  default void rememberAssign(Object f,BiConsumer<Object,Object> fo){
+    os().add(f);
+    fs().add(fo);
+    }  
   default void fix(){
     List<Object> os=os();
     List<BiConsumer<Object,Object>> fs=fs();
@@ -422,6 +425,17 @@ interface Fwd{
       }
     }
   }
+
+
+---
+Translation example
+a+b //42 user
+a.#plus( that: b) //42 core
+a.#plus[Nat]( that: b) //42 annotated
+Nat.#plus_that(a,b) //42F
+nativeInt32 Nat: {   Nat #plus_that(Nat a, Nat b)nativeInt32Plus} //42F class
+Nat._hash_plus_that(a,b)//Java 
+class Nat {  public static int _hash_plus_that(int a, int b){return a+b;}  }//Java class
 
 -----------------------------
 4 General execution

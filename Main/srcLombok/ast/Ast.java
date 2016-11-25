@@ -131,7 +131,9 @@ public interface Ast {
 		Mdf mdf;
 		Path path;
 		Ph ph;
-    public static final NormType immVoid=new NormType(Mdf.Immutable,Path.Void(),Ph.None);
+        public static final NormType immVoid=new NormType(Mdf.Immutable,Path.Void(),Ph.None);
+        public static final NormType immLibrary=new NormType(Mdf.Immutable,Path.Library(),Ph.None);
+        public static final NormType immAny=new NormType(Mdf.Immutable,Path.Any(),Ph.None);
 		public String toString() {
 			return (((ph == Ph.Ph) ? "fwd " : (ph == Ph.None) ? "" : "fwd% ") + mdf.name() + "" + this.path.rowData);
 		}
