@@ -43,12 +43,27 @@ public interface OnLineCode {
     if(url.startsWith("L42.is/")){return OnLineCodeHelper.getL42Code(url.substring("L42.is/".length()));}
     throw Assertions.codeNotReachable();
   }
-  public static String pluginString(Program p,ExpCore.Using u){
-    String url=p.extractCb(u.getPath()).getDoc1().toString();
+  static PluginWithPart _isPluginWithPart(Doc doc){
+    return _isPluginWithPart(pluginString(doc));
+    }
+  static PluginWithPart _isPluginWithPart(String plgString){
+    String url=plgString;    
+    if (url.endsWith("\n")){url=url.substring(0,url.length()-1);}
+    int nl=url.indexOf('\n');
+    if(nl!=-1){
+      return new PluginWithPart(url.substring(0, nl),url.substring(nl+1));
+      }
+    return null;
+    }
+  public static String pluginString(Doc doc){
+    String url=doc.toString();
     if(!url.startsWith("@plugin\n")){throw new ErrorMessage.InvalidURL(url,null);}
     url=url.substring("@plugin\n".length());
     url=url.trim();
     return url;
+  }
+  public static String pluginString(Program p,ExpCore.Using u){
+    return pluginString(p.extractCb(u.getPath()).getDoc1());
     }
   public static PluginType plugin(Program p,ExpCore.Using u){
     PluginType pt = OnLineCodeHelper.getPluginType(pluginString(p, u));
@@ -75,11 +90,8 @@ public interface OnLineCode {
 class OnLineCodeHelper{
   static PluginType getPluginType(String url){
     if (url.endsWith("\n")){url=url.substring(0,url.length()-1);}
-    int nl=url.indexOf('\n');
-    if(nl!=-1){
-      PluginType plugin=new PluginWithPart(url.substring(0, nl),url.substring(nl+1));
-      return plugin;
-      }
+    PluginType pwp=OnLineCode._isPluginWithPart(url);
+    if (pwp!=null){return pwp;}
     if(url.startsWith("L42.is/connected/")){
       PluginType plugin= OnLineCodeHelper.getWellKnownPluginType(url.substring("L42.is/connected/".length()));
       return plugin;

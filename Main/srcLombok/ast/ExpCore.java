@@ -124,6 +124,7 @@ public interface ExpCore {
     public String toString() {return sugarVisitors.ToFormattedText.of(this);}
     public boolean isConsistent() { return _Aux.isConsistent(this);}
     public ClassB withMember(Member m) {return _Aux.withMember(this, m);}
+    public Member _getMember(ast.Ast.MethodSelector ms) {return _Aux._getMember(this, ms);}
     public ClassB onClassNavigateToPathAndDo(List<String>cs,Function<ClassB,ClassB>op){return _Aux.onClassNavigateToPathAndDo(this, cs, op);}
     public ClassB onNestedNavigateToPathAndDo(List<String>cs,Function<ClassB.NestedClass,Optional<ClassB.NestedClass>>op){return _Aux.onNestedNavigateToPathAndDo(this, cs, op);}
     public ExpCore.ClassB.NestedClass getNested(List<String>cs){return _Aux.getNested(this, cs);}
@@ -344,6 +345,12 @@ class _Aux{
     else {newMs.set(index, m);}
     ClassB result = cb.withMs(newMs);
     return result;
+    }
+  static ClassB.Member _getMember(ClassB cb,ast.Ast.MethodSelector ms) {
+    assert cb.isConsistent();
+    int index=_Aux.getIndex(cb.getMs(),ms);
+    if(index==-1){return null;}
+    return cb.getMs().get(index);
     }
 
   static boolean isConsistent(ClassB cb) {

@@ -315,7 +315,8 @@ returnTrash(x,st)=replace
 L42F-->st
 CT[throw[TX1,TX2] x]='throw' new [throw](x) //one throw is the keyword, the other the metavariable
 CT[loop ex]= while(true) label1:{returnTrash(CT[ex])}
-CT[CN.mxs(ys)]=CN.mxs(ys) //not CT*CN on purpose
+CT[CN.mxs(ys)]=CN.mxs(ys) with CT(CN)(mxs) with body //not CT*CN on purpose
+CT[CN.mxs(y,ys)]=y._mxs(ys) with CT(CN)(mxs) without body 
 CT[use CN check mxs(ys) ex]=....(CN,ys,CT[ex])//not CT*CN on purpose
 CT[if x then ex1 else ex2]=if (x)CT[ex1] else CT[ex2] //blocks??
 CT[while ???x?_or_?ex?? then ex1]=...
@@ -346,19 +347,27 @@ CT[interface CN implements CNs {Mxs}]=
 public interface CN implements CNs{CT,CN[Mxs]}
 otherwise
 CT[kind CN implements CNs {Mxs}]=
-public class CN implements CNs{ /*public CN(){}*/ CT,CN[Mxs]}
+public class CN implements CNs{CT,CN[Mxs] 
+  /*public CN(){}*/
+  public static CN NewFwd(){return new _Fwd();}
+  private static class _Fwd extends CN implements Fwd{
+    private List<Object> os=new ArrayList<>();
+    private List<BiConsumer<Object,Object>> fs=new ArrayList<>();
+    public List<Object> os(){return os;}
+    public List<BiConsumer<Object,Object>> fs(){return fs;}
+    }
+  }
 
 //never happens with no this? CT[refine method T mxs((T x)s) e]
 CT,CN[refine method TX mxs(TX' this,(TX x)s) e]=
-  public static CT*TX mxs(CT*TX' _this,CT*(TX x)s) _this._mxs(xs)
-  public CT*TX _mxs(CT*(TX x)s) CT[e]
+  public static CT*TX mxs(CT*TX' _this,CT*(TX x)s) CT[e[_this=this]]
+  public CT*TX _mxs(CT*(TX x)s)  CT._mxs(this,xs)
 
-CT,CN[refine method T mxs(TX' this,(T x)s)]
-  public static CT*TX mxs(CT*TX' _this,CT*(TX x)s) {return _this._mxs(xs);}
+CT,CN[refine method T mxs(TX' this,(T x)s)] //no body
   CT*TX _mxs(CT*(TX x)s);//is going to be in an interface
 
-CT,CN[method T mxs((T x)s) e]
-  public static CT*TX mxs(CT*(TX x)s)CT[e]
+CT,CN[method T mxs((T x)s) e] //no refine, note, work both with and without 'this' parameter
+  public static CT*TX mxs(CT*(TX x)s[_this=this])CT[e[_this=this]] 
 
 
 //never happens CT[method T mxs((T x)s)]
@@ -396,6 +405,23 @@ CT,CN[method Void x(TX this, TX' that) setter]=
 //  where x=catch TX y ex is catch (TX y ){x=ex break labelFor_x}
 //dxs\e and dxs\t removes the e and the TX from dxs to separe declarations and initializations
 //x=ex is untrivial to define, for example x= throw x'== throw x'
+
+
+###Assumed
+---
+interface Fwd{
+  void rememberAssign(Object f,BiConsumer<Object,Object> fo);
+  List<Object> os();
+  List<BiConsumer<Object,Object>> fs();
+  default void fix(){
+    List<Object> os=os();
+    List<BiConsumer<Object,Object>> fs=fs();
+    assert os.size()==fs.size();
+    for(int i=0;i<os.size();i++){
+      fs.get(i).accept(this,os.get(i));
+      }
+    }
+  }
 
 -----------------------------
 4 General execution

@@ -1,19 +1,26 @@
 package is.L42.connected.withSafeOperators;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import ast.Ast.Mdf;
+import ast.Ast.MethodSelector;
 import ast.ExpCore;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
+import ast.ExpCore.ClassB.MethodWithType;
 import ast.ExpCore.ClassB.NestedClass;
 import ast.Expression;
 import auxiliaryGrammar.Program;
 import facade.L42;
 import facade.Parser;
 import facade.L42.ExecutionStage;
+import platformSpecific.fakeInternet.OnLineCode;
+import platformSpecific.fakeInternet.PluginWithPart;
 import sugarVisitors.Desugar;
 import sugarVisitors.InjectionOnCore;
+import tools.Assertions;
 
 public class PlgWrapperGenerator {
   ExpCore templateWrapper=parseAndDesugar(
@@ -60,8 +67,11 @@ private ExpCore parseAndDesugar(String s) {
 
 
 //-----------------------------------------------------
-
+  public ClassB plgComplete(Program p){
+    return plgComplete(Collections.emptyList(),p,p.topCb());
+    }
   public ClassB plgComplete(List<String>cs,Program p,ClassB l){
+    //p.top() is topL
     List<Member> ms=new ArrayList<>();
     for(Member m: l.getMs()){
       if(!(m instanceof NestedClass)){
@@ -81,8 +91,34 @@ private ExpCore parseAndDesugar(String s) {
     //return plgComplete1(cs,p,l)
     }
   public ClassB plgComplete1(List<String>cs,Program p,ClassB l){
+    PluginWithPart pwp = OnLineCode._isPluginWithPart(l.getDoc1());
+    if(pwp==null){return l;}
+    Member m=l._getMember(new MethodSelector("#pluginUnresponsive",Collections.singletonList("binaryRepr")));
+    if(m==null){throw Assertions.codeNotReachable();}//TODO:
+    MethodWithType mwt=(MethodWithType)m;//since normalized
+    if(!mwt.getMt().getMdf().equals(Mdf.Class)){throw Assertions.codeNotReachable();}
+    
     return null;//TODO:
+    /*plgComplete1(lTop,dept,p,l){
+    check there is a class method T #pluginUnresponsive(Library binaryRepr) method
+    c=locateClass(l)
+    Map<String,List<Method,mh42>> ms=..
+    List<Constructor,mh42> cs=...
+    m42s=new List
+    forall e,mh in ms,cs:
+      ui=UsingInfo(e)
+      tu=templateUsing
+      tu.updateAllStuff(ui,mh)
+      m42s.add(tu)
+      foral T in mh,
+        check either lTop(T) is pluginWithPart
+        or p(T/dept) has right method
+        //may be faster to cache?
+      }
+    return templateWrapper U m42s*/
     }
+  
+   
   
 
 
