@@ -4,6 +4,7 @@ Part 2: reduction rules and notations
 -----------------------------------------------------------
 depend on:
  Phase|p|empty|empty|empty|-e ~> e' : T
+ Phase |-p ~> L
  e -->p+ r //we discussued with James: should we use ~> or a kind of big step arrow for type judgment that do annotation?
  
 -----------------------------------------------------------
@@ -17,9 +18,9 @@ r::=LC| exception v | error v
 (top)------------------------       eC not of form LC
      p ==> p'.update(p'.top()[C=r]) <paths; paths'>=usedPathsE(p,eC) //tuple notation
                                     p0=multiNorm(p,paths U paths')//norm the part of p required by eC
-                                    paths'|-p0:p' //the part of p' referred to by paths' is well typed
-                                    Norm,p'|-toAny(paths,eC): _ : imm Library //replace paths with Any //eC is well typed
-                                    Norm,p'|-eC ~> eC' : imm Library //duplicated typing, so we can have eC non with Anys
+                                    paths' ||-p0 ~> p' //the part of p' referred to by paths' is well typed
+                                    Norm | p'| empty| empty| empty |-toAny(paths,eC): _ : imm Library //replace paths with Any //eC is well typed
+                                    Norm | p'| empty| empty| empty |-eC ~> eC' : imm Library //duplicated typing, so we can have eC non with Anys
                                     
 
 
@@ -161,27 +162,27 @@ maindefinition:
   where Cs in Cssi
 
 ------------------------------------------     
-###define paths|-p:p    //James may like notation path ||- p~>p' to underline is an addition layer
+###define paths ||-p ~> p    //James may like notation path ||- p~>p' to underline is an addition layer
 
-  paths |-p:p'
+  paths ||-p ~> p'
   
-        paths |- p.pop():p0
-        Css|-p1:L
+        paths ||- p.pop() ~> p0
+        Css ||-p1 ~> L
 (pPop)----------------------------------  p1=p.growFellow(p0)
-        Css paths |- p : p1.update(L)
+        Css paths ||- p  ~>  p1.update(L)
   
 
-         Css|-p:L
+         Css ||-p ~> L
 (pNoPop)--------------------------------  p.pop() undefined
-         Css  |- p :L,empty
+         Css  ||- p  ~> L,empty
 
 
 (pEmpty)--------------------------------
-         empty |- p :p
+         empty ||- p ~> p
   
 
-     forall Csi : Coherent,pi|-pi.top(): Li : _ //if Li.Phase=Typed, the check will be just asserted
+     forall Csi : Coherent |-pi ~> Li //if Li.Phase=Typed, the check will be just asserted
 (pL) ---------------------------------------   pi=p.navigate(Csi)
-     Cs1..Csn|-p:p.top()[Cs1=L1,.. Csn=Ln]     //Li will have Phase=Typed also inside all somehow contained Ls
+     Cs1..Csn ||-p ~> p.top()[Cs1=L1,.. Csn=Ln]     //Li will have Phase=Typed also inside all somehow contained Ls
 
  

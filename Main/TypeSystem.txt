@@ -272,7 +272,7 @@ fwd%Imm<=fwdImm
 -----------------------------------------------
 5 LibraryAndMemberTyping
 -----------------------------------------------
- Phase |- p ~> L   and   p |- M ~> M'
+ Phase |- p ~> L   and   p | Ps |- M ~> M'
  L is the typed/annotated version of p.top()
  M' is the annotated version of M
  and p.top() is the literal containing M
@@ -288,15 +288,15 @@ Typed |- p ~> L'
    L'={interface? implements Ps M1'..Mn' max(Phase,Typed)}
    forall i in 1..n
      p| Ps |- Mi ~> Mi'
-   Ps=P1..Pm
+   Ps=P1..Pm//TODO: this and the forall may be superfluous, since L0 is normed
    forall ms in dom(p(P1))U..U dom(p(Pm))
      ms in dom(L0)
 
 
 (library coherent)
-Coherent |- p ~> L'
+Coherent |- p ~> L[where Phase=Coherent]
    where
-   Typed |- p ~> L'
+   Typed |- p ~> L
    coherent(p)
     
 
