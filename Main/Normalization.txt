@@ -181,7 +181,7 @@ maindefinition:
          empty ||- p ~> p
   
 
-     forall Csi : Coherent |-pi ~> Li //if Li.Phase=Typed, the check will be just asserted
+     forall Csi : Coherent |-pi ~> Li // the type system can be optimized to just assert  tests for libraries that are annotated as already checked TODO: check in implementation the responsabilty to check/not is of the TS
 (pL) ---------------------------------------   pi=p.navigate(Csi)
      Cs1..Csn ||-p ~> p.top()[Cs1=L1,.. Csn=Ln]     //Li will have Phase=Typed also inside all somehow contained Ls
 
