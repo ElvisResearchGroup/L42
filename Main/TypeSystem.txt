@@ -282,7 +282,7 @@ fwd%Imm<=fwdImm
 Norm  |- p ~> norm(p)  //remember: norm ignores meth bodies
 
 (library well typed)
-Phase |- p ~> L'
+Phase |- p ~> L' //In implementation, if p.top().Phase>=Phase, L'=p.Top()
    where
    Phase in {Typed,Coherent}
    L0={interface? implements Ps M1..Mn Phase'}=norm(p)
