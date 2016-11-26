@@ -286,9 +286,11 @@ Typed |- p ~> L'
    where
    L0={interface? implements Ps M1..Mn Phase}=norm(p)
    L'={interface? implements Ps M1'..Mn' max(Phase,Typed)}
-   p| Ps |- Mi ~> Mi' forall i in 1..n
+   forall i in 1..n
+     p| Ps |- Mi ~> Mi'
    Ps=P1..Pm
-   forall ms in dom(p(P1))U..U dom(p(Pm)) ms in dom(L0)
+   forall ms in dom(p(P1))U..U dom(p(Pm))
+     ms in dom(L0)
 
 
 (library coherent)
