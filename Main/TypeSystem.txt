@@ -288,17 +288,17 @@ Phase |- p ~> L' //In implementation, if p.top().Phase>=Phase, L'=p.Top()
    L0={interface? implements Ps M1..Mn Phase'}=norm(p)
    L'={interface? implements Ps M1'..Mn' max(Phase',Phase)}
    forall i in 1..n
-     p| Ps |- Mi ~> Mi'
+     Phase| p| Ps |- Mi ~> Mi'
    if Phase=Coherent then coherent(p)
    Ps=P1..Pm//TODO: this and the forall may be superfluous, since L0 is normed
    forall ms in dom(p(P1))U..U dom(p(Pm))
      ms in dom(L0)
 
-p| Ps |-C:L ~>  C:L'
+Phase| p| Ps |-C:L ~>  C:L'
    where
-   Typed |-p.push(C) ~> L'
+   Phase |-p.push(C) ~> L'
 
-p| Ps |-M ~> M'
+Phase| p| Ps |-M ~> M'
   where
   M =refine? mdf method T m(T1 x1 .. Tn xn)exceptions Ps' e?
   M'=refine? mdf method T m(T1 x1 .. Tn xn)exceptions Ps' e?'
