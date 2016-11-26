@@ -279,17 +279,16 @@ fwd%Imm<=fwdImm
 
   
 (library shallow norm)
-Norm  |- p ~> norm(p)  //light norm: ignore meth bodies
+Norm  |- p ~> norm(p)  //remember: norm ignores meth bodies
 
 (library well typed)
 Typed |- p ~> L'
    where
    L0={interface? implements Ps M1..Mn Phase}=norm(p)
    L'={interface? implements Ps M1'..Mn' max(Phase,Typed)}
-   p| Ps |- Mi ~> Mi'
-   forall ms in dom(p(P1))U..U dom(p(Pm))
-     where Ps=P1..Pm
-     ms in dom(L0)
+   p| Ps |- Mi ~> Mi' forall i in 1..n
+   Ps=P1..Pm
+   forall ms in dom(p(P1))U..U dom(p(Pm)) ms in dom(L0)
 
 
 (library coherent)
