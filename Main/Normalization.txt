@@ -49,20 +49,20 @@ maindefinition:
 -methods(p,P0)=M1'..Mk'
   p(P0)={interface? implements Ps Ms Phase}
   if Phase!=None, M1'..Mk' are extracted from Ms[from P0]//TODO
-  P1..Pn=collect(p,Ps[from P0]), error unless forall i, p(Pi) is an interface
+  P1..Pn=collect(p,Ps[from P0]), error unless forall i in 1..n, p(Pi) is an interface
   ms1..msk={ms|forall i in 0..n : p(Pi)(ms) is defined}//TODO: double check in code is i in 0..n
   forall ms in ms1..msk, there is exactly 1 j in 0..n
     such that p(Pj)(ms)=mh e? //no refine
   
-  //i comes from k in ms1..msk
-  Mi= p(P0)(msi)[from P0] if it is of form  refine? mh e?,
-  otherwise
-  Mi=addRefine(methods(p,Pj)(msi)) //ok if it stay the same since already refine
-    for the smallest j in 1..k such that methods(p,Pj)(msi) of form refine? mh
+  forall i in 1..k //i comes from k in ms1..msk
+    Mi= p(P0)(msi)[from P0] if it is of form  refine? mh e?,
+    otherwise
+    Mi=addRefine(methods(p,Pj)(msi)) //ok if it stay the same since already refine
+      for the smallest j in 1..k such that methods(p,Pj)(msi) of form refine? mh
   
-  Mi'=Mi[with e=p(P0)(msi).e[from P0]] if defined,
-  otherwise
-  Mi'=Mi
+    Mi'=Mi[with e=p(P0)(msi).e[from P0]] if defined,
+    otherwise
+    Mi'=Mi
 
 ------------------------------------------
 ###define norm(p,e)=e

@@ -280,6 +280,7 @@ fwd%Imm<=fwdImm
   
 (library shallow norm)
 Norm  |- p ~> norm(p)  //remember: norm ignores meth bodies
+//assert forall P in norm(p).Ps p(P).Phase>=Norm
 
 (library well typed)
 Phase |- p ~> L' //In implementation, if p.top().Phase>=Phase, L'=p.Top()
@@ -287,6 +288,7 @@ Phase |- p ~> L' //In implementation, if p.top().Phase>=Phase, L'=p.Top()
    Phase in {Typed,Coherent}
    L0={interface? implements Ps M1..Mn Phase'}=norm(p)
    L'={interface? implements Ps M1'..Mn' max(Phase',Phase)}
+   //assert forall P in Ps p(P).Phase>=Norm
    forall i in 1..n
      Phase| p| Ps |- Mi ~> Mi'
    if Phase=Coherent then coherent(p)
@@ -305,8 +307,8 @@ Phase| p| Ps |-M ~> M'
   else
     e?=e?'
   refine? != empty <=> 
-    forall P in Ps such that p(P)(m(x1..xn))=M //that is, is defined
-      M=mdf method T' m(T1 x1..Tn xn)exceptions Ps' and p|-T<=T'
+    forall P in Ps such that p(P)(m(x1..xn))=M0 //that is, is defined
+      M0=mdf method T' m(T1 x1..Tn xn)exceptions Ps' and p|-T<=T'
 
 coherent(p,C1:L1..Cn:Ln)=coherent(p.push(C1),L1)..coherent(p.push(Cn),Ln)
 
