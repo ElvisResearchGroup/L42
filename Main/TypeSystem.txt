@@ -108,7 +108,7 @@ _ |- P~>P:class P
 (library prop)
 Phase |p |_ |_ |_ |- L ~> L' : imm Library
   where
-  Phase  |- p.evilPush(L) ~> L' // is it clashing on the notation in the end of Normalization.txt?
+  Phase  |- p.evilPush(L) ~> L'
 
 (x)
 Phase| p| G| xss; xs| Tr |-x:T
@@ -301,33 +301,30 @@ Phase| p| Ps |-M ~> M'
   where
   M =refine? mdf method T m(T1 x1 .. Tn xn)exceptions Ps' e?
   M'=refine? mdf method T m(T1 x1 .. Tn xn)exceptions Ps' e?'
-  G=this:This0,x1:T1..xn:Tn
+  G=this:mdf This0,x1:T1,..,xn:Tn
   if e?=e then
-    Typed| p| G|empty;empty|empty;Ps' |- e ~>  e?':_ <=T//should it be fwd% T ?? check in formal.pdf
+    Typed| p| G|empty;empty|empty;Ps' |- e ~>  e?':_ <=fwd% T
   else
     e?=e?'
   refine? != empty <=> 
     forall P in Ps such that p(P)(m(x1..xn))=M0 //that is, is defined
       M0=mdf method T' m(T1 x1..Tn xn)exceptions Ps' and p|-T<=T'
 
-coherent(p,C1:L1..Cn:Ln)=coherent(p.push(C1),L1)..coherent(p.push(Cn),Ln)
 
-coherent(p)
+coherent(p) //interfaces are always coherent
   where
   p.top()={interface implements _ mwts ncs}
-  coherent(p,ncs)
     
-coherent(p)    
+coherent(p)  //classes are coherent if they have a coherent set of abstract methods
   where
   p.top()={implements _ mwts' ncs} //note, no interface
-  coherent(p,ncs)
-  mwts={mwt in mwts'| mwt.e undefined }
+  mwts={mwt in mwts'| mwt.e undefined } //collect the abstract methods
   either mwts is empty or
     at least 1 mwt in mwts is class method 
     and
-    exists (T x)s such that
+    exists (T x)s such that //angelic non determinism to figure out the types of the fields 
       all T in (T x)s are mut, imm, class or capsule //thus, no fwd
-      forall mwt in mwts coherent(p,(T x)s, mwt)
+      forall mwt in mwts coherent(p,(T x)s, mwt) //all abstract methods are coherent according to those fields
       
       
 coherent(p,T1 x1..Tn xn,
