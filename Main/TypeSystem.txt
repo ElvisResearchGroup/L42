@@ -303,7 +303,7 @@ Phase| p| Ps |-M ~> M'
   M =refine? mdf method T m(T1 x1 .. Tn xn)exceptions Ps' e?
   M'=refine? mdf method T m(T1 x1 .. Tn xn)exceptions Ps' e?'
   if e?=e then
-    Typed p| G|empty;empty|empty;Ps' |- e ~>  e?':_ <=T//should it be fwd% T ?? check in formal.pdf
+    Typed| p| G|empty;empty|empty;Ps' |- e ~>  e?':_ <=T//should it be fwd% T ?? check in formal.pdf
   else
     e?=e?'
   existsExactly 1 P in Ps,This0
