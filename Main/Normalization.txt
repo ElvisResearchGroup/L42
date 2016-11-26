@@ -19,7 +19,7 @@ r::=LC| exception v | error v
      p ==> p'.update(p'.top()[C=r]) <paths; paths'>=usedPathsE(p,eC) //tuple notation
                                     p0=multiNorm(p,paths U paths')//norm the part of p required by eC
                                     paths' ||-p0 ~> p' //the part of p' referred to by paths' is well typed
-                                    Norm | p'| empty| empty| empty |-toAny(paths,eC): _ : imm Library //replace paths with Any //eC is well typed
+                                    Norm | p'| empty| empty| empty |-toAny(paths,eC) ~> _ : imm Library //replace paths with Any //eC is well typed
                                     Norm | p'| empty| empty| empty |-eC ~> eC' : imm Library //duplicated typing, so we can have eC non with Anys
                                     
 

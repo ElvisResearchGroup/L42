@@ -282,24 +282,17 @@ fwd%Imm<=fwdImm
 Norm  |- p ~> norm(p)  //remember: norm ignores meth bodies
 
 (library well typed)
-Typed |- p ~> L'
+Phase |- p ~> L'
    where
-   L0={interface? implements Ps M1..Mn Phase}=norm(p)
-   L'={interface? implements Ps M1'..Mn' max(Phase,Typed)}
+   Phase in {Typed,Coherent}
+   L0={interface? implements Ps M1..Mn Phase'}=norm(p)
+   L'={interface? implements Ps M1'..Mn' max(Phase',Phase)}
    forall i in 1..n
      p| Ps |- Mi ~> Mi'
+   if Phase=Coherent then coherent(p)
    Ps=P1..Pm//TODO: this and the forall may be superfluous, since L0 is normed
    forall ms in dom(p(P1))U..U dom(p(Pm))
      ms in dom(L0)
-
-
-(library coherent)
-Coherent |- p ~> L[where Phase=Coherent]
-   where
-   Typed |- p ~> L
-   coherent(p)
-    
-
 
 p| Ps |-C:L ~>  C:L'
    where
