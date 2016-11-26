@@ -442,7 +442,7 @@ class Nat {  public static int _hash_plus_that(int a, int b){return a+b;}  }//Ja
 -----------------------------
 Execution
 
-CT.execute(p,e)=CT.loadAndRun(J)
+CT.execute(p,e)=CT.loadAndRun(CN,J)
   ex=p;empty[e]
   sJ=toJava(ex)
   J=class CN{ public static Object execute(){sJ}}//CN fresh
@@ -464,7 +464,7 @@ that contains the following info:
 -for each iteration:
   -the p, the e, the used paths, the used CT, the resulting r
 when re-compiling, if the same iteraion uses the same e, the same used paths as
-cached, and for each P in paths, p(P) is the same, then we can re use the cached CT and re run e.
+cached, and for each P in paths, p(P) is the same(THE SAME of who???), then we can re use the cached CT and re run e.
 If the resulting r is different, we trash all cache for following iterations. 
 Discuss advantages/disadvantages
 
@@ -495,6 +495,28 @@ grow more stuff
 execute more stuff
 
 
+----------------
+Second plan for caching
+
+reuse at               //0
+A:Data<<{}             //1 require paths1, e1 -> J1,Je1
+B:Data<<{}             //2 require paths1,e2 -> Je2
+C:Collection.vector(A) //3 require paths1,A,paths3,e3 -> J3,Je3
+D:Data<<{C,A}          //4 require paths1,A,C,e4  ->,Je4
+Main:D.run()           //5 require A,B,C,D,e5 -> JA,JB,JC,JD,Je5
+
+algoritm?
+l have CN
+l have Phase
+l have Dep: (P,CN)s
+need p,Path
+if p(Path).CN notin cache
+  return addToLoad(p,Path)
+l,lf,j,jb=cache(p(Path).CN)
+if l!=p(Path) //this also check l.Dep=p(Path).Dep
+  removeCache(p(Path).CN)
+  return addToLoad(p,Path)
+return lf,j,jb
 
 
 -----------------------------
