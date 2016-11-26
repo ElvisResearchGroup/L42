@@ -53,7 +53,7 @@ maindefinition:
   ms1..msk={ms|forall i in 0..n : p(Pi)(ms) is defined}//TODO: double check in code is i in 0..n
   forall ms in ms1..msk, there is exactly 1 j in 0..n
     such that p(Pj)(ms)=mh e? //no refine
-  
+  //cases like A:  {interface refine method A()}  B: { implements A method A()} are ok wrt B but fails for A  
   forall i in 1..k //i comes from k in ms1..msk
     Mi= p(P0)(msi)[from P0] if it is of form  refine? mh e?,
     otherwise
