@@ -290,9 +290,6 @@ Phase |- p ~> L' //In implementation, if p.top().Phase>=Phase, L'=p.Top()
    forall i in 1..n
      Phase| p| Ps |- Mi ~> Mi'
    if Phase=Coherent then coherent(p)
-   Ps=P1..Pm//TODO: this and the forall may be superfluous, since L0 is normed
-   forall ms in dom(p(P1))U..U dom(p(Pm))
-     ms in dom(L0)
 
 Phase| p| Ps |-C:L ~>  C:L'
    where
@@ -307,8 +304,6 @@ Phase| p| Ps |-M ~> M'
     Typed| p| G|empty;empty|empty;Ps' |- e ~>  e?':_ <=T//should it be fwd% T ?? check in formal.pdf
   else
     e?=e?'
-  existsExactly 1 P in Ps,This0
-    such that p(P)(m(x1..xn)).refine? = empty
   refine? != empty <=> 
     forall P in Ps such that p(P)(m(x1..xn))=M //that is, is defined
       M=mdf method T' m(T1 x1..Tn xn)exceptions Ps' and p|-T<=T'
