@@ -47,8 +47,8 @@ public class PluginWithPart implements PluginType{
     if(ui.methOrKs instanceof Method){
       res.add(jTo42(((Method)ui.methOrKs).getReturnType()));
       }
-    else {res.add(jTo42(ui.plgClass));}
-    if (!ui.staticMethod) {res.add(jTo42(ui.plgClass));}
+    else {res.add(jTo42(ui.plgInfo.plgClass));}
+    if (!ui.staticMethod) {res.add(jTo42(ui.plgInfo.plgClass));}
     for(String t :ui.names)
     res.add(jTo42(t));
     return res;
@@ -75,25 +75,55 @@ public class PluginWithPart implements PluginType{
     }  
     return ProtectedPluginType.executeMethod(method, p, rec, es.toArray());
     }
-  private static class UsingInfo{
-    boolean staticMethod=false;
-    List<String> names;
-    String jMethName=null;
-    boolean needPData=false;;
-    List<String> ts=new ArrayList<>();
-    List<Class<?>>jts=new ArrayList<>();
-    Object methOrKs=null;
-    boolean isVoid=false;
+  public static class PlgInfo{
     String plgString;
     String plgName;
     Class<?> plgClass;
-    UsingInfo(Program p,Using s){
-      plgString=OnLineCode.pluginString(p, s);
-      if(plgString.endsWith("\n")){
-        plgString=plgString.substring(0,plgString.length()-1);
+    PlgInfo(Doc doc){
+    plgString=OnLineCode.pluginString(doc);
+    if(plgString.endsWith("\n")){
+      plgString=plgString.substring(0,plgString.length()-1);
+      }
+    assert !plgString.endsWith("\n");
+    plgName=plgString.substring(plgString.lastIndexOf('\n')+1);
+    try{plgClass=Class.forName(plgName);}
+    catch(ClassNotFoundException|SecurityException e){throw Assertions.codeNotReachable();}
+    }
+  }
+  public static class UsingInfo{
+    boolean staticMethod=false;
+    List<String> names;// avoiding _this, just the parameter names, encoding java types
+    String jMethName=null;
+    boolean needPData=false;//is using.ms.m starts with #
+    List<String> ts=new ArrayList<>();//types are in 42 primitives
+    List<Class<?>>jts=new ArrayList<>();
+    //assert names.size()==ts.size(), but jts.size()==ts.size() or ts.size()+1 if needPData
+    Object methOrKs=null;
+    boolean isVoid=false;
+    PlgInfo plgInfo;
+    Ast.MethodSelector usingMs;
+    UsingInfo(PlgInfo pi,Method m){
+      plgInfo=pi;
+      methOrKs=m;
+      isVoid=m.getReturnType().equals(Void.TYPE);   
+      staticMethod=Modifier.isStatic(m.getModifiers());
+      jMethName=m.getName();
+      jts.addAll(Arrays.asList(m.getParameterTypes()));
+      List<Class<?>> jtsNoPData = jts;
+      needPData=false;
+      //TODO: when PData exists 
+      //if(!jts.isEmpty() && jts.get(0).equals(PData.class)){jtsNoPData.remove(0);needPData=true;}
+      for(Class<?> jt:jtsNoPData){
+        String t=jt.getCanonicalName();
+        ts.add(t);
+        String name=EncodingHelper.javaClassToX(t);
+        names.add(name);
         }
-      assert !plgString.endsWith("\n");
-      plgName=plgString.substring(plgString.lastIndexOf('\n')+1);
+      usingMs=new Ast.MethodSelector(needPData?"#"+jMethName:jMethName, names);
+      }
+    UsingInfo(Program p,Using s){
+      usingMs=s.getS();
+      plgInfo=new PlgInfo(p.extractCb(s.getPath()).getDoc1());
       names = s.getS().getNames();
       staticMethod=true;
       if(!names.isEmpty() && names.get(0).equals("_this")){
@@ -126,16 +156,14 @@ public class PluginWithPart implements PluginType{
         try{jts.add(0,Class.forName("platformSpecific.javaTranslation.PData"));}
         catch(ClassNotFoundException cnfe){throw Assertions.codeNotReachable();}
         }
-      try{plgClass=Class.forName(plgName);}
-      catch(ClassNotFoundException|SecurityException e){throw Assertions.codeNotReachable();}
       if(jMethName.equals("new")){
         assert this.staticMethod;
-        try{methOrKs=plgClass.getConstructor(jts.toArray(new Class<?>[0]));}
+        try{methOrKs=plgInfo.plgClass.getConstructor(jts.toArray(new Class<?>[0]));}
         catch(NoSuchMethodException|SecurityException e){throw Assertions.codeNotReachable();}
         }
       else{
         Method m;
-        try{m=Class.forName(plgName).getMethod(jMethName, jts.toArray(new Class<?>[0]));}
+        try{m=Class.forName(plgInfo.plgName).getMethod(jMethName, jts.toArray(new Class<?>[0]));}
         catch(ClassNotFoundException|NoSuchMethodException|SecurityException e){throw Assertions.codeNotReachable();}
         isVoid=m.getReturnType().equals(Void.TYPE);
         methOrKs=m;
@@ -163,7 +191,7 @@ public class PluginWithPart implements PluginType{
     res.append("platformSpecific.javaTranslation.Resources.plgExecutor(");
     res.append("\""+s.getS().getName()+"\",");
     res.append("platformSpecific.javaTranslation.Resources.getP(), ");
-    res.append("("+ui.plgName+")"+parRec+", ");
+    res.append("("+ui.plgInfo.plgName+")"+parRec+", ");
     //(plF,xsF)->{ `T1` _1;..`Tn` _n;
     String plF="L"+Functions.freshName("pl",labels);
     String xsF="L"+Functions.freshName("xs",labels);
@@ -183,14 +211,14 @@ public class PluginWithPart implements PluginType{
     if(!ui.isVoid){res.append("return ");}
     if(ui.methOrKs instanceof Method){
       if(ui.staticMethod){
-        res.append(ui.plgName+"."+ui.jMethName+"("+opt);
+        res.append(ui.plgInfo.plgName+"."+ui.jMethName+"("+opt);
         }
       else{
         res.append(plF+"."+ui.jMethName+"("+opt);
         } 
       }
     else{
-      res.append("new "+ui.plgName+"("+opt);    
+      res.append("new "+ui.plgInfo.plgName+"("+opt);    
     }
     StringBuilders.formatSequence(res,
       IntStream.range(1, ui.ts.size()+1).iterator(),

@@ -1,12 +1,17 @@
 package is.L42.connected.withSafeOperators;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
+import ast.Ast;
 import ast.Ast.Mdf;
 import ast.Ast.MethodSelector;
 import ast.Ast.MethodType;
+import ast.Ast.NormType;
 import ast.ExpCore;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
@@ -98,20 +103,17 @@ private ExpCore parseAndDesugar(String s) {
     MethodType mt=mwt.getMt();
     if(!mt.getMdf().equals(Mdf.Class)){return false;}
     if(!mt.getReturnType().getNT().getMdf().equals(Mdf.Immutable)){return false;}
-    if(!mt.getTs().get(0).equals(NormType.i))
+    if(!mt.getTs().get(0).equals(NormType.immLibrary)){return false;}    
     return true;//not care what is the result, since is just thrown as error
     }
   public ClassB plgComplete1(List<String>cs,Program p,ClassB l){
     PluginWithPart pwp = OnLineCode._isPluginWithPart(l.getDoc1());
     if(pwp==null){return l;}
-    Member m=l._getMember(new MethodSelector("#pluginUnresponsive",Collections.singletonList("binaryRepr")));
-    if(m==null){throw Assertions.codeNotReachable();}//TODO:
-    MethodWithType mwt=(MethodWithType)m;//since normalized
-    if(!mwt.getMt().getMdf().equals(Mdf.Class)){throw Assertions.codeNotReachable();}
-    
+    if(!hasPluginUnresponsive(p, l)){throw Assertions.codeNotReachable();}//TODO:
+    Map<String,Entry<Method,Ast.MethodSelector>> ms;
     return null;//TODO:
     /*plgComplete1(lTop,dept,p,l){
-    check there is a class method T #pluginUnresponsive(Library binaryRepr) method
+    
     c=locateClass(l)
     Map<String,List<Method,mh42>> ms=..
     List<Constructor,mh42> cs=...

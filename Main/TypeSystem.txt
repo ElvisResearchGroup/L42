@@ -322,7 +322,7 @@ coherent(p)  //classes are coherent if they have a coherent set of abstract meth
   either mwts is empty or
     at least 1 mwt in mwts is class method 
     and
-    exists (T x)s such that //angelic non determinism to figure out the types of the fields 
+    exists some (T x)s such that //angelic non determinism to figure out at least one set of types for the fields 
       all T in (T x)s are mut, imm, class or capsule //thus, no fwd
       forall mwt in mwts coherent(p,(T x)s, mwt) //all abstract methods are coherent according to those fields
       
@@ -358,3 +358,17 @@ coherent(p,T1 x1..Tn xn,
   
 ------------------
 Dispatch //HARD
+-------------------
+
+Coherent and union types:
+to easy translation in Java/etc, we can not accept the following
+A,B interface
+C,D implements A,B
+
+I implements C,D
+class method This f(I x   )
+mut method Void x ( C that)
+mut method Void #x ( D that)
+read method A x()
+read method B #x()
+as coherent, since the field would be an union type of C and D
