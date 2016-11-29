@@ -162,7 +162,7 @@ Phase| p| G| Cage| Tr|-(T1 x1=e1..Tn xn=en ks e0[_]) ~>(T'1 x1=e'1..T'n xn=e'n k
     G0=G[fwd%(G')]
   otherwise
     G0=G[G']
-  Phase| p| G0| Cage| Tr|-e0~>e'0:_<=T //if the expected type is ALWAYS available, we can allow subtyping here and in catch.
+  Phase| p| G0| Cage| Tr|-e0~>e'0:_<=T
   
 (block divide scope)
 //This rule is not materialized in the sugar since it would duplicate the catches (potentially exponentially)
