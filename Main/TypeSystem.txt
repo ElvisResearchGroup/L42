@@ -123,9 +123,10 @@ D |- loop e ~> loop e' : imm Void
   D|- e ~> e' : imm Void
 
 (throw)
-D|-throw[_,_] e~> throw[T,mdf P] e' :  T
+D|-throw[T?,_] e~> throw[T,mdf P] e' :  T
   where
   D|- e~>  e' :  mdf P
+  either T?=empty or T?=T
   if throw=exception, p|-mdf P<=imm P' and P' in D.Ps
   if throw=return, p|-mdf P<=T' and T' in D.Ts
   if throw=error, p|-mdf P<=imm Any  
@@ -360,7 +361,7 @@ coherent(p,T1 x1..Tn xn,
 Dispatch //HARD
 -------------------
 
-1- e:Library do we always now the expected (super) type?
+1- e:imm Library do we always know the expected (super) type?
 
 Coherent and union types:
 to easy translation in Java/etc, we can not accept the following
