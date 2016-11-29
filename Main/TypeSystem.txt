@@ -132,7 +132,7 @@ D|-throw[T?,_] e~> throw[T,mdf P] e' :  T
   if throw=error, p|-mdf P<=imm Any  
 
 (mcall)
-D|- e0.m[_](x1:e1..Xn:en) ~> e'0.m[P0](x1:e'1..xn:e'n)  : T'
+D|- e0.m[_](x1:e1..Xn:en) ~> e'0.m[P0](x1:e'1..xn:e'n)  : T' //e0 will be of form mr
   where
   resolve(D.p,guessType(D.G,e0))= _ P0=T'0
   D.p(P0).m(x1..xn).mh[from P0]=mdf0 method T m(T1 x1,..Tn xn) exception Ps

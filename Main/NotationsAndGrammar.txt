@@ -61,8 +61,7 @@ msx::=ms(::x)?
 #core expressions
 L::={interface? implements Ps M1..Mn Phase}
 M::=refine? mh e?| ms e | C:e
-e::=void|L|mr| throw[T1,T2] e|loop e|(ds ks e[T])
- | use P check m((x:e)s) e
+e::=void|L|mr| throw[T1,T2] e|loop e|(ds ks e[T]) | use P check m((x:e)s) e
 mr::= x| P | mr.m((x:e)s)
 //annotations [T1,T2], [P] and [T] are implicitly "?", as in [T]?
 k::=catch T x e
