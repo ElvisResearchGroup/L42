@@ -212,14 +212,16 @@ Phase |p |G |Cage |Tr|-catch throw T x (e0 throw x) ~> catch throw mdf Any x (e0
   e0'=(imm Void y=e' catch error Any z void void)
   Phase |p |G\x |Cage |empty |- e0 ~> e0':imm Void
 
-(lent viewpoint adaptation)//We may want to split t-swap and t-unlock again
-Phase |p |G |Cage |Tr|-e~>e':toLent(mdf P)
+(unlock)
+Phase |p |G |xss;xs |Tr|-e~>e':mdf P
   where
-  Phase |p |G |Cage' |Tr|-e~>e':mdf P
-  Cage=xs0,xss;xs
-  Cage'=xss,domMut(G)\xss ; xs'
-  if mdf in {imm,fwd%Imm,fwdImm,capsule,class} then xs'=empty
-  otherwise  xs'=xs
+  Phase |p |G |xss,domMut(G)\xss ; empty |Tr|-e~>e':mdf P
+  mdf in {imm,fwd%Imm,fwdImm,capsule,class}
+
+(swap)
+Phase |p |G |xs0,xss;xs |Tr|-e~>e':toLent(mdf P)
+  where
+  Phase |p |G |xss,domMut(G)\xss ; xs |Tr|-e~>e':mdf P
 
 (capsule promotion)
 Phase |p |G |Cage |Tr|-e~>e':capsule P
@@ -366,44 +368,39 @@ Dispatch //HARD
 
 
 
+Calling type system on e:
 
-(void)
+SimpleTS:
+if e is a block, then
+  blockTop:
+    try blockWithDivide
+    failing if block in shape, apply (propagate promotions to catches):
+      shape 1: apply to change to mut, type blockWithDivide again
+      shape 2: apply to change to mut, type blockWithDivide again; on fail apply to change to read, type blockWithDivide
+  where 
+    blockWithDivide:
+      if possible apply(block divide scope) to the smallest possible starting ds
+      else apply (block)
+    inside (block) we will apply (catchMany),(catch),(catch and rethrow any) 
 
-(Path)
-
-(library prop)
-
-(x)
-
-(loop)
-
-(throw)
-
-(mcall)
-     
-(using)
-
-
-(block)
-  
-(block divide scope)
+otherwise
+  if e not block, apply rule for (void) (Path) (library prop)(x) (loop) (throw) (mcall) (using)
   
 
-(propagate promotions to catches)
-
-(catchMany)
-
-(catch)
-(catch and rethrow any)// could be sugared as "on throw mdf x d
-(lent viewpoint adaptation)//We may want to split t-swap and t-unlock again
-
-(capsule promotion)
-
-(imm promotion)
-
-(lent to singleton)
+CompleteTs://the one called recursivelly every time we do a "D|-e~>e' :_<=expectedT"
+  as much as possible, apply (lent to singleton)  
+  if possible apply unlock  
+  try SimpleTS
+  on fail:
+    if "lent should be mut", apply swap, then CompleteTS
+    if result is different w.r.t. the expected, fixable modulo capsule promotion:
+      apply (capsule promotion), then CompleteTS
+    if result is different w.r.t. the expected, fixable modulo imm promotion:
+      apply (capsule promotion), then CompleteTS
+      if does not work, apply (imm promotion), then CompleteTS
 
 
+----------------
 
 Coherent and union types:
 to easy translation in Java/etc, we can not accept the following
