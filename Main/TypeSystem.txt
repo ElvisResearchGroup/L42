@@ -362,6 +362,9 @@ Dispatch //HARD
 -------------------
 
 1- e:imm Library do we always know the expected (super) type?
+  D,e,expectedT-->e'
+  D|-e~>e' :_<=expectedT
+
 
 Coherent and union types:
 to easy translation in Java/etc, we can not accept the following
