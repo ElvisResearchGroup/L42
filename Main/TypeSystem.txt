@@ -201,7 +201,7 @@ Phase| p| G| Cage| Tr|-catch throw T0 x e ~> catch throw resolve(p,T0) x e' :T1
   where
   Phase| p| G[x:T0]| Cage| Tr |- e ~> e':_<=T1
   either throw=return or resolve(p,T0)=imm _
-  resolve(p,T0) not in {_ Any, fwd _, fwd% _}
+  resolve(p,T0) not in {_ Any, fwdImm _,fwdMut, fwd%Imm _,fwd%Mut _}
 
 (catch and rethrow any)// could be sugared as "on throw mdf x doAndPropagate e"  
 Phase |p |G |Cage |Tr|-catch throw T x (e0 throw x) ~> catch throw mdf Any x (e0' throw x): _
