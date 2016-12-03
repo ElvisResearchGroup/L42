@@ -498,6 +498,52 @@ execute more stuff
 ----------------
 Second plan for caching
 
+-Dep
+Assume all L have a L.Dep=P->CN
+where all the transitive dependencies are contained in Dep
+and in the p pointing to L, forall P in dom(L.Dep)
+p(P).CN=L.Dep(P)
+
+-CT.has(p,P)= CT(p(P).CN) is defined
+-cache.has(p,P)= cache(p(P).CN).L=p(P)
+-p(Ps).CN={p(P).CN| P in Ps}
+
+###
+---
+When from program p we need to load classes Ps0 to CT using cache:
+
+CT'=CT.need(cache,p,Ps0) //need all the chunk together, since Javac may do multi-class inlining
+  Ps1={P in Ps0 | not CT.has(p,P)}
+  //assert all classes in CT are also "cached well"
+  deps1={Ps\Ps1\..\Psn| Ps in deps0,Ps1..Psn=deps0\Ps}
+  Dag: //may not have a single root
+    Nodes={P,dom(p(P).Dep)[from P]| P in Ps1} //note, dependencies are transitive    
+    Edges={ Ps1->Ps2 | Ps1,Ps2 in deps0, Ps1 >Ps2}
+  var CTres=CT
+  Repeat:
+    Take one leave Ps in Dag
+      assert !CT.has(p,P) forall P in Ps
+      if forall P in Ps:
+        cache(p(P).CN)=L=p(P) //note, this includes L.Dep
+      then:
+        -add Ps=P1..Pn to CT using the cache:
+          CTRes=CTRes,p(P1).CN->cache(p(P1).CN),..,p(Pn).CN->cache(p(Pn).CN)
+        -remove the leave from Dag
+        -remove Ps from all the nodes of the graph
+      else:
+        -mark that leave as dirty
+  When all the existing leaves are dirty,then:
+     -we load Paths=(all the P in the roots of the Dag) without using the cache:
+       CTRes=CT.growWith(p,Paths)
+     -we remove such p(P).CN from the cache //is this enough?
+  //this algorithm require to not cache the "e",
+  //may be is not a problem since they are usually small?
+  return CTRes  
+
+
+
+
+
 reuse at               //0
 A:Data<<{}             //1 require paths1, e1 -> J1,Je1
 B:Data<<{}             //2 require paths1,e2 -> Je2
@@ -518,6 +564,11 @@ if l!=p(Path) //this also check l.Dep=p(Path).Dep
   return addToLoad(p,Path)
 return lf,j,jb
 
+
+    
+ 
+
+//Path2={P in Path1 | not cache.has(p,P)}
 
 -----------------------------
 5 Optimization//later?

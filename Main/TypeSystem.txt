@@ -83,7 +83,7 @@ Tr[ks]
   Ts; Ps [catch return mdf P1 x1 e1..catch return mdf Pn xn en..]=Ts[adaptMdfForReturn mdf P1]..[adaptMdfForReturn mdf Pn];Ps 
   //Note: all the mdf of the various Ts are required to be the same, or the operation is undefined and we get a type error
 
-mdf P1..mdf Pn[adaptMdfForReturn mdf' P0]
+Ts[adaptMdfForReturn T]
   mdf P1..mdf Pn[adaptMdfForReturn mdf' P0]=mdf' P0..mdf' Pn  if mdf' <= mdf
   otherwise mdf P1..mdf Pn[adaptMdfForReturn mdf' P0]=mdf' P0 //this case will also be triggered for n=0 
   //is multi level return needed by the sugar? can we optimize more during java generation if we do not?
@@ -201,7 +201,7 @@ Phase| p| G| Cage| Tr|-catch throw T0 x e ~> catch throw resolve(p,T0) x e' :T1
   where
   Phase| p| G[x:T0]| Cage| Tr |- e ~> e':_<=T1
   either throw=return or resolve(p,T0)=imm _
-  resolve(p,T0) not of form _ Any
+  resolve(p,T0) not in {_ Any, fwd _, fwd% _}
 
 (catch and rethrow any)// could be sugared as "on throw mdf x doAndPropagate e"  
 Phase |p |G |Cage |Tr|-catch throw T x (e0 throw x) ~> catch throw mdf Any x (e0' throw x): _
@@ -213,13 +213,13 @@ Phase |p |G |Cage |Tr|-catch throw T x (e0 throw x) ~> catch throw mdf Any x (e0
   Phase |p |G\x |Cage |empty |- e0 ~> e0':imm Void
 
 (unlock)
-Phase |p |G |xss;xs |Tr|-e~>e':mdf P
+Phase |p |G |xss;xs |Tr\returnReadLentMut|-e~>e':mdf P
   where
   Phase |p |G |xss,domMut(G)\xss ; empty |Tr|-e~>e':mdf P
   mdf in {imm,fwd%Imm,fwdImm,capsule,class}
 
 (swap)
-Phase |p |G |xs0,xss;xs |Tr|-e~>e':toLent(mdf P)
+Phase |p |G |xs0,xss;xs |Tr\returnMut|-e~>e':toLent(mdf P)
   where
   Phase |p |G |xss,domMut(G)\xss ; xs |Tr|-e~>e':mdf P
 
@@ -234,7 +234,7 @@ Phase |p |G |Cage |Tr|-e~>e':capsule P
 Phase |p |G |Cage |Tr|-e~>e':imm P
   where
   Phase |p |G |Cage' |Tr|-e~>e':mdf P
-  mdf in {read,lent}  
+  mdf in {read,lent} //TODO: what about fwd/fwd%  
   Cage=xss;xs
   Cage'=xss,domMut(G)\xss;domMutLentRead(G)//fwd%Mut, fwdMut in xs too
 
