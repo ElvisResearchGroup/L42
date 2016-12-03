@@ -78,8 +78,9 @@ G[ks]
   otherwise G[ks]=G 
 
 Tr[ks]
+  if ks='catch throw _ Any e' then Tr[ks]=Tr else
   Ts; Ps [catch error T1 x1 e1..catch error Tn xn en..]=Ts; Ps
-  Ts; Ps [catch exception _ P1 x1 e1..catch exception _ Pn xn en..]=Ts; Ps,P1..Pn/Any
+  Ts; Ps [catch exception _ P1 x1 e1..catch exception _ Pn xn en..]=Ts; Ps,P1..Pn
   Ts; Ps [catch return mdf P1 x1 e1..catch return mdf Pn xn en..]=Ts[adaptMdfForReturn mdf P1]..[adaptMdfForReturn mdf Pn];Ps 
   //Note: all the mdf of the various Ts are required to be the same, or the operation is undefined and we get a type error
 
@@ -92,7 +93,7 @@ Tr[lessReturnMut]
   mut C1..mut Cn; Ps[lessReturnMut] = capsule C1..capsule Cn; Ps
   otherwise Tr[lessReturnMut] = Tr
 Tr[lessReturnReadLentMut]
-   mdf C1..mdf Cn; Ps[lessReturnReadLentMut] = capsule C1..capsule Cn; Ps if mdf in lent,mut
+   mdf C1..mdf Cn; Ps[lessReturnReadLentMut] = capsule C1..capsule Cn; Ps if mdf in {lent,mut}
    read C1..read Cn; Ps[lessReturnReadLentMut] = imm C1..imm Cn; Ps
    otherwise Tr[lessReturnReadLentMut] = Tr 
   
@@ -220,13 +221,13 @@ Phase |p |G |Cage |Tr|-catch throw T x (e0 throw x) ~> catch throw mdf Any x (e0
   Phase |p |G\x |Cage |empty |- e ~> e':imm Void
 
 (unlock)
-Phase |p |G |xss;xs |Tr\returnReadLentMut|-e~>e':mdf P
+Phase |p |G |xss;xs |Tr[lessReturnReadLentMut]|-e~>e':mdf P
   where
   Phase |p |G |xss,domMut(G)\xss ; empty |Tr|-e~>e':mdf P
   mdf in {imm,fwd%Imm,fwdImm,capsule,class}
 
 (swap)
-Phase |p |G |xs0,xss;xs |Tr\returnMut|-e~>e':toLent(mdf P)
+Phase |p |G |xs0,xss;xs |Tr[lessReturnMut]|-e~>e':toLent(mdf P)
   where
   Phase |p |G |xss,domMut(G)\xss ; xs |Tr|-e~>e':mdf P
 
