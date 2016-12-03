@@ -201,16 +201,16 @@ Phase| p| G| Cage| Tr|-catch throw T0 x e ~> catch throw resolve(p,T0) x e' :T1
   where
   Phase| p| G[x:T0]| Cage| Tr |- e ~> e':_<=T1
   either throw=return or resolve(p,T0)=imm _
-  resolve(p,T0) not in {_ Any, fwdImm _,fwdMut, fwd%Imm _,fwd%Mut _}
+  resolve(p,T0) not in {_ Any, fwdImm _,fwdMut, fwd%Imm _,fwd%Mut _}//This cause strong limitation in factories using conditionals (as in if-return)
 
 (catch and rethrow any)// could be sugared as "on throw mdf x doAndPropagate e"  
 Phase |p |G |Cage |Tr|-catch throw T x (e0 throw x) ~> catch throw mdf Any x (e0' throw x): _
   where
-  resolve(p,T)=mdf Any
+  resolve(p,T)=mdf Any, mdf notin {fwdImm,fwd%Imm,fwdMut,fwd%Mut}
   either throw =return or mdf=imm
   e0=(imm Void y=e catch error Any z void void)
   e0'=(imm Void y=e' catch error Any z void void)
-  Phase |p |G\x |Cage |empty |- e0 ~> e0':imm Void
+  Phase |p |G\x |Cage |empty |- e ~> e':imm Void
 
 (unlock)
 Phase |p |G |xss;xs |Tr\returnReadLentMut|-e~>e':mdf P
