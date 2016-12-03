@@ -89,10 +89,12 @@ Ts[adaptMdfForReturn T]
   //is multi level return needed by the sugar? can we optimize more during java generation if we do not?
 
 Tr[lessReturnMut]
-  mut C1..mut Cn; Ps[lessReturnMut]=capsule C1..capsule Cn; Ps
-  otherwise Tr[lessReturnMut]=Tr
+  mut C1..mut Cn; Ps[lessReturnMut] = capsule C1..capsule Cn; Ps
+  otherwise Tr[lessReturnMut] = Tr
 Tr[lessReturnReadLentMut]
-   C1..mut Cn; Ps[lessReturnMut]=capsule C1..capsule Cn; Ps
+   mdf C1..mdf Cn; Ps[lessReturnReadLentMut] = capsule C1..capsule Cn; Ps if mdf in lent,mut
+   read C1..read Cn; Ps[lessReturnReadLentMut] = imm C1..imm Cn; Ps
+   otherwise Tr[lessReturnReadLentMut] = Tr 
   
 --------------------------------------------
 3 ExpressionTypeJudgement
