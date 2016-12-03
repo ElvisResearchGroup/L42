@@ -90,6 +90,10 @@ Ts[adaptMdfForReturn T]
 
 Tr[lessReturnMut]
   mut C1..mut Cn; Ps[lessReturnMut]=capsule C1..capsule Cn; Ps
+  otherwise Tr[lessReturnMut]=Tr
+Tr[lessReturnReadLentMut]
+   C1..mut Cn; Ps[lessReturnMut]=capsule C1..capsule Cn; Ps
+  
 --------------------------------------------
 3 ExpressionTypeJudgement
 --------------------------------------------
