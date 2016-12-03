@@ -88,7 +88,8 @@ Ts[adaptMdfForReturn T]
   otherwise mdf P1..mdf Pn[adaptMdfForReturn mdf' P0]=mdf' P0 //this case will also be triggered for n=0 
   //is multi level return needed by the sugar? can we optimize more during java generation if we do not?
 
-
+Tr[lessReturnMut]
+  mut C1..mut Cn; Ps[lessReturnMut]=capsule C1..capsule Cn; Ps
 --------------------------------------------
 3 ExpressionTypeJudgement
 --------------------------------------------
