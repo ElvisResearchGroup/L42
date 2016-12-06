@@ -378,35 +378,48 @@ Dispatch //HARD
 
 Calling type system on e:
 
-SimpleTS:
-if e is a block, then
-  blockTop:
-    try blockWithDivide
-    failing if block in shape, apply (propagate promotions to catches):
-      shape 1: apply to change to mut, type blockWithDivide again
-      shape 2: apply to change to mut, type blockWithDivide again; on fail apply to change to read, type blockWithDivide
-  where 
-    blockWithDivide:
-      if possible apply(block divide scope) to the smallest possible starting ds
-      else apply (block)
-    inside (block) we will apply (catchMany),(catch),(catch and rethrow any) 
-
-otherwise
-  if e not block, apply rule for (void) (Path) (library prop)(x) (loop) (throw) (mcall) (using)
+PromoteTS:
   
 
-CompleteTs://the one called recursivelly every time we do a "D|-e~>e' :_<=expectedT"
-  as much as possible, apply (lent to singleton)  
-  if possible apply unlock  
-  try SimpleTS
-  on fail:
-    if "lent should be mut", apply swap, then CompleteTS
-    if result is different w.r.t. the expected, fixable modulo capsule promotion:
-      apply (capsule promotion), then CompleteTS
-    if result is different w.r.t. the expected, fixable modulo imm promotion:
-      apply (capsule promotion), then CompleteTS
-      if does not work, apply (imm promotion), then CompleteTS
 
+SimpleTS: //input the expected type, return the computed type or the kind of error
+if e is a block, then
+  if possible apply(block divide scope) to the smallest possible starting ds
+  else apply (block)
+  inside (block) we will apply (catchMany),(catch),(catch and rethrow any) 
+otherwise
+  if e not block, apply rule for (void) (Path) (library prop)(x) (loop) (throw) (mcall) (using)
+
+CompleteTs://the one called recursivelly every time we do a "D|-e~>e' :_<=expectedT", return void or the error
+  as much as possible, apply (lent to singleton)  
+  if possible and do not restrict the returns, apply unlock  
+  try SwapTS
+  on result subtype of expected: all ok
+  on result not subtype of expected:
+    if result is different w.r.t. the expected, fixable modulo capsule promotion:
+      apply (capsule promotion), then SwapTS
+      if fail and expression is block in shape, apply (propagate promotions to catches):
+      apply to change to mut, apply (capsule promotion), apply SwapTS; assert: the result is subtype of the expected.
+    if result is different w.r.t. the expected, fixable modulo imm promotion:
+      apply (imm promotion), then SwapTS
+      if fail and expression is block in shape, apply (propagate promotions to catches):
+      apply to change to mut, apply (capsule promotion), apply SwapTS; assert: the result is subtype of the expected.
+      if fail
+      apply change to read, apply (imm promotion), apply SwapTS; assert: the result is subtype of the expected.
+
+SwapTS: //return computed type or error
+  try SimpleTS
+  on result subtype of expected: all ok
+  on fail:
+    if "lent should be mut", apply swap, then UnlockTS
+    propagate other failures
+
+UnlockTS: //return computed type or error
+  try SimpleTS
+  on result subtype of expected: all ok
+  on fail:
+    if "required variable is strongly locked", apply unlock, then SimpleTS
+    propagate other failures
 
 ----------------
 
