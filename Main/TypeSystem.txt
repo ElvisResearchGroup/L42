@@ -19,7 +19,8 @@ Structure of this document:
 G::=x1:T1..xn:Tn  //G reads Gamma
 D::= Phase `|` p `|` G `|` Cage `|` Tr  //D reads Delta
 Cage::= xss; xs
-Tr::=Ts; Ps //Tr reads Throws
+Tr::=Ps; Ps //Tr reads Throws
+We can extract Tr.returns and Tr.exceptions for the first and the second group of Ps
 
 //we believe that at any moment, in a D:
 //Cage.xss contains only bindings that are mut in G
@@ -96,6 +97,38 @@ Tr[lessReturnReadLentMut]
    mdf C1..mdf Cn; Ps[lessReturnReadLentMut] = capsule C1..capsule Cn; Ps if mdf in {lent,mut}
    read C1..read Cn; Ps[lessReturnReadLentMut] = imm C1..imm Cn; Ps
    otherwise Tr[lessReturnReadLentMut] = Tr 
+
+extractReturnMdf(e1..en)=mdf //annotated expressions
+  mdfs=extractReturnMdf(e1),...,extractReturnMdf(en)
+  mdf=mostGeneral({mdfs})//make a set to remove duplicates
+
+extractReturnMdf(void)=extractReturnMdf(L)=extractReturnMdf(x)=extractReturnMdf(P)=empty
+extractReturnMdf(return[T, mdf P] e)=mdf,extractReturnMdf(e)
+extractReturnMdf(loop e)=extractReturnMdf(error e)=extractReturnMdf(exception e)=extractReturnMdf(e)
+extractReturnMdf( e0.m[_](x1:e1,..,xn:en) )=extractReturnMdf( use P check m(x1:e1,..,xn:en) e0)=extractReturnMdf(e0),...,extractReturnMdf(en)
+
+extractReturnMdf( (T1 x1=e1 Tn xn=en k1..km e0 [_]) )=extractReturnMdf(e0),...,extractReturnMdf(en),extractReturnMdf(k1),..,extractReturnMdf(km)
+where km not of form return Any e
+No, need subtyping reasoning? Need to return the T instead of the mdf,
+and to supply the p, then check for subtyping 
+otherwise 
+
+extractReturnMdf(catch throw P x e)=extractReturnMdf(e)
+
+//TODO: sugar uses return T+return Any to do cast. Current restrictions
+//would prevent this.
+//If we then support return T+return Any, then need to
+//prevent a return* +return Any to be explored by extractReturnMdf  
+
+mostGeneral(mdfs)=mdf //assert fwd and fwd% not in mdfs
+  if mdfs=mdf', then mdf=mdf' //that is the only way mdf=class
+  otherwise if class in mdfs, then undefined
+  otherwise if read in mdfs, mdf=read
+  otherwise if capsule in mdfs, then mdf=mostGeneral(mdfs\capsule)
+  //from now on, we have at least two of those:lent, mut, imm //Note: fwd and fwd% are cutted out in the throw rule
+  otherwise if imm in mdfs, mdf=read
+  otherwise mdf=lent
+
   
 --------------------------------------------
 3 ExpressionTypeJudgement
@@ -133,10 +166,11 @@ D |- loop e ~> loop e' : imm Void
 (throw)
 D|-throw[T?,_] e~> throw[T,mdf P] e' :  T
   where
-  D|- e~>  e' :  mdf P
+  resolve(D.p,guessType(D.G,e))=T' //TODO: is it needed somehow or should just be asserted?
+  D|- e~>  e' :  mdf P<=T'
   either T?=empty or T?=T
-  if throw=exception, p|-mdf P<=imm P' and P' in D.Ps
-  if throw=return, p|-mdf P<=T' and T' in D.Ts
+  if throw=exception, p|-mdf P<=imm P' and P' in D.Tr.exceptions
+  if throw=return, p|-mdf P<=T', P in D.Tr.returns and mdf not fwd or fwd% 
   if throw=error, p|-mdf P<=imm Any  
 
 (mcall)
@@ -162,15 +196,17 @@ D|- e0.m[_](x1:e1..Xn:en) ~> e'0.m[P0](x1:e'1..xn:e'n)  : T' //e0 will be of for
 Phase| p| G| Cage| Tr|-(T1 x1=e1..Tn xn=en ks e0[_]) ~>(T'1 x1=e'1..T'n xn=e'n ks' e'0 [T]) : T
   where
   for i in 1..n T'i=resolve(p,Ti)
-  Phase| p| G/x1..xn| Cage| Tr|-ks~> ks' : T
+  Phase| p| G/x1..xn| Cage| Tr| mdf|-ks~> ks' : T
   G'=x1:T'1..xn:T'n
   G1=G[ks'][fwd(complete(G'))]
   for i in 1..n Phase| p| G1| Cage| Tr[ks']|-ei~>e'i: _ <=fwd% T'i
+  mdf=extractReturnMdf(e'1..e'n)
   if exists x in FV(e1..en) such that G(x)=fwd _ or G(x)=fwd% _
     G0=G[fwd%(G')]
   otherwise
     G0=G[G']
   Phase| p| G0| Cage| Tr|-e0~>e'0:_<=T
+
   
 (block divide scope)
 //This rule is not materialized in the sugar since it would duplicate the catches (potentially exponentially) //also a desugaring tring to assign the inner block to a variable and then do the catches only one would capture also errors in the "e"
@@ -394,11 +430,11 @@ CompleteTs://the one called recursivelly every time we do a "D|-e~>e' :_<=expect
   on result subtype of expected: all ok
   on result not subtype of expected:
     if result is different w.r.t. the expected, fixable modulo capsule promotion:
-      apply (capsule promotion), then SwapTS
+      apply (capsule promotion), then UnlockTS
       if fail and expression is block in shape, apply (propagate promotions to catches):
       apply to change to mut, apply (capsule promotion), apply SwapTS; assert: the result is subtype of the expected.
     if result is different w.r.t. the expected, fixable modulo imm promotion:
-      apply (imm promotion), then SwapTS
+      apply (imm promotion), then UnlockTS
       if fail and expression is block in shape, apply (propagate promotions to catches):
       apply to change to mut, apply (capsule promotion), apply SwapTS; assert: the result is subtype of the expected.
       if fail
@@ -408,14 +444,14 @@ SwapTS: //return computed type or error
   try SimpleTS
   on result subtype of expected: all ok
   on fail:
-    if "lent should be mut", apply swap, then UnlockTS
+    if "lent should be mut", apply swap, then SimpleTS
     propagate other failures
 
 UnlockTS: //return computed type or error
-  try SimpleTS
+  try SwapTS
   on result subtype of expected: all ok
   on fail:
-    if "required variable is strongly locked", apply unlock, then SimpleTS
+    if "required variable is strongly locked", apply unlock, then SwapTS
     propagate other failures
 
 ----------------

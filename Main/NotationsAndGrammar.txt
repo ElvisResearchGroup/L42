@@ -61,11 +61,13 @@ msx::=ms(::x)?
 #core expressions
 L::={interface? implements Ps M1..Mn Phase}
 M::=refine? mh e?| ms e | C:e
-e::=void|L|mr| throw[T1,T2] e|loop e|(ds ks e[T]) | use P check m((x:e)s) e
-mr::= x| P | mr.m((x:e)s)
+e::=void|L|chain| throw[T1,T2] chain|loop e|(ds ks e[T]) | use P check m((x:e)s) e
+chain::= x| P | chain.m[P]((x:e)s)
 //annotations [T1,T2], [P] and [T] are implicitly "?", as in [T]?
 k::=catch T x e
 d::= T x=e
+//note: chain have always a guessable type, 
+//TODO: update sugared language to require chain as meth receiver and thrown expressions
 
 #Compiled terms
 LC::={interface? implements Ps MC1..MCn Phase}  //library compiled

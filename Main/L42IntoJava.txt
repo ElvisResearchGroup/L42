@@ -515,10 +515,10 @@ When from program p we need to load classes Ps0 to CT using cache:
 CT'=CT.need(cache,p,Ps0) //need all the chunk together, since Javac may do multi-class inlining
   Ps1={P in Ps0 | not CT.has(p,P)}
   //assert all classes in CT are also "cached well"
-  deps1={Ps\Ps1\..\Psn| Ps in deps0,Ps1..Psn=deps0\Ps}
+  deps={dom(p(P).Dep)| P in Ps1}
   Dag: //may not have a single root
     Nodes={P,dom(p(P).Dep)[from P]| P in Ps1} //note, dependencies are transitive    
-    Edges={ Ps1->Ps2 | Ps1,Ps2 in deps0, Ps1 >Ps2}
+    Edges={ Ps1->Ps2 | Ps1,Ps2 in deps, Ps1 supersetof Ps2}
   var CTres=CT
   Repeat:
     Take one leave Ps in Dag
