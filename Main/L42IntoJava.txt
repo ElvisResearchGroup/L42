@@ -534,7 +534,7 @@ CT'=CT.need(cache,p,Ps0) //need all the chunk together, since Javac may do multi
   When all the existing leaves are dirty,then:
      -we load Paths=(all the P in the roots of the Dag) without using the cache:
        CTRes=CT.growWith(p,Paths)
-     -we remove such p(P).CN from the cache //is this enough?
+     -we update cache forall Pi in "roots of the Dag", p(Pi).CN->CT(p(Pi).CN)
   //this algorithm require to not cache the "e",
   //may be is not a problem since they are usually small?
   return CTRes  
