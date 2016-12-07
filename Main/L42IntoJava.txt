@@ -518,7 +518,7 @@ CT'=CT.need(cache,p,Ps0) //need all the chunk together, since Javac may do multi
   deps={dom(p(P).Dep)| P in Ps1}
   Dag: //may not have a single root
     Nodes={P,dom(p(P).Dep)[from P]| P in Ps1} //note, dependencies are transitive    
-    Edges={ Ps1->Ps2 | Ps1,Ps2 in deps, Ps1 supersetof Ps2}
+    Edges={ Ps1->Ps2 | Ps1,Ps2 in Nodes, Ps1 supersetof Ps2}
   var CTres=CT
   Repeat:
     Take one leave Ps in Dag
