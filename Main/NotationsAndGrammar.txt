@@ -121,18 +121,30 @@ Part 2: well formedness
 -----------------------------------------------------------
 
 ms: unique x in xs
+
 mh: mh.ms is well defined, Any notin Ps //Ps is thrown exceptions
+
 mdf: "%" not present in any term, will be used internally by the type system
-C: not Any, Library, Void, This, Thisn
-T: now is allowed, but I may want to prevent Void::msxs or similar
+
+C:e :  C not Any, Library, Void, This, Thisn
+
+T: for skeletal types now is allowed, but I may want to prevent Void::msxs or similar
+
 msx: in ms::x, x in ms.xs or x is this
-all throw in a specific ks are the same (thus no "catch return T1 x1 e1 catch error T2 x2 e2")
+
 L: unique LDom in LDoms, Any notin Ps //Library and Void are not interfaces so you will get the normal error from implementing them
    and methods in interfaces have no body (and no @private)
+
 throw/loop: I may want to disallows throw throw' e and similar
-(ds ks e[T]): unique x in ds, FV(ks) disjoint dom(ds) 
+
+(ds ks e[T]): unique x in ds, FV(ks) disjoint dom(ds) and 
+  forall k1,k2 in ks, k1.throw=k2.throw
+  That is, all throw in a specific ks are the same (thus no "catch return T1 x1 e1 catch error T2 x2 e2")
+
 e.m[P]((x:e)s): I may want to disallow throw and similar as es
+
 use P check m((x:e)s) e: P not Any/Void/Library
+
 
 //Note: error/exception only imm is checked as type error, not well formedness
 

@@ -7,7 +7,7 @@ Structure of this document:
 
 3 ExpressionTypeJudgement
 
-4 Subtyping p|- T<=T' and shortcut D |- e ~> e':T<=T'
+4 Subtyping p|- T<=T' and shortcut D |- e ~> e':T | Tr<=T'
 
 5 LibraryAndMemberTyping
 
@@ -17,10 +17,9 @@ Structure of this document:
 //In this file, all the L are LC   //LC == in all C:e, e of form L
 
 G::=x1:T1..xn:Tn  //G reads Gamma
-D::= Phase `|` p `|` G `|` Cage `|` Tr  //D reads Delta
+D::= Phase `|` p `|` G `|` Cage  //D reads Delta
 Cage::= xss; xs
-Tr::=Ps; Ps //Tr reads Throws
-We can extract Tr.returns and Tr.exceptions for the first and the second group of Ps
+Tr::=Ts; Ps //Tr reads Throws
 
 //we believe that at any moment, in a D:
 //Cage.xss contains only bindings that are mut in G
@@ -71,6 +70,8 @@ toRead(T)
 toRead(G)
   toRead(G)(x)=toRead(G(x)) //thus undefined where toRead undefined 
 
+toLent(T1..Tn;Ps)=toLent(T1)..toLent(Tn);Ps
+
 G[G']
   G[G'](x)=G'(x) if x in dom(G'); otherwise G[G'](x)=G(x)
 
@@ -78,47 +79,21 @@ G[ks]
   G[catch error mdf P x e ks]=toRead(G) with P not Any
   otherwise G[ks]=G 
 
-Tr[ks]
-  if ks='catch throw _ Any e' then Tr[ks]=Tr else
-  Ts; Ps [catch error T1 x1 e1..catch error Tn xn en..]=Ts; Ps
-  Ts; Ps [catch exception _ P1 x1 e1..catch exception _ Pn xn en..]=Ts; Ps,P1..Pn
-  Ts; Ps [catch return mdf P1 x1 e1..catch return mdf Pn xn en..]=Ts[adaptMdfForReturn mdf P1]..[adaptMdfForReturn mdf Pn];Ps 
-  //Note: all the mdf of the various Ts are required to be the same, or the operation is undefined and we get a type error
-
-Ts[adaptMdfForReturn T]
-  mdf P1..mdf Pn[adaptMdfForReturn mdf' P0]=mdf' P0..mdf' Pn  if mdf' <= mdf
-  otherwise mdf P1..mdf Pn[adaptMdfForReturn mdf' P0]=mdf' P0 //this case will also be triggered for n=0 
-  //is multi level return needed by the sugar? can we optimize more during java generation if we do not?
-
-Tr[lessReturnMut]
-  mut C1..mut Cn; Ps[lessReturnMut] = capsule C1..capsule Cn; Ps
-  otherwise Tr[lessReturnMut] = Tr
-Tr[lessReturnReadLentMut]
-   mdf C1..mdf Cn; Ps[lessReturnReadLentMut] = capsule C1..capsule Cn; Ps if mdf in {lent,mut}
-   read C1..read Cn; Ps[lessReturnReadLentMut] = imm C1..imm Cn; Ps
-   otherwise Tr[lessReturnReadLentMut] = Tr 
-
-extractReturnMdf(e1..en)=mdf //annotated expressions
-  mdfs=extractReturnMdf(e1),...,extractReturnMdf(en)
-  mdf=mostGeneral({mdfs})//make a set to remove duplicates
-
-extractReturnMdf(void)=extractReturnMdf(L)=extractReturnMdf(x)=extractReturnMdf(P)=empty
-extractReturnMdf(return[T, mdf P] e)=mdf,extractReturnMdf(e)
-extractReturnMdf(loop e)=extractReturnMdf(error e)=extractReturnMdf(exception e)=extractReturnMdf(e)
-extractReturnMdf( e0.m[_](x1:e1,..,xn:en) )=extractReturnMdf( use P check m(x1:e1,..,xn:en) e0)=extractReturnMdf(e0),...,extractReturnMdf(en)
-
-extractReturnMdf( (T1 x1=e1 Tn xn=en k1..km e0 [_]) )=extractReturnMdf(e0),...,extractReturnMdf(en),extractReturnMdf(k1),..,extractReturnMdf(km)
-where km not of form return Any e
-No, need subtyping reasoning? Need to return the T instead of the mdf,
-and to supply the p, then check for subtyping 
+mostGeneral(p,error,Tr)=imm Any
+mostGeneral(p,return,empty;Ps) undefined??
+mostGeneral(p,exception,_;empty) undefined?? TODO:Need discussion
+mostGeneral(p,return,T1..Tn;Ps)=mostGeneral(T1.mdf .. Tn.mdf) mostGeneral(p,T1.P .. Tn.P)
 otherwise 
+mostGeneral(p,exception,_;Ps)=imm mostGeneral(p,Ps)
 
-extractReturnMdf(catch throw P x e)=extractReturnMdf(e)
+mostGeneral(p,P)=P
+otherwise
+mostGeneral(p,Ps1 P Ps2)=mostGeneral(p,Ps1 Ps2)
+  if exists P' in Ps1,Ps2 such that p|-P<=P'
+otherwise
+mostGeneral(p,Ps)=Any 
 
-//TODO: sugar uses return T+return Any to do cast. Current restrictions
-//would prevent this.
-//If we then support return T+return Any, then need to
-//prevent a return* +return Any to be explored by extractReturnMdf  
+catchRethrow(k) iff k=catch throw T x ((imm Void y=e catch error Any z void void) throw x)
 
 mostGeneral(mdfs)=mdf //assert fwd and fwd% not in mdfs
   if mdfs=mdf', then mdf=mdf' //that is the only way mdf=class
@@ -141,86 +116,58 @@ mostGeneral(mdfs)=mdf //assert fwd and fwd% not in mdfs
 
 
 (void)
-_ |- void~> void:imm Void
+_ |- void~> void:imm Void | emptyTr
 
 (Path)
-_ |- P~>P:class P
+_ |- P~>P:class P | emptyTr
 
 (library prop)
-Phase |p |_ |_ |_ |- L ~> L' : imm Library
+Phase |p |_ |_ |_ |- L ~> L' : imm Library | emptyTr
   where
   Phase  |- p.evilPush(L) ~> L'
 
 (x)
-Phase| p| G| xss; xs| Tr |-x:T
+Phase| p| G| xss; xs| Tr |-x:T | emptyTr
   where
   x notin xs
   if x in xss T=toLent(G(x))
   otherwise T=G(x)
 
 (loop)
-D |- loop e ~> loop e' : imm Void
+D |- loop e ~> loop e' : imm Void | Tr
   where
-  D|- e ~> e' : imm Void
+  D|- e ~> e' : imm Void | Tr
 
 (throw)
-D|-throw[T?,_] e~> throw[T,mdf P] e' :  T
+D|-throw[T?,_] e~> throw[T,mdf P] e' :  T | Tr
   where
-  resolve(D.p,guessType(D.G,e))=T' //TODO: is it needed somehow or should just be asserted?
-  D|- e~>  e' :  mdf P<=T'
+  resolve(D.p,guessType(D.G,e))=mdf' P //TODO: is it needed somehow or should just be asserted?
+  D|- e~>  e' :  mdf' P |Tr' <=mdf P
   either T?=empty or T?=T
-  if throw=exception, p|-mdf P<=imm P' and P' in D.Tr.exceptions
-  if throw=return, p|-mdf P<=T', P in D.Tr.returns and mdf not fwd or fwd% 
-  if throw=error, p|-mdf P<=imm Any  
+  if throw=exception, mdf=imm and Tr=Tr'.with(exceptions:\++P)
+  if throw=return, mdf=mdf',Tr=Tr',with(returns:(mdf P)++\) and mdf not fwd or fwd% 
+  if throw=error, mdf=imm and Tr=Tr'  
 
 (mcall)
-D|- e0.m[_](x1:e1..Xn:en) ~> e'0.m[P0](x1:e'1..xn:e'n)  : T' //e0 will be of form mr
+D|- e0.m[_](x1:e1..Xn:en) ~> e'0.m[P0](x1:e'1..xn:e'n)  : T' | Ts0 U..U Tsn U empty;Ps //e0 will be of form mr
   where
   resolve(D.p,guessType(D.G,e0))= _ P0=T'0
   D.p(P0).m(x1..xn).mh[from P0]=mdf0 method T m(T1 x1,..Tn xn) exception Ps
   forall P in Ps exists P' in D.Tr.Ps such that p|- P <= P'
-  forall i 0..n D|- ei ~> e'i : T'i <=Ti
+  forall i 0..n D|- ei ~> e'i : T'i | Tri<=Ti
   if no fwd or fwd% in T'1..T'n
     T'=T
   otherwise 
     T'=fwd% T
      
 (using)
- D|-use P check m(x1:e1.. xn:en) e0 ~>use P check m(x1:e'1.. xn:e'n) e'0 :T0
+ D|-use P check m(x1:e1.. xn:en) e0 ~>use P check m(x1:e'1.. xn:e'n) e'0 :T0 | Tr0 U..U Trn
  where
    plugin(D.p,P,m(x1..xn))=plg, T0..Tn //plg is a free variable, in the small step reduction would be the function representing the behaviour
    forall i 0..n D|- ei ~> e'i : T'i <=Ti
 
 
-(block)
-Phase| p| G| Cage| Tr|-(T1 x1=e1..Tn xn=en ks e0[_]) ~>(T'1 x1=e'1..T'n xn=e'n ks' e'0 [T]) : T
-  where
-  for i in 1..n T'i=resolve(p,Ti)
-  Phase| p| G/x1..xn| Cage| Tr| mdf|-ks~> ks' : T
-  G'=x1:T'1..xn:T'n
-  G1=G[ks'][fwd(complete(G'))]
-  for i in 1..n Phase| p| G1| Cage| Tr[ks']|-ei~>e'i: _ <=fwd% T'i
-  mdf=extractReturnMdf(e'1..e'n)
-  if exists x in FV(e1..en) such that G(x)=fwd _ or G(x)=fwd% _
-    G0=G[fwd%(G')]
-  otherwise
-    G0=G[G']
-  Phase| p| G0| Cage| Tr|-e0~>e'0:_<=T
-
-  
-(block divide scope)
-//This rule is not materialized in the sugar since it would duplicate the catches (potentially exponentially) //also a desugaring tring to assign the inner block to a variable and then do the catches only one would capture also errors in the "e"
-//type system need not to repeat the test for ks in the two contexts,
-//since if ks typed in the outer block, it would also type in the same way
-//in the richer context in the inner block.
-D|- (ds1 ds2 ks e)~>(ds'1 ds'2 ks' e'):T
-  where
-  D|- (ds1 ks (ds2 ks e) )~>(ds'1 ks'(ds'2 ks' e')):T
-  dom(ds2) not in FV(ds1)
-  //we do not need to state FV(ks) not in dom(ds1,ds2) since rule block do G/x1..xn
-  //to optimize, we could use a empty shell ks (with all es replaced with error void), but then we will need to explicitly test for FV(ks) not in dom(ds1,ds2)
-  
-(propagate promotions to catches)
+//TODO: may disappear(propagate promotions to catches)
 //This rule is basically is a fix to support the syntactic sugar
 //Can not be in the sugar since it needs to be applied dynamically and failure driven
 //note, the sugar just use a single k, here is generalized
@@ -234,59 +181,98 @@ D|- (d catch return mdf Path x x e)~>(d' catch return mdf' Path x x e') :mdf' Pa
     //is there a way to make this rule more deterministic?
     //if we look in FV(d) and compare with D.Cage.xss/xs we may work out what we need?
 
-
-(catchMany)
-D|-k1..kn ~> k'1..k'n:T
+(block divide scope)
+//This rule is not materialized in the sugar since it would duplicate the catches (potentially exponentially) //also a desugaring tring to assign the inner block to a variable and then do the catches only one would capture also errors in the "e"
+//type system need not to repeat the test for ks in the two contexts,
+//since if ks typed in the outer block, it would also type in the same way
+//in the richer context in the inner block.
+D|- (ds1 ds2 ks e)~>(ds'1 ds'2 ks' e'):T
   where
-  forall i in 1..n D|-ki ~> k'i:T
-  either n=1 or forall i 1..n Any notEq k'i.T.P 
+  D|- (ds1 ks (ds2 ks e) )~>(ds'1 ks'(ds'2 ks' e')):T
+  dom(ds2) not in FV(ds1)
+  //we do not need to state FV(ks) not in dom(ds1,ds2) since rule block do G/x1..xn
+  //to optimize, we could use a empty shell ks (with all es replaced with error void), but then we will need to explicitly test for FV(ks) not in dom(ds1,ds2)
+
+(block)
+Phase| p| G| Cage| Tr|-(T1 x1=e1..Tn xn=en ks e0[_]) ~>(T'1 x1=e'1..T'n xn=e'n ks' e'0 [T]) : T | (Tr1 U..U Trn)\Ks' Tr U Tr0
+  where
+  for i in 1..n T'i=resolve(p,Ti)
+  G'=x1:T'1..xn:T'n
+  G1=G[ks][fwd(complete(G'))]
+  for i in 1..n Phase| p| G1| Cage|-ei~>e'i: _ | Tri <=fwd% T'i
+  Phase| p| G/x1..xn| Cage | Tr1 U .. U Trn |-ks~> ks' : T | Tr
+  if exists x in FV(e1..en) such that G(x)=fwd _ or G(x)=fwd% _
+    G0=G[fwd%(G')]
+  otherwise
+    G0=G[G']
+  Phase| p| G0| Cage |-e0~>e'0:_ | Tr0<=T
+
+    
+
+//Note: the new idea is that catch throw Any will catch all that can be thrown,
+// if not of form catchRethrow(k); in that case *only* the catchRethrow rule will apply
+(catchMany)
+D| Tr |-k1..kn ~> k'1..k'n:T | Tr1 U .. U Trn
+  where
+  forall i in 1..n D| Tr|-ki ~> k'i:T|Tri
+  either forall i 1..(n-1) Any notEq k'i.P //That is, only the last one can 
   
 (catch)
-Phase| p| G| Cage| Tr|-catch throw T0 x e ~> catch throw resolve(p,T0) x e' :T1
+Phase| p| G| Cage| Tr|-catch throw T0 x e ~> catch throw resolve(p,T0) x e' :T1| Tr
   where
-  Phase| p| G[x:T0]| Cage| Tr |- e ~> e':_<=T1
+  Phase| p| G[x:T0]| Cage|- e ~> e':_<=T1| Tr
   either throw=return or resolve(p,T0)=imm _
   resolve(p,T0) not in {_ Any, fwdImm _,fwdMut, fwd%Imm _,fwd%Mut _}//This cause strong limitation in factories using conditionals (as in if-return)
 
 (catch and rethrow any)// could be sugared as "on throw mdf x doAndPropagate e"  
-Phase |p |G |Cage |Tr|-catch throw T x (e0 throw x) ~> catch throw mdf Any x (e0' throw x): _
+Phase |p |G |Cage |Tr|-catch throw T x (e0 throw x) ~> catch throw mdf Any x (e0' throw x): _ | Tr
   where
-  resolve(p,T)=mdf Any, mdf notin {fwdImm,fwd%Imm,fwdMut,fwd%Mut}
-  either throw =return or mdf=imm
+  resolve(p,T)=mdf Any //mdf is ignored
   e0=(imm Void y=e catch error Any z void void)
   e0'=(imm Void y=e' catch error Any z void void)
   Phase |p |G\x |Cage |empty |- e ~> e':imm Void
 
-(unlock)
-Phase |p |G |xss;xs |Tr[lessReturnReadLentMut]|-e~>e':mdf P
+(catch precise any)// could be sugared as "on throw mdf x doAndPropagate e"  
+Phase |p |G |Cage |Tr|-catch throw T x e ~> catch throw mdf Any x e': T' | Tr'
   where
-  Phase |p |G |xss,domMut(G)\xss ; empty |Tr|-e~>e':mdf P
+  not catchRethrow(catch throw T x e)
+  resolve(p,T)=mdf Any
+  //more expressive rule would say e type for any T in Tr.Ts
+  T=mostGeneral(throw,Tr)//may be Any, or even undefined for return class+read
+  Phase |p |G+x:T |Cage |- e ~> e':T'| Tr'
+
+
+(unlock)
+Phase |p |G |xss;xs|-e~>e':mdf P | Tr
+  where
+  Phase |p |G |xss,domMut(G)\xss ; empty |-e~>e':mdf P | Tr
   mdf in {imm,fwd%Imm,fwdImm,capsule,class}
+  forall T in Tr.Ts, T.mdf in {imm,capsule,class} 
 
 (swap)
-Phase |p |G |xs0,xss;xs |Tr[lessReturnMut]|-e~>e':toLent(mdf P)
+Phase |p |G |xs0,xss;xs|-e~>e':toLent(mdf P) | toLent(Tr)
   where
-  Phase |p |G |xss,domMut(G)\xss ; xs |Tr|-e~>e':mdf P
+  Phase |p |G |xss,domMut(G)\xss ; xs |Tr|-e~>e':mdf P | Tr
 
 (capsule promotion)
-Phase |p |G |Cage |Tr|-e~>e':capsule P
+Phase |p |G |Cage |-e~>e':capsule P | Tr
   where
-  Phase |p |G |Cage' |Tr|-e~>e':mut P  
+  Phase |p |G |Cage'|-e~>e':mut P   | Tr
   Cage=xss;xs
   Cage'=xss,domMut(G)\xss;xs
 
 (imm promotion)
-Phase |p |G |Cage |Tr|-e~>e':imm P
+Phase |p |G |Cage|-e~>e':imm P | Tr
   where
-  Phase |p |G |Cage' |Tr|-e~>e':mdf P
+  Phase |p |G |Cage' |Tr|-e~>e':mdf P | Tr
   mdf in {read,lent} //TODO: what about fwd/fwd%  
   Cage=xss;xs
   Cage'=xss,domMut(G)\xss;domMutLentRead(G)//fwd%Mut, fwdMut in xs too
 
 (lent to singleton)
-Phase| p| G, x:lent C, G'|  xss;xs | Tr |-e~>e':T
+Phase| p| G, x:lent C, G'|  xss;xs |-e~>e':T  | Tr
   where 
-  Phase| p| G, x:mut C, G'|  xss,{x};xs| Tr |-e~>e':T
+  Phase| p| G, x:mut C, G'|  xss,{x};xs |-e~>e':T | Tr
 
 
 ------------------------------------------------------
