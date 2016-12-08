@@ -104,7 +104,9 @@ mostGeneral(mdfs)=mdf //assert fwd and fwd% not in mdfs
   otherwise if imm in mdfs, mdf=read
   otherwise mdf=lent
 
-  
+Tr1 U Tr2
+  Ts1;Ps1 U Ts2;Ps2 =  Ts1,Ts2; Ps1,Ps2  
+
 --------------------------------------------
 3 ExpressionTypeJudgement
 --------------------------------------------
@@ -166,20 +168,6 @@ D|- e0.m[_](x1:e1..Xn:en) ~> e'0.m[P0](x1:e'1..xn:e'n)  : T' | Ts0 U..U Tsn U em
    plugin(D.p,P,m(x1..xn))=plg, T0..Tn //plg is a free variable, in the small step reduction would be the function representing the behaviour
    forall i 0..n D|- ei ~> e'i : T'i <=Ti
 
-
-//TODO: may disappear(propagate promotions to catches)
-//This rule is basically is a fix to support the syntactic sugar
-//Can not be in the sugar since it needs to be applied dynamically and failure driven
-//note, the sugar just use a single k, here is generalized
-D|- (d catch return mdf Path x x e)~>(d' catch return mdf' Path x x e') :mdf' Path
-  where
-  D|-(d catch return mdf' Path x x e)~>(d' catch return mdf' Path x x e') :mdf' Path
-  either
-    mdf=capsule, mdf'=mut
-  or
-    mdf=imm, mdf' in {mut,read} //mut case is needed if we need capsule promotion+subtyping
-    //is there a way to make this rule more deterministic?
-    //if we look in FV(d) and compare with D.Cage.xss/xs we may work out what we need?
 
 (block divide scope)
 //This rule is not materialized in the sugar since it would duplicate the catches (potentially exponentially) //also a desugaring tring to assign the inner block to a variable and then do the catches only one would capture also errors in the "e"
