@@ -151,7 +151,7 @@ D|-throw[T?,_] e~> throw[T,mdf P] e' :  T | Tr
   if throw=error, mdf=imm and Tr=Tr'  
 
 (mcall)
-D|- e0.m[_](x1:e1..Xn:en) ~> e'0.m[P0](x1:e'1..xn:e'n)  : T' | Tr0 U..U Trn U empty;Ps //e0 will be of form mr
+D|- e0.m[_](x1:e1..Xn:en) ~> e'0.m[P0](x1:e'1..xn:e'n)  : T' | Tr0 U..U Trn U (empty;Ps) //e0 will be of form mr
   where
   resolve(D.p,guessType(D.G,e0))= _ P0=T'0=T0
   D.p(P0).m(x1..xn).mh[from P0]=mdf0 method T m(T1 x1,..Tn xn) exception Ps
@@ -166,8 +166,8 @@ D|- e0.m[_](x1:e1..Xn:en) ~> e'0.m[P0](x1:e'1..xn:e'n)  : T' | Tr0 U..U Trn U em
  D|-use P check m(x1:e1.. xn:en) e0 ~>use P check m(x1:e'1.. xn:e'n) e'0 :T0 | Tr0 U..U Trn
  where
    plugin(D.p,P,m(x1..xn))=plg, T0..Tn //plg is a free variable, in the small step reduction would be the function representing the behaviour
-   forall i 0..n D|- ei ~> e'i : T'i <=Ti
-
+   forall i 0..n D|- ei ~> e'i : T'i :Tri<=Ti
+//TODO: what happen if a parameter take mut and the plugin throw error w.r.t. strong error safety? can we catch it soon?
 
 (block divide scope)
 //This rule is not materialized in the sugar since it would duplicate the catches (potentially exponentially) //also a desugaring tring to assign the inner block to a variable and then do the catches only one would capture also errors in the "e"
@@ -182,7 +182,7 @@ D|- (ds1 ds2 ks e)~>(ds'1 ds'2 ks' e'):T
   //to optimize, we could use a empty shell ks (with all es replaced with error void), but then we will need to explicitly test for FV(ks) not in dom(ds1,ds2)
 
 (block)
-Phase| p| G| Cage| Tr|-(T1 x1=e1..Tn xn=en ks e0[_]) ~>(T'1 x1=e'1..T'n xn=e'n ks' e'0 [T]) : T | (Tr1 U..U Trn)\Ks' Tr U Tr0
+Phase| p| G| Cage|-(T1 x1=e1..Tn xn=en ks e0[_]) ~>(T'1 x1=e'1..T'n xn=e'n ks' e'0 [T]) : T | (Tr1 U..U Trn)\Ks' Tr U Tr0
   where
   for i in 1..n T'i=resolve(p,Ti)
   G'=x1:T'1..xn:T'n
