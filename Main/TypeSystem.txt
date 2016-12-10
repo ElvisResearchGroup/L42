@@ -107,6 +107,11 @@ mostGeneral(mdfs)=mdf //assert fwd and fwd% not in mdfs
 Tr1 U Tr2
   Ts1;Ps1 U Ts2;Ps2 =  Ts1,Ts2; Ps1,Ps2  
 
+Tr.capture(p,k1..kn)= Tr.capture(p,k1)...capture(p,kn)
+
+Tr.capture(p,catch error P x e)=Tr
+(Ts;Ps).capture(p,catch exception P x e)=Ts;{P'| P' in Ps, not p|-P'<=P}
+(Ts;Ps).capture(p,catch return P x e)={T| T in Ts, not p|-T.P<=P};Ps
 --------------------------------------------
 3 ExpressionTypeJudgement
 --------------------------------------------
@@ -182,7 +187,7 @@ D|- (ds1 ds2 ks e)~>(ds'1 ds'2 ks' e'):T
   //to optimize, we could use a empty shell ks (with all es replaced with error void), but then we will need to explicitly test for FV(ks) not in dom(ds1,ds2)
 
 (block)
-Phase| p| G| Cage|-(T1 x1=e1..Tn xn=en ks e0[_]) ~>(T'1 x1=e'1..T'n xn=e'n ks' e'0 [T]) : T | (Tr1 U..U Trn)\Ks' Tr U Tr0
+Phase| p| G| Cage|-(T1 x1=e1..Tn xn=en ks e0[_]) ~>(T'1 x1=e'1..T'n xn=e'n ks' e'0 [T]) : T | (Tr1 U..U Trn).capture(p,ks') Tr U Tr0
   where
   for i in 1..n T'i=resolve(p,Ti)
   G'=x1:T'1..xn:T'n
