@@ -151,9 +151,9 @@ D|-throw[T?,_] e~> throw[T,mdf P] e' :  T | Tr
   if throw=error, mdf=imm and Tr=Tr'  
 
 (mcall)
-D|- e0.m[_](x1:e1..Xn:en) ~> e'0.m[P0](x1:e'1..xn:e'n)  : T' | Ts0 U..U Tsn U empty;Ps //e0 will be of form mr
+D|- e0.m[_](x1:e1..Xn:en) ~> e'0.m[P0](x1:e'1..xn:e'n)  : T' | Tr0 U..U Trn U empty;Ps //e0 will be of form mr
   where
-  resolve(D.p,guessType(D.G,e0))= _ P0=T'0
+  resolve(D.p,guessType(D.G,e0))= _ P0=T'0=T0
   D.p(P0).m(x1..xn).mh[from P0]=mdf0 method T m(T1 x1,..Tn xn) exception Ps
   forall P in Ps exists P' in D.Tr.Ps such that p|- P <= P'
   forall i 0..n D|- ei ~> e'i : T'i | Tri<=Ti
