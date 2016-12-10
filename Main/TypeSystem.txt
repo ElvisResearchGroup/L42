@@ -225,7 +225,7 @@ Phase |p |G |Cage |Tr|-catch throw T x (e0 throw x) ~> catch throw mdf Any x (e0
   e0'=(imm Void y=e' catch error Any z void void)
   Phase |p |G\x |Cage  |- e ~> e':_ <=imm Void | empty
 
-(catch precise any)// could be sugared as "on throw mdf x doAndPropagate e"  
+(catch precise any)//TODO: can it be broken by metaprogramming? forcing to jump to Any while there was a result before?  
 Phase |p |G |Cage |Tr|-catch throw T0 x e ~> catch throw Any x e': T | Tr'
   where
   not catchRethrow(catch throw Any x e)
@@ -248,7 +248,7 @@ Phase |p |G |xs0,xss;xs|-e~>e':toLent(mdf P) | toLent(Tr)
   Phase |p |G |xss,domMut(G)\xss ; xs |Tr|-e~>e':mdf P | Tr
 
 (capsule promotion)
-Phase |p |G |Cage |-e~>e':capsule P | Tr
+Phase |p |G |Cage |-e~>e':capsule P | Tr //TODO: should we promote a mut P inside Tr to capsule? same for imm-promotion?
   where
   Phase |p |G |Cage'|-e~>e':mut P   | Tr
   Cage=xss;xs
