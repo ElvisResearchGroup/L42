@@ -223,7 +223,7 @@ Phase |p |G |Cage |Tr|-catch throw T x (e0 throw x) ~> catch throw mdf Any x (e0
   resolve(p,T)=mdf Any //mdf is ignored
   e0=(imm Void y=e catch error Any z void void)
   e0'=(imm Void y=e' catch error Any z void void)
-  Phase |p |G\x |Cage |empty |- e ~> e':imm Void
+  Phase |p |G\x |Cage  |- e ~> e':imm Void | empty
 
 (catch precise any)// could be sugared as "on throw mdf x doAndPropagate e"  
 Phase |p |G |Cage |Tr|-catch throw T0 x e ~> catch throw Any x e': T | Tr'
