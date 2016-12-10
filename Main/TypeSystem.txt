@@ -221,13 +221,13 @@ Phase |p |G |Cage |Tr|-catch throw T x (e0 throw x) ~> catch throw mdf Any x (e0
   Phase |p |G\x |Cage |empty |- e ~> e':imm Void
 
 (catch precise any)// could be sugared as "on throw mdf x doAndPropagate e"  
-Phase |p |G |Cage |Tr|-catch throw T x e ~> catch throw mdf Any x e': T' | Tr'
+Phase |p |G |Cage |Tr|-catch throw T0 x e ~> catch throw Any x e': T | Tr'
   where
-  not catchRethrow(catch throw T x e)
-  resolve(p,T)=mdf Any
+  not catchRethrow(catch throw Any x e)
+  resolve(p,T0)=mdf Any
   //more expressive rule would say e type for any T in Tr.Ts
-  T=mostGeneral(throw,Tr)//may be Any, or even undefined for return class+read
-  Phase |p |G+x:T |Cage |- e ~> e':T'| Tr'
+  T1=mostGeneral(throw,Tr)//may be Any, or even undefined for return class+read
+  Phase |p |G+x:T1 |Cage |- e ~> e':T| Tr'
 
 
 (unlock)
