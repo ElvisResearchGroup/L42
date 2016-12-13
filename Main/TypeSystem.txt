@@ -149,11 +149,11 @@ D |- loop e ~> loop e' : imm Void | Tr
 D|-throw[T?,_] e~> throw[T,mdf P] e' :  T | Tr
   where
   resolve(D.p,guessType(D.G,e))=mdf' P //TODO: is it needed somehow or should just be asserted?
-  D|- e~>  e' :  mdf' P |Tr' <=mdf P
+  D|- e~>  e' :  mdf P |Ts;Ps <=mdf' P //Allows promotions
   either T?=empty or T?=T
-  if throw=exception, mdf=imm and Tr=Tr'.with(exceptions:\++P)
-  if throw=return, mdf=mdf',Tr=Tr',with(returns:(mdf P)++\) and mdf not fwd or fwd% 
-  if throw=error, mdf=imm and Tr=Tr'  
+  if throw=exception, mdf=imm and Tr=Ts;Ps,P
+  if throw=return, mdf=mdf',Tr=Ts,mdf P;Ps and mdf not fwd or fwd% 
+  if throw=error, mdf=imm and Tr=Ts;Ps
 
 (mcall)
 D|- e0.m[_](x1:e1..Xn:en) ~> e'0.m[P0](x1:e'1..xn:e'n)  : T' | Tr0 U..U Trn U (empty;Ps) //e0 will be of form mr
@@ -257,7 +257,7 @@ Phase |p |G |Cage |-e~>e':capsule P | Tr //TODO: should we promote a mut P insid
 (imm promotion)
 Phase |p |G |Cage|-e~>e':imm P | Tr
   where
-  Phase |p |G |Cage' |Tr|-e~>e':mdf P | Tr
+  Phase |p |G |Cage' |-e~>e':mdf P | Tr
   mdf in {read,lent} //TODO: what about fwd/fwd%  
   Cage=xss;xs
   Cage'=xss,domMut(G)\xss;domMutLentRead(G)//fwd%Mut, fwdMut in xs too
@@ -394,30 +394,41 @@ Dispatch //HARD
 
 Calling type system on e:
 
-SimpleTS: //input the expected type, return the computed type or the kind of error
-if e is a block, then
-  if possible apply(block divide scope) to the smallest possible starting ds
-  else apply (block)
-  inside (block) we will apply (catchMany),(catch),(catch and rethrow any) 
-otherwise
-  if e not block, apply rule for (void) (Path) (library prop)(x) (loop) (throw) (mcall) (using)
+BlockDivideScope block->block:
+  compute all the splitting points of a block, by using an algorithm like the following:
+    for each d in ds, see FV(ds), ...
+  then construct a resulting block where all inner ks are empty shells.
+  you can mark a divided block by using the Type annotation putting some special value, or a boolean flag.
+  
 
-CompleteTs://the one called recursivelly every time we do a "D|-e~>e' :_<=expectedT", return void or the error
-  as much as possible, apply (lent to singleton)  
-  if possible and do not restrict the returns, apply unlock  
-  try SwapTS
+SimpleTS D, expectedT,e-> computedT,Tr,annotatedE or errorInfo
+apply rule for (block) (void) (Path) (library prop)(x) (loop) (throw) (mcall) (using)
+  inside (block) we will apply (catchMany),(catch),(catch and rethrow any)
+
+CompleteTs D,e->computedT,Tr,annotatedE or error info ://the one called recursivelly every time we do a "D|-e~>e' :_<=expectedT"
+  as much as possible, apply (lent to singleton)
+  if e is a block b, then e=BlockDivideScope(b)
+  if possible and, apply unlock optimistically
+  //do not attempt the former line if the direct function over in the stack trace is imm-promotion
+  //do not attemp the former line if FV(e) do not contain locked variables
+  //may be just do it on demaind?
+  if e is a methodCall and the predicted result is not subtype of expected: AttemptPromotion  
+  else if e is a throw error/exception and the predicted result is not immutable: AttemptPromotion
+  else try UnlockTS
   on result subtype of expected: all ok
-  on result not subtype of expected:
-    if result is different w.r.t. the expected, fixable modulo capsule promotion:
-      apply (capsule promotion), then UnlockTS
-      if fail and expression is block in shape, apply (propagate promotions to catches):
-      apply to change to mut, apply (capsule promotion), apply SwapTS; assert: the result is subtype of the expected.
-    if result is different w.r.t. the expected, fixable modulo imm promotion:
-      apply (imm promotion), then UnlockTS
-      if fail and expression is block in shape, apply (propagate promotions to catches):
-      apply to change to mut, apply (capsule promotion), apply SwapTS; assert: the result is subtype of the expected.
-      if fail
-      apply change to read, apply (imm promotion), apply SwapTS; assert: the result is subtype of the expected.
+  on result not subtype of expected: AttemptPromotion
+
+AttemptPromotion:
+  if result is different w.r.t. the expected, fixable modulo capsule promotion:
+    apply (capsule promotion), then UnlockTS
+    if fail and expression is block in shape, apply (propagate promotions to catches):
+    apply to change to mut, apply (capsule promotion), apply UnlockTS; assert: the result is subtype of the expected.
+  if result is different w.r.t. the expected, fixable modulo imm promotion:
+    apply (imm promotion), then UnlockTS
+    if fail and expression is block in shape, apply (propagate promotions to catches):
+    apply to change to mut, apply (capsule promotion), apply UnlockTS; assert: the result is subtype of the expected.
+    if fail
+    apply change to read, apply (imm promotion), apply UnlockTS; assert: the result is subtype of the expected.
 
 SwapTS: //return computed type or error
   try SimpleTS
@@ -431,8 +442,14 @@ UnlockTS: //return computed type or error
   on result subtype of expected: all ok
   on fail:
     if "required variable is strongly locked", apply unlock, then SwapTS
+    //do not attempt the former line if the direct function over in the stack trace is imm-promotion
+    //do not attemp the former line if FV(e) do not contain locked variables
     propagate other failures
 
+//Note adding native support for local variables + casts would not make
+//returns less needed/problematic
+
+//Note: the current system never try to promote the e of return e
 ----------------
 
 Coherent and union types:
