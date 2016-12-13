@@ -199,7 +199,7 @@ Phase| p| G| Cage|-(T1 x1=e1..Tn xn=en ks e0[_]) ~>(T'1 x1=e'1..T'n xn=e'n ks' e
   otherwise
     G0=G[G']
   Phase| p| G0| Cage |-e0~>e'0:_ | Tr0<=T
-
+//Note, need to add cching info for mdf in catch return since now is inferred at typing
     
 
 //Note: the new idea is that catch throw Any will catch all that can be thrown,
