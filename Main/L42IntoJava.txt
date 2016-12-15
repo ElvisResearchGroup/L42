@@ -72,8 +72,8 @@ CT::= CN->p,CD,Javabytecode
 CD::=kind CN implements CNs{ Mxs }
 Mx::=refine? method T mxs((T x)s) body?//first is this
 //note: no exceptions declared, body empty only if kind=interface
-body::=ex | setter|getter|new|newWithFwd|newFwd nativeIntSum|nativeIntMul|...|nativeVectorAdd
-kind::=class |interface | nativeInt |nativeString| nativeFloat|nativeVector[CN] | ...
+body::=ex | setter|getter|new|newWithFwd|newFwd |nativeIntSum|nativeIntMul|...|nativeVectorAdd
+kind::=class |interface | nativeInt |nativeString| nativeFloat|nativeVector<CN> | nativeOpt<T>| ...
 miniE::=x|void|CN|null| throw[TX1,TX2] x |loop ex
   |CN.mxs(ys)| use CN check mxs(ys) ex
   |if x then ex1 else ex2 |while ???x?_or_?ex?? then ex1 | x1:=x2 |(mdf CN)x
@@ -277,7 +277,8 @@ CT+p=CT,p.top().CN->p,CD',J
 CT*mdf CN=@mdf CN if CT(CN)=kind _ and kind in {class,interface}
 CT*mdf CN=@mdf int if CT(CN)=nativeInt _ 
 ...
-CT*mdf CN=@mdf float if CT(CN)=nativeFloat _ 
+CT*mdf CN=@mdf float if CT(CN)=nativeFloat _
+CT*mdf CN=@mdf T if CT(CN)=nativeOpt<T> _  
 
 Java------------------
 statement st::=
@@ -600,9 +601,25 @@ if CT(CN)= aSpecificPattern
 something like this should work for int,float,arrays and a couple more stuff
 for Opts would work in combination with wrapper class optimization
 
+
+###Optimizations over blocks:
+---
+#Var Local binding optimization 
+if a block declare a binding x that:
+-has non interface type 
+-is initialized from constructor
+-is only used as receiver //includes is never returned
+-the called methods on it are only get/set
+then you can replace the x with the wrapped type(s) and avoid creation
+of such object.
+TODO: can be extended allowing calls for other kinds of methods?
+//Note, we still have to keep the class in existence, since could be used somewhere else.
+
+###Optimizations over whole classes:
+---
 Example int:
 for some x, CN, m, P, plus,times
-int32Pattern=
+int32Pattern=//input
 class CN{
   method Library x() getter
   method CN New_m(x)(Library x) new
@@ -612,7 +629,7 @@ class CN{
     error _)
   method CN times(CN that) ...
   }//note, not all methods need to be there
-int32Native=
+int32Native=//output
 int32Native CN{//here instead we will generate all methods
   method Library x() int32NativeToLib
   method CN New_m(Library x) int32NativeFromLib
@@ -622,33 +639,30 @@ int32Native CN{//here instead we will generate all methods
   //discuss: can we have two plus methods? can we have extra methods and just leave them be?
 
 WrapperClasses:
-class is wrapper if
+class CN is wrapper if
 - exactly one field,
-- no implements
-- never casted to Any??//can not be checked on an open program
-//TS may annotate T->Any(e), then that can be replace with new T? chain of news up to surviving inner type?
-//no need of the chain, wrapper classes are fixed one at the time?
-- either no setter(opt has no setter)
-  or never used in constructors and setters//may not need //also can not be checked on an open program 
+- no setter(opt has no setter)
+then
+replace all CN with the field type except for CN.mxs
+CN constructors are simplified away
+CN.f(x,z) setters are x:=z
+CN.f(x) getter are y=x 
+all throw x where G(x)=mdf CN in the original program//all throw of form throw x in this language 
+are transformed in (mdf CN x'=CN.new(x) throw x') //x will be now of the wrapped type
+all catch throw CN x e,
+if x used outside of throws in e
+are transformed in (mdf?? CN x'=x.field() transformedOf(e)[x'=x] )
+//TODO: check this does not break {..return..} optimization
   
-  then
-  replace all CN with the field type except for CN.mxs
-  CN constructors are simplified away
-  CN.f(x,z) setters are x:=z
-  CN.f(x) getter are y=x 
-  all throw where mdf CN x, use new
-  all catch throw mdf CN x, unwrap if not just rethrow
-  //check this does not break {..return..} optimization
-  
-  //note for marco: I believe/ed that this means redirect need to refuse to work on private P
-  //note for marco: if we rename all private nested classes to the top level, we can avoid most privacy coupuled; it would only stay for private methods.
+  //note for marco: I believe/ed that this means redirect need to refuse to work on private P, no idea what that could mean now
+  //oddly correlated note for marco: if we rename all private nested classes to the top level, we can avoid most privacy coupuled; it would only stay for private methods; not sure is what we want
 
 If/While insertion:
 If insertion:
 (T y=CN.#checkTrue(x)  catch exception Void ex1 ex2)
   replaced with
 if x ex2 else ex1
-  if CT(CN).kind=nativeInt //just to avoid native bools too?
+  if CT(CN).kind=nativeBool
 
 
 Throw/cast simplification
@@ -664,7 +678,7 @@ Throw/cast simplification
  ..
  catch throw Tn x x
  e)
-????? need casts ? ifs? type switch?
+????? need casts ? ifs? type switch?//Note: this is not the patter used in sugar
 
 
 ---------
@@ -672,41 +686,6 @@ Throw/cast simplification
 
 
 
-
-
-
------------------------------------------------
-
-
-  exercise:
-  e::= x| let x=e0 in e1 | e0 e1
-  into:
-  ax::= x| x y
-
-  ex::= ax| let x=ax ex
-  
-  [x]=x
-
-  [let x=e0 in e1]= let x=ax in [e1]
-   where [e0]=ax
-  [let x=e0 in e1]=
-     let x1=ax1 in .. let xn=axn let y=ax in
-     let x=ax in [e1]
-   where [e0]=let x1=ax1 in .. let xn=axn in ax
-   //note, the dots can be empty
-
-  [x y]= x y
-  otherwise
-  [x e1]=
-    let x1=ax1 in .. let xn=axn in
-    let y=ax in x y
-  where [e1]=let x1=ax1 in .. let xn=axn in ax
-  otherwise
-  [e0 e1]=
-    let x1=ax1 in .. let xn=axn in
-    let x=ax in [x e1]
-  where [e0]=let x1=ax1 in .. let xn=axn in ax
-  
 
 
 
