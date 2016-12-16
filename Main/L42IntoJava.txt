@@ -74,9 +74,9 @@ Mx::=refine? method T mxs((T x)s) body?//first is this
 //note: no exceptions declared, body empty only if kind=interface
 body::=ex | setter|getter|new|newWithFwd|newFwd |nativeIntSum|nativeIntMul|...|nativeVectorAdd
 kind::=class |interface | nativeInt |nativeString| nativeFloat|nativeVector<CN> | nativeOpt<T>| ...
-miniE::=x|void|CN|null| throw[TX1,TX2] x |loop ex
+miniE::=x|void|CN|null| throw[TX1,TX2] x |loop ex //TODO: may be miniE can be removed  and merged with ex
   |CN.mxs(ys)| use CN check mxs(ys) ex
-  |if x then ex1 else ex2 |while ???x?_or_?ex?? then ex1 | x1:=x2 |(mdf CN)x
+  |if x then ex1 else ex2 |breakLoop | x1:=x2 |(mdf CN)x
 ex::=miniE | (dxs kxs ex [TX])
 kx::=catch throw TX x ex
 dx::=TX x=ex
@@ -664,7 +664,15 @@ If insertion:
 if x ex2 else ex1
   if CT(CN).kind=nativeBool
 
+While insertion
+while cond block
+----------------
+( loop (cond.#checkTrue(),  block ), catch exception Void x void, void)
 
+( loop (x=cond   Bool.#checkTrue( x),  block ), catch exception Void x void, void)
+
+( loop ( x=cond if x breakWhile block) catch exception Void x void, void)
+//If the block does not leak exception Void, we can also avoid the catch
 Throw/cast simplification
 (throw[T,_] ax
  catch throw T x x

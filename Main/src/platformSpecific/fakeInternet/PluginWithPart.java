@@ -27,9 +27,9 @@ import tools.Map;
 import tools.StringBuilders;
 
 public class PluginWithPart implements PluginType{
-  String url;
-  String part;
-  Class<?>pointed;
+  public final String url;
+  public final String part;
+  public final Class<?>pointed;
   public PluginWithPart(String url, String part) {
     super();
     this.url = url;

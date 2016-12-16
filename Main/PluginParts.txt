@@ -355,3 +355,21 @@ System42:PlgWrapper.$<<{
   }
 
   
+  --------------
+  from 42 to call Java:
+  use P check m((x:e)s)
+  if m start with #, java method will require PData
+  if m is "new" or "#new", then we refer to a constructor.
+  names xs are used to identify the method/constructor despite overloading
+  
+  from 42 header, the metaprogramming can guess a Java method to call:
+  #numMethName(xs) will call
+  the java method called MethodName 
+  that is in position num in the ordered ovelrloaded.
+  How to ORDER overloaed methods:
+  with xs.size()=n
+  select all the methods with that name and either argument size n or
+  argument size n+1 and the first one is PData.
+  syntetize the 42 ms using name that would be needed to call such method
+  lexicographic ordering over such ms. 
+  

@@ -1,8 +1,10 @@
 package is.L42.connected.withSafeOperators;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -24,6 +26,7 @@ import facade.Parser;
 import facade.L42.ExecutionStage;
 import platformSpecific.fakeInternet.OnLineCode;
 import platformSpecific.fakeInternet.PluginWithPart;
+import platformSpecific.fakeInternet.PluginWithPart.PlgInfo;
 import sugarVisitors.Desugar;
 import sugarVisitors.InjectionOnCore;
 import tools.Assertions;
@@ -108,14 +111,19 @@ private ExpCore parseAndDesugar(String s) {
     }
   public ClassB plgComplete1(List<String>cs,Program p,ClassB l){
     PluginWithPart pwp = OnLineCode._isPluginWithPart(l.getDoc1());
+    //PlgInfo plg=new PlgInfo();?? instead?
     if(pwp==null){return l;}
     if(!hasPluginUnresponsive(p, l)){throw Assertions.codeNotReachable();}//TODO:
-    Map<String,Entry<Method,Ast.MethodSelector>> ms;
+    Class<?> c=pwp.pointed;
+    Map<String,List<Entry<Method,Ast.MethodSelector>>> methods=new HashMap<>();
+    List<Entry<Constructor<?>,Ast.MethodSelector>> cons=new ArrayList<>();
+    fillMethods(c,l,methods);
+    fillConstructors(c,cons);
     return null;//TODO:
     /*plgComplete1(lTop,dept,p,l){
     
-    c=locateClass(l)
-    Map<String,List<Method,mh42>> ms=..
+    c=locateClass(l)//c is Java class
+    Map<String,List<Method,mh42>> ms=..//jMethodName->allTheOverloadedJavaMethods
     List<Constructor,mh42> cs=...
     m42s=new List
     forall e,mh in ms,cs:
@@ -130,6 +138,25 @@ private ExpCore parseAndDesugar(String s) {
       }
     return templateWrapper U m42s*/
     }
+
+
+private void fillConstructors(Class<?> c, List<Entry<Constructor<?>, MethodSelector>> cons) {
+// TODO Auto-generated method stub
+
+}
+
+
+private void fillMethods(Class<?> c, ClassB l, Map<String, List<Entry<Method, MethodSelector>>> methods) {
+  for(Member m:l.getMs()){
+    if (!(m instanceof ClassB.MethodWithType)){continue;}
+    MethodWithType mwt=(MethodWithType)m;
+    if(mwt.get_inner().isPresent()){continue;}
+    MethodType mt=mwt.getMt();
+    
+    }
+  for(Method m:c.g)
+
+}
   
    
   
