@@ -17,8 +17,8 @@ Structure of this document:
 //In this file, all the L are LC   //LC == in all C:e, e of form L
 
 G::=x1:T1..xn:Tn  //G reads Gamma
-D::= Phase `|` p `|` G `|` Cage  //D reads Delta
-Cage::= xss; xs
+D::= Phase `|` p `|` G   //D reads Delta
+//Cage::= xss; xs
 Tr::=Ts; Ps //Tr reads Throws
 
 //we believe that at any moment, in a D:
@@ -70,7 +70,23 @@ toRead(T)
 toRead(G)
   toRead(G)(x)=toRead(G(x)) //thus undefined where toRead undefined 
 
-toLent(T1..Tn;Ps)=toLent(T1)..toLent(Tn);Ps
+toLent(G)
+  toLent(G)(x)=toLent(G(x)) //thus undefined where toLent undefined
+
+// unused now? toLent(T1..Tn;Ps)=toLent(T1)..toLent(Tn);Ps
+
+toImmOrCapsule(T)
+  toImmOrCapsule(mdf C)=capsule C with mdf in {lent,mut,fwdMut,fwd%Mut,capsule}
+  toImmOrCapsule(read C)=imm C
+  otherwise toImmOrCapsule(T)=T//mdf in {imm,fwdImm,fwd%Imm}
+
+lentToMut(T)
+  lentToMut(lent C)=mut C
+  otherwise lentToMut(T)=T  
+
+mutToCapsule(T)
+  mutToCapsule(mut C)=capsule C
+  otherwise mutToCapsule(T)=T
 
 G[G']
   G[G'](x)=G'(x) if x in dom(G'); otherwise G[G'](x)=G(x)
@@ -112,6 +128,16 @@ Tr.capture(p,k1..kn)= Tr.capture(p,k1)...capture(p,kn)
 Tr.capture(p,catch error P x e)=Tr
 (Ts;Ps).capture(p,catch exception P x e)=Ts;{P'| P' in Ps, not p|-P'<=P}
 (Ts;Ps).capture(p,catch return P x e)={T| T in Ts, not p|-T.P<=P};Ps
+
+
+methTypes(p,P,ms)
+  methTypes(p,P,ms)={MethT,MethT0,..,MethTn,MethT',MethT''}
+    p(P).ms.mh[from P]=mdf0 method T m(T1 x1,..Tn xn) exception Ps
+    MethT=mdf0 P0 T1..Tn->T;Ps=T0..Tn->T;Ps
+    MethT'=(T0..Tn->T)[read->imm,lent->capsule,mut->capsule];Ps
+    MethTi=Tsi->toLent(T);Ps where Tsi=toLent(T0..Ti-1) Ti[lent->mut] toLent(Ti+1..Tn)
+    MethT''=T0..Tn->T[mut->capsule];Ps
+    //MethTi is not produced if any parameter has mdf fwdMut
 --------------------------------------------
 3 ExpressionTypeJudgement
 --------------------------------------------
@@ -137,7 +163,7 @@ Phase |p |_ |_ |_ |- L ~> L' : imm Library | emptyTr
 Phase| p| G| xss; xs| Tr |-x:T | emptyTr
   where
   x notin xs
-  if x in xss T=toLent(G(x))
+  if x in xss T=(G(x))
   otherwise T=G(x)
 
 (loop)
@@ -149,7 +175,7 @@ D |- loop e ~> loop e' : imm Void | Tr
 D|-throw[T?,_] e~> throw[T,mdf P] e' :  T | Tr
   where
   resolve(D.p,guessType(D.G,e))=mdf' P //TODO: is it needed somehow or should just be asserted?
-  D|- e~>  e' :  mdf P |Ts;Ps <=mdf' P //Allows promotions
+  D|- e~>  e' :  mdf P |Ts;Ps <=mdf' P //Allows to use alternative method typing
   either T?=empty or T?=T
   if throw=exception, mdf=imm and Tr=Ts;Ps,P
   if throw=return, mdf=mdf',Tr=Ts,mdf P;Ps and mdf not fwd or fwd% 
@@ -158,10 +184,11 @@ D|-throw[T?,_] e~> throw[T,mdf P] e' :  T | Tr
 (mcall)
 D|- e0.m[_](x1:e1..Xn:en) ~> e'0.m[P0](x1:e'1..xn:e'n)  : T' | Tr0 U..U Trn U (empty;Ps) //e0 will be of form mr
   where
-  resolve(D.p,guessType(D.G,e0))= _ P0=T'0=T0
+  resolve(D.p,guessType(D.G,e0))= _ P0
+  T0..Tn->T;Ps in methTypes(p,P0,m(x1..xn))
   D.p(P0).m(x1..xn).mh[from P0]=mdf0 method T m(T1 x1,..Tn xn) exception Ps
   forall P in Ps exists P' in D.Tr.Ps such that p|- P <= P'
-  forall i 0..n D|- ei ~> e'i : T'i | Tri<=Ti
+  forall i 0..n D|- ei ~> e'i : T'i <=Ti | Tri//T'0 is correctly a free variable
   if no fwd or fwd% in T'1..T'n
     T'=T
   otherwise 
@@ -171,7 +198,7 @@ D|- e0.m[_](x1:e1..Xn:en) ~> e'0.m[P0](x1:e'1..xn:e'n)  : T' | Tr0 U..U Trn U (e
  D|-use P check m(x1:e1.. xn:en) e0 ~>use P check m(x1:e'1.. xn:e'n) e'0 :T0 | Tr0 U..U Trn
  where
    plugin(D.p,P,m(x1..xn))=plg, T0..Tn //plg is a free variable, in the small step reduction would be the function representing the behaviour
-   forall i 0..n D|- ei ~> e'i : T'i :Tri<=Ti
+   forall i 0..n D|- ei ~> e'i : T'i <=Ti |Tri
 //TODO: what happen if a parameter take mut and the plugin throw error w.r.t. strong error safety? can we catch it soon?
 
 (block divide scope)
@@ -187,18 +214,18 @@ D|- (ds1 ds2 ks e)~>(ds'1 ds'2 ks' e'):T
   //to optimize, we could use a empty shell ks (with all es replaced with error void), but then we will need to explicitly test for FV(ks) not in dom(ds1,ds2)
 
 (block)
-Phase| p| G| Cage|-(T1 x1=e1..Tn xn=en ks e0[_]) ~>(T'1 x1=e'1..T'n xn=e'n ks' e'0 [T]) : T | (Tr1 U..U Trn).capture(p,ks') Tr U Tr0
+Phase| p| G|-(T1 x1=e1..Tn xn=en ks e0[_]) ~>(T'1 x1=e'1..T'n xn=e'n ks' e'0 [T]) : T | (Tr1 U..U Trn).capture(p,ks') Tr U Tr0
   where
   for i in 1..n T'i=resolve(p,Ti)
   G'=x1:T'1..xn:T'n
   G1=G[ks][fwd(complete(G'))]
-  for i in 1..n Phase| p| G1| Cage|-ei~>e'i: _ | Tri <=fwd% T'i
-  Phase| p| G/x1..xn| Cage | Tr1 U .. U Trn |-ks~> ks' : T | Tr
+  for i in 1..n Phase| p| G1|-ei~>e'i: _ <=fwd% T'i | Tri
+  Phase| p| G/x1..xn | Tr1 U .. U Trn |-ks~> ks' : T | Tr
   if exists x in FV(e1..en) such that G(x)=fwd _ or G(x)=fwd% _
     G0=G[fwd%(G')]
   otherwise
     G0=G[G']
-  Phase| p| G0| Cage |-e0~>e'0:_ | Tr0<=T
+  Phase| p| G0 |-e0~>e'0:_ <=T | Tr0
 //Note, need to add cching info for mdf in catch return since now is inferred at typing
     
 
@@ -211,65 +238,37 @@ D| Tr |-k1..kn ~> k'1..k'n:T | Tr1 U .. U Trn
   either forall i 1..(n-1) Any notEq k'i.P //That is, only the last one can 
   
 (catch)
-Phase| p| G| Cage| _ |-catch throw T0 x e ~> catch throw resolve(p,T0) x e' :T1| Tr
+Phase| p| G| _ |-catch throw T0 x e ~> catch throw resolve(p,T0) x e' :T1| Tr
   where
-  Phase| p| G[x:T0]| Cage|- e ~> e':_<=T1| Tr
+  Phase| p| G[x:T0]|- e ~> e':_<=T1| Tr
   either throw=return or resolve(p,T0)=imm _
   resolve(p,T0) not in {_ Any, fwdImm _,fwdMut _, fwd%Imm _,fwd%Mut _}//This cause strong limitation in factories using conditionals (as in if-return)
 
 (catch and rethrow any)// could be sugared as "on throw mdf x doAndPropagate e"  
-Phase |p |G |Cage |Tr|-catch throw T x (e0 throw x) ~> catch throw mdf Any x (e0' throw x): _ | Tr
+Phase |p |G |Tr|-catch throw T x (e0 throw x) ~> catch throw mdf Any x (e0' throw x): _ | Tr
   where
   resolve(p,T)=mdf Any //mdf is ignored
   e0=(imm Void y=e catch error Any z void void)
   e0'=(imm Void y=e' catch error Any z void void)
-  Phase |p |G\x |Cage  |- e ~> e':_ <=imm Void | empty
+  Phase |p |G\x |- e ~> e':_ <=imm Void | empty
 
 (catch precise any)//TODO: can it be broken by metaprogramming? forcing to jump to Any while there was a result before?  
-Phase |p |G |Cage |Tr|-catch throw T0 x e ~> catch throw Any x e': T | Tr'
+Phase |p |G  |Tr|-catch throw T0 x e ~> catch throw Any x e': T | Tr'
   where
   not catchRethrow(catch throw Any x e)
   resolve(p,T0)=mdf Any
   //more expressive rule would say e type for any T in Tr.Ts
   T1=mostGeneral(throw,Tr)//may be Any, or even undefined for return class+read
-  Phase |p |G+x:T1 |Cage |- e ~> e':_<=T| Tr'
+  Phase |p |G+x:T1|- e ~> e':_<=T| Tr'
 
-
-(unlock)
-Phase |p |G |xss;xs|-e~>e':mdf P | Tr
-  where
-  Phase |p |G |xss,domMut(G)\xss ; empty |-e~>e':mdf P | Tr
-  mdf in {imm,fwd%Imm,fwdImm,capsule,class}
-  forall T in Tr.Ts, T.mdf in {imm,capsule,class} 
-
-(swap)
-Phase |p |G |xs0,xss;xs|-e~>e':toLent(mdf P) | toLent(Tr)
-  where
-  Phase |p |G |xss,domMut(G)\xss ; xs |Tr|-e~>e':mdf P | Tr
 
 (capsule promotion)
-Phase |p |G |Cage |-e~>e':capsule P | Tr //TODO: should we promote a mut P inside Tr to capsule? same for imm-promotion?
+Phase |p |G |-(ds ks e)~>(ds' ks' e'):capsule P | Tr
   where
-  Phase |p |G |Cage'|-e~>e':mut P   | Tr
-  Cage=xss;xs
-  Cage'=xss,domMut(G)\xss;xs
-
-(imm promotion)
-Phase |p |G |Cage|-e~>e':imm P | Tr
-  where
-  Phase |p |G |Cage' |-e~>e':mdf P | Tr
-  mdf in {read,lent} //TODO: what about fwd/fwd%  
-  Cage=xss;xs
-  Cage'=xss,domMut(G)\xss;domMutLentRead(G)//fwd%Mut, fwdMut in xs too
-
-(lent to singleton)
-Phase| p| G, x:lent C, G'|  xss;xs |-e~>e':T  | Tr
-  where 
-  Phase| p| G, x:mut C, G'|  xss,{x};xs |-e~>e':T | Tr
-
+  Phase |p |toLent(G) |-(ds ks e)~>(ds' ks' e'):mut P   | Tr
 
 ------------------------------------------------------
-4 Subtyping p|- T<=T' and shortcut D |- e ~> e':T<=T'
+4 Subtyping p|- T<=T' and shortcut D |- e ~> e':T<=T'|Tr
 ------------------------------------------------------
   
 (subtype)
@@ -280,9 +279,9 @@ p|-mdf0 P0<=mdf1 P1
   p.equiv(P,P1)
   
 (shortcut)
-D |- e ~> e':T<=T'
+D |- e ~> e':T<=T' | Tr
   where
-  D |- e ~> e':T
+  D |- e ~> e':T | Tr
   D.p |-T<=T'
   
 mdf<=mdf
@@ -325,11 +324,12 @@ Phase| p| Ps |-C:L ~>  C:L'
 
 Phase| p| Ps |-M ~> M'
   where
-  M =refine? mdf method T m(T1 x1 .. Tn xn)exceptions Ps' e?
-  M'=refine? mdf method T m(T1 x1 .. Tn xn)exceptions Ps' e?'
+  M =refine? mdf method T m(T1 x1 .. Tn xn)exceptions Ps0 e?
+  M'=refine? mdf method T m(T1 x1 .. Tn xn)exceptions Ps0 e?'
   G=this:mdf This0,x1:T1,..,xn:Tn
   if e?=e then
-    Typed| p| G|empty;empty|empty;Ps' |- e ~>  e?':_ <=fwd% T
+    Typed| p| G| |- e ~>  e?':_ <=fwd% T | empty;Ps1
+    forall P1 in Ps1 exists P0 in Ps0 such that p|-P1<=P0
   else
     e?=e?'
   refine? != empty <=> 
@@ -451,22 +451,6 @@ UnlockTS: //return computed type or error
 
 //Note: the current system never try to promote the e of return e
 ----------------
-
-
-We are discussing to modify the TS in the following way:
-1)Remove rule unlock, swap, imm-promotion,lent to singleton and Cages
-2) instead of doing
-  D.p(P0).m(x1..xn).mh[from P0]=mdf0 method T m(T1 x1,..Tn xn) exception Ps
-  in rule (mcall)
-  we can have a notation methTypes(p,P0,ms)
-  returning a set with many method types MethT::=T0..Tn->T;Ps
-    methTypes(p,P0,ms)={MethT,MethT0,..,MethTn,MethT',MethT''}
-      p(P0).ms.mh[from P0]=mdf0 method T m(T1 x1,..Tn xn) exception Ps
-      MethT=mdf0 P0 T1..Tn->T;Ps=T0..Tn->T;Ps
-      MethT'=T0..Tn->T[read->imm,lent->capsule,mut->capsule];Ps
-      MethTi=Tsi->toLent(T);Ps where Tsi=T0..Ti-1[mut->lent] Ti[lent->mut] Ti+1..Tn[mut->lent]
-      MethT''=T0..Tn->T[mut->capsule];Ps
- 
 Coherent and union types:
 to easy translation in Java/etc, we can not accept the following
 A,B interface
@@ -479,3 +463,40 @@ mut method Void #x ( D that)
 read method A x()
 read method B #x()
 as coherent, since the field would be an union type of C and D
+
+
+--------------------------------------------------
+Removed rules
+
+(unlock)
+Phase |p |G |xss;xs|-e~>e':mdf P | Tr
+  where
+  Phase |p |G |xss,domMut(G)\xss ; empty |-e~>e':mdf P | Tr
+  mdf in {imm,fwd%Imm,fwdImm,capsule,class}
+  forall T in Tr.Ts, T.mdf in {imm,capsule,class} 
+
+(swap)
+Phase |p |G |xs0,xss;xs|-e~>e':toLent(mdf P) | toLent(Tr)
+  where
+  Phase |p |G |xss,domMut(G)\xss ; xs |Tr|-e~>e':mdf P | Tr
+
+(imm promotion)
+Phase |p |G |Cage|-e~>e':imm P | Tr
+  where
+  Phase |p |G |Cage' |-e~>e':mdf P | Tr
+  mdf in {read,lent} //TODO: what about fwd/fwd%  
+  Cage=xss;xs
+  Cage'=xss,domMut(G)\xss;domMutLentRead(G)//fwd%Mut, fwdMut in xs too
+
+(lent to singleton)
+Phase| p| G, x:lent C, G'|  xss;xs |-e~>e':T  | Tr
+  where 
+  Phase| p| G, x:mut C, G'|  xss,{x};xs |-e~>e':T | Tr
+
+(capsule promotion)
+Phase |p |G |Cage |-e~>e':capsule P | Tr //TODO: should we promote a mut P inside Tr to capsule? same for imm-promotion?
+  where
+  Phase |p |G |Cage'|-e~>e':mut P   | Tr
+  Cage=xss;xs
+  Cage'=xss,domMut(G)\xss;xs
+
