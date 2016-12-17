@@ -362,14 +362,22 @@ System42:PlgWrapper.$<<{
   if m is "new" or "#new", then we refer to a constructor.
   names xs are used to identify the method/constructor despite overloading
   
+  HORRIBLE SOLUTION:
   from 42 header, the metaprogramming can guess a Java method to call:
   #numMethName(xs) will call
   the java method called MethodName 
-  that is in position num in the ordered ovelrloaded.
-  How to ORDER overloaed methods:
+  that is in position num in the ordered overloaded.
+  How to ORDER overloaded methods:
   with xs.size()=n
   select all the methods with that name and either argument size n or
   argument size n+1 and the first one is PData.
   syntetize the 42 ms using name that would be needed to call such method
   lexicographic ordering over such ms. 
   
+  BETTERSOLUTION:
+  the user specify a method name m (or new/empty) and a parameter number n
+  If there is only one such method with that name/parameter number n or n+1 with first par PData
+  Proceed.
+  Else error.
+  The user can put a comment with an ms, then the method name is ignored and the ms is used to syntetize the using
+  if the user do not specify, the method name and parameter number must identify

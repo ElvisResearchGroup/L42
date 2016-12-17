@@ -452,6 +452,21 @@ UnlockTS: //return computed type or error
 //Note: the current system never try to promote the e of return e
 ----------------
 
+
+We are discussing to modify the TS in the following way:
+1)Remove rule unlock, swap, imm-promotion,lent to singleton and Cages
+2) instead of doing
+  D.p(P0).m(x1..xn).mh[from P0]=mdf0 method T m(T1 x1,..Tn xn) exception Ps
+  in rule (mcall)
+  we can have a notation methTypes(p,P0,ms)
+  returning a set with many method types MethT::=T0..Tn->T;Ps
+    methTypes(p,P0,ms)={MethT,MethT0,..,MethTn,MethT',MethT''}
+      p(P0).ms.mh[from P0]=mdf0 method T m(T1 x1,..Tn xn) exception Ps
+      MethT=mdf0 P0 T1..Tn->T;Ps=T0..Tn->T;Ps
+      MethT'=T0..Tn->T[read->imm,lent->capsule,mut->capsule];Ps
+      MethTi=Tsi->toLent(T);Ps where Tsi=T0..Ti-1[mut->lent] Ti[lent->mut] Ti+1..Tn[mut->lent]
+      MethT''=T0..Tn->T[mut->capsule];Ps
+ 
 Coherent and union types:
 to easy translation in Java/etc, we can not accept the following
 A,B interface
