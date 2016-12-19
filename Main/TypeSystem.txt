@@ -500,3 +500,22 @@ Phase |p |G |Cage |-e~>e':capsule P | Tr //TODO: should we promote a mut P insid
   Cage=xss;xs
   Cage'=xss,domMut(G)\xss;xs
 
+----------------
+Dispatch for the simplified TS:
+
+use rule for the specific form,
+if block, first do the maximal split if needed. (mark pre splitted blocks?)
+if splitted block, and required capsule, try type normally, on fail, try capsule promotion
+
+if method:
+  check if return type is ok with primary meth return.
+  if not, you have 1 or 0 possible alternative types (read->imm or mut->capsule/imm)
+  if return ok and could even be toLent and still be ok,
+  expect toLent for all parameters.
+  If all ends up with the needed type, no lentviewpoint
+  if exactly one needed the allowed lent, re type the other mut as capsule
+  
+So, retype happens only for block if obtained mut but needed capsule
+and for method parameter where mut obtained but needed capsule.
+As special case, if meth parameter is block, and is normally typed mut, we can
+skip (double) double typing and go on with block promotion directly
