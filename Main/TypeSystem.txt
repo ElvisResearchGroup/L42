@@ -160,13 +160,13 @@ methTypes(p,P,ms)
 --------------------------------------------
 3 ExpressionTypeJudgement
 --------------------------------------------
-  D |- e ~> e':T | Tr   and D |Tr|- k ~> k':T |Tr 
+  D |- e ~> e':T | Tr   and D |Tr|- k ~> k':T |Tr'
   where e' is an annotated version of expression e and is of type T
   where k' is an annotated version of catch k and k.e is of type T
   D.p points to where the e is located, //D.p.top()=ctxL[e]
   so if P inside e, D.p(P) is a reasonable operation
   Tr is the computed set of thrown returns and exceptions;
-  for catches, we need the Tr of the ds to type catch _ Any precisly
+  for catches, we need the Tr of the ds to type catch _ Any precisely
 
 (void)
 _ |- void~> void:imm Void | emptyTr
@@ -180,11 +180,7 @@ Phase |p |_ |_ |_ |- L ~> L' : imm Library | emptyTr
   Phase  |- p.evilPush(L) ~> L'
 
 (x)
-Phase| p| G| xss; xs| Tr |-x:T | emptyTr
-  where
-  x notin xs
-  if x in xss T=(G(x))
-  otherwise T=G(x)
+Phase| p| G |-x:G(x) | emptyTr
 
 (loop)
 D |- loop e ~> loop e' : imm Void | Tr
