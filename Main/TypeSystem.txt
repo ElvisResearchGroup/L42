@@ -104,7 +104,7 @@ G[G']
   G[G'](x)=G'(x) if x in dom(G'); otherwise G[G'](x)=G(x)
 
 G[ks]
-  G[catch error mdf P x e ks]=toRead(G) with P not Any
+  G[k]=toRead(G) with catchRethrow(k)
   otherwise G[ks]=G 
 
 mostGeneral(p,error,Tr)=imm Any
