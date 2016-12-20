@@ -42,10 +42,10 @@ fwd% T
   fwd% mut P=fwd%Mut P
   otherwise fwd% T=T
  
-noFwd
-  noFwd imm P=noFwd fwd%imm P=Imm P
-  noFwd mut P=noFwd fwd%mut P=Mut P
-  otherwise noFwd T=T
+//noFwd
+//  noFwd imm P=noFwd fwd%imm P= imm P
+//  noFwd mut P=noFwd fwd%mut P= mut P
+//  otherwise noFwd T=T
 
 toImm(T)        
   toImm(class P)=class P
@@ -202,11 +202,12 @@ D|- e0.m[_](x1:e1..Xn:en) ~> e'0.m[P0](x1:e'1..xn:e'n)  : T' | Tr0 U..U Trn U (e
   where
   resolve(D.p,guessType(D.G,e0))= _ P0
   T0..Tn->T;Ps in methTypes(p,P0,m(x1..xn))
-  forall i 0..n D|- ei ~> e'i : T'i <=Ti | Tri//T'0 is correctly a free variable
-  if no fwd or fwd% in T'1..T'n
-    T'=T
-  otherwise 
+  forall i 0..n D|- ei ~> e'i : T'i <=Ti | Tri //T'0 is correctly a free variable
+  if fwd or fwd% in T'1..T'n
     T'=fwd% T
+  otherwise
+    T'=T //Note, we can make a more expressive, but harder to explain TS by writing  T'=removeFwd(T)
+    
      
 (using)
  D|-use P check m(x1:e1.. xn:en) e0 ~>use P check m(x1:e'1.. xn:e'n) e'0 :T0 | Tr0 U..U Trn
