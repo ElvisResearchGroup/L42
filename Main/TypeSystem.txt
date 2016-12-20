@@ -180,7 +180,7 @@ Phase |p |_ |_ |_ |- L ~> L' : imm Library | emptyTr
   Phase  |- p.evilPush(L) ~> L'
 
 (x)
-Phase| p| G |-x:G(x) | emptyTr
+Phase| p| G |-x ~> x :G(x) | emptyTr
 
 (loop)
 D |- loop e ~> loop e' : imm Void | Tr
@@ -536,3 +536,10 @@ Phase |p |G |Cage |-e~>e':capsule P | Tr //TODO: should we promote a mut P insid
   Phase |p |G |Cage'|-e~>e':mut P   | Tr
   Cage=xss;xs
   Cage'=xss,domMut(G)\xss;xs
+
+(x)
+Phase| p| G| xss; xs| Tr |-x:T | emptyTr
+  where
+  x notin xs
+  if x in xss T=(G(x))
+  otherwise T=G(x)
