@@ -98,7 +98,7 @@ G[ks]
 mostGeneral(p,error,Tr)=imm Any
 mostGeneral(p,return,empty;Ps) undefined??
 mostGeneral(p,exception,_;empty) undefined?? TODO:Need discussion
-mostGeneral(p,return,T1..Tn;Ps)=mostGeneral(T1.mdf .. Tn.mdf) mostGeneral(p,T1.P .. Tn.P)
+mostGeneral(p,return,T1..Tn;Ps)=mostGeneral({T1.mdf .. Tn.mdf}) mostGeneral(p,T1.P .. Tn.P)
 otherwise 
 mostGeneral(p,exception,_;Ps)=imm mostGeneral(p,Ps)
 
