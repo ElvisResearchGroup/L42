@@ -104,7 +104,7 @@ G[G']
   G[G'](x)=G'(x) if x in dom(G'); otherwise G[G'](x)=G(x)
 
 G[ks]
-  G[k]=toRead(G) with catchRethrow(k)
+  G[k]=toRead(G) with k.throw=error and not catchRethrow(k)
   otherwise G[ks]=G 
 
 mostGeneral(p,error,Tr)=imm Any
