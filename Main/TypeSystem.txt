@@ -152,15 +152,15 @@ methTypes(p,P,ms)
     p(P).ms.mh[from P]=mdf0 method T m(T1 x1,..Tn xn) exception Ps
     MethT=(mdf0 P0 T1..Tn->T;Ps)  =  T0..Tn->T;Ps
     MethT'=toImmOrCapsule(T0..Tn->T);Ps
-    forall i in 0..n
+    forall i in 0..n      //MethTi is not produced since toLent does not cover the whole domain (fwdMut)
       MethTi=Tsi->toLent(T);Ps where Tsi=mutToCapsule(T0..Ti-1) mutToLent(Ti) mutToCapsule(Ti+1..Tn)
       if defined, otherwise MethTi=MethT
     MethT''=mutToCapsule(T0..Tn->T);Ps
-    //MethTi is not produced if any parameter has mdf fwdMut
+
 --------------------------------------------
 3 ExpressionTypeJudgement
 --------------------------------------------
-  D |- e ~> e':T   and D |- k ~> k':T 
+  D |- e ~> e':T | Tr   and D |Tr|- k ~> k':T |Tr 
   where e' is an annotated version of expression e and is of type T
   where k' is an annotated version of catch k and k.e is of type T
   D.p points to where the e is located, //D.p.top()=ctxL[e]
