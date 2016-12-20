@@ -214,10 +214,15 @@ D|- e0.m[_](x1:e1..Xn:en) ~> e'0.m[P0](x1:e'1..xn:e'n)  : T' | Tr0 U..U Trn U (e
  where
    plugin(D.p,P,m(x1..xn))=plg, T0..Tn //plg is a free variable, in the small step reduction would be the function representing the behaviour
    forall i 0..n D|- ei ~> e'i : T'i <=Ti |Tri
-//TODO: what happen if a parameter take mut and the plugin throw error w.r.t. strong error safety? can we catch it soon?
+//Note: what happen if a parameter take mut and the plugin throw error w.r.t. strong error safety? can we catch it soon?
+//The idea is that I can still use the normal pattern to throw error if the plugin fail, but to catch that error we will have to go up the stack a lot.
+//Now plugings are assumed to always ask for imm/class parameters
 
 (block divide scope)
-//This rule is not materialized in the sugar since it would duplicate the catches (potentially exponentially) //also a desugaring tring to assign the inner block to a variable and then do the catches only one would capture also errors in the "e"
+//This rule is not materialized in the sugar since it would duplicate
+//the catches (potentially exponentially)
+//also a desugaring tring to assign the inner block to a variable and
+//then do the catches only one would capture also errors in the "e"
 //type system need not to repeat the test for ks in the two contexts,
 //since if ks typed in the outer block, it would also type in the same way
 //in the richer context in the inner block.
