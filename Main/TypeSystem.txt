@@ -79,7 +79,7 @@ toLent(G)
 toImmOrCapsule(T)
   toImmOrCapsule(mdf C)=capsule C with mdf in {lent,mut,fwdMut,fwd%Mut,capsule}
   toImmOrCapsule(read C)=imm C
-  otherwise toImmOrCapsule(T)=T//mdf in {imm,fwdImm,fwd%Imm}
+  otherwise toImmOrCapsule(T)=T//mdf in {class,imm,fwdImm,fwd%Imm}
 
 lentToMut(T)
   lentToMut(lent C)=mut C
