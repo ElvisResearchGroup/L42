@@ -190,7 +190,7 @@ D |- loop e ~> loop e' : imm Void | Tr
 (throw)
 D|-throw[T?,_] e~> throw[T,mdf P] e' :  T | Tr
   where
-  resolve(D.p,guessType(D.G,e))= _ P //TODO: is it needed somehow or should just be asserted?
+  resolve(D.p,guessType(D.G,e))= _ P //the _ can guide if we want a class or a read in {read,class} later.
   D|- e~>  e' :  mdf P <=mdf' P |Ts;Ps //Allows to use alternative method typing
   either T?=empty or T?=T
   if throw=exception, mdf'=imm and Tr=Ts;Ps,P
@@ -202,8 +202,6 @@ D|- e0.m[_](x1:e1..Xn:en) ~> e'0.m[P0](x1:e'1..xn:e'n)  : T' | Tr0 U..U Trn U (e
   where
   resolve(D.p,guessType(D.G,e0))= _ P0
   T0..Tn->T;Ps in methTypes(p,P0,m(x1..xn))
-  D.p(P0).m(x1..xn).mh[from P0]=mdf0 method T m(T1 x1,..Tn xn) exception Ps
-  forall P in Ps exists P' in D.Tr.Ps such that p|- P <= P'
   forall i 0..n D|- ei ~> e'i : T'i <=Ti | Tri//T'0 is correctly a free variable
   if no fwd or fwd% in T'1..T'n
     T'=T
