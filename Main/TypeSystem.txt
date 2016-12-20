@@ -167,6 +167,7 @@ methTypes(p,P,ms)
   so if P inside e, D.p(P) is a reasonable operation
   Tr is the computed set of thrown returns and exceptions;
   for catches, we need the Tr of the ds to type catch _ Any precisely
+  Tr' contains only the throws from the catch k itself.
 
 (void)
 _ |- void~> void:imm Void | emptyTr
@@ -234,7 +235,7 @@ D|- (ds1 ds2 ks e)~>(ds'1 ds'2 ks' e'):T
   //to optimize, we could use a empty shell ks (with all es replaced with error void), but then we will need to explicitly test for FV(ks) not in dom(ds1,ds2)
 
 (block)
-Phase| p| G|-(T1 x1=e1..Tn xn=en ks e0[_]) ~>(T'1 x1=e'1..T'n xn=e'n ks' e'0 [T]) : T | (Tr1 U..U Trn).capture(p,ks') Tr U Tr0
+Phase| p| G|-(T1 x1=e1..Tn xn=en ks e0[_]) ~>(T'1 x1=e'1..T'n xn=e'n ks' e'0 [T]) : T | (Tr1 U..U Trn).capture(p,ks') U Tr U Tr0
   where
   for i in 1..n T'i=resolve(p,Ti)
   G'=x1:T'1..xn:T'n

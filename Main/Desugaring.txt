@@ -6,6 +6,9 @@ Here we put ideas for better desugaring:
 while e block
 becomes:
 ( var T v = e //how we get that type? Why it can not be a skeletal?
+  //we can instead of duplicating the e,
+  // use guess type to obtain the P, then call P.#false() 
+  //and initialize v for real at the start of the loop instead of the end
   loop (
     v.checkIfTrue()
     block
