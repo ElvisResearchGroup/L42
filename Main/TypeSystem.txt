@@ -53,12 +53,13 @@ toImm(T)
 
 toLent(T)
   toLent(mut P)=lent P,
-  toLent(mutFwd P) and toLent(mutFwd% P) undefined;
+  toLent(fwdMut P) and toLent(fwd%Mut P) undefined;
   otherwise toLent(T)=T 
 
 toLentAlsoFwd(T)
   toLentAlsoFwd(mut P)=lent P,
-  toLentAlsoFwd(mutFwd P) and toLentAlsoFwd(mutFwd% P) lentP;
+  toLentAlsoFwd(fwdMut P) = lentP
+  toLentAlsoFwd(fwd%Mut P) = lentP
   otherwise toLentAlsoFwd(T)=T 
 
 capsuleToLent(T)  
