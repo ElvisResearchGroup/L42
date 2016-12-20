@@ -165,7 +165,8 @@ methTypes(p,P,ms)
   where k' is an annotated version of catch k and k.e is of type T
   D.p points to where the e is located, //D.p.top()=ctxL[e]
   so if P inside e, D.p(P) is a reasonable operation
-
+  Tr is the computed set of thrown returns and exceptions;
+  for catches, we need the Tr of the ds to type catch _ Any precisly
 
 (void)
 _ |- void~> void:imm Void | emptyTr
