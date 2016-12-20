@@ -51,6 +51,11 @@ toImm(T)
   toImm(class P)=class P
   otherwise, toImm(mdf P)=imm P
 
+toImmOrCapsule(T)
+  toImmOrCapsule(mdf C)=capsule C with mdf in {lent,mut,fwdMut,fwd%Mut,capsule}
+  toImmOrCapsule(read C)=imm C
+  otherwise toImmOrCapsule(T)=T//mdf in {class,imm,fwdImm,fwd%Imm}
+
 toLent(T)
   toLent(mut P)=lent P,
   toLent(fwdMut P) and toLent(fwd%Mut P) undefined;
@@ -81,11 +86,6 @@ toLent(G)
   toLent(G)(x)=toLent(G(x)) //thus undefined where toLent undefined
 
 // unused now? toLent(T1..Tn;Ps)=toLent(T1)..toLent(Tn);Ps
-
-toImmOrCapsule(T)
-  toImmOrCapsule(mdf C)=capsule C with mdf in {lent,mut,fwdMut,fwd%Mut,capsule}
-  toImmOrCapsule(read C)=imm C
-  otherwise toImmOrCapsule(T)=T//mdf in {class,imm,fwdImm,fwd%Imm}
 
 lentToMut(T)
   lentToMut(lent C)=mut C
