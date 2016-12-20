@@ -119,6 +119,11 @@ mostGeneral(mdfs)=mdf //assert fwd and fwd% not in mdfs
   //from now on, we have at least two of those:lent, mut, imm //Note: fwd and fwd% are cutted out in the throw rule
   otherwise if imm in mdfs, mdf=read
   otherwise mdf=lent
+  //set oriented definition from james: mostGeneral(mdfs) = mdf0 such that 
+  //forall mdf1 in mdfs, mdf1 <= mdf0
+  //forall mdf2
+  //  either mdf0 <= mdf2
+  //  or exists mdf3 in mdfs  mdf3 > mdf2
 
 Tr1 U Tr2
   Ts1;Ps1 U Ts2;Ps2 =  Ts1,Ts2; Ps1,Ps2  
