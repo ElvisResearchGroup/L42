@@ -56,11 +56,11 @@ toLent(T)
   toLent(fwdMut P) and toLent(fwd%Mut P) undefined;
   otherwise toLent(T)=T 
 
-toLentAlsoFwd(T)
-  toLentAlsoFwd(mut P)=lent P,
-  toLentAlsoFwd(fwdMut P) = lentP
-  toLentAlsoFwd(fwd%Mut P) = lentP
-  otherwise toLentAlsoFwd(T)=T 
+//toLentAlsoFwd(T)
+//  toLentAlsoFwd(mut P)=lent P,
+//  toLentAlsoFwd(fwdMut P) = lent P
+//  toLentAlsoFwd(fwd%Mut P) = lent P
+//  otherwise toLentAlsoFwd(T)=T 
 
 capsuleToLent(T)  
   capsuleToLent(capsule P)=lent P
@@ -90,6 +90,11 @@ toImmOrCapsule(T)
 lentToMut(T)
   lentToMut(lent C)=mut C
   otherwise lentToMut(T)=T  
+
+mutToLent(T)
+  mutToLent(mut C)=mutToLent(fwdMut C)=mutToLent(fwd%Mut C)=lent C
+  otherwise lentToMut(T)=T  
+
 
 mutToCapsule(T)
   mutToCapsule(mut C)=capsule C
@@ -147,7 +152,7 @@ methTypes(p,P,ms)
     p(P).ms.mh[from P]=mdf0 method T m(T1 x1,..Tn xn) exception Ps
     MethT=(mdf0 P0 T1..Tn->T;Ps)  =  T0..Tn->T;Ps
     MethT'=toImmOrCapsule(T0..Tn->T);Ps
-    MethTi=Tsi->toLent(T);Ps where Tsi=toLentAlsoFwd(T0..Ti-1) lentToMut(Ti) toLentAlsoFwd(Ti+1..Tn)
+    MethTi=Tsi->toLent(T);Ps where Tsi=mutToCapsule(T0..Ti-1) mutToLent(Ti) mutToCapsule(Ti+1..Tn)
     MethT''=mutToCapsule(T0..Tn->T);Ps
     //MethTi is not produced if any parameter has mdf fwdMut
 --------------------------------------------
