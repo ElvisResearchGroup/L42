@@ -105,7 +105,7 @@ G[G']
 
 G[ks]
   G[k]=G with catchRethrow(k)
-  G[k ks]=toRead(G) with k.throw=error
+  otherwise G[k ks]=toRead(G) with k.throw=error
   otherwise G[ks]=G 
 
 mostGeneral(p,error,Tr)=imm Any
