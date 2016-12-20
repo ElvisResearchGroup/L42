@@ -190,12 +190,12 @@ D |- loop e ~> loop e' : imm Void | Tr
 (throw)
 D|-throw[T?,_] e~> throw[T,mdf P] e' :  T | Tr
   where
-  resolve(D.p,guessType(D.G,e))=mdf' P //TODO: is it needed somehow or should just be asserted?
-  D|- e~>  e' :  mdf P |Ts;Ps <=mdf' P //Allows to use alternative method typing
+  resolve(D.p,guessType(D.G,e))= _ P //TODO: is it needed somehow or should just be asserted?
+  D|- e~>  e' :  mdf P <=mdf' P |Ts;Ps //Allows to use alternative method typing
   either T?=empty or T?=T
-  if throw=exception, mdf=imm and Tr=Ts;Ps,P
-  if throw=return, mdf=mdf',Tr=Ts,mdf P;Ps and mdf not fwd or fwd% 
-  if throw=error, mdf=imm and Tr=Ts;Ps
+  if throw=exception, mdf'=imm and Tr=Ts;Ps,P
+  if throw=return, mdf' in {read,class},Tr=Ts,mdf P;Ps and mdf not fwd or fwd% 
+  if throw=error, mdf'=imm and Tr=Ts;Ps
 
 (mcall)
 D|- e0.m[_](x1:e1..Xn:en) ~> e'0.m[P0](x1:e'1..xn:e'n)  : T' | Tr0 U..U Trn U (empty;Ps) //e0 will be of form mr
