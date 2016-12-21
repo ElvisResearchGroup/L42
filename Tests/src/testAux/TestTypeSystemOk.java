@@ -95,7 +95,8 @@ public static class TesFail {
   public static List<Object[]> createData() {
     return Arrays.asList(new Object[][] {
     {"This0.C",
-    "{C:{class method Void foo() (D.foo())} D:{class method Void bar() (void)}}"
+    "{C:{class method Void foo() (D.foo())} "
+    +"D:{class method Void bar() (void)}}"
   },{"This0.C",
    "{C:{E:{class method Void foo() (This1.foo())} class method Library foo() (D.foo())} D:{class method Void foo() (C.E.foo())}}"
   },{"This0.C",
@@ -108,7 +109,7 @@ public static class TesFail {
       @Test(expected=ErrorMessage.TypeError.class)
       public void testAllSteps() {//s1 unused :(
         runTypeSystem(s2);
-        assert false;
+        //assert false;
       }
 
       }

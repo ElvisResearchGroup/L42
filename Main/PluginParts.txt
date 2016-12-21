@@ -146,10 +146,10 @@ expected Result: {/*@plugin it.bla/a.A*/
   mut This0 #from(Library binaryRepr)
   read method
   Library #binaryRepr()
-  class method
+  class method //TODO: update plugin use ms to include instanceof as for new
   Void #exceptionIf(Library binaryRepr) exception This
-    use This check _%%%(binaryRepr:binaryRepr)
-    error This.pluginUnresponsive(binaryRepr)
+    use This check instanceof(binaryRepr:binaryRepr)
+    exception This.#from(binaryRepr:binaryRepr)
 
   class method T #pluginUnresponsive(Library binaryRepr)//provided
   mdf method Ret m(Par1 p1, Par2 p2)//header provided
@@ -169,8 +169,8 @@ expected Result: {/*@plugin it.bla/a.A*/
       Library res=use This0 check m()
       error This.pluginUnresponsive({/*plugin it.bla/a.A.m(p1,p2)*/})
       catch error Library x (
-        E1.exceptionIf(binaryRepr:x)
-        E2.exceptionIf(binaryRepr:x)
+        E1.#exceptionIf(binaryRepr:x)
+        E2.#exceptionIf(binaryRepr:x)
         error x
         )
       res
@@ -181,10 +181,9 @@ expected Result: {/*@plugin it.bla/a.A*/
   { class method This m()
     This.from(binaryRepr:(
       Library res=use This0 check m(_:This.binaryRepr())
-        error This.from(
-          binaryRepr:{/**/}"
+        error This.#pluginUnresponsive(binaryRepr:{/**/})"
       catch error Library x (
-        This.exceptionIf(binaryRepr:x)
+        This.#exceptionIf(binaryRepr:x)
         error x
         )
       res
@@ -192,10 +191,9 @@ expected Result: {/*@plugin it.bla/a.A*/
   }
   and
   { class method This m()
-    This.from(binaryRepr:(
-      Library res=use This0 check m()
-        error This.from(
-          binaryRepr:{/**/}"
+    This.#from(binaryRepr:(
+      Library res=use This0 check m(_:This.binaryRepr())
+        error This.#pluginUnresponsive( binaryRepr:{/**/})"
       res
       ))
   }
@@ -236,25 +234,43 @@ plgComplete(p,l){
   for all nested cs in l: l=l.with(cs=plgComplete1(l,cs.size(),p,l(cs))
   return l;
   }
-plgComplete1(lTop,dept,p,l){
+  
+argLessPData jm=
+  jm.argsize if first is not PData
+  else jm.argsize-1
+  //assert others are not PData?
+plgComplete1(lTop,cs,p,l){
   if l not plg with part, return l
-    check there is a class method T #pluginUnresponsive(Library binaryRepr)
-    method
-  c=locateClass(l)
-  Map<String,List<Method,mh42>> ms=..
-  List<Constructor,mh42> cs=...
-  m42s=new List
-  forall e,mh in ms,cs:
-    ui=UsingInfo(e)
-    tu=templateUsing
-    tu.updateAllStuff(ui,mh)
-    m42s.add(tu)
+    check there is a method
+    class method T #pluginUnresponsive(Library binaryRepr)
+  Class<?>c=locateClass(l)
+  JMethods jms=c.allpublicMethods()
+  mhs=method headers of abstract method in l.getMWTs()
+  ms=emptyList
+  for mh in mhs
     foral T in mh,
-      check either lTop(T) is pluginWithPart
-      or p(T/dept) has right method
+      if T inside lTop check lTop(T[from cs]) is pluginWithPart
+      otherwise T'=T.lessOuters(cs.size()), p(T') has right methods:
+        class method mut This0 #from(Library binaryRepr)
+        for return
+        read method Library #binaryRepr()
+        for parameter
+        class method Void #exceptionIf(Library binaryRepr) exception This
+        for exception
       //may be faster to cache?
+  
+    if mh has special comment...
+    else
+    methName=mh.ms.x
+    methArgs=mh.ms.xs.size()
+    jms0={jm in jms| name is methName, argLessPData jm=methArgs}
+    if jms0.size!=1 error from jms0
+    jm=jms.get(0)
+    ui=UsingInfo(c,jm)
+    tu=templateUsing.updateAllStuff(ui,mh)
+    ms.add(tu)
     }
-  return templateWrapper U m42s
+  return templateWrapper U ms U l
   }
   
 PlgWrapper:{interface 
@@ -381,3 +397,10 @@ System42:PlgWrapper.$<<{
   Else error.
   The user can put a comment with an ms, then the method name is ignored and the ms is used to syntetize the using
   if the user do not specify, the method name and parameter number must identify
+  For example 
+  method /*@selector foo(_int,_java_lang_Integer)*/
+  Num myName(Num x,Num y)  
+  
+  @plugin url @plgPart part
+  //needs to be lowercase since is part of the language?
+  //can be tuned so that @Plugin can refer to a class Plugin:{/*@pugin*/}

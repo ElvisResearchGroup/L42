@@ -131,9 +131,9 @@ public class TestSingleStep {
        },{lineNumber(),"( mut D r=D.new(x:r) (mut D r1a=D.new(x:r1b) mut D r1b=D.new(x:r1b) (mut D r2a=D.new(x:r2b)mut D r2b=D.new(x:r1a) r.x(r2a))))",
           "( mut D r=D.new(x:r2a)mut D r1a=D.new(x:r1b)mut D r1b=D.new(x:r1b) mut D r2a=D.new(x:r2b)  mut D r2b=D.new(x:r1a) ((void)))"
        },{lineNumber(),"{outer() C: {new() class method Library m() {inner()}} D: C.m()}",
-            "{outer() C: {new() class method Library m() {inner()}##star ^##}##star ^## D:(class C this0=C { inner()}##star ^## )}"
+            "{outer() C: {new() class method Library m() {inner()}}##star ^## D:(class C this0=C { inner()}##star ^## )}"
        },{lineNumber(),"{ method Library m() ({outer() C: {new() class method Library m() ({inner()})} D: C.m()})}",
-         "{ method Library m() ({ outer()C:{ new()class method Library m() ({ inner()}##star ^##)}##star ^## D:(class C this0=C ({ inner()}##star ^## ))})}"
+         "{ method Library m() ({ outer()C:{ new()class method Library m() ({ inner()})}##star ^## D:(class C this0=C ({ inner()}##star ^## ))})}"
 
 
          //can not work without the normalization
@@ -154,10 +154,10 @@ public class TestSingleStep {
         TestHelper.multiLine(
          "{C:{ k()class method Library ok() ("
         ,"  {//@oK"
-        ,"}##star ^##"
+        ,"}"
         ,"  )class method Library ko() ("
         ,"  {//@kO"
-        ,"}##star ^##"
+        ,"}"
         ,"  )}##star ^## I:{interface }##star ^## AI:{ k() implements This1.I}##star ^## D:("
         ,"  Any z=error ("
         ,"class This0.AI this0=This0.AI"

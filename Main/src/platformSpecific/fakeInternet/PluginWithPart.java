@@ -76,33 +76,33 @@ public class PluginWithPart implements PluginType{
     return ProtectedPluginType.executeMethod(method, p, rec, es.toArray());
     }
   public static class PlgInfo{
-    String plgString;
-    String plgName;
-    Class<?> plgClass;
-    PlgInfo(Doc doc){
-    plgString=OnLineCode.pluginString(doc);
-    if(plgString.endsWith("\n")){
-      plgString=plgString.substring(0,plgString.length()-1);
-      }
-    assert !plgString.endsWith("\n");
-    plgName=plgString.substring(plgString.lastIndexOf('\n')+1);
+    public String plgString;
+    public String plgName;
+    public Class<?> plgClass;
+    public PlgInfo(Doc doc){
+    plgString=doc._getParameterForPlugin();
+    plgString=plgString.trim();
+    plgName=doc._getParameterForPluginPart();
+    plgName=plgName.trim();
     try{plgClass=Class.forName(plgName);}
-    catch(ClassNotFoundException|SecurityException e){throw Assertions.codeNotReachable();}
+    catch(ClassNotFoundException|SecurityException e){
+      throw Assertions.codeNotReachable();
+      }
     }
   }
   public static class UsingInfo{
-    boolean staticMethod=false;
-    List<String> names;// avoiding _this, just the parameter names, encoding java types
-    String jMethName=null;
-    boolean needPData=false;//is using.ms.m starts with #
-    List<String> ts=new ArrayList<>();//types are in 42 primitives
-    List<Class<?>>jts=new ArrayList<>();
+    public boolean staticMethod=false;
+    public List<String> names;// avoiding _this, just the parameter names, encoding java types
+    public String jMethName=null;
+    public boolean needPData=false;//is using.ms.m starts with #
+    public List<String> ts=new ArrayList<>();//types are in 42 primitives
+    public List<Class<?>>jts=new ArrayList<>();
     //assert names.size()==ts.size(), but jts.size()==ts.size() or ts.size()+1 if needPData
-    Object methOrKs=null;
-    boolean isVoid=false;
-    PlgInfo plgInfo;
-    Ast.MethodSelector usingMs;
-    UsingInfo(PlgInfo pi,Method m){
+    public Object methOrKs=null;
+    public boolean isVoid=false;
+    public PlgInfo plgInfo;
+    public Ast.MethodSelector usingMs;
+    public UsingInfo(PlgInfo pi,Method m){
       plgInfo=pi;
       methOrKs=m;
       isVoid=m.getReturnType().equals(Void.TYPE);   
@@ -121,7 +121,7 @@ public class PluginWithPart implements PluginType{
         }
       usingMs=new Ast.MethodSelector(needPData?"#"+jMethName:jMethName, names);
       }
-    UsingInfo(Program p,Using s){
+    public UsingInfo(Program p,Using s){
       usingMs=s.getS();
       plgInfo=new PlgInfo(p.extractCb(s.getPath()).getDoc1());
       names = s.getS().getNames();

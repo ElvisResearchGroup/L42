@@ -87,7 +87,7 @@ public interface PluginType {
     return ts;
     };
   default Object execute(Program p, Using u){
-    assert false: "is this not called with compilation?";
+    //NOTE: this is not called with compilation but only with single steps";
     Method m=ProtectedPluginType.getMethod(this,p, u);
     return ProtectedPluginType.executeMethod(m, p, this, u.getEs().toArray());
     }

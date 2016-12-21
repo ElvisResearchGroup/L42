@@ -131,6 +131,8 @@ public interface Ast {
 		Mdf mdf;
 		Path path;
 		Ph ph;
+        public static final NormType mutThis0=new NormType(Mdf.Mutable,Path.outer(0),Ph.None);
+        public static final NormType immThis0=new NormType(Mdf.Immutable,Path.outer(0),Ph.None);
         public static final NormType immVoid=new NormType(Mdf.Immutable,Path.Void(),Ph.None);
         public static final NormType immLibrary=new NormType(Mdf.Immutable,Path.Library(),Ph.None);
         public static final NormType immAny=new NormType(Mdf.Immutable,Path.Any(),Ph.None);
@@ -507,6 +509,7 @@ public interface Ast {
 	            boolean multiline;
 		String s;
 		List<Object> annotations;
+		List<String> parameters;
 
 		public List<Path> getPaths() {
 			List<Path> result = new ArrayList<>();
@@ -517,6 +520,11 @@ public interface Ast {
 			}
 			return result;
 		}
+		public String _getParameterFor(Object annotation){
+		  int i=annotations.indexOf(annotation);
+		  if(i==-1){return null;}
+		  return parameters.get(i);
+		  }
 		public Doc withNewlineTerminator(){
 		  if(s.endsWith("\n")){return this;}
 		  return this.withS(s+"\n");
@@ -532,18 +540,19 @@ public interface Ast {
         public static Doc getPrivate(){return privateInstance;}
         private static final Doc privateInstance=Doc.factory(true,"@private");
 		public static Doc factory(Path single) {
-			return new Doc(true,"%s\n", Collections.singletonList((Object) single));
+			return new Doc(true,"%s\n", Collections.singletonList((Object) single), Collections.singletonList(""));
 		}
 
 		public static Doc factory(boolean multiline,String s) {
 			if (!multiline & !s.endsWith("\n")) { s += "\n";}
 			List<Object> annotations = new ArrayList<>();
+            List<String> parameters = new ArrayList<>();
 			StringBuilder sb = new StringBuilder();
 			for (int i = 0; i < s.length(); i++) {
 				char ci = s.charAt(i);
 				if (ci == '%') {
 					sb.append('%');
-					sb.append('%');
+					sb.append('%');//NOTE: this is to allow String.format in toString
 					continue;
 				}
 				if (ci != '@') {
@@ -557,47 +566,50 @@ public interface Ast {
 					if (next == '.' || Path.isValidPathChar(next)) {
 						sb.append("%s");
 						i = readAnnotation(s, i + 1, annotations);
+	                    readParameter(s, i + 1, parameters);
 					} else {
 						throw Assertions.codeNotReachable("invalid use of @ in |" + next + "| " + s);
 					} // if(!Path.isValidPathStart(next)){sb.append(ci);continue;}
 				}
 			}
-			return new Doc(multiline,sb.toString(), annotations);
+			return new Doc(multiline,sb.toString(), annotations,parameters);
 		}
 
-		private static final Doc empty = new Doc(true,"", Collections.emptyList());
+		private static final Doc empty = new Doc(true,"", Collections.emptyList(), Collections.emptyList());
 
 		public static Doc empty() {
 			return empty;
 		}
-
-                        public String toString() {
-                                    List<Object> paths = new ArrayList<>();
-                                    for (Object pi : this.annotations) {
-                                                if (pi instanceof Path) {
-                                                            paths.add("@" + sugarVisitors.ToFormattedText.of((Path) pi));
-                                                } else {
-                                                            paths.add("@" + (String) pi);
-                                                }
-                                    }
-                                    String text=String.format(this.s, paths.toArray());
-                                    return text;
-                          }
-                       public String toCodeFormattedString() {
-                                    String text=toString();
-                                    if(text.isEmpty()){return text;}
-                                    if(this.multiline){return "/*"+text+"*/";}
-                                    assert text.endsWith("\n"):"|"+text+"|";
-                                    String[] splitted=text.substring(0,text.length()-1).split("\n",-1);//on its line for ease of testing//This was a bad move, javaSplit, you despicable bastard
-                                    StringBuffer res=new StringBuffer();
-                                    {int i=-1;for(String s:splitted){i+=1;
-                                       if(s.isEmpty()&& i==0){continue;}
-                                       res.append("//");
-                                       res.append(s);
-                                       res.append("\n");
-                                       }}
-                                     return res.toString();
-                        }
+	    public String _getParameterForPlugin(){return _getParameterFor("plugin");}
+        public String _getParameterForPluginPart(){return _getParameterFor("pluginPart");}
+        
+        public String toString() {
+          List<Object> paths = new ArrayList<>();
+          for (Object pi : this.annotations) {
+            if (pi instanceof Path) { 
+              paths.add("@" + sugarVisitors.ToFormattedText.of((Path) pi));
+            } else {
+              paths.add("@" + (String) pi);  
+            }
+          }
+          String text=String.format(this.s, paths.toArray());
+          return text;
+        }
+      public String toCodeFormattedString() {
+        String text=toString();
+        if(text.isEmpty()){return text;}
+        if(this.multiline){return "/*"+text+"*/";}
+        assert text.endsWith("\n"):"|"+text+"|";
+        String[] splitted=text.substring(0,text.length()-1).split("\n",-1);//on its line for ease of testing//This was a bad move, javaSplit, you despicable bastard
+        StringBuffer res=new StringBuffer();
+        {int i=-1;for(String s:splitted){i+=1;
+          if(s.isEmpty()&& i==0){continue;}
+          res.append("//");
+          res.append(s);
+          res.append("\n");
+        }}
+        return res.toString();
+        }
 
 		public boolean isEmpty() {
 			return this.s.isEmpty();
@@ -606,7 +618,9 @@ public interface Ast {
 		public Doc sum(Doc that) {
 			List<Object> ps = new ArrayList<>(this.annotations);
 			ps.addAll(that.annotations);
-			return new Doc(true,this.s + that.s, ps);
+            List<String> pars = new ArrayList<>(this.parameters);
+            pars.addAll(that.parameters);
+			return new Doc(true,this.s + that.s, ps,pars);
 		}
 		public Doc formatNewLinesAsList() {
 		  String newS=this.s.trim();
@@ -627,7 +641,13 @@ public interface Ast {
     else {paths.add(res);}
     return start+res.length()-1;
     }
-}
+
+  private static void readParameter(String s, int start, List<String> parameters) {
+    int i=s.indexOf('@',start);
+    if (i==-1){i=s.length();}
+    parameters.add(s.substring(start,i));
+    }
+  }
 
 	public static enum SignalKind {
 		Error("error"), Exception("exception"), Return("return");

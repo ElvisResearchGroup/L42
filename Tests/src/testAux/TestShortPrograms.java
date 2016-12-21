@@ -510,9 +510,9 @@ public static final String operatorAccess(){return
 }
 
 public static final String listAccess(){return
-"{//@plugin\n"
+"{//@plugin\n"//new lines not needed anymore
 +"   //someUrlToFix\n"
-+"   //java.util.ArrayList\n"
++"   // @pluginPart java.util.ArrayList\n"
 +"class method This (Library repr)"
 +"method Library repr()"
 +"class method\n"

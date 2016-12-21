@@ -59,8 +59,8 @@ public class Translator {
     List<SourceFile> files =new ArrayList<>();
     for(String k :map.keySet()){//"generated.Program42";
       files.add(new SourceFile(k,map.get(k)));
-      //try {Files.write(Paths.get("/u/staff/servetto/git/L42/Tests/src/generated/"+k+".java"), map.get(k).getBytes());}catch (IOException _e) {throw new Error(_e);}
-      //try {Files.write(Paths.get("C:/Users/user/git/L42/Tests/src/generated/"+k+".java"), map.get(k).getBytes());}catch (IOException _e) {throw new Error(_e);}
+      //try{Files.write(Paths.get("/u/staff/servetto/git/L42/Tests/src/generated/"+k+".java"), map.get(k).getBytes());}catch (IOException _e) {throw new Error(_e);}
+      //try{Files.write(Paths.get("C:/Users/user/git/L42/Tests/src/generated/"+k+".java"), map.get(k).getBytes());}catch (IOException _e) {throw new Error(_e);}
       }
     //System.out.println("Compilation Iteration ready to compile");
     MapClassLoader cl=((Facade)Configuration.reduction).getLastLoader();

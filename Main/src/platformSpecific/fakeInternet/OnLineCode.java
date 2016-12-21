@@ -44,30 +44,30 @@ public interface OnLineCode {
     throw Assertions.codeNotReachable();
   }
   static PluginWithPart _isPluginWithPart(Doc doc){
-    return _isPluginWithPart(pluginString(doc));
+    String url=doc._getParameterForPlugin();
+    String part=doc._getParameterForPluginPart();
+    if (url==null || part==null){return null;}
+    url=url.trim();
+    part=part.trim();
+    return new PluginWithPart(url,part);
     }
-  static PluginWithPart _isPluginWithPart(String plgString){
-    String url=plgString;    
-    if (url.endsWith("\n")){url=url.substring(0,url.length()-1);}
-    int nl=url.indexOf('\n');
-    if(nl!=-1){
-      return new PluginWithPart(url.substring(0, nl),url.substring(nl+1));
+  static PluginType _isWellKnownPlugin(Doc doc){
+    String url=doc._getParameterForPlugin();
+    if (url==null){return null;}
+    url=url.trim();
+    if(url.startsWith("L42.is/connected/")){
+      PluginType plugin= OnLineCodeHelper.getWellKnownPluginType(url.substring("L42.is/connected/".length()));
+      return plugin;
       }
     return null;
     }
-  public static String pluginString(Doc doc){
-    String url=doc.toString();
-    if(!url.startsWith("@plugin\n")){throw new ErrorMessage.InvalidURL(url,null);}
-    url=url.substring("@plugin\n".length());
-    url=url.trim();
-    return url;
-  }
-  public static String pluginString(Program p,ExpCore.Using u){
-    return pluginString(p.extractCb(u.getPath()).getDoc1());
-    }
   public static PluginType plugin(Program p,ExpCore.Using u){
-    PluginType pt = OnLineCodeHelper.getPluginType(pluginString(p, u));
-    return pt;
+    Doc d=p.extractCb(u.getPath()).getDoc1();
+    PluginType pt =_isPluginWithPart(d);
+    if(pt!=null){return pt;}
+    pt = _isWellKnownPlugin(d);
+    if(pt!=null){return pt;}
+    throw Assertions.codeNotReachable("Other plugings not supported yet");
   }
   public static ExpCore pluginAction(Program p,ExpCore.Using u){
     try{
@@ -88,16 +88,6 @@ public interface OnLineCode {
 }
 
 class OnLineCodeHelper{
-  static PluginType getPluginType(String url){
-    if (url.endsWith("\n")){url=url.substring(0,url.length()-1);}
-    PluginType pwp=OnLineCode._isPluginWithPart(url);
-    if (pwp!=null){return pwp;}
-    if(url.startsWith("L42.is/connected/")){
-      PluginType plugin= OnLineCodeHelper.getWellKnownPluginType(url.substring("L42.is/connected/".length()));
-      return plugin;
-      }
-    throw Assertions.codeNotReachable();
-  }
   static PluginType getWellKnownPluginType(String url){
     String className="is.L42.connected."+url+".Plugin";
     try {

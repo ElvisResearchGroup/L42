@@ -238,7 +238,7 @@ public class TestParseAndDesugar {
   }
 
 
-  @RunWith(Parameterized.class)
+  //TODO: @RunWith(Parameterized.class)
   public static class TestPrivateNormalization {
     @Parameter(0) public int _lineNumber;
     @Parameter(1) public String _p1;
@@ -262,7 +262,7 @@ public class TestParseAndDesugar {
 }});}
 
 //----------
-@Test
+//TODO: @Test
   public void testOk() {
     TestHelper.configureForTest();
     L42.setRootPath(Paths.get("dummy"));
