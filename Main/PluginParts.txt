@@ -148,7 +148,7 @@ expected Result: {/*@plugin it.bla/a.A*/
   Library #binaryRepr()
   class method //TODO: update plugin use ms to include instanceof as for new
   Void #exceptionIf(Library binaryRepr) exception This
-    use This check instanceof(binaryRepr:binaryRepr)
+    use This check instanceof(_this:binaryRepr)
     exception This.#from(binaryRepr:binaryRepr)
 
   class method T #pluginUnresponsive(Library binaryRepr)//provided
@@ -190,13 +190,20 @@ expected Result: {/*@plugin it.bla/a.A*/
       ))
   }
   and
-  { class method This m()
-    This.#from(binaryRepr:(
-      Library res=use This0 check m(_:This.binaryRepr())
-        error This.#pluginUnresponsive( binaryRepr:{/**/})"
+
+  { class method Void m()
+    (
+      Void res=use This0 check m(_:This.binaryRepr())
+        error This.#pluginUnresponsive(binaryRepr:{/**/})"
+      catch error Library x (
+        This.#exceptionIf(binaryRepr:x)
+        error x
+        )
       res
-      ))
-  }
+      )
+    }
+  //the catch need to be removed is exceptions is empty
+  
   get the member, fill
   mwt.retType
   mwt.parameters

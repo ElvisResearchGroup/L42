@@ -330,7 +330,8 @@ CT[catch throw TX1 x1 ex1..catch throw TXn xn exn ]=
   catch([throw] y){CT[TX1 x1 ex1] ...CT[TXn xn exn] throw y;}
 CT[TX x ex]=
   boolean fresh; fresh=y.inner() instanceof CT*TX;//boxed version
-  if(fresh){
+  if(fresh){//TODO:Need care for Library vs Any: Library will capture all objects that 
+    //do not implement some root interface of all 42 objects, while Any will capture all.
     CT*TX x=(TX)y.inner();
     CT[ex]
     }

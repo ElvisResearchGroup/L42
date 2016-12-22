@@ -194,9 +194,15 @@ public class TranslateExpression implements coreVisitors.Visitor<Void>{
   private void getCatch(String kVar,On on,String asReturn,String kLab) {
     Path p=((NormType)on.getT()).getPath();
     String tn=Resources.nameOf(p);
-    if(p.equals(Path.Library())){res.append(getCatchHeaderForLibrary(kVar));}
-    else if(!p.isPrimitive() && tn.equals("Object")){res.append(getCatchHeaderForPathNotStar(kVar,p));}
-    else {res.append("if("+kVar+".unbox instanceof "+tn+"){\n");}
+    if(p.equals(Path.Library())){
+      res.append(getCatchHeaderForLibrary(kVar));
+      }
+    else if(!p.isPrimitive() && tn.equals("Object")){
+      res.append(getCatchHeaderForPathNotStar(kVar,p));
+      }
+    else {
+      res.append("if("+kVar+".unbox instanceof "+tn+"){\n");
+      }
     res.append("  "+tn+" P"+on.getX()+"=("+tn+")"+kVar+".unbox;\n");
     res.append(asReturn);
     on.getInner().accept(this);
@@ -205,15 +211,17 @@ public class TranslateExpression implements coreVisitors.Visitor<Void>{
     res.append("\n  }\nelse ");
   }
 
-
+  //TODO: this is problematic for plugins with Part
+  //for now, we may leave it broken that Library capture all as much as any?
   private Object getCatchHeaderForLibrary(String xName) {
     String iOf=xName+".unbox instanceof ";
-    return "if("
+    return "if(!("+iOf+"platformSpecific.javaTranslation.Resources.Revertable)){\n";
+/*    return "if("
         +iOf+" String ||"
         +iOf+" Integer ||"
-        +iOf+"  ast.ExpCore.ClassB||"
+        +iOf+"  ast.ExpCore.ClassB||"//Will break if ClassB implements Revertable
         +iOf+"  ast.Ast.Doc"
-        +"){\n";
+        +"){\n";*/
   }
 
   private Object getCatchHeaderForPathNotStar(String xName,Path path) {

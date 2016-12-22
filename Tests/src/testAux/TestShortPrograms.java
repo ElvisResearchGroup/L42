@@ -486,13 +486,19 @@ public void testPluginPartsWrapper(){tp("{",
     " error void}",
     "A:W<<{/*@plugin  toFix @pluginPart "+A.class.getName()+" */",
     " class method Void #pluginUnresponsive(Library binaryRepr) void  ",
-    " class method This() method This0 m() class method This0 k()   }",
-    "  ",
-    "Main:( A a= A() A a0=a.m() A a1=A.k() {//@exitStatus\n//0\n\n})",
-    " }");}
-public static class A{
+    " class method This()",
+    " method This m()",
+    " class method This0 k()",
+    " method Void foo(This bar) exception This",
+    " } ",
+    "Main:( A a= A() A a0=a.m() A a1=A.k() ",
+    " a.foo(bar:a0)",
+    " catch exception A x {//@exitStatus\n//0\n\n}",
+    " {/*fail*/})}");}
+public static class A extends RuntimeException{
   public A m(){return this;}
   public static A k(){return new A();}
+  public void foo(A bar){throw bar;}
   }
 /*@Test
 public void testCompositionAT2() throws Throwable{

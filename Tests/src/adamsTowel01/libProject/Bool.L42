@@ -19,14 +19,14 @@
   method
   Void #checkTrue() exception Void
     use Alu
-      check ifInt32EqualDo(n1:this.binaryRepr() n2:0N.binaryRepr())
+      check ifFalseBoolDo(this.binaryRepr())
       exception void
   class method
   This true()
-    This(binaryRepr:1N.binaryRepr())
+    This(binaryRepr:use Alu check constTrue() error void)
   class method
   This false()
-    This(binaryRepr:0N.binaryRepr())
+    This(binaryRepr:use Alu check constFalse() error void)
 
   method
   This &(This that){

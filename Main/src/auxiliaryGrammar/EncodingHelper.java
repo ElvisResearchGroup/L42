@@ -79,6 +79,11 @@ public class EncodingHelper{
   public static ClassB wrapInt32(String i) {
     return ClassB.docClass(Doc.factory(true,"@int32\n"+i+"\n"));
   }
+  public static ClassB wrapBool(boolean b) {
+    String s="@boolTrue\n";
+    if(!b)s="@boolFalse\n";
+    return ClassB.docClass(Doc.factory(true,s));
+  }
   public static ClassB wrapStringU(String s) {
     return ClassB.docClass(Doc.factory(true,"@stringU\n"+produceStringUnicode(s)+"\n"));
   }
@@ -124,6 +129,21 @@ public class EncodingHelper{
     if(code==null){return null;}
     try{return Integer.parseInt(code);}
     catch(NumberFormatException nfe){return null;}
+    }
+
+  public static Boolean ensureExtractBool(Object e) {
+    Boolean res=_extractBool(e);
+    if (res==null ){throw new Resources.Error("InvalidBool");}
+    return res;
+    }
+  public static Boolean _extractBool(Object e) {
+    if(e instanceof Boolean){return (Boolean)e;}
+    if(!(e instanceof ClassB)){return null;}
+    ClassB cb=(ClassB)e;
+    Object ann = cb.getDoc1().getAnnotations().get(0);
+    if(ann.equals("boolTrue")){return true;}
+    if(ann.equals("boolFalse")){return false;}
+    return null;
     }
 
   public static Path ensureExtractPathFromJava(Object e) {

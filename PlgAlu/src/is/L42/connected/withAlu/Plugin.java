@@ -134,6 +134,18 @@ public class Plugin implements PluginType {
     Integer i=ensureExtractInt32(cb);
     return ""+i;
   }
+  //isTrueBool
+  @ActionType({ActionType.Type.Void,ActionType.Type.Library})
+  public  Resources.Void MifFalseBoolDo£xthat(Object cb1){
+    Boolean b=ensureExtractBool(cb1);
+    if(b){return Resources.Void.instance;}
+    throw Resources.notAct;
+  }
+  @ActionType({ActionType.Type.Library})
+  public  Object MconstTrue(){return true;}
+  @ActionType({ActionType.Type.Library})
+  public  Object MconstFalse(){return false;} 
+  
   @ActionType({ActionType.Type.Void,ActionType.Type.Library})
   public Resources.Void MstringDebug£xthat(Object cb){
     String s=ensureExtractStringU(cb);

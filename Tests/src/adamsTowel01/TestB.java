@@ -25,7 +25,7 @@ public class TestB extends helpers.TestRunner{
       //Opt.Parallel,
       Opt.ProfilerPrintOff,//disable profiler print and final profiling computation
       //// big individual deployment options
-      Opt.DeplAT1, // AdamsTowel01
+      //Opt.DeplAT1, // AdamsTowel01
       // Opt.DeplAT2, // AdamsTowel02
       // Opt.Project, // Run the local libProject as a folder, expecting it to deploy a project towel
       //// options for deploying small things
@@ -43,7 +43,7 @@ public class TestB extends helpers.TestRunner{
       //"UseIntrospectionAdamTowel3.L42",
       //"UseIntrospectionAdamTowel4.L42",
       //"UseIntrospectionAdamTowel5.L42",
-      // Opt.AllTests, // All files in libTests, as indivisrcdual tests, in no defined order
+      Opt.AllTests, // All files in libTests, as indivisrcdual tests, in no defined order
       Opt.NOP  // Convenience option, so that all of the other options can end with a comma
     );
     return tests;

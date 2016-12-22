@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.IntStream;
@@ -50,10 +51,15 @@ public class PluginWithPart implements PluginType{
   public List<NormType> typeOf(Program p, Using u){
     List<NormType> res=new ArrayList<>();
     UsingInfo ui=new UsingInfo(p,u);
-    if(ui.methOrKs instanceof Method){
-      res.add(jTo42(((Method)ui.methOrKs).getReturnType()));
+    if(ui.methOrKs==null){ res.add(jTo42(Void.TYPE));}
+    else{
+      if(ui.methOrKs instanceof Constructor){
+        res.add(jTo42(ui.plgInfo.plgClass));
+        }
+      if(ui.methOrKs instanceof Method){
+        res.add(jTo42(((Method)ui.methOrKs).getReturnType()));
+        }
       }
-    else {res.add(jTo42(ui.plgInfo.plgClass));}
     if (!ui.staticMethod) {res.add(jTo42(ui.plgInfo.plgClass));}
     for(String t :ui.names)
     res.add(jTo42(t));
@@ -99,12 +105,12 @@ public class PluginWithPart implements PluginType{
   public static class UsingInfo{
     public boolean staticMethod=false;
     public List<String> names;// avoiding _this, just the parameter names, encoding java types
-    public String jMethName=null;
+    public String jMethName=null;//can also be new for constructors and instanceof
     public boolean needPData=false;//is using.ms.m starts with #
-    public List<String> ts=new ArrayList<>();//types are in 42 primitives
+    public List<String> ts=new ArrayList<>();//types as javaCanonicalNames
     public List<Class<?>>jts=new ArrayList<>();
     //assert names.size()==ts.size(), but jts.size()==ts.size() or ts.size()+1 if needPData
-    public Object methOrKs=null;
+    public Object methOrKs=null;//will stay null for instanceof
     public boolean isVoid=false;
     public PlgInfo plgInfo;
     public Ast.MethodSelector usingMs;
@@ -144,6 +150,14 @@ public class PluginWithPart implements PluginType{
     public UsingInfo(Program p,Using s){
       usingMs=s.getS();
       plgInfo=new PlgInfo(p.extractCb(s.getPath()).getDoc1());
+      if(usingMs.getName().equals("instanceof")){
+        assert usingMs.getNames().size()==1 && usingMs.getNames().get(0).equals("_this");
+        //TODO: better error message?
+        names=Collections.emptyList();
+        jMethName="instanceof";
+        isVoid=true;//expression executed if instanceOf is True
+        return;
+        }
       names = s.getS().getNames();
       staticMethod=true;
       if(!names.isEmpty() && names.get(0).equals("_this")){
@@ -193,9 +207,12 @@ public class PluginWithPart implements PluginType{
       catch (ClassNotFoundException e) { throw new Error(e); }
       }
     }
+  
+  
   @Override
   public String executableJ(Program p,Using s,String te,List<String>tes,Set<String> labels){
     UsingInfo ui=new UsingInfo(p,s);
+    if (ui.methOrKs==null){return executableInstanceof(ui,s,te,tes,labels);}
     //if static meth tes=e1..en, parRec=null, rec=plgName
     //else  tes=e0..en, parRec=e0, rec=plF //that is, e1..en do not contains the first of tes
     //if Meth par1 of type PData opt=`Resources.pData(),`
@@ -217,6 +234,7 @@ public class PluginWithPart implements PluginType{
     res.append("("+ui.plgInfo.plgClass.getCanonicalName()+")"+parRec+", ");
     //(plF,xsF)->{ `T1` _1;..`Tn` _n;
     String plF="L"+Functions.freshName("pl",labels);
+    String trF="L"+Functions.freshName("tr",labels);
     String xsF="L"+Functions.freshName("xs",labels);
     res.append("("+plF+","+xsF+")->{\n");
     {int i=0;for(String t:ui.ts){i++;
@@ -231,6 +249,7 @@ public class PluginWithPart implements PluginType{
     //  catch(ClassCastException cce){assert false; throw DoNotAct;}
     res.append("catch(ClassCastException cce){assert false;throw platformSpecific.javaTranslation.Resources.notAct;}");
     //  return plgName.name(`opt` _1,..,_n);
+    res.append("\n try{\n");
     if(!ui.isVoid){res.append("return ");}
     if(ui.methOrKs instanceof Method){
       if(ui.staticMethod){
@@ -248,7 +267,9 @@ public class PluginWithPart implements PluginType{
       ", ",i->res.append("_"+i));
     res.append(");\n");
     if(ui.isVoid){res.append("return platformSpecific.javaTranslation.Resources.Void.instance;\n");}
-    res.append("},()->");
+    res.append("}catch(Throwable "+trF+
+            "){throw new platformSpecific.javaTranslation.Resources.Error("+trF+");}"
+            + "},()->");
     //  },
     //()->`te`,`te1`,..,`ten`);
     res.append(te);
@@ -256,4 +277,20 @@ public class PluginWithPart implements PluginType{
     res.append(")");
     return res.toString();
     }
+  private String executableInstanceof(UsingInfo ui, Using s, String te, List<String> tes, Set<String> labels) {
+    String path=ui.plgInfo.plgClass.getCanonicalName();
+    String plF="L"+Functions.freshName("pl",labels);
+    String xsF="L"+Functions.freshName("xs",labels);
+    //plgExecutor("instanceofPath",p,obj,
+    //  (plF,empty)->{ if (plF instanceof Path){throw Resources.notAct;}
+    //                 return Resources.Void.instance;}
+    // ,()->e);
+    return "platformSpecific.javaTranslation.Resources.plgExecutor("
+         + "\"instanceof "+path+"\",platformSpecific.javaTranslation.Resources.getP(),"
+         + "(Object)"+tes.get(0)+" ,"
+         + "("+plF+","+xsF+")->{ if ("+plF+" instanceof "+path+"){throw platformSpecific.javaTranslation.Resources.notAct;}"
+         + "return platformSpecific.javaTranslation.Resources.Void.instance;}"
+         + ",()->"+te+")"
+        ;
   }
+}

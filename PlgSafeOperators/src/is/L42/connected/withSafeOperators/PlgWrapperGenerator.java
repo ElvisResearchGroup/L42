@@ -53,10 +53,10 @@ public class PlgWrapperGenerator {
     " Library #binaryRepr()\n"+
     " class method\n"+
     " Void #exceptionIf(Library binaryRepr) exception This\n"+
-    " void "+//TODO: fix for instanceof
-//    "   use This check _%%%(binaryRepr:binaryRepr)\n"+
-//    "   error This.#pluginUnresponsive(binaryRepr:binaryRepr)\n"+
+    "   use This check instanceof(_this:binaryRepr)\n"+
+    "   exception This.#from(binaryRepr:binaryRepr)\n"+
     "}")).getMs();
+ 
   private static MCall templateUsingExc=(MCall) ((ClassB)parseAndDesugar(
     " {class method This m()\n"+
     " This.#from(binaryRepr:(\n"+
@@ -71,16 +71,6 @@ public class PlgWrapperGenerator {
     "}\n"+
     "")).getMs().get(0).getInner();
   
-  private static MCall templateUsing=(MCall) ((ClassB)parseAndDesugar(
-  " {class method This m()\n"+
-  " This.#from(binaryRepr:(\n"+
-  "   Library res=use This0 check m(_:This.#binaryRepr())\n"+
-  "     error This.#pluginUnresponsive(binaryRepr:void)\n"+
-  "   res\n"+
-  "   ))\n"+
-  " }\n"+
-  "")).getMs().get(0).getInner();
-       
 private static ExpCore parseAndDesugar(String s) {
   Expression code1=Parser.parse("PlgWrapperGenerator",s);
   Expression code2=Desugar.of(code1);
@@ -208,10 +198,10 @@ private static UsingInfo usingConstructor(PlgInfo plgInfo, Constructor<?>[] jcs,
   }
 
   private static MethodWithType updateTemplateUsing(UsingInfo ui, MethodWithType mwt) {
-    MCall e=templateUsing;
-    if (!mwt.getMt().getExceptions().isEmpty()){e=templateUsingExc;}
+    MCall e=templateUsingExc;
     MethodType mt=mwt.getMt();
     ExpCore.Block b=(Block) e.getEs().get(0);
+    if (mwt.getMt().getExceptions().isEmpty()){b=b.withOns(Collections.emptyList());}
     ExpCore.Using u=(Using) b.getDecs().get(0).getInner();
     ExpCore.MCall p0=(MCall) u.getEs().get(0);//parameter expressions
     
@@ -252,8 +242,14 @@ private static UsingInfo usingConstructor(PlgInfo plgInfo, Constructor<?>[] jcs,
       //k0 add more on need
       //ki.inner#mcall.inner<-Pi
       }
-    e=e.withEs(Collections.singletonList(b));
-    mwt=mwt.withInner(e);
+    if(!ui.isVoid){
+      e=e.withEs(Collections.singletonList(b));
+      mwt=mwt.withInner(e);
+      }
+    else{
+      b=b.withDecs(Collections.singletonList(b.getDecs().get(0).withT(NormType.immVoid)));
+      mwt=mwt.withInner(b);
+      }
     return mwt;
     }
 
@@ -351,6 +347,7 @@ public static boolean hasPluginUnresponsive(ClassB l){
 
   private static void isOkAsReturn(Program p, Path csTop, Type ti) {
     Path pi=ti.getNT().getPath();
+    if (pi.equals(Path.Void())){return;}
     Path op=_pathForOutside(csTop.getCBar().size(),pi);
     if(op==null){checkForInside(p.topCb(),csTop,pi); return;}
     ClassB l=p.extractCb(op);
