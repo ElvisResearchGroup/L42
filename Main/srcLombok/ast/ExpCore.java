@@ -203,6 +203,10 @@ public interface ExpCore {
     Doc doc;
     List<ExpCore> es;
     ExpCore inner;
+    public Using(Path path,MethodSelector s,Doc doc,List<ExpCore> es,ExpCore inner){
+      this.path=path;this.s=s;this.doc=doc;this.es=es;this.inner=inner;
+      assert s.getNames().size()==es.size();
+      }
     public Using withEsi(int i,ExpCore ei){
     List<ExpCore> es2=new ArrayList<>(es);
     es2.set(i,ei);

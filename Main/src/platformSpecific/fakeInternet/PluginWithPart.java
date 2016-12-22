@@ -1,5 +1,6 @@
 package platformSpecific.fakeInternet;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import ast.ExpCore.Using;
 import auxiliaryGrammar.EncodingHelper;
 import auxiliaryGrammar.Functions;
 import auxiliaryGrammar.Program;//TODO: to change in the new program
+import facade.PData;
 import platformSpecific.javaTranslation.Resources;
 import sun.security.timestamp.TSRequest;
 import tools.Assertions;
@@ -36,6 +38,10 @@ public class PluginWithPart implements PluginType{
     this.part = part;
     try {
       this.pointed=Class.forName(part);
+      }
+    catch (ExceptionInInitializerError e) {
+      e.printStackTrace();
+      throw e;
       }
     catch (ClassNotFoundException e) {
       throw new ErrorMessage.InvalidURL(url+"\n"+part,null);
@@ -109,17 +115,31 @@ public class PluginWithPart implements PluginType{
       staticMethod=Modifier.isStatic(m.getModifiers());
       jMethName=m.getName();
       jts.addAll(Arrays.asList(m.getParameterTypes()));
+      commonInit();
+      }
+    private void commonInit() {
+      names=new ArrayList<>();
       List<Class<?>> jtsNoPData = jts;
       needPData=false;
-      //TODO: when PData exists 
-      //if(!jts.isEmpty() && jts.get(0).equals(PData.class)){jtsNoPData.remove(0);needPData=true;}
+      if(!jts.isEmpty() && jts.get(0).equals(PData.class)){jtsNoPData.remove(0);needPData=true;}
+      if(!staticMethod){names.add("_this");}
       for(Class<?> jt:jtsNoPData){
         String t=jt.getCanonicalName();
         ts.add(t);
-        String name=EncodingHelper.javaClassToX(t);
+        String name=EncodingHelper.javaClassToX(jt.getName());
         names.add(name);
         }
+      assert names!=null;
       usingMs=new Ast.MethodSelector(needPData?"#"+jMethName:jMethName, names);
+    }
+    public UsingInfo(PlgInfo pi,Constructor<?> m){
+      plgInfo=pi;
+      methOrKs=m;
+      isVoid=false;   
+      staticMethod=true;
+      jMethName="new";
+      jts.addAll(Arrays.asList(m.getParameterTypes()));
+      commonInit();
       }
     public UsingInfo(Program p,Using s){
       usingMs=s.getS();
@@ -135,31 +155,20 @@ public class PluginWithPart implements PluginType{
       if(needPData){jMethName=jMethName.substring(1);}
       for(String n:names){
         String t=EncodingHelper.xToJavaClass(n);
-        ts.add(t);
-        try {jts.add(Class.forName(t));}
-        catch (ClassNotFoundException e) {
-          //handling primitive types
-          switch(t){
-            case "byte":jts.add(byte.class);break;
-            case "short":jts.add(short.class);break;
-            case "int":jts.add(int.class);break;
-            case "long":jts.add(long.class);break;
-            case "float":jts.add(float.class);break;
-            case "double":jts.add(double.class);break;
-            case "char":jts.add(char.class);break;
-            case "boolean":jts.add(boolean.class);break;
-            default:throw Assertions.codeNotReachable();
-            }
-          }
+        Class<?>tClass;
+        tClass = tToClass(t);
+        ts.add(tClass.getCanonicalName());//t has $ for nestedclasses, canonicalname have . instead
+        jts.add(tClass);
         }
       if(needPData){
-        try{jts.add(0,Class.forName("platformSpecific.javaTranslation.PData"));}
-        catch(ClassNotFoundException cnfe){throw Assertions.codeNotReachable();}
+        jts.add(0,PData.class);
         }
       if(jMethName.equals("new")){
         assert this.staticMethod;
-        try{methOrKs=plgInfo.plgClass.getConstructor(jts.toArray(new Class<?>[0]));}
-        catch(NoSuchMethodException|SecurityException e){throw Assertions.codeNotReachable();}
+        try{methOrKs=plgInfo.plgClass.getDeclaredConstructor(jts.toArray(new Class<?>[0]));}
+        catch(NoSuchMethodException e){
+          throw new Error(e);
+          }
         }
       else{
         Method m;
@@ -169,13 +178,27 @@ public class PluginWithPart implements PluginType{
         methOrKs=m;
         }
       }
+    private Class<?> tToClass(String t) {
+     switch(t){
+       case "byte":return byte.class;
+       case "short":return short.class;
+       case "int":return int.class;
+       case "long":return long.class;
+       case "float":return float.class;
+       case "double":return double.class;
+       case "char":return char.class;
+       case "boolean":return boolean.class;
+       }
+      try {return Class.forName(t);}
+      catch (ClassNotFoundException e) { throw new Error(e); }
+      }
     }
   @Override
   public String executableJ(Program p,Using s,String te,List<String>tes,Set<String> labels){
     UsingInfo ui=new UsingInfo(p,s);
     //if static meth tes=e1..en, parRec=null, rec=plgName
     //else  tes=e0..en, parRec=e0, rec=plF //that is, e1..en do not contains the first of tes
-    //if Meth par1 of type PData opt=`Resource.pData(),`
+    //if Meth par1 of type PData opt=`Resources.pData(),`
     //else opt=``
     String parRec="null";
     if(!ui.staticMethod){
@@ -184,14 +207,14 @@ public class PluginWithPart implements PluginType{
       }
     String opt="";
     if(ui.needPData){
-      opt="platformSpecific.javaTranslation.Resource.pData(),";
+      opt="platformSpecific.javaTranslation.Resources.pData(),";
       }
     StringBuilder res=new StringBuilder();
     //plgExecutor("`PathName`",p,(plgName)`parRec`,
     res.append("platformSpecific.javaTranslation.Resources.plgExecutor(");
     res.append("\""+s.getS().getName()+"\",");
     res.append("platformSpecific.javaTranslation.Resources.getP(), ");
-    res.append("("+ui.plgInfo.plgName+")"+parRec+", ");
+    res.append("("+ui.plgInfo.plgClass.getCanonicalName()+")"+parRec+", ");
     //(plF,xsF)->{ `T1` _1;..`Tn` _n;
     String plF="L"+Functions.freshName("pl",labels);
     String xsF="L"+Functions.freshName("xs",labels);
@@ -211,14 +234,14 @@ public class PluginWithPart implements PluginType{
     if(!ui.isVoid){res.append("return ");}
     if(ui.methOrKs instanceof Method){
       if(ui.staticMethod){
-        res.append(ui.plgInfo.plgName+"."+ui.jMethName+"("+opt);
+        res.append(ui.plgInfo.plgClass.getCanonicalName()+"."+ui.jMethName+"("+opt);
         }
       else{
         res.append(plF+"."+ui.jMethName+"("+opt);
         } 
       }
     else{
-      res.append("new "+ui.plgInfo.plgName+"("+opt);    
+      res.append("new "+ui.plgInfo.plgClass.getCanonicalName()+"("+opt);    
     }
     StringBuilders.formatSequence(res,
       IntStream.range(1, ui.ts.size()+1).iterator(),

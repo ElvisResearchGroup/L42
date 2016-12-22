@@ -477,7 +477,23 @@ public void testPluginParts1Fail(){tp("{",
     "  L.N e=l.get(sz) {})",
     "Main:{//@exitStatus\n//0\n\n}",
     " }");}
-
+@Test
+public void testPluginPartsWrapper(){tp("{",
+    "W:{//@plugin is.L42.connected.withSafeOperators",
+    " //@pluginPart is.L42.connected.withSafeOperators.PlgWrapperGenerator",
+    "class method Library <<(Library that)use This",
+    " check #main(_Library:that)",
+    " error void}",
+    "A:W<<{/*@plugin  toFix @pluginPart "+A.class.getName()+" */",
+    " class method Void #pluginUnresponsive(Library binaryRepr) void  ",
+    " class method This() method This0 m() class method This0 k()   }",
+    "  ",
+    "Main:( A a= A() A a0=a.m() A a1=A.k() {//@exitStatus\n//0\n\n})",
+    " }");}
+public static class A{
+  public A m(){return this;}
+  public static A k(){return new A();}
+  }
 /*@Test
 public void testCompositionAT2() throws Throwable{
   L42.trustPluginsAndFinalProgram=true;

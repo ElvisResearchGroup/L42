@@ -3,6 +3,7 @@ package platformSpecific.javaTranslation;
 import facade.Configuration;
 import facade.ErrorFormatter;
 import facade.L42;
+import facade.PData;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -80,6 +81,7 @@ public class Resources {
     assert p!=null;
     return p;
     }
+  public static PData pData(){return new PData(getP());}
   public static <T> T withPDo(Program _p,Supplier<T> action){
     if(p!=null){throw new IllegalAccessError();}
     try{

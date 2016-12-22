@@ -226,6 +226,7 @@ public class EncodingHelper{
   }
   public static String xToJavaClass(String that){
     that=that.substring(1);
+    if(that.equals("Library")){return ExpCore.ClassB.class.getName();}
     that=that.replace("%%%", ".%%");
     that=that.replace("%%", "\\u");
     that=that.replace("%", ".");

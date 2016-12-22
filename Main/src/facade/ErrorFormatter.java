@@ -321,7 +321,7 @@ public class ErrorFormatter {
     if(obj instanceof HashMap){ return obj.toString();}
     if(obj instanceof Collection){ return obj.toString();}
     if(obj instanceof ast.Util.PathMwt){ return obj.toString();}
-    return "unknown kind "+obj.getClass().getCanonicalName();
+    return "unknown kind "+obj.getClass().getName();
   }
   public static String formatSelectorCompact(Ast.MethodSelector ms) {
     StringBuilder sb=new StringBuilder();
