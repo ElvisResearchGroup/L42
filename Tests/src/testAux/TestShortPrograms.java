@@ -470,12 +470,14 @@ public void testPluginParts1(){tp("{",
     "  l.add(sz) L.N e=l.get(sz) {})",
     "Main:{//@exitStatus\n//0\n\n}",
     " }");}
-@Test(expected=AssertionError.class)//For now, should be a plugin not acting in the future
+@Test
 public void testPluginParts1Fail(){tp("{",
     "L:"+listAccess(),
     "Q:(L l=L() L.N sz=l.size()  ",
-    "  L.N e=l.get(sz) {})",
-    "Main:{//@exitStatus\n//0\n\n}",
+    "  L.N e=l.get(sz)",
+    "  catch error Library xx {//@exitStatus\n//0\n\n}",
+    " {/*fail*/})",
+//    "Main:{//@exitStatus\n//0\n\n}",
     " }");}
 @Test
 public void testPluginPartsWrapper(){tp("{",
