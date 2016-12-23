@@ -1,4 +1,4 @@
-package is.L42.connected.withSafeOperators;
+package is.L42.connected.withSafeOperators.pluginWrapper;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -17,6 +17,7 @@ import ast.Ast.MethodSelector;
 import ast.Ast.MethodType;
 import ast.Ast.NormType;
 import ast.Ast.Path;
+import ast.Ast.Ph;
 import ast.Ast.Type;
 import ast.ExpCore;
 import ast.ExpCore.Block;
@@ -325,13 +326,16 @@ public static boolean hasPluginUnresponsive(ClassB l){
     throw Assertions.codeNotReachable("Add error for internal references need to be plugins too");//TODO:
       }
     }
+  private static boolean isOkMdf(Type t){
+    return !t.getNT().getMdf().equals(Mdf.Class) && t.getNT().getPh().equals(Ph.None); 
+  }
   private static void isOkAsParameter(Program p, Path csTop, Type ti) {
     Path pi=ti.getNT().getPath();
     Path op=_pathForOutside(csTop.getCBar().size(),pi);
     if(op==null){checkForInside(p.topCb(),csTop,pi); return;}
     ClassB l=p.extractCb(op);//TODO: since p.top is topL, is it ok this extraction?
     boolean hasIt=hasBinaryRepr(l);
-    boolean mdfOk=!ti.getNT().getMdf().equals(Mdf.class);
+    boolean mdfOk=isOkMdf(ti);
     if(!hasIt){throw Assertions.codeNotReachable("Add error for no #binaryRepr");}//TODO:
     if(!mdfOk){throw Assertions.codeNotReachable("Add error for no class parameters allowed");}//TODO:
     }
@@ -352,9 +356,39 @@ public static boolean hasPluginUnresponsive(ClassB l){
     if(op==null){checkForInside(p.topCb(),csTop,pi); return;}
     ClassB l=p.extractCb(op);
     boolean hasIt=hasFrom(l);
-    boolean mdfOk=!ti.getNT().getMdf().equals(Mdf.class);
+    boolean mdfOk=isOkMdf(ti);
     if(!hasIt){throw Assertions.codeNotReachable("Add error for no #from(binaryRepr)");}//TODO:
     if(!mdfOk){throw Assertions.codeNotReachable("Add error for no class result allowed");}//TODO:
     }   
  
 }
+
+class PlgWrapperException extends Exception{
+  String internalPath;
+  String selector;
+  String mutMsg;//since java do not want setMessage  :(
+  public @Override String getMessage(){return mutMsg;}
+  protected void setMessage(String msg){mutMsg=msg;}
+  PlgWrapperException(String internalPath,String selector){
+    super();
+    this.internalPath=internalPath;this.selector=selector;
+    }
+}
+
+/*
+invalidMethodType
+  where: Path, ms
+  what: invalid ret/par/exc type
+  why: no *primitive par/ret/exc void
+       method *123 not present in external ref
+       plg part not internal ref
+       no class/fwd par/ret
+ 
+  no plgunresponsive
+    where: Path, ms
+
+overloading
+  where: Path, ms
+  in JavaClass selector/num have x variations/ is not present
+*/
+//TODO: if a class is internal and is not plugin with part, is it ok if it has the right methods anyway??

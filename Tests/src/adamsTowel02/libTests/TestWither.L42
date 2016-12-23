@@ -1,8 +1,8 @@
 {reuse L42.is/AdamTowel02
 
 
-//C:Wither<<{(N n, S s)  class method This immK(N n, S s) }
-C:Data<<{N n, S s  }
+//C:Wither<<{(Size n, S s)  class method This immK(Size n, S s) }
+C:Data<<{Size n, S s  }
 
 
 Main:{
@@ -22,9 +22,9 @@ Main:{
   '11
   '[End of defined output]
   ")
-  C c=C(n:10N,s:S"11")
-  C c1=c.with(n:20N, s:S"21")
-  C c2=c.with(n:22N)
+  C c=C(n:10Size,s:S"11")
+  C c1=c.with(n:20Size, s:S"21")
+  C c2=c.with(n:22Size)
   C c3=c.with(s:S"23")
   C c4=c.with()
   Debug(c.n())

@@ -1,24 +1,24 @@
 {
   class method
-  mut Iterator (N that)
-    Iterator(start:0N,end:that)
+  mut Iterator (Size that)
+    Iterator(start:0Size,end:that)
 
   class method
-  mut Iterator (N start, N stop)
+  mut Iterator (Size start, Size stop)
     Iterator(start:start,end:stop)
     
   class method
-  mut Iterator (N start)
-    Iterator(start:start,end:N"-1")
+  mut Iterator (Size start)
+    Iterator(start:start,end:Size"-1")
     
-  class method class N #default##apply(Void that) N
-  class method class N #default##apply(Void stop) N
-  class method class N #default##apply(Void start) N
+  class method class Size #default##apply(Void that) Size
+  class method class Size #default##apply(Void stop) Size
+  class method class Size #default##apply(Void start) Size
   
-  Iterator:{mut (var N start, N end)
+  Iterator:{mut (var Size start, Size end)
     mut method
     Void #next() exception Void (
-      if this.end() <0N | this.start()<this.end() (this.start(this.start()+1N))
+      if this.end() <0Size | this.start()<this.end() (this.start(this.start()+1Size))
       else exception void
       )
 
@@ -26,7 +26,7 @@
     Void #checkEnd() void
 
     read method
-    N #inner() this.start()-1N
+    Size #inner() this.start()-1Size
 
     read method
     Void #close() void

@@ -51,7 +51,7 @@ maindefinition:
   if Phase!=None, M1'..Mk' are extracted from Ms[from P0]//TODO
   P1..Pn=collect(p,Ps[from P0]), error unless forall i in 1..n, p(Pi) is an interface
   ms1..msk={ms|forall i in 0..n : p(Pi)(ms) is defined}//TODO: double check in code is i in 0..n
-  forall ms in ms1..msk, there is exactly 1 j in 0..n
+  forall ms in ms1..msk, there is exactly 1 j in 0..n //TODO: this is problematic: In case multiple P are either exactly the same or points to the same interface!! for now the problem is just hacked away in the code
     such that p(Pj)(ms)=mh e? //no refine
   //cases like A:  {interface refine method A()}  B: { implements A method A()} are ok wrt B but fails for A  
   forall i in 1..k //i comes from k in ms1..msk

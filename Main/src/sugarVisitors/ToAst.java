@@ -321,7 +321,7 @@ public class ToAst extends AbstractVisitor<Expression>{
     return addNumParse(ctx,ctx.children.get(i).accept(this));
     }
   @Override public Expression visitMxRound(MxRoundContext ctx) {
-    String mx=ctx.m().getText();
+    String mx=ctx.MX().getText();
     assert mx.endsWith("(");
     mx=mx.substring(0,mx.length()-1);
     RoundContext r = ctx.round();

@@ -1,6 +1,6 @@
 {reuse L42.is/AdamTowel01
 
-NList:Collections.vector(of:N)
+NList:Collections.vector(of:Size)
 Main:{
 
   i=Introspection(lib:{Bar:{method Void()}})
@@ -8,7 +8,7 @@ Main:{
   Debug(ni.classKind())
   Debug(i.classKind())
 
-  zero=NList[0N]
+  zero=NList[0Size]
   Debug(S"Hello Adam "[zero.left()]"")
 
   selector=Selector"foo(azz,bzz,czz)"
@@ -22,7 +22,7 @@ Main:{
   Debug(Path.fresh())
   Debug(Path.fresh(path:Path"This"))
 
-  Debug(S"Hello Adam n1:"[0N]" n2:"[Bool.false()]" endOfString" )
+  Debug(S"Hello Adam n1:"[0Size]" n2:"[Bool.false()]" endOfString" )
   return ExitCode.normal()
   }
 }

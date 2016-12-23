@@ -4,7 +4,7 @@
   method classAny() This
   method readableName()GetMyName(This)
 
-  Annotation:{(Library _binaryRepr, S text, N index) implements Concept.ToS, Concept.Classable
+  Annotation:{(Library _binaryRepr, S text, Size index) implements Concept.ToS, Concept.Classable
 
     method is(subtype) {  with subtype (on class This return Bool.true()) return Bool.false()}
     method classAny() This
@@ -18,7 +18,7 @@
       }
     method Bool hasReferredClass() (
       res=this.text()!=S"" &
-        this.text().isASCIIUpperCase(0N)
+        this.text().isASCIIUpperCase(0Size)
       //Debug(S"Doc.hasReferredClass(this:"[this]")="[res]"")
       res
       )
@@ -27,7 +27,7 @@
   class method This (Library that) (
     Annotations res=(
       result=Annotations.empty()
-      var N aN=1N
+      var Size aN=1Size
       while Bool.true() (// to be able to break
         result.add(right:Annotation(
           _binaryRepr:that,
@@ -35,7 +35,7 @@
             .introspectDocAsString(path:Path"This",annotationN:aN)
           index:aN
           ))
-        aN+=1N
+        aN+=1Size
         )
       catch exception MetaGuard.NestedClassUnavailable x error Assert.CodeNotReachable"Doc2"(x)
       result

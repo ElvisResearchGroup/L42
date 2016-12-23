@@ -1,4 +1,4 @@
-{(fwd NestedClass _root,Path path,N memberN,Record record) implements Member,Concept.Equals, Concept.Classable //@private
+{(fwd NestedClass _root,Path path,Size memberN,Record record) implements Member,Concept.Equals, Concept.Classable //@private
 
 method is(subtype) {  with subtype (on class This return Bool.true()) return Bool.false()}
 method classAny() This
@@ -46,7 +46,7 @@ Type returnType() {
     root:this.root(),
     path:this.path(),
     memberN:this.memberN(),
-    typeN:0N)
+    typeN:0Size)
   catch exception MetaGuard.MemberUnavailable x error Assert.CodeNotReachable"Method1"(x)
   catch exception Void  error Assert.CodeNotReachable"void was thrown"
   }
@@ -59,13 +59,13 @@ Types exceptions() error Assert.NotImplementedYet""
 method
 Types parameterTypes() {
   result=Types.empty()
-  var N pN=1N
+  var Size pN=1Size
   while Bool.true() (// to be able to break
     Type ti=this.root().mirror()
       .introspectReportType(root:this.root(),
       path:this.pathFromRoot(),memberN:this.memberN(),typeN:pN)
     result.add(right:ti)
-    pN+=1N
+    pN+=1Size
     )
   return result
   catch exception MetaGuard.MemberUnavailable err error Assert.CodeNotReachable"Method2"(err)

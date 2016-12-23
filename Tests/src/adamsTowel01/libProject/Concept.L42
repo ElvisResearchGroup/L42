@@ -55,17 +55,17 @@ Invariant:{interface
   Bool invariant()
   }
 RandomAccess:{interface
-  //read method read Elem (N that)
-  //mut method mut Elem #(N that)
-  read method read Any get(N that)
-  mut method mut Any #get(N that)
+  //read method read Elem (Size that)
+  //mut method mut Elem #(Size that)
+  read method read Any get(Size that)
+  mut method mut Any #get(Size that)
   }
 //RandomUpdate:{interface
-  //mut method Void (N that, mut Elem val)
-//  mut method Void set(N that, mut Any val) exception Guard.Parameter ???
+  //mut method Void (Size that, mut Elem val)
+//  mut method Void set(Size that, mut Any val) exception Guard.Parameter ???
 //  }
 Sizable:{interface
-  read method N size()
+  read method Size size()
   read method Bool isEmpty()
   }
 Iterator:{interface

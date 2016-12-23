@@ -26,9 +26,9 @@ SolidTrait:{class method Library (){//Data is more than Solid, and Liquid, Gas, 
     ParseFail:Message.$<<{ implements Guard.ParseFail}
     Top: SafeOperatorsAccess.compose(left:SolidTrait() //Use[SolidTrait()]<<
       right:{implements Concept.ToS
-        N inner
-        class method This(N inner)
-        //class method This(N that) This(inner:that) 
+        Size inner
+        class method This(Size inner)
+        //class method This(Size that) This(inner:that) 
        
         method toS()
           This.readableName()++S"."++this.name()
@@ -43,7 +43,7 @@ SolidTrait:{class method Library (){//Data is more than Solid, and Liquid, Gas, 
        
         class method
         This fromS(S that){
-          with n in 0N.vals(), d in This.names().vals() (
+          with n in 0Size.vals(), d in This.names().vals() (
             if d==that (return This(inner:n))
             )
           error ParseFail"The provided string is not valid: "[that]""
@@ -64,7 +64,7 @@ SolidTrait:{class method Library (){//Data is more than Solid, and Liquid, Gas, 
     //  method Bool >(Top that)  this.that() == (this.that() | 1BinaryFlag32<<that.that())
     //  method toS()
     //    This.myName()++S"["[
-    //      with n in 0N.vals(), d in Top.names().vals() (
+    //      with n in 0Size.vals(), d in Top.names().vals() (
     //        if this>Top(n) (use[ d sep:S";"])
     //        )]"]"
    //

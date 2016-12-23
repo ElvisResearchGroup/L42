@@ -61,13 +61,13 @@ public class SumMethods {
     return pathCb;
   }
   private static void checkConflict(List<String> path, MethodSelector mRes, ClassB pathCb, MethodWithType mwtU) {
-    for(PathMwt e:pathCb.getStage().getInherited()){
+    /*for(PathMwt e:pathCb.getStage().getInherited()){
       if(e.getMwt().getMs().equals(mRes)){//method declared in an interface and not implemented
         MethodWithType mtConflict=e.getMwt();
         mtConflict=From.from(mtConflict, From.fromP(e.getOriginal(),Path.outer(0,path)));
         Errors42.checkMethodClash(path, mwtU,mtConflict,false);
         }
-    }
+    }*/ //unneded for normalized classb
     Optional<Member> optConflict = Program.getIfInDom(pathCb.getMs(),mRes);
     if(optConflict.isPresent()){
       if(optConflict.get() instanceof MethodImplemented){

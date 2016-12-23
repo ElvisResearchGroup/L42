@@ -1,6 +1,6 @@
 { implements Concept.Equals
-read method N size()
-read method  Elem val(N that)
+read method Size size()
+read method  Elem val(Size that)
 
 class method mut This #seqBuilder()
 class method mut This #from(mut This seqBuilder)
@@ -47,7 +47,7 @@ This &(This that)
 
 method
 Bool >>(This that)
-  this >>=that & this.size()>that.size()
+  this >>=that & !(that>>=this)
 
 method
 Bool >>=(This that) {
@@ -82,40 +82,40 @@ method equals(that){
 
 
 read method
-N indexOfLeft(Elem val){
+Size indexOfLeft(Elem val){
   size=this.size()
-  var N pos=0N
+  var Size pos=0Size
   loop (
     if this.val(pos).equals(val) (return pos)
-    if pos>=size (return N"-1")
-    pos+=1N
+    if pos>=size (return Size"-1")
+    pos+=1Size
     )
   }
 
 read method
-N indexOfRight(Elem val){
-  var N pos=this.size()-1N
+Size indexOfRight(Elem val){
+  var Size pos=this.size()-1Size
   loop (
     if this.val(pos).equals(val) (return pos)
-    if pos<=0N (return N"-1")
-    pos-=1N
+    if pos<=0Size (return Size"-1")
+    pos-=1Size
     )
   }
 
 method //from VectorTrait
-This without(N index)
+This without(Size index)
 
 method
 This withoutLeft(Elem val) {
   pos=this.indexOfLeft(val:val)
-  if pos<0N (return this)
+  if pos<0Size (return this)
   return this.without(index:pos)
   }
 
 method
 This withoutRight(Elem val){
   pos=this.indexOfRight(val:val)
-  if pos<0N (return this)
+  if pos<0Size (return this)
   return this.without(index:pos)
   }
 
@@ -126,29 +126,29 @@ This withoutAll(Elem val)
 
 
 mut method //from VectorTrait
-Void remove(N that)
+Void remove(Size that)
 
 mut method
 Void removeAll(Elem val){
-  var N pos=0N
+  var Size pos=0Size
   loop (
     if this.val(pos).equals(val) (this.remove(pos))
     if pos>=this.size() (return void)
-    pos+=1N
+    pos+=1Size
     )
   }
 
 mut method
 Void removeLeft(Elem val){
   pos=this.indexOfLeft(val:val)
-  if pos<0N (return void)
+  if pos<0Size (return void)
   return this.remove(pos)
   }
 
 mut method
 Void removeRight(Elem val){
   pos=this.indexOfRight(val:val)
-  if pos<0N (return void)
+  if pos<0Size (return void)
   return this.remove(pos)
   }
 

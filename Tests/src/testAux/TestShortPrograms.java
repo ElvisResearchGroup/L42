@@ -482,7 +482,7 @@ public void testPluginParts1Fail(){tp("{",
 @Test
 public void testPluginPartsWrapper(){tp("{",
     "W:{//@plugin is.L42.connected.withSafeOperators",
-    " //@pluginPart is.L42.connected.withSafeOperators.PlgWrapperGenerator",
+    " //@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.PlgWrapperGenerator",
     "class method Library <<(Library that)use This",
     " check #main(_Library:that)",
     " error void}",

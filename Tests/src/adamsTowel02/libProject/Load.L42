@@ -17,7 +17,7 @@
       exception ConceptMapUnavailable
           "provided library do not offers Abstract.ConceptMap or "[err.path()]
           " available paths are "[with av in Introspection(lib:that).transitivelyNestedClasses().vals() (
-              use[S.nl()++av.pathFromRoot().toS()] //(start:8N)
+              use[S.nl()++av.pathFromRoot().toS()]
             )]""
     exception on MetaGuard.SourceUnfit, MetaGuard.MethodClash, MetaGuard.IncoherentRedirectMapping
       ConceptMapMismatch""

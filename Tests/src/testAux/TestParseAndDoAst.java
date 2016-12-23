@@ -206,7 +206,7 @@ public class TestParseAndDoAst {
     }
   }
   @RunWith(Parameterized.class)
-  public static class Test3 {
+  public static class TestParseFail {
     @Parameter(0) public String s;
     @Parameterized.Parameters
     public static List<Object[]> createData() {
@@ -215,13 +215,15 @@ public class TestParseAndDoAst {
   },{"a \"ff"
   },{"a b"
   },{" ( )"
+  },{" { Void #default##square(that) void }"
 }});}
   @Test
   public void testNotOk() {
     try{
       Expression e1 = Parser.parse(null,s);
-      String rep=e1.toString();
-      Assert.assertEquals(rep+"\n"+s,"");
+      //String rep=e1.toString();
+      //Assert.assertEquals(rep+"\n"+s,"");
+      throw new Error();
       }
     catch(ParseCancellationException e){}
     catch(IllegalArgumentException e){}

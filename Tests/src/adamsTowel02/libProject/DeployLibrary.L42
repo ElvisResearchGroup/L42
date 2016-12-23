@@ -9,7 +9,7 @@ class method Library moveToAbstract(Path that,Library of){
       Assert.CodeNotReachable"DeployLibrary2"
     Assert.ObservedBug"map and library mismatch on "[that]" available paths are "[
       with av in available.vals() (
-        use[S.nl()++av.pathFromRoot().toS()(start:8N)]
+        use[S.nl()++av.pathFromRoot().toS()]
       )]""
     )
   error on MetaGuard

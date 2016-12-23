@@ -3,16 +3,16 @@ read method
 read MutListAny that()
 
 read method
-N from()
+Size from()
 
 mut method
-Void from(N that)
+Void from(Size that)
 
 read method
-N maxTo()
+Size maxTo()
 
 read method
-N minTo()
+Size minTo()
 
 read method
 Bool isFill()
@@ -22,8 +22,8 @@ Elem filled()
 
 mut method
 Void #next() exception Void (
-  this.from(\from+1N)
-  if this.maxTo()>0N & this.from()>=this.maxTo() (exception void)
+  this.from(\from+1Size)
+  if this.maxTo()>0Size & this.from()>=this.maxTo() (exception void)
   if !this.isFill() & this.from()>=this.that().size() (exception void)
   )
 

@@ -27,7 +27,7 @@ Bool:{
   Any parseError(This2.S that)
     ParseFail"The provided string is not a valid bool: "[that]""
   }
-N:{
+Size:{
   ParseFail:This2.Message.$<<{ implements Guard.ParseFail}
   class method
   Any parseError(This2.S that)
@@ -36,30 +36,30 @@ N:{
 S:{
   implements Concept.ToS
   method
-  This2.N size()
+  This2.Size size()
   method
-  This2.S (This2.N start, This2.N end)
+  This2.S (This2.Size start, This2.Size end)
   method
-  This2.S (This2.N that)
+  This2.S (This2.Size that)
   method 
   This2.Bool contains(This2.S that)
   
   Skip: {interface 
-    mut method This3.N (S that, This3.N index)
+    mut method This3.Size (S that, This3.Size index)
     //positive to keep and jump, negative to skip and jump,
     //never zero
     }
   method Strings split(capsule Skip skipper){
     res=Strings.empty()
     mut Skip mskip = skipper
-    var This2.N index= 0This2.N
+    var This2.Size index= 0This2.Size
     while index< this.size() (
       skip=mskip(this,index:index)
-      if skip>0This2.N (
+      if skip>0This2.Size (
         res.add(right:this(start:index, end:index+skip))
         index+=skip
         )
-      else if skip<0This2.N (
+      else if skip<0This2.Size (
         index-=skip
         )
       else (
@@ -78,16 +78,16 @@ S:{
     This3.S chars
     
     method ( that, index) {
-      This3.N negSkip={
+      This3.Size negSkip={
         with r in Range(that.size()-index) (
           if !this.chars().contains(that(index+r)) (return r)
           )
         //reached the end of the string
         return that.size()-index
         }
-      if negSkip>0This3.N (return 0This3.N-negSkip)
+      if negSkip>0This3.Size (return 0This3.Size-negSkip)
       //Assert.Holds[
-      //  negSkip==0This3.N; 
+      //  negSkip==0This3.Size; 
       //  !this.chars().contains(that(index))
       //  ]
       with r in Range(that.size()-index) (

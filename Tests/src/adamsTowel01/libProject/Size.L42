@@ -6,13 +6,13 @@
   class method
   This fromS(Concept.ToS that) (
     s=that.toS()
-    N(_binaryRepr: use Alu
+    Size(_binaryRepr: use Alu
       check stringToInt32(s.binaryRepr())
       error This.parseError(s))
     )
   class method
   This #from(Library binaryRepr)
-    N(_binaryRepr:binaryRepr)
+    Size(_binaryRepr:binaryRepr)
   method
   Library binaryRepr() this._binaryRepr()
 
@@ -21,14 +21,14 @@
     S.SBuilder.empty()
 
   class method
-  N #from(S.SBuilder builder)
-    N(_binaryRepr: use Alu
+  Size #from(S.SBuilder builder)
+    Size(_binaryRepr: use Alu
       check stringToInt32(builder.binaryRepr())
       error This.parseError(S.#from(builder: builder)))
 
   class method
   Any parseError(S that)
-    S"N.UnsatisfactoryErrorToAvoidCycle, replace in AdamT2"
+    S"Size.UnsatisfactoryErrorToAvoidCycle, replace in AdamT2"
 
   method
   toS()
@@ -37,26 +37,26 @@
       error void)
 
   method
-  N +(N that)
-    N(_binaryRepr:use Alu
+  Size +(Size that)
+    Size(_binaryRepr:use Alu
       check sumInt32(n1:this.binaryRepr() n2:that.binaryRepr())
       error void)
 
   method
-  N -(N that)
-    N(_binaryRepr:use Alu
+  Size -(Size that)
+    Size(_binaryRepr:use Alu
       check subInt32(n1:this.binaryRepr() n2:that.binaryRepr())
       error void)
 
   method
-  N *(N that)
-    N(_binaryRepr:use Alu
+  Size *(Size that)
+    Size(_binaryRepr:use Alu
       check mulInt32(n1:this.binaryRepr() n2:that.binaryRepr())
       error void)
 
   method
-  N /(N that)
-    N(_binaryRepr: use Alu
+  Size /(Size that)
+    Size(_binaryRepr: use Alu
       check divInt32(n1:this.binaryRepr() n2:that.binaryRepr())
       error void)
 
@@ -73,7 +73,7 @@
     }
 
   method
-  Bool <(N that) {
+  Bool <(Size that) {
     use Alu
       check ifInt32GrtDo(n1:this.binaryRepr() n2:that.binaryRepr())
       return Bool.true()
@@ -81,7 +81,7 @@
     }
 
   method
-  Bool <=(N that) {
+  Bool <=(Size that) {
     use Alu
       check ifInt32GEqDo(n1:this.binaryRepr() n2:that.binaryRepr())
       return Bool.true()
@@ -90,23 +90,23 @@
 
   method Bool !=(This that) !(this==that)
 
-  method Bool >(N that)  !(this<=that)
+  method Bool >(Size that)  !(this<=that)
 
 
-  method Bool >=(N that) !(this<that)
+  method Bool >=(Size that) !(this<that)
 
   method
   mut Iterator vals()
-    Iterator(start:this,end:N"-1")
+    Iterator(start:this,end:Size"-1")
 
   method
-  mut Iterator vals(N upTo)
+  mut Iterator vals(Size upTo)
     Iterator(start:this,end:upTo)
 
   Iterator:{mut (var This1 start, This1 end)
     mut method
     Void #next() exception Void (
-      if this.end() <0N | this.start()<this.end() (this.start(this.start()+1N))
+      if this.end() <0Size | this.start()<this.end() (this.start(this.start()+1Size))
       else exception void
       )
 
@@ -114,7 +114,7 @@
     Void #checkEnd() void
 
     read method
-    This1 #inner() this.start()-1N
+    This1 #inner() this.start()-1Size
 
     read method
     Void #close() void

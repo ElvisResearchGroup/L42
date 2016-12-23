@@ -28,16 +28,16 @@
   This from(S name,Strings names) {
     if names.isEmpty() (return This.fromS(name++S"()"))
     pars=S"("[with n in names.vals() (use[n++S","])]""
-    return This.fromS(name++pars(end:pars.size()-1N)++S")")
-    //This.fromS(name[pars(end:#-1N)]")")
+    return This.fromS(name++pars(end:pars.size()-1Size)++S")")
+    //This.fromS(name[pars(end:#-1Size)]")")
     }
   method S nameAsField() {
     n=this.name()
-    if n(0N)==S"#" (return n(start:1N))
+    if n(0Size)==S"#" (return n(start:1Size))
     return n
     }
   method S prefixAsField() {
-    if this.toS()(0N)==S"#" (return S"#")
+    if this.toS()(0Size)==S"#" (return S"#")
     return S""
     }
   method Library binaryRepr() this._binaryRepr()
@@ -62,8 +62,8 @@
 
   method
   Bool isOperator(){
-    if this.name().size()==0N (return Bool.true() )
-    return this.name()(0N)==S"#"
+    if this.name().size()==0Size (return Bool.true() )
+    return this.name()(0Size)==S"#"
     }
   method
   S name() (
@@ -74,14 +74,14 @@
   method
   Strings names(){
     var S str=this.toS()
-    str:=str(start:str.indexOfLeft(val:S"(")+1N, end:str.size()-1N)++S","
+    str:=str(start:str.indexOfLeft(val:S"(")+1Size, end:str.size()-1Size)++S","
     // from foo(a,b,c) to a,b,c,
     result=Strings.empty()
     if str==S"," (return result)
     while str!=S"" (
       pos=str.indexOfLeft(val:S",")
       result.add(right:str(end:pos))
-      str:=str(start:pos+1N)
+      str:=str(start:pos+1Size)
       )
     return result
   }
@@ -95,7 +95,7 @@
     with n in that.names().vals() (
       tot++=n++S","
       )
-    tot:=tot(start:0N end:tot.size()-1N)++S")"
+    tot:=tot(start:0Size end:tot.size()-1Size)++S")"
     return Selector.fromS(tot)
     }
 
@@ -103,7 +103,7 @@
     class method //will be private
     S leftAsASCIIUpperCase(S that){
       index=S.aSCIILowerCase().indexOfLeft(val:that.left())
-      if index>=0N  ( return that.withLeft(S.aSCIIUpperCase()(index) ))
+      if index>=0Size  ( return that.withLeft(S.aSCIIUpperCase()(index) ))
       return that
       }
 

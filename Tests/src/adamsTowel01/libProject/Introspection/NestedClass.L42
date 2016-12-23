@@ -60,11 +60,11 @@ method S externalTypeToS() {
   doc=this.record().docOf(path:Path"MyClass")
   nameAndPrefix=doc.annotations().left().toS()
   sep=nameAndPrefix.indexOfLeft(val:S".")
-  name= nameAndPrefix(start:sep+1N)
-  prefix=N.fromS(nameAndPrefix(start:4N, end:sep)) //4N== S"This".size()
-  //Assert.$[prefix>0N]
-  if prefix == 1N (return S"This."++name)
-  return S"This"[prefix-1N]"."++name
+  name= nameAndPrefix(start:sep+1Size)
+  prefix=Size.fromS(nameAndPrefix(start:4Size, end:sep)) //4Size== S"This".size()
+  //Assert.$[prefix>0Size]
+  if prefix == 1Size (return S"This."++name)
+  return S"This"[prefix-1Size]"."++name
 }
 
 method ClassKind classKind() ClassKind.fromS(this.record()"ClassKind")
@@ -72,14 +72,14 @@ method S allAsString() this.record()"AllAsString"  //just the library literal
 method
 Members members() (
   result=Members.empty()
-  var N mN=1N
+  var Size mN=1Size
   while Bool.true() (// to be able to break
     //Debug(S"Iteration "[mN]"")
     result.add(right:this.mirror()
       .introspectReportMember(root:this,path:this.path(),memberN:mN))
     //this was a private member
     catch exception MetaGuard.MemberUnavailable exception void
-    mN+=1N
+    mN+=1Size
     )
   result)
   //TODO: this method goes in loop for private members.
@@ -102,10 +102,10 @@ NestedClasses transitivelyNestedClasses()
 
 method Types implementedInterfaces() (
   result=Types.empty()
-  var N tN=1N
+  var Size tN=1Size
   while Bool.true() (// to be able to break
     ti=this.mirror()
-      .introspectReportType(root:this,path:this.path(),memberN:0N,typeN:tN)
+      .introspectReportType(root:this,path:this.path(),memberN:0Size,typeN:tN)
     //Assert.$[with sr=ti.strRepr() (
     //  use[sr!=S"This";sr!=S""]
     //  )]
@@ -113,7 +113,7 @@ method Types implementedInterfaces() (
     //Assert.$[sr!=S"@.This";sr!=S"This";sr!=S""]
 
     result.add(right:ti)
-    tN+=1N
+    tN+=1Size
     )
   catch exception MetaGuard.MemberUnavailable x error Assert.CodeNotReachable"NestedClass3"(x)
   result)
@@ -150,7 +150,7 @@ Types removeDup(Types that) (
 method//@private
 Bool select(Type that,read Types from) (
   rp=that.referencedPath()
-  Count[with t in from.vals() (use[t.referencedPath() == rp])]==0N
+  Count[with t in from.vals() (use[t.referencedPath() == rp])]==0Size
   )
 method//@private
 Types remove(Types that,Types from)

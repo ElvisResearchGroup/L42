@@ -2,11 +2,11 @@
 
 Main:{
   Assert.Pre[
-    1N==1N;
-    2N==2N
+    1Size==1Size;
+    2Size==2Size
     ]
   (
-  Assert.Pre[1N!=1N]
+  Assert.Pre[1Size!=1Size]
   catch error Assert.Bug Debug(S"pass")
   error S"FAIL"
   )

@@ -1,7 +1,9 @@
 {reuse L42.is/AdamTowel01
 
 Main:{
-
+  Debug(S"checkBooleans: "[Bool.true()]" -- "[Bool.false()]" -- "[S"hi"==S"hi"]" --"[S"hi"==S"hello"]"")
+  if Bool.true() (Debug(S"trueget"))
+  if Bool.false() (Debug(S"falseget"))
   i=Introspection(lib:{Bar:{method Void foo(Void par1 Any par2)} Beer:{}},path:Path"Bar")
   Debug(S"classkind of Bar is "++i.classKind().toS())
   Debug(S"Bas as string: "++i.allAsString())

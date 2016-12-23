@@ -66,18 +66,25 @@ Library toSTrait(Introspection.NestedClass that) {
 
  class method
  S nodeName(read Any that){
-   with that (on read Concept.Classable
-     return Introspection(clazz:that.classAny()).externalTypeToS()
+   with that (
+     on read Concept.Classable
+       return Introspection(clazz:that.classAny()).externalTypeToS()
+     on read Void return S"Void"
+     on read Library return S"Library"
      )
    return S"?"
   }
 class method
  S valToS(read Any that){
-   with that (on read Concept.ToS (
-     ts=that.toS()
-     if ts.beginsWith(S"[") ( return ts)
-     return S.doubleQuote()++ts++S.doubleQuote()
-     ))
+   with that (
+     on read Concept.ToS (
+       ts=that.toS()
+       if ts.beginsWith(S"[") ( return ts)
+       return S.doubleQuote()++ts++S.doubleQuote()
+       )
+     on Void  return S.doubleQuote()++S"void"++S.doubleQuote()
+     on Library  return S.doubleQuote()++S"{..}"++S.doubleQuote()
+     )
    return S"?"
   }
 class method

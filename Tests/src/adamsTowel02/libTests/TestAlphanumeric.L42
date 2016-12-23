@@ -7,9 +7,9 @@ Email: Alphanumeric << {
   class method
   This parse(S that) {
     index= that.indexOfLeft(val:S"@") //works only for simple emails
-    if index < 0N (error Alphanumeric.ParseFail"@ not found")
+    if index < 0Size (error Alphanumeric.ParseFail"@ not found")
     local= that(end: index) //string slicing
-    domain= that(start: index+1N ) //string slicing
+    domain= that(start: index+1Size ) //string slicing
     if domain.contains(S"@") (error Alphanumeric.ParseFail"multiple @ found")
     return This(that,local: local,domain: domain)
     } //call the factory with fields plus the original string
@@ -17,7 +17,7 @@ Email: Alphanumeric << {
 
 Main:{
 
-Assert.Pre[1N == 1N]  // because we went through a phase of being unsure about assertions
+Assert.Pre[1Size == 1Size]  // because we went through a phase of being unsure about assertions
 
 myEmail= Email"arthur.dent@gmail.com"
 

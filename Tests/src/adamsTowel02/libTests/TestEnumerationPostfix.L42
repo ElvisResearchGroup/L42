@@ -18,9 +18,9 @@ Enumeration:{
     S.SBuilder.empty()
   
   class method
-  Selector numToSel(N that)
+  Selector numToSel(Size that)
   exception InvalidElements{
-    if that>=64N (exception InvalidElements"too many enumeration elements:"[that+1N]", max is 64")
+    if that>=64Size (exception InvalidElements"too many enumeration elements:"[that+1Size]", max is 64")
     return Selector.fromS(S"#"++that.toS()++S"()")
     }
   
@@ -50,7 +50,7 @@ Enumeration:{
     },)
 
   class method
-  Library enumElem(N ord, S s)
+  Library enumElem(Size ord, S s)
   exception InvalidElements {
     sel=this.sToSel(s)
     return Refactor.Rename.selector(\"ord()" of: \"T" to:this.numToSel(ord))
@@ -65,8 +65,8 @@ Enumeration:{
   exception InvalidElements {
     ss=this.sToSs(base.toS())
     res=Extends[EnumTrait()]
-      <<Refactor.Redirect(Path"T" to:N)
-      <<(Extends[with ord in Range(start:0N), s in ss.vals() (
+      <<Refactor.Redirect(Path"T" to:Size)
+      <<(Extends[with ord in Range(start:0Size), s in ss.vals() (
         use[this.enumElem(ord:ord, s:s)]
         )]
       << Refactor.Rename.selector(\"#apply()" to:\"names()")
@@ -82,7 +82,7 @@ Main:{
   Assert.Holds[
     Dir.left()!=Dir.right();
     Dir.top()!=Dir.right();
-    Dir.names().size()==4N
+    Dir.names().size()==4Size
     ]
   Debug(S"foo")
   return ExitCode.normal()
@@ -90,7 +90,7 @@ Main:{
 //bug in parser for many <<
 //reorganize refactor, add default for no path and /, done for rename
 /*
-1  Redirect:{ that->Path  that is Refactor.Redirect(\"T" to:N)
+1  Redirect:{ that->Path  that is Refactor.Redirect(\"T" to:Size)
 Rename.selector(   .path(  .selector(of
 2  RenameSelector:{(Selector that, Path of, Selector to)   that->Selector, of->Path to->Selector,   shortcut no of
 3  RenamePath:{(Path that, Path to)  that,to->Path
@@ -106,7 +106,7 @@ Hide.path( .selector( .selector(of
 10  MakePrivateSelector:{(Selector that, Path of)
 Call it ComposeMethods?
 11  SumMethods:{   (Selector that,Selector and, Path of, S over, Selector to)
-12  MakeMethod:{    (Selector that, Path of, Introspection.Mdf.List mdfs, N exceptionN)
+12  MakeMethod:{    (Selector that, Path of, Introspection.Mdf.List mdfs, Size exceptionN)
 */
 }
 

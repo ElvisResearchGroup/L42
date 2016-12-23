@@ -16,24 +16,24 @@ read method  mut This reverse() (
   result
   )
 
-read method N size() this.inner().size()
-read method Bool isEmpty() this.size()==0N
-read method  Elem val(N that) This.cast(this.inner().val(that) )
-read method  Elem left() This.cast(this.inner().val(0N) )
-read method  Elem right() This.cast(this.inner().val(\size-1N) )
+read method Size size() this.inner().size()
+read method Bool isEmpty() this.size()==0Size
+read method  Elem val(Size that) This.cast(this.inner().val(that) )
+read method  Elem left() This.cast(this.inner().val(0Size) )
+read method  Elem right() This.cast(this.inner().val(\size-1Size) )
 
 //#################MUT METHODS
-mut method  Void (N that,Elem val) this.#inner()(that, val:val)
-mut method  Void left(Elem that) this.#inner()(0N,val:that)
-mut method  Void right(Elem that) this.#inner()(\size-1N,val:that)
+mut method  Void (Size that,Elem val) this.#inner()(that, val:val)
+mut method  Void left(Elem that) this.#inner()(0Size,val:that)
+mut method  Void right(Elem that) this.#inner()(\size-1Size,val:that)
 
-mut method  Void add(N that, Elem val) this.#inner().add(that,val:val)
+mut method  Void add(Size that, Elem val) this.#inner().add(that,val:val)
 mut method  Void add(Elem right) this.#inner().add(\size,val:right)
-mut method  Void add(Elem left) this.#inner().add(0N,val:left)
+mut method  Void add(Elem left) this.#inner().add(0Size,val:left)
 
-mut method  Void remove(N that) this.#inner().remove(that)
-mut method  Void removeLeft() this.remove(0N)
-mut method  Void removeRight() this.remove(this.size()-1N)
+mut method  Void remove(Size that) this.#inner().remove(that)
+mut method  Void removeLeft() this.remove(0Size)
+mut method  Void removeRight() this.remove(this.size()-1Size)
 
 
 //#################OPERATORS
@@ -53,25 +53,25 @@ This ++(This that){
 //#################Withs
 
 method
-This with(N that, Elem val)
+This with(Size that, Elem val)
   This.#immK(inner:this.inner().with(that,val:val))
 
 method
 This withLeft(Elem that)
-  this.with(0N, val:that)
+  this.with(0Size, val:that)
 
 method
 This withRight(Elem that)
-  this.with(this.size()-1N, val:that)
+  this.with(this.size()-1Size, val:that)
 
 //insertion
 method
-This withAlso(N that, Elem val)
+This withAlso(Size that, Elem val)
   This.#immK(inner:this.inner().withAlso(that,val:val))
 
 method
 This withAlsoLeft(Elem that)
-  this.withAlso(0N, val:that)
+  this.withAlso(0Size, val:that)
 
 method
 This withAlsoRight(Elem that)
@@ -80,16 +80,16 @@ This withAlsoRight(Elem that)
 
 //skipping/filtering
 method
-This without(N index)
+This without(Size index)
   This.#immK(inner:this.inner().without(index))
 
 method
 This withoutLeft()
-  this.without(index:0N)
+  this.without(index:0Size)
 
 method
 This withoutRight()
-  this.without(index:this.size()-1N)
+  this.without(index:this.size()-1Size)
 
 
 
@@ -97,35 +97,35 @@ This withoutRight()
 IteratorTrait:{class method Library () ...}
 
 //first chunk, no fill
-read method  lent IteratorVal vals(N from, N maxTo, N minTo) IteratorVal(this.inner(), from:from,maxTo:maxTo,minTo:minTo)
-read method lent IteratorVal vals(N minTo) this.vals(from:N"-1", maxTo:N"-2", minTo:minTo)
-read method lent IteratorVal vals(N from, N to) this.vals(from:from, maxTo:to, minTo:this.inner().size() )
-read method lent IteratorVal vals() this.vals(from:N"-1", maxTo:N"-2", minTo:this.inner().size() )
+read method  lent IteratorVal vals(Size from, Size maxTo, Size minTo) IteratorVal(this.inner(), from:from,maxTo:maxTo,minTo:minTo)
+read method lent IteratorVal vals(Size minTo) this.vals(from:Size"-1", maxTo:Size"-2", minTo:minTo)
+read method lent IteratorVal vals(Size from, Size to) this.vals(from:from, maxTo:to, minTo:this.inner().size() )
+read method lent IteratorVal vals() this.vals(from:Size"-1", maxTo:Size"-2", minTo:this.inner().size() )
 
 IteratorVal: SafeOperatorsAccess.compose(left:IteratorTrait(),
-   right:  { (read MutListAny that, var N from, N maxTo, N minTo)
+   right:  { (read MutListAny that, var Size from, Size maxTo, Size minTo)
      read method Bool isFill() Bool.false()
      read method Elem filled() error Assert.CodeNotReachable"Filled called on not fill iterator, should never happen"
      } )
 //now with fill
-read method  lent IteratorValFill vals(N from, N maxTo, N minTo, Elem filled) IteratorValFill(this.inner(), from:from,maxTo:maxTo,minTo:minTo, filled:filled)
-read method lent IteratorValFill vals(N minTo, Elem filled) this.vals(from:N"-1", maxTo:N"-2", minTo:minTo, filled:filled)
-read method lent IteratorValFill vals(N from, N to, Elem filled) this.vals(from:from, maxTo:to, minTo:this.inner().size(), filled:filled )
-read method lent IteratorValFill vals(Elem filled) this.vals(from:N"-1", maxTo:N"-2", minTo:this.inner().size(), filled:filled )
+read method  lent IteratorValFill vals(Size from, Size maxTo, Size minTo, Elem filled) IteratorValFill(this.inner(), from:from,maxTo:maxTo,minTo:minTo, filled:filled)
+read method lent IteratorValFill vals(Size minTo, Elem filled) this.vals(from:Size"-1", maxTo:Size"-2", minTo:minTo, filled:filled)
+read method lent IteratorValFill vals(Size from, Size to, Elem filled) this.vals(from:from, maxTo:to, minTo:this.inner().size(), filled:filled )
+read method lent IteratorValFill vals(Elem filled) this.vals(from:Size"-1", maxTo:Size"-2", minTo:this.inner().size(), filled:filled )
 
 IteratorValFill: SafeOperatorsAccess.compose(left:IteratorTrait(),
-   right:  { (read MutListAny that, var N from, N maxTo, N minTo, Elem filled)
+   right:  { (read MutListAny that, var Size from, Size maxTo, Size minTo, Elem filled)
      read method Bool isFill() Bool.true()
      } )
 
 
-mut method  lent IteratorVar #vals(N from, N maxTo, N minTo) IteratorVar(this.#inner(), from:from,maxTo:maxTo,minTo:minTo)
-mut method lent IteratorVar #vals(N minTo) this.#vals(from:N"-1", maxTo:N"-2", minTo:minTo)
-mut method lent IteratorVar #vals(N from, N to) this.#vals(from:from, maxTo:to, minTo:this.inner().size() )
-mut method lent IteratorVar #vals() this.#vals(from:0N-1N, maxTo:N"-2", minTo:this.inner().size() )
+mut method  lent IteratorVar #vals(Size from, Size maxTo, Size minTo) IteratorVar(this.#inner(), from:from,maxTo:maxTo,minTo:minTo)
+mut method lent IteratorVar #vals(Size minTo) this.#vals(from:Size"-1", maxTo:Size"-2", minTo:minTo)
+mut method lent IteratorVar #vals(Size from, Size to) this.#vals(from:from, maxTo:to, minTo:this.inner().size() )
+mut method lent IteratorVar #vals() this.#vals(from:0Size-1Size, maxTo:Size"-2", minTo:this.inner().size() )
 
 IteratorVar: SafeOperatorsAccess.compose(left:IteratorTrait(),
-  right:  { (mut MutListAny that, var N from, N maxTo, N minTo)
+  right:  { (mut MutListAny that, var Size from, Size maxTo, Size minTo)
     mut method Void inner(Elem that) this.#that()(this.from(),val:that)
     read method Bool isFill() Bool.false()
     read method Elem filled() error Assert.CodeNotReachable"Filled called on not fill iterator, should never happen"

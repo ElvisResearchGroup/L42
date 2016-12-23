@@ -1,12 +1,12 @@
 {reuse L42.is/AdamTowel02
 
-NL:Collections.vector(of:N)
+NL:Collections.vector(of:Size)
 
 UndefinedOnEmptyList: Message.$<<{ implements Guard}
 $:{    
-  class method N max(NL that) (
+  class method Size max(NL that) (
     if that.isEmpty() (error UndefinedOnEmptyList"on $.max")
-    var N maxCandidate=that.left()
+    var Size maxCandidate=that.left()
     with elem in that.vals() (
       if maxCandidate<elem (maxCandidate:=elem)
       )
@@ -15,7 +15,7 @@ $:{
   }
 
 Main:{
-  NL myList=NL[1N;2N;3N]
+  NL myList=NL[1Size;2Size;3Size]
   max=$.max(myList)
   Debug.test(S"the max for "[myList]" is "[max]"!" expected:S"the max for [1; 2; 3] is 3!")
   return ExitCode.normal()

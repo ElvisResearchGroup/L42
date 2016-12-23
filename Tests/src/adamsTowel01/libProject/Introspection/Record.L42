@@ -30,7 +30,7 @@
     error Assert.CodeNotReachable"Record2"
     }
   //this is how I would like it to be
-  //class method Member dispatch(fwd NestedClass root,Path path,MirrorPr mirror, N memberN,Library record) {
+  //class method Member dispatch(fwd NestedClass root,Path path,MirrorPr mirror, Size memberN,Library record) {
   //  _report =Introspection(lib:report).record()
   //  with x=_report"MemberKind" (
   //    if x== S"NestedClass"  (return NestedClass(_root:root,path:path,mirror:mirror,record:_report))
@@ -50,11 +50,11 @@
       NestedClass(_root:root,path:path,mirror:this.mirror(),record: this._report())
       )}
   RootForMethod:// toPutAs private
-    {(Path path,N memberN,Record _report) implements RootForMember
+    {(Path path,Size memberN,Record _report) implements RootForMember
       method (root) (
         Method(_root:root,path:this.path(),memberN:this.memberN(),record:this._report())
         )}
-  class method Member dispatch(fwd NestedClass root,Path path,MirrorPr mirror, N memberN,Library record) (
+  class method Member dispatch(fwd NestedClass root,Path path,MirrorPr mirror, Size memberN,Library record) (
     _report =Record(lib:record)
     RootForMember result={
       x=_report"MemberKind"
@@ -70,7 +70,7 @@
       if x== S"NestedClass" (
         return RootForNested(path:path,mirror:mirror,_report:_report)
         )
-      error Assert.ObservedBug(text:S"invalid member kind "[x]"")
+      error Assert.ObservedBug(text:S"invalid member kind |"[x]"|")
       }
     result(root:root)
     )

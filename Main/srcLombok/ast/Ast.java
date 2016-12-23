@@ -630,16 +630,18 @@ public interface Ast {
     }
 
   private static int readAnnotation(String s, int start, List<Object> paths) {
+    boolean isPath=Path.isValidPathStart(s.charAt(start));        
     StringBuilder sb = new StringBuilder();
     for (int i = start; i < s.length(); i++) {
       char ci = s.charAt(i);
-      if (ci == '.' || Path.isValidPathChar(ci)) { sb.append(ci); }
+      if (Path.isValidPathChar(ci)) {sb.append(ci);}
+      else if (ci == '.' && isPath && i+1<s.length()&& Path.isValidPathStart(s.charAt(i+1))) {sb.append(ci);}
       else {break;}
       }
-    String res=sb.toString();
-    if (Path.isValidPathStart(s.charAt(start))) {     paths.add(Path.parse(res));   }
+    String res = sb.toString();
+    if (isPath) {paths.add(Path.parse(res));}
     else {paths.add(res);}
-    return start+res.length()-1;
+    return start + res.length() - 1;  
     }
 
   private static void readParameter(String s, int start, List<String> parameters) {

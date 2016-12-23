@@ -12,8 +12,8 @@ Main:{
   s4 = Strings[S"a"; S"b"; S"c"; S"d"]
   Debug.test(s4.toS() expected:S"[a; b; c; d]")
   
-  aLots = Anys[0N; void; 1N; {}; 2N; S"words"; 3N; Strings[]; 4N; Anys[]; 5N]
-  Debug.test(aLots.toS() expected:S"[0; ?; 1; ?; 2; words; 3; []; 4; []; 5]")
+  aLots = Anys[0Size; void; 1Size; {}; 2Size; S"words"; 3Size; Strings[]; 4Size; Anys[]; 5Size]
+  Debug.test(aLots.toS() expected:S"[0; void; 1; {..}; 2; words; 3; []; 4; []; 5]")
   
   // Examples from the guide: http://l42.is/tutorial.xhtml#Sequences
   // except with strings instead of numbers
@@ -92,7 +92,8 @@ Main:{
 // they don't work on numbers either
 //  Debug.test(9N<Anys[9N;8N]   expected:true  message:S"9N<Anys[9N;8N]")
 //  Debug.test(c<Strings[a;b]   expected:false  message:S"c<Strings[a;b]")
-  Debug(S"[FAIL] The is-an-element-of tests presume that numbers, strings, etc know about lists, and they don't.")
+//TODO: this would need the discussion of operator normalization (a<b into b>a to be completed, including != and others)
+//  Debug(S"[FAIL] The is-an-element-of tests presume that numbers, strings, etc know about lists, and they don't.")
   
   Debug(S"More tests to do, after the names on the list editing methods settle.")
   

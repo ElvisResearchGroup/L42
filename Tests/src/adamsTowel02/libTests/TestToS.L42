@@ -1,14 +1,14 @@
 {reuse L42.is/AdamTowel02
 
-NotStringable:{(N that)}
+NotStringable:{(Size that)}
 
-Person:Data.AddToS<<{(S name, var N age)
+Person:Data.AddToS<<{(S name, var Size age)
   implements Concept.Classable
   method is(subtype) {  with subtype (on class This return Bool.true()) return Bool.false()}
   method classAny() This
   method readableName()GetMyName(This)
   }
-//Person:Data.AddToS<<{(S name, var N age)}
+//Person:Data.AddToS<<{(S name, var Size age)}
 Person2:Data.AddToS<<{(S name, NotStringable age)}
 Person3:Data.AddToS<<{(Concept.ToS name, Any age)}
 
@@ -27,13 +27,13 @@ Main:{
 //   "[p:[name:\"Bob\", age:\"10\"]]\n"+
 //   "[p:This.Person[name:\"Bob\", age:\"10\"]]\n"
 
-  p=Person(name:S"Bob",age:10N)
+  p=Person(name:S"Bob",age:10Size)
   Debug.test(p expected:S"[name:"[quoteBob]", age:"[quoteTen]"]")
   
-  p2=Person2(name:S"Bob",age:NotStringable(10N))
+  p2=Person2(name:S"Bob",age:NotStringable(10Size))
   Debug.test(p2, expected:S"[name:"[quoteBob]", age:?]")
   
-  p3=Person3(name:S"Bob",age:NotStringable(10N))
+  p3=Person3(name:S"Bob",age:NotStringable(10Size))
   Debug.test(p3, expected:S"[name:This.S"[quoteBob]", age:??]")
   
   pp=PP(p:p)

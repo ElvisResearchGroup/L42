@@ -1,7 +1,7 @@
 {reuse L42.is/AdamTowel02
 
 Main:{
-  with n in Range(3N) (Debug(S"hi"++n.toS()))
+  with n in Range(3Size) (Debug(S"hi"++n.toS()))
   with n in Range(3\) (Debug(S"hi"++n.toS()))
   return ExitCode.normal()
   }

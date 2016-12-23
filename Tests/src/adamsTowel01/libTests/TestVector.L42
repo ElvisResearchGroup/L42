@@ -17,8 +17,8 @@ Main:{
   Debug.test(S"Hello-"[with var si in sv.#vals() ( use[si sep:S"@@"]   si:=si++S"%")]""
     expected:S"Hello-a#@@b#")
   
-  Debug.test(sv.val(0N) expected:S"a#%")
-  Debug.test(sv.val(1N) expected:S"b#%")
+  Debug.test(sv.val(0Size) expected:S"a#%")
+  Debug.test(sv.val(1Size) expected:S"b#%")
   
   // withoutAll
   var SV2 s2=SV2[S"c";S"d"]

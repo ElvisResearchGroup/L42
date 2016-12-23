@@ -1,9 +1,11 @@
 {reuse L42.is/AdamTowel01
 
+//(Bug solved on 23/12/2016)
 // We discovered by accident that some annotations cause assertions.
 // Here is one: @Debug.test()
 
 Main:{
+  Debug(S"Hi!")
   return ExitCode.normal()
   }
   

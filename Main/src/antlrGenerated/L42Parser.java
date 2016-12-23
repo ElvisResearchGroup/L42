@@ -910,7 +910,6 @@ public class L42Parser extends Parser {
 			case Path:
 			case MX:
 			case X:
-			case HashX:
 			case ContextId:
 			case UnOp:
 			case NumParse:
@@ -1707,9 +1706,7 @@ public class L42Parser extends Parser {
 	}
 
 	public static class MxRoundContext extends ParserRuleContext {
-		public MContext m() {
-			return getRuleContext(MContext.class,0);
-		}
+		public TerminalNode MX() { return getToken(L42Parser.MX, 0); }
 		public RoundContext round() {
 			return getRuleContext(RoundContext.class,0);
 		}
@@ -1738,7 +1735,7 @@ public class L42Parser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(303); m();
+			setState(303); match(MX);
 			setState(304); round();
 			}
 		}
@@ -2436,7 +2433,7 @@ public class L42Parser extends Parser {
 				setState(375); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << S) | (1L << Mdf) | (1L << ORoundSpace) | (1L << OCurly) | (1L << DotDotDot) | (1L << Ph) | (1L << If) | (1L << While) | (1L << Loop) | (1L << With) | (1L << Var) | (1L << Using) | (1L << WalkBy) | (1L << Path) | (1L << MX) | (1L << X) | (1L << HashX) | (1L << ContextId) | (1L << UnOp) | (1L << NumParse))) != 0) );
+			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << S) | (1L << Mdf) | (1L << ORoundSpace) | (1L << OCurly) | (1L << DotDotDot) | (1L << Ph) | (1L << If) | (1L << While) | (1L << Loop) | (1L << With) | (1L << Var) | (1L << Using) | (1L << WalkBy) | (1L << Path) | (1L << MX) | (1L << X) | (1L << ContextId) | (1L << UnOp) | (1L << NumParse))) != 0) );
 			setState(377); match(CCurly);
 			}
 		}
@@ -4884,7 +4881,7 @@ public class L42Parser extends Parser {
 		"\u011e\3\2\2\2\u012f\u0121\3\2\2\2\u012f\u0122\3\2\2\2\u012f\u0123\3\2"+
 		"\2\2\u012f\u0124\3\2\2\2\u012f\u0125\3\2\2\2\u012f\u0126\3\2\2\2\u012f"+
 		"\u0127\3\2\2\2\u012f\u0128\3\2\2\2\u012f\u0129\3\2\2\2\u012f\u012a\3\2"+
-		"\2\2\u012f\u012c\3\2\2\2\u0130+\3\2\2\2\u0131\u0132\5\2\2\2\u0132\u0133"+
+		"\2\2\u012f\u012c\3\2\2\2\u0130+\3\2\2\2\u0131\u0132\7*\2\2\u0132\u0133"+
 		"\5R*\2\u0133-\3\2\2\2\u0134\u0135\7-\2\2\u0135/\3\2\2\2\u0136\u0137\7"+
 		"!\2\2\u0137\u013b\5L\'\2\u0138\u0139\7!\2\2\u0139\u013b\5N(\2\u013a\u0136"+
 		"\3\2\2\2\u013a\u0138\3\2\2\2\u013b\61\3\2\2\2\u013c\u013d\7\25\2\2\u013d"+

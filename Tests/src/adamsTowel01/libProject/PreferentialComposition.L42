@@ -62,7 +62,7 @@ Library <<(Library that) exception MetaGuard.ClassClash,MetaGuard.MethodClash
     i=Introspection(lib:that)
     map=SrcDests.empty()
     var Library acc={}
-    with lib in this.myLibs().vals(), index in 1N.vals() (
+    with lib in this.myLibs().vals(), index in 1Size.vals() (
       var Library libi=lib
       rens=This1.renameMap(lib,prefix:S"#"[index]"", intros:i.transitivelyNestedClasses())
       with ren in rens.vals() (

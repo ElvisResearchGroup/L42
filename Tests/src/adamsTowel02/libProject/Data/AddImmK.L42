@@ -30,12 +30,12 @@
   var Library immK$=Refactor.MakeMethod(Selector.fresh(otherK.selector())
      of:Path"This"
      mdfs:allImm
-     exceptionN:0N
+     exceptionN:0Size
      )<<{}
-  var N count=0N
+  var Size count=0Size
   immK$:=Refactor.Redirect(Path"$0" toType:otherK.returnType())<<immK$
   with ti in otherK.parameterTypes().vals() (
-    count+=1N
+    count+=1Size
     immK$:=Refactor.Redirect(Path.fromS(S"$"[count]"") toType:ti)<<immK$
     )
   r=Use[that]<<immK$

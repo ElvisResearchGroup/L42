@@ -56,41 +56,41 @@ Bool >(This that)
   //#####other sequence like methods
 
 method
-N indexOfLeft(S val)
-  this.indexOfLeft(val:val,start:0N)
+Size indexOfLeft(S val)
+  this.indexOfLeft(val:val,start:0Size)
 method
-N indexOfLeft(S val, N start){
+Size indexOfLeft(S val, Size start){
   //val must be not empty, TODO: error here?
-  var N current=start
+  var Size current=start
   while current<this.size() (
     if this.subStrEq(val,start:current) (return current)
-    current+=1N
+    current+=1Size
     )
-  return N"-1"
+  return Size"-1"
   } 
 
 method
-N indexOfRight(This val){
+Size indexOfRight(This val){
   //val must be not empty, TODO: error here?
-  var N current=this.size()-val.size()
-  while current>=0N (
+  var Size current=this.size()-val.size()
+  while current>=0Size (
     if this(start:current).beginsWith(val) (return current)
-    current-=1N
+    current-=1Size
     )
-  return N"-1"
+  return Size"-1"
   }
 
 method
 This withoutLeft(This val) {
   pos=this.indexOfLeft(val:val)
-  if pos<0N (return this)
+  if pos<0Size (return this)
   return this.without(index:pos, skipNum:val.size())
   }
 
 method
 This withoutRight(This val){
   pos=this.indexOfRight(val:val)
-  if pos<0N (return this)
+  if pos<0Size (return this)
   return this.without(index:pos, skipNum:val.size())
   }
 
@@ -101,43 +101,43 @@ This withoutAll(This val)
 
 method
 Bool isEmpty()
-  this.size()==0N
+  this.size()==0Size
 
 method
-This val(N that)
+This val(Size that)
   this(that)
 
 method
 This left()
-  this.val(0N)
+  this.val(0Size)
 
 method
 This right()
-  this.val(this.size()-1N)
+  this.val(this.size()-1Size)
 
 
 //#################Withs
 
 method
-This with(N that, This val)
+This with(Size that, This val)
   this(end:that)++val++this(start:that+val.size())
 
 method
 This withLeft(This that)
-  this.with(0N, val:that) //TODO: should be with(left)??
+  this.with(0Size, val:that) //TODO: should be with(left)??
 
 method
 This withRight(This that)
-  this.with(this.size()-1N, val:that)
+  this.with(this.size()-1Size, val:that)
 
 //insertion
 method
-This withAlso(N that, This val)
+This withAlso(Size that, This val)
   this(end:that)++val++this(start:that)
 
 method
 This withAlsoLeft(This that)
-  this.withAlso(0N, val:that)
+  this.withAlso(0Size, val:that)
 
 method
 This withAlsoRight(This that)
@@ -146,49 +146,49 @@ This withAlsoRight(This that)
 
 //skipping/filtering
 method
-This without(N index)
-  this(end:index)++this(start:index+1N)
+This without(Size index)
+  this(end:index)++this(start:index+1Size)
 
 method
-This without(N index, N skipNum)
+This without(Size index, Size skipNum)
   this(end:index)++this(start:skipNum+index)
 method
 This withoutLeft()
-  this.without(index:0N)
+  this.without(index:0Size)
 
 method
 This withoutRight()
-  this.without(index:this.size()-1N)
+  this.without(index:this.size()-1Size)
 
 
   method
   Bool contains(S that){
     res=this.indexOfLeft(val:that)
     //Debug(S"S.contains(this:"[this]" that:"[that]")="[res]"")
-    if res>=0N (return Bool.true())
+    if res>=0Size (return Bool.true())
     return Bool.false()
     }
 
 
 
   method
-  S (N start, N end)
+  S (Size start, Size end)
     S.#from(binaryRepr:use Alu
       check stringSubstring(this.binaryRepr(),start:start.binaryRepr(),end:end.binaryRepr())
       error void )
 
   method
-  S (N that) this(start:that, end:that+1N)
+  S (Size that) this(start:that, end:that+1Size)
 
   method
-  S (N start) this(start:start, end:this.size())
+  S (Size start) this(start:start, end:this.size())
 
   method
-  S (N end) this(start:0N, end:end)
+  S (Size end) this(start:0Size, end:end)
 
 
-  method N size()
-    N(_binaryRepr: use Alu
+  method Size size()
+    Size(_binaryRepr: use Alu
       check stringSize(this.binaryRepr())
       error void)
 
@@ -196,21 +196,21 @@ This withoutRight()
   //##### string special
 
   method
-  Bool subStrEq(S that, N start)
+  Bool subStrEq(S that, Size start)
     this(start:start, end:that.size()+start)==that//optimizing this one may help many methods
   method
   Bool beginsWith(S that)
-    this.subStrEq(that,start:0N)
+    this.subStrEq(that,start:0Size)
 
 
   class method S aSCIILowerCase() S"qwertyuiopasdfghjklzxcvbnm"
   class method S aSCIIUpperCase() S"QWERTYUIOPASDFGHJKLZXCVBNM"
 
   method
-  Bool isASCIILowerCase(N that)
+  Bool isASCIILowerCase(Size that)
     S.aSCIILowerCase().contains(this(that))
   method
-  Bool isASCIIUpperCase(N that) (
+  Bool isASCIIUpperCase(Size that) (
     //Debug(S"S.isASCIIUpperCase(this:"[this]" that:"[that]")")
     S.aSCIIUpperCase().contains(this(that))
     )
@@ -219,7 +219,7 @@ This withoutRight()
   S doubleQuote()
     S"
     '"
-    "(0N)
+    "(0Size)
 
   class method
   S nl()

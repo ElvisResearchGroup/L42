@@ -19,7 +19,7 @@ import tools.Map;
 
 abstract class Methods implements Program{
   static private  List<Ast.Path> push(List<Ast.Path>ps,Ast.Path newThis){
-    List<Ast.Path>res=new ArrayList();
+    List<Ast.Path>res=new ArrayList<>();
     res.add(Path.outer(0));
     for(Ast.Path pi:ps){res.add(From.fromP(pi,newThis));}
     return res;
@@ -32,7 +32,9 @@ abstract class Methods implements Program{
     return res;
     }
   static List<Ast.Path> collect(Program p,List<Ast.Path> p0ps){
-    return collect(p,p0ps,new ArrayList<>());
+    return new ArrayList<>(new HashSet<>(collect(p,p0ps,new ArrayList<>())));
+    //TODO: this over is an hack to remove duplicates, still need to decide how to behave
+    //if different paths points to the same interface
     }
   static List<Ast.Path>  collect(Program p,List<Ast.Path> p0ps,List<Ast.Path> visited){
     if( p0ps.isEmpty()){return p0ps;}

@@ -133,7 +133,7 @@ numParse: NumParse;
 eUnOp: UnOp? /*numParse?*/ ePost;
 ePost: eAtom  (squareW|square|Dot mCall|ORoundNoSpace round|docs | stringParse)*;
 eAtom:classBReuse|classB|numParse? x | xOp|numParse? Path|numParse? block|ifExpr|whileExpr| signalExpr| loopExpr |WalkBy | w |using | DotDotDot | mxRound | useSquare|numParse? contextId;
-mxRound: m round;
+mxRound: MX round;
 contextId: ContextId;
 useSquare: Using square | Using squareW;
 ifExpr: If eTop block (Else eTop)?;

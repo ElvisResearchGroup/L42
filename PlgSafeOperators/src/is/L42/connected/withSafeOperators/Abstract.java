@@ -77,8 +77,8 @@ public class Abstract {
     MethodWithType mwt1 = p.extractMwt(sel, cb).get();
     if(newSel!=null){Errors42.checkCompatibleMs(pathForError, mwt1, newSel);}
     Optional<MethodWithType> mwt2 = p.extractMwt(newSel, cb);
-    mwt1=mwt1.withMs(newSel).withDoc(Doc.empty());
-    if(mwt2.isPresent()){
+    mwt1=mwt1.withMs(newSel).withDoc(Doc.empty()).withMt(mwt1.getMt().withRefine(false));//never refine, see under
+    if(mwt2.isPresent()){//Never there, so will never implement interfaces (on normalized classb)
        throw Errors42.errorMethodClash(pathForError, mwt1,mwt2.get(), false, Collections.emptyList(), false,false,false); 
        }   
     newMs.add(mwt1);
