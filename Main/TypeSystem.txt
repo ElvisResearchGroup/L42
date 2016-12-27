@@ -146,8 +146,62 @@ Tr.capture(p,catch error P x e)=Tr
 (Ts;Ps).capture(p,catch return P x e)={T| T in Ts, not p|-T.P<=P};Ps
 
 
+--------------
+methTypes(p,P,ms)  Expressed as metarules
+
+//first managing placeholders
+
+  p(P).ms.mh[from P]=mdf0 method T m(T1 x1,..Tn xn) exception Ps
+  not fwd_or_fwd%_in T0..Tn
+-------------------------------------------------------------------
+  T0..Tn->T;Ps in methTypes(p,P,ms)
+
+  p(P).ms.mh[from P]=mdf0 method T m(T1 x1,..Tn xn) exception Ps
+  fwd_or_fwd%_in T0..Tn
+-------------------------------------------------------------------
+  T0..Tn-> fwd% T;Ps in methTypes(p,P,ms)
+
+
+  Ts0 fwdImm P' Ts1->T;Ps in methTypes(p,P,ms) 
+-------------------------------------------------------------------
+  Ts0 imm P' Ts1->T;Ps in methTypes(p,P,ms)
+
+  Ts0 fwdMut P' Ts1->T;Ps in methTypes(p,P,ms) 
+-------------------------------------------------------------------
+  Ts0 mut P' Ts1->T;Ps in methTypes(p,P,ms)
+    
+  Ts->mdf P';Ps in methTypes(p,P,ms)
+  not fwd_or_fwd%_in Ts
+  mdf in {fwdImm,fwd%Imm}  
+-------------------------------------------------------------------
+  Ts->imm P';Ps in methTypes(p,P,ms)
+
+  Ts->mdf P';Ps in methTypes(p,P,ms)
+  not fwd_or_fwd%_in Ts
+  mdf in {fwdMut,fwd%Mut} 
+-------------------------------------------------------------------
+  Ts->mut P';Ps in methTypes(p,P,ms)
+
+//then capsule and imm promotion
+  Ts->T;Ps in methTypes(p,P,ms)
+-------------------------------------------------------------------
+  mutToCapsule(T0..Tn->T);Ps in methTypes(p,P,ms)
+
+  Ts->T;Ps in methTypes(p,P,ms)
+-------------------------------------------------------------------
+  toImmOrCapsule(Ts->T);Ps in methTypes(p,P,ms)
+  
+//then lent viewpoint adaptation    
+
+  Ts0 T' Ts1->T;Ps in methTypes(p,P,ms)
+  Ts'=mutToCapsule(Ts0) mutToLent(T') mutToCapsule(Ts1)
+-------------------------------------------------------------------
+  Ts'->toLent(T);Ps in methTypes(p,P,ms)
+
+
+//Here OLD version to help us discuss a way to compute/dispatch over the set of all the methods efficiently
 methTypes(p,P,ms)
-  methTypes(p,P,ms)={MethT,MethT0,..,MethTn,MethT',MethT''}
+  methTypes'(p,P,ms)={MethT,MethT0,..,MethTn,MethT',MethT''}
     p(P).ms.mh[from P]=mdf0 method T m(T1 x1,..Tn xn) exception Ps
     MethT=(mdf0 P0 T1..Tn->T;Ps)  =  T0..Tn->T;Ps
     MethT'=toImmOrCapsule(T0..Tn->T);Ps
@@ -155,7 +209,8 @@ methTypes(p,P,ms)
       MethTi=Tsi->toLent(T);Ps where Tsi=mutToCapsule(T0..Ti-1) mutToLent(Ti) mutToCapsule(Ti+1..Tn)
       if defined, otherwise MethTi=MethT
     MethT''=mutToCapsule(T0..Tn->T);Ps
-
+  MethT in methTypes(p,P,ms) if MethT in methTypes'(p,P,ms)
+   
 --------------------------------------------
 3 ExpressionTypeJudgement
 --------------------------------------------
@@ -190,12 +245,12 @@ D |- loop e ~> loop e' : imm Void | Tr
 (throw)
 D|-throw[T?,_] e~> throw[T,mdf P] e' :  T | Tr
   where
-  resolve(D.p,guessType(D.G,e))= _ P //the _ can guide if we want a class or a read in {read,class} later.
-  D|- e~>  e' :  mdf P <=mdf' P |Ts;Ps //Allows to use alternative method typing
+  resolve(D.p,guessType(D.G,e))= mdf' P
+  D|- e~>  e' :  mdf P <=T'|Ts;Ps //Allows to use alternative method typing
   either T?=empty or T?=T
-  if throw=exception, mdf'=imm and Tr=Ts;Ps,P
-  if throw=return, mdf' in {read,class},Tr=Ts,mdf P;Ps and mdf not fwd or fwd% 
-  if throw=error, mdf'=imm and Tr=Ts;Ps
+  if throw=exception, T=mdf' P=imm P and Tr=Ts;Ps,P
+  if throw=error,     T=mdf' P=imm P and Tr=Ts;Ps
+  if throw=return, T= fwd mdf' P,Tr=Ts,mdf P;Ps 
 
 (mcall)
 D|- e0.m[_](x1:e1..Xn:en) ~> e'0.m[P0](x1:e'1..xn:e'n)  : T' | Tr0 U..U Trn U (empty;Ps) //e0 will be of form mr
@@ -203,10 +258,11 @@ D|- e0.m[_](x1:e1..Xn:en) ~> e'0.m[P0](x1:e'1..xn:e'n)  : T' | Tr0 U..U Trn U (e
   resolve(D.p,guessType(D.G,e0))= _ P0
   T0..Tn->T;Ps in methTypes(p,P0,m(x1..xn))
   forall i 0..n D|- ei ~> e'i : T'i <=Ti | Tri //T'0 is correctly a free variable
-  if fwd or fwd% in T'1..T'n
-    T'=fwd% T
-  otherwise
-    T'=T //Note, we can make a more expressive, but harder to explain TS by writing  T'=removeFwd(T)
+//Lines under now replaced with more method types. Left here in the comment to ease our discussion
+//  if fwd or fwd% in T'1..T'n //TODO: after discussion with James, we should make methType richer and move
+//    T'=fwd% T // the following lines in the TS dispatching reasoning in the end
+//  otherwise
+//    T'=T //Note, we can make a more expressive, but harder to explain TS by writing  T'=removeFwd(T)
     
      
 (using)
