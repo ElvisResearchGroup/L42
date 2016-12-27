@@ -238,7 +238,7 @@ D|- (ds1 ds2 ks e)~>(ds'1 ds'2 ks' e'):T
   //Algorithm to divide ds in the first minimal ds1, ds2
   //with ds=ds0..dsn; domi=dom(dsi+1..dsn)
   //var xs=empty
-  //var i=0
+  //var i=0  //If we was to start i at some j, we would still break the block in the earliest possible point geq j
   //loop (
   //xs= xs U  FV(ei)
   //if (domi\xs) = empty then return i
