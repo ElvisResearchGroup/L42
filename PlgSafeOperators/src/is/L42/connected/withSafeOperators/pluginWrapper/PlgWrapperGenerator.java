@@ -390,5 +390,22 @@ invalidMethodType
 overloading
   where: Path, ms
   in JavaClass selector/num have x variations/ is not present
+  
+  
+  LocationIssue
+    Any Operator cause //this will store some of the parameters of the operation
+    Library originalInput
+    internal/ext
+    Path /ClassAny
+    opt ms
+    opt sublocation (0 ret 1..n pars -1..-k exceptions, this??)
+    size code
+    issue string
+    LocationIssue next?
+
+    
+
+    
+    
 */
 //TODO: if a class is internal and is not plugin with part, is it ok if it has the right methods anyway??
