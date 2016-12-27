@@ -236,7 +236,7 @@ D|- (ds1 ds2 ks e)~>(ds'1 ds'2 ks' e'):T
   //to optimize, we could use a empty shell ks (with all es replaced with error void), but then we will need to explicitly test for FV(ks) not in dom(ds1,ds2)
   
   //Algorithm to divide ds in the first minimal ds', ds''
-  //with ds=ds1..dsn; domi=dom(dsi+1..dsn)
+  //with ds=ds0..dsn; domi=dom(dsi+1..dsn)
   //var xs=empty
   //var i=0
   //loop (
@@ -244,7 +244,7 @@ D|- (ds1 ds2 ks e)~>(ds'1 ds'2 ks' e'):T
   //if (xs \ domi) = empty then return i
   //                    //cut will be from 1 to i included
   //i:=i+1
-  //if i==ds.size return i
+  //if i==ds.size-1 return i
   //)
 
 (block)
