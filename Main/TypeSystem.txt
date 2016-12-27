@@ -241,8 +241,8 @@ D|- (ds1 ds2 ks e)~>(ds'1 ds'2 ks' e'):T
   //var i=0
   //loop (
   //xs= xs U  FV(ei)
-  //if (xs \ domi) = empty then return i
-  //                    //cut will be from 1 to i included
+  //if (domi\xs) = empty then return i
+  //                    //cut will be from 0 to i included
   //i:=i+1
   //if i==ds.size-1 return i
   //)
