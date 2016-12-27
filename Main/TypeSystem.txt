@@ -43,7 +43,7 @@ fwd% T
   otherwise fwd% T=T
  
 fwd_or_fwd%_in Ts
-if T in Ts, T in {fwdImm,fwdMut,fwd%Imm,fwd%Mut}
+if T in Ts, T in {fwdImm _,fwdMut_,fwd%Imm _,fwd%Mut _}
 
 toImm(T)        
   toImm(class P)=class P
@@ -253,7 +253,7 @@ Phase| p| G|-(T1 x1=e1..Tn xn=en ks e0[_]) ~>(T'1 x1=e'1..T'n xn=e'n ks' e'0 [T]
   G1=G[ks][fwd(complete(G'))]
   for i in 1..n Phase| p| G1|-ei~>e'i: T''i <=fwd% T'i | Tri
   Phase| p| G/x1..xn | Tr1 U .. U Trn |-ks~> ks' : T | Tr
-  if exists fwd or fwd% in T''1..T''n
+  if fwd_or_fwd%_in T''1..T''n
     G0=G[fwd%(G')]
   otherwise
     G0=G[G']
