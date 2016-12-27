@@ -235,7 +235,7 @@ D|- (ds1 ds2 ks e)~>(ds'1 ds'2 ks' e'):T
   //we do not need to state FV(ks) not in dom(ds1,ds2) since rule block do G/x1..xn
   //to optimize, we could use a empty shell ks (with all es replaced with error void), but then we will need to explicitly test for FV(ks) not in dom(ds1,ds2)
   
-  //Algorithm to divide ds in the first minimal ds', ds''
+  //Algorithm to divide ds in the first minimal ds1, ds2
   //with ds=ds0..dsn; domi=dom(dsi+1..dsn)
   //var xs=empty
   //var i=0
@@ -244,7 +244,7 @@ D|- (ds1 ds2 ks e)~>(ds'1 ds'2 ks' e'):T
   //if (domi\xs) = empty then return i
   //                    //cut will be from 0 to i included
   //i:=i+1
-  //if i==ds.size-1 return i
+  //if i==n return i //ds.size-1
   //)
 
 (block)
