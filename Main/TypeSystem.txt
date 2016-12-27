@@ -42,7 +42,7 @@ fwd% T
   fwd% mut P=fwd%Mut P
   otherwise fwd% T=T
  
-fwd_or_fwd%_in_Ts
+fwd_or_fwd%_in Ts
 if T in Ts, T in {fwdImm,fwdMut,fwd%Imm,fwd%Mut}
 
 toImm(T)        
