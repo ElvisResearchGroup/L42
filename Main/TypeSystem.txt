@@ -309,10 +309,11 @@ Phase| p| G|-(T1 x1=e1..Tn xn=en ks e0[_]) ~>(T'1 x1=e'1..T'n xn=e'n ks' e'0 [T]
   G1=G[ks][fwd(complete(G'))]
   for i in 1..n Phase| p| G1|-ei~>e'i: T''i <=fwd% T'i | Tri
   Phase| p| G/x1..xn | Tr1 U .. U Trn |-ks~> ks' : T | Tr
+  if fwd_or fwd%_in Tr1.Ts U .. U Trn.Ts
+    then x1..xn disjoint FV(e1..en)
   if fwd_or_fwd%_in T''1..T''n
-    G0=G[fwd%(G')]
-  otherwise
-    G0=G[G']
+    then G0=G[fwd%(G')]
+    otherwise G0=G[G']
   Phase| p| G0 |-e0~>e'0:_ <=T | Tr0
 //Note, need to add cching info for mdf in catch return since now is inferred at typing
     
