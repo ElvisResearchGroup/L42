@@ -152,12 +152,12 @@ methTypes(p,P,ms)  Expressed as metarules
 //first managing placeholders
 
   p(P).ms.mh[from P]=mdf0 method T m(T1 x1,..Tn xn) exception Ps
-  not fwd_or_fwd%_in T0..Tn
+  T0= mdf0 P /*TODO newLine*/  not fwd_or_fwd%_in T0..Tn
 -------------------------------------------------------------------
   T0..Tn->T;Ps in methTypes(p,P,ms)
 
   p(P).ms.mh[from P]=mdf0 method T m(T1 x1,..Tn xn) exception Ps
-  fwd_or_fwd%_in T0..Tn
+  T0= mdf0 P /*TODO newLine*/  fwd_or_fwd%_in T0..Tn
 -------------------------------------------------------------------
   T0..Tn-> fwd% T;Ps in methTypes(p,P,ms)
 
@@ -183,20 +183,20 @@ methTypes(p,P,ms)  Expressed as metarules
   Ts->mut P';Ps in methTypes(p,P,ms)
 
 //then capsule and imm promotion
-  Ts->T;Ps in methTypes(p,P,ms)
+  Ts->mut P0;Ps in methTypes(p,P,ms)
 -------------------------------------------------------------------
-  mutToCapsule(T0..Tn->T);Ps in methTypes(p,P,ms)
+  mutToCapsule(T0..Tn)->capsule P0;Ps in methTypes(p,P,ms)
 
-  Ts->T;Ps in methTypes(p,P,ms)
+  Ts->read P0;Ps in methTypes(p,P,ms)
 -------------------------------------------------------------------
-  toImmOrCapsule(Ts->T);Ps in methTypes(p,P,ms)
+  toImmOrCapsule(Ts)->imm P0;Ps in methTypes(p,P,ms)
   
 //then lent viewpoint adaptation    
 
-  Ts0 T' Ts1->T;Ps in methTypes(p,P,ms)
-  Ts'=mutToCapsule(Ts0) mutToLent(T') mutToCapsule(Ts1)
+  Ts0 T Ts1->T0;Ps in methTypes(p,P,ms)
+  Ts'=mutToCapsule(Ts0) mutToLent(T) mutToCapsule(Ts1)
 -------------------------------------------------------------------
-  Ts'->toLent(T);Ps in methTypes(p,P,ms)
+  Ts'->toLent(T0);Ps in methTypes(p,P,ms)
 
 
 //Here OLD version to help us discuss a way to compute/dispatch over the set of all the methods efficiently
@@ -295,7 +295,7 @@ D|- (ds1 ds2 ks e)~>(ds'1 ds'2 ks' e'):T
   //var i=0  //If we was to start i at some j, we would still break the block in the earliest possible point geq j
   //loop (
   //xs= xs U  FV(ei)
-  //if (domi\xs) = empty then return i
+  //if (domi\xs) = domi then return i
   //                    //cut will be from 0 to i included
   //i:=i+1
   //if i==n return i //ds.size-1
