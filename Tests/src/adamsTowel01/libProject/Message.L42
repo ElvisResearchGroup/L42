@@ -2,7 +2,7 @@
 class method S kind()
 method S text()
 method Opt responseOf()
-read method class This class()
+refine read method class This class()
 //change? remove opt, use fwd and method isResponse()?
 //error fixed in adam 2 as usual?
 Opt:{#new(TOpt that)
@@ -66,8 +66,7 @@ $:{()
       !(this==that)
     method Bool == (This that)
       Message.EqualMessages(this,other:that)
-    method classAny() This
-    method class() This
+    refine read method class Message class() This
     class method
     This (S text)
       This(_text:text,cause:Message.Opt())

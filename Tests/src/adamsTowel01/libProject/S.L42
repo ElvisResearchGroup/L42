@@ -1,9 +1,10 @@
 { _private(Library _binaryRepr)
  implements  Concept.Base, Concept.Equals //needed until we do (also refine) normalization
+ 
 
   //#####Implemented
   method is(subtype) {  with subtype (on class This return Bool.true()) return Bool.false()}
-  method classAny() This
+  refine read method class This class() This
   method readableName()GetMyName(This)
 
   class method This #from(Library binaryRepr) This._private(_binaryRepr:binaryRepr)

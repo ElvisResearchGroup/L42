@@ -3,7 +3,7 @@ class method
 S getToSOrName(read Any that){
   with that (
     on Concept.ToS return that.toS()
-    on Concept.Classable return GetMyName(that.classAny())++S" instance"
+    on Concept.Classable return GetMyName(that.class())++S" instance"
     default return S"instance not ToS or Classable"
     )
   }

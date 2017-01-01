@@ -22,6 +22,11 @@ Assert:...
 //--layer-- linked list and its test
 Collections:...
 Strings:Collections.vector(of:S)
+StringSplit:{
+  class method //will be fixed in adam2
+  Strings splitOn(S that,S chars)
+    error S"StringSplit.UnsatisfactoryErrorToAvoidCycle, replace in AdamT2"
+}
 CTest:( Strings ss=Strings[S"foo"] {()}  ) //check lists are usable
 //--layer-- introspection layer, and MetaGuard
 Path:...

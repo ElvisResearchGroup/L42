@@ -55,7 +55,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-class This1.Concept.Classable classAny() This0
+class This0 class() This0
 refine class method 
 This1.S readableName() This1.GetMyName.#apply(that:This0)
 refine read method 
@@ -365,7 +365,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-class This1.Concept.Classable classAny() This0
+class This0 class() This0
 refine class method 
 This1.S readableName() This1.GetMyName.#apply(that:This0)
 class method 
@@ -1070,7 +1070,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-class This1.Concept.Classable classAny() This0
+class This0 class() This0
 refine class method 
 This1.S readableName() This1.GetMyName.#apply(that:This0)
 class method 
@@ -2485,7 +2485,7 @@ read method
 This2.S toS() }
 Classable:{interface 
 read method 
-class This1.Classable classAny() 
+class This0 class() 
 class method 
 This2.S readableName() 
 class method 
@@ -2495,7 +2495,7 @@ Base:{interface implements This1.ToS, This1.Classable, This1.Equals/*class metho
 refine read method 
 This2.S toS() 
 refine read method 
-class This1.Classable classAny() 
+class This1.Classable class() 
 refine class method 
 This2.S readableName() 
 refine class method 
@@ -2586,14 +2586,12 @@ method
 This1.S text() 
 method 
 This0.Opt responseOf() 
-read method 
+refine read method 
 class This0 class() 
 refine read method 
 This1.S toS() 
 refine read method 
 This1.Bool equals(read Any that) 
-refine read method 
-class This1.Concept.Classable classAny() 
 refine class method 
 This1.S readableName() 
 refine class method 
@@ -2937,8 +2935,6 @@ This3.Bool #bangequal(This0 that) (this.#equalequal(that:that)).#bang()
 method 
 This3.Bool #equalequal(This0 that) This3.Message.EqualMessages.#apply(that:this, other:that)
 refine read method 
-class This3.Concept.Classable classAny() This0
-refine read method 
 class This3.Message class() This0
 class method 
 This0 #apply(This3.S text) This0.#apply(_text:text, cause:This3.Message.Opt.#apply())
@@ -3002,8 +2998,6 @@ refine read method
 This1.S toS() 
 refine read method 
 This1.Bool equals(read Any that) 
-refine read method 
-class This1.Concept.Classable classAny() 
 refine class method 
 This1.S readableName() 
 refine class method 
@@ -3123,8 +3117,6 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine read method 
-class This2.Concept.Classable classAny() This0
 refine class method 
 This2.S readableName() This2.GetMyName.#apply(that:This0)
 refine class method 
@@ -3333,8 +3325,6 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine read method 
-class This2.Concept.Classable classAny() This0
 refine class method 
 This2.S readableName() This2.GetMyName.#apply(that:This0)
 refine class method 
@@ -3543,8 +3533,6 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine read method 
-class This2.Concept.Classable classAny() This0
 refine class method 
 This2.S readableName() This2.GetMyName.#apply(that:This0)
 refine class method 
@@ -3651,8 +3639,6 @@ refine read method
 This2.S toS() 
 refine read method 
 This2.Bool equals(read Any that) 
-refine read method 
-class This2.Concept.Classable classAny() 
 refine class method 
 This2.S readableName() 
 refine class method 
@@ -3672,8 +3658,6 @@ refine read method
 This2.S toS() 
 refine read method 
 This2.Bool equals(read Any that) 
-refine read method 
-class This2.Concept.Classable classAny() 
 refine class method 
 This2.S readableName() 
 refine class method 
@@ -3793,8 +3777,6 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine read method 
-class This3.Concept.Classable classAny() This0
 refine class method 
 This3.S readableName() This3.GetMyName.#apply(that:This0)
 refine class method 
@@ -3901,8 +3883,6 @@ refine read method
 This1.S toS() 
 refine read method 
 This1.Bool equals(read Any that) 
-refine read method 
-class This1.Concept.Classable classAny() 
 refine class method 
 This1.S readableName() 
 refine class method 
@@ -4022,8 +4002,6 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine read method 
-class This2.Concept.Classable classAny() This0
 refine class method 
 This2.S readableName() This2.GetMyName.#apply(that:This0)
 refine class method 
@@ -4232,8 +4210,6 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine read method 
-class This2.Concept.Classable classAny() This0
 refine class method 
 This2.S readableName() This2.GetMyName.#apply(that:This0)
 refine class method 
@@ -4442,8 +4418,6 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine read method 
-class This2.Concept.Classable classAny() This0
 refine class method 
 This2.S readableName() This2.GetMyName.#apply(that:This0)
 refine class method 
@@ -4652,8 +4626,6 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine read method 
-class This2.Concept.Classable classAny() This0
 refine class method 
 This2.S readableName() This2.GetMyName.#apply(that:This0)
 refine class method 
@@ -4902,8 +4874,6 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine read method 
-class This2.Concept.Classable classAny() This0
 refine class method 
 This2.S readableName() This2.GetMyName.#apply(that:This0)
 refine class method 
@@ -6241,7 +6211,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-class This3.Concept.Classable classAny() This0
+class This0 class() This0
 refine class method 
 This3.S readableName() This3.GetMyName.#apply(that:This0)
 Elem:{}
@@ -7984,7 +7954,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-class This1.Concept.Classable classAny() This0
+class This0 class() This0
 refine class method 
 This1.S readableName() This1.GetMyName.#apply(that:This0)
 read method 
@@ -9254,6 +9224,74 @@ mut method
 This2.Size #inner() 
 read method 
 This2.Size inner() }}
+StringSplit:{
+class method /*will be fixed in adam2
+*/This1.Strings splitOn(This1.S that, This1.S chars) error This1.S.#from(builder:(
+  mut This1.S.SBuilder b=This1.S.#builder()
+  Void unused=b.#S()
+  Void unused0=b.#t()
+  Void unused1=b.#r()
+  Void unused2=b.#i()
+  Void unused3=b.#n()
+  Void unused4=b.#g()
+  Void unused5=b.#S()
+  Void unused6=b.#p()
+  Void unused7=b.#l()
+  Void unused8=b.#i()
+  Void unused9=b.#t()
+  Void unused10=b.#dot()
+  Void unused11=b.#U()
+  Void unused12=b.#n()
+  Void unused13=b.#s()
+  Void unused14=b.#a()
+  Void unused15=b.#t()
+  Void unused16=b.#i()
+  Void unused17=b.#s()
+  Void unused18=b.#f()
+  Void unused19=b.#a()
+  Void unused20=b.#c()
+  Void unused21=b.#t()
+  Void unused22=b.#o()
+  Void unused23=b.#r()
+  Void unused24=b.#y()
+  Void unused25=b.#E()
+  Void unused26=b.#r()
+  Void unused27=b.#r()
+  Void unused28=b.#o()
+  Void unused29=b.#r()
+  Void unused30=b.#T()
+  Void unused31=b.#o()
+  Void unused32=b.#A()
+  Void unused33=b.#v()
+  Void unused34=b.#o()
+  Void unused35=b.#i()
+  Void unused36=b.#d()
+  Void unused37=b.#C()
+  Void unused38=b.#y()
+  Void unused39=b.#c()
+  Void unused40=b.#l()
+  Void unused41=b.#e()
+  Void unused42=b.#comma()
+  Void unused43=b.#space()
+  Void unused44=b.#r()
+  Void unused45=b.#e()
+  Void unused46=b.#p()
+  Void unused47=b.#l()
+  Void unused48=b.#a()
+  Void unused49=b.#c()
+  Void unused50=b.#e()
+  Void unused51=b.#space()
+  Void unused52=b.#i()
+  Void unused53=b.#n()
+  Void unused54=b.#space()
+  Void unused55=b.#A()
+  Void unused56=b.#d()
+  Void unused57=b.#a()
+  Void unused58=b.#m()
+  Void unused59=b.#T()
+  Void unused60=b.#2()
+  b
+  ))}
 CTest:{
 class method 
 mut This0 #mutK() 
@@ -9302,7 +9340,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-class This1.Concept.Classable classAny() This0
+class This0 class() This0
 refine class method 
 This1.S readableName() This1.GetMyName.#apply(that:This0)
 class method 
@@ -9912,7 +9950,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-class This1.Concept.Classable classAny() This0
+class This0 class() This0
 refine class method 
 This1.S readableName() This1.GetMyName.#apply(that:This0)
 class method 
@@ -10525,7 +10563,8 @@ Void inner(This2.S that)
 mut method 
 This2.S #inner() 
 read method 
-This2.S inner() }}
+This2.S inner() }
+ParseFail:{}}
 SafeOperators:{/*@plugin
 L42.is/connected/withSafeOperators
 */
@@ -11279,8 +11318,6 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine read method 
-class This3.Concept.Classable classAny() This0
 refine class method 
 This3.S readableName() This3.GetMyName.#apply(that:This0)
 refine class method 
@@ -11411,8 +11448,6 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-class This3.Concept.Classable classAny() This0
-read method 
 class This0 class() This0
 refine class method 
 This3.S readableName() This3.GetMyName.#apply(that:This0)
@@ -12084,7 +12119,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-class This3.Concept.Classable classAny() This0
+class This0 class() This0
 refine class method 
 This3.S readableName() This3.GetMyName.#apply(that:This0)
 read method 
@@ -13393,8 +13428,6 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-class This3.Concept.Classable classAny() This0
-read method 
 class This0 class() This0
 refine class method 
 This3.S readableName() This3.GetMyName.#apply(that:This0)
@@ -13983,7 +14016,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-class This2.Concept.Classable classAny() This0
+class This0 class() This0
 refine class method 
 This2.S readableName() This2.GetMyName.#apply(that:This0)
 class method 
@@ -14141,7 +14174,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-class This3.Concept.Classable classAny() This0
+class This0 class() This0
 refine class method 
 This3.S readableName() This3.GetMyName.#apply(that:This0)
 refine read method 
@@ -14662,7 +14695,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-class This3.Concept.Classable classAny() This0
+class This0 class() This0
 refine class method 
 This3.S readableName() This3.GetMyName.#apply(that:This0)
 IteratorTrait:{
@@ -16033,7 +16066,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-class This2.Concept.Classable classAny() This0
+class This0 class() This0
 refine class method 
 This2.S readableName() This2.GetMyName.#apply(that:This0)
 read method 
@@ -17358,7 +17391,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-class This2.Concept.Classable classAny() This0
+class This0 class() This0
 refine class method 
 This2.S readableName() This2.GetMyName.#apply(that:This0)
 refine read method 
@@ -18170,7 +18203,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-class This2.Concept.Classable classAny() This0
+class This0 class() This0
 refine class method 
 This2.S readableName() This2.GetMyName.#apply(that:This0)
 read method 
@@ -19496,7 +19529,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-class This2.Concept.Classable classAny() This0
+class This0 class() This0
 refine class method 
 This2.S readableName() This2.GetMyName.#apply(that:This0)
 refine read method 
@@ -22038,7 +22071,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-class This2.Concept.Classable classAny() This0
+class This0 class() This0
 refine class method 
 This2.S readableName() This2.GetMyName.#apply(that:This0)
 read method 
@@ -23367,7 +23400,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-class This2.Concept.Classable classAny() This0
+class This0 class() This0
 refine class method 
 This2.S readableName() This2.GetMyName.#apply(that:This0)
 refine read method 
@@ -24417,7 +24450,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-class This2.Concept.Classable classAny() This0
+class This0 class() This0
 refine class method 
 This2.S readableName() This2.GetMyName.#apply(that:This0)
 IteratorTrait:{
@@ -24950,8 +24983,6 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-class This2.Concept.Classable classAny() This0
-read method 
 class This0 class() This0
 refine class method 
 This2.S readableName() This2.GetMyName.#apply(that:This0)
@@ -25436,8 +25467,6 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine read method 
-class This3.Concept.Classable classAny() This0
 refine class method 
 This3.S readableName() This3.GetMyName.#apply(that:This0)
 refine class method 
@@ -25972,7 +26001,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-class This3.Concept.Classable classAny() This0
+class This0 class() This0
 refine class method 
 This3.S readableName() This3.GetMyName.#apply(that:This0)
 read method 
@@ -27279,8 +27308,6 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-class This2.Concept.Classable classAny() This0
-read method 
 class This0 class() This0
 refine class method 
 This2.S readableName() This2.GetMyName.#apply(that:This0)
@@ -27716,8 +27743,6 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine read method 
-class This3.Concept.Classable classAny() This0
 refine class method 
 This3.S readableName() This3.GetMyName.#apply(that:This0)
 refine class method 
@@ -28252,7 +28277,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-class This3.Concept.Classable classAny() This0
+class This0 class() This0
 refine class method 
 This3.S readableName() This3.GetMyName.#apply(that:This0)
 read method 
@@ -29559,8 +29584,6 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-class This2.Concept.Classable classAny() This0
-read method 
 class This0 class() This0
 refine class method 
 This2.S readableName() This2.GetMyName.#apply(that:This0)
@@ -30008,8 +30031,6 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine read method 
-class This3.Concept.Classable classAny() This0
 refine class method 
 This3.S readableName() This3.GetMyName.#apply(that:This0)
 refine class method 
@@ -30544,7 +30565,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-class This3.Concept.Classable classAny() This0
+class This0 class() This0
 refine class method 
 This3.S readableName() This3.GetMyName.#apply(that:This0)
 read method 
@@ -31852,8 +31873,6 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-class This2.Concept.Classable classAny() This0
-read method 
 class This0 class() This0
 refine class method 
 This2.S readableName() This2.GetMyName.#apply(that:This0)
@@ -32260,8 +32279,6 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine read method 
-class This3.Concept.Classable classAny() This0
 refine class method 
 This3.S readableName() This3.GetMyName.#apply(that:This0)
 refine class method 
@@ -32796,7 +32813,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-class This3.Concept.Classable classAny() This0
+class This0 class() This0
 refine class method 
 This3.S readableName() This3.GetMyName.#apply(that:This0)
 read method 
@@ -34079,8 +34096,6 @@ refine read method
 This1.S toS() 
 refine read method 
 This1.Bool equals(read Any that) 
-refine read method 
-class This1.Concept.Classable classAny() 
 refine class method 
 This1.S readableName() 
 refine class method 
@@ -34114,8 +34129,6 @@ refine read method
 class This3.Message class() 
 refine read method 
 This3.Bool equals(read Any that) 
-refine read method 
-class This3.Concept.Classable classAny() 
 refine class method 
 This3.S readableName() 
 refine class method 
@@ -34201,8 +34214,6 @@ CurlyBlock-Should be unreachable code
   )
 refine read method 
 class This3.Message class() This0
-refine read method 
-class This3.Concept.Classable classAny() This0
 class method 
 This0 #apply(This3.Introspection.Record record, Library lib) 
 method 
@@ -34370,8 +34381,6 @@ CurlyBlock-Should be unreachable code
   )
 refine read method 
 class This2.Message class() This0
-refine read method 
-class This2.Concept.Classable classAny() This0
 class method 
 This0 #apply(This2.Introspection.Record record, Library lib) This0.#mut(record:record, lib:lib)
 method 
@@ -34516,8 +34525,6 @@ CurlyBlock-Should be unreachable code
   )
 refine read method 
 class This2.Message class() This0
-refine read method 
-class This2.Concept.Classable classAny() This0
 class method 
 This0 #apply(This2.Introspection.Record record, Library lib) This0.#mut(record:record, lib:lib)
 method 
@@ -34647,8 +34654,6 @@ CurlyBlock-Should be unreachable code
   )
 refine read method 
 class This2.Message class() This0
-refine read method 
-class This2.Concept.Classable classAny() This0
 class method 
 This0 #apply(This2.Introspection.Record record, Library lib) This0.#mut(record:record, lib:lib)
 method 
@@ -34779,8 +34784,6 @@ CurlyBlock-Should be unreachable code
   )
 refine read method 
 class This2.Message class() This0
-refine read method 
-class This2.Concept.Classable classAny() This0
 class method 
 This0 #apply(This2.Introspection.Record record, Library lib) This0.#mut(record:record, lib:lib)
 method 
@@ -34917,8 +34920,6 @@ CurlyBlock-Should be unreachable code
   )
 refine read method 
 class This2.Message class() This0
-refine read method 
-class This2.Concept.Classable classAny() This0
 class method 
 This0 #apply(This2.Introspection.Record record, Library lib) This0.#mut(record:record, lib:lib)
 method 
@@ -35053,8 +35054,6 @@ CurlyBlock-Should be unreachable code
   )
 refine read method 
 class This2.Message class() This0
-refine read method 
-class This2.Concept.Classable classAny() This0
 class method 
 This0 #apply(This2.Introspection.Record record, Library lib) This0.#mut(record:record, lib:lib)
 method 
@@ -35191,8 +35190,6 @@ CurlyBlock-Should be unreachable code
   )
 refine read method 
 class This2.Message class() This0
-refine read method 
-class This2.Concept.Classable classAny() This0
 class method 
 This0 #apply(This2.Introspection.Record record, Library lib) This0.#mut(record:record, lib:lib)
 method 
@@ -35240,8 +35237,6 @@ refine read method
 This2.S toS() 
 refine read method 
 This2.Bool equals(read Any that) 
-refine read method 
-class This2.Concept.Classable classAny() 
 refine class method 
 This2.S readableName() 
 refine class method 
@@ -35473,8 +35468,6 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine read method 
-class This2.Concept.Classable classAny() This0
 refine class method 
 This2.S readableName() This2.GetMyName.#apply(that:This0)
 refine class method 
@@ -35724,8 +35717,6 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine read method 
-class This2.Concept.Classable classAny() This0
 refine class method 
 This2.S readableName() This2.GetMyName.#apply(that:This0)
 refine class method 
@@ -36439,7 +36430,7 @@ CastT-Should be unreachable code
         ))
       
       (
-        Void unused31=return This2.GetMyName.#apply(that:that0.classAny()).#plusplus(that:This2.S.#from(builder:(
+        Void unused31=return This2.GetMyName.#apply(that:that0.class()).#plusplus(that:This2.S.#from(builder:(
           mut This2.S.SBuilder b0=This2.S.#builder()
           Void unused32=b0.#space()
           Void unused33=b0.#i()
@@ -36764,8 +36755,6 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine read method 
-class This3.Concept.Classable classAny() This0
 refine class method 
 This3.S readableName() This3.GetMyName.#apply(that:This0)
 refine class method 
@@ -38137,7 +38126,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-class This2.Concept.Classable classAny() This0
+class This0 class() This0
 refine class method 
 This2.S readableName() This2.GetMyName.#apply(that:This0)
 IteratorTrait:{
@@ -39074,7 +39063,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-class This2.Concept.Classable classAny() This0
+class This0 class() This0
 refine class method 
 This2.S readableName() This2.GetMyName.#apply(that:This0)
 IteratorTrait:{
@@ -40777,8 +40766,6 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine read method 
-class This2.Concept.Classable classAny() This0
 refine class method 
 This2.S readableName() This2.GetMyName.#apply(that:This0)
 refine class method 

@@ -40,7 +40,7 @@ Assert.Holds[
 
 Assert.Holds[
   e.isPresent() msg:S"Alphanumeric<<{interface}: (expected) error has no responseOf()";
-  MetaGuard.ClassClash.is(subtype:e.#get().classAny())
+  MetaGuard.ClassClash.is(subtype:e.#get().class())
     msg: S"Alphanumeric<<{interface} response != ClassClash";
 ]
 
@@ -54,7 +54,7 @@ Assert.Holds[
 
 Assert.Holds[
   e.isPresent() msg:S"Alphanumeric<<{builder()}: (expected) error has no responseOf()";
-  MetaGuard.MethodClash.is(subtype:e.#get().classAny())
+  MetaGuard.MethodClash.is(subtype:e.#get().class())
     msg: S"Alphanumeric<<{builder()} response != MethodClash";
 ]
 

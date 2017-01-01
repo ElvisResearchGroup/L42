@@ -153,7 +153,7 @@ maindefinition:
   **if using P _ _ inside e, P not Any
   otherwise, P is considered of type class Any.
   // note that user can always force a not any by writing (x=P x)
-  
+  // note, if p(P) not defined, the path will be consider an any, and error will be rised somewhere else.
 
 ------------------------------------------     
 ###define toAny

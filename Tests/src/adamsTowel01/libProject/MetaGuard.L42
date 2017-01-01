@@ -18,8 +18,7 @@
         with that (on This return this==that)
         return Bool.false()
         }
-      method class() This
-      method classAny() This
+      refine read method class Message class() This
       class method This(Introspection.Record record, Library lib)
       method Bool != (This that)
         !(this==that)

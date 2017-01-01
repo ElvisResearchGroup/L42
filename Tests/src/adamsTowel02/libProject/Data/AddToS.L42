@@ -68,7 +68,7 @@ Library toSTrait(Introspection.NestedClass that) {
  S nodeName(read Any that){
    with that (
      on read Concept.Classable
-       return Introspection(clazz:that.classAny()).externalTypeToS()
+       return Introspection(clazz:that.class()).externalTypeToS()
      on read Void return S"Void"
      on read Library return S"Library"
      )

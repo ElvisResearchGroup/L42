@@ -4,6 +4,7 @@ import java.util.List;
 
 import ast.Ast;
 import ast.Ast.Path;
+import ast.ErrorMessage;
 import ast.ExpCore;
 import ast.ExpCore.ClassB;
 import tools.Assertions;
@@ -89,7 +90,10 @@ public interface Program {//this class will eventually replace auxiliaryDefiniti
     Program res1=this;
     for(int i=0;i<p.outerNumber();i++){res1=res1.pop();}
     ExpCore.ClassB top=res1.top();
-    return top.getClassB(p.getCBar());
+    try{return top.getClassB(p.getCBar());}
+    catch(ErrorMessage.PathNonExistant pne){
+      throw pne.withListOfNodeNames(p.getCBar()).withCb(top);
+      }
     }
   default Path _reducePath(Path p,CtxL ctx){
     if(p.isPrimitive()){return null;}

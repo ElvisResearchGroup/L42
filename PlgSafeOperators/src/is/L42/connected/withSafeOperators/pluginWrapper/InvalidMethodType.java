@@ -18,6 +18,30 @@ package is.L42.connected.withSafeOperators.pluginWrapper;
  
  for plugins: make a #method that throw all the Specific
  and a method that throw the General, if you really want...
+ 
+ No, this interact with design of introspection.
+ NestedClass/Type represent a internal/external location already,
+ so all exceptions can have a NestedClass/Type field
+ and a Location allowing with-case on Location.InterfaceNum, ...Location.methodReturnType
+
+so
+NestedClass/Method/TypeAnnotation(with mdf, doc, Role)
+Role: implInterf n NestedClass,retType Method,par n Method, thisT Method, exception n Method
+or TypeAnnotation is interface and "roles" are concrete classes?
+again Class can be interface and ClassAsLibrary/ClassAsObject can be concrete?
+
+Introspection
+Refactor
+Selector
+ClassPath
+Location
+  Class .Free .Named
+  Method
+  Type
+  .Interface 
+  .ReturnType ...
+ 
+Use.Fail Location (will be either Class.Named or Method of a Class.Named) 
  * */
 
 

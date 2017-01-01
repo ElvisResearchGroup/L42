@@ -5,7 +5,7 @@ NotStringable:{(Size that)}
 Person:Data.AddToS<<{(S name, var Size age)
   implements Concept.Classable
   method is(subtype) {  with subtype (on class This return Bool.true()) return Bool.false()}
-  method classAny() This
+  refine read method class This class() This
   method readableName()GetMyName(This)
   }
 //Person:Data.AddToS<<{(S name, var Size age)}

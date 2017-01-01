@@ -1,7 +1,7 @@
 {(fwd NestedClass _root,Path path,Size memberN,Record record) implements Member,Concept.Equals, Concept.Classable //@private
 
 method is(subtype) {  with subtype (on class This return Bool.true()) return Bool.false()}
-method classAny() This
+refine read method class This class() This
 method readableName()GetMyName(This)
 method toS() This.readableName()++S"["[this.allAsString()]"]"
 method Bool ==(This that){

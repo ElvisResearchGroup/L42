@@ -7,6 +7,7 @@ import java.util.List;
 import ast.Ast;
 import ast.Ast.Path;
 import ast.Ast.Type;
+import ast.ErrorMessage;
 import ast.ExpCore;
 import ast.ExpCore.Block;
 import ast.ExpCore.ClassB;
@@ -18,6 +19,7 @@ import coreVisitors.CollectClassBs0;
 import coreVisitors.CollectPaths0;
 import coreVisitors.IsCompiled;
 import coreVisitors.PropagatorVisitor;
+import tools.Assertions;
 
 class PathsPaths{
   public PathsPaths(Paths left, Paths right) {
@@ -32,7 +34,11 @@ public class UsedPaths {
 //assert that the result includes paths in usedPathsFix(p,paths, empty)  
 //Ps,Ps'={P|P inside eC}//arbitrary split of the set; heuristic will apply in the implementation.
     List<Ast.Path>  ps=CollectPaths0.of(e);//collect all paths
-    List<Ast.Path>  ps1=collectNotAnyPaths(p,e);
+    List<Ast.Path>  ps1;
+    try{ps1=collectNotAnyPaths(p,e);}
+    catch(ErrorMessage.PathNonExistant pne){
+      throw Assertions.codeNotReachable();
+      }
     ps.removeAll(ps1);
 //paths= reorganize(Ps')
     Paths paths = Paths.reorganize(ps1);
@@ -105,7 +111,7 @@ public class UsedPaths {
     return result2.union(result3.pop());
     }
   static private List<Ast.Path> collectNotAnyPaths(Program p,ExpCore e) {
-    class C extends CollectPaths0{
+    class HeuristicForNotAnyPathsSplit extends CollectPaths0{
     //non determinism heuristic:
     //**if P.m(_) inside e, P not Any
       public Void visit(MCall s) {
@@ -134,9 +140,10 @@ public class UsedPaths {
     //**if p(Pi).Cache=Typed, Pi is not Any
       public Void visit(Path s) { 
         if(s.isPrimitive()){return null;}
-        if(p.extractClassB(s).getPhase()==Phase.Typed){
+        try{if(p.extractClassB(s).getPhase()==Phase.Typed){
           return super.visit(s);
-          }
+          }}
+        catch(ErrorMessage.PathNonExistant pne){/*we do not rise this error while computing the heuristic*/}
         return null;
         }
       
@@ -152,6 +159,6 @@ public class UsedPaths {
         return this.paths;
         }
       }
-    return new C().result(e);
+    return new HeuristicForNotAnyPathsSplit().result(e);
     }
 }

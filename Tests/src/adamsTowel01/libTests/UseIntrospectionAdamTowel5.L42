@@ -93,7 +93,7 @@ Main:{
     expected:S"@.This,@.A,@.B,")
   Debug(S"OK")
   catch exception Concept.Classable x
-    error Debug(Introspection(clazz:x.classAny()).externalTypeToS())
+    error Debug(Introspection(clazz:x.class()).externalTypeToS())
   return ExitCode.normal()
   }
 }

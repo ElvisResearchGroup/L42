@@ -32,9 +32,9 @@ abstract class Methods implements Program{
     return res;
     }
   static List<Ast.Path> collect(Program p,List<Ast.Path> p0ps){
-    return new ArrayList<>(new HashSet<>(collect(p,p0ps,new ArrayList<>())));
-    //TODO: this over is an hack to remove duplicates, still need to decide how to behave
-    //if different paths points to the same interface
+    List<Path> res = collect(p,p0ps,new ArrayList<>());
+    return res;
+    //TODO: do we need somehow to remove duplicates?
     }
   static List<Ast.Path>  collect(Program p,List<Ast.Path> p0ps,List<Ast.Path> visited){
     if( p0ps.isEmpty()){return p0ps;}

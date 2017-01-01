@@ -5,7 +5,7 @@ class method Library<<(Library that) This(that)
 
 class method Library(Any that) {
   with that (
-    on Concept.Classable return this(that, clazz:that.classAny())
+    on Concept.Classable return this(that, clazz:that.class())
     on Library return this(that,clazz:Library)
     on Void return this(that,clazz:Void)
     )

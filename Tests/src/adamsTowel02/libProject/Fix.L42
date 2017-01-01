@@ -105,6 +105,11 @@ S:{
 //    error SubStringNotPresent"string["[string]"] do not contains ["[subString]""
     )
   }
+StringSplit:{
+  class method //will be fixed in adam2
+  Strings splitOn(S that,This2.S chars)
+    that.splitOn(chars:chars)//TODO: flush SkipChars etc in StringSplit
+}
 Selector:{
   ParseFail:This2.Message.$<<{ implements Guard.ParseFail}
   class method
