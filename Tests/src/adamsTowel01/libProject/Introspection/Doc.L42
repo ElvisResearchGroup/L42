@@ -13,8 +13,8 @@
     method class Any referredClass() {
       return Introspection.Record(lib:this._binaryRepr()).that()
         .introspectDocPath(path:Path"This",annotationN:this.index())
-      catch exception MetaGuard.NestedClassUnavailable x error Assert.CodeNotReachable"Doc1"(x)
-      catch exception Void x error Assert.ObservedBug"Plugin introspection bug"
+      catch exception MetaGuard.NestedClassUnavailable x error X"Doc1"(x)
+      catch exception Void x error X"Plugin introspection bug"
       }
     method Bool hasReferredClass() (
       res=this.text()!=S"" &
@@ -37,7 +37,7 @@
           ))
         aN+=1Size
         )
-      catch exception MetaGuard.NestedClassUnavailable x error Assert.CodeNotReachable"Doc2"(x)
+      catch exception MetaGuard.NestedClassUnavailable x error X"Doc2"(x)
       result
       )
     This._private(_binaryRepr:that, _annotations:res)
@@ -51,7 +51,7 @@
   method toS() {
     return Introspection.Record(lib:this._binaryRepr()).that()
       .introspectDocAsString(path:Path"This")
-    catch exception MetaGuard.NestedClassUnavailable x error Assert.CodeNotReachable"Doc3"(x)
+    catch exception MetaGuard.NestedClassUnavailable x error X"Doc3"(x)
    }
    method Annotations annotations()this._annotations()
   }

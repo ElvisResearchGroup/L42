@@ -35,10 +35,10 @@
     res=Extends[lib]<<that
 
     error on MetaGuard.ClassClash
-      Assert.ObservedBug"Someone redefined part of the implementation of AlphaNumeric"
+      X"Someone redefined part of the implementation of AlphaNumeric"
 
     error on MetaGuard.MethodClash
-      Assert.ObservedBug"Someone redefined parts of the implementation of Alphanumeric badly"
+      X"Someone redefined parts of the implementation of Alphanumeric badly"
 
     return K<<res
     }

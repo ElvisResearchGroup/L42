@@ -77,7 +77,7 @@ Library <<(Library that) exception MetaGuard.ClassClash,MetaGuard.MethodClash
       )
     return acc
     error on MetaGuard.MemberUnavailable
-      Assert.CodeNotReachable"PreferentialComposition1"
+      X"PreferentialComposition1"
     }
   method This ++ (This that)
     This(myLibs:this.myLibs()++that.myLibs())

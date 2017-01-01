@@ -50,7 +50,7 @@ method class Any externalType(){
     on MirrorPr.Lib
       error Guard.Operation
         "NestedClass.externalType() The NestedClass Object is unbound"
-    default error Assert.CodeNotReachable"NestedClass1"
+    default error X"NestedClass1"
     )
   }
 method S externalTypeToS() {
@@ -62,7 +62,7 @@ method S externalTypeToS() {
   sep=nameAndPrefix.indexOfLeft(val:S".")
   name= nameAndPrefix(start:sep+1Size)
   prefix=Size.fromS(nameAndPrefix(start:4Size, end:sep)) //4Size== S"This".size()
-  //Assert.$[prefix>0Size]
+  //X[prefix>0Size]
   if prefix == 1Size (return S"This."++name)
   return S"This"[prefix-1Size]"."++name
 }
@@ -106,16 +106,16 @@ method Types implementedInterfaces() (
   while Bool.true() (// to be able to break
     ti=this.mirror()
       .introspectReportType(root:this,path:this.path(),memberN:0Size,typeN:tN)
-    //Assert.$[with sr=ti.strRepr() (
+    //X[with sr=ti.strRepr() (
     //  use[sr!=S"This";sr!=S""]
     //  )]
     sr=ti.strRepr()
-    //Assert.$[sr!=S"@.This";sr!=S"This";sr!=S""]
+    //X[sr!=S"@.This";sr!=S"This";sr!=S""]
 
     result.add(right:ti)
     tN+=1Size
     )
-  catch exception MetaGuard.MemberUnavailable x error Assert.CodeNotReachable"NestedClass3"(x)
+  catch exception MetaGuard.MemberUnavailable x error X"NestedClass3"(x)
   result)
 method Types transitivelyImplementedInterfaces() {
   var Types result=this.removeDup(this.implementedInterfaces())

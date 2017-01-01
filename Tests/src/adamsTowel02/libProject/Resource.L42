@@ -19,7 +19,7 @@ class method Library castTrait(){
    }
 class method Library(Any that, class Any clazz) (
   trait=Refactor.Redirect(Path"T" to:clazz)<<this.castTrait()
-  error on MetaGuard Assert.CodeNotReachable"Resource usage of redirect failed"
+  error on MetaGuard X"Resource usage of redirect failed"
   SafeOperators.liftValue(that,selector:Selector"val()"  lib:trait)
   //can throw primitive error MethodClash, but should never happen here
   )

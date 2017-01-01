@@ -24,14 +24,14 @@
     }
 
   CellEnd:{() implements Cell
-    method get(that) error Assert.CodeNotReachable"CellEnd.get"
+    method get(that) error X"CellEnd.get"
     method set(that,val,add) {
-      if !add (error Assert.CodeNotReachable"CellEnd.set1")
+      if !add (error X"CellEnd.set1")
       if that==0Size (return CellNext(val:val,next:this) )
-      error Assert.CodeNotReachable"CellEnd.set2"
+      error X"CellEnd.set2"
       }
     method remove(that)
-      error Assert.CodeNotReachable"CellEnd.remove"
+      error X"CellEnd.remove"
     }
 
   class method

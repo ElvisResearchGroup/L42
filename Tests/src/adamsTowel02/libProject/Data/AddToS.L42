@@ -7,7 +7,7 @@ class method
 Library<<(Library that) {
   return Use[that]<<this.toSTrait(Introspection(lib:that))
   error on MetaGuard
-    Assert.CodeNotReachable"AddToS.<<"
+    X"AddToS.<<"
   }
 
 //code generation
@@ -61,7 +61,7 @@ Library toSTrait(Introspection.NestedClass that) {
     }
   //lib can override baseToS to provid the real behaviour, the empty baseToS is used for classes wiht no fields
   return Refactor.MakePrivateSelector(Selector"baseToS()" of:Path"This")<<Extends[miniToS]<<lib
-  error on MetaGuard Assert.CodeNotReachable"AddToS.finalWrapping - MakePrivate"
+  error on MetaGuard X"AddToS.finalWrapping - MakePrivate"
   }
 
  class method

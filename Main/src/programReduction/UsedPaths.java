@@ -154,6 +154,16 @@ public class UsedPaths {
           }
         return super.visit(s);
         }
+      //**if catch T inside e, T.P not Any
+      protected void liftO(ExpCore.Block.On on){
+        Path pOn=on.getT().match(
+                normType->normType.getPath(),
+                hType->hType.getPath());
+        if (!pOn.isPrimitive()){
+          this.paths.add(pOn);
+          }
+        super.liftO(on);
+        }
       List<Path> result(ExpCore e){
         e.accept(this);
         return this.paths;

@@ -105,7 +105,7 @@ read method lent IteratorVal vals() this.vals(from:Size"-1", maxTo:Size"-2", min
 IteratorVal: SafeOperatorsAccess.compose(left:IteratorTrait(),
    right:  { (read MutListAny that, var Size from, Size maxTo, Size minTo)
      read method Bool isFill() Bool.false()
-     read method Elem filled() error Assert.CodeNotReachable"Filled called on not fill iterator, should never happen"
+     read method Elem filled() error X"Filled called on not fill iterator, should never happen"
      } )
 //now with fill
 read method  lent IteratorValFill vals(Size from, Size maxTo, Size minTo, Elem filled) IteratorValFill(this.inner(), from:from,maxTo:maxTo,minTo:minTo, filled:filled)
@@ -128,7 +128,7 @@ IteratorVar: SafeOperatorsAccess.compose(left:IteratorTrait(),
   right:  { (mut MutListAny that, var Size from, Size maxTo, Size minTo)
     mut method Void inner(Elem that) this.#that()(this.from(),val:that)
     read method Bool isFill() Bool.false()
-    read method Elem filled() error Assert.CodeNotReachable"Filled called on not fill iterator, should never happen"
+    read method Elem filled() error X"Filled called on not fill iterator, should never happen"
     })
 //################# Interfaces implemented
   method toS()

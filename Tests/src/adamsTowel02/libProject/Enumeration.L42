@@ -56,7 +56,7 @@
       <<Refactor.Rename.selector(\"isN()" to:sel.with(prefix:S"is"))
       <<this.traitMeth()
     catch exception InvalidElements e (exception e)
-    error on MetaGuard Assert.CodeNotReachable""
+    error on MetaGuard X""
     }
   class method
   Library from(Concept.Base base)
@@ -70,7 +70,7 @@
       << Refactor.Rename.selector(\"#apply()" to:\"names()")
       <<Resource(ss))
     catch exception InvalidElements e (exception e)
-    error on MetaGuard Assert.CodeNotReachable""
+    error on MetaGuard X""
     return res
     }
   }

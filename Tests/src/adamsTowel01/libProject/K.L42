@@ -42,6 +42,6 @@ Library<< (Library that){
     return This.$(names:names,  isFwd:Bool.false(),
         mutK:S"#apply", lentK:S"lentK", readK: S"readK",immK:S"immK")
         <<that
-    error on MetaGuard.MethodUnavailable Assert.CodeNotReachable""
+    error on MetaGuard.MethodUnavailable X""
   }
 }

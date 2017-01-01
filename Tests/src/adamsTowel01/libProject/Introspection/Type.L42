@@ -25,7 +25,7 @@ NestedClass  referencedPath(Doc.Annotation ann) {
   if sPath==S"" (return this.root())
   Path path=Path.fromS(sPath)
   return this.root().nestedClassFromRoot(path)
-  catch exception MetaGuard.NestedClassUnavailable x error Assert.ObservedBug"Type refers to unexistent path"
+  catch exception MetaGuard.NestedClassUnavailable x error X"Type refers to unexistent path"
   }
 method NestedClass referencedPath()
   this.referencedPath(ann:this.record().docOf(path:Path"Path").annotations().left())

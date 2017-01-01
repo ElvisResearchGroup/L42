@@ -86,7 +86,7 @@ S:{
         return that.size()-index
         }
       if negSkip>0This3.Size (return 0This3.Size-negSkip)
-      //Assert.Holds[
+      //X[
       //  negSkip==0This3.Size; 
       //  !this.chars().contains(that(index))
       //  ]
@@ -144,22 +144,24 @@ Path:{
       )
     }
   }
-  Assert:{interface
-    Bug:This2.Message.$<<{ implements This1}
-    Pre:{
-      class method mut Tests #seqBuilder() Tests.empty()
-      class method Void #from(Tests seqBuilder) (
-        res=seqBuilder.collapse()
-        if !res.isEmpty() (error Bug"Precondition violation: "[res]"")
-        )
-      }
-    Holds:{
-      class method mut Tests #seqBuilder() Tests.empty()
-      class method Void #from(Tests seqBuilder) (
-        res=seqBuilder.collapse()
-        if !res.isEmpty() (error Bug"Observed bug: "[res]"")
-        )
-      }
+  X:{
+   class method mut Tests #seqBuilder() Tests.empty()
+   class method Void #from(Tests seqBuilder) (
+     res=seqBuilder.collapse()
+     if !res.isEmpty() (
+       error This2.X.AssertionFail"Observed bug: "[res]""
+       )
+     )
+     
+   Pre:{
+     class method mut Tests #seqBuilder() Tests.empty()
+     class method Void #from(Tests seqBuilder) (
+       res=seqBuilder.collapse()
+       if !res.isEmpty() (
+         error This3.X.AssertionFail"Precondition violation: "[res]""
+         )
+       )
+     }
    Test: {(This3.Bool that, This3.S msg)}
    Tests: Refactor.compose(//do not use Use to save compilation time
      left:Refactor.Hide.selector(\"#add(that)")<<Collections.vector(of:Test)

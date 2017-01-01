@@ -47,14 +47,14 @@ Type returnType() {
     path:this.path(),
     memberN:this.memberN(),
     typeN:0Size)
-  catch exception MetaGuard.MemberUnavailable x error Assert.CodeNotReachable"Method1"(x)
-  catch exception Void  error Assert.CodeNotReachable"void was thrown"
+  catch exception MetaGuard.MemberUnavailable x error X"Method1"(x)
+  catch exception Void  error X"void was thrown"
   }
 
 
 
 method
-Types exceptions() error Assert.NotImplementedYet""
+Types exceptions() error X.NotImplementedYet""
 
 method
 Types parameterTypes() {
@@ -68,7 +68,7 @@ Types parameterTypes() {
     pN+=1Size
     )
   return result
-  catch exception MetaGuard.MemberUnavailable err error Assert.CodeNotReachable"Method2"(err)
+  catch exception MetaGuard.MemberUnavailable err error X"Method2"(err)
   }
 
 method

@@ -3,7 +3,7 @@
 class method
 NestedClass(Library lib)(
   root=MirrorPr.Lib(lib:lib).introspectReport(root:root,path:Path"This")
-  catch exception  MetaGuard.NestedClassUnavailable x error Assert.CodeNotReachable"Introspection1"
+  catch exception  MetaGuard.NestedClassUnavailable x error X"Introspection1"
   root
   )
 class method
@@ -14,14 +14,14 @@ NestedClass(Library lib,Path path) exception MetaGuard.NestedClassUnavailable (
 class method
 NestedClass(class Any clazz) (
   root=MirrorPr.Class(lib:clazz).introspectReport(root:root,path:Path"This")
-  catch exception MetaGuard.NestedClassUnavailable x error Assert.CodeNotReachable"Introspection2"
+  catch exception MetaGuard.NestedClassUnavailable x error X"Introspection2"
   root
   )
 
 class method
 NestedClass(class Any clazz,Path path) (
   root=MirrorPr.Class(lib:clazz).introspectReport(root:root,path:path)
-  catch exception MetaGuard.NestedClassUnavailable x error Assert.CodeNotReachable"Introspection3"
+  catch exception MetaGuard.NestedClassUnavailable x error X"Introspection3"
   root
   )
 MirrorPr:... //Todo:remove Pr later.

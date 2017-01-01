@@ -5,7 +5,7 @@
 Dir: Enumeration"left, right, top, down"
       
 Main:{
-  Assert.Holds[
+  X[
     Dir.left()!=Dir.right();
     Dir.top()!=Dir.right();
     Dir.names().size()==4Size

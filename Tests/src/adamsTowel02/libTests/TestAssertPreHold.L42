@@ -1,13 +1,18 @@
 {reuse L42.is/AdamTowel02
 
 Main:{
-  Assert.Pre[
-    1Size==1Size;
-    2Size==2Size
+  class Message checkSubtype=X.AssertionFail
+  X.Pre[
+    1Size==1Size msg:S"Foo";
+    2Size==2Size msg:S"Bar";
     ]
   (
-  Assert.Pre[1Size!=1Size]
-  catch error Assert.Bug Debug(S"pass")
+  X.Pre[1Size!=1Size msg:S"Beer"]
+  catch error X.AssertionFail Debug(S"pass")
+  catch error Message xx (
+    Debug(S"instead we captured "++xx.class().readableName())
+    error S"FAIL"
+    )
   error S"FAIL"
   )
   return ExitCode.normal()

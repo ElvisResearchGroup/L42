@@ -20,7 +20,7 @@ Library constructorAction(Introspection.Type that) {
         mut This open=that
         Invariant.checkInvariant(open)
         open    )   })
-    error Assert.CodeNotReachable"unidentified mdf:"[m]"!"
+    error X"unidentified mdf:"[m]"!"
     }
 
 class method
@@ -40,7 +40,7 @@ Library setterAction() { implements Concept.Invariant
       if m.isMutable()      (return { class method,,,,mut   T (mut    T that),,, that,,,,T:{} })
       if m.isLent()            (return { class method,,,,lent   T (lent    T that),,,,that,,,,T:{} })
       if m.isReadable()    (return { class method,,,,read T (read   T that),,,,that,,,,T:{} })
-      error Assert.CodeNotReachable"unidentified mdf:"[m]"!"
+      error X"unidentified mdf:"[m]"!"
       }
     nc=that.referencedPath()
     if nc.hasExternalType() (
@@ -48,7 +48,7 @@ Library setterAction() { implements Concept.Invariant
       )
     return Refactor.RenamePath(Path"T" to:nc.pathFromRoot())<<mdfA
     catch exception MetaGuard cnr
-      error Assert.CodeNotReachable"idAction"(cnr)
+      error X"idAction"(cnr)
     }
 
   //main decoration method
@@ -90,7 +90,7 @@ Library stateDecoration(Library that,Introspection.Methods state) {
       )
     return acc
     catch exception  MetaGuard cnr
-      error Assert.CodeNotReachable"Invariant"(cnr)
+      error X"Invariant"(cnr)
     }
 
 //create a "fresh" selector that agrees with the new fresh constructor// should be put in Data?
@@ -102,7 +102,7 @@ Selector stateFName(Selector that, Strings old,Strings fresh){//a field selector
     with o in old.vals(), f in fresh.vals() (
         if name==o (return Selector.from(name:prefix++f,names:names))
         )
-    error Assert.CodeNotReachable
-      "stateFName ["[name]"]"[with o1 in old.vals(), f1 in fresh.vals() (use[o1++S"!"++f1])]""
+    error 
+      X"stateFName ["[name]"]"[with o1 in old.vals(), f1 in fresh.vals() (use[o1++S"!"++f1])]""
     }
 }

@@ -17,7 +17,7 @@
     path=Path.#from(builder:builder)
     return this.that().introspectDocAsString(path:path)
     error on MetaGuard.MemberUnavailable 
-      Assert.CodeNotReachable"Record1"[this.that()]"" //TODO: not the right error? 
+      X"Record1"[this.that()]"" //TODO: not the right error? 
     }
   method
   Doc docOf(Path path){
@@ -27,7 +27,7 @@
         //This can not be done for circular reference Refactor.RenamePath(path to:Path"This")<<mirror.lib()
         )
       )
-    error Assert.CodeNotReachable"Record2"
+    error X"Record2"
     }
   //this is how I would like it to be
   //class method Member dispatch(fwd NestedClass root,Path path,MirrorPr mirror, Size memberN,Library record) {
@@ -37,7 +37,7 @@
   //    if x== S"InterfaceImplementedMethod" (return Method(_root:root,path:path,memberN:memberN,record:_report))
   //    if x== S"ImplementedMethod" (return Method(_root:root,path:path,memberN:memberN,record:_report))
   //    if x== S"AbstractMethod" (return Method(_root:root,path:path,memberN:memberN,record:_report))
-  //    default error Assert.ObservedBug(S"invalid member kind "[x]"")
+  //    default error X"invalid member kind "[x]""
   //    )
   //  }
   //instead, I have to write this :-(
@@ -70,7 +70,7 @@
       if x== S"NestedClass" (
         return RootForNested(path:path,mirror:mirror,_report:_report)
         )
-      error Assert.ObservedBug(text:S"invalid member kind |"[x]"|")
+      error X"invalid member kind |"[x]"|"
       }
     result(root:root)
     )

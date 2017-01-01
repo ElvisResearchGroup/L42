@@ -26,7 +26,7 @@ exception InvalidAction{
   return acc
   catch exception InvalidAction x exception x
   error on MetaGuard
-    Assert.CodeNotReachable"PostAct.Action1"
+    X"PostAct.Action1"
   }
 
 method //@private
@@ -38,7 +38,7 @@ Library composeAction(Library that,Selector fresh){
   //ok since action res has fresh name
   return acc
   error on MetaGuard
-    Assert.CodeNotReachable"PostAct.ActionCompose"
+    X"PostAct.ActionCompose"
   }
 
 method //@private

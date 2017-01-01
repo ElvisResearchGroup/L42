@@ -151,6 +151,7 @@ maindefinition:
   **if ( _ T x=_  _ _) inside e, T.P not Any //TODO: just use liftT in code
   **if catch throw T x _ inside e, T.P not Any  
   **if using P _ _ inside e, P not Any
+  **if catch T inside e, T.P not Any
   otherwise, P is considered of type class Any.
   // note that user can always force a not any by writing (x=P x)
   // note, if p(P) not defined, the path will be consider an any, and error will be rised somewhere else.

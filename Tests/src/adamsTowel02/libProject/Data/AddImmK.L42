@@ -13,7 +13,7 @@
         )
       )
    return this.addImmK(that,otherK:s.left())
-   catch exception MetaGuard error Assert.CodeNotReachable"<< boh?"
+   catch exception MetaGuard error X"<< boh?"
    }
 
   class method
@@ -40,7 +40,7 @@
     )
   r=Use[that]<<immK$
   error on MetaGuard
-    Assert.CodeNotReachable"addImmK"
+    X"addImmK"
   r
   )
 }

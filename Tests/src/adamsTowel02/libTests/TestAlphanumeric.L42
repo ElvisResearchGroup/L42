@@ -17,11 +17,11 @@ Email: Alphanumeric << {
 
 Main:{
 
-Assert.Pre[1Size == 1Size]  // because we went through a phase of being unsure about assertions
+X.Pre[1Size == 1Size]  // because we went through a phase of being unsure about assertions
 
 myEmail= Email"arthur.dent@gmail.com"
 
-Assert.Holds[
+X[
   myEmail.local() ==S"arthur.dent";
   myEmail.domain() ==S"gmail.com";
   myEmail.toS() ==S"arthur.dent@gmail.com" msg: S"Original string does not round-trip:" ++ myEmail.toS();
@@ -31,14 +31,14 @@ Assert.Holds[
 
   // Try to exercise the catch on ClassClash
 
-  var Assert.ObservedBug bb={
+  var X.AssertionFail bb={
     lib=Alphanumeric << {interface}
-    catch error Assert.ObservedBug b (return b)
+    catch error X.AssertionFail b (return b)
     error S"unable to exercise ClassClash in Alphanumeric"
   }
   var Message.Opt e = bb.responseOf()  // TODO: understand why this unexpectedly needed a stated type
 
-Assert.Holds[
+X[
   e.isPresent() msg:S"Alphanumeric<<{interface}: (expected) error has no responseOf()";
   MetaGuard.ClassClash.is(subtype:e.#get().class())
     msg: S"Alphanumeric<<{interface} response != ClassClash";
@@ -47,12 +47,12 @@ Assert.Holds[
   // Try to exercise the catch on MethodClash
   bb := {
     lib=Alphanumeric << {class method Void #builder()}
-    catch error Assert.ObservedBug b (return b)
+    catch error X.AssertionFail b (return b)
     error S"unable to exercise MethodClash in Alphanumeric"
   }
   e := bb.responseOf()
 
-Assert.Holds[
+X[
   e.isPresent() msg:S"Alphanumeric<<{builder()}: (expected) error has no responseOf()";
   MetaGuard.MethodClash.is(subtype:e.#get().class())
     msg: S"Alphanumeric<<{builder()} response != MethodClash";

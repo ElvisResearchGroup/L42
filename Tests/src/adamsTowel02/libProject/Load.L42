@@ -12,7 +12,7 @@
   exception ConceptMapMismatch, ConceptMapUnavailable
     {
     return Refactor.Redirect(Path"Abstract.ConceptMap" to:ConceptMap)<<that
-    error on MetaGuard.InvalidOnTopLevel Assert.CodeNotReachable"Load1"
+    error on MetaGuard.InvalidOnTopLevel X"Load1"
     catch exception MetaGuard.NestedClassUnavailable err
       exception ConceptMapUnavailable
           "provided library do not offers Abstract.ConceptMap or "[err.path()]

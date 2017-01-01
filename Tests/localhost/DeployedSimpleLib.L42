@@ -359,16 +359,16 @@ mut This3.S.SBuilder #builder()
 method 
 This1 #from(This3.S.SBuilder builder) }}}
 S:{implements This1.Concept.Base, This1.Concept.Classable, This1.Concept.Equals, This1.Concept.ToS
-class method /*needed until we do (also refine) normalization
+class method /*, Concept.Equals //needed until we do (also refine) normalization
 #####Implemented
 */mut This0 #mutK(Library _binaryRepr) 
-class method /*needed until we do (also refine) normalization
+class method /*, Concept.Equals //needed until we do (also refine) normalization
 #####Implemented
 */This0 _private(Library _binaryRepr) 
-mut method /*needed until we do (also refine) normalization
+mut method /*, Concept.Equals //needed until we do (also refine) normalization
 #####Implemented
 */Library #_binaryRepr() 
-read method /*needed until we do (also refine) normalization
+read method /*, Concept.Equals //needed until we do (also refine) normalization
 #####Implemented
 */Library _binaryRepr() 
 refine class method 
@@ -1175,40 +1175,16 @@ method
 mut This4.S.SBuilder #builder() 
 method 
 This1 #from(This4.S.SBuilder builder) }}}}
-Assert:{interface implements This1.Message, This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Classable
-refine class method 
-This1.S kind() 
-refine method 
-This1.S text() 
-refine method 
-This1.Message.Opt responseOf() 
-refine read method 
-class This1.Message class() 
-refine read method 
-This1.S toS() 
-refine read method 
-This1.Bool equals(read Any that) 
-refine class method 
-This1.S readableName() 
-refine class method 
-This1.Bool is(class Any subtype) 
-NotImplementedYet:{implements This1, This2.Message, This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable
-refine class method 
-This2.S kind() 
-refine method 
-This2.S text() 
-refine method 
-This2.Message.Opt responseOf() 
-refine read method 
-class This2.Message class() 
-refine read method 
-This2.S toS() 
-refine read method 
-This2.Bool equals(read Any that) 
-refine class method 
-This2.S readableName() 
-refine class method 
-This2.Bool is(class Any subtype) 
+X:{
+class method 
+This0.AssertionFail #from(This1.S.SBuilder builder) 
+class method 
+mut This1.S.SBuilder #builder() 
+class method 
+mut This0.Tests #seqBuilder() 
+class method 
+Void #from(This0.Tests seqBuilder) 
+NotImplementedYet:{implements This2.Message, This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable
 class method 
 mut This0 #mutK(This2.S _text, This2.Message.Opt cause) 
 class method 
@@ -1221,12 +1197,28 @@ mut method
 This2.Message.Opt #cause() 
 read method 
 This2.Message.Opt cause() 
+refine class method 
+This2.Bool is(class Any subtype) 
+refine class method 
+This2.S readableName() 
+refine class method 
+This2.S kind() 
+refine method 
+This2.S text() 
+refine method 
+This2.Message.Opt responseOf() 
+refine read method 
+This2.Bool equals(read Any that) 
 method 
 This0 #apply(This2.Message that) 
+refine read method 
+This2.S toS() 
 method 
 This2.Bool #bangequal(This0 that) 
 method 
 This2.Bool #equalequal(This0 that) 
+refine read method 
+class This2.Message class() 
 class method 
 This0 #apply(This2.S text) 
 class method 
@@ -1252,187 +1244,7 @@ method
 mut This3.S.SBuilder #builder() 
 method 
 This1 #from(This3.S.SBuilder builder) }}
-ObservedBug:{implements This1, This2.Message, This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable
-refine class method 
-This2.S kind() 
-refine method 
-This2.S text() 
-refine method 
-This2.Message.Opt responseOf() 
-refine read method 
-class This2.Message class() 
-refine read method 
-This2.S toS() 
-refine read method 
-This2.Bool equals(read Any that) 
-refine class method 
-This2.S readableName() 
-refine class method 
-This2.Bool is(class Any subtype) 
-class method 
-mut This0 #mutK(This2.S _text, This2.Message.Opt cause) 
-class method 
-This0 #apply(This2.S _text, This2.Message.Opt cause) 
-mut method 
-This2.S #_text() 
-read method 
-This2.S _text() 
-mut method 
-This2.Message.Opt #cause() 
-read method 
-This2.Message.Opt cause() 
-method 
-This0 #apply(This2.Message that) 
-method 
-This2.Bool #bangequal(This0 that) 
-method 
-This2.Bool #equalequal(This0 that) 
-class method 
-This0 #apply(This2.S text) 
-class method 
-This0 #apply(This2.S text, This2.Message cause) 
-class method 
-mut This2.S.SBuilder #builder() 
-class method 
-This0 #from(This2.S.SBuilder builder) 
-method 
-This0.Continue #from(This2.S.SConcat seqBuilder) 
-method 
-mut This2.S.SConcat #seqBuilder() 
-Continue:{
-class method 
-mut This0 #mutK(This3.S that) 
-class method 
-This0 #apply(This3.S that) 
-mut method 
-This3.S #that() 
-read method 
-This3.S that() 
-method 
-mut This3.S.SBuilder #builder() 
-method 
-This1 #from(This3.S.SBuilder builder) }}
-CodeNotReachable:{implements This1, This2.Message, This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable
-refine class method 
-This2.S kind() 
-refine method 
-This2.S text() 
-refine method 
-This2.Message.Opt responseOf() 
-refine read method 
-class This2.Message class() 
-refine read method 
-This2.S toS() 
-refine read method 
-This2.Bool equals(read Any that) 
-refine class method 
-This2.S readableName() 
-refine class method 
-This2.Bool is(class Any subtype) 
-class method 
-mut This0 #mutK(This2.S _text, This2.Message.Opt cause) 
-class method 
-This0 #apply(This2.S _text, This2.Message.Opt cause) 
-mut method 
-This2.S #_text() 
-read method 
-This2.S _text() 
-mut method 
-This2.Message.Opt #cause() 
-read method 
-This2.Message.Opt cause() 
-method 
-This0 #apply(This2.Message that) 
-method 
-This2.Bool #bangequal(This0 that) 
-method 
-This2.Bool #equalequal(This0 that) 
-class method 
-This0 #apply(This2.S text) 
-class method 
-This0 #apply(This2.S text, This2.Message cause) 
-class method 
-mut This2.S.SBuilder #builder() 
-class method 
-This0 #from(This2.S.SBuilder builder) 
-method 
-This0.Continue #from(This2.S.SConcat seqBuilder) 
-method 
-mut This2.S.SConcat #seqBuilder() 
-Continue:{
-class method 
-mut This0 #mutK(This3.S that) 
-class method 
-This0 #apply(This3.S that) 
-mut method 
-This3.S #that() 
-read method 
-This3.S that() 
-method 
-mut This3.S.SBuilder #builder() 
-method 
-This1 #from(This3.S.SBuilder builder) }}
-AssertMessage:{implements This1, This2.Message, This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable
-refine class method 
-This2.S kind() 
-refine method 
-This2.S text() 
-refine method 
-This2.Message.Opt responseOf() 
-refine read method 
-class This2.Message class() 
-refine read method 
-This2.S toS() 
-refine read method 
-This2.Bool equals(read Any that) 
-refine class method 
-This2.S readableName() 
-refine class method 
-This2.Bool is(class Any subtype) 
-class method 
-mut This0 #mutK(This2.S _text, This2.Message.Opt cause) 
-class method 
-This0 #apply(This2.S _text, This2.Message.Opt cause) 
-mut method 
-This2.S #_text() 
-read method 
-This2.S _text() 
-mut method 
-This2.Message.Opt #cause() 
-read method 
-This2.Message.Opt cause() 
-method 
-This0 #apply(This2.Message that) 
-method 
-This2.Bool #bangequal(This0 that) 
-method 
-This2.Bool #equalequal(This0 that) 
-class method 
-This0 #apply(This2.S text) 
-class method 
-This0 #apply(This2.S text, This2.Message cause) 
-class method 
-mut This2.S.SBuilder #builder() 
-class method 
-This0 #from(This2.S.SBuilder builder) 
-method 
-This0.Continue #from(This2.S.SConcat seqBuilder) 
-method 
-mut This2.S.SConcat #seqBuilder() 
-Continue:{
-class method 
-mut This0 #mutK(This3.S that) 
-class method 
-This0 #apply(This3.S that) 
-mut method 
-This3.S #that() 
-read method 
-This3.S that() 
-method 
-mut This3.S.SBuilder #builder() 
-method 
-This1 #from(This3.S.SBuilder builder) }}
-Bug:{implements This1, This2.Message, This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable
+AssertionFail:{implements This2.Message, This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable
 class method 
 mut This0 #mutK(This2.S _text, This2.Message.Opt cause) 
 class method 
@@ -1493,11 +1305,6 @@ mut This3.S.SBuilder #builder()
 method 
 This1 #from(This3.S.SBuilder builder) }}
 Pre:{
-class method 
-mut This1.Tests #seqBuilder() 
-class method 
-Void #from(This1.Tests seqBuilder) }
-Holds:{
 class method 
 mut This1.Tests #seqBuilder() 
 class method 
@@ -2035,7 +1842,7 @@ This1.Guard _Guard()
 method 
 This1.System _System() 
 method 
-This1.Assert _Assert() 
+This1.X _X() 
 method 
 This1.Strings _Strings() 
 method 

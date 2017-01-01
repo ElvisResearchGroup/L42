@@ -12,7 +12,7 @@
       acc:=Refactor.MoveImplementationSelector(
         ren.src() of:ren.path() to:ren.dest())<<acc
       catch exception MetaGuard err
-        error Assert.ObservedBug"Path.#lessless(that)"(err)
+        error X"Path.#lessless(that)"(err)
       void
       )
     acc:=Refactor.RenamePath(
@@ -23,13 +23,13 @@
       )
     return acc
     catch exception MetaGuard.MemberUnavailable err
-      error Assert.CodeNotReachable"Path2"(err)
+      error X"Path2"(err)
     }
   class method //@private
   PreferentialComposition.SrcDests renameMap(Library that,S prefix,Introspection.NestedClasses intros)
     PreferentialComposition.SrcDests[ with intro in intros.vals() (
       Strings ns=intro.pathFromRoot().names()
-      //Assert.$[!ns.isEmpty()]
+      //X[!ns.isEmpty()]
       round=PreferentialComposition.renameMap(that,
         prefix:prefix,
         path:Path.from(names:ns.withoutLeft())

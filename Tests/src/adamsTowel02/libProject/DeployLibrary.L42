@@ -6,14 +6,14 @@ class method Library moveToAbstract(Path that,Library of){
   error on MetaGuard.NestedClassUnavailable (
     available=Introspection(lib:of, path:Path"PrImpl").nestedClasses()
     error on MetaGuard.NestedClassUnavailable
-      Assert.CodeNotReachable"DeployLibrary2"
-    Assert.ObservedBug"map and library mismatch on "[that]" available paths are "[
+      X"DeployLibrary2"
+    X"map and library mismatch on "[that]" available paths are "[
       with av in available.vals() (
         use[S.nl()++av.pathFromRoot().toS()]
       )]""
     )
   error on MetaGuard
-    Assert.CodeNotReachable"DeployLibrary3"
+    X"DeployLibrary3"
   }
 
 class method
@@ -21,13 +21,13 @@ Library  exposeAsLibrary(Library that, Path path)
 exception
     MetaGuard.NestedClassUnavailable,
     MetaGuard.PrivacyCoupuled {
-  //Assert.$[path!=Path"This"]
+  //X[path!=Path"This"]
   this.checkTargetExists(that,path:path)//throws MetaGuard.NestedClassUnavailable
   var Library res=that
   Debug(S"1.1")
   res:=Refactor.RenamePath(Path"This" to:Path"PrImpl")<<res
   error on MetaGuard
-    Assert.CodeNotReachable"DeployLibrary1"
+    X"DeployLibrary1"
   Debug(S"1.2")
   with m in Introspection(lib:that, path:Path"ConceptMap").methods().vals() (
     p=m.returnType().referencedPath().pathFromRoot()
@@ -38,21 +38,21 @@ exception
   res:=Refactor.RemoveImplementationPath(Path"Abstract")<<res//leak PrivacyCoupuled
   Debug(S"1.4")
   error on MetaGuard.MemberUnavailable
-    Assert.CodeNotReachable"DeployLibrary3"
+    X"DeployLibrary3"
   res:=Refactor.RenamePath(Path"PrImpl"++path to:Path"This")<<res
   Debug(S"1.5")
   res:=Refactor.MakePrivatePath(Path"PrImpl")<<res
   Debug(S"1.6")
   return res
   error on MetaGuard
-    Assert.CodeNotReachable"DeployLibrary4"
+    X"DeployLibrary4"
   }
 class method
 Void checkTargetExists(Library that,Path path)
 exception MetaGuard.NestedClassUnavailable (
   unused=Refactor.AddDocumentationPath(path doc:Introspection.Doc"JustToSeeIfItIsThere")<<that
   error on MetaGuard.InvalidOnTopLevel
-    Assert.CodeNotReachable"DeployLibrary5"
+    X"DeployLibrary5"
   void
   )
 

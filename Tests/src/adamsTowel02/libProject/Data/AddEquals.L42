@@ -4,7 +4,7 @@ class method
 Library<<(Library that) {
   return Use[that]<<this.equalsTrait(Introspection(lib:that))
   error on MetaGuard
-    Assert.CodeNotReachable"AddToS.<<"
+    X"AddToS.<<"
   }
 
 //code generation
@@ -55,6 +55,6 @@ Library equalsTrait(Introspection.NestedClass that) {
     Bool !=(This that) !(this==that)
     }
   return Refactor.MakePrivateSelector(Selector"baseEquals(that)" of:Path"This")<<Extends[miniEquals]<<lib
-  error on MetaGuard Assert.CodeNotReachable"AddEquals.finalWrapping - MakePrivate"
+  error on MetaGuard X"AddEquals.finalWrapping - MakePrivate"
   }
 }
