@@ -1,11 +1,72 @@
 package is.L42.connected.withSafeOperators.pluginWrapper;
 
-/*
+
+interface FluentSetter<T>{
+  void setMessage(String msg);
+  
+  @SuppressWarnings("unchecked")
+  default T msg(String msg){
+    setMessage(msg);
+    return (T)this;
+    }
+  }
+
+@SuppressWarnings("serial")
+abstract class RedirectExc extends Exception{
+  //TODO: add location/internalLocation?
+  String mutMsg;//since java do not want setMessage  :(
+  public @Override String getMessage(){return mutMsg;}
+  public void setMessage(String msg){mutMsg=msg;}
+}
+
+public class RefactorErrors{
+  @SuppressWarnings("serial") public static class 
+  SelectorNotFound extends RedirectExc implements
+    FluentSetter<SelectorNotFound>{}
+
+  @SuppressWarnings("serial") public static class 
+  PathNotFound extends RedirectExc implements
+    FluentSetter<PathNotFound>{}
+  
+  @SuppressWarnings("serial") public static class 
+  MethodClash extends RedirectExc implements
+    FluentSetter<MethodClash>{}
+  
+  @SuppressWarnings("serial") public static class 
+  MethodUnfit extends RedirectExc implements
+    FluentSetter<MethodUnfit>{}
+  
+  @SuppressWarnings("serial") public static class 
+  ClassClash extends RedirectExc implements
+    FluentSetter<ClassClash>{}
+  
+  @SuppressWarnings("serial") public static class 
+  ClassUnfit extends RedirectExc implements
+    FluentSetter<ClassUnfit>{}
+  
+  @SuppressWarnings("serial") public static class 
+  PrivacyCoupuled extends RedirectExc implements
+    FluentSetter<PrivacyCoupuled>{}
+  
+  @SuppressWarnings("serial") public static class 
+  IncoherentMapping extends RedirectExc implements
+    FluentSetter<IncoherentMapping>{}
+  
+  @SuppressWarnings("serial") public static class 
+  InducedCircularImplement extends RedirectExc implements
+    FluentSetter<InducedCircularImplement>{}
+  
+  @SuppressWarnings("serial") public static class 
+  UnresolvedOverloading extends RedirectExc implements
+    FluentSetter<UnresolvedOverloading>{}
+  
+}
+  /*
  TODO:
  to make enumerations going from java to 42:
  1 make a pluginMethod in Alu that an enum object return its ordinal
  2 lift Enumeration out of its test and then add a #from using the plugin method of before
- 3 allow internal reference that have the right method
+ 3 allow internal reference that have just the right method
  
  
  For exceptions, may be is better to actually declare the hierarky
@@ -42,7 +103,7 @@ Location
   .ReturnType ...
  
 Use.Fail Location (will be either Class.Named or Method of a Class.Named) 
- * */
+
 
 
 public class InvalidMethodType extends PlgWrapperException{
@@ -65,6 +126,17 @@ public class InvalidMethodType extends PlgWrapperException{
     this.ge
     );
     }
-    
-
 }
+
+class PlgWrapperException extends Exception{
+  String internalPath;
+  String selector;
+  String mutMsg;//since java do not want setMessage  :(
+  public @Override String getMessage(){return mutMsg;}
+  protected void setMessage(String msg){mutMsg=msg;}
+  PlgWrapperException(String internalPath,String selector){
+    super();
+    this.internalPath=internalPath;this.selector=selector;
+    }
+}
+*/

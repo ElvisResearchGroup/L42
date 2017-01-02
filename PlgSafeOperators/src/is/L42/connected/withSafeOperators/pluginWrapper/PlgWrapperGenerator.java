@@ -36,6 +36,9 @@ import auxiliaryGrammar.Program;
 import coreVisitors.From;
 import facade.L42;
 import facade.Parser;
+import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.ClassUnfit;
+import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.MethodUnfit;
+import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.UnresolvedOverloading;
 import facade.L42.ExecutionStage;
 import facade.PData;
 import platformSpecific.fakeInternet.OnLineCode;
@@ -80,13 +83,13 @@ private static ExpCore parseAndDesugar(String s) {
 
 
 //-----------------------------------------------------
-  public static ClassB main(PData data,ClassB l){
+  public static ClassB main(PData data,ClassB l) throws UnresolvedOverloading, ClassUnfit, MethodUnfit{
     return plgComplete(data.p.addAtTop(l));
     }
-  public static ClassB plgComplete(Program p){//p contains the l to modify at top
+  public static ClassB plgComplete(Program p) throws UnresolvedOverloading, ClassUnfit, MethodUnfit{//p contains the l to modify at top
     return plgComplete(Collections.emptyList(),p,p.topCb());
     }
-  public static ClassB plgComplete(List<String>cs,Program p,ClassB l){
+  public static ClassB plgComplete(List<String>cs,Program p,ClassB l) throws UnresolvedOverloading, ClassUnfit, MethodUnfit{
     //p.top() is topL
     List<Member> ms=new ArrayList<>();
     for(Member m: l.getMs()){
@@ -120,11 +123,14 @@ private static ExpCore parseAndDesugar(String s) {
     return ps.length;
     //TODO:?assert others are not PData?
     }
-  public static ClassB plgComplete1(List<String>cs,Program p,ClassB l){
+  public static ClassB plgComplete1(List<String>cs,Program p,ClassB l) throws UnresolvedOverloading, ClassUnfit, MethodUnfit{
     PluginWithPart pwp = OnLineCode._isPluginWithPart(l.getDoc1());
     PlgInfo plgInfo=new PlgInfo(l.getDoc1());
     if(pwp==null){return l;}
-    if(!hasPluginUnresponsive(l)){throw Assertions.codeNotReachable("Add error for no #pluginUnresponsive(binaryRepr)");}//TODO:
+    if(!hasPluginUnresponsive(l)){
+      throw new RefactorErrors.ClassUnfit().msg(
+        "Class "+Path.outer(0,cs) +" does not contain method #pluginUnresponsive(binaryRepr)");
+      }
     Class<?> c=pwp.pointed;
     Method[] jms=c.getMethods();
     Constructor<?>[] jcs=c.getDeclaredConstructors();
@@ -146,7 +152,7 @@ private static ExpCore parseAndDesugar(String s) {
     }
 
 
-private static void addMwt(Program p, PlgInfo plgInfo, Method[] jms, Constructor<?>[] jcs, List<Member> msResult, Path pTop, MethodWithType mwt) {
+private static void addMwt(Program p, PlgInfo plgInfo, Method[] jms, Constructor<?>[] jcs, List<Member> msResult, Path pTop, MethodWithType mwt) throws UnresolvedOverloading, ClassUnfit, MethodUnfit {
 //checks
   isOkAsReturn(p,pTop,mwt.getMt().getReturnType());
   for(Path pi:mwt.getMt().getExceptions()){
@@ -169,14 +175,19 @@ private static void addMwt(Program p, PlgInfo plgInfo, Method[] jms, Constructor
 }
 
 
-private static UsingInfo usingMethod(PlgInfo plgInfo, Method[] jms, MethodWithType mwt, String name) {
+private static UsingInfo usingMethod(PlgInfo plgInfo, Method[] jms, MethodWithType mwt, String name) throws UnresolvedOverloading {
   List<Method>jms0=new ArrayList<>();
   for (Method mi:jms){
     if (!mi.getName().equals(name)){continue;}
     if (argLessPData(mi)!=mwt.getMs().getNames().size()){continue;}
     jms0.add(mi);
     }
-  //TODO: add errors for jms0.size()!=1;
+  if (jms0.size()!=1){
+    throw new RefactorErrors.UnresolvedOverloading().msg(
+      "The referred java class "+plgInfo.plgClass.getName()+
+      " does not have exactly one method for "+name+" with right number of arguments.\n"+
+      "List of candidate methods:"+jms0);
+    }
   assert jms0.size()==1:
     jms0.size();
   Method jm=jms0.get(0);
@@ -184,13 +195,18 @@ private static UsingInfo usingMethod(PlgInfo plgInfo, Method[] jms, MethodWithTy
   return ui;
   }
 
-private static UsingInfo usingConstructor(PlgInfo plgInfo, Constructor<?>[] jcs, MethodWithType mwt, String name) {
+private static UsingInfo usingConstructor(PlgInfo plgInfo, Constructor<?>[] jcs, MethodWithType mwt, String name) throws UnresolvedOverloading {
   List<Constructor<?>>jcs0=new ArrayList<>();
   for (Constructor<?> mi:jcs){
     if (argLessPData(mi)!=mwt.getMs().getNames().size()){continue;}
     jcs0.add(mi);
     }
-  //TODO: add errors for jcs0.size()!=1;
+  if (jcs0.size()!=1){
+  throw new RefactorErrors.UnresolvedOverloading().msg(
+    "The referred java class "+plgInfo.plgClass.getName()+
+    " does not have exactly one constructor with right number of arguments.\n"+
+    "List of candidate constructors:"+jcs0);
+  }
   assert jcs0.size()==1:
     jcs0.size();
   Constructor<?> jc=jcs0.get(0);
@@ -310,70 +326,70 @@ public static boolean hasPluginUnresponsive(ClassB l){
     if(pi.getN()<=dept){return null;}
     return pi.setNewOuter(pi.getN()-dept);
     }
-  private static void checkForInside(ClassB lTop,Path csTop,Path originalPath){
+  private static void checkForInside(ClassB lTop,Path csTop,Path originalPath) throws ClassUnfit, MethodUnfit{
     if(originalPath.isPrimitive()){
-      throw Assertions.codeNotReachable("Add error for paths in plg methods can not be primitive");//TODO:
+      throw new RefactorErrors.MethodUnfit().msg(
+        "Method signature not supported:\n parameters can not be Void/Any/fwd.\n"
+        + "returns can not be Any/fwd\n"
+        + "exceptions can not be Any/Void/Library");
       }
     Path cs=From.fromP(originalPath,csTop);
     assert cs.getN()==0;
-    Doc d=lTop.getDoc1();
     List<String> cBar = cs.getCBar();
-    if(!cBar.isEmpty()){
-      NestedClass li=lTop.getNested(cBar);
-      d=((ClassB)li.getE()).getDoc1();
-      }
+    ClassB lPointed=lTop.getClassB(cBar);
+    Doc d=lPointed.getDoc1();
     if(d._getParameterForPlugin()==null ||d._getParameterForPluginPart()==null){
-    throw Assertions.codeNotReachable("Add error for internal references need to be plugins too");//TODO:
+    throw new RefactorErrors.ClassUnfit().msg(
+      "Class "+cBar+" doesnot have @pluginPart annotation");
       }
     }
-  private static boolean isOkMdf(Type t){
-    return !t.getNT().getMdf().equals(Mdf.Class) && t.getNT().getPh().equals(Ph.None); 
-  }
-  private static void isOkAsParameter(Program p, Path csTop, Type ti) {
+  private static void isOkAsParameter(Program p, Path csTop, Type ti) throws ClassUnfit, MethodUnfit {
     Path pi=ti.getNT().getPath();
+    if (pi.equals(Path.Library())){return;}//Libraries are ok and we just omit the .binaryRepr() call
     Path op=_pathForOutside(csTop.getCBar().size(),pi);
     if(op==null){checkForInside(p.topCb(),csTop,pi); return;}
     ClassB l=p.extractCb(op);//TODO: since p.top is topL, is it ok this extraction?
     boolean hasIt=hasBinaryRepr(l);
-    boolean mdfOk=isOkMdf(ti);
-    if(!hasIt){throw Assertions.codeNotReachable("Add error for no #binaryRepr");}//TODO:
-    if(!mdfOk){throw Assertions.codeNotReachable("Add error for no class parameters allowed");}//TODO:
+    boolean phOk=ti.getNT().getPh().equals(Ph.None);
+    if(!hasIt){throw new RefactorErrors.ClassUnfit().msg(
+      "Class "+op+" has no #binaryRepr() method");
+      }if(!phOk){throw new RefactorErrors.MethodUnfit().msg(
+      "Fwd types not allowed.");
+      }
     }
 
 
-  private static void isOkAsException(Program p, Path csTop, Path pi) {
+  private static void isOkAsException(Program p, Path csTop, Path pi) throws ClassUnfit, MethodUnfit {
     Path op=_pathForOutside(csTop.getCBar().size(),pi);
     if(op==null){checkForInside(p.topCb(),csTop,pi);return;}
     ClassB l=p.extractCb(op);
-    if(!hasExceptionIf(l)){throw Assertions.codeNotReachable("Add error for no #exceptionIf(binaryRepr) for exception...");}//TODO:
+    if(!hasExceptionIf(l)){throw new RefactorErrors.ClassUnfit().msg(
+      "Class "+op+" has no method #exceptionIf(binaryRepr)");
+      }
     }
 
 
-  private static void isOkAsReturn(Program p, Path csTop, Type ti) {
+  private static void isOkAsReturn(Program p, Path csTop, Type ti) throws ClassUnfit, MethodUnfit {
     Path pi=ti.getNT().getPath();
     if (pi.equals(Path.Void())){return;}
     Path op=_pathForOutside(csTop.getCBar().size(),pi);
     if(op==null){checkForInside(p.topCb(),csTop,pi); return;}
     ClassB l=p.extractCb(op);
     boolean hasIt=hasFrom(l);
-    boolean mdfOk=isOkMdf(ti);
-    if(!hasIt){throw Assertions.codeNotReachable("Add error for no #from(binaryRepr)");}//TODO:
-    if(!mdfOk){throw Assertions.codeNotReachable("Add error for no class result allowed");}//TODO:
+    boolean phOk=ti.getNT().getPh().equals(Ph.None);
+    if (ti.getNT().getMdf()==Mdf.Class && !ti.equals(NormType.classAny)){
+      throw new RefactorErrors.MethodUnfit().msg("Return type can be 'class' only if is exactly 'class any'");
+      }
+    if(!hasIt){throw new RefactorErrors.ClassUnfit().msg(
+      "Class "+op+" has no method #from(binaryRepr)");
+      }
+    if(!phOk){//TODO: why this limitation?
+      throw new RefactorErrors.MethodUnfit().msg("Return type can not be fwd");
+      }
     }   
  
 }
 
-class PlgWrapperException extends Exception{
-  String internalPath;
-  String selector;
-  String mutMsg;//since java do not want setMessage  :(
-  public @Override String getMessage(){return mutMsg;}
-  protected void setMessage(String msg){mutMsg=msg;}
-  PlgWrapperException(String internalPath,String selector){
-    super();
-    this.internalPath=internalPath;this.selector=selector;
-    }
-}
 
 /*
 invalidMethodType
@@ -404,8 +420,21 @@ overloading
     LocationIssue next?
 
     
-
+General exceptions for Refactor
+  SelectorNotFound
+  PathNotFound
+  MethodClash //2 methods not ok together
+  MethodUnfit //1 method not ok shape
+  ClassClash
+  ClassUnfit
+  
+  privacycoupuled
+  incoherentRedirectMapping
+  cicular interface implements induced
+  overloading  
     
+  error may talk about extern
+  have field internalLocation to talk about why pointing out
     
 */
 //TODO: if a class is internal and is not plugin with part, is it ok if it has the right methods anyway??
