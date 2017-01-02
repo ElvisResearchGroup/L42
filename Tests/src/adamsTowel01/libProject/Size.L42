@@ -1,4 +1,6 @@
-{(Library _binaryRepr) implements Concept.ToS Concept.Equals, Concept.Classable//@private
+{ implements Concept.ToS Concept.Equals, Concept.Classable//@private
+  class method mut This _private(Library _binaryRepr)
+  read method Library _binaryRepr()
 
   method is(subtype) {  with subtype (on class This return Bool.true()) return Bool.false()}
   refine read method class This class() This
@@ -6,13 +8,13 @@
   class method
   This fromS(Concept.ToS that) (
     s=that.toS()
-    Size(_binaryRepr: use Alu
+    Size._private(_binaryRepr: use Alu
       check stringToInt32(s.binaryRepr())
       error This.parseError(s))
     )
   class method
-  This #from(Library binaryRepr)
-    Size(_binaryRepr:binaryRepr)
+  mut This #from(Library binaryRepr)
+    Size._private(_binaryRepr:binaryRepr)
   method
   Library binaryRepr() this._binaryRepr()
 
@@ -22,7 +24,7 @@
 
   class method
   Size #from(S.SBuilder builder)
-    Size(_binaryRepr: use Alu
+    Size._private(_binaryRepr: use Alu
       check stringToInt32(builder.binaryRepr())
       error This.parseError(S.#from(builder: builder)))
 
@@ -38,25 +40,25 @@
 
   method
   Size +(Size that)
-    Size(_binaryRepr:use Alu
+    Size._private(_binaryRepr:use Alu
       check sumInt32(n1:this.binaryRepr() n2:that.binaryRepr())
       error void)
 
   method
   Size -(Size that)
-    Size(_binaryRepr:use Alu
+    Size._private(_binaryRepr:use Alu
       check subInt32(n1:this.binaryRepr() n2:that.binaryRepr())
       error void)
 
   method
   Size *(Size that)
-    Size(_binaryRepr:use Alu
+    Size._private(_binaryRepr:use Alu
       check mulInt32(n1:this.binaryRepr() n2:that.binaryRepr())
       error void)
 
   method
   Size /(Size that)
-    Size(_binaryRepr: use Alu
+    Size._private(_binaryRepr: use Alu
       check divInt32(n1:this.binaryRepr() n2:that.binaryRepr())
       error void)
 

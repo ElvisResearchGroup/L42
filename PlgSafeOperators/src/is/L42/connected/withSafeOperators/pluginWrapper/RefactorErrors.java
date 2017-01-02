@@ -17,6 +17,7 @@ abstract class RedirectExc extends Exception{
   String mutMsg;//since java do not want setMessage  :(
   public @Override String getMessage(){return mutMsg;}
   public void setMessage(String msg){mutMsg=msg;}
+  public String text(){return mutMsg;}
 }
 
 public class RefactorErrors{

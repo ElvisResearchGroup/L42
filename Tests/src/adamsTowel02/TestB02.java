@@ -30,7 +30,7 @@ public class TestB02 extends helpers.TestRunner{
       // Opt.Project, // Run the local libProject as a folder, expecting it to deploy a project towel
       //// options for deploying small things
       //"_.L42", // Name of a file in libTests; edit to match your file
-      "DeploySimpleLib.L42",
+     /*"DeploySimpleLib.L42",
       "TestAddEquals.L42",
       "TestAddInvariant.L42",
       "TestAlphanumeric.L42",
@@ -53,6 +53,7 @@ public class TestB02 extends helpers.TestRunner{
       "UseDeployedSimpleLib.L42",
       "UseLib.L42",
       "UseOperators1.L42",
+      */"TestPlgWrapper.L42",
       //Opt.AllTests, // All files in libTests, as individual tests, in no defined order
       Opt.NOP  // Convenience option, so that all of the other options can end with a comma
     );

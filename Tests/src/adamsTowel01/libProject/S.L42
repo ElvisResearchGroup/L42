@@ -1,5 +1,6 @@
-{ _private(Library _binaryRepr)
- implements  Concept.Base//, Concept.Equals //needed until we do (also refine) normalization
+{ implements  Concept.Base//, Concept.Equals //needed until we do (also refine) normalization
+  class method mut This _private(Library _binaryRepr)
+  read method Library _binaryRepr()
  
 
   //#####Implemented
@@ -7,7 +8,7 @@
   refine read method class This class() This
   method readableName()GetMyName(This)
 
-  class method This #from(Library binaryRepr) This._private(_binaryRepr:binaryRepr)
+  class method mut This #from(Library binaryRepr) This._private(_binaryRepr:binaryRepr)
 
   method Library binaryRepr() this._binaryRepr()
 
@@ -189,7 +190,7 @@ This withoutRight()
 
 
   method Size size()
-    Size(_binaryRepr: use Alu
+    Size.#from(binaryRepr: use Alu
       check stringSize(this.binaryRepr())
       error void)
 

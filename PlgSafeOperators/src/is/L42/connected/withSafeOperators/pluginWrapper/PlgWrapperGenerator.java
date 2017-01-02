@@ -125,8 +125,8 @@ private static ExpCore parseAndDesugar(String s) {
     }
   public static ClassB plgComplete1(List<String>cs,Program p,ClassB l) throws UnresolvedOverloading, ClassUnfit, MethodUnfit{
     PluginWithPart pwp = OnLineCode._isPluginWithPart(l.getDoc1());
-    PlgInfo plgInfo=new PlgInfo(l.getDoc1());
     if(pwp==null){return l;}
+    PlgInfo plgInfo=new PlgInfo(l.getDoc1());
     if(!hasPluginUnresponsive(l)){
       throw new RefactorErrors.ClassUnfit().msg(
         "Class "+Path.outer(0,cs) +" does not contain method #pluginUnresponsive(binaryRepr)");
@@ -154,14 +154,19 @@ private static ExpCore parseAndDesugar(String s) {
 
 private static void addMwt(Program p, PlgInfo plgInfo, Method[] jms, Constructor<?>[] jcs, List<Member> msResult, Path pTop, MethodWithType mwt) throws UnresolvedOverloading, ClassUnfit, MethodUnfit {
 //checks
-  isOkAsReturn(p,pTop,mwt.getMt().getReturnType());
-  for(Path pi:mwt.getMt().getExceptions()){
-    isOkAsException(p,pTop,pi);
+  try{
+    isOkAsReturn(p,pTop,mwt.getMt().getReturnType());
+    for(Path pi:mwt.getMt().getExceptions()){
+      isOkAsException(p,pTop,pi);
+      }
+    for(Type ti:mwt.getMt().getTs()){
+      isOkAsParameter(p,pTop,ti);
+      }//TODO: we may want to cache those tests if performance is needed
     }
-  for(Type ti:mwt.getMt().getTs()){
-    isOkAsParameter(p,pTop,ti);
+  catch(ClassUnfit| MethodUnfit e){
+    e.setMessage("While examining Class "+pTop+" method "+mwt.getMs()+":\n"+e.getMessage());
+    throw e;
     }
-  //TODO: we may want to cache those tests if performance is needed
 
   //add to msResult
   //TODO: add behaviour if mwt have special comment to define specific ms for use
@@ -229,9 +234,13 @@ private static UsingInfo usingConstructor(PlgInfo plgInfo, Constructor<?>[] jcs,
     if(!mt.getMdf().equals(Mdf.Class)){
       ues.add(p0.withInner(new ExpCore.X("this")));
       }
-    for(String x: mwt.getMs().getNames()){
-      ues.add(p0.withInner(new ExpCore.X(x)));
-      }
+    {int i=-1;for(String x: mwt.getMs().getNames()){i++;
+      ExpCore pi=new ExpCore.X(x);
+      if(!mwt.getMt().getTs().get(i).equals(NormType.immLibrary)){
+        pi=p0.withInner(pi);  
+        }
+      ues.add(pi);
+      }}
     u=new Using(u.getPath(),ui.usingMs,u.getDoc(),ues,u.getInner());
     String errorS=
       "plugin string: "+ui.plgInfo.plgString+"\n"+
@@ -249,22 +258,23 @@ private static UsingInfo usingConstructor(PlgInfo plgInfo, Constructor<?>[] jcs,
       On on=b.getOns().get(0);
       Dec k0 = ((Block)on.getInner()).getDecs().get(0);
       List<Dec> ks=new ArrayList<>();
-      for(Path pi:mt.getExceptions()){
+      {int i=-1;for(Path pi:mt.getExceptions()){i++;
         MCall mci=((MCall)k0.getInner()).withInner(pi);
-        ks.add(k0.withInner(mci));
-        }
+        ks.add(k0.withInner(mci).withX(k0.getX()+i));
+        }}
       on=on.withInner(((Block)on.getInner()).withDecs(ks));
       b=b.withOns(Collections.singletonList(on));
       //k0=b.k(0).inner#block.decs(0)
       //k0 add more on need
       //ki.inner#mcall.inner<-Pi
       }
-    if(!ui.isVoid){
+    
+    if (ui.isVoid){b=b.withDecs(Collections.singletonList(b.getDecs().get(0).withT(NormType.immVoid)));}
+    if(!ui.isVoid && !mwt.getMt().getReturnType().equals(NormType.immLibrary)){
       e=e.withEs(Collections.singletonList(b));
       mwt=mwt.withInner(e);
       }
     else{
-      b=b.withDecs(Collections.singletonList(b.getDecs().get(0).withT(NormType.immVoid)));
       mwt=mwt.withInner(b);
       }
     return mwt;
@@ -372,6 +382,7 @@ public static boolean hasPluginUnresponsive(ClassB l){
   private static void isOkAsReturn(Program p, Path csTop, Type ti) throws ClassUnfit, MethodUnfit {
     Path pi=ti.getNT().getPath();
     if (pi.equals(Path.Void())){return;}
+    if (pi.equals(Path.Library())){return;}//We will need to generate a simpler returning expression
     Path op=_pathForOutside(csTop.getCBar().size(),pi);
     if(op==null){checkForInside(p.topCb(),csTop,pi); return;}
     ClassB l=p.extractCb(op);
