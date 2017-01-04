@@ -92,52 +92,29 @@ Role: implInterf n NestedClass,retType Method,par n Method, thisT Method, except
 or TypeAnnotation is interface and "roles" are concrete classes?
 again Class can be interface and ClassAsLibrary/ClassAsObject can be concrete?
 
-Introspection
 Refactor
-Selector
-ClassPath
+  with method creating a nested class with <<
+  with nested exceptions 
+    MethodClash //2 methods not ok together
+    MethodUnfit //1 method not ok shape
+    ClassClash
+    ClassUnfit  
+    privacycoupuled
+    incoherentRedirectMapping
+    cicular interface implements induced
+    overloading 
+
+Selector with exception NotFound
+ClassPath with exception NotFound
+
 Location
   Class .Free .Named
   Method
-  Type
+  Type interface?
   .Interface 
   .ReturnType ...
  
 Use.Fail Location (will be either Class.Named or Method of a Class.Named) 
-
-
-
-public class InvalidMethodType extends PlgWrapperException{
-    static String ret="return";
-    static String par="parameter";
-    static String exc="exception";
-    public static enum Kind{Primitive,MethodNotPresent,InvalidModifier,NoPluginWithPart}
-    Kind invalidKind
-    public static enum Tag{Primitive,MethodNotPresent,InvalidModifier,NoPluginWithPart}
-    Tag tag;
-    
-    static String noPrimitive2="primitive %s can not mapped as a %s"; //t kind
-    static String meth2="method %s not present in external path %s";//ms t
-    static String mdf2="%s %s has invalid modifier (class/fwd)";//kind t
-    static String internalRef1="internal path %s is not annotated as a plugin with part";//t     
-    public static String 
-    String why;
-    InvalidMethodType(String internalPath, String selector, String kind,String t,String ms) {
-    super(internalPath, selector);
-    this.ge
-    );
-    }
-}
-
-class PlgWrapperException extends Exception{
-  String internalPath;
-  String selector;
-  String mutMsg;//since java do not want setMessage  :(
-  public @Override String getMessage(){return mutMsg;}
-  protected void setMessage(String msg){mutMsg=msg;}
-  PlgWrapperException(String internalPath,String selector){
-    super();
-    this.internalPath=internalPath;this.selector=selector;
-    }
-}
+//TODO: note: x to Java have to use _num to make xs uniques
+//TODO: today we do not support arrays in x toJava. Are we happy?
 */

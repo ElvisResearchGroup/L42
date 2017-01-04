@@ -129,12 +129,12 @@ public class PluginWithPart implements PluginType{
       needPData=false;
       if(!jts.isEmpty() && jts.get(0).equals(PData.class)){jtsNoPData.remove(0);needPData=true;}
       if(!staticMethod){names.add("_this");}
-      for(Class<?> jt:jtsNoPData){
+      {int i=0;for(Class<?> jt:jtsNoPData){i++;//Ok, we star at 1 for first parameter
         String t=jt.getCanonicalName();
         ts.add(t);
-        String name=EncodingHelper.javaClassToX(jt.getName());
+        String name=EncodingHelper.javaClassToX(i,jt.getName());
         names.add(name);
-        }
+        }}
       assert names!=null;
       usingMs=new Ast.MethodSelector(needPData?"#"+jMethName:jMethName, names);
     }

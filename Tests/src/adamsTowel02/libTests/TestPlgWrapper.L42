@@ -4,7 +4,7 @@ PrW:{//private wrapper
   //@plugin is.L42.connected.withSafeOperators
   //@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.PlgWrapperGenerator
   class method Library <<(Library that)use This
-    check #main(_Library:that)
+    check #main(_1_Library:that)
     error void
   }
 Refactor2:PrW<<{
@@ -69,7 +69,7 @@ A:Refactor2.JavaImport<<{//@plugin  toFix @pluginPart testAux.TestShortPrograms$
   class method Void #pluginUnresponsive(Library binaryRepr) void
   class method This()
   method This m()
-  class method This0 k()
+  class method This k()
   method Void foo(This bar) exception This
   }
 Main:(

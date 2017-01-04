@@ -484,7 +484,7 @@ public void testPluginPartsWrapper(){tp("{",
     "W:{//@plugin is.L42.connected.withSafeOperators",
     " //@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.PlgWrapperGenerator",
     "class method Library <<(Library that)use This",
-    " check #main(_Library:that)",
+    " check #main(_1_Library:that)",
     " error void}",
     "A:W<<{/*@plugin  toFix @pluginPart "+A.class.getName()+" */",
     " class method Void #pluginUnresponsive(Library binaryRepr) void  ",
@@ -547,13 +547,13 @@ public static final String listAccess(){return
 +"method\n"
 +"Void add(N that) (\n"
 +"    Library x=use This\n"//add return a boolean
-+"      check add(_this:this.repr(),_java%lang%Object:that.repr())\n"
++"      check add(_this:this.repr(),_1_java%lang%Object:that.repr())\n"
 +"      error void"
 + "   void)\n"
 +"method\n"
 +"N get(N that)\n"
 +"    N(repr:use This\n"
-+"      check get(_this:this.repr(),_int:that.repr())\n"
++"      check get(_this:this.repr(),_1_int:that.repr())\n"
 +"      error void)\n"
 +"method\n"
 +"N size()\n"

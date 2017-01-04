@@ -239,13 +239,16 @@ public class EncodingHelper{
  //"." converted in "%" and unicode weirdos converted in "%%u..."
  //since no two dots in a row are allowed
 
-  public static String javaClassToX(String that){
+  public static String javaClassToX(int parNum,String that){
     that=produceStringUnicode(that);//now all \\u inside, no other \ inside
     that=that.replace("\\u", "%%");
-    return "_"+that.replace(".","%");
+    return "_"+parNum+"_"+that.replace(".","%");
   }
   public static String xToJavaClass(String that){
+    assert that.charAt(0)=='_';
     that=that.substring(1);
+    assert that.indexOf("_")!=-1:that;
+    that=that.substring(that.indexOf("_")+1);
     if(that.equals("Library")){return ExpCore.ClassB.class.getName();}
     that=that.replace("%%%", ".%%");
     that=that.replace("%%", "\\u");
