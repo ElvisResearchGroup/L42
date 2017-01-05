@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_plglimitations" default="compile.module.plglimitations">
+  <dirname property="module.plglimitations.basedir" file="${ant.file.module_plglimitations}"/>
+  
+  <property name="module.jdk.home.plglimitations" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.plglimitations" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.plglimitations" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.plglimitations" value="-encoding windows-1252 -source 8 -target 8 ${compiler.args}"/>
+  
+  <property name="plglimitations.output.dir" value="${module.plglimitations.basedir}/bin"/>
+  <property name="plglimitations.testoutput.dir" value="${module.plglimitations.basedir}/bin"/>
+  
+  <path id="plglimitations.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="plglimitations.module.production.classpath">
+    <path refid="${module.jdk.classpath.plglimitations}"/>
+    <pathelement location="${l42_main.output.dir}"/>
+  </path>
+  
+  <path id="plglimitations.runtime.production.module.classpath">
+    <pathelement location="${plglimitations.output.dir}"/>
+    <path refid="l42_main.runtime.production.module.classpath"/>
+  </path>
+  
+  <path id="plglimitations.module.classpath">
+    <pathelement location="${plglimitations.output.dir}"/>
+    <path refid="${module.jdk.classpath.plglimitations}"/>
+    <pathelement location="${l42_main.output.dir}"/>
+  </path>
+  
+  <path id="plglimitations.runtime.module.classpath">
+    <pathelement location="${plglimitations.output.dir}"/>
+    <path refid="l42_main.runtime.module.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.plglimitations">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.plglimitations">
+    <patternset refid="excluded.from.module.plglimitations"/>
+  </patternset>
+  
+  <path id="plglimitations.module.sourcepath">
+    <dirset dir="${module.plglimitations.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.plglimitations" depends="compile.module.plglimitations.production,compile.module.plglimitations.tests" description="Compile module PlgLimitations"/>
+  
+  <target name="compile.module.plglimitations.production" depends="register.custom.compilers,compile.module.l42_main" description="Compile module PlgLimitations; production classes">
+    <mkdir dir="${plglimitations.output.dir}"/>
+    <javac2 destdir="${plglimitations.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.plglimitations}/javac">
+      <compilerarg line="${compiler.args.plglimitations}"/>
+      <bootclasspath refid="plglimitations.module.bootclasspath"/>
+      <classpath refid="plglimitations.module.production.classpath"/>
+      <src refid="plglimitations.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.plglimitations"/>
+    </javac2>
+    
+    <copy todir="${plglimitations.output.dir}">
+      <fileset dir="${module.plglimitations.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.plglimitations.tests" depends="register.custom.compilers,compile.module.plglimitations.production" description="compile module PlgLimitations; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.plglimitations" description="cleanup module">
+    <delete dir="${plglimitations.output.dir}"/>
+    <delete dir="${plglimitations.testoutput.dir}"/>
+  </target>
+</project>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_l42_main" default="compile.module.l42_main">
+  <dirname property="module.l42_main.basedir" file="${ant.file.module_l42_main}"/>
+  
+  <property name="module.jdk.home.l42_main" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.l42_main" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.l42_main" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.l42_main" value="-XDignore.symbol.file -encoding windows-1250 -source 8 -target 8 ${compiler.args}"/>
+  
+  <property name="l42_main.output.dir" value="${module.l42_main.basedir}/bin"/>
+  <property name="l42_main.testoutput.dir" value="${module.l42_main.basedir}/bin"/>
+  
+  <path id="l42_main.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="l42_main.module.production.classpath">
+    <path refid="${module.jdk.classpath.l42_main}"/>
+    <pathelement location="${basedir}/antlr-4.2.2-complete.jar"/>
+  </path>
+  
+  <path id="l42_main.runtime.production.module.classpath">
+    <pathelement location="${l42_main.output.dir}"/>
+    <pathelement location="${basedir}/antlr-4.2.2-complete.jar"/>
+  </path>
+  
+  <path id="l42_main.module.classpath">
+    <pathelement location="${l42_main.output.dir}"/>
+    <path refid="${module.jdk.classpath.l42_main}"/>
+    <pathelement location="${basedir}/antlr-4.2.2-complete.jar"/>
+  </path>
+  
+  <path id="l42_main.runtime.module.classpath">
+    <pathelement location="${l42_main.output.dir}"/>
+    <pathelement location="${basedir}/antlr-4.2.2-complete.jar"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.l42_main">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.l42_main">
+    <patternset refid="excluded.from.module.l42_main"/>
+  </patternset>
+  
+  <path id="l42_main.module.sourcepath">
+    <dirset dir="${module.l42_main.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.l42_main" depends="compile.module.l42_main.production,compile.module.l42_main.tests" description="Compile module L42_Main"/>
+  
+  <target name="compile.module.l42_main.production" depends="register.custom.compilers" description="Compile module L42_Main; production classes">
+    <mkdir dir="${l42_main.output.dir}"/>
+    <javac2 destdir="${l42_main.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.l42_main}/javac">
+      <compilerarg line="${compiler.args.l42_main}"/>
+      <bootclasspath refid="l42_main.module.bootclasspath"/>
+      <classpath refid="l42_main.module.production.classpath"/>
+      <src refid="l42_main.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.l42_main"/>
+    </javac2>
+    
+    <copy todir="${l42_main.output.dir}">
+      <fileset dir="${module.l42_main.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.l42_main.tests" depends="register.custom.compilers,compile.module.l42_main.production" description="compile module L42_Main; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.l42_main" description="cleanup module">
+    <delete dir="${l42_main.output.dir}"/>
+    <delete dir="${l42_main.testoutput.dir}"/>
+  </target>
+</project>

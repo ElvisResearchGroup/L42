@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_plggui" default="compile.module.plggui">
+  <dirname property="module.plggui.basedir" file="${ant.file.module_plggui}"/>
+  
+  <property name="module.jdk.home.plggui" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.plggui" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.plggui" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.plggui" value="-encoding windows-1252 -source 8 -target 8 ${compiler.args}"/>
+  
+  <property name="plggui.output.dir" value="${module.plggui.basedir}/bin"/>
+  <property name="plggui.testoutput.dir" value="${module.plggui.basedir}/bin"/>
+  
+  <path id="plggui.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="plggui.module.production.classpath">
+    <path refid="${module.jdk.classpath.plggui}"/>
+    <pathelement location="${l42_main.output.dir}"/>
+  </path>
+  
+  <path id="plggui.runtime.production.module.classpath">
+    <pathelement location="${plggui.output.dir}"/>
+    <path refid="l42_main.runtime.production.module.classpath"/>
+  </path>
+  
+  <path id="plggui.module.classpath">
+    <pathelement location="${plggui.output.dir}"/>
+    <path refid="${module.jdk.classpath.plggui}"/>
+    <pathelement location="${l42_main.output.dir}"/>
+  </path>
+  
+  <path id="plggui.runtime.module.classpath">
+    <pathelement location="${plggui.output.dir}"/>
+    <path refid="l42_main.runtime.module.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.plggui">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.plggui">
+    <patternset refid="excluded.from.module.plggui"/>
+  </patternset>
+  
+  <path id="plggui.module.sourcepath">
+    <dirset dir="${module.plggui.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.plggui" depends="compile.module.plggui.production,compile.module.plggui.tests" description="Compile module PlgGui"/>
+  
+  <target name="compile.module.plggui.production" depends="register.custom.compilers,compile.module.l42_main" description="Compile module PlgGui; production classes">
+    <mkdir dir="${plggui.output.dir}"/>
+    <javac2 destdir="${plggui.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.plggui}/javac">
+      <compilerarg line="${compiler.args.plggui}"/>
+      <bootclasspath refid="plggui.module.bootclasspath"/>
+      <classpath refid="plggui.module.production.classpath"/>
+      <src refid="plggui.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.plggui"/>
+    </javac2>
+    
+    <copy todir="${plggui.output.dir}">
+      <fileset dir="${module.plggui.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.plggui.tests" depends="register.custom.compilers,compile.module.plggui.production" description="compile module PlgGui; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.plggui" description="cleanup module">
+    <delete dir="${plggui.output.dir}"/>
+    <delete dir="${plggui.testoutput.dir}"/>
+  </target>
+</project>
