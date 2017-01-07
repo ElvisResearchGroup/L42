@@ -51,6 +51,13 @@ m::= x| #x
 
 
 
+
+repl
+main.runSlow L42Continuation c
+c.original src
+c.desugared src
+c.free names maps
+c.add(C:e)
 -------
 Please, sort of ignore the rest, it is a former attempt
 Introspection:{
