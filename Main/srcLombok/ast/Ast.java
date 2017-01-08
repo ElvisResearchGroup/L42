@@ -124,6 +124,8 @@ public interface Ast {
         assert this instanceof ast.Ast.NormType : this;
         return (ast.Ast.NormType) this;
         }
+      Doc getDoc();
+      Type withDoc(Doc doc);
    }
 
  @Value
@@ -132,12 +134,13 @@ public interface Ast {
   Mdf mdf;
   Path path;
   Ph ph;
-        public static final NormType mutThis0=new NormType(Mdf.Mutable,Path.outer(0),Ph.None);
-        public static final NormType immThis0=new NormType(Mdf.Immutable,Path.outer(0),Ph.None);
-        public static final NormType immVoid=new NormType(Mdf.Immutable,Path.Void(),Ph.None);
-        public static final NormType immLibrary=new NormType(Mdf.Immutable,Path.Library(),Ph.None);
-        public static final NormType immAny=new NormType(Mdf.Immutable,Path.Any(),Ph.None);
-        public static final NormType classAny=new NormType(Mdf.Class,Path.Any(),Ph.None);
+  Doc doc;
+        public static final NormType mutThis0=new NormType(Mdf.Mutable,Path.outer(0),Ph.None,Doc.empty());
+        public static final NormType immThis0=new NormType(Mdf.Immutable,Path.outer(0),Ph.None,Doc.empty());
+        public static final NormType immVoid=new NormType(Mdf.Immutable,Path.Void(),Ph.None,Doc.empty());
+        public static final NormType immLibrary=new NormType(Mdf.Immutable,Path.Library(),Ph.None,Doc.empty());
+        public static final NormType immAny=new NormType(Mdf.Immutable,Path.Any(),Ph.None,Doc.empty());
+        public static final NormType classAny=new NormType(Mdf.Class,Path.Any(),Ph.None,Doc.empty());
   public String toString() {
    return (((ph == Ph.Ph) ? "fwd " : (ph == Ph.None) ? "" : "fwd% ") + mdf.name() + "" + this.path.rowData);
   }
@@ -160,7 +163,7 @@ public interface Ast {
   Path path;
   List<MethodSelectorX> selectors;
   boolean forcePlaceholder;
-
+  Doc doc;
   public <T> T match(Function<NormType, T> normType, Function<HistoricType, T> hType) {
    return hType.apply(this);
   }
@@ -171,6 +174,8 @@ public interface Ast {
   public <T> T match(Function<NormType, T> normType, Function<HistoricType, T> hType) {
    throw tools.Assertions.codeNotReachable();
   }
+  public Doc getDoc(){return Doc.empty();}
+  public Type withDoc(Doc doc){return this;}
  }
 
  @Value
@@ -277,7 +282,7 @@ public interface Ast {
   Doc docExceptions;
   Mdf mdf;
   List<Type> ts;
-  List<Doc> tDocs;
+  //List<Doc> tDocs;
   Type returnType;
   List<Path> exceptions;
  }
@@ -286,7 +291,7 @@ public interface Ast {
  /* @ToString(exclude="n") */ public class Path implements Expression, ExpCore, Atom {
   int n;
   List<String> rowData;
-
+  public NormType toImmNT(){return new NormType(Mdf.Immutable,this,Ph.None,Doc.empty());}
   private Path(int n, List<String> rowData) {
    assert!rowData.get(0).contains("-") : rowData;// as in Outer-1 :-(
    assert!rowData.contains(null) : // comment to force new line an put

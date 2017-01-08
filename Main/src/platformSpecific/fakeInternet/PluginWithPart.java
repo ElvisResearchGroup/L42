@@ -66,14 +66,14 @@ public class PluginWithPart implements PluginType{
     return res;
     }
   private static ast.Ast.NormType jTo42(Class<?> jt){
-    if (jt.equals(Void.TYPE)){return new NormType(Mdf.Immutable,Path.Void(),Ph.None);}
-    if (jt.equals(ast.Ast.Path.class)){return new NormType(Mdf.Class,Path.Any(),Ph.None);}
-    return new NormType(Mdf.Immutable,Path.Library(),Ph.None);
+    if (jt.equals(Void.TYPE)){return NormType.immVoid;}
+    if (jt.equals(ast.Ast.Path.class)){return NormType.classAny;}
+    return NormType.immLibrary;
     }
   private static ast.Ast.NormType jTo42(String jt){
     //if (jt.equals("void")){return new NormType(Mdf.Immutable,Path.Void(),Ph.None);}
-    if (jt.equals("_ast%Ast%Path")){return new NormType(Mdf.Class,Path.Any(),Ph.None);}
-    return new NormType(Mdf.Immutable,Path.Library(),Ph.None);
+    if (jt.equals("_ast%Ast%Path")){return NormType.classAny;}
+    return NormType.immLibrary;
     }
   public Object execute(Program p, Using u){
     assert false: "is this not called with compilation?";

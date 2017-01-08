@@ -270,7 +270,7 @@ public interface Expression extends Ast {
       for (Member m : this.ms) {
         if (m instanceof MethodWithType) {
           MethodWithType mwt = (MethodWithType) m;
-          assert mwt.mt.getTDocs().size() == mwt.mt.getTs().size();
+          //assert mwt.mt.getTDocs().size() == mwt.mt.getTs().size();
         }
         if (m instanceof NestedClass) {
           NestedClass nc = (NestedClass) m;

@@ -52,7 +52,6 @@ public class ToAst extends AbstractVisitor<Expression>{
       if(name.endsWith("(")){name=name.substring(0,name.length()-1);}
       Mdf mdf=Ast.Mdf.fromString((h.Mdf()==null)?"":h.Mdf().getText());
       List<Type> ts=new ArrayList<>();
-      List<Doc> tdocs=new ArrayList<>();
       List<String> names=new ArrayList<>();
       Iterator<TContext> tit=h.t().iterator();
       Iterator<DocsOptContext> dit=h.docsOpt().iterator();
@@ -60,15 +59,16 @@ public class ToAst extends AbstractVisitor<Expression>{
       Type returnType=parseType(tit.next());
       for(XContext x : h.x()){
         names.add(x.getText());
-        ts.add(parseType(tit.next()));
-        tdocs.add(parseDoc(dit.next()));
+        Type ti=parseType(tit.next());
+        ti=ti.withDoc(ti.getDoc().sum(parseDoc(dit.next())));
+        ts.add(ti);
       }
       MethodSelector s=new MethodSelector(name, names);
       List<Path> exceptions=new ArrayList<Path>();
       for(TerminalNode p:h.Path()){exceptions.add(Path.parse(p.getText()));}
       Optional<Expression> inner=Optional.empty();
       if(ctx.eTopForMethod()!=null){inner=Optional.of(ctx.eTopForMethod().accept(ToAst.this));}
-      MethodType mt=new MethodType(h.Refine()!=null,doc2,mdf,ts,tdocs,returnType,exceptions);
+      MethodType mt=new MethodType(h.Refine()!=null,doc2,mdf,ts,returnType,exceptions);
       return new MethodWithType(doc1,s, mt, inner,position(ctx));
     }
 
@@ -281,7 +281,8 @@ public class ToAst extends AbstractVisitor<Expression>{
       return new Ast.NormType(
         Mdf.fromString((tt.Mdf()==null)?"":nameK(tt.Mdf())),
         Ast.Path.parse(nameU(tt.Path())),
-        (tt.Ph()==null)?Ph.None:Ph.Ph);
+        (tt.Ph()==null)?Ph.None:Ph.Ph,Doc.empty());
+      //TODO: soon add here for types with docs
     }
     if(t.historicalT()!=null){
        HistoricalTContext tt = t.historicalT();
@@ -290,7 +291,8 @@ public class ToAst extends AbstractVisitor<Expression>{
        for(HistoricalSeqContext ms:tt.historicalSeq()){
          mss.add(parseMethSelectorX(ms));
        }
-       return new ast.Ast.HistoricType(p,mss,tt.Ph()!=null);
+       return new ast.Ast.HistoricType(p,mss,tt.Ph()!=null,Doc.empty());
+       //TODO: also add here when the doc is parsed
     }
     throw Assertions.codeNotReachable();
   }

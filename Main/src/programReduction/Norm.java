@@ -29,7 +29,7 @@ public class Norm {
     String x=msx.getX();
     if(x.isEmpty()){return mwt.getMt().getReturnType();}
     if(x.equals("this")){
-      return new NormType(mwt.getMt().getMdf(),p,Ph.None);
+      return new NormType(mwt.getMt().getMdf(),p,Ph.None,mwt.getDoc());
       }
     int i=mwt.getMs().getNames().indexOf(x);
     assert i!=-1:
@@ -63,8 +63,8 @@ public class Norm {
       }
     Type nextT=nextT(ht.getPath(),mwt,ht.getSelectors().get(0));
     NormType nextNT= _resolve(p,nextT);
-    if (ht.getSelectors().size()==1){return nextNT;}
-    return _resolve(p,new HistoricType(nextNT.getPath(),ht.getSelectors().subList(1, ht.getSelectors().size()) , ht.isForcePlaceholder()/*may disappear?*/));
+    if (ht.getSelectors().size()==1){return nextNT.withDoc(ht.getDoc().sum(nextNT.getDoc()));}
+    return _resolve(p,new HistoricType(nextNT.getPath(),ht.getSelectors().subList(1, ht.getSelectors().size()) , ht.isForcePlaceholder()/*may disappear?*/,ht.getDoc()));
 //-resolve(p,P::ms::x)=resolve(p,T)//and avoid circularity
 //  methods(p,P)(ms)=refine? _ method _ _( _ T x _) e? 
 //-resolve(p,P::msx::msxs)=resolve(p,P'::msxs) //here be carefull for possible infinite recursion 

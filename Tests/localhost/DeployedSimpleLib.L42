@@ -34,8 +34,6 @@ method
 This0 #bang() 
 method 
 This0 #equalequal(This0 that) 
-method 
-This0 #bangequal(This0 that) 
 class method 
 This0 fromS(read This1.Concept.ToS that) 
 class method 
@@ -69,8 +67,6 @@ method
 This0 #apply(This2.Message that) 
 refine read method 
 This2.S toS() 
-method 
-This1 #bangequal(This0 that) 
 method 
 This1 #equalequal(This0 that) 
 refine read method 
@@ -327,8 +323,6 @@ This0 #apply(This2.Message that)
 refine read method 
 This2.S toS() 
 method 
-This2.Bool #bangequal(This0 that) 
-method 
 This2.Bool #equalequal(This0 that) 
 refine read method 
 class This2.Message class() 
@@ -379,8 +373,6 @@ refine read method
 This1.Bool equals(read Any that) 
 method 
 This0 #plusplus(This0 that) 
-method 
-This1.Bool #bangequal(This0 that) 
 method 
 This1.Bool #equalequal(This0 that) 
 method 
@@ -923,8 +915,6 @@ This2.Message.Opt cause()
 method 
 This0 #apply(This2.Message that) 
 method 
-This2.Bool #bangequal(This0 that) 
-method 
 This2.Bool #equalequal(This0 that) 
 class method 
 This0 #apply(This2.S text) 
@@ -983,8 +973,6 @@ This2.Message.Opt cause()
 method 
 This0 #apply(This2.Message that) 
 method 
-This2.Bool #bangequal(This0 that) 
-method 
 This2.Bool #equalequal(This0 that) 
 class method 
 This0 #apply(This2.S text) 
@@ -1042,8 +1030,6 @@ read method
 This2.Message.Opt cause() 
 method 
 This0 #apply(This2.Message that) 
-method 
-This2.Bool #bangequal(This0 that) 
 method 
 This2.Bool #equalequal(This0 that) 
 class method 
@@ -1139,8 +1125,6 @@ This3.Message.Opt cause()
 method 
 This0 #apply(This3.Message that) 
 method 
-This3.Bool #bangequal(This0 that) 
-method 
 This3.Bool #equalequal(This0 that) 
 class method 
 This0 #apply(This3.S text) 
@@ -1206,8 +1190,6 @@ This0 #apply(This2.Message that)
 refine read method 
 This2.S toS() 
 method 
-This2.Bool #bangequal(This0 that) 
-method 
 This2.Bool #equalequal(This0 that) 
 refine read method 
 class This2.Message class() 
@@ -1265,8 +1247,6 @@ method
 This0 #apply(This2.Message that) 
 refine read method 
 This2.S toS() 
-method 
-This2.Bool #bangequal(This0 that) 
 method 
 This2.Bool #equalequal(This0 that) 
 refine read method 
@@ -1655,8 +1635,6 @@ This1.Bool #rightrightequal(This0 that)
 method 
 This1.Bool #right(This1.S that) 
 read method 
-This1.Bool #bangequal(read This0 that) 
-read method 
 This1.Bool #equalequal(read This0 that) 
 refine read method 
 This1.Bool equals(read Any that) 
@@ -1926,8 +1904,6 @@ Library binaryRepr()
 refine read method 
 This1.S toS() 
 method 
-This1.Bool #bangequal(This0 that) 
-method 
 This1.Bool #equalequal(This0 that) 
 refine read method 
 This1.Bool equals(read Any that) 
@@ -1972,8 +1948,6 @@ method
 This0 #apply(This2.Message that) 
 refine read method 
 This2.S toS() 
-method 
-This2.Bool #bangequal(This0 that) 
 method 
 This2.Bool #equalequal(This0 that) 
 refine read method 
@@ -2036,8 +2010,6 @@ Library binaryRepr()
 refine read method 
 This1.S toS() 
 method 
-This1.Bool #bangequal(This0 that) 
-method 
 This1.Bool #equalequal(This0 that) 
 refine read method 
 This1.Bool equals(read Any that) 
@@ -2082,8 +2054,6 @@ method
 This0 #apply(This2.Message that) 
 refine read method 
 This2.S toS() 
-method 
-This2.Bool #bangequal(This0 that) 
 method 
 This2.Bool #equalequal(This0 that) 
 refine read method 
@@ -2160,8 +2130,6 @@ class This2.Message class()
 class method 
 This0 #apply(This2.Introspection.Record record, Library lib) 
 method 
-This2.Bool #bangequal(This0 that) 
-method 
 This2.Bool #equalequal(This0 that) 
 class method 
 Void #apply(Library lift) exception This0 
@@ -2190,8 +2158,6 @@ refine read method
 class This2.Message class() 
 class method 
 This0 #apply(This2.Introspection.Record record, Library lib) 
-method 
-This2.Bool #bangequal(This0 that) 
 method 
 This2.Bool #equalequal(This0 that) 
 class method 
@@ -2222,8 +2188,6 @@ class This2.Message class()
 class method 
 This0 #apply(This2.Introspection.Record record, Library lib) 
 method 
-This2.Bool #bangequal(This0 that) 
-method 
 This2.Bool #equalequal(This0 that) 
 class method 
 Void #apply(Library lift) exception This0 
@@ -2252,8 +2216,6 @@ refine read method
 class This2.Message class() 
 class method 
 This0 #apply(This2.Introspection.Record record, Library lib) 
-method 
-This2.Bool #bangequal(This0 that) 
 method 
 This2.Bool #equalequal(This0 that) 
 class method 
@@ -2284,8 +2246,6 @@ class This2.Message class()
 class method 
 This0 #apply(This2.Introspection.Record record, Library lib) 
 method 
-This2.Bool #bangequal(This0 that) 
-method 
 This2.Bool #equalequal(This0 that) 
 class method 
 Void #apply(Library lift) exception This0 
@@ -2315,8 +2275,6 @@ class This2.Message class()
 class method 
 This0 #apply(This2.Introspection.Record record, Library lib) 
 method 
-This2.Bool #bangequal(This0 that) 
-method 
 This2.Bool #equalequal(This0 that) 
 class method 
 Void #apply(Library lift) exception This0 
@@ -2345,8 +2303,6 @@ refine read method
 class This2.Message class() 
 class method 
 This0 #apply(This2.Introspection.Record record, Library lib) 
-method 
-This2.Bool #bangequal(This0 that) 
 method 
 This2.Bool #equalequal(This0 that) 
 class method 
@@ -2411,8 +2367,6 @@ This2.S readableName()
 refine class method 
 This2.Bool is(class Any subtype) 
 method 
-This2.Bool #bangequal(This0 that) 
-method 
 This2.Bool #equalequal(This0 that) 
 class method 
 Void #apply(Library lift) exception This0 }
@@ -2453,8 +2407,6 @@ refine class method
 This2.S readableName() 
 refine class method 
 This2.Bool is(class Any subtype) 
-method 
-This2.Bool #bangequal(This0 that) 
 method 
 This2.Bool #equalequal(This0 that) 
 class method 
@@ -2987,8 +2939,6 @@ This2.Bool #rightrightequal(This0 that)
 method 
 This2.Bool #right(This1.Member that) 
 read method 
-This2.Bool #bangequal(read This0 that) 
-read method 
 This2.Bool #equalequal(read This0 that) 
 refine read method 
 This2.Bool equals(read Any that) 
@@ -3131,8 +3081,6 @@ refine read method
 This2.S toS() 
 method 
 This2.Bool #equalequal(This0 that) 
-method 
-This2.Bool #bangequal(This0 that) 
 refine read method 
 This2.Bool equals(read Any that) 
 method 
@@ -3277,8 +3225,6 @@ This2.Bool #rightrightequal(This0 that)
 method 
 This2.Bool #right(This1.Method that) 
 read method 
-This2.Bool #bangequal(read This0 that) 
-read method 
 This2.Bool #equalequal(read This0 that) 
 refine read method 
 This2.Bool equals(read Any that) 
@@ -3422,8 +3368,6 @@ refine read method
 This2.S toS() 
 method 
 This2.Bool #equalequal(This0 that) 
-method 
-This2.Bool #bangequal(This0 that) 
 refine read method 
 This2.Bool equals(read Any that) 
 method 
@@ -3591,8 +3535,6 @@ method
 This2.Bool #rightrightequal(This0 that) 
 method 
 This2.Bool #right(This1.NestedClass that) 
-read method 
-This2.Bool #bangequal(read This0 that) 
 read method 
 This2.Bool #equalequal(read This0 that) 
 refine read method 
@@ -3994,8 +3936,6 @@ refine read method
 This2.Bool equals(read Any that) 
 read method 
 This2.Bool #equalequal(read This0 that) 
-read method 
-This2.Bool #bangequal(read This0 that) 
 refine read method 
 This2.S toS() 
 read method 
@@ -4063,8 +4003,6 @@ read method
 This3.Message.Opt cause() 
 method 
 This0 #apply(This3.Message that) 
-method 
-This3.Bool #bangequal(This0 that) 
 method 
 This3.Bool #equalequal(This0 that) 
 class method 
@@ -4211,8 +4149,6 @@ method
 This3.Bool #rightrightequal(This0 that) 
 method 
 This3.Bool #right(This1 that) 
-read method 
-This3.Bool #bangequal(read This0 that) 
 read method 
 This3.Bool #equalequal(read This0 that) 
 refine read method 
@@ -4358,8 +4294,6 @@ refine read method
 This2.Bool equals(read Any that) 
 read method 
 This2.Bool #equalequal(read This0 that) 
-read method 
-This2.Bool #bangequal(read This0 that) 
 refine read method 
 This2.S toS() 
 read method 
@@ -4409,8 +4343,6 @@ read method
 This3.Message.Opt cause() 
 method 
 This0 #apply(This3.Message that) 
-method 
-This3.Bool #bangequal(This0 that) 
 method 
 This3.Bool #equalequal(This0 that) 
 class method 
@@ -4557,8 +4489,6 @@ method
 This3.Bool #rightrightequal(This0 that) 
 method 
 This3.Bool #right(This1 that) 
-read method 
-This3.Bool #bangequal(read This0 that) 
 read method 
 This3.Bool #equalequal(read This0 that) 
 refine read method 
@@ -4704,8 +4634,6 @@ refine read method
 This2.Bool equals(read Any that) 
 read method 
 This2.Bool #equalequal(read This0 that) 
-read method 
-This2.Bool #bangequal(read This0 that) 
 refine read method 
 This2.S toS() 
 read method 
@@ -4759,8 +4687,6 @@ read method
 This3.Message.Opt cause() 
 method 
 This0 #apply(This3.Message that) 
-method 
-This3.Bool #bangequal(This0 that) 
 method 
 This3.Bool #equalequal(This0 that) 
 class method 
@@ -4907,8 +4833,6 @@ method
 This3.Bool #rightrightequal(This0 that) 
 method 
 This3.Bool #right(This1 that) 
-read method 
-This3.Bool #bangequal(read This0 that) 
 read method 
 This3.Bool #equalequal(read This0 that) 
 refine read method 
@@ -5055,8 +4979,6 @@ refine read method
 This2.Bool equals(read Any that) 
 read method 
 This2.Bool #equalequal(read This0 that) 
-read method 
-This2.Bool #bangequal(read This0 that) 
 refine read method 
 This2.S toS() 
 read method 
@@ -5106,8 +5028,6 @@ read method
 This3.Message.Opt cause() 
 method 
 This0 #apply(This3.Message that) 
-method 
-This3.Bool #bangequal(This0 that) 
 method 
 This3.Bool #equalequal(This0 that) 
 class method 
@@ -5254,8 +5174,6 @@ method
 This3.Bool #rightrightequal(This0 that) 
 method 
 This3.Bool #right(This1 that) 
-read method 
-This3.Bool #bangequal(read This0 that) 
 read method 
 This3.Bool #equalequal(read This0 that) 
 refine read method 
@@ -5655,8 +5573,6 @@ This3.Message.Opt cause()
 method 
 This0 #apply(This3.Message that) 
 method 
-This3.Bool #bangequal(This0 that) 
-method 
 This3.Bool #equalequal(This0 that) 
 class method 
 This0 #apply(This3.S text) 
@@ -5777,8 +5693,6 @@ This2.Message.Opt cause()
 method 
 This0 #apply(This2.Message that) 
 method 
-This2.Bool #bangequal(This0 that) 
-method 
 This2.Bool #equalequal(This0 that) 
 class method 
 This0 #apply(This2.S text) 
@@ -5857,8 +5771,6 @@ read method
 This2.Message.Opt cause() 
 method 
 This0 #apply(This2.Message that) 
-method 
-This2.Bool #bangequal(This0 that) 
 method 
 This2.Bool #equalequal(This0 that) 
 class method 
@@ -6053,8 +5965,6 @@ read method
 This2.Message.Opt cause() 
 method 
 This0 #apply(This2.Message that) 
-method 
-This2.Bool #bangequal(This0 that) 
 method 
 This2.Bool #equalequal(This0 that) 
 class method 
@@ -6596,8 +6506,6 @@ This2.Message.Opt cause()
 method 
 This0 #apply(This2.Message that) 
 method 
-This2.Bool #bangequal(This0 that) 
-method 
 This2.Bool #equalequal(This0 that) 
 class method 
 This0 #apply(This2.S text) 
@@ -6655,8 +6563,6 @@ read method
 This2.Message.Opt cause() 
 method 
 This0 #apply(This2.Message that) 
-method 
-This2.Bool #bangequal(This0 that) 
 method 
 This2.Bool #equalequal(This0 that) 
 class method 

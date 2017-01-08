@@ -7,6 +7,7 @@ import java.util.function.Function;
 
 import ast.Ast;
 import ast.Ast.Mdf;
+import ast.Ast.NormType;
 import ast.Expression.With.On;
 import tools.Map;
 import ast.Expression.BlockContent;
@@ -64,7 +65,6 @@ public class DesugarCatchDefault extends CloneVisitor{
     if(this.lastReturn!=null){
        return ((CatchToComplete)k).completeCatch(this.lastReturn);
        }
-    return ((CatchToComplete)k).completeCatch(
-         new Ast.NormType(Mdf.Immutable,Path.Any(),Ph.None));
+    return ((CatchToComplete)k).completeCatch(NormType.immAny);
     }
 }

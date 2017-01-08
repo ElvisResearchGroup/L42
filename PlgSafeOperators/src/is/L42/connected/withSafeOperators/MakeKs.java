@@ -115,10 +115,9 @@ static private MethodType immK(MethodType proto) {
   }
   //can not reuse the desugar one, here we create ExpCore stuff, also , the sugar one may disappear
   static private MethodWithType prototypeK(Doc doc,List<String>fieldNames,List<Type>fieldTypes,Position pos) {
-    List<Doc> tDocss=fieldNames.stream().map(s->Doc.empty()).collect(Collectors.toList());
     MethodSelector ms=new MethodSelector("",fieldNames);
-    NormType resT=new ast.Ast.NormType(Mdf.Mutable,ast.Ast.Path.outer(0),Ph.None);
-    MethodType mt=new MethodType(false,Doc.empty(),ast.Ast.Mdf.Class,fieldTypes,tDocss,resT,Collections.emptyList());
+    NormType resT=NormType.mutThis0;
+    MethodType mt=new MethodType(false,Doc.empty(),ast.Ast.Mdf.Class,fieldTypes,resT,Collections.emptyList());
     return new MethodWithType(doc, ms,mt, Optional.empty(),pos);
     }
 

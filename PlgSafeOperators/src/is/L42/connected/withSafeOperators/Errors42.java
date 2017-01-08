@@ -241,16 +241,13 @@ public class Errors42 {
     int max=Math.max(sizeA,sizeB);
     for(int i=min;i<max;i++){parsWrong.add(i);}
     List<Type> ts = new ArrayList<>(mem.getMt().getTs());
-    List<Doc> tsd = new ArrayList<>(mem.getMt().getTDocs());
     for(int i=sizeA;i<sizeB;i++){
-      ts.add(new ast.Ast.NormType(Mdf.Immutable,Path.Void(),Ph.None));
-      tsd.add(Doc.empty());
+      ts.add(ast.Ast.NormType.immVoid);
       }
     if(sizeA>sizeB){
       ts=ts.subList(0, sizeB);
-      tsd=tsd.subList(0, sizeB);
     }
-    MethodWithType memb = mem.withMs(dest).withMt(mem.getMt().withTs(ts).withTDocs(tsd));
+    MethodWithType memb = mem.withMs(dest).withMt(mem.getMt().withTs(ts));
     throw errorMethodClash(pathForError, mem,memb, true, parsWrong,true, true, false);
 
   }

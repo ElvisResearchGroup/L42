@@ -140,7 +140,7 @@ class DesugarW extends CloneVisitor{
     String z=Functions.freshName("casted", usedVars);
 
     List<Catch> ks=new ArrayList<>();
-    Type t2=new NormType(nt.getMdf(),Path.Any(),Ph.None);
+    Type t2=new NormType(nt.getMdf(),Path.Any(),Ph.None,Doc.empty());
     ks.add(new Expression.Catch1(pos,SignalKind.Return,t,z,//case return captured
         new X(z)));//return it
     ks.add(new Expression.Catch1(pos,SignalKind.Return,t2,z,//else
@@ -193,7 +193,7 @@ class DesugarW extends CloneVisitor{
     //catch exception Void recursive call
     Catch k=Desugar.getK(pos,
       SignalKind.Exception, "",
-      new NormType(Mdf.Immutable, Path.Void(),Ph.None),
+      NormType.immVoid,
       continuation);
     //main expression with 'T' renaming
     Expression e0=on0.getInner();
@@ -264,7 +264,7 @@ class DesugarW extends CloneVisitor{
   private Catch withDesugarGetDefaultCatch(Position pos,SignalKind kind,Expression eClose) {
     String propagated1=Functions.freshName("propagated",usedVars);
     Expression blockPropagate1=Desugar.getBlock(pos,eClose,new Signal(kind,new X(propagated1)));
-    Type t=new Ast.NormType(Mdf.Immutable,Path.Any(),Ph.None);
+    Type t=NormType.immAny;
     Expression.Catch1 k1=new Expression.Catch1(pos,kind, t,propagated1,blockPropagate1);
     return new DesugarCatchDefault.CatchToComplete(k1);
   }

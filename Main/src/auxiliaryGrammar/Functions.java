@@ -131,7 +131,7 @@ public static NormType sharedAndLentToReadable(NormType that){
   Mdf mdf=that.getMdf();
   if(mdf==Mdf.Mutable){mdf=Mdf.Readable;}
   if(mdf==Mdf.Lent){mdf=Mdf.Readable;}
-  return new NormType(mdf,that.getPath(),that.getPh());
+  return that.withMdf(mdf);
   }
 public static Block garbage(Block e, int n) {
   //try to see witch of the dvs in 0..i can be trashed
@@ -268,12 +268,12 @@ public static Path classOf(Program p, ExpCore ctxVal,List<ast.ExpCore.Block.Dec>
 }
 public static NormType toPartial(NormType that) {
   if(that.getPh()==Ph.Ph){return that;}
-  return new NormType(that.getMdf(),that.getPath(),Ph.Partial);
+  return that.withPh(Ph.Partial);
   }
 
 
 public static NormType toPh(NormType that){
-  return new NormType(that.getMdf(),that.getPath(),Ph.Ph);
+  return that.withPh(Ph.Ph);
   }
 public static HashMap<String, NormType> complete(HashMap<String, NormType> varEnv) {
   HashMap<String, NormType> result= new HashMap<String, NormType>();

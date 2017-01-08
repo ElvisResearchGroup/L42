@@ -27,15 +27,14 @@ public static ClassB addMethod(ClassB _lib, List<String> path, MethodSelector ms
   String[] _mdfs = mdfs.split(" ");
   assert _mdfs.length==ms.getNames().size()+2;
   List<String> nc=new ArrayList<>();
-  Type retT=new NormType(Mdf.valueOf(_mdfs[1]),Path.outer(0,Arrays.asList("$0")),Ph.None);
+  Type retT=new NormType(Mdf.valueOf(_mdfs[1]),Path.outer(0,Arrays.asList("$0")),Ph.None,Doc.empty());
   nc.add("$0");
   List<Type> ts=new ArrayList<>();
   List<Doc> docs=new ArrayList<>();
   int count=1;
   for(String n: ms.getNames()){
     String cn="$"+count;
-    ts.add(new NormType(Mdf.valueOf(_mdfs[count+1]),Path.outer(0,Arrays.asList(cn)),Ph.None));
-    docs.add(Doc.empty());
+    ts.add(new NormType(Mdf.valueOf(_mdfs[count+1]),Path.outer(0,Arrays.asList(cn)),Ph.None,Doc.empty()));
     nc.add(cn);
     count++;
     }
@@ -45,7 +44,7 @@ public static ClassB addMethod(ClassB _lib, List<String> path, MethodSelector ms
     exceptions.add(Path.outer(0,Arrays.asList(cn)));
     nc.add(cn);
     }
-  MethodType mt = new MethodType(false,Doc.empty(),Mdf.valueOf(_mdfs[0]),ts,docs, retT,exceptions);
+  MethodType mt = new MethodType(false,Doc.empty(),Mdf.valueOf(_mdfs[0]),ts, retT,exceptions);
   MethodWithType mwt=new MethodWithType(Doc.empty(),ms,mt,Optional.empty(),innerLib.getP());
   Optional<Member> optM = Program.getIfInDom(innerLib.getMs(),ms);
   if(optM.isPresent()){

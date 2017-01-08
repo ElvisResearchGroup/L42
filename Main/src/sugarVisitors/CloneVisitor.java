@@ -33,8 +33,8 @@ public class CloneVisitor implements Visitor<Expression>{
     }
   protected Type liftT(Type t){
     return t.match(
-        nt->(Type)new NormType(nt.getMdf(),lift(nt.getPath()),nt.getPh()),
-        ht->(Type)new HistoricType(lift(ht.getPath()),ht.getSelectors(),ht.isForcePlaceholder())
+        nt->(Type)new NormType(nt.getMdf(),lift(nt.getPath()),nt.getPh(),liftDoc(nt.getDoc())),
+        ht->(Type)new HistoricType(lift(ht.getPath()),ht.getSelectors(),ht.isForcePlaceholder(),liftDoc(ht.getDoc()))
         );
     }
   protected Expression.Catch liftK(Expression.Catch k){
@@ -121,7 +121,6 @@ public class CloneVisitor implements Visitor<Expression>{
         liftDoc(mt.getDocExceptions()),
       mt.getMdf(),
       Map.of(this::liftT,mt.getTs()),
-      Map.of(this::liftDoc,mt.getTDocs()),
       liftT(mt.getReturnType()),
       Map.of(this::lift,mt.getExceptions()));
   }

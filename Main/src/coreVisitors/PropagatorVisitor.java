@@ -36,6 +36,7 @@ public class PropagatorVisitor implements Visitor<Void>{
     e.accept(this);
     }
   protected void liftT(Type t){
+    liftDoc(t.getDoc());
     if(t instanceof NormType){lift(((NormType)t).getPath());}
     else {
       HistoricType ht=(HistoricType) t;
@@ -88,7 +89,6 @@ public class PropagatorVisitor implements Visitor<Void>{
   protected void liftMT(MethodType mt) {
     liftDoc(mt.getDocExceptions());
     for(Type t:mt.getTs()){liftT(t);}
-    for(Doc d:mt.getTDocs()){liftDoc(d);}
     liftT(mt.getReturnType());
     for(Path p:mt.getExceptions()){lift(p);}
     }

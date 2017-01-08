@@ -193,13 +193,8 @@ public class Sum {
     Set<Path> pc = new HashSet<>(pa);
     pc.retainAll(pb);
     Doc doc = ma.getDoc().sum(mb.getDoc());
-    //tDocs=TDocs[with a in ma.mt().tDocs(), b in mb.mt().tDocs() ( use[a+b] )]
-    List<Doc> tDocs = new ArrayList<>();
-    for (int i = 0; i < ma.getMt().getTDocs().size(); i += 1) {
-      tDocs.add(ma.getMt().getTDocs().get(i).sum(mb.getMt().getTDocs().get(i)));
-    }
     Doc docExc = ma.getMt().getDocExceptions().sum(mb.getMt().getDocExceptions());
-    MethodType mt = ma.getMt().withDocExceptions(docExc).withTDocs(tDocs);
+    MethodType mt = ma.getMt().withDocExceptions(docExc);
     ArrayList<Path> opc = new ArrayList<>(pc);
     Collections.sort(opc, (p1, p2) -> p1.toString().compareTo(p2.toString()));
     mt = mt.withExceptions(opc);

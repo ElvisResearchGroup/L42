@@ -19,6 +19,7 @@ import ast.Ast.Type;
 import ast.Ast.Path;
 import ast.Ast.Ph;
 import ast.Ast.NormType;
+import ast.Ast.Doc;
 import ast.Ast.Mdf;
 import ast.ExpCore;
 import ast.ExpCore.ClassB;
@@ -183,7 +184,7 @@ public class TypeSystemOK {
     }
     if(!mt.get_inner().isPresent()){return;}
     HashMap<String,NormType> varEnv=new HashMap<>();
-    varEnv.put("this",new NormType(mt.getMt().getMdf(),Path.outer(0),Ph.None));
+    varEnv.put("this",new NormType(mt.getMt().getMdf(),Path.outer(0),Ph.None,Doc.empty()));
     {int i=-1;for(String parName:mt.getMs().getNames()){i+=1;
       Type ti=mt.getMt().getTs().get(i);
       varEnv.put(parName, (NormType)ti);

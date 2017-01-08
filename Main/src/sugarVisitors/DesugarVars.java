@@ -138,7 +138,7 @@ private int firstVar(List<VarDec> varDecs){
   return -1;
   }
 private VarDecXE getDecForVar(String cName,VarDecXE varDec) {
-  NormType nt=new NormType(Mdf.Mutable,Path.outer(0).pushC(cName),Ph.None);
+  NormType nt=new NormType(Mdf.Mutable,Path.outer(0).pushC(cName),Ph.None,Doc.empty());
   Position pos = Desugar.getPosition(varDec.getInner());
   MCall right=new MCall(nt.getPath(),"#apply",Doc.empty(), Desugar.getPs("inner",new X(varDec.getX())),pos);
   String nameZ=Functions.freshName(nt.getPath(), usedVars);

@@ -11,6 +11,7 @@ import ast.Ast;
 import ast.ExpCore;
 import ast.Ast.Doc;
 import ast.Ast.Mdf;
+import ast.Ast.NormType;
 import ast.Ast.Path;
 import ast.Ast.Ph;
 import ast.Ast.Position;
@@ -187,21 +188,16 @@ public class EncodingHelper{
     return result;
   }
   public static Ast.MethodType mtType(Path result){
-    List<Doc> docs=new ArrayList<>();
     List<Type> ts=new ArrayList<>();
-    ts.add(new Ast.NormType(Mdf.Class,Path.Any(),Ph.None));
-    docs.add(Doc.empty());
-    return new Ast.MethodType(false,Doc.empty(),Mdf.Immutable,ts,docs,new Ast.NormType(Mdf.Immutable,result,Ph.None),Collections.emptyList());
+    ts.add(NormType.classAny);
+    return new Ast.MethodType(false,Doc.empty(),Mdf.Immutable,ts,result.toImmNT(),Collections.emptyList());
   }
 
   public static Ast.MethodType mt(Path result,Path ...paths){
-    List<Doc> docs=new ArrayList<>();
     List<Type> ts=new ArrayList<>();
     for(Path pi:paths){
-      ts.add(new Ast.NormType(Mdf.Immutable,pi,Ph.None));
-      docs.add(Doc.empty());
-      }
-    return new Ast.MethodType(false,Doc.empty(),Mdf.Immutable,ts,docs,new Ast.NormType(Mdf.Immutable,result,Ph.None),Collections.emptyList());
+      ts.add(pi.toImmNT());      }
+    return new Ast.MethodType(false,Doc.empty(),Mdf.Immutable,ts,result.toImmNT(),Collections.emptyList());
   }
   public static ExpCore wrapResource(Object o) {
     if(o instanceof ClassB){return (ClassB)o;}

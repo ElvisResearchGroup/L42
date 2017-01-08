@@ -451,12 +451,12 @@ public class ToFormattedText implements Visitor<Void>{
     separeFromChar();
     c(methT.getMs().getName());
     c("(");
-    StringBuilders.formatSequence(this.result,methT.getMt().getTs().iterator(), methT.getMt().getTDocs().iterator(),methT.getMs().getNames().iterator(),", ",
-      (ti,doci,xi)->{
-      formatType(ti);
+    StringBuilders.formatSequence(this.result,methT.getMt().getTs().iterator(), methT.getMs().getNames().iterator(),", ",
+      (ti,xi)->{
+      formatType(ti.withDoc(Doc.empty()));
       separeFromChar();
       c(xi);
-      formatDoc(doci);
+      formatDoc(ti.getDoc());
       });
     c(") ");
     if(methT.getMt().getExceptions().isEmpty()){return;}

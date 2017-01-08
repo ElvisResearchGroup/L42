@@ -89,18 +89,14 @@ public class SumMethods {
     else{
       totTypes=mt1.getTs().stream().map(t->t.match(nt->nt.withPh(Ph.None), hType->hType)).collect(Collectors.toList());
     }
-    List<Doc> totDocs=new ArrayList<>(mt1.getTDocs());
     totTypes.addAll(mt2.getTs());
-    totDocs.addAll(mt2.getTDocs());
     int toRemove=mt1.getTs().size()+index;
     totTypes.remove(toRemove);
-    totDocs.remove(toRemove);
-    assert totTypes.size()==totDocs.size();
     ArrayList<Path> exU = new ArrayList<>(mt1.getExceptions());
     exU.addAll(mt2.getExceptions());
     MethodType mtU =new MethodType(false,
         mt1.getDocExceptions().sum(mt2.getDocExceptions()),
-        mdfU,totTypes,totDocs,mt2.getReturnType(),exU);
+        mdfU,totTypes,mt2.getReturnType(),exU);
     return mtU;
     }
   static boolean isReplacedParOk(int index,MethodType mt1,MethodType mt2){

@@ -22,10 +22,10 @@ public class CloneVisitor implements Visitor<ExpCore>{
     }
   protected Type liftT(Type t){
     return t.match(
-        nt->(Type)new NormType(nt.getMdf(),lift(nt.getPath()),nt.getPh()),
+        nt->(Type)new NormType(nt.getMdf(),lift(nt.getPath()),nt.getPh(),liftDoc(nt.getDoc())),
         ht->(Type)new HistoricType(
             lift(ht.getPath()),
-            liftSXs(ht.getSelectors()),ht.isForcePlaceholder())
+            liftSXs(ht.getSelectors()),ht.isForcePlaceholder(),liftDoc(ht.getDoc()))
         );
     }
   protected List<MethodSelectorX> liftSXs(List<MethodSelectorX> selectors) {
@@ -76,7 +76,7 @@ public class CloneVisitor implements Visitor<ExpCore>{
     }
 
   protected MethodType liftMT(MethodType mt) {
-    return new MethodType(mt.isRefine(),liftDoc(mt.getDocExceptions()),mt.getMdf(),Map.of(this::liftT,mt.getTs()),Map.of(this::liftDoc,mt.getTDocs()),liftT(mt.getReturnType()),Map.of(this::lift,mt.getExceptions()));
+    return new MethodType(mt.isRefine(),liftDoc(mt.getDocExceptions()),mt.getMdf(),Map.of(this::liftT,mt.getTs()),liftT(mt.getReturnType()),Map.of(this::lift,mt.getExceptions()));
   }
   public ExpCore visit(Path s) {return s;}
   public ExpCore visit(X s) { return s;}

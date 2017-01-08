@@ -19,14 +19,14 @@ import ast.Ast.Type;
 @Target(ElementType.METHOD)
 public @interface ActionType {
   public static enum Type{
-    Library(new Ast.NormType(Mdf.Immutable,Path.Library(),Ph.None)),
-    Void(new Ast.NormType(Mdf.Immutable,Path.Void(),Ph.None)),
-    ImmAny(new Ast.NormType(Mdf.Immutable,Path.Any(),Ph.None)),
-    TypeAny(new Ast.NormType(Mdf.Class,Path.Any(),Ph.None)),
-    CapsuleAny(new Ast.NormType(Mdf.Capsule,Path.Any(),Ph.None)),
-    MutAny(new Ast.NormType(Mdf.Mutable,Path.Any(),Ph.None)),
-    LentAny(new Ast.NormType(Mdf.Lent,Path.Any(),Ph.None)),
-    ReadAny(new Ast.NormType(Mdf.Readable,Path.Any(),Ph.None));
+    Library(Ast.NormType.immLibrary),
+    Void(Ast.NormType.immVoid),
+    ImmAny(Ast.NormType.immAny),
+    TypeAny(Ast.NormType.classAny),
+    CapsuleAny(Ast.NormType.immAny.withMdf(Mdf.Capsule)),
+    MutAny(Ast.NormType.immAny.withMdf(Mdf.Mutable)),
+    LentAny(Ast.NormType.immAny.withMdf(Mdf.Lent)),
+    ReadAny(Ast.NormType.immAny.withMdf(Mdf.Readable));
     Ast.Type type;
     Type(Ast.Type type){this.type=type;}
   }
