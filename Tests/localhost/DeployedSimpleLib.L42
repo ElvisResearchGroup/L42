@@ -100,7 +100,12 @@ method
 mut This3.S.SBuilder #builder() 
 method 
 This1 #from(This3.S.SBuilder builder) }}}
-Size:{implements This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Classable
+Size:{implements This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Classable/*@private
+*/
+class method 
+mut This0 _private(Library _binaryRepr) 
+read method 
+Library _binaryRepr() 
 refine class method 
 This1.Bool is(class Any subtype) 
 refine read method 
@@ -110,7 +115,7 @@ This1.S readableName()
 class method 
 This0 fromS(This1.Concept.ToS that) 
 class method 
-This0 #from(Library binaryRepr) 
+mut This0 #from(Library binaryRepr) 
 method 
 Library binaryRepr() 
 class method 
@@ -133,12 +138,6 @@ method
 This1.Bool #equalequal(This0 that) 
 refine read method 
 This1.Bool equals(read Any that) 
-method 
-This1.Bool #left(This0 that) 
-method 
-This1.Bool #leftequal(This0 that) 
-method 
-This1.Bool #bangequal(This0 that) 
 method 
 This1.Bool #right(This0 that) 
 method 
@@ -358,19 +357,12 @@ method
 mut This3.S.SBuilder #builder() 
 method 
 This1 #from(This3.S.SBuilder builder) }}}
-S:{implements This1.Concept.Base, This1.Concept.Classable, This1.Concept.Equals, This1.Concept.ToS
-class method /*, Concept.Equals //needed until we do (also refine) normalization
-#####Implemented
-*/mut This0 #mutK(Library _binaryRepr) 
-class method /*, Concept.Equals //needed until we do (also refine) normalization
-#####Implemented
-*/This0 _private(Library _binaryRepr) 
-mut method /*, Concept.Equals //needed until we do (also refine) normalization
-#####Implemented
-*/Library #_binaryRepr() 
-read method /*, Concept.Equals //needed until we do (also refine) normalization
-#####Implemented
-*/Library _binaryRepr() 
+S:{implements This1.Concept.Base, This1.Concept.Classable, This1.Concept.Equals, This1.Concept.ToS/*, Concept.Equals //needed until we do (also refine) normalization
+*/
+class method 
+mut This0 _private(Library _binaryRepr) 
+read method 
+Library _binaryRepr() 
 refine class method 
 This1.Bool is(class Any subtype) 
 refine read method 
@@ -378,7 +370,7 @@ class This0 class()
 refine class method 
 This0 readableName() 
 class method 
-This0 #from(Library binaryRepr) 
+mut This0 #from(Library binaryRepr) 
 method 
 Library binaryRepr() 
 refine read method 
@@ -870,7 +862,7 @@ mut This0 #mutK()
 class method 
 This0 #apply() 
 class method 
-Library #leftleft(Library that) 
+Library #leftrightleft(Library that) 
 class method 
 Library messageTrait() }}
 Guard:{/* exception as Guard bureocracy, error as Guard detection
@@ -1883,7 +1875,7 @@ method
 This1.PreferentialComposition _PreferentialComposition() 
 method 
 This1.Load _Load() }
-Url:{/*ParseFailure:Message:S[]<<{ implements Guard} no need, related to invariant?
+Url:{/*ParseFailure:Message:S[]<><{ implements Guard} no need, related to invariant?
 */implements This1.Concept.ToS
 class method /* if you do not implement it, it is a constructor?
 */This0 fromS(This1.Concept.ToS that) 
@@ -1903,7 +1895,12 @@ refine read method
 This1.S toS() 
 method 
 Library binaryRepr() }
-Path:{implements This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Classable
+Path:{implements This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Classable/*@private
+*/
+class method 
+mut This0 _private(Library _binaryRepr) 
+read method 
+Library _binaryRepr() 
 refine class method 
 This1.Bool is(class Any subtype) 
 refine read method 
@@ -1919,7 +1916,7 @@ This0 #from(This1.S.SBuilder builder)
 class method 
 mut This1.S.SBuilder #builder() 
 class method 
-This0 #from(Library binaryRepr) 
+mut This0 #from(Library binaryRepr) 
 class method 
 Any parseError(This1.S that) 
 class method 
@@ -2006,7 +2003,12 @@ method
 mut This3.S.SBuilder #builder() 
 method 
 This1 #from(This3.S.SBuilder builder) }}}
-Selector:{implements This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Classable
+Selector:{implements This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Classable/*@private
+*/
+class method 
+mut This0 _private(Library _binaryRepr) 
+read method 
+Library _binaryRepr() 
 refine class method 
 This1.Bool is(class Any subtype) 
 refine read method 
@@ -2020,7 +2022,7 @@ This0 #from(This1.S.SBuilder builder)
 class method 
 mut This1.S.SBuilder #builder() 
 class method 
-This0 #from(Library binaryRepr) 
+mut This0 #from(Library binaryRepr) 
 class method 
 Any parseError(This1.S that) 
 class method 
@@ -2137,7 +2139,7 @@ Library recordWrapperToSTrait()
 class method 
 Library recordWrapperTrait() 
 class method 
-Library #leftleft(Library that) }
+Library #leftrightleft(Library that) }
 SourceUnfit:{implements This1, This2.Guard, This2.Message, This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable
 class method 
 This2.S libName() 
@@ -5405,7 +5407,7 @@ This2.Introspection.Type #to()
 read method 
 This2.Introspection.Type to() 
 method 
-Library #leftleft(Library that) exception This2.MetaGuard.NestedClassUnavailable, This2.MetaGuard.InvalidOnTopLevel, This2.MetaGuard.SourceUnfit, This2.MetaGuard.MethodClash, This2.MetaGuard.ClassClash, This2.MetaGuard.IncoherentRedirectMapping }
+Library #leftrightleft(Library that) exception This2.MetaGuard.NestedClassUnavailable, This2.MetaGuard.InvalidOnTopLevel, This2.MetaGuard.SourceUnfit, This2.MetaGuard.MethodClash, This2.MetaGuard.ClassClash, This2.MetaGuard.IncoherentRedirectMapping }
 Redirect:{
 class method 
 mut This0 #mutK(This2.Path that, class Any to) 
@@ -5422,7 +5424,7 @@ class Any to()
 class method 
 This1.RedirectType #apply(This2.Path that, This2.Introspection.Type toType) 
 method 
-Library #leftleft(Library that) exception This2.MetaGuard.NestedClassUnavailable, This2.MetaGuard.InvalidOnTopLevel, This2.MetaGuard.SourceUnfit, This2.MetaGuard.MethodClash, This2.MetaGuard.IncoherentRedirectMapping }
+Library #leftrightleft(Library that) exception This2.MetaGuard.NestedClassUnavailable, This2.MetaGuard.InvalidOnTopLevel, This2.MetaGuard.SourceUnfit, This2.MetaGuard.MethodClash, This2.MetaGuard.IncoherentRedirectMapping }
 RenameSelector:{
 class method 
 mut This0 #mutK(This2.Selector that, This2.Path of, This2.Selector to) 
@@ -5441,7 +5443,7 @@ This2.Selector #to()
 read method 
 This2.Selector to() 
 method 
-Library #leftleft(Library that) exception This2.MetaGuard.MemberUnavailable, This2.MetaGuard.MethodClash }
+Library #leftrightleft(Library that) exception This2.MetaGuard.MemberUnavailable, This2.MetaGuard.MethodClash }
 RenamePath:{
 class method 
 mut This0 #mutK(This2.Path that, This2.Path to) 
@@ -5456,7 +5458,7 @@ This2.Path #to()
 read method 
 This2.Path to() 
 method 
-Library #leftleft(Library that) exception This2.MetaGuard.NestedClassUnavailable, This2.MetaGuard.MethodClash, This2.MetaGuard.ClassClash }
+Library #leftrightleft(Library that) exception This2.MetaGuard.NestedClassUnavailable, This2.MetaGuard.MethodClash, This2.MetaGuard.ClassClash }
 RemoveImplementationSelector:{
 class method 
 mut This0 #mutK(This2.Selector that, This2.Path of) 
@@ -5471,7 +5473,7 @@ This2.Path #of()
 read method 
 This2.Path of() 
 method 
-Library #leftleft(Library that) exception This2.MetaGuard.MemberUnavailable }
+Library #leftrightleft(Library that) exception This2.MetaGuard.MemberUnavailable }
 MoveImplementationSelector:{
 class method 
 mut This0 #mutK(This2.Selector that, This2.Path of, This2.Selector to) 
@@ -5490,7 +5492,7 @@ This2.Selector #to()
 read method 
 This2.Selector to() 
 method 
-Library #leftleft(Library that) exception This2.MetaGuard.MemberUnavailable, This2.MetaGuard.MethodClash }
+Library #leftrightleft(Library that) exception This2.MetaGuard.MemberUnavailable, This2.MetaGuard.MethodClash }
 RemoveImplementationPath:{
 class method 
 mut This0 #mutK(This2.Path that) 
@@ -5501,7 +5503,7 @@ This2.Path #that()
 read method 
 This2.Path that() 
 method 
-Library #leftleft(Library that) exception This2.MetaGuard.NestedClassUnavailable, This2.MetaGuard.PrivacyCoupuled }
+Library #leftrightleft(Library that) exception This2.MetaGuard.NestedClassUnavailable, This2.MetaGuard.PrivacyCoupuled }
 AddDocumentationSelector:{
 class method 
 mut This0 #mutK(This2.Selector that, This2.Path of, This2.Introspection.Doc doc) 
@@ -5520,7 +5522,7 @@ This2.Introspection.Doc #doc()
 read method 
 This2.Introspection.Doc doc() 
 method 
-Library #leftleft(Library that) exception This2.MetaGuard.MemberUnavailable }
+Library #leftrightleft(Library that) exception This2.MetaGuard.MemberUnavailable }
 AddDocumentationPath:{
 class method 
 mut This0 #mutK(This2.Path that, This2.Introspection.Doc doc) 
@@ -5535,7 +5537,7 @@ This2.Introspection.Doc #doc()
 read method 
 This2.Introspection.Doc doc() 
 method 
-Library #leftleft(Library that) exception This2.MetaGuard.NestedClassUnavailable, This2.MetaGuard.InvalidOnTopLevel }
+Library #leftrightleft(Library that) exception This2.MetaGuard.NestedClassUnavailable, This2.MetaGuard.InvalidOnTopLevel }
 MakePrivatePath:{
 class method /*Can be called Hide
 */mut This0 #mutK(This2.Path that) 
@@ -5546,7 +5548,7 @@ mut method /*Can be called Hide
 read method /*Can be called Hide
 */This2.Path that() 
 method 
-Library #leftleft(Library that) exception This2.MetaGuard.MemberUnavailable, This2.MetaGuard.InvalidOnTopLevel }
+Library #leftrightleft(Library that) exception This2.MetaGuard.MemberUnavailable, This2.MetaGuard.InvalidOnTopLevel }
 MakePrivateSelector:{
 class method 
 mut This0 #mutK(This2.Selector that, This2.Path of) 
@@ -5561,7 +5563,7 @@ This2.Path #of()
 read method 
 This2.Path of() 
 method 
-Library #leftleft(Library that) exception This2.MetaGuard.MemberUnavailable }
+Library #leftrightleft(Library that) exception This2.MetaGuard.MemberUnavailable }
 SumMethods:{
 class method 
 mut This0 #mutK(This2.Selector that, This2.Selector and, This2.Path of, This2.S over, This2.Selector to) 
@@ -5588,7 +5590,7 @@ This2.Selector #to()
 read method 
 This2.Selector to() 
 method 
-Library #leftleft(Library that) exception This2.MetaGuard.MemberUnavailable, This2.MetaGuard.MethodClash, This2.MetaGuard.ParameterMismatch }
+Library #leftrightleft(Library that) exception This2.MetaGuard.MemberUnavailable, This2.MetaGuard.MethodClash, This2.MetaGuard.ParameterMismatch }
 MakeMethod:{
 class method 
 mut This0 #mutK(This2.Selector that, This2.Path of, This2.Introspection.Mdf.List mdfs, This2.Size exceptionN) 
@@ -5611,7 +5613,7 @@ This2.Size #exceptionN()
 read method 
 This2.Size exceptionN() 
 method 
-Library #leftleft(Library that) exception This2.MetaGuard.NestedClassUnavailable, This2.MetaGuard.MethodClash }
+Library #leftrightleft(Library that) exception This2.MetaGuard.NestedClassUnavailable, This2.MetaGuard.MethodClash }
 Tools:{
 class method 
 This2.S getToSOrName(read Any that) 
@@ -5710,7 +5712,7 @@ class This2.Path #default#selector(Void of) }}
 Optimize:{
 RemoveUnreachableCode:{
 class method 
-Library #leftleft(Library that) }}
+Library #leftrightleft(Library that) }}
 Opt:{
 class method 
 Library #apply(class Any that) }
@@ -5723,7 +5725,7 @@ mut This1.PreferentialComposition.Libs #seqBuilder()
 class method 
 This0 #from(This1.PreferentialComposition.Libs seqBuilder) 
 method 
-Library #leftleft(Library that) exception This1.MetaGuard.ClassClash, This1.MetaGuard.MethodClash 
+Library #leftrightleft(Library that) exception This1.MetaGuard.ClassClash, This1.MetaGuard.MethodClash 
 method 
 This0 #plusplus(This0 that) 
 method 
@@ -5737,7 +5739,7 @@ mut This1.PreferentialComposition.Libs #seqBuilder()
 class method 
 This0 #from(This1.PreferentialComposition.Libs seqBuilder) 
 method 
-Library #leftleft(Library that) exception This1.MetaGuard.ClassClash, This1.MetaGuard.MethodClash 
+Library #leftrightleft(Library that) exception This1.MetaGuard.ClassClash, This1.MetaGuard.MethodClash 
 method 
 This0 #plusplus(This0 that) 
 method 
@@ -5805,18 +5807,18 @@ method
 This1 #from(This3.S.SBuilder builder) }}
 Parsable:{
 class method 
-Library #leftleft(Library that) exception This1.DecorationUnfeasable }
+Library #leftrightleft(Library that) exception This1.DecorationUnfeasable }
 SealState:{/* how to specify which factory to keep out? what getters
 */
 class method 
-Library #leftleft(Library that) }
+Library #leftrightleft(Library that) }
 DataFromToS:{/* in the future we can add also hashCode and > =>
 */
 class method 
-Library #leftleft(Library that) exception This1.DecorationUnfeasable }
+Library #leftrightleft(Library that) exception This1.DecorationUnfeasable }
 Equals:{
 class method 
-Library #leftleft(Library that) exception This1.DecorationUnfeasable }}
+Library #leftrightleft(Library that) exception This1.DecorationUnfeasable }}
 Collections:{
 class method 
 Library vector(class Any of) 
@@ -5981,7 +5983,7 @@ This0.$#from(This1.S.SBuilder builder)
 class method 
 mut This1.S.SBuilder #builder() 
 class method 
-Library #leftleft(Library that) 
+Library #leftrightleft(Library that) 
 $:{
 class method 
 mut This0 #mutK(This2.S names, This2.Bool isFwd, This2.S mutK, This2.S lentK, This2.S readK, This2.S immK) 
@@ -6014,12 +6016,12 @@ This2.S immK()
 method 
 This0 fwd() 
 method 
-Library #leftleft(Library that) exception This2.MetaGuard.MethodUnavailable/*if names are wrong
+Library #leftrightleft(Library that) exception This2.MetaGuard.MethodUnavailable/*if names are wrong
 MetaGuard.NestedClassUnavailable//no since we use Path"This"
 */ }}
 Alphanumeric:{
 class method 
-Library #leftleft(Library that) 
+Library #leftrightleft(Library that) 
 ParseFail:{implements This2.Guard.ParseFail, This2.Guard, This2.Message, This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable
 refine class method 
 This2.S kind() 
@@ -6092,7 +6094,7 @@ read method /*(Any fileName)
 class method 
 Library binaryReprFrom(Library lib) 
 method 
-Library #leftleft(Library that) }
+Library #leftrightleft(Library that) }
 PreferentialComposition:{/*members of PreferentialComposition
 */
 class method 
@@ -6100,7 +6102,7 @@ This0.SrcDests renameMap(Library that, This1.S prefix, This1.Path path, This1.In
 class method 
 This1.Bool needRename(This1.Introspection.NestedClass that, This1.Introspection.Method meth) 
 class method 
-Library #leftleft(Library that) exception This1.MetaGuard.ClassClash, This1.MetaGuard.MethodClash 
+Library #leftrightleft(Library that) exception This1.MetaGuard.ClassClash, This1.MetaGuard.MethodClash 
 $:{interface 
 method 
 Library solveConflict(Library that, This1.SrcDest location) }
@@ -6561,7 +6563,7 @@ Load:{/*shape of a loadable library:
  Abstract.ConceptMap mapps concepts names to abstract classes
 */
 class method 
-Library #leftleft(Library that) exception This0.ConceptMapMismatch, This0.ConceptMapUnavailable 
+Library #leftrightleft(Library that) exception This0.ConceptMapMismatch, This0.ConceptMapUnavailable 
 ConceptMapMismatch:{implements This2.MetaGuard, This2.Guard, This2.Message, This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable
 refine class method 
 This2.S kind() 
@@ -6702,7 +6704,7 @@ Library exposeAsLibrary(Library that, This2.Path path) exception This2.MetaGuard
 class method 
 Void checkTargetExists(Library that, This2.Path path) exception This2.MetaGuard.NestedClassUnavailable 
 method 
-Library #leftleft(Library that) exception This2.MetaGuard.NestedClassUnavailable, This2.MetaGuard.PrivacyCoupuled }}}
+Library #leftrightleft(Library that) exception This2.MetaGuard.NestedClassUnavailable, This2.MetaGuard.PrivacyCoupuled }}}
 class method 
 Void printHelloWorld() This0.Abstract.Debug.#apply(that:This0.Abstract.S.#from(builder:(
   mut This0.Abstract.S.SBuilder b=This0.Abstract.S.#builder()

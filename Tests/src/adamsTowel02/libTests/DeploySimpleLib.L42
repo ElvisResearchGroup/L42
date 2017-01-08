@@ -10,11 +10,11 @@ Main:{
   dl=Load.DeployLibrary(
     path:Path"MyLib",
     url:Url"localhost/DeployedSimpleLib.L42"
-    )<<SimpleLib()
+    )<><SimpleLib()
   return ExitCode.normal()
 }
 //Task:Load.DeployLibrary[
 //  Path"MyLib",
 //  url:Url"localhost/DeployedSimpleLib.L42"
-//  ]<<SimpleLib()
+//  ]<><SimpleLib()
 }

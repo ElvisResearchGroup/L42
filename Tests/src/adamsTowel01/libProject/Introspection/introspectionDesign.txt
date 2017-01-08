@@ -73,7 +73,6 @@ Introspection:{
     Path path
     Record record
     method Bool ==(This that)
-    method Bool != (This that)
     method Doc nestedDoc()// error  for This
     method Doc doc() //of the library literal
     method Path pathFromRoot() // invariant NestedClass(...).nestedClassFromRoot(path).pathFromRoot()==path

@@ -101,8 +101,19 @@ public class GuessType implements Visitor<Type> {
   public Type visit(SquareCall s) { return GuessType.concatHistoricType(s.getReceiver().accept(this),Desugar.squareGuessedSelector());}
   public Type visit(Literal s) { return GuessType.concatHistoricType(s.getReceiver().accept(this),Desugar.literalGuessedSelector());}
   public Type visit(BinOp s) {
-    if(s.getOp().kind==Ast.OpKind.EqOp){return NormType.immVoid;}
-    return visit(Desugar.visit1Step(s));
+    Op op=s.getOp();
+    if(op.kind==Ast.OpKind.EqOp){return NormType.immVoid;}
+    if(op.negated){
+      BinOp s2=s.withOp(op.nonNegatedVersion());
+      return visit(new UnOp(s.getP(),Op.Bang,s2));
+      }
+    if(!op.normalized){
+      BinOp op2=new BinOp(s.getP(),s.getRight(),op.normalizedVersion(),s.getLeft());
+      return visit(op2);
+      }
+    assert !op.negated && op.normalized :op; 
+    MCall mc=Desugar.getMCall(s.getP(),s.getLeft(),Desugar.desugarName(op.inner),Desugar.getPs(s.getRight()));
+    return visit(mc);
     }
   public Type visit(SquareWithCall s) {
     { return GuessType.concatHistoricType(s.getReceiver().accept(this),Desugar.squareGuessedSelector());}

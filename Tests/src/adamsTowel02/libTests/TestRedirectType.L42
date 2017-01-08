@@ -29,9 +29,9 @@ Main:{
   t1=i.method(Selector"a1()").returnType()
   t2=i.method(Selector"a2()").returnType()
   t3=i.method(Selector"a3()").returnType()
-  c1=Refactor.Redirect(Path"C" toType:t1)<<c
-  c2=Refactor.Redirect(Path"C" toType:t2)<<c
-  c3=Refactor.Redirect(Path"C" toType:t3)<<c
+  c1=Refactor.Redirect(Path"C" toType:t1)<><c
+  c2=Refactor.Redirect(Path"C" toType:t2)<><c
+  c3=Refactor.Redirect(Path"C" toType:t3)<><c
   Debug(lib:c)
   Debug(lib:c1)
   Debug(lib:c2)

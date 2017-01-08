@@ -2,9 +2,9 @@
 //can be used as
 // PostAction(Selector"foo(bar)" of:Path"A"
 //   action:{method Size (Size that) that+that}
-//   deprecated: Selector"fooOld(bar)")<<myCode
+//   deprecated: Selector"fooOld(bar)")<><myCode
 method
-Library <<(Library that)
+Library <><(Library that)
 exception InvalidAction{
   this.checkAction(this.action())// check action well formed
 
@@ -14,14 +14,14 @@ exception InvalidAction{
   fresh=Selector.fresh(Selector"#apply(that)")// will be the name of the action
 
   var Library acc=that
-  acc:=Refactor.MoveImplementationSelector(src of:p to:dest)<<acc
+  acc:=Refactor.MoveImplementationSelector(src of:p to:dest)<><acc
   //now src is abstract
   acc:=this.composeAction(acc,fresh:fresh)
-  acc:={return Refactor.SumMethods(dest and:fresh of:p over:S"that" to:src)<<acc
+  acc:={return Refactor.SumMethods(dest and:fresh of:p over:S"that" to:src)<><acc
     exception on MetaGuard.ParameterMismatch
       InvalidAction"Action class signature does not fit decorated method"
     }
-  acc:=Refactor.MakePrivateSelector(fresh of:p)<<acc
+  acc:=Refactor.MakePrivateSelector(fresh of:p)<><acc
   //we do not need to refer to the action any more
   return acc
   catch exception InvalidAction x exception x
@@ -32,8 +32,8 @@ exception InvalidAction{
 method //@private
 Library composeAction(Library that,Selector fresh){
   var Library acc=this.action()
-  acc:=Refactor.RenamePath(Path"This" to:this.of())<<acc
-  acc:=Refactor.RenameSelector(Selector"#apply(that)" of:this.of() to:fresh)<<acc
+  acc:=Refactor.RenamePath(Path"This" to:this.of())<><acc
+  acc:=Refactor.RenameSelector(Selector"#apply(that)" of:this.of() to:fresh)<><acc
   acc:=Refactor.compose(left:that,right:acc)
   //ok since action res has fresh name
   return acc
@@ -54,5 +54,5 @@ exception InvalidAction (
     )
   )
 //InvalidAction: Message.$ <>< { implements MetaGuard}
-InvalidAction:Message.$<<{ implements MetaGuard}
+InvalidAction:Message.$<><{ implements MetaGuard}
 }

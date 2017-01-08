@@ -1,5 +1,5 @@
 {
-Failure:Message.$<<{ implements MetaGuard}
+Failure:Message.$<><{ implements MetaGuard}
   //invariant checking, used into the actions
   class method
   Void checkInvariant(read Concept.Invariant that) (
@@ -44,16 +44,16 @@ Library setterAction() { implements Concept.Invariant
       }
     nc=that.referencedPath()
     if nc.hasExternalType() (
-      return Refactor.Redirect(Path"T" to:nc.externalType())<<mdfA
+      return Refactor.Redirect(Path"T" to:nc.externalType())<><mdfA
       )
-    return Refactor.RenamePath(Path"T" to:nc.pathFromRoot())<<mdfA
+    return Refactor.RenamePath(Path"T" to:nc.pathFromRoot())<><mdfA
     catch exception MetaGuard cnr
       error X"idAction"(cnr)
     }
 
   //main decoration method
   class method
-  Library<<(Library that)
+  Library<><(Library that)
   exception StateUnfit {
     i=Introspection(lib:that)
     if ! i.implements(Introspection(clazz:Concept.Invariant))  (return that)
@@ -76,15 +76,15 @@ Library stateDecoration(Library that,Introspection.Methods state) {
       mdf=m.thisMdf()
       if mdf.isClass() (
         newSel=Selector.from(name:SafeOperators.freshName(s.name()),names:kNamesF)
-        acc:=PostAction(s of:p    action:this.constructorAction(m.returnType())  deprecated: newSel)<<acc
+        acc:=PostAction(s of:p    action:this.constructorAction(m.returnType())  deprecated: newSel)<><acc
         )
       else (
         newSel=This.stateFName(s,old:kNames, fresh:kNamesF)
         if s.names().isEmpty()  (
-          acc:=PostAction(s of:p  action:this.idAction(m.returnType())   deprecated:newSel)<<acc
+          acc:=PostAction(s of:p  action:this.idAction(m.returnType())   deprecated:newSel)<><acc
           )
         else (
-          acc:=PostAction(s of:p   action:this.setterAction()  deprecated:newSel)<<acc
+          acc:=PostAction(s of:p   action:this.setterAction()  deprecated:newSel)<><acc
           )
         )
       )

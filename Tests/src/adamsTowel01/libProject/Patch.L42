@@ -1,6 +1,6 @@
 {(Path that)
   method
-  Library <<(Library that)
+  Library <><(Library that)
   exception MetaGuard.ClassClash,MetaGuard.MethodClash{
     ip=Introspection(lib:that,path:this.that())
     itr=ip.transitivelyNestedClasses()
@@ -10,16 +10,16 @@
     with ren in rens.vals() (
       map.add(right:ren)
       acc:=Refactor.MoveImplementationSelector(
-        ren.src() of:ren.path() to:ren.dest())<<acc
+        ren.src() of:ren.path() to:ren.dest())<><acc
       catch exception MetaGuard err
         error X"Path.#lessless(that)"(err)
       void
       )
     acc:=Refactor.RenamePath(
-      this.that() to:Path"This")<<acc
+      this.that() to:Path"This")<><acc
     with mapi in map.vals() (
       acc:=Refactor.MakePrivateSelector(
-        mapi.dest() of:mapi.path())<<acc
+        mapi.dest() of:mapi.path())<><acc
       )
     return acc
     catch exception MetaGuard.MemberUnavailable err

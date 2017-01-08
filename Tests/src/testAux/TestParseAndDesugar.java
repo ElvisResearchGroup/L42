@@ -213,11 +213,11 @@ public class TestParseAndDesugar {
   },{lineNumber(),"{ method Any(Any a,Any b) a+ b}",
   "{ method Any #apply(Any a, Any b) a.#plus(that:b)}"
 },{lineNumber(),"{ method Any() this!=this &   this}",
-  "{ method Any #apply() this.#bangequal(that:this).#and(that:this)}"
+  "{ method Any #apply() this.#equalequal(that:this).#bang().#and(that:this)}"
 },{lineNumber(),"{ method Any() this==this &   this}",
   "{ method Any #apply() this.#equalequal(that:this).#and(that:this)}"
 },{lineNumber(),"{ method Any() this<=this &   this}",
-  "{ method Any #apply() this.#leftequal(that:this).#and(that:this)}"
+  "{ method Any #apply() (This0 opNorm=this this.#rightequal(that:opNorm)).#and(that:this)}"
 },{lineNumber(),"{ method Any() this+this &   this}",
   "{ method Any #apply() this.#plus(that:this).#and(that:this)}"
 

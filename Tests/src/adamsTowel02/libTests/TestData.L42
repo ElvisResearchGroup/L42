@@ -2,7 +2,7 @@
 
 
 
-Person:Data<<{ implements Concept.Invariant
+Person:Data<><{ implements Concept.Invariant
   S name, var Size age
   method invariant()
     this.name()!=S"" & this.age()>= 0Size

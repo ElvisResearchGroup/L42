@@ -463,19 +463,27 @@ public class Desugar extends CloneVisitor{
     return new RoundBlock(getPosition(s),s.getDoc(),lift(s.getInner()),Collections.emptyList());
   }
   public Expression visit(BinOp s) {
-    if(s.getOp()==Op.ColonEqual){
+    Op op=s.getOp();
+    if(op==Op.ColonEqual){
       return visit(getMCall(s.getP(),s.getLeft(),"inner",getPs(s.getRight())));
     }
-    if(s.getOp().kind==Ast.OpKind.EqOp){
+    if(op.kind==Ast.OpKind.EqOp){
+      //go from, for example ++= into ++
       Op op2=Op.fromString(s.getOp().inner.substring(0,s.getOp().inner.length()-1));
       BinOp s2=s.withOp(op2);
       s2=s2.withLeft(getMCall(s.getP(),s.getLeft(),"#inner",getPs()));
-      return visit(new BinOp(s.getP(),s.getLeft(),Op.ColonEqual,visit1Step(s2)));
+      return visit(new BinOp(s.getP(),s.getLeft(),Op.ColonEqual,s2));
     }
-    return visit(visit1Step(s));
-  }
-  static public MCall visit1Step(BinOp s) {
-    return getMCall(s.getP(),s.getLeft(),desugarName(s.getOp().inner),getPs(s.getRight()));
+    if (op.negated){
+      BinOp s2=s.withOp(op.nonNegatedVersion());
+      return visit(getMCall(s.getP(),s2,desugarName(Op.Bang.inner),getPs()));
+      }
+    if (op.normalized){
+      return visit(getMCall(s.getP(),s.getLeft(),desugarName(s.getOp().inner),getPs(s.getRight())));
+      }
+    String x=Functions.freshName("opNorm", usedVars);
+    BinOp s2=new BinOp(s.getP(),s.getRight(),op.normalizedVersion(),new Expression.X(x));
+    return visit(getBlock(s.getP(),x, s.getLeft(),s2));
   }
   public Expression visit(UnOp s) {
     return visit(visit1Step(s));

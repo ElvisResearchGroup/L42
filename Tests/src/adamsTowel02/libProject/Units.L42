@@ -41,15 +41,6 @@ Library traitUnit() { Concept.Equals, Concept.ToS
     Bool ==(This that)
 
     method
-    Bool <(This that)
-
-    method
-    Bool <=(This that)
-
-    method
-    Bool !=(This that)
-
-    method
     Bool >(This that)
 
     method
@@ -87,18 +78,6 @@ Library traitUnit() { Concept.Equals, Concept.ToS
     this.that()==that.that()
 
   method
-  Bool <(This that)
-    this.that()<that.that()
-
-  method
-  Bool <=(This that)
-    this.that()<=that.that()
-
-  method
-  Bool !=(This that)
-    this.that()!=that.that()
-
-  method
   Bool >(This that)
     this.that()>that.that()
 
@@ -111,13 +90,13 @@ Library traitUnit() { Concept.Equals, Concept.ToS
     this.that()/that.that()
   //*********
   }
-NotValidSupport:Message.$<<{implements MetaGuard}
-NotSameSupport:Message.$<<{implements MetaGuard}
-NotValidUnit:Message.$<<{implements MetaGuard}
+NotValidSupport:Message.$<><{implements MetaGuard}
+NotSameSupport:Message.$<><{implements MetaGuard}
+NotValidUnit:Message.$<><{implements MetaGuard}
 
 class method
 Library of(class Any that) exception NotValidSupport{
-  return Data.Solid<<Refactor.Redirect(Path"Support" to:that)<<this.traitUnit()
+  return Data.Solid<><Refactor.Redirect(Path"Support" to:that)<><this.traitUnit()
   exception on MetaGuard
     NotValidSupport"The provided class is not a valid support class for a unit of measure: "[GetMyName(that)]""
   }
@@ -183,11 +162,11 @@ Library of(class Any c1, class Any c2,Library trait) exception NotValidUnit, Not
     "Provided classes "[GetMyName(c1)]" and "[GetMyName(c2)]" have different supports."
     )
   t=t1 //==t2
-  res=Data.Solid<<Refactor.Redirect(Path"Support" toType:t)<<this.traitUnit()
-  var Library traitAnd=Refactor.Redirect(Path"S" toType:t)<<trait
-  traitAnd:=Refactor.Redirect(Path"T1" to:c1)<<traitAnd
-  traitAnd:=Refactor.Redirect(Path"T2" to:c2)<<traitAnd
-  return Use[res]<<traitAnd
+  res=Data.Solid<><Refactor.Redirect(Path"Support" toType:t)<><this.traitUnit()
+  var Library traitAnd=Refactor.Redirect(Path"S" toType:t)<><trait
+  traitAnd:=Refactor.Redirect(Path"T1" to:c1)<><traitAnd
+  traitAnd:=Refactor.Redirect(Path"T2" to:c2)<><traitAnd
+  return Use[res]<><traitAnd
   exception on MetaGuard
     NotValidUnit"The provided classes "[GetMyName(c1)]" and "[GetMyName(c2)]" are not  valid Unit classes."
   }

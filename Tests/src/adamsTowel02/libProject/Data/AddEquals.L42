@@ -1,10 +1,10 @@
 {
 //initial delegation
 class method
-Library<<(Library that) {
-  return Use[that]<<this.equalsTrait(Introspection(lib:that))
+Library<><(Library that) {
+  return Use[that]<><this.equalsTrait(Introspection(lib:that))
   error on MetaGuard
-    X"AddToS.<<"
+    X"AddToS.<><"
   }
 
 //code generation
@@ -51,10 +51,9 @@ Library equalsTrait(Introspection.NestedClass that) {
       }
     method
     Bool ==(This that) this.baseEquals(that)
-    method
-    Bool !=(This that) !(this==that)
+
     }
-  return Refactor.MakePrivateSelector(Selector"baseEquals(that)" of:Path"This")<<Extends[miniEquals]<<lib
+  return Refactor.MakePrivateSelector(Selector"baseEquals(that)" of:Path"This")<><Extends[miniEquals]<><lib
   error on MetaGuard X"AddEquals.finalWrapping - MakePrivate"
   }
 }

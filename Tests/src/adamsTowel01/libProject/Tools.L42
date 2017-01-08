@@ -8,7 +8,7 @@ S getToSOrName(read Any that){
     )
   }
 
-  CanNotSpecializeOperation:Message.$<<{ implements MetaGuard}
+  CanNotSpecializeOperation:Message.$<><{ implements MetaGuard}
   class method
   Library specializeField(Selector selector, Introspection.Type type, Library forReadable, Library forClass)
   exception CanNotSpecializeOperation {
@@ -23,7 +23,7 @@ S getToSOrName(read Any that){
    class method // maybe private
    Library specialize(Library that, Selector selector, Introspection.Type type)
    exception CanNotSpecializeOperation {
-    return Refactor.Redirect(Path"T" toType: type)<<Refactor.RenameSelector(Selector"f()" of:Path"This" to:selector)<<that
+    return Refactor.Redirect(Path"T" toType: type)<><Refactor.RenameSelector(Selector"f()" of:Path"This" to:selector)<><that
     exception on MetaGuard CanNotSpecializeOperation"Unfit operation"
     }
   class method // maybe private
@@ -35,8 +35,8 @@ S getToSOrName(read Any that){
       read method T #0f()
       }
     res:=Refactor.compose(left:res,right:that)
-    res:=Refactor.MakePrivateSelector(Selector"f()" of:Path"This")<<res
-    res:=Refactor.RenameSelector(Selector"#0f()" of:Path"This" to:Selector"f()")<<res
+    res:=Refactor.MakePrivateSelector(Selector"f()" of:Path"This")<><res
+    res:=Refactor.RenameSelector(Selector"#0f()" of:Path"This" to:Selector"f()")<><res
     exception on MetaGuard CanNotSpecializeOperation"Unfit operation"
     return res
     }

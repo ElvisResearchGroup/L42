@@ -14,7 +14,7 @@ exception StateUnfit{
   }
 
 class method
-Library<<(Library that)
+Library<><(Library that)
 exception StateUnfit, MetaGuard{
   i=Introspection(lib:that)
   s=i.state()
@@ -31,7 +31,7 @@ exception StateUnfit, MetaGuard{
       newSel=Selector.from(name:S"with",names:newSelNames)
       defP=Selector.from(name:n,names:Strings[])
       ss:=ss + newSel
-      acc:=DefaultParameter(sel, of:Path"This",name:n, by:defP)<<acc
+      acc:=DefaultParameter(sel, of:Path"This",name:n, by:defP)<><acc
       )
     )
   return acc
@@ -48,8 +48,8 @@ exception StateUnfit, MetaGuard{
   var Library acc=that
   acc:=Refactor.compose(left:acc
     right:Refactor.RenameSelector(
-      Selector"with(that)" of:p to:freshW)<<action)
-  acc:=Refactor.SumMethods(k.selector() and:freshW of:p over:S"that" to:withK)<<acc
+      Selector"with(that)" of:p to:freshW)<><action)
+  acc:=Refactor.SumMethods(k.selector() and:freshW of:p over:S"that" to:withK)<><acc
   return acc
   }
 }

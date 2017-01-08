@@ -156,8 +156,8 @@ public class TestParseAndDoAst {
 },{"a**b**c**d","(a**(b**(c**d)))"
 },{"a**b**c**d**e","(a**(b**(c**(d**e))))"
 },{"a**b**c**d**e**f","(a**(b**(c**(d**(e**f)))))"
-},{"a<<b<<c<<d<<e","(a<<(b<<(c<<(d<<e))))"
-},{"a<<b<<c<<d<<e<<f","(a<<(b<<(c<<(d<<(e<<f)))))"
+},{"a>>b>>c>>d>>e","(a>>(b>>(c>>(d>>e))))"
+},{"a>>b>>c>>d>>e>>f","(a>>(b>>(c>>(d>>(e>>f)))))"
 //},{"a+ b -c","(a)" is this not giving error since it is captured later? how?
 },{"a*b < c+d","((a*b)<(c+d))"
 

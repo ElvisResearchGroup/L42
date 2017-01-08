@@ -63,10 +63,6 @@ Bool >(Elem that)
 
 
 
-
-read method
-Bool !=(read This that) !(this==that)
-
 read method
 Bool ==(read This that){
   with e1 in this.vals(), e2 in that.vals() (

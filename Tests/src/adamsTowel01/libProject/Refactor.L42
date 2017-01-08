@@ -10,7 +10,7 @@
     }
   class method
   Void checkTargetExists(Library that,Path path) exception MetaGuard.NestedClassUnavailable (
-    unused=AddDocumentationPath(path doc:Introspection.Doc"JustToSeeIfItIsThere")<<that
+    unused=AddDocumentationPath(path doc:Introspection.Doc"JustToSeeIfItIsThere")<><that
     catch exception MetaGuard.InvalidOnTopLevel x
       error X"Refactor4"
     void
@@ -18,7 +18,7 @@
 
   RedirectType:{(Path that, Introspection.Type to)
     method
-    Library << (Library that)
+    Library <>< (Library that)
     exception
         MetaGuard.NestedClassUnavailable,
         MetaGuard.InvalidOnTopLevel,
@@ -26,12 +26,12 @@
         MetaGuard.MethodClash,
         MetaGuard.ClassClash,
         MetaGuard.IncoherentRedirectMapping{
-    if this.to().isVoid() (return Redirect(this.that() to: Void)<<that)
-    if this.to().isAny() (return Redirect(this.that() to: Any)<<that)
-    if this.to().isLibrary() (return Redirect(this.that() to: Library)<<that)
+    if this.to().isVoid() (return Redirect(this.that() to: Void)<><that)
+    if this.to().isAny() (return Redirect(this.that() to: Any)<><that)
+    if this.to().isLibrary() (return Redirect(this.that() to: Library)<><that)
     nc=this.to().referencedPath()
-    if nc.hasExternalType() (return Redirect(this.that() to: nc.externalType())<<that )
-    return RenamePath(this.that() to:nc.pathFromRoot())<<that
+    if nc.hasExternalType() (return Redirect(this.that() to: nc.externalType())<><that )
+    return RenamePath(this.that() to:nc.pathFromRoot())<><that
     }
   }
 
@@ -42,7 +42,7 @@
       RedirectType(that, to:toType)
 
     method
-    Library << (Library that)
+    Library <>< (Library that)
     exception
         MetaGuard.NestedClassUnavailable,
         MetaGuard.InvalidOnTopLevel,
@@ -61,7 +61,7 @@
     }
   RenameSelector:{(Selector that, Path of, Selector to)
     method
-    Library << (Library that)
+    Library <>< (Library that)
     exception MetaGuard.MemberUnavailable,MetaGuard.MethodClash{
       return SafeOperators.renameMethod(that,path:this.of() src:this.that(),dest:this.to())
       catch error Library err (
@@ -72,7 +72,7 @@
     }
   RenamePath:{(Path that, Path to)
     method
-    Library << (Library that)
+    Library <>< (Library that)
     exception
         MetaGuard.NestedClassUnavailable,
         MetaGuard.MethodClash,
@@ -88,7 +88,7 @@
     }
   RemoveImplementationSelector:{(Selector that, Path of)
     method
-    Library << (Library that)
+    Library <>< (Library that)
     exception MetaGuard.MemberUnavailable{
       return SafeOperators.removeImplementation(that,path:this.of(),selector:this.that())
       catch error Library err (
@@ -98,7 +98,7 @@
     }
   MoveImplementationSelector:{(Selector that, Path of,Selector to)
     method
-    Library << (Library that)
+    Library <>< (Library that)
     exception MetaGuard.MemberUnavailable,MetaGuard.MethodClash{
       return SafeOperators.moveImplementation(that,path:this.of(),src:this.that(),dest:this.to())
       catch error Library err (
@@ -109,7 +109,7 @@
     }
   RemoveImplementationPath:{(Path that)
     method
-    Library << (Library that)
+    Library <>< (Library that)
     exception
         MetaGuard.NestedClassUnavailable,
         MetaGuard.PrivacyCoupuled{
@@ -121,7 +121,7 @@
     }
   AddDocumentationSelector:{(Selector that, Path of,Introspection.Doc doc)
     method
-    Library << (Library that)
+    Library <>< (Library that)
     exception MetaGuard.MemberUnavailable{
       return SafeOperators.addDocumentation(that,path:this.of() selector:this.that(),doc:this.doc())
       catch error Library err (
@@ -131,7 +131,7 @@
     }
   AddDocumentationPath:{(Path that,Introspection.Doc doc)
     method
-    Library << (Library that)
+    Library <>< (Library that)
     exception
         MetaGuard.NestedClassUnavailable,
         MetaGuard.InvalidOnTopLevel{
@@ -144,26 +144,26 @@
     }
   MakePrivatePath:{(Path that) //Can be called Hide
     method
-    Library << (Library that)
+    Library <>< (Library that)
     exception
         MetaGuard.MemberUnavailable,
         MetaGuard.InvalidOnTopLevel
       AddDocumentationPath(this.that(),doc:Introspection.Doc({//@private
-        }))<<that
+        }))<><that
     }
   MakePrivateSelector:{(Selector that, Path of)
     method
-    Library << (Library that)
+    Library <>< (Library that)
     exception MetaGuard.MemberUnavailable
       AddDocumentationSelector(this.that() of:this.of() doc:Introspection.Doc({//@private
-        }))<<that
+        }))<><that
     }
 
   SumMethods:{
     (Selector that,Selector and, Path of, S over, Selector to)
 
     method
-    Library << (Library that)
+    Library <>< (Library that)
     exception
         MetaGuard.MemberUnavailable,
         MetaGuard.MethodClash,
@@ -181,7 +181,7 @@
     (Selector that, Path of, Introspection.Mdf.List mdfs, Size exceptionN)
 
    method
-   Library << (Library that)
+   Library <>< (Library that)
    exception
        MetaGuard.NestedClassUnavailable
        MetaGuard.MethodClash{
