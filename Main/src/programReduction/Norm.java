@@ -88,14 +88,14 @@ public class Norm {
     //p.top()={interface? implements Ps Ms} //Ms is free var and is ok
     ClassB l=p.top();
     //Ps'=collect(p,Ps)
-    List<Path> ps1 = Methods.collect(p,l.getSupertypes());
+    List<Path> ps1 = Methods.collect(p,l.getSuperPaths());
     //Ms'=methods(p,This0), {C:e in Ms} //norm now put all the nested classes in the back.
     List<ClassB.Member> ms1 = Stream.concat(
       p.methods(Path.outer(0)).stream(),
       l.getMs().stream().filter(m->m instanceof ClassB.NestedClass)
       ).map(m->norm(p,m)).collect(Collectors.toList());
     //return l.withSupertypes(ps1).withMs(ms1).withUniqueId(p.getFreshId()).withPhase(Phase.Norm);
-    return new ClassB(l.getDoc1(),l.getDoc2(),l.isInterface(),ps1,ms1,l.getP(),l.getStage(),Phase.Norm,p.getFreshId());
+    return new ClassB(l.getDoc1(),l.isInterface(),Map.of(pi->pi.toImmNT(),ps1),ms1,l.getP(),l.getStage(),Phase.Norm,p.getFreshId());
     }
   @SuppressWarnings("unchecked")
   <T extends ExpCore.ClassB.Member> T norm(Program p,T m){

@@ -76,7 +76,6 @@ public class Norm {
     List<Type> ts=new ArrayList<Type>();
       for(Type tt:t.getTs()){ts.add(of(p,tt));}
     MethodType mt2=new MethodType(t.isRefine(),
-        t.getDocExceptions(),
         t.getMdf(),
         ts,//already normalized before
        of(p,t.getReturnType()),

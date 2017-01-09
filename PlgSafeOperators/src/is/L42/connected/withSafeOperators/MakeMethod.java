@@ -19,6 +19,7 @@ import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.*;
 import ast.Util.CachedStage;
 import auxiliaryGrammar.Program;
+import tools.Map;
 
 public class MakeMethod {
 public static ClassB addMethod(ClassB _lib, List<String> path, MethodSelector ms, String mdfs,int excNumber){
@@ -44,7 +45,7 @@ public static ClassB addMethod(ClassB _lib, List<String> path, MethodSelector ms
     exceptions.add(Path.outer(0,Arrays.asList(cn)));
     nc.add(cn);
     }
-  MethodType mt = new MethodType(false,Doc.empty(),Mdf.valueOf(_mdfs[0]),ts, retT,exceptions);
+  MethodType mt = new MethodType(false,Mdf.valueOf(_mdfs[0]),ts, retT,Map.of(pi->pi.toImmNT(),exceptions));
   MethodWithType mwt=new MethodWithType(Doc.empty(),ms,mt,Optional.empty(),innerLib.getP());
   Optional<Member> optM = Program.getIfInDom(innerLib.getMs(),ms);
   if(optM.isPresent()){

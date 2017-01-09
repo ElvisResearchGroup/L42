@@ -63,7 +63,7 @@ public static ReplState start(String code){
       }   
   }
   public ReplState add(String code){
-    Expression.ClassB cbEmpty=new ClassB(Doc.empty(),Doc.empty(),new ast.Ast.InterfaceHeader(),Collections.emptyList(), Collections.emptyList(), Collections.emptyList(),Position.noInfo, Stage.Star);
+    Expression.ClassB cbEmpty=new ClassB(Doc.empty(),new ast.Ast.InterfaceHeader(),Collections.emptyList(), Collections.emptyList(), Collections.emptyList(),Position.noInfo, Stage.Star);
     try{
       //parse
       Expression.ClassB codeTmp=(ClassB) Parser.parse("Repl","{"+code+"}");  

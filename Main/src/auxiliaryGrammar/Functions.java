@@ -110,8 +110,8 @@ public static boolean isSubtype(Program p, Path path1, Path path2) {
 
   ClassB cp1=p.extractCb(path1);
   //for(Path pathi:cp1.getStage().getInheritedPaths()){
-  for(Path pathi:cp1.getSupertypes()){
-    Path pathiFrom=From.fromP(pathi, path1);
+  for(Type ti:cp1.getSupertypes()){
+    Path pathiFrom=From.fromP(ti.getNT().getPath(), path1);
     Path pathiN=Norm.of(p,pathiFrom);//or not norm?
     if(pathiN.equals(path2N)){return true;}
   }
@@ -575,7 +575,7 @@ private static List<MethodWithType> collectAbstractMethods(Program p,ClassB cb) 
 public static Set<MethodSelector> originalMethOf(Program p, ClassB cb) {
   return originalMethOf(p,cb.getSupertypes(),cb.getMs());
 }
-public static Set<MethodSelector> originalMethOf(Program p, List<Path> paths,List<Member> ms0) {
+public static Set<MethodSelector> originalMethOf(Program p, List<Type> superTs,List<Member> ms0) {
   Set<MethodSelector> result=new HashSet<>();
   for(Member m:ms0){
     m.match(
@@ -583,12 +583,12 @@ public static Set<MethodSelector> originalMethOf(Program p, List<Path> paths,Lis
         mi->{throw Assertions.codeNotReachable();},
         mt->result.add(mt.getMs()));
     }
-  retainOnlyOriginalMethOf(p,paths,result);
+  retainOnlyOriginalMethOf(p,superTs,result);
   return result;
 }
-private static void retainOnlyOriginalMethOf(Program p, List<Path> paths,Set<MethodSelector> ms0) {
-   for(Path pi:paths){
-    for(Member mi:p.extractCb(pi).getMs()){
+private static void retainOnlyOriginalMethOf(Program p, List<Type> superTs,Set<MethodSelector> ms0) {
+   for(Type ti:superTs){
+    for(Member mi:p.extractCb(ti.getNT().getPath()).getMs()){
       mi.match(
           nc->false,
           mim->{throw Assertions.codeNotReachable();},

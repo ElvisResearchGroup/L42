@@ -117,7 +117,7 @@ static private MethodType immK(MethodType proto) {
   static private MethodWithType prototypeK(Doc doc,List<String>fieldNames,List<Type>fieldTypes,Position pos) {
     MethodSelector ms=new MethodSelector("",fieldNames);
     NormType resT=NormType.mutThis0;
-    MethodType mt=new MethodType(false,Doc.empty(),ast.Ast.Mdf.Class,fieldTypes,resT,Collections.emptyList());
+    MethodType mt=new MethodType(false,ast.Ast.Mdf.Class,fieldTypes,resT,Collections.emptyList());
     return new MethodWithType(doc, ms,mt, Optional.empty(),pos);
     }
 

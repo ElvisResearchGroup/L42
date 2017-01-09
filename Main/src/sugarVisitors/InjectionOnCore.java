@@ -67,8 +67,7 @@ public class InjectionOnCore implements Visitor<ExpCore> {
   }
   public ExpCore visit(Expression.ClassB s){
     Doc doc1=s.getDoc1();
-    Doc doc2=s.getDoc2();
-    List<Ast.Path> supertypes=s.getSupertypes();
+    List<Ast.Type> supertypes=s.getSupertypes();
     boolean isInterface=false;
     if(s.getH() instanceof Ast.ConcreteHeader){throw Assertions.codeNotReachable();}
     if(s.getH() instanceof Ast.InterfaceHeader){isInterface=true;}
@@ -84,7 +83,7 @@ public class InjectionOnCore implements Visitor<ExpCore> {
           })
        );
     }
-    ClassB result=new ClassB(doc1,doc2,isInterface,supertypes,members,s.getP(),new CachedStage(),Phase.None,"");
+    ClassB result=new ClassB(doc1,isInterface,supertypes,members,s.getP(),new CachedStage(),Phase.None,"");
     result.getStage().setStage(s.getStage());
     return result;
     }

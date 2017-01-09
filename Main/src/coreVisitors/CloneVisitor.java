@@ -76,7 +76,7 @@ public class CloneVisitor implements Visitor<ExpCore>{
     }
 
   protected MethodType liftMT(MethodType mt) {
-    return new MethodType(mt.isRefine(),liftDoc(mt.getDocExceptions()),mt.getMdf(),Map.of(this::liftT,mt.getTs()),liftT(mt.getReturnType()),Map.of(this::lift,mt.getExceptions()));
+    return new MethodType(mt.isRefine(),mt.getMdf(),Map.of(this::liftT,mt.getTs()),liftT(mt.getReturnType()),Map.of(this::liftT,mt.getExceptions()));
   }
   public ExpCore visit(Path s) {return s;}
   public ExpCore visit(X s) { return s;}
@@ -98,11 +98,10 @@ public class CloneVisitor implements Visitor<ExpCore>{
     return Map.of(this::liftDec,s);
   }
   public ExpCore visit(ClassB s) {
-    List<Path> sup = liftSup(s.getSupertypes());
+    List<Type> sup = liftSup(s.getSupertypes());
     List<Member> ms = liftMembers(s.getMs());
     return new ClassB(
       liftDoc(s.getDoc1()),
-      liftDoc(s.getDoc2()),
       s.isInterface(),
       sup,
       ms,
@@ -114,8 +113,8 @@ public class CloneVisitor implements Visitor<ExpCore>{
   public List<Member> liftMembers(List<Member> s) {
     return Map.of(this::liftM,s);
   }
-  protected List<Path> liftSup(List<Path> supertypes) {
-    return Map.of(this::lift,supertypes);
+  protected List<Type> liftSup(List<Type> supertypes) {
+    return Map.of(this::liftT,supertypes);
   }
   @Override
   public ExpCore visit(Loop s) {

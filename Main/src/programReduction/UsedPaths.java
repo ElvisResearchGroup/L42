@@ -86,7 +86,7 @@ public class UsedPaths {
   static private Paths usedInnerL(ClassB lc, List<String> cs) {
   //LC={_ implements Ps, M1..Mn}//in implementation, error if not compiled
   assert IsCompiled.of(lc);//TODO: should it be a compilation error?
-  Paths paths=Paths.reorganize(lc.getSupertypes());
+  Paths paths=Paths.reorganize(lc.getSuperPaths());
   for(ClassB.Member mi: lc.getMs()){
     paths=paths.union(usedInnerM(mi));
     }

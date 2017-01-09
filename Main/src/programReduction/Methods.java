@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 import java.util.Set;
 
 import ast.Ast;
@@ -45,7 +46,8 @@ abstract class Methods implements Program{
       }
     if(p0.isPrimitive()){return collect(p,ps,visited);}
     ClassB l=p.extractClassB(p0);
-    List<Ast.Path> recP0=collect(p.navigate(p0),l.getSupertypes(),push(visited,p0));
+    List<Path>superPaths=l.getSuperPaths();
+    List<Ast.Path> recP0=collect(p.navigate(p0),superPaths,push(visited,p0));
     recP0=Map.of(pi->From.fromP(pi,p0),recP0);
     List<Ast.Path> recPs=collect(p,ps,visited);
     return mergeUnique(p0, recP0, recPs);    
@@ -60,7 +62,7 @@ abstract class Methods implements Program{
   public List<MethodWithType> methods(Ast.Path p0){
     Program p=this;
     ClassB cb0=p.extractClassB(p0);
-    List<Ast.Path> ps=cb0.getSupertypes();
+    List<Ast.Path> ps=cb0.getSuperPaths();
 //          P1..Pn=collect(p,Ps[from P0]), error unless forall i, p(Pi) is an interface
     List<Ast.Path> p1n=collect(p,Map.of(pi->From.fromP(pi,p0), ps));
     List<ClassB> cb1n=Map.of(pi->p.extractClassB(pi), p1n);

@@ -267,14 +267,14 @@ public class Desugar extends CloneVisitor{
   public Expression visit(ClassB s) {
     Position pos=s.getP();
     if(s.getH() instanceof ConcreteHeader){
-      List<Member> ms = Desugar.cfType((ConcreteHeader)s.getH(),s.getDoc2());
+      List<Member> ms = Desugar.cfType((ConcreteHeader)s.getH(),Doc.empty());
       ms.addAll(s.getMs());
-      s=s.withDoc2(Doc.empty()).withMs(ms).withH(new Ast.TraitHeader());
+      s=s.withMs(ms).withH(new Ast.TraitHeader());
     }
     if(!s.getFields().isEmpty()){
       List<Member> ms =s.getFields().stream().flatMap(f->Desugar.field(pos,f)).collect(Collectors.toList());
       ms.addAll(s.getMs());
-      s=s.withDoc2(Doc.empty()).withMs(ms).withH(new Ast.TraitHeader());
+      s=s.withMs(ms).withH(new Ast.TraitHeader());
       }
     Set<String> oldUsedVars = this.usedVars;
     HashMap<String, Type> oldVarEnv = this.varEnv;
@@ -583,7 +583,7 @@ public class Desugar extends CloneVisitor{
 
   static ClassB encodePrimitiveString(String s){
     //return EncodingHelper.wrapStringU(s);//no, this produces a ExpCoreClassB
-    return new ClassB(Doc.factory(true,"@stringU\n"+EncodingHelper.produceStringUnicode(s)+"\n"),Doc.empty(),new Ast.TraitHeader(),Collections.emptyList(),Collections.emptyList(),Collections.emptyList(),Position.noInfo,Stage.None);
+    return new ClassB(Doc.factory(true,"@stringU\n"+EncodingHelper.produceStringUnicode(s)+"\n"),new Ast.TraitHeader(),Collections.emptyList(),Collections.emptyList(),Collections.emptyList(),Position.noInfo,Stage.None);
   }
   public static String desugarName(String n){
     if(n.isEmpty())return "#apply";
@@ -790,7 +790,7 @@ public class Desugar extends CloneVisitor{
         }
     MethodSelector ms=called.withName(h.getName());
     NormType resT=new ast.Ast.NormType(mdf,ast.Ast.Path.outer(0),Ph.None,Doc.empty());
-    MethodType mt=new MethodType(false,Doc.empty(),ast.Ast.Mdf.Class,ts,resT,Collections.emptyList());
+    MethodType mt=new MethodType(false,ast.Ast.Mdf.Class,ts,resT,Collections.emptyList());
     Parameters ps=new Parameters(Optional.empty(),called.getNames(), called.getNames().stream().map(n->new X(n)).collect(Collectors.toList()));
     MCall body=new MCall(Path.outer(0),called.getName(),Doc.empty(),ps,h.getP());
     return new MethodWithType(doc, ms,mt, Optional.of(body),h.getP());
@@ -825,7 +825,7 @@ public class Desugar extends CloneVisitor{
       }
     MethodSelector ms=new MethodSelector("#mutK",names);
     NormType resT=new ast.Ast.NormType(Mdf.Mutable,ast.Ast.Path.outer(0),Ph.None,Doc.empty());
-    MethodType mt=new MethodType(false,Doc.empty(),ast.Ast.Mdf.Class,ts,resT,Collections.emptyList());
+    MethodType mt=new MethodType(false,ast.Ast.Mdf.Class,ts,resT,Collections.emptyList());
     return new MethodWithType(doc, ms,mt, Optional.empty(),pos);
     }
   static private Mdf mdfForNamedK(ast.Ast.ConcreteHeader h){
@@ -873,7 +873,7 @@ public class Desugar extends CloneVisitor{
   }
   private static MethodWithType generateSetter(Expression.Position pos, ast.Ast.FieldDec f, Doc doc) {
     Type tt=f.getT().match(nt->nt.withPh(Ph.None), hType->hType);
-    MethodType mti=new MethodType(false,Doc.empty(),Mdf.Mutable,Collections.singletonList(tt),NormType.immVoid,Collections.emptyList());
+    MethodType mti=new MethodType(false,Mdf.Mutable,Collections.singletonList(tt),NormType.immVoid,Collections.emptyList());
     MethodSelector msi=new MethodSelector(f.getName(),Collections.singletonList("that"));
     MethodWithType mwt = new MethodWithType(doc, msi, mti, Optional.empty(),pos);
     return mwt;
@@ -881,7 +881,7 @@ public class Desugar extends CloneVisitor{
   //left cfExposer generating exposer since is different from generateExposer code for # and capsule
   static private void cfExposer(Expression.Position pos,FieldDec f,Doc doc, List<Member> result) {
     Type tt=f.getT().match(nt->nt.withPh(Ph.None), hType->hType);
-    MethodType mti=new MethodType(false,Doc.empty(),Mdf.Mutable,Collections.emptyList(),tt,Collections.emptyList());
+    MethodType mti=new MethodType(false,Mdf.Mutable,Collections.emptyList(),tt,Collections.emptyList());
     MethodSelector msi=new MethodSelector("#"+f.getName(),Collections.emptyList());
     result.add(new MethodWithType(doc, msi, mti, Optional.empty(),pos));
   }
@@ -891,7 +891,7 @@ public class Desugar extends CloneVisitor{
       if(nt.getMdf()==Mdf.Capsule){nt=nt.withMdf(Mdf.Lent);}
       return nt;
       }, hType->hType);
-    MethodType mti=new MethodType(false,Doc.empty(),Mdf.Mutable,Collections.emptyList(),tt,Collections.emptyList());
+    MethodType mti=new MethodType(false,Mdf.Mutable,Collections.emptyList(),tt,Collections.emptyList());
     MethodSelector msi=new MethodSelector(f.getName(),Collections.emptyList());
     MethodWithType mwt = new MethodWithType(doc, msi, mti, Optional.empty(),pos);
     return mwt;
@@ -908,7 +908,7 @@ public class Desugar extends CloneVisitor{
     if(mdf==Mdf.Capsule || mdf==Mdf.Mutable || mdf==Mdf.Lent){
       fieldNt=fieldNt.withMdf(Mdf.Readable);
       }
-    MethodType mti=new MethodType(false,Doc.empty(),Mdf.Readable,Collections.emptyList(),fieldNt,Collections.emptyList());
+    MethodType mti=new MethodType(false,Mdf.Readable,Collections.emptyList(),fieldNt,Collections.emptyList());
     String name=f.getName();
     if(name.startsWith("#")){name=name.substring(1);}
     MethodSelector msi=new MethodSelector(name,Collections.emptyList());

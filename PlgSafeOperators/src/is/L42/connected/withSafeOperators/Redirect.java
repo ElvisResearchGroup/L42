@@ -116,9 +116,10 @@ public class Redirect {
   }
   private static void checkExceptionOk(List<SPathSPath> exceptions, List<PathPath> verified) {
     for(SPathSPath exc:exceptions){
-     List<Path> src = exc.getMwt1().getMt().getExceptions();
-     src=Map.of(pi->traspose(verified,pi),src);
-     if(!src.containsAll(exc.getMwt2().getMt().getExceptions())){
+     List<Path> src = Map.of(t->traspose(verified,t.getNT().getPath()), exc.getMwt1().getMt().getExceptions());
+     //was: src=Map.of(pi->traspose(verified,pi),src); and now is merged on top
+     List<Path>other=Map.of(t->t.getNT().getPath(),exc.getMwt2().getMt().getExceptions());
+     if(!src.containsAll(other)){
        throw Errors42.errorMethodClash(exc.getSrc().getCBar(), exc.getMwt1(),exc.getMwt2(),true,
            Collections.emptyList(),false,false,false);
        }
@@ -244,12 +245,12 @@ public class Redirect {
     int countExternal=0;
     int countExternalSatisfied=0;
     exceptions.add(new SPathSPath(src,mwtSrc,mwtDest));
-    for(Path pi:mwtSrc.getMt().getExceptions()){
+    for(Path pi:Map.of(t->t.getNT().getPath(),mwtSrc.getMt().getExceptions())){
       if(pi.isPrimitive() || pi.outerNumber()>0){
         countExternal+=1;
         if(mwtDest.getMt().getExceptions().contains(pi)){countExternalSatisfied+=1;}
         continue;}
-      plusEqual(ambiguities,pi,mwtDest.getMt().getExceptions());
+      plusEqual(ambiguities,pi,Map.of(t->t.getNT().getPath(),mwtDest.getMt().getExceptions()));
     }
     int countInternal=mwtSrc.getMt().getExceptions().size()-countExternal;
     return countInternal+countExternalSatisfied>=mwtDest.getMt().getExceptions().size();
@@ -285,11 +286,11 @@ public class Redirect {
   private static void redirectOkImpl(ClassKind kindSrc,ClassKind kindDest,List<PathSPath> ambiguities, PathSPath current, ClassB currentIntCb, ClassB currentExtCb) {
    // List<Path>unexpectedInterfaces=new ArrayList<>(unexpectedI);
    // Collections.sort(unexpectedInterfaces,(pa,pb)->pa.toString().compareTo(pb.toString()));
-    List<Path>extPs=currentExtCb.getSupertypes();
+    List<Path>extPs=currentExtCb.getSuperPaths();
     Path destP=current.getPathsSet().iterator().next();
     extPs=Map.of(pi->From.fromP(pi,destP), extPs);
     List<Path> unexpectedInterfaces=new ArrayList<>();
-    for(Path pi:currentIntCb.getSupertypes()){
+    for(Path pi:currentIntCb.getSuperPaths()){
       Path pif=From.fromP(pi, current.getPath());
       if(extPs.isEmpty()){unexpectedInterfaces.add(pif);}
       else if(pif.isPrimitive() || pif.outerNumber()>0){

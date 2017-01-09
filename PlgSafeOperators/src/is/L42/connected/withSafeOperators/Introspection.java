@@ -107,8 +107,8 @@ public class Introspection {//TODO: we keep 5 methods, but we merge the PathRepo
     if(memberN==0){
       if(typeN<=0){throw Resources.notAct;}
       if(current.getSupertypes().size()<typeN){throw Resources.notAct;}
-      Path implN = current.getSupertypes().get(typeN-1);
-      return typeReport(isExternal,p.addAtTop(that), implN.toImmNT(),path);
+      Type implN = current.getSupertypes().get(typeN-1);
+      return typeReport(isExternal,p.addAtTop(that), implN,path);
       }
     assert memberN>0;
     Member mi = current.getMs().get(memberN-1);
@@ -121,7 +121,7 @@ public class Introspection {//TODO: we keep 5 methods, but we merge the PathRepo
       ti=mwt.getMt().getTs().get(typeN-1);
       }
     if(typeN<0){
-      ti=new NormType(Mdf.Immutable,mwt.getMt().getExceptions().get((typeN*-1)-1),Ph.None,Doc.empty());
+      ti=mwt.getMt().getExceptions().get((typeN*-1)-1);
       //TODO: doci=?? add docs for exceptions, return type and implements
       }
     return typeReport(isExternal,p.addAtTop(that), ti,path);

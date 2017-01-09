@@ -179,8 +179,8 @@ public class TypeSystemOK {
     for(Type t:mt.getMt().getTs() ){
       checkExists(p,t,mt.getP());
       }
-    for(Path pi:mt.getMt().getExceptions()){
-      checkExists(p,pi,mt.getP());
+    for(Type ti:mt.getMt().getExceptions()){
+      checkExists(p,ti.getNT().getPath(),mt.getP());
     }
     if(!mt.get_inner().isPresent()){return;}
     HashMap<String,NormType> varEnv=new HashMap<>();
@@ -192,7 +192,7 @@ public class TypeSystemOK {
     SealEnv sealEnv=SealEnv.empty();
     sealEnv.xssK.add(new HashSet<>(varEnv.keySet()));
     ThrowEnv throwEnv=new ThrowEnv();
-    throwEnv.exceptions.addAll(mt.getMt().getExceptions());
+    mt.getMt().getExceptions().stream().forEach(t->throwEnv.exceptions.add(t.getNT().getPath()));
     NormType suggested=Functions.toPartial((NormType)mt.getMt().getReturnType());
     p.exePlusOk(varEnv);
     TypeSystem.typecheckSure(

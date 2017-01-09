@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
+
 import tools.Assertions;
 import coreVisitors.CloneVisitor;
 import coreVisitors.CollectPaths0;
@@ -20,9 +22,8 @@ import ast.ExpCore.ClassB.*;
 public class UsedPathsPlus {
   public List<Path> of(ClassB cb){
     List<Path> result=new ArrayList<Path>();
-    result.addAll(cb.getSupertypes());
+    result.addAll(cb.getSuperPaths());
     result.addAll(cb.getDoc1().getPaths());
-    result.addAll(cb.getDoc2().getPaths());
     for(Member m:cb.getMs()){m.match(
       nc->collectPaths(result,nc),
       mi->collectPaths(result,mi),

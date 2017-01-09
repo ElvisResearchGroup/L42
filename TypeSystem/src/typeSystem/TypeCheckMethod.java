@@ -50,7 +50,7 @@ public class TypeCheckMethod {
 
   public static Type methCallT(TypeSystem that, List<HashMap<String, NormType>> varEnvs,MCall s,NormType recExpected, MethodWithType mwt) {
     //check exceptions subtype
-    checkExceptions(that.p,s,mwt.getMt().getExceptions(),that.throwEnv.exceptions);
+    checkExceptions(that.p,s,tools.Map.of(ti->ti.getNT().getPath(),mwt.getMt().getExceptions()),that.throwEnv.exceptions);
     List<NormType> tsExp=new ArrayList<NormType>();
     List<Type> ts=new ArrayList<Type>();
     List<ExpCore> es = new ArrayList<ExpCore>();

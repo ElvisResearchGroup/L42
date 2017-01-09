@@ -92,10 +92,9 @@ public class SumMethods {
     totTypes.addAll(mt2.getTs());
     int toRemove=mt1.getTs().size()+index;
     totTypes.remove(toRemove);
-    ArrayList<Path> exU = new ArrayList<>(mt1.getExceptions());
+    List<Type> exU = new ArrayList<>(mt1.getExceptions());
     exU.addAll(mt2.getExceptions());
     MethodType mtU =new MethodType(false,
-        mt1.getDocExceptions().sum(mt2.getDocExceptions()),
         mdfU,totTypes,mt2.getReturnType(),exU);
     return mtU;
     }

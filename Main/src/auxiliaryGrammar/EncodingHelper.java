@@ -180,7 +180,6 @@ public class EncodingHelper{
   static String extractCode(ClassB cb, String prefix) {
     if(cb.isInterface()){return null;}
     if(!cb.getMs().isEmpty()){return null;}
-    if(!cb.getDoc2().isEmpty()){return null;}
     String result=cb.getDoc1().toString();
     if(!result.startsWith(prefix)){return null;}
     if(result.length()==prefix.length()){return "";}
@@ -190,14 +189,14 @@ public class EncodingHelper{
   public static Ast.MethodType mtType(Path result){
     List<Type> ts=new ArrayList<>();
     ts.add(NormType.classAny);
-    return new Ast.MethodType(false,Doc.empty(),Mdf.Immutable,ts,result.toImmNT(),Collections.emptyList());
+    return new Ast.MethodType(false,Mdf.Immutable,ts,result.toImmNT(),Collections.emptyList());
   }
 
   public static Ast.MethodType mt(Path result,Path ...paths){
     List<Type> ts=new ArrayList<>();
     for(Path pi:paths){
       ts.add(pi.toImmNT());      }
-    return new Ast.MethodType(false,Doc.empty(),Mdf.Immutable,ts,result.toImmNT(),Collections.emptyList());
+    return new Ast.MethodType(false,Mdf.Immutable,ts,result.toImmNT(),Collections.emptyList());
   }
   public static ExpCore wrapResource(Object o) {
     if(o instanceof ClassB){return (ClassB)o;}

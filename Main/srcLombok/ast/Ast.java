@@ -278,13 +278,12 @@ public interface Ast {
  @Value
  @Wither
  public class MethodType {
-     boolean refine;
-  Doc docExceptions;
+  boolean refine;
   Mdf mdf;
   List<Type> ts;
   //List<Doc> tDocs;
   Type returnType;
-  List<Path> exceptions;
+  List<Type> exceptions;
  }
 
  @Value
