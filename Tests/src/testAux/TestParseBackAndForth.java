@@ -34,7 +34,6 @@ public class TestParseBackAndForth {
 },{"{//qq\n a(A a)}","{//qq\n a( A a )}"
 },{"{(A a)}","{ ( A a )}"
 },{"{(A a//foo\n)}","{ ( A a//foo\n )}"
-},{"{(A a)//ee\n}","{ ( A a )//ee\n}"
 },{"{(A a) implements A}","{ ( A a )implements A}"
 },{"{ method a(b c) {d e f}}","{\nmethod a(b c ) {\n  d\n  e\n  f\n  }}"
 },{"{ method a(b c) (d e f)}","{\nmethod a(b c ) (\n  d\n  e\n  f\n  )}"

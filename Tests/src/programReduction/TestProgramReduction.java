@@ -24,10 +24,18 @@ public static class TestExecution {
   @Parameterized.Parameters
   public static List<Object[]> createData() {
     return Arrays.asList(new Object[][] {
-    {lineNumber(),"{A:{class method Library const(){C:{}} } B:A.const()}","{A:{class method Library const(){C:{}} } B:{C:{}}}"  
-  },{lineNumber(),"{A:{class method Library id(Library that)that } B:A.id({D:{}})}","{A:{class method Library id(Library that)that } B:{D:{}}}"
+    {lineNumber(),"{A:{class method Library const(){C:{}} } B:A.const()}","{A:{class method Library const(){C:{}##star ^##}##star ^##}##star ^## B:{C:{}}}"  
+  },{lineNumber(),"{A:{class method Library id(Library that)that } B:A.id({D:{}})}","{A:{class method Library id(Library that)that }##star ^## B:{D:{}}}"
 
-  },{lineNumber(),"{I1:{interface implements I2} I2:{interface class method Library id(Library that)} A:{ implements I1  method  id( that)that } B:A.id({D:{}})}","{I1:{interface implements I2} I2:{interface class method Library id(Library that)} A:{ implements I1  method  id( that)that } B:{D:{}}}"
+  },{lineNumber(),
+  "{I1:{interface implements I2} "
+ +"I2:{interface class method Library id(Library that)} "
+ +"A:{ implements I1  method  id( that)that } "
+ +"B:A.id({D:{}})}",
+  "{I1:{interface implements I2 refine class method Library id(Library that)}##star ^## "
+ +"I2:{interface class method Library id(Library that)}##star ^## "
+ +"A:{ implements I1, I2  refine class method  Library id(Library that)that }##star ^## "
+ +"B:{D:{}}}"
 
 //  },{lineNumber(),"{I:{method Any m()} B:error void}","This0.I::m()","Any"  
 //  },{lineNumber(),"{I:{method I m() method Any m2()} B:error void}","This0.I::m()::m()::m2()","Any" 

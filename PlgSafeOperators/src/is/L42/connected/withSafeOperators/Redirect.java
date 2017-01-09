@@ -244,16 +244,18 @@ public class Redirect {
   private static boolean plusEqualAndExc(List<PathSPath> ambiguities, List<SPathSPath> exceptions, Path src,MethodWithType mwtSrc, MethodWithType mwtDest) {
     int countExternal=0;
     int countExternalSatisfied=0;
+    List<Path> srcExc = Map.of(t->t.getNT().getPath(),mwtSrc.getMt().getExceptions());
+    List<Path> destExc = Map.of(t->t.getNT().getPath(),mwtDest.getMt().getExceptions());
     exceptions.add(new SPathSPath(src,mwtSrc,mwtDest));
-    for(Path pi:Map.of(t->t.getNT().getPath(),mwtSrc.getMt().getExceptions())){
+    for(Path pi:srcExc){
       if(pi.isPrimitive() || pi.outerNumber()>0){
         countExternal+=1;
-        if(mwtDest.getMt().getExceptions().contains(pi)){countExternalSatisfied+=1;}
+        if(destExc.contains(pi)){countExternalSatisfied+=1;}
         continue;}
-      plusEqual(ambiguities,pi,Map.of(t->t.getNT().getPath(),mwtDest.getMt().getExceptions()));
+      plusEqual(ambiguities,pi,destExc);
     }
-    int countInternal=mwtSrc.getMt().getExceptions().size()-countExternal;
-    return countInternal+countExternalSatisfied>=mwtDest.getMt().getExceptions().size();
+    int countInternal=srcExc.size()-countExternal;
+    return countInternal+countExternalSatisfied>=destExc.size();
   }
   private static boolean redirectOkT(List<PathSPath> ambiguities, Type tSrc, Type tDest) {
     if(!tSrc.getClass().equals(tDest.getClass())){

@@ -252,8 +252,10 @@ public class ExtractInfo {
     Set<Path> pb=new HashSet<>(Map.of(t->t.getNT().getPath(),mtb.getMt().getExceptions()));
     Set<Path> pc=new HashSet<>(pa);
     pc.retainAll(pb);
-    if(mta.get_inner().isPresent() && !pc.containsAll(pa)){return false;}
-    if(mtb.get_inner().isPresent() && !pc.containsAll(pb)){return false;}
+    if(mta.get_inner().isPresent() && !pc.containsAll(pa)){
+      return false;}
+    if(mtb.get_inner().isPresent() && !pc.containsAll(pb)){
+      return false;}
     return true;
   }
   static List<PathMx> collectPrivateMethodsOfPublicPaths(ClassB cb, List<String> path) {
