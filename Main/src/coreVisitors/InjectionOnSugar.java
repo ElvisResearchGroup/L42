@@ -106,9 +106,8 @@ public class InjectionOnSugar implements Visitor<ast.Expression> {
 
   @Override public Expression visit(ClassB s) {
     Doc doc1=s.getDoc1();
-    Doc doc2=s.getDoc2();
     Header h=(s.isInterface())?new Ast.InterfaceHeader():new Ast.TraitHeader();
-    List<Path>supertypes=s.getSupertypes();
+    List<Type>supertypes=s.getSupertypes();
     List<Member> members=new ArrayList<>();
     for(ast.ExpCore.ClassB.Member mi:s.getMs()){
       members.add(mi.match(
@@ -121,7 +120,7 @@ public class InjectionOnSugar implements Visitor<ast.Expression> {
          return new Expression.ClassB.MethodWithType(idoc, is, mt, lift(mwt.get_inner()),mwt.getP());
          }
         ));    }
-    return new Expression.ClassB(doc1,doc2, h,Collections.emptyList(), supertypes, members,s.getP(),s.getStage().getStage());
+    return new Expression.ClassB(doc1, h,Collections.emptyList(), supertypes, members,s.getP(),s.getStage().getStage());
   }
   public Expression visit(WalkBy s) {
     return new Expression.WalkBy();

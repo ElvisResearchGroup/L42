@@ -155,7 +155,6 @@ public class L42 {
     ClassB lastC=(ClassB)last.getInner();
     //TODO: booh what is the right kind? if(!(lastC.getH() instanceof Ast.TraitHeader)){finalErr(result,"The last class is not a Trait");}
     if(!lastC.getMs().isEmpty()){finalErr(result,"The last class contains members");}
-    if(!lastC.getDoc2().isEmpty()){finalErr(result,"The last class have non empty second documentation: "+lastC.getDoc2());}
     String errCode=lastC.getDoc1().toString();
     if(!errCode.startsWith("@exitStatus\n")){
       finalErr(result,"The last class is not an exitStatus class:"+errCode);

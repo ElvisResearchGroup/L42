@@ -20,8 +20,7 @@
         }
       refine read method class Message class() This
       class method This(Introspection.Record record, Library lib)
-      method Bool != (This that)
-        !(this==that)
+
       method Bool == (This that)
         Message.EqualMessages(this,other:that)
       class method S libName()
@@ -34,7 +33,7 @@
         )
       }
 
-    class method Library <<(Library that) (
+    class method Library <><(Library that) (
       //either that provides a toS, or I have a default impl, that requires lib()
       res=SafeOperatorsAccess.compose(left:that,right:This.recordWrapperTrait())
       Library open=  {
@@ -52,13 +51,13 @@
 
       )
     }
-SourceUnfit:RecordWrapper<<{class method S libName()S"SourceUnfit"}
-IncoherentRedirectMapping:RecordWrapper<<{class method S libName()S"IncoherentRedirectMapping"}
-ClassClash:RecordWrapper<<{class method S libName()S"ClassClash"}
-MethodClash:RecordWrapper<<{class method S libName()S"MethodClash"}
-InvalidOnTopLevel:RecordWrapper<<{class method S libName()S"InvalidOnTopLevel"}
-PrivacyCoupuled:RecordWrapper<<{class method S libName()S"PrivacyCoupuled"}
-ParameterMismatch:RecordWrapper<<{class method S libName()S"ParameterMismatch"}
+SourceUnfit:RecordWrapper<><{class method S libName()S"SourceUnfit"}
+IncoherentRedirectMapping:RecordWrapper<><{class method S libName()S"IncoherentRedirectMapping"}
+ClassClash:RecordWrapper<><{class method S libName()S"ClassClash"}
+MethodClash:RecordWrapper<><{class method S libName()S"MethodClash"}
+InvalidOnTopLevel:RecordWrapper<><{class method S libName()S"InvalidOnTopLevel"}
+PrivacyCoupuled:RecordWrapper<><{class method S libName()S"PrivacyCoupuled"}
+ParameterMismatch:RecordWrapper<><{class method S libName()S"ParameterMismatch"}
 
 MemberUnavailable:{interface implements MetaGuard}
 DispatchMemberUnavailable:{
@@ -73,13 +72,13 @@ DispatchMemberUnavailable:{
       )
     )
   }
-NestedClassUnavailable:RecordWrapper<<{(Path path,Bool isPrivate) implements MemberUnavailable
+NestedClassUnavailable:RecordWrapper<><{(Path path,Bool isPrivate) implements MemberUnavailable
   method toS() This.readableName()++S"[path:"[this.path()]",isPrivate:"[this.isPrivate()]"]"
   class method This (Introspection.Record record, Library lib)
     This(path:Path.fromDocInternalizedS(record"Path"),isPrivate:Bool.fromS(record"IsPrivate"))
   class method S libName()S"MemberUnavailable"
   }
-MethodUnavailable:RecordWrapper<<{(Path path,Selector selector,Bool isPrivate) implements MemberUnavailable
+MethodUnavailable:RecordWrapper<><{(Path path,Selector selector,Bool isPrivate) implements MemberUnavailable
   method toS() This.readableName()++S"[path:"[this.path()]", selector:"[this.selector()]",isPrivate:"[this.isPrivate()]"]"
   class method This (Introspection.Record record, Library lib)
     This(path:Path.fromDocInternalizedS(record"Path"),selector:Selector.fromS(record"Selector"),isPrivate:Bool.fromS(record"IsPrivate"))

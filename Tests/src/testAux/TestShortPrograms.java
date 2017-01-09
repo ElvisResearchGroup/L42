@@ -483,10 +483,10 @@ public void testPluginParts1Fail(){tp("{",
 public void testPluginPartsWrapper(){tp("{",
     "W:{//@plugin is.L42.connected.withSafeOperators",
     " //@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.PlgWrapperGenerator",
-    "class method Library <<(Library that)use This",
+    "class method Library <><(Library that)use This",
     " check #main(_1_Library:that)",
     " error void}",
-    "A:W<<{/*@plugin  toFix @pluginPart "+A.class.getName()+" */",
+    "A:W<><{/*@plugin  toFix @pluginPart "+A.class.getName()+" */",
     " class method Void #pluginUnresponsive(Library binaryRepr) void  ",
     " class method This()",
     " method This m()",
@@ -508,7 +508,7 @@ public void testCompositionAT2() throws Throwable{
   //new TestBase01()._01_00DeployAdamTowel01();
   try{tp("{TOP:{reuse L42.is/AdamTowel01",
     "Resource:{  reuse L42.is/AdamTowel01",
-    "   A:{ Foo:This1.Message.$<<{ implements This2.Message} }    }}",
+    "   A:{ Foo:This1.Message.$<><{ implements This2.Message} }    }}",
     "Main:{//@exitStatus\n//0\n\n}",
     " }");}
     finally{L42.trustPluginsAndFinalProgram=false;}

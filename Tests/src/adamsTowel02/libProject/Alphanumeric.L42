@@ -1,8 +1,8 @@
 {
-  ParseFail: Message.$<<{implements Guard.ParseFail}
+  ParseFail: Message.$<><{implements Guard.ParseFail}
 
   class method
-  Library <<(Library that){
+  Library <><(Library that){
     lib=(,{
       implements Concept.Base
       
@@ -29,10 +29,9 @@
         return Bool.false()
         }
       method Bool ==(This that) this.that()==that.that()
-      method Bool !=(This that) !(this==that)
       },)
 
-    res=Extends[lib]<<that
+    res=Extends[lib]<><that
 
     error on MetaGuard.ClassClash
       X"Someone redefined part of the implementation of AlphaNumeric"
@@ -40,6 +39,6 @@
     error on MetaGuard.MethodClash
       X"Someone redefined parts of the implementation of Alphanumeric badly"
 
-    return K<<res
+    return K<><res
     }
   }

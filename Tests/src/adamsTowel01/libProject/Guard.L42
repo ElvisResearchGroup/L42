@@ -10,9 +10,9 @@
 
 interface implements Message //all other guards should implement this one
 
-Operation:Message.$<<{ implements Guard}//if "this" is unfit
-Parameter:Message.$<<{ implements Guard}// if a parameter is unfit
-Precondition:Message.$<<{ implements Guard}// if it is about multiple parameters
+Operation:Message.$<><{ implements Guard}//if "this" is unfit
+Parameter:Message.$<><{ implements Guard}// if a parameter is unfit
+Precondition:Message.$<><{ implements Guard}// if it is about multiple parameters
 
 ParseFail:{interface  implements Guard} //thrown by fromS methods and similar
 

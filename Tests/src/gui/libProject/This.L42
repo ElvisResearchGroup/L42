@@ -21,7 +21,7 @@ GuiLib:{class method Library (){
           check close(wName:this.id().binaryRepr())
           error void
       method
-      Void open(S title, S body, N x, N y)
+      Void open(S title, S body, Size x, Size y)
         this.open(
           html:S""[This.htmlHeader()]"<TITLE>"[title]
           "</TITLE></HTML><BODY>"[body]"</BODY></HTML>"
@@ -38,7 +38,7 @@ GuiLib:{class method Library (){
 
 
       method
-      Void open(S html, N x, N y) (
+      Void open(S html, Size x, Size y) (
         Debug(html)
         use GuiPlugin
           check open(
@@ -104,7 +104,7 @@ Task: (
   Load.DeployLibrary(
     path:Path"Exported",
     url:Url"localhost/GuiLib.L42"
-    )<<GuiLib()
+    )<><GuiLib()
     )
 
 }

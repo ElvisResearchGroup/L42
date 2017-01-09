@@ -48,7 +48,7 @@ public class GuessType implements Visitor<Type> {
     assert this.varEnv.get(s.getInner())!=null;
     return this.varEnv.get(s.getInner());
     }
-  public Type visit(Path s) { return new NormType(Mdf.Class,s,Ph.None); }
+  public Type visit(Path s) { return new NormType(Mdf.Class,s,Ph.None,Doc.empty()); }
 
   public Type visit(RoundBlock s) {
     HashMap<String, Type> tmpVarEnv = this.varEnv;
@@ -75,7 +75,7 @@ public class GuessType implements Visitor<Type> {
     if(t instanceof NormType){
       NormType nt = (NormType)t;
       List<Ast.MethodSelectorX> selectors=Collections.singletonList(new Ast.MethodSelectorX(ms,""));
-      return new HistoricType(nt.getPath(), selectors,false);
+      return new HistoricType(nt.getPath(), selectors,false,Doc.empty());
     }
     HistoricType ht=(HistoricType)t;
     List<Ast.MethodSelectorX> selectors = new ArrayList<>(ht.getSelectors());
@@ -101,8 +101,19 @@ public class GuessType implements Visitor<Type> {
   public Type visit(SquareCall s) { return GuessType.concatHistoricType(s.getReceiver().accept(this),Desugar.squareGuessedSelector());}
   public Type visit(Literal s) { return GuessType.concatHistoricType(s.getReceiver().accept(this),Desugar.literalGuessedSelector());}
   public Type visit(BinOp s) {
-    if(s.getOp().kind==Ast.OpKind.EqOp){return NormType.immVoid;}
-    return visit(Desugar.visit1Step(s));
+    Op op=s.getOp();
+    if(op.kind==Ast.OpKind.EqOp){return NormType.immVoid;}
+    if(op.negated){
+      BinOp s2=s.withOp(op.nonNegatedVersion());
+      return visit(new UnOp(s.getP(),Op.Bang,s2));
+      }
+    if(!op.normalized){
+      BinOp op2=new BinOp(s.getP(),s.getRight(),op.normalizedVersion(),s.getLeft());
+      return visit(op2);
+      }
+    assert !op.negated && op.normalized :op; 
+    MCall mc=Desugar.getMCall(s.getP(),s.getLeft(),Desugar.desugarName(op.inner),Desugar.getPs(s.getRight()));
+    return visit(mc);
     }
   public Type visit(SquareWithCall s) {
     { return GuessType.concatHistoricType(s.getReceiver().accept(this),Desugar.squareGuessedSelector());}
@@ -113,8 +124,8 @@ public class GuessType implements Visitor<Type> {
     throw new ast.ErrorMessage.NotWellFormedMsk(s,s,"Can not infer the type of a { ... return ... } block.");
     }
 
-  public Type visit(ClassReuse s){return new NormType(Mdf.Immutable,Path.Library(),Ph.None);}
-  public Type visit(ClassB s) {return new NormType(Mdf.Immutable,Path.Library(),Ph.None);}
+  public Type visit(ClassReuse s){return NormType.immLibrary;}
+  public Type visit(ClassB s) {return NormType.immLibrary;}
   @Override public Type visit(ContextId s) {
     throw new ast.ErrorMessage.NotWellFormedMsk(s,s,"Can not infer the type of a hashId (can this error happens?)");
   }

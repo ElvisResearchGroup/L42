@@ -36,6 +36,7 @@ public class PropagatorVisitor implements Visitor<Void>{
     e.accept(this);
     }
   protected void liftT(Type t){
+    liftDoc(t.getDoc());
     if(t instanceof NormType){lift(((NormType)t).getPath());}
     else {
       HistoricType ht=(HistoricType) t;
@@ -86,11 +87,9 @@ public class PropagatorVisitor implements Visitor<Void>{
     if(mt.get_inner().isPresent()){lift(mt.getInner());}  
     }
   protected void liftMT(MethodType mt) {
-    liftDoc(mt.getDocExceptions());
     for(Type t:mt.getTs()){liftT(t);}
-    for(Doc d:mt.getTDocs()){liftDoc(d);}
     liftT(mt.getReturnType());
-    for(Path p:mt.getExceptions()){lift(p);}
+    for(Type p:mt.getExceptions()){liftT(p);}
     }
   public Void visit(Using s) {
     lift(s.getPath());
@@ -125,14 +124,13 @@ public class PropagatorVisitor implements Visitor<Void>{
     liftSup(s.getSupertypes());
     liftMembers(s.getMs());
     liftDoc(s.getDoc1());
-    liftDoc(s.getDoc2());
     return null;
     }
   public void liftMembers(List<Member> s) {
     for(Member m:s){liftM(m);}
     }
-  protected void liftSup(List<Path> s) {
-    for(ExpCore e:s){lift(e);}
+  protected void liftSup(List<Type> s) {
+    for(Type e:s){liftT(e);}
     }
   public Void visit(Loop s) {
     lift(s.getInner());

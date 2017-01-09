@@ -31,7 +31,7 @@
   mut BBuilder #builder()
     BBuilder.empty()
 
-  ParseFail:Message.$<<{ implements Guard.ParseFail}
+  ParseFail:Message.$<><{ implements Guard.ParseFail}
   BBuilder:{(var Library that, var Size count)
     class method
     mut This empty()
@@ -96,26 +96,18 @@
     return Bool.false()
     }
 
-  method
-  Bool <(This that) {
+  method Bool >(This that)  {
     use Alu
-      check ifUInt32GrtDo(n1:this.br() n2:that.br())
+      check ifUInt32GrtDo(n1:that.br() n2:this.br())
       return Bool.true()
     return Bool.false()
     }
 
-  method
-  Bool <=(This that) {
+
+  method Bool >=(This that) {
     use Alu
-      check ifUInt32GEqDo(n1:this.br() n2:that.br())
+      check ifUInt32GEqDo(n1:that.br() n2:this.br())
       return Bool.true()
     return Bool.false()
     }
-
-  method Bool !=(This that) !(this==that)
-
-  method Bool >(This that)  !(this<=that)
-
-
-  method Bool >=(This that) !(this<that)
   }

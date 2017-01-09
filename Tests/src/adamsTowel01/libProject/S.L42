@@ -27,8 +27,6 @@
       check stringConcat(s1:this.binaryRepr(),s2:that.binaryRepr())
       error void)
 
-  method Bool != (This that) !(this==that)
-
   method
   Bool == (This that) {
     use Alu

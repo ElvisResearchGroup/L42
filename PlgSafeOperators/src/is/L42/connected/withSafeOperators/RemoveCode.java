@@ -110,8 +110,6 @@ public class RemoveCode {
       :accumulator;
     assert accumulator.getDoc1().isEmpty()
       :accumulator;
-    assert accumulator.getDoc2().isEmpty()
-      :accumulator;
     List<Member> ms = new ArrayList<>();
     for(Member m:accumulator.getMs()){
       assert m instanceof NestedClass:

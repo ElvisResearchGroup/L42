@@ -3,11 +3,11 @@
 PrW:{//private wrapper
   //@plugin is.L42.connected.withSafeOperators
   //@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.PlgWrapperGenerator
-  class method Library <<(Library that)use This
+  class method Library <><(Library that)use This
     check #main(_1_Library:that)
     error void
   }
-Refactor2:PrW<<{
+Refactor2:PrW<><{
   Fail:{interface implements Concept.ToS, Concept.Classable
     //not implement Guard, not a message, no cause/more then a msg?
     method S text()  
@@ -31,7 +31,7 @@ Refactor2:PrW<<{
       Library #pluginUnresponsive(Library binaryRepr)
         binaryRepr  
       }
-    class method Library <<(Library that)
+    class method Library <><(Library that)
       SafeOperatorsAccess.compose(
         left:that,
         right:This.trait()
@@ -45,7 +45,7 @@ Refactor2:PrW<<{
       binaryRepr  
 
     class method
-    Library <<(Library that)
+    Library <><(Library that)
     exception UnresolvedOverloading, ClassUnfit, MethodUnfit
       This.main(that)
 
@@ -54,18 +54,18 @@ Refactor2:PrW<<{
     exception UnresolvedOverloading, ClassUnfit, MethodUnfit
 
     }
-  UnresolvedOverloading:ErrorW<<{
+  UnresolvedOverloading:ErrorW<><{
     //@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$UnresolvedOverloading
     }
-  ClassUnfit:ErrorW<<{
+  ClassUnfit:ErrorW<><{
     //@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$ClassUnfit
     }
-  MethodUnfit:ErrorW<<{
+  MethodUnfit:ErrorW<><{
     //@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$MethodUnfit
     } 
   }
 
-A:Refactor2.JavaImport<<{//@plugin  toFix @pluginPart testAux.TestShortPrograms$A
+A:Refactor2.JavaImport<><{//@plugin  toFix @pluginPart testAux.TestShortPrograms$A
   class method Void #pluginUnresponsive(Library binaryRepr) void
   class method This()
   method This m()

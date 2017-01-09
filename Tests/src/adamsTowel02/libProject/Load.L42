@@ -4,14 +4,14 @@
 // Abstract:{} contains abstract classes, and
 // Abstract.ConceptMap mapps concepts names to abstract classes
 
-  ConceptMapMismatch:Message.$<<{ implements MetaGuard}
-  ConceptMapUnavailable:Message.$<<{ implements MetaGuard}
+  ConceptMapMismatch:Message.$<><{ implements MetaGuard}
+  ConceptMapUnavailable:Message.$<><{ implements MetaGuard}
 
   class method
-  Library << (Library that)
+  Library <>< (Library that)
   exception ConceptMapMismatch, ConceptMapUnavailable
     {
-    return Refactor.Redirect(Path"Abstract.ConceptMap" to:ConceptMap)<<that
+    return Refactor.Redirect(Path"Abstract.ConceptMap" to:ConceptMap)<><that
     error on MetaGuard.InvalidOnTopLevel X"Load1"
     catch exception MetaGuard.NestedClassUnavailable err
       exception ConceptMapUnavailable

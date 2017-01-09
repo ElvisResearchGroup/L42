@@ -76,10 +76,8 @@ public class Norm {
     List<Type> ts=new ArrayList<Type>();
       for(Type tt:t.getTs()){ts.add(of(p,tt));}
     MethodType mt2=new MethodType(t.isRefine(),
-        t.getDocExceptions(),
         t.getMdf(),
         ts,//already normalized before
-        t.getTDocs(),
        of(p,t.getReturnType()),
        Map.of(pi->of(p,pi),t.getExceptions())
        );
@@ -111,9 +109,9 @@ public class Norm {
     return nt.withPh(Ph.Ph);
   }
   private static NormType resolveMany(Program p, HistoricType t) {
-    HistoricType tOne=new HistoricType(t.getPath(), t.getSelectors().subList(0,1),false);
+    HistoricType tOne=new HistoricType(t.getPath(), t.getSelectors().subList(0,1),false,t.getDoc());
     NormType nt=resolveOne(p,tOne);
-    HistoricType tNext=new HistoricType(nt.getPath(),t.getSelectors().subList(1, t.getSelectors().size()),false);
+    HistoricType tNext=new HistoricType(nt.getPath(),t.getSelectors().subList(1, t.getSelectors().size()),false,t.getDoc());
     return resolve(p,tNext);
   }
 
@@ -127,7 +125,7 @@ public class Norm {
     return of(p,mt.getMt().getReturnType());
     }
   if(x.equals("this")){
-    return new NormType(mt.getMt().getMdf(),t.getPath(),Ph.None);
+    return new NormType(mt.getMt().getMdf(),t.getPath(),Ph.None,Doc.empty());
     }
   int i=mt.getMs().getNames().indexOf(x);
   assert i!=-1:

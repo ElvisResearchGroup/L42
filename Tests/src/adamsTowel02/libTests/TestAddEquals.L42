@@ -3,13 +3,13 @@
 
 
 
-Person:Data.AddEquals<<{(S name, var Size age)  }
-//Person:Data.AddToS<<{(S name, var Size age)}
-//Person2:Data.AddToS<<{(S name, NotStringable age)}
-//Person3:Data.AddToS<<{(Concept.ToS name, Any age)}
+Person:Data.AddEquals<><{(S name, var Size age)  }
+//Person:Data.AddToS<><{(S name, var Size age)}
+//Person2:Data.AddToS<><{(S name, NotStringable age)}
+//Person3:Data.AddToS<><{(Concept.ToS name, Any age)}
 
-PP:Data.AddToS<<{(mut Person p)}
-PP2:Data.AddToS<<{(mut Any p)}
+PP:Data.AddToS<><{(mut Person p)}
+PP2:Data.AddToS<><{(mut Any p)}
 
 Main:{
   Person p1=Person(name:S"Bob",age:10Size)

@@ -278,7 +278,7 @@ private Block fieldABlock(Set<String> around,MCall mc, MethodWithType mwt,HashSe
   decRec=(Block)RenameVars.of(decRec,renames);
   assert checkSuccessRename(around, decRec);
   Path path1=((NormType)mwt.getMt().getReturnType()).getPath();
-  Type tz=new NormType(Mdf.Immutable,path1,Ast.Ph.None);
+  Type tz=path1.toImmNT();
   String z=Functions.freshName(path1, forbidden);
   MCall mcz=mc.withInner(decRec.getInner());
   ExpCore ez=decRec.withInner(mcz);
@@ -305,7 +305,8 @@ private ExpCore primCallArg(Program p,MCall mc, int i, MethodWithType mwt, HashS
   return new Block(Doc.empty(),Collections.singletonList(new Block.Dec(ti,xi,ei)),
       mc.withEs(es),Collections.emptyList(),mc.getP());
 }
-private ExpCore primCallRec(MCall mc, Path pathR,MethodWithType mwt, HashSet<String> usedNames) {  NormType t1=new NormType(mwt.getMt().getMdf(),pathR,Ast.Ph.None);
+private ExpCore primCallRec(MCall mc, Path pathR,MethodWithType mwt, HashSet<String> usedNames) { 
+  NormType t1=new NormType(mwt.getMt().getMdf(),pathR,Ast.Ph.None,Doc.empty());
   log("---primCallRec--");
   String x1=Functions.freshName(pathR,usedNames);
   ExpCore e1=mc.getInner();
@@ -341,7 +342,7 @@ private ExpCore normalMeth(Path pathR,MethodWithType mwt, ExpCore ctxVal, MCall 
   }
   ArrayList<Block.Dec> decs=new ArrayList<Block.Dec>();
   decs.add( new Block.Dec(
-      new NormType(mwt.getMt().getMdf(),pathR,Ast.Ph.None),
+      new NormType(mwt.getMt().getMdf(),pathR,Ast.Ph.None,Doc.empty()),
       renames.get("this"),
       mc.getInner()));
 

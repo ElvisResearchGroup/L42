@@ -22,13 +22,13 @@ Message:{Opt:{
   }}}
 Guard:{interface ParseFail:{interface  implements Guard}}
 Bool:{
-  ParseFail:This2.Message.$<<{ implements Guard.ParseFail}
+  ParseFail:This2.Message.$<><{ implements Guard.ParseFail}
   class method
   Any parseError(This2.S that)
     ParseFail"The provided string is not a valid bool: "[that]""
   }
 Size:{
-  ParseFail:This2.Message.$<<{ implements Guard.ParseFail}
+  ParseFail:This2.Message.$<><{ implements Guard.ParseFail}
   class method
   Any parseError(This2.S that)
     ParseFail"The provided string is not a valid Int32: "[that]""
@@ -74,7 +74,7 @@ S:{
     return res
     }
   
-  SkipChars: K<<{ implements Skip 
+  SkipChars: K<><{ implements Skip 
     This3.S chars
     
     method ( that, index) {
@@ -100,7 +100,7 @@ S:{
   method
   Strings splitOn(This2.S chars) (
     this.split(skipper:SkipChars(chars:chars))
-//  SubStringNotPresent:This2.Message.$<<{ implements Guard}
+//  SubStringNotPresent:This2.Message.$<><{ implements Guard}
 //  class method Void subStringNotPresent(This2.S string, This2.S subString)
 //    error SubStringNotPresent"string["[string]"] do not contains ["[subString]""
     )
@@ -111,13 +111,13 @@ StringSplit:{
     that.splitOn(chars:chars)//TODO: flush SkipChars etc in StringSplit
 }
 Selector:{
-  ParseFail:This2.Message.$<<{ implements Guard.ParseFail}
+  ParseFail:This2.Message.$<><{ implements Guard.ParseFail}
   class method
   Any parseError(This2.S that)
     ParseFail"The provided string is not a valid selector: "[that]""
   }
 Path:{
-  ParseFail:This2.Message.$<<{ implements Guard.ParseFail}
+  ParseFail:This2.Message.$<><{ implements Guard.ParseFail}
   class method
   Any parseError(This2.S that)
     ParseFail"The provided string is not a valid path: "[that]""
@@ -164,7 +164,7 @@ Path:{
      }
    Test: {(This3.Bool that, This3.S msg)}
    Tests: Refactor.compose(//do not use Use to save compilation time
-     left:Refactor.Hide.selector(\"#add(that)")<<Collections.vector(of:Test)
+     left:Refactor.Hide.selector(\"#add(that)")<><Collections.vector(of:Test)
      right:{ 
 
      mut method

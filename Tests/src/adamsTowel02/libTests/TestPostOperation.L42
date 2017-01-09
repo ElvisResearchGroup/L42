@@ -3,7 +3,7 @@ C:PostAction(Selector"foo()"
   of:Path"This",
   action:{ class method Void (Void that) Debug(S"World")}
   deprecated:Selector"bar()"
-  )<<{class method Void foo() Debug(S"Hello")}
+  )<><{class method Void foo() Debug(S"Hello")}
 Main:{
   Debug(S"
   '[Defined output between][End of defined output]

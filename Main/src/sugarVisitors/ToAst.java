@@ -47,12 +47,11 @@ public class ToAst extends AbstractVisitor<Expression>{
     @Override public Member visitMethodWithType(MethodWithTypeContext ctx) {
       MhtContext h = ctx.mht();
       Doc doc1=(h.docsOpt().get(0)==null)?Doc.empty():parseDoc(h.docsOpt().get(0));
-      Doc doc2=(ctx.docsOpt()==null)?Doc.empty():parseDoc(ctx.docsOpt());
+      //Doc doc2=(ctx.docsOpt()==null)?Doc.empty():parseDoc(ctx.docsOpt());
       String name=(h.mDec()==null)?"":h.mDec().getText().replace('\t', '(');
       if(name.endsWith("(")){name=name.substring(0,name.length()-1);}
       Mdf mdf=Ast.Mdf.fromString((h.Mdf()==null)?"":h.Mdf().getText());
       List<Type> ts=new ArrayList<>();
-      List<Doc> tdocs=new ArrayList<>();
       List<String> names=new ArrayList<>();
       Iterator<TContext> tit=h.t().iterator();
       Iterator<DocsOptContext> dit=h.docsOpt().iterator();
@@ -60,15 +59,16 @@ public class ToAst extends AbstractVisitor<Expression>{
       Type returnType=parseType(tit.next());
       for(XContext x : h.x()){
         names.add(x.getText());
-        ts.add(parseType(tit.next()));
-        tdocs.add(parseDoc(dit.next()));
+        Type ti=parseType(tit.next());
+        ti=ti.withDoc(ti.getDoc().sum(parseDoc(dit.next())));
+        ts.add(ti);
       }
       MethodSelector s=new MethodSelector(name, names);
-      List<Path> exceptions=new ArrayList<Path>();
-      for(TerminalNode p:h.Path()){exceptions.add(Path.parse(p.getText()));}
+      List<Type> exceptions=new ArrayList<>();
+      for(TerminalNode p:h.Path()){exceptions.add(Path.parse(p.getText()).toImmNT());}
       Optional<Expression> inner=Optional.empty();
       if(ctx.eTopForMethod()!=null){inner=Optional.of(ctx.eTopForMethod().accept(ToAst.this));}
-      MethodType mt=new MethodType(h.Refine()!=null,doc2,mdf,ts,tdocs,returnType,exceptions);
+      MethodType mt=new MethodType(h.Refine()!=null,mdf,ts,returnType,exceptions);
       return new MethodWithType(doc1,s, mt, inner,position(ctx));
     }
 
@@ -281,7 +281,8 @@ public class ToAst extends AbstractVisitor<Expression>{
       return new Ast.NormType(
         Mdf.fromString((tt.Mdf()==null)?"":nameK(tt.Mdf())),
         Ast.Path.parse(nameU(tt.Path())),
-        (tt.Ph()==null)?Ph.None:Ph.Ph);
+        (tt.Ph()==null)?Ph.None:Ph.Ph,Doc.empty());
+      //TODO: soon add here for types with docs
     }
     if(t.historicalT()!=null){
        HistoricalTContext tt = t.historicalT();
@@ -290,7 +291,8 @@ public class ToAst extends AbstractVisitor<Expression>{
        for(HistoricalSeqContext ms:tt.historicalSeq()){
          mss.add(parseMethSelectorX(ms));
        }
-       return new ast.Ast.HistoricType(p,mss,tt.Ph()!=null);
+       return new ast.Ast.HistoricType(p,mss,tt.Ph()!=null,Doc.empty());
+       //TODO: also add here when the doc is parsed
     }
     throw Assertions.codeNotReachable();
   }
@@ -340,22 +342,22 @@ public class ToAst extends AbstractVisitor<Expression>{
   @Override public Expression visitClassBReuse(ClassBReuseContext ctx) {
     Doc doc1=Doc.empty();
     if(ctx.docsOpt().size()>=1){doc1=parseDoc(ctx.docsOpt().get(0));}
-    Doc doc2=Doc.empty();
+    Doc doc2=Doc.empty();//TODO: check when you remove doc2 from syntax
     if(ctx.docsOpt().size()>=2){doc2=parseDoc(ctx.docsOpt().get(1));}
     assert ctx.getChild(0).getText().equals("{");
     assert ctx.getChild(2).getText().startsWith("reuse");
     String url=ctx.getChild(2).getText();
     url=url.trim();
     List<Member> ms=visitMembers(ctx.member());
-    ClassB inner=new ClassB(doc1, doc2, new Ast.TraitHeader(),Collections.emptyList(),Collections.emptyList(), ms, position(ctx),Stage.None);
+    ClassB inner=new ClassB(doc1, new Ast.TraitHeader(),Collections.emptyList(),Collections.emptyList(), ms, position(ctx),Stage.None);
     return new Expression.ClassReuse(inner,url,null);
   }
   @Override public Expression visitClassB(ClassBContext ctx) {
     Doc doc1=parseDoc(ctx.docsOpt().get(0));
-    Doc doc2=parseDoc(ctx.docsOpt().get(1));
+    //Doc doc2=parseDoc(ctx.docsOpt().get(1));
     Header h=parseHeader(ctx.header());
-    List<Path> supertypes= new ArrayList<Path>();
-    for(TerminalNode p: ctx.Path()){supertypes.add(Path.parse(nameU(p)));}
+    List<Type> supertypes= new ArrayList<>();
+    for(TerminalNode p: ctx.Path()){supertypes.add(Path.parse(nameU(p)).toImmNT());}
     List<Member> ms=visitMembers(ctx.member());
     Stage s=Stage.None;
     if(ctx.classBExtra()!=null){
@@ -366,7 +368,7 @@ public class ToAst extends AbstractVisitor<Expression>{
     }
     List<Ast.FieldDec> fs=new ArrayList<>();
     for( FieldDecContext f:ctx.fieldDec()){fs.add(parseFieldDec(f));}
-    return new Expression.ClassB(doc1,doc2, h,fs,supertypes, ms,position(ctx),s);
+    return new Expression.ClassB(doc1, h,fs,supertypes, ms,position(ctx),s);
   }
   public List<Member> visitMembers(List<MemberContext> ctxms){
     List<Member> members=new ArrayList<Member>();

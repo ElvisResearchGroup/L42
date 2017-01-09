@@ -2,18 +2,18 @@
 
 NotStringable:{(Size that)}
 
-Person:Data.AddToS<<{(S name, var Size age)
+Person:Data.AddToS<><{(S name, var Size age)
   implements Concept.Classable
   method is(subtype) {  with subtype (on class This return Bool.true()) return Bool.false()}
   refine read method class This class() This
   method readableName()GetMyName(This)
   }
-//Person:Data.AddToS<<{(S name, var Size age)}
-Person2:Data.AddToS<<{(S name, NotStringable age)}
-Person3:Data.AddToS<<{(Concept.ToS name, Any age)}
+//Person:Data.AddToS<><{(S name, var Size age)}
+Person2:Data.AddToS<><{(S name, NotStringable age)}
+Person3:Data.AddToS<><{(Concept.ToS name, Any age)}
 
-PP:Data.AddToS<<{(mut Person p)}
-PP2:Data.AddToS<<{(mut Any p)}
+PP:Data.AddToS<><{(mut Person p)}
+PP2:Data.AddToS<><{(mut Any p)}
 
 Main:{
   dq = S.doubleQuote()

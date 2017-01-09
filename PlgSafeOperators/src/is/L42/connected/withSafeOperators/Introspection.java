@@ -107,28 +107,26 @@ public class Introspection {//TODO: we keep 5 methods, but we merge the PathRepo
     if(memberN==0){
       if(typeN<=0){throw Resources.notAct;}
       if(current.getSupertypes().size()<typeN){throw Resources.notAct;}
-      Path implN = current.getSupertypes().get(typeN-1);
-      return typeReport(isExternal,p.addAtTop(that), new NormType(Mdf.Immutable,implN,Ph.None),path,current.getDoc2());
+      Type implN = current.getSupertypes().get(typeN-1);
+      return typeReport(isExternal,p.addAtTop(that), implN,path);
       }
     assert memberN>0;
     Member mi = current.getMs().get(memberN-1);
     if(!(mi instanceof MethodWithType)){throw Resources.notAct;}
     MethodWithType mwt=(MethodWithType)mi;
      Type ti = mwt.getMt().getReturnType();
-     Doc doci=mwt.getDoc();
      if(typeN>mwt.getMt().getTs().size()){throw Resources.notAct;}
      if(typeN<-mwt.getMt().getExceptions().size()){throw Resources.notAct;}
     if(typeN>0){
       ti=mwt.getMt().getTs().get(typeN-1);
-      doci=mwt.getMt().getTDocs().get(typeN-1);
       }
     if(typeN<0){
-      ti=new NormType(Mdf.Immutable,mwt.getMt().getExceptions().get((typeN*-1)-1),Ph.None);
+      ti=mwt.getMt().getExceptions().get((typeN*-1)-1);
       //TODO: doci=?? add docs for exceptions, return type and implements
       }
-    return typeReport(isExternal,p.addAtTop(that), ti,path,doci);
+    return typeReport(isExternal,p.addAtTop(that), ti,path);
     }
-  private static ClassB typeReport(Path isExternal,Program p,Type ti, List<String> src, Doc doc){
+  private static ClassB typeReport(Path isExternal,Program p,Type ti, List<String> src){
     p=p.navigateInTo(src);
     NormType normTi=(ti instanceof NormType)?(NormType)ti:null;
     NormType resolvedTi=null;
@@ -142,7 +140,7 @@ public class Introspection {//TODO: we keep 5 methods, but we merge the PathRepo
     boolean resPh=(resolvedTi!=null)?resolvedTi.getPh()==Ph.Ph:ph;
     String suffix=(ti instanceof Ast.HistoricType)?selectorsToString(((Ast.HistoricType)ti).getSelectors()):"";
     String allAsString=ToFormattedText.of(ti);
-    return typeReport(isExternal,src, tk, mdf, resMdf, pi, resPi, ph, resPh, suffix, doc, allAsString);
+    return typeReport(isExternal,src, tk, mdf, resMdf, pi, resPi, ph, resPh, suffix, ti.getDoc(), allAsString);
     //unfold?
   }
 

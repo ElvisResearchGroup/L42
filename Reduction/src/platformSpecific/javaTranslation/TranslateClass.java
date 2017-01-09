@@ -122,7 +122,7 @@ public class TranslateClass {
     else{res.append(" implements ");}
     res.append("platformSpecific.javaTranslation.Resources.Revertable");
     Set<String> supt=new HashSet<>();
-    for(Path pi:ct.getSupertypes()/*getStage().getInheritedPaths()*/){
+    for(Path pi:ct.getSuperPaths()/*getStage().getInheritedPaths()*/){
       if (pi.equals(Path.Any())){continue;}
       assert !pi.isPrimitive();
       String resName=Resources.nameOf(pi);

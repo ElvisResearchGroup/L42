@@ -7,12 +7,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import platformSpecific.javaTranslation.Resources;
 import sugarVisitors.CloneVisitor;
 import sugarVisitors.CollapsePositions;
+import tools.Map;
 import facade.Configuration;
 import is.L42.connected.withSafeOperators.ExtractInfo.ClassKind;
+import ast.Ast;
 import ast.Ast.Doc;
 import ast.Ast.MethodType;
 import ast.Ast.Path;
@@ -97,11 +100,10 @@ public class Sum {
 
   static ClassB normalizedSum(Program p, ClassB topA, ClassB topB,ClassB a, ClassB b, List<String> current) {
     List<Member> ms = doubleSimetricalMatch(p,topA,topB,a, b,  current);
-    List<Path> superT = new ArrayList<Path>(a.getSupertypes());
+    List<ast.Ast.Type> superT = new ArrayList<>(a.getSupertypes());
     superT.addAll(b.getSupertypes());
     superT=Collections.unmodifiableList(superT);
     Doc doc1 = a.getDoc1().sum(b.getDoc1());
-    Doc doc2 = a.getDoc2().sum(b.getDoc2());
     Sum.checkClassClash(p, current, topA, topB, a, b);
     boolean isInterface =a.isInterface() || b.isInterface();
     CachedStage stage=new CachedStage();
@@ -112,7 +114,7 @@ public class Sum {
     }
     if(a.getStage().isVerified() && b.getStage().isVerified()){stage.setVerified(true);}
     Phase accPhase = a.getPhase().acc(b.getPhase());
-    ExpCore.ClassB res= new ClassB(doc1, doc2, isInterface, superT,
+    ExpCore.ClassB res= new ClassB(doc1, isInterface, superT,
             ms,CollapsePositions.accumulatePos(a.getP(), b.getP()),
             stage,accPhase,accPhase==Phase.None?"":"-");
     res=(ClassB) res.accept(new coreVisitors.CloneVisitor(){
@@ -188,19 +190,13 @@ public class Sum {
   }
 
   static MethodWithType sumMethod(MethodWithType ma, MethodWithType mb) {
-    Set<Path> pa = new HashSet<>(ma.getMt().getExceptions());
-    Set<Path> pb = new HashSet<>(mb.getMt().getExceptions());
+    Set<Path> pa = new HashSet<>(Map.of(t->t.getNT().getPath(),ma.getMt().getExceptions()));
+    Set<Path> pb = new HashSet<>(Map.of(t->t.getNT().getPath(),mb.getMt().getExceptions()));
     Set<Path> pc = new HashSet<>(pa);
     pc.retainAll(pb);
     Doc doc = ma.getDoc().sum(mb.getDoc());
-    //tDocs=TDocs[with a in ma.mt().tDocs(), b in mb.mt().tDocs() ( use[a+b] )]
-    List<Doc> tDocs = new ArrayList<>();
-    for (int i = 0; i < ma.getMt().getTDocs().size(); i += 1) {
-      tDocs.add(ma.getMt().getTDocs().get(i).sum(mb.getMt().getTDocs().get(i)));
-    }
-    Doc docExc = ma.getMt().getDocExceptions().sum(mb.getMt().getDocExceptions());
-    MethodType mt = ma.getMt().withDocExceptions(docExc).withTDocs(tDocs);
-    ArrayList<Path> opc = new ArrayList<>(pc);
+    MethodType mt = ma.getMt();
+    List<Ast.Type> opc =pc.stream().map(pi->(Ast.Type)pi.toImmNT()).collect(Collectors.toList());
     Collections.sort(opc, (p1, p2) -> p1.toString().compareTo(p2.toString()));
     mt = mt.withExceptions(opc);
     MethodWithType mwt = ma.withMt(mt).withDoc(doc);

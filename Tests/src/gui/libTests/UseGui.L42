@@ -1,5 +1,5 @@
 {reuse L42.is/AdamTowel02
-Gui:Load<<{reuse L42.is/GuiLib}
+Gui:Load<><{reuse L42.is/GuiLib}
 C:{
   list=Strings[S"4.png";S"2.png";S"bang.jpg";S"bang.jpg";S"bang.jpg"]
   var S msg=S"<div id='Alpha'>"
@@ -20,10 +20,10 @@ C:{
     title:S"FIRST!"
     //put here any folder with the right images in
     body:initialState
-    x:600N
-    y:400N
+    x:600Size
+    y:400Size
     )
-  with event in gui.events(), h in list.vals(minTo:0N) (
+  with event in gui.events(), h in list.vals(minTo:0Size) (
     Debug(S"#@ActionBefore:"++ msg)
     msg++=S"<img src='"++resources++h++S"' height='100' width='100'/>"
     Debug(S"#@ActionNOW:"++ msg)

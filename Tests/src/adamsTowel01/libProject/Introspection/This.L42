@@ -37,7 +37,7 @@ NestedClasses:Collections.vector(of:NestedClass)
 Type:...
 Types:Collections.vector(of:Type)
 
-Mdf:Enum<<{
+Mdf:Enum<><{
   class method Strings names()Strings[S"Capsule";S"Mutable";S"Lent";S"Readable";S"Immutable";S"Class"]
   class method This _Capsule() This(inner:0Size)
   class method This _Mutable() This(inner:1Size)
@@ -54,14 +54,14 @@ Mdf:Enum<<{
   method Bool isClass() this.inner()==5Size
   }
 
-MethodKind:Enum<<{
+MethodKind:Enum<><{
   class method Strings names()Strings[S"InterfaceImplementedMethod"; S"ImplementedMethod"; S"AbstractMethod"]
   class method This _InterfaceImplementedMethod() This(inner:0Size)
   class method This _ImplementedMethod() This(inner:1Size)
   class method This _AbstractMethod() This(inner:2Size)
   }
 
-ClassKind:Enum<<{
+ClassKind:Enum<><{
   class method Strings names()Strings[S"Interface";S"ClosedClass";S"OpenClass";S"Template";S"FreeTemplate";]
   class method This _Interface() This(inner:0Size)
   class method This _ClosedClass() This(inner:1Size)
@@ -70,7 +70,7 @@ ClassKind:Enum<<{
   class method This _FreeTemplate() This(inner:4Size)
   }
 
-TypeKind:Enum<<{//may disappear
+TypeKind:Enum<><{//may disappear
   class method Strings names()Strings[S"Normal";S"Alias";S"AliasUnresolvable";]
   class method This _Normal() This(inner:0Size)
   class method This _Alias() This(inner:1Size)

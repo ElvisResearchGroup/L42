@@ -9,7 +9,7 @@ method Bool ==(This that){
   if this.memberN()!=this.memberN() (return Bool.false())
   return this.root()==that.root()
   }
-method Bool != (This that) !(this==that)
+
 method equals(that){
   with that (on This return this==that)
   return Bool.false()

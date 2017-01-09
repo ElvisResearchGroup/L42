@@ -21,6 +21,7 @@ import sugarVisitors.CollapsePositions;
 import sugarVisitors.ToFormattedText;
 import tools.Assertions;
 import ast.Ast;
+import ast.Ast.Doc;
 import ast.Ast.FreeType;
 import ast.Ast.MethodSelector;
 import ast.Ast.MethodType;
@@ -77,7 +78,7 @@ public class TypeSystem implements Visitor<Type>, Reporter, ast.Ast.HasPos{
   @Override
   public Type visit(_void s) {
     return collectEnvs(null,()->{
-      return new NormType(Mdf.Capsule,Path.Void(),Ph.None);
+      return new NormType(Mdf.Capsule,Path.Void(),Ph.None,Doc.empty());
     });
   }
 
@@ -119,7 +120,7 @@ public class TypeSystem implements Visitor<Type>, Reporter, ast.Ast.HasPos{
           //  throw new ErrorMessage.LibraryRefersToIncompleteClasses(p.getInnerData(), s);
           //  }
           }
-        return new NormType(Mdf.Immutable,Path.Library(),Ph.None);
+        return NormType.immLibrary;
       });
     //}
    // finally{this.p=pOld;}
@@ -127,15 +128,15 @@ public class TypeSystem implements Visitor<Type>, Reporter, ast.Ast.HasPos{
   @Override
   public Type visit(Path s) {
     return collectEnvs(null,()->{
-      if( s.isPrimitive()){return new NormType(Mdf.Class,s,Ph.None);}
+      if( s.isPrimitive()){return new NormType(Mdf.Class,s,Ph.None,Doc.empty());}
       ClassB ct=p.extractCb(s);
       if(ct.isInterface()){
-        return new NormType(Mdf.Class,Path.Any(),Ph.None);
+        return NormType.classAny;
         }
       if(isPathPath(p,ct)){
-        return new NormType(Mdf.Class,s,Ph.None);
+        return new NormType(Mdf.Class,s,Ph.None,Doc.empty());
         }
-      return new NormType(Mdf.Class,Path.Any(),Ph.None);
+      return NormType.classAny;
       });
     }
  private boolean isPathPath(Program p,ClassB cb) {
@@ -154,7 +155,7 @@ public class TypeSystem implements Visitor<Type>, Reporter, ast.Ast.HasPos{
       if(s.getKind()==SignalKind.Return){
         suggestedMdf=throwEnv.mdfOfRes();
       }
-      NormType suggestedNested=new NormType(suggestedMdf,Path.Any(),Ph.None);
+      NormType suggestedNested=new NormType(suggestedMdf,Path.Any(),Ph.None,Doc.empty());
       //TODO:was tollerant
       Type preciseTOpt=typecheckSure(false,p,varEnv,sealEnv,throwEnv,suggestedNested,s.getInner());
       if (preciseTOpt instanceof Ast.FreeType){return preciseTOpt;}
@@ -404,7 +405,7 @@ public class TypeSystem implements Visitor<Type>, Reporter, ast.Ast.HasPos{
       catch(ErrorMessage err){
        throw ErrorMessage.PosImprove.improve(err,s.getP());
         }
-      NormType recExpected=new NormType(mwt.getMt().getMdf(),recOpt,Ph.None);
+      NormType recExpected=new NormType(mwt.getMt().getMdf(),recOpt,Ph.None,Doc.empty());
       return TypeCheckMethod.methCallT(this,varEnvs,s,recExpected,mwt);
     });
   }

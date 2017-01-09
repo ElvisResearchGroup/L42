@@ -1,12 +1,12 @@
 {
-DecorationUnfeasable:Message.$<<{ implements MetaGuard}
+DecorationUnfeasable:Message.$<><{ implements MetaGuard}
 
 
 Parsable:{
-  class method Library<<(Library that)
+  class method Library<><(Library that)
   exception DecorationUnfeasable{
     return Extends[{
-      //ParseFailure:Message:S[]<<{ implements Guard} no need, related to invariant?
+      //ParseFailure:Message:S[]<><{ implements Guard} no need, related to invariant?
       class method// if you do not implement it, it is a constructor?
       This fromS(Concept.ToS that)
       //will be in the interface when there is class refinement,
@@ -18,25 +18,25 @@ Parsable:{
 
       class method
       mut S.SBuilder #builder() S.SBuilder.empty()
-     }]<<that
+     }]<><that
     exception on MetaGuard
       DecorationUnfeasable"Parsable"
     }
   }
 SealState:{
   // how to specify which factory to keep out? what getters
-  class method Library<<(Library that){
+  class method Library<><(Library that){
     i=Introspection(lib:that)
     return that
     }
   }
 
 DataFromToS:{// in the future we can add also hashCode and > =>
-  class method Library<<(Library that) exception DecorationUnfeasable{
+  class method Library<><(Library that) exception DecorationUnfeasable{
     return Extends[{ implements Concept.ToS
-    method Bool != (This that) !(this==that)
+    
     read method Bool ==(read This that) this.toS()==that.toS()
-    }]<<Equals<<that
+    }]<><Equals<><that
     catch exception DecorationUnfeasable mg
       exception mg
     exception on MetaGuard
@@ -45,14 +45,14 @@ DataFromToS:{// in the future we can add also hashCode and > =>
   }
 
 Equals:{
-  class method Library<<(Library that) exception DecorationUnfeasable{
+  class method Library<><(Library that) exception DecorationUnfeasable{
     return Extends[{ implements Concept.Equals
       method equals(that){
         with that (on This return this==that)
         return Bool.false()
         }
       read method Bool ==(read This that)
-      }]<<that
+      }]<><that
     exception on MetaGuard
       DecorationUnfeasable"Equals"
     }

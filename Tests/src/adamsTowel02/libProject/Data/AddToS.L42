@@ -4,10 +4,10 @@
 
 //initial delegation
 class method
-Library<<(Library that) {
-  return Use[that]<<this.toSTrait(Introspection(lib:that))
+Library<><(Library that) {
+  return Use[that]<><this.toSTrait(Introspection(lib:that))
   error on MetaGuard
-    X"AddToS.<<"
+    X"AddToS.<><"
   }
 
 //code generation
@@ -44,8 +44,8 @@ Library toSTrait(Introspection.NestedClass that) {
         read method class T f()
         }
       )
-   action:=Use[action]<<Refactor.RenamePath(Path"This" to:Path"FN")<<Resource(fn)
-   action:=Refactor.MakePrivatePath(Path"FN")<<action
+   action:=Use[action]<><Refactor.RenamePath(Path"This" to:Path"FN")<><Resource(fn)
+   action:=Refactor.MakePrivatePath(Path"FN")<><action
    use[action]
     )]
   lib=acc.foldLeft(resolver:{
@@ -60,7 +60,7 @@ Library toSTrait(Introspection.NestedClass that) {
     read method S baseToS() S""
     }
   //lib can override baseToS to provid the real behaviour, the empty baseToS is used for classes wiht no fields
-  return Refactor.MakePrivateSelector(Selector"baseToS()" of:Path"This")<<Extends[miniToS]<<lib
+  return Refactor.MakePrivateSelector(Selector"baseToS()" of:Path"This")<><Extends[miniToS]<><lib
   error on MetaGuard X"AddToS.finalWrapping - MakePrivate"
   }
 

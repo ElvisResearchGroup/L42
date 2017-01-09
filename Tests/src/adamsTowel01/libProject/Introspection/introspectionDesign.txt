@@ -1,3 +1,65 @@
+Idea: the introspection lets you talk about locations in the code, so 
+if you have the class { class method Library foo()}
+you can ask what is the return type of This.foo(), and you get
+a Location.ReturnType knowing the Path (Library) the modifier (imm/immutable)
+and the Location.Method that contains such type annotation.
+
+General class shape:
+with dfn={interface Doc:{interface implements This2.Doc} Free:{implements This1 Doc:{implements This2.Doc}} Named:{implements This1 Doc:{This2.Doc}}}
+Location:{interface implements Base //that is equals, toS and "know your class"
+  Doc:{interface implements Location}//documentation, generalization of comments
+  Class:dfn
+  Method:dfn
+  Type:{Doc:{} Implemented:dfn 
+      ReturnType:dfn ThisType:dfn Exception:dfn Parameter:dfn
+      }
+}
+Why so many Doc/Free etc
+The idea is that there are two main kinds of class:
+Class.Free: library literals that are not associated to a name yet, so no one
+can call methods on them.
+Class.Named: literals associated from names.
+By calling Refactor.introspect(lib:{...}) you get a Class.Free
+By calling Refactor.introspect(class:A.B) you get a Class.Named
+
+Location.Doc know its Location location() //where it is.
+Location.Class.Doc know its refine Class location()
+Location.Class.Free know its refine Class.Free location(), etcetera.
+Location.Method know its Class location()
+Location.Method.Free know its refine Class.Free location(),...
+
+Do you think this is a sensible design?
+What methods should those types offers?
+The "bnf" we are tring to show is:
+
+L::={ interface? Doc implements Ts/*all T here have imm as mdf*/ M1..Mn Phase}  //library compiled
+M::= mwt |nc
+mwt::= abstract? refine? mh //we do not expose the implementation
+nc::= C Doc:L
+mdf::= imm|mut|lent|read|capsule|class | fwdImm | fwdMut
+Phase::=Norm|Typed|Coherent 
+ms::=m(xs) //method selector
+mh::= mdf method Doc T m(T1 x1..Tn xn) exception Ts //all mdf here will be imm
+P::= Thisn.Cs | Any | Library | Void  //is pronounced "Path"
+T::= mdf P Doc
+Doc::= /*has a text, a set of annotations,
+ where every annotation can be either a string or
+ a Path, and a string content for each annotation */
+C::= uppercase identifiers including $ as uppercase
+x::= lowercase identifier including _ as lowercase
+m::= x| #x
+
+
+
+
+repl
+main.runSlow L42Continuation c
+c.original src
+c.desugared src
+c.free names maps
+c.add(C:e)
+-------
+Please, sort of ignore the rest, it is a former attempt
 Introspection:{
   class method NestedClass (Library lib)
   class method NestedClass (Library lib,Path path) exception MetaGuard.NestedClassUnavailable
@@ -11,7 +73,6 @@ Introspection:{
     Path path
     Record record
     method Bool ==(This that)
-    method Bool != (This that)
     method Doc nestedDoc()// error  for This
     method Doc doc() //of the library literal
     method Path pathFromRoot() // invariant NestedClass(...).nestedClassFromRoot(path).pathFromRoot()==path

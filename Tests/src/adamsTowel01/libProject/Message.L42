@@ -33,7 +33,7 @@ EqualMessages:{
   //that check for equal class and then call EqualMessages
   }}
 $:{()
-  class method Library <<(Library that)
+  class method Library <><(Library that)
     SafeOperatorsAccess.compose(left:that, right:This.messageTrait())
   class method Library messageTrait() {(S _text, Message.Opt cause) implements Message
     
@@ -62,8 +62,7 @@ $:{()
       else (res:=res++S"[")
       return res[this.cause().#get()]"]"
       }
-    method Bool != (This that)
-      !(this==that)
+
     method Bool == (This that)
       Message.EqualMessages(this,other:that)
     refine read method class Message class() This

@@ -41,21 +41,21 @@ Refactor:...
 // more composition
 Opt:...
 PreferentialComposition:...
-Extends:PreferentialComposition<<{ implements PreferentialComposition.$
+Extends:PreferentialComposition<><{ implements PreferentialComposition.$
   method solveConflict(that,location){
-    return Refactor.MoveImplementationSelector(location.src() of:location.path() to:location.dest())<<that
+    return Refactor.MoveImplementationSelector(location.src() of:location.path() to:location.dest())<><that
     error on MetaGuard X""
     }
   }
-Use:PreferentialComposition<<{ implements PreferentialComposition.$
+Use:PreferentialComposition<><{ implements PreferentialComposition.$
   method solveConflict(that,location){
-    return Refactor.RenameSelector(location.src() of:location.path() to:location.dest())<<that
+    return Refactor.RenameSelector(location.src() of:location.path() to:location.dest())<><that
     error on MetaGuard X""
     }
   }
 Patch:...
 Default:...
-Url:Default.Parsable<<...
+Url:Default.Parsable<><...
 DeployTowel:... //uses Url
 K:...
 

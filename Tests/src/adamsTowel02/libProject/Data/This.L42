@@ -1,5 +1,5 @@
 {
-StateUnfit:Message.$<<{ implements MetaGuard}
+StateUnfit:Message.$<><{ implements MetaGuard}
  //make state private will be another decorator now
 Invariant:...
 // dead alreay? useful for future?AddImmK:...
@@ -16,25 +16,23 @@ Solid:{
     method readableName() GetMyName(This)
     method
     Bool == (This that)
-    method
-    Bool !=(This that)
     }
   class method
-  Library<<(Library that) exception MetaGuard.ClassClash,MetaGuard.MethodClash
-    Extends[this.solidTrait()]<<that
+  Library<><(Library that) exception MetaGuard.ClassClash,MetaGuard.MethodClash
+    Extends[this.solidTrait()]<><that
   }
 
 class method
-Library << (Library that)
+Library <>< (Library that)
 exception StateUnfit, MetaGuard
  {
   var Library res=that
-  res:=K<<res
-  res:=Wither<<res
-  res:=AddToS<<res
-  res:=AddEquals<<res
-  res:=Invariant<<res
-  res:=Solid<<res
+  res:=K<><res
+  res:=Wither<><res
+  res:=AddToS<><res
+  res:=AddEquals<><res
+  res:=Invariant<><res
+  res:=Solid<><res
   return res
   //data: toS == class named,  invariant, with  ---  Still missing: fromS, clone mutk
   }

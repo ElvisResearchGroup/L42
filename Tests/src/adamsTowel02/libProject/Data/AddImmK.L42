@@ -1,6 +1,6 @@
 {//Just immK for now
   class method
-  Library<<(Library that)
+  Library<><(Library that)
   exception StateUnfit {
     i=Introspection(lib:that)
     s=i.state()
@@ -13,7 +13,7 @@
         )
       )
    return this.addImmK(that,otherK:s.left())
-   catch exception MetaGuard error X"<< boh?"
+   catch exception MetaGuard error X"<>< boh?"
    }
 
   class method
@@ -31,14 +31,14 @@
      of:Path"This"
      mdfs:allImm
      exceptionN:0Size
-     )<<{}
+     )<><{}
   var Size count=0Size
-  immK$:=Refactor.Redirect(Path"$0" toType:otherK.returnType())<<immK$
+  immK$:=Refactor.Redirect(Path"$0" toType:otherK.returnType())<><immK$
   with ti in otherK.parameterTypes().vals() (
     count+=1Size
-    immK$:=Refactor.Redirect(Path.fromS(S"$"[count]"") toType:ti)<<immK$
+    immK$:=Refactor.Redirect(Path.fromS(S"$"[count]"") toType:ti)<><immK$
     )
-  r=Use[that]<<immK$
+  r=Use[that]<><immK$
   error on MetaGuard
     X"addImmK"
   r

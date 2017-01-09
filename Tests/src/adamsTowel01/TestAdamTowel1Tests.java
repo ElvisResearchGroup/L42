@@ -12,7 +12,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 import helpers.TestRunner.Opt;
 
-public class TestB extends helpers.TestRunner{
+public class TestAdamTowel1Tests extends helpers.TestRunner{
   @Parameters(name = "{index}:{1}")
   public static List<Object[]> go(){
     List<Object[]> tests = goInner(

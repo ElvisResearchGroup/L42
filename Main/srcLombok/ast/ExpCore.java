@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -99,9 +100,8 @@ public interface ExpCore {
   }
 
   @Value @Wither @EqualsAndHashCode(exclude = {"stage","p","phase","uniqueId"}) public static class ClassB implements ExpCore, Ast.Atom,HasPos {
-    public ClassB(Doc doc1, Doc doc2, boolean isInterface, List<Path> supertypes, List<Member> ms,Position p,ast.Util.CachedStage stage, Phase phase, String uniqueId) {
+    public ClassB(Doc doc1, boolean isInterface, List<Type> supertypes, List<Member> ms,Position p,ast.Util.CachedStage stage, Phase phase, String uniqueId) {
       this.doc1 = doc1;
-      this.doc2 = doc2;
       this.isInterface = isInterface;
       this.supertypes = supertypes;
       this.ms = ms;
@@ -113,9 +113,8 @@ public interface ExpCore {
       assert isConsistent();
       }//lombock fails me here :-(
     Doc doc1;
-    Doc doc2;
     boolean isInterface;
-    List<Ast.Path> supertypes;
+    List<Ast.Type> supertypes;
     List<Member> ms;
     Position p;
     ast.Util.CachedStage stage;
@@ -131,13 +130,18 @@ public interface ExpCore {
     public List<ExpCore.ClassB.NestedClass> getNestedList(List<String>cs){return _Aux.getNestedList(this, cs);}
     public ExpCore.ClassB getClassB(List<String>cs){return _Aux.getClassB(this, cs);}
     
-    public static ExpCore.ClassB docClass(Doc d){return new ClassB(d,Doc.empty(),false,Collections.emptyList(),Collections.emptyList(),Position.noInfo,verifiedStage.copyMostStableInfo(),Phase.Typed,"");}
+    public static ExpCore.ClassB docClass(Doc d){return new ClassB(d,false,Collections.emptyList(),Collections.emptyList(),Position.noInfo,verifiedStage.copyMostStableInfo(),Phase.Typed,"");}
     //TODO: remove when chachd stage is out
     private static final CachedStage verifiedStage=new CachedStage();
     static{verifiedStage.setVerified(true);}
     
-    public static ExpCore.ClassB membersClass(List<Member> ms,Position pos){return new ClassB(Doc.empty(),Doc.empty(),false,Collections.emptyList(),ms,pos,new CachedStage(),Phase.None,"");}    
-  
+    public static ExpCore.ClassB membersClass(List<Member> ms,Position pos){return new ClassB(Doc.empty(),false,Collections.emptyList(),ms,pos,new CachedStage(),Phase.None,"");}    
+    
+    public List<Path> getSuperPaths(){
+      return this.getSupertypes().stream()
+        .map(t->t.getNT().getPath())
+        .collect(Collectors.toList());
+      }    
     @Override public <T> T accept(coreVisitors.Visitor<T> v) {return v.visit(this);}
     public static enum Phase{None,Norm,Typed;
     public Phase acc(Phase other){
@@ -366,7 +370,7 @@ class _Aux{
         String key = mwt.getMs().toString();
         assert !keys.contains(key);
         keys.add(key);
-        assert mwt.getMt().getTDocs().size() == mwt.getMt().getTs().size();
+        //assert mwt.getMt().getTDocs().size() == mwt.getMt().getTs().size();
         }
       if (m instanceof NestedClass) {
         NestedClass nc = (NestedClass) m;

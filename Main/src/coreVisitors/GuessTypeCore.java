@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import facade.Configuration;
 import tools.Assertions;
+import ast.Ast.Doc;
 import ast.Ast.FreeType;
 import ast.Ast.HistoricType;
 import ast.Ast.MethodSelector;
@@ -73,7 +74,7 @@ public class GuessTypeCore implements Visitor<Path>{
     List<MethodSelectorX> msl=new ArrayList<>();
     MethodSelectorX msx=new MethodSelectorX(s.getS(), "");
     msl.add(msx); 
-    Type t=new Ast.HistoricType(path,msl,false);
+    Type t=new Ast.HistoricType(path,msl,false,Doc.empty());
     t=Norm.of(p,t);
     assert t instanceof NormType;
     NormType nt=(NormType)t;

@@ -138,7 +138,7 @@ private int firstVar(List<VarDec> varDecs){
   return -1;
   }
 private VarDecXE getDecForVar(String cName,VarDecXE varDec) {
-  NormType nt=new NormType(Mdf.Mutable,Path.outer(0).pushC(cName),Ph.None);
+  NormType nt=new NormType(Mdf.Mutable,Path.outer(0).pushC(cName),Ph.None,Doc.empty());
   Position pos = Desugar.getPosition(varDec.getInner());
   MCall right=new MCall(nt.getPath(),"#apply",Doc.empty(), Desugar.getPs("inner",new X(varDec.getX())),pos);
   String nameZ=Functions.freshName(nt.getPath(), usedVars);
@@ -200,7 +200,7 @@ private VarDecXE getDecForVar(String cName,VarDecXE varDec) {
  private VarDecCE getClassBForVar(VarDecXE varDec) {
    List<FieldDec> fs=new ArrayList<FieldDec>();
    fs.add(new FieldDec(true,_computeTypeForClassBForVar(varDec),"inner",Doc.empty()));
-   ClassB cb=new ClassB(Doc.empty(),Doc.empty(),new Ast.ConcreteHeader(Mdf.Mutable, "",fs,Position.noInfo),Collections.emptyList(),Collections.emptyList(),Collections.emptyList(),Position.noInfo,Stage.None);
+   ClassB cb=new ClassB(Doc.empty(),new Ast.ConcreteHeader(Mdf.Mutable, "",fs,Position.noInfo),Collections.emptyList(),Collections.emptyList(),Collections.emptyList(),Position.noInfo,Stage.None);
    String nameC=Functions.freshName("Var"+varDec.getX(), L42.usedNames);
    //usedCnames.add(nameC);
    return new VarDecCE(new NestedClass(Doc.getPrivate(),nameC,cb,null));

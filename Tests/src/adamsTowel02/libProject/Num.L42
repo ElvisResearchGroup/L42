@@ -32,7 +32,7 @@
       check stringToNum(builder.binaryRepr())
       error This.parseError(S.#from(builder: builder)))
 
-  ParseFail:Message.$<<{ implements Guard.ParseFail}
+  ParseFail:Message.$<><{ implements Guard.ParseFail}
   class method
   Any parseError(S that)
     ParseFail"The provided string is not a valid Rational: "[that]""
@@ -78,26 +78,17 @@
     return Bool.false()
     }
 
-  method
-  Bool <(This that) {
+  method Bool >(This that)  {
     use Plg
-      check ifNumGrtDo(n1:this.binaryRepr() n2:that.binaryRepr())
+      check ifNumGrtDo(n1:that.binaryRepr() n2:this.binaryRepr())
       return Bool.true()
     return Bool.false()
     }
 
-  method
-  Bool <=(This that) {
+  method Bool >=(This that) {
     use Plg
-      check ifNumGEqDo(n1:this.binaryRepr() n2:that.binaryRepr())
+      check ifNumGEqDo(n1:that.binaryRepr() n2:this.binaryRepr())
       return Bool.true()
     return Bool.false()
     }
-
-  method Bool !=(This that) !(this==that)
-
-  method Bool >(This that)  !(this<=that)
-
-  method Bool >=(This that) !(this<that)
-
   }

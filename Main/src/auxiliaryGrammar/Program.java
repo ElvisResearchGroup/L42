@@ -381,8 +381,8 @@ public class Program {
     if (!cbi.isInterface()){
       throw new ErrorMessage.MalformedSubtypeDeclaration(forErr,cbi, pi, p.getInnerData());
     }
-    for(Path pj:cbi.getSupertypes()){
-      pj=From.fromP(pj,pi);
+    for(Type tj:cbi.getSupertypes()){
+      Path pj=From.fromP(tj.getNT().getPath(),pi);
       accumulateAllSupertypes(cbi,ps, p, pj);
     }
   }
@@ -399,8 +399,8 @@ public class Program {
   //to remove those doubles.
   public static List<Path> getAllSupertypes(Program p,ClassB cb){
     List<Path> result=new ArrayList<>();
-    for(Path pi:cb.getSupertypes()){
-      accumulateAllSupertypes(cb,result, p, pi);
+    for(Type ti:cb.getSupertypes()){
+      accumulateAllSupertypes(cb,result, p, ti.getNT().getPath());
       }
     return result;
   }

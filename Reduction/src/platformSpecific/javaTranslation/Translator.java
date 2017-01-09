@@ -182,18 +182,18 @@ public class Translator {
       if(Program.getIfInDom(ms,pmwt.getMwt().getMs()).isPresent()){continue;}
       ms.add(From.from(pmwt.getMwt(), p));
     }
-    List<Path> sup = tools.Map.of(pi->(Path)From.fromP(pi,p),ct.getSupertypes());
+    List<Path> sup = tools.Map.of(ti->(Path)From.fromP(ti.getNT().getPath(),p),ct.getSupertypes());
     List<Path> supAll = sup;//tools.Map.of(pi->(Path)From.fromP(pi,p),ct.getStage().getInheritedPaths());
-    ClassB res= ct.withMs(ms).withSupertypes(sup);
+    ClassB res= ct.withMs(ms).withSupertypes(tools.Map.of(pi->pi.toImmNT(),sup));
     res=res.withStage(res.getStage().copyMostStableInfo());
     res.getStage().setInheritedPaths(supAll);
     return res;
   }
   private static ClassB normalizeClass(Program p,ClassB ct) {
     assert ct.getStage().getInheritedPaths()!=null;
-    List<Path> sup = tools.Map.of(pi->(Path)
-        Norm.of(p,pi),ct.getSupertypes());
-    ClassB result= Norm.ofAllMethodsOf(p, ct,false).withSupertypes(sup);
+    List<Path> sup = tools.Map.of(ti->(Path)
+        Norm.of(p,ti.getNT().getPath()),ct.getSupertypes());
+    ClassB result= Norm.ofAllMethodsOf(p, ct,false).withSupertypes(tools.Map.of(pi->pi.toImmNT(),sup));
     result.withStage(ct.getStage().copyMostStableInfo());
     result.getStage().setInheritedPaths(tools.Map.of(pi->(Path)
         Norm.of(p,pi),ct.getStage().getInheritedPaths()));

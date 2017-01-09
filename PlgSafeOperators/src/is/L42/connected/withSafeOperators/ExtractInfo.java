@@ -60,7 +60,7 @@ public class ExtractInfo {
     }  }
   static class IsUsedAsPath extends IsUsed{
     IsUsedAsPath(Path target){super(target);}
-    protected List<Path> liftSup(List<Path> supertypes) {return supertypes;}
+    protected List<Type> liftSup(List<Type> supertypes) {return supertypes;}
     protected Type liftT(Type t){return t;}
   public static Set<Path> of(ClassB cb,Path path){
     IsUsedAsPath iu=new IsUsedAsPath(path);
@@ -73,7 +73,7 @@ public class ExtractInfo {
     Set<Path> whereUsed=new HashSet<>();
     public ExpCore visit(ClassB s) {
       Path localP=Path.outer(0,this.getLocator().getClassNamesPath());
-      for(Path ip:s.getSupertypes()){
+      for(Path ip:s.getSuperPaths()){
       if(From.fromP(ip, localP).equals(target)){
         whereUsed.add(localP);
         }
@@ -248,8 +248,8 @@ public class ExtractInfo {
     return res;
   }
   static boolean isExceptionOk(MethodWithType mta, MethodWithType mtb) {
-    Set<Path> pa=new HashSet<>(mta.getMt().getExceptions());
-    Set<Path> pb=new HashSet<>(mtb.getMt().getExceptions());
+    Set<Path> pa=new HashSet<>(Map.of(t->t.getNT().getPath(), mta.getMt().getExceptions()));
+    Set<Path> pb=new HashSet<>(Map.of(t->t.getNT().getPath(),mtb.getMt().getExceptions()));
     Set<Path> pc=new HashSet<>(pa);
     pc.retainAll(pb);
     if(mta.get_inner().isPresent() && !pc.containsAll(pa)){return false;}

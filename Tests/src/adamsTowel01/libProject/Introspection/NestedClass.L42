@@ -15,7 +15,6 @@ method Bool ==(This that){
   if ext (return this.externalTypeToS()==that.externalTypeToS())
   return this.allAsString()==that.allAsString()
   }
-method Bool != (This that) !(this==that)
 method equals(that){
   with that (on This return this==that)
   return Bool.false()

@@ -156,8 +156,8 @@ private static void addMwt(Program p, PlgInfo plgInfo, Method[] jms, Constructor
 //checks
   try{
     isOkAsReturn(p,pTop,mwt.getMt().getReturnType());
-    for(Path pi:mwt.getMt().getExceptions()){
-      isOkAsException(p,pTop,pi);
+    for(Type ti:mwt.getMt().getExceptions()){
+      isOkAsException(p,pTop,ti.getNT().getPath());
       }
     for(Type ti:mwt.getMt().getTs()){
       isOkAsParameter(p,pTop,ti);
@@ -258,8 +258,8 @@ private static UsingInfo usingConstructor(PlgInfo plgInfo, Constructor<?>[] jcs,
       On on=b.getOns().get(0);
       Dec k0 = ((Block)on.getInner()).getDecs().get(0);
       List<Dec> ks=new ArrayList<>();
-      {int i=-1;for(Path pi:mt.getExceptions()){i++;
-        MCall mci=((MCall)k0.getInner()).withInner(pi);
+      {int i=-1;for(Type ti:mt.getExceptions()){i++;
+        MCall mci=((MCall)k0.getInner()).withInner(ti.getNT().getPath());
         ks.add(k0.withInner(mci).withX(k0.getX()+i));
         }}
       on=on.withInner(((Block)on.getInner()).withDecs(ks));

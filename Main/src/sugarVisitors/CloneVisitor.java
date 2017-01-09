@@ -33,8 +33,8 @@ public class CloneVisitor implements Visitor<Expression>{
     }
   protected Type liftT(Type t){
     return t.match(
-        nt->(Type)new NormType(nt.getMdf(),lift(nt.getPath()),nt.getPh()),
-        ht->(Type)new HistoricType(lift(ht.getPath()),ht.getSelectors(),ht.isForcePlaceholder())
+        nt->(Type)new NormType(nt.getMdf(),lift(nt.getPath()),nt.getPh(),liftDoc(nt.getDoc())),
+        ht->(Type)new HistoricType(lift(ht.getPath()),ht.getSelectors(),ht.isForcePlaceholder(),liftDoc(ht.getDoc()))
         );
     }
   protected Expression.Catch liftK(Expression.Catch k){
@@ -118,12 +118,10 @@ public class CloneVisitor implements Visitor<Expression>{
   }
   protected MethodType liftMT(MethodType mt) {
     return new MethodType(mt.isRefine(),
-        liftDoc(mt.getDocExceptions()),
       mt.getMdf(),
       Map.of(this::liftT,mt.getTs()),
-      Map.of(this::liftDoc,mt.getTDocs()),
       liftT(mt.getReturnType()),
-      Map.of(this::lift,mt.getExceptions()));
+      Map.of(this::liftT,mt.getExceptions()));
   }
   public Expression visit(Path s) {return s;}
   public Expression visit(X s) { return s;}
@@ -151,9 +149,9 @@ public class CloneVisitor implements Visitor<Expression>{
   public Expression visit(ClassB s) {
     Header h = liftH(s.getH());
     List<FieldDec> fs=Map.of(this::liftF,s.getFields());
-    List<Path> superT = Map.of(this::lift,s.getSupertypes());
+    List<Type> superT = Map.of(this::liftT,s.getSupertypes());
     List<Member> ms = Map.of(this::liftM,s.getMs());
-    return new ClassB(liftDoc(s.getDoc1()),liftDoc(s.getDoc2()),h,fs,superT,ms,s.getP(),s.getStage());
+    return new ClassB(liftDoc(s.getDoc1()),h,fs,superT,ms,s.getP(),s.getStage());
   }
   @Override
   public Expression visit(If s) {

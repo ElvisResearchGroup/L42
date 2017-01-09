@@ -42,9 +42,6 @@
 
   method toS() S.#from(binaryRepr: this._binaryRepr())
 
-
-  method Bool != (This that) !(this==that)
-
   method
   Bool == (This that) {
     use Alu

@@ -2,7 +2,7 @@
 
 NL:Collections.vector(of:Size)
 
-UndefinedOnEmptyList: Message.$<<{ implements Guard}
+UndefinedOnEmptyList: Message.$<><{ implements Guard}
 $:{    
   class method Size max(NL that) (
     if that.isEmpty() (error UndefinedOnEmptyList"on $.max")

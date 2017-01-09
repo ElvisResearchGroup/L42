@@ -74,29 +74,20 @@
     return Bool.false()
     }
 
-  method
-  Bool <(Size that) {
+  method Bool >(Size that)  {
     use Alu
-      check ifInt32GrtDo(n1:this.binaryRepr() n2:that.binaryRepr())
+      check ifInt32GrtDo(n1:that.binaryRepr() n2:this.binaryRepr())
       return Bool.true()
     return Bool.false()
     }
 
-  method
-  Bool <=(Size that) {
+
+  method Bool >=(Size that) {
     use Alu
-      check ifInt32GEqDo(n1:this.binaryRepr() n2:that.binaryRepr())
+      check ifInt32GEqDo(n1:that.binaryRepr() n2:this.binaryRepr())
       return Bool.true()
     return Bool.false()
     }
-
-  method Bool !=(This that) !(this==that)
-
-  method Bool >(Size that)  !(this<=that)
-
-
-  method Bool >=(Size that) !(this<that)
-
   method
   mut Iterator vals()
     Iterator(start:this,end:Size"-1")

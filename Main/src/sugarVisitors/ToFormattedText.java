@@ -451,19 +451,18 @@ public class ToFormattedText implements Visitor<Void>{
     separeFromChar();
     c(methT.getMs().getName());
     c("(");
-    StringBuilders.formatSequence(this.result,methT.getMt().getTs().iterator(), methT.getMt().getTDocs().iterator(),methT.getMs().getNames().iterator(),", ",
-      (ti,doci,xi)->{
-      formatType(ti);
+    StringBuilders.formatSequence(this.result,methT.getMt().getTs().iterator(), methT.getMs().getNames().iterator(),", ",
+      (ti,xi)->{
+      formatType(ti.withDoc(Doc.empty()));
       separeFromChar();
       c(xi);
-      formatDoc(doci);
+      formatDoc(ti.getDoc());
       });
     c(") ");
     if(methT.getMt().getExceptions().isEmpty()){return;}
     c("exception ");
     StringBuilders.formatSequence(this.result,methT.getMt().getExceptions().iterator(),", ",
-        p->visit(p));
-    formatDoc(methT.getMt().getDocExceptions());
+        p->formatType(p));
     sp();
   }
   private void formatMs(MethodSelector s) {
@@ -493,9 +492,8 @@ public class ToFormattedText implements Visitor<Void>{
     if(!arg0.getSupertypes().isEmpty()){
       c("implements ");
       StringBuilders.formatSequence(this.result,arg0.getSupertypes().iterator(),", ",
-        p->visit(p));
+        p->formatType(p));
       }
-    formatDoc(arg0.getDoc2());
   }
   private void formatField(FieldDec v) {
    sp();

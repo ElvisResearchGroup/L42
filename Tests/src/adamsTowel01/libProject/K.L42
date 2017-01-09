@@ -5,7 +5,7 @@ $:{(S names, Bool isFwd, S mutK,S lentK,S readK,S immK)
         This(names:this.names(), isFwd:Bool.true(),
             mutK:this.mutK(),lentK:this.lentK(),readK:this.readK(),immK:this.immK() )
     method
-    Library<< (Library that)
+    Library<>< (Library that)
     exception
     MetaGuard.MethodUnavailable//if names are wrong
     //MetaGuard.NestedClassUnavailable//no since we use Path"This"
@@ -28,7 +28,7 @@ class method
 mut S.SBuilder #builder()
     S.SBuilder.empty()
 class method
-Library<< (Library that){
+Library<>< (Library that){
     //compute names
     i=Introspection(lib:that)
     names=S""[with m in i.methods().vals() (
@@ -41,7 +41,7 @@ Library<< (Library that){
     //just submit mutK...immK, if already there, they are not produced by the operator.
     return This.$(names:names,  isFwd:Bool.false(),
         mutK:S"#apply", lentK:S"lentK", readK: S"readK",immK:S"immK")
-        <<that
+        <><that
     error on MetaGuard.MethodUnavailable X""
   }
 }
