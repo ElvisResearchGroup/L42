@@ -34,3 +34,12 @@ In order to define the AST and some more datastructures I used lombock, that
 saved me from writing about 5k of boilerplate code.
 lombock is a metaprogramming tool that exapand some annotations in usefull methods.
 
+## Building it from the command line
+Currently, only Main is built (without running ANTLR and lombok):
+
+* Install sbt
+* Change JDK path in javacOptions in build.sbt
+
+Then in the repository directory, run:
+
+    sbt compile
