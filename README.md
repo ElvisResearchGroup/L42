@@ -35,16 +35,11 @@ saved me from writing about 5k of boilerplate code.
 lombock is a metaprogramming tool that exapand some annotations in usefull methods.
 
 ## Building it from the command line
-Currently, it's a complex beast of Eclipse projects. The preliminary setup for building from the command line
-was semi-auto generated using IntelliJ IDEA (after a few hours of Eclipse project import struggles).
-Before building it, you need to:
+Currently, only Main is built (without running ANTLR and lombok):
 
-* Install ant, JDK8, IntelliJ IDEA (the auto generated build configuration uses a few JARs from it: JUnit, Javac2... )
-* Change paths in Main/main.properties accordingly
+* Install sbt
+* Change JDK path in javacOptions in build.sbt
 
 Then in the repository directory, run:
 
-    cd Main
-    ant
-	
-TODO for brave hearts (open a Github issue?): convert it to Ivy/Maven/Gradle/anything sensible
+    sbt compile
