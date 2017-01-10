@@ -160,10 +160,8 @@ methTypes(p,P,ms)  Expressed as metarules
 //first managing placeholders
 
        p(P).ms.mh[from P]=mdf0 method T m(T1 x1,..Tn xn) exception Ps
-       T0= mdf0 P
-       fwd_or_fwd%_in T1..Tn
 (mBase)-------------------------------------------------------------------
-       T0..Tn-> fwd% T;Ps in methTypes(p,P,ms)
+       mdf0 P T1..Tn-> fwd% T;Ps in methTypes(p,P,ms)
  
 
          Ts->T;Ps in methTypes(p,P,ms) 
