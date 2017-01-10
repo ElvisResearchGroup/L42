@@ -163,11 +163,9 @@ methTypes(p,P,ms)  Expressed as metarules
 (mBase)-------------------------------------------------------------------
        mdf0 P T1..Tn-> fwd% T;Ps in methTypes(p,P,ms)
  
-
          Ts->T;Ps in methTypes(p,P,ms) 
 (mNoFwd)-------------------------------------------------------------------
          noFwd Ts-> noFwd T;Ps in methTypes(p,P,ms)
-
 
 //then capsule and imm promotion
     Ts->mut P0;Ps in methTypes(p,P,ms)
@@ -176,14 +174,16 @@ methTypes(p,P,ms)  Expressed as metarules
 
     Ts->read P0;Ps in methTypes(p,P,ms)
 (mI)-------------------------------------------------------------------
-    toImmOrCapsule(Ts)->imm P0;Ps in methTypes(p,P,ms)
+    toImmOrCapsule(Ts)->imm P0;Ps in methTypes(p,P,ms) 
+    //the behaviour of immorcapsule on fwd is not relevant since the method
+    // returns a read and will be not well formed if it had fwd parameters
   
 //then lent viewpoint adaptation    
 
-     Ts0 T Ts1->T0;Ps in methTypes(p,P,ms)
-     Ts'=mutToCapsule(Ts0) mutToLent(T) mutToCapsule(Ts1)
+     Ts0 T1 Ts2->T;Ps in methTypes(p,P,ms)
+     Ts'=mutToCapsule(Ts0) mutToLent(T1) mutToCapsule(Ts2)
 (mVp)-------------------------------------------------------------------
-     Ts'->toLent(T0);Ps in methTypes(p,P,ms)
+     Ts'->toLent(T);Ps in methTypes(p,P,ms)
 
 
 //Here OLD version to help us discuss a way to compute/dispatch over the set of all the methods efficiently
