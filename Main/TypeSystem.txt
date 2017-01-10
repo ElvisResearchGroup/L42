@@ -43,8 +43,8 @@ fwd% T
   otherwise fwd% T=T
  
 fwd_or_fwd%_in Ts
-if exists T in Ts such that
-T in {fwdImm _,fwdMut_,fwd%Imm _,fwd%Mut _}
+  exists T in Ts such that
+  T in {fwdImm _,fwdMut_,fwd%Imm _,fwd%Mut _}
 
 toImm(T)        
   toImm(class P)=class P
@@ -153,12 +153,14 @@ methTypes(p,P,ms)  Expressed as metarules
 //first managing placeholders
 
   p(P).ms.mh[from P]=mdf0 method T m(T1 x1,..Tn xn) exception Ps
-  T0= mdf0 P /*TODO newLine*/  not fwd_or_fwd%_in T0..Tn
+  T0= mdf0 P 
+  not fwd_or_fwd%_in T0..Tn
 -------------------------------------------------------------------
   T0..Tn->T;Ps in methTypes(p,P,ms)
 
   p(P).ms.mh[from P]=mdf0 method T m(T1 x1,..Tn xn) exception Ps
-  T0= mdf0 P /*TODO newLine*/  fwd_or_fwd%_in T0..Tn
+  T0= mdf0 P
+  fwd_or_fwd%_in T0..Tn
 -------------------------------------------------------------------
   T0..Tn-> fwd% T;Ps in methTypes(p,P,ms)
 
