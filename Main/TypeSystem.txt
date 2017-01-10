@@ -46,6 +46,13 @@ fwd_or_fwd%_in Ts
   exists T in Ts such that
   T in {fwdImm _,fwdMut_,fwd%Imm _,fwd%Mut _}
 
+noFwd T
+  noFwd fwdImm P=noFwd fwd%Imm P=imm P
+  noFwd fwdMut P=noFwd fwd%Mut P=mut P
+  otherwise noFwd T=T
+
+noFwd T1..Tn= noFwd T1 .. noFwd Tn
+  
 toImm(T)        
   toImm(class P)=class P
   otherwise, toImm(mdf P)=imm P
@@ -154,35 +161,35 @@ methTypes(p,P,ms)  Expressed as metarules
 
   p(P).ms.mh[from P]=mdf0 method T m(T1 x1,..Tn xn) exception Ps
   T0= mdf0 P 
-  not fwd_or_fwd%_in T0..Tn
--------------------------------------------------------------------
+  not fwd_or_fwd%_in T1..Tn
+(m10)-------------------------------------------------------------------
   T0..Tn->T;Ps in methTypes(p,P,ms)
 
   p(P).ms.mh[from P]=mdf0 method T m(T1 x1,..Tn xn) exception Ps
   T0= mdf0 P
-  fwd_or_fwd%_in T0..Tn
--------------------------------------------------------------------
+  fwd_or_fwd%_in T1..Tn
+(m20)-------------------------------------------------------------------
   T0..Tn-> fwd% T;Ps in methTypes(p,P,ms)
 
 
   Ts0 fwdImm P' Ts1->T;Ps in methTypes(p,P,ms) 
--------------------------------------------------------------------
+1-------------------------------------------------------------------
   Ts0 imm P' Ts1->T;Ps in methTypes(p,P,ms)
 
   Ts0 fwdMut P' Ts1->T;Ps in methTypes(p,P,ms) 
--------------------------------------------------------------------
+2-------------------------------------------------------------------
   Ts0 mut P' Ts1->T;Ps in methTypes(p,P,ms)
     
   Ts->mdf P';Ps in methTypes(p,P,ms)
   not fwd_or_fwd%_in Ts
   mdf in {fwdImm,fwd%Imm}  
--------------------------------------------------------------------
+3-------------------------------------------------------------------
   Ts->imm P';Ps in methTypes(p,P,ms)
 
   Ts->mdf P';Ps in methTypes(p,P,ms)
   not fwd_or_fwd%_in Ts
   mdf in {fwdMut,fwd%Mut} 
--------------------------------------------------------------------
+4-------------------------------------------------------------------
   Ts->mut P';Ps in methTypes(p,P,ms)
 
 //then capsule and imm promotion
