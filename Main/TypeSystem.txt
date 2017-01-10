@@ -58,9 +58,9 @@ toImm(T)
   otherwise, toImm(mdf P)=imm P
 
 toImmOrCapsule(T)
-  toImmOrCapsule(mdf C)=capsule C with mdf in {lent,mut,fwdMut,fwd%Mut,capsule}
+  toImmOrCapsule(mdf C)=capsule C with mdf in {lent,mut,fwdMut,fwd%Mut}
   toImmOrCapsule(read C)=imm C
-  otherwise toImmOrCapsule(T)=T//mdf in {class,imm,fwdImm,fwd%Imm}
+  otherwise toImmOrCapsule(T)=T//mdf in {class,imm,fwdImm,fwd%Imm,capsule}
 
 toLent(T)
   toLent(mut P)=lent P,
@@ -172,7 +172,7 @@ methTypes(p,P,ms)  Expressed as metarules
 //then capsule and imm promotion
     Ts->mut P0;Ps in methTypes(p,P,ms)
 (mC)-------------------------------------------------------------------
-    mutToCapsule(T0..Tn)->capsule P0;Ps in methTypes(p,P,ms)
+    mutToCapsule(Ts)->capsule P0;Ps in methTypes(p,P,ms)
 
     Ts->read P0;Ps in methTypes(p,P,ms)
 (mI)-------------------------------------------------------------------
