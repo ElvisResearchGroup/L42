@@ -398,7 +398,7 @@ public class ToFormattedText implements Visitor<Void>{
 
   @Override
   public Void visit(ClassB cb) {
-    c("{");
+    c(" {");
     formatH(cb);
     cb.getFields().forEach(this::formatField);
     formatMembers(cb.getMs());

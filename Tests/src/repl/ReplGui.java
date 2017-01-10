@@ -2,6 +2,7 @@ package repl;
 
 import java.awt.*; import java.awt.event.*;
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PipedInputStream;
@@ -42,7 +43,8 @@ JTextArea newSrc=new JTextArea(2, 50);
 JTextArea output=new JTextArea(20, 50);
 JTextArea errors=new JTextArea(20, 50);
 ReplState repl=null;
-BufferedReader err;
+//BufferedReader err;
+ByteArrayOutputStream err;
 boolean running=false;
 JButton runB;
 ExecutorService executor = Executors.newFixedThreadPool(1);
@@ -72,9 +74,10 @@ void auxRunCode(){
   finally{
     SwingUtilities.invokeLater(()->{try{
       output.setText(L42.record.toString());
-      String newErr="";
-      try {while(err.ready()){newErr+="\n"+err.readLine();}}
-      catch (IOException e) {throw new Error(e);}
+      String newErr=err.toString();
+      //String newErr="";
+      //try {while(err.ready()){newErr+="\n"+err.readLine();}}
+      //catch (IOException e) {throw new Error(e);}
       errors.setText(errors.getText()+newErr);
       if(repl==null){return;}
       loadedSrc.setText(repl.originalS);
@@ -96,12 +99,16 @@ void buildGui(JRootPane pane){
   tabbedPane.addTab("output", new JScrollPane(output));
   tabbedPane.addTab("errors", new JScrollPane(errors));
   newSrc.setFont(newSrc.getFont().deriveFont(40f));
-  PipedOutputStream pErr = new PipedOutputStream();   
-  System.setErr(new PrintStream(pErr));
-  System.setOut(new PrintStream(pErr));   
-  PipedInputStream pIn;try {pIn = new PipedInputStream(pErr);}
-  catch (IOException e) {throw new Error(e);}  
-  err = new BufferedReader(new InputStreamReader(pIn));
+  //PipedOutputStream pErr = new PipedOutputStream();   
+  //System.setErr(new PrintStream(pErr));
+  //System.setOut(new PrintStream(pErr)); 
+  
+  ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+  System.setOut(new PrintStream(buffer));
+  System.setErr(new PrintStream(buffer));
+  //PipedInputStream pIn;try {pIn = new PipedInputStream(pErr);}
+  //catch (IOException e) {throw new Error(e);}  
+  err = buffer;//new BufferedReader(new InputStreamReader(pIn));
   pane.add(tabbedPane,BorderLayout.CENTER);
   }
 
