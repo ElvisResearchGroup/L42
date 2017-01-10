@@ -156,7 +156,7 @@ C:e : capsuleWellFormed
    
 mwt: Ts=parameter types, 
   if fwdImm _ in Ts, (return type).mdf not in {read, lent, capsule, class}
-  if fwdMut _ in Ts, (return type).mdf in {imm, fwdImm}
+  if fwdMut _ in Ts, (return type).mdf in {mut, fwdMut}
 
 mwt:  capsuleWellFormed 
   mwt= refine? mdf method T m(T1 x1..Tn xn)e
