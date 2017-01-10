@@ -43,7 +43,8 @@ fwd% T
   otherwise fwd% T=T
  
 fwd_or_fwd%_in Ts
-if exists T in Ts, T in {fwdImm _,fwdMut_,fwd%Imm _,fwd%Mut _}
+if exists T in Ts such that
+T in {fwdImm _,fwdMut_,fwd%Imm _,fwd%Mut _}
 
 toImm(T)        
   toImm(class P)=class P
