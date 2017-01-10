@@ -154,6 +154,10 @@ C:e : capsuleWellFormed
    cX(e)=empty
    //Note, this can be applied directly after desugaring
    
+mwt: Ts=parameter types, 
+  if fwdImm _ in Ts, (return type).mdf not in {read, lent, capsule, class}
+  if fwdMut _ in Ts, (return type).mdf in {imm, fwdImm}
+
 mwt:  capsuleWellFormed 
   mwt= refine? mdf method T m(T1 x1..Tn xn)e
   FV(e)\ this,x1..xn= empty
