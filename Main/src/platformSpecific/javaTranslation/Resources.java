@@ -297,7 +297,7 @@ public class Resources {
     }
   /*public Object bar(Plugin plg,Object e1, Object e2,Callable<Object> conclE){
     return plgExecutor("dbgInfo",null,new Plugin(),
-        (plF,xsF)->plF.MsumInt32£xn1£xn2(xsF[0],xsF[1]),
+        (plF,xsF)->plF.MsumInt32Â£xn1Â£xn2(xsF[0],xsF[1]),
         conclE,e1,e2);
   }*/
   public static <Pt,T> T plgExecutor(String plgCall,Program p,Pt plg,PlgClosure<Pt,T> cls,Callable<T> concl, Object ... es){
@@ -369,7 +369,7 @@ public class Resources {
     }
   public static String nameOf(String name, List<String> names) {
     String result="M"+name;
-    for(String x:names){result+="£x"+x;}
+    for(String x:names){result+="Â£x"+x;}
     return nameOf(result);
     }
   public static String nameOf(Path path) {
@@ -409,16 +409,16 @@ public class Resources {
     return nameOf(res);
   }
   public static String nameOf(String s){
-      s=s.replace(".","£_");
-      s=s.replace("%","£p");
-      s=s.replace("#","£h");
+      s=s.replace(".","Â£_");
+      s=s.replace("%","Â£p");
+      s=s.replace("#","Â£h");
       return s;
   }
   public static String name42Of(String javaName){
       String s=javaName;
-      s=s.replace("£_",".");
-      s=s.replace("£p","%");
-      s=s.replace("£h","#");
+      s=s.replace("Â£_",".");
+      s=s.replace("Â£p","%");
+      s=s.replace("Â£h","#");
       return s;
   }
 
@@ -441,16 +441,16 @@ public class Resources {
   private static String extractMethName(String methodName) {
     assert methodName.startsWith("M");
     String end=")";
-    if (!methodName.contains("£x")){end="()";}
-    methodName=methodName.replaceFirst("£x", "(");
-    methodName=methodName.replaceAll("£x", ", ");
+    if (!methodName.contains("Â£x")){end="()";}
+    methodName=methodName.replaceFirst("Â£x", "(");
+    methodName=methodName.replaceAll("Â£x", ", ");
     methodName=name42Of(methodName);
     return "."+methodName.substring(1)+end;
   }
   private static String extractClassName(String className) {
-    if(className.startsWith("generated.Program42$This0£_")){
+    if(className.startsWith("generated.Program42$This0Â£_")){
       className=className.substring(27);
-      className=className.replace("£_", ".");
+      className=className.replace("Â£_", ".");
       className=name42Of(className);
       return className;
     }

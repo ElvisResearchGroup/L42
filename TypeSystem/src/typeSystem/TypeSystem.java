@@ -7,8 +7,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
 
-import com.sun.org.apache.xalan.internal.xsltc.compiler.util.ErrorMessages;
-
 import coreVisitors.FreeVariables;
 import coreVisitors.GuessTypeCore;
 import coreVisitors.InjectionOnSugar;

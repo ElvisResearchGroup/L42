@@ -1,0 +1,42 @@
+<project>
+    <target name="clean">
+        <delete dir="antBuild"/>
+    </target>
+
+    <target name="compile">
+        <mkdir dir="antBuild/classes"/>
+        <javac encoding="UTF-8" includeantruntime="false" srcdir="Main/src" destdir="antBuild/classes">
+        <classpath>
+          <pathelement path="Main/antlr-4.2.2-complete.jar"/>
+        </classpath>
+        </javac>
+        <javac encoding="UTF-8" includeantruntime="false" srcdir="TypeSystem/src" destdir="antBuild/classes"/>
+        <javac encoding="UTF-8" includeantruntime="false" srcdir="Reduction/src" destdir="antBuild/classes"/>
+        <javac encoding="UTF-8" includeantruntime="false" srcdir="PlgAlu/src" destdir="antBuild/classes"/>
+        <javac encoding="UTF-8" includeantruntime="false" srcdir="PlgGui/src" destdir="antBuild/classes"/>
+        <javac encoding="UTF-8" includeantruntime="false" srcdir="PlgLimitations/src" destdir="antBuild/classes"/>
+        <javac encoding="UTF-8" includeantruntime="false" srcdir="PlgLimitations/src" destdir="antBuild/classes"/>
+        <javac encoding="UTF-8" includeantruntime="false" srcdir="PlgNumbers/src" destdir="antBuild/classes"/>
+        <javac encoding="UTF-8" includeantruntime="false" srcdir="PlgSafeOperators/src" destdir="antBuild/classes"/>
+        <mkdir dir="antBuild/jar"/>
+        <jar destfile="antBuild/jar/Repl.jar" basedir="antBuild/classes">
+            <manifest>
+                <attribute name="Main-Class" value="repl.ReplGui"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="jar">
+        <mkdir dir="build/jar"/>
+        <jar destfile="build/jar/HelloWorld.jar" basedir="build/classes">
+            <manifest>
+                <attribute name="Main-Class" value="oata.HelloWorld"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="run">
+        <java jar="build/jar/HelloWorld.jar" fork="true"/>
+    </target>
+
+</project>

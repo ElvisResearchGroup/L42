@@ -11,7 +11,6 @@ import java.util.Collections;
 import java.util.List;
 
 import platformSpecific.javaTranslation.Resources;
-import com.sun.org.apache.xml.internal.security.utils.resolver.ResourceResolverException;
 import facade.Configuration;
 import facade.L42;
 import facade.Parser;

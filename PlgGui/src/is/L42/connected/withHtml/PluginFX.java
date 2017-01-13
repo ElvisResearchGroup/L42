@@ -33,17 +33,17 @@ try to learn to use ACE for the IDE?
 
 public class PluginFX implements PluginType {
 //OLD, unused.
-  public static Ast.MethodType Mopen£that£title=mt(Path.Void(),Path.Library(),Path.Library());
+  public static Ast.MethodType MopenÂ£thatÂ£title=mt(Path.Void(),Path.Library(),Path.Library());
   @ActionType({ActionType.Type.Void,ActionType.Type.Library,ActionType.Type.Library})
-  public Resources.Void Mopen£that£title(Object cb1,Object cb2){
+  public Resources.Void MopenÂ£thatÂ£title(Object cb1,Object cb2){
     String s1=ensureExtractStringU(cb1);
     String s2=ensureExtractStringU(cb2);
     FrameFX.open(s2,s1);
     return Resources.Void.instance;
   }
-  public static Ast.MethodType Mset£that£id=mt(Path.Void(),Path.Library(),Path.Library());
+  public static Ast.MethodType MsetÂ£thatÂ£id=mt(Path.Void(),Path.Library(),Path.Library());
   @ActionType({ActionType.Type.Void,ActionType.Type.Library,ActionType.Type.Library})
-  public  Resources.Void Mset£that£id(Object cb1,Object cb2){
+  public  Resources.Void MsetÂ£thatÂ£id(Object cb1,Object cb2){
     String s1=ensureExtractStringU(cb1);
     String s2=ensureExtractStringU(cb2);
     FrameFX.setId(s2,s1);
@@ -51,7 +51,7 @@ public class PluginFX implements PluginType {
   }
   
   @ActionType({ActionType.Type.Library,ActionType.Type.Library})
-  public  Object MexecuteJs£that(Object _s1){
+  public  Object MexecuteJsÂ£that(Object _s1){
     String s1=EncodingHelper.ensureExtractStringU(_s1);
     String res = FrameFX.executeJs(s1);
     assert res!=null;

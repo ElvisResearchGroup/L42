@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.sun.xml.internal.txw2.output.StreamSerializer;
-
 import ast.ExpCore;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.MethodWithType;

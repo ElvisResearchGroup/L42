@@ -20,7 +20,7 @@ public class Plugin implements PluginType {
 
 	// Connect to database only using a url
 	@ActionType({ActionType.Type.Void,ActionType.Type.Library})
-    public Resources.Void Mconnect£xurl(Object _url){
+    public Resources.Void MconnectÂ£xurl(Object _url){
 		String s=ensureExtractStringU(_url);
 
 		try {
@@ -41,7 +41,7 @@ public class Plugin implements PluginType {
 	// Connect to database with username and password
 	@Deprecated /**Not yet implemented**/
 	@ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
-    public Object Mconnect£xn1£xn2£xn3£xn4(Object server, Object database, Object username, Object password){
+    public Object MconnectÂ£xn1Â£xn2Â£xn3Â£xn4(Object server, Object database, Object username, Object password){
 		String s=ensureExtractStringU(server);
 		String t=ensureExtractStringU(database);
 		String u=ensureExtractStringU(username);
@@ -62,7 +62,7 @@ public class Plugin implements PluginType {
 
 	// Select rows from the database
 	@ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
-    public Object Mquery£xurl£xquery(Object _url, Object _query){
+    public Object MqueryÂ£xurlÂ£xquery(Object _url, Object _query){
 	  String s=ensureExtractStringU(_query);
 	  String u=ensureExtractStringU(_url);
 	  DatabaseResource data = DatabaseResource.getDataResource(u);
@@ -76,7 +76,7 @@ public class Plugin implements PluginType {
 
 	// Select rows from the database and display them as rows.
 	@ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
-    public Object MqueryToString£xurl£xquery(Object _url, Object _query){
+    public Object MqueryToStringÂ£xurlÂ£xquery(Object _url, Object _query){
 	  String url=ensureExtractStringU(_url);
 	  String query=ensureExtractStringU(_query);
 	  DatabaseResource data = DatabaseResource.getDataResource(url);
@@ -89,7 +89,7 @@ public class Plugin implements PluginType {
 
 	// insert a new row into the database
 	@ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
-    public Object Minsert£xurl£xquery(Object _url, Object _query){
+    public Object MinsertÂ£xurlÂ£xquery(Object _url, Object _query){
 	  String s=ensureExtractStringU(_url);
 	  String q=ensureExtractStringU(_query);
 	  DatabaseResource data = DatabaseResource.getDataResource(s);
@@ -101,7 +101,7 @@ public class Plugin implements PluginType {
 
 	// Add a new table to the database
 	@ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
-    public Object McreateNewTable£xurl£xquery(Object _url, Object _query){
+    public Object McreateNewTableÂ£xurlÂ£xquery(Object _url, Object _query){
 	  String s = ensureExtractStringU(_url);
 	  String q = ensureExtractStringU(_query);
 	  DatabaseResource data = DatabaseResource.getDataResource(s);
@@ -113,7 +113,7 @@ public class Plugin implements PluginType {
 
 	// Delete rows from the database
 	@ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
-    public Object Mdelete£xurl£xquery(Object _url, Object _query){
+    public Object MdeleteÂ£xurlÂ£xquery(Object _url, Object _query){
 	  String s = ensureExtractStringU(_url);
 	  String q = ensureExtractStringU(_query);
 	  DatabaseResource data = DatabaseResource.getDataResource(s);
@@ -125,7 +125,7 @@ public class Plugin implements PluginType {
 
 	// Connect to database only using a url
 	@ActionType({ActionType.Type.Void,ActionType.Type.Library})
-    public Resources.Void Mclose£xurl(Object _url){
+    public Resources.Void McloseÂ£xurl(Object _url){
 		String s = ensureExtractStringU(_url);
 		DatabaseResource data = DatabaseResource.getDataResource(s);
 		assert data != null;
@@ -135,7 +135,7 @@ public class Plugin implements PluginType {
 	
 	// Shuts down the server so we are no longer connected
 	@ActionType({ActionType.Type.Void,ActionType.Type.Library})
-    public Resources.Void Mshutdown£xurl(Object _url){
+    public Resources.Void MshutdownÂ£xurl(Object _url){
 		String s = ensureExtractStringU(_url);
 
 		DatabaseResource data = DatabaseResource.getDataResource(s);
@@ -147,7 +147,7 @@ public class Plugin implements PluginType {
 
 	// Checks if we are connected to the given url
 	@ActionType({ActionType.Type.Library,ActionType.Type.Library})
-    public Object MisConnected£xurl(Object _url){
+    public Object MisConnectedÂ£xurl(Object _url){
 		String s = ensureExtractStringU(_url);
 		DatabaseResource data = DatabaseResource.getDataResource(s);
 		assert data != null;
@@ -157,7 +157,7 @@ public class Plugin implements PluginType {
 	//==
 	@Deprecated /**Not yet implemented**/
 	@ActionType({ActionType.Type.Void,ActionType.Type.Library,ActionType.Type.Library})
-	public  Resources.Void MifDatabaseResourceEqualDo£xo1£xo2(Object _o1,Object _o2){
+	public  Resources.Void MifDatabaseResourceEqualDoÂ£xo1Â£xo2(Object _o1,Object _o2){
 	  DatabaseResource i1=ensureExtract(DatabaseResource.class,_o1);
 	  DatabaseResource i2=ensureExtract(DatabaseResource.class,_o2);
 	  if(!i1.equals(i2)){return Resources.Void.instance;}
@@ -170,7 +170,7 @@ public class Plugin implements PluginType {
 
 	// Connect to database only using a url
 	@ActionType({ActionType.Type.Library,ActionType.Type.Library})
-    public Object McursorNext£xid(Object _id){
+    public Object McursorNextÂ£xid(Object _id){
 		int id=ensureExtractInt32(_id);
 
 		Cursor c = Cursor.getCursor(id);
@@ -181,7 +181,7 @@ public class Plugin implements PluginType {
 
 	// Connect to database only using a url
 	@ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
-    public Object McursorGetString£xid£xcolumnName(Object _id, Object _columnName){
+    public Object McursorGetStringÂ£xidÂ£xcolumnName(Object _id, Object _columnName){
 		int id=ensureExtractInt32(_id);
 		String columnName=ensureExtractStringU(_columnName);
 
@@ -193,7 +193,7 @@ public class Plugin implements PluginType {
 
 	// Connect to database only using a url
 	@ActionType({ActionType.Type.Void,ActionType.Type.Library})
-    public Resources.Void McursorClose£xid(Object _id){
+    public Resources.Void McursorCloseÂ£xid(Object _id){
 		int id=ensureExtractInt32(_id);
 
 		Cursor c = Cursor.getCursor(id);

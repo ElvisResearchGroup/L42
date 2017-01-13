@@ -38,8 +38,8 @@ import sugarVisitors.ToFormattedText;
 public class Plugin implements PluginType{
 
     @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
-    public Object Mcompose£xleft£xright(Object _left,Object _right){
-      return Timer.record("Mcompose£xleft£xright", ()-> {
+    public Object McomposeÂ£xleftÂ£xright(Object _left,Object _right){
+      return Timer.record("McomposeÂ£xleftÂ£xright", ()-> {
         ClassB left=ensureExtractClassB(_left);
         ClassB right=ensureExtractClassB(_right);
         try{return Sum.sum(Resources.getP(),left,right);
@@ -50,7 +50,7 @@ public class Plugin implements PluginType{
       });
       }
     @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
-    public Object MrenameClass£xthat£xsrc£xdest(Object _that,Object _src,Object _dest){
+    public Object MrenameClassÂ£xthatÂ£xsrcÂ£xdest(Object _that,Object _src,Object _dest){
       ClassB that=ensureExtractClassB(_that);
       List<String> src=Path.parseValidCs(ensureExtractStringU(_src));
       List<String> dest=Path.parseValidCs(ensureExtractStringU(_dest));
@@ -58,7 +58,7 @@ public class Plugin implements PluginType{
       return Rename.renameClass(Resources.getP(),that,src,dest);
       }
     @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
-    public Object MrenameMethod£xthat£xpath£xsrc£xdest(Object _that,Object _path,Object _src,Object _dest){
+    public Object MrenameMethodÂ£xthatÂ£xpathÂ£xsrcÂ£xdest(Object _that,Object _path,Object _src,Object _dest){
       ClassB that=ensureExtractClassB(_that);
       List<String> path=Path.parseValidCs(ensureExtractStringU(_path));
        MethodSelector src = MethodSelector.parse(ensureExtractStringU(_src));
@@ -66,7 +66,7 @@ public class Plugin implements PluginType{
       return Rename.renameMethod(Resources.getP(),that,path,src,dest);
       }
     @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
-    public Object MsumMethods£xthat£xpath£xsrc1£xsrc2£xdest£xname(Object _that,Object _path,Object _src1,Object _src2,Object _dest,Object _name){
+    public Object MsumMethodsÂ£xthatÂ£xpathÂ£xsrc1Â£xsrc2Â£xdestÂ£xname(Object _that,Object _path,Object _src1,Object _src2,Object _dest,Object _name){
       ClassB that=ensureExtractClassB(_that);
       String name=ensureExtractStringU(_name);
       List<String> path=Path.parseValidCs(ensureExtractStringU(_path));
@@ -76,7 +76,7 @@ public class Plugin implements PluginType{
       return SumMethods.sumMethods(that,path,src1,src2,dest,name);
       }
     @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.TypeAny})
-    public Object Mredirect£xthat£xsrc£xdest(Object _that,Object _src,Object _dest){
+    public Object MredirectÂ£xthatÂ£xsrcÂ£xdest(Object _that,Object _src,Object _dest){
       ClassB that=ensureExtractClassB(_that);
       List<String> src=Path.parseValidCs(ensureExtractStringU(_src));
       Path dest=ensureExtractPathFromJava(_dest);
@@ -86,20 +86,20 @@ public class Plugin implements PluginType{
       return Redirect.redirect(Resources.getP(),that,Path.outer(0,src),dest);
       }
     @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
-    public Object MremoveImplementation£xthat£xpath(Object _that,Object _path){
+    public Object MremoveImplementationÂ£xthatÂ£xpath(Object _that,Object _path){
       ClassB that=ensureExtractClassB(_that);
       List<String> path=Path.parseValidCs(ensureExtractStringU(_path));
       return Abstract.toAbstract(that,path);
       }
     @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
-    public Object MremoveImplementation£xthat£xpath£xselector(Object _that,Object _path,Object _sel){
+    public Object MremoveImplementationÂ£xthatÂ£xpathÂ£xselector(Object _that,Object _path,Object _sel){
       ClassB that=ensureExtractClassB(_that);
       List<String> path=Path.parseValidCs(ensureExtractStringU(_path));
       MethodSelector sel = MethodSelector.parse(ensureExtractStringU(_sel));
       return Abstract.toAbstract(Resources.getP(),that,path,sel,null);
       }
     @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
-    public Object MmoveImplementation£xthat£xpath£xsrc£xdest(Object _that,Object _path,Object _sel1,Object _sel2){
+    public Object MmoveImplementationÂ£xthatÂ£xpathÂ£xsrcÂ£xdest(Object _that,Object _path,Object _sel1,Object _sel2){
       try{
       ClassB that=ensureExtractClassB(_that);
       //assert that.getStage().isInheritedComputed();
@@ -112,14 +112,14 @@ public class Plugin implements PluginType{
       }
       }
     @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
-    public Object MaddDocumentation£xthat£xpath£xdoc(Object _that,Object _path,Object _doc){
+    public Object MaddDocumentationÂ£xthatÂ£xpathÂ£xdoc(Object _that,Object _path,Object _doc){
       ClassB that=ensureExtractClassB(_that);
       List<String> path=Path.parseValidCs(ensureExtractStringU(_path));
       Doc doc=ensureExtractDoc(_doc);
       return AddDocumentation.addDocumentationOnNestedClass(Resources.getP(),that,path,doc);
       }
     @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
-    public Object MaddDocumentation£xthat£xpath£xselector£xdoc(Object _that,Object _path,Object _sel,Object _doc){
+    public Object MaddDocumentationÂ£xthatÂ£xpathÂ£xselectorÂ£xdoc(Object _that,Object _path,Object _sel,Object _doc){
       ClassB that=ensureExtractClassB(_that);
       List<String> path=Path.parseValidCs(ensureExtractStringU(_path));
       MethodSelector sel = MethodSelector.parse(ensureExtractStringU(_sel));
@@ -128,19 +128,19 @@ public class Plugin implements PluginType{
       }
 
     @ActionType({ActionType.Type.Library,ActionType.Type.Library})
-    public Object MremoveUnreachableCode£xthat(Object _that){
+    public Object MremoveUnreachableCodeÂ£xthat(Object _that){
       ClassB that=ensureExtractClassB(_that);
       return RemoveCode.removeUnreachableCode(that);
     }
     @ActionType({ActionType.Type.Void,ActionType.Type.Library})
-    public  Resources.Void MifInvalidDo£xselector(Object _selector){
+    public  Resources.Void MifInvalidDoÂ£xselector(Object _selector){
       String s=ensureExtractStringU(_selector);
      try{Ast.MethodSelector.parse(s);}
      catch(Resources.Error err){throw Resources.notAct;}
      return Resources.Void.instance;
     }
     @ActionType({ActionType.Type.Void,ActionType.Type.Library})
-    public  Resources.Void MifInvalidDo£xpath(Object _path){
+    public  Resources.Void MifInvalidDoÂ£xpath(Object _path){
       String s=ensureExtractStringU(_path);
      try{Ast.Path.parseValidCs(s);}
      catch(Resources.Error err){
@@ -154,7 +154,7 @@ public class Plugin implements PluginType{
 //--------------------------------------------------------------------------------------------------
     //-----5 +5 introspections //lib
     @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
-    public Object MintrospectLibraryReport£xthat£xpath(Object _that,Object _path){
+    public Object MintrospectLibraryReportÂ£xthatÂ£xpath(Object _that,Object _path){
       ClassB that=ensureExtractClassB(_that);
       List<String> path=Path.parseValidCs(ensureExtractStringU(_path));
       List<Object> result= new ArrayList<>(Introspection.giveInfo(that, path));
@@ -163,14 +163,14 @@ public class Plugin implements PluginType{
       return Resources.Error.multiPartStringClassB("MemberReport",result.toArray());
     }
     @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
-    public Object MintrospectLibraryReportMember£xthat£xpath£xmemberN(Object _that,Object _path,Object _memberN){
+    public Object MintrospectLibraryReportMemberÂ£xthatÂ£xpathÂ£xmemberN(Object _that,Object _path,Object _memberN){
       ClassB that=ensureExtractClassB(_that);
       List<String> path=Path.parseValidCs(ensureExtractStringU(_path));
       int memberN=ensureExtractInt32(_memberN);
       return Introspection.giveInfoMember(that, path,memberN);
     }
     @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
-    public Object MintrospectLibraryReportType£xthat£xpath£xmemberN£xtypeN(Object _that,Object _path,Object _memberN,Object _typeN){
+    public Object MintrospectLibraryReportTypeÂ£xthatÂ£xpathÂ£xmemberNÂ£xtypeN(Object _that,Object _path,Object _memberN,Object _typeN){
       ClassB that=ensureExtractClassB(_that);
       List<String> path=Path.parseValidCs(ensureExtractStringU(_path));
       int memberN=ensureExtractInt32(_memberN);
@@ -179,14 +179,14 @@ public class Plugin implements PluginType{
     }
 
     @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
-    public Object MintrospectLibraryDocAsString£xthat£xpath£xannotationN(Object _that,Object _path,Object _annotationN){
+    public Object MintrospectLibraryDocAsStringÂ£xthatÂ£xpathÂ£xannotationN(Object _that,Object _path,Object _annotationN){
       ClassB that=ensureExtractClassB(_that);
       List<String> path=Path.parseValidCs(ensureExtractStringU(_path));
       int annotationN=ensureExtractInt32(_annotationN);
       return Introspection.extractDocAsString(that, path, annotationN);
     }
     @ActionType({ActionType.Type.TypeAny,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
-    public Object MintrospectLibraryDocPath£xthat£xpath£xannotationN(Object _that,Object _path,Object _annotationN){
+    public Object MintrospectLibraryDocPathÂ£xthatÂ£xpathÂ£xannotationN(Object _that,Object _path,Object _annotationN){
       ClassB that=ensureExtractClassB(_that);
       List<String> path=Path.parseValidCs(ensureExtractStringU(_path));
       int annotationN=ensureExtractInt32(_annotationN);
@@ -195,7 +195,7 @@ public class Plugin implements PluginType{
 
     //-----5 +5 introspections //type
     @ActionType({ActionType.Type.Library,ActionType.Type.TypeAny,ActionType.Type.Library})
-    public Object MintrospectTypeReport£xthat£xpath(Object _that,Object _path){
+    public Object MintrospectTypeReportÂ£xthatÂ£xpath(Object _that,Object _path){
       Path iPath=(_that instanceof Path)?(Path)_that:(Path)((Revertable)_that).revert();
       if (iPath.isPrimitive()){throw Resources.notAct;}
       //TODO: provide fake classes
@@ -212,7 +212,7 @@ public class Plugin implements PluginType{
       return Resources.Error.multiPartStringClassB("MemberReport",result.toArray());
     }
     @ActionType({ActionType.Type.Library,ActionType.Type.TypeAny,ActionType.Type.Library,ActionType.Type.Library})
-    public Object MintrospectTypeReportMember£xthat£xpath£xmemberN(Object _that,Object _path,Object _memberN){
+    public Object MintrospectTypeReportMemberÂ£xthatÂ£xpathÂ£xmemberN(Object _that,Object _path,Object _memberN){
       Path iPath=(_that instanceof Path)?(Path)_that:(Path)((Revertable)_that).revert();
       ClassB that=Resources.getP().extractCb(iPath);
       List<String> path=Path.parseValidCs(ensureExtractStringU(_path));
@@ -220,7 +220,7 @@ public class Plugin implements PluginType{
       return Introspection.giveInfoMember(that, path,memberN);
     }
     @ActionType({ActionType.Type.Library,ActionType.Type.TypeAny,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
-    public Object MintrospectTypeReportType£xthat£xpath£xmemberN£xtypeN(Object _that,Object _path,Object _memberN,Object _typeN){
+    public Object MintrospectTypeReportTypeÂ£xthatÂ£xpathÂ£xmemberNÂ£xtypeN(Object _that,Object _path,Object _memberN,Object _typeN){
       Path iPath=(_that instanceof Path)?(Path)_that:(Path)((Revertable)_that).revert();
       ClassB that=Resources.getP().extractCb(iPath);
       List<String> path=Path.parseValidCs(ensureExtractStringU(_path));
@@ -230,7 +230,7 @@ public class Plugin implements PluginType{
     }
 
     @ActionType({ActionType.Type.Library,ActionType.Type.TypeAny,ActionType.Type.Library,ActionType.Type.Library})
-    public Object MintrospectTypeDocAsString£xthat£xpath£xannotationN(Object _that,Object _path,Object _annotationN){
+    public Object MintrospectTypeDocAsStringÂ£xthatÂ£xpathÂ£xannotationN(Object _that,Object _path,Object _annotationN){
       Path iPath=(_that instanceof Path)?(Path)_that:(Path)((Revertable)_that).revert();
       ClassB that=Resources.getP().extractCb(iPath);
       List<String> path=Path.parseValidCs(ensureExtractStringU(_path));
@@ -238,7 +238,7 @@ public class Plugin implements PluginType{
       return Introspection.extractDocAsString(that, path, annotationN);
     }
     @ActionType({ActionType.Type.TypeAny,ActionType.Type.TypeAny,ActionType.Type.Library,ActionType.Type.Library})
-    public Object MintrospectTypeDocPath£xthat£xpath£xannotationN(Object _that,Object _path,Object _annotationN){
+    public Object MintrospectTypeDocPathÂ£xthatÂ£xpathÂ£xannotationN(Object _that,Object _path,Object _annotationN){
       Path iPath=(_that instanceof Path)?(Path)_that:(Path)((Revertable)_that).revert();
       ClassB that=Resources.getP().extractCb(iPath);
       List<String> path=Path.parseValidCs(ensureExtractStringU(_path));
@@ -246,14 +246,14 @@ public class Plugin implements PluginType{
       return Configuration.reduction.convertPath(Introspection.extractDocPath(that, path, annotationN));
     }
     @ActionType({ActionType.Type.Library,ActionType.Type.Library})
-    public Object MprivateNormalize£xthat(Object _that){
+    public Object MprivateNormalizeÂ£xthat(Object _that){
       ClassB that=ensureExtractClassB(_that);
       //if(that.getStage().isPrivateNormalized()){return that;}
       return NormalizePrivates.normalize(Resources.getP(),that);
     }
 
     @ActionType({ActionType.Type.Library,ActionType.Type.Library})
-    public  Object MfreshName£xthat(Object _s){
+    public  Object MfreshNameÂ£xthat(Object _s){
       String name=ensureExtractStringU(_s);
       if (name.isEmpty()){name="fresh";}
       return Functions.freshName(name,L42.usedNames);
@@ -262,7 +262,7 @@ public class Plugin implements PluginType{
     }
 
    @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
-    public  Object MmakeMethod£xthat£xpath£xselector£xmdfs£xexceptionN(Object _lib,Object _path,Object _selector, Object _mdfs, Object _execptionN){
+    public  Object MmakeMethodÂ£xthatÂ£xpathÂ£xselectorÂ£xmdfsÂ£xexceptionN(Object _lib,Object _path,Object _selector, Object _mdfs, Object _execptionN){
       ClassB lib=ensureExtractClassB(_lib);
       List<String> path = Path.parseValidCs(ensureExtractStringU(_path));
       MethodSelector selector=MethodSelector.parse(ensureExtractStringU(_selector));
@@ -271,7 +271,7 @@ public class Plugin implements PluginType{
       return MakeMethod.addMethod(lib, path, selector, mdfs, exceptionN);
     }
     @ActionType({ActionType.Type.Library,ActionType.Type.ImmAny,ActionType.Type.Library,ActionType.Type.Library})
-    public  Object MliftValue£xthat£xselector£xlib(Object _that,Object _selector, Object _lib){
+    public  Object MliftValueÂ£xthatÂ£xselectorÂ£xlib(Object _that,Object _selector, Object _lib){
       ClassB lib=ensureExtractClassB(_lib);
       MethodSelector selector=MethodSelector.parse(ensureExtractStringU(_selector));
       ExpCore val=Revertable.doRevert(_that);//TODO: would go in loop for circular graphs?
@@ -280,7 +280,7 @@ public class Plugin implements PluginType{
     }
 
     @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
-    public  Object MaddKs£xthat£xpath£xfields£xmutK£xlentK£xreadK£ximmK£xisFwd(
+    public  Object MaddKsÂ£xthatÂ£xpathÂ£xfieldsÂ£xmutKÂ£xlentKÂ£xreadKÂ£ximmKÂ£xisFwd(
         Object _that,Object _path, Object _fields, Object _mutK,Object _lentK,Object _readK,Object _immK,Object _fwd
         ){
       ClassB that=ensureExtractClassB(_that);

@@ -60,7 +60,7 @@ class ProtectedPluginType{
     }
   static String executableWrapper(Using s, Set<String> labels){
   //  (plF,xsF)->plF. 
-  //  MnameEncoded£xn1£xn2(xsF[0],..,xsF[n]),
+  //  MnameEncodedÂ£xn1Â£xn2(xsF[0],..,xsF[n]),
   String plF="L"+Functions.freshName("pl",labels);
   String xsF="L"+Functions.freshName("xs",labels);
   StringBuilder res=new StringBuilder();
@@ -101,7 +101,7 @@ public interface PluginType {
     res.append(ProtectedPluginType.executableWrapper(s, labels));
     //plgExecutor("PathName",p,new plgName(),
     //  (plF,xsF)->plF. 
-    //  MnameEncoded£xn1£xn2(xsF[0],..,xsF[n]),
+    //  MnameEncodedÂ£xn1Â£xn2(xsF[0],..,xsF[n]),
     //()->e,e0,..,en);
     res.append(", ()->(");
     res.append(e);

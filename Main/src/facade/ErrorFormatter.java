@@ -42,7 +42,9 @@ public class ErrorFormatter {
     //displayAbstractMethods(cb,result,"");
     return result.toString();
   }
-  private static void displayAbstractMethods(ClassB cb,StringBuilder result,String nesting){
+  
+@SuppressWarnings("unused")//TODO: what was this for
+private static void displayAbstractMethods(ClassB cb,StringBuilder result,String nesting){
 
     result.append("{\n");
     for(Member m:cb.getMs()){
@@ -95,7 +97,7 @@ public class ErrorFormatter {
     pos(msg,c,ps);
     Position pos=positionsFilter(ps);
     if(c==ErrorMessage.DotDotDotCanNotBeResolved.class){
-        ErrorMessage.DotDotDotCanNotBeResolved ddd=(ErrorMessage.DotDotDotCanNotBeResolved)msg;
+//        ErrorMessage.DotDotDotCanNotBeResolved ddd=(ErrorMessage.DotDotDotCanNotBeResolved)msg;
 
     }
     errorTxt="Error kind: "+c.getSimpleName()+"\nPosition:"+
@@ -335,7 +337,8 @@ public class ErrorFormatter {
     //System.out.print("\n*************************\n");
     //printType(0,p);
     }
-  private static void printType(int i, Program p) {
+@SuppressWarnings("unused")//TODO: what was used for?
+private static void printType(int i, Program p) {
     if(p.isEmpty()){return;}
     printType(i,"",p.topCb());
     printType(i+1,p.pop());
@@ -382,8 +385,8 @@ public class ErrorFormatter {
     }*/
     for(Member m: cb.getMs()){
       if(!(m instanceof MethodWithType)){continue;}
-      MethodWithType mt=(MethodWithType)m;
-      /*if (!mt.getInner().isPresent() && !mt.isFieldGenerated()){
+      /*MethodWithType mt=(MethodWithType)m;
+      if (!mt.getInner().isPresent() && !mt.isFieldGenerated()){
         return "\n  The method "+mt.getMs()+" of the requested path is abstract";
       }*/
     }
@@ -410,7 +413,9 @@ public class ErrorFormatter {
     }
     return "The requested path is incomplete since it refers to other incomplete classes in the program";
   }
-  public static void topFormatErrorMessage(ErrorMessage msg) {
+
+@SuppressWarnings("unchecked")
+public static void topFormatErrorMessage(ErrorMessage msg) {
     //System.out.println(ErrorFormatter.formatError(msg).getErrorTxt());
     L42.printDebug(
         formatError(Program.empty(),msg).getErrorTxt()

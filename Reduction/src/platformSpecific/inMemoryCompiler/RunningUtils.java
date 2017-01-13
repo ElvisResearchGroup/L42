@@ -61,7 +61,8 @@ public class RunningUtils {
           }
         throw new SecurityException(p.toString());}
   };
-  public static synchronized void runInSecurity(SecurityManager m,final Runnable task,int millisecondsTimeOut){
+@SuppressWarnings("deprecation")//For thread.stop(), since no alternative is available
+public static synchronized void runInSecurity(SecurityManager m,final Runnable task,int millisecondsTimeOut){
     final SecurityManager old=System.getSecurityManager();
     final SecurityManager delegate=m;
     final boolean[]allows={false};

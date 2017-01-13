@@ -2,6 +2,7 @@ package platformSpecific.inMemoryCompiler;
 import java.io.*;
 import java.net.URI;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
@@ -16,8 +17,15 @@ import facade.L42;
 public class InMemoryJavaCompiler {
   public static class SourceFile extends SimpleJavaFileObject {
     private String contents;
+    private static URI methForSuper(String s){
+    try {
+    return java.net.URI.create(URLEncoder.encode(s,"UTF-8"));
+    } catch (UnsupportedEncodingException e) { throw new Error(e);} 
+    }
     public SourceFile(String className, String contents) {
-      super(java.net.URI.create("string:///" + className.replace('.', '/')+ Kind.SOURCE.extension), Kind.SOURCE);
+      super(methForSuper(
+        "string:///" + className.replace('.', '/')+ Kind.SOURCE.extension
+        ), Kind.SOURCE);
       this.contents = contents;}
     public CharSequence getCharContent(boolean b){return contents;}
   }
@@ -195,7 +203,7 @@ public class InMemoryJavaCompiler {
         }
       };
     if(!compiler.getTask(/*out:*/null,classFileManager,diagnisticListenerForErrors,
-        /*compilerOptions:*/Arrays.asList("-Xlint:unchecked","-classpath",plugins()),/*StringsClasses??:*/null,files
+        /*compilerOptions:*/Arrays.asList("-Xlint:unchecked","-encoding","\"UTF-8\"","-classpath",plugins()),/*StringsClasses??:*/null,files
       ).call()
         ){
         throw new CompilationError(diagnisticListenerForErrors);

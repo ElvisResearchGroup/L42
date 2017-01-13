@@ -17,11 +17,12 @@ import java.util.stream.Collectors;
 
 import javax.swing.*;
 
+import facade.Configuration;
 import facade.L42;
 @SuppressWarnings("serial")
 public class ReplGui extends JFrame {
- public static void main(String[] args) {
- helpers.TestHelper.configureForTest();
+ public static void main(String[] args) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
+ Configuration.loadAll();
  SwingUtilities.invokeLater(()-> {
  //UIManager.getLookAndFeelDefaults()
  //.put("defaultFont", new Font("Arial", Font.PLAIN, 24));
@@ -40,6 +41,11 @@ public class ReplGui extends JFrame {
 
 JTextArea loadedSrc=new JTextArea(20, 50);
 JTextArea newSrc=new JTextArea(2, 50);
+{newSrc.setText("reuse L42.is/AdamTowel02\n"+
+  "Main:{\n"+
+  "  return ExitCode.normal()\n"+
+  "}");
+ }
 JTextArea output=new JTextArea(20, 50);
 JTextArea errors=new JTextArea(20, 50);
 ReplState repl=null;

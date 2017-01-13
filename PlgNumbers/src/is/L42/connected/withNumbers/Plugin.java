@@ -13,35 +13,35 @@ import static auxiliaryGrammar.EncodingHelper.*;
 public class Plugin implements PluginType {
   // +
   @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
-  public  Object MsumNum£xn1£xn2(Object cb1,Object cb2){
+  public  Object MsumNumÂ£xn1Â£xn2(Object cb1,Object cb2){
     BigRational  i1=ensureExtract(BigRational.class,cb1);
     BigRational  i2=ensureExtract(BigRational.class,cb2);
     return i1.sum(i2);
   }
   //*
   @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
-  public  Object MmulNum£xn1£xn2(Object cb1,Object cb2){
+  public  Object MmulNumÂ£xn1Â£xn2(Object cb1,Object cb2){
     BigRational  i1=ensureExtract(BigRational.class,cb1);
     BigRational  i2=ensureExtract(BigRational.class,cb2);
     return i1.multiply(i2);
   }
   // /
   @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
-  public  Object MdivNum£xn1£xn2(Object cb1,Object cb2){
+  public  Object MdivNumÂ£xn1Â£xn2(Object cb1,Object cb2){
     BigRational  i1=ensureExtract(BigRational.class,cb1);
     BigRational  i2=ensureExtract(BigRational.class,cb2);
     return i1.divide(i2);
   }
   //-
   @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
-  public  Object MsubNum£xn1£xn2(Object cb1,Object cb2){
+  public  Object MsubNumÂ£xn1Â£xn2(Object cb1,Object cb2){
     BigRational  i1=ensureExtract(BigRational.class,cb1);
     BigRational  i2=ensureExtract(BigRational.class,cb2);
     return i1.subtract(i2);
   }
   //==
   @ActionType({ActionType.Type.Void,ActionType.Type.Library,ActionType.Type.Library})
-  public  Resources.Void MifNumEqualDo£xn1£xn2(Object cb1,Object cb2){
+  public  Resources.Void MifNumEqualDoÂ£xn1Â£xn2(Object cb1,Object cb2){
     BigRational  i1=ensureExtract(BigRational.class,cb1);
     BigRational  i2=ensureExtract(BigRational.class,cb2);
     if(!i1.equals(i2)){return Resources.Void.instance;}
@@ -49,7 +49,7 @@ public class Plugin implements PluginType {
   }
   //<
   @ActionType({ActionType.Type.Void,ActionType.Type.Library,ActionType.Type.Library})
-  public  Resources.Void MifNumGrtDo£xn1£xn2(Object cb1,Object cb2){
+  public  Resources.Void MifNumGrtDoÂ£xn1Â£xn2(Object cb1,Object cb2){
     BigRational  i1=ensureExtract(BigRational.class,cb1);
     BigRational  i2=ensureExtract(BigRational.class,cb2);
     if(i1.compareTo(i2)<0){return Resources.Void.instance;}
@@ -57,7 +57,7 @@ public class Plugin implements PluginType {
   }
   //<=
   @ActionType({ActionType.Type.Void,ActionType.Type.Library,ActionType.Type.Library})
-  public  Resources.Void MifNumGEqDo£xn1£xn2(Object cb1,Object cb2){
+  public  Resources.Void MifNumGEqDoÂ£xn1Â£xn2(Object cb1,Object cb2){
     BigRational  i1=ensureExtract(BigRational.class,cb1);
     BigRational  i2=ensureExtract(BigRational.class,cb2);
     if(i1.compareTo(i2)<=0){return Resources.Void.instance;}
@@ -65,14 +65,14 @@ public class Plugin implements PluginType {
   }
 
   @ActionType({ActionType.Type.Library,ActionType.Type.Library})
-  public  Object MstringToNum£xthat(Object cb){
+  public  Object MstringToNumÂ£xthat(Object cb){
     String s=ensureExtractStringU(cb);
     try{return BigRational.from(s);}
     catch(NumberFormatException nfe){throw new Resources.Error("InvalidEncodingForI32: "+s);    }
   }
 
   @ActionType({ActionType.Type.Library,ActionType.Type.Library})
-  public  Object MnumToString£xthat(Object cb){
+  public  Object MnumToStringÂ£xthat(Object cb){
     BigRational  i=ensureExtract(BigRational.class,cb);
     return ""+i;
   }
