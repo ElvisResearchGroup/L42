@@ -217,12 +217,12 @@ _ |- void~> void:imm Void | emptyTr
 _ |- P~>P:class P | emptyTr
 
 (library prop)
-Phase |p |_ |_ |_ |- L ~> L' : imm Library | emptyTr
+D |- L ~> L' : imm Library | emptyTr
   where
-  Phase  |- p.evilPush(L) ~> L'
+  D.Phase  |- D.p.evilPush(L) ~> L'
 
 (x)
-Phase| p| G |-x ~> x :G(x) | emptyTr
+D |-x ~> x :D.G(x) | emptyTr
 
 (loop)
 D |- loop e ~> loop e' : imm Void | Tr
@@ -235,9 +235,9 @@ D|-throw[T?,_] e~> throw[T,mdf P] e' :  T | Tr
   resolve(D.p,guessType(D.G,e))= mdf' P
   D|- e~>  e' :  mdf P <=T'|Ts;Ps //Allows to use alternative method typing
   either T?=empty or T?=T
-  if throw=exception, T=mdf' P=imm P and Tr=Ts;Ps,P
-  if throw=error,     T=mdf' P=imm P and Tr=Ts;Ps
-  if throw=return, T= fwd mdf' P,Tr=Ts,mdf P;Ps 
+  if throw=exception, T'=mdf' P=imm P and Tr=Ts;Ps,P
+  if throw=error,     T'=mdf' P=imm P and Tr=Ts;Ps
+  if throw=return, T'= (fwd mdf' P) and Tr=(Ts,mdf P);Ps 
 
 (mcall)
 D|- e0.m[_](x1:e1..Xn:en) ~> e'0.m[P0](x1:e'1..xn:e'n)  : T' | Tr0 U..U Trn U (empty;Ps) //e0 will be of form mr
