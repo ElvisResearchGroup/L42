@@ -229,15 +229,19 @@ D |- loop e ~> loop e' : imm Void | Tr
   where
   D|- e ~> e' : imm Void | Tr
 
-(throw)
-D|-throw[T?,_] e~> throw[T,mdf P] e' :  T | Tr
+(throw)   // expression of type T0 throws the result of an expression where:
+          // T1 is the guess type of the expression
+          // T2 is the modified type, taking into account kind of thrown
+          // T3 is the type of the expression, including promotions
+          // and T3 is the type of the value thrown, this allows to use alternative method typing
+D|-throw[T0?,_] e~> throw[T0,T3] e' :  T0 | Tr
   where
-  resolve(D.p,guessType(D.G,e))= mdf' P
-  D|- e~>  e' :  mdf P <=T'|Ts;Ps //Allows to use alternative method typing
-  either T?=empty or T?=T
-  if throw=exception, T'=mdf' P=imm P and Tr=Ts;Ps,P
-  if throw=error,     T'=mdf' P=imm P and Tr=Ts;Ps
-  if throw=return, T'= (fwd mdf' P) and Tr=(Ts,mdf P);Ps 
+  either T0?=empty or T0?=T0
+  T1 = resolve(D.p,guessType(D.G,e))
+  if throw=exception, T2= imm T1.P and Tr=Ts;Ps,P
+  if throw=error,     T2= imm T1.P and Tr=Ts;Ps
+  if throw=return,    T2= (fwd T1) and Tr=(Ts,T3);Ps 
+  D|- e~>  e' :  T3 <=T2|Ts;Ps 
 
 (mcall)
 D|- e0.m[_](x1:e1..Xn:en) ~> e'0.m[P0](x1:e'1..xn:e'n)  : T' | Tr0 U..U Trn U (empty;Ps) //e0 will be of form mr
