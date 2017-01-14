@@ -155,7 +155,7 @@ C:e : capsuleWellFormed
    //Note, this can be applied directly after desugaring
    
 mwt: Ts=parameter types, 
-  if exists fwdImm _ in Ts then (return type).mdf not in {mut, fwdMut, imm, fwdImm}
+  if exists fwdImm _ in Ts then (return type).mdf in {mut, fwdMut, imm, fwdImm}
   if exists fwdMut _ in Ts then (return type).mdf in {mut, fwdMut}
 
 mwt:  capsuleWellFormed 

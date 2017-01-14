@@ -111,7 +111,21 @@ void buildGui(JRootPane pane){
   
   ByteArrayOutputStream buffer = new ByteArrayOutputStream();
   System.setOut(new PrintStream(buffer));
-  System.setErr(new PrintStream(buffer));
+  final PrintStream myErr=System.err;
+  System.setErr(new PrintStream(buffer){
+    public void print(String s) {
+      SwingUtilities.invokeLater(()->{
+        myErr.print(s);
+        super.print(s);
+        });
+      }
+    public void println(String s) {
+      SwingUtilities.invokeLater(()->{
+        myErr.println(s);
+        super.println(s);
+        });
+      }
+    });
   //PipedInputStream pIn;try {pIn = new PipedInputStream(pErr);}
   //catch (IOException e) {throw new Error(e);}  
   err = buffer;//new BufferedReader(new InputStreamReader(pIn));

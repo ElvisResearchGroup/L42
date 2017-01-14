@@ -97,9 +97,9 @@ lentToMut(T)
   lentToMut(lent C)=mut C
   otherwise lentToMut(T)=T  
 
-mutToLent(T)
-  mutToLent(mut C)=mutToLent(fwdMut C)=mutToLent(fwd%Mut C)=lent C
-  otherwise lentToMut(T)=T  
+//mutToLent(T)
+//  mutToLent(mut C)=mutToLent(fwdMut C)=mutToLent(fwd%Mut C)=lent C
+//  otherwise lentToMut(T)=T  
 
 
 mutToCapsule(T)
@@ -181,7 +181,7 @@ methTypes(p,P,ms)  Expressed as metarules
 //then lent viewpoint adaptation    
 
      Ts0 T1 Ts2->T;Ps in methTypes(p,P,ms)
-     Ts'=mutToCapsule(Ts0) mutToLent(T1) mutToCapsule(Ts2)
+     Ts'=mutToCapsule(Ts0) toLent(T1) mutToCapsule(Ts2)
 (mVp)-------------------------------------------------------------------
      Ts'->toLent(T);Ps in methTypes(p,P,ms)
 
