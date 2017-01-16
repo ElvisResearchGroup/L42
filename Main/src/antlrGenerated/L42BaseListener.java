@@ -277,6 +277,19 @@ public class L42BaseListener implements L42Listener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterImpls(@NotNull L42Parser.ImplsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitImpls(@NotNull L42Parser.ImplsContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterWSimple(@NotNull L42Parser.WSimpleContext ctx) { }
 	/**
 	 * {@inheritDoc}

@@ -152,6 +152,13 @@ public interface L42Visitor<T> extends ParseTreeVisitor<T> {
 	T visitMxRound(@NotNull L42Parser.MxRoundContext ctx);
 
 	/**
+	 * Visit a parse tree produced by {@link L42Parser#impls}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitImpls(@NotNull L42Parser.ImplsContext ctx);
+
+	/**
 	 * Visit a parse tree produced by {@link L42Parser#wSimple}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

@@ -74,7 +74,7 @@ public class ToAst extends AbstractVisitor<Expression>{
 
     @Override public Member visitNestedClass(NestedClassContext ctx) {
       Doc doc=parseDoc(ctx.docsOpt());
-      if(ctx.Path().getText().contains("::")){throw Assertions.userErrorAssert("no ::");}//TODO:improve
+      if(ctx.Path().getText().contains("::")){throw Assertions.userErrorAssert("no ::");}//TODO:improve, if can be reached
       String name=ctx.Path().getText();
       Expression inner=ctx.eTop().accept(ToAst.this);
       return new NestedClass(doc, name, inner,position(ctx));
@@ -278,21 +278,21 @@ public class ToAst extends AbstractVisitor<Expression>{
   private Type parseType(TContext t) {
     if(t.concreteT()!=null){
       ConcreteTContext tt = t.concreteT();
+      Doc d=parseDoc(tt.docsOpt());
       return new Ast.NormType(
         Mdf.fromString((tt.Mdf()==null)?"":nameK(tt.Mdf())),
         Ast.Path.parse(nameU(tt.Path())),
-        (tt.Ph()==null)?Ph.None:Ph.Ph,Doc.empty());
-      //TODO: soon add here for types with docs
+        (tt.Ph()==null)?Ph.None:Ph.Ph,d);
     }
     if(t.historicalT()!=null){
        HistoricalTContext tt = t.historicalT();
+       Doc d=parseDoc(tt.docsOpt());
        Path p=ast.Ast.Path.parse(nameU(tt.Path()));
        List<MethodSelectorX> mss=new ArrayList<MethodSelectorX>();
        for(HistoricalSeqContext ms:tt.historicalSeq()){
          mss.add(parseMethSelectorX(ms));
        }
-       return new ast.Ast.HistoricType(p,mss,tt.Ph()!=null,Doc.empty());
-       //TODO: also add here when the doc is parsed
+       return new ast.Ast.HistoricType(p,mss,tt.Ph()!=null,d);
     }
     throw Assertions.codeNotReachable();
   }
@@ -342,8 +342,7 @@ public class ToAst extends AbstractVisitor<Expression>{
   @Override public Expression visitClassBReuse(ClassBReuseContext ctx) {
     Doc doc1=Doc.empty();
     if(ctx.docsOpt().size()>=1){doc1=parseDoc(ctx.docsOpt().get(0));}
-    Doc doc2=Doc.empty();//TODO: check when you remove doc2 from syntax
-    if(ctx.docsOpt().size()>=2){doc2=parseDoc(ctx.docsOpt().get(1));}
+    //Note: if exists ctx.docsOpt().get(1)) it is ignored.
     assert ctx.getChild(0).getText().equals("{");
     assert ctx.getChild(2).getText().startsWith("reuse");
     String url=ctx.getChild(2).getText();
@@ -353,11 +352,15 @@ public class ToAst extends AbstractVisitor<Expression>{
     return new Expression.ClassReuse(inner,url,null);
   }
   @Override public Expression visitClassB(ClassBContext ctx) {
-    Doc doc1=parseDoc(ctx.docsOpt().get(0));
-    //Doc doc2=parseDoc(ctx.docsOpt().get(1));
+    Doc doc1=parseDoc(ctx.docsOpt().get(0));//the number 1 if present is ignored
     Header h=parseHeader(ctx.header());
     List<Type> supertypes= new ArrayList<>();
-    for(TerminalNode p: ctx.Path()){supertypes.add(Path.parse(nameU(p)).toImmNT());}
+    ImplsContext impl = ctx.impls();
+    if (impl!=null){
+      {int i=-1;for(TerminalNode p: impl.Path()){i+=1;
+        supertypes.add(Path.parse(nameU(p)).toImmNT().withDoc(parseDoc(impl.docsOpt().get(0))));
+        }
+      }}
     List<Member> ms=visitMembers(ctx.member());
     Stage s=Stage.None;
     if(ctx.classBExtra()!=null){

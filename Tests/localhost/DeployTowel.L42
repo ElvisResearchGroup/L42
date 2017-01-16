@@ -1,14 +1,14 @@
-{
-ExitCode:{
+ {
+ExitCode: {
 class method 
-Library normal() {/*@exitStatus
+Library normal()  {/*@exitStatus
 0
 */}
 class method 
-Library failure() {/*@exitStatus
+Library failure()  {/*@exitStatus
 42000
 */}}
-DeployTowel:{
+DeployTowel: {
 class method 
 mut This0 #mutK(This2.Url fileName) 
 class method 
@@ -19,23 +19,23 @@ read method
 This2.Url fileName() 
 class method 
 Library binaryReprFrom(Library lib) (
-  Library norm=use This0.SafeOperatorsAccess__43_0 check privateNormalize(that:lib) error {
+  Library norm=use This0.SafeOperatorsAccess__43_0 check privateNormalize(that:lib) error  {
   class method 
   mut This0 #mutK() 
   class method 
   This0 privateNormalize() This0.#mutK()}
-  Library record=use This0.SafeOperatorsAccess__43_0 check introspectLibraryReport(that:norm, path:{/*@stringU
+  Library record=use This0.SafeOperatorsAccess__43_0 check introspectLibraryReport(that:norm, path: {/*@stringU
 This
-*/}) error {
+*/}) error  {
   class method 
   mut This0 #mutK() 
   class method 
   This0 introspectLibraryReport() This0.#mutK()}
-  use This0.SafeOperatorsAccess__43_0 check introspectLibraryDocAsString(that:record, path:{/*@stringU
+  use This0.SafeOperatorsAccess__43_0 check introspectLibraryDocAsString(that:record, path: {/*@stringU
 AllAsString
-*/}, annotationN:{/*@int32
+*/}, annotationN: {/*@int32
 0
-*/}) error {
+*/}) error  {
   class method 
   mut This0 #mutK() 
   class method 
@@ -43,7 +43,7 @@ AllAsString
   )
 method 
 Library #leftrightleft(Library that) (
-  Void unused=use This2.Alu check fileDebug(fileName:this.fileName().binaryRepr(), content:This0.binaryReprFrom(lib:that)) error {
+  Void unused=use This2.Alu check fileDebug(fileName:this.fileName().binaryRepr(), content:This0.binaryReprFrom(lib:that)) error  {
   class method 
   mut This0 #mutK() 
   class method 
@@ -51,6 +51,6 @@ Library #leftrightleft(Library that) (
   This1.ExitCode.normal()
   )
 SafeOperatorsAccess__43_0:/*@private
-*/{/*@plugin
+*/ {/*@plugin
 L42.is/connected/withSafeOperators
 */}}}

@@ -1,7 +1,7 @@
 {(var Cell head,var Size size)
   implements Concept.ToS
 
-  Cell:{interface Any
+  Cell:{interface
     method Any get(Size that)
     method Cell set(Size that, Any val,Bool add)
     method Cell remove(Size that)

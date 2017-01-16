@@ -138,65 +138,64 @@ public class TestParseAndDoAst {
   }
   @RunWith(Parameterized.class)
   public static class Test2 {
-    @Parameter(0) public String s;
-    @Parameter(1) public String expected;
-    @Parameterized.Parameters
+    @Parameter(0) public int _lineNumber;
+    @Parameter(1) public String s;
+    @Parameter(2) public String expected;
+    @Parameters(name = "{index}: line {0}")
     public static List<Object[]> createData() {
       return Arrays.asList(new Object[][] {
-{"a","a"
-},{"5N","Expression.Literal(receiver=N, inner=5, isNumber=true)"
-},{"5-5N","Expression.Literal(receiver=N, inner=5-5, isNumber=true)"
-},{"a-5N","(a-Expression.Literal(receiver=N, inner=5, isNumber=true))"
-},{" (a (5N) e)","Expression.RoundBlock(doc=, inner=e, contents=[Expression.BlockContent(decs=[Ast.VarDecE(inner=a), Ast.VarDecE(inner=Expression.RoundBlock(doc=, inner=Expression.Literal(receiver=N, inner=5, isNumber=true), contents=[]))], _catch=[])])"
-},{"a*b","(a*b)"
-},{"a*b*c","((a*b)*c)"
-},{"a*b*c*d","(((a*b)*c)*d)"
-},{"a**b","(a**b)"
-},{"a**b**c","(a**(b**c))"
-},{"a**b**c**d","(a**(b**(c**d)))"
-},{"a**b**c**d**e","(a**(b**(c**(d**e))))"
-},{"a**b**c**d**e**f","(a**(b**(c**(d**(e**f)))))"
-},{"a>>b>>c>>d>>e","(a>>(b>>(c>>(d>>e))))"
-},{"a>>b>>c>>d>>e>>f","(a>>(b>>(c>>(d>>(e>>f)))))"
+{lineNumber(),"a","a"
+},{lineNumber(),"5N","Expression.Literal(receiver=N, inner=5, isNumber=true)"
+},{lineNumber(),"5-5N","Expression.Literal(receiver=N, inner=5-5, isNumber=true)"
+},{lineNumber(),"a-5N","(a-Expression.Literal(receiver=N, inner=5, isNumber=true))"
+},{lineNumber()," (a (5N) e)","Expression.RoundBlock(doc=, inner=e, contents=[Expression.BlockContent(decs=[Ast.VarDecE(inner=a), Ast.VarDecE(inner=Expression.RoundBlock(doc=, inner=Expression.Literal(receiver=N, inner=5, isNumber=true), contents=[]))], _catch=[])])"
+},{lineNumber(),"a*b","(a*b)"
+},{lineNumber(),"a*b*c","((a*b)*c)"
+},{lineNumber(),"a*b*c*d","(((a*b)*c)*d)"
+},{lineNumber(),"a**b","(a**b)"
+},{lineNumber(),"a**b**c","(a**(b**c))"
+},{lineNumber(),"a**b**c**d","(a**(b**(c**d)))"
+},{lineNumber(),"a**b**c**d**e","(a**(b**(c**(d**e))))"
+},{lineNumber(),"a**b**c**d**e**f","(a**(b**(c**(d**(e**f)))))"
+},{lineNumber(),"a>>b>>c>>d>>e","(a>>(b>>(c>>(d>>e))))"
+},{lineNumber(),"a>>b>>c>>d>>e>>f","(a>>(b>>(c>>(d>>(e>>f)))))"
 //},{"a+ b -c","(a)" is this not giving error since it is captured later? how?
-},{"a*b < c+d","((a*b)<(c+d))"
+},{lineNumber(),"a*b < c+d","((a*b)<(c+d))"
 
-},{" (a=b c)","Expression.RoundBlock(doc=, inner=c, contents=[Expression.BlockContent(decs=[Ast.VarDecXE(isVar=false, t=Optional.empty, x=a, inner=b)], _catch=[])])"
-},{" (var a=b c)","Expression.RoundBlock(doc=, inner=c, contents=[Expression.BlockContent(decs=[Ast.VarDecXE(isVar=true, t=Optional.empty, x=a, inner=b)], _catch=[])])"
-},{" (A::b() a=b c)","Expression.RoundBlock(doc=, inner=c, contents=[Expression.BlockContent(decs=[Ast.VarDecXE(isVar=false, t=Optional[Ast.HistoricType(path=A, selectors=[Ast.MethodSelectorX(ms=b(), x=)], forcePlaceholder=false, doc=)], x=a, inner=b)], _catch=[])])"
-//15
-},{"{a(A a)}","Expression.ClassB(doc1=, h=Ast.ConcreteHeader(mdf=Immutable, name=a, fs=[Ast.FieldDec(isVar=false, t=Immutable[A], name=a, doc=)]), fields=[], supertypes=[], ms=[], stage=None)"
-},{"{(A a)}","Expression.ClassB(doc1=, h=Ast.ConcreteHeader(mdf=Immutable, name=, fs=[Ast.FieldDec(isVar=false, t=Immutable[A], name=a, doc=)]), fields=[], supertypes=[], ms=[], stage=None)"
-},{"{ method a(b c) {d e f}}","Expression.ClassB(doc1=, h=Ast.TraitHeader(), fields=[], supertypes=[], ms=[Expression.ClassB.MethodImplemented(doc=, s=a(b,c), inner=Expression.CurlyBlock(doc=, contents=[Expression.BlockContent(decs=[Ast.VarDecE(inner=d), Ast.VarDecE(inner=e), Ast.VarDecE(inner=f)], _catch=[])]))], stage=None)"
-},{"if a (b) else c.h()","Expression.If(cond=a, then=Expression.RoundBlock(doc=, inner=b, contents=[]), _else=Optional[Expression.MCall(receiver=c, name=h, doc=, ps=Ast.Parameters(e=Optional.empty, xs=[], es=[]))])"
-},{"Foo\"bla\"","Expression.Literal(receiver=Foo, inner=bla, isNumber=false)"
-},{"Foo\"  bla  \"","Expression.Literal(receiver=Foo, inner=  bla  , isNumber=false)"
+},{lineNumber()," (a=b c)","Expression.RoundBlock(doc=, inner=c, contents=[Expression.BlockContent(decs=[Ast.VarDecXE(isVar=false, t=Optional.empty, x=a, inner=b)], _catch=[])])"
+},{lineNumber()," (var a=b c)","Expression.RoundBlock(doc=, inner=c, contents=[Expression.BlockContent(decs=[Ast.VarDecXE(isVar=true, t=Optional.empty, x=a, inner=b)], _catch=[])])"
+},{lineNumber()," (A::b() a=b c)","Expression.RoundBlock(doc=, inner=c, contents=[Expression.BlockContent(decs=[Ast.VarDecXE(isVar=false, t=Optional[Ast.HistoricType(path=A, selectors=[Ast.MethodSelectorX(ms=b(), x=)], forcePlaceholder=false, doc=)], x=a, inner=b)], _catch=[])])"
 
-//22
-},{"Foo\"\n  'bla\n  , \"","Expression.Literal(receiver=Foo, inner=bla\n, isNumber=false)"
-//23
-},{"Foo\"\n  'bla\n 'ble\n , \"","Expression.Literal(receiver=Foo, inner=bla\nble\n, isNumber=false)"
+},{lineNumber(),"{a(A a)}","Expression.ClassB(doc1=, h=Ast.ConcreteHeader(mdf=Immutable, name=a, fs=[Ast.FieldDec(isVar=false, t=Immutable[A], name=a, doc=)]), fields=[], supertypes=[], ms=[], stage=None)"
+},{lineNumber(),"{(A a)}","Expression.ClassB(doc1=, h=Ast.ConcreteHeader(mdf=Immutable, name=, fs=[Ast.FieldDec(isVar=false, t=Immutable[A], name=a, doc=)]), fields=[], supertypes=[], ms=[], stage=None)"
+},{lineNumber(),"{ method a(b c) {d e f}}","Expression.ClassB(doc1=, h=Ast.TraitHeader(), fields=[], supertypes=[], ms=[Expression.ClassB.MethodImplemented(doc=, s=a(b,c), inner=Expression.CurlyBlock(doc=, contents=[Expression.BlockContent(decs=[Ast.VarDecE(inner=d), Ast.VarDecE(inner=e), Ast.VarDecE(inner=f)], _catch=[])]))], stage=None)"
+},{lineNumber(),"if a (b) else c.h()","Expression.If(cond=a, then=Expression.RoundBlock(doc=, inner=b, contents=[]), _else=Optional[Expression.MCall(receiver=c, name=h, doc=, ps=Ast.Parameters(e=Optional.empty, xs=[], es=[]))])"
+},{lineNumber(),"Foo\"bla\"","Expression.Literal(receiver=Foo, inner=bla, isNumber=false)"
+},{lineNumber(),"Foo\"  bla  \"","Expression.Literal(receiver=Foo, inner=  bla  , isNumber=false)"
 
-},{" { }","Expression.ClassB(doc1=, h=Ast.TraitHeader(), fields=[], supertypes=[], ms=[], stage=None)"
-},{" {()}","Expression.ClassB(doc1=, h=Ast.ConcreteHeader(mdf=Immutable, name=, fs=[]), fields=[], supertypes=[], ms=[], stage=None)"
-},{" {mut ()}","Expression.ClassB(doc1=, h=Ast.ConcreteHeader(mdf=Mutable, name=, fs=[]), fields=[], supertypes=[], ms=[], stage=None)"
-},{" {//aa\n mut foo()//bb\n}","Expression.ClassB(doc1=aa\n, h=Ast.ConcreteHeader(mdf=Mutable, name=foo, fs=[]), fields=[], supertypes=[], ms=[], stage=None)"
-},{" {interface}","Expression.ClassB(doc1=, h=Ast.InterfaceHeader(), fields=[], supertypes=[], ms=[], stage=None)"
-},{" { implements  A.B, C}","Expression.ClassB(doc1=, h=Ast.TraitHeader(), fields=[], supertypes=[Immutable[A, B], Immutable[C]], ms=[], stage=None)"
-},{" {//foo\n implements  A.B, C //bar\n}","Expression.ClassB(doc1=foo\n, h=Ast.TraitHeader(), fields=[], supertypes=[Immutable[A, B], Immutable[C]], ms=[], stage=None)"
-},{" {//foo\n implements  A.B, C }","Expression.ClassB(doc1=foo\n, h=Ast.TraitHeader(), fields=[], supertypes=[Immutable[A, B], Immutable[C]], ms=[], stage=None)"
-},{" { implements  A.B, C //bar\n}","Expression.ClassB(doc1=, h=Ast.TraitHeader(), fields=[], supertypes=[Immutable[A, B], Immutable[C]], ms=[], stage=None)"
-},{"{ method Any a()}","Expression.ClassB(doc1=, h=Ast.TraitHeader(), fields=[], supertypes=[], ms=[Expression.ClassB.MethodWithType(doc=, ms=a(), mt=Ast.MethodType(refine=false, mdf=Immutable, ts=[], returnType=Immutable[Any], exceptions=[]), inner=Optional.empty)], stage=None)"
-},{"{ method //a\nAny a()}","Expression.ClassB(doc1=, h=Ast.TraitHeader(), fields=[], supertypes=[], ms=[Expression.ClassB.MethodWithType(doc=a\n, ms=a(), mt=Ast.MethodType(refine=false, mdf=Immutable, ts=[], returnType=Immutable[Any], exceptions=[]), inner=Optional.empty)], stage=None)"
-},{"{ method Any a()//b\n}","Expression.ClassB(doc1=, h=Ast.TraitHeader(), fields=[], supertypes=[], ms=[Expression.ClassB.MethodWithType(doc=, ms=a(), mt=Ast.MethodType(refine=false, mdf=Immutable, ts=[], returnType=Immutable[Any], exceptions=[]), inner=Optional.empty)], stage=None)"
-},{"{ method //a\nAny a()//b\n}","Expression.ClassB(doc1=, h=Ast.TraitHeader(), fields=[], supertypes=[], ms=[Expression.ClassB.MethodWithType(doc=a\n, ms=a(), mt=Ast.MethodType(refine=false, mdf=Immutable, ts=[], returnType=Immutable[Any], exceptions=[]), inner=Optional.empty)], stage=None)"
-},{"{ method Any a(T x, C y, B z)}","Expression.ClassB(doc1=, h=Ast.TraitHeader(), fields=[], supertypes=[], ms=[Expression.ClassB.MethodWithType(doc=, ms=a(x,y,z), mt=Ast.MethodType(refine=false, mdf=Immutable, ts=[Immutable[T], Immutable[C], Immutable[B]], returnType=Immutable[Any], exceptions=[]), inner=Optional.empty)], stage=None)"
-},{"{ method Any a(T x, C y//foo\n,,,,,,,,,,,,, B z)}","Expression.ClassB(doc1=, h=Ast.TraitHeader(), fields=[], supertypes=[], ms=[Expression.ClassB.MethodWithType(doc=, ms=a(x,y,z), mt=Ast.MethodType(refine=false, mdf=Immutable, ts=[Immutable[T], Immutable[C], Immutable[B]], returnType=Immutable[Any], exceptions=[]), inner=Optional.empty)], stage=None)"
-},{"{ (A a //foo\n)}","Expression.ClassB(doc1=, h=Ast.ConcreteHeader(mdf=Immutable, name=, fs=[Ast.FieldDec(isVar=false, t=Immutable[A], name=a, doc=foo\n)]), fields=[], supertypes=[], ms=[], stage=None)"
-},{" (a )(b,x:c)","Expression.FCall(receiver=Expression.RoundBlock(doc=, inner=a, contents=[]), doc=, ps=Ast.Parameters(e=Optional[b], xs=[x], es=[c]))"
-},{" a //bar\n ","Expression.DocE(inner=a, doc=bar\n)"
-},{"with x in a var y in b+c() z=t (on T y)","Expression.With(xs=[], is=[Ast.VarDecXE(isVar=false, t=Optional.empty, x=x, inner=a), Ast.VarDecXE(isVar=true, t=Optional.empty, x=y, inner=(b+Expression.FCall(receiver=c, doc=, ps=Ast.Parameters(e=Optional.empty, xs=[], es=[]))))], decs=[Ast.VarDecXE(isVar=false, t=Optional.empty, x=z, inner=t)], ons=[Expression.With.On(ts=[Immutable[T]], inner=y)], defaultE=Optional.empty)"
-},{"S\"a//bla\"\n","Expression.Literal(receiver=S, inner=a//bla, isNumber=false)"
+},{lineNumber(),"Foo\"\n  'bla\n  , \"","Expression.Literal(receiver=Foo, inner=bla\n, isNumber=false)"
+},{lineNumber(),"Foo\"\n  'bla\n 'ble\n , \"","Expression.Literal(receiver=Foo, inner=bla\nble\n, isNumber=false)"
+
+},{lineNumber()," { }","Expression.ClassB(doc1=, h=Ast.TraitHeader(), fields=[], supertypes=[], ms=[], stage=None)"
+},{lineNumber()," {()}","Expression.ClassB(doc1=, h=Ast.ConcreteHeader(mdf=Immutable, name=, fs=[]), fields=[], supertypes=[], ms=[], stage=None)"
+},{lineNumber()," {mut ()}","Expression.ClassB(doc1=, h=Ast.ConcreteHeader(mdf=Mutable, name=, fs=[]), fields=[], supertypes=[], ms=[], stage=None)"
+},{lineNumber()," {//aa\n mut foo()}","Expression.ClassB(doc1=aa\n, h=Ast.ConcreteHeader(mdf=Mutable, name=foo, fs=[]), fields=[], supertypes=[], ms=[], stage=None)"
+},{lineNumber()," {interface}","Expression.ClassB(doc1=, h=Ast.InterfaceHeader(), fields=[], supertypes=[], ms=[], stage=None)"
+},{lineNumber()," { implements  A.B, C}","Expression.ClassB(doc1=, h=Ast.TraitHeader(), fields=[], supertypes=[Immutable[A, B], Immutable[C]], ms=[], stage=None)"
+},{lineNumber()," {//foo\n implements  A.B, C //bar\n}","Expression.ClassB(doc1=foo\n, h=Ast.TraitHeader(), fields=[], supertypes=[Immutable[A, B], Immutable[C]], ms=[], stage=None)"
+},{lineNumber()," {//foo\n implements  A.B, C }","Expression.ClassB(doc1=foo\n, h=Ast.TraitHeader(), fields=[], supertypes=[Immutable[A, B], Immutable[C]], ms=[], stage=None)"
+},{lineNumber()," { implements  A.B, C //bar\n}","Expression.ClassB(doc1=, h=Ast.TraitHeader(), fields=[], supertypes=[Immutable[A, B], Immutable[C]], ms=[], stage=None)"
+},{lineNumber(),"{ method Any a()}","Expression.ClassB(doc1=, h=Ast.TraitHeader(), fields=[], supertypes=[], ms=[Expression.ClassB.MethodWithType(doc=, ms=a(), mt=Ast.MethodType(refine=false, mdf=Immutable, ts=[], returnType=Immutable[Any], exceptions=[]), inner=Optional.empty)], stage=None)"
+},{lineNumber(),"{ method //a\nAny a()}","Expression.ClassB(doc1=, h=Ast.TraitHeader(), fields=[], supertypes=[], ms=[Expression.ClassB.MethodWithType(doc=a\n, ms=a(), mt=Ast.MethodType(refine=false, mdf=Immutable, ts=[], returnType=Immutable[Any], exceptions=[]), inner=Optional.empty)], stage=None)"
+},{lineNumber(),"{ method Any a()//b\n}","Expression.ClassB(doc1=, h=Ast.TraitHeader(), fields=[], supertypes=[], ms=[Expression.ClassB.MethodWithType(doc=, ms=a(), mt=Ast.MethodType(refine=false, mdf=Immutable, ts=[], returnType=Immutable[Any], exceptions=[]), inner=Optional.empty)], stage=None)"
+},{lineNumber(),"{ method //a\nAny a()//b\n}","Expression.ClassB(doc1=, h=Ast.TraitHeader(), fields=[], supertypes=[], ms=[Expression.ClassB.MethodWithType(doc=a\n, ms=a(), mt=Ast.MethodType(refine=false, mdf=Immutable, ts=[], returnType=Immutable[Any], exceptions=[]), inner=Optional.empty)], stage=None)"
+},{lineNumber(),"{ method Any a(T x, C y, B z)}","Expression.ClassB(doc1=, h=Ast.TraitHeader(), fields=[], supertypes=[], ms=[Expression.ClassB.MethodWithType(doc=, ms=a(x,y,z), mt=Ast.MethodType(refine=false, mdf=Immutable, ts=[Immutable[T], Immutable[C], Immutable[B]], returnType=Immutable[Any], exceptions=[]), inner=Optional.empty)], stage=None)"
+},{lineNumber(),"{ method Any a(T x, C y//foo\n,,,,,,,,,,,,, B z)}","Expression.ClassB(doc1=, h=Ast.TraitHeader(), fields=[], supertypes=[], ms=[Expression.ClassB.MethodWithType(doc=, ms=a(x,y,z), mt=Ast.MethodType(refine=false, mdf=Immutable, ts=[Immutable[T], Immutable[C], Immutable[B]], returnType=Immutable[Any], exceptions=[]), inner=Optional.empty)], stage=None)"
+},{lineNumber(),"{ (A a //foo\n)}","Expression.ClassB(doc1=, h=Ast.ConcreteHeader(mdf=Immutable, name=, fs=[Ast.FieldDec(isVar=false, t=Immutable[A], name=a, doc=foo\n)]), fields=[], supertypes=[], ms=[], stage=None)"
+},{lineNumber()," (a )(b,x:c)","Expression.FCall(receiver=Expression.RoundBlock(doc=, inner=a, contents=[]), doc=, ps=Ast.Parameters(e=Optional[b], xs=[x], es=[c]))"
+},{lineNumber()," a //bar\n ","Expression.DocE(inner=a, doc=bar\n)"
+},{lineNumber(),"with x in a var y in b+c() z=t (on T y)","Expression.With(xs=[], is=[Ast.VarDecXE(isVar=false, t=Optional.empty, x=x, inner=a), Ast.VarDecXE(isVar=true, t=Optional.empty, x=y, inner=(b+Expression.FCall(receiver=c, doc=, ps=Ast.Parameters(e=Optional.empty, xs=[], es=[]))))], decs=[Ast.VarDecXE(isVar=false, t=Optional.empty, x=z, inner=t)], ons=[Expression.With.On(ts=[Immutable[T]], inner=y)], defaultE=Optional.empty)"
+},{lineNumber(),"S\"a//bla\"\n","Expression.Literal(receiver=S, inner=a//bla, isNumber=false)"
 }});}
   @Test
   public void testOkToString() {

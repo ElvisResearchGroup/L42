@@ -229,6 +229,17 @@ public interface L42Listener extends ParseTreeListener {
 	void exitMxRound(@NotNull L42Parser.MxRoundContext ctx);
 
 	/**
+	 * Enter a parse tree produced by {@link L42Parser#impls}.
+	 * @param ctx the parse tree
+	 */
+	void enterImpls(@NotNull L42Parser.ImplsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link L42Parser#impls}.
+	 * @param ctx the parse tree
+	 */
+	void exitImpls(@NotNull L42Parser.ImplsContext ctx);
+
+	/**
 	 * Enter a parse tree produced by {@link L42Parser#wSimple}.
 	 * @param ctx the parse tree
 	 */
