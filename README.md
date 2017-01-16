@@ -1,10 +1,8 @@
 # L42
-
-Here I will try t explain how to set up L42 in eclipse.
-On Eclipse Luna, you may need to install EGit
-On Eclipse Mars EGit installation is not needed.
-
+-------------------------------
+#Importing in eclipse:
 Do (file->)import ->git-> projects(from git)->clone uri
+  (old versions: On Eclipse Luna, you may need to install EGit)
 If asked, import Eclipse projects (instead of NewProject or GeneralProject)
 You should get all the projects already  setted up with the right dependencies.
 
@@ -15,6 +13,7 @@ The following should be all the relevant projects:
 4 tests
 5 .. n plus all the plugins
 
+Dependencies should be sorted by just importing without giving any extra settings.
 If you have any problem of dependencies, you can manually set up dependences in the class paths.
 2,3 and 5..n depends from 1. Tests(4) depends from everyone else.
 Additionally, main and tests depends from antlr.jar and main depends from lombock.jar.
@@ -34,3 +33,8 @@ In order to define the AST and some more datastructures I used lombock, that
 saved me from writing about 5k of boilerplate code.
 lombock is a metaprogramming tool that exapand some annotations in usefull methods.
 
+-----------------------------------------
+#build using ant
+There is a very minimal ant script that is building the project in a folder antBuild.
+can be called with "ant compile" or "ant clean compile"
+this also create a jar able to run a primitive REPL for 42. 
