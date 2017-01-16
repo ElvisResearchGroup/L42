@@ -5,6 +5,7 @@
 
     <target name="compile">
         <mkdir dir="antBuild/classes"/>
+
         <javac encoding="UTF-8" includeantruntime="false" srcdir="Main/src" destdir="antBuild/classes">
         <classpath>
           <pathelement path="Main/antlr-4.2.2-complete.jar"/>
@@ -18,25 +19,26 @@
         <javac encoding="UTF-8" includeantruntime="false" srcdir="PlgLimitations/src" destdir="antBuild/classes"/>
         <javac encoding="UTF-8" includeantruntime="false" srcdir="PlgNumbers/src" destdir="antBuild/classes"/>
         <javac encoding="UTF-8" includeantruntime="false" srcdir="PlgSafeOperators/src" destdir="antBuild/classes"/>
+
         <mkdir dir="antBuild/jar"/>
+        <copy file="Main/antlr-4.2.2-complete.jar" tofile="antBuild/jar/antlr.jar"/>
+        <copy file="Tests/localhost/AdamTowel01.L42" tofile="antBuild/jar/localhost/AdamTowel01.L42"/>
+        <copy file="Tests/localhost/AdamTowel02.L42" tofile="antBuild/jar/localhost/AdamTowel02.L42"/>
         <jar destfile="antBuild/jar/Repl.jar" basedir="antBuild/classes">
             <manifest>
+                <attribute name="Class-Path" value=
+     "antlr.jar"/>
+
                 <attribute name="Main-Class" value="repl.ReplGui"/>
             </manifest>
         </jar>
     </target>
 
-    <target name="jar">
-        <mkdir dir="build/jar"/>
-        <jar destfile="build/jar/HelloWorld.jar" basedir="build/classes">
-            <manifest>
-                <attribute name="Main-Class" value="oata.HelloWorld"/>
-            </manifest>
-        </jar>
-    </target>
 
     <target name="run">
-        <java jar="antBuild/jar/Repl.jar" fork="true"/>
+        <java jar="antBuild/jar/Repl.jar" dir="antBuild/jar" fork="true">
+        <assertions><enable/></assertions>
+        </java>
     </target>
 
 </project>

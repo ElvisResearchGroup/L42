@@ -10,6 +10,7 @@ import java.io.PipedOutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -24,14 +25,13 @@ public class ReplGui extends JFrame {
  public static void main(String[] args) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
  Configuration.loadAll();
  SwingUtilities.invokeLater(()-> {
- //UIManager.getLookAndFeelDefaults()
- //.put("defaultFont", new Font("Arial", Font.PLAIN, 24));
  ReplGui g = new ReplGui();
  g.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
  g.getRootPane().setLayout(new BorderLayout());
- g.runB = new JButton("------Bar------");
- g.runB.addActionListener(new ActionListener() {
- public void actionPerformed(ActionEvent e) {g.runCode();}});
+ g.runB = new JButton("Run!");
+ g.runB.addActionListener((e)->
+   g.runCode()
+   );
  g.getRootPane().add(g.runB, BorderLayout.SOUTH);
  g.buildGui(g.getRootPane());
  g.pack();
@@ -43,14 +43,14 @@ JTextArea loadedSrc=new JTextArea(20, 50);
 JTextArea newSrc=new JTextArea(2, 50);
 {newSrc.setText("reuse L42.is/AdamTowel02\n"+
   "Main:{\n"+
+  "  Debug(S\"hi!!\")\n"+        
   "  return ExitCode.normal()\n"+
   "}");
  }
 JTextArea output=new JTextArea(20, 50);
 JTextArea errors=new JTextArea(20, 50);
 ReplState repl=null;
-//BufferedReader err;
-ByteArrayOutputStream err;
+StringBuffer err=new StringBuffer();
 boolean running=false;
 JButton runB;
 ExecutorService executor = Executors.newFixedThreadPool(1);
@@ -78,22 +78,51 @@ void auxRunCode(){
            .map(e->e.toString()+"\n").reduce("",(a,b)->a+b));
       }
   finally{
-    SwingUtilities.invokeLater(()->{try{
-      output.setText(L42.record.toString());
-      String newErr=err.toString();
-      //String newErr="";
-      //try {while(err.ready()){newErr+="\n"+err.readLine();}}
-      //catch (IOException e) {throw new Error(e);}
-      errors.setText(errors.getText()+newErr);
-      if(repl==null){return;}
-      loadedSrc.setText(repl.originalS);
-      }
-      finally{
-        this.running=false;
-        runB.setEnabled(true);
-        runB.setText("Run!");
-      }});
+    SwingUtilities.invokeLater(this::updateTextFields);
     }
+  }
+private void updateTextFields(){
+  try{
+    assert L42.record!=null:"d";
+    assert err!=null:"a";
+    assert errors!=null:"b";
+    assert loadedSrc!=null:"c";
+    output.setText(L42.record.toString());
+    String newErr=err.toString();
+    errors.setText(newErr);
+    if(repl==null){return;}
+    loadedSrc.setText(repl.originalS);
+    }
+  finally{
+    this.running=false;
+    runB.setEnabled(true);
+    runB.setText("Run!");
+    }
+  }
+private void doAndWait(Runnable r){
+  try {executor.submit(r).get();}
+  catch (InterruptedException | ExecutionException e) {
+    throw new Error(e);
+    }
+  }
+private PrintStream delegatePrintStream(PrintStream prs){
+  return new PrintStream(prs){
+    public void print(String s) {
+//      doAndWait(()->{
+//        prs.print(s);
+        err.append(s);
+//        });
+      super.print(s);
+      }
+    public void println(String s) {
+//      doAndWait(()->{
+        String ss=s+"\n";
+//        prs.println(ss);
+        err.append(ss);
+//        });
+      super.println(s);
+      }
+    };
   }
 void buildGui(JRootPane pane){
   JTabbedPane tabbedPane = new JTabbedPane();  
@@ -105,32 +134,10 @@ void buildGui(JRootPane pane){
   tabbedPane.addTab("output", new JScrollPane(output));
   tabbedPane.addTab("errors", new JScrollPane(errors));
   newSrc.setFont(newSrc.getFont().deriveFont(40f));
-  //PipedOutputStream pErr = new PipedOutputStream();   
-  //System.setErr(new PrintStream(pErr));
-  //System.setOut(new PrintStream(pErr)); 
-  
-  ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-  System.setOut(new PrintStream(buffer));
-  final PrintStream myErr=System.err;
-  System.setErr(new PrintStream(buffer){
-    public void print(String s) {
-      SwingUtilities.invokeLater(()->{
-        myErr.print(s);
-        super.print(s);
-        });
-      }
-    public void println(String s) {
-      SwingUtilities.invokeLater(()->{
-        myErr.println(s);
-        super.println(s);
-        });
-      }
-    });
-  //PipedInputStream pIn;try {pIn = new PipedInputStream(pErr);}
-  //catch (IOException e) {throw new Error(e);}  
-  err = buffer;//new BufferedReader(new InputStreamReader(pIn));
+  //System.out.println(System.out.getClass().getName());
+  //System.out.println(System.err.getClass().getName());
+  System.setOut(delegatePrintStream(System.out));
+  System.setErr(delegatePrintStream(System.err));
   pane.add(tabbedPane,BorderLayout.CENTER);
   }
-
-
 }

@@ -55,7 +55,7 @@ public class L42 {
   }
   public static ExecutionStage getStage(){return _stage;}
   public static int compilationRounds=0;
-  public static boolean trustPluginsAndFinalProgram=false;
+  public static boolean trustPluginsAndFinalProgram=true;
   public static StringBuilder record=new StringBuilder();
   public static String messageOfLastTopLevelError="";
   public static String reconstructedStackTrace="";

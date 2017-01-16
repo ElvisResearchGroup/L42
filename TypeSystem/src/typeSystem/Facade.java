@@ -25,7 +25,7 @@ public class Facade implements facade.TypeSystem{
     return null;});
   }
   @Override
-  public void checkCt(Program p, ClassB ct) {//is this ever called?
+  public void checkCt(Program p, ClassB ct) {
     Timer.record("TypeSystem.checkCt",()->{
     TypeSystemOK.checkCt(p, ct);
     return null;});
