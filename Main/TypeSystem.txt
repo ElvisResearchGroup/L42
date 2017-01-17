@@ -319,9 +319,10 @@ D| Tr |-k1..kn ~> k'1..k'n:T | Tr1 U .. U Trn
 (catch)
 Phase| p| G| _ |-catch throw T0 x e ~> catch throw resolve(p,T0) x e' :T1| Tr
   where
-  Phase| p| G[x:T0]|- e ~> e':_<=T1| Tr
+  Phase| p| G[x:T1]|- e ~> e':_<=T1| Tr
   either throw=return or resolve(p,T0)=imm _
-  resolve(p,T0) not in {_ Any, fwdImm _,fwdMut _, fwd%Imm _,fwd%Mut _}//This cause strong limitation in factories using conditionals (as in if-return)
+  resolve(p,T0) not of form _ Any
+  T1=mostGeneral(throw,Tr).mdf resolve(p,T0).P
 
 (catch and rethrow any)// could be sugared as "on throw doAndPropagate e"  
 Phase |p |G |Tr|-catch throw Any x (e0 throw x) ~> catch throw Any x (e0' throw x): _ | Tr
@@ -331,10 +332,9 @@ Phase |p |G |Tr|-catch throw Any x (e0 throw x) ~> catch throw Any x (e0' throw 
   Phase |p |G\x |- e ~> e':_ <=imm Void | empty
 
 (catch precise any)//TODO: can it be broken by metaprogramming? forcing to jump to Any while there was a result before?  
-Phase |p |G  |Tr|-catch throw T0 x e ~> catch throw Any x e': T | Tr'
+Phase |p |G  |Tr|-catch throw Any x e ~> catch throw Any x e': T | Tr'
   where
   not catchRethrow(catch throw Any x e)
-  resolve(p,T0)=mdf Any
   //more expressive rule would say e type for any T in Tr.Ts
   T1=mostGeneral(throw,Tr)//may be Any, or even undefined for return class+read
   Phase |p |G+x:T1|- e ~> e':_<=T| Tr'
