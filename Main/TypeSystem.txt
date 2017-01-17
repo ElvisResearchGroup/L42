@@ -317,12 +317,12 @@ D| Tr |-k1..kn ~> k'1..k'n:T | Tr1 U .. U Trn
   either forall i 1..(n-1) Any notEq k'i.P //That is, only the last one can 
   
 (catch)
-Phase| p| G| _ |-catch throw T0 x e ~> catch throw resolve(p,T0).P x e' :T1| Tr
+Phase| p| G| Tr' |-catch throw T0 x e ~> catch throw resolve(p,T0).P x e' :T1| Tr
   where
   Phase| p| G[x:T1]|- e ~> e':_<=T1| Tr
   either throw=return or resolve(p,T0)=imm _
   resolve(p,T0) not of form _ Any
-  T1=mostGeneral(throw,Tr).mdf resolve(p,T0).P
+  T1=mostGeneral(throw,Tr').mdf resolve(p,T0).P
 
 (catch and rethrow any)// could be sugared as "on throw doAndPropagate e"  
 Phase |p |G |Tr|-catch throw Any x (e0 throw x) ~> catch throw Any x (e0' throw x): _ | Tr
