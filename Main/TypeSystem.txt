@@ -128,8 +128,6 @@ mostGeneral(p,Ps1 P Ps2)=mostGeneral(p,Ps1 Ps2)
 otherwise
 mostGeneral(p,Ps)=Any 
 
-catchRethrow(k) iff k=catch throw T x ((imm Void y=e catch error Any z void void) throw x)
-
 mostGeneral(mdfs)=mdf //assert fwd and fwd% not in mdfs
   if mdfs=mdf', then mdf=mdf' //that is the only way mdf=class
   otherwise if class in mdfs, then undefined
@@ -143,6 +141,8 @@ mostGeneral(mdfs)=mdf //assert fwd and fwd% not in mdfs
   //forall mdf2
   //  either mdf0 <= mdf2
   //  or exists mdf3 in mdfs  not mdf3 <= mdf2
+
+catchRethrow(k) iff k=catch throw T x ((imm Void y=e catch error Any z void void) throw x)
 
 Tr1 U Tr2
   Ts1;Ps1 U Ts2;Ps2 =  Ts1,Ts2; Ps1,Ps2  
@@ -197,6 +197,11 @@ methTypes(p,P,ms)
       if defined, otherwise MethTi=MethT
     MethT''=mutToCapsule(T0..Tn->T);Ps
   MethT in methTypes(p,P,ms) if MethT in methTypes'(p,P,ms)
+//Lines under now replaced with more method types. Left here in the comment to ease our discussion
+//  if fwd or fwd% in T'1..T'n //TODO: after discussion with James, we should make methType richer and move
+//    T'=fwd% T // the following lines in the TS dispatching reasoning in the end
+//  otherwise
+//    T'=T //Note, we can make a more expressive, but harder to explain TS by writing  T'=removeFwd(T)
    
 --------------------------------------------
 3 ExpressionTypeJudgement
@@ -244,17 +249,12 @@ D|-throw[T0?,_] e~> throw[T0,T3] e' :  T0 | Tr
   D|- e~>  e' :  T3 <=T2|Ts;Ps 
 
 (mcall)
-D|- e0.m[_](x1:e1..Xn:en) ~> e'0.m[P0](x1:e'1..xn:e'n)  : T' | Tr0 U..U Trn U (empty;Ps) //e0 will be of form mr
+D|- e0.m[_](x1:e1..Xn:en) ~> e'0.m[P0](x1:e'1..xn:e'n)  : T | Tr0 U..U Trn U (empty;Ps)
+  //e0 will be of form chain
   where
   resolve(D.p,guessType(D.G,e0))= _ P0
   T0..Tn->T;Ps in methTypes(p,P0,m(x1..xn))
-  forall i 0..n D|- ei ~> e'i : T'i <=Ti | Tri //T'0 is correctly a free variable
-//Lines under now replaced with more method types. Left here in the comment to ease our discussion
-//  if fwd or fwd% in T'1..T'n //TODO: after discussion with James, we should make methType richer and move
-//    T'=fwd% T // the following lines in the TS dispatching reasoning in the end
-//  otherwise
-//    T'=T //Note, we can make a more expressive, but harder to explain TS by writing  T'=removeFwd(T)
-    
+  forall i 0..n D|- ei ~> e'i : T'i <=Ti | Tri //T'0 is correctly a free variable    
      
 (using)
  D|-use P check m(x1:e1.. xn:en) e0 ~>use P check m(x1:e'1.. xn:e'n) e'0 :T0 | Tr0 U..U Trn
