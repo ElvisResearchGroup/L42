@@ -317,7 +317,7 @@ D| Tr |-k1..kn ~> k'1..k'n:T | Tr1 U .. U Trn
   either forall i 1..(n-1) Any notEq k'i.P //That is, only the last one can 
   
 (catch)
-Phase| p| G| _ |-catch throw T0 x e ~> catch throw resolve(p,T0) x e' :T1| Tr
+Phase| p| G| _ |-catch throw T0 x e ~> catch throw resolve(p,T0).P x e' :T1| Tr
   where
   Phase| p| G[x:T1]|- e ~> e':_<=T1| Tr
   either throw=return or resolve(p,T0)=imm _
