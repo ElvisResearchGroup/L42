@@ -327,8 +327,8 @@ Phase| p| G| _ |-catch throw T0 x e ~> catch throw resolve(p,T0) x e' :T1| Tr
 Phase |p |G |Tr|-catch throw T x (e0 throw x) ~> catch throw Any x (e0' throw x): _ | Tr
   where
   resolve(p,T)=mdf Any //mdf is ignored
-  e0=(imm Void y=e catch error Any z void void)
-  e0'=(imm Void y=e' catch error Any z void void)
+  e0=(e catch error Any z void void)
+  e0'=(e' catch error Any z void void)
   Phase |p |G\x |- e ~> e':_ <=imm Void | empty
 
 (catch precise any)//TODO: can it be broken by metaprogramming? forcing to jump to Any while there was a result before?  
