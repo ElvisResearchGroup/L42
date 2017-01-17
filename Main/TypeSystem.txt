@@ -187,7 +187,7 @@ methTypes(p,P,ms)  Expressed as metarules
 
 
 //Here OLD version to help us discuss a way to compute/dispatch over the set of all the methods efficiently
-methTypes(p,P,ms)
+methTypes(p,P,ms) //note we need to give precedence to the non fwd/fwd% versions
   methTypes'(p,P,ms)={MethT,MethT0,..,MethTn,MethT',MethT''}
     p(P).ms.mh[from P]=mdf0 method T m(T1 x1,..Tn xn) exception Ps
     MethT=(mdf0 P0 T1..Tn->T;Ps)  =  T0..Tn->T;Ps
@@ -302,7 +302,7 @@ Phase| p| G|-(T1 x1=e1..Tn xn=en ks e0[_]) ~>(T'1 x1=e'1..T'n xn=e'n ks' e'0 [T]
   Phase| p| G/x1..xn | Tr1 U .. U Trn |-ks~> ks' : T | Tr
   if fwd_or_fwd%_in Tr1.Ts U .. U Trn.Ts
     then x1..xn disjoint FV(e1..en)
-  if fwd_or_fwd%_in T''1..T''n
+  if exists x in FV(e1..en) such that fwd_or_fwd%_in G(x),T'1..T'n
     then G0=G[fwd%(G')]
     otherwise G0=G[G']
   Phase| p| G0 |-e0~>e'0:_ <=T | Tr0
