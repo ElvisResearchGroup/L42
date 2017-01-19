@@ -313,7 +313,7 @@ Phase| p| G|-(T1 x1=e1..Tn xn=en ks e0[_]) ~>(T'1 x1=e'1..T'n xn=e'n ks' e'0 [T]
 (catchMany)
 D| Tr |-k1..kn ~> k'1..k'n:T | Tr1 U .. U Trn
   where
-  forall i in 1..n D| Tr|-ki ~> k'i:T|Tri
+  forall i in 1..n D| Tr.capture(D.p,k1..ki-1)|-ki ~> k'i:T|Tri
   either forall i 1..(n-1) Any notEq k'i.P //That is, only the last one can 
   
   
