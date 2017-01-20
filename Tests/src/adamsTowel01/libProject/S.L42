@@ -236,6 +236,14 @@ This withoutRight()
       error void)
 
   method
+  S as42MultilineString()
+    S.doubleQuote()
+    ++S.nl()++S"'"
+    ++this.replace(S.nl(), into:S.nl()++S"'")
+    ++S.nl()
+    ++S.doubleQuote()
+    
+  method
   Continue #from(S.SConcat seqBuilder)
     Continue(seqBuilder.old()++seqBuilder.accumulator())
 

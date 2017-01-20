@@ -44,6 +44,7 @@ public class TestAdamTowel1Tests extends helpers.TestRunner{
       ////Problem with old cache, will be fixed with new TS soon "UseIntrospectionAdamTowel2.L42",
       "UseIntrospectionAdamTowel3.L42",
       "UseIntrospectionAdamTowel4.L42",
+      "TestPlgWrapper.L42",
       ////Problem with old cache, will be fixed with new TS soon "UseIntrospectionAdamTowel5.L42",
       //Opt.AllTests, // All files in libTests, as indivisrcdual tests, in no defined order
       Opt.NOP  // Convenience option, so that all of the other options can end with a comma

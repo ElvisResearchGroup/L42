@@ -1,0 +1,59 @@
+{
+  Fail:{interface implements Concept.ToS, Concept.Classable
+    //not implement Guard, not a message, no cause/more then a msg?
+    method S text()  
+    }
+  ErrorW:{
+    class method Library trait(){
+      //@plugin is.L42.connected.withSafeOperators
+      implements Fail
+      
+      method toS() This.readableName()[
+        S": ";S.nl();this.text().as42MultilineString()
+        ]""
+      
+      refine read method class This class() This
+      
+      method readableName() GetMyName(This)
+      
+      method is(subtype) {
+        with subtype (on class This return Bool.true())
+        return Bool.false()
+        }
+      class method
+      Library #pluginUnresponsive(Library binaryRepr)
+        binaryRepr  
+      }
+    class method Library <><(Library that)
+      SafeOperatorsAccess.compose(
+        left:that,
+        right:This.trait()
+      )
+    }
+  JavaImport:{
+    //@plugin is.L42.connected.withSafeOperators
+    //@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.PlgWrapperGenerator
+    class method
+    Library #pluginUnresponsive(Library binaryRepr)
+      binaryRepr  
+
+    class method
+    Library <><(Library that)
+    exception UnresolvedOverloading, ClassUnfit, MethodUnfit
+      This.main(that)
+
+    class method
+    Library main(Library that)
+    exception UnresolvedOverloading, ClassUnfit, MethodUnfit
+
+    }
+  UnresolvedOverloading:ErrorW<><{
+    //@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$UnresolvedOverloading
+    }
+  ClassUnfit:ErrorW<><{
+    //@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$ClassUnfit
+    }
+  MethodUnfit:ErrorW<><{
+    //@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$MethodUnfit
+    } 
+  }

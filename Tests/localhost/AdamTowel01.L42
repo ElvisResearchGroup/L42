@@ -1513,6 +1513,16 @@ This1.S nl() This1.S.#from(builder:(
 method 
 This1.S replace(This1.S that, This1.S into) This1.S.#from(binaryRepr:use This1.Alu check stringReplace(that:this.binaryRepr(), src:that.binaryRepr(), dest:into.binaryRepr()) error void)
 method 
+This1.S as42MultilineString() This1.S.doubleQuote().#plusplus(that:This1.S.nl().#plusplus(that:This1.S.#from(builder:(
+  mut This1.S.SBuilder b=This1.S.#builder()
+  Void unused=b.#sQuote()
+  b
+  )).#plusplus(that:this.replace(that:This1.S.nl(), into:This1.S.nl().#plusplus(that:This1.S.#from(builder:(
+  mut This1.S.SBuilder b0=This1.S.#builder()
+  Void unused0=b0.#sQuote()
+  b0
+  )))).#plusplus(that:This1.S.nl().#plusplus(that:This1.S.doubleQuote())))))
+method 
 This0.Continue #from(This1.S.SConcat seqBuilder) This0.Continue.#apply(that:seqBuilder.old().#plusplus(that:seqBuilder.accumulator()))
 method 
 mut This0.SConcat #seqBuilder() This1.S.SConcat.#apply(old:this, accumulator:This1.S.#from(builder:(
@@ -36799,6 +36809,352 @@ class method
 class This2.Selector #default#selector(Void that) This2.Selector
 class method 
 class This2.Path #default#selector(Void of) This2.Path}}
+PrW: {/*private wrapper
+@plugin is.L42.connected.withSafeOperators
+@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.PlgWrapperGenerator
+*/
+class method 
+Library #leftrightleft(Library that) use This0 check #main(_1_Library:that) error void}
+Refactor2: {
+Fail: {interface implements This2.Concept.ToS, This2.Concept.Classable
+method 
+This2.S text() 
+refine read method 
+This2.S toS() 
+refine read method 
+class This2.Concept.Classable class() 
+refine class method 
+This2.S readableName() 
+refine class method 
+This2.Bool is(class Any subtype) }
+ErrorW: {
+class method 
+Library trait()  {/*@plugin is.L42.connected.withSafeOperators
+*/implements This2.Fail, This3.Concept.ToS, This3.Concept.Classable
+refine read method 
+This3.S toS() (
+  This3.S.Continue rcv105=(
+    This3.S rcv106=This0.readableName()
+    rcv106.#from(seqBuilder:(
+      mut This3.S.SConcat b=rcv106.#seqBuilder()
+      Void unused=b.#add(that:This3.S.#from(builder:(
+        mut This3.S.SBuilder b0=This3.S.#builder()
+        Void unused2=b0.#colon()
+        Void unused3=b0.#space()
+        b0
+        )))
+      Void unused0=b.#add(that:This3.S.nl())
+      Void unused1=b.#add(that:this.text().as42MultilineString())
+      b
+      ))
+    )
+  rcv105.#from(builder:(
+    mut This3.S.SBuilder b1=rcv105.#builder()
+    b1
+    ))
+  )
+refine read method 
+class This0 class() This0
+refine class method 
+This3.S readableName() This3.GetMyName.#apply(that:This0)
+refine class method 
+This3.Bool is(class Any subtype) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error  {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This3.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This3.Bool.false()
+    void
+    )
+  
+  catch return This3.Bool result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+class method 
+Library #pluginUnresponsive(Library binaryRepr) binaryRepr
+refine method 
+This3.S text() }
+class method 
+Library #leftrightleft(Library that) This2.SafeOperatorsAccess.compose(left:that, right:This0.trait())}
+JavaImport: {/*@plugin is.L42.connected.withSafeOperators
+@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.PlgWrapperGenerator
+*/
+class method 
+mut This0 #from(Library binaryRepr) 
+read method 
+Library #binaryRepr() 
+class method 
+Void #exceptionIf(Library binaryRepr) exception This0 use This0 check instanceof(_this:binaryRepr) exception This0.#from(binaryRepr:binaryRepr)
+class method 
+Library #pluginUnresponsive(Library binaryRepr) binaryRepr
+class method 
+Library #leftrightleft(Library that) exception This1.UnresolvedOverloading, This1.ClassUnfit, This1.MethodUnfit This0.main(that:that)
+class method 
+Library main(Library that) exception This1.UnresolvedOverloading, This1.ClassUnfit, This1.MethodUnfit (
+  Library res=use This0 check #main(_1_ast%ExpCore$ClassB:that) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.connected.withSafeOperators.pluginWrapper.PlgWrapperGenerator\u000amethod name: main(that)\u000ajava method: is.L42.connected.withSafeOperators.pluginWrapper.PlgWrapperGenerator.#main(_1_ast%ExpCore$ClassB)\u000a
+*/})
+  
+  catch error Library x (
+    Void unused0=This1.UnresolvedOverloading.#exceptionIf(binaryRepr:x)
+    Void unused1=This1.ClassUnfit.#exceptionIf(binaryRepr:x)
+    Void unused2=This1.MethodUnfit.#exceptionIf(binaryRepr:x)
+    error x
+    )
+  
+  res
+  )}
+UnresolvedOverloading: {/*@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$UnresolvedOverloading
+@plugin is.L42.connected.withSafeOperators
+*/implements This1.Fail, This2.Concept.ToS, This2.Concept.Classable
+class method 
+mut This0 #from(Library binaryRepr) 
+read method 
+Library #binaryRepr() 
+class method 
+Void #exceptionIf(Library binaryRepr) exception This0 use This0 check instanceof(_this:binaryRepr) exception This0.#from(binaryRepr:binaryRepr)
+refine read method 
+This2.S toS() (
+  This2.S.Continue rcv105=(
+    This2.S rcv106=This0.readableName()
+    rcv106.#from(seqBuilder:(
+      mut This2.S.SConcat b=rcv106.#seqBuilder()
+      Void unused=b.#add(that:This2.S.#from(builder:(
+        mut This2.S.SBuilder b0=This2.S.#builder()
+        Void unused2=b0.#colon()
+        Void unused3=b0.#space()
+        b0
+        )))
+      Void unused0=b.#add(that:This2.S.nl())
+      Void unused1=b.#add(that:this.text().as42MultilineString())
+      b
+      ))
+    )
+  rcv105.#from(builder:(
+    mut This2.S.SBuilder b1=rcv105.#builder()
+    b1
+    ))
+  )
+refine read method 
+class This0 class() This0
+refine class method 
+This2.S readableName() This2.GetMyName.#apply(that:This0)
+refine class method 
+This2.Bool is(class Any subtype) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error  {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This2.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This2.Bool.false()
+    void
+    )
+  
+  catch return This2.Bool result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+class method 
+Library #pluginUnresponsive(Library binaryRepr) binaryRepr
+refine method 
+This2.S text() This2.S.#from(binaryRepr:(
+  Library res=use This0 check text(_this:this.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$UnresolvedOverloading\u000amethod name: text()\u000ajava method: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$UnresolvedOverloading.text(_this)\u000a
+*/})
+  res
+  ))}
+ClassUnfit: {/*@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$ClassUnfit
+@plugin is.L42.connected.withSafeOperators
+*/implements This1.Fail, This2.Concept.ToS, This2.Concept.Classable
+class method 
+mut This0 #from(Library binaryRepr) 
+read method 
+Library #binaryRepr() 
+class method 
+Void #exceptionIf(Library binaryRepr) exception This0 use This0 check instanceof(_this:binaryRepr) exception This0.#from(binaryRepr:binaryRepr)
+refine read method 
+This2.S toS() (
+  This2.S.Continue rcv105=(
+    This2.S rcv106=This0.readableName()
+    rcv106.#from(seqBuilder:(
+      mut This2.S.SConcat b=rcv106.#seqBuilder()
+      Void unused=b.#add(that:This2.S.#from(builder:(
+        mut This2.S.SBuilder b0=This2.S.#builder()
+        Void unused2=b0.#colon()
+        Void unused3=b0.#space()
+        b0
+        )))
+      Void unused0=b.#add(that:This2.S.nl())
+      Void unused1=b.#add(that:this.text().as42MultilineString())
+      b
+      ))
+    )
+  rcv105.#from(builder:(
+    mut This2.S.SBuilder b1=rcv105.#builder()
+    b1
+    ))
+  )
+refine read method 
+class This0 class() This0
+refine class method 
+This2.S readableName() This2.GetMyName.#apply(that:This0)
+refine class method 
+This2.Bool is(class Any subtype) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error  {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This2.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This2.Bool.false()
+    void
+    )
+  
+  catch return This2.Bool result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+class method 
+Library #pluginUnresponsive(Library binaryRepr) binaryRepr
+refine method 
+This2.S text() This2.S.#from(binaryRepr:(
+  Library res=use This0 check text(_this:this.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$ClassUnfit\u000amethod name: text()\u000ajava method: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$ClassUnfit.text(_this)\u000a
+*/})
+  res
+  ))}
+MethodUnfit: {/*@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$MethodUnfit
+@plugin is.L42.connected.withSafeOperators
+*/implements This1.Fail, This2.Concept.ToS, This2.Concept.Classable
+class method 
+mut This0 #from(Library binaryRepr) 
+read method 
+Library #binaryRepr() 
+class method 
+Void #exceptionIf(Library binaryRepr) exception This0 use This0 check instanceof(_this:binaryRepr) exception This0.#from(binaryRepr:binaryRepr)
+refine read method 
+This2.S toS() (
+  This2.S.Continue rcv105=(
+    This2.S rcv106=This0.readableName()
+    rcv106.#from(seqBuilder:(
+      mut This2.S.SConcat b=rcv106.#seqBuilder()
+      Void unused=b.#add(that:This2.S.#from(builder:(
+        mut This2.S.SBuilder b0=This2.S.#builder()
+        Void unused2=b0.#colon()
+        Void unused3=b0.#space()
+        b0
+        )))
+      Void unused0=b.#add(that:This2.S.nl())
+      Void unused1=b.#add(that:this.text().as42MultilineString())
+      b
+      ))
+    )
+  rcv105.#from(builder:(
+    mut This2.S.SBuilder b1=rcv105.#builder()
+    b1
+    ))
+  )
+refine read method 
+class This0 class() This0
+refine class method 
+This2.S readableName() This2.GetMyName.#apply(that:This0)
+refine class method 
+This2.Bool is(class Any subtype) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error  {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This2.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This2.Bool.false()
+    void
+    )
+  
+  catch return This2.Bool result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+class method 
+Library #pluginUnresponsive(Library binaryRepr) binaryRepr
+refine method 
+This2.S text() This2.S.#from(binaryRepr:(
+  Library res=use This0 check text(_this:this.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$MethodUnfit\u000amethod name: text()\u000ajava method: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$MethodUnfit.text(_this)\u000a
+*/})
+  res
+  ))}}
 Opt: {
 class method 
 Library #apply(class Any that) This1.SafeOperators.redirect(that: {
@@ -37135,8 +37491,8 @@ This1.Bool needRename(This1.Introspection.NestedClass that, This1.Introspection.
       )
     Void unused1=(
       This1.Bool cond0=(
-        This1.Introspection.MethodKind rcv105=meth.methodKind()
-        rcv105.equals(that:rcv105.class()._AbstractMethod())
+        This1.Introspection.MethodKind rcv107=meth.methodKind()
+        rcv107.equals(that:rcv107.class()._AbstractMethod())
         )
       (
         Void unused3=cond0.#checkTrue()
@@ -37163,8 +37519,8 @@ This1.Bool needRename(This1.Introspection.NestedClass that, This1.Introspection.
         )
       Void unused5=(
         This1.Bool cond2=(
-          This1.Introspection.MethodKind rcv106=meth2.methodKind()
-          rcv106.equals(that:rcv106.class()._AbstractMethod())
+          This1.Introspection.MethodKind rcv108=meth2.methodKind()
+          rcv108.equals(that:rcv108.class()._AbstractMethod())
           )
         (
           Void unused8=cond2.#checkTrue()
@@ -37272,20 +37628,20 @@ Library #leftrightleft(Library that) exception This2.MetaGuard.ClassClash, This2
                       (
                         Library libi=lib.#inner()
                         This1.SrcDests rens=This1.renameMap__48_0(that:lib.#inner(), prefix:(
-                          This2.S.Continue rcv107=(
-                            This2.S rcv108=This2.S.#from(builder:(
+                          This2.S.Continue rcv109=(
+                            This2.S rcv110=This2.S.#from(builder:(
                               mut This2.S.SBuilder b0=This2.S.#builder()
                               Void unused23=b0.#hash()
                               b0
                               ))
-                            rcv108.#from(seqBuilder:(
-                              mut This2.S.SConcat b1=rcv108.#seqBuilder()
+                            rcv110.#from(seqBuilder:(
+                              mut This2.S.SConcat b1=rcv110.#seqBuilder()
                               Void unused24=b1.#add(that:index.#inner())
                               b1
                               ))
                             )
-                          rcv107.#from(builder:(
-                            mut This2.S.SBuilder b2=rcv107.#builder()
+                          rcv109.#from(builder:(
+                            mut This2.S.SBuilder b2=rcv109.#builder()
                             b2
                             ))
                           ), intros:i.transitivelyNestedClasses())
@@ -39620,20 +39976,20 @@ Library #leftrightleft(Library that) exception This1.MetaGuard.ClassClash, This1
                       (
                         Library libi=lib.#inner()
                         This1.PreferentialComposition.SrcDests rens=This1.PreferentialComposition.renameMap__48_0(that:lib.#inner(), prefix:(
-                          This1.S.Continue rcv107=(
-                            This1.S rcv108=This1.S.#from(builder:(
+                          This1.S.Continue rcv109=(
+                            This1.S rcv110=This1.S.#from(builder:(
                               mut This1.S.SBuilder b0=This1.S.#builder()
                               Void unused23=b0.#hash()
                               b0
                               ))
-                            rcv108.#from(seqBuilder:(
-                              mut This1.S.SConcat b1=rcv108.#seqBuilder()
+                            rcv110.#from(seqBuilder:(
+                              mut This1.S.SConcat b1=rcv110.#seqBuilder()
                               Void unused24=b1.#add(that:index.#inner())
                               b1
                               ))
                             )
-                          rcv107.#from(builder:(
-                            mut This1.S.SBuilder b2=rcv107.#builder()
+                          rcv109.#from(builder:(
+                            mut This1.S.SBuilder b2=rcv109.#builder()
                             b2
                             ))
                           ), intros:i.transitivelyNestedClasses())
@@ -40024,20 +40380,20 @@ Library #leftrightleft(Library that) exception This1.MetaGuard.ClassClash, This1
                       (
                         Library libi=lib.#inner()
                         This1.PreferentialComposition.SrcDests rens=This1.PreferentialComposition.renameMap__48_0(that:lib.#inner(), prefix:(
-                          This1.S.Continue rcv107=(
-                            This1.S rcv108=This1.S.#from(builder:(
+                          This1.S.Continue rcv109=(
+                            This1.S rcv110=This1.S.#from(builder:(
                               mut This1.S.SBuilder b0=This1.S.#builder()
                               Void unused23=b0.#hash()
                               b0
                               ))
-                            rcv108.#from(seqBuilder:(
-                              mut This1.S.SConcat b1=rcv108.#seqBuilder()
+                            rcv110.#from(seqBuilder:(
+                              mut This1.S.SConcat b1=rcv110.#seqBuilder()
                               Void unused24=b1.#add(that:index.#inner())
                               b1
                               ))
                             )
-                          rcv107.#from(builder:(
-                            mut This1.S.SBuilder b2=rcv107.#builder()
+                          rcv109.#from(builder:(
+                            mut This1.S.SBuilder b2=rcv109.#builder()
                             b2
                             ))
                           ), intros:i.transitivelyNestedClasses())
@@ -40370,7 +40726,7 @@ Library #leftrightleft(Library that) exception This1.MetaGuard.ClassClash, This1
                 Void unused13=varacc0.inner(that:This1.Refactor.MoveImplementationSelector.#apply(that:ren.#inner().src(), of:ren.#inner().path(), to:ren.#inner().dest()).#leftrightleft(that:varacc0.#inner()))
                 
                 catch exception This1.MetaGuard err error (
-                  This1.X.AssertionFail rcv109=This1.X.#from(builder:(
+                  This1.X.AssertionFail rcv111=This1.X.#from(builder:(
                     mut This1.S.SBuilder b0=This1.X.#builder()
                     Void unused14=b0.#P()
                     Void unused15=b0.#a()
@@ -40394,7 +40750,7 @@ Library #leftrightleft(Library that) exception This1.MetaGuard.ClassClash, This1
                     Void unused33=b0.#cRound()
                     b0
                     ))
-                  rcv109.#apply(that:err)
+                  rcv111.#apply(that:err)
                   )
                 
                 void
@@ -40476,7 +40832,7 @@ Library #leftrightleft(Library that) exception This1.MetaGuard.ClassClash, This1
     Void unused3=return varacc0.#inner()
     
     catch exception This1.MetaGuard.MemberUnavailable err error (
-      This1.X.AssertionFail rcv110=This1.X.#from(builder:(
+      This1.X.AssertionFail rcv112=This1.X.#from(builder:(
         mut This1.S.SBuilder b2=This1.X.#builder()
         Void unused48=b2.#P()
         Void unused49=b2.#a()
@@ -40485,7 +40841,7 @@ Library #leftrightleft(Library that) exception This1.MetaGuard.ClassClash, This1
         Void unused52=b2.#2()
         b2
         ))
-      rcv110.#apply(that:err)
+      rcv112.#apply(that:err)
       )
     
     void
@@ -41074,13 +41430,13 @@ Library #leftrightleft(Library that) (
     This1.Introspection.NestedClass i=This1.Introspection.#apply(lib:that)
     This1.S names=(//just submit mutK...immK, if already there, they are not produced by the operator.
 (
-      This1.S.Continue rcv111=(
-        This1.S rcv112=This1.S.#from(builder:(
+      This1.S.Continue rcv113=(
+        This1.S rcv114=This1.S.#from(builder:(
           mut This1.S.SBuilder b0=This1.S.#builder()
           b0
           ))
-        rcv112.#from(seqBuilder:(
-          mut This1.S.SConcat b=rcv112.#seqBuilder()
+        rcv114.#from(seqBuilder:(
+          mut This1.S.SConcat b=rcv114.#seqBuilder()
           Void unused1=(
             lent This1.Introspection.Methods.IteratorVal m=i.methods().vals()
             (
@@ -41103,8 +41459,8 @@ Library #leftrightleft(Library that) (
                     (
                       This1.Selector sel=m.#inner().selector()
                       This1.Bool isAbs=(
-                        This1.Introspection.MethodKind rcv113=m.#inner().methodKind()
-                        rcv113.equals(that:rcv113.class()._AbstractMethod())
+                        This1.Introspection.MethodKind rcv115=m.#inner().methodKind()
+                        rcv115.equals(that:rcv115.class()._AbstractMethod())
                         )
                       This1.Bool isVis=m.#inner().isPrivate().#bang()
                       This1.Bool isNoArg=sel.names().isEmpty()
@@ -41152,8 +41508,8 @@ Library #leftrightleft(Library that) (
           b
           ))
         )
-      rcv111.#from(builder:(
-        mut This1.S.SBuilder b2=rcv111.#builder()
+      rcv113.#from(builder:(
+        mut This1.S.SBuilder b2=rcv113.#builder()
         b2
         ))
       ))

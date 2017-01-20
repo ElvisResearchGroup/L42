@@ -2044,6 +2044,12 @@ This0 nl() This0.#from(builder:(
 method 
 This0 replace(This0 that, This0 into) This0.#from(binaryRepr:use This1.Alu check stringReplace(that:this.binaryRepr(), src:that.binaryRepr(), dest:into.binaryRepr()) error void)
 method 
+This0 as42MultilineString() This0.doubleQuote().#plusplus(that:this.replace(that:This0.nl(), into:This0.nl().#plusplus(that:This0.#from(builder:(
+  mut This0.SBuilder b=This0.#builder()
+  Void unused=b.#sQuote()
+  b
+  )))).#plusplus(that:This0.nl().#plusplus(that:This0.doubleQuote())))
+method 
 This0.Continue #from(This0.SConcat seqBuilder) This0.Continue.#apply(that:seqBuilder.old().#plusplus(that:seqBuilder.accumulator()))
 method 
 mut This0.SConcat #seqBuilder() This0.SConcat.#apply(old:this, accumulator:This0.#from(builder:(

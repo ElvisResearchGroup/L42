@@ -1,6 +1,8 @@
 package is.L42.connected.withSafeOperators.pluginWrapper;
 
-
+/* fluent setter for errors, a good idea to avoid duplicating constructors, but
+ * the main issue is that we need to support enriching the message while try-catching  
+ */
 interface FluentSetter<T>{
   void setMessage(String msg);
   
@@ -115,6 +117,6 @@ Location
   .ReturnType ...
  
 Use.Fail Location (will be either Class.Named or Method of a Class.Named) 
-//TODO: note: x to Java have to use _num to make xs uniques
+//done: note: x to Java have to use _num to make xs uniques
 //TODO: today we do not support arrays in x toJava. Are we happy?
 */
