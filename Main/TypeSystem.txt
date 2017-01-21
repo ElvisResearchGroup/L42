@@ -473,9 +473,10 @@ Dispatch for the simplified TS:
 use rule for the specific form,
 if block, first do the maximal split if needed. (mark pre splitted blocks?)
 if splitted block, and required capsule, try type normally, on fail, try capsule promotion
+if a block fails capsule promotion, we may want to memoize that fact.
 
-if method:
-  check if return type is ok with primary meth return.
+if method call:
+  check if expected super-type is ok with primary meth return.
   if not, you have 1 or 0 possible alternative types (read->imm or mut->capsule/imm)
   if return ok and could even be toLent and still be ok,
   expect toLent for all parameters.
