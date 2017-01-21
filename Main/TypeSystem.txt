@@ -402,7 +402,7 @@ Phase |- p ~> L' //In implementation, if p.top().Phase>=Phase, L'=p.Top()
    //assert forall P in Ps p(P).Phase>=Norm
    forall i in 1..n
      Phase| p| Ps |- Mi ~> Mi'
-   if Phase=Coherent then coherent(p)
+   if Phase=Coherent then coherent(p.updateTop(L'))
 
 (member nested)
 Phase| p| Ps |-C:L ~>  C:L'
