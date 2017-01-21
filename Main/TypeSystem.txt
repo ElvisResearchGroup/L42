@@ -103,8 +103,8 @@ lentToMut(T)
 
 
 mutToCapsule(T)
-  mutToCapsule(fwdMut C)=mutToCapsule(fwd%Mut C)
-  =mutToCapsule(mut C)=capsule C
+  mutToCapsule(fwdMut C) and mutToCapsule(fwd%Mut C) undefined
+  mutToCapsule(mut C)=capsule C
   otherwise mutToCapsule(T)=T
 
 G[G']
