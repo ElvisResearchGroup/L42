@@ -477,8 +477,8 @@ if a block fails capsule promotion, we may want to memoize that fact.
 
 if method call:
   check if expected super-type is ok with primary meth return.
-  if not, you have possible alternative types (read->imm or mut->capsule/imm or fwd%_ or noFwd for fwd returning methods)
-  if return ok and could even be toLent and still be ok,
+  if not, you have possible alternative return subtypes (read->imm or mut->capsule/imm or fwd%_ or noFwd for fwd returning methods)
+  if expected super-type is ok and even toLent(expected super-type) is ok,
   expect toLent for all parameters.
   If all ends up with the needed type, no lentviewpoint
   if exactly one needed the allowed lent, re type the other mut as capsule
