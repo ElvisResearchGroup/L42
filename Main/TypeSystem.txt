@@ -121,6 +121,8 @@ mostGeneral(p,return,T1..Tn;Ps)=mostGeneral({T1.mdf .. Tn.mdf}) mostGeneral(p,T1
 otherwise 
 mostGeneral(p,exception,_;Ps)=imm mostGeneral(p,Ps)
 
+  //note that the answer is took from the possible thrown values.
+  //We do not search in the implemented interfaces, this would break with metaprogramming.
 mostGeneral(p,P)=P
 otherwise
 mostGeneral(p,Ps1 P Ps2)=mostGeneral(p,Ps1 Ps2)
