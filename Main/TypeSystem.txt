@@ -331,7 +331,7 @@ Phase| p| G| Tr' |-catch throw T0 x e ~> catch throw resolve(p,T0).P x e' :T2| T
 
 (catch and rethrow any)// could be sugared as "on throw doAndPropagate e"  
 Phase |p |G |Tr|-catch throw Any x (e0 throw x) ~> catch throw Any x (e0' throw x): _ | Tr
-  where
+  where //Note: e0, e, e0',e' are using the sugar imm Void x=e == e
   e0=(e catch error Any z void void)
   e0'=(e' catch error Any z void void)
   Phase |p |G\x |- e ~> e':_ <=imm Void | empty
