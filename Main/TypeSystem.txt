@@ -404,23 +404,23 @@ Phase |- p ~> L' //In implementation, if p.top().Phase>=Phase, L'=p.Top()
      Phase| p| Ps |- Mi ~> Mi'
    if Phase=Coherent then coherent(p)
 
-(MemberNested)
+(member nested)
 Phase| p| Ps |-C:L ~>  C:L'
    where
    Phase |-p.push(C) ~> L'
 
-(MemberMethod)
+(member method)
 Phase| p| Ps |-M ~> M'
   where
   M =refine? mdf method T m(T1 x1 .. Tn xn)exceptions Ps0 e?
   M'=refine? mdf method T m(T1 x1 .. Tn xn)exceptions Ps0 e?'
   G=this:mdf This0,x1:T1,..,xn:Tn
   if e?=e then
-    Typed| p| G| |- e ~>  e?':_ <=fwd% T | empty;Ps1
+    Typed| p| G |- e ~>  e?':_ <=fwd% T | empty;Ps1
     forall P1 in Ps1 exists P0 in Ps0 such that p|-P1<=P0
   else
     e?=e?'
-  refine? != empty <=> 
+  refine? = refine <=> 
     forall P in Ps such that p(P)(m(x1..xn))=M0 //that is, is defined
       M0=mdf method T' m(T1 x1..Tn xn)exceptions Ps' and p|-T<=T'
 
