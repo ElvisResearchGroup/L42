@@ -53,7 +53,6 @@ public class TestAdamTowel2Tests extends helpers.TestRunner{
       "UseDeployedSimpleLib.L42",
       "UseLib.L42",
       "UseOperators1.L42",
-      "TestPlgWrapper.L42",
       //Opt.AllTests, // All files in libTests, as individual tests, in no defined order
       Opt.NOP  // Convenience option, so that all of the other options can end with a comma
     );

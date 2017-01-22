@@ -192,6 +192,23 @@ public class TestParseAndDesugar {
 },{lineNumber(),"{ method Any() this+this &   this}",
   "{ method Any #apply() this.#plus(that:this).#and(that:this)}"
 
+
+},{lineNumber(),"{ method Any m(Any a, Any b) a<><b}",
+"{method Any m(Any a, Any b) a.#leftrightleft(that:b)}"
+},{lineNumber(),"{ method Any m(Any a, Any b) a+=b}",
+ "{method Any m(Any a, Any b) "
++"a.inner(that:a.#inner().#plus(that:b))}"
+},{lineNumber(),"{ method Any m(Any a, Any b) a<><=b}",
+ "{method Any m(Any a, Any b)"
++"a.inner(that:a.#inner().#leftrightleft(that:b))}"
+},{lineNumber(),"{ method Any m(Any a, Any b) a><>=b}",
+ " { method Any m(Any a, Any b)"
++"a.inner(that:("
++ "  Any::#inner() opNorm=a.#inner()"
++ "  b.#leftrightleft(that:opNorm)"
++ "  ))}"
+
+
 }});}
 
   @Test

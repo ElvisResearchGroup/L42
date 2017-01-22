@@ -47559,12 +47559,30 @@ Library #leftrightleft(Library that) exception This0.StateUnfit, This1.MetaGuard
         )
       )
     mut This0.Varres1_$%$%$%97_1_$%$%$%$%227_1_$%$%$%$%$%353_1_$%$%$%$%$%$%480_1_$%$%$%$%$%$%$%608_1_$%$%$%$%$%$%$%$%737_1_$%$%$%$%$%$%$%$%$%867_1_$%$%$%$%$%$%$%$%$%$%998_1_$%$%$%$%$%$%$%$%$%$%$%1130_1_$%$%$%$%$%$%$%$%$%$%$%$%1263_1__1397_1 varres1=This0.Varres1_$%$%$%97_1_$%$%$%$%227_1_$%$%$%$%$%353_1_$%$%$%$%$%$%480_1_$%$%$%$%$%$%$%608_1_$%$%$%$%$%$%$%$%737_1_$%$%$%$%$%$%$%$%$%867_1_$%$%$%$%$%$%$%$%$%$%998_1_$%$%$%$%$%$%$%$%$%$%$%1130_1_$%$%$%$%$%$%$%$%$%$%$%$%1263_1__1397_1.#apply(inner:res)
-    Void unused1=varres1.inner(that:This1.K.#leftrightleft(that:varres1.#inner()))
-    Void unused2=varres1.inner(that:This0.Wither.#leftrightleft(that:varres1.#inner()))
-    Void unused3=varres1.inner(that:This0.AddToS.#leftrightleft(that:varres1.#inner()))
-    Void unused4=varres1.inner(that:This0.AddEquals.#leftrightleft(that:varres1.#inner()))
-    Void unused5=varres1.inner(that:This0.Invariant.#leftrightleft(that:varres1.#inner()))
-    Void unused6=varres1.inner(that:This0.Solid.#leftrightleft(that:varres1.#inner()))
+    Void unused1=varres1.inner(that:(
+      Library opNorm=varres1.#inner()
+      This1.K.#leftrightleft(that:opNorm)
+      ))
+    Void unused2=varres1.inner(that:(
+      Library opNorm0=varres1.#inner()
+      This0.Wither.#leftrightleft(that:opNorm0)
+      ))
+    Void unused3=varres1.inner(that:(
+      Library opNorm1=varres1.#inner()
+      This0.AddToS.#leftrightleft(that:opNorm1)
+      ))
+    Void unused4=varres1.inner(that:(
+      Library opNorm2=varres1.#inner()
+      This0.AddEquals.#leftrightleft(that:opNorm2)
+      ))
+    Void unused5=varres1.inner(that:(
+      Library opNorm3=varres1.#inner()
+      This0.Invariant.#leftrightleft(that:opNorm3)
+      ))
+    Void unused6=varres1.inner(that:(
+      Library opNorm4=varres1.#inner()
+      This0.Solid.#leftrightleft(that:opNorm4)
+      ))
     Void unused7=return (//data: toS == class named,  invariant, with  ---  Still missing: fromS, clone mutk
 varres1.#inner())
     void

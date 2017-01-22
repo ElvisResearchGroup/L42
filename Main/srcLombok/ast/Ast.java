@@ -744,8 +744,8 @@ public interface Ast {
   MinusMinusEqual("--=",OpKind.EqOp,true,true,false),//
   TimesTimesEqual("**=",OpKind.EqOp,true,true,false),//
   ColonEqual(":=",OpKind.EqOp,true,true,false),//
-  BabelFishLEqual("<><=",OpKind.DataOp, true,false,false),//
-  BabelFishREqual("><>=",OpKind.DataOp, true,false,false);//
+  BabelFishLEqual("<><=",OpKind.EqOp, true,false,false),//
+  BabelFishREqual("><>=",OpKind.EqOp, true,false,false);//
 
   public final String inner;
   public final OpKind kind;

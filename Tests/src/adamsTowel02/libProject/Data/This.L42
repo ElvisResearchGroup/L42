@@ -32,12 +32,12 @@ exception StateUnfit, MetaGuard
       Concept.Classable, Concept.ToS, Concept.Equals
       }
     )
-  res:=K<><res
-  res:=Wither<><res
-  res:=AddToS<><res
-  res:=AddEquals<><res
-  res:=Invariant<><res
-  res:=Solid<><res
+  res><>=K
+  res><>=Wither
+  res><>=AddToS
+  res><>=AddEquals
+  res><>=Invariant
+  res><>=Solid
   return res
   //data: toS == class named,  invariant, with  ---  Still missing: fromS, clone mutk
   }
