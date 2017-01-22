@@ -8,7 +8,7 @@ AddToS:...
 AddEquals:...
 
 Solid:{
-  //class, ToS ==, != required
+  //class, ToS == required
   class method Library solidTrait(){ implements
         Concept.Classable, Concept.ToS, Concept.Equals //may be Parsable?
     method is(subtype) {  with subtype (on class This return Bool.true()) return Bool.false()}
@@ -27,6 +27,11 @@ Library <>< (Library that)
 exception StateUnfit, MetaGuard
  {
   var Library res=that
+  if Introspection(lib:res).classKind().equals(\class._Interface()) (
+    return Extends[res]<><{interface implements 
+      Concept.Classable, Concept.ToS, Concept.Equals
+      }
+    )
   res:=K<><res
   res:=Wither<><res
   res:=AddToS<><res
