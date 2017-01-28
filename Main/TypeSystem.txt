@@ -183,8 +183,8 @@ methTypes(p,P,ms)  Expressed as metarules
   
 //then lent viewpoint adaptation    
 
-     Ts0 T1 Ts2->T;Ps in methTypes(p,P,ms)
-     Ts'=mutToCapsule(Ts0) toLent(T1) mutToCapsule(Ts2)
+     Ts0 mut P  Ts2->T;Ps in methTypes(p,P,ms)
+     Ts'=mutToCapsule(Ts0) lent T mutToCapsule(Ts2)
 (mVp)-------------------------------------------------------------------
      Ts'->toLent(T);Ps in methTypes(p,P,ms)
 
@@ -301,7 +301,7 @@ Phase| p| G|-(T1 x1=e1..Tn xn=en ks e0[_]) ~>(T'1 x1=e'1..T'n xn=e'n ks' e'0 [T]
   for i in 1..n T'i=resolve(p,Ti)
   G'=x1:T'1..xn:T'n
   G1=(G[ks]/x1..xn) [fwd(complete(G'))]
-  for i in 1..n Phase| p| G1|-ei~>e'i: T''i <=fwd% T'i | Tri
+  for i in 1..n Phase| p| G1|-ei~>e'i: _ <=fwd% T'i | Tri
   Phase| p| G/x1..xn | Tr1 U .. U Trn |-ks~> ks' : T | Tr
   if fwd_or_fwd%_in Tr1.Ts U .. U Trn.Ts
     then x1..xn disjoint FV(e1..en)
