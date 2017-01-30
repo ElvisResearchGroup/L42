@@ -281,7 +281,8 @@ D|- (ds1 ds2 ks e)~>(ds'1 ds'2 ks' e'):T |Tr
   D|- (ds1 ks (ds2 ks e) )~>(ds'1 ks'(ds'2 ks' e')):T |Tr
   dom(ds2) not in FV(ds1)
   //we do not need to state FV(ks) not in dom(ds1,ds2) since rule block do G/x1..xn
-  //to optimize, we could use a empty shell ks (with all es replaced with error void), but then we will need to explicitly test for FV(ks) not in dom(ds1,ds2)
+  //to optimize, we could use a empty shell ks (with all es replaced with error void),
+  //but then we will need to explicitly test for FV(ks) not in dom(ds1,ds2)
   
   //Algorithm to divide ds in the first minimal ds1, ds2
   //with ds=ds0..dsn; domi=dom(dsi+1..dsn)
@@ -488,8 +489,79 @@ and for method parameter where mut obtained but needed capsule.
 As special case, if meth parameter is block, and is normally typed mut, we can
 skip (double) double typing and go on with block promotion directly
 
+-----
+type system:
+object with 
+-memoized hash map TSIn->TSOut
+-memoized hash map p,P,ms->mTypes
+-memoized identity hash set fullysplitted blocks
+TSIn: Delta,e,T
+TSOut: either OK(TSIn,T,Tr) or Error(TSIn,String,Opt(T)) //Error.T is the obtained type that is not a subtype of expected one.
+
+ts(TSIn in)->TSOut
+  useAnonimusVisitor to dispatch to specific ts
+tsPath(TSIn in,Path p)->TSOut //assert in.e == , etc. for other cases
+  ...follow rule Path...
+..other cases...
+  
+structure of all tsXX methods:
+  TSOur res=_memoizedTSRes(in);
+  if (res!=null){return res;}
+  try{
+    ... return res=e; ...
+    }
+  finally{memoizeTSRes(in,res);}
+  
+non trivial methods: tsBlock and tsMCall 
+
+tsBlock(TsIn in,Block e)->TSOut
+  if !isSplitted(e)//memoized info
+    e=splitBlock(e)
+  assert isSplitted(e)
+  res1=tsBlockBase(in,e)
+  if res1.isOk(){return res=res1;}
+  if promotionMakesSense()//mut that need capsule
+    res2=tsBlockPromotion(in,e)//calls tsBlock internally,
+    //thanks to promotionMakesSense does not goes in look
+    if res2.isOk(){return res=res2;}
+  //if we are here, both res1,res2 not ok
+  return res=combine(res1,res2)
+  
+tsMCall(TSIn in,MCall e)->TSOut
+  Path rec=guessType(e.receiver)
+  mTypes,mTypesRes=memoizedMTypes(in.p,rec,e.ms)
+  mType=_firstMatchReturn(TSIn.T,mTypes)// 1 select the first match with acceptable return type
+  if mType==null return res=Error???
+  //2 type all the parameters with mutOnlyToLent(Ts)
+  resR=ts(in.with(e:e.receiver,t:mutOnlyToLent(mType.receiverT)))
+  if !resR.isOk() return res=combineContext(TSIn,resR)
+  resp=TSOut[resR]++TSOut[with e in e.es, T in mTypes.Ts
+    resi=ts(in.with(e:e, t:mutOnlyToLent(T)))
+    if !resi.isOk() return res=combineContext(TSIn,resi)
+    use[resi]   
+    ]
+  assert forall r in resp, r.isOk()
+  mTypeRes=firstMatchParameters({res.T|res in resp},mTypesRes) 
+  if mTypeRes!=null 
+    return res=OK(TSIn,mTypeRes.returnType,U{res.Tr| res in resp})
+  //3 if there is no matching method, we may need to retype some mut
+  //in capsule caused by mvp:
+  //it is  not over if there is a mathing method type with mutToCapsule(result param types)
+  //in this case assert "there is exactly 1 matching method"
+  mTypeMVP=firstMatchParameters({mutToCapsule(res.T)|res in resp},mTypesRes) //or mTypes?
+  if mTypeMVP==null Error????
+  assert firstMatchParameters({mutToCapsule(res.T)|res in resp},mTypesRes\mTypeMVP) fails
+  //To be happy, we can retype the obtainedMut parameters into expected capsule
+  with TSOut out in resp (
+    if out.in.expectedT.mdf==Mdf.mut (
+      resi=ts(out.in.with(expectedT:\.with(mdf:Mdf.capsule)))
+      if !resi.isOk() return Error???
+      )
+    )
+  return res=OK(TSIn,mTypeMVP.returnType,U{res.Tr| res in resp}) //is the TS from res ok?
 
 
+_memoizedTSRes(in) //need attention: we can not use .equals on p
 ---------------
 OLD STUFF FROM NOW ON  
 ------------------
