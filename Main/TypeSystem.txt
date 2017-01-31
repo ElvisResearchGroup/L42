@@ -285,9 +285,9 @@ D|- e0.m[_](x1:e1..Xn:en) ~> e'0.m[P0](x1:e'1..xn:e'n)  : T <= T'| Tr0 U..U Trn 
 //type system need not to repeat the test for ks in the two contexts,
 //since if ks typed in the outer block, it would also type in the same way
 //in the richer context in the inner block.
-D|- (ds1 ds2 ks e)~>(ds'1 ds'2 ks' e'):T |Tr
+D|- (ds1 ds2 ks e)~>(ds'1 ds'2 ks' e'):T <= T' |Tr
   where
-  D|- (ds1 ks (ds2 ks e) )~>(ds'1 ks'(ds'2 ks' e')):T |Tr
+  D|- (ds1 ks (ds2 ks e) )~>(ds'1 ks'(ds'2 ks' e')):T <= T' |Tr
   dom(ds2) not in FV(ds1)
   //we do not need to state FV(ks) not in dom(ds1,ds2) since rule block do G/x1..xn
   //to optimize, we could use a empty shell ks (with all es replaced with error void),
