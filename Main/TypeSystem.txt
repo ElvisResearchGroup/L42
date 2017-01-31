@@ -559,7 +559,7 @@ tsMCall(TSIn in,MCall e)->TSOut
       if !resi.isOk() return Error???
       )
     )
-  return res=OK(TSIn,mTypeMVP.returnType,U{res.Tr| res in resp}) //is the TS from res ok?
+  return res=OK(TSIn,mTypeMVP.returnType,Trs[with r in resp (use[r.Tr])].collapse()) //is the TS from res ok?
 
 
 _memoizedTSRes(in) //need attention: we can not use .equals on p
