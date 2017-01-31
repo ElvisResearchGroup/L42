@@ -111,6 +111,7 @@ G[G']
   G[G'](x)=G'(x) if x in dom(G'); otherwise G[G'](x)=G(x)
 
 G[ks]
+  G[]=G
   G[k ks]=G[ks] with catchRethrow(k)
   otherwise G[k ks]=toRead(G) with k.throw=error
   otherwise G[ks]=G 
