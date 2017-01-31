@@ -323,15 +323,15 @@ Phase| p| G|-(T1  x1=e1 ..Tn  xn=en  ks  e0  [_]) ~>
   Phase| p| G0 |-e0~>e'0:T0 <=T' | Tr0
   if mostGeneral(T0,Ts) is defined, then T=mostGeneral(T0,Ts)
   else T= mostGeneral(T0.mdf,Ts.mdfs) T'.P
-    
+  // assert D.p|-T <= T'
+   
 //TODO: check that this kind of things work {Bar:{}   method m (foo catch exception Bar x e1 e0)  } redirect Bar->Any
 //Note: the new idea is that catch throw Any will catch all that can be thrown,
 // if not of form catchRethrow(k); in that case *only* the catchRethrow rule will apply
 (catchMany)
-D| Tr |-k1..kn ~> k'1..k'n:T | Tr1 U .. U Trn
+D| Tr |-k1..kn ~> k'1..k'n:T1..Tn <= T | Tr1 U .. U Trn
   where
-  forall i in 1..n D| Tr.capture(D.p,k1..ki-1)|-ki ~> k'i:T|Tri
-  either forall i 1..(n-1) Any notEq k'i.P //That is, only the last one can 
+  forall i in 1..n D| Tr.capture(D.p,k1..ki-1)|-ki ~> k'i:Ti <= T |Tri
   
   
 (catch)
