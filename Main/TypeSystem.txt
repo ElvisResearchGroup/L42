@@ -540,9 +540,9 @@ tsMCall(TSIn in,MCall e)->TSOut
     use[resi]   
     ]
   assert forall r in resp, r.isOk()
-  mTypeRes=firstMatchParameters({res.T|res in resp},mTypesRev) 
+  mTypeRes=firstMatchParameters(Ts[with r in resp (use[r.T])],mTypesRev) 
   if mTypeRes!=null 
-    return res=OK(TSIn,mTypeRes.returnType,U{res.Tr| res in resp})
+    return res=OK(TSIn,mTypeRes.returnType,Trs[with r in resp (use[r.Tr])].collapse())
   //3 if there is no matching method, we may need to retype some mut
   //in capsule caused by mvp:
   //it is  not over if there is a mathing method type with mutToCapsule(result param types)
