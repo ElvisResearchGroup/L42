@@ -219,10 +219,14 @@ methTypes(p,P,ms) //note we need to give precedence to the non fwd/fwd% versions
   Tr' contains only the throws from the catch k itself.
 
 (void)
-_ |- void~> void:imm Void | emptyTr
-
+_ |- void~> void:imm Void <= mdf Void | emptyTr
+  where
+  mdf in {read, imm}
+  
 (Path)
-_ |- P~>P:class P | emptyTr
+D |- P~>P:class P <= T | emptyTr
+  where
+  D.p|-T<=class P
 
 (library prop)
 D |- L ~> L' : imm Library | emptyTr
