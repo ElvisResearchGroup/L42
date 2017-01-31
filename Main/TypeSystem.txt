@@ -262,15 +262,16 @@ D|-throw[_,_] e~> throw[T0,T3] e' : T0 <= T0 | Tr
 D|- e0.m[_](x1:e1..Xn:en) ~> e'0.m[P0](x1:e'1..xn:e'n)  : T <= T'| Tr0 U..U Trn U (empty;Ps)
   //e0 will be of form chain
   where
-  D.p|-T <= T'
   resolve(D.p,guessType(D.G,e0))= _ P0 //assert T'0.P=P0
   T0..Tn->T;Ps in methTypes(p,P0,m(x1..xn))
+  D.p|-T <= T'
   forall i 0..n D|- ei ~> e'i : T'i <=Ti | Tri //T'0 is correctly a free variable    
-     
+  
 (using)
- D|-use P check m(x1:e1.. xn:en) e0 ~>use P check m(x1:e'1.. xn:e'n) e'0 :T0 | Tr0 U..U Trn
+ D|-use P check m(x1:e1.. xn:en) e0 ~>use P check m(x1:e'1.. xn:e'n) e'0 :T0 <= T | Tr0 U..U Trn
  where
    plugin(D.p,P,m(x1..xn))=plg, T1..Tn->T0;empty //plg is a free variable, in the small step reduction would be the function representing the behaviour
+   D.p|-T0 <= T
    forall i 0..n D|- ei ~> e'i : T'i <=Ti |Tri
 //Note: what happen if a parameter take mut and the plugin throw error w.r.t. strong error safety? can we catch it soon?
 //The idea is that I can still use the normal pattern to throw error if the plugin fail, but to catch that error we will have to go up the stack a lot.
