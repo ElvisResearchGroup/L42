@@ -314,13 +314,15 @@ Phase| p| G|-(T1  x1=e1 ..Tn  xn=en  ks  e0  [_]) ~>
   G'=x1:T'1..xn:T'n
   G1=(G[ks]/x1..xn) [fwd(complete(G'))]
   for i in 1..n Phase| p| G1|-ei~>e'i: _ <=fwd% T'i | Tri
-  Phase| p| G/x1..xn | Tr1 U .. U Trn |-ks~> ks' : T | Tr
+  Phase| p| G/x1..xn | Tr1 U .. U Trn |-ks~> ks' : Ts <= T' | Tr
   if fwd_or_fwd%_in Tr1.Ts U .. U Trn.Ts
     then x1..xn disjoint FV(e1..en)
   if exists x in FV(e1..en) such that fwd_or_fwd%_in (G/x1..xn)[complete(G')](x)
     then G0=G[fwd%(G')]
     otherwise G0=G[G']
-  Phase| p| G0 |-e0~>e'0:_ <=T | Tr0
+  Phase| p| G0 |-e0~>e'0:T0 <=T' | Tr0
+  if mostGeneral(T0,Ts) is defined, then T=mostGeneral(T0,Ts)
+  else T= mostGeneral(T0.mdf,Ts.mdfs) T'.P
     
 //TODO: check that this kind of things work {Bar:{}   method m (foo catch exception Bar x e1 e0)  } redirect Bar->Any
 //Note: the new idea is that catch throw Any will catch all that can be thrown,
