@@ -548,9 +548,10 @@ tsMCall(TSIn in,MCall e)->TSOut
   //in capsule caused by mvp:
   //it is  not over if there is a mathing method type with mutToCapsule(result param types)
   //in this case assert "there is exactly 1 matching method"
-  mTypeMVP=firstMatchParameters({mutToCapsule(res.T)|res in resp},mTypesRes) //or mTypes?
+  tsToCaps=Ts[with r in resp (use[mutToCapsule(r.T)])]
+  mTypeMVP=firstMatchParameters(tsToCaps,mTypesRes) //or mTypes?
   if mTypeMVP==null Error????
-  assert firstMatchParameters({mutToCapsule(res.T)|res in resp},mTypesRes\mTypeMVP) fails
+  assert firstMatchParameters(tsToCaps,mTypesRes-mTypeMVP) fails
   //To be happy, we can retype the obtainedMut parameters into expected capsule
   with TSOut out in resp (
     if out.in.expectedT.mdf==Mdf.mut (
