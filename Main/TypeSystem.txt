@@ -531,7 +531,8 @@ tsBlock(TsIn in,Block e)->TSOut
 tsMCall(TSIn in,MCall e)->TSOut
   Path rec=guessType(e.receiver)
   mTypes,mTypesRev=memoizedMTypes(in.p,rec,e.ms)
-  mType=_firstMatchReturn(TSIn.T,mTypes)// 1 select the first match with acceptable return type
+  // 1 select the first match with acceptable return type
+  mType=_firstMatchReturn(TSIn.T,mTypes)
   if mType==null return res=Error???
   //2 type all the parameters with mutOnlyToLent(Ts)
   resp=TSOut[with e in e.es.withAlso(left:e.receiver), T in mTypes.Ts
@@ -540,9 +541,9 @@ tsMCall(TSIn in,MCall e)->TSOut
     use[resi]   
     ]
   assert forall r in resp, r.isOk()
-  mTypeRes=firstMatchParameters(Ts[with r in resp (use[r.T])],mTypesRev) 
-  if mTypeRes!=null 
-    return res=OK(TSIn,mTypeRes.returnType,Trs[with r in resp (use[r.Tr])].collapse())
+  mTypeRev=_firstMatchParameters(Ts[with r in resp (use[r.T])],mTypesRev) 
+  if mTypeRev!=null 
+    return res=OK(TSIn,mTypeRev.returnType,Trs[with r in resp (use[r.Tr])].collapse())
   //3 if there is no matching method, we may need to retype some mut
   //in capsule caused by mvp:
   //it is  not over if there is a mathing method type with mutToCapsule(result param types)
