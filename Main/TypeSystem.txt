@@ -354,13 +354,11 @@ Phase |p |G |Tr|-catch throw Any x (e0 throw x) ~> catch throw Any x (e0' throw 
   Phase |p |G\x |- e ~> e':_ <=imm Void | empty
 
 (catch precise any)//TODO: can it be broken by metaprogramming? forcing to jump to Any while there was a result before?  
-Phase |p |G |Tr|-catch throw Any x e ~> catch throw Any x e': T <= T' | Tr'
+Phase |p |G |Tr|-catch throw Any x e ~> catch throw T1 x e': T <= T' | Tr'
   where
   not catchRethrow(catch throw Any x e)
-  //more expressive rule would say e type for any T in Tr.Ts
   T1=mostGeneral(throw,Tr)//may be Any, or even undefined for return class+read
   Phase |p |G+x:T1|- e ~> e':T<=T'| Tr'
-
 
 (capsule promotion)
 Phase |p |G |-(ds ks e)~>(ds' ks' e'):capsule P | Tr
