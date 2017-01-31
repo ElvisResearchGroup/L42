@@ -347,19 +347,19 @@ Phase| p| G| Tr' |-catch throw T0 x e ~> catch throw resolve(p,T0).P x e' :T2 <=
   Phase| p| G[x:T1]|- e ~> e' : T2 <= T | Tr
 
 (catch and rethrow any)// could be sugared as "on throw doAndPropagate e"  
-Phase |p |G |Tr|-catch throw Any x (e0 throw x) ~> catch throw Any x (e0' throw x): _ | Tr
+Phase |p |G |Tr|-catch throw Any x (e0 throw x) ~> catch throw Any x (e0' throw x): T<=T | Tr
   where //Note: e0, e, e0',e' are using the sugar imm Void x=e == e
   e0=(e catch error Any z void void)
   e0'=(e' catch error Any z void void)
   Phase |p |G\x |- e ~> e':_ <=imm Void | empty
 
 (catch precise any)//TODO: can it be broken by metaprogramming? forcing to jump to Any while there was a result before?  
-Phase |p |G  |Tr|-catch throw Any x e ~> catch throw Any x e': T | Tr'
+Phase |p |G |Tr|-catch throw Any x e ~> catch throw Any x e': T <= T' | Tr'
   where
   not catchRethrow(catch throw Any x e)
   //more expressive rule would say e type for any T in Tr.Ts
   T1=mostGeneral(throw,Tr)//may be Any, or even undefined for return class+read
-  Phase |p |G+x:T1|- e ~> e':_<=T| Tr'
+  Phase |p |G+x:T1|- e ~> e':T<=T'| Tr'
 
 
 (capsule promotion)
