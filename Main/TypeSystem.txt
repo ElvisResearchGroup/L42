@@ -521,7 +521,7 @@ tsBlock(TsIn in,Block e)->TSOut
   assert isSplitted(e)
   res1=tsBlockBase(in,e)
   if res1.isOk(){return res=res1;}
-  if !promotionMakesSense(){return res=res1;}//mut that need capsule
+  if !promotionMakesSense(){return res=res1;}//promotionMakesSense: mut that need capsule
   res2=tsBlockPromotion(in,e)//calls tsBlock internally,
   //thanks to promotionMakesSense does not goes in loop
   if res2.isOk(){return res=res2;}
@@ -530,19 +530,17 @@ tsBlock(TsIn in,Block e)->TSOut
   
 tsMCall(TSIn in,MCall e)->TSOut
   Path rec=guessType(e.receiver)
-  mTypes,mTypesRes=memoizedMTypes(in.p,rec,e.ms)
+  mTypes,mTypesRev=memoizedMTypes(in.p,rec,e.ms)
   mType=_firstMatchReturn(TSIn.T,mTypes)// 1 select the first match with acceptable return type
   if mType==null return res=Error???
   //2 type all the parameters with mutOnlyToLent(Ts)
-  resR=ts(in.with(e:e.receiver,t:mutOnlyToLent(mType.receiverT)))
-  if !resR.isOk() return res=combineContext(TSIn,resR)
-  resp=TSOut[resR]++TSOut[with e in e.es, T in mTypes.Ts
+  resp=TSOut[with e in e.es.withAlso(left:e.receiver), T in mTypes.Ts
     resi=ts(in.with(e:e, t:mutOnlyToLent(T)))
     if !resi.isOk() return res=combineContext(TSIn,resi)
     use[resi]   
     ]
   assert forall r in resp, r.isOk()
-  mTypeRes=firstMatchParameters({res.T|res in resp},mTypesRes) 
+  mTypeRes=firstMatchParameters({res.T|res in resp},mTypesRev) 
   if mTypeRes!=null 
     return res=OK(TSIn,mTypeRes.returnType,U{res.Tr| res in resp})
   //3 if there is no matching method, we may need to retype some mut
