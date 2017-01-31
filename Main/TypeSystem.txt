@@ -162,7 +162,7 @@ methTypes(p,P,ms)  Expressed as metarules
 
 //first managing placeholders
 
-       p(P).ms.mh[from P]=mdf0 method T m(T1 x1,..Tn xn) exception Ps
+       p(P).ms.mh[from P]=refine? mdf0 method T m(T1 x1,..Tn xn) exception Ps
 (mBase)-------------------------------------------------------------------
        mdf0 P T1..Tn-> fwd% T;Ps in methTypes(p,P,ms)
  
@@ -255,7 +255,7 @@ D|-throw[T0?,_] e~> throw[T0,T3] e' :  T0 | Tr
 D|- e0.m[_](x1:e1..Xn:en) ~> e'0.m[P0](x1:e'1..xn:e'n)  : T | Tr0 U..U Trn U (empty;Ps)
   //e0 will be of form chain
   where
-  resolve(D.p,guessType(D.G,e0))= _ P0
+  resolve(D.p,guessType(D.G,e0))= _ P0 //assert T'0.P=P0
   T0..Tn->T;Ps in methTypes(p,P0,m(x1..xn))
   forall i 0..n D|- ei ~> e'i : T'i <=Ti | Tri //T'0 is correctly a free variable    
      
@@ -549,10 +549,10 @@ tsMCall(TSIn in,MCall e)->TSOut
   //it is  not over if there is a mathing method type with mutToCapsule(result param types)
   //in this case assert "there is exactly 1 matching method"
   tsToCaps=Ts[with r in resp (use[mutToCapsule(r.T)])]
-  mTypeMVP=firstMatchParameters(tsToCaps,mTypesRes) //or mTypes?
+  mTypeMVP=firstMatchParameters(tsToCaps,mTypesRev) //or mTypes?
   if mTypeMVP==null Error????
   assert firstMatchParameters(tsToCaps,mTypesRes-mTypeMVP) fails
-  //To be happy, we can retype the obtainedMut parameters into expected capsule
+  //To be happy, we can retype the obtained mut parameters into expected capsule
   respMVP=TSOut[with r in resp, T t in mTypeMVP.TS (
     if (r.mdf <= t.mfd) (
       assert r.mdf != Mdf.mut
@@ -565,8 +565,8 @@ tsMCall(TSIn in,MCall e)->TSOut
       if !resi.isOK()  return Error???
       use [resi]
       )
-    )
-    return res=makeMCallOK(TSIn,respMVP,mTypeMVP)
+    )]
+  return res=makeMCallOK(TSIn,respMVP,mTypeMVP)
 
 
 _memoizedTSRes(in) //need attention: we can not use .equals on p
