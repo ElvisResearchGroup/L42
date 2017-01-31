@@ -250,7 +250,7 @@ D |- loop e ~> loop e' : imm Void <= T | Tr
           // T2 is the modified type, taking into account kind of thrown
           // T3 is the type of the expression, including promotions
           // and T3 is the type of the value thrown, this allows to use alternative method typing
-D|-throw[_,_] e~> throw[T0,T3] e' :  T0 <=T0 | Tr
+D|-throw[_,_] e~> throw[T0,T3] e' : T0 <= T0 | Tr
   where
   T1 = resolve(D.p,guessType(D.G,e))
   if throw=exception, T2= imm T1.P and Tr=Ts;Ps,P
@@ -259,9 +259,10 @@ D|-throw[_,_] e~> throw[T0,T3] e' :  T0 <=T0 | Tr
   D|- e~>  e' :  T3 <=T2|Ts;Ps 
 
 (mcall)
-D|- e0.m[_](x1:e1..Xn:en) ~> e'0.m[P0](x1:e'1..xn:e'n)  : T | Tr0 U..U Trn U (empty;Ps)
+D|- e0.m[_](x1:e1..Xn:en) ~> e'0.m[P0](x1:e'1..xn:e'n)  : T <= T'| Tr0 U..U Trn U (empty;Ps)
   //e0 will be of form chain
   where
+  D.p|-T <= T'
   resolve(D.p,guessType(D.G,e0))= _ P0 //assert T'0.P=P0
   T0..Tn->T;Ps in methTypes(p,P0,m(x1..xn))
   forall i 0..n D|- ei ~> e'i : T'i <=Ti | Tri //T'0 is correctly a free variable    
