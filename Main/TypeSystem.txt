@@ -500,18 +500,18 @@ object with
 -memoized identity hash set fullysplitted blocks
 
 ts(TSIn in)->TSOut
-  useAnonimusVisitor to dispatch to specific ts
-tsPath(TSIn in,Path p)->TSOut //assert in.e == , etc. for other cases
+  use Anonymous Visitor to dispatch to specific ts
+tsPath(TSIn in,Path p)->TSOut //assert in.e == p, etc. for other cases
   ...follow rule Path...
 ..other cases...
   
 structure of all tsXX methods:
-  TSOur res=_memoizedTSRes(in);
+  TSOut res=_memoizedTSRes(in);
   if (res!=null){return res;}
   try{
     ... return res=e; ...
     }
-  finally{memoizeTSRes(in,res);}
+  finally{memoizeTSRes(in,res);}//remember, memoizeTSRes need to not memoize null res
   
 non trivial methods: tsBlock and tsMCall 
 
@@ -521,10 +521,10 @@ tsBlock(TsIn in,Block e)->TSOut
   assert isSplitted(e)
   res1=tsBlockBase(in,e)
   if res1.isOk(){return res=res1;}
-  if promotionMakesSense()//mut that need capsule
-    res2=tsBlockPromotion(in,e)//calls tsBlock internally,
-    //thanks to promotionMakesSense does not goes in look
-    if res2.isOk(){return res=res2;}
+  if !promotionMakesSense(){return res=res1;}//mut that need capsule
+  res2=tsBlockPromotion(in,e)//calls tsBlock internally,
+  //thanks to promotionMakesSense does not goes in loop
+  if res2.isOk(){return res=res2;}
   //if we are here, both res1,res2 not ok
   return res=combine(res1,res2)
   
