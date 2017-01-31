@@ -491,12 +491,13 @@ skip (double) double typing and go on with block promotion directly
 
 -----
 type system:
-object with 
--memoized hash map TSIn->TSOut
--memoized hash map p,P,ms->mTypes
--memoized identity hash set fullysplitted blocks
 TSIn: Delta,e,T
 TSOut: either OK(TSIn,T,Tr) or Error(TSIn,String,Opt(T)) //Error.T is the obtained type that is not a subtype of expected one.
+
+object with 
+-memoized hash map TSIn->TSOut
+-memoized hash map p,P,ms->mTypes0,mTypes1
+-memoized identity hash set fullysplitted blocks
 
 ts(TSIn in)->TSOut
   useAnonimusVisitor to dispatch to specific ts
