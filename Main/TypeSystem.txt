@@ -226,11 +226,12 @@ _ |- void~> void:imm Void <= mdf Void | emptyTr
 (Path)
 D |- P~>P:class P <= T | emptyTr
   where
-  D.p|-T<=class P
+  D.p|-class P <= T
 
 (library prop)
-D |- L ~> L' : imm Library | emptyTr
+D |- L ~> L' : imm Library <= mdf Library| emptyTr
   where
+  mdf in {read, imm}
   D.Phase  |- D.p.evilPush(L) ~> L'
 
 (x)
