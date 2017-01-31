@@ -235,7 +235,9 @@ D |- L ~> L' : imm Library <= mdf Library| emptyTr
   D.Phase  |- D.p.evilPush(L) ~> L'
 
 (x)
-D |-x ~> x :D.G(x) | emptyTr
+D |-x ~> x :D.G(x) <= T| emptyTr
+  where
+  D.p|- D.G(x) <= T
 
 (loop)
 D |- loop e ~> loop e' : imm Void | Tr
