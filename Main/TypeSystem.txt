@@ -109,13 +109,12 @@ mutToCapsule(T)
 
 G[G']
   G[G'](x)=G'(x) if x in dom(G'); otherwise G[G'](x)=G(x)
-
+ 
 G[ks]
-  G[]=G
-  G[k ks]=G[ks] with catchRethrow(k)
+  G[k ks]=G[ks] with catchRethrow(k) or k.throw != error
   otherwise G[k ks]=toRead(G) with k.throw=error
-  otherwise G[ks]=G 
-
+  G[]=G
+  
 mostGeneral(p,error,Tr)=imm Any
 mostGeneral(p,return,empty;Ps) undefined
 mostGeneral(p,exception,_;empty) undefined?? TODO:Need discussion
