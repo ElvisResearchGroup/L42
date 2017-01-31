@@ -306,7 +306,9 @@ D|- (ds1 ds2 ks e)~>(ds'1 ds'2 ks' e'):T <= T' |Tr
   //)
 
 (block)
-Phase| p| G|-(T1 x1=e1..Tn xn=en ks e0[_]) ~>(T'1 x1=e'1..T'n xn=e'n ks' e'0 [T]) : T | (Tr1 U..U Trn).capture(p,ks') U Tr U Tr0
+Phase| p| G|-(T1  x1=e1 ..Tn  xn=en  ks  e0  [_]) ~>
+             (T'1 x1=e'1..T'n xn=e'n ks' e'0 [T]) 
+     : T <= T' | (Tr1 U..U Trn).capture(p,ks') U Tr U Tr0
   where
   for i in 1..n T'i=resolve(p,Ti)
   G'=x1:T'1..xn:T'n
