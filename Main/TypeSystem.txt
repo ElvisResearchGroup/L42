@@ -339,12 +339,12 @@ D| Tr |-k1..kn ~> k'1..k'n:T1..Tn <= T | Tr1 U .. U Trn
    // T1 is the actual caught type, based on the types which can be thrown in context
    // T2 is the type of the expression, based on x being bound T1
 
-Phase| p| G| Tr' |-catch throw T0 x e ~> catch throw resolve(p,T0).P x e' :T2| Tr
+Phase| p| G| Tr' |-catch throw T0 x e ~> catch throw resolve(p,T0).P x e' :T2 <= T | Tr
   where
   mdf1 = mostGeneral(throw,Tr').mdf
   T1 = mdf1 resolve (p, T0).P
   T1 not of form _ Any
-  Phase| p| G[x:T1]|- e ~> e':_<=T2| Tr
+  Phase| p| G[x:T1]|- e ~> e' : T2 <= T | Tr
 
 (catch and rethrow any)// could be sugared as "on throw doAndPropagate e"  
 Phase |p |G |Tr|-catch throw Any x (e0 throw x) ~> catch throw Any x (e0' throw x): _ | Tr
