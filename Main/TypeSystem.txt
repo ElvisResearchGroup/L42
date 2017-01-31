@@ -492,7 +492,7 @@ skip (double) double typing and go on with block promotion directly
 -----
 type system:
 TSIn: Delta,e,T
-TSOut: either OK(TSIn,T,Tr) or Error(TSIn,String,Opt(T)) //Error.T is the obtained type that is not a subtype of expected one.
+TSOut: either OK(TSIn,e,T,Tr) or Error(TSIn,String,Opt(T)) //Error.T is the obtained type that is not a subtype of expected one.
 
 object with 
 -memoized hash map TSIn->TSOut
@@ -543,7 +543,7 @@ tsMCall(TSIn in,MCall e)->TSOut
   assert forall r in resp, r.isOk()
   mTypeRev=_firstMatchParameters(Ts[with r in resp (use[r.T])],mTypesRev) 
   if mTypeRev!=null 
-    return res=OK(TSIn,mTypeRev.returnType,Trs[with r in resp (use[r.Tr])].collapse())
+    return res=makeMCallOK(TSIn,resp,mTypeRev)//mTypeRev.returnType needed, and Trs[with r in resp (use[r.Tr])].collapse())
   //3 if there is no matching method, we may need to retype some mut
   //in capsule caused by mvp:
   //it is  not over if there is a mathing method type with mutToCapsule(result param types)
@@ -553,13 +553,20 @@ tsMCall(TSIn in,MCall e)->TSOut
   if mTypeMVP==null Error????
   assert firstMatchParameters(tsToCaps,mTypesRes-mTypeMVP) fails
   //To be happy, we can retype the obtainedMut parameters into expected capsule
-  with TSOut out in resp (
-    if out.in.expectedT.mdf==Mdf.mut (
-      resi=ts(out.in.with(expectedT:\.with(mdf:Mdf.capsule)))
-      if !resi.isOk() return Error???
+  respMVP=TSOut[with r in resp, T t in mTypeMVP.TS (
+    if (r.mdf <= t.mfd) (
+      assert r.mdf != Mdf.mut
+      use [r]
+      )
+    else(
+      assert r.mdf == Mdf.mut
+      assert t.mdf == Mdf.capsule
+      resi=ts(r.in.with(expectedT:t))
+      if !resi.isOK()  return Error???
+      use [resi]
       )
     )
-  return res=OK(TSIn,mTypeMVP.returnType,Trs[with r in resp (use[r.Tr])].collapse()) //is the TS from res ok?
+    return res=makeMCallOK(TSIn,respMVP,mTypeMVP)
 
 
 _memoizedTSRes(in) //need attention: we can not use .equals on p
