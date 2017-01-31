@@ -343,7 +343,7 @@ Phase| p| G| Tr' |-catch throw T0 x e ~> catch throw resolve(p,T0).P x e' :T2 <=
   where
   mdf1 = mostGeneral(throw,Tr').mdf
   T1 = mdf1 resolve (p, T0).P
-  T1 not of form _ Any
+  not catchRethrow(catch throw T1 x e)
   Phase| p| G[x:T1]|- e ~> e' : T2 <= T | Tr
 
 (catch and rethrow any)// could be sugared as "on throw doAndPropagate e"  
@@ -352,13 +352,6 @@ Phase |p |G |Tr|-catch throw Any x (e0 throw x) ~> catch throw Any x (e0' throw 
   e0=(e catch error Any z void void)
   e0'=(e' catch error Any z void void)
   Phase |p |G\x |- e ~> e':_ <=imm Void | empty
-
-(catch precise any)//TODO: can it be broken by metaprogramming? forcing to jump to Any while there was a result before?  
-Phase |p |G |Tr|-catch throw Any x e ~> catch throw T1 x e': T <= T' | Tr'
-  where
-  not catchRethrow(catch throw Any x e)
-  T1=mostGeneral(throw,Tr)//may be Any, or even undefined for return class+read
-  Phase |p |G+x:T1|- e ~> e':T<=T'| Tr'
 
 (capsule promotion)
 Phase |p |G |-(ds ks e)~>(ds' ks' e'):capsule P | Tr
