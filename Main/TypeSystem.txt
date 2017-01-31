@@ -250,9 +250,8 @@ D |- loop e ~> loop e' : imm Void <= T | Tr
           // T2 is the modified type, taking into account kind of thrown
           // T3 is the type of the expression, including promotions
           // and T3 is the type of the value thrown, this allows to use alternative method typing
-D|-throw[T0?,_] e~> throw[T0,T3] e' :  T0 | Tr
+D|-throw[_,_] e~> throw[T0,T3] e' :  T0 <=T0 | Tr
   where
-  either T0?=empty or T0?=T0
   T1 = resolve(D.p,guessType(D.G,e))
   if throw=exception, T2= imm T1.P and Tr=Ts;Ps,P
   if throw=error,     T2= imm T1.P and Tr=Ts;Ps
