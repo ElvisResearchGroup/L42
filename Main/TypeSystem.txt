@@ -19,13 +19,8 @@ Structure of this document:
 
 G::=x1:T1..xn:Tn  //G reads Gamma
 D::= Phase `|` p `|` G   //D reads Delta
-//Cage::= xss; xs
 Tr::=Ts; Ps //Tr reads Throws
 MethT::=Ts->T;Ps
-
-//we believe that at any moment, in a D:
-//Cage.xss contains only bindings that are mut in G
-//Cage.xs contains only bindings that are mut, fwd%Mut, fwdMut, lent, read in G 
 
 --------------------------------------------
 2 Type manipulation
@@ -68,12 +63,6 @@ toLent(T)
   toLent(fwdMut P) and toLent(fwd%Mut P) undefined;
   otherwise toLent(T)=T 
 
-//toLentAlsoFwd(T)
-//  toLentAlsoFwd(mut P)=lent P,
-//  toLentAlsoFwd(fwdMut P) = lent P
-//  toLentAlsoFwd(fwd%Mut P) = lent P
-//  otherwise toLentAlsoFwd(T)=T 
-
 capsuleToLent(T)  
   capsuleToLent(capsule P)=lent P
   otherwise capsuleToLent(mdf P)=mdf P
@@ -92,16 +81,9 @@ toRead(G)
 toLent(G)
   toLent(G)(x)=toLent(G(x)) //thus undefined where toLent undefined
 
-// unused now? toLent(T1..Tn;Ps)=toLent(T1)..toLent(Tn);Ps
-
 lentToMut(T)
   lentToMut(lent C)=mut C
   otherwise lentToMut(T)=T  
-
-//mutToLent(T)
-//  mutToLent(mut C)=mutToLent(fwdMut C)=mutToLent(fwd%Mut C)=lent C
-//  otherwise lentToMut(T)=T  
-
 
 mutToCapsule(T)
   mutToCapsule(fwdMut C) and mutToCapsule(fwd%Mut C) undefined
@@ -115,24 +97,27 @@ G[ks]
   G[k ks]=G[ks] with catchRethrow(k) or k.throw != error
   otherwise G[k ks]=toRead(G) with k.throw=error
   G[]=G
-  
-mostGeneralMdf(p,error,Tr)=imm
-mostGeneralMdf(p,return,empty;Ps) undefined
-mostGeneralMdf(p,return,T1..Tn;Ps)=mostGeneral({T1.mdf .. Tn.mdf})
-otherwise 
-mostGeneralMdf(p,exception,_;Ps)=imm
 
+mostGeneralMdf(p,throw,Tr)  
+  mostGeneralMdf(p,error,Tr)=imm
+  mostGeneralMdf(p,return,empty;Ps) undefined
+  mostGeneralMdf(p,return,T1..Tn;Ps)=mostGeneral({T1.mdf .. Tn.mdf})
+  otherwise 
+  mostGeneralMdf(p,exception,_;Ps)=imm
+
+mostGeneral(p,P)
 //note that the answer is took from the possible thrown values.
 //We do not search in the implemented interfaces, this would break with metaprogramming.
-mostGeneral(p,P)=P
-otherwise
-mostGeneral(p,Ps1 P Ps2)=mostGeneral(p,Ps1 Ps2)
-  if exists P' in Ps1,Ps2 such that p|-P<=P'
-otherwise
-mostGeneral(p,Ps)=Any 
+  mostGeneral(p,P)=P
+  otherwise
+  mostGeneral(p,Ps1 P Ps2)=mostGeneral(p,Ps1 Ps2)
+    if exists P' in Ps1,Ps2 such that p|-P<=P'
+  otherwise
+  mostGeneral(p,Ps)=Any 
 
-mostGeneral(mdfs)=mdf //assert fwd and fwd% not in mdfs
-  if mdfs=mdf', then mdf=mdf' //that is the only way mdf=class
+mostGeneral(mdfs)
+  mostGeneral(mdfs)=mdf //assert fwd and fwd% not in mdfs
+    if mdfs=mdf', then mdf=mdf' //that is the only way mdf=class
   otherwise if class in mdfs, then undefined
   otherwise if read in mdfs, mdf=read
   otherwise if capsule in mdfs, then mdf=mostGeneral(mdfs\capsule)
@@ -187,24 +172,6 @@ methTypes(p,P,ms)  Expressed as metarules
      Ts'=mutToCapsule(Ts0) lent T mutToCapsule(Ts2)
 (mVp)-------------------------------------------------------------------
      Ts'->toLent(T);Ps in methTypes(p,P,ms)
-
-
-//Here OLD version to help us discuss a way to compute/dispatch over the set of all the methods efficiently
-methTypes(p,P,ms) //note we need to give precedence to the non fwd/fwd% versions
-  methTypes'(p,P,ms)={MethT,MethT0,..,MethTn,MethT',MethT''}
-    p(P).ms.mh[from P]=mdf0 method T m(T1 x1,..Tn xn) exception Ps
-    MethT=(mdf0 P0 T1..Tn->T;Ps)  =  T0..Tn->T;Ps
-    MethT'=toImmOrCapsule(T0..Tn->T);Ps
-    forall i in 0..n      //MethTi is not produced since toLent does not cover the whole domain (fwdMut)
-      MethTi=Tsi->toLent(T);Ps where Tsi=mutToCapsule(T0..Ti-1) mutToLent(Ti) mutToCapsule(Ti+1..Tn)
-      if defined, otherwise MethTi=MethT
-    MethT''=mutToCapsule(T0..Tn->T);Ps
-  MethT in methTypes(p,P,ms) if MethT in methTypes'(p,P,ms)
-//Lines under now replaced with more method types. Left here in the comment to ease our discussion
-//  if fwd or fwd% in T'1..T'n //TODO: after discussion with James, we should make methType richer and move
-//    T'=fwd% T // the following lines in the TS dispatching reasoning in the end
-//  otherwise
-//    T'=T //Note, we can make a more expressive, but harder to explain TS by writing  T'=removeFwd(T)
    
 --------------------------------------------
 3 ExpressionTypeJudgement
@@ -292,19 +259,8 @@ D|- (ds1 ds2 ks e)~>(ds'1 ds'2 ks' e'):T <= T' |Tr
   //we do not need to state FV(ks) not in dom(ds1,ds2) since rule block do G/x1..xn
   //to optimize, we could use a empty shell ks (with all es replaced with error void),
   //but then we will need to explicitly test for FV(ks) not in dom(ds1,ds2)
+  //Marco believes that replacing the second ks' with a skeleton would preserve the type system behavior.
   
-  //Algorithm to divide ds in the first minimal ds1, ds2
-  //with ds=ds0..dsn; domi=dom(dsi+1..dsn)
-  //var xs=empty
-  //var i=0  //If we was to start i at some j, we would still break the block in the earliest possible point geq j
-  //loop (
-  //xs= xs U  FV(ei)
-  //if (domi\xs) = domi then return i
-  //                    //cut will be from 0 to i included
-  //i:=i+1
-  //if i==n return i //ds.size-1
-  //)
-
 (block)
 Phase| p| G|-(T1  x1=e1 ..Tn  xn=en  ks  e0  [_]) ~>
              (T'1 x1=e'1..T'n xn=e'n ks' e'0 [T]) 
@@ -508,6 +464,21 @@ tsBlock(TsIn in,Block e)->TSOut
   //if we are here, both res1,res2 not ok
   return res=combine(res1,res2)
   
+splitBlock(Block b)->Block
+  //Algorithm to divide ds in the first minimal ds1, ds2
+  ds=ds0..dsn;
+  domi=dom(dsi+1..dsn)
+  var xs=empty
+  var i=0  //If we was to start i at some j, we would still break the block in the earliest possible point geq j
+  loop (
+    xs= xs U  FV(ei)
+    if (domi\xs) = domi then return i
+    //cut will be from 0 to i included
+    i:=i+1
+    if i==n return i //ds.size-1
+    )
+  return Block(ds0..dsi,ks,Block(dsi+1..dsn skeletal(ks),e))
+  
 tsMCall(TSIn in,MCall e)->TSOut
   Path rec=guessType(e.receiver)
   mTypes,mTypesRev=computeMTypes(in.p,rec,e.ms)
@@ -549,7 +520,19 @@ tsMCall(TSIn in,MCall e)->TSOut
     )]
   return res=makeMCallOK(TSIn,respMVP,mTypeMVP)
 
+computeMTypes
+  order of first list:
+    base(if diff from noFwd),
+    noFwd,
+    zero or 1 of {mc,mi} based on noFwd,
+    1 mType for each lent parameter using mvp based on noFwd
 
+  order of second list:
+    zero or 1 of {mc,mi} based on noFwd,
+    noFwd
+    base(if diff from noFwd),
+    zero or 1 of {mc,mi} based on noFwd,
+  
 _memoizedTSRes(in) //need attention: we can not use .equals on p
 
 ----------------
