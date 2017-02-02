@@ -7,10 +7,11 @@ Structure of this document:
 
 3 ExpressionTypeJudgement
 
-4 Subtyping p|- T<=T' and shortcut D |- e ~> e':T | Tr<=T'
+4 Subtyping p|- T<=T'
 
 5 LibraryAndMemberTyping
 
+6 Deteministic strategy for type system
 -----------------------------
 1 Grammar
 -----------------------------
@@ -209,7 +210,7 @@ methTypes(p,P,ms) //note we need to give precedence to the non fwd/fwd% versions
 --------------------------------------------
 3 ExpressionTypeJudgement
 --------------------------------------------
-  D |- e ~> e':T | Tr   and D |Tr|- k ~> k':T |Tr'
+  D |- e ~> e':T <=T'| Tr   and D |Tr|- k ~> k':Ts <=T' |Tr'
   where e' is an annotated version of expression e and is of type T
   where k' is an annotated version of catch k and k.e is of type T
   D.p points to where the e is located, //D.p.top()=ctxL[e]
@@ -354,12 +355,14 @@ Phase |p |G |Tr|-catch throw Any x (e0 throw x) ~> catch throw Any x (e0' throw 
   Phase |p |G\x |- e ~> e':_ <=imm Void | empty
 
 (capsule promotion)
-Phase |p |G |-(ds ks e)~>(ds' ks' e'):capsule P | Tr
+Phase |p |G |-(ds ks e)~>(ds' ks' e'):capsule P <=capsule P | Tr
   where
-  Phase |p |toLent(G) |-(ds ks e)~>(ds' ks' e'):mut P   | Tr
+  Phase |p |toLent(G) |-(ds ks e)~>(ds' ks' e'):mut P <=mut P   | Tr
+//this rule is now "deterministic" in the sense that if typing the block give us a capsule directly,
+//this rule can not be applied, since we require mut P <=mut P in the premise.
 
 ------------------------------------------------------
-4 Subtyping p|- T<=T' and shortcut D |- e ~> e':T<=T'|Tr
+4 Subtyping p|- T<=T'
 ------------------------------------------------------
   
 (subtype)
@@ -368,12 +371,6 @@ p|-mdf0 P0<=mdf1 P1
   mdf0<=mdf1
   P in P0 U (p(P0).Ps[from P0])
   p.equiv(P,P1)
-  
-(shortcut)
-D |- e ~> e':T<=T' | Tr
-  where
-  D |- e ~> e':T | Tr
-  D.p |-T<=T'
   
 mdf<=mdf
 mdf1<=mdf3 if mdf1<=mdf2 and mdf2<=mdf3
@@ -472,35 +469,15 @@ coherent(p,T1 x1..Tn xn,
   m=#?xi
   p|-T<=Ti//setter
  
-----------------
-Dispatch for the simplified TS:
-
-use rule for the specific form,
-if block, first do the maximal split if needed. (mark pre splitted blocks?)
-if splitted block, and required capsule, try type normally, on fail, try capsule promotion
-if a block fails capsule promotion, we may want to memoize that fact.
-
-if method call:
-  check if expected super-type is ok with primary meth return.
-  if not, you have possible alternative return subtypes (read->imm or mut->capsule/imm or fwd%_ or noFwd for fwd returning methods)
-  if expected super-type is ok and even toLent(primary meth return) <=expected super-type is ok,
-    expect toLent for all parameters.
-  If all ends up with the needed type, no lentviewpoint
-  if exactly one needed the allowed lent, re type the other mut as capsule
-  
-So, retype happens only for block if obtained mut but needed capsule
-and for method parameter where mut obtained but needed capsule.
-As special case, if meth parameter is block, and is normally typed mut, we can
-skip (double) double typing and go on with block promotion directly
-
------
+----------------------------- 
+6 Deteministic strategy for type system
+-----------------------------
 type system:
 TSIn: Delta,e,T
 TSOut: either OK(TSIn,e,T,Tr) or Error(TSIn,String,Opt(T)) //Error.T is the obtained type that is not a subtype of expected one.
 
 object with 
 -memoized hash map TSIn->TSOut
--memoized hash map p,P,ms->mTypes0,mTypes1
 -memoized identity hash set fullysplitted blocks
 
 ts(TSIn in)->TSOut
@@ -534,11 +511,12 @@ tsBlock(TsIn in,Block e)->TSOut
   
 tsMCall(TSIn in,MCall e)->TSOut
   Path rec=guessType(e.receiver)
-  mTypes,mTypesRev=memoizedMTypes(in.p,rec,e.ms)
+  mTypes,mTypesRev=computeMTypes(in.p,rec,e.ms)
+  //memoizing mTypes would be a mistake since we can not abstract over p and [from rec]
   // 1 select the first match with acceptable return type
   mType=_firstMatchReturn(TSIn.T,mTypes)
   if mType==null return res=Error???
-  //2 type all the parameters with mutOnlyToLent(Ts)
+  //2 type all the parameters with mutOnlyToLent(Ts) //we may store the mutOnlyToLent result already in the first memoized map
   resp=TSOut[with e in e.es.withAlso(left:e.receiver), T in mTypes.Ts
     resi=ts(in.with(e:e, t:mutOnlyToLent(T)))
     if !resi.isOk() return res=combineContext(TSIn,resi)
@@ -574,77 +552,9 @@ tsMCall(TSIn in,MCall e)->TSOut
 
 
 _memoizedTSRes(in) //need attention: we can not use .equals on p
----------------
-OLD STUFF FROM NOW ON  
-------------------
-Dispatch //HARD
--------------------
 
-1- e:imm Library do we always know the expected (super) type?
-  D,e,expectedT-->e'
-  D|-e~>e' :_<=expectedT
-
-
-
-Calling type system on e:
-
-BlockDivideScope block->block:
-  compute all the splitting points of a block, by using an algorithm like the following:
-    for each d in ds, see FV(ds), ...
-  then construct a resulting block where all inner ks are empty shells.
-  you can mark a divided block by using the Type annotation putting some special value, or a boolean flag.
-  
-
-SimpleTS D, expectedT,e-> computedT,Tr,annotatedE or errorInfo
-apply rule for (block) (void) (Path) (library prop)(x) (loop) (throw) (mcall) (using)
-  inside (block) we will apply (catchMany),(catch),(catch and rethrow any)
-
-CompleteTs D,e->computedT,Tr,annotatedE or error info ://the one called recursivelly every time we do a "D|-e~>e' :_<=expectedT"
-  as much as possible, apply (lent to singleton)
-  if e is a block b, then e=BlockDivideScope(b)
-  if possible and, apply unlock optimistically
-  //do not attempt the former line if the direct function over in the stack trace is imm-promotion
-  //do not attemp the former line if FV(e) do not contain locked variables
-  //may be just do it on demaind?
-  if e is a methodCall and the predicted result is not subtype of expected: AttemptPromotion  
-  else if e is a throw error/exception and the predicted result is not immutable: AttemptPromotion
-  else try UnlockTS
-  on result subtype of expected: all ok
-  on result not subtype of expected: AttemptPromotion
-
-AttemptPromotion:
-  if result is different w.r.t. the expected, fixable modulo capsule promotion:
-    apply (capsule promotion), then UnlockTS
-    if fail and expression is block in shape, apply (propagate promotions to catches):
-    apply to change to mut, apply (capsule promotion), apply UnlockTS; assert: the result is subtype of the expected.
-  if result is different w.r.t. the expected, fixable modulo imm promotion:
-    apply (imm promotion), then UnlockTS
-    if fail and expression is block in shape, apply (propagate promotions to catches):
-    apply to change to mut, apply (capsule promotion), apply UnlockTS; assert: the result is subtype of the expected.
-    if fail
-    apply change to read, apply (imm promotion), apply UnlockTS; assert: the result is subtype of the expected.
-
-SwapTS: //return computed type or error
-  try SimpleTS
-  on result subtype of expected: all ok
-  on fail:
-    if "lent should be mut", apply swap, then SimpleTS
-    propagate other failures
-
-UnlockTS: //return computed type or error
-  try SwapTS
-  on result subtype of expected: all ok
-  on fail:
-    if "required variable is strongly locked", apply unlock, then SwapTS
-    //do not attempt the former line if the direct function over in the stack trace is imm-promotion
-    //do not attemp the former line if FV(e) do not contain locked variables
-    propagate other failures
-
-//Note adding native support for local variables + casts would not make
-//returns less needed/problematic
-
-//Note: the current system never try to promote the e of return e
 ----------------
+Notes:
 Coherent and union types:
 to easy translation in Java/etc, we can not accept the following
 A,B interface
@@ -657,46 +567,3 @@ mut method Void #x ( D that)
 read method A x()
 read method B #x()
 as coherent, since the field would be an union type of C and D
-
-
---------------------------------------------------
-Removed rules
-
-(unlock)
-Phase |p |G |xss;xs|-e~>e':mdf P | Tr
-  where
-  Phase |p |G |xss,domMut(G)\xss ; empty |-e~>e':mdf P | Tr
-  mdf in {imm,fwd%Imm,fwdImm,capsule,class}
-  forall T in Tr.Ts, T.mdf in {imm,capsule,class} 
-
-(swap)
-Phase |p |G |xs0,xss;xs|-e~>e':toLent(mdf P) | toLent(Tr)
-  where
-  Phase |p |G |xss,domMut(G)\xss ; xs |Tr|-e~>e':mdf P | Tr
-
-(imm promotion)
-Phase |p |G |Cage|-e~>e':imm P | Tr
-  where
-  Phase |p |G |Cage' |-e~>e':mdf P | Tr
-  mdf in {read,lent} //TODO: what about fwd/fwd%  
-  Cage=xss;xs
-  Cage'=xss,domMut(G)\xss;domMutLentRead(G)//fwd%Mut, fwdMut in xs too
-
-(lent to singleton)
-Phase| p| G, x:lent C, G'|  xss;xs |-e~>e':T  | Tr
-  where 
-  Phase| p| G, x:mut C, G'|  xss,{x};xs |-e~>e':T | Tr
-
-(capsule promotion)
-Phase |p |G |Cage |-e~>e':capsule P | Tr //TODO: should we promote a mut P inside Tr to capsule? same for imm-promotion?
-  where
-  Phase |p |G |Cage'|-e~>e':mut P   | Tr
-  Cage=xss;xs
-  Cage'=xss,domMut(G)\xss;xs
-
-(x)
-Phase| p| G| xss; xs| Tr |-x:T | emptyTr
-  where
-  x notin xs
-  if x in xss T=(G(x))
-  otherwise T=G(x)
