@@ -453,7 +453,7 @@ non trivial methods: tsBlock and tsMCall
 
 tsBlock(TsIn in,Block e)->TSOut
   if !isSplitted(e)//memoized info
-    e=splitBlock(e)
+    e=splitBlock(e)//also memoize
   assert isSplitted(e)
   res1=tsBlockBase(in,e)
   if res1.isOk(){return res=res1;}
@@ -477,7 +477,9 @@ splitBlock(Block b)->Block
     i:=i+1
     if i==n return i //ds.size-1
     )
-  return Block(ds0..dsi,ks,Block(dsi+1..dsn skeletal(ks),e))
+  Block b= Block(ds0..dsi,ks,Block(dsi+1..dsn skeletal(ks),e))
+  memoizeSplitted(b)//note, of course the inner block may not be fully splitted
+  return b
   
 tsMCall(TSIn in,MCall e)->TSOut
   Path rec=guessType(e.receiver)
@@ -534,7 +536,13 @@ computeMTypes
     zero or 1 of {mc,mi} based on noFwd,
   
 _memoizedTSRes(in) //need attention: we can not use .equals on p
-
+  in=Phase,p,G,e,T
+  equality on in will use the identity of p and e
+  return map.get(in)
+memoizeTSRes(in,res)
+  assert map(in)==null
+  return map.put(in,res)
+  
 ----------------
 Notes:
 Coherent and union types:
