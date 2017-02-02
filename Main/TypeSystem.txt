@@ -341,7 +341,7 @@ D| Tr |-k1..kn ~> k'1..k'n:T1..Tn <= T | Tr1 U .. U Trn
 
 Phase| p| G| Tr' |-catch throw T0 x e ~> catch throw resolve(p,T0).P x e' :T2 <= T | Tr
   where
-  mdf1 = mostGeneral(throw,Tr').mdf
+  mdf1 = mostGeneralMdf(throw,Tr')
   T1 = mdf1 resolve (p, T0).P
   not catchRethrow(catch throw T1 x e)
   Phase| p| G[x:T1]|- e ~> e' : T2 <= T | Tr
