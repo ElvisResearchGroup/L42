@@ -78,19 +78,19 @@ All:Fix<><{
 Person:Data<><{
   List friends
   $Top:Data<><{}
-  List:Collections.vector(of:Top)
+  List:Collections.vector(of:$Top)
   }
 ---
 All:Data[\"Person";\"Car"]<><{
   Person:{
     Car.List cars
     $Top:Data<><{}
-    List:Collections.vector(of:Top)
+    List:Collections.vector(of:$Top)
     }
   Car:{
     Person.List owners
     $Top:Data<><{}
-    List:Collections.vector(of:Top)
+    List:Collections.vector(of:$Top)
     }
   }
 
@@ -106,7 +106,7 @@ in that case, the definition of *refer* can be simpler
   rc=t.referredClass()
   when (clazz=rc.asNamed() doBla(clazz))//capturing/discarding exception void
   //or with lambdas
-  res=$(inf:..)$:rc.matcher(result:Library)<><{
+  res=$(rc, inf:..)$:rc.matcher(result:Library)<><{
    Info inf
    method (named)
    /*using this.inf() and Named:named get result*/
@@ -114,8 +114,58 @@ in that case, the definition of *refer* can be simpler
    /*using this.inf() and AnonTop:anonTop get result*/
    /*etcetera*/
    }
- 
+   resL=$(list)$:list.sorter()<><{
+     method >(a,b) a.foo()>b.foo()
+     }
+   resL=list.sort(($:\<><{..}$))
+   //what if sintactic sugar
+   // ($:\<><{(T x)s..}$((x:e)s)== lambda{(T x=e)s ..}
+   resL=list.sort(lambda{method >(a,b) a.foo()>b.foo()})
+   //compare with
+   resL=list.sort(lambda(a,b)->a.foo()>b.foo() )
     )
+
+
+
+----------------------
+42 verbosity for good
+this. is required
+explicit types at method boundaries
+types for number/strings
+types for collections
+"closures" requires explicit passing of environment
+
+
+
+----------------------
+42 expressive power
+is not important to make a language where
+is easy to write a correct program if you know exactly what you want
+is important to have wrong programs easily failing well
+so, when thinking of a feature
+-how can be used to acheive my goal :-(
+-how can be misused :-|
+-how can be used to guard my code against bugs :-)
+
+good 42 libraries/towels should make you think of what can
+go wrong first and upfront, even before completly fleshing out
+the desired behaviour
+
+on freedom is slavery:
+every language feature that you can use is a feature you need
+to guard against, since others can use it too.
+
+many languages have many different kinds of features
+In 42 you sort of have 2 main attack mechanism:
+interface implementation: a very sharp knife
+metaprogramming: an atomic bomb
+
+and many protection mechanisms:
+Types and modifiers, exceptions, sandboxing (soon)
+
+
+
+----------------------
 
 (Integrated) Metaprogramming and 42
 
