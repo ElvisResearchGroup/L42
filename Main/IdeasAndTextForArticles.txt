@@ -1,3 +1,108 @@
+Trivializing metaprogramming or supporting metaprogramming?
+Metaprogramming is hard.
+In 42 we want to support 
+the difficoult task of creating relayable
+metaprogramming operations, that consider all the side case,
+not supporting a subset of cases and prevent the others by design.
+
+For example: Data/AddEquals
+we wish to add equals to a class,
+and to do it by calling equals on all the fields.
+This design seams intuitive and "good" but there are a ton
+of side cases that needs to be supported. Let see how 42 
+supports those:
+
+-Simple definitions. No recursive types, no subtyping, all good.
+All fields must implement equals, otherwhise error.
+This is the trivial case, the goal of 42 design is to support
+thinking more than about just this case.
+Super trivializing would be a system that just do the task and give error
+later if not all the <:Equals are satisfied. 
+
+-recursive data
+A:AddEquals<><{B b}
+B:AddEquals<><{A a}
+
+-nestedclasses
+A:AddEquals<><{
+  B b
+  B:AddEquals<><{A a}
+  }
+##or
+A:AddEquals<><{
+  B b
+  B:{A a}
+  }
+
+Let see how the design of the introspection library will help us to not trivialize AddEquals
+We will iterate on the field types
+i=Refactor.introspect(lib:that)
+Location.Types ts=i.fieldTypes()
+with t in ts.vals() (//Type is an interface
+  with rc=t.referredClass() (
+    on Location.Class.Named /*handle trivial case: need <: Equals*/
+    on Location.Class.AnonNested /*do we want to retro fit AddEquals?*/ 
+    on Location.Class.AnonTop/*you require yourself to be <:Equals, should be ok, right?*/
+    on Location.Class.Unprocessed/*optimistic behaviour? pessimistic one?*/
+    ))
+the purpose of 42 is not to make those decisions once and for all,
+but to create a framework where those decisions can be made and documented.
+
+
+meta level soundness
+
+a class is not well typed if assume something false of 
+another class.
+for example trying to sum Bool.
+A class is well typed if assume true facts
+for all referred classes.
+A class is well typed w.r.t. Ps if assume true facts
+for all classes Ps.
+an expression containing Libraries and class objects
+*refers* to all the classes referred by the Libraries
+plus all the class objects, transitivelly.
+
+openPs(p,e)={P| e refers_p P, p(P) not LC}
+falsePs(p,e)={P| e refers_p P, p(P)= LC, e assume false over LC}
+
+meta safety: openPs and falsePs never grow
+-- but, consider the two solutions:
+All:Fix<><{
+  Person:Data<><{
+    Persons friends
+    Persons:Data<><{}
+    }
+  Persons:Collections.vector(of:Person)
+  }
+
+Person:Data<><{
+  Persons friends
+  Top:Data<><{}
+  Persons:Collections.vector(of:Top)
+  }
+---
+Collections always take a complete, non class-any parameter.
+What if all class object are non-any and to give a 
+possibly broken one you need {/*@P*/}:imm Library?
+common sugar may make it {@P}
+
+in that case, the definition of *refer* can be simpler
+    
+  //testing alternative 42
+  rc=t.referredClass()
+  when (clazz=rc.asNamed() doBla(clazz))//capturing/discarding exception void
+  //or with lambdas
+  res=$(inf:..)$:rc.matcher(result:Library)<><{
+   Info inf
+   method (named)
+   /*using this.inf() and Named:named get result*/
+   method (anonTop)
+   /*using this.inf() and AnonTop:anonTop get result*/
+   /*etcetera*/
+   }
+ 
+    )
+
 (Integrated) Metaprogramming and 42
 
 Integrated metaprogramming is when you can generate code
