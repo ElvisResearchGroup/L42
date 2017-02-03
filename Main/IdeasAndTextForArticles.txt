@@ -76,10 +76,24 @@ All:Fix<><{
   }
 
 Person:Data<><{
-  Persons friends
-  Top:Data<><{}
-  Persons:Collections.vector(of:Top)
+  List friends
+  $Top:Data<><{}
+  List:Collections.vector(of:Top)
   }
+---
+All:Data[\"Person";\"Car"]<><{
+  Person:{
+    Car.List cars
+    $Top:Data<><{}
+    List:Collections.vector(of:Top)
+    }
+  Car:{
+    Person.List owners
+    $Top:Data<><{}
+    List:Collections.vector(of:Top)
+    }
+  }
+
 ---
 Collections always take a complete, non class-any parameter.
 What if all class object are non-any and to give a 
