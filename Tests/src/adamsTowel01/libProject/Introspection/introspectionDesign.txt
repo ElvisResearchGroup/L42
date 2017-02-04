@@ -5,41 +5,101 @@ a Location.ReturnType knowing the Path (Library) the modifier (imm/immutable)
 and the Location.Method that contains such type annotation.
 
 General class shape:
-with dfn={interface Doc:{interface implements This2.Doc} Free:{implements This1 Doc:{implements This2.Doc}} Named:{implements This1 Doc:{This2.Doc}}}
 Location:{interface implements Base //that is equals, toS and "know your class"
-  Doc:{interface implements Location}//documentation, generalization of comments
-  Class:dfn
-  Method:dfn
-  Type:{Doc:{} Implemented:dfn 
-      ReturnType:dfn ThisType:dfn Exception:dfn Parameter:dfn
+  Mdf:Enum...
+  Location location()
+  Origin:{
+    List:...
+    S fileName()
+    Size line()
+    Size column()
+    }
+  Origin.List origins()//many since metaprogramming
+  Doc:{ implements Location
+    Location location()//user will need typecase to discover precise type
+    Annotation:{
+      List:..
+      Type.RefTo 
+      S text
       }
-}
-Why so many Doc/Free etc
-The idea is that there are two main kinds of class:
-Class.Free: library literals that are not associated to a name yet, so no one
-can call methods on them.
-Class.Named: literals associated from names.
-By calling Refactor.introspect(lib:{...}) you get a Class.Free
-By calling Refactor.introspect(class:A.B) you get a Class.Named
+    }
+  //there is no Member since normalized classes have order: first nested, then methods
+  Lib:{ implements Location
+    refine Lib location()
+    List directNested()
+    List allNesteds()
+    Method.List methods()
+    Type.Implemented.List implementedInterfaces()
+    Bool isInterface()
+    Doc doc()
+    List:...
+    Root root()
+    Path path()//last is its name, empty path for root
+    Doc nestedDoc()//empty doc if it is root
+    //even if obtained with a classObj, no method to get it back
+    //to get a nested classObj, Refactor.navigateClassObj(classAny,Path)->classAny??
+    }
+  Method:{
+    List:...
+    refine Lib location()
+    Bool isAbstract()
+    Bool isRefine()
+    Selector selector()
+    Type.Return returnType()
+    Type.Parameter.List parameterTypes()
+    Type.Exception.List exceptions()
+    }
+  Type:{ interface
+    Doc doc()
+    RefTo:{interface implements Base
+      //toS is the full path with Thisn.
+      Lib:{
+        Location.Lib referredLib()
+        }
+      Uncompiled:{ implements This1
+        S pathToExpression()//can be a subset of toS
+        S expression()
+        }
+      Binded:{implements This1 //includes primitives
+        class Any referredClassObj()
+        }
+      Missing:{implements This1
+        //mostly useful for docs, where we can use lowercase annotation
+        //or we may want to preserve @P where we removed the P
+        //also, if an (nested) Uncompiled is resolved not existing..        
+        }
+      }
+    RefTo refTo()
+    Mdf mdf()//imm for exception/implemented    
+    Return:{
+      refine Method location()
+      }
+    Parameter:{
+      List:...
+      refine Method location()
+      Size pos()//0 for this
+      }
+    Exception:{
+      List:...
+      refine Method location()
+      Size pos()//should start from 1 or 0?
+      }
+    Implemented:{
+      List:...
+      refine Lib location()
+      Size pos()//should start from 1 or 0?
+      }    
+    }
 
-Location.Doc know its Location location() //where it is.
-Location.Class.Doc know its refine Class location()
-Location.Class.Free know its refine Class.Free location(), etcetera.
-Location.Method know its Class location()
-Location.Method.Free know its refine Class.Free location(),...
+By calling Refactor.introspect(lib:{...})or
+By calling Refactor.introspect(class:A.B) you get a Location.Lib
 
-Do you think this is a sensible design?
-What methods should those types offers?
-The "bnf" we are tring to show is:
-
-L::={ interface? Doc implements Ts/*all T here have imm as mdf*/ M1..Mn Phase}  //library compiled
-M::= mwt |nc
+L::={ interface? Doc implements Ts mwt1..mwtn nc1..nck Phase}  //library compiled
 mwt::= abstract? refine? mh //we do not expose the implementation
 nc::= C Doc:L
-mdf::= imm|mut|lent|read|capsule|class | fwdImm | fwdMut
-Phase::=Norm|Typed|Coherent 
+mdf::= imm|mut|lent|read|capsule|class | fwdImm | fwdMut 
 ms::=m(xs) //method selector
-mh::= mdf method Doc T m(T1 x1..Tn xn) exception Ts //all mdf here will be imm
+mh::= mdf method Doc T m(T1 x1..Tn xn) exception Ts
 P::= Thisn.Cs | Any | Library | Void  //is pronounced "Path"
 T::= mdf P Doc
 Doc::= /*has a text, a set of annotations,

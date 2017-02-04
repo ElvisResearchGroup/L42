@@ -44,7 +44,9 @@ with t in ts.vals() (//Type is an interface
     on Location.Class.AnonNested /*do we want to retro fit AddEquals?*/ 
     on Location.Class.AnonTop/*you require yourself to be <:Equals, should be ok, right?*/
     on Location.Class.Unprocessed/*optimistic behaviour? pessimistic one?*/
-    ))
+    )
+//??  catch exception Location.Class.Uncompiled u /*optimistic behaviour? pessimistic one?*/
+  )
 the purpose of 42 is not to make those decisions once and for all,
 but to create a framework where those decisions can be made and documented.
 
@@ -77,7 +79,7 @@ All:Fix<><{
 
 Person:Data<><{
   List friends
-  $Top:Data<><{}
+  $Top:Data(abstract:\)<><{}
   List:Collections.vector(of:$Top)
   }
 ---
@@ -163,8 +165,11 @@ metaprogramming: an atomic bomb
 and many protection mechanisms:
 Types and modifiers, exceptions, sandboxing (soon)
 
-
-
+---
+Immutable list subtypes?
+ListToS>= ListPerson ?
+since immutable, can I write a list interface and specializations?
+how it works with the iterators?
 ----------------------
 
 (Integrated) Metaprogramming and 42
