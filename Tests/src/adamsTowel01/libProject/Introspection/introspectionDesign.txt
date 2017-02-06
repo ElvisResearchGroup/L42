@@ -33,7 +33,7 @@ Location:{interface implements Base //that is equals, toS and "know your class"
     Bool isInterface()
     Doc doc()
     List:...
-    Root root()
+    Lib root()
     Path path()//last is its name, empty path for root
     Doc nestedDoc()//empty doc if it is root
     //even if obtained with a classObj, no method to get it back
@@ -109,7 +109,32 @@ C::= uppercase identifiers including $ as uppercase
 x::= lowercase identifier including _ as lowercase
 m::= x| #x
 
+//add 6 xNum methods like parameterNum
+//add ElementNotAvailable exception
+//add classKind? (NO methodKind, just isAbstract+isRefine is all we need) 
+//produce Mdf from enum (wrapping?)
 
+//add implements(WHAT???) how to check if a lib implement an interface, what is the parameter?
+//implements(class Any clazz) and implements(Path path)
+
+//from oldImpl: state/stateCandidate isCoherent
+
+//deriveds:
+allNested:
+  Lib.List[this]++
+  Lib.List[with nc in this.directNested().vals() (
+    with nci in nc.allNested().vals() (use[nci])
+    )]
+methodFromSelector:
+
+nestedFromPath: (rootPath? no? nestedFromRoot can be emulated by root().nested(path:))
+
+has(path)? has(selector)?
+isPrivate??
+
+impl Concept.ToS,Concept.Equals, Concept.Classable
+equals is complex: are two equal literal equal 
+  if binded to different names? yes if they have the same origins?
 
 
 repl
