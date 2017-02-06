@@ -4296,18 +4296,8 @@ CurlyBlock-Should be unreachable code
 */}
   )
 class method 
-Library minimal(class Any that) This1.SafeOperatorsAccess.redirect(that:This0.VectorTrait.#apply(), srcBinaryRepr:This1.S.#from(builder:(
-  mut This1.S.SBuilder b=This1.S.#builder()
-  Void unused=b.#E()
-  Void unused0=b.#l()
-  Void unused1=b.#e()
-  Void unused2=b.#m()
-  b
-  )).binaryRepr(), dest:that)
-class method 
-Library eq(class Any that) (
-  Library lib=This1.SafeOperatorsAccess.compose(left:This0.VectorTrait.#apply(), right:This0.CodeEq.#apply())
-  This1.SafeOperatorsAccess.redirect(that:lib, srcBinaryRepr:This1.S.#from(builder:(
+Library minimal(class Any that) (
+  Library tmp=This1.SafeOperatorsAccess.redirect(that:This0.VectorTrait.#apply(), srcBinaryRepr:This1.S.#from(builder:(
     mut This1.S.SBuilder b=This1.S.#builder()
     Void unused=b.#E()
     Void unused0=b.#l()
@@ -4315,6 +4305,42 @@ Library eq(class Any that) (
     Void unused2=b.#m()
     b
     )).binaryRepr(), dest:that)
+  This1.SafeOperatorsAccess.redirect(that:tmp, srcBinaryRepr:This1.S.#from(builder:(
+    mut This1.S.SBuilder b0=This1.S.#builder()
+    Void unused3=b0.#M()
+    Void unused4=b0.#u()
+    Void unused5=b0.#t()
+    Void unused6=b0.#L()
+    Void unused7=b0.#i()
+    Void unused8=b0.#s()
+    Void unused9=b0.#t()
+    Void unused10=b0.#T()
+    b0
+    )).binaryRepr(), dest:This0.MutListAny)
+  )
+class method 
+Library eq(class Any that) (
+  Library lib=This1.SafeOperatorsAccess.compose(left:This0.VectorTrait.#apply(), right:This0.CodeEq.#apply())
+  Library tmp=This1.SafeOperatorsAccess.redirect(that:lib, srcBinaryRepr:This1.S.#from(builder:(
+    mut This1.S.SBuilder b=This1.S.#builder()
+    Void unused=b.#E()
+    Void unused0=b.#l()
+    Void unused1=b.#e()
+    Void unused2=b.#m()
+    b
+    )).binaryRepr(), dest:that)
+  This1.SafeOperatorsAccess.redirect(that:tmp, srcBinaryRepr:This1.S.#from(builder:(
+    mut This1.S.SBuilder b0=This1.S.#builder()
+    Void unused3=b0.#M()
+    Void unused4=b0.#u()
+    Void unused5=b0.#t()
+    Void unused6=b0.#L()
+    Void unused7=b0.#i()
+    Void unused8=b0.#s()
+    Void unused9=b0.#t()
+    Void unused10=b0.#T()
+    b0
+    )).binaryRepr(), dest:This0.MutListAny)
   )
 IterationFailure: {implements This2.Guard, This2.Message, This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable
 refine class method 
@@ -4524,7 +4550,7 @@ method
 This1 #from(This3.S.SBuilder builder) This1.#apply(text:this.that().#plusplus(that:This3.S.#from(builder:builder)))}}
 CollectionErrors: {
 class method 
-Any negBound(This2.Size that, This1.MutListAny list) (
+Any negBound(This2.Size that, This2.Size listSize) (
   This2.Guard.Parameter.Continue rcv15=(
     This2.Guard.Parameter rcv16=(
       This2.Guard.Parameter.Continue rcv17=(
@@ -4583,7 +4609,7 @@ Any negBound(This2.Size that, This1.MutListAny list) (
           ))
         rcv18.#from(seqBuilder:(
           mut This2.S.SConcat b0=rcv18.#seqBuilder()
-          Void unused48=b0.#add(that:list.size())
+          Void unused48=b0.#add(that:listSize)
           b0
           ))
         )
@@ -4617,7 +4643,7 @@ Any negBound(This2.Size that, This1.MutListAny list) (
     ))
   )
 class method 
-Any outBound(This2.Size that, This1.MutListAny list) (
+Any outBound(This2.Size that, This2.Size listSize) (
   This2.Guard.Parameter.Continue rcv19=(
     This2.Guard.Parameter rcv20=(
       This2.Guard.Parameter.Continue rcv21=(
@@ -4651,7 +4677,7 @@ Any outBound(This2.Size that, This1.MutListAny list) (
           ))
         rcv22.#from(seqBuilder:(
           mut This2.S.SConcat b0=rcv22.#seqBuilder()
-          Void unused23=b0.#add(that:list.size())
+          Void unused23=b0.#add(that:listSize)
           b0
           ))
         )
@@ -4788,6 +4814,72 @@ Any iterationTermination(This2.Size from, This2.Size minTo, This2.Size size) (
     mut This2.S.SBuilder b3=rcv23.#builder()
     b3
     ))
+  )
+class method 
+Void checkBound(This2.Size that, This2.Size listSize) (
+  Void unused=(
+    This2.Bool cond=(
+      This2.Size opNorm=that
+      This2.Size.#from(builder:(
+        mut This2.S.SBuilder b=This2.Size.#builder()
+        Void unused0=b.#0()
+        b
+        )).#right(that:opNorm)
+      )
+    (
+      Void unused1=cond.#checkTrue()
+      
+      catch exception Void catched2 void
+      
+      (error This1.CollectionErrors.negBound(that:that, listSize:listSize))
+      )
+    )
+  (
+    This2.Bool cond0=(
+      This2.Size opNorm0=listSize
+      that.#rightequal(that:opNorm0)
+      )
+    (
+      Void unused2=cond0.#checkTrue()
+      
+      catch exception Void catched6 void
+      
+      (error This1.CollectionErrors.outBound(that:that, listSize:listSize))
+      )
+    )
+  )
+class method 
+Void checkBoundAdd(This2.Size that, This2.Size listSize) (
+  Void unused=(
+    This2.Bool cond=(
+      This2.Size opNorm=that
+      This2.Size.#from(builder:(
+        mut This2.S.SBuilder b=This2.Size.#builder()
+        Void unused0=b.#0()
+        b
+        )).#right(that:opNorm)
+      )
+    (
+      Void unused1=cond.#checkTrue()
+      
+      catch exception Void catched2 void
+      
+      (error This1.CollectionErrors.negBound(that:that, listSize:listSize))
+      )
+    )
+  (
+    This2.Bool cond0=(
+      This2.Size opNorm0=listSize
+      that.#right(that:opNorm0)
+      )
+    (
+      Void unused2=cond0.#checkTrue()
+      
+      catch exception Void catched6 void
+      
+      (error This1.CollectionErrors.outBound(that:that, listSize:listSize))
+      )
+    )
   )}
 MutListAny: {implements This2.Concept.ToS
 class method 
@@ -4814,17 +4906,17 @@ mut This0 empty() This0.#apply(head:This0.CellEnd.#apply(), size:This2.Size.#fro
   )))
 read method 
 Any val(This2.Size that) (
-  Void unused=this.checkBound(that:that)
+  Void unused=This1.CollectionErrors.checkBound(that:that, listSize:this.size())
   this.head().get(that:that)
   )
 mut method 
 Void #apply(This2.Size that, Any val) (
-  Void unused=this.checkBound(that:that)
+  Void unused=This1.CollectionErrors.checkBound(that:that, listSize:this.size())
   this.head(that:this.head().set(that:that, val:val, add:This2.Bool.false()))
   )
 mut method 
 Void add(This2.Size that, Any val) (
-  Void unused=this.checkBoundAdd(that:that)
+  Void unused=This1.CollectionErrors.checkBoundAdd(that:that, listSize:this.size())
   Void unused0=this.head(that:this.head().set(that:that, val:val, add:This2.Bool.true()))
   this.size(that:this.size().#plus(that:This2.Size.#from(builder:(
     mut This2.S.SBuilder b=This2.Size.#builder()
@@ -4834,7 +4926,7 @@ Void add(This2.Size that, Any val) (
   )
 mut method 
 Void remove(This2.Size that) (
-  Void unused=this.checkBound(that:that)
+  Void unused=This1.CollectionErrors.checkBound(that:that, listSize:this.size())
   Void unused0=this.head(that:this.head().remove(that:that))
   this.size(that:this.size().#less(that:This2.Size.#from(builder:(
     mut This2.S.SBuilder b=This2.Size.#builder()
@@ -4844,7 +4936,7 @@ Void remove(This2.Size that) (
   )
 method 
 This0 without(This2.Size that) (
-  Void unused=this.checkBound(that:that)
+  Void unused=This1.CollectionErrors.checkBound(that:that, listSize:this.size())
   This0.#apply(head:this.head().remove(that:that), size:this.size().#less(that:This2.Size.#from(builder:(
     mut This2.S.SBuilder b=This2.Size.#builder()
     Void unused0=b.#1()
@@ -4853,7 +4945,7 @@ This0 without(This2.Size that) (
   )
 method 
 This0 withAlso(This2.Size that, Any val) (
-  Void unused=this.checkBoundAdd(that:that)
+  Void unused=This1.CollectionErrors.checkBoundAdd(that:that, listSize:this.size())
   This0.#apply(head:this.head().set(that:that, val:val, add:This2.Bool.true()), size:this.size().#plus(that:This2.Size.#from(builder:(
     mut This2.S.SBuilder b=This2.Size.#builder()
     Void unused0=b.#1()
@@ -4862,78 +4954,12 @@ This0 withAlso(This2.Size that, Any val) (
   )
 method 
 This0 with(This2.Size that, Any val) (
-  Void unused=this.checkBound(that:that)
+  Void unused=This1.CollectionErrors.checkBound(that:that, listSize:this.size())
   This0.#apply(head:this.head().set(that:that, val:val, add:This2.Bool.false()), size:this.size().#plus(that:This2.Size.#from(builder:(
     mut This2.S.SBuilder b=This2.Size.#builder()
     Void unused0=b.#1()
     b
     ))))
-  )
-read method 
-Void checkBound(This2.Size that) (
-  Void unused=(
-    This2.Bool cond=(
-      This2.Size opNorm=that
-      This2.Size.#from(builder:(
-        mut This2.S.SBuilder b=This2.Size.#builder()
-        Void unused0=b.#0()
-        b
-        )).#right(that:opNorm)
-      )
-    (
-      Void unused1=cond.#checkTrue()
-      
-      catch exception Void catched2 void
-      
-      (error This1.CollectionErrors.negBound(that:that, list:this))
-      )
-    )
-  (
-    This2.Bool cond0=(
-      This2.Size opNorm0=this.size()
-      that.#rightequal(that:opNorm0)
-      )
-    (
-      Void unused2=cond0.#checkTrue()
-      
-      catch exception Void catched6 void
-      
-      (error This1.CollectionErrors.outBound(that:that, list:this))
-      )
-    )
-  )
-read method 
-Void checkBoundAdd(This2.Size that) (
-  Void unused=(
-    This2.Bool cond=(
-      This2.Size opNorm=that
-      This2.Size.#from(builder:(
-        mut This2.S.SBuilder b=This2.Size.#builder()
-        Void unused0=b.#0()
-        b
-        )).#right(that:opNorm)
-      )
-    (
-      Void unused1=cond.#checkTrue()
-      
-      catch exception Void catched2 void
-      
-      (error This1.CollectionErrors.negBound(that:that, list:this))
-      )
-    )
-  (
-    This2.Bool cond0=(
-      This2.Size opNorm0=this.size()
-      that.#right(that:opNorm0)
-      )
-    (
-      Void unused2=cond0.#checkTrue()
-      
-      catch exception Void catched6 void
-      
-      (error This1.CollectionErrors.outBound(that:that, list:this))
-      )
-    )
   )
 refine read method 
 This2.S toS() (
@@ -5339,17 +5365,17 @@ VectorTrait: {
 class method 
 Library #apply()  {implements This3.Concept.ToS, This3.Concept.Classable
 class method 
-mut This0 #mutK(mut This2.MutListAny inner) 
+mut This0 #mutK(mut This0.MutListT inner) 
 class method 
-mut This0 #apply(mut This2.MutListAny inner) This0.#mutK(inner:inner)
+mut This0 #apply(mut This0.MutListT inner) This0.#mutK(inner:inner)
 mut method 
-mut This2.MutListAny #inner() 
+mut This0.MutListT #inner() 
 read method 
-read This2.MutListAny inner() 
+read This0.MutListT inner() 
 class method 
-This0 #immK(This2.MutListAny inner) 
+This0 #immK(This0.MutListT inner) 
 class method 
-mut This0 empty() This0.#apply(inner:This2.MutListAny.empty())
+mut This0 empty() This0.#apply(inner:This0.MutListT.empty())
 class method 
 mut This0 #seqBuilder() this.empty()
 class method 
@@ -5453,7 +5479,7 @@ This0.Elem left() This0.cast(that:this.inner().val(that:This3.Size.#from(builder
 read method 
 This0.Elem right() (//#################MUT METHODS
 This0.cast(that:(
-  read This2.MutListAny rcv27=this.inner()
+  read This0.MutListT rcv27=this.inner()
   rcv27.val(that:rcv27.size().#less(that:This3.Size.#from(builder:(
     mut This3.S.SBuilder b=This3.Size.#builder()
     Void unused=b.#1()
@@ -5462,12 +5488,12 @@ This0.cast(that:(
   )))
 mut method 
 Void #apply(This3.Size that, This0.Elem val) (
-  mut This2.MutListAny rcv28=this.#inner()
+  mut This0.MutListT rcv28=this.#inner()
   rcv28.#apply(that:that, val:val)
   )
 mut method 
 Void left(This0.Elem that) (
-  mut This2.MutListAny rcv29=this.#inner()
+  mut This0.MutListT rcv29=this.#inner()
   rcv29.#apply(that:This3.Size.#from(builder:(
     mut This3.S.SBuilder b=This3.Size.#builder()
     Void unused=b.#0()
@@ -5476,7 +5502,7 @@ Void left(This0.Elem that) (
   )
 mut method 
 Void right(This0.Elem that) (
-  mut This2.MutListAny rcv30=this.#inner()
+  mut This0.MutListT rcv30=this.#inner()
   rcv30.#apply(that:rcv30.size().#less(that:This3.Size.#from(builder:(
     mut This3.S.SBuilder b=This3.Size.#builder()
     Void unused=b.#1()
@@ -5487,7 +5513,7 @@ mut method
 Void add(This3.Size that, This0.Elem val) this.#inner().add(that:that, val:val)
 mut method 
 Void add(This0.Elem right) (
-  mut This2.MutListAny rcv31=this.#inner()
+  mut This0.MutListT rcv31=this.#inner()
   rcv31.add(that:rcv31.size(), val:right)
   )
 mut method 
@@ -5781,12 +5807,33 @@ refine read method
 class This0 class() This0
 refine class method 
 This3.S readableName() This3.GetMyName.#apply(that:This0)
+MutListT: {implements This4.Concept.ToS
+read method 
+This4.Size size() 
+class method 
+mut This0 empty() 
+read method 
+Any val(This4.Size that) 
+mut method 
+Void #apply(This4.Size that, Any val) 
+mut method 
+Void add(This4.Size that, Any val) 
+mut method 
+Void remove(This4.Size that) 
+method 
+This0 without(This4.Size that) 
+method 
+This0 withAlso(This4.Size that, Any val) 
+method 
+This0 with(This4.Size that, Any val) 
+refine read method 
+This4.S toS() }
 Elem: {}
 IteratorTrait: {
 class method 
 Library #apply()  {
 read method 
-read This4.MutListAny that() 
+read This2.MutListT that() 
 read method 
 This5.Size from() 
 mut method 
@@ -5875,7 +5922,7 @@ read method
 Void #close() void}}
 IteratorVal: {
 read method 
-read This3.MutListAny that() 
+read This1.MutListT that() 
 read method 
 This4.Size from() 
 mut method 
@@ -6021,11 +6068,11 @@ CurlyBlock-Should be unreachable code
 read method 
 Void #close() void
 class method 
-lent This0 #lentK(read This3.MutListAny that, This4.Size from, This4.Size maxTo, This4.Size minTo) 
+lent This0 #lentK(read This1.MutListT that, This4.Size from, This4.Size maxTo, This4.Size minTo) 
 class method 
-lent This0 #apply(read This3.MutListAny that, This4.Size from, This4.Size maxTo, This4.Size minTo) This0.#lentK(that:that, from:from, maxTo:maxTo, minTo:minTo)
+lent This0 #apply(read This1.MutListT that, This4.Size from, This4.Size maxTo, This4.Size minTo) This0.#lentK(that:that, from:from, maxTo:maxTo, minTo:minTo)
 mut method 
-read This3.MutListAny #that() 
+read This1.MutListT #that() 
 mut method 
 This4.Size #from() 
 mut method 
@@ -6034,7 +6081,7 @@ mut method
 This4.Size #minTo() }
 IteratorValFill: {
 read method 
-read This3.MutListAny that() 
+read This1.MutListT that() 
 read method 
 This4.Size from() 
 mut method 
@@ -6122,11 +6169,11 @@ CurlyBlock-Should be unreachable code
 read method 
 Void #close() void
 class method 
-lent This0 #lentK(read This3.MutListAny that, This4.Size from, This4.Size maxTo, This4.Size minTo, This1.Elem filled) 
+lent This0 #lentK(read This1.MutListT that, This4.Size from, This4.Size maxTo, This4.Size minTo, This1.Elem filled) 
 class method 
-lent This0 #apply(read This3.MutListAny that, This4.Size from, This4.Size maxTo, This4.Size minTo, This1.Elem filled) This0.#lentK(that:that, from:from, maxTo:maxTo, minTo:minTo, filled:filled)
+lent This0 #apply(read This1.MutListT that, This4.Size from, This4.Size maxTo, This4.Size minTo, This1.Elem filled) This0.#lentK(that:that, from:from, maxTo:maxTo, minTo:minTo, filled:filled)
 mut method 
-read This3.MutListAny #that() 
+read This1.MutListT #that() 
 mut method 
 This4.Size #from() 
 mut method 
@@ -6137,7 +6184,7 @@ mut method
 This1.Elem #filled() }
 IteratorVar: {
 read method 
-read This3.MutListAny that() 
+read This1.MutListT that() 
 read method 
 This4.Size from() 
 mut method 
@@ -6283,11 +6330,11 @@ CurlyBlock-Should be unreachable code
 read method 
 Void #close() void
 class method 
-mut This0 #mutK(mut This3.MutListAny that, This4.Size from, This4.Size maxTo, This4.Size minTo) 
+mut This0 #mutK(mut This1.MutListT that, This4.Size from, This4.Size maxTo, This4.Size minTo) 
 class method 
-mut This0 #apply(mut This3.MutListAny that, This4.Size from, This4.Size maxTo, This4.Size minTo) This0.#mutK(that:that, from:from, maxTo:maxTo, minTo:minTo)
+mut This0 #apply(mut This1.MutListT that, This4.Size from, This4.Size maxTo, This4.Size minTo) This0.#mutK(that:that, from:from, maxTo:maxTo, minTo:minTo)
 mut method 
-mut This3.MutListAny #that() 
+mut This1.MutListT #that() 
 mut method 
 This4.Size #from() 
 mut method 
@@ -6296,7 +6343,7 @@ mut method
 This4.Size #minTo() 
 mut method 
 Void inner(This1.Elem that) (
-  mut This3.MutListAny rcv32=this.#that()
+  mut This1.MutListT rcv32=this.#that()
   rcv32.#apply(that:this.from(), val:that)
   )}}}
 CodeEq: {

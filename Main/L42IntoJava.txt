@@ -646,8 +646,9 @@ class CN is wrapper if
 then
 replace all CN with the field type except for CN.mxs
 CN constructors are simplified away
-CN.f(x,z) setters are x:=z
+CN.f(x,z) setters are x:=z ?? we just said no setter?
 CN.f(x) getter are y=x 
+if x passed to a method needing an interface type, then it is wrapped as for throw(see later)?
 all throw x where G(x)=mdf CN in the original program//all throw of form throw x in this language 
 are transformed in (mdf CN x'=CN.new(x) throw x') //x will be now of the wrapped type
 all catch throw CN x e,

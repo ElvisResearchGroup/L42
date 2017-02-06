@@ -226,6 +226,7 @@ public class TranslateClass {
     }
 
   public static void getMethodHeader(MethodWithType mt, StringBuilder res) {
+    res.append("\n@SuppressWarnings(\"unchecked\")"); 
     res.append("\npublic ");
     res.append(Resources.nameOf(mt.getMt().getReturnType()));
     res.append(" ");
@@ -246,9 +247,9 @@ public class TranslateClass {
     res.append("public static final class Ph extends ");
     res.append(s+" implements platformSpecific.javaTranslation.Resources.PhI<"+s+">{\n");
     res.append("  private final java.util.ArrayList<java.util.function.Consumer<"+s+">> actions=new java.util.ArrayList<>();\n");
-    res.append("  public void commit("+s+" val){ for(java.util.function.Consumer<"+s+"> r:actions){r.accept(val);} }");
-    res.append("  public void addAction(java.util.function.Consumer<"+s+"> r){actions.add(r);}");
-    res.append("  public Ph() {super(");
+    res.append(" \n@SuppressWarnings(\"unchecked\")\n public void commit("+s+" val){ for(java.util.function.Consumer<"+s+"> r:actions){r.accept(val);} }");
+    res.append(" \n@SuppressWarnings(\"unchecked\")\n public void addAction(java.util.function.Consumer<"+s+"> r){actions.add(r);}");
+    res.append(" \n@SuppressWarnings(\"unchecked\")\n public Ph() {super(");
     StringBuilders.formatSequence(res, ctor.getMs().getNames().iterator(),
       ", ",n->res.append("null"));
     res.append(");}\n  }\n");

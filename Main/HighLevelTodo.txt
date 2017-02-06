@@ -1,17 +1,20 @@
 todo:
 
+new private with __ instead of @private (see later in this file)
+
 if e return/error/exception/loop e 
 should work without parenthesis around return/..
 
 collections should have all methods,
 remove become removeAll(elem:)
 without become without(index:)
+add contains as operator
+collections for plugingwrappers
 
 use check vs use m(xes) with
 
+add Reusable<><code == Use[code]<><Resource(\"reusableCode()")<><code
 
-
-should != be desugared in !(==)    > norm for <=, => <,  >> <<,
 
 -use outer for outside with scope.
   discussing with James about what is the right semantic: just skipping the first
@@ -19,7 +22,9 @@ should != be desugared in !(==)    > norm for <=, => <,  >> <<,
   James suggests to skip the first "reuse". It is drastic but seams working
   Alternatives could be using skeletal types to introduce aliasings?
 
-Many constructor is ok for a class?
+DONE:Many constructor is ok for a class?
+solved with immk, mutk, readK. Surprisingly, lentk is unsund
+in the sense that makes invariant checking impossible
 
 
 se ho una classe che ha metodi astratti class non fwd, posso aggiungere i fwd e non rompo nulla?
@@ -166,41 +171,11 @@ clone on read method mut Outer0 clone(orignal T x)//all capsule fields are not d
 what if (Ti xi) create both
 #apply and #immK
 and Ti xi create no constructors?
-----
-syntax stuff:
-  add # for defaults: logic is
-    on addition methods, is a constructor
-    on set is the old value
-    on stuff in a numericalish range 0..n, is the max range.
 
-foo.location(\.with(\+20N))
-
-foo.location(%.with(%+20N))
-
-foo.location(#.with(#+20N))
-
-
-make comments with // /**/
 make @id == /*@id*/
 
-new desugaring for string and number literals!!
-x:e in ps becomes x=e
 
 
-'caching is getting out of control
-'a save version, operators refresh all the cache?
-'still good, many operators do lots of internal stuff?
-
-
-'@NonNull ast.Ast.Stage stage=Stage.None;//fix point for typing
-'final java.util.List<ClassB>dependencies=-//if not empty, just to provide a better error, is sort of connected with stage? check!
-'java.util.List<PathMwt> inherited=null;//fix point for interface implementation
-'List<InvalidMwtAsState> coherent=-
-'String givenName="";
-'boolean verified=false;//to avoid re typechecking, should be safe for all operators?
-'boolean privateNormalized=false;//to avoid re normalization - if operators remove cache, is not usefull.
-'Would it disappear in the new idea? replaced with min-max with -1 default?
-'final java.util.List<Integer> families=- //to merge two classes easier with sum, again same problem as before//Would disappear
 
 prviati:
 method selector contiene un long int. -1 per non privato

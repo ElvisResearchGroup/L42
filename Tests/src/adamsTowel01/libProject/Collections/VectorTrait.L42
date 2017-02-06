@@ -1,11 +1,22 @@
-{  (mut MutListAny inner)
+{  (mut MutListT inner)
 implements Concept.ToS Concept.Classable
-class method This #immK(MutListAny inner)
-class method mut This empty() This(inner:MutListAny.empty())
+class method This #immK(MutListT inner)
+class method mut This empty() This(inner:MutListT.empty())
 class method mut This #seqBuilder() this.empty()
 class method mut This #from(mut This seqBuilder) seqBuilder
 mut method Void #add(Elem that) this.add(right:that)
 
+MutListT:{ implements Concept.ToS
+  read method Size size()
+  class method mut This empty()
+  read method Any val(Size that)
+  mut method Void (Size that,Any val)
+  mut method Void add(Size that, Any val) 
+  mut method Void remove(Size that) 
+  method This without(Size that)
+  method This withAlso(Size that, Any val)
+  method This with(Size that, Any val) 
+  }
 Elem:{}
 class method Elem cast(Any that) {with that (on Elem return that   default error CollectionErrors.cast())}
 
@@ -103,7 +114,7 @@ read method lent IteratorVal vals(Size from, Size to) this.vals(from:from, maxTo
 read method lent IteratorVal vals() this.vals(from:Size"-1", maxTo:Size"-2", minTo:this.inner().size() )
 
 IteratorVal: SafeOperatorsAccess.compose(left:IteratorTrait(),
-   right:  { (read MutListAny that, var Size from, Size maxTo, Size minTo)
+   right:  { (read MutListT that, var Size from, Size maxTo, Size minTo)
      read method Bool isFill() Bool.false()
      read method Elem filled() error X"Filled called on not fill iterator, should never happen"
      } )
@@ -114,7 +125,7 @@ read method lent IteratorValFill vals(Size from, Size to, Elem filled) this.vals
 read method lent IteratorValFill vals(Elem filled) this.vals(from:Size"-1", maxTo:Size"-2", minTo:this.inner().size(), filled:filled )
 
 IteratorValFill: SafeOperatorsAccess.compose(left:IteratorTrait(),
-   right:  { (read MutListAny that, var Size from, Size maxTo, Size minTo, Elem filled)
+   right:  { (read MutListT that, var Size from, Size maxTo, Size minTo, Elem filled)
      read method Bool isFill() Bool.true()
      } )
 
@@ -125,7 +136,7 @@ mut method lent IteratorVar #vals(Size from, Size to) this.#vals(from:from, maxT
 mut method lent IteratorVar #vals() this.#vals(from:0Size-1Size, maxTo:Size"-2", minTo:this.inner().size() )
 
 IteratorVar: SafeOperatorsAccess.compose(left:IteratorTrait(),
-  right:  { (mut MutListAny that, var Size from, Size maxTo, Size minTo)
+  right:  { (mut MutListT that, var Size from, Size maxTo, Size minTo)
     mut method Void inner(Elem that) this.#that()(this.from(),val:that)
     read method Bool isFill() Bool.false()
     read method Elem filled() error X"Filled called on not fill iterator, should never happen"

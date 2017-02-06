@@ -40,56 +40,45 @@
 
   read method
   Any val(Size that) (
-    this.checkBound(that)
+    CollectionErrors.checkBound(that,listSize:this.size())
     this.head().get(that)
     )
 
   mut method
   Void (Size that,Any val) (
-    this.checkBound(that)
+    CollectionErrors.checkBound(that,listSize:this.size())
     this.head(this.head().set(that,val:val,add:Bool.false()))
     )
 
   mut method
   Void add(Size that, Any val) (
-    this.checkBoundAdd(that)
+    CollectionErrors.checkBoundAdd(that,listSize:this.size())
     this.head( this.head().set(that, val:val,add:Bool.true()) )
     this.size(this.size()+1Size)
     )
   mut method
   Void remove(Size that) (
-    this.checkBound(that)
+    CollectionErrors.checkBound(that,listSize:this.size())
     this.head( this.head().remove(that) )
     this.size(this.size()-1Size)
     )
 
   method
   This without(Size that) (
-    this.checkBound(that)
+    CollectionErrors.checkBound(that,listSize:this.size())
     This(head: this.head().remove(that), size:this.size()-1Size )
     )
 
   method
   This withAlso(Size that, Any val) (
-    this.checkBoundAdd(that)
+    CollectionErrors.checkBoundAdd(that,listSize:this.size())
     This(head: this.head().set(that,val:val, add:Bool.true()), size:this.size()+1Size )
     )
 
   method
   This with(Size that, Any val) (
-    this.checkBound(that)
+    CollectionErrors.checkBound(that,listSize:this.size())
     This(head: this.head().set(that,val:val, add:Bool.false()), size:this.size()+1Size )
-    )
-
-  read method
-  Void checkBound(Size that) (
-    if that<0Size (error CollectionErrors.negBound(that, list:this) )
-    if this.size()<=that (error CollectionErrors.outBound(that, list:this) )
-    )
-  read method
-  Void checkBoundAdd(Size that) (
-    if that<0Size (error CollectionErrors.negBound(that, list:this) )
-    if this.size()<that (error CollectionErrors.outBound(that, list:this) )
     )
     
   method toS() {
