@@ -270,24 +270,27 @@ D|- (ds1 ds2 ks e)~>(ds'1 ds'2 ks' e'):T <= T' |Tr
 Phase| p| G|-(ds  ks  e0  [_]) ~>(ds' ks' e'0 [T]) 
      : T <= T' | (Tr1 U..U Trn).capture(p,ks') U Tr U Tr0
   where
-  Phase| p| G |G[ks]/dom(ds)|- ds ~> ds' |Tr1..Trn | G0
+  Phase| p| G[ks]/dom(ds)|- ds ~> ds' |Tr1..Trn | G0
+  if fwd_or_fwd%_in { (G/dom(ds)[complete(resolve(p,G.Ts))](x) | x in FV(ds.es) }
+    then G0=G[fwd%(resolve(p,G.Ts))]
+    otherwise G0=G[resolve(p,G.Ts)]
   Phase| p| G/x1..xn | Tr1 U .. U Trn |-ks~> ks' : Ts <= T' | Tr
   Phase| p| G0 |-e0~>e'0:T0 <=T' | Tr0
   T= mostGeneral(T0.mdf,Ts.mdfs) T'.P
   // assert D.p|-T <= T'
 
 (ds)
-Phase| p| G |G2|- T1  x1=e1 ..Tn  xn=en ~> T'1  x1=e'1 ..T'n  xn=e'n |Tr1..Trn | G0
+Phase| p| G |- T1  x1=e1 ..Tn  xn=en ~> T'1  x1=e'1 ..T'n  xn=e'n |Tr1..Trn | G0
   where
   for i in 1..n T'i=resolve(p,Ti)
   G'=x1:T'1..xn:T'n
-  G1= [fwd(complete(G'))]
+  G1= G[fwd(complete(G'))]
   for i in 1..n Phase| p| G1|-ei~>e'i: _ <=fwd% T'i | Tri
   if fwd_or_fwd%_in Tr1.Ts U .. U Trn.Ts
     then x1..xn disjoint FV(e1..en)
-  if fwd_or_fwd%_in { (G/x1..xn)[complete(G')](x) | x in FV(e1..en) }
-    then G0=G[fwd%(G')]
-    otherwise G0=G[G']
+  //if fwd_or_fwd%_in { (G/x1..xn)[complete(G')](x) | x in FV(e1..en) }
+  //  then G0=G[fwd%(G')]
+  //  otherwise G0=G[G']
 
    
 //TODO: check that this kind of things work {Bar:{}   method m (foo catch exception Bar x e1 e0)  } redirect Bar->Any
