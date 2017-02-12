@@ -277,19 +277,22 @@ Phase| p| G|-(ds  ks  e0  [_]) ~>(ds' ks' e'0 [T])
   // assert D.p|-T <= T'
 
 (ds)
-Phase| p| G|- T1  x1=e1 ..Tn  xn=en, ds ~>  T'1  x1=e'1 ..T'n  xn=e'n, ds'|Tr1..Trn | G0
+Phase| p| G|- T1  x1=e1 ..Tn  xn=en, ds ~>  T'1  x1=e'1 ..T'n  xn=e'n, ds'|Tr1..Trn,Trs | G2
   where
   dom(ds) notin FV(e1..en)
   for i in 1..n T'i=resolve(p,Ti)
   G'=x1:T'1..xn:T'n
-  G1= G2[fwd(complete(G'))]
+  G1= G[fwd(complete(G'))]
   for i in 1..n Phase| p| G1|-ei~>e'i: _ <=fwd% T'i | Tri
   if fwd_or_fwd%_in Tr1.Ts U .. U Trn.Ts
     then x1..xn disjoint FV(e1..en)
   if fwd_or_fwd%_in { G[complete(G')](x) | x in FV(e1..en) }
     then G0=G[fwd%(G')]
     otherwise G0=G[G']
+  Phase| p| G0|- ds ~> ds'|Trs | G2
 
+(dsEmpty)
+Phase| p| G|- empty ~> empty| empty | G
    
 //TODO: check that this kind of things work {Bar:{}   method m (foo catch exception Bar x e1 e0)  } redirect Bar->Any
 //Note: the new idea is that catch throw Any will catch all that can be thrown,
