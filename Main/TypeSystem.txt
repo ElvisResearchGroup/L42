@@ -248,23 +248,6 @@ D|- e0.m[_](x1:e1..Xn:en) ~> e'0.m[P0](x1:e'1..xn:e'n)  : T <= T'| Tr0 U..U Trn 
 //Note: what happen if a parameter take mut and the plugin throw error w.r.t. strong error safety? can we catch it soon?
 //The idea is that I can still use the normal pattern to throw error if the plugin fail, but to catch that error we will have to go up the stack a lot.
 //Now plugings are assumed to always ask for imm/class parameters
-
-(block divide scope)
-//This rule is not materialized in the sugar since it would duplicate
-//the catches (potentially exponentially)
-//also a desugaring tring to assign the inner block to a variable and
-//then do the catches only one would capture also errors in the "e"
-//type system need not to repeat the test for ks in the two contexts,
-//since if ks typed in the outer block, it would also type in the same way
-//in the richer context in the inner block.
-D|- (ds1 ds2 ks e)~>(ds'1 ds'2 ks' e'):T <= T' |Tr
-  where
-  D|- (ds1 ks (ds2 ks e) )~>(ds'1 ks'(ds'2 ks' e')):T <= T' |Tr
-  dom(ds2) not in FV(ds1)
-  //we do not need to state FV(ks) not in dom(ds1,ds2) since rule block do G/x1..xn
-  //to optimize, we could use a empty shell ks (with all es replaced with error void),
-  //but then we will need to explicitly test for FV(ks) not in dom(ds1,ds2)
-  //Marco believes that replacing the second ks' with a skeleton would preserve the type system behavior.
   
 (block)
 Phase| p| G|-(ds  ks  e0  [_]) ~>(ds' ks' e'0 [T]) 
@@ -283,7 +266,7 @@ Phase| p| G|- T1  x1=e1 ..Tn  xn=en, ds ~>  T'1  x1=e'1 ..T'n  xn=e'n, ds'|Tr1..
   for i in 1..n T'i=resolve(p,Ti)
   G'=x1:T'1..xn:T'n
   G1= G[fwd(complete(G'))]
-  for i in 1..n Phase| p| G1|-ei~>e'i: _ <=fwd% T'i | Tri
+  for i in 1..n Phase| p| G1|-ei~>e'i: _ <= fwd% T'i | Tri
   if fwd_or_fwd%_in Tr1.Ts U .. U Trn.Ts
     then x1..xn disjoint FV(e1..en)
   if fwd_or_fwd%_in { G[complete(G')](x) | x in FV(e1..en) }
