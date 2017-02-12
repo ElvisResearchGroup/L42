@@ -173,8 +173,8 @@ methTypes(p,P,ms)  Expressed as metarules
   
 //then lent viewpoint adaptation    
 
-     Ts0 mut P  Ts2->T;Ps in methTypes(p,P,ms)
-     Ts'=mutToCapsule(Ts0) lent T mutToCapsule(Ts2) //this implies not fwd_or_fwd%_in Ts0,Ts2
+     Ts0 mut P Ts2->T;Ps in methTypes(p,P,ms)
+     Ts'=mutToCapsule(Ts0) lent P mutToCapsule(Ts2) //this implies not fwd_or_fwd%_in Ts0,Ts2
 (mVp)-------------------------------------------------------------------
      Ts'->toLent(T);Ps in methTypes(p,P,ms)
    
@@ -520,17 +520,19 @@ tsMCall(TSIn in,MCall e)->TSOut
 
 computeMTypes
   order of first list:
-    base(if diff from noFwd (use .equals ?) ),
-    noFwd,
+    base,
+    noFwd(if diff from base (use .equals ?) ),
     zero or 1 of {mc,mi} based on noFwd,
-    1 mType for each lent parameter using mvp based on noFwd
+    1 mType for each mut parameter using mvp based on noFwd
+    1 mType for each mut parameter using mvp based on base
 
   order of second list:
     zero or 1 of {mc,mi} based on noFwd,
     noFwd
     base(if diff from noFwd),
-    zero or 1 of {mc,mi} based on noFwd,
-  
+    1 mType for each mut parameter using mvp based on noFwd
+    1 mType for each mut parameter using mvp based on base
+      
 _memoizedTSRes(in) //need attention: we can not use .equals on p
   in=Phase,p,G,e,T
   equality on in will use the identity of p and e
