@@ -429,7 +429,6 @@ TSOut: either OK(TSIn,e,T,Tr) or Error(TSIn,String,Opt(T)) //Error.T is the obta
 
 object with 
 -memoized hash map TSIn->TSOut
--memoized identity hash set fullysplitted blocks
 
 ts(TSIn in)->TSOut
   use Anonymous Visitor to dispatch to specific ts
@@ -448,10 +447,7 @@ structure of all tsXX methods:
 non trivial methods: tsBlock and tsMCall 
 
 tsBlock(TsIn in,Block e)->TSOut
-  if !isSplitted(e)//memoized info
-    e=splitBlock(e)//also memoize
-  assert isSplitted(e)
-  res1=tsBlockBase(in,e)
+  res1=tsBlockBase(in,e) //will use splitDs
   if res1.isOk(){return res=res1;}
   if !promotionMakesSense(){return res=res1;}//promotionMakesSense: mut that need capsule
   res2=tsBlockPromotion(in,e)//calls tsBlock internally,
@@ -460,7 +456,7 @@ tsBlock(TsIn in,Block e)->TSOut
   //if we are here, both res1,res2 not ok
   return res=combine(res1,res2)
   
-splitBlock(Block b)->Block
+splitDs(ds)->i
   //Algorithm to divide ds in the first minimal ds1, ds2
   ds=ds0..dsn;
   domi=dom(dsi+1..dsn)
@@ -473,9 +469,7 @@ splitBlock(Block b)->Block
     i:=i+1
     if i==n return i //ds.size-1
     )
-  Block b= Block(ds0..dsi,ks,Block(dsi+1..dsn skeletal(ks),e))
-  memoizeSplitted(b)//note, of course the inner block may not be fully splitted
-  return b
+  return i //that is, ds=d1..di , di+1..dn
   
 tsMCall(TSIn in,MCall e)->TSOut
   Path rec=guessType(e.receiver)
