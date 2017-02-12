@@ -61,6 +61,10 @@ toImmOrCapsule(T)
 toLent(T)
   toLent(mut P)=lent P,
   toLent(fwdMut P) and toLent(fwd%Mut P) undefined;
+  otherwise toLent(T)=T
+  
+mutOnlyToLent(T)
+  toLent(mut P)=lent P,
   otherwise toLent(T)=T 
 
 capsuleToLent(T)  
@@ -94,9 +98,9 @@ G[G']
   G[G'](x)=G'(x) if x in dom(G'); otherwise G[G'](x)=G(x)
  
 G[ks]
-  G[k ks]=G[ks] with catchRethrow(k) or k.throw != error
-  otherwise G[k ks]=toRead(G) with k.throw=error
   G[]=G
+  G[k ks]=toRead(G) with k.throw=error and not catchRethrow(k)
+  otherwise G[k ks] = G[ks]
 
 mostGeneralMdf(p,throw,Tr)  
   mostGeneralMdf(p,error,Tr)=imm
@@ -130,6 +134,7 @@ mostGeneral(mdfs)
   //  either mdf0 <= mdf2
   //  or exists mdf3 in mdfs  not mdf3 <= mdf2
 
+//liberal use of desugaring in the line under
 catchRethrow(k) iff k=catch throw Any x ((e catch error Any z void void) throw x)
 
 Tr1 U Tr2
@@ -160,7 +165,7 @@ methTypes(p,P,ms)  Expressed as metarules
 (mC)-------------------------------------------------------------------
     mutToCapsule(Ts)->capsule P0;Ps in methTypes(p,P,ms)
 
-    Ts->read P0;Ps in methTypes(p,P,ms)
+    Ts->read P0;Ps in methTypes(p,P,ms) //by well formedness if return type is read, not fwd_or_fwd%_in Ts
 (mI)-------------------------------------------------------------------
     toImmOrCapsule(Ts)->imm P0;Ps in methTypes(p,P,ms) 
     //the behaviour of immorcapsule on fwd is not relevant since the method
@@ -169,7 +174,7 @@ methTypes(p,P,ms)  Expressed as metarules
 //then lent viewpoint adaptation    
 
      Ts0 mut P  Ts2->T;Ps in methTypes(p,P,ms)
-     Ts'=mutToCapsule(Ts0) lent T mutToCapsule(Ts2)
+     Ts'=mutToCapsule(Ts0) lent T mutToCapsule(Ts2) //this implies not fwd_or_fwd%_in Ts0,Ts2
 (mVp)-------------------------------------------------------------------
      Ts'->toLent(T);Ps in methTypes(p,P,ms)
    
@@ -210,7 +215,7 @@ D |-x ~> x :D.G(x) <= T | emptyTr
 D |- loop e ~> loop e' : imm Void <= T | Tr
   where
   D.p|-imm Void <= T
-  D|- e ~> e' : imm Void | Tr
+  D|- e ~> e' : _ <= imm Void | Tr
 
 (throw)   // expression of type T0 throws the result of an expression where:
           // T1 is the guess type of the expression
@@ -273,12 +278,11 @@ Phase| p| G|-(T1  x1=e1 ..Tn  xn=en  ks  e0  [_]) ~>
   Phase| p| G/x1..xn | Tr1 U .. U Trn |-ks~> ks' : Ts <= T' | Tr
   if fwd_or_fwd%_in Tr1.Ts U .. U Trn.Ts
     then x1..xn disjoint FV(e1..en)
-  if exists x in FV(e1..en) such that fwd_or_fwd%_in (G/x1..xn)[complete(G')](x)
+  if fwd_or_fwd%_in { (G/x1..xn)[complete(G')](x) | x in FV(e1..en) }
     then G0=G[fwd%(G')]
     otherwise G0=G[G']
   Phase| p| G0 |-e0~>e'0:T0 <=T' | Tr0
-  if mostGeneral(T0,Ts) is defined, then T=mostGeneral(T0,Ts)
-  else T= mostGeneral(T0.mdf,Ts.mdfs) T'.P
+  T= mostGeneral(T0.mdf,Ts.mdfs) T'.P
   // assert D.p|-T <= T'
    
 //TODO: check that this kind of things work {Bar:{}   method m (foo catch exception Bar x e1 e0)  } redirect Bar->Any
@@ -379,7 +383,7 @@ Phase| p| Ps |-M ~> M'
     e?=e?'
   refine? = refine <=> 
     forall P in Ps such that p(P)(m(x1..xn))=M0 //that is, is defined
-      M0=mdf method T' m(T1 x1..Tn xn)exceptions Ps' and p|-T<=T'
+      M0=mdf method T' m(T1 x1..Tn xn)exceptions Ps' and p|-T<= (T'[from P])
 
 
 coherent(p) //interfaces are always coherent
@@ -524,7 +528,7 @@ tsMCall(TSIn in,MCall e)->TSOut
 
 computeMTypes
   order of first list:
-    base(if diff from noFwd),
+    base(if diff from noFwd (use .equals ?) ),
     noFwd,
     zero or 1 of {mc,mi} based on noFwd,
     1 mType for each lent parameter using mvp based on noFwd

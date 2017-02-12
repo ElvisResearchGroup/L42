@@ -62,7 +62,7 @@ msx::=ms(::x)?
 L::={interface? implements Ps M1..Mn Phase}
 M::=refine? mh e?| ms e | C:e
 e::=void|L|chain| throw[T1,T2] chain|loop e|(ds ks e[T]) | use P check m((x:e)s) e
-chain::= x| P | chain.m[P]((x:e)s) | (ds ks chain)//last is needed to support (a+b)*c
+chain::= x| P | chain.m[P]((x:e)s) | (ds ks chain[T])//last is needed to support (a+b)*c
 //annotations [T1,T2], [P] and [T] are implicitly "?", as in [T]?
 k::=catch T x e
 d::= T x=e
@@ -135,7 +135,7 @@ msx: in ms::x, x in ms.xs or x is this
 L: unique LDom in LDoms, Any notin Ps //Library and Void are not interfaces so you will get the normal error from implementing them
    and methods in interfaces have no body (and no @private)
 
-throw/loop: I may want to disallows throw throw' e and similar
+throw/loop: -the new chain syntax disallows many strange expressions like "throw throw x" or "loop throw loop x"
 
 (ds ks e[T]): unique x in ds, FV(ks) disjoint dom(ds) and 
   forall k1,k2 in ks, k1.throw=k2.throw
