@@ -280,11 +280,9 @@ Phase| p| G|-(ds  ks  e0  [_]) ~>(ds' ks' e'0 [T])
   // assert D.p|-T <= T'
 
 (ds)
-Phase| p| G |G2|- ds1,ds2 ~>  ds'1,ds'2|Tr1..Trn | G0
+Phase| p| G |G2|- T1  x1=e1 ..Tn  xn=en, ds ~>  T'1  x1=e'1 ..T'n  xn=e'n, ds'|Tr1..Trn | G0
   where
-  ds1=T1  x1=e1 ..Tn  xn=en
-  ds1'=T'1  x1=e'1 ..T'n  xn=e'n
-  dom(ds2) notin FV(ds1)
+  dom(ds) notin FV(e1..en)
   for i in 1..n T'i=resolve(p,Ti)
   G'=x1:T'1..xn:T'n
   G1= G2[fwd(complete(G'))]
