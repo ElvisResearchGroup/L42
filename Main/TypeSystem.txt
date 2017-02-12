@@ -270,14 +270,14 @@ D|- (ds1 ds2 ks e)~>(ds'1 ds'2 ks' e'):T <= T' |Tr
 Phase| p| G|-(ds  ks  e0  [_]) ~>(ds' ks' e'0 [T]) 
      : T <= T' | (Tr1 U..U Trn).capture(p,ks') U Tr U Tr0
   where
-  Phase| p| G |- ds ~> ds' :Ts <=Ts' |Tr1..Trn | G0
+  Phase| p| G |- ds ~> ds' |Tr1..Trn | G0
   Phase| p| G/x1..xn | Tr1 U .. U Trn |-ks~> ks' : Ts <= T' | Tr
   Phase| p| G0 |-e0~>e'0:T0 <=T' | Tr0
   T= mostGeneral(T0.mdf,Ts.mdfs) T'.P
   // assert D.p|-T <= T'
 
 (ds)
-Phase| p| G |- T1  x1=e1 ..Tn  xn=en ~> T'1  x1=e'1 ..T'n  xn=e'n :Ts <=Ts' |Tr1..Trn | G0
+Phase| p| G |- T1  x1=e1 ..Tn  xn=en ~> T'1  x1=e'1 ..T'n  xn=e'n |Tr1..Trn | G0
   where
   for i in 1..n T'i=resolve(p,Ti)
   G'=x1:T'1..xn:T'n
