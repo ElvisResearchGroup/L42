@@ -5,63 +5,197 @@ a Location.ReturnType knowing the Path (Library) the modifier (imm/immutable)
 and the Location.Method that contains such type annotation.
 
 General class shape:
+
+//###0 Location declaration and methods 
+//------------------------------------
+
 Location:{interface implements Base //that is equals, toS and "know your class"
-  Mdf:Enum...
+  
+  method
   Location location()
-  Origin:{
-    List:...
-    S fileName()
-    Size line()
-    Size column()
+  
+  NotAvailable:Message.$<><{implements Guard}
+  
+  Mdf:Enum"imm, mut, read, lent, capsule, class"
+
+
+//###1 Origin
+//------------------------------------  
+
+  Origin:MiniData<><{
+    S fileName
+    Size line
+    Size column
+    
+    $This:MiniData.thisLib()
+    List:Collection.vector(of:$This)
     }
-  Origin.List origins()//many since metaprogramming
-  Doc:{ implements Location
-    Location location()//user will need typecase to discover precise type
-    Annotation:{
-      List:..
+    
+  method Size originsSize()//many since metaprogramming
+  method Origin origin(Size that)   
+  method
+  Origin.List origins()
+    Origin.List[with i in Count(this.originSize()) (use[this.origin(i)])]
+
+
+//###2 Doc 
+//------------------------------------
+
+  Doc:MiniData<><{ implements Location
+    method Location location()//user will need typecase to discover precise type
+    Annotation:MiniData<><{
       Type.RefTo 
       S text
+    
+      $This:MiniData.thisLib()
+      List:Collection.vector(of:$This)
       }
     }
+
+    
+//###3 Lib 
+//------------------------------------
+
   //there is no Member since normalized classes have order: first nested, then methods
-  Lib:{ implements Location
-    refine Lib location()
-    List directNested()
+  Lib:MiniData<><{ implements Location
+    refine method Lib location()
+    method Size nestedsSize()
+    method This nested(Size that)
+    method
+    List nesteds()
+      List[with i in Count(this.nestedSize()) (use[this.nested(i)])]
     List allNesteds()
+      List[this]++
+      List[with nc in this.nesteds().vals() (
+        with nci in nc.allNesteds().vals() (use[nci])
+      )]
+    method Lib nested(Path path) exception NotAvailable (
+      with ni in this.root().allNested().vals() (
+        if ni.path()==path (return ni)
+        )
+      exception NotAvailable"Path "[path]"not present"
+      )
+    method Bool has(Path path) (
+      unused=this.nested(path:path)
+      catch exception NotAvailable Bool.false()
+      Bool.true()
+      )
+          
+    method Size methodsSize()
+    method Method method(Size that)
     Method.List methods()
-    Type.Implemented.List implementedInterfaces()
+      Method.List[with i in Count(this.methodsSize()) (use[this.method(i)])]
+    
+    method Method method(Selector selector) exception NotAvailable (
+      with mi in this.methods() (
+        if mi.selector()==selector (return mi)
+        )
+      exception NotAvailable"Selector "[selector]"not present"
+      )
+    method Bool has(Selector selector) (
+      unused=this.method(selector:selector)
+      catch exception NotAvailable Bool.false()
+      Bool.true()
+      )      
+    method Size implementedsSize()
+    method Type.Implemented implemented(Size that)
+    method
+    Type.Implemented.List implementeds()
+      Type.Implemented.List[with i in Count(this.implementedsSize()) (use[this.implemented(i)])]
+    
+    method Bool implements(class Any clazz){
+      if Refactor.equalsClassObj(Any, and:clazz) (
+        return Bool.True()
+        ) 
+       with ti in this.implementeds().vals() (
+         with ri=ti.refTo() (
+           on Type.RefTo.Binded (
+             ci=ri.referredClassObj()
+             if Refactor.equalsClassObj(ci, and:clazz) (
+              //no need of supertypes since normalized classes has transitive implements already
+              return Bool.True()
+              )
+             )
+           )
+         )
+       return Bool.false()
+       }
+    method Bool implements(Path path) {
+       with ti in this.implementeds().vals() (
+         with ri=ti.refTo() (
+           on Type.RefTo.Lib (
+             libi=ri.referredLib()
+             if path==libi.path() (
+               return Bool.true()
+               )
+             )
+           )
+         )
+       return Bool.false()
+       }   
+    
+    method Doc doc()
+    method S kindS()
+    Kind:Enum"..."
+    method
     Bool isInterface()
-    Doc doc()
-    List:...
-    Lib root()
-    Path path()//last is its name, empty path for root
-    Doc nestedDoc()//empty doc if it is root
+      this.kindS()==S"Interface"
+    Bool isCoherent()
+      this.isInterface() | this.kindS()==S"CoherentClass"
+    $This:MiniData.thisLib()
+    List:Collection.vector(of:$This)
+    
+    method Lib root()
+    method Path path()//last is its name, empty path for root
+    method Doc nestedDoc()//empty doc if it is root
     //even if obtained with a classObj, no method to get it back
     //to get a nested classObj, Refactor.navigateClassObj(classAny,Path)->classAny??
     }
-  Method:{
-    List:...
-    refine Lib location()
-    Bool isAbstract()
-    Bool isRefine()
-    Selector selector()
-    Type.Return returnType()
+
+    
+//###4 Method 
+//------------------------------------
+
+  Method:MiniData<><{
+    $This:MiniData.thisLib()
+    List:Collection.vector(of:$This)
+
+    refine method Lib location()
+    method Bool isAbstract()
+    method Bool isRefine()
+    method Selector selector()
+    method Type.Return returnType()
+    
+    method Size parameterTypesSize()
+    method Type.Implemented parameterType(Size that)
+    method
     Type.Parameter.List parameterTypes()
+      Type.Parameter.List[with i in Count(this.parameterTypesSize()) (use[this.parameterType(i)])]
+      
+    method Size exceptionsSize()
+    method Type.Implemented exception(Size that)
+    method
     Type.Exception.List exceptions()
+      Type.Exception.List[with i in Count(this.exceptionsSize()) (use[this.exceptions(i)])]
     }
-  Type:{ interface
-    Doc doc()
-    RefTo:{interface implements Base
+
+
+//###5 Type and RefTo 
+//------------------------------------
+
+  Type:{ interface implements Base??
+    method Doc doc()
+    RefTo:{interface implements Base??
       //toS is the full path with Thisn.
-      Lib:{
-        Location.Lib referredLib()
+      Lib:{ implements This1
+        method Location.Lib referredLib()
         }
       Uncompiled:{ implements This1
-        S pathToExpression()//can be a subset of toS
-        S expression()
+        method S pathToExpression()//can be a subset of toS
+        method S expression()
         }
       Binded:{implements This1 //includes primitives
-        class Any referredClassObj()
+        method class Any referredClassObj()
         }
       Missing:{implements This1
         //mostly useful for docs, where we can use lowercase annotation
@@ -69,27 +203,36 @@ Location:{interface implements Base //that is equals, toS and "know your class"
         //also, if an (nested) Uncompiled is resolved not existing..        
         }
       }
-    RefTo refTo()
-    Mdf mdf()//imm for exception/implemented    
-    Return:{
+    method RefTo refTo()
+    method Mdf mdf()//imm for exception/implemented    
+    Return:{ implements This1
       refine Method location()
       }
-    Parameter:{
-      List:...
-      refine Method location()
-      Size pos()//0 for this
+    Parameter:MiniData<><{ implements This1
+      $This:MiniData.thisLib()
+      List:Collection.vector(of:$This)
+
+      refine method Method location()
+      method Size pos()//0 for this
       }
-    Exception:{
-      List:...
-      refine Method location()
-      Size pos()//should start from 1 or 0?
+    Exception:MiniData<><{ implements This1
+      $This:MiniData.thisLib()
+      List:Collection.vector(of:$This)
+
+      refine method Method location()
+      method Size pos()//should start from 1 or 0?
       }
-    Implemented:{
-      List:...
-      refine Lib location()
-      Size pos()//should start from 1 or 0?
+    Implemented:MiniData<><{ implements This1
+      $This:MiniData.thisLib()
+      List:Collection.vector(of:$This)
+
+      refine method Lib location()
+      method Size pos()//should start from 1 or 0?
       }    
     }
+
+//###6 Discussions 
+//------------------------------------
 
 By calling Refactor.introspect(lib:{...})or
 By calling Refactor.introspect(class:A.B) you get a Location.Lib
@@ -109,40 +252,33 @@ C::= uppercase identifiers including $ as uppercase
 x::= lowercase identifier including _ as lowercase
 m::= x| #x
 
-//add 6 xNum methods like parameterNum
-//add ElementNotAvailable exception
-//add classKind? (NO methodKind, just isAbstract+isRefine is all we need) 
-//produce Mdf from enum (wrapping?)
+Notes:
+//no more methodKind, just isAbstract+isRefine is all we need 
 
-//add implements(WHAT???) how to check if a lib implement an interface, what is the parameter?
-//implements(class Any clazz) and implements(Path path)
+//from oldImpl: state/stateCandidate
+//rootPath no. nestedFromRoot can be emulated by root().nested(path:))
 
-//from oldImpl: state/stateCandidate isCoherent
+//isPrivate should be a method for Selector/Path
 
-//deriveds:
-allNested:
-  Lib.List[this]++
-  Lib.List[with nc in this.directNested().vals() (
-    with nci in nc.allNested().vals() (use[nci])
-    )]
-methodFromSelector:
-
-nestedFromPath: (rootPath? no? nestedFromRoot can be emulated by root().nested(path:))
-
-has(path)? has(selector)?
-isPrivate??
-
-impl Concept.ToS,Concept.Equals, Concept.Classable
+impl Concept.ToS,Concept.Equals, Concept.Classable //that is Base
 equals is complex: are two equal literal equal 
   if binded to different names? yes if they have the same origins?
 
+MiniDataTrait:Resource<><{
+  implements Concept.Base
+  read method class This class() This
+  class method S readableName() Refactor.classObjToS()//new plugin as for classObjEq
+  class method Bool is(class Any subtype){ with subtype (on class This return Bool.true()) return Bool.false()}
+  read method Bool equals(read Any that) { with that (on This return this==that)  return Bool.false()  }
+  //read method Bool ==(read This that)
+  //read method S toS()
+  }
+MiniData:{
+  class method Library <><(Library that) exception MetaGuard //Refactor.Guard ??
+    Refactor.rename(path:\"$This" to:\"This")<><Refactor.compose(left:MiniDataTrait() right:that)
+    }
 
-repl
-main.runSlow L42Continuation c
-c.original src
-c.desugared src
-c.free names maps
-c.add(C:e)
+
 -------
 Please, sort of ignore the rest, it is a former attempt
 Introspection:{

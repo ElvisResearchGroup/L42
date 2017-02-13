@@ -11,6 +11,27 @@ without become without(index:)
 add contains as operator
 collections for plugingwrappers
 
+Unit:
+  add mutiply(byUnitName) divide(byUnitName) dividing(byUnitName)
+  units implements Unit.OfMeasure so that 
+    Unit(Meter per:Kg) can check that==per by that.is(subtypeOf:per) and vice versa
+
+is(subtype) should be is(subtypeOf)?
+
+.equals(\) \ should make the constructor? this will allow
+myDirection.equals(\north)
+
+Refactor:
+  go to a new notation where
+  Refactor.operationName(...) create different Refactor.Name instances
+  for example
+  Refactor.rename(selector:\ of:\ to:\)
+  in the guide, compare
+  Refactor.rename(selector:\"..")
+  to java versions
+  Refactor.renameSelector("..")
+  Refactor.rename(new Selector(".."))
+
 use check vs use m(xes) with
 
 add Reusable<><code == Use[code]<><Resource(\"reusableCode()")<><code
