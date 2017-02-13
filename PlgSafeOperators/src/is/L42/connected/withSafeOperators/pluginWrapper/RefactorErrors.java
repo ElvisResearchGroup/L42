@@ -14,7 +14,7 @@ interface FluentSetter<T>{
   }
 
 @SuppressWarnings("serial")
-abstract class RedirectExc extends Exception{
+abstract class MutMsgExc extends Exception{
   //TODO: add location/internalLocation?
   String mutMsg;//since java do not want setMessage  :(
   public @Override String getMessage(){return mutMsg;}
@@ -24,43 +24,43 @@ abstract class RedirectExc extends Exception{
 
 public class RefactorErrors{
   @SuppressWarnings("serial") public static class 
-  SelectorNotFound extends RedirectExc implements
+  SelectorNotFound extends MutMsgExc implements
     FluentSetter<SelectorNotFound>{}
 
   @SuppressWarnings("serial") public static class 
-  PathNotFound extends RedirectExc implements
+  PathNotFound extends MutMsgExc implements
     FluentSetter<PathNotFound>{}
   
   @SuppressWarnings("serial") public static class 
-  MethodClash extends RedirectExc implements
+  MethodClash extends MutMsgExc implements
     FluentSetter<MethodClash>{}
   
   @SuppressWarnings("serial") public static class 
-  MethodUnfit extends RedirectExc implements
+  MethodUnfit extends MutMsgExc implements
     FluentSetter<MethodUnfit>{}
   
   @SuppressWarnings("serial") public static class 
-  ClassClash extends RedirectExc implements
+  ClassClash extends MutMsgExc implements
     FluentSetter<ClassClash>{}
   
   @SuppressWarnings("serial") public static class 
-  ClassUnfit extends RedirectExc implements
+  ClassUnfit extends MutMsgExc implements
     FluentSetter<ClassUnfit>{}
   
   @SuppressWarnings("serial") public static class 
-  PrivacyCoupuled extends RedirectExc implements
+  PrivacyCoupuled extends MutMsgExc implements
     FluentSetter<PrivacyCoupuled>{}
   
   @SuppressWarnings("serial") public static class 
-  IncoherentMapping extends RedirectExc implements
+  IncoherentMapping extends MutMsgExc implements
     FluentSetter<IncoherentMapping>{}
   
   @SuppressWarnings("serial") public static class 
-  InducedCircularImplement extends RedirectExc implements
+  InducedCircularImplement extends MutMsgExc implements
     FluentSetter<InducedCircularImplement>{}
   
   @SuppressWarnings("serial") public static class 
-  UnresolvedOverloading extends RedirectExc implements
+  UnresolvedOverloading extends MutMsgExc implements
     FluentSetter<UnresolvedOverloading>{}
   
 }

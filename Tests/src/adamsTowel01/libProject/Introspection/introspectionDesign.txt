@@ -274,10 +274,50 @@ MiniDataTrait:Resource<><{
   //read method S toS()
   }
 MiniData:{
-  class method Library <><(Library that) exception MetaGuard //Refactor.Guard ??
+  class method Library <><(Library that) exception Refactor.Fail (
     Refactor.rename(path:\"$This" to:\"This")<><Refactor.compose(left:MiniDataTrait() right:that)
     }
+Refactor.baseDefaults()<>< to call MiniData?
 
+Refactor2 design:
+
+who come first?
+
+java impl for AllErrors(Doneish),Location, Sum, Redirect,liftValue with new errors
+1 java Location
+2 java enrich some errors with Location, some will have lists-> blasSize() blas(Size that)
+3 java Sum with new errors/testing
+4 redirect, and james can import the tests? depends on how sum goes?
+5 safeOperatorsAccess can be updated to use new Sum/Redirect
+6 finally, we can start Refactor2 as below...
+
+Refactor2
+  Fail impl Base
+  OpAccess:PrW<><{//we may need to continue using a variation of
+    //safeOperatorsAccess instead...
+    compose/*use Compose check*/,redirect, liftValue  //no errors
+    }
+  Resource
+  MiniData/baseDefaults()
+  ErrorW using MiniData
+  AllErrors, with LocationTmp location() and LocationTmp:{..dull impl for #binaryRepr etc for nested Lib:{} Method:{} etc}
+  compose
+  Compose:{//plugAnn
+    class method
+    Library main(Library left,Library right)
+    exception ..
+    }
+  redirect //may need to add support for class Any
+  Redirect:{//plgAnn}
+  etc?
+  }
+  Location:..
+  Redirect3:{..stuff needing Locations..}
+  
+  in Fixing:
+    Refactor=Refactor2+Refactor3,
+    Resource=Refactor.Resource
+    redirect Refactor.LocationTmp to Location?
 
 -------
 Please, sort of ignore the rest, it is a former attempt
