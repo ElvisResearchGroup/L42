@@ -41,8 +41,19 @@ public class CollapsePositions extends CloneVisitor{
       p=accumulatePos(p,hp.getP());
     }
   }
+  public static Position accumulateSinglePos(Position p){
+    if(p.get_next()==null){return p;}
+    Position p2=accumulateSinglePos(p.get_next());
+    assert p2.get_next()==null;
+    Position res= accumulatePos(p.with_next(null),p2);
+    assert res.get_next()==null;
+    return res;
+    }
   public static Position accumulatePos(Position p1, Position p2) {
     if(p2==null){return p1;}
+    if(p1==null){return p2;}
+    p1=accumulateSinglePos(p1);
+    p2=accumulateSinglePos(p2);
     String file=p1.getFile();
     if(file==null){file=p2.getFile();}
     //assert file!=null;
@@ -51,8 +62,8 @@ public class CollapsePositions extends CloneVisitor{
         Integer.min(p1.getLine1(),p2.getLine1()),
         Integer.min(p1.getPos1(),p2.getPos1()),
         Integer.max(p1.getLine2(),p2.getLine2()),
-        Integer.max(p1.getPos2(),p2.getPos2())
-        );
+        Integer.max(p1.getPos2(),p2.getPos2()),
+        null);
       }
     //if(genericity(p1)>genericity(p2)){return p2;}//mess up with file names?
     return p1;

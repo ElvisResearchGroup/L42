@@ -63,6 +63,10 @@ public class RefactorErrors{
   UnresolvedOverloading extends MutMsgExc implements
     FluentSetter<UnresolvedOverloading>{}
   
+  @SuppressWarnings("serial") public static class 
+  NotAvailable extends MutMsgExc implements
+    FluentSetter<NotAvailable>{}//For Location
+  
 }
   /*
  TODO:

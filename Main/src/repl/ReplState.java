@@ -46,7 +46,7 @@ public static ReplState start(String code){
     code3=(ExpCore.ClassB)code3.accept(new CloneVisitor(){
       @Override public ExpCore visit(ExpCore.ClassB cb){
         Position p=cb.getP();
-        cb=cb.withP(new Position(p.getFile(),p.getLine1(),p.getPos1(),p.getLine2(),p.getPos2()));
+        cb=cb.withP(new Position(p.getFile(),p.getLine1(),p.getPos1(),p.getLine2(),p.getPos2(),p.get_next()));
         return super.visit(cb);
         }
       });
@@ -89,7 +89,7 @@ public static ReplState start(String code){
       code3=(ExpCore.ClassB)code3.accept(new CloneVisitor(){
         @Override public ExpCore visit(ExpCore.ClassB cb){
           Position p=cb.getP();
-          cb=cb.withP(new Position(p.getFile(),p.getLine1(),p.getPos1(),p.getLine2(),p.getPos2()));
+          cb=cb.withP(new Position(p.getFile(),p.getLine1(),p.getPos1(),p.getLine2(),p.getPos2(),p.get_next()));
           return super.visit(cb);
           }
        });

@@ -187,7 +187,7 @@ public class L42 {
       code3=(ClassB)code3.accept(new CloneVisitor(){
           @Override public ExpCore visit(ClassB cb){
             Position p=cb.getP();
-            cb=cb.withP(new Position(p.getFile(),p.getLine1(),p.getPos1(),p.getLine2(),p.getPos2()));
+            cb=cb.withP(new Position(p.getFile(),p.getLine1(),p.getPos1(),p.getLine2(),p.getPos2(),p.get_next()));
             return super.visit(cb);
             }
           });

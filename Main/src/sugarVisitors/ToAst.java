@@ -99,7 +99,7 @@ public class ToAst extends AbstractVisitor<Expression>{
   }
   public Position position(ParserRuleContext ctx) {
     //assert facade.Parser.fileName!=null;
-    Position p=new Position(facade.Parser.getFileName(),ctx.start.getLine(),ctx.start.getCharPositionInLine(),ctx.stop.getLine(),ctx.stop.getCharPositionInLine());
+    Position p=new Position(facade.Parser.getFileName(),ctx.start.getLine(),ctx.start.getCharPositionInLine(),ctx.stop.getLine(),ctx.stop.getCharPositionInLine(),null);
     return p;
   }
 

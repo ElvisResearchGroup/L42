@@ -1,5 +1,16 @@
 todo:
 
+discuss desugaring step by step:
+  a sugared class can contain desugared nesteds. (reuse classes may have cached desugared/typed extra members)
+  normalization -collect used paths will have a cache(idClassB->desugaredClassB)
+    and the recursion will happen preferentially on the cache
+  then normalizeAll will take desugared from cache and normalize them
+  
+  -desugaring a ClassB will desugar also its method bodies.
+  -normalizing a ClassB will (call desugar by caching) and normalize up to the method headers.
+  -we can sort of never observe that ClassB inside method bodies are desugared but not normalized since to extract
+   that class we need to type that method first (and thus normalize such class)
+    
 new private with __ instead of @private (see later in this file)
 
 if e return/error/exception/loop e 

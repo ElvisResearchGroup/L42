@@ -33,23 +33,26 @@ Location:{interface implements Base //that is equals, toS and "know your class"
     
   method Size originsSize()//many since metaprogramming
   method Origin origin(Size that)   
-  method
-  Origin.List origins()
-    Origin.List[with i in Count(this.originSize()) (use[this.origin(i)])]
 
 
 //###2 Doc 
 //------------------------------------
 
   Doc:MiniData<><{ implements Location
-    method Location location()//user will need typecase to discover precise type
+    //user will need typecase to discover precise type, location() not refined
     Annotation:MiniData<><{
-      Type.RefTo 
+      Type.RefTo key
       S text
     
       $This:MiniData.thisLib()
       List:Collection.vector(of:$This)
       }
+    method Size annotationsSize()
+    method Annotation annotation(Size that)   
+    method
+    Annotation.List origins()
+      Annotation.List[with i in Count(this.originSize()) (use[this.origin(i)])]
+    
     }
 
     
@@ -277,6 +280,13 @@ MiniData:{
   class method Library <><(Library that) exception Refactor.Fail (
     Refactor.rename(path:\"$This" to:\"This")<><Refactor.compose(left:MiniDataTrait() right:that)
     }
+    
+All locations need to be sum with
+{ implements Location
+  method
+  Origin.List origins()
+    Origin.List[with i in Count(this.originSize()) (use[this.origin(i)])]
+  }
 Refactor.baseDefaults()<>< to call MiniData?
 
 Refactor2 design:

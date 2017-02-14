@@ -511,11 +511,13 @@ public interface Ast {
 
  @Value
  @Wither
- public static class Doc {
-             boolean multiline;
+ @EqualsAndHashCode(exclude = "p")
+ public static class Doc implements Expression.HasPos{
+  boolean multiline;
   String s;
   List<Object> annotations;
   List<String> parameters;
+  Position p;
 
   public List<Path> getPaths() {
    List<Path> result = new ArrayList<>();
@@ -546,7 +548,7 @@ public interface Ast {
         public static Doc getPrivate(){return privateInstance;}
         private static final Doc privateInstance=Doc.factory(true,"@private");
   public static Doc factory(Path single) {
-   return new Doc(true,"%s\n", Collections.singletonList((Object) single), Collections.singletonList(""));
+   return new Doc(true,"%s\n", Collections.singletonList((Object) single), Collections.singletonList(""),Position.noInfo);
   }
 
   public static Doc factory(boolean multiline,String s) {
@@ -578,10 +580,10 @@ public interface Ast {
      } // if(!Path.isValidPathStart(next)){sb.append(ci);continue;}
     }
    }
-   return new Doc(multiline,sb.toString(), annotations,parameters);
+   return new Doc(multiline,sb.toString(), annotations,parameters,Position.noInfo);
   }
 
-  private static final Doc empty = new Doc(true,"", Collections.emptyList(), Collections.emptyList());
+  private static final Doc empty = new Doc(true,"", Collections.emptyList(), Collections.emptyList(),Position.noInfo);
 
   public static Doc empty() {
    return empty;
@@ -626,7 +628,7 @@ public interface Ast {
    ps.addAll(that.annotations);
             List<String> pars = new ArrayList<>(this.parameters);
             pars.addAll(that.parameters);
-   return new Doc(true,this.s + that.s, ps,pars);
+   return new Doc(true,this.s + that.s, ps,pars,Position.noInfo);
   }
   public Doc formatNewLinesAsList() {
     String newS=this.s.trim();
@@ -807,13 +809,14 @@ public interface Ast {
   None, Ph, Partial
  }
 
- public static @Value class Position {
-  public static final Position noInfo = new Position(null, Integer.MAX_VALUE / 2, Integer.MAX_VALUE / 2, 0, 0);
+ public static @Wither @Value class Position {
+  public static final Position noInfo = new Position(null, Integer.MAX_VALUE / 2, Integer.MAX_VALUE / 2, 0, 0,null);
   String file;
   int line1;
   int pos1;
   int line2;
   int pos2;
+  Position _next;
 
   public String toString() {
    int line1 = this.line1 - 1;
