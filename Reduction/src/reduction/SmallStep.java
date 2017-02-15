@@ -27,6 +27,7 @@ import coreVisitors.IsCompiled;
 import coreVisitors.ReplaceCtx;
 import facade.Configuration;
 import facade.ErrorFormatter;
+import facade.PData;
 
 public class SmallStep extends Executor{
 
@@ -59,7 +60,7 @@ public class SmallStep extends Executor{
         }
       });
       //run m.e1-->e2
-      ExpCore e2=executeAtomicStep(p1,e1,m.getName());
+      ExpCore e2=executeAtomicStep(new PData(p1),e1,m.getName());
       e2=Functions.clearCache(e2,Stage.Less);
       if(!(e2 instanceof ClassB)){Configuration.typeSystem.checkMetaExpr(p1.getExecutableStar(),e2);}//TODO: as assert
       ClassB cbRes=cb.withMember(m.withInner(e2));
@@ -72,7 +73,7 @@ public class SmallStep extends Executor{
       cb.getStage().setStage(oldSt);
       }
   }
-  protected ExpCore executeAtomicStep(Program p1, ExpCore e1,String nestedName) {
+  protected ExpCore executeAtomicStep(PData p1, ExpCore e1,String nestedName) {
     //return step(p1,e1);//TODO push withP in compiledStep
     if(!IsCompiled.of(e1)){return step(p1, e1);}
     return Resources.withPDo(p1,()-> step(p1, e1));

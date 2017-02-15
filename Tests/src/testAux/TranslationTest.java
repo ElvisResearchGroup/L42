@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import facade.Configuration;
 import facade.L42;
+import facade.PData;
 import facade.Parser;
 import platformSpecific.inMemoryCompiler.InMemoryJavaCompiler;
 import platformSpecific.inMemoryCompiler.RunningUtils;
@@ -65,9 +66,9 @@ public class TranslationTest {
     Program p=runTypeSystem(cbStr);
     ExpCore e=Desugar.of(Parser.parse(null,eStr)).accept(new InjectionOnCore());
     ExpCore e2=Functions.setMinimalCache(p,Norm.of(p, e));
-    Translator code=Resources.withPDo(p,()->Translator.translateProgram(p, e2));
+    Translator code=Resources.withPDo(new PData(p),()->Translator.translateProgram(p, e2));
     System.out.println(code);
-    Object o=Resources.withPDo(p,()->code.runMap());
+    Object o=Resources.withPDo(new PData(p),()->code.runMap());
     Assert.assertEquals(o.getClass().getName(), nameRes);
     }
 

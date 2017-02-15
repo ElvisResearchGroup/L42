@@ -8,5 +8,5 @@ import auxiliaryGrammar.Program;
 public interface Reduction {
   ClassB of(ClassB topLevel);
   Object convertPath(Path p);
-  ExpCore metaExp(Program p, ExpCore e,String nameDebug);
+  ExpCore metaExp(PData p, ExpCore e,String nameDebug);
 }

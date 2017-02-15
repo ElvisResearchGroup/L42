@@ -10,6 +10,7 @@ import ast.ExpCore.ClassB;
 import auxiliaryGrammar.Program;
 import facade.Configuration;
 import facade.L42;
+import facade.PData;
 import facade.Reduction;
 import platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.MapClassLoader;
 import platformSpecific.javaTranslation.Resources;
@@ -64,7 +65,7 @@ public class Facade implements Reduction{
     return (ClassB)Executor.stepStar(myExecutor, topLevel);
   });}
 @Override
-public ExpCore metaExp(Program p,ExpCore e,String nameDebug) {
+public ExpCore metaExp(PData p,ExpCore e,String nameDebug) {
   return  myExecutor.executeAtomicStep(p, e,nameDebug);
  }
 }

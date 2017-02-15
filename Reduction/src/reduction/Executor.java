@@ -16,6 +16,7 @@ import coreVisitors.*;
 import facade.Configuration;
 import facade.ErrorFormatter;
 import facade.L42;
+import facade.PData;
 import facade.Parser;
 import ast.Ast;
 import ast.Ast.Doc;
@@ -44,7 +45,7 @@ import ast.Redex.*;
 import auxiliaryGrammar.*;
 
 abstract public class Executor {
-  abstract protected ExpCore executeAtomicStep(Program p1, ExpCore e1,String nestedName);
+  abstract protected ExpCore executeAtomicStep(PData p1, ExpCore e1,String nestedName);
   abstract protected ClassB meta1(Program p, ClassB cb, NestedClass m);
   abstract protected void log(String s);
   static public ExpCore last1=null;
@@ -63,7 +64,7 @@ public static ExpCore stepStar(Executor executer,ExpCore e){
   try{while(true){
     assert coreVisitors.CheckNoVarDeclaredTwice.of((ClassB) e);
     e=NormalizeBlocks.of(e);
-    e=executer.step(emptyP,e);
+    e=executer.step(new PData(emptyP),e);
     dbgRecordNext(e);
     assert coreVisitors.CheckNoVarDeclaredTwice.of((ClassB) e);
     executer.log("--------------------"+(iteration+=1));
@@ -87,22 +88,22 @@ public static ExpCore stepStar(Executor executer,ExpCore e){
       }
     return e;}
 }
-final public ExpCore step(Program p,ExpCore e){
+final public ExpCore step(PData p,ExpCore e){
   try{
-  Ctx<Redex> ctx=ExtractCtxVal.of(p, e);
+  Ctx<Redex> ctx=ExtractCtxVal.of(p.p, e);
   log("---REDEX--: "+ctx.hole.getClass().getSimpleName());
   return Match.<ExpCore>of(ctx.hole)
       .add(Redex.Garbage.class, r->garbage(ctx.ctx,r))
-      .add(Redex.CaptureOrNot.class, r->captureOrNot(p,ctx.ctx,r))
+      .add(Redex.CaptureOrNot.class, r->captureOrNot(p.p,ctx.ctx,r))
       .add(Redex.BlockElim.class, r->blockElim(ctx.ctx,r))
       .add(Redex.Subst.class, r->subst(ctx.ctx,r))
-      .add(Redex.MethCall.class, r->methCall(p,ctx.ctx,r))
-      .add(Redex.Ph.class, r->ph(p,ctx.ctx,r))
+      .add(Redex.MethCall.class, r->methCall(p.p,ctx.ctx,r))
+      .add(Redex.Ph.class, r->ph(p.p,ctx.ctx,r))
       .add(Redex.NoThrowRemoveOn.class, r->removeCatch(ctx.ctx,r))
             .add(Redex.LoopR.class, r->loopR(ctx.ctx,r))
-      .add(Redex.UsingOut.class, r->usingOut(p,ctx.ctx,r))
-      .add(Redex.Using.class, r->using(p,ctx.ctx,r))
-      .add(Redex.Meta.class, r->meta(p,ctx.ctx,r))
+      .add(Redex.UsingOut.class, r->usingOut(p.p,ctx.ctx,r))
+      .add(Redex.Using.class, r->using(p.p,ctx.ctx,r))
+      .add(Redex.Meta.class, r->meta(p.p,ctx.ctx,r))
       .end();}
 catch(ErrorMessage.CtxExtractImpossible rethrow){
   throw rethrow;//to debug
@@ -160,7 +161,7 @@ protected ClassB meta1Prop(Program p, ClassB cb, NestedClass m) {
   //extract cb
   Ctx<ClassB> ctxC=ExtractCtxCompiled.of(e);
   //run cb1-->cb2
-  ClassB cb2=(ClassB)step(p1, ctxC.hole);
+  ClassB cb2=(ClassB)step(new PData(p1), ctxC.hole);
   ExpCore e2=ReplaceCtx.of(ctxC.ctx,cb2);
   
   //compose cb with new member
@@ -178,7 +179,7 @@ protected ClassB metaMethod(Program p, ClassB cb, Member m) {
   //extract cb
   Ctx<ClassB> ctxC=ExtractCtxCompiled.of(e);
   //run cb1-->cb2
-  ClassB cb2=(ClassB)step(p1, ctxC.hole);
+  ClassB cb2=(ClassB)step(new PData(p1), ctxC.hole);
   ExpCore e2=ReplaceCtx.of(ctxC.ctx,cb2);
   //compose cb with new member
   return cb.withMember(m.withInner(e2));

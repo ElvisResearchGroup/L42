@@ -121,17 +121,19 @@ public class ExtractInfo {
 
   public static enum ClassKind{
     //Box,
-    Interface,
+    Interface("interface"),
     //FreeInterface,
-    ClosedClass,
-    OpenClass,
-    Template/*,PureRecord*/,
-    FreeTemplate
+    ClosedClass("closedClass"),
+    OpenClass("openClass"),
+    Template("template")/*,PureRecord*/,
+    FreeTemplate("freeTemplate");
     //Module,
     //TemplateModule,
     //Interface_FreeInterface,
     //Box_TemplateModule
-    ;}
+    public final String name42;
+    ClassKind(String name42){this.name42=name42;}
+    }
   //top can be null, in this case we can return the mixed kinds
   public static ClassKind classKind(ClassB top, List<String> current,ClassB cb,Boolean isFree,Boolean isPrivateState,Boolean isNoImplementation){//9 options
    assert (top==null)==(current==null);

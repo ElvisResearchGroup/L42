@@ -76,13 +76,14 @@ public class Resources {
     usedRes.put(newK,cb);
     return newK;
     }
-  private static Program p;
+  private static PData p;
   public static Program getP(){
     assert p!=null;
-    return p;
+    assert p.p!=null;
+    return p.p;
     }
-  public static PData pData(){return new PData(getP());}
-  public static <T> T withPDo(Program _p,Supplier<T> action){
+  public static PData pData(){assert p!=null; return p;}
+  public static <T> T withPDo(PData _p,Supplier<T> action){
     if(p!=null){throw new IllegalAccessError();}
     try{
       p=_p;

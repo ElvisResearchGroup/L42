@@ -13,6 +13,7 @@ import coreVisitors.IsCompiled;
 import coreVisitors.IsValue;
 import coreVisitors.NormalizeBlocks;
 import facade.L42;
+import facade.PData;
 import ast.ErrorMessage;
 import ast.ExpCore;
 import ast.ExpCore.ClassB;
@@ -25,14 +26,14 @@ public class CompiledStep extends SmallStep{
   @Override protected void log(String s) { }
 
   @Override
-  protected ExpCore executeAtomicStep(Program p1, ExpCore _e1,String nestedName) {
+  protected ExpCore executeAtomicStep(PData p1, ExpCore _e1,String nestedName) {
     if(!IsCompiled.of(_e1)){return step(p1, _e1);}
     return Resources.withPDo(p1,()->{
       ExpCore e1=NormalizeBlocks.of(_e1);
       if(e1 instanceof ExpCore.Signal){
-        throw new ErrorMessage.CtxExtractImpossible(e1,p1.getInnerData());
+        throw new ErrorMessage.CtxExtractImpossible(e1,p1.p.getInnerData());
         }
-      Translator code=Timer.record("Translator.translateProgram",()->Translator.translateProgram(p1, e1));
+      Translator code=Timer.record("Translator.translateProgram",()->Translator.translateProgram(p1.p, e1));
       try{
         L42.compilationRounds++;
         System.out.println("Compilation Iteration-- "+nestedName+":"+L42.compilationRounds+ "");

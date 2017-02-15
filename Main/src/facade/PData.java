@@ -12,5 +12,6 @@ public class PData {
     this.p = p;
     }
 
-public Program p;//TODO: will change
+  public Program p;//TODO: will change
+  public programReduction.Program newP=null;
   }

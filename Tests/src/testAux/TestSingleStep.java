@@ -15,6 +15,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
 
+import facade.PData;
 import facade.Parser;
 import reduction.SmallStep;
 import sugarVisitors.Desugar;
@@ -217,7 +218,7 @@ TestHelper.multiLine(" "
       ExpCore ee1=Desugar.of(Parser.parse(null," "+e1)).accept(new InjectionOnCore());
       ExpCore ee2=Desugar.of(Parser.parse(null," "+e2)).accept(new InjectionOnCore());
       Program p=TestHelper.getProgramCD();
-      ExpCore eRed=new SmallStep().step(p, ee1);
+      ExpCore eRed=new SmallStep().step(new PData(p), ee1);
       TestHelper.assertEqualExp(eRed,ee2);
     }
 

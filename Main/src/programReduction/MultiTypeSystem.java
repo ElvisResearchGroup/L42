@@ -62,7 +62,7 @@ private static ClassB typeSingle(Program p) {
     return s;
   }});
   p=p.updateTop(l);
-  auxiliaryGrammar.Program pOld = p.oldRepr();
+  auxiliaryGrammar.Program pOld = p.oldRepr();//TODO:will disappear
   pOld=pOld.getExecutableStar();
   //pOld.recomputeStage();
   facade.Configuration.typeSystem.checkCt(pOld.pop(),l);

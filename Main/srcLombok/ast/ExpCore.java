@@ -98,8 +98,10 @@ public interface ExpCore {
 
     }
   }
+   
 
   @Value @Wither @EqualsAndHashCode(exclude = {"stage","p","phase","uniqueId"}) public static class ClassB implements ExpCore, Ast.Atom,HasPos {
+    
     public ClassB(Doc doc1, boolean isInterface, List<Type> supertypes, List<Member> ms,Position p,ast.Util.CachedStage stage, Phase phase, String uniqueId) {
       this.doc1 = doc1;
       this.isInterface = isInterface;
@@ -120,6 +122,20 @@ public interface ExpCore {
     ast.Util.CachedStage stage;
     Phase phase;
     String uniqueId;
+    // In the future, we may remove members and add mwts and ns, now we add delegation constructors/getters
+    public ClassB(Doc doc1, boolean isInterface, List<Type> supertypes, List<ClassB.MethodWithType> mwts, List<ClassB.NestedClass> ns,Position p,ast.Util.CachedStage stage, Phase phase, String uniqueId) {
+      this(doc1,isInterface,supertypes,java.util.stream.Stream.concat(mwts.stream(),ns.stream()).collect(Collectors.toList()),p,stage,phase,uniqueId);
+      }
+    public List<ClassB.MethodWithType> mwts(){
+      return ms.stream().filter(e->e instanceof ClassB.MethodWithType)
+        .map(e->(ClassB.MethodWithType)e)
+        .collect(Collectors.toList());
+      }
+    public List<ClassB.NestedClass> ns(){
+      return ms.stream().filter(e->e instanceof ClassB.NestedClass)
+        .map(e->(ClassB.NestedClass)e)
+        .collect(Collectors.toList());
+      }
     public String toString() {return sugarVisitors.ToFormattedText.of(this);}
     public boolean isConsistent() { return _Aux.isConsistent(this);}
     public ClassB withMember(Member m) {return _Aux.withMember(this, m);}

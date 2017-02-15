@@ -5,6 +5,7 @@ import sugarVisitors.ToFormattedText;
 import coreVisitors.InjectionOnSugar;
 import coreVisitors.IsCompiled;
 import coreVisitors.NormalizeBlocks;
+import facade.PData;
 import ast.ExpCore;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
@@ -14,7 +15,7 @@ import auxiliaryGrammar.Program;
 public class BigStep extends SmallStep{
 
   
-  protected ExpCore executeAtomicStep(Program p1, ExpCore _e1) {
+  protected ExpCore executeAtomicStep(PData p1, ExpCore _e1) {
     if(!IsCompiled.of(_e1)){return step(p1, _e1);}
     return Resources.withPDo(p1,()->{
       ExpCore e1=_e1;

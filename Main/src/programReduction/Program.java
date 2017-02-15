@@ -7,6 +7,7 @@ import ast.Ast.Path;
 import ast.ErrorMessage;
 import ast.ExpCore;
 import ast.ExpCore.ClassB;
+import facade.PData;
 import tools.Assertions;
 
 public interface Program {//this class will eventually replace auxiliaryDefinitions.Program
@@ -113,6 +114,12 @@ public interface Program {//this class will eventually replace auxiliaryDefiniti
     String ncName=((ClassB.NestedClass)m).getName();
     if(!ncName.equals(cs.get(0))){return null;}
     return Path.outer(0, cs.subList(1, cs.size()));
+    }
+  default PData reprAsPData(){
+    auxiliaryGrammar.Program pOld=this.oldRepr();
+    PData res=new PData(pOld);
+    res.newP=this;
+    return res;
     }
   default auxiliaryGrammar.Program oldRepr(){
     //TODO: will disappear

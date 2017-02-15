@@ -39,5 +39,16 @@ Main2:(
   Debug(S"Fail")
   {/*fail*/}
   )
+Compose:Refactor2.JavaImport<><{/*
+  @plugin  toFix 
+  @pluginPart is.L42.connected.withSafeOperators.refactor.Compose
+  */
+  class method Void #pluginUnresponsive(Library binaryRepr) void
 
+  class method Library compose(Library left,Library right)
+  }
+
+Main3:(
+  lRes=Compose.compose(left:{},right:{})
+  ExitCode.normal())
 }

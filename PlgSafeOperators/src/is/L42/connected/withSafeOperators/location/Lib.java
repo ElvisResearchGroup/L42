@@ -1,98 +1,85 @@
 package is.L42.connected.withSafeOperators.location;
 
-public class Lib implements Location{
-  @Override Lib location(){return null;}
-  int nestedsSize(){}
-method This nested(Size that)
-method
-List nesteds()
-  List[with i in Count(this.nestedSize()) (use[this.nested(i)])]
-List allNesteds()
-  List[this]++
-  List[with nc in this.nesteds().vals() (
-    with nci in nc.allNesteds().vals() (use[nci])
-  )]
-method Lib nested(Path path) exception NotAvailable (
-  with ni in this.root().allNested().vals() (
-    if ni.path()==path (return ni)
-    )
-  exception NotAvailable"Path "[path]"not present"
-  )
-method Bool has(Path path) (
-  unused=this.nested(path:path)
-  catch exception NotAvailable Bool.false()
-  Bool.true()
-  )
-      
-method Size methodsSize()
-method Method method(Size that)
-Method.List methods()
-  Method.List[with i in Count(this.methodsSize()) (use[this.method(i)])]
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
-method Method method(Selector selector) exception NotAvailable (
-  with mi in this.methods() (
-    if mi.selector()==selector (return mi)
-    )
-  exception NotAvailable"Selector "[selector]"not present"
-  )
-method Bool has(Selector selector) (
-  unused=this.method(selector:selector)
-  catch exception NotAvailable Bool.false()
-  Bool.true()
-  )      
-method Size implementedsSize()
-method Type.Implemented implemented(Size that)
-method
-Type.Implemented.List implementeds()
-  Type.Implemented.List[with i in Count(this.implementedsSize()) (use[this.implemented(i)])]
+import ast.Ast;
+import ast.Ast.Path;
+import ast.ExpCore;
+import ast.ExpCore.ClassB.NestedClass;
+import is.L42.connected.withSafeOperators.ExtractInfo;
+import is.L42.connected.withSafeOperators.ExtractInfo.ClassKind;
+import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.NotAvailable;
 
-method Bool implements(class Any clazz){
-  if Refactor.equalsClassObj(Any, and:clazz) (
-    return Bool.True()
-    ) 
-   with ti in this.implementeds().vals() (
-     with ri=ti.refTo() (
-       on Type.RefTo.Binded (
-         ci=ri.referredClassObj()
-         if Refactor.equalsClassObj(ci, and:clazz) (
-          //no need of supertypes since normalized classes has transitive implements already
-          return Bool.True()
-          )
-         )
-       )
-     )
-   return Bool.false()
-   }
-method Bool implements(Path path) {
-   with ti in this.implementeds().vals() (
-     with ri=ti.refTo() (
-       on Type.RefTo.Lib (
-         libi=ri.referredLib()
-         if path==libi.path() (
-           return Bool.true()
-           )
-         )
-       )
-     )
-   return Bool.false()
-   }   
+public class Lib extends Location.LocationImpl<ExpCore.ClassB,Lib>{
+  ExpCore.ClassB root;
+  String path;
+  public Lib(
+    ExpCore.ClassB root,
+    String path,
+    ExpCore.ClassB inner,Lib location) {super(inner,location);
+      this.root=root;
+      this.path=path;
+      }
+  //Cacher<List<Lib>> nestedsC=new Cacher<List<Lib>>(){public List<Lib> cache(){    }}; 
+  Cacher<List<Lib>> nestedsC=new Cacher<List<Lib>>(){public List<Lib> cache(){
+    return inner.ns().stream()
+      .map(n->new Lib(root,pathConcat(n.getName()),(ExpCore.ClassB)n.getInner(),Lib.this))
+      .collect(Collectors.toList());}};
+  public int nestedsSize(){return nestedsC.get().size();}
+  public Lib nested(int that) throws NotAvailable{return Location.listAccess(nestedsC.get(), that);}
 
-method Doc doc()
-method S kindS()
-Kind:Enum"..."
-method
-Bool isInterface()
-  this.kindS()==S"Interface"
-Bool isCoherent()
-  this.isInterface() | this.kindS()==S"CoherentClass"
-$This:MiniData.thisLib()
-List:Collection.vector(of:$This)
+  Cacher<List<Method>> methodsC=new Cacher<List<Method>>(){public List<Method> cache(){
+  return inner.mwts().stream()
+    .map(mwt->new Method(mwt,Lib.this))
+    .collect(Collectors.toList());}};
+  public int methodsSize(){return methodsC.get().size();}
+  public Method method(int that) throws NotAvailable{return Location.listAccess(methodsC.get(), that);}
 
-method Lib root()
-method Path path()//last is its name, empty path for root
-method Doc nestedDoc()//empty doc if it is root
+  Cacher<List<Type.Implemented>> implementedsC=new Cacher<List<Type.Implemented>>(){public List<Type.Implemented> cache(){
+  List<Type.Implemented> res=new ArrayList<>();
+  {int i=-1; for(Ast.Type ti:inner.getSupertypes()){i+=1; //starts from 0
+    res.add(new Type.Implemented(i,ti.getNT(),inner,Lib.this));
+  }}
+  return res;
+  }};
+  public int implementedsSize(){return implementedsC.get().size();}
+  public Type.Implemented implemented(int that) throws NotAvailable{return Location.listAccess(implementedsC.get(), that);}
+
+  @Override public Doc doc(){return new Doc(inner.getDoc1(),this);}
+  public String kindS(){
+    ClassKind k = ExtractInfo.classKind(root,Path.parseValidCs(path),inner,null,null,null);
+    return k.name42;
+    }
+  public Lib root(){return new Lib(root,"",root,null);}
+  @Override//since we pass null for root
+  public Lib location() {
+    Lib l=super.location();
+    if (l!=null){return l;}
+    return this;
+    }
+  public String path(){return path;}//last is its name, empty path for root
+  public Doc nestedDoc(){
+    if(this.path.isEmpty()){
+      return new Doc(Ast.Doc.empty(),this);
+      }
+    NestedClass nc = inner.getNested(Path.parseValidCs(path));
+    return new Doc(nc.getDoc(),this);
+    }//empty doc if it is root
 //even if obtained with a classObj, no method to get it back
 //to get a nested classObj, Refactor.navigateClassObj(classAny,Path)->classAny??
-}
-
-}
+  public String toS() {return sugarVisitors.ToFormattedText.of(inner);}
+  public Lib navigate(List<String> cs){
+    if (cs.isEmpty()){return this;}
+    List<String> top = Collections.singletonList(cs.get(0));
+    List<String> tail=cs.subList(1,cs.size());
+    Lib nextStep=new Lib(root,pathConcat(cs.get(0)),inner.getClassB(top),this);
+    return nextStep.navigate(tail);
+    }
+  private String pathConcat(String c){
+    if(path.isEmpty()) {return c;}
+    return path+"."+c;
+    }
+  }

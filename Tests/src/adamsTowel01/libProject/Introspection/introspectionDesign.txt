@@ -170,13 +170,13 @@ Location:{interface implements Base //that is equals, toS and "know your class"
     method Type.Return returnType()
     
     method Size parameterTypesSize()
-    method Type.Implemented parameterType(Size that)
+    method Type.Parameter parameterType(Size that)
     method
     Type.Parameter.List parameterTypes()
       Type.Parameter.List[with i in Count(this.parameterTypesSize()) (use[this.parameterType(i)])]
       
     method Size exceptionsSize()
-    method Type.Implemented exception(Size that)
+    method Type.Exception exception(Size that)
     method
     Type.Exception.List exceptions()
       Type.Exception.List[with i in Count(this.exceptionsSize()) (use[this.exceptions(i)])]
