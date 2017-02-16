@@ -245,7 +245,7 @@ public class Introspection {//TODO: we keep 5 methods, but we merge the PathRepo
 
   private static Doc liftDoc(List<String> path, Doc doc,int newNested) {
     //for all external paths (pi.outern>path.size) new outern=oldOutern-size+newNested
-    //for all internal paths(otherwise) becomes a ::string, normalized in path,
+    //for all internal paths(otherwise) becomes a .string, normalized in path,
     List<Object> ann=new ArrayList<>();
     for(Object o:doc.getAnnotations()){
       if(o instanceof String){ann.add(o);continue;}

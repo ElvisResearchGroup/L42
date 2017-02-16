@@ -593,11 +593,25 @@ public interface Ast {
   }
   public Doc withAnnotations(final List<Object> ann) { //customized to make the string change not break the parameters structure
     assert ann.size()==this.annotations.size();
-    Doc tmp=new Doc(this.multiline, s, this.annotations, this.parameters, this.p);
+    assert ann.stream().allMatch(Doc::isValidAnnotation)://
+      "";
+    Doc tmp = new Doc(this.multiline, this.s, ann, this.parameters, this.p);
     assert Doc.factory(this.multiline,tmp.toStringWeak()).equals(tmp)://
       "";
     return tmp;
   }
+  public static boolean isValidAnnotation(Object o){
+    if (o instanceof Path){return true;}
+    if (!(o instanceof String)){return false;}
+    String s=(String)o;
+    if(s.isEmpty()){return true;}
+    if (Path.isValidPathStart(s.charAt(0))){return false;}
+    for(char c : s.toCharArray()) {
+      if(c=='.'){continue;}
+      if(!Path.isValidPathChar(c)){return false;}
+      }
+    return true;
+    }
   public Doc toMultiline(){
     Doc tmp=new Doc(true, s, this.annotations, this.parameters, this.p);
     assert Doc.factory(true,tmp.toStringWeak()).equals(tmp);
@@ -671,6 +685,7 @@ public interface Ast {
       char ci = s.charAt(i);
       if (Path.isValidPathChar(ci)) {sb.append(ci);}
       else if (ci == '.' && isPath && i+1<s.length()&& Path.isValidPathStart(s.charAt(i+1))) {sb.append(ci);}
+      else if (ci == '.' && !isPath) {sb.append(ci);}
       else {break;}
       }
     String res = sb.toString();

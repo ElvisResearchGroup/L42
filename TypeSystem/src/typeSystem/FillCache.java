@@ -137,7 +137,6 @@ public static void computeStage(Program p,ClassB cb) {
   if(cb.getStage().getStage()!=Stage.None){return;}
   List<String>explored=new ArrayList<>();
   computeInheritedDeep(p, cb,explored);
-  p.addAtTop(cb);
   assert cb.getStage().getInherited()!=null;
   List<CachedStage>again=new ArrayList<>();
   computeStageFirst(again,p,cb);

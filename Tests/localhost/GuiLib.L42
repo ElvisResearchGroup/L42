@@ -459,6 +459,8 @@ This0 nl()
 method 
 This0 replace(This0 that, This0 into) 
 method 
+This0 as42MultilineString() 
+method 
 This0.Continue #from(This0.SConcat seqBuilder) 
 method 
 mut This0.SConcat #seqBuilder() 
@@ -5891,13 +5893,17 @@ method
 This1 #from(This3.S.SBuilder builder) }}
 CollectionErrors: {
 class method 
-Any negBound(This2.Size that, This1.MutListAny list) 
+Any negBound(This2.Size that, This2.Size listSize) 
 class method 
-Any outBound(This2.Size that, This1.MutListAny list) 
+Any outBound(This2.Size that, This2.Size listSize) 
 class method 
 Any cast() 
 class method 
-Any iterationTermination(This2.Size from, This2.Size minTo, This2.Size size) }
+Any iterationTermination(This2.Size from, This2.Size minTo, This2.Size size) 
+class method 
+Void checkBound(This2.Size that, This2.Size listSize) 
+class method 
+Void checkBoundAdd(This2.Size that, This2.Size listSize) }
 MutListAny: {implements This2.Concept.ToS
 class method 
 mut This0 #mutK(This0.Cell head, This2.Size size) 
@@ -5931,10 +5937,6 @@ method
 This0 withAlso(This2.Size that, Any val) 
 method 
 This0 with(This2.Size that, Any val) 
-read method 
-Void checkBound(This2.Size that) 
-read method 
-Void checkBoundAdd(This2.Size that) 
 refine read method 
 This2.S toS() 
 Cell: {interface 
