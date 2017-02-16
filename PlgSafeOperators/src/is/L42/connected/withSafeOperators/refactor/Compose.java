@@ -13,4 +13,5 @@ public class Compose {
     catch(Program.EmptyProgram ep){}
     return l1;
   }
+  //public static ClassB compose()//need to sort out new privates?
 }

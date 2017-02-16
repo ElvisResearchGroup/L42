@@ -100,7 +100,7 @@ public interface ExpCore {
   }
    
 
-  @Value @Wither @EqualsAndHashCode(exclude = {"stage","p","phase","uniqueId"}) public static class ClassB implements ExpCore, Ast.Atom,HasPos {
+  @Value @Wither @EqualsAndHashCode(exclude = {"stage","p","phase","uniqueId"})  /*@ToString(exclude ="p")*/ public static class ClassB implements ExpCore, Ast.Atom,HasPos {
     
     public ClassB(Doc doc1, boolean isInterface, List<Type> supertypes, List<Member> ms,Position p,ast.Util.CachedStage stage, Phase phase, String uniqueId) {
       this.doc1 = doc1;

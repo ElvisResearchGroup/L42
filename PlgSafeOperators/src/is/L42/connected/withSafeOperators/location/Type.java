@@ -33,10 +33,10 @@ public interface Type extends Location{
         return new TypeRefTo.Binded(path);
         }
       //else, phase is none but cb available and not normalized
-      return new TypeRefTo.Uncompiled();//TODO: borderline ok?
+      return new TypeRefTo.Unavailable();//TODO: borderline ok?
       }
     catch(ErrorMessage.ProgramExtractOnMetaExpression meta){
-      return new TypeRefTo.Uncompiled();
+      return new TypeRefTo.Unavailable();
       }
     catch(ErrorMessage.PathNonExistant pne){
       return new TypeRefTo.Missing();

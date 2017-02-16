@@ -1,5 +1,33 @@
  {/*--layer-- Bool Size S -     and first layer of unsafe operators
 */
+PrW: {/*private wrapper
+@plugin is.L42.connected.withSafeOperators
+@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.PlgWrapperGenerator
+*/
+class method 
+Library #leftrightleft(Library that) use This0 check #main(_1_Library:that) error void}
+UnsafeRefactor: {
+Compose: {/*
+  @plugin  toFix 
+  @pluginPart is.L42.connected.withSafeOperators.refactor.Compose
+  */
+class method 
+mut This0 #from(Library binaryRepr) 
+read method 
+Library #binaryRepr() 
+class method 
+Void #exceptionIf(Library binaryRepr) exception This0 use This0 check instanceof(_this:binaryRepr) exception This0.#from(binaryRepr:binaryRepr)
+class method 
+Void #pluginUnresponsive(Library binaryRepr) error  {/*Compose(that,and)*/}
+class method 
+Library compose(Library left, Library right) (
+  Library res=use This0 check #compose(_1_ast%ExpCore$ClassB:left, _2_ast%ExpCore$ClassB:right) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.refactor.Compose\u000amethod name: compose(left,right)\u000ajava method: is.L42.connected.withSafeOperators.refactor.Compose.#compose(_1_ast%ExpCore$ClassB,_2_ast%ExpCore$ClassB)\u000a
+*/})
+  res
+  )
+class method 
+Library #apply(Library that, Library and) This0.compose(left:that, right:and)}}
 Alu: {/*@plugin
 L42.is/connected/withAlu
 */}
@@ -36856,12 +36884,6 @@ class method
 class This2.Selector #default#selector(Void that) This2.Selector
 class method 
 class This2.Path #default#selector(Void of) This2.Path}}
-PrW: {/*private wrapper
-@plugin is.L42.connected.withSafeOperators
-@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.PlgWrapperGenerator
-*/
-class method 
-Library #leftrightleft(Library that) use This0 check #main(_1_Library:that) error void}
 Refactor2: {
 Fail: {interface implements This2.Concept.ToS, This2.Concept.Classable
 method 

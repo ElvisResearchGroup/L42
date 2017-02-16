@@ -1,0 +1,17 @@
+{
+Compose:{/*
+  @plugin  toFix 
+  @pluginPart is.L42.connected.withSafeOperators.refactor.Compose
+  */
+  class method Void #pluginUnresponsive(Library binaryRepr) 
+    error {/*Compose(that,and)*/}
+
+  class method
+  Library compose(Library left,Library right)
+  
+  class method
+  Library (Library that,Library and)
+    This.compose(left:that,right:and)
+  }
+//may still need redirect/rename class
+}

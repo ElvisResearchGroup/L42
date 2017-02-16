@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
+import ast.Ast.Doc;
 import ast.Ast.Mdf;
 import ast.Ast.NormType;
 import ast.Ast.Op;
@@ -510,8 +511,7 @@ public interface Ast {
  }
 
  @Value
- @Wither
- @EqualsAndHashCode(exclude = "p")
+ @EqualsAndHashCode(exclude = "p") /*to string manually defined so @ToString(exclude = "p") not needed*/
  public static class Doc implements Expression.HasPos{
   boolean multiline;
   String s;
@@ -552,6 +552,9 @@ public interface Ast {
   }
 
   public static Doc factory(boolean multiline,String s) {
+    return factory(multiline, s,Position.noInfo );
+  }
+  public static Doc factory(boolean multiline,String s, Position pos) {
    if (!multiline & !s.endsWith("\n")) { s += "\n";}
    List<Object> annotations = new ArrayList<>();
             List<String> parameters = new ArrayList<>();
@@ -580,7 +583,7 @@ public interface Ast {
      } // if(!Path.isValidPathStart(next)){sb.append(ci);continue;}
     }
    }
-   return new Doc(multiline,sb.toString(), annotations,parameters,Position.noInfo);
+   return new Doc(multiline,sb.toString(), annotations,parameters,pos);
   }
 
   private static final Doc empty = new Doc(true,"", Collections.emptyList(), Collections.emptyList(),Position.noInfo);
@@ -588,10 +591,27 @@ public interface Ast {
   public static Doc empty() {
    return empty;
   }
+  public Doc withAnnotations(final List<Object> ann) { //customized to make the string change not break the parameters structure
+    assert ann.size()==this.annotations.size();
+    Doc tmp=new Doc(this.multiline, s, this.annotations, this.parameters, this.p);
+    assert Doc.factory(this.multiline,tmp.toStringWeak()).equals(tmp)://
+      "";
+    return tmp;
+  }
+  public Doc toMultiline(){
+    Doc tmp=new Doc(true, s, this.annotations, this.parameters, this.p);
+    assert Doc.factory(true,tmp.toStringWeak()).equals(tmp);
+    return tmp;
+    }
+  public Doc withS(final String s) { //customized to make the string change not break the parameters structure
+    if (this.s==s || this.s.equals(s)){return this;}
+    Doc tmp=new Doc(this.multiline, s, this.annotations, this.parameters, this.p);
+    return Doc.factory(this.multiline,tmp.toStringWeak());
+    }
      public String _getParameterForPlugin(){return _getParameterFor("plugin");}
         public String _getParameterForPluginPart(){return _getParameterFor("pluginPart");}
         
-        public String toString() {
+        public String toStringWeak() {
           List<Object> paths = new ArrayList<>();
           for (Object pi : this.annotations) {
             if (pi instanceof Path) { 
@@ -600,7 +620,12 @@ public interface Ast {
               paths.add("@" + (String) pi);  
             }
           }
-          String text=String.format(this.s, paths.toArray());
+          return String.format(this.s, paths.toArray());
+          }
+        public String toString() {
+          String text=toStringWeak();
+          assert Doc.factory(this.multiline, text).equals(this)://
+            "";
           return text;
         }
       public String toCodeFormattedString() {
@@ -624,11 +649,13 @@ public interface Ast {
   }
 
   public Doc sum(Doc that) {
-   List<Object> ps = new ArrayList<>(this.annotations);
-   ps.addAll(that.annotations);
-            List<String> pars = new ArrayList<>(this.parameters);
-            pars.addAll(that.parameters);
-   return new Doc(true,this.s + that.s, ps,pars,Position.noInfo);
+   
+   //be carefull, a more optimized implementation would mess up annotations as in 
+   // /*@a b*/ +/* c*/ would create annotations=[" b"] while
+   // /*@a b c*/ would create annotations=[" b c"]
+   String tosThis=this.toString();
+   String tosThat=that.toString();
+   return Doc.factory(true, tosThis+tosThat,this.p.sum(that.p));
   }
   public Doc formatNewLinesAsList() {
     String newS=this.s.trim();
@@ -655,7 +682,11 @@ public interface Ast {
   private static void readParameter(String s, int start, List<String> parameters) {
     int i=s.indexOf('@',start);
     if (i==-1){i=s.length();}
-    parameters.add(s.substring(start,i));
+    String par=s.substring(start, i);
+    while(par.endsWith("\n")){
+      par=par.substring(0, par.length()-1);
+      }
+    parameters.add(par);
     }
   }
 
@@ -811,6 +842,12 @@ public interface Ast {
 
  public static @Wither @Value class Position {
   public static final Position noInfo = new Position(null, Integer.MAX_VALUE / 2, Integer.MAX_VALUE / 2, 0, 0,null);
+  public Position sum(Position that){
+    if (this==noInfo){return that;}
+    if (that==noInfo || that==null){return this;}
+    if(this._next==null){return this.with_next(that);}
+    return this.with_next(this._next.sum(that));
+    }
   String file;
   int line1;
   int pos1;

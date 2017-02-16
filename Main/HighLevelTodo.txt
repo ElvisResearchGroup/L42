@@ -209,12 +209,21 @@ make @id == /*@id*/
 
 
 
-prviati:
-method selector contiene un long int. -1 per non privato
-@private non ha semantica nel linguaggio,
+private:
+method selector contans a long int. -1 for not private
+Path??? an array of long as long as cs?
+@private is not without any semantic in the language,
 una library compilata e' ben formata se tutti i nomi dichiarati con forma a__n sono dichiarati una volta sola al suo interno, e non ridichiara nomi dichiarati fuori. (quindi hiding is ok)
 operatori che prendono cose ben formate (in un certo programa)producono cose ben formate (nello stesso programma).
 su chiamata di metodo(small step) o su resource.get() on compiled i nomi sono rimpiazzati.
+
+a developed library can normalize its private names in the following way:
+put in a list all the declared private numbers.
+//assert the same number does not appear twice.
+now for each number, its index is the new minimized number.
+do a find/replace on the ast replacing the numbers with their index.
+We can then find the max private number while reading the library, and we have
+our starting freshPrivate number.
 
 una classB e' normalizata (non solo ben formata) se
 ha nomi privati consegutivi e ordinati nei sottoalberi,

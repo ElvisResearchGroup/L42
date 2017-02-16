@@ -53,6 +53,11 @@ public class L42 {
       }
     _stage=newStage;
   }
+  private static long privateNum=0L;
+  public synchronized static long freshPrivate(){privateNum+=1L;return privateNum;}
+  public synchronized static void setFreshPrivateCap(long cap){
+    privateNum=Math.max(privateNum, cap);
+    }
   public static ExecutionStage getStage(){return _stage;}
   public static int compilationRounds=0;
   public static boolean trustPluginsAndFinalProgram=true;

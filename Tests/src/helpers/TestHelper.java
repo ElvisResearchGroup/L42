@@ -26,6 +26,7 @@ import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.NestedClass;
 import ast.Expression;
+import auxiliaryGrammar.Functions;
 import auxiliaryGrammar.Program;
 import facade.Configuration;
 import facade.L42;
@@ -128,6 +129,9 @@ public class TestHelper {
   public static void assertEqualExp(ExpCore e1,ExpCore e2){
     assert e1!=null;
     assert e2!=null;
+    e1=Functions.clearCache(e1,null);//clean all cache
+    e2=Functions.clearCache(e2,null);//clean all cache
+
     String s1=ToFormattedText.of(e1);
     String s2=ToFormattedText.of(e2);
     if(e1.equals(e2) && s1.equals(s2)){return;}

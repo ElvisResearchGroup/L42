@@ -96,7 +96,6 @@ import auxiliaryGrammar.Program;
     ClassB expected=getClassB(_expected);
     if(!isError){
       ClassB res=Sum.sum(Program.empty(),cb1,cb2);
-      res=Functions.clearCache(res,Ast.Stage.None);
       TestHelper.assertEqualExp(expected,res);
       }
     else{

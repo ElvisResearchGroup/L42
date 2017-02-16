@@ -193,9 +193,24 @@ Location:{interface implements Base //that is equals, toS and "know your class"
       Lib:{ implements This1
         method Location.Lib referredLib()
         }
-      Uncompiled:{ implements This1
-        method S pathToExpression()//can be a subset of toS
-        method S expression()
+      Unavailable:{ implements This1
+        /*cases:
+          (1)
+          A: .. Refactor.introspect(lib:{ method B(B.C that)})..
+          B:{..}//just not yet normalized in the program flow
+          (2)
+          A: .. Refactor.introspect(lib:{ method B()})..
+          B:Foo<><{..}//B is not there yet.
+          (3)
+          A: .. Refactor.introspect(lib:{ method B.C()})..
+          B:Foo<><{..}//we do not know if B.C will ever exists
+          (4)
+          {/*this all is seen as This1 by lib:{..}*/
+          A: .. Refactor.introspect(lib:{ method This1()})..
+          }//it can not be norm, not even in principle, since
+           // A is under compilation right now.
+        
+        */
         }
       Binded:{implements This1 //includes primitives
         method class Any referredClassObj()
@@ -203,7 +218,7 @@ Location:{interface implements Base //that is equals, toS and "know your class"
       Missing:{implements This1
         //mostly useful for docs, where we can use lowercase annotation
         //or we may want to preserve @P where we removed the P
-        //also, if an (nested) Uncompiled is resolved not existing..        
+        //also, if an (nested) Unavailable is resolved not existing..        
         }
       }
     method RefTo refTo()
@@ -239,6 +254,14 @@ Location:{interface implements Base //that is equals, toS and "know your class"
 
 By calling Refactor.introspect(lib:{...})or
 By calling Refactor.introspect(class:A.B) you get a Location.Lib
+
+Java Lib need to store a optional classObj in case
+the lib come from binded class.
+When extracting a RefTo from a type with classObj, it will
+never be Lib.
+if the classObj is typed in p, it will be a RefTo a typed Binded
+else will be any of Missing, Binded, Unreached 
+
 
 L::={ interface? Doc implements Ts mwt1..mwtn nc1..nck Phase}  //library compiled
 mwt::= abstract? refine? mh //we do not expose the implementation

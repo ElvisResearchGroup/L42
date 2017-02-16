@@ -601,6 +601,7 @@ private static void retainOnlyOriginalMethOf(Program p, List<Type> superTs,Set<M
   return (T)e.accept(new coreVisitors.CloneVisitor(){
     @Override public ExpCore visit(ExpCore.ClassB cb){
       cb=((ExpCore.ClassB)super.visit(cb));
+      if(level==null){return cb.withStage(new CachedStage()).withPhase(Phase.None);}
       if(level!=Stage.Plus && level!=Stage.Less){
         return cb.withStage(new CachedStage());
       }

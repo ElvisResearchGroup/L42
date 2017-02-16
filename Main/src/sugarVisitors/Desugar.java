@@ -578,7 +578,7 @@ public class Desugar extends CloneVisitor{
   }
 
   protected Doc liftDoc(Doc doc) {
-    return super.liftDoc(doc.withMultiline(true));
+    return super.liftDoc(doc.toMultiline());
   }
 
   static ClassB encodePrimitiveString(String s){

@@ -19,14 +19,8 @@ public interface TypeRefTo {
       }    
     @Override public String toS() {return path.toString(); }
     }
-  static class Uncompiled implements TypeRefTo{
+  static class Unavailable implements TypeRefTo{
     Ast.Path path;//pre frommed to be ok with PData
-    public String pathToExpression(){
-      throw tools.Assertions.codeNotReachable("not implemented yet, requires PData");//TODO:
-      }//can be a subset of toS
-    public String expression(){
-      throw tools.Assertions.codeNotReachable("not implemented yet, requires PData");//TODO:      
-      }
     @Override public String toS() {return path.toString(); }
     }
   static class Binded implements TypeRefTo{//includes primitives

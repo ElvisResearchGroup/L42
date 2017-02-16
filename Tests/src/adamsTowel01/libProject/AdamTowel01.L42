@@ -1,5 +1,13 @@
 {
 //--layer-- Bool Size S -     and first layer of unsafe operators
+PrW:{//private wrapper
+  //@plugin is.L42.connected.withSafeOperators
+  //@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.PlgWrapperGenerator
+  class method Library <><(Library that)use This
+    check #main(_1_Library:that)
+    error void
+  }
+UnsafeRefactor:PrW<><...
 Alu:{//@plugin
   //L42.is/connected/withAlu
   }
@@ -39,13 +47,8 @@ Introspection:...
 MetaGuard:...
 //--layer-- Refactor, one fat feature
 Refactor:...
-PrW:{//private wrapper
-  //@plugin is.L42.connected.withSafeOperators
-  //@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.PlgWrapperGenerator
-  class method Library <><(Library that)use This
-    check #main(_1_Library:that)
-    error void
-  }//TODO: refactor2 will eventually replace refactor
+
+//TODO: refactor2 will eventually replace refactor
 Refactor2:PrW<><...
 // more composition
 Opt:...
