@@ -9,6 +9,7 @@ import ast.Ast;
 import ast.Ast.Path;
 import ast.ExpCore;
 import ast.ExpCore.ClassB.NestedClass;
+import ast.PathAux;
 import is.L42.connected.withSafeOperators.ExtractInfo;
 import is.L42.connected.withSafeOperators.ExtractInfo.ClassKind;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.NotAvailable;
@@ -50,7 +51,7 @@ public class Lib extends Location.LocationImpl<ExpCore.ClassB,Lib>{
 
   @Override public Doc doc(){return new Doc(inner.getDoc1(),this);}
   public String kindS(){
-    ClassKind k = ExtractInfo.classKind(root,Path.parseValidCs(path),inner,null,null,null);
+    ClassKind k = ExtractInfo.classKind(root,PathAux.parseValidCs(path),inner,null,null,null);
     return k.name42;
     }
   public Lib root(){return new Lib(root,"",root,null);}
@@ -65,7 +66,7 @@ public class Lib extends Location.LocationImpl<ExpCore.ClassB,Lib>{
     if(this.path.isEmpty()){
       return new Doc(Ast.Doc.empty(),this);
       }
-    NestedClass nc = inner.getNested(Path.parseValidCs(path));
+    NestedClass nc = inner.getNested(PathAux.parseValidCs(path));
     return new Doc(nc.getDoc(),this);
     }//empty doc if it is root
 //even if obtained with a classObj, no method to get it back

@@ -37,24 +37,23 @@ public class From extends CloneVisitor {
   }
   public static Path fromP(Path p0, Path source){
     if(p0.isPrimitive()){return p0;}
-    LinkedList<String> cs0=new LinkedList<String>(p0.getRowData());
-    LinkedList<String> cs1=new LinkedList<String>(source.getRowData());
-    cs0.removeFirst();
-    cs1.removeFirst();
+    LinkedList<String> cs0=new LinkedList<String>(p0.getCBar());
+    LinkedList<String> cs1=new LinkedList<String>(source.getCBar());
     int n=p0.outerNumber();
     int m=source.outerNumber();
     int k=cs1.size();
     List<String> result=new ArrayList<String>();
+    int resN=0;
     if(n<=k){
-      result.add("This"+m);
+      resN=m;
       result.addAll(cs1.subList(0,cs1.size()-n));
       result.addAll(cs0);
     }
     else{
-      result.add("This"+(m+n-k));
+      resN=m+n-k;
       result.addAll(cs0);
     }
-  return new Path(result);
+  return Path.outer(resN,result);
   }
   /*public static ExpCore of(ExpCore e, Path source){
     return e.accept(new From(source));

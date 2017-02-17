@@ -114,17 +114,17 @@ public class TestRename {
     @Test public void test() {
       TestHelper.configureForTest();
       ClassB cb1 = getClassB(_cb1);
-      Path path = Path.parse(_path);
+      List<String> path=TestHelper.cs(_path);
       MethodSelector ms1 = MethodSelector.parse(_ms1);
       MethodSelector ms2 = MethodSelector.parse(_ms2);
       ClassB expected = getClassB(_expected);
       if (!isError) {
-        ClassB res = Rename.renameMethod(Program.empty(), cb1, path.getCBar(), ms1, ms2);
+        ClassB res = Rename.renameMethod(Program.empty(), cb1, path, ms1, ms2);
         res=Functions.clearCache(res,Ast.Stage.None);
         TestHelper.assertEqualExp(expected, res);
       } else {
         try {
-          Rename.renameMethod(Program.empty(), cb1, path.getCBar(), ms1, ms2);
+          Rename.renameMethod(Program.empty(), cb1, path, ms1, ms2);
           fail("error expected");
         } catch (Resources.Error err) {
           ClassB res = (ClassB) err.unbox;
@@ -161,15 +161,15 @@ public class TestRename {
     @Test public void test() {
       TestHelper.configureForTest();
       ClassB cb1 = getClassB(_cb1);
-      Path path = Path.parse(_path);
+      List<String> path=TestHelper.cs(_path);
       MethodSelector ms1 = MethodSelector.parse(_ms1);
       if (!isError) {
-        UserForMethodResult res = Rename.userForMethod(Program.empty(), cb1, path.getCBar(), ms1,true);
+        UserForMethodResult res = Rename.userForMethod(Program.empty(), cb1, path, ms1,true);
         Assert.assertEquals(expected1, res.asClient.toString());
         Assert.assertEquals(expected2, res.asThis.toString());
       } else {
         try {
-          Rename.userForMethod(Program.empty(), cb1, path.getCBar(), ms1,true);
+          Rename.userForMethod(Program.empty(), cb1, path, ms1,true);
           fail("error expected");
         } catch (Resources.Error err) {
           ClassB res = (ClassB) err.unbox;
@@ -204,17 +204,17 @@ public class TestRename {
       TestHelper.configureForTest();
       ClassB cb1 = getClassB(_cb1);
       Configuration.typeSystem.computeStage(Program.empty(), cb1);
-      Path path1 = Path.parse(_path1);
-      Path path2 = Path.parse(_path2);
+      List<String> path1=TestHelper.cs(_path1);
+      List<String> path2=TestHelper.cs(_path2);
       ClassB expected = getClassB(_expected);
       if (!isError) {
-        ClassB res = Rename.renameClassStrict(Program.empty(), cb1, path1.getCBar(), path2.getCBar());
+        ClassB res = Rename.renameClassStrict(Program.empty(), cb1, path1,  path2);
         Configuration.typeSystem.checkCt(Program.empty(),res);
         res=Functions.clearCache(res,Ast.Stage.None);
         TestHelper.assertEqualExp(expected, res);
       } else {
         try {
-          Rename.renameClassStrict(Program.empty(), cb1, path1.getCBar(), path2.getCBar());
+          Rename.renameClassStrict(Program.empty(), cb1, path1, path2);
           fail("error expected");
         } catch (Resources.Error err) {
           ClassB res = (ClassB) err.unbox;
@@ -372,16 +372,16 @@ public class TestRename {
       TestHelper.configureForTest();
       ClassB cb1 = getClassB(_cb1);
       Configuration.typeSystem.computeStage(Program.empty(), cb1);
-      Path path1 = Path.parse(_path1);
-      Path path2 = Path.parse(_path2);
+      List<String> path1=TestHelper.cs(_path1);
+      List<String> path2=TestHelper.cs(_path2);
       ClassB expected = getClassB(_expected);
       if (!isError) {
-        ClassB res = Rename.renameClass(Program.empty(), cb1, path1.getCBar(), path2.getCBar());
+        ClassB res = Rename.renameClass(Program.empty(), cb1, path1, path2);
         res=Functions.clearCache(res,Ast.Stage.None);
         TestHelper.assertEqualExp(expected, res);
       } else {
         try {
-          Rename.renameClass(Program.empty(), cb1, path1.getCBar(), path2.getCBar());
+          Rename.renameClass(Program.empty(), cb1, path1, path2);
           fail("error expected");
         } catch (Resources.Error err) {
           ClassB res = (ClassB) err.unbox;

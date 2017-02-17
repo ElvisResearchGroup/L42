@@ -25,6 +25,7 @@ import ast.Ast.Stage;
 import ast.ExpCore;
 import ast.ExpCore.ClassB.MethodWithType;
 import ast.Expression;
+import ast.PathAux;
 import ast.Util.CachedStage;
 import ast.Ast.Path;
 import ast.ExpCore.ClassB;
@@ -95,10 +96,10 @@ public class TestTypeCaching {
     public void testAllSteps() {
       ClassB cb1=(ClassB)(Desugar.of(Parser.parse(null,e1)).accept(new InjectionOnCore()));
       Program p=Program.empty();
-      Path path=Path.parse(_path);
+      List<String> path=TestHelper.cs(_path);
       FillCache.computeInheritedDeep(p, cb1,new ArrayList<>());
       FillCache.computeStage(p, cb1);
-      CachedStage stg = Program.extractCBar(path.getCBar(), cb1).getStage();
+      CachedStage stg = Program.extractCBar(path, cb1).getStage();
       Assert.assertEquals(expectedCoh, stg.getCoherent().isEmpty());
       Assert.assertEquals(expected,stg.getInherited().toString());
     }

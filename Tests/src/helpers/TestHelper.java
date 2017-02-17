@@ -281,6 +281,10 @@ public class TestHelper {
     cb=cb.withMs(ms);
     System.out.println(ToFormattedText.of(cb));
   }
+  public static List<String> cs(String pathS){
+    Path path=Path.sugarParse(pathS);
+    return path.isCore()?path.getCBar():path.sugarNames();
+    }
   public static void configureForTest() {
     Configuration.reduction=new reduction.Facade();
     Configuration.typeSystem=new typeSystem.Facade();

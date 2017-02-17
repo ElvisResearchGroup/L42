@@ -57,9 +57,9 @@ public static class TestGiveInfoType {
 }});}
 @Test  public void test() {
   ClassB cb=getClassB(_cb);
-  Path path=Path.parse(_path);
+  List<String> path=TestHelper.cs(_path);
   ClassB expected=getClassB(_expected);
-  ClassB result=Introspection.giveInfoType(null,Program.empty(),cb,path.getCBar(),methNum,typeNum);
+  ClassB result=Introspection.giveInfoType(null,Program.empty(),cb,path,methNum,typeNum);
   TestHelper.assertEqualExp(expected,result);
   }
 }

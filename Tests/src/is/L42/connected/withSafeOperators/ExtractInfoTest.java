@@ -13,6 +13,7 @@ import org.junit.runners.Parameterized.Parameter;
 
 import ast.Ast.Path;
 import ast.ExpCore.ClassB;
+import helpers.TestHelper;
 
 public class ExtractInfoTest {
   
@@ -35,8 +36,10 @@ public class ExtractInfoTest {
   }});}
   @Test  public void test() {
     ClassB classInput=getClassB(_classInput);
-    Path path=Path.parse(_path);
-    path=Path.outer(0,path.getCBar());//normalize, put This0 on top.
+    Path path=Path.sugarParse(_path);
+    if(!path.isCore()){
+      path=Path.outer(0,path.sugarNames());//normalize, put This0 on top.
+      }
     ExtractInfo.IsUsed iu=new ExtractInfo.IsUsed(path);
     classInput.accept(iu);
     assertEquals(iu.whereUsed.size(),(int)count);//cast to avoid overloading ambiguity :(

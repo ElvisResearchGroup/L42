@@ -15,6 +15,7 @@ import org.junit.runners.Parameterized.Parameter;
 import ast.Ast;
 import ast.Ast.Path;
 import ast.ExpCore;
+import ast.PathAux;
 import helpers.TestHelper;
 
 public class TestPaths {
@@ -59,7 +60,7 @@ public static class TestPrefix{
 @Test  public void test() {
   String[] ss=_paths.split(" ");
   List<Ast.Path> ps=new ArrayList<>();
-  List<String>prefix=Path.parseValidCs(_prefix);
+  List<String>prefix=PathAux.parseValidCs(_prefix);
   for( String s:ss){ ps.add(Path.parse(s));}
   Paths paths=Paths.reorganize(ps);
   paths=paths.prefix(prefix);

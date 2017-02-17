@@ -194,7 +194,8 @@ public class Program {
         }
       if(ec instanceof ClassB){cb=(ClassB)nc.getInner();}
       else {
-        throw new ErrorMessage.ProgramExtractOnMetaExpression(new Path(list),Collections.singletonList(cb));
+        throw new ErrorMessage.ProgramExtractOnMetaExpression(
+          Path.sugarParse(list),Collections.singletonList(cb));
         }
     }
     return cb;

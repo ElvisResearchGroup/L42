@@ -47,18 +47,18 @@ public class TestAddComment {
   @Test  public void test() {
     TestHelper.configureForTest();
     ClassB cb1=getClassB(_cb1);
-    Path path=Path.parse(_path);
+    List<String> path=TestHelper.cs(_path);
     MethodSelector ms=MethodSelector.parse(_ms);
     Doc doc=Doc.factory(true,_doc);
     assert ms!=null;
     ClassB expected=getClassB(_expected);
     if(!isError){
-      ClassB res=AddDocumentation.addDocumentationOnMethod(Program.empty(),cb1, path.getCBar(), ms,doc);
+      ClassB res=AddDocumentation.addDocumentationOnMethod(Program.empty(),cb1, path, ms,doc);
       res=Functions.clearCache(res,Stage.None);
       TestHelper.assertEqualExp(expected,res);
       }
     else{
-      try{AddDocumentation.addDocumentationOnMethod(Program.empty(),cb1, path.getCBar(), ms,doc);fail("error expected");}
+      try{AddDocumentation.addDocumentationOnMethod(Program.empty(),cb1, path, ms,doc);fail("error expected");}
       catch(Resources.Error err){
         ClassB res=(ClassB)err.unbox;
         TestHelper.assertEqualExp(expected,res);
@@ -83,15 +83,15 @@ public class TestAddComment {
   @Test  public void test() {
     TestHelper.configureForTest();
     ClassB cb1=getClassB(_cb1);
-    Path path=Path.parse(_path);
+    List<String> path=TestHelper.cs(_path);
     Doc doc=Doc.factory(true,_doc);
     ClassB expected=getClassB(_expected);
     if(!isError){
-      ClassB res=AddDocumentation.addDocumentationOnNestedClass(Program.empty(),cb1, path.getCBar(),doc);
+      ClassB res=AddDocumentation.addDocumentationOnNestedClass(Program.empty(),cb1, path,doc);
       TestHelper.assertEqualExp(expected,res);
       }
     else{
-      try{AddDocumentation.addDocumentationOnNestedClass(Program.empty(),cb1, path.getCBar(),doc);fail("error expected");}
+      try{AddDocumentation.addDocumentationOnNestedClass(Program.empty(),cb1, path,doc);fail("error expected");}
       catch(Resources.Error err){
         ClassB res=(ClassB)err.unbox;
         TestHelper.assertEqualExp(expected,res);

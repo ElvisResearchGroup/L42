@@ -139,10 +139,9 @@ public class Norm {
     assert path.isCore():path;
     int n=path.outerNumber();
     if(n==0){return path;}
-    //String outern=path.getRowData().get(0);
-    if(path.getRowData().size()==1){return path;}
-    String c=path.getRowData().get(1);
-	//if(path.outerNumber()>=p.getInnerData().size()){throw External.external;}
+    if(path.getCBar().isEmpty()){return path;}
+    String c=path.getCBar().get(0);
+
     ClassB myLib=p.getCb(n);//need types on interface implemented methods
     List<Member> ms=myLib.getMs();
     Optional<Member> om=Program.getIfInDom(ms, c);
@@ -156,10 +155,8 @@ public class Norm {
         };
       }
     if(!isPass){return path;}
-    List<String> result=new ArrayList<String>();
-    result.add("This"+(n-1));
-    result.addAll(path.getRowData().subList(2,path.getRowData().size()));
-    return of(p,new Path(result));
+    Path pathRes=Path.outer(n-1, path.getCBar().subList(1,path.getCBar().size()));
+    return of(p,pathRes);
   }
 
   public static MethodWithType normMethodOrRetrow(ClassB ct,

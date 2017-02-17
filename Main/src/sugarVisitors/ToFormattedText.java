@@ -566,8 +566,16 @@ public class ToFormattedText implements Visitor<Void>{
     if(Path.Any()==path){return c("Any");}
     if(Path.Library()==path){return c("Library");}
     if(Path.Void()==path){return c("Void");}
-    StringBuilders.formatSequence(this.result,path.getRowData().iterator(),
-        ".",s->c(s));
+    
+    if(path.isCore()){
+      c("This"+path.outerNumber());
+      for(String ci:path.getCBar()){
+        c("."+ci);
+        }
+      return null;
+      }
+    StringBuilders.formatSequence(this.result,
+      path.sugarNames().iterator(),".",s->c(s));
     return null;
   }
   @Override

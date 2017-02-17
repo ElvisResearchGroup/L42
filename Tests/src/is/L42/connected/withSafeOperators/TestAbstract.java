@@ -63,18 +63,18 @@ public static class TestAbstractMeth {//add more test for error cases
 }});}
 @Test  public void test() {
   ClassB cb1=getClassB(_cb1);
-  Path path=Path.parse(_path);
+  List<String> path=TestHelper.cs(_path);
   MethodSelector ms=MethodSelector.parse(_ms);
   assert ms!=null;
   ClassB expected=getClassB(_expected);
   if(!isError){
     //TODO: mettere tests per il caso con un selettore destinazione. In particolare testare interfacce
-    ClassB res=Abstract.toAbstract(Program.empty(),cb1, path.getCBar(), ms,null);
+    ClassB res=Abstract.toAbstract(Program.empty(),cb1, path, ms,null);
     res=Functions.clearCache(res,Stage.None);
     TestHelper.assertEqualExp(expected,res);
     }
   else{
-    try{Abstract.toAbstract(Program.empty(),cb1, path.getCBar(), ms,null);fail("error expected");}
+    try{Abstract.toAbstract(Program.empty(),cb1, path, ms,null);fail("error expected");}
     catch(Resources.Error err){
       ClassB res=(ClassB)err.unbox;
       TestHelper.assertEqualExp(expected,res);
@@ -131,7 +131,7 @@ public static class TestMoveMeth {//add more test for error cases
 @Test  public void test() {
   TestHelper.configureForTest();
   ClassB cb1=getClassB(_cb1);
-  Path path=Path.parse(_path);
+  List<String> path=TestHelper.cs(_path);
   MethodSelector ms1=MethodSelector.parse(_ms1);
   assert ms1!=null;
   MethodSelector ms2=MethodSelector.parse(_ms2);
@@ -139,12 +139,12 @@ public static class TestMoveMeth {//add more test for error cases
   ClassB expected=getClassB(_expected);
   if(!isError){
     //TODO: mettere tests per il caso con un selettore destinazione. In particolare testare interfacce
-    ClassB res=Abstract.toAbstract(Program.empty(),cb1, path.getCBar(), ms1,ms2);
+    ClassB res=Abstract.toAbstract(Program.empty(),cb1, path, ms1,ms2);
     res=Functions.clearCache(res,Stage.None);
     TestHelper.assertEqualExp(expected,res);
     }
   else{
-    try{Abstract.toAbstract(Program.empty(),cb1, path.getCBar(), ms1,ms2);fail("error expected");}
+    try{Abstract.toAbstract(Program.empty(),cb1, path, ms1,ms2);fail("error expected");}
     catch(Resources.Error err){
       ClassB res=(ClassB)err.unbox;
       TestHelper.assertEqualExp(expected,res);
@@ -270,15 +270,15 @@ public static class TestAbstractClass {//add more test for error cases
 @Test  public void test() {
   TestHelper.configureForTest();
   ClassB cb1=getClassB(_cb1);
-  Path path=Path.parse(_path);
+  List<String> path=TestHelper.cs(_path);
   ClassB expected=getClassB(_expected);
   if(!isError){
-    ClassB res=Abstract.toAbstract(cb1, path.getCBar());
+    ClassB res=Abstract.toAbstract(cb1, path);
     res=Functions.clearCache(res,Stage.None);
     TestHelper.assertEqualExp(expected,res);
     }
   else{
-    try{Abstract.toAbstract(cb1, path.getCBar());fail("error expected");}
+    try{Abstract.toAbstract(cb1, path);fail("error expected");}
     catch(Resources.Error err){
       ClassB res=(ClassB)err.unbox;
       TestHelper.assertEqualExp(expected,res);

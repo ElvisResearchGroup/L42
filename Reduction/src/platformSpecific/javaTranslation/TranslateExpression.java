@@ -69,7 +69,7 @@ public class TranslateExpression implements coreVisitors.Visitor<Void>{
       res.append(Resources.nameOf(s)+".type ");
       }
     else{
-      Position pos=Resources.getP().getCb(s.getN()).getP();
+      Position pos=Resources.getP().getCb(s.outerNumber()).getP();
       int hash=System.identityHashCode(pos);
       String cs=s.toString();
       int dotPos=cs.indexOf(".");

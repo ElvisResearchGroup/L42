@@ -66,6 +66,7 @@ import ast.Expression.While;
 import ast.Expression.With;
 import ast.Expression.X;
 import ast.Expression._void;
+import ast.PathAux;
 import ast.Util.CachedStage;
 import ast.Util.PathMxMx;
 import auxiliaryGrammar.EncodingHelper;
@@ -112,7 +113,7 @@ public class Desugar extends CloneVisitor{
     int cutPoint=libName.lastIndexOf("/");
     assert cutPoint!=-1;
     char first=libName.charAt(cutPoint+1);
-    if(Path.isValidPathStart(first)){
+    if(PathAux.isValidPathStart(first)){
         return PrivateHelper.updatePrivateFamilies(classB);
         }//we assume is going to be
     // -desugared, well typed and with private names normalized //TODO: do we want to check?

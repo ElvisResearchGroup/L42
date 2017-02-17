@@ -41,16 +41,12 @@ public class DesugarPaths extends CloneVisitor{
     }
   public Expression visit(Path s) {
     if(s.isCore()|| s.isPrimitive()){return s;}
-    List<String> rd = new ArrayList<String>(s.getRowData());
+    List<String> rd =s.sugarNames();
+    assert !rd.isEmpty();
     String key=rd.get(0);
-    if(key.equals("This")){
-      rd.set(0, "This0");
-      return new Path(rd);
-      }
     int index = searchForScope(key);
-    if (index==-1){index=0;}//to simplify testing
-    rd.add(0,"This"+index);
-    return new Path(rd);
+    if(index==-1){index=0;}//TODO: is what we want? not to the nearest reuse?
+    return Path.outer(index,rd);
     }
 
   private int searchForScope(String key) {

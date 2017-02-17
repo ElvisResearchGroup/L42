@@ -189,13 +189,24 @@ public static String freshName(String pathR, Set<String> usedNames) {
 }
 
 public static Path freshPathName(Path pathR, Set<String> usedNames) {
-  String p=pathR.getRowData().get(pathR.getRowData().size()-1);
-  p=freshName(p,usedNames);
+  String p=null;
+  if(pathR.isPrimitive()){p=freshName(pathR.toString(),usedNames);}
+  else if(pathR.getCBar().isEmpty()){p=freshName("This",usedNames);}
+  else{
+    p=pathR.getCBar().get(pathR.getCBar().size()-1);
+    p=freshName(p,usedNames);
+    }
   return pathR.popC().pushC(p);
-}
+  }
 
 public static String freshName(Path pathR, Set<String> usedNames) {
-  String p=pathR.getRowData().get(pathR.getRowData().size()-1);
+  String p=null;
+  if(pathR.isPrimitive()){p=freshName(pathR.toString(),usedNames);}
+  else if(pathR.getCBar().isEmpty()){p=freshName("This",usedNames);}
+  else{
+    p=pathR.getCBar().get(pathR.getCBar().size()-1);
+    p=freshName(p,usedNames);
+    }
   p=p.substring(0,1).toLowerCase() +p.substring(1);
   return freshName(p,usedNames);
 }

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
+import ast.Ast.Atom;
 import ast.Ast.Doc;
 import ast.Ast.Mdf;
 import ast.Ast.NormType;
@@ -136,14 +137,14 @@ public interface Ast {
   Path path;
   Ph ph;
   Doc doc;
-        public static final NormType mutThis0=new NormType(Mdf.Mutable,Path.outer(0),Ph.None,Doc.empty());
-        public static final NormType immThis0=new NormType(Mdf.Immutable,Path.outer(0),Ph.None,Doc.empty());
-        public static final NormType immVoid=new NormType(Mdf.Immutable,Path.Void(),Ph.None,Doc.empty());
-        public static final NormType immLibrary=new NormType(Mdf.Immutable,Path.Library(),Ph.None,Doc.empty());
-        public static final NormType immAny=new NormType(Mdf.Immutable,Path.Any(),Ph.None,Doc.empty());
-        public static final NormType classAny=new NormType(Mdf.Class,Path.Any(),Ph.None,Doc.empty());
+  public static final NormType mutThis0=new NormType(Mdf.Mutable,Path.outer(0),Ph.None,Doc.empty());
+  public static final NormType immThis0=new NormType(Mdf.Immutable,Path.outer(0),Ph.None,Doc.empty());
+  public static final NormType immVoid=new NormType(Mdf.Immutable,Path.Void(),Ph.None,Doc.empty());
+  public static final NormType immLibrary=new NormType(Mdf.Immutable,Path.Library(),Ph.None,Doc.empty());
+  public static final NormType immAny=new NormType(Mdf.Immutable,Path.Any(),Ph.None,Doc.empty());
+  public static final NormType classAny=new NormType(Mdf.Class,Path.Any(),Ph.None,Doc.empty());
   public String toString() {
-   return (((ph == Ph.Ph) ? "fwd " : (ph == Ph.None) ? "" : "fwd% ") + mdf.name() + "" + this.path.rowData);
+   return (((ph == Ph.Ph) ? "fwd " : (ph == Ph.None) ? "" : "fwd% ") + mdf.name() + "[" + this.path.toString()+"]");
   }
 
   public <T> T match(Function<NormType, T> normType, Function<HistoricType, T> hType) {
@@ -269,7 +270,7 @@ public interface Ast {
    }
    for (char c : s.toCharArray()) {
     if (allowHash && c == '#') {continue;}
-     if (ast.Ast.Path.isValidPathChar(c)) {continue;}
+     if (ast.PathAux.isValidPathChar(c)) {continue;}
        return false;
    }
    return c0 == '_' ||c0 == '#' || (c0 >= 'a' && c0 <= 'z');
@@ -287,229 +288,60 @@ public interface Ast {
   List<Type> exceptions;
  }
 
- @Value
- /* @ToString(exclude="n") */ public class Path implements Expression, ExpCore, Atom {
-  int n;
-  List<String> rowData;
-  public NormType toImmNT(){return new NormType(Mdf.Immutable,this,Ph.None,Doc.empty());}
-  private Path(int n, List<String> rowData) {
-   assert!rowData.get(0).contains("-") : rowData;// as in Outer-1 :-(
-   assert!rowData.contains(null) : // comment to force new line an put
-           // break
-   rowData;
-   rowData = Collections.unmodifiableList(rowData);
-   this.n = n;
-   this.rowData = rowData;
-  }
-
-  public Path(List<String> rowData) {
-   assert!rowData.get(0).contains("-") : rowData;// as in Outer-1 :-(
-   rowData = Collections.unmodifiableList(rowData);
-   this.rowData = rowData;
-   String start = this.rowData.get(0);
-   boolean isCore = isOutern(start);
-   if (isCore) {
-    start = start.substring("This".length());
-    n = Integer.parseInt(start);
-   } else {
-    n = -1;
+ //-------------------
+ public static abstract class Path implements Expression, ExpCore, Atom{
+ public static Path sugarParse(List<String> rowData){
+   Path res=PathSugar._instance(rowData);
+   if (res!=null){return res;}
+   return parse(rowData);
    }
-  }
-
-  @Override
-  public <T> T accept(sugarVisitors.Visitor<T> v) {
-   return v.visit(this);
-  }
-
-  @Override
-  public <T> T accept(coreVisitors.Visitor<T> v) {
-   return v.visit(this);
-  }
-
-  public boolean isPrimitive() {
-   return this.equals(Path.Void()) || this.equals(Path.Library()) || this.equals(Path.Any());
-  }
-
-  public boolean isCore() {
-   return n != -1;
-  }
-
-  public String toString() {
-   return sugarVisitors.ToFormattedText.of(this);
-  }
-
-  private static boolean isOutern(String start) {
-   if (!start.startsWith("This")) {
-    return false;
-   }
-   start = start.substring("This".length());
-   if (start.isEmpty()) {
-    return false;
-   }
-   for (char c : start.toCharArray()) {
-    if (!Character.isDigit(c)) {
-     return false;
-    }
-   }
-   return true;
-  }
-
-  public Path popC() {
-   // assert outerNumber()==0;
-   List<String> s = new ArrayList<String>(this.rowData);
-   // s.remove(1);
-   s.remove(s.size() - 1);
-   return new Path(n, s);
-  }
-
-  public Path pushC(String c) {
-   // assert outerNumber()==0;
-   List<String> s = new ArrayList<String>(this.rowData);
-   s.add(c);
-   return new Path(n, s);
-  }
-
-  public List<String> getCBar() {
-   assert!this.isPrimitive();
-   if (this.isCore()) {
-    return rowData.subList(1, rowData.size());
-   }
-   return rowData;
-  }
-
-  public Path setNewOuter(int n) {
-   assert isCore();
-   List<String> s = new ArrayList<String>(this.rowData);
-   s.set(0, "This" + n);
-   return new Path(n, s);
-  }
-
-  public int outerNumber() {
-   assert isCore() : this;
-   return this.n;
-  }
-
-  private static final Path _Outer0 = new Path(0, Arrays.asList("This0"));
-  private static final Path _Void = new Path(-1, Arrays.asList("Void"));
-  private static final Path _Any = new Path(-1, Arrays.asList("Any"));
-  private static final Path _Library = new Path(-1, Arrays.asList("Library"));
-
-  public static Path outer(int n, List<String> cs) {
-   List<String> arr = new ArrayList<>();
-   arr.add("This" + n);
-   arr.addAll(cs);
-   return new Path(n, arr);
-  }
-
-  public static Path outer(int n) {
-   assert n >= 0;
-   if (n == 0) {
-    return _Outer0;
-   }
-   return new Path(n, Arrays.asList("This" + n));
-  }
-
-  public static Path Void() {
-   return _Void;
-  }
-
-  public static Path Any() {
-   return _Any;
-  }
-
-  public static Path Library() {
-   return _Library;
-  }
-
-  public static List<String> parseValidCs(String cs) {
-   if (cs.equals("This0") || cs.equals("This")) {
-    return Collections.emptyList();
-   }
-   List<String> rowData = Collections.unmodifiableList(Arrays.asList(cs.split("\\.")));
-   for (String s : rowData) {
-    if (!isValidClassName(s)) {
-     throw new Resources.Error("InvalidPath: " + cs);
-    }
-   }
-   return rowData;
-  }
-
-  public static boolean isValidOuter(String name) {// thus invalid as
-               // pathName
-   if (name.equals("This")) {
-    return true;
-   }
-   if (name.equals("This0")) {
-    return true;
-   }
-   if (!name.startsWith("This")) {
-    return false;
-   }
-   int firstN = "This".length();
-   char c = name.charAt(firstN);
-   // first is 1--9 and all rest is 0-9
-   if ("123456789".indexOf(c) != -1) {
-    return false;
-   }
-   for (int i = firstN + 1; i < name.length(); i++) {
-    if ("0123456789".indexOf(name.charAt(i)) == -1) {
-     return false;
-    }
-   }
-   return true;
-  }
-
-  public static boolean isValidClassName(String name) {
-              if(name.isEmpty()){return false;}
-   if (isValidOuter(name)) {
-    return false;
-   }
-   if (!isValidPathStart(name.charAt(0))) {
-    return false;
-   }
-   for (int i = 1; i < name.length(); i++) {
-    if (!isValidPathChar(name.charAt(i))) {
-     return false;
-    }
-   }
-   return true;
-  }
-
-  public static Path parse(String path) {
+ public static Path sugarParse(String path) {
    List<String> rowData = Arrays.asList(path.split("\\."));
-   for (String s : rowData) {// TODO: make it more precise, throw real
-          // error?
-    assert isValidOuter(s) || isValidClassName(s) : path;
+   return sugarParse(rowData);
    }
-   return new Path(rowData);
-  }
+ public static Path parse(List<String> rowData){
+   Path res=PathPrimitive._parsePrimitive(rowData);
+   if (res!=null){return res;}
+   res=PathCore._parsePathCode(rowData);
+   if (res!=null){return res;}
+   throw Assertions.codeNotReachable("InvalidPath: " + rowData);
+   //this does not accept the sugarPath
+   }
+ public static Path parse(String path) {
+   List<String> rowData = Arrays.asList(path.split("\\."));
+   return parse(rowData);
+   }
+ public static Path outer(int n, List<String> cs){
+   return PathCore.instance(n,cs);
+   }
+ public static Path outer(int n){
+   return PathCore.instance(n,Collections.emptyList());
+   }
+ public static Path Void() {return PathPrimitive._Void;}
+ public static Path Any() {return  PathPrimitive._Any;}
+ public static Path Library() {return PathPrimitive._Library;}
 
-  public static boolean isValidPathStart(char c) {
-   if (c == '%') {
-    return true;
-   }
-   if (c == '$') {
-    return true;
-   }
-   return Character.isUpperCase(c);
-  }
+ public NormType toImmNT(){return new NormType(Mdf.Immutable,this,Ph.None,Doc.empty());}
+   public <T> T accept(sugarVisitors.Visitor<T> v) {
+     return v.visit(this);
+     }
+   public <T> T accept(coreVisitors.Visitor<T> v) {
+     return v.visit(this);
+     }
+   public boolean isPrimitive() {return false;}
+   public boolean isCore() { return false; }
+   public String toString() { return sugarVisitors.ToFormattedText.of(this);}
 
-  public static boolean isValidPathChar(char c) {
-   if (c == '%') {
-    return true;
-   }
-   if (c == '$') {
-    return true;
-   }
-   if (c == '_') {
-    return true;
-   }
-   assert c!='\t':
-    c;
-   return Character.isUpperCase(c) || Character.isLowerCase(c) || Character.isDigit(c);
-  }
- }
-
+   public Path popC(){throw Assertions.codeNotReachable("path.pocC on not core:"+this);}
+   public Path pushC(String c){throw Assertions.codeNotReachable("path.pushC on not core:"+this);}
+   public List<String> getCBar(){throw Assertions.codeNotReachable("path.getCBar on not core:"+this);}
+   public Path setNewOuter(int n){throw Assertions.codeNotReachable("path.setNewOuter on not core:"+this);}
+   public int outerNumber(){throw Assertions.codeNotReachable("path.outerNumber on not core:"+this);}
+   public List<String> sugarNames(){throw Assertions.codeNotReachable("path.outerNumber on not core:"+this);}
+   
+ }  
+ //-----------------------------
+ 
  @Value
  @EqualsAndHashCode(exclude = "p") /*to string manually defined so @ToString(exclude = "p") not needed*/
  public static class Doc implements Expression.HasPos{
@@ -574,13 +406,13 @@ public interface Ast {
      if (i + 1 < s.length()) {
       next = s.charAt(i + 1);
      }
-     if (next == '.' || Path.isValidPathChar(next)) {
+     if (next == '.' || PathAux.isValidPathChar(next)) {
       sb.append("%s");
       i = readAnnotation(s, i + 1, annotations);
                      readParameter(s, i + 1, parameters);
      } else {
       throw Assertions.codeNotReachable("invalid use of @ in |" + next + "| " + s);
-     } // if(!Path.isValidPathStart(next)){sb.append(ci);continue;}
+     } // if(!PathAux.isValidPathStart(next)){sb.append(ci);continue;}
     }
    }
    return new Doc(multiline,sb.toString(), annotations,parameters,pos);
@@ -605,10 +437,10 @@ public interface Ast {
     if (!(o instanceof String)){return false;}
     String s=(String)o;
     if(s.isEmpty()){return true;}
-    if (Path.isValidPathStart(s.charAt(0))){return false;}
+    if (PathAux.isValidPathStart(s.charAt(0))){return false;}
     for(char c : s.toCharArray()) {
       if(c=='.'){continue;}
-      if(!Path.isValidPathChar(c)){return false;}
+      if(!PathAux.isValidPathChar(c)){return false;}
       }
     return true;
     }
@@ -679,17 +511,17 @@ public interface Ast {
     }
 
   private static int readAnnotation(String s, int start, List<Object> paths) {
-    boolean isPath=Path.isValidPathStart(s.charAt(start));        
+    boolean isPath=PathAux.isValidPathStart(s.charAt(start));        
     StringBuilder sb = new StringBuilder();
     for (int i = start; i < s.length(); i++) {
       char ci = s.charAt(i);
-      if (Path.isValidPathChar(ci)) {sb.append(ci);}
-      else if (ci == '.' && isPath && i+1<s.length()&& Path.isValidPathStart(s.charAt(i+1))) {sb.append(ci);}
+      if (PathAux.isValidPathChar(ci)) {sb.append(ci);}
+      else if (ci == '.' && isPath && i+1<s.length()&& PathAux.isValidPathStart(s.charAt(i+1))) {sb.append(ci);}
       else if (ci == '.' && !isPath) {sb.append(ci);}
       else {break;}
       }
     String res = sb.toString();
-    if (isPath) {paths.add(Path.parse(res));}
+    if (isPath) {paths.add(Path.sugarParse(res));}
     else {paths.add(res);}
     return start + res.length() - 1;  
     }

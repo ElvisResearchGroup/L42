@@ -75,7 +75,7 @@ public class TranslateClass {
 
   private static void pathReverter(String s, StringBuilder res) {
     Path path=Path.parse(Resources.name42Of(s));
-    int hash=path.getN();
+    int hash=path.outerNumber();
     String cs=path.toString();
     assert cs.contains("."):
       cs;
@@ -89,7 +89,7 @@ public class TranslateClass {
     res.append("public ast.ExpCore revert(){\n");
     //pathReverter(s, res);//no, much worst here
     Path path=Path.parse(Resources.name42Of(s));
-    int hash=path.getN();
+    int hash=path.outerNumber();
     String cs=path.toString();
     cs=cs.substring(cs.indexOf("."));
     res.append( "ast.Ast.Path receiver= (ast.Ast.Path)platformSpecific.javaTranslation.Resources.fromHash("+hash+",\""+cs+"\").revert();\n");

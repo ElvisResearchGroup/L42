@@ -333,8 +333,8 @@ public static boolean hasPluginUnresponsive(ClassB l){
     }
   private static Path _pathForOutside(int dept,Path pi){
     if(pi.isPrimitive()){return null;}
-    if(pi.getN()<=dept){return null;}
-    return pi.setNewOuter(pi.getN()-dept);
+    if(pi.outerNumber()<=dept){return null;}
+    return pi.setNewOuter(pi.outerNumber()-dept);
     }
   private static void checkForInside(ClassB lTop,Path csTop,Path originalPath) throws ClassUnfit, MethodUnfit{
     if(originalPath.isPrimitive()){
@@ -344,7 +344,7 @@ public static boolean hasPluginUnresponsive(ClassB l){
         + "exceptions can not be Any/Void/Library");
       }
     Path cs=From.fromP(originalPath,csTop);
-    assert cs.getN()==0;
+    assert cs.outerNumber()==0;
     List<String> cBar = cs.getCBar();
     ClassB lPointed=lTop.getClassB(cBar);
     Doc d=lPointed.getDoc1();

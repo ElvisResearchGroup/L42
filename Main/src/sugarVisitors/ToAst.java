@@ -65,7 +65,7 @@ public class ToAst extends AbstractVisitor<Expression>{
       }
       MethodSelector s=new MethodSelector(name, names);
       List<Type> exceptions=new ArrayList<>();
-      for(TerminalNode p:h.Path()){exceptions.add(Path.parse(p.getText()).toImmNT());}
+      for(TerminalNode p:h.Path()){exceptions.add(Path.sugarParse(p.getText()).toImmNT());}
       Optional<Expression> inner=Optional.empty();
       if(ctx.eTopForMethod()!=null){inner=Optional.of(ctx.eTopForMethod().accept(ToAst.this));}
       MethodType mt=new MethodType(h.Refine()!=null,mdf,ts,returnType,exceptions);
@@ -281,13 +281,13 @@ public class ToAst extends AbstractVisitor<Expression>{
       Doc d=parseDoc(tt.docsOpt());
       return new Ast.NormType(
         Mdf.fromString((tt.Mdf()==null)?"":nameK(tt.Mdf())),
-        Ast.Path.parse(nameU(tt.Path())),
+        Ast.Path.sugarParse(nameU(tt.Path())),
         (tt.Ph()==null)?Ph.None:Ph.Ph,d);
     }
     if(t.historicalT()!=null){
        HistoricalTContext tt = t.historicalT();
        Doc d=parseDoc(tt.docsOpt());
-       Path p=ast.Ast.Path.parse(nameU(tt.Path()));
+       Path p=ast.Ast.Path.sugarParse(nameU(tt.Path()));
        List<MethodSelectorX> mss=new ArrayList<MethodSelectorX>();
        for(HistoricalSeqContext ms:tt.historicalSeq()){
          mss.add(parseMethSelectorX(ms));
@@ -310,7 +310,7 @@ public class ToAst extends AbstractVisitor<Expression>{
 
   @Override public Expression visitEAtom(EAtomContext ctx) {
     if(ctx.Path()!=null){
-      return addNumParse(ctx,Ast.Path.parse(nameU(ctx.Path())));
+      return addNumParse(ctx,Ast.Path.sugarParse(nameU(ctx.Path())));
         }
     if(ctx.DotDotDot()!=null){
       return new Expression.DotDotDot();
@@ -358,7 +358,7 @@ public class ToAst extends AbstractVisitor<Expression>{
     ImplsContext impl = ctx.impls();
     if (impl!=null){
       {int i=-1;for(TerminalNode p: impl.Path()){i+=1;
-        supertypes.add(Path.parse(nameU(p)).toImmNT().withDoc(parseDoc(impl.docsOpt().get(0))));
+        supertypes.add(Path.sugarParse(nameU(p)).toImmNT().withDoc(parseDoc(impl.docsOpt().get(0))));
         }
       }}
     List<Member> ms=visitMembers(ctx.member());
@@ -484,7 +484,7 @@ public class ToAst extends AbstractVisitor<Expression>{
       return (ctx.children!=null)?new LinkedList<ParseTree>(ctx.children):new LinkedList<ParseTree>();
   }
   @Override public Expression visitUsing(UsingContext ctx) {
-    Path path= Ast.Path.parse(nameU(ctx.Path()));
+    Path path= Ast.Path.sugarParse(nameU(ctx.Path()));
     Expression inner=ctx.eTop().accept(this);
     String name=nameL(ctx.mCall().m());
     Parameters parameters=this.parseMParameters(ctx.mCall().round().ps());

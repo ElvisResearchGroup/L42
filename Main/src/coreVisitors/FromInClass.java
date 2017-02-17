@@ -33,11 +33,7 @@ public class FromInClass extends CloneVisitor {
     finally{this.j=oldJ;}
   }
   private static Path addOuter(int k,Path p){
-    List<String> inner=new ArrayList<String>(p.getRowData());
-    int newOuters=p.outerNumber()+k;
-    assert newOuters>=0;
-    inner.set(0,"This"+newOuters);
-    return new Path(inner);
+    return Path.outer(p.outerNumber()+k,p.getCBar());
   }
   public static ExpCore of(ClassB cb, Path source){
     return cb.accept(new FromInClass(0,source));

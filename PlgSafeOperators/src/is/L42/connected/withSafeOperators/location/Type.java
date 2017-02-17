@@ -8,6 +8,7 @@ import ast.ExpCore;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.MethodWithType;
 import ast.ExpCore.ClassB.Phase;
+import ast.PathAux;
 import auxiliaryGrammar.Program;
 import coreVisitors.From;
 import facade.PData;
@@ -19,7 +20,7 @@ public interface Type extends Location{
   default TypeRefTo refTo(PData pData) {
     Path path=type().getPath();
     String where=locationLib().path;
-    Path whereP=Path.outer(0,Path.parseValidCs(where));
+    Path whereP=Path.outer(0,PathAux.parseValidCs(where));
     path=From.fromP(path,whereP);
     if (path.outerNumber()==0){
       return new TypeRefTo.Lib(locationLib().root(),path);

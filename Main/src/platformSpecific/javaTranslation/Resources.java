@@ -45,6 +45,7 @@ import ast.Ast.SignalKind;
 import ast.Ast.Stage;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Phase;
+import ast.PathAux;
 import ast.Util.CachedStage;
 import auxiliaryGrammar.EncodingHelper;
 import auxiliaryGrammar.Functions;
@@ -154,7 +155,7 @@ public class Resources {
         Doc docip1=(Doc)map[i+1];
           inner=ClassB.docClass(docip1);
           }
-        if(!Path.isValidClassName(cName)){throw Assertions.codeNotReachable("Invalid name in multiPartStringError:"+cName);}
+        if(!PathAux.isValidClassName(cName)){throw Assertions.codeNotReachable("Invalid name in multiPartStringError:"+cName);}
         ms.add(new ExpCore.ClassB.NestedClass(Doc.empty(), cName, inner,null));
       }
       ExpCore.ClassB cb=ClassB.membersClass(ms,Position.noInfo);
