@@ -253,19 +253,19 @@ D|- e0.m[_](x1:e1..Xn:en) ~> e'0.m[P0](x1:e'1..xn:e'n)  : T <= T'| Tr0 U..U Trn 
 Phase| p| G|-(ds  ks  e0  [_]) ~>(ds' ks' e'0 [T]) 
      : T <= T' | Tr'.capture(p,ks') U Tr U Tr0
   where
-  Phase| p| G[ks]/dom(ds)|- ds ~> ds' |Tr' | G0
+  Phase| p| G/dom(ds)| ks|- ds ~> ds' |Tr' | G0
   Phase| p| G/x1..xn | Tr1 U .. U Trn |-ks~> ks' : Ts <= T' | Tr
   Phase| p| G0 |-e0~>e'0:T0 <=T' | Tr0
   T= mostGeneral({T0.mdf,Ts.mdfs}) T'.P
   // assert D.p|-T <= T'
 
 (ds)
-Phase| p| G|- T1  x1=e1 ..Tn  xn=en, ds ~>  T'1  x1=e'1 ..T'n  xn=e'n, ds'|Tr U Tr' | G2
+Phase| p| G| ks|- T1  x1=e1 ..Tn  xn=en, ds ~>  T'1  x1=e'1 ..T'n  xn=e'n, ds'|Tr U Tr' | G2
   where
   dom(ds) notin FV(e1..en)
   for i in 1..n T'i=resolve(p,Ti)
   G'=x1:T'1..xn:T'n
-  G1= G[fwd(complete(G'))]
+  G1= G[fwd(complete(G'))][ks]
   for i in 1..n Phase| p| G1|-ei~>e'i: _ <= fwd% T'i | Tri
   Tr=Tr1 U .. U Trn
   if fwd_or_fwd%_in Tr.Ts
@@ -273,10 +273,10 @@ Phase| p| G|- T1  x1=e1 ..Tn  xn=en, ds ~>  T'1  x1=e'1 ..T'n  xn=e'n, ds'|Tr U 
   if fwd_or_fwd%_in { G[complete(G')](x) | x in FV(e1..en) }
     then G0=G[fwd%(G')]
     otherwise G0=G[G']
-  Phase| p| G0|- ds ~> ds'|Tr' | G2
+  Phase| p| G0|ks|- ds ~> ds'|Tr' | G2
 
 (dsEmpty)
-Phase| p| G|- empty ~> empty| empty;empty | G
+Phase| p| G|ks|- empty ~> empty| empty;empty | G
    
 //TODO: check that this kind of things work {Bar:{}   method m (foo catch exception Bar x e1 e0)  } redirect Bar->Any
 //Note: the new idea is that catch throw Any will catch all that can be thrown,
