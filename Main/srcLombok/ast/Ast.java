@@ -287,7 +287,30 @@ public interface Ast {
   Type returnType;
   List<Type> exceptions;
  }
-
+ @Value @Wither
+ public static class C{
+   String inner;
+   long privateNum;
+   public C(String inner,long privateNum){
+     this.inner=inner;this.privateNum=privateNum;
+     assert PathAux.isValidClassName(inner);
+     }
+   public static C of(String name){
+     int index=name.lastIndexOf("__");
+     if(index==-1){return new C(name,-1L);}
+     String numS=name.substring(index+2,name.length());
+     try{
+       long num=Long.parseLong(numS);
+       return new C(name.substring(0,index),num);
+       }
+     catch(NumberFormatException nfe){return new C(name,-1L);}
+     }
+   public String toString(){
+     if(privateNum==-1){return inner;}
+     return inner+"__"+privateNum;
+     }
+   }
+ 
  //-------------------
  public static abstract class Path implements Expression, ExpCore, Atom{
  public static Path sugarParse(List<String> rowData){
