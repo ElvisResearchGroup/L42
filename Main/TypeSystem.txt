@@ -254,7 +254,7 @@ Phase| p| G|-(ds  ks  e0  [_]) ~>(ds' ks' e'0 [T])
      : T <= T' | Tr'.capture(p,ks') U Tr U Tr0
   where
   Phase| p| G/dom(ds)| ks|- ds ~> ds' |Tr' | G0
-  Phase| p| G/x1..xn | Tr1 U .. U Trn |-ks~> ks' : Ts <= T' | Tr
+  Phase| p| G/dom(ds)| Tr1 U .. U Trn |-ks~> ks' : Ts <= T' | Tr
   Phase| p| G0 |-e0~>e'0:T0 <=T' | Tr0
   T= mostGeneral({T0.mdf,Ts.mdfs}) T'.P
   // assert D.p|-T <= T'
@@ -265,7 +265,7 @@ Phase| p| G| ks|- T1  x1=e1 ..Tn  xn=en, ds ~>  T'1  x1=e'1 ..T'n  xn=e'n, ds'|T
   dom(ds) notin FV(e1..en)
   for i in 1..n T'i=resolve(p,Ti)
   G'=x1:T'1..xn:T'n
-  G1= G[fwd(complete(G'))][ks]
+  G1= G[fwd(complete(G'))][ks] //[ks] removes fwdMut, but we wonder if they could stay and all would be sound?
   for i in 1..n Phase| p| G1|-ei~>e'i: _ <= fwd% T'i | Tri
   Tr=Tr1 U .. U Trn
   if fwd_or_fwd%_in Tr.Ts
@@ -462,7 +462,7 @@ splitDs(ds)->i
   ds=ds0..dsn;
   domi=dom(dsi+1..dsn)
   var xs=empty
-  var i=0  //If we was to start i at some j, we would still break the block in the earliest possible point geq j
+  var i=0
   loop (
     xs= xs U  FV(ei)
     if (domi\xs) = domi then return i

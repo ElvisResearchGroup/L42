@@ -1278,7 +1278,8 @@ public interface Ast {
     public C(String inner, long privateNum) {
       this.inner = inner;
       this.privateNum = privateNum;
-      assert PathAux.isValidClassName(inner);
+      assert PathAux.isValidClassName(inner):
+        inner;
     }
     
     public static C of(String name) {
