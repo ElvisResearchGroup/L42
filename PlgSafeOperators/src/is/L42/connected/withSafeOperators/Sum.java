@@ -98,7 +98,7 @@ public class Sum {
    }
   }
 
-  static ClassB normalizedSum(Program p, ClassB topA, ClassB topB,ClassB a, ClassB b, List<String> current) {
+  static ClassB normalizedSum(Program p, ClassB topA, ClassB topB,ClassB a, ClassB b, List<Ast.C> current) {
     List<Member> ms = doubleSimetricalMatch(p,topA,topB,a, b,  current);
     List<ast.Ast.Type> superT = new ArrayList<>(a.getSupertypes());
     superT.addAll(b.getSupertypes());
@@ -141,7 +141,7 @@ public class Sum {
     }
   }
 */
-  private static List<Member> doubleSimetricalMatch(Program p, ClassB topA, ClassB topB,ClassB a, ClassB b, List<String> current) {
+  private static List<Member> doubleSimetricalMatch(Program p, ClassB topA, ClassB topB,ClassB a, ClassB b, List<Ast.C> current) {
     List<Member> ms=new ArrayList<>();
     for (Member m : a.getMs()) {//add from a+b
       Optional<Member> oms = Program.getIfInDom(b.getMs(), m);
@@ -160,15 +160,15 @@ public class Sum {
     return ms;
     }
 
-  public static void doubleSimmetricalMatch(Program p, ClassB topA, ClassB topB, List<Member> ms, List<String> current, Member m, Member oms) {
+  public static void doubleSimmetricalMatch(Program p, ClassB topA, ClassB topB, List<Member> ms, List<Ast.C> current, Member m, Member oms) {
     m.match(
         nc -> matchNC(p,topA,topB,nc, ms, (NestedClass) oms, current),
         mi -> matchMi(current, mi, ms, oms),
         mt -> matchMt(current, mt, ms, oms));
   }
 
-  private static Void matchNC(Program p, ClassB topA, ClassB topB,NestedClass nca, List<Member> ms, NestedClass ncb, List<String> current) {
-    List<String> innerCurrent = new ArrayList<>(current);
+  private static Void matchNC(Program p, ClassB topA, ClassB topB,NestedClass nca, List<Member> ms, NestedClass ncb, List<Ast.C> current) {
+    List<Ast.C> innerCurrent = new ArrayList<>(current);
     innerCurrent.add(nca.getName());
     ClassB newInner = normalizedSum(p,topA,topB,(ClassB) nca.getInner(), (ClassB) ncb.getInner(), innerCurrent);
     Doc doc = nca.getDoc().sum(ncb.getDoc());
@@ -177,7 +177,7 @@ public class Sum {
     }
 
 
-  private static Void matchMt(List<String> pathForError, MethodWithType mwta, List<Member> ms, Member mb) {
+  private static Void matchMt(List<Ast.C> pathForError, MethodWithType mwta, List<Member> ms, Member mb) {
     if (mb instanceof MethodImplemented) { throw Errors42.errorMethodClash(pathForError, mwta, mb, false, Collections.emptyList(), false, false,false); }
     MethodWithType mwtb = (MethodWithType) mb;
     Errors42.checkMethodClash(pathForError, mwta, mwtb,false);
@@ -185,7 +185,7 @@ public class Sum {
     return null;
   }
 
-  private static Void matchMi(List<String> pathForError, MethodImplemented mia, List<Member> ms, Member mb) {
+  private static Void matchMi(List<Ast.C> pathForError, MethodImplemented mia, List<Member> ms, Member mb) {
     throw Errors42.errorMethodClash(pathForError, mia, mb, false, Collections.emptyList(), false, false,false);
   }
 
@@ -208,7 +208,7 @@ public class Sum {
   }
 
   public static void checkClassClash(
-      Program p,List<String>current,
+      Program p,List<Ast.C>current,
       ClassB topA,ClassB topB,
       ClassB currentA,ClassB currentB){
 

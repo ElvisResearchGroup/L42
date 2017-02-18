@@ -7,6 +7,7 @@ import java.util.Collections;
 
 import ast.Ast;
 import ast.ExpCore;
+import ast.Ast.C;
 import ast.ExpCore.ClassB;
 import coreVisitors.IsCompiled;
 
@@ -54,13 +55,13 @@ public class ProgramReduction {
     Program p0=Norm.multiNorm(p,paths.union(paths1));
     Program p1=MultiTypeSystem.typeProgram(paths1, p0);
     MultiTypeSystem.typeMetaExp(p1,MultiTypeSystem.toAny(paths,ec1));
-    ClassB res=reduceE(p1,ec1,p1.getFreshId()+"."+nc.getName());
+    ClassB res=reduceE(p1,ec1,C.of(p1.getFreshId()+"__"+nc.getName()));
     ClassB top=p1.top();
     assert top.getNested(Collections.singletonList(nc.getName()))!=null;//would actually fail if not there
     top=top.withMember(nc.withE(res));
     return p1.updateTop(top);
     }
-  static private ClassB reduceE(Program p, ExpCore e,String nameDebug) {
+  static private ClassB reduceE(Program p, ExpCore e,Ast.C nameDebug) {
     ExpCore res=facade.Configuration.reduction.metaExp(p.reprAsPData(), e,nameDebug);
     if(res instanceof ClassB){return (ClassB)res;}
     throw new ast.ErrorMessage.MalformedFinalResult(p.top(),"error is:\n\n"+sugarVisitors.ToFormattedText.of(res));

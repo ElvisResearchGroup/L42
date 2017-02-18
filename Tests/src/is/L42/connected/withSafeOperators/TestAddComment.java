@@ -13,6 +13,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 
 import platformSpecific.javaTranslation.Resources;
+import ast.Ast;
 import ast.Ast.Doc;
 import ast.Ast.MethodSelector;
 import ast.Ast.Path;
@@ -47,7 +48,7 @@ public class TestAddComment {
   @Test  public void test() {
     TestHelper.configureForTest();
     ClassB cb1=getClassB(_cb1);
-    List<String> path=TestHelper.cs(_path);
+    List<Ast.C> path=TestHelper.cs(_path);
     MethodSelector ms=MethodSelector.parse(_ms);
     Doc doc=Doc.factory(true,_doc);
     assert ms!=null;
@@ -83,7 +84,7 @@ public class TestAddComment {
   @Test  public void test() {
     TestHelper.configureForTest();
     ClassB cb1=getClassB(_cb1);
-    List<String> path=TestHelper.cs(_path);
+    List<Ast.C> path=TestHelper.cs(_path);
     Doc doc=Doc.factory(true,_doc);
     ClassB expected=getClassB(_expected);
     if(!isError){

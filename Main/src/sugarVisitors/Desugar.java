@@ -110,25 +110,7 @@ public class Desugar extends CloneVisitor{
 
   }
   private ast.ExpCore.ClassB renameAllPrivatesInUsedLibs(String libName,ExpCore.ClassB classB) {
-    int cutPoint=libName.lastIndexOf("/");
-    assert cutPoint!=-1;
-    char first=libName.charAt(cutPoint+1);
-    if(PathAux.isValidPathStart(first)){
-        return PrivateHelper.updatePrivateFamilies(classB);
-        }//we assume is going to be
-    // -desugared, well typed and with private names normalized //TODO: do we want to check?
-    /*if(!IsCompiled.of(classB)){return classB;}//TODO: just to make test easier, should be an error in production
-   //else, use the old, buggy name rename, to remove later
-    //collect private names
-    CollectPrivateNames cpn=CollectPrivateNames.of(classB);
-    //rename all
-    Program emptyP=Program.empty();
-    //classB=IntrospectionAdapt.sealConstructors(emptyP,classB,cpn.mapConstructors);
-    //cpn.mapMx=IntrospectionAdapt.expandMapMx(emptyP,classB,cpn.mapMx);
-    List<PathMxMx> mapMx = ConsistentRenaming.makeMapMxConsistent(classB,cpn.mapMx);
-    classB=IntrospectionAdapt.applyMapMx(emptyP,classB,mapMx);
-    classB=IntrospectionAdapt.applyMapPath(emptyP,classB,cpn.mapPath);
-    */return classB;
+    return classB;//TODO: when new private system is working modify here
   }
   private void collectAllUsedLibs(Expression e) {
     profiling.Timer.activate("sugarvisitors.collectAllUsed");

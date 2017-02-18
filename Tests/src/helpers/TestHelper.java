@@ -20,6 +20,7 @@ import sugarVisitors.Desugar;
 import sugarVisitors.InjectionOnCore;
 import sugarVisitors.ToFormattedText;
 import ast.Ast.Path;
+import ast.Ast;
 import ast.ErrorMessage;
 import ast.ExpCore;
 import ast.ExpCore.ClassB;
@@ -281,7 +282,7 @@ public class TestHelper {
     cb=cb.withMs(ms);
     System.out.println(ToFormattedText.of(cb));
   }
-  public static List<String> cs(String pathS){
+  public static List<Ast.C> cs(String pathS){
     Path path=Path.sugarParse(pathS);
     return path.isCore()?path.getCBar():path.sugarNames();
     }

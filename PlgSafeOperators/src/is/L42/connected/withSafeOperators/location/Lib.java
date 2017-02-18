@@ -16,10 +16,10 @@ import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.NotAvaila
 
 public class Lib extends Location.LocationImpl<ExpCore.ClassB,Lib>{
   ExpCore.ClassB root;
-  String path;
+  Path path;
   public Lib(
     ExpCore.ClassB root,
-    String path,
+    Path path,
     ExpCore.ClassB inner,Lib location) {super(inner,location);
       this.root=root;
       this.path=path;
@@ -27,7 +27,7 @@ public class Lib extends Location.LocationImpl<ExpCore.ClassB,Lib>{
   //Cacher<List<Lib>> nestedsC=new Cacher<List<Lib>>(){public List<Lib> cache(){    }}; 
   Cacher<List<Lib>> nestedsC=new Cacher<List<Lib>>(){public List<Lib> cache(){
     return inner.ns().stream()
-      .map(n->new Lib(root,pathConcat(n.getName()),(ExpCore.ClassB)n.getInner(),Lib.this))
+      .map(n->new Lib(root,path.pushC(n.getName()),(ExpCore.ClassB)n.getInner(),Lib.this))
       .collect(Collectors.toList());}};
   public int nestedsSize(){return nestedsC.get().size();}
   public Lib nested(int that) throws NotAvailable{return Location.listAccess(nestedsC.get(), that);}
@@ -51,36 +51,32 @@ public class Lib extends Location.LocationImpl<ExpCore.ClassB,Lib>{
 
   @Override public Doc doc(){return new Doc(inner.getDoc1(),this);}
   public String kindS(){
-    ClassKind k = ExtractInfo.classKind(root,PathAux.parseValidCs(path),inner,null,null,null);
+    ClassKind k = ExtractInfo.classKind(root,path.getCBar(),inner,null,null,null);
     return k.name42;
     }
-  public Lib root(){return new Lib(root,"",root,null);}
+  public Lib root(){return new Lib(root,Path.outer(0),root,null);}
   @Override//since we pass null for root
   public Lib location() {
     Lib l=super.location();
     if (l!=null){return l;}
     return this;
     }
-  public String path(){return path;}//last is its name, empty path for root
+  public Path path(){return path;}//last is its name, empty path for root
   public Doc nestedDoc(){
-    if(this.path.isEmpty()){
+    if(this.path.getCBar().isEmpty()){
       return new Doc(Ast.Doc.empty(),this);
       }
-    NestedClass nc = inner.getNested(PathAux.parseValidCs(path));
+    NestedClass nc = inner.getNested(path.getCBar());
     return new Doc(nc.getDoc(),this);
     }//empty doc if it is root
 //even if obtained with a classObj, no method to get it back
 //to get a nested classObj, Refactor.navigateClassObj(classAny,Path)->classAny??
   public String toS() {return sugarVisitors.ToFormattedText.of(inner);}
-  public Lib navigate(List<String> cs){
+  public Lib navigate(List<Ast.C> cs){
     if (cs.isEmpty()){return this;}
-    List<String> top = Collections.singletonList(cs.get(0));
-    List<String> tail=cs.subList(1,cs.size());
-    Lib nextStep=new Lib(root,pathConcat(cs.get(0)),inner.getClassB(top),this);
+    List<Ast.C> top = Collections.singletonList(cs.get(0));
+    List<Ast.C> tail=cs.subList(1,cs.size());
+    Lib nextStep=new Lib(root,path.pushC(cs.get(0)),inner.getClassB(top),this);
     return nextStep.navigate(tail);
-    }
-  private String pathConcat(String c){
-    if(path.isEmpty()) {return c;}
-    return path+"."+c;
     }
   }

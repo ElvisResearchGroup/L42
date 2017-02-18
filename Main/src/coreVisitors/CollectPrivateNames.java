@@ -24,7 +24,7 @@ import auxiliaryGrammar.Functions;
 public class CollectPrivateNames extends CloneVisitor{
   public final List<PathMxMx> mapMx=new ArrayList<>();
   public final List<PathPath> mapPath=new ArrayList<>();
-  List<String> cs=new ArrayList<>();
+  List<Ast.C> cs=new ArrayList<>();
   public static CollectPrivateNames of(ExpCore e){
     CollectPrivateNames cdv=new CollectPrivateNames();
     e.accept(cdv);

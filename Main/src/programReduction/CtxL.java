@@ -2,6 +2,7 @@ package programReduction;
 
 import java.util.List;
 
+import ast.Ast;
 import ast.ExpCore;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
@@ -35,7 +36,7 @@ public class CtxL {
   public String nameWhereThereisTheHole(){
     Member m = this.origin.getMs().get(this.pos);
     return m.match(
-      nc->nc.getName(),
+      nc->nc.getName().toString(),
       mi->mi.getS().toString(),
       mwt->mwt.getMs().toString());
     }  
@@ -61,12 +62,12 @@ public class CtxL {
     else {innerSplit=CtxC.split(inner);}
     return new CtxL(l,pos,innerSplit);
     }
-  public static CtxL split (ExpCore.ClassB l,String c){
+  public static CtxL split (ExpCore.ClassB l,Ast.C c){
     int pos=findC(l,c);
     CtxC ctx=CtxC.hole(l.getMs().get(pos).getInner());
     return new CtxL(l,pos,ctx);
     }
-  private static int findC(ExpCore.ClassB l,String c){
+  private static int findC(ExpCore.ClassB l,Ast.C c){
     int i=0;
     for(Member m:l.getMs()){
       if (m instanceof ExpCore.ClassB.NestedClass && ((ExpCore.ClassB.NestedClass)m).getName().equals(c)){

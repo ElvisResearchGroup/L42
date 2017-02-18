@@ -11,6 +11,7 @@ import java.util.stream.Stream;
 
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.*;
+import ast.Ast;
 import ast.Ast.Doc;
 import ast.Ast.FieldDec;
 import ast.Ast.Mdf;
@@ -24,7 +25,7 @@ import auxiliaryGrammar.Functions;
 import auxiliaryGrammar.Program;
 import sugarVisitors.Desugar;
 public class MakeKs {
-  public static ClassB makeKs(ClassB that,List<String> path, List<String> fieldNames,String mutK,String lentK,String readK,String immK,boolean fwd){
+  public static ClassB makeKs(ClassB that,List<Ast.C> path, List<String> fieldNames,String mutK,String lentK,String readK,String immK,boolean fwd){
     MakeKs m=new MakeKs();
     if(path.isEmpty()){return m.makeKs(that,that,fieldNames,mutK,lentK,readK,immK,fwd);}
     Errors42.checkExistsPathMethod(that, path, Optional.empty());

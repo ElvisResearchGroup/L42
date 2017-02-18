@@ -34,12 +34,12 @@ public static Program typeProgram(Paths paths, Program p){
   return p1.updateTop(l);
   }
 
-private static ClassB typeLibrary(List<List<String>> current, Program p) {
+private static ClassB typeLibrary(List<List<Ast.C>> current, Program p) {
 //forall Csi : pi|-pi.top(): Li //if Li.Phase=Typed, the check will be just asserted
 //(pL) ---------------------------------------   pi=p.navigate(Csi)
 //Cs1..Csn|-p:p.top()[Cs1=L1,.. Csn=Ln]    
   ClassB result=p.top();
-  for(List<String> csi : current){
+  for(List<Ast.C> csi : current){
     Program pi=p.navigate(csi);
     assert pi.top().getPhase()!=Phase.None:
     "";

@@ -2,6 +2,7 @@ package is.L42.connected.withSafeOperators;
 
 import platformSpecific.javaTranslation.Resources;
 import sugarVisitors.ToFormattedText;
+import tools.Map;
 import ast.Ast;
 import ast.ErrorMessage;
 import ast.Ast.Mdf;
@@ -31,14 +32,14 @@ import coreVisitors.From;
 import facade.Configuration;
 
 public class Introspection {//TODO: we keep 5 methods, but we merge the PathReport and MemberReport content.
-  public static List<Object>  giveInfo(ClassB that,List<String> path){
+  public static List<Object>  giveInfo(ClassB that,List<Ast.C> path){
     Errors42.checkExistsPathMethod(that, path,Optional.empty());
     Doc[] docRef={null};
     ClassB current = Program.extractCBar(path, that,docRef);
     return Arrays.asList(
       "MemberKind","NestedClass",
       "MemberDoc",(docRef[0]==null)?"":liftDoc(path.subList(0,path.size()-1),docRef[0],1),
-      "Key",""+String.join(".",path),
+      "Key",""+String.join(".",Map.of(ci->""+ci,path)),
       "AllAsString",ToFormattedText.ofNoStage(current),
       "ClassKind",ExtractInfo.classKind(that, path, current,null, null,null).name(),
       "LibraryDoc",liftDoc(path,current.getDoc1(),1),
@@ -46,7 +47,7 @@ public class Introspection {//TODO: we keep 5 methods, but we merge the PathRepo
       "ImplementedNumber",""+current.getSupertypes().size()
     );}
 
-  public static ClassB giveInfoMember(ClassB that,List<String> path,int memberN){
+  public static ClassB giveInfoMember(ClassB that,List<Ast.C> path,int memberN){
     assert memberN!=0;
     Errors42.checkExistsPathMethod(that, path,Optional.empty());
     ClassB current = Program.extractCBar(path, that);
@@ -57,13 +58,13 @@ public class Introspection {//TODO: we keep 5 methods, but we merge the PathRepo
     ClassB[] result={null};
     mN.match(
       nc->{
-        List<String> fullPath=new ArrayList<>(path);
+        List<Ast.C> fullPath=new ArrayList<>(path);
         fullPath.add(nc.getName());
         ClassB currentNc=(ClassB)nc.getInner();
         result[0]=Resources.Error.multiPartStringClassB("MemberReport",
           "MemberKind","NestedClass",
           "MemberDoc",liftDoc(path,nc.getDoc(),1),
-          "Key",String.join(".",fullPath),
+          "Key",String.join(".",Map.of(ci->""+ci, fullPath)),
           "AllAsString",ToFormattedText.ofNoStage(nc.getInner()),
           "ClassKind",ExtractInfo.classKind(that, path,(ClassB) nc.getInner(),null, null,null).name(),
           "LibraryDoc",liftDoc(path,currentNc.getDoc1(),1),
@@ -99,7 +100,7 @@ public class Introspection {//TODO: we keep 5 methods, but we merge the PathRepo
   //static enum TypeKind{InternalNormal,ExternalNormal,InternalAlias,ExternalAlias, InternalAliasUnresolvable,ExternalAliasUnresolvable,InternalExternalAlias}
   static enum TypeKind{Normal,Alias,AliasUnresolvable}
   //if member ==0, talk about implemented interfaces, nested classes have no types
-  public static ClassB giveInfoType(Path  isExternal,Program p,ClassB that,List<String> path,int memberN,int typeN){
+  public static ClassB giveInfoType(Path  isExternal,Program p,ClassB that,List<Ast.C> path,int memberN,int typeN){
     Errors42.checkExistsPathMethod(that, path,Optional.empty());
     ClassB current = Program.extractCBar(path, that);
     if(current.getMs().size()<memberN){throw Resources.notAct;}
@@ -126,7 +127,7 @@ public class Introspection {//TODO: we keep 5 methods, but we merge the PathRepo
       }
     return typeReport(isExternal,p.addAtTop(that), ti,path);
     }
-  private static ClassB typeReport(Path isExternal,Program p,Type ti, List<String> src){
+  private static ClassB typeReport(Path isExternal,Program p,Type ti, List<Ast.C> src){
     p=p.navigateInTo(src);
     NormType normTi=(ti instanceof NormType)?(NormType)ti:null;
     NormType resolvedTi=null;
@@ -145,7 +146,7 @@ public class Introspection {//TODO: we keep 5 methods, but we merge the PathRepo
   }
 
   //private static boolean isExternal(List<String>path,Path pi){return pi.isPrimitive()||pi.outerNumber()>path.size(); }
-  private static TypeKind getTypeKind(List<String>path,Type ti, NormType resolvedTi) {
+  private static TypeKind getTypeKind(List<Ast.C>path,Type ti, NormType resolvedTi) {
     if(ti instanceof NormType){return TypeKind.Normal;
       //NormType nt=(NormType)ti;
       //if(isExternal(path,nt.getPath())){return TypeKind.ExternalNormal;}
@@ -171,7 +172,7 @@ public class Introspection {//TODO: we keep 5 methods, but we merge the PathRepo
     return result;
   }
 
-  private static ClassB typeReport(Path isExternal,List<String> path, TypeKind kind, Mdf mdf, Mdf resMdf, Path pi, Path resPi, boolean ph, boolean resPh, String suffix,  Doc doc, String allAsString) throws Error {
+  private static ClassB typeReport(Path isExternal,List<Ast.C> path, TypeKind kind, Mdf mdf, Mdf resMdf, Path pi, Path resPi, boolean ph, boolean resPh, String suffix,  Doc doc, String allAsString) throws Error {
     assert mdf!=null && resMdf!=null;
     Doc dPi=liftDoc(path,Doc.factory(pi),1);
     Doc dResPi=liftDoc(path,Doc.factory(resPi),1);
@@ -200,7 +201,7 @@ public class Introspection {//TODO: we keep 5 methods, but we merge the PathRepo
    Soft wrap: if the content is already wrapped in @stringU, leave it as it is.
    What should we do for @int32 and similar?
     */
-  public static String extractDocAsString(ClassB that,List<String>path,int annotationN){
+  public static String extractDocAsString(ClassB that,List<Ast.C>path,int annotationN){
     //System.out.println("extractDocAsString("+path+" annotationN:"+annotationN+")");
     Errors42.checkExistsPathMethod(that, path,Optional.empty());
     ClassB current = Program.extractCBar(path, that);
@@ -222,7 +223,7 @@ public class Introspection {//TODO: we keep 5 methods, but we merge the PathRepo
     Object o=d.getAnnotations().get(annotationN-1);
     return o.toString();
   }
-  public static Path extractDocPath(ClassB that,List<String>path,int annNumber){
+  public static Path extractDocPath(ClassB that,List<Ast.C>path,int annNumber){
     Errors42.checkExistsPathMethod(that, path,Optional.empty());
     ClassB current = Program.extractCBar(path, that);
     Doc d=current.getDoc1();
@@ -243,7 +244,7 @@ public class Introspection {//TODO: we keep 5 methods, but we merge the PathRepo
   5)extractDocPath:Lib*,path, pathNumber ->typeAny //error for internal paths or number bigger than possible.
 */
 
-  private static Doc liftDoc(List<String> path, Doc doc,int newNested) {
+  private static Doc liftDoc(List<Ast.C> path, Doc doc,int newNested) {
     //for all external paths (pi.outern>path.size) new outern=oldOutern-size+newNested
     //for all internal paths(otherwise) becomes a .string, normalized in path,
     List<Object> ann=new ArrayList<>();
@@ -256,8 +257,8 @@ public class Introspection {//TODO: we keep 5 methods, but we merge the PathRepo
           o=pi.setNewOuter((pi.outerNumber()-path.size())+newNested);
           ann.add(o);continue;
           }
-      List<String>topPi=ClassOperations.toTop(path, pi);
-      o="."+String.join(".",topPi);
+      List<Ast.C>topPi=ClassOperations.toTop(path, pi);
+      o="."+String.join(".",Map.of(ci->""+ci,topPi));
       ann.add(o);//continue;
     }
     return doc.withAnnotations(ann);

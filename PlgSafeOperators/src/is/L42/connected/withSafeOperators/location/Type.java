@@ -19,8 +19,7 @@ public interface Type extends Location{
   Lib locationLib();
   default TypeRefTo refTo(PData pData) {
     Path path=type().getPath();
-    String where=locationLib().path;
-    Path whereP=Path.outer(0,PathAux.parseValidCs(where));
+    Path whereP=locationLib().path;
     path=From.fromP(path,whereP);
     if (path.outerNumber()==0){
       return new TypeRefTo.Lib(locationLib().root(),path);

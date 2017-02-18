@@ -65,7 +65,7 @@ public interface Program {//this class will eventually replace auxiliaryDefiniti
     else return this.pop().get(n-1);
     }
 
-  default Program push(String c) {
+  default Program push(Ast.C c) {
     CtxL splitted=CtxL.split(this.top(), c);
     return new PushedProgram((ClassB)splitted.originalHole(),splitted,this); 
     }
@@ -76,9 +76,9 @@ public interface Program {//this class will eventually replace auxiliaryDefiniti
   //with p'=p.evilPush(L)   p'.top()==L, p'.pop()==p, p'.update(..) error! 
   */
 
-  default Program navigate(List<String>cs){
+  default Program navigate(List<Ast.C>cs){
     Program res=this;
-    for(String c:cs){res=res.push(c);}
+    for(Ast.C c:cs){res=res.push(c);}
     return res;
     }
 
@@ -107,11 +107,11 @@ public interface Program {//this class will eventually replace auxiliaryDefiniti
       return p2.setNewOuter(p2.outerNumber()+1);
       }
     assert p.outerNumber()==1;
-    List<String> cs = p.getCBar();
+    List<Ast.C> cs = p.getCBar();
     if(cs.isEmpty()){return null;}
     ClassB.Member m=ctx.originalCtxM();
     if(!(m instanceof ClassB.NestedClass)){return null;}
-    String ncName=((ClassB.NestedClass)m).getName();
+    Ast.C ncName=((ClassB.NestedClass)m).getName();
     if(!ncName.equals(cs.get(0))){return null;}
     return Path.outer(0, cs.subList(1, cs.size()));
     }

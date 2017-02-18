@@ -289,7 +289,7 @@ public interface Expression extends Ast {
     }
     @Value @Wither @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p")public static class NestedClass implements Member {
       Doc doc;
-      String name;
+      Ast.C name;
       Expression inner;
       Ast.Position p;
       public <T> T match(Function<NestedClass, T> nc, Function<MethodImplemented, T> mi, Function<MethodWithType, T> mt) {

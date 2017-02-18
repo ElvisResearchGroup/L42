@@ -89,7 +89,7 @@ private static ExpCore parseAndDesugar(String s) {
   public static ClassB plgComplete(Program p) throws UnresolvedOverloading, ClassUnfit, MethodUnfit{//p contains the l to modify at top
     return plgComplete(Collections.emptyList(),p,p.topCb());
     }
-  public static ClassB plgComplete(List<String>cs,Program p,ClassB l) throws UnresolvedOverloading, ClassUnfit, MethodUnfit{
+  public static ClassB plgComplete(List<Ast.C>cs,Program p,ClassB l) throws UnresolvedOverloading, ClassUnfit, MethodUnfit{
     //p.top() is topL
     List<Member> ms=new ArrayList<>();
     for(Member m: l.getMs()){
@@ -98,7 +98,7 @@ private static ExpCore parseAndDesugar(String s) {
         continue;
         }
       NestedClass nc=(NestedClass)m;
-      List<String>csc=new ArrayList<>(cs);
+      List<Ast.C>csc=new ArrayList<>(cs);
       csc.add(nc.getName());
       ms.add(nc.withInner(
         plgComplete(csc,p,(ClassB)nc.getInner()))
@@ -123,7 +123,7 @@ private static ExpCore parseAndDesugar(String s) {
     return ps.length;
     //TODO:?assert others are not PData?
     }
-  public static ClassB plgComplete1(List<String>cs,Program p,ClassB l) throws UnresolvedOverloading, ClassUnfit, MethodUnfit{
+  public static ClassB plgComplete1(List<Ast.C>cs,Program p,ClassB l) throws UnresolvedOverloading, ClassUnfit, MethodUnfit{
     PluginWithPart pwp = OnLineCode._isPluginWithPart(l.getDoc1());
     if(pwp==null){return l;}
     PlgInfo plgInfo=new PlgInfo(l.getDoc1());
@@ -345,7 +345,7 @@ public static boolean hasPluginUnresponsive(ClassB l){
       }
     Path cs=From.fromP(originalPath,csTop);
     assert cs.outerNumber()==0;
-    List<String> cBar = cs.getCBar();
+    List<Ast.C> cBar = cs.getCBar();
     ClassB lPointed=lTop.getClassB(cBar);
     Doc d=lPointed.getDoc1();
     if(d._getParameterForPlugin()==null ||d._getParameterForPluginPart()==null){

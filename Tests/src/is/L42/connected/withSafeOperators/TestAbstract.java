@@ -15,6 +15,7 @@ import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
 
 import platformSpecific.javaTranslation.Resources;
+import ast.Ast;
 import ast.Ast.MethodSelector;
 import ast.Ast.Path;
 import ast.Ast.Stage;
@@ -63,7 +64,7 @@ public static class TestAbstractMeth {//add more test for error cases
 }});}
 @Test  public void test() {
   ClassB cb1=getClassB(_cb1);
-  List<String> path=TestHelper.cs(_path);
+  List<Ast.C> path=TestHelper.cs(_path);
   MethodSelector ms=MethodSelector.parse(_ms);
   assert ms!=null;
   ClassB expected=getClassB(_expected);
@@ -131,7 +132,7 @@ public static class TestMoveMeth {//add more test for error cases
 @Test  public void test() {
   TestHelper.configureForTest();
   ClassB cb1=getClassB(_cb1);
-  List<String> path=TestHelper.cs(_path);
+  List<Ast.C> path=TestHelper.cs(_path);
   MethodSelector ms1=MethodSelector.parse(_ms1);
   assert ms1!=null;
   MethodSelector ms2=MethodSelector.parse(_ms2);
@@ -270,7 +271,7 @@ public static class TestAbstractClass {//add more test for error cases
 @Test  public void test() {
   TestHelper.configureForTest();
   ClassB cb1=getClassB(_cb1);
-  List<String> path=TestHelper.cs(_path);
+  List<Ast.C> path=TestHelper.cs(_path);
   ClassB expected=getClassB(_expected);
   if(!isError){
     ClassB res=Abstract.toAbstract(cb1, path);

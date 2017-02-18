@@ -18,7 +18,7 @@ public class CollectDeclaredClassNamesAndMethodNames extends CloneVisitor{
     return cdv.xs;
   }
   public NestedClass visit(NestedClass nc){
-    xs.add(nc.getName());
+    xs.add(nc.getName().toString());
     return super.visit(nc);
     }
   protected MethodSelector liftMs(MethodSelector ms) {

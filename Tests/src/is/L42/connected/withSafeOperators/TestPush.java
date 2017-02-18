@@ -11,6 +11,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 
+import ast.Ast.C;
 import ast.ExpCore.ClassB;
 
 @RunWith(Parameterized.class)
@@ -32,7 +33,7 @@ public class TestPush {
 @Test  public void test() {
   ClassB cb1=getClassB(e1);
   ClassB cb2=getClassB(e2);
-  ClassB res=Push.pushOne(cb1,e3);
+  ClassB res=Push.pushOne(cb1,C.of(e3));
   TestHelper.assertEqualExp(res,cb2);
   }
 }

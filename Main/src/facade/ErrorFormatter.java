@@ -168,7 +168,7 @@ private static void displayAbstractMethods(ClassB cb,StringBuilder result,String
     return "\n    "+reportMetaError(p,inner);
   }
   private static class ReportThrow extends coreVisitors.CloneWithPath{
-    List<String> collectedPath=null;
+    List<Ast.C> collectedPath=null;
     ExpCore.Signal collectedErr=null;
     public ClassB.NestedClass visit(ClassB.NestedClass nc){
       if(nc.getInner() instanceof ExpCore.Signal){

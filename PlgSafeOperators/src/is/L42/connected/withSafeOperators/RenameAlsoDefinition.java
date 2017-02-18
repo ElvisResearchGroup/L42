@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import ast.Ast;
 import ast.Ast.MethodSelector;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
@@ -67,10 +68,10 @@ class RenameAlsoDefinition extends RenameUsage{
     Locator current=this.getLocator().copy();
     current.pushMember(nc);
     for(Locator nl:maps.nesteds){
-      if(!(nl.getAnnotation() instanceof String)){continue;}
+      if(!(nl.getAnnotation() instanceof Ast.C)){continue;}
       if(!nl.equals(current)){continue;}
-      assert nl.getAnnotation() instanceof String:nl.getAnnotation();
-      return super.visit(nc.withName((String)nl.getAnnotation()));
+      assert nl.getAnnotation() instanceof Ast.C:nl.getAnnotation();
+      return super.visit(nc.withName((Ast.C)nl.getAnnotation()));
     }
     return super.visit(nc);
   }

@@ -139,7 +139,7 @@ public class Program {
     result=result.next.addAtTop(cbNext);
     return result;
   }*/
-  public Program navigateInTo(String c){
+  public Program navigateInTo(Ast.C c){
     assert !this.isEmpty();
     Optional<Member> mOpt=getIfInDom(this.topCb().getMs(),c);
     if(!mOpt.isPresent()){
@@ -149,7 +149,7 @@ public class Program {
     Program result=this;
     return result.addAtTop((ClassB)((NestedClass)m).getInner());
   }
-  public Program navigateInTo(List<String> paths){
+  public Program navigateInTo(List<Ast.C> paths){
     if(paths.isEmpty()){return this;}
     return this.navigateInTo(paths.get(0)).navigateInTo(paths.subList(1,paths.size()));
     }
@@ -169,18 +169,18 @@ public class Program {
   }*/
   private static final Doc[] _trashCommentRef=new Doc[]{Doc.empty()};
   private static final Boolean[] _trashIsPrivateRef=new Boolean[]{false};
-  public static ClassB extractCBar(List<String> list, ClassB cb) {
+  public static ClassB extractCBar(List<Ast.C> list, ClassB cb) {
     return extractCBar(list, cb,_trashCommentRef,_trashIsPrivateRef);
   }
-  public static ClassB extractCBar(List<String> list, ClassB cb,Doc[] commentRef) {
+  public static ClassB extractCBar(List<Ast.C> list, ClassB cb,Doc[] commentRef) {
     return extractCBar(list, cb,commentRef,_trashIsPrivateRef);
   }
-  public static ClassB extractCBar(List<String> list, ClassB cb,Boolean[] isPrivateRef) {
+  public static ClassB extractCBar(List<Ast.C> list, ClassB cb,Boolean[] isPrivateRef) {
     return extractCBar(list, cb,_trashCommentRef,isPrivateRef);
   }
-  public static ClassB extractCBar(List<String> list, ClassB cb,Doc[] commentRef,Boolean[]isPrivateRef) {
+  public static ClassB extractCBar(List<Ast.C> list, ClassB cb,Doc[] commentRef,Boolean[]isPrivateRef) {
     assert cb!=null;
-    for(String s:list){
+    for(Ast.C s:list){
       Optional<Member> optNc = Program.getIfInDom(cb.getMs(),s);
       if(!optNc.isPresent()){
         throw new ErrorMessage.PathNonExistant(list,cb,null);
@@ -195,7 +195,7 @@ public class Program {
       if(ec instanceof ClassB){cb=(ClassB)nc.getInner();}
       else {
         throw new ErrorMessage.ProgramExtractOnMetaExpression(
-          Path.sugarParse(list),Collections.singletonList(cb));
+          Path.outer(0,list),Collections.singletonList(cb));
         }
     }
     return cb;
@@ -230,7 +230,7 @@ public class Program {
     }
     return Optional.empty();
   }
-  public static Optional<Member> getIfInDom(List<ExpCore.ClassB.Member> map, String elem){
+  public static Optional<Member> getIfInDom(List<ExpCore.ClassB.Member> map, Ast.C elem){
     for(ExpCore.ClassB.Member m: map){
       if(m.match(nc->nc.getName().equals(elem), mi->false, mt->false)){return Optional.of(m);}
       }
@@ -387,7 +387,7 @@ public class Program {
       accumulateAllSupertypes(cbi,ps, p, pj);
     }
   }
-  public static List<Path> removeDuplicates(List<Path>paths, List<String> explored){
+  public static List<Path> removeDuplicates(List<Path>paths, List<Ast.C> explored){
     List<Path> result=new ArrayList<>();
     for(Path pi:paths){
       pi=From.normalizeShort(pi, explored);

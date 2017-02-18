@@ -14,6 +14,7 @@ import tools.Map;
 import ast.Ast;
 import ast.ErrorMessage;
 import ast.Expression;
+import ast.Ast.C;
 import ast.Ast.Doc;
 import ast.Ast.FieldDec;
 import ast.Ast.Mdf;
@@ -137,7 +138,7 @@ private int firstVar(List<VarDec> varDecs){
     }}
   return -1;
   }
-private VarDecXE getDecForVar(String cName,VarDecXE varDec) {
+private VarDecXE getDecForVar(Ast.C cName,VarDecXE varDec) {
   NormType nt=new NormType(Mdf.Mutable,Path.outer(0).pushC(cName),Ph.None,Doc.empty());
   Position pos = Desugar.getPosition(varDec.getInner());
   MCall right=new MCall(nt.getPath(),"#apply",Doc.empty(), Desugar.getPs("inner",new X(varDec.getX())),pos);
@@ -203,7 +204,7 @@ private VarDecXE getDecForVar(String cName,VarDecXE varDec) {
    ClassB cb=new ClassB(Doc.empty(),new Ast.ConcreteHeader(Mdf.Mutable, "",fs,Position.noInfo),Collections.emptyList(),Collections.emptyList(),Collections.emptyList(),Position.noInfo,Stage.None);
    String nameC=Functions.freshName("Var"+varDec.getX(), L42.usedNames);
    //usedCnames.add(nameC);
-   return new VarDecCE(new NestedClass(Doc.getPrivate(),nameC,cb,null));
+   return new VarDecCE(new NestedClass(Doc.getPrivate(),C.of(nameC),cb,null));
  }
  public Type _computeTypeForClassBForVar(VarDecXE varDec) {
    assert varDec.getT().isPresent(): " it is now required by the stricted syntax";

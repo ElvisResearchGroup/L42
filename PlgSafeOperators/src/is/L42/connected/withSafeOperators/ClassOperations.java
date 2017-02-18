@@ -9,6 +9,7 @@ import java.util.function.Function;
 
 import coreVisitors.CloneWithPath;
 import coreVisitors.CollectPrivateNames;
+import ast.Ast;
 import ast.Ast.Path;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
@@ -17,7 +18,7 @@ import ast.Util.PathMxMx;
 import auxiliaryGrammar.Program;
 
 public class ClassOperations {
-
+/*
   public static ClassB _OLD_onNestedNavigateToPathAndDo(ClassB cb,List<String>cs,Function<NestedClass,Optional<NestedClass>>op){
     assert !cs.isEmpty();
     assert cb!=null;
@@ -55,27 +56,27 @@ public class ClassOperations {
     Program.replaceIfInDom(newMs, nc.withInner(newCb));
     return cb.withMs(newMs);
   }
-
+*/
   static ClassB normalizePaths(ClassB cb){
     return (ClassB)cb.accept(new CloneWithPath(){
       public ast.ExpCore visit(ast.Ast.Path s) {
         if(s.isPrimitive()){return s;}
         assert s.isCore();
-        List<String> path = this.getLocator().getClassNamesPath();
+        List<Ast.C> path = this.getLocator().getClassNamesPath();
         if(s.outerNumber()>path.size()){return s;}
         return normalizePath(path,s.outerNumber(),s.getCBar());
       }});}
-  static List<String>toTop(List<String>path,Path s){
+  static List<Ast.C>toTop(List<Ast.C>path,Path s){
     assert !s.isPrimitive();
     assert s.outerNumber()<=path.size(): s+" "+path;
-    List<String>result=new ArrayList<>();
+    List<Ast.C>result=new ArrayList<>();
     result.addAll(path.subList(0,path.size()-s.outerNumber()));
     result.addAll(s.getCBar());
     return result;
   }
-  static Path normalizePath(List<String>whereWeAre,int outerN,List<String>cs){
+   static Path normalizePath(List<Ast.C>whereWeAre,int outerN,List<Ast.C>cs){
     assert cs!=null;
-    List<String> whereWeAreLoc=whereWeAre.subList(whereWeAre.size()-outerN, whereWeAre.size());
+    List<Ast.C> whereWeAreLoc=whereWeAre.subList(whereWeAre.size()-outerN, whereWeAre.size());
     int i=0;
     while(true){
       if(i>=cs.size()){break;}

@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import platformSpecific.javaTranslation.Resources;
+import ast.Ast;
 import ast.ErrorMessage;
 import ast.ErrorMessage.PathNonExistant;
 import ast.ExpCore.*;
@@ -25,7 +26,7 @@ import auxiliaryGrammar.Program;
 import is.L42.connected.withSafeOperators.ExtractInfo.IsUsed;
 import is.L42.connected.withSafeOperators.Rename.UserForMethodResult;
 public class Abstract {
-  public static ClassB toAbstract(ClassB cb, List<String> path){
+  public static ClassB toAbstract(ClassB cb, List<Ast.C> path){
     Errors42.checkExistsPathMethod(cb, path, Optional.empty());
     //check privacy coupled
     ClassB cbClear=cb.onClassNavigateToPathAndDo( path, cbi->clear(cbi));
@@ -55,12 +56,12 @@ public class Abstract {
     return cb.withMs(newMs);
   }
 
-  public static ClassB toAbstract(Program p,ClassB cb, List<String> path,MethodSelector sel,MethodSelector newSel){
+  public static ClassB toAbstract(Program p,ClassB cb, List<Ast.C> path,MethodSelector sel,MethodSelector newSel){
     Errors42.checkExistsPathMethod(cb, path, Optional.of(sel));
     if(path.isEmpty()){return auxToAbstract(p,cb,path,sel,newSel);}
     return cb.onClassNavigateToPathAndDo(path,cbi->auxToAbstract(p,cbi,path,sel,newSel));
   }
-  private static ClassB auxToAbstract(Program p,ClassB cb,List<String> pathForError,MethodSelector sel,MethodSelector newSel) {
+  private static ClassB auxToAbstract(Program p,ClassB cb,List<Ast.C> pathForError,MethodSelector sel,MethodSelector newSel) {
     List<Member> newMs=new ArrayList<>(cb.getMs());
     Member m=Program.getIfInDom(newMs, sel).get();
     //make m abstract
@@ -85,7 +86,7 @@ public class Abstract {
     return cb.withMs(newMs);  
   }
 
-  static void checkPrivacyCoupuled(ClassB cbFull,ClassB cbClear, List<String> path) {
+  static void checkPrivacyCoupuled(ClassB cbFull,ClassB cbClear, List<Ast.C> path) {
   //start from a already cleared out of private states
   //check if all private nested classes are USED using IsUsed on cbClear
   //this also verify that no private nested classes are used as

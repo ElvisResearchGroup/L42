@@ -7,6 +7,7 @@ import ast.Ast.Path;
 import ast.Ast.Ph;
 import ast.Ast.Position;
 import ast.Ast.Type;
+import ast.Ast;
 import ast.ExpCore;
 import ast.ExpCore.*;
 import ast.ExpCore.ClassB.Member;
@@ -22,7 +23,7 @@ import tools.Assertions;
 import java.util.*;
 import java.util.stream.Collectors;
 public class SumMethods {
-  public static ClassB sumMethods(ClassB lib, List<String> path, MethodSelector m1,MethodSelector m2,MethodSelector mRes,String name){
+  public static ClassB sumMethods(ClassB lib, List<Ast.C> path, MethodSelector m1,MethodSelector m2,MethodSelector mRes,String name){
     ClassB pathCb = pathCb(lib, path);
     Member mem1=Errors42.checkExistsPathMethod(lib, path, Optional.of(m1));
     Member mem2=Errors42.checkExistsPathMethod(lib, path, Optional.of(m2));
@@ -42,25 +43,25 @@ public class SumMethods {
     if(!replOk){throw Errors42.errorParameterMismatch(path, mem1,mem2, false,true,true);}
     return finalResult(lib, path, mwtU);
   }
-  private static ClassB finalResult(ClassB lib, List<String> path, MethodWithType mwtU) {
+  private static ClassB finalResult(ClassB lib, List<Ast.C> path, MethodWithType mwtU) {
     if(path.isEmpty()){
       return lib.withMember(mwtU);
       }//if may be omitted?
     return lib.onClassNavigateToPathAndDo(path,cbi->cbi.withMember(mwtU));
   }
-  private static void checkParSize(int index,List<String> path, MethodSelector m1, MethodSelector m2, MethodSelector mRes, Member mem1, Member mem2, MethodType mt1, MethodType mt2) {
+  private static void checkParSize(int index,List<Ast.C> path, MethodSelector m1, MethodSelector m2, MethodSelector mRes, Member mem1, Member mem2, MethodType mt1, MethodType mt2) {
     if(m1.getNames().size()+m2.getNames().size()-1!=mRes.getNames().size()){
       throw Errors42.errorParameterMismatch(path, mem1,mem2, isReplacedParOk(index,mt1,mt2),mdfU(mt1.getMdf(),mt2.getMdf())!=null,false);
     }
   }
-  private static ClassB pathCb(ClassB lib, List<String> path) {
+  private static ClassB pathCb(ClassB lib, List<Ast.C> path) {
     ClassB pathCb=lib;
     if(!path.isEmpty()){
       pathCb=(ClassB)((NestedClass)Errors42.checkExistsPathMethod(lib, path, Optional.empty())).getInner();
     }
     return pathCb;
   }
-  private static void checkConflict(List<String> path, MethodSelector mRes, ClassB pathCb, MethodWithType mwtU) {
+  private static void checkConflict(List<Ast.C> path, MethodSelector mRes, ClassB pathCb, MethodWithType mwtU) {
     /*for(PathMwt e:pathCb.getStage().getInherited()){
       if(e.getMwt().getMs().equals(mRes)){//method declared in an interface and not implemented
         MethodWithType mtConflict=e.getMwt();

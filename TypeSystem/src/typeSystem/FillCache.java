@@ -32,7 +32,7 @@ import facade.ErrorFormatter;
 import sugarVisitors.CollapsePositions;
 
 public class FillCache {
- public static void computeInheritedDeep(Program p,ClassB cb,List<String>explored){
+ public static void computeInheritedDeep(Program p,ClassB cb,List<Ast.C>explored){
    assert cb!=null;
    assert p.canBeAdded(cb);
    computeInherited(p,explored,cb);
@@ -46,7 +46,7 @@ public class FillCache {
      }
    }
  }
- public static void computeInherited(Program p, List<String> explored,ClassB cb){
+ public static void computeInherited(Program p, List<Ast.C> explored,ClassB cb){
     if(cb.getStage().isInheritedComputed()){return;}
     p=p.addAtTop(cb);
     List<Path> allSup = Program.getAllSupertypes(p, cb);
@@ -56,7 +56,7 @@ public class FillCache {
     cb.getStage().setInherited(mwts);
     cb.getStage().setInheritedPaths(allSup);
   }
-private static void checkCoherent(List<PathMwt> mwts, List<String> explored,ClassB cb) {
+private static void checkCoherent(List<PathMwt> mwts, List<Ast.C> explored,ClassB cb) {
   //- no two mwt are the same
   //-forall mwti, cb do not define them as mwt.
   //-forall mi in cb, mwti defines it.
@@ -125,7 +125,7 @@ public static void collectInnerClasses(List<CachedStage>again,Program p,ClassB c
     NestedClass nc=(NestedClass)m;
     if (!(nc.getInner() instanceof ClassB)){result.add(null);continue;}
     ClassB cbi=(ClassB)nc.getInner();
-    cbi.getStage().setGivenName(nc.getName());
+    cbi.getStage().setGivenName(nc.getName().toString());
     if(cbi.getStage().getStage()==Stage.None){
       computeStageFirst(again,p,cbi);
     }
@@ -135,7 +135,7 @@ public static void collectInnerClasses(List<CachedStage>again,Program p,ClassB c
 public static void computeStage(Program p,ClassB cb) {
   assert p.canBeAdded(cb);
   if(cb.getStage().getStage()!=Stage.None){return;}
-  List<String>explored=new ArrayList<>();
+  List<Ast.C>explored=new ArrayList<>();
   computeInheritedDeep(p, cb,explored);
   assert cb.getStage().getInherited()!=null;
   List<CachedStage>again=new ArrayList<>();

@@ -12,6 +12,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 
+import ast.Ast;
 import ast.Ast.Path;
 import ast.ExpCore.ClassB;
 import auxiliaryGrammar.Program;
@@ -57,7 +58,7 @@ public static class TestGiveInfoType {
 }});}
 @Test  public void test() {
   ClassB cb=getClassB(_cb);
-  List<String> path=TestHelper.cs(_path);
+  List<Ast.C> path=TestHelper.cs(_path);
   ClassB expected=getClassB(_expected);
   ClassB result=Introspection.giveInfoType(null,Program.empty(),cb,path,methNum,typeNum);
   TestHelper.assertEqualExp(expected,result);

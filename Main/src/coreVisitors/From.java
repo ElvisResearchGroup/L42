@@ -8,6 +8,7 @@ import java.util.List;
 import tools.Map;
 import ast.Ast.*;
 import ast.ExpCore.ClassB;
+import ast.Ast;
 import ast.ExpCore;
 
 public class From extends CloneVisitor {
@@ -22,11 +23,11 @@ public class From extends CloneVisitor {
     //return s.accept(new FromInClass(0,path.setNewOuter(path.outerNumber()+1).pushC("__IRRELEVANT__")));
     return FromInClass.of(s,path);
   }
-  public static Path normalizeShort(Path p0,List<String>explored){
+  public static Path normalizeShort(Path p0,List<Ast.C>explored){
     if(p0.isPrimitive()){return p0;}
     int n=Math.min(p0.outerNumber(),explored.size());
     if(n==0){return p0;}
-    List<String> cs = p0.getCBar();
+    List<Ast.C> cs = p0.getCBar();
     n=Math.min(n,cs.size());
     int i=0;
     while(i<n){
@@ -37,12 +38,12 @@ public class From extends CloneVisitor {
   }
   public static Path fromP(Path p0, Path source){
     if(p0.isPrimitive()){return p0;}
-    LinkedList<String> cs0=new LinkedList<String>(p0.getCBar());
-    LinkedList<String> cs1=new LinkedList<String>(source.getCBar());
+    LinkedList<Ast.C> cs0=new LinkedList<>(p0.getCBar());
+    LinkedList<Ast.C> cs1=new LinkedList<>(source.getCBar());
     int n=p0.outerNumber();
     int m=source.outerNumber();
     int k=cs1.size();
-    List<String> result=new ArrayList<String>();
+    List<Ast.C> result=new ArrayList<>();
     int resN=0;
     if(n<=k){
       resN=m;

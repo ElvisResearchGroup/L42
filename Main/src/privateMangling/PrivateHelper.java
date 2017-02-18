@@ -4,6 +4,8 @@ import ast.ExpCore;
 
 import java.util.List;
 
+import ast.Ast;
+import ast.Ast.C;
 import ast.Ast.MethodSelector;
 import ast.Ast.Path;
 import ast.ExpCore.ClassB;
@@ -33,12 +35,12 @@ public class PrivateHelper {
             .withNames(Map.of(PrivateHelper::updateSingleName, ms.getNames()));
         }
       public ClassB.NestedClass visit(ClassB.NestedClass nc){
-        return super.visit(nc.withName(updateSingleName(nc.getName())));
+        return super.visit(nc.withName(C.of(updateSingleName(nc.getName().toString()))));
         }
       public ExpCore visit(Path s) {
         if(s.isPrimitive()){return super.visit(s);}
-        List<String> cs = s.getCBar();
-        cs=Map.of(PrivateHelper::updateSingleName,cs);
+        List<Ast.C> cs = s.getCBar();
+        cs=Map.of(ci->C.of(PrivateHelper.updateSingleName(ci.toString())),cs);
         return super.visit(Path.outer(s.outerNumber(),cs));
         }
     });

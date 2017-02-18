@@ -41,16 +41,16 @@ public class DesugarPaths extends CloneVisitor{
     }
   public Expression visit(Path s) {
     if(s.isCore()|| s.isPrimitive()){return s;}
-    List<String> rd =s.sugarNames();
+    List<Ast.C> rd =s.sugarNames();
     assert !rd.isEmpty();
-    String key=rd.get(0);
+    Ast.C key=rd.get(0);
     int index = searchForScope(key);
     if(index==-1){index=0;}//TODO: is what we want? not to the nearest reuse?
     return Path.outer(index,rd);
     }
 
-  private int searchForScope(String key) {
-    assert !key.equals("This");
+  private int searchForScope(Ast.C key) {
+    assert !key.toString().equals("This");
     int index=-1;
     for(ClassB cb:p){
       index+=1;

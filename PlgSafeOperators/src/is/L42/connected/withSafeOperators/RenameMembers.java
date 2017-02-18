@@ -45,7 +45,7 @@ public class RenameMembers extends coreVisitors.CloneWithPath{
         if(s.isPrimitive()){return s;}
         //System.out.print("     "+s);
         assert s.isCore();
-        List<String>cs=s.getCBar();
+        List<Ast.C>cs=s.getCBar();
         if(cs.isEmpty()){return s;}//no need to rename outers
         Locator current=this.getLocator().copy();
         current.toFormerNodeLocator();
@@ -72,16 +72,16 @@ public class RenameMembers extends coreVisitors.CloneWithPath{
         assert extraCs>=0:extraCs;
         Path result=null;
         if (nl.getAnnotation() instanceof Path){result=(Path)nl.getAnnotation();}
-        List<String>cs=s.getCBar();
+        List<Ast.C>cs=s.getCBar();
         if(result==null){
           assert nl.getAnnotation()!=null;
-          assert nl.getAnnotation() instanceof String;
-          List<String>newCs=new ArrayList<>(cs);
-          newCs.set(cs.size()-1-extraCs,(String) nl.getAnnotation());
+          assert nl.getAnnotation() instanceof Ast.C;
+          List<Ast.C>newCs=new ArrayList<>(cs);
+          newCs.set(cs.size()-1-extraCs,(Ast.C) nl.getAnnotation());
           return Path.outer(s.outerNumber(),newCs);
           }
-        List<String> path =cs.subList(cs.size()-extraCs,cs.size());
-        for(String si:path){
+        List<Ast.C> path =cs.subList(cs.size()-extraCs,cs.size());
+        for(Ast.C si:path){
           result=result.pushC(si);
         }
         return result.setNewOuter(result.outerNumber()+myDept);

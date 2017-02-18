@@ -181,7 +181,7 @@ methTypes(p,P,ms)  Expressed as metarules
 --------------------------------------------
 3 ExpressionTypeJudgement
 --------------------------------------------
-  D |- e ~> e':T <=T'| Tr   and D |Tr|- k ~> k':Ts <=T' |Tr'
+  D |- e ~> e':T <=T'| Tr   and D |Tr|- k ~> k':Ts <=T' |Tr' //TODO: add all the judgement forms: ks, ds
   where e' is an annotated version of expression e and is of type T
   where k' is an annotated version of catch k and k.e is of type T
   D.p points to where the e is located, //D.p.top()=ctxL[e]
@@ -470,7 +470,7 @@ splitDs(ds)->i
     i:=i+1
     if i==n return i //ds.size-1
     )
-  return i //that is, ds=d1..di , di+1..dn
+   error X""// would be unreachable return i //that is, ds=d1..di , di+1..dn
   
 tsMCall(TSIn in,MCall e)->TSOut
   Path rec=guessType(e.receiver)

@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import ast.Ast;
+import ast.Ast.C;
 import ast.Ast.Doc;
 import ast.Ast.Mdf;
 import ast.Ast.MethodSelector;
@@ -22,27 +24,27 @@ import auxiliaryGrammar.Program;
 import tools.Map;
 
 public class MakeMethod {
-public static ClassB addMethod(ClassB _lib, List<String> path, MethodSelector ms, String mdfs,int excNumber){
+public static ClassB addMethod(ClassB _lib, List<Ast.C> path, MethodSelector ms, String mdfs,int excNumber){
   Errors42.checkExistsPathMethod(_lib, path, Optional.empty());
   ClassB innerLib=Program.extractCBar(path, _lib);
   String[] _mdfs = mdfs.split(" ");
   assert _mdfs.length==ms.getNames().size()+2;
   List<String> nc=new ArrayList<>();
-  Type retT=new NormType(Mdf.valueOf(_mdfs[1]),Path.outer(0,Arrays.asList("$0")),Ph.None,Doc.empty());
+  Type retT=new NormType(Mdf.valueOf(_mdfs[1]),Path.outer(0,Arrays.asList(C.of("$0"))),Ph.None,Doc.empty());
   nc.add("$0");
   List<Type> ts=new ArrayList<>();
   List<Doc> docs=new ArrayList<>();
   int count=1;
   for(String n: ms.getNames()){
     String cn="$"+count;
-    ts.add(new NormType(Mdf.valueOf(_mdfs[count+1]),Path.outer(0,Arrays.asList(cn)),Ph.None,Doc.empty()));
+    ts.add(new NormType(Mdf.valueOf(_mdfs[count+1]),Path.outer(0,Arrays.asList(C.of(cn))),Ph.None,Doc.empty()));
     nc.add(cn);
     count++;
     }
   List<Path> exceptions=new ArrayList<>();
   for(int i=0;i<excNumber;i++){
     String cn="$"+count++;
-    exceptions.add(Path.outer(0,Arrays.asList(cn)));
+    exceptions.add(Path.outer(0,Arrays.asList(C.of(cn))));
     nc.add(cn);
     }
   MethodType mt = new MethodType(false,Mdf.valueOf(_mdfs[0]),ts, retT,Map.of(pi->pi.toImmNT(),exceptions));
@@ -58,7 +60,7 @@ public static ClassB addMethod(ClassB _lib, List<String> path, MethodSelector ms
     List<Member> mem = new ArrayList<>(cbi.getMs());
     mem.add(mwt);
     for(String s:nc){
-      mem.add(new NestedClass(Doc.empty(),s,emptyCb,cbi.getP()));
+      mem.add(new NestedClass(Doc.empty(),C.of(s),emptyCb,cbi.getP()));
       }
     return cbi.withMs(mem);
     });

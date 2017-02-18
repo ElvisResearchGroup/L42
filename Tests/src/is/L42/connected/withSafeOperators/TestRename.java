@@ -18,6 +18,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 import platformSpecific.javaTranslation.Resources;
 import ast.Ast;
+import ast.Ast.C;
 import ast.Ast.MethodSelector;
 import ast.Ast.Path;
 import ast.ExpCore;
@@ -114,7 +115,7 @@ public class TestRename {
     @Test public void test() {
       TestHelper.configureForTest();
       ClassB cb1 = getClassB(_cb1);
-      List<String> path=TestHelper.cs(_path);
+      List<Ast.C> path=TestHelper.cs(_path);
       MethodSelector ms1 = MethodSelector.parse(_ms1);
       MethodSelector ms2 = MethodSelector.parse(_ms2);
       ClassB expected = getClassB(_expected);
@@ -161,7 +162,7 @@ public class TestRename {
     @Test public void test() {
       TestHelper.configureForTest();
       ClassB cb1 = getClassB(_cb1);
-      List<String> path=TestHelper.cs(_path);
+      List<Ast.C> path=TestHelper.cs(_path);
       MethodSelector ms1 = MethodSelector.parse(_ms1);
       if (!isError) {
         UserForMethodResult res = Rename.userForMethod(Program.empty(), cb1, path, ms1,true);
@@ -204,8 +205,8 @@ public class TestRename {
       TestHelper.configureForTest();
       ClassB cb1 = getClassB(_cb1);
       Configuration.typeSystem.computeStage(Program.empty(), cb1);
-      List<String> path1=TestHelper.cs(_path1);
-      List<String> path2=TestHelper.cs(_path2);
+      List<Ast.C> path1=TestHelper.cs(_path1);
+      List<Ast.C> path2=TestHelper.cs(_path2);
       ClassB expected = getClassB(_expected);
       if (!isError) {
         ClassB res = Rename.renameClassStrict(Program.empty(), cb1, path1,  path2);
@@ -227,22 +228,22 @@ public class TestRename {
   //-----
   @Test
   public void testToTop() {
-    List<String> res = ClassOperations.toTop(Arrays.asList(),Path.parse("This0.A"));
+    List<Ast.C> res = ClassOperations.toTop(Arrays.asList(),Path.parse("This0.A"));
     Assert.assertEquals(res,Arrays.asList("A"));
     res = ClassOperations.toTop(Arrays.asList(),Path.parse("This0.A.B"));
     Assert.assertEquals(res,Arrays.asList("A","B"));
-    res = ClassOperations.toTop(Arrays.asList("C"),Path.parse("This1.A.B"));
+    res = ClassOperations.toTop(Arrays.asList(C.of("C")),Path.parse("This1.A.B"));
     Assert.assertEquals(res,Arrays.asList("A","B"));
-    res = ClassOperations.toTop(Arrays.asList("C"),Path.parse("This0.A.B"));
+    res = ClassOperations.toTop(Arrays.asList(C.of("C")),Path.parse("This0.A.B"));
     Assert.assertEquals(res,Arrays.asList("C","A","B"));
   }
   @Test
   public void testNormalizePath() {
     Path res = ClassOperations.normalizePath(Arrays.asList(),0,Arrays.asList());
     Assert.assertEquals(res,Path.outer(0));
-    res = ClassOperations.normalizePath(Arrays.asList("A"),1,Arrays.asList("B"));
+    res = ClassOperations.normalizePath(Arrays.asList(C.of("A")),1,Arrays.asList(C.of("B")));
     Assert.assertEquals(res,Path.parse("This1.B"));
-    res = ClassOperations.normalizePath(Arrays.asList("B"),1,Arrays.asList("B"));
+    res = ClassOperations.normalizePath(Arrays.asList(C.of("B")),1,Arrays.asList(C.of("B")));
     Assert.assertEquals(res,Path.parse("This0"));
 
   }
@@ -372,8 +373,8 @@ public class TestRename {
       TestHelper.configureForTest();
       ClassB cb1 = getClassB(_cb1);
       Configuration.typeSystem.computeStage(Program.empty(), cb1);
-      List<String> path1=TestHelper.cs(_path1);
-      List<String> path2=TestHelper.cs(_path2);
+      List<Ast.C> path1=TestHelper.cs(_path1);
+      List<Ast.C> path2=TestHelper.cs(_path2);
       ClassB expected = getClassB(_expected);
       if (!isError) {
         ClassB res = Rename.renameClass(Program.empty(), cb1, path1, path2);

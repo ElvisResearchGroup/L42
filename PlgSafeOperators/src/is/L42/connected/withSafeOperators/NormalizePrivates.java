@@ -18,6 +18,7 @@ import ast.Util.*;
 import auxiliaryGrammar.Locator;
 import auxiliaryGrammar.Program;
 import ast.Ast;
+import ast.Ast.C;
 import ast.Ast.Path;
 //this file may be moved in L42_Main
 public class NormalizePrivates {
@@ -48,7 +49,7 @@ public class NormalizePrivates {
     CollectedLocatorsMap result=new CollectedLocatorsMap();
     cb.accept(new CloneWithPath(){
       @Override public ClassB.NestedClass visit(ClassB.NestedClass nc){
-        String name=nc.getName();
+        String name=nc.getName().toString();
         String uniquePexed=processNameAndReturnUnseenPedex(result.pedexes,name);
         PrivatePedex validUniquePexed = isValidPedex(uniquePexed);
         if(!nc.getDoc().isPrivate()){
@@ -137,9 +138,9 @@ public class NormalizePrivates {
     return (ClassB)cb.accept(new CloneVisitor(){
         public ExpCore visit(Path s){
           if(s.isPrimitive()){return s;}
-          List<String> cs=s.getCBar();
-          List<String>newCs=new ArrayList<>();
-          for(String si:cs){newCs.add(replace__(si));}
+          List<Ast.C> cs=s.getCBar();
+          List<Ast.C>newCs=new ArrayList<>();
+          for(Ast.C si:cs){newCs.add(C.of(replace__(si.toString())));}
           if(newCs.equals(cs)){return s;}
           return Path.outer(s.outerNumber(),newCs);
         }
@@ -151,7 +152,7 @@ public class NormalizePrivates {
           return liftMs(ms);
         }
         public ClassB.NestedClass visit(ClassB.NestedClass nc){
-          return super.visit(nc.withName(replace__(nc.getName())));
+          return super.visit(nc.withName(C.of(replace__(nc.getName().toString()))));
         }
       }) ;
   }
@@ -167,6 +168,7 @@ public class NormalizePrivates {
     HashMap<String,String>renaming=new HashMap<>();
     return (ClassB) cb.accept(new CloneVisitor(){
       private int currentNum=0;
+      private Ast.C visitName(Ast.C namec) {return C.of(visitName(namec.toString()));}
       private String visitName(String name) {
         String mapped=renaming.get(name);
         if(mapped!=null){return mapped;}
@@ -182,12 +184,12 @@ public class NormalizePrivates {
       }
       //nc, ms,path
       public NestedClass visit(NestedClass nc){
-        String newName=visitName(nc.getName());
+      Ast.C newName=visitName(nc.getName());
         return super.visit(nc.withName(newName));
         }
 
       public ExpCore visit(Path path){
-        List<String>cs=path.getCBar();
+        List<Ast.C>cs=path.getCBar();
         cs=Map.of(c->visitName(c),cs);
         return super.visit(Path.outer(path.outerNumber(),cs));
         }

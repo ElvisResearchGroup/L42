@@ -71,7 +71,7 @@ import coreVisitors.InjectionOnSugar;
   }
   @Value @Wither @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class IncoherentMwts extends ErrorMessage implements PosImprove{
   ast.Ast.MethodSelector guilty;
-  List<String> exploredPath;
+  List<Ast.C> exploredPath;
   List<PathMwt> incoherent;
   Ast.Position pos;}
   @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class MalformedUnionOfMembers extends ErrorMessage {
@@ -194,7 +194,7 @@ import coreVisitors.InjectionOnSugar;
     Position pos;
   }
   @Value @Wither @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class PathNonExistant extends TypeError implements PosImprove{
-    List<String> listOfNodeNames;
+    List<Ast.C> listOfNodeNames;
     ClassB cb;
     Position pos;
   }

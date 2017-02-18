@@ -40,7 +40,7 @@ public class ExtractInfo {
       }
     Set<Path> whereUsed=new HashSet<>();
     public ExpCore visit(Path s) {
-      List<String> path = this.getLocator().getClassNamesPath();
+      List<Ast.C> path = this.getLocator().getClassNamesPath();
       if(s.isPrimitive()){return s;}
       if(path.size()<s.outerNumber()){return s;}
       //List<String> unexploredPath=path.subList(0,path.size()-s.outerNumber());
@@ -88,7 +88,7 @@ public class ExtractInfo {
   }
   //path member is not a nestedclass
   //path is used
-  public static boolean checkBox(ClassB top,ClassB cb,List<String> path,boolean justFalse) throws Resources.Error/*NotBox*/{
+  public static boolean checkBox(ClassB top,ClassB cb,List<Ast.C> path,boolean justFalse) throws Resources.Error/*NotBox*/{
     List<MethodSelector> meth = collectDeclaredMethods(cb);
     Set<Path> used = ExtractInfo.IsUsed.of(top,Path.outer(0,path));
     if(meth.isEmpty()&& used.isEmpty() && !cb.isInterface() && cb.getSupertypes().isEmpty()){return true;}
@@ -104,9 +104,9 @@ public class ExtractInfo {
     return meth;
   }
 
-  public static void checkBox(ClassB top,ClassB cb,List<String> path) throws Resources.Error/*NotBox*/{ checkBox(top,cb, path,false);}
-  public static boolean isBox(ClassB top,ClassB cb,List<String> path){return checkBox(top, cb,path,true);}
-  public static boolean isNeverImplemented(ClassB top,List<String> path){
+  public static void checkBox(ClassB top,ClassB cb,List<Ast.C> path) throws Resources.Error/*NotBox*/{ checkBox(top,cb, path,false);}
+  public static boolean isBox(ClassB top,ClassB cb,List<Ast.C> path){return checkBox(top, cb,path,true);}
+  public static boolean isNeverImplemented(ClassB top,List<Ast.C> path){
     Set<Path> used = ExtractInfo.IsImplemented.of(top,Path.outer(0,path));
     if(used.isEmpty()){ return true;}
     return false;
@@ -135,7 +135,7 @@ public class ExtractInfo {
     ClassKind(String name42){this.name42=name42;}
     }
   //top can be null, in this case we can return the mixed kinds
-  public static ClassKind classKind(ClassB top, List<String> current,ClassB cb,Boolean isFree,Boolean isPrivateState,Boolean isNoImplementation){//9 options
+  public static ClassKind classKind(ClassB top, List<Ast.C> current,ClassB cb,Boolean isFree,Boolean isPrivateState,Boolean isNoImplementation){//9 options
    assert (top==null)==(current==null);
     if(cb.isInterface()){  return ClassKind.Interface; }
     if(isPrivateState==null){isPrivateState=hasPrivateState(cb);}
@@ -147,7 +147,7 @@ public class ExtractInfo {
     return ClassKind.Template;
   }
 
-  public static boolean isFree(ClassB top, List<String> current) {
+  public static boolean isFree(ClassB top, List<Ast.C> current) {
     assert current!=null;
     Set<Path> used = ExtractInfo.IsUsedAsPath.of(top,Path.outer(0,current));
     if(used.isEmpty()){ return true;}
@@ -260,17 +260,17 @@ public class ExtractInfo {
       return false;}
     return true;
   }
-  static List<PathMx> collectPrivateMethodsOfPublicPaths(ClassB cb, List<String> path) {
+  static List<PathMx> collectPrivateMethodsOfPublicPaths(ClassB cb, List<Ast.C> path) {
     List<PathMx> result=new ArrayList<>();
     cb=Program.extractCBar(path, cb);
     auxCollectPrivateMethodsOfPublicPaths(cb,result,path);
     return result;
   }
-  private static void auxCollectPrivateMethodsOfPublicPaths(ClassB cb,List<PathMx> accumulator, List<String> prefix) {
+  private static void auxCollectPrivateMethodsOfPublicPaths(ClassB cb,List<PathMx> accumulator, List<Ast.C> prefix) {
     for(Member m:cb.getMs()){m.match(
       nc->{
         if(nc.getDoc().isPrivate()){return null;}
-        List<String> newPrefix=new ArrayList<>(prefix);
+        List<Ast.C> newPrefix=new ArrayList<>(prefix);
         newPrefix.add(nc.getName());
         auxCollectPrivateMethodsOfPublicPaths((ClassB)nc.getInner(),accumulator,newPrefix);
         return null;
@@ -281,10 +281,10 @@ public class ExtractInfo {
         return null;
       });}
   }
-  private static void auxCollectPrivatePathsAndSubpaths(ClassB cb,List<Path> accumulator, List<String> prefix, boolean collectAll) {
+  private static void auxCollectPrivatePathsAndSubpaths(ClassB cb,List<Path> accumulator, List<Ast.C> prefix, boolean collectAll) {
     for(Member m:cb.getMs()){m.match(
       nc->{
-        List<String> newPrefix=new ArrayList<>(prefix);
+        List<Ast.C> newPrefix=new ArrayList<>(prefix);
         newPrefix.add(nc.getName());
         boolean newCollectAll=collectAll || nc.getDoc().isPrivate();
         auxCollectPrivatePathsAndSubpaths((ClassB)nc.getInner(),accumulator,newPrefix,newCollectAll);
@@ -292,19 +292,19 @@ public class ExtractInfo {
         return null;
       },mi->null, mt->null);}
   }
-  static List<Path> collectPrivatePathsAndSubpaths(ClassB cb, List<String> path) {
+  static List<Path> collectPrivatePathsAndSubpaths(ClassB cb, List<Ast.C> path) {
     List<Path> result=new ArrayList<>();
     cb=Program.extractCBar(path, cb);
     auxCollectPrivatePathsAndSubpaths(cb,result,path ,false);
     return result;
   }
 
-  public static boolean isPrefix(List<String> a, List<String> b) {
-    List<String> la=a;
-    List<String> lb=b;
+  public static boolean isPrefix(List<Ast.C> a, List<Ast.C> b) {
+    List<Ast.C> la=a;
+    List<Ast.C> lb=b;
     while (!la.isEmpty() && !lb.isEmpty()){
-      String ai=la.get(0);
-      String bi=lb.get(0);
+      Ast.C ai=la.get(0);
+      Ast.C bi=lb.get(0);
       if(!ai.equals(bi)){return false;}
       la=la.subList(1, la.size());
       lb=lb.subList(1, lb.size());

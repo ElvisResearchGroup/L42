@@ -24,7 +24,7 @@ import auxiliaryGrammar.Program;
 
 public class RetainOnlyAndRenameAs extends CloneVisitor{
   //private Path path;
-  private List<String> path;
+  private List<Ast.C> path;
   private MethodSelector ms1;
   private MethodSelector ms2;
   public RetainOnlyAndRenameAs(Path path, MethodSelector ms1,MethodSelector ms2) {
@@ -34,7 +34,7 @@ public class RetainOnlyAndRenameAs extends CloneVisitor{
     }
   public List<Member> liftMembers(List<Member> s) {
     if(!path.isEmpty()){
-      String name=path.get(0);
+    Ast.C name=path.get(0);
       List<Member> result=new ArrayList<>();
       Optional<Member> mOpt = Program.getIfInDom(s, name);
       if(!mOpt.isPresent()){
@@ -75,7 +75,7 @@ public class RetainOnlyAndRenameAs extends CloneVisitor{
     if(!path.get(0).equals(nc.getName())){
       return nc;
       }
-    List<String> aux = new ArrayList<>(path);
+    List<Ast.C> aux = new ArrayList<>(path);
     path.remove(0);
     try{return super.visit(nc);}
     finally{path=aux;}

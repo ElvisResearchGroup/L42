@@ -58,7 +58,7 @@ public class ReplaceDots extends CloneVisitor{
     return null;
   }
   public Path pathToDirectory(){
-    Path fileP=this.currentFolder.resolve(this.currentNested.getName());
+    Path fileP=this.currentFolder.resolve(this.currentNested.getName().toString());
     if(Files.isDirectory(fileP)){
       return fileP;
       }

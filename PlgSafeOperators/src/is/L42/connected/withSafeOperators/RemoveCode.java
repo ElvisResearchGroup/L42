@@ -12,6 +12,7 @@ import java.util.function.Function;
 import coreVisitors.CloneVisitor;
 import coreVisitors.From;
 import platformSpecific.fakeInternet.ActionType;
+import ast.Ast;
 import ast.ErrorMessage;
 import ast.Ast.Doc;
 import ast.Ast.Path;
@@ -28,7 +29,7 @@ public class RemoveCode {
 	System.out.println("removeUnreachableCode");
     ClassB newCb=removeAllPrivates(originalCb);
     ClassB oldCb=newCb;
-    Set<List<String>> justAdded = paths(newCb);
+    Set<List<Ast.C>> justAdded = paths(newCb);
     do{
       oldCb=newCb;
       //for all nested in newCb
@@ -48,24 +49,24 @@ public class RemoveCode {
     //then, with fixpoint:
     //for all the classes that are in newL, if Cs is used, add Cs from oldL
   }
-  private static Set<List<String>>  paths(ClassB cb) {
-    Set<List<String>> result=new HashSet<>();
+  private static Set<List<Ast.C>>  paths(ClassB cb) {
+    Set<List<Ast.C>> result=new HashSet<>();
     collectPaths(result,Collections.emptyList(),cb);
     return result;
   }
-  private static void collectPaths(Set<List<String>> accumulator,List<String> path,ClassB cb) {
+  private static void collectPaths(Set<List<Ast.C>> accumulator,List<Ast.C> path,ClassB cb) {
     accumulator.add(path);
     for(Member m:cb.getMs()){
       if(!(m instanceof NestedClass)){continue;}
       NestedClass nc=(NestedClass)m;
-      List<String> pathi=new ArrayList<>(path);
+      List<Ast.C> pathi=new ArrayList<>(path);
       pathi.add(nc.getName());
       collectPaths(accumulator,pathi,(ClassB)nc.getInner());
     }
   }
-  private static ClassB collectDepNested(Set<List<String>> justAdded,ClassB originalCb,ClassB accumulator,ClassB depSource,List<String> origin){
-    List<List<String>> dep=collectDep(depSource,origin);
-    for(List<String> pi:dep){
+  private static ClassB collectDepNested(Set<List<Ast.C>> justAdded,ClassB originalCb,ClassB accumulator,ClassB depSource,List<Ast.C> origin){
+    List<List<Ast.C>> dep=collectDep(depSource,origin);
+    for(List<Ast.C> pi:dep){
       if(justAdded.contains(pi)){continue;}
       justAdded.add(pi);
       accumulator=addDep(accumulator,pi,originalCb);
@@ -75,17 +76,17 @@ public class RemoveCode {
       if(!(m instanceof NestedClass)){continue;}
       NestedClass nc=(NestedClass)m;
       ClassB cbi=(ClassB)nc.getInner();
-      List<String> newOrigin=new ArrayList<>(origin);
+      List<Ast.C> newOrigin=new ArrayList<>(origin);
       newOrigin.add(nc.getName());
       accumulator=collectDepNested(justAdded,originalCb, accumulator,cbi,newOrigin);
       }
     return accumulator;
     }
-  private static ClassB addDep(ClassB accumulator, List<String> path, ClassB originalCb) {
+  private static ClassB addDep(ClassB accumulator, List<Ast.C> path, ClassB originalCb) {
     if(path.isEmpty()){
       return mergeNestedHolderWithDep(accumulator, originalCb);
       }
-    String firstName=path.get(0);
+    Ast.C firstName=path.get(0);
     //either fistName does not exist in accumulator, and we call removeAllButPath
     //or we have to continue recursivelly.
     Optional<Member> optM = Program.getIfInDom(accumulator.getMs(), firstName);
@@ -122,7 +123,7 @@ public class RemoveCode {
       }
     return originalCb.withMs(ms);
     }
-  private static ClassB removeAllButPath(List<String> path, ClassB originalCb) {
+  private static ClassB removeAllButPath(List<Ast.C> path, ClassB originalCb) {
     if(path.isEmpty()){
       List<Member> ms = new ArrayList<>();
       for(Member m:originalCb.getMs()){
@@ -131,7 +132,7 @@ public class RemoveCode {
         }
       return originalCb.withMs(ms);
       }
-    String firstName=path.get(0);
+    Ast.C firstName=path.get(0);
     List<Member> ms = new ArrayList<>();
     for(Member m:originalCb.getMs()){
       if(!(m instanceof NestedClass)){continue;}
@@ -143,9 +144,9 @@ public class RemoveCode {
     return ClassB.membersClass(ms,Position.noInfo);
   }
 
-  private static List<List<String>> collectDep(ClassB depSource, List<String> origin) {
+  private static List<List<Ast.C>> collectDep(ClassB depSource, List<Ast.C> origin) {
     List<Path> dep = new UsedPaths().of(depSource);
-    List<List<String>>result=new ArrayList<>();
+    List<List<Ast.C>>result=new ArrayList<>();
     for(Path pi:new HashSet<>(dep)){
       if(pi.isPrimitive()){continue;}
       Path piF=From.fromP(pi, Path.outer(0, origin));

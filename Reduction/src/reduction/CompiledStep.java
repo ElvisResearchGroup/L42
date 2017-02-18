@@ -14,6 +14,7 @@ import coreVisitors.IsValue;
 import coreVisitors.NormalizeBlocks;
 import facade.L42;
 import facade.PData;
+import ast.Ast;
 import ast.ErrorMessage;
 import ast.ExpCore;
 import ast.ExpCore.ClassB;
@@ -26,7 +27,7 @@ public class CompiledStep extends SmallStep{
   @Override protected void log(String s) { }
 
   @Override
-  protected ExpCore executeAtomicStep(PData p1, ExpCore _e1,String nestedName) {
+  protected ExpCore executeAtomicStep(PData p1, ExpCore _e1,Ast.C nestedName) {
     if(!IsCompiled.of(_e1)){return step(p1, _e1);}
     return Resources.withPDo(p1,()->{
       ExpCore e1=NormalizeBlocks.of(_e1);

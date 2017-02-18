@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import ast.Ast;
 import ast.Ast.Doc;
 import ast.Ast.MethodSelector;
 import ast.Ast.Path;
@@ -39,7 +40,7 @@ public class Locator {
   }
   public String getLastName(){
     Member m=this.ms.get(this.ms.size()-1);
-    return m.match(nc->nc.getName(), mi->mi.getS().getName(), mt->mt.getMs().getName());
+    return m.match(nc->nc.getName().toString(), mi->mi.getS().getName(), mt->mt.getMs().getName());
   }
   public Kind kind() {
     int size = this.size();
@@ -74,13 +75,13 @@ public class Locator {
     this.auxAddCs(path.getCBar());
     return true;
   }
-  public void addCsAndMember(List<String> cs,Member m) {
+  public void addCsAndMember(List<Ast.C> cs,Member m) {
     auxAddCs(cs);
     this.cbs.add(null);
     this.indexes.add(0);
     this.ms.add(m);
     }
-  public void addCs(List<String> cs) {
+  public void addCs(List<Ast.C> cs) {
     auxAddCs(cs);
     assert !cbs.contains(null) : cbs;
     int size=this.size();
@@ -89,13 +90,13 @@ public class Locator {
       this.indexes.set(size-1, 0);
     }
   }
-  private void auxAddCs(List<String> cs) {
+  private void auxAddCs(List<Ast.C> cs) {
     int size=this.size();
     if(size>0 && this.cbs.get(size-1)==null){
       this.indexes.set(size-1,1);
       this.cbs.set(size-1,LocatorSupport.dumbCb);
     }
-    for (String s : cs) {
+    for (Ast.C s : cs) {
       this.ms.add(new ClassB.NestedClass(ast.Ast.Doc.empty(), s, new ast.ExpCore.WalkBy(), null));
       this.indexes.add(1);
       this.cbs.add(LocatorSupport.dumbCb);
@@ -146,8 +147,8 @@ public class Locator {
       }
       if (ci.getClass() != nli.getClass()) { return false; }
       if (!(ci instanceof ClassB.NestedClass)) { return false; }
-      String nci = ((ClassB.NestedClass) ci).getName();
-      String nnli = ((ClassB.NestedClass) nli).getName();
+      Ast.C nci = ((ClassB.NestedClass) ci).getName();
+      Ast.C nnli = ((ClassB.NestedClass) nli).getName();
       if (!nci.equals(nnli)) { return false; }
       //is ok to not check classBs?
     }
@@ -166,10 +167,10 @@ public class Locator {
     return this.toStringNoAnnotation().equals(that.toStringNoAnnotation());
   }
   public int hashCode(){return this.toString().hashCode();}
-  public List<String> getClassNamesPath(){
+  public List<Ast.C> getClassNamesPath(){
     int size=this.size();
     //assert path.get(path.size()-1)==null;
-    List<String> sPath=new ArrayList<>();
+    List<Ast.C> sPath=new ArrayList<>();
     for(Member m:this.ms){
       m.match(nc->sPath.add(nc.getName()), mi->sPath.add(null), mt->sPath.add(null));
     }

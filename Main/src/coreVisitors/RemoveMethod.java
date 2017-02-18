@@ -15,7 +15,7 @@ import ast.ExpCore.ClassB.Member;
 import auxiliaryGrammar.Program;
 
 public class RemoveMethod extends CloneVisitor{
-  private List<String> path;
+  private List<Ast.C> path;
   private MethodSelector ms;
   public RemoveMethod(Path path, MethodSelector ms) {
     this.path = new ArrayList<>(path.getCBar());this.ms=ms;
@@ -35,7 +35,7 @@ public class RemoveMethod extends CloneVisitor{
     if(!path.get(0).equals(nc.getName())){
       return nc;
       }
-    List<String> aux=new ArrayList<String>(path);
+    List<Ast.C> aux=new ArrayList<>(path);
     path.remove(0);
     try{return super.visit(nc);}
     finally{path=aux;}

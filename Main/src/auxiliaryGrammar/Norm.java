@@ -23,6 +23,7 @@ import ast.Ast.Ph;
 import ast.Ast.Position;
 import ast.Ast.Stage;
 import ast.Ast.Type;
+import ast.Ast;
 import ast.ErrorMessage;
 import ast.ErrorMessage.NotOkToStar;
 import ast.ExpCore;
@@ -140,7 +141,7 @@ public class Norm {
     int n=path.outerNumber();
     if(n==0){return path;}
     if(path.getCBar().isEmpty()){return path;}
-    String c=path.getCBar().get(0);
+    Ast.C c=path.getCBar().get(0);
 
     ClassB myLib=p.getCb(n);//need types on interface implemented methods
     List<Member> ms=myLib.getMs();

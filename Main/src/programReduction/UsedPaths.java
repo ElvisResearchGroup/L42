@@ -48,7 +48,7 @@ public class UsedPaths {
     return result;
     }
 
-  static private Paths usedPathsFix(Program p, Paths paths, List<List<String>> css) {
+  static private Paths usedPathsFix(Program p, Paths paths, List<List<Ast.C>> css) {
 //- usedPathsFix(p,empty,empty) =empty   
     if (paths.isEmpty()){
       assert css.isEmpty();
@@ -57,7 +57,7 @@ public class UsedPaths {
     
 //- usedPathsFix(p,paths,Css)= usedPathsFix(p.pop(),paths.pop(),empty).push(Css)
 //paths.top()\Css==empty
-    List<List<String>> topLessCss = new ArrayList<>(paths.top());
+    List<List<Ast.C>> topLessCss = new ArrayList<>(paths.top());
     topLessCss.removeAll(css);
     if(topLessCss.isEmpty()){
       Paths popPaths=paths.pop();
@@ -70,20 +70,20 @@ public class UsedPaths {
 //paths.top()\Css!=empty
 //paths0=usedPathsL(p.top(),paths.top()\Css)
     Paths paths0=usedPathsL(p.top(),topLessCss);
-    List<List<String>> css1=new ArrayList<>(paths.top());
+    List<List<Ast.C>> css1=new ArrayList<>(paths.top());
     css1.addAll(css);
     return usedPathsFix(p,paths.union(paths0),Paths.minimize(css1));
     }
 
 //- usedPathsL(L, Cs1..Csn)=usedInnerL(L(Cs1),Cs1) U ... U usedInnerL(L(Csn),Csn)
-  static private Paths usedPathsL(ClassB l, List<List<String>> css) {
+  static private Paths usedPathsL(ClassB l, List<List<Ast.C>> css) {
     Paths result=Paths.empty();
-    for(List<String> csi : css){result=result.union(usedInnerL(l.getClassB(csi),csi));}
+    for(List<Ast.C> csi : css){result=result.union(usedInnerL(l.getClassB(csi),csi));}
     return result;
     }
   
 //- usedInnerL(LC,Cs)=paths.prefix(Cs)
-  static private Paths usedInnerL(ClassB lc, List<String> cs) {
+  static private Paths usedInnerL(ClassB lc, List<Ast.C> cs) {
   //LC={_ implements Ps, M1..Mn}//in implementation, error if not compiled
   assert IsCompiled.of(lc);//TODO: should it be a compilation error?
   Paths paths=Paths.reorganize(lc.getSuperPaths());

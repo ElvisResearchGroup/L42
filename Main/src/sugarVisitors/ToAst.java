@@ -77,7 +77,7 @@ public class ToAst extends AbstractVisitor<Expression>{
       if(ctx.Path().getText().contains("::")){throw Assertions.userErrorAssert("no ::");}//TODO:improve, if can be reached
       String name=ctx.Path().getText();
       Expression inner=ctx.eTop().accept(ToAst.this);
-      return new NestedClass(doc, name, inner,position(ctx));
+      return new NestedClass(doc, C.of(name), inner,position(ctx));
     }
 
     @Override public Member visitMethodImplemented(MethodImplementedContext ctx) {

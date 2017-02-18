@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ast.Ast.Path;
+import ast.Ast;
 import ast.ExpCore;
 import ast.ExpCore.ClassB;
 import auxiliaryGrammar.Program;
@@ -65,7 +66,7 @@ public class Facade implements Reduction{
     return (ClassB)Executor.stepStar(myExecutor, topLevel);
   });}
 @Override
-public ExpCore metaExp(PData p,ExpCore e,String nameDebug) {
+public ExpCore metaExp(PData p,ExpCore e,Ast.C nameDebug) {
   return  myExecutor.executeAtomicStep(p, e,nameDebug);
  }
 }

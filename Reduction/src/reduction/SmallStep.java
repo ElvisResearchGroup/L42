@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import platformSpecific.javaTranslation.Resources;
+import ast.Ast;
 import ast.ErrorMessage;
 import ast.ExpCore;
 import ast.Ast.Mdf;
@@ -73,7 +74,7 @@ public class SmallStep extends Executor{
       cb.getStage().setStage(oldSt);
       }
   }
-  protected ExpCore executeAtomicStep(PData p1, ExpCore e1,String nestedName) {
+  protected ExpCore executeAtomicStep(PData p1, ExpCore e1,Ast.C nestedName) {
     //return step(p1,e1);//TODO push withP in compiledStep
     if(!IsCompiled.of(e1)){return step(p1, e1);}
     return Resources.withPDo(p1,()-> step(p1, e1));

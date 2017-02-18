@@ -16,6 +16,7 @@ import tools.Assertions;
 import tools.Map;
 import tools.Match;
 import ast.Ast;
+import ast.Ast.C;
 import ast.Ast.Doc;
 import ast.Ast.HistoricType;
 import ast.Ast.Mdf;
@@ -42,14 +43,15 @@ import coreVisitors.IsCompiled;
 import coreVisitors.IsValue;
 import coreVisitors.ReplaceCtx;
 import facade.Configuration;
+import facade.L42;
 
 public class Functions {
 
-public static ClassB.NestedClass encapsulateIn(List<String> cBar,ClassB elem,Doc doc) {
+public static ClassB.NestedClass encapsulateIn(List<Ast.C> cBar,ClassB elem,Doc doc) {
     //Notice: encapsulation do not do the from. It must be done
     //on the call side as in "redirectDefinition"
     assert !cBar.isEmpty();
-    List<String> cBar2 = cBar.subList(1,cBar.size());
+    List<Ast.C> cBar2 = cBar.subList(1,cBar.size());
     if(cBar2.isEmpty()){return new ClassB.NestedClass(doc,cBar.get(0),elem,null);}
     List<Member> ms=new ArrayList<>();
     ms.add(encapsulateIn(cBar2,elem,doc));
@@ -193,10 +195,12 @@ public static Path freshPathName(Path pathR, Set<String> usedNames) {
   if(pathR.isPrimitive()){p=freshName(pathR.toString(),usedNames);}
   else if(pathR.getCBar().isEmpty()){p=freshName("This",usedNames);}
   else{
-    p=pathR.getCBar().get(pathR.getCBar().size()-1);
+    Ast.C last=pathR.getCBar().get(pathR.getCBar().size()-1);
+    if (last.isPrivate()){return pathR.popC().pushC(last.withPrivateNum(L42.freshPrivate()));}
+    p=last.getInner();
     p=freshName(p,usedNames);
     }
-  return pathR.popC().pushC(p);
+  return pathR.popC().pushC(C.of(p));
   }
 
 public static String freshName(Path pathR, Set<String> usedNames) {
@@ -204,12 +208,13 @@ public static String freshName(Path pathR, Set<String> usedNames) {
   if(pathR.isPrimitive()){p=freshName(pathR.toString(),usedNames);}
   else if(pathR.getCBar().isEmpty()){p=freshName("This",usedNames);}
   else{
-    p=pathR.getCBar().get(pathR.getCBar().size()-1);
+    p=pathR.getCBar().get(pathR.getCBar().size()-1).toString();
     p=freshName(p,usedNames);
     }
   p=p.substring(0,1).toLowerCase() +p.substring(1);
   return freshName(p,usedNames);
 }
+
 public static final HashSet<String>keywords=new HashSet<String>();
 static{
   //keywords.add("Void");

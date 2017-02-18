@@ -16,6 +16,7 @@ import facade.Configuration;
 import facade.L42;
 import ast.Ast;
 import ast.ExpCore;
+import ast.Ast.C;
 import ast.Ast.Doc;
 import ast.Ast.Path;
 import ast.Ast.Position;
@@ -35,7 +36,7 @@ import auxiliaryGrammar.Norm;
 import auxiliaryGrammar.Program;
 
 public class Rename {
-  public static ClassB renameClass(Program p,ClassB cb,List<String> src,List<String> dest){
+  public static ClassB renameClass(Program p,ClassB cb,List<Ast.C> src,List<Ast.C> dest){
     Errors42.checkExistsPathMethod(cb, src, Optional.empty());
     if(src.equals(dest)){return cb;}
     if(src.isEmpty()){//push is asked
@@ -52,17 +53,18 @@ public class Rename {
     if(!ExtractInfo.isPrefix(src, dest)){ return ClassOperations.normalizePaths(directRename(p,cb,src,dest));}
     src=new ArrayList<>(src);
     dest=new ArrayList<>(dest);
-    src.add(0,"Result");
-    dest.add(0,"Result");
-    cb=Push.pushOne(cb,"Result");
-    List<String> tmp = Collections.singletonList("Tmp");
+    C result=C.of("Result");
+    src.add(0,result);
+    dest.add(0,result);
+    cb=Push.pushOne(cb,result);
+    List<Ast.C> tmp = Collections.singletonList(C.of("Tmp"));
     cb=directRename(p,cb,src,tmp);
     if(!L42.trustPluginsAndFinalProgram) {Configuration.typeSystem.checkCt(p, cb);}
     cb=directRename(p,cb,tmp,dest);
     cb=Pop.directPop(cb);
     return cb;
   }
-  public static ClassB renameClassStrict(Program p,ClassB cb,List<String> src,List<String> dest){
+  public static ClassB renameClassStrict(Program p,ClassB cb,List<Ast.C> src,List<Ast.C> dest){
   /*
   errors:
   src is prefix of dest
@@ -75,7 +77,7 @@ public class Rename {
     cb=NormalizePrivates.normalize(p, cb);
     return ClassOperations.normalizePaths(directRename(p, cb, src, dest));
   }
-  private static ClassB directRename(Program p, ClassB cb, List<String> src, List<String> dest) {
+  private static ClassB directRename(Program p, ClassB cb, List<Ast.C> src, List<Ast.C> dest) {
     CollectedLocatorsMap clm=CollectedLocatorsMap.from(Path.outer(0,src), Path.outer(0,dest));
     ClassB renamedCb=(ClassB)new RenameAlsoDefinition(cb,clm,p).visit(cb);
     ClassB clearCb=renamedCb.onNestedNavigateToPathAndDo(src,nc->Optional.empty());
@@ -83,7 +85,7 @@ public class Rename {
     newCb=ClassOperations.normalizePaths(newCb);
     return Sum.normalizedTopSum(p, clearCb, newCb);
   }
-  public static ClassB renameMethod(Program p,ClassB cb,List<String> path,MethodSelector src,MethodSelector dest){
+  public static ClassB renameMethod(Program p,ClassB cb,List<Ast.C> path,MethodSelector src,MethodSelector dest){
       Member mem=Errors42.checkExistsPathMethod(cb, path, Optional.of(src));
       assert mem instanceof MethodWithType;
       Errors42.checkCompatibleMs(path,(MethodWithType)mem,dest);
@@ -93,7 +95,7 @@ public class Rename {
      return (ClassB) ren.visit(cb);
     }
   static class UserForMethodResult{List<PathMx> asClient;List<MethodSelector>asThis;}
-  public static UserForMethodResult userForMethod(Program p,ClassB cb,List<String> path,MethodSelector src,boolean checkMethExists ){
+  public static UserForMethodResult userForMethod(Program p,ClassB cb,List<Ast.C> path,MethodSelector src,boolean checkMethExists ){
     if(checkMethExists){
       Member mem=Errors42.checkExistsPathMethod(cb, path, Optional.of(src));
       assert mem instanceof MethodWithType;
@@ -107,7 +109,7 @@ public class Rename {
       @Override protected MethodSelector liftMs(MethodSelector ms){return ms;}
       @Override protected MethodSelector liftMsInMetDec(MethodSelector ms){return ms;}
       public ExpCore visit(MCall s) {
-        List<String> localPath = this.getLocator().getClassNamesPath();
+        List<Ast.C> localPath = this.getLocator().getClassNamesPath();
         if(!localPath.equals(path)){return super.visit(s);}
         if(s.getInner().equals(Path.outer(0)) || s.getInner().equals(new ExpCore.X("this"))){
             result2.add(s.getS());
@@ -133,7 +135,7 @@ public class Rename {
   }
 
 
-  private static ClassB redirectDefinition(List<String>src,List<String>dest, ClassB lprime) {
+  private static ClassB redirectDefinition(List<Ast.C>src,List<Ast.C>dest, ClassB lprime) {
     assert !src.isEmpty();
     assert !dest.isEmpty();
     Doc[] docCb=new Doc[]{Doc.empty()};
@@ -151,14 +153,14 @@ public class Rename {
       public ExpCore visit(Path s) {
         if(s.isPrimitive()){return s;}
         assert s.isCore();
-        List<String> path = this.getLocator().getClassNamesPath();
+        List<Ast.C> path = this.getLocator().getClassNamesPath();
         if(s.outerNumber()>path.size()){return s;}
-        List<String> unexploredPath=path.subList(0,path.size()-s.outerNumber());//in usedPath similar thing.
+        List<Ast.C> unexploredPath=path.subList(0,path.size()-s.outerNumber());//in usedPath similar thing.
         if(unexploredPath.contains(null)){return s;}//we are in a class literal in a method and we look inside
         if(s.outerNumber()>path.size()){return s;}
-        List<String>topView=ClassOperations.toTop(path,s);
+        List<Ast.C>topView=ClassOperations.toTop(path,s);
         for(PathPath pp:mapPath){
-          List<String>src=pp.getPath1().getCBar();
+          List<Ast.C>src=pp.getPath1().getCBar();
           if(topView.size()<src.size()){continue;}
           if(topView.equals(src)){
             if(pp.getPath2().isPrimitive()){
@@ -169,9 +171,9 @@ public class Rename {
               }
             return pp.getPath2().setNewOuter(pp.getPath2().outerNumber()+path.size());
             }
-          List<String>trimmedTop=topView.subList(0, src.size());
+          List<Ast.C>trimmedTop=topView.subList(0, src.size());
           if(trimmedTop.equals(src)){
-            List<String>elongatedDest=new ArrayList<>(pp.getPath2().getCBar());
+            List<Ast.C>elongatedDest=new ArrayList<>(pp.getPath2().getCBar());
             elongatedDest.addAll(topView.subList(src.size(),topView.size()));
             if(pp.getPath2().outerNumber()==0){
               return ClassOperations.normalizePath(path,path.size(),elongatedDest);

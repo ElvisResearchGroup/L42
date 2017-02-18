@@ -291,6 +291,7 @@ public interface Ast {
  public static class C{
    String inner;
    long privateNum;
+   public boolean isPrivate(){return privateNum!=-1;}
    public C(String inner,long privateNum){
      this.inner=inner;this.privateNum=privateNum;
      assert PathAux.isValidClassName(inner);
@@ -334,7 +335,7 @@ public interface Ast {
    List<String> rowData = Arrays.asList(path.split("\\."));
    return parse(rowData);
    }
- public static Path outer(int n, List<String> cs){
+ public static Path outer(int n, List<C> cs){
    return PathCore.instance(n,cs);
    }
  public static Path outer(int n){
@@ -356,11 +357,11 @@ public interface Ast {
    public String toString() { return sugarVisitors.ToFormattedText.of(this);}
 
    public Path popC(){throw Assertions.codeNotReachable("path.pocC on not core:"+this);}
-   public Path pushC(String c){throw Assertions.codeNotReachable("path.pushC on not core:"+this);}
-   public List<String> getCBar(){throw Assertions.codeNotReachable("path.getCBar on not core:"+this);}
+   public Path pushC(C c){throw Assertions.codeNotReachable("path.pushC on not core:"+this);}
+   public List<C> getCBar(){throw Assertions.codeNotReachable("path.getCBar on not core:"+this);}
    public Path setNewOuter(int n){throw Assertions.codeNotReachable("path.setNewOuter on not core:"+this);}
    public int outerNumber(){throw Assertions.codeNotReachable("path.outerNumber on not core:"+this);}
-   public List<String> sugarNames(){throw Assertions.codeNotReachable("path.outerNumber on not core:"+this);}
+   public List<C> sugarNames(){throw Assertions.codeNotReachable("path.outerNumber on not core:"+this);}
    
  }  
  //-----------------------------

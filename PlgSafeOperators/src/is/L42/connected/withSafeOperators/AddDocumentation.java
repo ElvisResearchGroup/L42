@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import tools.Assertions;
+import ast.Ast;
 import ast.Ast.Doc;
 import ast.Ast.Mdf;
 import ast.Ast.MethodSelector;
@@ -18,7 +19,7 @@ import facade.Configuration;
 import platformSpecific.javaTranslation.Resources;
 public class AddDocumentation {
 
-  public static ClassB addDocumentationOnMethod (Program p,ClassB cb, List<String> cs,MethodSelector sel,Doc doc){
+  public static ClassB addDocumentationOnMethod (Program p,ClassB cb, List<Ast.C> cs,MethodSelector sel,Doc doc){
     Errors42.checkExistsPathMethod(cb, cs, Optional.of(sel));
     Configuration.typeSystem.computeStage(p, cb);
     if(cs.isEmpty()){cb=auxAddDocOnMethod(p,cb,sel,doc);}
@@ -83,7 +84,7 @@ public class AddDocumentation {
     return null;
   }
 
-  public static ClassB addDocumentationOnNestedClass (Program p,ClassB cb, List<String> cs,Doc doc){
+  public static ClassB addDocumentationOnNestedClass (Program p,ClassB cb, List<Ast.C> cs,Doc doc){
     if(cs.isEmpty()){throw Errors42.errorInvalidOnTopLevel();}
     Errors42.checkExistsPathMethod(cb, cs, Optional.empty());
     if(doc.isPrivate()){cb.getStage().setPrivateNormalized(false);}

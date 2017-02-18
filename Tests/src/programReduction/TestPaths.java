@@ -60,7 +60,7 @@ public static class TestPrefix{
 @Test  public void test() {
   String[] ss=_paths.split(" ");
   List<Ast.Path> ps=new ArrayList<>();
-  List<String>prefix=PathAux.parseValidCs(_prefix);
+  List<Ast.C>prefix=PathAux.parseValidCs(_prefix);
   for( String s:ss){ ps.add(Path.parse(s));}
   Paths paths=Paths.reorganize(ps);
   paths=paths.prefix(prefix);

@@ -19,6 +19,7 @@ import ast.Ast.MethodSelector;
 import ast.Ast.Path;
 import ast.Ast.Ph;
 import ast.Ast.Type;
+import ast.Ast;
 import ast.ErrorMessage;
 import ast.ErrorMessage.PathNonExistant;
 import ast.ExpCore;
@@ -34,7 +35,7 @@ import auxiliaryGrammar.Program;
 public class Errors42 {
 
   //"SourceUnfit", caused by redirect
-  public static Error errorSourceUnfit(List<String> current,Path destExternalPath,ExtractInfo.ClassKind kindSrc,ExtractInfo.ClassKind kindDest,List<Member>unexpected,boolean headerOk,List<Path>unexpectedInterfaces){
+  public static Error errorSourceUnfit(List<Ast.C> current,Path destExternalPath,ExtractInfo.ClassKind kindSrc,ExtractInfo.ClassKind kindDest,List<Member>unexpected,boolean headerOk,List<Path>unexpectedInterfaces){
       return Resources.Error.multiPartStringError("SourceUnfit",
           "SrcPath",formatPathIn(current), //the path of the class that can not be redirected
           "DestExternalPath",formatPathOut(destExternalPath), //the path of the class that can not be redirected
@@ -47,7 +48,7 @@ public class Errors42 {
            );
   }
   //"ClassClash" caused by sum, renameClass, renameClassStrict, renameClass
-  static Error errorClassClash(List<String> current,  List<Path> confl/*,ExtractInfo.ClassKind kindA,ExtractInfo.ClassKind kindB*/) {
+  static Error errorClassClash(List<Ast.C> current,  List<Path> confl/*,ExtractInfo.ClassKind kindA,ExtractInfo.ClassKind kindB*/) {
     return Resources.Error.multiPartStringError("ClassClash",
        "Path",formatPathIn(current),//the path of the clash, in the rename is the path of the destination clash
        //"LeftKind",kindA.name(),//kind of left and right classes
@@ -57,7 +58,7 @@ public class Errors42 {
         );
   }
   //"MethodClash" caused by sum, renameMethod, renameClassStrict, renameClass
-  static Error errorMethodClash(List<String> pathForError, Member mta, Member mtb, boolean excOk, List<Integer> pars, boolean retType, boolean thisMdf,boolean rightIsInterfaceAbstract) {
+  static Error errorMethodClash(List<Ast.C> pathForError, Member mta, Member mtb, boolean excOk, List<Integer> pars, boolean retType, boolean thisMdf,boolean rightIsInterfaceAbstract) {
       return Resources.Error.multiPartStringError("MethodClash",
       "Path",formatPathIn(pathForError),//the path of the clash (that own  the method), in the rename is the path of the destination clash
       "Left",sugarVisitors.ToFormattedText.of(mta).replace("\n","").trim(),//implementation dependend print of the left and right methods
@@ -70,7 +71,7 @@ public class Errors42 {
       "IncompatibleException",""+!excOk);//if they have an incompatible exception list
     }
   //"ParameterMismatch" caused by sumMethod
-  static Error errorParameterMismatch(List<String> pathForError, Member mta, Member mtb,  boolean par, boolean mdf,boolean parNameOk) {
+  static Error errorParameterMismatch(List<Ast.C> pathForError, Member mta, Member mtb,  boolean par, boolean mdf,boolean parNameOk) {
       return Resources.Error.multiPartStringError("ParameterMismatch",
        "Path",formatPathIn(pathForError),//the path of the clash (that own  the method), in the rename is the path of the destination clash
       "Left",sugarVisitors.ToFormattedText.of(mta).replace("\n","").trim(),//implementation dependend print of the left and right methods
@@ -88,7 +89,7 @@ public class Errors42 {
   }
   //"MemberUnavailable", caused by most operations referring to paths and methods
   static enum MemberUnavailable{PrivatePath,PrivateMethod,NonExistentPath,NonExistentMethod}
-  static Member checkExistsPathMethod(ClassB cb, List<String> path,Optional<MethodSelector>ms){
+  static Member checkExistsPathMethod(ClassB cb, List<Ast.C> path,Optional<MethodSelector>ms){
     try{
       Boolean[] isPrivateRef=new Boolean[]{false};
       ClassB cbi=Program.extractCBar(path, cb,isPrivateRef);
@@ -134,10 +135,10 @@ public class Errors42 {
   }
 
   //"PathClash", caused by renameClassStrict, if two paths are prefix of one other
-  public static Resources.Error errorPrefix(List<String> a, List<String> b) {
+  public static Resources.Error errorPrefix(List<Ast.C> a, List<Ast.C> b) {
   boolean aIsLonger=a.size()>b.size();
-  List<String> shorter=aIsLonger?b:a;
-  List<String> longer=aIsLonger?a:b;
+  List<Ast.C> shorter=aIsLonger?b:a;
+  List<Ast.C> longer=aIsLonger?a:b;
   return Resources.Error.multiPartStringError("PathClash",
      "Prefix",""+shorter,
      "Clashing",""+longer);}
@@ -161,7 +162,7 @@ public class Errors42 {
         "ContainsMethods",""+meth,
         "ActualKind",""+kind.name());
   }
-  public static void checkMethodClash(List<String>pathForError,MethodWithType mta, MethodWithType mtb,boolean rightIsInterfaceAbstract){
+  public static void checkMethodClash(List<Ast.C>pathForError,MethodWithType mta, MethodWithType mtb,boolean rightIsInterfaceAbstract){
     boolean implClash=mta.get_inner().isPresent() && mtb.get_inner().isPresent();
     boolean exc=ExtractInfo.isExceptionOk(mta,mtb);
     List<Integer> pars=ExtractInfo.isParTypeOk(mta,mtb);
@@ -218,9 +219,13 @@ public class Errors42 {
         "IncoherentDest",incoDest.formatNewLinesAsList()
         );
   }
-  static Doc formatPathIn(List<String> path){
+  static Doc formatPathIn(List<Ast.C> path){
     //if(path.isEmpty()){return Doc.factory(Path.outer(0));}
-    return Doc.factory(true,"@."+String.join(".", path)+"\n");
+    String res="@";
+    for(Ast.C ci:path){res+="."+ci;}
+    if(path.isEmpty()){res="@.\n";}
+    else {res+="\n";}
+    return Doc.factory(true,res);
   }
   static Doc formatPathOut(Path path){
     if(path.isPrimitive()){return Doc.factory(path);}
@@ -232,7 +237,7 @@ public class Errors42 {
     if(path.outerNumber()==0){return formatPathIn(path.getCBar());}
     return formatPathOut(path);
   }
-  public static void checkCompatibleMs(List<String> pathForError,MethodWithType mem, MethodSelector dest) {
+  public static void checkCompatibleMs(List<Ast.C> pathForError,MethodWithType mem, MethodSelector dest) {
     int sizeA = mem.getMs().getNames().size();
     int sizeB = dest.getNames().size();
     if(sizeA==sizeB){return;}

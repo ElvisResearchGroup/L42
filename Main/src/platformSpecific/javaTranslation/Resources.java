@@ -37,6 +37,7 @@ import ast.ErrorMessage.PathNonExistant;
 import ast.ErrorMessage.TypeError;
 import ast.ErrorMessage.UserLevelError;
 import ast.ExpCore;
+import ast.Ast.C;
 import ast.Ast.Doc;
 import ast.Ast.NormType;
 import ast.Ast.Path;
@@ -121,8 +122,8 @@ public class Resources {
     int shift=newK.length-common;
     int padding=ks.length-common;
     if(shift==0 && padding==0){return o;}
-    List<String>csPadding=new ArrayList<>();
-    for(int i=0;i<padding;i++){csPadding.add("Padding"+i);}
+    List<Ast.C>csPadding=new ArrayList<>();
+    for(int i=0;i<padding;i++){csPadding.add(C.of("Padding"+i));}
     ClassB cb= (ClassB)FromInClass.of((ClassB)o,Path.outer(shift,csPadding));
     //Configuration.typeSystem.computeStage(p, cb);
     return cb;
@@ -146,7 +147,7 @@ public class Resources {
     public static ExpCore.ClassB multiPartStringClassB(String kind, Object... map) throws java.lang.Error {
       List<ExpCore.ClassB.Member> ms=new ArrayList<>();
       assert map.length%2==0;
-      ms.add(new ExpCore.ClassB.NestedClass(Doc.empty(),"Kind", EncodingHelper.wrapStringU(kind),null));
+      ms.add(new ExpCore.ClassB.NestedClass(Doc.empty(),C.of("Kind"), EncodingHelper.wrapStringU(kind),null));
       for(int i=0;i<map.length;i+=2){
         String cName=(String)map[i];
         ClassB inner;
@@ -156,7 +157,7 @@ public class Resources {
           inner=ClassB.docClass(docip1);
           }
         if(!PathAux.isValidClassName(cName)){throw Assertions.codeNotReachable("Invalid name in multiPartStringError:"+cName);}
-        ms.add(new ExpCore.ClassB.NestedClass(Doc.empty(), cName, inner,null));
+        ms.add(new ExpCore.ClassB.NestedClass(Doc.empty(), C.of(cName), inner,null));
       }
       ExpCore.ClassB cb=ClassB.membersClass(ms,Position.noInfo);
       return cb;
@@ -397,7 +398,7 @@ public class Resources {
            }};
       }
 
-  public static String nameOf(int level, List<String> cs) {
+  public static String nameOf(int level, List<Ast.C> cs) {
     Program p=Resources.getP();
     Position pos=p.getCb(level).getP();
     assert pos!=null;
@@ -407,7 +408,7 @@ public class Resources {
     String res="This"+hc;
     //??String res="This"+p.getCb(level).getUniqueId();
     //String res="This"+level;
-    for(String s:cs){res+="."+s;}
+    for(Ast.C s:cs){res+="."+s;}
     return nameOf(res);
   }
   public static String nameOf(String s){

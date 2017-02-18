@@ -20,6 +20,7 @@ import is.L42.connected.withSafeOperators.ExtractInfo.IsUsed;
 import is.L42.connected.withSafeOperators.Pop.PopNFrom;
 import tools.Assertions;
 import tools.Map;
+import ast.Ast;
 import ast.ErrorMessage;
 import ast.ExpCore;
 import ast.ExpCore.*;
@@ -63,7 +64,7 @@ public class Redirect {
       return ClassB.membersClass(Collections.emptyList(),Position.noInfo);
       }
     return (ClassB)l.accept(new coreVisitors.CloneVisitor(){
-      List<String> cs=path1.getCBar();
+      List<Ast.C> cs=path1.getCBar();
       public List<Member> liftMembers(List<Member> s) {
         List<Member> result=new ArrayList<Member>();
         for(Member m:s){m.match(
@@ -75,10 +76,10 @@ public class Redirect {
         }
       private boolean manageNC(NestedClass nc, List<Member> result) {
         assert !cs.isEmpty();
-        String top=cs.get(0);
+        Ast.C top=cs.get(0);
         if(!top.equals(nc.getName())){return result.add(nc);}//out of path
         if(cs.size()==1){return true;}
-        List<String> csLocal=cs;
+        List<Ast.C> csLocal=cs;
         cs=cs.subList(1,cs.size());
         try{return result.add(this.visit(nc));}
         finally{cs=csLocal;}
@@ -164,7 +165,7 @@ public class Redirect {
   }
   private static void redirectOkAux(Program p, PathSPath current, ClassB cbTop, List<PathSPath> ambiguities, List<SPathSPath> exceptions) {
     assert current.getPathsSet().size()==1;
-    List<String>cs=current.getPath().getCBar();
+    List<Ast.C>cs=current.getPath().getCBar();
     if(cs.isEmpty()){throw Errors42.errorInvalidOnTopLevel();}
     Errors42.checkExistsPathMethod(cbTop, cs, Optional.empty());
     Boolean[] csPrivate=new Boolean[]{false};

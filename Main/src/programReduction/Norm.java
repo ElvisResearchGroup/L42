@@ -112,9 +112,9 @@ public class Norm {
     }
       
 
-  static Program auxMultiNorm(Program p, List<List<String>>topPaths){
+  static Program auxMultiNorm(Program p, List<List<Ast.C>>topPaths){
     ClassB lTop=p.top();
-    for(List<String> csi:topPaths){
+    for(List<Ast.C> csi:topPaths){
 //  pi = p.navigate(Csi)
 //  Li = norm(pi)//norming the top
 //  L = p.top()[Cs1=L1..Csn=Ln] //replace the nested classes in paths Csi with libraries Li.

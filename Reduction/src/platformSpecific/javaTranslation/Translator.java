@@ -133,7 +133,7 @@ public class Translator {
     addP(level+1,p.pop(),map,original);
   }
 
-  public static void add(int level,List<String> cs,ClassB cb, Map<String,ClassB> map,Program original){
+  public static void add(int level,List<Ast.C> cs,ClassB cb, Map<String,ClassB> map,Program original){
     Ast.Path p=Ast.Path.outer(level, cs);
 
     if(cb.getPhase()==Phase.Typed  && IsCompiled.of(cb)){//otherwise is "meta"
@@ -162,7 +162,7 @@ public class Translator {
         if(nc.getInner()==original.getCb(level-1)){continue;}
         //avoid generation of multiple versions of the same thing
       }
-      ArrayList<String> newCs=new ArrayList<>(cs);
+      ArrayList<Ast.C> newCs=new ArrayList<>(cs);
       newCs.add(nc.getName());
       add(level,newCs,(ClassB) nc.getInner(),map,original);
     }

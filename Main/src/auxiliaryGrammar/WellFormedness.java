@@ -245,7 +245,7 @@ public class WellFormedness {
   }
 
   public static void checkMembers(ClassB s) {
-    HashSet<String>usedNestedClassNames=new HashSet<>();
+    HashSet<Ast.C>usedNestedClassNames=new HashSet<>();
     HashSet<MethodSelector>usedSelector=new HashSet<>();
     for(ClassB.Member m:s.getMs()){
       m.match(

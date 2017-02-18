@@ -320,7 +320,7 @@ public class ToFormattedText implements Visitor<Void>{
             return v.getInner().accept(this);
             },
           (v)->{
-            c(v.getInner().getName());
+            c(v.getInner().getName().toString());
             c(":");
             formatDoc(v.getInner().getDoc());
             return v.getInner().getInner().accept(this);
@@ -416,7 +416,7 @@ public class ToFormattedText implements Visitor<Void>{
     for( Member m:ms){
       m.match(
       nestedClass->{nl();
-        c(nestedClass.getName());
+        c(nestedClass.getName().toString());
         c(":");
         formatDoc(nestedClass.getDoc());
         return nestedClass.getInner().accept(this);
@@ -569,13 +569,13 @@ public class ToFormattedText implements Visitor<Void>{
     
     if(path.isCore()){
       c("This"+path.outerNumber());
-      for(String ci:path.getCBar()){
+      for(Ast.C ci:path.getCBar()){
         c("."+ci);
         }
       return null;
       }
     StringBuilders.formatSequence(this.result,
-      path.sugarNames().iterator(),".",s->c(s));
+      path.sugarNames().iterator(),".",s->c(s.toString()));
     return null;
   }
   @Override
