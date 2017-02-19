@@ -63,7 +63,7 @@ public class ToAst extends AbstractVisitor<Expression>{
         ti=ti.withDoc(ti.getDoc().sum(parseDoc(dit.next())));
         ts.add(ti);
       }
-      MethodSelector s=new MethodSelector(name, names);
+      MethodSelector s=MethodSelector.of(name, names);
       List<Type> exceptions=new ArrayList<>();
       for(TerminalNode p:h.Path()){exceptions.add(Path.sugarParse(p.getText()).toImmNT());}
       Optional<Expression> inner=Optional.empty();
@@ -384,7 +384,7 @@ public class ToAst extends AbstractVisitor<Expression>{
     for(XContext x:ctx.x()){xs.add(nameL(x));}
     String name="";
     if(ctx.mDec()!=null){name=nameL(ctx.mDec());}
-    return new MethodSelector(name,xs);
+    return MethodSelector.of(name,xs);
   }
   private Header parseHeader(HeaderContext header) {
     if(header.Interface()!=null){return new Ast.InterfaceHeader();}

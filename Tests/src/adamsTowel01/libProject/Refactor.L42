@@ -148,14 +148,14 @@
     exception
         MetaGuard.MemberUnavailable,
         MetaGuard.InvalidOnTopLevel
-      AddDocumentationPath(this.that(),doc:Introspection.Doc({//@private
+      AddDocumentationPath(this.that(),doc:Introspection.Doc({//@_private
         }))<><that
     }
   MakePrivateSelector:{(Selector that, Path of)
     method
     Library <>< (Library that)
     exception MetaGuard.MemberUnavailable
-      AddDocumentationSelector(this.that() of:this.of() doc:Introspection.Doc({//@private
+      AddDocumentationSelector(this.that() of:this.of() doc:Introspection.Doc({//@_private
         }))<><that
     }
 

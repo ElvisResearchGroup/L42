@@ -196,8 +196,8 @@ public static Path freshPathName(Path pathR, Set<String> usedNames) {
   else if(pathR.getCBar().isEmpty()){p=freshName("This",usedNames);}
   else{
     Ast.C last=pathR.getCBar().get(pathR.getCBar().size()-1);
-    if (last.isPrivate()){return pathR.popC().pushC(last.withPrivateNum(L42.freshPrivate()));}
-    p=last.getInner();
+    if (last.isUnique()){return pathR.popC().pushC(last.withUniqueNum(L42.freshPrivate()));}
+    p=last.toString();
     p=freshName(p,usedNames);
     }
   return pathR.popC().pushC(C.of(p));

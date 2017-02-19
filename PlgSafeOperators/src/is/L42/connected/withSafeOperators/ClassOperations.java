@@ -8,7 +8,6 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import coreVisitors.CloneWithPath;
-import coreVisitors.CollectPrivateNames;
 import ast.Ast;
 import ast.Ast.Path;
 import ast.ExpCore.ClassB;

@@ -173,7 +173,7 @@ public class ExtractInfo {
        if(!(m instanceof MethodWithType)){continue;}
        MethodWithType mwt=(MethodWithType)m;
        if(mwt.get_inner().isPresent()){continue;}
-       if(mwt.getDoc().isPrivate()){return true;}
+       if(mwt.getMs().isUnique()){return true;}
      }
     return false;
    }
@@ -269,14 +269,14 @@ public class ExtractInfo {
   private static void auxCollectPrivateMethodsOfPublicPaths(ClassB cb,List<PathMx> accumulator, List<Ast.C> prefix) {
     for(Member m:cb.getMs()){m.match(
       nc->{
-        if(nc.getDoc().isPrivate()){return null;}
+        if(nc.getName().isUnique()){return null;}
         List<Ast.C> newPrefix=new ArrayList<>(prefix);
         newPrefix.add(nc.getName());
         auxCollectPrivateMethodsOfPublicPaths((ClassB)nc.getInner(),accumulator,newPrefix);
         return null;
       },mi->null,
       mt->{
-        if (!mt.getDoc().isPrivate()){return null;}
+        if (!mt.getMs().isUnique()){return null;}
         accumulator.add(new PathMx(Path.outer(0,prefix),mt.getMs()));
         return null;
       });}
@@ -286,7 +286,7 @@ public class ExtractInfo {
       nc->{
         List<Ast.C> newPrefix=new ArrayList<>(prefix);
         newPrefix.add(nc.getName());
-        boolean newCollectAll=collectAll || nc.getDoc().isPrivate();
+        boolean newCollectAll=collectAll || nc.getName().isUnique();
         auxCollectPrivatePathsAndSubpaths((ClassB)nc.getInner(),accumulator,newPrefix,newCollectAll);
         if(newCollectAll){accumulator.add(Path.outer(0,newPrefix));}
         return null;

@@ -44,12 +44,12 @@ public class Abstract {
     for(Member m:cb.getMs()){
       m.match(
           nc->{
-            if(nc.getDoc().isPrivate()){return null;}
+            if(nc.getName().isUnique()){return null;}
             newMs.add(nc.withInner(clear((ClassB)nc.getInner())));return null;
             },
           mi->{return null;},//just implementation
           mt->{
-            if(mt.getDoc().isPrivate()){return null;}
+            if(mt.getMs().isUnique()){return null;}
             newMs.add(mt.with_inner(Optional.empty()));return null;}
       );}
     //create new class

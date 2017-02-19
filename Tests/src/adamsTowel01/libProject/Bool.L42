@@ -1,5 +1,5 @@
 {(Library binaryRepr)
- implements Concept.Equals, Concept.ToS, Concept.Classable//@private
+ implements Concept.Equals, Concept.ToS, Concept.Classable//@_private
 
   method is(subtype) {  with subtype (on class This return Bool.true()) return Bool.false()}
   refine read method class This class() This

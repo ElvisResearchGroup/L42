@@ -1,4 +1,4 @@
-{(fwd NestedClass root,Path path, Size memberN, Size typeN,Record record) implements Concept.ToS, Concept.Classable //@private
+{(fwd NestedClass root,Path path, Size memberN, Size typeN,Record record) implements Concept.ToS, Concept.Classable //@_private
 
 method is(subtype) {  with subtype (on class This return Bool.true()) return Bool.false()}
 refine read method class This class() This
@@ -18,7 +18,7 @@ method Mdf mdf() {//error on AliasUnresolvable
   error Guard.Operation"AliasUnresolvable class, mdf unknown"
   }
 
-method //@private
+method //_@private
 NestedClass  referencedPath(Doc.Annotation ann) {
   if ann.hasReferredClass() (return Introspection(clazz:ann.referredClass()))
   S sPath=ann.toS()(start:1Size)

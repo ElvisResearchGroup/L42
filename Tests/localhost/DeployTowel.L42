@@ -19,19 +19,19 @@ read method
 This2.Url fileName() 
 class method 
 Library binaryReprFrom(Library lib) (
-  Library norm=use This0.SafeOperatorsAccess__43_0 check privateNormalize(that:lib) error  {
+  Library norm=use This0.SafeOperatorsAccess check privateNormalize(that:lib) error  {
   class method 
   mut This0 #mutK() 
   class method 
   This0 privateNormalize() This0.#mutK()}
-  Library record=use This0.SafeOperatorsAccess__43_0 check introspectLibraryReport(that:norm, path: {/*@stringU
+  Library record=use This0.SafeOperatorsAccess check introspectLibraryReport(that:norm, path: {/*@stringU
 This
 */}) error  {
   class method 
   mut This0 #mutK() 
   class method 
   This0 introspectLibraryReport() This0.#mutK()}
-  use This0.SafeOperatorsAccess__43_0 check introspectLibraryDocAsString(that:record, path: {/*@stringU
+  use This0.SafeOperatorsAccess check introspectLibraryDocAsString(that:record, path: {/*@stringU
 AllAsString
 */}, annotationN: {/*@int32
 0
@@ -50,7 +50,7 @@ Library #leftrightleft(Library that) (
   This0 fileDebug() This0.#mutK()}
   This1.ExitCode.normal()
   )
-SafeOperatorsAccess__43_0:/*@private
+SafeOperatorsAccess:/*@_private
 */ {/*@plugin
 L42.is/connected/withSafeOperators
 */}}}

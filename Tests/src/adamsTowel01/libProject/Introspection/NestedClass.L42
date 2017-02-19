@@ -1,5 +1,5 @@
 {//findMeNestedClass
-(fwd NestedClass _root,Path path,MirrorPr mirror, Record record) implements Member,Concept.Equals, Concept.Classable //@private
+(fwd NestedClass _root,Path path,MirrorPr mirror, Record record) implements Member,Concept.Equals, Concept.Classable //@_private
 
 method is(subtype) {  with subtype (on class This return Bool.true()) return Bool.false()}
 refine read method class This class() This
@@ -138,7 +138,7 @@ Bool implements(This that){
         )
     return Bool.false()
   }
-method//@private
+method//@_private
 Types removeDup(Types that) (
   var mut Types result=Types.empty() //can not use [with since we need to check in results
   with t in that.vals() (
@@ -146,12 +146,12 @@ Types removeDup(Types that) (
     )
   result
   )
-method//@private
+method//@_private
 Bool select(Type that,read Types from) (
   rp=that.referencedPath()
   Count[with t in from.vals() (use[t.referencedPath() == rp])]==0Size
   )
-method//@private
+method//@_private
 Types remove(Types that,Types from)
   Types[with t in that.vals() (if this.select(t,from:from) (use[t]))]
 

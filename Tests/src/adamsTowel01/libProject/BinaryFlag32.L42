@@ -59,9 +59,9 @@
     This(Size.#from(binaryRepr:builder.that()))
     )
 
-  method//@private
+  method//@_private
   This res(Library that) This(Size.#from(binaryRepr:that))
-  method//@private
+  method//@_private
   Library br() this.that().binaryRepr()
   method
   This &(This that) this.res(use Alu

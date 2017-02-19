@@ -162,7 +162,7 @@ public class RemoveCode {
         for(Member m:ms1){
           if(!(m instanceof NestedClass)){ms2.add(m);continue;}
           NestedClass ns=(NestedClass)m;
-          if(!ns.getDoc().isPrivate()){ms2.add(m);continue;}
+          if(!ns.getName().isUnique()){ms2.add(m);continue;}
           //otherwise, not add
           }
         return super.liftMembers(ms2);

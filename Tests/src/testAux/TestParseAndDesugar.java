@@ -41,13 +41,13 @@ public class TestParseAndDesugar {
    {lineNumber(), "a","a"
  },{lineNumber(), " ( a=void a)"," ( a=void a)"
  },{lineNumber(), " ( var Void a=void a)"," ("
-  +" Vara:/*@private*/\n {mut (var Void inner)} "
+  +" Vara:\n {mut (var Void inner)} "
   +" Void a=void "
   +" mut This0.Vara vara=This0.Vara.#apply(inner:a) "
   +" vara.#inner() "
   +" )"
  },{lineNumber(), "  (   var Library lib={} (x={} lib:=x)  (x={ } lib:=x  ) lib   )",
-   " (  Varlib:/*@private*/\n  {mut (var Library inner)}"
+   " (  Varlib:\n  {mut (var Library inner)}"
   +" Library lib={}"
   +" mut This0.Varlib varlib=This0.Varlib.#apply(inner:lib) "
   +" (  x={}   varlib:=x   ) "
@@ -78,7 +78,7 @@ public class TestParseAndDesugar {
    {lineNumber(), "a","a"
    },{lineNumber(), " This","This0"
    },{lineNumber(), " (var Void x=void x:=void)",
-    " ( Varx:/*@private*/\n{mut (var Void inner)}  Void x=void"
+    " ( Varx:\n{mut (var Void inner)}  Void x=void"
    +"   mut This0.Varx varx=This0.Varx.#apply(inner:x)"
    +"   varx.inner(that:void) )"
 
@@ -147,7 +147,7 @@ public class TestParseAndDesugar {
 },{lineNumber(), " (A*b a b c )"," ( Void unused=This0.A.#times(that:b) Void unused0=a Void unused1=b c )"
 },{lineNumber(), " (T a=b c=a c )"," (This0.T a=b This0.T c=a c )"
 },{lineNumber(), " (var This0.T a=a+c c=a a:=C(a) fuffa c )",//ok outer 0 can not be desugared since there is not outer nested class.
-   " (Vara:/*@private*/\n{mut (var This1.T inner)}"
+   " (Vara:\n{mut (var This1.T inner)}"
   +"  This0.T a=a.#plus(that:c)"
   +"  This0.T c=a"
   +"  mut This0.Vara vara=This0.Vara.#apply(inner:a)"
@@ -156,7 +156,7 @@ public class TestParseAndDesugar {
   +"  c)"
 },{lineNumber(), " (var This0.T a=a+c c=a Fuffa(a:=a.foo(a)) c )",//ok outer 0 can not be desugared since there is not outer nested class.
   " ("
-  +" Vara:/*@private*/\n{mut (var This1.T inner)}"
+  +" Vara:\n{mut (var This1.T inner)}"
   +" This0.T a=a.#plus(that:c)"
   +" This0.T c=a"
   +" mut This0.Vara vara=This0.Vara.#apply(inner:a)"

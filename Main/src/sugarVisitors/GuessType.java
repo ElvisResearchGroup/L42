@@ -92,7 +92,7 @@ public class GuessType implements Visitor<Type> {
     List<String> xs=new ArrayList<String>();
     if(mc.getPs().getE().isPresent()){xs.add("that");}
     xs.addAll(mc.getPs().getXs());
-    return new MethodSelector(mc.getName(),xs);
+    return MethodSelector.of(mc.getName(),xs);
   }
 
 

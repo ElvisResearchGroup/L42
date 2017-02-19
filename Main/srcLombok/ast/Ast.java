@@ -184,39 +184,52 @@ public interface Ast {
  @Wither
  public class MethodSelector {
   String name;
+  long uniqueNum;
+  public boolean isUnique(){return uniqueNum!=-1;}
   List<String> names;
-  public MethodSelector(String name,List<String>names){
-    this.name=name;
-    this.names=java.util.Collections.unmodifiableList(names);
-    assert this.invariant();
-  }
+  public static MethodSelector of(String name,List<String>names){
+    int index=name.lastIndexOf("_$_");
+    long uniqueNum=C.sToNumber(name, index);
+    if (uniqueNum!=-1){name=name.substring(0,index);}
+    names=java.util.Collections.unmodifiableList(names);
+    MethodSelector res=new MethodSelector(name,uniqueNum,names);
+    assert res.invariant();
+    return res;
+    }
   public boolean isOperator(){
     return this.name.startsWith("#");//for now, to improve later
-  }
+    }
   public boolean invariant(){
     // not good enought, it can also be empty or operator
     // assert checkX(name,true);
-  assert !name.contains("\t"):
-   name;
+    assert !name.contains("\t"):
+      name;
+    if(!( name.isEmpty() && this.uniqueNum==-1)){
+      assert checkX(Desugar.desugarName(name),true);
+      }
     for(String n:names){assert checkX(n,false);}
     return true;
-  }
+    }
 
   public String toSrcEquivalent() {
-   String result = "new ast.Ast.MethodSelector(\"" + name + "\",java.util.Arrays.asList(";
+   String result = "ast.Ast.MethodSelector.of(\"" + nameToS() + "\",java.util.Arrays.asList(";
    result += String.join(",", tools.Map.of(ni -> "\"" + ni + "\"", names));
    return result + "))";
   }
-
+  public String nameToS(){
+    if(uniqueNum==-1){return name;}
+    return name+"_$_"+uniqueNum;
+    }
   public String toString() {
-   if (name.isEmpty() && names.isEmpty()) {
+   String nameU=nameToS();
+   if (nameU.isEmpty() && names.isEmpty()) {
     return "()";
    }
    if (names.isEmpty()) {
-    return name + "()";
+    return nameU + "()";
    }
    StringBuilder result = new StringBuilder();
-   result.append(name + "(");
+   result.append(nameU + "(");
    tools.StringBuilders.formatSequence(result, names.iterator(), ",", result::append);
    result.append(")");
    return result.toString();
@@ -224,7 +237,7 @@ public interface Ast {
 
   public static MethodSelector parse(String s) {
    if (s.equals("()")) {
-    return new MethodSelector(Desugar.desugarName(""), Collections.emptyList());
+    return MethodSelector.of(Desugar.desugarName(""), Collections.emptyList());
    }
    String name = s;
    List<String> xs = new ArrayList<String>();
@@ -256,7 +269,7 @@ public interface Ast {
    if (!checkX(name, true)) {
     throw new Resources.Error("InvalidSelector: " + s);
    }
-   return new MethodSelector(name, xs);
+   return MethodSelector.of(name, xs);
   }
 
   public static boolean checkX(String s, boolean allowHash) {
@@ -290,25 +303,30 @@ public interface Ast {
  @Value @Wither
  public static class C{
    String inner;
-   long privateNum;
-   public boolean isPrivate(){return privateNum!=-1;}
-   public C(String inner,long privateNum){
-     this.inner=inner;this.privateNum=privateNum;
+   long uniqueNum;
+   public boolean isUnique(){return uniqueNum!=-1;}
+   public C(String inner,long uniqueNum){
+     this.inner=inner;this.uniqueNum=uniqueNum;
      assert PathAux.isValidClassName(inner);
      }
-   public static C of(String name){
-     int index=name.lastIndexOf("__");
-     if(index==-1){return new C(name,-1L);}
-     String numS=name.substring(index+2,name.length());
+   public static long sToNumber(String name,int index){
+     if(index==-1){return -1L;}
+     String numS=name.substring(index+3,name.length());
      try{
        long num=Long.parseLong(numS);
-       return new C(name.substring(0,index),num);
+       return num;
        }
-     catch(NumberFormatException nfe){return new C(name,-1L);}
+     catch(NumberFormatException nfe){return -1L;}
+     }
+   public static C of(String name){
+     int index=name.lastIndexOf("_$_");
+     long uniqueNum=sToNumber(name,index);
+     if(uniqueNum==-1){return new C(name,-1);}
+     return new C(name.substring(0,index),uniqueNum);       
      }
    public String toString(){
-     if(privateNum==-1){return inner;}
-     return inner+"__"+privateNum;
+     if(uniqueNum==-1){return inner;}
+     return inner+"_$_"+uniqueNum;
      }
    }
  
@@ -394,15 +412,15 @@ public interface Ast {
     return this.withS(s+"\n");
     }
 
-  public boolean isPrivate() {
+  /*public boolean isPrivate() {
    if (this.annotations.contains("private")) {
     return true;
    }
    // if(this.toString().startsWith("@private")){return true;}
    return false;
-  }
-        public static Doc getPrivate(){return privateInstance;}
-        private static final Doc privateInstance=Doc.factory(true,"@private");
+  }*/
+        //public static Doc getPrivate(){return privateInstance;}
+        //private static final Doc privateInstance=Doc.factory(true,"@private");
   public static Doc factory(Path single) {
    return new Doc(true,"%s\n", Collections.singletonList((Object) single), Collections.singletonList(""),Position.noInfo);
   }

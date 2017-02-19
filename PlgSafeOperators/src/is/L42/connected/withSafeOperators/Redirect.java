@@ -25,6 +25,7 @@ import ast.ErrorMessage;
 import ast.ExpCore;
 import ast.ExpCore.*;
 import ast.Ast.NormType;
+import ast.Ast.C;
 import ast.Ast.Doc;
 import ast.Ast.HistoricType;
 import ast.Ast.Path;
@@ -168,8 +169,8 @@ public class Redirect {
     List<Ast.C>cs=current.getPath().getCBar();
     if(cs.isEmpty()){throw Errors42.errorInvalidOnTopLevel();}
     Errors42.checkExistsPathMethod(cbTop, cs, Optional.empty());
-    Boolean[] csPrivate=new Boolean[]{false};
-    ClassB currentIntCb=Program.extractCBar(cs,cbTop,csPrivate);
+    //Boolean[] csPrivate=new Boolean[]{false};
+    ClassB currentIntCb=Program.extractCBar(cs,cbTop);
     //path exists by construction.
     Path path=current.getPathsSet().iterator().next();
     ClassB currentExtCb;
@@ -182,7 +183,7 @@ public class Redirect {
       assert path.isPrimitive();
       currentExtCb=ClassB.membersClass(Collections.emptyList(),Position.noInfo).withInterface(path.equals(Path.Any()));
     }
-    assert !csPrivate[0];
+    assert cs.stream().allMatch(c->!c.isUnique());
     boolean isPrivateState=ExtractInfo.hasPrivateState(currentIntCb);
     boolean isNoImplementation=ExtractInfo.isNoImplementation(currentIntCb);
     boolean headerOk=currentIntCb.isInterface()==currentExtCb.isInterface();

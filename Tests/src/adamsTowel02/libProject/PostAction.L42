@@ -29,7 +29,7 @@ exception InvalidAction{
     X"PostAct.Action1"
   }
 
-method //@private
+method //@_private
 Library composeAction(Library that,Selector fresh){
   var Library acc=this.action()
   acc:=Refactor.RenamePath(Path"This" to:this.of())<><acc
@@ -41,7 +41,7 @@ Library composeAction(Library that,Selector fresh){
     X"PostAct.ActionCompose"
   }
 
-method //@private
+method //@_private
 Void checkAction(Library that)
 exception InvalidAction (
   defM=Introspection(lib: that).method(Selector"#apply(that)")

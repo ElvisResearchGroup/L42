@@ -29,37 +29,26 @@ public class AddDocumentation {
       Program p2=p1;
        cb= cb.onClassNavigateToPathAndDo(cs,cbi->auxAddDocOnMethod(p2,cbi,sel,doc));
       }
-    if(doc.isPrivate()){
-      cb.getStage().setPrivateNormalized(false);
-      cb=NormalizePrivates.normalize(p, cb);
-      }
     return cb;
   }
 
   private static ClassB auxAddDocOnMethod(Program p,ClassB cb, MethodSelector sel, Doc doc) {
     List<Member> newMs=new ArrayList<>(cb.getMs());
-    boolean docPrivate=doc.isPrivate();
     Member m=Program.getIfInDom(newMs, sel).get();
     //add comment
     m.match(nc->{throw Assertions.codeNotReachable();},
       mi->{
-        if (docPrivate){throw Errors42.errorInvalidOnMember(doc);}
         mi=mi.withDoc(mi.getDoc().sum(doc));
         Program.replaceIfInDom(newMs,mi);
         return null;
         },
-      mt-> makeMwtPrivate(p,cb, doc, newMs, docPrivate, mt)
+      mt-> makeMwtPrivate(p,cb, doc, newMs, mt)
       );
     //create new class
     return cb.withMs(newMs);
   }
 
-  private static Void makeMwtPrivate(Program p,ClassB cb, Doc doc, List<Member> newMs, boolean docPrivate, MethodWithType mwt) {
-    if (mwt.get_inner().isPresent() || !docPrivate){
-      mwt=mwt.withDoc(mwt.getDoc().sum(doc));
-      Program.replaceIfInDom(newMs,mwt);
-      return null;
-      }
+  private static Void makeMwtPrivate(Program p,ClassB cb, Doc doc, List<Member> newMs, MethodWithType mwt) {
     boolean prState=ExtractInfo.hasPrivateState(cb);
     if(prState){throw Errors42.errorInvalidOnMember(doc);}
     if(mwt.getMt().getMdf()!=Mdf.Class){throw Errors42.errorInvalidOnMember(doc);}
@@ -87,12 +76,7 @@ public class AddDocumentation {
   public static ClassB addDocumentationOnNestedClass (Program p,ClassB cb, List<Ast.C> cs,Doc doc){
     if(cs.isEmpty()){throw Errors42.errorInvalidOnTopLevel();}
     Errors42.checkExistsPathMethod(cb, cs, Optional.empty());
-    if(doc.isPrivate()){cb.getStage().setPrivateNormalized(false);}
     cb= cb.onNestedNavigateToPathAndDo( cs, nc->Optional.of(nc.withDoc(nc.getDoc().sum(doc))));
-    if(doc.isPrivate()){
-      cb.getStage().setPrivateNormalized(false);
-      cb=NormalizePrivates.normalize(p, cb);
-      }
     return cb;
   }
 

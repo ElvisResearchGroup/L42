@@ -72,7 +72,6 @@ import ast.Util.PathMxMx;
 import auxiliaryGrammar.EncodingHelper;
 import auxiliaryGrammar.Functions;
 import auxiliaryGrammar.Program;
-import coreVisitors.CollectPrivateNames;
 import coreVisitors.InjectionOnSugar;
 import coreVisitors.IsCompiled;
 import coreVisitors.Visitor;
@@ -542,10 +541,10 @@ public class Desugar extends CloneVisitor{
     return getMCall(s.getP(),s.getReceiver(),"#from",ps);
   }
   static Ast.MethodSelector literalGuessedSelector(){
-    return new Ast.MethodSelector("#from",Collections.singletonList("builder"));
+    return Ast.MethodSelector.of("#from",Collections.singletonList("builder"));
   }
   static Ast.MethodSelector squareGuessedSelector(){
-    return new Ast.MethodSelector("#from",Collections.singletonList("seqBuilder"));
+    return Ast.MethodSelector.of("#from",Collections.singletonList("seqBuilder"));
   }
   protected ast.Ast.VarDecXE liftVarDecXE(ast.Ast.VarDecXE d) {
     assert !d.isVar():
@@ -646,7 +645,7 @@ public class Desugar extends CloneVisitor{
     List<String> names=new ArrayList<String>();
     if(s.getPs().getE().isPresent()){names.add("that");}
     names.addAll(s.getPs().getXs());
-    MethodSelector ms=new MethodSelector(s.getName(),names);
+    MethodSelector ms=MethodSelector.of(s.getName(),names);
     Type tt=recT.match(
         nt->{
           Path path=nt.getPath();
@@ -806,7 +805,7 @@ public class Desugar extends CloneVisitor{
       ts.add(ti);
       names.add(fi.getName());
       }
-    MethodSelector ms=new MethodSelector("#mutK",names);
+    MethodSelector ms=MethodSelector.of("#mutK",names);
     NormType resT=new ast.Ast.NormType(Mdf.Mutable,ast.Ast.Path.outer(0),Ph.None,Doc.empty());
     MethodType mt=new MethodType(false,ast.Ast.Mdf.Class,ts,resT,Collections.emptyList());
     return new MethodWithType(doc, ms,mt, Optional.empty(),pos);
@@ -857,7 +856,7 @@ public class Desugar extends CloneVisitor{
   private static MethodWithType generateSetter(Expression.Position pos, ast.Ast.FieldDec f, Doc doc) {
     Type tt=f.getT().match(nt->nt.withPh(Ph.None), hType->hType);
     MethodType mti=new MethodType(false,Mdf.Mutable,Collections.singletonList(tt),NormType.immVoid,Collections.emptyList());
-    MethodSelector msi=new MethodSelector(f.getName(),Collections.singletonList("that"));
+    MethodSelector msi=MethodSelector.of(f.getName(),Collections.singletonList("that"));
     MethodWithType mwt = new MethodWithType(doc, msi, mti, Optional.empty(),pos);
     return mwt;
   }
@@ -865,7 +864,7 @@ public class Desugar extends CloneVisitor{
   static private void cfExposer(Expression.Position pos,FieldDec f,Doc doc, List<Member> result) {
     Type tt=f.getT().match(nt->nt.withPh(Ph.None), hType->hType);
     MethodType mti=new MethodType(false,Mdf.Mutable,Collections.emptyList(),tt,Collections.emptyList());
-    MethodSelector msi=new MethodSelector("#"+f.getName(),Collections.emptyList());
+    MethodSelector msi=MethodSelector.of("#"+f.getName(),Collections.emptyList());
     result.add(new MethodWithType(doc, msi, mti, Optional.empty(),pos));
   }
     private static MethodWithType generateExposer(Expression.Position pos, FieldDec f, Doc doc) {
@@ -875,7 +874,7 @@ public class Desugar extends CloneVisitor{
       return nt;
       }, hType->hType);
     MethodType mti=new MethodType(false,Mdf.Mutable,Collections.emptyList(),tt,Collections.emptyList());
-    MethodSelector msi=new MethodSelector(f.getName(),Collections.emptyList());
+    MethodSelector msi=MethodSelector.of(f.getName(),Collections.emptyList());
     MethodWithType mwt = new MethodWithType(doc, msi, mti, Optional.empty(),pos);
     return mwt;
   }
@@ -894,7 +893,7 @@ public class Desugar extends CloneVisitor{
     MethodType mti=new MethodType(false,Mdf.Readable,Collections.emptyList(),fieldNt,Collections.emptyList());
     String name=f.getName();
     if(name.startsWith("#")){name=name.substring(1);}
-    MethodSelector msi=new MethodSelector(name,Collections.emptyList());
+    MethodSelector msi=MethodSelector.of(name,Collections.emptyList());
     MethodWithType mwt=new MethodWithType(doc, msi, mti, Optional.empty(),pos);
     return mwt;
   }

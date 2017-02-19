@@ -283,7 +283,7 @@ private static UsingInfo usingConstructor(PlgInfo plgInfo, Constructor<?>[] jcs,
 
 public static boolean hasPluginUnresponsive(ClassB l){
     //class method T #pluginUnresponsive(Library binaryRepr)
-    MethodSelector ms=new MethodSelector("#pluginUnresponsive",Collections.singletonList("binaryRepr"));
+    MethodSelector ms=MethodSelector.of("#pluginUnresponsive",Collections.singletonList("binaryRepr"));
     MethodWithType mwt=(MethodWithType)l._getMember(ms);
     if(mwt==null){return false;}//must be an mwt since normalized
     MethodType mt=mwt.getMt();
@@ -295,7 +295,7 @@ public static boolean hasPluginUnresponsive(ClassB l){
     }
   public static boolean hasBinaryRepr(ClassB l){
     //read method Library #binaryRepr()
-    MethodSelector ms=new MethodSelector("#binaryRepr",Collections.emptyList());
+    MethodSelector ms=MethodSelector.of("#binaryRepr",Collections.emptyList());
     MethodWithType mwt=(MethodWithType)l._getMember(ms);
     if(mwt==null){return false;}//must be an mwt since normalized
     MethodType mt=mwt.getMt();
@@ -307,7 +307,7 @@ public static boolean hasPluginUnresponsive(ClassB l){
     }
   public static boolean hasFrom(ClassB l){
     //   class method mut This0 #from(Library binaryRepr)
-    MethodSelector ms=new MethodSelector("#from",Collections.singletonList("binaryRepr"));
+    MethodSelector ms=MethodSelector.of("#from",Collections.singletonList("binaryRepr"));
     MethodWithType mwt=(MethodWithType)l._getMember(ms);
     if(mwt==null){return false;}//must be an mwt since normalized
     MethodType mt=mwt.getMt();
@@ -320,7 +320,7 @@ public static boolean hasPluginUnresponsive(ClassB l){
 
   public static boolean hasExceptionIf(ClassB l){
     //class method Void #exceptionIf(Library binaryRepr) exception This
-    MethodSelector ms=new MethodSelector("#exceptionIf",Collections.singletonList("binaryRepr"));
+    MethodSelector ms= MethodSelector.of("#exceptionIf",Collections.singletonList("binaryRepr"));
     MethodWithType mwt=(MethodWithType)l._getMember(ms);
     if(mwt==null){return false;}//must be an mwt since normalized
     MethodType mt=mwt.getMt();

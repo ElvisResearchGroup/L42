@@ -13,6 +13,7 @@ import java.util.Set;
 import platformSpecific.javaTranslation.Resources;
 import platformSpecific.javaTranslation.Resources.Error;
 import sugarVisitors.ToFormattedText;
+import ast.Ast.C;
 import ast.Ast.Doc;
 import ast.Ast.Mdf;
 import ast.Ast.MethodSelector;
@@ -91,8 +92,9 @@ public class Errors42 {
   static enum MemberUnavailable{PrivatePath,PrivateMethod,NonExistentPath,NonExistentMethod}
   static Member checkExistsPathMethod(ClassB cb, List<Ast.C> path,Optional<MethodSelector>ms){
     try{
-      Boolean[] isPrivateRef=new Boolean[]{false};
-      ClassB cbi=Program.extractCBar(path, cb,isPrivateRef);
+      Boolean[] isPrivateRef=new Boolean[]{false};//used in closures
+      for(C c:path){if(c.isUnique()){isPrivateRef[0]=true;}}
+      ClassB cbi=Program.extractCBar(path, cb);
       Boolean[] isPrivateMeth=new Boolean[]{false};
       boolean absentMeth=false;
       if(ms.isPresent()){
@@ -102,7 +104,7 @@ public class Errors42 {
           meth.get().match(
             nc->{throw Assertions.codeNotReachable();},
             mi->{return null;},
-            mt->{if(mt.getDoc().isPrivate()){isPrivateMeth[0]=true;}return null;}
+            mt->{if(mt.getMs().isUnique()){isPrivateMeth[0]=true;}return null;}
             );
           if(!isPrivateMeth[0]){return meth.get();}
           }

@@ -75,9 +75,10 @@ public class RenameMembers extends coreVisitors.CloneWithPath{
         List<Ast.C>cs=s.getCBar();
         if(result==null){
           assert nl.getAnnotation()!=null;
-          assert nl.getAnnotation() instanceof Ast.C;
+          assert nl.getAnnotation() instanceof String:
+            nl.getAnnotation();
           List<Ast.C>newCs=new ArrayList<>(cs);
-          newCs.set(cs.size()-1-extraCs,(Ast.C) nl.getAnnotation());
+          newCs.set(cs.size()-1-extraCs,Ast.C.of((String)nl.getAnnotation()));
           return Path.outer(s.outerNumber(),newCs);
           }
         List<Ast.C> path =cs.subList(cs.size()-extraCs,cs.size());

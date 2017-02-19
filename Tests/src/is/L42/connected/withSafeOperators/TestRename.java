@@ -22,6 +22,7 @@ import ast.Ast.C;
 import ast.Ast.MethodSelector;
 import ast.Ast.Path;
 import ast.ExpCore;
+import ast.PathAux;
 import ast.ExpCore.ClassB;
 import ast.Util.PathMx;
 import auxiliaryGrammar.Functions;
@@ -229,13 +230,13 @@ public class TestRename {
   @Test
   public void testToTop() {
     List<Ast.C> res = ClassOperations.toTop(Arrays.asList(),Path.parse("This0.A"));
-    Assert.assertEquals(res,Arrays.asList("A"));
+    Assert.assertEquals(res,PathAux.sToC(Arrays.asList("A")));
     res = ClassOperations.toTop(Arrays.asList(),Path.parse("This0.A.B"));
-    Assert.assertEquals(res,Arrays.asList("A","B"));
-    res = ClassOperations.toTop(Arrays.asList(C.of("C")),Path.parse("This1.A.B"));
-    Assert.assertEquals(res,Arrays.asList("A","B"));
-    res = ClassOperations.toTop(Arrays.asList(C.of("C")),Path.parse("This0.A.B"));
-    Assert.assertEquals(res,Arrays.asList("C","A","B"));
+    Assert.assertEquals(res,PathAux.sToC(Arrays.asList("A","B")));
+    res = ClassOperations.toTop(PathAux.sToC(Arrays.asList("C")),Path.parse("This1.A.B"));
+    Assert.assertEquals(res,PathAux.sToC(Arrays.asList("A","B")));
+    res = ClassOperations.toTop(PathAux.sToC(Arrays.asList("C")),Path.parse("This0.A.B"));
+    Assert.assertEquals(res,PathAux.sToC(Arrays.asList("C","A","B")));
   }
   @Test
   public void testNormalizePath() {

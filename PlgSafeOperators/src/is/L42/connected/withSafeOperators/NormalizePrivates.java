@@ -52,7 +52,7 @@ public class NormalizePrivates {
         String name=nc.getName().toString();
         String uniquePexed=processNameAndReturnUnseenPedex(result.pedexes,name);
         PrivatePedex validUniquePexed = isValidPedex(uniquePexed);
-        if(!nc.getDoc().isPrivate()){
+        if(!nc.getName().isUnique()){
           if(name.contains("__")){result.notNormalized();}
           return super.visit(nc);
           }
@@ -67,7 +67,7 @@ public class NormalizePrivates {
         String name=mwt.getMs().getName();
         String uniquePexed=processNameAndReturnUnseenPedex(result.pedexes,name);
         PrivatePedex validUniquePexed = isValidPedex(uniquePexed);
-        if(!mwt.getDoc().isPrivate()){
+        if(!mwt.getMs().isUnique()){
           if(name.contains("__")){result.notNormalized();}
           return super.visit(mwt);
           }

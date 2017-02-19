@@ -1,4 +1,4 @@
-{ _private(Library _binaryRepr, Annotations _annotations) implements Concept.ToS, Concept.Classable //@private
+{ _private(Library _binaryRepr, Annotations _annotations) implements Concept.ToS, Concept.Classable //@_private
 
   method is(subtype) {  with subtype (on class This return Bool.true()) return Bool.false()}
   refine read method class This class() This

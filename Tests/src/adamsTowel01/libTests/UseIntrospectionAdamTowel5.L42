@@ -84,11 +84,11 @@ Main:{
   CheckNested(lib:{A:{ B:{}}}
     expected:S"@.This,@.A,@.A.B,")
   Debug(S"l")
-  CheckNested(lib:{A:{} B://@private
+  CheckNested(lib:{A:{} B://@_private
       {}}
     expected:S"@.This,@.A,@.B,")
   Debug(S"m")
-  CheckNested(lib:{A:{} B://@private
+  CheckNested(lib:{A:{} B://@_private
       {C:{}}}
     expected:S"@.This,@.A,@.B,")
   Debug(S"OK")

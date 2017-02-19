@@ -135,7 +135,7 @@ public class PluginWithPart implements PluginType{
         names.add(name);
         }}
       assert names!=null;
-      usingMs=new Ast.MethodSelector(needPData?"#"+jMethName:jMethName, names);
+      usingMs=Ast.MethodSelector.of(needPData?"#"+jMethName:jMethName, names);
     }
     public UsingInfo(PlgInfo pi,Constructor<?> m){
       plgInfo=pi;

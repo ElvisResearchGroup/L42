@@ -1,4 +1,4 @@
-{(fwd NestedClass _root,Path path,Size memberN,Record record) implements Member,Concept.Equals, Concept.Classable //@private
+{(fwd NestedClass _root,Path path,Size memberN,Record record) implements Member,Concept.Equals, Concept.Classable //@_private
 
 method is(subtype) {  with subtype (on class This return Bool.true()) return Bool.false()}
 refine read method class This class() This

@@ -116,17 +116,17 @@ static private MethodType immK(MethodType proto) {
   }
   //can not reuse the desugar one, here we create ExpCore stuff, also , the sugar one may disappear
   static private MethodWithType prototypeK(Doc doc,List<String>fieldNames,List<Type>fieldTypes,Position pos) {
-    MethodSelector ms=new MethodSelector("",fieldNames);
+    MethodSelector ms=MethodSelector.of("",fieldNames);
     NormType resT=NormType.mutThis0;
     MethodType mt=new MethodType(false,ast.Ast.Mdf.Class,fieldTypes,resT,Collections.emptyList());
     return new MethodWithType(doc, ms,mt, Optional.empty(),pos);
     }
 
   private ast.Ast.NormType candidate(List<Member> ms, String fName){
-    Optional<Member> a = Program.getIfInDom(ms,new MethodSelector(fName,Collections.singletonList("that")));
-    Optional<Member> b = Program.getIfInDom(ms,new MethodSelector("#"+fName,Collections.singletonList("that")));
-    Optional<Member> c = Program.getIfInDom(ms,new MethodSelector(fName,Collections.emptyList()));
-    Optional<Member> d = Program.getIfInDom(ms,new MethodSelector("#"+fName,Collections.emptyList()));
+    Optional<Member> a = Program.getIfInDom(ms, MethodSelector.of(fName,Collections.singletonList("that")));
+    Optional<Member> b = Program.getIfInDom(ms, MethodSelector.of("#"+fName,Collections.singletonList("that")));
+    Optional<Member> c = Program.getIfInDom(ms, MethodSelector.of(fName,Collections.emptyList()));
+    Optional<Member> d = Program.getIfInDom(ms, MethodSelector.of("#"+fName,Collections.emptyList()));
     NormType ta=getType(a);
     NormType tb=getType(b);
     NormType tc=getType(c);

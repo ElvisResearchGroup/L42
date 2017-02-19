@@ -8,7 +8,7 @@ SrcDest:{(Path path, Selector src,Selector dest)}
 SrcDests:Collections.vector(of:SrcDest)
 Libs: Collections.vector(of:Library)
 
-class method //@private
+class method //@_private
 SrcDests renameMap(Library that,S prefix,Introspection.NestedClasses intros)
   SrcDests[with intro in intros.vals() (
     round=this.renameMap(that,prefix:prefix,
@@ -44,7 +44,7 @@ class method
 Library <><(Library that) exception MetaGuard.ClassClash,MetaGuard.MethodClash
   Refactor.compose(left:that,right:{
   //members of each produced class
- (Libs myLibs) implements $ //@private
+ (Libs myLibs) implements $ //@_private
 
 
   class method
