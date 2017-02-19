@@ -14,7 +14,6 @@ import ast.ExpCore.ClassB.MethodWithType;
 import ast.Util;
 import ast.Util.*;
 import auxiliaryGrammar.Locator;
-import privateMangling.PrivateHelper;
 import tools.Map;
 import ast.Ast.MethodSelector;
 
@@ -29,33 +28,6 @@ void notNormalized(){
 }
 public String toString(){
   return""+pedexes+"\n"+selectors+"\n"+nesteds+"\n"+normalized;
-  }
-public void computeNewNames(){
-  HashMap<Locator,String> map=new HashMap<>();
-  for(Locator mL:selectors){computeNewName(map,mL);}
-  for(Locator nL:nesteds){nL.setAnnotation(NormalizePrivates.freshName(nL.getLastName()));}
-}
-private void computeNewName(HashMap<Locator, String> map, Locator mL) {
-  Member m=mL.getLastMember();
-  assert m instanceof MethodWithType;
-  MethodWithType mwt=(MethodWithType)m;
-  if( mwt.get_inner().isPresent()){
-    mL.setAnnotation(mwt.getMs().withName(NormalizePrivates.freshName(mwt.getMs().getName())));
-    return;
-  }
-  //private and abstract, it must be state!
-  Locator locator=mL.copy();
-  locator.toFormerNodeLocator();
-  String s=map.get(locator);
-  if(s==null){
-    s="__"+NormalizePrivates.countPrivates++ +"_"+PrivateHelper.countFamilies;//may be turn in method?
-    map.put(locator,s);
-  }
-  String newPedex=s;
-  List<String> names = (mwt.getMt().getMdf()!=Mdf.Class)?mwt.getMs().getNames():Map.of(si->NormalizePrivates.freshName(si,newPedex),mwt.getMs().getNames());
-  ast.Ast.MethodSelector ms=ast.Ast.MethodSelector.of(
-      NormalizePrivates.freshName(mwt.getMs().getName(),newPedex),names);
-  mL.setAnnotation(ms);
   }
 public static  CollectedLocatorsMap from(Path src,Path dest){
   Locator nl = pathPathToLocator(src,dest);

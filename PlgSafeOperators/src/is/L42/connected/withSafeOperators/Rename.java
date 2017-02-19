@@ -48,7 +48,6 @@ public class Rename {
         return Pop.pop(cb);
         }//otherwise, proceed with encoding
     }
-    cb=NormalizePrivates.normalize(p, cb);
     cb=ClassOperations.normalizePaths(cb);
     if(!ExtractInfo.isPrefix(src, dest)){ return ClassOperations.normalizePaths(directRename(p,cb,src,dest));}
     src=new ArrayList<>(src);
@@ -74,7 +73,6 @@ public class Rename {
   */
     Errors42.checkExistsPathMethod(cb, src, Optional.empty());
     if(ExtractInfo.isPrefix(src,dest)){throw Errors42.errorPrefix(src,dest);}
-    cb=NormalizePrivates.normalize(p, cb);
     return ClassOperations.normalizePaths(directRename(p, cb, src, dest));
   }
   private static ClassB directRename(Program p, ClassB cb, List<Ast.C> src, List<Ast.C> dest) {
@@ -89,7 +87,6 @@ public class Rename {
       Member mem=Errors42.checkExistsPathMethod(cb, path, Optional.of(src));
       assert mem instanceof MethodWithType;
       Errors42.checkCompatibleMs(path,(MethodWithType)mem,dest);
-      cb=NormalizePrivates.normalize(p, cb);
       CollectedLocatorsMap maps=CollectedLocatorsMap.from(Path.outer(0,path),(MethodWithType) mem,dest);
       RenameAlsoDefinition ren=new RenameAlsoDefinition(cb, maps,p);
      return (ClassB) ren.visit(cb);

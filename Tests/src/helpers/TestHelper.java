@@ -33,7 +33,6 @@ import facade.Configuration;
 import facade.L42;
 import facade.Parser;
 import facade.L42.ExecutionStage;
-import is.L42.connected.withSafeOperators.NormalizePrivates;
 import platformSpecific.javaTranslation.Resources;
 import profiling.Timer;
 
@@ -291,7 +290,6 @@ public class TestHelper {
     Configuration.typeSystem=new typeSystem.Facade();
     L42.record=new StringBuilder();
     L42.usedNames.clear();
-    NormalizePrivates.reset();
     Resources.clearRes();
     Timer.restart();
     Timer.activate("TOP");

@@ -32,6 +32,7 @@ import platformSpecific.fakeInternet.ActionType;
 import platformSpecific.fakeInternet.PluginType;
 import platformSpecific.javaTranslation.Resources;
 import platformSpecific.javaTranslation.Resources.Revertable;
+import privateMangling.RefreshUniqueNames;
 import profiling.Timer;
 import sugarVisitors.ToFormattedText;
 import tools.Map;
@@ -251,7 +252,7 @@ public class Plugin implements PluginType{
     public Object MprivateNormalize£xthat(Object _that){
       ClassB that=ensureExtractClassB(_that);
       //if(that.getStage().isPrivateNormalized()){return that;}
-      return NormalizePrivates.normalize(Resources.getP(),that);
+      return RefreshUniqueNames.refresh(that);
     }
 
     @ActionType({ActionType.Type.Library,ActionType.Type.Library})

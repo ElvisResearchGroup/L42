@@ -204,7 +204,7 @@ private VarDecXE getDecForVar(Ast.C cName,VarDecXE varDec) {
    ClassB cb=new ClassB(Doc.empty(),new Ast.ConcreteHeader(Mdf.Mutable, "",fs,Position.noInfo),Collections.emptyList(),Collections.emptyList(),Collections.emptyList(),Position.noInfo,Stage.None);
    String nameC=Functions.freshName("Var"+varDec.getX(), L42.usedNames);
    //usedCnames.add(nameC);
-   return new VarDecCE(new NestedClass(Doc.empty(),C.of(nameC),cb,null));
+   return new VarDecCE(new NestedClass(Doc.empty(),C.of(nameC).withUniqueNum(L42.freshPrivate()),cb,null));
  }
  public Type _computeTypeForClassBForVar(VarDecXE varDec) {
    assert varDec.getT().isPresent(): " it is now required by the stricted syntax";

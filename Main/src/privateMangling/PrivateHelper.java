@@ -12,7 +12,7 @@ import ast.ExpCore.ClassB;
 import coreVisitors.CloneVisitor;
 import tools.Map;
 
-public class PrivateHelper {
+/*public class PrivateHelper {
   public static int countFamilies=0;
   static String updateSingleName(String x){
     int isPr=x.lastIndexOf("__");
@@ -46,3 +46,4 @@ public class PrivateHelper {
     });
   }
 }
+*/

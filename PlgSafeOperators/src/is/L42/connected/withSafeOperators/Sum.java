@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import platformSpecific.javaTranslation.Resources;
+import privateMangling.RefreshUniqueNames;
 import sugarVisitors.CloneVisitor;
 import sugarVisitors.CollapsePositions;
 import tools.Map;
@@ -43,16 +44,7 @@ public class Sum {
     //System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
     a=ClassOperations.normalizePaths(a);
     b=ClassOperations.normalizePaths(b);
-    a =NormalizePrivates.normalize(p, a);
-    b = NormalizePrivates.normalize(p, b);
-    int famSizeA=a.getStage().getFamilies().size();
-    int famSizeB=b.getStage().getFamilies().size();
-    if(famSizeA>famSizeB){
-      a=NormalizePrivates.refreshFamilies(b.getStage().getFamilies(), a);
-    }
-    else{
-      b=NormalizePrivates.refreshFamilies(a.getStage().getFamilies(), b);
-    }
+    b =(ClassB) RefreshUniqueNames.refresh(b);
     return normalizedTopSum(p, a, b);
   }
 

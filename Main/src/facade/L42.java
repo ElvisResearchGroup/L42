@@ -58,6 +58,9 @@ public class L42 {
   public synchronized static void setFreshPrivateCap(long cap){
     privateNum=Math.max(privateNum, cap);
     }
+  public synchronized static void resetFreshPrivate(){//for testing
+    privateNum=0L;
+    }
   public static ExecutionStage getStage(){return _stage;}
   public static int compilationRounds=0;
   public static boolean trustPluginsAndFinalProgram=true;

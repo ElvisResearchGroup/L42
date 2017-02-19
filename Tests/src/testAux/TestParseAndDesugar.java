@@ -41,23 +41,24 @@ public class TestParseAndDesugar {
    {lineNumber(), "a","a"
  },{lineNumber(), " ( a=void a)"," ( a=void a)"
  },{lineNumber(), " ( var Void a=void a)"," ("
-  +" Vara:\n {mut (var Void inner)} "
+  +" Vara_$_1:\n {mut (var Void inner)} "
   +" Void a=void "
-  +" mut This0.Vara vara=This0.Vara.#apply(inner:a) "
-  +" vara.#inner() "
+  +" mut This0.Vara_$_1 vara_$_=This0.Vara_$_1.#apply(inner:a) "
+  +" vara_$_.#inner() "
   +" )"
  },{lineNumber(), "  (   var Library lib={} (x={} lib:=x)  (x={ } lib:=x  ) lib   )",
-   " (  Varlib:\n  {mut (var Library inner)}"
+   " (  Varlib_$_1:\n  {mut (var Library inner)}"
   +" Library lib={}"
-  +" mut This0.Varlib varlib=This0.Varlib.#apply(inner:lib) "
-  +" (  x={}   varlib:=x   ) "
-  +" (  x={}   varlib:=x  ) "
-  +" varlib.#inner() "
+  +" mut This0.Varlib_$_1 varlib_$_=This0.Varlib_$_1.#apply(inner:lib) "
+  +" (  x={}   varlib_$_:=x   ) "
+  +" (  x={}   varlib_$_:=x  ) "
+  +" varlib_$_.#inner() "
   +" )"
    }});}
       @Test
       public void testDesugarVars() {
         TestHelper.configureForTest();
+        L42.resetFreshPrivate();
         L42.setRootPath(Paths.get("dummy"));
         L42.usedNames.clear();
         Expression es1=Parser.parse(null,_p1);
@@ -78,9 +79,9 @@ public class TestParseAndDesugar {
    {lineNumber(), "a","a"
    },{lineNumber(), " This","This0"
    },{lineNumber(), " (var Void x=void x:=void)",
-    " ( Varx:\n{mut (var Void inner)}  Void x=void"
-   +"   mut This0.Varx varx=This0.Varx.#apply(inner:x)"
-   +"   varx.inner(that:void) )"
+    " ( Varx_$_1:\n{mut (var Void inner)}  Void x=void"
+   +"   mut This0.Varx_$_1 varx_$_=This0.Varx_$_1.#apply(inner:x)"
+   +"   varx_$_.inner(that:void) )"
 
 },{lineNumber(), " (A +B)*C"," (This0.A.#plus(that:This0.B)).#times(that:This0.C)"
   },{lineNumber(), " (6Meter +A)*B"," (This0.Meter.#from(builder:(  This0.Meter::#builder() b=This0.Meter.#builder() "
@@ -147,20 +148,20 @@ public class TestParseAndDesugar {
 },{lineNumber(), " (A*b a b c )"," ( Void unused=This0.A.#times(that:b) Void unused0=a Void unused1=b c )"
 },{lineNumber(), " (T a=b c=a c )"," (This0.T a=b This0.T c=a c )"
 },{lineNumber(), " (var This0.T a=a+c c=a a:=C(a) fuffa c )",//ok outer 0 can not be desugared since there is not outer nested class.
-   " (Vara:\n{mut (var This1.T inner)}"
+   " (Vara_$_1:\n{mut (var This1.T inner)}"
   +"  This0.T a=a.#plus(that:c)"
   +"  This0.T c=a"
-  +"  mut This0.Vara vara=This0.Vara.#apply(inner:a)"
-  +"  Void unused=vara.inner(that:This0.C.#apply(that:vara.#inner()))"
+  +"  mut This0.Vara_$_1 vara_$_=This0.Vara_$_1.#apply(inner:a)"
+  +"  Void unused=vara_$_.inner(that:This0.C.#apply(that:vara_$_.#inner()))"
   +"  Void unused0=fuffa"
   +"  c)"
 },{lineNumber(), " (var This0.T a=a+c c=a Fuffa(a:=a.foo(a)) c )",//ok outer 0 can not be desugared since there is not outer nested class.
   " ("
-  +" Vara:\n{mut (var This1.T inner)}"
+  +" Vara_$_1:\n{mut (var This1.T inner)}"
   +" This0.T a=a.#plus(that:c)"
   +" This0.T c=a"
-  +" mut This0.Vara vara=This0.Vara.#apply(inner:a)"
-  +" Void unused=This0.Fuffa.#apply(that:vara.inner(that:vara.#inner().foo(that:vara.#inner())))"
+  +" mut This0.Vara_$_1 vara_$_=This0.Vara_$_1.#apply(inner:a)"
+  +" Void unused=This0.Fuffa.#apply(that:vara_$_.inner(that:vara_$_.#inner().foo(that:vara_$_.#inner())))"
   +"c"
   +")"
 },{lineNumber(), " (T a=b (c=a c ))"," (This0.T a=b (This0.T c=a c ))"
@@ -214,6 +215,7 @@ public class TestParseAndDesugar {
   @Test
   public void testOk() {
     TestHelper.configureForTest();
+    L42.resetFreshPrivate();
     L42.setRootPath(Paths.get("dummy"));
     L42.usedNames.clear();
     Expression es1=Parser.parse(null,_p1);
@@ -253,6 +255,7 @@ public class TestParseAndDesugar {
 //TODO: @Test
   public void testOk() {
     TestHelper.configureForTest();
+    L42.resetFreshPrivate();
     L42.setRootPath(Paths.get("dummy"));
     L42.usedNames.clear();
     Expression es1=Parser.parse(null,_p1);

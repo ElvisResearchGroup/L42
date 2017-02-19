@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import platformSpecific.fakeInternet.OnLineCode;
-import privateMangling.PrivateHelper;
 import tools.Assertions;
 import ast.Ast;
 import ast.ErrorMessage;
