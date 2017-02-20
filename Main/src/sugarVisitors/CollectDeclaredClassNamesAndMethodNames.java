@@ -22,7 +22,7 @@ public class CollectDeclaredClassNamesAndMethodNames extends CloneVisitor{
     return super.visit(nc);
     }
   protected MethodSelector liftMs(MethodSelector ms) {
-    xs.add(ms.getName());
+    xs.add(ms.nameToS());
     for(String n:ms.getNames()){xs.add(n);}
     return super.liftMs(ms);
   }

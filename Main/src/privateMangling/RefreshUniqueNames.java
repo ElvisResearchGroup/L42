@@ -48,7 +48,8 @@ public class RefreshUniqueNames {
     });
     }
   
-  public static ExpCore refresh(ExpCore e){
+  @SuppressWarnings("unchecked")
+public static <T extends ExpCore>T refresh(T e){
   HashMap<MethodSelector,MethodSelector> mapS=new HashMap<>();
   HashMap<C,C> mapC=new HashMap<>();
   //load up maps
@@ -57,16 +58,16 @@ public class RefreshUniqueNames {
       MethodSelector ms=mwt.getMs();
       if(!ms.isUnique()){super.visit(mwt);return;}
       MethodSelector newMs=mapS.get(ms);
-      if(newMs==null){mapS.put(ms,newMs=ms.withUniqueNum(L42.freshPrivate()));}
+      if(newMs==null){mapS.put(ms,ms.withUniqueNum(L42.freshPrivate()));}
       super.visit(mwt);
       return;
       }
     public void visit(ClassB.NestedClass nc){
-      C name=newC(mapC,nc.getName());
+      newC(mapC,nc.getName());
       super.visit(nc);
       }
     });
-  return (ClassB)e.accept(new coreVisitors.CloneVisitor(){
+  return (T)e.accept(new coreVisitors.CloneVisitor(){
   protected MethodSelector liftMs(MethodSelector ms){
     if(!ms.isUnique()){return ms;}
     MethodSelector newMs=mapS.get(ms);
@@ -97,3 +98,25 @@ public class RefreshUniqueNames {
 }
   }
 
+
+
+/*
+
+Discussions: 
+state/factory/constructors
+
+make private an abstract should be error?
+
+make state private on class:
+  requires class to be coherent?
+  all abstract methods are made unique, 
+  all ks/fields are renamed synchronized.
+  further refreshing need to keep them sincronized,
+    but is possible since abstract and you can distinguish them
+    plus abstract has no body, so renaming parameters does not mess in the implementation
+    but, what for factory calls?
+      since we map to new selectors, should be ok?
+    
+
+
+*/

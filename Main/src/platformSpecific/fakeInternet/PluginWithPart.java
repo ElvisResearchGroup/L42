@@ -77,7 +77,7 @@ public class PluginWithPart implements PluginType{
   public Object execute(Program p, Using u){
     assert false: "is this not called with compilation?";
     //rest of implementation is wrong
-    Method method = ProtectedPluginType.getMethod(pointed, p, u.getS().getName(), u.getS().getNames().size(),u);
+    Method method = ProtectedPluginType.getMethod(pointed, p, u.getS().nameToS(), u.getS().getNames().size(),u);
     List<ExpCore> es = u.getEs();
     ExpCore rec=null;
     if ((method.getModifiers() & Modifier.STATIC) == 0) {
@@ -149,7 +149,7 @@ public class PluginWithPart implements PluginType{
     public UsingInfo(Program p,Using s){
       usingMs=s.getS();
       plgInfo=new PlgInfo(p.extractCb(s.getPath()).getDoc1());
-      if(usingMs.getName().equals("instanceof")){
+      if(usingMs.nameToS().equals("instanceof")){
         assert usingMs.getNames().size()==1 && usingMs.getNames().get(0).equals("_this");
         //TODO: better error message?
         names=Collections.emptyList();
@@ -163,7 +163,7 @@ public class PluginWithPart implements PluginType{
         staticMethod=false;
         names=names.subList(1,names.size());
         }
-      jMethName=s.getS().getName();
+      jMethName=s.getS().nameToS();
       needPData=jMethName.startsWith("#");
       if(needPData){jMethName=jMethName.substring(1);}
       for(String n:names){
@@ -228,7 +228,7 @@ public class PluginWithPart implements PluginType{
     StringBuilder res=new StringBuilder();
     //plgExecutor("`PathName`",p,(plgName)`parRec`,
     res.append("platformSpecific.javaTranslation.Resources.plgExecutor(");
-    res.append("\""+s.getS().getName()+"\",");
+    res.append("\""+s.getS().nameToS()+"\",");
     res.append("platformSpecific.javaTranslation.Resources.getP(), ");
     res.append("("+ui.plgInfo.plgClass.getCanonicalName()+")"+parRec+", ");
     //(plF,xsF)->{ `T1` _1;..`Tn` _n;

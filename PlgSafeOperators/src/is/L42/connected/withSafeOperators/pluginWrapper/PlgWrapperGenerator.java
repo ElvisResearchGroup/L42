@@ -170,7 +170,7 @@ private static void addMwt(Program p, PlgInfo plgInfo, Method[] jms, Constructor
 
   //add to msResult
   //TODO: add behaviour if mwt have special comment to define specific ms for use
-  String name=mwt.getMs().getName();
+  String name=mwt.getMs().nameToS();
   if(name.startsWith("#")){name=name.substring(1);}
   UsingInfo ui;
   if (!name.equals("new") && !name.equals("apply")) ui= usingMethod(plgInfo, jms, mwt, name);

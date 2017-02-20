@@ -142,23 +142,34 @@
         error err)
       }
     }
+    
+    
+    
   MakePrivatePath:{(Path that) //Can be called Hide
     method
     Library <>< (Library that)
     exception
         MetaGuard.MemberUnavailable,
-        MetaGuard.InvalidOnTopLevel
-      AddDocumentationPath(this.that(),doc:Introspection.Doc({//@_private
-        }))<><that
+        MetaGuard.InvalidOnTopLevel {
+      if this.that()==Path"This" (error S"need to create an MetaGuard.InvalidOnTopLevel")
+      return SafeOperators.hideClass(that,src:this.that())
+      catch error Library err (
+        MetaGuard.NestedClassUnavailable(lift:err)
+        error err
+        )
+      }
     }
   MakePrivateSelector:{(Selector that, Path of)
     method
     Library <>< (Library that)
-    exception MetaGuard.MemberUnavailable
-      AddDocumentationSelector(this.that() of:this.of() doc:Introspection.Doc({//@_private
-        }))<><that
+    exception MetaGuard.MemberUnavailable {
+      return SafeOperators.hideMethod(that,path:this.of() src:this.that())
+      catch error Library err (
+        MetaGuard.DispatchMemberUnavailable(err)
+        error err)
+      }
     }
-
+    
   SumMethods:{
     (Selector that,Selector and, Path of, S over, Selector to)
 

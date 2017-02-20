@@ -38,11 +38,12 @@ public class ProgramReduction {
 /*
           eC' -->p'+ r              p.top()={_ implements Ps0, MCs  C:eC Ms}
 (top)------------------------       eC not of form LC
-     p ==> p'.update(p'.top()[C=r]) eC'=norm(p,eC) //resolve skele types, add all refine, collect supertypes
+     p ==> p'.update(p'.top()[C=L]) eC'=norm(p,eC) //resolve skele types, add all refine, collect supertypes
                                     <paths; paths'>=usedPathsE(p,eC') //tuple notation
                                     p0=multiNorm(p,paths U paths')//norm the part of p required by eC'
                                     paths'|-p0:p' //the part of p' referred to by paths' is well typed
                                     p'|-toAny(paths,eC'): imm Library //replace paths with Any //eC' is well typed
+                                                                        L=refreshUniqueNames(r) //may fail if r not of form L, and that would be lifted as compilation error.
 */
   static private Program top(Program p,NestedClass nc) {
     ExpCore ec=nc.getInner();
@@ -56,6 +57,7 @@ public class ProgramReduction {
     Program p1=MultiTypeSystem.typeProgram(paths1, p0);
     MultiTypeSystem.typeMetaExp(p1,MultiTypeSystem.toAny(paths,ec1));
     ClassB res=reduceE(p1,ec1,C.of("NameDebug_"+nc.getName()));
+    res=privateMangling.RefreshUniqueNames.refresh(res);
     ClassB top=p1.top();
     assert top.getNested(Collections.singletonList(nc.getName()))!=null;//would actually fail if not there
     top=top.withMember(nc.withE(res));

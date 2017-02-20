@@ -21,7 +21,7 @@ import auxiliaryGrammar.Functions;
 import auxiliaryGrammar.Program;
 class ProtectedPluginType{
   static Method getMethod(PluginType that,Program p,Using u){
-    String mName=Resources.nameOf(u.getS().getName(),u.getS().getNames());
+    String mName=Resources.nameOf(u.getS().nameToS(),u.getS().getNames());
     return getMethod(that.getClass(),p,mName,u.getS().getNames().size(),u);
     }
 
@@ -65,7 +65,7 @@ class ProtectedPluginType{
   String xsF="L"+Functions.freshName("xs",labels);
   StringBuilder res=new StringBuilder();
   res.append("("+plF+","+xsF+")->"+plF+".");
-  res.append(Resources.nameOf(s.getS().getName(),s.getS().getNames()));
+  res.append(Resources.nameOf(s.getS().nameToS(),s.getS().getNames()));
   res.append("(");
   StringBuilders.formatSequence(res,
     IntStream.range(0, s.getEs().size()).iterator(),
@@ -95,7 +95,7 @@ public interface PluginType {
     StringBuilder res=new StringBuilder();
     String plgName=this.getClass().getName();
     res.append("platformSpecific.javaTranslation.Resources.plgExecutor(");
-    res.append("\""+s.getS().getName()+"\",");
+    res.append("\""+s.getS().nameToS()+"\",");
     res.append("platformSpecific.javaTranslation.Resources.getP(), ");
     res.append("new "+plgName+"(), ");
     res.append(ProtectedPluginType.executableWrapper(s, labels));

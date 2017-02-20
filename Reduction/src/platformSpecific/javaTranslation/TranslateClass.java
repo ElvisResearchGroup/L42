@@ -210,7 +210,7 @@ public class TranslateClass {
   private static void getSetter(MethodWithType mt, StringBuilder res) {
     getMethodHeader(mt, res);
     res.append("{this.");
-    String name=Resources.nameOf(mt.getMs().getName());
+    String name=Resources.nameOf(mt.getMs().nameToS());
     res.append("F"+name);
     res.append("=Pthat;return platformSpecific.javaTranslation.Resources.Void.instance;}");
     }
@@ -218,7 +218,7 @@ public class TranslateClass {
   private static void getGetterOrExposer(MethodWithType mt, StringBuilder res) {
     getMethodHeader(mt, res);
     res.append("{return this.");
-    String name=mt.getMs().getName();
+    String name=mt.getMs().nameToS();
     if(name.startsWith("#")){name=name.substring(1);}
     name=Resources.nameOf(name);
     res.append("F"+name);

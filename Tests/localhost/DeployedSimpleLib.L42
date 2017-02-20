@@ -3460,6 +3460,12 @@ method
 This1.Types transitivelyImplementedInterfaces() 
 method 
 This2.Bool implements(This0 that) 
+method /*@_private
+*/This1.Types removeDup(This1.Types that) 
+method /*@_private
+*/This2.Bool select(This1.Type that, read This1.Types from) 
+method /*@_private
+*/This1.Types remove(This1.Types that, This1.Types from) 
 method 
 This1.Methods stateCandidate() 
 method 
@@ -3766,6 +3772,8 @@ method
 This1.TypeKind typeKind() 
 method 
 This1.Mdf mdf() 
+method /*_@private
+*/This1.NestedClass referencedPath(This1.Doc.Annotation ann) 
 method 
 This1.NestedClass referencedPath() 
 method 
@@ -6096,9 +6104,15 @@ This1.Url fileName()
 class method 
 Library binaryReprFrom(Library lib) 
 method 
-Library #leftrightleft(Library that) }
+Library #leftrightleft(Library that) 
+SafeOperatorsAccess:/*@_private
+*/ {/*@plugin
+L42.is/connected/withSafeOperators
+*/}}
 PreferentialComposition: {/*members of PreferentialComposition
 */
+class method /*@_private
+*/This0.SrcDests renameMap(Library that, This1.S prefix, This1.Introspection.NestedClasses intros) 
 class method 
 This0.SrcDests renameMap(Library that, This1.S prefix, This1.Path path, This1.Introspection.Methods ms) 
 class method 

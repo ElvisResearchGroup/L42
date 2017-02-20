@@ -138,7 +138,7 @@ public class TranslateExpression implements coreVisitors.Visitor<Void>{
   public Void visit(MCall s) {
     res.append("(");
     s.getInner().accept(this);
-    res.append(")."+Resources.nameOf(s.getS().getName(),s.getS().getNames())+"(");
+    res.append(")."+Resources.nameOf(s.getS().nameToS(),s.getS().getNames())+"(");
     StringBuilders.formatSequence(res,s.getEs().iterator(),
       ", ", ei->ei.accept(this));
     res.append(")");

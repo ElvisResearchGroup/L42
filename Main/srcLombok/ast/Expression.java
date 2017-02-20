@@ -1,5 +1,6 @@
 package ast;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
@@ -264,14 +265,20 @@ public interface Expression extends Ast {
     Position p;
     Stage stage;
     public boolean isConsistent() {
+      HashSet<String> keys = new HashSet<String>();
       int countWalkBy = 0;
       for (Member m : this.ms) {
         if (m instanceof MethodWithType) {
           MethodWithType mwt = (MethodWithType) m;
-          //assert mwt.mt.getTDocs().size() == mwt.mt.getTs().size();
+          String key=mwt.getMs().toString();
+          assert !keys.contains(key);
+          keys.add(key);
         }
         if (m instanceof NestedClass) {
           NestedClass nc = (NestedClass) m;
+          String key=nc.getName().toString();
+          assert !keys.contains(key);
+          keys.add(key);
           if (nc.inner instanceof WalkBy) {
             countWalkBy += 1;
           }

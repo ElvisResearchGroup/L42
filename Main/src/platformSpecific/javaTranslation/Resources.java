@@ -368,7 +368,7 @@ public class Resources {
     return nameOf(p);
     }
   public static String nameOf(Ast.MethodSelector ms) {
-    return nameOf(ms.getName(),ms.getNames());
+    return nameOf(ms.nameToS(),ms.getNames());
     }
   public static String nameOf(String name, List<String> names) {
     String result="M"+name;

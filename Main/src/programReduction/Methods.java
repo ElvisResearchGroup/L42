@@ -1,6 +1,7 @@
 package programReduction;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -60,6 +61,7 @@ abstract class Methods implements Program{
 //  -methods(p,P0)=M1'..Mk'
 //          p(P0)={interface? implements Ps Ms} 
   public List<MethodWithType> methods(Ast.Path p0){
+    if (p0.isPrimitive()){return Collections.emptyList();}
     Program p=this;
     ClassB cb0=p.extractClassB(p0);
     List<Ast.Path> ps=cb0.getSuperPaths();

@@ -254,7 +254,7 @@ private ExpCore fieldA(ExpCore ctxVal, MCall mc, MethodWithType mwt,HashSet<Stri
     }
   //fieldAObj
   log("---meth fieldA obj--");
-  String fName=mc.getS().getName();
+  String fName=mc.getS().nameToS();
   if(fName.startsWith("#")){fName=fName.substring(1);}
   MCall decRec2=(MCall)decRec;
   //assert IsValue.of(Resources.getP(),decRec2);

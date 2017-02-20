@@ -449,7 +449,7 @@ public class ToFormattedText implements Visitor<Void>{
     else{nl();}
     formatType(methT.getMt().getReturnType());
     separeFromChar();
-    c(methT.getMs().getName());
+    c(methT.getMs().nameToS());
     c("(");
     StringBuilders.formatSequence(this.result,methT.getMt().getTs().iterator(), methT.getMs().getNames().iterator(),", ",
       (ti,xi)->{
@@ -466,7 +466,7 @@ public class ToFormattedText implements Visitor<Void>{
     sp();
   }
   private void formatMs(MethodSelector s) {
-    c(s.getName());
+    c(s.nameToS());
     c("(");
     for( String ss:s.getNames()){
       c(ss);

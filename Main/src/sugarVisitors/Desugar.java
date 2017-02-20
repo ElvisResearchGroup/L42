@@ -630,7 +630,7 @@ public class Desugar extends CloneVisitor{
     return super.liftH(ch.withName(desugarName(ch.getName())));
   }
   protected MethodSelector liftMs(MethodSelector ms) {
-    return ms.withName(desugarName(ms.getName()));
+    return ms.withName(desugarName(ms.nameToS()));
   }
   private<T0,T> T withExpectedType(Type t,Supplier<T> f){
     Type aux=this.t;
@@ -685,7 +685,7 @@ public class Desugar extends CloneVisitor{
   public MethodImplemented visit(MethodImplemented mi){
     this.usedVars=new HashSet<String>();
     this.varEnv=new HashMap<String, Type>();
-    String mName=desugarName(mi.getS().getName());
+    String mName=desugarName(mi.getS().nameToS());
     mi=mi.withS(mi.getS().withName(mName));
     for(String name:mi.getS().getNames()){
       usedVars.add(name);
@@ -708,7 +708,7 @@ public class Desugar extends CloneVisitor{
   public MethodWithType visit(MethodWithType mt){
     this.usedVars=new HashSet<String>();
     this.varEnv=new HashMap<String, Type>();
-    String mName=desugarName(mt.getMs().getName());
+    String mName=desugarName(mt.getMs().nameToS());
     mt=mt.withMs(mt.getMs().withName(mName));
     if(!mt.getInner().isPresent()){return super.visit(mt);}
     {int i=-1;for(String name:mt.getMs().getNames()){i+=1;
@@ -773,7 +773,7 @@ public class Desugar extends CloneVisitor{
     NormType resT=new ast.Ast.NormType(mdf,ast.Ast.Path.outer(0),Ph.None,Doc.empty());
     MethodType mt=new MethodType(false,ast.Ast.Mdf.Class,ts,resT,Collections.emptyList());
     Parameters ps=new Parameters(Optional.empty(),called.getNames(), called.getNames().stream().map(n->new X(n)).collect(Collectors.toList()));
-    MCall body=new MCall(Path.outer(0),called.getName(),Doc.empty(),ps,h.getP());
+    MCall body=new MCall(Path.outer(0),called.nameToS(),Doc.empty(),ps,h.getP());
     return new MethodWithType(doc, ms,mt, Optional.of(body),h.getP());
   }
   static public MethodWithType cfLentK(MethodWithType mutK) {

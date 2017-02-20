@@ -40,7 +40,7 @@ public class Locator {
   }
   public String getLastName(){
     Member m=this.ms.get(this.ms.size()-1);
-    return m.match(nc->nc.getName().toString(), mi->mi.getS().getName(), mt->mt.getMs().getName());
+    return m.match(nc->nc.getName().toString(), mi->mi.getS().nameToS(), mt->mt.getMs().nameToS());
   }
   public Kind kind() {
     int size = this.size();

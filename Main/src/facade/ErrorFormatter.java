@@ -327,7 +327,7 @@ private static void displayAbstractMethods(ClassB cb,StringBuilder result,String
   }
   public static String formatSelectorCompact(Ast.MethodSelector ms) {
     StringBuilder sb=new StringBuilder();
-    sb.append(ms.getName()+"(");
+    sb.append(ms.nameToS()+"(");
     StringBuilders.formatSequence(sb,ms.getNames().iterator(),", ",n->sb.append(n));
     return sb.toString()+")";
   }

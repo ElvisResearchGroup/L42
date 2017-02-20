@@ -248,7 +248,7 @@ public static List<Block.Dec> replace(List<Block.Dec> dvs,MCall mc){
   for(Block.Dec dv: dvs){
     if(!dv.getX().equals(x)){result.add(dv);continue;}
     MCall inner=(MCall)dv.getInner();
-    String fieldName=mc.getS().getName();
+    String fieldName=mc.getS().nameToS();
     int mIndex=inner.getS().getNames().indexOf(fieldName);
     assert mIndex!=-1 :fieldName+" / "+ToFormattedText.of(inner);
     List<ExpCore> es2 = new ArrayList<>(inner.getEs());
@@ -418,7 +418,7 @@ public static List<InvalidMwtAsState> coherent(Program p, ClassB ct) {
   kNotHave(readK,result,Mdf.Capsule,Mdf.Mutable,Mdf.Lent);
   kNotHave(immK,result,Mdf.Capsule,Mdf.Mutable,Mdf.Lent,Mdf.Readable);
   for(  MethodWithType mwt:mwts){//for all the other h
-    String name=mwt.getMs().getName();
+    String name=mwt.getMs().nameToS();
     if(name.startsWith("#")){name=name.substring(1);}
     //select satisfying parameter
     NormType nt=selectCorrespondingFieldType(oneK,  name);

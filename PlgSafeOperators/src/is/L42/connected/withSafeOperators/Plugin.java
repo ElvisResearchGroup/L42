@@ -296,5 +296,22 @@ public class Plugin implements PluginType{
       boolean fwd=ensureExtractInt32(_fwd)==0?false:true;
       return MakeKs.makeKs(that, path, Arrays.asList(fieldNames), mutK, lentK, readK, immK, fwd);
     }
-
+//--------------------------
+    @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+    public Object MhideMethod£xthat£xpath£xsrc(Object _that,Object _path,Object _src){
+      ClassB that=ensureExtractClassB(_that);
+      List<Ast.C> path=PathAux.parseValidCs(ensureExtractStringU(_path));
+       MethodSelector src = MethodSelector.parse(ensureExtractStringU(_src));
+       MethodSelector dest = src.withUniqueNum(L42.freshPrivate());
+      return Rename.renameMethod(Resources.getP(),that,path,src,dest);
+      }
+    @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+    public Object MhideClass£xthat£xsrc(Object _that,Object _src){
+      ClassB that=ensureExtractClassB(_that);
+      List<Ast.C> src=PathAux.parseValidCs(ensureExtractStringU(_src));
+      List<Ast.C> dest=new ArrayList<>(src);
+      dest.set(dest.size()-1, dest.get(dest.size()-1).withUniqueNum(L42.freshPrivate()));
+      return Rename.renameClass(Resources.getP(),that,src,dest);
+      }
+    
   }

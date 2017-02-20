@@ -72,7 +72,7 @@ public class CloneVisitor implements Visitor<ExpCore>{
     return new ClassB.MethodImplemented(liftDoc(mi.getDoc()), liftMsInMetDec(mi.getS()), lift(mi.getInner()),mi.getP());
     }
   public ClassB.MethodWithType visit(ClassB.MethodWithType mt){
-    return new ClassB.MethodWithType(liftDoc(mt.getDoc()),liftMsInMetDec(mt.getMs()),liftMT(mt.getMt()), Map.of(this::lift,mt.get_inner()),mt.getP());
+    return new ClassB.MethodWithType(liftDoc(mt.getDoc()),liftMsInMetDec(this.liftMs(mt.getMs())),liftMT(mt.getMt()), Map.of(this::lift,mt.get_inner()),mt.getP());
     }
 
   protected MethodType liftMT(MethodType mt) {
