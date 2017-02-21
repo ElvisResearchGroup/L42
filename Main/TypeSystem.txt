@@ -26,7 +26,7 @@ MethT::=Ts->T;Ps
 2 Type manipulation
 --------------------------------------------
 
-complete(G)={x:T | G(x) not fwd/fwd%}
+onlyMutOrImm(G)={x:G(x) | G(x) only mut or imm}
 
 fwd T
   fwd imm P=fwd fwd%imm P=fwdImm P
@@ -276,12 +276,12 @@ Phase| p| G| ks|- T1  x1=e1 ..Tn  xn=en, ds ~>  T'1  x1=e'1 ..T'n  xn=e'n, ds'|T
   dom(ds) notin FV(e1..en)
   for i in 1..n T'i=resolve(p,Ti)
   G'=x1:T'1..xn:T'n
-  G1= G[fwd(complete(G'))][ks] //[ks] removes fwdMut, but we wonder if they could stay and all would be sound?
+  G1= (G\x1..xn)[ks][fwd(onlyMutOrImm(G'))] //[ks] removes fwdMut, but we wonder if they could stay and all would be sound?
   for i in 1..n Phase| p| G1|-ei~>e'i: _ <= fwd% T'i | Tri
   Tr=Tr1 U .. U Trn
   if fwd_or_fwd%_in Tr.Ts
     then x1..xn disjoint FV(e1..en)
-  if fwd_or_fwd%_in { G[complete(G')](x) | x in FV(e1..en) }
+  if fwd_or_fwd%_in { G\x1..xn(x) | x in FV(e1..en) }
     then G0=G[fwd%(G')]
     otherwise G0=G[G']
   Phase| p| G0|ks|- ds ~> ds'|Tr' | G2
@@ -507,7 +507,7 @@ tsMCall(TSIn in,MCall e)->TSOut
   tsToCaps=Ts[with r in resp (use[mutToCapsule(r.T)])]
   mTypeMVP=firstMatchParameters(tsToCaps,mTypesRev) //or mTypes?
   if mTypeMVP==null Error????
-  assert firstMatchParameters(tsToCaps,mTypesRes-mTypeMVP) fails
+  //this assert could not work: assert firstMatchParameters(tsToCaps,mTypesRes-mTypeMVP) fails
   //To be happy, we can retype the obtained mut parameters into expected capsule
   respMVP=TSOut[with ri in resp, T ti in mTypeMVP.TS (
     if (ri.mdf <= ti.mfd) (
