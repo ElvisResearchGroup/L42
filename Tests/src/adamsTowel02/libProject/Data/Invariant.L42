@@ -93,7 +93,7 @@ Library stateDecoration(Library that,Introspection.Methods state) {
       error X"Invariant"(cnr)
     }
 
-//create a "fresh" selector that agrees with the new fresh constructor// should be put in Data?
+//create a "fresh" selector for fields that agrees with the new fresh constructor// should be put in Data?
 class method
 Selector stateFName(Selector that, Strings old,Strings fresh){//a field selector and old and fresh field names
     name=that.nameAsField()

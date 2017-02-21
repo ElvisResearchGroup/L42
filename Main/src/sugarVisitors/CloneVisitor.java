@@ -7,6 +7,7 @@ import tools.Map;
 import ast.Ast.Doc;
 import ast.Ast.MethodSelector;
 import ast.Ast.Parameters;
+import ast.Ast;
 import ast.Ast.ConcreteHeader;
 import ast.Ast.FieldDec;
 import ast.Ast.Header;
@@ -34,7 +35,7 @@ public class CloneVisitor implements Visitor<Expression>{
   protected Type liftT(Type t){
     return t.match(
         nt->(Type)new NormType(nt.getMdf(),lift(nt.getPath()),nt.getPh(),liftDoc(nt.getDoc())),
-        ht->(Type)new HistoricType(lift(ht.getPath()),ht.getSelectors(),ht.isForcePlaceholder(),liftDoc(ht.getDoc()))
+        ht->(Type)new HistoricType(lift(ht.getPath()),Map.of(this::liftMsX, ht.getSelectors()),ht.isForcePlaceholder(),liftDoc(ht.getDoc()))
         );
     }
   protected Expression.Catch liftK(Expression.Catch k){
@@ -116,6 +117,15 @@ public class CloneVisitor implements Visitor<Expression>{
   protected MethodSelector liftMs(MethodSelector ms) {
     return ms;
   }
+  protected Ast.MethodSelectorX liftMsX(Ast.MethodSelectorX selector) {
+    MethodSelector ms1=selector.getMs();
+    MethodSelector ms2=liftMs(ms1);
+    if(selector.getX().isEmpty() || selector.getX().equals("this")){return selector.withMs(ms2);}
+    int pos=ms1.getNames().indexOf(selector.getX());
+    assert pos!=-1:selector;
+    return selector.withMs(ms2).withX(ms2.getNames().get(pos));
+  }
+
   protected MethodType liftMT(MethodType mt) {
     return new MethodType(mt.isRefine(),
       mt.getMdf(),

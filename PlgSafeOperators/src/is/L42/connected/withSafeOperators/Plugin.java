@@ -9,7 +9,7 @@ import static auxiliaryGrammar.EncodingHelper.ensureExtractDoc;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
+import java.util.stream.Collectors;
 
 import ast.Ast;
 import ast.Ast.Doc;
@@ -19,6 +19,7 @@ import ast.Ast.Path;
 import ast.Ast.Position;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
+import ast.ExpCore.ClassB.MethodWithType;
 import ast.ExpCore.ClassB.NestedClass;
 import ast.PathAux;
 import auxiliaryGrammar.Functions;
@@ -312,6 +313,28 @@ public class Plugin implements PluginType{
       List<Ast.C> dest=new ArrayList<>(src);
       dest.set(dest.size()-1, dest.get(dest.size()-1).withUniqueNum(L42.freshPrivate()));
       return Rename.renameClass(Resources.getP(),that,src,dest);
-      }
+      }/*
+    @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+    public Object MhideState£xthat£xsrc(Object _that,Object _src){
+      ClassB that=ensureExtractClassB(_that);
+      List<Ast.C> src=PathAux.parseValidCs(ensureExtractStringU(_src));
+      ClassB target=that.getClassB(src);
+      List<MethodWithType>mwtA=target.mwts().stream().filter(mwt->!mwt.get_inner().isPresent()).collect(Collectors.toList());
+      kjkkj typos to remember I was here
+      we should take in input a candidete ks?
+              
+              map can go num to num!
+              -state can all be labeled with the same num
+              -change in consistent: fields inherit num of unique constructor
+              -now, a num to num map keep consistent classes consistent!
+              
+              we can make a pluginwithpart taking a list of strings for candidate state?
+              -new(path), addSelector, decorate(lib)?
+               decorate: choose uniqueNum n. 
+                 for all selectors msi: RenameMethod path,msi, msi.with(n)
+                      
+      //return Rename.renameClass(Resources.getP(),that,src,dest);
+      return null;
+      }*/
     
   }

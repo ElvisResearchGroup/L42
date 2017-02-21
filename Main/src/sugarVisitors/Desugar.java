@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import platformSpecific.fakeInternet.OnLineCode;
+import privateMangling.RefreshUniqueNames;
 import tools.Assertions;
 import ast.Ast;
 import ast.ErrorMessage;
@@ -80,6 +81,9 @@ import profiling.Timer;
 
 public class Desugar extends CloneVisitor{
   public static Expression of(Expression e){
+    long max=RefreshUniqueNames.maxUnique(e);
+    assert max>=0L;
+    L42.setFreshPrivateCap(max+1);
     if(L42.path!=null){e=ReplaceDots.of(L42.path, e);}
     Desugar d=new Desugar();
     d.usedVars.addAll(CollectDeclaredVars.of(e));
@@ -272,24 +276,23 @@ public class Desugar extends CloneVisitor{
   public Expression visit(ClassReuse s) {
     ClassB res=lift(s.getInner());
   //ClassB reused2=OnLineCode.getCode(s.getUrl());
-    ExpCore.ClassB reused=this.importedLibs.get(s.getUrl());
-    assert reused!=null:s.getUrl()+" "+this.importedLibs.keySet()+this.importedLibs.get(s.getUrl())+this.importedLibs;
-    for(ast.ExpCore.ClassB.Member m1:reused.getMs()){
-      for(Member m2:res.getMs()){
-        m1.match(
-            nc1->{return m2.match(nc2->{
-               if (nc1.getName().equals(nc2.getName())){throw new ast.ErrorMessage.NotWellFormedMsk(s, s, "Nested class \""+nc1.getName()+"\" already present in reused library "+s.getUrl());}
-              return null;}, mi2->null, mt2->null);},
-            mi1->{return m2.match(nc2->null,mi2->{
-              if (mi1.getS().equals(mi2.getS())){throw new ast.ErrorMessage.NotWellFormedMsk(s, s, "Method implemented \""+mi1.getS()+"\" already present in reused library "+s.getUrl());}
-             return null;},  mt2->null);},
-            mt1->{return m2.match(nc2->null,mi2->null,mt2->{
-              if (mt1.getMs().equals(mt2.getMs())){throw new ast.ErrorMessage.NotWellFormedMsk(s, s, "Method with type \""+mt1.getMs()+"\" already present in reused library "+s.getUrl());}
-             return null;});}
-            );
-        //NotWellFormedMsk
-      }
-    }
+    ExpCore.ClassB _reused=this.importedLibs.get(s.getUrl());
+    assert _reused!=null:s.getUrl()+" "+this.importedLibs.keySet()+this.importedLibs.get(s.getUrl())+this.importedLibs;
+    ExpCore.ClassB reused=RefreshUniqueNames.refreshTopLevel(_reused);
+    for(Member m2:res.getMs()){
+      m2.match(
+        nc2->{for(ast.ExpCore.ClassB.NestedClass nc1:reused.ns()){
+          if (nc1.getName().equals(nc2.getName())){
+            throw new ast.ErrorMessage.NotWellFormedMsk(s, s, "Nested class \""+nc1.getName()+"\" already present in reused library "+s.getUrl());
+            }
+        }return null;},
+        mi->{return null;},
+        mwt2->{for(ast.ExpCore.ClassB.MethodWithType mwt1:reused.mwts()){
+          if (mwt1.getMs().equals(mwt2.getMs())){
+            throw new ast.ErrorMessage.NotWellFormedMsk(s, s, "Method with type \""+mwt1.getMs()+"\" already present in reused library "+s.getUrl());
+            }  
+        }return null;});
+      }    
     return new ClassReuse(res,s.getUrl(),reused);
   }
 

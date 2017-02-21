@@ -136,7 +136,7 @@ public class PropagatorVisitor implements Visitor<Void>{
     lift(s.getInner());
     return null;
     }
-  protected void liftMsInMetDec(MethodSelector ms) {}//Do nothing on purpose, can be overridden
+  protected void liftMsInMetDec(MethodSelector ms) {liftMs(ms);}//delegate on more common lift, to play with overriding better.
 
   public Void visit(WalkBy s) {throw Assertions.codeNotReachable();}
 

@@ -271,13 +271,15 @@ public interface Expression extends Ast {
         if (m instanceof MethodWithType) {
           MethodWithType mwt = (MethodWithType) m;
           String key=mwt.getMs().toString();
-          assert !keys.contains(key);
+          //For better error messages we would like to finish parsing
+          //assert !keys.contains(key);
           keys.add(key);
         }
         if (m instanceof NestedClass) {
           NestedClass nc = (NestedClass) m;
           String key=nc.getName().toString();
-          assert !keys.contains(key);
+          //For better error messages we would like to finish parsing
+          //assert !keys.contains(key);
           keys.add(key);
           if (nc.inner instanceof WalkBy) {
             countWalkBy += 1;
