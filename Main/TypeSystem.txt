@@ -391,13 +391,15 @@ coherent(p)  //classes are coherent if they have a coherent set of abstract meth
   either mwts is empty or
     at least 1 mwt in mwts is class method 
     and
-    exists some (T x)s such that //angelic non determinism to figure out at least one set of types for the fields 
+    exists some (T x)s and n? such that //angelic non determinism to figure out at least one set of types for the fields 
       all T in (T x)s are mut, imm, class or capsule //thus, no fwd
-      forall mwt in mwts coherent(p,(T x)s, mwt) //all abstract methods are coherent according to those fields
+      forall mwt in mwts coherent(n?,p,(T x)s, mwt) //all abstract methods are coherent according to those fields
       
+m[n]==m_$_n
+m[]==m
       
-coherent(p,T1 x1..Tn xn,
-      refine? class method T m(T1' x1..Tn' xn) exception _)
+coherent(n?,p,T1 x1..Tn xn,
+      refine? class method T m[n?] (T1' x1..Tn' xn) exception _)
   where
   either
     p|-mut This0 <=T and p|-Ti'<=fwd Ti
@@ -407,8 +409,8 @@ coherent(p,T1 x1..Tn xn,
     p|-read This0 <=T and p|-Ti'<=fwd toRead(Ti) //how with capsule?
 
 
-coherent(p,T1 x1..Tn xn,
-    refine? mdf method T m() exception _)
+coherent(n?,p,T1 x1..Tn xn,
+    refine? mdf method T m[n?]() exception _)
   where
   m=#?xi
   either
@@ -416,8 +418,8 @@ coherent(p,T1 x1..Tn xn,
   or 
     mdf=read and p|-toRead(Ti)<=T //getter
   
-coherent(p,T1 x1..Tn xn,
-    refine? mut method Void m(T that) exception _)
+coherent(n?,p,T1 x1..Tn xn,
+    refine? mut method Void m[n?](T that) exception _)
   where
   m=#?xi
   p|-T<=Ti//setter
