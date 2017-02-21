@@ -181,14 +181,25 @@ methTypes(p,P,ms)  Expressed as metarules
 --------------------------------------------
 3 ExpressionTypeJudgement
 --------------------------------------------
-  D |- e ~> e':T <=T'| Tr   and D |Tr|- k ~> k':Ts <=T' |Tr' //TODO: add all the judgement forms: ks, ds
-  where e' is an annotated version of expression e and is of type T
-  where k' is an annotated version of catch k and k.e is of type T
-  D.p points to where the e is located, //D.p.top()=ctxL[e]
-  so if P inside e, D.p(P) is a reasonable operation
-  Tr is the computed set of thrown returns and exceptions;
-  for catches, we need the Tr of the ds to type catch _ Any precisely
-  Tr' contains only the throws from the catch k itself.
+  D |- e ~> e':T <=T'| Tr  
+    where e' is an annotated version of expression e and is of type T
+    D.p points to where the e is located, //D.p.top()=ctxL[e]
+    so if P inside e, D.p(P) is a reasonable operation
+    Tr is the computed set of thrown returns and exceptions.
+    
+  Phase| p| G|ks|- ds ~> ds'| Tr | G0
+    where ds' is an annotated version of ds.
+    We need the catches to seal the gamma to ensure "strong error safety".
+    The resulting G0 is the enriched G containing info about ds too. 
+
+  D |Tr|- k ~> k':T <=T' |Tr'    
+    where k' is an annotated version of catch k and k.e is of type T
+    we need the Tr of the ds to extract the mdf for returns
+    Tr' contains only the throws from the catch k itself.
+  
+  D| Tr |-ks ~> k's:Ts <= T | Tr
+    just types a set of cathes.
+    
 
 (void)
 D |- void~> void:imm Void <= T | emptyTr
@@ -480,8 +491,8 @@ tsMCall(TSIn in,MCall e)->TSOut
   mType=_firstMatchReturn(TSIn.T,mTypes)
   if mType==null return res=Error???
   //2 type all the parameters with mutOnlyToLent(Ts) //we may store the mutOnlyToLent result already in the first memoized map
-  resp=TSOut[with e in e.es.withAlso(left:e.receiver), T in mTypes.Ts
-    resi=ts(in.with(e:e, t:mutOnlyToLent(T)))
+  resp=TSOut[with ei in e.es.withAlso(left:e.receiver), Ti in mTypes.Ts
+    resi=ts(in.with(e:ei, t:mutOnlyToLent(Ti)))
     if !resi.isOk() return res=combineContext(TSIn,resi)
     use[resi]   
     ]
@@ -498,15 +509,15 @@ tsMCall(TSIn in,MCall e)->TSOut
   if mTypeMVP==null Error????
   assert firstMatchParameters(tsToCaps,mTypesRes-mTypeMVP) fails
   //To be happy, we can retype the obtained mut parameters into expected capsule
-  respMVP=TSOut[with r in resp, T t in mTypeMVP.TS (
-    if (r.mdf <= t.mfd) (
-      assert r.mdf != Mdf.mut
-      use [r]
+  respMVP=TSOut[with ri in resp, T ti in mTypeMVP.TS (
+    if (ri.mdf <= ti.mfd) (
+      assert ri.mdf != Mdf.mut
+      use [ri]
       )
     else(
-      assert r.mdf == Mdf.mut
-      assert t.mdf == Mdf.capsule
-      resi=ts(r.in.with(expectedT:t))
+      assert ri.mdf == Mdf.mut
+      assert ti.mdf == Mdf.capsule
+      resi=ts(ri.in.with(expectedT:ti))
       if !resi.isOK()  return Error???
       use [resi]
       )
