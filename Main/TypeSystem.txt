@@ -102,33 +102,23 @@ G[ks]
   G[k ks]=toRead(G) with k.throw=error and not catchRethrow(k)
   otherwise G[k ks] = G[ks]
 
-mostGeneralMdf(p,throw,Tr)  
-  mostGeneralMdf(p,error,Tr)=imm
-  mostGeneralMdf(p,return,empty;Ps) undefined
-  mostGeneralMdf(p,return,T1..Tn;Ps)=mostGeneral({T1.mdf .. Tn.mdf})
+mostGeneralMdf(throw,Tr)  
+  mostGeneralMdf(error,Tr)=imm
+  mostGeneralMdf(return,empty;Ps) undefined
+  mostGeneralMdf(return,T1..Tn;Ps)=mostGeneralMdf({T1.mdf .. Tn.mdf})
   otherwise 
-  mostGeneralMdf(p,exception,_;Ps)=imm
+  mostGeneralMdf(exception,_;Ps)=imm
 
-mostGeneral(p,P)
-//note that the answer is took from the possible thrown values.
-//We do not search in the implemented interfaces, this would break with metaprogramming.
-  mostGeneral(p,P)=P
-  otherwise
-  mostGeneral(p,Ps1 P Ps2)=mostGeneral(p,Ps1 Ps2)
-    if exists P' in Ps1,Ps2 such that p|-P<=P'
-  otherwise
-  mostGeneral(p,Ps)=Any 
-
-mostGeneral(mdfs)
-  mostGeneral(mdfs)=mdf //assert fwd and fwd% not in mdfs
+mostGeneralMdf(mdfs)
+  mostGeneralMdf(mdfs)=mdf //assert fwd and fwd% not in mdfs
     if mdfs=mdf', then mdf=mdf' //that is the only way mdf=class
   otherwise if class in mdfs, then undefined
   otherwise if read in mdfs, mdf=read
-  otherwise if capsule in mdfs, then mdf=mostGeneral(mdfs\capsule)
+  otherwise if capsule in mdfs, then mdf=mostGeneralMdf(mdfs\capsule)
   //from now on, we have at least two of those:lent, mut, imm //Note: fwd and fwd% are cutted out in the throw rule
   otherwise if imm in mdfs, mdf=read
   otherwise mdf=lent
-  //set oriented definition from james: mostGeneral(mdfs) = mdf0 such that 
+  //set oriented definition from james: mostGeneralMdf(mdfs) = mdf0 such that 
   //forall mdf1 in mdfs, mdf1 <= mdf0
   //forall mdf2
   //  either mdf0 <= mdf2
@@ -194,11 +184,11 @@ methTypes(p,P,ms)  Expressed as metarules
 
   D |Tr|- k ~> k':T <=T' |Tr'    
     where k' is an annotated version of catch k and k.e is of type T
-    we need the Tr of the ds to extract the mdf for returns
+    we need the Tr of the ds to extract the mdf for caught returns
     Tr' contains only the throws from the catch k itself.
   
-  D| Tr |-ks ~> k's:Ts <= T | Tr
-    just types a set of cathes.
+  D| Tr |-ks ~> k's:Ts <= T | Tr'
+    just types a set of catches.
     
 
 (void)
@@ -211,7 +201,7 @@ D |- P~>P:class P <= T | emptyTr
   where
   D.p|-class P <= T
 
-(library prop)
+(library propagation)
 D |- L ~> L' : imm Library <= T | emptyTr
   where
   D.p|-imm Library <= T
@@ -267,7 +257,7 @@ Phase| p| G|-(ds  ks  e0  [_]) ~>(ds' ks' e'0 [T])
   Phase| p| G/dom(ds)| ks|- ds ~> ds' |Tr' | G0
   Phase| p| G/dom(ds)| Tr1 U .. U Trn |-ks~> ks' : Ts <= T' | Tr
   Phase| p| G0 |-e0~>e'0:T0 <=T' | Tr0
-  T= mostGeneral({T0.mdf,Ts.mdfs}) T'.P
+  T= mostGeneralMdf({T0.mdf,Ts.mdfs}) T'.P
   // assert D.p|-T <= T'
 
 (ds)
