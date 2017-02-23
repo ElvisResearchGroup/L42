@@ -261,17 +261,17 @@ Phase| p| G|-(ds  ks  e0  [_]) ~>(ds' ks' e'0 [T])
   // assert D.p|-T <= T'
 
 (ds)
-Phase| p| G| ks|- T1  x1=e1 ..Tn  xn=en, ds ~>  T'1  x1=e'1 ..T'n  xn=e'n, ds'|Tr U Tr' | G2
+Phase| p| G| ks|- T0  x0=e0 ..Tn  xn=en, ds ~>  T'1  x1=e'1 ..T'n  xn=e'n, ds'|Tr U Tr' | G2
   where
-  dom(ds) notin FV(e1..en)
-  for i in 1..n T'i=resolve(p,Ti)
-  G'=x1:T'1..xn:T'n
-  G1= (G\x1..xn)[ks][fwd(onlyMutOrImm(G'))] //[ks] removes fwdMut, but we wonder if they could stay and all would be sound?
-  for i in 1..n Phase| p| G1|-ei~>e'i: _ <= fwd% T'i | Tri
-  Tr=Tr1 U .. U Trn
+  dom(ds) notin FV(e0..en)
+  for i in 0..n T'i=resolve(p,Ti)
+  G'=x0:T'0..xn:T'n
+  G1= (G\x0..xn)[ks][fwd(onlyMutOrImm(G'))] //[ks] removes fwdMut, but we wonder if they could stay and all would be sound?
+  for i in 0..n Phase| p| G1|-ei~>e'i: _ <= fwd% T'i | Tri
+  Tr=Tr0 U .. U Trn
   if fwd_or_fwd%_in Tr.Ts
-    then x1..xn disjoint FV(e1..en)
-  if fwd_or_fwd%_in { G\x1..xn(x) | x in FV(e1..en) }
+    then x1..xn disjoint FV(e0..en)
+  if fwd_or_fwd%_in { G\x0..xn(x) | x in FV(e0..en) }
     then G0=G[fwd%(G')]
     otherwise G0=G[G']
   Phase| p| G0|ks|- ds ~> ds'|Tr' | G2
@@ -286,7 +286,6 @@ Phase| p| G|ks|- empty ~> empty| empty;empty | G
 D| Tr |-k1..kn ~> k'1..k'n:T1..Tn <= T | Tr1 U .. U Trn
   where
   forall i in 1..n D| Tr.capture(D.p,k1..ki-1)|-ki ~> k'i:Ti <= T |Tri
-  
   
 (catch)
    // T0 is the declared caught type, which contributes only a path
@@ -306,6 +305,7 @@ Phase |p |G |Tr|-catch throw Any x (e0 throw x) ~> catch throw Any x (e0' throw 
   e0=(e catch error Any z void void)
   e0'=(e' catch error Any z void void)
   Phase |p |G\x |- e ~> e':_ <=imm Void | empty
+  catchRethrow(catch throw Any x(e0 throw x)) 
 
 (capsule promotion)
 Phase |p |G |-(ds ks e)~>(ds' ks' e'):capsule P <=capsule P | Tr
@@ -327,14 +327,14 @@ p|-mdf0 P0<=mdf1 P1
   
 mdf<=mdf
 mdf1<=mdf3 if mdf1<=mdf2 and mdf2<=mdf3
-capsule<=mut,imm
-imm<=read
-mut<=lent
+capsule<=mut,imm  //,lent,read,fwd%Mut,fwdMut,fwd%Imm, fwdImm
+imm<=read,fwd%Imm //,fwdImm
+mut<=lent,fwd%Mut //,read,fwdMut
 lent<=read
-mut<=fwd%Mut
 fwd%Mut<=fwdMut
-imm<=fwd%imm
 fwd%Imm<=fwdImm
+
+
 -----------------------------------------------
 5 LibraryAndMemberTyping
 -----------------------------------------------

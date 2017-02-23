@@ -1,3 +1,50 @@
+Conventionally, compiled languages have separated phases of
+compilation and execution, and they have a single "main"
+execution point or task. In most cases the result of such
+task is simply discarded or passed to the operative
+system that will most likely ignore it. 
+
+42 execution model interleave execution and compilation,
+and have many tasks. You can see a task as a generalization of a "main" method/expression.
+Executing a 42 program with only one task
+is similar to compile the source and then directly execute it.
+If we have two or more tasks, then we can see the interleaved
+compilation: First enough classes are compiled so that the first
+task can be executed.
+The result of the first task is code (called Library in 42),
+that can be compiled and used for the second task.
+That is: the result of a task can be part of the program
+needed to run the successive tasks.
+
+This model is an extension of the conventional model of
+compilation/execution; tasks are run top to bottom,
+and every time a task is run all its dependencies are
+well typed, so there can not be a type error while running
+a task. In this sense, 42 is a sound typed language.
+
+On the flip side, since compilation happens after arbitrary execution,
+we can get compilation errors between task executions.
+In case a task terminate with an error/exception, such failure
+is propagated as a compilation error.
+Task execution can perform arbitrary computation, including taking
+input from external sources. This means that different executions of the same
+42 program can produce different code, or even terminate with different errors.
+
+However, 42 is safer than approaches based on free meta-programming:
+Libraries (code literals) are first class values that are manipulated
+with certain operations, and 42 guarantees that 
+if a task produces a non well typed Library,
+such type error was originally present in a Library literal
+wrote directly inside such task; that is
+type errors will not come from other compiled code.
+
+This is a similar experience to what happens already with
+a conventional compiler processing a (group of) classes at a time:
+a compilation error is produced while processing a class that
+has a type error or make wrong assumptions on the shape of already
+compiled classes.  
+ ---------------
+
 Bugs and programming:
 idea
   what you wish for, is incoherent.
