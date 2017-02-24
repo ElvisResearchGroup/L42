@@ -440,7 +440,7 @@ tsPath(TSIn in,Path p)->TSOut //assert in.e == p, etc. for other cases
   ...follow rule Path...
 ..other cases...
   
-structure of all tsXX methods:
+structure of all tsXX methods://or just the dispatch one :-)
   TSOut res=_memoizedTSRes(in);
   if (res!=null){return res;}
   try{
