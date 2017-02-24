@@ -12,7 +12,6 @@ import ast.Ast.FreeType;
 import ast.Ast.HistoricType;
 import ast.Ast.NormType;
 import ast.Ast.Path;
-import ast.Ast.Ph;
 import ast.Ast.Stage;
 import ast.Ast.Type;
 import ast.ErrorMessage;
@@ -84,7 +83,7 @@ public class TypeCheckMethod {
     {int j=-1;for(Type t:ts){j+=1;
       if(t instanceof Ast.FreeType){continue;}
       NormType nt=Functions.forceNormType(that.p,es.get(j), t);
-      if(nt.getPh()!=Ph.None){ph=true;}
+      if(!Functions.isComplete(nt)){ph=true;}
     }}
     if(ph){return Functions.toPartial(rt);}
     return rt;

@@ -10,7 +10,6 @@ import ast.Ast.Mdf;
 import ast.Ast.MethodSelector;
 import ast.Ast.Op;
 import ast.Ast.Path;
-import ast.Ast.Ph;
 import ast.Ast.Type;
 import ast.Ast.NormType;
 import ast.Ast.HistoricType;
@@ -48,7 +47,7 @@ public class GuessType implements Visitor<Type> {
     assert this.varEnv.get(s.getInner())!=null;
     return this.varEnv.get(s.getInner());
     }
-  public Type visit(Path s) { return new NormType(Mdf.Class,s,Ph.None,Doc.empty()); }
+  public Type visit(Path s) { return new NormType(Mdf.Class,s,Doc.empty()); }
 
   public Type visit(RoundBlock s) {
     HashMap<String, Type> tmpVarEnv = this.varEnv;
@@ -75,7 +74,7 @@ public class GuessType implements Visitor<Type> {
     if(t instanceof NormType){
       NormType nt = (NormType)t;
       List<Ast.MethodSelectorX> selectors=Collections.singletonList(new Ast.MethodSelectorX(ms,""));
-      return new HistoricType(nt.getPath(), selectors,false,Doc.empty());
+      return new HistoricType(nt.getPath(), selectors,Doc.empty());
     }
     HistoricType ht=(HistoricType)t;
     List<Ast.MethodSelectorX> selectors = new ArrayList<>(ht.getSelectors());

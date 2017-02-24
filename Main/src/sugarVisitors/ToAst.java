@@ -25,6 +25,7 @@ import ast.Ast.MethodSelector;
 import ast.Ast.MethodSelectorX;
 import ast.Ast.NormType;
 import ast.Expression.With.On;
+import auxiliaryGrammar.Functions;
 import ast.Ast.Op;
 import ast.Ast.Parameters;
 import ast.Ast.Path;
@@ -279,10 +280,11 @@ public class ToAst extends AbstractVisitor<Expression>{
     if(t.concreteT()!=null){
       ConcreteTContext tt = t.concreteT();
       Doc d=parseDoc(tt.docsOpt());
-      return new Ast.NormType(
+      Ast.NormType nt=new Ast.NormType(
         Mdf.fromString((tt.Mdf()==null)?"":nameK(tt.Mdf())),
-        Ast.Path.sugarParse(nameU(tt.Path())),
-        (tt.Ph()==null)?Ph.None:Ph.Ph,d);
+        Ast.Path.sugarParse(nameU(tt.Path())),d);
+      if (tt.Ph()==null){return nt;}
+      return Functions.toPh(nt);
     }
     if(t.historicalT()!=null){
        HistoricalTContext tt = t.historicalT();
@@ -292,7 +294,7 @@ public class ToAst extends AbstractVisitor<Expression>{
        for(HistoricalSeqContext ms:tt.historicalSeq()){
          mss.add(parseMethSelectorX(ms));
        }
-       return new ast.Ast.HistoricType(p,mss,tt.Ph()!=null,d);
+       return new ast.Ast.HistoricType(p,mss,d);
     }
     throw Assertions.codeNotReachable();
   }

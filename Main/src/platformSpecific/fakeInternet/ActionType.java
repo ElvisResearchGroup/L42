@@ -12,7 +12,6 @@ import ast.Ast;
 import ast.Ast.Doc;
 import ast.Ast.NormType;
 import ast.Ast.Path;
-import ast.Ast.Ph;
 import ast.Ast.Type;
 
 @Retention(RetentionPolicy.RUNTIME)

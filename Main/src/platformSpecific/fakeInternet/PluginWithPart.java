@@ -17,7 +17,6 @@ import ast.Ast.Doc;
 import ast.Ast.Mdf;
 import ast.Ast.NormType;
 import ast.Ast.Path;
-import ast.Ast.Ph;
 import ast.ExpCore.Using;
 import auxiliaryGrammar.EncodingHelper;
 import auxiliaryGrammar.Functions;
@@ -70,7 +69,6 @@ public class PluginWithPart implements PluginType{
     return NormType.immLibrary;
     }
   private static ast.Ast.NormType jTo42(String jt){
-    //if (jt.equals("void")){return new NormType(Mdf.Immutable,Path.Void(),Ph.None);}
     if (jt.equals("_ast%Ast%Path")){return NormType.classAny;}
     return NormType.immLibrary;
     }

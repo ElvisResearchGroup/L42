@@ -4,7 +4,6 @@ import ast.Ast.Mdf;
 import ast.Ast.MethodSelector;
 import ast.Ast.MethodType;
 import ast.Ast.Path;
-import ast.Ast.Ph;
 import ast.Ast.Position;
 import ast.Ast.Type;
 import ast.Ast;
@@ -82,13 +81,13 @@ public class SumMethods {
     Mdf mdfU=mdfU(mt1.getMdf(),mt2.getMdf());
     if(mdfU==null){return null;}
     Type removed=mt2.getTs().get(index);
-    boolean isRemovedPh=removed.match(nt->nt.getPh()==Ph.Ph, hType->false);
+    boolean isRemovedPh=removed.match(nt->!Functions.isComplete(nt), hType->false);
     List<Type> totTypes;
     if(isRemovedPh){
       totTypes=new ArrayList<>(mt1.getTs());
     }
     else{
-      totTypes=mt1.getTs().stream().map(t->t.match(nt->nt.withPh(Ph.None), hType->hType)).collect(Collectors.toList());
+      totTypes=mt1.getTs().stream().map(t->t.match(nt->Functions.toComplete(nt), hType->hType)).collect(Collectors.toList());
     }
     totTypes.addAll(mt2.getTs());
     int toRemove=mt1.getTs().size()+index;

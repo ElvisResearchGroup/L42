@@ -22,7 +22,6 @@ import sugarVisitors.Desugar;
 import sugarVisitors.InjectionOnCore;
 import ast.Ast.Mdf;
 import ast.Ast.NormType;
-import ast.Ast.Ph;
 import ast.Ast.Stage;
 import ast.ErrorMessage;
 import ast.ExpCore;

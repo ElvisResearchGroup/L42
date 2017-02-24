@@ -36,7 +36,14 @@ public interface Program {//this class will eventually replace auxiliaryDefiniti
   List<ExpCore.ClassB.MethodWithType> methods(Ast.Path p);
   
   //program derived operations:
- 
+  default boolean subtypeEq(Ast.Path p,Ast.Path p1){
+    if(equiv(p,p1)){return true;}
+    ClassB cb=this.extractClassB(p);
+    for(Path pi:cb.getSuperPaths()){
+      if(equiv(pi, p1)){return true;}
+      }
+    return false;
+    }
   //hint for testing: p.equiv(p0,p1)==p.navigate(p0).equals(p.navigate(p1))
   //provided both navigates do not throw evilPush errors
   //and p0, p1 already exists (not still to metaprogram their outers)

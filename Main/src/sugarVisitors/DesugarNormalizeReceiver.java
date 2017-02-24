@@ -18,7 +18,6 @@ import ast.Ast.NormType;
 import ast.Ast.Op;
 import ast.Ast.Parameters;
 import ast.Ast.Path;
-import ast.Ast.Ph;
 import ast.Ast.Position;
 import ast.Ast.SignalKind;
 import ast.Ast.Type;

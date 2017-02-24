@@ -268,13 +268,11 @@ public class Redirect {
       normType->{
         NormType ntP=(NormType)tDest;
         if(!normType.getMdf().equals(ntP.getMdf())){return false;}//incompatible internal/external types t1 t2
-        if(!normType.getPh().equals(ntP.getPh())){return false;}//incompatible internal/external types t1 t2
          return plusEqualCheckExt(ambiguities,normType.getPath(),Arrays.asList(ntP.getPath()));
       },
       hType->{
         HistoricType htP=(HistoricType)tDest;
         if(!hType.getSelectors().equals(htP.getSelectors())){return false;}//incompatible internal/external types t1 t2
-        if(hType.isForcePlaceholder()!=htP.isForcePlaceholder()){return false;}//incompatible internal/external types t1 t2
         return plusEqualCheckExt(ambiguities,hType.getPath(),Arrays.asList(htP.getPath()));
       });
   }

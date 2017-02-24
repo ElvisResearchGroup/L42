@@ -26,7 +26,6 @@ import ast.Ast.MethodType;
 import ast.Ast.Type;
 import ast.Ast.Mdf;
 import ast.Ast.Path;
-import ast.Ast.Ph;
 import ast.Ast.Position;
 import ast.Ast.SignalKind;
 import ast.Ast.Stage;
@@ -76,7 +75,7 @@ public class TypeSystem implements Visitor<Type>, Reporter, ast.Ast.HasPos{
   @Override
   public Type visit(_void s) {
     return collectEnvs(null,()->{
-      return new NormType(Mdf.Capsule,Path.Void(),Ph.None,Doc.empty());
+      return new NormType(Mdf.Capsule,Path.Void(),Doc.empty());
     });
   }
 
@@ -126,13 +125,13 @@ public class TypeSystem implements Visitor<Type>, Reporter, ast.Ast.HasPos{
   @Override
   public Type visit(Path s) {
     return collectEnvs(null,()->{
-      if( s.isPrimitive()){return new NormType(Mdf.Class,s,Ph.None,Doc.empty());}
+      if( s.isPrimitive()){return new NormType(Mdf.Class,s,Doc.empty());}
       ClassB ct=p.extractCb(s);
       if(ct.isInterface()){
         return NormType.classAny;
         }
       if(isPathPath(p,ct)){
-        return new NormType(Mdf.Class,s,Ph.None,Doc.empty());
+        return new NormType(Mdf.Class,s,Doc.empty());
         }
       return NormType.classAny;
       });
@@ -153,12 +152,12 @@ public class TypeSystem implements Visitor<Type>, Reporter, ast.Ast.HasPos{
       if(s.getKind()==SignalKind.Return){
         suggestedMdf=throwEnv.mdfOfRes();
       }
-      NormType suggestedNested=new NormType(suggestedMdf,Path.Any(),Ph.None,Doc.empty());
+      NormType suggestedNested=Functions.toComplete(new NormType(suggestedMdf,Path.Any(),Doc.empty()));
       //TODO:was tollerant
       Type preciseTOpt=typecheckSure(false,p,varEnv,sealEnv,throwEnv,suggestedNested,s.getInner());
       if (preciseTOpt instanceof Ast.FreeType){return preciseTOpt;}
       NormType preciseT = Functions.forceNormType(this.p,s.getInner(), preciseTOpt);
-      if(preciseT.getPh()!=Ph.None){
+      if(!Functions.isComplete(preciseT)){
         throw new ErrorMessage.InvalidTypeForThrowe(s, preciseT,null);
       }
       if(!Functions.isSubtype(preciseT.getMdf(),suggestedMdf)){
@@ -185,7 +184,8 @@ public class TypeSystem implements Visitor<Type>, Reporter, ast.Ast.HasPos{
   private static Type suggestedAllowPromotions(Type suggested) {
     if(suggested instanceof FreeType){return suggested;}
     NormType nt=(NormType)suggested;
-    if(nt.getMdf()==Mdf.Capsule ||nt.getMdf()==Mdf.Immutable){return nt.withMdf(Mdf.Readable);}
+    Mdf m=nt.getMdf();
+    if(m==Mdf.Capsule ||m==Mdf.Immutable||m==Mdf.ImmutableFwd||m==Mdf.ImmutablePFwd){return nt.withMdf(Mdf.Readable);}
     return suggested;
   }
   public static Type typecheckSureInner(boolean unlocking,Program p,HashMap<String, NormType> varEnv, SealEnv sealEnv, ThrowEnv throwEnv, Type suggested,Type suggestedAllowPromotions,ExpCore inner) {
@@ -210,7 +210,8 @@ public class TypeSystem implements Visitor<Type>, Reporter, ast.Ast.HasPos{
       }
     if(Functions.isSubtype(p, nt,nts)){return result;}
 
-    if(nt.getMdf()==Mdf.Mutable && (nts.getMdf()==Mdf.Capsule ||nts.getMdf()==Mdf.Immutable)){
+    Mdf m=nts.getMdf();
+    if(nt.getMdf()==Mdf.Mutable && (m==Mdf.Capsule ||m==Mdf.Immutable ||m==Mdf.ImmutableFwd||m==Mdf.ImmutablePFwd)){
       SealEnv newSealEnv=new SealEnv(sealEnv);
       newSealEnv.addLayer(varEnv);
       try{return typecheckPromotion(unlocking,p, varEnv, throwEnv, inner, nts.withMdf(Mdf.Mutable), nt,newSealEnv,sealEnv).withMdf(nts.getMdf());}
@@ -222,7 +223,7 @@ public class TypeSystem implements Visitor<Type>, Reporter, ast.Ast.HasPos{
         throw new ErrorMessage.TypesNotSubtype(nt,nts,inner,e,e.getPos());
         }
       }
-    if(nt.getMdf()==Mdf.Readable && nts.getMdf()==Mdf.Immutable){
+    if(nt.getMdf()==Mdf.Readable && (m==Mdf.Immutable || m==Mdf.ImmutableFwd|| m==Mdf.ImmutablePFwd)){
       SealEnv newSealEnv=new SealEnv(sealEnv);
       newSealEnv.addStrongLock(varEnv);
       newSealEnv.addLayer(varEnv);
@@ -403,7 +404,7 @@ public class TypeSystem implements Visitor<Type>, Reporter, ast.Ast.HasPos{
       catch(ErrorMessage err){
        throw ErrorMessage.PosImprove.improve(err,s.getP());
         }
-      NormType recExpected=new NormType(mwt.getMt().getMdf(),recOpt,Ph.None,Doc.empty());
+      NormType recExpected=Functions.toComplete(new NormType(mwt.getMt().getMdf(),recOpt,Doc.empty()));
       return TypeCheckMethod.methCallT(this,varEnvs,s,recExpected,mwt);
     });
   }

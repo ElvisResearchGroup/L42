@@ -17,7 +17,6 @@ import ast.Ast.NormType;
 import ast.Ast.Op;
 import ast.Ast.Parameters;
 import ast.Ast.Path;
-import ast.Ast.Ph;
 import ast.Ast.Position;
 import ast.Ast.SignalKind;
 import ast.Ast.Type;
@@ -140,7 +139,7 @@ class DesugarW extends CloneVisitor{
     String z=Functions.freshName("casted", usedVars);
 
     List<Catch> ks=new ArrayList<>();
-    Type t2=new NormType(nt.getMdf(),Path.Any(),Ph.None,Doc.empty());
+    Type t2=new NormType(nt.getMdf(),Path.Any(),Doc.empty());
     ks.add(new Expression.Catch1(pos,SignalKind.Return,t,z,//case return captured
         new X(z)));//return it
     ks.add(new Expression.Catch1(pos,SignalKind.Return,t2,z,//else

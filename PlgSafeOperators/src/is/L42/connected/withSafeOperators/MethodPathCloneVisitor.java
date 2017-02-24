@@ -13,7 +13,6 @@ import ast.Ast.MethodSelector;
 import ast.Ast.MethodSelectorX;
 import ast.Ast.NormType;
 import ast.Ast.Path;
-import ast.Ast.Ph;
 import ast.Ast.Type;
 import ast.ErrorMessage.NormImpossible;
 import ast.ExpCore.Block;
@@ -83,7 +82,7 @@ abstract public class MethodPathCloneVisitor extends RenameMembers {
       //NormType nt=Norm.of(p,mt.getTs().get(i));
       result.put(n,mt.getTs().get(i));
     }}
-    result.put("this",new NormType(mt.getMdf(),Path.outer(0),Ph.None,Doc.empty()));
+    result.put("this",new NormType(mt.getMdf(),Path.outer(0),Doc.empty()));
     return result;
   }
   public ExpCore visit(Block s) {
@@ -115,7 +114,7 @@ abstract public class MethodPathCloneVisitor extends RenameMembers {
         MethodSelector ms2=visitMS(sel.getMs(),last);
         if(ms2.equals(sel.getMs())){sels.add(sel);}
         else{sels.add(new MethodSelectorX(ms2,sel.getX()));}
-        Ast.HistoricType hti=new Ast.HistoricType(last,Collections.singletonList(sel),false,Doc.empty());
+        Ast.HistoricType hti=new Ast.HistoricType(last,Collections.singletonList(sel),Doc.empty());
         NormType nt=Norm.of(//this norm have to stay
            Program.getExtendedProgram(p,this.getLocator().getCbs()),hti);
         last=nt.getPath();

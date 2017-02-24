@@ -11,7 +11,6 @@ import ast.Ast.Doc;
 import ast.Ast.Mdf;
 import ast.Ast.NormType;
 import ast.Ast.Path;
-import ast.Ast.Ph;
 import platformSpecific.javaTranslation.Resources;
 import tools.Assertions;
 import tools.Map;

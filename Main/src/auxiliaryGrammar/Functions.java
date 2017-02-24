@@ -23,7 +23,6 @@ import ast.Ast.Mdf;
 import ast.Ast.MethodSelector;
 import ast.Ast.NormType;
 import ast.Ast.Path;
-import ast.Ast.Ph;
 import ast.Ast.Position;
 import ast.Ast.Stage;
 import ast.Ast.Type;
@@ -90,15 +89,8 @@ public static Path classOf(Program p,ExpCore ctxVal,ExpCore val){
 }
 public static boolean isSubtype(Program p,NormType t1,NormType t2){
   return isSubtype(t1.getMdf(),t2.getMdf())
-      && isSubtype(p,t1.getPath(),t2.getPath())
-      && isSubtype(t1.getPh(),t2.getPh());
+      && isSubtype(p,t1.getPath(),t2.getPath());
 
-}
-private static boolean isSubtype(Ph ph, Ph ph2) {
-  if(ph==ph2){return true;}
-  if(ph==Ph.None){return true;}
-  if(ph2==Ph.Ph){return true;}
-  return false;
 }
 public static boolean isSubtype(Program p, Path path1, Path path2) {
   if(!path1.isPrimitive()){p.extractCb(path1);}
@@ -119,16 +111,19 @@ public static boolean isSubtype(Program p, Path path1, Path path2) {
   }
   return false;
 }
-public static boolean isSubtype(Mdf mdf1, Mdf mdf2) {
-  if(mdf1==mdf2){return true;}
-  if(mdf1==Mdf.Class || mdf2==Mdf.Class){return false;}
-  if(mdf2==Mdf.Readable){return true;}
-  if(mdf1==Mdf.Capsule){return true;}
-  //mdf1 not class, capsule
-  //mdf2 not class, readable
-  if(mdf1==Mdf.Mutable && mdf2==Mdf.Lent){return true;}
-  return false;
-}
+public static boolean isSubtype(Mdf mdf1, Mdf m) {
+  if(mdf1==m){return true;}
+  switch(mdf1){
+    case Class:        return false;
+    case Capsule:      return m!=Mdf.Class;
+    case Immutable:    return m==Mdf.Readable || m==Mdf.ImmutablePFwd || m==Mdf.ImmutableFwd;//imm<=read,fwd%Imm //,fwdImm
+    case Mutable:      return m==Mdf.Lent || m==Mdf.MutablePFwd ||m==Mdf.Readable|| m==Mdf.MutableFwd;//mut<=lent,fwd%Mut //,read,fwdMut
+    case Lent:         return m==Mdf.Readable;//lent<=read
+    case MutablePFwd:  return m==Mdf.MutableFwd;//fwd%Mut<=fwdMut
+    case ImmutablePFwd:return m==Mdf.ImmutableFwd;//fwd%Imm<=fwdImm
+    default: return false;
+    }
+  }
 public static NormType sharedAndLentToReadable(NormType that){
   Mdf mdf=that.getMdf();
   if(mdf==Mdf.Mutable){mdf=Mdf.Readable;}
@@ -283,25 +278,79 @@ public static Path classOf(Program p, ExpCore ctxVal,List<ast.ExpCore.Block.Dec>
   return classOf(p,ctxVal,inner);
 }
 public static NormType toPartial(NormType that) {
-  if(that.getPh()==Ph.Ph){return that;}
-  return that.withPh(Ph.Partial);
+  switch (that.getMdf()){
+    case Capsule:       return that;
+    case Class:         return that;
+    case Immutable:     return that.withMdf(Mdf.ImmutablePFwd);
+    case ImmutableFwd:  return that;
+    case ImmutablePFwd: return that;
+    case Lent:          return that;
+    case Mutable:       return that.withMdf(Mdf.MutablePFwd);
+    case MutableFwd:    return that;
+    case MutablePFwd:   return that;
+    case Readable:      return that;  
+    }
+  throw Assertions.codeNotReachable();
   }
 
+public static boolean isComplete(NormType that){
+  switch (that.getMdf()){
+    case Capsule:       return true;
+    case Class:         return true;
+    case Immutable:     return true;
+    case ImmutableFwd:  return false;
+    case ImmutablePFwd: return false;
+    case Lent:          return true;
+    case Mutable:       return true;
+    case MutableFwd:    return false;
+    case MutablePFwd:   return false;
+    case Readable:      return true; 
+    }
+  throw Assertions.codeNotReachable();
+  }
 
 public static NormType toPh(NormType that){
-  return that.withPh(Ph.Ph);
+  switch (that.getMdf()){
+    case Capsule:       return that;
+    case Class:         return that;
+    case Immutable:     return that.withMdf(Mdf.ImmutableFwd);
+    case ImmutableFwd:  return that;
+    case ImmutablePFwd: return that.withMdf(Mdf.ImmutableFwd);
+    case Lent:          return that;
+    case Mutable:       return that.withMdf(Mdf.MutableFwd);
+    case MutableFwd:    return that;
+    case MutablePFwd:   return that.withMdf(Mdf.MutableFwd);
+    case Readable:      return that;  
+    }
+  throw Assertions.codeNotReachable();
   }
+public static NormType toComplete(NormType that){
+  switch (that.getMdf()){
+    case Capsule:       return that;
+    case Class:         return that;
+    case Immutable:     return that;
+    case ImmutableFwd:  return that.withMdf(Mdf.Immutable);
+    case ImmutablePFwd: return that.withMdf(Mdf.Immutable);
+    case Lent:          return that;
+    case Mutable:       return that;
+    case MutableFwd:    return that.withMdf(Mdf.Mutable);
+    case MutablePFwd:   return that.withMdf(Mdf.Mutable);
+    case Readable:      return that;  
+    }
+  throw Assertions.codeNotReachable();
+  }
+
 public static HashMap<String, NormType> complete(HashMap<String, NormType> varEnv) {
   HashMap<String, NormType> result= new HashMap<String, NormType>();
   for(String s: varEnv.keySet()){
-    if(varEnv.get(s).getPh()==Ph.None){result.put(s,varEnv.get(s));}
+    if(isComplete(varEnv.get(s))){result.put(s,varEnv.get(s));}
     }
   return result;
 }
 public static HashMap<String, NormType> nonComplete(HashMap<String, NormType> varEnv) {
   HashMap<String, NormType> result= new HashMap<String, NormType>();
   for(String s: varEnv.keySet()){
-    if(varEnv.get(s).getPh()!=Ph.None){result.put(s,varEnv.get(s));}
+    if(!isComplete(varEnv.get(s))){result.put(s,varEnv.get(s));}
     }
   return result;
 }
@@ -397,7 +446,7 @@ public static List<InvalidMwtAsState> coherent(Program p, ClassB ct) {
     if(!retType.getPath().equals(Path.outer(0))){
     return Collections.singletonList(new InvalidMwtAsState(" return path must be This",constr));
     }
-    if(retType.getPh()!=Ph.None){
+    if(!isComplete(retType)){
       return Collections.singletonList(new InvalidMwtAsState(" return type fwd invalid for constructor",constr));
     }
     if(retType.getMdf()==Mdf.Mutable){ mutK=setIfFree(mutK,constr,result);}
@@ -485,6 +534,11 @@ public static boolean getterOkMdf(Mdf k,Mdf mnt,Mdf expected){
     case Mutable:
     case Lent:
     case Readable:return Mdf.Readable==expected;
+    case Capsule: return false;
+    case ImmutableFwd:return false;
+    case ImmutablePFwd:return false;
+    case MutableFwd:return false;
+    case MutablePFwd:return false;
     default: throw Assertions.codeNotReachable();
   }
 }
@@ -497,6 +551,11 @@ public static boolean exposerSetterOkMdf(Mdf k,Mdf mnt,Mdf expected){
     case Mutable:
     case Readable: return mnt==expected;
     case Lent:if(k==Mdf.Lent){return Mdf.Lent==expected || Mdf.Mutable==expected;}
+    case Capsule: return false;
+    case ImmutableFwd: return false;
+    case ImmutablePFwd:return false;
+    case MutableFwd:return false;
+    case MutablePFwd:return false;
     default: throw Assertions.codeNotReachable();
   }
 }
@@ -553,13 +612,6 @@ public static boolean coherent(Program p, NormType nt, MethodWithType mwt,Method
   }
   return false;*/
 }
-/*
-private static boolean okSubtypeGet(Program p, Mdf mdf, Path path, MethodWithType mwt) {
-  return isSubtype(p, new NormType(mdf,path,Ph.None),Norm.of(p,mwt.getMt().getReturnType()));
-}
-private static boolean okSubtypeSet(Program p, Mdf mdf, Path path, MethodWithType mwt) {
-  return isSubtype(p, Norm.of(p,mwt.getMt().getTs().get(0)),new NormType(mdf,path,Ph.None));
-}*/
 private static boolean checkVoidAndThatOk(Program p,MethodWithType mwt) {
   if(mwt.getMt().getTs().size()>1){return false;}
   if(mwt.getMt().getTs().isEmpty()){return true;}

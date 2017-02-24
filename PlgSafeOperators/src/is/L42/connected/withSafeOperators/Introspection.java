@@ -11,7 +11,6 @@ import ast.Ast.Path;
 import ast.Ast.Type;
 import ast.ErrorMessage.NormImpossible;
 import ast.Ast.NormType;
-import ast.Ast.Ph;
 import ast.Ast.Doc;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
@@ -137,8 +136,8 @@ public class Introspection {//TODO: we keep 5 methods, but we merge the PathRepo
     Mdf resMdf=(resolvedTi!=null)?resolvedTi.getMdf():Mdf.Immutable;
     Path pi=(normTi!=null)?normTi.getPath():((Ast.HistoricType)ti).getPath();
     Path resPi=(resolvedTi!=null)?resolvedTi.getPath():pi;
-    boolean ph=(normTi!=null)?normTi.getPh()==Ph.Ph:((Ast.HistoricType)ti).isForcePlaceholder();
-    boolean resPh=(resolvedTi!=null)?resolvedTi.getPh()==Ph.Ph:ph;
+    boolean ph=(normTi!=null)?!Functions.isComplete(normTi):false;
+    boolean resPh=(resolvedTi!=null)?!Functions.isComplete(resolvedTi):ph;
     String suffix=(ti instanceof Ast.HistoricType)?selectorsToString(((Ast.HistoricType)ti).getSelectors()):"";
     String allAsString=ToFormattedText.of(ti);
     return typeReport(isExternal,src, tk, mdf, resMdf, pi, resPi, ph, resPh, suffix, ti.getDoc(), allAsString);

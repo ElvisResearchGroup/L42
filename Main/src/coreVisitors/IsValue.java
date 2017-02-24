@@ -70,7 +70,7 @@ public class IsValue extends TestShapeVisitor{
   public boolean validDv(Block.Dec dv) {
     NormType nt=dv.getT().getNT();
     if(nt.getMdf()==Mdf.Capsule){return false;}
-    if(nt.getPh()!=Ph.None){return false;}
+    if(!Functions.isComplete(nt)){return false;}
     if(Functions.isInterface(p,nt.getPath())){return false;}
     if(validRightValue(dv.getInner())){return true;}
     if(nt.getMdf()==Mdf.Immutable && dv.getInner() instanceof Block){

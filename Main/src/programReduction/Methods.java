@@ -19,7 +19,7 @@ import ast.ExpCore.ClassB.MethodWithType;
 import coreVisitors.From;
 import tools.Map;
 
-abstract class Methods implements Program{
+public abstract class Methods implements Program{
   static private  List<Ast.Path> push(List<Ast.Path>ps,Ast.Path newThis){
     List<Ast.Path>res=new ArrayList<>();
     res.add(Path.outer(0));
@@ -33,7 +33,7 @@ abstract class Methods implements Program{
     res.addAll(after);
     return res;
     }
-  static List<Ast.Path> collect(Program p,List<Ast.Path> p0ps){
+  public static List<Ast.Path> collect(Program p,List<Ast.Path> p0ps){
     List<Path> res = collect(p,p0ps,new ArrayList<>());
     return res;
     //TODO: do we need somehow to remove duplicates?

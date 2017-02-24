@@ -23,7 +23,6 @@ import ast.Ast.Doc;
 import ast.Ast.Mdf;
 import ast.Ast.MethodSelector;
 import ast.Ast.Path;
-import ast.Ast.Ph;
 import ast.Ast.Stage;
 import ast.Ast.Type;
 import ast.Ast.NormType;
@@ -298,7 +297,7 @@ private ExpCore primCallArg(Program p,MCall mc, int i, MethodWithType mwt, HashS
   log("---primCallArg--");
   NormType ti=mwt.getMt().getTs().get(i).match(n->n, hType->Norm.resolve(p,hType));
   Path pi=ti.getPath();
-  ti=ti.withPh(Ph.None);
+  ti=Functions.toComplete(ti);
   String xi=Functions.freshName(pi,usedNames);
   ExpCore ei=mc.getEs().get(i);
   ArrayList<ExpCore> es = new ArrayList<ExpCore>(mc.getEs());
@@ -307,7 +306,7 @@ private ExpCore primCallArg(Program p,MCall mc, int i, MethodWithType mwt, HashS
       mc.withEs(es),Collections.emptyList(),mc.getP());
 }
 private ExpCore primCallRec(MCall mc, Path pathR,MethodWithType mwt, HashSet<String> usedNames) { 
-  NormType t1=new NormType(mwt.getMt().getMdf(),pathR,Ast.Ph.None,Doc.empty());
+  NormType t1=Functions.toComplete(new NormType(mwt.getMt().getMdf(),pathR,Doc.empty()));
   log("---primCallRec--");
   String x1=Functions.freshName(pathR,usedNames);
   ExpCore e1=mc.getInner();
@@ -343,7 +342,7 @@ private ExpCore normalMeth(Path pathR,MethodWithType mwt, ExpCore ctxVal, MCall 
   }
   ArrayList<Block.Dec> decs=new ArrayList<Block.Dec>();
   decs.add( new Block.Dec(
-      new NormType(mwt.getMt().getMdf(),pathR,Ast.Ph.None,Doc.empty()),
+          Functions.toComplete(new NormType(mwt.getMt().getMdf(),pathR,Doc.empty())),
       renames.get("this"),
       mc.getInner()));
 
@@ -440,7 +439,7 @@ private static ExpCore ph(Program p,ExpCore ctxVal,Redex.Ph r){
   Dec deci = decs.get(r.getPhIndex());
   NormType ti=deci.getT().getNT();
   Path path=Functions.classOf(p, ctxVal, deci.getInner());
-  ti=ti.withPh(Ph.None).withPath(path);
+  ti=Functions.toComplete(ti).withPath(path);
   decs.set(r.getPhIndex(),deci.withT(ti));
   return ReplaceCtx.of(ctxVal,b.withDecs(decs));
 }

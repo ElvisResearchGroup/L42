@@ -13,7 +13,6 @@ import ast.Ast.Mdf;
 import ast.Ast.NormType;
 import ast.Ast.Op;
 import ast.Ast.Path;
-import ast.Ast.Ph;
 import sugarVisitors.Desugar;
 import tools.Assertions;
 import tools.StringBuilders;
@@ -135,16 +134,15 @@ public interface Ast {
  public class NormType implements Type {
   Mdf mdf;
   Path path;
-  Ph ph;
   Doc doc;
-  public static final NormType mutThis0=new NormType(Mdf.Mutable,Path.outer(0),Ph.None,Doc.empty());
-  public static final NormType immThis0=new NormType(Mdf.Immutable,Path.outer(0),Ph.None,Doc.empty());
-  public static final NormType immVoid=new NormType(Mdf.Immutable,Path.Void(),Ph.None,Doc.empty());
-  public static final NormType immLibrary=new NormType(Mdf.Immutable,Path.Library(),Ph.None,Doc.empty());
-  public static final NormType immAny=new NormType(Mdf.Immutable,Path.Any(),Ph.None,Doc.empty());
-  public static final NormType classAny=new NormType(Mdf.Class,Path.Any(),Ph.None,Doc.empty());
+  public static final NormType mutThis0=new NormType(Mdf.Mutable,Path.outer(0),Doc.empty());
+  public static final NormType immThis0=new NormType(Mdf.Immutable,Path.outer(0),Doc.empty());
+  public static final NormType immVoid=new NormType(Mdf.Immutable,Path.Void(),Doc.empty());
+  public static final NormType immLibrary=new NormType(Mdf.Immutable,Path.Library(),Doc.empty());
+  public static final NormType immAny=new NormType(Mdf.Immutable,Path.Any(),Doc.empty());
+  public static final NormType classAny=new NormType(Mdf.Class,Path.Any(),Doc.empty());
   public String toString() {
-   return (((ph == Ph.Ph) ? "fwd " : (ph == Ph.None) ? "" : "fwd% ") + mdf.name() + "[" + this.path.toString()+"]");
+   return mdf.name() + "[" + this.path.toString()+"]";
   }
 
   public <T> T match(Function<NormType, T> normType, Function<HistoricType, T> hType) {
@@ -164,7 +162,6 @@ public interface Ast {
  public class HistoricType implements Type {
   Path path;
   List<MethodSelectorX> selectors;
-  boolean forcePlaceholder;
   Doc doc;
   public <T> T match(Function<NormType, T> normType, Function<HistoricType, T> hType) {
    return hType.apply(this);
@@ -363,7 +360,7 @@ public interface Ast {
  public static Path Any() {return  PathPrimitive._Any;}
  public static Path Library() {return PathPrimitive._Library;}
 
- public NormType toImmNT(){return new NormType(Mdf.Immutable,this,Ph.None,Doc.empty());}
+ public NormType toImmNT(){return new NormType(Mdf.Immutable,this,Doc.empty());}
    public <T> T accept(sugarVisitors.Visitor<T> v) {
      return v.visit(this);
      }
@@ -597,7 +594,8 @@ public interface Ast {
  }
 
  public static enum Mdf {
-  Immutable(""), Mutable("mut"), Readable("read"), Lent("lent"), Capsule("capsule"), Class("class");
+  Immutable(""), Mutable("mut"), Readable("read"), Lent("lent"), Capsule("capsule"), Class("class"),
+  ImmutableFwd("fwd"),ImmutablePFwd("%fwd"),MutableFwd("fwd mut"),MutablePFwd("%fwd mut");
   public final String inner;
 
   Mdf(String inner) {
@@ -725,9 +723,9 @@ public interface Ast {
   }
  }
 
- public static enum Ph {
+ /*public static enum Ph {
   None, Ph, Partial
- }
+ }*/
 
  public static @Wither @Value class Position {
   public static final Position noInfo = new Position(null, Integer.MAX_VALUE / 2, Integer.MAX_VALUE / 2, 0, 0,null);

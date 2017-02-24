@@ -13,7 +13,6 @@ import ast.Ast.MethodSelector;
 import ast.Ast.MethodSelectorX;
 import ast.Ast.NormType;
 import ast.Ast.Path;
-import ast.Ast.Ph;
 import ast.Ast.Type;
 import ast.ExpCore.Block;
 import ast.ExpCore.ClassB;

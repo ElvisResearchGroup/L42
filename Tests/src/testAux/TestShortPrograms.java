@@ -268,13 +268,14 @@ public void testClassMethods2(){tp("{"
 
 @Test public void testPlaceHolder(){tp(""
 ,"{"
-,"A:{(fwd A x)}"
+,"A:{A x, class method A(fwd A x)}"
 ," C:( A myA=A(x:myA)  {//@exitStatus\n//0\n})"
 ,"}"
 );}
 @Test public void testPlaceHolderFactory(){tp(""
 ,"{"
-,"A:{(fwd A x)}"
+//TODO: try with a mut constructor too,"A:{(fwd A x)}"
+,"A:{A x, class method A(fwd A x)}"
 ,"Factory:{ class method A (fwd A a) A(x:a)}"
 /*,"C: {//@exitStatus\n//0\n\n}"*/
 ," C:( A myA=Factory(a:myA)  {//@exitStatus\n//0\n})"

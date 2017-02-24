@@ -18,7 +18,6 @@ import ast.Ast.Mdf;
 import ast.Ast.MethodSelector;
 import ast.Ast.MethodType;
 import ast.Ast.NormType;
-import ast.Ast.Ph;
 import ast.Ast.Position;
 import ast.Ast.Type;
 import auxiliaryGrammar.Functions;
@@ -77,8 +76,7 @@ static private NormType mdfChange(Type n,Mdf m1,Mdf m2){
     return nt;
   }
 static private NormType addFwd(Type n){
-  NormType nt=(NormType)n;
-  return nt.withPh(Ph.Ph);
+  return Functions.toPh(n.getNT());
   }
 static private MethodType fwdK(MethodType proto) {
   return proto.withTs(proto.getTs().stream()

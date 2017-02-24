@@ -19,7 +19,6 @@ import ast.Ast.MethodSelector;
 import ast.Ast.MethodType;
 import ast.Ast.NormType;
 import ast.Ast.Path;
-import ast.Ast.Ph;
 import ast.Ast.Position;
 import ast.Ast.Stage;
 import ast.Ast.Type;
@@ -101,18 +100,14 @@ public class Norm {
   }
 
   public static NormType resolve(Program p, HistoricType t) {
-  if(t.getSelectors().size()==1){return resolvePh(resolveOne(p,t),t.isForcePlaceholder());}
-  assert t.getSelectors().size()>1;
-  return resolvePh(resolveMany(p,t),t.isForcePlaceholder());
-  }
-  private static NormType resolvePh(NormType nt,boolean forcePh){
-    if(!forcePh){return nt;}
-    return nt.withPh(Ph.Ph);
+    if(t.getSelectors().size()==1){return resolveOne(p,t);}
+    assert t.getSelectors().size()>1;
+    return resolveMany(p,t);
   }
   private static NormType resolveMany(Program p, HistoricType t) {
-    HistoricType tOne=new HistoricType(t.getPath(), t.getSelectors().subList(0,1),false,t.getDoc());
+    HistoricType tOne=new HistoricType(t.getPath(), t.getSelectors().subList(0,1),t.getDoc());
     NormType nt=resolveOne(p,tOne);
-    HistoricType tNext=new HistoricType(nt.getPath(),t.getSelectors().subList(1, t.getSelectors().size()),false,t.getDoc());
+    HistoricType tNext=new HistoricType(nt.getPath(),t.getSelectors().subList(1, t.getSelectors().size()),t.getDoc());
     return resolve(p,tNext);
   }
 
@@ -126,7 +121,7 @@ public class Norm {
     return of(p,mt.getMt().getReturnType());
     }
   if(x.equals("this")){
-    return new NormType(mt.getMt().getMdf(),t.getPath(),Ph.None,Doc.empty());
+    return new NormType(mt.getMt().getMdf(),t.getPath(),Doc.empty());
     }
   int i=mt.getMs().getNames().indexOf(x);
   assert i!=-1:

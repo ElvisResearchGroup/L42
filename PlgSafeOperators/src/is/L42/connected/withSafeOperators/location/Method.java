@@ -9,7 +9,6 @@ import ast.Ast;
 import ast.Ast.MethodType;
 import ast.Ast.NormType;
 import ast.Ast.Path;
-import ast.Ast.Ph;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.MethodWithType;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.NotAvailable;
@@ -28,7 +27,7 @@ public class Method extends Location.LocationImpl<ClassB.MethodWithType, Lib>{
     
   Cacher<List<Type.Parameter>> parametersC=new Cacher<List<Type.Parameter>>(){public List<Type.Parameter> cache(){
     MethodType mt = inner.getMt();
-    Ast.NormType thisT=new NormType(mt.getMdf(),Path.outer(0),Ph.None,Ast.Doc.empty());
+    Ast.NormType thisT=new NormType(mt.getMdf(),Path.outer(0),Ast.Doc.empty());
     List<Type.Parameter> res=new ArrayList<>();
     res.add(new Type.Parameter(0,thisT,inner,Method.this));
     {int i=0; for(Ast.Type ti:mt.getTs()){i+=1; //starts from 1

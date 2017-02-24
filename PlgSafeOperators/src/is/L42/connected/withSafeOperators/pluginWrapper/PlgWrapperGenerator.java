@@ -17,7 +17,6 @@ import ast.Ast.MethodSelector;
 import ast.Ast.MethodType;
 import ast.Ast.NormType;
 import ast.Ast.Path;
-import ast.Ast.Ph;
 import ast.Ast.Type;
 import ast.ExpCore;
 import ast.ExpCore.Block;
@@ -32,6 +31,7 @@ import ast.ExpCore.Signal;
 import ast.ExpCore.Using;
 import ast.Expression;
 import auxiliaryGrammar.EncodingHelper;
+import auxiliaryGrammar.Functions;
 import auxiliaryGrammar.Program;
 import coreVisitors.From;
 import facade.L42;
@@ -360,7 +360,7 @@ public static boolean hasPluginUnresponsive(ClassB l){
     if(op==null){checkForInside(p.topCb(),csTop,pi); return;}
     ClassB l=p.extractCb(op);//TODO: since p.top is topL, is it ok this extraction?
     boolean hasIt=hasBinaryRepr(l);
-    boolean phOk=ti.getNT().getPh().equals(Ph.None);
+    boolean phOk=Functions.isComplete(ti.getNT());
     if(!hasIt){throw new RefactorErrors.ClassUnfit().msg(
       "Class "+op+" has no #binaryRepr() method");
       }if(!phOk){throw new RefactorErrors.MethodUnfit().msg(
@@ -387,7 +387,7 @@ public static boolean hasPluginUnresponsive(ClassB l){
     if(op==null){checkForInside(p.topCb(),csTop,pi); return;}
     ClassB l=p.extractCb(op);
     boolean hasIt=hasFrom(l);
-    boolean phOk=ti.getNT().getPh().equals(Ph.None);
+    boolean phOk=Functions.isComplete(ti.getNT());
     if (ti.getNT().getMdf()==Mdf.Class && !ti.equals(NormType.classAny)){
       throw new RefactorErrors.MethodUnfit().msg("Return type can be 'class' only if is exactly 'class any'");
       }

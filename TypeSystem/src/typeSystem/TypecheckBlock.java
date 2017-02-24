@@ -14,7 +14,6 @@ import ast.Ast.FreeType;
 import ast.Ast.Mdf;
 import ast.Ast.NormType;
 import ast.Ast.Path;
-import ast.Ast.Ph;
 import ast.Ast.Position;
 import ast.Ast.SignalKind;
 import ast.Ast.Type;
@@ -280,7 +279,7 @@ public class TypecheckBlock {
     for(HashMap<String, NormType> ve:varEnvs){
       for(String key:ve.keySet()){
         if(newIntroduced.containsKey(key)){continue;}
-        if(ve.get(key).getPh()!=Ph.None){return false;}
+        if(!Functions.isComplete(ve.get(key))){return false;}
       }
     }
     return true;

@@ -13,7 +13,6 @@ import ast.Ast.Mdf;
 import ast.Ast.MethodSelector;
 import ast.Ast.MethodType;
 import ast.Ast.Path;
-import ast.Ast.Ph;
 import ast.Ast.Stage;
 import ast.Ast.Type;
 import ast.Ast.NormType;
@@ -30,14 +29,14 @@ public static ClassB addMethod(ClassB _lib, List<Ast.C> path, MethodSelector ms,
   String[] _mdfs = mdfs.split(" ");
   assert _mdfs.length==ms.getNames().size()+2;
   List<String> nc=new ArrayList<>();
-  Type retT=new NormType(Mdf.valueOf(_mdfs[1]),Path.outer(0,Arrays.asList(C.of("$0"))),Ph.None,Doc.empty());
+  Type retT=new NormType(Mdf.valueOf(_mdfs[1]),Path.outer(0,Arrays.asList(C.of("$0"))),Doc.empty());
   nc.add("$0");
   List<Type> ts=new ArrayList<>();
   List<Doc> docs=new ArrayList<>();
   int count=1;
   for(String n: ms.getNames()){
     String cn="$"+count;
-    ts.add(new NormType(Mdf.valueOf(_mdfs[count+1]),Path.outer(0,Arrays.asList(C.of(cn))),Ph.None,Doc.empty()));
+    ts.add(new NormType(Mdf.valueOf(_mdfs[count+1]),Path.outer(0,Arrays.asList(C.of(cn))),Doc.empty()));
     nc.add(cn);
     count++;
     }

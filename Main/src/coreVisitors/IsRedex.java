@@ -113,7 +113,7 @@ public class IsRedex{
     Block s2=Functions.garbage(s, i);
     if(!s2.equals(s)){return new Redex.Garbage(s2);}
     if(new IsValue(p).validDecForPh(s.getDecs().get(i))){
-      if(ti.getPh()==Ph.Ph || Functions.isInterface(p,ti.getPath())){return new Redex.Ph(s,i);}
+      if(!Functions.isComplete(ti) || Functions.isInterface(p,ti.getPath())){return new Redex.Ph(s,i);}
       if(ti.getMdf()==Mdf.Capsule){return new Redex.Subst(s,i);}
     }
     if(!IsValue.of(p,ei)){

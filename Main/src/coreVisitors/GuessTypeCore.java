@@ -74,7 +74,7 @@ public class GuessTypeCore implements Visitor<Path>{
     List<MethodSelectorX> msl=new ArrayList<>();
     MethodSelectorX msx=new MethodSelectorX(s.getS(), "");
     msl.add(msx); 
-    Type t=new Ast.HistoricType(path,msl,false,Doc.empty());
+    Type t=new Ast.HistoricType(path,msl,Doc.empty());
     t=Norm.of(p,t);
     assert t instanceof NormType;
     NormType nt=(NormType)t;
