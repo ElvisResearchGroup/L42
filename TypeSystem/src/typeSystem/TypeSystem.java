@@ -31,6 +31,8 @@ import ast.Ast.SignalKind;
 import ast.Ast.Stage;
 import ast.ErrorMessage;
 import ast.ErrorMessage.MethodNotPresent;
+import ast.ErrorMessage.PathsNotSubtype;
+import ast.ErrorMessage.TypesNotSubtype;
 import ast.ExpCore;
 import ast.ExpCore.Block;
 import ast.ExpCore.ClassB;
@@ -185,16 +187,29 @@ public class TypeSystem implements Visitor<Type>, Reporter, ast.Ast.HasPos{
     if(suggested instanceof FreeType){return suggested;}
     NormType nt=(NormType)suggested;
     Mdf m=nt.getMdf();
-    if(m==Mdf.Capsule ||m==Mdf.Immutable||m==Mdf.ImmutableFwd||m==Mdf.ImmutablePFwd){return nt.withMdf(Mdf.Readable);}
+    if(m==Mdf.Capsule ||m==Mdf.Immutable/*NO?||m==Mdf.ImmutableFwd||m==Mdf.ImmutablePFwd*/){return nt.withMdf(Mdf.Readable);}
     return suggested;
   }
+  static int typecheckSureInner_loopingcount=0;
   public static Type typecheckSureInner(boolean unlocking,Program p,HashMap<String, NormType> varEnv, SealEnv sealEnv, ThrowEnv throwEnv, Type suggested,Type suggestedAllowPromotions,ExpCore inner) {
     //se suggested imm o capsula, fake sugg as readonly, and
     //then consider for promotions.
     //promotion on block puo' promuovere tutto o ricorsivamente l'espressione+ons
     //per questo secondo caso, basta suggerire capsula+imm?
 
-    Type result=_typecheckTollerant(p, varEnv, sealEnv, throwEnv, suggestedAllowPromotions, inner);
+    Type result;
+    try{
+      result=_typecheckTollerant(p, varEnv, sealEnv, throwEnv, suggestedAllowPromotions, inner);}
+    catch(TypesNotSubtype re){
+      if(typecheckSureInner_loopingcount>1){throw re;}
+      if(!(suggested instanceof Ast.NormType)){throw re;}
+      if (suggested.getNT().getMdf()==Mdf.ImmutablePFwd){
+        try{typecheckSureInner_loopingcount+=1;
+        result=_typecheckTollerant(p, varEnv, sealEnv, throwEnv, suggested.getNT().withMdf(Mdf.MutablePFwd), inner);
+        }finally{typecheckSureInner_loopingcount-=1;}
+        }
+      else throw re;
+     }
     if(result instanceof Ast.FreeType){return result;}
     if(suggested instanceof Ast.FreeType){return result;}
     NormType nts=Functions.forceNormType( p,inner,suggested);
@@ -214,7 +229,7 @@ public class TypeSystem implements Visitor<Type>, Reporter, ast.Ast.HasPos{
     if(nt.getMdf()==Mdf.Mutable && (m==Mdf.Capsule ||m==Mdf.Immutable ||m==Mdf.ImmutableFwd||m==Mdf.ImmutablePFwd)){
       SealEnv newSealEnv=new SealEnv(sealEnv);
       newSealEnv.addLayer(varEnv);
-      try{return typecheckPromotion(unlocking,p, varEnv, throwEnv, inner, nts.withMdf(Mdf.Mutable), nt,newSealEnv,sealEnv).withMdf(nts.getMdf());}
+      try{return typecheckPromotion(unlocking,p, varEnv, throwEnv, inner, nts.withMdf(Mdf.Mutable), nt,newSealEnv,sealEnv).withMdf(m);}
       catch(ErrorMessage.TypeError e){
         if(inner instanceof Block){
           try{return typecheckSureInner(unlocking,p,varEnv,sealEnv,throwEnv,suggested,suggested,inner);}
@@ -227,7 +242,7 @@ public class TypeSystem implements Visitor<Type>, Reporter, ast.Ast.HasPos{
       SealEnv newSealEnv=new SealEnv(sealEnv);
       newSealEnv.addStrongLock(varEnv);
       newSealEnv.addLayer(varEnv);
-      try{return typecheckPromotion(unlocking,p, varEnv, throwEnv, inner, nts.withMdf(Mdf.Readable), nt,newSealEnv,sealEnv).withMdf(Mdf.Immutable);}
+      try{return typecheckPromotion(unlocking,p, varEnv, throwEnv, inner, nts.withMdf(Mdf.Readable), nt,newSealEnv,sealEnv).withMdf(m);}
       catch(ErrorMessage.TypeError e){
         if(inner instanceof Block){
           try{return typecheckSureInner(unlocking,p,varEnv,sealEnv,throwEnv,suggested,suggested,inner);}

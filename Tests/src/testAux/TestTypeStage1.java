@@ -260,7 +260,7 @@ public static class TestStage2 {
     },{lineNumber(), " (AI any=(mut AI aI=AI.#mutK() aI) any)",
     new NormType(Mdf.Immutable,Path.parse("This0.AI"), Doc.empty()),
     new NormType(Mdf.Immutable,Path.parse("This0.AI"), Doc.empty()),
-    new String[]{"{ AI:{mut k()} }"}
+    new String[]{"{ AI:{class method mut This #mutK()} }"}
 
     },{lineNumber(), "error D.k()",//get capsule promoted
       new Ast.FreeType(),
