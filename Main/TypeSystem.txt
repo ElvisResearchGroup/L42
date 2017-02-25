@@ -524,6 +524,7 @@ tsMCall(TSIn in,MCall e)->TSOut
       use [resi]
       )
     )]
+  assert forall r in respMVP, r.isOk()
   return res=makeMCallOK(TSIn,respMVP,mTypeMVP)
 
 computeMTypes
