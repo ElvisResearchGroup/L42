@@ -175,9 +175,8 @@ methTypes(p,P,ms)  Expressed as metarules
     so if P inside e, D.p(P) is a reasonable operation
     Tr is the computed set of thrown returns and exceptions.
     
-  Phase| p| G|ks|- ds ~> ds'| Tr | G0
+  Phase| p| G|- ds ~> ds'| Tr | G0
     where ds' is an annotated version of ds.
-    We need the catches to seal the gamma to ensure "strong error safety".
     The resulting G0 is the enriched G containing info about ds too. 
 
   D |Tr|- k ~> k':T <=T' |Tr'    
@@ -275,10 +274,10 @@ Phase| p| G |- T0  x0=e0 ..Tn  xn=en, ds ~>
   if fwd_or_fwd%_in { G(x) | x in FV(e0..en) } // x0..xn already excluded
     then G0=G[fwd%(G')]
     otherwise G0=G[G']
-  Phase| p| G0|ks|- ds ~> ds'|Tr' | G2
+  Phase| p| G0|- ds ~> ds'|Tr' | G2
 
 (dsEmpty)
-Phase| p| G|ks|- empty ~> empty| empty;empty | G
+Phase| p| G |- empty ~> empty| empty;empty | G
    
 //TODO: check that this kind of things work {Bar:{}   method m (foo catch exception Bar x e1 e0)  } redirect Bar->Any
 //Note: the new idea is that catch throw Any will catch all that can be thrown,
