@@ -307,7 +307,8 @@ Phase |p |G |Tr|-catch throw Any x (e0 throw x) ~> catch throw Any x (e0' throw 
   Phase |p |G\x |- e ~> e':_ <=imm Void | empty
   catchRethrow(catch throw Any x(e0 throw x)) 
 
-(capsule promotion)
+(capsule promotion)//we are discussing if some blocks may not be promotable:
+//for example blocks with empty ds and ks.
 Phase |p |G |- (ds ks e)~>(ds' ks' e'):capsule P <=capsule P | Tr
   where
   Phase |p |toLent(G) |-(ds ks e)~>(ds' ks' e'):mut P <=mut P   | Tr
