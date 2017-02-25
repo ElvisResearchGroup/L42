@@ -140,7 +140,7 @@ methTypes(p,P,ms)  Expressed as metarules
 
 //first managing placeholders
 
-       p(P).ms.mh[from P]=refine? mdf0 method T m(T1 x1,..Tn xn) exception Ps
+       p(P)(ms).mh[from P]=refine? mdf0 method T m(T1 x1,..Tn xn) exception Ps
 (mBase)-------------------------------------------------------------------
        mdf0 P T1..Tn-> fwd% T;Ps in methTypes(p,P,ms)
  
@@ -382,7 +382,7 @@ Phase| p| Ps |-M ~> M'
       M0=mdf method T' m(T'1 x1..T'n xn)exceptions Ps'
       p|-T<= T'
       p.equiv(T1,T'1)..p.equiv(Tn,T'n)
-      forall Pi in Ps0 exists Pj in Ps' p |-Pi<=Pj 
+      forall Pi in Ps0 exists Pj in Ps' such that p |- Pi<=Pj 
 
 
 coherent(p) //interfaces are always coherent
