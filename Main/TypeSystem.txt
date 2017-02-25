@@ -165,6 +165,12 @@ methTypes(p,P,ms)  Expressed as metarules
      Ts'=mutToCapsule(Ts0) lent P mutToCapsule(Ts2) //this implies not fwd_or_fwd%_in Ts0,Ts2
 (mVp)-------------------------------------------------------------------
      Ts'->toLent(T);Ps in methTypes(p,P,ms)
+
+//We may want/need to introduce an alternative to mc called mIfwd/mIfwd% where
+//if the method return fwd%Mut, then we can promote it to fwd%Imm...
+//to allows situations like
+//A:{class method mut A( fwd A x )}
+//A a=A(x:a)
    
 --------------------------------------------
 3 ExpressionTypeJudgement
