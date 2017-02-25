@@ -72,9 +72,10 @@ capsuleToLent(T)
   otherwise capsuleToLent(mdf P)=mdf P
    
 toRead(T) //TODO: fix in code
-  toRead(fwdMut P)=toRead(fwd%Mut P)=undefined  
+  toRead(fwdMut P)=toRead(fwd%Mut P)=undefined
+  toRead(fwdImm P)=toRead(fwd%Imm P)=undefined  
   toRead(imm P)=toRead(lent P)=toRead(mut P)=toRead(capsule P)=read P
-  otherwise read(T)=T//mdf in read,fwdImm,fwd%Imm,class  
+  otherwise read(T)=T//mdf in read,class  
 
 toRead(G)
   toRead(G)(x)=toRead(G(x)) //thus undefined where toRead undefined 
