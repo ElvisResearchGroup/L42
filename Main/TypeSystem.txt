@@ -378,7 +378,7 @@ Phase| p| Ps |-M ~> M'
     e?=e?'
   refine? = refine <=> 
     forall P in Ps such that p(P)(m(x1..xn))[from P]=M0 //that is, is defined
-      so that:
+      all of the following hold:
       M0=mdf method T' m(T'1 x1..T'n xn)exceptions Ps'
       p|-T<= T'
       p.equiv(T1,T'1)..p.equiv(Tn,T'n)
