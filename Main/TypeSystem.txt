@@ -64,20 +64,18 @@ toLent(T)
   otherwise toLent(T)=T
   
 mutOnlyToLent(T)
-  toLent(mut P)=lent P,
-  otherwise toLent(T)=T 
+  mutOnlyToLent(mut P)=lent P,
+  otherwise mutOnlyToLent(T)=T 
 
 capsuleToLent(T)  
   capsuleToLent(capsule P)=lent P
   otherwise capsuleToLent(mdf P)=mdf P
    
 toRead(T)
-  toRead(imm P)=imm P
-  toRead(fwdImm P)=fwdImm P
-  toRead(fwd%Imm P)=fwd%Imm P
+  toRead(fwdMut P)=toRead(fwd%Mut P)=undefined  
   toRead(fwdMut P)=toRead(fwd%Mut P)=undefined
-  toRead(class P)=class P
-  otherwise toRead(mdf P)=read P //mdf in read,lent,mut,capsule
+  toRead(lent P)=toRead(mut P)=toRead(capsule P)=read P
+  otherwise read(T)=T//mdf in read,imm,fwdImm,fwd%Imm,class  
 
 toRead(G)
   toRead(G)(x)=toRead(G(x)) //thus undefined where toRead undefined 
@@ -114,7 +112,7 @@ mostGeneralMdf(mdfs)
     if mdfs=mdf', then mdf=mdf' //that is the only way mdf=class
   otherwise if class in mdfs, then undefined
   otherwise if read in mdfs, mdf=read
-  otherwise if capsule in mdfs, then mdf=mostGeneralMdf(mdfs\capsule)
+  //TODO: is this line needed? otherwise if capsule in mdfs, then mdf=mostGeneralMdf(mdfs\capsule)
   //from now on, we have at least two of those:lent, mut, imm //Note: fwd and fwd% are cutted out in the throw rule
   otherwise if imm in mdfs, mdf=read
   otherwise mdf=lent
@@ -482,7 +480,7 @@ tsMCall(TSIn in,MCall e)->TSOut
   // 1 select the first match with acceptable return type
   mType=_firstMatchReturn(TSIn.T,mTypes)
   if mType==null return res=Error???
-  //2 type all the parameters with mutOnlyToLent(Ts) //we may store the mutOnlyToLent result already in the first memoized map
+  //2 type all the parameters with mutOnlyToLent(Ts) //we may include mutOnlyToLent in the computation of the MTypes, instead of in the loop below
   resp=TSOut[with ei in e.es.withAlso(left:e.receiver), Ti in mTypes.Ts
     resi=ts(in.with(e:ei, t:mutOnlyToLent(Ti)))
     if !resi.isOk() return res=combineContext(TSIn,resi)
@@ -495,7 +493,6 @@ tsMCall(TSIn in,MCall e)->TSOut
   //3 if there is no matching method, we may need to retype some mut
   //in capsule caused by mvp:
   //it is  not over if there is a mathing method type with mutToCapsule(result param types)
-  //in this case assert "there is exactly 1 matching method"
   tsToCaps=Ts[with r in resp (use[mutToCapsule(r.T)])]
   mTypeMVP=firstMatchParameters(tsToCaps,mTypesRev) //or mTypes?
   if mTypeMVP==null Error????
@@ -503,7 +500,7 @@ tsMCall(TSIn in,MCall e)->TSOut
   //To be happy, we can retype the obtained mut parameters into expected capsule
   respMVP=TSOut[with ri in resp, T ti in mTypeMVP.TS (
     if (ri.mdf <= ti.mfd) (
-      assert ri.mdf != Mdf.mut
+      assert ri.mdf != Mdf.mut //James think this assertion may fail for ri/ti= read 
       use [ri]
       )
     else(
@@ -518,7 +515,7 @@ tsMCall(TSIn in,MCall e)->TSOut
 
 computeMTypes
   order of first list:
-    base,
+    base, //James comment: base and noFwd are in the right order, because the context can reject base in order to select noFwd
     noFwd(if diff from base (use .equals ?) ),
     zero or 1 of {mc,mi} based on noFwd,
     1 mType for each mut parameter using mvp based on noFwd

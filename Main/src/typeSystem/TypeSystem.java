@@ -3,6 +3,7 @@ package typeSystem;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 
 import ast.Ast;
@@ -10,6 +11,7 @@ import ast.Ast.NormType;
 import ast.Ast.Path;
 import ast.ExpCore;
 import ast.Ast.C;
+import ast.Ast.Mdf;
 import ast.ExpCore.Block;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.MethodWithType;
@@ -25,6 +27,7 @@ import coreVisitors.PropagatorVisitor;
 import coreVisitors.Visitor;
 import programReduction.Program;
 import tools.Assertions;
+import typeSystem.TypeSystem.TIn;
 
 public class TypeSystem {
   HashMap<TIn,TOut>map=new HashMap<>();//memoized map
@@ -63,11 +66,72 @@ public class TypeSystem {
       return true;
       }
     public TIn addG(String x, NormType t){
-      TIn res=new TIn(phase,p,e,expected);
+      TIn res=gClean();
       res.g.putAll(this.g);
       res.g.put(x,t);
       return res;
       }
+    public NormType g(String x){
+      NormType res=this.g.get(x);
+      assert res!=null;
+      return res;
+      }
+    public Set<String> gDom(){return g.keySet();}
+    public TIn gClean(){return new TIn(phase,p,e,expected);}
+    //onlyMutOrImm(G)={x:G(x) | G(x) only mut or imm}
+    public TIn onlyMutOrImm(){
+      TIn res=gClean();
+      for(String xi:gDom()){
+        NormType ti=g(xi);
+        assert ti!=null;
+        if (ti.getMdf()==Mdf.Mutable || ti.getMdf()==Mdf.Immutable){
+          res.g.put(xi,ti);
+          }
+        }
+      return res;
+      }
+    public TIn toRead(){//toRead(G)(x)=toRead(G(x)) //thus undefined where toRead undefined
+      TIn res=gClean();
+      for(String xi:gDom()){
+        NormType ti=g(xi);
+        assert ti!=null;
+        ti=TypeManipulation._toRead(ti);
+        if(ti==null){continue;}
+        res.g.put(xi,ti);
+        }
+      return res;
+      } 
+    public TIn toLent(){//toLent(G)(x)=toLent(G(x)) //thus undefined where toLent undefined
+      TIn res=gClean();
+      for(String xi:gDom()){
+        NormType ti=g(xi);
+        assert ti!=null;
+        ti=TypeManipulation._toRead(ti);
+        if(ti==null){continue;}
+        res.g.put(xi,ti);
+        }
+      return res;
+      } 
+    /*G[G']
+  G[G'](x)=G'(x) if x in dom(G'); otherwise G[G'](x)=G(x)
+ 
+G[ks]
+  G[]=G
+  G[k ks]=toRead(G) with k.throw=error and not catchRethrow(k)
+  otherwise G[k ks] = G[ks]
+  
+  Tr1 U Tr2
+  Ts1;Ps1 U Ts2;Ps2 =  Ts1,Ts2; Ps1,Ps2  
+
+Tr.capture(p,k1..kn)= Tr.capture(p,k1)...capture(p,kn)
+
+Tr.capture(p,catch error P x e)=Tr
+(Ts;Ps).capture(p,catch exception P x e)=Ts;{P'| P' in Ps, not p|-P'<=P}
+(Ts;Ps).capture(p,catch return P x e)={T| T in Ts, not p|-T.P<=P};Ps
+
+
+*/
+
     public TIn withE(ExpCore newE,NormType newExpected){
       return new TIn(phase,p,newE,newExpected);
       }
