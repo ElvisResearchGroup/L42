@@ -411,7 +411,7 @@ coherent(n?,p,T1 x1..Tn xn,
   or   
     p|-imm This0 <=T and p|-Ti'<=fwd toImm(Ti)
   or
-    p|-read This0 <=T and p|-Ti'<=fwd toRead(Ti) //how with capsule?
+    p|-read This0 <=T and p|-Ti'<=toRead(Ti) //how with capsule? //no need to fwd, since toReaded already
 
 
 coherent(n?,p,T1 x1..Tn xn,
