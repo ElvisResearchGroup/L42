@@ -175,16 +175,16 @@ methTypes(p,P,ms)  Expressed as metarules
     so if P inside e, D.p(P) is a reasonable operation
     Tr is the computed set of thrown returns and exceptions.
     
-  Phase| p| G|- ds ~> ds'| Tr | G0
+  Phase| p| G |- ds ~> ds'| Tr | G0
     where ds' is an annotated version of ds.
     The resulting G0 is the enriched G containing info about ds too. 
 
-  D |Tr|- k ~> k':T <=T' |Tr'    
+  D |Tr |- k ~> k':T <=T' |Tr'    
     where k' is an annotated version of catch k and k.e is of type T
     we need the Tr of the ds to extract the mdf for caught returns
     Tr' contains only the throws from the catch k itself.
   
-  D| Tr |-ks ~> k's:Ts <= T | Tr'
+  D| Tr |- ks ~> k's:Ts <= T | Tr'
     just types a set of catches.
     
 
@@ -220,7 +220,7 @@ D |- loop e ~> loop e' : imm Void <= T | Tr
           // T2 is the modified type, taking into account kind of thrown
           // T3 is the type of the expression, including promotions
           // and T3 is the type of the value thrown, this allows to use alternative method typing
-D|-throw[_,_] e~> throw[T0,T3] e' : T0 <= T0 | Tr
+D |- throw[_,_] e~> throw[T0,T3] e' : T0 <= T0 | Tr
   where
   T1 = resolve(D.p,guessType(D.G,e))
   if throw=exception, T2= imm T1.P and Tr=Ts;Ps,P
@@ -229,7 +229,7 @@ D|-throw[_,_] e~> throw[T0,T3] e' : T0 <= T0 | Tr
   D|- e~>  e' :  T3 <=T2|Ts;Ps 
 
 (mcall)
-D|- e0.m[_](x1:e1..Xn:en) ~> e'0.m[P0](x1:e'1..xn:e'n)  : T <= T'| Tr0 U..U Trn U (empty;Ps)
+D |-  e0.m[_](x1:e1..Xn:en) ~> e'0.m[P0](x1:e'1..xn:e'n)  : T <= T'| Tr0 U..U Trn U (empty;Ps)
   //e0 will be of form chain
   where
   resolve(D.p,guessType(D.G,e0))= _ P0 //assert T'0.P=P0
@@ -238,7 +238,7 @@ D|- e0.m[_](x1:e1..Xn:en) ~> e'0.m[P0](x1:e'1..xn:e'n)  : T <= T'| Tr0 U..U Trn 
   forall i 0..n D|- ei ~> e'i : T'i <=Ti | Tri //T'0 is correctly a free variable    
   
 (using)
- D|-use P check m(x1:e1.. xn:en) e0 ~>use P check m(x1:e'1.. xn:e'n) e'0 :T0 <= T | Tr0 U..U Trn
+ D |- use P check m(x1:e1.. xn:en) e0 ~>use P check m(x1:e'1.. xn:e'n) e'0 :T0 <= T | Tr0 U..U Trn
  where
    plugin(D.p,P,m(x1..xn))=plg, T1..Tn->T0;empty //plg is a free variable, in the small step reduction would be the function representing the behaviour
    D.p|-T0 <= T
@@ -248,14 +248,14 @@ D|- e0.m[_](x1:e1..Xn:en) ~> e'0.m[P0](x1:e'1..xn:e'n)  : T <= T'| Tr0 U..U Trn 
 //Now plugings are assumed to always ask for imm/class parameters
   
 (block)
-Phase| p| G|-(ds  ks  e0  [_]) ~>(ds' ks' e'0 [T]) 
+Phase| p| G |- (ds  ks  e0  [_]) ~>(ds' ks' e'0 [T]) 
      : T <= T' | Tr'.capture(p,ks') U Tr U Tr0
   where
   G'=G/dom(ds)
   Phase| p| G'[ks] |- ds ~> ds' |Tr' | G0
   //[ks] removes fwdMut, but we wonder if they could stay and all would be sound?
-  Phase| p| G'| Tr1 U .. U Trn |-ks~> ks' : Ts <= T' | Tr
-  Phase| p| (G0\dom(G'))[G'] |-e0~>e'0:T0 <=T' | Tr0
+  Phase| p| G'| Tr1 U .. U Trn |- ks~> ks' : Ts <= T' | Tr
+  Phase| p| G'[G0\dom(G')] |- e0~>e'0:T0 <=T' | Tr0
   T= mostGeneralMdf({T0.mdf,Ts.mdfs}) T'.P
   // assert D.p|-T <= T'
 
@@ -292,7 +292,7 @@ D| Tr |-k1..kn ~> k'1..k'n:T1..Tn <= T | Tr1 U .. U Trn
    // T1 is the actual caught type, based on the types which can be thrown in context
    // T2 is the type of the expression, based on x being bound T1
 
-Phase| p| G| Tr' |-catch throw T0 x e ~> catch throw resolve(p,T0).P x e' :T2 <= T | Tr
+Phase| p| G| Tr' |- catch throw T0 x e ~> catch throw resolve(p,T0).P x e' :T2 <= T | Tr
   where
   mdf1 = mostGeneralMdf(throw,Tr')
   T1 = mdf1 resolve (p, T0).P
@@ -308,18 +308,18 @@ Phase |p |G |Tr|-catch throw Any x (e0 throw x) ~> catch throw Any x (e0' throw 
   catchRethrow(catch throw Any x(e0 throw x)) 
 
 (capsule promotion)
-Phase |p |G |-(ds ks e)~>(ds' ks' e'):capsule P <=capsule P | Tr
+Phase |p |G |- (ds ks e)~>(ds' ks' e'):capsule P <=capsule P | Tr
   where
   Phase |p |toLent(G) |-(ds ks e)~>(ds' ks' e'):mut P <=mut P   | Tr
 //this rule is now "deterministic" in the sense that if typing the block give us a capsule directly,
 //this rule can not be applied, since we require mut P <=mut P in the premise.
 
 ------------------------------------------------------
-4 Subtyping p|- T<=T'
+4 Subtyping p |- T<=T'
 ------------------------------------------------------
   
 (subtype)
-p|-mdf0 P0<=mdf1 P1
+p |- mdf0 P0<=mdf1 P1
   where
   mdf0<=mdf1
   P in P0 U (p(P0).Ps[from P0])
