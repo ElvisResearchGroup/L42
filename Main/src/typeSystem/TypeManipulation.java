@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 
 import ast.Ast.Mdf;
 import ast.Ast.NormType;
+import ast.Ast.Path;
 import ast.Ast.SignalKind;
 import ast.Ast;
 import ast.ExpCore;
@@ -198,12 +199,16 @@ public static Mdf mostGeneralMdf(Set<Mdf> mdfs){
   return Mdf.Lent;
   }
 
-/*
-//liberal use of desugaring in the line under
-catchRethrow(k) iff k=catch throw Any x ((e catch error Any z void void) throw x)
 
- */
-
+public static boolean catchRethrow(ExpCore.Block.On k){
+  //liberal use of desugaring in the line under
+  //catchRethrow(k) iff k=catch throw Any x ((e catch error Any z void void) throw x)
+  if(!k.getT().equals(Path.Any().toImmNT())){return false;}
+  if(!(k.getE() instanceof ExpCore.Block)){return false;}
+  ExpCore.Block b=(ExpCore.Block)k.getE();
+  if(!(b.getInner() instanceof ExpCore.Signal)){return false;}
+  return false;
+  }
 
 
 }
