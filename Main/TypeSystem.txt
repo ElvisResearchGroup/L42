@@ -377,8 +377,12 @@ Phase| p| Ps |-M ~> M'
   else
     e?=e?'
   refine? = refine <=> 
-    forall P in Ps such that p(P)(m(x1..xn))=M0 //that is, is defined
-      M0=mdf method T' m(T1 x1..Tn xn)exceptions Ps' and p|-T<= (T'[from P])
+    forall P in Ps such that p(P)(m(x1..xn))[from P]=M0 //that is, is defined
+      so that:
+      M0=mdf method T' m(T'1 x1..T'n xn)exceptions Ps'
+      p|-T<= T'
+      p.equiv(T1,T'1)..p.equiv(Tn,T'n)
+      forall Pi in Ps0 exists Pj in Ps' p |-Pi<=Pj 
 
 
 coherent(p) //interfaces are always coherent
