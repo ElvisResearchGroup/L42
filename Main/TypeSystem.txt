@@ -54,8 +54,8 @@ toImm(T)
   otherwise, toImm(mdf P)=imm P
 
 toImmOrCapsule(T)
-  toImmOrCapsule(mdf C)=capsule C with mdf in {lent,mut,fwdMut,fwd%Mut}
-  toImmOrCapsule(read C)=imm C
+  toImmOrCapsule(mdf P)=capsule P with mdf in {lent,mut,fwdMut,fwd%Mut}
+  toImmOrCapsule(read P)=imm P
   otherwise toImmOrCapsule(T)=T//mdf in {class,imm,fwdImm,fwd%Imm,capsule}
 
 toLent(T)
@@ -74,8 +74,8 @@ capsuleToLent(T)
 toRead(T) //TODO: fix in code
   toRead(fwdMut P)=toRead(fwd%Mut P)=undefined
   toRead(fwdImm P)=toRead(fwd%Imm P)=undefined  
-  toRead(imm P)=toRead(lent P)=toRead(mut P)=toRead(capsule P)=read P
-  otherwise read(T)=T//mdf in read,class  
+  toRead(lent P)=toRead(mut P)=toRead(capsule P)=read P
+  otherwise read(T)=T//mdf in imm,read,class  
 
 toRead(G)
   toRead(G)(x)=toRead(G(x)) //thus undefined where toRead undefined 
@@ -84,13 +84,26 @@ toLent(G)
   toLent(G)(x)=toLent(G(x)) //thus undefined where toLent undefined
 
 lentToMut(T)
-  lentToMut(lent C)=mut C
+  lentToMut(lent P)=mut P
   otherwise lentToMut(T)=T  
 
 mutToCapsule(T)
-  mutToCapsule(fwdMut C) and mutToCapsule(fwd%Mut C) undefined
-  mutToCapsule(mut C)=capsule C
+  mutToCapsule(fwdMut P) and mutToCapsule(fwd%Mut P) undefined
+  mutToCapsule(mut P)=capsule P
   otherwise mutToCapsule(T)=T
+
+mutToCapsuleAndFwdMutToFwdImm(T) //called f in the implementation
+  f(fwd%Mut P) undefined
+  f(mut P)=capsule P
+  f(fwdMut P)= fwdImm P 
+  otherwise f(T)=T
+
+mutToCapsuleAndFwdMutToRead(T) //called f in the implementation
+  f(fwd%Mut P) undefined
+  f(mut P)=capsule P
+  f(fwdMut P)= read P 
+  otherwise f(T)=T
+
 
 G[G']
   G[G'](x)=G'(x) if x in dom(G'); otherwise G[G'](x)=G(x)
@@ -166,12 +179,14 @@ methTypes(p,P,ms)  Expressed as metarules
 (mVp)-------------------------------------------------------------------
      Ts'->toLent(T);Ps in methTypes(p,P,ms)
 
-//We may want/need to introduce an alternative to mc called mIfwd/mIfwd% where
-//if the method return fwd%Mut, then we can promote it to fwd%Imm...
-//to allows situations like
-//A:{class method mut A( fwd A x )}
-//A a=A(x:a)
-   
+    Ts->fwd%Mut P0;Ps in methTypes(p,P,ms)
+(mFwd)-------------------------------------------------------------------
+    mutToCapsuleAndFwdMutToFwdImm(Ts)->fwd%Imm P0;Ps in methTypes(p,P,ms)   
+
+    Ts->fwd%Mut P0;Ps in methTypes(p,P,ms)
+(mRead)-------------------------------------------------------------------
+    mutToCapsuleAndFwdMutToRead(Ts)->read P0;Ps in methTypes(p,P,ms)
+
 --------------------------------------------
 3 ExpressionTypeJudgement
 --------------------------------------------
@@ -400,10 +415,9 @@ coherent(p)  //classes are coherent if they have a coherent set of abstract meth
   p.top()={implements _ mwts' ncs} //note, no interface
   mwts={mwt in mwts'| mwt.e undefined } //collect the abstract methods
   either mwts is empty or
-    at least 1 mwt in mwts is class method 
-    and
-    exists some (T x)s and n? such that //angelic non determinism to figure out at least one set of types for the fields 
-      all T in (T x)s are mut, imm, class or capsule //thus, no fwd
+    there is exactly 1 class method, and (after removing fwds) have
+    (T x)s parameters and n? such that 
+      all T in (T x)s are mut, imm, class or capsule //thus, no read/lent
       forall mwt in mwts coherent(n?,p,(T x)s, mwt) //all abstract methods are coherent according to those fields
       
 m[n]==m_$_n
@@ -412,13 +426,7 @@ m[]==m
 coherent(n?,p,T1 x1..Tn xn,
       refine? class method T m[n?] (T1' x1..Tn' xn) exception _)
   where
-  either
     p|-mut This0 <=T and p|-Ti'<=fwd Ti
-  or   
-    p|-imm This0 <=T and p|-Ti'<=fwd toImm(Ti)
-  or
-    p|-read This0 <=T and p|-Ti'<=toRead(Ti) //how with capsule? //no need to fwd, since toReaded already
-
 
 coherent(n?,p,T1 x1..Tn xn,
     refine? mdf method T m[n?]() exception _)
@@ -427,7 +435,7 @@ coherent(n?,p,T1 x1..Tn xn,
   either
     mdf=mut and p|-capsuleToLent(Ti)<=T //exposer
   or 
-    mdf=read and p|-toRead(Ti)<=T //getter
+    mdf=read and p|-toRead(Ti)<=T //getter //note for James, toRead need to keep imm as imm, toRead code reverted again :)
   
 coherent(n?,p,T1 x1..Tn xn,
     refine? mut method Void m[n?](T that) exception _)
@@ -532,11 +540,17 @@ computeMTypes
     base, //James comment: base and noFwd are in the right order, because the context can reject base in order to select noFwd
     noFwd(if diff from base (use .equals ?) ),
     zero or 1 of {mc,mi} based on noFwd,
+    if possible, mFwd(base)
+    if possible, mRead(base)
+    if possible, noFwd(mFwd(base))
     1 mType for each mut parameter using mvp based on noFwd
     1 mType for each mut parameter using mvp based on base
 
   order of second list:
     zero or 1 of {mc,mi} based on noFwd,
+    if possible, noFwd(mFwd(base))
+    if possible, mFwd(base) //MarcoToJames: non sure about the order of this and next line
+    if possible, mRead(base)
     noFwd
     base(if diff from noFwd),
     1 mType for each mut parameter using mvp based on noFwd
