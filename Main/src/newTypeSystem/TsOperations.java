@@ -1,4 +1,4 @@
-package typeSystem;
+package newTypeSystem;
 
 import ast.Ast.Path;
 import ast.ExpCore.Block;
@@ -9,8 +9,8 @@ import ast.ExpCore.Signal;
 import ast.ExpCore.Using;
 import ast.ExpCore.X;
 import ast.ExpCore._void;
-import typeSystem.TypeSystem.TIn;
-import typeSystem.TypeSystem.TOut;
+import newTypeSystem.TypeSystem.TIn;
+import newTypeSystem.TypeSystem.TOut;
 
 public class TsOperations {
 

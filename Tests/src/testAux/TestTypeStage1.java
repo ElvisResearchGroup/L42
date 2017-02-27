@@ -28,6 +28,7 @@ import sugarVisitors.Desugar;
 import sugarVisitors.InjectionOnCore;
 import typeSystem.SealEnv;
 import typeSystem.ThrowEnv;
+import typeSystem.TypeSystem;
 import ast.Ast;
 import ast.Ast.NormType;
 import ast.Ast.Type;

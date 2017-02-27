@@ -1,4 +1,4 @@
-package typeSystem;
+package newTypeSystem;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,9 +25,9 @@ import ast.ExpCore.X;
 import ast.ExpCore._void;
 import coreVisitors.PropagatorVisitor;
 import coreVisitors.Visitor;
+import newTypeSystem.TypeSystem.TIn;
 import programReduction.Program;
 import tools.Assertions;
-import typeSystem.TypeSystem.TIn;
 
 public class TypeSystem {
   HashMap<TIn,TOut>map=new HashMap<>();//memoized map

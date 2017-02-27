@@ -1,4 +1,4 @@
-package typeSystem;
+package newTypeSystem;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,10 +11,10 @@ import ast.Ast.Mdf;
 import ast.Ast.NormType;
 import ast.Ast.Path;
 import ast.Ast.SignalKind;
+import newTypeSystem.TypeSystem.TIn;
+import newTypeSystem.TypeSystem.TOk;
 import ast.Ast;
 import ast.ExpCore;
-import typeSystem.TypeSystem.TIn;
-import typeSystem.TypeSystem.TOk;
 
 public class TypeManipulation {
 
