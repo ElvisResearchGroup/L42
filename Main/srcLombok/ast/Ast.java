@@ -293,7 +293,6 @@ public interface Ast {
   boolean refine;
   Mdf mdf;
   List<Type> ts;
-  //List<Doc> tDocs;
   Type returnType;
   List<Type> exceptions;
  }

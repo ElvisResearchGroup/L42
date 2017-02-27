@@ -71,7 +71,7 @@ capsuleToLent(T)
   capsuleToLent(capsule P)=lent P
   otherwise capsuleToLent(mdf P)=mdf P
    
-toRead(T) //TODO: fix in code
+toRead(T)
   toRead(fwdMut P)=toRead(fwd%Mut P)=undefined
   toRead(fwdImm P)=toRead(fwd%Imm P)=undefined  
   toRead(lent P)=toRead(mut P)=toRead(capsule P)=read P
@@ -208,6 +208,7 @@ methTypes(p,P,ms)  Expressed as metarules
   D| Tr |- ks ~> k's:Ts <= T | Tr'
     just types a set of catches.
     
+---------------------------------
 
 (void)
 D |- void~> void:imm Void <= T | emptyTr

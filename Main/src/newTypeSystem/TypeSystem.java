@@ -5,14 +5,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import ast.Ast;
 import ast.Ast.NormType;
 import ast.Ast.Path;
+import ast.Ast.SignalKind;
 import ast.ExpCore;
 import ast.Ast.C;
 import ast.Ast.Mdf;
 import ast.ExpCore.Block;
+import ast.ExpCore.Block.On;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.MethodWithType;
 import ast.ExpCore.ClassB.Phase;
@@ -23,15 +26,25 @@ import ast.ExpCore.Using;
 import ast.ExpCore.WalkBy;
 import ast.ExpCore.X;
 import ast.ExpCore._void;
+import auxiliaryGrammar.Functions;
 import coreVisitors.PropagatorVisitor;
 import coreVisitors.Visitor;
 import newTypeSystem.TypeSystem.TIn;
+import newTypeSystem.TypeSystem.TOut;
 import programReduction.Program;
 import tools.Assertions;
 
 public class TypeSystem {
   HashMap<TIn,TOut>map=new HashMap<>();//memoized map
-  class TIn{
+  public static boolean subtype(Program p,Path pSub,Path pSuper){
+    return p.subtypeEq(pSub, pSuper);
+    }
+  public static boolean subtype(Program p, NormType tSub, NormType tSuper) {
+    if(!Functions.isSubtype(tSub.getMdf(),tSuper.getMdf())){return false;}
+    return subtype(p,tSub.getPath(),tSuper.getPath());
+    }
+
+  static class TIn{
     Phase phase;
     Program p;
     HashMap<String,NormType>g=new HashMap<>();//could be two arrays for efficiency
@@ -68,7 +81,17 @@ public class TypeSystem {
     public TIn addG(String x, NormType t){
       TIn res=gClean();
       res.g.putAll(this.g);
+      assert !res.g.containsKey(x);
       res.g.put(x,t);
+      return res;
+      }
+    public TIn addGds(List<ExpCore.Block.Dec> ds){
+      TIn res=gClean();
+      res.g.putAll(this.g);
+      for(ExpCore.Block.Dec d : ds){
+        assert !res.g.containsKey(d.getX());
+        res.g.put(d.getX(),programReduction.Norm.resolve(this.p,d.getT()));
+        }
       return res;
       }
     public NormType g(String x){
@@ -111,35 +134,31 @@ public class TypeSystem {
         res.g.put(xi,ti);
         }
       return res;
-      } 
-    /*G[G']
-  G[G'](x)=G'(x) if x in dom(G'); otherwise G[G'](x)=G(x)
- 
-G[ks]
-  G[]=G
-  G[k ks]=toRead(G) with k.throw=error and not catchRethrow(k)
-  otherwise G[k ks] = G[ks]
-  
-  Tr1 U Tr2
-  Ts1;Ps1 U Ts2;Ps2 =  Ts1,Ts2; Ps1,Ps2  
-
-Tr.capture(p,k1..kn)= Tr.capture(p,k1)...capture(p,kn)
-
-Tr.capture(p,catch error P x e)=Tr
-(Ts;Ps).capture(p,catch exception P x e)=Ts;{P'| P' in Ps, not p|-P'<=P}
-(Ts;Ps).capture(p,catch return P x e)={T| T in Ts, not p|-T.P<=P};Ps
-
-
-*/
-
+      }
+    public TIn gKs(List<ExpCore.Block.On>ks){     
+    //G[ks]
+    //  G[]=G
+    //  G[k ks]=toRead(G) with k.throw=error and not catchRethrow(k)
+    //  otherwise G[k ks] = G[ks]
+    for( On k:ks){
+      if(k.getKind()!=SignalKind.Error){continue;}
+      if(TypeManipulation.catchRethrow(k)){continue;}
+      return this.toRead();
+      }
+    return this;
+    }
     public TIn withE(ExpCore newE,NormType newExpected){
       return new TIn(phase,p,newE,newExpected);
       }
+    public TIn withP(Program newP){
+      return new TIn(phase,newP,e,Path.Library().toImmNT());
+      }
+
     boolean isCoherent(){
       return true;
       }
     }
-  class TOk implements TOut{
+  static class TOk implements TOut{
     public boolean isOk() { return true;}
     public TOk toOk() {return this;}
     TIn in;
@@ -147,6 +166,39 @@ Tr.capture(p,catch error P x e)=Tr
     NormType computed;
     List<NormType>returns=new ArrayList<>();
     List<Path>exceptions=new ArrayList<>();
+    public TOk(TIn in, ExpCore annotated, NormType computed){
+      this.in=in;this.annotated=annotated;this.computed=computed;
+      }
+    public TOk tsUnion(TOk that){
+      //Tr1 U Tr2
+      //  Ts1;Ps1 U Ts2;Ps2 =  Ts1,Ts2; Ps1,Ps2  
+      TOk res=new TOk(this.in,this.annotated,this.computed);
+      res.returns.addAll(this.returns);
+      res.returns.addAll(that.returns);
+      res.exceptions.addAll(this.exceptions);
+      res.exceptions.addAll(that.exceptions);
+      return res;
+      }
+    public TOk tsCapture(List<ExpCore.Block.On> ks){
+      //Tr.capture(p,k1..kn)= Tr.capture(p,k1)...capture(p,kn)
+      //Tr.capture(p,catch error P x e)=Tr
+      //(Ts;Ps).capture(p,catch exception P x e)=Ts;{P'| P' in Ps, not p|-P'<=P}
+      //(Ts;Ps).capture(p,catch return P x e)={T| T in Ts, not p|-T.P<=P};Ps
+      Stream<NormType> ret = this.returns.stream();
+      Stream<Path> exc = this.exceptions.stream();
+      for(On k:ks){
+        if(k.getKind()==SignalKind.Error){continue;}
+        if(k.getKind()==SignalKind.Exception){
+          exc=exc.filter(pi->!subtype(this.in.p,pi,k.getT().getNT().getPath()));
+          }
+        //otherwise, is return
+        ret=ret.filter(ti->!subtype(this.in.p,ti.getPath(),k.getT().getNT().getPath()));
+        }
+      TOk result=new TOk(in,annotated,computed);
+      exc.forEach(result.exceptions::add);
+      ret.forEach(result.returns::add);
+      return result;
+      }
     boolean isCoherent(){
       assert in!=null;
       assert annotated!=null;
@@ -154,7 +206,7 @@ Tr.capture(p,catch error P x e)=Tr
       return true;
       }
     }
-  class TErr implements TOut {
+  static class TErr implements TOut {
     public boolean isOk() { return false;}
     public TErr toError() {return this;}
     public TErr(TIn in, String msg, NormType _computed) {
@@ -162,10 +214,13 @@ Tr.capture(p,catch error P x e)=Tr
       }
     TIn in;
     String msg;
-    NormType _computed;  
+    NormType _computed;
+    public TOut enrich(TIn in2) {
+      return this;//TODO: design some general error context enreaching
+      }  
     }
-  interface TOut extends OkOr<TOk,TErr>{}
-  interface OkOr<T extends OkOr<T,E>, E extends OkOr<T,E> >{
+  static interface TOut extends OkOr<TOk,TErr>{}
+  static interface OkOr<T extends OkOr<T,E>, E extends OkOr<T,E> >{
     boolean isOk();
     default T toOk() {throw new java.lang.Error();}
     default E toError() {throw new java.lang.Error();}

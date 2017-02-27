@@ -139,11 +139,13 @@ public static NormType capsuleToLent(NormType t){
 public static NormType _toRead(NormType t){   
 //  toRead(T)
 //    toRead(fwdMut P)=toRead(fwd%Mut P)=undefined  
-//    toRead(fwdMut P)=toRead(fwd%Mut P)=undefined
+//    toRead(fwdImm P)=toRead(fwd%Imm P)=undefined
 //    toRead(lent P)=toRead(mut P)=toRead(capsule P)=read P
-//    otherwise read(T)=T//mdf in read,imm,fwdImm,fwd%Imm,class  
+//    toRead(lent P)=toRead(mut P)=toRead(capsule P)=read P
+//    otherwise read(T)=T//mdf in imm,read,class  
   Mdf m=t.getMdf();
   if(m==Mdf.MutableFwd || m==Mdf.MutablePFwd){return null;}
+  if(m==Mdf.ImmutableFwd || m==Mdf.ImmutablePFwd){return null;}
   if(m==Mdf.Lent ||m==Mdf.Mutable||m==Mdf.Capsule){
     return t.withMdf(Mdf.Readable);
     }
@@ -166,6 +168,31 @@ public static NormType mutToCapsule(NormType t){
   Mdf m=t.getMdf();
   assert m!=Mdf.MutableFwd && m!=Mdf.MutablePFwd;
   if(m==Mdf.Mutable){return t.withMdf(Mdf.Capsule);}
+  return t;
+  }
+
+public static NormType mutToCapsuleAndFwdMutToFwdImm(NormType t){
+//mutToCapsuleAndFwdMutToFwdImm(T) //called f in the implementation
+//f(fwd%Mut P) undefined
+//f(mut P)=capsule P
+//f(fwdMut P)= fwdImm P 
+//otherwise f(T)=T
+ Mdf m=t.getMdf();
+ assert m!=Mdf.MutablePFwd;
+ if(m==Mdf.Mutable){return t.withMdf(Mdf.Capsule);}
+ if(m==Mdf.MutableFwd){return t.withMdf(Mdf.ImmutableFwd);}
+ return t;
+ }
+public static NormType mutToCapsuleAndFwdMutToRead(NormType t){
+//mutToCapsuleAndFwdMutToRead(T) //called f in the implementation
+//f(fwd%Mut P) undefined
+//f(mut P)=capsule P
+//f(fwdMut P)= read P 
+//otherwise f(T)=T
+  Mdf m=t.getMdf();
+  assert m!=Mdf.MutablePFwd;
+  if(m==Mdf.Mutable){return t.withMdf(Mdf.Capsule);}
+  if(m==Mdf.MutableFwd){return t.withMdf(Mdf.Readable);}
   return t;
   }
 

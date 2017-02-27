@@ -37,9 +37,9 @@ public class Norm {
     for(MethodWithType mwt:list){if(mwt.getMs().equals(ms)){return mwt;}}
     return null;
   }
-  static NormType resolve(Program p,Type t){
+  public static NormType resolve(Program p,Type t){
     try{
-      return _resolve(p,t);//TODO: if needed check/fix force placeholders here
+      return _resolve(p,t);
     }
     catch(StackOverflowError err){
       throw new ast.ErrorMessage.HistoricTypeCircularDefinition((HistoricType)t);
@@ -80,7 +80,7 @@ public class Norm {
         return norm(p.evilPush(s));
         }});
     }
-  ExpCore.ClassB norm(Program p){
+  public ExpCore.ClassB norm(Program p){
     //-norm(p)={interface? implements Ps' norm(p,Ms') }
     //p.top()={interface? implements Ps Ms} //Ms is free var and is ok
     ClassB l=p.top();

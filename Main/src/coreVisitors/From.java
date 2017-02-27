@@ -14,7 +14,6 @@ import ast.ExpCore;
 public class From extends CloneVisitor {
   private Path path;
   private From(Path path){  this.path=path;  }
-
   @Override public ExpCore visit(Path p){
     if(p.isPrimitive()){return p;}
     return fromP(p,path);
@@ -65,6 +64,10 @@ public class From extends CloneVisitor {
   public static List<ExpCore.ClassB.Member> from(List<ExpCore.ClassB.Member> ms, Path source){
     return Map.of(new From(source)::liftM, ms);
   }
+
+  public static MethodType from(MethodType mt,Path source){
+    return new From(source).liftMT(mt);
+    }
   @SuppressWarnings("unchecked")
   public static <T extends ExpCore.ClassB.Member> T from(T member, Path source){
     return (T)new From(source).liftM(member);
