@@ -542,16 +542,16 @@ computeMTypes
     noFwd(if diff from base (use .equals ?) ),
     if possible, mFwd(base)
     if possible, mRead(base)
-    zero or 1 of {mc,mi} based on noFwd(base), or noFwd(mImmFwd(base) if mi(base) fails
+    zero or 1 of {mc,mi} based on noFwd(base), or noFwd(mImmFwd(base)) if mi(base) fails
     1 mType for each mut parameter using mvp based on noFwd(base)
     1 mType for each mut parameter using mvp based on base
 
   order of second list:
     zero or 1 of {mc,mi} based on noFwd(base), or noFwd(mImmFwd(base)) if mi(base) fails
     if possible, mFwd(base) //MarcoToJames: non sure about the order of this and next line
-    if possible, mRead(base)
     noFwd
     base(if diff from noFwd(base)),
+    if possible, mRead(base)
     1 mType for each mut parameter using mvp based on noFwd
     1 mType for each mut parameter using mvp based on base
  // forall mt, mi(mRead(base)=noFwd(mImmFwd(base)) if both sides are defined
