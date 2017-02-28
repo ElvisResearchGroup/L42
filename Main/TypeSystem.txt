@@ -416,7 +416,7 @@ coherent(p)  //classes are coherent if they have a coherent set of abstract meth
   p.top()={implements _ mwts' ncs} //note, no interface
   mwts={mwt in mwts'| mwt.e undefined } //collect the abstract methods
   either mwts is empty or
-    there is exactly 1 class method, and (after removing fwds) have
+    there is exactly 1 class method, and (after removing fwds) have //may make more formal this line
     (T x)s parameters and n? such that 
       all T in (T x)s are mut, imm, class or capsule //thus, no read/lent
       forall mwt in mwts coherent(n?,p,(T x)s, mwt) //all abstract methods are coherent according to those fields
@@ -540,10 +540,10 @@ computeMTypes
   order of first list:
     base, //James comment: base and noFwd are in the right order, because the context can reject base in order to select noFwd
     noFwd(if diff from base (use .equals ?) ),
-    zero or 1 of {mc,mi} based on noFwd,
     if possible, mFwd(base)
     if possible, mRead(base)
     if possible, noFwd(mFwd(base))
+    zero or 1 of {mc,mi} based on noFwd,
     1 mType for each mut parameter using mvp based on noFwd
     1 mType for each mut parameter using mvp based on base
 
