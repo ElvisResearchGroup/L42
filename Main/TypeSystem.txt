@@ -180,7 +180,7 @@ methTypes(p,P,ms)  Expressed as metarules
      Ts'->toLent(T);Ps in methTypes(p,P,ms)
 
     Ts->fwd%Mut P0;Ps in methTypes(p,P,ms)
-(mFwd)-------------------------------------------------------------------
+(mImmFwd)-------------------------------------------------------------------
     mutToCapsuleAndFwdMutToFwdImm(Ts)->fwd%Imm P0;Ps in methTypes(p,P,ms)   
 
     Ts->fwd%Mut P0;Ps in methTypes(p,P,ms)
@@ -540,7 +540,7 @@ computeMTypes
   order of first list:
     base, //James comment: base and noFwd are in the right order, because the context can reject base in order to select noFwd
     noFwd(if diff from base (use .equals ?) ),
-    if possible, mFwd(base)
+    if possible, mImmFwd(base)
     if possible, mRead(base)
     zero or 1 of {mc,mi} based on noFwd(base), or noFwd(mImmFwd(base)) if mi(base) fails
     1 mType for each mut parameter using mvp based on noFwd(base)
@@ -548,7 +548,7 @@ computeMTypes
 
   order of second list:
     zero or 1 of {mc,mi} based on noFwd(base), or noFwd(mImmFwd(base)) if mi(base) fails
-    if possible, mFwd(base) //MarcoToJames: non sure about the order of this and next line
+    if possible, mImmFwd(base) //MarcoToJames: non sure about the order of this and next line
     noFwd
     base(if diff from noFwd(base)),
     if possible, mRead(base)
