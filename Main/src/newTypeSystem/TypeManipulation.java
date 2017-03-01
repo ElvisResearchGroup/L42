@@ -93,13 +93,13 @@ public static List<NormType>  noFwd(Collection<NormType>ts){
   return res;
   }
 
-public static NormType toImm(NormType t){//used only for fields in coherent
+/*public static NormType toImm(NormType t){//used only for fields in coherent
 //  toImm(T)        
 //    toImm(class P)=class P
 //    otherwise, toImm(mdf P)=imm P
   if(t.getMdf()==Mdf.Class){return t;}
   return t.withMdf(Mdf.Immutable);
-  }
+  }*/
 public static NormType toImmOrCapsule(NormType t){
 //  toImmOrCapsule(T)
 //    toImmOrCapsule(mdf C)=capsule C with mdf in {lent,mut,fwdMut,fwd%Mut}
@@ -155,13 +155,13 @@ public static NormType _toRead(NormType t){
   }
  
 
-public static NormType lentToMut(NormType t){
+/*public static NormType lentToMut(NormType t){
 //  lentToMut(T)
 //    lentToMut(lent C)=mut C
 //    otherwise lentToMut(T)=T  
   if(t.getMdf()==Mdf.Lent){return t.withMdf(Mdf.Mutable);}
   return t;
-  }
+  }*/
 public static NormType mutToCapsule(NormType t){
 //  mutToCapsule(T)
 //    mutToCapsule(fwdMut C) and mutToCapsule(fwd%Mut C) undefined

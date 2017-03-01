@@ -35,10 +35,10 @@ public class WellFormednessCore {
     }
   Mdf m=mt.getReturnType().getNT().getMdf();
   if(r2){
-   if(m!=Mdf.Mutable && m!=Mdf.MutableFwd){return false;}
+   if(m!=Mdf.Mutable && m!=Mdf.MutableFwd && m!=Mdf.MutablePFwd){return false;}
   }
   else if(r1){
-    if(m!=Mdf.Mutable && m!=Mdf.MutableFwd && m!=Mdf.Immutable && m!=Mdf.ImmutableFwd){return false;}
+    if(m!=Mdf.Mutable && m!=Mdf.Immutable && !TypeManipulation.fwd_or_fwdP_in(m)){return false;}
   }
   //TODO: do we want this extra restriction?
   if(!r1&&!r2){//no fwd at all

@@ -49,29 +49,29 @@ noFwd T
 
 noFwd T1..Tn= noFwd T1 .. noFwd Tn
   
-toImm(T)        
-  toImm(class P)=class P
-  otherwise, toImm(mdf P)=imm P
+//toImm(T) //unused?        
+//toImm(class P)=class P
+//otherwise, toImm(mdf P)=imm P
 
-toImmOrCapsule(T)
+toImmOrCapsule(T) //used for parameters
   toImmOrCapsule(mdf P)=capsule P with mdf in {lent,mut,fwdMut,fwd%Mut}
   toImmOrCapsule(read P)=imm P
   otherwise toImmOrCapsule(T)=T//mdf in {class,imm,fwdImm,fwd%Imm,capsule}
 
-toLent(T)
+toLent(T)//used for return types and gamma
   toLent(mut P)=lent P,
   toLent(fwdMut P) and toLent(fwd%Mut P) undefined;
   otherwise toLent(T)=T
   
-mutOnlyToLent(T)
+mutOnlyToLent(T) //used for parameters in deterministic strategy
   mutOnlyToLent(mut P)=lent P,
   otherwise mutOnlyToLent(T)=T 
 
-capsuleToLent(T)  
+capsuleToLent(T)  //used for return type in get/exposer
   capsuleToLent(capsule P)=lent P
   otherwise capsuleToLent(mdf P)=mdf P
    
-toRead(T)
+toRead(T) //used in gamma and in return type getter
   toRead(fwdMut P)=toRead(fwd%Mut P)=undefined
   toRead(fwdImm P)=toRead(fwd%Imm P)=undefined  
   toRead(lent P)=toRead(mut P)=toRead(capsule P)=read P
@@ -83,22 +83,22 @@ toRead(G)
 toLent(G)
   toLent(G)(x)=toLent(G(x)) //thus undefined where toLent undefined
 
-lentToMut(T)
-  lentToMut(lent P)=mut P
-  otherwise lentToMut(T)=T  
+//lentToMut(T) //unused
+//  lentToMut(lent P)=mut P
+//  otherwise lentToMut(T)=T  
 
-mutToCapsule(T)
-  mutToCapsule(fwdMut P) and mutToCapsule(fwd%Mut P) undefined
+mutToCapsule(T) //used for parameters
+  mutToCapsule(fwdMut P) and mutToCapsule(fwd%Mut P) undefined//NO? no reason to restrict?
   mutToCapsule(mut P)=capsule P
   otherwise mutToCapsule(T)=T
-
-mutToCapsuleAndFwdMutToFwdImm(T) //called f in the implementation
+//used for parameters
+mutToCapsuleAndFwdMutToFwdImm(T) //used for parameters//called f in the implementation
   f(fwd%Mut P) undefined
   f(mut P)=capsule P
   f(fwdMut P)= fwdImm P 
   otherwise f(T)=T
 
-mutToCapsuleAndFwdMutToRead(T) //called f in the implementation
+mutToCapsuleAndFwdMutToRead(T) //used for parameters//called f in the implementation
   f(fwd%Mut P) undefined
   f(mut P)=capsule P
   f(fwdMut P)= read P 
@@ -501,7 +501,7 @@ splitDs(ds)->i
   
 tsMCall(TSIn in,MCall e)->TSOut
   Path rec=guessType(e.receiver)
-  mTypes,mTypesRev=computeMTypes(in.p,rec,e.ms)
+  mTypes=computeMTypes(in.p,rec,e.ms)
   //memoizing mTypes would be a mistake since we can not abstract over p and [from rec]
   // 1 select the first match with acceptable return type
   mType=_firstMatchReturn(TSIn.T,mTypes)
@@ -513,14 +513,16 @@ tsMCall(TSIn in,MCall e)->TSOut
     use[resi]   
     ]
   assert forall r in resp, r.isOk()
-  mTypeRev=_firstMatchParameters(Ts[with r in resp (use[r.T])],mTypesRev) 
+  ---------------------
+  mTypeRev=_bestMatchMtype(Ts[with r in resp (use[r.T])],TSIn.T,mTypes) 
   if mTypeRev!=null 
     return res=makeMCallOK(TSIn,resp,mTypeRev)//mTypeRev.returnType needed, and Trs[with r in resp (use[r.Tr])].collapse())
   //3 if there is no matching method, we may need to retype some mut
   //in capsule caused by mvp:
   //it is  not over if there is a mathing method type with mutToCapsule(result param types)
   tsToCaps=Ts[with r in resp (use[mutToCapsule(r.T)])]
-  mTypeMVP=firstMatchParameters(tsToCaps,mTypesRev) //or mTypes?
+  mTypeMVP=_bestMatchMtype(tsToCaps,TSIn.T,mTypes)
+  ------------------
   if mTypeMVP==null Error????
   //this assert could not work: assert firstMatchParameters(tsToCaps,mTypesRes-mTypeMVP) fails
   //To be happy, we can retype the obtained mut parameters into expected capsule
@@ -547,28 +549,26 @@ a read parameter is present in base, it becomes imm only on the left
 is always better (methT subtype)
 //----
 computeMTypes
-  order of first list:
-    base, //James comment: base and noFwd are in the right order, because the context can reject base in order to select noFwd
-    noFwd(if diff from base (use .equals ?) ),
-    if possible, mImmFwd(base)
-    if possible, mRead(base)
-    zero or 1 of {mc,mi} based on noFwd(base),
-    if mi(noFwd(base)) fails, try
-      noFwd(mImmFwd(base)) and mI(mRead(base))
-    1 mType for each mut parameter using mvp based on noFwd(base)
-    1 mType for each mut parameter using mvp based on base
+  order of first list; //some entries may have the same value
+  mBase
+  mNoFwd(mBase)
+  mImmFwd(mBase)
+  mRead(mBase)
+  mC(mBase)
+  mC(mNoFwd(mBase))
+  mI(mBase)
+  mI(mRead(mBase))
+  mNoFwd(mImmFwd(mBase))  
+  mVp(mBase) //1 mType for each mut parameter
+  mVp(mNoFwd(base))//1 mType for each mut parameter
+  
+_firstMatchReturn(T)
+moves along the list and select the first with a
+compatible return type
+_bestMatchMtype(Ts->T)
+for all the mt subtype of Ts->T, select the one with
+the most precise return type
 
-//No need of second list? just search with ts,t all compatible return types
-and compute the most specific?
-  order of second list:
-    zero or 1 of {mc,mi} based on noFwd(base), or noFwd(mImmFwd(base)) if mi(base) fails
-    if possible, mImmFwd(base) //MarcoToJames: non sure about the order of this and next line
-    noFwd
-    base(if diff from noFwd(base)),
-    if possible, mRead(base)
-    1 mType for each mut parameter using mvp based on noFwd
-    1 mType for each mut parameter using mvp based on base
- // forall mt, mi(mRead(base)=noFwd(mImmFwd(base)) if both sides are defined
 _memoizedTSRes(in) //need attention: we can not use .equals on p
   in=Phase,p,G,e,T
   equality on in will use the identity of p and e
