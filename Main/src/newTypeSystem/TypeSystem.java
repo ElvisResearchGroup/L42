@@ -11,9 +11,11 @@ import ast.Ast;
 import ast.Ast.NormType;
 import ast.Ast.Path;
 import ast.Ast.SignalKind;
+import ast.Ast.Type;
 import ast.ExpCore;
 import ast.Ast.C;
 import ast.Ast.Mdf;
+import ast.Ast.MethodType;
 import ast.ExpCore.Block;
 import ast.ExpCore.Block.On;
 import ast.ExpCore.ClassB;
@@ -43,6 +45,42 @@ public class TypeSystem {
     if(!Functions.isSubtype(tSub.getMdf(),tSuper.getMdf())){return false;}
     return subtype(p,tSub.getPath(),tSuper.getPath());
     }
+//only check mdf subtyping
+public static boolean _methMdfTSubtype(MethodType mSub,MethodType mSuper){
+  if (!Functions.isSubtype(mSuper.getMdf(),mSub.getMdf())){return false;}
+  if (!Functions.isSubtype(mSuper.getReturnType().getNT().getMdf(),mSub.getReturnType().getNT().getMdf())){return false;}
+  {int i=-1;for(Type tSub:mSub.getTs()){i+=1;Type tSuper=mSuper.getTs().get(i);
+  if (!Functions.isSubtype(tSuper.getNT().getMdf(),tSub.getNT().getMdf())){
+    return false;
+    }    
+  }}
+  return true;
+}
+public static boolean methTSubtype(Program p,MethodType mSub,MethodType mSuper){
+  if (!Functions.isSubtype(mSuper.getMdf(),mSub.getMdf())){return false;}
+  if (!newTypeSystem.TypeSystem.subtype(p,mSub.getReturnType().getNT(),mSuper.getReturnType().getNT())){
+    return false;
+  }
+  if(mSub.getTs().size()!=mSuper.getTs().size()){return false;}
+  {int i=-1;for(Type tSub:mSub.getTs()){i+=1;Type tSuper=mSuper.getTs().get(i);
+    if (!newTypeSystem.TypeSystem.subtype(p,tSuper.getNT(),tSub.getNT())){
+      return false;
+      }    
+  }}
+  for(Type ti:mSub.getExceptions()){
+    if(!exceptionSubtype(p,ti.getNT(), mSuper)){return false;}
+    }
+  return true;
+  }
+ private static boolean exceptionSubtype(Program p,NormType ti, MethodType mSuper) {
+    for(Type tj:mSuper.getExceptions()){
+    if(p.subtypeEq(ti.getPath(),tj.getNT().getPath())){
+      return true;
+      }
+    }
+    return false;
+  }
+
 
   static class TIn{
     Phase phase;

@@ -105,12 +105,14 @@ public static NormType toImmOrCapsule(NormType t){
 //    toImmOrCapsule(mdf C)=capsule C with mdf in {lent,mut,fwdMut,fwd%Mut}
 //    toImmOrCapsule(read C)=imm C
 //    otherwise toImmOrCapsule(T)=T//mdf in {class,imm,fwdImm,fwd%Imm,capsule}
-  Mdf m=t.getMdf();
+  return t.withMdf(toImmOrCapsule(t.getMdf()));
+  }
+public static Mdf toImmOrCapsule(Mdf m){
   if (m==Mdf.Lent ||m==Mdf.Mutable ||m==Mdf.MutableFwd ||m==Mdf.MutablePFwd){
-    return t.withMdf(Mdf.Capsule);
+    return Mdf.Capsule;
     }
-  if(m==Mdf.Readable){return t.withMdf(Mdf.Immutable);}
-  return t;
+  if(m==Mdf.Readable){return Mdf.Immutable;}
+  return m;
   }
 public static NormType _toLent(NormType t){
 //  toLent(T)
@@ -167,10 +169,12 @@ public static NormType mutToCapsule(NormType t){
 //    mutToCapsule(fwdMut C) and mutToCapsule(fwd%Mut C) undefined
 //    mutToCapsule(mut C)=capsule C
 //    otherwise mutToCapsule(T)=T
-  Mdf m=t.getMdf();
+  return t.withMdf(mutToCapsule(t.getMdf()));
+  }
+public static Mdf mutToCapsule(Mdf m){
   assert m!=Mdf.MutableFwd && m!=Mdf.MutablePFwd;
-  if(m==Mdf.Mutable){return t.withMdf(Mdf.Capsule);}
-  return t;
+  if(m==Mdf.Mutable){return Mdf.Capsule;}
+  return m;
   }
 
 public static NormType mutToCapsuleAndFwdMutToFwdImm(NormType t){
@@ -179,11 +183,13 @@ public static NormType mutToCapsuleAndFwdMutToFwdImm(NormType t){
 //f(mut P)=capsule P
 //f(fwdMut P)= fwdImm P 
 //otherwise f(T)=T
- Mdf m=t.getMdf();
+  return t.withMdf(mutToCapsuleAndFwdMutToFwdImm(t.getMdf()));
+  }
+public static Mdf mutToCapsuleAndFwdMutToFwdImm(Mdf m){
  assert m!=Mdf.MutablePFwd;
- if(m==Mdf.Mutable){return t.withMdf(Mdf.Capsule);}
- if(m==Mdf.MutableFwd){return t.withMdf(Mdf.ImmutableFwd);}
- return t;
+ if(m==Mdf.Mutable){return Mdf.Capsule;}
+ if(m==Mdf.MutableFwd){return Mdf.ImmutableFwd;}
+ return m;
  }
 public static NormType mutToCapsuleAndFwdMutToRead(NormType t){
 //mutToCapsuleAndFwdMutToRead(T) //called f in the implementation
@@ -191,11 +197,13 @@ public static NormType mutToCapsuleAndFwdMutToRead(NormType t){
 //f(mut P)=capsule P
 //f(fwdMut P)= read P 
 //otherwise f(T)=T
-  Mdf m=t.getMdf();
+  return t.withMdf(mutToCapsuleAndFwdMutToRead(t.getMdf()));
+  }
+public static Mdf mutToCapsuleAndFwdMutToRead(Mdf m){
   assert m!=Mdf.MutablePFwd;
-  if(m==Mdf.Mutable){return t.withMdf(Mdf.Capsule);}
-  if(m==Mdf.MutableFwd){return t.withMdf(Mdf.Readable);}
-  return t;
+  if(m==Mdf.Mutable){return Mdf.Capsule;}
+  if(m==Mdf.MutableFwd){return Mdf.Readable;}
+  return m;
   }
 
 public static Mdf mostGeneralMdf(Ast.SignalKind _throw,TOk out){

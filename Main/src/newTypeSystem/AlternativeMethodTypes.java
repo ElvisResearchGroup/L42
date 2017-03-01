@@ -55,7 +55,7 @@ public class AlternativeMethodTypes {
     if(retT.getMdf()!=Mdf.Mutable){return null;}
     retT=retT.withMdf(Mdf.Capsule);
     List<Type> ts = Map.of(t->mutToCapsule(t.getNT()),mt.getTs());
-    return mt.withReturnType(retT).withTs(ts);
+    return mt.withReturnType(retT).withTs(ts).withMdf(mutToCapsule(mt.getMdf()));
     }
   static MethodType _mI(MethodType mt){
 //Ts->read P0;Ps in methTypes(p,P,ms) //by well formedness if return type is read, not fwd_or_fwd%_in Ts
@@ -67,9 +67,22 @@ public class AlternativeMethodTypes {
     if(retT.getMdf()!=Mdf.Readable){return null;}
     retT=retT.withMdf(Mdf.Immutable);
     List<Type> ts = Map.of(t->toImmOrCapsule(t.getNT()),mt.getTs());
-    return mt.withReturnType(retT).withTs(ts);
+    return mt.withReturnType(retT).withTs(ts).withMdf(toImmOrCapsule(mt.getMdf()));
     }
+
   static MethodType _mVp(MethodType mt, int parNum){
+    if(parNum>0){return _mVpNoRec(mt,parNum-1);}
+    assert parNum==0;
+    if(mt.getMdf()!=Mdf.Mutable){return null;}
+    NormType retT=mt.getReturnType().getNT();
+    retT=_toLent(retT);
+    if(retT==null){return null;}
+    List<Type> ts = Map.of(t->mutToCapsule(t.getNT()),mt.getTs());
+    MethodType res= mt.withReturnType(retT).withTs(ts).withMdf(Mdf.Lent);
+    if(WellFormednessCore.methodTypeWellFormed(res)){return res;}
+    return null;
+    }
+  static MethodType _mVpNoRec(MethodType mt, int parNum){
 //Ts0 mut P Ts2->T;Ps in methTypes(p,P,ms)
 //Ts'=mutToCapsule(Ts0) lent P mutToCapsule(Ts2) //this implies not fwd_or_fwd%_in Ts0,Ts2
 //(mVp)-------------------------------------------------------------------
@@ -81,7 +94,7 @@ public class AlternativeMethodTypes {
     if(retT==null){return null;}
     List<Type> ts = Map.of(t->mutToCapsule(t.getNT()),mt.getTs());
     ts.set(parNum, pN.withMdf(Mdf.Lent));
-    MethodType res= mt.withReturnType(retT).withTs(ts);
+    MethodType res= mt.withReturnType(retT).withTs(ts).withMdf(mutToCapsule(mt.getMdf()));
     if(WellFormednessCore.methodTypeWellFormed(res)){return res;}
     return null;
     }
@@ -95,7 +108,7 @@ public class AlternativeMethodTypes {
     if(retT.getMdf()!=Mdf.MutablePFwd){return null;}
     retT=retT.withMdf(Mdf.ImmutablePFwd);
     List<Type> ts = Map.of(t->mutToCapsuleAndFwdMutToFwdImm(t.getNT()),mt.getTs());
-    MethodType res= mt.withReturnType(retT).withTs(ts);
+    MethodType res= mt.withReturnType(retT).withTs(ts).withMdf(mutToCapsuleAndFwdMutToFwdImm(mt.getMdf()));
     if(WellFormednessCore.methodTypeWellFormed(res)){return res;}
     return null;
     }
@@ -109,7 +122,7 @@ public class AlternativeMethodTypes {
     if(retT.getMdf()!=Mdf.MutablePFwd){return null;}
     retT=retT.withMdf(Mdf.Readable);
     List<Type> ts = Map.of(t->mutToCapsuleAndFwdMutToRead(t.getNT()),mt.getTs());
-    MethodType res=mt.withReturnType(retT).withTs(ts);
+    MethodType res=mt.withReturnType(retT).withTs(ts).withMdf(mutToCapsuleAndFwdMutToRead(mt.getMdf()));
     if(WellFormednessCore.methodTypeWellFormed(res)){return res;}
     return null;
     }
@@ -143,4 +156,18 @@ public class AlternativeMethodTypes {
     }}
     return res;
   }
+  public static MethodType _firstMatchReturn(Program p,NormType nt,List<MethodType> mts){
+  for(MethodType mt:mts){
+    if(TypeSystem.subtype(p, mt.getReturnType().getNT(), nt)){return mt;}
+    }
+  return null;
   }
+
+public static MethodType _bestMatchMtype(Program p,MethodType superMt,List<MethodType> mts){
+  List<MethodType> res=new ArrayList<>();
+  for(MethodType mt:mts){
+   // if(TypeSystem.subtype(p, mt.getReturnType().getNT(), nt)){return mt;}
+  }
+  return null;//TODO: finish
+  }
+}

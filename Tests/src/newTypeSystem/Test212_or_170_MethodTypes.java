@@ -17,6 +17,7 @@ import ast.Ast.Mdf;
 import ast.Ast.MethodType;
 import ast.Ast.Path;
 import ast.Ast.Type;
+import auxiliaryGrammar.Functions;
 import auxiliaryGrammar.WellFormednessCore;
 import programReduction.Program;
 import programReduction.TestProgram;
@@ -47,19 +48,7 @@ static{
     }
   }
 static Program __p=TestProgram.p("{}");
-public static boolean methTSubtype(MethodType mSub,MethodType mSuper){
-  if (!newTypeSystem.TypeSystem.subtype(__p,mSub.getReturnType().getNT(),mSuper.getReturnType().getNT())){
-    return false;
-  }
-  if(mSub.getTs().size()!=mSuper.getTs().size()){return false;}
-  {int i=-1;for(Type tSub:mSub.getTs()){i+=1;Type tSuper=mSuper.getTs().get(i);
-    if (!newTypeSystem.TypeSystem.subtype(__p,tSuper.getNT(),tSub.getNT())){
-      return false;
-      }    
-  }}
-  //TODO: add mdf and exceptions
-  return true;
-  }
+
 
   @Test
   public void test1(){
@@ -70,7 +59,7 @@ public static boolean methTSubtype(MethodType mSub,MethodType mSuper){
     MethodType proto=new MethodType(true,Mdf.Capsule,
       Arrays.asList(_t.withMdf(Mdf.Mutable),_t.withMdf(Mdf.ImmutableFwd)),
       _t.withMdf(Mdf.ImmutablePFwd),Collections.emptyList());
-    proto=_mVp(proto,0);
+    proto=_mVp(proto,1);
     System.out.println(mtToS(proto));
 
   }
@@ -96,16 +85,16 @@ public static boolean methTSubtype(MethodType mSub,MethodType mSuper){
     for(MethodType mt:dataSet){
       MethodType base=mBase(mt);
       //test mVp(mNoFwd(mBase)) == mNoFwd(mVp(mBase))
-      {MethodType v1=_mVp(mNoFwd(base),0);
-      MethodType v2=_mVp(base,0); if(v2!=null){v2=mNoFwd(v2);}
+      {MethodType v1=_mVp(mNoFwd(base),1);
+      MethodType v2=_mVp(base,1); if(v2!=null){v2=mNoFwd(v2);}
       assert v2==null ||v1!=null; //v2 ok implies v1 ok
       //not assert v1==null ||v2!=null;//v1 ok imples v2 ok
       assert v2==null || v1.equals(v2):
         mtToS(v1)+" "+mtToS(v2);
       if(v1!=null && v2!=null){countA+=1;}
       }
-      {MethodType v1=_mVp(mNoFwd(base),1);
-      MethodType v2=_mVp(base,1); if(v2!=null){v2=mNoFwd(v2);}
+      {MethodType v1=_mVp(mNoFwd(base),2);
+      MethodType v2=_mVp(base,2); if(v2!=null){v2=mNoFwd(v2);}
       assert v2==null ||v1!=null; //v2 ok implies v1 ok
       //not assert v1==null ||v2!=null;//v1 ok imples v2 ok
       assert v2==null || v1.equals(v2):
@@ -127,8 +116,8 @@ public static boolean methTSubtype(MethodType mSub,MethodType mSuper){
     if(tryOk(mNoFwd(mt),"mNoFwd",past,map)){return true;}
     if(tryOk(_mC(mt),"mC",past,map)){return true;}
     if(tryOk(_mI(mt),"mI",past,map)){return true;}
-    if(tryOk(_mVp(mt,0),"mVp0",past,map)){return true;}
-    if(tryOk(_mVp(mt,1),"mVp1",past,map)){return true;}
+    if(tryOk(_mVp(mt,1),"mVp0",past,map)){return true;}
+    if(tryOk(_mVp(mt,2),"mVp1",past,map)){return true;}
     if(tryOk(_mImmFwd(mt),"mImmFwd",past,map)){return true;}
     if(tryOk(_mRead(mt),"mRead",past,map)){return true;}
     return false;
