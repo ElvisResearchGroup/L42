@@ -1,8 +1,11 @@
 package auxiliaryGrammar;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import ast.ExpCore;
 import ast.Ast.Mdf;
@@ -14,9 +17,35 @@ import ast.ExpCore.X;
 import ast.ExpCore.Block.Dec;
 import ast.ExpCore.Block.On;
 import coreVisitors.CollectPaths0;
+import newTypeSystem.TypeManipulation;
 import tools.Assertions;
+import ast.Ast.MethodType;
+import ast.Ast.Type;
 
 public class WellFormednessCore {
+  public static boolean methodTypeWellFormed(MethodType mt){
+  boolean r1=false;
+  boolean r2=false;
+  //if exists fwdImm _ in Ts then (return type).mdf in {mut, fwdMut, imm, fwdImm}
+  //if exists fwdMut _ in Ts then (return type).mdf in {mut, fwdMut}
+  for(Type t:mt.getTs()){
+    Mdf m=t.getNT().getMdf();
+    if(m==Mdf.ImmutableFwd){r1=true;}
+    if(m==Mdf.MutableFwd){r2=true;}
+    }
+  Mdf m=mt.getReturnType().getNT().getMdf();
+  if(r2){
+   if(m!=Mdf.Mutable && m!=Mdf.MutableFwd){return false;}
+  }
+  else if(r1){
+    if(m!=Mdf.Mutable && m!=Mdf.MutableFwd && m!=Mdf.Immutable && m!=Mdf.ImmutableFwd){return false;}
+  }
+  //TODO: do we want this extra restriction?
+  if(!r1&&!r2){//no fwd at all
+    if(TypeManipulation.fwd_or_fwdP_in(m)){return false;}
+    }
+  return true;
+  }
   //should replicate some of the other well formedness for sugared? even if already checked??
   public static void capsuleOnlyOnce(ExpCore.ClassB.NestedClass nc){
     countX(nc.getInner());

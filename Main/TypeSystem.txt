@@ -154,8 +154,10 @@ methTypes(p,P,ms)  Expressed as metarules
 //first managing placeholders
 
        p(P)(ms).mh[from P]=refine? mdf0 method T m(T1 x1,..Tn xn) exception Ps
+       T'=fwd% T if fwd_or_fwd%_in(Ts)
+       otherwise T'=T       
 (mBase)-------------------------------------------------------------------
-       mdf0 P T1..Tn-> fwd% T;Ps in methTypes(p,P,ms)
+       mdf0 P T1..Tn-> T';Ps in methTypes(p,P,ms)
  
          Ts->T;Ps in methTypes(p,P,ms) 
 (mNoFwd)-------------------------------------------------------------------
@@ -179,11 +181,13 @@ methTypes(p,P,ms)  Expressed as metarules
 (mVp)-------------------------------------------------------------------
      Ts'->toLent(T);Ps in methTypes(p,P,ms)
 
-    Ts->fwd%Mut P0;Ps in methTypes(p,P,ms)
+    Ts->fwd%Mut P0;Ps in methTypes(p,P,ms)//could be generalized to make fwdMut in fwdImm 
+    fwd_or_fwd%_in(Ts)
 (mImmFwd)-------------------------------------------------------------------
     mutToCapsuleAndFwdMutToFwdImm(Ts)->fwd%Imm P0;Ps in methTypes(p,P,ms)   
 
-    Ts->fwd%Mut P0;Ps in methTypes(p,P,ms)
+    Ts->fwd%Mut P0;Ps in methTypes(p,P,ms)//could be generalized to make fwdMut in read
+    fwd_or_fwd%_in(Ts)
 (mRead)-------------------------------------------------------------------
     mutToCapsuleAndFwdMutToRead(Ts)->read P0;Ps in methTypes(p,P,ms)
 
@@ -536,16 +540,26 @@ tsMCall(TSIn in,MCall e)->TSOut
   assert forall r in respMVP, r.isOk()
   return res=makeMCallOK(TSIn,respMVP,mTypeMVP)
 
+//Notes on mtypes obtained during testing:
+-noFwd(mImmFwd(base))!=mI(mRead(base)), for example if
+a read parameter is present in base, it becomes imm only on the left
+-they can be different, and none of the two 
+is always better (methT subtype)
+//----
 computeMTypes
   order of first list:
     base, //James comment: base and noFwd are in the right order, because the context can reject base in order to select noFwd
     noFwd(if diff from base (use .equals ?) ),
     if possible, mImmFwd(base)
     if possible, mRead(base)
-    zero or 1 of {mc,mi} based on noFwd(base), or noFwd(mImmFwd(base)) if mi(base) fails
+    zero or 1 of {mc,mi} based on noFwd(base),
+    if mi(noFwd(base)) fails, try
+      noFwd(mImmFwd(base)) and mI(mRead(base))
     1 mType for each mut parameter using mvp based on noFwd(base)
     1 mType for each mut parameter using mvp based on base
 
+//No need of second list? just search with ts,t all compatible return types
+and compute the most specific?
   order of second list:
     zero or 1 of {mc,mi} based on noFwd(base), or noFwd(mImmFwd(base)) if mi(base) fails
     if possible, mImmFwd(base) //MarcoToJames: non sure about the order of this and next line
