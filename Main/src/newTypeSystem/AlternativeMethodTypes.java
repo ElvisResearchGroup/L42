@@ -10,6 +10,7 @@ import coreVisitors.From;
 import programReduction.Program;
 import tools.Map;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ast.Ast.Mdf;
@@ -113,5 +114,33 @@ public class AlternativeMethodTypes {
     return null;
     }
   
-  
+  static void add(List<MethodType>l,MethodType t){
+    if(t==null){return;}
+    l.add(t);
+    }
+  static List<MethodType> types(Program p, Path P, MethodSelector ms){
+    List<MethodType>res=new ArrayList<>();
+    MethodType base=mBase(p,P,ms);
+    add(res,base);
+    MethodType mNoFwd=mBase(p,P,ms);
+    add(res,mNoFwd);
+    MethodType mImmFwd=_mImmFwd(base);
+    add(res,mImmFwd);
+    MethodType mRead=_mRead(base);
+    add(res, mRead);
+    add(res,_mC(base));
+    add(res,_mC(mNoFwd));
+    add(res,_mI(base));
+    if(mRead!=null){add(res,_mI(mRead));}
+    if(mImmFwd!=null){add(res,mNoFwd(mImmFwd));}  
+    {int i=-1;for(Type ti:base.getTs()){i+=1;
+      if(ti.getNT().getMdf()!=Mdf.Mutable){continue;}
+      add(res,_mVp(base,i)); //1 mType for each mut parameter
+      }}
+    {int i=-1;for(Type ti:mNoFwd.getTs()){i+=1;
+    if(ti.getNT().getMdf()!=Mdf.Mutable){continue;}
+    add(res,_mVp(mNoFwd,i)); //1 mType for each mut parameter
+    }}
+    return res;
+  }
   }
