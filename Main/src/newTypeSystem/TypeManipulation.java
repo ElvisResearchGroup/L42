@@ -191,18 +191,20 @@ public static Mdf mutToCapsuleAndFwdMutToFwdImm(Mdf m){
  if(m==Mdf.MutableFwd){return Mdf.ImmutableFwd;}
  return m;
  }
-public static NormType mutToCapsuleAndFwdMutToRead(NormType t){
+public static NormType mutToCapsuleAndFwdToRead(NormType t){
 //mutToCapsuleAndFwdMutToRead(T) //called f in the implementation
 //f(fwd%Mut P) undefined
 //f(mut P)=capsule P
-//f(fwdMut P)= read P 
+//f(fwdMut P)= read P
+//f(fwdImm P)= read P 
 //otherwise f(T)=T
-  return t.withMdf(mutToCapsuleAndFwdMutToRead(t.getMdf()));
+  return t.withMdf(mutToCapsuleAndFwdToRead(t.getMdf()));
   }
-public static Mdf mutToCapsuleAndFwdMutToRead(Mdf m){
+public static Mdf mutToCapsuleAndFwdToRead(Mdf m){
   assert m!=Mdf.MutablePFwd;
   if(m==Mdf.Mutable){return Mdf.Capsule;}
   if(m==Mdf.MutableFwd){return Mdf.Readable;}
+  if(m==Mdf.ImmutableFwd){return Mdf.Readable;}
   return m;
   }
 

@@ -48,7 +48,7 @@ public class TypeSystem {
 //only check mdf subtyping
 public static boolean _methMdfTSubtype(MethodType mSub,MethodType mSuper){
   if (!Functions.isSubtype(mSuper.getMdf(),mSub.getMdf())){return false;}
-  if (!Functions.isSubtype(mSuper.getReturnType().getNT().getMdf(),mSub.getReturnType().getNT().getMdf())){return false;}
+  if (!Functions.isSubtype(mSub.getReturnType().getNT().getMdf(),mSuper.getReturnType().getNT().getMdf())){return false;}
   {int i=-1;for(Type tSub:mSub.getTs()){i+=1;Type tSuper=mSuper.getTs().get(i);
   if (!Functions.isSubtype(tSuper.getNT().getMdf(),tSub.getNT().getMdf())){
     return false;

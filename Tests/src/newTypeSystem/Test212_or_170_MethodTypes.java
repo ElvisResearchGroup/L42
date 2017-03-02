@@ -3,6 +3,7 @@ package newTypeSystem;
 import java.util.ArrayList;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -170,6 +171,13 @@ static Program __p=TestProgram.p("{}");
       });
     return res[0];
     }
+  String mtsToS(Collection<MethodType> mts){
+  String[] res={""+mts.size()+"|"};
+  mts.forEach(m->{
+    res[0]+="\n    "+mtToS(m);
+    });
+  return res[0];
+  }
   String mtToS(MethodType mt){
     return mt.getTs().get(0).getNT().getMdf()+","+
            mt.getTs().get(1).getNT().getMdf()+"->"+
@@ -222,6 +230,51 @@ static Program __p=TestProgram.p("{}");
       if(mi.keySet().containsAll(m1s) && mi.keySet().containsAll(m2s)){return m3;}
       }
     return -1;
+    }
+  
+
+@Test
+public void listGenerateAllOfMap(){
+  for(MethodType mt:dataSet){
+    Map<MethodType, String> all = fixMap(mt);
+    List<MethodType> list = AlternativeMethodTypes.types(mt);
+    assert new HashSet<>(list).equals(all.keySet()):
+      mapToS(all)+"\n"+mtsToS(list);
+    }
+  }
+
+//False, correctly does not hold for fwd methods @Test
+public void listGenerateAtLeastMt(){
+  for(MethodType mt:dataSet){
+    List<MethodType> list = AlternativeMethodTypes.types(mt);
+    assert list.contains(mt):
+      mtToS(mt)+"\n"+mtsToS(list);
+    }
+  }
+
+
+//and subtype mdf dataset is equal of subtype mdf of all mt in map
+//(what method subtype to use for sum/redirect?)
+//if mt<mt' then forall mt'i in list(mt'), exists mti in list(mt) s.t. mti<mt'i
+  @Test
+  public void subtypeDirectImpliesSubtypeList(){
+    for(MethodType mt0:dataSet){
+      for(MethodType mt1:dataSet){
+        if(mt0==mt1){continue;}
+        if(!TypeSystem._methMdfTSubtype(mt0,mt1)){continue;}
+        assert TypeSystem.methTSubtype(__p, mt0,mt1):
+        mtToS(mt0)+"\n"+mtToS(mt1);
+        checkOne(mt0,mt1);
+        }
+      }
+    }
+  void checkOne(MethodType mt0,MethodType mt1){
+    List<MethodType> list0 = AlternativeMethodTypes.types(mt0);
+    List<MethodType> list1 = AlternativeMethodTypes.types(mt1);
+    for(MethodType mt1i:list1){
+      assert list0.stream().anyMatch(mt0i->TypeSystem._methMdfTSubtype(mt0i,mt1i)):
+        "\n"+mtToS(mt0)+"\n"+mtToS(mt1)+"\n"+mtToS(mt1i)+"\n"+mtsToS(list0);
+      }
     }
   }
 

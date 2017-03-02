@@ -98,10 +98,11 @@ mutToCapsuleAndFwdMutToFwdImm(T) //used for parameters//called f in the implemen
   f(fwdMut P)= fwdImm P 
   otherwise f(T)=T
 
-mutToCapsuleAndFwdMutToRead(T) //used for parameters//called f in the implementation
+mutToCapsuleAndFwdRead(T) //used for parameters//called f in the implementation
   f(fwd%Mut P) undefined
   f(mut P)=capsule P
-  f(fwdMut P)= read P 
+  f(fwdMut P)= read P
+  f(fwdImm P)= read P 
   otherwise f(T)=T
 
 
@@ -168,7 +169,7 @@ methTypes(p,P,ms)  Expressed as metarules
 (mC)-------------------------------------------------------------------
     mutToCapsule(Ts)->capsule P0;Ps in methTypes(p,P,ms)
 
-    Ts->read P0;Ps in methTypes(p,P,ms) //by well formedness if return type is read, not fwd_or_fwd%_in Ts
+    Ts->read/*or lent*/ P0;Ps in methTypes(p,P,ms) //by well formedness if return type is read, not fwd_or_fwd%_in Ts
 (mI)-------------------------------------------------------------------
     toImmOrCapsule(Ts)->imm P0;Ps in methTypes(p,P,ms) 
     //the behaviour of immorcapsule on fwd is not relevant since the method
@@ -189,7 +190,7 @@ methTypes(p,P,ms)  Expressed as metarules
     Ts->fwd%Mut P0;Ps in methTypes(p,P,ms)//could be generalized to make fwdMut in read
     fwd_or_fwd%_in(Ts)
 (mRead)-------------------------------------------------------------------
-    mutToCapsuleAndFwdMutToRead(Ts)->read P0;Ps in methTypes(p,P,ms)
+    mutToCapsuleAndFwdRead(Ts)->read P0;Ps in methTypes(p,P,ms)
 
 --------------------------------------------
 3 ExpressionTypeJudgement

@@ -64,7 +64,7 @@ public class AlternativeMethodTypes {
 ////the behaviour of immorcapsule on fwd is not relevant since the method
 //// returns a read and will be not well formed if it had fwd parameters
     NormType retT=mt.getReturnType().getNT();
-    if(retT.getMdf()!=Mdf.Readable){return null;}
+    if(retT.getMdf()!=Mdf.Readable ||retT.getMdf()!=Mdf.Lent){return null;}
     retT=retT.withMdf(Mdf.Immutable);
     List<Type> ts = Map.of(t->toImmOrCapsule(t.getNT()),mt.getTs());
     return mt.withReturnType(retT).withTs(ts).withMdf(toImmOrCapsule(mt.getMdf()));
@@ -116,13 +116,13 @@ public class AlternativeMethodTypes {
 //Ts->fwd%Mut P0;Ps in methTypes(p,P,ms)
 //fwd_or_fwd%_in(Ts)
 //(mRead)-------------------------------------------------------------------
-//mutToCapsuleAndFwdMutToRead(Ts)->read P0;Ps in methTypes(p,P,ms)
+//mutToCapsuleAndFwdToRead(Ts)->read P0;Ps in methTypes(p,P,ms)
     if(!TypeManipulation.fwd_or_fwdP_in(mt.getTs())){return null;}
     NormType retT=mt.getReturnType().getNT();
     if(retT.getMdf()!=Mdf.MutablePFwd){return null;}
     retT=retT.withMdf(Mdf.Readable);
-    List<Type> ts = Map.of(t->mutToCapsuleAndFwdMutToRead(t.getNT()),mt.getTs());
-    MethodType res=mt.withReturnType(retT).withTs(ts).withMdf(mutToCapsuleAndFwdMutToRead(mt.getMdf()));
+    List<Type> ts = Map.of(t->mutToCapsuleAndFwdToRead(t.getNT()),mt.getTs());
+    MethodType res=mt.withReturnType(retT).withTs(ts).withMdf(mutToCapsuleAndFwdToRead(mt.getMdf()));
     if(WellFormednessCore.methodTypeWellFormed(res)){return res;}
     return null;
     }
@@ -132,10 +132,16 @@ public class AlternativeMethodTypes {
     l.add(t);
     }
   static List<MethodType> types(Program p, Path P, MethodSelector ms){
+    MethodWithType mwt = (MethodWithType) p.extractClassB(P)._getMember(ms);
+    assert mwt!=null;
+    MethodType mt=From.from(mwt.getMt(),P);
+    return types(mt);
+  }
+  static List<MethodType> types(MethodType mt){
     List<MethodType>res=new ArrayList<>();
-    MethodType base=mBase(p,P,ms);
+    MethodType base=mBase(mt);
     add(res,base);
-    MethodType mNoFwd=mBase(p,P,ms);
+    MethodType mNoFwd=mNoFwd(base);
     add(res,mNoFwd);
     MethodType mImmFwd=_mImmFwd(base);
     add(res,mImmFwd);
@@ -146,11 +152,14 @@ public class AlternativeMethodTypes {
     add(res,_mI(base));
     if(mRead!=null){add(res,_mI(mRead));}
     if(mImmFwd!=null){add(res,mNoFwd(mImmFwd));}  
-    {int i=-1;for(Type ti:base.getTs()){i+=1;
+    if(mt.getMdf()==Mdf.Mutable){add(res,_mVp(base,0));}
+    //later, 0 for mvp is the receiver so is ok to start from 1
+    {int i=0;for(Type ti:base.getTs()){i+=1;
       if(ti.getNT().getMdf()!=Mdf.Mutable){continue;}
       add(res,_mVp(base,i)); //1 mType for each mut parameter
       }}
-    {int i=-1;for(Type ti:mNoFwd.getTs()){i+=1;
+    if(mt.getMdf()==Mdf.Mutable){add(res,_mVp(mNoFwd,0));}
+    {int i=0;for(Type ti:mNoFwd.getTs()){i+=1;
     if(ti.getNT().getMdf()!=Mdf.Mutable){continue;}
     add(res,_mVp(mNoFwd,i)); //1 mType for each mut parameter
     }}
