@@ -102,7 +102,7 @@ mutToCapsuleAndFwdRead(T) //used for parameters//called f in the implementation
   f(fwd%Mut P) undefined
   f(mut P)=capsule P
   f(fwdMut P)= read P
-  f(fwdImm P)= read P 
+  f(fwdImm P)= imm P //Note: read here would be unsound 
   otherwise f(T)=T
 
 
@@ -123,18 +123,28 @@ mostGeneralMdf(throw,Tr)
 
 mostGeneralMdf(mdfs)
   mostGeneralMdf(mdfs)=mdf //assert fwd and fwd% not in mdfs
+  case by exclusion:
     if mdfs=mdf', then mdf=mdf' //that is the only way mdf=class
-  otherwise if class in mdfs, then undefined
-  otherwise if read in mdfs, mdf=read
-  //TODO: is this line needed? otherwise if capsule in mdfs, then mdf=mostGeneralMdf(mdfs\capsule)
-  //from now on, we have at least two of those:lent, mut, imm //Note: fwd and fwd% are cutted out in the throw rule
-  otherwise if imm in mdfs, mdf=read
-  otherwise mdf=lent
+    if class in mdfs, then undefined
+    if {mdfs}={capsule,imm} mdf=imm
+    if fwd_or_fwd%_in(mdfs) {
+      if read,lent in mdfs, then undefined
+      if imm,mut in noFwd(mdfs) then undefined
+      //we know: more then one, no read/lent, either all imm side or mut side
+      if fwdImm in mdfs mdf=fwdImm
+      if fwdMut in mdfs mdf=fwdMut
+      if fwd%Mut in mdfs mdf=fwd%Mut
+      if fwd%Imm in mdfs mdf=fwd%Imm
+      }
+    if read in mdfs, mdf=read
+    if imm in mdfs, mdf=read
+    mdf=lent
   //set oriented definition from james: mostGeneralMdf(mdfs) = mdf0 such that 
   //forall mdf1 in mdfs, mdf1 <= mdf0
   //forall mdf2
   //  either mdf0 <= mdf2
-  //  or exists mdf3 in mdfs  not mdf3 <= mdf2
+  //  or exists mdf3 in mdfs  not mdf3 <= mdf2 
+  //Marco can not understand the former line. Is the set definition equal to the current(updated) version?
 
 //liberal use of desugaring in the line under
 catchRethrow(k) iff k=catch throw Any x ((e catch error Any z void void) throw x)
@@ -224,6 +234,7 @@ D |- void~> void:imm Void <= T | emptyTr
 D |- P~>P:class P <= T | emptyTr
   where
   D.p|-class P <= T
+  assert p(P) well defined
 
 (library propagation)
 D |- L ~> L' : imm Library <= T | emptyTr
@@ -249,7 +260,7 @@ D |- loop e ~> loop e' : imm Void <= T | Tr
           // and T3 is the type of the value thrown, this allows to use alternative method typing
 D |- throw[_,_] e~> throw[T0,T3] e' : T0 <= T0 | Tr
   where
-  T1 = resolve(D.p,guessType(D.G,e))
+  T1 = resolve(D.p,guessType(D.G,e))// Note, resolves and guessTypes can go in error, and need to become a type error here
   if throw=exception, T2= imm T1.P and Tr=Ts;Ps,P
   if throw=error,     T2= imm T1.P and Tr=Ts;Ps
   if throw=return,    T2= (fwd T1) and Tr=(Ts,T3);Ps 
@@ -259,8 +270,8 @@ D |- throw[_,_] e~> throw[T0,T3] e' : T0 <= T0 | Tr
 D |-  e0.m[_](x1:e1..Xn:en) ~> e'0.m[P0](x1:e'1..xn:e'n)  : T <= T'| Tr0 U..U Trn U (empty;Ps)
   //e0 will be of form chain
   where
-  resolve(D.p,guessType(D.G,e0))= _ P0 //assert T'0.P=P0
-  T0..Tn->T;Ps in methTypes(p,P0,m(x1..xn))
+  resolve(D.p,guessType(D.G,e0))= _ P0 //assert T'0.P=P0 //again, can go in error resolve+guess
+  T0..Tn->T;Ps in methTypes(p,P0,m(x1..xn)) //can not be avaible, find skeme of error similar to before for guess?
   D.p|-T <= T'
   forall i 0..n D|- ei ~> e'i : T'i <=Ti | Tri //T'0 is correctly a free variable    
   
@@ -268,6 +279,7 @@ D |-  e0.m[_](x1:e1..Xn:en) ~> e'0.m[P0](x1:e'1..xn:e'n)  : T <= T'| Tr0 U..U Tr
  D |- use P check m(x1:e1.. xn:en) e0 ~>use P check m(x1:e'1.. xn:e'n) e'0 :T0 <= T | Tr0 U..U Trn
  where
    plugin(D.p,P,m(x1..xn))=plg, T1..Tn->T0;empty //plg is a free variable, in the small step reduction would be the function representing the behaviour
+   //plugin/meth not found error
    D.p|-T0 <= T
    forall i 0..n D|- ei ~> e'i : T'i <=Ti |Tri
 //Note: what happen if a parameter take mut and the plugin throw error w.r.t. strong error safety? can we catch it soon?
@@ -281,9 +293,12 @@ Phase| p| G |- (ds  ks  e0  [_]) ~>(ds' ks' e'0 [T])
   G'=G/dom(ds)
   Phase| p| G'[ks] |- ds ~> ds' |Tr' | G0
   //[ks] removes fwdMut, but we wonder if they could stay and all would be sound?
-  Phase| p| G'| Tr1 U .. U Trn |- ks~> ks' : Ts <= T' | Tr
+  //here we have the info to capture a failure about ds and discover if 
+  //extant name (fwd[%]* x) was hidden by error safety or  modifiable name (capsule/mut/lent x)
+  //was locked by error safety[cite the line number of the catch]
+  Phase| p| G'| Tr' |- ks~> ks' : Ts <= T' | Tr
   Phase| p| G'[G0\dom(G')] |- e0~>e'0:T0 <=T' | Tr0
-  T= mostGeneralMdf({T0.mdf,Ts.mdfs}) T'.P
+  T= mostGeneralMdf({T0.mdf,Ts.mdfs}) T'.P //set of Mdfs admits no single most general mdf
   // assert D.p|-T <= T'
 
 (ds)  // G is clipped for error safety; G2 is clipped and complete
@@ -297,7 +312,7 @@ Phase| p| G |- T0  x0=e0 ..Tn  xn=en, ds ~>
   for i in 0..n Phase| p| G1|-ei~>e'i: _ <= fwd% T'i | Tri
   Tr=Tr0 U .. U Trn
   if fwd_or_fwd%_in Tr.Ts
-    then x1..xn disjoint FV(e0..en)
+    then x1..xn disjoint FV(e0..en)//returning unresolved items from cycles is prohibited
   if fwd_or_fwd%_in { G(x) | x in FV(e0..en) } // x0..xn already excluded
     then G0=G[fwd%(G')]
     otherwise G0=G[G']
@@ -321,8 +336,10 @@ D| Tr |-k1..kn ~> k'1..k'n:T1..Tn <= T | Tr1 U .. U Trn
 
 Phase| p| G| Tr' |- catch throw T0 x e ~> catch throw resolve(p,T0).P x e' :T2 <= T | Tr
   where
-  mdf1 = mostGeneralMdf(throw,Tr')
-  T1 = mdf1 resolve (p, T0).P
+  mdf1 = mostGeneralMdf(throw,Tr') //set of Mdfs admits no single most general mdf
+  //inconsistent set of thrown things, which do not share a most
+  //general modifier [list of line numbers of the throws]
+  T1 = mdf1 resolve (p, T0).P //resolve can fail
   not catchRethrow(catch throw T1 x e)
   Phase| p| G[x:T1]|- e ~> e' : T2 <= T | Tr
 
@@ -386,6 +403,7 @@ Phase |- p ~> L' //In implementation, if p.top().Phase>=Phase, L'=p.Top()
    forall i in 1..n
      Phase| p| Ps |- Mi ~> Mi'
    if Phase=Coherent then coherent(p.updateTop(L'))
+   //or error not coherent set of abstr. methods:list
 
 (member nested)
 Phase| p| Ps |-C:L ~>  C:L'
@@ -406,10 +424,12 @@ Phase| p| Ps |-M ~> M'
   refine? = refine <=> 
     forall P in Ps such that p(P)(m(x1..xn))[from P]=M0 //that is, is defined
       all of the following hold:
-      M0=mdf method T' m(T'1 x1..T'n xn)exceptions Ps'
-      p|-T<= T'
-      p.equiv(T1,T'1)..p.equiv(Tn,T'n)
-      forall Pi in Ps0 exists Pj in Ps' such that p |- Pi<=Pj 
+      M0=refine?' mdf method T' m(T'1 x1..T'n xn)exceptions Ps'
+      p|-T<= T' //method returns a type which is not a sybtype of its ancestor "name" or worst, ancestor do not define method named m(xs)
+      p.equiv(T1,T'1)..p.equiv(Tn,T'n) //invalid type w.r.t. ancestor paramerer xi   
+      forall Pi in Ps0 exists Pj in Ps' such that p |- Pi<=Pj
+      //or error: leaked exception P is not the subtype of a declared exception
+      /or  method declares an exception (P) which is not a subtype of ancestor exceptions 
 
 
 coherent(p) //interfaces are always coherent
@@ -507,6 +527,7 @@ tsMCall(TSIn in,MCall e)->TSOut
   // 1 select the first match with acceptable return type
   mType=_firstMatchReturn(TSIn.T,mTypes)
   if mType==null return res=Error???
+  //unachievable return type (T) for method (P.ms) [line numbers of expression and declaration]
   //2 type all the parameters with mutOnlyToLent(Ts) //we may include mutOnlyToLent in the computation of the MTypes, instead of in the loop below
   resp=TSOut[with ei in e.es.withAlso(left:e.receiver), Ti in mTypes.Ts
     resi=ts(in.with(e:ei, t:mutOnlyToLent(Ti)))

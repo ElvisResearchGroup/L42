@@ -1,0 +1,17 @@
+Here we should collect common misunderstanding that can
+arise about 42 semantic
+1----
+in a block, a value thrown in a catch, leaks out of the whole block.
+NOT in the next catch/paragraph-catch
+2------
+var Foo x is
+a label called x that can be attached to many different
+immutable Foo.
+
+mut Foo x is
+a permanent super glued label, initialized on a mutable Foo.
+
+3------
+metaprogramming is "functional" in the sense that new code is created
+but there is no way to modify old code.
+
