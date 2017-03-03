@@ -2,25 +2,34 @@ package newTypeSystem;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
+import ast.Ast.MethodType;
+import ast.Ast.NormType;
 import ast.Ast.Path;
 import ast.Ast.Type;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.MethodWithType;
 import ast.ExpCore.ClassB.NestedClass;
 import ast.ExpCore.ClassB.Phase;
+import auxiliaryGrammar.Functions;
+import coreVisitors.From;
 import programReduction.Norm;
 import programReduction.Program;
 import tools.Assertions;
+import ast.Ast.Mdf;
 
 public class TypeLibrary {
+  TypeSystem outerTyper;
+  TypeLibrary(TypeSystem outerTyper){this.outerTyper=outerTyper;}
 
-    public static TOut type(TIn in) {
+    public TOut type(TIn in) {
     // TODO Auto-generated method stub
     return null;
     }
     
-    public static TOut libraryShallowNorm(TIn in) {
+    public TOut libraryShallowNorm(TIn in) {
     //(library shallow norm)
     //Norm  |- p ~> norm(p)  //remember: norm ignores meth bodies
     ////assert forall P in norm(p).Ps p(P).Phase>=Norm
@@ -28,12 +37,11 @@ public class TypeLibrary {
     return new TOk(in,normP,Path.Library().toImmNT());
     }
 
-    private static ClassB normTopL(TIn in) throws Error {
+    private ClassB normTopL(TIn in) throws Error {
     ClassB normP;
     try{normP=new Norm().norm(in.p);}
     catch(RuntimeException exc){
       throw Assertions.codeNotReachable("not implemented yet");
-      //TODO: try catch and wrap norm errors
     }
     assert normP.getSupertypes().stream().allMatch(
       t->{
@@ -43,7 +51,7 @@ public class TypeLibrary {
     return normP;
     }
     
-    public static TOut libraryWellTyped(TIn in) {
+    public TOut libraryWellTyped(TIn in) {
 //   (library well typed)
 //   Phase |- p ~> L' //In implementation, if p.top().Phase>=Phase, L'=p.Top()
      ClassB top=in.p.top();
@@ -82,12 +90,7 @@ public class TypeLibrary {
     return null;
     }
 
-    private static boolean coherent(Program updateTop) {
-    // TODO Auto-generated method stub
-    return false;
-    }
-
-    private static TOutM memberNested(newTypeSystem.TIn in, NestedClass nc) {
+    private TOutM memberNested(newTypeSystem.TIn in, NestedClass nc) {
     //(member nested)
     //Phase| p| Ps |-C:L ~>  C:L'
     //   where
@@ -98,9 +101,166 @@ public class TypeLibrary {
     return new TOkM(nc.withInner(res.toOk().annotated));
     }
 
-    private static TOutM memberMethod(TIn in, List<Type> supertypes, MethodWithType mwt) {
+    private TOutM memberMethod(TIn in, List<Type> supertypes, MethodWithType mwt) {
+//(member method)
+//Phase| p| Ps |-M ~> M'
+//  where
+//  M =refine? mdf method T m(T1 x1 .. Tn xn)exceptions Ps0 e?
+//  M'=refine? mdf method T m(T1 x1 .. Tn xn)exceptions Ps0 e?'
+//  G=this:mdf This0,x1:T1,..,xn:Tn
+//  if e?=e then
+//  Typed| p| G |- e ~>  e?':_ <=fwd% T | empty;Ps1
+//  forall P1 in Ps1 exists P0 in Ps0 such that p|-P1<=P0
+//else
+//  e?=e?'
+    MethodWithType mwt1;
+    if(!mwt.get_inner().isPresent()){
+      mwt1=mwt;
+    }
+    else{
+      TIn newIn=in.freshGFromMt(mwt);
+      TOut out=outerTyper.type(newIn);
+      if(!out.isOk()){throw Assertions.codeNotReachable();}
+      for(Path P1: out.toOk().exceptions){
+        //exists P0 in Ps0 such that p|-P1<=P0
+        boolean ok=mwt.getMt().getExceptions().stream().anyMatch(
+          P0->TypeSystem.subtype(newIn.p, P1, P0.getNT().getPath()));
+        if(!ok){throw Assertions.codeNotReachable();}
+        }
+      mwt1=mwt.with_inner(Optional.of(out.toOk().annotated));
+    }
+    if(mwt.getMt().isRefine()){
+//  refine? = refine <=> 
+//    forall P in Ps such that p(P)(m(x1..xn))[from P]=M0 //that is, is defined
+//      all of the following hold:
+//      M0=refine?' mdf method T' m(T'1 x1..T'n xn)exceptions Ps'
+//      p|-T<= T' //method returns a type which is not a sybtype of its ancestor "name" or worst, ancestor do not define method named m(xs)
+//      p.equiv(T1,T'1)..p.equiv(Tn,T'n) //invalid type w.r.t. ancestor paramerer xi   
+//      forall Pi in Ps0 exists Pj in Ps' such that p |- Pi<=Pj
+//      //or error: leaked exception P is not the subtype of a declared exception
+//      /or  method declares an exception (P) which is not a subtype of ancestor exceptions 
+      for(Type t :supertypes){
+        Path P=t.getNT().getPath();
+        ClassB cbP=in.p.extractClassB(P);
+        MethodWithType mwtP=(MethodWithType) cbP._getMember(mwt.getMs());
+        if(mwtP==null){continue;}
+        MethodType M0=From.from(mwtP.getMt(),P);
+        if(!TypeSystem.subtype(in.p, mwt.getMt().getReturnType().getNT(),M0.getReturnType().getNT())){
+          throw Assertions.codeNotReachable();
+          }
+        {int i=-1;for(Type Ti:mwt.getMt().getTs()){i+=1; Type T1i=M0.getTs().get(i);
+          if(!in.p.equiv(Ti.getNT(),T1i.getNT())){throw Assertions.codeNotReachable();}
+        }}
+        for(Type Pi: mwt.getMt().getExceptions()){
+          //exists Pj in Ps' such that p |- Pi<=Pj
+          boolean ok=M0.getExceptions().stream().anyMatch(Pj->TypeSystem.subtype(in.p, Pi.getNT().getPath(), Pj.getNT().getPath()));
+          if(!ok){throw Assertions.codeNotReachable();}
+          }
+        }
+      }
+    return new TOkM(mwt1);
+    }
+
+    
+    private boolean coherent(Program p) {
+      ClassB top=p.top();
+      if (top.isInterface()){return true;}
+      List<MethodWithType> stateC=top.getMs().stream()
+      .map(m->(MethodWithType)m)
+      .filter(m->!m.get_inner().isPresent())
+      .sorted((m1,m2)->m1.getMt().getMdf()==Mdf.Class?1:-1)
+      .collect(Collectors.toList());
+      if(stateC.isEmpty()){return true;}
+      MethodWithType ck=stateC.get(0);
+      if(!coherentK(p,ck)){return false;}
+      for(MethodWithType mwt:stateC.subList(1,stateC.size())){
+        if(!coherentF(p,ck,mwt)){return false;}
+      }
+      return true;
+    }
+//coherent(p) //interfaces are always coherent
+//  where
+//  p.top()={interface implements _ mwts ncs}
+    
+//coherent(p)  //classes are coherent if they have a coherent set of abstract methods
+//  where
+//  p.top()={implements _ mwts' ncs} //note, no interface
+//  mwts={mwt in mwts'| mwt.e undefined } //collect the abstract methods
+//  either mwts is empty or
+//    there is exactly 1 class method, and (after removing fwds) have //may make more formal this line
+//    (T x)s parameters and n? such that 
+//      all T in (T x)s are mut, imm, class or capsule //thus, no read/lent
+//      forall mwt in mwts coherent(n?,p,(T x)s, mwt) //all abstract methods are coherent according to those fields
+      
+//m[n]==m_$_n
+//m[]==m
+      
+//coherent(n?,p,T1 x1..Tn xn,
+//      refine? class method T m[n?] (T1' x1..Tn' xn) exception _)
+//  where
+//    p|-mut This0 <=T and p|-Ti'<=fwd Ti
+
+//coherent(n?,p,T1 x1..Tn xn,
+//    refine? mdf method T m[n?]() exception _)
+//  where
+//  m=#?xi
+//  either
+//    mdf=mut and p|-capsuleToLent(Ti)<=T //exposer
+//  or 
+//    mdf=read and p|-toRead(Ti)<=T //getter //note for James, toRead need to keep imm as imm, toRead code reverted again :)
+  
+//coherent(n?,p,T1 x1..Tn xn,
+//    refine? mut method Void m[n?](T that) exception _)
+//  where
+//  m=#?xi
+//  p|-T<=Ti//setter
+
+
+    private boolean coherentF(Program p,MethodWithType ck, MethodWithType mwt) {
+      MethodType mt=mwt.getMt();
+      Mdf m=mt.getMdf();
+      if(mwt.getMs().getUniqueNum()!=ck.getMs().getUniqueNum()){return false;}
+      NormType Ti=_extractTi(ck,mwt.getMs().getName());// internally do noFwd
+      if (Ti==null){return false;}
+      //if(m==Mdf.Class){return false;}
+      if(m==Mdf.Readable){//getter
+        if(!mt.getTs().isEmpty()){return false;}
+        NormType Ti_=TypeManipulation._toRead(Ti);
+        if (Ti_==null){return false;}//p|-toRead(Ti)<=T
+        if(!TypeSystem.subtype(p, Ti_,mt.getReturnType().getNT())){return false;}
+        return true;
+      }
+      if(m!=Mdf.Mutable){return false;}
+      //exposer/setter
+      if(mt.getTs().isEmpty()){//exposer
+      NormType Ti_=TypeManipulation.capsuleToLent(Ti);
+      if (Ti_==null){return false;}//p|-capsuleToLent(Ti)<=T
+      if(!TypeSystem.subtype(p, Ti_,mt.getReturnType().getNT())){return false;}
+      }
+      //setter refine? mut method Void m[n?](T that)
+      if(!mt.getReturnType().equals(NormType.immVoid)){return false;}
+      if(mt.getTs().size()!=1){return false;}
+      if(!mwt.getMs().getNames().get(0).equals("that")){return false;}
+      if(!TypeSystem.subtype(p, Ti,mt.getTs().get(0).getNT())){return false;}
+      return true;
+    }
+
+    private NormType _extractTi(MethodWithType ck, String name) {
     // TODO Auto-generated method stub
+    //TypeManipulation.noFwd(
     return null;
     }
 
+    private boolean coherentK(Program p,MethodWithType ck) {
+      MethodType mt=ck.getMt();
+      if(mt.getMdf()!=Mdf.Class){return false;}
+      NormType rt=mt.getReturnType().getNT();
+      if(!TypeSystem.subtype(p, Path.outer(0),rt.getPath())){return false;}
+      if(!Functions.isSubtype(Mdf.Mutable,rt.getMdf())){return false;}
+      for(Type ti:mt.getTs()){
+        Mdf mi=ti.getNT().getMdf();
+        if(mi==Mdf.Readable || mi==Mdf.Lent){return false;}
+        }
+      return true;
+    }
 }

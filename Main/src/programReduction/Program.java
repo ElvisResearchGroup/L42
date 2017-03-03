@@ -64,7 +64,9 @@ public interface Program {//this class will eventually replace auxiliaryDefiniti
         }
       }
     }
- 
+  default boolean equiv(Ast.NormType t, Ast.NormType t1){
+    return t.getMdf()==t1.getMdf() && equiv(t.getPath(),t1.getPath());
+    }
   
   default ExpCore.ClassB get(int n){
     assert n>=0;

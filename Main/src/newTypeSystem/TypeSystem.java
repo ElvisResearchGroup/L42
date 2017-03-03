@@ -1,8 +1,10 @@
 package newTypeSystem;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -14,6 +16,7 @@ import ast.Ast.SignalKind;
 import ast.Ast.Type;
 import ast.ExpCore;
 import ast.Ast.C;
+import ast.Ast.Doc;
 import ast.Ast.Mdf;
 import ast.Ast.MethodType;
 import ast.ExpCore.Block;
@@ -115,7 +118,7 @@ public static boolean methTSubtype(Program p,MethodType mSub,MethodType mSuper){
 class TIn{
   Phase phase;
   Program p;
-  HashMap<String,NormType>g=new HashMap<>();//could be two arrays for efficiency
+  Map<String,NormType>g=Collections.emptyMap();//could be two arrays for efficiency
   ExpCore e;
   NormType expected;
   TIn(Phase phase,Program p,ExpCore e,NormType expected){
@@ -162,6 +165,20 @@ class TIn{
       }
     return res;
     }
+  public TIn freshGFromMt(MethodWithType mwt){
+  MethodType mt=mwt.getMt();
+  assert mwt.get_inner().isPresent();
+  TIn res=gClean();
+  res.e=mwt.getInner();
+  res.expected=TypeManipulation.fwdP(mt.getReturnType().getNT());
+  g.put("this",new NormType(mt.getMdf(),Path.outer(0),Doc.empty()));
+  {int i=-1;for(String x:mwt.getMs().getNames()){i+=1;
+    NormType ntx=mt.getTs().get(i).getNT();
+    res.g.put(x,ntx);
+    }}
+  return res;
+  }
+
   public NormType g(String x){
     NormType res=this.g.get(x);
     assert res!=null;
