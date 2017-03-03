@@ -12,10 +12,6 @@ import ast.ExpCore.Signal;
 import ast.ExpCore.Using;
 import ast.ExpCore.X;
 import ast.ExpCore._void;
-import newTypeSystem.TypeSystem.TIn;
-import newTypeSystem.TypeSystem.TOut;
-import newTypeSystem.TypeSystem.TOk;
-import newTypeSystem.TypeSystem.TErr;
 
 public class TsOperations {
 
@@ -75,7 +71,7 @@ public class TsOperations {
       TErr out=new TErr(in,"-----------",t);
       return out;  
       }
-    TOut out=TypeLibrary.type(in.phase,in.withP(in.p.evilPush(s)));
+    TOut out=TypeLibrary.type(in.withP(in.p.evilPush(s)));
     if(out.isOk()){return new TOk(in,s,t);}
     return out.toError().enrich(in);
     }

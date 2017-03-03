@@ -159,13 +159,17 @@ public interface ExpCore {
         .collect(Collectors.toList());
       }    
     @Override public <T> T accept(coreVisitors.Visitor<T> v) {return v.visit(this);}
-    public static enum Phase{None,Norm,Typed;
+    public static enum Phase{None,Norm,Typed,Coherent;
     public Phase acc(Phase other){
       if(this==other){return this;}
       if(other==Typed){return this;}
       if(this==Typed){return other;}
       return None;
-      }}
+      }
+    public boolean subtypeEq(Phase that){
+      return this.ordinal()>=that.ordinal();
+      }
+    }
     public interface Member extends HasPos, WithInner<Member> {
       <T> T match(Function<NestedClass, T> nc, Function<MethodImplemented, T> mi, Function<MethodWithType, T> mt);
       }

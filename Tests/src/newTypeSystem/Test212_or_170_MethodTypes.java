@@ -253,7 +253,7 @@ public void listGenerateAtLeastMt(){
   }
 
 
-//and subtype mdf dataset is equal of subtype mdf of all mt in map
+//subtype mdf dataset is equal of subtype mdf of all mt in map
 //(what method subtype to use for sum/redirect?)
 //if mt<mt' then forall mt'i in list(mt'), exists mti in list(mt) s.t. mti<mt'i
   @Test

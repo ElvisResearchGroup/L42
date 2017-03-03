@@ -12,8 +12,6 @@ import ast.Ast.NormType;
 import ast.Ast.Type;
 import ast.Ast.Path;
 import ast.Ast.SignalKind;
-import newTypeSystem.TypeSystem.TIn;
-import newTypeSystem.TypeSystem.TOk;
 import ast.Ast;
 import ast.ExpCore;
 
