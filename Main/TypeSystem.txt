@@ -599,6 +599,17 @@ memoizeTSRes(in,res)
   assert map(in)==null
   return map.put(in,res)
   
+  -------------
+  Erorr structors and error improvments:
+  -error safety interact badly with error messages:
+    can we retype without error safety to discover where is the problem?
+    can we identify when a certain variable is hidden/demotes?
+  
+  
+  
+  
+  
+  
 ----------------
 Notes:
 Coherent and union types:
