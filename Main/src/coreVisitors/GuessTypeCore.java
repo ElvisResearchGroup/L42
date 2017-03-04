@@ -30,7 +30,7 @@ import auxiliaryGrammar.Functions;
 import auxiliaryGrammar.Norm;
 import auxiliaryGrammar.Program;
 import ast.Ast.Type;
-
+//TODO: kill
 public class GuessTypeCore implements Visitor<Path>{
   Program p;
   HashMap<String, Type> varEnv;

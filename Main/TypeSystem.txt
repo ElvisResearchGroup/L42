@@ -128,8 +128,8 @@ mostGeneralMdf(mdfs)//TODO: update code
     if class in mdfs, then undefined
     if {mdfs}={capsule,imm} mdf=imm
     if fwd_or_fwd%_in(mdfs) {
-      if read,lent in mdfs, then undefined
-      if imm,mut in noFwd(mdfs) then undefined
+      if read or lent in mdfs, then undefined
+      if imm and mut both in noFwd(mdfs) then undefined
       //we know: more then one, no read/lent, either all imm side or mut side
       if fwdImm in mdfs mdf=fwdImm
       if fwdMut in mdfs mdf=fwdMut
@@ -140,12 +140,12 @@ mostGeneralMdf(mdfs)//TODO: update code
     if imm in mdfs, mdf=read
     mdf=lent
   //set oriented definition from james: mostGeneralMdf(mdfs) = mdf0 such that 
-  //forall mdf1 in mdfs, mdf1 <= mdf0
-  //forall mdf2
-  //  either mdf0 <= mdf2
-  //  or exists mdf3 in mdfs  not mdf3 <= mdf2 
-  //Marco can not understand the former line. Is the set definition equal to the current(updated) version?
-
+  //generalEnough(mdfs)
+  //  mdf | forall mdf1 in mdfs, mdf1 <= mdf
+  //mostGeneralMdf(mdfs)
+  //mdf = generalEnough(mdfs) such that
+  //  forall mdf1 = generalEnough(mdfs) mdf <= mdf1
+  // that is, the most speficic generalEnough.
 //liberal use of desugaring in the line under
 catchRethrow(k) iff k=catch throw Any x ((e catch error Any z void void) throw x)
 
@@ -191,7 +191,7 @@ methTypes(p,P,ms)  Expressed as metarules
      Ts'=mutToCapsule(Ts0) lent P mutToCapsule(Ts2) //this implies not fwd_or_fwd%_in Ts0,Ts2
 (mVp)-------------------------------------------------------------------
      Ts'->toLent(T);Ps in methTypes(p,P,ms)
-
+//and then rules about fwd and fwd%
     Ts->fwd%Mut P0;Ps in methTypes(p,P,ms)//could be generalized to make fwdMut in fwdImm 
     fwd_or_fwd%_in(Ts)
 (mImmFwd)-------------------------------------------------------------------

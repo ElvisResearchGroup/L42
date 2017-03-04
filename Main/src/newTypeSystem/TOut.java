@@ -23,6 +23,12 @@ class TOk implements TOut{
   public TOk(TIn in, ExpCore annotated, NormType computed){
     this.in=in;this.annotated=annotated;this.computed=computed;
     }
+  public TOk withAC(ExpCore annotated,NormType computed){
+    TOk res=new TOk(this.in,annotated,computed);
+    res.returns=this.returns;
+    res.exceptions=this.exceptions;
+    return res;
+    }
   private <T> List<T> union(List<T> l1,List<T>l2){
     //optimized when most lists are empty
     if(l1.isEmpty() && l2.isEmpty()){return Collections.emptyList();}
@@ -41,6 +47,18 @@ class TOk implements TOut{
     res.exceptions=union(this.exceptions,that.exceptions);
     return res;
     }
+  public TOk returnsAdd(NormType t){
+    TOk res=new TOk(this.in,this.annotated,this.computed);
+    res.returns=new ArrayList<>(returns);
+    res.returns.add(t);
+    return res;
+    }
+  public TOk exceptionsAdd(Path p){
+    TOk res=new TOk(this.in,this.annotated,this.computed);
+    res.exceptions=new ArrayList<>(exceptions);
+    res.exceptions.add(p);
+    return res;
+  }
   public TOk tsCapture(List<ExpCore.Block.On> ks){
     //Tr.capture(p,k1..kn)= Tr.capture(p,k1)...capture(p,kn)
     //Tr.capture(p,catch error P x e)=Tr
