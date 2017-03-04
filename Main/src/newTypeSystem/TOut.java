@@ -1,6 +1,7 @@
 package newTypeSystem;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -17,19 +18,27 @@ class TOk implements TOut{
   TIn in;
   ExpCore annotated;
   NormType computed;
-  List<NormType>returns=new ArrayList<>();
-  List<Path>exceptions=new ArrayList<>();
+  List<NormType>returns=Collections.emptyList();
+  List<Path>exceptions=Collections.emptyList();
   public TOk(TIn in, ExpCore annotated, NormType computed){
     this.in=in;this.annotated=annotated;this.computed=computed;
     }
+  private <T> List<T> union(List<T> l1,List<T>l2){
+    //optimized when most lists are empty
+    if(l1.isEmpty() && l2.isEmpty()){return Collections.emptyList();}
+    if(l1.isEmpty()){return l2;}
+    if(l2.isEmpty()){return l1;}
+    List<T>res=new ArrayList<>(l1);
+    res.addAll(l2);
+    return res;
+  }
   public TOk tsUnion(TOk that){
     //Tr1 U Tr2
     //  Ts1;Ps1 U Ts2;Ps2 =  Ts1,Ts2; Ps1,Ps2  
     TOk res=new TOk(this.in,this.annotated,this.computed);
-    res.returns.addAll(this.returns);
-    res.returns.addAll(that.returns);
-    res.exceptions.addAll(this.exceptions);
-    res.exceptions.addAll(that.exceptions);
+    if(this.returns.isEmpty() && that.returns.isEmpty())
+    res.returns=union(this.returns,that.returns);
+    res.exceptions=union(this.exceptions,that.exceptions);
     return res;
     }
   public TOk tsCapture(List<ExpCore.Block.On> ks){

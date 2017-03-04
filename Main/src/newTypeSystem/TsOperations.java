@@ -12,10 +12,11 @@ import ast.ExpCore.Signal;
 import ast.ExpCore.Using;
 import ast.ExpCore.X;
 import ast.ExpCore._void;
+import tools.Assertions;
 
-public class TsOperations {
-
-    public static TOut tsPath(TIn in, Path s) {
+public interface TsOperations extends TypeSystem{
+    
+    default TOut tsPath(TIn in, Path s) {
     //D |- P~>P:class P <= T | emptyTr
     //D.p|-class P <= T
     NormType t=new NormType(Mdf.Class,s,Doc.empty());
@@ -26,12 +27,17 @@ public class TsOperations {
     return out;
     }
 
-    public static TOut tsX(TIn in, X s) {
-    // TODO Auto-generated method stub
-    return null;
+    default TOut tsX(TIn in, X s) {
+    //D |-x ~> x :D.G(x) <= T | emptyTr
+    //  D.p|- D.G(x) <= T
+    NormType nt=in.g(s.getInner());
+    if(TypeSystem.subtype(in.p,nt,in.expected)){
+      return new TOk(in,s,nt);
+      }
+    throw Assertions.codeNotReachable();
     }
 
-    public static TOut tsVoid(TIn in, _void s) {
+    default TOut tsVoid(TIn in, _void s) {
     //D |- void~> void:imm Void <= T | emptyTr
     //D.p|-imm Void <= T
     NormType t=Path.Void().toImmNT();
@@ -42,27 +48,34 @@ public class TsOperations {
     return out;
     }
 
-    public static TOut tsUsing(TIn in, Using s) {
+    default TOut tsUsing(TIn in, Using s) {
     // TODO Auto-generated method stub
     return null;
     }
 
-    public static TOut tsSignal(TIn in, Signal s) {
+    default TOut tsSignal(TIn in, Signal s) {
+      //D |- throw[_,_] e~> throw[T0,T3] e' : T0 <= T0 | Tr
+      //  T1 = resolve(D.p,guessType(D.G,e))// Note, resolves and guessTypes can go in error, and need to become a type error here
+      //  if throw=exception, T2= imm T1.P and Tr=Ts;Ps,P
+      //  if throw=error,     T2= imm T1.P and Tr=Ts;Ps
+      //  if throw=return,    T2= (fwd T1) and Tr=(Ts,T3);Ps 
+      //  D|- e~>  e' :  T3 <=T2|Ts;Ps
+      //NormType T1=
+    throw Assertions.codeNotReachable();
+
+    }
+
+    default TOut tsMCall(TIn in, MCall s) {
     // TODO Auto-generated method stub
     return null;
     }
 
-    public static TOut tsMCall(TIn in, MCall s) {
+    default TOut tsBlock(TIn in, Block s) {
     // TODO Auto-generated method stub
     return null;
     }
 
-    public static TOut tsBlock(TIn in, Block s) {
-    // TODO Auto-generated method stub
-    return null;
-    }
-
-    public static TOut tsClassB(TIn in, ClassB s) {
+    default TOut tsClassB(TIn in, ClassB s) {
     //D |- L ~> L' : imm Library <= T | emptyTr
     //D.p|-imm Library <= T
     //D.Phase  |- D.p.evilPush(L) ~> L'
@@ -71,14 +84,23 @@ public class TsOperations {
       TErr out=new TErr(in,"-----------",t);
       return out;  
       }
-    TOut out=TypeLibrary.type(in.withP(in.p.evilPush(s)));
+    TOut out=typeLib(in.withP(in.p.evilPush(s)));
     if(out.isOk()){return new TOk(in,s,t);}
     return out.toError().enrich(in);
     }
 
-    public static TOut tsLoop(TIn in, Loop s) {
-    // TODO Auto-generated method stub
-    return null;
+    default TOut tsLoop(TIn in, Loop s) {
+    //D |- loop e ~> loop e' : imm Void <= T | Tr
+    //  D.p|-imm Void <= T
+    //  D|- e ~> e' : _ <= imm Void | Tr
+    TOut innerT=type(in.withE(s.getInner(), Path.Void().toImmNT()));
+    if(!innerT.isOk()){throw Assertions.codeNotReachable();}
+    if(TypeSystem.subtype(in.p, Path.Void().toImmNT(),in.expected)){
+      TOk res= new TOk(in,s.withInner(innerT.toOk().annotated),innerT.toOk().computed);
+      res=res.tsUnion(innerT.toOk());
+      return res;
+      }
+    throw Assertions.codeNotReachable();
     }
 
 }

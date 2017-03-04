@@ -175,8 +175,13 @@ public class AlternativeMethodTypes {
 public static MethodType _bestMatchMtype(Program p,MethodType superMt,List<MethodType> mts){
   List<MethodType> res=new ArrayList<>();
   for(MethodType mt:mts){
-   // if(TypeSystem.subtype(p, mt.getReturnType().getNT(), nt)){return mt;}
+    if(TypeSystem._methMdfTSubtype(mt, superMt)){
+      if(!res.stream().anyMatch(mti->TypeSystem._methMdfTSubtype(mti, mt))){
+        res.add(mt);//if there is no method that is even better, add
+        }
+      }
   }
-  return null;//TODO: finish
+  assert res.size()==1;
+  return res.get(0);
   }
 }

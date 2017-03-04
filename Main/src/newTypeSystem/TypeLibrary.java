@@ -20,16 +20,15 @@ import programReduction.Program;
 import tools.Assertions;
 import ast.Ast.Mdf;
 
-public class TypeLibrary {
-  TypeSystem outerTyper;
-  TypeLibrary(TypeSystem outerTyper){this.outerTyper=outerTyper;}
-
-    public TOut type(TIn in) {
-    // TODO Auto-generated method stub
-    return null;
+public interface TypeLibrary extends TypeSystem{
+  
+  @Override default TOut typeLib(TIn in) {
+    assert in.phase!=Phase.None;
+    if(in.phase==Phase.Norm){return libraryShallowNorm(in);}
+    return libraryWellTyped(in);
     }
     
-    public TOut libraryShallowNorm(TIn in) {
+  default TOut libraryShallowNorm(TIn in) {
     //(library shallow norm)
     //Norm  |- p ~> norm(p)  //remember: norm ignores meth bodies
     ////assert forall P in norm(p).Ps p(P).Phase>=Norm
@@ -37,7 +36,7 @@ public class TypeLibrary {
     return new TOk(in,normP,Path.Library().toImmNT());
     }
 
-    private ClassB normTopL(TIn in) throws Error {
+  default ClassB normTopL(TIn in) throws Error {
     ClassB normP;
     try{normP=new Norm().norm(in.p);}
     catch(RuntimeException exc){
@@ -51,7 +50,7 @@ public class TypeLibrary {
     return normP;
     }
     
-    public TOut libraryWellTyped(TIn in) {
+  default TOut libraryWellTyped(TIn in) {
 //   (library well typed)
 //   Phase |- p ~> L' //In implementation, if p.top().Phase>=Phase, L'=p.Top()
      ClassB top=in.p.top();
@@ -90,7 +89,7 @@ public class TypeLibrary {
     return null;
     }
 
-    private TOutM memberNested(newTypeSystem.TIn in, NestedClass nc) {
+  default TOutM memberNested(newTypeSystem.TIn in, NestedClass nc) {
     //(member nested)
     //Phase| p| Ps |-C:L ~>  C:L'
     //   where
@@ -101,7 +100,7 @@ public class TypeLibrary {
     return new TOkM(nc.withInner(res.toOk().annotated));
     }
 
-    private TOutM memberMethod(TIn in, List<Type> supertypes, MethodWithType mwt) {
+  default TOutM memberMethod(TIn in, List<Type> supertypes, MethodWithType mwt) {
 //(member method)
 //Phase| p| Ps |-M ~> M'
 //  where
@@ -119,7 +118,7 @@ public class TypeLibrary {
     }
     else{
       TIn newIn=in.freshGFromMt(mwt);
-      TOut out=outerTyper.type(newIn);
+      TOut out=type(newIn);
       if(!out.isOk()){throw Assertions.codeNotReachable();}
       for(Path P1: out.toOk().exceptions){
         //exists P0 in Ps0 such that p|-P1<=P0
@@ -162,7 +161,7 @@ public class TypeLibrary {
     }
 
     
-    private boolean coherent(Program p) {
+  default boolean coherent(Program p) {
       ClassB top=p.top();
       if (top.isInterface()){return true;}
       List<MethodWithType> stateC=top.getMs().stream()
@@ -216,7 +215,7 @@ public class TypeLibrary {
 //  p|-T<=Ti//setter
 
 
-    private boolean coherentF(Program p,MethodWithType ck, MethodWithType mwt) {
+  default boolean coherentF(Program p,MethodWithType ck, MethodWithType mwt) {
       MethodType mt=mwt.getMt();
       Mdf m=mt.getMdf();
       if(mwt.getMs().getUniqueNum()!=ck.getMs().getUniqueNum()){return false;}
@@ -245,13 +244,14 @@ public class TypeLibrary {
       return true;
     }
 
-    private NormType _extractTi(MethodWithType ck, String name) {
-    // TODO Auto-generated method stub
-    //TypeManipulation.noFwd(
+  default NormType _extractTi(MethodWithType ck, String name) {
+    int i=-1;for(String ni:ck.getMs().getNames()){i+=1;
+      if (ni.equals(name)){return TypeManipulation.noFwd(ck.getMt().getTs().get(i).getNT());} 
+      }
     return null;
     }
 
-    private boolean coherentK(Program p,MethodWithType ck) {
+    default boolean coherentK(Program p,MethodWithType ck) {
       MethodType mt=ck.getMt();
       if(mt.getMdf()!=Mdf.Class){return false;}
       NormType rt=mt.getReturnType().getNT();
