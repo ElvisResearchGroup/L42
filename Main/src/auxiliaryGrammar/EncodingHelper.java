@@ -71,7 +71,7 @@ public class EncodingHelper{
     return result;
   }
   public static ExpCore wrapError(String err) {
-    return new ExpCore.Signal(SignalKind.Error,wrapStringU(err));
+    return new ExpCore.Signal(SignalKind.Error,wrapStringU(err),Path.Library().toImmNT(),Path.Library().toImmNT());
   }
   public static ClassB wrapInt32(int i) {
     return wrapInt32(""+i);
@@ -205,15 +205,15 @@ public class EncodingHelper{
     if(o instanceof Resources.Void){return new ExpCore._void();}
     if(o instanceof Resources.Error){
       ExpCore inside=wrapResource(((Resources.Error)o).unbox);
-      return new ExpCore.Signal(SignalKind.Error,inside);
+      return new ExpCore.Signal(SignalKind.Error,inside,null,null);
       }
     if(o instanceof Resources.Exception){
       ExpCore inside=wrapResource(((Resources.Exception)o).unbox);
-      return new ExpCore.Signal(SignalKind.Exception,inside);
+      return new ExpCore.Signal(SignalKind.Exception,inside,null,null);
       }
     if(o instanceof Resources.Return){
       ExpCore inside=wrapResource(((Resources.Return)o).unbox);
-      return new ExpCore.Signal(SignalKind.Return,inside);
+      return new ExpCore.Signal(SignalKind.Return,inside,null,null);
       }
     if( o instanceof Resources.Library){
       return Ast.Path.Library();

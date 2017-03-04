@@ -46,7 +46,7 @@ public class TypeSystemOK {
     */
   public static void checkTop(Program p){
     Program p1=p.pop();
-    ClassB ct = Program.replaceWalkByWith(p.topCb(),new Signal(SignalKind.Error, new _void()));
+    ClassB ct = Program.replaceWalkByWith(p.topCb(),new Signal(SignalKind.Error, new _void(),Path.Library().toImmNT(),Path.Void().toImmNT()));
     //it is ok, indeed we check the program only when there is a meta expression in the path of the program, so
     //the line itself can not be typechecked yet!
     //This means that we cut off some cases: some classes may enjoy  the type information for some classes on the side branches.

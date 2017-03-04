@@ -195,7 +195,7 @@ public interface ExpCore {
         return mi.apply(this);
         }
       }
-    @Value @Wither @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p")public static class MethodWithType implements Member {
+    @Value @Wither @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") public static class MethodWithType implements Member {
       @NonNull Doc doc;
       @NonNull MethodSelector ms;
       @NonNull MethodType mt;
@@ -241,9 +241,13 @@ public interface ExpCore {
     }
   }
 
-  @Value @Wither public static class Signal implements ExpCore, WithInner<Signal>{
+  @Value @Wither
+  @EqualsAndHashCode(exclude = {"typeOut","typeIn"}) @ToString(exclude = {"typeOut","typeIn"}) 
+  public static class Signal implements ExpCore, WithInner<Signal>{
     SignalKind kind;
     ExpCore inner;
+    NormType typeOut;
+    NormType typeIn;
     
     @Override public <T> T accept(coreVisitors.Visitor<T> v) {
       return v.visit(this);

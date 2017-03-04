@@ -28,7 +28,7 @@ import ast.ExpCore.ClassB.Phase;
 import ast.Expression;
 public class InjectionOnCore implements Visitor<ExpCore> {
   public ExpCore visit(Expression.Signal s){
-    return new Signal(s.getKind(),s.getInner().accept(this));}
+    return new Signal(s.getKind(),s.getInner().accept(this),null,null);}
   public ExpCore visit(Expression.Loop s) {
     return new Loop(s.getInner().accept(this));}
 
