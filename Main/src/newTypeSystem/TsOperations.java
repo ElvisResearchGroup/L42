@@ -4,6 +4,7 @@ import ast.Ast.Doc;
 import ast.Ast.Mdf;
 import ast.Ast.NormType;
 import ast.Ast.Path;
+import ast.Ast.SignalKind;
 import ast.ExpCore.Block;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.Loop;
@@ -20,6 +21,7 @@ public interface TsOperations extends TypeSystem{
     //D |- P~>P:class P <= T | emptyTr
     //D.p|-class P <= T
     NormType t=new NormType(Mdf.Class,s,Doc.empty());
+    assert in.p.extractClassB(s)!=null;
     if(TypeSystem.subtype(in.p, t, in.expected)){
       return new TOk(in,s,t);
       }
@@ -60,9 +62,17 @@ public interface TsOperations extends TypeSystem{
       //  if throw=error,     T2= imm T1.P and Tr=Ts;Ps
       //  if throw=return,    T2= (fwd T1) and Tr=(Ts,T3);Ps 
       //  D|- e~>  e' :  T3 <=T2|Ts;Ps
-      //NormType T1=
-    throw Assertions.codeNotReachable();
-
+      NormType T1=GuessTypeCore.of(in, s.getInner());
+      NormType T2;      
+      if(s.getKind()!=SignalKind.Return){T2=T1.getPath().toImmNT();}
+      else{T2=TypeManipulation.fwd(T1);}
+      TOut innerT=type(in.withE(s.getInner(), T2));
+      if(!innerT.isOk()){throw Assertions.codeNotReachable();}
+      TOk res=innerT.toOk();
+      NormType T3=res.computed;
+      if(s.getKind()==SignalKind.Return){res=res.returnsAdd(T3);}
+      if(s.getKind()==SignalKind.Exception){res=res.exceptionsAdd(T3.getPath());}
+      return res.withAC(s.withInner(res.annotated),in.expected);
     }
 
     default TOut tsMCall(TIn in, MCall s) {

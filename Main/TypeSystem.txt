@@ -308,14 +308,14 @@ Phase| p| G |- T0  x0=e0 ..Tn  xn=en, ds ~>
   dom(ds) notin FV(e0..en)
   for i in 0..n T'i=resolve(p,Ti)
   G'=x0:T'0..xn:T'n
-  G1= G[fwd(onlyMutOrImm(G'))] 
+  G1= G[fwd(onlyMutOrImm(G'))] //capturing error for next line if not onlyMutOrImm(G') is used and is errored by next line 
   for i in 0..n Phase| p| G1|-ei~>e'i: _ <= fwd% T'i | Tri
   Tr=Tr0 U .. U Trn
   if fwd_or_fwd%_in Tr.Ts
     then x1..xn disjoint FV(e0..en)//returning unresolved items from cycles is prohibited
   if fwd_or_fwd%_in { G(x) | x in FV(e0..en) } // x0..xn already excluded
     then G0=G[fwd%(G')]
-    otherwise G0=G[G']
+    otherwise G0=G[G']//capturing error for next line, see if the difference between fwd%(G') ad G' would fix it. Still, then we need to check for the fwd x in FV(e0..en)..
   Phase| p| G0|- ds ~> ds'|Tr' | G2
 
 (dsEmpty)
@@ -336,7 +336,7 @@ D| Tr |-k1..kn ~> k'1..k'n:T1..Tn <= T | Tr1 U .. U Trn
 
 Phase| p| G| Tr' |- catch throw T0 x e ~> catch throw resolve(p,T0).P x e' :T2 <= T | Tr
   where
-  mdf1 = mostGeneralMdf(throw,Tr') //set of Mdfs admits no single most general mdf
+  mdf1 = mostGeneralMdf(throw,Tr') //set of Mdfs admits no single most general mdf, or mdfs is empty
   //inconsistent set of thrown things, which do not share a most
   //general modifier [list of line numbers of the throws]
   T1 = mdf1 resolve (p, T0).P //resolve can fail
@@ -604,7 +604,9 @@ memoizeTSRes(in,res)
   -error safety interact badly with error messages:
     can we retype without error safety to discover where is the problem?
     can we identify when a certain variable is hidden/demotes?
-  
+  -method chunks? calling a(b(c(d))), where is the problem if 
+  there is an invalid subtype, thanks to alternative method typing?
+  should we blame the whole chunk?
   
   
   
