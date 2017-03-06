@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -99,14 +100,14 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
   //Phase| p| G |- empty ~> empty| empty;empty | G
     if(_ds.isEmpty()){return new TOkDs(null,_ds,in);}
   //Phase| p| G |- T0  x0=e0 ..Tn  xn=en, ds ~>
-  //     T'1  x1=e'1 ..T'n  xn=e'n, ds'|Tr U Tr' | G2
+  //     T'0  x0=e'0 ..T'n  xn=e'n, ds'|Tr U Tr' | G2
     int i=splitDs(in,_ds);
     List<Dec> ds=_ds.subList(i+1,_ds.size());
     List<Dec> ds0n=_ds.subList(0,i);
-    assert ds0n.stream()//fuck streams, love math..
-      .flatMap(d->FreeVariables.of(d.getInner()).stream())
-      .filter(x->ds.stream().anyMatch(d->d.getX().equals(x)))
-      .count()==0;    
+    List<String> fve0n=ds0n.stream().flatMap(d->FreeVariables.of(d.getInner()).stream()).collect(Collectors.toList());
+    assert !fve0n.stream()
+      .anyMatch(x->ds.stream()
+        .anyMatch(d->d.getX().equals(x)));    
   //assert dom(ds) disjoint FV(e0..en)
     
   //  for i in 0..n T'i=resolve(p,Ti)
@@ -121,23 +122,42 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
   //  Tr=Tr0 U .. U Trn
   TOk trAcc=new TOk(null,null,null);
   List<Dec>ds1=new ArrayList<>();
+  List<Dec>ds1FwdP=new ArrayList<>();
   for(Dec di:ds0n){
     NormType nt=Norm.resolve(in.p,di.getT());
-    TOut _out=type(in.withE(di.getInner(),TypeManipulation.fwdP(nt)));
+    NormType ntFwdP=TypeManipulation.fwdP(nt);
+    TOut _out=type(in.withE(di.getInner(),ntFwdP));
     if(!_out.isOk()){throw Assertions.codeNotReachable();}
     TOk ok=_out.toOk();
     trAcc=trAcc.tsUnion(ok);
-    ds1.add(di.withInner(ok.annotated).withT(nt));
+    Dec di1=di.withInner(ok.annotated);
+    ds1.add(di1.withT(nt));
+    ds1FwdP.add(di1.withT(ntFwdP));
     }
   //  if fwd_or_fwd%_in Tr.Ts
-  //    then x1..xn disjoint FV(e0..en)//returning unresolved items from cycles is prohibited
+  //    then x0..xn disjoint FV(e0..en)//returning unresolved items from cycles is prohibited
   if(TypeManipulation.fwd_or_fwdP_in(trAcc.returns)){
-    if(!)
+    boolean xInCommon=fve0n.stream().anyMatch(x->ds0n.stream().anyMatch(d->d.getX().equals(x)));
+    if(xInCommon){throw Assertions.codeNotReachable();}
     }
   //  if fwd_or_fwd%_in { G(x) | x in FV(e0..en) } // x0..xn already excluded
-  //    then G0=G[fwd%(G')]
+  //    then G0=G[fwd%(G')]  
   //    otherwise G0=G[G']//capturing error for next line, see if the difference between fwd%(G') ad G' would fix it. Still, then we need to check for the fwd x in FV(e0..en)..
+  List<NormType> _nts=new ArrayList<>();
+  for(String x: fve0n){
+    NormType t=in.g(x);
+    if(t!=null){_nts.add(t);}
+    }
+  TIn inG0;
+  if(TypeManipulation.fwd_or_fwdP_in(_nts)){inG0=in.addGds(ds1FwdP);}
+  else{inG0=in.addGds(ds1);}
   //  Phase| p| G0|- ds ~> ds'|Tr' | G2
+  TOutDs _res= dsType(inG0,ds);
+  if(!_res.isOk()){throw Assertions.codeNotReachable();}
+  TOkDs res=_res.toOkDs();
+  ds1.addAll(res.ds);//safe? locally created, not leaked yet.
+  trAcc=trAcc.tsUnion(res.trAcc);
+  return new TOkDs(trAcc,ds1,res.g);
   }
    /*
       
@@ -173,7 +193,8 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
 */
   
 
-default TOutKs ksType(TIn in1,TOut tsAcc,List<On> ks);
+
+default TOutKs ksType(TIn in1,TOut tsAcc,List<On> ks){throw Assertions.codeNotReachable();}
 
 default TOut tsBlockPromotion(TIn in,Block s){throw Assertions.codeNotReachable();};
 /*
