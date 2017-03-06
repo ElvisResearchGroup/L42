@@ -20,7 +20,7 @@ import programReduction.Program;
 import tools.Assertions;
 import ast.Ast.Mdf;
 
-public interface TypeLibrary extends TypeSystem{
+public interface TsLibrary extends TypeSystem{
   
   @Override default TOut typeLib(TIn in) {
     assert in.phase!=Phase.None;
@@ -54,7 +54,8 @@ public interface TypeLibrary extends TypeSystem{
 //   (library well typed)
 //   Phase |- p ~> L' //In implementation, if p.top().Phase>=Phase, L'=p.Top()
      ClassB top=in.p.top();
-     assert top.getPhase().subtypeEq(Phase.Typed);//   Phase in {Typed,Coherent}
+     assert in.phase.subtypeEq(Phase.Typed)://   Phase in {Typed,Coherent}
+       "";
      if(top.getPhase().subtypeEq(in.phase)){ 
        return new TOk(in,top,Path.Library().toImmNT());
        }
@@ -81,12 +82,12 @@ public interface TypeLibrary extends TypeSystem{
      if(in.phase.subtypeEq(maxPhase)){maxPhase=in.phase;}
      ClassB L1=new ClassB(L0.getDoc1(),L0.isInterface(),L0.getSupertypes(),newMwts,newNs,L0.getP(),L0.getStage(),maxPhase,L0.getUniqueId());
      if(in.phase==Phase.Coherent){
-       boolean isCoh=coherent(in.p.updateTop(L1));
+       boolean isCoh=coherent(in.p.pop().evilPush(L1));
        if(!isCoh){throw Assertions.codeNotReachable("not implemented yet");}
        }
-//   if Phase=Coherent then coherent(p.updateTop(L'))
+//   if Phase=Coherent then coherent(p.pop().evilPush(L'))
 //   //or error not coherent set of abstr. methods:list
-    return null;
+    return new TOk(in,L1,Path.Library().toImmNT());
     }
 
   default TOutM memberNested(newTypeSystem.TIn in, NestedClass nc) {
@@ -95,7 +96,7 @@ public interface TypeLibrary extends TypeSystem{
     //   where
     //   Phase |-p.push(C) ~> L'    return null;
     Program p1=in.p.push(nc.getName());
-    TOut res=type(in.withP(p1));
+    TOut res=typeLib(in.withP(p1));
     if(!res.isOk()){return res.toError();}
     return new TOkM(nc.withInner(res.toOk().annotated));
     }
@@ -164,7 +165,7 @@ public interface TypeLibrary extends TypeSystem{
   default boolean coherent(Program p) {
       ClassB top=p.top();
       if (top.isInterface()){return true;}
-      List<MethodWithType> stateC=top.getMs().stream()
+      List<MethodWithType> stateC=top.mwts().stream()
       .map(m->(MethodWithType)m)
       .filter(m->!m.get_inner().isPresent())
       .sorted((m1,m2)->m1.getMt().getMdf()==Mdf.Class?1:-1)

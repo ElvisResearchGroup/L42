@@ -38,6 +38,7 @@ import programReduction.Program;
 import tools.Assertions;
 
 public interface TypeSystem{
+  static TypeSystem instance(){return new Impl();}
   TOut type(TIn in);
   TOut typeLib(TIn in);
   public static boolean subtype(Program p,Path pSub,Path pSuper){
@@ -83,8 +84,7 @@ public interface TypeSystem{
       return false;
     }
   }
-
-abstract class Impl implements TypeSystem,TsOperations,TsBlock{
+class Impl implements TypeSystem,TsOperations,TsBlock,TsMCall,TsLibrary{
   HashMap<TIn,TOut>map=new HashMap<>();//memoized map
   @Override public TOut type(TIn in){
     TOut res=_memoizedTSRes(in);
@@ -103,13 +103,14 @@ abstract class Impl implements TypeSystem,TsOperations,TsBlock{
         public TOut visit(WalkBy s) {throw Assertions.codeNotReachable();}
         });
       }
-    finally{memoizeTSRes(in,res);}
+    finally{if(res!=null){memoizeTSRes(in,res);}}
     assert res!=null;
     return res;
     }
   private void memoizeTSRes(TIn in, TOut out) {
   //memoizeTSRes need to not memoize null res
-    assert out!=null;
+    assert out!=null:
+      "";
     assert !map.containsKey(in);
     map.put(in, out);
     }

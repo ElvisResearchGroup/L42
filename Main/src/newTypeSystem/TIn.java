@@ -1,6 +1,7 @@
 package newTypeSystem;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -92,6 +93,7 @@ assert mwt.get_inner().isPresent();
 TIn res=gClean();
 res.e=mwt.getInner();
 res.expected=TypeManipulation.fwdP(mt.getReturnType().getNT());
+g=new HashMap<>();
 g.put("this",new NormType(mt.getMdf(),Path.outer(0),Doc.empty()));
 {int i=-1;for(String x:mwt.getMs().getNames()){i+=1;
   NormType ntx=mt.getTs().get(i).getNT();

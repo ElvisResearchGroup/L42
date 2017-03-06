@@ -76,12 +76,6 @@ public interface TsOperations extends TypeSystem{
       return res.withAC(s,in.expected);
     }
 
-    default TOut tsMCall(TIn in, MCall s) {
-    // TODO Auto-generated method stub
-    return null;
-    }
-
-
     default TOut tsClassB(TIn in, ClassB s) {
     //D |- L ~> L' : imm Library <= T | emptyTr
     //D.p|-imm Library <= T
