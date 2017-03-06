@@ -72,7 +72,8 @@ public interface TsOperations extends TypeSystem{
       NormType T3=res.computed;
       if(s.getKind()==SignalKind.Return){res=res.returnsAdd(T3);}
       if(s.getKind()==SignalKind.Exception){res=res.exceptionsAdd(T3.getPath());}
-      return res.withAC(s.withInner(res.annotated),in.expected);
+      s=s.withInner(res.annotated).withTypeIn(T3).withTypeOut(in.expected);
+      return res.withAC(s,in.expected);
     }
 
     default TOut tsMCall(TIn in, MCall s) {
@@ -80,10 +81,6 @@ public interface TsOperations extends TypeSystem{
     return null;
     }
 
-    default TOut tsBlock(TIn in, Block s) {
-    // TODO Auto-generated method stub
-    return null;
-    }
 
     default TOut tsClassB(TIn in, ClassB s) {
     //D |- L ~> L' : imm Library <= T | emptyTr

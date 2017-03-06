@@ -12,6 +12,8 @@ import ast.Ast.MethodType;
 import ast.Ast.NormType;
 import ast.Ast.Path;
 import ast.Ast.SignalKind;
+import ast.ExpCore.Block;
+import ast.ExpCore.Block.Dec;
 import ast.ExpCore.Block.On;
 import ast.ExpCore.ClassB.MethodWithType;
 import ast.ExpCore.ClassB.Phase;
@@ -67,6 +69,23 @@ public TIn addGds(List<ExpCore.Block.Dec> ds){
     }
   return res;
   }
+public TIn removeGXs(Set<String> set) {
+  TIn res=gClean();
+  res.g.putAll(this.g);
+  for(String x : set){
+    res.g.remove(x);
+    }
+  return res;
+  }
+public TIn removeGDs(List<Block.Dec> ds) {
+TIn res=gClean();
+res.g.putAll(this.g);
+for(Dec di : ds){
+  res.g.remove(di.getX());
+  }
+return res;
+}
+
 public TIn freshGFromMt(MethodWithType mwt){
 MethodType mt=mwt.getMt();
 assert mwt.get_inner().isPresent();
@@ -89,17 +108,6 @@ public NormType g(String x){
 public Set<String> gDom(){return g.keySet();}
 public TIn gClean(){return new TIn(phase,p,e,expected);}
 //onlyMutOrImm(G)={x:G(x) | G(x) only mut or imm}
-public TIn onlyMutOrImm(){
-  TIn res=gClean();
-  for(String xi:gDom()){
-    NormType ti=g(xi);
-    assert ti!=null;
-    if (ti.getMdf()==Mdf.Mutable || ti.getMdf()==Mdf.Immutable){
-      res.g.put(xi,ti);
-      }
-    }
-  return res;
-  }
 public TIn toRead(){//toRead(G)(x)=toRead(G(x)) //thus undefined where toRead undefined
   TIn res=gClean();
   for(String xi:gDom()){
@@ -144,6 +152,7 @@ public TIn withP(Program newP){
 boolean isCoherent(){
   return true;
   }
+
 }
 
 

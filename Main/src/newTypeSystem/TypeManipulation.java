@@ -206,7 +206,7 @@ public static Mdf mutToCapsuleAndFwdToRead(Mdf m){
   return m;
   }
 
-public static Mdf mostGeneralMdf(Ast.SignalKind _throw,TOk out){
+public static Mdf _mostGeneralMdf(Ast.SignalKind _throw,TOk out){
 //mostGeneralMdf(throw,Tr)  
 //  mostGeneralMdf(error,Tr)=imm
 //  mostGeneralMdf(return,empty;Ps) undefined
@@ -216,16 +216,16 @@ public static Mdf mostGeneralMdf(Ast.SignalKind _throw,TOk out){
   if(_throw!=SignalKind.Return){return Mdf.Immutable;}
   assert !out.returns.isEmpty();
   Stream<Ast.Mdf> s = out.returns.stream().map(t->t.getMdf());
-  return mostGeneralMdf(s.collect(Collectors.toSet()));
+  return _mostGeneralMdf(s.collect(Collectors.toSet()));
   }
-public static Mdf mostGeneralMdf(Set<Mdf> mdfs){
+public static Mdf _mostGeneralMdf(Set<Mdf> mdfs){
 //mostGeneralMdf(mdfs)
 //  mostGeneralMdf(mdfs)=mdf //assert fwd and fwd% not in mdfs
   assert !fwd_or_fwdP_inMdfs(mdfs);
 //    if mdfs=mdf', then mdf=mdf' //that is the only way mdf=class
   if (mdfs.size()==1){return mdfs.iterator().next();}
 //  otherwise if class in mdfs, then undefined
-  assert !mdfs.contains(Mdf.Class);
+  if (mdfs.contains(Mdf.Class)){return null;}
 //  otherwise if read in mdfs, mdf=read
   if(mdfs.contains(Mdf.Readable)){return Mdf.Readable;}
 //  //ignoring capsule,

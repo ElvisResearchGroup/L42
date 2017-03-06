@@ -6,11 +6,35 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import ast.ExpCore;
+import ast.Ast;
 import ast.Ast.NormType;
 import ast.Ast.Path;
 import ast.Ast.SignalKind;
+import ast.ExpCore.Block.Dec;
 import ast.ExpCore.Block.On;
 import ast.ExpCore.ClassB.Member;
+
+class TErr implements TOut,TOutM,TOutDs,TOutKs{
+public boolean isOk() { return false;}
+public TErr toError() {return this;}
+public TErr(TIn in, String msg, NormType _computed) {
+  this.in = in; this.msg = msg; this._computed = _computed;
+  }
+TIn in;
+String msg;
+NormType _computed;
+public TErr enrich(TIn in2) {
+  return this;//TODO: design some general error context enreaching
+  }  
+}
+
+
+//-----------------TOut
+interface TOut{
+  boolean isOk();
+  default TOk toOk() {throw new Error();}
+  default TErr toError() {throw new Error();}
+  }
 
 class TOk implements TOut{
   public boolean isOk() { return true;}
@@ -60,10 +84,10 @@ class TOk implements TOut{
     return res;
   }
   public TOk tsCapture(List<ExpCore.Block.On> ks){
-    //Tr.capture(p,k1..kn)= Tr.capture(p,k1)...capture(p,kn)
-    //Tr.capture(p,catch error P x e)=Tr
-    //(Ts;Ps).capture(p,catch exception P x e)=Ts;{P'| P' in Ps, not p|-P'<=P}
-    //(Ts;Ps).capture(p,catch return P x e)={T| T in Ts, not p|-T.P<=P};Ps
+    //Tr.capture(k1..kn)= Tr.capture(p,k1)...capture(p,kn)
+    //Tr.capture(catch error P x e)=Tr
+    //(Ts;Ps).capture(catch exception P x e)=Ts;{P'| P' in Ps, not p|-P'<=P}
+    //(Ts;Ps).capture(catch return P x e)={T| T in Ts, not p|-T.P<=P};Ps
     Stream<NormType> ret = this.returns.stream();
     Stream<Path> exc = this.exceptions.stream();
     for(On k:ks){
@@ -86,33 +110,58 @@ class TOk implements TOut{
     return true;
     }
   }
+
+
+//----------------------TOutM
+interface TOutM{
+  boolean isOk();
+  default TOkM toOkM() {throw new Error();}
+  default TErr toError() {throw new Error();}
+  }
+
 class TOkM implements TOutM{
   public TOkM(Member inner) {this.inner = inner;}
   ExpCore.ClassB.Member inner;  
   public boolean isOk() { return true;}
   public TOkM toOkM() {return this;}
   }
-class TErr implements TOut,TOutM{
-  public boolean isOk() { return false;}
-  public TErr toError() {return this;}
-  public TErr(TIn in, String msg, NormType _computed) {
-    this.in = in; this.msg = msg; this._computed = _computed;
+
+//----------------------TOutDs
+interface TOutDs{
+boolean isOk();
+default TOkDs toOkDs() {throw new Error();}
+default TErr toError() {throw new Error();}
+}
+
+class TOkDs implements TOutDs{
+  public TOkDs(TOk trAcc, List<Dec> ds, TIn g) {
+    this.trAcc = trAcc;
+    this.ds = ds;
+    this.g = g;
     }
-  TIn in;
-  String msg;
-  NormType _computed;
-  public TErr enrich(TIn in2) {
-    return this;//TODO: design some general error context enreaching
-    }  
+  TOk trAcc;
+  List<ExpCore.Block.Dec> ds;
+  TIn g;
+  public boolean isOk() { return true;}
+  public TOkDs toOkM() {return this;}
   }
 
-interface TOut{
-  boolean isOk();
-  default TOk toOk() {throw new Error();}
-  default TErr toError() {throw new Error();}
-  }
-interface TOutM{
-  boolean isOk();
-  default TOkM toOkM() {throw new Error();}
-  default TErr toError() {throw new Error();}
-  }
+//----------------------TOutKs
+interface TOutKs{
+boolean isOk();
+default TOkKs toOkKs() {throw new Error();}
+default TErr toError() {throw new Error();}
+}
+
+class TOkKs implements TOutKs{
+  public TOkKs(TOk trAcc, List<On> ks, List<NormType> ts) {
+    this.trAcc = trAcc;
+    this.ks = ks;
+    this.ts = ts;
+    }
+  TOk trAcc;
+  List<ExpCore.Block.On> ks;
+  List<NormType> ts;
+  public boolean isOk() { return true;}
+  public TOkKs toOkM() {return this;}
+}

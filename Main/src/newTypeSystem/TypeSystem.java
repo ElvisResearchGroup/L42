@@ -84,7 +84,7 @@ public interface TypeSystem{
     }
   }
 
-abstract class Impl implements TypeSystem,TsOperations{
+abstract class Impl implements TypeSystem,TsOperations,TsBlock{
   HashMap<TIn,TOut>map=new HashMap<>();//memoized map
   @Override public TOut type(TIn in){
     TOut res=_memoizedTSRes(in);

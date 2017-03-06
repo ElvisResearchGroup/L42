@@ -305,7 +305,7 @@ Phase| p| G |- (ds  ks  e0  [_]) ~>(ds' ks' e'0 [T])
 Phase| p| G |- T0  x0=e0 ..Tn  xn=en, ds ~>
               T'1  x1=e'1 ..T'n  xn=e'n, ds'|Tr U Tr' | G2
   where
-  dom(ds) notin FV(e0..en)
+  dom(ds) disjoint FV(e0..en)
   for i in 0..n T'i=resolve(p,Ti)
   G'=x0:T'0..xn:T'n
   G1= G[fwd(onlyMutOrImm(G'))] //capturing error for next line if not onlyMutOrImm(G') is used and is errored by next line 
@@ -496,7 +496,7 @@ structure of all tsXX methods://or just the dispatch one :-)
 non trivial methods: tsBlock and tsMCall 
 
 tsBlock(TsIn in,Block e)->TSOut
-  res1=tsBlockBase(in,e) //will use splitDs
+  res1=tsBlockBase(in,e)
   if res1.isOk(){return res=res1;}
   if !promotionMakesSense(){return res=res1;}//promotionMakesSense: mut that need capsule
   res2=tsBlockPromotion(in,e)//calls tsBlock internally,
