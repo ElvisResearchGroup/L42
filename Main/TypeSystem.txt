@@ -358,7 +358,7 @@ Phase |p |G |- (ds ks e)~>(ds' ks' e'):capsule P <=capsule P | Tr
   Phase |p |toLent(G) |-(ds ks e)~>(ds' ks' e'):mut P <=mut P   | Tr
 //this rule is now "deterministic" in the sense that if typing the block give us a capsule directly,
 //this rule can not be applied, since we require mut P <=mut P in the premise.
-
+//this is another point wher x can become undefined
 ------------------------------------------------------
 4 Subtyping p |- T<=T'
 ------------------------------------------------------
@@ -417,7 +417,7 @@ Phase| p| Ps |-M ~> M'
   M'=refine? mdf method T m(T1 x1 .. Tn xn)exceptions Ps0 e?'
   G=this:mdf This0,x1:T1,..,xn:Tn
   if e?=e then
-    Typed| p| G |- e ~>  e?':_ <=fwd% T | empty;Ps1
+    Typed| p| G |- e ~>  e?':_ <=fwd% T | empty;Ps1//TODO: IN CODE, check empty ts
     forall P1 in Ps1 exists P0 in Ps0 such that p|-P1<=P0
   else
     e?=e?'
@@ -425,7 +425,7 @@ Phase| p| Ps |-M ~> M'
     forall P in Ps such that p(P)(m(x1..xn))[from P]=M0 //that is, is defined
       all of the following hold:
       M0=refine?' mdf method T' m(T'1 x1..T'n xn)exceptions Ps'
-      p|-T<= T' //method returns a type which is not a sybtype of its ancestor "name" or worst, ancestor do not define method named m(xs)
+      p|-T<= T' //method returns a type which is not a sybtype of its ancestor "name"
       p.equiv(T1,T'1)..p.equiv(Tn,T'n) //invalid type w.r.t. ancestor paramerer xi   
       forall Pi in Ps0 exists Pj in Ps' such that p |- Pi<=Pj
       //or error: leaked exception P is not the subtype of a declared exception
@@ -522,7 +522,7 @@ splitDs(ds)->i
   
 tsMCall(TSIn in,MCall e)->TSOut
   Path rec=guessType(e.receiver)
-  mTypes=computeMTypes(in.p,rec,e.ms)
+  mTypes=computeMTypes(in.p,rec,e.ms)//TODO: in code error if meth not there
   //memoizing mTypes would be a mistake since we can not abstract over p and [from rec]
   // 1 select the first match with acceptable return type
   mType=_firstMatchReturn(TSIn.T,mTypes)
