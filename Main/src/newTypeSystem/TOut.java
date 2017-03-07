@@ -17,12 +17,13 @@ import ast.ExpCore.ClassB.Member;
 class TErr implements TOut,TOutM,TOutDs,TOutKs{
 public boolean isOk() { return false;}
 public TErr toError() {return this;}
-public TErr(TIn in, String msg, NormType _computed) {
-  this.in = in; this.msg = msg; this._computed = _computed;
+public TErr(TIn in, String msg, NormType _computed, ErrorKind kind) {
+  this.in = in; this.msg = msg; this._computed = _computed;this.kind=kind;
   }
 TIn in;
 String msg;
 NormType _computed;
+ErrorKind kind;
 public TErr enrich(TIn in2) {
   return this;//TODO: design some general error context enreaching
   }  

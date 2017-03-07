@@ -25,7 +25,7 @@ public interface TsOperations extends TypeSystem{
     if(TypeSystem.subtype(in.p, t, in.expected)){
       return new TOk(in,s,t);
       }
-    TErr out=new TErr(in,"----",t);
+    TErr out=new TErr(in,"----",t,ErrorKind.NotSybtype);
     return out;
     }
 
@@ -46,7 +46,7 @@ public interface TsOperations extends TypeSystem{
     if(TypeSystem.subtype(in.p, t, in.expected)){
       return new TOk(in,s,t);
       }
-    TErr out=new TErr(in,"misplaced void constant",t);
+    TErr out=new TErr(in,"misplaced void constant",t,ErrorKind.NotSybtype);
     return out;
     }
 
@@ -82,7 +82,7 @@ public interface TsOperations extends TypeSystem{
     //D.Phase  |- D.p.evilPush(L) ~> L'
     NormType t=Path.Library().toImmNT();
     if(!TypeSystem.subtype(in.p, t, in.expected)){
-      TErr out=new TErr(in,"-----------",t);
+      TErr out=new TErr(in,"-----------",t,ErrorKind.NotSybtype);
       return out;  
       }
     TOut out=typeLib(in.withP(in.p.evilPush(s)));

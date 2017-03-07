@@ -21,16 +21,16 @@ import programReduction.TestProgram;
 import sugarVisitors.Desugar;
 import sugarVisitors.InjectionOnCore;
 @RunWith(Parameterized.class)
-public class TestLibraryOk {
+public class TestLibraryError {
   @Parameter(0) public int _lineNumber;
   @Parameter(1) public String sProg;
   @Parameter(2) public String s1;
-  @Parameter(3) public String s2;
+  @Parameter(3) public newTypeSystem.ErrorKind s2;
   @Parameters(name = "{index}: line {0}")
   public static List<Object[]> createData() {
     return Arrays.asList(new Object[][] {
-{lineNumber(),"{}","{C:{method Void()void}}","{C:{method Void()void}}"
-},{lineNumber(),"{}","{C:{method Void()void } D:{}}","{C:{method Void()void } D:{}}"
+{lineNumber(),"{}","{C:{method Void()}}",ErrorKind.LibraryNotCoherent
+},{lineNumber(),"{}","{C:{method Void()this }}",ErrorKind.NotSybtype
 /*},{lineNumber(),"This0.C",
 "{C:{class method Void foo() (This0.foo())} }",
 "{C:{class method Void foo() (This0.foo())}##star^## }##star^##"
@@ -73,10 +73,8 @@ Program p=TestProgram.p(sProg);
 ClassB cb1Pre=(ClassB)Desugar.of(Parser.parse(null,s1)).accept(new InjectionOnCore());
 cb1Pre=new programReduction.Norm().norm(p.evilPush(cb1Pre));
 TOut out=TypeSystem.instance().type(new TIn(Phase.Coherent,p,cb1Pre,Path.Library().toImmNT()));
-assert out.isOk();
-ClassB cb1=(ClassB)out.toOk().annotated;
-ClassB cbExpected=(ClassB)Desugar.of(Parser.parse(null,s2)).accept(new InjectionOnCore());
-TestHelper.assertEqualExp(cb1,cbExpected);
+assert !out.isOk();
+ErrorKind kind= out.toError().kind;
+assert kind==s2;
 }
 }
-
