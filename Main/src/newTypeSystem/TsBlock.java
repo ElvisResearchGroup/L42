@@ -73,7 +73,7 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
    TOkDs dsOk=_dsOut.toOkDs();
    //Phase| p| G'| Tr' |- ks~> ks' : Ts <= T' | Tr
    TOutKs _ksOut=ksType(in1,dsOk.trAcc,ks);
-   if(!_ksOut.isOk()){throw Assertions.codeNotReachable();}
+   if(!_ksOut.isOk()){return _ksOut.toError();}
    TOkKs ksOk=_ksOut.toOkKs();
    //Phase| p| G'[G0\dom(G')] |- e0~>e'0:T0 <=T' | Tr0
    TIn G0LessG1=dsOk.g.removeGXs(in1.g.keySet());

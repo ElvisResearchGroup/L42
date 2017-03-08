@@ -70,7 +70,7 @@ public interface TsOperations extends TypeSystem{
       if(s.getKind()!=SignalKind.Return){T2=T1.getPath().toImmNT();}
       else{T2=TypeManipulation.fwd(T1);}
       TOut innerT=type(in.withE(s.getInner(), T2));
-      if(!innerT.isOk()){throw Assertions.codeNotReachable();}
+      if(!innerT.isOk()){return innerT.toError();}
       TOk res=innerT.toOk();
       NormType T3=res.computed;
       if(s.getKind()==SignalKind.Return){res=res.returnsAdd(T3);}
@@ -99,14 +99,14 @@ public interface TsOperations extends TypeSystem{
     //  D.p|-imm Void <= T
     //  D|- e ~> e' : _ <= imm Void | Tr
     TOut innerT=type(in.withE(s.getInner(), Path.Void().toImmNT()));
-    if(!innerT.isOk()){throw Assertions.codeNotReachable();}
+    if(!innerT.isOk()){return innerT.toError();}
     ErrorKind subErr=TypeSystem.subtype(in.p, Path.Void().toImmNT(),in.expected);
     if(subErr==null){
       TOk res= new TOk(in,s.withInner(innerT.toOk().annotated),innerT.toOk().computed);
       res=res.tsUnion(innerT.toOk());
       return res;
       }
-    throw Assertions.codeNotReachable();
+    return new TErr(in,"",Path.Void().toImmNT(),subErr);
     }
 
 }

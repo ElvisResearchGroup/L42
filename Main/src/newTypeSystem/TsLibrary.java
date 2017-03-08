@@ -40,7 +40,7 @@ public interface TsLibrary extends TypeSystem{
     ClassB normP;
     try{normP=new Norm().norm(in.p);}
     catch(RuntimeException exc){
-      throw exc;//Assertions.codeNotReachable("not implemented yet");
+      throw exc;
       //exceptions from normalization all represents unsolvable
       //type errors. Same for cyclic resolve
     }
@@ -129,7 +129,10 @@ public interface TsLibrary extends TypeSystem{
         //exists P0 in Ps0 such that p|-P1<=P0
         boolean ok=mwt.getMt().getExceptions().stream().anyMatch(
           P0->null==TypeSystem.subtype(newIn.p, P1, P0.getNT().getPath()));
-        if(!ok){throw Assertions.codeNotReachable();}
+        if(!ok){return new TErr(newIn,"",P1.toImmNT(),ErrorKind.MethodLeaksExceptions);}
+        }
+      if(!out.toOk().returns.isEmpty()){
+        return new TErr(newIn,"",out.toOk().returns.get(0),ErrorKind.MethodLeaksReturns);
         }
       mwt1=mwt.with_inner(Optional.of(out.toOk().annotated));
     }
@@ -149,17 +152,22 @@ public interface TsLibrary extends TypeSystem{
         MethodWithType mwtP=(MethodWithType) cbP._getMember(mwt.getMs());
         if(mwtP==null){continue;}
         MethodType M0=From.from(mwtP.getMt(),P);
-        if(null!=TypeSystem.subtype(in.p, mwt.getMt().getReturnType().getNT(),M0.getReturnType().getNT())){
-          throw Assertions.codeNotReachable();
+        ErrorKind kind=TypeSystem.subtype(in.p, mwt.getMt().getReturnType().getNT(),M0.getReturnType().getNT());
+        if(kind!=null){
+          return new TErr(in,"",P.toImmNT(),ErrorKind.InvalidImplements);
           }
         {int i=-1;for(Type Ti:mwt.getMt().getTs()){i+=1; Type T1i=M0.getTs().get(i);
-          if(!in.p.equiv(Ti.getNT(),T1i.getNT())){throw Assertions.codeNotReachable();}
+          if(!in.p.equiv(Ti.getNT(),T1i.getNT())){
+          return new TErr(in,"",P.toImmNT(),ErrorKind.InvalidImplements);
+          }
         }}
         for(Type Pi: mwt.getMt().getExceptions()){
           //exists Pj in Ps' such that p |- Pi<=Pj
           boolean ok=M0.getExceptions().stream().anyMatch(
                     Pj->null==TypeSystem.subtype(in.p, Pi.getNT().getPath(), Pj.getNT().getPath()));
-          if(!ok){throw Assertions.codeNotReachable();}
+          if(!ok){
+          return new TErr(in,"",P.toImmNT(),ErrorKind.InvalidImplements);
+            }
           }
         }
       }

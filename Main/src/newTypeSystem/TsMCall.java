@@ -26,7 +26,7 @@ public interface TsMCall extends TypeSystem{
     List<MethodType> mTypes = AlternativeMethodTypes.types(mDec);
     MethodType mType=AlternativeMethodTypes._firstMatchReturn(in.p,in.expected,mTypes);
     if (mType==null){
-      throw Assertions.codeNotReachable();
+      return new TErr(in,"",ret,ErrorKind.NotSubtypeMdf);
       }
 //unachievable return type (T) for method (P.ms) [line numbers of expression and declaration]
 //2 type all the parameters with mutOnlyToLent(Ts) //we may include mutOnlyToLent in the computation of the MTypes, instead of in the loop below
@@ -36,13 +36,13 @@ public interface TsMCall extends TypeSystem{
     ExpCore e0=s.getInner();
     NormType t0=new NormType(mType.getMdf(),rec,Doc.empty());
     TOut _res0=type(in.withE(e0,TypeManipulation.mutOnlyToLent(t0)));
-    if(!_res0.isOk()){throw Assertions.codeNotReachable();}
+    if(!_res0.isOk()){return _res0.toError();}
     TOk res0=_res0.toOk();
     Mdf recMdf=_res0.toOk().computed.getMdf();
     {int i=-1;for(  ExpCore ei:s.getEs()){i+=1;
       NormType ti=mType.getTs().get(i).getNT();
       TOut _resi=type(in.withE(ei,TypeManipulation.mutOnlyToLent(ti)));
-      if(!_resi.isOk()){throw Assertions.codeNotReachable();}
+      if(!_resi.isOk()){return _resi.toError();}
       resp.add(_resi.toOk());
       computed.add(_resi.toOk().computed);
       annotated.add(_resi.toOk().annotated);
