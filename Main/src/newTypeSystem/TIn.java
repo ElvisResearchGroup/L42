@@ -156,7 +156,7 @@ boolean isCoherent(){
   return true;
   }
 @Override public String toString(){
-  return "["+this.phase+","+this.g+","+this.expected+"]";
+  return this.phase+";p;"+this.g+"|-"+sugarVisitors.ToFormattedText.of(this.e)+":"+this.expected;
   }
 }
 

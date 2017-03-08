@@ -436,7 +436,7 @@ coherent(p) //interfaces are always coherent
   where
   p.top()={interface implements _ mwts ncs}
     
-coherent(p)  //classes are coherent if they have a coherent set of abstract methods
+coherent(p) //classes are coherent if they have a coherent set of abstract methods
   where
   p.top()={implements _ mwts' ncs} //note, no interface
   mwts={mwt in mwts'| mwt.e undefined } //collect the abstract methods
@@ -452,7 +452,8 @@ m[]==m
 coherent(n?,p,T1 x1..Tn xn,
       refine? class method T m[n?] (T1' x1..Tn' xn) exception _)
   where
-    p|-mut This0 <=T and p|-Ti'<=fwd Ti
+    p|- This0 <=T.P and p|-Ti'<=fwd Ti
+    T.mdf!=class and if T.mdf in {imm,capsule}, mut notin (T1..Tn).mdfs//TODO: in code, plus discuss with James
 
 coherent(n?,p,T1 x1..Tn xn,
     refine? mdf method T m[n?]() exception _)

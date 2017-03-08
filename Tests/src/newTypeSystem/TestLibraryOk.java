@@ -33,6 +33,7 @@ public class TestLibraryOk {
 },{lineNumber(),"{}","{C:{method Void()void } D:{}}","{C:{method Void()void } D:{}}"
 },{lineNumber(),"{}","{C:{method This()this }}","{C:{method This()this }}"
 },{lineNumber(),"{}","{C:{method This()this() }}","{C:{method This()this() }}"
+},{lineNumber(),"{}","{C:{method D() this() } D:{class method This ()}}","{C:{method D() this() } D:{class method This()}}"
 /*},{lineNumber(),"This0.C",
 "{C:{class method Void foo() (This0.foo())} }",
 "{C:{class method Void foo() (This0.foo())}##star^## }##star^##"
@@ -75,7 +76,8 @@ Program p=TestProgram.p(sProg);
 ClassB cb1Pre=(ClassB)Desugar.of(Parser.parse(null,s1)).accept(new InjectionOnCore());
 cb1Pre=new programReduction.Norm().norm(p.evilPush(cb1Pre));
 TOut out=TypeSystem.instance().type(TIn.top(p,cb1Pre));
-assert out.isOk();
+assert out.isOk():
+  "";
 ClassB cb1=(ClassB)out.toOk().annotated;
 ClassB cbExpected=(ClassB)Desugar.of(Parser.parse(null,s2)).accept(new InjectionOnCore());
 TestHelper.assertEqualExp(cb1,cbExpected);
