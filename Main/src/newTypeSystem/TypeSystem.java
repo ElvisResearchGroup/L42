@@ -41,12 +41,14 @@ public interface TypeSystem{
   static TypeSystem instance(){return new Impl();}
   TOut type(TIn in);
   TOut typeLib(TIn in);
-  public static boolean subtype(Program p,Path pSub,Path pSuper){
-    return p.subtypeEq(pSub, pSuper);
+  public static ErrorKind subtype(Program p,Path pSub,Path pSuper){
+    if (!p.subtypeEq(pSub, pSuper)){return ErrorKind.NotSubtypeClass;}
+    return null;
     }
-  public static boolean subtype(Program p, NormType tSub, NormType tSuper) {
-    if(!Functions.isSubtype(tSub.getMdf(),tSuper.getMdf())){return false;}
-    return subtype(p,tSub.getPath(),tSuper.getPath());
+  public static ErrorKind subtype(Program p, NormType tSub, NormType tSuper) {
+    if (!p.subtypeEq(tSub.getPath(),tSuper.getPath())){return ErrorKind.NotSubtypeClass;}
+    if(!Functions.isSubtype(tSub.getMdf(),tSuper.getMdf())){return ErrorKind.NotSubtypeMdf;}
+    return null;
     }
   //only check mdf subtyping
   public static boolean _methMdfTSubtype(MethodType mSub,MethodType mSuper){
@@ -61,12 +63,12 @@ public interface TypeSystem{
     }
   public static boolean methTSubtype(Program p,MethodType mSub,MethodType mSuper){
     if (!Functions.isSubtype(mSuper.getMdf(),mSub.getMdf())){return false;}
-    if (!subtype(p,mSub.getReturnType().getNT(),mSuper.getReturnType().getNT())){
+    if (null!=subtype(p,mSub.getReturnType().getNT(),mSuper.getReturnType().getNT())){
       return false;
     }
     if(mSub.getTs().size()!=mSuper.getTs().size()){return false;}
     {int i=-1;for(Type tSub:mSub.getTs()){i+=1;Type tSuper=mSuper.getTs().get(i);
-      if (!subtype(p,tSuper.getNT(),tSub.getNT())){
+      if (null!=subtype(p,tSuper.getNT(),tSub.getNT())){
         return false;
         }    
       }}

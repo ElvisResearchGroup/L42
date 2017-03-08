@@ -63,6 +63,8 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
    //Phase| p| G'[ks] |- ds ~> ds' |Tr' | G0
    TOutDs _dsOut=dsType(in2,ds);
    if(!_dsOut.isOk()){
+     TErr err=_dsOut.toError();
+     if(!err.kind.needContext){return err;}
      //here we have the info to capture a failure about ds and discover if    
      //extant name (fwd[%]* x) was hidden by error safety or  modifiable name (capsule/mut/lent x)
      //was locked by error safety[cite the line number of the catch]
@@ -76,7 +78,7 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
    //Phase| p| G'[G0\dom(G')] |- e0~>e'0:T0 <=T' | Tr0
    TIn G0LessG1=dsOk.g.removeGXs(in1.g.keySet());
    TOut _e0Out=type(G0LessG1.withE(s.getE(), in.expected));
-   if(!_e0Out.isOk()){throw Assertions.codeNotReachable();}
+   if(!_e0Out.isOk()){return _e0Out.toError();}
    TOk e0Ok=_e0Out.toOk();
    //T= mostGeneralMdf({T0.mdf,Ts.mdfs}) T'.P //set of Mdfs admits no single most general mdf
    Set<Mdf>mdfs=new HashSet<>();
@@ -85,9 +87,9 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
      }
    mdfs.add(e0Ok.computed.getMdf());
    Mdf tMdf=TypeManipulation._mostGeneralMdf(mdfs);
-   if(tMdf==null){throw Assertions.codeNotReachable();}
+   if(tMdf==null){return new TErr(in,"",e0Ok.computed,ErrorKind.NoMostGeneralMdf);}
    NormType t=new NormType(tMdf,in.expected.getPath(),Doc.empty());
-   assert TypeSystem.subtype(in.p,t, in.expected);
+   assert null==TypeSystem.subtype(in.p,t, in.expected);
    Block annotated=new Block(s.getDoc(),dsOk.ds,e0Ok.annotated,ksOk.ks,s.getP());
    TOk res=new TOk(in,annotated,t);
    // result Tr: Tr'.capture(p,ks') U Tr U Tr0
@@ -127,7 +129,7 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
     NormType nt=Norm.resolve(in.p,di.getT());
     NormType ntFwdP=TypeManipulation.fwdP(nt);
     TOut _out=type(in.withE(di.getInner(),ntFwdP));
-    if(!_out.isOk()){throw Assertions.codeNotReachable();}
+    if(!_out.isOk()){return _out.toError();}
     TOk ok=_out.toOk();
     trAcc=trAcc.tsUnion(ok);
     Dec di1=di.withInner(ok.annotated);
@@ -138,7 +140,7 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
   //    then x0..xn disjoint FV(e0..en)//returning unresolved items from cycles is prohibited
   if(TypeManipulation.fwd_or_fwdP_in(trAcc.returns)){
     boolean xInCommon=fve0n.stream().anyMatch(x->ds0n.stream().anyMatch(d->d.getX().equals(x)));
-    if(xInCommon){throw Assertions.codeNotReachable();}
+    if(xInCommon){return new TErr(in,"",null,ErrorKind.AttemptReturnFwd);}
     }
   //  if fwd_or_fwd%_in { G(x) | x in FV(e0..en) } // x0..xn already excluded
   //    then G0=G[fwd%(G')]  
@@ -153,7 +155,7 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
   else{inG0=in.addGds(ds1);}
   //  Phase| p| G0|- ds ~> ds'|Tr' | G2
   TOutDs _res= dsType(inG0,ds);
-  if(!_res.isOk()){throw Assertions.codeNotReachable();}
+  if(!_res.isOk()){return _res.toError();}
   TOkDs res=_res.toOkDs();
   ds1.addAll(res.ds);//safe? locally created, not leaked yet.
   trAcc=trAcc.tsUnion(res.trAcc);
@@ -213,7 +215,7 @@ default TOut combine(TErr res,TErr promFail){throw Assertions.codeNotReachable()
 default boolean promotionMakesSense(TErr tErr){
     NormType expected=tErr.in.expected;
     NormType obtained=tErr._computed;
-    if (!TypeSystem.subtype(tErr.in.p,obtained.getPath(), expected.getPath())){return false;}
+    if (null!=TypeSystem.subtype(tErr.in.p,obtained.getPath(), expected.getPath())){return false;}
     Mdf eM=expected.getMdf();
     Mdf oM=obtained.getMdf();
     return (eM==Mdf.Capsule || eM==Mdf.Immutable) && oM==Mdf.Mutable;

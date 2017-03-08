@@ -30,40 +30,9 @@ public class TestLibraryError {
   public static List<Object[]> createData() {
     return Arrays.asList(new Object[][] {
 {lineNumber(),"{}","{C:{method Void()}}",ErrorKind.LibraryNotCoherent
-},{lineNumber(),"{}","{C:{method Void()this }}",ErrorKind.NotSybtype
-/*},{lineNumber(),"This0.C",
-"{C:{class method Void foo() (This0.foo())} }",
-"{C:{class method Void foo() (This0.foo())}##star^## }##star^##"
-},{lineNumber(),"This0.C",
-"{C:{class method Void foo() (D.foo())} D:{method Void() class method Void foo() (void)}}",
-"{C:{class method Void foo() (D.foo())}##plus^## D:{method Void()class method Void foo() (void)}##plus ^##}##plus^##"
-},{lineNumber(),"This0.C",
-"{C:{E:{class method Void foo() (This1.foo())} class method Void foo() (D.foo())} D:{class method Void foo() (C.E.foo())}}",
-"{C:{E:{class method Void foo() (This1.foo())}##star^## class method Void foo() (D.foo())}##star^## D:{class method Void foo() (C.E.foo())}##star^##}##star^##"
-},{lineNumber(),"This0.C",
-"{C:{E:{class method Void foo() (This1.foo())} class method Void foo() (D.foo())} D:{method Void() class method Void foo() (C.E.foo())}}",
-"{C:{E:{class method Void foo() (This1.foo())}##plus^## class method Void foo() (D.foo())}##plus^## D:{method Void()  class method Void foo() (C.E.foo())}##plus^##}##plus^##"
-
-},{lineNumber(),"This0.C",
-"{K:{E:{class method Void foo() (This2.C.foo())}} C:{class method Void foo() (D.foo())} D:{class method Void foo() (K.E.foo())}}",
-"{K:{E:{class method Void foo() (This2.C.foo())}##star^##}##star ^## C:{class method Void foo() (D.foo())}##star^## D:{class method Void foo() (K.E.foo())}##star^##}##star^##"
-},{lineNumber(),"This0.C",
-"{K:{method Void() E:{class method C foo() (C.foo())}} C:{class method C foo() (D.foo())} D:{class method C foo() (K.E.foo())}}",
-"{K:{method Void() E:{class method C foo() (C.foo())}##star^##}##plus ^## C:{class method C foo() (D.foo())}##star^## D:{class method C foo() (K.E.foo())}##star^##}##plus^##"
-//norm//NO, Norm is executed only in the extracted method
-//},{"This0.C",
-//"{K:{E:{class method C.foo() foo() (C.foo())}} C:{class method C foo() (D.foo())} D:{class method C foo() (K.E.foo())}}",
-//"{K:{E:{class method C foo() (C.foo())}##plus^##}##plus ^## C:{class method C foo() (D.foo())}##plus^## D:{class method C foo() (K.E.foo())}##plus^##}##plus^##"
-//},{"This0.C",
-//"{K:{E:{class method C.foo().foo() foo() (C.foo())}} C:{class method C foo() (D.foo())} D:{class method C foo() (K.E.foo())}}",
-//"{K:{E:{class method C foo() (C.foo())}##plus^##}##plus^## C:{class method C foo() (D.foo())}##plus^## D:{class method C foo() (K.E.foo())}##plus^##}##plus^##"
-},{lineNumber(),"This0.C",
-"{C:{ method Void foo() (This0 x= this void)} }",
-"{C:{ method Void foo() (This0 x= this void)}##star^## }##star^##"
-},{lineNumber(),"This0.C",
-"{C:{ method Void foo() (C x= this void)} }",
-"{C:{ method Void foo() (C x= this void)}##star^## }##star^##"
-*/
+},{lineNumber(),"{}","{C:{method Void()this }}",ErrorKind.NotSubtypeClass
+},{lineNumber(),"{}","{C:{method class This()this }}",ErrorKind.NotSubtypeMdf
+},{lineNumber(),"{}","{C:{method This()this.foo() method Any foo()this }}",ErrorKind.NotSubtypeClass
 
 }});}
 
@@ -72,7 +41,7 @@ public void test() {
 Program p=TestProgram.p(sProg);
 ClassB cb1Pre=(ClassB)Desugar.of(Parser.parse(null,s1)).accept(new InjectionOnCore());
 cb1Pre=new programReduction.Norm().norm(p.evilPush(cb1Pre));
-TOut out=TypeSystem.instance().type(new TIn(Phase.Coherent,p,cb1Pre,Path.Library().toImmNT()));
+TOut out=TypeSystem.instance().type(TIn.top(p,cb1Pre));
 assert !out.isOk();
 ErrorKind kind= out.toError().kind;
 assert kind==s2;

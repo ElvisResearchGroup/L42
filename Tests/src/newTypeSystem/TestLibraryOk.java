@@ -31,6 +31,8 @@ public class TestLibraryOk {
     return Arrays.asList(new Object[][] {
 {lineNumber(),"{}","{C:{method Void()void}}","{C:{method Void()void}}"
 },{lineNumber(),"{}","{C:{method Void()void } D:{}}","{C:{method Void()void } D:{}}"
+},{lineNumber(),"{}","{C:{method This()this }}","{C:{method This()this }}"
+},{lineNumber(),"{}","{C:{method This()this() }}","{C:{method This()this() }}"
 /*},{lineNumber(),"This0.C",
 "{C:{class method Void foo() (This0.foo())} }",
 "{C:{class method Void foo() (This0.foo())}##star^## }##star^##"
@@ -72,7 +74,7 @@ public void test() {
 Program p=TestProgram.p(sProg);
 ClassB cb1Pre=(ClassB)Desugar.of(Parser.parse(null,s1)).accept(new InjectionOnCore());
 cb1Pre=new programReduction.Norm().norm(p.evilPush(cb1Pre));
-TOut out=TypeSystem.instance().type(new TIn(Phase.Coherent,p,cb1Pre,Path.Library().toImmNT()));
+TOut out=TypeSystem.instance().type(TIn.top(p,cb1Pre));
 assert out.isOk();
 ClassB cb1=(ClassB)out.toOk().annotated;
 ClassB cbExpected=(ClassB)Desugar.of(Parser.parse(null,s2)).accept(new InjectionOnCore());

@@ -19,9 +19,15 @@ public interface TsMCall extends TypeSystem{
   default TOut tsMCall(TIn in, MCall s) {
     NormType _rec=GuessTypeCore.of(in, s.getInner());
     Path rec=_rec.getPath();
-    List<MethodType> mTypes = AlternativeMethodTypes.types(in.p,rec,s.getS());
+    MethodType mDec=AlternativeMethodTypes.mtDeclared(in.p,rec,s.getS());
+    NormType ret=mDec.getReturnType().getNT();
+    ErrorKind kind = TypeSystem.subtype(in.p, ret.getPath(),in.expected.getPath());
+    if(kind!=null){return new TErr(in,"",ret,kind);}
+    List<MethodType> mTypes = AlternativeMethodTypes.types(mDec);
     MethodType mType=AlternativeMethodTypes._firstMatchReturn(in.p,in.expected,mTypes);
-    if (mType==null){throw Assertions.codeNotReachable();}
+    if (mType==null){
+      throw Assertions.codeNotReachable();
+      }
 //unachievable return type (T) for method (P.ms) [line numbers of expression and declaration]
 //2 type all the parameters with mutOnlyToLent(Ts) //we may include mutOnlyToLent in the computation of the MTypes, instead of in the loop below
     List<TOk> resp=new ArrayList<>();

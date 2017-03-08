@@ -38,6 +38,7 @@ public interface Program {//this class will eventually replace auxiliaryDefiniti
   //program derived operations:
   default boolean subtypeEq(Ast.Path p,Ast.Path p1){
     if(equiv(p,p1)){return true;}
+    if(p.isPrimitive()){return false;}
     ClassB cb=this.extractClassB(p);
     for(Path pi:cb.getSuperPaths()){
       if(equiv(pi, p1)){return true;}

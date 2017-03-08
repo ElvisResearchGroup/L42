@@ -83,7 +83,9 @@ public interface TsLibrary extends TypeSystem{
      ClassB L1=new ClassB(L0.getDoc1(),L0.isInterface(),L0.getSupertypes(),newMwts,newNs,L0.getP(),L0.getStage(),maxPhase,L0.getUniqueId());
      if(in.phase==Phase.Coherent){
        boolean isCoh=coherent(in.p.pop().evilPush(L1));
-       if(!isCoh){throw Assertions.codeNotReachable("not implemented yet");}
+       if(!isCoh){
+         return new TErr(in,"",Path.Library().toImmNT(),ErrorKind.LibraryNotCoherent);
+         }
        }
 //   if Phase=Coherent then coherent(p.pop().evilPush(L'))
 //   //or error not coherent set of abstr. methods:list
@@ -120,11 +122,11 @@ public interface TsLibrary extends TypeSystem{
     else{
       TIn newIn=in.freshGFromMt(mwt);
       TOut out=type(newIn);
-      if(!out.isOk()){throw Assertions.codeNotReachable();}
+      if(!out.isOk()){return out.toError();}
       for(Path P1: out.toOk().exceptions){
         //exists P0 in Ps0 such that p|-P1<=P0
         boolean ok=mwt.getMt().getExceptions().stream().anyMatch(
-          P0->TypeSystem.subtype(newIn.p, P1, P0.getNT().getPath()));
+          P0->null==TypeSystem.subtype(newIn.p, P1, P0.getNT().getPath()));
         if(!ok){throw Assertions.codeNotReachable();}
         }
       mwt1=mwt.with_inner(Optional.of(out.toOk().annotated));
@@ -145,7 +147,7 @@ public interface TsLibrary extends TypeSystem{
         MethodWithType mwtP=(MethodWithType) cbP._getMember(mwt.getMs());
         if(mwtP==null){continue;}
         MethodType M0=From.from(mwtP.getMt(),P);
-        if(!TypeSystem.subtype(in.p, mwt.getMt().getReturnType().getNT(),M0.getReturnType().getNT())){
+        if(null!=TypeSystem.subtype(in.p, mwt.getMt().getReturnType().getNT(),M0.getReturnType().getNT())){
           throw Assertions.codeNotReachable();
           }
         {int i=-1;for(Type Ti:mwt.getMt().getTs()){i+=1; Type T1i=M0.getTs().get(i);
@@ -153,7 +155,8 @@ public interface TsLibrary extends TypeSystem{
         }}
         for(Type Pi: mwt.getMt().getExceptions()){
           //exists Pj in Ps' such that p |- Pi<=Pj
-          boolean ok=M0.getExceptions().stream().anyMatch(Pj->TypeSystem.subtype(in.p, Pi.getNT().getPath(), Pj.getNT().getPath()));
+          boolean ok=M0.getExceptions().stream().anyMatch(
+                    Pj->null==TypeSystem.subtype(in.p, Pi.getNT().getPath(), Pj.getNT().getPath()));
           if(!ok){throw Assertions.codeNotReachable();}
           }
         }
@@ -227,7 +230,7 @@ public interface TsLibrary extends TypeSystem{
         if(!mt.getTs().isEmpty()){return false;}
         NormType Ti_=TypeManipulation._toRead(Ti);
         if (Ti_==null){return false;}//p|-toRead(Ti)<=T
-        if(!TypeSystem.subtype(p, Ti_,mt.getReturnType().getNT())){return false;}
+        if(null!=TypeSystem.subtype(p, Ti_,mt.getReturnType().getNT())){return false;}
         return true;
       }
       if(m!=Mdf.Mutable){return false;}
@@ -235,13 +238,13 @@ public interface TsLibrary extends TypeSystem{
       if(mt.getTs().isEmpty()){//exposer
       NormType Ti_=TypeManipulation.capsuleToLent(Ti);
       if (Ti_==null){return false;}//p|-capsuleToLent(Ti)<=T
-      if(!TypeSystem.subtype(p, Ti_,mt.getReturnType().getNT())){return false;}
+      if(null!=TypeSystem.subtype(p, Ti_,mt.getReturnType().getNT())){return false;}
       }
       //setter refine? mut method Void m[n?](T that)
       if(!mt.getReturnType().equals(NormType.immVoid)){return false;}
       if(mt.getTs().size()!=1){return false;}
       if(!mwt.getMs().getNames().get(0).equals("that")){return false;}
-      if(!TypeSystem.subtype(p, Ti,mt.getTs().get(0).getNT())){return false;}
+      if(null!=TypeSystem.subtype(p, Ti,mt.getTs().get(0).getNT())){return false;}
       return true;
     }
 
@@ -256,7 +259,7 @@ public interface TsLibrary extends TypeSystem{
       MethodType mt=ck.getMt();
       if(mt.getMdf()!=Mdf.Class){return false;}
       NormType rt=mt.getReturnType().getNT();
-      if(!TypeSystem.subtype(p, Path.outer(0),rt.getPath())){return false;}
+      if(null!=TypeSystem.subtype(p, Path.outer(0),rt.getPath())){return false;}
       if(!Functions.isSubtype(Mdf.Mutable,rt.getMdf())){return false;}
       for(Type ti:mt.getTs()){
         Mdf mi=ti.getNT().getMdf();

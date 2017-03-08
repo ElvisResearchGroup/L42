@@ -131,12 +131,13 @@ public class AlternativeMethodTypes {
     if(t==null){return;}
     l.add(t);
     }
-  static List<MethodType> types(Program p, Path P, MethodSelector ms){
-    MethodWithType mwt = (MethodWithType) p.extractClassB(P)._getMember(ms);
-    assert mwt!=null;
-    MethodType mt=From.from(mwt.getMt(),P);
-    return types(mt);
-  }
+    static MethodType mtDeclared(Program p, Path P, MethodSelector ms){
+      MethodWithType mwt = (MethodWithType) p.extractClassB(P)._getMember(ms);
+      assert mwt!=null;
+      MethodType mt=From.from(mwt.getMt(),P);
+      return mt;
+      }
+
   static List<MethodType> types(MethodType mt){
     List<MethodType>res=new ArrayList<>();
     MethodType base=mBase(mt);
@@ -167,7 +168,7 @@ public class AlternativeMethodTypes {
   }
   public static MethodType _firstMatchReturn(Program p,NormType nt,List<MethodType> mts){
   for(MethodType mt:mts){
-    if(TypeSystem.subtype(p, mt.getReturnType().getNT(), nt)){return mt;}
+    if(null==TypeSystem.subtype(p, mt.getReturnType().getNT(), nt)){return mt;}
     }
   return null;
   }

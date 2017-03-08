@@ -21,14 +21,18 @@ import ast.ExpCore.ClassB.Phase;
 import programReduction.Program;
 
 class TIn{
-Phase phase;
-Program p;
-Map<String,NormType>g=Collections.emptyMap();//could be two arrays for efficiency
-ExpCore e;
-NormType expected;
-TIn(Phase phase,Program p,ExpCore e,NormType expected){
+final Phase phase;
+final Program p;
+final Map<String,NormType>g;//=Collections.emptyMap();//could be two arrays for efficiency
+final ExpCore e;
+final NormType expected;
+public static TIn top(Program p,ExpCore e){
+  return new TIn(Phase.Coherent,p,e,Path.Library().toImmNT(),Collections.emptyMap());
+  }
+private TIn(Phase phase,Program p,ExpCore e,NormType expected,Map<String,NormType>g ){
   this.phase=phase;this.p=p;
   this.e=e;this.expected=expected;
+  this.g=g;
   }
 @Override
 public int hashCode() {
@@ -55,82 +59,76 @@ public boolean equals(Object obj) {
   return true;
   }
 public TIn addG(String x, NormType t){
-  TIn res=gClean();
-  res.g.putAll(this.g);
-  assert !res.g.containsKey(x);
-  res.g.put(x,t);
-  return res;
+  assert !g.containsKey(x);
+  Map<String,NormType>newG=new HashMap<String,NormType>(g);
+  newG.put(x,t);
+  return this.withG(newG);
   }
 public TIn addGds(List<ExpCore.Block.Dec> ds){
-  TIn res=gClean();
-  res.g.putAll(this.g);
+  Map<String,NormType>newG=new HashMap<String,NormType>(g);
   for(ExpCore.Block.Dec d : ds){
-    assert !res.g.containsKey(d.getX());
-    res.g.put(d.getX(),programReduction.Norm.resolve(this.p,d.getT()));
+    assert !g.containsKey(d.getX());
+    newG.put(d.getX(),programReduction.Norm.resolve(this.p,d.getT()));
     }
-  return res;
+  return this.withG(newG);
   }
 public TIn removeGXs(Set<String> set) {
-  TIn res=gClean();
-  res.g.putAll(this.g);
+  Map<String,NormType>newG=new HashMap<String,NormType>(g);
   for(String x : set){
-    res.g.remove(x);
+    newG.remove(x);
     }
-  return res;
+  return this.withG(newG);
   }
 public TIn removeGDs(List<Block.Dec> ds) {
-TIn res=gClean();
-res.g.putAll(this.g);
-for(Dec di : ds){
-  res.g.remove(di.getX());
+  Map<String,NormType>newG=new HashMap<String,NormType>(g);
+  for(Dec di : ds){
+    newG.remove(di.getX());
   }
-return res;
+  return this.withG(newG);
 }
 
 public TIn freshGFromMt(MethodWithType mwt){
-MethodType mt=mwt.getMt();
-assert mwt.get_inner().isPresent();
-TIn res=gClean();
-res.e=mwt.getInner();
-res.expected=TypeManipulation.fwdP(mt.getReturnType().getNT());
-g=new HashMap<>();
-g.put("this",new NormType(mt.getMdf(),Path.outer(0),Doc.empty()));
-{int i=-1;for(String x:mwt.getMs().getNames()){i+=1;
-  NormType ntx=mt.getTs().get(i).getNT();
-  res.g.put(x,ntx);
-  }}
-return res;
-}
+  MethodType mt=mwt.getMt();
+  assert mwt.get_inner().isPresent();
+  Map<String,NormType>newG=new HashMap<String,NormType>(g);
+  newG.put("this",new NormType(mt.getMdf(),Path.outer(0),Doc.empty()));
+  {int i=-1;for(String x:mwt.getMs().getNames()){i+=1;
+    NormType ntx=mt.getTs().get(i).getNT();
+    newG.put(x,ntx);
+    }}
+  return new TIn(this.phase,this.p,mwt.getInner(),TypeManipulation.fwdP(mt.getReturnType().getNT()),newG);
+  }
 
 public NormType g(String x){
   NormType res=this.g.get(x);
-  assert res!=null;
+  assert res!=null:
+    x;
   return res;
   }
 public Set<String> gDom(){return g.keySet();}
-public TIn gClean(){return new TIn(phase,p,e,expected);}
+//public TIn gClean(){return new TIn(phase,p,e,expected);}
 //onlyMutOrImm(G)={x:G(x) | G(x) only mut or imm}
 public TIn toRead(){//toRead(G)(x)=toRead(G(x)) //thus undefined where toRead undefined
-  TIn res=gClean();
+  Map<String,NormType>newG=new HashMap<String,NormType>(g);
   for(String xi:gDom()){
     NormType ti=g(xi);
     assert ti!=null;
     ti=TypeManipulation._toRead(ti);
     if(ti==null){continue;}
-    res.g.put(xi,ti);
+    newG.put(xi,ti);
     }
-  return res;
+  return this.withG(newG);
   } 
 public TIn toLent(){//toLent(G)(x)=toLent(G(x)) //thus undefined where toLent undefined
-  TIn res=gClean();
+  Map<String,NormType>newG=new HashMap<String,NormType>(g);
   for(String xi:gDom()){
     NormType ti=g(xi);
     assert ti!=null;
     ti=TypeManipulation._toRead(ti);
     if(ti==null){continue;}
-    res.g.put(xi,ti);
+    newG.put(xi,ti);
     }
-  return res;
+  return this.withG(newG);
   }
 public TIn gKs(List<ExpCore.Block.On>ks){     
 //G[ks]
@@ -145,16 +143,21 @@ for( On k:ks){
 return this;
 }
 public TIn withE(ExpCore newE,NormType newExpected){
-  return new TIn(phase,p,newE,newExpected);
+  return new TIn(this.phase,this.p,newE,newExpected,this.g);
   }
 public TIn withP(Program newP){
-  return new TIn(phase,newP,e,Path.Library().toImmNT());
+  return new TIn(this.phase,newP,this.e,Path.Library().toImmNT(),this.g);
   }
+private TIn withG(Map<String,NormType>g){
+  return new TIn(this.phase,this.p,this.e,this.expected,g);
+}
 
 boolean isCoherent(){
   return true;
   }
-
+@Override public String toString(){
+  return "["+this.phase+","+this.g+","+this.expected+"]";
+  }
 }
 
 

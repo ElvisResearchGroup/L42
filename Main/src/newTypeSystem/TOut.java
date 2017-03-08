@@ -94,10 +94,10 @@ class TOk implements TOut{
     for(On k:ks){
       if(k.getKind()==SignalKind.Error){continue;}
       if(k.getKind()==SignalKind.Exception){
-        exc=exc.filter(pi->!TypeSystem.subtype(this.in.p,pi,k.getT().getNT().getPath()));
+        exc=exc.filter(pi->null!=TypeSystem.subtype(this.in.p,pi,k.getT().getNT().getPath()));
         }
       //otherwise, is return
-      ret=ret.filter(ti->!TypeSystem.subtype(this.in.p,ti.getPath(),k.getT().getNT().getPath()));
+      ret=ret.filter(ti->null!=TypeSystem.subtype(this.in.p,ti.getPath(),k.getT().getNT().getPath()));
       }
     TOk result=new TOk(in,annotated,computed);
     exc.forEach(result.exceptions::add);

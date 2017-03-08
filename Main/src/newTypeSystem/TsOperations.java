@@ -22,10 +22,11 @@ public interface TsOperations extends TypeSystem{
     //D.p|-class P <= T
     NormType t=new NormType(Mdf.Class,s,Doc.empty());
     assert in.p.extractClassB(s)!=null;
-    if(TypeSystem.subtype(in.p, t, in.expected)){
+    ErrorKind subErr=TypeSystem.subtype(in.p, t, in.expected);
+    if(subErr==null){
       return new TOk(in,s,t);
       }
-    TErr out=new TErr(in,"----",t,ErrorKind.NotSybtype);
+    TErr out=new TErr(in,"----",t,subErr);
     return out;
     }
 
@@ -33,20 +34,22 @@ public interface TsOperations extends TypeSystem{
     //D |-x ~> x :D.G(x) <= T | emptyTr
     //  D.p|- D.G(x) <= T
     NormType nt=in.g(s.getInner());
-    if(TypeSystem.subtype(in.p,nt,in.expected)){
+    ErrorKind subErr=TypeSystem.subtype(in.p,nt,in.expected);
+    if(subErr==null){
       return new TOk(in,s,nt);
       }
-    throw Assertions.codeNotReachable();
+    return new TErr(in,"",nt,subErr);
     }
 
     default TOut tsVoid(TIn in, _void s) {
     //D |- void~> void:imm Void <= T | emptyTr
     //D.p|-imm Void <= T
     NormType t=Path.Void().toImmNT();
-    if(TypeSystem.subtype(in.p, t, in.expected)){
+    ErrorKind subErr=TypeSystem.subtype(in.p, t, in.expected);
+    if(subErr==null){
       return new TOk(in,s,t);
       }
-    TErr out=new TErr(in,"misplaced void constant",t,ErrorKind.NotSybtype);
+    TErr out=new TErr(in,"misplaced void constant",t,subErr);
     return out;
     }
 
@@ -81,8 +84,9 @@ public interface TsOperations extends TypeSystem{
     //D.p|-imm Library <= T
     //D.Phase  |- D.p.evilPush(L) ~> L'
     NormType t=Path.Library().toImmNT();
-    if(!TypeSystem.subtype(in.p, t, in.expected)){
-      TErr out=new TErr(in,"-----------",t,ErrorKind.NotSybtype);
+    ErrorKind subErr=TypeSystem.subtype(in.p, t, in.expected);
+    if(subErr!=null){
+      TErr out=new TErr(in,"-----------",t,subErr);
       return out;  
       }
     TOut out=typeLib(in.withP(in.p.evilPush(s)));
@@ -96,7 +100,8 @@ public interface TsOperations extends TypeSystem{
     //  D|- e ~> e' : _ <= imm Void | Tr
     TOut innerT=type(in.withE(s.getInner(), Path.Void().toImmNT()));
     if(!innerT.isOk()){throw Assertions.codeNotReachable();}
-    if(TypeSystem.subtype(in.p, Path.Void().toImmNT(),in.expected)){
+    ErrorKind subErr=TypeSystem.subtype(in.p, Path.Void().toImmNT(),in.expected);
+    if(subErr==null){
       TOk res= new TOk(in,s.withInner(innerT.toOk().annotated),innerT.toOk().computed);
       res=res.tsUnion(innerT.toOk());
       return res;
