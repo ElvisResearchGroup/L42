@@ -9,7 +9,8 @@ public enum ErrorKind {
   MethodLeaksReturns(false),
   MethodLeaksExceptions(false),
   InvalidImplements(false),
-  SkeletalTypeCircularDef(false),
+  //no, will be throw as error from Norm code 
+  //SkeletalTypeCircularDef(false),
   NoMostGeneralMdf(false),//??
   AttemptReturnFwd(false),
   PluginNotFound(false),

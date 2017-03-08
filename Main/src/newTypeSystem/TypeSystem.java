@@ -39,6 +39,14 @@ import tools.Assertions;
 
 public interface TypeSystem{
   static TypeSystem instance(){return new Impl();}
+  default ClassB topTypeLib(Program p,ClassB l){
+    TIn in=TIn.top(p, l);
+    TOut out=type(in);
+    if(out.isOk()){return (ClassB) out.toOk().annotated;}
+    TErr err=out.toError();
+    throw new FormattedError(err);
+    //errors from norm still leak out, are they good looking?
+  }
   TOut type(TIn in);
   TOut typeLib(TIn in);
   public static ErrorKind subtype(Program p,Path pSub,Path pSuper){

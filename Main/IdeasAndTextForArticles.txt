@@ -1,3 +1,13 @@
+.multipy(byMeter)
+.divide/dividing(byKg)
+if we had a UnitOfMeasure interface,
+declaring  Unit: {class method Library(class UnitOfMeasure that, class UnitOfMeasure per)}
+will make some stuff easier?
+Check if two units are the same to prevent kg/kg and to
+generate only one extractor for kg*kg?
+
+
+
 Conventionally, compiled languages have separated phases of
 compilation and execution, and they have a single "main"
 execution point or task. In most cases the result of such
@@ -221,6 +231,12 @@ res={if cond return e1
  versus
  res=cond?e1:e2 
 
+overloading vs 42 method selectors: verbose, but not always:
+Refactor.rename(selector:\"")
+compare with 
+Java Refactor.renameSelector("")
+or
+Java Refactor.rename(new Selector(""))
 
 ----------------------
 42 expressive power

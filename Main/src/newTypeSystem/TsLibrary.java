@@ -40,7 +40,9 @@ public interface TsLibrary extends TypeSystem{
     ClassB normP;
     try{normP=new Norm().norm(in.p);}
     catch(RuntimeException exc){
-      throw Assertions.codeNotReachable("not implemented yet");
+      throw exc;//Assertions.codeNotReachable("not implemented yet");
+      //exceptions from normalization all represents unsolvable
+      //type errors. Same for cyclic resolve
     }
     assert normP.getSupertypes().stream().allMatch(
       t->{

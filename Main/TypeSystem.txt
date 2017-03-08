@@ -303,7 +303,7 @@ Phase| p| G |- (ds  ks  e0  [_]) ~>(ds' ks' e'0 [T])
 
 (ds)  // G is clipped for error safety; G2 is clipped and complete
 Phase| p| G |- T0  x0=e0 ..Tn  xn=en, ds ~>
-              T'1  x1=e'1 ..T'n  xn=e'n, ds'|Tr U Tr' | G2
+              T'0  x0=e'0 ..T'n  xn=e'n, ds'|Tr U Tr' | G2
   where
   dom(ds) disjoint FV(e0..en)
   for i in 0..n T'i=resolve(p,Ti)
@@ -312,7 +312,7 @@ Phase| p| G |- T0  x0=e0 ..Tn  xn=en, ds ~>
   for i in 0..n Phase| p| G1|-ei~>e'i: _ <= fwd% T'i | Tri
   Tr=Tr0 U .. U Trn
   if fwd_or_fwd%_in Tr.Ts
-    then x1..xn disjoint FV(e0..en)//returning unresolved items from cycles is prohibited
+    then x0..xn disjoint FV(e0..en)//returning unresolved items from cycles is prohibited
   if fwd_or_fwd%_in { G(x) | x in FV(e0..en) } // x0..xn already excluded
     then G0=G[fwd%(G')]
     otherwise G0=G[G']//capturing error for next line, see if the difference between fwd%(G') ad G' would fix it. Still, then we need to check for the fwd x in FV(e0..en)..
