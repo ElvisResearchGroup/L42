@@ -296,7 +296,7 @@ Phase| p| G |- (ds  ks  e0  [_]) ~>(ds' ks' e'0 [T])
   //here we have the info to capture a failure about ds and discover if 
   //extant name (fwd[%]* x) was hidden by error safety or  modifiable name (capsule/mut/lent x)
   //was locked by error safety[cite the line number of the catch]
-  Phase| p| G'| Tr' |- ks~> ks' : Ts <= T' | Tr
+  Phase| p| G'| Tr' |- ks~> ks' : Ts <= T' | Tr //In the implementation, we could also return Tr'.capture(p,ks') precomputed
   Phase| p| G'[G0\dom(G')] |- e0~>e'0:T0 <=T' | Tr0
   T= mostGeneralMdf({T0.mdf,Ts.mdfs}) T'.P //set of Mdfs admits no single most general mdf
   // assert D.p|-T <= T'
@@ -334,7 +334,7 @@ D| Tr |-k1..kn ~> k'1..k'n:T1..Tn <= T | Tr1 U .. U Trn
    // T1 is the actual caught type, based on the types which can be thrown in context
    // T2 is the type of the expression, based on x being bound T1
 
-Phase| p| G| Tr' |- catch throw T0 x e ~> catch throw resolve(p,T0).P x e' :T2 <= T | Tr
+Phase| p| G| Tr' |- catch throw T0 x e ~> catch throw T1.P x e' :T2 <= T | Tr
   where
   mdf1 = mostGeneralMdf(throw,Tr') //set of Mdfs admits no single most general mdf, or mdfs is empty
   //inconsistent set of thrown things, which do not share a most

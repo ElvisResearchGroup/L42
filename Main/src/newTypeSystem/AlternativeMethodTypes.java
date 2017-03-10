@@ -54,6 +54,8 @@ public class AlternativeMethodTypes {
     NormType retT=mt.getReturnType().getNT();
     if(retT.getMdf()!=Mdf.Mutable){return null;}
     retT=retT.withMdf(Mdf.Capsule);
+    assert mt.getTs().get(0).getNT().getMdf()!=Mdf.MutablePFwd:
+    "";
     List<Type> ts = Map.of(t->mutToCapsule(t.getNT()),mt.getTs());
     return mt.withReturnType(retT).withTs(ts).withMdf(mutToCapsule(mt.getMdf()));
     }

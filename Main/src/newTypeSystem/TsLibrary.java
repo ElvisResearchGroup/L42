@@ -204,14 +204,6 @@ public interface TsLibrary extends TypeSystem{
 //    (T x)s parameters and n? such that 
 //      all T in (T x)s are mut, imm, class or capsule //thus, no read/lent
 //      forall mwt in mwts coherent(n?,p,(T x)s, mwt) //all abstract methods are coherent according to those fields
-      
-//m[n]==m_$_n
-//m[]==m
-      
-//coherent(n?,p,T1 x1..Tn xn,
-//      refine? class method T m[n?] (T1' x1..Tn' xn) exception _)
-//  where
-//    p|-mut This0 <=T and p|-Ti'<=fwd Ti
 
 //coherent(n?,p,T1 x1..Tn xn,
 //    refine? mdf method T m[n?]() exception _)
@@ -265,15 +257,25 @@ public interface TsLibrary extends TypeSystem{
     return null;
     }
 
+  
+//coherent(n?,p,T1 x1..Tn xn,
+//refine? class method T m[n?] (T1' x1..Tn' xn) exception _)
+//where
+//p|- This0 <=T.P and p|-Ti'<=fwd Ti
+//T.mdf!=class and if T.mdf in {imm,capsule}, mut notin (T1..Tn).mdfs
+
     default boolean coherentK(Program p,MethodWithType ck) {
       MethodType mt=ck.getMt();
       if(mt.getMdf()!=Mdf.Class){return false;}
       NormType rt=mt.getReturnType().getNT();
       if(null!=TypeSystem.subtype(p, Path.outer(0),rt.getPath())){return false;}
-      if(!Functions.isSubtype(Mdf.Mutable,rt.getMdf())){return false;}
+      Mdf m=rt.getMdf();
+      if (m==Mdf.Class){return false;}
+      boolean immOrC=(m==Mdf.Immutable || m==Mdf.Capsule);
       for(Type ti:mt.getTs()){
         Mdf mi=ti.getNT().getMdf();
         if(mi==Mdf.Readable || mi==Mdf.Lent){return false;}
+        if(immOrC & (mi==Mdf.Mutable || mi==Mdf.MutableFwd)){return false;}
         }
       return true;
     }

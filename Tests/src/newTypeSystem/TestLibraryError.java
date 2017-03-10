@@ -33,6 +33,7 @@ public class TestLibraryError {
 },{lineNumber(),"{}","{C:{method Void()this }}",ErrorKind.NotSubtypeClass
 },{lineNumber(),"{}","{C:{method class This()this }}",ErrorKind.NotSubtypeMdf
 },{lineNumber(),"{}","{C:{method This()this.foo() method Any foo()this }}",ErrorKind.NotSubtypeClass
+},{lineNumber(),"{}","{C:{method D() this() } D:{class method This ( mut This that )}}",ErrorKind.LibraryNotCoherent
 
 }});}
 

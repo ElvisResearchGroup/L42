@@ -231,6 +231,10 @@ res={if cond return e1
  versus
  res=cond?e1:e2 
 
+imperative commands allowed if they return void,
+otherwise required unused local variable dec
+unused1=Foo.bar() //now is clear that I choose to trash return value
+
 overloading vs 42 method selectors: verbose, but not always:
 Refactor.rename(selector:\"")
 compare with 

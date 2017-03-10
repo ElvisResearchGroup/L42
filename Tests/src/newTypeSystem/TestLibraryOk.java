@@ -34,6 +34,8 @@ public class TestLibraryOk {
 },{lineNumber(),"{}","{C:{method This()this }}","{C:{method This()this }}"
 },{lineNumber(),"{}","{C:{method This()this() }}","{C:{method This()this() }}"
 },{lineNumber(),"{}","{C:{method D() this() } D:{class method This ()}}","{C:{method D() this() } D:{class method This()}}"
+},{lineNumber(),"{}","{C:{method Library() (x=void catch error Library y y {} ) }}","{C:{method Library() (x=void catch error Library y y {} ) }}"
+
 /*},{lineNumber(),"This0.C",
 "{C:{class method Void foo() (This0.foo())} }",
 "{C:{class method Void foo() (This0.foo())}##star^## }##star^##"

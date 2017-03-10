@@ -14,7 +14,8 @@ public enum ErrorKind {
   NoMostGeneralMdf(false),//??
   AttemptReturnFwd(false),
   PluginNotFound(false),
-  PluginTypeNotPresent(false);
+  PluginTypeNotPresent(false),
+  UnsafeCatchAny(false);
   final boolean needContext;
   ErrorKind(boolean needContext){this.needContext=needContext;}
   }

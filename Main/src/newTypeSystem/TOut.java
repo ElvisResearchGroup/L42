@@ -14,9 +14,9 @@ import ast.ExpCore.Block.Dec;
 import ast.ExpCore.Block.On;
 import ast.ExpCore.ClassB.Member;
 
-class TErr implements TOut,TOutM,TOutDs,TOutKs{
-public boolean isOk() { return false;}
-public TErr toError() {return this;}
+class TErr implements TOut,TOutM,TOutDs,TOutKs,TOutK{
+@Override public boolean isOk() { return false;}
+@Override public TErr toError() {return this;}
 public TErr(TIn in, String msg, NormType _computed, ErrorKind kind) {
   this.in = in; this.msg = msg; this._computed = _computed;this.kind=kind;
   }
@@ -38,8 +38,8 @@ interface TOut{
   }
 
 class TOk implements TOut{
-  public boolean isOk() { return true;}
-  public TOk toOk() {return this;}
+  @Override public boolean isOk() { return true;}
+  @Override public TOk toOk() {return this;}
   TIn in;
   ExpCore annotated;
   NormType computed;
@@ -67,6 +67,8 @@ class TOk implements TOut{
     //Tr1 U Tr2
     //  Ts1;Ps1 U Ts2;Ps2 =  Ts1,Ts2; Ps1,Ps2  
     TOk res=new TOk(this.in,this.annotated,this.computed);
+    assert this.returns!=null;
+    assert that.returns!=null;
     if(this.returns.isEmpty() && that.returns.isEmpty())
     res.returns=union(this.returns,that.returns);
     res.exceptions=union(this.exceptions,that.exceptions);
@@ -84,24 +86,28 @@ class TOk implements TOut{
     res.exceptions.add(p);
     return res;
   }
-  public TOk tsCapture(List<ExpCore.Block.On> ks){
+  public TOk trCapture(On k){
     //Tr.capture(k1..kn)= Tr.capture(p,k1)...capture(p,kn)
     //Tr.capture(catch error P x e)=Tr
     //(Ts;Ps).capture(catch exception P x e)=Ts;{P'| P' in Ps, not p|-P'<=P}
     //(Ts;Ps).capture(catch return P x e)={T| T in Ts, not p|-T.P<=P};Ps
-    Stream<NormType> ret = this.returns.stream();
-    Stream<Path> exc = this.exceptions.stream();
-    for(On k:ks){
-      if(k.getKind()==SignalKind.Error){continue;}
-      if(k.getKind()==SignalKind.Exception){
-        exc=exc.filter(pi->null!=TypeSystem.subtype(this.in.p,pi,k.getT().getNT().getPath()));
-        }
-      //otherwise, is return
-      ret=ret.filter(ti->null!=TypeSystem.subtype(this.in.p,ti.getPath(),k.getT().getNT().getPath()));
-      }
+    if(k.getKind()==SignalKind.Error){return this;}
     TOk result=new TOk(in,annotated,computed);
-    exc.forEach(result.exceptions::add);
-    ret.forEach(result.returns::add);
+    if(k.getKind()==SignalKind.Exception){
+      result.exceptions=new ArrayList<>();
+      for(Path pi: exceptions){
+        if(null!=TypeSystem.subtype(this.in.p,pi,k.getT().getNT().getPath())){
+          result.exceptions.add(pi);
+          }
+        }
+      }
+    //otherwise, is return
+    result.returns=new ArrayList<>();
+    for(NormType ti: returns){
+      if(null!=TypeSystem.subtype(this.in.p,ti.getPath(),k.getT().getNT().getPath())){
+        result.returns.add(ti);
+        }
+      }
     return result;
     }
   boolean isCoherent(){
@@ -123,8 +129,8 @@ interface TOutM{
 class TOkM implements TOutM{
   public TOkM(Member inner) {this.inner = inner;}
   ExpCore.ClassB.Member inner;  
-  public boolean isOk() { return true;}
-  public TOkM toOkM() {return this;}
+  @Override public boolean isOk() { return true;}
+  @Override public TOkM toOkM() {return this;}
   }
 
 //----------------------TOutDs
@@ -143,8 +149,8 @@ class TOkDs implements TOutDs{
   TOk trAcc;
   List<ExpCore.Block.Dec> ds;
   TIn g;
-  public boolean isOk() { return true;}
-  public TOkDs toOkM() {return this;}
+  @Override public boolean isOk() { return true;}
+  @Override public TOkDs toOkDs() {return this;}
   }
 
 //----------------------TOutKs
@@ -155,14 +161,35 @@ default TErr toError() {throw new Error();}
 }
 
 class TOkKs implements TOutKs{
-  public TOkKs(TOk trAcc, List<On> ks, List<NormType> ts) {
+  public TOkKs(TOk trAcc,TOk trCaptured, List<On> ks, List<NormType> ts) {
     this.trAcc = trAcc;
+    this.trCaptured=trCaptured;
     this.ks = ks;
     this.ts = ts;
     }
   TOk trAcc;
+  TOk trCaptured;
   List<ExpCore.Block.On> ks;
   List<NormType> ts;
-  public boolean isOk() { return true;}
-  public TOkKs toOkM() {return this;}
+  @Override public boolean isOk() { return true;}
+  @Override public TOkKs toOkKs() {return this;}
+}
+//----------------------TOutK
+interface TOutK{
+boolean isOk();
+default TOkK toOkK() {throw new Error();}
+default TErr toError() {throw new Error();}
+}
+
+class TOkK implements TOutK{
+public TOkK(TOk tr, On k, NormType t) {
+  this.tr = tr;
+  this.k = k;
+  this.t = t;
+  }
+TOk tr;
+On k;
+NormType t;
+@Override public boolean isOk() { return true;}
+@Override public TOkK toOkK() {return this;}
 }

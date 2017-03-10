@@ -64,6 +64,11 @@ public TIn addG(String x, NormType t){
   newG.put(x,t);
   return this.withG(newG);
   }
+public TIn removeG(String x){
+  Map<String,NormType>newG=new HashMap<String,NormType>(g);
+  newG.remove(x);
+  return this.withG(newG);
+}
 public TIn addGds(List<ExpCore.Block.Dec> ds){
   Map<String,NormType>newG=new HashMap<String,NormType>(g);
   for(ExpCore.Block.Dec d : ds){

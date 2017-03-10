@@ -167,7 +167,9 @@ public static NormType mutToCapsule(NormType t){
 //    mutToCapsule(fwdMut C) and mutToCapsule(fwd%Mut C) undefined
 //    mutToCapsule(mut C)=capsule C
 //    otherwise mutToCapsule(T)=T
-  return t.withMdf(mutToCapsule(t.getMdf()));
+  Mdf _m=mutToCapsule(t.getMdf());
+  if(_m==null){return null;}
+  return t.withMdf(_m);
   }
 public static Mdf mutToCapsule(Mdf m){
   assert m!=Mdf.MutableFwd && m!=Mdf.MutablePFwd;

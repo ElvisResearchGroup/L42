@@ -8,9 +8,12 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import ast.ExpCore;
 import ast.Ast.Doc;
 import ast.Ast.Mdf;
 import ast.Ast.NormType;
+import ast.Ast.Path;
+import ast.Ast.SignalKind;
 import ast.ExpCore.Block;
 import ast.ExpCore.Block.Dec;
 import ast.ExpCore.Block.On;
@@ -34,13 +37,14 @@ public interface TsBlock extends TypeSystem{
   default int splitDs(TIn in,List<Block.Dec> ds){
     int i=0;
     final int n=ds.size()-1;
+    if (ds.isEmpty()){return 0;}
     List<String> xs=new ArrayList<>();
     while(true){
       xs.addAll(coreVisitors.FreeVariables.of(ds.get(i).getInner()));//xs U  FV(ei)
       if (xsNotInDomi(xs,ds,i+1)){return i;}
       //cut will be from 0 to i included
+      if (i==n){return i;} //ds.size-1  
       i+=1;
-      if (i==n){return i;} //ds.size-1      
       }
     }  
 default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
@@ -93,7 +97,7 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
    Block annotated=new Block(s.getDoc(),dsOk.ds,e0Ok.annotated,ksOk.ks,s.getP());
    TOk res=new TOk(in,annotated,t);
    // result Tr: Tr'.capture(p,ks') U Tr U Tr0
-   res=res.tsCapture(ksOk.ks).tsUnion(ksOk.trAcc).tsUnion(e0Ok);
+   res=ksOk.trCaptured.tsUnion(ksOk.trAcc).tsUnion(e0Ok);
    return res;
   }
   
@@ -158,33 +162,67 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
   if(!_res.isOk()){return _res.toError();}
   TOkDs res=_res.toOkDs();
   ds1.addAll(res.ds);//safe? locally created, not leaked yet.
-  trAcc=trAcc.tsUnion(res.trAcc);
+  if(res.trAcc!=null){trAcc=trAcc.tsUnion(res.trAcc);}
   return new TOkDs(trAcc,ds1,res.g);
   }
-   /*
-      
-   //TODO: check that this kind of things work {Bar:{}   method m (foo catch exception Bar x e1 e0)  } redirect Bar->Any
-   //Note: the new idea is that catch throw Any will catch all that can be thrown,
-   // if not of form catchRethrow(k); in that case *only* the catchRethrow rule will apply
-   (catchMany)
-   D| Tr |-k1..kn ~> k'1..k'n:T1..Tn <= T | Tr1 U .. U Trn
-     where
-     forall i in 1..n D| Tr.capture(D.p,k1..ki-1)|-ki ~> k'i:Ti <= T |Tri
-     
-   (catch)
+  
+  default TOutKs ksType(TIn in,TOk trAcc,List<On> ks){
+//   D| Tr |-k1..kn ~> k'1..k'n:T1..Tn <= T | Tr1 U .. U Trn
+//     forall i in 1..n D| Tr.capture(D.p,k1..ki-1)|-ki ~> k'i:Ti <= T |Tri
+    TOk tr=trAcc;
+    TOk newTrAcc=null;
+    List<On>ks1=new ArrayList<>();
+    List<NormType>ts=new ArrayList<>();
+    for(On k:ks){
+      TOutK out=kType(in,tr,k);
+      if(!out.isOk()){return out.toError();}
+      TOkK ok=out.toOkK();
+      ks1.add(ok.k);
+      ts.add(ok.t);
+      newTrAcc=(newTrAcc==null)?ok.tr:newTrAcc.tsUnion(ok.tr);
+      tr=tr.trCapture(k);
+      }
+
+    TOkKs res=new TOkKs(newTrAcc,tr,ks,ts);
+    return res;
+    }    
+  
+  default TOutK kType(TIn in,TOk tr,On k){
+    if(TypeManipulation.catchRethrow(k)){return kTypeCatchAny(in,tr,k);}
+    return kTypeCatch(in,tr,k);
+    }
       // T0 is the declared caught type, which contributes only a path
       // T1 is the actual caught type, based on the types which can be thrown in context
       // T2 is the type of the expression, based on x being bound T1
-
-   Phase| p| G| Tr' |- catch throw T0 x e ~> catch throw resolve(p,T0).P x e' :T2 <= T | Tr
-     where
+  default TOutK kTypeCatch(TIn in,TOk tr1,On k){
+    if(k.getKind()==SignalKind.Return && tr1.returns.isEmpty()){return new TErr(in,"No returns in scope",null,ErrorKind.NoMostGeneralMdf);}
+    Mdf mdf1=TypeManipulation._mostGeneralMdf(k.getKind(),tr1);
+    if(mdf1==null){return new TErr(in,"Contrasting mdf expected for return",null,ErrorKind.NoMostGeneralMdf);}
+    NormType T1 = Norm.resolve(in.p, k.getT()).withMdf(mdf1);
+    TOut _out=type(in.addG(k.getX(),T1).withE(k.getE(), in.expected));
+    if(!_out.isOk()){return _out.toError();}
+    TOk out=_out.toOk();
+    TOkK res=new TOkK(out,k.withE(out.annotated),out.computed);
+    return res;
+     /*   Phase| p| G| Tr' |- catch throw T0 x e ~> catch throw T1.P x e' :T2 <= T | Tr
      mdf1 = mostGeneralMdf(throw,Tr') //set of Mdfs admits no single most general mdf, or mdfs is empty
      //inconsistent set of thrown things, which do not share a most
      //general modifier [list of line numbers of the throws]
      T1 = mdf1 resolve (p, T0).P //resolve can fail
      not catchRethrow(catch throw T1 x e)
      Phase| p| G[x:T1]|- e ~> e' : T2 <= T | Tr
-
+*/
+    }
+  default TOutK kTypeCatchAny(TIn in,TOk tr,On k){
+    Block e=(Block) k.getE();
+    ExpCore e0=e.getDecs().get(0).getInner();
+    TIn in1=in.removeG(k.getX());
+    TOut _out=type(in1.withE(e0,Path.Void().toImmNT()));
+    if(!_out.isOk()){return _out.toError();}
+    TOk ok=_out.toOk();
+    if(!ok.exceptions.isEmpty() ||!ok.returns.isEmpty()){return new TErr(in,"",null,ErrorKind.UnsafeCatchAny);}
+    return new TOkK(tr,k.withE(e.withDeci(0,e.getDecs().get(0).withInner(ok.annotated))),in.expected);
+    /*
    (catch and rethrow any)// could be sugared as "on throw doAndPropagate e"  
    Phase |p |G |Tr|-catch throw Any x (e0 throw x) ~> catch throw Any x (e0' throw x): T<=T | Tr
      where //Note: e0, e, e0',e' are using the sugar imm Void x=e == e
@@ -193,10 +231,8 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
      Phase |p |G\x |- e ~> e':_ <=imm Void | empty
      catchRethrow(catch throw Any x(e0 throw x)) 
 */
-  
+  }
 
-
-default TOutKs ksType(TIn in1,TOut tsAcc,List<On> ks){throw Assertions.codeNotReachable();}
 
 default TOut tsBlockPromotion(TIn in,Block s){throw Assertions.codeNotReachable();};
 /*
@@ -220,7 +256,5 @@ default boolean promotionMakesSense(TErr tErr){
     Mdf oM=obtained.getMdf();
     return (eM==Mdf.Capsule || eM==Mdf.Immutable) && oM==Mdf.Mutable;
   }
-
-
 
 }
