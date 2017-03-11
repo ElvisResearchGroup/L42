@@ -103,7 +103,7 @@ public interface TsOperations extends TypeSystem{
     ErrorKind subErr=TypeSystem.subtype(in.p, Path.Void().toImmNT(),in.expected);
     if(subErr==null){
       TOk res= new TOk(in,s.withInner(innerT.toOk().annotated),innerT.toOk().computed);
-      res=res.tsUnion(innerT.toOk());
+      res=res.trUnion(innerT.toOk());
       return res;
       }
     return new TErr(in,"",Path.Void().toImmNT(),subErr);

@@ -208,7 +208,7 @@ public static Mdf mutToCapsuleAndFwdToRead(Mdf m){
   return m;
   }
 
-public static Mdf _mostGeneralMdf(Ast.SignalKind _throw,TOk out){
+public static Mdf _mostGeneralMdf(Ast.SignalKind _throw,ATr<?> out){
 //mostGeneralMdf(throw,Tr)  
 //  mostGeneralMdf(error,Tr)=imm
 //  mostGeneralMdf(return,empty;Ps) undefined

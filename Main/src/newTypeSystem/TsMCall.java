@@ -3,6 +3,7 @@ package newTypeSystem;
 import ast.ExpCore.MCall;
 import auxiliaryGrammar.Functions;
 import tools.Assertions;
+import tools.Map;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,7 +16,21 @@ import ast.Ast.NormType;
 import ast.Ast.Path;
 import ast.ExpCore;
 import ast.Ast.Type;
+
 public interface TsMCall extends TypeSystem{
+default TOut innerMVPRetype(TOk ri,NormType ti){
+  if(Functions.isSubtype(ri.computed.getMdf(),ti.getMdf())){
+    assert ri.computed.getMdf()!=Mdf.Mutable; 
+    return ri;
+    }
+  else{
+    assert ri.computed.getMdf() == Mdf.Mutable;
+    assert ti.getMdf() == Mdf.Capsule;
+    TIn ini=ri.in.withE(ri.in.e,ti);
+    TOut resi=type(ini);
+    return resi;
+    }
+  }
 
   default TOut tsMCall(TIn in, MCall s) {
     NormType _rec=GuessTypeCore.of(in, s.getInner());
@@ -54,7 +69,8 @@ public interface TsMCall extends TypeSystem{
     MCall resM=new MCall(res0.annotated,s.getS(),s.getDoc(),annotated,s.getP());
     TOk res=new TOk(in,resM,mTypeRev.getReturnType().getNT());
     // Trs[with r in resp (use[r.Tr])].collapse())
-    for(TOk oki:resp){res=res.tsUnion(oki);}
+    res=res.trUnion(res0);
+    for(TOk oki:resp){res=res.trUnion(oki);}
     return res;
     }
 //3 if there is no matching method, we may need to retype some mut
@@ -77,37 +93,23 @@ public interface TsMCall extends TypeSystem{
     return new TErr(in,"mvp candidate notfound",mTypes.get(0).getReturnType().getNT(),ErrorKind.NotSubtypeClass);
     }
 //To be happy, we can retype the obtained mut parameters into expected capsule
-  List<TOk> respMVP=new ArrayList<>();
+  TOut _newRes0=innerMVPRetype(res0,t0.withMdf(mTypeMVP.getMdf()));
+  if(!_newRes0.isOk()){return _newRes0;}
+  TOk newRes0=_newRes0.toOk();
+  List<TOk> newResp=new ArrayList<>();
   {int i=-1;for(TOk ri :resp){i+=1;NormType ti=mTypeMVP.getTs().get(i).getNT();
-//respMVP=TSOut[with ri in resp, T ti in mTypeMVP.TS (
-    if(Functions.isSubtype(ri.computed.getMdf(),ti.getMdf())){
-//  if (ri.mdf <= ti.mfd) (
-    assert ri.computed.getMdf()!=Mdf.Mutable; 
-    respMVP.add(ri);
-//    assert ri.mdf != Mdf.mut //James think this assertion may fail for ri/ti= read 
-//    use [ri]
-//    )
-//  else(
-    }else{
-    assert ri.computed.getMdf() == Mdf.Mutable;
-    assert ti.getMdf() == Mdf.Capsule;
-    TIn ini=ri.in.withE(ri.in.e,ti);
-    TOut resi=type(ini);
-    if(!resi.isOk()){return resi.toError();}
-//    resi=ts(ri.in.with(expectedT:ti))
-//    if !resi.isOK()  return Error???
-//    use [resi]
-    respMVP.add(resi.toOk());
-    }}}
-//    )
-//  )]
+    TOut outi=innerMVPRetype(ri,ti);
+    if(!outi.isOk()){return outi.toError();}
+    newResp.add(outi.toOk());
+    }}
 //return res=makeMCallOK(TSIn,respMVP,mTypeMVP)
-NO NO, I have forgot about the receiver not in the ts!!!
-MCall resM=new MCall(res0.annotated,s.getS(),s.getDoc(),annotated,s.getP());
-TOk res=new TOk(in,resM,mTypeRev.getReturnType().getNT());
+  MCall resM=new MCall(newRes0.annotated,s.getS(),s.getDoc(),
+    Map.of(r->r.annotated,newResp),s.getP());
+  TOk res=new TOk(in,resM,mTypeMVP.getReturnType().getNT());
 // Trs[with r in resp (use[r.Tr])].collapse())
-for(TOk oki:resp){res=res.tsUnion(oki);}
-return res;
+  res=res.trUnion(newRes0);
+  for(TOk oki:newResp){res=res.trUnion(oki);}
+  return res;
+  }
 }
 
-}

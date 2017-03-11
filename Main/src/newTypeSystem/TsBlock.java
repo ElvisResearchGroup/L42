@@ -97,7 +97,7 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
    Block annotated=new Block(s.getDoc(),dsOk.ds,e0Ok.annotated,ksOk.ks,s.getP());
    TOk res=new TOk(in,annotated,t);
    // result Tr: Tr'.capture(p,ks') U Tr U Tr0
-   res=ksOk.trCaptured.tsUnion(ksOk.trAcc).tsUnion(e0Ok);
+   res=res.trUnion(ksOk.trCaptured.trUnion(ksOk.trAcc).trUnion(e0Ok));
    return res;
   }
   
@@ -126,7 +126,7 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
   TIn in1=in.addGds(dsFiltered); 
   //  for i in 0..n Phase| p| G1|-ei~>e'i: _ <= fwd% T'i | Tri
   //  Tr=Tr0 U .. U Trn
-  TOk trAcc=new TOk(null,null,null);
+  Tr trAcc=new Tr();
   List<Dec>ds1=new ArrayList<>();
   List<Dec>ds1FwdP=new ArrayList<>();
   for(Dec di:ds0n){
@@ -135,7 +135,7 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
     TOut _out=type(in.withE(di.getInner(),ntFwdP));
     if(!_out.isOk()){return _out.toError();}
     TOk ok=_out.toOk();
-    trAcc=trAcc.tsUnion(ok);
+    trAcc=trAcc.trUnion(ok);
     Dec di1=di.withInner(ok.annotated);
     ds1.add(di1.withT(nt));
     ds1FwdP.add(di1.withT(ntFwdP));
@@ -162,15 +162,15 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
   if(!_res.isOk()){return _res.toError();}
   TOkDs res=_res.toOkDs();
   ds1.addAll(res.ds);//safe? locally created, not leaked yet.
-  if(res.trAcc!=null){trAcc=trAcc.tsUnion(res.trAcc);}
+  if(res.trAcc!=null){trAcc=trAcc.trUnion(res.trAcc);}
   return new TOkDs(trAcc,ds1,res.g);
   }
   
-  default TOutKs ksType(TIn in,TOk trAcc,List<On> ks){
+  default TOutKs ksType(TIn in,Tr trAcc,List<On> ks){
 //   D| Tr |-k1..kn ~> k'1..k'n:T1..Tn <= T | Tr1 U .. U Trn
 //     forall i in 1..n D| Tr.capture(D.p,k1..ki-1)|-ki ~> k'i:Ti <= T |Tri
-    TOk tr=trAcc;
-    TOk newTrAcc=null;
+    Tr tr=trAcc;
+    Tr newTrAcc=new Tr();
     List<On>ks1=new ArrayList<>();
     List<NormType>ts=new ArrayList<>();
     for(On k:ks){
@@ -179,22 +179,22 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
       TOkK ok=out.toOkK();
       ks1.add(ok.k);
       ts.add(ok.t);
-      newTrAcc=(newTrAcc==null)?ok.tr:newTrAcc.tsUnion(ok.tr);
-      tr=tr.trCapture(k);
+      newTrAcc=newTrAcc.trUnion(ok.tr);
+      tr=tr.trCapture(in.p,k);
       }
 
     TOkKs res=new TOkKs(newTrAcc,tr,ks,ts);
     return res;
     }    
   
-  default TOutK kType(TIn in,TOk tr,On k){
+  default TOutK kType(TIn in,Tr tr,On k){
     if(TypeManipulation.catchRethrow(k)){return kTypeCatchAny(in,tr,k);}
     return kTypeCatch(in,tr,k);
     }
       // T0 is the declared caught type, which contributes only a path
       // T1 is the actual caught type, based on the types which can be thrown in context
       // T2 is the type of the expression, based on x being bound T1
-  default TOutK kTypeCatch(TIn in,TOk tr1,On k){
+  default TOutK kTypeCatch(TIn in,Tr tr1,On k){
     if(k.getKind()==SignalKind.Return && tr1.returns.isEmpty()){return new TErr(in,"No returns in scope",null,ErrorKind.NoMostGeneralMdf);}
     Mdf mdf1=TypeManipulation._mostGeneralMdf(k.getKind(),tr1);
     if(mdf1==null){return new TErr(in,"Contrasting mdf expected for return",null,ErrorKind.NoMostGeneralMdf);}
@@ -202,7 +202,7 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
     TOut _out=type(in.addG(k.getX(),T1).withE(k.getE(), in.expected));
     if(!_out.isOk()){return _out.toError();}
     TOk out=_out.toOk();
-    TOkK res=new TOkK(out,k.withE(out.annotated),out.computed);
+    TOkK res=new TOkK(new Tr().trUnion(out),k.withE(out.annotated),out.computed);
     return res;
      /*   Phase| p| G| Tr' |- catch throw T0 x e ~> catch throw T1.P x e' :T2 <= T | Tr
      mdf1 = mostGeneralMdf(throw,Tr') //set of Mdfs admits no single most general mdf, or mdfs is empty
@@ -213,7 +213,7 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
      Phase| p| G[x:T1]|- e ~> e' : T2 <= T | Tr
 */
     }
-  default TOutK kTypeCatchAny(TIn in,TOk tr,On k){
+  default TOutK kTypeCatchAny(TIn in,Tr tr,On k){
     Block e=(Block) k.getE();
     ExpCore e0=e.getDecs().get(0).getInner();
     TIn in1=in.removeG(k.getX());
