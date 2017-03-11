@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -179,8 +180,10 @@ static Program __p=TestProgram.p("{}");
   return res[0];
   }
   String mtToS(MethodType mt){
-    return mt.getTs().get(0).getNT().getMdf()+","+
-           mt.getTs().get(1).getNT().getMdf()+"->"+
+    return 
+           mt.getMdf()+":"+
+           mt.getTs().get(0).getNT().getMdf()+","+
+           ((mt.getTs().size()==2)?mt.getTs().get(1).getNT().getMdf():"")+"->"+
            mt.getReturnType().getNT().getMdf();
     }
   @Test
@@ -231,14 +234,42 @@ static Program __p=TestProgram.p("{}");
       }
     return -1;
     }
-  
+ 
+MethodType recLeft(MethodType mt){
+  List<Type>newTs=mt.getTs().subList(1, mt.getTs().size());
+  Mdf mdf=mt.getTs().get(0).getNT().getMdf();
+  if(TypeManipulation.fwd_or_fwdP_in(mdf)){return null;}
+  return mt.withMdf(mdf).withTs(newTs);
+  }
+@Test
+public void testReciverWorksAsParameter(){
+  for(MethodType mt:dataSet){
+    MethodType left=recLeft(mt);
+    if(left==null){continue;}
+    List<MethodType> list = AlternativeMethodTypes.types(mt);
+    List<MethodType> listLeftBefore = AlternativeMethodTypes.types(left);
+    List<MethodType> listLeftAfter = tools.Map.of(this::recLeft,list);
+    assert listLeftBefore.equals(listLeftAfter):
+    "\n"+mtsToS(list)+
+    "\n"+mtsToS(listLeftBefore)+
+    "\n"+mtsToS(listLeftAfter);
+    }
+
+  }
 
 @Test
-public void listGenerateAllOfMap(){
+public void testListGenerateAllOfMap(){
   for(MethodType mt:dataSet){
     Map<MethodType, String> all = fixMap(mt);
     List<MethodType> list = AlternativeMethodTypes.types(mt);
-    assert new HashSet<>(list).equals(all.keySet()):
+    //mi(mVp would be promotable in imm, but is unuseful:
+    //the direct promotion to mc is more expressive
+    Set<MethodType> removeUnuseful=all.entrySet().stream()
+              .filter(e->!e.getValue().contains("mI(mVp"))
+              .map(e->e.getKey()).collect(Collectors.toSet());
+    boolean either=new HashSet<>(list).equals(removeUnuseful)
+            ||new HashSet<>(list).equals(all.keySet());
+    assert either:
       mapToS(all)+"\n"+mtsToS(list);
     }
   }

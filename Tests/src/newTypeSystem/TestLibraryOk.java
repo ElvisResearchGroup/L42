@@ -29,47 +29,42 @@ public class TestLibraryOk {
   @Parameters(name = "{index}: line {0}")
   public static List<Object[]> createData() {
     return Arrays.asList(new Object[][] {
-{lineNumber(),"{}","{C:{method Void()void}}","{C:{method Void()void}}"
-},{lineNumber(),"{}","{C:{method Void()void } D:{}}","{C:{method Void()void } D:{}}"
-},{lineNumber(),"{}","{C:{method This()this }}","{C:{method This()this }}"
-},{lineNumber(),"{}","{C:{method This()this() }}","{C:{method This()this() }}"
-},{lineNumber(),"{}","{C:{method D() this() } D:{class method This ()}}","{C:{method D() this() } D:{class method This()}}"
-},{lineNumber(),"{}","{C:{method Library() (x=void catch error Library y y {} ) }}","{C:{method Library() (x=void catch error Library y y {} ) }}"
+//----- basic attempts
+{lineNumber(),"{}","{C:{method Void()void}}",null
+},{lineNumber(),"{}","{C:{method Void()void } D:{}}",null
+},{lineNumber(),"{}","{C:{method This()this }}",null
+},{lineNumber(),"{}","{C:{method This()this() }}",null
+},{lineNumber(),"{}","{C:{method D() this() } D:{class method This ()}}",null
+},{lineNumber(),"{}","{C:{method Library() (x=void catch error Library y y {} ) }}",null
+},{lineNumber(),"{}","{C:{class method Void foo() (This0.foo())} }",null
 
-/*},{lineNumber(),"This0.C",
-"{C:{class method Void foo() (This0.foo())} }",
-"{C:{class method Void foo() (This0.foo())}##star^## }##star^##"
-},{lineNumber(),"This0.C",
-"{C:{class method Void foo() (D.foo())} D:{method Void() class method Void foo() (void)}}",
-"{C:{class method Void foo() (D.foo())}##plus^## D:{method Void()class method Void foo() (void)}##plus ^##}##plus^##"
-},{lineNumber(),"This0.C",
-"{C:{E:{class method Void foo() (This1.foo())} class method Void foo() (D.foo())} D:{class method Void foo() (C.E.foo())}}",
-"{C:{E:{class method Void foo() (This1.foo())}##star^## class method Void foo() (D.foo())}##star^## D:{class method Void foo() (C.E.foo())}##star^##}##star^##"
-},{lineNumber(),"This0.C",
-"{C:{E:{class method Void foo() (This1.foo())} class method Void foo() (D.foo())} D:{method Void() class method Void foo() (C.E.foo())}}",
-"{C:{E:{class method Void foo() (This1.foo())}##plus^## class method Void foo() (D.foo())}##plus^## D:{method Void()  class method Void foo() (C.E.foo())}##plus^##}##plus^##"
+//fromming and calling method from other classes
+},{lineNumber(),"{}",
+"{C:{class method Void foo() (D.foo())} D:{class method Void foo() (void)}}",null
+},{lineNumber(),"{}",
+"{C:{E:{class method Void foo() (This1.foo())} class method Void foo() (D.foo())} D:{class method Void foo() (C.E.foo())}}",null
+},{lineNumber(),"{}",
+"{K:{E:{class method Void foo() (This2.C.foo())}} C:{class method Void foo() (D.foo())} D:{class method Void foo() (K.E.foo())}}",null
+},{lineNumber(),"{}",
+"{K:{ E:{class method C foo() (C.foo())}} C:{class method C foo() (D.foo())} D:{class method C foo() (K.E.foo())}}",null
+},{lineNumber(),"{}",
+"{C:{ method Void foo() (This0 x= this void)} }",null
+},{lineNumber(),"{}",
+"{C:{ method Void foo() (C x= this void)} }",null
+},{lineNumber(),"{}",
+"{K:{ E:{class method C foo1() (C.foo2())}} C:{class method C foo2() (D.foo3())} D:{class method C foo3() (K.E.foo1())}}",null
 
-},{lineNumber(),"This0.C",
-"{K:{E:{class method Void foo() (This2.C.foo())}} C:{class method Void foo() (D.foo())} D:{class method Void foo() (K.E.foo())}}",
-"{K:{E:{class method Void foo() (This2.C.foo())}##star^##}##star ^## C:{class method Void foo() (D.foo())}##star^## D:{class method Void foo() (K.E.foo())}##star^##}##star^##"
-},{lineNumber(),"This0.C",
-"{K:{method Void() E:{class method C foo() (C.foo())}} C:{class method C foo() (D.foo())} D:{class method C foo() (K.E.foo())}}",
-"{K:{method Void() E:{class method C foo() (C.foo())}##star^##}##plus ^## C:{class method C foo() (D.foo())}##star^## D:{class method C foo() (K.E.foo())}##star^##}##plus^##"
-//norm//NO, Norm is executed only in the extracted method
-//},{"This0.C",
-//"{K:{E:{class method C.foo() foo() (C.foo())}} C:{class method C foo() (D.foo())} D:{class method C foo() (K.E.foo())}}",
-//"{K:{E:{class method C foo() (C.foo())}##plus^##}##plus ^## C:{class method C foo() (D.foo())}##plus^## D:{class method C foo() (K.E.foo())}##plus^##}##plus^##"
-//},{"This0.C",
-//"{K:{E:{class method C.foo().foo() foo() (C.foo())}} C:{class method C foo() (D.foo())} D:{class method C foo() (K.E.foo())}}",
-//"{K:{E:{class method C foo() (C.foo())}##plus^##}##plus^## C:{class method C foo() (D.foo())}##plus^## D:{class method C foo() (K.E.foo())}##plus^##}##plus^##"
-},{lineNumber(),"This0.C",
-"{C:{ method Void foo() (This0 x= this void)} }",
-"{C:{ method Void foo() (This0 x= this void)}##star^## }##star^##"
-},{lineNumber(),"This0.C",
-"{C:{ method Void foo() (C x= this void)} }",
-"{C:{ method Void foo() (C x= this void)}##star^## }##star^##"
-*/
+//method chains
+},{lineNumber(),"{}",
+"{K:{ E:{class method C foo1() (D.foo3().foo2().foo2())}} C:{method C foo2() (D.foo3())} D:{class method C foo3() (K.E.foo1())}}",null
 
+//method promotions
+},{lineNumber(),"{}",
+"{ method This m() this.readM(this)   method read This readM(read This that)that}",null
+},{lineNumber(),"{}",
+"{ method This m() this.readM()   read method read This readM()this}",null
+},{lineNumber(),"{}",
+"{ class method mut This() method This m() This() }",null
 }});}
 
 @Test()
@@ -81,7 +76,7 @@ TOut out=TypeSystem.instance().type(TIn.top(p,cb1Pre));
 assert out.isOk():
   "";
 ClassB cb1=(ClassB)out.toOk().annotated;
-ClassB cbExpected=(ClassB)Desugar.of(Parser.parse(null,s2)).accept(new InjectionOnCore());
+ClassB cbExpected=s2==null?cb1Pre:(ClassB)Desugar.of(Parser.parse(null,s2)).accept(new InjectionOnCore());
 TestHelper.assertEqualExp(cb1,cbExpected);
 }
 }

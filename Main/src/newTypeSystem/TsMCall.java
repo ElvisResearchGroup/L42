@@ -52,7 +52,7 @@ default TOut innerMVPRetype(TOk ri,NormType ti){
     ExpCore e0=s.getInner();
     NormType t0=new NormType(mType.getMdf(),rec,Doc.empty());
     TOut _res0=type(in.withE(e0,TypeManipulation.mutOnlyToLent(t0)));
-    if(!_res0.isOk()){return _res0.toError();}
+    if(!_res0.isOk()){return improveReceiverError(t0, _res0);}
     TOk res0=_res0.toOk();
     Mdf recMdf=_res0.toOk().computed.getMdf();
     {int i=-1;for(  ExpCore ei:s.getEs()){i+=1;
@@ -111,5 +111,18 @@ default TOut innerMVPRetype(TOk ri,NormType ti){
   for(TOk oki:newResp){res=res.trUnion(oki);}
   return res;
   }
+
+default TOut improveReceiverError(NormType t0, TOut _res0) {
+TErr err=_res0.toError();
+  //if receiver must class, and is not, give better error
+  //if receiver must not class, but is class, give better error
+  if(t0.getMdf()==Mdf.Class && err.kind==ErrorKind.NotSubtypeMdf){
+    return err.withKind(ErrorKind.ClassMethCalledOnNonClass);
+    }
+  if(err._computed!=null && err._computed.getMdf()==Mdf.Class && err.kind==ErrorKind.NotSubtypeMdf){
+    return err.withKind(ErrorKind.NonClassMethCalledOnClass);
+    }
+  return err;
+}
 }
 

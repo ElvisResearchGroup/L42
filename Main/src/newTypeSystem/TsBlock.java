@@ -97,14 +97,16 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
    Block annotated=new Block(s.getDoc(),dsOk.ds,e0Ok.annotated,ksOk.ks,s.getP());
    TOk res=new TOk(in,annotated,t);
    // result Tr: Tr'.capture(p,ks') U Tr U Tr0
-   res=res.trUnion(ksOk.trCaptured.trUnion(ksOk.trAcc).trUnion(e0Ok));
+   assert ksOk.trCaptured!=null;
+   Tr trUnion = ksOk.trCaptured.trUnion(ksOk.trAcc).trUnion(e0Ok);
+   res=res.trUnion(trUnion);
    return res;
   }
   
   
   default TOutDs dsType(TIn in,List<Dec> _ds){
   //Phase| p| G |- empty ~> empty| empty;empty | G
-    if(_ds.isEmpty()){return new TOkDs(null,_ds,in);}
+    if(_ds.isEmpty()){return new TOkDs(Tr.instance,_ds,in);}
   //Phase| p| G |- T0  x0=e0 ..Tn  xn=en, ds ~>
   //     T'0  x0=e'0 ..T'n  xn=e'n, ds'|Tr U Tr' | G2
     int i=splitDs(in,_ds);
@@ -126,7 +128,7 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
   TIn in1=in.addGds(dsFiltered); 
   //  for i in 0..n Phase| p| G1|-ei~>e'i: _ <= fwd% T'i | Tri
   //  Tr=Tr0 U .. U Trn
-  Tr trAcc=new Tr();
+  Tr trAcc=Tr.instance;
   List<Dec>ds1=new ArrayList<>();
   List<Dec>ds1FwdP=new ArrayList<>();
   for(Dec di:ds0n){
@@ -169,8 +171,9 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
   default TOutKs ksType(TIn in,Tr trAcc,List<On> ks){
 //   D| Tr |-k1..kn ~> k'1..k'n:T1..Tn <= T | Tr1 U .. U Trn
 //     forall i in 1..n D| Tr.capture(D.p,k1..ki-1)|-ki ~> k'i:Ti <= T |Tri
+    assert trAcc!=null;
     Tr tr=trAcc;
-    Tr newTrAcc=new Tr();
+    Tr newTrAcc=Tr.instance;
     List<On>ks1=new ArrayList<>();
     List<NormType>ts=new ArrayList<>();
     for(On k:ks){
@@ -202,7 +205,7 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
     TOut _out=type(in.addG(k.getX(),T1).withE(k.getE(), in.expected));
     if(!_out.isOk()){return _out.toError();}
     TOk out=_out.toOk();
-    TOkK res=new TOkK(new Tr().trUnion(out),k.withE(out.annotated),out.computed);
+    TOkK res=new TOkK(Tr.instance.trUnion(out),k.withE(out.annotated),out.computed);
     return res;
      /*   Phase| p| G| Tr' |- catch throw T0 x e ~> catch throw T1.P x e' :T2 <= T | Tr
      mdf1 = mostGeneralMdf(throw,Tr') //set of Mdfs admits no single most general mdf, or mdfs is empty

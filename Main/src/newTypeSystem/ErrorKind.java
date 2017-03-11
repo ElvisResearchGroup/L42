@@ -15,7 +15,9 @@ public enum ErrorKind {
   AttemptReturnFwd(false),
   PluginNotFound(false),
   PluginTypeNotPresent(false),
-  UnsafeCatchAny(false);
+  UnsafeCatchAny(false),
+  ClassMethCalledOnNonClass(false),
+  NonClassMethCalledOnClass(false);
   final boolean needContext;
   ErrorKind(boolean needContext){this.needContext=needContext;}
   }

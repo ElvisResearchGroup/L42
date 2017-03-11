@@ -54,8 +54,6 @@ public class AlternativeMethodTypes {
     NormType retT=mt.getReturnType().getNT();
     if(retT.getMdf()!=Mdf.Mutable){return null;}
     retT=retT.withMdf(Mdf.Capsule);
-    assert mt.getTs().get(0).getNT().getMdf()!=Mdf.MutablePFwd:
-    "";
     List<Type> ts = Map.of(t->mutToCapsule(t.getNT()),mt.getTs());
     return mt.withReturnType(retT).withTs(ts).withMdf(mutToCapsule(mt.getMdf()));
     }
@@ -66,7 +64,7 @@ public class AlternativeMethodTypes {
 ////the behaviour of immorcapsule on fwd is not relevant since the method
 //// returns a read and will be not well formed if it had fwd parameters
     NormType retT=mt.getReturnType().getNT();
-    if(retT.getMdf()!=Mdf.Readable ||retT.getMdf()!=Mdf.Lent){return null;}
+    if(retT.getMdf()!=Mdf.Readable && retT.getMdf()!=Mdf.Lent){return null;}
     retT=retT.withMdf(Mdf.Immutable);
     List<Type> ts = Map.of(t->toImmOrCapsule(t.getNT()),mt.getTs());
     return mt.withReturnType(retT).withTs(ts).withMdf(toImmOrCapsule(mt.getMdf()));

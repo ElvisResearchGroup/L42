@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import ast.Ast.Atom;
 import ast.Ast.Doc;
@@ -295,6 +296,13 @@ public interface Ast {
   List<Type> ts;
   Type returnType;
   List<Type> exceptions;
+  @Override public String toString(){
+    String res=
+      this.mdf+":"+ts.stream().map(e->e.toString()).collect(Collectors.joining(","))
+      +"->"+returnType;
+    if (!exceptions.isEmpty()){res=res+" exceptions:"+exceptions.stream().map(e->e.toString()).collect(Collectors.joining(","));}   
+    return res;
+    }
  }
  @Value @Wither
  public static class C{

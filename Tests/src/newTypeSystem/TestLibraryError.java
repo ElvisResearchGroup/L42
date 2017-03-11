@@ -34,6 +34,8 @@ public class TestLibraryError {
 },{lineNumber(),"{}","{C:{method class This()this }}",ErrorKind.NotSubtypeMdf
 },{lineNumber(),"{}","{C:{method This()this.foo() method Any foo()this }}",ErrorKind.NotSubtypeClass
 },{lineNumber(),"{}","{C:{method D() this() } D:{class method This ( mut This that )}}",ErrorKind.LibraryNotCoherent
+},{lineNumber(),"{}",
+"{K:{ E:{class method C foo1() (D.foo3().foo2().foo2())}} C:{class method C foo2() (D.foo3())} D:{class method C foo3() (K.E.foo1())}}",ErrorKind.ClassMethCalledOnNonClass
 
 }});}
 

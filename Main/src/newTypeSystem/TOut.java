@@ -21,6 +21,9 @@ class TErr implements TOut,TOutM,TOutDs,TOutKs,TOutK{
 public TErr(TIn in, String msg, NormType _computed, ErrorKind kind) {
   this.in = in; this.msg = msg; this._computed = _computed;this.kind=kind;
   }
+public TErr withKind(ErrorKind kind){
+  return new TErr(this.in,this.msg,this._computed,kind);
+  }
 TIn in;
 String msg;
 NormType _computed;
@@ -104,8 +107,10 @@ private <T> List<T> union(List<T> l1,List<T>l2){
   }
 }
 class Tr extends ATr<Tr>{
+  private Tr(){}
   @Override Tr trClean() {return new Tr();}
   @Override Tr self() {return this;}
+  static final Tr instance=new Tr();
   }
 
 class TOk extends ATr<TOk> implements TOut{
@@ -158,6 +163,7 @@ default TErr toError() {throw new Error();}
 
 class TOkDs implements TOutDs{
   public TOkDs(Tr trAcc, List<Dec> ds, TIn g) {
+    assert trAcc!=null;
     this.trAcc = trAcc;
     this.ds = ds;
     this.g = g;
@@ -178,6 +184,8 @@ default TErr toError() {throw new Error();}
 
 class TOkKs implements TOutKs{
   public TOkKs(Tr trAcc,Tr trCaptured, List<On> ks, List<NormType> ts) {
+    assert trAcc!=null;
+    assert trCaptured!=null;
     this.trAcc = trAcc;
     this.trCaptured=trCaptured;
     this.ks = ks;
