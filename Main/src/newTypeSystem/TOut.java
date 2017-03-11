@@ -162,7 +162,7 @@ default TErr toError() {throw new Error();}
 }
 
 class TOkDs implements TOutDs{
-  public TOkDs(Tr trAcc, List<Dec> ds, TIn g) {
+  public TOkDs(Tr trAcc, List<Dec> ds, G g) {
     assert trAcc!=null;
     this.trAcc = trAcc;
     this.ds = ds;
@@ -170,7 +170,7 @@ class TOkDs implements TOutDs{
     }
   Tr trAcc;
   List<ExpCore.Block.Dec> ds;
-  TIn g;
+  G g;
   @Override public boolean isOk() { return true;}
   @Override public TOkDs toOkDs() {return this;}
   }

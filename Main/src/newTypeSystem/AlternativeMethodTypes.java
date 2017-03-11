@@ -12,6 +12,7 @@ import tools.Map;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import ast.Ast.Mdf;
 import ast.Ast.MethodSelector;
@@ -178,11 +179,13 @@ public static MethodType _bestMatchMtype(Program p,MethodType superMt,List<Metho
   for(MethodType mt:mts){
     if(TypeSystem._methMdfTSubtype(mt, superMt)){
       if(!res.stream().anyMatch(mti->TypeSystem._methMdfTSubtype(mti, mt))){
+        res=res.stream().filter(mti->!TypeSystem._methMdfTSubtype(mt, mti)).collect(Collectors.toList());
         res.add(mt);//if there is no method that is even better, add
         }
       }
   }
-  assert res.size()==1;
+  assert res.size()==1:
+  res.size();
   return res.get(0);
   }
 }

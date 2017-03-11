@@ -353,8 +353,9 @@ Phase |p |G |Tr|-catch throw Any x (e0 throw x) ~> catch throw Any x (e0' throw 
 
 (capsule promotion)//we are discussing if some blocks may not be promotable:
 //for example blocks with empty ds and ks.
-Phase |p |G |- (ds ks e)~>(ds' ks' e'):capsule P <=capsule P | Tr
+Phase |p |G |- (ds ks e)~>(ds' ks' e'):capsule P <=mdf P | Tr
   where
+  mdf in {capsule, imm fwdImm, fwd%Imm}
   Phase |p |toLent(G) |-(ds ks e)~>(ds' ks' e'):mut P <=mut P   | Tr
 //this rule is now "deterministic" in the sense that if typing the block give us a capsule directly,
 //this rule can not be applied, since we require mut P <=mut P in the premise.

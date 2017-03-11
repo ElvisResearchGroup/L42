@@ -65,6 +65,11 @@ public class TestLibraryOk {
 "{ method This m() this.readM()   read method read This readM()this}",null
 },{lineNumber(),"{}",
 "{ class method mut This() method This m() This() }",null
+
+//block promotion
+},{lineNumber(),"{}",
+"{ class method mut This() method This m() ( mut This x=This() x) }",null
+
 }});}
 
 @Test()

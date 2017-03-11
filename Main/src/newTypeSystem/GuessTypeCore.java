@@ -76,8 +76,8 @@ public NormType visit(MCall s) {
 @Override
 public NormType visit(Block s) {
   if (!s.getOns().isEmpty()){throw Assertions.codeNotReachable();}
-  TIn oldIn=in.addGds(s.getDecs());
-  TIn in2=in.addGds(s.getDecs());
+  TIn oldIn=in.addGds(in.p,s.getDecs());
+  TIn in2=in.addGds(in.p,s.getDecs());
   in=in2;
   try{return s.getInner().accept(this);}
   finally{in=oldIn;}
