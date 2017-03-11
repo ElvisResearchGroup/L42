@@ -22,13 +22,14 @@ import sugarVisitors.Desugar;
 import sugarVisitors.InjectionOnCore;
 @RunWith(Parameterized.class)
 public class TestLibraryOk {
-  @Parameter(0) public int _lineNumber;
-  @Parameter(1) public String sProg;
-  @Parameter(2) public String s1;
-  @Parameter(3) public String s2;
-  @Parameters(name = "{index}: line {0}")
-  public static List<Object[]> createData() {
-    return Arrays.asList(new Object[][] {
+//static constants to make it more readable
+@Parameter(0) public int _lineNumber;
+@Parameter(1) public String sProg;
+@Parameter(2) public String s1;
+@Parameter(3) public String s2;
+@Parameters(name = "{index}: line {0}")
+public static List<Object[]> createData() {
+  return Arrays.asList(new Object[][] {
 //----- basic attempts
 {lineNumber(),"{}","{C:{method Void()void}}",null
 },{lineNumber(),"{}","{C:{method Void()void } D:{}}",null
@@ -79,10 +80,9 @@ ClassB cb1Pre=(ClassB)Desugar.of(Parser.parse(null,s1)).accept(new InjectionOnCo
 cb1Pre=new programReduction.Norm().norm(p.evilPush(cb1Pre));
 TOut out=TypeSystem.instance().type(TIn.top(p,cb1Pre));
 assert out.isOk():
-  "";
+"";
 ClassB cb1=(ClassB)out.toOk().annotated;
 ClassB cbExpected=s2==null?cb1Pre:(ClassB)Desugar.of(Parser.parse(null,s2)).accept(new InjectionOnCore());
 TestHelper.assertEqualExp(cb1,cbExpected);
 }
 }
-
