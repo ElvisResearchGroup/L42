@@ -67,13 +67,17 @@ abstract class AG<This extends AG<This>>{
     }
     return this.withG(newG);
   }
-  public NormType g(String x){
+ public NormType g(String x){
     NormType res=this.g.get(x);
     assert res!=null:
       x;
     return res;
     }
-  public Set<String> gDom(){return g.keySet();}
+ public NormType _g(String x){
+   return this.g.get(x);
+   }
+
+ public Set<String> gDom(){return g.keySet();}
 
   //onlyMutOrImm(G)={x:G(x) | G(x) only mut or imm}
   public This toRead(){//toRead(G)(x)=toRead(G(x)) //thus undefined where toRead undefined

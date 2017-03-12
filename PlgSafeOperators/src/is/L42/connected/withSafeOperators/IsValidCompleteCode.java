@@ -19,6 +19,6 @@ public class IsValidCompleteCode {
     return found[0];
   }
   void ensureWellTyped(ClassB cb){//In case of error, should be false or error?
-    newTypeSystem.TypeSystem.instance().topTypeLib(Phase.Typed, Program.emptyLibraryProgram(),cb);
+    newTypeSystem.TypeSystem.instance().topTypeLib(Phase.Typed, Program.emptyLibraryProgram().updateTop(cb));
   }
 }

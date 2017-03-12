@@ -60,7 +60,7 @@ public class Rename {
     List<Ast.C> tmp = Collections.singletonList(C.of("Tmp"));
     cb=directRename(p,cb,src,tmp);
     if(!L42.trustPluginsAndFinalProgram) {
-      newTypeSystem.TypeSystem.instance().topTypeLib(Phase.Typed, p, cb);
+      newTypeSystem.TypeSystem.instance().topTypeLib(Phase.Typed, p.evilPush(cb));
       }
     cb=directRename(p,cb,tmp,dest);
     cb=Pop.directPop(cb);

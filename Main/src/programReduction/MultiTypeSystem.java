@@ -50,7 +50,7 @@ private static ClassB typeLibrary(List<List<Ast.C>> current, Program p) {
   }
 
 private static ClassB typeSingle(Program p) {
- return newTypeSystem.TypeSystem.instance().topTypeLib(Phase.Coherent,p.pop(), p.top());
+ return newTypeSystem.TypeSystem.instance().topTypeLib(Phase.Coherent,p);
  }
 
 public static ExpCore toAny(Paths paths, ExpCore e) {

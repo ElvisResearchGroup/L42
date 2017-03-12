@@ -222,7 +222,7 @@ class EvilPushed extends Methods{
 
   public Program updateTop(ClassB l) {throw Assertions.codeNotReachable();}
 
-  public Path _reducePath(Path p) {throw Assertions.codeNotReachable();}
+  public Path _reducePath(Path p) {return null;}
 
   public Program growFellow(Program fellow) {throw Assertions.codeNotReachable();}
   

@@ -3,7 +3,7 @@ package newTypeSystem;
 public class FormattedError extends RuntimeException {
 
     public FormattedError(TErr err) {
-    // TODO Auto-generated constructor stub
+      super("\n"+err.in+"\n"+err.msg+"\n"+err.kind+"\n"+err._computed);
     }
 
 }

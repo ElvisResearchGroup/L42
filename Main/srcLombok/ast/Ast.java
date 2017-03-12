@@ -616,7 +616,8 @@ public interface Ast {
    }
    throw tools.Assertions.codeNotReachable();
   }
-
+  public static List<Mdf> muts=Arrays.asList(Mdf.Mutable,Mdf.MutablePFwd,Mdf.MutableFwd);
+  public static List<Mdf> imms=Arrays.asList(Mdf.Immutable,Mdf.ImmutablePFwd,Mdf.ImmutableFwd);
  }
 
  public static enum OpKind {

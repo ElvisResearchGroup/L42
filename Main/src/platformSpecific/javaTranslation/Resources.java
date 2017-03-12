@@ -226,7 +226,7 @@ public class Resources {
     List<ClassB> cbs = CollectClassBs0.of(ec0);
     for(ClassB cb:cbs){
       try{
-        newTypeSystem.TypeSystem.instance().topTypeLib(Phase.Typed,p, cb);}
+        newTypeSystem.TypeSystem.instance().topTypeLib(Phase.Typed,p.evilPush(cb));}
       catch(ErrorMessage msg){
         System.err.println("__________PLUGIN error identified_________");
         throw msg;//to breakpoint here

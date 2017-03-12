@@ -122,7 +122,7 @@ mostGeneralMdf(throw,Tr)
   mostGeneralMdf(exception,_;Ps)=imm
 
 mostGeneralMdf(mdfs)//TODO: update code
-  mostGeneralMdf(mdfs)=mdf //assert fwd and fwd% not in mdfs
+  mostGeneralMdf(mdfs)=mdf
   case by exclusion:
     if mdfs=mdf', then mdf=mdf' //that is the only way mdf=class
     if class in mdfs, then undefined

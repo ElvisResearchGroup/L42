@@ -321,7 +321,7 @@ public static class TestStage2 {
         TestHelper.configureForTest();
         ExpCore e=Desugar.of(Parser.parse(null," "+_e)).accept(new InjectionOnCore());
         Program p=TestHelper.getProgram(program);
-        p=p.evilPush(TypeSystem.instance().topTypeLib(Phase.Coherent, p.pop(), p.top()));
+        p=p.evilPush(TypeSystem.instance().topTypeLib(Phase.Coherent, p));
         TOut out=TypeSystem.instance().type(TIn.top(Phase.Typed, p, e).withE(e, this.typeSugg));
         assert out.isOk();
         assert out.toOk().computed.equals(typeExpected);

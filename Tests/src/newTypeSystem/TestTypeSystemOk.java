@@ -117,7 +117,7 @@ public static class TesFail {
         TestHelper.configureForTest();
         ClassB cb1=(ClassB)Desugar.of(Parser.parse(null,scb1)).accept(new InjectionOnCore());
         Program p=Program.emptyLibraryProgram();
-        return TypeSystem.instance().topTypeLib(Phase.Coherent, p,cb1);
+        return TypeSystem.instance().topTypeLib(Phase.Coherent, p.evilPush(cb1));
       }
 }
 

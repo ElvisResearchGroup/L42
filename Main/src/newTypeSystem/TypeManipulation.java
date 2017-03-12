@@ -221,20 +221,37 @@ public static Mdf _mostGeneralMdf(Ast.SignalKind _throw,ATr<?> out){
   return _mostGeneralMdf(s.collect(Collectors.toSet()));
   }
 public static Mdf _mostGeneralMdf(Set<Mdf> mdfs){
-//mostGeneralMdf(mdfs)
-//  mostGeneralMdf(mdfs)=mdf //assert fwd and fwd% not in mdfs
-  assert !fwd_or_fwdP_inMdfs(mdfs);
-//    if mdfs=mdf', then mdf=mdf' //that is the only way mdf=class
+//case by exclusion:
+//  if mdfs=mdf', then mdf=mdf' //that is the only way mdf=class
   if (mdfs.size()==1){return mdfs.iterator().next();}
-//  otherwise if class in mdfs, then undefined
+//  if class in mdfs, then undefined
   if (mdfs.contains(Mdf.Class)){return null;}
-//  otherwise if read in mdfs, mdf=read
+//  if {mdfs}={capsule,imm} mdf=imm
+  if (mdfs.contains(Mdf.Capsule) && mdfs.contains(Mdf.Immutable) && mdfs.size()==2){
+    return Mdf.Immutable;
+    }
+//  if fwd_or_fwd%_in(mdfs) {
+  if(TypeManipulation.fwd_or_fwdP_inMdfs(mdfs)){
+//    if read or lent in mdfs, then undefined
+    if (mdfs.contains(Mdf.Readable)){return null;}
+    if (mdfs.contains(Mdf.Lent)){return null;}
+//  if imm and mut both in noFwd(mdfs) then undefined
+    boolean mutIn=false;
+    boolean immIn=false;
+    for(Mdf m:mdfs){
+      if(Mdf.muts.contains(m))mutIn=true;
+      if(Mdf.imms.contains(m))immIn=true;
+      }
+    if (mutIn && immIn){return null;}
+    //we know: more then one, no read/lent, either all imm side or mut side
+    if(mdfs.contains(Mdf.ImmutableFwd)){return Mdf.ImmutableFwd;}
+    if(mdfs.contains(Mdf.MutableFwd)){return Mdf.MutableFwd;}
+    if(mdfs.contains(Mdf.ImmutablePFwd)){return Mdf.ImmutablePFwd;}
+    assert mdfs.contains(Mdf.MutableFwd);{return Mdf.MutableFwd;}
+    }
+  //if read in mdfs, mdf=read
   if(mdfs.contains(Mdf.Readable)){return Mdf.Readable;}
-//  //ignoring capsule,
-//  //from now on, we have at least two of those:lent, mut, imm //Note: fwd and fwd% are cutted out in the throw rule
-//  otherwise if imm in mdfs, mdf=read
   if(mdfs.contains(Mdf.Immutable)){return Mdf.Readable;}
-//  otherwise mdf=lent
   return Mdf.Lent;
   }
 

@@ -73,7 +73,7 @@ public class TranslationTest {
   private static Program runTypeSystem(String scb1) {
     ClassB cb1=(ClassB)Desugar.of(Parser.parse(null,scb1)).accept(new InjectionOnCore());
     Program p=Program.emptyLibraryProgram();
-    ClassB cb=newTypeSystem.TypeSystem.instance().topTypeLib(Phase.Coherent, p,cb1);
+    ClassB cb=newTypeSystem.TypeSystem.instance().topTypeLib(Phase.Coherent, p.evilPush(cb1));
     return p.evilPush(cb);
   }
 }

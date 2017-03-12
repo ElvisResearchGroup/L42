@@ -122,7 +122,7 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
   //  for i in 0..n T'i=resolve(p,Ti)
   //  G'=x0:T'0..xn:T'n //is just ds for the way I handle TIn
   //  G1= G[fwd(onlyMutOrImm(G'))] //capturing error for next line if not onlyMutOrImm(G') is used and is errored by next line
-  List<Dec> dsFiltered = ds.stream().filter(
+  List<Dec> dsFiltered = ds0n.stream().filter(
           d->{Mdf m=d.getT().getNT().getMdf(); return m==Mdf.Immutable||m==Mdf.Mutable;})
           .map(d->d.withT(TypeManipulation.fwd(d.getT().getNT())))
           .collect(Collectors.toList());
@@ -135,7 +135,7 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
   for(Dec di:ds0n){
     NormType nt=Norm.resolve(in.p,di.getT());
     NormType ntFwdP=TypeManipulation.fwdP(nt);
-    TOut _out=type(in.withE(di.getInner(),ntFwdP));
+    TOut _out=type(in1.withE(di.getInner(),ntFwdP));
     if(!_out.isOk()){return _out.toError();}
     TOk ok=_out.toOk();
     trAcc=trAcc.trUnion(ok);
@@ -154,7 +154,7 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
   //    otherwise G0=G[G']//capturing error for next line, see if the difference between fwd%(G') ad G' would fix it. Still, then we need to check for the fwd x in FV(e0..en)..
   List<NormType> _nts=new ArrayList<>();
   for(String x: fve0n){
-    NormType t=in.g(x);
+    NormType t=in._g(x);
     if(t!=null){_nts.add(t);}
     }
   TIn inG0;

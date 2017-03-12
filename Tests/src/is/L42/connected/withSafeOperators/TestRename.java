@@ -210,7 +210,7 @@ public class TestRename {
       ClassB expected = getClassB(_expected);
       if (!isError) {
         ClassB res = Rename.renameClassStrict(Program.emptyLibraryProgram(), cb1, path1,  path2);
-        newTypeSystem.TypeSystem.instance().topTypeLib(Phase.Typed, Program.emptyLibraryProgram(),res);
+        newTypeSystem.TypeSystem.instance().topTypeLib(Phase.Typed, Program.emptyLibraryProgram().updateTop(res));
         TestHelper.assertEqualExp(expected, res);
       } else {
         try {

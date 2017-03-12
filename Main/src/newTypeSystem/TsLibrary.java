@@ -84,7 +84,7 @@ public interface TsLibrary extends TypeSystem{
      if(in.phase.subtypeEq(maxPhase)){maxPhase=in.phase;}
      ClassB L1=new ClassB(L0.getDoc1(),L0.isInterface(),L0.getSupertypes(),newMwts,newNs,L0.getP(),maxPhase,L0.getUniqueId());
      if(in.phase==Phase.Coherent){
-       boolean isCoh=coherent(in.p.pop().evilPush(L1));
+       boolean isCoh=coherent(in.p.updateTop(L1));
        if(!isCoh){
          return new TErr(in,"",Path.Library().toImmNT(),ErrorKind.LibraryNotCoherent);
          }
@@ -181,7 +181,7 @@ public interface TsLibrary extends TypeSystem{
       List<MethodWithType> stateC=top.mwts().stream()
       .map(m->(MethodWithType)m)
       .filter(m->!m.get_inner().isPresent())
-      .sorted((m1,m2)->m1.getMt().getMdf()==Mdf.Class?1:-1)
+      .sorted((m1,m2)->m1.getMt().getMdf()==Mdf.Class?-1:1)
       .collect(Collectors.toList());
       if(stateC.isEmpty()){return true;}
       MethodWithType ck=stateC.get(0);
