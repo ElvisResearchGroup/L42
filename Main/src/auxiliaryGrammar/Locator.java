@@ -11,7 +11,7 @@ import ast.Ast.Path;
 import ast.Ast.Position;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
-import ast.Util.CachedStage;
+
 
 public class Locator {
   public static enum Kind {

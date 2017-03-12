@@ -18,28 +18,28 @@ import ast.ErrorMessage.NormImpossible;
 import ast.ExpCore.Block;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.MCall;
+import auxiliaryGrammar.Functions;
 import ast.ExpCore.Block.Dec;
 import ast.ExpCore.Block.On;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodImplemented;
 import ast.ExpCore.ClassB.MethodWithType;
-import auxiliaryGrammar.Norm;
-import auxiliaryGrammar.Program;
+import ast.ExpCore.ClassB.Phase;
+import programReduction.Program;
 import coreVisitors.From;
-import coreVisitors.GuessTypeCore;
 import facade.Configuration;
+import newTypeSystem.TIn;
 import tools.Assertions;
 import tools.Map;
 
 abstract public class MethodPathCloneVisitor extends RenameMembers {
-  public HashMap<String, Type> varEnv=new HashMap<>();
+  public HashMap<String, NormType> varEnv=new HashMap<>();
   public final ClassB visitStart;
   public final Program p;
   public MethodPathCloneVisitor(ClassB visitStart,CollectedLocatorsMap maps,Program p) { 
     super(maps);
     this.visitStart=visitStart;
-    Configuration.typeSystem.computeStage(p,visitStart);
-    this.p=p.addAtTop(visitStart);
+    this.p=p.evilPush(visitStart);
     }
   ClassB getLastCb(){
     if(this.getLocator().size()==0){return visitStart;}
@@ -47,49 +47,50 @@ abstract public class MethodPathCloneVisitor extends RenameMembers {
   }
   public abstract MethodSelector visitMS(MethodSelector original,Path src);
   public ClassB.NestedClass visit(ClassB.NestedClass nc){
-    HashMap<String, Ast.Type> aux =this.varEnv;
+    HashMap<String, Ast.NormType> aux =this.varEnv;
     this.varEnv=new HashMap<>();
     try{return super.visit(nc);}
     finally{this.varEnv=aux;}
     }
   public ClassB.MethodImplemented visit(ClassB.MethodImplemented mi){
-    HashMap<String, Ast.Type> aux =this.varEnv;
-    Program ep=Program.getExtendedProgram(p,this.getLocator().getCbs());
+    HashMap<String, Ast.NormType> aux =this.varEnv;
+    Program ep=p;for(ClassB cbi:this.getLocator().getCbs()){ep=ep.evilPush(cbi);}
     this.varEnv=getVarEnvOf(ep,mi.getS(),this.getLastCb());
     try{ return super.visit(mi); }
     finally{this.varEnv=aux;}
   }
   public ClassB.MethodWithType visit(ClassB.MethodWithType mt){
-    HashMap<String, Ast.Type> aux =this.varEnv;
-    Program ep=Program.getExtendedProgram(p,this.getLocator().getCbs());
+    HashMap<String, Ast.NormType> aux =this.varEnv;
+    Program ep=p;for(ClassB cbi:this.getLocator().getCbs()){ep=ep.evilPush(cbi);}
     this.varEnv=getVarEnvOf(ep,mt.getMs(),this.getLastCb());
     try{ return super.visit(mt);}
     finally{this.varEnv=aux;}
     }
   private Ast.MethodType getMt(Program p,MethodSelector s,ClassB cb){
-	assert p.getCb(0)==cb;
-    Optional<Member> mOpt = Program.getIfInDom(cb.getMs(),s);
+	assert p.top()==cb;
+    Optional<Member> mOpt = Functions.getIfInDom(cb.getMs(),s);
     assert mOpt.isPresent();
     if(mOpt.get() instanceof MethodWithType){return ((MethodWithType)mOpt.get()).getMt();}
     assert mOpt.get() instanceof MethodImplemented;
-    return Program.getMT(p, s, cb).getMt();
+    MethodWithType mwt=(MethodWithType) cb._getMember(s);
+    return mwt.getMt();
   }
-  private HashMap<String, Ast.Type> getVarEnvOf(Program p,MethodSelector s,ClassB cb) {
-	assert p.getCb(0)==cb;
+  private HashMap<String, Ast.NormType> getVarEnvOf(Program p,MethodSelector s,ClassB cb) {
+	assert p.top()==cb;
     Ast.MethodType mt=getMt(p,s,cb);
-    HashMap<String, Ast.Type> result=new HashMap<>();
+    HashMap<String,Ast.NormType> result=new HashMap<>();
     {int i=-1;for(String n:s.getNames()){i+=1;
       //NormType nt=Norm.of(p,mt.getTs().get(i));
-      result.put(n,mt.getTs().get(i));
+      result.put(n,mt.getTs().get(i).getNT());
     }}
     result.put("this",new NormType(mt.getMdf(),Path.outer(0),Doc.empty()));
     return result;
   }
   public ExpCore visit(Block s) {
-    HashMap<String, Ast.Type> aux = new HashMap<>(this.varEnv);
+    HashMap<String, Ast.NormType> aux = new HashMap<>(this.varEnv);
     try{
       for(Dec d:s.getDecs()){
-        this.varEnv.put(d.getX(),d.getT()
+        this.varEnv.put(d.getX(),d.getT().getNT()
             //Functions.forceNormType(s,d.getT())
             //Norm.of(p, d.getT())
             );
@@ -97,7 +98,7 @@ abstract public class MethodPathCloneVisitor extends RenameMembers {
       List<Dec> newDecs = liftDecs(s.getDecs());
       List<On> newOns=new ArrayList<>();
       for(On on:s.getOns()){
-        this.varEnv.put(on.getX(),on.getT());
+        this.varEnv.put(on.getX(),on.getT().getNT());
         newOns.add(liftO(on));
         this.varEnv.remove(on.getX());
         }
@@ -115,8 +116,8 @@ abstract public class MethodPathCloneVisitor extends RenameMembers {
         if(ms2.equals(sel.getMs())){sels.add(sel);}
         else{sels.add(new MethodSelectorX(ms2,sel.getX()));}
         Ast.HistoricType hti=new Ast.HistoricType(last,Collections.singletonList(sel),Doc.empty());
-        NormType nt=Norm.of(//this norm have to stay
-           Program.getExtendedProgram(p,this.getLocator().getCbs()),hti);
+        Program ep=p;for(ClassB cbi:this.getLocator().getCbs()){ep=ep.evilPush(cbi);}
+        NormType nt=programReduction.Norm.resolve(ep, hti);
         last=nt.getPath();
         }
       Ast.HistoricType ht2=ht.withSelectors(sels);
@@ -125,13 +126,14 @@ abstract public class MethodPathCloneVisitor extends RenameMembers {
 
 
   public ExpCore visit(MCall s) {
-    Program ep=Program.getExtendedProgram(p,this.getLocator().getCbs());
+    Program ep=p;for(ClassB cbi:this.getLocator().getCbs()){ep=ep.evilPush(cbi);}
     MethodSelector ms=s.getS();
     Path guessed=null;
     try{
-      guessed=GuessTypeCore.of( ep, varEnv,s.getInner());
-      assert guessed!=null;//{return super.visit(s);}
-      guessed=Norm.of(ep, guessed);
+      TIn in=TIn.top(Phase.Typed, ep, s.getInner());
+      in=in.withG(varEnv);
+      guessed=newTypeSystem.GuessTypeCore.of(in,s.getInner()).getPath();
+      assert guessed!=null;
       }
     catch(NormImpossible ignored){return super.visit(s);}
     MethodSelector ms2=visitMS(ms,guessed);

@@ -21,7 +21,7 @@ import ast.Ast.Path;
 import ast.Ast.Stage;
 import ast.ExpCore.ClassB;
 import auxiliaryGrammar.Functions;
-import auxiliaryGrammar.Program;
+import programReduction.Program;
 
 public class TestAbstract{
 @RunWith(Parameterized.class)
@@ -70,12 +70,11 @@ public static class TestAbstractMeth {//add more test for error cases
   ClassB expected=getClassB(_expected);
   if(!isError){
     //TODO: mettere tests per il caso con un selettore destinazione. In particolare testare interfacce
-    ClassB res=Abstract.toAbstract(Program.empty(),cb1, path, ms,null);
-    res=Functions.clearCache(res,Stage.None);
+    ClassB res=Abstract.toAbstract(Program.emptyLibraryProgram(),cb1, path, ms,null);
     TestHelper.assertEqualExp(expected,res);
     }
   else{
-    try{Abstract.toAbstract(Program.empty(),cb1, path, ms,null);fail("error expected");}
+    try{Abstract.toAbstract(Program.emptyLibraryProgram(),cb1, path, ms,null);fail("error expected");}
     catch(Resources.Error err){
       ClassB res=(ClassB)err.unbox;
       TestHelper.assertEqualExp(expected,res);
@@ -140,12 +139,11 @@ public static class TestMoveMeth {//add more test for error cases
   ClassB expected=getClassB(_expected);
   if(!isError){
     //TODO: mettere tests per il caso con un selettore destinazione. In particolare testare interfacce
-    ClassB res=Abstract.toAbstract(Program.empty(),cb1, path, ms1,ms2);
-    res=Functions.clearCache(res,Stage.None);
+    ClassB res=Abstract.toAbstract(Program.emptyLibraryProgram(),cb1, path, ms1,ms2);
     TestHelper.assertEqualExp(expected,res);
     }
   else{
-    try{Abstract.toAbstract(Program.empty(),cb1, path, ms1,ms2);fail("error expected");}
+    try{Abstract.toAbstract(Program.emptyLibraryProgram(),cb1, path, ms1,ms2);fail("error expected");}
     catch(Resources.Error err){
       ClassB res=(ClassB)err.unbox;
       TestHelper.assertEqualExp(expected,res);
@@ -275,7 +273,6 @@ public static class TestAbstractClass {//add more test for error cases
   ClassB expected=getClassB(_expected);
   if(!isError){
     ClassB res=Abstract.toAbstract(cb1, path);
-    res=Functions.clearCache(res,Stage.None);
     TestHelper.assertEqualExp(expected,res);
     }
   else{

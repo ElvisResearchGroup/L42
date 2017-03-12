@@ -36,19 +36,19 @@ import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodWithType;
 import ast.ExpCore.ClassB.NestedClass;
-import ast.Util.CachedStage;
+
 import ast.Util.PathPath;
 import ast.Util.PathSPath;
 import ast.Util.SPathSPath;
-import auxiliaryGrammar.Norm;
-import auxiliaryGrammar.Program;
+import auxiliaryGrammar.Functions;
+import programReduction.Program;
 public class Redirect {
   private static List<PathPath> verifiedForErrorMsg;
   public static ClassB redirect(Program p,ClassB cb, Path internal,Path external){
     //call redirectOk, if that is ok, no other errors?
     //should cb be normalized first?
     assert external.isPrimitive() || external.outerNumber()>0;
-    p=p.addAtTop(cb);
+    p=p.evilPush(cb);
     List<PathPath>toRedirect=redirectOk(p,cb,internal,external);
     return applyMapPath(p,cb,toRedirect);
   }
@@ -170,14 +170,14 @@ public class Redirect {
     if(cs.isEmpty()){throw Errors42.errorInvalidOnTopLevel();}
     Errors42.checkExistsPathMethod(cbTop, cs, Optional.empty());
     //Boolean[] csPrivate=new Boolean[]{false};
-    ClassB currentIntCb=Program.extractCBar(cs,cbTop);
+    ClassB currentIntCb=cbTop.getClassB(cs);
     //path exists by construction.
     Path path=current.getPathsSet().iterator().next();
     ClassB currentExtCb;
     if(path.isCore()){
       assert path.outerNumber()>0:
         path;
-      currentExtCb= p.extractCb(path);
+      currentExtCb= p.extractClassB(path);
       }
     else{
       assert path.isPrimitive();
@@ -203,7 +203,7 @@ public class Redirect {
     redirectOkImpl(kindSrc,kindDest,ambiguities,current,currentIntCb,currentExtCb);
     List<Member> unexpectedMembers=new ArrayList<>();
     for(Member mi:currentIntCb.getMs()){
-      Optional<Member> miPrime = Program.getIfInDom(currentExtCb.getMs(),mi);
+      Optional<Member> miPrime = Functions.getIfInDom(currentExtCb.getMs(),mi);
       if(miPrime.isPresent() && miPrime.get().getClass().equals(mi.getClass())){
         Member miGet=miPrime.get();
         redirectOkMember(ambiguities,exceptions, mi,miGet,current);

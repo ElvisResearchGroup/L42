@@ -24,15 +24,17 @@ import ast.ExpCore;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.NestedClass;
+import ast.ExpCore.ClassB.Phase;
 import ast.Expression;
-import ast.Util.CachedStage;
+
 import ast.Ast.Position;
 import ast.ExpCore.ClassB.MethodWithType;
-import auxiliaryGrammar.Program;
 import coreVisitors.InjectionOnSugar;
 import coreVisitors.IsCompiled;
 import facade.L42.ExecutionStage;
 import platformSpecific.javaTranslation.Resources;
+import programReduction.Program;
+import programReduction.Program.EmptyProgram;
 
 public class ErrorFormatter {
   //TODO: in future, not display for coherent classes
@@ -151,7 +153,7 @@ private static void displayAbstractMethods(ClassB cb,StringBuilder result,String
     for(Member m:cb.getMs()){
       String err=m.match(nc->{
         ClassB ncb=(ClassB)nc.getInner();
-        if(ncb.getStage().getStage()!=Stage.Star){
+        if(ncb.getPhase()!=Phase.Coherent){
           return nc.getName()+"."+isItErrorPlace(p,nc.getInner());
           }
         return null;
@@ -267,29 +269,8 @@ private static void displayAbstractMethods(ClassB cb,StringBuilder result,String
       Ast.Position p=CollapsePositions.of((ExpCore)obj);
       ps.add(p);
       ExpCore exp=(ExpCore)obj;
-      //Expression expression=exp.accept(new RecoverStoredSugar());
       Expression expression=exp.accept(new InjectionOnSugar());
-      String cachedInfo="";
-      if(exp instanceof ClassB){
-        CachedStage stg = ((ClassB)exp).getStage();
-        if(stg.getGivenName().isEmpty()){
-          cachedInfo+="anonymous";
-        }
-        else{ cachedInfo+="name: "+stg.getGivenName();}
-        cachedInfo+=  " depends:[";
-        //cachedInfo+=//can be circular errorFormat(stg.getDependencies(),new ArrayList<>());
-        for(ClassB cbd:new HashSet<>(stg.getDependencies())){
-          if(cbd.getStage().getStage()==Stage.Less){cachedInfo+="-";}
-          if(cbd.getStage().getStage()==Stage.Plus){cachedInfo+="+";}
-          if(cbd.getStage().getGivenName().isEmpty()){
-            cachedInfo+="anonymous";
-          }
-          else {cachedInfo+=cbd.getStage().getGivenName();}
-          cachedInfo  +=/*"{"+cbd.getStage().getStage().name()+"}"+*/", ";
-        }
-        cachedInfo+="]";
-        }
-      return cachedInfo+errorFormat(expression,ps);
+      return errorFormat(expression,ps);
       }
     if(obj instanceof Ast.MethodSelector){
       return formatSelectorCompact((Ast.MethodSelector)obj);
@@ -318,7 +299,6 @@ private static void displayAbstractMethods(ClassB cb,StringBuilder result,String
     //if(obj instanceof Expression){return ToFormattedText.of((Expression)obj);}
     if(obj instanceof Expression.ClassB.Member){return ToFormattedText.of((Expression.ClassB.Member)obj);}
     if(obj instanceof java.nio.file.Path){return obj.toString();}
-    if(obj instanceof CachedStage){return obj.toString();}
     if(obj instanceof Ast.Position){ return obj.toString();}
     if(obj instanceof HashMap){ return obj.toString();}
     if(obj instanceof Collection){ return obj.toString();}
@@ -339,9 +319,9 @@ private static void displayAbstractMethods(ClassB cb,StringBuilder result,String
     }
 @SuppressWarnings("unused")//TODO: what was used for?
 private static void printType(int i, Program p) {
-    if(p.isEmpty()){return;}
-    printType(i,"",p.topCb());
-    printType(i+1,p.pop());
+    printType(i,"",p.top());
+    try{printType(i+1,p.pop());}
+    catch(EmptyProgram ep){}
 
   }
   private static void printType(int i,String prefix, ClassB top) {
@@ -405,7 +385,7 @@ private static void printType(int i, Program p) {
   }
 
   public static String whyIsNotExecutable(Path path, Program p1) {
-    ClassB cb=p1.extractCb(path);
+    ClassB cb=p1.extractClassB(path);
     String whyNot=whyIsNotExecutable(cb);
     if (whyNot!=null){
       return "The requested path is incomplete.\n  "
@@ -418,7 +398,8 @@ private static void printType(int i, Program p) {
 public static void topFormatErrorMessage(ErrorMessage msg) {
     //System.out.println(ErrorFormatter.formatError(msg).getErrorTxt());
     L42.printDebug(
-        formatError(Program.empty(),msg).getErrorTxt()
+        //TODO: not sure about getP(), added instead of empty program
+        formatError(Resources.getP(),msg).getErrorTxt()
         );
     for(Field f:msg.getClass().getDeclaredFields()){
       f.setAccessible(true);

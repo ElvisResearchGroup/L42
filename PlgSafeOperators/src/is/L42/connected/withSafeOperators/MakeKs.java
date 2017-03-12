@@ -21,7 +21,7 @@ import ast.Ast.NormType;
 import ast.Ast.Position;
 import ast.Ast.Type;
 import auxiliaryGrammar.Functions;
-import auxiliaryGrammar.Program;
+import programReduction.Program;
 import sugarVisitors.Desugar;
 public class MakeKs {
   public static ClassB makeKs(ClassB that,List<Ast.C> path, List<String> fieldNames,String mutK,String lentK,String readK,String immK,boolean fwd){
@@ -55,7 +55,7 @@ public class MakeKs {
     addWithName(immK, toAdd, _immK);
     List<Member> result=new ArrayList<>(that.getMs());
     for(MethodWithType m:toAdd){
-      if(Program.getIfInDom(result,m.getMs()).isPresent()){continue;}
+      if(Functions.getIfInDom(result,m.getMs()).isPresent()){continue;}
       result.add(m);
       }
     return that.withMs(result);
@@ -121,10 +121,10 @@ static private MethodType immK(MethodType proto) {
     }
 
   private ast.Ast.NormType candidate(List<Member> ms, String fName){
-    Optional<Member> a = Program.getIfInDom(ms, MethodSelector.of(fName,Collections.singletonList("that")));
-    Optional<Member> b = Program.getIfInDom(ms, MethodSelector.of("#"+fName,Collections.singletonList("that")));
-    Optional<Member> c = Program.getIfInDom(ms, MethodSelector.of(fName,Collections.emptyList()));
-    Optional<Member> d = Program.getIfInDom(ms, MethodSelector.of("#"+fName,Collections.emptyList()));
+    Optional<Member> a = Functions.getIfInDom(ms, MethodSelector.of(fName,Collections.singletonList("that")));
+    Optional<Member> b = Functions.getIfInDom(ms, MethodSelector.of("#"+fName,Collections.singletonList("that")));
+    Optional<Member> c = Functions.getIfInDom(ms, MethodSelector.of(fName,Collections.emptyList()));
+    Optional<Member> d = Functions.getIfInDom(ms, MethodSelector.of("#"+fName,Collections.emptyList()));
     NormType ta=getType(a);
     NormType tb=getType(b);
     NormType tc=getType(c);

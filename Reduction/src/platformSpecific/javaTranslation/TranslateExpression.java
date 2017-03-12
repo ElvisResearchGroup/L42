@@ -29,7 +29,7 @@ import ast.ExpCore.WalkBy;
 import ast.ExpCore.X;
 import ast.ExpCore._void;
 import auxiliaryGrammar.Functions;
-import auxiliaryGrammar.Program;
+import programReduction.Program;
 import coreVisitors.IsCompiled;
 
 /*class A{ A m(A a){return a;}
@@ -64,12 +64,12 @@ public class TranslateExpression implements coreVisitors.Visitor<Void>{
       if(s.equals(Path.Void())){res.append("platformSpecific.javaTranslation.Resources.Void.type");}
       return null;
     }
-    ClassB cbs=Resources.getP().extractCb(s);
+    ClassB cbs=Resources.getP().extractClassB(s);
     if(cbs.getPhase()==Phase.Typed  && IsCompiled.of(cbs)){
       res.append(Resources.nameOf(s)+".type ");
       }
     else{
-      Position pos=Resources.getP().getCb(s.outerNumber()).getP();
+      Position pos=Resources.getP().get(s.outerNumber()).getP();
       int hash=System.identityHashCode(pos);
       String cs=s.toString();
       int dotPos=cs.indexOf(".");

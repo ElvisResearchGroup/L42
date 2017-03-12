@@ -12,7 +12,6 @@ import ast.ExpCore;
 import ast.ExpCore.*;
 import static auxiliaryGrammar.EncodingHelper.*;
 import auxiliaryGrammar.EncodingHelper;
-import auxiliaryGrammar.Program;
 
 
 /*

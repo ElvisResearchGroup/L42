@@ -21,8 +21,9 @@ import ast.Ast.Stage;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.NestedClass;
-import ast.Util.CachedStage;
-import auxiliaryGrammar.Program;
+
+import programReduction.Program;
+import auxiliaryGrammar.Functions;
 import auxiliaryGrammar.UsedPaths;
 public class RemoveCode {
   public static ClassB removeUnreachableCode(ClassB originalCb){
@@ -89,8 +90,8 @@ public class RemoveCode {
     Ast.C firstName=path.get(0);
     //either fistName does not exist in accumulator, and we call removeAllButPath
     //or we have to continue recursivelly.
-    Optional<Member> optM = Program.getIfInDom(accumulator.getMs(), firstName);
-    NestedClass originalNc =(NestedClass) Program.getIfInDom(originalCb.getMs(), firstName).get();
+    Optional<Member> optM = Functions.getIfInDom(accumulator.getMs(), firstName);
+    NestedClass originalNc =(NestedClass) Functions.getIfInDom(originalCb.getMs(), firstName).get();
     ClassB newInner;
     if(!optM.isPresent()){
       newInner=removeAllButPath(path.subList(1, path.size()),(ClassB)originalNc.getInner());
@@ -101,7 +102,7 @@ public class RemoveCode {
     }
     NestedClass nc=originalNc.withInner(newInner);
     List<Member> ms = new ArrayList<>(accumulator.getMs());
-    Program.replaceIfInDom(ms,nc);
+    Functions.replaceIfInDom(ms,nc);
     return accumulator.withMs(ms);
   }
   private static ClassB mergeNestedHolderWithDep(ClassB accumulator, ClassB originalCb) {

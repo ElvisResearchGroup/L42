@@ -12,7 +12,7 @@ import ast.ExpCore;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.MethodWithType;
 import ast.ExpCore.ClassB.Phase;
-import ast.Util.CachedStage;
+
 import coreVisitors.CloneVisitor;
 import tools.Assertions;
 import tools.Map;
@@ -92,7 +92,7 @@ public class Norm {
       l.getMs().stream().filter(m->m instanceof ClassB.NestedClass)
       ).map(m->norm(p,m)).collect(Collectors.toList());
     //return l.withSupertypes(ps1).withMs(ms1).withUniqueId(p.getFreshId()).withPhase(Phase.Norm);
-    return new ClassB(l.getDoc1(),l.isInterface(),Map.of(pi->pi.toImmNT(),ps1),ms1,l.getP(),l.getStage(),Phase.Norm,p.getFreshId());
+    return new ClassB(l.getDoc1(),l.isInterface(),Map.of(pi->pi.toImmNT(),ps1),ms1,l.getP(),Phase.Norm,p.getFreshId());
     }
   @SuppressWarnings("unchecked")
   <T extends ExpCore.ClassB.Member> T norm(Program p,T m){

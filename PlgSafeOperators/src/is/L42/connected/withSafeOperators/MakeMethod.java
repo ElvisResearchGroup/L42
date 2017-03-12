@@ -18,14 +18,14 @@ import ast.Ast.Type;
 import ast.Ast.NormType;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.*;
-import ast.Util.CachedStage;
-import auxiliaryGrammar.Program;
+import auxiliaryGrammar.Functions;
+import programReduction.Program;
 import tools.Map;
 
 public class MakeMethod {
 public static ClassB addMethod(ClassB _lib, List<Ast.C> path, MethodSelector ms, String mdfs,int excNumber){
   Errors42.checkExistsPathMethod(_lib, path, Optional.empty());
-  ClassB innerLib=Program.extractCBar(path, _lib);
+  ClassB innerLib=_lib.getClassB(path);
   String[] _mdfs = mdfs.split(" ");
   assert _mdfs.length==ms.getNames().size()+2;
   List<String> nc=new ArrayList<>();
@@ -48,13 +48,11 @@ public static ClassB addMethod(ClassB _lib, List<Ast.C> path, MethodSelector ms,
     }
   MethodType mt = new MethodType(false,Mdf.valueOf(_mdfs[0]),ts, retT,Map.of(pi->pi.toImmNT(),exceptions));
   MethodWithType mwt=new MethodWithType(Doc.empty(),ms,mt,Optional.empty(),innerLib.getP());
-  Optional<Member> optM = Program.getIfInDom(innerLib.getMs(),ms);
+  Optional<Member> optM = Functions.getIfInDom(innerLib.getMs(),ms);
   if(optM.isPresent()){
     throw Errors42.errorMethodClash(path, mwt, optM.get(), false, Collections.emptyList(), false, false,false);
     }
-  CachedStage cs=new CachedStage();
-  cs.setStage(Stage.Star);
-  ClassB emptyCb=ClassB.membersClass(Collections.emptyList(),innerLib.getP()).withStage(cs);
+  ClassB emptyCb=ClassB.membersClass(Collections.emptyList(),innerLib.getP());
   return _lib.onClassNavigateToPathAndDo(path,cbi->{
     List<Member> mem = new ArrayList<>(cbi.getMs());
     mem.add(mwt);

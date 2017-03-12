@@ -200,7 +200,7 @@ private VarDecXE getDecForVar(Ast.C cName,VarDecXE varDec) {
  private VarDecCE getClassBForVar(VarDecXE varDec) {
    List<FieldDec> fs=new ArrayList<FieldDec>();
    fs.add(new FieldDec(true,_computeTypeForClassBForVar(varDec),"inner",Doc.empty()));
-   ClassB cb=new ClassB(Doc.empty(),new Ast.ConcreteHeader(Mdf.Mutable, "",fs,Position.noInfo),Collections.emptyList(),Collections.emptyList(),Collections.emptyList(),Position.noInfo,Stage.None);
+   ClassB cb=new ClassB(Doc.empty(),new Ast.ConcreteHeader(Mdf.Mutable, "",fs,Position.noInfo),Collections.emptyList(),Collections.emptyList(),Collections.emptyList(),Position.noInfo);
    String nameC=Functions.freshName("Var"+varDec.getX(), L42.usedNames);
    //usedCnames.add(nameC);
    return new VarDecCE(new NestedClass(Doc.empty(),C.of(nameC).withUniqueNum(L42.freshPrivate()),cb,null));

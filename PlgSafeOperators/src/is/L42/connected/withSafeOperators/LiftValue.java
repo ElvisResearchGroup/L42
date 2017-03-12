@@ -13,7 +13,8 @@ import ast.Ast.Path;
 import ast.ExpCore;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodWithType;
-import auxiliaryGrammar.Program;
+import auxiliaryGrammar.Functions;
+import programReduction.Program;
 
 public class LiftValue {
   static ExpCore.ClassB liftValue(ExpCore val,Ast.MethodSelector sel, ExpCore.ClassB context){
@@ -25,7 +26,7 @@ public class LiftValue {
     //lib={ T:{} class method Any val()  class method T cast() {with val=this.val() (on T return val) error ....}
     //lib:=redirect T ->... <<lib
     //lib:=liftValue  val
-    Optional<Member> optMt = Program.getIfInDom(ms,sel);
+    Optional<Member> optMt = Functions.getIfInDom(ms,sel);
     ExpCore.ClassB.MethodWithType mwt=new ExpCore.ClassB.MethodWithType(Doc.empty(),sel,mt,Optional.of(val),context.getP());
     if(!optMt.isPresent()){
       ms.add(mwt);
@@ -33,7 +34,7 @@ public class LiftValue {
       }
     if(!(optMt.get() instanceof MethodWithType)){throw Errors42.errorMethodClash(Collections.emptyList(),optMt.get(),mwt,true,Collections.emptyList(),true,true,false);}
    Errors42.checkMethodClash(Collections.emptyList(),(MethodWithType) optMt.get(),mwt,false);
-   Program.replaceIfInDom(ms,mwt);
+   Functions.replaceIfInDom(ms,mwt);
    return context.withMs(ms);
     }
 }

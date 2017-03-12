@@ -14,7 +14,7 @@ import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.NestedClass;
 import ast.Util.PathMxMx;
-import auxiliaryGrammar.Program;
+import programReduction.Program;
 
 public class ClassOperations {
 /*

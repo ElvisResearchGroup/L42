@@ -18,7 +18,7 @@ import ast.ErrorMessage;
 import ast.ExpCore;
 import ast.ExpCore.Using;
 import auxiliaryGrammar.Functions;
-import auxiliaryGrammar.Program;
+import programReduction.Program;
 class ProtectedPluginType{
   static Method getMethod(PluginType that,Program p,Using u){
     String mName=Resources.nameOf(u.getS().nameToS(),u.getS().getNames());
@@ -34,7 +34,7 @@ class ProtectedPluginType{
       for(Method m:that.getClass().getDeclaredMethods()){
         options.add(m.getName());
         }
-      throw new ErrorMessage.PluginMethodUndefined(options,uForError,p.getInnerData(),null);
+      throw new ErrorMessage.PluginMethodUndefined(options,uForError,null,null);
       }
     catch (SecurityException e) { throw new Error(e);}
     }

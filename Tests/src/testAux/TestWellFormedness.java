@@ -28,8 +28,7 @@ import ast.ExpCore;
 import ast.Ast.Path;
 import ast.ExpCore.ClassB;
 import ast.Expression;
-import auxiliaryGrammar.Norm;
-import auxiliaryGrammar.Program;
+import programReduction.Program;
 
 //TODO: add way more tests
 

@@ -17,7 +17,7 @@ import ast.Ast.NormType;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodWithType;
-import auxiliaryGrammar.Program;
+import programReduction.Program;
 
 public class TranslateClass {
   public static void of(Program p, String s, ClassB ct, StringBuilder res) {

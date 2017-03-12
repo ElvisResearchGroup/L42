@@ -20,7 +20,7 @@ import ast.ExpCore.Block.Dec;
 import ast.Redex;
 import auxiliaryGrammar.Ctx;
 import auxiliaryGrammar.Functions;
-import auxiliaryGrammar.Program;
+import programReduction.Program;
 
 public class ExtractCtxVal implements Visitor<Ctx<Redex>>{
   Program p;
@@ -119,6 +119,6 @@ public class ExtractCtxVal implements Visitor<Ctx<Redex>>{
     //what if check garbage first?
     Ctx<Redex> result=e.accept(new ExtractCtxVal(p));
     if(result!=null){return result;}
-    throw new ErrorMessage.CtxExtractImpossible(e,p.getInnerData());
+    throw new ErrorMessage.CtxExtractImpossible(e,null);
   }
 }

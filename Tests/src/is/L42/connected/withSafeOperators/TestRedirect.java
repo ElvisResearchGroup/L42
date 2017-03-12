@@ -19,7 +19,7 @@ import platformSpecific.javaTranslation.Resources;
 import ast.Ast.MethodSelector;
 import ast.Ast.Path;
 import ast.ExpCore.ClassB;
-import auxiliaryGrammar.Program;
+import programReduction.Program;
 
 public class TestRedirect{
 @RunWith(Parameterized.class)

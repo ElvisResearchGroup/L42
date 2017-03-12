@@ -30,7 +30,7 @@ import ast.Ast.Stage;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.Using;
 import auxiliaryGrammar.EncodingHelper;
-import auxiliaryGrammar.Program;
+import programReduction.Program;
 import auxiliaryGrammar.WellFormedness;
 
 public interface OnLineCode {
@@ -61,7 +61,7 @@ public interface OnLineCode {
     return null;
     }
   public static PluginType plugin(Program p,ExpCore.Using u){
-    Doc d=p.extractCb(u.getPath()).getDoc1();
+    Doc d=p.extractClassB(u.getPath()).getDoc1();
     PluginType pt =_isPluginWithPart(d);
     if(pt!=null){return pt;}
     pt = _isWellKnownPlugin(d);

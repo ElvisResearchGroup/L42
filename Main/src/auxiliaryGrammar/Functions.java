@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -32,7 +33,7 @@ import ast.ExpCore.*;
 import ast.ExpCore.ClassB.*;
 import ast.Expression.ClassReuse;
 import ast.Expression;
-import ast.Util.CachedStage;
+
 import ast.Util.InvalidMwtAsState;
 import ast.Util.PathMwt;
 import coreVisitors.Dec;
@@ -43,8 +44,60 @@ import coreVisitors.IsValue;
 import coreVisitors.ReplaceCtx;
 import facade.Configuration;
 import facade.L42;
+import programReduction.Program;
 
 public class Functions {
+
+public static Optional<Member> getIfInDom(List<ExpCore.ClassB.Member> map, Ast.C elem){
+for(ExpCore.ClassB.Member m: map){
+  if(m.match(nc->nc.getName().equals(elem), mi->false, mt->false)){return Optional.of(m);}
+  }
+return Optional.empty();
+}
+public static Optional<Member> getIfInDom(List<ExpCore.ClassB.Member> map, ast.Ast.MethodSelector elem){
+//remember: the are no docs to make method selectors different.
+for(ExpCore.ClassB.Member m: map){
+  if(m.match(nc->false,mi->mi.getS().equals(elem) ,mt->mt.getMs().equals(elem))){return Optional.of(m);}
+  }
+return Optional.empty();
+}
+public static Optional<Member> getIfInDom(List<ExpCore.ClassB.Member> map, ExpCore.ClassB.Member elem){
+return elem.match(nc->getIfInDom(map,nc.getName()), mi->getIfInDom(map,mi.getS()),mt->getIfInDom(map,mt.getMs()));
+}
+public static void removeIfInDom(List<Member> ms,MethodSelector sel){
+for(Member memi:ms){
+  boolean res=memi.match(
+      nc->false,
+      mi->{if(mi.getS().equals(sel)){ms.remove(mi);return true;}return false;},
+      mt->{if(mt.getMs().equals(sel)){ms.remove(mt);return true;}return false;});
+  if(res){break;}
+}
+}
+public static void removeIfInDom(List<Member> ms,String sel){
+for(Member memi:ms){
+  boolean res=memi.match(
+      nc->{if(nc.getName().equals(sel)){ms.remove(nc);return true;}return false;},
+      mi->false,
+      mt->false);
+  if(res){break;}
+}
+}
+public static void replaceIfInDom(List<Member> ms,Member m){
+Object matchRes=m.match(
+    nc->{for(Member mi:ms){if (!(mi instanceof NestedClass)){continue;}
+      if (!nc.getName().equals(((NestedClass)mi).getName())){continue;}
+      return ms.set(ms.indexOf(mi), m);//swap to keep order
+      }return null;},
+    mImpl->{for(Member mi:ms){if (!(mi instanceof MethodImplemented)){continue;}
+      if (!mImpl.getS().equals(((MethodImplemented)mi).getS())){continue;}
+      return ms.set(ms.indexOf(mi), m);//swap to keep order
+      }return null;},
+    mt->{for(Member mi:ms){if (!(mi instanceof MethodWithType)){continue;}
+      if (!mt.getMs().equals(((MethodWithType)mi).getMs())){continue;}
+      return ms.set(ms.indexOf(mi), m);//swap to keep order
+      }return null;});
+if(matchRes==null){ms.add(m);}
+}
 
 public static ClassB.NestedClass encapsulateIn(List<Ast.C> cBar,ClassB elem,Doc doc) {
     //Notice: encapsulation do not do the from. It must be done
@@ -57,10 +110,21 @@ public static ClassB.NestedClass encapsulateIn(List<Ast.C> cBar,ClassB elem,Doc 
     ClassB cb= ClassB.membersClass(ms,Position.noInfo);
     return new ClassB.NestedClass(Doc.empty(),cBar.get(0),cb,null);
   }
+public static Path originDecOf(Program p,MethodSelector ms,ClassB cb/*normalized*/){
+  assert cb.getPhase().subtypeEq(Phase.Norm);
+  for(Path pi:cb.getSuperPaths()){
+    ClassB cbi=p.extractClassB(pi);
+    MethodWithType m = (MethodWithType) cbi._getMember(ms);
+    if(m!=null && !m.getMt().isRefine()){return pi;}
+    }
+  throw Assertions.codeNotReachable();
+  }
+ 
 public static Path add1Outer(Path p) {
     if( p.isPrimitive()){return p;}
     return p.setNewOuter(p.outerNumber()+1);
   }
+/*
 public static Path classOf(Program p,ExpCore ctxVal,ExpCore val){
   assert IsValue.of(p,val)|
          new IsValue(p).validRightValue(val):ToFormattedText.of(val);
@@ -110,7 +174,7 @@ public static boolean isSubtype(Program p, Path path1, Path path2) {
     if(pathiN.equals(path2N)){return true;}
   }
   return false;
-}
+}*/
 public static boolean isSubtype(Mdf mdf1, Mdf m) {
   if(mdf1==m){return true;}
   switch(mdf1){
@@ -270,13 +334,14 @@ public static List<Path> remove1OuterAndPrimitives(Collection<Path> paths){
   }
   return result;
 }
-
+/*
 public static Path classOf(Program p, ExpCore ctxVal,List<ast.ExpCore.Block.Dec> decs, ExpCore inner) {
   Position pos=null;if(inner instanceof Ast.HasPos){pos=((Ast.HasPos)inner).getP();}
   Block b=new Block(Doc.empty(),decs,new WalkBy(),Collections.emptyList(),pos);
   ctxVal=ReplaceCtx.of(ctxVal, b);
   return classOf(p,ctxVal,inner);
 }
+*/
 public static NormType toPartial(NormType that) {
   switch (that.getMdf()){
     case Capsule:       return that;
@@ -374,10 +439,11 @@ public static boolean isSuperTypeOfMut(Mdf mdf){
       ||mdf==Mdf.Lent
       ||mdf==Mdf.Readable;
   }
+
 public static boolean isInterface(Program p, Path path) {
   if (path.equals(Path.Any())){return true;}
   if(path.isPrimitive()){return false;}
-  return p.extractCb(path).isInterface();//in typing, this is guaranteed to be there
+  return p.extractClassB(path).isInterface();//in typing, this is guaranteed to be there
 }
 public static boolean checkCore(Expression result) {
     result.accept(new CloneVisitor(){
@@ -390,335 +456,6 @@ public static boolean checkCore(Expression result) {
           }
       }});
   return true;
-}
-
-public static NormType forceNormType(Program p,ExpCore inner, Type preciseTOpt) {
-  assert preciseTOpt!=null;
-  if (preciseTOpt instanceof Ast.HistoricType){
-    return Norm.resolve(p,(HistoricType) preciseTOpt);
-    //throw new ErrorMessage.UnresolvedType((Ast.HistoricType)preciseTOpt,inner);
-    }
-  NormType preciseT=(NormType)preciseTOpt;
-  return preciseT;
-}
-public static List<InvalidMwtAsState> isAbstract(Program p, ClassB ct) {
-  List<InvalidMwtAsState> details = coherent(p,ct);
-  if(!details.isEmpty()){
-	  return details;
-	  }
-  details=new ArrayList<>();
-  for(Member m:ct.getMs()){
-    if(!(m instanceof NestedClass)){continue;}
-    NestedClass nc=(NestedClass)m;
-    assert nc.getInner() instanceof ClassB;
-    isAbstract(p.addAtTop(ct),(ClassB)nc.getInner()).stream()
-        .map(s->new InvalidMwtAsState(nc.getName()+"."+s.getReason(),s.getMwt())).forEach(details::add);
-  }
-  return details;
-}
-
-public static List<InvalidMwtAsState> coherent(Program p, ClassB ct) {
-  Program p1=p.addAtTop(ct);//was designed to give 1 error, now must give full list
-  if( ct.isInterface()){ return Collections.emptyList();}
-  List<MethodWithType> mwtsNI= collectNotImplementedMethods(ct);
-  if(!mwtsNI.isEmpty()){
-    return mwtsNI.stream().map(m->new InvalidMwtAsState("Method from interface not implemented",m)).collect(Collectors.toList());
-  }
-  List<MethodWithType> mwts= collectAbstractMethods(p1,ct);
-  if(mwts.isEmpty()){return Collections.emptyList();}
-  List<MethodWithType> typeMethods=new ArrayList<>();
-  for(MethodWithType mwt:mwts){if(mwt.getMt().getMdf()==Ast.Mdf.Class){typeMethods.add(mwt);}}
-  /*if(typeMethods.size()>1){
-    return mwts.stream().map(m->new InvalidMwtAsState("More than one constructor candidate",m)).collect(Collectors.toList());
-    }*/
-
-  if(typeMethods.size()==0){
-    return mwts.stream().map(m->new InvalidMwtAsState("No constructor candidate",m)).collect(Collectors.toList());
-    }
-  MethodWithType mutK=null;
-  MethodWithType lentK=null;
-  MethodWithType readK=null;
-  MethodWithType immK=null;
-  List<InvalidMwtAsState> result=new ArrayList<>();
-  for(MethodWithType constr: typeMethods){
-    mwts.remove(constr);
-    NormType retType=(NormType)constr.getMt().getReturnType();
-    if(!retType.getPath().equals(Path.outer(0))){
-    return Collections.singletonList(new InvalidMwtAsState(" return path must be This",constr));
-    }
-    if(!isComplete(retType)){
-      return Collections.singletonList(new InvalidMwtAsState(" return type fwd invalid for constructor",constr));
-    }
-    if(retType.getMdf()==Mdf.Mutable){ mutK=setIfFree(mutK,constr,result);}
-    if(retType.getMdf()==Mdf.Lent){ lentK=setIfFree(lentK,constr,result);}
-    if(retType.getMdf()==Mdf.Readable){ readK=setIfFree(readK,constr,result);}
-    if(retType.getMdf()==Mdf.Immutable){ immK=setIfFree(immK,constr,result);}
-    }
-  //we know typeMethods is not empty
-  MethodWithType oneK = mutK!=null?mutK:(lentK!=null?lentK:(readK!=null?readK:immK));
-  assert oneK!=null;
-  List<Path> paths = oneK.getMt().getTs().stream().map(t->((NormType)t).getPath()).collect(Collectors.toList());
-  kFieldEquals(oneK,paths,mutK,result);
-  kFieldEquals(oneK,paths,lentK,result);
-  kFieldEquals(oneK,paths,readK,result);
-  kFieldEquals(oneK,paths,immK,result);
-  kNotHave(mutK,result,Mdf.Capsule,Mdf.Lent,Mdf.Readable);
-  kNotHave(lentK,result,Mdf.Capsule,Mdf.Mutable);
-  kNotHave(readK,result,Mdf.Capsule,Mdf.Mutable,Mdf.Lent);
-  kNotHave(immK,result,Mdf.Capsule,Mdf.Mutable,Mdf.Lent,Mdf.Readable);
-  for(  MethodWithType mwt:mwts){//for all the other h
-    String name=mwt.getMs().nameToS();
-    if(name.startsWith("#")){name=name.substring(1);}
-    //select satisfying parameter
-    NormType nt=selectCorrespondingFieldType(oneK,  name);
-    if(nt==null){
-      result.add(new InvalidMwtAsState(" Abstract method not a field of the constructor",mwt));
-      }
-    else if(!coherent(p1, nt,mwt,oneK)){
-      result.add(new InvalidMwtAsState(" Abstract method has invalid shape to be part of the state",mwt));
-      }
-    }
-  return result;
-  }
-  private static void kNotHave(MethodWithType constr, List<InvalidMwtAsState> result, Mdf... mdfs) {
-    if(constr==null){return;}
-    for(Type t:constr.getMt().getTs()){
-      NormType nt=(NormType)t;
-      if(Arrays.asList(mdfs).contains(nt.getMdf())){
-        result.add(new InvalidMwtAsState(" constructor has invalid mdf for its fields ",constr));
-      }
-    }
-  }
-
-private static MethodWithType setIfFree(MethodWithType oldK, MethodWithType constr,List<InvalidMwtAsState> result) {
-  if (oldK==null){return constr;}
-  result.add(new InvalidMwtAsState(" More than one constructor with the same return type:",oldK));
-  result.add(new InvalidMwtAsState(" More than one constructor with the same return type:",constr));
-  return oldK;
-}
-private static Path mapHelp(MethodWithType oneK,  MethodWithType otherK, List<InvalidMwtAsState> result,Type t){
-  NormType nt=(NormType)t;
-  //can not be required fwd, we need invariants to replace constructos if needed, should make ts more flexible?
-  //if(nt.getPh()!=Ph.Ph){result.add(new InvalidMwtAsState(" constructor parameters must all be fwd ",otherK ));}
-  return nt.getPath();
-}
-private static void kFieldEquals(MethodWithType oneK, List<Path> paths, MethodWithType otherK, List<InvalidMwtAsState> result) {
-  if (otherK==null){return;}
-  if (!oneK.getMs().getNames().equals(otherK.getMs().getNames())){
-    result.add(new InvalidMwtAsState(" Different number or names of parameters for two candidate constructors: ",oneK));
-    result.add(new InvalidMwtAsState(" Different number or names of parameters for two candidate constructors: ",otherK));
-  }
-  List<Path> otherP = otherK.getMt().getTs().stream().map(t->mapHelp(oneK,otherK,result,t)).collect(Collectors.toList());
-
-  if(!paths.equals(otherP)){
-    result.add(new InvalidMwtAsState(" Different number or paths of parameters for two candidate constructors: ",oneK));
-    result.add(new InvalidMwtAsState(" Different number or paths of parameters for two candidate constructors: ",otherK));
-  }
-}
-
-/**null if no corresponding field is found*/
-private static NormType selectCorrespondingFieldType(MethodWithType constr, String name) {
-  int i=-1;for(String ni:constr.getMs().getNames()){i+=1;
-    if(!ni.equals(name)){continue;}
-    NormType nt=(NormType)constr.getMt().getTs().get(i);
-    return nt;
-    }
-  return null;
-}
-public static boolean getterOkMdf(Mdf k,Mdf mnt,Mdf expected){
-  switch (mnt){
-    case Class:return Mdf.Class==expected;
-    case Immutable:
-      if (k==Mdf.Immutable){return Mdf.Readable==expected || Mdf.Immutable==expected;}
-      return Mdf.Immutable==expected;
-    case Mutable:
-    case Lent:
-    case Readable:return Mdf.Readable==expected;
-    case Capsule: return false;
-    case ImmutableFwd:return false;
-    case ImmutablePFwd:return false;
-    case MutableFwd:return false;
-    case MutablePFwd:return false;
-    default: throw Assertions.codeNotReachable();
-  }
-}
-public static boolean exposerSetterOkMdf(Mdf k,Mdf mnt,Mdf expected){
-  if( k==Mdf.Immutable){return false;}
-  if( k==Mdf.Readable){return false;}
-  switch (mnt){
-    case Class:
-    case Immutable:
-    case Mutable:
-    case Readable: return mnt==expected;
-    case Lent:if(k==Mdf.Lent){return Mdf.Lent==expected || Mdf.Mutable==expected;}
-    case Capsule: return false;
-    case ImmutableFwd: return false;
-    case ImmutablePFwd:return false;
-    case MutableFwd:return false;
-    case MutablePFwd:return false;
-    default: throw Assertions.codeNotReachable();
-  }
-}
-public static boolean coherent(Program p, NormType nt, MethodWithType mwt,MethodWithType oneK) {
-  if(!checkVoidAndThatOk(p,mwt)){return false;}
-  //itid=imm->imm,type->type
-  //getter: read to itid,*->read/itid,*->read/tid, imm->(read/imm)
-  //exposer mut to allid/lent->(lent,mut),allid/ NO/NO
-  //setter is mut from allid/lent->(lent,mut),allid/NO/NO
-  Mdf kMdf=((NormType)oneK.getMt().getReturnType()).getMdf();
-  Mdf expected=((NormType)mwt.getMt().getReturnType()).getMdf();
-  if(mwt.getMt().getMdf()==Mdf.Readable){
-    return getterOkMdf(kMdf,nt.getMdf(),expected);
-  }
-  if(!mwt.getMt().getTs().isEmpty()){
-    expected=((NormType)mwt.getMt().getTs().get(0)).getMdf();
-    }
-  return exposerSetterOkMdf(kMdf,nt.getMdf(),expected);
-
-  /*//group1
-  if(mdf==Mdf.Class || mdf==Mdf.Immutable || mdf==Mdf.Readable){
-  //case a
-    if(mwt.getMt().getTs().isEmpty()){ return okSubtypeGet(p, mdf, path, mwt); }
-    //case b
-    if(mwt.getMt().getMdf()==Mdf.Mutable || mwt.getMt().getMdf()==Mdf.Lent){
-      return okSubtypeSet(p, mdf, path, mwt);
-    }
-  }
- //group2
-  if(mdf==Mdf.Mutable || mdf==Mdf.Lent){
-    if(mwt.getMt().getMdf()==Mdf.Mutable){
-      //case c
-      if(mwt.getMt().getTs().isEmpty()){return okSubtypeGet(p, mdf, path, mwt);}
-      //case e
-      else {return okSubtypeSet(p, mdf, path, mwt);}
-    }else   if(mwt.getMt().getMdf()==Mdf.Lent && !mwt.getMt().getTs().isEmpty()){
-        //case f
-      return okSubtypeSet(p,Mdf.Capsule,path,mwt);
-    } else if(mwt.getMt().getMdf()!=Mdf.Class && mwt.getMt().getMdf()!=Mdf.Mutable){
-    //case d
-      return okSubtypeGet(p,mwt.getMt().getMdf(),path,mwt);
-    }
-  }
-  //group3
-  assert mwt.getMt().getMdf()!=Mdf.Class;//from call conditions
-  if(mdf!=Mdf.Capsule){return false;}
-  if(mwt.getMt().getTs().isEmpty()){
-    //g
-    return okSubtypeGet(p,mwt.getMt().getMdf(),path,mwt);
-  }
-  if(mwt.getMt().getMdf()==Mdf.Mutable){
-    //h
-    return okSubtypeSet(p,Mdf.Mutable,path,mwt);
-  }
-  return false;*/
-}
-private static boolean checkVoidAndThatOk(Program p,MethodWithType mwt) {
-  if(mwt.getMt().getTs().size()>1){return false;}
-  if(mwt.getMt().getTs().isEmpty()){return true;}
-  if(!Norm.of(p,mwt.getMt().getReturnType()).equals(NormType.immVoid)){return false;}
-  if(!mwt.getMs().getNames().get(0).equals("that")){return false;}
-  return true;
-  }
-
-private static List<MethodWithType> collectNotImplementedMethods(ClassB cb) {
-  List<MethodWithType> mwts=new ArrayList<>();
-  for(PathMwt inhM:cb.getStage().getInherited()){
-    MethodSelector si = inhM.getMwt().getMs();
-    if( Program.getIfInDom(cb.getMs(),si).isPresent()){continue;}
-    mwts.add(inhM.getMwt());
-  }
-  return mwts;
-}
-
-private static List<MethodWithType> collectAbstractMethods(Program p,ClassB cb) {
-  List<MethodWithType> mwts=new ArrayList<>();
-  for(Member m:cb.getMs()){
-    if(!(m instanceof MethodWithType)){continue;}
-    MethodWithType mwt=(MethodWithType)m;
-    if(mwt.get_inner().isPresent()){continue;}
-    mwts.add(Norm.of(p,mwt,false));
-    }
-  return mwts;
-}
-public static Set<MethodSelector> originalMethOf(Program p, ClassB cb) {
-  return originalMethOf(p,cb.getSupertypes(),cb.getMs());
-}
-public static Set<MethodSelector> originalMethOf(Program p, List<Type> superTs,List<Member> ms0) {
-  Set<MethodSelector> result=new HashSet<>();
-  for(Member m:ms0){
-    m.match(
-        nc->false,
-        mi->{throw Assertions.codeNotReachable();},
-        mt->result.add(mt.getMs()));
-    }
-  retainOnlyOriginalMethOf(p,superTs,result);
-  return result;
-}
-private static void retainOnlyOriginalMethOf(Program p, List<Type> superTs,Set<MethodSelector> ms0) {
-   for(Type ti:superTs){
-    for(Member mi:p.extractCb(ti.getNT().getPath()).getMs()){
-      mi.match(
-          nc->false,
-          mim->{throw Assertions.codeNotReachable();},
-          mt->ms0.remove(mt.getMs()));
-      }
-  }
-}
-//with less remove only less, with plus remove plus and less, with other remove always
-@SuppressWarnings("unchecked") public static <T extends ExpCore> T clearCache(T e,Ast.Stage level){
-  return (T)e.accept(new coreVisitors.CloneVisitor(){
-    @Override public ExpCore visit(ExpCore.ClassB cb){
-      cb=((ExpCore.ClassB)super.visit(cb));
-      if(level==null){return cb.withStage(new CachedStage()).withPhase(Phase.None);}
-      if(level!=Stage.Plus && level!=Stage.Less){
-        return cb.withStage(new CachedStage());
-      }
-      if(cb.getStage().getStage()==Stage.Less){
-        return  cb.withStage(new CachedStage());
-        }
-      if(level==Stage.Plus && cb.getStage().getStage()==Stage.Plus ){
-        return  cb.withStage(new CachedStage());
-        }
-      return cb;
-    }
-  });
-}
-
-public static <T > boolean verifyMinimalCache(T e){
-  if(!(e instanceof ExpCore)){return true;}
-  ((ExpCore)e).accept(new coreVisitors.CloneVisitor(){
-    @Override public ExpCore visit(ExpCore.ClassB cb){
-      cb=((ExpCore.ClassB)super.visit(cb));
-      if(!cb.getStage().isInheritedComputed()){
-        throw new AssertionError(cb);
-      }
-      return  cb;
-      }
-  });
-  return true;
-}
-
-@SuppressWarnings("unchecked")
-public static <T > T setMinimalCache(Program p,T e){
-  if(!(e instanceof ExpCore)){return e;}
-  return (T)((ExpCore)e).accept(new coreVisitors.CloneVisitor(){
-    @Override public ExpCore visit(ExpCore.ClassB cb){
-      //cb=((ExpCore.ClassB)super.visit(cb)); we need to stop at the first layer
-      Configuration.typeSystem.computeStage(p, cb);
-      //TODO: all this should disappear with new Ts+reduction
-      cb=(ClassB) cb.accept(new coreVisitors.CloneVisitor(){
-        public ExpCore visit(ClassB s) {
-          if (s.getPhase()!=Phase.None){
-            s=s.withPhase(Phase.Norm);
-            } 
-          return super.visit(s);
-          }});
-      if (cb.getPhase()!=Phase.None){
-        cb=cb.withPhase(Phase.Norm);
-        }
-      return  cb;
-      }
-  });
 }
 
 }

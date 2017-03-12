@@ -19,8 +19,11 @@ import ast.Ast.Stage;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.WalkBy;
 import ast.ExpCore.ClassB.Member;
+import ast.ExpCore.ClassB.MethodWithType;
+import ast.ExpCore.ClassB.NestedClass;
 import auxiliaryGrammar.EncodingHelper;
-import auxiliaryGrammar.Program;
+import auxiliaryGrammar.Functions;
+import programReduction.Program;
 
 public class RetainOnlyAndRenameAs extends CloneVisitor{
   //private Path path;
@@ -36,7 +39,7 @@ public class RetainOnlyAndRenameAs extends CloneVisitor{
     if(!path.isEmpty()){
     Ast.C name=path.get(0);
       List<Member> result=new ArrayList<>();
-      Optional<Member> mOpt = Program.getIfInDom(s, name);
+      Optional<Member> mOpt =Functions.getIfInDom(s, name);
       if(!mOpt.isPresent()){
         throw new Resources.Error(EncodingHelper.wrapStringU("RenamedNestedClassNotExistant:"+name));
         }
@@ -46,7 +49,7 @@ public class RetainOnlyAndRenameAs extends CloneVisitor{
       }
     //rename as
     List<Member> result=new ArrayList<>();
-    Optional<Member> mOpt = Program.getIfInDom(s, this.ms1);
+    Optional<Member> mOpt =Functions.getIfInDom(s, ms1);
     if( mOpt.isPresent() ){
       Member m=mOpt.get();
       m=m.match(nc->{throw Assertions.codeNotReachable();},
@@ -68,7 +71,6 @@ public class RetainOnlyAndRenameAs extends CloneVisitor{
   }
   public ExpCore visit(ClassB cb){
     ClassB cb2=ClassB.membersClass(cb.getMs(),cb.getP());
-    cb2=cb2.withStage(cb.getStage());
     return super.visit(cb2);
   }
   public ClassB.NestedClass visit(ClassB.NestedClass nc){

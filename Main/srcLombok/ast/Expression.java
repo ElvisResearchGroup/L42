@@ -246,13 +246,12 @@ public interface Expression extends Ast {
 
   //TODO: for decent error messages, eventually we have to admit duplicated members in Expression, so that the well formedess function can have an input
   @Value @Wither @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") public static class ClassB implements Expression, Ast.Atom, HasPos{
-    public ClassB(Doc doc1, Header h, List<Ast.FieldDec> fields, List<Type> supertypes, List<Member> ms,Position p, Stage stage) {
+    public ClassB(Doc doc1, Header h, List<Ast.FieldDec> fields, List<Type> supertypes, List<Member> ms,Position p) {
       this.doc1 = doc1;
       this.h = h;
       this.fields=fields;
       this.supertypes = supertypes;
       this.ms = ms;
-      this.stage = stage;
       this.p=p;
       isConsistent();
     }
@@ -263,7 +262,6 @@ public interface Expression extends Ast {
     List<Type> supertypes;
     List<Member> ms;
     Position p;
-    Stage stage;
     public boolean isConsistent() {
       HashSet<String> keys = new HashSet<String>();
       int countWalkBy = 0;

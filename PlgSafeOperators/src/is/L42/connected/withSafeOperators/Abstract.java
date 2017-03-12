@@ -22,7 +22,8 @@ import ast.ExpCore.ClassB.MethodWithType;
 import ast.ExpCore.ClassB.NestedClass;
 import ast.Util.PathMwt;
 import ast.Util.PathMx;
-import auxiliaryGrammar.Program;
+import auxiliaryGrammar.Functions;
+import programReduction.Program;
 import is.L42.connected.withSafeOperators.ExtractInfo.IsUsed;
 import is.L42.connected.withSafeOperators.Rename.UserForMethodResult;
 public class Abstract {
@@ -63,21 +64,22 @@ public class Abstract {
   }
   private static ClassB auxToAbstract(Program p,ClassB cb,List<Ast.C> pathForError,MethodSelector sel,MethodSelector newSel) {
     List<Member> newMs=new ArrayList<>(cb.getMs());
-    Member m=Program.getIfInDom(newMs, sel).get();
+    Member m=Functions.getIfInDom(newMs, sel).get();
     //make m abstract
     if(m instanceof MethodWithType){
       MethodWithType mwt=(MethodWithType)m;
       mwt=mwt.with_inner(Optional.empty());
-      Program.replaceIfInDom(newMs,mwt);
+      Functions.replaceIfInDom(newMs,mwt);
       }
     else{//it is method implemented
-      Program.removeIfInDom(newMs, sel);
+    Functions.removeIfInDom(newMs, sel);
       }
     //create new class
     if(newSel==null){ return cb.withMs(newMs);  }
-    MethodWithType mwt1 = p.extractMwt(sel, cb).get();
+    MethodWithType mwt1 = (MethodWithType) cb._getMember(sel);
+    assert mwt1!=null;
     if(newSel!=null){Errors42.checkCompatibleMs(pathForError, mwt1, newSel);}
-    Optional<MethodWithType> mwt2 = p.extractMwt(newSel, cb);
+    Optional<MethodWithType> mwt2 = Optional.ofNullable((MethodWithType)cb._getMember(newSel));
     mwt1=mwt1.withMs(newSel).withDoc(Doc.empty()).withMt(mwt1.getMt().withRefine(false));//never refine, see under
     if(mwt2.isPresent()){//Never there, so will never implement interfaces (on normalized classb)
        throw Errors42.errorMethodClash(pathForError, mwt1,mwt2.get(), false, Collections.emptyList(), false,false,false); 
@@ -119,7 +121,7 @@ public class Abstract {
     Set<PathMx> result=new HashSet<>();
     for(PathMx pmx:prMeth){
       assert pmx.getPath().outerNumber()==0;
-      UserForMethodResult res= Rename.userForMethod(Program.empty(), cbClear,pmx.getPath().getCBar(),pmx.getMs(),false);
+      UserForMethodResult res= Rename.userForMethod(Resources.getP()/*wasEmpty*/, cbClear,pmx.getPath().getCBar(),pmx.getMs(),false);
       result.addAll(res.asClient);
       res.asThis.stream().map(e->new PathMx(Path.outer(0),e)).forEach(result::add);
       }

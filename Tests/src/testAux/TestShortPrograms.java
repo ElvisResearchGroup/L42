@@ -31,7 +31,7 @@ public class TestShortPrograms {
     ClassB res=res0.getTopLevelProgram();
     ClassB.NestedClass nc=(ClassB.NestedClass)res.getMs().get(res.getMs().size()-1);
     ExpCore ee2=Desugar.of(Parser.parse(null,"{//@exitStatus\n//0\n\n}")).accept(new InjectionOnCore());
-    TestHelper.assertEqualExp(Functions.clearCache(nc.getInner(),Ast.Stage.None),ee2);
+    TestHelper.assertEqualExp(nc.getInner(),ee2);
   }
 
 @Test public void test1(){tp(""

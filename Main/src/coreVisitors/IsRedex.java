@@ -13,7 +13,7 @@ import ast.Redex;
 import ast.Redex.Garbage;
 import ast.ExpCore.*;
 import auxiliaryGrammar.Functions;
-import auxiliaryGrammar.Program;
+import programReduction.Program;
 //no, non e' un visitor, e deve ritornare un Optional Redex!
 public class IsRedex{
   //Program p;

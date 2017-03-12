@@ -20,7 +20,7 @@ import ast.Ast.Path;
 import ast.Ast.Stage;
 import ast.ExpCore.ClassB;
 import auxiliaryGrammar.Functions;
-import auxiliaryGrammar.Program;
+import programReduction.Program;
 
 public class TestAddComment {
   @RunWith(Parameterized.class)
@@ -54,12 +54,11 @@ public class TestAddComment {
     assert ms!=null;
     ClassB expected=getClassB(_expected);
     if(!isError){
-      ClassB res=AddDocumentation.addDocumentationOnMethod(Program.empty(),cb1, path, ms,doc);
-      res=Functions.clearCache(res,Stage.None);
+      ClassB res=AddDocumentation.addDocumentationOnMethod(Program.emptyLibraryProgram(),cb1, path, ms,doc);
       TestHelper.assertEqualExp(expected,res);
       }
     else{
-      try{AddDocumentation.addDocumentationOnMethod(Program.empty(),cb1, path, ms,doc);fail("error expected");}
+      try{AddDocumentation.addDocumentationOnMethod(Program.emptyLibraryProgram(),cb1, path, ms,doc);fail("error expected");}
       catch(Resources.Error err){
         ClassB res=(ClassB)err.unbox;
         TestHelper.assertEqualExp(expected,res);
@@ -88,11 +87,11 @@ public class TestAddComment {
     Doc doc=Doc.factory(true,_doc);
     ClassB expected=getClassB(_expected);
     if(!isError){
-      ClassB res=AddDocumentation.addDocumentationOnNestedClass(Program.empty(),cb1, path,doc);
+      ClassB res=AddDocumentation.addDocumentationOnNestedClass(Program.emptyLibraryProgram(),cb1, path,doc);
       TestHelper.assertEqualExp(expected,res);
       }
     else{
-      try{AddDocumentation.addDocumentationOnNestedClass(Program.empty(),cb1, path,doc);fail("error expected");}
+      try{AddDocumentation.addDocumentationOnNestedClass(Program.emptyLibraryProgram(),cb1, path,doc);fail("error expected");}
       catch(Resources.Error err){
         ClassB res=(ClassB)err.unbox;
         TestHelper.assertEqualExp(expected,res);

@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import ast.ExpCore;
@@ -13,6 +14,7 @@ import ast.Ast.MethodType;
 import ast.Ast.NormType;
 import ast.Ast.Path;
 import ast.Ast.SignalKind;
+import ast.Ast.Type;
 import ast.ExpCore.Block;
 import ast.ExpCore.Block.Dec;
 import ast.ExpCore.Block.On;
@@ -22,7 +24,8 @@ import programReduction.Program;
 
 abstract class AG<This extends AG<This>>{
   AG(Map<String,NormType>g){this.g=g;}
-  abstract This withG(Map<String,NormType>g);//{return new This();}
+  //TODO: should not be public
+  abstract public This withG(Map<String,NormType>g);//{return new This();}
   abstract This self();//{return this;}
   final Map<String,NormType>g;//=Collections.emptyMap();//could be two arrays for efficiency
   public This addG(String x, NormType t){
@@ -64,7 +67,6 @@ abstract class AG<This extends AG<This>>{
     }
     return this.withG(newG);
   }
-
   public NormType g(String x){
     NormType res=this.g.get(x);
     assert res!=null:
@@ -111,20 +113,20 @@ public This gKs(List<ExpCore.Block.On>ks){
 }
 class G extends AG<G>{
   private G(Map<String,NormType>g){super(g);}
-  @Override G withG(Map<String,NormType>g) {return new G(g);}
+  @Override public G withG(Map<String,NormType>g) {return new G(g);}
   @Override G self() {return this;}
   static final G instance=new G(Collections.emptyMap());
   }
-class TIn extends AG<TIn>{
-@Override TIn withG(Map<String,NormType>g) {return new TIn(this.phase,this.p,this.e,this.expected,g);}
+public class TIn extends AG<TIn>{
+@Override public TIn withG(Map<String,NormType>g) {return new TIn(this.phase,this.p,this.e,this.expected,g);}
 @Override TIn self() {return this;}
 
 final Phase phase;
 final Program p;
 final ExpCore e;
 final NormType expected;
-public static TIn top(Program p,ExpCore e){
-  return new TIn(Phase.Coherent,p,e,Path.Library().toImmNT(),Collections.emptyMap());
+public static TIn top(Phase phase,Program p,ExpCore e){
+  return new TIn(phase,p,e,Path.Library().toImmNT(),Collections.emptyMap());
   }
 private TIn(Phase phase,Program p,ExpCore e,NormType expected,Map<String,NormType>g ){
   super(g);

@@ -24,7 +24,7 @@ import sugarVisitors.InjectionOnCore;
 import ast.ExpCore;
 import ast.Expression;
 import auxiliaryGrammar.Functions;
-import auxiliaryGrammar.Program;
+import programReduction.Program;
 
 public class TestExtractThrow {
 

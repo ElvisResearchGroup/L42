@@ -6,14 +6,18 @@ import java.util.Optional;
 
 import ast.Ast;
 import ast.Ast.MethodSelector;
+import ast.Ast.Path;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodImplemented;
 import ast.ExpCore.ClassB.MethodWithType;
+import ast.ExpCore.ClassB.NestedClass;
 import ast.Util.InfoAboutMs;
+import auxiliaryGrammar.Functions;
 import auxiliaryGrammar.Locator;
-import auxiliaryGrammar.Program;
+import programReduction.Program;
 import auxiliaryGrammar.Locator.Kind;
+import is.L42.connected.withSafeOperators.refactor.Compose;
 import tools.Assertions;
 
 class RenameAlsoDefinition extends RenameUsage{
@@ -23,29 +27,32 @@ class RenameAlsoDefinition extends RenameUsage{
     List<Member>result1=super.liftMembers(s);
     List<Member>result2=new ArrayList<>();
     for(Member m:result1){
-      Optional<Member> optM = Program.getIfInDom(result2,m);
+      Optional<Member> optM = Functions.getIfInDom(result2,m);
       if (!optM.isPresent()){result2.add(m);continue;}
       Member m2=optM.get();
       result2.remove(m2);
-      Sum.doubleSimmetricalMatch(null/*boh, null program, does it breaks?*/,
+      assert m.getClass()==m2.getClass();
+      _Sum.doubleSimmetricalMatch(null/*boh, null program, does it breaks?*/,
           visitStart,visitStart,result2,this.getLocator().getClassNamesPath(),m,m2);
     //remove clashes here
     }
     return result2;
     }
 
-  public ClassB.MethodImplemented visit(ClassB.MethodImplemented mi){
-    //System.out.println("visitMethodImplemented "+mi.getS());
-    return potentiallyRenameMethodImplementedHeader(super.visit(mi));
+  public MethodWithType visit(MethodWithType mi){
+    if(mi.getMt().isRefine()){
+      mi=potentiallyRenameMethodImplementedHeader(super.visit(mi));
+      }
+    return super.visit(mi);
   }
-  private MethodImplemented potentiallyRenameMethodImplementedHeader(MethodImplemented mi) {
+  private MethodWithType potentiallyRenameMethodImplementedHeader(MethodWithType mi) {
+    assert mi.getMt().isRefine();
     ClassB currentCb=this.getLocator().getLastCb();
-    Program ep=Program.getExtendedProgram(p, this.getLocator().getCbs());
+    Program ep=p;for(ClassB cbi:this.getLocator().getCbs()){ep=ep.evilPush(cbi);}
     //List<Path> supers = Program.getAllSupertypes(ep, currentCb);
-    InfoAboutMs info = Program.getMT(ep, mi.getS(),currentCb);
-    assert !info.getAllSuper().isEmpty();
+    Path origin=Functions.originDecOf(ep,mi.getMs(),currentCb);
     Locator original=this.getLocator().copy();
-    boolean isOut=original.moveInPath(info.getOriginal());
+    boolean isOut=original.moveInPath(origin);
     if(isOut){return mi;}
     for(Locator pMx :maps.selectors){
       assert pMx.kind()==Kind.Method;
@@ -53,12 +60,12 @@ class RenameAlsoDefinition extends RenameUsage{
           nc->{throw Assertions.codeNotReachable();},
           mimpl->mimpl.getS(),
           mt->mt.getMs());
-      if(!mi.getS().equals(s)){continue;}
+      if(!mi.getMs().equals(s)){continue;}
       Locator renamed =pMx.copy();
       renamed.toFormerNodeLocator();
       if(!original.equals(renamed)){return mi;}
       MethodSelector ms2=(MethodSelector) pMx.getAnnotation();
-      return mi.withS(ms2);
+      return mi.withMs(ms2);
       }
     return mi;
   }

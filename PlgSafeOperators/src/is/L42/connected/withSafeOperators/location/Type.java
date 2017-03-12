@@ -9,7 +9,7 @@ import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.MethodWithType;
 import ast.ExpCore.ClassB.Phase;
 import ast.PathAux;
-import auxiliaryGrammar.Program;
+import programReduction.Program;
 import coreVisitors.From;
 import facade.PData;
 import tools.Assertions;
@@ -24,10 +24,10 @@ public interface Type extends Location{
     if (path.outerNumber()==0){
       return new TypeRefTo.Lib(locationLib().root(),path);
       }
-    Program p=pData.p.addAtTop(locationLib().root().inner);
+    Program p=pData.p.evilPush(locationLib().root().inner);
     //will be evilPush
     try{
-      ClassB cb=p.extractCb(path);
+      ClassB cb=p.extractClassB(path);
       //if(coreVisitors.IsCompiled.of(cb)){
       if(cb.getPhase()!=Phase.None){//norm,typed,coherent
         return new TypeRefTo.Binded(path);

@@ -30,7 +30,8 @@ import ast.ExpCore.X;
 import ast.Util.PathMx;
 import ast.Util.PathPath;
 import ast.Util.PathSPath;
-import auxiliaryGrammar.Program;
+import auxiliaryGrammar.Functions;
+import programReduction.Program;
 
 public class Errors42 {
 
@@ -93,11 +94,11 @@ public class Errors42 {
     try{
       Boolean[] isPrivateRef=new Boolean[]{false};//used in closures
       for(C c:path){if(c.isUnique()){isPrivateRef[0]=true;}}
-      ClassB cbi=Program.extractCBar(path, cb);
+      ClassB cbi=cb.getClassB(path);
       Boolean[] isPrivateMeth=new Boolean[]{false};
       boolean absentMeth=false;
       if(ms.isPresent()){
-        Optional<Member> meth=Program.getIfInDom(cbi.getMs(),ms.get());
+        Optional<Member> meth=Functions.getIfInDom(cbi.getMs(),ms.get());
         absentMeth=!meth.isPresent();
         if(meth.isPresent()){
           meth.get().match(

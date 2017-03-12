@@ -14,6 +14,7 @@ import coreVisitors.CloneVisitorWithProgram;
 import coreVisitors.FromInClass;
 import facade.Configuration;
 import facade.L42;
+import is.L42.connected.withSafeOperators.refactor.Compose;
 import ast.Ast;
 import ast.ExpCore;
 import ast.Ast.C;
@@ -22,7 +23,7 @@ import ast.Ast.Path;
 import ast.Ast.Position;
 import ast.Ast.MethodSelector;
 import ast.Ast.Stage;
-import ast.Util.CachedStage;
+
 import ast.Util.PathMx;
 import ast.Util.PathMxMx;
 import ast.ExpCore.*;
@@ -30,10 +31,10 @@ import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodImplemented;
 import ast.ExpCore.ClassB.MethodWithType;
 import ast.ExpCore.ClassB.NestedClass;
+import ast.ExpCore.ClassB.Phase;
 import ast.Util.PathPath;
 import auxiliaryGrammar.Functions;
-import auxiliaryGrammar.Norm;
-import auxiliaryGrammar.Program;
+import programReduction.Program;
 
 public class Rename {
   public static ClassB renameClass(Program p,ClassB cb,List<Ast.C> src,List<Ast.C> dest){
@@ -58,7 +59,9 @@ public class Rename {
     cb=Push.pushOne(cb,result);
     List<Ast.C> tmp = Collections.singletonList(C.of("Tmp"));
     cb=directRename(p,cb,src,tmp);
-    if(!L42.trustPluginsAndFinalProgram) {Configuration.typeSystem.checkCt(p, cb);}
+    if(!L42.trustPluginsAndFinalProgram) {
+      newTypeSystem.TypeSystem.instance().topTypeLib(Phase.Typed, p, cb);
+      }
     cb=directRename(p,cb,tmp,dest);
     cb=Pop.directPop(cb);
     return cb;
@@ -81,7 +84,7 @@ public class Rename {
     ClassB clearCb=renamedCb.onNestedNavigateToPathAndDo(src,nc->Optional.empty());
     ClassB newCb=redirectDefinition(src,dest,renamedCb);
     newCb=ClassOperations.normalizePaths(newCb);
-    return Sum.normalizedTopSum(p, clearCb, newCb);
+    return Compose.alradyRefreshedCompose(p, clearCb, newCb);
   }
   public static ClassB renameMethod(Program p,ClassB cb,List<Ast.C> path,MethodSelector src,MethodSelector dest){
       Member mem=Errors42.checkExistsPathMethod(cb, path, Optional.of(src));
@@ -135,12 +138,11 @@ public class Rename {
   private static ClassB redirectDefinition(List<Ast.C>src,List<Ast.C>dest, ClassB lprime) {
     assert !src.isEmpty();
     assert !dest.isEmpty();
-    Doc[] docCb=new Doc[]{Doc.empty()};
-    ClassB cb=Program.extractCBar(src, lprime,docCb);
+    NestedClass nsCb=lprime.getNested(src);
     Path toFrom=Path.outer(dest.size()-1,src.subList(0,src.size()-1));
-    cb=(ClassB)FromInClass.of(cb, toFrom);
+    ClassB cb=(ClassB) FromInClass.of((ClassB) nsCb.getInner(), toFrom);
     List<Member>ms=new ArrayList<>();
-    ms.add(Functions.encapsulateIn(dest, cb,docCb[0]));
+    ms.add(Functions.encapsulateIn(dest, cb,nsCb.getDoc()));
     return ClassB.membersClass(ms,Position.noInfo);
   }
 

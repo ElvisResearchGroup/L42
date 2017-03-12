@@ -350,7 +350,7 @@ public class ToAst extends AbstractVisitor<Expression>{
     String url=ctx.getChild(2).getText();
     url=url.trim();
     List<Member> ms=visitMembers(ctx.member());
-    ClassB inner=new ClassB(doc1, new Ast.TraitHeader(),Collections.emptyList(),Collections.emptyList(), ms, position(ctx),Stage.None);
+    ClassB inner=new ClassB(doc1, new Ast.TraitHeader(),Collections.emptyList(),Collections.emptyList(), ms, position(ctx));
     return new Expression.ClassReuse(inner,url,null);
   }
   @Override public Expression visitClassB(ClassBContext ctx) {
@@ -364,16 +364,9 @@ public class ToAst extends AbstractVisitor<Expression>{
         }
       }}
     List<Member> ms=visitMembers(ctx.member());
-    Stage s=Stage.None;
-    if(ctx.classBExtra()!=null){
-      if(ctx.classBExtra().Stage()!=null){
-        s=Stage.fromString(ctx.classBExtra().Stage().toString());
-        }
-      //for( TerminalNode sp:ctx.classBExtra().Path()){allP.add(Path.parse(nameU(sp)));}
-    }
     List<Ast.FieldDec> fs=new ArrayList<>();
     for( FieldDecContext f:ctx.fieldDec()){fs.add(parseFieldDec(f));}
-    return new Expression.ClassB(doc1, h,fs,supertypes, ms,position(ctx),s);
+    return new Expression.ClassB(doc1, h,fs,supertypes, ms,position(ctx));
   }
   public List<Member> visitMembers(List<MemberContext> ctxms){
     List<Member> members=new ArrayList<Member>();

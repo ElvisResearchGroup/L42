@@ -14,7 +14,7 @@ import ast.ExpCore.ClassB.*;
 import ast.Redex.Garbage;
 import ast.Ast.*;
 import auxiliaryGrammar.Functions;
-import auxiliaryGrammar.Program;
+import programReduction.Program;
 
 public class IsValue extends TestShapeVisitor{
   Program p;
@@ -91,7 +91,7 @@ public class IsValue extends TestShapeVisitor{
     MCall s=(MCall)ec;
     if(!(s.getInner() instanceof Path)){return false;}
     MethodSelector ms=s.getS();
-    MethodWithType mwt=p.method((Path)s.getInner(),ms,s,true);
+    MethodWithType mwt=(MethodWithType) p.extractClassB((Path)s.getInner())._getMember(ms);
     if(mwt.get_inner().isPresent()){return false;}
     if(mwt.getMt().getMdf()!=ast.Ast.Mdf.Class){return false;}
     for(ExpCore ei:s.getEs()){

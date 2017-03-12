@@ -23,7 +23,7 @@ import ast.Ast.MethodSelector;
 import ast.Ast.Path;
 import ast.ExpCore.ClassB;
 import auxiliaryGrammar.Functions;
-import auxiliaryGrammar.Program;
+import programReduction.Program;
 
   @RunWith(Parameterized.class)
   public class TestSumMethod {
@@ -98,7 +98,6 @@ import auxiliaryGrammar.Program;
   @Test  public void test() {
     TestHelper.configureForTest();
     ClassB cb=getClassB(_cb);
-    Configuration.typeSystem.computeStage(Program.empty(), cb);
     Path path=Path.parse(_path);
     MethodSelector ms1=MethodSelector.parse(_ms1);
     MethodSelector ms2=MethodSelector.parse(_ms2);
@@ -106,7 +105,6 @@ import auxiliaryGrammar.Program;
     ClassB expected=getClassB(_expected);
     if(!isError){
       ClassB res=SumMethods.sumMethods(cb,path.getCBar(),ms1,ms2,ms3,name);
-      res=Functions.clearCache(res,Ast.Stage.None);
       TestHelper.assertEqualExp(expected,res);
       }
     else{

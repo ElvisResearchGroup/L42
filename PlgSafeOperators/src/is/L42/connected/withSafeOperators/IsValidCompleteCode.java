@@ -1,7 +1,8 @@
 package is.L42.connected.withSafeOperators;
 import ast.ExpCore.*;
+import ast.ExpCore.ClassB.Phase;
 import auxiliaryGrammar.Locator;
-import auxiliaryGrammar.Program;
+import programReduction.Program;
 import ast.ExpCore;
 import coreVisitors.CloneWithPath;
 import facade.Configuration;
@@ -18,8 +19,6 @@ public class IsValidCompleteCode {
     return found[0];
   }
   void ensureWellTyped(ClassB cb){//In case of error, should be false or error?
-    Program p=Program.empty();
-    Configuration.typeSystem.computeStage(p, cb);
-    Configuration.typeSystem.checkCt(p, cb);
+    newTypeSystem.TypeSystem.instance().topTypeLib(Phase.Typed, Program.emptyLibraryProgram(),cb);
   }
 }

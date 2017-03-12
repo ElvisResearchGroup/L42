@@ -14,7 +14,7 @@ import ast.Ast.Path;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.MethodWithType;
 import auxiliaryGrammar.Functions;
-import auxiliaryGrammar.Program;
+import programReduction.Program;
 import facade.Parser;
 import sugarVisitors.InjectionOnCore;
 
@@ -76,7 +76,7 @@ public class TestCoherentClass {
     @Test
     public void testCoherence() {
       ClassB cb1=(ClassB)(Parser.parse(null,e).accept(new InjectionOnCore()));
-      Program p=Program.empty();
+      Program p=Program.emptyLibraryProgram();
       MethodWithType mwt=(MethodWithType)cb1.getMs().get(0);
       //boolean res=Functions.coherent(p, mdf, path, mwt);
       //Assert.assertEquals(res,ok);

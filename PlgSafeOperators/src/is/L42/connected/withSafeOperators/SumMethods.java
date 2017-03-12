@@ -15,7 +15,7 @@ import ast.ExpCore.ClassB.MethodWithType;
 import ast.ExpCore.ClassB.NestedClass;
 import ast.Util.PathMwt;
 import auxiliaryGrammar.Functions;
-import auxiliaryGrammar.Program;
+import programReduction.Program;
 import coreVisitors.From;
 import tools.Assertions;
 
@@ -26,8 +26,8 @@ public class SumMethods {
     ClassB pathCb = pathCb(lib, path);
     Member mem1=Errors42.checkExistsPathMethod(lib, path, Optional.of(m1));
     Member mem2=Errors42.checkExistsPathMethod(lib, path, Optional.of(m2));
-    MethodType mt1=Program.extractMwt(mem1,(ClassB) pathCb).getMt();
-    MethodType mt2=Program.extractMwt(mem2,(ClassB) pathCb).getMt();
+    MethodType mt1=((MethodWithType)pathCb._getMember(m1)).getMt();
+    MethodType mt2=((MethodWithType)pathCb._getMember(m2)).getMt();
     int index=m2.getNames().indexOf(name);
     if(index==-1){
       throw Errors42.errorParameterMismatch(path, mem1,mem2, false,false,false);
@@ -68,7 +68,7 @@ public class SumMethods {
         Errors42.checkMethodClash(path, mwtU,mtConflict,false);
         }
     }*/ //unneded for normalized classb
-    Optional<Member> optConflict = Program.getIfInDom(pathCb.getMs(),mRes);
+    Optional<Member> optConflict = Functions.getIfInDom(pathCb.getMs(),mRes);
     if(optConflict.isPresent()){
       if(optConflict.get() instanceof MethodImplemented){
         throw Errors42.errorMethodClash(path,mwtU, optConflict.get(), true,Collections.emptyList(),true,true,false);

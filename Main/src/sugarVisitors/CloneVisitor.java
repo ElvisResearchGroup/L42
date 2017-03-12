@@ -161,7 +161,7 @@ public class CloneVisitor implements Visitor<Expression>{
     List<FieldDec> fs=Map.of(this::liftF,s.getFields());
     List<Type> superT = Map.of(this::liftT,s.getSupertypes());
     List<Member> ms = Map.of(this::liftM,s.getMs());
-    return new ClassB(liftDoc(s.getDoc1()),h,fs,superT,ms,s.getP(),s.getStage());
+    return new ClassB(liftDoc(s.getDoc1()),h,fs,superT,ms,s.getP());
   }
   @Override
   public Expression visit(If s) {

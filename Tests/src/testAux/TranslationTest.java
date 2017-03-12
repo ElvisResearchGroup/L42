@@ -21,12 +21,11 @@ import platformSpecific.javaTranslation.Resources;
 import platformSpecific.javaTranslation.Translator;
 import sugarVisitors.Desugar;
 import sugarVisitors.InjectionOnCore;
-import typeSystem.TypeSystemOK;
 import ast.ExpCore;
 import ast.ExpCore.ClassB;
+import ast.ExpCore.ClassB.Phase;
 import auxiliaryGrammar.Functions;
-import auxiliaryGrammar.Norm;
-import auxiliaryGrammar.Program;
+import programReduction.Program;
 
 public class TranslationTest {
   @Test public void t1(){tester(
@@ -65,8 +64,7 @@ public class TranslationTest {
     TestHelper.configureForTest();
     Program p=runTypeSystem(cbStr);
     ExpCore e=Desugar.of(Parser.parse(null,eStr)).accept(new InjectionOnCore());
-    ExpCore e2=Functions.setMinimalCache(p,Norm.of(p, e));
-    Translator code=Resources.withPDo(new PData(p),()->Translator.translateProgram(p, e2));
+    Translator code=Resources.withPDo(new PData(p),()->Translator.translateProgram(p, e));
     System.out.println(code);
     Object o=Resources.withPDo(new PData(p),()->code.runMap());
     Assert.assertEquals(o.getClass().getName(), nameRes);
@@ -74,10 +72,8 @@ public class TranslationTest {
 
   private static Program runTypeSystem(String scb1) {
     ClassB cb1=(ClassB)Desugar.of(Parser.parse(null,scb1)).accept(new InjectionOnCore());
-    Program p=Program.empty();
-    Configuration.typeSystem.computeStage(p,cb1);
-    p=p.addAtTop(cb1);
-    TypeSystemOK.checkAll(p);
-    return p;
+    Program p=Program.emptyLibraryProgram();
+    ClassB cb=newTypeSystem.TypeSystem.instance().topTypeLib(Phase.Coherent, p,cb1);
+    return p.evilPush(cb);
   }
 }

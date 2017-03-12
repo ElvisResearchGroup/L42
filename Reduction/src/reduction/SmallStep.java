@@ -13,13 +13,12 @@ import ast.Ast.Path;
 import ast.Ast.Stage;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.WalkBy;
-import ast.Util.CachedStage;
+
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.NestedClass;
 import auxiliaryGrammar.Ctx;
 import auxiliaryGrammar.Functions;
-import auxiliaryGrammar.Norm;
-import auxiliaryGrammar.Program;
+import programReduction.Program;
 import coreVisitors.CloneVisitor;
 import coreVisitors.CollectPaths0;
 import coreVisitors.ExtractCtxCompiled;
@@ -38,31 +37,18 @@ public class SmallStep extends Executor{
     //?Functions.clearCache(cb, Stage.Plus);
     //?for(ClassB cbi:p.getInnerData()){Functions.clearCache(cb, Stage.Plus);}
     //?p.recomputeStage();
-    Configuration.typeSystem.computeStage(p,cb);
     //get p'
-    Stage oldSt=cb.getStage().getStage();
     try{
-      cb.getStage().setStage(Stage.Less);//TODO: ok according with Formal. should we make formal nicer?
-      Program p1=p.addAtTop(cb);
-      //assert ct.getStage()==Stage.Less;
-      //Program p1=p.addAtTop(ct);
+      Program p1=p.evilPush(cb);
       ErrorFormatter.printType(p1);
       //check p'
-      Configuration.typeSystem.checkAll(p1);
-      e1=Norm.of(p1,e1);
+      //Configuration.typeSystem.checkAll(p1);
+      //e1=Norm.of(p1,e1);
       //check e1
-      Configuration.typeSystem.checkMetaExpr(p1.getExecutableStar(),e1);
-      e1.accept(new CloneVisitor(){
-        @Override public ExpCore visit(ClassB cb){
-          assert cb.getStage().isInheritedComputed():
-            "foo";
-          return cb;//we must only check the outermost layer or cb
-        }
-      });
+      //Configuration.typeSystem.checkMetaExpr(p1.getExecutableStar(),e1);
       //run m.e1-->e2
       ExpCore e2=executeAtomicStep(new PData(p1),e1,m.getName());
-      e2=Functions.clearCache(e2,Stage.Less);
-      if(!(e2 instanceof ClassB)){Configuration.typeSystem.checkMetaExpr(p1.getExecutableStar(),e2);}//TODO: as assert
+      //if(!(e2 instanceof ClassB)){Configuration.typeSystem.checkMetaExpr(p1.getExecutableStar(),e2);}//TODO: as assert
       ClassB cbRes=cb.withMember(m.withInner(e2));
       //TODO: if e2 is an error, terminate with error, do it better?
       //is it already stopping if that happens?
@@ -70,7 +56,7 @@ public class SmallStep extends Executor{
       //replace cb[m.e2]
       return cbRes;
     }finally{
-      cb.getStage().setStage(oldSt);
+ 
       }
   }
   protected ExpCore executeAtomicStep(PData p1, ExpCore e1,Ast.C nestedName) {

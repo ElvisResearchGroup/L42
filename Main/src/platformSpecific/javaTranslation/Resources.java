@@ -47,10 +47,10 @@ import ast.Ast.Stage;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Phase;
 import ast.PathAux;
-import ast.Util.CachedStage;
+
 import auxiliaryGrammar.EncodingHelper;
 import auxiliaryGrammar.Functions;
-import auxiliaryGrammar.Program;
+import programReduction.Program;
 
 public class Resources {
   public static final ErrorMessage.PluginActionUndefined notAct=new ErrorMessage.PluginActionUndefined(-2);
@@ -96,18 +96,19 @@ public class Resources {
 
   public static String pKeysString(){
     String result="";
-    int[] data=pKeys();
+    int[] data = pKeys();
     for(int d:data){result+=","+d;}
     return result;
     }
   public static int[] pKeys(){
-    List<ClassB> cs = getP().getInnerData();
-    Collections.reverse(cs);
-    int[] result=new int[cs.size()];
-    for(int i=0;i<cs.size();i++){
-       result[i]=System.identityHashCode(cs.get(i).getP());
-      }
-    return result;
+    List<Integer>res=new ArrayList<>();
+    Program p=getP();
+    while(true){
+      res.add(p.top().getUniqueId());
+      try{p=p.pop();}
+      catch(RuntimeException rte){break;}
+    }
+    return res.stream().mapToInt(Integer::intValue).toArray();    
     }
   public static Object getRes(String key,int... ks){
     Object o=usedRes.get(key);
@@ -214,28 +215,23 @@ public class Resources {
       List<ClassB> cbs = CollectClassBs0.of(ec);
       List<Path> ps = CollectPaths0.of(ec);
       for(ClassB cb:cbs){
-        //Configuration.typeSystem.computeStage(p,cb);
-        if(cb.getStage().getStage()==Stage.Less ||cb.getStage().getStage()==Stage.None  ){strict=false;}
+        if(!cb.getPhase().subtypeEq(Phase.Typed)){strict=false;}
         }
       for(Path path:ps){
         if(path.isPrimitive()){continue;}
-        Stage extracted=p.extractCb(path).getStage().getStage();
-        if(extracted==Stage.Less || extracted==Stage.None){strict=false;}
+        ClassB extracted=p.extractClassB(path);
+        if(!extracted.getPhase().subtypeEq(Phase.Typed)){strict=false;}
         }
       }
     List<ClassB> cbs = CollectClassBs0.of(ec0);
     for(ClassB cb:cbs){
-      Configuration.typeSystem.computeStage(p,cb);
-      try{Configuration.typeSystem.checkCt( p, cb);}
+      try{
+        newTypeSystem.TypeSystem.instance().topTypeLib(Phase.Typed,p, cb);}
       catch(ErrorMessage msg){
         System.err.println("__________PLUGIN error identified_________");
         throw msg;//to breakpoint here
         }
-      if(strict && (cb.getStage().getStage()==Stage.Less || cb.getStage().getStage()==Stage.None)){
-        return false;
-        //throw Assertions.codeNotReachable("try to make this happen, is it possible? it should mean bug in plugin code\n"/*+ToFormattedText.of(ct)*/);
       }
-    }
     return true;
   }
 
@@ -255,18 +251,13 @@ public class Resources {
 
   public static <Pt,T> T plgExecuteSafe(Program p,Pt plg,PlgClosure<Pt,T> cls,Object ... xs){
     T res=null;
-    //for(Object o:xs){assert Functions.verifyMinimalCache(o);}
-    for(int i=0;i<xs.length;i++){xs[i]=Functions.setMinimalCache(p, xs[i]);}
-    //TODO: sadly the translation process lose this while putting in resources, when fixed, decomment after and check here
     try{
       res=cls.apply(plg, xs);
-      res=Functions.setMinimalCache(p, res);
       if(Resources.isValid(p,res,xs)){return res;}
       else{throw Resources.notAct;}
       }
     catch(Resources.Error errF){
       Object errRes = errF.unbox;
-      errRes=Functions.setMinimalCache(p, errRes);
       if(Resources.isValid(p,errRes,xs)){throw errF;}
       else{throw Resources.notAct;}
       }
@@ -380,7 +371,7 @@ public class Resources {
     if (path.equals(Path.Library())){return "Object";}
     if (path.equals(Path.Void())){return "platformSpecific.javaTranslation.Resources.Void";}
     Program p=Resources.getP();
-    try{ClassB cb=p.extractCb(path);
+    try{ClassB cb=p.extractClassB(path);
     if( cb.getPhase()==Phase.Typed && IsCompiled.of(cb)){ return nameOf(path.outerNumber(),path.getCBar()); }
     }catch (ErrorMessage em){}
     //return nameOf(path.outerNumber(),path.getCBar());
@@ -393,14 +384,14 @@ public class Resources {
         public ast.ExpCore revert() {
           Program p=getP();
           int dept=0;
-          while(System.identityHashCode(p.topCb().getP())!=hash){dept++;p=p.pop();}
+          while(System.identityHashCode(p.top().getP())!=hash){dept++;p=p.pop();}
           return ast.Ast.Path.parse("This"+dept+path);
            }};
       }
 
   public static String nameOf(int level, List<Ast.C> cs) {
     Program p=Resources.getP();
-    Position pos=p.getCb(level).getP();
+    Position pos=p.get(level).getP();
     assert pos!=null;
     assert pos!=Position.noInfo;
     int hc = System.identityHashCode(pos);//ok, all relevant positions existed together at the same moment.

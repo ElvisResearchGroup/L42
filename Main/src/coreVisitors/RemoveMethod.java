@@ -11,9 +11,9 @@ import ast.Ast.MethodSelector;
 import ast.Ast.Path;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.WalkBy;
+import auxiliaryGrammar.Functions;
 import ast.ExpCore.ClassB.Member;
-import auxiliaryGrammar.Program;
-
+import ast.ExpCore.ClassB.MethodWithType;
 public class RemoveMethod extends CloneVisitor{
   private List<Ast.C> path;
   private MethodSelector ms;
@@ -23,7 +23,7 @@ public class RemoveMethod extends CloneVisitor{
   public List<Member> liftMembers(List<Member> s) {
     if(!path.isEmpty()){return Map.of(this::liftM,s);}
     List<Member> result=new ArrayList<>(s);
-    Optional<Member> mOpt = Program.getIfInDom(s, this.ms);
+    Optional<Member> mOpt =Functions.getIfInDom(s,ms);
     if( mOpt.isPresent()){
       Member m=mOpt.get();
       result.remove(m);

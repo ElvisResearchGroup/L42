@@ -109,7 +109,6 @@ public class CloneVisitor implements Visitor<ExpCore>{
       sup,
       ms,
       s.getP(),
-      s.getStage().copyMostStableInfo(),
       s.getPhase(),
       s.getUniqueId());
   }

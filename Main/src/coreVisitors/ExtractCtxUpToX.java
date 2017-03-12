@@ -18,7 +18,6 @@ import ast.ExpCore.X;
 import ast.ExpCore._void;
 import ast.Redex;
 import auxiliaryGrammar.Ctx;
-import auxiliaryGrammar.Program;
 
 public class ExtractCtxUpToX implements Visitor<Ctx<Block>>{
   String x;

@@ -27,8 +27,8 @@ import coreVisitors.IsCompiled;
 import facade.Configuration;
 import facade.L42;
 import auxiliaryGrammar.Functions;
-import auxiliaryGrammar.Norm;
-import auxiliaryGrammar.Program;
+import programReduction.Program;
+import programReduction.Program.EmptyProgram;
 import ast.Ast;
 import ast.Ast.Doc;
 import ast.Ast.InterfaceHeader;
@@ -110,8 +110,8 @@ public class Translator {
         //if(!cb.getDoc1().getS().contains("##@")){continue;}
       }
       if (map.get(s).getPhase()!=Phase.Typed){continue;}
-      ClassB cbNorm=normalizeClass(p,map.get(s));
-      assert cbNorm.getPhase()==Phase.Typed;
+      ClassB cbNorm=map.get(s);//Hope it work, it was normalized before
+      assert cbNorm.getPhase().subtypeEq(Phase.Typed);
       mapNorm.put(s,cbNorm);
     }
 
@@ -127,10 +127,9 @@ public class Translator {
     return t;
     }
   public static void addP(int level,Program p,Map<String,ClassB> map,Program original){
-    if(p.isEmpty()){return;}
-    Configuration.typeSystem.computeInherited(p.pop(),p.topCb());
-    add(level,Collections.emptyList(),p.topCb(),map,original);
-    addP(level+1,p.pop(),map,original);
+  add(level,Collections.emptyList(),p.top(),map,original);
+  Program popped;try{popped=p.pop();}catch(EmptyProgram ep){return;}
+  addP(level+1,popped,map,original);
   }
 
   public static void add(int level,List<Ast.C> cs,ClassB cb, Map<String,ClassB> map,Program original){
@@ -139,7 +138,6 @@ public class Translator {
     if(cb.getPhase()==Phase.Typed  && IsCompiled.of(cb)){//otherwise is "meta"
       //assert cb.getStage().getInheritedPaths()!=null;
       ClassB cbUF=useFrom(cb,p);
-      assert cbUF.getStage().getInheritedPaths()!=null;
       if(!cs.isEmpty()){//ok to ignore empty ones, since not complete?
         map.put(Resources.nameOf(level,cs),cbUF);
       }
@@ -159,7 +157,7 @@ public class Translator {
       NestedClass nc=(NestedClass)m;
       if(!(nc.getInner() instanceof ClassB)){continue;}
       if(cs.isEmpty() &&level>0){
-        if(nc.getInner()==original.getCb(level-1)){continue;}
+        if(nc.getInner()==original.get(level-1)){continue;}
         //avoid generation of multiple versions of the same thing
       }
       ArrayList<Ast.C> newCs=new ArrayList<>(cs);
@@ -173,30 +171,19 @@ public class Translator {
     ArrayList<Member> ms=new ArrayList<Member>();
     for(Member m:ct.getMs()){
       m.match(nc->null,
-        mi->ms.add(From.from(Program.extractMwt(mi, ct),p)),
+        mi->{throw Assertions.codeNotReachable();},
         mt->ms.add(From.from(mt, p))
         );
       }
     //for(PathMwt pmwt:ct.getStage().getInherited()){
     for(PathMwt pmwt:Collections.<PathMwt>emptyList()){
-      if(Program.getIfInDom(ms,pmwt.getMwt().getMs()).isPresent()){continue;}
+      if(Functions.getIfInDom(ms,pmwt.getMwt().getMs()).isPresent()){continue;}
       ms.add(From.from(pmwt.getMwt(), p));
     }
     List<Path> sup = tools.Map.of(ti->(Path)From.fromP(ti.getNT().getPath(),p),ct.getSupertypes());
     List<Path> supAll = sup;//tools.Map.of(pi->(Path)From.fromP(pi,p),ct.getStage().getInheritedPaths());
     ClassB res= ct.withMs(ms).withSupertypes(tools.Map.of(pi->pi.toImmNT(),sup));
-    res=res.withStage(res.getStage().copyMostStableInfo());
-    res.getStage().setInheritedPaths(supAll);
     return res;
   }
-  private static ClassB normalizeClass(Program p,ClassB ct) {
-    assert ct.getStage().getInheritedPaths()!=null;
-    List<Path> sup = tools.Map.of(ti->(Path)
-        Norm.of(p,ti.getNT().getPath()),ct.getSupertypes());
-    ClassB result= Norm.ofAllMethodsOf(p, ct,false).withSupertypes(tools.Map.of(pi->pi.toImmNT(),sup));
-    result.withStage(ct.getStage().copyMostStableInfo());
-    result.getStage().setInheritedPaths(tools.Map.of(pi->(Path)
-        Norm.of(p,pi),ct.getStage().getInheritedPaths()));
-    return result;
-  }
+  
 }

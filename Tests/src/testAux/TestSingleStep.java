@@ -25,8 +25,7 @@ import ast.ExpCore;
 import ast.Expression;
 import ast.Ast.Path;
 import ast.ExpCore.ClassB;
-import auxiliaryGrammar.Norm;
-import auxiliaryGrammar.Program;
+import programReduction.Program;
 
 public class TestSingleStep {
 

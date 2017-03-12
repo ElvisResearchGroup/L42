@@ -20,7 +20,7 @@ import ast.Ast.Path;
 import ast.Ast.Stage;
 import ast.ExpCore.ClassB;
 import auxiliaryGrammar.Functions;
-import auxiliaryGrammar.Program;
+import programReduction.Program;
 import facade.Parser;
 import helpers.TestHelper;
 import is.L42.connected.withSafeOperators.Abstract;

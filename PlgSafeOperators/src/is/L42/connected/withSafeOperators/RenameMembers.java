@@ -24,11 +24,9 @@ import ast.ExpCore.ClassB.MethodImplemented;
 import ast.ExpCore.ClassB.MethodWithType;
 import ast.Util.PathPath;
 import auxiliaryGrammar.Locator;
-import auxiliaryGrammar.Norm;
-import auxiliaryGrammar.Program;
+import programReduction.Program;
 import coreVisitors.CloneVisitorWithProgram;
 import coreVisitors.From;
-import coreVisitors.GuessTypeCore;
 import tools.Map;
 
 public class RenameMembers extends coreVisitors.CloneWithPath{

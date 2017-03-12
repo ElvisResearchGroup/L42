@@ -25,7 +25,7 @@ import ast.ExpCore.ClassB;
 import ast.Ast;
 import ast.Ast.Stage;
 import ast.Ast.Path;
-import auxiliaryGrammar.Program;
+import programReduction.Program;
 import facade.L42;
 import facade.Parser;
 

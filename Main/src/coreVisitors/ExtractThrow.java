@@ -15,7 +15,7 @@ import ast.ExpCore.Using;
 import ast.ExpCore.WalkBy;
 import ast.ExpCore.X;
 import ast.ExpCore._void;
-import auxiliaryGrammar.Program;
+import programReduction.Program;
 import auxiliaryGrammar.Functions;
 
 public class ExtractThrow implements Visitor<ExpCore>{

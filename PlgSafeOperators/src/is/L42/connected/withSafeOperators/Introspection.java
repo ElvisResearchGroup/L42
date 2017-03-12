@@ -19,8 +19,7 @@ import ast.ExpCore.ClassB.NestedClass;
 import ast.ExpCore.*;
 import auxiliaryGrammar.EncodingHelper;
 import auxiliaryGrammar.Functions;
-import auxiliaryGrammar.Norm;
-import auxiliaryGrammar.Program;
+import programReduction.Program;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -33,13 +32,18 @@ import facade.Configuration;
 public class Introspection {//TODO: we keep 5 methods, but we merge the PathReport and MemberReport content.
   public static List<Object>  giveInfo(ClassB that,List<Ast.C> path){
     Errors42.checkExistsPathMethod(that, path,Optional.empty());
-    Doc[] docRef={null};
-    ClassB current = Program.extractCBar(path, that,docRef);
+    Doc doc=null;
+    ClassB current=that;
+    if(!path.isEmpty()){
+      NestedClass nsCurrent=that.getNested(path);   
+      current= (ClassB) nsCurrent.getE();
+      doc=nsCurrent.getDoc();
+      }
     return Arrays.asList(
       "MemberKind","NestedClass",
-      "MemberDoc",(docRef[0]==null)?"":liftDoc(path.subList(0,path.size()-1),docRef[0],1),
+      "MemberDoc",(doc==null)?"":liftDoc(path.subList(0,path.size()-1),doc,1),
       "Key",""+String.join(".",Map.of(ci->""+ci,path)),
-      "AllAsString",ToFormattedText.ofNoStage(current),
+      "AllAsString",current,
       "ClassKind",ExtractInfo.classKind(that, path, current,null, null,null).name(),
       "LibraryDoc",liftDoc(path,current.getDoc1(),1),
       "MemberNumber",""+current.getMs().size(),
@@ -49,7 +53,7 @@ public class Introspection {//TODO: we keep 5 methods, but we merge the PathRepo
   public static ClassB giveInfoMember(ClassB that,List<Ast.C> path,int memberN){
     assert memberN!=0;
     Errors42.checkExistsPathMethod(that, path,Optional.empty());
-    ClassB current = Program.extractCBar(path, that);
+    ClassB current = that.getClassB(path);
     if(current.getMs().size()<memberN){
       throw Resources.notAct;
       }
@@ -64,7 +68,7 @@ public class Introspection {//TODO: we keep 5 methods, but we merge the PathRepo
           "MemberKind","NestedClass",
           "MemberDoc",liftDoc(path,nc.getDoc(),1),
           "Key",String.join(".",Map.of(ci->""+ci, fullPath)),
-          "AllAsString",ToFormattedText.ofNoStage(nc.getInner()),
+          "AllAsString",ToFormattedText.of(nc.getInner()),
           "ClassKind",ExtractInfo.classKind(that, path,(ClassB) nc.getInner(),null, null,null).name(),
           "LibraryDoc",liftDoc(path,currentNc.getDoc1(),1),
           "MemberNumber",""+currentNc.getMs().size(),
@@ -101,14 +105,14 @@ public class Introspection {//TODO: we keep 5 methods, but we merge the PathRepo
   //if member ==0, talk about implemented interfaces, nested classes have no types
   public static ClassB giveInfoType(Path  isExternal,Program p,ClassB that,List<Ast.C> path,int memberN,int typeN){
     Errors42.checkExistsPathMethod(that, path,Optional.empty());
-    ClassB current = Program.extractCBar(path, that);
+    ClassB current = that.getClassB(path);
     if(current.getMs().size()<memberN){throw Resources.notAct;}
     if(memberN<0){throw Resources.notAct;}//TODO: is this a good idea?
     if(memberN==0){
       if(typeN<=0){throw Resources.notAct;}
       if(current.getSupertypes().size()<typeN){throw Resources.notAct;}
       Type implN = current.getSupertypes().get(typeN-1);
-      return typeReport(isExternal,p.addAtTop(that), implN,path);
+      return typeReport(isExternal,p.evilPush(that), implN,path);
       }
     assert memberN>0;
     Member mi = current.getMs().get(memberN-1);
@@ -124,13 +128,12 @@ public class Introspection {//TODO: we keep 5 methods, but we merge the PathRepo
       ti=mwt.getMt().getExceptions().get((typeN*-1)-1);
       //TODO: doci=?? add docs for exceptions, return type and implements
       }
-    return typeReport(isExternal,p.addAtTop(that), ti,path);
+    return typeReport(isExternal,p.evilPush(that), ti,path);
     }
   private static ClassB typeReport(Path isExternal,Program p,Type ti, List<Ast.C> src){
-    p=p.navigateInTo(src);
+    p=p.navigate(src);
     NormType normTi=(ti instanceof NormType)?(NormType)ti:null;
     NormType resolvedTi=null;
-    try{resolvedTi=Norm.of(p, ti);}catch(ErrorMessage.NormImpossible ni){}
     TypeKind tk = getTypeKind(src,ti, resolvedTi);
     Mdf mdf=(normTi!=null)?normTi.getMdf():Mdf.Immutable;
     Mdf resMdf=(resolvedTi!=null)?resolvedTi.getMdf():Mdf.Immutable;
@@ -203,7 +206,7 @@ public class Introspection {//TODO: we keep 5 methods, but we merge the PathRepo
   public static String extractDocAsString(ClassB that,List<Ast.C>path,int annotationN){
     //System.out.println("extractDocAsString("+path+" annotationN:"+annotationN+")");
     Errors42.checkExistsPathMethod(that, path,Optional.empty());
-    ClassB current = Program.extractCBar(path, that);
+    ClassB current = that.getClassB(path);
     Doc d=current.getDoc1();
     d=liftDoc(path,d,0);
     //System.out.println("extractDocAsString("+d+")");
@@ -224,7 +227,7 @@ public class Introspection {//TODO: we keep 5 methods, but we merge the PathRepo
   }
   public static Path extractDocPath(ClassB that,List<Ast.C>path,int annNumber){
     Errors42.checkExistsPathMethod(that, path,Optional.empty());
-    ClassB current = Program.extractCBar(path, that);
+    ClassB current = that.getClassB(path);
     Doc d=current.getDoc1();
     d=liftDoc(path,d,0);//ok, it is as should be if wrote in the class (see under)
     if(d.getAnnotations().size()<annNumber){throw Resources.notAct;}

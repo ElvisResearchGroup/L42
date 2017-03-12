@@ -15,7 +15,7 @@ import ast.Ast.Type;
 import ast.ExpCore.*;
 import ast.ExpCore.ClassB.NestedClass;
 import ast.ExpCore.ClassB.Phase;
-import ast.Util.CachedStage;
+import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodWithType;
 import is.L42.connected.withSafeOperators.Errors42;
 import is.L42.connected.withSafeOperators.ExtractInfo;
@@ -24,8 +24,23 @@ import programReduction.Program;
 import tools.Map;
 
 public class Compose {
+
+  //will be needed for other operations... may be sum need to cooperate? late checks are an issue...
+  /*public static boolean matchNested(Program p, ClassB top, List<Member> ms, List<Ast.C> current, NestedClass nc1, NestedClass nc2) {
+    NestedClass resNc=nc1.withDoc(nc1.getDoc().sum(nc2.getDoc()));
+    SumResN res = nestedCompose(p, top, top,(ClassB)nc1.getE(), (ClassB)nc2.getE(),current);
+    if(!res.isOk()){return false;}
+    SumOkN resOk=res.toOk();
+    resOk.
+  }*/
+  //public static boolean matchMwt(Program p, ClassB topA, ClassB topB, List<Member> ms, List<Ast.C> current, Member m, Member oms) {
+
+
   public static ClassB compose(Program pData,ClassB a,ClassB b){
     b=privateMangling.RefreshUniqueNames.refresh(b);
+    return alradyRefreshedCompose(pData,a,b);
+    }
+  public static ClassB alradyRefreshedCompose(Program pData,ClassB a,ClassB b){
     SumResN res = nestedCompose(pData,a,b,a,b,Collections.emptyList());
     if(res.isOk()){return res.toOk().res;}
     SumErr err=res.toError();
@@ -38,7 +53,6 @@ public class Compose {
       }
     return null;
     }
-    
     
   //return the composed nested that should fit in position path
   public static SumResN nestedCompose(Program pData,
@@ -58,7 +72,7 @@ public class Compose {
     Position newP=a.getP().sum(b.getP());
     if(isClassClash(path,topA,topB,a,b)){return new SumErrN(null,path);}
     boolean isInterface=a.isInterface() || b.isInterface();
-    res[0].toOk().res=new ClassB(newDoc,isInterface,newTs,newMwt,newNested,newP,new CachedStage(/*will soon die*/),Phase.None/*will soon be a min*/,"");
+    res[0].toOk().res=new ClassB(newDoc,isInterface,newTs,newMwt,newNested,newP,a.getPhase().acc(b.getPhase()),0);
     for(Function<Program, SumErrN> f:res[0].toOk().lateChecks){
     SumErrN err=f.apply(pData);
       if(err==null){continue;}
@@ -180,7 +194,7 @@ public class Compose {
     return res;
     }
   
-private static SumResM methodCompose(Program pData,
+public static SumResM methodCompose(Program pData,
   ClassB topA, ClassB topB,
   MethodWithType ma, MethodWithType mb,
   List<C> path) {

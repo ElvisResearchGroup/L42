@@ -20,7 +20,6 @@ import ast.Ast.Path;
 import ast.Ast.Type;
 import ast.ExpCore.Block;
 import ast.ExpCore.ClassB;
-import ast.Util.CachedStage;
 import ast.Util.PathMwt;
 import coreVisitors.InjectionOnSugar;
 
@@ -333,7 +332,6 @@ import coreVisitors.InjectionOnSugar;
     Type tExpected;
     ExpCore e;
     List<ClassB> p;
-    CachedStage cachedInfo;
     Position pos;
   }
 

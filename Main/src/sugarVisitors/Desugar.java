@@ -66,11 +66,11 @@ import ast.Expression.With;
 import ast.Expression.X;
 import ast.Expression._void;
 import ast.PathAux;
-import ast.Util.CachedStage;
+
 import ast.Util.PathMxMx;
 import auxiliaryGrammar.EncodingHelper;
 import auxiliaryGrammar.Functions;
-import auxiliaryGrammar.Program;
+import programReduction.Program;
 import coreVisitors.InjectionOnSugar;
 import coreVisitors.IsCompiled;
 import coreVisitors.Visitor;
@@ -121,15 +121,6 @@ public class Desugar extends CloneVisitor{
         ClassB data = OnLineCode.getCode(s.getUrl());
         L42.usedNames.addAll(CollectDeclaredClassNamesAndMethodNames.of(data));
         ast.ExpCore.ClassB dataCore=(ast.ExpCore.ClassB) data.accept(new InjectionOnCore());
-        Configuration.typeSystem.computeStage(Program.empty()/*.addAtTop(dataCore)*/,dataCore);
-        dataCore.accept(new coreVisitors.CloneVisitor(){
-          @Override public ExpCore visit(ExpCore.ClassB cb){
-            CachedStage stage=cb.getStage();
-            assert stage!=null;
-            stage.setVerified(true);//TODO add more cached info?
-            return super.visit(cb);
-            }
-        });
         Desugar.this.importedLibs.put(s.getUrl(),dataCore);
         //Using a hash map as over means that if we import the same library twice, we get a single copy.
         //This is "ok" but then we can not rely on the identities of the positions.
@@ -566,7 +557,7 @@ public class Desugar extends CloneVisitor{
 
   static ClassB encodePrimitiveString(String s){
     //return EncodingHelper.wrapStringU(s);//no, this produces a ExpCoreClassB
-    return new ClassB(Doc.factory(true,"@stringU\n"+EncodingHelper.produceStringUnicode(s)+"\n"),new Ast.TraitHeader(),Collections.emptyList(),Collections.emptyList(),Collections.emptyList(),Position.noInfo,Stage.None);
+    return new ClassB(Doc.factory(true,"@stringU\n"+EncodingHelper.produceStringUnicode(s)+"\n"),new Ast.TraitHeader(),Collections.emptyList(),Collections.emptyList(),Collections.emptyList(),Position.noInfo);
   }
   public static String desugarName(String n){
     if(n.isEmpty())return "#apply";

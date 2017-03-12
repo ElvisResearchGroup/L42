@@ -262,7 +262,6 @@ public class TestParseAndDesugar {
     String res2=(String)_p2;
     Expression result=Desugar.of(es1);
     ExpCore res = result.accept(new InjectionOnCore());
-    res=Functions.clearCache(res,ast.Ast.Stage.None);
     result=res.accept(new InjectionOnSugar());
     String r1=ToFormattedText.of(res);
     boolean check=r1.contains(res2);

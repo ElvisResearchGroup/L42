@@ -29,13 +29,14 @@ import ast.ExpCore.ClassB.MethodImplemented;
 import ast.ExpCore.ClassB.MethodWithType;
 import ast.ExpCore.ClassB.NestedClass;
 import ast.ExpCore.ClassB.Phase;
-import ast.Util.CachedStage;
+
 import ast.Util.PathMwt;
+import auxiliaryGrammar.Functions;
 import ast.ExpCore.*;
-import auxiliaryGrammar.Program;
+import programReduction.Program;
 import coreVisitors.From;
 
-public class Sum {
+public class _Sum {
   static ClassB sum(Program p, ClassB a, ClassB b) {
     //System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
     //System.out.println("___________________________________________________");
@@ -50,10 +51,10 @@ public class Sum {
 
   public static ClassB normalizedTopSum(Program p, ClassB topA, ClassB topB) {
      ClassB result=normalizedSum(p,topA, topB,topA, topB, Collections.emptyList());
-     Sum.interfaceClash(p,result);
+     //Sum.interfaceClash(p,result);
      return result;
     }
-
+/*
   private static void interfaceClash(Program p, ClassB candidate) {
    try{
      Configuration.typeSystem.computeStage(p,candidate);
@@ -89,26 +90,19 @@ public class Sum {
 
    }
   }
-
+*/
   static ClassB normalizedSum(Program p, ClassB topA, ClassB topB,ClassB a, ClassB b, List<Ast.C> current) {
     List<Member> ms = doubleSimetricalMatch(p,topA,topB,a, b,  current);
     List<ast.Ast.Type> superT = new ArrayList<>(a.getSupertypes());
     superT.addAll(b.getSupertypes());
     superT=Collections.unmodifiableList(superT);
     Doc doc1 = a.getDoc1().sum(b.getDoc1());
-    Sum.checkClassClash(p, current, topA, topB, a, b);
+    //Sum.checkClassClash(p, current, topA, topB, a, b);
     boolean isInterface =a.isInterface() || b.isInterface();
-    CachedStage stage=new CachedStage();
-    stage.setPrivateNormalized(true);
-    stage.getFamilies().addAll(a.getStage().getFamilies());
-    for(Integer fam:b.getStage().getFamilies()){
-      if(!stage.getFamilies().contains(fam)){stage.getFamilies().add(fam);}
-    }
-    if(a.getStage().isVerified() && b.getStage().isVerified()){stage.setVerified(true);}
     Phase accPhase = a.getPhase().acc(b.getPhase());
     ExpCore.ClassB res= new ClassB(doc1, isInterface, superT,
             ms,CollapsePositions.accumulatePos(a.getP(), b.getP()),
-            stage,accPhase,accPhase==Phase.None?"":"-");
+            accPhase,accPhase==Phase.None?0:1);
     res=(ClassB) res.accept(new coreVisitors.CloneVisitor(){
       public ExpCore visit(ClassB s){
         if (s.getPhase()==Phase.None){return super.visit(s);}
@@ -136,7 +130,7 @@ public class Sum {
   private static List<Member> doubleSimetricalMatch(Program p, ClassB topA, ClassB topB,ClassB a, ClassB b, List<Ast.C> current) {
     List<Member> ms=new ArrayList<>();
     for (Member m : a.getMs()) {//add from a+b
-      Optional<Member> oms = Program.getIfInDom(b.getMs(), m);
+      Optional<Member> oms = Functions.getIfInDom(b.getMs(), m);
       if (!oms.isPresent()) {
         ms.add(m);
         }
@@ -145,7 +139,7 @@ public class Sum {
         }
       }
     for (Member m : b.getMs()) {//add the rest
-      if (!Program.getIfInDom(ms, m).isPresent()) {
+      if (!Functions.getIfInDom(ms, m).isPresent()) {
         ms.add(m);
         }
       }
@@ -173,7 +167,7 @@ public class Sum {
     if (mb instanceof MethodImplemented) { throw Errors42.errorMethodClash(pathForError, mwta, mb, false, Collections.emptyList(), false, false,false); }
     MethodWithType mwtb = (MethodWithType) mb;
     Errors42.checkMethodClash(pathForError, mwta, mwtb,false);
-    ms.add(Sum.sumMethod(mwta, mwtb));
+    ms.add(_Sum.sumMethod(mwta, mwtb));
     return null;
   }
 

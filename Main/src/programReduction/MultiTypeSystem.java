@@ -50,32 +50,8 @@ private static ClassB typeLibrary(List<List<Ast.C>> current, Program p) {
   }
 
 private static ClassB typeSingle(Program p) {
-  ClassB l=new Norm(){//TODO: all body of this meth will change with new typing
-    protected MethodWithType normMwt(Program p,MethodWithType mwt){
-      return this.normMwtDeep(p, mwt);
-      }
-    }.norm(p);
-  l=(ClassB) l.accept(new coreVisitors.CloneVisitor(){
-  public ExpCore visit(ClassB s) {
-    s=(ClassB) super.visit(s);
-    s.getStage().setStage(Stage.Star);
-    return s;
-  }});
-  p=p.updateTop(l);
-  auxiliaryGrammar.Program pOld = p.oldRepr();//TODO:will disappear
-  pOld=pOld.getExecutableStar();
-  //pOld.recomputeStage();
-  facade.Configuration.typeSystem.checkCt(pOld.pop(),l);
-  l=(ClassB) l.accept(new coreVisitors.CloneVisitor(){
-    public ExpCore visit(ClassB s) {
-      s=s.withPhase(Phase.Typed);
-      s=(ClassB) super.visit(s);
-      s.getStage().setVerified(true);//TODO: remove when there is new TS
-      s.getStage().setStage(Stage.Star);
-      return s;
-    }});
-  return l;//TODO: replace with new TS soonish
-  }
+ return newTypeSystem.TypeSystem.instance().topTypeLib(Phase.Coherent,p.pop(), p.top());
+ }
 
 public static ExpCore toAny(Paths paths, ExpCore e) {
   return e.accept(new CloneVisitor(){
@@ -89,11 +65,7 @@ public static ExpCore toAny(Paths paths, ExpCore e) {
     });
 }
 
-public static void typeMetaExp(Program p, ExpCore e) {
-  auxiliaryGrammar.Program pOld = p.oldRepr();
-  //pOld=pOld.getExecutableStar();
-  //pOld.recomputeStage();
-  facade.Configuration.typeSystem.checkMetaExpr(pOld,e);
-  //TODO: replace with new TS soonish
+public static ExpCore typeMetaExp(Program p, ExpCore e) {
+  return newTypeSystem.TypeSystem.instance().topTypeExp(p,e);
   }
 }

@@ -18,8 +18,6 @@ import ast.ExpCore.X;
 import ast.ExpCore._void;
 import ast.Redex;
 import auxiliaryGrammar.Ctx;
-import auxiliaryGrammar.Program;
-
 public class ExtractCtxCompiled implements Visitor<Ctx<ClassB>>{
   //private ExtractCtxCompiled(Program p){this.p=p;}
   

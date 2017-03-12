@@ -52,9 +52,8 @@ import ast.Expression.While;
 import ast.Expression.With;
 import ast.Expression.X;
 import ast.Expression._void;
-import ast.Util.CachedStage;
+
 import auxiliaryGrammar.Functions;
-import auxiliaryGrammar.Program;
 
 public class ToFormattedText implements Visitor<Void>{
   private StringBuilder result=new StringBuilder();
@@ -84,9 +83,7 @@ public class ToFormattedText implements Visitor<Void>{
   public static String of(ExpCore e){
     return of(e.accept(new InjectionOnSugar()));
   }
-  public static String ofNoStage(ExpCore e){
-    return of(Functions.clearCache(e,Stage.Less));
-  }
+
   public static String of(ExpCore.ClassB.Member m){
     List<ExpCore.ClassB.Member> ms=new ArrayList<>();
     ms.add(m);
@@ -403,13 +400,7 @@ public class ToFormattedText implements Visitor<Void>{
     cb.getFields().forEach(this::formatField);
     formatMembers(cb.getMs());
     c("}");
-    if (cb.getStage()!=Stage.None){c(cb.getStage().inner);}
     separeFromChar();
-    /*StringBuilders.formatSequence(this.result,cb.getAllSupertypes().iterator(), ", ",
-        p->{this.visit(p);});*/
-    if (cb.getStage()!=Stage.None/* || !cb.getAllSupertypes().isEmpty()*/){
-      c("^##");
-      }
     return null;
   }
   private void formatMembers(List<Member> ms) {

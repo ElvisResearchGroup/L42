@@ -23,12 +23,12 @@ import ast.ExpCore.ClassB.MethodWithType;
 import ast.ExpCore.ClassB.NestedClass;
 import ast.PathAux;
 import auxiliaryGrammar.Functions;
-import auxiliaryGrammar.Norm;
-import auxiliaryGrammar.Program;
+import programReduction.Program;
 import coreVisitors.CloneVisitorWithProgram;
 import coreVisitors.From;
 import facade.Configuration;
 import facade.L42;
+import is.L42.connected.withSafeOperators.refactor.Compose;
 import platformSpecific.fakeInternet.ActionType;
 import platformSpecific.fakeInternet.PluginType;
 import platformSpecific.javaTranslation.Resources;
@@ -46,7 +46,7 @@ public class Plugin implements PluginType{
       return Timer.record("Mcompose£xleft£xright", ()-> {
         ClassB left=ensureExtractClassB(_left);
         ClassB right=ensureExtractClassB(_right);
-        try{return Sum.sum(Resources.getP(),left,right);
+        try{return Compose.compose(Resources.getP(),left,right);
         }catch(ArrayIndexOutOfBoundsException exc){
           exc.printStackTrace();
           throw exc;
@@ -203,7 +203,7 @@ public class Plugin implements PluginType{
       Path iPath=(_that instanceof Path)?(Path)_that:(Path)((Revertable)_that).revert();
       if (iPath.isPrimitive()){throw Resources.notAct;}
       //TODO: provide fake classes
-      ClassB that=Resources.getP().extractCb(iPath);
+      ClassB that=Resources.getP().extractClassB(iPath);
       List<Ast.C> path=PathAux.parseValidCs(ensureExtractStringU(_path));
       List<Object> result= new ArrayList<>(Introspection.giveInfo(that, path));
       result.add("MyClass");
@@ -218,7 +218,7 @@ public class Plugin implements PluginType{
     @ActionType({ActionType.Type.Library,ActionType.Type.TypeAny,ActionType.Type.Library,ActionType.Type.Library})
     public Object MintrospectTypeReportMember£xthat£xpath£xmemberN(Object _that,Object _path,Object _memberN){
       Path iPath=(_that instanceof Path)?(Path)_that:(Path)((Revertable)_that).revert();
-      ClassB that=Resources.getP().extractCb(iPath);
+      ClassB that=Resources.getP().extractClassB(iPath);
       List<Ast.C> path=PathAux.parseValidCs(ensureExtractStringU(_path));
       int memberN=ensureExtractInt32(_memberN);
       return Introspection.giveInfoMember(that, path,memberN);
@@ -226,7 +226,7 @@ public class Plugin implements PluginType{
     @ActionType({ActionType.Type.Library,ActionType.Type.TypeAny,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
     public Object MintrospectTypeReportType£xthat£xpath£xmemberN£xtypeN(Object _that,Object _path,Object _memberN,Object _typeN){
       Path iPath=(_that instanceof Path)?(Path)_that:(Path)((Revertable)_that).revert();
-      ClassB that=Resources.getP().extractCb(iPath);
+      ClassB that=Resources.getP().extractClassB(iPath);
       List<Ast.C> path=PathAux.parseValidCs(ensureExtractStringU(_path));
       int memberN=ensureExtractInt32(_memberN);
       int typeN=ensureExtractInt32(_typeN);
@@ -236,7 +236,7 @@ public class Plugin implements PluginType{
     @ActionType({ActionType.Type.Library,ActionType.Type.TypeAny,ActionType.Type.Library,ActionType.Type.Library})
     public Object MintrospectTypeDocAsString£xthat£xpath£xannotationN(Object _that,Object _path,Object _annotationN){
       Path iPath=(_that instanceof Path)?(Path)_that:(Path)((Revertable)_that).revert();
-      ClassB that=Resources.getP().extractCb(iPath);
+      ClassB that=Resources.getP().extractClassB(iPath);
       List<Ast.C> path=PathAux.parseValidCs(ensureExtractStringU(_path));
       int annotationN=ensureExtractInt32(_annotationN);
       return Introspection.extractDocAsString(that, path, annotationN);
@@ -244,7 +244,7 @@ public class Plugin implements PluginType{
     @ActionType({ActionType.Type.TypeAny,ActionType.Type.TypeAny,ActionType.Type.Library,ActionType.Type.Library})
     public Object MintrospectTypeDocPath£xthat£xpath£xannotationN(Object _that,Object _path,Object _annotationN){
       Path iPath=(_that instanceof Path)?(Path)_that:(Path)((Revertable)_that).revert();
-      ClassB that=Resources.getP().extractCb(iPath);
+      ClassB that=Resources.getP().extractClassB(iPath);
       List<Ast.C> path=PathAux.parseValidCs(ensureExtractStringU(_path));
       int annotationN=ensureExtractInt32(_annotationN);
       return Configuration.reduction.convertPath(Introspection.extractDocPath(that, path, annotationN));

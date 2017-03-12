@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import platformSpecific.javaTranslation.Resources;
+import programReduction.Program;
 import sugarVisitors.ToFormattedText;
 import tools.Assertions;
 import tools.Map;
@@ -36,12 +37,13 @@ import ast.ExpCore.WalkBy;
 import ast.ExpCore.ClassB.Member;
 import ast.Redex.LoopR;
 import ast.Redex.Using;
+import auxiliaryGrammar.Ctx;
+import auxiliaryGrammar.Functions;
 import ast.ExpCore.*;
 import ast.ExpCore.Block.*;
 import ast.ExpCore.ClassB.*;
 import ast.Redex;
 import ast.Redex.*;
-import auxiliaryGrammar.*;
 
 abstract public class Executor {
   abstract protected ExpCore executeAtomicStep(PData p1, ExpCore e1,Ast.C nestedName);
@@ -55,7 +57,7 @@ public static void dbgRecordNext(ExpCore e){
   last1=e;
   }
 public static ExpCore stepStar(Executor executer,ExpCore e){
-  final Program emptyP=Program.empty();
+  final Program emptyP=Program.emptyLibraryProgram();
   int iteration=0;
   dbgRecordNext(e);
   executer.log("--------------------"+(iteration+=1));
@@ -74,21 +76,21 @@ public static ExpCore stepStar(Executor executer,ExpCore e){
     assert e instanceof ClassB;
     if(!L42.trustPluginsAndFinalProgram){
       ClassB ct=(ClassB)e;
-      Configuration.typeSystem.computeStage(emptyP,ct);
-      Program p1=emptyP.addAtTop(ct);
-      Configuration.typeSystem.checkCt( emptyP, ct);
-      if(!p1.checkComplete()){//also check is star
-        //p1.checkComplete();//to let debugger enter
+      Program p1=emptyP.evilPush(ct);
+      assert false;//I think this is all old code?
+      //Configuration.typeSystem.checkCt( emptyP, ct);
+      /*if(!p1.checkComplete()){//also check is star
         throw new ErrorMessage.MalformedFinalResult(ct,
           "Some class can not be completely typed as is still incomplete or refers to incomplete classes"
             +ErrorFormatter.reportPlaceOfMetaError(p1,ct)
             );
-        }
+        }*/
       }
     return e;}
 }
 final public ExpCore step(PData p,ExpCore e){
-  try{
+  throw Assertions.codeNotReachable();//the whole reduction will soon disappear
+  /*try{
   Ctx<Redex> ctx=ExtractCtxVal.of(p.p, e);
   log("---REDEX--: "+ctx.hole.getClass().getSimpleName());
   return Match.<ExpCore>of(ctx.hole)
@@ -106,9 +108,54 @@ final public ExpCore step(PData p,ExpCore e){
       .end();}
 catch(ErrorMessage.CtxExtractImpossible rethrow){
   throw rethrow;//to debug
-}
+  
+}*/
 }
 
+public static ExpCore subst(ExpCore ctxVal,Redex.Subst r){
+Block e1=r.getThat();
+int i=r.getSubstIndex();
+ExpCore val=e1.getDecs().get(i).getInner();
+String x=e1.getDecs().get(i).getX();
+ArrayList<Block.Dec> decs = new ArrayList<Block.Dec>(e1.getDecs());
+decs.remove(i);
+Block e2=new Block(e1.getDoc(),decs,e1.getInner(),e1.getOns(),e1.getP());
+ExpCore result=ReplaceX.of(e2,val,x);
+return ReplaceCtx.of(ctxVal,result);
+}
+protected ClassB meta1Prop(Program p, ClassB cb, NestedClass m) {
+log("---meta1Prop--");
+//get cb-->ct
+//get p'
+Program p1=p.evilPush(cb);
+//extract e
+ExpCore e=m.getInner();
+//extract cb
+Ctx<ClassB> ctxC=ExtractCtxCompiled.of(e);
+//run cb1-->cb2
+ClassB cb2=(ClassB)step(new PData(p1), ctxC.hole);
+ExpCore e2=ReplaceCtx.of(ctxC.ctx,cb2);
+
+//compose cb with new member
+return cb.withMember(m.withInner(e2));
+}
+
+protected ClassB metaMethod(Program p, ClassB cb, Member m) {
+log("---meta2--");
+//get cb-->ct
+//get p'
+Program p1=p.evilPush(cb);
+//extract e
+ExpCore e=m.getInner();
+//extract cb
+Ctx<ClassB> ctxC=ExtractCtxCompiled.of(e);
+//run cb1-->cb2
+ClassB cb2=(ClassB)step(new PData(p1), ctxC.hole);
+ExpCore e2=ReplaceCtx.of(ctxC.ctx,cb2);
+//compose cb with new member
+return cb.withMember(m.withInner(e2));
+}
+/*
 private static ExpCore using(Program p, ExpCore ctxVal, Using r) {
   return ReplaceCtx.of(ctxVal,r.getToReplace());
 }
@@ -148,45 +195,11 @@ private ExpCore meta(Program p, ExpCore ctx, Meta r) {
   }
   return ReplaceCtx.of(ctx, metaMethod(p,cb,m));
 }
-protected ClassB meta1Prop(Program p, ClassB cb, NestedClass m) {
-  log("---meta1Prop--");
-  //get cb-->ct
-  Configuration.typeSystem.computeStage(p,cb);
-  //BOOH??ct=ct.withMember(m.withBody(new WalkBy()));
-  //get p'
-  Program p1=p.addAtTop(cb);
-  //extract e
-  ExpCore e=m.getInner();
-  //extract cb
-  Ctx<ClassB> ctxC=ExtractCtxCompiled.of(e);
-  //run cb1-->cb2
-  ClassB cb2=(ClassB)step(new PData(p1), ctxC.hole);
-  ExpCore e2=ReplaceCtx.of(ctxC.ctx,cb2);
-  
-  //compose cb with new member
-  return cb.withMember(m.withInner(e2));
-}
-
-protected ClassB metaMethod(Program p, ClassB cb, Member m) {
-  log("---meta2--");
-  //get cb-->ct
-  Configuration.typeSystem.computeStage(p, cb);
-  //get p'
-  Program p1=p.addAtTop(cb);
-  //extract e
-  ExpCore e=m.getInner();
-  //extract cb
-  Ctx<ClassB> ctxC=ExtractCtxCompiled.of(e);
-  //run cb1-->cb2
-  ClassB cb2=(ClassB)step(new PData(p1), ctxC.hole);
-  ExpCore e2=ReplaceCtx.of(ctxC.ctx,cb2);
-  //compose cb with new member
-  return cb.withMember(m.withInner(e2));
-}
 
 private static ExpCore removeCatch(ExpCore ctxVal, NoThrowRemoveOn r) {
   return ReplaceCtx.of(ctxVal,r.getThat().withOns(Collections.emptyList()));
 }
+
 private ExpCore methCall(Program p, ExpCore ctxVal, MethCall r) {
   MCall mc = r.getThat();
   Path pathR=Functions.classOf(p, ctxVal, mc.getInner());
@@ -218,6 +231,7 @@ private ExpCore methCall(Program p, ExpCore ctxVal, MethCall r) {
   //case setter
   return fieldU(ctxVal, mc);
 }
+
 private ExpCore fieldU(ExpCore ctxVal, MCall mc) {
   log("---meth FieldU--");
   String x=((ExpCore.X)mc.getInner()).getInner();
@@ -422,17 +436,7 @@ private ExpCore blockElim(ExpCore ctxVal,Redex.BlockElim r){
   Block result=e1.withDecs(decs);
   return ReplaceCtx.of(ctxVal,result);
 }
-public static ExpCore subst(ExpCore ctxVal,Redex.Subst r){
-  Block e1=r.getThat();
-  int i=r.getSubstIndex();
-  ExpCore val=e1.getDecs().get(i).getInner();
-  String x=e1.getDecs().get(i).getX();
-  ArrayList<Block.Dec> decs = new ArrayList<Block.Dec>(e1.getDecs());
-  decs.remove(i);
-  Block e2=new Block(e1.getDoc(),decs,e1.getInner(),e1.getOns(),e1.getP());
-  ExpCore result=ReplaceX.of(e2,val,x);
-  return ReplaceCtx.of(ctxVal,result);
-}
+
 private static ExpCore ph(Program p,ExpCore ctxVal,Redex.Ph r){
   Block b=r.getThat();
   ArrayList<Block.Dec> decs = new ArrayList<Block.Dec>(b.getDecs());
@@ -443,4 +447,5 @@ private static ExpCore ph(Program p,ExpCore ctxVal,Redex.Ph r){
   decs.set(r.getPhIndex(),deci.withT(ti));
   return ReplaceCtx.of(ctxVal,b.withDecs(decs));
 }
+*/
 }

@@ -1,16 +1,20 @@
 package programReduction;
 
+import java.util.Collections;
 import java.util.List;
 
 import ast.Ast;
+import ast.Ast.Doc;
 import ast.Ast.Path;
+import ast.Ast.Position;
 import ast.ErrorMessage;
 import ast.ExpCore;
 import ast.ExpCore.ClassB;
+import ast.ExpCore.ClassB.Phase;
 import facade.PData;
 import tools.Assertions;
 
-public interface Program {//this class will eventually replace auxiliaryDefinitions.Program
+public interface Program {
   @SuppressWarnings("serial")
   public static class EmptyProgram extends RuntimeException{}
   
@@ -31,7 +35,7 @@ public interface Program {//this class will eventually replace auxiliaryDefiniti
     //ok also this one can be messed up by evilPush
   Program growFellow(Program fellow);
   //(L,ctxL,_).growFellow(p)==p.push(p.top()/ctxL)
-  String getFreshId();//good for debugging and needed for reduction 
+  int getFreshId();//good for debugging and needed for reduction 
 
   List<ExpCore.ClassB.MethodWithType> methods(Ast.Path p);
   
@@ -126,28 +130,21 @@ public interface Program {//this class will eventually replace auxiliaryDefiniti
     return Path.outer(0, cs.subList(1, cs.size()));
     }
   default PData reprAsPData(){
-    auxiliaryGrammar.Program pOld=this.oldRepr();
-    PData res=new PData(pOld);
-    res.newP=this;
+    PData res=new PData(this);
     return res;
     }
-  default auxiliaryGrammar.Program oldRepr(){
-    //TODO: will disappear
-    auxiliaryGrammar.Program res=this.pop().oldRepr();
-    return res.addAtTop(this.top());
-    }
+  static Program emptyLibraryProgram(){return EmptyProgramHolder.cached;}
+  }
+class EmptyProgramHolder{
+  static final Program cached=new FlatProgram(new ClassB(Doc.empty(), false,Collections.emptyList(),Collections.emptyList(), Position.noInfo, Phase.Coherent, 0));
   }
 
 class FlatProgram extends Methods{
-  int freshIds=0;
+  int freshIds=1;
   ExpCore.ClassB l;
   FlatProgram(ExpCore.ClassB l){this.l=l;}
     
   public Program pop() { throw new Program.EmptyProgram();}
-  @Override public auxiliaryGrammar.Program oldRepr(){
-    auxiliaryGrammar.Program res=auxiliaryGrammar.Program.empty();
-    return res.addAtTop(top());
-    }
   
   public Program push(CtxL ctx, ClassB l) {
     return new PushedProgram(l,ctx,this);
@@ -167,7 +164,7 @@ class FlatProgram extends Methods{
 
   public Program growFellow(Program fellow) {throw new Program.EmptyProgram();}
 
-  public String getFreshId(){return ""+freshIds++;}
+  public int getFreshId(){return freshIds++;}
   }
 class PushedProgram extends Methods{
   ClassB newTop;
@@ -197,9 +194,9 @@ class PushedProgram extends Methods{
     return fellow.push(ctx,(ClassB)ctx.originalHole());
     //(L,ctxL,_).growFellow(p)==p.push(p.top()/ctxL)
     }
-  public String getFreshId(){
-    String popped=this.pop().getFreshId();
-    return popped+"."+this.splitPoint.nameWhereThereisTheHole();
+  public int getFreshId(){
+    int popped=this.pop().getFreshId();
+    return popped;//+"."+this.splitPoint.nameWhereThereisTheHole();
     }
   }
 class UpdatedProgram extends PushedProgram{
@@ -229,8 +226,8 @@ class EvilPushed extends Methods{
 
   public Program growFellow(Program fellow) {throw Assertions.codeNotReachable();}
   
-  public String getFreshId(){
-    String popped=this.pop().getFreshId();
-    return popped+".<EvilPushed>";
+  public int getFreshId(){
+    int popped=this.pop().getFreshId();
+    return popped;//+".<EvilPushed>";
     }
   }

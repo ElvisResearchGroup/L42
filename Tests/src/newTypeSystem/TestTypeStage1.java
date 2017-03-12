@@ -1,4 +1,4 @@
-package testAux;
+package newTypeSystem;
 
 import helpers.TestHelper;
 
@@ -26,9 +26,6 @@ import facade.Configuration;
 import facade.Parser;
 import sugarVisitors.Desugar;
 import sugarVisitors.InjectionOnCore;
-import typeSystem.SealEnv;
-import typeSystem.ThrowEnv;
-import typeSystem.TypeSystem;
 import ast.Ast;
 import ast.Ast.NormType;
 import ast.Ast.Type;
@@ -40,7 +37,8 @@ import ast.Ast.Doc;
 import ast.Ast.Mdf;
 import ast.Ast.Path;
 import ast.ExpCore.ClassB;
-import auxiliaryGrammar.Program;
+import ast.ExpCore.ClassB.Phase;
+import programReduction.Program;
 
 public class TestTypeStage1 {
   @Before public void config() {TestHelper.configureForTest();}
@@ -49,8 +47,8 @@ public class TestTypeStage1 {
     public static class TestStage1 {
       @Parameter(0) public int _lineNumber;
       @Parameter(1) public String _e;
-      @Parameter(2) public Type typeSugg;
-      @Parameter(3) public Type typeExpected;
+      @Parameter(2) public NormType typeSugg;
+      @Parameter(3) public NormType typeExpected;
       @Parameter(4) public String[] program;
       @Parameters(name = "{index}: line {0}")
       public static List<Object[]> createData() {
@@ -191,9 +189,9 @@ static String listExample=TestHelper.multiLine(
       TestHelper.configureForTest();
       ExpCore e=Desugar.of(Parser.parse(null," "+_e)).accept(new InjectionOnCore());
       Program p=TestHelper.getProgram( program);
-      Type t2=TypeSystem.typecheckSure(false,p, new HashMap<>(),SealEnv.empty(),new ThrowEnv(), this.typeSugg, e);
-      Assert.assertEquals(t2,typeExpected);
-      //TestHelper.assertEqualExp(eRed,ee2);
+      TOut out=TypeSystem.instance().type(TIn.top(Phase.Typed, p, e).withE(e, this.typeSugg));
+      assert out.isOk();
+      assert out.toOk().computed.equals(typeExpected);
     }
 
     }
@@ -202,8 +200,8 @@ static String listExample=TestHelper.multiLine(
 public static class TestStage2 {
   @Parameter(0) public int _lineNumber;
   @Parameter(1) public String _e;
-  @Parameter(2) public Type typeSugg;
-  @Parameter(3) public Type typeExpected;
+  @Parameter(2) public NormType typeSugg;
+  @Parameter(3) public NormType typeExpected;
   @Parameter(4) public String[] program;
   @Parameters(name = "{index}: line {0}")
   public static List<Object[]> createData() {
@@ -323,18 +321,18 @@ public static class TestStage2 {
         TestHelper.configureForTest();
         ExpCore e=Desugar.of(Parser.parse(null," "+_e)).accept(new InjectionOnCore());
         Program p=TestHelper.getProgram(program);
-        Configuration.typeSystem.checkAll(p);
-        Type t2=TypeSystem.typecheckSure(false,p, new HashMap<>(),SealEnv.empty(),new ThrowEnv(), typeSugg, e);
-        Assert.assertEquals(t2,typeExpected);
-        //TestHelper.assertEqualExp(eRed,ee2);
-      }
+        p=p.evilPush(TypeSystem.instance().topTypeLib(Phase.Coherent, p.pop(), p.top()));
+        TOut out=TypeSystem.instance().type(TIn.top(Phase.Typed, p, e).withE(e, this.typeSugg));
+        assert out.isOk();
+        assert out.toOk().computed.equals(typeExpected);
+   }
 }
 @RunWith(Parameterized.class)
 public static class TestStage3_notOk {
   @Parameter(0) public int _lineNumber;
   @Parameter(1) public String _e;
-  @Parameter(2) public Type typeSugg;
-  @Parameter(3) public Type typeExpected;
+  @Parameter(2) public NormType typeSugg;
+  @Parameter(3) public NormType typeExpected;
   @Parameter(4) public String[] program;
   @Parameters(name = "{index}: line {0}")
   public static List<Object[]> createData() {
@@ -414,7 +412,9 @@ public static class TestStage3_notOk {
         TestHelper.configureForTest();
         ExpCore e=Desugar.of(Parser.parse(null," "+_e)).accept(new InjectionOnCore());
         Program p=TestHelper.getProgram(program);
-        TypeSystem.typecheckSure(false,p, new HashMap<>(),SealEnv.empty(),new ThrowEnv(), typeSugg, e);
+        TOut out=TypeSystem.instance().type(TIn.top(Phase.Typed, p, e).withE(e, this.typeSugg));
+        assert out.isOk();
+        assert out.toOk().computed.equals(typeExpected);
       }
 
       }

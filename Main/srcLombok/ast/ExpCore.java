@@ -21,8 +21,6 @@ import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodImplemented;
 import ast.ExpCore.ClassB.MethodWithType;
 import ast.ExpCore.ClassB.NestedClass;
-import ast.Util.CachedStage;
-import auxiliaryGrammar.Program;
 
 public interface ExpCore {
   <T> T accept(coreVisitors.Visitor<T> v);
@@ -100,18 +98,16 @@ public interface ExpCore {
   }
    
 
-  @Value @Wither @EqualsAndHashCode(exclude = {"stage","p","phase","uniqueId"})  /*@ToString(exclude ="p")*/ public static class ClassB implements ExpCore, Ast.Atom,HasPos {
+  @Value @Wither @EqualsAndHashCode(exclude = {"p","phase","uniqueId"})  /*@ToString(exclude ="p")*/ public static class ClassB implements ExpCore, Ast.Atom,HasPos {
     
-    public ClassB(Doc doc1, boolean isInterface, List<Type> supertypes, List<Member> ms,Position p,ast.Util.CachedStage stage, Phase phase, String uniqueId) {
+    public ClassB(Doc doc1, boolean isInterface, List<Type> supertypes, List<Member> ms,Position p, Phase phase, int uniqueId) {
       this.doc1 = doc1;
       this.isInterface = isInterface;
       this.supertypes = supertypes;
       this.ms = ms;
-      this.stage=stage;
       this.p=p;
       this.phase=phase;
       this.uniqueId=uniqueId;
-      assert stage!=null;
       assert isConsistent();
       }//lombock fails me here :-(
     Doc doc1;
@@ -119,12 +115,11 @@ public interface ExpCore {
     List<Ast.Type> supertypes;
     List<Member> ms;
     Position p;
-    ast.Util.CachedStage stage;
     Phase phase;
-    String uniqueId;
+    int uniqueId;
     // In the future, we may remove members and add mwts and ns, now we add delegation constructors/getters
-    public ClassB(Doc doc1, boolean isInterface, List<Type> supertypes, List<ClassB.MethodWithType> mwts, List<ClassB.NestedClass> ns,Position p,ast.Util.CachedStage stage, Phase phase, String uniqueId) {
-      this(doc1,isInterface,supertypes,java.util.stream.Stream.concat(mwts.stream(),ns.stream()).collect(Collectors.toList()),p,stage,phase,uniqueId);
+    public ClassB(Doc doc1, boolean isInterface, List<Type> supertypes, List<ClassB.MethodWithType> mwts, List<ClassB.NestedClass> ns,Position p, Phase phase, int uniqueId) {
+      this(doc1,isInterface,supertypes,java.util.stream.Stream.concat(mwts.stream(),ns.stream()).collect(Collectors.toList()),p,phase,uniqueId);
       }
     public List<ClassB.MethodWithType> mwts(){
       return ms.stream().filter(e->e instanceof ClassB.MethodWithType)
@@ -146,12 +141,9 @@ public interface ExpCore {
     public List<ExpCore.ClassB.NestedClass> getNestedList(List<Ast.C>cs){return _Aux.getNestedList(this, cs);}
     public ExpCore.ClassB getClassB(List<Ast.C>cs){return _Aux.getClassB(this, cs);}
     
-    public static ExpCore.ClassB docClass(Doc d){return new ClassB(d,false,Collections.emptyList(),Collections.emptyList(),Position.noInfo,verifiedStage.copyMostStableInfo(),Phase.Typed,"");}
-    //TODO: remove when chachd stage is out
-    private static final CachedStage verifiedStage=new CachedStage();
-    static{verifiedStage.setVerified(true);}
+    public static ExpCore.ClassB docClass(Doc d){return new ClassB(d,false,Collections.emptyList(),Collections.emptyList(),Position.noInfo,Phase.Typed,0);}
     
-    public static ExpCore.ClassB membersClass(List<Member> ms,Position pos){return new ClassB(Doc.empty(),false,Collections.emptyList(),ms,pos,new CachedStage(),Phase.None,"");}    
+    public static ExpCore.ClassB membersClass(List<Member> ms,Position pos){return new ClassB(Doc.empty(),false,Collections.emptyList(),ms,pos,Phase.None,0);}    
     
     public List<Path> getSuperPaths(){
       return this.getSupertypes().stream()
@@ -160,11 +152,9 @@ public interface ExpCore {
       }    
     @Override public <T> T accept(coreVisitors.Visitor<T> v) {return v.visit(this);}
     public static enum Phase{None,Norm,Typed,Coherent;
-    public Phase acc(Phase other){
-      if(this==other){return this;}
-      if(other==Typed){return this;}
-      if(this==Typed){return other;}
-      return None;
+    public Phase acc(Phase that){
+      if(this.subtypeEq(that)){return that;}
+      return this;
       }
     public boolean subtypeEq(Phase that){
       return this.ordinal()>=that.ordinal();

@@ -28,11 +28,9 @@ import ast.Util.PathMxMx;
 import auxiliaryGrammar.Functions;
 import auxiliaryGrammar.Locator;
 import auxiliaryGrammar.Locator.Kind;
-import auxiliaryGrammar.Norm;
-import auxiliaryGrammar.Program;
+import programReduction.Program;
 import coreVisitors.CloneVisitorWithProgram;
 import coreVisitors.From;
-import coreVisitors.GuessTypeCore;
 
 public class RenameUsage extends MethodPathCloneVisitor {
   RenameUsage(ClassB visitStart,CollectedLocatorsMap maps,Program p) {

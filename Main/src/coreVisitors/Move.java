@@ -18,7 +18,6 @@ import ast.ExpCore.Loop;
 import ast.Redex;
 import ast.Redex.FUpdateExtended;
 import auxiliaryGrammar.Ctx;
-import auxiliaryGrammar.Program;
 
 public class Move implements Visitor<Ctx<List<Block.Dec>>>{
   

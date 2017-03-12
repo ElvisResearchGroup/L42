@@ -11,8 +11,7 @@ import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodWithType;
 import ast.Util.PathMx;
 import auxiliaryGrammar.Functions;
-import auxiliaryGrammar.Norm;
-import auxiliaryGrammar.Program;
+import programReduction.Program;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -262,7 +261,7 @@ public class ExtractInfo {
   }
   static List<PathMx> collectPrivateMethodsOfPublicPaths(ClassB cb, List<Ast.C> path) {
     List<PathMx> result=new ArrayList<>();
-    cb=Program.extractCBar(path, cb);
+    cb=cb.getClassB(path);
     auxCollectPrivateMethodsOfPublicPaths(cb,result,path);
     return result;
   }
@@ -294,7 +293,7 @@ public class ExtractInfo {
   }
   static List<Path> collectPrivatePathsAndSubpaths(ClassB cb, List<Ast.C> path) {
     List<Path> result=new ArrayList<>();
-    cb=Program.extractCBar(path, cb);
+    cb=cb.getClassB(path);
     auxCollectPrivatePathsAndSubpaths(cb,result,path ,false);
     return result;
   }

@@ -55,8 +55,8 @@ public class ProgramReduction {
     Paths paths1=pair.right;
     Program p0=Norm.multiNorm(p,paths.union(paths1));
     Program p1=MultiTypeSystem.typeProgram(paths1, p0);
-    MultiTypeSystem.typeMetaExp(p1,MultiTypeSystem.toAny(paths,ec1));
-    ClassB res=reduceE(p1,ec1,C.of("NameDebug_"+nc.getName()));
+    ExpCore annEc1=MultiTypeSystem.typeMetaExp(p1,MultiTypeSystem.toAny(paths,ec1));
+    ClassB res=reduceE(p1,annEc1,C.of("NameDebug_"+nc.getName()));
     res=privateMangling.RefreshUniqueNames.refresh(res);
     ClassB top=p1.top();
     assert top.getNested(Collections.singletonList(nc.getName()))!=null;//would actually fail if not there

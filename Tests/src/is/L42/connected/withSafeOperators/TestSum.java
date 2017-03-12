@@ -7,6 +7,7 @@ import static org.junit.Assert.fail;
 import facade.Configuration;
 import facade.L42;
 import helpers.TestHelper;
+import is.L42.connected.withSafeOperators.refactor.Compose;
 
 import java.util.Arrays;
 import java.util.List;
@@ -21,7 +22,7 @@ import platformSpecific.javaTranslation.Resources;
 import ast.Ast;
 import ast.ExpCore.ClassB;
 import auxiliaryGrammar.Functions;
-import auxiliaryGrammar.Program;
+import programReduction.Program;
 
   @RunWith(Parameterized.class)
   public class TestSum {
@@ -91,15 +92,13 @@ import auxiliaryGrammar.Program;
     TestHelper.configureForTest();
     ClassB cb1=getClassB(_cb1);
     ClassB cb2=getClassB(_cb2);
-    Configuration.typeSystem.computeStage(Program.empty(), cb1);
-    Configuration.typeSystem.computeStage(Program.empty(), cb2);
     ClassB expected=getClassB(_expected);
     if(!isError){
-      ClassB res=Sum.sum(Program.empty(),cb1,cb2);
+      ClassB res=Compose.compose(Program.emptyLibraryProgram(),cb1,cb2);
       TestHelper.assertEqualExp(expected,res);
       }
     else{
-      try{Sum.sum(Program.empty(),cb1,cb2);fail("error expected");}
+      try{Compose.compose(Program.emptyLibraryProgram(),cb1,cb2);fail("error expected");}
       catch(Resources.Error err){
         ClassB res=(ClassB)err.unbox;
         TestHelper.assertEqualExp(expected,res);

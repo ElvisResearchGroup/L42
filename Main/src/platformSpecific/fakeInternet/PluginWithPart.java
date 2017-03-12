@@ -20,9 +20,9 @@ import ast.Ast.Path;
 import ast.ExpCore.Using;
 import auxiliaryGrammar.EncodingHelper;
 import auxiliaryGrammar.Functions;
-import auxiliaryGrammar.Program;//TODO: to change in the new program
 import facade.PData;
 import platformSpecific.javaTranslation.Resources;
+import programReduction.Program;
 import tools.Assertions;
 import tools.Map;
 import tools.StringBuilders;
@@ -146,7 +146,7 @@ public class PluginWithPart implements PluginType{
       }
     public UsingInfo(Program p,Using s){
       usingMs=s.getS();
-      plgInfo=new PlgInfo(p.extractCb(s.getPath()).getDoc1());
+      plgInfo=new PlgInfo(p.extractClassB(s.getPath()).getDoc1());
       if(usingMs.nameToS().equals("instanceof")){
         assert usingMs.getNames().size()==1 && usingMs.getNames().get(0).equals("_this");
         //TODO: better error message?

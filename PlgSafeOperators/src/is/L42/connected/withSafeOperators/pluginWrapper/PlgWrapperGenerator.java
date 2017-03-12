@@ -32,7 +32,7 @@ import ast.ExpCore.Using;
 import ast.Expression;
 import auxiliaryGrammar.EncodingHelper;
 import auxiliaryGrammar.Functions;
-import auxiliaryGrammar.Program;
+import programReduction.Program;
 import coreVisitors.From;
 import facade.L42;
 import facade.Parser;
@@ -84,10 +84,10 @@ private static ExpCore parseAndDesugar(String s) {
 
 //-----------------------------------------------------
   public static ClassB main(PData data,ClassB l) throws UnresolvedOverloading, ClassUnfit, MethodUnfit{
-    return plgComplete(data.p.addAtTop(l));
+    return plgComplete(data.p.evilPush(l));
     }
   public static ClassB plgComplete(Program p) throws UnresolvedOverloading, ClassUnfit, MethodUnfit{//p contains the l to modify at top
-    return plgComplete(Collections.emptyList(),p,p.topCb());
+    return plgComplete(Collections.emptyList(),p,p.top());
     }
   public static ClassB plgComplete(List<Ast.C>cs,Program p,ClassB l) throws UnresolvedOverloading, ClassUnfit, MethodUnfit{
     //p.top() is topL
@@ -357,8 +357,8 @@ public static boolean hasPluginUnresponsive(ClassB l){
     Path pi=ti.getNT().getPath();
     if (pi.equals(Path.Library())){return;}//Libraries are ok and we just omit the .binaryRepr() call
     Path op=_pathForOutside(csTop.getCBar().size(),pi);
-    if(op==null){checkForInside(p.topCb(),csTop,pi); return;}
-    ClassB l=p.extractCb(op);//TODO: since p.top is topL, is it ok this extraction?
+    if(op==null){checkForInside(p.top(),csTop,pi); return;}
+    ClassB l=p.extractClassB(op);//TODO: since p.top is topL, is it ok this extraction?
     boolean hasIt=hasBinaryRepr(l);
     boolean phOk=Functions.isComplete(ti.getNT());
     if(!hasIt){throw new RefactorErrors.ClassUnfit().msg(
@@ -371,8 +371,8 @@ public static boolean hasPluginUnresponsive(ClassB l){
 
   private static void isOkAsException(Program p, Path csTop, Path pi) throws ClassUnfit, MethodUnfit {
     Path op=_pathForOutside(csTop.getCBar().size(),pi);
-    if(op==null){checkForInside(p.topCb(),csTop,pi);return;}
-    ClassB l=p.extractCb(op);
+    if(op==null){checkForInside(p.top(),csTop,pi);return;}
+    ClassB l=p.extractClassB(op);
     if(!hasExceptionIf(l)){throw new RefactorErrors.ClassUnfit().msg(
       "Class "+op+" has no method #exceptionIf(binaryRepr)");
       }
@@ -384,8 +384,8 @@ public static boolean hasPluginUnresponsive(ClassB l){
     if (pi.equals(Path.Void())){return;}
     if (pi.equals(Path.Library())){return;}//We will need to generate a simpler returning expression
     Path op=_pathForOutside(csTop.getCBar().size(),pi);
-    if(op==null){checkForInside(p.topCb(),csTop,pi); return;}
-    ClassB l=p.extractCb(op);
+    if(op==null){checkForInside(p.top(),csTop,pi); return;}
+    ClassB l=p.extractClassB(op);
     boolean hasIt=hasFrom(l);
     boolean phOk=Functions.isComplete(ti.getNT());
     if (ti.getNT().getMdf()==Mdf.Class && !ti.equals(NormType.classAny)){

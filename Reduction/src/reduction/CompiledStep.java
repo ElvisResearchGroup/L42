@@ -21,7 +21,7 @@ import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.NestedClass;
 import auxiliaryGrammar.EncodingHelper;
-import auxiliaryGrammar.Program;
+import programReduction.Program;
 
 public class CompiledStep extends SmallStep{
   @Override protected void log(String s) { }
@@ -32,7 +32,7 @@ public class CompiledStep extends SmallStep{
     return Resources.withPDo(p1,()->{
       ExpCore e1=NormalizeBlocks.of(_e1);
       if(e1 instanceof ExpCore.Signal){
-        throw new ErrorMessage.CtxExtractImpossible(e1,p1.p.getInnerData());
+        throw new ErrorMessage.CtxExtractImpossible(e1,null);
         }
       Translator code=Timer.record("Translator.translateProgram",()->Translator.translateProgram(p1.p, e1));
       try{

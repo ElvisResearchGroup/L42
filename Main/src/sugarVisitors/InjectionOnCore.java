@@ -20,7 +20,7 @@ import ast.Expression.Catch;
 import ast.Expression.ClassReuse;
 import ast.Expression.ContextId;
 import ast.Expression.WalkBy;
-import ast.Util.CachedStage;
+
 import ast.ExpCore.*;
 import ast.ExpCore.Block.*;
 import ast.ExpCore.ClassB.Member;
@@ -83,8 +83,7 @@ public class InjectionOnCore implements Visitor<ExpCore> {
           })
        );
     }
-    ClassB result=new ClassB(doc1,isInterface,supertypes,members,s.getP(),new CachedStage(),Phase.None,"");
-    result.getStage().setStage(s.getStage());
+    ClassB result=new ClassB(doc1,isInterface,supertypes,members,s.getP(),Phase.None,0);
     return result;
     }
   public ExpCore visit(Expression.MCall s){
@@ -137,7 +136,7 @@ public class InjectionOnCore implements Visitor<ExpCore> {
     if(newStuff.getMs().isEmpty()){return cb;}
     List<Member> ms = new ArrayList<Member>(cb.getMs());
     ms.addAll(newStuff.getMs());
-    return cb.withMs(ms).withStage(new CachedStage());//we still keep the cache in the inner literals
+    return cb.withMs(ms);
     }
   @Override public ExpCore visit(ContextId s){throw Assertions.codeNotReachable();}
 }

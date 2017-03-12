@@ -8,7 +8,7 @@ import ast.Ast.Path;
 import ast.Ast;
 import ast.ExpCore;
 import ast.ExpCore.ClassB;
-import auxiliaryGrammar.Program;
+import programReduction.Program;
 import facade.Configuration;
 import facade.L42;
 import facade.PData;

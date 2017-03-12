@@ -15,7 +15,7 @@ import org.junit.runners.Parameterized.Parameter;
 import ast.Ast;
 import ast.Ast.Path;
 import ast.ExpCore.ClassB;
-import auxiliaryGrammar.Program;
+import programReduction.Program;
 public class TestIntrospection {
 
 @RunWith(Parameterized.class)
@@ -60,7 +60,7 @@ public static class TestGiveInfoType {
   ClassB cb=getClassB(_cb);
   List<Ast.C> path=TestHelper.cs(_path);
   ClassB expected=getClassB(_expected);
-  ClassB result=Introspection.giveInfoType(null,Program.empty(),cb,path,methNum,typeNum);
+  ClassB result=Introspection.giveInfoType(null,Program.emptyLibraryProgram(),cb,path,methNum,typeNum);
   TestHelper.assertEqualExp(expected,result);
   }
 }

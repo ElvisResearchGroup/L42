@@ -39,8 +39,16 @@ import tools.Assertions;
 
 public interface TypeSystem{
   static TypeSystem instance(){return new Impl();}
-  default ClassB topTypeLib(Program p,ClassB l){
-    TIn in=TIn.top(p, l);
+
+  default ExpCore topTypeExp(Program p,ExpCore e){
+    TIn in=TIn.top(Phase.Norm,p, e);
+    TOut out=type(in);
+    if(out.isOk()){return out.toOk().annotated;}
+    TErr err=out.toError();
+    throw new FormattedError(err);
+    }
+  default ClassB topTypeLib(Phase phase,Program p,ClassB l){
+    TIn in=TIn.top(phase,p, l);
     TOut out=type(in);
     if(out.isOk()){return (ClassB) out.toOk().annotated;}
     TErr err=out.toError();

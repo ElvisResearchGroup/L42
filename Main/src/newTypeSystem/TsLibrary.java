@@ -82,7 +82,7 @@ public interface TsLibrary extends TypeSystem{
      }
      Phase maxPhase=L0.getPhase();
      if(in.phase.subtypeEq(maxPhase)){maxPhase=in.phase;}
-     ClassB L1=new ClassB(L0.getDoc1(),L0.isInterface(),L0.getSupertypes(),newMwts,newNs,L0.getP(),L0.getStage(),maxPhase,L0.getUniqueId());
+     ClassB L1=new ClassB(L0.getDoc1(),L0.isInterface(),L0.getSupertypes(),newMwts,newNs,L0.getP(),maxPhase,L0.getUniqueId());
      if(in.phase==Phase.Coherent){
        boolean isCoh=coherent(in.p.pop().evilPush(L1));
        if(!isCoh){

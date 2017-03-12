@@ -28,7 +28,7 @@ import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.NestedClass;
 import ast.Expression;
 import auxiliaryGrammar.Functions;
-import auxiliaryGrammar.Program;
+import programReduction.Program;
 import facade.Configuration;
 import facade.L42;
 import facade.Parser;
@@ -129,9 +129,6 @@ public class TestHelper {
   public static void assertEqualExp(ExpCore e1,ExpCore e2){
     assert e1!=null;
     assert e2!=null;
-    e1=Functions.clearCache(e1,null);//clean all cache
-    e2=Functions.clearCache(e2,null);//clean all cache
-
     String s1=ToFormattedText.of(e1);
     String s2=ToFormattedText.of(e2);
     if(e1.equals(e2) && s1.equals(s2)){return;}
@@ -227,14 +224,13 @@ public class TestHelper {
   }
 
    public static Program getProgram(/*List<Path> paths,*/String[] code){
-    Program p0=Program.empty();
+    Program p0=Program.emptyLibraryProgram();
     Integer outerCount = code.length;
     for(String s:code){
       Expression e=Parser.parse("This"+outerCount,s);
       --outerCount;
       ClassB ec=(ClassB)Desugar.of(e).accept(new InjectionOnCore());
-      Configuration.typeSystem.computeStage(p0, ec);
-      p0=p0.addAtTop(ec);
+      p0=p0.evilPush(ec);
       }
     return p0;
   }
@@ -287,7 +283,6 @@ public class TestHelper {
     }
   public static void configureForTest() {
     Configuration.reduction=new reduction.Facade();
-    Configuration.typeSystem=new typeSystem.Facade();
     L42.record=new StringBuilder();
     L42.usedNames.clear();
     Resources.clearRes();
