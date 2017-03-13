@@ -220,7 +220,7 @@ class EvilPushed extends Methods{
 
   public ClassB top() {return newTop;}
 
-  public Program updateTop(ClassB l) {throw Assertions.codeNotReachable();}
+  public Program updateTop(ClassB l) {return new EvilPushed(l,former);}
 
   public Path _reducePath(Path p) {return null;}
 

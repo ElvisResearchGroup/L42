@@ -122,7 +122,7 @@ public class UsedPaths {
     //**if ( _ T x=P _ _) inside e and T!=class Any, P not Any.
     //**if (mdf P x=_ _) inside e, P not Any  
       protected void liftDec(Block.Dec s) {
-        Path pt=s.getT().getNT().getPath();
+        Path pt=s.getT().match(nt->nt.getPath(), hType->hType.getPath());
         if(!pt.isPrimitive()){this.paths.add(pt);}
         Path p=justPath(s.getInner());
         if (p!=null){this.paths.add(p);}

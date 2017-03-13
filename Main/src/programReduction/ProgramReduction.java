@@ -49,13 +49,13 @@ public class ProgramReduction {
     ExpCore ec=nc.getInner();
     assert IsCompiled.of(ec);
     assert !(ec instanceof ClassB);
-    ExpCore ec1=new Norm().norm(p, ec);//TODO:May disappear with new TS?
-    PathsPaths pair = UsedPaths.usedPathsE(p, ec1);
+    //ExpCore ec1=new Norm().norm(p, ec);//TODO:May disappear with new TS?
+    PathsPaths pair = UsedPaths.usedPathsE(p, ec);
     Paths paths=pair.left;
     Paths paths1=pair.right;
     Program p0=Norm.multiNorm(p,paths.union(paths1));
     Program p1=MultiTypeSystem.typeProgram(paths1, p0);
-    ExpCore annEc1=MultiTypeSystem.typeMetaExp(p1,MultiTypeSystem.toAny(paths,ec1));
+    ExpCore annEc1=MultiTypeSystem.typeMetaExp(p1,MultiTypeSystem.toAny(paths,ec));
     ClassB res=reduceE(p1,annEc1,C.of("NameDebug_"+nc.getName()));
     res=privateMangling.RefreshUniqueNames.refresh(res);
     ClassB top=p1.top();

@@ -112,8 +112,12 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
     int i=splitDs(in,_ds);
     assert i+1<=_ds.size();
     List<Dec> ds=_ds.subList(i+1,_ds.size());
-    List<Dec> ds0n=_ds.subList(0,i+1);
-    List<String> fve0n=ds0n.stream().flatMap(d->FreeVariables.of(d.getInner()).stream()).collect(Collectors.toList());
+    List<Dec> ds0n=new ArrayList<>();
+    List<String> fve0n=new ArrayList<>();
+    for(Dec di:_ds.subList(0,i+1)){
+      ds0n.add(di.withT(Norm.resolve(in.p,di.getT())));
+      fve0n.addAll(FreeVariables.of(di.getInner()));
+      }
     assert !fve0n.stream()
       .anyMatch(x->ds.stream()
         .anyMatch(d->d.getX().equals(x)));    
@@ -122,52 +126,52 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
   //  for i in 0..n T'i=resolve(p,Ti)
   //  G'=x0:T'0..xn:T'n //is just ds for the way I handle TIn
   //  G1= G[fwd(onlyMutOrImm(G'))] //capturing error for next line if not onlyMutOrImm(G') is used and is errored by next line
-  List<Dec> dsFiltered = ds0n.stream().filter(
+    List<Dec> dsFiltered = ds0n.stream().filter(
           d->{Mdf m=d.getT().getNT().getMdf(); return m==Mdf.Immutable||m==Mdf.Mutable;})
           .map(d->d.withT(TypeManipulation.fwd(d.getT().getNT())))
           .collect(Collectors.toList());
-  TIn in1=in.addGds(in.p,dsFiltered); 
+    TIn in1=in.addGds(in.p,dsFiltered); 
   //  for i in 0..n Phase| p| G1|-ei~>e'i: _ <= fwd% T'i | Tri
   //  Tr=Tr0 U .. U Trn
-  Tr trAcc=Tr.instance;
-  List<Dec>ds1=new ArrayList<>();
-  List<Dec>ds1FwdP=new ArrayList<>();
-  for(Dec di:ds0n){
-    NormType nt=Norm.resolve(in.p,di.getT());
-    NormType ntFwdP=TypeManipulation.fwdP(nt);
-    TOut _out=type(in1.withE(di.getInner(),ntFwdP));
-    if(!_out.isOk()){return _out.toError();}
-    TOk ok=_out.toOk();
-    trAcc=trAcc.trUnion(ok);
-    Dec di1=di.withInner(ok.annotated);
-    ds1.add(di1.withT(nt));
-    ds1FwdP.add(di1.withT(ntFwdP));
-    }
+    Tr trAcc=Tr.instance;
+    List<Dec>ds1=new ArrayList<>();
+    List<Dec>ds1FwdP=new ArrayList<>();
+    for(Dec di:ds0n){
+      NormType nt=di.getT().getNT();
+      NormType ntFwdP=TypeManipulation.fwdP(nt);
+      TOut _out=type(in1.withE(di.getInner(),ntFwdP));
+      if(!_out.isOk()){return _out.toError();}
+      TOk ok=_out.toOk();
+      trAcc=trAcc.trUnion(ok);
+      Dec di1=di.withInner(ok.annotated);
+      ds1.add(di1.withT(nt));
+      ds1FwdP.add(di1.withT(ntFwdP));
+      }
   //  if fwd_or_fwd%_in Tr.Ts
   //    then x0..xn disjoint FV(e0..en)//returning unresolved items from cycles is prohibited
-  if(TypeManipulation.fwd_or_fwdP_in(trAcc.returns)){
-    boolean xInCommon=fve0n.stream().anyMatch(x->ds0n.stream().anyMatch(d->d.getX().equals(x)));
-    if(xInCommon){return new TErr(in,"",null,ErrorKind.AttemptReturnFwd);}
-    }
+    if(TypeManipulation.fwd_or_fwdP_in(trAcc.returns)){
+      boolean xInCommon=fve0n.stream().anyMatch(x->ds0n.stream().anyMatch(d->d.getX().equals(x)));
+      if(xInCommon){return new TErr(in,"",null,ErrorKind.AttemptReturnFwd);}
+      }
   //  if fwd_or_fwd%_in { G(x) | x in FV(e0..en) } // x0..xn already excluded
   //    then G0=G[fwd%(G')]  
   //    otherwise G0=G[G']//capturing error for next line, see if the difference between fwd%(G') ad G' would fix it. Still, then we need to check for the fwd x in FV(e0..en)..
-  List<NormType> _nts=new ArrayList<>();
-  for(String x: fve0n){
-    NormType t=in._g(x);
-    if(t!=null){_nts.add(t);}
-    }
-  TIn inG0;
-  if(TypeManipulation.fwd_or_fwdP_in(_nts)){inG0=in.addGds(in.p,ds1FwdP);}
-  else{inG0=in.addGds(in.p,ds1);}
+    List<NormType> _nts=new ArrayList<>();
+    for(String x: fve0n){
+      NormType t=in._g(x);
+      if(t!=null){_nts.add(t);}
+      }
+    TIn inG0;
+    if(TypeManipulation.fwd_or_fwdP_in(_nts)){inG0=in.addGds(in.p,ds1FwdP);}
+    else{inG0=in.addGds(in.p,ds1);}
   //  Phase| p| G0|- ds ~> ds'|Tr' | G2
-  TOutDs _res= dsType(inG0,ds);
-  if(!_res.isOk()){return _res.toError();}
-  TOkDs res=_res.toOkDs();
-  ds1.addAll(res.ds);//safe? locally created, not leaked yet.
-  if(res.trAcc!=null){trAcc=trAcc.trUnion(res.trAcc);}
-  return new TOkDs(trAcc,ds1,res.g);
-  }
+    TOutDs _res= dsType(inG0,ds);
+    if(!_res.isOk()){return _res.toError();}
+    TOkDs res=_res.toOkDs();
+    ds1.addAll(res.ds);//safe? locally created, not leaked yet.
+    if(res.trAcc!=null){trAcc=trAcc.trUnion(res.trAcc);}
+    return new TOkDs(trAcc,ds1,res.g);
+    }
   
   default TOutKs ksType(TIn in,Tr trAcc,List<On> ks){
 //   D| Tr |-k1..kn ~> k'1..k'n:T1..Tn <= T | Tr1 U .. U Trn

@@ -28,7 +28,9 @@ public class CompiledStep extends SmallStep{
 
   @Override
   protected ExpCore executeAtomicStep(PData p1, ExpCore _e1,Ast.C nestedName) {
-    if(!IsCompiled.of(_e1)){return step(p1, _e1);}
+    if(!IsCompiled.of(_e1)){
+      return step(p1, _e1);
+      }
     return Resources.withPDo(p1,()->{
       ExpCore e1=NormalizeBlocks.of(_e1);
       if(e1 instanceof ExpCore.Signal){

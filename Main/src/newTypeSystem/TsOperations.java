@@ -90,7 +90,9 @@ public interface TsOperations extends TypeSystem{
       return out;  
       }
     TOut out=typeLib(in.withP(in.p.evilPush(s)));
-    if(out.isOk()){return new TOk(in,s,t);}
+    if(out.isOk()){
+      return new TOk(in,out.toOk().annotated,t);
+      }
     return out.toError().enrich(in);
     }
 

@@ -372,7 +372,7 @@ public class Resources {
     if (path.equals(Path.Void())){return "platformSpecific.javaTranslation.Resources.Void";}
     Program p=Resources.getP();
     try{ClassB cb=p.extractClassB(path);
-    if( cb.getPhase()==Phase.Typed && IsCompiled.of(cb)){ return nameOf(path.outerNumber(),path.getCBar()); }
+    if( cb.getPhase().subtypeEq(Phase.Typed) && IsCompiled.of(cb)){ return nameOf(path.outerNumber(),path.getCBar()); }
     }catch (ErrorMessage em){}
     //return nameOf(path.outerNumber(),path.getCBar());
     return "Object";//TODO: boh? new reduction would fix?

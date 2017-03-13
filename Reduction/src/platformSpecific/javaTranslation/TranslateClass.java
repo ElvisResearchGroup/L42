@@ -118,6 +118,7 @@ public class TranslateClass {
       }
     else{res.append("class ");}
     res.append(s);
+    System.out.println("creating class "+s);
     if(isInterface){res.append(" extends ");}
     else{res.append(" implements ");}
     res.append("platformSpecific.javaTranslation.Resources.Revertable");

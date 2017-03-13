@@ -247,7 +247,7 @@ public void test12(){tp("{"
 ,"  T:{ }"
 ,"  class method"
 ,"  This0.GenericId.T id(This0.GenericId.T that) (that)}"
-,"E:( c=LibList {//@exitStatus\n//0\n\n})"
+,"E:( class LibList c=LibList {//@exitStatus\n//0\n\n})"
 ,"}"
 );}
 
