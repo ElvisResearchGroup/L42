@@ -4,6 +4,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import helpers.TestHelper;
+import newTypeSystem.ErrorKind;
+import newTypeSystem.FormattedError;
 import facade.Configuration;
 import facade.ErrorFormatter;
 import facade.L42;
@@ -19,6 +21,13 @@ import ast.ExpCore.ClassB;
 import auxiliaryGrammar.Functions;
 
 public class TestShortPrograms {
+  public static void tp(ErrorKind kind,String ...code) {
+  
+  try{tp(code);assert false;}
+  catch(FormattedError err){
+    assert err.kind==kind;
+    }
+  }
   public static void tp(String ...code) {
     TestHelper.configureForTest();
     FinalResult res0;
@@ -127,6 +136,7 @@ public class TestShortPrograms {
 ,"    )"
 ,"}");}
 
+/* Not working, lent boxes disabled to get single constructor
 @Test public void test7b(){tp("{()"
 ,"  C:{k()"
 ,"    class method Library ok() ({//@exitStatus\n//0\n\n} )"
@@ -145,7 +155,7 @@ public class TestShortPrograms {
 ,"    C.ko()"
 ,"    )"
 ,"}");}
-
+*/
 @Test public void test8(){tp("{()"
   ," D: {() class method Library id(Library that) (that)}"
   ," C: D.id({()  method Void foo() (C x= this void)}) "
@@ -203,15 +213,15 @@ public void test9b(){tp("{()"
 
 
 @Test(expected=PathNonExistant.class)//TODO: now fail with paths not subtype, would be nice to recover the precise error
-public void test9c1(){tp("{()"//focus on the difference between c1 and c2. This is the expected behaviour.
-    ," D: {() class method Library id(Library that) (that)}"
-    ," C: D.id({()  H:{() method Void foo() (This2.C.E x= this void)}}) "
+public void test9c1(){tp("{"//focus on the difference between c1 and c2. This is the expected behaviour.
+    ," D: { class method Library id(Library that) that}"
+    ," C: D.id({ H:{ method Void foo() (This2.C.E x= this void)}}) "
     ," F:( c=C {//@exitStatus\n//0\n\n})"//otherwise it does not fails with optimizations on
     ,"}");}
 @Test()
 public void test9c2(){tp("{"
-    ," D: { class method Library id(Library that) (that)}"
-    ," C: D.id({  H:{ method Void foo() (This2.C.H x= this void)}}) "
+    ," D: { class method Library id(Library that) that}"
+    ," C: D.id({ H:{ method Void foo() (This2.C.H x= this void)}}) "//here C.H vs C.E is the only difference
     ," F:( c=C {//@exitStatus\n//0\n\n})"
     ,"}");}
 @Test(/*expected=ErrorMessage.PathsNotSubtype.class/*PathNonExistant.class*/)//correctly no error for trashing the error.
@@ -228,8 +238,8 @@ public void test9d(){tp("{()"
     ," E: ( c=C {//@exitStatus\n//0\n\n})"
     ,"}");}
 
-@Test(expected=ErrorMessage.MethodNotPresent.class)
-public void test10(){tp("{()"
+@Test//(expected=ErrorMessage.MethodNotPresent.class)
+public void test10(){tp(ErrorKind.SelectorNotFound,"{()"
     ," D: {() class method Library id(Library that) (that)}"
     ," C: D.id({()  method Void foo(D x) ( x.foo(x))}) "
     ," E: ( c=C {//@exitStatus\n//0\n\n})"
@@ -315,19 +325,19 @@ public void testPlusNotStar(){tp("{"
 ,"}"
 );}
 
-@Test(expected=ErrorMessage.PathsNotSubtype.class)
-public void testDeepTyping1(){tp("{"
+@Test//(expected=ErrorMessage.PathsNotSubtype.class)
+public void testDeepTyping1(){tp(ErrorKind.NotSubtypeClass,"{"
     ," D: { class method Library wrong()  { A:{method Void v(Any a) a } } }"
     ," E: ( Library ignore=D.wrong(), {//@exitStatus\n//0\n\n})"
     ,"}");}
-@Test(expected=ErrorMessage.MethodNotPresent.class)
-public void testDeepTyping2(){tp("{"
+@Test//(expected=ErrorMessage.MethodNotPresent.class)
+public void testDeepTyping2(){tp(ErrorKind.SelectorNotFound,"{"
     ," D: { class method Library wrong()  { A:{method Void v() this.notDeclared() } } }"
     ," E: ( Library ignore=D.wrong(), {//@exitStatus\n//0\n\n})"
     ,"}");}
 
-@Test(expected=ErrorMessage.MethodNotPresent.class)
-public void testDeepTyping3(){tp("{"
+@Test//(expected=ErrorMessage.MethodNotPresent.class)
+public void testDeepTyping3(){tp(ErrorKind.SelectorNotFound,"{"
     ," D: { class method Library wrong()  { A:{method Void v() this.notDeclared() } } }"
     ," E: ( Void ignore=D.wrong(), {//@exitStatus\n//0\n\n})"//we check that methodNotPresent has priority over PathsNotSubtype in this case
     ,"}");}

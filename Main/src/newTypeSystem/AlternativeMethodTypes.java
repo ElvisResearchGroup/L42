@@ -132,9 +132,9 @@ public class AlternativeMethodTypes {
     if(t==null){return;}
     l.add(t);
     }
-    static MethodType mtDeclared(Program p, Path P, MethodSelector ms){
+    static MethodType _mtDeclared(Program p, Path P, MethodSelector ms){
       MethodWithType mwt = (MethodWithType) p.extractClassB(P)._getMember(ms);
-      assert mwt!=null;
+      if(mwt==null){return null;}
       MethodType mt=From.from(mwt.getMt(),P);
       return mt;
       }

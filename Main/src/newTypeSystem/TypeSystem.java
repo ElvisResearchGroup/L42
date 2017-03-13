@@ -122,7 +122,8 @@ class Impl implements TypeSystem,TsOperations,TsBlock,TsMCall,TsLibrary{
         });
       }
     finally{if(res!=null){memoizeTSRes(in,res);}}
-    assert res!=null;
+    assert res!=null:
+      "";
     return res;
     }
   private void memoizeTSRes(TIn in, TOut out) {

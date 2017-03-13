@@ -35,7 +35,10 @@ default TOut innerMVPRetype(TOk ri,NormType ti){
   default TOut tsMCall(TIn in, MCall s) {
     NormType _rec=GuessTypeCore.of(in, s.getInner());
     Path rec=_rec.getPath();
-    MethodType mDec=AlternativeMethodTypes.mtDeclared(in.p,rec,s.getS());
+    MethodType mDec=AlternativeMethodTypes._mtDeclared(in.p,rec,s.getS());
+    if (mDec==null){
+      return new TErr(in,"",null,ErrorKind.SelectorNotFound);
+      }
     NormType ret=mDec.getReturnType().getNT();
     ErrorKind kind = TypeSystem.subtype(in.p, ret.getPath(),in.expected.getPath());
     if(kind!=null){return new TErr(in,"",ret,kind);}

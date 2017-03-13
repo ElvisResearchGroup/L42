@@ -228,7 +228,7 @@ public interface TsLibrary extends TypeSystem{
       NormType Ti=_extractTi(ck,mwt.getMs().getName());// internally do noFwd
       if (Ti==null){return false;}
       //if(m==Mdf.Class){return false;}
-      if(m==Mdf.Readable){//getter
+      if(m==Mdf.Readable || m==Mdf.Immutable){//getter
         if(!mt.getTs().isEmpty()){return false;}
         NormType Ti_=TypeManipulation._toRead(Ti);
         if (Ti_==null){return false;}//p|-toRead(Ti)<=T

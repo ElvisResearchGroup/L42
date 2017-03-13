@@ -1,10 +1,15 @@
 package newTypeSystem;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import ast.Ast.Doc;
 import ast.Ast.Mdf;
 import ast.Ast.NormType;
 import ast.Ast.Path;
 import ast.Ast.SignalKind;
+import ast.ErrorMessage;
+import ast.ExpCore;
 import ast.ExpCore.Block;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.Loop;
@@ -54,8 +59,32 @@ public interface TsOperations extends TypeSystem{
     }
 
     default TOut tsUsing(TIn in, Using s) {
-    // TODO Auto-generated method stub
-    return null;
+    //D |- use P check m(x1:e1.. xn:en) e0 ~>use P check m(x1:e'1.. xn:e'n) e'0 :T0 <= T | Tr0 U..U Trn
+    //  plugin(D.p,P,m(x1..xn))=plg, T1..Tn->T0;empty //plg is a free variable, in the small step reduction would be the function representing the behaviour
+    //  D.p|-T0 <= T
+    //  forall i 0..n D|- ei ~> e'i : T'i <=Ti |Tri
+    //Now plugings are assumed to always ask for imm/class parameters
+    if (s.getPath().isPrimitive()){     
+      throw new ErrorMessage.InvalidURL("No plug-in url present for primitive path "+s.getPath(),null);     
+      }       
+    List<NormType> lt = platformSpecific.fakeInternet.OnLineCode.pluginType(in.p, s);      
+    assert s.getEs().size()==lt.size()-1;
+    ErrorKind k=TypeSystem.subtype(in.p,lt.get(0),in.expected);
+    if(k!=null){return new TErr(in,"",lt.get(0),k);}
+    List<ExpCore> newEs=new ArrayList<>();
+    TOut out0=type(in.withE(s.getInner(),lt.get(0)));
+    if(!out0.isOk()){return out0;}
+    TOk okAcc=out0.toOk();
+    {int i=-1;for(ExpCore ei:s.getEs()){i+=1;       
+      NormType ti=lt.get(i+1);//1..n      
+      assert ti.getMdf()==Mdf.Immutable || ti.getMdf()==Mdf.Class;
+      TOut outi=type(in.withE(ei,ti));
+      if(!outi.isOk()){return outi;}
+      newEs.add(outi.toOk().annotated);
+      okAcc=okAcc.trUnion(outi.toOk());
+      }}
+    okAcc=okAcc.withAC(s.withInner(okAcc.annotated).withEs(newEs),lt.get(0));
+    return okAcc;
     }
 
     default TOut tsSignal(TIn in, Signal s) {

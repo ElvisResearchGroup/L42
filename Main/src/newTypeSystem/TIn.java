@@ -172,7 +172,11 @@ boolean isCoherent(){
   return true;
   }
 @Override public String toString(){
-  return this.phase+";p;"+this.g+"|-"+sugarVisitors.ToFormattedText.of(this.e)+":"+this.expected;
+
+  String resE=sugarVisitors.ToFormattedText.of(this.e);
+  resE=resE.replace("\n", " ");
+  if(resE.length()>50){resE=resE.substring(0,40)+"[..]"+resE.substring(resE.length()-5,resE.length());}
+  return this.phase+";p;"+this.g+"|-"+resE+":"+this.expected;
   }
 public TIn freshGFromMt(MethodWithType mwt){
   MethodType mt=mwt.getMt();

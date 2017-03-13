@@ -51,9 +51,9 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
   //ds=ds0..dsn;
   //domi=dom(dsi+1..dsn)
   //domi\xs=domi == no x in xs in dom(dsi+1..dsn)
-  if(ip1>=ds.size()){return false;}
+  if(ip1>=ds.size()){return true;}
   String xDsip1=ds.get(ip1).getX();
-  if(xs.contains(xDsip1)){return true;}
+  if(xs.contains(xDsip1)){return false;}
   return xsNotInDomi(xs,ds,ip1+1);
   }
 
@@ -69,10 +69,10 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
    if(!_dsOut.isOk()){
      TErr err=_dsOut.toError();
      if(!err.kind.needContext){return err;}
-     //here we have the info to capture a failure about ds and discover if    
+     //TODO: here we have the info to capture a failure about ds and discover if    
      //extant name (fwd[%]* x) was hidden by error safety or  modifiable name (capsule/mut/lent x)
      //was locked by error safety[cite the line number of the catch]
-     throw Assertions.codeNotReachable();
+     return err;
      }
    TOkDs dsOk=_dsOut.toOkDs();
    //Phase| p| G'| Tr' |- ks~> ks' : Ts <= T' | Tr

@@ -463,7 +463,7 @@ coherent(n?,p,T1 x1..Tn xn,
   either
     mdf=mut and p|-capsuleToLent(Ti)<=T //exposer
   or 
-    mdf=read and p|-toRead(Ti)<=T //getter //note for James, toRead need to keep imm as imm, toRead code reverted again :)
+    mdf in {read,imm} and p|-toRead(Ti)<=T //getter //note for James, toRead need to keep imm as imm, toRead code reverted again :)
   
 coherent(n?,p,T1 x1..Tn xn,
     refine? mut method Void m[n?](T that) exception _)
