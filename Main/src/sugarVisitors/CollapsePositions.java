@@ -15,7 +15,7 @@ public class CollapsePositions extends CloneVisitor{
   }
   public static Position of(Expression e){
     CollapsePositions cp=new CollapsePositions();
-    e.accept(cp);
+    cp.lift(e);
     return cp.p;
   }
 
@@ -33,7 +33,7 @@ public class CollapsePositions extends CloneVisitor{
   }
   protected <T extends Expression>T lift(T e){
    accumulatePos(e);
-    return super.lift(e);
+   return super.lift(e);
   }
   private void accumulatePos(Object o){
     if(o instanceof Expression.HasPos){
@@ -65,13 +65,6 @@ public class CollapsePositions extends CloneVisitor{
         Integer.max(p1.getPos2(),p2.getPos2()),
         null);
       }
-    //if(genericity(p1)>genericity(p2)){return p2;}//mess up with file names?
     return p1;
     }
-  private static int genericity(Position p) {
-    return (p.getLine2()-p.getLine1())*10000
-    +
-    (p.getPos2()-p.getPos1());
   }
-
-}
