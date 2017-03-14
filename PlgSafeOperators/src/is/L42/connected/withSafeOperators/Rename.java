@@ -14,7 +14,6 @@ import coreVisitors.CloneVisitorWithProgram;
 import coreVisitors.FromInClass;
 import facade.Configuration;
 import facade.L42;
-import is.L42.connected.withSafeOperators.refactor.Compose;
 import ast.Ast;
 import ast.ExpCore;
 import ast.Ast.C;
@@ -84,7 +83,7 @@ public class Rename {
     ClassB clearCb=renamedCb.onNestedNavigateToPathAndDo(src,nc->Optional.empty());
     ClassB newCb=redirectDefinition(src,dest,renamedCb);
     newCb=ClassOperations.normalizePaths(newCb);
-    return Compose.alradyRefreshedCompose(p, clearCb, newCb);
+    return _Sum.normalizedTopSum(p, clearCb, newCb);
   }
   public static ClassB renameMethod(Program p,ClassB cb,List<Ast.C> path,MethodSelector src,MethodSelector dest){
       Member mem=Errors42.checkExistsPathMethod(cb, path, Optional.of(src));

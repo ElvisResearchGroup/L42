@@ -55,7 +55,6 @@ public This trUnion(ATr<?> that){
   This res=trClean();
   assert this.returns!=null;
   assert that.returns!=null;
-  if(this.returns.isEmpty() && that.returns.isEmpty())
   res.returns=union(this.returns,that.returns);
   res.exceptions=union(this.exceptions,that.exceptions);
   return res;

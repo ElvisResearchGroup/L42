@@ -265,6 +265,7 @@ default TOut combine(TErr res,TErr promFail){throw Assertions.codeNotReachable()
 default boolean promotionMakesSense(TErr tErr){
     NormType expected=tErr.in.expected;
     NormType obtained=tErr._computed;
+    if(expected==null || obtained==null){return false;}
     if (null!=TypeSystem.subtype(tErr.in.p,obtained.getPath(), expected.getPath())){return false;}
     Mdf eM=expected.getMdf();
     Mdf oM=obtained.getMdf();

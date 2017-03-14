@@ -50,10 +50,10 @@ public class TranslationTest {
       "{  }"," { return void }","platformSpecific.javaTranslation.Resources$Void");}
 
   @Test public void t7(){tester(
-      "{ A:{(B b, Void v)} B:{(A a)} }"," (aa=A(b:bb,v:void)  bb=B(a:aa) bb.a().b().a().v()  )","platformSpecific.javaTranslation.Resources$Void");}
+      "{ A:{B b Void v class method This (fwd B b, Void v)} B:{A a class method This (fwd A a)} }"," (aa=A(b:bb,v:void)  bb=B(a:aa) bb.a().b().a().v()  )","platformSpecific.javaTranslation.Resources$Void");}
 
   @Test public void t8(){tester(
-      "{ A:{(A a, Void v)} }"," (aa=A(a:aa,v:void) aa.a().a().a().v()  )","platformSpecific.javaTranslation.Resources$Void");}
+      "{ A:{A a,Void v, class method This (fwd A a, Void v)} }"," (aa=A(a:aa,v:void) aa.a().a().a().v()  )","platformSpecific.javaTranslation.Resources$Void");}
 
   @Test public void t9(){tester(
       "{ A:{() implements IA method foo() void} IA:{interface method Void foo() } }"," A().foo()","platformSpecific.javaTranslation.Resources$Void");}
@@ -63,7 +63,8 @@ public class TranslationTest {
   public void tester(String cbStr,String eStr,String nameRes) {
     TestHelper.configureForTest();
     Program p=runTypeSystem(cbStr);
-    ExpCore e=Desugar.of(Parser.parse(null,eStr)).accept(new InjectionOnCore());
+    ExpCore _e=Desugar.of(Parser.parse(null,eStr)).accept(new InjectionOnCore());
+    ExpCore e = newTypeSystem.TypeSystem.instance().topTypeExpVoid(p, _e);
     Translator code=Resources.withPDo(new PData(p),()->Translator.translateProgram(p, e));
     System.out.println(code);
     Object o=Resources.withPDo(new PData(p),()->code.runMap());

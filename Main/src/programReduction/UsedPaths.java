@@ -99,7 +99,9 @@ public class UsedPaths {
     List<Path> result1;
     List<ClassB> l1n = Collections.emptyList();
     if(m instanceof MethodWithType){
-      result1 = CollectPaths0.of((MethodWithType)m);
+      MethodWithType mwt = (MethodWithType)m;
+      result1 = CollectPaths0.of(mwt);
+      if(mwt.get_inner().isPresent()){l1n = CollectClassBs0.of(m.getInner());}
       }
     else {
       result1=CollectPaths0.of(m.getInner());

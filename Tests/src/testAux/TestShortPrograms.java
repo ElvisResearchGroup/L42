@@ -125,7 +125,7 @@ public class TestShortPrograms {
 ,"    class method Library ko() ({//@exitStatus\n//42000\n\n} )"
 ,"    }"
 ,"  I:{interface}"
-,"  Box:{mut k(var fwd mut Any f)}"
+,"  Box:{class method mut This k(fwd mut Any f)  mut method mut Any f()}"
 ,"  AI:{k() implements I}"
 ,"  D:("
 ,"    mut Box box=Box.k(f:box)"
@@ -162,15 +162,15 @@ public class TestShortPrograms {
   ," E: ( c=C {//@exitStatus\n//0\n\n})"
   ,"}");}
 
-@Test(expected=ErrorMessage.PathsNotSubtype.class)
-public void test8b(){tp("{()"
+@Test//(expected=ErrorMessage.PathsNotSubtype.class)
+public void test8b(){tp(ErrorKind.NotSubtypeClass,"{()"
     ," D: {() class method Library id(Library that) (that)}"
     ," C: {()  method Void foo() (D x= this void)} "
     ," E: ( c=C {//@exitStatus\n//0\n\n})"
     ,"}");}
 
-@Test(expected=ErrorMessage.PathsNotSubtype.class)
-public void test8c(){tp("{()"
+@Test//(expected=ErrorMessage.PathsNotSubtype.class)
+public void test8c(){tp(ErrorKind.NotSubtypeClass,"{()"
     ," D: {() class method Library id(Library that) (that)}"
     ," C: D.id({() method Void foo() (D x= this void)}) "
     ," E:( c=C {//@exitStatus\n//0\n\n})"
@@ -212,7 +212,7 @@ public void test9b(){tp("{()"
     ,"}");}
 
 
-@Test(expected=PathNonExistant.class)//TODO: now fail with paths not subtype, would be nice to recover the precise error
+@Test(expected=PathNonExistant.class)
 public void test9c1(){tp("{"//focus on the difference between c1 and c2. This is the expected behaviour.
     ," D: { class method Library id(Library that) that}"
     ," C: D.id({ H:{ method Void foo() (This2.C.E x= this void)}}) "
@@ -318,9 +318,9 @@ public void testTwoKindExc2(){tp(""
 ," {//@exitStatus\n//0\n})"
 ,"}"
 );}
-@Test(expected=ErrorMessage.PathsNotSubtype.class)
-public void testPlusNotStar(){tp("{"
-,"A:{ () method Library foo() }"
+@Test//(expected=ErrorMessage.PathsNotSubtype.class)
+public void testPlusNotStar(){tp(ErrorKind.LibraryNotCoherent,"{"
+,"A:{ class method This () method Library foo() }"
 ,"E: A().foo()"
 ,"}"
 );}

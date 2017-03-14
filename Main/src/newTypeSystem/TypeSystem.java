@@ -40,6 +40,13 @@ import tools.Assertions;
 public interface TypeSystem{
   static TypeSystem instance(){return new Impl();}
 
+  default ExpCore topTypeExpVoid(Program p,ExpCore e){
+    TIn in=TIn.top(Phase.Norm,p, e);
+    TOut out=type(in.withE(e,Path.Void().toImmNT()));
+    if(out.isOk()){return out.toOk().annotated;}
+    TErr err=out.toError();
+    throw new FormattedError(err);
+    }
   default ExpCore topTypeExp(Program p,ExpCore e){
     TIn in=TIn.top(Phase.Norm,p, e);
     TOut out=type(in);
@@ -61,7 +68,12 @@ public interface TypeSystem{
     if (!p.subtypeEq(pSub, pSuper)){return ErrorKind.NotSubtypeClass;}
     return null;
     }
+  public static void checkExists(Program p, Path pi){
+    if (pi.isCore()){p.extractClassB(pi);}
+    }
   public static ErrorKind subtype(Program p, NormType tSub, NormType tSuper) {
+    checkExists(p,tSub.getPath());
+    checkExists(p,tSuper.getPath());
     if (!p.subtypeEq(tSub.getPath(),tSuper.getPath())){return ErrorKind.NotSubtypeClass;}
     if(!Functions.isSubtype(tSub.getMdf(),tSuper.getMdf())){return ErrorKind.NotSubtypeMdf;}
     return null;

@@ -187,7 +187,7 @@ public TIn freshGFromMt(MethodWithType mwt){
     NormType ntx=mt.getTs().get(i).getNT();
     newG.put(x,ntx);
     }}
-  return new TIn(this.phase,this.p,mwt.getInner(),TypeManipulation.fwdP(mt.getReturnType().getNT()),newG);
+  return new TIn(Phase.Typed,this.p,mwt.getInner(),TypeManipulation.fwdP(mt.getReturnType().getNT()),newG);
   }
 
 }

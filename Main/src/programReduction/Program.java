@@ -41,6 +41,7 @@ public interface Program {
   
   //program derived operations:
   default boolean subtypeEq(Ast.Path p,Ast.Path p1){
+    if(p1.equals(Path.Any())){return true;}
     if(equiv(p,p1)){return true;}
     if(p.isPrimitive()){return false;}
     ClassB cb=this.extractClassB(p);

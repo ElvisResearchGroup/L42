@@ -47,8 +47,8 @@ public interface TsLibrary extends TypeSystem{
     assert normP.getSupertypes().stream().allMatch(
       t->{
         Phase phase=in.p.extractClassB(t.getNT().getPath()).getPhase();
-        return phase==Phase.Norm ||
-                phase==Phase.Typed;});
+        return phase!=Phase.None;}):
+      "";
     return normP;
     }
     
@@ -70,13 +70,14 @@ public interface TsLibrary extends TypeSystem{
      List<NestedClass> newNs = new ArrayList<>();
      //   forall i in 1..n
 //     Phase| p| Ps |- Mi ~> Mi'
+     TIn inNested=in.withP(in.p.updateTop(L0));
      for(MethodWithType mwt:mwts){
-       TOutM out=memberMethod(in,L0.getSupertypes(),mwt);
+       TOutM out=memberMethod(inNested,L0.getSupertypes(),mwt);
        if(!out.isOk()){return out.toError();}
        newMwts.add((MethodWithType)out.toOkM().inner);
        }
      for(NestedClass nt:ns){
-       TOutM out=memberNested(in,nt);
+       TOutM out=memberNested(inNested,nt);
        if(!out.isOk()){return out.toError();}
        newNs.add((NestedClass)out.toOkM().inner);
      }
@@ -234,14 +235,15 @@ public interface TsLibrary extends TypeSystem{
         if (Ti_==null){return false;}//p|-toRead(Ti)<=T
         if(null!=TypeSystem.subtype(p, Ti_,mt.getReturnType().getNT())){return false;}
         return true;
-      }
+        }
       if(m!=Mdf.Mutable){return false;}
       //exposer/setter
       if(mt.getTs().isEmpty()){//exposer
-      NormType Ti_=TypeManipulation.capsuleToLent(Ti);
-      if (Ti_==null){return false;}//p|-capsuleToLent(Ti)<=T
-      if(null!=TypeSystem.subtype(p, Ti_,mt.getReturnType().getNT())){return false;}
-      }
+        NormType Ti_=TypeManipulation.capsuleToLent(Ti);
+        if (Ti_==null){return false;}//p|-capsuleToLent(Ti)<=T
+        if(null!=TypeSystem.subtype(p, Ti_,mt.getReturnType().getNT())){return false;}
+        return true;
+        }
       //setter refine? mut method Void m[n?](T that)
       if(!mt.getReturnType().equals(NormType.immVoid)){return false;}
       if(mt.getTs().size()!=1){return false;}
@@ -251,6 +253,7 @@ public interface TsLibrary extends TypeSystem{
     }
 
   default NormType _extractTi(MethodWithType ck, String name) {
+    if(name.startsWith("#")){name=name.substring(1);}
     int i=-1;for(String ni:ck.getMs().getNames()){i+=1;
       if (ni.equals(name)){return TypeManipulation.noFwd(ck.getMt().getTs().get(i).getNT());} 
       }

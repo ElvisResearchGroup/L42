@@ -398,8 +398,7 @@ private static void printType(int i, Program p) {
 public static void topFormatErrorMessage(ErrorMessage msg) {
     //System.out.println(ErrorFormatter.formatError(msg).getErrorTxt());
     L42.printDebug(
-        //TODO: not sure about getP(), added instead of empty program
-        formatError(Resources.getP(),msg).getErrorTxt()
+        formatError(Program.emptyLibraryProgram(),msg).getErrorTxt()
         );
     for(Field f:msg.getClass().getDeclaredFields()){
       f.setAccessible(true);

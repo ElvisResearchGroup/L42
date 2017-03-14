@@ -355,6 +355,8 @@ public class Resources {
       }
     }
   public static String nameOf(Ast.Type t) {
+    assert t instanceof NormType:
+    "";
     Path p=((NormType)t).getPath();
     return nameOf(p);
     }

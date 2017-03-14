@@ -84,7 +84,7 @@ public NormType visit(Block s) {
 }
 @Override
 public NormType visit(ClassB s) {
-  throw Assertions.codeNotReachable();
+  return Path.Library().toImmNT();
 }
 @Override
 public NormType visit(Loop s) {

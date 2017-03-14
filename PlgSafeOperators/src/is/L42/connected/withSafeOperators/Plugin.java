@@ -28,7 +28,6 @@ import coreVisitors.CloneVisitorWithProgram;
 import coreVisitors.From;
 import facade.Configuration;
 import facade.L42;
-import is.L42.connected.withSafeOperators.refactor.Compose;
 import platformSpecific.fakeInternet.ActionType;
 import platformSpecific.fakeInternet.PluginType;
 import platformSpecific.javaTranslation.Resources;
@@ -46,7 +45,7 @@ public class Plugin implements PluginType{
       return Timer.record("Mcompose£xleft£xright", ()-> {
         ClassB left=ensureExtractClassB(_left);
         ClassB right=ensureExtractClassB(_right);
-        try{return Compose.compose(Resources.getP(),left,right);
+        try{return _Sum.sum(Resources.getP(),left,right);
         }catch(ArrayIndexOutOfBoundsException exc){
           exc.printStackTrace();
           throw exc;

@@ -7,7 +7,6 @@ import static org.junit.Assert.fail;
 import facade.Configuration;
 import facade.L42;
 import helpers.TestHelper;
-import is.L42.connected.withSafeOperators.refactor.Compose;
 
 import java.util.Arrays;
 import java.util.List;
@@ -94,11 +93,11 @@ import programReduction.Program;
     ClassB cb2=getClassB(_cb2);
     ClassB expected=getClassB(_expected);
     if(!isError){
-      ClassB res=Compose.compose(Program.emptyLibraryProgram(),cb1,cb2);
+      ClassB res=_Sum.sum(Program.emptyLibraryProgram(),cb1,cb2);
       TestHelper.assertEqualExp(expected,res);
       }
     else{
-      try{Compose.compose(Program.emptyLibraryProgram(),cb1,cb2);fail("error expected");}
+      try{_Sum.sum(Program.emptyLibraryProgram(),cb1,cb2);fail("error expected");}
       catch(Resources.Error err){
         ClassB res=(ClassB)err.unbox;
         TestHelper.assertEqualExp(expected,res);

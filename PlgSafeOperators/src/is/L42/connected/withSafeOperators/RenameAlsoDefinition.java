@@ -17,7 +17,6 @@ import auxiliaryGrammar.Functions;
 import auxiliaryGrammar.Locator;
 import programReduction.Program;
 import auxiliaryGrammar.Locator.Kind;
-import is.L42.connected.withSafeOperators.refactor.Compose;
 import tools.Assertions;
 
 class RenameAlsoDefinition extends RenameUsage{
