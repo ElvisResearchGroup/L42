@@ -84,6 +84,8 @@ public class Norm {
     //-norm(p)={interface? implements Ps' norm(p,Ms') }
     //p.top()={interface? implements Ps Ms} //Ms is free var and is ok
     ClassB l=p.top();
+    assert !l.getDoc1().toString().contains("exception as Guard bureocracy"):
+      "";
     //Ps'=collect(p,Ps)
     List<Path> ps1 = Methods.collect(p,l.getSuperPaths());
     //Ms'=methods(p,This0), {C:e in Ms} //norm now put all the nested classes in the back.

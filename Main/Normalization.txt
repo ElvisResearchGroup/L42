@@ -115,7 +115,9 @@ maindefinition:
 - usedPathsE(p,eC)= <path\paths';paths'>//assert that the result includes paths in usedPathsFix(p,paths, empty)  
   Ps,Ps'={P|P inside eC}//arbitrary split of the set; heuristic will apply in the implementation.
   paths=usedPathsFix(p,reorganize(Ps), empty)
-  paths'=usedPathsFix(p,reorganize(Ps'), empty)//TODO: fix code around here (plus, do we have setminus on Paths?)
+  paths'=usedPathsFix(p,reorganize(Ps'), empty) //TODO: fix code around here (plus, do we have setminus on Paths?)
+    U reorganize(L1.implements) U..U reorganize(Ln.implements) //TODO: and all implemented of nested classes? TODO: also in code
+  L1..Ln={L| L inside e}
  
 - usedPathsFix(p,paths,Css)= usedPathsFix(p, paths U paths0,Css') // U on paths does minimize() internally
    paths.top()\Css!=empty
@@ -140,7 +142,8 @@ maindefinition:
 - usedInnerL(LC,Cs)=empty //TODO: Possible huge performance boost when implemented. Not implemented at 1/10/2016
   LC.Phase not in{None,Norm}
 
-- usedInnerM(M)= reorganize({P| P inside M}) U (usedInnerL(L1,empty) U...U usedInnerL(Ln,empty)).pop() //leverage on empty.pop()=empty
+- usedInnerM(M)= reorganize({P| P inside M}) 
+    U (usedInnerL(L1,empty) U...U usedInnerL(Ln,empty)).pop() //leverage on empty.pop()=empty
   //on former line, if we pop the individual results we could save some work while miminizing
   L1..Ln={L| L inside M}
 

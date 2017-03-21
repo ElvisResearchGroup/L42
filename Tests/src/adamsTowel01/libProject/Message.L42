@@ -21,7 +21,7 @@ Opt:{#new(TOpt that)
   class method This (This1 that) This.#new(TOf(that))
   }
 EqualMessages:{
-  class method Bool (Message that,Message other){
+  class method Bool (read Message that,read Message other){
   //assuming they have the same class
   res=that.class().kind()==other.class().kind()
     & that.text()==other.text()

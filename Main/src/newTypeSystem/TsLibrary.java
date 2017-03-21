@@ -47,6 +47,8 @@ public interface TsLibrary extends TypeSystem{
     assert normP.getSupertypes().stream().allMatch(
       t->{
         Phase phase=in.p.extractClassB(t.getNT().getPath()).getPhase();
+        assert phase!=Phase.None:
+          t.getNT().getPath();
         return phase!=Phase.None;}):
       "";
     return normP;

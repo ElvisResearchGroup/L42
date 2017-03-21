@@ -1,7 +1,9 @@
 { implements  Concept.Base//, Concept.Equals //needed until we do (also refine) normalization
   class method mut This _private(Library _binaryRepr)
   read method Library _binaryRepr()
- 
+  read method
+  This clone()
+    This._private(_binaryRepr:this._binaryRepr())
 
   //#####Implemented
   method is(subtype) {  with subtype (on class This return Bool.true()) return Bool.false()}
@@ -10,9 +12,9 @@
 
   class method mut This #from(Library binaryRepr) This._private(_binaryRepr:binaryRepr)
 
-  method Library binaryRepr() this._binaryRepr()
+  read method Library binaryRepr() this._binaryRepr()
 
-  method toS() this
+  method toS() this.clone()
 
   method equals(that){
     with that (on read This return this==that)
@@ -27,8 +29,8 @@
       check stringConcat(s1:this.binaryRepr(),s2:that.binaryRepr())
       error void)
 
-  method
-  Bool == (This that) {
+  read method
+  Bool ==(read This that) {
     use Alu
       check ifStringEqualDo(s1:this.binaryRepr(),s2:that.binaryRepr())
       return Bool.true()

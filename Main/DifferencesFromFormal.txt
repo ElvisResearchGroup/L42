@@ -48,29 +48,30 @@ class method read This #readK(..) (mut,lent,read,capsule to imm)
 *if there is any lent/read setter, then mutK must not exist
 ----
 
-*Syntactic sugar
-S"foo"    =    S.#from(builder:(
-  b=S.#builder()
+*Syntactic sugar  //Atom is not a binding declared var/depend of the order? 
+Atom"foo"    =    Atom.#from(builder:(
+  b=Atom.#builder()
   b.#f()
   b.#o()
   b.#o()
   b
   ))
-12N       =    N.#from(builder:...)
-V[a;b]     =    V.#from(seqBuilder:(
-  b=V.#seqBbuilder()
+Atom[a;b]     =    Atom.#from(seqBuilder:(
+  b=Atom.#seqBbuilder()
   b.#add(a)
   b.#add(b)
   b
   ))
-V[with x in e body =
-V.#from(seqBuilder:(
-  b=V.#seqBuilder()
+Atom[with x in e body =
+Atom.#from(seqBuilder:(
+  b=Atom.#seqBuilder()
   with x in e body [use[ps1..psn]:= (  b.#add(ps1)...b.#add(psn) void) ]
   b
   ))
-
-
+---
+NonAtom[/**/]=(x=NonAtom x[/**/])
+NonAtom"/**/"=(x=NonAtom x"/**/")
+12e       =    e"12"
 *Syntax
 Catch T x e
 Catch Ts e

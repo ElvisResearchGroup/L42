@@ -101,7 +101,9 @@ public class UsedPaths {
     if(m instanceof MethodWithType){
       MethodWithType mwt = (MethodWithType)m;
       result1 = CollectPaths0.of(mwt);
-      if(mwt.get_inner().isPresent()){l1n = CollectClassBs0.of(m.getInner());}
+      if(mwt.get_inner().isPresent()){
+        l1n = CollectClassBs0.of(m.getInner());
+        }
       }
     else {
       result1=CollectPaths0.of(m.getInner());

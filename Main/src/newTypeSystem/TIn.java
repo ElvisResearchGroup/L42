@@ -96,7 +96,7 @@ public This toLent(){//toLent(G)(x)=toLent(G(x)) //thus undefined where toLent u
   for(String xi:gDom()){
     NormType ti=g(xi);
     assert ti!=null;
-    ti=TypeManipulation._toRead(ti);
+    ti=TypeManipulation._toLent(ti);
     if(ti==null){continue;}
     newG.put(xi,ti);
     }
