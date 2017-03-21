@@ -16,6 +16,7 @@ public enum ErrorKind {
   PluginNotFound(false),
   PluginTypeNotPresent(false),
   UnsafeCatchAny(false),
+  ReceiverInvalidMdfForMs(false),
   ClassMethCalledOnNonClass(false),
   NonClassMethCalledOnClass(false);
   final boolean needContext;

@@ -107,17 +107,17 @@ public class SumMethods {
 
 
   static ExpCore eU(int index,Position pos,MethodType mt1,MethodType mt2,MethodSelector m1,MethodSelector m2,MethodSelector mRes){
-    ExpCore r1=(mt1.getMdf()==Mdf.Class)?Path.outer(0):new ExpCore.X("this");
-    ExpCore r2=(mt2.getMdf()==Mdf.Class)?Path.outer(0):new ExpCore.X("this");
+    ExpCore r1=(mt1.getMdf()==Mdf.Class)?Path.outer(0):new ExpCore.X(pos,"this");
+    ExpCore r2=(mt2.getMdf()==Mdf.Class)?Path.outer(0):new ExpCore.X(pos,"this");
     //this/outer0 . m2(this/outer0 .m1(ps1),ps2)
     List<ExpCore> ps1=new ArrayList<>();
-    for(String x:mRes.getNames().subList(0,m1.getNames().size())){ps1.add(new ExpCore.X(x));}
+    for(String x:mRes.getNames().subList(0,m1.getNames().size())){ps1.add(new ExpCore.X(pos,x));}
     ExpCore eInner=new ExpCore.MCall(r1, m1,Doc.empty(), ps1, pos);
 
     ArrayList<ExpCore> ps2=new ArrayList<>();
     for(int i=1;i<m2.getNames().size();i++){
       String x=mRes.getNames().get(m1.getNames().size()+i-1);
-      ps2.add(new ExpCore.X(x));
+      ps2.add(new ExpCore.X(pos,x));
       }
     ps2.add(index,eInner);
     ExpCore eU=new ExpCore.MCall(r2, m2, Doc.empty(),ps2 , pos);

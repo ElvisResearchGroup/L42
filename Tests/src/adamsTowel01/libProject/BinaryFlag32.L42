@@ -88,11 +88,11 @@
       check notInt32(n1:this.br())
       error void)
 
-  method
-  Bool ==(This that) this.that()==that.that()
+  read method
+  Bool ==(read This that) this.that()==that.that()
 
   method equals(that){
-    with that (on This return this==that)
+    with that (on read This return this==that)
     return Bool.false()
     }
 

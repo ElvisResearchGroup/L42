@@ -32,7 +32,7 @@ public class InjectionOnCore implements Visitor<ExpCore> {
   public ExpCore visit(Expression.Loop s) {
     return new Loop(s.getInner().accept(this));}
 
-  public ExpCore visit(Expression.X s){return new X(s.getInner());}
+  public ExpCore visit(Expression.X s){return new X(s.getP(),s.getInner());}
     public ExpCore visit(Expression._void s){return new _void();}
   public ExpCore visit(Ast.Path s){return s;}
   public ExpCore visit(Expression.RoundBlock s){

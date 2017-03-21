@@ -49,8 +49,9 @@ Library equalsTrait(Introspection.NestedClass that) {
       with that (on read This return this.baseEquals(that))
       return Bool.false()
       }
-    method
-    Bool ==(This that) this.baseEquals(that)
+    read method
+    Bool ==(read This that)
+      this.baseEquals(that)
 
     }
   return Refactor.MakePrivateSelector(Selector"baseEquals(that)" of:Path"This")<><Extends[miniEquals]<><lib

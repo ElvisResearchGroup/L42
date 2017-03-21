@@ -311,7 +311,7 @@ public class Desugar extends CloneVisitor{
           //S on T e ==  catch exception T x S e(x)
           Expression inner=kP.getInner();
           inner=new Expression.FCall(kP.getP(),inner,Doc.empty(),
-              new ast.Ast.Parameters(Optional.of(new X(x)),Collections.emptyList(),Collections.emptyList()));
+              new ast.Ast.Parameters(Optional.of(new X(kP.getP(),x)),Collections.emptyList(),Collections.emptyList()));
           inner=new Expression.Signal(kP.getKind(),inner);
           result.add(liftK(new Expression.Catch1(kP.getP(),SignalKind.Exception,t,x,inner)));
         }
@@ -361,7 +361,7 @@ public class Desugar extends CloneVisitor{
     Position p=s.getP();
     if(!(s.getCond() instanceof Ast.Atom)){
       String x=Functions.freshName("cond", usedVars);
-      return visit(getBlock(p,x, s.getCond(),s.withCond(new X(x))));
+      return visit(getBlock(p,x, s.getCond(),s.withCond(new X(p,x))));
     }
     MCall check=getMCall(p,s.getCond(),"#checkTrue", getPs());
     Expression.Catch k = getK(p,SignalKind.Exception,"",NormType.immVoid,s.get_else().get());
@@ -428,7 +428,7 @@ public class Desugar extends CloneVisitor{
     assert s.getContents().get(0).getDecs().get(0) instanceof VarDecE;
     Expression inner=((VarDecE)s.getContents().get(0).getDecs().get(0)).getInner();
     String y=Functions.freshName("result",this.usedVars);
-    Expression.Catch k=getK(s.getP(),SignalKind.Return,y,this.t,new X(y));
+    Expression.Catch k=getK(s.getP(),SignalKind.Return,y,this.t,new X(s.getP(),y));
     Expression termination= Desugar.errorMsg("CurlyBlock-Should be unreachable code");
     RoundBlock outer=getBlock(s.getP(),inner, Collections.singletonList(k),termination);
     return visit(outer);
@@ -456,7 +456,7 @@ public class Desugar extends CloneVisitor{
       return visit(getMCall(s.getP(),s.getLeft(),desugarName(s.getOp().inner),getPs(s.getRight())));
       }
     String x=Functions.freshName("opNorm", usedVars);
-    BinOp s2=new BinOp(s.getP(),s.getRight(),op.normalizedVersion(),new Expression.X(x));
+    BinOp s2=new BinOp(s.getP(),s.getRight(),op.normalizedVersion(),new Expression.X(s.getP(),x));
     return visit(getBlock(s.getP(),x, s.getLeft(),s2));
   }
   public Expression visit(UnOp s) {
@@ -484,7 +484,7 @@ public class Desugar extends CloneVisitor{
     List<VarDec> vd=new ArrayList<>();
     Expression k=getMCall(s.getP(),s.getReceiver(),"#seqBuilder",getPs());
     String x=Functions.freshName("b", usedVars);
-    X b=new X(x);
+    X b=new X(s.getP(),x);
     vd.add(new VarDecXE(false, Optional.empty(), x, k));
     for(Parameters ps:s.getPss()){
       vd.add(new VarDecE(getMCall(s.getP(),b,"#add",ps)));
@@ -519,7 +519,7 @@ public class Desugar extends CloneVisitor{
     List<VarDec> vd=new ArrayList<>();
     Expression k=getMCall(s.getP(),s.getReceiver(),"#builder",getPs());
     String x=Functions.freshName("b", usedVars);
-    X b=new X(x);
+    X b=new X(s.getP(),x);
     vd.add(new VarDecXE(false, Optional.empty(), x, k));
     for(char ch:s.getInner().toCharArray()){
       String name=Character.toString(ch);
@@ -765,7 +765,7 @@ public class Desugar extends CloneVisitor{
     MethodSelector ms=called.withName(h.getName());
     NormType resT=new ast.Ast.NormType(mdf,ast.Ast.Path.outer(0),Doc.empty());
     MethodType mt=new MethodType(false,ast.Ast.Mdf.Class,ts,resT,Collections.emptyList());
-    Parameters ps=new Parameters(Optional.empty(),called.getNames(), called.getNames().stream().map(n->new X(n)).collect(Collectors.toList()));
+    Parameters ps=new Parameters(Optional.empty(),called.getNames(), called.getNames().stream().map(n->new X(Position.noInfo,n)).collect(Collectors.toList()));
     MCall body=new MCall(Path.outer(0),called.nameToS(),Doc.empty(),ps,h.getP());
     return new MethodWithType(doc, ms,mt, Optional.of(body),h.getP());
   }

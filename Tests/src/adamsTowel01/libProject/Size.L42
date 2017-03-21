@@ -62,15 +62,15 @@
       check divInt32(n1:this.binaryRepr() n2:that.binaryRepr())
       error void)
 
-  method
-  Bool ==(This that) {
+  read method
+  Bool ==(read This that){
     use Alu
       check ifInt32EqualDo(n1:this.binaryRepr() n2:that.binaryRepr())
       return Bool.true()
     return Bool.false()
     }
   method equals(that){
-    with that (on This return this==that)
+    with that (on read This return this==that)
     return Bool.false()
     }
 

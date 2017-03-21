@@ -26,7 +26,7 @@ public interface TsBlock extends TypeSystem{
   default TOut tsBlock(TIn in, Block s) {
     TOut res1=tsBlockBase(in,s);
     if (res1.isOk()){return res1;}
-    if (!promotionMakesSense(res1.toError())){return res1;}//promotionMakesSense: mut that need capsule
+    if (!promotionMakesSense(in,res1.toError())){return res1;}//promotionMakesSense: mut that need capsule
     TOut res2=tsBlockPromotion(in,s);//calls tsBlock internally,
     //thanks to promotionMakesSense does not goes in loop
     if (res2.isOk()){return res2;}
@@ -188,7 +188,7 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
       ks1.add(ok.k);
       ts.add(ok.t);
       newTrAcc=newTrAcc.trUnion(ok.tr);
-      tr=tr.trCapture(in.p,k);
+      tr=tr.trCapture(in.p,ok.k);
       }
 
     TOkKs res=new TOkKs(newTrAcc,tr,ks,ts);
@@ -210,7 +210,7 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
     TOut _out=type(in.addG(k.getX(),T1).withE(k.getE(), in.expected));
     if(!_out.isOk()){return _out.toError();}
     TOk out=_out.toOk();
-    TOkK res=new TOkK(Tr.instance.trUnion(out),k.withE(out.annotated),out.computed);
+    TOkK res=new TOkK(Tr.instance.trUnion(out),k.withE(out.annotated).withT(T1),out.computed);
     return res;
      /*   Phase| p| G| Tr' |- catch throw T0 x e ~> catch throw T1.P x e' :T2 <= T | Tr
      mdf1 = mostGeneralMdf(throw,Tr') //set of Mdfs admits no single most general mdf, or mdfs is empty
@@ -248,7 +248,8 @@ default TOut tsBlockPromotion(TIn in,Block s){
   //Phase |p |G |- (ds ks e)~>(ds' ks' e'):capsule P <=capsule P | Tr
   //  Phase |p |toLent(G) |-(ds ks e)~>(ds' ks' e'):mut P <=mut P   | Tr
   Mdf eM=in.expected.getMdf();
-  assert eM==Mdf.Capsule || eM==Mdf.Immutable ||eM==Mdf.ImmutableFwd || eM==Mdf.ImmutablePFwd;
+  assert eM==Mdf.Capsule || eM==Mdf.Immutable ||eM==Mdf.ImmutableFwd || eM==Mdf.ImmutablePFwd:
+    eM;
   
   TIn in2=in.toLent();
   TOut out=type(in2.withE(in.e,in.expected.withMdf(Mdf.Mutable)));
@@ -260,13 +261,16 @@ default TOut tsBlockPromotion(TIn in,Block s){
   }
 
 
-default TOut combine(TErr res,TErr promFail){throw Assertions.codeNotReachable();}
+default TErr combine(TErr res,TErr promFail){
+  return new TErr(res.in,res.msg
+  +"\n(Block promotion attempted but\n"+promFail.in+"\n failed)",res._computed,res.kind);
+  }
 
-default boolean promotionMakesSense(TErr tErr){
-    NormType expected=tErr.in.expected;
+default boolean promotionMakesSense(TIn in,TErr tErr){
+    NormType expected=in.expected;
     NormType obtained=tErr._computed;
     if(expected==null || obtained==null){return false;}
-    if (null!=TypeSystem.subtype(tErr.in.p,obtained.getPath(), expected.getPath())){return false;}
+    if (null!=TypeSystem.subtype(in.p,obtained.getPath(), expected.getPath())){return false;}
     Mdf eM=expected.getMdf();
     Mdf oM=obtained.getMdf();
     boolean acceptableEM=eM==Mdf.Capsule || eM==Mdf.Immutable ||eM==Mdf.ImmutableFwd || eM==Mdf.ImmutablePFwd;

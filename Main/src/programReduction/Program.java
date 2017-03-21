@@ -11,6 +11,7 @@ import ast.ErrorMessage;
 import ast.ExpCore;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Phase;
+import coreVisitors.From;
 import facade.PData;
 import tools.Assertions;
 
@@ -46,7 +47,7 @@ public interface Program {
     if(p.isPrimitive()){return false;}
     ClassB cb=this.extractClassB(p);
     for(Path pi:cb.getSuperPaths()){
-      if(equiv(pi, p1)){return true;}
+      if(equiv(From.fromP(pi,p), p1)){return true;}
       }
     return false;
     }

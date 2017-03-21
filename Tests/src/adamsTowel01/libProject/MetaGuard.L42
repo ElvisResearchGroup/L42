@@ -15,7 +15,7 @@
       method is(subtype) {  with subtype (on class This return Bool.true()) return Bool.false()}
       method readableName()GetMyName(This)
       method equals(that){
-        with that (on This return this==that)
+        with that (on read This return this==that)
         return Bool.false()
         }
       refine read method class Message class() This

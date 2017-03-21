@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ast.Ast.Path;
+import ast.Ast.Position;
 import ast.ExpCore;
 import ast.ExpCore.Block;
 import ast.ExpCore.Block.Dec;
@@ -26,7 +27,7 @@ public interface CtxC {
   CtxC divide(ExpCore all);
   static CtxC split (ExpCore e){return e.accept(new CtxSplitter());}
   static CtxC hole(ExpCore original){return new CtxSplitter.Hole(original);} 
-  default String _toString() {return "CtxC["+sugarVisitors.ToFormattedText.of(this.fillHole(new ExpCore.X("_HOLE_")))+",originalHole:"+sugarVisitors.ToFormattedText.of(this.originalHole())+"]";}
+  default String _toString() {return "CtxC["+sugarVisitors.ToFormattedText.of(this.fillHole(new ExpCore.X(Position.noInfo,"_HOLE_")))+",originalHole:"+sugarVisitors.ToFormattedText.of(this.originalHole())+"]";}
   default int _hashCode() {return this.fillHole(new ExpCore.WalkBy()).hashCode();}
   default boolean _equals(Object obj) {
     if (this == obj) return true;

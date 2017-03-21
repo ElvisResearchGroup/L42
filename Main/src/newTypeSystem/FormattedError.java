@@ -7,7 +7,7 @@ import sugarVisitors.CollapsePositions;
 public class FormattedError extends RuntimeException {
     public final TErr err;
     public final ErrorKind kind;
-    static String format(TErr err){
+    public static String format(TErr err){
       String res="\n"+err.in+"\n"+err.msg+"\n"+err.kind+"\n"+err._computed;
       if (err.kind==ErrorKind.NotSubtypeClass){
        res+="\nexpected path was :"+err.in.expected.getPath()

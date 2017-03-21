@@ -41,7 +41,9 @@ public interface ExpCore {
     }
   }
 
-  @Value public static class X implements ExpCore, Ast.Atom {
+  @Value @EqualsAndHashCode(exclude = "p")
+  public static class X implements ExpCore, Ast.Atom, HasPos {
+    Position p;
     String inner;
     public String toString() {
       return this.inner;

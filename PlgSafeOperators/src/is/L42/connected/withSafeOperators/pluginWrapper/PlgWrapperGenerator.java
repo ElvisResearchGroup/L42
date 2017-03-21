@@ -232,10 +232,10 @@ private static UsingInfo usingConstructor(PlgInfo plgInfo, Constructor<?>[] jcs,
     //u=u.withS(ui.usingMs);
     List<ExpCore> ues=new ArrayList<>();
     if(!mt.getMdf().equals(Mdf.Class)){
-      ues.add(p0.withInner(new ExpCore.X("this")));
+      ues.add(p0.withInner(new ExpCore.X(mwt.getP(),"this")));
       }
     {int i=-1;for(String x: mwt.getMs().getNames()){i++;
-      ExpCore pi=new ExpCore.X(x);
+      ExpCore pi=new ExpCore.X(mwt.getP(),x);
       if(!mwt.getMt().getTs().get(i).equals(NormType.immLibrary)){
         pi=p0.withInner(pi);  
         }

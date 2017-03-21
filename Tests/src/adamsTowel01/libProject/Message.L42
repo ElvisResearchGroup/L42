@@ -1,7 +1,7 @@
 {interface implements Concept.ToS, Concept.Equals, Concept.Classable
 class method S kind()
-method S text()
-method Opt responseOf()
+read method S text()
+read method Opt responseOf()
 refine read method class This class()
 //change? remove opt, use fwd and method isResponse()?
 //error fixed in adam 2 as usual?
@@ -43,7 +43,7 @@ $:{()
     method text() this._text()
     method responseOf() this.cause()
     method equals(that){
-      with that (on This return this==that)
+      with that (on read This return this==that)
       return Bool.false()
       }
   method
@@ -63,7 +63,7 @@ $:{()
       return res[this.cause().#get()]"]"
       }
 
-    method Bool == (This that)
+    read method Bool ==(read This that)
       Message.EqualMessages(this,other:that)
     refine read method class Message class() This
     class method

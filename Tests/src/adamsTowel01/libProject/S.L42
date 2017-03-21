@@ -15,7 +15,7 @@
   method toS() this
 
   method equals(that){
-    with that (on This return this==that)
+    with that (on read This return this==that)
     return Bool.false()
     }
 

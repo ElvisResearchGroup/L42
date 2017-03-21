@@ -24,7 +24,7 @@ public class RenameVars extends CloneVisitor{
   public ExpCore visit(X s) {
     String alt=toRename.get(s.getInner());
     if(alt==null){return s;}
-    return new X(alt);
+    return new X(s.getP(),alt);
     }
   public ExpCore visit(Block s) {
     List<On> k = Map.of(this::liftO,s.getOns());

@@ -5,7 +5,8 @@ method is(subtype) {  with subtype (on class This return Bool.true()) return Boo
 refine read method class This class() This
 method readableName()GetMyName(This)
 method toS() This.readableName()++S"["[this.allAsString()]"]"
-method Bool ==(This that){
+read method
+Bool ==(read This that){
   if this.path()!=that.path() (return Bool.false())
   //else equal paths
   if this.path()!=Path"This" (return this.root()==that.root())
@@ -16,7 +17,7 @@ method Bool ==(This that){
   return this.allAsString()==that.allAsString()
   }
 method equals(that){
-  with that (on This return this==that)
+  with that (on read This return this==that)
   return Bool.false()
   }
 method This root()this._root()

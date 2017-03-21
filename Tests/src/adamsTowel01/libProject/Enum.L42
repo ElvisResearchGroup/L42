@@ -12,7 +12,7 @@ SolidTrait:{class method Library (){//Data is more than Solid, and Liquid, Gas, 
     refine read method class This class() This
     method readableName() GetMyName(This)
     method equals(that) {
-      with that (on This return that==this)
+      with that (on read This return that==this)
       return Bool.false()
       }
     read method

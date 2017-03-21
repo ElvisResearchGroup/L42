@@ -48,7 +48,7 @@ Equals:{
   class method Library<><(Library that) exception DecorationUnfeasable{
     return Extends[{ implements Concept.Equals
       method equals(that){
-        with that (on This return this==that)
+        with that (on read This return this==that)
         return Bool.false()
         }
       read method Bool ==(read This that)

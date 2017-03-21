@@ -70,7 +70,9 @@ public interface Expression extends Ast {
 
   }
 
-  @Value public static class X implements Expression, Ast.Atom {
+  @Value @EqualsAndHashCode(exclude = "p")
+  public static class X implements Expression, Ast.Atom, HasPos{
+    Position p;
     String inner;
     public String toString() {
       return this.inner;

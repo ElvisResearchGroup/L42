@@ -99,11 +99,15 @@ public class ToAst extends AbstractVisitor<Expression>{
     return new Expression.With(position(ctx),xs, is, decs, ons, defaultE);
   }
   public Position position(ParserRuleContext ctx) {
-    //assert facade.Parser.fileName!=null;
     Position p=new Position(facade.Parser.getFileName(),ctx.start.getLine(),ctx.start.getCharPositionInLine(),ctx.stop.getLine(),ctx.stop.getCharPositionInLine(),null);
     return p;
   }
+  public Position position(Token ctx) {
+    Position p=new Position(facade.Parser.getFileName(),ctx.getLine(),ctx.getCharPositionInLine(),ctx.getLine(),ctx.getCharPositionInLine(),null);
+    return p;
+  }
 
+  
   @Override public Expression visitWSwitch(WSwitchContext ctx) {
     List<String> xs = new ArrayList<String>();
     for( XContext x:ctx.x()){xs.add(x.getText());}
@@ -177,7 +181,7 @@ public class ToAst extends AbstractVisitor<Expression>{
   @Override public Expression visitTerminal(TerminalNode arg0) {
     Token t=(Token)arg0.getPayload();
     switch(t.getType()){
-      case L42Lexer.X: return new Expression.X(nameL(t));
+      case L42Lexer.X: return new Expression.X(position(t),nameL(t));
       case L42Lexer.UnOp:
       case L42Lexer.BoolOp:throw tools.Assertions.codeNotReachable(t.toString());
       default:throw tools.Assertions.codeNotReachable(t.toString());
@@ -307,7 +311,7 @@ public class ToAst extends AbstractVisitor<Expression>{
   @Override public Expression visitX(XContext ctx) {
     assert ctx.children.size()==1: ctx.children.get(1).getClass();
     if(nameK(ctx.X()).equals("void")){return Expression._void.instance;}
-    return new Expression.X(nameL(ctx.X()));
+    return new Expression.X(position(ctx),nameL(ctx.X()));
     }
 
   @Override public Expression visitEAtom(EAtomContext ctx) {
@@ -332,7 +336,7 @@ public class ToAst extends AbstractVisitor<Expression>{
     Doc doc=parseDoc(r.docsOpt());
     assert !mx.startsWith("#");
     assert !mx.startsWith("\\");
-    Expression rcv=new Expression.X(mx);
+    Expression rcv=new Expression.X(position(ctx),mx);
     //Expression rcv= (mx.startsWith("#"))?new Expression.ContextId(mx):new Expression.X(mx);
     return new Expression.FCall(position(r),rcv,doc,parseMParameters(r.ps()));
     }
@@ -574,7 +578,7 @@ public class ToAst extends AbstractVisitor<Expression>{
     return new Parameters(e0,xs,es);
   }
   public Expression visitXOp(XOpContext ctx) {
-    return new BinOp(position(ctx),new X(nameL(ctx.X())),Op.fromString(ctx.EqOp().getText()),ctx.eTop().accept(this));
+    return new BinOp(position(ctx),new X(position(ctx),nameL(ctx.X())),Op.fromString(ctx.EqOp().getText()),ctx.eTop().accept(this));
   }
   @Override
   public Expression visitRoundBlockForMethod(RoundBlockForMethodContext ctx) {

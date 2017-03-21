@@ -110,7 +110,7 @@ public class Rename {
       public ExpCore visit(MCall s) {
         List<Ast.C> localPath = this.getLocator().getClassNamesPath();
         if(!localPath.equals(path)){return super.visit(s);}
-        if(s.getInner().equals(Path.outer(0)) || s.getInner().equals(new ExpCore.X("this"))){
+        if(s.getInner().equals(Path.outer(0)) || s.getInner().equals(new ExpCore.X(Position.noInfo,"this"))){
             result2.add(s.getS());
             return s.withInner(s.getInner().accept(this)).withEs(Map.of(e->e.accept(this), s.getEs()));
             }

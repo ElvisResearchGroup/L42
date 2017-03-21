@@ -69,7 +69,7 @@ class DesugarNormalizeReceiver extends CloneVisitor{
   private Expression normalizeReceiver(Ast.HasReceiver s){
     assert !(s.getReceiver() instanceof Ast.Atom);
     String x=Functions.freshName("rcv", usedVars);
-    return Desugar.getBlock(s.getP(),x, s.getReceiver(),s.withReceiver(new X(x)));
+    return Desugar.getBlock(s.getP(),x, s.getReceiver(),s.withReceiver(new X(s.getP(),x)));
     }
   public Expression visit(MCall s) {
     if (s.getReceiver() instanceof Ast.Atom){ return super.visit(s);}

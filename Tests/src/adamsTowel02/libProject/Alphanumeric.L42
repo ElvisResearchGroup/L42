@@ -25,10 +25,12 @@
       method readableName()GetMyName(This)
       method is(subtype){  with subtype (on class This return Bool.true()) return Bool.false()}
       method equals(that){
-        with that (on This return this==that)
+        with that (on read This return this==that)
         return Bool.false()
         }
-      method Bool ==(This that) this.that()==that.that()
+      read method
+      Bool ==(read This that)
+        this.that()==that.that()
       },)
 
     res=Extends[lib]<><that

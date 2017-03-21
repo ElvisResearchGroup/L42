@@ -3,6 +3,7 @@ package programReduction;
 import java.util.List;
 
 import ast.Ast;
+import ast.Ast.Position;
 import ast.ExpCore;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
@@ -40,7 +41,7 @@ public class CtxL {
       mi->mi.getS().toString(),
       mwt->mwt.getMs().toString());
     }  
-  public String toString() {return "CtxL["+sugarVisitors.ToFormattedText.of(this.fillHole(new ExpCore.X("_HOLE_")))+",originalHole:"+sugarVisitors.ToFormattedText.of(this.originalHole())+"]";}
+  public String toString() {return "CtxL["+sugarVisitors.ToFormattedText.of(this.fillHole(new ExpCore.X(Position.noInfo,"_HOLE_")))+",originalHole:"+sugarVisitors.ToFormattedText.of(this.originalHole())+"]";}
   public int hashCode() {return this.fillHole(new ExpCore.WalkBy()).hashCode();}
   public boolean equals(Object obj) {
     if (this == obj) return true;

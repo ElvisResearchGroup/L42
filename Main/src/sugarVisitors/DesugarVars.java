@@ -140,7 +140,7 @@ private int firstVar(List<VarDec> varDecs){
 private VarDecXE getDecForVar(Ast.C cName,VarDecXE varDec) {
   NormType nt=new NormType(Mdf.Mutable,Path.outer(0).pushC(cName),Doc.empty());
   Position pos = Desugar.getPosition(varDec.getInner());
-  MCall right=new MCall(nt.getPath(),"#apply",Doc.empty(), Desugar.getPs("inner",new X(varDec.getX())),pos);
+  MCall right=new MCall(nt.getPath(),"#apply",Doc.empty(), Desugar.getPs("inner",new X(pos,varDec.getX())),pos);
   String nameZ=Functions.freshName(nt.getPath(), usedVars);
   //usedVars.add(nameZ);
   return new VarDecXE(false,Optional.of(nt),nameZ,right);
@@ -154,8 +154,8 @@ private VarDecXE getDecForVar(Ast.C cName,VarDecXE varDec) {
    varDecs.set(pos,varDec.withVar(false));
    VarDecCE ce=getClassBForVar(varDec);
    VarDecXE d=getDecForVar(ce.getInner().getName(),varDec);
-   X x=new X(varDec.getX());
-   X z=new X(d.getX());
+   X x=new X(s.getP(),varDec.getX());
+   X z=new X(s.getP(),d.getX());
    int d3First=findD2(x,pos,varDecs);
    RoundBlock fake = getFakeBlock(x,z,s, varDecs, d3First);
    List<VarDec> trueDecs=new ArrayList<VarDec>();

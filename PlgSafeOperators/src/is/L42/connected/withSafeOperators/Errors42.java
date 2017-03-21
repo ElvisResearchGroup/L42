@@ -18,6 +18,7 @@ import ast.Ast.Doc;
 import ast.Ast.Mdf;
 import ast.Ast.MethodSelector;
 import ast.Ast.Path;
+import ast.Ast.Position;
 import ast.Ast.Type;
 import ast.Ast;
 import ast.ErrorMessage;
@@ -171,8 +172,8 @@ public class Errors42 {
     boolean retType=mta.getMt().getReturnType().equals(mtb.getMt().getReturnType());
     boolean thisMdf=mta.getMt().getMdf().equals(mtb.getMt().getMdf());
     if(!implClash && exc && pars.isEmpty() && retType && thisMdf && !rightIsInterfaceAbstract){return;}
-    if(mta.get_inner().isPresent()){mta=mta.with_inner(Optional.of(new ExpCore.X("implementation")));}
-    if(mtb.get_inner().isPresent()){mtb=mtb.with_inner(Optional.of(new ExpCore.X("implementation")));}
+    if(mta.get_inner().isPresent()){mta=mta.with_inner(Optional.of(new ExpCore.X(Position.noInfo,"implementation")));}
+    if(mtb.get_inner().isPresent()){mtb=mtb.with_inner(Optional.of(new ExpCore.X(Position.noInfo,"implementation")));}
     throw errorMethodClash(pathForError, mta, mtb, exc, pars, retType, thisMdf,false);
   }
  /* static void checkCoherentMapping(List<PathPath> setVisited) {

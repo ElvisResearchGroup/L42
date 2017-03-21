@@ -295,7 +295,7 @@ MiniDataTrait:Resource<><{
   read method class This class() This
   class method S readableName() Refactor.classObjToS()//new plugin as for classObjEq
   class method Bool is(class Any subtype){ with subtype (on class This return Bool.true()) return Bool.false()}
-  read method Bool equals(read Any that) { with that (on This return this==that)  return Bool.false()  }
+  read method Bool equals(read Any that) { with that (on read This return this==that)  return Bool.false()  }
   //read method Bool ==(read This that)
   //read method S toS()
   }
@@ -366,7 +366,7 @@ Introspection:{
     NestedClass root
     Path path
     Record record
-    method Bool ==(This that)
+    read method Bool ==(read This that)
     method Doc nestedDoc()// error  for This
     method Doc doc() //of the library literal
     method Path pathFromRoot() // invariant NestedClass(...).nestedClassFromRoot(path).pathFromRoot()==path

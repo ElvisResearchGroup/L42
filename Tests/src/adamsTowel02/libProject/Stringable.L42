@@ -12,7 +12,7 @@ class method Library stringableTrait(){
   method Library binaryRepr() this.inner().binaryRepr()
   method Bool == (This that) this.inner()==that.inner()
   method Bool equals(Any that) {
-    with that (on This return this==that)
+    with that (on read This return this==that)
     return Bool.false()
     }
   }

@@ -16,7 +16,7 @@ Library traitUnit() { implements Concept.Equals, Concept.ToS
   method toS() this.that().toS()
 
   method equals(that){
-    with that (on This return this.that().equals(that.that()) )
+    with that (on read This return this.that().equals(that.that()) )
     return Bool.false()
     }
 
@@ -37,8 +37,8 @@ Library traitUnit() { implements Concept.Equals, Concept.ToS
     method
     This /(This that)
 
-    method
-    Bool ==(This that)
+    read method
+    Bool ==(read This that)
 
     method
     Bool >(This that)
@@ -73,8 +73,8 @@ Library traitUnit() { implements Concept.Equals, Concept.ToS
   This /(Support that)
     This(this.that()/that)
 
-  method
-  Bool ==(This that)
+  read method
+  Bool ==(read This that)
     this.that()==that.that()
 
   method

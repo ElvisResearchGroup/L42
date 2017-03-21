@@ -38,7 +38,7 @@ public class InjectionOnSugar implements Visitor<ast.Expression> {
   }
 
   @Override public Expression visit(X s) {
-    return new Expression.X(s.getInner());
+    return new Expression.X(s.getP(),s.getInner());
   }
 
   @Override public Expression visit(_void s) {
