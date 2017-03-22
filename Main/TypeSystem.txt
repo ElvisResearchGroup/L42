@@ -233,7 +233,7 @@ D |- void~> void:imm Void <= T | emptyTr
 (Path)
 D |- P~>P:class P <= T | emptyTr
   where
-  D.p|-class P <= T
+  D.p|-class P <= T//TODO interface should be class Any
   assert p(P) well defined
 
 (library propagation)
@@ -263,7 +263,7 @@ D |- throw[_,_] e~> throw[T0,T3] e' : T0 <= T0 | Tr
   T1 = resolve(D.p,guessType(D.G,e))// Note, resolves and guessTypes can go in error, and need to become a type error here
   if throw=exception, T2= imm T1.P and Tr=Ts;Ps,P
   if throw=error,     T2= imm T1.P and Tr=Ts;Ps
-  if throw=return,    T2= (fwd T1) and Tr=(Ts,T3);Ps 
+  if throw=return,    T2= (fwd T1) and Tr=(Ts,T3);Ps  //TODO: add(also in code) that return classAny is forbidden
   D|- e~>  e' :  T3 <=T2|Ts;Ps 
 
 (mcall)

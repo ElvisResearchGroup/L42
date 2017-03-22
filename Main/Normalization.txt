@@ -18,7 +18,7 @@ r::=LC| exception v | error v
 (top)------------------------       eC not of form LC
      p ==> p'.update(p'.top()[C=L]) <paths; paths'>=usedPathsE(p,eC) //tuple notation
                                     p0=multiNorm(p,paths U paths')//norm the part of p required by eC
-                                    paths' ||-p0 ~> p' //the part of p' referred to by paths' is well typed
+                                    path;paths' ||-p0 ~> p' //the part of p' referred to by paths' is well typed
                                     Norm | p'| empty| empty| empty |-toAny(paths,eC) ~> _ : imm Library //replace paths with Any //eC is well typed
                                     Norm | p'| empty| empty| empty |-eC ~> eC' : imm Library //duplicated typing, so we can have eC non with Anys
                                     L=refreshUniqueNames(r) //may fail if r not of form L, and that would be lifted as compilation error.
@@ -89,11 +89,12 @@ maindefinition:
   
 //norm(p,ms e) should never be call 
 
--norm(p,refine? mh e?)= refine? resolve(p,mh) e? 
+-norm(p,refine? mh e?)= refine? resolve(p,mh) e'?
+  where e'?=empty if e?=empty
+  otherwise e'?= e where we replace all Li inside e?
+    with norm(p,Li)//TODO update code here 
     
--norm(p, C:L) =C:norm(p,L)//we could do a norm(p.push(C)) to avoid an evil push
-
-//-norm(p,empty)=empty
+-norm(p, C:L) =C:norm(p,L)//we could do a norm(p.push(C)) to avoid an evil push //TODO: check what we do in the code and make it coherent
 
 ------------------------------------------
 ### define multiNorm(p,paths)
@@ -116,12 +117,13 @@ maindefinition:
   Ps,Ps'={P|P inside eC}//arbitrary split of the set; heuristic will apply in the implementation.
   paths=usedPathsFix(p,reorganize(Ps), empty)
   paths'=usedPathsFix(p,reorganize(Ps'), empty) //TODO: fix code around here (plus, do we have setminus on Paths?)
-    U deepImplements(L1) U..U deepImplements(Ln) //TODO: also in code
-  L1..Ln={L| L inside e}
+    U (usedInnerL(L1,empty) U...U usedInnerL(Ln,empty)).pop()
+//    U deepImplements(L1) U..U deepImplements(Ln) //TODO: also in code
+  L1..Ln={L| L inside eC}//in path not prime// not repeat check stage
   
-  deepImplements(L0)=reorganize(L0.Ps)
-    U (deepImplements(L1) U..deepImplements(Ln)).pop()
-    L1..Ln={L|L in M, M in L.Ms} 
+//  deepImplements(L0)=reorganize(L0.Ps)
+//    U (deepImplements(L1) U..deepImplements(Ln)).pop()
+//    L1..Ln={L|L in M, M in L.Ms} 
  
 - usedPathsFix(p,paths,Css)= usedPathsFix(p, paths U paths0,Css') // U on paths does minimize() internally
    paths.top()\Css!=empty
@@ -173,25 +175,29 @@ maindefinition:
 ------------------------------------------     
 ###define paths ||-p ~> p    //James may like notation path ||- p~>p' to underline is an addition layer
 
-  paths ||-p ~> p'
+  paths;path' ||-p ~> p'
   
-        paths ||- p.pop() ~> p0
-        Css ||-p1 ~> L
+        paths;path' ||- p.pop() ~> p0
+        Css; Css' ||-p1 ~> L
 (pPop)----------------------------------  p1=p.growFellow(p0)
-        Css paths ||- p  ~>  p1.update(L)
+        Css paths;Css'path' ||- p  ~>  p1.update(L)
   
 
-         Css ||-p ~> L
+         Css;Css' ||-p ~> L
 (pNoPop)--------------------------------  p.pop() undefined
-         Css  ||- p  ~> L,empty
+         Css;Css'  ||- p  ~> L,empty
 
 
 (pEmpty)--------------------------------
-         empty ||- p ~> p
-  
+         empty;empty ||- p ~> p
 
-     forall Csi : Coherent |-pi ~> Li // the type system can be optimized to just assert  tests for libraries that are annotated as already checked TODO: check in implementation the responsibility to check/not is of the TS and not of the current implementation of Normalization
-(pL) ---------------------------------------   pi=p.navigate(Csi)
-     Cs1..Csn ||-p ~> p.top()[Cs1=L1,.. Csn=Ln]     //Li will have Phase=Typed also inside all somehow contained Ls
-
+//TODO: this rule changed a lot fix it in the code  
+// the type system can be optimized to just assert  tests for libraries that are
+// annotated as already checked TODO: check in implementation the responsibility to
+// check/not is of the TS and not of the current implementation of Normalization
+     forall Csi in 1..n : Typed |-p.navigate(Csi) ~> Li 
+     forall Csi' in 1..k: Coherent |-p.navigate(Csi') ~> Li' 
+(pL) --------------------------------------- 
+     Cs1..Csn;Cs1'..Csk' ||-p ~> p.top()[Cs1=L1,.. Csn=Ln][Cs1'=L1'..Csk'=Lk']    //Li will have Phase=Typed also inside all somehow contained Ls
+//assert Csi' not contained, even as postfix in Cs1..Csn
  
