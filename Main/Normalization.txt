@@ -3,7 +3,7 @@
 Part 2: reduction rules and notations
 -----------------------------------------------------------
 depend on:
- Phase|p|empty|empty|empty|-e ~> e' : T //TODO: should TS declare a Phase |p |-e~>e':T as a shortcut to avoid exposing G Cage and Tr?
+ Phase|p|empty|empty|empty|-e ~> e' : T
  Phase |-p ~> L
  e -->p+ r //we discussued with James: should we use ~> or a kind of big step arrow for type judgment that do annotation?
  
@@ -51,7 +51,7 @@ maindefinition:
   p(P0)={interface? implements Ps Ms Phase}
   if Phase!=None, M1'..Mk' are extracted from Ms[from P0]//TODO
   P1..Pn=collect(p,Ps[from P0]), error unless forall i in 1..n, p(Pi) is an interface
-  ms1..msk={ms|forall i in 0..n : p(Pi)(ms) is defined}//TODO: double check in code is i in 0..n
+  ms1..msk={ms|forall i in 0..n : p(Pi)(ms) is defined}//Note, in the code it (properly implemented but) is done in 2 steps, first cb0, then p1n
   forall ms in ms1..msk, there is exactly 1 j in 0..n //TODO: this is problematic: In case multiple P are either exactly the same or points to the same interface!! for now the problem is just hacked away in the code
     such that p(Pj)(ms)=mh e? //no refine
   //cases like A:  {interface refine method A()}  B: { implements A method A()} are ok wrt B but fails for A  
@@ -92,9 +92,10 @@ maindefinition:
 -norm(p,refine? mh e?)= refine? resolve(p,mh) e'?
   where e'?=empty if e?=empty
   otherwise e'?= e where we replace all Li inside e?
-    with norm(p,Li)//TODO update code here 
+    with norm(p,Li) 
     
--norm(p, C:L) =C:norm(p,L)//we could do a norm(p.push(C)) to avoid an evil push //TODO: check what we do in the code and make it coherent
+-norm(p, C:L) =C:norm(p,L)
+//we could do a norm(p.push(C)) to avoid an evil push, now we do not, the code seams to work fine.
 
 ------------------------------------------
 ### define multiNorm(p,paths)
@@ -115,10 +116,10 @@ maindefinition:
 //and this is also ok for path,path' for toAny
 - usedPathsE(p,eC)= <path\paths';paths'>//assert that the result includes paths in usedPathsFix(p,paths, empty)  
   Ps,Ps'={P|P inside eC}//arbitrary split of the set; heuristic will apply in the implementation.
+  paths'=usedPathsFix(p,reorganize(Ps'), empty)
   paths=usedPathsFix(p,reorganize(Ps), empty)
-  paths'=usedPathsFix(p,reorganize(Ps'), empty) //TODO: fix code around here (plus, do we have setminus on Paths?)
     U (usedInnerL(L1,empty) U...U usedInnerL(Ln,empty)).pop()
-//    U deepImplements(L1) U..U deepImplements(Ln) //TODO: also in code
+//    U deepImplements(L1) U..U deepImplements(Ln)
   L1..Ln={L| L inside eC}//in path not prime// not repeat check stage
   
 //  deepImplements(L0)=reorganize(L0.Ps)
@@ -158,7 +159,7 @@ maindefinition:
   **if P.m(_) inside e, P not Any
   **if ( _ T x=P _ _) inside e and T!=class Any, P not Any.
   **if p(Pi).Phase=Typed, Pi is not Any
-  **if ( _ T x=_  _ _) inside e, T.P not Any //TODO: just use liftT in code
+  **if ( _ T x=_  _ _) inside e, T.P not Any
   **if catch throw T x _ inside e, T.P not Any  
   **if using P _ _ inside e, P not Any
   **if catch T inside e, T.P not Any
@@ -191,10 +192,9 @@ maindefinition:
 (pEmpty)--------------------------------
          empty;empty ||- p ~> p
 
-//TODO: this rule changed a lot fix it in the code  
 // the type system can be optimized to just assert  tests for libraries that are
-// annotated as already checked TODO: check in implementation the responsibility to
-// check/not is of the TS and not of the current implementation of Normalization
+// annotated as already checked 
+// However, this is  the responsibility of the TS and not MultiTypeSystem
      forall Csi in 1..n : Typed |-p.navigate(Csi) ~> Li 
      forall Csi' in 1..k: Coherent |-p.navigate(Csi') ~> Li' 
 (pL) --------------------------------------- 

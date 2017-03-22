@@ -67,16 +67,23 @@ public interface TsLibrary extends TypeSystem{
 //   L'={interface? implements Ps M1'..Mn' max(Phase',Phase)}
      ClassB L0 = normTopL(in);
      List<MethodWithType> mwts = L0.mwts();
-     List<MethodWithType> newMwts = new ArrayList<>();
      List<NestedClass> ns = L0.ns();
      List<NestedClass> newNs = new ArrayList<>();
      //   forall i in 1..n
 //     Phase| p| Ps |- Mi ~> Mi'
      TIn inNested=in.withP(in.p.updateTop(L0));
-     for(MethodWithType mwt:mwts){
-       TOutM out=memberMethod(inNested,L0.getSupertypes(),mwt);
-       if(!out.isOk()){return out.toError();}
-       newMwts.add((MethodWithType)out.toOkM().inner);
+     
+     List<MethodWithType> newMwts;
+     if(in.phase==Phase.Coherent && top.getPhase()==Phase.Typed){
+       newMwts=new ArrayList<>(mwts);
+       }
+     else {
+       newMwts = new ArrayList<>();
+       for(MethodWithType mwt:mwts){
+         TOutM out=memberMethod(inNested,L0.getSupertypes(),mwt);
+         if(!out.isOk()){return out.toError();}
+         newMwts.add((MethodWithType)out.toOkM().inner);
+         }
        }
      for(NestedClass nt:ns){
        TOutM out=memberNested(inNested,nt);

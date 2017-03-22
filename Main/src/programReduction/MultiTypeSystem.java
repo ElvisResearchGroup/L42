@@ -14,43 +14,39 @@ import coreVisitors.CloneVisitor;
 
 public class MultiTypeSystem {
 
-public static Program typeProgram(Paths paths, Program p){
-//(pEmpty)---------------------------------
-//empty |- p :p
-  if(paths.isEmpty()){return p;}
-//      Css|-p:L
-//(pNoPop)--------------------------------  p.pop() undefined
-//      Css  |- p :L,empty
+public static Program typeProgram(Paths paths0,Paths paths1, Program p){
+  if(paths0.isEmpty() && paths1.isEmpty()){return p;}
   if(p instanceof FlatProgram){
-    return p.updateTop(typeLibrary(paths.current,p));
+    assert paths0.pop().isEmpty() && paths1.pop().isEmpty(); 
+    return p.updateTop(typeLibrary(paths0.top(),paths1.top(),p));
   }
-//       paths |- p.pop():p0
-//       Css|-p1:L
-//(pPop)----------------------------------  p1=p.growFellow(p0)
-//       Css paths |- p : p1.update(L)
-  Program p0=typeProgram(paths.pop(),p.pop());
+  Program p0=typeProgram(paths0.pop(),paths1.pop(),p.pop());
   Program p1=p.growFellow(p0);
-  ClassB l=typeLibrary(paths.current,p1);
+  ClassB l=typeLibrary(paths0.top(),paths1.top(),p1);
   return p1.updateTop(l);
   }
 
-private static ClassB typeLibrary(List<List<Ast.C>> current, Program p) {
-//forall Csi : pi|-pi.top(): Li //if Li.Phase=Typed, the check will be just asserted
-//(pL) ---------------------------------------   pi=p.navigate(Csi)
-//Cs1..Csn|-p:p.top()[Cs1=L1,.. Csn=Ln]    
+private static ClassB typeLibrary(List<List<Ast.C>> current0,List<List<Ast.C>> current1, Program p) {
   ClassB result=p.top();
-  for(List<Ast.C> csi : current){
+  for(List<Ast.C> csi : current0){
     Program pi=p.navigate(csi);
     assert pi.top().getPhase()!=Phase.None:
     "";
-    ClassB li=typeSingle(pi);
+    ClassB li=typeSingle(Phase.Typed,pi);
     result=result.onClassNavigateToPathAndDo(csi, oldLi->li);
-  }
+    }
+  for(List<Ast.C> csi : current1){
+    Program pi=p.navigate(csi);
+    assert pi.top().getPhase()!=Phase.None:
+    "";
+    ClassB li=typeSingle(Phase.Coherent,pi);
+    result=result.onClassNavigateToPathAndDo(csi, oldLi->li);
+    }
   return result;
   }
 
-private static ClassB typeSingle(Program p) {
- return newTypeSystem.TypeSystem.instance().topTypeLib(Phase.Coherent,p);
+private static ClassB typeSingle(Phase phase,Program p) {
+ return newTypeSystem.TypeSystem.instance().topTypeLib(phase,p);
  }
 
 public static ExpCore toAny(Paths paths, ExpCore e) {

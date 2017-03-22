@@ -391,9 +391,9 @@ fwd%Imm<=fwdImm
 
   
 (library shallow norm)
-Norm  |- p ~> norm(p)  //remember: norm ignores meth bodies
+Norm  |- p ~> p.top()  //remember: norm ignores meth bodies
 //assert forall P in norm(p).Ps p(P).Phase>=Norm
-
+//assert p.top().Phase!=None
 (library well typed)
 Phase |- p ~> L' //In implementation, if p.top().Phase>=Phase, L'=p.Top()
    where

@@ -56,7 +56,7 @@ public interface TypeSystem{
     }
   default ClassB topTypeLib(Phase phase,Program p){
     TIn in=TIn.top(phase,p, p.top());
-    TOut out=typeLib(in);
+    TOut out=typeLib(in);//this already check if the phase is already good enough!
     if(out.isOk()){return (ClassB) out.toOk().annotated;}
     TErr err=out.toError();
     throw new FormattedError(err);

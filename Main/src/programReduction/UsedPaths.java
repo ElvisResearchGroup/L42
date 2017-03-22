@@ -40,10 +40,18 @@ public class UsedPaths {
       throw Assertions.codeNotReachable();
       }
     ps.removeAll(ps1);
-//paths= reorganize(Ps')
-    Paths paths = Paths.reorganize(ps1);
-    Paths usedPathsFix = usedPathsFix(p,paths,Collections.emptyList());
-    PathsPaths result= new PathsPaths(Paths.reorganize(ps),usedPathsFix);        
+    Paths paths= Paths.reorganize(ps);
+    Paths paths1 = Paths.reorganize(ps1);
+    paths1 = usedPathsFix(p,paths1,Collections.emptyList());
+    List<ClassB> l1n = CollectClassBs0.of(e);
+    //U (usedInnerL(L1,empty) U...U usedInnerL(Ln,empty)).pop()
+    Paths acc=Paths.empty();
+    for(ClassB li:l1n){
+      acc=acc.union(usedInnerL(li,Collections.emptyList()));
+      }
+    paths=paths.union(acc.pop());
+    paths=paths.setMinus(paths1);
+    PathsPaths result= new PathsPaths(paths,paths1);        
     System.out.println("UsedPaths:\npaths:"+result.left+"\npaths':"+result.right+"\n-----------------\n");
     return result;
     }
@@ -85,7 +93,7 @@ public class UsedPaths {
 //- usedInnerL(LC,Cs)=paths.prefix(Cs)
   static private Paths usedInnerL(ClassB lc, List<Ast.C> cs) {
   //LC={_ implements Ps, M1..Mn}//in implementation, error if not compiled
-  assert IsCompiled.of(lc);//TODO: should it be a compilation error?
+  assert IsCompiled.of(lc);//should it be a compilation error?
   Paths paths=Paths.reorganize(lc.getSuperPaths());
   for(ClassB.Member mi: lc.getMs()){
     paths=paths.union(usedInnerM(mi));

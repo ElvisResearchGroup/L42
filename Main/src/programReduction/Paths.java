@@ -38,6 +38,20 @@ public class Paths {
     css.addAll(other.top());
     return rec.push(css);
   }
+  public Paths setMinus(Paths other){
+    assert other!=null:
+      "";
+    if (this==empty){return this;}
+    if (other==empty){return this;}
+    Paths rec=this.pop().setMinus(other.pop());
+    
+    List<List<Ast.C>> css = new ArrayList<>();
+    for(List<Ast.C> csi:this.top()){
+      if(!hasPrefixIn(other.top(),csi)){css.add(csi);}
+      }
+    return rec.push(css);
+  }
+
   public Paths prefix(List<Ast.C>cs){
     if(this==empty){return empty;}
     if(cs.isEmpty()){return this;}
@@ -76,13 +90,16 @@ public class Paths {
   }
   public static List<List<Ast.C>> minimize(List<List<Ast.C>> css){
     Set<List<Ast.C>> res=new LinkedHashSet<>();
-    for(List<Ast.C> csCandidate: css) outCandidate:{
-      for(List<Ast.C> csTest: css){
-        if(isPrefix(csTest,csCandidate)){break outCandidate;}
+    for(List<Ast.C> csCandidate: css) {
+      if(!hasPrefixIn(css,csCandidate)){res.add(csCandidate);}
       }
-      res.add(csCandidate);
-    }
     return new ArrayList<>(res);
+    }
+  private static boolean hasPrefixIn(List<List<Ast.C>>cssShort,List<Ast.C>csLong){
+    for(List<Ast.C> csTest: cssShort){
+      if(isPrefix(csTest,csLong)){return true;}
+      }
+    return false;
     }
   private static boolean isPrefix(List<Ast.C>csShort,List<Ast.C>csLong){
     if(csShort.size()>=csLong.size()){return false;}

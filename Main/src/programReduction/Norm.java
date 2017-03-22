@@ -11,6 +11,7 @@ import java.util.stream.Stream;
 import ast.ExpCore;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.MethodWithType;
+import ast.ExpCore.ClassB.NestedClass;
 import ast.ExpCore.ClassB.Phase;
 
 import coreVisitors.CloneVisitor;
@@ -99,15 +100,16 @@ public class Norm {
   @SuppressWarnings("unchecked")
   <T extends ExpCore.ClassB.Member> T norm(Program p,T m){
     return m.match(
-      nc->(T)nc.withE(norm(p,nc.getE())),//modify here to decrese performance but reduce evilpushes, by doing push(C) in case e is L
+      nc->(T)normNC(p,nc),
       mi->(T)Assertions.codeNotReachable(),
       mwt->(T)normMwt(p,mwt)
       );
     }
+  protected NestedClass normNC(Program p,NestedClass nc){
+    return nc.withE(norm(p,nc.getE()));
+    //modify here to decrese performance but reduce evilpushes, by doing push(C) in case e is L
+  }
   protected MethodWithType normMwt(Program p,MethodWithType mwt){
-    return mwt.withMt(resolve(p,mwt.getMt()));
-    }
-  protected MethodWithType normMwtDeep(Program p,MethodWithType mwt){
     return mwt.withMt(resolve(p,mwt.getMt()))
       .with_inner(mwt.get_inner().map(e->norm(p,e)));
     }
@@ -132,7 +134,7 @@ public class Norm {
 //- multiNorm(p, Cs1..Csn)/*a single Css*/= p.update(L)
       Paths popped=paths.pop();
       if(popped.isEmpty()){
-        return auxMultiNorm(p,paths.current);
+        return auxMultiNorm(p,paths.top());
         }
 //- multiNorm(p, Css,Csss) =multiNorm(p',Css) 
 //  p'=p.growFellow(multiNorm(p.pop(), Csss))

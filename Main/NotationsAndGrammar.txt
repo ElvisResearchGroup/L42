@@ -204,6 +204,7 @@ Part 3: paths
  
  -(Css paths) U (Css' paths')=(paths U paths').push(Css U Css')
  -paths U empty=empty U paths = paths
+ -(Css paths) \(Css' paths')=(path\path').push(Css\Css')//where Css\Css' ={Cs in Css| not Exists prefix of Cs in Css'}
  
  -empty.prefix(_)=empty
  -paths.prefix(empty)= paths
