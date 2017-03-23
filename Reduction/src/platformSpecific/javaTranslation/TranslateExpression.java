@@ -65,7 +65,7 @@ public class TranslateExpression implements coreVisitors.Visitor<Void>{
       return null;
     }
     ClassB cbs=Resources.getP().extractClassB(s);
-    if(cbs.getPhase().subtypeEq(Phase.Typed)  && IsCompiled.of(cbs)){
+    if(cbs.getPhase()==Phase.Coherent  && IsCompiled.of(cbs)){
       res.append(Resources.nameOf(s)+".type ");
       }
     else{

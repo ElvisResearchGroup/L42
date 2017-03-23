@@ -26,7 +26,7 @@ Cast:{class method Elem (Any that) {
 //#################READ METHODS
 read method  mut This reverse() (
   result=This.empty()
-  with e in this.vals()  (result.add(left:e))
+  with e in this.vals() (result.add(left:e))
   result
   )
 

@@ -109,9 +109,9 @@ public class Translator {
         //ClassB cb=map.get(s);
         //if(!cb.getDoc1().getS().contains("##@")){continue;}
       }
-      if (!map.get(s).getPhase().subtypeEq(Phase.Typed)){continue;}
+      if (map.get(s).getPhase()!=Phase.Coherent){continue;}
       ClassB cbNorm=map.get(s);//Hope it work, it was normalized before
-      assert cbNorm.getPhase().subtypeEq(Phase.Typed);
+      assert cbNorm.getPhase()==Phase.Coherent;
       mapNorm.put(s,cbNorm);
     }
 
@@ -120,7 +120,7 @@ public class Translator {
       resi.append("package generated;");
       resi.append("@SuppressWarnings(\"all\")");
       ClassB cbNorm = mapNorm.get(s);
-      assert cbNorm.getPhase().subtypeEq(Phase.Typed);
+      assert cbNorm.getPhase()==Phase.Coherent;
       TranslateClass.of(p,s,mapNorm.get(s),resi);
       String resiS=resi.toString();
       t.map.put(s, resiS);
@@ -136,7 +136,7 @@ public class Translator {
   public static void add(int level,List<Ast.C> cs,ClassB cb, Map<String,ClassB> map,Program original){
     Ast.Path p=Ast.Path.outer(level, cs);
 
-    if(cb.getPhase().subtypeEq(Phase.Typed)  && IsCompiled.of(cb)){//otherwise is "meta"
+    if(cb.getPhase()==Phase.Coherent  && IsCompiled.of(cb)){//otherwise is "meta"
       //assert cb.getStage().getInheritedPaths()!=null;
       ClassB cbUF=useFrom(cb,p);
       if(!cs.isEmpty()){//ok to ignore empty ones, since not complete?

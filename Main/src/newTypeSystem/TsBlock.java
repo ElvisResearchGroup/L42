@@ -203,7 +203,9 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
       // T1 is the actual caught type, based on the types which can be thrown in context
       // T2 is the type of the expression, based on x being bound T1
   default TOutK kTypeCatch(TIn in,Tr tr1,On k){
-    if(k.getKind()==SignalKind.Return && tr1.returns.isEmpty()){return new TErr(in,"No returns in scope",null,ErrorKind.NoMostGeneralMdf);}
+    if(k.getKind()==SignalKind.Return && tr1.returns.isEmpty()){
+      return new TErr(in,"No returns in scope",null,ErrorKind.NoMostGeneralMdf);
+      }
     Mdf mdf1=TypeManipulation._mostGeneralMdf(k.getKind(),tr1);
     if(mdf1==null){return new TErr(in,"Contrasting mdf expected for return",null,ErrorKind.NoMostGeneralMdf);}
     NormType T1 = Norm.resolve(in.p, k.getT()).withMdf(mdf1);

@@ -18,7 +18,9 @@ import ast.ExpCore.Block;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.MCall;
 import ast.ExpCore.ClassB.Member;
+import ast.ExpCore.ClassB.MethodImplemented;
 import ast.ExpCore.ClassB.MethodWithType;
+import ast.ExpCore.ClassB.NestedClass;
 import ast.ExpCore.ClassB.Phase;
 import coreVisitors.CollectClassBs0;
 import coreVisitors.CollectPaths0;
@@ -48,35 +50,34 @@ static PathsPaths usedPathsECatchErrors(Program p, ExpCore e){
 //- usedPathsE(p,eC)= <reorganize(Ps); usedPathsFix(p,paths, empty)>
 //assert that the result includes paths in usedPathsFix(p,paths, empty)  
 //Ps,Ps'={P|P inside eC}//arbitrary split of the set; heuristic will apply in the implementation.
-    List<Ast.Path>  ps=CollectPaths0.of(e);//collect all paths
+    List<Ast.Path>  psBoth=CollectPaths0.of(e);//collect all paths
     List<Ast.Path>  ps1;
     try{ps1=collectNotAnyPaths(p,e);}
     catch(ErrorMessage.PathNonExistant pne){
       throw Assertions.codeNotReachable();
       }
-    ps.removeAll(ps1);
-    Paths paths= Paths.reorganize(ps);
+//L1..Ln={L| L inside eC}//in path not prime// not repeat check stage
     List<ClassB> l1n = CollectClassBs0.of(e);
-//    paths=usedPathsFix(p,reorganize(Ps) 
-//            U (deepImplements(L1)U..U deepImplements(Ln)).pop(), empty)
+//paths'=usedPathsFix(p,reorganize(Ps'), empty,Coherent)
+    Paths paths1 = Paths.reorganize(ps1);
+    paths1 = usedPathsFix(p,paths1,Collections.emptyList(),Phase.Coherent);
+    assert paths1.checkAllDefined(p);
+//paths0=reorganize(Ps,Ps') U paths' U (deepImplements(L1)U..U deepImplements(Ln)).pop()
+//paths=usedPathsFix(p,paths0, empty,Typed)
+    Paths paths0= Paths.reorganize(psBoth).union(paths1);
     Paths acc=Paths.empty();
     for(ClassB li:l1n){
       acc=acc.union(deepImplements(li));
       }
-    paths=paths.union(acc.pop());
-    paths=usedPathsFix(p,paths,Collections.emptyList());
-    paths.checkAllDefined(p);
-    
-    Paths paths1 = Paths.reorganize(ps1);
-    paths1 = usedPathsFix(p,paths1,Collections.emptyList());
-    paths1.checkAllDefined(p);
-    paths=paths.setMinus(paths1);
-    PathsPaths result= new PathsPaths(paths,paths1);
+    paths0=paths0.union(acc.pop());
+    Paths paths=usedPathsFix(p,paths0,Collections.emptyList(),Phase.Typed);
+    assert paths.checkAllDefined(p);
+    PathsPaths result= new PathsPaths(paths.setMinus(paths1),paths1);
     System.out.println("UsedPaths:\npaths:"+result.left+"\npaths':"+result.right+"\n-----------------\n");
     return result;
     }
 
-  static private Paths usedPathsFix(Program p, Paths paths, List<List<Ast.C>> css) {
+  static private Paths usedPathsFix(Program p, Paths paths, List<List<Ast.C>> css,Phase phase0) {
 //- usedPathsFix(p,empty,empty) =empty   
     if (paths.isEmpty()){
       assert css.isEmpty();
@@ -94,32 +95,32 @@ static PathsPaths usedPathsECatchErrors(Program p, ExpCore e){
         }
       assert !(p instanceof FlatProgram):
         popPaths;
-      return usedPathsFix(p.pop(),popPaths,Collections.emptyList()).push(css);
+      return usedPathsFix(p.pop(),popPaths,Collections.emptyList(),phase0).push(css);
       }
 //-usedPathsFix(p,paths,Css)= usedPathsFix(p, paths U paths0,minimize(paths0.top() U Css)) // U on paths does minimize() internally
 //paths.top()\Css!=empty
 //paths0=usedPathsL(p.top(),paths.top()\Css)
-    Paths paths0=usedPathsL(p.top(),topLessCss);
+    Paths paths0=usedPathsL(p.top(),topLessCss,phase0);
     List<List<Ast.C>> css1=new ArrayList<>(paths.top());
     css1.addAll(css);
-    return usedPathsFix(p,paths.union(paths0),Paths.minimize(css1));
+    return usedPathsFix(p,paths.union(paths0),Paths.minimize(css1),phase0);
     }
 
 //- usedPathsL(L, Cs1..Csn)=usedInnerL(L(Cs1),Cs1) U ... U usedInnerL(L(Csn),Csn)
-  static private Paths usedPathsL(ClassB l, List<List<Ast.C>> css) {
+  static private Paths usedPathsL(ClassB l, List<List<Ast.C>> css,Phase phase0) {
     Paths result=Paths.empty();
     for(List<Ast.C> csi : css){
       ClassB li;try{li=l.getClassB(csi);}
       catch(ErrorMessage.PathNonExistant pne){
         throw pne.withListOfNodeNames(csi).withCb(l);
         }
-      result=result.union(usedInnerL(li,csi));
+      result=result.union(usedInnerL(li,csi,phase0));
       }
     return result;
     }
   
 //- usedInnerL(LC,Cs)=paths.prefix(Cs)
-  static private Paths usedInnerL(ClassB lc, List<Ast.C> cs) {
+  static private Paths usedInnerL(ClassB lc, List<Ast.C> cs,Phase phase0) {
   //LC={_ implements Ps, M1..Mn}//in implementation, error if not compiled
   if(!IsCompiled.of(lc)){
     throw new ErrorMessage.IncompleteClassIsRequired(
@@ -129,31 +130,33 @@ static PathsPaths usedPathsECatchErrors(Program p, ExpCore e){
   }
   Paths paths=Paths.reorganize(lc.getSuperPaths());
   for(ClassB.Member mi: lc.getMs()){
-    paths=paths.union(usedInnerM(mi));
+    paths=paths.union(usedInnerM(mi,phase0));
     }
   //paths=reorganize(Ps) U usedInnerM(M1) U... U usedInnerM(Mn))
   return paths.prefix(cs);}
-  
-//- usedInnerM(M)= reorganize({P| P inside M}) U (usedInnerL(L1,empty) U...U usedInnerL(Ln,empty)).pop()
-  static private Paths usedInnerM(Member m) {
-//L1..Ln={L| L inside M}
+ 
+  static private Paths usedInnerM(Member m,Phase phase0) {  
+    if(m instanceof NestedClass){
+      NestedClass nc=(NestedClass)m;
+      return usedInnerL((ClassB)nc.getInner(),Collections.emptyList(),phase0).pop();
+      }
     List<Path> result1;
     List<ClassB> l1n = Collections.emptyList();
     if(m instanceof MethodWithType){
-      MethodWithType mwt = (MethodWithType)m;
-      result1 = CollectPaths0.of(mwt);
-      if(mwt.get_inner().isPresent()){
+      MethodWithType mwt=(MethodWithType)m;
+      result1=CollectPaths0.of(mwt);
+      if(phase0==Phase.Typed && mwt.get_inner().isPresent()){
         l1n = CollectClassBs0.of(m.getInner());
         }
       }
-    else {
+    else{
+      assert m instanceof MethodImplemented;
       result1=CollectPaths0.of(m.getInner());
-      l1n = CollectClassBs0.of(m.getInner());
       }
     Paths result2=Paths.reorganize(result1);
-    Paths result3=Paths.empty();
-    for(ClassB li: l1n){result3=result3.union(usedInnerL(li,Collections.emptyList()));}
-    return result2.union(result3.pop());
+    Paths acc=Paths.empty();
+    for(ClassB li: l1n){acc=acc.union(usedInnerL(li,Collections.emptyList(),phase0));}
+    return result2.union(acc.pop());
     }
   
   static private Paths deepImplements(ClassB l){

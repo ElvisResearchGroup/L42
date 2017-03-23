@@ -50,6 +50,7 @@ public class Paths {
       if(hasPrefixIn(other.top(),csi)){continue;}
       css.add(csi);
       }
+    if(css.isEmpty() && rec.isEmpty()){return Paths.empty();}
     return rec.push(css);
   }
   public boolean checkAllDefined(Program p){

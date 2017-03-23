@@ -5,6 +5,7 @@ import ast.Ast.Type;
 import ast.Ast.Path;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodWithType;
+import auxiliaryGrammar.Functions;
 import auxiliaryGrammar.WellFormednessCore;
 import coreVisitors.From;
 import programReduction.Program;
@@ -12,6 +13,7 @@ import tools.Map;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import ast.Ast.Mdf;
@@ -184,8 +186,18 @@ public static MethodType _bestMatchMtype(Program p,MethodType superMt,List<Metho
         }
       }
   }
-  assert res.size()==1:
-  res.size();
-  return res.get(0);
+  //assert res.size()==1: res.size(); sometime is false, for example capsule->capsule and mut->mut
+  if(res.size()==1){
+    return res.get(0);
+    }
+  List<MethodType> _res=res;//for final limitations
+  Optional<MethodType> res1 = res.stream().filter(
+    mt1->_res.stream().allMatch(
+      mt2->Functions.isSubtype(
+        mt1.getReturnType().getNT().getMdf(),mt2.getReturnType().getNT().getMdf()
+        ))).findAny();
+    if(res1.isPresent()){return res1.get();}
+    assert false;
+    return res.get(0);
   }
 }
