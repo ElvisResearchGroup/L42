@@ -14,7 +14,7 @@ Parsable:{
 
       class method
       This #from(S.SBuilder builder)
-        This.fromS(S.#from(binaryRepr: builder.binaryRepr()))
+        This.fromS(S.#from(binaryRepr: builder.#binaryRepr()))
 
       class method
       mut S.SBuilder #builder() S.SBuilder.empty()

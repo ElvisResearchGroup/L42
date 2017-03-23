@@ -24,6 +24,7 @@ import ast.Ast.Position;
 import ast.Ast.Stage;
 import ast.Ast.Type;
 import ast.Ast.VarDec;
+import ast.ExpCore.ClassB.Phase;
 import ast.ExpCore;
 import ast.Expression;
 import ast.Expression.BinOp;
@@ -87,7 +88,7 @@ public class ToFormattedText implements Visitor<Void>{
   public static String of(ExpCore.ClassB.Member m){
     List<ExpCore.ClassB.Member> ms=new ArrayList<>();
     ms.add(m);
-    ExpCore e=ExpCore.ClassB.membersClass(ms,m.getP());
+    ExpCore e=ExpCore.ClassB.membersClass(ms,m.getP(),Phase.None);
     Expression.ClassB es=(ClassB) e.accept(new InjectionOnSugar());
     ToFormattedText tft=new ToFormattedText();
     tft.formatMembers(es.getMs());//for the injection

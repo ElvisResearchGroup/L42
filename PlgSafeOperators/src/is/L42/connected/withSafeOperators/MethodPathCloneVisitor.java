@@ -126,7 +126,9 @@ abstract public class MethodPathCloneVisitor extends RenameMembers {
 
 
   public ExpCore visit(MCall s) {
-    Program ep=p;for(ClassB cbi:this.getLocator().getCbs()){ep=ep.evilPush(cbi);}
+    Program ep=p;for(ClassB cbi:this.getLocator().getCbs()){
+      if(cbi!=null){ep=ep.evilPush(cbi);}
+      }
     MethodSelector ms=s.getS();
     Path guessed=null;
     try{

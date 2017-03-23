@@ -12,7 +12,7 @@
 
   class method mut This #from(Library binaryRepr) This._private(_binaryRepr:binaryRepr)
 
-  read method Library binaryRepr() this._binaryRepr()
+  read method Library #binaryRepr() this._binaryRepr()
 
   method toS() this.clone()
 
@@ -26,13 +26,13 @@
   //#####operators
   method
   S ++ (S that) S.#from(binaryRepr: use Alu
-      check stringConcat(s1:this.binaryRepr(),s2:that.binaryRepr())
+      check stringConcat(s1:this.#binaryRepr(),s2:that.#binaryRepr())
       error void)
 
   read method
   Bool ==(read This that) {
     use Alu
-      check ifStringEqualDo(s1:this.binaryRepr(),s2:that.binaryRepr())
+      check ifStringEqualDo(s1:this.#binaryRepr(),s2:that.#binaryRepr())
       return Bool.true()
     return Bool.false()
     }
@@ -176,7 +176,7 @@ This withoutRight()
   method
   S (Size start, Size end)
     S.#from(binaryRepr:use Alu
-      check stringSubstring(this.binaryRepr(),start:start.binaryRepr(),end:end.binaryRepr())
+      check stringSubstring(this.#binaryRepr(),start:start.#binaryRepr(),end:end.#binaryRepr())
       error void )
 
   method
@@ -191,7 +191,7 @@ This withoutRight()
 
   method Size size()
     Size.#from(binaryRepr: use Alu
-      check stringSize(this.binaryRepr())
+      check stringSize(this.#binaryRepr())
       error void)
 
 
@@ -232,9 +232,9 @@ This withoutRight()
   method
   S replace(S that, S into)
     S.#from(binaryRepr:use Alu
-      check stringReplace(this.binaryRepr(),
-        src:that.binaryRepr()
-        dest:into.binaryRepr())
+      check stringReplace(this.#binaryRepr(),
+        src:that.#binaryRepr()
+        dest:into.#binaryRepr())
       error void)
 
   method
@@ -275,7 +275,7 @@ This withoutRight()
 
   SBuilder:...
   class method This #from(S.SBuilder builder)
-    This._private(_binaryRepr:builder.binaryRepr())
+    This._private(_binaryRepr:builder.#binaryRepr())
   class method mut S.SBuilder #builder() S.SBuilder.empty()
 
 

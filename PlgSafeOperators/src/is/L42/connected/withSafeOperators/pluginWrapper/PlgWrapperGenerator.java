@@ -355,7 +355,7 @@ public static boolean hasPluginUnresponsive(ClassB l){
     }
   private static void isOkAsParameter(Program p, Path csTop, Type ti) throws ClassUnfit, MethodUnfit {
     Path pi=ti.getNT().getPath();
-    if (pi.equals(Path.Library())){return;}//Libraries are ok and we just omit the .binaryRepr() call
+    if (pi.equals(Path.Library())){return;}//Libraries are ok and we just omit the .#binaryRepr() call
     Path op=_pathForOutside(csTop.getCBar().size(),pi);
     if(op==null){checkForInside(p.top(),csTop,pi); return;}
     ClassB l=p.extractClassB(op);//TODO: since p.top is topL, is it ok this extraction?

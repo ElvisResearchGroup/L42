@@ -142,7 +142,7 @@ public class RemoveCode {
       ClassB newInner=removeAllButPath(path.subList(1, path.size()),(ClassB)nc.getInner());
       ms.add(nc.withInner(newInner));
       }
-    return ClassB.membersClass(ms,Position.noInfo);
+    return ClassB.membersClass(ms,Position.noInfo,originalCb.getPhase());
   }
 
   private static List<List<Ast.C>> collectDep(ClassB depSource, List<Ast.C> origin) {

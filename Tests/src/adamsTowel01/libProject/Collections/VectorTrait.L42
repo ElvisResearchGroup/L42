@@ -18,7 +18,10 @@ MutListT:{ implements Concept.ToS
   method This with(Size that, Any val) 
   }
 Elem:{}
-class method Elem cast(Any that) {with that (on Elem return that   default error CollectionErrors.cast())}
+Cast:{class method Elem (Any that) {
+  with that (on Elem return that
+  default error CollectionErrors.cast()
+  )}}
 
 //#################READ METHODS
 read method  mut This reverse() (
@@ -29,9 +32,9 @@ read method  mut This reverse() (
 
 read method Size size() this.inner().size()
 read method Bool isEmpty() this.size()==0Size
-read method  Elem val(Size that) This.cast(this.inner().val(that) )
-read method  Elem left() This.cast(this.inner().val(0Size) )
-read method  Elem right() This.cast(this.inner().val(\size-1Size) )
+read method  Elem val(Size that) Cast(this.inner().val(that) )
+read method  Elem left() Cast(this.inner().val(0Size) )
+read method  Elem right() Cast(this.inner().val(\size-1Size) )
 
 //#################MUT METHODS
 mut method  Void (Size that,Elem val) this.#inner()(that, val:val)

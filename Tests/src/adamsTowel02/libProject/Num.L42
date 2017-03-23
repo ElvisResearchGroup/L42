@@ -13,14 +13,14 @@
   This fromS(Concept.ToS that) (
     s=that.toS()
     This._private(_binaryRepr: use Plg
-      check stringToNum(s.binaryRepr())
+      check stringToNum(s.#binaryRepr())
       error This.parseError(s))
     )
   class method
   This #from(Library binaryRepr)
     This._private(_binaryRepr:binaryRepr)
   method
-  Library binaryRepr() this._binaryRepr()
+  Library #binaryRepr() this._binaryRepr()
 
   class method
   mut S.SBuilder #builder()
@@ -29,7 +29,7 @@
   class method
   This #from(S.SBuilder builder)
     This._private(_binaryRepr: use Plg
-      check stringToNum(builder.binaryRepr())
+      check stringToNum(builder.#binaryRepr())
       error This.parseError(S.#from(builder: builder)))
 
   ParseFail:Message.$<><{ implements Guard.ParseFail}
@@ -39,37 +39,37 @@
   method
   toS()
     S.#from(binaryRepr: use Plg
-      check numToString(this.binaryRepr())
+      check numToString(this.#binaryRepr())
       error void)
 
   method
   This +(This that)
     This._private(_binaryRepr:use Plg
-      check sumNum(n1:this.binaryRepr() n2:that.binaryRepr())
+      check sumNum(n1:this.#binaryRepr() n2:that.#binaryRepr())
       error void)
 
   method
   This -(This that)
     This._private(_binaryRepr:use Plg
-      check subNum(n1:this.binaryRepr() n2:that.binaryRepr())
+      check subNum(n1:this.#binaryRepr() n2:that.#binaryRepr())
       error void)
 
   method
   This *(This that)
     This._private(_binaryRepr:use Plg
-      check mulNum(n1:this.binaryRepr() n2:that.binaryRepr())
+      check mulNum(n1:this.#binaryRepr() n2:that.#binaryRepr())
       error void)
 
   method
   This /(This that)
     This._private(_binaryRepr: use Plg
-      check divNum(n1:this.binaryRepr() n2:that.binaryRepr())
+      check divNum(n1:this.#binaryRepr() n2:that.#binaryRepr())
       error void)
 
   read method
   Bool ==(read This that){
     use Plg
-      check ifNumEqualDo(n1:this.binaryRepr() n2:that.binaryRepr())
+      check ifNumEqualDo(n1:this.#binaryRepr() n2:that.#binaryRepr())
       return Bool.true()
     return Bool.false()
     }
@@ -80,14 +80,14 @@
 
   method Bool >(This that)  {
     use Plg
-      check ifNumGrtDo(n1:that.binaryRepr() n2:this.binaryRepr())
+      check ifNumGrtDo(n1:that.#binaryRepr() n2:this.#binaryRepr())
       return Bool.true()
     return Bool.false()
     }
 
   method Bool >=(This that) {
     use Plg
-      check ifNumGEqDo(n1:that.binaryRepr() n2:this.binaryRepr())
+      check ifNumGEqDo(n1:that.#binaryRepr() n2:this.#binaryRepr())
       return Bool.true()
     return Bool.false()
     }

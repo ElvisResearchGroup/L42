@@ -9,11 +9,11 @@
 // still, there is no bug in the program at this stage. Is legit for the caller to try and be blamed
 
 interface implements Message //all other guards should implement this one
+This$:{interface}
+Operation:Message.$<><{ implements This$}//if "this" is unfit
+Parameter:Message.$<><{ implements This$}// if a parameter is unfit
+Precondition:Message.$<><{ implements This$}// if it is about multiple parameters
 
-Operation:Message.$<><{ implements Guard}//if "this" is unfit
-Parameter:Message.$<><{ implements Guard}// if a parameter is unfit
-Precondition:Message.$<><{ implements Guard}// if it is about multiple parameters
-
-ParseFail:{interface  implements Guard} //thrown by fromS methods and similar
+ParseFail:{interface  implements This$} //thrown by fromS methods and similar
 
 }

@@ -44,8 +44,8 @@
     )
   class method mut S.SBuilder #builder()S.SBuilder.empty()
   class method This #from(S.SBuilder builder)
-    This(builder.binaryRepr())
-  method Library binaryRepr() this._binaryRepr()
+    This(builder.#binaryRepr())
+  method Library #binaryRepr() this._binaryRepr()
 
 
   method toS() {

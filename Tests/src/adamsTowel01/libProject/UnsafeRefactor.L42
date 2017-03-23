@@ -1,10 +1,11 @@
 {
-Compose:{/*
-  @plugin  toFix 
-  @pluginPart is.L42.connected.withSafeOperators.refactor.Compose
-  */
+/*Compose:{
+  //@ww plugin  toFix 
+  //@ww pluginPart is.L42.connected.withSafeOperators.refactor.Compose
+  
   class method Void #pluginUnresponsive(Library binaryRepr) 
-    error {/*Compose(that,and)*/}
+    error {//Compose(that,and)
+    }
 
   class method
   Library compose(Library left,Library right)
@@ -12,6 +13,22 @@ Compose:{/*
   class method
   Library (Library that,Library and)
     This.compose(left:that,right:and)
-  }
+  }*/
 //may still need redirect/rename class
+RenameClass:{
+  /*
+  @plugin  toFix 
+  @pluginPart is.L42.connected.withSafeOperators.refactor.Rename
+  */
+  class method Void #pluginUnresponsive(Library binaryRepr) 
+    error {/*renameClass(Library that,S nameSrc,S nameDest)*/}
+
+  class method
+  Library renameClass(Library that,S nameSrc,S nameDest)
+  }
+This$er:{
+  class method
+  Library <><(Library that)
+    RenameClass.renameClass(that,nameSrc:S"This$",nameDest:S"This")
+  }
 }

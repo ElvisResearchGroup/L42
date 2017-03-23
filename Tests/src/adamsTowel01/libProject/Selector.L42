@@ -9,10 +9,10 @@
 
   class method
   This fromS(Concept.ToS that)
-    This.#from(binaryRepr: that.toS().binaryRepr())
+    This.#from(binaryRepr: that.toS().#binaryRepr())
 
   class method This #from(S.SBuilder builder)
-    This.#from(binaryRepr: builder.binaryRepr())
+    This.#from(binaryRepr: builder.#binaryRepr())
 
   class method mut S.SBuilder #builder() S.SBuilder.empty()
 
@@ -43,7 +43,7 @@
     if this.toS()(0Size)==S"#" (return S"#")
     return S""
     }
-  method Library binaryRepr() this._binaryRepr()
+  method Library #binaryRepr() this._binaryRepr()
 
 
   method toS() S.#from(binaryRepr: this._binaryRepr())
@@ -51,7 +51,7 @@
   method
   Bool == (This that) {
     use Alu
-      check ifStringEqualDo(s1:this.binaryRepr(),s2:that.binaryRepr())
+      check ifStringEqualDo(s1:this.#binaryRepr(),s2:that.#binaryRepr())
       return Bool.true()
     return Bool.false()
     }

@@ -38,6 +38,7 @@ public class CloneWithPath extends CloneVisitor{
   public ExpCore visit(ClassB cb){
     location.enterClassB(cb);
     try{return super.visit(cb);}
+//    catch(NullPointerException npe){throw npe;}
     finally{ location.exitClassB(); }
   }
     

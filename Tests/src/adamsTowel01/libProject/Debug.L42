@@ -2,7 +2,7 @@
   class method
   Void (read Concept.ToS that)
     use Alu
-      check stringDebug(that.toS().binaryRepr())
+      check stringDebug(that.toS().#binaryRepr())
       void
   class method
   Void (Library lib) error S"to fix in AdamTowel2"
@@ -11,22 +11,22 @@
   Void (Concept.ToS fileName, Concept.ToS content)
     use Alu
       check fileDebug(
-        fileName:fileName.toS().binaryRepr(),
-        content:content.toS().binaryRepr()
+        fileName:fileName.toS().#binaryRepr(),
+        content:content.toS().#binaryRepr()
         )
       void
 
   class method
   S readFile(Concept.ToS fileName)
     S.#from(binaryRepr:use Alu
-      check fileReadDebug(   fileName:fileName.toS().binaryRepr()  )
+      check fileReadDebug(   fileName:fileName.toS().#binaryRepr()  )
       error S"Alu.fileReadDebug reading file:"[fileName]""
       )
 
   class method
   S localToAbsolute(Concept.ToS fileName)
     S.#from(binaryRepr:use Alu
-      check localToAbsolute(   fileName:fileName.toS().binaryRepr()  )
+      check localToAbsolute(   fileName:fileName.toS().#binaryRepr()  )
       error S"Alu.fileReadDebug reading file:"[fileName]""
       )
 

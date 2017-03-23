@@ -62,7 +62,7 @@ public class Redirect {
   }
   public static ClassB remove(Path path1, ClassB l) {
     if(path1.equals(Path.outer(0))){
-      return ClassB.membersClass(Collections.emptyList(),Position.noInfo);
+      return ClassB.membersClass(Collections.emptyList(),Position.noInfo,l.getPhase());
       }
     return (ClassB)l.accept(new coreVisitors.CloneVisitor(){
       List<Ast.C> cs=path1.getCBar();
@@ -181,7 +181,7 @@ public class Redirect {
       }
     else{
       assert path.isPrimitive();
-      currentExtCb=ClassB.membersClass(Collections.emptyList(),Position.noInfo).withInterface(path.equals(Path.Any()));
+      currentExtCb=ClassB.membersClass(Collections.emptyList(),Position.noInfo,cbTop.getPhase()).withInterface(path.equals(Path.Any()));
     }
     assert cs.stream().allMatch(c->!c.isUnique());
     boolean isPrivateState=ExtractInfo.hasPrivateState(currentIntCb);

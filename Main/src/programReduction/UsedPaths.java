@@ -3,11 +3,16 @@ package programReduction;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
+
+import com.sun.xml.internal.ws.dump.LoggingDumpTube.Position;
 
 import ast.Ast;
 import ast.Ast.Path;
 import ast.Ast.Type;
 import ast.ErrorMessage;
+import ast.ErrorMessage.IncompleteClassIsRequired;
+import ast.ErrorMessage.PathNonExistant;
 import ast.ExpCore;
 import ast.ExpCore.Block;
 import ast.ExpCore.ClassB;
@@ -19,6 +24,7 @@ import coreVisitors.CollectClassBs0;
 import coreVisitors.CollectPaths0;
 import coreVisitors.IsCompiled;
 import coreVisitors.PropagatorVisitor;
+import sugarVisitors.CollapsePositions;
 import tools.Assertions;
 
 class PathsPaths{
@@ -29,6 +35,15 @@ class PathsPaths{
 
 public class UsedPaths {
 
+static PathsPaths usedPathsECatchErrors(Program p, ExpCore e){
+  try{return usedPathsE(p,e);}
+  catch(PathNonExistant pne){
+    throw pne.withPos(CollapsePositions.of(e));
+    }
+  catch(IncompleteClassIsRequired icir){
+    throw icir.withE(e).withPos(CollapsePositions.of(e));
+    }
+  }
   static PathsPaths usedPathsE(Program p, ExpCore e){
 //- usedPathsE(p,eC)= <reorganize(Ps); usedPathsFix(p,paths, empty)>
 //assert that the result includes paths in usedPathsFix(p,paths, empty)  
@@ -41,17 +56,22 @@ public class UsedPaths {
       }
     ps.removeAll(ps1);
     Paths paths= Paths.reorganize(ps);
-    Paths paths1 = Paths.reorganize(ps1);
-    paths1 = usedPathsFix(p,paths1,Collections.emptyList());
     List<ClassB> l1n = CollectClassBs0.of(e);
-    //U (usedInnerL(L1,empty) U...U usedInnerL(Ln,empty)).pop()
+//    paths=usedPathsFix(p,reorganize(Ps) 
+//            U (deepImplements(L1)U..U deepImplements(Ln)).pop(), empty)
     Paths acc=Paths.empty();
     for(ClassB li:l1n){
-      acc=acc.union(usedInnerL(li,Collections.emptyList()));
+      acc=acc.union(deepImplements(li));
       }
     paths=paths.union(acc.pop());
+    paths=usedPathsFix(p,paths,Collections.emptyList());
+    paths.checkAllDefined(p);
+    
+    Paths paths1 = Paths.reorganize(ps1);
+    paths1 = usedPathsFix(p,paths1,Collections.emptyList());
+    paths1.checkAllDefined(p);
     paths=paths.setMinus(paths1);
-    PathsPaths result= new PathsPaths(paths,paths1);        
+    PathsPaths result= new PathsPaths(paths,paths1);
     System.out.println("UsedPaths:\npaths:"+result.left+"\npaths':"+result.right+"\n-----------------\n");
     return result;
     }
@@ -72,6 +92,8 @@ public class UsedPaths {
       if(popPaths.isEmpty()){
         return Paths.empty().push(css);
         }
+      assert !(p instanceof FlatProgram):
+        popPaths;
       return usedPathsFix(p.pop(),popPaths,Collections.emptyList()).push(css);
       }
 //-usedPathsFix(p,paths,Css)= usedPathsFix(p, paths U paths0,minimize(paths0.top() U Css)) // U on paths does minimize() internally
@@ -86,14 +108,25 @@ public class UsedPaths {
 //- usedPathsL(L, Cs1..Csn)=usedInnerL(L(Cs1),Cs1) U ... U usedInnerL(L(Csn),Csn)
   static private Paths usedPathsL(ClassB l, List<List<Ast.C>> css) {
     Paths result=Paths.empty();
-    for(List<Ast.C> csi : css){result=result.union(usedInnerL(l.getClassB(csi),csi));}
+    for(List<Ast.C> csi : css){
+      ClassB li;try{li=l.getClassB(csi);}
+      catch(ErrorMessage.PathNonExistant pne){
+        throw pne.withListOfNodeNames(csi).withCb(l);
+        }
+      result=result.union(usedInnerL(li,csi));
+      }
     return result;
     }
   
 //- usedInnerL(LC,Cs)=paths.prefix(Cs)
   static private Paths usedInnerL(ClassB lc, List<Ast.C> cs) {
   //LC={_ implements Ps, M1..Mn}//in implementation, error if not compiled
-  assert IsCompiled.of(lc);//should it be a compilation error?
+  if(!IsCompiled.of(lc)){
+    throw new ErrorMessage.IncompleteClassIsRequired(
+            "library not compiled yet is required to be typed",
+            null,Path.outer(0, cs), Collections.emptyList(),Ast.Position.noInfo
+            );
+  }
   Paths paths=Paths.reorganize(lc.getSuperPaths());
   for(ClassB.Member mi: lc.getMs()){
     paths=paths.union(usedInnerM(mi));
@@ -122,6 +155,20 @@ public class UsedPaths {
     for(ClassB li: l1n){result3=result3.union(usedInnerL(li,Collections.emptyList()));}
     return result2.union(result3.pop());
     }
+  
+  static private Paths deepImplements(ClassB l){
+    Paths res=Paths.reorganize(l.getSuperPaths());
+    Paths acc=Paths.empty();
+    for(Member mi:l.getMs()){
+      ExpCore e;try{e=mi.getInner();}
+      catch(NoSuchElementException nsee){continue;}
+      for(ClassB cbij:CollectClassBs0.of(e)){
+        acc=acc.union(deepImplements(cbij));
+        }
+      }
+    return res.union(acc.pop());
+    }
+  
   static private List<Ast.Path> collectNotAnyPaths(Program p,ExpCore e) {
     class HeuristicForNotAnyPathsSplit extends CollectPaths0{
     //non determinism heuristic:

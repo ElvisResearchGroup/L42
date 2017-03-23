@@ -41,7 +41,8 @@ public class ProgramReduction {
     assert IsCompiled.of(ec);
     assert !(ec instanceof ClassB);
     //ExpCore ec1=new Norm().norm(p, ec);//TODO:May disappear with new TS?
-    PathsPaths pair = UsedPaths.usedPathsE(p, ec);
+    System.out.println("Top running on nc:"+nc.getName());
+    PathsPaths pair = UsedPaths.usedPathsECatchErrors(p, ec);
     Paths paths=pair.left;
     Paths paths1=pair.right;
     Program p0=Norm.multiNorm(p,paths.union(paths1));

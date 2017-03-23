@@ -122,7 +122,8 @@ public class Translator {
       ClassB cbNorm = mapNorm.get(s);
       assert cbNorm.getPhase().subtypeEq(Phase.Typed);
       TranslateClass.of(p,s,mapNorm.get(s),resi);
-      t.map.put(s, resi.toString());
+      String resiS=resi.toString();
+      t.map.put(s, resiS);
     }
     return t;
     }

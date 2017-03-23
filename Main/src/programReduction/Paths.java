@@ -43,15 +43,28 @@ public class Paths {
       "";
     if (this==empty){return this;}
     if (other==empty){return this;}
-    Paths rec=this.pop().setMinus(other.pop());
-    
+    Paths rec=this.pop().setMinus(other.pop()); 
     List<List<Ast.C>> css = new ArrayList<>();
     for(List<Ast.C> csi:this.top()){
-      if(!hasPrefixIn(other.top(),csi)){css.add(csi);}
+      if(other.top().contains(csi)){continue;}
+      if(hasPrefixIn(other.top(),csi)){continue;}
+      css.add(csi);
       }
     return rec.push(css);
   }
-
+  public boolean checkAllDefined(Program p){
+    if(this.isEmpty()){return true;}
+    for(List<Ast.C>cs:this.top()){
+      try{@SuppressWarnings("unused") Program pi= p.navigate(cs);}
+      catch(RuntimeException rte){
+        throw rte;//to breakpoint
+        }
+      }
+    if(this.pop().isEmpty()){return true;}
+    return this.pop().checkAllDefined(p.pop());
+    
+    }
+  
   public Paths prefix(List<Ast.C>cs){
     if(this==empty){return empty;}
     if(cs.isEmpty()){return this;}

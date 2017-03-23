@@ -35,18 +35,18 @@
   BBuilder:{(var Library that, var Size count)
     class method
     mut This empty()
-      This(0Size.binaryRepr(),count:0Size)
+      This(0Size.#binaryRepr(),count:0Size)
 
     mut method Void #0() (
       this.count(this.count()+1Size)
       this.that(use Alu
-        check leftShiftInt32(n1:this.that() n2:1Size.binaryRepr())
+        check leftShiftInt32(n1:this.that() n2:1Size.#binaryRepr())
         error void)
       )
     mut method Void #1() (
       this.#0()
       this.that(use Alu
-        check orInt32(n1:this.that(), n2:1Size.binaryRepr())
+        check orInt32(n1:this.that(), n2:1Size.#binaryRepr())
         error void
         )
       )
@@ -62,7 +62,7 @@
   method//@_private
   This res(Library that) This(Size.#from(binaryRepr:that))
   method//@_private
-  Library br() this.that().binaryRepr()
+  Library br() this.that().#binaryRepr()
   method
   This &(This that) this.res(use Alu
       check andInt32(n1:this.br() n2:that.br())
@@ -73,11 +73,11 @@
       error void)
   method
   This <<(Size that) this.res(use Alu
-      check leftShiftInt32(n1:this.br() n2:that.binaryRepr())
+      check leftShiftInt32(n1:this.br() n2:that.#binaryRepr())
       error void)
   method
   This >>(Size that) this.res(use Alu
-      check rightShiftInt32(n1:this.br() n2:that.binaryRepr())
+      check rightShiftInt32(n1:this.br() n2:that.#binaryRepr())
       error void)
   method
   This xor(This that) this.res(use Alu

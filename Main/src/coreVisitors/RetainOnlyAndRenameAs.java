@@ -70,7 +70,7 @@ public class RetainOnlyAndRenameAs extends CloneVisitor{
     return RenameVars.of(inner, toRename);
   }
   public ExpCore visit(ClassB cb){
-    ClassB cb2=ClassB.membersClass(cb.getMs(),cb.getP());
+    ClassB cb2=ClassB.membersClass(cb.getMs(),cb.getP(),cb.getPhase());
     return super.visit(cb2);
   }
   public ClassB.NestedClass visit(ClassB.NestedClass nc){

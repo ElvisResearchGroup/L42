@@ -128,6 +128,10 @@ public class Plugin implements PluginType {
     try{return new Integer(s);}
     catch(NumberFormatException nfe){throw new Resources.Error("InvalidEncodingForI32: "+s);    }
   }
+  
+  @ActionType({ActionType.Type.Library})
+  public  Object MconstStringEmpty(){return "";}
+  
 
   @ActionType({ActionType.Type.Library,ActionType.Type.Library})
   public  Object Mint32ToString£xthat(Object cb){
@@ -143,6 +147,7 @@ public class Plugin implements PluginType {
   }
   @ActionType({ActionType.Type.Library})
   public  Object MconstTrue(){return true;}
+  
   @ActionType({ActionType.Type.Library})
   public  Object MconstFalse(){return false;} 
   

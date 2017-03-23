@@ -675,8 +675,8 @@ public interface ExpCore {
       return new ClassB(d, false, Collections.emptyList(), Collections.emptyList(), Position.noInfo, Phase.Typed, 0);
     }
     
-    public static ExpCore.ClassB membersClass(List<Member> ms, Position pos) {
-      return new ClassB(Doc.empty(), false, Collections.emptyList(), ms, pos, Phase.None, 0);
+    public static ExpCore.ClassB membersClass(List<Member> ms, Position pos,Phase phase) {
+      return new ClassB(Doc.empty(), false, Collections.emptyList(), ms, pos, phase, 0);
     }
     
     public List<Path> getSuperPaths() {

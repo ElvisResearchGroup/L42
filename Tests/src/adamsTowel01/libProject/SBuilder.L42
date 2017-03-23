@@ -1,16 +1,16 @@
 { _private(var Library _binaryRepr)
 
-  read method Library binaryRepr() this._binaryRepr()
+  read method Library #binaryRepr() this._binaryRepr()
 
   mut method Void acc(Library that) this._binaryRepr(
     use Alu
-    check stringConcat(s1:this.binaryRepr(),s2:that)
+    check stringConcat(s1:this.#binaryRepr(),s2:that)
     error void)
 
-  class method mut This empty() This._private(_binaryRepr:{
-    //@stringU
-    //
-    })
+  class method mut This empty() This._private(_binaryRepr:
+    use Alu
+    check constStringEmpty()
+    error void)
 
   //NUMBERS:
 

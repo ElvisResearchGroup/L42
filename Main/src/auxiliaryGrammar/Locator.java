@@ -129,7 +129,7 @@ public class Locator {
   }
 
   static class LocatorSupport {
-    private static final ClassB dumbCb = ClassB.membersClass(Collections.emptyList(),Position.noInfo);
+    private static final ClassB dumbCb = ClassB.membersClass(Collections.emptyList(),Position.noInfo,null);
     }
 
   public boolean prefixOf(Locator nl) {

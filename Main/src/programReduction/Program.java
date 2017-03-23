@@ -173,6 +173,10 @@ class PushedProgram extends Methods{
   CtxL splitPoint;
   Program former;
   public PushedProgram(ClassB newTop, CtxL splitPoint, Program former) {
+    assert newTop!=null:
+      "";
+    assert former!=null:
+      "";
     this.newTop=newTop;
     this.splitPoint=splitPoint;
     this.former=former;
@@ -213,6 +217,10 @@ class UpdatedProgram extends PushedProgram{
 class EvilPushed extends Methods{
   ClassB newTop; Program former;
   public EvilPushed(ClassB newTop, Program former) {
+    assert newTop!=null:
+      "";
+    assert former!=null:
+      "";
     this.newTop=newTop; this.former=former;
     }
 

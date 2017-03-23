@@ -1,10 +1,19 @@
-{(Library binaryRepr)
+{(Library _binaryRepr)
  implements Concept.Equals, Concept.ToS, Concept.Classable//@_private
 
   read method
   This clone()
-    This(binaryRepr:this.binaryRepr())
-
+    This(_binaryRepr:this._binaryRepr())
+ 
+  method 
+  Library #binaryRepr()
+    this._binaryRepr()
+  
+  class method
+  This #from(Library binaryRepr)
+    This(_binaryRepr:binaryRepr)
+ 
+  
   method is(subtype) {  with subtype (on class This return Bool.true()) return Bool.false()}
   refine read method class This class() This
   method readableName()GetMyName(This)
@@ -23,14 +32,14 @@
   read method
   Void #checkTrue() exception Void
     use Alu
-      check ifFalseBoolDo(this.binaryRepr())
+      check ifFalseBoolDo(this._binaryRepr())
       exception void
   class method
   This true()
-    This(binaryRepr:use Alu check constTrue() error void)
+    This.#from(binaryRepr:use Alu check constTrue() error void)
   class method
   This false()
-    This(binaryRepr:use Alu check constFalse() error void)
+    This.#from(binaryRepr:use Alu check constFalse() error void)
 
   method
   This &(This that){

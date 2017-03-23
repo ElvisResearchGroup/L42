@@ -244,7 +244,7 @@ public class PluginWithPart implements PluginType{
       }}
     res.append("}\n");
     //  catch(ClassCastException cce){assert false; throw DoNotAct;}
-    res.append("catch(ClassCastException cce){assert false;throw platformSpecific.javaTranslation.Resources.notAct;}");
+    res.append("catch(ClassCastException cce){assert false:\"\"+cce+java.util.Arrays.asList("+ xsF+");throw platformSpecific.javaTranslation.Resources.notAct;}");
     //  return plgName.name(`opt` _1,..,_n);
     res.append("\n try{\n");
     if(!ui.isVoid){res.append("return ");}

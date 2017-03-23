@@ -52,7 +52,7 @@ public static ClassB addMethod(ClassB _lib, List<Ast.C> path, MethodSelector ms,
   if(optM.isPresent()){
     throw Errors42.errorMethodClash(path, mwt, optM.get(), false, Collections.emptyList(), false, false,false);
     }
-  ClassB emptyCb=ClassB.membersClass(Collections.emptyList(),innerLib.getP());
+  ClassB emptyCb=ClassB.membersClass(Collections.emptyList(),innerLib.getP(),innerLib.getPhase());
   return _lib.onClassNavigateToPathAndDo(path,cbi->{
     List<Member> mem = new ArrayList<>(cbi.getMs());
     mem.add(mwt);

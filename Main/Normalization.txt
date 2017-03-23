@@ -112,31 +112,33 @@ maindefinition:
    
 ------------------------------------------     
 ###define usedPathsE
+//TODO: still wrong, usedPathFix need to work on pairs paths;paths':
+//  the idea is that paths found inside literal inside meth bodies need to go in paths so that will only be required as Typed.
 //note we could have redundant paths, like This1.C and This2.B.C and is ok
 //and this is also ok for path,path' for toAny
 - usedPathsE(p,eC)= <path\paths';paths'>//assert that the result includes paths in usedPathsFix(p,paths, empty)  
   Ps,Ps'={P|P inside eC}//arbitrary split of the set; heuristic will apply in the implementation.
   paths'=usedPathsFix(p,reorganize(Ps'), empty)
-  paths=usedPathsFix(p,reorganize(Ps), empty)
-    U (usedInnerL(L1,empty) U...U usedInnerL(Ln,empty)).pop()
-//    U deepImplements(L1) U..U deepImplements(Ln)
+  paths=usedPathsFix(p,reorganize(Ps) 
+    U (deepImplements(L1)U..U deepImplements(Ln)).pop(), empty)
   L1..Ln={L| L inside eC}//in path not prime// not repeat check stage
-  
-//  deepImplements(L0)=reorganize(L0.Ps)
-//    U (deepImplements(L1) U..deepImplements(Ln)).pop()
-//    L1..Ln={L|L in M, M in L.Ms} 
+  //TODO: need deep implements +usedPathsFix on all the deep implemented?
+
+deepImplements(L0)=reorganize(L0.Ps)
+  U (deepImplements(L1) U..deepImplements(Ln)).pop()
+  L1..Ln={L|L in M, M in L.Ms} 
  
 - usedPathsFix(p,paths,Css)= usedPathsFix(p, paths U paths0,Css') // U on paths does minimize() internally
    paths.top()\Css!=empty
    paths0=usedPathsL(p.top(),paths.top()\Css)
-   Css'=minimize(paths.top() U Css)//@James, was path0 before... was wrong?
+   Css'=minimize(paths.top() U Css)
      
 - usedPathsFix(p,paths,Css)=paths0
    paths.top()\Css==empty
    if paths.pop() not empty
      paths0=usedPathsFix(p.pop(),paths.pop(),empty).push(Css)
    otherwise //this if is to avoid p.pop() undefined
-     paths0=empty.push(Css)//@James, new lines here
+     paths0=empty.push(Css)
 - usedPathsFix(p,empty,empty) =empty   
     
 - usedPathsL(L, Cs1..Csn)=usedInnerL(L(Cs1),Cs1) U ... U usedInnerL(L(Csn),Csn)

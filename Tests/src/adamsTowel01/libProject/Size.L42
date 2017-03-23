@@ -9,14 +9,14 @@
   This fromS(Concept.ToS that) (
     s=that.toS()
     Size._private(_binaryRepr: use Alu
-      check stringToInt32(s.binaryRepr())
+      check stringToInt32(s.#binaryRepr())
       error This.parseError(s))
     )
   class method
   mut This #from(Library binaryRepr)
     Size._private(_binaryRepr:binaryRepr)
   read method
-  Library binaryRepr() this._binaryRepr()
+  Library #binaryRepr() this._binaryRepr()
 
   class method
   mut S.SBuilder #builder()
@@ -25,7 +25,7 @@
   class method
   Size #from(S.SBuilder builder)
     Size._private(_binaryRepr: use Alu
-      check stringToInt32(builder.binaryRepr())
+      check stringToInt32(builder.#binaryRepr())
       error This.parseError(S.#from(builder: builder)))
 
   class method
@@ -35,37 +35,37 @@
   method
   toS()
     S.#from(binaryRepr: use Alu
-      check int32ToString(this.binaryRepr())
+      check int32ToString(this.#binaryRepr())
       error void)
 
   method
   Size +(Size that)
     Size._private(_binaryRepr:use Alu
-      check sumInt32(n1:this.binaryRepr() n2:that.binaryRepr())
+      check sumInt32(n1:this.#binaryRepr() n2:that.#binaryRepr())
       error void)
 
   method
   Size -(Size that)
     Size._private(_binaryRepr:use Alu
-      check subInt32(n1:this.binaryRepr() n2:that.binaryRepr())
+      check subInt32(n1:this.#binaryRepr() n2:that.#binaryRepr())
       error void)
 
   method
   Size *(Size that)
     Size._private(_binaryRepr:use Alu
-      check mulInt32(n1:this.binaryRepr() n2:that.binaryRepr())
+      check mulInt32(n1:this.#binaryRepr() n2:that.#binaryRepr())
       error void)
 
   method
   Size /(Size that)
     Size._private(_binaryRepr: use Alu
-      check divInt32(n1:this.binaryRepr() n2:that.binaryRepr())
+      check divInt32(n1:this.#binaryRepr() n2:that.#binaryRepr())
       error void)
 
   read method
   Bool ==(read This that){
     use Alu
-      check ifInt32EqualDo(n1:this.binaryRepr() n2:that.binaryRepr())
+      check ifInt32EqualDo(n1:this.#binaryRepr() n2:that.#binaryRepr())
       return Bool.true()
     return Bool.false()
     }
@@ -76,7 +76,7 @@
 
   method Bool >(Size that)  {
     use Alu
-      check ifInt32GrtDo(n1:that.binaryRepr() n2:this.binaryRepr())
+      check ifInt32GrtDo(n1:that.#binaryRepr() n2:this.#binaryRepr())
       return Bool.true()
     return Bool.false()
     }
@@ -84,7 +84,7 @@
 
   method Bool >=(Size that) {
     use Alu
-      check ifInt32GEqDo(n1:that.binaryRepr() n2:this.binaryRepr())
+      check ifInt32GEqDo(n1:that.#binaryRepr() n2:this.#binaryRepr())
       return Bool.true()
     return Bool.false()
     }

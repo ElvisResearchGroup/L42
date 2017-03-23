@@ -18,7 +18,7 @@ GuiLib:{class method Library (){
       method
       Void close()
         use GuiPlugin
-          check close(wName:this.id().binaryRepr())
+          check close(wName:this.id().#binaryRepr())
           error void
       method
       Void open(S title, S body, Size x, Size y)
@@ -42,10 +42,10 @@ GuiLib:{class method Library (){
         Debug(html)
         use GuiPlugin
           check open(
-            wName:this.id().binaryRepr()
-            html:html.binaryRepr()
-            x:x.binaryRepr()
-            y:y.binaryRepr()
+            wName:this.id().#binaryRepr()
+            html:html.#binaryRepr()
+            x:x.#binaryRepr()
+            y:y.#binaryRepr()
             )
           error void
           )
@@ -62,7 +62,7 @@ GuiLib:{class method Library (){
       method
       S executeJs(S that)
         S.#from(binaryRepr: use GuiPlugin
-          check executeJs(wName:this.id().binaryRepr(),command:that.binaryRepr())
+          check executeJs(wName:this.id().#binaryRepr(),command:that.#binaryRepr())
           error void)
 
       method
@@ -73,7 +73,7 @@ GuiLib:{class method Library (){
 
         class method S auxFetchEvent(S id) exception Void {
           Library s=use GuiPlugin
-            check eventPending(wName:id.binaryRepr())
+            check eventPending(wName:id.#binaryRepr())
             exception void
           catch error Library x exception void
           return S.#from(binaryRepr: s)

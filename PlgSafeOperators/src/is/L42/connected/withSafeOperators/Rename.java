@@ -142,7 +142,7 @@ public class Rename {
     ClassB cb=(ClassB) FromInClass.of((ClassB) nsCb.getInner(), toFrom);
     List<Member>ms=new ArrayList<>();
     ms.add(Functions.encapsulateIn(dest, cb,nsCb.getDoc()));
-    return ClassB.membersClass(ms,Position.noInfo);
+    return ClassB.membersClass(ms,Position.noInfo,lprime.getPhase());
   }
 
   //TODO: replace with same mechanism of private normalization when is completed

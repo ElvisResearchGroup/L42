@@ -15,8 +15,8 @@ class method
 Library renameClass(Library that,S src, S dest)
   use SafeOperatorsAccess
     check renameClass(that
-      src:src.binaryRepr()
-      dest:dest.binaryRepr()
+      src:src.#binaryRepr()
+      dest:dest.#binaryRepr()
       )
     error S"SafeOperatorsAccess.renameClass"
   }

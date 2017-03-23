@@ -12,9 +12,9 @@ Library vector(class Any of){
 class method
 Library minimal(class Any that) (
   tmp= SafeOperatorsAccess.redirect(VectorTrait(),
-    srcBinaryRepr:S"Elem".binaryRepr(), dest:that)
+    srcBinaryRepr:S"Elem".#binaryRepr(), dest:that)
   SafeOperatorsAccess.redirect(tmp,
-    srcBinaryRepr:S"MutListT".binaryRepr(), dest:MutListAny)
+    srcBinaryRepr:S"MutListT".#binaryRepr(), dest:MutListAny)
   )
 class method
 Library eq(class Any that) (
@@ -23,9 +23,9 @@ Library eq(class Any that) (
     right:CodeEq()
     )
   tmp=SafeOperatorsAccess.redirect(lib,
-    srcBinaryRepr:S"Elem".binaryRepr(),dest:that)
+    srcBinaryRepr:S"Elem".#binaryRepr(),dest:that)
   SafeOperatorsAccess.redirect(tmp,
-    srcBinaryRepr:S"MutListT".binaryRepr(), dest:MutListAny)
+    srcBinaryRepr:S"MutListT".#binaryRepr(), dest:MutListAny)
   )
 
 VectorTrait:{class method Library()...}

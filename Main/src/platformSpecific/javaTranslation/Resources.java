@@ -160,7 +160,7 @@ public class Resources {
         if(!PathAux.isValidClassName(cName)){throw Assertions.codeNotReachable("Invalid name in multiPartStringError:"+cName);}
         ms.add(new ExpCore.ClassB.NestedClass(Doc.empty(), C.of(cName), inner,null));
       }
-      ExpCore.ClassB cb=ClassB.membersClass(ms,Position.noInfo);
+      ExpCore.ClassB cb=ClassB.membersClass(ms,Position.noInfo,Phase.Coherent);
       return cb;
     }
     }

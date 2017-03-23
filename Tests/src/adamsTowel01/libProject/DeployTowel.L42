@@ -22,7 +22,7 @@ method
 Library <><(Library that) (
   use Alu
     check fileDebug(
-      fileName:this.fileName().binaryRepr(),
+      fileName:this.fileName().#binaryRepr(),
       content:This.binaryReprFrom(lib:that)
       )
     error {fileDebug()}

@@ -284,7 +284,7 @@ PlgWrapper:{interface
   class method
   mut This0 from(Library binaryRepr)//is PlgWrapper from outside
   read method
-  Library binaryRepr()
+  Library #binaryRepr()
   }
   
 A:{/*@plugin it.bla/a.A*/
@@ -294,7 +294,7 @@ A:{/*@plugin it.bla/a.A*/
   mut This0 from(Library binaryRepr)//refined to return This0
   
   refine read method//as normalization already add
-  Library binaryRepr()
+  Library #binaryRepr()
   
   read method Size a()
     Size.from(binaryRepr:

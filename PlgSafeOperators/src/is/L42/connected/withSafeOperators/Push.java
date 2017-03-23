@@ -22,7 +22,7 @@ class Push {
     Path p=Path.outer(1);
     ClassB cb=(ClassB)FromInClass.of(in, p);
     List<Member> ms=Collections.singletonList(new ClassB.NestedClass(Doc.empty(),s,cb,null));
-    return ClassB.membersClass(ms,cb.getP());
+    return ClassB.membersClass(ms,cb.getP(),cb.getPhase());
   }
   //could be more efficient if directly implemented
   static ClassB pushMany(ClassB in,List<Ast.C>cs){
