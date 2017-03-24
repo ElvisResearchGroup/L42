@@ -240,7 +240,7 @@ class DesugarW extends CloneVisitor{
     return result;
   }
 
-  private Expression withDeclareIts(List<VarDecXE> is, RoundBlock inner) {
+  private RoundBlock withDeclareIts(List<VarDecXE> is, RoundBlock inner) {
     if(is.isEmpty()){return inner;}
     VarDecXE i0 = is.get(0);
     List<VarDecXE> is2 = is.subList(1, is.size());
@@ -251,13 +251,14 @@ class DesugarW extends CloneVisitor{
   }
 
   private RoundBlock withDeclareItsNestedBlock(RoundBlock inner, VarDecXE i0, List<VarDecXE> is2) {
-    Expression recursive=withDeclareIts(is2,inner);
-    Expression eClose=Desugar.getMCall(inner.getP(),new X(inner.getP(),i0.getX()),"#close",Desugar.getPs());
+    RoundBlock recursive=withDeclareIts(is2,inner);
+    /*Expression eClose=Desugar.getMCall(inner.getP(),new X(inner.getP(),i0.getX()),"#close",Desugar.getPs());
     Catch k1 = withDesugarGetDefaultCatch(inner.getP(),SignalKind.Exception,eClose);
     Catch k2 = withDesugarGetDefaultCatch(inner.getP(),SignalKind.Return,eClose);
     RoundBlock conclusive1=Desugar.getBlock(inner.getP(),recursive, Collections.singletonList(k1), Expression._void.instance);
     RoundBlock conclusive2=Desugar.getBlock(inner.getP(),conclusive1, Collections.singletonList(k2), eClose);
-    return conclusive2;
+    return conclusive2;*/
+    return recursive;
   }
 
   private Catch withDesugarGetDefaultCatch(Position pos,SignalKind kind,Expression eClose) {

@@ -9,6 +9,7 @@ import ast.Ast.MethodType;
 import ast.Ast.NormType;
 import ast.Ast.Path;
 import ast.Ast.Type;
+import ast.ErrorMessage;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.MethodWithType;
 import ast.ExpCore.ClassB.NestedClass;
@@ -94,7 +95,7 @@ public interface TsLibrary extends TypeSystem{
      if(in.phase.subtypeEq(maxPhase)){maxPhase=in.phase;}
      ClassB L1=new ClassB(L0.getDoc1(),L0.isInterface(),L0.getSupertypes(),newMwts,newNs,L0.getP(),maxPhase,L0.getUniqueId());
      if(in.phase==Phase.Coherent){
-       boolean isCoh=coherent(in.p.updateTop(L1));
+       boolean isCoh=coherent(in.p.updateTop(L1),true);
        if(!isCoh){
          return new TErr(in,"",Path.Library().toImmNT(),ErrorKind.LibraryNotCoherent);
          }
@@ -185,7 +186,7 @@ public interface TsLibrary extends TypeSystem{
     }
 
     
-  default boolean coherent(Program p) {
+  default boolean coherent(Program p,boolean force) {
       ClassB top=p.top();
       if (top.isInterface()){return true;}
       List<MethodWithType> stateC=top.mwts().stream()
@@ -195,9 +196,15 @@ public interface TsLibrary extends TypeSystem{
       .collect(Collectors.toList());
       if(stateC.isEmpty()){return true;}
       MethodWithType ck=stateC.get(0);
-      if(!coherentK(p,ck)){return false;}
+      if(!coherentK(p,ck)){
+        if(force){throw new ErrorMessage.NotOkToStar(top, ck,"invalid candidate factory", ck.getP());}
+        return false;
+        }
       for(MethodWithType mwt:stateC.subList(1,stateC.size())){
-        if(!coherentF(p,ck,mwt)){return false;}
+        if(!coherentF(p,ck,mwt)){
+          if(force){throw new ErrorMessage.NotOkToStar(top, ck,"abstract method\n"+sugarVisitors.ToFormattedText.of(mwt)+"\ndo not fit candidate factory", mwt.getP());}
+          return false;
+          }
       }
       return true;
     }
