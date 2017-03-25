@@ -649,7 +649,7 @@ guessable(ds ks catch throw x e ks' throw _)= guessable(e)
   not catchRethrow(catch throw x e)
 
 How to actually guess if is return?
-guess(G, d1..dn ks catch return x e ks' throw _)= mdf guess(e).P
+guess(G, d1..dn ks catch return T x e ks' throw _)= guess(G[x:mdf T.P],e)
   with
   all e in {ks.es,ks'.es} of form throw _
   not catchRethrow(catch throw x e)
