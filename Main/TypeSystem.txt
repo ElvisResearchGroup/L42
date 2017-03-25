@@ -637,10 +637,10 @@ as coherent, since the field would be an union type of C and D
 Notationandgrammar:
 e::=..|  x:=e
 d::= var? T x=e | var? x=chain
-chain::=..|(ds ks e) with guessable(ds ks e)=T
+chain::=..|(ds ks e) with guessable(ds ks e)
 T::= mdf P /*remove skeletaltypes*/
 
-d not well formed if var+capsule
+d not well formed if var+capsule or var+fwd
 
 guessable(ds e)=guessable(e)
 guessable(ds ks catch throw x e ks' throw _)= guessable(e)
@@ -649,11 +649,11 @@ guessable(ds ks catch throw x e ks' throw _)= guessable(e)
   not catchRethrow(catch throw x e)
 
 How to actually guess if is return?
-guess(G, d1..dn ks catch return e ks' throw _)= mdf guess(e).P
+guess(G, d1..dn ks catch return x e ks' throw _)= mdf guess(e).P
   with
   all e in {ks.es,ks'.es} of form throw _
   not catchRethrow(catch throw x e)
-  mdf=mostGeneralMdf(guessMdf(G[ds],d1.e)U..UguessMdf(G[ds],dn.e))
+  mdf=mostGeneralMdf(guessMdf(G[d1..dn],d1.e)U..U guessMdf(G[d1..dn],dn.e))
   
 guessMdf(G,void)=guessMdf(G,P)=guessMdf(G,L)=guessMdf(G,x)=..=empty
 guessMdf(G,return e)=guess(G,e).mdf
