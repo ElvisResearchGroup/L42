@@ -442,10 +442,8 @@ coherent(p) //classes are coherent if they have a coherent set of abstract metho
   p.top()={implements _ mwts' ncs} //note, no interface
   mwts={mwt in mwts'| mwt.e undefined } //collect the abstract methods
   either mwts is empty or
-    there is exactly 1 class method, and (after removing fwds) have //may make more formal this line
-    (T x)s parameters and n? such that 
-      all T in (T x)s are mut, imm, class or capsule //thus, no read/lent
-      forall mwt in mwts coherent(n?,p,(T x)s, mwt) //all abstract methods are coherent according to those fields
+    there is exactly 1 class method with parameters (T x)s and n? such that 
+      forall mwt in mwts coherent(n?,p,noFwd((T x)s), mwt) //all abstract methods are coherent according to those fields
       
 m[n]==m_$_n
 m[]==m
@@ -454,7 +452,11 @@ coherent(n?,p,T1 x1..Tn xn,
       refine? class method T m[n?] (T1' x1..Tn' xn) exception _)
   where
     p|- This0 <=T.P and p|-Ti'<=fwd Ti
-    T.mdf!=class and if T.mdf in {imm,capsule}, mut notin (T1..Tn).mdfs//TODO: in code, plus discuss with James
+    T.mdf!=class
+    lent notin (T1..Tn).mdf
+    if T.mdf in {imm,capsule}, mut notin (T1..Tn).mdfs//TODO: in code
+    if T.mdf not lent, read notin (T1..Tn).mdf
+    else read 0or1in (T1..Tn).mdf
 
 coherent(n?,p,T1 x1..Tn xn,
     refine? mdf method T m[n?]() exception _)
@@ -470,6 +472,7 @@ coherent(n?,p,T1 x1..Tn xn,
   where
   m=#?xi
   p|-T<=Ti//setter
+  T.mdf not read //TODO: in code
  
 ----------------------------- 
 6 Deteministic strategy for type system
