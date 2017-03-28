@@ -12,6 +12,7 @@ import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
 
 import ast.Ast.Path;
+import ast.ErrorMessage.NotOkToStar;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Phase;
 import facade.Parser;
@@ -101,7 +102,11 @@ public void test() {
 Program p=TestProgram.p(sProg);
 ClassB cb1Pre=(ClassB)Desugar.of(Parser.parse(null,s1)).accept(new InjectionOnCore());
 cb1Pre=new programReduction.Norm().norm(p.evilPush(cb1Pre));
-TOut out=TypeSystem.instance().type(TIn.top(Phase.Coherent,p,cb1Pre));
+TOut out;try{out=TypeSystem.instance().type(TIn.top(Phase.Coherent,p,cb1Pre));}
+catch(NotOkToStar coh){
+  assert s2==ErrorKind.LibraryNotCoherent;
+  return;
+  }
 if(s2 instanceof ErrorKind){
   assert !out.isOk();
   ErrorKind kind= out.toError().kind;

@@ -26,7 +26,7 @@ public interface TsOperations extends TypeSystem{
     //D |- P~>P:class P <= T | emptyTr
     //D.p|-class P <= T
     NormType t=new NormType(Mdf.Class,s,Doc.empty());
-    assert in.p.extractClassB(s)!=null;
+    assert s.isPrimitive() || in.p.extractClassB(s)!=null;
     ErrorKind subErr=TypeSystem.subtype(in.p, t, in.expected);
     if(subErr==null){
       return new TOk(in,s,t);

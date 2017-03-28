@@ -39,27 +39,18 @@ public class TestTypeSystemOk {
     @Parameters(name = "{index}: line {0}")
     public static List<Object[]> createData() {
       return Arrays.asList(new Object[][] {
- {lineNumber(),"This0.C","{C:{method Void()}}","{C:{method Void()}##plus^##}##plus^##"
-},{lineNumber(),"This0.C","{C:{method Void()} D:{}}","{C:{method Void()}##plus^## D:{}##star ^##}##plus^##"
-},{lineNumber(),"This0.C",
+  {lineNumber(),"This0.C",
   "{C:{class method Void foo() (This0.foo())} }",
   "{C:{class method Void foo() (This0.foo())}##star^## }##star^##"
 },{lineNumber(),"This0.C",
-  "{C:{class method Void foo() (D.foo())} D:{method Void() class method Void foo() (void)}}",
-  "{C:{class method Void foo() (D.foo())}##plus^## D:{method Void()class method Void foo() (void)}##plus ^##}##plus^##"
-},{lineNumber(),"This0.C",
   "{C:{E:{class method Void foo() (This1.foo())} class method Void foo() (D.foo())} D:{class method Void foo() (C.E.foo())}}",
-  "{C:{E:{class method Void foo() (This1.foo())}##star^## class method Void foo() (D.foo())}##star^## D:{class method Void foo() (C.E.foo())}##star^##}##star^##"
-},{lineNumber(),"This0.C",
-  "{C:{E:{class method Void foo() (This1.foo())} class method Void foo() (D.foo())} D:{method Void() class method Void foo() (C.E.foo())}}",
-  "{C:{E:{class method Void foo() (This1.foo())}##plus^## class method Void foo() (D.foo())}##plus^## D:{method Void()  class method Void foo() (C.E.foo())}##plus^##}##plus^##"
-
+  "{C:{class method Void foo() (D.foo()) E:{class method Void foo() (This1.foo())}} D:{class method Void foo() (C.E.foo())}}"
 },{lineNumber(),"This0.C",
   "{K:{E:{class method Void foo() (This2.C.foo())}} C:{class method Void foo() (D.foo())} D:{class method Void foo() (K.E.foo())}}",
   "{K:{E:{class method Void foo() (This2.C.foo())}##star^##}##star ^## C:{class method Void foo() (D.foo())}##star^## D:{class method Void foo() (K.E.foo())}##star^##}##star^##"
 },{lineNumber(),"This0.C",
-  "{K:{method Void() E:{class method C foo() (C.foo())}} C:{class method C foo() (D.foo())} D:{class method C foo() (K.E.foo())}}",
-  "{K:{method Void() E:{class method C foo() (C.foo())}##star^##}##plus ^## C:{class method C foo() (D.foo())}##star^## D:{class method C foo() (K.E.foo())}##star^##}##plus^##"
+  "{K:{ E:{class method C foo() (C.foo())}} C:{class method C foo() (D.foo())} D:{class method C foo() (K.E.foo())}}",
+  "{K:{ E:{class method C foo() (C.foo())}} C:{class method C foo() (D.foo())} D:{class method C foo() (K.E.foo())}}"
   //norm//NO, Norm is executed only in the extracted method
 //},{"This0.C",
 //  "{K:{E:{class method C.foo() foo() (C.foo())}} C:{class method C foo() (D.foo())} D:{class method C foo() (K.E.foo())}}",
@@ -105,7 +96,7 @@ public static class TesFail {
 
        }});}
 
-      @Test(expected=ErrorMessage.TypeError.class)
+      @Test(expected=FormattedError.class)
       public void testAllSteps() {//s1 unused :(
         runTypeSystem(s2);
         //assert false;
