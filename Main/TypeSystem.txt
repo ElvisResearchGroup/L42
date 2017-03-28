@@ -472,7 +472,7 @@ coherent(n?,p,T1 x1..Tn xn,
   where
   m=#?xi
   p|-T<=Ti//setter
-  T.mdf not read //TODO: in code
+  T.mdf notin {read,lent} //TODO: in code
  
 ----------------------------- 
 6 Deteministic strategy for type system
