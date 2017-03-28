@@ -453,10 +453,10 @@ coherent(n?,p,T1 x1..Tn xn,
   where
     p|- This0 <=T.P and p|-Ti'<=fwd Ti
     T.mdf!=class
-    lent notin (T1..Tn).mdf
+    lent notin (T1..Tn).mdfs
     if T.mdf in {imm,capsule}, mut notin (T1..Tn).mdfs//TODO: in code
-    if T.mdf not lent, read notin (T1..Tn).mdf
-    else read 0or1in (T1..Tn).mdf
+    if T.mdf notin {lent,read}, read notin (T1..Tn).mdfs
+
 
 coherent(n?,p,T1 x1..Tn xn,
     refine? mdf method T m[n?]() exception _)

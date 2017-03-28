@@ -187,6 +187,7 @@ public static MethodType _bestMatchMtype(Program p,MethodType superMt,List<Metho
       }
   }
   //assert res.size()==1: res.size(); sometime is false, for example capsule->capsule and mut->mut
+  if(res.isEmpty()){return null;}
   if(res.size()==1){
     return res.get(0);
     }
@@ -197,7 +198,8 @@ public static MethodType _bestMatchMtype(Program p,MethodType superMt,List<Metho
         mt1.getReturnType().getNT().getMdf(),mt2.getReturnType().getNT().getMdf()
         ))).findAny();
     if(res1.isPresent()){return res1.get();}
-    assert false;
+    assert false:
+      "";
     return res.get(0);
   }
 }
