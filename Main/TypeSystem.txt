@@ -455,7 +455,8 @@ coherent(n?,p,T1 x1..Tn xn,
     T.mdf!=class
     lent notin (T1..Tn).mdfs
     if T.mdf in {imm,capsule}, mut notin (T1..Tn).mdfs//TODO: in code
-    if T.mdf notin {lent,read}, read notin (T1..Tn).mdfs
+    forall j in 1..n !=i, read != Tj.mdf
+    if T.mdf notin {lent,read}, i=0
 
 
 coherent(n?,p,T1 x1..Tn xn,
