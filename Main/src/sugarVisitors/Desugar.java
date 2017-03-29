@@ -819,19 +819,19 @@ public class Desugar extends CloneVisitor{
     //if var, do setter
     if(f.isVar()){s=Stream.concat(s,Stream.of(generateSetter(pos,f,f.getDoc())));}
     //if #, do getter and exposer, else only exposer
-    if(f.getName().startsWith("#")){
+    //if(f.getName().startsWith("#")){
       s=Stream.concat(s, Stream.of(
         generateExposer(pos,f,f.getDoc()),
         generateGetter(pos,f,f.getDoc())
         ));
-      }
+    /*  }
     else if (requireExposer(f.getT())){
       s=Stream.concat(s, Stream.of(
         generateExposer(pos,f,f.getDoc())
         ));
       }
     else {s=Stream.concat(s, Stream.of(  generateGetter(pos,f,f.getDoc())  ));}
-    //Careful with capsule
+    *///Careful with capsule
     return s;
     }
   private static boolean requireExposer(Type t) {
@@ -865,7 +865,7 @@ public class Desugar extends CloneVisitor{
       return nt;
       }, hType->hType);
     MethodType mti=new MethodType(false,Mdf.Mutable,Collections.emptyList(),tt,Collections.emptyList());
-    MethodSelector msi=MethodSelector.of(f.getName(),Collections.emptyList());
+    MethodSelector msi=MethodSelector.of("#"+f.getName(),Collections.emptyList());
     MethodWithType mwt = new MethodWithType(doc, msi, mti, Optional.empty(),pos);
     return mwt;
   }
@@ -883,7 +883,7 @@ public class Desugar extends CloneVisitor{
       }
     MethodType mti=new MethodType(false,Mdf.Readable,Collections.emptyList(),fieldNt,Collections.emptyList());
     String name=f.getName();
-    if(name.startsWith("#")){name=name.substring(1);}
+    //if(name.startsWith("#")){name=name.substring(1);}
     MethodSelector msi=MethodSelector.of(name,Collections.emptyList());
     MethodWithType mwt=new MethodWithType(doc, msi, mti, Optional.empty(),pos);
     return mwt;

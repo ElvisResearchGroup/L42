@@ -454,7 +454,7 @@ coherent(n?,p,T1 x1..Tn xn,
     p|- This0 <=T.P and p|-Ti'<=fwd Ti
     T.mdf!=class
     lent notin (T1..Tn).mdfs
-    if T.mdf in {imm,capsule}, mut notin (T1..Tn).mdfs//TODO: in code
+    if T.mdf in {imm,capsule}, mut notin (T1..Tn).mdfs
     forall j in 1..n !=i, read != Tj.mdf
     if T.mdf notin {lent,read}, i=0
 
@@ -473,7 +473,7 @@ coherent(n?,p,T1 x1..Tn xn,
   where
   m=#?xi
   p|-T<=Ti//setter
-  if Ti=read then T.mdf in {capsule,imm} //TODO: in code
+  if Ti=read then T.mdf in {capsule,imm}
  
 ----------------------------- 
 6 Deteministic strategy for type system

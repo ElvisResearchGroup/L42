@@ -208,36 +208,6 @@ public interface TsLibrary extends TypeSystem{
       }
       return true;
     }
-//coherent(p) //interfaces are always coherent
-//  where
-//  p.top()={interface implements _ mwts ncs}
-    
-//coherent(p)  //classes are coherent if they have a coherent set of abstract methods
-//  where
-//  p.top()={implements _ mwts' ncs} //note, no interface
-//  mwts={mwt in mwts'| mwt.e undefined } //collect the abstract methods
-//  either mwts is empty or
-//    there is exactly 1 class method, and (after removing fwds) have //may make more formal this line
-//    (T x)s parameters and n? such that 
-//      all T in (T x)s are mut, imm, class or capsule //thus, no read/lent
-//      forall mwt in mwts coherent(n?,p,(T x)s, mwt) //all abstract methods are coherent according to those fields
-
-//coherent(n?,p,T1 x1..Tn xn,
-//    refine? mdf method T m[n?]() exception _)
-//  where
-//  m=#?xi
-//  either
-//    mdf=mut and p|-capsuleToLent(Ti)<=T //exposer
-//  or 
-//    mdf=read and p|-toRead(Ti)<=T //getter //note for James, toRead need to keep imm as imm, toRead code reverted again :)
-  
-//coherent(n?,p,T1 x1..Tn xn,
-//    refine? mut method Void m[n?](T that) exception _)
-//  where
-//  m=#?xi
-//  p|-T<=Ti//setter
-
-
   default boolean coherentF(Program p,MethodWithType ck, MethodWithType mwt) {
       MethodType mt=mwt.getMt();
       Mdf m=mt.getMdf();
@@ -264,7 +234,12 @@ public interface TsLibrary extends TypeSystem{
       if(!mt.getReturnType().equals(NormType.immVoid)){return false;}
       if(mt.getTs().size()!=1){return false;}
       if(!mwt.getMs().getNames().get(0).equals("that")){return false;}
-      if(null!=TypeSystem.subtype(p, Ti,mt.getTs().get(0).getNT())){return false;}
+      NormType T=mt.getTs().get(0).getNT();
+      if(null!=TypeSystem.subtype(p, Ti,T)){return false;}
+      if(Ti.getMdf()==Mdf.Readable){
+        Mdf mT=T.getMdf();
+        if(mT!=Mdf.Capsule && mT!=Mdf.Immutable){return false;}
+      }
       return true;
     }
 
@@ -291,9 +266,15 @@ public interface TsLibrary extends TypeSystem{
       Mdf m=rt.getMdf();
       if (m==Mdf.Class){return false;}
       boolean immOrC=(m==Mdf.Immutable || m==Mdf.Capsule);
+      boolean lentOrR=(m==Mdf.Lent || m==Mdf.Readable);
+      int allowedR=lentOrR?1:0;
       for(Type ti:mt.getTs()){
         Mdf mi=ti.getNT().getMdf();
-        if(mi==Mdf.Readable || mi==Mdf.Lent){return false;}
+        if(mi==Mdf.Lent){return false;}
+        if(mi==Mdf.Readable){
+          if(allowedR==0){return false;}
+          allowedR-=1;
+          }
         if(immOrC & (mi==Mdf.Mutable || mi==Mdf.MutableFwd)){return false;}
         }
       return true;

@@ -318,8 +318,8 @@ public void testTwoKindExc2(){tp(""
 ," {//@exitStatus\n//0\n})"
 ,"}"
 );}
-@Test//(expected=ErrorMessage.PathsNotSubtype.class)
-public void testPlusNotStar(){tp(ErrorKind.LibraryNotCoherent,"{"
+@Test(expected=ErrorMessage.NotOkToStar.class)
+public void testPlusNotStar(){tp("{"
 ,"A:{ class method This () method Library foo() }"
 ,"E: A().foo()"
 ,"}"

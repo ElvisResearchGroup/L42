@@ -31,7 +31,7 @@ class ProtectedPluginType{
     try {return that.getMethod(mName, parameterTypes);}
     catch (NoSuchMethodException e) {
       List<String> options=new ArrayList<>();
-      for(Method m:that.getClass().getDeclaredMethods()){
+      for(Method m:that.getDeclaredMethods()){
         options.add(m.getName());
         }
       throw new ErrorMessage.PluginMethodUndefined(options,uForError,null,null);

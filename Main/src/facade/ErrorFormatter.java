@@ -234,9 +234,10 @@ private static void displayAbstractMethods(ClassB cb,StringBuilder result,String
     Field f=c.getDeclaredField("p");
     f.setAccessible(true);
     Collection<?> envs=(Collection<?>)f.get(msg);
-    for(Object o:envs){
-      errorTxt+=errorFormat(o,ps)+"\n";
-    }
+    if(envs!=null){
+      for(Object o:envs){
+        errorTxt+=errorFormat(o,ps)+"\n";
+      }}
     return errorTxt;
   }
 
