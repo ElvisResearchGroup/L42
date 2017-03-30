@@ -8,11 +8,12 @@ import java.util.NoSuchElementException;
 import com.sun.xml.internal.ws.dump.LoggingDumpTube.Position;
 
 import ast.Ast;
+import ast.Ast.C;
 import ast.Ast.Path;
 import ast.Ast.Type;
 import ast.ErrorMessage;
 import ast.ErrorMessage.IncompleteClassIsRequired;
-import ast.ErrorMessage.PathNonExistant;
+import ast.ErrorMessage.PathMetaOrNonExistant;
 import ast.ExpCore;
 import ast.ExpCore.Block;
 import ast.ExpCore.ClassB;
@@ -39,7 +40,7 @@ public class UsedPaths {
 
 static PathsPaths usedPathsECatchErrors(Program p, ExpCore e){
   try{return usedPathsE(p,e);}
-  catch(PathNonExistant pne){
+  catch(PathMetaOrNonExistant pne){
     throw pne.withPos(CollapsePositions.of(e));
     }
   catch(IncompleteClassIsRequired icir){
@@ -53,7 +54,7 @@ static PathsPaths usedPathsECatchErrors(Program p, ExpCore e){
     List<Ast.Path>  psBoth=CollectPaths0.of(e);//collect all paths
     List<Ast.Path>  ps1;
     try{ps1=collectNotAnyPaths(p,e);}
-    catch(ErrorMessage.PathNonExistant pne){
+    catch(ErrorMessage.PathMetaOrNonExistant pne){
       throw Assertions.codeNotReachable();
       }
 //L1..Ln={L| L inside eC}//in path not prime// not repeat check stage
@@ -94,27 +95,39 @@ static PathsPaths usedPathsECatchErrors(Program p, ExpCore e){
         return Paths.empty().push(css);
         }
       assert !(p instanceof FlatProgram):
-        popPaths;
+        popPaths;      
       return usedPathsFix(p.pop(),popPaths,Collections.emptyList(),phase0).push(css);
       }
 //-usedPathsFix(p,paths,Css)= usedPathsFix(p, paths U paths0,minimize(paths0.top() U Css)) // U on paths does minimize() internally
 //paths.top()\Css!=empty
 //paths0=usedPathsL(p.top(),paths.top()\Css)
-    Paths paths0=usedPathsL(p.top(),topLessCss,phase0);
+    Paths paths0=usedPathsL(p,p.top(),topLessCss,phase0);
     List<List<Ast.C>> css1=new ArrayList<>(paths.top());
     css1.addAll(css);
     return usedPathsFix(p,paths.union(paths0),Paths.minimize(css1),phase0);
     }
 
 //- usedPathsL(L, Cs1..Csn)=usedInnerL(L(Cs1),Cs1) U ... U usedInnerL(L(Csn),Csn)
-  static private Paths usedPathsL(ClassB l, List<List<Ast.C>> css,Phase phase0) {
+  static private Paths usedPathsL(Program pForError,ClassB l, List<List<Ast.C>> css,Phase phase0) {
     Paths result=Paths.empty();
     for(List<Ast.C> csi : css){
+      assert !csi.isEmpty();
       ClassB li;try{li=l.getClassB(csi);}
-      catch(ErrorMessage.PathNonExistant pne){
+      catch(ErrorMessage.PathMetaOrNonExistant pne){
         throw pne.withListOfNodeNames(csi).withCb(l);
         }
-      result=result.union(usedInnerL(li,csi,phase0));
+      ClassB liTop=li;
+      if (csi.size()!=0){liTop=l.getClassB(Collections.singletonList(csi.get(0)));}
+      assert IsCompiled.of(liTop);
+      //checked after for newPaths: when the offending value is produced, so we have more context for error message
+      //  throw new ErrorMessage.PathMetaOrNonExistant(true, Collections.singletonList(csi.get(0)), l, null,null);
+      
+      Paths newPaths=usedInnerL(li,csi,phase0);
+      try{newPaths.checkAllDefined(pForError);}
+      catch(ErrorMessage.PathMetaOrNonExistant pne){
+        throw pne.withWherePathWasWritten(li.getP());
+        }
+      result=result.union(newPaths);
       }
     return result;
     }
@@ -205,7 +218,7 @@ static PathsPaths usedPathsECatchErrors(Program p, ExpCore e){
         try{if(p.extractClassB(s).getPhase()==Phase.Typed){
           return super.visit(s);
           }}
-        catch(ErrorMessage.PathNonExistant pne){/*we do not rise this error while computing the heuristic*/}
+        catch(ErrorMessage.PathMetaOrNonExistant pne){/*we do not rise this error while computing the heuristic*/}
         return null;
         }
       

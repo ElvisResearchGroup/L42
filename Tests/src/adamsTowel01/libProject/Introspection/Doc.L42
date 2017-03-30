@@ -11,7 +11,7 @@
     method readableName()GetMyName(This)
     method toS() this.text()
     method class Any referredClass() {
-      return Introspection.Record(lib:this._binaryRepr()).that()
+      return Introspection_Record.Record(lib:this._binaryRepr()).that()
         .introspectDocPath(path:Path"This",annotationN:this.index())
       catch exception MetaGuard.NestedClassUnavailable x error X"Doc1"(x)
       catch exception Void x error X"Plugin introspection bug"
@@ -31,7 +31,7 @@
       while Bool.true() (// to be able to break
         result.add(right:Annotation(
           _binaryRepr:that,
-          text:Introspection.Record(lib:that).that()
+          text:Introspection_Record.Record(lib:that).that()
             .introspectDocAsString(path:Path"This",annotationN:aN)
           index:aN
           ))
@@ -49,7 +49,7 @@
 
 
   method toS() {
-    return Introspection.Record(lib:this._binaryRepr()).that()
+    return Introspection_Record.Record(lib:this._binaryRepr()).that()
       .introspectDocAsString(path:Path"This")
     catch exception MetaGuard.NestedClassUnavailable x error X"Doc3"(x)
    }

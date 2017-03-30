@@ -145,7 +145,7 @@ public interface ExpCore {
     
     public static ExpCore.ClassB docClass(Doc d){return new ClassB(d,false,Collections.emptyList(),Collections.emptyList(),Position.noInfo,Phase.Typed,0);}
     
-    public static ExpCore.ClassB membersClass(List<Member> ms,Position pos){return new ClassB(Doc.empty(),false,Collections.emptyList(),ms,pos,Phase.None,0);}    
+    public static ExpCore.ClassB membersClass(List<Member> ms,Position pos,Phase phase){return new ClassB(Doc.empty(),false,Collections.emptyList(),ms,pos,phase,0);}    
     
     public List<Path> getSuperPaths(){
       return this.getSupertypes().stream()
@@ -262,12 +262,12 @@ class _Aux{
   static ClassB wrapCast(ExpCore e){
     try{return (ClassB)e;}
     catch(ClassCastException cce){
-      throw new ErrorMessage.ProgramExtractOnMetaExpression(null,null);
+      throw new ErrorMessage.PathMetaOrNonExistant(true,null,null,null,null);
       }
     }
   static void checkIndex(int index){
     if (index==-1){
-      throw new ErrorMessage.PathNonExistant(null,null,null);
+      throw new ErrorMessage.PathMetaOrNonExistant(false,null,null,null,null);
       }
     }
   static ClassB onNestedNavigateToPathAndDo(ClassB cb,List<Ast.C>cs,Function<NestedClass,Optional<NestedClass>>op){

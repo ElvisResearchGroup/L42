@@ -40,7 +40,6 @@ public class ProgramReduction {
     ExpCore ec=nc.getInner();
     assert IsCompiled.of(ec);
     assert !(ec instanceof ClassB);
-    //ExpCore ec1=new Norm().norm(p, ec);//TODO:May disappear with new TS?
     System.out.println("Top running on nc:"+nc.getName());
     PathsPaths pair = UsedPaths.usedPathsECatchErrors(p, ec);
     Paths paths=pair.left;

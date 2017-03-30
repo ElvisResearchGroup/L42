@@ -33,7 +33,6 @@ import sugarVisitors.ToFormattedText;
 import tools.Assertions;
 import ast.Ast;
 import ast.ErrorMessage;
-import ast.ErrorMessage.PathNonExistant;
 import ast.ErrorMessage.TypeError;
 import ast.ErrorMessage.UserLevelError;
 import ast.ExpCore;
@@ -153,9 +152,12 @@ public class Resources {
         String cName=(String)map[i];
         ClassB inner;
         if(map[i+1] instanceof String){inner=EncodingHelper.wrapStringU((String)map[i+1]);}
-        else{//for now, just doc.
+        else if (map[i+1]instanceof Doc){//for now, just doc.
         Doc docip1=(Doc)map[i+1];
           inner=ClassB.docClass(docip1);
+          }
+        else{
+          throw new Error(map[i+1].toString());
           }
         if(!PathAux.isValidClassName(cName)){throw Assertions.codeNotReachable("Invalid name in multiPartStringError:"+cName);}
         ms.add(new ExpCore.ClassB.NestedClass(Doc.empty(), C.of(cName), inner,null));

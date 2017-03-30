@@ -35,10 +35,8 @@ public interface Type extends Location{
       //else, phase is none but cb available and not normalized
       return new TypeRefTo.Unavailable();//TODO: borderline ok?
       }
-    catch(ErrorMessage.ProgramExtractOnMetaExpression meta){
-      return new TypeRefTo.Unavailable();
-      }
-    catch(ErrorMessage.PathNonExistant pne){
+    catch(ErrorMessage.PathMetaOrNonExistant pne){
+      if (pne.isMeta()){return new TypeRefTo.Unavailable();}
       return new TypeRefTo.Missing();
       }
 

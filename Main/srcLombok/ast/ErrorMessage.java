@@ -101,10 +101,6 @@ import coreVisitors.InjectionOnSugar;
     Path path;
     List<ClassB> p;
   }
-  @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class ProgramExtractOnMetaExpression extends ErrorMessage {
-    Path path;
-    List<ClassB> p;
-  }
   @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class CtxExtractImpossible extends ErrorMessage {
     ExpCore e;
     List<ClassB> p;
@@ -192,11 +188,13 @@ import coreVisitors.InjectionOnSugar;
     ClassB cb;
     Position pos;
   }
-  @Value @Wither @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class PathNonExistant extends TypeError implements PosImprove{
+  @Value @Wither @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class PathMetaOrNonExistant extends TypeError implements PosImprove{
+    boolean isMeta;
     List<Ast.C> listOfNodeNames;
     ClassB cb;
     Position pos;
-  }
+    Position wherePathWasWritten;
+    }
   @Value @Wither @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class PathNonStar extends TypeError {
     Path path;
     HashMap<String, Ast.NormType> varEnv;

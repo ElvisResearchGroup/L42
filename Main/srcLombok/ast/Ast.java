@@ -342,7 +342,7 @@ public interface Ast {
    return parse(rowData);
    }
  public static Path sugarParse(String path) {
-   List<String> rowData = PathAux.Arrays.asList(path.split("\\."));
+   List<String> rowData = Arrays.asList(path.split("\\."));
    return sugarParse(rowData);
    }
  public static Path parse(List<String> rowData){

@@ -305,6 +305,7 @@ private static void displayAbstractMethods(ClassB cb,StringBuilder result,String
     if(obj instanceof Collection){ return obj.toString();}
     if(obj instanceof ast.Util.PathMwt){ return obj.toString();}
     if(obj instanceof ast.Ast.C){ return obj.toString();}
+    if(obj instanceof Boolean){ return obj.toString();}
     return "unknown kind "+obj.getClass().getName();
   }
   public static String formatSelectorCompact(Ast.MethodSelector ms) {

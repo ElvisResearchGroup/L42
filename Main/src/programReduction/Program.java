@@ -108,7 +108,7 @@ public interface Program {
     for(int i=0;i<p.outerNumber();i++){res1=res1.pop();}
     ExpCore.ClassB top=res1.top();
     try{return top.getClassB(p.getCBar());}
-    catch(ErrorMessage.PathNonExistant pne){
+    catch(ErrorMessage.PathMetaOrNonExistant pne){
       throw pne.withListOfNodeNames(p.getCBar()).withCb(top);
       }
     }

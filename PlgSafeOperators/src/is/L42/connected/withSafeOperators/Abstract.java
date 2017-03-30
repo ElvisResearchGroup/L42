@@ -10,7 +10,7 @@ import java.util.Set;
 import platformSpecific.javaTranslation.Resources;
 import ast.Ast;
 import ast.ErrorMessage;
-import ast.ErrorMessage.PathNonExistant;
+import ast.ErrorMessage.PathMetaOrNonExistant;
 import ast.ExpCore.*;
 import ast.Ast.Doc;
 import ast.Ast.MethodSelector;
@@ -109,7 +109,7 @@ public class Abstract {
     if(coupuledPaths.isEmpty() && usedPrMeth.isEmpty()){return;}
     ordered.addAll(usedPrMeth);
     }
-  catch(PathNonExistant pne){
+  catch(PathMetaOrNonExistant pne){
     assert !coupuledPaths.isEmpty();
     }
   Collections.sort(ordered,(px1,px2)->px1.toString().compareTo(px2.toString()));

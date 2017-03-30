@@ -17,8 +17,8 @@
   method S #from(S.SBuilder builder) {
     path=Path.#from(builder:builder)
     return this.that().introspectDocAsString(path:path)
-    error on MetaGuard.MemberUnavailable 
-      X"Record1"[this.that()]"" //TODO: not the right error? 
+    error on Guard 
+      X"Record1"[this.that()]"" //TODO: not the right error?  plus we can not capture the more appropriate MetaGuard.MemberUnavailable 
     }
   method
   Doc docOf(Path path){

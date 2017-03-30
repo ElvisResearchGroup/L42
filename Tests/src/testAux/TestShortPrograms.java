@@ -15,7 +15,7 @@ import sugarVisitors.InjectionOnCore;
 import ast.Ast;
 import ast.ErrorMessage;
 import ast.ErrorMessage.FinalResult;
-import ast.ErrorMessage.PathNonExistant;
+import ast.ErrorMessage.PathMetaOrNonExistant;
 import ast.ExpCore;
 import ast.ExpCore.ClassB;
 import auxiliaryGrammar.Functions;
@@ -176,7 +176,7 @@ public void test8c(){tp(ErrorKind.NotSubtypeClass,"{()"
     ," E:( c=C {//@exitStatus\n//0\n\n})"
     ,"}");}
 
-@Test(expected=ErrorMessage.PathNonExistant.class)
+@Test(expected=ErrorMessage.PathMetaOrNonExistant.class)
 public void test8d(){tp("{()"
     ," A: {Bla:{}}"
     ," D: {() class method Void wrongParameter(A.BlaWrong that)void class method Library id(Library that) that}"
@@ -184,7 +184,7 @@ public void test8d(){tp("{()"
     ," E: ( c=C {//@exitStatus\n//0\n\n})"
     ,"}");}
 
-@Test(expected=ErrorMessage.PathNonExistant.class)
+@Test(expected=ErrorMessage.PathMetaOrNonExistant.class)
 public void test8e(){tp("{"
     ," A:{"
     ," B:{(C.D d) }"
@@ -193,7 +193,7 @@ public void test8e(){tp("{"
     ,"Main:( c=C {//@exitStatus"
     ," //0"
     ," })}");}
-@Test(expected=ErrorMessage.PathNonExistant.class)
+@Test(expected=ErrorMessage.PathMetaOrNonExistant.class)
 public void test8f(){tp("{"
     ," A:{"
     ," B:{method Void foo() (class Any unused=C.Dpr void)}"
@@ -204,7 +204,7 @@ public void test8f(){tp("{"
     ," })}");}
 
 
-@Test(expected=PathNonExistant.class)
+@Test(expected=PathMetaOrNonExistant.class)
 public void test9b(){tp("{()"
     ," D: {() class method Library id(Library that) (that)}"
     ," C: {()  H:{() method Void foo() (This2.C.E x= this void)}}"
@@ -212,7 +212,7 @@ public void test9b(){tp("{()"
     ,"}");}
 
 
-@Test(expected=PathNonExistant.class)
+@Test(expected=PathMetaOrNonExistant.class)
 public void test9c1(){tp("{"//focus on the difference between c1 and c2. This is the expected behaviour.
     ," D: { class method Library id(Library that) that}"
     ," C: D.id({ H:{ method Void foo() (This2.C.E x= this void)}}) "
@@ -251,7 +251,7 @@ public void test11(){tp("{()"
     ," E: ( c=C {//@exitStatus\n//0\n\n})"
     ,"}");}
 
-@Test(expected=ErrorMessage.PathNonExistant.class)
+@Test(expected=ErrorMessage.PathMetaOrNonExistant.class)
 public void test12(){tp("{"
 ,"LibList:{"
 ,"  T:{ }"

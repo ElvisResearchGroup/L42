@@ -3,12 +3,22 @@ Alu:{//@plugin
   //L42.is/connected/withAlu
   }
 ExitCode:...
-Url:{(Library binaryRepr)
+Url:{
+  Library _binaryRepr
+  class method
+  This(Library _binaryRepr)
+ 
+  method
+  Library #binaryRepr()this._binaryRepr()
+ 
+  class method
+  This #from(Library binaryRepr)
+    This(_binaryRepr:binaryRepr)
   SBuilder:...  
   
   class method
   This #from(SBuilder builder) 
-    This(binaryRepr:builder.#binaryRepr())
+    This.#from(binaryRepr:builder.#binaryRepr())
     
   class method
   mut SBuilder #builder()

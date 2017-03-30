@@ -22,7 +22,6 @@ import ast.Ast.Position;
 import ast.Ast.Type;
 import ast.Ast;
 import ast.ErrorMessage;
-import ast.ErrorMessage.PathNonExistant;
 import ast.ExpCore;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
@@ -121,7 +120,7 @@ public class Errors42 {
           "InvalidKind",""+kind.name(),
           "IsPrivate",""+kind.name().contains("Private"));
       }
-    catch(ast.ErrorMessage.PathNonExistant e){
+    catch(ast.ErrorMessage.PathMetaOrNonExistant e){
       throw Resources.Error.multiPartStringError("MemberUnavailable",
           "Path",formatPathIn(path),
           "Selector",""+((ms.isPresent())?ms.get():""),

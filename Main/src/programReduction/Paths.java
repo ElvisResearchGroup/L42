@@ -5,6 +5,8 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import ast.Ast;
+import ast.ErrorMessage;
+import coreVisitors.IsCompiled;
 public class Paths {
   //@SuppressWarnings("serial")
   //public static class EmptyPath extends RuntimeException{}
@@ -56,7 +58,12 @@ public class Paths {
   public boolean checkAllDefined(Program p){
     if(this.isEmpty()){return true;}
     for(List<Ast.C>cs:this.top()){
-      try{@SuppressWarnings("unused") Program pi= p.navigate(cs);}
+      try{
+        Program pi= p.navigate(cs);
+        if(!IsCompiled.of(pi.top())){
+          throw new ErrorMessage.PathMetaOrNonExistant(true, cs, p.top(), p.top().getP(), null);
+          }
+        }
       catch(RuntimeException rte){
         throw rte;//to breakpoint
         }
