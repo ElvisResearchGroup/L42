@@ -74,7 +74,7 @@ LC::={interface? implements Ps MC1..MCn Phase}  //library compiled
 MC::= mwt | ms eC |nc
 mwt::= refine? mh eC? //may still contains skeletal types
 nc::= C:LC
-eC::= x|void|P|L|throw[T1,T2] eC|loop eC|(dCs kCs eC[T])
+eC::= x|void|P|LC |throw[T1,T2] eC|loop eC|(dCs kCs eC[T])
  | eC.m[P]((x:eC)s)| use P check m((x:eC)s) eC
 kC::=catch T x eC
 dC::= T x=eC
@@ -83,7 +83,7 @@ dC::= T x=eC
 // but normalization is a different step
 
 # Contexts
-ctxC::=[] | eC.m( (x=eC)s x=ctxC, (x=e)s)| .... // compilation context, e=ctxC[L] selects an L where all the former Ls are LC. The context do not enter in libraries
+ctxC::=[] | eC.m( (x:eC)s x:ctxC, (x:e)s)| .... // compilation context, e=ctxC[L] selects an L where all the former Ls are LC. The context do not enter in libraries
 ctxM::= C: ctxC |ms ctxC | refine? mh ctxC
 ctxL::= {interface? implements Ps Ms ctxM Ms' Phase}
 
@@ -102,7 +102,7 @@ ctxL::= {interface? implements Ps Ms ctxM Ms' Phase}
  -define L/ctxL'=<ctxL; e>   intuition: if L=ctxL[e], ctxL sim ctxL'
   * {interface? implements Ps MC1..MCn C:e Ms}/{interface? implements Ps MC1'..MCn' C':ctxC' Ms'}
    = {interface? implements Ps MC1..MCn C:ctxC Ms}, e0
-   e=ctcC[e0] and ctxC sim ctxC'
+   e=ctxC[e0] and ctxC sim ctxC'
 
 ---------
 We define functional notation for
@@ -120,7 +120,7 @@ Moreover, for convenience we define inside in the following way:
 Part 2: well formedness
 -----------------------------------------------------------
 
-ms: unique x in xs
+ms: unique x in xs, 'this' notin xs
 
 mh: mh.ms is well defined, Any notin Ps //Ps is thrown exceptions
 
@@ -133,7 +133,7 @@ T: for skeletal types now is allowed, but I may want to prevent Void::msxs or si
 msx: in ms::x, x in ms.xs or x is this
 
 L: unique LDom in LDoms, Any notin Ps //Library and Void are not interfaces so you will get the normal error from implementing them
-   and methods in interfaces have no body (and no @private)
+   and methods in interfaces have no body
 
 throw/loop: -the new chain syntax disallows many strange expressions like "throw throw x" or "loop throw loop x"
 
