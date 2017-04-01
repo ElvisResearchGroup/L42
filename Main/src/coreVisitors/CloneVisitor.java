@@ -20,11 +20,12 @@ public class CloneVisitor implements Visitor<ExpCore>{
     //no, I would like to assert on T, that is a supertype of getClass()
     return result;
     }
+  protected Path liftP(Path p){return p;}
   protected Type liftT(Type t){
     return t.match(
-        nt->(Type)new NormType(nt.getMdf(),lift(nt.getPath()),liftDoc(nt.getDoc())),
+        nt->(Type)new NormType(nt.getMdf(),liftP(nt.getPath()),liftDoc(nt.getDoc())),
         ht->(Type)new HistoricType(
-            lift(ht.getPath()),
+            liftP(ht.getPath()),
             liftSXs(ht.getSelectors()),liftDoc(ht.getDoc()))
         );
     }
@@ -57,7 +58,7 @@ public class CloneVisitor implements Visitor<ExpCore>{
   }
   protected Doc liftDoc(Doc doc) {
     return doc.withAnnotations(Map.of(ann->{
-      if(ann instanceof Path){return this.visit((Path)ann);}
+      if(ann instanceof Path){return liftP((Path)ann);}
       return ann;},doc.getAnnotations()));
   }
   protected Member liftM(Member m) {
@@ -78,12 +79,12 @@ public class CloneVisitor implements Visitor<ExpCore>{
   protected MethodType liftMT(MethodType mt) {
     return new MethodType(mt.isRefine(),mt.getMdf(),Map.of(this::liftT,mt.getTs()),liftT(mt.getReturnType()),Map.of(this::liftT,mt.getExceptions()));
   }
-  public ExpCore visit(Path s) {return s;}
+  @Override public ExpCore visit(EPath s) {return s.withInner(liftP(s.getInner()));}
   public ExpCore visit(X s) { return s;}
   public ExpCore visit(_void s) {return s;}
   public ExpCore visit(WalkBy s) {return s;}
   public ExpCore visit(Using s) {
-    return new Using(lift(s.getPath()),liftMs(s.getS()),liftDoc(s.getDoc()),Map.of(this::lift,s.getEs()),lift(s.getInner()));
+    return new Using(liftP(s.getPath()),liftMs(s.getS()),liftDoc(s.getDoc()),Map.of(this::lift,s.getEs()),lift(s.getInner()));
   }
   public ExpCore visit(Signal s) {
     return new Signal(s.getKind(),lift(s.getInner()),

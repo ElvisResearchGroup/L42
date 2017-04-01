@@ -31,7 +31,7 @@ public class Facade implements Reduction{
       String s=Resources.nameOf(p);
       if(s.equals("Object")){
         return new Resources.Revertable(){public ast.ExpCore revert() {
-           return p;
+           return ExpCore.EPath.wrap(p);
            }};
         }
       try {

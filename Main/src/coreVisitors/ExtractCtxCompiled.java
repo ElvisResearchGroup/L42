@@ -21,7 +21,7 @@ import auxiliaryGrammar.Ctx;
 public class ExtractCtxCompiled implements Visitor<Ctx<ClassB>>{
   //private ExtractCtxCompiled(Program p){this.p=p;}
   
-  public Ctx<ClassB> visit(Path s) {throw Assertions.codeNotReachable();}
+  public Ctx<ClassB> visit(ExpCore.EPath s) {throw Assertions.codeNotReachable();}
   public Ctx<ClassB> visit(X s) {throw Assertions.codeNotReachable();}
   public Ctx<ClassB> visit(_void s) {throw Assertions.codeNotReachable();}
   public Ctx<ClassB> visit(WalkBy s) {throw Assertions.codeNotReachable();}

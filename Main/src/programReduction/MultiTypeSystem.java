@@ -52,9 +52,9 @@ private static ClassB typeSingle(Phase phase,Program p) {
 public static ExpCore toAny(Paths paths, ExpCore e) {
   return e.accept(new CloneVisitor(){
     public ExpCore visit(ClassB s) {return s;}
-    public ExpCore visit(Ast.Path s) {
-      if(paths.contains(s)){
-        return Ast.Path.Any();
+    public ExpCore visit(ExpCore.EPath s) {
+      if(paths.contains(s.getInner())){
+        return s.withInner(Ast.Path.Any());
         }
       return s;
       } 

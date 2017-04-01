@@ -18,6 +18,7 @@ import ast.Ast.SignalKind;
 import ast.Ast.Stage;
 import ast.Ast.Type;
 import ast.ExpCore.ClassB;
+import ast.ExpCore.EPath;
 import ast.ExpCore.Using;
 import ast.ExpCore._void;
 
@@ -216,13 +217,13 @@ public class EncodingHelper{
       return new ExpCore.Signal(SignalKind.Return,inside,null,null);
       }
     if( o instanceof Resources.Library){
-      return Ast.Path.Library();
+      return EPath.wrap(Ast.Path.Library());
     }
     if( o instanceof Resources.Void){
-      return Ast.Path.Void();
+      return EPath.wrap(Ast.Path.Void());
     }
     if( o instanceof Resources.Any){
-      return Ast.Path.Any();
+      return EPath.wrap(Ast.Path.Any());
     }
     if(o instanceof Resources.Revertable){return ((Resources.Revertable)o).revert();}
     return wrapResource(o.toString());

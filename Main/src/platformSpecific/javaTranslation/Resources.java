@@ -181,17 +181,17 @@ public class Resources {
     public static final Void type=new Void();
     @Override
     public ExpCore revert() {
-      return Path.Void();
+      return ExpCore.EPath.wrap(Path.Void());
     }
     }
   public static class Any implements Revertable{
     public static final Any type=new Any();
     @Override
-    public ExpCore revert() {return Path.Any();  }}
+    public ExpCore revert() {return ExpCore.EPath.wrap(Path.Any());  }}
   public static class Library implements Revertable{
     public static final Library type=new Library();
     @Override
-    public ExpCore revert() {return Path.Library();  }}
+    public ExpCore revert() {return ExpCore.EPath.wrap(Path.Library());  }}
   public static interface PhI<T>{
     public void commit(T t);
     public void addAction(java.util.function.Consumer<T> r);
@@ -389,7 +389,7 @@ public class Resources {
           Program p=getP();
           int dept=0;
           while(System.identityHashCode(p.top().getP())!=hash){dept++;p=p.pop();}
-          return ast.Ast.Path.parse("This"+dept+path);
+          return ExpCore.EPath.wrap(ast.Ast.Path.parse("This"+dept+path));
            }};
       }
 

@@ -21,8 +21,8 @@ import auxiliaryGrammar.Functions;
     e.accept(cp);
     return cp.paths;
   }
-  public ExpCore visit(Path s) {//invoked by visit classB header/super and local vardec
-    if(!s.isPrimitive()){paths.add(s);}
+  @Override public ExpCore visit(ExpCore.EPath s) {//invoked by visit classB header/super and local vardec
+    if(!s.isPrimitive()){paths.add(s.getInner());}
     return s;
     }
   /*public ExpCore visit(ClassB cb){

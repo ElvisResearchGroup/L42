@@ -20,8 +20,8 @@ public class CollectPaths0 extends PropagatorVisitor{
     cp.visit(mwt);
     return cp.paths;
   }
-  public Void visit(Path s) { 
-    if(!s.isPrimitive()){paths.add(s);}
+  public Void visit(ExpCore.EPath s) { 
+    if(!s.isPrimitive()){paths.add(s.getInner());}
     return null;
     }
   public Void visit(ClassB s) {return null;}  

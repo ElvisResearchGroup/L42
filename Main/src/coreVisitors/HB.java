@@ -90,7 +90,7 @@ public class HB implements Visitor<ExpCore> {
     }
   }
 
-  public ExpCore visit(Path s) {return null;}
+  public ExpCore visit(ExpCore.EPath s) {return null;}
   public ExpCore visit(X s) {return null;}
   public ExpCore visit(_void s) {return null;}
   public ExpCore visit(WalkBy s) {return s;}

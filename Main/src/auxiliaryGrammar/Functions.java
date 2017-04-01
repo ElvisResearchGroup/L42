@@ -447,7 +447,7 @@ public static boolean isInterface(Program p, Path path) {
 }
 public static boolean checkCore(Expression result) {
     result.accept(new CloneVisitor(){
-      public Expression visit(Path p){assert p.isCore() || p.isPrimitive():p;return p;}
+      @Override public Expression visit(Expression.EPath p){assert p.getInner().isCore() || p.getInner().isPrimitive():p;return p;}
       protected <T extends Expression>T lift(T e){//exists just to breakpoint
         try{return super.lift(e);}
         catch(AssertionError err){

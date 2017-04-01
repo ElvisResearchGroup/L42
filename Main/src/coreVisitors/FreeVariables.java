@@ -76,7 +76,7 @@ public class FreeVariables implements Visitor<Set<String>>{
   
   public Set<String> visit(WalkBy s) {throw Assertions.codeNotReachable();}
   public Set<String> visit(_void s) {return collected;}
-  public Set<String> visit(Path s) {return collected;}
+  public Set<String> visit(ExpCore.EPath s) {return collected;}
   public Set<String> visit(ClassB s) {return collected;}
   
 }

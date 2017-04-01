@@ -55,7 +55,7 @@ public class IsValue extends TestShapeVisitor{
   }
 
 
-  public Boolean visit(Path s) {return true;}
+  public Boolean visit(ExpCore.EPath s) {return true;}
   public Boolean visit(X s) {return true;}
   public Boolean visit(_void s)  {return true;}
   public Boolean visit(ClassB s)  {return true;}

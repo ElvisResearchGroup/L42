@@ -24,14 +24,15 @@ import ast.Expression.ClassB.*;
 
 public class PropagatorVisitor implements Visitor<Void>{
   protected void lift(Expression e){ e.accept(this); }
+  protected void liftP(Path p){}
   protected void liftT(Type t){
     t.match(
       nt->{
-        lift(nt.getPath());
+        liftP(nt.getPath());
         liftDoc(nt.getDoc());
         return null;},
       ht->{
-        lift(ht.getPath());
+        liftP(ht.getPath());
         ht.getSelectors().forEach(this::liftMsX);
         liftDoc(ht.getDoc());
         return null;}
@@ -74,7 +75,7 @@ public class PropagatorVisitor implements Visitor<Void>{
   protected void liftDoc(Doc doc) {
     doc.getAnnotations().forEach(ann->{
       if(ann instanceof Path){
-        this.visit((Path)ann);
+        this.liftP((Path)ann);
         }});
     }
   protected void liftBC(Expression.BlockContent c) {
@@ -139,12 +140,12 @@ public class PropagatorVisitor implements Visitor<Void>{
     mt.getExceptions().forEach(this::liftT);
     }
   
-  public Void visit(Path s) {return null;}
+  public Void visit(Expression.EPath s) {return null;}
   public Void visit(X s) { return null;}
   public Void visit(_void s) {return null;}
   public Void visit(WalkBy s) {return null;}
   public Void visit(Using s) {
-    lift(s.getPath());
+    liftP(s.getPath());
     liftDoc(s.getDocs());
     liftPs(s.getPs());
     lift(s.getInner());

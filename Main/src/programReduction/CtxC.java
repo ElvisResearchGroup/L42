@@ -73,7 +73,7 @@ class CtxCInner<T extends ExpCore.WithInner<T> & ExpCore> implements CtxC{
 
 class CtxSplitter implements coreVisitors.Visitor<CtxC>{
   //those are never reached by the visit
-  public CtxC visit(Path s) {throw Assertions.codeNotReachable();}
+  public CtxC visit(ExpCore.EPath s) {throw Assertions.codeNotReachable();}
   public CtxC visit(X s) {throw Assertions.codeNotReachable();}
   public CtxC visit(_void s) {throw Assertions.codeNotReachable();}
   //this case should eventually disappear

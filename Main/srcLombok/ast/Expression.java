@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
+import ast.Ast.Atom;
+import ast.Ast.HasPos;
 import ast.Ast.Position;
 import ast.Ast.SignalKind;
 import ast.Ast.Type;
@@ -339,6 +341,17 @@ public interface Expression extends Ast {
     }
   }
 
+  @Value @Wither @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p")
+  public static class EPath implements Expression,HasPos,Atom{
+    Position p;
+    Ast.Path inner;
+    public boolean isPrimitive(){return this.getInner().isPrimitive();}
+    public boolean isCore(){return this.getInner().isCore();}
+    public <T> T accept(sugarVisitors.Visitor<T> v) {
+      return v.visit(this);
+      }
+    }
+  
   @Value public static class _void implements Expression, Ast.Atom {
     @Override public <T> T accept(sugarVisitors.Visitor<T> v) {
       return v.visit(this);

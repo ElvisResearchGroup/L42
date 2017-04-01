@@ -47,7 +47,7 @@ public class GuessType implements Visitor<Type> {
     assert this.varEnv.get(s.getInner())!=null;
     return this.varEnv.get(s.getInner());
     }
-  public Type visit(Path s) { return new NormType(Mdf.Class,s,Doc.empty()); }
+  public Type visit(Expression.EPath s) { return new NormType(Mdf.Class,s.getInner(),Doc.empty()); }
 
   public Type visit(RoundBlock s) {
     HashMap<String, Type> tmpVarEnv = this.varEnv;

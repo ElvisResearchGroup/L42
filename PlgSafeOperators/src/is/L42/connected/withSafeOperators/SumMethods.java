@@ -107,8 +107,8 @@ public class SumMethods {
 
 
   static ExpCore eU(int index,Position pos,MethodType mt1,MethodType mt2,MethodSelector m1,MethodSelector m2,MethodSelector mRes){
-    ExpCore r1=(mt1.getMdf()==Mdf.Class)?Path.outer(0):new ExpCore.X(pos,"this");
-    ExpCore r2=(mt2.getMdf()==Mdf.Class)?Path.outer(0):new ExpCore.X(pos,"this");
+    ExpCore r1=(mt1.getMdf()==Mdf.Class)?ExpCore.EPath.wrap(Path.outer(0)):new ExpCore.X(pos,"this");
+    ExpCore r2=(mt2.getMdf()==Mdf.Class)?ExpCore.EPath.wrap(Path.outer(0)):new ExpCore.X(pos,"this");
     //this/outer0 . m2(this/outer0 .m1(ps1),ps2)
     List<ExpCore> ps1=new ArrayList<>();
     for(String x:mRes.getNames().subList(0,m1.getNames().size())){ps1.add(new ExpCore.X(pos,x));}

@@ -34,7 +34,7 @@ public class InjectionOnCore implements Visitor<ExpCore> {
 
   public ExpCore visit(Expression.X s){return new X(s.getP(),s.getInner());}
     public ExpCore visit(Expression._void s){return new _void();}
-  public ExpCore visit(Ast.Path s){return s;}
+  public ExpCore visit(Expression.EPath s){return new ExpCore.EPath(s.getP(), s.getInner());}
   public ExpCore visit(Expression.RoundBlock s){
     Doc doc = s.getDoc();
     assert s.getContents().size()<=1:s.getContents();

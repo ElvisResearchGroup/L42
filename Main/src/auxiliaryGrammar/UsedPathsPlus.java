@@ -43,9 +43,10 @@ public class UsedPathsPlus {
         if(!p.isPrimitive()){ps.add(p);}
         return super.visit(s);
       }*/
-      public ExpCore visit(Path s){
+      @Override public ExpCore visit(EPath s1){
+        Path s=s1.getInner();
         if(!s.isPrimitive()){ps.add(s);}
-        return super.visit(s);
+        return super.visit(s1);
         }
       }
     e.accept(new CollectPaths());

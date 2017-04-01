@@ -1,5 +1,6 @@
 package coreVisitors;
 
+import ast.ExpCore;
 import ast.Ast.Path;
 import ast.ExpCore.Block;
 import ast.ExpCore.ClassB;
@@ -12,7 +13,7 @@ import ast.ExpCore.X;
 import ast.ExpCore._void;
 
 public class TestShapeVisitor implements Visitor<Boolean>{
-  public Boolean visit(Path s) {return false;}
+  public Boolean visit(ExpCore.EPath s) {return false;}
   public Boolean visit(X s) {return false;}
   public Boolean visit(_void s)  {return false;}
   public Boolean visit(WalkBy s)  {return false;}

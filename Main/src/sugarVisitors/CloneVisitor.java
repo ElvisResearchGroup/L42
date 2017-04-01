@@ -32,10 +32,11 @@ public class CloneVisitor implements Visitor<Expression>{
     //assert L42.checkWellFormedness(result);
     return result;
     }
+  protected Path liftP(Path p){return p;}
   protected Type liftT(Type t){
     return t.match(
-        nt->(Type)new NormType(nt.getMdf(),lift(nt.getPath()),liftDoc(nt.getDoc())),
-        ht->(Type)new HistoricType(lift(ht.getPath()),Map.of(this::liftMsX, ht.getSelectors()),liftDoc(ht.getDoc()))
+        nt->(Type)new NormType(nt.getMdf(),liftP(nt.getPath()),liftDoc(nt.getDoc())),
+        ht->(Type)new HistoricType(liftP(ht.getPath()),Map.of(this::liftMsX, ht.getSelectors()),liftDoc(ht.getDoc()))
         );
     }
   protected Expression.Catch liftK(Expression.Catch k){
@@ -68,7 +69,7 @@ public class CloneVisitor implements Visitor<Expression>{
   }
   protected Doc liftDoc(Doc doc) {
     return doc.withAnnotations(Map.of(ann->{
-      if(ann instanceof Path){return this.visit((Path)ann);}
+      if(ann instanceof Path){return this.liftP((Path)ann);}
       return ann;},doc.getAnnotations()));
   }
   protected Expression.BlockContent liftBC(Expression.BlockContent c) {
@@ -133,12 +134,12 @@ public class CloneVisitor implements Visitor<Expression>{
       liftT(mt.getReturnType()),
       Map.of(this::liftT,mt.getExceptions()));
   }
-  public Expression visit(Path s) {return s;}
+  public Expression visit(Expression.EPath s) {return s;}
   public Expression visit(X s) { return s;}
   public Expression visit(_void s) {return s;}
   public Expression visit(WalkBy s) {return s;}
   public Expression visit(Using s) {
-    return new Using(lift(s.getPath()),s.getName(),liftDoc(s.getDocs()),liftPs(s.getPs()),lift(s.getInner()));
+    return new Using(liftP(s.getPath()),s.getName(),liftDoc(s.getDocs()),liftPs(s.getPs()),lift(s.getInner()));
   }
   protected Parameters liftPs(Parameters ps) {
     return new Parameters(

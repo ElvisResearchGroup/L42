@@ -1,29 +1,12 @@
 {
-(Url fileName)
- class method Library binaryReprFrom(Library lib)(
-  Library norm=use SafeOperatorsAccess
-    check privateNormalize(lib)
-    error {privateNormalize()}
-  Library record=use SafeOperatorsAccess
-    check introspectLibraryReport(norm, path:{//@stringU
-            //This
-           })
-    error {introspectLibraryReport()}
-  use SafeOperatorsAccess
-    check introspectLibraryDocAsString(record,
-      path:{//@stringU
-            //AllAsString
-           },annotationN:{//@int32
-            //0
-           })
-    error {introspectLibraryDocAsString()}
-  )
+Url fileName
+class method This(Url fileName)
+ 
 method
 Library <><(Library that) (
-  use Alu
-    check fileDebug(
-      fileName:this.fileName().#binaryRepr(),
-      content:This.binaryReprFrom(lib:that)
+  use SafeOperatorsAccess
+    check deployCode(that      
+      url:this.fileName().#binaryRepr()
       )
     error {fileDebug()}
   ExitCode.normal()

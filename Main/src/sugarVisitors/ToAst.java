@@ -316,7 +316,7 @@ public class ToAst extends AbstractVisitor<Expression>{
 
   @Override public Expression visitEAtom(EAtomContext ctx) {
     if(ctx.Path()!=null){
-      return addNumParse(ctx,Ast.Path.sugarParse(nameU(ctx.Path())));
+      return addNumParse(ctx,new Expression.EPath(position(ctx),Path.sugarParse(nameU(ctx.Path()))));
         }
     if(ctx.DotDotDot()!=null){
       return new Expression.DotDotDot();

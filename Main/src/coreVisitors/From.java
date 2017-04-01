@@ -14,9 +14,9 @@ import ast.ExpCore;
 public class From extends CloneVisitor {
   private Path path;
   private From(Path path){  this.path=path;  }
-  @Override public ExpCore visit(Path p){
+  @Override public ExpCore visit(ExpCore.EPath p){
     if(p.isPrimitive()){return p;}
-    return fromP(p,path);
+    return p.withInner(fromP(p.getInner(),path));
     }
   public ExpCore visit(ClassB s) {
     //return s.accept(new FromInClass(0,path.setNewOuter(path.outerNumber()+1).pushC("__IRRELEVANT__")));

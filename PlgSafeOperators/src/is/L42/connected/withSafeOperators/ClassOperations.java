@@ -9,6 +9,7 @@ import java.util.function.Function;
 
 import coreVisitors.CloneWithPath;
 import ast.Ast;
+import ast.ExpCore;
 import ast.Ast.Path;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
@@ -58,12 +59,12 @@ public class ClassOperations {
 */
   static ClassB normalizePaths(ClassB cb){
     return (ClassB)cb.accept(new CloneWithPath(){
-      public ast.ExpCore visit(ast.Ast.Path s) {
+      public ast.ExpCore visit(ExpCore.EPath s) {
         if(s.isPrimitive()){return s;}
         assert s.isCore();
         List<Ast.C> path = this.getLocator().getClassNamesPath();
-        if(s.outerNumber()>path.size()){return s;}
-        return normalizePath(path,s.outerNumber(),s.getCBar());
+        if(s.getInner().outerNumber()>path.size()){return s;}
+        return ExpCore.EPath.wrap(normalizePath(path,s.getInner().outerNumber(),s.getInner().getCBar()));
       }});}
   static List<Ast.C>toTop(List<Ast.C>path,Path s){
     assert !s.isPrimitive();

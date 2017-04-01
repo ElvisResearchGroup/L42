@@ -207,6 +207,20 @@ public interface ExpCore {
       return v.visit(this);
       }
     }
+  @Value @Wither @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p")
+  public static class EPath implements ExpCore,HasPos,Atom{
+    Position p;
+    Ast.Path inner;
+    public boolean isPrimitive(){return this.getInner().isPrimitive();}
+    public boolean isCore(){return this.getInner().isCore();}
+  public <T> T accept(coreVisitors.Visitor<T> v) {
+    return v.visit(this);
+    }
+  public static EPath wrap(Ast.Path p){
+    return new EPath(Position.noInfo,p);
+    }
+  }
+  
   @Value public static class WalkBy implements ExpCore {
     @Override public <T> T accept(coreVisitors.Visitor<T> v) {
       return v.visit(this);

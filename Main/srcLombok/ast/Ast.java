@@ -335,7 +335,7 @@ public interface Ast {
    }
  
  //-------------------
- public static abstract class Path implements Expression, ExpCore, Atom{
+ public static abstract class Path {
  public static Path sugarParse(List<String> rowData){
    Path res=PathSugar._instance(rowData);
    if (res!=null){return res;}
@@ -368,12 +368,6 @@ public interface Ast {
  public static Path Library() {return PathPrimitive._Library;}
 
  public NormType toImmNT(){return new NormType(Mdf.Immutable,this,Doc.empty());}
-   public <T> T accept(sugarVisitors.Visitor<T> v) {
-     return v.visit(this);
-     }
-   public <T> T accept(coreVisitors.Visitor<T> v) {
-     return v.visit(this);
-     }
    public boolean isPrimitive() {return false;}
    public boolean isCore() { return false; }
    public String toString() { return sugarVisitors.ToFormattedText.of(this);}

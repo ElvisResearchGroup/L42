@@ -38,15 +38,15 @@ public class ExtractInfo {
       this.target=target;
       }
     Set<Path> whereUsed=new HashSet<>();
-    public ExpCore visit(Path s) {
+    public ExpCore visit(ExpCore.EPath s) {
       List<Ast.C> path = this.getLocator().getClassNamesPath();
       if(s.isPrimitive()){return s;}
-      if(path.size()<s.outerNumber()){return s;}
+      if(path.size()<s.getInner().outerNumber()){return s;}
       //List<String> unexploredPath=path.subList(0,path.size()-s.outerNumber());
       //if(unexploredPath.contains(null)){return super.visit(s);}
       if(path.contains(null)){return super.visit(s);}
       Path localP=Path.outer(0,path);
-      boolean isSame=From.fromP(s, localP).equals(target);
+      boolean isSame=From.fromP(s.getInner(), localP).equals(target);
       if(isSame){
         whereUsed.add(localP);
         }

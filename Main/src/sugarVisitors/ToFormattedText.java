@@ -72,7 +72,7 @@ public class ToFormattedText implements Visitor<Void>{
   }
   public static String of(Path path){
     ToFormattedText tft=new ToFormattedText();
-    tft.visit(path);
+    tft.liftP(path);
     return tft.result.toString();
   }
   public static String of(Doc doc){
@@ -383,7 +383,7 @@ public class ToFormattedText implements Visitor<Void>{
   @Override
   public Void visit(Using arg0) {
     c("use ");
-    arg0.getPath().accept(this);
+    this.liftP(arg0.getPath());
     sp();
     c("check ");
     c(arg0.getName());
@@ -508,11 +508,11 @@ public class ToFormattedText implements Visitor<Void>{
       tN->{
         if(ast.Ast.Mdf.Immutable!=tN.getMdf()){
           c(tN.getMdf().inner);sp();}
-        visit(tN.getPath());
+        liftP(tN.getPath());
         return null;
       },
       tH->{
-        visit(tH.getPath());
+        liftP(tH.getPath());
         for( MethodSelectorX s:tH.getSelectors()){
           c("::");
           formatMs(s.getMs());
@@ -551,7 +551,11 @@ public class ToFormattedText implements Visitor<Void>{
     }
 
   @Override
-  public Void visit(Path path) {
+  public Void visit(Expression.EPath path) {
+    return liftP(path.getInner());
+  }
+  
+  protected Void liftP(Path path) {
     if(Path.Any()==path){return c("Any");}
     if(Path.Library()==path){return c("Library");}
     if(Path.Void()==path){return c("Void");}

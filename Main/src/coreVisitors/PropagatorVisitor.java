@@ -35,13 +35,14 @@ public class PropagatorVisitor implements Visitor<Void>{
   protected void lift(ExpCore e){
     e.accept(this);
     }
+  protected void liftP(Path p){}
   protected void liftT(Type t){
     liftDoc(t.getDoc());
-    if(t instanceof NormType){lift(((NormType)t).getPath());}
+    if(t instanceof NormType){liftP(((NormType)t).getPath());}
     else {
       HistoricType ht=(HistoricType) t;
       liftSXs(ht.getSelectors());
-      lift(ht.getPath());
+      liftP(ht.getPath());
       }
     }
           
@@ -92,7 +93,7 @@ public class PropagatorVisitor implements Visitor<Void>{
     for(Type p:mt.getExceptions()){liftT(p);}
     }
   public Void visit(Using s) {
-    lift(s.getPath());
+    liftP(s.getPath());
     liftMs(s.getS());
     liftDoc(s.getDoc());
     for(ExpCore e:s.getEs()){lift(e);}
@@ -140,7 +141,7 @@ public class PropagatorVisitor implements Visitor<Void>{
 
   public Void visit(WalkBy s) {throw Assertions.codeNotReachable();}
 
-  public Void visit(Path s) {return null;}//Do nothing on purpose, can be overridden
+  public Void visit(ExpCore.EPath s) {return null;}//Do nothing on purpose, can be overridden
   public Void visit(X s) {return null;}//Do nothing on purpose, can be overridden
   public Void visit(_void s) {return null;}//Do nothing on purpose, can be overridden
   }

@@ -26,7 +26,7 @@ public class ExtractCtxVal implements Visitor<Ctx<Redex>>{
   Program p;
   private ExtractCtxVal(Program p){this.p=p;}
   
-  public Ctx<Redex> visit(Path s) {return null;}
+  public Ctx<Redex> visit(ExpCore.EPath s) {return null;}
   public Ctx<Redex> visit(X s) {return null;}
   public Ctx<Redex> visit(_void s) { return null; }
   public Ctx<Redex> visit(WalkBy s) {throw Assertions.codeNotReachable();}

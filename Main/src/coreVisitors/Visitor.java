@@ -3,7 +3,7 @@ package coreVisitors;
 import ast.ExpCore.*;
 
 public interface Visitor<T> {
-  T visit(ast.Ast.Path s);
+  T visit(EPath s);
   T visit(X s);
   T visit(_void s);
   T visit(WalkBy s);

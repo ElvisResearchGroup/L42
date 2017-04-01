@@ -35,12 +35,12 @@ class Pop {
   static class PopNFrom extends CloneWithPath{
     public PopNFrom(int n){this.n=n;}
     public final int n;
-    public ExpCore visit(Path s) {
+    public ExpCore visit(ExpCore.EPath s) {
       if(s.isPrimitive()){return s;}
-      return popN(n,s);
+      return s.withInner(popN(n,s.getInner()));
       }
 
-    private ExpCore popN(int n,Path s) {
+    private Path popN(int n,Path s) {
       assert n>=0;
       if (n==0){return s;}
       if (s.outerNumber()==0){return s;}

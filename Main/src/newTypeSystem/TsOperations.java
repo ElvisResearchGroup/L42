@@ -22,11 +22,11 @@ import tools.Assertions;
 
 public interface TsOperations extends TypeSystem{
     
-    default TOut tsPath(TIn in, Path s) {
+    default TOut tsPath(TIn in, ExpCore.EPath s) {
     //D |- P~>P:class P <= T | emptyTr
     //D.p|-class P <= T
-    NormType t=new NormType(Mdf.Class,s,Doc.empty());
-    assert s.isPrimitive() || in.p.extractClassB(s)!=null;
+    NormType t=new NormType(Mdf.Class,s.getInner(),Doc.empty());
+    assert s.isPrimitive() || in.p.extractClassB(s.getInner())!=null;
     ErrorKind subErr=TypeSystem.subtype(in.p, t, in.expected);
     if(subErr==null){
       return new TOk(in,s,t);

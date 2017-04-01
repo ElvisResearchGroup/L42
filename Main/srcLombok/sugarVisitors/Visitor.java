@@ -25,7 +25,7 @@ public interface Visitor<T> {
   T visit(WalkBy s);
   T visit(_void s);
   T visit(Literal s);
-  T visit(Ast.Path s);
+  T visit(EPath s);
   T visit(Loop s);
   T visit(ClassReuse s);
   T visit(UseSquare s);

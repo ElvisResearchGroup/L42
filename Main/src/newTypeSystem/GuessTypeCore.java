@@ -37,8 +37,8 @@ public static NormType of(TIn in,ExpCore e) {
   return e.accept(new GuessTypeCore(in));
 }
 @Override
-public NormType visit(Path s) {
-  return new NormType(Mdf.Class,s,Doc.empty());
+public NormType visit(ExpCore.EPath s) {
+  return new NormType(Mdf.Class,s.getInner(),Doc.empty());
 }
 @Override
 public NormType visit(X s) {

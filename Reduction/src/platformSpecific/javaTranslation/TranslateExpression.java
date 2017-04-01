@@ -57,19 +57,20 @@ public class TranslateExpression implements coreVisitors.Visitor<Void>{
   TranslateExpression(StringBuilder res){this.res=res;}
 
   @Override
-  public Void visit(Path s) {
+  public Void visit(ExpCore.EPath s) {
     if(s.isPrimitive()){
       if(s.equals(Path.Any())){res.append("platformSpecific.javaTranslation.Resources.Any.type");}
       if(s.equals(Path.Library())){res.append("platformSpecific.javaTranslation.Resources.Library.type");}
       if(s.equals(Path.Void())){res.append("platformSpecific.javaTranslation.Resources.Void.type");}
       return null;
     }
-    ClassB cbs=Resources.getP().extractClassB(s);
+    Path ss=s.getInner();
+    ClassB cbs=Resources.getP().extractClassB(ss);
     if(cbs.getPhase()==Phase.Coherent  && IsCompiled.of(cbs)){
-      res.append(Resources.nameOf(s)+".type ");
+      res.append(Resources.nameOf(ss)+".type ");
       }
     else{
-      Position pos=Resources.getP().get(s.outerNumber()).getP();
+      Position pos=Resources.getP().get(ss.outerNumber()).getP();
       int hash=System.identityHashCode(pos);
       String cs=s.toString();
       int dotPos=cs.indexOf(".");

@@ -121,7 +121,7 @@ class Impl implements TypeSystem,TsOperations,TsBlock,TsMCall,TsLibrary{
     if (res!=null){return res;}
     try{
       res=in.e.accept(new Visitor<TOut>(){
-        public TOut visit(Path s) {return tsPath(in,s);}
+        public TOut visit(ExpCore.EPath s) {return tsPath(in,s);}
         public TOut visit(X s) {return tsX(in,s);}
         public TOut visit(_void s) {return tsVoid(in,s);}
         public TOut visit(Using s) {return tsUsing(in,s);}

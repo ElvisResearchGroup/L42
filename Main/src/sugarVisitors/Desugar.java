@@ -287,7 +287,7 @@ public class Desugar extends CloneVisitor{
   }
 
 
-  public Expression visit(Path s) {
+  public Expression visit(Expression.EPath s) {
     assert s.isCore()|| s.isPrimitive();
     return s;
   }
@@ -661,7 +661,7 @@ public class Desugar extends CloneVisitor{
     this.t=NormType.immVoid;
     Parameters ps = liftPs(s.getPs());
     this.t=aux;
-    return new Using(lift(s.getPath()),s.getName(),s.getDocs(),ps,lift(s.getInner()));
+    return new Using(liftP(s.getPath()),s.getName(),s.getDocs(),ps,lift(s.getInner()));
   }
   public NestedClass visit(NestedClass nc){
     while(nc.getInner() instanceof Expression.DocE){
@@ -766,7 +766,7 @@ public class Desugar extends CloneVisitor{
     NormType resT=new ast.Ast.NormType(mdf,ast.Ast.Path.outer(0),Doc.empty());
     MethodType mt=new MethodType(false,ast.Ast.Mdf.Class,ts,resT,Collections.emptyList());
     Parameters ps=new Parameters(Optional.empty(),called.getNames(), called.getNames().stream().map(n->new X(Position.noInfo,n)).collect(Collectors.toList()));
-    MCall body=new MCall(Path.outer(0),called.nameToS(),Doc.empty(),ps,h.getP());
+    MCall body=new MCall(new Expression.EPath(h.getP(),Path.outer(0)),called.nameToS(),Doc.empty(),ps,h.getP());
     return new MethodWithType(doc, ms,mt, Optional.of(body),h.getP());
   }
   static public MethodWithType cfLentK(MethodWithType mutK) {

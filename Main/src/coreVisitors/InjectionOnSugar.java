@@ -8,6 +8,7 @@ import java.util.Optional;
 import coreVisitors.Visitor;
 import tools.Match;
 import ast.Ast;
+import ast.ExpCore;
 import ast.Ast.Doc;
 import ast.Ast.Header;
 import ast.Ast.Mdf;
@@ -33,8 +34,8 @@ import auxiliaryGrammar.WellFormedness;
 
 public class InjectionOnSugar implements Visitor<ast.Expression> {
 
-  @Override public Expression visit(Path s) {
-    return s;
+  @Override public Expression visit(ExpCore.EPath s) {
+    return new Expression.EPath(s.getP(),s.getInner());
   }
 
   @Override public Expression visit(X s) {

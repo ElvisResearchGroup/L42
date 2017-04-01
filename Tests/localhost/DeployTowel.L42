@@ -9,41 +9,15 @@ Library failure()  {/*@exitStatus
 42000
 */}}
 DeployTowel: {
-class method 
-mut This0 #mutK(This2.Url fileName) 
-class method 
-This0 #apply(This2.Url fileName) This0.#mutK(fileName:fileName)
 mut method 
 This2.Url #fileName() 
 read method 
 This2.Url fileName() 
 class method 
-Library binaryReprFrom(Library lib) (
-  Library norm=use This0.SafeOperatorsAccess check privateNormalize(that:lib) error  {
-  class method 
-  mut This0 #mutK() 
-  class method 
-  This0 privateNormalize() This0.#mutK()}
-  Library record=use This0.SafeOperatorsAccess check introspectLibraryReport(that:norm, path: {/*@stringU
-This
-*/}) error  {
-  class method 
-  mut This0 #mutK() 
-  class method 
-  This0 introspectLibraryReport() This0.#mutK()}
-  use This0.SafeOperatorsAccess check introspectLibraryDocAsString(that:record, path: {/*@stringU
-AllAsString
-*/}, annotationN: {/*@int32
-0
-*/}) error  {
-  class method 
-  mut This0 #mutK() 
-  class method 
-  This0 introspectLibraryDocAsString() This0.#mutK()}
-  )
+This0 #apply(This2.Url fileName) 
 method 
 Library #leftrightleft(Library that) (
-  Void unused=use This2.Alu check fileDebug(fileName:this.fileName().binaryRepr(), content:This0.binaryReprFrom(lib:that)) error  {
+  Void unused=use This0.SafeOperatorsAccess check deployCode(that:that, url:this.fileName().#binaryRepr()) error  {
   class method 
   mut This0 #mutK() 
   class method 

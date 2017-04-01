@@ -23,7 +23,7 @@ public class ExtractCtxUpToX implements Visitor<Ctx<Block>>{
   String x;
   private ExtractCtxUpToX(String x){this.x=x;}
   
-  public Ctx<Block> visit(Path s) {throw Assertions.codeNotReachable();}
+  public Ctx<Block> visit(ExpCore.EPath s) {throw Assertions.codeNotReachable();}
   public Ctx<Block> visit(X s) {throw Assertions.codeNotReachable();}
   public Ctx<Block> visit(_void s) {throw Assertions.codeNotReachable();}
   public Ctx<Block> visit(WalkBy s) {throw Assertions.codeNotReachable();}

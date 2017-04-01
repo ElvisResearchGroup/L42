@@ -95,7 +95,7 @@ abstract class ReceiverExcluder<T> implements Visitor<T>{
   public T visit(WalkBy s){throw Assertions.codeNotReachable();}
   public T visit(_void s){throw Assertions.codeNotReachable();}
   public T visit(Literal s){throw Assertions.codeNotReachable();}
-  public T visit(Ast.Path s){throw Assertions.codeNotReachable();}
+  public T visit(Expression.EPath s){throw Assertions.codeNotReachable();}
   public T visit(Loop s){throw Assertions.codeNotReachable();}
   public T visit(ClassReuse s){throw Assertions.codeNotReachable();}
   public T visit(UseSquare s){throw Assertions.codeNotReachable();}

@@ -46,12 +46,12 @@ public class RefreshUniqueNames {
         //I need to collect the DECLARED C,ms and those are the only that I need to refresh.
         //refresh all can work only at top level
         }
-      public ExpCore visit(Path s) {
+      public ExpCore visit(ExpCore.EPath s) {
         if(s.isPrimitive()){return s;}
-        List<C> cs = s.getCBar();
+        List<C> cs = s.getInner().getCBar();
         List<C> newCs =new ArrayList<>();
         for(C c:cs){ newCs.add(c.withUniqueNum(newN(map,c.getUniqueNum()))); }
-        return Path.outer(s.outerNumber(),newCs);
+        return s.withInner(Path.outer(s.getInner().outerNumber(),newCs));
         }
     });
     }
@@ -80,14 +80,14 @@ public static <T extends ExpCore>T refresh(T e){
     C name=nc.getName().withUniqueNum(mappedN(map, nc.getName().getUniqueNum()));
     return super.visit(nc.withName(name));
     }
-  public ExpCore visit(Path s) {
+  public ExpCore visit(ExpCore.EPath s) {
     if(s.isPrimitive()){return s;}
-    List<C> cs = s.getCBar();
+    List<C> cs = s.getInner().getCBar();
     List<C> newCs =new ArrayList<>();
     for(C c:cs){
       newCs.add(c.withUniqueNum(mappedN(map, c.getUniqueNum())));
       }
-    return Path.outer(s.outerNumber(),newCs);
+    return s.withInner(Path.outer(s.getInner().outerNumber(),newCs));
     }
   });
 }

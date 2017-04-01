@@ -75,7 +75,7 @@ public class Dec implements Visitor<ExpCore> {
     return s.getDecs().get(pos).getInner();
   }
 
-  public ExpCore visit(Path s) {return null;}
+  @Override public ExpCore visit(ExpCore.EPath s) {return null;}
   public ExpCore visit(X s) {return null;}
   public ExpCore visit(_void s) {return null;}
   public ExpCore visit(WalkBy s) {return s;}

@@ -10,9 +10,9 @@ public class IsValidCompleteCode {
   boolean isComplete(ClassB cb){
     boolean[]found={false};
     cb.accept(new CloneWithPath(){
-      public ExpCore visit(ast.Ast.Path p){
+      public ExpCore visit(ExpCore.EPath p){
         Locator l=this.getLocator().copy();
-        if(p.outerNumber()>l.size()){found[0]=true;}
+        if(p.getInner().outerNumber()>l.size()){found[0]=true;}
         return super.visit(p);
       }
     });

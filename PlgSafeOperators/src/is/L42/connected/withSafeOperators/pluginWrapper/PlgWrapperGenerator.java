@@ -228,7 +228,7 @@ private static UsingInfo usingConstructor(PlgInfo plgInfo, Constructor<?>[] jcs,
     ExpCore.MCall p0=(MCall) u.getEs().get(0);//parameter expressions
     
     //e#mcall.inner<-mwt.retType.path
-    e=e.withInner(mt.getReturnType().getNT().getPath());
+    e=e.withInner(ExpCore.EPath.wrap(mt.getReturnType().getNT().getPath()));
     //u=u.withS(ui.usingMs);
     List<ExpCore> ues=new ArrayList<>();
     if(!mt.getMdf().equals(Mdf.Class)){
@@ -259,7 +259,7 @@ private static UsingInfo usingConstructor(PlgInfo plgInfo, Constructor<?>[] jcs,
       Dec k0 = ((Block)on.getInner()).getDecs().get(0);
       List<Dec> ks=new ArrayList<>();
       {int i=-1;for(Type ti:mt.getExceptions()){i++;
-        MCall mci=((MCall)k0.getInner()).withInner(ti.getNT().getPath());
+        MCall mci=((MCall)k0.getInner()).withInner(ExpCore.EPath.wrap(ti.getNT().getPath()));
         ks.add(k0.withInner(mci).withX(k0.getX()+i));
         }}
       on=on.withInner(((Block)on.getInner()).withDecs(ks));

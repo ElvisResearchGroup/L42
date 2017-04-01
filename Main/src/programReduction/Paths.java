@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import ast.Ast;
 import ast.ErrorMessage;
+import ast.ExpCore.ClassB;
 import coreVisitors.IsCompiled;
 public class Paths {
   //@SuppressWarnings("serial")
@@ -59,10 +60,13 @@ public class Paths {
     if(this.isEmpty()){return true;}
     for(List<Ast.C>cs:this.top()){
       try{
-        Program pi= p.navigate(cs);
-        if(!IsCompiled.of(pi.top())){
+        ClassB li=p.top().getClassB(cs);
+        if(!IsCompiled.of(li)){
           throw new ErrorMessage.PathMetaOrNonExistant(true, cs, p.top(), p.top().getP(), null);
           }
+        }
+      catch(ErrorMessage.PathMetaOrNonExistant pne){
+        throw pne.withListOfNodeNames(cs);
         }
       catch(RuntimeException rte){
         throw rte;//to breakpoint

@@ -213,9 +213,9 @@ static PathsPaths usedPathsECatchErrors(Program p, ExpCore e){
         return null;
         }
     //**if p(Pi).Cache=Typed, Pi is not Any
-      public Void visit(Path s) { 
+      public Void visit(ExpCore.EPath s) { 
         if(s.isPrimitive()){return null;}
-        try{if(p.extractClassB(s).getPhase()==Phase.Typed){
+        try{if(p.extractClassB(s.getInner()).getPhase()==Phase.Typed){
           return super.visit(s);
           }}
         catch(ErrorMessage.PathMetaOrNonExistant pne){/*we do not rise this error while computing the heuristic*/}

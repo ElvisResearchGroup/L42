@@ -6,6 +6,9 @@ import static auxiliaryGrammar.EncodingHelper.ensureExtractInt32;
 import static auxiliaryGrammar.EncodingHelper.ensureExtractPathFromJava;
 import static auxiliaryGrammar.EncodingHelper.ensureExtractDoc;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -312,7 +315,20 @@ public class Plugin implements PluginType{
       List<Ast.C> dest=new ArrayList<>(src);
       dest.set(dest.size()-1, dest.get(dest.size()-1).withUniqueNum(L42.freshPrivate()));
       return Rename.renameClass(Resources.getP(),that,src,dest);
-      }/*
+      }
+    
+    @ActionType({ActionType.Type.Void,ActionType.Type.Library,ActionType.Type.Library})
+    public Resources.Void MdeployCode£xthat£xurl(Object _that,Object _url){
+      ClassB that=ensureExtractClassB(_that);
+      String url=ensureExtractStringU(_url);
+      String text=sugarVisitors.ToFormattedText.of(that);
+      java.nio.file.Path p=Paths.get(url);
+      try {Files.write(p, text.getBytes());}
+      catch (IOException e) {throw new Error(e);}
+      return Resources.Void.instance;
+      }
+    
+    /*
     @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
     public Object MhideState£xthat£xsrc(Object _that,Object _src){
       ClassB that=ensureExtractClassB(_that);

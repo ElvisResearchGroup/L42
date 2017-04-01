@@ -75,7 +75,7 @@ public class CheckTerminatingBlock implements Visitor<Void> {
   public Void visit(_void s) {return fail(s);}
   public Void visit(Literal s) {return fail(s);}
   public Void visit(While s) {return fail(s);}
-  public Void visit(Path s) {return fail(s);}
+  public Void visit(Expression.EPath s) {return fail(s);}
   public Void visit(ClassReuse s) {return fail(s);}
   public Void visit(ContextId s)  {return fail(s);}
   }

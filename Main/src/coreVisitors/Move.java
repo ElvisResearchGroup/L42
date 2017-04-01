@@ -24,7 +24,7 @@ public class Move implements Visitor<Ctx<List<Block.Dec>>>{
   final String x;
   private Move(String x){this.x=x;}
   
-  public Ctx<List<Block.Dec>> visit(Path s) {throw Assertions.codeNotReachable();}
+  public Ctx<List<Block.Dec>> visit(ExpCore.EPath s) {throw Assertions.codeNotReachable();}
   public Ctx<List<Block.Dec>> visit(X s) {throw Assertions.codeNotReachable();}
   public Ctx<List<Block.Dec>> visit(_void s) {throw Assertions.codeNotReachable();}
   public Ctx<List<Block.Dec>> visit(WalkBy s) {

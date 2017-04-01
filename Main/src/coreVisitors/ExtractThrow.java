@@ -67,7 +67,7 @@ public class ExtractThrow implements Visitor<ExpCore>{
     }
 
   public ExpCore visit(ClassB s)  { return new ExpCore.WalkBy();}
-  public ExpCore visit(Path s) { return new ExpCore.WalkBy();}
+  public ExpCore visit(ExpCore.EPath s) { return new ExpCore.WalkBy();}
   public ExpCore visit(X s) { return new ExpCore.WalkBy();}
   public ExpCore visit(_void s) { return new ExpCore.WalkBy();}
   public ExpCore visit(WalkBy s) {throw Assertions.codeNotReachable();}
