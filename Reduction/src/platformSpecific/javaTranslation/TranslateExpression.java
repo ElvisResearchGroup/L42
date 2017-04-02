@@ -58,13 +58,13 @@ public class TranslateExpression implements coreVisitors.Visitor<Void>{
 
   @Override //not a propagator visitor. 
   public Void visit(ExpCore.EPath s) {
-    if(s.isPrimitive()){
-      if(s.equals(Path.Any())){res.append("platformSpecific.javaTranslation.Resources.Any.type");}
-      if(s.equals(Path.Library())){res.append("platformSpecific.javaTranslation.Resources.Library.type");}
-      if(s.equals(Path.Void())){res.append("platformSpecific.javaTranslation.Resources.Void.type");}
+    Path ss=s.getInner();
+    if(ss.isPrimitive()){
+      if(ss.equals(Path.Any())){res.append("platformSpecific.javaTranslation.Resources.Any.type");}
+      if(ss.equals(Path.Library())){res.append("platformSpecific.javaTranslation.Resources.Library.type");}
+      if(ss.equals(Path.Void())){res.append("platformSpecific.javaTranslation.Resources.Void.type");}
       return null;
     }
-    Path ss=s.getInner();
     ClassB cbs=Resources.getP().extractClassB(ss);
     if(cbs.getPhase()==Phase.Coherent  && IsCompiled.of(cbs)){
       res.append(Resources.nameOf(ss)+".type ");

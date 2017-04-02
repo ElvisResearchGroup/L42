@@ -212,11 +212,9 @@ public interface ExpCore {
     Position p;
     Ast.Path inner;
     public String toString(){return this.getInner().toString();}
-    public boolean isPrimitive(){return this.getInner().isPrimitive();}
-    public boolean isCore(){return this.getInner().isCore();}
-  public <T> T accept(coreVisitors.Visitor<T> v) {
-    return v.visit(this);
-    }
+    public <T> T accept(coreVisitors.Visitor<T> v) {
+      return v.visit(this);
+      }
   public static EPath wrap(Ast.Path p){
     return new EPath(Position.noInfo,p);
     }

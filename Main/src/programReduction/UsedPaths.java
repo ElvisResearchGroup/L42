@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import com.sun.xml.internal.ws.dump.LoggingDumpTube.Position;
+import ast.Ast.Position;
 
 import ast.Ast;
 import ast.Ast.C;
@@ -25,6 +25,7 @@ import ast.ExpCore.ClassB.NestedClass;
 import ast.ExpCore.ClassB.Phase;
 import coreVisitors.CollectClassBs0;
 import coreVisitors.CollectPaths0;
+import coreVisitors.FindPathUsage;
 import coreVisitors.IsCompiled;
 import coreVisitors.PropagatorVisitor;
 import sugarVisitors.CollapsePositions;
@@ -125,7 +126,8 @@ static PathsPaths usedPathsECatchErrors(Program p, ExpCore e){
       Paths newPaths=usedInnerL(li,csi,phase0);
       try{newPaths.checkAllDefined(pForError);}
       catch(ErrorMessage.PathMetaOrNonExistant pne){
-        throw pne.withWherePathWasWritten(li.getP());
+        Position p=FindPathUsage._locate(pForError,li,Path.outer(0, pne.getListOfNodeNames()));
+        throw pne.withWherePathWasWritten(p);
         }
       result=result.union(newPaths);
       }
@@ -205,7 +207,7 @@ static PathsPaths usedPathsECatchErrors(Program p, ExpCore e){
         }
       private Path justPath(ExpCore e){
         if(e instanceof ExpCore.EPath){
-          if(!((ExpCore.EPath)e).isPrimitive()){
+          if(!((ExpCore.EPath)e).getInner().isPrimitive()){
             return ((ExpCore.EPath)e).getInner();
             }
           }

@@ -158,7 +158,7 @@ public class EncodingHelper{
     if(e instanceof Resources.Library){return Path.Library();}
     if(e instanceof Resources.Void){return Path.Void();}
     assert e instanceof Resources.Revertable;
-    return (Path) ((Resources.Revertable)e).revert();
+    return ((ExpCore.EPath) ((Resources.Revertable)e).revert()).getInner();
     }
   public static String ensureExtractStringU(Object e) {
     String res=_extractStringU(e);
