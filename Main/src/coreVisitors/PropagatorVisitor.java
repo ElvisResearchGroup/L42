@@ -141,7 +141,8 @@ public class PropagatorVisitor implements Visitor<Void>{
 
   public Void visit(WalkBy s) {throw Assertions.codeNotReachable();}
 
-  public Void visit(ExpCore.EPath s) {return null;}//Do nothing on purpose, can be overridden
+  public Void visit(ExpCore.EPath s) {liftP(s.getInner());return null;}
+  
   public Void visit(X s) {return null;}//Do nothing on purpose, can be overridden
   public Void visit(_void s) {return null;}//Do nothing on purpose, can be overridden
   }

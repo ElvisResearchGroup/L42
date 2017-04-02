@@ -207,10 +207,11 @@ public interface ExpCore {
       return v.visit(this);
       }
     }
-  @Value @Wither @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p")
+  @Value @Wither @EqualsAndHashCode(exclude = "p")
   public static class EPath implements ExpCore,HasPos,Atom{
     Position p;
     Ast.Path inner;
+    public String toString(){return this.getInner().toString();}
     public boolean isPrimitive(){return this.getInner().isPrimitive();}
     public boolean isCore(){return this.getInner().isCore();}
   public <T> T accept(coreVisitors.Visitor<T> v) {

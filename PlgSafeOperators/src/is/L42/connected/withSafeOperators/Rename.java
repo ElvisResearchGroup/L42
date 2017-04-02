@@ -148,37 +148,36 @@ public class Rename {
   //TODO: replace with same mechanism of private normalization when is completed
   static ClassB renameUsage(List<PathPath> mapPath, ClassB cb) {
     return (ClassB)cb.accept(new coreVisitors.CloneWithPath(){
-      public ExpCore visit(ExpCore.EPath s) {
+     @Override protected Path liftP(Path s) {
         if(s.isPrimitive()){return s;}
         assert s.isCore();
-        Path ss=s.getInner();
         List<Ast.C> path = this.getLocator().getClassNamesPath();
-        if(ss.outerNumber()>path.size()){return s;}
-        List<Ast.C> unexploredPath=path.subList(0,path.size()-ss.outerNumber());//in usedPath similar thing.
+        if(s.outerNumber()>path.size()){return s;}
+        List<Ast.C> unexploredPath=path.subList(0,path.size()-s.outerNumber());//in usedPath similar thing.
         if(unexploredPath.contains(null)){return s;}//we are in a class literal in a method and we look inside
-        if(ss.outerNumber()>path.size()){return s;}
-        List<Ast.C>topView=ClassOperations.toTop(path,ss);
+        if(s.outerNumber()>path.size()){return s;}
+        List<Ast.C>topView=ClassOperations.toTop(path,s);
         for(PathPath pp:mapPath){
           List<Ast.C>src=pp.getPath1().getCBar();
           if(topView.size()<src.size()){continue;}
           if(topView.equals(src)){
             if(pp.getPath2().isPrimitive()){
-              return s.withInner(pp.getPath2());
+              return pp.getPath2();
               }
             if(pp.getPath2().outerNumber()==0){
-              return s.withInner(ClassOperations.normalizePath(path,path.size(),pp.getPath2().getCBar()));
+              return ClassOperations.normalizePath(path,path.size(),pp.getPath2().getCBar());
               }
-            return s.withInner(pp.getPath2().setNewOuter(pp.getPath2().outerNumber()+path.size()));
+            return pp.getPath2().setNewOuter(pp.getPath2().outerNumber()+path.size());
             }
           List<Ast.C>trimmedTop=topView.subList(0, src.size());
           if(trimmedTop.equals(src)){
             List<Ast.C>elongatedDest=new ArrayList<>(pp.getPath2().getCBar());
             elongatedDest.addAll(topView.subList(src.size(),topView.size()));
             if(pp.getPath2().outerNumber()==0){
-              return s.withInner(ClassOperations.normalizePath(path,path.size(),elongatedDest));
+              return ClassOperations.normalizePath(path,path.size(),elongatedDest);
               }
             else{
-              return s.withInner(Path.outer(pp.getPath2().outerNumber()+path.size(),elongatedDest));
+              return Path.outer(pp.getPath2().outerNumber()+path.size(),elongatedDest);
             }}}
         return s;
         }

@@ -39,14 +39,14 @@ public class DesugarPaths extends CloneVisitor{
         }
     finally{p.remove(0); }
     }
-  public Expression visit(Expression.EPath s) {
+  @Override protected Path liftP(Path s) {
     if(s.isCore()|| s.isPrimitive()){return s;}
-    List<Ast.C> rd =s.getInner().sugarNames();
+    List<Ast.C> rd =s.sugarNames();
     assert !rd.isEmpty();
     Ast.C key=rd.get(0);
     int index = searchForScope(key);
     if(index==-1){index=0;}//TODO: is what we want? not to the nearest reuse?
-    return s.withInner(Path.outer(index,rd));
+    return Path.outer(index,rd);
     }
 
   private int searchForScope(Ast.C key) {

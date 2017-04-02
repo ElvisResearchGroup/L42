@@ -38,19 +38,19 @@ public class RenameMembers extends coreVisitors.CloneWithPath{
   public static  ClassB of(CollectedLocatorsMap maps,ClassB cb){
     return (ClassB)cb.accept(new RenameMembers(maps));
   }
-      public ExpCore visit(ExpCore.EPath s) {
+      
+    @Override protected Path liftP(Path s) {
         if(s.isPrimitive()){return s;}
         //System.out.print("     "+s);
         assert s.isCore();
-        Path ss=s.getInner();
-        List<Ast.C>cs=ss.getCBar();
+        List<Ast.C>cs=s.getCBar();
         if(cs.isEmpty()){return s;}//no need to rename outers
         Locator current=this.getLocator().copy();
         current.toFormerNodeLocator();
-        boolean canCut=current.cutUpTo(ss.outerNumber());
+        boolean canCut=current.cutUpTo(s.outerNumber());
         if(!canCut){return s;}
         int whereImSize=current.size();
-        current.addCs(ss.getCBar());
+        current.addCs(s.getCBar());
         
         for(Locator nl:maps.nesteds){
           if(whereImSize>nl.size()){continue;}
@@ -59,9 +59,9 @@ public class RenameMembers extends coreVisitors.CloneWithPath{
           boolean compatible= current.prefixOf(nl);
           if(!compatible){continue;}
           int extraCs=(current.size()-nl.size());//the class name in nl.that
-          Path pi=getDestPath(this.getLocator().getClassNamesPath().size(),nl,ss,extraCs);
+          Path pi=getDestPath(this.getLocator().getClassNamesPath().size(),nl,s,extraCs);
           //TODO:can be made more efficient without creating the listPaths
-          return s.withInner(pi);
+          return pi;
           }
         return s;
         }

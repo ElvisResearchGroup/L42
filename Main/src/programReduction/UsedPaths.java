@@ -204,22 +204,21 @@ static PathsPaths usedPathsECatchErrors(Program p, ExpCore e){
         super.liftDec(s);
         }
       private Path justPath(ExpCore e){
-        if(e instanceof Path){
-          if(!((Path)e).isPrimitive()){
-            return (Path)e;
+        if(e instanceof ExpCore.EPath){
+          if(!((ExpCore.EPath)e).isPrimitive()){
+            return ((ExpCore.EPath)e).getInner();
             }
           }
         if(e instanceof ExpCore.Block){return justPath(((ExpCore.Block)e).getInner());}
         return null;
         }
     //**if p(Pi).Cache=Typed, Pi is not Any
-      public Void visit(ExpCore.EPath s) { 
-        if(s.isPrimitive()){return null;}
-        try{if(p.extractClassB(s.getInner()).getPhase()==Phase.Typed){
-          return super.visit(s);
+      @Override protected void liftP(Path s) { 
+        if(s.isPrimitive()){return;}
+        try{if(p.extractClassB(s).getPhase()==Phase.Typed){
+          super.liftP(s); return;
           }}
         catch(ErrorMessage.PathMetaOrNonExistant pne){/*we do not rise this error while computing the heuristic*/}
-        return null;
         }
       
       //**if using P _ _ inside e, P not Any

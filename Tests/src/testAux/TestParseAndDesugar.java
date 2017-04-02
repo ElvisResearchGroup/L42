@@ -223,7 +223,7 @@ public class TestParseAndDesugar {
     Expression result=Desugar.of(es1);
     //ExpCore res = result.accept(new InjectionOnCore());
     //result=res.accept(new InjectionOnSugar());
-    TestHelper.assertEqualExp(result,es2);
+    TestHelper.assertEqualExp(es2,result);
   }
   }
 

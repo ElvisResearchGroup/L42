@@ -15,16 +15,16 @@ public class FromInClass extends CloneVisitor {
   public FromInClass(int j,Path path){
     this.j=j;this.path=path;
     }
-  @Override public ExpCore visit(ExpCore.EPath p){
+  @Override protected Path liftP(Path p){
     assert j>=1;
     if(p.isPrimitive()){return p;}
-    int n=p.getInner().outerNumber();
+    int n=p.outerNumber();
     if(n<j){return p;}
     //Path result=From.fromP(p, addOuter(j-1,path));
-    Path nLessJ=addOuter(-j,p.getInner());
+    Path nLessJ=addOuter(-j,p);
     nLessJ=From.fromP(nLessJ,path);
     Path result= addOuter(j,nLessJ);
-    return p.withInner(result);
+    return result;
     }
   public ExpCore visit(ClassB s) {
     int oldJ=this.j;

@@ -36,13 +36,7 @@ public class UsedPathsPlus {
     //class CollectReceiversPaths extends CloneVisitor{
     class CollectPaths extends CloneVisitor{
       public ExpCore visit(ClassB s) {return s;}
-      /*boh, why i needed this? why collect only receivers? why allowing class Any in star classes?
-      public ExpCore visit(ExpCore.MCall s) {//otherwise, we could not use paths+ as Any in star classes.
-         if(!(s.getReceiver() instanceof Path)){return super.visit(s);}
-        Path p=(Path)s.getReceiver();
-        if(!p.isPrimitive()){ps.add(p);}
-        return super.visit(s);
-      }*/
+
       @Override public ExpCore visit(EPath s1){
         Path s=s1.getInner();
         if(!s.isPrimitive()){ps.add(s);}

@@ -287,7 +287,7 @@ public class Desugar extends CloneVisitor{
   }
 
 
-  public Expression visit(Expression.EPath s) {
+  protected Path liftP(Path s) {
     assert s.isCore()|| s.isPrimitive();
     return s;
   }

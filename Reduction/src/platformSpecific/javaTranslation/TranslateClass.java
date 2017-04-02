@@ -92,7 +92,7 @@ public class TranslateClass {
     int hash=path.outerNumber();
     String cs=path.toString();
     cs=cs.substring(cs.indexOf("."));
-    res.append( "ast.Ast.Path receiver= (ast.Ast.Path)platformSpecific.javaTranslation.Resources.fromHash("+hash+",\""+cs+"\").revert();\n");
+    res.append( "ast.ExpCore receiver= (ast.ExpCore)platformSpecific.javaTranslation.Resources.fromHash("+hash+",\""+cs+"\").revert();\n");
     res.append("if(this==type){return receiver;}\n");
     //res.append("java.util.ArrayList<String> xs=new java.util.ArrayList<>(java.util.Arrays.asList(");
     List<String> ns = ctor.getMs().getNames();

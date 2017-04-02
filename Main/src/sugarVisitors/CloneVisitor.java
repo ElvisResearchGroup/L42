@@ -134,7 +134,7 @@ public class CloneVisitor implements Visitor<Expression>{
       liftT(mt.getReturnType()),
       Map.of(this::liftT,mt.getExceptions()));
   }
-  public Expression visit(Expression.EPath s) {return s;}
+  public Expression visit(Expression.EPath s) {return s.withInner(liftP(s.getInner()));}
   public Expression visit(X s) { return s;}
   public Expression visit(_void s) {return s;}
   public Expression visit(WalkBy s) {return s;}

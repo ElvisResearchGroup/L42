@@ -22,8 +22,7 @@ public class IsValue extends TestShapeVisitor{
   public static boolean of(Program p, ExpCore e){return e.accept(new IsValue(p));}
   //atoms
   public static boolean isAtom(ExpCore e){
-    return e instanceof Path ||e instanceof X
-        || e instanceof _void||e instanceof ClassB;
+    return e instanceof Ast.Atom;
   }
 
   public static Redex.Garbage nestedGarbage(ExpCore e){
@@ -89,9 +88,9 @@ public class IsValue extends TestShapeVisitor{
   public boolean validRightValue(ExpCore ec)  {
     if(!(ec instanceof MCall))return false;
     MCall s=(MCall)ec;
-    if(!(s.getInner() instanceof Path)){return false;}
+    if(!(s.getInner() instanceof EPath)){return false;}
     MethodSelector ms=s.getS();
-    MethodWithType mwt=(MethodWithType) p.extractClassB((Path)s.getInner())._getMember(ms);
+    MethodWithType mwt=(MethodWithType) p.extractClassB(((EPath)s.getInner()).getInner())._getMember(ms);
     if(mwt.get_inner().isPresent()){return false;}
     if(mwt.getMt().getMdf()!=ast.Ast.Mdf.Class){return false;}
     for(ExpCore ei:s.getEs()){

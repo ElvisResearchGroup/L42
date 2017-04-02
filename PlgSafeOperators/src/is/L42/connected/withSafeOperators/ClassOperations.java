@@ -59,12 +59,12 @@ public class ClassOperations {
 */
   static ClassB normalizePaths(ClassB cb){
     return (ClassB)cb.accept(new CloneWithPath(){
-      public ast.ExpCore visit(ExpCore.EPath s) {
+      protected Path liftP(Path s) {
         if(s.isPrimitive()){return s;}
         assert s.isCore();
         List<Ast.C> path = this.getLocator().getClassNamesPath();
-        if(s.getInner().outerNumber()>path.size()){return s;}
-        return ExpCore.EPath.wrap(normalizePath(path,s.getInner().outerNumber(),s.getInner().getCBar()));
+        if(s.outerNumber()>path.size()){return s;}
+        return normalizePath(path,s.outerNumber(),s.getCBar());
       }});}
   static List<Ast.C>toTop(List<Ast.C>path,Path s){
     assert !s.isPrimitive();

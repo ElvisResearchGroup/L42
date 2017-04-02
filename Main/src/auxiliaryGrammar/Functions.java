@@ -124,57 +124,6 @@ public static Path add1Outer(Path p) {
     if( p.isPrimitive()){return p;}
     return p.setNewOuter(p.outerNumber()+1);
   }
-/*
-public static Path classOf(Program p,ExpCore ctxVal,ExpCore val){
-  assert IsValue.of(p,val)|
-         new IsValue(p).validRightValue(val):ToFormattedText.of(val);
-  Path res=Match.<Path>of(val)
-      .add(Path.class,t->t)
-      .add(_void.class,t->Path.Void())
-      .add(ClassB.class,t->Path.Library())
-      .add(Block.class,t->{
-        ExpCore t2=t.withInner(new ExpCore.WalkBy());
-        t2=ReplaceCtx.of(ctxVal,t2);
-        return classOf(p,t2,t.getInner());
-        })
-      .add(X.class,t->{
-        ExpCore e=Dec.of(ctxVal, t.getInner(), false);
-        if(e instanceof Block){return classOf(p,ctxVal,e);}
-        assert e instanceof MCall:ToFormattedText.of(ctxVal)+" ["+ToFormattedText.of(val)+"]";
-        return (Path)((MCall)e).getInner();
-        })
-      .add(MCall.class,t->{
-        assert t.getInner() instanceof Path;
-        return (Path)t.getInner();
-        })
-      .end();
-  return res;
-
-}
-public static boolean isSubtype(Program p,NormType t1,NormType t2){
-  return isSubtype(t1.getMdf(),t2.getMdf())
-      && isSubtype(p,t1.getPath(),t2.getPath());
-
-}
-public static boolean isSubtype(Program p, Path path1, Path path2) {
-  if(!path1.isPrimitive()){p.extractCb(path1);}
-  if(!path2.isPrimitive()){p.extractCb(path2);}
-  if(path2.equals(Path.Any())){return true;}
-  if(path1.equals(path2)){return true;}
-  if(path1.isPrimitive()){return false;}
-  Path path2N=Norm.of(p,path2);
-  Path path1N=Norm.of(p,path1);
-  if(path1N.equals(path2N)){return true;}
-
-  ClassB cp1=p.extractCb(path1);
-  //for(Path pathi:cp1.getStage().getInheritedPaths()){
-  for(Type ti:cp1.getSupertypes()){
-    Path pathiFrom=From.fromP(ti.getNT().getPath(), path1);
-    Path pathiN=Norm.of(p,pathiFrom);//or not norm?
-    if(pathiN.equals(path2N)){return true;}
-  }
-  return false;
-}*/
 public static boolean isSubtype(Mdf mdf1, Mdf m) {
   if(mdf1==m){return true;}
   switch(mdf1){
@@ -447,7 +396,7 @@ public static boolean isInterface(Program p, Path path) {
 }
 public static boolean checkCore(Expression result) {
     result.accept(new CloneVisitor(){
-      @Override public Expression visit(Expression.EPath p){assert p.getInner().isCore() || p.getInner().isPrimitive():p;return p;}
+      @Override protected Path liftP(Path p){assert p.isCore() || p.isPrimitive():p;return p;}
       protected <T extends Expression>T lift(T e){//exists just to breakpoint
         try{return super.lift(e);}
         catch(AssertionError err){

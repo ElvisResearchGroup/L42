@@ -140,7 +140,7 @@ public class PropagatorVisitor implements Visitor<Void>{
     mt.getExceptions().forEach(this::liftT);
     }
   
-  public Void visit(Expression.EPath s) {return null;}
+  public Void visit(Expression.EPath s) {liftP(s.getInner());return null;}
   public Void visit(X s) { return null;}
   public Void visit(_void s) {return null;}
   public Void visit(WalkBy s) {return null;}

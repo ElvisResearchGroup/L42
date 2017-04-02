@@ -56,7 +56,7 @@ public class TranslateExpression implements coreVisitors.Visitor<Void>{
   Set<String> undeclared=new HashSet<String>();
   TranslateExpression(StringBuilder res){this.res=res;}
 
-  @Override
+  @Override //not a propagator visitor. 
   public Void visit(ExpCore.EPath s) {
     if(s.isPrimitive()){
       if(s.equals(Path.Any())){res.append("platformSpecific.javaTranslation.Resources.Any.type");}

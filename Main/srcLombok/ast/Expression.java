@@ -341,12 +341,13 @@ public interface Expression extends Ast {
     }
   }
 
-  @Value @Wither @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p")
+  @Value @Wither @EqualsAndHashCode(exclude = "p")
   public static class EPath implements Expression,HasPos,Atom{
     Position p;
     Ast.Path inner;
     public boolean isPrimitive(){return this.getInner().isPrimitive();}
     public boolean isCore(){return this.getInner().isCore();}
+    public String toString(){return this.getInner().toString();}
     public <T> T accept(sugarVisitors.Visitor<T> v) {
       return v.visit(this);
       }
