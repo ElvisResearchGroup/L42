@@ -120,6 +120,7 @@ class G extends AG<G>{
   @Override public G withG(Map<String,NormType>g) {return new G(g);}
   @Override G self() {return this;}
   static final G instance=new G(Collections.emptyMap());
+  public String toString(){return g.toString();}
   }
 public class TIn extends AG<TIn>{
 @Override public TIn withG(Map<String,NormType>g) {return new TIn(this.phase,this.p,this.e,this.expected,g);}

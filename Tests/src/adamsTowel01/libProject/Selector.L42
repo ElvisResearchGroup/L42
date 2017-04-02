@@ -43,13 +43,13 @@
     if this.toS()(0Size)==S"#" (return S"#")
     return S""
     }
-  method Library #binaryRepr() this._binaryRepr()
+  read method Library #binaryRepr() this._binaryRepr()
 
 
   method toS() S.#from(binaryRepr: this._binaryRepr())
 
-  method
-  Bool == (This that) {
+  read method
+  Bool == (read This that) {
     use Alu
       check ifStringEqualDo(s1:this.#binaryRepr(),s2:that.#binaryRepr())
       return Bool.true()

@@ -92,7 +92,7 @@ class method
         )
       error System.Guard.PluginFailure"SafeOperators.removeImplementation(path,selector)"
 
-  class method
+  /*class method
   Library addDocumentation(Library that,Path path,Introspection.Doc doc)
     use This
       check addDocumentation(that
@@ -100,7 +100,6 @@ class method
         doc:doc.#binaryRepr()
         )
       error System.Guard.PluginFailure"SafeOperators.addDocumentation(path)"
-
   class method
   Library addDocumentation(Library that,Path path,Selector selector,Introspection.Doc doc)
     use This
@@ -110,7 +109,7 @@ class method
         doc:doc.#binaryRepr()
         )
       error System.Guard.PluginFailure"SafeOperators.addDocumentation(path,selector)"
-
+*/
   class method
   S freshName(S that) S.#from(binaryRepr: use This
       check freshName(that.#binaryRepr())

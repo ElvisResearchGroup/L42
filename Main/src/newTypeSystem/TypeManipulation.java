@@ -2,6 +2,7 @@ package newTypeSystem;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -226,9 +227,13 @@ public static Mdf _mostGeneralMdf(Set<Mdf> mdfs){
   if (mdfs.size()==1){return mdfs.iterator().next();}
 //  if class in mdfs, then undefined
   if (mdfs.contains(Mdf.Class)){return null;}
-//  if {mdfs}={capsule,imm} mdf=imm
-  if (mdfs.contains(Mdf.Capsule) && mdfs.contains(Mdf.Immutable) && mdfs.size()==2){
-    return Mdf.Immutable;
+  //if mdfs\capsule=mdf', then mdf=mdf'
+  if (mdfs.contains(Mdf.Capsule) && mdfs.size()==2){
+    Iterator<Mdf> i = mdfs.iterator();
+    Mdf m=i.next();
+    if(m==Mdf.Capsule){m=i.next();}
+    assert m!=Mdf.Capsule;
+    return m;
     }
 //  if fwd_or_fwd%_in(mdfs) {
   if(TypeManipulation.fwd_or_fwdP_inMdfs(mdfs)){
@@ -245,9 +250,10 @@ public static Mdf _mostGeneralMdf(Set<Mdf> mdfs){
     if (mutIn && immIn){return null;}
     //we know: more then one, no read/lent, either all imm side or mut side
     if(mdfs.contains(Mdf.ImmutableFwd)){return Mdf.ImmutableFwd;}
-    if(mdfs.contains(Mdf.MutableFwd)){return Mdf.MutableFwd;}
     if(mdfs.contains(Mdf.ImmutablePFwd)){return Mdf.ImmutablePFwd;}
-    assert mdfs.contains(Mdf.MutableFwd);{return Mdf.MutableFwd;}
+    if(mdfs.contains(Mdf.MutableFwd)){return Mdf.MutableFwd;}
+    assert mdfs.contains(Mdf.MutablePFwd): mdfs;
+    return Mdf.MutablePFwd;
     }
   //if read in mdfs, mdf=read
   if(mdfs.contains(Mdf.Readable)){return Mdf.Readable;}

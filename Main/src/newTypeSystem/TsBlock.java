@@ -91,7 +91,9 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
      }
    mdfs.add(e0Ok.computed.getMdf());
    Mdf tMdf=TypeManipulation._mostGeneralMdf(mdfs);
-   if(tMdf==null){return new TErr(in,"",e0Ok.computed,ErrorKind.NoMostGeneralMdf);}
+   if(tMdf==null){
+     return new TErr(in,"",e0Ok.computed,ErrorKind.NoMostGeneralMdf);
+     }
    NormType t=new NormType(tMdf,in.expected.getPath(),Doc.empty());
    assert null==TypeSystem.subtype(in.p,t, in.expected);
    Block annotated=new Block(s.getDoc(),dsOk.ds,e0Ok.annotated,ksOk.ks,s.getP());
@@ -207,7 +209,9 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
       return new TErr(in,"No returns in scope",null,ErrorKind.NoMostGeneralMdf);
       }
     Mdf mdf1=TypeManipulation._mostGeneralMdf(k.getKind(),tr1);
-    if(mdf1==null){return new TErr(in,"Contrasting mdf expected for return",null,ErrorKind.NoMostGeneralMdf);}
+    if(mdf1==null){
+    return new TErr(in,"Contrasting mdf expected for return",null,ErrorKind.NoMostGeneralMdf);
+    }
     NormType T1 = Norm.resolve(in.p, k.getT()).withMdf(mdf1);
     TOut _out=type(in.addG(k.getX(),T1).withE(k.getE(), in.expected));
     if(!_out.isOk()){return _out.toError();}

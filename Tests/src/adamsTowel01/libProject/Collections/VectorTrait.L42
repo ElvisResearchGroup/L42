@@ -25,9 +25,9 @@ MutListT:{ implements Concept.ToS
   }
 Elem:{}
 Cast:{class method Elem (Any that) {
-  with that (on Elem return that
-  default error CollectionErrors.cast()
-  )}}
+  with that (on Elem return that)
+  error CollectionErrors.cast()
+  }}
 
 //#################READ METHODS
 read method  mut This reverse() (

@@ -121,20 +121,21 @@ mostGeneralMdf(throw,Tr)
   otherwise 
   mostGeneralMdf(exception,_;Ps)=imm
 
-mostGeneralMdf(mdfs)//TODO: update code
+mostGeneralMdf(mdfs)
   mostGeneralMdf(mdfs)=mdf
   case by exclusion:
     if mdfs=mdf', then mdf=mdf' //that is the only way mdf=class
-    if class in mdfs, then undefined
-    if {mdfs}={capsule,imm} mdf=imm
+    if class in mdfs, then undefined //and size>1
+    if mdfs\capsule=mdf', then mdf=mdf'
     if fwd_or_fwd%_in(mdfs) {
       if read or lent in mdfs, then undefined
       if imm and mut both in noFwd(mdfs) then undefined
       //we know: more then one, no read/lent, either all imm side or mut side
       if fwdImm in mdfs mdf=fwdImm
-      if fwdMut in mdfs mdf=fwdMut
-      if fwd%Mut in mdfs mdf=fwd%Mut
       if fwd%Imm in mdfs mdf=fwd%Imm
+      if fwdMut in mdfs mdf=fwdMut
+      assert fwd%Mut in mdfs
+      mdf=fwd%Mut
       }
     if read in mdfs, mdf=read
     if imm in mdfs, mdf=read

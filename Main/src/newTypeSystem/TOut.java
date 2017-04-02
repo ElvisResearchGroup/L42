@@ -106,6 +106,7 @@ private <T> List<T> union(List<T> l1,List<T>l2){
   }
 }
 class Tr extends ATr<Tr>{
+  public String toString(){return "exceptions:"+this.exceptions+" returns:"+this.returns;}
   private Tr(){}
   @Override Tr trClean() {return new Tr();}
   @Override Tr self() {return this;}
@@ -167,6 +168,9 @@ class TOkDs implements TOutDs{
     this.ds = ds;
     this.g = g;
     }
+  public String toString(){
+    return this.g+ " "+this.trAcc;
+  }
   Tr trAcc;
   List<ExpCore.Block.Dec> ds;
   G g;
