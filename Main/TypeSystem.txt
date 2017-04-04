@@ -328,7 +328,7 @@ Phase| p| G |- empty ~> empty| empty;empty | G
 (catchMany)
 D| Tr |-k1..kn ~> k'1..k'n:T1..Tn <= T | Tr1 U .. U Trn
   where
-  forall i in 1..n D| Tr |-ki ~> k'i:Ti <= T |Tri
+  forall i in 1..n D| Tr |-ki ~> k'i:Ti <= T |Tri//TODO: in code
   //we used to have Tr.capture(D.p,k1..ki-1) instead of D|Tr|-ki, but it was wrong in case of redirect; for example
   //Elem e=(return that catch return Elem x x catch return Any y error void)[redirect Elem in Any]
   //in this setting the second catch return Any would fail for "no return in scope"
@@ -691,3 +691,5 @@ D |-x:=e ~> x:=e' :imm Void <= T | Tr
  in rule ds now we add the guessed T to ds without T; this
  can cause a type error if guessed is capsule and d is var
  since d not well formed if var+capsule
+ Note: capsule P is never guessed, is demoted to mut P,
+ to avoid suprisingly use only onece references.
