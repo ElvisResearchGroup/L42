@@ -328,7 +328,10 @@ Phase| p| G |- empty ~> empty| empty;empty | G
 (catchMany)
 D| Tr |-k1..kn ~> k'1..k'n:T1..Tn <= T | Tr1 U .. U Trn
   where
-  forall i in 1..n D| Tr.capture(D.p,k1..ki-1)|-ki ~> k'i:Ti <= T |Tri
+  forall i in 1..n D| Tr |-ki ~> k'i:Ti <= T |Tri
+  //Tr.capture(D.p,k1..ki-1) instead of Tr, but it would be wrong in case of redirect; for example
+  //Elem e=(return that catch Elem x x catch Any y error void)[redirect Elem in Any]
+ 
   
 (catch)
    // T0 is the declared caught type, which contributes only a path
