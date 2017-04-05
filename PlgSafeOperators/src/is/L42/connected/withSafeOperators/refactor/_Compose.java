@@ -1,3 +1,108 @@
+/*
+All composition operations are 
+expected to run only on normalized LCs, and to produce a normalized LC.
+When run on well typed LCs, it will produce a well typed LC.
+Definiton for sum: formally 
+p|-L1++L2=L
+will be a weakly associative and weakly commutative operation.
+Note: sum of coherent LCs can produce a (well typed but) not coherent LC
+
+#weak associativity
+sum is a partial function:
+if a+(b+c)=d and (a+b)+c=d' then d=d'
+but is not guaranteed a+(b+c)=(a+b)+c 
+
+#weak associativity
+a+b sim b+a
+sim allows differences in the order of implemented
+interfaces, declared methods and nested classes.  
+
+IData::=P,Ps,mhs
+_______
+#define
+p|-L1++L2=L
+  where
+  p|-L1+L2=L0,IDatas
+  p|-L0+IDatas=L
+
+_______
+#define
+p|-L1+L2=L,IDatas
+p|-{interface?1 implements Ps1 mwts1 ncs1}+{interface?2 implements Ps2 mwts2 ncs2}
+  ={interface? implements Ps mwts ncs},IDatas,IData?
+  where
+  interface?=p|-interface?1 mwts1 +interface?1 mwts2
+  Ps=Ps1 U Ps2 // where U composition avoid duplicates
+  mwts=p|-mwt1[mwts2]..mwtn[mwts2] mwts2\dom(mwts1)  
+    where mwts1=mwt1..mwtn
+  ncs,IDatas=p|-nc1[ncs2]..nck[ncs2] ncs2\dom(ncs1)
+    where ncs1=nc1..nck
+  if interface?=empty, 
+    IData?=empty 
+  else
+    IData=This0,Ps,mwts
+
+_______
+#define inteface?1 mwts1+inteface?2 mwts2=interface?
+inteface?1 mwts1 + inteface?2 mwts2 = inteface?2 mwts2 + inteface?1 mwts1
+inteface? mwts1+inteface? mwts2=interface?
+otherwise
+mwts1 + interface mwts2=interface
+  where
+  mwts1.e?s+{empty}
+  class notin mwts1.mhs.mdfs
+
+_______
+#define mwt[mwts]=mwt'
+p|-mwt[mwt1..mwtn]=p|-mwt +mwti if mwt.ms=mwti.ms
+p|-mwt[mwts]=mwt if mwt.ms notin dom(mwts) 
+
+_______
+#define nc[ncs]=nc'
+p|-nc[nc1..ncn]=p|-nc +nci if nc.C=nci.C
+p|-nc[ncs]=nc if nc.C notin dom(nc)
+
+_______
+#define mwt1+mwt2=mwt
+p|-mwt1+mwt2=p|-mwt2+mwt1
+p|-refine?1 mh1 e?+refine?2 mh2={refine?1,refine?2} mh1 e?
+  where
+  p|-mh1<mh2
+//This allows a non refine member to become refine
+
+_______
+#define nc1+nc2=nc,IDatas
+p|-C:L1+C:L2=C: L,IDatas[append C]
+  where
+   p.push(C)|-L1+L2=L,IDatas
+
+_______
+#define
+p|-L+IDatas=L'
+p|-{implements? Ps mwts ns}+IDatas={implements? Ps' p|-mwts'+IDatas p|-ns+IDatas}
+if Pi in Ps, Pj in IDatas.Ps and p|-Pi<=Pj then
+  Ps'=Ps U IDatas(Pj).Ps // where U composition avoid duplicates
+  mwts'=mwt1[IDatas(Pj).mwts]..mwtn[IDatas(Pj).mwts]
+    where mwts=mwt1..mwtn
+else
+  Ps'=Ps
+  mwts'=mwts  
+
+_______
+#define nc+IDatas=nc'
+p|-C:L +IDatas = p.push(C)|-L+IDatas[add1outer]
+
+_______
+#define mwt+IDatas=mwt'
+p|-refine? mh e?+IData = refine? mh p|-e?+IData[add1outer]
+
+_______
+#define p|-e+IDatas=e'
+  clone the structure and replace 
+  all L with p|-L+IData
+  
+
+*/
 package is.L42.connected.withSafeOperators.refactor;
 import java.util.ArrayList;
 import java.util.Collections;
