@@ -234,7 +234,7 @@ D |- void~> void:imm Void <= T | emptyTr
 (Path)
 D |- P~>P:class P <= T | emptyTr
   where
-  D.p|-class P <= T//TODO interface should be class Any
+  D.p|-class P <= T// interface should be class Any
   assert p(P) well defined
 
 (library propagation)
@@ -297,7 +297,7 @@ Phase| p| G |- (ds  ks  e0  [_]) ~>(ds' ks' e'0 [T])
   //here we have the info to capture a failure about ds and discover if 
   //extant name (fwd[%]* x) was hidden by error safety or  modifiable name (capsule/mut/lent x)
   //was locked by error safety[cite the line number of the catch]
-  Phase| p| G'| Tr' |- ks~> ks' : Ts <= T' | Tr //In the implementation, we could also return Tr'.capture(p,ks') precomputed
+  Phase| p| G'| Tr' |- ks~> ks' : Ts <= T' | Tr 
   Phase| p| G'[G0\dom(G')] |- e0~>e'0:T0 <=T' | Tr0
   T= mostGeneralMdf({T0.mdf,Ts.mdfs}) T'.P //set of Mdfs admits no single most general mdf
   // assert D.p|-T <= T'
@@ -328,7 +328,7 @@ Phase| p| G |- empty ~> empty| empty;empty | G
 (catchMany)
 D| Tr |-k1..kn ~> k'1..k'n:T1..Tn <= T | Tr1 U .. U Trn
   where
-  forall i in 1..n D| Tr |-ki ~> k'i:Ti <= T |Tri//TODO: in code
+  forall i in 1..n D| Tr |-ki ~> k'i:Ti <= T |Tri
   //we used to have Tr.capture(D.p,k1..ki-1) instead of D|Tr|-ki, but it was wrong in case of redirect; for example
   //Elem e=(return that catch return Elem x x catch return Any y error void)[redirect Elem in Any]
   //in this setting the second catch return Any would fail for "no return in scope"

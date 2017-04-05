@@ -186,16 +186,13 @@ default TErr toError() {throw new Error();}
 }
 
 class TOkKs implements TOutKs{
-  public TOkKs(Tr trAcc,Tr trCaptured, List<On> ks, List<NormType> ts) {
+  public TOkKs(Tr trAcc, List<On> ks, List<NormType> ts) {
     assert trAcc!=null;
-    assert trCaptured!=null;
     this.trAcc = trAcc;
-    this.trCaptured=trCaptured;
     this.ks = ks;
     this.ts = ts;
     }
   Tr trAcc;
-  Tr trCaptured;
   List<ExpCore.Block.On> ks;
   List<NormType> ts;
   @Override public boolean isOk() { return true;}

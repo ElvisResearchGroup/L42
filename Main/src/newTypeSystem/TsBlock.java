@@ -99,8 +99,11 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
    Block annotated=new Block(s.getDoc(),dsOk.ds,e0Ok.annotated,ksOk.ks,s.getP());
    TOk res=new TOk(in,annotated,t);
    // result Tr: Tr'.capture(p,ks') U Tr U Tr0
-   assert ksOk.trCaptured!=null;
-   Tr trUnion = ksOk.trCaptured.trUnion(ksOk.trAcc).trUnion(e0Ok);
+   Tr trCaptured=dsOk.trAcc;
+   for(On k : ks){
+     trCaptured=trCaptured.trCapture(in.p,k);
+     }
+   Tr trUnion = trCaptured.trUnion(ksOk.trAcc).trUnion(e0Ok);
    res=res.trUnion(trUnion);
    return res;
   }
@@ -190,10 +193,11 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
       ks1.add(ok.k);
       ts.add(ok.t);
       newTrAcc=newTrAcc.trUnion(ok.tr);
-      tr=tr.trCapture(in.p,ok.k);
+      //Removed, according to fix to type system in 5/4/2017 
+      //tr=tr.trCapture(in.p,ok.k);
       }
 
-    TOkKs res=new TOkKs(newTrAcc,tr,ks,ts);
+    TOkKs res=new TOkKs(newTrAcc,ks,ts);
     return res;
     }    
   
