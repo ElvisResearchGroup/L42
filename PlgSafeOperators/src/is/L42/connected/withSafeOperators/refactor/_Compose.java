@@ -39,9 +39,9 @@ Cs|-L1 sum1 L2=L; Cs->Ps; Cs->mhs
   interface?=interface?1 mwts1 +interface?1 mwts2
   Ps=Ps1, Ps2
   mwti[mwts2]=mwti',mh?i
-  mwts=mwt1'..mwtn' mwts2\dom(mwts1)
+  mwts=mwt1'..mwtn' mwts2\dom(mwt1..mwtn)
   Cs|-nci[ncs2]= nci';Cs->Psi;Cs->mhsi
-  ncs=nc1'..ncn' ncs2\dom(ncs1)
+  ncs=nc1'..ncn' ncs2\dom(nc1..nck)
   if interface?=empty, 
     Cs->Ps= Cs->Ps1,..,Cs->Psk
     Cs->mwts= Cs:mh?1..mh?n,Cs->ms1,..,Cs->msk 
@@ -77,6 +77,86 @@ refine? mh e? +refine?' mh'= {refine?,refine?'} mh e?; mh'
 //in case mh=mh', we can avoid to generate the element in the map
 
 _______
+#define Cs|-nc1+nc2=nc;Cs->Ps;Cs->mhs
+C:L1+C:L2=C: L;Cs->Ps;Cs->mhs
+  where
+   Cs.C|-L1+L2=L;Cs->Ps;Cs->mhs
+
+_______
+#define
+Cs|-L1 sum2 Cs->Ps=L2
+
+Cs,n|-{interface? implements Ps mwts ns} sum2 Cs->Ps
+  ={interface? 
+    implements Ps,(Ps'[from Pi])
+    Cs,n|-mwts sum2 Cs->Ps
+    Cs,n|-ns sum2 Cs->Ps
+    }
+  where
+  Pi in Ps,
+  Pi[remove n outer][from This0.Cs]=This0.Csi //if the result is not This0, it implements an outer interface
+  Csi:Ps' in Cs->Ps
+  
+Otherwise, if no such Pi in Ps
+Cs|-{interface? implements Ps mwts ns} sum2 Cs->Ps
+  ={interface? implements Ps
+    Cs,n;p|-mwts sum2 Cs->Ps
+    Cs,n;p|-ns sum2 Cs->Ps
+    }
+    
+_______
+#define
+Cs,0|-C:L sum2 Cs->Ps = C: Cs.C,0|-L sum2 Cs->Ps
+Cs,n+1|-C:L sum2 Cs->Ps = C: Cs,n+2|-L sum2 Cs->Ps
+_______
+#define
+Cs,n|-refine? mh e? sum2 Cs->Ps = refine? mh Cs,n+1|-e? sum2 Cs->Ps
+
+_______
+#define Cs,n|-e+Cs->Ps= e'
+  clone the structure and replace 
+  all L with Cs,n|-L+Cs->Ps
+
+_______
+#define
+Cs,n;p|-L2 sum3 Cs->mhs = L3  
+
+Cs,n;p|-{interface? implements Ps mwts ns} sum3 Cs->mhs
+  ={interface? 
+    implements p|-Ps
+    p|-(Cs,n;p|-mwts sum3 Cs->mhs)+mhs
+    Cs,n;p|-ns sum3 Cs->mhs
+    }
+  where
+  either
+    Pi in Ps,
+    Pi[remove n outer][from This0.Cs]=This0.Csi //if the result is not This0, it implements an outer interface
+    Csi:Ps' in Cs->mhs
+  or
+    n=0 and Cs:Ps' in Cs->mhs
+Otherwise,
+Cs|-{interface? implements Ps mwts ns} sum3 Cs->mhs
+  ={interface? implements Ps
+    p|-(Cs,n;p|-mwts sum3 Cs->mhs)+mhs
+    Cs,n;p|-ns sum3 Cs->mhs
+    }
+
+_______
+#define p|-P1..Pn = Ps
+  Pi in Ps if forall Pj in {Pi+1..Pn} not p.equiv(Pi,Pj)  
+  undefined if p.equiv(Pi,This0) //circularity error
+
+_______
+#define p|-mwts+mhs=mwts'
+p|-mwt1..mwtn+mhs=mwts'
+  =p|-mwt1[mhs]..p|-mwtn[mhs] addRefine(mhs\dom(mwt1..mwtn))
+
+_______
+#define p|-mwt[mhs]=mwt'
+p|-mwt[mhs]=mwt if mwt.ms notin dom(mhs)
+p|-mwt[mh1..mhn]= p|-mwt+mhi if mwt.ms =mhi.ms
+
+_______
 #define p|-mwt+mh=mwt'
 p|-mwt+mh=mwt
   where
@@ -85,93 +165,9 @@ p|-mwt+mh=mwt.with[mh=mh]
   where
   p|-mh<mwt.mh
   mwt.e?=empty
-
-_______
-#define Cs|-nc1+nc2=nc;Cs->Ps;Cs->mhs
-C:L1+C:L2=C: L;Cs->Ps;Cs->mhs
-  where
-   Cs.C|-L1+L2=L;Cs->Ps;Cs->mhs
-
-
-_______
-#define
-Cs|-L1 sum2 Cs->Ps=L2
-
-Cs|-{interface? implements Ps mwts ns} sum2 Cs->Ps={interface? implements Ps mwts Cs|-ns sum2 Cs->Ps}
-  where
-  //TODO no will be a otherwise of the other case
-   * issues: need to propagate into mwts to update literals in e.
-   * not clear what to add to Cs in that case.. 
-  Cs notin dom(Cs->Ps)
-
-Cs|-{interface? implements Ps mwts ns} sum2 Cs->Ps
-  ={interface? implements Ps,(Ps'[from Cs]) mwts Cs|-ns sum2 Cs->Ps}
-  where
-  Cs:Ps' in Cs->Ps
-  Pi in Ps,
-  Pi[from Cs]=This0.Csi
-  Csi:Ps' in Cs->Ps
-  
-  Pj in IDatas.Ps and p|-Pi<=Pj then
-  Ps'=Ps U IDatas(Pj).Ps // where U composition avoid duplicates
-  
-_______
-#define
-Cs|-C:L sum2 Cs->Ps=C: Cs.C|-L sum2 Cs->Ps
-
-_______
-#define
-Cs;p|-L2 sum3 P->mhs = L3  
-
-
-_______
-#define
-p|-L+IDatas=L'
-p|-{implements? Ps mwts ns}+IDatas={implements? Ps' p|-mwts'+IDatas p|-ns+IDatas}
-if Pi in Ps, Pj in IDatas.Ps and p|-Pi<=Pj then
-  Ps'=Ps U IDatas(Pj).Ps // where U composition avoid duplicates
-  mwts'=mwt1[IDatas(Pj).mwts]..mwtn[IDatas(Pj).mwts]
-    where mwts=mwt1..mwtn
-else
-  Ps'=Ps
-  mwts'=mwts  
-
-_______
-#define nc+IDatas=nc'
-p|-C:L +IDatas = p.push(C)|-L+IDatas[add1outer]
-
-_______
-#define mwt+IDatas=mwt'
-p|-refine? mh e?+IData = refine? mh p|-e?+IData[add1outer]
-
-_______
-#define p|-e+IDatas=e'
-  clone the structure and replace 
-  all L with p|-L+IData
  
-_______
-#define p|-P1..Pn = Ps
-  Pi in Ps if forall Pj in {Pi+1..Pn} not p.equiv(Pi,Pj)  
-  undefined if p.equiv(Pi,This0) //circularity error
-
-sum
-sum1 = no need p
-sum2 = add all implements `normalizing'
-sum3 = use p, check circularities+minimize Ps, chose the best mh
-
-P->Ps
-P->mwts
-can I have maps over Cs? store a current position Cs?
-
-  issues:
-  detect circularity with U
-  subtype need to be checked using the final result?
-    first sum nested classes and for abs+abs methods prefer left,
-    and add a late sum with the right (add a late sum with the abs version in the case abs+concrete)
-    second sum interfaces Ps
-    third, now we know subtyping: sum late methods from both interfaces and classes.
-  
-  how to propagate interface implements in case
+ ---------
+ Example of difficoult case:
     {A:{interface<B} B:{interface} C:{}}+{A:{interface} C:{<A}}
     =must be
     {A:{interface<B} B:{interface} C:{<A,B}}
@@ -179,7 +175,7 @@ can I have maps over Cs? store a current position Cs?
     {A:{inteface<B} B:{interface} C:{<A}} +A,B,empty
     =
     {A:{inteface<B} B:{interface} C:{<A,B}}
-  so it seams to work for this simple case...
+  so it seams to work for this case...
     
 */
 package is.L42.connected.withSafeOperators.refactor;
