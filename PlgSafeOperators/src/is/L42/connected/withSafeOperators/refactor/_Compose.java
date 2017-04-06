@@ -3,7 +3,7 @@ All composition operations are
 expected to run only on normalized LCs, and to produce a normalized LC.
 When run on well typed LCs, it will produce a well typed LC.
 Definiton for sum: formally 
-p|-L1++L2=L
+p|-L1 sum L2=L
 will be a weakly associative and weakly commutative operation.
 Note: sum of coherent LCs can produce a (well typed but) not coherent LC
 
@@ -17,30 +17,37 @@ a+b sim b+a
 sim allows differences in the order of implemented
 interfaces, declared methods and nested classes.  
 
-IData::=P,Ps,mhs
 _______
 #define
-p|-L1++L2=L
+p|-L sum L'=L3
   where
-  p|-L1+L2=L0,IDatas
-  p|-L0+IDatas=L
+  empty|-L sum1 L'=L1,Cs->Ps, Cs->mhs
+  empty|-L1 sum2 Cs->Ps=L2
+  empty;p.evilPush(L2)|-L2 sum3 P->mhs = L3  
 
+Notation
+A->B::=A1:B1.. An:Bn
+and define functional access, dom
+well formedness on single key,
+comma raw composition and a[b] update composition
 _______
 #define
-p|-L1+L2=L,IDatas
-p|-{interface?1 implements Ps1 mwts1 ncs1}+{interface?2 implements Ps2 mwts2 ncs2}
-  ={interface? implements Ps mwts ncs},IDatas,IData?
+Cs|-L1 sum1 L2=L; Cs->Ps; Cs->mhs
+{interface?1 implements Ps1 mwt1..mwtn nc1..nck}+{interface?2 implements Ps2 mwts2 ncs2}
+  ={interface? implements Ps mwts ncs}; Cs->Ps; Cs->mhs
   where
-  interface?=p|-interface?1 mwts1 +interface?1 mwts2
-  Ps=Ps1 U Ps2 // where U composition avoid duplicates
-  mwts=p|-mwt1[mwts2]..mwtn[mwts2] mwts2\dom(mwts1)  
-    where mwts1=mwt1..mwtn
-  ncs,IDatas=p|-nc1[ncs2]..nck[ncs2] ncs2\dom(ncs1)
-    where ncs1=nc1..nck
+  interface?=interface?1 mwts1 +interface?1 mwts2
+  Ps=Ps1, Ps2
+  mwti[mwts2]=mwti',mh?i
+  mwts=mwt1'..mwtn' mwts2\dom(mwts1)
+  Cs|-nci[ncs2]= nci';Cs->Psi;Cs->mhsi
+  ncs=nc1'..ncn' ncs2\dom(ncs1)
   if interface?=empty, 
-    IData?=empty 
+    Cs->Ps= Cs->Ps1,..,Cs->Psk
+    Cs->mwts= Cs:mh?1..mh?n,Cs->ms1,..,Cs->msk 
   else
-    IData=This0,Ps,mwts
+    Cs->Ps= Cs->Ps1,..,Cs->Psk,Cs:Ps
+    Cs->mwts= Cs:mh?1..mh?n,Cs->ms1,..,Cs->msk,Cs:mwts.mhs 
 
 _______
 #define inteface?1 mwts1+inteface?2 mwts2=interface?
@@ -49,32 +56,73 @@ inteface? mwts1+inteface? mwts2=interface?
 otherwise
 mwts1 + interface mwts2=interface
   where
-  mwts1.e?s+{empty}
+  mwts1.e?s = {empty}
   class notin mwts1.mhs.mdfs
 
 _______
-#define mwt[mwts]=mwt'
-p|-mwt[mwt1..mwtn]=p|-mwt +mwti if mwt.ms=mwti.ms
-p|-mwt[mwts]=mwt if mwt.ms notin dom(mwts) 
+#define mwt[mwts]=mwt';mh?
+mwt[mwt1..mwtn]=mwt +mwti if mwt.ms=mwti.ms
+mwt[mwts]=mwt if mwt.ms notin dom(mwts) 
 
 _______
-#define nc[ncs]=nc'
-p|-nc[nc1..ncn]=p|-nc +nci if nc.C=nci.C
-p|-nc[ncs]=nc if nc.C notin dom(nc)
+#define Cs|-nc[ncs]=nc';Cs->Ps;Cs->mhs
+Cs|-nc[nc1..ncn]=Cs|-nc + nci if nc.C=nci.C
+Cs|-nc[ncs]=nc;empty;empty if nc.C notin dom(nc)
 
 _______
-#define mwt1+mwt2=mwt
-p|-mwt1+mwt2=p|-mwt2+mwt1
-p|-refine?1 mh1 e?+refine?2 mh2={refine?1,refine?2} mh1 e?
-  where
-  p|-mh1<mh2
+#define mwt1+mwt2=mwt; mh?
+refine? mh + refine?' mh' e= {refine?,refine?'} mh' e;mh
+refine? mh e? +refine?' mh'= {refine?,refine?'} mh e?; mh'
 //This allows a non refine member to become refine
+//in case mh=mh', we can avoid to generate the element in the map
 
 _______
-#define nc1+nc2=nc,IDatas
-p|-C:L1+C:L2=C: L,IDatas[append C]
+#define p|-mwt+mh=mwt'
+p|-mwt+mh=mwt
   where
-   p.push(C)|-L1+L2=L,IDatas
+  p|-mwt.mh<mh
+p|-mwt+mh=mwt.with[mh=mh]
+  where
+  p|-mh<mwt.mh
+  mwt.e?=empty
+
+_______
+#define Cs|-nc1+nc2=nc;Cs->Ps;Cs->mhs
+C:L1+C:L2=C: L;Cs->Ps;Cs->mhs
+  where
+   Cs.C|-L1+L2=L;Cs->Ps;Cs->mhs
+
+
+_______
+#define
+Cs|-L1 sum2 Cs->Ps=L2
+
+Cs|-{interface? implements Ps mwts ns} sum2 Cs->Ps={interface? implements Ps mwts Cs|-ns sum2 Cs->Ps}
+  where
+  //TODO no will be a otherwise of the other case
+   * issues: need to propagate into mwts to update literals in e.
+   * not clear what to add to Cs in that case.. 
+  Cs notin dom(Cs->Ps)
+
+Cs|-{interface? implements Ps mwts ns} sum2 Cs->Ps
+  ={interface? implements Ps,(Ps'[from Cs]) mwts Cs|-ns sum2 Cs->Ps}
+  where
+  Cs:Ps' in Cs->Ps
+  Pi in Ps,
+  Pi[from Cs]=This0.Csi
+  Csi:Ps' in Cs->Ps
+  
+  Pj in IDatas.Ps and p|-Pi<=Pj then
+  Ps'=Ps U IDatas(Pj).Ps // where U composition avoid duplicates
+  
+_______
+#define
+Cs|-C:L sum2 Cs->Ps=C: Cs.C|-L sum2 Cs->Ps
+
+_______
+#define
+Cs;p|-L2 sum3 P->mhs = L3  
+
 
 _______
 #define
@@ -100,8 +148,39 @@ _______
 #define p|-e+IDatas=e'
   clone the structure and replace 
   all L with p|-L+IData
-  
+ 
+_______
+#define p|-P1..Pn = Ps
+  Pi in Ps if forall Pj in {Pi+1..Pn} not p.equiv(Pi,Pj)  
+  undefined if p.equiv(Pi,This0) //circularity error
 
+sum
+sum1 = no need p
+sum2 = add all implements `normalizing'
+sum3 = use p, check circularities+minimize Ps, chose the best mh
+
+P->Ps
+P->mwts
+can I have maps over Cs? store a current position Cs?
+
+  issues:
+  detect circularity with U
+  subtype need to be checked using the final result?
+    first sum nested classes and for abs+abs methods prefer left,
+    and add a late sum with the right (add a late sum with the abs version in the case abs+concrete)
+    second sum interfaces Ps
+    third, now we know subtyping: sum late methods from both interfaces and classes.
+  
+  how to propagate interface implements in case
+    {A:{interface<B} B:{interface} C:{}}+{A:{interface} C:{<A}}
+    =must be
+    {A:{interface<B} B:{interface} C:{<A,B}}
+    indeed
+    {A:{inteface<B} B:{interface} C:{<A}} +A,B,empty
+    =
+    {A:{inteface<B} B:{interface} C:{<A,B}}
+  so it seams to work for this simple case...
+    
 */
 package is.L42.connected.withSafeOperators.refactor;
 import java.util.ArrayList;
