@@ -30,30 +30,83 @@ interfaces, declared methods and nested classes.
 
 _______
 #define
-p|-L sum L'=L3
+p|-L sum L'=L2
   where
-  empty|-L sum1 L'=L1,Cs->Ps, Cs->mhs
-  empty|-L1 sum2 Cs->Ps=L2
-  empty;p.evilPush(L2)|-L2 sum3 P->mhs = L3  
-
+  empty|-L sumPs L'=L1;Css
+  empty;0;p.evilPush(L1);L;L';Css|-L sumAll L'=L2
+  
 _______
 #define
-Cs|-L1 sum1 L2=L; Cs->Ps; Cs->mhs
-{interface?1 implements Ps1 mwt1..mwtn nc1..nck}+{interface?2 implements Ps2 mwts2 ncs2}
-  ={interface? implements Ps mwts ncs}; Cs->Ps; Cs->mhs
+Cs|-L1 sumPs L2= L;Css
+{interface?1 implements Ps1 mwts1 nc1..nck} sumPs {interface?2 implements Ps2 mwts2 ncs2}
+= { {interface?1,interface?2} implements Ps1,Ps2 mwts, ncs};Css
+ where
+ Cs|-nci[ncs2]= nci';Cssi
+ mwts=leftPreferential(mwts1,mwts2)
+ ncs=nc1'..ncn' ncs2\dom(nc1..nck)
+ if {interface?1,interface?2}=interface
+   Css=Css1..Cssk,Cs
+ else
+   Css=Css1..Cssk
+ 
+_______
+#define
+Cs;n;p;LC1;LC2;Css|-L1 sumAll L2=L
+Cs;n;p;LC1;LC2;Css|- {interface?1 implements Ps1 mwt1..mwtn nc1..nck} 
+    sumAll {interface?2 implements Ps2 mwts2 ncs2}
+    =Cs;n;p;top1;top2;Css|-Isum({interface? implements Ps mwts ncs})
   where
   interface?=interface?1 mwts1 +interface?1 mwts2
-  Ps=Ps1, Ps2
+  
+  Ps=collect(p,Ps1, Ps2)
+  
   mwti[mwts2]=mwti',mh?i
   mwts=mwt1'..mwtn' mwts2\dom(mwt1..mwtn)
+  
   Cs|-nci[ncs2]= nci';Cs->Psi;Cs->mhsi
   ncs=nc1'..ncn' ncs2\dom(nc1..nck)
-  if interface?=empty, 
-    Cs->Ps= Cs->Ps1,..,Cs->Psk
-    Cs->mwts= Cs:mh?1..mh?n,Cs->ms1,..,Cs->msk 
+  
+  Cs;n;p;top1;top2;Css|-Isum(L)=L'
+
+_______
+#define Cs;n;p;LC1;LC2;Css|-Isum(L)=L[with mwts=Cs;n;p;LC1;LC2;Css|-IsumDeep(mwts)]
+  
+  forall Pi in L.Ps,
+    we call Csi Pi[remove n outer][from This0.Cs]=This0.Csi //if the result is not This0, it implements an outer interface
+  
+  forall Csi
+    we call mwtsi = p|-LC1(Csi).mwts + LC2(Csi).mwts//could be cached
+  mwts=leftPreferential(L.mwts,mwts1[from Ps1]+..+mwtsn[from Psn])
+  if any mwtsi existed:  
+    mss={mwt.ms: mwt in mwts, mwt is refine}
+    //check still 1 no refine
+    forall msi in mss exists exactly 1 Pi in L.Ps such that
+      p(Pi)(ms)=mh//no refine
+   
+    //check for all refine method valid <= without optimizing for norm
+    forall msi in mss, mwts(msi)=mwt
+      forall Pi in Ps where Csi exists,
+        mwt.ms in dom(p(Pi))
+        mwt1=LC1(Csi)(mwt.ms), mwt2=LC2(Csi)(mwt.ms)
+        check p|-mwt.mh << mwt1.mh and p|-mwt.mh << mwt2.mh
+  
+_______
+#define Cs;n;p;LC1;LC2;Css|-IsumDeep(L)=Cs;n;p;LC1;LC2;Css|-Isum(L0)
+  L0=L[with ncs=ncs]
+  ncs=Cs;n;p;LC1;LC2;Css|-IsumDeep(L.ncs)
+
+_______
+#define Cs;n;p;LC1;LC2;Css|-IsumDeep(C:L)= C: L0
+  if n=0
+    L0=Cs.C;n;p.push(C);LC1;LC2;Css|-IsumDeep(L)
   else
-    Cs->Ps= Cs->Ps1,..,Cs->Psk,Cs:Ps
-    Cs->mwts= Cs:mh?1..mh?n,Cs->ms1,..,Cs->msk,Cs:mwts.mhs 
+    L0=Cs;n+1;p.push(C);LC1;LC2;Css|-IsumDeep(L)
+
+_______
+#define Cs;n;p;LC1;LC2;Css|-IsumDeep(refine? mh e?)= refine? mh e?'
+  e?'= explore the structure of e? and
+    replace every L with 
+    Cs;n+1;p.push(L);LC1;LC2;Css|-IsumDeep(L)
 
 _______
 #define inteface?1 mwts1+inteface?2 mwts2=interface?
@@ -64,114 +117,28 @@ mwts1 + interface mwts2=interface
   where
   mwts1.e?s = {empty}
   class notin mwts1.mhs.mdfs
-
-_______
-#define mwt[mwts]=mwt';mh?
-mwt[mwt1..mwtn]=mwt +mwti if mwt.ms=mwti.ms
-mwt[mwts]=mwt if mwt.ms notin dom(mwts) 
-
-_______
-#define Cs|-nc[ncs]=nc';Cs->Ps;Cs->mhs
-Cs|-nc[nc1..ncn]=Cs|-nc + nci if nc.C=nci.C
-Cs|-nc[ncs]=nc;empty;empty if nc.C notin dom(nc)
-
-_______
-#define mwt1+mwt2=mwt; mh?
-refine? mh + refine?' mh' e= {refine?,refine?'} mh' e;mh
-refine? mh e? +refine?' mh'= {refine?,refine?'} mh e?; mh'
-//This allows a non refine member to become refine
-//in case mh=mh', we can avoid to generate the element in the map
-
-_______
-#define Cs|-nc1+nc2=nc;Cs->Ps;Cs->mhs
-C:L1+C:L2=C: L;Cs->Ps;Cs->mhs
-  where
-   Cs.C|-L1+L2=L;Cs->Ps;Cs->mhs
-
-_______
-#define
-Cs|-L1 sum2 Cs->Ps=L2
-
-Cs,n|-{interface? implements Ps mwts ns} sum2 Cs->Ps
-  ={interface? 
-    implements Ps,(Ps'[from Pi])
-    Cs,n|-mwts sum2 Cs->Ps
-    Cs,n|-ns sum2 Cs->Ps
-    }
-  where
-  Pi in Ps,
-  Pi[remove n outer][from This0.Cs]=This0.Csi //if the result is not This0, it implements an outer interface
-  Csi:Ps' in Cs->Ps
   
-Otherwise, if no such Pi in Ps
-Cs|-{interface? implements Ps mwts ns} sum2 Cs->Ps
-  ={interface? implements Ps
-    Cs,n;p|-mwts sum2 Cs->Ps
-    Cs,n;p|-ns sum2 Cs->Ps
-    }
-    
 _______
-#define
-Cs,0|-C:L sum2 Cs->Ps = C: Cs.C,0|-L sum2 Cs->Ps
-Cs,n+1|-C:L sum2 Cs->Ps = C: Cs,n+2|-L sum2 Cs->Ps
-_______
-#define
-Cs,n|-refine? mh e? sum2 Cs->Ps = refine? mh Cs,n+1|-e? sum2 Cs->Ps
+#define p|-mwts1+mwts2=mwts
+p|-mwt1..mwtn+mwts2
+  =p|-mwt1[mwts2]..p|-mwtn[mwts2] mwts2\dom(mwt1..mwtn)
 
 _______
-#define Cs,n|-e+Cs->Ps= e'
-  clone the structure and replace 
-  all L with Cs,n|-L+Cs->Ps
+#define p|-mwt[mwts]=mwt'
+p|-mwt[mwts]=mwt if mwt.ms notin dom(mwts)
+p|-mwt[mwt1..mwtn]= p|-mwt+mwti if mwt.ms =mwt.ms
 
 _______
-#define
-Cs,n;p|-L2 sum3 Cs->mhs = L3  
-
-Cs,n;p|-{interface? implements Ps mwts ns} sum3 Cs->mhs
-  ={interface? 
-    implements p|-Ps
-    p|-(Cs,n;p|-mwts sum3 Cs->mhs)+mhs
-    Cs,n;p|-ns sum3 Cs->mhs
-    }
+#define p|-mwt1+mwt2=mwt
+p|-mwt1+mwt2=p|-mwt2+mwt1
+p|-mwt1+mwt2={mwt1.refine?,mwt2.refine?}mwt1.mh {mwt1.e?,mwt2.e?}
   where
-  either
-    Pi in Ps,
-    Pi[remove n outer][from This0.Cs]=This0.Csi //if the result is not This0, it implements an outer interface
-    Csi:Ps' in Cs->mhs
-  or
-    n=0 and Cs:Ps' in Cs->mhs
-Otherwise,
-Cs|-{interface? implements Ps mwts ns} sum3 Cs->mhs
-  ={interface? implements Ps
-    p|-(Cs,n;p|-mwts sum3 Cs->mhs)+mhs
-    Cs,n;p|-ns sum3 Cs->mhs
-    }
+  p|-mwt1.mh<<mwt2.mh
+  empty in {mwt1.e?,mwt2.e?}
+//This allows a non refine member to become refine
 
-_______
-#define p|-P1..Pn = Ps
-  Pi in Ps if forall Pj in {Pi+1..Pn} not p.equiv(Pi,Pj)  
-  undefined if p.equiv(Pi,This0) //circularity error
-
-_______
-#define p|-mwts+mhs=mwts'
-p|-mwt1..mwtn+mhs=mwts'
-  =p|-mwt1[mhs]..p|-mwtn[mhs] addRefine(mhs\dom(mwt1..mwtn))
-
-_______
-#define p|-mwt[mhs]=mwt'
-p|-mwt[mhs]=mwt if mwt.ms notin dom(mhs)
-p|-mwt[mh1..mhn]= p|-mwt+mhi if mwt.ms =mhi.ms
-
-_______
-#define p|-mwt+mh=mwt'
-p|-mwt+mh=mwt
-  where
-  p|-mwt.mh<mh
-p|-mwt+mh=mwt.with[mh=mh]
-  where
-  p|-mh<mwt.mh
-  mwt.e?=empty
- 
+  
+  
  ---------
  Example of difficoult case:
     {A:{interface<B} B:{interface} C:{}}+{A:{interface} C:{<A}}
@@ -182,6 +149,10 @@ p|-mwt+mh=mwt.with[mh=mh]
     =
     {A:{inteface<B} B:{interface} C:{<A,B}}
   so it seams to work for this case...
+  
+  //what happens if
+   * {I:{interface} J:{interface} A:{<I,J}}+{{I:{interface method S m()} J:{interface method S m()}}
+  
     
 */
 package is.L42.connected.withSafeOperators.refactor;

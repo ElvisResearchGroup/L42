@@ -41,7 +41,7 @@ subdefinitions:
   p(P0)={_ implements Ps0 _}
   Ps'=collect(p,Ps0[from P0])
   //this check absence of circularity by looping
-  //Note for marco: we remove circularity; update operator sum; plus add privatly implemented concept/error
+  //TODO Note for marco: we remove circularity; update operator sum; plus add privatly implemented concept/error
   //may be a good strategy could be that 
   //"sum can not add abstract implemented methods", this enforces adding either equal hierarchies with different operators, or different hierarchies with equal operators.
   //Or we can make this kind of check happens as extra at the end of multiple sums?
