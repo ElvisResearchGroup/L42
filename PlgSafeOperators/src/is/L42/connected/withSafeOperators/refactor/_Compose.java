@@ -1,10 +1,21 @@
 /*
 All composition operations are 
 expected to run only on normalized LCs, and to produce a normalized LC.
+in a normalized LC,
+-Ps reports all the transitivelly implemented interfaces
+-all method are method with type (mwt), with refine if implementing interface
+-all the nested classes are after the methods in the list of members
+
+Notation
+A->B::=A1:B1.. An:Bn
+and define functional access, dom
+well formedness on single key,
+comma raw composition and a[b] update composition
+
 When run on well typed LCs, it will produce a well typed LC.
-Definiton for sum: formally 
+Definition for sum: 
 p|-L1 sum L2=L
-will be a weakly associative and weakly commutative operation.
+is a weakly associative and weakly commutative operation.
 Note: sum of coherent LCs can produce a (well typed but) not coherent LC
 
 #weak associativity
@@ -25,11 +36,6 @@ p|-L sum L'=L3
   empty|-L1 sum2 Cs->Ps=L2
   empty;p.evilPush(L2)|-L2 sum3 P->mhs = L3  
 
-Notation
-A->B::=A1:B1.. An:Bn
-and define functional access, dom
-well formedness on single key,
-comma raw composition and a[b] update composition
 _______
 #define
 Cs|-L1 sum1 L2=L; Cs->Ps; Cs->mhs
