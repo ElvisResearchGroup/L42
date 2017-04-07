@@ -42,7 +42,7 @@ Cs|-L1 sumPs L2= L;Css
 = { {interface?1,interface?2} implements Ps1,Ps2 mwts, ncs};Css
  where
  Cs|-nci[ncs2]= nci';Cssi
- mwts=leftPreferential(mwts1,mwts2)
+ mwts=mwts1,mwts2\dom(mwts1)
  ncs=nc1'..ncn' ncs2\dom(nc1..nck)
  if {interface?1,interface?2}=interface
    Css=Css1..Cssk,Cs
@@ -76,12 +76,12 @@ Cs;n+1;p;LC1;LC2;Css|-C:L = C: Cs;n+2;p.push(C);LC1;LC2;Css|-L
 _______
 #define Cs;n;p;LC1;LC2;Css|-Isum(L)=L[with mwts=Cs;n;p;LC1;LC2;Css|-IsumDeep(mwts)]
   
-  forall Pi in L.Ps,
-    we call Csi Pi[remove n outer][from This0.Cs]=This0.Csi //if the result is not This0, it implements an outer interface
+  forall Pi in L.Ps, we call 
+    This0.Csi=Pi[remove n outer][from This0.Cs]//if the result is not This0, it implements an outer interface
+    mwtsi = p|-LC1(Csi).mwts + LC2(Csi).mwts//could be cached
+    mwtsi'=mwtsi[from Psi]\dom(L.mwts)
+  mwts=L.mwts,addRefine(mwts1'+..+mwtsn'))
   
-  forall Csi
-    we call mwtsi = p|-LC1(Csi).mwts + LC2(Csi).mwts//could be cached
-  mwts=leftPreferential(L.mwts,mwts1[from Ps1]+..+mwtsn[from Psn])
   if any mwtsi existed:  
     mss={mwt.ms: mwt in mwts, mwt is refine}
     //check still 1 no refine
@@ -102,10 +102,8 @@ _______
 
 _______
 #define Cs;n;p;LC1;LC2;Css|-IsumDeep(C:L)= C: L0
-  if n=0
-    L0=Cs.C;n;p.push(C);LC1;LC2;Css|-IsumDeep(L)
-  else
-    L0=Cs;n+1;p.push(C);LC1;LC2;Css|-IsumDeep(L)
+Cs;0;p;LC1;LC2;Css|-IsumDeep(C:L)= C: Cs.C;0;p.push(C);LC1;LC2;Css|-IsumDeep(L)
+Cs;n+1;p;LC1;LC2;Css|-IsumDeep(C:L)= C: Cs;n+2;p.push(C);LC1;LC2;Css|-IsumDeep(L)
 
 _______
 #define Cs;n;p;LC1;LC2;Css|-IsumDeep(refine? mh e?)= refine? mh e?'
