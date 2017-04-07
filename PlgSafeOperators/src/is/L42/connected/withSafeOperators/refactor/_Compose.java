@@ -63,10 +63,15 @@ Cs;n;p;LC1;LC2;Css|- {interface?1 implements Ps1 mwt1..mwtn nc1..nck}
   mwti[mwts2]=mwti',mh?i
   mwts=mwt1'..mwtn' mwts2\dom(mwt1..mwtn)
   
-  Cs|-nci[ncs2]= nci';Cs->Psi;Cs->mhsi
+  Cs|-nci[ncs2]= nci'
   ncs=nc1'..ncn' ncs2\dom(nc1..nck)
   
   Cs;n;p;top1;top2;Css|-Isum(L)=L'
+
+_______
+#define Cs;n;p;LC1;LC2;Css|-nc
+Cs;0;p;LC1;LC2;Css|-C:L = C: Cs.C;0;p.push(C);LC1;LC2;Css|-L
+Cs;n+1;p;LC1;LC2;Css|-C:L = C: Cs;n+2;p.push(C);LC1;LC2;Css|-L 
 
 _______
 #define Cs;n;p;LC1;LC2;Css|-Isum(L)=L[with mwts=Cs;n;p;LC1;LC2;Css|-IsumDeep(mwts)]
