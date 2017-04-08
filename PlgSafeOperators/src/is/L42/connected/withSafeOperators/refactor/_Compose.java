@@ -28,61 +28,71 @@ p|-L sum L'=L2
   where
   empty|-L sumPs L'=L1;Css
   empty;0;p.evilPush(L1);L;L';Css|-L sumAll L'=L2
-  
+
+_______
+#define M[Ms]=M?
+nc[nc1..ncn]=nci if nci.C=nc.C
+mwt[mwt1..mwtn]=mwti if mwti.ms=mwt.ms
+otherwise=empty
+
 _______
 #define
 Cs|-L1 sumPs L2= L;Css
 {interface?1 implements Ps1 mwts1 nc1..nck} sumPs {interface?2 implements Ps2 mwts2 ncs2}
 = { {interface?1,interface?2} implements Ps1,Ps2 mwts, ncs};Css
  where
- Cs|-nci[ncs2]= nci';Cssi
+ Cs|-nci sumPs nci[ncs2]= nci';Cssi
  mwts=mwts1,mwts2\dom(mwts1)
- ncs=nc1'..nck' ncs2\dom(nc1..nck)
+ ncs=nc1',..nck',ncs2\dom(nc1..nck)
  if {interface?1,interface?2}=interface
    Css=Css1,..,Cssk,Cs
  else
    Css=Css1,..,Cssk
- 
+
+_______
+#define Cs|-nc1 sumPS nc2=nc;Css
+Cs|-C:L = C: Cs.C|-L  
+
+
+SArg::=Cs;n;p;LC1;LC2;Css
 _______
 #define
-Cs;n;p;LC1;LC2;Css|-L1 sumAll L2=L
-Cs;n;p;LC1;LC2;Css|- {interface?1 implements Ps1 mwt1..mwtn nc1..nck} 
+SArg|-L1 sumAll L2=L
+SArg|- {interface?1 implements Ps1 mwt1..mwtn nc1..nck} 
     sumAll {interface?2 implements Ps2 mwts2 ncs2}
-    =Cs;n;p;LC1;LC2;Css|-Isum({interface? implements Ps mwts ncs})
+    =SArg|-Isum({interface? implements Ps mwts ncs})
   where
   interface?=interface?1 mwts1 +interface?1 mwts2
-  
-  Ps=collect(p,Ps1, Ps2)
-  
-  mwti[mwts2]=mwti',mh?i
-  mwts=mwt1'..mwtn' mwts2\dom(mwt1..mwtn)
-  
-  Cs|-nci[ncs2]= nci'
+  Ps=collect(SArg.p,Ps1, Ps2)
+  SArg.p|-mwti sumAll mwti[mwts2]=mwti'
+  mwts=mwt1',..,mwtn',mwts2\dom(mwt1..mwtn)
+  SArg|-nci sumAll nci[ncs2]= nci'
   ncs=nc1'..ncn' ncs2\dom(nc1..nck)
-  
-  Cs;n;p;top1;top2;Css|-Isum(L)=L'
+  SArg|-Isum(L)=L'
 
 _______
-#define Cs;n;p;LC1;LC2;Css|-nc=nc'
-Cs;0;p;LC1;LC2;Css|-C:L = C: Cs.C;0;p.push(C);LC1;LC2;Css|-L
-Cs;n+1;p;LC1;LC2;Css|-C:L = C: Cs;n+2;p.push(C);LC1;LC2;Css|-L 
-
+#define SArg|-nc1 sumAll nc2=nc
+SArg|-C:L1 sumAll C:L2 = C: SArg'[with p=p.push(C)]|-L1 sumAll L2
+if SArg.n=0 SArg'=SArg[with Cs=SArg.Cs.C]
+else SArg'=SArg[with n=SArg.n+1]
 _______
-#define Cs;n;p;LC1;LC2;Css|-Isum(L)=L[with mwts=Cs;n;p;LC1;LC2;Css|-IsumDeep(mwts)]
-  
-  forall Pi in L.Ps, we call 
+#define SArg|-Isum(L)=L[with mwts=SArg|-IsumDeep(mwts)]
+  forall Pi in L.Ps, we name 
     This0.Csi=Pi[remove n outer][from This0.Cs]//if the result is not This0, it implements an outer interface
     mwtsi = p|-LC1(Csi).mwts + LC2(Csi).mwts//could be cached
     mwtsi'=mwtsi[from Psi]\dom(L.mwts)
-  mwts=L.mwts,addRefine(mwts1'+..+mwtsn'))
-  
+  mwts0=[with msi in (mwts1',..,mwtsn').mss
+    SArg.p|-max(msi[mwts1'],..,msi[mwtsn'])]
+  mwts=[with mwti in L.mwts
+    SArg.p|-mwti sumAll addRefine(mwti[mwts0]))
+    ],mwts0\dom(L.mwts)  
   if any mwtsi existed:  
     mss={mwt.ms: mwt in mwts, mwt is refine}
     //check still 1 no refine
     forall msi in mss exists exactly 1 Pi in L.Ps such that
       p(Pi)(ms)=mh//no refine
    
-    //check for all refine method valid <= without optimizing for norm
+    //check for all refine method valid <=; keep in mind p.top() is not normalized
     forall msi in mss, mwts(msi)=mwt
       forall Pi in Ps where Csi exists,
         mwt.ms in dom(p(Pi))
@@ -90,20 +100,21 @@ _______
         check p|-mwt.mh << mwt1.mh and p|-mwt.mh << mwt2.mh
   
 _______
-#define Cs;n;p;LC1;LC2;Css|-IsumDeep(L)=Cs;n;p;LC1;LC2;Css|-Isum(L0)
+#define SArg|-IsumDeep(L)= SArg|-Isum(L0)
   L0=L[with ncs=ncs]
-  ncs=Cs;n;p;LC1;LC2;Css|-IsumDeep(L.ncs)
+  ncs= SArg|-IsumDeep(L.ncs)
 
 _______
-#define Cs;n;p;LC1;LC2;Css|-IsumDeep(C:L)= C: L0
-Cs;0;p;LC1;LC2;Css|-IsumDeep(C:L)= C: Cs.C;0;p.push(C);LC1;LC2;Css|-IsumDeep(L)
-Cs;n+1;p;LC1;LC2;Css|-IsumDeep(C:L)= C: Cs;n+2;p.push(C);LC1;LC2;Css|-IsumDeep(L)
+#define SArg|-IsumDeep(C:L)= C: L0
+SArg|-IsumDeep(C:L)= C: SArg'[with p=Sarg.p.push(C)]|-IsumDeep(L)
+if SArg.n=0 SArg'=SArg[with Cs=SArg.Cs.C]
+else SArg'=SArg[with n=SArg.n+1]
 
 _______
-#define Cs;n;p;LC1;LC2;Css|-IsumDeep(refine? mh e?)= refine? mh e?'
+#define SArg|-IsumDeep(refine? mh e?)= refine? mh e?'
   e?'= explore the structure of e? and
     replace every L with 
-    Cs;n+1;p.push(L);LC1;LC2;Css|-IsumDeep(L)
+    SArg[witn n=SArg.n+1][with p=SArg.p.push(L)]|-IsumDeep(L)
 
 _______
 #define interface?1 mwts1+interface?2 mwts2=interface?
@@ -116,21 +127,10 @@ mwts1 + interface mwts2=interface
   class notin mwts1.mhs.mdfs
   
 _______
-#define p|-mwts1+mwts2=mwts
-p|-mwt1..mwtn+mwts2
-  =p|-mwt1[mwts2]..p|-mwtn[mwts2] mwts2\dom(mwt1..mwtn)
-
-_______
-#define p|-mwt[mwts]=mwt'
-p|-mwt[mwts]=mwt if mwt.ms notin dom(mwts)
-p|-mwt[mwt1..mwtn]= p|-mwt+mwti if mwt.ms =mwt.ms
-
-_______
-#define p|-mwt1+mwt2=mwt
-p|-mwt1+mwt2=p|-mwt2+mwt1
-p|-mwt1+mwt2={mwt1.refine?,mwt2.refine?}mwt1.mh {mwt1.e?,mwt2.e?}
+#define p|-mwt1 sumAll mwt2=mwt
+p|-mwt1 sumAll mwt2
+    ={mwt1.refine?,mwt2.refine?} p|-max(mwt1.mh,mwt2.mh) {mwt1.e?,mwt2.e?}
   where
-  p|-mwt1.mh<<mwt2.mh
   empty in {mwt1.e?,mwt2.e?}
 //This allows a non refine member to become refine
 
