@@ -37,7 +37,7 @@ Cs|-L1 sumPs L2= L;Css
  where
  Cs|-nci[ncs2]= nci';Cssi
  mwts=mwts1,mwts2\dom(mwts1)
- ncs=nc1'..ncn' ncs2\dom(nc1..nck)
+ ncs=nc1'..nck' ncs2\dom(nc1..nck)
  if {interface?1,interface?2}=interface
    Css=Css1,..,Cssk,Cs
  else
@@ -48,7 +48,7 @@ _______
 Cs;n;p;LC1;LC2;Css|-L1 sumAll L2=L
 Cs;n;p;LC1;LC2;Css|- {interface?1 implements Ps1 mwt1..mwtn nc1..nck} 
     sumAll {interface?2 implements Ps2 mwts2 ncs2}
-    =Cs;n;p;top1;top2;Css|-Isum({interface? implements Ps mwts ncs})
+    =Cs;n;p;LC1;LC2;Css|-Isum({interface? implements Ps mwts ncs})
   where
   interface?=interface?1 mwts1 +interface?1 mwts2
   
@@ -63,7 +63,7 @@ Cs;n;p;LC1;LC2;Css|- {interface?1 implements Ps1 mwt1..mwtn nc1..nck}
   Cs;n;p;top1;top2;Css|-Isum(L)=L'
 
 _______
-#define Cs;n;p;LC1;LC2;Css|-nc
+#define Cs;n;p;LC1;LC2;Css|-nc=nc'
 Cs;0;p;LC1;LC2;Css|-C:L = C: Cs.C;0;p.push(C);LC1;LC2;Css|-L
 Cs;n+1;p;LC1;LC2;Css|-C:L = C: Cs;n+2;p.push(C);LC1;LC2;Css|-L 
 
