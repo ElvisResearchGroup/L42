@@ -112,9 +112,9 @@ _______
     Cs;n+1;p.push(L);LC1;LC2;Css|-IsumDeep(L)
 
 _______
-#define inteface?1 mwts1+inteface?2 mwts2=interface?
-inteface?1 mwts1 + inteface?2 mwts2 = inteface?2 mwts2 + inteface?1 mwts1
-inteface? mwts1+inteface? mwts2=interface?
+#define interface?1 mwts1+interface?2 mwts2=interface?
+interface?1 mwts1 + interface?2 mwts2 = interface?2 mwts2 + interface?1 mwts1
+interface? mwts1+interface? mwts2=interface?
 otherwise
 mwts1 + interface mwts2=interface
   where
@@ -148,9 +148,9 @@ p|-mwt1+mwt2={mwt1.refine?,mwt2.refine?}mwt1.mh {mwt1.e?,mwt2.e?}
     =must be
     {A:{interface<B} B:{interface} C:{<A,B}}
     indeed
-    {A:{inteface<B} B:{interface} C:{<A}} +A,B,empty
+    {A:{interface<B} B:{interface} C:{<A}} +A,B,empty
     =
-    {A:{inteface<B} B:{interface} C:{<A,B}}
+    {A:{interface<B} B:{interface} C:{<A,B}}
   so it seams to work for this case...
   
   //what happens if
