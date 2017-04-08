@@ -3,14 +3,8 @@ All composition operations are
 expected to run only on normalized LCs, and to produce a normalized LC.
 in a normalized LC,
 -Ps reports all the transitivelly implemented interfaces
--all method are method with type (mwt), with refine if implementing interface
+-all method are method with type (mwt), with refine if declared in an implemented interface
 -all the nested classes are after the methods in the list of members
-
-Notation
-A->B::=A1:B1.. An:Bn
-and define functional access, dom
-well formedness on single key,
-comma raw composition and a[b] update composition
 
 When run on well typed LCs, it will produce a well typed LC.
 Definition for sum: 
@@ -45,9 +39,9 @@ Cs|-L1 sumPs L2= L;Css
  mwts=mwts1,mwts2\dom(mwts1)
  ncs=nc1'..ncn' ncs2\dom(nc1..nck)
  if {interface?1,interface?2}=interface
-   Css=Css1..Cssk,Cs
+   Css=Css1,..,Cssk,Cs
  else
-   Css=Css1..Cssk
+   Css=Css1,..,Cssk
  
 _______
 #define
@@ -155,7 +149,15 @@ p|-mwt1+mwt2={mwt1.refine?,mwt2.refine?}mwt1.mh {mwt1.e?,mwt2.e?}
   
   //what happens if
    * {I:{interface} J:{interface} A:{<I,J}}+{{I:{interface method S m()} J:{interface method S m()}}
+
   
+  
+  Notation
+A->B::=A1:B1.. An:Bn
+and define functional access, dom
+well formedness on single key,
+comma raw composition and a[b] update composition
+
     
 */
 package is.L42.connected.withSafeOperators.refactor;
