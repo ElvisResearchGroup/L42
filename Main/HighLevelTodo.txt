@@ -1,7 +1,6 @@
 todo:
 
 
-remove forceplaceholder
 remove () sugar and concrete header
 
 discuss desugaring step by step:
@@ -15,8 +14,6 @@ discuss desugaring step by step:
   -we can sort of never observe that ClassB inside method bodies are desugared but not normalized since to extract
    that class we need to type that method first (and thus normalize such class)
     
-new private with __ instead of @private (see later in this file)
-
 if e return/error/exception/loop e 
 should work without parenthesis around return/..
 
@@ -58,168 +55,10 @@ add Reusable<><code == Use[code]<><Resource(\"reusableCode()")<><code
   James suggests to skip the first "reuse". It is drastic but seams working
   Alternatives could be using skeletal types to introduce aliasings?
 
-DONE:Many constructor is ok for a class?
-solved with immk, mutk, readK. Surprisingly, lentk is unsund
-in the sense that makes invariant checking impossible
-
-
-se ho una classe che ha metodi astratti class non fwd, posso aggiungere i fwd e non rompo nulla?
-potrebbe essere un passo nella normalizzazione? o nel tipaggio?
-in ogni caso, non fwd dovrebbe generare non fwd costruttori?
-
-
-//isFactory, isGetter, isSetter ensure invariants as seen later
-Void checkCoherent(Library lib) (
-  abss=lib.abstractMethods()
-  if abss.isEmpty() (OK!!)
-  ks=abss.clazz()[with m in abss.vals() (if m.isFactory() ( use[m]))]
-  gs==abss.clazz()[with m in abss.vals() (if m.isGetter() ( use[m]))]
-  ss==abss.clazz()[with m in abss.vals() (if m.isSetter() ( use[m]))]
-  if ks.size()+gs.size()+ss.size()!=abss.size() (error _)
-  if ks.isEmpty() (error _)
-  with k1 in ks.vals() (// all ks need to define the same fields
-    with k2 in ks.vals() ( sameParams(k1:k1,k2:k2))
-    )
-  //each field have  a set of all possible modifers.
- Mdf: Enum"type, capsule, imm, mut, lent, read"
- FMap:Map(from:S toMut:Mdf.Set)
- fmap=FMap[with f in ks.top().parameters().vals() ( use[from:f.name() to: Mdf.all())]
-
-//for each constructor: type constr is wrong
- //imm+ constructor need imm+ or Type(all cheched before in isConstr)
- with k in ks (//need to assume all normalized types?
-   with p in k.parameters().vals() (
-     restrictK(
-       acc:fMap.val(p.name()),
-       oM:k.mdf(),  fM:p.type().mdf()
-       )))
- with g in gs (restrictG(
-   acc:this.extrat(fMap, ifPresent:g),
-   oM:g.mdf(), fM:g.returnType().mdf()
-   ))
- with s in ss (restrictS(
-   acc:this.extrat(fMap, ifPresent:g),
-   oM:s.mdf(), fM:s.parameters().top().type().mdf()
-   ))
-
-with p in fMap.pairs() (
-  if p.val().isEmpty() (error _)
-  )
-  //otherwise, is coherent!
- )
-
-class method
-mut Introspection.Mdf.Set extract(mut FMap that,Introspection.Method ifPresent) {
-  m=ifPresent
-  s=m.nameAsField().toS()
-  if !that.has(key:s) error _ //abs method m is not part of state
-  return that.val(s)
-  }
-
-class method
-Void restrictK(mut Introspection.Mdf.Set acc, Introspection.Mdf oM, Introspection.Mdf fM)
-  acc.retain(all:{
-    //oM never type,
-    //oM==#mut implies fM !< #[#lent; #read]
-    //oM<#[#imm;#capsule] implies fM<#[#imm;#capsule;#type]
-    //  0type +3caps+ 3Imm + 4mut + 6lent+6read =22
-    if fM==#type return #[#type]   //5
-    if oM<#[#imm;#capsule] return #all-#type//4
-    if fM==#imm return #[#imm;#read]//3
-    Assert.Bug[ oM < #[#mut;#lent;#read] ]
-    Assert.Bug[ fM < #[#capsule;#mut;#lent;#read] ] // 3*4= 12 left, but mut not with lent/read, thus 10 left
-    if fM==#capsule  return #all-#type //3
-    if fM==#mut  return #[#mut;#lent;#read]//3
-    if fM==#lent return #[#lent ;#read]   //2
-    return #[#read]//2
-   })
-
-method
-Void restrictS(mut Introspection.Mdf.Set acc, Introspection.Mdf oM, Introspection.Mdf fM)
-  acc.retain(all:{//oM only mut,lent;  oM==mut implies fM !< #[#lent; #read]  6+4=10
-  if fM==#type return #[#type]   //2
-  if fM==#imm return #[#imm;#read] //2
-  if fM==#capsule return #all-#type //2
-  if fM==#read return #[#read] //1
-  if fM==#lent return #[#lent;#read] //1
-  Assert.Bug[fM==#mut]
-  if oM==#lent return #[#lent;#read] //1
-  return #[#mut;#lent;#read]//1
- )}
-
- method
- Void restrictG(mut Introspection.Mdf.Set acc, Introspection.Mdf oM, Introspection.Mdf fM)
-  acc.retain({
-  //oM not type, fM ==capsule implies oM==capsule
-  //oM< \[\read; \imm] implies  fM !< #[#mut; #lent]
-  //oM== #lent implies  fM != #mut
- // 6caps+ 4lent+3read +3Imm+5mut   =21
-    if fM==#type return #[#type]   //5     // 5caps+ 3lent+2read +2Imm+4mut
-    if fM==#imm return #[#imm] //5      // 4caps+ 2lent+1read +1Imm+3mut
-    Assert.Bug[oM==#read -> fM==#read]
-    Assert.Bug[fM==#lent -> oM<#[#mut;#lent;#capsule]]
-    if fM<#[#capsule;#lent] return #[#mut;#lent;#capsule] //1+3   // 2caps+ 1lent+1read +1Imm+2mut
-    if fM==#read return #all-#type  //oM=imm,read,lent,mut,capsule 5   // 1caps+ 0lent+0read +0Imm+1mut
-    Assert.Bug[fM==#mut]
-    Assert.Bug[oM< #[#mut;#capsule]]
-    return #[#mut;#capsule]//2  // 0caps+ 0lent+0read +0Imm+0mut
-  )}
-
-carefull in mdf+ includes capsule? yes, a "capsule" field is a capsule/mut/lent field.
-Then a state is consistent if all fields have 1 or more candidate mdf.
-
-
-for example
-type method mut Outer0 k1(mut Foo n) ' with the actual type of the fields
-type method Outer0 k2(Foo n) ' the imm constructor, can always take imm fields
- the imm constructor is ok even in case of lent fields.
-
- multiple constr must agree on the names of fields, and on their path, but the mdf may differ.
- fields getters,
- method Foo n() ' the imm getters can always return imm stuff
-
- go by cases:
- imm F x: can have
-   read-imm-/lent-imm-/mut-imm-/imm-imm- getter,
-   lent-imm+/mut-imm+ setter,
-   mut-imm+/capsule-imm+/lent-imm+/read-imm+/imm-imm+ constr
- mut F x:
-   read-read/lent-lent-/mut-mut-/imm-imm- getter
-   lent-capsule/mut-mut setter
-   mut-mut+/capsule-capsule/lent-mut/read-read+/imm-imm+ constr
-   *note: lent-lent constr *may* be allowed in special cases: only if is a single field OR if no mut-mut getter provided for more than 1 field
-lent F x:
-   read-read/lent-lent-/imm-imm- getter
-   lent-lent+/mut-lent+ setter
-   mut-mut+/capsule-capsule/lent-lent+/read-read+/imm-imm+ constr
-read F x:
-   read-read/lent-read/imm-imm- getter
-   lent-read+/mut-read+ setter
-   mut-(mut+,Imm)/capsule-capsule/lent-lent+/read-read+/imm-imm+ constr
- capsule F x:
-   read-read/lent-lent-/mut-lent-/imm-imm- getter
-   lent-capsule/mut-capsule setter
-   mut-capsule/capsule-capsule/lent-capsule/read-capsule/imm-imm+ constr
------
-wither on method  Outer0 with(imm T x)
-clone on read method mut Outer0 clone(orignal T x)//all capsule fields are not defaulted? defaulted wih clone()?
-
-what if (Ti xi) create both
-#apply and #immK
-and Ti xi create no constructors?
-
 make @id == /*@id*/
 
 
 
-
-private:
-method selector contans a long int. -1 for not private
-Path??? an array of long as long as cs?
-@private is not without any semantic in the language,
-una library compilata e' ben formata se tutti i nomi dichiarati con forma a__n sono dichiarati una volta sola al suo interno, e non ridichiara nomi dichiarati fuori. (quindi hiding is ok)
-operatori che prendono cose ben formate (in un certo programa)producono cose ben formate (nello stesso programma).
-su chiamata di metodo(small step) o su resource.get() on compiled i nomi sono rimpiazzati.
 
 a developed library can normalize its private names in the following way:
 put in a list all the declared private numbers.
@@ -229,20 +68,7 @@ do a find/replace on the ast replacing the numbers with their index.
 We can then find the max private number while reading the library, and we have
 our starting freshPrivate number.
 
-una classB e' normalizata (non solo ben formata) se
-ha nomi privati consegutivi e ordinati nei sottoalberi,
-e ogni classB cachia min e max (non solo le normalizzate).
-Per efficiacia di implementazione, normalizziamo tutte le librerie del programma iniziale (reused).
-
 all operators except sum and addprivate do not need further attention?
-sum a,b if interval disoint, just sum and make union of interval
-if not disjoint, normalize both starting from higer number ever committed (different from higher reached).
-On commit, set up a new max committed
-On add private, just extend the interval by 1 and use such index.
-
-' make multiple normalization not insert multiple %$ stuff
-' method Bool isConcrete() true iff all non state methods are implemented and
-' all the interface methods are implemented.
 
 'add a printableOutline() to nested class
 ' all public methods lv1,
