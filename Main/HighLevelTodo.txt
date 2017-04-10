@@ -93,14 +93,6 @@ all operators except sum and addprivate do not need further attention?
 ' for all public nc lv*, if not annotated '@importanceX with x 1-*, with indented methods
 ' otherwise with all methods inline, nested after?
 
-Obsolete(
-  AddDocumentation for private state?
-  -constructor must be first?
-  -error if you was going to create a incoherent private state.
-  -- no seams like addDocumentation must be called on the constructor, and make private all the potential state
-  -to prevent capture of unwanted state methods, you can rename or implement them and then revert.
-)
-
   -in deploy library, check that is closed code
   -test if from is applied when reading method types?
     -on literal, it should be frommed before passed to plugin
@@ -113,37 +105,11 @@ Obsolete(
    -for collections, error S" still report stuff that should be done better.
   -opt and iterator: version generic, version to sum with outer0 and get a nested.
   -method from interfaces? just all interfaces - this will miss from?
-Caching
-   -desugaring import library, assume verified//done?
-   -how it interact with trusted plugins?
-    -is private normalized
-    -get the set of used families
 
 
-    -Sum and interfaces: sum can make interfaces circular. I think I will make this OK
-    -sum must give error if sum class implementing interface with class directly defining an
-    interface method of the first one. check this case
-
- Other plugins
-    -db plugin
-      design of resources: make connection string "is" resource handler?
-
- Language
-  - method of interfaces can be refined, method refine T m(xs) eOpt
-  -yeld? [with .... yeld(e) or yeld(v, separator:S", ")
-  this would allow S"["[with n in names.vals() ( yeld(n,separator:S"; "))]"]"
  Syntax
-    -concrete header have doc ('here fs)'and here  -- one of the two must be the place for @private?
-    -all implemented interface names have docs, also simpler @ann syntax no new line
 
-    - put << normalization in the sugar
-    -use @as default? instead of #?
-     so Map[   @[a;b;c];       @[a;b;c];       ]
-    options[isVisible:@]   vs  options[isVisible:Bool.true()]
-    Car(weels:@[....] doors:@[])
-    RenamePath[@"Bar" to:@"Beer"]
-    -operators <-  ->   \/ /\    <><  ><>  <=<  >=> ?? may be not?
-    -usually ~ is give me internal, so rename all .binary repr?
+    -operators <-  ->   \/ /\  <=<  >=> ?? may be not?
 
 Parsing errors:
   variable declare multiple times do not give any info, not even the file
@@ -160,27 +126,3 @@ Well formedness
 well formedness: implemented or exceptions must be with no repetition, and with no Any.
 Operators should preserve this
 interfaces can be circular, check that no bug happens
-
-
-------------------
-   Check if what is under is done
-    -private rename normalization
-    collect privates:
-     MethodLocator:{List<Member> mTail; List<Integer> mPos; Ms that, Ms newName}
-     NestedLocator:{List<Member> mTail; List<Integer> mPos; String that, String newName}
-     collectPrivates(cb)->set of MethodLocator,NestedLocator
-     since no sum will be triggered, we can do all the rename together
-     collectPrivates(cb) first collect the names, then compute the rename, keeping in account private state consistency
-       that is, constructors get the same pedex appended to name AND fields, and field get the same pedex
-     renamePrivates(collectPrivates(cb))
-       clone with path:
-         on nested, if collected rename
-         on mwt if collected rename
-         on mi nothing, never private
-         on path, if collected rename, will need to explore only a "pure nested" part of the tail
-         on meth call, same idea. Reuse guess receiver type from rename method.
-    reuse of lower case, trust private normalized and desugared.
-       replace all the name__N_0 in name__N'_redirectIndex
-    normalizePrivates(newIndex) rename all the name__N_K in name__N'_index
-    reuse on Uppercase, do desugar and do not do private renaming at all.// just for testing
-
