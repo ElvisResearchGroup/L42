@@ -55,18 +55,17 @@ ms::=m(xs) //method selector
 mh::= mdf method T m(T1 x1..Tn xn) exception Ps //mh.ms generates the corresponding ms  
 Ldom::=ms|C
 P::= Thisn.Cs | Any | Library | Void  //is pronounced "Path"
-T::= mdf P | P::msxs
-msx::=ms(::x)?
+T::= mdf P 
 
 #core expressions
+//annotations [T1,T2], [P] and [T] are implicitly "?", as in [T]?
 L::={interface? implements Ps M1..Mn Phase}
 M::=refine? mh e?| ms e | C:e
-e::=chain| throw[T1,T2] chain|loop e|(ds ks e[T]) | use P check m((x:e)s) e
-chain::= L|void|x| P | chain.m[P]((x:e)s) | (ds ks chain[T])//last is needed to support (a+b)*c
-//annotations [T1,T2], [P] and [T] are implicitly "?", as in [T]?
+e::=L|void|x| P | chain.m[P]((x:e)s) 
+  | throw[T1,T2] chain|loop e|(ds ks e[T]) | use P check m((x:e)s) e | x:=e
 k::=catch T x e
-d::= T x=e
-//note: chain have always a guessable type, 
+d::=var? T x=e | var? x=chain
+chain::=e //where guessable ( e) 
 //TODO: update sugared language to require chain as meth receiver and thrown expressions
 
 #Compiled terms
@@ -75,7 +74,7 @@ MC::= mwt | ms eC |nc
 mwt::= refine? mh eC? //may still contains skeletal types
 nc::= C:LC
 eC::= x|void|P|LC |throw[T1,T2] eC|loop eC|(dCs kCs eC[T])
- | eC.m[P]((x:eC)s)| use P check m((x:eC)s) eC
+ | eC.m[P]((x:eC)s)| use P check m((x:eC)s) eC | x:=eC
 kC::=catch T x eC
 dC::= T x=eC
 
@@ -83,11 +82,20 @@ dC::= T x=eC
 // but normalization is a different step
 
 # Contexts
-ctxC::=[] | eC.m( (x:eC)s x:ctxC, (x:e)s)| .... // compilation context, e=ctxC[L] selects an L where all the former Ls are LC. The context do not enter in libraries
+ctxC::=[] 
+ | ctcC.m( (x:e)s) 
+ | eC.m( (x:eC)s x:ctxC, (x:e)s)
+ | use P check m( (x:eC)s x:ctxC, (x:e)s) e 
+ | use P check m((x:eC)s) ctxC 
+ | throw ctxC | loop C | x:=ctxC
+ | (ds var? T? x=ctxC dCs kCs eC[T])
+ | (dCs ks catch T x ctxC kCs e[T])
+ | (dCs kCs ctxC[T]) 
+.... // compilation context, e=ctxC[L] selects an L where all the former Ls are LC. The context do not enter in libraries
 ctxM::= C: ctxC |ms ctxC | refine? mh ctxC
 ctxL::= {interface? implements Ps Ms ctxM Ms' Phase}
 
-//notice how every LC is a special kind of L (barnotation has structural subtyping)
+//notice how every LC is a special kind of L (math seams to have structural subtyping)
 
 -----------------------------------------------------------
 ###operations on contexts (for implementation too)
@@ -119,6 +127,16 @@ Moreover, for convenience we define inside in the following way:
 -----------------------------------------------------------
 Part 2: well formedness
 -----------------------------------------------------------
+guessable(e)
+guessable(L), guessable(void), guessable(x), guessable(P), guessable(chain.m((x:e)s))
+
+guessable((ds e)) = guessable(e)
+guessable((ds ks catch throw x e ks' throw _))= guessable(e)
+  with
+  all e in {ks.es,ks'.es} of form throw _
+  not catchRethrow(catch throw x e)//catchRethrow defined in typeSystem.tex
+
+d: var T x=e is valid only if T not capsule or fwd.
 
 ms: unique x in xs, 'this' notin xs
 

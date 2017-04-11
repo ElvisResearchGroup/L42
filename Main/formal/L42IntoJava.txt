@@ -24,17 +24,15 @@ Generated Java should be
 -fast to execute//the less important now
 -executable in parallel
 -the generated class files should be cachable on remote server
--have a decent definition for correct plug in behaviour/checking in case, for example, of the
- redirect, where the class Any could be norm but not well typable yet
 
 key ideas:
 -every L has a unique generated name added during normalization
--plugin application will generate new names for resulting libraries //james suggests: old names may be marked as orphans
+-binding process will generate new names for binded (top level and nested)libraries //james suggests: old names may be marked as orphans
 -every 42 execution generate a Resource class that have
   -current program // current program do not appear in map, current.top() always not LC
   -map from generate names to program view in that point//programs in map,p.top() always LC
    (no need to be the most updated program view?)
- Thus, multiple 42 executions can run in parallel, but 
+ Thus, multiple independent 42 executions can run in parallel, but 
  multiple C:e in an execution needs to be sequential.
  
  
@@ -60,7 +58,7 @@ Destination 2:
 1 Grammar
 -----------------------------
 
-L42N //should be identical to the one in NotationsAndGrammar
+L42N //should denote a super language with respect to the one in NotationsAndGrammar
 
 e::=x|void|P|L|throw[T1,T2] e|loop e|(ds ks e[T])| e.m[P]((x:e)s)| use P check m((x:e)s) e
 throw::= exception | error | return
