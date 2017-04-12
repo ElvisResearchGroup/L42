@@ -3,14 +3,15 @@ All composition operations are
 expected to run only on normalized LCs, and to produce a normalized LC.
 in a normalized LC,
 -Ps reports all the transitivelly implemented interfaces
--all method are method with type (mwt), with refine if declared in an implemented interface
+-all methods are methods with type (mwt), with refine if declared in an implemented interface
 -all the nested classes are after the methods in the list of members
 
 When run on well typed LCs, it will produce a well typed LC.
+
 Definition for sum: 
 p|-L1 sum L2=L
 is a weakly associative and weakly commutative operation.
-Note: sum of coherent LCs can produce a (well typed but) not coherent LC
+Note: sum of coherent LCs can produce a (well typed but) non-coherent LC
 
 #weak associativity
 sum is a partial function:
@@ -30,7 +31,7 @@ p|-L sum L'=L2
   empty;0;p.evilPush(L1);L;L';Css|-L sumAll L'=L2
 
 _______
-#define M[Ms]=M?
+#define M[Ms]=M? //note, this is similar to nc.C(ncs) but is 'empty' instead of 'undefined'
 nc[nc1..ncn]=nci if nci.C=nc.C
 mwt[mwt1..mwtn]=mwti if mwti.ms=mwt.ms
 otherwise=empty
@@ -51,10 +52,16 @@ Cs|-L1 sumPs L2= L;Css
 
 _______
 #define Cs|-nc1 sumPS nc2=nc;Css
-Cs|-C:L = C: Cs.C|-L  
+Cs|-C:L1 sumPS C:L2 = C: Cs.C|-L1 sumPS L2 
+Cs|-nc sumPS empty = nc;empty
 
+SArg::=Cs;n;p;LC1;LC2;Css  //sum arguments
+// Cs=path from top,
+//n=how many nested inside library literals inside method bodies
+//p= program including a approximate result as p.top()
+//LC1 and LC2= the top libraries
+//Css= paths from top of all interfaces composed by the sum 
 
-SArg::=Cs;n;p;LC1;LC2;Css
 _______
 #define
 SArg|-L1 sumAll L2=L
@@ -62,7 +69,7 @@ SArg|- {interface?1 implements Ps1 mwt1..mwtn nc1..nck}
     sumAll {interface?2 implements Ps2 mwts2 ncs2}
     =SArg|-Isum({interface? implements Ps mwts ncs})
   where
-  interface?=interface?1 mwts1 +interface?1 mwts2
+  interface?=interface?1 mwts1 +interface?2 mwts2
   Ps=collect(SArg.p,Ps1, Ps2)
   SArg.p|-mwti sumAll mwti[mwts2]=mwti'
   mwts=mwt1',..,mwtn',mwts2\dom(mwt1..mwtn)
