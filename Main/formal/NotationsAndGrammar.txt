@@ -263,10 +263,10 @@ program operations primitive:
 -update top //this is the only one that can detect evilPush
  (L,ctxLs).update(L')=L',ctxLs
 
--p.reducePath(This1.C.Cs)=This0.Cs
+-p.reducePath(This1.C.Cs)=This0.Cs //reducePath reduce only 1 level at the time
  if p=L,ctxL,_ and ctxL(C)=[] //ok also this one can be messed up by evilPush
--p.reducePath(This(n+2).Cs)=This(n+1).Cs'
-   p.pop().reducePath(This(n+1).Cs)=Thisn.Cs'
+-p.reducePath(This(n+2).Cs)=This(n+1).Cs' //it is correct to have n both before and after the = sign
+   p.pop().reducePath(This(n+1).Cs)=This(n).Cs'
 
 - growFellow
   (L,ctxL,_).growFellow(p)==p.push(p.top()/ctxL)
