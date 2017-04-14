@@ -3,7 +3,7 @@ All composition operations are
 expected to run only on normalized LCs, and to produce a normalized LC.
 In a normalized LC,
 -Ps reports all the transitivelly implemented interfaces
- -all methods in implemented interfaces are explicitly declared (with their type) in this library
+-all methods in implemented interfaces are explicitly declared (with their type) in this library
 -all the nested classes are after the methods in the list of members
 
 When run on well typed LCs, it will produce a well typed LC. Note: sum of coherent LCs can produce a (well typed but) non-coherent LC
@@ -85,7 +85,7 @@ else SArg'=SArg[with n=SArg.n+1]
 _______
 #define SArg|-Isum(L)=L[with mwts=SArg|-IsumDeep(mwts)]
   forall Pi in L.Ps, we name 
-    This0.Csi=Pi[remove n outer][from This0.Cs]//if the result is not This0, it implements an outer interface
+    This0.Csi=Pi[remove SArg.n outer][from This0.(SArg.Cs)]//if the result is not This0, it implements an outer interface
     mwtsi = p|-LC1(Csi).mwts + LC2(Csi).mwts//could be cached
     mwtsi'=mwtsi[from Psi]\dom(L.mwts)
   mwts0=[with msi in (mwts1',..,mwtsn').mss
