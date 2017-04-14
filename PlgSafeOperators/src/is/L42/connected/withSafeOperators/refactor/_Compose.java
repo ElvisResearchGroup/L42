@@ -1,24 +1,24 @@
 /*
 All composition operations are 
 expected to run only on normalized LCs, and to produce a normalized LC.
-in a normalized LC,
+In a normalized LC,
 -Ps reports all the transitivelly implemented interfaces
--all methods are methods with type (mwt), with refine if declared in an implemented interface
+ -all methods in implemented interfaces are explicitly declared (with their type) in this library
 -all the nested classes are after the methods in the list of members
 
-When run on well typed LCs, it will produce a well typed LC.
+When run on well typed LCs, it will produce a well typed LC. Note: sum of coherent LCs can produce a (well typed but) non-coherent LC
 
 Definition for sum: 
-p|-L1 sum L2=L
+p|-L1 sum L2=L //p is the program within which the sum is run. This1 in L1 and L2 is p.top().
 is a weakly associative and weakly commutative operation.
-Note: sum of coherent LCs can produce a (well typed but) non-coherent LC
+
 
 #weak associativity
 sum is a partial function:
 if a+(b+c)=d and (a+b)+c=d' then d=d'
 but is not guaranteed a+(b+c)=(a+b)+c 
 
-#weak associativity
+#weak commutativity
 a+b sim b+a
 sim allows differences in the order of implemented
 interfaces, declared methods and nested classes.  
@@ -31,7 +31,7 @@ p|-L sum L'=L2
   empty;0;p.evilPush(L1);L;L';Css|-L sumAll L'=L2
 
 _______
-#define M[Ms]=M? //note, this is similar to nc.C(ncs) but is 'empty' instead of 'undefined'
+#define M[Ms]=M?
 nc[nc1..ncn]=nci if nci.C=nc.C
 mwt[mwt1..mwtn]=mwti if mwti.ms=mwt.ms
 otherwise=empty
@@ -75,7 +75,7 @@ SArg|- {interface?1 implements Ps1 mwt1..mwtn nc1..nck}
   mwts=mwt1',..,mwtn',mwts2\dom(mwt1..mwtn)
   SArg|-nci sumAll nci[ncs2]= nci'
   ncs=nc1'..ncn' ncs2\dom(nc1..nck)
-  SArg|-Isum(L)=L'
+
 
 _______
 #define SArg|-nc1 sumAll nc2=nc
