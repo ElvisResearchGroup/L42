@@ -24,7 +24,11 @@ sim allows differences in the order of implemented
 interfaces, declared methods and nested classes.  
 
 
-What if we attempt first a real formalization?
+I'm now attempting an actual formalization:
+just a predicate to check if a sum looks as what we want,
+without attempting to forge an algorithm to produce the result
+_______
+#define
 p|-L1+L2=L0
 with p=p0.evilPush(L0) 
 if forall Cs, 
@@ -39,15 +43,13 @@ if forall Cs,
       b4)L0(Cs)(ms).e?=e' if Li(Cs)(ms).e?=e, i in{1,2}
          e' sim e where sim ignore all L inside e/e'
          L0(Cs)(ms).mh =Li(Cs)(ms).mh
-         forall L' inside e',
-           c1)ctxC'[L']=e', ctxC[L]=e, ctxC' sim ctxC
-           c2)validMwts(p, p0.evilPush(Li), L',L)
+         validMwts(p, p0.evilPush(Li), e',e)
       b5)if L1(Cs) defined, p|-L0(Cs)(ms).mh<<L1(Cs)(ms).mh
       b6)if L2(Cs) defined, p|-L0(Cs)(ms).mh<<L2(Cs)(ms).mh
       b7)if L1(Cs) defined, validMwts(p, p0.evilPush(L1), L0,L1,Cs,ms)
       b8)if L1(Cs) defined, validMwts(p, p0.evilPush(L2), L0,L1,Cs,ms) 
-
-//need to check all the L inside L0(Cs)(ms).e
+_______
+#define
 validMwts(p0, p, L0,L,Cs,ms)
   with mh0=L0(Cs)(ms).mh and mh=L(Cs)(ms).mh
   p0|-mh0<<mh ?? repetition?
@@ -58,11 +60,16 @@ validMwts(p0, p, L0,L,Cs,ms)
   mh,mhs is allowed config.
   forall mhi in mh0\mhs exists mhj in mh0,mhs //is this forall checking the right thing?
     such that p0|-mhj<<mhi
-    
-validMwts(p0, p, L0,L)
-  forall Cs, ms such that L(Cs)(ms) is defined
-    validMwts(p0, p, L0,L,Cs,ms)    
-  
+_______
+#define    
+validMwts(p0, p, e0,e)
+  forall L0 inside e0
+    ctxC0[L0]=e0, ctxC[L]=e, ctxC0 sim ctxC0
+    forall Cs, ms such that L(Cs)(ms) is defined
+      validMwts(p0, p, L0,L,Cs,ms)
+      if L(Cs)(ms).e?=e' then
+        L0(Cs)(ms).e?=e0'
+        validMwts(p0.evilPush(L0), p.evilPush(L), e0',e')  
 _______
 #define
 p|-L sum L'=L2
