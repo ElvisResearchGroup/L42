@@ -23,6 +23,46 @@ a+b sim b+a
 sim allows differences in the order of implemented
 interfaces, declared methods and nested classes.  
 
+
+What if we attempt first a real formalization?
+p|-L1+L2=L0
+with p=p0.evilPush(L0) 
+if forall Cs, 
+    a1)L0(Cs) defined if L1(Cs) or L2(Cs) defined.
+    a2)L0(Cs) is interface if L1(Cs) is interface or L2(Cs) is interface
+    a3)if L1(Cs) defined, L0(Cs).Ps contains all collect(p.navigate(Cs),L1(Cs).Ps)
+       if L2(Cs) defined, L0(Cs).Ps contains all collect(p.navigate(Cs),L2(Cs).Ps)
+    a4)forall ms,
+      b1)either L1(Cs)(ms).e?=empty or L2(Cs)(ms).e?=empty
+      b2)L0(Cs)(ms) defined if L1(Cs)(ms) or L2(Cs)(ms) defined.
+      b3)L0(Cs)(ms) is refine if exists P in L0(Cs).Ps such that ms in dom(p(P)) 
+      b4)L0(Cs)(ms).e?=e' if Li(Cs)(ms).e?=e, i in{1,2}
+         e' sim e where sim ignore all L inside e/e'
+         L0(Cs)(ms).mh =Li(Cs)(ms).mh
+         forall L' inside e',
+           c1)ctxC'[L']=e', ctxC[L]=e, ctxC' sim ctxC
+           c2)validMwts(p, p0.evilPush(Li), L',L)
+      b5)if L1(Cs) defined, p|-L0(Cs)(ms).mh<<L1(Cs)(ms).mh
+      b6)if L2(Cs) defined, p|-L0(Cs)(ms).mh<<L2(Cs)(ms).mh
+      b7)if L1(Cs) defined, validMwts(p, p0.evilPush(L1), L0,L1,Cs,ms)
+      b8)if L1(Cs) defined, validMwts(p, p0.evilPush(L2), L0,L1,Cs,ms) 
+
+//need to check all the L inside L0(Cs)(ms).e
+validMwts(p0, p, L0,L,Cs,ms)
+  with mh0=L0(Cs)(ms).mh and mh=L(Cs)(ms).mh
+  p0|-mh0<<mh ?? repetition?
+  L0(Cs).Ps contains all collect(p0,L0(Cs).Ps)?? repetition?
+  mhs0={p0(P)(ms).mh |P in L0(Cs).Ps}
+  mhs={p(P)(ms).mh |P in L(Cs).Ps}//note,p0(P)(ms) would wrongly produce a larger set 
+  mh0,mhs0 is winning config.
+  mh,mhs is allowed config.
+  forall mhi in mh0\mhs exists mhj in mh0,mhs //is this forall checking the right thing?
+    such that p0|-mhj<<mhi
+    
+validMwts(p0, p, L0,L)
+  forall Cs, ms such that L(Cs)(ms) is defined
+    validMwts(p0, p, L0,L,Cs,ms)    
+  
 _______
 #define
 p|-L sum L'=L2
@@ -67,12 +107,15 @@ _______
 SArg|-L1 sumAll L2=L
 SArg|- {interface?1 implements Ps1 mwt1..mwtn nc1..nck} 
     sumAll {interface?2 implements Ps2 mwts2 ncs2}
-    =SArg|-Isum({interface? implements Ps mwts ncs})
+    ={interface? implements Ps mwts ncs}
   where
   interface?=interface?1 mwts1 +interface?2 mwts2
   Ps=collect(SArg.p,Ps1, Ps2)
-  SArg.p|-mwti sumAll mwti[mwts2]=mwti'
-  mwts=mwt1',..,mwtn',mwts2\dom(mwt1..mwtn)
+  mwti'=SArg.p|-mwti sumAll mwti[mwts2]
+  SArg'=SArg[with LC1=SArg.LC2][with LC2=SArg.LC1]
+  if mwti.e?=empty mwti''=SArg'|-Isum(mwti')
+  else mwti''=SArg|- Isum(mwti')
+  mwts=mwt1'',..,mwtn'',SArg'|-Isum(mwts2\dom(mwt1..mwtn))
   SArg|-nci sumAll nci[ncs2]= nci'
   ncs=nc1'..ncn' ncs2\dom(nc1..nck)
 
@@ -82,34 +125,57 @@ _______
 SArg|-C:L1 sumAll C:L2 = C: SArg'[with p=p.push(C)]|-L1 sumAll L2
 if SArg.n=0 SArg'=SArg[with Cs=SArg.Cs.C]
 else SArg'=SArg[with n=SArg.n+1]
+
 _______
-#define SArg|-Isum(L)=L[with mwts=SArg|-IsumDeep(mwts)]
+#define SArg|-Isum(mwt1..mwtn)=SArg|-Isum(mwt1),..,SArg|-Isum(mwtn)
+
+_______
+#define SArg|-Isum(mwt)
+come importo gli altri mwt in implemented interfaces
+sistema mwt,
+sistema all L in mwt.e
+
+dividere aggiungere mwt da controlla sottotipo << ?
+prima controlla, poi aggiungi?
+
+_______
+#define Icheck(SArg,Ps,mwt)
+  //check still 1 no refine
+  exists 0 or 1 Pi in Ps such that
+    p(Pi)(ms)=mh//no refine
+  //check for all refine method valid <=; keep in mind p.top() is not normalized
+  forall Pi in Ps where the folling holds:
+    This0.Csi=Pi[remove SArg.n outer][from This0.(SArg.Cs)]
+    mwt.ms in dom(p(Pi)) //over the ms under consideration
+    if n==0 //we are in the nested class SArg.Cs
+      if LC1(SArg.Cs)(mwt.ms).mh and LC2(Csi)(mwt.ms).mh are both defined
+        then p|-mwt.mh << LC2(Csi)(mwt.ms).mh must hold  
+        if LC2(SArg.Cs)(mwt.ms).mh and LC1(Csi)(mwt.ms).mh are both defined
+        then p|-mwt.mh << LC1(Csi)(mwt.ms).mh must hold
+      else //we are deep in a literal in a method body
+        //we may call it so that LC1 is always the source for such method
+        p|-mwt.mh << LC2(Csi)(mwt.ms).mh must hold
+
+
+_______
+#define Iadd(SArg,L)=L[with mwts=SArg|-IsumDeep(mwts)]
   forall Pi in L.Ps, we name 
     This0.Csi=Pi[remove SArg.n outer][from This0.(SArg.Cs)]//if the result is not This0, it implements an outer interface
-    mwtsi = p|-LC1(Csi).mwts + LC2(Csi).mwts//could be cached
-    mwtsi'=mwtsi[from Psi]\dom(L.mwts)
-  mwts0=[with msi in (mwts1',..,mwtsn').mss
-    SArg.p|-max(msi[mwts1'],..,msi[mwtsn'])]
+    mwtsi=[with mwtj in LC1(Csi).mwts
+      max(SArg.p,mwtj,mwtj[LC2(Csi).mwts])
+      ],LC2(Csi).mwts\dom(LC1(Csi).mwts)
+    //mwtsi could be cached
+    mwtsi'=mwtsi[from Pi]
+    //\dom(L.mwts) //this will be added
+  mwts0=mwts1'..mwtsn'//should have disjoint domains?? no??
   mwts=[with mwti in L.mwts
     SArg.p|-mwti sumAll addRefine(mwti[mwts0]))
     ],mwts0\dom(L.mwts)  
-  if any mwtsi existed:  
-    mss={mwt.ms: mwt in mwts, mwt is refine}
-    //check still 1 no refine
-    forall msi in mss exists exactly 1 Pi in L.Ps such that
-      p(Pi)(ms)=mh//no refine
-   
-    //check for all refine method valid <=; keep in mind p.top() is not normalized
-    forall msi in mss, mwts(msi)=mwt
-      forall Pi in Ps where Csi exists,
-        mwt.ms in dom(p(Pi))
-        mwt1=LC1(Csi)(mwt.ms), mwt2=LC2(Csi)(mwt.ms)
-        check p|-mwt.mh << mwt1.mh and p|-mwt.mh << mwt2.mh
   
 _______
-#define SArg|-IsumDeep(L)= SArg|-Isum(L0)
-  L0=L[with ncs=ncs]
+#define SArg|-IsumDeep(L)= SArg|-L[with ncs=ncs][with mwts=mwts]
   ncs= SArg|-IsumDeep(L.ncs)
+  mwts=Isum(L0.mwts)
 
 _______
 #define SArg|-IsumDeep(C:L)= C: L0
