@@ -70,6 +70,12 @@ validMwts(p0, p, e0,e)
       if L(Cs)(ms).e?=e' then
         L0(Cs)(ms).e?=e0'
         validMwts(p0.evilPush(L0), p.evilPush(L), e0',e')  
+
+
+Notes:
+should a uniquely named non coherent class be well typed "typed"?
+should we require that after the sum all the formerly coherent uniquely named classes are still coherent?
+
 _______
 #define
 p|-L sum L'=L2
