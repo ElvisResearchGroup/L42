@@ -75,7 +75,7 @@ validMwts(p0, p, e0,e)
 Notes:
 should a uniquely named non coherent class be well typed "typed"?
 should we require that after the sum all the formerly coherent uniquely named classes are still coherent?
-
+may be we should be stronger and require no new abstract method is added to uniquely named classes? to avoid allow static classes to become non static (only once)
 _______
 #define
 p|-L sum L'=L2
