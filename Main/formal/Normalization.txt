@@ -85,7 +85,7 @@ maindefinition:
   otherwise
 -norm(p)={interface? implements Ps' norm(p,Ms') Norm}
  p.top()={interface? implements Ps Ms} //Ms is free var and is ok
- Ps'=collect(p,Ps)
+ Ps'=collect(p,Ps) //Marco does not likes that Ps get reordered also if they are all present, but is hard to predict what will happen if not reorder only in that fragile circustance
  Ms'=methods(p,This0), {C:e in Ms} //norm now put all the nested classes in the back.
   
 //norm(p,ms e) should never be call 

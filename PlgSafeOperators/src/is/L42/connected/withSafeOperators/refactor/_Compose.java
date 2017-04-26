@@ -36,6 +36,7 @@ if forall Cs,
     a2)L0(Cs) is interface if L1(Cs) is interface or L2(Cs) is interface //check there is check for when ok to sum interface+class
     a3)if L1(Cs) defined, L0(Cs).Ps contains all collect(p.navigate(Cs),L1(Cs).Ps)
        if L2(Cs) defined, L0(Cs).Ps contains all collect(p.navigate(Cs),L2(Cs).Ps)
+       L0(Cs).Ps=collect(p.navigate(Cs),L0(Cs).Ps)
     a4)forall ms,
       b1)either L1(Cs)(ms).e?=empty or L2(Cs)(ms).e?=empty
       b2)L0(Cs)(ms) defined if L1(Cs)(ms) or L2(Cs)(ms) defined.
@@ -47,7 +48,9 @@ if forall Cs,
       b5)if L1(Cs) defined, p|-L0(Cs)(ms).mh<<L1(Cs)(ms).mh
       b6)if L2(Cs) defined, p|-L0(Cs)(ms).mh<<L2(Cs)(ms).mh
       b7)if L1(Cs) defined, validMwts(p, p0.evilPush(L1), L0,L1,Cs,ms)
-      b8)if L1(Cs) defined, validMwts(p, p0.evilPush(L2), L0,L1,Cs,ms) 
+      b8)if L1(Cs) defined, validMwts(p, p0.evilPush(L2), L0,L1,Cs,ms)
+    a5) L0(Cs).mwts.mss=L1(Cs).mwts.mss\L2(Cs).mwts.mss,L2(Cs).mwts.mss 
+    a6) L0(Cs).ncs.Cs=L1(Cs).ncs.Cs\L2(Cs).ncs.Cs,L2(Cs).ncs.Cs
 _______
 #define
 validMwts(p0, p, L0,L,Cs,ms)
