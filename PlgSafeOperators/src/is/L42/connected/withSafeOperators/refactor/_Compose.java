@@ -33,7 +33,7 @@ p|-L1+L2=L0
 with p=p0.evilPush(L0) 
 if forall Cs, 
     a1)L0(Cs) defined if L1(Cs) or L2(Cs) defined.
-    a2)L0(Cs) is interface if L1(Cs) is interface or L2(Cs) is interface
+    a2)L0(Cs) is interface if L1(Cs) is interface or L2(Cs) is interface //check there is check for when ok to sum interface+class
     a3)if L1(Cs) defined, L0(Cs).Ps contains all collect(p.navigate(Cs),L1(Cs).Ps)
        if L2(Cs) defined, L0(Cs).Ps contains all collect(p.navigate(Cs),L2(Cs).Ps)
     a4)forall ms,

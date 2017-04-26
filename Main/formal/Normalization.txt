@@ -35,7 +35,8 @@ r::=LC| exception v | error v
 ###define methods(p,P)=Ms
 
 subdefinitions:
--collect(p,empty)=empty 
+//if in the sum we have two normalized implements lists Ps1, Ps2, then the resulting Ps0= Ps1\Ps2, Ps2 follows the "collect order"
+-collect(p,empty)=empty  
   //an implementation could keep a list of visited P instead of diverging, mathematically is the same.
 -collect(p,P0 Ps)=(P0,Ps')\collect(p,Ps), collect(p,Ps) //that is,crucially: dept first but we avoid duplicates by keeping the rightmost occurence.  
   p(P0)={_ implements Ps0 _}

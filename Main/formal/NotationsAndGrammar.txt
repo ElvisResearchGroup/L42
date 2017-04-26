@@ -286,7 +286,7 @@ program derived operations:
  p.push(L)=p.push(ctxL,L)//an evilPush can exist in implementation
  with ctxL[L]=p.top()
  //with p'=p.evilPush(L)   p'.top()==L, p'.pop()==p, p'.update(..) error! 
-
+//TODO: define evil push more precisly with fresh nested class
 
 -navigate(Cs)
  p.navigate(C1..Ck)=p.push(C1)...push(Ck)
