@@ -49,8 +49,13 @@ if forall Cs,
       b6)if L2(Cs) defined, p|-L0(Cs)(ms).mh<<L2(Cs)(ms).mh
       b7)if L1(Cs) defined, validMwts(p, p0.evilPush(L1), L0,L1,Cs,ms)
       b8)if L1(Cs) defined, validMwts(p, p0.evilPush(L2), L0,L1,Cs,ms)
-    a5) L0(Cs).mwts.mss=L1(Cs).mwts.mss\L2(Cs).mwts.mss,L2(Cs).mwts.mss 
-    a6) L0(Cs).ncs.Cs=L1(Cs).ncs.Cs\L2(Cs).ncs.Cs,L2(Cs).ncs.Cs
+    a5) L0(Cs).mwts.mss=
+          (methods(p,This0).mss\L1(Cs).mwts.mss)\L2(Cs).mwts.mss, 
+          L1(Cs).mwts.mss\L2(Cs).mwts.mss,
+          L2(Cs).mwts.mss
+    a6) L0(Cs).ncs.Cs=
+          L1(Cs).ncs.Cs\L2(Cs).ncs.Cs,
+          L2(Cs).ncs.Cs
 _______
 #define
 validMwts(p0, p, L0,L,Cs,ms)
