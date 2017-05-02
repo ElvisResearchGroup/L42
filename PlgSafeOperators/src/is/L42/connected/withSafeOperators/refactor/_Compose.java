@@ -50,8 +50,8 @@ if forall Cs, all of the following hold:
          validMwts(p, p0.evilPush(Li), e',e)
       b5)if L1(Cs) defined, p|-L0(Cs)(ms).mh<<L1(Cs)(ms).mh
       b6)if L2(Cs) defined, p|-L0(Cs)(ms).mh<<L2(Cs)(ms).mh
-      b7)if L1(Cs) defined, validMwts(p, p0.evilPush(L1), L0,L1,Cs,ms)
-      b8)if L1(Cs) defined, validMwts(p, p0.evilPush(L2), L0,L1,Cs,ms)
+      b7)if L1(Cs) defined, validMwt(p, p0.evilPush(L1), L0,L1,Cs,ms)
+      b8)if L1(Cs) defined, validMwt(p, p0.evilPush(L2), L0,L1,Cs,ms)
     a5) L0(Cs).mwts.mss=
           (methods(p,This0).mss\L1(Cs).mwts.mss)\L2(Cs).mwts.mss, 
           L1(Cs).mwts.mss\L2(Cs).mwts.mss,
@@ -61,7 +61,7 @@ if forall Cs, all of the following hold:
           L2(Cs).ncs.Cs
 _______
 #define
-validMwts(p0, p, L0,L,Cs,ms)
+validMwt(p0, p, L0,L,Cs,ms)
   with mh0=L0(Cs)(ms).mh and mh=L(Cs)(ms).mh
   p0|-mh0<<mh ?? repetition?
   L0(Cs).Ps contains all collect(p0,L0(Cs).Ps)?? repetition?
@@ -75,15 +75,15 @@ _______
 #define    
 validMwts(p0, p, e0,e)
   forall L0 inside e0
-    ctxC0[L0]=e0, ctxC[L]=e, ctxC0 sim ctxC0
-    forall Cs, ms such that L(Cs)(ms) is defined
-      validMwts(p0, p, L0,L,Cs,ms)
+    ctxC0[L0]=e0, ctxC[L]=e, ctxC0 sim ctxC
+    forall Cs, ms such that L(Cs)(ms) is defined //L0(Cs)(ms) must be defined in the same cases
+      validMwt(p0, p, L0,L,Cs,ms)
       if L(Cs)(ms).e?=e' then
         L0(Cs)(ms).e?=e0'
         validMwts(p0.evilPush(L0), p.evilPush(L), e0',e')  
 
 
-Notes:
+Notes: (the first 2 of? the points under also apply to classes with private state
 should a uniquely named non coherent class be well typed "typed"?
 should we require that after the sum all the formerly coherent uniquely named classes are still coherent?
 may be we should be stronger and require no new abstract method is added to uniquely named classes? to avoid allow static classes to become non static (only once)

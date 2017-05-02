@@ -408,7 +408,7 @@ fwd%Imm<=fwdImm
 Norm  |- p ~> p.top()  //remember: norm ignores meth bodies
 //assert forall P in norm(p).Ps p(P).Phase>=Norm
 //assert p.top().Phase!=None
-(library well typed)
+(library well typed)  //TODO: check interfaces has no unique named methods
 Phase |- p ~> L' //In implementation, if p.top().Phase>=Phase, L'=p.Top()
    where
    Phase in {Typed,Coherent}
