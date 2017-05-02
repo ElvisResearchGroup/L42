@@ -6,7 +6,7 @@ In a normalized LC,
 -all methods in implemented interfaces are explicitly declared (with their type) in this library
 -all the nested classes are after the methods in the list of members
 
-When run on well typed LCs, it will produce a well typed LC. Note: sum of coherent LCs can produce a (well typed but) non-coherent LC
+When run on well typed LCs, it will produce a well typed LC  or fail for locally explicable reasons. Note: sum of coherent LCs can produce a (well typed but) non-coherent LC
 
 Definition for sum: 
 p|-L1 sum L2=L //p is the program within which the sum is run. This1 in L1 and L2 is p.top().
@@ -37,7 +37,10 @@ if forall Cs,
     a3)if L1(Cs) defined, L0(Cs).Ps contains all collect(p.navigate(Cs),L1(Cs).Ps)
        if L2(Cs) defined, L0(Cs).Ps contains all collect(p.navigate(Cs),L2(Cs).Ps)
        L0(Cs).Ps=collect(p.navigate(Cs),L0(Cs).Ps)
-    a4)forall ms,
+       Ps =L1(Cs).Ps, L2(Cs).Ps if defined, else either
+       Ps =L1(Cs).Ps or Ps= L2(Cs).Ps
+       L0(Cs).Ps=collect(p.navigate(Cs),Ps)
+    a4)if L0(Cs) defined, then forall ms,
       b1)either L1(Cs)(ms).e?=empty or L2(Cs)(ms).e?=empty
       b2)L0(Cs)(ms) defined if L1(Cs)(ms) or L2(Cs)(ms) defined.
       b3)L0(Cs)(ms) is refine if exists P in L0(Cs).Ps such that ms in dom(p(P)) 
