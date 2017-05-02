@@ -31,7 +31,7 @@ _______
 #define
 p|-L1+L2=L0
 with p=p0.evilPush(L0) 
-if forall Cs, 
+if forall Cs, all of the following hold:
     a1)L0(Cs) defined if L1(Cs) or L2(Cs) defined.
     a2)L0(Cs) is interface if L1(Cs) is interface or L2(Cs) is interface //check there is check for when ok to sum interface+class
     a3)if L1(Cs) defined, L0(Cs).Ps contains all collect(p.navigate(Cs),L1(Cs).Ps)
@@ -40,8 +40,8 @@ if forall Cs,
        Ps =L1(Cs).Ps, L2(Cs).Ps if defined, else either
        Ps =L1(Cs).Ps or Ps= L2(Cs).Ps
        L0(Cs).Ps=collect(p.navigate(Cs),Ps)
-    a4)if L0(Cs) defined, then forall ms,
-      b1)either L1(Cs)(ms).e?=empty or L2(Cs)(ms).e?=empty
+    a4)if L0(Cs) defined, then forall ms, all of the following hold:
+      b1)if L1(Cs)(ms) and L2(Cs)(ms) both defined, then L1(Cs)(ms).e?=empty or L2(Cs)(ms).e?=empty
       b2)L0(Cs)(ms) defined if L1(Cs)(ms) or L2(Cs)(ms) defined.
       b3)L0(Cs)(ms) is refine if exists P in L0(Cs).Ps such that ms in dom(p(P)) 
       b4)L0(Cs)(ms).e?=e' if Li(Cs)(ms).e?=e, i in{1,2}
