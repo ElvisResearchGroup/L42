@@ -271,9 +271,11 @@ import ast.Ast.NormType;
 import ast.Ast.Path;
 import ast.Ast.Position;
 import ast.Ast.Type;
+import ast.ExpCore;
 import ast.ExpCore.*;
 import ast.ExpCore.ClassB.NestedClass;
 import ast.ExpCore.ClassB.Phase;
+import facade.PData;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodWithType;
 import is.L42.connected.withSafeOperators.Errors42;
@@ -283,7 +285,7 @@ import newTypeSystem.TypeSystem;
 import programReduction.Program;
 import tools.Map;
 
-public class _Compose {
+public class Compose {
 
   //will be needed for other operations... may be sum need to cooperate? late checks are an issue...
   /*public static boolean matchNested(Program p, ClassB top, List<Member> ms, List<Ast.C> current, NestedClass nc1, NestedClass nc2) {
@@ -292,14 +294,76 @@ public class _Compose {
     if(!res.isOk()){return false;}
     SumOkN resOk=res.toOk();
     resOk.
-  }*/
+  }
+  
+  
+  
+  //simplified sum in 5 lines: interfaces sum not allowed, method header must be identical
+  {implements Ts1 mwt1 ncs1}+{implements Ts2 mwt2 ncs2} ={Ts1\Ts2,Ts2 mwts ncs}
+  with 
+    mwts=mwts1\dom(mwts2) {mwt[mwts1]+mwt | mwt in mwts2}
+    ncs=ncs1\dom(ncs2) {nc[ncs1]+nc | nc in ncs2}
+  C:L1 + C:L2= C: L1+L2
+  refine? mh e? + refine?' mh e?'= {refine?,refine?'} mh e? e?' //if none is empty, is not a well formed mwt  
+  
+  */
   //public static boolean matchMwt(Program p, ClassB topA, ClassB topB, List<Member> ms, List<Ast.C> current, Member m, Member oms) {
 
-
-  public static ClassB compose(Program pData,ClassB a,ClassB b){
+  public static MethodWithType _extractMwt(MethodWithType mwt,List<MethodWithType>mwts){
+    for(MethodWithType mwti:mwts){if (mwti.getMs().equals(mwt.getMs())){return mwti;}}
+    return null;
+    }
+  public static NestedClass  _extractNc(NestedClass nc,List<NestedClass>ncs){
+    for(NestedClass nci:ncs){if (nci.getName().equals(nc.getName())){return nci;}}
+    return null;
+    }
+  
+  public static ClassB compose(PData pData,ClassB a,ClassB b){
     b=privateMangling.RefreshUniqueNames.refresh(b);
     return alradyRefreshedCompose(pData,a,b);
     }
+  
+  public static MethodWithType sumMwt(MethodWithType mwt1,MethodWithType mwt2){
+    if (mwt1==null){return mwt2;}
+    boolean refine=mwt1.getMt().isRefine() || mwt2.getMt().isRefine(); 
+    if(!mwt1.getMt().withRefine(false).equals(mwt2.getMt().withRefine(false))){
+      assert false;
+      }
+    Optional<ExpCore>body=mwt1.get_inner();
+    if(body.isPresent() && mwt2.get_inner().isPresent()){
+      assert false;
+      }
+    if(!body.isPresent()){body=mwt2.get_inner();}
+    MethodWithType mwt=mwt1.withMt(mwt1.getMt().withRefine(refine)).with_inner(body);
+    return mwt;
+    }
+  public static ClassB alradyRefreshedCompose(PData p,ClassB a,ClassB b){
+    if(a.isInterface() || b.isInterface()){
+      assert false;
+      }
+    List<Type> impls=new ArrayList<>(a.getSupertypes());
+    for(Type ti:b.getSupertypes()){impls.remove(ti);}
+    impls.addAll(b.getSupertypes());
+    List<MethodWithType>mwts=new ArrayList<>(a.mwts());
+    for(MethodWithType mwti: b.mwts()){mwts.remove(mwti);}
+    for(MethodWithType mwti: b.mwts()){
+      mwts.add(sumMwt(_extractMwt(mwti,a.mwts()),mwti));
+      }
+    List<NestedClass>ncs=new ArrayList<>(a.ns());
+    for(NestedClass nci: b.ns()){ncs.remove(nci);}
+    for(NestedClass nci: b.ns()){
+      NestedClass ncj=_extractNc(nci,a.ns());
+      if(ncj==null){ncs.add(nci);}
+      else {
+        ClassB l=alradyRefreshedCompose(p,(ClassB)nci.getE(),(ClassB)ncj.getE());
+        ncs.add(nci.withE(l));}
+      }
+    
+    return new ClassB(a.getDoc1().sum(b.getDoc1()),false,impls,mwts,ncs,a.getP().sum(b.getP()),Phase.Norm,p.p.getFreshId());
+  }
+  
+}
+  /*
   public static ClassB alradyRefreshedCompose(Program pData,ClassB a,ClassB b){
     SumOut res = nestedCompose(pData,a,b,a,b,Collections.emptyList());
     if(res.isOk()){return res.toOk().res;}
@@ -505,7 +569,7 @@ return null;
 }
 
 //-------------------Data structures----------
-
+/*
 class SumOkM implements SumOutM{
   MethodWithType res; SumOkM(MethodWithType res){this.res=res;}
   @Override public SumOkM toOkM() {return this;}
