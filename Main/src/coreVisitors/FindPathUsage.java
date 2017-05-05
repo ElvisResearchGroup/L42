@@ -30,6 +30,9 @@ Ast.Position located=null;
     finally{searchingFor=oldP;}
     }
   public ExpCore visit(ExpCore.EPath s) {
+    if(s.toString().contains("Safe")){
+      System.out.println(s);
+    }
     if (p.equiv(s.getInner(),searchingFor)){
       this.located=s.getP();
       }

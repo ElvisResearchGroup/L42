@@ -345,12 +345,12 @@ public class Compose {
     for(Type ti:b.getSupertypes()){impls.remove(ti);}
     impls.addAll(b.getSupertypes());
     List<MethodWithType>mwts=new ArrayList<>(a.mwts());
-    for(MethodWithType mwti: b.mwts()){mwts.remove(mwti);}
+    for(MethodWithType mwti: b.mwts()){Util._findAndRemove(mwts,mwti.getMs());}
     for(MethodWithType mwti: b.mwts()){
       mwts.add(sumMwt(_extractMwt(mwti,a.mwts()),mwti));
       }
     List<NestedClass>ncs=new ArrayList<>(a.ns());
-    for(NestedClass nci: b.ns()){ncs.remove(nci);}
+    for(NestedClass nci: b.ns()){Util._findAndRemove(ncs,nci.getName());}
     for(NestedClass nci: b.ns()){
       NestedClass ncj=_extractNc(nci,a.ns());
       if(ncj==null){ncs.add(nci);}
@@ -540,6 +540,7 @@ public static SumOutM methodCompose(Program p,
 return null;
 }
 }
+*/
 class Util{
 //TODO: put in functions, and use everywhere?
 static <T> List<T> push(List<T> that, T elem){

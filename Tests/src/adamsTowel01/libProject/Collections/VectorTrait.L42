@@ -122,7 +122,7 @@ read method lent IteratorVal vals(Size minTo) this.vals(from:Size"-1", maxTo:Siz
 read method lent IteratorVal vals(Size from, Size to) this.vals(from:from, maxTo:to, minTo:this.inner().size() )
 read method lent IteratorVal vals() this.vals(from:Size"-1", maxTo:Size"-2", minTo:this.inner().size() )
 
-IteratorVal: SafeOperatorsAccess.compose(left:IteratorTrait(),
+IteratorVal: UnsafeRefactor.Compose.compose(left:IteratorTrait(),
    right:  { 
      read MutListT _that, var Size from, Size maxTo, Size minTo
      read method read MutListT that() this._that()
@@ -140,7 +140,7 @@ read method lent IteratorValFill vals(Size minTo, Elem filled) this.vals(from:Si
 read method lent IteratorValFill vals(Size from, Size to, Elem filled) this.vals(from:from, maxTo:to, minTo:this.inner().size(), filled:filled )
 read method lent IteratorValFill vals(Elem filled) this.vals(from:Size"-1", maxTo:Size"-2", minTo:this.inner().size(), filled:filled )
 
-IteratorValFill: SafeOperatorsAccess.compose(left:IteratorTrait(),
+IteratorValFill: UnsafeRefactor.Compose.compose(left:IteratorTrait(),
    right:  {
      read MutListT _that, var Size from, Size maxTo, Size minTo, Elem filled
      read method read MutListT that() this._that()
@@ -158,7 +158,7 @@ mut method lent IteratorVar #vals(Size minTo) this.#vals(from:Size"-1", maxTo:Si
 mut method lent IteratorVar #vals(Size from, Size to) this.#vals(from:from, maxTo:to, minTo:this.inner().size() )
 mut method lent IteratorVar #vals() this.#vals(from:0Size-1Size, maxTo:Size"-2", minTo:this.inner().size() )
 
-IteratorVar: SafeOperatorsAccess.compose(left:IteratorTrait(),
+IteratorVar: UnsafeRefactor.Compose.compose(left:IteratorTrait(),
   right:  { 
     mut MutListT that, var Size from, Size maxTo, Size minTo
     class method
