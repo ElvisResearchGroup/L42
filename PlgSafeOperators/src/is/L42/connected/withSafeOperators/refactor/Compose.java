@@ -61,15 +61,15 @@ if forall Cs, all of the following hold:
           L2(Cs).ncs.Cs
 _______
 #define
-validMwt(p0, p, L0,L,Cs,ms)
+validMwt(p0, p, L0,L,Cs,ms)  //we need to add Froms when needed
   with mh0=L0(Cs)(ms).mh and mh=L(Cs)(ms).mh
-  p0|-mh0<<mh ?? repetition?
+  p0 |- mh0 << mh ?? repetition?
   L0(Cs).Ps contains all collect(p0,L0(Cs).Ps)?? repetition?
   mhs0={p0(P)(ms).mh |P in L0(Cs).Ps}
   mhs={p(P)(ms).mh |P in L(Cs).Ps}//note,p0(P)(ms) would wrongly produce a larger set 
   mh0,mhs0 is winning config.
   mh,mhs is allowed config.
-  forall mhi in mh0\mhs exists mhj in mh0,mhs //is this forall checking the right thing?
+  forall mhi in mhs0\mhs exists mhj in mh0,mhs //is this forall checking the right thing?
     such that p0|-mhj<<mhi
 _______
 #define    
@@ -299,7 +299,7 @@ public class Compose {
   
   
   //simplified sum in 5 lines: interfaces sum not allowed, method header must be identical
-  {implements Ts1 mwt1 ncs1}+{implements Ts2 mwt2 ncs2} ={Ts1\Ts2,Ts2 mwts ncs}
+  {implements Ts1 mwt1 ncs1}+{implements Ts2 mwt2 ncs2} ={implements Ts1\Ts2,Ts2 mwts ncs}
   with 
     mwts=mwts1\dom(mwts2) {mwt[mwts1]+mwt | mwt in mwts2}
     ncs=ncs1\dom(ncs2) {nc[ncs1]+nc | nc in ncs2}
