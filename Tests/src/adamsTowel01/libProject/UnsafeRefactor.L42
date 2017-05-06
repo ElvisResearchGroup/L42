@@ -13,7 +13,6 @@ Compose:{
   Library (Library that,Library and)
     This.compose(left:that,right:and)
   }
-//may still need redirect/rename class
 RenameClass:{
   //@plugin  toFix 
   //@pluginPart is.L42.connected.withSafeOperators.refactor.Rename
@@ -22,6 +21,15 @@ RenameClass:{
 
   class method
   Library renameClass(Library that,S nameSrc,S nameDest)
+  }
+Redirect:{
+  //@plugin  toFix 
+  //@pluginPart is.L42.connected.withSafeOperators.refactor.Redirect
+  class method Void #pluginUnresponsive(Library binaryRepr) 
+    error {/*redirect(Library that,S src,class Any dest)*/}
+
+  class method
+  Library redirect(Library that,S src,class Any dest)
   }
 This$er:{
   class method

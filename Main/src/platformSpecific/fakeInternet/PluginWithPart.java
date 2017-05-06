@@ -69,7 +69,11 @@ public class PluginWithPart implements PluginType{
     return NormType.immLibrary;
     }
   private static ast.Ast.NormType jTo42(String jt){
-    if (jt.equals("_ast%Ast%Path")){return NormType.classAny;}
+    jt=jt.substring(1);
+    jt=jt.substring(jt.indexOf("_"));
+    if (jt.equals("_ast%Ast$Path")){
+      return NormType.classAny;
+      }
     return NormType.immLibrary;
     }
   public Object execute(Program p, Using u){
@@ -240,7 +244,12 @@ public class PluginWithPart implements PluginType{
     //  try{_1=(`T1`)xsF[0];.._n=(`Tn`)xsF[n-1];}
     res.append("try{\n");
     {int i=0;for(String t:ui.ts){i++;
-      res.append("_"+i+"=("+t+")"+xsF+"["+(i-1)+"];\n");
+      if(t.equals("ast.Ast.Path")){
+        res.append("_"+i+"=auxiliaryGrammar.EncodingHelper.ensureExtractPathFromJava("+xsF+"["+(i-1)+"]);\n");
+        }
+      else {
+        res.append("_"+i+"=("+t+")"+xsF+"["+(i-1)+"];\n");
+        }
       }}
     res.append("}\n");
     //  catch(ClassCastException cce){assert false; throw DoNotAct;}

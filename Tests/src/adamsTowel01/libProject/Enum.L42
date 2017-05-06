@@ -21,7 +21,7 @@ SolidTrait:{class method Library (){//Data is more than Solid, and Liquid, Gas, 
 
   class method Library enumTrait() {
     ParseFail:Message.$<><{ implements Guard.ParseFail}
-    Top: SafeOperatorsAccess.compose(left:SolidTrait() //Use[SolidTrait()]<><
+    Top: UnsafeRefactor.Compose.compose(left:SolidTrait() //Use[SolidTrait()]<><
       right:{implements Concept.ToS
         Size inner
         class method This(Size inner)

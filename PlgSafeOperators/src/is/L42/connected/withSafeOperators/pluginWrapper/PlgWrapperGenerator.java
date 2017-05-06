@@ -231,12 +231,20 @@ private static UsingInfo usingConstructor(PlgInfo plgInfo, Constructor<?>[] jcs,
     e=e.withInner(ExpCore.EPath.wrap(mt.getReturnType().getNT().getPath()));
     //u=u.withS(ui.usingMs);
     List<ExpCore> ues=new ArrayList<>();
-    if(!mt.getMdf().equals(Mdf.Class)){
+    if(mt.getMdf()!=Mdf.Class){
       ues.add(p0.withInner(new ExpCore.X(mwt.getP(),"this")));
       }
     {int i=-1;for(String x: mwt.getMs().getNames()){i++;
       ExpCore pi=new ExpCore.X(mwt.getP(),x);
-      if(!mwt.getMt().getTs().get(i).equals(NormType.immLibrary)){
+      boolean needAddBinaryRepr=true;
+      Type ti=mwt.getMt().getTs().get(i);
+      if(ti.equals(NormType.immLibrary)){
+        needAddBinaryRepr=false;
+        }
+      if(ti.getNT().getMdf()==Mdf.Class){
+        needAddBinaryRepr=false;
+        }
+      if(needAddBinaryRepr){
         pi=p0.withInner(pi);  
         }
       ues.add(pi);
@@ -355,6 +363,7 @@ public static boolean hasPluginUnresponsive(ClassB l){
     }
   private static void isOkAsParameter(Program p, Path csTop, Type ti) throws ClassUnfit, MethodUnfit {
     Path pi=ti.getNT().getPath();
+    if(ti.getNT().getMdf()==Mdf.Class){return;}//class parameters are ok, and we just omit the .#binaryRepr() call
     if (pi.equals(Path.Library())){return;}//Libraries are ok and we just omit the .#binaryRepr() call
     Path op=_pathForOutside(csTop.getCBar().size(),pi);
     if(op==null){checkForInside(p.top(),csTop,pi); return;}
