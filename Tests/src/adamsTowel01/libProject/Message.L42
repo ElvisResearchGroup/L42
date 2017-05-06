@@ -34,7 +34,7 @@ EqualMessages:{
   }}
 $:{()
   class method Library <><(Library that)
-    /*SafeOperatorsAccess*/UnsafeRefactor.Compose.compose(left:that, right:This.messageTrait())
+    UnsafeRefactor.Compose.compose(left:that, right:This.messageTrait())
   class method Library messageTrait() {(S _text, Message.Opt cause) implements Message
     
     method is(subtype) {  with subtype (on class This return Bool.true()) return Bool.false()}

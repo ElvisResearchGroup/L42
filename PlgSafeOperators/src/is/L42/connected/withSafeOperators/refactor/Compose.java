@@ -303,8 +303,10 @@ public class Compose {
   with 
     mwts=mwts1\dom(mwts2) {mwt[mwts1]+mwt | mwt in mwts2}
     ncs=ncs1\dom(ncs2) {nc[ncs1]+nc | nc in ncs2}
-  C:L1 + C:L2= C: L1+L2
-  refine? mh e? + refine?' mh e?'= {refine?,refine?'} mh e? e?' //if none is empty, is not a well formed mwt  
+  C:L1 + C:L2 = C: L1+L2
+  C:L1 + empty = C: L1
+  refine? mh e? + refine?' mh e?'= {refine?,refine?'} mh e? e?' //if none is empty, is not a well formed mwt
+  mwt + empty= mwt  
   
   */
   //public static boolean matchMwt(Program p, ClassB topA, ClassB topB, List<Member> ms, List<Ast.C> current, Member m, Member oms) {
