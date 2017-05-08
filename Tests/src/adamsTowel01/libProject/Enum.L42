@@ -1,8 +1,8 @@
 {
   class method Library<><(Library that) //TODO: handle errors for the better version
     //Use[Refactor.RenamePath(Path"Top" to:Path"This")<><this.enumTrait()]<><that
-    SafeOperatorsAccess.compose(
-        left:SafeOperatorsAccess.renameClass(this.enumTrait(), src:S"Top" , dest:S"This")
+    UnsafeRefactor.Compose.compose(
+        left:UnsafeRefactor.RenameClass.renameClass(this.enumTrait(), nameSrc:S"Top" , nameDest:S"This")
         right:that)
 
 SolidTrait:{class method Library (){//Data is more than Solid, and Liquid, Gas, Plasma can be good methafores
@@ -49,7 +49,7 @@ SolidTrait:{class method Library (){//Data is more than Solid, and Liquid, Gas, 
     List:Collections.vector(of:Top)
     //class method mut Set #seqBuilder() Set.empty()
     //class method Set #from(Set seqBuilder)seqBuilder
-    //Set: SafeOperatorsAccess.compose(left:SolidTrait() //Use[SolidTrait()]<><
+    //Set: UnsafeRefactor.Compose.compose(left:SolidTrait() //Use[SolidTrait()]<><
     //  right:{(var BinaryFlag32 that) implements Concept.ToS
     //  class method mut This #seqBuilder() this.empty()
     //  class method mut This empty() This(0BinaryFlag32)

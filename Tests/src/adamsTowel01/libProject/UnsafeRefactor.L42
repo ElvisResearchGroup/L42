@@ -36,4 +36,31 @@ This$er:{
   Library <><(Library that)
     RenameClass.renameClass(that,nameSrc:S"This$",nameDest:S"This")
   }
+MiniDataTrait:{class method Library(){
+  implements Concept.Base
+
+  refine read method
+  class This class()
+    This
+
+  method readableName()
+    MiniData.classObjToS()
+
+  method is(subtype){
+    with subtype (on class This return Bool.true())
+    return Bool.false()}
+
+  method equals(that) {
+    with that (on read This return this==that)
+    return Bool.false()}
+
+  read method Bool ==(read This that)
+  }}
+MiniData:{
+  class method S classObjToS()S"TOFIX"
+  class method Library thisLib() {interface implements Concept.Base}
+  class method
+  Library <><(Library that)
+    This$er<><Compose.compose(left:MiniDataTrait() right:that)
+  }
 }

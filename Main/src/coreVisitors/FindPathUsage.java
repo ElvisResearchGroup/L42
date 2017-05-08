@@ -30,7 +30,7 @@ Ast.Position located=null;
     finally{searchingFor=oldP;}
     }
   public ExpCore visit(ExpCore.EPath s) {
-    if(s.toString().contains("Safe")){
+    if(s.toString().endsWith("SafeOperatorsAccess")){
       System.out.println(s);
     }
     if (p.equiv(s.getInner(),searchingFor)){

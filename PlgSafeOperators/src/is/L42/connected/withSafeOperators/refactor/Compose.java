@@ -67,8 +67,8 @@ validMwt(p0, p, L0,L,Cs,ms)  //we need to add Froms when needed
   L0(Cs).Ps contains all collect(p0,L0(Cs).Ps)?? repetition?
   mhs0={p0(P)(ms).mh |P in L0(Cs).Ps}
   mhs={p(P)(ms).mh |P in L(Cs).Ps}//note,p0(P)(ms) would wrongly produce a larger set 
-  mh0,mhs0 is winning config.
-  mh,mhs is allowed config.
+  //mh0,mhs0 is winning config.
+  //mh,mhs is allowed config.
   forall mhi in mhs0\mhs exists mhj in mh0,mhs //is this forall checking the right thing?
     such that p0|-mhj<<mhi
 _______

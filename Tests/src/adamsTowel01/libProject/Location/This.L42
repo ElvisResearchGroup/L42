@@ -1,66 +1,83 @@
-Idea: the introspection lets you talk about locations in the code, so 
+{
+interface implements Base //that is equals, toS and "know your class"
+/*Idea: the introspection lets you talk about locations in the code, so 
 if you have the class { class method Library foo()}
 you can ask what is the return type of This.foo(), and you get
 a Location.ReturnType knowing the Path (Library) the modifier (imm/immutable)
 and the Location.Method that contains such type annotation.
+###0 Location declaration and methods 
+------------------------------------
+Location:{
+*/
 
-General class shape:
-
-//###0 Location declaration and methods 
-//------------------------------------
-
-Location:{interface implements Base //that is equals, toS and "know your class"
+method
+Location location()
   
-  method
-  Location location()
+NotAvailable:Message.$<><{implements Guard}
   
-  NotAvailable:Message.$<><{implements Guard}
-  
-  Mdf:Enum"imm, mut, read, lent, capsule, class"
-
+//note: "class" is not a good name for an enum elem. Thus we use uppercase down
+//Mdf:Enumeration"imm, mut, read, lent, capsule, fwdImm, fwdMut"
+Mdf:Enum<><{class method Strings names()Strings[S"Immutable";S"Mutable";S"Read";S"Lent";S"Capsule";S"Class";S"FwdImmuable";S"FwdMutable"]
+  class method This _Immutable() This(inner:0Size)
+  method Bool isImmutable() this.inner()==0Size
+  class method This _Mutable() This(inner:1Size)
+  method Bool isMutable() this.inner()==1Size
+  class method This _Read() This(inner:2Size)
+  method Bool isRead() this.inner()==2Size
+  class method This _Lent() This(inner:3Size)
+  method Bool isLent() this.inner()==3Size
+  class method This _Capsule() This(inner:4Size)
+  method Bool isCapsule() this.inner()==4Size
+  class method This _Class() This(inner:5Size)
+  method Bool isClass() this.inner()==5Size
+  class method This _FwdImmutable() This(inner:6Size)
+  method Bool isFwdImmutable() this.inner()==6Size
+  class method This _FwdMutable() This(inner:7Size)
+  method Bool isFwdMutable() this.inner()==7Size 
+  }
 
 //###1 Origin
 //------------------------------------  
-
-  Origin:MiniData<><{
-    S fileName
-    Size line
-    Size column
+method Size originsSize()//many since metaprogramming
+method Origin origin(Size that)   
+Origin:UnsafeRefactor.MiniData<><{
+  //@plugin  toFix 
+  //@pluginPart is.L42.connected.withSafeOperators.location.Origin
+  S fileName
+  Size line
+  Size column
+  This$:UnsafeRefactor.MiniData.thisLib()
+  List:Collections.vector(of:This$)
+  }
     
-    $This:MiniData.thisLib()
-    List:Collection.vector(of:$This)
-    }
-    
-  method Size originsSize()//many since metaprogramming
-  method Origin origin(Size that)   
+}
+//we should test the former first. Add to origin a constructor method and make a test
 
-
+/*
 //###2 Doc 
 //------------------------------------
 
-  Doc:MiniData<><{ implements Location
-    //user will need typecase to discover precise type, location() not refined
-    Annotation:MiniData<><{
-      Type.RefTo key
-      S text
-    
-      $This:MiniData.thisLib()
-      List:Collection.vector(of:$This)
-      }
-    method Size annotationsSize()
-    method Annotation annotation(Size that)   
-    method
-    Annotation.List origins()
-      Annotation.List[with i in Count(this.originSize()) (use[this.origin(i)])]
-    
+Doc:UnsafeRefactor.MiniData<><{ implements Location
+  //user will need typecase to discover precise type, location() not refined
+  Annotation:UnsafeRefactor.MiniData<><{
+    Type.RefTo key
+    S text
+  
+    This$:UnsafeRefactor.MiniData.thisLib()
+    List:Collection.vector(of:This$)
     }
-
+  method Size annotationsSize()
+  method Annotation annotation(Size that)   
+  method
+  Annotation.List origins()
+    Annotation.List[with i in Count(this.originSize()) (use[this.origin(i)])]  
+  }
     
 //###3 Lib 
 //------------------------------------
 
   //there is no Member since normalized classes have order: first nested, then methods
-  Lib:MiniData<><{ implements Location
+  Lib:UnsafeRefactor.MiniData<><{ implements Location
     refine method Lib location()
     method Size nestedsSize()
     method This nested(Size that)
@@ -145,8 +162,8 @@ Location:{interface implements Base //that is equals, toS and "know your class"
       this.kindS()==S"Interface"
     Bool isCoherent()
       this.isInterface() | this.kindS()==S"CoherentClass"
-    $This:MiniData.thisLib()
-    List:Collection.vector(of:$This)
+    This$:UnsafeRefactor.MiniData.thisLib()
+    List:Collection.vector(of:This$)
     
     method Lib root()
     method Path path()//last is its name, empty path for root
@@ -159,9 +176,9 @@ Location:{interface implements Base //that is equals, toS and "know your class"
 //###4 Method 
 //------------------------------------
 
-  Method:MiniData<><{
-    $This:MiniData.thisLib()
-    List:Collection.vector(of:$This)
+  Method:UnsafeRefactor.MiniData<><{
+    This$:UnsafeRefactor.MiniData.thisLib()
+    List:Collection.vector(of:This$)
 
     refine method Lib location()
     method Bool isAbstract()
@@ -194,23 +211,22 @@ Location:{interface implements Base //that is equals, toS and "know your class"
         method Location.Lib referredLib()
         }
       Unavailable:{ implements This1
-        /*cases:
-          (1)
-          A: .. Refactor.introspect(lib:{ method B(B.C that)})..
-          B:{..}//just not yet normalized in the program flow
-          (2)
-          A: .. Refactor.introspect(lib:{ method B()})..
-          B:Foo<><{..}//B is not there yet.
-          (3)
-          A: .. Refactor.introspect(lib:{ method B.C()})..
-          B:Foo<><{..}//we do not know if B.C will ever exists
-          (4)
-          {/*this all is seen as This1 by lib:{..}*/
-          A: .. Refactor.introspect(lib:{ method This1()})..
-          }//it can not be norm, not even in principle, since
-           // A is under compilation right now.
+        //cases:
+        //  (1)
+        //  A: .. Refactor.introspect(lib:{ method B(B.C that)})..
+        //  B:{..}//just not yet normalized in the program flow
+        //  (2)
+        //  A: .. Refactor.introspect(lib:{ method B()})..
+        //  B:Foo<><{..}//B is not there yet.
+        //  (3)
+        //  A: .. Refactor.introspect(lib:{ method B.C()})..
+        //  B:Foo<><{..}//we do not know if B.C will ever exists
+        //  (4)
+        //  {//this all is seen as This1 by lib:{..}
+        //  A: .. Refactor.introspect(lib:{ method This1()})..
+        //  }//it can not be norm, not even in principle, since
+        //   // A is under compilation right now.
         
-        */
         }
       Binded:{implements This1 //includes primitives
         method class Any referredClassObj()
@@ -226,23 +242,23 @@ Location:{interface implements Base //that is equals, toS and "know your class"
     Return:{ implements This1
       refine Method location()
       }
-    Parameter:MiniData<><{ implements This1
-      $This:MiniData.thisLib()
-      List:Collection.vector(of:$This)
+    Parameter:UnsafeRefactor.MiniData<><{ implements This1
+      This$:UnsafeRefactor.MiniData.thisLib()
+      List:Collection.vector(of:This$)
 
       refine method Method location()
       method Size pos()//0 for this
       }
-    Exception:MiniData<><{ implements This1
-      $This:MiniData.thisLib()
-      List:Collection.vector(of:$This)
+    Exception:UnsafeRefactor.MiniData<><{ implements This1
+      This$:UnsafeRefactor.MiniData.thisLib()
+      List:Collection.vector(of:This$)
 
       refine method Method location()
       method Size pos()//should start from 1 or 0?
       }
-    Implemented:MiniData<><{ implements This1
-      $This:MiniData.thisLib()
-      List:Collection.vector(of:$This)
+    Implemented:UnsafeRefactor.MiniData<><{ implements This1
+      This$:UnsafeRefactor.MiniData.thisLib()
+      List:Collection.vector(of:This$)
 
       refine method Lib location()
       method Size pos()//should start from 1 or 0?
@@ -271,9 +287,9 @@ ms::=m(xs) //method selector
 mh::= mdf method Doc T m(T1 x1..Tn xn) exception Ts
 P::= Thisn.Cs | Any | Library | Void  //is pronounced "Path"
 T::= mdf P Doc
-Doc::= /*has a text, a set of annotations,
- where every annotation can be either a string or
- a Path, and a string content for each annotation */
+Doc::= //has a text, a set of annotations,
+ //where every annotation can be either a string or
+ //a Path, and a string content for each annotation 
 C::= uppercase identifiers including $ as uppercase
 x::= lowercase identifier including _ as lowercase
 m::= x| #x
@@ -290,19 +306,6 @@ impl Concept.ToS,Concept.Equals, Concept.Classable //that is Base
 equals is complex: are two equal literal equal 
   if binded to different names? yes if they have the same origins?
 
-MiniDataTrait:Resource<><{
-  implements Concept.Base
-  read method class This class() This
-  class method S readableName() Refactor.classObjToS()//new plugin as for classObjEq
-  class method Bool is(class Any subtype){ with subtype (on class This return Bool.true()) return Bool.false()}
-  read method Bool equals(read Any that) { with that (on read This return this==that)  return Bool.false()  }
-  //read method Bool ==(read This that)
-  //read method S toS()
-  }
-MiniData:{
-  class method Library <><(Library that) exception Refactor.Fail (
-    Refactor.rename(path:\"$This" to:\"This")<><Refactor.compose(left:MiniDataTrait() right:that)
-    }
     
 All locations need to be sum with
 { implements Location
@@ -328,12 +331,14 @@ Refactor2
   Fail impl Base
   OpAccess:PrW<><{//we may need to continue using a variation of
     //safeOperatorsAccess instead...
-    compose/*use Compose check*/,redirect, liftValue  //no errors
+    compose,//use Compose check
+    redirect, liftValue  //no errors
     }
   Resource
   MiniData/baseDefaults()
   ErrorW using MiniData
-  AllErrors, with LocationTmp location() and LocationTmp:{..dull impl for #binaryRepr etc for nested Lib:{} Method:{} etc}
+  AllErrors, with LocationTmp location() 
+    and LocationTmp:{..dull impl for #binaryRepr etc for nested Lib:{} Method:{} etc}
   compose
   Compose:{//plugAnn
     class method
@@ -351,76 +356,5 @@ Refactor2
     Refactor=Refactor2+Refactor3,
     Resource=Refactor.Resource
     redirect Refactor.LocationTmp to Location?
-
--------
-Please, sort of ignore the rest, it is a former attempt
-Introspection:{
-  class method NestedClass (Library lib)
-  class method NestedClass (Library lib,Path path) exception MetaGuard.NestedClassUnavailable
-  class method NestedClass (class Any clazz)
-  class method NestedClass (class Any clazz,Path path) exception MetaGuard.NestedClassUnavailable
-
-  Member:{interface implements Concepts.Base}
-  NestedClass:{<:Member
-    Library mirror
-    NestedClass root
-    Path path
-    Record record
-    read method Bool ==(read This that)
-    method Doc nestedDoc()// error  for This
-    method Doc doc() //of the library literal
-    method Path pathFromRoot() // invariant NestedClass(...).nestedClassFromRoot(path).pathFromRoot()==path
-    method Bool hasExternalType()
-    method class Any externalType() //error if  root()!=this or root() is literal, otherwise contains the class Any used to initialize root/this.
-    method S externalTypeToS()
-    method ClassKind classKind()
-    method S allAsString()  //just the library literal//badname
-    method Members members()
-    method Methods methods()
-    method NestedClasses nestedClasses()
-    method Types implementedInterfaces()
-    method NestedClasses transitivelyNestedClasses()
-    method Bool implements(This that)//note type of argument
-    method Bool consistent()
-    method Methods constructors()
-    method Methods getters()
-    method Methods setters()
-    method Methods exposers()    
-    method Method method(Selector that) exception MetaGuard.MethodUnavailable
-    method Bool has(Selector selector)
-    method NestedClass nestedClassFromRoot(Path that) exception MetaGuard.NestedClassUnavailable
-    method Bool has(Path pathFromRoot)
-    method Bool isPrivate()
-    }
-
-  Method:{<:Member
-    method NestedClass root()
-    method NestedClass nestedClass()
-    method Doc doc()
-    method Mdf thisMdf()
-    method Path pathFromRoot()// invariant NestedClass(...).nestedClassFromRoot(path).pathFromRoot()==path
-    method Selector selector()
-    method MethodKind methodKind() //one of InterfaceImplementedMethod,ImplementedMethod,AbstractMethod
-    method S allAsString()
-    method Type returnType()
-    method Types exceptions()
-    method Types parameterTypes()
-    }
-
-  Type:{
-    method NestedClass root()
-    method TypeKind typeKind() //{Normal,Alias,AliasUnresolvable}
-    method Mdf mdf()//error on AliasUnresolvable
-    method NestedClass referencedPath()
-    method NestedClass resolvedReferencedPath() //error on AliasUnresolvable
-    method Bool partial()
-    method Bool resolvedPartial() //error on Normal? or the same of partial()
-    method S suffix()  //error on Normal
-    method Doc doc()
-    method S allAsString()
-    }
-    Members: ...
-    Methods: ...
-    NestedClasses: ...
-    Types:...
-  }
+    
+*/

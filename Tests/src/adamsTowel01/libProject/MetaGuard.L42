@@ -37,13 +37,13 @@
 
     class method Library <><(Library that) (
       //either that provides a toS, or I have a default impl, that requires lib()
-      res=SafeOperatorsAccess.compose(left:that,right:This.recordWrapperTrait())
+      res=UnsafeRefactor.Compose.compose(left:that,right:This.recordWrapperTrait())
       Library open=  {
-        return SafeOperatorsAccess.compose(left:res,right:This.recordWrapperToSTrait())
+        return UnsafeRefactor.Compose.compose(left:res,right:This.recordWrapperToSTrait())
         catch error Library return res
         }
       {
-        return SafeOperatorsAccess.compose(left:open,right:{
+        return UnsafeRefactor.Compose.compose(left:open,right:{
             class method mut This #mut(fwd Introspection_Record.Record record, fwd Library lib)
             class method This(Introspection_Record.Record record, Library lib) This.#mut(record:record,lib:lib)
             })

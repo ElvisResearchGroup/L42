@@ -126,7 +126,8 @@ static PathsPaths usedPathsECatchErrors(Program p, ExpCore e){
       Paths newPaths=usedInnerL(li,csi,phase0);
       try{newPaths.checkAllDefined(pForError);}
       catch(ErrorMessage.PathMetaOrNonExistant pne){
-        Position p=FindPathUsage._locate(pForError,li,Path.outer(csi.size()+1, pne.getListOfNodeNames()));
+        Position p=FindPathUsage._locate(pForError,li,Path.outer(csi.size()+1/*TODO we need to fix this crap for real*/,
+                pne.getListOfNodeNames()));
         throw pne.withWherePathWasWritten(p);
         }
       result=result.union(newPaths);

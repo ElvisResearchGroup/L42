@@ -2077,6 +2077,24 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.refact
 */})
   res
   )}
+Redirect: {/*@plugin  toFix 
+@pluginPart is.L42.connected.withSafeOperators.refactor.Redirect
+*/
+class method 
+mut This0 #from(Library binaryRepr) 
+read method 
+Library #binaryRepr() 
+class method 
+Void #exceptionIf(Library binaryRepr) exception This0 use This0 check instanceof(_this:binaryRepr) exception This0.#from(binaryRepr:binaryRepr)
+class method 
+Void #pluginUnresponsive(Library binaryRepr) error  {/*redirect(Library that,S src,class Any dest)*/}
+class method 
+Library redirect(Library that, This2.S src, class Any dest) (
+  Library res=use This0 check #redirect(_1_ast%ExpCore$ClassB:that, _2_java%lang%String:src.#binaryRepr(), _3_ast%Ast$Path:dest) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.refactor.Redirect\u000amethod name: redirect(that,src,dest)\u000ajava method: is.L42.connected.withSafeOperators.refactor.Redirect.#redirect(_1_ast%ExpCore$ClassB,_2_java%lang%String,_3_ast%Ast$Path)\u000a
+*/})
+  res
+  )}
 This$er: {
 class method 
 Library #leftrightleft(Library that) This1.RenameClass.renameClass(that:that, nameSrc:This2.S.#from(builder:(
@@ -2094,7 +2112,109 @@ Library #leftrightleft(Library that) This1.RenameClass.renameClass(that:that, na
   Void unused6=b0.#i()
   Void unused7=b0.#s()
   b0
-  )))}}
+  )))}
+MiniDataTrait: {
+class method 
+Library #apply()  {implements This3.Concept.Base, This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals
+refine read method 
+class This0 class() This0
+refine class method 
+This3.S readableName() This2.MiniData.classObjToS()
+refine class method 
+This3.Bool is(class Any subtype) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error  {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This3.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This3.Bool.false()
+    void
+    )
+  
+  catch return This3.Bool result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+refine read method 
+This3.Bool equals(read Any that) (
+  Void unused=(
+    Void unused0=(
+      read This0 that0=(
+        Void unused2=return that
+        
+        catch return read This0 casted casted
+        
+        catch return read Any casted exception void
+        
+        error  {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return this.#equalequal(that:that0)
+        void
+        )
+      )
+    Void unused1=return This3.Bool.false()
+    void
+    )
+  
+  catch return This3.Bool result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+read method 
+This3.Bool #equalequal(read This0 that) 
+refine read method 
+This3.S toS() }}
+MiniData: {
+class method 
+This2.S classObjToS() This2.S.#from(builder:(
+  mut This2.S.SBuilder b=This2.S.#builder()
+  Void unused=b.#T()
+  Void unused0=b.#O()
+  Void unused1=b.#F()
+  Void unused2=b.#I()
+  Void unused3=b.#X()
+  b
+  ))
+class method 
+Library thisLib()  {interface implements This3.Concept.Base, This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals
+refine read method 
+This3.S toS() 
+refine read method 
+class This3.Concept.Classable class() 
+refine class method 
+This3.S readableName() 
+refine class method 
+This3.Bool is(class Any subtype) 
+refine read method 
+This3.Bool equals(read Any that) }
+class method 
+Library #leftrightleft(Library that) This1.This$er.#leftrightleft(that:This1.Compose.compose(left:This1.MiniDataTrait.#apply(), right:that))}}
 Range: {
 class method 
 mut This0.Iterator #apply(This1.Size that) This0.Iterator.#apply(start:This1.Size.#from(builder:(
@@ -2454,110 +2574,6 @@ Void #add(This1.Bool that) (
     b
     )))))
   )}
-SafeOperatorsAccess: {/*@plugin
-L42.is/connected/withSafeOperators
-*/
-class method 
-Library compose(Library left, Library right) use This0 check compose(left:left, right:right) error This1.S.#from(builder:(
-  mut This1.S.SBuilder b=This1.S.#builder()
-  Void unused=b.#S()
-  Void unused0=b.#a()
-  Void unused1=b.#f()
-  Void unused2=b.#e()
-  Void unused3=b.#O()
-  Void unused4=b.#p()
-  Void unused5=b.#e()
-  Void unused6=b.#r()
-  Void unused7=b.#a()
-  Void unused8=b.#t()
-  Void unused9=b.#o()
-  Void unused10=b.#r()
-  Void unused11=b.#s()
-  Void unused12=b.#A()
-  Void unused13=b.#c()
-  Void unused14=b.#c()
-  Void unused15=b.#e()
-  Void unused16=b.#s()
-  Void unused17=b.#s()
-  Void unused18=b.#dot()
-  Void unused19=b.#c()
-  Void unused20=b.#o()
-  Void unused21=b.#m()
-  Void unused22=b.#p()
-  Void unused23=b.#o()
-  Void unused24=b.#s()
-  Void unused25=b.#e()
-  b
-  ))
-class method 
-Library redirect(Library that, Library srcBinaryRepr, class Any dest) use This1.SafeOperatorsAccess check redirect(that:that, src:srcBinaryRepr, dest:dest) error This1.S.#from(builder:(
-  mut This1.S.SBuilder b=This1.S.#builder()
-  Void unused=b.#S()
-  Void unused0=b.#a()
-  Void unused1=b.#f()
-  Void unused2=b.#e()
-  Void unused3=b.#O()
-  Void unused4=b.#p()
-  Void unused5=b.#e()
-  Void unused6=b.#r()
-  Void unused7=b.#a()
-  Void unused8=b.#t()
-  Void unused9=b.#o()
-  Void unused10=b.#r()
-  Void unused11=b.#s()
-  Void unused12=b.#A()
-  Void unused13=b.#c()
-  Void unused14=b.#c()
-  Void unused15=b.#e()
-  Void unused16=b.#s()
-  Void unused17=b.#s()
-  Void unused18=b.#dot()
-  Void unused19=b.#r()
-  Void unused20=b.#e()
-  Void unused21=b.#d()
-  Void unused22=b.#i()
-  Void unused23=b.#r()
-  Void unused24=b.#e()
-  Void unused25=b.#c()
-  Void unused26=b.#t()
-  b
-  ))
-class method 
-Library renameClass(Library that, This1.S src, This1.S dest) use This1.SafeOperatorsAccess check renameClass(that:that, src:src.#binaryRepr(), dest:dest.#binaryRepr()) error This1.S.#from(builder:(
-  mut This1.S.SBuilder b=This1.S.#builder()
-  Void unused=b.#S()
-  Void unused0=b.#a()
-  Void unused1=b.#f()
-  Void unused2=b.#e()
-  Void unused3=b.#O()
-  Void unused4=b.#p()
-  Void unused5=b.#e()
-  Void unused6=b.#r()
-  Void unused7=b.#a()
-  Void unused8=b.#t()
-  Void unused9=b.#o()
-  Void unused10=b.#r()
-  Void unused11=b.#s()
-  Void unused12=b.#A()
-  Void unused13=b.#c()
-  Void unused14=b.#c()
-  Void unused15=b.#e()
-  Void unused16=b.#s()
-  Void unused17=b.#s()
-  Void unused18=b.#dot()
-  Void unused19=b.#r()
-  Void unused20=b.#e()
-  Void unused21=b.#n()
-  Void unused22=b.#a()
-  Void unused23=b.#m()
-  Void unused24=b.#e()
-  Void unused25=b.#C()
-  Void unused26=b.#l()
-  Void unused27=b.#a()
-  Void unused28=b.#s()
-  Void unused29=b.#s()
-  b
-  ))}
 Concept: {
 ToS: {interface 
 read method 
@@ -2836,7 +2852,7 @@ mut This0 #mutK()
 class method 
 This0 #apply() This0.#mutK()
 class method 
-Library #leftrightleft(Library that) This2.SafeOperatorsAccess.compose(left:that, right:This0.messageTrait())
+Library #leftrightleft(Library that) This2.UnsafeRefactor.Compose.compose(left:that, right:This0.messageTrait())
 class method 
 Library messageTrait()  {implements This3.Message, This3.Concept.ToS, This3.Concept.Equals, This3.Concept.Classable
 class method 
@@ -4363,15 +4379,15 @@ CurlyBlock-Should be unreachable code
   )
 class method 
 Library minimal(class Any that) (
-  Library tmp=This1.SafeOperatorsAccess.redirect(that:This0.VectorTrait.#apply(), srcBinaryRepr:This1.S.#from(builder:(
+  Library tmp=This1.UnsafeRefactor.Redirect.redirect(that:This0.VectorTrait.#apply(), src:This1.S.#from(builder:(
     mut This1.S.SBuilder b=This1.S.#builder()
     Void unused=b.#E()
     Void unused0=b.#l()
     Void unused1=b.#e()
     Void unused2=b.#m()
     b
-    )).#binaryRepr(), dest:that)
-  This1.SafeOperatorsAccess.redirect(that:tmp, srcBinaryRepr:This1.S.#from(builder:(
+    )), dest:that)
+  This1.UnsafeRefactor.Redirect.redirect(that:tmp, src:This1.S.#from(builder:(
     mut This1.S.SBuilder b0=This1.S.#builder()
     Void unused3=b0.#M()
     Void unused4=b0.#u()
@@ -4382,20 +4398,20 @@ Library minimal(class Any that) (
     Void unused9=b0.#t()
     Void unused10=b0.#T()
     b0
-    )).#binaryRepr(), dest:This0.MutListAny)
+    )), dest:This0.MutListAny)
   )
 class method 
 Library eq(class Any that) (
-  Library lib=This1.SafeOperatorsAccess.compose(left:This0.VectorTrait.#apply(), right:This0.CodeEq.#apply())
-  Library tmp=This1.SafeOperatorsAccess.redirect(that:lib, srcBinaryRepr:This1.S.#from(builder:(
+  Library lib=This1.UnsafeRefactor.Compose.compose(left:This0.VectorTrait.#apply(), right:This0.CodeEq.#apply())
+  Library tmp=This1.UnsafeRefactor.Redirect.redirect(that:lib, src:This1.S.#from(builder:(
     mut This1.S.SBuilder b=This1.S.#builder()
     Void unused=b.#E()
     Void unused0=b.#l()
     Void unused1=b.#e()
     Void unused2=b.#m()
     b
-    )).#binaryRepr(), dest:that)
-  This1.SafeOperatorsAccess.redirect(that:tmp, srcBinaryRepr:This1.S.#from(builder:(
+    )), dest:that)
+  This1.UnsafeRefactor.Redirect.redirect(that:tmp, src:This1.S.#from(builder:(
     mut This1.S.SBuilder b0=This1.S.#builder()
     Void unused3=b0.#M()
     Void unused4=b0.#u()
@@ -4406,9 +4422,56 @@ Library eq(class Any that) (
     Void unused9=b0.#t()
     Void unused10=b0.#T()
     b0
-    )).#binaryRepr(), dest:This0.MutListAny)
+    )), dest:This0.MutListAny)
   )
 IterationFailure: {implements This2.Guard, This2.Message, This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable
+class method 
+mut This0 #mutK(This2.S _text, This2.Message.Opt cause) 
+class method 
+This0 #apply(This2.S _text, This2.Message.Opt cause) This0.#mutK(_text:_text, cause:cause)
+mut method 
+This2.S #_text() 
+read method 
+This2.S _text() 
+mut method 
+This2.Message.Opt #cause() 
+read method 
+This2.Message.Opt cause() 
+refine class method 
+This2.Bool is(class Any subtype) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error  {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This2.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This2.Bool.false()
+    void
+    )
+  
+  catch return This2.Bool result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+refine class method 
+This2.S readableName() This2.GetMyName.#apply(that:This0)
 refine class method 
 This2.S kind() this.readableName()
 refine read method 
@@ -4416,7 +4479,40 @@ This2.S text() this._text()
 refine read method 
 This2.Message.Opt responseOf() this.cause()
 refine read method 
-class This2.Message class() This0
+This2.Bool equals(read Any that) (
+  Void unused=(
+    Void unused0=(
+      read This0 that0=(
+        Void unused2=return that
+        
+        catch return read This0 casted casted
+        
+        catch return read Any casted exception void
+        
+        error  {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return this.#equalequal(that:that0)
+        void
+        )
+      )
+    Void unused1=return This2.Bool.false()
+    void
+    )
+  
+  catch return This2.Bool result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+method 
+This0 #apply(This2.Message that) This0.#apply(text:this.text(), cause:that)
 refine read method 
 This2.S toS() (
   Void unused=(
@@ -4490,90 +4586,10 @@ This2.S toS() (
 CurlyBlock-Should be unreachable code
 */}
   )
-refine read method 
-This2.Bool equals(read Any that) (
-  Void unused=(
-    Void unused0=(
-      read This0 that0=(
-        Void unused2=return that
-        
-        catch return read This0 casted casted
-        
-        catch return read Any casted exception void
-        
-        error  {/*@stringU
-CastT-Should be unreachable code
-*/}
-        )
-      
-      catch exception Void catched0 void
-      
-      (
-        Void unused3=return this.#equalequal(that:that0)
-        void
-        )
-      )
-    Void unused1=return This2.Bool.false()
-    void
-    )
-  
-  catch return This2.Bool result result
-  
-  error  {/*@stringU
-CurlyBlock-Should be unreachable code
-*/}
-  )
-refine class method 
-This2.S readableName() This2.GetMyName.#apply(that:This0)
-refine class method 
-This2.Bool is(class Any subtype) (
-  Void unused=(
-    Void unused0=(
-      class This0 subtype0=(
-        Void unused2=return subtype
-        
-        catch return class This0 casted casted
-        
-        catch return class Any casted exception void
-        
-        error  {/*@stringU
-CastT-Should be unreachable code
-*/}
-        )
-      
-      catch exception Void catched0 void
-      
-      (
-        Void unused3=return This2.Bool.true()
-        void
-        )
-      )
-    Void unused1=return This2.Bool.false()
-    void
-    )
-  
-  catch return This2.Bool result result
-  
-  error  {/*@stringU
-CurlyBlock-Should be unreachable code
-*/}
-  )
-class method 
-mut This0 #mutK(This2.S _text, This2.Message.Opt cause) 
-class method 
-This0 #apply(This2.S _text, This2.Message.Opt cause) This0.#mutK(_text:_text, cause:cause)
-mut method 
-This2.S #_text() 
-read method 
-This2.S _text() 
-mut method 
-This2.Message.Opt #cause() 
-read method 
-This2.Message.Opt cause() 
-method 
-This0 #apply(This2.Message that) This0.#apply(text:this.text(), cause:that)
 read method 
 This2.Bool #equalequal(read This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
+refine read method 
+class This2.Message class() This0
 class method 
 This0 #apply(This2.S text) This0.#apply(_text:text, cause:This2.Message.Opt.#apply())
 class method 
@@ -5935,78 +5951,6 @@ CurlyBlock-Should be unreachable code
 read method 
 Void #close() void}}
 IteratorVal: {
-read method 
-read This1.MutListT that() this._that()
-read method 
-This4.Size from() 
-mut method 
-Void from(This4.Size that) 
-read method 
-This4.Size maxTo() 
-read method 
-This4.Size minTo() 
-read method 
-This4.Bool isFill() This4.Bool.false()
-read method 
-This1.Elem filled() error This4.X.#from(builder:(
-  mut This4.S.SBuilder b=This4.X.#builder()
-  Void unused=b.#F()
-  Void unused0=b.#i()
-  Void unused1=b.#l()
-  Void unused2=b.#l()
-  Void unused3=b.#e()
-  Void unused4=b.#d()
-  Void unused5=b.#space()
-  Void unused6=b.#c()
-  Void unused7=b.#a()
-  Void unused8=b.#l()
-  Void unused9=b.#l()
-  Void unused10=b.#e()
-  Void unused11=b.#d()
-  Void unused12=b.#space()
-  Void unused13=b.#o()
-  Void unused14=b.#n()
-  Void unused15=b.#space()
-  Void unused16=b.#n()
-  Void unused17=b.#o()
-  Void unused18=b.#t()
-  Void unused19=b.#space()
-  Void unused20=b.#f()
-  Void unused21=b.#i()
-  Void unused22=b.#l()
-  Void unused23=b.#l()
-  Void unused24=b.#space()
-  Void unused25=b.#i()
-  Void unused26=b.#t()
-  Void unused27=b.#e()
-  Void unused28=b.#r()
-  Void unused29=b.#a()
-  Void unused30=b.#t()
-  Void unused31=b.#o()
-  Void unused32=b.#r()
-  Void unused33=b.#comma()
-  Void unused34=b.#space()
-  Void unused35=b.#s()
-  Void unused36=b.#h()
-  Void unused37=b.#o()
-  Void unused38=b.#u()
-  Void unused39=b.#l()
-  Void unused40=b.#d()
-  Void unused41=b.#space()
-  Void unused42=b.#n()
-  Void unused43=b.#e()
-  Void unused44=b.#v()
-  Void unused45=b.#e()
-  Void unused46=b.#r()
-  Void unused47=b.#space()
-  Void unused48=b.#h()
-  Void unused49=b.#a()
-  Void unused50=b.#p()
-  Void unused51=b.#p()
-  Void unused52=b.#e()
-  Void unused53=b.#n()
-  b
-  ))
 mut method 
 Void #next() exception Void (
   Void unused=this.from(that:this.from().#plus(that:This4.Size.#from(builder:(
@@ -6086,30 +6030,88 @@ read This1.MutListT #_that()
 read method 
 read This1.MutListT _that() 
 mut method 
+Void from(This4.Size that) 
+mut method 
 This4.Size #from() 
+read method 
+This4.Size from() 
 mut method 
 This4.Size #maxTo() 
+read method 
+This4.Size maxTo() 
 mut method 
 This4.Size #minTo() 
+read method 
+This4.Size minTo() 
+read method 
+read This1.MutListT that() this._that()
 class method 
 lent This0 #apply(read This1.MutListT _that, This4.Size from, This4.Size maxTo, This4.Size minTo) 
 class method 
-lent This0 #apply(read This1.MutListT that, This4.Size from, This4.Size maxTo, This4.Size minTo) This0.#apply(_that:that, from:from, maxTo:maxTo, minTo:minTo)}
+lent This0 #apply(read This1.MutListT that, This4.Size from, This4.Size maxTo, This4.Size minTo) This0.#apply(_that:that, from:from, maxTo:maxTo, minTo:minTo)
+read method 
+This4.Bool isFill() This4.Bool.false()
+read method 
+This1.Elem filled() error This4.X.#from(builder:(
+  mut This4.S.SBuilder b=This4.X.#builder()
+  Void unused=b.#F()
+  Void unused0=b.#i()
+  Void unused1=b.#l()
+  Void unused2=b.#l()
+  Void unused3=b.#e()
+  Void unused4=b.#d()
+  Void unused5=b.#space()
+  Void unused6=b.#c()
+  Void unused7=b.#a()
+  Void unused8=b.#l()
+  Void unused9=b.#l()
+  Void unused10=b.#e()
+  Void unused11=b.#d()
+  Void unused12=b.#space()
+  Void unused13=b.#o()
+  Void unused14=b.#n()
+  Void unused15=b.#space()
+  Void unused16=b.#n()
+  Void unused17=b.#o()
+  Void unused18=b.#t()
+  Void unused19=b.#space()
+  Void unused20=b.#f()
+  Void unused21=b.#i()
+  Void unused22=b.#l()
+  Void unused23=b.#l()
+  Void unused24=b.#space()
+  Void unused25=b.#i()
+  Void unused26=b.#t()
+  Void unused27=b.#e()
+  Void unused28=b.#r()
+  Void unused29=b.#a()
+  Void unused30=b.#t()
+  Void unused31=b.#o()
+  Void unused32=b.#r()
+  Void unused33=b.#comma()
+  Void unused34=b.#space()
+  Void unused35=b.#s()
+  Void unused36=b.#h()
+  Void unused37=b.#o()
+  Void unused38=b.#u()
+  Void unused39=b.#l()
+  Void unused40=b.#d()
+  Void unused41=b.#space()
+  Void unused42=b.#n()
+  Void unused43=b.#e()
+  Void unused44=b.#v()
+  Void unused45=b.#e()
+  Void unused46=b.#r()
+  Void unused47=b.#space()
+  Void unused48=b.#h()
+  Void unused49=b.#a()
+  Void unused50=b.#p()
+  Void unused51=b.#p()
+  Void unused52=b.#e()
+  Void unused53=b.#n()
+  b
+  ))}
 IteratorValFill: {
-read method 
-read This1.MutListT that() this._that()
-read method 
-This4.Size from() 
-mut method 
-Void from(This4.Size that) 
-read method 
-This4.Size maxTo() 
-read method 
-This4.Size minTo() 
-read method 
-This4.Bool isFill() This4.Bool.true()
-read method 
-This1.Elem filled() 
 mut method 
 Void #next() exception Void (
   Void unused=this.from(that:this.from().#plus(that:This4.Size.#from(builder:(
@@ -6189,90 +6191,32 @@ read This1.MutListT #_that()
 read method 
 read This1.MutListT _that() 
 mut method 
+Void from(This4.Size that) 
+mut method 
 This4.Size #from() 
-mut method 
-This4.Size #maxTo() 
-mut method 
-This4.Size #minTo() 
-mut method 
-This1.Elem #filled() 
-class method 
-lent This0 #apply(read This1.MutListT _that, This4.Size from, This4.Size maxTo, This4.Size minTo, This1.Elem filled) 
-class method 
-lent This0 #apply(read This1.MutListT that, This4.Size from, This4.Size maxTo, This4.Size minTo, This1.Elem filled) This0.#apply(_that:that, from:from, maxTo:maxTo, minTo:minTo, filled:filled)}
-IteratorVar: {
-read method 
-read This1.MutListT that() 
 read method 
 This4.Size from() 
 mut method 
-Void from(This4.Size that) 
+This4.Size #maxTo() 
 read method 
 This4.Size maxTo() 
+mut method 
+This4.Size #minTo() 
 read method 
 This4.Size minTo() 
+mut method 
+This1.Elem #filled() 
 read method 
-This4.Bool isFill() This4.Bool.false()
+This1.Elem filled() 
 read method 
-This1.Elem filled() error This4.X.#from(builder:(
-  mut This4.S.SBuilder b=This4.X.#builder()
-  Void unused=b.#F()
-  Void unused0=b.#i()
-  Void unused1=b.#l()
-  Void unused2=b.#l()
-  Void unused3=b.#e()
-  Void unused4=b.#d()
-  Void unused5=b.#space()
-  Void unused6=b.#c()
-  Void unused7=b.#a()
-  Void unused8=b.#l()
-  Void unused9=b.#l()
-  Void unused10=b.#e()
-  Void unused11=b.#d()
-  Void unused12=b.#space()
-  Void unused13=b.#o()
-  Void unused14=b.#n()
-  Void unused15=b.#space()
-  Void unused16=b.#n()
-  Void unused17=b.#o()
-  Void unused18=b.#t()
-  Void unused19=b.#space()
-  Void unused20=b.#f()
-  Void unused21=b.#i()
-  Void unused22=b.#l()
-  Void unused23=b.#l()
-  Void unused24=b.#space()
-  Void unused25=b.#i()
-  Void unused26=b.#t()
-  Void unused27=b.#e()
-  Void unused28=b.#r()
-  Void unused29=b.#a()
-  Void unused30=b.#t()
-  Void unused31=b.#o()
-  Void unused32=b.#r()
-  Void unused33=b.#comma()
-  Void unused34=b.#space()
-  Void unused35=b.#s()
-  Void unused36=b.#h()
-  Void unused37=b.#o()
-  Void unused38=b.#u()
-  Void unused39=b.#l()
-  Void unused40=b.#d()
-  Void unused41=b.#space()
-  Void unused42=b.#n()
-  Void unused43=b.#e()
-  Void unused44=b.#v()
-  Void unused45=b.#e()
-  Void unused46=b.#r()
-  Void unused47=b.#space()
-  Void unused48=b.#h()
-  Void unused49=b.#a()
-  Void unused50=b.#p()
-  Void unused51=b.#p()
-  Void unused52=b.#e()
-  Void unused53=b.#n()
-  b
-  ))
+read This1.MutListT that() this._that()
+class method 
+lent This0 #apply(read This1.MutListT _that, This4.Size from, This4.Size maxTo, This4.Size minTo, This1.Elem filled) 
+class method 
+lent This0 #apply(read This1.MutListT that, This4.Size from, This4.Size maxTo, This4.Size minTo, This1.Elem filled) This0.#apply(_that:that, from:from, maxTo:maxTo, minTo:minTo, filled:filled)
+read method 
+This4.Bool isFill() This4.Bool.true()}
+IteratorVar: {
 mut method 
 Void #next() exception Void (
   Void unused=this.from(that:this.from().#plus(that:This4.Size.#from(builder:(
@@ -6349,19 +6293,91 @@ read method
 Void #close() void
 mut method 
 mut This1.MutListT #that() 
+read method 
+read This1.MutListT that() 
+mut method 
+Void from(This4.Size that) 
 mut method 
 This4.Size #from() 
+read method 
+This4.Size from() 
 mut method 
 This4.Size #maxTo() 
+read method 
+This4.Size maxTo() 
 mut method 
 This4.Size #minTo() 
+read method 
+This4.Size minTo() 
 class method 
 mut This0 #apply(mut This1.MutListT that, This4.Size from, This4.Size maxTo, This4.Size minTo) 
 mut method 
 Void inner(This1.Elem that) (
   mut This1.MutListT rcv32=this.#that()
   rcv32.#apply(that:this.from(), val:that)
-  )}}}
+  )
+read method 
+This4.Bool isFill() This4.Bool.false()
+read method 
+This1.Elem filled() error This4.X.#from(builder:(
+  mut This4.S.SBuilder b=This4.X.#builder()
+  Void unused=b.#F()
+  Void unused0=b.#i()
+  Void unused1=b.#l()
+  Void unused2=b.#l()
+  Void unused3=b.#e()
+  Void unused4=b.#d()
+  Void unused5=b.#space()
+  Void unused6=b.#c()
+  Void unused7=b.#a()
+  Void unused8=b.#l()
+  Void unused9=b.#l()
+  Void unused10=b.#e()
+  Void unused11=b.#d()
+  Void unused12=b.#space()
+  Void unused13=b.#o()
+  Void unused14=b.#n()
+  Void unused15=b.#space()
+  Void unused16=b.#n()
+  Void unused17=b.#o()
+  Void unused18=b.#t()
+  Void unused19=b.#space()
+  Void unused20=b.#f()
+  Void unused21=b.#i()
+  Void unused22=b.#l()
+  Void unused23=b.#l()
+  Void unused24=b.#space()
+  Void unused25=b.#i()
+  Void unused26=b.#t()
+  Void unused27=b.#e()
+  Void unused28=b.#r()
+  Void unused29=b.#a()
+  Void unused30=b.#t()
+  Void unused31=b.#o()
+  Void unused32=b.#r()
+  Void unused33=b.#comma()
+  Void unused34=b.#space()
+  Void unused35=b.#s()
+  Void unused36=b.#h()
+  Void unused37=b.#o()
+  Void unused38=b.#u()
+  Void unused39=b.#l()
+  Void unused40=b.#d()
+  Void unused41=b.#space()
+  Void unused42=b.#n()
+  Void unused43=b.#e()
+  Void unused44=b.#v()
+  Void unused45=b.#e()
+  Void unused46=b.#r()
+  Void unused47=b.#space()
+  Void unused48=b.#h()
+  Void unused49=b.#a()
+  Void unused50=b.#p()
+  Void unused51=b.#p()
+  Void unused52=b.#e()
+  Void unused53=b.#n()
+  b
+  ))}}}
 CodeEq: {
 class method 
 Library #apply()  {implements This3.Concept.Equals
@@ -7065,12 +7081,6 @@ class method
 This0 #immK(This1.Collections.MutListAny inner) This0.#apply(inner:inner)
 class method 
 mut This0 empty() This0.#apply(inner:This1.Collections.MutListAny.empty())
-class method 
-mut This0 #seqBuilder() this.empty()
-class method 
-mut This0 #from(mut This0 seqBuilder) seqBuilder
-mut method 
-Void #add(This1.S that) this.add(right:that)
 read method 
 mut This0 reverse() (
   mut This0 result=This0.empty()
@@ -7102,15 +7112,11 @@ mut This0 reverse() (
   result
   )
 read method 
-This1.Size size() this.inner().size()
-read method 
 This1.Bool isEmpty() this.size().#equalequal(that:This1.Size.#from(builder:(
   mut This1.S.SBuilder b=This1.Size.#builder()
   Void unused=b.#0()
   b
   )))
-read method 
-This1.S val(This1.Size that) This0.Cast.#apply(that:this.inner().val(that:that))
 read method 
 This1.S left() This0.Cast.#apply(that:this.inner().val(that:This1.Size.#from(builder:(
   mut This1.S.SBuilder b=This1.Size.#builder()
@@ -7163,8 +7169,6 @@ Void add(This1.S left) this.#inner().add(that:This1.Size.#from(builder:(
   Void unused=b.#0()
   b
   )), val:left)
-mut method /*from VectorTrait
-*/Void remove(This1.Size that) this.#inner().remove(that:that)
 mut method 
 Void removeLeft() this.remove(that:This1.Size.#from(builder:(
   mut This1.S.SBuilder b=This1.Size.#builder()
@@ -7271,8 +7275,6 @@ This0 withAlsoLeft(This1.S that) this.withAlso(that:This1.Size.#from(builder:(
 method 
 This0 withAlsoRight(This1.S that) (//skipping/filtering
 this.withAlso(that:this.size(), val:that))
-method /*from VectorTrait
-*/This0 without(This1.Size index) This0.#immK(inner:this.inner().without(that:index))
 method 
 This0 withoutLeft() this.without(index:This1.Size.#from(builder:(
   mut This1.S.SBuilder b=This1.Size.#builder()
@@ -7302,18 +7304,6 @@ lent This0.IteratorVal vals(This1.Size minTo) this.vals(from:This1.Size.#from(bu
   )), minTo:minTo)
 read method 
 lent This0.IteratorVal vals(This1.Size from, This1.Size to) this.vals(from:from, maxTo:to, minTo:this.inner().size())
-read method 
-lent This0.IteratorVal vals() this.vals(from:This1.Size.#from(builder:(
-  mut This1.S.SBuilder b=This1.Size.#builder()
-  Void unused=b.#less()
-  Void unused0=b.#1()
-  b
-  )), maxTo:This1.Size.#from(builder:(
-  mut This1.S.SBuilder b0=This1.Size.#builder()
-  Void unused1=b0.#less()
-  Void unused2=b0.#2()
-  b0
-  )), minTo:this.inner().size())
 read method 
 lent This0.IteratorValFill vals(This1.Size from, This1.Size maxTo, This1.Size minTo, This1.S filled) This0.IteratorValFill.#apply(that:this.inner(), from:from, maxTo:maxTo, minTo:minTo, filled:filled)
 read method 
@@ -7412,6 +7402,28 @@ refine read method
 class This0 class() This0
 refine class method 
 This1.S readableName() This1.GetMyName.#apply(that:This0)
+read method 
+This1.Size size() this.inner().size()
+read method 
+This1.S val(This1.Size that) This0.Cast.#apply(that:this.inner().val(that:that))
+class method 
+mut This0 #seqBuilder() this.empty()
+class method 
+mut This0 #from(mut This0 seqBuilder) seqBuilder
+mut method 
+Void #add(This1.S that) this.add(right:that)
+read method 
+lent This0.IteratorVal vals() this.vals(from:This1.Size.#from(builder:(
+  mut This1.S.SBuilder b=This1.Size.#builder()
+  Void unused=b.#less()
+  Void unused0=b.#1()
+  b
+  )), maxTo:This1.Size.#from(builder:(
+  mut This1.S.SBuilder b0=This1.Size.#builder()
+  Void unused1=b0.#less()
+  Void unused2=b0.#2()
+  b0
+  )), minTo:this.inner().size())
 read method 
 This1.Bool contains(This1.S that) (//################# operators
 (
@@ -7830,6 +7842,8 @@ CurlyBlock-Should be unreachable code
 */}
   )
 method 
+This0 without(This1.Size index) This0.#immK(inner:this.inner().without(that:index))
+method 
 This0 withoutLeft(This1.S val) (
   Void unused=(
     This1.Size pos=this.indexOfLeft(val:val)
@@ -7933,6 +7947,8 @@ This0 withoutAll(This1.S val) This0.#from(seqBuilder:(
     )
   b
   ))
+mut method 
+Void remove(This1.Size that) this.#inner().remove(that:that)
 mut method 
 Void removeAll(This1.S val) (
   Void unused=(
@@ -8165,182 +8181,7 @@ CurlyBlock-Should be unreachable code
   )
 read method 
 Void #close() void}}
-IteratorVal: {
-read method 
-read This2.Collections.MutListAny that() this._that()
-read method 
-This2.Size from() 
-mut method 
-Void from(This2.Size that) 
-read method 
-This2.Size maxTo() 
-read method 
-This2.Size minTo() 
-read method 
-This2.Bool isFill() This2.Bool.false()
-read method 
-This2.S filled() error This2.X.#from(builder:(
-  mut This2.S.SBuilder b=This2.X.#builder()
-  Void unused=b.#F()
-  Void unused0=b.#i()
-  Void unused1=b.#l()
-  Void unused2=b.#l()
-  Void unused3=b.#e()
-  Void unused4=b.#d()
-  Void unused5=b.#space()
-  Void unused6=b.#c()
-  Void unused7=b.#a()
-  Void unused8=b.#l()
-  Void unused9=b.#l()
-  Void unused10=b.#e()
-  Void unused11=b.#d()
-  Void unused12=b.#space()
-  Void unused13=b.#o()
-  Void unused14=b.#n()
-  Void unused15=b.#space()
-  Void unused16=b.#n()
-  Void unused17=b.#o()
-  Void unused18=b.#t()
-  Void unused19=b.#space()
-  Void unused20=b.#f()
-  Void unused21=b.#i()
-  Void unused22=b.#l()
-  Void unused23=b.#l()
-  Void unused24=b.#space()
-  Void unused25=b.#i()
-  Void unused26=b.#t()
-  Void unused27=b.#e()
-  Void unused28=b.#r()
-  Void unused29=b.#a()
-  Void unused30=b.#t()
-  Void unused31=b.#o()
-  Void unused32=b.#r()
-  Void unused33=b.#comma()
-  Void unused34=b.#space()
-  Void unused35=b.#s()
-  Void unused36=b.#h()
-  Void unused37=b.#o()
-  Void unused38=b.#u()
-  Void unused39=b.#l()
-  Void unused40=b.#d()
-  Void unused41=b.#space()
-  Void unused42=b.#n()
-  Void unused43=b.#e()
-  Void unused44=b.#v()
-  Void unused45=b.#e()
-  Void unused46=b.#r()
-  Void unused47=b.#space()
-  Void unused48=b.#h()
-  Void unused49=b.#a()
-  Void unused50=b.#p()
-  Void unused51=b.#p()
-  Void unused52=b.#e()
-  Void unused53=b.#n()
-  b
-  ))
-mut method 
-Void #next() exception Void (
-  Void unused=this.from(that:this.from().#plus(that:This2.Size.#from(builder:(
-    mut This2.S.SBuilder b=This2.Size.#builder()
-    Void unused1=b.#1()
-    b
-    ))))
-  Void unused0=(
-    This2.Bool cond=this.maxTo().#right(that:This2.Size.#from(builder:(
-      mut This2.S.SBuilder b0=This2.Size.#builder()
-      Void unused2=b0.#0()
-      b0
-      ))).#and(that:this.from().#rightequal(that:this.maxTo()))
-    (
-      Void unused3=cond.#checkTrue()
-      
-      catch exception Void catched2 void
-      
-      (exception void)
-      )
-    )
-  (
-    This2.Bool cond0=this.isFill().#bang().#and(that:this.from().#rightequal(that:this.that().size()))
-    (
-      Void unused4=cond0.#checkTrue()
-      
-      catch exception Void catched5 void
-      
-      (exception void)
-      )
-    )
-  )
-read method 
-Void #checkEnd() (
-  This2.Bool cond=(
-    This2.Size opNorm=this.from()
-    this.minTo().#right(that:opNorm)
-    )
-  (
-    Void unused=cond.#checkTrue()
-    
-    catch exception Void catched1 void
-    
-    (error This2.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size()))
-    )
-  )
-read method 
-This2.S #inner() (
-  Void unused=(
-    Void unused0=(
-      This2.Bool cond=(
-        This2.Size opNorm=this.from()
-        this.that().size().#right(that:opNorm)
-        )
-      (
-        Void unused2=cond.#checkTrue()
-        
-        catch exception Void catched1 void
-        
-        (return This1.Cast.#apply(that:this.that().val(that:this.from())))
-        )
-      )
-    Void unused1=return this.filled()
-    void
-    )
-  
-  catch return This2.S result result
-  
-  error  {/*@stringU
-CurlyBlock-Should be unreachable code
-*/}
-  )
-read method 
-Void #close() void
-mut method 
-read This2.Collections.MutListAny #_that() 
-read method 
-read This2.Collections.MutListAny _that() 
-mut method 
-This2.Size #from() 
-mut method 
-This2.Size #maxTo() 
-mut method 
-This2.Size #minTo() 
-class method 
-lent This0 #apply(read This2.Collections.MutListAny _that, This2.Size from, This2.Size maxTo, This2.Size minTo) 
-class method 
-lent This0 #apply(read This2.Collections.MutListAny that, This2.Size from, This2.Size maxTo, This2.Size minTo) This0.#apply(_that:that, from:from, maxTo:maxTo, minTo:minTo)}
 IteratorValFill: {
-read method 
-read This2.Collections.MutListAny that() this._that()
-read method 
-This2.Size from() 
-mut method 
-Void from(This2.Size that) 
-read method 
-This2.Size maxTo() 
-read method 
-This2.Size minTo() 
-read method 
-This2.Bool isFill() This2.Bool.true()
-read method 
-This2.S filled() 
 mut method 
 Void #next() exception Void (
   Void unused=this.from(that:this.from().#plus(that:This2.Size.#from(builder:(
@@ -8420,90 +8261,32 @@ read This2.Collections.MutListAny #_that()
 read method 
 read This2.Collections.MutListAny _that() 
 mut method 
+Void from(This2.Size that) 
+mut method 
 This2.Size #from() 
+read method 
+This2.Size from() 
 mut method 
 This2.Size #maxTo() 
+read method 
+This2.Size maxTo() 
 mut method 
 This2.Size #minTo() 
+read method 
+This2.Size minTo() 
 mut method 
 This2.S #filled() 
+read method 
+This2.S filled() 
+read method 
+read This2.Collections.MutListAny that() this._that()
 class method 
 lent This0 #apply(read This2.Collections.MutListAny _that, This2.Size from, This2.Size maxTo, This2.Size minTo, This2.S filled) 
 class method 
-lent This0 #apply(read This2.Collections.MutListAny that, This2.Size from, This2.Size maxTo, This2.Size minTo, This2.S filled) This0.#apply(_that:that, from:from, maxTo:maxTo, minTo:minTo, filled:filled)}
+lent This0 #apply(read This2.Collections.MutListAny that, This2.Size from, This2.Size maxTo, This2.Size minTo, This2.S filled) This0.#apply(_that:that, from:from, maxTo:maxTo, minTo:minTo, filled:filled)
+read method 
+This2.Bool isFill() This2.Bool.true()}
 IteratorVar: {
-read method 
-read This2.Collections.MutListAny that() 
-read method 
-This2.Size from() 
-mut method 
-Void from(This2.Size that) 
-read method 
-This2.Size maxTo() 
-read method 
-This2.Size minTo() 
-read method 
-This2.Bool isFill() This2.Bool.false()
-read method 
-This2.S filled() error This2.X.#from(builder:(
-  mut This2.S.SBuilder b=This2.X.#builder()
-  Void unused=b.#F()
-  Void unused0=b.#i()
-  Void unused1=b.#l()
-  Void unused2=b.#l()
-  Void unused3=b.#e()
-  Void unused4=b.#d()
-  Void unused5=b.#space()
-  Void unused6=b.#c()
-  Void unused7=b.#a()
-  Void unused8=b.#l()
-  Void unused9=b.#l()
-  Void unused10=b.#e()
-  Void unused11=b.#d()
-  Void unused12=b.#space()
-  Void unused13=b.#o()
-  Void unused14=b.#n()
-  Void unused15=b.#space()
-  Void unused16=b.#n()
-  Void unused17=b.#o()
-  Void unused18=b.#t()
-  Void unused19=b.#space()
-  Void unused20=b.#f()
-  Void unused21=b.#i()
-  Void unused22=b.#l()
-  Void unused23=b.#l()
-  Void unused24=b.#space()
-  Void unused25=b.#i()
-  Void unused26=b.#t()
-  Void unused27=b.#e()
-  Void unused28=b.#r()
-  Void unused29=b.#a()
-  Void unused30=b.#t()
-  Void unused31=b.#o()
-  Void unused32=b.#r()
-  Void unused33=b.#comma()
-  Void unused34=b.#space()
-  Void unused35=b.#s()
-  Void unused36=b.#h()
-  Void unused37=b.#o()
-  Void unused38=b.#u()
-  Void unused39=b.#l()
-  Void unused40=b.#d()
-  Void unused41=b.#space()
-  Void unused42=b.#n()
-  Void unused43=b.#e()
-  Void unused44=b.#v()
-  Void unused45=b.#e()
-  Void unused46=b.#r()
-  Void unused47=b.#space()
-  Void unused48=b.#h()
-  Void unused49=b.#a()
-  Void unused50=b.#p()
-  Void unused51=b.#p()
-  Void unused52=b.#e()
-  Void unused53=b.#n()
-  b
-  ))
 mut method 
 Void #next() exception Void (
   Void unused=this.from(that:this.from().#plus(that:This2.Size.#from(builder:(
@@ -8580,19 +8363,91 @@ read method
 Void #close() void
 mut method 
 mut This2.Collections.MutListAny #that() 
+read method 
+read This2.Collections.MutListAny that() 
+mut method 
+Void from(This2.Size that) 
 mut method 
 This2.Size #from() 
+read method 
+This2.Size from() 
 mut method 
 This2.Size #maxTo() 
+read method 
+This2.Size maxTo() 
 mut method 
 This2.Size #minTo() 
+read method 
+This2.Size minTo() 
 class method 
 mut This0 #apply(mut This2.Collections.MutListAny that, This2.Size from, This2.Size maxTo, This2.Size minTo) 
 mut method 
 Void inner(This2.S that) (
   mut This2.Collections.MutListAny rcv32=this.#that()
   rcv32.#apply(that:this.from(), val:that)
-  )}
+  )
+read method 
+This2.Bool isFill() This2.Bool.false()
+read method 
+This2.S filled() error This2.X.#from(builder:(
+  mut This2.S.SBuilder b=This2.X.#builder()
+  Void unused=b.#F()
+  Void unused0=b.#i()
+  Void unused1=b.#l()
+  Void unused2=b.#l()
+  Void unused3=b.#e()
+  Void unused4=b.#d()
+  Void unused5=b.#space()
+  Void unused6=b.#c()
+  Void unused7=b.#a()
+  Void unused8=b.#l()
+  Void unused9=b.#l()
+  Void unused10=b.#e()
+  Void unused11=b.#d()
+  Void unused12=b.#space()
+  Void unused13=b.#o()
+  Void unused14=b.#n()
+  Void unused15=b.#space()
+  Void unused16=b.#n()
+  Void unused17=b.#o()
+  Void unused18=b.#t()
+  Void unused19=b.#space()
+  Void unused20=b.#f()
+  Void unused21=b.#i()
+  Void unused22=b.#l()
+  Void unused23=b.#l()
+  Void unused24=b.#space()
+  Void unused25=b.#i()
+  Void unused26=b.#t()
+  Void unused27=b.#e()
+  Void unused28=b.#r()
+  Void unused29=b.#a()
+  Void unused30=b.#t()
+  Void unused31=b.#o()
+  Void unused32=b.#r()
+  Void unused33=b.#comma()
+  Void unused34=b.#space()
+  Void unused35=b.#s()
+  Void unused36=b.#h()
+  Void unused37=b.#o()
+  Void unused38=b.#u()
+  Void unused39=b.#l()
+  Void unused40=b.#d()
+  Void unused41=b.#space()
+  Void unused42=b.#n()
+  Void unused43=b.#e()
+  Void unused44=b.#v()
+  Void unused45=b.#e()
+  Void unused46=b.#r()
+  Void unused47=b.#space()
+  Void unused48=b.#h()
+  Void unused49=b.#a()
+  Void unused50=b.#p()
+  Void unused51=b.#p()
+  Void unused52=b.#e()
+  Void unused53=b.#n()
+  b
+  ))}
 Varpos_$_37: {
 class method 
 mut This0 #mutK(This2.Size inner) 
@@ -8625,7 +8480,168 @@ Void inner(This2.Size that)
 mut method 
 This2.Size #inner() 
 read method 
-This2.Size inner() }}
+This2.Size inner() }
+IteratorVal: {
+mut method 
+Void #next() exception Void (
+  Void unused=this.from(that:this.from().#plus(that:This2.Size.#from(builder:(
+    mut This2.S.SBuilder b=This2.Size.#builder()
+    Void unused1=b.#1()
+    b
+    ))))
+  Void unused0=(
+    This2.Bool cond=this.maxTo().#right(that:This2.Size.#from(builder:(
+      mut This2.S.SBuilder b0=This2.Size.#builder()
+      Void unused2=b0.#0()
+      b0
+      ))).#and(that:this.from().#rightequal(that:this.maxTo()))
+    (
+      Void unused3=cond.#checkTrue()
+      
+      catch exception Void catched2 void
+      
+      (exception void)
+      )
+    )
+  (
+    This2.Bool cond0=this.isFill().#bang().#and(that:this.from().#rightequal(that:this.that().size()))
+    (
+      Void unused4=cond0.#checkTrue()
+      
+      catch exception Void catched5 void
+      
+      (exception void)
+      )
+    )
+  )
+read method 
+Void #checkEnd() (
+  This2.Bool cond=(
+    This2.Size opNorm=this.from()
+    this.minTo().#right(that:opNorm)
+    )
+  (
+    Void unused=cond.#checkTrue()
+    
+    catch exception Void catched1 void
+    
+    (error This2.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size()))
+    )
+  )
+read method 
+This2.S #inner() (
+  Void unused=(
+    Void unused0=(
+      This2.Bool cond=(
+        This2.Size opNorm=this.from()
+        this.that().size().#right(that:opNorm)
+        )
+      (
+        Void unused2=cond.#checkTrue()
+        
+        catch exception Void catched1 void
+        
+        (return This1.Cast.#apply(that:this.that().val(that:this.from())))
+        )
+      )
+    Void unused1=return this.filled()
+    void
+    )
+  
+  catch return This2.S result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+read method 
+Void #close() void
+mut method 
+read This2.Collections.MutListAny #_that() 
+read method 
+read This2.Collections.MutListAny _that() 
+mut method 
+Void from(This2.Size that) 
+mut method 
+This2.Size #from() 
+read method 
+This2.Size from() 
+mut method 
+This2.Size #maxTo() 
+read method 
+This2.Size maxTo() 
+mut method 
+This2.Size #minTo() 
+read method 
+This2.Size minTo() 
+read method 
+read This2.Collections.MutListAny that() this._that()
+class method 
+lent This0 #apply(read This2.Collections.MutListAny _that, This2.Size from, This2.Size maxTo, This2.Size minTo) 
+class method 
+lent This0 #apply(read This2.Collections.MutListAny that, This2.Size from, This2.Size maxTo, This2.Size minTo) This0.#apply(_that:that, from:from, maxTo:maxTo, minTo:minTo)
+read method 
+This2.Bool isFill() This2.Bool.false()
+read method 
+This2.S filled() error This2.X.#from(builder:(
+  mut This2.S.SBuilder b=This2.X.#builder()
+  Void unused=b.#F()
+  Void unused0=b.#i()
+  Void unused1=b.#l()
+  Void unused2=b.#l()
+  Void unused3=b.#e()
+  Void unused4=b.#d()
+  Void unused5=b.#space()
+  Void unused6=b.#c()
+  Void unused7=b.#a()
+  Void unused8=b.#l()
+  Void unused9=b.#l()
+  Void unused10=b.#e()
+  Void unused11=b.#d()
+  Void unused12=b.#space()
+  Void unused13=b.#o()
+  Void unused14=b.#n()
+  Void unused15=b.#space()
+  Void unused16=b.#n()
+  Void unused17=b.#o()
+  Void unused18=b.#t()
+  Void unused19=b.#space()
+  Void unused20=b.#f()
+  Void unused21=b.#i()
+  Void unused22=b.#l()
+  Void unused23=b.#l()
+  Void unused24=b.#space()
+  Void unused25=b.#i()
+  Void unused26=b.#t()
+  Void unused27=b.#e()
+  Void unused28=b.#r()
+  Void unused29=b.#a()
+  Void unused30=b.#t()
+  Void unused31=b.#o()
+  Void unused32=b.#r()
+  Void unused33=b.#comma()
+  Void unused34=b.#space()
+  Void unused35=b.#s()
+  Void unused36=b.#h()
+  Void unused37=b.#o()
+  Void unused38=b.#u()
+  Void unused39=b.#l()
+  Void unused40=b.#d()
+  Void unused41=b.#space()
+  Void unused42=b.#n()
+  Void unused43=b.#e()
+  Void unused44=b.#v()
+  Void unused45=b.#e()
+  Void unused46=b.#r()
+  Void unused47=b.#space()
+  Void unused48=b.#h()
+  Void unused49=b.#a()
+  Void unused50=b.#p()
+  Void unused51=b.#p()
+  Void unused52=b.#e()
+  Void unused53=b.#n()
+  b
+  ))}}
 StringSplit: {
 class method /*will be fixed in adam2
 */This1.Strings splitOn(This1.S that, This1.S chars) error This1.S.#from(builder:(
@@ -10506,13 +10522,13 @@ CurlyBlock-Should be unreachable code
   )}
 Enum: {
 class method 
-Library #leftrightleft(Library that) This1.SafeOperatorsAccess.compose(left:This1.SafeOperatorsAccess.renameClass(that:this.enumTrait(), src:This1.S.#from(builder:(
+Library #leftrightleft(Library that) This1.UnsafeRefactor.Compose.compose(left:This1.UnsafeRefactor.RenameClass.renameClass(that:this.enumTrait(), nameSrc:This1.S.#from(builder:(
   mut This1.S.SBuilder b=This1.S.#builder()
   Void unused=b.#T()
   Void unused0=b.#o()
   Void unused1=b.#p()
   b
-  )), dest:This1.S.#from(builder:(
+  )), nameDest:This1.S.#from(builder:(
   mut This1.S.SBuilder b0=This1.S.#builder()
   Void unused2=b0.#T()
   Void unused3=b0.#h()
@@ -10523,6 +10539,53 @@ Library #leftrightleft(Library that) This1.SafeOperatorsAccess.compose(left:This
 class method 
 Library enumTrait()  {
 ParseFail: {implements This3.Guard.ParseFail, This3.Guard, This3.Message, This3.Concept.ToS, This3.Concept.Equals, This3.Concept.Classable
+class method 
+mut This0 #mutK(This3.S _text, This3.Message.Opt cause) 
+class method 
+This0 #apply(This3.S _text, This3.Message.Opt cause) This0.#mutK(_text:_text, cause:cause)
+mut method 
+This3.S #_text() 
+read method 
+This3.S _text() 
+mut method 
+This3.Message.Opt #cause() 
+read method 
+This3.Message.Opt cause() 
+refine class method 
+This3.Bool is(class Any subtype) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error  {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This3.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This3.Bool.false()
+    void
+    )
+  
+  catch return This3.Bool result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+refine class method 
+This3.S readableName() This3.GetMyName.#apply(that:This0)
 refine class method 
 This3.S kind() this.readableName()
 refine read method 
@@ -10530,7 +10593,40 @@ This3.S text() this._text()
 refine read method 
 This3.Message.Opt responseOf() this.cause()
 refine read method 
-class This3.Message class() This0
+This3.Bool equals(read Any that) (
+  Void unused=(
+    Void unused0=(
+      read This0 that0=(
+        Void unused2=return that
+        
+        catch return read This0 casted casted
+        
+        catch return read Any casted exception void
+        
+        error  {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return this.#equalequal(that:that0)
+        void
+        )
+      )
+    Void unused1=return This3.Bool.false()
+    void
+    )
+  
+  catch return This3.Bool result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+method 
+This0 #apply(This3.Message that) This0.#apply(text:this.text(), cause:that)
 refine read method 
 This3.S toS() (
   Void unused=(
@@ -10604,90 +10700,10 @@ This3.S toS() (
 CurlyBlock-Should be unreachable code
 */}
   )
-refine read method 
-This3.Bool equals(read Any that) (
-  Void unused=(
-    Void unused0=(
-      read This0 that0=(
-        Void unused2=return that
-        
-        catch return read This0 casted casted
-        
-        catch return read Any casted exception void
-        
-        error  {/*@stringU
-CastT-Should be unreachable code
-*/}
-        )
-      
-      catch exception Void catched0 void
-      
-      (
-        Void unused3=return this.#equalequal(that:that0)
-        void
-        )
-      )
-    Void unused1=return This3.Bool.false()
-    void
-    )
-  
-  catch return This3.Bool result result
-  
-  error  {/*@stringU
-CurlyBlock-Should be unreachable code
-*/}
-  )
-refine class method 
-This3.S readableName() This3.GetMyName.#apply(that:This0)
-refine class method 
-This3.Bool is(class Any subtype) (
-  Void unused=(
-    Void unused0=(
-      class This0 subtype0=(
-        Void unused2=return subtype
-        
-        catch return class This0 casted casted
-        
-        catch return class Any casted exception void
-        
-        error  {/*@stringU
-CastT-Should be unreachable code
-*/}
-        )
-      
-      catch exception Void catched0 void
-      
-      (
-        Void unused3=return This3.Bool.true()
-        void
-        )
-      )
-    Void unused1=return This3.Bool.false()
-    void
-    )
-  
-  catch return This3.Bool result result
-  
-  error  {/*@stringU
-CurlyBlock-Should be unreachable code
-*/}
-  )
-class method 
-mut This0 #mutK(This3.S _text, This3.Message.Opt cause) 
-class method 
-This0 #apply(This3.S _text, This3.Message.Opt cause) This0.#mutK(_text:_text, cause:cause)
-mut method 
-This3.S #_text() 
-read method 
-This3.S _text() 
-mut method 
-This3.Message.Opt #cause() 
-read method 
-This3.Message.Opt cause() 
-method 
-This0 #apply(This3.Message that) This0.#apply(text:this.text(), cause:that)
 read method 
 This3.Bool #equalequal(read This0 that) This3.Message.EqualMessages.#apply(that:this, other:that)
+refine read method 
+class This3.Message class() This0
 class method 
 This0 #apply(This3.S text) This0.#apply(_text:text, cause:This3.Message.Opt.#apply())
 class method 
@@ -10800,22 +10816,22 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-read method 
-This3.Bool #equalequal(read This0 that) this.inner().#equalequal(that:that.inner())
-refine read method 
-This3.S toS() This0.readableName().#plusplus(that:This3.S.#from(builder:(
-  mut This3.S.SBuilder b=This3.S.#builder()
-  Void unused=b.#dot()
-  b
-  )).#plusplus(that:this.name()))
 mut method 
 This3.Size #inner() 
 read method 
 This3.Size inner() 
 class method 
 This0 #apply(This3.Size inner) 
+refine read method 
+This3.S toS() This0.readableName().#plusplus(that:This3.S.#from(builder:(
+  mut This3.S.SBuilder b=This3.S.#builder()
+  Void unused=b.#dot()
+  b
+  )).#plusplus(that:this.name()))
 read method 
 This3.S name() This0.names().val(that:this.inner())
+read method 
+This3.Bool #equalequal(read This0 that) this.inner().#equalequal(that:that.inner())
 class method 
 This3.Strings names() 
 class method 
@@ -11442,78 +11458,6 @@ CurlyBlock-Should be unreachable code
 read method 
 Void #close() void}}
 IteratorVal: {
-read method 
-read This4.Collections.MutListAny that() this._that()
-read method 
-This4.Size from() 
-mut method 
-Void from(This4.Size that) 
-read method 
-This4.Size maxTo() 
-read method 
-This4.Size minTo() 
-read method 
-This4.Bool isFill() This4.Bool.false()
-read method 
-Any filled() error This4.X.#from(builder:(
-  mut This4.S.SBuilder b=This4.X.#builder()
-  Void unused=b.#F()
-  Void unused0=b.#i()
-  Void unused1=b.#l()
-  Void unused2=b.#l()
-  Void unused3=b.#e()
-  Void unused4=b.#d()
-  Void unused5=b.#space()
-  Void unused6=b.#c()
-  Void unused7=b.#a()
-  Void unused8=b.#l()
-  Void unused9=b.#l()
-  Void unused10=b.#e()
-  Void unused11=b.#d()
-  Void unused12=b.#space()
-  Void unused13=b.#o()
-  Void unused14=b.#n()
-  Void unused15=b.#space()
-  Void unused16=b.#n()
-  Void unused17=b.#o()
-  Void unused18=b.#t()
-  Void unused19=b.#space()
-  Void unused20=b.#f()
-  Void unused21=b.#i()
-  Void unused22=b.#l()
-  Void unused23=b.#l()
-  Void unused24=b.#space()
-  Void unused25=b.#i()
-  Void unused26=b.#t()
-  Void unused27=b.#e()
-  Void unused28=b.#r()
-  Void unused29=b.#a()
-  Void unused30=b.#t()
-  Void unused31=b.#o()
-  Void unused32=b.#r()
-  Void unused33=b.#comma()
-  Void unused34=b.#space()
-  Void unused35=b.#s()
-  Void unused36=b.#h()
-  Void unused37=b.#o()
-  Void unused38=b.#u()
-  Void unused39=b.#l()
-  Void unused40=b.#d()
-  Void unused41=b.#space()
-  Void unused42=b.#n()
-  Void unused43=b.#e()
-  Void unused44=b.#v()
-  Void unused45=b.#e()
-  Void unused46=b.#r()
-  Void unused47=b.#space()
-  Void unused48=b.#h()
-  Void unused49=b.#a()
-  Void unused50=b.#p()
-  Void unused51=b.#p()
-  Void unused52=b.#e()
-  Void unused53=b.#n()
-  b
-  ))
 mut method 
 Void #next() exception Void (
   Void unused=this.from(that:this.from().#plus(that:This4.Size.#from(builder:(
@@ -11593,30 +11537,88 @@ read This4.Collections.MutListAny #_that()
 read method 
 read This4.Collections.MutListAny _that() 
 mut method 
+Void from(This4.Size that) 
+mut method 
 This4.Size #from() 
+read method 
+This4.Size from() 
 mut method 
 This4.Size #maxTo() 
+read method 
+This4.Size maxTo() 
 mut method 
 This4.Size #minTo() 
+read method 
+This4.Size minTo() 
+read method 
+read This4.Collections.MutListAny that() this._that()
 class method 
 lent This0 #apply(read This4.Collections.MutListAny _that, This4.Size from, This4.Size maxTo, This4.Size minTo) 
 class method 
-lent This0 #apply(read This4.Collections.MutListAny that, This4.Size from, This4.Size maxTo, This4.Size minTo) This0.#apply(_that:that, from:from, maxTo:maxTo, minTo:minTo)}
+lent This0 #apply(read This4.Collections.MutListAny that, This4.Size from, This4.Size maxTo, This4.Size minTo) This0.#apply(_that:that, from:from, maxTo:maxTo, minTo:minTo)
+read method 
+This4.Bool isFill() This4.Bool.false()
+read method 
+Any filled() error This4.X.#from(builder:(
+  mut This4.S.SBuilder b=This4.X.#builder()
+  Void unused=b.#F()
+  Void unused0=b.#i()
+  Void unused1=b.#l()
+  Void unused2=b.#l()
+  Void unused3=b.#e()
+  Void unused4=b.#d()
+  Void unused5=b.#space()
+  Void unused6=b.#c()
+  Void unused7=b.#a()
+  Void unused8=b.#l()
+  Void unused9=b.#l()
+  Void unused10=b.#e()
+  Void unused11=b.#d()
+  Void unused12=b.#space()
+  Void unused13=b.#o()
+  Void unused14=b.#n()
+  Void unused15=b.#space()
+  Void unused16=b.#n()
+  Void unused17=b.#o()
+  Void unused18=b.#t()
+  Void unused19=b.#space()
+  Void unused20=b.#f()
+  Void unused21=b.#i()
+  Void unused22=b.#l()
+  Void unused23=b.#l()
+  Void unused24=b.#space()
+  Void unused25=b.#i()
+  Void unused26=b.#t()
+  Void unused27=b.#e()
+  Void unused28=b.#r()
+  Void unused29=b.#a()
+  Void unused30=b.#t()
+  Void unused31=b.#o()
+  Void unused32=b.#r()
+  Void unused33=b.#comma()
+  Void unused34=b.#space()
+  Void unused35=b.#s()
+  Void unused36=b.#h()
+  Void unused37=b.#o()
+  Void unused38=b.#u()
+  Void unused39=b.#l()
+  Void unused40=b.#d()
+  Void unused41=b.#space()
+  Void unused42=b.#n()
+  Void unused43=b.#e()
+  Void unused44=b.#v()
+  Void unused45=b.#e()
+  Void unused46=b.#r()
+  Void unused47=b.#space()
+  Void unused48=b.#h()
+  Void unused49=b.#a()
+  Void unused50=b.#p()
+  Void unused51=b.#p()
+  Void unused52=b.#e()
+  Void unused53=b.#n()
+  b
+  ))}
 IteratorValFill: {
-read method 
-read This4.Collections.MutListAny that() this._that()
-read method 
-This4.Size from() 
-mut method 
-Void from(This4.Size that) 
-read method 
-This4.Size maxTo() 
-read method 
-This4.Size minTo() 
-read method 
-This4.Bool isFill() This4.Bool.true()
-read method 
-Any filled() 
 mut method 
 Void #next() exception Void (
   Void unused=this.from(that:this.from().#plus(that:This4.Size.#from(builder:(
@@ -11696,90 +11698,32 @@ read This4.Collections.MutListAny #_that()
 read method 
 read This4.Collections.MutListAny _that() 
 mut method 
+Void from(This4.Size that) 
+mut method 
 This4.Size #from() 
-mut method 
-This4.Size #maxTo() 
-mut method 
-This4.Size #minTo() 
-mut method 
-Any #filled() 
-class method 
-lent This0 #apply(read This4.Collections.MutListAny _that, This4.Size from, This4.Size maxTo, This4.Size minTo, Any filled) 
-class method 
-lent This0 #apply(read This4.Collections.MutListAny that, This4.Size from, This4.Size maxTo, This4.Size minTo, Any filled) This0.#apply(_that:that, from:from, maxTo:maxTo, minTo:minTo, filled:filled)}
-IteratorVar: {
-read method 
-read This4.Collections.MutListAny that() 
 read method 
 This4.Size from() 
 mut method 
-Void from(This4.Size that) 
+This4.Size #maxTo() 
 read method 
 This4.Size maxTo() 
+mut method 
+This4.Size #minTo() 
 read method 
 This4.Size minTo() 
+mut method 
+Any #filled() 
 read method 
-This4.Bool isFill() This4.Bool.false()
+Any filled() 
 read method 
-Any filled() error This4.X.#from(builder:(
-  mut This4.S.SBuilder b=This4.X.#builder()
-  Void unused=b.#F()
-  Void unused0=b.#i()
-  Void unused1=b.#l()
-  Void unused2=b.#l()
-  Void unused3=b.#e()
-  Void unused4=b.#d()
-  Void unused5=b.#space()
-  Void unused6=b.#c()
-  Void unused7=b.#a()
-  Void unused8=b.#l()
-  Void unused9=b.#l()
-  Void unused10=b.#e()
-  Void unused11=b.#d()
-  Void unused12=b.#space()
-  Void unused13=b.#o()
-  Void unused14=b.#n()
-  Void unused15=b.#space()
-  Void unused16=b.#n()
-  Void unused17=b.#o()
-  Void unused18=b.#t()
-  Void unused19=b.#space()
-  Void unused20=b.#f()
-  Void unused21=b.#i()
-  Void unused22=b.#l()
-  Void unused23=b.#l()
-  Void unused24=b.#space()
-  Void unused25=b.#i()
-  Void unused26=b.#t()
-  Void unused27=b.#e()
-  Void unused28=b.#r()
-  Void unused29=b.#a()
-  Void unused30=b.#t()
-  Void unused31=b.#o()
-  Void unused32=b.#r()
-  Void unused33=b.#comma()
-  Void unused34=b.#space()
-  Void unused35=b.#s()
-  Void unused36=b.#h()
-  Void unused37=b.#o()
-  Void unused38=b.#u()
-  Void unused39=b.#l()
-  Void unused40=b.#d()
-  Void unused41=b.#space()
-  Void unused42=b.#n()
-  Void unused43=b.#e()
-  Void unused44=b.#v()
-  Void unused45=b.#e()
-  Void unused46=b.#r()
-  Void unused47=b.#space()
-  Void unused48=b.#h()
-  Void unused49=b.#a()
-  Void unused50=b.#p()
-  Void unused51=b.#p()
-  Void unused52=b.#e()
-  Void unused53=b.#n()
-  b
-  ))
+read This4.Collections.MutListAny that() this._that()
+class method 
+lent This0 #apply(read This4.Collections.MutListAny _that, This4.Size from, This4.Size maxTo, This4.Size minTo, Any filled) 
+class method 
+lent This0 #apply(read This4.Collections.MutListAny that, This4.Size from, This4.Size maxTo, This4.Size minTo, Any filled) This0.#apply(_that:that, from:from, maxTo:maxTo, minTo:minTo, filled:filled)
+read method 
+This4.Bool isFill() This4.Bool.true()}
+IteratorVar: {
 mut method 
 Void #next() exception Void (
   Void unused=this.from(that:this.from().#plus(that:This4.Size.#from(builder:(
@@ -11856,19 +11800,91 @@ read method
 Void #close() void
 mut method 
 mut This4.Collections.MutListAny #that() 
+read method 
+read This4.Collections.MutListAny that() 
+mut method 
+Void from(This4.Size that) 
 mut method 
 This4.Size #from() 
+read method 
+This4.Size from() 
 mut method 
 This4.Size #maxTo() 
+read method 
+This4.Size maxTo() 
 mut method 
 This4.Size #minTo() 
+read method 
+This4.Size minTo() 
 class method 
 mut This0 #apply(mut This4.Collections.MutListAny that, This4.Size from, This4.Size maxTo, This4.Size minTo) 
 mut method 
 Void inner(Any that) (
   mut This4.Collections.MutListAny rcv32=this.#that()
   rcv32.#apply(that:this.from(), val:that)
-  )}}}
+  )
+read method 
+This4.Bool isFill() This4.Bool.false()
+read method 
+Any filled() error This4.X.#from(builder:(
+  mut This4.S.SBuilder b=This4.X.#builder()
+  Void unused=b.#F()
+  Void unused0=b.#i()
+  Void unused1=b.#l()
+  Void unused2=b.#l()
+  Void unused3=b.#e()
+  Void unused4=b.#d()
+  Void unused5=b.#space()
+  Void unused6=b.#c()
+  Void unused7=b.#a()
+  Void unused8=b.#l()
+  Void unused9=b.#l()
+  Void unused10=b.#e()
+  Void unused11=b.#d()
+  Void unused12=b.#space()
+  Void unused13=b.#o()
+  Void unused14=b.#n()
+  Void unused15=b.#space()
+  Void unused16=b.#n()
+  Void unused17=b.#o()
+  Void unused18=b.#t()
+  Void unused19=b.#space()
+  Void unused20=b.#f()
+  Void unused21=b.#i()
+  Void unused22=b.#l()
+  Void unused23=b.#l()
+  Void unused24=b.#space()
+  Void unused25=b.#i()
+  Void unused26=b.#t()
+  Void unused27=b.#e()
+  Void unused28=b.#r()
+  Void unused29=b.#a()
+  Void unused30=b.#t()
+  Void unused31=b.#o()
+  Void unused32=b.#r()
+  Void unused33=b.#comma()
+  Void unused34=b.#space()
+  Void unused35=b.#s()
+  Void unused36=b.#h()
+  Void unused37=b.#o()
+  Void unused38=b.#u()
+  Void unused39=b.#l()
+  Void unused40=b.#d()
+  Void unused41=b.#space()
+  Void unused42=b.#n()
+  Void unused43=b.#e()
+  Void unused44=b.#v()
+  Void unused45=b.#e()
+  Void unused46=b.#r()
+  Void unused47=b.#space()
+  Void unused48=b.#h()
+  Void unused49=b.#a()
+  Void unused50=b.#p()
+  Void unused51=b.#p()
+  Void unused52=b.#e()
+  Void unused53=b.#n()
+  b
+  ))}}}
 SolidTrait: {
 class method 
 Library #apply()  {/*Data is more than Solid, and Liquid, Gas, Plasma can be good methafores
