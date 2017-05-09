@@ -45,11 +45,10 @@ public class Origin {
     }
   public String toS(){
     return "Origin:"+this.fileName+
-            "[lineStart=" + lineStart +
-            ", lineEnd=" + lineEnd +
-            ", columnStart=" + columnStart +
-            ", columnEnd=" + columnEnd +
-            "]";
+            "\nlines " + lineStart +
+            " to " + lineEnd +
+            "; comums " + columnStart +
+            " to " + columnEnd;
     }
   String fileName;
   int lineStart;
