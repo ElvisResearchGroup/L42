@@ -58,6 +58,12 @@ if forall Cs, all of the following hold:
     a6) L0(Cs).ncs.Cs=
           L1(Cs).ncs.Cs\L2(Cs).ncs.Cs,
           L2(Cs).ncs.Cs
+Question:
+does p, L1 exists so that p|- L1+{}=L3  and  L3!=L1
+if norm(p.pop().evilPush(L1))=L1 then L3=L1 ??
+Opens:
+-if a method pop up thanks to interface enrichment, we alreadt require its existence, we need to require its mh to be defined.
+If there are multiple? see last skype chat
 
 _______
 #define
