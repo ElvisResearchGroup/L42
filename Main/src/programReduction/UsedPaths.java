@@ -42,6 +42,11 @@ public class UsedPaths {
 static PathsPaths usedPathsECatchErrors(Program p, ExpCore e){
   try{return usedPathsE(p,e);}
   catch(PathMetaOrNonExistant pne){
+    if (pne.getWherePathWasWritten()==null){
+      assert pne.getListOfNodeNames()!=null;
+      Position pos=FindPathUsage._locate(p,e,Path.outer(1,pne.getListOfNodeNames()));
+      pne=pne.withWherePathWasWritten(pos);
+      }
     throw pne.withPos(CollapsePositions.of(e));
     }
   catch(IncompleteClassIsRequired icir){
@@ -115,7 +120,9 @@ static PathsPaths usedPathsECatchErrors(Program p, ExpCore e){
       assert !csi.isEmpty();
       ClassB li;try{li=l.getClassB(csi);}
       catch(ErrorMessage.PathMetaOrNonExistant pne){
-        throw pne.withListOfNodeNames(csi).withCb(l);
+        /*Position p=FindPathUsage._locate(pForError,l,Path.outer(1,
+          csi));*/
+        throw pne.withListOfNodeNames(csi).withCb(l);//.withWherePathWasWritten(p);
         }
       ClassB liTop=li;
       if (csi.size()!=0){liTop=l.getClassB(Collections.singletonList(csi.get(0)));}

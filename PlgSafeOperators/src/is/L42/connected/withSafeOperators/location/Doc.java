@@ -28,7 +28,34 @@ public class Doc extends Location.LocationImpl<Ast.Doc,Location>{
     }
     TypeRefTo key; 
     String text;
+    public boolean equalequal(Object that){return this.equals(that);}
+    public String toS(){
+      return "Annotation:@"+key+" "+text;
+      }
+    //Generated
+    @Override public int hashCode() {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((key == null) ? 0 : key.hashCode());
+      result = prime * result + ((text == null) ? 0 : text.hashCode());
+      return result;
+      }
+    @Override public boolean equals(Object obj) {
+      if (this == obj) return true;
+      if (obj == null) return false;
+      if (getClass() != obj.getClass())return false;
+      Annotation other = (Annotation) obj;
+      if (key == null) {
+        if (other.key != null) return false;
+      } else if (!key.equals(other.key))return false;
+      if (text == null) {
+        if (other.text != null) return false;
+      } else if (!text.equals(other.text)) return false;
+      return true;
+      }
+    
     }
   @Override public String toS() {return inner.getS();}
   @Override public Doc doc() {return this;}
+  
   }

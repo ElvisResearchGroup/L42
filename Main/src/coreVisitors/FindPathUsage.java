@@ -18,9 +18,10 @@ public class FindPathUsage extends CloneVisitorWithProgram{
     }
 Ast.Position located=null;
   Path searchingFor;
-  public static Ast.Position _locate(Program p,ClassB cb, Path pi){
+  public static Ast.Position _locate(Program p,ExpCore e, Path pi){
+    assert IsCompiled.of(e);
     FindPathUsage fpu=new FindPathUsage(p,pi);
-    cb.accept(fpu);
+    e.accept(fpu);
     return fpu.located;
   } 
   public ExpCore visit(ClassB s) {
@@ -29,36 +30,42 @@ Ast.Position located=null;
     try{return super.visit(s);}
     finally{searchingFor=oldP;}
     }
-  public ExpCore visit(ExpCore.EPath s) {
-    if(s.toString().endsWith("SafeOperatorsAccess")){
-      System.out.println(s);
-    }
-    if (p.equiv(s.getInner(),searchingFor)){
-      this.located=s.getP();
+  public void locate(Path path,Ast.Position pos){
+    if (p.equiv(path,searchingFor)){
+      this.located=pos;
       }
-    return s;
-    //add using, type... type has no pos..
     }
+  public ExpCore visit(ExpCore.EPath s) {
+    locate(s.getInner(),s.getP());
+    return s;
+    }
+  public ExpCore visit(ExpCore.Using s) {
+  locate(s.getPath(),ctxPos());
+  return super.visit(s);
+  }
+
   public Type liftT(Type s) {
   Path inner=s.match(nt->nt.getPath(), hType->hType.getPath());
-  if (p.equiv(inner,searchingFor)){
-    if (getLastCMs()==null){
-      this.located=p.top().getP();
-      return s;
-      }
-    if (getLastCMs()instanceof Ast.C){
-      List<Ast.C> cs=Collections.singletonList((Ast.C)getLastCMs());
-      this.located=p.top().getNested(cs).getP();
-      return s;
-      }
-    if (getLastCMs()instanceof Ast.MethodSelector){
-      Member m=p.top()._getMember((Ast.MethodSelector) getLastCMs());
-      assert m!=null;
-      this.located=m.getP();
-      return s;
-      }    
+  if(s.toString().endsWith("Location")){
+    System.out.println(s);
     }
-  return s;
-  //add using, type... type has no pos..
+  Ast.Position pos = ctxPos();
+  locate(inner,pos);  return s;
+  //add using
   }
+private Ast.Position ctxPos() {
+Ast.Position pos=p.top().getP();
+  if (getLastCMs()!=null){
+  if (getLastCMs()instanceof Ast.C){
+    List<Ast.C> cs=Collections.singletonList((Ast.C)getLastCMs());
+    pos=p.top().getNested(cs).getP();
+    }
+  if (getLastCMs()instanceof Ast.MethodSelector){
+    Member m=p.top()._getMember((Ast.MethodSelector) getLastCMs());
+    assert m!=null;
+    pos=m.getP();
+    }
+  }
+return pos;
+}
   }

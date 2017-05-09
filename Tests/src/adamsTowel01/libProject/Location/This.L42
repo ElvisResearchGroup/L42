@@ -11,8 +11,7 @@ Location:{
 */
 
 method
-Location location()
-  
+This location()
 NotAvailable:Message.$<><{implements Guard}
   
 //note: "class" is not a good name for an enum elem. Thus we use uppercase down
@@ -38,156 +37,26 @@ Mdf:Enum<><{class method Strings names()Strings[S"Immutable";S"Mutable";S"Read";
 
 //###1 Origin
 //------------------------------------  
-method Size originsSize()//many since metaprogramming
-method Origin origin(Size that)   
-Origin:UnsafeRefactor.MiniData<><{
-  //@plugin  toFix 
-  //@pluginPart is.L42.connected.withSafeOperators.location.Origin
-  S fileName
-  Size lineStart
-  Size lineEnd
-  Size columnStart
-  Size columnEnd
-  class method
-  This(S fileName, Size lineStart, Size lineEnd,
-    Size columnStart, Size columnEnd) 
-  class method
-  Library #pluginUnresponsive(Library binaryRepr)
-    binaryRepr  
-
-  This$:UnsafeRefactor.MiniData.thisLib()
-  List:Collections.vector(of:This$)
-  }
-    
-}
-//we should test the former first. Add to origin a constructor method and make a test
-
-/*
+This$:{interface
+  method Size originsSize()//many since metaprogramming
+  method Origin origin(Size that)   
+  }  
+Origin:UnsafeRefactor.MiniData<><...
 //###2 Doc 
 //------------------------------------
-
-Doc:UnsafeRefactor.MiniData<><{ implements Location
-  //user will need typecase to discover precise type, location() not refined
-  Annotation:UnsafeRefactor.MiniData<><{
-    Type.RefTo key
-    S text
-  
-    This$:UnsafeRefactor.MiniData.thisLib()
-    List:Collection.vector(of:This$)
-    }
-  method Size annotationsSize()
-  method Annotation annotation(Size that)   
-  method
-  Annotation.List origins()
-    Annotation.List[with i in Count(this.originSize()) (use[this.origin(i)])]  
-  }
-    
+Doc:UnsafeRefactor.MiniData<><...
 //###3 Lib 
 //------------------------------------
-
-  //there is no Member since normalized classes have order: first nested, then methods
-  Lib:UnsafeRefactor.MiniData<><{ implements Location
-    refine method Lib location()
-    method Size nestedsSize()
-    method This nested(Size that)
-    method
-    List nesteds()
-      List[with i in Count(this.nestedSize()) (use[this.nested(i)])]
-    List allNesteds()
-      List[this]++
-      List[with nc in this.nesteds().vals() (
-        with nci in nc.allNesteds().vals() (use[nci])
-      )]
-    method Lib nested(Path path) exception NotAvailable (
-      with ni in this.root().allNested().vals() (
-        if ni.path()==path (return ni)
-        )
-      exception NotAvailable"Path "[path]"not present"
-      )
-    method Bool has(Path path) (
-      unused=this.nested(path:path)
-      catch exception NotAvailable Bool.false()
-      Bool.true()
-      )
-          
-    method Size methodsSize()
-    method Method method(Size that)
-    Method.List methods()
-      Method.List[with i in Count(this.methodsSize()) (use[this.method(i)])]
-    
-    method Method method(Selector selector) exception NotAvailable (
-      with mi in this.methods() (
-        if mi.selector()==selector (return mi)
-        )
-      exception NotAvailable"Selector "[selector]"not present"
-      )
-    method Bool has(Selector selector) (
-      unused=this.method(selector:selector)
-      catch exception NotAvailable Bool.false()
-      Bool.true()
-      )      
-    method Size implementedsSize()
-    method Type.Implemented implemented(Size that)
-    method
-    Type.Implemented.List implementeds()
-      Type.Implemented.List[with i in Count(this.implementedsSize()) (use[this.implemented(i)])]
-    
-    method Bool implements(class Any clazz){
-      if Refactor.equalsClassObj(Any, and:clazz) (
-        return Bool.True()
-        ) 
-       with ti in this.implementeds().vals() (
-         with ri=ti.refTo() (
-           on Type.RefTo.Binded (
-             ci=ri.referredClassObj()
-             if Refactor.equalsClassObj(ci, and:clazz) (
-              //no need of supertypes since normalized classes has transitive implements already
-              return Bool.True()
-              )
-             )
-           )
-         )
-       return Bool.false()
-       }
-    method Bool implements(Path path) {
-       with ti in this.implementeds().vals() (
-         with ri=ti.refTo() (
-           on Type.RefTo.Lib (
-             libi=ri.referredLib()
-             if path==libi.path() (
-               return Bool.true()
-               )
-             )
-           )
-         )
-       return Bool.false()
-       }   
-    
-    method Doc doc()
-    method S kindS()
-    Kind:Enum"..."
-    method
-    Bool isInterface()
-      this.kindS()==S"Interface"
-    Bool isCoherent()
-      this.isInterface() | this.kindS()==S"CoherentClass"
-    This$:UnsafeRefactor.MiniData.thisLib()
-    List:Collection.vector(of:This$)
-    
-    method Lib root()
-    method Path path()//last is its name, empty path for root
-    method Doc nestedDoc()//empty doc if it is root
-    //even if obtained with a classObj, no method to get it back
-    //to get a nested classObj, Refactor.navigateClassObj(classAny,Path)->classAny??
-    }
-
-    
+//there is no Member since normalized classes have order: first nested, then methods
+//Lib:UnsafeRefactor.MiniData<><...
+}
+ /*   
 //###4 Method 
 //------------------------------------
 
   Method:UnsafeRefactor.MiniData<><{
     This$:UnsafeRefactor.MiniData.thisLib()
-    List:Collection.vector(of:This$)
+    List:Collections.vector(of:This$)
 
     refine method Lib location()
     method Bool isAbstract()
@@ -199,13 +68,13 @@ Doc:UnsafeRefactor.MiniData<><{ implements Location
     method Type.Parameter parameterType(Size that)
     method
     Type.Parameter.List parameterTypes()
-      Type.Parameter.List[with i in Count(this.parameterTypesSize()) (use[this.parameterType(i)])]
+      Type.Parameter.List[with i in 0Size.vals(upTo:this.parameterTypesSize()) (use[this.parameterType(i)])]
       
     method Size exceptionsSize()
     method Type.Exception exception(Size that)
     method
     Type.Exception.List exceptions()
-      Type.Exception.List[with i in Count(this.exceptionsSize()) (use[this.exceptions(i)])]
+      Type.Exception.List[with i in 0Size.vals(upTo:this.exceptionsSize()) (use[this.exceptions(i)])]
     }
 
 
@@ -217,7 +86,7 @@ Doc:UnsafeRefactor.MiniData<><{ implements Location
     RefTo:{interface implements Base??
       //toS is the full path with Thisn.
       Lib:{ implements This1
-        method Location.Lib referredLib()
+        method Lib referredLib()
         }
       Unavailable:{ implements This1
         //cases:
@@ -253,21 +122,21 @@ Doc:UnsafeRefactor.MiniData<><{ implements Location
       }
     Parameter:UnsafeRefactor.MiniData<><{ implements This1
       This$:UnsafeRefactor.MiniData.thisLib()
-      List:Collection.vector(of:This$)
+      List:Collections.vector(of:This$)
 
       refine method Method location()
       method Size pos()//0 for this
       }
     Exception:UnsafeRefactor.MiniData<><{ implements This1
       This$:UnsafeRefactor.MiniData.thisLib()
-      List:Collection.vector(of:This$)
+      List:Collections.vector(of:This$)
 
       refine method Method location()
       method Size pos()//should start from 1 or 0?
       }
     Implemented:UnsafeRefactor.MiniData<><{ implements This1
       This$:UnsafeRefactor.MiniData.thisLib()
-      List:Collection.vector(of:This$)
+      List:Collections.vector(of:This$)
 
       refine method Lib location()
       method Size pos()//should start from 1 or 0?
@@ -278,7 +147,7 @@ Doc:UnsafeRefactor.MiniData<><{ implements Location
 //------------------------------------
 
 By calling Refactor.introspect(lib:{...})or
-By calling Refactor.introspect(class:A.B) you get a Location.Lib
+By calling Refactor.introspect(class:A.B) you get a Lib
 
 Java Lib need to store a optional classObj in case
 the lib come from binded class.
@@ -320,7 +189,7 @@ All locations need to be sum with
 { implements Location
   method
   Origin.List origins()
-    Origin.List[with i in Count(this.originSize()) (use[this.origin(i)])]
+    Origin.List[with i in 0Size.vals(upTo:this.originSize()) (use[this.origin(i)])]
   }
 Refactor.baseDefaults()<>< to call MiniData?
 

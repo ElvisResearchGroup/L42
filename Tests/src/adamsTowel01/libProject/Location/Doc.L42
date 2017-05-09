@@ -1,0 +1,21 @@
+{ implements This1.This$
+  //user will need typecase to discover precise type, location() not refined
+  //@plugin  toFix 
+  //@pluginPart is.L42.connected.withSafeOperators.location.Doc
+  class method Library #pluginUnresponsive(Library binaryRepr) binaryRepr
+  This$:UnsafeRefactor.MiniData.thisLib()
+  Annotation:UnsafeRefactor.MiniData<><{
+    //@plugin  toFix 
+    //@pluginPart is.L42.connected.withSafeOperators.location.Doc$Annotation
+    //@todo:decomment later:Type.RefTo key
+    S text
+    class method Library #pluginUnresponsive(Library binaryRepr) binaryRepr
+    This$:UnsafeRefactor.MiniData.thisLib()
+    List:Collections.vector(of:This$)
+    }
+  method Size annotationsSize()
+  method Annotation annotation(Size that)   
+  method
+  Annotation.List origins()
+    Annotation.List[with i in 0Size.vals(upTo:this.originSize())  (use[this.origin(i)])]  
+  }

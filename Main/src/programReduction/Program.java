@@ -83,7 +83,9 @@ public interface Program {
 
   default Program push(Ast.C c) {
     CtxL splitted=CtxL.split(this.top(), c);
-    return new PushedProgram((ClassB)splitted.originalHole(),splitted,this); 
+    ExpCore holeP = splitted.originalHole();
+    assert holeP instanceof ClassB;
+    return new PushedProgram((ClassB)holeP,splitted,this); 
     }
 
   /*mah -push(L)//non determinism is not relevant if update is not used

@@ -56,10 +56,10 @@ sep::=  ; //boh, should be trees lists of lists?
 Tree:{interface}
 Leaf:Data<<{implements Tree (Id id, S str)}
 Node:Data<<{implements Tree (Id id,Treess treess)}
-Trees:Collection.vector(of:Tree)
-Treess:Collection.vector(ofMut:Trees)
+Trees:Collections.vector(of:Tree)
+Treess:Collections.vector(ofMut:Trees)
 
-Tokens:Use[Collection.vector(of:S)]<<{ ..}
+Tokens:Use[Collections.vector(of:S)]<<{ ..}
 on tokenList
 parse () {
  id=this.parseId()

@@ -546,7 +546,7 @@ CT'=CT.need(cache,p,Ps0) //need all the chunk together, since Javac may do multi
 reuse at               //0
 A:Data<<{}             //1 require paths1, e1 -> J1,Je1
 B:Data<<{}             //2 require paths1,e2 -> Je2
-C:Collection.vector(A) //3 require paths1,A,paths3,e3 -> J3,Je3
+C:Collections.vector(A) //3 require paths1,A,paths3,e3 -> J3,Je3
 D:Data<<{C,A}          //4 require paths1,A,C,e4  ->,Je4
 Main:D.run()           //5 require A,B,C,D,e5 -> JA,JB,JC,JD,Je5
 
