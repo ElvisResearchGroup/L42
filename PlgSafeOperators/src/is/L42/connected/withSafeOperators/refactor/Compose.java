@@ -40,18 +40,19 @@ if forall Cs, all of the following hold:
        Ps =L1(Cs).Ps, L2(Cs).Ps if defined, else either
        Ps =L1(Cs).Ps or Ps= L2(Cs).Ps
        L0(Cs).Ps=collect(p.navigate(Cs),Ps)
-    a4)if L0(Cs) defined, then forall ms, all of the following hold:
+    a4)if L0(Cs) defined, then forall ms, for all i in {1,2}, all of the following hold:
       b1)if L1(Cs)(ms) and L2(Cs)(ms) both defined, then L1(Cs)(ms).e?=empty or L2(Cs)(ms).e?=empty
       b2)L0(Cs)(ms) defined if L1(Cs)(ms) or L2(Cs)(ms) defined.
       b3)L0(Cs)(ms) is refine if exists P in L0(Cs).Ps such that ms in dom(p(P)) 
-      b4)L0(Cs)(ms).e?=e' if Li(Cs)(ms).e?=e, i in{1,2}
+      b4)L0(Cs)(ms).e?=e' if Li(Cs)(ms).e?=e,
          e' sim e where sim ignore all L inside e/e'
          L0(Cs)(ms).mh =Li(Cs)(ms).mh
          validMwts(p.navigate(Cs), p0.evilPush(Li).navigate(Cs), e',e)
-      b5)if L1(Cs)(ms) defined, p|-L0(Cs)(ms).mh<<L1(Cs)(ms).mh
-      b6)if L2(Cs)(ms) defined, p|-L0(Cs)(ms).mh<<L2(Cs)(ms).mh
-      b7)if L1(Cs)(ms) defined, validMwt(p, p0.evilPush(L1), L0,L1,Cs,ms)
-      b8)if L1(Cs)(ms) defined, validMwt(p, p0.evilPush(L2), L0,L1,Cs,ms)
+      b5)if Li(Cs)(ms) defined, p|-L0(Cs)(ms).mh<<Li(Cs)(ms).mh
+
+      b6)if Li(Cs)(ms) defined, validMwt(p, p0.evilPush(Li), L0,Li,Cs,ms)
+    
+    
     a5) L0(Cs).mwts.mss=
           (methods(p,This0).mss\L1(Cs).mwts.mss)\L2(Cs).mwts.mss, 
           L1(Cs).mwts.mss\L2(Cs).mwts.mss,
