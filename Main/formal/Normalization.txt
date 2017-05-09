@@ -7,6 +7,25 @@ depend on:
  Phase |-p ~> L
  e -->p+ r //we discussued with James: should we use ~> or a kind of big step arrow for type judgment that do annotation?
  
+
+General 42 execution:
+0 parsing
+1 desugaring
+2 from the top, find the first innermost C:e with e!=L and:
+3 normalize all the transitive dependencies of e
+4 type all the code needed to execute e as "coherent" (aka not abstract)
+5 and all the code that e can refer to but not execute as "typed" (but potentially still abstract)
+6 type e:Library
+7 execute e until you get an L, and replace e with L in the program
+8 jump back to 2. 
+
+Note: desugaring is before all normalization. There is no need to
+merge desugaring and normalization. Thus reuse is unfolded at
+desugaring time.
+ A program deploying towels and testing them,
+ may need to use a load42File plugin to control the desugaring time.
+
+
 -----------------------------------------------------------
 ### reduction rules
 ReductionTop:

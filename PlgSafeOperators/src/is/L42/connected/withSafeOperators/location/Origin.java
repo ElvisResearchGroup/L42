@@ -40,9 +40,56 @@ public class Origin {
     this.columnStart = columnStart;
     this.columnEnd = columnEnd;
     }
+  public boolean equalequal(Object that){
+    return this.equals(that);
+    }
+  public String toS(){
+    return "Origin:"+this.fileName+
+            "[lineStart=" + lineStart +
+            ", lineEnd=" + lineEnd +
+            ", columnStart=" + columnStart +
+            ", columnEnd=" + columnEnd +
+            "]";
+    }
   String fileName;
   int lineStart;
   int lineEnd;
   int columnStart;
   int columnEnd;
+  //---Generated
+  @Override
+public int hashCode() {
+final int prime = 31;
+int result = 1;
+result = prime * result + columnEnd;
+result = prime * result + columnStart;
+result = prime * result + ((fileName == null) ? 0 : fileName.hashCode());
+result = prime * result + lineEnd;
+result = prime * result + lineStart;
+return result;
+}
+@Override
+public boolean equals(Object obj) {
+if (this == obj)
+    return true;
+if (obj == null)
+    return false;
+if (getClass() != obj.getClass())
+    return false;
+Origin other = (Origin) obj;
+if (columnEnd != other.columnEnd)
+    return false;
+if (columnStart != other.columnStart)
+    return false;
+if (fileName == null) {
+if (other.fileName != null)
+    return false;
+} else if (!fileName.equals(other.fileName))
+    return false;
+if (lineEnd != other.lineEnd)
+    return false;
+if (lineStart != other.lineStart)
+    return false;
+return true;
+}
 }

@@ -29,6 +29,7 @@ public class TestAdamTowel1Tests extends helpers.TestRunner{
       // Opt.DeplAT2, // AdamsTowel02
       // Opt.Project, // Run the local libProject as a folder, expecting it to deploy a project towel
       //// options for deploying small things
+      "TestLocation.L42",
       "TestDebug.L42", // Name of a file in libTests; edit to match your file
       "TestHelloWorld.L42",
       "TestK.L42",

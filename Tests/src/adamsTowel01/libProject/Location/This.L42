@@ -1,5 +1,5 @@
 {
-interface implements Base //that is equals, toS and "know your class"
+interface implements Concept.Base //that is equals, toS and "know your class"
 /*Idea: the introspection lets you talk about locations in the code, so 
 if you have the class { class method Library foo()}
 you can ask what is the return type of This.foo(), and you get
@@ -44,8 +44,17 @@ Origin:UnsafeRefactor.MiniData<><{
   //@plugin  toFix 
   //@pluginPart is.L42.connected.withSafeOperators.location.Origin
   S fileName
-  Size line
-  Size column
+  Size lineStart
+  Size lineEnd
+  Size columnStart
+  Size columnEnd
+  class method
+  This(S fileName, Size lineStart, Size lineEnd,
+    Size columnStart, Size columnEnd) 
+  class method
+  Library #pluginUnresponsive(Library binaryRepr)
+    binaryRepr  
+
   This$:UnsafeRefactor.MiniData.thisLib()
   List:Collections.vector(of:This$)
   }

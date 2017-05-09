@@ -46,7 +46,7 @@ MiniDataTrait:{class method Library(){
   method readableName()
     MiniData.classObjToS()
 
-  method is(subtype){
+  method/*hi2*/ is(subtype){
     with subtype (on class This return Bool.true())
     return Bool.false()}
 
@@ -58,7 +58,10 @@ MiniDataTrait:{class method Library(){
   }}
 MiniData:{
   class method S classObjToS()S"TOFIX"
-  class method Library thisLib() {interface implements Concept.Base}
+  class method Library thisLib() {
+    implements Concept.Base
+    refine read method class This class()
+    }
   class method
   Library <><(Library that)
     This$er<><Compose.compose(left:MiniDataTrait() right:that)

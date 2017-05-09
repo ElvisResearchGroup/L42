@@ -1,0 +1,14 @@
+{reuse L42.is/AdamTowel01
+
+Main:{
+  o=Location.Origin(fileName:S"foo",
+    lineStart:0Size, lineEnd:10Size,
+    columnStart:1Size, columnEnd:10Size
+    )
+  Debug.test(
+    S"our origin is in "[o]"!!"
+    expected:S"our origin is in "[o]"!!" )
+  return ExitCode.normal()
+  }
+
+}

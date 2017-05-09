@@ -1,6 +1,6 @@
-{(Library _binaryRepr)
- implements Concept.Equals, Concept.ToS, Concept.Classable//@_private
-
+{implements Concept.Base
+  Library _binaryRepr
+  class method mut This(Library _binaryRepr) 
   read method
   This clone()
     This(_binaryRepr:this._binaryRepr())
@@ -8,9 +8,10 @@
   method 
   Library #binaryRepr()
     this._binaryRepr()
+ 
   
   class method
-  This #from(Library binaryRepr)
+  mut This #from(Library binaryRepr)
     This(_binaryRepr:binaryRepr)
  
   

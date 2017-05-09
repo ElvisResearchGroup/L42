@@ -194,16 +194,22 @@ static PathsPaths usedPathsECatchErrors(Program p, ExpCore e){
     //**if P.m(_) inside e, P not Any
       public Void visit(MCall s) {
         Path p=justPath(s.getInner());
-        if (p!=null){this.paths.add(p);}
+        if (p!=null){
+          this.paths.add(p);
+          }
         return super.visit(s);
         }
     //**if ( _ T x=P _ _) inside e and T!=class Any, P not Any.
     //**if (mdf P x=_ _) inside e, P not Any  
       protected void liftDec(Block.Dec s) {
         Path pt=s.getT().match(nt->nt.getPath(), hType->hType.getPath());
-        if(!pt.isPrimitive()){this.paths.add(pt);}
+        if(!pt.isPrimitive()){
+         this.paths.add(pt);
+          }
         Path p=justPath(s.getInner());
-        if (p!=null){this.paths.add(p);}
+        if (p!=null){
+          this.paths.add(p);
+          }
         super.liftDec(s);
         }
       private Path justPath(ExpCore e){

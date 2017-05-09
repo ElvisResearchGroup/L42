@@ -47,7 +47,7 @@ if forall Cs, all of the following hold:
       b4)L0(Cs)(ms).e?=e' if Li(Cs)(ms).e?=e, i in{1,2}
          e' sim e where sim ignore all L inside e/e'
          L0(Cs)(ms).mh =Li(Cs)(ms).mh
-         validMwts(p, p0.evilPush(Li), e',e)
+         validMwts(p.navigate(Cs), p0.evilPush(Li).navigate(Cs), e',e)
       b5)if L1(Cs) defined, p|-L0(Cs)(ms).mh<<L1(Cs)(ms).mh
       b6)if L2(Cs) defined, p|-L0(Cs)(ms).mh<<L2(Cs)(ms).mh
       b7)if L1(Cs) defined, validMwt(p, p0.evilPush(L1), L0,L1,Cs,ms)
@@ -80,7 +80,7 @@ validMwts(p0, p, e0,e)
       validMwt(p0, p, L0,L,Cs,ms)
       if L(Cs)(ms).e?=e' then
         L0(Cs)(ms).e?=e0'
-        validMwts(p0.evilPush(L0), p.evilPush(L), e0',e')  
+        validMwts(p0.evilPush(L0).navigate(Cs), p.evilPush(L).navigate(Cs), e0',e')  
 
 
 Notes: (the first 2 of? the points under also apply to classes with private state
