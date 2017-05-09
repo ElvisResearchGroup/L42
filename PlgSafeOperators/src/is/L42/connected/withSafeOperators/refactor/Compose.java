@@ -48,10 +48,10 @@ if forall Cs, all of the following hold:
          e' sim e where sim ignore all L inside e/e'
          L0(Cs)(ms).mh =Li(Cs)(ms).mh
          validMwts(p.navigate(Cs), p0.evilPush(Li).navigate(Cs), e',e)
-      b5)if L1(Cs) defined, p|-L0(Cs)(ms).mh<<L1(Cs)(ms).mh
-      b6)if L2(Cs) defined, p|-L0(Cs)(ms).mh<<L2(Cs)(ms).mh
-      b7)if L1(Cs) defined, validMwt(p, p0.evilPush(L1), L0,L1,Cs,ms)
-      b8)if L1(Cs) defined, validMwt(p, p0.evilPush(L2), L0,L1,Cs,ms)
+      b5)if L1(Cs)(ms) defined, p|-L0(Cs)(ms).mh<<L1(Cs)(ms).mh
+      b6)if L2(Cs)(ms) defined, p|-L0(Cs)(ms).mh<<L2(Cs)(ms).mh
+      b7)if L1(Cs)(ms) defined, validMwt(p, p0.evilPush(L1), L0,L1,Cs,ms)
+      b8)if L1(Cs)(ms) defined, validMwt(p, p0.evilPush(L2), L0,L1,Cs,ms)
     a5) L0(Cs).mwts.mss=
           (methods(p,This0).mss\L1(Cs).mwts.mss)\L2(Cs).mwts.mss, 
           L1(Cs).mwts.mss\L2(Cs).mwts.mss,
