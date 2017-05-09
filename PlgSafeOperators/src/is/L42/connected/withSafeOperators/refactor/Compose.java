@@ -58,6 +58,7 @@ if forall Cs, all of the following hold:
     a6) L0(Cs).ncs.Cs=
           L1(Cs).ncs.Cs\L2(Cs).ncs.Cs,
           L2(Cs).ncs.Cs
+
 _______
 #define
 validMwt(p0, p, L0,L,Cs,ms)  //we need to add Froms when needed
