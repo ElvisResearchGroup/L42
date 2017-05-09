@@ -51,7 +51,7 @@ if forall Cs, all of the following hold:
       b5)if Li(Cs)(ms) defined, p|-L0(Cs)(ms).mh<<Li(Cs)(ms).mh
 
       b6)if Li(Cs)(ms) defined, validMwt(p, p0.evilPush(Li), L0,Li,Cs,ms)
-    
+      b7)if L0(Cs)(ms).e?=empty and Li(Cs)(ms)=mwt, then mwt.e?=empty
     
     a5) L0(Cs).mwts.mss=
           (methods(p,This0).mss\L1(Cs).mwts.mss)\L2(Cs).mwts.mss, 
