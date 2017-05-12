@@ -186,7 +186,7 @@ public interface TsLibrary extends TypeSystem{
     }
 
     
-  default boolean coherent(Program p,boolean force) {
+  static boolean coherent(Program p,boolean force) {
       ClassB top=p.top();
       if (top.isInterface()){return true;}
       List<MethodWithType> stateC=top.mwts().stream()
@@ -208,7 +208,7 @@ public interface TsLibrary extends TypeSystem{
       }
       return true;
     }
-  default boolean coherentF(Program p,MethodWithType ck, MethodWithType mwt) {
+  static boolean coherentF(Program p,MethodWithType ck, MethodWithType mwt) {
       MethodType mt=mwt.getMt();
       Mdf m=mt.getMdf();
       if(mwt.getMs().getUniqueNum()!=ck.getMs().getUniqueNum()){return false;}
@@ -243,7 +243,7 @@ public interface TsLibrary extends TypeSystem{
       return true;
     }
 
-  default NormType _extractTi(MethodWithType ck, String name) {
+  static NormType _extractTi(MethodWithType ck, String name) {
     if(name.startsWith("#")){name=name.substring(1);}
     int i=-1;for(String ni:ck.getMs().getNames()){i+=1;
       if (ni.equals(name)){return TypeManipulation.noFwd(ck.getMt().getTs().get(i).getNT());} 
@@ -258,7 +258,7 @@ public interface TsLibrary extends TypeSystem{
 //p|- This0 <=T.P and p|-Ti'<=fwd Ti
 //T.mdf!=class and if T.mdf in {imm,capsule}, mut notin (T1..Tn).mdfs
 
-    default boolean coherentK(Program p,MethodWithType ck) {
+    static boolean coherentK(Program p,MethodWithType ck) {
       MethodType mt=ck.getMt();
       if(mt.getMdf()!=Mdf.Class){return false;}
       NormType rt=mt.getReturnType().getNT();

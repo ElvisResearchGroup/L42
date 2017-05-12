@@ -16,7 +16,7 @@ public interface Location {
     }
   Location location();
   Doc doc();
-  //boolean equalsequals(This that)
+  boolean equalequal(Object that);
   String toS();
   Cacher<List<Origin>> protectedOrigins();
   static abstract class LocationImpl<T extends Expression.HasPos, L extends Location> implements Location{
@@ -28,18 +28,48 @@ public interface Location {
     public LocationImpl(T inner, L location){
       this.inner=inner;
       this.location=location;
-      protectedOrigins=new Cacher<List<Origin>>(){
-      public List<Origin> cache(){
-      List<Origin> origins=new ArrayList<>();
-      Position pi=inner.getP();
-      while(true){
-        if (pi==null || pi==Position.noInfo){return origins;}
-        origins.add(new Origin(pi.getFile(),pi.getLine1(),pi.getLine2(),pi.getPos1(),pi.getPos2()));
-        pi=pi.get_next();
-      }}};}
+      this.protectedOrigins=new Cacher<List<Origin>>(){
+        public List<Origin> cache(){
+          List<Origin> origins=new ArrayList<>();
+          Position pi=inner.getP();
+          while(true){
+            if (pi==null || pi==Position.noInfo){return origins;}
+            origins.add(new Origin(pi.getFile(),pi.getLine1(),pi.getLine2(),pi.getPos1(),pi.getPos2()));
+            pi=pi.get_next();
+            }}};}
     @Override public Cacher<List<Origin>> protectedOrigins(){return protectedOrigins;}
+    @Override
+    public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((inner == null) ? 0 : inner.hashCode());
+    result = prime * result + ((location == null) ? 0 : location.hashCode());
+    return result;
     }
-  default int originsSize() {
+    @Override
+    public boolean equals(Object obj) {
+    if (this == obj)
+        return true;
+    if (obj == null)
+        return false;
+    if (getClass() != obj.getClass())
+        return false;
+    LocationImpl<?, ?> other = (LocationImpl<?, ?>) obj;
+    if (inner == null) {
+    if (other.inner != null)
+        return false;
+    } else if (!inner.equals(other.inner))
+        return false;
+    if (location == null) {
+    if (other.location != null)
+        return false;
+    } else if (!location.equals(other.location))
+        return false;
+    return true;
+    }
+    
+    }
+  default int originSize() {
     return protectedOrigins().get().size();
     }
   default Origin origin(int that) throws NotAvailable{

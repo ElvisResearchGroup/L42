@@ -50,5 +50,7 @@ public class Method extends Location.LocationImpl<ClassB.MethodWithType, Lib>{
   }};
   public int exceptionsSize(){return parametersC.get().size();}
   public Type.Exception exception(int that) throws NotAvailable{return Location.listAccess(exceptionsC.get(), that);}
-  
+  @Override public boolean equalequal(Object that) {
+    return this.equals(that);
+    }
   }

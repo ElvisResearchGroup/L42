@@ -1,4 +1,4 @@
-{ implements This1.This$
+{
   //user will need typecase to discover precise type, location() not refined
   //@plugin  toFix 
   //@pluginPart is.L42.connected.withSafeOperators.location.Doc
@@ -13,9 +13,9 @@
     This$:UnsafeRefactor.MiniData.thisLib()
     List:Collections.vector(of:This$)
     }
-  method Size annotationsSize()
+  method Size annotationSize()
   method Annotation annotation(Size that)   
   method
-  Annotation.List origins()
-    Annotation.List[with i in 0Size.vals(upTo:this.originSize())  (use[this.origin(i)])]  
+  Annotation.List annotations()
+    Annotation.List[with i in 0Size.vals(upTo:this.annotationSize())  (use[this.annotation(i)])]  
   }

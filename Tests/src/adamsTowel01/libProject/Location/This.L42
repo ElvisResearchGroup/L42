@@ -37,115 +37,47 @@ Mdf:Enum<><{class method Strings names()Strings[S"Immutable";S"Mutable";S"Read";
 
 //###1 Origin
 //------------------------------------  
-This$:{interface
-  method Size originsSize()//many since metaprogramming
-  method Origin origin(Size that)   
-  }  
 Origin:UnsafeRefactor.MiniData<><...
+
+//###1.5 Meta support
+//------------------------------------  
+This$:{interface implements Concept.Base
+  method Size originSize()//many since metaprogramming
+  method Origin origin(Size that)   
+  }
+This$Impl:{
+  class method
+  Library<><(Library that)
+    UnsafeRefactor.Compose.compose(left:This(), right:that)
+ 
+  class method Library(){ implements This$
+    refine read method class This class()
+    method
+    Origin.List origins()
+      Origin.List[with i in 0Size.vals(upTo:this.originSize()) (use[this.origin(i)])]
+    }
+  }
+
 //###2 Doc 
 //------------------------------------
-Doc:UnsafeRefactor.MiniData<><...
+Doc:UnsafeRefactor.MiniData<><This$Impl<><...
 //###3 Lib 
 //------------------------------------
 //there is no Member since normalized classes have order: first nested, then methods
-//Lib:UnsafeRefactor.MiniData<><...
-}
- /*   
+  Lib:UnsafeRefactor.MiniData<><This$Impl<><...
+  
 //###4 Method 
 //------------------------------------
-
-  Method:UnsafeRefactor.MiniData<><{
-    This$:UnsafeRefactor.MiniData.thisLib()
-    List:Collections.vector(of:This$)
-
-    refine method Lib location()
-    method Bool isAbstract()
-    method Bool isRefine()
-    method Selector selector()
-    method Type.Return returnType()
-    
-    method Size parameterTypesSize()
-    method Type.Parameter parameterType(Size that)
-    method
-    Type.Parameter.List parameterTypes()
-      Type.Parameter.List[with i in 0Size.vals(upTo:this.parameterTypesSize()) (use[this.parameterType(i)])]
-      
-    method Size exceptionsSize()
-    method Type.Exception exception(Size that)
-    method
-    Type.Exception.List exceptions()
-      Type.Exception.List[with i in 0Size.vals(upTo:this.exceptionsSize()) (use[this.exceptions(i)])]
-    }
-
+  Method:UnsafeRefactor.MiniData<><This$Impl<><...
 
 //###5 Type and RefTo 
 //------------------------------------
-
-  Type:{ interface implements Base??
-    method Doc doc()
-    RefTo:{interface implements Base??
-      //toS is the full path with Thisn.
-      Lib:{ implements This1
-        method Lib referredLib()
-        }
-      Unavailable:{ implements This1
-        //cases:
-        //  (1)
-        //  A: .. Refactor.introspect(lib:{ method B(B.C that)})..
-        //  B:{..}//just not yet normalized in the program flow
-        //  (2)
-        //  A: .. Refactor.introspect(lib:{ method B()})..
-        //  B:Foo<><{..}//B is not there yet.
-        //  (3)
-        //  A: .. Refactor.introspect(lib:{ method B.C()})..
-        //  B:Foo<><{..}//we do not know if B.C will ever exists
-        //  (4)
-        //  {//this all is seen as This1 by lib:{..}
-        //  A: .. Refactor.introspect(lib:{ method This1()})..
-        //  }//it can not be norm, not even in principle, since
-        //   // A is under compilation right now.
-        
-        }
-      Binded:{implements This1 //includes primitives
-        method class Any referredClassObj()
-        }
-      Missing:{implements This1
-        //mostly useful for docs, where we can use lowercase annotation
-        //or we may want to preserve @P where we removed the P
-        //also, if an (nested) Unavailable is resolved not existing..        
-        }
-      }
-    method RefTo refTo()
-    method Mdf mdf()//imm for exception/implemented    
-    Return:{ implements This1
-      refine Method location()
-      }
-    Parameter:UnsafeRefactor.MiniData<><{ implements This1
-      This$:UnsafeRefactor.MiniData.thisLib()
-      List:Collections.vector(of:This$)
-
-      refine method Method location()
-      method Size pos()//0 for this
-      }
-    Exception:UnsafeRefactor.MiniData<><{ implements This1
-      This$:UnsafeRefactor.MiniData.thisLib()
-      List:Collections.vector(of:This$)
-
-      refine method Method location()
-      method Size pos()//should start from 1 or 0?
-      }
-    Implemented:UnsafeRefactor.MiniData<><{ implements This1
-      This$:UnsafeRefactor.MiniData.thisLib()
-      List:Collections.vector(of:This$)
-
-      refine method Lib location()
-      method Size pos()//should start from 1 or 0?
-      }    
-    }
+  Type:...
+}
 
 //###6 Discussions 
 //------------------------------------
-
+/*
 By calling Refactor.introspect(lib:{...})or
 By calling Refactor.introspect(class:A.B) you get a Lib
 

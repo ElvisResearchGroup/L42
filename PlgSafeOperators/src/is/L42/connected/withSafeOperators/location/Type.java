@@ -54,6 +54,31 @@ public interface Type extends Location{
     Ast.NormType type;
     @Override public Ast.NormType type(){return type;}
     @Override public Lib locationLib(){return location().location();}
+    @Override public boolean equalequal(Object that){return this.equals(that);}
+    @Override
+    public int hashCode() {
+    final int prime = 31;
+    int result = super.hashCode();
+    result = prime * result + ((type == null) ? 0 : type.hashCode());
+    return result;
+    }
+    @Override
+    public boolean equals(Object obj) {
+    if (this == obj)
+        return true;
+    if (!super.equals(obj))
+        return false;
+    if (getClass() != obj.getClass())
+        return false;
+    Return other = (Return) obj;
+    if (type == null) {
+    if (other.type != null)
+        return false;
+    } else if (!type.equals(other.type))
+        return false;
+    return true;
+    }
+    
     }
   
   static class Parameter extends Location.LocationImpl<ExpCore.ClassB.MethodWithType, Method> implements Type{
@@ -67,7 +92,34 @@ public interface Type extends Location{
     Ast.NormType type;
     @Override public Ast.NormType type(){return type;}
     @Override public Lib locationLib(){return location().location();}
-
+    @Override public boolean equalequal(Object that){return this.equals(that);}
+    @Override
+    public int hashCode() {
+    final int prime = 31;
+    int result = super.hashCode();
+    result = prime * result + pos;
+    result = prime * result + ((type == null) ? 0 : type.hashCode());
+    return result;
+    }
+    @Override
+    public boolean equals(Object obj) {
+    if (this == obj)
+        return true;
+    if (!super.equals(obj))
+        return false;
+    if (getClass() != obj.getClass())
+        return false;
+    Parameter other = (Parameter) obj;
+    if (pos != other.pos)
+        return false;
+    if (type == null) {
+    if (other.type != null)
+        return false;
+    } else if (!type.equals(other.type))
+        return false;
+    return true;
+    }
+    
     }
   static class Exception extends Location.LocationImpl<ExpCore.ClassB.MethodWithType, Method> implements Type{
     public Exception(int pos, Ast.NormType type,MethodWithType inner, Method location) {
@@ -80,6 +132,34 @@ public interface Type extends Location{
     Ast.NormType type;
     @Override public Ast.NormType type(){return type;}
     @Override public Lib locationLib(){return location().location();}
+    @Override public boolean equalequal(Object that){return this.equals(that);}
+    @Override
+    public int hashCode() {
+    final int prime = 31;
+    int result = super.hashCode();
+    result = prime * result + pos;
+    result = prime * result + ((type == null) ? 0 : type.hashCode());
+    return result;
+    }
+    @Override
+    public boolean equals(Object obj) {
+    if (this == obj)
+        return true;
+    if (!super.equals(obj))
+        return false;
+    if (getClass() != obj.getClass())
+        return false;
+    Exception other = (Exception) obj;
+    if (pos != other.pos)
+        return false;
+    if (type == null) {
+    if (other.type != null)
+        return false;
+    } else if (!type.equals(other.type))
+        return false;
+    return true;
+    }
+    
     }
   static class Implemented extends Location.LocationImpl<ExpCore.ClassB, Lib> implements Type{
     public Implemented(int pos, Ast.NormType type,ExpCore.ClassB inner, Lib location) {
@@ -92,5 +172,33 @@ public interface Type extends Location{
     Ast.NormType type;
     @Override public Ast.NormType type(){return type;}
     @Override public Lib locationLib(){return location();}
+    @Override public boolean equalequal(Object that){return this.equals(that);}
+    @Override
+    public int hashCode() {
+    final int prime = 31;
+    int result = super.hashCode();
+    result = prime * result + pos;
+    result = prime * result + ((type == null) ? 0 : type.hashCode());
+    return result;
+    }
+    @Override
+    public boolean equals(Object obj) {
+    if (this == obj)
+        return true;
+    if (!super.equals(obj))
+        return false;
+    if (getClass() != obj.getClass())
+        return false;
+    Implemented other = (Implemented) obj;
+    if (pos != other.pos)
+        return false;
+    if (type == null) {
+    if (other.type != null)
+        return false;
+    } else if (!type.equals(other.type))
+        return false;
+    return true;
+    }
+    
     }            
   }

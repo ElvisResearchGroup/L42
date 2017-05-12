@@ -1,0 +1,63 @@
+{ interface implements This1.This$
+    This$:{interface}
+    method Doc doc()
+    RefTo:{interface implements Concept.Base
+      This$:{interface}
+      //toS is the full path with Thisn.
+      Lib:UnsafeRefactor.MiniData<><This$Impl<><{ implements This$
+        method Lib referredLib()
+        }
+      Unavailable:UnsafeRefactor.MiniData<><This$Impl<><{ implements This$
+        //cases:
+        //  (1)
+        //  A: .. Refactor.introspect(lib:{ method B(B.C that)})..
+        //  B:{..}//just not yet normalized in the program flow
+        //  (2)
+        //  A: .. Refactor.introspect(lib:{ method B()})..
+        //  B:Foo<><{..}//B is not there yet.
+        //  (3)
+        //  A: .. Refactor.introspect(lib:{ method B.C()})..
+        //  B:Foo<><{..}//we do not know if B.C will ever exists
+        //  (4)
+        //  {//this all is seen as This1 by lib:{..}
+        //  A: .. Refactor.introspect(lib:{ method This1()})..
+        //  }//it can not be norm, not even in principle, since
+        //   // A is under compilation right now.
+        
+        }
+      Binded:UnsafeRefactor.MiniData<><This$Impl<><{ implements This$ //includes primitives
+        method class Any referredClassObj()
+        }
+      Missing:UnsafeRefactor.MiniData<><This$Impl<><{ implements This$
+        //mostly useful for docs, where we can use lowercase annotation
+        //or we may want to preserve @P where we removed the P
+        //also, if an (nested) Unavailable is resolved not existing..        
+        }
+      }
+    method RefTo refTo()
+    method Mdf mdf()//imm for exception/implemented    
+    Return:UnsafeRefactor.MiniData<><This$Impl<><{ implements This$
+      refine method Method location()
+      }
+    Parameter:UnsafeRefactor.MiniData<><This$Impl<><{ implements This$
+      This$:UnsafeRefactor.MiniData.thisLib()
+      List:Collections.vector(of:This$)
+
+      refine method Method location()
+      method Size pos()//0 for this
+      }
+    Exception:UnsafeRefactor.MiniData<><This$Impl<><{ implements This$
+      This$:UnsafeRefactor.MiniData.thisLib()
+      List:Collections.vector(of:This$)
+
+      refine method Method location()
+      method Size pos()//should start from 1 or 0?
+      }
+    Implemented:UnsafeRefactor.MiniData<><This$Impl<><{ implements This$
+      This$:UnsafeRefactor.MiniData.thisLib()
+      List:Collections.vector(of:This$)
+
+      refine method Lib location()
+      method Size pos()//should start from 1 or 0?
+      }    
+    }

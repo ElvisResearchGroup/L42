@@ -1,4 +1,4 @@
-{ implements Location
+{
   //@plugin  toFix 
   //@pluginPart is.L42.connected.withSafeOperators.location.Doc
   class method Library #pluginUnresponsive(Library binaryRepr) binaryRepr
@@ -8,6 +8,7 @@
   method
   List nesteds()
     List[with i in 0Size.vals(upTo:this.nestedSize()) (use[this.nested(i)])]
+  method
   List allNesteds()
     List[this]++
     List[with nc in this.nesteds().vals() (
@@ -25,8 +26,13 @@
     Bool.true()
     )
         
-  method Size methodsSize()
-  method Method method(Size that)
+  method 
+  Size methodsSize()
+
+  method
+  Method method(Size that)
+
+  method
   Method.List methods()
     Method.List[with i in 0Size.vals(upTo:this.methodsSize()) (use[this.method(i)])]
     
@@ -41,11 +47,11 @@
     catch exception NotAvailable Bool.false()
     Bool.true()
     )      
-  method Size implementedsSize()
+  method Size implementedSize()
   method Type.Implemented implemented(Size that)
   method
   Type.Implemented.List implementeds()
-    Type.Implemented.List[with i in 0Size.vals(upTo:this.implementedsSize()) (use[this.implemented(i)])]
+    Type.Implemented.List[with i in 0Size.vals(upTo:this.implementedSize()) (use[this.implemented(i)])]
     
   method Bool implements(class Any clazz){
     if Refactor.equalsClassObj(Any, and:clazz) (
@@ -80,13 +86,33 @@
   
   method Doc doc()
   method S kindS()
-  Kind:Enum"..."
+  Kind:Enum"interface,closedClass,openClass,template,freeTemplate"
+  //TODO: freeTemplate must mean no class methods!! old idea (class methods not called) does not seams to make sense, if not called, then could be just not having them...
+  interface if label
+  closedclass if private abstract exists
+  else free template if all abs and no class meth
+  else template  if all abs (recursive?)
+  else open class??
+  we may want different infos?
+  isInterface = easy
+  plus one option between:
+  isBinded? = store flag? or, only for not binded:
+  isRedirectableToClass
+  isRedirectableToInterface
+  isClosedClass
+  //or is all false: is open class
+  
+  isCoherent (deep+need program)? only for not binded? use lable for binded? but label is imprecise
   method
   Bool isInterface()
     this.kindS()==S"Interface"
+  
+  method
   Bool isCoherent()
-    this.isInterface() | this.kindS()==S"CoherentClass"
+    this.isInterface() | this.kindS()==S"CoherentClass"//Not a kind???
+  
   This$:UnsafeRefactor.MiniData.thisLib()
+  
   List:Collections.vector(of:This$)
     
   method Lib root()

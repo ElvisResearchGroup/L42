@@ -8,27 +8,56 @@ import java.util.stream.Collectors;
 import ast.Ast;
 import ast.Ast.Path;
 import ast.ExpCore;
+import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.NestedClass;
 import ast.PathAux;
+import facade.PData;
 import is.L42.connected.withSafeOperators.ExtractInfo;
 import is.L42.connected.withSafeOperators.ExtractInfo.ClassKind;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.NotAvailable;
 
 public class Lib extends Location.LocationImpl<ExpCore.ClassB,Lib>{
+  boolean isBinded;
   ExpCore.ClassB root;
   Path path;
   public Lib(
+    boolean isBinded,
     ExpCore.ClassB root,
     Path path,
     ExpCore.ClassB inner,Lib location) {super(inner,location);
+      this.isBinded=isBinded;
       this.root=root;
       this.path=path;
       }
-  //Cacher<List<Lib>> nestedsC=new Cacher<List<Lib>>(){public List<Lib> cache(){    }}; 
+  public Lib(
+    boolean isBinded,
+    ExpCore.ClassB root,
+    Path path,
+    ExpCore.ClassB inner) {super(inner,null);
+      this.isBinded=isBinded;
+      this.root=root;
+      this.path=path;
+      this.location=this;
+      }
+  public static Lib newFromClass(PData pData,Path path){
+    ClassB cb=pData.p.extractClassB(path);//TODO: need from??
+    Lib lib=new Lib(true,cb,Path.outer(0),cb);
+    return lib;
+    } 
+  public static Lib newFromLibrary(ExpCore.ClassB cb){
+    Lib lib=new Lib(false,cb,Path.outer(0),cb);
+    return lib;
+    } 
   Cacher<List<Lib>> nestedsC=new Cacher<List<Lib>>(){public List<Lib> cache(){
+    if(Lib.this.isBinded){
+      return inner.ns().stream()
+        .map(n->new Lib(true,(ExpCore.ClassB)n.getInner(),Path.outer(0),(ExpCore.ClassB)n.getInner()))
+        .collect(Collectors.toList());
+      }
     return inner.ns().stream()
-      .map(n->new Lib(root,path.pushC(n.getName()),(ExpCore.ClassB)n.getInner(),Lib.this))
-      .collect(Collectors.toList());}};
+      .map(n->new Lib(false,root,path.pushC(n.getName()),(ExpCore.ClassB)n.getInner(),Lib.this))
+      .collect(Collectors.toList());
+    }};
   public int nestedsSize(){return nestedsC.get().size();}
   public Lib nested(int that) throws NotAvailable{return Location.listAccess(nestedsC.get(), that);}
 
@@ -54,12 +83,14 @@ public class Lib extends Location.LocationImpl<ExpCore.ClassB,Lib>{
     ClassKind k = ExtractInfo.classKind(root,path.getCBar(),inner,null,null,null);
     return k.name42;
     }
-  public Lib root(){return new Lib(root,Path.outer(0),root,null);}
-  @Override//since we pass null for root
-  public Lib location() {
-    Lib l=super.location();
-    if (l!=null){return l;}
-    return this;
+  public boolean isCoherent(PData pData){
+    return newTypeSystem.TsLibrary.coherent(pData.p.evilPush(this.inner), false);
+    //TODO: no, we need to navigate on a path for classAnys?
+    }
+  public Lib root(){
+    if(this.root==this.inner){return this;}
+    assert !this.isBinded;
+    return new Lib(false,root,Path.outer(0),root);
     }
   public Path path(){return path;}//last is its name, empty path for root
   public Doc nestedDoc(){
@@ -74,9 +105,16 @@ public class Lib extends Location.LocationImpl<ExpCore.ClassB,Lib>{
   public String toS() {return sugarVisitors.ToFormattedText.of(inner);}
   public Lib navigate(List<Ast.C> cs){
     if (cs.isEmpty()){return this;}
+    if(this.isBinded){
+      ClassB cb=this.inner.getClassB(cs);//TODO: need from?
+      return new Lib(true,cb,Path.outer(0),cb);
+      }
     List<Ast.C> top = Collections.singletonList(cs.get(0));
     List<Ast.C> tail=cs.subList(1,cs.size());
-    Lib nextStep=new Lib(root,path.pushC(cs.get(0)),inner.getClassB(top),this);
+    Lib nextStep=new Lib(false,root,path.pushC(cs.get(0)),inner.getClassB(top),this);
     return nextStep.navigate(tail);
+    }
+  @Override public boolean equalequal(Object that) {
+    return this.equals(that);
     }
   }
