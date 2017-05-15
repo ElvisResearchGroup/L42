@@ -303,16 +303,17 @@ public class Compose {
   }
   
   
-  
-  //simplified sum in 5 lines: interfaces sum not allowed, method header must be identical
-  {implements Ts1 mwt1 ncs1}+{implements Ts2 mwt2 ncs2} ={implements Ts1\Ts2,Ts2 mwts ncs}
-  with 
-    mwts=mwts1\dom(mwts2) {mwt[mwts1]+mwt | mwt in mwts2}
-    ncs=ncs1\dom(ncs2) {nc[ncs1]+nc | nc in ncs2}
-  C:L1 + C:L2 = C: L1+L2
-  C:L1 + empty = C: L1
-  refine? mh e? + refine?' mh e?'= {refine?,refine?'} mh e? e?' //if none is empty, is not a well formed mwt
-  mwt + empty= mwt  
+  ----------------------------
+  //simplified non computational sum in 9 lines: result need to agree on its norm
+--p|-{implements Ts mwt ncs}+{implements Ts' mwt1..mwtn nc1..nck}=L
+    with p.top()=L, norm(p)=L 
+    and L={implements Ts\Ts',Ts'
+      mwts\dom(mwt1..mwtn) p|-mwt1[mwts]+mwt1 .. p|-mwtn[mwts]+mwtn
+      ncs\dom(nc1..nck) p|-nc1[ncs]+nc1 .. p|-nck[ncs]+nck }
+--p|-M + empty = M //M is the metavariable for member, introduced in notation and grammar
+--p|-C:L1 + C:L2 = C: p.push(C)|-L1+L2
+--p|-refine?1 mh1 e?1 + refine?2 mh2 e?2= {refine?1,refine?2} mh e?i 
+    with {i,j}={1,2}, e?j=empty, p|-mhi<<mh1 and p|-mhi<<mh1
   
   */
   //public static boolean matchMwt(Program p, ClassB topA, ClassB topB, List<Member> ms, List<Ast.C> current, Member m, Member oms) {

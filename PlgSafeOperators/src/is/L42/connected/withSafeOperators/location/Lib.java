@@ -79,11 +79,8 @@ public class Lib extends Location.LocationImpl<ExpCore.ClassB,Lib>{
   public Type.Implemented implemented(int that) throws NotAvailable{return Location.listAccess(implementedsC.get(), that);}
 
   @Override public Doc doc(){return new Doc(inner.getDoc1(),this);}
-  public String kindS(){
-    ClassKind k = ExtractInfo.classKind(root,path.getCBar(),inner,null,null,null);
-    return k.name42;
-    }
   public boolean isCoherent(PData pData){
+    if (this.isBinded){return false;}
     return newTypeSystem.TsLibrary.coherent(pData.p.evilPush(this.inner), false);
     //TODO: no, we need to navigate on a path for classAnys?
     }

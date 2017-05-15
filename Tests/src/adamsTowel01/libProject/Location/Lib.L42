@@ -85,24 +85,34 @@
      }   
   
   method Doc doc()
-  method S kindS()
-  Kind:Enum"interface,closedClass,openClass,template,freeTemplate"
+  **method S kindS()
+  **Kind:Enum"interface,closedClass,openClass,template,freeTemplate"
   //TODO: freeTemplate must mean no class methods!! old idea (class methods not called) does not seams to make sense, if not called, then could be just not having them...
+  technically you can still have class Type variables and use the method over those, but it seams like a minor case
   interface if label
   closedclass if private abstract exists
   else free template if all abs and no class meth
   else template  if all abs (recursive?)
   else open class??
   we may want different infos?
-  isInterface = easy
+  -isInterface = easy
   plus one option between:
-  isBinded? = store flag? or, only for not binded:
-  isRedirectableToClass
-  isRedirectableToInterface
-  isClosedClass
+  -isBinded? = store flag? or, only for not binded:
+  --isRedirectableToClass(all abstract)
+  --isRedirectableToInterface (free template + interfaces)
+  --isClosedClass (private state)? use the isOpenState?
+that is closed for sure when binded?
   //or is all false: is open class
   
-  isCoherent (deep+need program)? only for not binded? use lable for binded? but label is imprecise
+  --isCoherent (deep+need program)? only for not binded? use lable for binded? but label is imprecise? just false for binded?
+called isCoherentlyBindable?
+PROBLEMS:
+  isCoherent can not be really checked on non still typable classes:
+  -surelly coherent, surelly incoherent, most likly coherent
+  *May be we just want a decorator PreventAbstract that fail if surelly incoherent? and not have an equivalent of isCoherent on Lib?
+  *A decorator MakeStatePrivate also have the same trouble: what to do if the "state" is only most likly coherent?
+
+
   method
   Bool isInterface()
     this.kindS()==S"Interface"
