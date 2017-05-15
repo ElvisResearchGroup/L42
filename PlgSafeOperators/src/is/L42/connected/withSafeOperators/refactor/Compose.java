@@ -223,11 +223,12 @@ _______
 #define interface?1 mwts1+interface?2 mwts2=interface?
 interface?1 mwts1 + interface?2 mwts2 = interface?2 mwts2 + interface?1 mwts1
 interface? mwts1+interface? mwts2=interface?
-otherwise
 mwts1 + interface mwts2=interface
   where
   mwts1.e?s = {empty}
   class notin mwts1.mhs.mdfs
+mwts1 +mwts2=empty if there are not uniquely named abstract methods on both sides,
+otherwise undefined
   
 _______
 #define p|-mwt1 sumAll mwt2=mwt
@@ -305,9 +306,9 @@ public class Compose {
   
   ----------------------------
   //simplified non computational sum in 9 lines: result need to agree on its norm
---p|-{implements Ts mwt ncs}+{implements Ts' mwt1..mwtn nc1..nck}=L
-    with p.top()=L, norm(p)=L 
-    and L={implements Ts\Ts',Ts'
+--p|-{interface?1 implements Ts mwts ncs}+{interface?2 implements Ts' mwt1..mwtn nc1..nck}=L
+    with p.top()=L, norm(p)=L, interface?=interface?1 mwts + interface?2 + mwt1..mwtn //defined earlier (around line 223)
+    and L={interface? implements Ts\Ts',Ts'
       mwts\dom(mwt1..mwtn) p|-mwt1[mwts]+mwt1 .. p|-mwtn[mwts]+mwtn
       ncs\dom(nc1..nck) p|-nc1[ncs]+nc1 .. p|-nck[ncs]+nck }
 --p|-M + empty = M //M is the metavariable for member, introduced in notation and grammar
