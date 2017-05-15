@@ -227,6 +227,7 @@ mwts1 + interface mwts2=interface
   where
   mwts1.e?s = {empty}
   class notin mwts1.mhs.mdfs
+  mwts1.mss not uniquely named
 mwts1 +mwts2=empty if there are not uniquely named abstract methods on both sides,
 otherwise undefined
   
