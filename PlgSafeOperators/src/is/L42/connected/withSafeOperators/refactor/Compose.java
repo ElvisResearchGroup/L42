@@ -311,8 +311,8 @@ public class Compose {
 --{interface?1 implements Ts mwts ncs}+p {interface?2 implements Ts' mwt1..mwtn nc1..nck}=L
     with p.top()=L, norm(p)=L, interface?=interface?1 mwts + interface?2 + mwt1..mwtn //defined earlier (around line 223)
     and L={interface? implements Ts\Ts',Ts'
-      mwts\dom(mwt1..mwtn) p|-mwt1[mwts]+mwt1 .. p|-mwtn[mwts]+mwtn
-      ncs\dom(nc1..nck) p|-nc1[ncs]+nc1 .. p|-nck[ncs]+nck }
+      mwts\dom(mwt1..mwtn) mwt1[mwts]+p mwt1 .. mwtn[mwts]+p mwtn
+      ncs\dom(nc1..nck) nc1[ncs]+p nc1 .. nck[ncs]+p nck }
 --empty +p M = M //M is the metavariable for member, introduced in notation and grammar
 --C:L1 +p C:L2 = C: L1 +p.push(C) L2
 --refine?1 mh1 e?1 +p refine?2 mh2 e?2= {refine?1,refine?2} mh e?i 
