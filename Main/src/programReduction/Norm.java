@@ -5,6 +5,7 @@ import ast.Ast.Path;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -108,8 +109,12 @@ public class Norm {
     //modify here to decrese performance but reduce evilpushes, by doing push(C) in case e is L
   }
   protected MethodWithType normMwt(Program p,MethodWithType mwt){
-    return mwt.withMt(resolve(p,mwt.getMt()))
-      .with_inner(mwt.get_inner().map(e->norm(p,e)));
+    MethodType mt=resolve(p,mwt.getMt());
+    Optional<ExpCore> e=mwt.get_inner().map(e1->e1.accept(new CloneVisitor(){
+      @Override public ExpCore visit(ClassB cb){
+        return norm(p.evilPush(cb));
+        }}));
+    return mwt.withMt(mt).with_inner(e);
     }
       
 

@@ -191,6 +191,7 @@ class TOkKs implements TOutKs{
     this.trAcc = trAcc;
     this.ks = ks;
     this.ts = ts;
+    for(On k:ks){assert k.getT() instanceof NormType:k.getT();}
     }
   Tr trAcc;
   List<ExpCore.Block.On> ks;

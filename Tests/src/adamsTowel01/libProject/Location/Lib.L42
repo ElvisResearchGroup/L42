@@ -1,10 +1,16 @@
-{
+{ implements This1.This$
   //@plugin  toFix 
   //@pluginPart is.L42.connected.withSafeOperators.location.Doc
-  class method Library #pluginUnresponsive(Library binaryRepr) binaryRepr
-  refine method Lib location()
-  method Size nestedsSize()
-  method This nested(Size that)
+  
+  
+  This$:UnsafeRefactor.MiniData.thisLib()
+
+  List:Collections.vector(of:This$)
+
+  class method
+   Library #pluginUnresponsive(Library binaryRepr)
+     binaryRepr
+
   method
   List nesteds()
     List[with i in 0Size.vals(upTo:this.nestedSize()) (use[this.nested(i)])]
@@ -26,12 +32,6 @@
     Bool.true()
     )
         
-  method 
-  Size methodsSize()
-
-  method
-  Method method(Size that)
-
   method
   Method.List methods()
     Method.List[with i in 0Size.vals(upTo:this.methodsSize()) (use[this.method(i)])]
@@ -47,8 +47,6 @@
     catch exception NotAvailable Bool.false()
     Bool.true()
     )      
-  method Size implementedSize()
-  method Type.Implemented implemented(Size that)
   method
   Type.Implemented.List implementeds()
     Type.Implemented.List[with i in 0Size.vals(upTo:this.implementedSize()) (use[this.implemented(i)])]
@@ -61,7 +59,7 @@
        with ri=ti.refTo() (
          on Type.RefTo.Binded (
            ci=ri.referredClassObj()
-           if Refactor.equalsClassObj(ci, and:clazz) (
+           if Type.RefTo.Binded.equalsClassObj(ci, and:clazz) (
             //no need of supertypes since normalized classes has transitive implements already
             return Bool.True()
             )
@@ -84,50 +82,48 @@
      return Bool.false()
      }   
   
-  method Doc doc()
-  **method S kindS()
-  **Kind:Enum"interface,closedClass,openClass,template,freeTemplate"
-  //TODO: freeTemplate must mean no class methods!! old idea (class methods not called) does not seams to make sense, if not called, then could be just not having them...
-  technically you can still have class Type variables and use the method over those, but it seams like a minor case
-  interface if label
-  closedclass if private abstract exists
-  else free template if all abs and no class meth
-  else template  if all abs (recursive?)
-  else open class??
-  we may want different infos?
-  -isInterface = easy
-  plus one option between:
-  -isBinded? = store flag? or, only for not binded:
-  --isRedirectableToClass(all abstract)
-  --isRedirectableToInterface (free template + interfaces)
-  --isClosedClass (private state)? use the isOpenState?
-that is closed for sure when binded?
-  //or is all false: is open class
-  
-  --isCoherent (deep+need program)? only for not binded? use lable for binded? but label is imprecise? just false for binded?
-called isCoherentlyBindable?
-PROBLEMS:
-  isCoherent can not be really checked on non still typable classes:
-  -surelly coherent, surelly incoherent, most likly coherent
-  *May be we just want a decorator PreventAbstract that fail if surelly incoherent? and not have an equivalent of isCoherent on Lib?
-  *A decorator MakeStatePrivate also have the same trouble: what to do if the "state" is only most likly coherent?
-
-
+    
+  //methods imported from java
+  method
+  This newFromClass(class Any that)
+  method 
+  This newFromLibrary(Library that)
+  method
+  Doc doc()
+  method 
+  Type.Implemented implemented(Size that)
+  method
+  Size implementedsSize()
+  method
+  Bool isBinded()
+  method
+  Bool isCloseState()
+  method//as in EnsureCoherent<><
+  Bool isEnsuredCoherent()
   method
   Bool isInterface()
-    this.kindS()==S"Interface"
-  
   method
-  Bool isCoherent()
-    this.isInterface() | this.kindS()==S"CoherentClass"//Not a kind???
-  
-  This$:UnsafeRefactor.MiniData.thisLib()
-  
-  List:Collections.vector(of:This$)
-    
-  method Lib root()
-  method Path path()//last is its name, empty path for root
-  method Doc nestedDoc()//empty doc if it is root
-  //even if obtained with a classObj, no method to get it back
-  //to get a nested classObj, Refactor.navigateClassObj(classAny,Path)->classAny??
+  Bool isPotentialInterface()
+  method
+  Bool isRedirectable()
+  method
+  Method method(Size that)
+  method
+  Size methodSize()
+  method
+  This navigate(Path that)
+  method
+  Bool nested(Size that)
+  method //empty doc if it is root
+  Doc nestedDoc()
+  method 
+  Size nestedSize()
+  method//last is its name, empty path for root
+  Path path()
+  method
+  Lib root()
+
+  refine method   //implemented but refined
+  Lib location()
+  //and == location() origin(Size) originSize() toS()
   }

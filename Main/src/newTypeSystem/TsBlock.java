@@ -79,6 +79,7 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
    TOutKs _ksOut=ksType(in1,dsOk.trAcc,ks);
    if(!_ksOut.isOk()){return _ksOut.toError();}
    TOkKs ksOk=_ksOut.toOkKs();
+   ks=ksOk.ks;//now resolved
    //Phase| p| G'[G0\dom(G')] |- e0~>e'0:T0 <=T' | Tr0
    G G0LessG1=dsOk.g.removeGXs(in1.g.keySet());
    TOut _e0Out=type(in1.addGG(G0LessG1).withE(s.getE(), in.expected));
@@ -193,11 +194,9 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
       ks1.add(ok.k);
       ts.add(ok.t);
       newTrAcc=newTrAcc.trUnion(ok.tr);
-      //Removed, according to fix to type system in 5/4/2017 
-      //tr=tr.trCapture(in.p,ok.k);
       }
 
-    TOkKs res=new TOkKs(newTrAcc,ks,ts);
+    TOkKs res=new TOkKs(newTrAcc,ks1,ts);
     return res;
     }    
   

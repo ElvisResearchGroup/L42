@@ -283,6 +283,7 @@ import ast.ExpCore;
 import ast.ExpCore.*;
 import ast.ExpCore.ClassB.NestedClass;
 import ast.ExpCore.ClassB.Phase;
+import auxiliaryGrammar.Functions;
 import facade.PData;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodWithType;
@@ -356,12 +357,12 @@ public class Compose {
     for(Type ti:b.getSupertypes()){impls.remove(ti);}
     impls.addAll(b.getSupertypes());
     List<MethodWithType>mwts=new ArrayList<>(a.mwts());
-    for(MethodWithType mwti: b.mwts()){Util._findAndRemove(mwts,mwti.getMs());}
+    for(MethodWithType mwti: b.mwts()){Functions._findAndRemove(mwts,mwti.getMs());}
     for(MethodWithType mwti: b.mwts()){
       mwts.add(sumMwt(_extractMwt(mwti,a.mwts()),mwti));
       }
     List<NestedClass>ncs=new ArrayList<>(a.ns());
-    for(NestedClass nci: b.ns()){Util._findAndRemove(ncs,nci.getName());}
+    for(NestedClass nci: b.ns()){Functions._findAndRemove(ncs,nci.getName());}
     for(NestedClass nci: b.ns()){
       NestedClass ncj=_extractNc(nci,a.ns());
       if(ncj==null){ncs.add(nci);}
@@ -552,33 +553,7 @@ return null;
 }
 }
 */
-class Util{
-//TODO: put in functions, and use everywhere?
-static <T> List<T> push(List<T> that, T elem){
-  List<T> res=new ArrayList<T>(that);
-  res.add(elem);
-  return res;
-  }
-static NestedClass _findAndRemove(List<NestedClass> ns,Ast.C that){
-  for(int i=0;i<ns.size();i++){
-    NestedClass ni=ns.get(i);
-    if(!ni.getName().equals(that)){continue;}
-    ns.remove(i);
-    return ni;
-    }
-  return null;
-  }
-static MethodWithType _findAndRemove(List<MethodWithType> mwts,Ast.MethodSelector that){
-for(int i=0;i<mwts.size();i++){
-  MethodWithType mwti=mwts.get(i);
-  if(!mwti.getMs().equals(that)){continue;}
-  mwts.remove(i);
-  return mwti;
-  }
-return null;
-}
 
-}
 
 //-------------------Data structures----------
 /*

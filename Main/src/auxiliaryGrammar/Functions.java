@@ -407,4 +407,29 @@ public static boolean checkCore(Expression result) {
   return true;
 }
 
+
+public static <T> List<T> push(List<T> that, T elem){
+List<T> res=new ArrayList<T>(that);
+res.add(elem);
+return res;
+}
+public static NestedClass _findAndRemove(List<NestedClass> ns,Ast.C that){
+for(int i=0;i<ns.size();i++){
+  NestedClass ni=ns.get(i);
+  if(!ni.getName().equals(that)){continue;}
+  ns.remove(i);
+  return ni;
+  }
+return null;
+}
+public static MethodWithType _findAndRemove(List<MethodWithType> mwts,Ast.MethodSelector that){
+for(int i=0;i<mwts.size();i++){
+MethodWithType mwti=mwts.get(i);
+if(!mwti.getMs().equals(that)){continue;}
+mwts.remove(i);
+return mwti;
+}
+return null;
+}
+
 }

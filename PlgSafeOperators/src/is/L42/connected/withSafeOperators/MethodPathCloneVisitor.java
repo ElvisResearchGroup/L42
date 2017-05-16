@@ -25,6 +25,7 @@ import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodImplemented;
 import ast.ExpCore.ClassB.MethodWithType;
 import ast.ExpCore.ClassB.Phase;
+import programReduction.Norm;
 import programReduction.Program;
 import coreVisitors.From;
 import facade.Configuration;
@@ -90,10 +91,12 @@ abstract public class MethodPathCloneVisitor extends RenameMembers {
     HashMap<String, Ast.NormType> aux = new HashMap<>(this.varEnv);
     try{
       for(Dec d:s.getDecs()){
-        this.varEnv.put(d.getX(),d.getT().getNT()
-            //Functions.forceNormType(s,d.getT())
-            //Norm.of(p, d.getT())
-            );
+        //TODO: next check will disappear when we erase skeletal types
+        if(!(d.getT() instanceof NormType)){
+          this.varEnv.put(d.getX(),Norm.resolve(p, d.getT()));
+          continue;
+          }
+        this.varEnv.put(d.getX(),d.getT().getNT());
         }
       List<Dec> newDecs = liftDecs(s.getDecs());
       List<On> newOns=new ArrayList<>();
@@ -116,7 +119,11 @@ abstract public class MethodPathCloneVisitor extends RenameMembers {
         if(ms2.equals(sel.getMs())){sels.add(sel);}
         else{sels.add(new MethodSelectorX(ms2,sel.getX()));}
         Ast.HistoricType hti=new Ast.HistoricType(last,Collections.singletonList(sel),Doc.empty());
-        Program ep=p;for(ClassB cbi:this.getLocator().getCbs()){ep=ep.evilPush(cbi);}
+        Program ep=p;for(ClassB cbi:this.getLocator().getCbs()){
+          //assert cbi!=null;
+          if (cbi==null){ep=ep.evilPush(ClassB.docClass(Doc.empty()));continue;/*TODO: mah*/}
+          ep=ep.evilPush(cbi);
+          }
         NormType nt=programReduction.Norm.resolve(ep, hti);
         last=nt.getPath();
         }

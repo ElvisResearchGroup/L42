@@ -6,24 +6,26 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import ast.Ast;
+import ast.Ast.Mdf;
 import ast.Ast.Path;
 import ast.ExpCore;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.NestedClass;
+import ast.ExpCore.ClassB.Phase;
 import ast.PathAux;
 import facade.PData;
 import is.L42.connected.withSafeOperators.ExtractInfo;
 import is.L42.connected.withSafeOperators.ExtractInfo.ClassKind;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.NotAvailable;
-
+import auxiliaryGrammar.Functions;
 public class Lib extends Location.LocationImpl<ExpCore.ClassB,Lib>{
   boolean isBinded;
   ExpCore.ClassB root;
-  Path path;
+  List<Ast.C> path;
   public Lib(
     boolean isBinded,
     ExpCore.ClassB root,
-    Path path,
+    List<Ast.C> path,
     ExpCore.ClassB inner,Lib location) {super(inner,location);
       this.isBinded=isBinded;
       this.root=root;
@@ -32,7 +34,7 @@ public class Lib extends Location.LocationImpl<ExpCore.ClassB,Lib>{
   public Lib(
     boolean isBinded,
     ExpCore.ClassB root,
-    Path path,
+    List<Ast.C> path,
     ExpCore.ClassB inner) {super(inner,null);
       this.isBinded=isBinded;
       this.root=root;
@@ -41,31 +43,31 @@ public class Lib extends Location.LocationImpl<ExpCore.ClassB,Lib>{
       }
   public static Lib newFromClass(PData pData,Path path){
     ClassB cb=pData.p.extractClassB(path);//TODO: need from??
-    Lib lib=new Lib(true,cb,Path.outer(0),cb);
+    Lib lib=new Lib(true,cb,Collections.emptyList(),cb);
     return lib;
     } 
   public static Lib newFromLibrary(ExpCore.ClassB cb){
-    Lib lib=new Lib(false,cb,Path.outer(0),cb);
+    Lib lib=new Lib(false,cb,Collections.emptyList(),cb);
     return lib;
     } 
   Cacher<List<Lib>> nestedsC=new Cacher<List<Lib>>(){public List<Lib> cache(){
     if(Lib.this.isBinded){
       return inner.ns().stream()
-        .map(n->new Lib(true,(ExpCore.ClassB)n.getInner(),Path.outer(0),(ExpCore.ClassB)n.getInner()))
+        .map(n->new Lib(true,(ExpCore.ClassB)n.getInner(),Collections.emptyList(),(ExpCore.ClassB)n.getInner()))
         .collect(Collectors.toList());
       }
     return inner.ns().stream()
-      .map(n->new Lib(false,root,path.pushC(n.getName()),(ExpCore.ClassB)n.getInner(),Lib.this))
+      .map(n->new Lib(false,root,Functions.push(path,n.getName()),(ExpCore.ClassB)n.getInner(),Lib.this))
       .collect(Collectors.toList());
     }};
-  public int nestedsSize(){return nestedsC.get().size();}
+  public int nestedSize(){return nestedsC.get().size();}
   public Lib nested(int that) throws NotAvailable{return Location.listAccess(nestedsC.get(), that);}
 
   Cacher<List<Method>> methodsC=new Cacher<List<Method>>(){public List<Method> cache(){
   return inner.mwts().stream()
     .map(mwt->new Method(mwt,Lib.this))
     .collect(Collectors.toList());}};
-  public int methodsSize(){return methodsC.get().size();}
+  public int methodSize(){return methodsC.get().size();}
   public Method method(int that) throws NotAvailable{return Location.listAccess(methodsC.get(), that);}
 
   Cacher<List<Type.Implemented>> implementedsC=new Cacher<List<Type.Implemented>>(){public List<Type.Implemented> cache(){
@@ -79,36 +81,68 @@ public class Lib extends Location.LocationImpl<ExpCore.ClassB,Lib>{
   public Type.Implemented implemented(int that) throws NotAvailable{return Location.listAccess(implementedsC.get(), that);}
 
   @Override public Doc doc(){return new Doc(inner.getDoc1(),this);}
-  public boolean isCoherent(PData pData){
-    if (this.isBinded){return false;}
-    return newTypeSystem.TsLibrary.coherent(pData.p.evilPush(this.inner), false);
-    //TODO: no, we need to navigate on a path for classAnys?
+  
+  public boolean isInterface(){return this.inner.isInterface();}
+  public boolean isBinded(){return this.isBinded;}
+  private static boolean isRedirectableRec(ClassB cb){
+  return !cb.mwts().stream().anyMatch(mwt->
+    mwt.get_inner().isPresent() 
+    || mwt.getMs().isUnique()
+    ) || cb.ns().stream().anyMatch(nc->!isRedirectableRec((ClassB)nc.getInner()));
     }
+  public boolean isRedirectable(){
+    return isRedirectableRec(this.inner);}//deep, all abs, no private
+  public boolean isPotentialInterface(){
+    //freeTemplate must mean no class methods!! old idea (class methods not called) does not seams to make sense, if not called, then could be just not having them...
+    //technically you can still have class Type variables and use the method over those, but it seams like a minor case
+    return !this.inner.mwts().stream().anyMatch(mwt->
+      mwt.get_inner().isPresent() 
+      || mwt.getMs().isUnique()
+      || mwt.getMt().getMdf()==Mdf.Class);
+    }//shallow for being sum with interface or redirectable to interface
+  public boolean isCloseState(){
+    return this.inner.mwts().stream().anyMatch(mwt->
+      !mwt.get_inner().isPresent() 
+      && mwt.getMs().isUnique());
+    }
+  public boolean isEnsuredCoherent(PData pData){
+    if (this.inner.getPhase()==Phase.Coherent){return true;}
+    if(this.isBinded){return false;}
+    return newTypeSystem.TsLibrary.coherent(pData.p.evilPush(this.inner), false);
+    
+  }
+  //either is labeled coherent, (may be binded)
+  //or not binded and TsLibrary.coherent(pData.p.evilPush(this.inner), false);
+  //in a world with the current subtype knowledge: it may give a false negative for incomplete subtyping information
+  
   public Lib root(){
     if(this.root==this.inner){return this;}
     assert !this.isBinded;
-    return new Lib(false,root,Path.outer(0),root);
+    return new Lib(false,root,Collections.emptyList(),root);
     }
-  public Path path(){return path;}//last is its name, empty path for root
+  public String path(){return Path.outer(0,path).toString();}//last is its name, empty path for root
   public Doc nestedDoc(){
-    if(this.path.getCBar().isEmpty()){
+    if(this.path.isEmpty()){
       return new Doc(Ast.Doc.empty(),this);
       }
-    NestedClass nc = inner.getNested(path.getCBar());
+    NestedClass nc = inner.getNested(path);
     return new Doc(nc.getDoc(),this);
     }//empty doc if it is root
 //even if obtained with a classObj, no method to get it back
 //to get a nested classObj, Refactor.navigateClassObj(classAny,Path)->classAny??
   public String toS() {return sugarVisitors.ToFormattedText.of(inner);}
-  public Lib navigate(List<Ast.C> cs){
+  public Lib navigate(String cs){
+    return navigate(PathAux.parseValidCs(cs));
+    }
+  private Lib navigate(List<Ast.C> cs){
     if (cs.isEmpty()){return this;}
     if(this.isBinded){
       ClassB cb=this.inner.getClassB(cs);//TODO: need from?
-      return new Lib(true,cb,Path.outer(0),cb);
+      return new Lib(true,cb,Collections.emptyList(),cb);
       }
     List<Ast.C> top = Collections.singletonList(cs.get(0));
     List<Ast.C> tail=cs.subList(1,cs.size());
-    Lib nextStep=new Lib(false,root,path.pushC(cs.get(0)),inner.getClassB(top),this);
+    Lib nextStep=new Lib(false,root,Functions.push(path,cs.get(0)),inner.getClassB(top),this);
     return nextStep.navigate(tail);
     }
   @Override public boolean equalequal(Object that) {

@@ -10,8 +10,6 @@ and the Location.Method that contains such type annotation.
 Location:{
 */
 
-method
-This location()
 NotAvailable:Message.$<><{implements Guard}
   
 //note: "class" is not a good name for an enum elem. Thus we use uppercase down
@@ -43,7 +41,8 @@ Origin:UnsafeRefactor.MiniData<><...
 //------------------------------------  
 This$:{interface implements Concept.Base
   method Size originSize()//many since metaprogramming
-  method Origin origin(Size that)   
+  method Origin origin(Size that)
+  method This location()
   }
 This$Impl:{
   class method
@@ -51,7 +50,7 @@ This$Impl:{
     UnsafeRefactor.Compose.compose(left:This(), right:that)
  
   class method Library(){ implements This$
-    refine read method class This class()
+    refine read method class This class()//to work with simple minded sum
     method
     Origin.List origins()
       Origin.List[with i in 0Size.vals(upTo:this.originSize()) (use[this.origin(i)])]
