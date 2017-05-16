@@ -313,7 +313,7 @@ public class Compose {
     and L={interface? implements Ts\Ts',Ts'
       mwts\dom(mwt1..mwtn) p|-mwt1[mwts]+mwt1 .. p|-mwtn[mwts]+mwtn
       ncs\dom(nc1..nck) p|-nc1[ncs]+nc1 .. p|-nck[ncs]+nck }
---p|-M + empty = M //M is the metavariable for member, introduced in notation and grammar
+--p|-empty + M = M //M is the metavariable for member, introduced in notation and grammar
 --p|-C:L1 + C:L2 = C: p.push(C)|-L1+L2
 --p|-refine?1 mh1 e?1 + refine?2 mh2 e?2= {refine?1,refine?2} mh e?i 
     with {i,j}={1,2}, e?j=empty, p|-mhi<<mh1 and p|-mhi<<mh1
