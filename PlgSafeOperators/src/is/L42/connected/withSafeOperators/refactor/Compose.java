@@ -100,11 +100,6 @@ p|-L sum L'=L2
   empty|-L sumPs L'=L1;Css
   empty;0;p.evilPush(L1);L;L';Css|-L sumAll L'=L2
 
-_______
-#define M[Ms]=M?
-nc[nc1..ncn]=nci if nci.C=nc.C
-mwt[mwt1..mwtn]=mwti if mwti.ms=mwt.ms
-otherwise=empty
 
 _______
 #define
@@ -219,17 +214,6 @@ _______
     replace every L with 
     SArg[witn n=SArg.n+1][with p=SArg.p.push(L)]|-IsumDeep(L)
 
-_______
-#define interface?1 mwts1+interface?2 mwts2=interface?
-interface?1 mwts1 + interface?2 mwts2 = interface?2 mwts2 + interface?1 mwts1
-interface? mwts1+interface? mwts2=interface?
-mwts1 + interface mwts2=interface
-  where
-  mwts1.e?s = {empty}
-  class notin mwts1.mhs.mdfs
-  mwts1.mss not uniquely named
-mwts1 +mwts2=empty if there are not uniquely named abstract methods on both sides,
-otherwise undefined
   
 _______
 #define p|-mwt1 sumAll mwt2=mwt
@@ -307,20 +291,58 @@ public class Compose {
   
   
   ----------------------------
-  //simplified non computational sum in 9 lines: result need to agree on its norm
-  //we may put it in this form? --L0=L1 ++p L2 = L1 +p.evilPush(L0) L2
---{interface?1 implements Ts mwts ncs} +p {interface?2 implements Ts' mwt1..mwtn nc1..nck}=L
-    with p.top()=L, norm(p)=L, interface?=interface?1 mwts + interface?2 + mwt1..mwtn //defined earlier (around line 223)
-    and L={interface? implements Ts\Ts',Ts'
-      mwts\dom(mwt1..mwtn) mwt1[mwts] +p mwt1 .. mwtn[mwts] +p mwtn
-      ncs\dom(nc1..nck) nc1[ncs] +p nc1 .. nck[ncs] +p nck }
---empty +p M = M //M is the metavariable for member, introduced in notation and grammar
---C:L1 +p C:L2 = C: L1 +p.push(C) L2
---refine?1 mh1 e?1 +p refine?2 mh2 e?2= {refine?1,refine?2} mh e?i 
-    with {i,j}={1,2}, e?j=empty, p|-mhi<<mh1 and p|-mhi<<mh2
+
+
+
+
+
+
+_______
+#define L1 ++p L2 = L0
+L1 ++p L2 = L0=
+  with L0=L1 +p.evilPush(L0) L2 and norm(p.evilPush(L0))=L0 
+
+_______
+#define L1 +p L2 = L0
+{interface?1 implements Ts mwts ncs} +p {interface?2 implements Ts' mwt1..mwtn nc1..nck}
+   ={ (interface?1 mwts + interface?2 + mwt1..mwtn)
+      implements (Ts\Ts',Ts')
+      (mwts\dom(mwt1..mwtn) mwt1[mwts] +p mwt1 .. mwtn[mwts] +p mwtn)
+      (ncs\dom(nc1..nck) nc1[ncs] +p nc1 .. nck[ncs] +p nck) }
+
+_______
+#define M? + M1 = M2
+empty +p M = M //M is the metavariable for member, introduced in notation and grammar
+C:L1 +p C:L2 = C: L1 +p.push(C) L2
+refine?1 mh1 e?1 +p refine?2 mh2 e?2= {refine?1,refine?2} mh e?i 
+  with {i,j}={1,2}, e?j=empty, p|-mhi<=mh1 and p|-mhi<=mh2
+
+_______
+#define p|-mh1<=mh2  //remember that p.equiv( P,P) hold even if p( P) undefined
+p|-mh1<=mh2
+  where p|-mh1.T<=mh2.T and mh1[with T=mh2.T]=mh2   
+     
+_______
+#define M[Ms]=M?
+nc[nc1..ncn]=nci if nci.C=nc.C
+mwt[mwt1..mwtn]=mwti if mwti.ms=mwt.ms
+otherwise=empty
+
+_______
+#define interface?1 mwts1+interface?2 mwts2=interface?
+interface?1 mwts1 + interface?2 mwts2 = interface?2 mwts2 + interface?1 mwts1
+interface? mwts1+interface? mwts2=interface?
+mwts1 + interface mwts2=interface
+  where
+  mwts1.e?s = {empty}
+  class notin mwts1.mhs.mdfs
+  mwts1.mss not uniquely named
+mwts1 +mwts2=empty
+  where i in 1,2 and mwtsi.mss not uniquely named
+
+
   
---p|-mh1<<mh2 still to define, remember that p.equiv( P,P) hold even if p( P) undefined
-  if all of the type are equiv, of course mh1<<mh2
+  
   */
   //public static boolean matchMwt(Program p, ClassB topA, ClassB topB, List<Member> ms, List<Ast.C> current, Member m, Member oms) {
 
