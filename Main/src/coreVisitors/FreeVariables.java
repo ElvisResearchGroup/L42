@@ -22,6 +22,7 @@ public class FreeVariables implements Visitor<Set<String>>{
   private HashSet<String> collected=new HashSet<String>();
   private HashSet<String> inScope=new HashSet<String>();
   public static Set<String> of(ExpCore e){
+    assert false:"is this dead code?";
     return e.accept(new FreeVariables());
   } 
   public static Set<String> ofBlock(Block s){
@@ -78,5 +79,6 @@ public class FreeVariables implements Visitor<Set<String>>{
   public Set<String> visit(_void s) {return collected;}
   public Set<String> visit(ExpCore.EPath s) {return collected;}
   public Set<String> visit(ClassB s) {return collected;}
-  
+  public Set<String> visit(ExpCore.UpdateVar s) {throw Assertions.codeNotReachable("deadCode?");}
+   
 }

@@ -24,6 +24,7 @@ import ast.ExpCore.ClassB.Phase;
 import ast.ExpCore.Loop;
 import ast.ExpCore.MCall;
 import ast.ExpCore.Signal;
+import ast.ExpCore.UpdateVar;
 import ast.ExpCore.Using;
 import ast.ExpCore.WalkBy;
 import ast.ExpCore.X;
@@ -306,6 +307,11 @@ public class TranslateExpression implements coreVisitors.Visitor<Void>{
     s.getInner().accept(this);
     res.append(";\n}})\n");
     return null;
+  }
+
+@Override
+public Void visit(UpdateVar s) {
+  throw Assertions.codeNotReachable();
   }
 
 }

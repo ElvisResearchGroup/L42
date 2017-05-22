@@ -41,6 +41,17 @@ public interface ExpCore {
     }
   }
 
+  @Value @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") @Wither public static class UpdateVar implements ExpCore,HasPos, WithInner<UpdateVar>{
+  ExpCore inner;
+  String var;
+  Doc doc;
+  Position p;
+  @Override public <T> T accept(coreVisitors.Visitor<T> v) {
+    return v.visit(this);
+  }
+}
+
+  
   @Value @EqualsAndHashCode(exclude = "p")
   public static class X implements ExpCore, Ast.Atom, HasPos {
     Position p;

@@ -107,7 +107,7 @@ public class GuessType implements Visitor<Type> {
       return visit(new UnOp(s.getP(),Op.Bang,s2));
       }
     if(!op.normalized){
-      BinOp op2=new BinOp(s.getP(),s.getRight(),op.normalizedVersion(),s.getLeft());
+      BinOp op2=new BinOp(s.getP(),s.getRight(),op.normalizedVersion(),s.getDoc(),s.getLeft());
       return visit(op2);
       }
     assert !op.negated && op.normalized :op; 

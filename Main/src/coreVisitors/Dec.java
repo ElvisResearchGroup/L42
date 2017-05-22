@@ -9,10 +9,12 @@ import ast.ExpCore.Block;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.MCall;
 import ast.ExpCore.Signal;
+import ast.ExpCore.UpdateVar;
 import ast.ExpCore.Using;
 import ast.ExpCore.WalkBy;
 import ast.ExpCore.X;
 import ast.ExpCore._void;
+import tools.Assertions;
 
 public class Dec implements Visitor<ExpCore> {
   String x;
@@ -85,4 +87,6 @@ public class Dec implements Visitor<ExpCore> {
     if(c2==null){return c1;}
     return c2;
     }
+@Override
+public ExpCore visit(UpdateVar s) { throw Assertions.codeNotReachable();}
 }

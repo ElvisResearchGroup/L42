@@ -7,6 +7,7 @@ import ast.ExpCore.ClassB;
 import ast.ExpCore.Loop;
 import ast.ExpCore.MCall;
 import ast.ExpCore.Signal;
+import ast.ExpCore.UpdateVar;
 import ast.ExpCore.Using;
 import ast.ExpCore.WalkBy;
 import ast.ExpCore.X;
@@ -23,4 +24,5 @@ public class TestShapeVisitor implements Visitor<Boolean>{
   public Boolean visit(Block s)  {return false;}
   public Boolean visit(ClassB s)  {return false;}
   public Boolean visit(Loop s)  {return false;}
+  public Boolean visit(UpdateVar s) {return false;}
 }

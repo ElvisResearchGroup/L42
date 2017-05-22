@@ -26,6 +26,7 @@ import ast.ExpCore.ClassB;
 import ast.ExpCore.Loop;
 import ast.ExpCore.MCall;
 import ast.ExpCore.Signal;
+import ast.ExpCore.UpdateVar;
 import ast.ExpCore.Using;
 import ast.ExpCore.WalkBy;
 import ast.ExpCore.X;
@@ -145,4 +146,10 @@ public class PropagatorVisitor implements Visitor<Void>{
   
   public Void visit(X s) {return null;}//Do nothing on purpose, can be overridden
   public Void visit(_void s) {return null;}//Do nothing on purpose, can be overridden
+@Override
+public Void visit(UpdateVar s) {
+  this.liftDoc(s.getDoc());
+  this.lift(s.getInner());
+  return null;
+  }
   }

@@ -12,6 +12,7 @@ import ast.ExpCore.ClassB;
 import ast.ExpCore.Loop;
 import ast.ExpCore.MCall;
 import ast.ExpCore.Signal;
+import ast.ExpCore.UpdateVar;
 import ast.ExpCore.Using;
 import ast.ExpCore.WalkBy;
 import ast.ExpCore.X;
@@ -30,13 +31,15 @@ public class ExtractCtxUpToX implements Visitor<Ctx<Block>>{
   public Ctx<Block> visit(ClassB s) {throw Assertions.codeNotReachable();}
 
   public Ctx<Block> visit(Signal s) {
-    return lift(s.getInner().accept(this),
-        ctx->s.withInner(ctx));
+    return lift(s.getInner().accept(this),s::withInner);
     }
   public Ctx<Block> visit(Loop s) {
-    return lift(s.getInner().accept(this),
-        ctx->s.withInner(ctx));
+    return lift(s.getInner().accept(this),s::withInner);
     }
+  public Ctx<Block> visit(UpdateVar s) {
+    return lift(s.getInner().accept(this),s::withInner);
+    }
+
 
   public Ctx<Block> visit(Using s) {
     for(ExpCore ei:s.getEs()){

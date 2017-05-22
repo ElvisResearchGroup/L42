@@ -82,7 +82,9 @@ class CtxSplitter implements coreVisitors.Visitor<CtxC>{
   //expressions that just wrap another
   public CtxC visit(Signal s) {return new CtxCInner<Signal>(s, s.getInner().accept(this));}
   public CtxC visit(Loop s) { return new CtxCInner<Loop>(s, s.getInner().accept(this));}
+  public CtxC visit(ExpCore.UpdateVar s) { return new CtxCInner<ExpCore.UpdateVar>(s, s.getInner().accept(this));}
 
+  
   //method call: define class for pointing in parameters
   private static class CtxCMCallPos extends CtxCAbsPos<MCall>{
     CtxCMCallPos(MCall origin,int pos,CtxC ctx) {super(origin,pos,ctx);}

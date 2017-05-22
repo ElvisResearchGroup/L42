@@ -14,7 +14,6 @@ import ast.ErrorMessage.*;
 import ast.ExpCore;
 import ast.ExpCore.*;
 import ast.ExpCore.Block.Dec;
-import ast.ExpCore.Loop;
 import ast.Redex;
 import ast.Redex.FUpdateExtended;
 import auxiliaryGrammar.Ctx;
@@ -121,6 +120,7 @@ public class Move implements Visitor<Ctx<List<Block.Dec>>>{
     }
   //solved on call side if atom!=x
   public static Block of(Block ctx,String a){
+    assert false:"dead code or handle todo";
     int ctxPosition=-1;
     //ExpCore ex=ctx.getDecs().get(ctx.domDecs().indexOf(x)).getE();
     List<Block.Dec> newDecs=new ArrayList<>();
@@ -148,4 +148,10 @@ public class Move implements Visitor<Ctx<List<Block.Dec>>>{
   }
 
   public Ctx<List<Dec>> visit(Loop s) {throw Assertions.codeNotReachable();}
+
+@Override
+public Ctx<List<Dec>> visit(UpdateVar s) {
+// TODO Auto-generated method stub
+return null;
+}
 }

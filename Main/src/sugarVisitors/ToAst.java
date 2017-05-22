@@ -460,6 +460,7 @@ public class ToAst extends AbstractVisitor<Expression>{
     while(!stack.isEmpty()){
       current=new Expression.BinOp(position(ctx),current,
         Op.fromString(stack.pop().getText()),
+        ToAst.parseDoc(stack.pop()),
         stack.pop().accept(this));
       }
     if(current instanceof Expression.BinOp){
@@ -578,7 +579,7 @@ public class ToAst extends AbstractVisitor<Expression>{
     return new Parameters(e0,xs,es);
   }
   public Expression visitXOp(XOpContext ctx) {
-    return new BinOp(position(ctx),new X(position(ctx),nameL(ctx.X())),Op.fromString(ctx.EqOp().getText()),ctx.eTop().accept(this));
+    return new BinOp(position(ctx),new X(position(ctx),nameL(ctx.X())),Op.fromString(ctx.EqOp().getText()),parseDoc(ctx.docsOpt()),ctx.eTop().accept(this));
   }
   @Override
   public Expression visitRoundBlockForMethod(RoundBlockForMethodContext ctx) {

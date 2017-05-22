@@ -296,7 +296,7 @@ class DesugarW extends CloneVisitor{
   }
 
   private static Expression withSquareAdd(Position pos,X x,Expression inner) {
-  Expression result=new BinOp(pos,x,Op.ColonEqual,new MCall(x,"#add",Doc.empty(),Desugar.getPs(inner),pos));
+  Expression result=new BinOp(pos,x,Op.ColonEqual,Doc.empty(),new MCall(x,"#add",Doc.empty(),Desugar.getPs(inner),pos));
   return result;
   }
 }

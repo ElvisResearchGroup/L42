@@ -72,4 +72,6 @@ public class ExtractThrow implements Visitor<ExpCore>{
   public ExpCore visit(_void s) { return new ExpCore.WalkBy();}
   public ExpCore visit(WalkBy s) {throw Assertions.codeNotReachable();}
   public ExpCore visit(Loop s) { return new ExpCore.WalkBy(); }
+  public ExpCore visit(ExpCore.UpdateVar s) {throw Assertions.codeNotReachable("should be dead code?");}
+  
   }

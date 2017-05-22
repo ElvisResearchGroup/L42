@@ -13,5 +13,6 @@ public interface Visitor<T> {
   T visit(Block s);
   T visit(ClassB s);
   T visit(Loop s);
+  T visit(UpdateVar s);
 
 }

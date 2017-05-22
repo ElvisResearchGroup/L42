@@ -118,16 +118,16 @@ historicalT:Ph? Path docsOpt historicalSeq+;
 methSelector: (mDec| ORoundNoSpace|ORoundSpace) x* CRound;
 
 x: X;
-xOp:X EqOp eTop;
+xOp:X EqOp docsOpt eTop;
 //unOp:UnOp;
 //binOp:BinOp;
 eTopForMethod:eTop | roundBlockForMethod (squareW|square|Dot mCall|ORoundNoSpace round|docs | stringParse)*;
 eTop:
-    eL3 ( BoolOp  eL3)*;
+    eL3 ( BoolOp docsOpt eL3)*;
 eL3:
-    eL2 ( RelOp  eL2)*;
+    eL2 ( RelOp docsOpt eL2)*;
 eL2:
-    eL1 ( DataOp eL1)*;
+    eL1 ( DataOp docsOpt eL1)*;
 eL1:
     eUnOp;
 numParse: NumParse;
@@ -182,8 +182,3 @@ w: wSwitch|wSimple;
 wSwitch:With x* i* varDec* ORoundSpace onPlus+ (Default eTop)? CRound;
 i: Var? t? x In eTop;
 wSimple: With i+ block;
-//C:\Users\marco\Desktop\EclipseLuna4.4.2\L42_2015\Main\src\antlrGenerated
-//C:\Users\marco\Desktop\latexHelper\disiFiles\marco\L42_2015\Main\src\antlrGenerated
-//C:\Users\Marco\workspace\TestJ8\src\antlrGenerated
-//C:\Users\marco\Desktop\latexHelper\disiFiles\marco\java8Lombock\src\antlrGenerated
-//C:\Users\marco\Desktop\latexHelper\disiFiles\marco\java8Alternate\src\antlrGenerated

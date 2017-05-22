@@ -12,6 +12,7 @@ import ast.ExpCore.ClassB;
 import ast.ExpCore.Loop;
 import ast.ExpCore.MCall;
 import ast.ExpCore.Signal;
+import ast.ExpCore.UpdateVar;
 import ast.ExpCore.Using;
 import ast.ExpCore.WalkBy;
 import ast.ExpCore.X;
@@ -37,6 +38,10 @@ public class ExtractCtxCompiled implements Visitor<Ctx<ClassB>>{
   public Ctx<ClassB> visit(Loop s) {
     return lift(s.getInner().accept(this),s::withInner);
   }
+  public Ctx<ClassB> visit(UpdateVar s) {
+    return lift(s.getInner().accept(this),s::withInner);
+  }
+
 
   public Ctx<ClassB> visit(Using s) {
     for(ExpCore ei:s.getEs()){

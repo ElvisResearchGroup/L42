@@ -134,7 +134,7 @@ public class Lib extends Location.LocationImpl<ExpCore.ClassB,Lib>{
   public Lib navigate(String cs){
     return navigate(PathAux.parseValidCs(cs));
     }
-  private Lib navigate(List<Ast.C> cs){
+  Lib navigate(List<Ast.C> cs){
     if (cs.isEmpty()){return this;}
     if(this.isBinded){
       ClassB cb=this.inner.getClassB(cs);//TODO: need from?

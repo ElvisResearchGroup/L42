@@ -18,6 +18,7 @@ import ast.ExpCore.ClassB;
 import ast.ExpCore.Loop;
 import ast.ExpCore.MCall;
 import ast.ExpCore.Signal;
+import ast.ExpCore.UpdateVar;
 import ast.ExpCore.Using;
 import ast.ExpCore.WalkBy;
 import ast.ExpCore.X;
@@ -90,5 +91,9 @@ public NormType visit(ClassB s) {
 public NormType visit(Loop s) {
   throw Assertions.codeNotReachable();
 }
+@Override
+public NormType visit(UpdateVar s) {
+  return Path.Void().toImmNT();
+  }
 }
 

@@ -12,6 +12,7 @@ import ast.ExpCore.ClassB;
 import ast.ExpCore.Loop;
 import ast.ExpCore.MCall;
 import ast.ExpCore.Signal;
+import ast.ExpCore.UpdateVar;
 import ast.ExpCore.Using;
 import ast.ExpCore.WalkBy;
 import ast.ExpCore.X;
@@ -36,11 +37,13 @@ public class ExtractCtxVal implements Visitor<Ctx<Redex>>{
     }
 
   public Ctx<Redex> visit(Signal s) {
-    return lift(s.getInner().accept(this),
-        ctx->s.withInner(ctx));
+    return lift(s.getInner().accept(this),s::withInner);
     }
   public Ctx<Redex> visit(Loop s) {
-    return checkRedex(s);
+    return checkRedex(s);//TODO: why loop is different from signal??
+    }
+  public Ctx<Redex> visit(UpdateVar s) {
+    return lift(s.getInner().accept(this),s::withInner);
     }
     
   public Ctx<Redex> visit(Using s) {
@@ -54,8 +57,7 @@ public class ExtractCtxVal implements Visitor<Ctx<Redex>>{
         return s.withEs(es);
       });
     }
-    return lift(s.getInner().accept(this),
-        ctx->s.withInner(ctx));
+    return lift(s.getInner().accept(this), s::withInner);
   }
   public Ctx<Redex> visit(MCall s) {
     Ctx<Redex> res=checkRedex(s);
@@ -116,6 +118,7 @@ public class ExtractCtxVal implements Visitor<Ctx<Redex>>{
     return null;
   }
   public static Ctx<Redex> of(Program p,ExpCore e){
+    assert false: "check the todo before proceeding";
     //what if check garbage first?
     Ctx<Redex> result=e.accept(new ExtractCtxVal(p));
     if(result!=null){return result;}

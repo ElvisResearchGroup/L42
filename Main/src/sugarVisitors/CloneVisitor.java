@@ -178,7 +178,7 @@ public class CloneVisitor implements Visitor<Expression>{
   }
   @Override
   public Expression visit(BinOp s) {
-    return new BinOp(s.getP(),lift(s.getLeft()),s.getOp(),lift(s.getRight()));
+    return new BinOp(s.getP(),lift(s.getLeft()),s.getOp(),liftDoc(s.getDoc()),lift(s.getRight()));
   }
   @Override
   public Expression visit(DocE s) {

@@ -7,7 +7,6 @@ import tools.Map;
 import ast.ExpCore;
 import ast.ExpCore.Block.Dec;
 import ast.ExpCore.ClassB.Member;
-import ast.ExpCore.Loop;
 import ast.ExpCore.*;
 import ast.Ast.*;
 import ast.Ast.Type.*;
@@ -125,5 +124,9 @@ public class CloneVisitor implements Visitor<ExpCore>{
   }
   protected MethodSelector liftMsInMetDec(MethodSelector ms) {
     return ms;
+  }
+@Override
+public ExpCore visit(UpdateVar s) {
+  return new UpdateVar(lift(s.getInner()),s.getVar(),liftDoc(s.getDoc()),s.getP());
   }
 }

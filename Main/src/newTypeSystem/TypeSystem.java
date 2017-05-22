@@ -130,6 +130,7 @@ class Impl implements TypeSystem,TsOperations,TsBlock,TsMCall,TsLibrary{
         public TOut visit(Block s) {return tsBlock(in,s);}
         public TOut visit(ClassB s) {return tsClassB(in,s);}
         public TOut visit(Loop s) {return tsLoop(in,s);}
+        public TOut visit(ExpCore.UpdateVar s) {throw Assertions.codeNotReachable();}
         public TOut visit(WalkBy s) {throw Assertions.codeNotReachable();}
         });
       }

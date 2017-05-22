@@ -446,7 +446,7 @@ public class Desugar extends CloneVisitor{
       Op op2=Op.fromString(s.getOp().inner.substring(0,s.getOp().inner.length()-1));
       BinOp s2=s.withOp(op2);
       s2=s2.withLeft(getMCall(s.getP(),s.getLeft(),"#inner",getPs()));
-      return visit(new BinOp(s.getP(),s.getLeft(),Op.ColonEqual,s2));
+      return visit(new BinOp(s.getP(),s.getLeft(),Op.ColonEqual,Doc.empty(),s2));
     }
     if (op.negated){
       BinOp s2=s.withOp(op.nonNegatedVersion());
@@ -456,7 +456,7 @@ public class Desugar extends CloneVisitor{
       return visit(getMCall(s.getP(),s.getLeft(),desugarName(s.getOp().inner),getPs(s.getRight())));
       }
     String x=Functions.freshName("opNorm", usedVars);
-    BinOp s2=new BinOp(s.getP(),s.getRight(),op.normalizedVersion(),new Expression.X(s.getP(),x));
+    BinOp s2=new BinOp(s.getP(),s.getRight(),op.normalizedVersion(),s.getDoc(),new Expression.X(s.getP(),x));
     return visit(getBlock(s.getP(),x, s.getLeft(),s2));
   }
   public Expression visit(UnOp s) {

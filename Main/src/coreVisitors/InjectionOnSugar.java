@@ -24,6 +24,7 @@ import ast.ExpCore.ClassB;
 import ast.ExpCore.Loop;
 import ast.ExpCore.MCall;
 import ast.ExpCore.Signal;
+import ast.ExpCore.UpdateVar;
 import ast.ExpCore.Using;
 import ast.ExpCore.WalkBy;
 import ast.ExpCore.X;
@@ -131,5 +132,14 @@ public class InjectionOnSugar implements Visitor<ast.Expression> {
   private Optional<Expression> lift(Optional<ast.ExpCore> e){
     if(e.isPresent()){return Optional.of(e.get().accept(this));}
     return Optional.empty();
+    }
+
+  @Override
+  public Expression visit(UpdateVar s) {
+    return new Expression.BinOp(s.getP(),
+              new Expression.X(s.getP(), s.getVar()),
+              Ast.Op.ColonEqual,
+              s.getDoc(),
+              lift(s.getInner()));
     }
   }

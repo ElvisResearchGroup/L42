@@ -98,6 +98,7 @@ public interface Expression extends Ast {
     Position p;
     Expression left;
     Ast.Op op;
+    Ast.Doc doc;
     Expression right;
     public String toString() {
       return "(" + left + op.inner + right + ")";
