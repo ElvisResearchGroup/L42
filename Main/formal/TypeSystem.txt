@@ -655,8 +655,8 @@ as coherent, since the field would be an union type of C and D
 
 --------------------------
 Notationandgrammar:
-e::=..|  x:=e
-d::= var? T x=e | var? x=chain
+e::=..|  x:=e//done
+d::= var? T x=e | var? x=chain//done
 chain::=..|(ds ks e) with guessable(ds ks e)
 T::= mdf P /*remove skeletaltypes*/
 

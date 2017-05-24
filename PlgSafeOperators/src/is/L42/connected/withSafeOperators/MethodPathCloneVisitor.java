@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import ast.Ast;
 import ast.ExpCore;
@@ -140,7 +141,12 @@ abstract public class MethodPathCloneVisitor extends RenameMembers {
     Path guessed=null;
     try{
       TIn in=TIn.top(Phase.Typed, ep, s.getInner());
-      in=in.withG(varEnv);
+      in=in.withG(
+        varEnv.entrySet().stream().collect(
+          Collectors.toMap(
+            me->me.getKey(),
+            me->new java.util.AbstractMap.SimpleEntry<>(false,me.getValue())
+            )));
       guessed=newTypeSystem.GuessTypeCore.of(in,s.getInner()).getPath();
       assert guessed!=null;
       }

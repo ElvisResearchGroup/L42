@@ -217,7 +217,7 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
     return new TErr(in,"Contrasting mdf expected for return",null,ErrorKind.NoMostGeneralMdf);
     }
     NormType T1 = Norm.resolve(in.p, k.getT()).withMdf(mdf1);
-    TOut _out=type(in.addG(k.getX(),T1).withE(k.getE(), in.expected));
+    TOut _out=type(in.addG(k.getX(),false,T1).withE(k.getE(), in.expected));
     if(!_out.isOk()){return _out.toError();}
     TOk out=_out.toOk();
     TOkK res=new TOkK(Tr.instance.trUnion(out),k.withE(out.annotated).withT(T1),out.computed);
