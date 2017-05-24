@@ -92,11 +92,11 @@ abstract public class MethodPathCloneVisitor extends RenameMembers {
     try{
       for(Dec d:s.getDecs()){
         //TODO: next check will disappear when we erase skeletal types
-        if(!(d.getT() instanceof NormType)){
-          this.varEnv.put(d.getX(),Norm.resolve(p, d.getT()));
+        if(!(d.getT().get() instanceof NormType)){
+          this.varEnv.put(d.getX(),Norm.resolve(p, d.getT().get()));
           continue;
           }
-        this.varEnv.put(d.getX(),d.getT().getNT());
+        this.varEnv.put(d.getX(),d.getT().get().getNT());
         }
       List<Dec> newDecs = liftDecs(s.getDecs());
       List<On> newOns=new ArrayList<>();

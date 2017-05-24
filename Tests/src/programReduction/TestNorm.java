@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,9 +43,9 @@ public static class TestResolve {
   Program p=TestProgram.p(_p);
   ExpCore.Block wType=(ExpCore.Block)TestHelper.getExpCore(TestProgram.class.getSimpleName()," ("+_type+" x=Any x)");
   ExpCore.Block wTypeExp=(ExpCore.Block)TestHelper.getExpCore(TestProgram.class.getSimpleName()," ("+_expected+" x=Any x)");
-  Type type = wType.getDecs().get(0).getT();
+  Type type = wType.getDecs().get(0).getT().get();
   NormType nt = Norm.resolve(p, type);
-  TestHelper.assertEqualExp(wTypeExp,wType.withDeci(0,wType.getDecs().get(0).withT(nt)));
+  TestHelper.assertEqualExp(wTypeExp,wType.withDeci(0,wType.getDecs().get(0).withT(Optional.of(nt))));
   }
 }
 

@@ -210,8 +210,10 @@ static PathsPaths usedPathsECatchErrors(Program p, ExpCore e){
     //**if ( _ T x=P _ _) inside e and T!=class Any, P not Any.
     //**if (mdf P x=_ _) inside e, P not Any  
       protected void liftDec(Block.Dec s) {
-        Path pt=s.getT().match(nt->nt.getPath(), hType->hType.getPath());
-        if(!pt.isPrimitive()){add(pt);}
+        if(s.getT().isPresent()){
+          Path pt=s.getT().get().match(nt->nt.getPath(), hType->hType.getPath());
+          if(!pt.isPrimitive()){add(pt);}
+          }
         Path p=justPath(s.getInner());
         if (p!=null){add(p);}
         super.liftDec(s);

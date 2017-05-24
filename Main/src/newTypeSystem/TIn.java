@@ -43,7 +43,7 @@ abstract class AG<This extends AG<This>>{
     Map<String,NormType>newG=new HashMap<String,NormType>(g);
     for(ExpCore.Block.Dec d : ds){
       assert !g.containsKey(d.getX());
-      newG.put(d.getX(),programReduction.Norm.resolve(p,d.getT()));
+      newG.put(d.getX(),programReduction.Norm.resolve(p,d.getT().get()));
       }
     return this.withG(newG);
     }

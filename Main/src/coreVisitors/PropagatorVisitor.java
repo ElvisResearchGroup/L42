@@ -2,6 +2,7 @@ package coreVisitors;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import tools.Assertions;
@@ -37,6 +38,9 @@ public class PropagatorVisitor implements Visitor<Void>{
     e.accept(this);
     }
   protected void liftP(Path p){}
+  protected void liftTOpt(Optional<Type> t){
+    if(t.isPresent()){liftT(t.get());}
+    }
   protected void liftT(Type t){
     liftDoc(t.getDoc());
     if(t instanceof NormType){liftP(((NormType)t).getPath());}
@@ -60,7 +64,7 @@ public class PropagatorVisitor implements Visitor<Void>{
     lift(on.getInner());
     }
   protected void liftDec(Block.Dec f) {
-    liftT(f.getT());
+    liftTOpt(f.getT());
     lift(f.getInner());
     }
   protected void liftDoc(Doc doc) {

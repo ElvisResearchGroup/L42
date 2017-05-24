@@ -250,7 +250,7 @@ public class TranslateExpression implements coreVisitors.Visitor<Void>{
       produceThrow((ExpCore.Signal)d.getInner());
       return;
       }
-    if(d.getInner() instanceof ExpCore.Block && d.getT().getNT().getPath().equals(Path.Void())){
+    if(d.getInner() instanceof ExpCore.Block && d.getT().get().getNT().getPath().equals(Path.Void())){
       //speeds up compilation time
       /*boolean isThrow=*/produceNestedBlock((Block)d.getInner(),"P"+d.getX()+"=");
       res.append("\n");
@@ -272,7 +272,7 @@ public class TranslateExpression implements coreVisitors.Visitor<Void>{
   public Set<String> declareVarsAndPh(List<Dec> decs) {
     Set<String> unDeclared=new HashSet<>();
     for(Dec d:decs){//declare all vars;
-      res.append(Resources.nameOf(d.getT()));
+      res.append(Resources.nameOf(d.getT().get()));
       res.append(" P"+d.getX()+";\n");
       unDeclared.add(d.getX());
     }
@@ -286,8 +286,8 @@ public class TranslateExpression implements coreVisitors.Visitor<Void>{
     assert unDeclared.isEmpty();
     for(Dec d:decs){
       if(domPhs.contains(d.getX())){//declare placeholder
-        res.append(Resources.nameOf(d.getT())+".Ph");
-        res.append(" PH"+d.getX()+"=new "+Resources.nameOf(d.getT())+".Ph();\n");
+        res.append(Resources.nameOf(d.getT().get())+".Ph");
+        res.append(" PH"+d.getX()+"=new "+Resources.nameOf(d.getT().get())+".Ph();\n");
         }
       }
     return domPhs;

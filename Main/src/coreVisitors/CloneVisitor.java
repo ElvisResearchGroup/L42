@@ -3,6 +3,8 @@ package coreVisitors;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 import tools.Map;
 import ast.ExpCore;
 import ast.ExpCore.Block.Dec;
@@ -20,6 +22,10 @@ public class CloneVisitor implements Visitor<ExpCore>{
     return result;
     }
   protected Path liftP(Path p){return p;}
+  protected Optional<Type> liftTOpt(Optional<Type> t){
+    if(!t.isPresent()){return t;}
+    return Optional.of(liftT(t.get()));
+  }
   protected Type liftT(Type t){
     return t.match(
         nt->(Type)new NormType(nt.getMdf(),liftP(nt.getPath()),liftDoc(nt.getDoc())),
@@ -53,7 +59,7 @@ public class CloneVisitor implements Visitor<ExpCore>{
     return new FieldDec(f.isVar(),liftT(f.getT()),f.getName(),f.getDocs());
   }*/
   protected Block.Dec liftDec(Block.Dec f) {
-    return new Block.Dec(liftT(f.getT()),f.getX(),lift(f.getInner()));
+    return new Block.Dec(f.isVar(),liftTOpt(f.getT()),f.getX(),lift(f.getInner()));
   }
   protected Doc liftDoc(Doc doc) {
     return doc.withAnnotations(Map.of(ann->{

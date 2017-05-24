@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.Map.Entry;
+import java.util.Optional;
 
 import ast.Ast;
 import ast.Ast.Doc;
@@ -277,7 +278,7 @@ private static UsingInfo usingConstructor(PlgInfo plgInfo, Constructor<?>[] jcs,
       //ki.inner#mcall.inner<-Pi
       }
     
-    if (ui.isVoid){b=b.withDecs(Collections.singletonList(b.getDecs().get(0).withT(NormType.immVoid)));}
+    if (ui.isVoid){b=b.withDecs(Collections.singletonList(b.getDecs().get(0).withT(Optional.of(NormType.immVoid))));}
     if(!ui.isVoid && !mwt.getMt().getReturnType().equals(NormType.immLibrary)){
       e=e.withEs(Collections.singletonList(b));
       mwt=mwt.withInner(e);

@@ -89,7 +89,7 @@ public class WellFormednessCore {
       xsi.add(CX.of(s.getInner()));
       for(On o:s.getOns()){xsi.add(CX.of(o.getInner()));}
       for(Dec d:s.getDecs()){
-        if(d.getT().getNT().getMdf()!=Mdf.Capsule){continue;}
+        if(d.getT().get().getNT().getMdf()!=Mdf.Capsule){continue;}
         String xi=d.getX();
         //xi at most 1 in ys,xs0
         int howMany_xs0=Collections.frequency(xsi.get(0),xi);

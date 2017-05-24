@@ -300,7 +300,7 @@ public class Compose {
 _______
 #define L1 ++p L2 = L0
 L1 ++p L2 = L0=
-  with L0=L1 +p.evilPush(L0) L2 and norm(p.evilPush(L0))=L0 
+  with L0=L1 +p.evilPush(L0) L2 and norm(p.evilPush(L0))=L0 execpt for order of implemented interfaces 
 
 _______
 #define L1 +p L2 = L0
@@ -314,7 +314,7 @@ _______
 #define M? + M1 = M2
 empty +p M = M //M is the metavariable for member, introduced in notation and grammar
 C:L1 +p C:L2 = C: L1 +p.push(C) L2
-refine?1 mh1 e?1 +p refine?2 mh2 e?2= {refine?1,refine?2} mh e?i 
+refine? mh1 e?1 +p refine? mh2 e?2= refine? mh e?i //we chose that allowing refine+non refine sum was more evil than good
   with {i,j}={1,2}, e?j=empty, p|-mhi<=mh1 and p|-mhi<=mh2
 
 _______

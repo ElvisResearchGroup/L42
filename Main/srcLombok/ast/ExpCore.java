@@ -86,7 +86,8 @@ public interface ExpCore {
       return v.visit(this);
     }
     @Value @Wither public static class Dec implements WithInner<Dec>{
-      Type t;
+      boolean isVar;
+      Optional<Type> t;
       String x;
       ExpCore inner;
     }

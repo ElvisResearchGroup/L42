@@ -80,10 +80,10 @@ public class InjectionOnSugar implements Visitor<ast.Expression> {
     Expression inner=lift(s.getInner());
     List<VarDec> decs= new ArrayList<VarDec>();
     for(int i=0;i<s.getDecs().size();i++){
-      Type t=s.getDecs().get(i).getT();
+      Optional<Type> t=s.getDecs().get(i).getT();
       String x=s.getDecs().get(i).getX();
       Expression e=lift(s.getDecs().get(i).getInner());
-      decs.add(new VarDecXE(false,Optional.of(t),x,e));
+      decs.add(new VarDecXE(s.getDecs().get(i).isVar(),t,x,e));
     }
     List<Expression.Catch> _catch=injectionCatch(s.getOns());
     List<Expression.BlockContent> contents=new ArrayList<>();

@@ -36,7 +36,6 @@ import ast.Expression;
 
 import ast.Util.InvalidMwtAsState;
 import ast.Util.PathMwt;
-import coreVisitors.Dec;
 import coreVisitors.FreeVariables;
 import coreVisitors.From;
 import coreVisitors.IsCompiled;

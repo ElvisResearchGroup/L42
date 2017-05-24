@@ -48,10 +48,10 @@ public class InjectionOnCore implements Visitor<ExpCore> {
           d;
         Ast.VarDecXE sugarDec=(Ast.VarDecXE)d;
         assert sugarDec.getT().isPresent() :sugarDec;
-        Type t=sugarDec.getT().get();
+        Optional<Type> t=sugarDec.getT();
         String x=sugarDec.getX();
         ExpCore e=sugarDec.getInner().accept(this);
-        decs.add(new Dec(t,x,e));
+        decs.add(new Dec(sugarDec.isVar(),t,x,e));
         };//END FOR DECS
       for(Catch k :c.get_catch()){
         assert k instanceof Expression.Catch1;
