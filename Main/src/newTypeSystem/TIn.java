@@ -33,6 +33,8 @@ abstract class AG<This extends AG<This>>{
     }
   public This addG(String x,boolean var, NormType t){
     assert !g.containsKey(x);
+    assert !var || !TypeManipulation.fwd_or_fwdP_in(t.getMdf());
+    assert !var || t.getMdf()!=Mdf.Capsule;
     Map<String,Map.Entry<Boolean, NormType>>newG=new HashMap<>(g);
     newG.put(x,p(var,t));
     return this.withG(newG);
@@ -46,7 +48,10 @@ abstract class AG<This extends AG<This>>{
     Map<String,Map.Entry<Boolean, NormType>>newG=new HashMap<>(g);
     for(ExpCore.Block.Dec d : ds){
       assert !g.containsKey(d.getX());
-      newG.put(d.getX(),p(d.isVar(),programReduction.Norm.resolve(p,d.getT().get())));
+      NormType nt = programReduction.Norm.resolve(p,d.getT().get());
+      assert !d.isVar() || !TypeManipulation.fwd_or_fwdP_in(nt.getMdf());
+      assert !d.isVar() || nt.getMdf()!=Mdf.Capsule;
+      newG.put(d.getX(),p(d.isVar(),nt));
       }
     return this.withG(newG);
     }

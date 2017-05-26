@@ -18,6 +18,7 @@ import ast.ExpCore.Signal;
 import ast.ExpCore.Using;
 import ast.ExpCore.X;
 import ast.ExpCore._void;
+import ast.ExpCore.UpdateVar;
 import tools.Assertions;
 
 public interface TsOperations extends TypeSystem{
@@ -139,5 +140,31 @@ public interface TsOperations extends TypeSystem{
       }
     return new TErr(in,"",Path.Void().toImmNT(),subErr);
     }
+
+    default TOut tsUpdateVar(TIn in, UpdateVar s) {
+      //D |-x:=e ~> x:=e' :imm Void <= T | Tr
+       //     where
+       //     D.G(x).var?=var
+       //     D.p|- imm Void <= T
+       //     D|- e ~> e':_<=D.G(x).T|Tr
+       //     not fwd_or_fwd%_in(D.G(x).T)
+      if(!in.gVar(s.getVar())){
+        assert false;
+        /*TODO: return TErr locked var to improve*/
+        }
+      ErrorKind subErr=TypeSystem.subtype(in.p, Path.Void().toImmNT(),in.expected);
+      if(subErr!=null){
+        assert false;//strange exp like Foo(a:=b)
+        }
+      NormType expected=in.g(s.getVar());
+      if(TypeManipulation.fwd_or_fwdP_in(expected.getMdf())){
+        assert false;//can it even happen or is blocked by well formedness before?
+        }
+      TOut innerT=type(in.withE(s.getInner(), expected));
+      if(!innerT.isOk()){return innerT;}
+      TOk ok=innerT.toOk();
+      ok=ok.withAC(s.withInner(ok.annotated), Path.Void().toImmNT());
+      return ok;
+      }
 
 }

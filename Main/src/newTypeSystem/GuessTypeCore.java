@@ -43,7 +43,7 @@ public NormType visit(ExpCore.EPath s) {
 }
 @Override
 public NormType visit(X s) {
-  NormType t= in.g.get(s.getInner()).getValue();
+  NormType t= in.g(s.getInner());
   assert t!=null;
   return t;
 }

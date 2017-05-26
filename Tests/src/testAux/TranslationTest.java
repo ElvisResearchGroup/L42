@@ -50,7 +50,8 @@ public class TranslationTest {
       "{  }"," { return void }","platformSpecific.javaTranslation.Resources$Void");}
 
   @Test public void t7(){tester(
-      "{ A:{B b Void v class method This (fwd B b, Void v)} B:{A a class method This (fwd A a)} }"," (aa=A(b:bb,v:void)  bb=B(a:aa) bb.a().b().a().v()  )","platformSpecific.javaTranslation.Resources$Void");}
+      "{ A:{B b Void v class method This (fwd B b, Void v)} B:{A a class method This (fwd A a)} }",
+      " (aa=A(b:bb,v:void)  bb=B(a:aa) bb.a().b().a().v()  )","platformSpecific.javaTranslation.Resources$Void");}
 
   @Test public void t8(){tester(
       "{ A:{A a,Void v, class method This (fwd A a, Void v)} }"," (aa=A(a:aa,v:void) aa.a().a().a().v()  )","platformSpecific.javaTranslation.Resources$Void");}

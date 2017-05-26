@@ -17,7 +17,7 @@ Structure of this document:
 -----------------------------
 //In this file, all the L are LC   //LC == in all C:e, e of form L
 
-G::=x1: var?1 T1..xn: var?n Tn  //G reads Gamma
+G::=x1: var?1 T1..xn: var?n Tn  //G reads Gamma //assert var x capsule _ or var x fwd _ or var x fwd% _ never happens
 D::= Phase `|` p `|` G  //D reads Delta
 Tr::=Ts; Ps //Tr reads Throws
 MethT::=Ts->T;Ps
@@ -305,14 +305,15 @@ Phase| p| G |- (ds  ks  e0  [_]) ~>(ds' ks' e'0 [T])
   Phase| p| G'[G0\dom(G')] |- e0~>e'0:T0 <=T' | Tr0
   T= mostGeneralMdf({T0.mdf,Ts.mdfs}) T'.P //set of Mdfs admits no single most general mdf
   // assert D.p|-T <= T'
+
 //TODO: list of changes to update in code:
 //either T?i etcetera
 //type in the annotated result is not just the resolved one!
 //check for well formedness too in code! can be violated adding a T fwd or capsule
 //note how G2 is now used instead of G' in a couple of places 
 (ds)  // G is clipped for error safety; G2 is clipped and complete
-Phase| p| G |- var?0 T?0  x0=e0 .. var?n T?n  xn=en, ds ~>
-              var?0 T'0  x0=e'0 ..var?0 T'n  xn=e'n, ds'|Tr U Tr' | G2
+Phase| p| G |- var?0 T?0  x0=e0 ..var?n T?n  xn=en, ds ~>
+               var?0 T'0  x0=e'0..var?0 T'n  xn=e'n, ds'|Tr U Tr' | G3
   where
   dom(ds) disjoint FV(e0..en)
   for i in 0..n
@@ -321,14 +322,15 @@ Phase| p| G |- var?0 T?0  x0=e0 .. var?n T?n  xn=en, ds ~>
   G'=x0:T0..xn:Tn
   G1= G[fwd(onlyMutOrImm(G'))] //capturing error for next line if not onlyMutOrImm(G') is used and is errored by next line 
   for i in 0..n Phase| p| G1|-ei~>e'i: T'i <= fwd% Ti | Tri
-  G2=x0:T'0..xn:T'n
+  T''i=T'i if fwd_or_fwd%_in(Ti) else T''i=noFwd(T'i)
+  G2=x0:T''0..xn:T'n //TODO anti fwd?
   Tr=Tr0 U .. U Trn
   if fwd_or_fwd%_in Tr.Ts
     then x0..xn disjoint FV(e0..en)//returning unresolved items from cycles is prohibited
   if fwd_or_fwd%_in { G(x) | x in FV(e0..en) } // x0..xn already excluded
-    then G0=G[fwd%(G2)]
+    then G0=G[fwd%(G2[with vars=empty])]
     otherwise G0=G[G2]//capturing error for next line, see if the difference between fwd%(G2) ad G2 would fix it. Still, then we need to check for the fwd x in FV(e0..en)..
-  Phase| p| G0|- ds ~> ds'|Tr' | G2
+  Phase| p| G0|- ds ~> ds'|Tr' | G3
 
 (dsEmpty)
 Phase| p| G |- empty ~> empty| empty;empty | G
@@ -349,7 +351,6 @@ D| Tr |-k1..kn ~> k'1..k'n:T1..Tn <= T | Tr1 U .. U Trn
    // T0 is the declared caught type, which contributes only a path
    // T1 is the actual caught type, based on the types which can be thrown in context
    // T2 is the type of the expression, based on x being bound T1
-
 Phase| p| G| Tr' |- catch throw T0 x e ~> catch throw T1.P x e' :T2 <= T | Tr
   where
   mdf1 = mostGeneralMdf(throw,Tr') //set of Mdfs admits no single most general mdf, or mdfs is empty
@@ -685,7 +686,7 @@ guessMdf(G,(d1..dj k1..kn e))=guessMdf(G,e)
   U guessMdf(G[k1.x:k1.T],k1.e) U..U guessMdf(G[kn.x:kn.T],kn.e)
   U guessMdf(G[d1..dj],d1.e) U..U guessMdf(G[d1..dj],dj.e)
   
-D::= ...;xs //the var in G//no added to the G as var?
+D::= ...;xs //the var in G//no added to the G as var?//done
 
 (xUpdate)//TODO: to move up
 D |-x:=e ~> x:=e' :imm Void <= T | Tr
@@ -694,9 +695,11 @@ D |-x:=e ~> x:=e' :imm Void <= T | Tr
   D.p|- imm Void <= T
   D|- e ~> e':_<=D.G(x).T|Tr
   not fwd_or_fwd%_in(D.G(x).T)
-  //TODO: note the change in toRead and toLent!!
+  //TODO: note the change in toRead and toLent!!//done
+
  in rule ds now we add the guessed T to ds without T; this
  can cause a type error if guessed is capsule and d is var
  since d not well formed if var+capsule
+
  Note: capsule P is never guessed, is demoted to mut P,
  to avoid suprisingly use only onece references.

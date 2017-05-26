@@ -112,34 +112,29 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
   
   
   default TOutDs dsType(TIn in,List<Dec> _ds){
-  //Phase| p| G |- empty ~> empty| empty;empty | G
     if(_ds.isEmpty()){return new TOkDs(Tr.instance,_ds,G.instance.addGG(in));}
-  //Phase| p| G |- T0  x0=e0 ..Tn  xn=en, ds ~>
-  //     T'0  x0=e'0 ..T'n  xn=e'n, ds'|Tr U Tr' | G2
     int i=splitDs(in,_ds);
     assert i+1<=_ds.size();
     List<Dec> ds=_ds.subList(i+1,_ds.size());
-    List<Dec> ds0n=new ArrayList<>();
+    List<Dec> ds0n=new ArrayList<>();//G'
     List<String> fve0n=new ArrayList<>();
     for(Dec di:_ds.subList(0,i+1)){
-      ds0n.add(di.withT(Optional.of(Norm.resolve(in.p,di.getT().get()))));
+      if(!di.getT().isPresent()){
+        NormType nti=GuessTypeCore.of(in, di.getInner());
+        ds0n.add(di.withT(Optional.of(nti)));
+        }
+      //TODO: else will change when skeletal types are removed
+      else{ds0n.add(di.withT(Optional.of(Norm.resolve(in.p,di.getT().get()))));}
       fve0n.addAll(FreeVariables.of(di.getInner()));
       }
     assert !fve0n.stream()
       .anyMatch(x->ds.stream()
         .anyMatch(d->d.getX().equals(x)));    
-  //assert dom(ds) disjoint FV(e0..en)
-    
-  //  for i in 0..n T'i=resolve(p,Ti)
-  //  G'=x0:T'0..xn:T'n //is just ds for the way I handle TIn
-  //  G1= G[fwd(onlyMutOrImm(G'))] //capturing error for next line if not onlyMutOrImm(G') is used and is errored by next line
     List<Dec> dsFiltered = ds0n.stream().filter(
           d->{Mdf m=d.getT().get().getNT().getMdf(); return m==Mdf.Immutable||m==Mdf.Mutable;})
           .map(d->d.withT(Optional.of(TypeManipulation.fwd(d.getT().get().getNT()))))
           .collect(Collectors.toList());
-    TIn in1=in.addGds(in.p,dsFiltered); 
-  //  for i in 0..n Phase| p| G1|-ei~>e'i: _ <= fwd% T'i | Tri
-  //  Tr=Tr0 U .. U Trn
+    TIn in1=in.addGds(in.p,dsFiltered); //G1
     Tr trAcc=Tr.instance;
     List<Dec>ds1=new ArrayList<>();
     List<Dec>ds1FwdP=new ArrayList<>();
@@ -151,18 +146,16 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
       TOk ok=_out.toOk();
       trAcc=trAcc.trUnion(ok);
       Dec di1=di.withInner(ok.annotated);
-      ds1.add(di1.withT(Optional.of(nt)));
-      ds1FwdP.add(di1.withT(Optional.of(ntFwdP)));
+      if(TypeManipulation.fwd_or_fwdP_in(nt.getMdf())){//building G2
+        ds1.add(di1.withT(Optional.of(ok.computed)));
+        }
+      else{ds1.add(di1.withT(Optional.of(TypeManipulation.noFwd(ok.computed))));}
+      ds1FwdP.add(di1.withVar(false).withT(Optional.of(TypeManipulation.fwdP(ok.computed))));
       }
-  //  if fwd_or_fwd%_in Tr.Ts
-  //    then x0..xn disjoint FV(e0..en)//returning unresolved items from cycles is prohibited
     if(TypeManipulation.fwd_or_fwdP_in(trAcc.returns)){
       boolean xInCommon=fve0n.stream().anyMatch(x->ds0n.stream().anyMatch(d->d.getX().equals(x)));
       if(xInCommon){return new TErr(in,"",null,ErrorKind.AttemptReturnFwd);}
       }
-  //  if fwd_or_fwd%_in { G(x) | x in FV(e0..en) } // x0..xn already excluded
-  //    then G0=G[fwd%(G')]  
-  //    otherwise G0=G[G']//capturing error for next line, see if the difference between fwd%(G') ad G' would fix it. Still, then we need to check for the fwd x in FV(e0..en)..
     List<NormType> _nts=new ArrayList<>();
     for(String x: fve0n){
       NormType t=in._g(x);
@@ -171,7 +164,6 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
     TIn inG0;
     if(TypeManipulation.fwd_or_fwdP_in(_nts)){inG0=in.addGds(in.p,ds1FwdP);}
     else{inG0=in.addGds(in.p,ds1);}
-  //  Phase| p| G0|- ds ~> ds'|Tr' | G2
     TOutDs _res= dsType(inG0,ds);
     if(!_res.isOk()){return _res.toError();}
     TOkDs res=_res.toOkDs();
