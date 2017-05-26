@@ -132,7 +132,7 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
         .anyMatch(d->d.getX().equals(x)));    
     List<Dec> dsFiltered = ds0n.stream().filter(
           d->{Mdf m=d.getT().get().getNT().getMdf(); return m==Mdf.Immutable||m==Mdf.Mutable;})
-          .map(d->d.withT(Optional.of(TypeManipulation.fwd(d.getT().get().getNT()))))
+          .map(d->d.withVar(false).withT(Optional.of(TypeManipulation.fwd(d.getT().get().getNT()))))
           .collect(Collectors.toList());
     TIn in1=in.addGds(in.p,dsFiltered); //G1
     Tr trAcc=Tr.instance;

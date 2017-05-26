@@ -112,11 +112,16 @@ public class InjectionOnCore implements Visitor<ExpCore> {
     if(e.isPresent()){return Optional.of(e.get().accept(this));}
     return Optional.empty();
     }
-
+  public ExpCore visit(Expression.BinOp s){
+    if(s.getOp()!=Expression.BinOp.Op.ColonEqual){
+      throw Assertions.codeNotReachable();}
+    assert s.getLeft() instanceof Expression.X: s;
+    Expression.X x=(Expression.X)s.getLeft();
+    return new ExpCore.UpdateVar(lift(s.getRight()),x.getInner() ,s.getDoc(),s.getP());
+    }
   public ExpCore visit(Expression.If s){throw Assertions.codeNotReachable();}
   public ExpCore visit(Expression.While s){throw Assertions.codeNotReachable();}
   public ExpCore visit(Expression.With s){throw Assertions.codeNotReachable();}
-  public ExpCore visit(Expression.BinOp s){throw Assertions.codeNotReachable();}
   public ExpCore visit(Expression.DocE s){throw Assertions.codeNotReachable();}
   public ExpCore visit(Expression.UnOp s){throw Assertions.codeNotReachable();}
   public ExpCore visit(Expression.FCall s){throw Assertions.codeNotReachable(s.toString());}

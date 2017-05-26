@@ -357,7 +357,11 @@ public void test13b(){tp("{",
 
 @Test
 public void test14RelaxVarableSameName1(){tp("{",
-    " A:{class method Library foo() (   var Library lib={} (x={} lib:=x)  (x={//@exitStatus\n//0\n\n} lib:=x  ) lib   )}",
+    " A:{class method Library foo() (   "
+    + "  var Library lib={}"
+    + "  (x={} lib:=x)"
+    + "  (x={//@exitStatus\n//0\n\n} lib:=x  )"
+    + "   lib   )}",
     "Main:A.foo()",
     " }");}
 

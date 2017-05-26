@@ -92,7 +92,7 @@ public class Desugar extends CloneVisitor{
     assert DesugarContext.checkRemoved(e);
     e=DesugarW.of(d.usedVars,e);
     e=DesugarVars.of(d.usedVars,e);
-    assert DesugarVars.assertVarsRemoved(e);
+    //assert DesugarVars.assertVarsRemoved(e);
     //understand what is the current folder
     //replace ... recursively
     //replaceDots(currentFolder,e)-> clone visitor
@@ -439,13 +439,13 @@ public class Desugar extends CloneVisitor{
   public Expression visit(BinOp s) {
     Op op=s.getOp();
     if(op==Op.ColonEqual){
-      return visit(getMCall(s.getP(),s.getLeft(),"inner",getPs(s.getRight())));
+      return s.withRight(lift(s.getRight()));//TODO: set the right expect type?
     }
     if(op.kind==Ast.OpKind.EqOp){
-      //go from, for example ++= into ++
+      //go from, for example a++=b into a:=a ++b
       Op op2=Op.fromString(s.getOp().inner.substring(0,s.getOp().inner.length()-1));
       BinOp s2=s.withOp(op2);
-      s2=s2.withLeft(getMCall(s.getP(),s.getLeft(),"#inner",getPs()));
+      //NO!s2=s2.withLeft(getMCall(s.getP(),s.getLeft(),"#inner",getPs()));
       return visit(new BinOp(s.getP(),s.getLeft(),Op.ColonEqual,Doc.empty(),s2));
     }
     if (op.negated){
@@ -539,11 +539,11 @@ public class Desugar extends CloneVisitor{
     return Ast.MethodSelector.of("#from",Collections.singletonList("seqBuilder"));
   }
   protected ast.Ast.VarDecXE liftVarDecXE(ast.Ast.VarDecXE d) {
-    assert !d.isVar():
-      d;
-    assert d.getT().isPresent();
-    return withExpectedType(d.getT().get(),()->super.liftVarDecXE(d));
-  }
+    if(d.getT().isPresent()){
+      return withExpectedType(d.getT().get(),()->super.liftVarDecXE(d));
+      }
+    return super.liftVarDecXE(d);//TODO: or set the type to void?
+    }
   protected ast.Ast.VarDecE liftVarDecE(ast.Ast.VarDecE d) {
     throw Assertions.codeNotReachable();
   }

@@ -117,7 +117,7 @@ public class DesugarVars extends CloneVisitor{
   }
   public Expression visit(RoundBlock s) {
     s=blockContentSepare(s);
-    s=blockVarClass(s);
+    //s=blockVarClass(s);
     Expression result= super.visit(s);
     return result;
     }

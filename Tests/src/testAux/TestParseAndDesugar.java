@@ -29,7 +29,7 @@ import auxiliaryGrammar.Functions;
 import coreVisitors.InjectionOnSugar;
 
 public class TestParseAndDesugar {
-
+/*
   @RunWith(Parameterized.class)
   public static class TestDesugarVars {
     @Parameter(0) public int _lineNumber;
@@ -68,6 +68,8 @@ public class TestParseAndDesugar {
         }
 
 }
+  */
+  
   @RunWith(Parameterized.class)
   public static class Test1 {
     @Parameter(0) public int _lineNumber;
@@ -78,11 +80,11 @@ public class TestParseAndDesugar {
       return Arrays.asList(new Object[][] {
    {lineNumber(), "a","a"
    },{lineNumber(), " This","This0"
-   },{lineNumber(), " (var Void x=void x:=void)",
+   /*},{lineNumber(), " (var Void x=void x:=void)",
     " ( Varx_$_2:\n{mut (var Void inner)}  Void x=void"
    +"   mut This0.Varx_$_2 varx_$_=This0.Varx_$_2.#apply(inner:x)"
    +"   varx_$_.inner(that:void) )"
-
+*/
 },{lineNumber(), " (A +B)*C"," (This0.A.#plus(that:This0.B)).#times(that:This0.C)"
   },{lineNumber(), " (6Meter +A)*B"," (This0.Meter.#from(builder:(  This0.Meter::#builder() b=This0.Meter.#builder() "
   +" Void unused=b.#6()  b  )).#plus(that:This0.A)).#times(that:This0.B)"
@@ -147,15 +149,15 @@ public class TestParseAndDesugar {
 },{lineNumber(), " ( T a=b T b=c catch error  Foo x x T a2=b2 T b2=c2 c )"," ( This0.T a=b This0.T b=c catch error This0.Foo x x     (   This0.T a2=b2 This0.T b2=c2  c  ) )"
 },{lineNumber(), " (A*b a b c )"," ( Void unused=This0.A.#times(that:b) Void unused0=a Void unused1=b c )"
 },{lineNumber(), " (T a=b c=a c )"," (This0.T a=b This0.T c=a c )"
-},{lineNumber(), " (var This0.T a=a+c c=a a:=C(a) fuffa c )",//ok outer 0 can not be desugared since there is not outer nested class.
+/*},{lineNumber(), " (var This0.T a=a+c c=a a:=C(a) fuffa c )",//ok outer 0 can not be desugared since there is not outer nested class.
    " (Vara_$_2:\n{mut (var This1.T inner)}"
   +"  This0.T a=a.#plus(that:c)"
   +"  This0.T c=a"
   +"  mut This0.Vara_$_2 vara_$_=This0.Vara_$_2.#apply(inner:a)"
   +"  Void unused=vara_$_.inner(that:This0.C.#apply(that:vara_$_.#inner()))"
   +"  Void unused0=fuffa"
-  +"  c)"
-},{lineNumber(), " (var This0.T a=a+c c=a Fuffa(a:=a.foo(a)) c )",//ok outer 0 can not be desugared since there is not outer nested class.
+  +"  c)"*/
+/*},{lineNumber(), " (var This0.T a=a+c c=a Fuffa(a:=a.foo(a)) c )",//ok outer 0 can not be desugared since there is not outer nested class.
   " ("
   +" Vara_$_2:\n{mut (var This1.T inner)}"
   +" This0.T a=a.#plus(that:c)"
@@ -163,14 +165,14 @@ public class TestParseAndDesugar {
   +" mut This0.Vara_$_2 vara_$_=This0.Vara_$_2.#apply(inner:a)"
   +" Void unused=This0.Fuffa.#apply(that:vara_$_.inner(that:vara_$_.#inner().foo(that:vara_$_.#inner())))"
   +"c"
-  +")"
+  +")"*/
 },{lineNumber(), " (T a=b (c=a c ))"," (This0.T a=b (This0.T c=a c ))"
 },{lineNumber(), " (T a=b c=a.m() c )"," (This0.T a=b This0.T::m() c=a.m() c )"
 },{lineNumber(), " (T a=b (c=a.m() c ))"," (This0.T a=b (This0.T::m() c=a.m() c ))"
 },{lineNumber(), " (T a=void a*b a+b catch error Foo x (x.bar()) a b c )",
    " (This0.T a=void  Void unused=a.#times(that:b)   Void unused0=a.#plus(that:b)  catch error This0.Foo x (x.bar()    )  (    Void unused1=a    Void unused2=b    c  ) )"
-},{lineNumber(), " (T a=void a+=a +a)",
-   " (This0.T a=void a.inner(that:a.#inner().#plus(that:a.#plus(that:a))))"
+/*},{lineNumber(), " (T a=void a+=a +a)",
+   " (This0.T a=void a.inner(that:a.#inner().#plus(that:a.#plus(that:a))))"*/
 //TOO UNSTABLE},{"{ reuse L42.is/base }","{Bool:{interface class method Void #checkTrue() exception Void} True:{ _private() implements This1.Bool method #checkTrue() ( void )} False:{ _private() implements This1.Bool method #checkTrue() (exception  void )}}"
 },{lineNumber(), "if X (Bla) else (Foo)",
    " (Void unused=This0.X.#checkTrue() catch exception Void catched (This0.Foo ) (This0.Bla) )"
@@ -196,19 +198,19 @@ public class TestParseAndDesugar {
 
 },{lineNumber(),"{ method Any m(Any a, Any b) a<><b}",
 "{method Any m(Any a, Any b) a.#leftrightleft(that:b)}"
-},{lineNumber(),"{ method Any m(Any a, Any b) a+=b}",
+/*},{lineNumber(),"{ method Any m(Any a, Any b) a+=b}",
  "{method Any m(Any a, Any b) "
-+"a.inner(that:a.#inner().#plus(that:b))}"
-},{lineNumber(),"{ method Any m(Any a, Any b) a<><=b}",
++"a.inner(that:a.#inner().#plus(that:b))}"*/
+/*},{lineNumber(),"{ method Any m(Any a, Any b) a<><=b}",
  "{method Any m(Any a, Any b)"
-+"a.inner(that:a.#inner().#leftrightleft(that:b))}"
-},{lineNumber(),"{ method Any m(Any a, Any b) a><>=b}",
++"a.inner(that:a.#inner().#leftrightleft(that:b))}"*/
+/*},{lineNumber(),"{ method Any m(Any a, Any b) a><>=b}",
  " { method Any m(Any a, Any b)"
 +"a.inner(that:("
 + "  Any::#inner() opNorm=a.#inner()"
 + "  b.#leftrightleft(that:opNorm)"
 + "  ))}"
-
+*/
 
 }});}
 

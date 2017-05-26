@@ -311,7 +311,12 @@ public class TranslateExpression implements coreVisitors.Visitor<Void>{
 
 @Override
 public Void visit(UpdateVar s) {
-  throw Assertions.codeNotReachable();
+  res.append(//need somehow to trash the result
+    "((P"+s.getVar());
+  res.append("=");
+  s.getInner().accept(this);
+  res.append(")==null?null:null)");
+  return null;
   }
 
 }
