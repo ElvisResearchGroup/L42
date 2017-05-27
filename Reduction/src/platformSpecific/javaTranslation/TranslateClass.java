@@ -314,7 +314,8 @@ public class TranslateClass {
   private static void getMethod(Program p,MethodWithType mt, StringBuilder res) {
     getMethodHeader(mt, res);
     if(mt.get_inner().isPresent()){
-      TranslateExpression.of(mt.getInner(),res);
+      List<String> methPar=mt.getMs().getNames();
+      TranslateExpression.of(mt.getInner(),res,methPar);
       }
     else{res.append(";\n");}
     }

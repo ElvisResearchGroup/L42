@@ -43,8 +43,8 @@ import coreVisitors.IsCompiled;
 class B{public static <T> T block(java.util.function.Supplier<T> p){return p.get();}}
 */
 public class TranslateExpression implements coreVisitors.Visitor<Void>{
-  public static void of(ExpCore expCore,StringBuilder res) {
-    TranslateExpression tr=new TranslateExpression(res);
+  public static void of(ExpCore expCore,StringBuilder res,List<String> methPar) {
+    TranslateExpression tr=new TranslateExpression(res,methPar);
     if(expCore instanceof Block){
       tr.produceNestedBlock((Block)expCore," return ");
       return;}
@@ -55,7 +55,8 @@ public class TranslateExpression implements coreVisitors.Visitor<Void>{
   private static Set<String> labels=new HashSet<String>();
   StringBuilder res;
   Set<String> undeclared=new HashSet<String>();
-  TranslateExpression(StringBuilder res){this.res=res;}
+  List<String> methPar;
+  TranslateExpression(StringBuilder res,List<String> methPar){this.res=res;this.methPar=methPar;}
 
   @Override //not a propagator visitor. 
   public Void visit(ExpCore.EPath s) {
@@ -86,9 +87,9 @@ public class TranslateExpression implements coreVisitors.Visitor<Void>{
   @Override
   public Void visit(X s) {
     if(s.getInner().equals("this")){res.append("this");return null;}
-    if(undeclared.contains(s.getInner())){res.append("PH"+s.getInner());}
-    else{res.append("P"+s.getInner());}
-    return null;
+    if(undeclared.contains(s.getInner())){res.append("PH"+s.getInner());return null;}
+    if(methPar.contains(s.getInner())){res.append("P"+s.getInner());return null;}
+    res.append("P"+s.getInner()+"[0]");return null;
   }
 
   @Override
@@ -205,7 +206,7 @@ public class TranslateExpression implements coreVisitors.Visitor<Void>{
     else {
       res.append("if("+kVar+".unbox instanceof "+tn+"){\n");
       }
-    res.append("  "+tn+" P"+on.getX()+"=("+tn+")"+kVar+".unbox;\n");
+    res.append("  "+tn+"[] P"+on.getX()+"={("+tn+")"+kVar+".unbox};\n");
     res.append(asReturn);
     on.getInner().accept(this);
     res.append(";");
@@ -238,7 +239,7 @@ public class TranslateExpression implements coreVisitors.Visitor<Void>{
       /*if(*/initializeSingleVar(d);/*){return true;}*/
       undeclared.remove(d.getX());
       if(domPhs.contains(d.getX())){
-        res.append("PH"+d.getX()+".commit(P"+d.getX()+");\n");
+        res.append("PH"+d.getX()+".commit(P"+d.getX()+"[0]);\n");
         }
       }
     //return false;
@@ -252,12 +253,12 @@ public class TranslateExpression implements coreVisitors.Visitor<Void>{
       }
     if(d.getInner() instanceof ExpCore.Block && d.getT().get().getNT().getPath().equals(Path.Void())){
       //speeds up compilation time
-      /*boolean isThrow=*/produceNestedBlock((Block)d.getInner(),"P"+d.getX()+"=");
+      /*boolean isThrow=*/produceNestedBlock((Block)d.getInner(),"P"+d.getX()+"[0]=");
       res.append("\n");
       //if(isThrow){return true;}
       }
     else{
-      res.append("P"+d.getX()+"=");
+      res.append("P"+d.getX()+"[0]=");
       d.getInner().accept(this);
       res.append(";\n");
       }
@@ -273,7 +274,7 @@ public class TranslateExpression implements coreVisitors.Visitor<Void>{
     Set<String> unDeclared=new HashSet<>();
     for(Dec d:decs){//declare all vars;
       res.append(Resources.nameOf(d.getT().get()));
-      res.append(" P"+d.getX()+";\n");
+      res.append("[] P"+d.getX()+"={null};\n");
       unDeclared.add(d.getX());
     }
     Set<String> domPhs=new HashSet<>();
@@ -313,7 +314,7 @@ public class TranslateExpression implements coreVisitors.Visitor<Void>{
 public Void visit(UpdateVar s) {
   res.append(//need somehow to trash the result
     "((P"+s.getVar());
-  res.append("=");
+  res.append("[0]=");
   s.getInner().accept(this);
   res.append(")==null?null:null)");
   return null;

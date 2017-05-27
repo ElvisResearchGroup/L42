@@ -97,7 +97,7 @@ public class Translator {
       res.append("@SuppressWarnings(\"all\")");
       res.append("public class "+t.mainName+"{\n");
       res.append("public static Object execute0()");
-      TranslateExpression.of(e, res);
+      TranslateExpression.of(e, res,Collections.emptyList());
       res.append("\n");
       res.append("}");
       t.map.put(t.mainName, res.toString());
