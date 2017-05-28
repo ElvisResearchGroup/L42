@@ -38,40 +38,12 @@ public class Norm {
     for(MethodWithType mwt:list){if(mwt.getMs().equals(ms)){return mwt;}}
     return null;
   }
-  public static NormType resolve(Program p,Type t){
-    throw Assertions.codeNotReachable();
-    }
-/*  static NormType _resolve(Program p,Type t){//may stack overflow
-//-resolve(p,mdf P)=mdf P
-    if( t instanceof NormType){return (NormType) t;}
-    HistoricType ht=(HistoricType) t;
-//-resolve(p,P::ms)=resolve(p,T)//and avoid circularity
-//  methods(p,P)(ms)=refine? _ method T ms e?
-    List<MethodWithType> methods = p.methods(ht.getPath());
-    MethodWithType mwt = select(ht.getSelectors().get(0).getMs(),methods);
-    if(mwt==null){
-      //throw new ast.ErrorMessage.NormImpossible(t, cause, null);
-      throw new ast.ErrorMessage.HistoricTypeNoTarget(ht,methods );
-      //TODO: what about the name targetType
-      }
-    Type nextT=nextT(ht.getPath(),mwt,ht.getSelectors().get(0));
-    NormType nextNT= _resolve(p,nextT);
-    if (ht.getSelectors().size()==1){return nextNT.withDoc(ht.getDoc().sum(nextNT.getDoc()));}
-    return _resolve(p,new HistoricType(nextNT.getPath(),ht.getSelectors().subList(1, ht.getSelectors().size()),ht.getDoc()));
-*/
-//-resolve(p,P::ms::x)=resolve(p,T)//and avoid circularity
-//  methods(p,P)(ms)=refine? _ method _ _( _ T x _) e? 
-//-resolve(p,P::msx::msxs)=resolve(p,P'::msxs) //here be carefull for possible infinite recursion 
-//  resolve(p,P::msx)= _ P'              
-  //}
-  private static MethodType resolve(Program p, MethodType mt) {
-    Type rt=resolve(p,mt.getReturnType());
-    List<Type>pts=Map.of(t->resolve(p,t),mt.getTs());
-    return mt.withReturnType(rt).withTs(pts);
-    }
+
+      
+  
+
   ExpCore norm(Program p,ExpCore e){
     return e.accept(new CloneVisitor(){
-      protected Type liftT(Type t){ return resolve(p,t); }
       public ExpCore visit(ClassB s) {
         //TODO: enable when there is new TS if(s.getPhase()!=Phase.None){return s;}
         return norm(p.evilPush(s));
@@ -104,7 +76,7 @@ public class Norm {
     //modify here to decrese performance but reduce evilpushes, by doing push(C) in case e is L
   }
   protected MethodWithType normMwt(Program p,MethodWithType mwt){
-    MethodType mt=resolve(p,mwt.getMt());
+    MethodType mt=mwt.getMt();
     Optional<ExpCore> e=mwt.get_inner().map(e1->e1.accept(new CloneVisitor(){
       @Override public ExpCore visit(ClassB cb){
         return norm(p.evilPush(cb));

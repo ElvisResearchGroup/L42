@@ -129,8 +129,7 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
           }
         ds0n.add(di.withT(Optional.of(nti)));
         }
-      //TODO: else will change when skeletal types are removed
-      else{ds0n.add(di.withT(Optional.of(Norm.resolve(in.p,di.getT().get()))));}
+      else{ds0n.add(di.withT(Optional.of(di.getT().get().getNT())));}
       fve0n.addAll(FreeVariables.of(di.getInner()));
       }
     assert !fve0n.stream()
@@ -214,7 +213,7 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
     if(mdf1==null){
     return new TErr(in,"Contrasting mdf expected for return",null,ErrorKind.NoMostGeneralMdf);
     }
-    NormType T1 = Norm.resolve(in.p, k.getT()).withMdf(mdf1);
+    NormType T1 = k.getT().getNT().withMdf(mdf1);
     TOut _out=type(in.addG(k.getX(),false,T1).withE(k.getE(), in.expected));
     if(!_out.isOk()){return _out.toError();}
     TOk out=_out.toOk();

@@ -264,14 +264,14 @@ public void test12(){tp("{"
 
 @Test
 public void testClassMethods1(){tp("{"
-    ," D: { class method Library a() This.b()   class method Library b() {()} }"
+    ," D: { class method Library a() This.b()   class method Library b() {} }"
     ," E: ( c=D.a() {//@exitStatus\n//0\n\n})"
     ,"}");}
 
 @Test
 public void testClassMethods2(){tp("{"
     ," I: { interface class method Library a()  class method Library b() }"
-    ," D:{  implements I  method a() This.b()   method  b() {()} }"
+    ," D:{  implements I  method a() This.b()   method  b() {} }"
     ," E: ( c=D.a() {//@exitStatus\n//0\n\n})"
     ,"}");}
 
