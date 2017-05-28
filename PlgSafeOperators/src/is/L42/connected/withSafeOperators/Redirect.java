@@ -27,7 +27,6 @@ import ast.ExpCore.*;
 import ast.Ast.NormType;
 import ast.Ast.C;
 import ast.Ast.Doc;
-import ast.Ast.HistoricType;
 import ast.Ast.Path;
 import ast.Ast.Position;
 import ast.Ast.Stage;
@@ -264,18 +263,11 @@ public class Redirect {
       return false;
       }//incompatible internal/external types t1 t2
     //Boolean[] pathOk={true};
-    return tSrc.match(
-      normType->{
-        NormType ntP=(NormType)tDest;
-        if(!normType.getMdf().equals(ntP.getMdf())){return false;}//incompatible internal/external types t1 t2
-         return plusEqualCheckExt(ambiguities,normType.getPath(),Arrays.asList(ntP.getPath()));
-      },
-      hType->{
-        HistoricType htP=(HistoricType)tDest;
-        if(!hType.getSelectors().equals(htP.getSelectors())){return false;}//incompatible internal/external types t1 t2
-        return plusEqualCheckExt(ambiguities,hType.getPath(),Arrays.asList(htP.getPath()));
-      });
-  }
+  
+    NormType ntP=(NormType)tDest;
+    if(!tSrc.getMdf().equals(ntP.getMdf())){return false;}//incompatible internal/external types t1 t2
+    return plusEqualCheckExt(ambiguities,tSrc.getPath(),Arrays.asList(ntP.getPath()));  
+    }
   private static boolean plusEqualCheckExt(List<PathSPath> ambiguities, Path path, List<Path> paths) {
     if(!path.isPrimitive() && path.outerNumber()==0){
       plusEqual(ambiguities,path,paths);

@@ -211,7 +211,7 @@ static PathsPaths usedPathsECatchErrors(Program p, ExpCore e){
     //**if (mdf P x=_ _) inside e, P not Any  
       protected void liftDec(Block.Dec s) {
         if(s.getT().isPresent()){
-          Path pt=s.getT().get().match(nt->nt.getPath(), hType->hType.getPath());
+          Path pt=s.getT().get().getPath();
           if(!pt.isPrimitive()){add(pt);}
           }
         Path p=justPath(s.getInner());
@@ -243,9 +243,7 @@ static PathsPaths usedPathsECatchErrors(Program p, ExpCore e){
         }
       //**if catch T inside e, T.P not Any
       protected void liftO(ExpCore.Block.On on){
-        Path pOn=on.getT().match(
-                normType->normType.getPath(),
-                hType->hType.getPath());
+        Path pOn=on.getT().getPath();
         if (!pOn.isPrimitive()){add(pOn);}
         super.liftO(on);
         }

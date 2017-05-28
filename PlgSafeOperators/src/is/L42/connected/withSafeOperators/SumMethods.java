@@ -17,6 +17,7 @@ import ast.Util.PathMwt;
 import auxiliaryGrammar.Functions;
 import programReduction.Program;
 import coreVisitors.From;
+import newTypeSystem.TypeManipulation;
 import tools.Assertions;
 
 import java.util.*;
@@ -81,13 +82,13 @@ public class SumMethods {
     Mdf mdfU=mdfU(mt1.getMdf(),mt2.getMdf());
     if(mdfU==null){return null;}
     Type removed=mt2.getTs().get(index);
-    boolean isRemovedPh=removed.match(nt->!Functions.isComplete(nt), hType->false);
+    boolean isRemovedPh=!Functions.isComplete(removed.getNT());
     List<Type> totTypes;
     if(isRemovedPh){
       totTypes=new ArrayList<>(mt1.getTs());
     }
     else{
-      totTypes=mt1.getTs().stream().map(t->t.match(nt->Functions.toComplete(nt), hType->hType)).collect(Collectors.toList());
+      totTypes=mt1.getTs().stream().map(t->TypeManipulation.noFwd(t.getNT())).collect(Collectors.toList());
     }
     totTypes.addAll(mt2.getTs());
     int toRemove=mt1.getTs().size()+index;

@@ -11,7 +11,6 @@ import ast.Ast;
 import ast.Ast.ConcreteHeader;
 import ast.Ast.FieldDec;
 import ast.Ast.Header;
-import ast.Ast.HistoricType;
 import ast.Ast.MethodType;
 import ast.Ast.NormType;
 import ast.Ast.Path;
@@ -34,10 +33,8 @@ public class CloneVisitor implements Visitor<Expression>{
     }
   protected Path liftP(Path p){return p;}
   protected Type liftT(Type t){
-    return t.match(
-        nt->(Type)new NormType(nt.getMdf(),liftP(nt.getPath()),liftDoc(nt.getDoc())),
-        ht->(Type)new HistoricType(liftP(ht.getPath()),Map.of(this::liftMsX, ht.getSelectors()),liftDoc(ht.getDoc()))
-        );
+    return new NormType(t.getMdf(),liftP(t.getPath()),liftDoc(t.getDoc()));
+        
     }
   protected Expression.Catch liftK(Expression.Catch k){
     if (k instanceof DesugarCatchDefault.CatchToComplete){
@@ -117,14 +114,6 @@ public class CloneVisitor implements Visitor<Expression>{
 
   protected MethodSelector liftMs(MethodSelector ms) {
     return ms;
-  }
-  protected Ast.MethodSelectorX liftMsX(Ast.MethodSelectorX selector) {
-    MethodSelector ms1=selector.getMs();
-    MethodSelector ms2=liftMs(ms1);
-    if(selector.getX().isEmpty() || selector.getX().equals("this")){return selector.withMs(ms2);}
-    int pos=ms1.getNames().indexOf(selector.getX());
-    assert pos!=-1:selector;
-    return selector.withMs(ms2).withX(ms2.getNames().get(pos));
   }
 
   protected MethodType liftMT(MethodType mt) {

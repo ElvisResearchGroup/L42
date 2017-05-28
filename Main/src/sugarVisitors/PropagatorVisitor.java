@@ -10,7 +10,6 @@ import ast.Ast.Parameters;
 import ast.Ast.ConcreteHeader;
 import ast.Ast.FieldDec;
 import ast.Ast.Header;
-import ast.Ast.HistoricType;
 import ast.Ast.MethodType;
 import ast.Ast.NormType;
 import ast.Ast.Path;
@@ -26,18 +25,9 @@ public class PropagatorVisitor implements Visitor<Void>{
   protected void lift(Expression e){ e.accept(this); }
   protected void liftP(Path p){}
   protected void liftT(Type t){
-    t.match(
-      nt->{
-        liftP(nt.getPath());
-        liftDoc(nt.getDoc());
-        return null;},
-      ht->{
-        liftP(ht.getPath());
-        ht.getSelectors().forEach(this::liftMsX);
-        liftDoc(ht.getDoc());
-        return null;}
-        );
-    }
+      liftP(t.getPath());
+      liftDoc(t.getDoc());
+      }
   protected void liftK(Expression.Catch k){
     if (k instanceof DesugarCatchDefault.CatchToComplete){
       this.liftK(((DesugarCatchDefault.CatchToComplete) k).catch1);
@@ -130,9 +120,6 @@ public class PropagatorVisitor implements Visitor<Void>{
 
   protected void liftMs(MethodSelector ms) {}
 
-  protected  void liftMsX(Ast.MethodSelectorX msx) {
-    liftMs(msx.getMs());
-    }
 
   protected void liftMT(MethodType mt) {
     mt.getTs().forEach(this::liftT);

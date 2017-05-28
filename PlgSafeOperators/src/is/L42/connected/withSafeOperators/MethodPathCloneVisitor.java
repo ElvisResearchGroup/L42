@@ -110,27 +110,6 @@ abstract public class MethodPathCloneVisitor extends RenameMembers {
       }
     finally{this.varEnv=aux;}
     }
-  public Ast.Type liftT(Ast.Type t){
-      if(!(t instanceof Ast.HistoricType)){return super.liftT(t);}
-      Ast.HistoricType ht=(Ast.HistoricType)t;
-      Path last=ht.getPath();
-      List<MethodSelectorX>sels=new ArrayList<>();
-      for(MethodSelectorX sel:ht.getSelectors()){
-        MethodSelector ms2=visitMS(sel.getMs(),last);
-        if(ms2.equals(sel.getMs())){sels.add(sel);}
-        else{sels.add(new MethodSelectorX(ms2,sel.getX()));}
-        Ast.HistoricType hti=new Ast.HistoricType(last,Collections.singletonList(sel),Doc.empty());
-        Program ep=p;for(ClassB cbi:this.getLocator().getCbs()){
-          //assert cbi!=null;
-          if (cbi==null){ep=ep.evilPush(ClassB.docClass(Doc.empty()));continue;/*TODO: mah*/}
-          ep=ep.evilPush(cbi);
-          }
-        NormType nt=programReduction.Norm.resolve(ep, hti);
-        last=nt.getPath();
-        }
-      Ast.HistoricType ht2=ht.withSelectors(sels);
-      return super.liftT(ht2);//this renames the initial path
-      }
 
 
   public ExpCore visit(MCall s) {

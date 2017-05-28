@@ -121,13 +121,18 @@ public interface Ast {
  }
 
  public interface Type {
-      <T> T match(Function<NormType, T> normType, Function<HistoricType, T> hType);
+      //<T> T match(Function<NormType, T> normType, Function<HistoricType, T> hType);
       default ast.Ast.NormType getNT() {
         assert this instanceof ast.Ast.NormType : this;
         return (ast.Ast.NormType) this;
         }
       Doc getDoc();
       Type withDoc(Doc doc);
+      Mdf getMdf();
+      Type withMdf(Mdf m);
+      Path getPath();
+      Type withPath(Path p);
+      
    }
 
  @Value
@@ -146,9 +151,9 @@ public interface Ast {
    return mdf.name() + "[" + this.path.toString()+"]";
   }
 
-  public <T> T match(Function<NormType, T> normType, Function<HistoricType, T> hType) {
+  /*public <T> T match(Function<NormType, T> normType, Function<HistoricType, T> hType) {
    return normType.apply(this);
-  }
+  }*/
  }
 
  @Value
@@ -158,7 +163,7 @@ public interface Ast {
   String x;
  }
 
- @Value
+ /*@Value
  @Wither
  public class HistoricType implements Type {
   Path path;
@@ -167,16 +172,16 @@ public interface Ast {
   public <T> T match(Function<NormType, T> normType, Function<HistoricType, T> hType) {
    return hType.apply(this);
   }
- }
+ }*/
 
- @Value
+ /*@Value
  public class FreeType implements Type {
   public <T> T match(Function<NormType, T> normType, Function<HistoricType, T> hType) {
    throw tools.Assertions.codeNotReachable();
   }
   public Doc getDoc(){return Doc.empty();}
   public Type withDoc(Doc doc){return this;}
- }
+ }*/
 
  @Value
  @Wither

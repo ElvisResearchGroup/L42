@@ -15,6 +15,7 @@ import ast.Ast.Path;
 import ast.Ast.Type;
 import ast.ExpCore.Block;
 import ast.ExpCore.ClassB;
+import ast.ExpCore.ClassB.MethodWithType;
 import ast.ExpCore.Loop;
 import ast.ExpCore.MCall;
 import ast.ExpCore.Signal;
@@ -26,6 +27,7 @@ import ast.ExpCore._void;
 import ast.ExpCore.Block.Dec;
 import ast.ExpCore.Block.On;
 import auxiliaryGrammar.Functions;
+import coreVisitors.From;
 import coreVisitors.Visitor;
 import tools.Assertions;
 
@@ -70,9 +72,8 @@ public NormType visit(MCall s) {
   List<MethodSelectorX> msl=new ArrayList<>();
   MethodSelectorX msx=new MethodSelectorX(s.getS(), "");
   msl.add(msx); 
-  Type t=new Ast.HistoricType(path,msl,Doc.empty());
-  NormType nt=programReduction.Norm.resolve(this.in.p,t);
-  return nt;
+  MethodWithType meth = (MethodWithType)in.p.extractClassB(path)._getMember(s.getS());
+  return (NormType) From.fromT(meth.getMt().getReturnType(),path);
 }
 @Override
 public NormType visit(Block s) {

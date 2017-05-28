@@ -27,12 +27,7 @@ public class CloneVisitor implements Visitor<ExpCore>{
     return Optional.of(liftT(t.get()));
   }
   protected Type liftT(Type t){
-    return t.match(
-        nt->(Type)new NormType(nt.getMdf(),liftP(nt.getPath()),liftDoc(nt.getDoc())),
-        ht->(Type)new HistoricType(
-            liftP(ht.getPath()),
-            liftSXs(ht.getSelectors()),liftDoc(ht.getDoc()))
-        );
+    return new NormType(t.getMdf(),liftP(t.getPath()),liftDoc(t.getDoc()));
     }
   protected List<MethodSelectorX> liftSXs(List<MethodSelectorX> selectors) {
     return Map.of(this::liftSX,selectors);

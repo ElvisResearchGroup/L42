@@ -9,7 +9,6 @@ import tools.Assertions;
 import tools.Map;
 import ast.ExpCore;
 import ast.Ast.Doc;
-import ast.Ast.HistoricType;
 import ast.Ast.MethodSelector;
 import ast.Ast.MethodSelectorX;
 import ast.Ast.MethodType;
@@ -43,12 +42,7 @@ public class PropagatorVisitor implements Visitor<Void>{
     }
   protected void liftT(Type t){
     liftDoc(t.getDoc());
-    if(t instanceof NormType){liftP(((NormType)t).getPath());}
-    else {
-      HistoricType ht=(HistoricType) t;
-      liftSXs(ht.getSelectors());
-      liftP(ht.getPath());
-      }
+    liftP(t.getPath());
     }
           
   protected void liftSXs(List<MethodSelectorX> selectors) {

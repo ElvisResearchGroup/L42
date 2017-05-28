@@ -19,7 +19,6 @@ import tools.Match;
 import ast.Ast;
 import ast.Ast.C;
 import ast.Ast.Doc;
-import ast.Ast.HistoricType;
 import ast.Ast.Mdf;
 import ast.Ast.MethodSelector;
 import ast.Ast.NormType;
@@ -333,21 +332,6 @@ public static NormType toPh(NormType that){
     case Mutable:       return that.withMdf(Mdf.MutableFwd);
     case MutableFwd:    return that;
     case MutablePFwd:   return that.withMdf(Mdf.MutableFwd);
-    case Readable:      return that;  
-    }
-  throw Assertions.codeNotReachable();
-  }
-public static NormType toComplete(NormType that){
-  switch (that.getMdf()){
-    case Capsule:       return that;
-    case Class:         return that;
-    case Immutable:     return that;
-    case ImmutableFwd:  return that.withMdf(Mdf.Immutable);
-    case ImmutablePFwd: return that.withMdf(Mdf.Immutable);
-    case Lent:          return that;
-    case Mutable:       return that;
-    case MutableFwd:    return that.withMdf(Mdf.Mutable);
-    case MutablePFwd:   return that.withMdf(Mdf.Mutable);
     case Readable:      return that;  
     }
   throw Assertions.codeNotReachable();

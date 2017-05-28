@@ -45,7 +45,7 @@ Ast.Position located=null;
   }
 
   public Type liftT(Type s) {
-  Path inner=s.match(nt->nt.getPath(), hType->hType.getPath());
+  Path inner=s.getPath();
   if(s.toString().endsWith("Location")){
     System.out.println(s);
     }

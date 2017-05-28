@@ -14,7 +14,6 @@ import sugarVisitors.CollapsePositions;
 import ast.Ast;
 import ast.Ast.Position;
 import ast.ExpCore;
-import ast.Ast.HistoricType;
 import ast.Ast.MethodSelector;
 import ast.Ast.Path;
 import ast.Ast.Type;
@@ -270,13 +269,13 @@ import coreVisitors.InjectionOnSugar;
   Ast.MethodSelector selector;
   List<ExpCore.ClassB.Member>allMs;
   }
-  @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class HistoricTypeNoTarget extends ErrorMessage {
+  /*@Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class HistoricTypeNoTarget extends ErrorMessage {
   Ast.HistoricType guilty;
   List<ExpCore.ClassB.MethodWithType>allMs;
-  }
-  @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class HistoricTypeCircularDefinition extends ErrorMessage {
+  }*/
+  /*@Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class HistoricTypeCircularDefinition extends ErrorMessage {
   Ast.HistoricType guilty;
-  }
+  }*/
   @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class LentShuldBeMutable extends ErrorMessage {
     ExpCore.X var;
   }
@@ -293,11 +292,11 @@ import coreVisitors.InjectionOnSugar;
     String varName;
     Position pos;
   }
-  @Value @Wither @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class UnresolvedType extends TypeError {
+  /*@Value @Wither @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class UnresolvedType extends TypeError {
     HistoricType t;
     ExpCore e;
     Position pos;
-  }
+  }*/
   @Value @Wither @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class IncompleteClassIsRequired extends TypeError {
     String reason;
     ExpCore e;

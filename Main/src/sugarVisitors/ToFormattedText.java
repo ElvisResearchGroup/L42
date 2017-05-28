@@ -504,25 +504,11 @@ public class ToFormattedText implements Visitor<Void>{
   return null;
   }
   private Void formatType(Type t) {
-    return t.match(
-      tN->{
-        if(ast.Ast.Mdf.Immutable!=tN.getMdf()){
-          c(tN.getMdf().inner);sp();}
-        liftP(tN.getPath());
-        return null;
-      },
-      tH->{
-        liftP(tH.getPath());
-        for( MethodSelectorX s:tH.getSelectors()){
-          c("::");
-          formatMs(s.getMs());
-          if(!s.getX().isEmpty()){
-            c("::");
-            c(s.getX());
-          }
-        }
-        return null;
-      });
+    if(ast.Ast.Mdf.Immutable!=t.getMdf()){
+      c(t.getMdf().inner);sp();
+      }
+    liftP(t.getPath());
+    return null;
   }
   @Override
   public Void visit(DotDotDot arg0) {

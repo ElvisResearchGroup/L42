@@ -19,7 +19,6 @@ import coreVisitors.CloneVisitor;
 import tools.Assertions;
 import tools.Map;
 import ast.Ast;
-import ast.Ast.HistoricType;
 import ast.Ast.MethodType;
 import ast.Ast.Type;
 public class Norm {
@@ -40,14 +39,9 @@ public class Norm {
     return null;
   }
   public static NormType resolve(Program p,Type t){
-    try{
-      return _resolve(p,t);
+    throw Assertions.codeNotReachable();
     }
-    catch(StackOverflowError err){
-      throw new ast.ErrorMessage.HistoricTypeCircularDefinition((HistoricType)t);
-      }
-    }
-  static NormType _resolve(Program p,Type t){//may stack overflow
+/*  static NormType _resolve(Program p,Type t){//may stack overflow
 //-resolve(p,mdf P)=mdf P
     if( t instanceof NormType){return (NormType) t;}
     HistoricType ht=(HistoricType) t;
@@ -64,11 +58,12 @@ public class Norm {
     NormType nextNT= _resolve(p,nextT);
     if (ht.getSelectors().size()==1){return nextNT.withDoc(ht.getDoc().sum(nextNT.getDoc()));}
     return _resolve(p,new HistoricType(nextNT.getPath(),ht.getSelectors().subList(1, ht.getSelectors().size()),ht.getDoc()));
+*/
 //-resolve(p,P::ms::x)=resolve(p,T)//and avoid circularity
 //  methods(p,P)(ms)=refine? _ method _ _( _ T x _) e? 
 //-resolve(p,P::msx::msxs)=resolve(p,P'::msxs) //here be carefull for possible infinite recursion 
 //  resolve(p,P::msx)= _ P'              
-  }
+  //}
   private static MethodType resolve(Program p, MethodType mt) {
     Type rt=resolve(p,mt.getReturnType());
     List<Type>pts=Map.of(t->resolve(p,t),mt.getTs());

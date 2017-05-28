@@ -154,7 +154,7 @@ public class Plugin implements PluginType{
        }
       return Resources.Void.instance;
     }
-
+/*
 //--------------------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------------------
@@ -251,6 +251,7 @@ public class Plugin implements PluginType{
       int annotationN=ensureExtractInt32(_annotationN);
       return Configuration.reduction.convertPath(Introspection.extractDocPath(that, path, annotationN));
     }
+    */
     @ActionType({ActionType.Type.Library,ActionType.Type.Library})
     public Object MprivateNormalize£xthat(Object _that){
       ClassB that=ensureExtractClassB(_that);

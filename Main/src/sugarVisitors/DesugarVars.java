@@ -208,10 +208,7 @@ private VarDecXE getDecForVar(Ast.C cName,VarDecXE varDec) {
  public Type _computeTypeForClassBForVar(VarDecXE varDec) {
    assert varDec.getT().isPresent(): " it is now required by the stricted syntax";
    Type t=varDec.getT().get();
-   t=t.match(
-     nt->nt.withPath(computeTypeForClassBForVar(nt.getPath())),
-     h -> h.withPath(computeTypeForClassBForVar(h.getPath()))
-     );
+   t=t.withPath(computeTypeForClassBForVar(t.getPath()));
    return t;
  }
  private Path computeTypeForClassBForVar(Path path) {
