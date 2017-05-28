@@ -35,16 +35,16 @@ public class TranslationTest {
       "{ C:{ class method Void foo() void } }"," C.foo()","platformSpecific.javaTranslation.Resources$Void");}
 
   @Test public void t2b(){tester(
-      "{ C:{k() class method Void foo() void } }"," C.foo()","platformSpecific.javaTranslation.Resources$Void");}
+      "{ C:{ class method Void foo() void } }"," C.foo()","platformSpecific.javaTranslation.Resources$Void");}
 
   @Test public void t3(){tester(
-      "{ C:{k() method Void foo() void } }"," C.k().foo()","platformSpecific.javaTranslation.Resources$Void");}
+      "{ C:{class method This k() method Void foo() void } }"," C.k().foo()","platformSpecific.javaTranslation.Resources$Void");}
 
   @Test public void t4(){tester(
-      "{ C:{() method Void foo() void  method C foo(C x) x} }"," C().foo(x:C()).foo()","platformSpecific.javaTranslation.Resources$Void");}
+      "{ C:{class method This() method Void foo() void  method C foo(C x) x} }"," C().foo(x:C()).foo()","platformSpecific.javaTranslation.Resources$Void");}
 
   @Test public void t5(){tester(
-      "{ C:{() method Void foo() void  method C (C x) x} }"," C()(x:C()).foo()","platformSpecific.javaTranslation.Resources$Void");}
+      "{ C:{class method This() method Void foo() void  method C (C x) x} }"," C()(x:C()).foo()","platformSpecific.javaTranslation.Resources$Void");}
 
   @Test public void t6(){tester(
       "{  }"," { return void }","platformSpecific.javaTranslation.Resources$Void");}
@@ -57,7 +57,7 @@ public class TranslationTest {
       "{ A:{A a,Void v, class method This (fwd A a, Void v)} }"," (aa=A(a:aa,v:void) aa.a().a().a().v()  )","platformSpecific.javaTranslation.Resources$Void");}
 
   @Test public void t9(){tester(
-      "{ A:{() implements IA method foo() void} IA:{interface method Void foo() } }"," A().foo()","platformSpecific.javaTranslation.Resources$Void");}
+      "{ A:{ implements IA class method This() method foo() void} IA:{interface method Void foo() } }"," A().foo()","platformSpecific.javaTranslation.Resources$Void");}
 
 
 

@@ -164,7 +164,7 @@ public class TestParseAndDoAst {
 
 },{lineNumber()," (a=b c)","Expression.RoundBlock(doc=, inner=c, contents=[Expression.BlockContent(decs=[Ast.VarDecXE(isVar=false, t=Optional.empty, x=a, inner=b)], _catch=[])])"
 },{lineNumber()," (var a=b c)","Expression.RoundBlock(doc=, inner=c, contents=[Expression.BlockContent(decs=[Ast.VarDecXE(isVar=true, t=Optional.empty, x=a, inner=b)], _catch=[])])"
-},{lineNumber()," ( a=b c)","Expression.RoundBlock(doc=, inner=c, contents=[Expression.BlockContent(decs=[Ast.VarDecXE(isVar=false, t=Optional[Ast.HistoricType(path=A, selectors=[Ast.MethodSelectorX(ms=b(), x=)], doc=)], x=a, inner=b)], _catch=[])])"
+},{lineNumber()," ( a=b c)","Expression.RoundBlock(doc=, inner=c, contents=[Expression.BlockContent(decs=[Ast.VarDecXE(isVar=false, t=Optional.empty, x=a, inner=b)], _catch=[])])"
 
 },{lineNumber(),"{a(A a)}","Expression.ClassB(doc1=, h=Ast.ConcreteHeader(mdf=Immutable, name=a, fs=[Ast.FieldDec(isVar=false, t=Immutable[A], name=a, doc=)]), fields=[], supertypes=[], ms=[])"
 },{lineNumber(),"{(A a)}","Expression.ClassB(doc1=, h=Ast.ConcreteHeader(mdf=Immutable, name=, fs=[Ast.FieldDec(isVar=false, t=Immutable[A], name=a, doc=)]), fields=[], supertypes=[], ms=[])"

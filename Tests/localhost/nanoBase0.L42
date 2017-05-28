@@ -4,12 +4,14 @@ Bool:{interface
   method Void #checkTrue() exception Void
   method This0 &(This0 that)
   }
-True:{_private()  implements Bool
+True:{  implements Bool 
+  class method This _private()
   method () (this._private())
   method #checkTrue() (void)
   method &(that) (that)
   }
-False:{_private()  implements Bool
+False:{ implements Bool
+  class method This _private()
   method () (this._private())
   method #checkTrue() (exception void)
   method &(that) (this)

@@ -95,7 +95,7 @@ public interface TsOperations extends TypeSystem{
       //  if throw=error,     T2= imm T1.P and Tr=Ts;Ps
       //  if throw=return,    T2= (fwd T1) and Tr=(Ts,T3);Ps 
       //  D|- e~>  e' :  T3 <=T2|Ts;Ps
-      NormType T1=GuessTypeCore.of(in, s.getInner());
+      NormType T1=GuessTypeCore._of(in, s.getInner());
       NormType T2;      
       if(s.getKind()!=SignalKind.Return){T2=T1.getPath().toImmNT();}
       else{T2=TypeManipulation.fwd(T1);}

@@ -36,7 +36,7 @@ TIn in;
 private GuessTypeCore(TIn in) {
   this.in=in;
 }
-public static NormType of(TIn in,ExpCore e) {
+public static NormType _of(TIn in,ExpCore e) {
   return e.accept(new GuessTypeCore(in));
 }
 @Override
@@ -67,18 +67,25 @@ public NormType visit(Signal s) {
 }
 @Override
 public NormType visit(MCall s) {
-  Path path=s.getInner().accept(this).getPath();
+  NormType former = s.getInner().accept(this);
+  if(former==null){return null;}
+  Path path=former.getPath();
   assert path!=null;
   List<MethodSelectorX> msl=new ArrayList<>();
   MethodSelectorX msx=new MethodSelectorX(s.getS(), "");
   msl.add(msx); 
   MethodWithType meth = (MethodWithType)in.p.extractClassB(path)._getMember(s.getS());
+  if(meth==null){return null;}
   return (NormType) From.fromT(meth.getMt().getReturnType(),path);
+  
 }
 @Override
 public NormType visit(Block s) {
+//
+//guess type core must change according to speck!//
+//
   if (!s.getOns().isEmpty()){throw Assertions.codeNotReachable();}
-  TIn oldIn=in.addGds(in.p,s.getDecs());
+  TIn oldIn=in;
   TIn in2=in.addGds(in.p,s.getDecs());
   in=in2;
   try{return s.getInner().accept(this);}

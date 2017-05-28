@@ -120,7 +120,7 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
     List<String> fve0n=new ArrayList<>();
     for(Dec di:_ds.subList(0,i+1)){
       if(!di.getT().isPresent()){
-        NormType nti=GuessTypeCore.of(in, di.getInner());
+        NormType nti=GuessTypeCore._of(in, di.getInner());
         if(di.isVar()){
           if(nti.getMdf()==Mdf.Capsule){nti=nti.withMdf(Mdf.Mutable);}
           else if(TypeManipulation.fwd_or_fwdP_in(nti.getMdf())){

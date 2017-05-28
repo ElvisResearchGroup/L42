@@ -44,21 +44,21 @@ public class TestShortPrograms {
   }
 
 @Test public void test1(){tp(""
-,"{() C:{//@exitStatus\n//0\n"
+,"{ C:{//@exitStatus\n//0\n"
 ,"}}"
 );}
-@Test public void test2(){tp("{()"
-,"  C:{k() class method Library m() ({//@exitStatus\n//0\n} )}"
+@Test public void test2(){tp("{"
+,"  C:{ class method Library m() ({//@exitStatus\n//0\n} )}"
 ,"  D:C.m()"
 ,"}");}
 
-@Test public void test3(){tp("{()"
-,"  C:{k()"
+@Test public void test3(){tp("{"
+,"  C:{"
 ,"    class method Library ok() ({//@exitStatus\n//0\n\n} )"
 ,"    class method Library ko() ({//@exitStatus\n//42000\n\n} )"
 ,"    }"
 ,"  I:{interface}"
-,"  AI:{k() implements I}"
+,"  AI:{ implements I class method This k()}"
 ,"  D:("
 ,"    Any z=error AI.k()"
 ,"    catch error AI x ("
@@ -68,13 +68,13 @@ public class TestShortPrograms {
 ,"    )"
 ,"}");}
 
-@Test public void test4(){tp("{()"
-,"  C:{k()"
+@Test public void test4(){tp("{"
+,"  C:{"
 ,"    class method Library ok() ({//@exitStatus\n//0\n\n} )"
 ,"    class method Library ko() ({//@exitStatus\n//42000\n\n} )"
 ,"    }"
 ,"  I:{interface}"
-,"  AI:{k() implements I}"
+,"  AI:{ implements I class method This k()}"
 ,"  D:("
 ,"    Any z=error AI.k()"
 ,"    catch error I x ("
@@ -84,13 +84,13 @@ public class TestShortPrograms {
 ,"    )"
 ,"}");}
 
-@Test public void test5(){tp("{()"
-,"  C:{k()"
+@Test public void test5(){tp("{"
+,"  C:{"
 ,"    class method Library ok() ({//@exitStatus\n//0\n\n} )"
 ,"    class method Library ko() ({//@exitStatus\n//42000\n\n} )"
 ,"    }"
 ,"  I:{interface}"
-,"  AI:{k()}"//removed  implements I
+,"  AI:{class method This k()}"//removed  implements I
 ,"  D:(Library res=("
 ,"    Any z=error AI.k()"
 ,"    catch error I x ("
@@ -102,13 +102,13 @@ public class TestShortPrograms {
 , " res)"
 ,"}");}
 
-@Test public void test6(){tp("{()"
-,"  C:{k()"
+@Test public void test6(){tp("{"
+,"  C:{"
 ,"    class method Library ok() ({//@exitStatus\n//0\n\n} )"
 ,"    class method Library ko() ({//@exitStatus\n//42000\n\n} )"
 ,"    }"
 ,"  I:{interface}"
-,"  AI:{k()}"//removed  implements I
+,"  AI:{class method This k()}"//removed  implements I
 ,"  D:("
 ,"    Any z=error AI.k()"
 ,"    catch error I x ("
@@ -119,14 +119,14 @@ public class TestShortPrograms {
 ,"    )"
 ,"}");}
 
-@Test public void test7(){tp("{()"
-,"  C:{k()"
+@Test public void test7(){tp("{"
+,"  C:{"
 ,"    class method Library ok() ({//@exitStatus\n//0\n\n} )"
 ,"    class method Library ko() ({//@exitStatus\n//42000\n\n} )"
 ,"    }"
 ,"  I:{interface}"
 ,"  Box:{class method mut This k(fwd mut Any f)  mut method mut Any f()}"
-,"  AI:{k() implements I}"
+,"  AI:{ implements I class method This k()}"
 ,"  D:("
 ,"    mut Box box=Box.k(f:box)"
 ,"    catch error I x ("
@@ -156,38 +156,38 @@ public class TestShortPrograms {
 ,"    )"
 ,"}");}
 */
-@Test public void test8(){tp("{()"
-  ," D: {() class method Library id(Library that) (that)}"
-  ," C: D.id({()  method Void foo() (C x= this void)}) "
+@Test public void test8(){tp("{"
+  ," D: { class method Library id(Library that) (that)}"
+  ," C: D.id({  method Void foo() (C x= this void)}) "
   ," E: ( c=C {//@exitStatus\n//0\n\n})"
   ,"}");}
 
 @Test//(expected=ErrorMessage.PathsNotSubtype.class)
-public void test8b(){tp(ErrorKind.NotSubtypeClass,"{()"
-    ," D: {() class method Library id(Library that) (that)}"
-    ," C: {()  method Void foo() (D x= this void)} "
+public void test8b(){tp(ErrorKind.NotSubtypeClass,"{"
+    ," D: { class method Library id(Library that) (that)}"
+    ," C: { method Void foo() (D x= this void)} "
     ," E: ( c=C {//@exitStatus\n//0\n\n})"
     ,"}");}
 
 @Test//(expected=ErrorMessage.PathsNotSubtype.class)
-public void test8c(){tp(ErrorKind.NotSubtypeClass,"{()"
-    ," D: {() class method Library id(Library that) (that)}"
-    ," C: D.id({() method Void foo() (D x= this void)}) "
+public void test8c(){tp(ErrorKind.NotSubtypeClass,"{"
+    ," D: { class method Library id(Library that) (that)}"
+    ," C: D.id({ method Void foo() (D x= this void)}) "
     ," E:( c=C {//@exitStatus\n//0\n\n})"
     ,"}");}
 
 @Test(expected=ErrorMessage.PathMetaOrNonExistant.class)
-public void test8d(){tp("{()"
+public void test8d(){tp("{"
     ," A: {Bla:{}}"
-    ," D: {() class method Void wrongParameter(A.BlaWrong that)void class method Library id(Library that) that}"
-    ," C: D.id({()  method Void foo() void} )"
+    ," D: { class method Void wrongParameter(A.BlaWrong that)void class method Library id(Library that) that}"
+    ," C: D.id({  method Void foo() void} )"
     ," E: ( c=C {//@exitStatus\n//0\n\n})"
     ,"}");}
 
 @Test(expected=ErrorMessage.PathMetaOrNonExistant.class)
 public void test8e(){tp("{"
     ," A:{"
-    ," B:{(C.D d) }"
+    ," B:{C.D d }"
     ," C:{ DPr:{}  }"
     ," }"
     ,"Main:( c=C {//@exitStatus"
@@ -205,9 +205,9 @@ public void test8f(){tp("{"
 
 
 @Test(expected=PathMetaOrNonExistant.class)
-public void test9b(){tp("{()"
-    ," D: {() class method Library id(Library that) (that)}"
-    ," C: {()  H:{() method Void foo() (This2.C.E x= this void)}}"
+public void test9b(){tp("{"
+    ," D: { class method Library id(Library that) (that)}"
+    ," C: {  H:{ method Void foo() (This2.C.E x= this void)}}"
     ," E: ( c=C {//@exitStatus\n//0\n\n})"
     ,"}");}
 
@@ -225,29 +225,29 @@ public void test9c2(){tp("{"
     ," F:( c=C {//@exitStatus\n//0\n\n})"
     ,"}");}
 @Test(/*expected=ErrorMessage.PathsNotSubtype.class/*PathNonExistant.class*/)//correctly no error for trashing the error.
-public void test9d(){tp("{()"
-    ," D: {() class method Library trash(Library that) ({()})}"
-    ," C: D.trash({()  H:{() method Void foo() (This2.C.E x= this void)}}) "
+public void test9d(){tp("{"
+    ," D: { class method Library trash(Library that) ({})}"
+    ," C: D.trash({  H:{ method Void foo() (This2.C.E x= this void)}}) "
     ," E: ( c=C {//@exitStatus\n//0\n\n})"
     ,"}");}
 
 
-@Test public void test9(){tp("{()"
-    ," D: {() class method Library id(Library that) (that)}"
-    ," C: D.id({()  H:{() method Void foo() (This2.C.H x= this void)}}) "
+@Test public void test9(){tp("{"
+    ," D: { class method Library id(Library that) (that)}"
+    ," C: D.id({  H:{ method Void foo() (This2.C.H x= this void)}}) "
     ," E: ( c=C {//@exitStatus\n//0\n\n})"
     ,"}");}
 
 @Test//(expected=ErrorMessage.MethodNotPresent.class)
-public void test10(){tp(ErrorKind.SelectorNotFound,"{()"
-    ," D: {() class method Library id(Library that) (that)}"
-    ," C: D.id({()  method Void foo(D x) ( x.foo(x))}) "
+public void test10(){tp(ErrorKind.SelectorNotFound,"{"
+    ," D: {class method Library id(Library that) (that)}"
+    ," C: D.id({  method Void foo(D x) ( x.foo(x))}) "
     ," E: ( c=C {//@exitStatus\n//0\n\n})"
     ,"}");}
 @Test//(expectedExceptions=ErrorMessage.MethodNotPresent.class)
-public void test11(){tp("{()"
-    ," D: {() class method Library id(Library that) (that)}"
-    ," C: D.id({()  method Void foo(C x) ( x.foo(x:x))}) "
+public void test11(){tp("{"
+    ," D: { class method Library id(Library that) (that)}"
+    ," C: D.id({  method Void foo(C x) ( x.foo(x:x))}) "
     ," E: ( c=C {//@exitStatus\n//0\n\n})"
     ,"}");}
 
@@ -294,8 +294,8 @@ public void testClassMethods2(){tp("{"
 
 @Test public void testTwoKindExc1(){tp(""
 ,"{"
-,"A:{()}"
-,"B:{()}"
+,"A:{class method This()}"
+,"B:{}"
 ," C:( "
 ,"  A myA=A()"
 ,"  exception A()"
@@ -308,8 +308,8 @@ public void testClassMethods2(){tp("{"
 @Test(expected=ErrorMessage.MalformedFinalResult.class)
 public void testTwoKindExc2(){tp(""
 ,"{"
-,"A:{()}"
-,"B:{()}"
+,"A:{class method This()}"
+,"B:{}"
 ," C:( "
 ,"  A myA=A()"
 ,"  exception void"
@@ -344,14 +344,14 @@ public void testDeepTyping3(){tp(ErrorKind.SelectorNotFound,"{"
 @Test//TODO:(expected=ErrorMessage.MalformedFinalResult.class)
 public void test13(){tp("{",
     " I:{ interface method I foo() }",
-    "A:{ () implements I  method I beer()}",
+    "A:{  implements I  method I beer()}",
     "Main:(x={} {//@exitStatus\n//0\n\n})",
     " }");}
 
 @Test //TODO: why was (expected=ErrorMessage.MalformedFinalResult.class)
 public void test13b(){tp("{",
     " I:{ interface method I foo() }",
-    "A:{ () implements I  }",
+    "A:{ implements I  }",
     "Main:(x={} {//@exitStatus\n//0\n\n})",
     " }");}
 

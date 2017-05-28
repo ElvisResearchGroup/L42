@@ -33,7 +33,10 @@ default TOut innerMVPRetype(TOk ri,NormType ti){
   }
 
   default TOut tsMCall(TIn in, MCall s) {
-    NormType _rec=GuessTypeCore.of(in, s.getInner());
+    NormType _rec=GuessTypeCore._of(in, s.getInner());
+    if (_rec==null){
+      return new TErr(in,"",null,ErrorKind.SelectorNotFound);
+      }
     Path rec=_rec.getPath();
     if(rec.isPrimitive()){
       return new TErr(in,"MethodCall on primitive type",null,ErrorKind.SelectorNotFound);
