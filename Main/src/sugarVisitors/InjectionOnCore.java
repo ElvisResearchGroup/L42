@@ -47,7 +47,7 @@ public class InjectionOnCore implements Visitor<ExpCore> {
         assert d instanceof Ast.VarDecXE:
           d;
         Ast.VarDecXE sugarDec=(Ast.VarDecXE)d;
-        assert sugarDec.getT().isPresent() :sugarDec;
+        //assert sugarDec.getT().isPresent() :sugarDec;
         Optional<Type> t=sugarDec.getT();
         String x=sugarDec.getX();
         ExpCore e=sugarDec.getInner().accept(this);

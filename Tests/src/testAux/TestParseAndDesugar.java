@@ -86,15 +86,15 @@ public class TestParseAndDesugar {
    +"   varx_$_.inner(that:void) )"
 */
 },{lineNumber(), " (A +B)*C"," (This0.A.#plus(that:This0.B)).#times(that:This0.C)"
-  },{lineNumber(), " (6Meter +A)*B"," (This0.Meter.#from(builder:(  This0.Meter::#builder() b=This0.Meter.#builder() "
+  },{lineNumber(), " (6Meter +A)*B"," (This0.Meter.#from(builder:(  b=This0.Meter.#builder() "
   +" Void unused=b.#6()  b  )).#plus(that:This0.A)).#times(that:This0.B)"
 
 },{lineNumber(), " (A + 1B)*C",
-  " (This0.A.#plus(that:This0.B.#from(builder:(  This0.B::#builder() b=This0.B.#builder()  Void unused=b.#1()  b  )))).#times(that:This0.C)"
+  " (This0.A.#plus(that:This0.B.#from(builder:(  b=This0.B.#builder()  Void unused=b.#1()  b  )))).#times(that:This0.C)"
 
 },{lineNumber(), " S\"foo\"",
   " This0.S.#from(builder:("+
-  "This0.S::#builder() b=This0.S.#builder()"+
+  " b=This0.S.#builder()"+
   "Void unused=b.#f()"+
   "Void unused0=b.#o()"+
   "Void unused1=b.#o()"+
@@ -102,7 +102,7 @@ public class TestParseAndDesugar {
   "))"
 },{lineNumber(), " S\"foo (\"",
   " This0.S.#from(builder:("+
-  "This0.S::#builder() b=This0.S.#builder()"+
+  " b=This0.S.#builder()"+
   "Void unused=b.#f()"+
   "Void unused0=b.#o()"+
   "Void unused1=b.#o()"+
@@ -111,7 +111,7 @@ public class TestParseAndDesugar {
   "b"+
   "))"
 },{lineNumber(), "with x=void (on Void void)",
-   " ( Void x=void ("
+   " (  x=void ("
    + " Void x0=("
    + "   Void unused=return x"
    + "   catch return Void casted casted catch return Any casted exception void "
@@ -119,7 +119,7 @@ public class TestParseAndDesugar {
    + " catch exception Void catched1 void "
    +" ( Void unused0=void void ) ) )"
 },{lineNumber(), "with x=void (on Library loop void)",
-  " ( Void x=void ("
+  " ( x=void ("
   + " Library x0=("
   + "   Void unused=return x"
   + "   catch return Library casted casted catch return Any casted exception void "
@@ -134,7 +134,7 @@ public class TestParseAndDesugar {
 },{lineNumber(), "A(\\+void)","This0.A.#apply(that:This0.A.#default##apply(that:void).#plus(that:void))"
 },{lineNumber(), "A[\\a;\\a]",
   //"This0.A.#begin().#add(that:This0.A.a()).#add(that:This0.A.a()).#end()"
-  "This0.A.#from(seqBuilder:( This0.A::#seqBuilder() b=This0.A.#seqBuilder()   Void unused=b.#add(that:This0.A.a())   Void unused0=b.#add(that:This0.A.a())     b   ))"
+  "This0.A.#from(seqBuilder:(  b=This0.A.#seqBuilder()   Void unused=b.#add(that:This0.A.a())   Void unused0=b.#add(that:This0.A.a())     b   ))"
 
 },{lineNumber(), "{method Library(){ method This bar() method This foo(This that) this.foo(\\bar) } }","{method Library #apply(){ method This0 bar() method This0 foo(This0 that) this.foo(that:this.bar()) } }"
 },{lineNumber(), "{method Library(){ method This bar() method This foo(This that) this.foo(\\bar+void) } }","{method Library #apply(){ method This0 bar() method This0 foo(This0 that) this.foo(that:this.bar().#plus(that:void)) } }"
@@ -145,10 +145,10 @@ public class TestParseAndDesugar {
 },{lineNumber(), "A*b","This0.A.#times(that:b)"
 },{lineNumber(), "A(b)","This0.A.#apply(that:b)"
 },{lineNumber(), " ( Void a=void a(b))"," (Void a=void a.#apply(that:b))"
-},{lineNumber(), " ( Void a=void (a)(b) )"," ( Void a=void ( Void rcv=(a)  rcv.#apply(that:b)))"
+},{lineNumber(), " ( Void a=void (a)(b) )"," ( Void a=void ( rcv=(a)  rcv.#apply(that:b)))"
 },{lineNumber(), " ( T a=b T b=c catch error  Foo x x T a2=b2 T b2=c2 c )"," ( This0.T a=b This0.T b=c catch error This0.Foo x x     (   This0.T a2=b2 This0.T b2=c2  c  ) )"
 },{lineNumber(), " (A*b a b c )"," ( Void unused=This0.A.#times(that:b) Void unused0=a Void unused1=b c )"
-},{lineNumber(), " (T a=b c=a c )"," (This0.T a=b This0.T c=a c )"
+},{lineNumber(), " (T a=b c=a c )"," (This0.T a=b c=a c )"
 /*},{lineNumber(), " (var This0.T a=a+c c=a a:=C(a) fuffa c )",//ok outer 0 can not be desugared since there is not outer nested class.
    " (Vara_$_2:\n{mut (var This1.T inner)}"
   +"  This0.T a=a.#plus(that:c)"
@@ -166,9 +166,9 @@ public class TestParseAndDesugar {
   +" Void unused=This0.Fuffa.#apply(that:vara_$_.inner(that:vara_$_.#inner().foo(that:vara_$_.#inner())))"
   +"c"
   +")"*/
-},{lineNumber(), " (T a=b (c=a c ))"," (This0.T a=b (This0.T c=a c ))"
-},{lineNumber(), " (T a=b c=a.m() c )"," (This0.T a=b This0.T::m() c=a.m() c )"
-},{lineNumber(), " (T a=b (c=a.m() c ))"," (This0.T a=b (This0.T::m() c=a.m() c ))"
+},{lineNumber(), " (T a=b (c=a c ))"," (This0.T a=b ( c=a c ))"
+},{lineNumber(), " (T a=b c=a.m() c )"," (This0.T a=b  c=a.m() c )"
+},{lineNumber(), " (T a=b (c=a.m() c ))"," (This0.T a=b ( c=a.m() c ))"
 },{lineNumber(), " (T a=void a*b a+b catch error Foo x (x.bar()) a b c )",
    " (This0.T a=void  Void unused=a.#times(that:b)   Void unused0=a.#plus(that:b)  catch error This0.Foo x (x.bar()    )  (    Void unused1=a    Void unused2=b    c  ) )"
 /*},{lineNumber(), " (T a=void a+=a +a)",
@@ -179,7 +179,7 @@ public class TestParseAndDesugar {
 },{lineNumber(), "if X (Bla) ",
    " (Void unused=This0.X.#checkTrue() catch exception Void catched  void  (This0.Bla) )"
 },{lineNumber(), "if Foo+Bar (bla) ",
-   " ( This0.Foo::#plus(that ) cond=This0.Foo.#plus(that:This0.Bar) ( Void unused=cond.#checkTrue() catch exception Void catched0  void  (bla)))"
+   " (  cond=This0.Foo.#plus(that:This0.Bar) ( Void unused=cond.#checkTrue() catch exception Void catched0  void  (bla)))"
 //},{lineNumber(), "{ <(T bar) }//bla\n"," (//bla\n{ class method This0 #left(This0.T bar)mut method This0.T #bar()read method This0.T bar()})"
 //},{lineNumber(), "{ (T bar) }"," {class method This0 #apply(This0.T bar) mut method This0.T #bar() read method This0.T bar() }"
 },{lineNumber(), " (T x={ if A (return B) return C } x)",
@@ -191,7 +191,7 @@ public class TestParseAndDesugar {
 },{lineNumber(),"{ method Any() this==this &   this}",
   "{ method Any #apply() this.#equalequal(that:this).#and(that:this)}"
 },{lineNumber(),"{ method Any() this<=this &   this}",
-  "{ method Any #apply() (This0 opNorm=this this.#rightequal(that:opNorm)).#and(that:this)}"
+  "{ method Any #apply() ( opNorm=this this.#rightequal(that:opNorm)).#and(that:this)}"
 },{lineNumber(),"{ method Any() this+this &   this}",
   "{ method Any #apply() this.#plus(that:this).#and(that:this)}"
 
@@ -207,7 +207,7 @@ public class TestParseAndDesugar {
 /*},{lineNumber(),"{ method Any m(Any a, Any b) a><>=b}",
  " { method Any m(Any a, Any b)"
 +"a.inner(that:("
-+ "  Any::#inner() opNorm=a.#inner()"
++ "  opNorm=a.#inner()"
 + "  b.#leftrightleft(that:opNorm)"
 + "  ))}"
 */

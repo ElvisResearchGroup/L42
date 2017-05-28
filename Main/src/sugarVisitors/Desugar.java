@@ -139,7 +139,7 @@ public class Desugar extends CloneVisitor{
 
   public Expression visit(RoundBlock s) {
     s=blockEtoXE(s);
-    s=blockInferVar(s);
+    //s=blockInferVar(s);
     HashMap<String, Type> oldVarEnv = new HashMap<String, Type>(varEnv);
     try{
       if(!s.getContents().isEmpty()){addAllDec(s.getContents().get(0).getDecs());}
@@ -164,8 +164,9 @@ public class Desugar extends CloneVisitor{
     for(VarDec _dec:decs){
       if(!(_dec instanceof VarDecXE)){continue;}
       VarDecXE dec=(VarDecXE)_dec;
-      assert dec.getT().isPresent();
-      this.varEnv.put(dec.getX(), dec.getT().get());
+      if (dec.getT().isPresent()){
+        this.varEnv.put(dec.getX(), dec.getT().get());
+        }
     }
   }
   private RoundBlock blockEtoXE(RoundBlock s) {
@@ -221,7 +222,7 @@ public class Desugar extends CloneVisitor{
         continue;
         }
       localVarEnv.put(dec.getX(),null);
-      newDecs.add(dec.withT(Optional.of(t)));
+      newDecs.add(dec.withT(Optional.ofNullable(t)));
       }
     return blockWithDec(s, newDecs);
   }
@@ -316,16 +317,12 @@ public class Desugar extends CloneVisitor{
   private Parameters liftPsPropagate(Parameters ps) {
     assert !ps.getE().isPresent();
     List<Expression> es = new ArrayList<Expression>();
-    {int i=-1;for(Expression ei:ps.getEs()){i+=1;
-      Type ti = expectedTypeFor(ps.getXs().get(i));
-      es.add(withExpectedType(ti,()->lift(ei)));
+    {int i=-1;for(Expression ei:ps.getEs()){i+=1; 
+      es.add(withExpectedType(null,()->lift(ei)));
     }}
     return new Parameters( Optional.empty(), ps.getXs(),   es);
   }
-  public Type expectedTypeFor(String x) {
-    throw Assertions.codeNotReachable();
-    //return this.t; when triggered, remove the methd and use this simple body
-  }
+
   public Expression visit(While s) {
     Expression cond=Desugar.getMCall(s.getP(),s.getCond(), "#checkTrue",Desugar.getPs());
     RoundBlock b=Desugar.getBlock(s.getP(),cond,s.getThen());
