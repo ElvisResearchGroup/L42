@@ -651,7 +651,18 @@ read method B #x()
 as coherent, since the field would be an union type of C and D
 
 
-
+guessType(p,G,e)
+  guessType(p,G,L)=imm Library
+  guessType(p,G,void)=guessType(p,G,x:=e)=imm Void
+  guessType(p,G,P)=class P //here will be wrong over interfaces 
+  chain.m(x1:e1..xn:en)=p(P)(m(x1..xn)).T//guaranteed to be a normalized method
+    where guessType(p,G,chain)=mdf P 
+  guessType(p,G,throw _) and guessType(p,G,loop _) undefined
+  guessType(p,G,(var?1 T?1 x1=e1..var?n T?n xn=en e) )=  guessType(p,G',e)
+    where G'=G[x1:T1..Xn:Tn], Ti=T?i, otherwise Ti=guessType(p,G,ei)
+  guessType(p,G,(ds ks e[T]) )
+  
+  guessType(p,G,use P check m(x1:e1..xn:en) e)
 
 
 --------------------------
