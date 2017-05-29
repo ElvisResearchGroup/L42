@@ -15,7 +15,8 @@
   class method class Size #default##apply(Void stop) Size
   class method class Size #default##apply(Void start) Size
   
-  Iterator:{mut (var Size start, Size end)
+  Iterator:{var Size start, Size end
+    class method mut This(Size start, Size end)
     mut method
     Void #next() exception Void (
       if this.end() <0Size | this.start()<this.end() (this.start(this.start()+1Size))

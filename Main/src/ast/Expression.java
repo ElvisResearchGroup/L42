@@ -1464,7 +1464,7 @@ public interface Expression extends Ast {
     public Catch1(final Position p, final SignalKind kind, final Type t, final String x, final Expression inner) {
       this.p = p;
       this.kind = kind;
-      this.t = t;
+      this.t = t; assert t!=null;
       this.x = x;
       this.inner = inner;
     }

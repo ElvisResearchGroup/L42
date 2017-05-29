@@ -96,7 +96,8 @@
   mut Iterator vals(Size upTo)
     Iterator(start:this,end:upTo)
 
-  Iterator:{mut (var This1 start, This1 end)
+  Iterator:{var This1 start, This1 end
+    class method mut This (This1 start, This1 end)
     mut method
     Void #next() exception Void (
       if this.end() <0Size | this.start()<this.end() (this.start(this.start()+1Size))

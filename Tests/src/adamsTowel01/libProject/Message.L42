@@ -5,13 +5,19 @@ read method Opt responseOf()
 refine read method class This class()
 //change? remove opt, use fwd and method isResponse()?
 //error fixed in adam 2 as usual?
-Opt:{#new(TOpt that)
+Opt:{TOpt that
+  class method This #new(TOpt that)
   TOpt:{interface method This2 get() }
-  TEmpty:{() implements TOpt method get()
-    error S"UnsatisfactoryErrorToAvoidCycle, replace in Adam2"
-    //error Guard.Operation"TEmpty.get() Value not present in Optional"
+  TEmpty:{ implements TOpt 
+    class method This()
+    method get()
+      error S"UnsatisfactoryErrorToAvoidCycle, replace in Adam2"
+      //error Guard.Operation"TEmpty.get() Value not present in Optional"
     }
-  TOf:{(This2 that) implements TOpt method get() this.that()}
+  TOf:{implements TOpt 
+    This2 that
+    class method This (This2 that)
+    method get() this.that()}
   method This1 #get() this.that().get()
   method Bool isPresent() {
     with cell=this.that() (on TOf return Bool.true())
@@ -32,11 +38,12 @@ EqualMessages:{
   return that.responseOf().#get().equals(other.responseOf().#get()) // this calls  equals in message,
   //that check for equal class and then call EqualMessages
   }}
-$:{()
+$:{class method This()
   class method Library <><(Library that)
     UnsafeRefactor.Compose.compose(left:that, right:This.messageTrait())
-  class method Library messageTrait() {(S _text, Message.Opt cause) implements Message
-    
+  class method Library messageTrait() {implements Message
+    S _text, Message.Opt cause
+    class method This (S _text, Message.Opt cause)
     method is(subtype) {  with subtype (on class This return Bool.true()) return Bool.false()}
     method readableName()GetMyName(This)
     method kind() this.readableName()
@@ -82,7 +89,8 @@ $:{()
   Continue #from(S.SConcat seqBuilder)
     Continue(seqBuilder.old()++seqBuilder.accumulator())
 
-  Continue:{(S that)
+  Continue:{S that
+    class method This(S that)
     method mut S.SBuilder #builder() S.SBuilder.empty()
     method This1 #from(S.SBuilder builder)
       This1(text:this.that()++S.#from(builder:builder) )

@@ -44,7 +44,6 @@ public class TestParseBackAndForth {
 //},{"Foo\"\n  //bla\n  , \"",""
 //},{"Foo\"\n  //bla\n //ble\n , \"",""
 },{" { }"," {}"
-},{" {()}"," { ()}"
 },{" {interface}"," {interface }"
 },{" { implements  A.B, C}"," {implements A.B, C}"
 

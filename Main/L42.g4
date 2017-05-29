@@ -175,7 +175,7 @@ member: methodWithType|methodImplemented|nestedClass;
 methodWithType: mht (EndType Path)? docsOpt eTopForMethod?| mht FieldSpecial;//was block?
 methodImplemented: mhs eTopForMethod;
 nestedClass: Path Colon docsOpt eTop;
-header:| Interface |Mdf? (mDec |ORoundSpace|ORoundNoSpace) fieldDec* CRound;
+header:| Interface; //|Mdf? (mDec |ORoundSpace|ORoundNoSpace) fieldDec* CRound;
 fieldDec:Var? t x docsOpt;
 
 w: wSwitch|wSimple;

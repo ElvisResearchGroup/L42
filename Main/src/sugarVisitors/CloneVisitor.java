@@ -33,6 +33,7 @@ public class CloneVisitor implements Visitor<Expression>{
     }
   protected Path liftP(Path p){return p;}
   protected Type liftT(Type t){
+    assert t!=null;
     return new NormType(t.getMdf(),liftP(t.getPath()),liftDoc(t.getDoc()));
         
     }

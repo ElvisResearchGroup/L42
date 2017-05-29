@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 
 import ast.Ast;
 import ast.ExpCore;
@@ -79,14 +80,31 @@ public NormType visit(MCall s) {
   return (NormType) From.fromT(meth.getMt().getReturnType(),path);
   
 }
+
+public static List<Dec> guessedDs(TIn in,List<Dec> toGuess){
+List<Dec> res=new ArrayList<>();//G'
+for(Dec di:toGuess){
+  if(!di.getT().isPresent()){
+    NormType nti=GuessTypeCore._of(in, di.getInner());
+    if(di.isVar()){
+      if(nti.getMdf()==Mdf.Capsule){nti=nti.withMdf(Mdf.Mutable);}
+      else if(TypeManipulation.fwd_or_fwdP_in(nti.getMdf())){
+        assert false;
+      }
+    }
+    res.add(di.withT(Optional.of(nti)));
+    }
+  else{res.add(di.withT(Optional.of(di.getT().get().getNT())));}
+  }
+return res;
+}
+
+
 @Override
 public NormType visit(Block s) {
-//
-//guess type core must change according to speck!//
-//
   if (!s.getOns().isEmpty()){throw Assertions.codeNotReachable();}
   TIn oldIn=in;
-  TIn in2=in.addGds(in.p,s.getDecs());
+  TIn in2=in.addGds(in.p,guessedDs(in,s.getDecs()));
   in=in2;
   try{return s.getInner().accept(this);}
   finally{in=oldIn;}

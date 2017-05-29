@@ -249,7 +249,8 @@ This withoutRight()
   Continue #from(S.SConcat seqBuilder)
     Continue(seqBuilder.old()++seqBuilder.accumulator())
 
-  Continue:{(S that)
+  Continue:{S that
+    class method This(S that)
     method mut S.SBuilder #builder() S.SBuilder.empty()
     method This1 #from(S.SBuilder builder)
       this.that()++S.#from(builder:builder)
@@ -259,7 +260,8 @@ This withoutRight()
   mut SConcat #seqBuilder()
     S.SConcat(old:this,accumulator:S"")
 
-  SConcat:{(S old,var S accumulator)
+  SConcat:{S old,var S accumulator
+    class method This (S old, S accumulator)
     mut method
     Void #add(read Concept.ToS that)
       this.accumulator(\accumulator++that.toS())

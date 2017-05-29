@@ -108,28 +108,16 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
    Tr trUnion = trCaptured.trUnion(ksOk.trAcc).trUnion(e0Ok);
    res=res.trUnion(trUnion);
    return res;
-  }
-  
+  }  
   
   default TOutDs dsType(TIn in,List<Dec> _ds){
     if(_ds.isEmpty()){return new TOkDs(Tr.instance,_ds,G.instance.addGG(in));}
     int i=splitDs(in,_ds);
     assert i+1<=_ds.size();
     List<Dec> ds=_ds.subList(i+1,_ds.size());
-    List<Dec> ds0n=new ArrayList<>();//G'
+    List<Dec> ds0n=GuessTypeCore.guessedDs(in,_ds.subList(0,i+1));//G'
     List<String> fve0n=new ArrayList<>();
     for(Dec di:_ds.subList(0,i+1)){
-      if(!di.getT().isPresent()){
-        NormType nti=GuessTypeCore._of(in, di.getInner());
-        if(di.isVar()){
-          if(nti.getMdf()==Mdf.Capsule){nti=nti.withMdf(Mdf.Mutable);}
-          else if(TypeManipulation.fwd_or_fwdP_in(nti.getMdf())){
-            assert false;
-          }
-          }
-        ds0n.add(di.withT(Optional.of(nti)));
-        }
-      else{ds0n.add(di.withT(Optional.of(di.getT().get().getNT())));}
       fve0n.addAll(FreeVariables.of(di.getInner()));
       }
     assert !fve0n.stream()

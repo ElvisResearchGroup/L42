@@ -35,7 +35,7 @@ StringSplit:{
   Strings splitOn(S that,S chars)
     error S"StringSplit.UnsatisfactoryErrorToAvoidCycle, replace in AdamT2"
 }
-CTest:( Strings ss=Strings[S"foo"] {()}  ) //check lists are usable
+CTest:( Strings ss=Strings[S"foo"] {}  ) //check lists are usable
 //--layer-- introspection layer, and MetaGuard
 Path:...
 Selector:...

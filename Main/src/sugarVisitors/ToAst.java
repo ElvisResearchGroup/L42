@@ -387,13 +387,8 @@ public class ToAst extends AbstractVisitor<Expression>{
   }
   private Header parseHeader(HeaderContext header) {
     if(header.Interface()!=null){return new Ast.InterfaceHeader();}
-    if(header.CRound()==null){return new Ast.TraitHeader();}
-    ast.Ast.Mdf mdf=ast.Ast.Mdf.fromString((header.Mdf()==null)?"":nameK(header.Mdf()));
-    String name=(header.mDec()==null)?"":nameL(header.mDec());
-    List<FieldDec> fields=new ArrayList<FieldDec>();
-    for( FieldDecContext f:header.fieldDec()){fields.add(parseFieldDec(f));}
-    return new Ast.ConcreteHeader(mdf,name, fields,position(header));
-  }
+    return new Ast.TraitHeader();
+    }
   private FieldDec parseFieldDec(FieldDecContext f) {
     return new Ast.FieldDec(f.Var()!=null, parseType(f.t()),nameL(f.x()),parseDoc(f.docsOpt()));
   }

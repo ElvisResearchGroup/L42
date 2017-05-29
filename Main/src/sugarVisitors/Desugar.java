@@ -604,6 +604,7 @@ public class Desugar extends CloneVisitor{
     return ms.withName(desugarName(ms.nameToS()));
   }
   private<T0,T> T withExpectedType(Type t,Supplier<T> f){
+    if (t==null){t=Path.Any().toImmNT();}
     Type aux=this.t;
     this.t=t;
     T result=f.get();
