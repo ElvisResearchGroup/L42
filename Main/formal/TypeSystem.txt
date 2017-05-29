@@ -659,11 +659,16 @@ guessType(p,G,e)
     where guessType(p,G,chain)=mdf P 
   guessType(p,G,throw _) and guessType(p,G,loop _) undefined
   guessType(p,G,(var?1 T?1 x1=e1..var?n T?n xn=en e) )=  guessType(p,G',e)
-    where G'=G[x1:T1..Xn:Tn], Ti=T?i, otherwise Ti=guessType(p,G,ei)
-  guessType(p,G,(ds ks e[T]) )
-  
-  guessType(p,G,use P check m(x1:e1..xn:en) e)
+    where G'=G[x1:T1..Xn:Tn], Ti=T?i, otherwise Ti=guessType(p,G,ei)  
+  guessType(p,G,use P check m(x1:e1..xn:en) e) undefined
 
+
+(catch precise any)
+Phase |p |G |Tr|-catch return Any x e ~> catch return T1 x e': T | Tr'
+where
+not catchRethrow(catch return Any x e)
+T1=T if p |-T'<=T forall T' in Tr.T
+Phase |p |G+x:T1|- e ~> e':_<=T| Tr'
 
 --------------------------
 Notationandgrammar:
