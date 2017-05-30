@@ -300,7 +300,7 @@ public class Compose {
 _______
 #define L1 ++p L2 = L0
 L1 ++p L2 = L0=
-  with L0=L1 +p.evilPush(L0) L2 and norm(p.evilPush(L0))=L0 execpt for order of implemented interfaces 
+  with L0=L1 +p.evilPush(L0) L2 and norm(p.evilPush(L0))=L0 execpt for order of implemented interfaces and members 
 
 _______
 #define L1 +p L2 = L0

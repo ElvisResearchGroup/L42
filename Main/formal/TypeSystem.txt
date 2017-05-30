@@ -663,7 +663,9 @@ guessType(p,G,e)
   guessType(p,G,use P check m(x1:e1..xn:en) e) undefined
 
 
-(catch precise any)
+(catch precise any)//notice, needs to be Any, it can't be 
+//(exception A() exception B() catch exception C x useXAsB(x) ) 
+//because even if A unrelated B, C;   B <C may be somewhere far away:: D extends A, C
 Phase |p |G |Tr|-catch return Any x e ~> catch return T1 x e': T | Tr'
 where
 not catchRethrow(catch return Any x e)
