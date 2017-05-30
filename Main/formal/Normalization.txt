@@ -105,8 +105,8 @@ maindefinition:
 -norm(p)={interface? implements Ps' norm(p,Ms') Norm}
  p.top()={interface? implements Ps Ms}
  Ps'=collect(p,Ps) //Marco does not likes that Ps get reordered also if they are all present, but is hard to predict what will happen if not reorder only in that fragile circustance
- Ms'=methods(p,This0)\Ms.mss,Ms??methods(p,This0), {C:e in Ms} //norm now put all the nested classes in the back.
- //TODO: do we want norm to return things in a well defined order? now it is not (and is broken by ??) 
+ Ms'=methods(p,This0)\Ms.mss, [methods(p,This0)(M.ms)| M in Ms],[C:e| C:e in Ms]
+ //TODO: former line now have well defined order (for the 2nd and 3rd part). Fix the order in the code 
 //norm(p,ms e) should never be call 
 
 -norm(p,refine? mh e?)= refine? resolve(p,mh) e'?
