@@ -41,7 +41,7 @@ public class TestWellFormedness {
     public static List<Object[]> createData() {
       return Arrays.asList(new Object[][] {
     {"{C:{} C:{}}"
-  },{"{f(C a C a)}"
+  },{"{class method This f(C a C a)}"
   },{"{ method () ( D d=D.k() catch exception Void x d.m() void)}"
   },{"{ method () ( this+this*this )}"
   },{"{ method () ( this++this**this )}"
@@ -67,7 +67,7 @@ public static class TestPass {
   @Parameterized.Parameters
   public static List<Object[]> createData() {
     return Arrays.asList(new Object[][] {
-  {"{()}"
+  {"{}"
 },{"{ method ()  this+this+this }"
 },{"{ method ()  this<=this<=this }"
 },{"{ method ()  this+this<=this <=this & this }"
