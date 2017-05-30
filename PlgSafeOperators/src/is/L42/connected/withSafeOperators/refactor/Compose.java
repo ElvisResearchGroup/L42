@@ -331,14 +331,14 @@ otherwise=empty
 _______
 #define interface?1 mwts1+interface?2 mwts2=interface?
 interface?1 mwts1 + interface?2 mwts2 = interface?2 mwts2 + interface?1 mwts1
-interface? mwts1+interface? mwts2=interface?
+interface mwts1+interface mwts2=interface
 mwts1 + interface mwts2=interface
   where
   mwts1.e?s = {empty}
   class notin mwts1.mhs.mdfs
   mwts1.mss not uniquely named
 mwts1 +mwts2=empty
-  where i in 1,2 and mwtsi.mss not uniquely named
+  with size({n| refine? mh in (mwts1,mwts2), mh.ms= m__n(xs)})<=1
 
 
   
