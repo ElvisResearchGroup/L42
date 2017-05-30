@@ -338,7 +338,7 @@ mwts1 + interface mwts2=interface
   class notin mwts1.mhs.mdfs
   mwts1.mss not uniquely named
 mwts1 +mwts2=empty
-  with size({n| refine? mh in (mwts1,mwts2), mh.ms= m__n(xs)})<=1
+  with size({n| refine? mh in (mwts1,mwts2), mh.ms= m__n(xs)})<=1//note, since is not "mh e" we are asking for the abstract methods only
 
 
   

@@ -67,7 +67,7 @@ subdefinitions:
   //Or we can make this kind of check happens as extra at the end of multiple sums?
 
 maindefinition:
--methods(p,P0)=M1'..Mk'
+-methods(p,P0)=M1'..Mk' //methods returns a set: the order of the methods is not relevant
   p(P0)={interface? implements Ps Ms Phase}
   if Phase!=None, M1'..Mk' are extracted from Ms[from P0]//TODO
   P1..Pn=collect(p,Ps[from P0]), error unless forall i in 1..n, p(Pi) is an interface
@@ -105,7 +105,7 @@ maindefinition:
 -norm(p)={interface? implements Ps' norm(p,Ms') Norm}
  p.top()={interface? implements Ps Ms} //Ms is free var and is ok
  Ps'=collect(p,Ps) //Marco does not likes that Ps get reordered also if they are all present, but is hard to predict what will happen if not reorder only in that fragile circustance
- Ms'=methods(p,This0), {C:e in Ms} //norm now put all the nested classes in the back.
+ Ms'=methods(p,This0)\Ms.mss,Ms??methods(p,This0), {C:e in Ms} //norm now put all the nested classes in the back.
   
 //norm(p,ms e) should never be call 
 
