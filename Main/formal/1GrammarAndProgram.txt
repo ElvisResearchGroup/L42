@@ -1,0 +1,218 @@
+L42 source is in a rich syntax (not shown here), that is desugared into a core syntax.
+The library literal L is the starting point for a set of transformations:
+A core Library literal L has the most liberal shape:
+  -transitivelly implemented interfaces can be omitted
+  -method types for implemented methods can be omitted
+  -nested classes and method declaration can be mixed together
+  -nested classes can be of form "C:e", where "e" represents
+   the computation needed to obtain the definition for "C".
+In addition, a compiled Library literal LC requires all the nested classes
+  *everywhere* in its subtree to be of form C:LC 
+In addition, in a normalized Library literal LC
+  -all the transitivelly implemented interfaces are mentioned
+  -all methods have their type
+  -nested classes are ordered after method declarations
+  -all L  *everywhere* in its subtree are normalized.
+  -Normalized library literals are labeled (at least)"Norm" 
+In addition, in a typed Library literal, 
+  -some type annotation are added, to simplify the work of
+   translating 42 to other target languages.
+  -all L  *everywhere* in its subtree are typed.
+  -Typed library literals are labeled (at least)"Typed" 
+  
+
+-----------------------------------------------------------
+Part 1: Core language grammar
+-----------------------------------------------------------
+_______
+#define non recursive terms:
+throw::= exception | error | return //James suggests "ball" as a possible replacement for throw
+mdf::= imm|mut|lent|read|capsule|class | fwdImm | fwdMut | fwd%Imm | fwd%Mut
+Phase::=None|Norm|Typed|Coherent //TODO: add (fresh library)names that are put after norms//May be None should be renamed into "Desugared"
+ms::=m(xs) //method selector
+mh::= mdf method T m(T1 x1..Tn xn) exception Ps //mh.ms generates the corresponding ms  
+Ldom::=ms|C
+P::= Thisn.Cs | Any | Library | Void  //is pronounced "Path"
+T::= mdf P 
+_______
+#define core expressions
+//annotations [T1,T2], [P] and [T] are implicitly "?", as in [T]?
+L::={interface? implements Ps M1..Mn Phase}
+M::=refine? mh e?| ms e | C:e
+e::=L|void|x| P | chain.m[P]((x:e)s) 
+  | throw[T1,T2] chain|loop e|(ds ks e[T]) | use P check m((x:e)s) e | x:=e
+k::=catch T x e
+d::=var? T x=e | var? x=chain
+chain::=x|P|chain.m( (x:e)s )|(ds chain)
+//TODO: update sugared language to require chain as meth receiver and thrown expressions
+_______
+#define Compiled terms
+LC::={interface? implements Ps MC1..MCn Phase}  //library compiled
+MC::= mwt | ms eC |nc
+mwt::= refine? mh eC? //may still contains skeletal types
+nc::= C:LC
+eC::= x|void|P|LC |throw[T1,T2] eC|loop eC|(dCs kCs eC[T])
+ | eC.m[P]((x:eC)s)| use P check m((x:eC)s) eC | x:=eC
+kC::=catch T x eC
+dC::= T x=eC
+//notice how every LC is a special kind of L (math seams to have structural subtyping)
+
+
+_______
+#define Contexts
+ctxC::=[] 
+ | ctcC.m( (x:e)s) 
+ | eC.m( (x:eC)s x:ctxC, (x:e)s)
+ | use P check m( (x:eC)s x:ctxC, (x:e)s) e 
+ | use P check m((x:eC)s) ctxC 
+ | throw ctxC | loop C | x:=ctxC
+ | (ds var? T? x=ctxC dCs kCs eC[T])
+ | (dCs ks catch T x ctxC kCs e[T])
+ | (dCs kCs ctxC[T]) 
+.... // compilation context, e=ctxC[L] selects an L where all the former Ls are LC. The context do not enter in libraries
+ctxM::= C: ctxC |ms ctxC | refine? mh ctxC
+ctxL::= {interface? implements Ps Ms ctxM Ms' Phase}
+
+_______
+#define functional notation for L, ctxL and LC (over Ldom domain and Cs)
+
+_______
+#define eC' inside eC
+- eC' inside eC if eC=ctxC[eC']
+- P inside M holds iff P inside M.e 
+ or M.mh= refine? T0 m(T1 x1..Tn xn) exception Ps
+ and Ti= _ P or Ti= P::_ or P in Ps
+ 
+
+-----------------------------------------------------------
+Part 2: Well formedness
+-----------------------------------------------------------
+
+* d: var T x=e is valid only if T not capsule or fwd.
+
+* ms: unique x in xs, 'this' notin xs
+
+* mh: mh.ms is well defined, Any notin Ps //Ps is thrown exceptions
+
+* mdf: "%" not present in any term, will be used internally by the type system
+
+* C:e :  C not Any, Library, Void, This, Thisn
+
+* L: unique LDom in LDoms, Any notin Ps //Library and Void are not interfaces so you will get the normal error from implementing them
+   and methods in interfaces have no body
+
+* (ds ks e[T]): unique x in ds, FV(ks) disjoint dom(ds) and 
+  forall k1,k2 in ks, k1.throw=k2.throw
+  That is, all throw in a specific ks are the same (thus no "catch return T1 x1 e1 catch error T2 x2 e2")
+
+* use P check m((x:e)s) e: P not Any/Void/Library
+
+//Note: error/exception only imm is checked as type error, not well formedness
+
+//C:e :  FV(e)=empty subsumed by next check
+
+* C:e : capsuleWellFormed 
+   cX(e)=empty
+   //Note, this can be applied directly after desugaring
+   
+* mwt: Ts=parameter types, 
+  if exists fwdImm _ in Ts then (return type).mdf in {mut, fwdMut, imm, fwdImm}
+  if exists fwdMut _ in Ts then (return type).mdf in {mut, fwdMut}
+
+* mwt:  capsuleWellFormed 
+  mwt= refine? mdf method T m(T1 x1..Tn xn)e
+  FV(e)\ this,x1..xn= empty
+  if Ti=capsule _, xi in cX(e) 0 or 1 times
+_______
+#define
+cX(e)//count occurences of xs
+  cX(x)=x         //FV can be defined from cX!!
+  cX(void)=cX(P)=cX(L)=empty
+  cX(throw[T1,T2] e)=cX(e)
+  cX(loop e)=cX(e),cX(e)  //two times, that is enough
+  cX(e0.m[T](x1:e1..xn:en) )=cX(e0),..,cX(en)
+  cX(use P check m(x1:e1..xn:en) e0)=cX(e0),..,cX(en)
+  cX( (T1 x1=e1..Tn xn=en k1..km e0[T]) )=ys/x1..xn ,max( (xs0/x1..xn), xs1,..,xsm)
+    where
+    ys=cX(e1),..,cX(en)
+    xsi=cX(ki)
+    xs0=cX(e0) 
+    if Ti=capsule _ then
+      xi at most 1 in ys,xs0
+_______
+#define max(xs,ys)= zs //where there are as many repetition of each x as both in the xs and ys
+  max(empty,ys)=ys
+  max (x xs,ys)=x max(xs,ys) if x not in ys
+  max (x xs,ys)=x max(xs,removeOne(x,ys)) 
+  max(xs, xs0..xsn) = max(max(xs,xs0),xs1..xsn)
+  max(xs)=xs
+
+
+
+-----------------------------------------------------------
+Part 3: program //more operations added when needed
+-----------------------------------------------------------
+Programs peculiar grammar is needed to represent the position
+in the program tree we are reducing.
+For example, if our 42 project is
+{ A:... B:This0.A.second({ method Library m(){C:This2.A.first({})} }) } 
+Then we first need to reduce "A.first({})"
+under the 3 part program
+p={C:A.first({})};{ method Library m()[]};{ A:... B:A.second([]) }
+Note how the first component is an L, while the others have a hole[],
+so they are of form ctxL.
+Note how the p.top() uses This2.A in order to skip two levels
+and refer to A in the outer most layer of our project.
+
+It is possible to see the program as a stack, with a top() and a pop() operation.
+Given a program is always possible to reconstruct the project by doing a set of pop.
+Since the top of the stack is of a different kind with respect to the other elements,
+pop replaces the [] with the stack top to forge an L 
+push, is the opposite of pop and extract a piece of the top to forge a new top.
+To do so, it takes in input the splitted form of the old head.
+Finally, notice how in this model updating the top  can not be emulated with pop() + push()
+
+p::=L0;ctxLs //representing This0,...,Thisn // where This0.C refers to a class bound in L0, and (This1..ThisN).C to bindings in cxtL1..cxtLn respectively
+
+program primitive operations:
+
+-p.top()=L
+ (L,_).top()=L
+
+-p.pop()=p'
+ (L,ctxL,ctxLs).pop()=ctxL[L],ctxLs
+
+-p.push(ctxL,L)=p'
+ (ctxL[L],ctxLs).push(ctxL,L)=L,ctxL,ctxLs
+ 
+-p.update(L)=p' //this is the only one that can detect evilPush
+ (L,ctxLs).update(L')=L',ctxLs
+
+  
+program derived operations:
+
+-p.get(n)=p'
+ p.get(0)=p.top()
+ p.get(n+1)=p.pop().get(n)
+ 
+-p.navigate(Cs)=p'
+ p.navigate(C1..Ck)=p.push(C1)...push(Ck)
+
+-p.navigate(P)=p'
+ p.navigate(Thisn.Cs)=p.pop()...pop().navigate(Cs) //with n pops
+
+-p(P)=L //functional notation
+ p(P)=p.navigate(P).top()//but some implementation could be faster
+
+-p.push(C)=p'
+ p.push(C)=p.push(ctxL,L)
+ where ctxL[L]=p.top() and ctxL(C)=[]
+
+-p.evilPush(L)=p'
+ ({interface? Ps Ms},ctxLs).evilPush(L)=L,{interface? Ps Ms C_evil:[]},ctxLs
+ with C_evil reserved C name.
+ A well-formed project (top level L) can not have C_evil anywhere.  
+
+ //Note: p.push(L)=p' not used in the code since it would be very slow and not expressive enough.
+ // p.push(L)=p.push(ctxL,L) with ctxL[L]=p.top()
+ 

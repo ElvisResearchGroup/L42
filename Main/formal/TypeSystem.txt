@@ -419,7 +419,7 @@ Phase |p |G |- (ds ks e)~>(ds' ks' e'):capsule P <=mdf P | Tr
 ------------------------------------------------------
 4 Subtyping p |- T<=T'
 ------------------------------------------------------
-  
+
 (subtype)
 p |- mdf0 P0<=mdf1 P1
   where
@@ -435,6 +435,15 @@ mut<=lent,fwd%Mut //,read,fwdMut
 lent<=read
 fwd%Mut<=fwdMut
 fwd%Imm<=fwdImm
+_______
+#define p.equiv(P1,P2) //check if 2 paths are equivalent
+- p.equiv(P,P) holds
+- p.equiv(P,P')=p.equiv(P',P)
+- p.equiv(P,P') if p.equiv(p.reducePath(P),P')
+- p.reducePath(This1.C.Cs)=This0.Cs //reducePath reduce only 1 level at the time
+    if p=L,ctxL,_ and ctxL(C)=[] //ok also this one can be messed up by evilPush
+- p.reducePath(This(n+2).Cs)=This(n+1).Cs' //it is correct to have n both before and after the = sign
+    p.pop().reducePath(This(n+1).Cs)=This(n).Cs'
 
 
 -----------------------------------------------

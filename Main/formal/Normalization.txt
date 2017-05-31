@@ -50,6 +50,72 @@ r::=LC| exception v | error v
                                     ctxL={interface? implements Ps, MCs  M[with e=ctxC] Ms}
                                     p'.top() of form LC
 
+
+
+
+-----------------------------------------------------------
+Part 3: paths
+-----------------------------------------------------------
+ paths::= Csss //list of set of list of C
+ operations:
+ -(Css paths).top()=Css
+ 
+ -(Css paths).pop()=paths
+ -empty.pop()=empty
+ 
+ -paths.push(Css)=minimize(Css) paths
+ 
+ -(Css paths) U (Css' paths')=(paths U paths').push(Css U Css')
+ -paths U empty=empty U paths = paths
+ -(Css paths) \(Css' paths')=(path\path').push(Css\Css')//where Css\Css' ={Cs in Css| not Exists prefix of Cs in Css'}
+ 
+ -empty.prefix(_)=empty
+ -paths.prefix(empty)= paths
+ -(Cs1..Csn).prefix(Cs)=Cs.Cs1 .. Cs.Csn
+ -(Css paths).prefix(Cs.C)= paths.prefix(Cs) U Css.prefix(Cs.C)
+  //example of prefix:
+  //((A)  (B)  (C)  (D)).prefix(W.E)
+  // = ((W.E.A  W.B  C) (D))
+  
+### auxiliary paths operations:
+ -reorganize(empty)=empty
+ -reorganize(Ps)=Css0,...,Cssn
+  Cssn!=empty
+  Cs in Cssi' iff Thisi.Cs in Ps
+  Cssi=minimize(Cssi')
+
+ -minimize(Cs1..Csn)={Cs in Cs1..Csn | forall Csi, Csi._!=Cs}
+
+
+
+------------------------------------------
+###define p.growFellow(p0)=p1
+Where p0 is one step shorter then p and p1,and p1.pop()=p0
+The idea is that p.pop() is very similar to p0, so we can use
+information in the way p grows from p.pop() in order to syntetize 
+p1 from p0.
+
+_______
+#define p.growFellow(p0)=p1
+- growFellow
+  (L,ctxL,_).growFellow(p)==p.push(p.top()/ctxL)
+
+_______
+#define L/ctxL'=<ctxL; e>   intuition: if L=ctxL[e], ctxL sim ctxL'
+  * {interface? implements Ps MC1..MCn C:e Ms}/{interface? implements Ps MC1'..MCn' C':ctxC' Ms'}
+   = {interface? implements Ps MC1..MCn C:ctxC Ms}, e0
+   e=ctxC[e0] and ctxC sim ctxC'
+_______
+#define ctxC1 sim ctxC2 
+  * [] sim []
+  assuming ctxC sim ctxC', then
+  * ctxC.m((x:e)s) sim ctxC'.m'((x:e)s')
+  * e.m(x1:e1..xn:en x:ctxC (x:e)s) sim e'.m'(x1':e1'..xn':en' x':ctxC' (x:e)s')
+  * (T1 x1=e1..Tn xn=en T x=ctxC (T x=e)s e) sim (T1' x1'=e1'..Tn' xn'=en' T' x'=ctxC' (T x=e)s' e')
+  * and so on        
+ 
+
+
 ------------------------------------------
 ###define methods(p,P)=Ms
 
@@ -129,7 +195,10 @@ maindefinition:
 
 - multiNorm(p, Css,paths) =multiNorm(p',Css) 
   p'=p.growFellow(multiNorm(p.pop(), paths))
-   
+
+
+
+
 ------------------------------------------     
 ###define usedPathsE
 //note we could have redundant paths, like This1.C and This2.B.C and is ok
