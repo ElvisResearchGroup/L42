@@ -161,50 +161,70 @@ Tr.capture(p,catch error P x e)=Tr
 (Ts;Ps).capture(p,catch exception P x e)=Ts;{P'| P' in Ps, not p|-P'<=P}
 (Ts;Ps).capture(p,catch return P x e)={T| T in Ts, not p|-T.P<=P};Ps
 
+guessType(p,G,e)
+  guessType(p,G,L)=imm Library
+  guessType(p,G,void)=guessType(p,G,x:=e)=imm Void
+  guessType(p,G,P)=class P //here will be wrong over interfaces 
+  chain.m(x1:e1..xn:en)=p(P)(m(x1..xn)).T//guaranteed to be a normalized method
+    where guessType(p,G,chain)=mdf P 
+  guessType(p,G,(var?1 T?1 x1=e1..var?n T?n xn=en e) )=  guessType(p,G',e)
+    where G'=G[x1:T1..Xn:Tn], Ti=T?i, otherwise Ti=guessType(p,G,ei)  
+  guessType(p,G,throw _) and guessType(p,G,loop _) undefined
+  guessType(p,G,use P check m(x1:e1..xn:en) e) undefined
 
 --------------
 methTypes(p,P,ms)  Expressed as metarules
 
 //first managing placeholders
 
-       p(P)(ms).mh[from P]=refine? mdf0 method T m(T1 x1,..Tn xn) exception Ps
-       T'=fwd% T if fwd_or_fwd%_in(Ts)
-       otherwise T'=T       
-(mBase)-------------------------------------------------------------------
-       mdf0 P T1..Tn-> T';Ps in methTypes(p,P,ms)
+(mBase)
+mdf0 P T1..Tn-> T';Ps in methTypes(p,P,ms)
+  where
+  p(P)(ms).mh[from P]=refine? mdf0 method T m(T1 x1,..Tn xn) exception Ps
+  T'=fwd% T if fwd_or_fwd%_in(Ts)
+  otherwise T'=T       
  
-         Ts->T;Ps in methTypes(p,P,ms) 
-(mNoFwd)-------------------------------------------------------------------
-         noFwd Ts-> noFwd T;Ps in methTypes(p,P,ms)
-
+(mNoFwd)
+noFwd Ts-> noFwd T;Ps in methTypes(p,P,ms)
+  where
+  Ts->T;Ps in methTypes(p,P,ms) 
+  
 //then capsule and imm promotion
-    Ts->mut P0;Ps in methTypes(p,P,ms)
-(mC)-------------------------------------------------------------------
-    mutToCapsule(Ts)->capsule P0;Ps in methTypes(p,P,ms)
-
-    Ts->read/*or lent*/ P0;Ps in methTypes(p,P,ms) //by well formedness if return type is read, not fwd_or_fwd%_in Ts
-(mI)-------------------------------------------------------------------
-    toImmOrCapsule(Ts)->imm P0;Ps in methTypes(p,P,ms) 
-    //the behaviour of immorcapsule on fwd is not relevant since the method
-    // returns a read and will be not well formed if it had fwd parameters
+(mC)
+mutToCapsule(Ts)->capsule P0;Ps in methTypes(p,P,ms)
+  where
+  Ts->mut P0;Ps in methTypes(p,P,ms)
+  
+(mI)
+toImmOrCapsule(Ts)->imm P0;Ps in methTypes(p,P,ms) 
+//the behaviour of immorcapsule on fwd is not relevant since the method
+// returns a read and will be not well formed if it had fwd parameters
+  where
+  Ts->read/*or lent*/ P0;Ps in methTypes(p,P,ms) 
+  //by well formedness if return type is read, not fwd_or_fwd%_in Ts
   
 //then lent viewpoint adaptation    
 
-     Ts0 mut P Ts2->T;Ps in methTypes(p,P,ms)
-     Ts'=mutToCapsule(Ts0) lent P mutToCapsule(Ts2) //this implies not fwd_or_fwd%_in Ts0,Ts2
-(mVp)-------------------------------------------------------------------
-     Ts'->toLent(T);Ps in methTypes(p,P,ms)
+(mVp)
+Ts'->toLent(T);Ps in methTypes(p,P,ms)
+  where
+  Ts0 mut P Ts2->T;Ps in methTypes(p,P,ms)
+  Ts'=mutToCapsule(Ts0) lent P mutToCapsule(Ts2) //this implies not fwd_or_fwd%_in Ts0,Ts2
+
+
 //and then rules about fwd and fwd%
-    Ts->fwd%Mut P0;Ps in methTypes(p,P,ms)//could be generalized to make fwdMut in fwdImm 
-    fwd_or_fwd%_in(Ts)
-(mImmFwd)-------------------------------------------------------------------
-    mutToCapsuleAndFwdMutToFwdImm(Ts)->fwd%Imm P0;Ps in methTypes(p,P,ms)   
-
-    Ts->fwd%Mut P0;Ps in methTypes(p,P,ms)//could be generalized to make fwdMut in read
-    fwd_or_fwd%_in(Ts)
-(mRead)-------------------------------------------------------------------
-    mutToCapsuleAndFwdRead(Ts)->read P0;Ps in methTypes(p,P,ms)
-
+(mImmFwd)
+mutToCapsuleAndFwdMutToFwdImm(Ts)->fwd%Imm P0;Ps in methTypes(p,P,ms)   
+  where
+  Ts->fwd%Mut P0;Ps in methTypes(p,P,ms)//could be generalized to make fwdMut in fwdImm 
+  fwd_or_fwd%_in(Ts)
+  
+(mRead)
+mutToCapsuleAndFwdRead(Ts)->read P0;Ps in methTypes(p,P,ms)
+  where
+  Ts->fwd%Mut P0;Ps in methTypes(p,P,ms)//could be generalized to make fwdMut in read
+  fwd_or_fwd%_in(Ts)
+  
 --------------------------------------------
 3 ExpressionTypeJudgement
 --------------------------------------------
@@ -279,6 +299,15 @@ D |-  e0.m[_](x1:e1..Xn:en) ~> e'0.m[P0](x1:e'1..xn:e'n)  : T <= T'| Tr0 U..U Tr
   T0..Tn->T;Ps in methTypes(p,P0,m(x1..xn)) //can not be avaible, find skeme of error similar to before for guess?
   D.p|-T <= T'
   forall i 0..n D|- ei ~> e'i : T'i <=Ti | Tri //T'0 is correctly a free variable    
+
+
+(xUpdate)
+D |-x:=e ~> x:=e' :imm Void <= T | Tr
+  where
+  D.G(x).var?=var
+  D.p|- imm Void <= T
+  D|- e ~> e':_<=D.G(x).T|Tr
+  not fwd_or_fwd%_in(D.G(x).T)
   
 (using)
  D |- use P check m(x1:e1.. xn:en) e0 ~>use P check m(x1:e'1.. xn:e'n) e'0 :T0 <= T | Tr0 U..U Trn
@@ -290,7 +319,7 @@ D |-  e0.m[_](x1:e1..Xn:en) ~> e'0.m[P0](x1:e'1..xn:e'n)  : T <= T'| Tr0 U..U Tr
 //Note: what happen if a parameter take mut and the plugin throw error w.r.t. strong error safety? can we catch it soon?
 //The idea is that I can still use the normal pattern to throw error if the plugin fail, but to catch that error we will have to go up the stack a lot.
 //Now plugings are assumed to always ask for imm/class parameters
-  
+
 (block)
 Phase| p| G |- (ds  ks  e0  [_]) ~>(ds' ks' e'0 [T]) 
      : T <= T' | Tr'.capture(p,ks') U Tr U Tr0
@@ -367,6 +396,16 @@ Phase |p |G |Tr|-catch throw Any x (e0 throw x) ~> catch throw Any x (e0' throw 
   e0'=(e' catch error Any z void void)
   Phase |p |G\x |- e ~> e':_ <=imm Void | empty
   catchRethrow(catch throw Any x(e0 throw x)) 
+
+(catch precise any)//notice, needs to be Any, it can't be 
+//(exception A() exception B() catch exception C x useXAsB(x) ) 
+//because even if A unrelated B, C; B <C    may be somewhere far away:: D extends A, C
+Phase |p |G |Tr|-catch return Any x e ~> catch return T1 x e': T | Tr'
+  where
+  not catchRethrow(catch return Any x e)
+  T1=T if p |-T'<=T forall T' in Tr.T
+  Phase |p |G+x:T1|- e ~> e':_<=T| Tr'
+
 
 (capsule promotion)//we are discussing if some blocks may not be promotable:
 //for example blocks with empty ds and ks.
@@ -651,17 +690,6 @@ read method B #x()
 as coherent, since the field would be an union type of C and D
 
 
-guessType(p,G,e)
-  guessType(p,G,L)=imm Library
-  guessType(p,G,void)=guessType(p,G,x:=e)=imm Void
-  guessType(p,G,P)=class P //here will be wrong over interfaces 
-  chain.m(x1:e1..xn:en)=p(P)(m(x1..xn)).T//guaranteed to be a normalized method
-    where guessType(p,G,chain)=mdf P 
-  guessType(p,G,throw _) and guessType(p,G,loop _) undefined
-  guessType(p,G,(var?1 T?1 x1=e1..var?n T?n xn=en e) )=  guessType(p,G',e)
-    where G'=G[x1:T1..Xn:Tn], Ti=T?i, otherwise Ti=guessType(p,G,ei)  
-  guessType(p,G,use P check m(x1:e1..xn:en) e) undefined
-
 
 (catch precise any)//notice, needs to be Any, it can't be 
 //(exception A() exception B() catch exception C x useXAsB(x) ) 
@@ -706,14 +734,7 @@ guessMdf(G,(d1..dj k1..kn e))=guessMdf(G,e)
   
 D::= ...;xs //the var in G//no added to the G as var?//done
 
-(xUpdate)//TODO: to move up
-D |-x:=e ~> x:=e' :imm Void <= T | Tr
-  where
-  D.G(x).var?=var
-  D.p|- imm Void <= T
-  D|- e ~> e':_<=D.G(x).T|Tr
-  not fwd_or_fwd%_in(D.G(x).T)
-  //TODO: note the change in toRead and toLent!!//done
+
 
  in rule ds now we add the guessed T to ds without T; this
  can cause a type error if guessed is capsule and d is var
