@@ -9,8 +9,8 @@ General 42 execution:
 7 execute e until you get an L, and replace e with L in the program
 8 jump back to 2. 
 
-The rules exposed here covers 2-8, and depends on normalization,
-reduction and typing, as exposed in other files.
+The rules exposed here covers 2-8, and depends on other notations defined in this file
+and on reduction and typing defined in other files.
 Paths (introduced later in the file) represent organized collections of P.
 
 //Note for james: desugaring is before all normalization. There is no need to
@@ -182,7 +182,7 @@ _______
 
 
 -----------------------------------------------------------
-Part 3: usedPathsE(p,eC)= <path;paths'>
+Part 5: usedPathsE(p,eC)= <path;paths'>
 -----------------------------------------------------------
 //note we could have redundant paths, like This1.C and This2.B.C and is ok
 //and this is also ok for path,path' for toAny
@@ -246,7 +246,7 @@ Part 3: usedPathsE(p,eC)= <path;paths'>
 
 
 -----------------------------------------------------------
-Part 5: paths;path' ||-p ~> p, toAny
+Part 6: paths;path' ||-p ~> p, toAny
 -----------------------------------------------------------
 (pPop)
 Css paths;Css'path' ||- p  ~>  p1.update(L)

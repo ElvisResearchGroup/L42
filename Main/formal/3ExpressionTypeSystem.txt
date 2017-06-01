@@ -1,0 +1,284 @@
+Since the type system is quite extensive, we first present the
+expression type system, that depends on notation for 
+-subtyping " p |- T<=T' "
+-(multiple) method typing "Ts->T;Ps in methTypes(p,P,ms)" 
+-and plugin behaviour  "plugin(D.p,P,m(x1..xn))=plg, T1..Tn->T0;empty"
+that are modeled later.
+Many secondary notations are defined in the end of the file.
+Note, in this file, all the L are LC   //LC == in all C:e, e of form L
+-----------------------------
+1 Grammar
+-----------------------------
+MethT::=Ts->T;Ps
+D::= Phase `|` p `|` G  //D reads Delta
+Tr::=Ts; Ps //Tr reads Throws
+G::=x1: var?1 T1..xn: var?n Tn  //G reads Gamma 
+//assert var x capsule _ or var x fwd _ or var x fwd% _ never happens  
+--------------------------------------------
+2 ExpressionTypeJudgement
+--------------------------------------------
+General judgment shape:
+D |- e ~> e':T <=T'| Tr  
+  where e' is an annotated version of expression e and is of type T
+  D.p points to where the e is located, //D.p.top()=ctxL[e]
+  so if P inside e, D.p(P) is a reasonable operation
+  Tr is the computed set of thrown returns and exceptions.
+----
+(void)
+D |- void~> void:imm Void <= T | emptyTr
+  where
+  D.p|-imm Void <= T
+  
+(Path)
+D |- P~>P:class P <= T | emptyTr
+  where
+  assert p(P) well defined
+  if p(P).interface?=empty then D.p|-class P <= T
+  else D.p|-class Any <= T //TODO: check in code
+  
+
+(library propagation)
+D |- L ~> L' : imm Library <= T | emptyTr
+  where
+  D.p|-imm Library <= T
+  D.Phase  |- D.p.evilPush(L) ~> L'
+
+(x)
+D |-x ~> x :D.G(x) <= T | emptyTr
+  where
+  D.p|- D.G(x) <= T
+
+(loop)
+D |- loop e ~> loop e' : imm Void <= T | Tr
+  where
+  D.p|-imm Void <= T
+  D|- e ~> e' : _ <= imm Void | Tr
+
+(throw)   // expression of type T0 throws the result of an expression where:
+          // T1 is the guess type of the expression
+          // T2 is the modified type, taking into account kind of thrown
+          // T3 is the type of the expression, including promotions
+          // and T3 is the type of the value thrown, this allows to use alternative method typing
+D |- throw[_,_] e~> throw[T0,T3] e' : T0 <= T0 | Tr
+  where
+  T1 = guessType(D.p,D.G,e)// Note guessTypes can go in error, and need to become a type error here
+  if throw=exception, T2= imm T1.P and Tr=Ts;Ps,P
+  if throw=error,     T2= imm T1.P and Tr=Ts;Ps
+  if throw=return,    T2= (fwd T1) and Tr=(Ts,T3);Ps  //TODO: add(also in code) that return classAny is forbidden
+  D|- e~>  e' :  T3 <=T2|Ts;Ps 
+
+(mcall)
+D |-  e0.m[_](x1:e1..Xn:en) ~> e'0.m[P0](x1:e'1..xn:e'n)  : T <= T'| Tr0 U..U Trn U (empty;Ps)
+  //e0 will be of form chain
+  where
+  guessType(D.p,D.G,e0)= _ P0 //assert T'0.P=P0 //again, can go in error guess
+  T0..Tn->T;Ps in methTypes(p,P0,m(x1..xn)) //can be not available, error similar to before for guess?
+  D.p|-T <= T'
+  forall i 0..n D|- ei ~> e'i : T'i <=Ti | Tri //T'0 is correctly a free variable    
+
+
+(xUpdate)
+D |-x:=e ~> x:=e' :imm Void <= T | Tr
+  where
+  D.G(x).var?=var
+  D.p|- imm Void <= T
+  D|- e ~> e':_<=D.G(x).T|Tr
+  not fwd_or_fwd%_in(D.G(x).T)
+  
+(using)
+ D |- use P check m(x1:e1.. xn:en) e0 ~>use P check m(x1:e'1.. xn:e'n) e'0 :T0 <= T | Tr0 U..U Trn
+ where
+   plugin(D.p,P,m(x1..xn))=plg, T1..Tn->T0;empty //plg is a free variable, in the small step reduction would be the function representing the behaviour
+   //plugin/meth not found error //assert T0..Tn exists in p
+   D.p|-T0 <= T
+   forall i 0..n D|- ei ~> e'i : T'i <=Ti |Tri
+//Note: what happen if a parameter take mut and the plugin throw error w.r.t. strong error safety? can we catch it soon?
+//The idea is that I can still use the normal pattern to throw error if the plugin fail, but to catch that error we will have to go up the stack a lot.
+//Now plugings are assumed to always ask for imm/class parameters
+
+(capsule promotion)//we are discussing if some blocks may not be promotable:
+//for example blocks with empty ds and ks.
+Phase |p |G |- (ds ks e)~>(ds' ks' e'):capsule P <=mdf P | Tr
+  where
+  mdf in {capsule, imm fwdImm, fwd%Imm}
+  Phase |p |toLent(G) |-(ds ks e)~>(ds' ks' e'):mut P <=mut P   | Tr
+//this rule is now "deterministic" in the sense that if typing the block give us a capsule directly,
+//this rule can not be applied, since we require mut P <=mut P in the premise.
+//this is another point wher x can become undefined
+
+
+
+(block)
+Phase| p| G |- (ds  ks  e0  [_]) ~>(ds' ks' e'0 [T]) 
+     : T <= T' | Tr'.capture(p,ks') U Tr U Tr0
+  where
+  G'=G/dom(ds)
+  Phase| p| G'[ks] |- ds ~> ds' |Tr' | G0
+  //[ks] removes fwdMut, but we wonder if they could stay and all would be sound?
+  //here we have the info to capture a failure about ds and discover if 
+  //extant name (fwd[%]* x) was hidden by error safety or  modifiable name (capsule/mut/lent x)
+  //was locked by error safety[cite the line number of the catch]
+  Phase| p| G'| Tr' |- ks~> ks' : Ts <= T' | Tr 
+  Phase| p| G'[G0\dom(G')] |- e0~>e'0:T0 <=T' | Tr0
+  T= mostGeneralMdf({T0.mdf,Ts.mdfs}) T'.P //set of Mdfs admits no single most general mdf
+  // assert D.p|-T <= T'
+
+
+------------------------------------------------------
+2 Secondary notation
+------------------------------------------------------
+guessType(p,G,e)
+  guessType(p,G,L)=imm Library
+  guessType(p,G,void)=guessType(p,G,x:=e)=imm Void
+  guessType(p,G,P)=class P //here will be wrong over interfaces 
+  chain.m(x1:e1..xn:en)=p(P)(m(x1..xn)).T//guaranteed to be a normalized method
+    where guessType(p,G,chain)=mdf P 
+  guessType(p,G,(var?1 T?1 x1=e1..var?n T?n xn=en e) )=  guessType(p,G',e)
+    where G'=G[x1:T1..Xn:Tn], Ti=T?i, otherwise Ti=guessType(p,G,ei)  
+  guessType(p,G,throw _) and guessType(p,G,loop _) undefined
+  guessType(p,G,use P check m(x1:e1..xn:en) e) undefined
+
+fwd_or_fwd%_in Ts
+  exists T in Ts such that
+  T in {fwdImm _,fwdMut_,fwd%Imm _,fwd%Mut _}
+
+toLent(G)
+  toLent(G)(x)=G(x) if G(x).T.mdf=immutable
+  otherwise
+  toLent(G)(x)=toLent(G(x))[with var?=empty] //thus undefined where toLent undefined
+
+toLent(T)//used for return types and gamma
+  toLent(mut P)=lent P,
+  toLent(fwdMut P) and toLent(fwd%Mut P) undefined;
+  otherwise toLent(T)=T
+
+Tr.capture(p,k1..kn)= Tr.capture(p,k1)...capture(p,kn)
+
+Tr.capture(p,catch error P x e)=Tr
+(Ts;Ps).capture(p,catch exception P x e)=Ts;{P'| P' in Ps, not p|-P'<=P}
+(Ts;Ps).capture(p,catch return P x e)={T| T in Ts, not p|-T.P<=P};Ps
+
+Tr1 U Tr2
+  Ts1;Ps1 U Ts2;Ps2 =  Ts1,Ts2; Ps1,Ps2  
+ 
+G[ks]
+  G[]=G
+  G[k ks]=toRead(G) with k.throw=error and not catchRethrow(k)
+  otherwise G[k ks] = G[ks]
+
+G[G']
+  G[G'](x)=G'(x) if x in dom(G'); otherwise G[G'](x)=G(x)
+
+
+mostGeneralMdf(mdfs)
+  mostGeneralMdf(mdfs)=mdf
+  case by exclusion:
+    if mdfs=mdf', then mdf=mdf' //that is the only way mdf=class
+    if class in mdfs, then undefined //and size>1
+    if mdfs\capsule=mdf', then mdf=mdf'
+    if fwd_or_fwd%_in(mdfs) {
+      if read or lent in mdfs, then undefined
+      if imm and mut both in noFwd(mdfs) then undefined
+      //we know: more then one, no read/lent, either all imm side or mut side
+      if fwdImm in mdfs mdf=fwdImm
+      if fwd%Imm in mdfs mdf=fwd%Imm
+      if fwdMut in mdfs mdf=fwdMut
+      assert fwd%Mut in mdfs
+      mdf=fwd%Mut
+      }
+    if read in mdfs, mdf=read
+    if imm in mdfs, mdf=read
+    mdf=lent
+  //set oriented definition from james: 
+  //generalEnough(mdfs)
+  //  mdf | forall mdf1 in mdfs, mdf1 <= mdf
+  //mostGeneralMdf(mdfs)
+  //mdf = generalEnough(mdfs) such that
+  //  forall mdf1 = generalEnough(mdfs) mdf <= mdf1
+  // that is, the most speficic generalEnough.
+
+------------------------------------------------------
+3 Secondary Judgements
+------------------------------------------------------
+Phase| p| G |- ds ~> ds'| Tr | G0
+  where ds' is an annotated version of ds.
+  The resulting G0 is the enriched G containing info about ds too.   
+
+(ds)  // G is clipped for error safety; G2 is clipped and complete
+Phase| p| G |- var?0 T?0  x0=e0 ..var?n T?n  xn=en, ds ~>
+               var?0 T'0  x0=e'0..var?0 T'n  xn=e'n, ds'|Tr U Tr' | G3
+  where
+  dom(ds) disjoint FV(e0..en)
+  for i in 0..n
+    either T?i =empty and Ti=guessType(G,ei) 
+    or Ti=resolve(p,T?i)
+  G'=x0:T0..xn:Tn
+  G1= G[fwd(onlyMutOrImm(G')[with vars=empty])] //capturing error for next line if not onlyMutOrImm(G') is used and is errored by next line 
+  for i in 0..n Phase| p| G1|-ei~>e'i: T'i <= fwd% Ti | Tri
+  T''i=T'i if fwd_or_fwd%_in(Ti) else T''i=noFwd(T'i)
+  G2=x0:T''0..xn:T'n //TODO anti fwd?
+  Tr=Tr0 U .. U Trn
+  if fwd_or_fwd%_in Tr.Ts
+    then x0..xn disjoint FV(e0..en)//returning unresolved items from cycles is prohibited
+  if fwd_or_fwd%_in { G(x) | x in FV(e0..en) } // x0..xn already excluded
+    then G0=G[fwd%(G2[with vars=empty])]
+    otherwise G0=G[G2]//capturing error for next line, see if the difference between fwd%(G2) ad G2 would fix it. Still, then we need to check for the fwd x in FV(e0..en)..
+  Phase| p| G0|- ds ~> ds'|Tr' | G3
+
+(dsEmpty)
+Phase| p| G |- empty ~> empty| empty;empty | G
+   
+ 
+-----------------------
+D |Tr |- k ~> k':T <=T' |Tr'    
+  where k' is an annotated version of catch k and k.e is of type T
+  we need the Tr of the ds to extract the mdf for caught returns
+  Tr' contains only the throws from the catch k itself.
+  
+(catch)
+   // T0 is the declared caught type, which contributes only a path
+   // T1 is the actual caught type, based on the types which can be thrown in context
+   // T2 is the type of the expression, based on x being bound T1
+Phase| p| G| Tr' |- catch throw T0 x e ~> catch throw T1.P x e' :T2 <= T | Tr
+  where
+  mdf1 = mostGeneralMdf(throw,Tr') //set of Mdfs admits no single most general mdf, or mdfs is empty
+  //inconsistent set of thrown things, which do not share a most
+  //general modifier [list of line numbers of the throws]
+  T1 = mdf1 resolve (p, T0).P //resolve can fail
+  not catchRethrow(catch throw T1 x e)
+  Phase| p| G[x:T1]|- e ~> e' : T2 <= T | Tr
+
+(catch and rethrow any)// could be sugared as "on throw doAndPropagate e"  
+Phase |p |G |Tr|-catch throw Any x (e0 throw x) ~> catch throw Any x (e0' throw x): T<=T | Tr
+  where //Note: e0, e, e0',e' are using the sugar imm Void x=e == e
+  e0=(e catch error Any z void void)
+  e0'=(e' catch error Any z void void)
+  Phase |p |G\x |- e ~> e':_ <=imm Void | empty
+  catchRethrow(catch throw Any x(e0 throw x)) 
+
+(catch precise any)//notice, needs to be Any, it can't be 
+//(exception A() exception B() catch exception C x useXAsB(x) ) 
+//because even if A unrelated B, C; B <C    may be somewhere far away:: D extends A, C
+Phase |p |G |Tr|-catch return Any x e ~> catch return T1 x e': T | Tr'
+  where
+  not catchRethrow(catch return Any x e)
+  T1=T if p |-T'<=T forall T' in Tr.T
+  Phase |p |G+x:T1|- e ~> e':_<=T| Tr'
+
+------------
+D| Tr |- ks ~> k's:Ts <= T | Tr'
+  just types a set of catches.
+
+//TODO: check that this kind of things work {Bar:{}   method m (foo catch exception Bar x e1 e0)  } redirect Bar->Any
+//Note: the new idea is that catch throw Any will catch all that can be thrown,
+// if not of form catchRethrow(k); in that case *only* the catchRethrow rule will apply
+(catchMany)
+D| Tr |-k1..kn ~> k'1..k'n:T1..Tn <= T | Tr1 U .. U Trn
+  where
+  forall i in 1..n D| Tr |-ki ~> k'i:Ti <= T |Tri
+  //we used to have Tr.capture(D.p,k1..ki-1) instead of D|Tr|-ki, but it was wrong in case of redirect; for example
+  //Elem e=(return that catch return Elem x x catch return Any y error void)[redirect Elem in Any]
+  //in this setting the second catch return Any would fail for "no return in scope"
+------------------------------------------------------
+4 Secondary notation for secondary judgements
+------------------------------------------------------
