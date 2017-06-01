@@ -33,7 +33,9 @@ ms::=m(xs) //method selector
 mh::= mdf method T m(T1 x1..Tn xn) exception Ps //mh.ms generates the corresponding ms  
 Ldom::=ms|C
 P::= Thisn.Cs | Any | Library | Void  //is pronounced "Path"
-T::= mdf P 
+T::= mdf P
+C::= <uppercaseIdentifier>n?
+m::=#?<lowercaseIdentifier>n?
 _______
 #define core expressions
 //annotations [T1,T2], [P] and [T] are implicitly "?", as in [T]?
@@ -87,6 +89,9 @@ _______
 -----------------------------------------------------------
 Part 2: Well formedness
 -----------------------------------------------------------
+
+* C__n,m__n: if for a given L,  C__n in dom(L) or m__n(xs) in dom(L),
+  then for any other L' in the project C'__n notin dom(L) and m'__n(xs') notin dom(L)
 
 * d: var T x=e is valid only if T not capsule or fwd.
 
@@ -150,7 +155,7 @@ _______
 
 
 -----------------------------------------------------------
-Part 3: program //more operations added when needed
+Part 3: program
 -----------------------------------------------------------
 Programs peculiar grammar is needed to represent the position
 in the program tree we are reducing.
@@ -215,4 +220,41 @@ program derived operations:
 
  //Note: p.push(L)=p' not used in the code since it would be very slow and not expressive enough.
  // p.push(L)=p.push(ctxL,L) with ctxL[L]=p.top()
+ 
+ 
+------------------------------------------
+Recursively transforming programs.
+We show here a general way to lift transformations
+from transL(L1)=L2 into transformations from transP(p1)=p2.
+
+transP(p1)=p2
+transP(L,empty)=transL(L),empty
+otherwise
+transP(p)=p'.updateTop(transL(p'.top())
+  //where p'=transP(p.pop()).push(????)//we use p to synthesize a push
+  where p'=p.growFellow(transP(p.pop()))
+  
+Notice how we call growFellow on a program that is one step
+shorter then p and p',and p'.pop()=transP(p.pop())
+The idea is that p.pop() is very similar to transP(p.pop()),
+so we can use information to find a way to grow transP(p.pop()).
+
+_______
+#define p.growFellow(p0)=p1
+(L,ctxL,_).growFellow(p)=p.push(p.top()/ctxL)
+
+_______
+#define L/ctxL'=<ctxL; e>   intuition: if L=ctxL[e], ctxL sim ctxL'
+  * {interface? implements Ps MC1..MCn C:e Ms}/{interface? implements Ps MC1'..MCn' C':ctxC' Ms'}
+   = {interface? implements Ps MC1..MCn C:ctxC Ms}, e0
+   e=ctxC[e0] and ctxC sim ctxC'
+_______
+#define ctxC1 sim ctxC2 
+  * [] sim []
+  assuming ctxC sim ctxC', then
+  * ctxC.m((x:e)s) sim ctxC'.m'((x:e)s')
+  * e.m(x1:e1..xn:en x:ctxC (x:e)s) sim e'.m'(x1':e1'..xn':en' x':ctxC' (x:e)s')
+  * (T1 x1=e1..Tn xn=en T x=ctxC (T x=e)s e) sim (T1' x1'=e1'..Tn' xn'=en' T' x'=ctxC' (T x=e)s' e')
+  * and so on        
+ 
  
