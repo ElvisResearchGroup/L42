@@ -109,7 +109,11 @@ Part 2: Well formedness
 * C:e :  C not Any, Library, Void, This, Thisn
 
 * L: unique LDom in LDoms, Any notin Ps //Library and Void are not interfaces so you will get the normal error from implementing them
-   and methods in interfaces have no body
+    Exists 0 or 1 n such that exists m__n(xs) such that L(m__n(xs))=mwt, mwt.e? empty
+    
+* L interface:
+   methods in interfaces have no body
+   forall m__n(xs),  m__n(xs)notin dom(L0)//TODO: in code check interfaces has no unique named methods
 
 * (ds ks e[T]): unique x in ds, FV(ks) disjoint dom(ds) and 
   forall k1,k2 in ks, k1.throw=k2.throw
