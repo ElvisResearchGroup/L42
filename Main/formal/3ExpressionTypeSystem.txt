@@ -125,80 +125,7 @@ Phase| p| G |- (ds  ks  e0  [_]) ~>(ds' ks' e'0 [T])
 
 
 ------------------------------------------------------
-2 Secondary notation
-------------------------------------------------------
-guessType(p,G,e)
-  guessType(p,G,L)=imm Library
-  guessType(p,G,void)=guessType(p,G,x:=e)=imm Void
-  guessType(p,G,P)=class P //here will be wrong over interfaces 
-  chain.m(x1:e1..xn:en)=p(P)(m(x1..xn)).T//guaranteed to be a normalized method
-    where guessType(p,G,chain)=mdf P 
-  guessType(p,G,(var?1 T?1 x1=e1..var?n T?n xn=en e) )=  guessType(p,G',e)
-    where G'=G[x1:T1..Xn:Tn], Ti=T?i, otherwise Ti=guessType(p,G,ei)  
-  guessType(p,G,throw _) and guessType(p,G,loop _) undefined
-  guessType(p,G,use P check m(x1:e1..xn:en) e) undefined
-
-fwd_or_fwd%_in Ts
-  exists T in Ts such that
-  T in {fwdImm _,fwdMut_,fwd%Imm _,fwd%Mut _}
-
-toLent(G)
-  toLent(G)(x)=G(x) if G(x).T.mdf=immutable
-  otherwise
-  toLent(G)(x)=toLent(G(x))[with var?=empty] //thus undefined where toLent undefined
-
-toLent(T)//used for return types and gamma
-  toLent(mut P)=lent P,
-  toLent(fwdMut P) and toLent(fwd%Mut P) undefined;
-  otherwise toLent(T)=T
-
-Tr.capture(p,k1..kn)= Tr.capture(p,k1)...capture(p,kn)
-
-Tr.capture(p,catch error P x e)=Tr
-(Ts;Ps).capture(p,catch exception P x e)=Ts;{P'| P' in Ps, not p|-P'<=P}
-(Ts;Ps).capture(p,catch return P x e)={T| T in Ts, not p|-T.P<=P};Ps
-
-Tr1 U Tr2
-  Ts1;Ps1 U Ts2;Ps2 =  Ts1,Ts2; Ps1,Ps2  
- 
-G[ks]
-  G[]=G
-  G[k ks]=toRead(G) with k.throw=error and not catchRethrow(k)
-  otherwise G[k ks] = G[ks]
-
-G[G']
-  G[G'](x)=G'(x) if x in dom(G'); otherwise G[G'](x)=G(x)
-
-
-mostGeneralMdf(mdfs)
-  mostGeneralMdf(mdfs)=mdf
-  case by exclusion:
-    if mdfs=mdf', then mdf=mdf' //that is the only way mdf=class
-    if class in mdfs, then undefined //and size>1
-    if mdfs\capsule=mdf', then mdf=mdf'
-    if fwd_or_fwd%_in(mdfs) {
-      if read or lent in mdfs, then undefined
-      if imm and mut both in noFwd(mdfs) then undefined
-      //we know: more then one, no read/lent, either all imm side or mut side
-      if fwdImm in mdfs mdf=fwdImm
-      if fwd%Imm in mdfs mdf=fwd%Imm
-      if fwdMut in mdfs mdf=fwdMut
-      assert fwd%Mut in mdfs
-      mdf=fwd%Mut
-      }
-    if read in mdfs, mdf=read
-    if imm in mdfs, mdf=read
-    mdf=lent
-  //set oriented definition from james: 
-  //generalEnough(mdfs)
-  //  mdf | forall mdf1 in mdfs, mdf1 <= mdf
-  //mostGeneralMdf(mdfs)
-  //mdf = generalEnough(mdfs) such that
-  //  forall mdf1 = generalEnough(mdfs) mdf <= mdf1
-  // that is, the most speficic generalEnough.
-
-------------------------------------------------------
-3 Secondary Judgements
+2 Secondary Judgements
 ------------------------------------------------------
 Phase| p| G |- ds ~> ds'| Tr | G0
   where ds' is an annotated version of ds.
@@ -279,6 +206,56 @@ D| Tr |-k1..kn ~> k'1..k'n:T1..Tn <= T | Tr1 U .. U Trn
   //we used to have Tr.capture(D.p,k1..ki-1) instead of D|Tr|-ki, but it was wrong in case of redirect; for example
   //Elem e=(return that catch return Elem x x catch return Any y error void)[redirect Elem in Any]
   //in this setting the second catch return Any would fail for "no return in scope"
-------------------------------------------------------
-4 Secondary notation for secondary judgements
-------------------------------------------------------
+
+  
+-----------------------------------------------
+ Phase |- p ~> L   and   p | Ps |- M ~> M'
+ L is the typed/annotated version of p.top()
+ M' is the annotated version of M
+ and p.top() is the literal containing M
+
+  
+(library shallow norm)
+Norm  |- p ~> p.top()
+//assert forall P in norm(p).Ps p(P).Phase>=Norm
+//assert p.top().Phase!=None
+
+(library well typed)
+Phase |- p ~> L'      //In implementation, if p.top().Phase>=Phase, L'=p.Top()
+   where
+   Phase in {Typed,Coherent}
+   L0={interface? implements Ps M1..Mn Phase'}=norm(p)
+   L'={interface? implements Ps M1'..Mn' max(Phase',Phase)}
+   forall m__n(xs),  m__n(xs)notin dom(L0)//TODO: in code check interfaces has no unique named methods
+   //assert forall P in Ps p(P).Phase>=Norm
+   forall i in 1..n
+     Phase| p.updateTop(L0)| Ps |- Mi ~> Mi'
+   if Phase=Coherent then coherent(p.udatateTop(L'))
+   //or error not coherent set of abstr. methods:list
+
+(member nested)
+Phase| p| Ps |-C:L ~>  C:L'
+   where
+   Phase |-p.push(C) ~> L'
+
+(member method)
+Phase| p| Ps |-M ~> M'
+  where
+  M =refine? mdf method T m(T1 x1 .. Tn xn)exceptions Ps0 e?
+  M'=refine? mdf method T m(T1 x1 .. Tn xn)exceptions Ps0 e?'
+  G=this:mdf This0,x1:T1,..,xn:Tn
+  if e?=e then
+    Typed| p| G |- e ~>  e?':_ <=fwd% T | empty;Ps1//TODO: IN CODE, check empty ts
+    forall P1 in Ps1 exists P0 in Ps0 such that p|-P1<=P0
+  else
+    e?=e?'
+  refine? = refine <=> 
+    forall P in Ps such that p(P)(m(x1..xn))[from P]=M0 //that is, is defined
+      all of the following hold:
+      M0=refine?' mdf method T' m(T'1 x1..T'n xn)exceptions Ps'
+      p|-T<= T' //method returns a type which is not a sybtype of its ancestor "name"
+      p.equiv(T1,T'1)..p.equiv(Tn,T'n) //invalid type w.r.t. ancestor paramerer xi   
+      forall Pi in Ps0 exists Pj in Ps' such that p |- Pi<=Pj
+      //or error: leaked exception P is not the subtype of a declared exception
+      //or  method declares an exception (P) which is not a subtype of ancestor exceptions 
+  

@@ -1,0 +1,284 @@
+This document can be open together with 3ExpressionTypeSystem 
+to reference the secondary notations used there
+--------------------------------------------
+1 Type manipulation
+--------------------------------------------
+
+onlyMutOrImm(G)={x:G(x) | G(x) only mut or imm}
+
+fwd T
+  fwd imm P=fwd fwd%imm P=fwdImm P
+  fwd mut P=fwd fwd%mut P=fwdMut P
+  otherwise fwd T=T
+
+fwd% T
+  fwd% imm P=fwd%Imm P
+  fwd% mut P=fwd%Mut P
+  otherwise fwd% T=T
+ 
+fwd_or_fwd%_in Ts
+  exists T in Ts such that
+  T in {fwdImm _,fwdMut_,fwd%Imm _,fwd%Mut _}
+
+noFwd T
+  noFwd fwdImm P=noFwd fwd%Imm P=imm P
+  noFwd fwdMut P=noFwd fwd%Mut P=mut P
+  otherwise noFwd T=T
+
+noFwd T1..Tn= noFwd T1 .. noFwd Tn
+  
+//toImm(T) //unused?        
+//toImm(class P)=class P
+//otherwise, toImm(mdf P)=imm P
+
+toImmOrCapsule(T) //used for parameters
+  toImmOrCapsule(mdf P)=capsule P with mdf in {lent,mut,fwdMut,fwd%Mut}
+  toImmOrCapsule(read P)=imm P
+  otherwise toImmOrCapsule(T)=T//mdf in {class,imm,fwdImm,fwd%Imm,capsule}
+
+toLent(T)//used for return types and gamma
+  toLent(mut P)=lent P,
+  toLent(fwdMut P) and toLent(fwd%Mut P) undefined;
+  otherwise toLent(T)=T
+  
+mutOnlyToLent(T) //used for parameters in deterministic strategy
+  mutOnlyToLent(mut P)=lent P,
+  otherwise mutOnlyToLent(T)=T 
+
+capsuleToLent(T)  //used for return type in get/exposer
+  capsuleToLent(capsule P)=lent P
+  otherwise capsuleToLent(mdf P)=mdf P
+   
+toRead(T) //used in gamma and in return type getter
+  toRead(fwdMut P)=toRead(fwd%Mut P)=undefined
+  toRead(fwdImm P)=toRead(fwd%Imm P)=undefined  
+  toRead(lent P)=toRead(mut P)=toRead(capsule P)=read P
+  otherwise read(T)=T//mdf in imm,read,class  
+
+toRead(G)
+  toRead(G)(x)=toRead(G(x))[with var?=empty] //thus undefined where toRead undefined 
+
+toLent(G)
+  toLent(G)(x)=G(x) if G(x).T.mdf=immutable
+  otherwise
+  toLent(G)(x)=toLent(G(x))[with var?=empty] //thus undefined where toLent undefined
+
+//lentToMut(T) //unused
+//  lentToMut(lent P)=mut P
+//  otherwise lentToMut(T)=T  
+
+mutToCapsule(T) //used for parameters
+  mutToCapsule(fwdMut P) and mutToCapsule(fwd%Mut P) undefined//NO? no reason to restrict?
+  mutToCapsule(mut P)=capsule P
+  otherwise mutToCapsule(T)=T
+//used for parameters
+mutToCapsuleAndFwdMutToFwdImm(T) //used for parameters//called f in the implementation
+  f(fwd%Mut P) undefined
+  f(mut P)=capsule P
+  f(fwdMut P)= fwdImm P 
+  otherwise f(T)=T
+
+mutToCapsuleAndFwdRead(T) //used for parameters//called f in the implementation
+  f(fwd%Mut P) undefined
+  f(mut P)=capsule P
+  f(fwdMut P)= read P
+  f(fwdImm P)= imm P //Note: read here would be unsound 
+  otherwise f(T)=T
+
+
+G[G']
+  G[G'](x)=G'(x) if x in dom(G'); otherwise G[G'](x)=G(x)
+ 
+G[ks]
+  G[]=G
+  G[k ks]=toRead(G) with k.throw=error and not catchRethrow(k)
+  otherwise G[k ks] = G[ks]
+
+mostGeneralMdf(throw,Tr)  
+  mostGeneralMdf(error,Tr)=imm
+  mostGeneralMdf(return,empty;Ps) undefined
+  mostGeneralMdf(return,T1..Tn;Ps)=mostGeneralMdf({T1.mdf .. Tn.mdf})
+  otherwise 
+  mostGeneralMdf(exception,_;Ps)=imm
+
+mostGeneralMdf(mdfs)
+  mostGeneralMdf(mdfs)=mdf
+  case by exclusion:
+    if mdfs=mdf', then mdf=mdf' //that is the only way mdf=class
+    if class in mdfs, then undefined //and size>1
+    if mdfs\capsule=mdf', then mdf=mdf'
+    if fwd_or_fwd%_in(mdfs) {
+      if read or lent in mdfs, then undefined
+      if imm and mut both in noFwd(mdfs) then undefined
+      //we know: more then one, no read/lent, either all imm side or mut side
+      if fwdImm in mdfs mdf=fwdImm
+      if fwd%Imm in mdfs mdf=fwd%Imm
+      if fwdMut in mdfs mdf=fwdMut
+      assert fwd%Mut in mdfs
+      mdf=fwd%Mut
+      }
+    if read in mdfs, mdf=read
+    if imm in mdfs, mdf=read
+    mdf=lent
+  //set oriented definition from james: 
+  //generalEnough(mdfs)
+  //  mdf | forall mdf1 in mdfs, mdf1 <= mdf
+  //mostGeneralMdf(mdfs)
+  //mdf = generalEnough(mdfs) such that
+  //  forall mdf1 = generalEnough(mdfs) mdf <= mdf1
+  // that is, the most speficic generalEnough.
+
+
+//liberal use of desugaring in the line under
+catchRethrow(k) iff k=catch throw Any x ((e catch error Any z void void) throw x)
+
+Tr1 U Tr2
+  Ts1;Ps1 U Ts2;Ps2 =  Ts1,Ts2; Ps1,Ps2  
+
+Tr.capture(p,k1..kn)= Tr.capture(p,k1)...capture(p,kn)
+
+Tr.capture(p,catch error P x e)=Tr
+(Ts;Ps).capture(p,catch exception P x e)=Ts;{P'| P' in Ps, not p|-P'<=P}
+(Ts;Ps).capture(p,catch return P x e)={T| T in Ts, not p|-T.P<=P};Ps
+
+guessType(p,G,e)
+  guessType(p,G,L)=imm Library
+  guessType(p,G,void)=guessType(p,G,x:=e)=imm Void
+  guessType(p,G,P)=class P //here will be wrong over interfaces 
+  chain.m(x1:e1..xn:en)=p(P)(m(x1..xn)).T//guaranteed to be a normalized method
+    where guessType(p,G,chain)=mdf P 
+  guessType(p,G,(var?1 T?1 x1=e1..var?n T?n xn=en e) )=  guessType(p,G',e)
+    where G'=G[x1:T1..Xn:Tn], Ti=T?i, otherwise Ti=guessType(p,G,ei)  
+  guessType(p,G,throw _) and guessType(p,G,loop _) undefined
+  guessType(p,G,use P check m(x1:e1..xn:en) e) undefined
+
+
+--------------------------------------------
+2 Coherent literal
+--------------------------------------------
+coherent(p) //interfaces are always coherent
+  where
+  p.top()={interface implements _ mwts ncs}
+    
+coherent(p) //classes are coherent if they have a coherent set of abstract methods
+  where
+  p.top()={implements _ mwts' ncs} //note, no interface
+  mwts={mwt in mwts'| mwt.e undefined } //collect the abstract methods
+  either mwts is empty or
+    there is exactly 1 class method with parameters (T x)s and n? such that 
+      forall mwt in mwts coherent(n?,p,noFwd((T x)s), mwt) //all abstract methods are coherent according to those fields
+      
+coherent(n?,p,T1 x1..Tn xn,
+      refine? class method T m__n? (T1' x1..Tn' xn) exception _)
+  where
+    p|- This0 <=T.P and p|-Ti'<=fwd Ti
+    T.mdf!=class
+    lent notin (T1..Tn).mdfs
+    if T.mdf in {imm,capsule}, mut notin (T1..Tn).mdfs
+    forall j in 1..n !=i, read != Tj.mdf
+    if T.mdf notin {lent,read}, i=0
+
+--------------------------------------------
+3 Multiple method types   T0..Tn-> T';Ps in methTypes(p,P,ms)
+--------------------------------------------
+The main idea giving flexibility to the 42 type system is that
+methods have many types, where only the modifiers change.
+It can be seen as a form of polymorphism of the method types.
+We here express the methodTypes set with metarules,
+but a finite/predictable sequence of applications is always sufficient,
+as shown later 
+
+//first managing placeholders
+
+(mBase)
+mdf0 P T1..Tn-> T';Ps in methTypes(p,P,ms)
+  where
+  p(P)(ms).mh[from P]=refine? mdf0 method T m(T1 x1,..Tn xn) exception Ps
+  T'=fwd% T if fwd_or_fwd%_in(Ts)
+  otherwise T'=T       
+ 
+(mNoFwd)
+noFwd Ts-> noFwd T;Ps in methTypes(p,P,ms)
+  where
+  Ts->T;Ps in methTypes(p,P,ms) 
+  
+//then capsule and imm promotion
+(mC)
+mutToCapsule(Ts)->capsule P0;Ps in methTypes(p,P,ms)
+  where
+  Ts->mut P0;Ps in methTypes(p,P,ms)
+  
+(mI)
+toImmOrCapsule(Ts)->imm P0;Ps in methTypes(p,P,ms) 
+//the behaviour of immorcapsule on fwd is not relevant since the method
+// returns a read and will be not well formed if it had fwd parameters
+  where
+  Ts->read/*or lent*/ P0;Ps in methTypes(p,P,ms) 
+  //by well formedness if return type is read, not fwd_or_fwd%_in Ts
+  
+//then lent viewpoint adaptation    
+
+(mVp)
+Ts'->toLent(T);Ps in methTypes(p,P,ms)
+  where
+  Ts0 mut P Ts2->T;Ps in methTypes(p,P,ms)
+  Ts'=mutToCapsule(Ts0) lent P mutToCapsule(Ts2) //this implies not fwd_or_fwd%_in Ts0,Ts2
+
+
+//and then rules about fwd and fwd%
+(mImmFwd)
+mutToCapsuleAndFwdMutToFwdImm(Ts)->fwd%Imm P0;Ps in methTypes(p,P,ms)   
+  where
+  Ts->fwd%Mut P0;Ps in methTypes(p,P,ms)//could be generalized to make fwdMut in fwdImm 
+  fwd_or_fwd%_in(Ts)
+  
+(mRead)
+mutToCapsuleAndFwdRead(Ts)->read P0;Ps in methTypes(p,P,ms)
+  where
+  Ts->fwd%Mut P0;Ps in methTypes(p,P,ms)//could be generalized to make fwdMut in read
+  fwd_or_fwd%_in(Ts)
+  
+It is possible to obtain all the variations with the following table:
+  mBase
+  mNoFwd(mBase)
+  mImmFwd(mBase)
+  mRead(mBase)
+  mC(mBase)
+  mC(mNoFwd(mBase))
+  mI(mBase)
+  mI(mRead(mBase))
+  mNoFwd(mImmFwd(mBase))  
+  mVp(mBase) //1 mType for each mut parameter
+  mVp(mNoFwd(base))//1 mType for each mut parameter
+  
+
+------------------------------------------------------
+4 Subtyping p |- T<=T'
+------------------------------------------------------
+
+(subtype)
+p |- mdf0 P0<=mdf1 P1
+  where
+  mdf0<=mdf1
+  P in P0 U (p(P0).Ps[from P0])
+  p.equiv(P,P1)
+  
+mdf<=mdf
+mdf1<=mdf3 if mdf1<=mdf2 and mdf2<=mdf3
+capsule<=mut,imm  //,lent,read,fwd%Mut,fwdMut,fwd%Imm, fwdImm
+imm<=read,fwd%Imm //,fwdImm
+mut<=lent,fwd%Mut //,read,fwdMut
+lent<=read
+fwd%Mut<=fwdMut
+fwd%Imm<=fwdImm
+_______
+#define p.equiv(P1,P2) //check if 2 paths are equivalent
+- p.equiv(P,P) holds
+- p.equiv(P,P')=p.equiv(P',P)
+- p.equiv(P,P') if p.equiv(p.reducePath(P),P')
+_______
+#define p.reducePath(P1)=P2 //reducePath reduce only 1 level at the time
+- p.reducePath(This1.C.Cs)=This0.Cs 
+    if p=L,ctxL,_ and ctxL(C)=[] //ok also this one can be messed up by evilPush
+- p.reducePath(This(n+2).Cs)=This(n+1).Cs' //it is correct to have n both before and after the = sign
+    p.pop().reducePath(This(n+1).Cs)=This(n).Cs'

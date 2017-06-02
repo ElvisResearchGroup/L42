@@ -36,6 +36,11 @@ P::= Thisn.Cs | Any | Library | Void  //is pronounced "Path"
 T::= mdf P
 C::= <uppercaseIdentifier>n?
 m::=#?<lowercaseIdentifier>n?
+
+//we denote with m__n(xs) or C__n a C with unique number n,
+//C is then the name without the number,
+//C__n? is the name with optionally a number, and C__n?=C if n?=empty
+
 _______
 #define core expressions
 //annotations [T1,T2], [P] and [T] are implicitly "?", as in [T]?
