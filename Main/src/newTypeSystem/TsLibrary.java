@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import ast.Ast.MethodType;
 import ast.Ast.NormType;
 import ast.Ast.Path;
-import ast.Ast.Type;
+import ast.Ast.NormType;
 import ast.ErrorMessage;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.MethodWithType;
@@ -116,7 +116,7 @@ public interface TsLibrary extends TypeSystem{
     return new TOkM(nc.withInner(res.toOk().annotated));
     }
 
-  default TOutM memberMethod(TIn in, List<Type> supertypes, MethodWithType mwt) {
+  default TOutM memberMethod(TIn in, List<NormType> supertypes, MethodWithType mwt) {
 //(member method)
 //Phase| p| Ps |-M ~> M'
 //  where
@@ -157,7 +157,7 @@ public interface TsLibrary extends TypeSystem{
 //      forall Pi in Ps0 exists Pj in Ps' such that p |- Pi<=Pj
 //      //or error: leaked exception P is not the subtype of a declared exception
 //      /or  method declares an exception (P) which is not a subtype of ancestor exceptions 
-      for(Type t :supertypes){
+      for(NormType t :supertypes){
         Path P=t.getNT().getPath();
         ClassB cbP=in.p.extractClassB(P);
         MethodWithType mwtP=(MethodWithType) cbP._getMember(mwt.getMs());
@@ -167,12 +167,12 @@ public interface TsLibrary extends TypeSystem{
         if(kind!=null){
           return new TErr(in,"",P.toImmNT(),ErrorKind.InvalidImplements);
           }
-        {int i=-1;for(Type Ti:mwt.getMt().getTs()){i+=1; Type T1i=M0.getTs().get(i);
+        {int i=-1;for(NormType Ti:mwt.getMt().getTs()){i+=1; NormType T1i=M0.getTs().get(i);
           if(!in.p.equiv(Ti.getNT(),T1i.getNT())){
           return new TErr(in,"",P.toImmNT(),ErrorKind.InvalidImplements);
           }
         }}
-        for(Type Pi: mwt.getMt().getExceptions()){
+        for(NormType Pi: mwt.getMt().getExceptions()){
           //exists Pj in Ps' such that p |- Pi<=Pj
           boolean ok=M0.getExceptions().stream().anyMatch(
                     Pj->null==TypeSystem.subtype(in.p, Pi.getNT().getPath(), Pj.getNT().getPath()));
@@ -268,7 +268,7 @@ public interface TsLibrary extends TypeSystem{
       boolean immOrC=(m==Mdf.Immutable || m==Mdf.Capsule);
       boolean lentOrR=(m==Mdf.Lent || m==Mdf.Readable);
       int allowedR=lentOrR?1:0;
-      for(Type ti:mt.getTs()){
+      for(NormType ti:mt.getTs()){
         Mdf mi=ti.getNT().getMdf();
         if(mi==Mdf.Lent){return false;}
         if(mi==Mdf.Readable){

@@ -25,7 +25,7 @@ import ast.Ast.NormType;
 import ast.Ast.Path;
 import ast.Ast.Position;
 import ast.Ast.Stage;
-import ast.Ast.Type;
+import ast.Ast.NormType;
 import ast.ErrorMessage;
 import ast.ExpCore;
 import ast.ExpCore.*;

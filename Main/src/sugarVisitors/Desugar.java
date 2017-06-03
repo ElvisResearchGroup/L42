@@ -31,7 +31,7 @@ import ast.Ast.Path;
 import ast.Ast.Position;
 import ast.Ast.SignalKind;
 import ast.Ast.Stage;
-import ast.Ast.Type;
+import ast.Ast.NormType;
 import ast.Ast.VarDec;
 import ast.Ast.VarDecCE;
 import ast.Ast.VarDecE;
@@ -134,13 +134,13 @@ public class Desugar extends CloneVisitor{
 
   HashMap<String,ast.ExpCore.ClassB> importedLibs=new HashMap<>();
   Set<String> usedVars=new HashSet<String>();
-  Type t=NormType.immVoid;
-  HashMap<String,Type> varEnv=new HashMap<String,Type>();
+  NormType t=NormType.immVoid;
+  HashMap<String,NormType> varEnv=new HashMap<String,NormType>();
 
   public Expression visit(RoundBlock s) {
     s=blockEtoXE(s);
     //s=blockInferVar(s);
-    HashMap<String, Type> oldVarEnv = new HashMap<String, Type>(varEnv);
+    HashMap<String, NormType> oldVarEnv = new HashMap<String, NormType>(varEnv);
     try{
       if(!s.getContents().isEmpty()){addAllDec(s.getContents().get(0).getDecs());}
       Expression result= super.visit(s);
@@ -150,7 +150,7 @@ public class Desugar extends CloneVisitor{
   }
   @Override protected Catch liftK(Catch k){
     if(!(k instanceof Expression.Catch1)){return super.liftK(k);}
-    //slower but safer?HashMap<String, Type> oldVarEnv = new HashMap<String, Type>(varEnv);
+    //slower but safer?HashMap<String, NormType> oldVarEnv = new HashMap<String, NormType>(varEnv);
     String added=null;
     try{
       Expression.Catch1 k1=(Expression.Catch1)k;
@@ -196,8 +196,8 @@ public class Desugar extends CloneVisitor{
     return s.withContents(ctx);
   }
 
-  public Type _computeTypeForClassBForVar(VarDecXE varDec) {
-    Type t=varDec.getT().get();
+  public NormType _computeTypeForClassBForVar(VarDecXE varDec) {
+    NormType t=varDec.getT().get();
     t=t.withPath(computeTypeForClassBForVar(t.getPath()));
     return t;
   }
@@ -209,14 +209,14 @@ public class Desugar extends CloneVisitor{
     }
   private RoundBlock blockInferVar(RoundBlock s) {
     if(s.getContents().isEmpty()){return s;}
-    HashMap<String, Type> localVarEnv = new HashMap<String, Type>(this.varEnv);
+    HashMap<String, NormType> localVarEnv = new HashMap<String, NormType>(this.varEnv);
     List<VarDec> newDecs =new ArrayList<VarDec>();
     for(VarDec _dec:s.getContents().get(0).getDecs()){
       if(!(_dec instanceof VarDecXE)){
         newDecs.add(_dec);continue;}
       VarDecXE dec=(VarDecXE)_dec;
       if(dec.getT().isPresent()){
-        Type ti=dec.getT().get();
+        NormType ti=dec.getT().get();
         localVarEnv.put(dec.getX(),ti);
         newDecs.add(dec);
         continue;
@@ -238,7 +238,7 @@ public class Desugar extends CloneVisitor{
       s=s.withMs(ms).withH(new Ast.TraitHeader());
       }
     Set<String> oldUsedVars = this.usedVars;
-    HashMap<String, Type> oldVarEnv = this.varEnv;
+    HashMap<String, NormType> oldVarEnv = this.varEnv;
     try{
       s=(ClassB)super.visit(s);
       s=FlatFirstLevelLocalNestedClasses.of(s,this);
@@ -287,13 +287,13 @@ public class Desugar extends CloneVisitor{
         continue;
         }
       k.match(k1->result.add(liftK(k1)), kM->{
-        for(Type t:kM.getTs()){
+        for(NormType t:kM.getTs()){
           result.add(liftK(new Expression.Catch1(kM.getP(),kM.getKind(),t,x,kM.getInner())));
         }
         return false;
       },
       kP->{
-        for(Type t:kP.getTs()){
+        for(NormType t:kP.getTs()){
           //S on T e ==  catch exception T x S e(x)
           Expression inner=kP.getInner();
           inner=new Expression.FCall(kP.getP(),inner,Doc.empty(),
@@ -395,7 +395,7 @@ public class Desugar extends CloneVisitor{
     bc.add(new Expression.BlockContent(decs,ks));
     return new RoundBlock(p,Doc.empty(),inner,bc);
   }
-  static Expression.Catch getK(Position pos,SignalKind kind, String x, Type t,Expression inner){
+  static Expression.Catch getK(Position pos,SignalKind kind, String x, NormType t,Expression inner){
   if (x==""){return new Expression.CatchMany(pos,kind,Collections.singletonList(t),inner);}
   return new Expression.Catch1(pos,kind,t,x,inner);
   }
@@ -603,9 +603,9 @@ public class Desugar extends CloneVisitor{
   protected MethodSelector liftMs(MethodSelector ms) {
     return ms.withName(desugarName(ms.nameToS()));
   }
-  private<T0,T> T withExpectedType(Type t,Supplier<T> f){
+  private<T0,T> T withExpectedType(NormType t,Supplier<T> f){
     if (t==null){t=Path.Any().toImmNT();}
-    Type aux=this.t;
+    NormType aux=this.t;
     this.t=t;
     T result=f.get();
     this.t=aux;
@@ -620,7 +620,7 @@ public class Desugar extends CloneVisitor{
       );
     }
   public Expression visit(Using s) {
-    Type aux=this.t;
+    NormType aux=this.t;
     this.t=NormType.immVoid;
     Parameters ps = liftPs(s.getPs());
     this.t=aux;
@@ -632,7 +632,7 @@ public class Desugar extends CloneVisitor{
       }//TODO: document stripping of comments and decide scope
     NestedClass nc1=nc;
     this.usedVars=new HashSet<String>();
-    this.varEnv=new HashMap<String, Type>();
+    this.varEnv=new HashMap<String, NormType>();
     usedVars.addAll(CollectDeclaredVars.of(nc.getInner()));
     return withExpectedType(
       NormType.immLibrary,
@@ -640,7 +640,7 @@ public class Desugar extends CloneVisitor{
   }
   public MethodImplemented visit(MethodImplemented mi){
     this.usedVars=new HashSet<String>();
-    this.varEnv=new HashMap<String, Type>();
+    this.varEnv=new HashMap<String, NormType>();
     String mName=desugarName(mi.getS().nameToS());
     mi=mi.withS(mi.getS().withName(mName));
     for(String name:mi.getS().getNames()){
@@ -663,7 +663,7 @@ public class Desugar extends CloneVisitor{
     }
   public MethodWithType visit(MethodWithType mt){
     this.usedVars=new HashSet<String>();
-    this.varEnv=new HashMap<String, Type>();
+    this.varEnv=new HashMap<String, NormType>();
     String mName=desugarName(mt.getMs().nameToS());
     mt=mt.withMs(mt.getMs().withName(mName));
     if(!mt.getInner().isPresent()){return super.visit(mt);}
@@ -720,9 +720,9 @@ public class Desugar extends CloneVisitor{
   }
 */
   static private MethodWithType cfNameK(Doc doc,Mdf mdf,ast.Ast.ConcreteHeader h,MethodSelector called) {
-    List<Type> ts=new ArrayList<Type>();
+    List<NormType> ts=new ArrayList<NormType>();
       for(FieldDec fi:h.getFs()){
-        Type ti=fi.getT();
+        NormType ti=fi.getT();
         ts.add(ti.withDoc(ti.getDoc().sum(fi.getDoc())));
         }
     MethodSelector ms=called.withName(h.getName());
@@ -748,9 +748,9 @@ public class Desugar extends CloneVisitor{
     }*/
   /*static public MethodWithType cfMutK(Doc doc,List<FieldDec>fields,Position pos) {
     List<String> names= new ArrayList<String>();
-    List<Type> ts=new ArrayList<Type>();
+    List<NormType> ts=new ArrayList<NormType>();
     for(FieldDec fi:fields){
-      Type ti=fi.getT().match(nt->{
+      NormType ti=fi.getT().match(nt->{
         if(nt.getMdf()==Mdf.Capsule){nt=nt.withMdf(Mdf.Mutable);}
         return nt;
         },ht->ht);
@@ -797,7 +797,7 @@ public class Desugar extends CloneVisitor{
     *///Careful with capsule
     return s;
     }
-  private static boolean requireExposer(Type t) {
+  private static boolean requireExposer(NormType t) {
     Mdf mdf= ((NormType)t).getMdf();
     return mdf==Mdf.Mutable || mdf==Mdf.Capsule|| mdf==Mdf.Lent;
 
@@ -808,7 +808,7 @@ public class Desugar extends CloneVisitor{
     result.add(generateSetter(pos, f, doc));
   }
   private static MethodWithType generateSetter(Expression.Position pos, ast.Ast.FieldDec f, Doc doc) {
-    Type tt=TypeManipulation.noFwd(f.getT().getNT());
+    NormType tt=TypeManipulation.noFwd(f.getT().getNT());
     MethodType mti=new MethodType(false,Mdf.Mutable,Collections.singletonList(tt),NormType.immVoid,Collections.emptyList());
     MethodSelector msi=MethodSelector.of(f.getName(),Collections.singletonList("that"));
     MethodWithType mwt = new MethodWithType(doc, msi, mti, Optional.empty(),pos);
@@ -816,13 +816,13 @@ public class Desugar extends CloneVisitor{
   }
   //left cfExposer generating exposer since is different from generateExposer code for # and capsule
   /*static private void cfExposer(Expression.Position pos,FieldDec f,Doc doc, List<Member> result) {
-    Type tt=f.getT().match(nt->Functions.toComplete(nt), hType->hType);
+    NormType tt=f.getT().match(nt->Functions.toComplete(nt), hType->hType);
     MethodType mti=new MethodType(false,Mdf.Mutable,Collections.emptyList(),tt,Collections.emptyList());
     MethodSelector msi=MethodSelector.of("#"+f.getName(),Collections.emptyList());
     result.add(new MethodWithType(doc, msi, mti, Optional.empty(),pos));
   }*/
     private static MethodWithType generateExposer(Expression.Position pos, FieldDec f, Doc doc) {
-    Type tt=TypeManipulation.noFwd(f.getT().getNT());
+    NormType tt=TypeManipulation.noFwd(f.getT().getNT());
     if(tt.getMdf()==Mdf.Capsule){tt=tt.withMdf(Mdf.Lent);}
     
     MethodType mti=new MethodType(false,Mdf.Mutable,Collections.emptyList(),tt,Collections.emptyList());

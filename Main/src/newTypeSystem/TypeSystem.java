@@ -13,7 +13,7 @@ import ast.Ast;
 import ast.Ast.NormType;
 import ast.Ast.Path;
 import ast.Ast.SignalKind;
-import ast.Ast.Type;
+import ast.Ast.NormType;
 import ast.ExpCore;
 import ast.Ast.C;
 import ast.Ast.Doc;
@@ -82,7 +82,7 @@ public interface TypeSystem{
   public static boolean _methMdfTSubtype(MethodType mSub,MethodType mSuper){
     if (!Functions.isSubtype(mSuper.getMdf(),mSub.getMdf())){return false;}
     if (!Functions.isSubtype(mSub.getReturnType().getNT().getMdf(),mSuper.getReturnType().getNT().getMdf())){return false;}
-    {int i=-1;for(Type tSub:mSub.getTs()){i+=1;Type tSuper=mSuper.getTs().get(i);
+    {int i=-1;for(NormType tSub:mSub.getTs()){i+=1;NormType tSuper=mSuper.getTs().get(i);
       if (!Functions.isSubtype(tSuper.getNT().getMdf(),tSub.getNT().getMdf())){
         return false;
         }    
@@ -95,18 +95,18 @@ public interface TypeSystem{
       return false;
     }
     if(mSub.getTs().size()!=mSuper.getTs().size()){return false;}
-    {int i=-1;for(Type tSub:mSub.getTs()){i+=1;Type tSuper=mSuper.getTs().get(i);
+    {int i=-1;for(NormType tSub:mSub.getTs()){i+=1;NormType tSuper=mSuper.getTs().get(i);
       if (null!=subtype(p,tSuper.getNT(),tSub.getNT())){
         return false;
         }    
       }}
-    for(Type ti:mSub.getExceptions()){
+    for(NormType ti:mSub.getExceptions()){
       if(!exceptionSubtype(p,ti.getNT(), mSuper)){return false;}
       }
     return true;
     }
   public static boolean exceptionSubtype(Program p,NormType ti, MethodType mSuper) {
-    for(Type tj:mSuper.getExceptions()){
+    for(NormType tj:mSuper.getExceptions()){
       if(p.subtypeEq(ti.getPath(),tj.getNT().getPath())){
         return true;
         }

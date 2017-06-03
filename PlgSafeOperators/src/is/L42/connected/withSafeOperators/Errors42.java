@@ -19,7 +19,7 @@ import ast.Ast.Mdf;
 import ast.Ast.MethodSelector;
 import ast.Ast.Path;
 import ast.Ast.Position;
-import ast.Ast.Type;
+import ast.Ast.NormType;
 import ast.Ast;
 import ast.ErrorMessage;
 import ast.ExpCore;
@@ -247,7 +247,7 @@ public class Errors42 {
     int min=Math.min(sizeA,sizeB);
     int max=Math.max(sizeA,sizeB);
     for(int i=min;i<max;i++){parsWrong.add(i);}
-    List<Type> ts = new ArrayList<>(mem.getMt().getTs());
+    List<NormType> ts = new ArrayList<>(mem.getMt().getTs());
     for(int i=sizeA;i<sizeB;i++){
       ts.add(ast.Ast.NormType.immVoid);
       }

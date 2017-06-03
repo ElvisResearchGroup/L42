@@ -12,12 +12,12 @@ import ast.Ast;
 import ast.Ast.Doc;
 import ast.Ast.NormType;
 import ast.Ast.Path;
-import ast.Ast.Type;
+import ast.Ast.NormType;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface ActionType {
-  public static enum Type{
+  public static enum NormType{
     Library(Ast.NormType.immLibrary),
     Void(Ast.NormType.immVoid),
     ImmAny(Ast.NormType.immAny),
@@ -26,9 +26,9 @@ public @interface ActionType {
     MutAny(Ast.NormType.immAny.withMdf(Mdf.Mutable)),
     LentAny(Ast.NormType.immAny.withMdf(Mdf.Lent)),
     ReadAny(Ast.NormType.immAny.withMdf(Mdf.Readable));
-    Ast.Type type;
-    Type(Ast.Type type){this.type=type;}
+    Ast.NormType type;
+    NormType(Ast.NormType type){this.type=type;}
   }
-  Type[] value();
+  NormType[] value();
   //Mdf mdf() default Mdf.Immutable;
 }

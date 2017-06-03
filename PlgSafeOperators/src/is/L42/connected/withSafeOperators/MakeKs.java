@@ -19,7 +19,7 @@ import ast.Ast.MethodSelector;
 import ast.Ast.MethodType;
 import ast.Ast.NormType;
 import ast.Ast.Position;
-import ast.Ast.Type;
+import ast.Ast.NormType;
 import auxiliaryGrammar.Functions;
 import programReduction.Program;
 import sugarVisitors.Desugar;
@@ -36,7 +36,7 @@ public class MakeKs {
   private boolean hasReadLentSetter=false;
   private ClassB makeKs(ClassB top, ClassB that,
       List<String> fieldNames, String mutK, String lentK, String readK,String immK,boolean fwd) {
-    List<Type>fieldTypes=new ArrayList<>();
+    List<NormType>fieldTypes=new ArrayList<>();
     for(String f :fieldNames){
       if(!MethodSelector.checkX(f,true)){throw new Error("Invalid field name provided:["+f+"]");}
       fieldTypes.add(candidate(that.getMs(),f));
@@ -70,12 +70,12 @@ static private MethodWithType changeMt(MethodWithType proto,Function<MethodType,
   }
 
 
-static private NormType mdfChange(Type n,Mdf m1,Mdf m2){
+static private NormType mdfChange(NormType n,Mdf m1,Mdf m2){
   NormType nt=(NormType)n;
   if(nt.getMdf().equals(m1)){return nt.withMdf(m2);}
     return nt;
   }
-static private NormType addFwd(Type n){
+static private NormType addFwd(NormType n){
   return Functions.toPh(n.getNT());
   }
 static private MethodType fwdK(MethodType proto) {
@@ -113,7 +113,7 @@ static private MethodType immK(MethodType proto) {
     .withReturnType(mdfChange(proto.getReturnType(),Mdf.Mutable,Mdf.Immutable));
   }
   //can not reuse the desugar one, here we create ExpCore stuff, also , the sugar one may disappear
-  static private MethodWithType prototypeK(Doc doc,List<String>fieldNames,List<Type>fieldTypes,Position pos) {
+  static private MethodWithType prototypeK(Doc doc,List<String>fieldNames,List<NormType>fieldTypes,Position pos) {
     MethodSelector ms=MethodSelector.of("",fieldNames);
     NormType resT=NormType.mutThis0;
     MethodType mt=new MethodType(false,ast.Ast.Mdf.Class,fieldTypes,resT,Collections.emptyList());

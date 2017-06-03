@@ -294,7 +294,7 @@ private static void displayAbstractMethods(ClassB cb,StringBuilder result,String
       }
       return res+"  ]\n";
     }
-    if(obj instanceof Ast.Type){return ToFormattedText.of((Ast.Type)obj);}
+    if(obj instanceof Ast.NormType){return obj.toString();}
 
     if(obj instanceof ClassB.Member){return ToFormattedText.of((ClassB.Member)obj);}
     //if(obj instanceof Expression){return ToFormattedText.of((Expression)obj);}

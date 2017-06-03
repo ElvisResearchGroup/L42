@@ -18,7 +18,6 @@ import org.junit.Test;
 import ast.Ast.Mdf;
 import ast.Ast.MethodType;
 import ast.Ast.Path;
-import ast.Ast.Type;
 import auxiliaryGrammar.Functions;
 import auxiliaryGrammar.WellFormednessCore;
 import programReduction.Program;
@@ -38,8 +37,8 @@ static{
       if(p2==Mdf.ImmutablePFwd ||p2==Mdf.MutablePFwd){continue;}
       for(Mdf r:Mdf.values()){
         if(r==Mdf.ImmutablePFwd ||r==Mdf.MutablePFwd){continue;}
-        List<Type> tsi=Arrays.asList(_t.withMdf(p1),_t.withMdf(p2));
-        List<Type> tsiSwap=Arrays.asList(_t.withMdf(p2),_t.withMdf(p1));
+        List<NormType> tsi=Arrays.asList(_t.withMdf(p1),_t.withMdf(p2));
+        List<NormType> tsiSwap=Arrays.asList(_t.withMdf(p2),_t.withMdf(p1));
         MethodType add1 = proto.withTs(tsi).withReturnType(_t.withMdf(r));
         MethodType add2 = proto.withTs(tsiSwap).withReturnType(_t.withMdf(r));
         if(!WellFormednessCore.methodTypeWellFormed(add1)){continue;}
@@ -236,7 +235,7 @@ static Program __p=TestProgram.p("{}");
     }
  
 MethodType recLeft(MethodType mt){
-  List<Type>newTs=mt.getTs().subList(1, mt.getTs().size());
+  List<NormType>newTs=mt.getTs().subList(1, mt.getTs().size());
   Mdf mdf=mt.getTs().get(0).getNT().getMdf();
   if(TypeManipulation.fwd_or_fwdP_in(mdf)){return null;}
   return mt.withMdf(mdf).withTs(newTs);

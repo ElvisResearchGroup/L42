@@ -104,7 +104,7 @@ public class Rename {
     HashSet<PathMx> result1=new HashSet<>();
     HashSet<MethodSelector> result2=new HashSet<>();
     MethodPathCloneVisitor ren=new RenameUsage(cb, maps,p){
-      public Ast.Type liftT(Ast.Type t){return t;}
+      public Ast.NormType liftT(Ast.NormType t){return t;}
       @Override protected MethodSelector liftMs(MethodSelector ms){return ms;}
       @Override protected MethodSelector liftMsInMetDec(MethodSelector ms){return ms;}
       public ExpCore visit(MCall s) {

@@ -10,7 +10,7 @@ import java.util.Set;
 import ast.ExpCore;
 import ast.Ast.Mdf;
 import ast.Ast.Path;
-import ast.Ast.Type;
+import ast.Ast.NormType;
 import ast.ErrorMessage;
 import ast.ExpCore.Block;
 import ast.ExpCore.X;
@@ -20,7 +20,7 @@ import coreVisitors.CollectPaths0;
 import newTypeSystem.TypeManipulation;
 import tools.Assertions;
 import ast.Ast.MethodType;
-import ast.Ast.Type;
+import ast.Ast.NormType;
 
 public class WellFormednessCore {
   public static boolean methodTypeWellFormed(MethodType mt){
@@ -28,7 +28,7 @@ public class WellFormednessCore {
   boolean r2=false;
   //if exists fwdImm _ in Ts then (return type).mdf in {mut, fwdMut, imm, fwdImm}
   //if exists fwdMut _ in Ts then (return type).mdf in {mut, fwdMut}
-  for(Type t:mt.getTs()){
+  for(NormType t:mt.getTs()){
     Mdf m=t.getNT().getMdf();
     if(m==Mdf.ImmutableFwd){r1=true;}
     if(m==Mdf.MutableFwd){r2=true;}
@@ -52,7 +52,7 @@ public class WellFormednessCore {
     }
   public static void capsuleOnlyOnce(ExpCore.ClassB.MethodWithType mwt){
     List<String> res = countX(mwt.getInner());
-    {int i=-1;for(Type ti:mwt.getMt().getTs()){i++;
+    {int i=-1;for(NormType ti:mwt.getMt().getTs()){i++;
       if(ti.getNT().getMdf()!=Mdf.Capsule){continue;}
       String capsX=mwt.getMs().getNames().get(i);
       if(Collections.frequency(res,capsX)<=1){continue;}

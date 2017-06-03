@@ -30,7 +30,7 @@ public class Method extends Location.LocationImpl<ClassB.MethodWithType, Lib>{
     Ast.NormType thisT=new NormType(mt.getMdf(),Path.outer(0),Ast.Doc.empty());
     List<Type.Parameter> res=new ArrayList<>();
     res.add(new Type.Parameter(0,thisT,inner,Method.this));
-    {int i=0; for(Ast.Type ti:mt.getTs()){i+=1; //starts from 1
+    {int i=0; for(Ast.NormType ti:mt.getTs()){i+=1; //starts from 1
       res.add(new Type.Parameter(i,ti.getNT(),inner,Method.this));
     }}
     return res;
@@ -43,7 +43,7 @@ public class Method extends Location.LocationImpl<ClassB.MethodWithType, Lib>{
   Cacher<List<Type.Exception>> exceptionsC=new Cacher<List<Type.Exception>>(){public List<Type.Exception> cache(){
   MethodType mt = inner.getMt();
   List<Type.Exception> res=new ArrayList<>();
-  {int i=-1; for(Ast.Type ti:mt.getTs()){i+=1; //starts from 0
+  {int i=-1; for(Ast.NormType ti:mt.getTs()){i+=1; //starts from 0
     res.add(new Type.Exception(i,ti.getNT(),inner,Method.this));
   }}
   return res;

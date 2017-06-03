@@ -11,7 +11,7 @@ import ast.ExpCore.Block.Dec;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.*;
 import ast.Ast.*;
-import ast.Ast.Type.*;
+import ast.Ast.NormType.*;
 
 public class CloneVisitor implements Visitor<ExpCore>{
   protected <T extends ExpCore>T lift(T e){
@@ -22,11 +22,11 @@ public class CloneVisitor implements Visitor<ExpCore>{
     return result;
     }
   protected Path liftP(Path p){return p;}
-  protected Optional<Type> liftTOpt(Optional<Type> t){
+  protected Optional<NormType> liftTOpt(Optional<NormType> t){
     if(!t.isPresent()){return t;}
     return Optional.of(liftT(t.get()));
   }
-  protected Type liftT(Type t){
+  protected NormType liftT(NormType t){
     return new NormType(t.getMdf(),liftP(t.getPath()),liftDoc(t.getDoc()));
     }
   protected List<MethodSelectorX> liftSXs(List<MethodSelectorX> selectors) {
@@ -102,7 +102,7 @@ public class CloneVisitor implements Visitor<ExpCore>{
     return Map.of(this::liftDec,s);
   }
   public ExpCore visit(ClassB s) {
-    List<Type> sup = liftSup(s.getSupertypes());
+    List<NormType> sup = liftSup(s.getSupertypes());
     List<Member> ms = liftMembers(s.getMs());
     return new ClassB(
       liftDoc(s.getDoc1()),
@@ -116,7 +116,7 @@ public class CloneVisitor implements Visitor<ExpCore>{
   public List<Member> liftMembers(List<Member> s) {
     return Map.of(this::liftM,s);
   }
-  protected List<Type> liftSup(List<Type> supertypes) {
+  protected List<NormType> liftSup(List<NormType> supertypes) {
     return Map.of(this::liftT,supertypes);
   }
   @Override

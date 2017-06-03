@@ -1,7 +1,7 @@
 package newTypeSystem;
 import ast.Ast.MethodType;
 import ast.Ast.NormType;
-import ast.Ast.Type;
+import ast.Ast.NormType;
 import ast.Ast.Path;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodWithType;
@@ -45,8 +45,8 @@ public class AlternativeMethodTypes {
 //  Ts->T;Ps in methTypes(p,P,ms) 
 //(mNoFwd)-------------------------------------------------------------------
 //  noFwd Ts-> noFwd T;Ps in methTypes(p,P,ms)
-    List<Type> ts = Map.of(t->noFwd(t.getNT()),mt.getTs());
-    Type retT=noFwd(mt.getReturnType().getNT());
+    List<NormType> ts = Map.of(t->noFwd(t.getNT()),mt.getTs());
+    NormType retT=noFwd(mt.getReturnType().getNT());
     return mt.withReturnType(retT).withTs(ts);
     }
 
@@ -57,7 +57,7 @@ public class AlternativeMethodTypes {
     NormType retT=mt.getReturnType().getNT();
     if(retT.getMdf()!=Mdf.Mutable){return null;}
     retT=retT.withMdf(Mdf.Capsule);
-    List<Type> ts = Map.of(t->mutToCapsule(t.getNT()),mt.getTs());
+    List<NormType> ts = Map.of(t->mutToCapsule(t.getNT()),mt.getTs());
     return mt.withReturnType(retT).withTs(ts).withMdf(mutToCapsule(mt.getMdf()));
     }
   static MethodType _mI(MethodType mt){
@@ -69,7 +69,7 @@ public class AlternativeMethodTypes {
     NormType retT=mt.getReturnType().getNT();
     if(retT.getMdf()!=Mdf.Readable && retT.getMdf()!=Mdf.Lent){return null;}
     retT=retT.withMdf(Mdf.Immutable);
-    List<Type> ts = Map.of(t->toImmOrCapsule(t.getNT()),mt.getTs());
+    List<NormType> ts = Map.of(t->toImmOrCapsule(t.getNT()),mt.getTs());
     return mt.withReturnType(retT).withTs(ts).withMdf(toImmOrCapsule(mt.getMdf()));
     }
 
@@ -80,7 +80,7 @@ public class AlternativeMethodTypes {
     NormType retT=mt.getReturnType().getNT();
     retT=_toLent(retT);
     if(retT==null){return null;}
-    List<Type> ts = Map.of(t->mutToCapsule(t.getNT()),mt.getTs());
+    List<NormType> ts = Map.of(t->mutToCapsule(t.getNT()),mt.getTs());
     MethodType res= mt.withReturnType(retT).withTs(ts).withMdf(Mdf.Lent);
     if(WellFormednessCore.methodTypeWellFormed(res)){return res;}
     return null;
@@ -95,7 +95,7 @@ public class AlternativeMethodTypes {
     NormType retT=mt.getReturnType().getNT();
     retT=_toLent(retT);
     if(retT==null){return null;}
-    List<Type> ts = Map.of(t->mutToCapsule(t.getNT()),mt.getTs());
+    List<NormType> ts = Map.of(t->mutToCapsule(t.getNT()),mt.getTs());
     ts.set(parNum, pN.withMdf(Mdf.Lent));
     MethodType res= mt.withReturnType(retT).withTs(ts).withMdf(mutToCapsule(mt.getMdf()));
     if(WellFormednessCore.methodTypeWellFormed(res)){return res;}
@@ -110,7 +110,7 @@ public class AlternativeMethodTypes {
     NormType retT=mt.getReturnType().getNT();
     if(retT.getMdf()!=Mdf.MutablePFwd){return null;}
     retT=retT.withMdf(Mdf.ImmutablePFwd);
-    List<Type> ts = Map.of(t->mutToCapsuleAndFwdMutToFwdImm(t.getNT()),mt.getTs());
+    List<NormType> ts = Map.of(t->mutToCapsuleAndFwdMutToFwdImm(t.getNT()),mt.getTs());
     MethodType res= mt.withReturnType(retT).withTs(ts).withMdf(mutToCapsuleAndFwdMutToFwdImm(mt.getMdf()));
     if(WellFormednessCore.methodTypeWellFormed(res)){return res;}
     return null;
@@ -124,7 +124,7 @@ public class AlternativeMethodTypes {
     NormType retT=mt.getReturnType().getNT();
     if(retT.getMdf()!=Mdf.MutablePFwd){return null;}
     retT=retT.withMdf(Mdf.Readable);
-    List<Type> ts = Map.of(t->mutToCapsuleAndFwdToRead(t.getNT()),mt.getTs());
+    List<NormType> ts = Map.of(t->mutToCapsuleAndFwdToRead(t.getNT()),mt.getTs());
     MethodType res=mt.withReturnType(retT).withTs(ts).withMdf(mutToCapsuleAndFwdToRead(mt.getMdf()));
     if(WellFormednessCore.methodTypeWellFormed(res)){return res;}
     return null;
@@ -158,12 +158,12 @@ public class AlternativeMethodTypes {
     if(mImmFwd!=null){add(res,mNoFwd(mImmFwd));}  
     if(mt.getMdf()==Mdf.Mutable){add(res,_mVp(base,0));}
     //later, 0 for mvp is the receiver so is ok to start from 1
-    {int i=0;for(Type ti:base.getTs()){i+=1;
+    {int i=0;for(NormType ti:base.getTs()){i+=1;
       if(ti.getNT().getMdf()!=Mdf.Mutable){continue;}
       add(res,_mVp(base,i)); //1 mType for each mut parameter
       }}
     if(mt.getMdf()==Mdf.Mutable){add(res,_mVp(mNoFwd,0));}
-    {int i=0;for(Type ti:mNoFwd.getTs()){i+=1;
+    {int i=0;for(NormType ti:mNoFwd.getTs()){i+=1;
     if(ti.getNT().getMdf()!=Mdf.Mutable){continue;}
     add(res,_mVp(mNoFwd,i)); //1 mType for each mut parameter
     }}

@@ -107,7 +107,7 @@ public interface Ast {
   
   final class VarDecXE implements VarDec {
     private final boolean isVar;
-    private final Optional<Type> t;
+    private final Optional<NormType> t;
     private final String x;
     private final Expression inner;
     
@@ -118,7 +118,7 @@ public interface Ast {
     @java.beans.ConstructorProperties({"isVar", "t", "x", "inner"})
     @java.lang.SuppressWarnings("all")
     @javax.annotation.Generated("lombok")
-    public VarDecXE(final boolean isVar, final Optional<Type> t, final String x, final Expression inner) {
+    public VarDecXE(final boolean isVar, final Optional<NormType> t, final String x, final Expression inner) {
       this.isVar = isVar;
       this.t = t;
       this.x = x;
@@ -133,7 +133,7 @@ public interface Ast {
     
     @java.lang.SuppressWarnings("all")
     @javax.annotation.Generated("lombok")
-    public Optional<Type> getT() {
+    public Optional<NormType> getT() {
       return this.t;
     }
     
@@ -200,7 +200,7 @@ public interface Ast {
     
     @java.lang.SuppressWarnings("all")
     @javax.annotation.Generated("lombok")
-    public VarDecXE withT(final Optional<Type> t) {
+    public VarDecXE withT(final Optional<NormType> t) {
       return this.t == t ? this : new VarDecXE(this.isVar, t, this.x, this.inner);
     }
     
@@ -510,14 +510,14 @@ public interface Ast {
   
   final class FieldDec {
     private final boolean isVar;
-    private final Type t;
+    private final NormType t;
     private final String name;
     private final Doc doc;
     
     @java.beans.ConstructorProperties({"isVar", "t", "name", "doc"})
     @java.lang.SuppressWarnings("all")
     @javax.annotation.Generated("lombok")
-    public FieldDec(final boolean isVar, final Type t, final String name, final Doc doc) {
+    public FieldDec(final boolean isVar, final NormType t, final String name, final Doc doc) {
       this.isVar = isVar;
       this.t = t;
       this.name = name;
@@ -532,7 +532,7 @@ public interface Ast {
     
     @java.lang.SuppressWarnings("all")
     @javax.annotation.Generated("lombok")
-    public Type getT() {
+    public NormType getT() {
       return this.t;
     }
     
@@ -599,7 +599,7 @@ public interface Ast {
     
     @java.lang.SuppressWarnings("all")
     @javax.annotation.Generated("lombok")
-    public FieldDec withT(final Type t) {
+    public FieldDec withT(final NormType t) {
       return this.t == t ? this : new FieldDec(this.isVar, t, this.name, this.doc);
     }
     
@@ -616,27 +616,9 @@ public interface Ast {
     }
   }
   
-  interface Type {
-    //<T> T match(Function<NormType, T> normType, Function<HistoricType, T> hType);
-    default ast.Ast.NormType getNT() {
-      assert this instanceof ast.Ast.NormType : this;
-      return (ast.Ast.NormType)this;
-    }
-    
-    Doc getDoc();
-    
-    Type withDoc(Doc doc);
-    
-    Mdf getMdf();
-    
-    Type withMdf(Mdf m);
-    
-    Path getPath();
-    
-    Type withPath(Path p);
-  }
+ 
   
-  final class NormType implements Type {
+  final class NormType{
     private final Mdf mdf;
     private final Path path;
     private final Doc doc;
@@ -659,7 +641,7 @@ public interface Ast {
       this.path = path;
       this.doc = doc;
     }
-    
+    public NormType getNT(){return this;}
     @java.lang.SuppressWarnings("all")
     @javax.annotation.Generated("lombok")
     public Mdf getMdf() {
@@ -808,7 +790,7 @@ public interface Ast {
   }
   /*@Value
  @Wither
- public class HistoricType implements Type {
+ public class HistoricType implements NormType {
   Path path;
   List<MethodSelectorX> selectors;
   Doc doc;
@@ -817,12 +799,12 @@ public interface Ast {
   }
  }*/
   /*@Value
- public class FreeType implements Type {
+ public class FreeType implements NormType {
   public <T> T match(Function<NormType, T> normType, Function<HistoricType, T> hType) {
    throw tools.Assertions.codeNotReachable();
   }
   public Doc getDoc(){return Doc.empty();}
-  public Type withDoc(Doc doc){return this;}
+  public NormType withDoc(Doc doc){return this;}
  }*/
   final class MethodSelector {
     private final String name;
@@ -1035,9 +1017,9 @@ public interface Ast {
   final class MethodType {
     private final boolean refine;
     private final Mdf mdf;
-    private final List<Type> ts;
-    private final Type returnType;
-    private final List<Type> exceptions;
+    private final List<NormType> ts;
+    private final NormType returnType;
+    private final List<NormType> exceptions;
     
     @Override
     public String toString() {
@@ -1051,7 +1033,7 @@ public interface Ast {
     @java.beans.ConstructorProperties({"refine", "mdf", "ts", "returnType", "exceptions"})
     @java.lang.SuppressWarnings("all")
     @javax.annotation.Generated("lombok")
-    public MethodType(final boolean refine, final Mdf mdf, final List<Type> ts, final Type returnType, final List<Type> exceptions) {
+    public MethodType(final boolean refine, final Mdf mdf, final List<NormType> ts, final NormType returnType, final List<NormType> exceptions) {
       this.refine = refine;
       this.mdf = mdf;
       this.ts = ts;
@@ -1073,19 +1055,19 @@ public interface Ast {
     
     @java.lang.SuppressWarnings("all")
     @javax.annotation.Generated("lombok")
-    public List<Type> getTs() {
+    public List<NormType> getTs() {
       return this.ts;
     }
     
     @java.lang.SuppressWarnings("all")
     @javax.annotation.Generated("lombok")
-    public Type getReturnType() {
+    public NormType getReturnType() {
       return this.returnType;
     }
     
     @java.lang.SuppressWarnings("all")
     @javax.annotation.Generated("lombok")
-    public List<Type> getExceptions() {
+    public List<NormType> getExceptions() {
       return this.exceptions;
     }
     
@@ -1144,19 +1126,19 @@ public interface Ast {
     
     @java.lang.SuppressWarnings("all")
     @javax.annotation.Generated("lombok")
-    public MethodType withTs(final List<Type> ts) {
+    public MethodType withTs(final List<NormType> ts) {
       return this.ts == ts ? this : new MethodType(this.refine, this.mdf, ts, this.returnType, this.exceptions);
     }
     
     @java.lang.SuppressWarnings("all")
     @javax.annotation.Generated("lombok")
-    public MethodType withReturnType(final Type returnType) {
+    public MethodType withReturnType(final NormType returnType) {
       return this.returnType == returnType ? this : new MethodType(this.refine, this.mdf, this.ts, returnType, this.exceptions);
     }
     
     @java.lang.SuppressWarnings("all")
     @javax.annotation.Generated("lombok")
-    public MethodType withExceptions(final List<Type> exceptions) {
+    public MethodType withExceptions(final List<NormType> exceptions) {
       return this.exceptions == exceptions ? this : new MethodType(this.refine, this.mdf, this.ts, this.returnType, exceptions);
     }
   }

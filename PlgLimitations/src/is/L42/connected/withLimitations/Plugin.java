@@ -10,7 +10,7 @@ import platformSpecific.javaTranslation.Resources;
 public class Plugin implements PluginType{
   long originalSystemTime=-1;
   private boolean isFirstCall(){return originalSystemTime==-1;}
-  @ActionType({ActionType.Type.Void,ActionType.Type.Library})
+  @ActionType({ActionType.NormType.Void,ActionType.NormType.Library})
   public Resources.Void MexecutionTime£xlessThan(Object _i1){
     int waitTime=ensureExtractInt32(_i1);
     long systemTime=System.currentTimeMillis();

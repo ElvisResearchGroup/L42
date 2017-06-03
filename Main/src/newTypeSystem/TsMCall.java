@@ -15,7 +15,7 @@ import ast.Ast.MethodType;
 import ast.Ast.NormType;
 import ast.Ast.Path;
 import ast.ExpCore;
-import ast.Ast.Type;
+import ast.Ast.NormType;
 
 public interface TsMCall extends TypeSystem{
 default TOut innerMVPRetype(TOk ri,NormType ti){
@@ -56,7 +56,7 @@ default TOut innerMVPRetype(TOk ri,NormType ti){
 //unachievable return type (T) for method (P.ms) [line numbers of expression and declaration]
 //2 type all the parameters with mutOnlyToLent(Ts) //we may include mutOnlyToLent in the computation of the MTypes, instead of in the loop below
     List<TOk> resp=new ArrayList<>();
-    List<Type> computed=new ArrayList<>();
+    List<NormType> computed=new ArrayList<>();
     List<ExpCore> annotated=new ArrayList<>();
     ExpCore e0=s.getInner();
     NormType t0=new NormType(mType.getMdf(),rec,Doc.empty());
@@ -87,7 +87,7 @@ default TOut innerMVPRetype(TOk ri,NormType ti){
 //it is  not over if there is a mathing method type with mutToCapsule(result param types)
 //tsToCaps=Ts[with r in resp (use[mutToCapsule(r.T)])]
 //mTypeMVP=_bestMatchMtype(tsToCaps,TSIn.T,mTypes)
-  List<Type>tsToCaps=new ArrayList<>();
+  List<NormType>tsToCaps=new ArrayList<>();
   for(TOk r: resp){
     Mdf m=r.computed.getMdf();
     if(m==Mdf.MutableFwd || m==Mdf.MutablePFwd){

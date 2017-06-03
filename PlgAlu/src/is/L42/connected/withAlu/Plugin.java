@@ -12,56 +12,56 @@ import static auxiliaryGrammar.EncodingHelper.*;
 
 public class Plugin implements PluginType {
   // +
-  @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+  @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
   public  Object MsumInt32£xn1£xn2(Object cb1,Object cb2){
     Integer i1=ensureExtractInt32(cb1);
     Integer i2=ensureExtractInt32(cb2);
     return i1+i2;
   }
   //*
-  @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+  @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
   public  Object MmulInt32£xn1£xn2(Object cb1,Object cb2){
     Integer i1=ensureExtractInt32(cb1);
     Integer i2=ensureExtractInt32(cb2);
     return i1*i2;
   }
   // /
-  @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+  @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
   public  Object MdivInt32£xn1£xn2(Object cb1,Object cb2){
     Integer i1=ensureExtractInt32(cb1);
     Integer i2=ensureExtractInt32(cb2);
     return i1/i2;
   }
   //-
-  @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+  @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
   public  Object MsubInt32£xn1£xn2(Object cb1,Object cb2){
     Integer i1=ensureExtractInt32(cb1);
     Integer i2=ensureExtractInt32(cb2);
     return i1-i2;
   }
   //&
-  @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+  @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
   public  Object MandInt32£xn1£xn2(Object cb1,Object cb2){
     Integer i1=ensureExtractInt32(cb1);
     Integer i2=ensureExtractInt32(cb2);
     return i1 & i2;
   }
   // |
-  @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+  @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
   public  Object MorInt32£xn1£xn2(Object cb1,Object cb2){
     Integer i1=ensureExtractInt32(cb1);
     Integer i2=ensureExtractInt32(cb2);
     return i1 | i2;
   }
   // ^
-  @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+  @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
   public  Object MxorInt32£xn1£xn2(Object cb1,Object cb2){
     Integer i1=ensureExtractInt32(cb1);
     Integer i2=ensureExtractInt32(cb2);
     return i1 ^ i2;
   }
   // <<
-  @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+  @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
   public  Object MleftShiftInt32£xn1£xn2(Object cb1,Object cb2){
     Integer i1=ensureExtractInt32(cb1);
     Integer i2=ensureExtractInt32(cb2);
@@ -69,7 +69,7 @@ public class Plugin implements PluginType {
     return i1 << i2;
   }
 //>>
- @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+ @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
  public  Object MrightShiftInt32£xn1£xn2(Object cb1,Object cb2){
    Integer i1=ensureExtractInt32(cb1);
    Integer i2=ensureExtractInt32(cb2);
@@ -77,13 +77,13 @@ public class Plugin implements PluginType {
    return i1 >>> i2;
  }
   //~
-  @ActionType({ActionType.Type.Library,ActionType.Type.Library})
+  @ActionType({ActionType.NormType.Library,ActionType.NormType.Library})
   public  Object MnotInt32£xn1(Object cb1){
     Integer i1=ensureExtractInt32(cb1);
     return ~i1 ;
   }
   //==
-  @ActionType({ActionType.Type.Void,ActionType.Type.Library,ActionType.Type.Library})
+  @ActionType({ActionType.NormType.Void,ActionType.NormType.Library,ActionType.NormType.Library})
   public  Resources.Void MifInt32EqualDo£xn1£xn2(Object cb1,Object cb2){
     Integer i1=ensureExtractInt32(cb1);
     Integer i2=ensureExtractInt32(cb2);
@@ -91,7 +91,7 @@ public class Plugin implements PluginType {
     throw Resources.notAct;
   }
   //<
-  @ActionType({ActionType.Type.Void,ActionType.Type.Library,ActionType.Type.Library})
+  @ActionType({ActionType.NormType.Void,ActionType.NormType.Library,ActionType.NormType.Library})
   public  Resources.Void MifInt32GrtDo£xn1£xn2(Object cb1,Object cb2){
     Integer i1=ensureExtractInt32(cb1);
     Integer i2=ensureExtractInt32(cb2);
@@ -99,7 +99,7 @@ public class Plugin implements PluginType {
     throw Resources.notAct;
   }
   //<=
-  @ActionType({ActionType.Type.Void,ActionType.Type.Library,ActionType.Type.Library})
+  @ActionType({ActionType.NormType.Void,ActionType.NormType.Library,ActionType.NormType.Library})
   public  Resources.Void MifInt32GEqDo£xn1£xn2(Object cb1,Object cb2){
     Integer i1=ensureExtractInt32(cb1);
     Integer i2=ensureExtractInt32(cb2);
@@ -107,7 +107,7 @@ public class Plugin implements PluginType {
     throw Resources.notAct;
   }
 //< unsigned
-  @ActionType({ActionType.Type.Void,ActionType.Type.Library,ActionType.Type.Library})
+  @ActionType({ActionType.NormType.Void,ActionType.NormType.Library,ActionType.NormType.Library})
   public  Resources.Void MifUInt32GrtDo£xn1£xn2(Object cb1,Object cb2){
     Integer i1=ensureExtractInt32(cb1);
     Integer i2=ensureExtractInt32(cb2);
@@ -115,49 +115,49 @@ public class Plugin implements PluginType {
     throw Resources.notAct;
   }
 //<= unsigned
-  @ActionType({ActionType.Type.Void,ActionType.Type.Library,ActionType.Type.Library})
+  @ActionType({ActionType.NormType.Void,ActionType.NormType.Library,ActionType.NormType.Library})
   public  Resources.Void MifUInt32GEqDo£xn1£xn2(Object cb1,Object cb2){
     Integer i1=ensureExtractInt32(cb1);
     Integer i2=ensureExtractInt32(cb2);
     if(Integer.compareUnsigned(i1,i2)>0){return Resources.Void.instance;}
     throw Resources.notAct;
   }
-  @ActionType({ActionType.Type.Library,ActionType.Type.Library})
+  @ActionType({ActionType.NormType.Library,ActionType.NormType.Library})
   public  Object MstringToInt32£xthat(Object cb){
     String s=ensureExtractStringU(cb);
     try{return new Integer(s);}
     catch(NumberFormatException nfe){throw new Resources.Error("InvalidEncodingForI32: "+s);    }
   }
   
-  @ActionType({ActionType.Type.Library})
+  @ActionType({ActionType.NormType.Library})
   public  Object MconstStringEmpty(){return "";}
   
 
-  @ActionType({ActionType.Type.Library,ActionType.Type.Library})
+  @ActionType({ActionType.NormType.Library,ActionType.NormType.Library})
   public  Object Mint32ToString£xthat(Object cb){
     Integer i=ensureExtractInt32(cb);
     return ""+i;
   }
   //isTrueBool
-  @ActionType({ActionType.Type.Void,ActionType.Type.Library})
+  @ActionType({ActionType.NormType.Void,ActionType.NormType.Library})
   public  Resources.Void MifFalseBoolDo£xthat(Object cb1){
     Boolean b=ensureExtractBool(cb1);
     if(b){return Resources.Void.instance;}
     throw Resources.notAct;
   }
-  @ActionType({ActionType.Type.Library})
+  @ActionType({ActionType.NormType.Library})
   public  Object MconstTrue(){return true;}
   
-  @ActionType({ActionType.Type.Library})
+  @ActionType({ActionType.NormType.Library})
   public  Object MconstFalse(){return false;} 
   
-  @ActionType({ActionType.Type.Void,ActionType.Type.Library})
+  @ActionType({ActionType.NormType.Void,ActionType.NormType.Library})
   public Resources.Void MstringDebug£xthat(Object cb){
     String s=ensureExtractStringU(cb);
     L42.printDebug(s);
     return Resources.Void.instance;
   }
-  @ActionType({ActionType.Type.Void,ActionType.Type.Library,ActionType.Type.Library})
+  @ActionType({ActionType.NormType.Void,ActionType.NormType.Library,ActionType.NormType.Library})
   public Resources.Void MfileDebug£xfileName£xcontent(Object _fName,Object _content){
     String fName=ensureExtractStringU(_fName);
     String content=ensureExtractStringU(_content);
@@ -167,7 +167,7 @@ public class Plugin implements PluginType {
     return Resources.Void.instance;
   }
 
-  @ActionType({ActionType.Type.Library,ActionType.Type.Library})
+  @ActionType({ActionType.NormType.Library,ActionType.NormType.Library})
   public Object MfileReadDebug£xfileName(Object _fName){
     String fName=ensureExtractStringU(_fName);
     java.nio.file.Path p=Paths.get(fName);
@@ -177,7 +177,7 @@ public class Plugin implements PluginType {
       }
     catch (IOException e) {throw new Error(e);}
   }
-  @ActionType({ActionType.Type.Library,ActionType.Type.Library})
+  @ActionType({ActionType.NormType.Library,ActionType.NormType.Library})
   public Object MlocalToAbsolute£xfileName(Object _fName){
     String fName=ensureExtractStringU(_fName);
     java.nio.file.Path p= Paths.get(fName);
@@ -187,18 +187,18 @@ public class Plugin implements PluginType {
 
 
 
-  @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+  @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
   public  Object MstringConcat£xs1£xs2(Object cb1,Object cb2){
     String s1=ensureExtractStringU(cb1);
     String s2=ensureExtractStringU(cb2);
     return s1+s2;
   }
-  @ActionType({ActionType.Type.Library,ActionType.Type.Library})
+  @ActionType({ActionType.NormType.Library,ActionType.NormType.Library})
   public  Object MstringSize£xthat(Object cb1){
     String s1=ensureExtractStringU(cb1);
     return s1.length();
   }
-  @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+  @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
   public  Object MstringSubstring£xthat£xstart£xend(Object cb1,Object _start,Object _end){
     String s1=ensureExtractStringU(cb1);
     int start=ensureExtractInt32(_start);
@@ -210,14 +210,14 @@ public class Plugin implements PluginType {
     return r;
   }
   
-  @ActionType({ActionType.Type.Void,ActionType.Type.Library,ActionType.Type.Library})
+  @ActionType({ActionType.NormType.Void,ActionType.NormType.Library,ActionType.NormType.Library})
   public Resources.Void MifStringEqualDo£xs1£xs2(Object cb1,Object cb2){
     String s1=ensureExtractStringU(cb1);
     String s2=ensureExtractStringU(cb2);
     if(!s1.equals(s2)){return Resources.Void.instance;}
     throw Resources.notAct;
   }
-  @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+  @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
   public Object MstringReplace£xthat£xsrc£xdest(Object _that,Object _src,Object _dest){
     String that=ensureExtractStringU(_that);
     String src=ensureExtractStringU(_src);

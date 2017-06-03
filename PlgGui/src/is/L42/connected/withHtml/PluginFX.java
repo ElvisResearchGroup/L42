@@ -33,7 +33,7 @@ try to learn to use ACE for the IDE?
 public class PluginFX implements PluginType {
 //OLD, unused.
   public static Ast.MethodType Mopen£that£title=mt(Path.Void(),Path.Library(),Path.Library());
-  @ActionType({ActionType.Type.Void,ActionType.Type.Library,ActionType.Type.Library})
+  @ActionType({ActionType.NormType.Void,ActionType.NormType.Library,ActionType.NormType.Library})
   public Resources.Void Mopen£that£title(Object cb1,Object cb2){
     String s1=ensureExtractStringU(cb1);
     String s2=ensureExtractStringU(cb2);
@@ -41,7 +41,7 @@ public class PluginFX implements PluginType {
     return Resources.Void.instance;
   }
   public static Ast.MethodType Mset£that£id=mt(Path.Void(),Path.Library(),Path.Library());
-  @ActionType({ActionType.Type.Void,ActionType.Type.Library,ActionType.Type.Library})
+  @ActionType({ActionType.NormType.Void,ActionType.NormType.Library,ActionType.NormType.Library})
   public  Resources.Void Mset£that£id(Object cb1,Object cb2){
     String s1=ensureExtractStringU(cb1);
     String s2=ensureExtractStringU(cb2);
@@ -49,7 +49,7 @@ public class PluginFX implements PluginType {
     return Resources.Void.instance;
   }
   
-  @ActionType({ActionType.Type.Library,ActionType.Type.Library})
+  @ActionType({ActionType.NormType.Library,ActionType.NormType.Library})
   public  Object MexecuteJs£that(Object _s1){
     String s1=EncodingHelper.ensureExtractStringU(_s1);
     String res = FrameFX.executeJs(s1);
@@ -57,7 +57,7 @@ public class PluginFX implements PluginType {
     return res;
   }
   public static Ast.MethodType MeventPending=mt(Path.Library());
-  @ActionType({ActionType.Type.Library})
+  @ActionType({ActionType.NormType.Library})
   public Object MeventPending(){
     try { return FrameFX.getEventString(); } 
     catch (ApplicationDead e) {

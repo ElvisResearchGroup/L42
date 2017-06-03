@@ -16,7 +16,7 @@ import ast.Ast.Path;
 import ast.Ast.Position;
 import ast.Ast.SignalKind;
 import ast.Ast.Stage;
-import ast.Ast.Type;
+import ast.Ast.NormType;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.EPath;
 import ast.ExpCore.Using;
@@ -187,13 +187,13 @@ public class EncodingHelper{
     return result;
   }
   public static Ast.MethodType mtType(Path result){
-    List<Type> ts=new ArrayList<>();
+    List<NormType> ts=new ArrayList<>();
     ts.add(NormType.classAny);
     return new Ast.MethodType(false,Mdf.Immutable,ts,result.toImmNT(),Collections.emptyList());
   }
 
   public static Ast.MethodType mt(Path result,Path ...paths){
-    List<Type> ts=new ArrayList<>();
+    List<NormType> ts=new ArrayList<>();
     for(Path pi:paths){
       ts.add(pi.toImmNT());      }
     return new Ast.MethodType(false,Mdf.Immutable,ts,result.toImmNT(),Collections.emptyList());

@@ -18,7 +18,7 @@ import ast.Ast.MethodSelector;
 import ast.Ast.MethodType;
 import ast.Ast.NormType;
 import ast.Ast.Path;
-import ast.Ast.Type;
+import ast.Ast.NormType;
 import ast.ExpCore;
 import ast.ExpCore.Block;
 import ast.ExpCore.Block.Dec;
@@ -157,10 +157,10 @@ private static void addMwt(Program p, PlgInfo plgInfo, Method[] jms, Constructor
 //checks
   try{
     isOkAsReturn(p,pTop,mwt.getMt().getReturnType());
-    for(Type ti:mwt.getMt().getExceptions()){
+    for(NormType ti:mwt.getMt().getExceptions()){
       isOkAsException(p,pTop,ti.getNT().getPath());
       }
-    for(Type ti:mwt.getMt().getTs()){
+    for(NormType ti:mwt.getMt().getTs()){
       isOkAsParameter(p,pTop,ti);
       }//TODO: we may want to cache those tests if performance is needed
     }
@@ -238,7 +238,7 @@ private static UsingInfo usingConstructor(PlgInfo plgInfo, Constructor<?>[] jcs,
     {int i=-1;for(String x: mwt.getMs().getNames()){i++;
       ExpCore pi=new ExpCore.X(mwt.getP(),x);
       boolean needAddBinaryRepr=true;
-      Type ti=mwt.getMt().getTs().get(i);
+      NormType ti=mwt.getMt().getTs().get(i);
       if(ti.equals(NormType.immLibrary)){
         needAddBinaryRepr=false;
         }
@@ -267,7 +267,7 @@ private static UsingInfo usingConstructor(PlgInfo plgInfo, Constructor<?>[] jcs,
       On on=b.getOns().get(0);
       Dec k0 = ((Block)on.getInner()).getDecs().get(0);
       List<Dec> ks=new ArrayList<>();
-      {int i=-1;for(Type ti:mt.getExceptions()){i++;
+      {int i=-1;for(NormType ti:mt.getExceptions()){i++;
         MCall mci=((MCall)k0.getInner()).withInner(ExpCore.EPath.wrap(ti.getNT().getPath()));
         ks.add(k0.withInner(mci).withX(k0.getX()+i));
         }}
@@ -362,7 +362,7 @@ public static boolean hasPluginUnresponsive(ClassB l){
       "Class "+cBar+" doesnot have @pluginPart annotation");
       }
     }
-  private static void isOkAsParameter(Program p, Path csTop, Type ti) throws ClassUnfit, MethodUnfit {
+  private static void isOkAsParameter(Program p, Path csTop, NormType ti) throws ClassUnfit, MethodUnfit {
     Path pi=ti.getNT().getPath();
     if(ti.getNT().getMdf()==Mdf.Class){return;}//class parameters are ok, and we just omit the .#binaryRepr() call
     if (pi.equals(Path.Library())){return;}//Libraries are ok and we just omit the .#binaryRepr() call
@@ -389,7 +389,7 @@ public static boolean hasPluginUnresponsive(ClassB l){
     }
 
 
-  private static void isOkAsReturn(Program p, Path csTop, Type ti) throws ClassUnfit, MethodUnfit {
+  private static void isOkAsReturn(Program p, Path csTop, NormType ti) throws ClassUnfit, MethodUnfit {
     Path pi=ti.getNT().getPath();
     if (pi.equals(Path.Void())){return;}
     if (pi.equals(Path.Library())){return;}//We will need to generate a simpler returning expression

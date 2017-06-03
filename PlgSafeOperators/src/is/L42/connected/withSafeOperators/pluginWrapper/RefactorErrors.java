@@ -88,8 +88,8 @@ public class RefactorErrors{
  and a method that throw the General, if you really want...
  
  No, this interact with design of introspection.
- NestedClass/Type represent a internal/external location already,
- so all exceptions can have a NestedClass/Type field
+ NestedClass/NormType represent a internal/external location already,
+ so all exceptions can have a NestedClass/NormType field
  and a Location allowing with-case on Location.InterfaceNum, ...Location.methodReturnType
 
 so
@@ -116,7 +116,7 @@ ClassPath with exception NotFound
 Location
   Class .Free .Named
   Method
-  Type interface?
+  NormType interface?
   .Interface 
   .ReturnType ...
  

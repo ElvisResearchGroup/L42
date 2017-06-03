@@ -10,7 +10,7 @@ import java.util.stream.Stream;
 
 import ast.Ast.Mdf;
 import ast.Ast.NormType;
-import ast.Ast.Type;
+import ast.Ast.NormType;
 import ast.Ast.Path;
 import ast.Ast.SignalKind;
 import ast.Ast;
@@ -54,11 +54,11 @@ public static boolean fwd_or_fwdP_in(Mdf m){
       || m==Mdf.MutablePFwd;
   }
 
-public static boolean fwd_or_fwdP_in(Collection<? extends Type>ts){
+public static boolean fwd_or_fwdP_in(Collection<? extends NormType>ts){
 //  fwd_or_fwd%_in Ts
 //    exists T in Ts such that
 //    T in {fwdImm _,fwdMut_,fwd%Imm _,fwd%Mut _}
-  for(Type ti:ts){
+  for(NormType ti:ts){
     if(fwd_or_fwdP_in(ti.getNT().getMdf())){return true;}
     }
   return false;

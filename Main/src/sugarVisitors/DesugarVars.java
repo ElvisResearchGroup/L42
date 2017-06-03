@@ -25,7 +25,7 @@ import ast.Ast.Path;
 import ast.Ast.Position;
 import ast.Ast.SignalKind;
 import ast.Ast.Stage;
-import ast.Ast.Type;
+import ast.Ast.NormType;
 import ast.Expression.Catch;
 import ast.Expression.Catch1;
 import ast.Expression.With.On;
@@ -205,9 +205,9 @@ private VarDecXE getDecForVar(Ast.C cName,VarDecXE varDec) {
    //usedCnames.add(nameC);
    return new VarDecCE(new NestedClass(Doc.empty(),C.of(nameC).withUniqueNum(L42.freshPrivate()),cb,null));
  }
- public Type _computeTypeForClassBForVar(VarDecXE varDec) {
+ public NormType _computeTypeForClassBForVar(VarDecXE varDec) {
    assert varDec.getT().isPresent(): " it is now required by the stricted syntax";
-   Type t=varDec.getT().get();
+   NormType t=varDec.getT().get();
    t=t.withPath(computeTypeForClassBForVar(t.getPath()));
    return t;
  }

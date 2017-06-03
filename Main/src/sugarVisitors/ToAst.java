@@ -31,7 +31,7 @@ import ast.Ast.Parameters;
 import ast.Ast.Path;
 import ast.Ast.SignalKind;
 import ast.Ast.TraitHeader;
-import ast.Ast.Type;
+import ast.Ast.NormType;
 import ast.Ast.VarDec;
 import ast.Ast.VarDecCE;
 import ast.Ast.VarDecE;
@@ -52,20 +52,20 @@ public class ToAst extends AbstractVisitor<Expression>{
       String name=(h.mDec()==null)?"":h.mDec().getText().replace('\t', '(');
       if(name.endsWith("(")){name=name.substring(0,name.length()-1);}
       Mdf mdf=Ast.Mdf.fromString((h.Mdf()==null)?"":h.Mdf().getText());
-      List<Type> ts=new ArrayList<>();
+      List<NormType> ts=new ArrayList<>();
       List<String> names=new ArrayList<>();
       Iterator<TContext> tit=h.t().iterator();
       Iterator<DocsOptContext> dit=h.docsOpt().iterator();
       dit.next();//jump first, called doc1 already
-      Type returnType=parseType(tit.next());
+      NormType returnType=parseType(tit.next());
       for(XContext x : h.x()){
         names.add(x.getText());
-        Type ti=parseType(tit.next());
+        NormType ti=parseType(tit.next());
         ti=ti.withDoc(ti.getDoc().sum(parseDoc(dit.next())));
         ts.add(ti);
       }
       MethodSelector s=MethodSelector.of(name, names);
-      List<Type> exceptions=new ArrayList<>();
+      List<NormType> exceptions=new ArrayList<>();
       for(TerminalNode p:h.Path()){exceptions.add(Path.sugarParse(p.getText()).toImmNT());}
       Optional<Expression> inner=Optional.empty();
       if(ctx.eTopForMethod()!=null){inner=Optional.of(ctx.eTopForMethod().accept(ToAst.this));}
@@ -253,7 +253,7 @@ public class ToAst extends AbstractVisitor<Expression>{
   }
 
   private On parseOnPlus(OnPlusContext on) {
-    List<Type> ts=new ArrayList<Type>();
+    List<NormType> ts=new ArrayList<NormType>();
     for(TContext t: on.t()){ts.add(parseType(t));}
     Expression inner=on.eTop((on.Case()==null)?0:1).accept(this);
     return new On(ts,inner);
@@ -271,16 +271,16 @@ public class ToAst extends AbstractVisitor<Expression>{
     }
   private VarDecXE parseRealVDec(VarDecContext vd) {
     TContext tt=vd.t();
-    Optional<Type> t=(tt==null)?Optional.<Type>empty():Optional.of(parseType(tt));
+    Optional<NormType> t=(tt==null)?Optional.<NormType>empty():Optional.of(parseType(tt));
     Expression inner=vd.eTop().accept(this);
     return new Ast.VarDecXE(vd.Var()!=null,t,nameL(vd.x()),inner);
     }
   private VarDecXE parseI(IContext vd) {
     TContext tt=vd.t();
-    Optional<Type> t=(tt==null)?Optional.<Type>empty():Optional.of(parseType(tt));
+    Optional<NormType> t=(tt==null)?Optional.<NormType>empty():Optional.of(parseType(tt));
     return new Ast.VarDecXE(vd.Var()!=null,t,nameL(vd.x()),vd.eTop().accept(this));
     }
-  private Type parseType(TContext t) {
+  private NormType parseType(TContext t) {
     if(t.concreteT()!=null){
       ConcreteTContext tt = t.concreteT();
       Doc d=parseDoc(tt.docsOpt());
@@ -360,7 +360,7 @@ public class ToAst extends AbstractVisitor<Expression>{
   @Override public Expression visitClassB(ClassBContext ctx) {
     Doc doc1=parseDoc(ctx.docsOpt().get(0));//the number 1 if present is ignored
     Header h=parseHeader(ctx.header());
-    List<Type> supertypes= new ArrayList<>();
+    List<NormType> supertypes= new ArrayList<>();
     ImplsContext impl = ctx.impls();
     if (impl!=null){
       {int i=-1;for(TerminalNode p: impl.Path()){i+=1;

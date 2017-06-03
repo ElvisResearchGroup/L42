@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.List;
 
 import ast.Ast;
-import ast.Ast.Type;
+import ast.Ast.NormType;
 import ast.Ast.Path;
 import ast.ExpCore;
 import ast.ExpCore.ClassB;
@@ -44,7 +44,7 @@ Ast.Position located=null;
   return super.visit(s);
   }
 
-  public Type liftT(Type s) {
+  public NormType liftT(NormType s) {
   Path inner=s.getPath();
   if(s.toString().endsWith("Location")){
     System.out.println(s);

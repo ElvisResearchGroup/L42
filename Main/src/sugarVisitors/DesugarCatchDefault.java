@@ -13,7 +13,7 @@ import tools.Map;
 import ast.Expression.BlockContent;
 import ast.Ast.Path;
 import ast.Ast.Position;
-import ast.Ast.Type;
+import ast.Ast.NormType;
 import ast.Expression;
 import ast.Expression.Catch;
 import ast.Expression.Catch1;
@@ -29,19 +29,19 @@ public class DesugarCatchDefault extends CloneVisitor{
     public Expression getInner() {return catch1.getInner();}
     public final Catch1 catch1;
     public CatchToComplete(Catch1 catch1){this.catch1=catch1;}
-    public Catch1 completeCatch(Type t){
+    public Catch1 completeCatch(NormType t){
       return catch1.withT(t);
     }
     public Position getP() {return catch1.getP();}
   }
-  Ast.Type lastReturn=null;
+  Ast.NormType lastReturn=null;
   public static ClassB of(ClassB s) {
     return (ClassB)s.accept(new DesugarCatchDefault());
   }
   protected BlockContent liftBC(BlockContent c) {
     if(c.get_catch().isEmpty()){return super.liftBC(c);}
     List<Catch> ks = Map.of(this::liftK, c.get_catch());
-    Type oldR=this.lastReturn;
+    NormType oldR=this.lastReturn;
     this.lastReturn=newR(ks);
     try{
       List<VarDec> liftVarDecs = liftVarDecs(c.getDecs());
@@ -50,7 +50,7 @@ public class DesugarCatchDefault extends CloneVisitor{
     finally{this.lastReturn=oldR;}
   }
     
-  private Type newR(List<Catch> ks) {
+  private NormType newR(List<Catch> ks) {
     if (ks.size()!=1){return this.lastReturn;} 
     Expression.Catch1 k=(Expression.Catch1)ks.get(0);
     if(k.getKind()!=SignalKind.Return){return this.lastReturn;}

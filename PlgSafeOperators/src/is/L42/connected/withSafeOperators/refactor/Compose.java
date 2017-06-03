@@ -262,7 +262,7 @@ import ast.Ast.Doc;
 import ast.Ast.NormType;
 import ast.Ast.Path;
 import ast.Ast.Position;
-import ast.Ast.Type;
+import ast.Ast.NormType;
 import ast.ExpCore;
 import ast.ExpCore.*;
 import ast.ExpCore.ClassB.NestedClass;
@@ -378,8 +378,8 @@ mwts1 +mwts2=empty
     if(a.isInterface() || b.isInterface()){
       assert false;
       }
-    List<Type> impls=new ArrayList<>(a.getSupertypes());
-    for(Type ti:b.getSupertypes()){impls.remove(ti);}
+    List<NormType> impls=new ArrayList<>(a.getSupertypes());
+    for(NormType ti:b.getSupertypes()){impls.remove(ti);}
     impls.addAll(b.getSupertypes());
     List<MethodWithType>mwts=new ArrayList<>(a.mwts());
     for(MethodWithType mwti: b.mwts()){Functions._findAndRemove(mwts,mwti.getMs());}
@@ -424,7 +424,7 @@ mwts1 +mwts2=empty
     if(!res[0].isOk()){return res[0];}
     List<MethodWithType> newMwt = newMwts(pData, topA, topB, a, b, path, res);
     if(!res[0].isOk()){return res[0];}    
-    List<Type> newTs = new ArrayList<>(a.getSupertypes());
+    List<NormType> newTs = new ArrayList<>(a.getSupertypes());
     newTs.addAll(b.getSupertypes());
     if(implementsNeedRecomputing(newTs,path)){
       res[0].toOk().lateChecks.add(pD->recomputeImplements(pD, path, newTs));
@@ -479,7 +479,7 @@ mwts1 +mwts2=empty
       else {
         ClassB cb=(ClassB)nai.getE();
         if(implementsNeedRecomputing(cb.getSupertypes(),path)){
-          List<Type>newTs=new ArrayList<>(cb.getSupertypes());
+          List<NormType>newTs=new ArrayList<>(cb.getSupertypes());
           out[0].toOk().lateChecks.add(pD->recomputeImplements(pD,path,newTs));
           newNested.add(nai.withE(cb.withSupertypes(newTs)));
           }
@@ -490,7 +490,7 @@ mwts1 +mwts2=empty
     for(NestedClass bn:bns){
       ClassB cb=(ClassB)bn.getE();
       if(implementsNeedRecomputing(cb.getSupertypes(),path)){
-      List<Type>newTs=new ArrayList<>(cb.getSupertypes());
+      List<NormType>newTs=new ArrayList<>(cb.getSupertypes());
       out[0].toOk().lateChecks.add(pD->recomputeImplements(pD,path,newTs));
       newNested.add(bn.withE(cb.withSupertypes(newTs)));
       }
@@ -499,7 +499,7 @@ mwts1 +mwts2=empty
     return newNested;
     }
   
-  private static SumErr recomputeImplements(Program p,List<C> path,List<Type> newTs) {
+  private static SumErr recomputeImplements(Program p,List<C> path,List<NormType> newTs) {
     p=p.navigate(path);
     try{
       List<Path> res = programReduction.Methods.collect(p,Map.of(t->t.getNT().getPath(), newTs));
@@ -511,9 +511,9 @@ mwts1 +mwts2=empty
       return new SumErr(null,null,path); 
       }
     }
-  private static boolean implementsNeedRecomputing(List<Type> ts,List<C> path) {
+  private static boolean implementsNeedRecomputing(List<NormType> ts,List<C> path) {
     int pSize=path.size();
-    for(Type t:ts){
+    for(NormType t:ts){
       if (t.getNT().getPath().outerNumber()<=pSize){return true;}
       }
     return false;
@@ -538,16 +538,16 @@ mwts1 +mwts2=empty
        if (isAllOk){return false;}
        return true;
       }
-  private static List<Type> excRes(Program p, List<Type>a,List<Type>b){
-    List<Type> res = excFilter(p,a,b);
+  private static List<NormType> excRes(Program p, List<NormType>a,List<NormType>b){
+    List<NormType> res = excFilter(p,a,b);
     res.addAll(excFilter(p,b,a));
     return res;
     }
-  private static List<Type> excFilter(Program p, List<Type>mayStay,List<Type>other){
-    List<Type>res=new ArrayList<>();
+  private static List<NormType> excFilter(Program p, List<NormType>mayStay,List<NormType>other){
+    List<NormType>res=new ArrayList<>();
     //res={ti in mayStay | exists tj in other s.t. p|-ti<=tj }
-    for(Type ti:mayStay){
-      for(Type tj:other){
+    for(NormType ti:mayStay){
+      for(NormType tj:other){
         if(p.subtypeEq(ti.getNT().getPath(),tj.getNT().getPath())){
           res.add(ti);
           }
@@ -560,7 +560,7 @@ public static SumOutM methodCompose(Program p,
     ClassB topA, ClassB topB,
     MethodWithType ma, MethodWithType mb,
     List<C> path) {
-  List<Type>excRes=excRes(p,ma.getMt().getExceptions(),mb.getMt().getExceptions());
+  List<NormType>excRes=excRes(p,ma.getMt().getExceptions(),mb.getMt().getExceptions());
   NormType resA=ma.getMt().getReturnType().getNT();
   NormType resB=mb.getMt().getReturnType().getNT();
   NormType res;

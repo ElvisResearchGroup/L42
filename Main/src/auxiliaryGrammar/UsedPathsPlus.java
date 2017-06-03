@@ -56,7 +56,7 @@ public class UsedPathsPlus {
     ps.addAll(Functions.remove1OuterAndPrimitives(of(cb)));
     return null;
   }
-  /*Void collectPaths(List<Path> ps,Ast.Type t){
+  /*Void collectPaths(List<Path> ps,Ast.NormType t){
     t.match(nt->ps.add(nt.getPath()), hType->ps.add(hType.getPath()));
     return null;
   }*/
@@ -76,7 +76,7 @@ public class UsedPathsPlus {
   }
   /*Void collectPaths(List<Path> ps, MethodType mt) {
     collectPaths(ps,mt.getReturnType());
-    for(Ast.Type t:mt.getTs()){
+    for(Ast.NormType t:mt.getTs()){
       collectPaths(ps,t);
       }
     ps.addAll(mt.getExceptions());

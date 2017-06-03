@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import ast.Ast.MethodSelector;
 import ast.Ast.Path;
-import ast.Ast.Type;
+import ast.Ast.NormType;
 import ast.Ast;
 import ast.ExpCore;
 import ast.Redex;

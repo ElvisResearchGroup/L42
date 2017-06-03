@@ -72,7 +72,7 @@ public class Lib extends Location.LocationImpl<ExpCore.ClassB,Lib>{
 
   Cacher<List<Type.Implemented>> implementedsC=new Cacher<List<Type.Implemented>>(){public List<Type.Implemented> cache(){
   List<Type.Implemented> res=new ArrayList<>();
-  {int i=-1; for(Ast.Type ti:inner.getSupertypes()){i+=1; //starts from 0
+  {int i=-1; for(Ast.NormType ti:inner.getSupertypes()){i+=1; //starts from 0
     res.add(new Type.Implemented(i,ti.getNT(),inner,Lib.this));
   }}
   return res;
@@ -94,7 +94,7 @@ public class Lib extends Location.LocationImpl<ExpCore.ClassB,Lib>{
     return isRedirectableRec(this.inner);}//deep, all abs, no private
   public boolean isPotentialInterface(){
     //freeTemplate must mean no class methods!! old idea (class methods not called) does not seams to make sense, if not called, then could be just not having them...
-    //technically you can still have class Type variables and use the method over those, but it seams like a minor case
+    //technically you can still have class NormType variables and use the method over those, but it seams like a minor case
     return !this.inner.mwts().stream().anyMatch(mwt->
       mwt.get_inner().isPresent() 
       || mwt.getMs().isUnique()

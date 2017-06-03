@@ -14,7 +14,7 @@ import ast.Ast.Header;
 import ast.Ast.MethodType;
 import ast.Ast.NormType;
 import ast.Ast.Path;
-import ast.Ast.Type;
+import ast.Ast.NormType;
 import ast.Ast.VarDec;
 import ast.Expression;
 import ast.Expression.ClassB.Member;
@@ -32,7 +32,7 @@ public class CloneVisitor implements Visitor<Expression>{
     return result;
     }
   protected Path liftP(Path p){return p;}
-  protected Type liftT(Type t){
+  protected NormType liftT(NormType t){
     assert t!=null;
     return new NormType(t.getMdf(),liftP(t.getPath()),liftDoc(t.getDoc()));
         
@@ -150,7 +150,7 @@ public class CloneVisitor implements Visitor<Expression>{
   public Expression visit(ClassB s) {
     Header h = liftH(s.getH());
     List<FieldDec> fs=Map.of(this::liftF,s.getFields());
-    List<Type> superT = Map.of(this::liftT,s.getSupertypes());
+    List<NormType> superT = Map.of(this::liftT,s.getSupertypes());
     List<Member> ms = Map.of(this::liftM,s.getMs());
     return new ClassB(liftDoc(s.getDoc1()),h,fs,superT,ms,s.getP());
   }

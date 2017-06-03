@@ -43,7 +43,7 @@ import tools.Map;
 //empty scheleton
 public class Plugin implements PluginType{
 
-    @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+    @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
     public Object Mcompose£xleft£xright(Object _left,Object _right){
       return Timer.record("Mcompose£xleft£xright", ()-> {
         ClassB left=ensureExtractClassB(_left);
@@ -55,7 +55,7 @@ public class Plugin implements PluginType{
         }
       });
       }
-    @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+    @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
     public Object MrenameClass£xthat£xsrc£xdest(Object _that,Object _src,Object _dest){
       ClassB that=ensureExtractClassB(_that);
       List<Ast.C> src=PathAux.parseValidCs(ensureExtractStringU(_src));
@@ -63,7 +63,7 @@ public class Plugin implements PluginType{
       //System.out.println("####################RENAMECLASS:"+src+"   "+dest);
       return Rename.renameClass(Resources.getP(),that,src,dest);
       }
-    @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+    @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
     public Object MrenameMethod£xthat£xpath£xsrc£xdest(Object _that,Object _path,Object _src,Object _dest){
       ClassB that=ensureExtractClassB(_that);
       List<Ast.C> path=PathAux.parseValidCs(ensureExtractStringU(_path));
@@ -71,7 +71,7 @@ public class Plugin implements PluginType{
        MethodSelector dest = MethodSelector.parse(ensureExtractStringU(_dest));
       return Rename.renameMethod(Resources.getP(),that,path,src,dest);
       }
-    @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+    @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
     public Object MsumMethods£xthat£xpath£xsrc1£xsrc2£xdest£xname(Object _that,Object _path,Object _src1,Object _src2,Object _dest,Object _name){
       ClassB that=ensureExtractClassB(_that);
       String name=ensureExtractStringU(_name);
@@ -81,7 +81,7 @@ public class Plugin implements PluginType{
        MethodSelector dest = MethodSelector.parse(ensureExtractStringU(_dest));
       return SumMethods.sumMethods(that,path,src1,src2,dest,name);
       }
-    @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.TypeAny})
+    @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.TypeAny})
     public Object Mredirect£xthat£xsrc£xdest(Object _that,Object _src,Object _dest){
       ClassB that=ensureExtractClassB(_that);
       List<Ast.C> src=PathAux.parseValidCs(ensureExtractStringU(_src));
@@ -91,20 +91,20 @@ public class Plugin implements PluginType{
       if(dest.isCore()){dest=dest.setNewOuter(dest.outerNumber()+1);}//TODO: see if extractPath should be changed
       return Redirect.redirect(Resources.getP(),that,Path.outer(0,src),dest);
       }
-    @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+    @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
     public Object MremoveImplementation£xthat£xpath(Object _that,Object _path){
       ClassB that=ensureExtractClassB(_that);
       List<Ast.C> path=PathAux.parseValidCs(ensureExtractStringU(_path));
       return Abstract.toAbstract(that,path);
       }
-    @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+    @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
     public Object MremoveImplementation£xthat£xpath£xselector(Object _that,Object _path,Object _sel){
       ClassB that=ensureExtractClassB(_that);
       List<Ast.C> path=PathAux.parseValidCs(ensureExtractStringU(_path));
       MethodSelector sel = MethodSelector.parse(ensureExtractStringU(_sel));
       return Abstract.toAbstract(Resources.getP(),that,path,sel,null);
       }
-    @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+    @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
     public Object MmoveImplementation£xthat£xpath£xsrc£xdest(Object _that,Object _path,Object _sel1,Object _sel2){
       try{
       ClassB that=ensureExtractClassB(_that);
@@ -117,14 +117,14 @@ public class Plugin implements PluginType{
       throw rte;//to put breakpoint
       }
       }
-    @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+    @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
     public Object MaddDocumentation£xthat£xpath£xdoc(Object _that,Object _path,Object _doc){
       ClassB that=ensureExtractClassB(_that);
       List<Ast.C> path=PathAux.parseValidCs(ensureExtractStringU(_path));
       Doc doc=ensureExtractDoc(_doc);
       return AddDocumentation.addDocumentationOnNestedClass(Resources.getP(),that,path,doc);
       }
-    @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+    @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
     public Object MaddDocumentation£xthat£xpath£xselector£xdoc(Object _that,Object _path,Object _sel,Object _doc){
       ClassB that=ensureExtractClassB(_that);
       List<Ast.C> path=PathAux.parseValidCs(ensureExtractStringU(_path));
@@ -133,19 +133,19 @@ public class Plugin implements PluginType{
       return AddDocumentation.addDocumentationOnMethod(Resources.getP(),that,path,sel,doc);
       }
 
-    @ActionType({ActionType.Type.Library,ActionType.Type.Library})
+    @ActionType({ActionType.NormType.Library,ActionType.NormType.Library})
     public Object MremoveUnreachableCode£xthat(Object _that){
       ClassB that=ensureExtractClassB(_that);
       return RemoveCode.removeUnreachableCode(that);
     }
-    @ActionType({ActionType.Type.Void,ActionType.Type.Library})
+    @ActionType({ActionType.NormType.Void,ActionType.NormType.Library})
     public  Resources.Void MifInvalidDo£xselector(Object _selector){
       String s=ensureExtractStringU(_selector);
      try{Ast.MethodSelector.parse(s);}
      catch(Resources.Error err){throw Resources.notAct;}
      return Resources.Void.instance;
     }
-    @ActionType({ActionType.Type.Void,ActionType.Type.Library})
+    @ActionType({ActionType.NormType.Void,ActionType.NormType.Library})
     public  Resources.Void MifInvalidDo£xpath(Object _path){
       String s=ensureExtractStringU(_path);
      try{PathAux.parseValidCs(s);}
@@ -159,7 +159,7 @@ public class Plugin implements PluginType{
 //--------------------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------------------
     //-----5 +5 introspections //lib
-    @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+    @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
     public Object MintrospectLibraryReport£xthat£xpath(Object _that,Object _path){
       ClassB that=ensureExtractClassB(_that);
       List<Ast.C> path=PathAux.parseValidCs(ensureExtractStringU(_path));
@@ -168,14 +168,14 @@ public class Plugin implements PluginType{
       result.add(Doc.factory(true,"@."+String.join(".",Map.of(ci->""+ci, path))));
       return Resources.Error.multiPartStringClassB("MemberReport",result.toArray());
     }
-    @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+    @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
     public Object MintrospectLibraryReportMember£xthat£xpath£xmemberN(Object _that,Object _path,Object _memberN){
       ClassB that=ensureExtractClassB(_that);
       List<Ast.C> path=PathAux.parseValidCs(ensureExtractStringU(_path));
       int memberN=ensureExtractInt32(_memberN);
       return Introspection.giveInfoMember(that, path,memberN);
     }
-    @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+    @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
     public Object MintrospectLibraryReportType£xthat£xpath£xmemberN£xtypeN(Object _that,Object _path,Object _memberN,Object _typeN){
       ClassB that=ensureExtractClassB(_that);
       List<Ast.C> path=PathAux.parseValidCs(ensureExtractStringU(_path));
@@ -184,14 +184,14 @@ public class Plugin implements PluginType{
       return Introspection.giveInfoType(null,Resources.getP(), that, path, memberN, typeN);
     }
 
-    @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+    @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
     public Object MintrospectLibraryDocAsString£xthat£xpath£xannotationN(Object _that,Object _path,Object _annotationN){
       ClassB that=ensureExtractClassB(_that);
       List<Ast.C> path=PathAux.parseValidCs(ensureExtractStringU(_path));
       int annotationN=ensureExtractInt32(_annotationN);
       return Introspection.extractDocAsString(that, path, annotationN);
     }
-    @ActionType({ActionType.Type.TypeAny,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+    @ActionType({ActionType.NormType.TypeAny,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
     public Object MintrospectLibraryDocPath£xthat£xpath£xannotationN(Object _that,Object _path,Object _annotationN){
       ClassB that=ensureExtractClassB(_that);
       List<Ast.C> path=PathAux.parseValidCs(ensureExtractStringU(_path));
@@ -200,7 +200,7 @@ public class Plugin implements PluginType{
     }
 
     //-----5 +5 introspections //type
-    @ActionType({ActionType.Type.Library,ActionType.Type.TypeAny,ActionType.Type.Library})
+    @ActionType({ActionType.NormType.Library,ActionType.NormType.TypeAny,ActionType.NormType.Library})
     public Object MintrospectTypeReport£xthat£xpath(Object _that,Object _path){
       Path iPath=(_that instanceof Path)?(Path)_that:(Path)((Revertable)_that).revert();
       if (iPath.isPrimitive()){throw Resources.notAct;}
@@ -217,7 +217,7 @@ public class Plugin implements PluginType{
       result.add(Doc.factory(iPath));
       return Resources.Error.multiPartStringClassB("MemberReport",result.toArray());
     }
-    @ActionType({ActionType.Type.Library,ActionType.Type.TypeAny,ActionType.Type.Library,ActionType.Type.Library})
+    @ActionType({ActionType.NormType.Library,ActionType.NormType.TypeAny,ActionType.NormType.Library,ActionType.NormType.Library})
     public Object MintrospectTypeReportMember£xthat£xpath£xmemberN(Object _that,Object _path,Object _memberN){
       Path iPath=(_that instanceof Path)?(Path)_that:(Path)((Revertable)_that).revert();
       ClassB that=Resources.getP().extractClassB(iPath);
@@ -225,7 +225,7 @@ public class Plugin implements PluginType{
       int memberN=ensureExtractInt32(_memberN);
       return Introspection.giveInfoMember(that, path,memberN);
     }
-    @ActionType({ActionType.Type.Library,ActionType.Type.TypeAny,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+    @ActionType({ActionType.NormType.Library,ActionType.NormType.TypeAny,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
     public Object MintrospectTypeReportType£xthat£xpath£xmemberN£xtypeN(Object _that,Object _path,Object _memberN,Object _typeN){
       Path iPath=(_that instanceof Path)?(Path)_that:(Path)((Revertable)_that).revert();
       ClassB that=Resources.getP().extractClassB(iPath);
@@ -235,7 +235,7 @@ public class Plugin implements PluginType{
       return Introspection.giveInfoType(iPath,Resources.getP(), that, path, memberN, typeN);
     }
 
-    @ActionType({ActionType.Type.Library,ActionType.Type.TypeAny,ActionType.Type.Library,ActionType.Type.Library})
+    @ActionType({ActionType.NormType.Library,ActionType.NormType.TypeAny,ActionType.NormType.Library,ActionType.NormType.Library})
     public Object MintrospectTypeDocAsString£xthat£xpath£xannotationN(Object _that,Object _path,Object _annotationN){
       Path iPath=(_that instanceof Path)?(Path)_that:(Path)((Revertable)_that).revert();
       ClassB that=Resources.getP().extractClassB(iPath);
@@ -243,7 +243,7 @@ public class Plugin implements PluginType{
       int annotationN=ensureExtractInt32(_annotationN);
       return Introspection.extractDocAsString(that, path, annotationN);
     }
-    @ActionType({ActionType.Type.TypeAny,ActionType.Type.TypeAny,ActionType.Type.Library,ActionType.Type.Library})
+    @ActionType({ActionType.NormType.TypeAny,ActionType.NormType.TypeAny,ActionType.NormType.Library,ActionType.NormType.Library})
     public Object MintrospectTypeDocPath£xthat£xpath£xannotationN(Object _that,Object _path,Object _annotationN){
       Path iPath=(_that instanceof Path)?(Path)_that:(Path)((Revertable)_that).revert();
       ClassB that=Resources.getP().extractClassB(iPath);
@@ -252,14 +252,14 @@ public class Plugin implements PluginType{
       return Configuration.reduction.convertPath(Introspection.extractDocPath(that, path, annotationN));
     }
     */
-    @ActionType({ActionType.Type.Library,ActionType.Type.Library})
+    @ActionType({ActionType.NormType.Library,ActionType.NormType.Library})
     public Object MprivateNormalize£xthat(Object _that){
       ClassB that=ensureExtractClassB(_that);
       //if(that.getStage().isPrivateNormalized()){return that;}
       return RefreshUniqueNames.refresh(that);
     }
 
-    @ActionType({ActionType.Type.Library,ActionType.Type.Library})
+    @ActionType({ActionType.NormType.Library,ActionType.NormType.Library})
     public  Object MfreshName£xthat(Object _s){
       String name=ensureExtractStringU(_s);
       if (name.isEmpty()){name="fresh";}
@@ -268,7 +268,7 @@ public class Plugin implements PluginType{
       //good for current operators, but for tomorrow ones?
     }
 
-   @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+   @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
     public  Object MmakeMethod£xthat£xpath£xselector£xmdfs£xexceptionN(Object _lib,Object _path,Object _selector, Object _mdfs, Object _execptionN){
       ClassB lib=ensureExtractClassB(_lib);
       List<Ast.C> path = PathAux.parseValidCs(ensureExtractStringU(_path));
@@ -277,7 +277,7 @@ public class Plugin implements PluginType{
       int exceptionN=ensureExtractInt32(_execptionN);
       return MakeMethod.addMethod(lib, path, selector, mdfs, exceptionN);
     }
-    @ActionType({ActionType.Type.Library,ActionType.Type.ImmAny,ActionType.Type.Library,ActionType.Type.Library})
+    @ActionType({ActionType.NormType.Library,ActionType.NormType.ImmAny,ActionType.NormType.Library,ActionType.NormType.Library})
     public  Object MliftValue£xthat£xselector£xlib(Object _that,Object _selector, Object _lib){
       ClassB lib=ensureExtractClassB(_lib);
       MethodSelector selector=MethodSelector.parse(ensureExtractStringU(_selector));
@@ -286,7 +286,7 @@ public class Plugin implements PluginType{
       return LiftValue.liftValue(val,  selector, lib);
     }
 
-    @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+    @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
     public  Object MaddKs£xthat£xpath£xfields£xmutK£xlentK£xreadK£ximmK£xisFwd(
         Object _that,Object _path, Object _fields, Object _mutK,Object _lentK,Object _readK,Object _immK,Object _fwd
         ){
@@ -301,7 +301,7 @@ public class Plugin implements PluginType{
       return MakeKs.makeKs(that, path, Arrays.asList(fieldNames), mutK, lentK, readK, immK, fwd);
     }
 //--------------------------
-    @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+    @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
     public Object MhideMethod£xthat£xpath£xsrc(Object _that,Object _path,Object _src){
       ClassB that=ensureExtractClassB(_that);
       List<Ast.C> path=PathAux.parseValidCs(ensureExtractStringU(_path));
@@ -309,7 +309,7 @@ public class Plugin implements PluginType{
        MethodSelector dest = src.withUniqueNum(L42.freshPrivate());
       return Rename.renameMethod(Resources.getP(),that,path,src,dest);
       }
-    @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+    @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
     public Object MhideClass£xthat£xsrc(Object _that,Object _src){
       ClassB that=ensureExtractClassB(_that);
       List<Ast.C> src=PathAux.parseValidCs(ensureExtractStringU(_src));
@@ -318,7 +318,7 @@ public class Plugin implements PluginType{
       return Rename.renameClass(Resources.getP(),that,src,dest);
       }
     
-    @ActionType({ActionType.Type.Void,ActionType.Type.Library,ActionType.Type.Library})
+    @ActionType({ActionType.NormType.Void,ActionType.NormType.Library,ActionType.NormType.Library})
     public Resources.Void MdeployCode£xthat£xurl(Object _that,Object _url){
       ClassB that=ensureExtractClassB(_that);
       String url=ensureExtractStringU(_url);
@@ -330,7 +330,7 @@ public class Plugin implements PluginType{
       }
     
     /*
-    @ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+    @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
     public Object MhideState£xthat£xsrc(Object _that,Object _src){
       ClassB that=ensureExtractClassB(_that);
       List<Ast.C> src=PathAux.parseValidCs(ensureExtractStringU(_src));

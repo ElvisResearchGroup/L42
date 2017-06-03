@@ -14,7 +14,7 @@ import ast.Ast.MethodType;
 import ast.Ast.NormType;
 import ast.Ast.Path;
 import ast.Ast.SignalKind;
-import ast.Ast.Type;
+import ast.Ast.NormType;
 import ast.ExpCore.Block;
 import ast.ExpCore.Block.Dec;
 import ast.ExpCore.Block.On;

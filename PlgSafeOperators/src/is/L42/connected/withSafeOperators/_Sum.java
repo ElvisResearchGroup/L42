@@ -93,7 +93,7 @@ public class _Sum {
 */
   static ClassB normalizedSum(Program p, ClassB topA, ClassB topB,ClassB a, ClassB b, List<Ast.C> current) {
     List<Member> ms = doubleSimetricalMatch(p,topA,topB,a, b,  current);
-    List<ast.Ast.Type> superT = new ArrayList<>(a.getSupertypes());
+    List<ast.Ast.NormType> superT = new ArrayList<>(a.getSupertypes());
     superT.addAll(b.getSupertypes());
     superT=Collections.unmodifiableList(superT);
     Doc doc1 = a.getDoc1().sum(b.getDoc1());
@@ -182,7 +182,7 @@ public class _Sum {
     pc.retainAll(pb);
     Doc doc = ma.getDoc().sum(mb.getDoc());
     MethodType mt = ma.getMt();
-    List<Ast.Type> opc =pc.stream().map(pi->(Ast.Type)pi.toImmNT()).collect(Collectors.toList());
+    List<Ast.NormType> opc =pc.stream().map(pi->(Ast.NormType)pi.toImmNT()).collect(Collectors.toList());
     Collections.sort(opc, (p1, p2) -> p1.toString().compareTo(p2.toString()));
     mt = mt.withExceptions(opc);
     MethodWithType mwt = ma.withMt(mt).withDoc(doc);

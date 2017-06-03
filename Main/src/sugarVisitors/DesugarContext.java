@@ -20,7 +20,7 @@ import ast.Ast.Parameters;
 import ast.Ast.Path;
 import ast.Ast.Position;
 import ast.Ast.SignalKind;
-import ast.Ast.Type;
+import ast.Ast.NormType;
 import ast.Expression.Catch;
 import ast.Expression.Catch1;
 import ast.Expression.With.On;

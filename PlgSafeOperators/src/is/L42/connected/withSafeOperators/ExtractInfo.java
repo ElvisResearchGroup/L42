@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Set;
 
 import ast.Ast.Path;
-import ast.Ast.Type;
+import ast.Ast.NormType;
 import ast.Ast.NormType;
 import ast.ErrorMessage.TwoDifferentImplementedInterfacesDeclareMethod;
 import ast.ExpCore.*;
@@ -59,8 +59,8 @@ public class ExtractInfo {
     }  }
   static class IsUsedAsPath extends IsUsed{
     IsUsedAsPath(Path target){super(target);}
-    protected List<Type> liftSup(List<Type> supertypes) {return supertypes;}
-    protected Type liftT(Type t){return t;}
+    protected List<NormType> liftSup(List<NormType> supertypes) {return supertypes;}
+    protected NormType liftT(NormType t){return t;}
   public static Set<Path> of(ClassB cb,Path path){
     IsUsedAsPath iu=new IsUsedAsPath(path);
     cb.accept(iu);
@@ -194,7 +194,7 @@ public class ExtractInfo {
        if(!(m instanceof MethodWithType)){continue;}
        MethodWithType mwt=(MethodWithType)m;
        if(mwt.getMt().getMdf()!=Mdf.Class){return false;}
-       Type rt = mwt.getMt().getReturnType();
+       NormType rt = mwt.getMt().getReturnType();
        if(!(rt instanceof NormType)){continue;}
        NormType nt=(NormType)rt;
        if(nt.getPath().equals(Path.outer(0))){return false;}
@@ -238,8 +238,8 @@ public class ExtractInfo {
     List<Integer>res=new ArrayList<>();
     int maxLen=Math.max(mta.getMt().getTs().size(),mtb.getMt().getTs().size());
     for(int i=0;i<maxLen;i++){
-      Type ta;
-      Type tb;
+      NormType ta;
+      NormType tb;
       try{
         ta = mta.getMt().getTs().get(i);
         tb=mtb.getMt().getTs().get(i);

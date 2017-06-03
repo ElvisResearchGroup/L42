@@ -10,7 +10,7 @@ import ast.Ast.Position;
 import ast.Ast;
 import ast.Ast.C;
 import ast.Ast.Path;
-import ast.Ast.Type;
+import ast.Ast.NormType;
 import ast.ErrorMessage;
 import ast.ErrorMessage.IncompleteClassIsRequired;
 import ast.ErrorMessage.PathMetaOrNonExistant;

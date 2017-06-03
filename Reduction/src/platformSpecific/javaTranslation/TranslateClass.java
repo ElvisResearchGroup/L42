@@ -10,7 +10,7 @@ import java.util.Set;
 import tools.Assertions;
 import tools.StringBuilders;
 import ast.Ast;
-import ast.Ast.Type;
+import ast.Ast.NormType;
 import ast.Ast.Path;
 import ast.Ast.Position;
 import ast.Ast.NormType;
@@ -150,7 +150,7 @@ public class TranslateClass {
   }
   private static void getFields(MethodWithType ctor, StringBuilder res) {
     List<String> ns = ctor.getMs().getNames();
-    List<Type> ts = ctor.getMt().getTs();
+    List<NormType> ts = ctor.getMt().getTs();
     StringBuilders.formatSequence(res,ns.iterator(),ts.iterator(),
       ";\n", (n,t)->{
         assert t instanceof NormType;
@@ -165,7 +165,7 @@ public class TranslateClass {
     res.append(s);
     res.append("( ");
     List<String> ns = ctor.getMs().getNames();
-    List<Type> ts = ctor.getMt().getTs();
+    List<NormType> ts = ctor.getMt().getTs();
     StringBuilders.formatSequence(res,ns.iterator(),ts.iterator(),
       ", ",(n,t)->{
         n=Resources.nameOf(n);
@@ -307,7 +307,7 @@ public class TranslateClass {
       assert m instanceof MethodWithType;
       MethodWithType mt=(MethodWithType)m;
       if( !isInterface && !mt.get_inner().isPresent()){continue;}
-      //if(mt.getMt().getMdf()!=Ast.Mdf.Type){continue;}
+      //if(mt.getMt().getMdf()!=Ast.Mdf.NormType){continue;}
       getMethod(p,mt,res);
     }
   }

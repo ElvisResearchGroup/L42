@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.IntStream;
 
-import platformSpecific.fakeInternet.ActionType.Type;
+import platformSpecific.fakeInternet.ActionType.NormType;
 import platformSpecific.javaTranslation.Resources;
 import tools.StringBuilders;
 import ast.Ast.MethodType;
@@ -81,7 +81,7 @@ public interface PluginType {
     ActionType ann = m.getAnnotation(ActionType.class);
     assert ann!=null;
     ArrayList<Ast.NormType> ts=new ArrayList<>();
-    for(ActionType.Type path:ann.value()){
+    for(ActionType.NormType path:ann.value()){
       ts.add(path.type.getNT());
       }
     return ts;

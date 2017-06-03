@@ -19,7 +19,7 @@ import static auxiliaryGrammar.EncodingHelper.*;
 public class Plugin implements PluginType {
 
 	// Connect to database only using a url
-	@ActionType({ActionType.Type.Void,ActionType.Type.Library})
+	@ActionType({ActionType.NormType.Void,ActionType.NormType.Library})
     public Resources.Void Mconnect£xurl(Object _url){
 		String s=ensureExtractStringU(_url);
 
@@ -40,7 +40,7 @@ public class Plugin implements PluginType {
 
 	// Connect to database with username and password
 	@Deprecated /**Not yet implemented**/
-	@ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+	@ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
     public Object Mconnect£xn1£xn2£xn3£xn4(Object server, Object database, Object username, Object password){
 		String s=ensureExtractStringU(server);
 		String t=ensureExtractStringU(database);
@@ -61,7 +61,7 @@ public class Plugin implements PluginType {
     }
 
 	// Select rows from the database
-	@ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+	@ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
     public Object Mquery£xurl£xquery(Object _url, Object _query){
 	  String s=ensureExtractStringU(_query);
 	  String u=ensureExtractStringU(_url);
@@ -75,7 +75,7 @@ public class Plugin implements PluginType {
     }
 
 	// Select rows from the database and display them as rows.
-	@ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+	@ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
     public Object MqueryToString£xurl£xquery(Object _url, Object _query){
 	  String url=ensureExtractStringU(_url);
 	  String query=ensureExtractStringU(_query);
@@ -88,7 +88,7 @@ public class Plugin implements PluginType {
     }
 
 	// insert a new row into the database
-	@ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+	@ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
     public Object Minsert£xurl£xquery(Object _url, Object _query){
 	  String s=ensureExtractStringU(_url);
 	  String q=ensureExtractStringU(_query);
@@ -100,7 +100,7 @@ public class Plugin implements PluginType {
     }
 
 	// Add a new table to the database
-	@ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+	@ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
     public Object McreateNewTable£xurl£xquery(Object _url, Object _query){
 	  String s = ensureExtractStringU(_url);
 	  String q = ensureExtractStringU(_query);
@@ -112,7 +112,7 @@ public class Plugin implements PluginType {
     }
 
 	// Delete rows from the database
-	@ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+	@ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
     public Object Mdelete£xurl£xquery(Object _url, Object _query){
 	  String s = ensureExtractStringU(_url);
 	  String q = ensureExtractStringU(_query);
@@ -124,7 +124,7 @@ public class Plugin implements PluginType {
     }
 
 	// Connect to database only using a url
-	@ActionType({ActionType.Type.Void,ActionType.Type.Library})
+	@ActionType({ActionType.NormType.Void,ActionType.NormType.Library})
     public Resources.Void Mclose£xurl(Object _url){
 		String s = ensureExtractStringU(_url);
 		DatabaseResource data = DatabaseResource.getDataResource(s);
@@ -134,7 +134,7 @@ public class Plugin implements PluginType {
     }
 	
 	// Shuts down the server so we are no longer connected
-	@ActionType({ActionType.Type.Void,ActionType.Type.Library})
+	@ActionType({ActionType.NormType.Void,ActionType.NormType.Library})
     public Resources.Void Mshutdown£xurl(Object _url){
 		String s = ensureExtractStringU(_url);
 
@@ -146,7 +146,7 @@ public class Plugin implements PluginType {
     }
 
 	// Checks if we are connected to the given url
-	@ActionType({ActionType.Type.Library,ActionType.Type.Library})
+	@ActionType({ActionType.NormType.Library,ActionType.NormType.Library})
     public Object MisConnected£xurl(Object _url){
 		String s = ensureExtractStringU(_url);
 		DatabaseResource data = DatabaseResource.getDataResource(s);
@@ -156,7 +156,7 @@ public class Plugin implements PluginType {
 
 	//==
 	@Deprecated /**Not yet implemented**/
-	@ActionType({ActionType.Type.Void,ActionType.Type.Library,ActionType.Type.Library})
+	@ActionType({ActionType.NormType.Void,ActionType.NormType.Library,ActionType.NormType.Library})
 	public  Resources.Void MifDatabaseResourceEqualDo£xo1£xo2(Object _o1,Object _o2){
 	  DatabaseResource i1=ensureExtract(DatabaseResource.class,_o1);
 	  DatabaseResource i2=ensureExtract(DatabaseResource.class,_o2);
@@ -169,7 +169,7 @@ public class Plugin implements PluginType {
 	//
 
 	// Connect to database only using a url
-	@ActionType({ActionType.Type.Library,ActionType.Type.Library})
+	@ActionType({ActionType.NormType.Library,ActionType.NormType.Library})
     public Object McursorNext£xid(Object _id){
 		int id=ensureExtractInt32(_id);
 
@@ -180,7 +180,7 @@ public class Plugin implements PluginType {
     }
 
 	// Connect to database only using a url
-	@ActionType({ActionType.Type.Library,ActionType.Type.Library,ActionType.Type.Library})
+	@ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
     public Object McursorGetString£xid£xcolumnName(Object _id, Object _columnName){
 		int id=ensureExtractInt32(_id);
 		String columnName=ensureExtractStringU(_columnName);
@@ -192,7 +192,7 @@ public class Plugin implements PluginType {
     }
 
 	// Connect to database only using a url
-	@ActionType({ActionType.Type.Void,ActionType.Type.Library})
+	@ActionType({ActionType.NormType.Void,ActionType.NormType.Library})
     public Resources.Void McursorClose£xid(Object _id){
 		int id=ensureExtractInt32(_id);
 

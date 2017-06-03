@@ -13,7 +13,7 @@ import ast.Ast.Mdf;
 import ast.Ast.MethodSelectorX;
 import ast.Ast.NormType;
 import ast.Ast.Path;
-import ast.Ast.Type;
+import ast.Ast.NormType;
 import ast.ExpCore.Block;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.MethodWithType;

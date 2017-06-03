@@ -20,10 +20,10 @@ import tools.Assertions;
 import tools.Map;
 import ast.Ast;
 import ast.Ast.MethodType;
-import ast.Ast.Type;
+import ast.Ast.NormType;
 public class Norm {
 
-  static Type nextT(Ast.Path p,MethodWithType mwt,Ast.MethodSelectorX msx){
+  static NormType nextT(Ast.Path p,MethodWithType mwt,Ast.MethodSelectorX msx){
     String x=msx.getX();
     if(x.isEmpty()){return mwt.getMt().getReturnType();}
     if(x.equals("this")){

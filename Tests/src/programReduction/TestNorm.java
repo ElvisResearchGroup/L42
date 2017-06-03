@@ -18,7 +18,6 @@ import ast.ExpCore.ClassB.MethodWithType;
 import ast.Ast.Doc;
 import ast.Ast.NormType;
 import ast.Ast.Path;
-import ast.Ast.Type;
 import helpers.TestHelper;
 import tools.Map;
 

@@ -29,7 +29,6 @@ import sugarVisitors.Desugar;
 import sugarVisitors.InjectionOnCore;
 import ast.Ast;
 import ast.Ast.NormType;
-import ast.Ast.Type;
 import ast.Ast.Stage;
 import ast.ErrorMessage;
 import ast.ErrorMessage.TypeError;
