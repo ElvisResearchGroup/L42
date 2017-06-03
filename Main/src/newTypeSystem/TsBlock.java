@@ -188,6 +188,13 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
   
   default TOutK kType(TIn in,Tr tr,On k){
     if(TypeManipulation.catchRethrow(k)){return kTypeCatchAny(in,tr,k);}
+    boolean preciseApplicable=
+      k.getKind()==SignalKind.Return &&
+      k.getT().equals(Path.Any().toImmNT()) &&
+      tr.returns.stream().allMatch(t->
+        TypeSystem.subtype(in.p, t,in.expected)==null
+        );
+    if (preciseApplicable){return kTypeCatchPreciseAny(in, tr, k);}
     return kTypeCatch(in,tr,k);
     }
       // T0 is the declared caught type, which contributes only a path
@@ -219,11 +226,12 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
   default TOutK kTypeCatchPreciseAny(TIn in,Tr tr,On k){
     assert k.getKind()==SignalKind.Return;
     assert k.getT().equals(Path.Any().toImmNT());
-    //Phase |p |G |Tr|-catch return Any x e ~> catch return T1 x e': T | Tr'
-    //  where
-    //  not catchRethrow(catch return Any x e)
-    //  T1=T if p |-T'<=T forall T' in Tr.T
-    //  Phase |p |G+x:T1|- e ~> e':_<=T| Tr'
+    assert !TypeManipulation.catchRethrow(k);
+    TOut _out=type(in.addG(k.getX(),false,in.expected).withE(k.getE(), in.expected));
+    if(!_out.isOk()){return _out.toError();}
+    TOk out=_out.toOk();
+    TOkK res=new TOkK(Tr.instance.trUnion(out),k.withE(out.annotated).withT(in.expected),out.computed);
+    return res;
     }
   default TOutK kTypeCatchAny(TIn in,Tr tr,On k){
     Block e=(Block) k.getE();
@@ -233,7 +241,8 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
     if(!_out.isOk()){return _out.toError();}
     TOk ok=_out.toOk();
     if(!ok.exceptions.isEmpty() ||!ok.returns.isEmpty()){return new TErr(in,"",null,ErrorKind.UnsafeCatchAny);}
-    return new TOkK(tr,k.withE(e.withDeci(0,e.getDecs().get(0).withInner(ok.annotated))),in.expected);
+    ExpCore newE=e.withDeci(0,e.getDecs().get(0).withInner(ok.annotated));
+    return new TOkK(tr,k.withE(newE),in.expected);
     /*
    (catch and rethrow any)// could be sugared as "on throw doAndPropagate e"  
    Phase |p |G |Tr|-catch throw Any x (e0 throw x) ~> catch throw Any x (e0' throw x): T<=T | Tr

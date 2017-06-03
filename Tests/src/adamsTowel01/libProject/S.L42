@@ -261,7 +261,7 @@ This withoutRight()
     S.SConcat(old:this,accumulator:S"")
 
   SConcat:{S old,var S accumulator
-    class method This (S old, S accumulator)
+    class method mut This (S old, S accumulator)
     mut method
     Void #add(read Concept.ToS that)
       this.accumulator(\accumulator++that.toS())

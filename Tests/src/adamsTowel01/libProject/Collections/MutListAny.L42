@@ -1,6 +1,6 @@
 {implements Concept.ToS
   var Cell head,var Size size
-  class method This(Cell head,Size size)
+  class method mut This(Cell head,Size size)
   Cell:{interface
     method Any get(Size that)
     method Cell set(Size that, Any val,Bool add)
@@ -9,7 +9,7 @@
 
   CellNext:{implements Cell
     Any val,Cell next
-    class method This(Any val,Cell next)
+    class method mut This(Any val,Cell next)
     method get(that) {
       if that==0Size (return this.val())
       return  this.next().get(that-1Size)
@@ -26,7 +26,7 @@
     }
 
   CellEnd:{implements Cell
-    class method This()
+    class method mut This()
     method get(that) error X"CellEnd.get"
     method set(that,val,add) {
       if !add (error X"CellEnd.set1")
