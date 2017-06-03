@@ -9,7 +9,7 @@ import ast.Ast.Atom;
 import ast.Ast.C;
 import ast.Ast.Doc;
 import ast.Ast.Mdf;
-import ast.Ast.NormType;
+import ast.Ast.Type;
 import ast.Ast.Path;
 import platformSpecific.javaTranslation.Resources;
 import tools.Assertions;

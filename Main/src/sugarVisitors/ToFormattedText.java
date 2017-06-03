@@ -22,7 +22,7 @@ import ast.Ast.Parameters;
 import ast.Ast.Path;
 import ast.Ast.Position;
 import ast.Ast.Stage;
-import ast.Ast.NormType;
+import ast.Ast.Type;
 import ast.Ast.VarDec;
 import ast.ExpCore.ClassB.Phase;
 import ast.ExpCore;
@@ -65,7 +65,7 @@ public class ToFormattedText implements Visitor<Void>{
     e.accept(tft);
     return tft.result.toString();
   }
-  public static String of(NormType t){
+  public static String of(Type t){
     ToFormattedText tft=new ToFormattedText();
     tft.formatType(t);
     return tft.result.toString();
@@ -348,7 +348,7 @@ public class ToFormattedText implements Visitor<Void>{
           c("catch ");
           c(kM.getKind().content);
           sp();
-          for(NormType t:kM.getTs()){
+          for(Type t:kM.getTs()){
             formatType(t);
             }
           sp();
@@ -359,7 +359,7 @@ public class ToFormattedText implements Visitor<Void>{
           sp();
           c(kP.getKind().content);
           c(" on ");
-          for(NormType t:kP.getTs()){
+          for(Type t:kP.getTs()){
             formatType(t);
             }
           sp();
@@ -497,13 +497,13 @@ public class ToFormattedText implements Visitor<Void>{
    sp();
   }
   private Void formatDoc(Doc d) {return c(d.toCodeFormattedString());}
-  private Void formatType(Optional<NormType> t) {
+  private Void formatType(Optional<Type> t) {
   if(t.isPresent()){
     return formatType(t.get());
     }
   return null;
   }
-  private Void formatType(NormType t) {
+  private Void formatType(Type t) {
     if(ast.Ast.Mdf.Immutable!=t.getMdf()){
       c(t.getMdf().inner);sp();
       }

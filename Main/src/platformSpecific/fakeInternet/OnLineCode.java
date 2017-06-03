@@ -24,7 +24,7 @@ import ast.ExpCore;
 import ast.Expression;
 import ast.Ast.Doc;
 import ast.Ast.MethodSelector;
-import ast.Ast.NormType;
+import ast.Ast.Type;
 import ast.Ast.SignalKind;
 import ast.Ast.Stage;
 import ast.ExpCore.ClassB;
@@ -75,11 +75,11 @@ public interface OnLineCode {
       }
     catch(Resources.Error err){return EncodingHelper.wrapResource(err);}
   }
-  public static List<NormType> pluginType(Program p,ExpCore.Using u){
+  public static List<Type> pluginType(Program p,ExpCore.Using u){
     return plugin(p,u).typeOf(p,u);
     }
   //Unuseful variant, since program not availabe at desugaring time
-  public static List<NormType> pluginType(Program p,Expression.Using u){
+  public static List<Type> pluginType(Program p,Expression.Using u){
     MethodSelector ms = MethodSelector.of(u.getName(),u.getPs().getXs());
     ExpCore.Using uCore=new ExpCore.Using(u.getPath(),ms,Doc.empty(),Collections.emptyList(),new ExpCore._void()); 
     return plugin(p,uCore).typeOf(p,uCore);

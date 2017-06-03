@@ -12,9 +12,9 @@ import ast.Ast.Doc;
 import ast.Ast.MethodSelector;
 import ast.Ast.MethodSelectorX;
 import ast.Ast.MethodType;
-import ast.Ast.NormType;
+import ast.Ast.Type;
 import ast.Ast.Path;
-import ast.Ast.NormType;
+import ast.Ast.Type;
 import ast.ExpCore.Block;
 import ast.ExpCore.Block.Dec;
 import ast.ExpCore.Block.On;
@@ -37,10 +37,10 @@ public class PropagatorVisitor implements Visitor<Void>{
     e.accept(this);
     }
   protected void liftP(Path p){}
-  protected void liftTOpt(Optional<NormType> t){
+  protected void liftTOpt(Optional<Type> t){
     if(t.isPresent()){liftT(t.get());}
     }
-  protected void liftT(NormType t){
+  protected void liftT(Type t){
     liftDoc(t.getDoc());
     liftP(t.getPath());
     }
@@ -87,9 +87,9 @@ public class PropagatorVisitor implements Visitor<Void>{
     if(mt.get_inner().isPresent()){lift(mt.getInner());}  
     }
   protected void liftMT(MethodType mt) {
-    for(NormType t:mt.getTs()){liftT(t);}
+    for(Type t:mt.getTs()){liftT(t);}
     liftT(mt.getReturnType());
-    for(NormType p:mt.getExceptions()){liftT(p);}
+    for(Type p:mt.getExceptions()){liftT(p);}
     }
   public Void visit(Using s) {
     liftP(s.getPath());
@@ -129,8 +129,8 @@ public class PropagatorVisitor implements Visitor<Void>{
   public void liftMembers(List<Member> s) {
     for(Member m:s){liftM(m);}
     }
-  protected void liftSup(List<NormType> s) {
-    for(NormType e:s){liftT(e);}
+  protected void liftSup(List<Type> s) {
+    for(Type e:s){liftT(e);}
     }
   public Void visit(Loop s) {
     lift(s.getInner());

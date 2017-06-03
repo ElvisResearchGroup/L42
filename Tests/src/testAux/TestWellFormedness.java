@@ -21,7 +21,7 @@ import facade.Parser;
 import sugarVisitors.Desugar;
 import sugarVisitors.InjectionOnCore;
 import ast.Ast.Mdf;
-import ast.Ast.NormType;
+import ast.Ast.Type;
 import ast.Ast.Stage;
 import ast.ErrorMessage;
 import ast.ExpCore;

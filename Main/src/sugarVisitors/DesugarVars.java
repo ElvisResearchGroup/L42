@@ -18,14 +18,14 @@ import ast.Ast.C;
 import ast.Ast.Doc;
 import ast.Ast.FieldDec;
 import ast.Ast.Mdf;
-import ast.Ast.NormType;
+import ast.Ast.Type;
 import ast.Ast.Op;
 import ast.Ast.Parameters;
 import ast.Ast.Path;
 import ast.Ast.Position;
 import ast.Ast.SignalKind;
 import ast.Ast.Stage;
-import ast.Ast.NormType;
+import ast.Ast.Type;
 import ast.Expression.Catch;
 import ast.Expression.Catch1;
 import ast.Expression.With.On;
@@ -138,7 +138,7 @@ private int firstVar(List<VarDec> varDecs){
   return -1;
   }
 private VarDecXE getDecForVar(Ast.C cName,VarDecXE varDec) {
-  NormType nt=new NormType(Mdf.Mutable,Path.outer(0).pushC(cName),Doc.empty());
+  Type nt=new Type(Mdf.Mutable,Path.outer(0).pushC(cName),Doc.empty());
   Position pos = Desugar.getPosition(varDec.getInner());
   MCall right=new MCall(new Expression.EPath(pos,nt.getPath()),"#apply",Doc.empty(), Desugar.getPs("inner",new X(pos,varDec.getX())),pos);
   String nameZ=Functions.freshName(nt.getPath(), usedVars);
@@ -205,9 +205,9 @@ private VarDecXE getDecForVar(Ast.C cName,VarDecXE varDec) {
    //usedCnames.add(nameC);
    return new VarDecCE(new NestedClass(Doc.empty(),C.of(nameC).withUniqueNum(L42.freshPrivate()),cb,null));
  }
- public NormType _computeTypeForClassBForVar(VarDecXE varDec) {
+ public Type _computeTypeForClassBForVar(VarDecXE varDec) {
    assert varDec.getT().isPresent(): " it is now required by the stricted syntax";
-   NormType t=varDec.getT().get();
+   Type t=varDec.getT().get();
    t=t.withPath(computeTypeForClassBForVar(t.getPath()));
    return t;
  }

@@ -22,14 +22,14 @@ import auxiliaryGrammar.Functions;
 import auxiliaryGrammar.WellFormednessCore;
 import programReduction.Program;
 import programReduction.TestProgram;
-import ast.Ast.NormType;
+import ast.Ast.Type;
 import static newTypeSystem.AlternativeMethodTypes.*;
 
 public class Test212_or_170_MethodTypes {
  //WellFormednessCore.methodType, is ok to have a fwd res with no fwd pars?
 public static List<MethodType> dataSet=new ArrayList<>();
 static{
-  NormType _t=Path.Any().toImmNT();
+  Type _t=Path.Any().toImmNT();
   MethodType proto=new MethodType(true,Mdf.Capsule,Collections.emptyList(),_t,Collections.emptyList());
   for(Mdf p1:Mdf.values()){
     if(p1==Mdf.ImmutablePFwd ||p1==Mdf.MutablePFwd){continue;}
@@ -37,8 +37,8 @@ static{
       if(p2==Mdf.ImmutablePFwd ||p2==Mdf.MutablePFwd){continue;}
       for(Mdf r:Mdf.values()){
         if(r==Mdf.ImmutablePFwd ||r==Mdf.MutablePFwd){continue;}
-        List<NormType> tsi=Arrays.asList(_t.withMdf(p1),_t.withMdf(p2));
-        List<NormType> tsiSwap=Arrays.asList(_t.withMdf(p2),_t.withMdf(p1));
+        List<Type> tsi=Arrays.asList(_t.withMdf(p1),_t.withMdf(p2));
+        List<Type> tsiSwap=Arrays.asList(_t.withMdf(p2),_t.withMdf(p1));
         MethodType add1 = proto.withTs(tsi).withReturnType(_t.withMdf(r));
         MethodType add2 = proto.withTs(tsiSwap).withReturnType(_t.withMdf(r));
         if(!WellFormednessCore.methodTypeWellFormed(add1)){continue;}
@@ -56,7 +56,7 @@ static Program __p=TestProgram.p("{}");
     assert dataSet.size()==170:
       dataSet.size();
     //Lent,ImmutableFwd->ImmutablePFwd
-    NormType _t=Path.Any().toImmNT();
+    Type _t=Path.Any().toImmNT();
     MethodType proto=new MethodType(true,Mdf.Capsule,
       Arrays.asList(_t.withMdf(Mdf.Mutable),_t.withMdf(Mdf.ImmutableFwd)),
       _t.withMdf(Mdf.ImmutablePFwd),Collections.emptyList());
@@ -235,7 +235,7 @@ static Program __p=TestProgram.p("{}");
     }
  
 MethodType recLeft(MethodType mt){
-  List<NormType>newTs=mt.getTs().subList(1, mt.getTs().size());
+  List<Type>newTs=mt.getTs().subList(1, mt.getTs().size());
   Mdf mdf=mt.getTs().get(0).getMdf();
   if(TypeManipulation.fwd_or_fwdP_in(mdf)){return null;}
   return mt.withMdf(mdf).withTs(newTs);

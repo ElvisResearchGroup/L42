@@ -76,11 +76,11 @@ class ProtectedPluginType{
   }
   }
 public interface PluginType {
-  default List<ast.Ast.NormType> typeOf(Program p, Using u){
+  default List<ast.Ast.Type> typeOf(Program p, Using u){
     Method m=ProtectedPluginType.getMethod(this,p, u);
     ActionType ann = m.getAnnotation(ActionType.class);
     assert ann!=null;
-    ArrayList<Ast.NormType> ts=new ArrayList<>();
+    ArrayList<Ast.Type> ts=new ArrayList<>();
     for(ActionType.NormType path:ann.value()){
       ts.add(path.type);
       }

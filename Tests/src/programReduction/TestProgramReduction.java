@@ -11,7 +11,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 
 import ast.ExpCore;
-import ast.Ast.NormType;
+import ast.Ast.Type;
 import helpers.TestHelper;
 
 public class TestProgramReduction {

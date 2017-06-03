@@ -12,7 +12,7 @@ import java.util.stream.Stream;
 import ast.ExpCore;
 import ast.Ast.Doc;
 import ast.Ast.Mdf;
-import ast.Ast.NormType;
+import ast.Ast.Type;
 import ast.Ast.Path;
 import ast.Ast.SignalKind;
 import ast.ExpCore.Block;
@@ -88,7 +88,7 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
    TOk e0Ok=_e0Out.toOk();
    //T= mostGeneralMdf({T0.mdf,Ts.mdfs}) T'.P //set of Mdfs admits no single most general mdf
    Set<Mdf>mdfs=new HashSet<>();
-   for(NormType nt:ksOk.ts){
+   for(Type nt:ksOk.ts){
      mdfs.add(nt.getMdf());
      }
    mdfs.add(e0Ok.computed.getMdf());
@@ -96,7 +96,7 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
    if(tMdf==null){
      return new TErr(in,"",e0Ok.computed,ErrorKind.NoMostGeneralMdf);
      }
-   NormType t=new NormType(tMdf,in.expected.getPath(),Doc.empty());
+   Type t=new Type(tMdf,in.expected.getPath(),Doc.empty());
    assert null==TypeSystem.subtype(in.p,t, in.expected);
    Block annotated=new Block(s.getDoc(),dsOk.ds,e0Ok.annotated,ksOk.ks,s.getP());
    TOk res=new TOk(in,annotated,t);
@@ -132,8 +132,8 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
     List<Dec>ds1=new ArrayList<>();
     List<Dec>ds1FwdP=new ArrayList<>();
     for(Dec di:ds0n){
-      NormType nt=di.getT().get();
-      NormType ntFwdP=TypeManipulation.fwdP(nt);
+      Type nt=di.getT().get();
+      Type ntFwdP=TypeManipulation.fwdP(nt);
       TOut _out=type(in1.withE(di.getInner(),ntFwdP));
       if(!_out.isOk()){return _out.toError();}
       TOk ok=_out.toOk();
@@ -149,9 +149,9 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
       boolean xInCommon=fve0n.stream().anyMatch(x->ds0n.stream().anyMatch(d->d.getX().equals(x)));
       if(xInCommon){return new TErr(in,"",null,ErrorKind.AttemptReturnFwd);}
       }
-    List<NormType> _nts=new ArrayList<>();
+    List<Type> _nts=new ArrayList<>();
     for(String x: fve0n){
-      NormType t=in._g(x);
+      Type t=in._g(x);
       if(t!=null){_nts.add(t);}
       }
     TIn inG0;
@@ -172,7 +172,7 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
     Tr tr=trAcc;
     Tr newTrAcc=Tr.instance;
     List<On>ks1=new ArrayList<>();
-    List<NormType>ts=new ArrayList<>();
+    List<Type>ts=new ArrayList<>();
     for(On k:ks){
       TOutK out=kType(in,tr,k);
       if(!out.isOk()){return out.toError();}
@@ -208,7 +208,7 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
     if(mdf1==null){
     return new TErr(in,"Contrasting mdf expected for return",null,ErrorKind.NoMostGeneralMdf);
     }
-    NormType T1 = k.getT().withMdf(mdf1);
+    Type T1 = k.getT().withMdf(mdf1);
     TOut _out=type(in.addG(k.getX(),false,T1).withE(k.getE(), in.expected));
     if(!_out.isOk()){return _out.toError();}
     TOk out=_out.toOk();
@@ -280,8 +280,8 @@ default TErr combine(TErr res,TErr promFail){
   }
 
 default boolean promotionMakesSense(TIn in,TErr tErr){
-    NormType expected=in.expected;
-    NormType obtained=tErr._computed;
+    Type expected=in.expected;
+    Type obtained=tErr._computed;
     if(expected==null || obtained==null){return false;}
     if (null!=TypeSystem.subtype(in.p,obtained.getPath(), expected.getPath())){return false;}
     Mdf eM=expected.getMdf();

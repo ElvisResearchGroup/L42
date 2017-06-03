@@ -10,10 +10,10 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import ast.Ast;
-import ast.Ast.NormType;
+import ast.Ast.Type;
 import ast.Ast.Path;
 import ast.Ast.SignalKind;
-import ast.Ast.NormType;
+import ast.Ast.Type;
 import ast.ExpCore;
 import ast.Ast.C;
 import ast.Ast.Doc;
@@ -71,7 +71,7 @@ public interface TypeSystem{
   public static void checkExists(Program p, Path pi){
     if (pi.isCore()){p.extractClassB(pi);}
     }
-  public static ErrorKind subtype(Program p, NormType tSub, NormType tSuper) {
+  public static ErrorKind subtype(Program p, Type tSub, Type tSuper) {
     checkExists(p,tSub.getPath());
     checkExists(p,tSuper.getPath());
     if (!p.subtypeEq(tSub.getPath(),tSuper.getPath())){return ErrorKind.NotSubtypeClass;}
@@ -82,7 +82,7 @@ public interface TypeSystem{
   public static boolean _methMdfTSubtype(MethodType mSub,MethodType mSuper){
     if (!Functions.isSubtype(mSuper.getMdf(),mSub.getMdf())){return false;}
     if (!Functions.isSubtype(mSub.getReturnType().getMdf(),mSuper.getReturnType().getMdf())){return false;}
-    {int i=-1;for(NormType tSub:mSub.getTs()){i+=1;NormType tSuper=mSuper.getTs().get(i);
+    {int i=-1;for(Type tSub:mSub.getTs()){i+=1;Type tSuper=mSuper.getTs().get(i);
       if (!Functions.isSubtype(tSuper.getMdf(),tSub.getMdf())){
         return false;
         }    
@@ -95,18 +95,18 @@ public interface TypeSystem{
       return false;
     }
     if(mSub.getTs().size()!=mSuper.getTs().size()){return false;}
-    {int i=-1;for(NormType tSub:mSub.getTs()){i+=1;NormType tSuper=mSuper.getTs().get(i);
+    {int i=-1;for(Type tSub:mSub.getTs()){i+=1;Type tSuper=mSuper.getTs().get(i);
       if (null!=subtype(p,tSuper,tSub)){
         return false;
         }    
       }}
-    for(NormType ti:mSub.getExceptions()){
+    for(Type ti:mSub.getExceptions()){
       if(!exceptionSubtype(p,ti, mSuper)){return false;}
       }
     return true;
     }
-  public static boolean exceptionSubtype(Program p,NormType ti, MethodType mSuper) {
-    for(NormType tj:mSuper.getExceptions()){
+  public static boolean exceptionSubtype(Program p,Type ti, MethodType mSuper) {
+    for(Type tj:mSuper.getExceptions()){
       if(p.subtypeEq(ti.getPath(),tj.getPath())){
         return true;
         }

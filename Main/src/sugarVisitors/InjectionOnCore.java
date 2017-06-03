@@ -15,7 +15,7 @@ import ast.ExpCore;
 import ast.Ast.Path;
 import ast.Ast.Position;
 import ast.Ast.SignalKind;
-import ast.Ast.NormType;
+import ast.Ast.Type;
 import ast.Expression.Catch;
 import ast.Expression.ClassReuse;
 import ast.Expression.ContextId;
@@ -48,7 +48,7 @@ public class InjectionOnCore implements Visitor<ExpCore> {
           d;
         Ast.VarDecXE sugarDec=(Ast.VarDecXE)d;
         //assert sugarDec.getT().isPresent() :sugarDec;
-        Optional<NormType> t=sugarDec.getT();
+        Optional<Type> t=sugarDec.getT();
         String x=sugarDec.getX();
         ExpCore e=sugarDec.getInner().accept(this);
         decs.add(new Dec(sugarDec.isVar(),t,x,e));
@@ -67,7 +67,7 @@ public class InjectionOnCore implements Visitor<ExpCore> {
   }
   public ExpCore visit(Expression.ClassB s){
     Doc doc1=s.getDoc1();
-    List<Ast.NormType> supertypes=s.getSupertypes();
+    List<Ast.Type> supertypes=s.getSupertypes();
     boolean isInterface=false;
     if(s.getH() instanceof Ast.ConcreteHeader){throw Assertions.codeNotReachable();}
     if(s.getH() instanceof Ast.InterfaceHeader){isInterface=true;}

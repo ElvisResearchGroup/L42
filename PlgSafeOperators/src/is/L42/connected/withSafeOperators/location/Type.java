@@ -15,7 +15,7 @@ import facade.PData;
 import tools.Assertions;
 
 public interface Type extends Location{
-  Ast.NormType type();
+  Ast.Type type();
   Lib locationLib();
   default TypeRefTo refTo(PData pData) {
     Path path=type().getPath();
@@ -47,12 +47,12 @@ public interface Type extends Location{
 
 
   static class Return extends Location.LocationImpl<ExpCore.ClassB.MethodWithType, Method> implements Type{
-    public Return(Ast.NormType type, MethodWithType inner, Method location) {
+    public Return(Ast.Type type, MethodWithType inner, Method location) {
       super(inner, location);
       this.type=type;
       }
-    Ast.NormType type;
-    @Override public Ast.NormType type(){return type;}
+    Ast.Type type;
+    @Override public Ast.Type type(){return type;}
     @Override public Lib locationLib(){return location().location();}
     @Override public boolean equalequal(Object that){return this.equals(that);}
     @Override
@@ -82,15 +82,15 @@ public interface Type extends Location{
     }
   
   static class Parameter extends Location.LocationImpl<ExpCore.ClassB.MethodWithType, Method> implements Type{
-    public Parameter(int pos, Ast.NormType type,MethodWithType inner, Method location) {
+    public Parameter(int pos, Ast.Type type,MethodWithType inner, Method location) {
       super(inner, location);
       this.pos=pos;
       this.type=type;
       }
     int pos;
     public int pos(){return pos;}//0 for this
-    Ast.NormType type;
-    @Override public Ast.NormType type(){return type;}
+    Ast.Type type;
+    @Override public Ast.Type type(){return type;}
     @Override public Lib locationLib(){return location().location();}
     @Override public boolean equalequal(Object that){return this.equals(that);}
     @Override
@@ -122,15 +122,15 @@ public interface Type extends Location{
     
     }
   static class Exception extends Location.LocationImpl<ExpCore.ClassB.MethodWithType, Method> implements Type{
-    public Exception(int pos, Ast.NormType type,MethodWithType inner, Method location) {
+    public Exception(int pos, Ast.Type type,MethodWithType inner, Method location) {
       super(inner, location);
       this.pos=pos;
       this.type=type;
       }
     int pos;
     public int pos(){return pos;}//0 for this
-    Ast.NormType type;
-    @Override public Ast.NormType type(){return type;}
+    Ast.Type type;
+    @Override public Ast.Type type(){return type;}
     @Override public Lib locationLib(){return location().location();}
     @Override public boolean equalequal(Object that){return this.equals(that);}
     @Override
@@ -162,15 +162,15 @@ public interface Type extends Location{
     
     }
   static class Implemented extends Location.LocationImpl<ExpCore.ClassB, Lib> implements Type{
-    public Implemented(int pos, Ast.NormType type,ExpCore.ClassB inner, Lib location) {
+    public Implemented(int pos, Ast.Type type,ExpCore.ClassB inner, Lib location) {
       super(inner, location);
       this.pos=pos;
       this.type=type;
       }  
     int pos;
     public int pos(){return pos;}//0 for this
-    Ast.NormType type;
-    @Override public Ast.NormType type(){return type;}
+    Ast.Type type;
+    @Override public Ast.Type type(){return type;}
     @Override public Lib locationLib(){return location();}
     @Override public boolean equalequal(Object that){return this.equals(that);}
     @Override

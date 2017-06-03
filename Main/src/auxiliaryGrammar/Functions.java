@@ -21,11 +21,11 @@ import ast.Ast.C;
 import ast.Ast.Doc;
 import ast.Ast.Mdf;
 import ast.Ast.MethodSelector;
-import ast.Ast.NormType;
+import ast.Ast.Type;
 import ast.Ast.Path;
 import ast.Ast.Position;
 import ast.Ast.Stage;
-import ast.Ast.NormType;
+import ast.Ast.Type;
 import ast.ErrorMessage;
 import ast.ExpCore;
 import ast.ExpCore.*;
@@ -135,7 +135,7 @@ public static boolean isSubtype(Mdf mdf1, Mdf m) {
     default: return false;
     }
   }
-public static NormType sharedAndLentToReadable(NormType that){
+public static Type sharedAndLentToReadable(Type that){
   Mdf mdf=that.getMdf();
   if(mdf==Mdf.Mutable){mdf=Mdf.Readable;}
   if(mdf==Mdf.Lent){mdf=Mdf.Readable;}
@@ -289,7 +289,7 @@ public static Path classOf(Program p, ExpCore ctxVal,List<ast.ExpCore.Block.Dec>
   return classOf(p,ctxVal,inner);
 }
 */
-public static NormType toPartial(NormType that) {
+public static Type toPartial(Type that) {
   switch (that.getMdf()){
     case Capsule:       return that;
     case Class:         return that;
@@ -305,7 +305,7 @@ public static NormType toPartial(NormType that) {
   throw Assertions.codeNotReachable();
   }
 
-public static boolean isComplete(NormType that){
+public static boolean isComplete(Type that){
   switch (that.getMdf()){
     case Capsule:       return true;
     case Class:         return true;
@@ -321,7 +321,7 @@ public static boolean isComplete(NormType that){
   throw Assertions.codeNotReachable();
   }
 
-public static NormType toPh(NormType that){
+public static Type toPh(Type that){
   switch (that.getMdf()){
     case Capsule:       return that;
     case Class:         return that;
@@ -337,32 +337,32 @@ public static NormType toPh(NormType that){
   throw Assertions.codeNotReachable();
   }
 
-public static HashMap<String, NormType> complete(HashMap<String, NormType> varEnv) {
-  HashMap<String, NormType> result= new HashMap<String, NormType>();
+public static HashMap<String, Type> complete(HashMap<String, Type> varEnv) {
+  HashMap<String, Type> result= new HashMap<String, Type>();
   for(String s: varEnv.keySet()){
     if(isComplete(varEnv.get(s))){result.put(s,varEnv.get(s));}
     }
   return result;
 }
-public static HashMap<String, NormType> nonComplete(HashMap<String, NormType> varEnv) {
-  HashMap<String, NormType> result= new HashMap<String, NormType>();
+public static HashMap<String, Type> nonComplete(HashMap<String, Type> varEnv) {
+  HashMap<String, Type> result= new HashMap<String, Type>();
   for(String s: varEnv.keySet()){
     if(!isComplete(varEnv.get(s))){result.put(s,varEnv.get(s));}
     }
   return result;
 }
 
-public static HashMap<String, NormType> toPh(HashMap<String, NormType> varEnv) {
-  HashMap<String, NormType> result= new HashMap<String, NormType>();
+public static HashMap<String, Type> toPh(HashMap<String, Type> varEnv) {
+  HashMap<String, Type> result= new HashMap<String, Type>();
   for(String s: varEnv.keySet()){result.put(s,toPh(varEnv.get(s)));}
   return result;
 }
-public static HashMap<String, NormType> toPartial(HashMap<String, NormType> varEnv) {
-  HashMap<String, NormType> result= new HashMap<String, NormType>();
+public static HashMap<String, Type> toPartial(HashMap<String, Type> varEnv) {
+  HashMap<String, Type> result= new HashMap<String, Type>();
   for(String s: varEnv.keySet()){result.put(s,toPartial(varEnv.get(s)));}
   return result;
 }
-public static NormType sharedToLent(NormType nt) {
+public static Type sharedToLent(Type nt) {
   if(nt.getMdf()!=Mdf.Mutable){return nt;}
   return nt.withMdf(Mdf.Lent);
 }

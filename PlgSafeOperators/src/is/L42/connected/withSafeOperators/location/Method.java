@@ -7,7 +7,7 @@ import java.util.stream.Stream;
 
 import ast.Ast;
 import ast.Ast.MethodType;
-import ast.Ast.NormType;
+import ast.Ast;
 import ast.Ast.Path;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.MethodWithType;
@@ -27,10 +27,10 @@ public class Method extends Location.LocationImpl<ClassB.MethodWithType, Lib>{
     
   Cacher<List<Type.Parameter>> parametersC=new Cacher<List<Type.Parameter>>(){public List<Type.Parameter> cache(){
     MethodType mt = inner.getMt();
-    Ast.NormType thisT=new NormType(mt.getMdf(),Path.outer(0),Ast.Doc.empty());
+    Ast.Type thisT=new Ast.Type(mt.getMdf(),Path.outer(0),Ast.Doc.empty());
     List<Type.Parameter> res=new ArrayList<>();
     res.add(new Type.Parameter(0,thisT,inner,Method.this));
-    {int i=0; for(Ast.NormType ti:mt.getTs()){i+=1; //starts from 1
+    {int i=0; for(Ast.Type ti:mt.getTs()){i+=1; //starts from 1
       res.add(new Type.Parameter(i,ti,inner,Method.this));
     }}
     return res;
@@ -43,7 +43,7 @@ public class Method extends Location.LocationImpl<ClassB.MethodWithType, Lib>{
   Cacher<List<Type.Exception>> exceptionsC=new Cacher<List<Type.Exception>>(){public List<Type.Exception> cache(){
   MethodType mt = inner.getMt();
   List<Type.Exception> res=new ArrayList<>();
-  {int i=-1; for(Ast.NormType ti:mt.getTs()){i+=1; //starts from 0
+  {int i=-1; for(Ast.Type ti:mt.getTs()){i+=1; //starts from 0
     res.add(new Type.Exception(i,ti,inner,Method.this));
   }}
   return res;

@@ -8,7 +8,7 @@ import ast.Ast;
 import ast.ErrorMessage;
 import ast.ExpCore;
 import ast.Ast.Mdf;
-import ast.Ast.NormType;
+import ast.Ast.Type;
 import ast.Ast.Path;
 import ast.Ast.Stage;
 import ast.ExpCore.ClassB;

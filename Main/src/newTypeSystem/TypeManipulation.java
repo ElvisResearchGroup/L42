@@ -9,8 +9,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import ast.Ast.Mdf;
-import ast.Ast.NormType;
-import ast.Ast.NormType;
+import ast.Ast.Type;
+import ast.Ast.Type;
 import ast.Ast.Path;
 import ast.Ast.SignalKind;
 import ast.Ast;
@@ -18,7 +18,7 @@ import ast.ExpCore;
 
 public class TypeManipulation {
 
-public static NormType fwd(NormType t){
+public static Type fwd(Type t){
 //  fwd T
 //    fwd imm P=fwd fwd%imm P=fwdImm P
 //    fwd mut P=fwd fwd%mut P=fwdMut P
@@ -32,7 +32,7 @@ public static NormType fwd(NormType t){
     }
   return t;
   }
-public static NormType fwdP(NormType t){
+public static Type fwdP(Type t){
 //  fwd% T
 //    fwd% imm P=fwd%Imm P
 //    fwd% mut P=fwd%Mut P
@@ -54,11 +54,11 @@ public static boolean fwd_or_fwdP_in(Mdf m){
       || m==Mdf.MutablePFwd;
   }
 
-public static boolean fwd_or_fwdP_in(Collection<? extends NormType>ts){
+public static boolean fwd_or_fwdP_in(Collection<? extends Type>ts){
 //  fwd_or_fwd%_in Ts
 //    exists T in Ts such that
 //    T in {fwdImm _,fwdMut_,fwd%Imm _,fwd%Mut _}
-  for(NormType ti:ts){
+  for(Type ti:ts){
     if(fwd_or_fwdP_in(ti.getMdf())){return true;}
     }
   return false;
@@ -71,7 +71,7 @@ public static boolean fwd_or_fwdP_inMdfs(Collection<Mdf>ms){
   return false;
   }
 
-public static NormType noFwd(NormType t){
+public static Type noFwd(Type t){
 //  noFwd T
 //    noFwd fwdImm P=noFwd fwd%Imm P=imm P
 //    noFwd fwdMut P=noFwd fwd%Mut P=mut P
@@ -85,10 +85,10 @@ public static NormType noFwd(NormType t){
     }
   return t;
   }
-public static List<NormType>  noFwd(Collection<NormType>ts){
+public static List<Type>  noFwd(Collection<Type>ts){
 //  noFwd T1..Tn= noFwd T1 .. noFwd Tn
-  List<NormType>res=new ArrayList<>();
-  for(NormType ti:ts){res.add(noFwd(ti));}
+  List<Type>res=new ArrayList<>();
+  for(Type ti:ts){res.add(noFwd(ti));}
   return res;
   }
 
@@ -99,7 +99,7 @@ public static List<NormType>  noFwd(Collection<NormType>ts){
   if(t.getMdf()==Mdf.Class){return t;}
   return t.withMdf(Mdf.Immutable);
   }*/
-public static NormType toImmOrCapsule(NormType t){
+public static Type toImmOrCapsule(Type t){
 //  toImmOrCapsule(T)
 //    toImmOrCapsule(mdf C)=capsule C with mdf in {lent,mut,fwdMut,fwd%Mut}
 //    toImmOrCapsule(read C)=imm C
@@ -113,7 +113,7 @@ public static Mdf toImmOrCapsule(Mdf m){
   if(m==Mdf.Readable){return Mdf.Immutable;}
   return m;
   }
-public static NormType _toLent(NormType t){
+public static Type _toLent(Type t){
 //  toLent(T)
 //    toLent(mut P)=lent P,
 //    toLent(fwdMut P) and toLent(fwd%Mut P) undefined;
@@ -124,14 +124,14 @@ public static NormType _toLent(NormType t){
   return t;
   }
 
-public static NormType mutOnlyToLent(NormType t){
+public static Type mutOnlyToLent(Type t){
 //  mutOnlyToLent(T)
 //    mutOnlyToLent(mut P)=lent P,
 //    otherwise mutOnlyToLent(T)=T 
   if(t.getMdf()==Mdf.Mutable){return t.withMdf(Mdf.Lent);}
   return t;
   }
-public static NormType capsuleToLent(NormType t){
+public static Type capsuleToLent(Type t){
 //  capsuleToLent(T)  
 //    capsuleToLent(capsule P)=lent P
 //    otherwise capsuleToLent(mdf P)=mdf P
@@ -139,7 +139,7 @@ public static NormType capsuleToLent(NormType t){
   return t;
   }
 
-public static NormType _toRead(NormType t){   
+public static Type _toRead(Type t){   
 //  toRead(T)
 //    toRead(fwdMut P)=toRead(fwd%Mut P)=undefined  
 //    toRead(fwdImm P)=toRead(fwd%Imm P)=undefined
@@ -163,7 +163,7 @@ public static NormType _toRead(NormType t){
   if(t.getMdf()==Mdf.Lent){return t.withMdf(Mdf.Mutable);}
   return t;
   }*/
-public static NormType mutToCapsule(NormType t){
+public static Type mutToCapsule(Type t){
 //  mutToCapsule(T)
 //    mutToCapsule(fwdMut C) and mutToCapsule(fwd%Mut C) undefined
 //    mutToCapsule(mut C)=capsule C
@@ -178,7 +178,7 @@ public static Mdf mutToCapsule(Mdf m){
   return m;
   }
 
-public static NormType mutToCapsuleAndFwdMutToFwdImm(NormType t){
+public static Type mutToCapsuleAndFwdMutToFwdImm(Type t){
 //mutToCapsuleAndFwdMutToFwdImm(T) //called f in the implementation
 //f(fwd%Mut P) undefined
 //f(mut P)=capsule P
@@ -192,7 +192,7 @@ public static Mdf mutToCapsuleAndFwdMutToFwdImm(Mdf m){
  if(m==Mdf.MutableFwd){return Mdf.ImmutableFwd;}
  return m;
  }
-public static NormType mutToCapsuleAndFwdToRead(NormType t){
+public static Type mutToCapsuleAndFwdToRead(Type t){
 //mutToCapsuleAndFwdMutToRead(T) //called f in the implementation
 //f(fwd%Mut P) undefined
 //f(mut P)=capsule P

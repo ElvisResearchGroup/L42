@@ -17,9 +17,9 @@ import ast.Ast.FieldDec;
 import ast.Ast.Mdf;
 import ast.Ast.MethodSelector;
 import ast.Ast.MethodType;
-import ast.Ast.NormType;
+import ast.Ast.Type;
 import ast.Ast.Position;
-import ast.Ast.NormType;
+import ast.Ast.Type;
 import auxiliaryGrammar.Functions;
 import programReduction.Program;
 import sugarVisitors.Desugar;
@@ -36,7 +36,7 @@ public class MakeKs {
   private boolean hasReadLentSetter=false;
   private ClassB makeKs(ClassB top, ClassB that,
       List<String> fieldNames, String mutK, String lentK, String readK,String immK,boolean fwd) {
-    List<NormType>fieldTypes=new ArrayList<>();
+    List<Type>fieldTypes=new ArrayList<>();
     for(String f :fieldNames){
       if(!MethodSelector.checkX(f,true)){throw new Error("Invalid field name provided:["+f+"]");}
       fieldTypes.add(candidate(that.getMs(),f));
@@ -70,12 +70,12 @@ static private MethodWithType changeMt(MethodWithType proto,Function<MethodType,
   }
 
 
-static private NormType mdfChange(NormType n,Mdf m1,Mdf m2){
-  NormType nt=(NormType)n;
+static private Type mdfChange(Type n,Mdf m1,Mdf m2){
+  Type nt=(Type)n;
   if(nt.getMdf().equals(m1)){return nt.withMdf(m2);}
     return nt;
   }
-static private NormType addFwd(NormType n){
+static private Type addFwd(Type n){
   return Functions.toPh(n);
   }
 static private MethodType fwdK(MethodType proto) {
@@ -105,7 +105,7 @@ static private MethodType readK(MethodType proto) {
 static private MethodType immK(MethodType proto) {
   return proto.withTs(proto.getTs().stream()
     .map(t->{
-      NormType nt=(NormType)t;
+      Type nt=(Type)t;
       if(!nt.getMdf().equals(Mdf.Class)){return nt.withMdf(Mdf.Immutable);}
       return nt;
       })
@@ -113,23 +113,23 @@ static private MethodType immK(MethodType proto) {
     .withReturnType(mdfChange(proto.getReturnType(),Mdf.Mutable,Mdf.Immutable));
   }
   //can not reuse the desugar one, here we create ExpCore stuff, also , the sugar one may disappear
-  static private MethodWithType prototypeK(Doc doc,List<String>fieldNames,List<NormType>fieldTypes,Position pos) {
+  static private MethodWithType prototypeK(Doc doc,List<String>fieldNames,List<Type>fieldTypes,Position pos) {
     MethodSelector ms=MethodSelector.of("",fieldNames);
-    NormType resT=NormType.mutThis0;
+    Type resT=Type.mutThis0;
     MethodType mt=new MethodType(false,ast.Ast.Mdf.Class,fieldTypes,resT,Collections.emptyList());
     return new MethodWithType(doc, ms,mt, Optional.empty(),pos);
     }
 
-  private ast.Ast.NormType candidate(List<Member> ms, String fName){
+  private ast.Ast.Type candidate(List<Member> ms, String fName){
     Optional<Member> a = Functions.getIfInDom(ms, MethodSelector.of(fName,Collections.singletonList("that")));
     Optional<Member> b = Functions.getIfInDom(ms, MethodSelector.of("#"+fName,Collections.singletonList("that")));
     Optional<Member> c = Functions.getIfInDom(ms, MethodSelector.of(fName,Collections.emptyList()));
     Optional<Member> d = Functions.getIfInDom(ms, MethodSelector.of("#"+fName,Collections.emptyList()));
-    NormType ta=getType(a);
-    NormType tb=getType(b);
-    NormType tc=getType(c);
-    NormType td=getType(d);
-    ast.Ast.NormType res=null;
+    Type ta=getType(a);
+    Type tb=getType(b);
+    Type tc=getType(c);
+    Type td=getType(d);
+    ast.Ast.Type res=null;
     if (a.isPresent() && b.isPresent()){
       if(!ta.equals(tb)){ throw new Error();}
       }
@@ -149,25 +149,25 @@ static private MethodType immK(MethodType proto) {
       }
     return res;
     }
-  private ast.Ast.NormType getType(Optional<Member>opt){
+  private ast.Ast.Type getType(Optional<Member>opt){
     if(!opt.isPresent()){return null;}
     Member m=opt.get();
     MethodWithType mwt=(MethodWithType)m;
-    if(mwt.getMs().getNames().isEmpty()){return (NormType) mwt.getMt().getReturnType();}
-    return (NormType) mwt.getMt().getTs().get(0);
+    if(mwt.getMs().getNames().isEmpty()){return (Type) mwt.getMt().getReturnType();}
+    return (Type) mwt.getMt().getTs().get(0);
     }
-  private boolean compatible(ast.Ast.NormType t1, ast.Ast.NormType t2){
+  private boolean compatible(ast.Ast.Type t1, ast.Ast.Type t2){
     if (!t1.getPath().equals(t2.getPath())){return false;}
     if (Functions.isSubtype(t1.getMdf(),t2.getMdf())){return true;}
     if (Functions.isSubtype(t2.getMdf(),t1.getMdf())){return true;}
     return false;
   }
-  private boolean more(ast.Ast.NormType t1, ast.Ast.NormType t2){
+  private boolean more(ast.Ast.Type t1, ast.Ast.Type t2){
     if (!t1.getPath().equals(t2.getPath())){return false;}
     if (Functions.isSubtype(t1.getMdf(),t2.getMdf())){return true;}
     return false;
   }
-  private ast.Ast.NormType moreSpecific(ast.Ast.NormType t1, ast.Ast.NormType t2){
+  private ast.Ast.Type moreSpecific(ast.Ast.Type t1, ast.Ast.Type t2){
     if(t1==null){return t2;}
     if(t2==null){return t1;}
     if (Functions.isSubtype(t1.getMdf(),t2.getMdf())){return t1;}

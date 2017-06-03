@@ -71,7 +71,7 @@ public interface Program {
         }
       }
     }
-  default boolean equiv(Ast.NormType t, Ast.NormType t1){
+  default boolean equiv(Ast.Type t, Ast.Type t1){
     return t.getMdf()==t1.getMdf() && equiv(t.getPath(),t1.getPath());
     }
   

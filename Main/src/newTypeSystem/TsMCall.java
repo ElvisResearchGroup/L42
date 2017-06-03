@@ -12,13 +12,13 @@ import java.util.List;
 import ast.Ast.Doc;
 import ast.Ast.Mdf;
 import ast.Ast.MethodType;
-import ast.Ast.NormType;
+import ast.Ast.Type;
 import ast.Ast.Path;
 import ast.ExpCore;
-import ast.Ast.NormType;
+import ast.Ast.Type;
 
 public interface TsMCall extends TypeSystem{
-default TOut innerMVPRetype(TOk ri,NormType ti){
+default TOut innerMVPRetype(TOk ri,Type ti){
   if(Functions.isSubtype(ri.computed.getMdf(),ti.getMdf())){
     assert ri.computed.getMdf()!=Mdf.Mutable; 
     return ri;
@@ -33,7 +33,7 @@ default TOut innerMVPRetype(TOk ri,NormType ti){
   }
 
   default TOut tsMCall(TIn in, MCall s) {
-    NormType _rec=GuessTypeCore._of(in, s.getInner());
+    Type _rec=GuessTypeCore._of(in, s.getInner());
     if (_rec==null){
       return new TErr(in,"",null,ErrorKind.SelectorNotFound);
       }
@@ -45,7 +45,7 @@ default TOut innerMVPRetype(TOk ri,NormType ti){
     if (mDec==null){
       return new TErr(in,"",null,ErrorKind.SelectorNotFound);
       }
-    NormType ret=mDec.getReturnType();
+    Type ret=mDec.getReturnType();
     ErrorKind kind = TypeSystem.subtype(in.p, ret.getPath(),in.expected.getPath());
     if(kind!=null){return new TErr(in,"",ret,kind);}
     List<MethodType> mTypes = AlternativeMethodTypes.types(mDec);
@@ -56,16 +56,16 @@ default TOut innerMVPRetype(TOk ri,NormType ti){
 //unachievable return type (T) for method (P.ms) [line numbers of expression and declaration]
 //2 type all the parameters with mutOnlyToLent(Ts) //we may include mutOnlyToLent in the computation of the MTypes, instead of in the loop below
     List<TOk> resp=new ArrayList<>();
-    List<NormType> computed=new ArrayList<>();
+    List<Type> computed=new ArrayList<>();
     List<ExpCore> annotated=new ArrayList<>();
     ExpCore e0=s.getInner();
-    NormType t0=new NormType(mType.getMdf(),rec,Doc.empty());
+    Type t0=new Type(mType.getMdf(),rec,Doc.empty());
     TOut _res0=type(in.withE(e0,TypeManipulation.mutOnlyToLent(t0)));
     if(!_res0.isOk()){return improveReceiverError(in,t0, _res0.toError());}
     TOk res0=_res0.toOk();
     Mdf recMdf=_res0.toOk().computed.getMdf();
     {int i=-1;for(  ExpCore ei:s.getEs()){i+=1;
-      NormType ti=mType.getTs().get(i);
+      Type ti=mType.getTs().get(i);
       TOut _resi=type(in.withE(ei,TypeManipulation.mutOnlyToLent(ti)));
       if(!_resi.isOk()){return _resi.toError();}
       resp.add(_resi.toOk());
@@ -87,13 +87,13 @@ default TOut innerMVPRetype(TOk ri,NormType ti){
 //it is  not over if there is a mathing method type with mutToCapsule(result param types)
 //tsToCaps=Ts[with r in resp (use[mutToCapsule(r.T)])]
 //mTypeMVP=_bestMatchMtype(tsToCaps,TSIn.T,mTypes)
-  List<NormType>tsToCaps=new ArrayList<>();
+  List<Type>tsToCaps=new ArrayList<>();
   for(TOk r: resp){
     Mdf m=r.computed.getMdf();
     if(m==Mdf.MutableFwd || m==Mdf.MutablePFwd){
       return new TErr(in,"impossible to search for mvp since mdf "+m,mTypes.get(0).getReturnType(),ErrorKind.NotSubtypeClass);
       }
-    NormType nt=TypeManipulation.mutToCapsule(r.computed);
+    Type nt=TypeManipulation.mutToCapsule(r.computed);
     tsToCaps.add(nt);
     }
   computedMt=computedMt.withTs(tsToCaps).withMdf(TypeManipulation.mutToCapsule(computedMt.getMdf()));
@@ -106,7 +106,7 @@ default TOut innerMVPRetype(TOk ri,NormType ti){
   if(!_newRes0.isOk()){return _newRes0;}
   TOk newRes0=_newRes0.toOk();
   List<TOk> newResp=new ArrayList<>();
-  {int i=-1;for(TOk ri :resp){i+=1;NormType ti=mTypeMVP.getTs().get(i);
+  {int i=-1;for(TOk ri :resp){i+=1;Type ti=mTypeMVP.getTs().get(i);
     TOut outi=innerMVPRetype(ri,ti);
     if(!outi.isOk()){return outi.toError();}
     newResp.add(outi.toOk());
@@ -121,7 +121,7 @@ default TOut innerMVPRetype(TOk ri,NormType ti){
   return res;
   }
 
-default TErr improveReceiverError(TIn in,NormType t0, TErr err) {
+default TErr improveReceiverError(TIn in,Type t0, TErr err) {
   if(err.kind!=ErrorKind.NotSubtypeMdf){return err;}
   //if receiver must class, and is not, give better error
   //if receiver must not class, but is class, give better error

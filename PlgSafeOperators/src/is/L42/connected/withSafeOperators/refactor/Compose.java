@@ -259,10 +259,10 @@ import java.util.function.Function;
 import ast.Ast;
 import ast.Ast.C;
 import ast.Ast.Doc;
-import ast.Ast.NormType;
+import ast.Ast.Type;
 import ast.Ast.Path;
 import ast.Ast.Position;
-import ast.Ast.NormType;
+import ast.Ast.Type;
 import ast.ExpCore;
 import ast.ExpCore.*;
 import ast.ExpCore.ClassB.NestedClass;
@@ -378,8 +378,8 @@ mwts1 +mwts2=empty
     if(a.isInterface() || b.isInterface()){
       assert false;
       }
-    List<NormType> impls=new ArrayList<>(a.getSupertypes());
-    for(NormType ti:b.getSupertypes()){impls.remove(ti);}
+    List<Type> impls=new ArrayList<>(a.getSupertypes());
+    for(Type ti:b.getSupertypes()){impls.remove(ti);}
     impls.addAll(b.getSupertypes());
     List<MethodWithType>mwts=new ArrayList<>(a.mwts());
     for(MethodWithType mwti: b.mwts()){Functions._findAndRemove(mwts,mwti.getMs());}

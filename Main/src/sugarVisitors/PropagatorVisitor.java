@@ -11,9 +11,9 @@ import ast.Ast.ConcreteHeader;
 import ast.Ast.FieldDec;
 import ast.Ast.Header;
 import ast.Ast.MethodType;
-import ast.Ast.NormType;
+import ast.Ast.Type;
 import ast.Ast.Path;
-import ast.Ast.NormType;
+import ast.Ast.Type;
 import ast.Ast.VarDec;
 import ast.Ast;
 import ast.Expression;
@@ -24,7 +24,7 @@ import ast.Expression.ClassB.*;
 public class PropagatorVisitor implements Visitor<Void>{
   protected void lift(Expression e){ e.accept(this); }
   protected void liftP(Path p){}
-  protected void liftT(NormType t){
+  protected void liftT(Type t){
       liftP(t.getPath());
       liftDoc(t.getDoc());
       }

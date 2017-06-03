@@ -9,7 +9,7 @@ import java.util.stream.IntStream;
 import platformSpecific.fakeInternet.PluginType;
 import tools.Assertions;
 import tools.StringBuilders;
-import ast.Ast.NormType;
+import ast.Ast.Type;
 import ast.Ast.Path;
 import ast.Ast.Position;
 import ast.Ast.SignalKind;
@@ -195,7 +195,7 @@ public class TranslateExpression implements coreVisitors.Visitor<Void>{
   }
 
   private void getCatch(String kVar,On on,String asReturn,String kLab) {
-    Path p=((NormType)on.getT()).getPath();
+    Path p=((Type)on.getT()).getPath();
     String tn=Resources.nameOf(p);
     if(p.equals(Path.Library())){
       res.append(getCatchHeaderForLibrary(kVar));

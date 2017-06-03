@@ -58,7 +58,7 @@ public class From extends CloneVisitor {
   /*public static ExpCore of(ExpCore e, Path source){
     return e.accept(new From(source));
   }*/
-  public static NormType fromT(NormType t, Path source){
+  public static Type fromT(Type t, Path source){
     return new From(source).liftT(t);
   }
   public static List<ExpCore.ClassB.Member> from(List<ExpCore.ClassB.Member> ms, Path source){

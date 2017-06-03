@@ -5,7 +5,7 @@ import java.util.List;
 
 import ast.Ast.Doc;
 import ast.Ast.Mdf;
-import ast.Ast.NormType;
+import ast.Ast.Type;
 import ast.Ast.Path;
 import ast.Ast.SignalKind;
 import ast.ErrorMessage;
@@ -26,7 +26,7 @@ public interface TsOperations extends TypeSystem{
     default TOut tsPath(TIn in, ExpCore.EPath s) {
     //D |- P~>P:class P <= T | emptyTr
     //D.p|-class P <= T
-    NormType t=new NormType(Mdf.Class,s.getInner(),Doc.empty());
+    Type t=new Type(Mdf.Class,s.getInner(),Doc.empty());
     assert s.getInner().isPrimitive() || in.p.extractClassB(s.getInner())!=null;
     ErrorKind subErr=TypeSystem.subtype(in.p, t, in.expected);
     if(subErr==null){
@@ -39,7 +39,7 @@ public interface TsOperations extends TypeSystem{
     default TOut tsX(TIn in, X s) {
     //D |-x ~> x :D.G(x) <= T | emptyTr
     //  D.p|- D.G(x) <= T
-    NormType nt=in.g(s.getInner());
+    Type nt=in.g(s.getInner());
     ErrorKind subErr=TypeSystem.subtype(in.p,nt,in.expected);
     if(subErr==null){
       return new TOk(in,s,nt);
@@ -50,7 +50,7 @@ public interface TsOperations extends TypeSystem{
     default TOut tsVoid(TIn in, _void s) {
     //D |- void~> void:imm Void <= T | emptyTr
     //D.p|-imm Void <= T
-    NormType t=Path.Void().toImmNT();
+    Type t=Path.Void().toImmNT();
     ErrorKind subErr=TypeSystem.subtype(in.p, t, in.expected);
     if(subErr==null){
       return new TOk(in,s,t);
@@ -68,7 +68,7 @@ public interface TsOperations extends TypeSystem{
     if (s.getPath().isPrimitive()){     
       throw new ErrorMessage.InvalidURL("No plug-in url present for primitive path "+s.getPath(),null);     
       }       
-    List<NormType> lt = platformSpecific.fakeInternet.OnLineCode.pluginType(in.p, s);      
+    List<Type> lt = platformSpecific.fakeInternet.OnLineCode.pluginType(in.p, s);      
     assert s.getEs().size()==lt.size()-1;
     ErrorKind k=TypeSystem.subtype(in.p,lt.get(0),in.expected);
     if(k!=null){return new TErr(in,"",lt.get(0),k);}
@@ -77,7 +77,7 @@ public interface TsOperations extends TypeSystem{
     if(!out0.isOk()){return out0;}
     TOk okAcc=out0.toOk();
     {int i=-1;for(ExpCore ei:s.getEs()){i+=1;       
-      NormType ti=lt.get(i+1);//1..n      
+      Type ti=lt.get(i+1);//1..n      
       assert ti.getMdf()==Mdf.Immutable || ti.getMdf()==Mdf.Class;
       TOut outi=type(in.withE(ei,ti));
       if(!outi.isOk()){return outi;}
@@ -95,14 +95,14 @@ public interface TsOperations extends TypeSystem{
       //  if throw=error,     T2= imm T1.P and Tr=Ts;Ps
       //  if throw=return,    T2= (fwd T1) and Tr=(Ts,T3);Ps 
       //  D|- e~>  e' :  T3 <=T2|Ts;Ps
-      NormType T1=GuessTypeCore._of(in, s.getInner());
-      NormType T2;      
+      Type T1=GuessTypeCore._of(in, s.getInner());
+      Type T2;      
       if(s.getKind()!=SignalKind.Return){T2=T1.getPath().toImmNT();}
       else{T2=TypeManipulation.fwd(T1);}
       TOut innerT=type(in.withE(s.getInner(), T2));
       if(!innerT.isOk()){return innerT.toError();}
       TOk res=innerT.toOk();
-      NormType T3=res.computed;
+      Type T3=res.computed;
       if(s.getKind()==SignalKind.Return){res=res.returnsAdd(T3);}
       if(s.getKind()==SignalKind.Exception){res=res.exceptionsAdd(T3.getPath());}
       s=s.withInner(res.annotated).withTypeIn(T3).withTypeOut(in.expected);
@@ -113,7 +113,7 @@ public interface TsOperations extends TypeSystem{
     //D |- L ~> L' : imm Library <= T | emptyTr
     //D.p|-imm Library <= T
     //D.Phase  |- D.p.evilPush(L) ~> L'
-    NormType t=Path.Library().toImmNT();
+    Type t=Path.Library().toImmNT();
     ErrorKind subErr=TypeSystem.subtype(in.p, t, in.expected);
     if(subErr!=null){
       TErr out=new TErr(in,"-----------",t,subErr);
@@ -156,7 +156,7 @@ public interface TsOperations extends TypeSystem{
       if(subErr!=null){
         assert false;//strange exp like Foo(a:=b)
         }
-      NormType expected=in.g(s.getVar());
+      Type expected=in.g(s.getVar());
       if(TypeManipulation.fwd_or_fwdP_in(expected.getMdf())){
         assert false;//can it even happen or is blocked by well formedness before?
         }

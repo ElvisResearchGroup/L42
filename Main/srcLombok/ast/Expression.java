@@ -9,7 +9,7 @@ import ast.Ast.Atom;
 import ast.Ast.HasPos;
 import ast.Ast.Position;
 import ast.Ast.SignalKind;
-import ast.Ast.NormType;
+import ast.Ast.Type;
 import ast.Ast.VarDec;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -66,7 +66,7 @@ public interface Expression extends Ast {
     @Value
     @Wither
     public static class On {
-      List<NormType> ts;
+      List<Type> ts;
       Expression inner;
     }
 
@@ -183,7 +183,7 @@ public interface Expression extends Ast {
   @Value @Wither @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") public static class Catch1 implements Catch{
     Position p;
     SignalKind kind;
-    NormType t;
+    Type t;
     String x;
     Expression inner;
     public <T> T match(Function<Catch1, T> k1,Function<CatchMany, T> kM,Function<CatchProp, T> kP){return k1.apply(this);}
@@ -191,7 +191,7 @@ public interface Expression extends Ast {
   @Value @Wither @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") public static class CatchMany implements Catch{
     Position p;
     SignalKind kind;
-    List<NormType> ts;
+    List<Type> ts;
     Expression inner;
     public String getX(){return "";}
     public <T> T match(Function<Catch1, T> k1,Function<CatchMany, T> kM,Function<CatchProp, T> kP){return kM.apply(this);}
@@ -199,7 +199,7 @@ public interface Expression extends Ast {
   @Value @Wither @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") public static class CatchProp implements Catch{
     Position p;
     SignalKind kind;
-    List<NormType> ts;
+    List<Type> ts;
     Expression inner;
     public String getX(){return "";}
     public <T> T match(Function<Catch1, T> k1,Function<CatchMany, T> kM,Function<CatchProp, T> kP){return kP.apply(this);}
@@ -251,7 +251,7 @@ public interface Expression extends Ast {
 
   //TODO: for decent error messages, eventually we have to admit duplicated members in Expression, so that the well formedess function can have an input
   @Value @Wither @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") public static class ClassB implements Expression, Ast.Atom, HasPos{
-    public ClassB(Doc doc1, Header h, List<Ast.FieldDec> fields, List<NormType> supertypes, List<Member> ms,Position p) {
+    public ClassB(Doc doc1, Header h, List<Ast.FieldDec> fields, List<Type> supertypes, List<Member> ms,Position p) {
       this.doc1 = doc1;
       this.h = h;
       this.fields=fields;
@@ -264,7 +264,7 @@ public interface Expression extends Ast {
     Doc doc1;
     Header h;
     List<Ast.FieldDec> fields;
-    List<NormType> supertypes;
+    List<Type> supertypes;
     List<Member> ms;
     Position p;
     public boolean isConsistent() {

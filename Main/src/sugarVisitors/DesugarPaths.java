@@ -10,7 +10,7 @@ import ast.Expression;
 import ast.Ast.ConcreteHeader;
 import ast.Ast.Doc;
 import ast.Ast.Path;
-import ast.Ast.NormType;
+import ast.Ast.Type;
 import ast.Expression.ClassB;
 import ast.Expression.ClassReuse;
 import ast.Expression.ClassB.Member;

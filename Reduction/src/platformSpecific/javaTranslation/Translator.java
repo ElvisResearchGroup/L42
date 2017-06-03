@@ -32,7 +32,7 @@ import programReduction.Program.EmptyProgram;
 import ast.Ast;
 import ast.Ast.Doc;
 import ast.Ast.InterfaceHeader;
-import ast.Ast.NormType;
+import ast.Ast.Type;
 import ast.Ast.Path;
 import ast.Ast.Stage;
 import ast.ExpCore;

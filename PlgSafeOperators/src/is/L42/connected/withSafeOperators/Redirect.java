@@ -24,13 +24,13 @@ import ast.Ast;
 import ast.ErrorMessage;
 import ast.ExpCore;
 import ast.ExpCore.*;
-import ast.Ast.NormType;
+import ast.Ast.Type;
 import ast.Ast.C;
 import ast.Ast.Doc;
 import ast.Ast.Path;
 import ast.Ast.Position;
 import ast.Ast.Stage;
-import ast.Ast.NormType;
+import ast.Ast.Type;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodWithType;
@@ -235,7 +235,7 @@ public class Redirect {
     boolean thisMdfOk=mwtSrc.getMt().getMdf().equals(mwtDest.getMt().getMdf());
     boolean retOk=redirectOkT(ambiguities,mwtSrc.getMt().getReturnType(),mwtDest.getMt().getReturnType());
     List<Integer>  parWrong=new ArrayList<Integer>();
-    {int i=-1;for(NormType tSrc:mwtSrc.getMt().getTs()){i+=1;NormType tDest=mwtDest.getMt().getTs().get(i);
+    {int i=-1;for(Type tSrc:mwtSrc.getMt().getTs()){i+=1;Type tDest=mwtDest.getMt().getTs().get(i);
       if(!redirectOkT(ambiguities,tSrc,tDest)){parWrong.add(i);};
     }}
     boolean excOk=plusEqualAndExc(ambiguities,exceptions,current.getPath(),mwtSrc, mwtDest);
@@ -258,13 +258,13 @@ public class Redirect {
     int countInternal=srcExc.size()-countExternal;
     return countInternal+countExternalSatisfied>=destExc.size();
   }
-  private static boolean redirectOkT(List<PathSPath> ambiguities, NormType tSrc, NormType tDest) {
+  private static boolean redirectOkT(List<PathSPath> ambiguities, Type tSrc, Type tDest) {
     if(!tSrc.getClass().equals(tDest.getClass())){
       return false;
       }//incompatible internal/external types t1 t2
     //Boolean[] pathOk={true};
   
-    NormType ntP=(NormType)tDest;
+    Type ntP=(Type)tDest;
     if(!tSrc.getMdf().equals(ntP.getMdf())){return false;}//incompatible internal/external types t1 t2
     return plusEqualCheckExt(ambiguities,tSrc.getPath(),Arrays.asList(ntP.getPath()));  
     }

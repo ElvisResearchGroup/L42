@@ -15,7 +15,7 @@ import ast.ErrorMessage;
 import ast.ExpCore;
 import ast.Ast.Doc;
 import ast.Ast.Mdf;
-import ast.Ast.NormType;
+import ast.Ast.Type;
 import ast.Ast.Path;
 import ast.ExpCore.Using;
 import auxiliaryGrammar.EncodingHelper;
@@ -46,8 +46,8 @@ public class PluginWithPart implements PluginType{
       throw new ErrorMessage.InvalidURL(url+"\n"+part,null);
       }
     }
-  public List<NormType> typeOf(Program p, Using u){
-    List<NormType> res=new ArrayList<>();
+  public List<Type> typeOf(Program p, Using u){
+    List<Type> res=new ArrayList<>();
     UsingInfo ui=new UsingInfo(p,u);
     if(ui.methOrKs==null){ res.add(jTo42(Void.TYPE));}
     else{
@@ -63,18 +63,18 @@ public class PluginWithPart implements PluginType{
     res.add(jTo42(t));
     return res;
     }
-  private static ast.Ast.NormType jTo42(Class<?> jt){
-    if (jt.equals(Void.TYPE)){return NormType.immVoid;}
-    if (jt.equals(ast.Ast.Path.class)){return NormType.classAny;}
-    return NormType.immLibrary;
+  private static ast.Ast.Type jTo42(Class<?> jt){
+    if (jt.equals(Void.TYPE)){return Type.immVoid;}
+    if (jt.equals(ast.Ast.Path.class)){return Type.classAny;}
+    return Type.immLibrary;
     }
-  private static ast.Ast.NormType jTo42(String jt){
+  private static ast.Ast.Type jTo42(String jt){
     jt=jt.substring(1);
     jt=jt.substring(jt.indexOf("_"));
     if (jt.equals("_ast%Ast$Path")){
-      return NormType.classAny;
+      return Type.classAny;
       }
-    return NormType.immLibrary;
+    return Type.immLibrary;
     }
   public Object execute(Program p, Using u){
     assert false: "is this not called with compilation?";

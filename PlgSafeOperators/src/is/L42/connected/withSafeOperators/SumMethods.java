@@ -5,7 +5,7 @@ import ast.Ast.MethodSelector;
 import ast.Ast.MethodType;
 import ast.Ast.Path;
 import ast.Ast.Position;
-import ast.Ast.NormType;
+import ast.Ast.Type;
 import ast.Ast;
 import ast.ExpCore;
 import ast.ExpCore.*;
@@ -81,9 +81,9 @@ public class SumMethods {
   static MethodType mtU(int index,MethodType mt1,MethodType mt2){
     Mdf mdfU=mdfU(mt1.getMdf(),mt2.getMdf());
     if(mdfU==null){return null;}
-    NormType removed=mt2.getTs().get(index);
+    Type removed=mt2.getTs().get(index);
     boolean isRemovedPh=!Functions.isComplete(removed);
-    List<NormType> totTypes;
+    List<Type> totTypes;
     if(isRemovedPh){
       totTypes=new ArrayList<>(mt1.getTs());
     }
@@ -93,7 +93,7 @@ public class SumMethods {
     totTypes.addAll(mt2.getTs());
     int toRemove=mt1.getTs().size()+index;
     totTypes.remove(toRemove);
-    List<NormType> exU = new ArrayList<>(mt1.getExceptions());
+    List<Type> exU = new ArrayList<>(mt1.getExceptions());
     exU.addAll(mt2.getExceptions());
     MethodType mtU =new MethodType(false,
         mdfU,totTypes,mt2.getReturnType(),exU);
@@ -101,8 +101,8 @@ public class SumMethods {
     }
   static boolean isReplacedParOk(int index,MethodType mt1,MethodType mt2){
     if(mt2.getTs().isEmpty()){return false;}
-    NormType p1 = mt2.getTs().get(index);
-    NormType r = mt1.getReturnType();
+    Type p1 = mt2.getTs().get(index);
+    Type r = mt1.getReturnType();
     return p1.equals(r);
     }
 

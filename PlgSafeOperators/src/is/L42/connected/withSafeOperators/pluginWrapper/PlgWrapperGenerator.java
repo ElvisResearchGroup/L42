@@ -16,9 +16,9 @@ import ast.Ast.Doc;
 import ast.Ast.Mdf;
 import ast.Ast.MethodSelector;
 import ast.Ast.MethodType;
-import ast.Ast.NormType;
+import ast.Ast.Type;
 import ast.Ast.Path;
-import ast.Ast.NormType;
+import ast.Ast.Type;
 import ast.ExpCore;
 import ast.ExpCore.Block;
 import ast.ExpCore.Block.Dec;
@@ -157,10 +157,10 @@ private static void addMwt(Program p, PlgInfo plgInfo, Method[] jms, Constructor
 //checks
   try{
     isOkAsReturn(p,pTop,mwt.getMt().getReturnType());
-    for(NormType ti:mwt.getMt().getExceptions()){
+    for(Type ti:mwt.getMt().getExceptions()){
       isOkAsException(p,pTop,ti.getPath());
       }
-    for(NormType ti:mwt.getMt().getTs()){
+    for(Type ti:mwt.getMt().getTs()){
       isOkAsParameter(p,pTop,ti);
       }//TODO: we may want to cache those tests if performance is needed
     }
@@ -238,8 +238,8 @@ private static UsingInfo usingConstructor(PlgInfo plgInfo, Constructor<?>[] jcs,
     {int i=-1;for(String x: mwt.getMs().getNames()){i++;
       ExpCore pi=new ExpCore.X(mwt.getP(),x);
       boolean needAddBinaryRepr=true;
-      NormType ti=mwt.getMt().getTs().get(i);
-      if(ti.equals(NormType.immLibrary)){
+      Type ti=mwt.getMt().getTs().get(i);
+      if(ti.equals(Type.immLibrary)){
         needAddBinaryRepr=false;
         }
       if(ti.getMdf()==Mdf.Class){
@@ -267,7 +267,7 @@ private static UsingInfo usingConstructor(PlgInfo plgInfo, Constructor<?>[] jcs,
       On on=b.getOns().get(0);
       Dec k0 = ((Block)on.getInner()).getDecs().get(0);
       List<Dec> ks=new ArrayList<>();
-      {int i=-1;for(NormType ti:mt.getExceptions()){i++;
+      {int i=-1;for(Type ti:mt.getExceptions()){i++;
         MCall mci=((MCall)k0.getInner()).withInner(ExpCore.EPath.wrap(ti.getPath()));
         ks.add(k0.withInner(mci).withX(k0.getX()+i));
         }}
@@ -278,8 +278,8 @@ private static UsingInfo usingConstructor(PlgInfo plgInfo, Constructor<?>[] jcs,
       //ki.inner#mcall.inner<-Pi
       }
     
-    if (ui.isVoid){b=b.withDecs(Collections.singletonList(b.getDecs().get(0).withT(Optional.of(NormType.immVoid))));}
-    if(!ui.isVoid && !mwt.getMt().getReturnType().equals(NormType.immLibrary)){
+    if (ui.isVoid){b=b.withDecs(Collections.singletonList(b.getDecs().get(0).withT(Optional.of(Type.immVoid))));}
+    if(!ui.isVoid && !mwt.getMt().getReturnType().equals(Type.immLibrary)){
       e=e.withEs(Collections.singletonList(b));
       mwt=mwt.withInner(e);
       }
@@ -297,7 +297,7 @@ public static boolean hasPluginUnresponsive(ClassB l){
     if(mwt==null){return false;}//must be an mwt since normalized
     MethodType mt=mwt.getMt();
     if(!mt.getMdf().equals(Mdf.Class)){return false;}
-    if(!mt.getTs().get(0).equals(NormType.immLibrary)){return false;}    
+    if(!mt.getTs().get(0).equals(Type.immLibrary)){return false;}    
     if(!mt.getExceptions().isEmpty()){return false;}
     if(!mt.getReturnType().getMdf().equals(Mdf.Immutable)){return false;}
     return true;//no need to check return type, since is just thrown as error
@@ -311,7 +311,7 @@ public static boolean hasPluginUnresponsive(ClassB l){
     if(!mt.getMdf().equals(Mdf.Readable)){return false;}
     if(!mt.getTs().isEmpty()){return false;}    
     if(!mt.getExceptions().isEmpty()){return false;}
-    if(!mt.getReturnType().equals(NormType.immLibrary)){return false;}
+    if(!mt.getReturnType().equals(Type.immLibrary)){return false;}
     return true;
     }
   public static boolean hasFrom(ClassB l){
@@ -321,9 +321,9 @@ public static boolean hasPluginUnresponsive(ClassB l){
     if(mwt==null){return false;}//must be an mwt since normalized
     MethodType mt=mwt.getMt();
     if(!mt.getMdf().equals(Mdf.Class)){return false;}
-    if(!mt.getTs().get(0).equals(NormType.immLibrary)){return false;}    
+    if(!mt.getTs().get(0).equals(Type.immLibrary)){return false;}    
     if(!mt.getExceptions().isEmpty()){return false;}
-    if(!mt.getReturnType().equals(NormType.mutThis0)){return false;}
+    if(!mt.getReturnType().equals(Type.mutThis0)){return false;}
     return true;
     }
 
@@ -334,10 +334,10 @@ public static boolean hasPluginUnresponsive(ClassB l){
     if(mwt==null){return false;}//must be an mwt since normalized
     MethodType mt=mwt.getMt();
     if(!mt.getMdf().equals(Mdf.Class)){return false;}
-    if(!mt.getTs().get(0).equals(NormType.immLibrary)){return false;}    
+    if(!mt.getTs().get(0).equals(Type.immLibrary)){return false;}    
     if(mt.getExceptions().size()!=1){return false;}
     if(!mt.getExceptions().get(0).equals(Path.outer(0))){return false;}
-    if(!mt.getReturnType().equals(NormType.immVoid)){return false;}
+    if(!mt.getReturnType().equals(Type.immVoid)){return false;}
     return true;//no need to check return type, since is just thrown as error
     }
   private static Path _pathForOutside(int dept,Path pi){
@@ -362,7 +362,7 @@ public static boolean hasPluginUnresponsive(ClassB l){
       "Class "+cBar+" doesnot have @pluginPart annotation");
       }
     }
-  private static void isOkAsParameter(Program p, Path csTop, NormType ti) throws ClassUnfit, MethodUnfit {
+  private static void isOkAsParameter(Program p, Path csTop, Type ti) throws ClassUnfit, MethodUnfit {
     Path pi=ti.getPath();
     if(ti.getMdf()==Mdf.Class){return;}//class parameters are ok, and we just omit the .#binaryRepr() call
     if (pi.equals(Path.Library())){return;}//Libraries are ok and we just omit the .#binaryRepr() call
@@ -389,7 +389,7 @@ public static boolean hasPluginUnresponsive(ClassB l){
     }
 
 
-  private static void isOkAsReturn(Program p, Path csTop, NormType ti) throws ClassUnfit, MethodUnfit {
+  private static void isOkAsReturn(Program p, Path csTop, Type ti) throws ClassUnfit, MethodUnfit {
     Path pi=ti.getPath();
     if (pi.equals(Path.Void())){return;}
     if (pi.equals(Path.Library())){return;}//We will need to generate a simpler returning expression
@@ -398,7 +398,7 @@ public static boolean hasPluginUnresponsive(ClassB l){
     ClassB l=p.extractClassB(op);
     boolean hasIt=hasFrom(l);
     boolean phOk=Functions.isComplete(ti);
-    if (ti.getMdf()==Mdf.Class && !ti.equals(NormType.classAny)){
+    if (ti.getMdf()==Mdf.Class && !ti.equals(Type.classAny)){
       throw new RefactorErrors.MethodUnfit().msg("Return type can be 'class' only if is exactly 'class any'");
       }
     if(!hasIt){throw new RefactorErrors.ClassUnfit().msg(

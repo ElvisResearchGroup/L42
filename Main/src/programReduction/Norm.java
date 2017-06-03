@@ -1,6 +1,6 @@
 package programReduction;
 
-import ast.Ast.NormType;
+import ast.Ast.Type;
 import ast.Ast.Path;
 
 import java.util.ArrayList;
@@ -20,14 +20,14 @@ import tools.Assertions;
 import tools.Map;
 import ast.Ast;
 import ast.Ast.MethodType;
-import ast.Ast.NormType;
+import ast.Ast.Type;
 public class Norm {
 
-  static NormType nextT(Ast.Path p,MethodWithType mwt,Ast.MethodSelectorX msx){
+  static Type nextT(Ast.Path p,MethodWithType mwt,Ast.MethodSelectorX msx){
     String x=msx.getX();
     if(x.isEmpty()){return mwt.getMt().getReturnType();}
     if(x.equals("this")){
-      return new NormType(mwt.getMt().getMdf(),p,mwt.getDoc());
+      return new Type(mwt.getMt().getMdf(),p,mwt.getDoc());
       }
     int i=mwt.getMs().getNames().indexOf(x);
     assert i!=-1:

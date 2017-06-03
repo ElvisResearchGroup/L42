@@ -10,10 +10,10 @@ import java.util.Set;
 import tools.Assertions;
 import tools.StringBuilders;
 import ast.Ast;
-import ast.Ast.NormType;
+import ast.Ast.Type;
 import ast.Ast.Path;
 import ast.Ast.Position;
-import ast.Ast.NormType;
+import ast.Ast.Type;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodWithType;
@@ -150,10 +150,10 @@ public class TranslateClass {
   }
   private static void getFields(MethodWithType ctor, StringBuilder res) {
     List<String> ns = ctor.getMs().getNames();
-    List<NormType> ts = ctor.getMt().getTs();
+    List<Type> ts = ctor.getMt().getTs();
     StringBuilders.formatSequence(res,ns.iterator(),ts.iterator(),
       ";\n", (n,t)->{
-        assert t instanceof NormType;
+        assert t instanceof Type;
         res.append("public ");
         res.append(Resources.nameOf(t));
         res.append(" F"+Resources.nameOf(n));
@@ -165,7 +165,7 @@ public class TranslateClass {
     res.append(s);
     res.append("( ");
     List<String> ns = ctor.getMs().getNames();
-    List<NormType> ts = ctor.getMt().getTs();
+    List<Type> ts = ctor.getMt().getTs();
     StringBuilders.formatSequence(res,ns.iterator(),ts.iterator(),
       ", ",(n,t)->{
         n=Resources.nameOf(n);

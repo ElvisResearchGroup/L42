@@ -25,7 +25,7 @@ import ast.Ast.Mdf;
 import ast.Ast.MethodSelector;
 import ast.Ast.Path;
 import ast.Ast.Stage;
-import ast.Ast.NormType;
+import ast.Ast.Type;
 //import ast.Ast.*;//NO too much clashes
 import ast.ErrorMessage;
 import ast.ExpCore;

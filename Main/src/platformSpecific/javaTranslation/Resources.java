@@ -38,7 +38,7 @@ import ast.ErrorMessage.UserLevelError;
 import ast.ExpCore;
 import ast.Ast.C;
 import ast.Ast.Doc;
-import ast.Ast.NormType;
+import ast.Ast.Type;
 import ast.Ast.Path;
 import ast.Ast.Position;
 import ast.Ast.SignalKind;
@@ -356,10 +356,10 @@ public class Resources {
       throw new Error(exc);
       }
     }
-  public static String nameOf(Ast.NormType t) {
-    assert t instanceof NormType:
+  public static String nameOf(Ast.Type t) {
+    assert t instanceof Type:
     "";
-    Path p=((NormType)t).getPath();
+    Path p=((Type)t).getPath();
     return nameOf(p);
     }
   public static String nameOf(Ast.MethodSelector ms) {

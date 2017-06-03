@@ -7,7 +7,7 @@ import java.util.stream.Stream;
 
 import ast.ExpCore;
 import ast.Ast;
-import ast.Ast.NormType;
+import ast.Ast.Type;
 import ast.Ast.Path;
 import ast.Ast.SignalKind;
 import ast.ExpCore.Block.Dec;
@@ -18,7 +18,7 @@ import programReduction.Program;
 class TErr implements TOut,TOutM,TOutDs,TOutKs,TOutK{
 @Override public boolean isOk() { return false;}
 @Override public TErr toError() {return this;}
-public TErr(TIn in, String msg, NormType _computed, ErrorKind kind) {
+public TErr(TIn in, String msg, Type _computed, ErrorKind kind) {
   this.in = in; this.msg = msg; this._computed = _computed;this.kind=kind;
   }
 public TErr withKind(ErrorKind kind){
@@ -26,7 +26,7 @@ public TErr withKind(ErrorKind kind){
   }
 TIn in;
 String msg;
-NormType _computed;
+Type _computed;
 ErrorKind kind;
 public TErr enrich(TIn in2) {
   return this;//TODO: design some general error context enreaching
@@ -41,7 +41,7 @@ interface TOut{
   default TErr toError() {throw new Error();}
   }
 abstract class ATr<This extends ATr<This>>{
-List<NormType>returns=Collections.emptyList();
+List<Type>returns=Collections.emptyList();
 List<Path>exceptions=Collections.emptyList();
 /*Tr(List<NormType>returns,List<Path>exceptions){
   this.returns=returns;
@@ -59,7 +59,7 @@ public This trUnion(ATr<?> that){
   res.exceptions=union(this.exceptions,that.exceptions);
   return res;
   }
-public This returnsAdd(NormType t){
+public This returnsAdd(Type t){
   This res=trClean();
   res.returns=new ArrayList<>(returns);
   res.returns.add(t);
@@ -88,7 +88,7 @@ public This trCapture(Program p,On k){
   }
 //otherwise, is return
   result.returns=new ArrayList<>();
-  for(NormType ti: returns){
+  for(Type ti: returns){
     if(null!=TypeSystem.subtype(p,ti.getPath(),k.getT().getPath())){
       result.returns.add(ti);
       }
@@ -120,11 +120,11 @@ class TOk extends ATr<TOk> implements TOut{
   @Override public TOk toOk() {return this;}
   TIn in;
   ExpCore annotated;
-  NormType computed;
-  public TOk(TIn in, ExpCore annotated, NormType computed){
+  Type computed;
+  public TOk(TIn in, ExpCore annotated, Type computed){
     this.in=in;this.annotated=annotated;this.computed=computed;
     }
-  public TOk withAC(ExpCore annotated,NormType computed){
+  public TOk withAC(ExpCore annotated,Type computed){
     TOk res=new TOk(this.in,annotated,computed);
     res.returns=this.returns;
     res.exceptions=this.exceptions;
@@ -186,16 +186,16 @@ default TErr toError() {throw new Error();}
 }
 
 class TOkKs implements TOutKs{
-  public TOkKs(Tr trAcc, List<On> ks, List<NormType> ts) {
+  public TOkKs(Tr trAcc, List<On> ks, List<Type> ts) {
     assert trAcc!=null;
     this.trAcc = trAcc;
     this.ks = ks;
     this.ts = ts;
-    for(On k:ks){assert k.getT() instanceof NormType:k.getT();}
+    for(On k:ks){assert k.getT() instanceof Type:k.getT();}
     }
   Tr trAcc;
   List<ExpCore.Block.On> ks;
-  List<NormType> ts;
+  List<Type> ts;
   @Override public boolean isOk() { return true;}
   @Override public TOkKs toOkKs() {return this;}
 }
@@ -207,14 +207,14 @@ default TErr toError() {throw new Error();}
 }
 
 class TOkK implements TOutK{
-public TOkK(Tr tr, On k, NormType t) {
+public TOkK(Tr tr, On k, Type t) {
   this.tr = tr;
   this.k = k;
   this.t = t;
   }
 Tr tr;
 On k;
-NormType t;
+Type t;
 @Override public boolean isOk() { return true;}
 @Override public TOkK toOkK() {return this;}
 }

@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 import ast.Ast.Atom;
 import ast.Ast.Doc;
 import ast.Ast.Mdf;
-import ast.Ast.NormType;
+import ast.Ast.Type;
 import ast.Ast.Op;
 import ast.Ast.Path;
 import sugarVisitors.Desugar;
@@ -46,7 +46,7 @@ public interface Ast {
  @Wither
  public class VarDecXE implements VarDec {
   boolean isVar;
-  Optional<NormType> t;
+  Optional<Type> t;
   String x;
   Expression inner;
 
@@ -115,28 +115,28 @@ public interface Ast {
  @Wither
  public class FieldDec {
   boolean isVar;
-  NormType t;
+  Type t;
   String name;
   Doc doc;
  }
 
  @Value
  @Wither
- public class NormType{
+ public class Type{
   Mdf mdf;
   Path path;
   Doc doc;
-  public static final NormType mutThis0=new NormType(Mdf.Mutable,Path.outer(0),Doc.empty());
-  public static final NormType immThis0=new NormType(Mdf.Immutable,Path.outer(0),Doc.empty());
-  public static final NormType immVoid=new NormType(Mdf.Immutable,Path.Void(),Doc.empty());
-  public static final NormType immLibrary=new NormType(Mdf.Immutable,Path.Library(),Doc.empty());
-  public static final NormType immAny=new NormType(Mdf.Immutable,Path.Any(),Doc.empty());
-  public static final NormType classAny=new NormType(Mdf.Class,Path.Any(),Doc.empty());
+  public static final Type mutThis0=new Type(Mdf.Mutable,Path.outer(0),Doc.empty());
+  public static final Type immThis0=new Type(Mdf.Immutable,Path.outer(0),Doc.empty());
+  public static final Type immVoid=new Type(Mdf.Immutable,Path.Void(),Doc.empty());
+  public static final Type immLibrary=new Type(Mdf.Immutable,Path.Library(),Doc.empty());
+  public static final Type immAny=new Type(Mdf.Immutable,Path.Any(),Doc.empty());
+  public static final Type classAny=new Type(Mdf.Class,Path.Any(),Doc.empty());
   public String toString() {
    return mdf.name() + "[" + this.path.toString()+"]";
   }
 
-  /*public <T> T match(Function<NormType, T> normType, Function<HistoricType, T> hType) {
+  /*public <T> T match(Function<Type, T> normType, Function<HistoricType, T> hType) {
    return normType.apply(this);
   }*/
  }
@@ -150,22 +150,22 @@ public interface Ast {
 
  /*@Value
  @Wither
- public class HistoricType implements NormType {
+ public class HistoricType implements Type {
   Path path;
   List<MethodSelectorX> selectors;
   Doc doc;
-  public <T> T match(Function<NormType, T> normType, Function<HistoricType, T> hType) {
+  public <T> T match(Function<Type, T> normType, Function<HistoricType, T> hType) {
    return hType.apply(this);
   }
  }*/
 
  /*@Value
- public class FreeType implements NormType {
-  public <T> T match(Function<NormType, T> normType, Function<HistoricType, T> hType) {
+ public class FreeType implements Type {
+  public <T> T match(Function<Type, T> normType, Function<HistoricType, T> hType) {
    throw tools.Assertions.codeNotReachable();
   }
   public Doc getDoc(){return Doc.empty();}
-  public NormType withDoc(Doc doc){return this;}
+  public Type withDoc(Doc doc){return this;}
  }*/
 
  @Value
@@ -283,9 +283,9 @@ public interface Ast {
  public class MethodType {
   boolean refine;
   Mdf mdf;
-  List<NormType> ts;
-  NormType returnType;
-  List<NormType> exceptions;
+  List<Type> ts;
+  Type returnType;
+  List<Type> exceptions;
   @Override public String toString(){
     String res=
       this.mdf+":"+ts.stream().map(e->e.toString()).collect(Collectors.joining(","))
@@ -357,7 +357,7 @@ public interface Ast {
  public static Path Any() {return  PathPrimitive._Any;}
  public static Path Library() {return PathPrimitive._Library;}
 
- public NormType toImmNT(){return new NormType(Mdf.Immutable,this,Doc.empty());}
+ public Type toImmNT(){return new Type(Mdf.Immutable,this,Doc.empty());}
    public boolean isPrimitive() {return false;}
    public boolean isCore() { return false; }
    public String toString() { return sugarVisitors.ToFormattedText.of(this);}

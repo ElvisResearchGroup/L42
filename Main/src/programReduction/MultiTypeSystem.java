@@ -3,7 +3,7 @@ package programReduction;
 import java.util.ArrayList;
 import java.util.List;
 
-import ast.Ast.NormType;
+import ast.Ast.Type;
 import ast.Ast.Stage;
 import ast.Ast;
 import ast.ExpCore;

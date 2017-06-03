@@ -16,7 +16,7 @@ import ast.Ast.MethodSelector;
 import ast.Ast.MethodType;
 import ast.Ast.Path;
 import ast.Ast.Position;
-import ast.Ast.NormType;
+import ast.Ast.Type;
 import ast.Ast.VarDec;
 import ast.Ast.VarDecXE;
 import ast.ExpCore.Block;
@@ -80,7 +80,7 @@ public class InjectionOnSugar implements Visitor<ast.Expression> {
     Expression inner=lift(s.getInner());
     List<VarDec> decs= new ArrayList<VarDec>();
     for(int i=0;i<s.getDecs().size();i++){
-      Optional<NormType> t=s.getDecs().get(i).getT();
+      Optional<Type> t=s.getDecs().get(i).getT();
       String x=s.getDecs().get(i).getX();
       Expression e=lift(s.getDecs().get(i).getInner());
       decs.add(new VarDecXE(s.getDecs().get(i).isVar(),t,x,e));
@@ -109,7 +109,7 @@ public class InjectionOnSugar implements Visitor<ast.Expression> {
   @Override public Expression visit(ClassB s) {
     Doc doc1=s.getDoc1();
     Header h=(s.isInterface())?new Ast.InterfaceHeader():new Ast.TraitHeader();
-    List<NormType>supertypes=s.getSupertypes();
+    List<Type>supertypes=s.getSupertypes();
     List<Member> members=new ArrayList<>();
     for(ast.ExpCore.ClassB.Member mi:s.getMs()){
       members.add(mi.match(

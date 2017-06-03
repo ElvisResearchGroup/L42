@@ -28,7 +28,7 @@ import facade.Parser;
 import sugarVisitors.Desugar;
 import sugarVisitors.InjectionOnCore;
 import ast.Ast;
-import ast.Ast.NormType;
+import ast.Ast.Type;
 import ast.Ast.Stage;
 import ast.ErrorMessage;
 import ast.ErrorMessage.TypeError;
@@ -48,65 +48,65 @@ public class TestTypeStage1 {
     public static class TestStage1 {
       @Parameter(0) public int _lineNumber;
       @Parameter(1) public String _e;
-      @Parameter(2) public NormType typeSugg;
-      @Parameter(3) public NormType typeExpected;
+      @Parameter(2) public Type typeSugg;
+      @Parameter(3) public Type typeExpected;
       @Parameter(4) public String[] program;
       @Parameters(name = "{index}: line {0}")
       public static List<Object[]> createData() {
         return Arrays.asList(new Object[][] {
            {lineNumber(),"( exception void catch exception  Void  x void  void)",
-           new NormType(Mdf.Readable,Path.Any(),Doc.empty()),
-           new NormType(Mdf.Immutable,Path.Any(), Doc.empty()),
+           new Type(Mdf.Readable,Path.Any(),Doc.empty()),
+           new Type(Mdf.Immutable,Path.Any(), Doc.empty()),
            new String[]{"{ D:{k()}}"}
          },{lineNumber(),"( (exception void "
           + "   catch exception Any x exception x"
           + "   void)"
           + " catch exception Void xOut void void)",
-           new NormType(Mdf.Readable,Path.Any(),Doc.empty()),
-           new NormType(Mdf.Immutable,Path.Any(), Doc.empty()),
+           new Type(Mdf.Readable,Path.Any(),Doc.empty()),
+           new Type(Mdf.Immutable,Path.Any(), Doc.empty()),
            new String[]{"{ D:{k()}}"}
        },{lineNumber(),"Any",
-         new NormType(Mdf.Class,Path.Any(), Doc.empty()),
-         new NormType(Mdf.Class,Path.Any(), Doc.empty()),
+         new Type(Mdf.Class,Path.Any(), Doc.empty()),
+         new Type(Mdf.Class,Path.Any(), Doc.empty()),
          new String[]{"{ C:{k()}}"}
        },{lineNumber(),"Library",
-         new NormType(Mdf.Class,Path.Any(),Doc.empty()),
-         new NormType(Mdf.Class,Path.Library(), Doc.empty()),
+         new Type(Mdf.Class,Path.Any(),Doc.empty()),
+         new Type(Mdf.Class,Path.Library(), Doc.empty()),
          new String[]{"{ C:{k()}}"}
        },{lineNumber(),"C.k()",
-         new NormType(Mdf.Immutable,Path.parse("This0.C"), Doc.empty()),
-         new NormType(Mdf.Immutable,Path.parse("This0.C"), Doc.empty()),
+         new Type(Mdf.Immutable,Path.parse("This0.C"), Doc.empty()),
+         new Type(Mdf.Immutable,Path.parse("This0.C"), Doc.empty()),
          new String[]{"{ C:{k()}}"}
        },{lineNumber(),"C.#mutK()",
-         new NormType(Mdf.Mutable,Path.parse("This0.C"), Doc.empty()),
-         new NormType(Mdf.Capsule,Path.parse("This0.C"), Doc.empty()),
+         new Type(Mdf.Mutable,Path.parse("This0.C"), Doc.empty()),
+         new Type(Mdf.Capsule,Path.parse("This0.C"), Doc.empty()),
          new String[]{"{ C:{mut k()}}"}
        },{lineNumber(),"C.k(f:D.k(),ft:D)",
-         new NormType(Mdf.Mutable,Path.parse("This0.C"), Doc.empty()),
-         new NormType(Mdf.Capsule,Path.parse("This0.C"), Doc.empty()),
+         new Type(Mdf.Mutable,Path.parse("This0.C"), Doc.empty()),
+         new Type(Mdf.Capsule,Path.parse("This0.C"), Doc.empty()),
          new String[]{"{ C:{mut k(var D f, class D ft)}, D:{k()}}"}
        },{lineNumber(),"( D x=D.k(), C.k(f:x,ft:D))",
-         new NormType(Mdf.Mutable,Path.parse("This0.C"), Doc.empty()),
-         new NormType(Mdf.Capsule,Path.parse("This0.C"), Doc.empty()),
+         new Type(Mdf.Mutable,Path.parse("This0.C"), Doc.empty()),
+         new Type(Mdf.Capsule,Path.parse("This0.C"), Doc.empty()),
          new String[]{"{ C:{mut k(var D f, class D ft)}, D:{k()}}"}
 
        },{lineNumber(),"error D.k()",
-         new NormType(Mdf.Readable,Path.Any(),Doc.empty()),
-         new NormType(Mdf.Readable,Path.Any(),Doc.empty()),
+         new Type(Mdf.Readable,Path.Any(),Doc.empty()),
+         new Type(Mdf.Readable,Path.Any(),Doc.empty()),
          new String[]{"{ D:{k()}}"}
 
        },{lineNumber(),"( D x=D.k(f:x), x)",
-         new NormType(Mdf.Readable,Path.Any(),Doc.empty()),
-         new NormType(Mdf.Immutable,Path.Any(), Doc.empty()),
+         new Type(Mdf.Readable,Path.Any(),Doc.empty()),
+         new Type(Mdf.Immutable,Path.Any(), Doc.empty()),
          new String[]{"{ D:{var D f, class method This k(fwd D f)} }"}
 
        },{lineNumber(),"List.factory(N.k())",
-         new NormType(Mdf.Readable,Path.Any(),Doc.empty()),
-         new NormType(Mdf.Immutable,Path.parse("This0.List"), Doc.empty()),
+         new Type(Mdf.Readable,Path.Any(),Doc.empty()),
+         new Type(Mdf.Immutable,Path.parse("This0.List"), Doc.empty()),
          new String[]{listExample}
        },{lineNumber(),"(class List this=List, N that=N.k(), List x=this.factoryAux(that,top:x)  x)",
-         new NormType(Mdf.Readable,Path.Any(),Doc.empty()),
-         new NormType(Mdf.Immutable,Path.Any(), Doc.empty()),
+         new Type(Mdf.Readable,Path.Any(),Doc.empty()),
+         new Type(Mdf.Immutable,Path.Any(), Doc.empty()),
          new String[]{listExample}
        },{lineNumber(),TestHelper.multiLine(""
 ,"(class List this=List,"
@@ -119,27 +119,27 @@ public class TestTypeStage1 {
 ,"       elem:that)"
 ,"   List.k(next:top,elem:N.k()))"
 ," )"),
-       new NormType(Mdf.ImmutablePFwd,Path.parse("This0.List"),Doc.empty()),
-         new NormType(Mdf.ImmutablePFwd,Path.parse("This0.List"),Doc.empty()),
+       new Type(Mdf.ImmutablePFwd,Path.parse("This0.List"),Doc.empty()),
+         new Type(Mdf.ImmutablePFwd,Path.parse("This0.List"),Doc.empty()),
          new String[]{listExample}
 
          },{lineNumber(),"( fwd D x=D.k(f:void), x)",
-         new NormType(Mdf.ImmutableFwd,Path.parse("This0.D"),Doc.empty()),
-           new NormType(Mdf.ImmutableFwd,Path.parse("This0.D"),Doc.empty()),
+         new Type(Mdf.ImmutableFwd,Path.parse("This0.D"),Doc.empty()),
+           new Type(Mdf.ImmutableFwd,Path.parse("This0.D"),Doc.empty()),
            new String[]{"{ D:{k(var Any f)} }"}
 
          //
          },{lineNumber(),"( fwd D x=D.k(f:void), D.k(f:x))",
-         new NormType(Mdf.MutablePFwd,Path.parse("This0.D"),Doc.empty()),
-           new NormType(Mdf.MutablePFwd,Path.parse("This0.D"),Doc.empty()),
+         new Type(Mdf.MutablePFwd,Path.parse("This0.D"),Doc.empty()),
+           new Type(Mdf.MutablePFwd,Path.parse("This0.D"),Doc.empty()),
            new String[]{"{ D:{k(var fwd Any f)} }"}
          },{lineNumber(),"( fwd D x=D.k(f:void), D.k(f:x))",
-         new NormType(Mdf.ImmutablePFwd,Path.parse("This0.D"),Doc.empty()),
-           new NormType(Mdf.ImmutablePFwd,Path.parse("This0.D"),Doc.empty()),
+         new Type(Mdf.ImmutablePFwd,Path.parse("This0.D"),Doc.empty()),
+           new Type(Mdf.ImmutablePFwd,Path.parse("This0.D"),Doc.empty()),
            new String[]{"{ D:{k( fwd Any f)} }"}
          },{lineNumber(),"( D x=D.k(f:void), D.k(f:x))",
-           new NormType(Mdf.Immutable,Path.parse("This0.D"), Doc.empty()),
-           new NormType(Mdf.Capsule,Path.parse("This0.D"), Doc.empty()),
+           new Type(Mdf.Immutable,Path.parse("This0.D"), Doc.empty()),
+           new Type(Mdf.Capsule,Path.parse("This0.D"), Doc.empty()),
            new String[]{"{ D:{k(var fwd Any f)} }"}
         //
          },{lineNumber(),TestHelper.multiLine(""
@@ -157,8 +157,8 @@ public class TestTypeStage1 {
 ,"    )"
 ,"  error void"
 ,"  )"),
-         new NormType(Mdf.Immutable,Path.Library(), Doc.empty()),
-new NormType(Mdf.Immutable,Path.Library(), Doc.empty()),
+         new Type(Mdf.Immutable,Path.Library(), Doc.empty()),
+new Type(Mdf.Immutable,Path.Library(), Doc.empty()),
 new String[]{"{ C:{ k()}, D:{k()}}"}
 
 }});}
@@ -196,77 +196,77 @@ static String listExample=TestHelper.multiLine(
 public static class TestStage2 {
   @Parameter(0) public int _lineNumber;
   @Parameter(1) public String _e;
-  @Parameter(2) public NormType typeSugg;
-  @Parameter(3) public NormType typeExpected;
+  @Parameter(2) public Type typeSugg;
+  @Parameter(3) public Type typeExpected;
   @Parameter(4) public String[] program;
   @Parameters(name = "{index}: line {0}")
   public static List<Object[]> createData() {
     return Arrays.asList(new Object[][] {
       {lineNumber(), "void",
-        NormType.immVoid,
-        NormType.immVoid,
+        Type.immVoid,
+        Type.immVoid,
       new String[]{"{ C:{k()}}"}
     },{lineNumber(), "C.#mutK()",
-      new NormType(Mdf.Capsule,Path.parse("This0.C"), Doc.empty()),
-      new NormType(Mdf.Capsule,Path.parse("This0.C"), Doc.empty()),
+      new Type(Mdf.Capsule,Path.parse("This0.C"), Doc.empty()),
+      new Type(Mdf.Capsule,Path.parse("This0.C"), Doc.empty()),
       new String[]{"{ C:{mut k()}}"}
     },{lineNumber(), "C.#mutK(f:D.#mutK()).f()",
-      new NormType(Mdf.Readable,Path.parse("This0.D"), Doc.empty()),
-      new NormType(Mdf.Immutable,Path.parse("This0.D"), Doc.empty()),
+      new Type(Mdf.Readable,Path.parse("This0.D"), Doc.empty()),
+      new Type(Mdf.Immutable,Path.parse("This0.D"), Doc.empty()),
       new String[]{"{ C:{mut k(var mut D f)} D:{mut k()}}"}
     },{lineNumber(), "C.#mutK(f:D.#mutK()).#f()",
-      new NormType(Mdf.Mutable,Path.parse("This0.D"), Doc.empty()),
-      new NormType(Mdf.Capsule,Path.parse("This0.D"), Doc.empty()),
+      new Type(Mdf.Mutable,Path.parse("This0.D"), Doc.empty()),
+      new Type(Mdf.Capsule,Path.parse("This0.D"), Doc.empty()),
       new String[]{"{ C:{mut k(var mut D f)} D:{mut k()}}"}
     },{lineNumber(), "C.#mutK(f:D.#mutK()).f()",
-      new NormType(Mdf.Immutable,Path.parse("This0.D"), Doc.empty()),
-      new NormType(Mdf.Immutable,Path.parse("This0.D"), Doc.empty()),
+      new Type(Mdf.Immutable,Path.parse("This0.D"), Doc.empty()),
+      new Type(Mdf.Immutable,Path.parse("This0.D"), Doc.empty()),
       new String[]{"{ C:{mut k(var mut D f)} D:{mut k()}}"}
 
     },{lineNumber(), "(lent Vector v=Vector.#mutK(), mut B b=B.#mutK(N.#mutK()),v.add(b.clone()))",
-      NormType.immVoid,
-      NormType.immVoid,
+      Type.immVoid,
+      Type.immVoid,
       new String[]{cloneExample}
     },{lineNumber(), "(A a=A.k(f:B.k(N.k()).clone()) a)",
-      new NormType(Mdf.Immutable,Path.parse("This0.A"), Doc.empty()),
-      new NormType(Mdf.Immutable,Path.parse("This0.A"), Doc.empty()),
+      new Type(Mdf.Immutable,Path.parse("This0.A"), Doc.empty()),
+      new Type(Mdf.Immutable,Path.parse("This0.A"), Doc.empty()),
       new String[]{cloneExample}
   //is ok, clone vuole readable
     },{lineNumber(), "(mut B b=B.k(N.k()), A a=A.k(f:b.clone()) a)",
-      new NormType(Mdf.Immutable,Path.parse("This0.A"), Doc.empty()),
-      new NormType(Mdf.Immutable,Path.parse("This0.A"), Doc.empty()),
+      new Type(Mdf.Immutable,Path.parse("This0.A"), Doc.empty()),
+      new Type(Mdf.Immutable,Path.parse("This0.A"), Doc.empty()),
       new String[]{cloneExample}
 
     },{lineNumber(), "(mut B b=B.k(N.k()), A a=A.k(f:b.clone()) a)",
-      new NormType(Mdf.Immutable,Path.parse("This0.A"), Doc.empty()),
-      new NormType(Mdf.Immutable,Path.parse("This0.A"), Doc.empty()),
+      new Type(Mdf.Immutable,Path.parse("This0.A"), Doc.empty()),
+      new Type(Mdf.Immutable,Path.parse("This0.A"), Doc.empty()),
       new String[]{cloneExample}
 
     },{lineNumber(), " ( B bi=A.k(f:(read B b=B.k(N.k()) b).clone()).f() bi)",
-      new NormType(Mdf.Immutable,Path.parse("This0.B"), Doc.empty()),
-      new NormType(Mdf.Immutable,Path.parse("This0.B"), Doc.empty()),
+      new Type(Mdf.Immutable,Path.parse("This0.B"), Doc.empty()),
+      new Type(Mdf.Immutable,Path.parse("This0.B"), Doc.empty()),
       new String[]{cloneExample}
 
     },{lineNumber(), " (read B b=B.k(N.k()),  B bi=A.k(f:b.clone()).f() bi)",
-      new NormType(Mdf.Immutable,Path.parse("This0.B"), Doc.empty()),
-      new NormType(Mdf.Immutable,Path.parse("This0.B"), Doc.empty()),
+      new Type(Mdf.Immutable,Path.parse("This0.B"), Doc.empty()),
+      new Type(Mdf.Immutable,Path.parse("This0.B"), Doc.empty()),
       new String[]{cloneExample}
     },{lineNumber(), " (AI any=(mut AI aI=AI.#mutK() aI) any)",
-    new NormType(Mdf.Immutable,Path.parse("This0.AI"), Doc.empty()),
-    new NormType(Mdf.Immutable,Path.parse("This0.AI"), Doc.empty()),
+    new Type(Mdf.Immutable,Path.parse("This0.AI"), Doc.empty()),
+    new Type(Mdf.Immutable,Path.parse("This0.AI"), Doc.empty()),
     new String[]{"{ AI:{class method mut This #mutK()} }"}
 
     },{lineNumber(), "error D.k()",//get capsule promoted
-      new NormType(Mdf.Readable,Path.Any(),Doc.empty()),
-      new NormType(Mdf.Readable,Path.Any(),Doc.empty()),
+      new Type(Mdf.Readable,Path.Any(),Doc.empty()),
+      new Type(Mdf.Readable,Path.Any(),Doc.empty()),
       new String[]{"{ D:{ mut k()}}"}
     },{lineNumber(), "( D.#mutK().m(D.#mutK()) )",
-      new NormType(Mdf.Readable,Path.Void(),Doc.empty()),
-      NormType.immVoid,
+      new Type(Mdf.Readable,Path.Void(),Doc.empty()),
+      Type.immVoid,
       new String[]{"{() D:{ mut () mut method Void m(mut D that) error void }}"}
     },{lineNumber(), "( mut D x=D.#mutK() mut D y=D.#mutK() x.m(y)  )",
-      new NormType(Mdf.Readable,Path.Void(),Doc.empty()),
-      NormType.immVoid,
+      new Type(Mdf.Readable,Path.Void(),Doc.empty()),
+      Type.immVoid,
       new String[]{"{() D:{ mut () mut method Void m(mut D that) error void }}"}
  //now not well typed any more... it seams like a good thing?
   /*   },{lineNumber(), "( lent D x=D.#mutK() mut D y=D.#mutK() x.m(y)  )",//Deceiving, but it should pass! as for ( lent D x=D() ( mut D y=D() x.m(y) ) )
@@ -275,8 +275,8 @@ public static class TestStage2 {
       new String[]{"{() D:{ mut () mut method Void m(mut D that) error void }}"}
    */ },{lineNumber(),
       "Reader.readCustomer()",
-      new NormType(Mdf.Readable,Path.Any(),Doc.empty()),
-      new NormType(Mdf.Capsule,Path.parse("This0.Customer"), Doc.empty()),
+      new Type(Mdf.Readable,Path.Any(),Doc.empty()),
+      new Type(Mdf.Capsule,Path.parse("This0.Customer"), Doc.empty()),
       new String[]{"{ () \n Customer:{ mut () }\n Reader :{()\n"
       +" class method capsule Customer readCustomer() (\n"
       +"   mut Customer c=Customer.#mutK()\n"
@@ -284,16 +284,16 @@ public static class TestStage2 {
       +" )}}"}
     },{lineNumber(),
         "Reader.readCustomer()",
-        new NormType(Mdf.Readable,Path.Any(),Doc.empty()),
-        new NormType(Mdf.Capsule,Path.parse("This0.Customer"), Doc.empty()),
+        new Type(Mdf.Readable,Path.Any(),Doc.empty()),
+        new Type(Mdf.Capsule,Path.parse("This0.Customer"), Doc.empty()),
         new String[]{"{() \n Customer:{ mut () }\n Reader :{()\n"
         +" class method capsule Customer readCustomer() {\n"
         +" return Customer.#mutK()"
         +" }}}"}
     },{lineNumber(),
       "Reader.readCustomer()",
-      new NormType(Mdf.Readable,Path.Any(),Doc.empty()),
-      new NormType(Mdf.Capsule,Path.parse("This0.Customer"), Doc.empty()),
+      new Type(Mdf.Readable,Path.Any(),Doc.empty()),
+      new Type(Mdf.Capsule,Path.parse("This0.Customer"), Doc.empty()),
       new String[]{"{() \n Customer:{ mut () }\n Reader :{()\n"
       +" class method capsule Customer readCustomer() (\n"
       +"   mut Customer c=Customer.#mutK()\n"
@@ -302,8 +302,8 @@ public static class TestStage2 {
       +"   error void)}}"}
     },{lineNumber(),
       "Reader.readCustomer()",
-      new NormType(Mdf.Readable,Path.Any(),Doc.empty()),
-      new NormType(Mdf.Capsule,Path.parse("This0.Customer"), Doc.empty()),
+      new Type(Mdf.Readable,Path.Any(),Doc.empty()),
+      new Type(Mdf.Capsule,Path.parse("This0.Customer"), Doc.empty()),
       new String[]{"{() \n Customer:{ mut () }\n Reader :{()\n"
       +" class method capsule Customer readCustomer() {\n"
       +"   mut Customer c=Customer.#mutK()\n"
@@ -328,28 +328,28 @@ public static class TestStage2 {
 public static class TestStage3_notOk {
   @Parameter(0) public int _lineNumber;
   @Parameter(1) public String _e;
-  @Parameter(2) public NormType typeSugg;
-  @Parameter(3) public NormType typeExpected;//TODO: what is the role of this for test not ok?
+  @Parameter(2) public Type typeSugg;
+  @Parameter(3) public Type typeExpected;//TODO: what is the role of this for test not ok?
   @Parameter(4) public String[] program;
   @Parameters(name = "{index}: line {0}")
   public static List<Object[]> createData() {
     return Arrays.asList(new Object[][] {
         {lineNumber()," (mut C x=C(x) x)",
-          NormType.immVoid,
-        new NormType(Mdf.Capsule,Path.Void(), Doc.empty()),
+          Type.immVoid,
+        new Type(Mdf.Capsule,Path.Void(), Doc.empty()),
         new String[]{"{ C:{mut (mut C that)}}"}
         },{lineNumber()," (mut C x=C(x) (capsule C y=x y))",
-          new NormType(Mdf.Capsule,Path.parse("This0.C"), Doc.empty()),
-          new NormType(Mdf.Capsule,Path.parse("This0.C"), Doc.empty()),
+          new Type(Mdf.Capsule,Path.parse("This0.C"), Doc.empty()),
+          new Type(Mdf.Capsule,Path.parse("This0.C"), Doc.empty()),
           new String[]{"{ C:{mut (mut C that)}}"}
 
       },{lineNumber()," (mut C x=C(x) (capsule C y=x.#that() y))",
-        new NormType(Mdf.Capsule,Path.parse("This0.C"), Doc.empty()),
-        new NormType(Mdf.Capsule,Path.parse("This0.C"), Doc.empty()),
+        new Type(Mdf.Capsule,Path.parse("This0.C"), Doc.empty()),
+        new Type(Mdf.Capsule,Path.parse("This0.C"), Doc.empty()),
         new String[]{"{ C:{mut (mut C that)}}"}
       },{lineNumber(),"(mut B b=B.k(N.k()), A a=A.k(f:b) a)",
-        new NormType(Mdf.Immutable,Path.parse("This0.A"), Doc.empty()),
-        new NormType(Mdf.Immutable,Path.parse("This0.A"), Doc.empty()),
+        new Type(Mdf.Immutable,Path.parse("This0.A"), Doc.empty()),
+        new Type(Mdf.Immutable,Path.parse("This0.A"), Doc.empty()),
         new String[]{cloneExample}
 
   /*now k mdf is ignored    },{lineNumber(),"error D.k()",
@@ -362,13 +362,13 @@ public static class TestStage3_notOk {
         new String[]{"{ D:{ mut k()}}"}
 */
       },{lineNumber(),"use A check sumInt32(n1:void n2:{}) error void",
-          new NormType(Mdf.Readable,Path.Any(),Doc.empty()),
-          new NormType(Mdf.Readable,Path.Any(),Doc.empty()),
+          new Type(Mdf.Readable,Path.Any(),Doc.empty()),
+          new Type(Mdf.Readable,Path.Any(),Doc.empty()),
           new String[]{"{ A:{//@plugin\n//L42.is/connected/withAlu\n}}"}
       //test to check that exception Any can not be captured
       },{lineNumber(),"( exception D() catch exception Any x void void)",
-        NormType.immVoid,
-        NormType.immVoid,
+        Type.immVoid,
+        Type.immVoid,
         new String[]{"{ D:{k() method Void m() (void)}}"}
      /* },{lineNumber(),//boh, is ok and leak exception any?
        "( loop ( exception void"
@@ -396,12 +396,12 @@ public static class TestStage3_notOk {
               new NormType(Mdf.Capsule,Path.Void(), Doc.empty()),
               new String[]{"{ D:{k() method Void m() (void)}}"}
            */ },{lineNumber(),"( mut D x=D() lent D y=D() x.m(y)  )",//must fail//ok
-              new NormType(Mdf.Readable,Path.Any(),Doc.empty()),
-              NormType.immVoid,
+              new Type(Mdf.Readable,Path.Any(),Doc.empty()),
+              Type.immVoid,
               new String[]{"{() D:{ mut () mut method Void m(mut D that) error void }}"}
             },{lineNumber(),"( mut D y=D() lent D x=D() x.m(y)  )",//must fail//ok
-              new NormType(Mdf.Readable,Path.Any(),Doc.empty()),
-              NormType.immVoid,
+              new Type(Mdf.Readable,Path.Any(),Doc.empty()),
+              Type.immVoid,
               new String[]{"{() D:{ mut () mut method Void m(mut D that) error void }}"}
 
 

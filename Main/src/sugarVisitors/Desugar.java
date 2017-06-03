@@ -24,14 +24,14 @@ import ast.Ast.Mdf;
 import ast.Ast.MethodSelector;
 import ast.Ast.MethodSelectorX;
 import ast.Ast.MethodType;
-import ast.Ast.NormType;
+import ast.Ast.Type;
 import ast.Ast.Op;
 import ast.Ast.Parameters;
 import ast.Ast.Path;
 import ast.Ast.Position;
 import ast.Ast.SignalKind;
 import ast.Ast.Stage;
-import ast.Ast.NormType;
+import ast.Ast.Type;
 import ast.Ast.VarDec;
 import ast.Ast.VarDecCE;
 import ast.Ast.VarDecE;
@@ -134,13 +134,13 @@ public class Desugar extends CloneVisitor{
 
   HashMap<String,ast.ExpCore.ClassB> importedLibs=new HashMap<>();
   Set<String> usedVars=new HashSet<String>();
-  NormType t=NormType.immVoid;
-  HashMap<String,NormType> varEnv=new HashMap<String,NormType>();
+  Type t=Type.immVoid;
+  HashMap<String,Type> varEnv=new HashMap<String,Type>();
 
   public Expression visit(RoundBlock s) {
     s=blockEtoXE(s);
     //s=blockInferVar(s);
-    HashMap<String, NormType> oldVarEnv = new HashMap<String, NormType>(varEnv);
+    HashMap<String, Type> oldVarEnv = new HashMap<String, Type>(varEnv);
     try{
       if(!s.getContents().isEmpty()){addAllDec(s.getContents().get(0).getDecs());}
       Expression result= super.visit(s);
@@ -179,7 +179,7 @@ public class Desugar extends CloneVisitor{
       VarDecE dec=(VarDecE)_dec;
       String x=Functions.freshName("unused", usedVars);
       //usedVars.add(x);
-      VarDecXE newXE=new VarDecXE(false,Optional.of(NormType.immVoid),x,dec.getInner());
+      VarDecXE newXE=new VarDecXE(false,Optional.of(Type.immVoid),x,dec.getInner());
       newDecs.add(newXE);
       }
     RoundBlock result = blockWithDec(s,newDecs);
@@ -196,8 +196,8 @@ public class Desugar extends CloneVisitor{
     return s.withContents(ctx);
   }
 
-  public NormType _computeTypeForClassBForVar(VarDecXE varDec) {
-    NormType t=varDec.getT().get();
+  public Type _computeTypeForClassBForVar(VarDecXE varDec) {
+    Type t=varDec.getT().get();
     t=t.withPath(computeTypeForClassBForVar(t.getPath()));
     return t;
   }
@@ -209,14 +209,14 @@ public class Desugar extends CloneVisitor{
     }
   private RoundBlock blockInferVar(RoundBlock s) {
     if(s.getContents().isEmpty()){return s;}
-    HashMap<String, NormType> localVarEnv = new HashMap<String, NormType>(this.varEnv);
+    HashMap<String, Type> localVarEnv = new HashMap<String, Type>(this.varEnv);
     List<VarDec> newDecs =new ArrayList<VarDec>();
     for(VarDec _dec:s.getContents().get(0).getDecs()){
       if(!(_dec instanceof VarDecXE)){
         newDecs.add(_dec);continue;}
       VarDecXE dec=(VarDecXE)_dec;
       if(dec.getT().isPresent()){
-        NormType ti=dec.getT().get();
+        Type ti=dec.getT().get();
         localVarEnv.put(dec.getX(),ti);
         newDecs.add(dec);
         continue;
@@ -238,7 +238,7 @@ public class Desugar extends CloneVisitor{
       s=s.withMs(ms).withH(new Ast.TraitHeader());
       }
     Set<String> oldUsedVars = this.usedVars;
-    HashMap<String, NormType> oldVarEnv = this.varEnv;
+    HashMap<String, Type> oldVarEnv = this.varEnv;
     try{
       s=(ClassB)super.visit(s);
       s=FlatFirstLevelLocalNestedClasses.of(s,this);
@@ -287,13 +287,13 @@ public class Desugar extends CloneVisitor{
         continue;
         }
       k.match(k1->result.add(liftK(k1)), kM->{
-        for(NormType t:kM.getTs()){
+        for(Type t:kM.getTs()){
           result.add(liftK(new Expression.Catch1(kM.getP(),kM.getKind(),t,x,kM.getInner())));
         }
         return false;
       },
       kP->{
-        for(NormType t:kP.getTs()){
+        for(Type t:kP.getTs()){
           //S on T e ==  catch exception T x S e(x)
           Expression inner=kP.getInner();
           inner=new Expression.FCall(kP.getP(),inner,Doc.empty(),
@@ -327,7 +327,7 @@ public class Desugar extends CloneVisitor{
     Expression cond=Desugar.getMCall(s.getP(),s.getCond(), "#checkTrue",Desugar.getPs());
     RoundBlock b=Desugar.getBlock(s.getP(),cond,s.getThen());
     Loop l=new Loop(b);
-    NormType _void=NormType.immVoid;
+    Type _void=Type.immVoid;
     Expression.Catch k=Desugar.getK(s.getP(),SignalKind.Exception, "",_void,  Expression._void.instance);
     RoundBlock b2=Desugar.getBlock(s.getP(),l,Collections.singletonList(k),Expression._void.instance);
     return b2.accept(this);
@@ -342,7 +342,7 @@ public class Desugar extends CloneVisitor{
       return visit(getBlock(p,x, s.getCond(),s.withCond(new X(p,x))));
     }
     MCall check=getMCall(p,s.getCond(),"#checkTrue", getPs());
-    Expression.Catch k = getK(p,SignalKind.Exception,"",NormType.immVoid,s.get_else().get());
+    Expression.Catch k = getK(p,SignalKind.Exception,"",Type.immVoid,s.get_else().get());
     return visit(getBlock(p,check,Collections.singletonList(k),s.getThen()));
   }
 
@@ -395,7 +395,7 @@ public class Desugar extends CloneVisitor{
     bc.add(new Expression.BlockContent(decs,ks));
     return new RoundBlock(p,Doc.empty(),inner,bc);
   }
-  static Expression.Catch getK(Position pos,SignalKind kind, String x, NormType t,Expression inner){
+  static Expression.Catch getK(Position pos,SignalKind kind, String x, Type t,Expression inner){
   if (x==""){return new Expression.CatchMany(pos,kind,Collections.singletonList(t),inner);}
   return new Expression.Catch1(pos,kind,t,x,inner);
   }
@@ -603,9 +603,9 @@ public class Desugar extends CloneVisitor{
   protected MethodSelector liftMs(MethodSelector ms) {
     return ms.withName(desugarName(ms.nameToS()));
   }
-  private<T0,T> T withExpectedType(NormType t,Supplier<T> f){
+  private<T0,T> T withExpectedType(Type t,Supplier<T> f){
     if (t==null){t=Path.Any().toImmNT();}
-    NormType aux=this.t;
+    Type aux=this.t;
     this.t=t;
     T result=f.get();
     this.t=aux;
@@ -620,8 +620,8 @@ public class Desugar extends CloneVisitor{
       );
     }
   public Expression visit(Using s) {
-    NormType aux=this.t;
-    this.t=NormType.immVoid;
+    Type aux=this.t;
+    this.t=Type.immVoid;
     Parameters ps = liftPs(s.getPs());
     this.t=aux;
     return new Using(liftP(s.getPath()),s.getName(),s.getDocs(),ps,lift(s.getInner()));
@@ -632,15 +632,15 @@ public class Desugar extends CloneVisitor{
       }//TODO: document stripping of comments and decide scope
     NestedClass nc1=nc;
     this.usedVars=new HashSet<String>();
-    this.varEnv=new HashMap<String, NormType>();
+    this.varEnv=new HashMap<String, Type>();
     usedVars.addAll(CollectDeclaredVars.of(nc.getInner()));
     return withExpectedType(
-      NormType.immLibrary,
+      Type.immLibrary,
       ()->super.visit(nc1));
   }
   public MethodImplemented visit(MethodImplemented mi){
     this.usedVars=new HashSet<String>();
-    this.varEnv=new HashMap<String, NormType>();
+    this.varEnv=new HashMap<String, Type>();
     String mName=desugarName(mi.getS().nameToS());
     mi=mi.withS(mi.getS().withName(mName));
     for(String name:mi.getS().getNames()){
@@ -663,7 +663,7 @@ public class Desugar extends CloneVisitor{
     }
   public MethodWithType visit(MethodWithType mt){
     this.usedVars=new HashSet<String>();
-    this.varEnv=new HashMap<String, NormType>();
+    this.varEnv=new HashMap<String, Type>();
     String mName=desugarName(mt.getMs().nameToS());
     mt=mt.withMs(mt.getMs().withName(mName));
     if(!mt.getInner().isPresent()){return super.visit(mt);}
@@ -672,7 +672,7 @@ public class Desugar extends CloneVisitor{
     this.varEnv.put(name,mt.getMt().getTs().get(i));
     }}
     usedVars.add("this");
-    varEnv.put("this",new NormType(mt.getMt().getMdf(),Path.outer(0),mt.getDoc()));
+    varEnv.put("this",new Type(mt.getMt().getMdf(),Path.outer(0),mt.getDoc()));
     usedVars.addAll(CollectDeclaredVars.of(mt.getInner().get()));
     final MethodWithType mt2=mt;//final restrictions
     return withExpectedType(
@@ -720,13 +720,13 @@ public class Desugar extends CloneVisitor{
   }
 */
   static private MethodWithType cfNameK(Doc doc,Mdf mdf,ast.Ast.ConcreteHeader h,MethodSelector called) {
-    List<NormType> ts=new ArrayList<NormType>();
+    List<Type> ts=new ArrayList<Type>();
       for(FieldDec fi:h.getFs()){
-        NormType ti=fi.getT();
+        Type ti=fi.getT();
         ts.add(ti.withDoc(ti.getDoc().sum(fi.getDoc())));
         }
     MethodSelector ms=called.withName(h.getName());
-    NormType resT=new ast.Ast.NormType(mdf,ast.Ast.Path.outer(0),Doc.empty());
+    Type resT=new ast.Ast.Type(mdf,ast.Ast.Path.outer(0),Doc.empty());
     MethodType mt=new MethodType(false,ast.Ast.Mdf.Class,ts,resT,Collections.emptyList());
     Parameters ps=new Parameters(Optional.empty(),called.getNames(), called.getNames().stream().map(n->new X(Position.noInfo,n)).collect(Collectors.toList()));
     MCall body=new MCall(new Expression.EPath(h.getP(),Path.outer(0)),called.nameToS(),Doc.empty(),ps,h.getP());
@@ -734,10 +734,10 @@ public class Desugar extends CloneVisitor{
   }
   static public MethodWithType cfLentK(MethodWithType mutK) {
     mutK=mutK.withMs(mutK.getMs().withName("#lentK"));
-    NormType resT=new ast.Ast.NormType(Mdf.Lent,ast.Ast.Path.outer(0),Doc.empty());
+    Type resT=new ast.Ast.Type(Mdf.Lent,ast.Ast.Path.outer(0),Doc.empty());
     MethodType mt = mutK.getMt();
     mt=mt.withReturnType(resT).withTs(mt.getTs().stream()
-        .map(t->(NormType)t)
+        .map(t->(Type)t)
         .map(nt->nt.withMdf(nt.getMdf()==Mdf.Mutable?Mdf.Lent:nt.getMdf()))
         .collect(Collectors.toList()));
     mutK=mutK.withMt(mt);
@@ -766,8 +766,8 @@ public class Desugar extends CloneVisitor{
   static private Mdf mdfForNamedK(ast.Ast.ConcreteHeader h){
     boolean canImm=true;
     for(FieldDec f:h.getFs()){
-      if(!(f.getT() instanceof NormType)){return Mdf.Mutable;}//TODO: will disappear?
-      NormType nt=(NormType)f.getT();
+      if(!(f.getT() instanceof Type)){return Mdf.Mutable;}//TODO: will disappear?
+      Type nt=(Type)f.getT();
       Mdf m=nt.getMdf();
       if(m==Mdf.Lent || m==Mdf.Readable){return Mdf.Lent;}
       if(m!=Mdf.Immutable && m!=Mdf.Class && m!=Mdf.ImmutableFwd){canImm=false;}
@@ -797,8 +797,8 @@ public class Desugar extends CloneVisitor{
     *///Careful with capsule
     return s;
     }
-  private static boolean requireExposer(NormType t) {
-    Mdf mdf= ((NormType)t).getMdf();
+  private static boolean requireExposer(Type t) {
+    Mdf mdf= ((Type)t).getMdf();
     return mdf==Mdf.Mutable || mdf==Mdf.Capsule|| mdf==Mdf.Lent;
 
   }
@@ -808,8 +808,8 @@ public class Desugar extends CloneVisitor{
     result.add(generateSetter(pos, f, doc));
   }
   private static MethodWithType generateSetter(Expression.Position pos, ast.Ast.FieldDec f, Doc doc) {
-    NormType tt=TypeManipulation.noFwd(f.getT());
-    MethodType mti=new MethodType(false,Mdf.Mutable,Collections.singletonList(tt),NormType.immVoid,Collections.emptyList());
+    Type tt=TypeManipulation.noFwd(f.getT());
+    MethodType mti=new MethodType(false,Mdf.Mutable,Collections.singletonList(tt),Type.immVoid,Collections.emptyList());
     MethodSelector msi=MethodSelector.of(f.getName(),Collections.singletonList("that"));
     MethodWithType mwt = new MethodWithType(doc, msi, mti, Optional.empty(),pos);
     return mwt;
@@ -822,7 +822,7 @@ public class Desugar extends CloneVisitor{
     result.add(new MethodWithType(doc, msi, mti, Optional.empty(),pos));
   }*/
     private static MethodWithType generateExposer(Expression.Position pos, FieldDec f, Doc doc) {
-    NormType tt=TypeManipulation.noFwd(f.getT());
+    Type tt=TypeManipulation.noFwd(f.getT());
     if(tt.getMdf()==Mdf.Capsule){tt=tt.withMdf(Mdf.Lent);}
     
     MethodType mti=new MethodType(false,Mdf.Mutable,Collections.emptyList(),tt,Collections.emptyList());
@@ -831,12 +831,12 @@ public class Desugar extends CloneVisitor{
     return mwt;
   }
   static private void cfGetter(Expression.Position pos,FieldDec f,Doc doc, List<Member> result) {
-    if(!( f.getT() instanceof NormType)){return;}
+    if(!( f.getT() instanceof Type)){return;}
     MethodWithType mwt = generateGetter(pos, f, doc);
     result.add(mwt);
     }
   private static MethodWithType generateGetter(Expression.Position pos, FieldDec f, Doc doc) {
-    NormType fieldNt=(NormType)f.getT();
+    Type fieldNt=(Type)f.getT();
     fieldNt=TypeManipulation.noFwd(fieldNt);
     Mdf mdf=fieldNt.getMdf();
     if(mdf==Mdf.Capsule || mdf==Mdf.Mutable || mdf==Mdf.Lent){

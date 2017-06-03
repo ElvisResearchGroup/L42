@@ -13,13 +13,13 @@ import ast.Ast;
 import ast.Expression;
 import ast.Ast.Doc;
 import ast.Ast.Mdf;
-import ast.Ast.NormType;
+import ast.Ast.Type;
 import ast.Ast.Op;
 import ast.Ast.Parameters;
 import ast.Ast.Path;
 import ast.Ast.Position;
 import ast.Ast.SignalKind;
-import ast.Ast.NormType;
+import ast.Ast.Type;
 import ast.Expression.Catch;
 import ast.Expression.Catch1;
 import ast.Expression.With.On;
@@ -133,13 +133,13 @@ class DesugarW extends CloneVisitor{
     decs.add(new VarDecE(w));
   }
 
-  private VarDecXE castT(Position pos,NormType t, String y, String x) {
-    assert t instanceof NormType;
-    NormType nt=t;
+  private VarDecXE castT(Position pos,Type t, String y, String x) {
+    assert t instanceof Type;
+    Type nt=t;
     String z=Functions.freshName("casted", usedVars);
 
     List<Catch> ks=new ArrayList<>();
-    NormType t2=new NormType(nt.getMdf(),Path.Any(),Doc.empty());
+    Type t2=new Type(nt.getMdf(),Path.Any(),Doc.empty());
     ks.add(new Expression.Catch1(pos,SignalKind.Return,t,z,//case return captured
         new X(pos,z)));//return it
     ks.add(new Expression.Catch1(pos,SignalKind.Return,t2,z,//else
@@ -149,9 +149,9 @@ class DesugarW extends CloneVisitor{
       ks,Desugar.errorMsg("CastT-Should be unreachable code"));
     return new VarDecXE(false,Optional.of(t),y,block);
   }
-  private static Expression renameT(Expression e, Expression.X x, NormType t, Expression.X y) {
-    assert t instanceof NormType;
-    NormType nt=(NormType)t;
+  private static Expression renameT(Expression e, Expression.X x, Type t, Expression.X y) {
+    assert t instanceof Type;
+    Type nt=(Type)t;
     if(nt.getPath().equals(Path.Any())){return e;}
     return XInE.of(x,y,e);
   }
@@ -185,18 +185,18 @@ class DesugarW extends CloneVisitor{
     List<VarDec> decs=new ArrayList<>();
     //TODO:?? now is very strange and requires the mdf to propagate it to the locally introduced var?
     //casts: every cast is a block content e+catch
-    {int i=-1;for(NormType ti:on0.getTs()){i+=1;
+    {int i=-1;for(Type ti:on0.getTs()){i+=1;
     String xi=xs.get(i);
     String yi=ys.get(i);
     decs.add(castT(pos,ti,yi,xi));}}
     //catch exception Void recursive call
     Catch k=Desugar.getK(pos,
       SignalKind.Exception, "",
-      NormType.immVoid,
+      Type.immVoid,
       continuation);
     //main expression with 'T' renaming
     Expression e0=on0.getInner();
-    {int i=-1;for(NormType ti:on0.getTs()){i+=1;
+    {int i=-1;for(Type ti:on0.getTs()){i+=1;
       String xi=xs.get(i);
       String yi=ys.get(i);
       e0=renameT(e0,new Expression.X(pos,xi), ti, new Expression.X(pos,yi));
@@ -232,7 +232,7 @@ class DesugarW extends CloneVisitor{
       }
     RoundBlock inner=new RoundBlock(pos,Doc.empty(),b,bc);
     Catch k=Desugar.getK(pos,SignalKind.Exception, "",
-        NormType.immVoid,
+        Type.immVoid,
         Expression._void.instance);
     inner=Desugar.getBlock(pos,new Loop(inner), Collections.singletonList(k), Expression._void.instance);
     Expression result=withDeclareIts(is,inner);
@@ -264,13 +264,13 @@ class DesugarW extends CloneVisitor{
   private Catch withDesugarGetDefaultCatch(Position pos,SignalKind kind,Expression eClose) {
     String propagated1=Functions.freshName("propagated",usedVars);
     Expression blockPropagate1=Desugar.getBlock(pos,eClose,new Signal(kind,new X(pos,propagated1)));
-    NormType t=NormType.immAny;
+    Type t=Type.immAny;
     Expression.Catch1 k1=new Expression.Catch1(pos,kind, t,propagated1,blockPropagate1);
     return new DesugarCatchDefault.CatchToComplete(k1);
   }
 
   private static RoundBlock withE1CatchExceptionOnVoidE2elseE3(Position pos,Expression e1,Expression e2,Expression e3) {
-    Expression.Catch k=Desugar.getK(pos,SignalKind.Exception, "", NormType.immVoid,e2);
+    Expression.Catch k=Desugar.getK(pos,SignalKind.Exception, "", Type.immVoid,e2);
     List<Expression.BlockContent> cs=new ArrayList<>();
     cs.add(Desugar.getBlockContent(e1,k));
     return new RoundBlock(pos,Doc.empty(),e3,cs);
@@ -291,7 +291,7 @@ class DesugarW extends CloneVisitor{
       decs.add(new VarDecE(ei));
     }
     Expression eCatch=Desugar.getBlock(pos,decs, new Signal(SignalKind.Exception,Expression._void.instance));
-    Expression.Catch k=Desugar.getK(pos,SignalKind.Exception, "", NormType.immVoid,eCatch);
+    Expression.Catch k=Desugar.getK(pos,SignalKind.Exception, "", Type.immVoid,eCatch);
     return Desugar.getBlockContent(eStart,k);
   }
 
