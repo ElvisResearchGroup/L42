@@ -216,6 +216,15 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
      Phase| p| G[x:T1]|- e ~> e' : T2 <= T | Tr
 */
     }
+  default TOutK kTypeCatchPreciseAny(TIn in,Tr tr,On k){
+    assert k.getKind()==SignalKind.Return;
+    assert k.getT().equals(Path.Any().toImmNT());
+    //Phase |p |G |Tr|-catch return Any x e ~> catch return T1 x e': T | Tr'
+    //  where
+    //  not catchRethrow(catch return Any x e)
+    //  T1=T if p |-T'<=T forall T' in Tr.T
+    //  Phase |p |G+x:T1|- e ~> e':_<=T| Tr'
+    }
   default TOutK kTypeCatchAny(TIn in,Tr tr,On k){
     Block e=(Block) k.getE();
     ExpCore e0=e.getDecs().get(0).getInner();
