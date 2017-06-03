@@ -79,11 +79,24 @@ public class Rename {
   }
   private static ClassB directRename(Program p, ClassB cb, List<Ast.C> src, List<Ast.C> dest) {
     CollectedLocatorsMap clm=CollectedLocatorsMap.from(Path.outer(0,src), Path.outer(0,dest));
+    //rename srcC in destC in top
     ClassB renamedCb=(ClassB)new RenameAlsoDefinition(cb,clm,p).visit(cb);
+    //clearCb=remove srcC from top
     ClassB clearCb=renamedCb.onNestedNavigateToPathAndDo(src,nc->Optional.empty());
+    //newCB=take srcC from top, and adjust paths to dest
     ClassB newCb=redirectDefinition(src,dest,renamedCb);
     newCb=ClassOperations.normalizePaths(newCb);
+    //optionally sum renamed srcC in destC
     return _Sum.normalizedTopSum(p, clearCb, newCb);
+    /*
+      L0[DirectRename src->dest]p =L //with src=C._, dest=C'._ and C!=C'
+        L1=L0[PathRename src->dest]
+        L2=L1\src
+        L3=L1(src)
+        L4=L3[from This(dest.size()-1).src.removeLast()][push dest]
+        L=L2++p L4
+     
+     */
   }
   public static ClassB renameMethod(Program p,ClassB cb,List<Ast.C> path,MethodSelector src,MethodSelector dest){
       Member mem=Errors42.checkExistsPathMethod(cb, path, Optional.of(src));
