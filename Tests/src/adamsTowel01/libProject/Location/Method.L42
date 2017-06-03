@@ -1,8 +1,9 @@
-{
+{   implements This1.This$
     This$:UnsafeRefactor.MiniData.thisLib()
     List:Collections.vector(of:This$)
 
     refine method Lib location()
+    refine read method class This class()
     method Bool isAbstract()
     method Bool isRefine()
     method Selector selector()

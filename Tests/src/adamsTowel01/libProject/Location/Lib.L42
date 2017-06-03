@@ -20,7 +20,7 @@
     List[with nc in this.nesteds().vals() (
       with nci in nc.allNesteds().vals() (use[nci])
     )]
-  method Lib nested(Path path) exception NotAvailable (
+  method This nested(Path path) exception NotAvailable (
     with ni in this.root().allNested().vals() (
       if ni.path()==path (return ni)
       )
@@ -121,7 +121,7 @@
   method//last is its name, empty path for root
   Path path()
   method
-  Lib root()
+  This root()
 
   refine method   //implemented but refined
   This location()
