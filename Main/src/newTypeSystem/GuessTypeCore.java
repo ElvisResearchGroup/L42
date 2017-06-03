@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import ast.Ast;
@@ -30,15 +31,33 @@ import ast.ExpCore.Block.On;
 import auxiliaryGrammar.Functions;
 import coreVisitors.From;
 import coreVisitors.Visitor;
+import programReduction.Program;
 import tools.Assertions;
 
 public class GuessTypeCore implements Visitor<Type>{
-TIn in;
-private GuessTypeCore(TIn in) {
+public static interface G{
+  public G addGuessing(Program p,List<ExpCore.Block.Dec> ds);
+  public Type _g(String x);
+  public static G of(Map<String, Type> varEnv){return new G(){
+     public Type _g(String x){return varEnv.get(x);}
+     public G addGuessing(Program p,List<ExpCore.Block.Dec> ds){
+       Map<String, Type> varEnv2=new HashMap<>(varEnv);
+       for(Dec d:ds){
+         varEnv2.put(d.getX(),GuessTypeCore._guessDecType(p, this,d));
+         }
+       return of(varEnv2);
+       }
+     };
+   }
+  }
+G in;
+Program p;
+private GuessTypeCore(Program p,G in) {
+  this.p=p;
   this.in=in;
 }
-public static Type _of(TIn in,ExpCore e) {
-  return e.accept(new GuessTypeCore(in));
+public static Type _of(Program p,G in,ExpCore e) {
+  return e.accept(new GuessTypeCore(p,in));
 }
 @Override
 public Type visit(ExpCore.EPath s) {
@@ -46,8 +65,7 @@ public Type visit(ExpCore.EPath s) {
 }
 @Override
 public Type visit(X s) {
-  Type t= in.g(s.getInner());
-  assert t!=null;
+  Type t= in._g(s.getInner());
   return t;
 }
 @Override
@@ -75,36 +93,39 @@ public Type visit(MCall s) {
   List<MethodSelectorX> msl=new ArrayList<>();
   MethodSelectorX msx=new MethodSelectorX(s.getS(), "");
   msl.add(msx); 
-  MethodWithType meth = (MethodWithType)in.p.extractClassB(path)._getMember(s.getS());
+  MethodWithType meth = (MethodWithType)p.extractClassB(path)._getMember(s.getS());
   if(meth==null){return null;}
   return (Type) From.fromT(meth.getMt().getReturnType(),path);
   
 }
 
-public static List<Dec> guessedDs(TIn in,List<Dec> toGuess){
+public static List<Dec> guessedDs(Program p, G in,List<Dec> toGuess){
 List<Dec> res=new ArrayList<>();//G'
 for(Dec di:toGuess){
-  if(!di.getT().isPresent()){
-    Type nti=GuessTypeCore._of(in, di.getInner());
-    if(di.isVar()){
-      if(nti.getMdf()==Mdf.Capsule){nti=nti.withMdf(Mdf.Mutable);}
-      else if(TypeManipulation.fwd_or_fwdP_in(nti.getMdf())){
-        assert false;
-      }
-    }
-    res.add(di.withT(Optional.of(nti)));
-    }
-  else{res.add(di.withT(Optional.of(di.getT().get())));}
+  if(di.getT().isPresent()){res.add(di);continue;}
+  Type nti = _guessDecType(p,in, di);
+  assert nti!=null;
+  res.add(di.withT(Optional.of(nti))); 
   }
 return res;
 }
+public static Type _guessDecType(Program p,G in, Dec di) {
+  if(di.getT().isPresent()){return di.getT().get();}
+  Type nti=GuessTypeCore._of(p,in, di.getInner());
+  if(nti==null){return null;}
+  if(nti.getMdf()==Mdf.Capsule){nti=nti.withMdf(Mdf.Mutable);}
+  else if(di.isVar() && TypeManipulation.fwd_or_fwdP_in(nti.getMdf())){
+    return null;
+    }
+  return nti;
+  }
 
 
 @Override
 public Type visit(Block s) {
   if (!s.getOns().isEmpty()){throw Assertions.codeNotReachable();}
-  TIn oldIn=in;
-  TIn in2=in.addGds(in.p,guessedDs(in,s.getDecs()));
+  G oldIn=in;
+  G in2=in.addGuessing(p,s.getDecs());
   in=in2;
   try{return s.getInner().accept(this);}
   finally{in=oldIn;}

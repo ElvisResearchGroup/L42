@@ -1,5 +1,7 @@
 package newTypeSystem;
 
+import static newTypeSystem.GuessTypeCore.G.of;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -22,8 +24,18 @@ import ast.ExpCore.ClassB.MethodWithType;
 import ast.ExpCore.ClassB.Phase;
 import programReduction.Program;
 
-abstract class AG<This extends AG<This>>{
+abstract class AG<This extends AG<This>>implements GuessTypeCore.G{
   AG(Map<String,Map.Entry<Boolean, Type>>g){this.g=g;}
+  @Override public GuessTypeCore.G addGuessing(Program p, List<Dec> ds) {
+    Map<String, Type> varEnv2=new HashMap<>();
+    for(Entry<String, Entry<Boolean, Type>> e:g.entrySet()){
+      varEnv2.put(e.getKey(),e.getValue().getValue());
+      }
+    for(Dec d:ds){
+      varEnv2.put(d.getX(),GuessTypeCore._guessDecType(p, this,d));
+      }
+    return of(varEnv2);
+    }
   //TODO: should not be public
   abstract public This withG(Map<String,Map.Entry<Boolean, Type>>g);//{return new This();}
   abstract This self();//{return this;}
@@ -143,7 +155,7 @@ public class TIn extends AG<TIn>{
 @Override TIn self() {return this;}
 
 final Phase phase;
-final Program p;
+public final Program p;
 final ExpCore e;
 final Type expected;
 public static TIn top(Phase phase,Program p,ExpCore e){
@@ -206,7 +218,6 @@ public TIn freshGFromMt(MethodWithType mwt){
     }}
   return new TIn(Phase.Typed,this.p,mwt.getInner(),TypeManipulation.fwdP(mt.getReturnType()),newG);
   }
-
 }
 
 

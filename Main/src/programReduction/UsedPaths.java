@@ -186,8 +186,9 @@ static PathsPaths usedPathsECatchErrors(Program p, ExpCore e){
     Paths res=Paths.reorganize(l.getSuperPaths());
     Paths acc=Paths.empty();
     for(Member mi:l.getMs()){
-      ExpCore e;try{e=mi.getInner();}
-      catch(NoSuchElementException nsee){continue;}
+      if (mi instanceof MethodWithType && 
+         !((MethodWithType)mi).get_inner().isPresent()){continue;}
+      ExpCore e=mi.getInner();
       for(ClassB cbij:CollectClassBs0.of(e)){
         acc=acc.union(deepImplements(cbij));
         }

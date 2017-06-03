@@ -30,6 +30,7 @@ import programReduction.Norm;
 import programReduction.Program;
 import coreVisitors.From;
 import facade.Configuration;
+import newTypeSystem.GuessTypeCore;
 import newTypeSystem.TIn;
 import tools.Assertions;
 import tools.Map;
@@ -92,12 +93,10 @@ abstract public class MethodPathCloneVisitor extends RenameMembers {
     HashMap<String, Ast.Type> aux = new HashMap<>(this.varEnv);
     try{
       for(Dec d:s.getDecs()){
-        //TODO: next check will disappear when we erase skeletal types
-        if(!(d.getT().get() instanceof Type)){
+        if(d.getT().isPresent()){
           this.varEnv.put(d.getX(),d.getT().get());
-          continue;
           }
-        this.varEnv.put(d.getX(),d.getT().get());
+        //TODO:??? GuessTypeCore._of(this.varEnv,d.getInner());
         }
       List<Dec> newDecs = liftDecs(s.getDecs());
       List<On> newOns=new ArrayList<>();
@@ -126,7 +125,9 @@ abstract public class MethodPathCloneVisitor extends RenameMembers {
             me->me.getKey(),
             me->new java.util.AbstractMap.SimpleEntry<>(false,me.getValue())
             )));
-      guessed=newTypeSystem.GuessTypeCore._of(in,s.getInner()).getPath();
+      Type tGuessed=newTypeSystem.GuessTypeCore._of(in.p,in,s.getInner());
+      if(tGuessed==null){return super.visit(s);}
+      guessed=tGuessed.getPath();
       assert guessed!=null;
       }
     catch(NormImpossible ignored){return super.visit(s);}

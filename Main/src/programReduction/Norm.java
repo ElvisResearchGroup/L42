@@ -39,8 +39,6 @@ public class Norm {
     return null;
   }
 
-      
-  
 
   ExpCore norm(Program p,ExpCore e){
     return e.accept(new CloneVisitor(){

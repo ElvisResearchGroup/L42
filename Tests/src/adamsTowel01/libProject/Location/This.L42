@@ -50,6 +50,7 @@ This$Impl:{
     UnsafeRefactor.Compose.compose(left:This(), right:that)
  
   class method Library(){ implements This$
+    refine method This location()
     refine read method class This class()//to work with simple minded sum
     method
     Origin.List origins()

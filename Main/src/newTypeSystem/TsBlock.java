@@ -115,7 +115,7 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
     int i=splitDs(in,_ds);
     assert i+1<=_ds.size();
     List<Dec> ds=_ds.subList(i+1,_ds.size());
-    List<Dec> ds0n=GuessTypeCore.guessedDs(in,_ds.subList(0,i+1));//G'
+    List<Dec> ds0n=GuessTypeCore.guessedDs(in.p,in,_ds.subList(0,i+1));//G'
     List<String> fve0n=new ArrayList<>();
     for(Dec di:_ds.subList(0,i+1)){
       fve0n.addAll(FreeVariables.of(di.getInner()));

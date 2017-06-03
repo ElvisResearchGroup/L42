@@ -33,7 +33,7 @@ default TOut innerMVPRetype(TOk ri,Type ti){
   }
 
   default TOut tsMCall(TIn in, MCall s) {
-    Type _rec=GuessTypeCore._of(in, s.getInner());
+    Type _rec=GuessTypeCore._of(in.p,in, s.getInner());
     if (_rec==null){
       return new TErr(in,"",null,ErrorKind.SelectorNotFound);
       }
