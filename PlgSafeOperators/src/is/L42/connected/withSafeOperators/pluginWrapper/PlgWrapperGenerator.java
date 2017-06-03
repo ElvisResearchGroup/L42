@@ -158,7 +158,7 @@ private static void addMwt(Program p, PlgInfo plgInfo, Method[] jms, Constructor
   try{
     isOkAsReturn(p,pTop,mwt.getMt().getReturnType());
     for(NormType ti:mwt.getMt().getExceptions()){
-      isOkAsException(p,pTop,ti.getNT().getPath());
+      isOkAsException(p,pTop,ti.getPath());
       }
     for(NormType ti:mwt.getMt().getTs()){
       isOkAsParameter(p,pTop,ti);
@@ -229,7 +229,7 @@ private static UsingInfo usingConstructor(PlgInfo plgInfo, Constructor<?>[] jcs,
     ExpCore.MCall p0=(MCall) u.getEs().get(0);//parameter expressions
     
     //e#mcall.inner<-mwt.retType.path
-    e=e.withInner(ExpCore.EPath.wrap(mt.getReturnType().getNT().getPath()));
+    e=e.withInner(ExpCore.EPath.wrap(mt.getReturnType().getPath()));
     //u=u.withS(ui.usingMs);
     List<ExpCore> ues=new ArrayList<>();
     if(mt.getMdf()!=Mdf.Class){
@@ -242,7 +242,7 @@ private static UsingInfo usingConstructor(PlgInfo plgInfo, Constructor<?>[] jcs,
       if(ti.equals(NormType.immLibrary)){
         needAddBinaryRepr=false;
         }
-      if(ti.getNT().getMdf()==Mdf.Class){
+      if(ti.getMdf()==Mdf.Class){
         needAddBinaryRepr=false;
         }
       if(needAddBinaryRepr){
@@ -268,7 +268,7 @@ private static UsingInfo usingConstructor(PlgInfo plgInfo, Constructor<?>[] jcs,
       Dec k0 = ((Block)on.getInner()).getDecs().get(0);
       List<Dec> ks=new ArrayList<>();
       {int i=-1;for(NormType ti:mt.getExceptions()){i++;
-        MCall mci=((MCall)k0.getInner()).withInner(ExpCore.EPath.wrap(ti.getNT().getPath()));
+        MCall mci=((MCall)k0.getInner()).withInner(ExpCore.EPath.wrap(ti.getPath()));
         ks.add(k0.withInner(mci).withX(k0.getX()+i));
         }}
       on=on.withInner(((Block)on.getInner()).withDecs(ks));
@@ -299,7 +299,7 @@ public static boolean hasPluginUnresponsive(ClassB l){
     if(!mt.getMdf().equals(Mdf.Class)){return false;}
     if(!mt.getTs().get(0).equals(NormType.immLibrary)){return false;}    
     if(!mt.getExceptions().isEmpty()){return false;}
-    if(!mt.getReturnType().getNT().getMdf().equals(Mdf.Immutable)){return false;}
+    if(!mt.getReturnType().getMdf().equals(Mdf.Immutable)){return false;}
     return true;//no need to check return type, since is just thrown as error
     }
   public static boolean hasBinaryRepr(ClassB l){
@@ -363,14 +363,14 @@ public static boolean hasPluginUnresponsive(ClassB l){
       }
     }
   private static void isOkAsParameter(Program p, Path csTop, NormType ti) throws ClassUnfit, MethodUnfit {
-    Path pi=ti.getNT().getPath();
-    if(ti.getNT().getMdf()==Mdf.Class){return;}//class parameters are ok, and we just omit the .#binaryRepr() call
+    Path pi=ti.getPath();
+    if(ti.getMdf()==Mdf.Class){return;}//class parameters are ok, and we just omit the .#binaryRepr() call
     if (pi.equals(Path.Library())){return;}//Libraries are ok and we just omit the .#binaryRepr() call
     Path op=_pathForOutside(csTop.getCBar().size(),pi);
     if(op==null){checkForInside(p.top(),csTop,pi); return;}
     ClassB l=p.extractClassB(op);//TODO: since p.top is topL, is it ok this extraction?
     boolean hasIt=hasBinaryRepr(l);
-    boolean phOk=Functions.isComplete(ti.getNT());
+    boolean phOk=Functions.isComplete(ti);
     if(!hasIt){throw new RefactorErrors.ClassUnfit().msg(
       "Class "+op+" has no #binaryRepr() method");
       }if(!phOk){throw new RefactorErrors.MethodUnfit().msg(
@@ -390,15 +390,15 @@ public static boolean hasPluginUnresponsive(ClassB l){
 
 
   private static void isOkAsReturn(Program p, Path csTop, NormType ti) throws ClassUnfit, MethodUnfit {
-    Path pi=ti.getNT().getPath();
+    Path pi=ti.getPath();
     if (pi.equals(Path.Void())){return;}
     if (pi.equals(Path.Library())){return;}//We will need to generate a simpler returning expression
     Path op=_pathForOutside(csTop.getCBar().size(),pi);
     if(op==null){checkForInside(p.top(),csTop,pi); return;}
     ClassB l=p.extractClassB(op);
     boolean hasIt=hasFrom(l);
-    boolean phOk=Functions.isComplete(ti.getNT());
-    if (ti.getNT().getMdf()==Mdf.Class && !ti.equals(NormType.classAny)){
+    boolean phOk=Functions.isComplete(ti);
+    if (ti.getMdf()==Mdf.Class && !ti.equals(NormType.classAny)){
       throw new RefactorErrors.MethodUnfit().msg("Return type can be 'class' only if is exactly 'class any'");
       }
     if(!hasIt){throw new RefactorErrors.ClassUnfit().msg(

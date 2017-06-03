@@ -47,9 +47,9 @@ public interface TsLibrary extends TypeSystem{
     }
     assert normP.getSupertypes().stream().allMatch(
       t->{
-        Phase phase=in.p.extractClassB(t.getNT().getPath()).getPhase();
+        Phase phase=in.p.extractClassB(t.getPath()).getPhase();
         assert phase!=Phase.None:
-          t.getNT().getPath();
+          t.getPath();
         return phase!=Phase.None;}):
       "";
     return normP;
@@ -139,7 +139,7 @@ public interface TsLibrary extends TypeSystem{
       for(Path P1: out.toOk().exceptions){
         //exists P0 in Ps0 such that p|-P1<=P0
         boolean ok=mwt.getMt().getExceptions().stream().anyMatch(
-          P0->null==TypeSystem.subtype(newIn.p, P1, P0.getNT().getPath()));
+          P0->null==TypeSystem.subtype(newIn.p, P1, P0.getPath()));
         if(!ok){return new TErr(newIn,"",P1.toImmNT(),ErrorKind.MethodLeaksExceptions);}
         }
       if(!out.toOk().returns.isEmpty()){
@@ -158,24 +158,24 @@ public interface TsLibrary extends TypeSystem{
 //      //or error: leaked exception P is not the subtype of a declared exception
 //      /or  method declares an exception (P) which is not a subtype of ancestor exceptions 
       for(NormType t :supertypes){
-        Path P=t.getNT().getPath();
+        Path P=t.getPath();
         ClassB cbP=in.p.extractClassB(P);
         MethodWithType mwtP=(MethodWithType) cbP._getMember(mwt.getMs());
         if(mwtP==null){continue;}
         MethodType M0=From.from(mwtP.getMt(),P);
-        ErrorKind kind=TypeSystem.subtype(in.p, mwt.getMt().getReturnType().getNT(),M0.getReturnType().getNT());
+        ErrorKind kind=TypeSystem.subtype(in.p, mwt.getMt().getReturnType(),M0.getReturnType());
         if(kind!=null){
           return new TErr(in,"",P.toImmNT(),ErrorKind.InvalidImplements);
           }
         {int i=-1;for(NormType Ti:mwt.getMt().getTs()){i+=1; NormType T1i=M0.getTs().get(i);
-          if(!in.p.equiv(Ti.getNT(),T1i.getNT())){
+          if(!in.p.equiv(Ti,T1i)){
           return new TErr(in,"",P.toImmNT(),ErrorKind.InvalidImplements);
           }
         }}
         for(NormType Pi: mwt.getMt().getExceptions()){
           //exists Pj in Ps' such that p |- Pi<=Pj
           boolean ok=M0.getExceptions().stream().anyMatch(
-                    Pj->null==TypeSystem.subtype(in.p, Pi.getNT().getPath(), Pj.getNT().getPath()));
+                    Pj->null==TypeSystem.subtype(in.p, Pi.getPath(), Pj.getPath()));
           if(!ok){
           return new TErr(in,"",P.toImmNT(),ErrorKind.InvalidImplements);
             }
@@ -219,7 +219,7 @@ public interface TsLibrary extends TypeSystem{
         if(!mt.getTs().isEmpty()){return false;}
         NormType Ti_=TypeManipulation._toRead(Ti);
         if (Ti_==null){return false;}//p|-toRead(Ti)<=T
-        if(null!=TypeSystem.subtype(p, Ti_,mt.getReturnType().getNT())){return false;}
+        if(null!=TypeSystem.subtype(p, Ti_,mt.getReturnType())){return false;}
         return true;
         }
       if(m!=Mdf.Mutable){return false;}
@@ -227,14 +227,14 @@ public interface TsLibrary extends TypeSystem{
       if(mt.getTs().isEmpty()){//exposer
         NormType Ti_=TypeManipulation.capsuleToLent(Ti);
         if (Ti_==null){return false;}//p|-capsuleToLent(Ti)<=T
-        if(null!=TypeSystem.subtype(p, Ti_,mt.getReturnType().getNT())){return false;}
+        if(null!=TypeSystem.subtype(p, Ti_,mt.getReturnType())){return false;}
         return true;
         }
       //setter refine? mut method Void m[n?](T that)
       if(!mt.getReturnType().equals(NormType.immVoid)){return false;}
       if(mt.getTs().size()!=1){return false;}
       if(!mwt.getMs().getNames().get(0).equals("that")){return false;}
-      NormType T=mt.getTs().get(0).getNT();
+      NormType T=mt.getTs().get(0);
       if(null!=TypeSystem.subtype(p, Ti,T)){return false;}
       if(Ti.getMdf()==Mdf.Readable){
         Mdf mT=T.getMdf();
@@ -246,7 +246,7 @@ public interface TsLibrary extends TypeSystem{
   static NormType _extractTi(MethodWithType ck, String name) {
     if(name.startsWith("#")){name=name.substring(1);}
     int i=-1;for(String ni:ck.getMs().getNames()){i+=1;
-      if (ni.equals(name)){return TypeManipulation.noFwd(ck.getMt().getTs().get(i).getNT());} 
+      if (ni.equals(name)){return TypeManipulation.noFwd(ck.getMt().getTs().get(i));} 
       }
     return null;
     }
@@ -261,7 +261,7 @@ public interface TsLibrary extends TypeSystem{
     static boolean coherentK(Program p,MethodWithType ck) {
       MethodType mt=ck.getMt();
       if(mt.getMdf()!=Mdf.Class){return false;}
-      NormType rt=mt.getReturnType().getNT();
+      NormType rt=mt.getReturnType();
       if(null!=TypeSystem.subtype(p, Path.outer(0),rt.getPath())){return false;}
       Mdf m=rt.getMdf();
       if (m==Mdf.Class){return false;}
@@ -269,7 +269,7 @@ public interface TsLibrary extends TypeSystem{
       boolean lentOrR=(m==Mdf.Lent || m==Mdf.Readable);
       int allowedR=lentOrR?1:0;
       for(NormType ti:mt.getTs()){
-        Mdf mi=ti.getNT().getMdf();
+        Mdf mi=ti.getMdf();
         if(mi==Mdf.Lent){return false;}
         if(mi==Mdf.Readable){
           if(allowedR==0){return false;}

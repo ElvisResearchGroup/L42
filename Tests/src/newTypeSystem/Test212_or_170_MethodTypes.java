@@ -181,9 +181,9 @@ static Program __p=TestProgram.p("{}");
   String mtToS(MethodType mt){
     return 
            mt.getMdf()+":"+
-           mt.getTs().get(0).getNT().getMdf()+","+
-           ((mt.getTs().size()==2)?mt.getTs().get(1).getNT().getMdf():"")+"->"+
-           mt.getReturnType().getNT().getMdf();
+           mt.getTs().get(0).getMdf()+","+
+           ((mt.getTs().size()==2)?mt.getTs().get(1).getMdf():"")+"->"+
+           mt.getReturnType().getMdf();
     }
   @Test
   public void couldSum(){
@@ -236,7 +236,7 @@ static Program __p=TestProgram.p("{}");
  
 MethodType recLeft(MethodType mt){
   List<NormType>newTs=mt.getTs().subList(1, mt.getTs().size());
-  Mdf mdf=mt.getTs().get(0).getNT().getMdf();
+  Mdf mdf=mt.getTs().get(0).getMdf();
   if(TypeManipulation.fwd_or_fwdP_in(mdf)){return null;}
   return mt.withMdf(mdf).withTs(newTs);
   }

@@ -94,7 +94,7 @@ for(Dec di:toGuess){
     }
     res.add(di.withT(Optional.of(nti)));
     }
-  else{res.add(di.withT(Optional.of(di.getT().get().getNT())));}
+  else{res.add(di.withT(Optional.of(di.getT().get())));}
   }
 return res;
 }

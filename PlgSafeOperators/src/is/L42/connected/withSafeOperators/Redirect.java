@@ -117,9 +117,9 @@ public class Redirect {
   }
   private static void checkExceptionOk(List<SPathSPath> exceptions, List<PathPath> verified) {
     for(SPathSPath exc:exceptions){
-     List<Path> src = Map.of(t->traspose(verified,t.getNT().getPath()), exc.getMwt1().getMt().getExceptions());
+     List<Path> src = Map.of(t->traspose(verified,t.getPath()), exc.getMwt1().getMt().getExceptions());
      //was: src=Map.of(pi->traspose(verified,pi),src); and now is merged on top
-     List<Path>other=Map.of(t->t.getNT().getPath(),exc.getMwt2().getMt().getExceptions());
+     List<Path>other=Map.of(t->t.getPath(),exc.getMwt2().getMt().getExceptions());
      if(!src.containsAll(other)){
        throw Errors42.errorMethodClash(exc.getSrc().getCBar(), exc.getMwt1(),exc.getMwt2(),true,
            Collections.emptyList(),false,false,false);
@@ -245,8 +245,8 @@ public class Redirect {
   private static boolean plusEqualAndExc(List<PathSPath> ambiguities, List<SPathSPath> exceptions, Path src,MethodWithType mwtSrc, MethodWithType mwtDest) {
     int countExternal=0;
     int countExternalSatisfied=0;
-    List<Path> srcExc = Map.of(t->t.getNT().getPath(),mwtSrc.getMt().getExceptions());
-    List<Path> destExc = Map.of(t->t.getNT().getPath(),mwtDest.getMt().getExceptions());
+    List<Path> srcExc = Map.of(t->t.getPath(),mwtSrc.getMt().getExceptions());
+    List<Path> destExc = Map.of(t->t.getPath(),mwtDest.getMt().getExceptions());
     exceptions.add(new SPathSPath(src,mwtSrc,mwtDest));
     for(Path pi:srcExc){
       if(pi.isPrimitive() || pi.outerNumber()>0){

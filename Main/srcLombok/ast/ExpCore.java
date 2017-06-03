@@ -87,7 +87,7 @@ public interface ExpCore {
     }
     @Value @Wither public static class Dec implements WithInner<Dec>{
       boolean isVar;
-      Optional<Type> t;
+      Optional<NormType> t;
       String x;
       ExpCore inner;
     }
@@ -102,7 +102,7 @@ public interface ExpCore {
     @Value @Wither @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") public static class On implements HasPos, WithInner<On>{
       SignalKind kind;
       String x;
-      Type t;
+      NormType t;
       ExpCore inner;
       Position p;
       public ExpCore getE(){return inner;}
@@ -114,7 +114,7 @@ public interface ExpCore {
 
   @Value @Wither @EqualsAndHashCode(exclude = {"p","phase","uniqueId"})  /*@ToString(exclude ="p")*/ public static class ClassB implements ExpCore, Ast.Atom,HasPos {
     
-    public ClassB(Doc doc1, boolean isInterface, List<Type> supertypes, List<Member> ms,Position p, Phase phase, int uniqueId) {
+    public ClassB(Doc doc1, boolean isInterface, List<NormType> supertypes, List<Member> ms,Position p, Phase phase, int uniqueId) {
       this.doc1 = doc1;
       this.isInterface = isInterface;
       this.supertypes = supertypes;
@@ -126,13 +126,13 @@ public interface ExpCore {
       }//lombock fails me here :-(
     Doc doc1;
     boolean isInterface;
-    List<Ast.Type> supertypes;
+    List<Ast.NormType> supertypes;
     List<Member> ms;
     Position p;
     Phase phase;
     int uniqueId;
     // In the future, we may remove members and add mwts and ns, now we add delegation constructors/getters
-    public ClassB(Doc doc1, boolean isInterface, List<Type> supertypes, List<ClassB.MethodWithType> mwts, List<ClassB.NestedClass> ns,Position p, Phase phase, int uniqueId) {
+    public ClassB(Doc doc1, boolean isInterface, List<NormType> supertypes, List<ClassB.MethodWithType> mwts, List<ClassB.NestedClass> ns,Position p, Phase phase, int uniqueId) {
       this(doc1,isInterface,supertypes,java.util.stream.Stream.concat(mwts.stream(),ns.stream()).collect(Collectors.toList()),p,phase,uniqueId);
       }
     public List<ClassB.MethodWithType> mwts(){
@@ -161,7 +161,7 @@ public interface ExpCore {
     
     public List<Path> getSuperPaths(){
       return this.getSupertypes().stream()
-        .map(t->t.getNT().getPath())
+        .map(t->t.getPath())
         .collect(Collectors.toList());
       }    
     @Override public <T> T accept(coreVisitors.Visitor<T> v) {return v.visit(this);}

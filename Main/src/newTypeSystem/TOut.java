@@ -81,7 +81,7 @@ public This trCapture(Program p,On k){
   if(k.getKind()==SignalKind.Exception){
   result.exceptions=new ArrayList<>();
   for(Path pi: exceptions){
-    if(null!=TypeSystem.subtype(p,pi,k.getT().getNT().getPath())){
+    if(null!=TypeSystem.subtype(p,pi,k.getT().getPath())){
       result.exceptions.add(pi);
       }
     }
@@ -89,7 +89,7 @@ public This trCapture(Program p,On k){
 //otherwise, is return
   result.returns=new ArrayList<>();
   for(NormType ti: returns){
-    if(null!=TypeSystem.subtype(p,ti.getPath(),k.getT().getNT().getPath())){
+    if(null!=TypeSystem.subtype(p,ti.getPath(),k.getT().getPath())){
       result.returns.add(ti);
       }
     }

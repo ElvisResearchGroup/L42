@@ -48,7 +48,7 @@ abstract class AG<This extends AG<This>>{
     Map<String,Map.Entry<Boolean, NormType>>newG=new HashMap<>(g);
     for(ExpCore.Block.Dec d : ds){
       assert !g.containsKey(d.getX());
-      NormType nt = d.getT().get().getNT();
+      NormType nt = d.getT().get();
       assert !d.isVar() || !TypeManipulation.fwd_or_fwdP_in(nt.getMdf());
       assert !d.isVar() || nt.getMdf()!=Mdf.Capsule;
       newG.put(d.getX(),p(d.isVar(),nt));
@@ -201,10 +201,10 @@ public TIn freshGFromMt(MethodWithType mwt){
   Map<String,Map.Entry<Boolean, NormType>>newG=new HashMap<>(g);
   newG.put("this",p(false,new NormType(mt.getMdf(),Path.outer(0),Doc.empty())));
   {int i=-1;for(String x:mwt.getMs().getNames()){i+=1;
-    NormType ntx=mt.getTs().get(i).getNT();
+    NormType ntx=mt.getTs().get(i);
     newG.put(x,p(false,ntx));
     }}
-  return new TIn(Phase.Typed,this.p,mwt.getInner(),TypeManipulation.fwdP(mt.getReturnType().getNT()),newG);
+  return new TIn(Phase.Typed,this.p,mwt.getInner(),TypeManipulation.fwdP(mt.getReturnType()),newG);
   }
 
 }

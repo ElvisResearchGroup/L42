@@ -23,7 +23,7 @@ public class Method extends Location.LocationImpl<ClassB.MethodWithType, Lib>{
   @Override public String toS() {return sugarVisitors.ToFormattedText.of(this.inner);}
   @Override public Doc doc() {return new Doc(inner.getDoc(),this);}
 
-  Type.Return returnType(){return new Type.Return(inner.getMt().getReturnType().getNT(),inner,this);}
+  Type.Return returnType(){return new Type.Return(inner.getMt().getReturnType(),inner,this);}
     
   Cacher<List<Type.Parameter>> parametersC=new Cacher<List<Type.Parameter>>(){public List<Type.Parameter> cache(){
     MethodType mt = inner.getMt();
@@ -31,7 +31,7 @@ public class Method extends Location.LocationImpl<ClassB.MethodWithType, Lib>{
     List<Type.Parameter> res=new ArrayList<>();
     res.add(new Type.Parameter(0,thisT,inner,Method.this));
     {int i=0; for(Ast.NormType ti:mt.getTs()){i+=1; //starts from 1
-      res.add(new Type.Parameter(i,ti.getNT(),inner,Method.this));
+      res.add(new Type.Parameter(i,ti,inner,Method.this));
     }}
     return res;
     }};
@@ -44,7 +44,7 @@ public class Method extends Location.LocationImpl<ClassB.MethodWithType, Lib>{
   MethodType mt = inner.getMt();
   List<Type.Exception> res=new ArrayList<>();
   {int i=-1; for(Ast.NormType ti:mt.getTs()){i+=1; //starts from 0
-    res.add(new Type.Exception(i,ti.getNT(),inner,Method.this));
+    res.add(new Type.Exception(i,ti,inner,Method.this));
   }}
   return res;
   }};

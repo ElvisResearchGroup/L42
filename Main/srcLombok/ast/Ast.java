@@ -46,7 +46,7 @@ public interface Ast {
  @Wither
  public class VarDecXE implements VarDec {
   boolean isVar;
-  Optional<Type> t;
+  Optional<NormType> t;
   String x;
   Expression inner;
 
@@ -115,29 +115,14 @@ public interface Ast {
  @Wither
  public class FieldDec {
   boolean isVar;
-  Type t;
+  NormType t;
   String name;
   Doc doc;
  }
 
- public interface Type {
-      //<T> T match(Function<NormType, T> normType, Function<HistoricType, T> hType);
-      default ast.Ast.NormType getNT() {
-        assert this instanceof ast.Ast.NormType : this;
-        return (ast.Ast.NormType) this;
-        }
-      Doc getDoc();
-      Type withDoc(Doc doc);
-      Mdf getMdf();
-      Type withMdf(Mdf m);
-      Path getPath();
-      Type withPath(Path p);
-      
-   }
-
  @Value
  @Wither
- public class NormType implements Type {
+ public class NormType{
   Mdf mdf;
   Path path;
   Doc doc;
@@ -165,7 +150,7 @@ public interface Ast {
 
  /*@Value
  @Wither
- public class HistoricType implements Type {
+ public class HistoricType implements NormType {
   Path path;
   List<MethodSelectorX> selectors;
   Doc doc;
@@ -175,12 +160,12 @@ public interface Ast {
  }*/
 
  /*@Value
- public class FreeType implements Type {
+ public class FreeType implements NormType {
   public <T> T match(Function<NormType, T> normType, Function<HistoricType, T> hType) {
    throw tools.Assertions.codeNotReachable();
   }
   public Doc getDoc(){return Doc.empty();}
-  public Type withDoc(Doc doc){return this;}
+  public NormType withDoc(Doc doc){return this;}
  }*/
 
  @Value
@@ -298,9 +283,9 @@ public interface Ast {
  public class MethodType {
   boolean refine;
   Mdf mdf;
-  List<Type> ts;
-  Type returnType;
-  List<Type> exceptions;
+  List<NormType> ts;
+  NormType returnType;
+  List<NormType> exceptions;
   @Override public String toString(){
     String res=
       this.mdf+":"+ts.stream().map(e->e.toString()).collect(Collectors.joining(","))

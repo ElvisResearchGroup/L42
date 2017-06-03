@@ -83,7 +83,7 @@ abstract public class MethodPathCloneVisitor extends RenameMembers {
     HashMap<String,Ast.NormType> result=new HashMap<>();
     {int i=-1;for(String n:s.getNames()){i+=1;
       //NormType nt=Norm.of(p,mt.getTs().get(i));
-      result.put(n,mt.getTs().get(i).getNT());
+      result.put(n,mt.getTs().get(i));
     }}
     result.put("this",new NormType(mt.getMdf(),Path.outer(0),Doc.empty()));
     return result;
@@ -94,15 +94,15 @@ abstract public class MethodPathCloneVisitor extends RenameMembers {
       for(Dec d:s.getDecs()){
         //TODO: next check will disappear when we erase skeletal types
         if(!(d.getT().get() instanceof NormType)){
-          this.varEnv.put(d.getX(),d.getT().get().getNT());
+          this.varEnv.put(d.getX(),d.getT().get());
           continue;
           }
-        this.varEnv.put(d.getX(),d.getT().get().getNT());
+        this.varEnv.put(d.getX(),d.getT().get());
         }
       List<Dec> newDecs = liftDecs(s.getDecs());
       List<On> newOns=new ArrayList<>();
       for(On on:s.getOns()){
-        this.varEnv.put(on.getX(),on.getT().getNT());
+        this.varEnv.put(on.getX(),on.getT());
         newOns.add(liftO(on));
         this.varEnv.remove(on.getX());
         }

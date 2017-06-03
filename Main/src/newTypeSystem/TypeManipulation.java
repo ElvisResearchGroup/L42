@@ -59,7 +59,7 @@ public static boolean fwd_or_fwdP_in(Collection<? extends NormType>ts){
 //    exists T in Ts such that
 //    T in {fwdImm _,fwdMut_,fwd%Imm _,fwd%Mut _}
   for(NormType ti:ts){
-    if(fwd_or_fwdP_in(ti.getNT().getMdf())){return true;}
+    if(fwd_or_fwdP_in(ti.getMdf())){return true;}
     }
   return false;
   }

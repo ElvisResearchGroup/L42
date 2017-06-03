@@ -67,7 +67,7 @@ public class IsValue extends TestShapeVisitor{
     return s.getInner().accept(this);
     }
   public boolean validDv(Block.Dec dv) {
-    NormType nt=dv.getT().get().getNT();
+    NormType nt=dv.getT().get();
     if(nt.getMdf()==Mdf.Capsule){return false;}
     if(!Functions.isComplete(nt)){return false;}
     if(Functions.isInterface(p,nt.getPath())){return false;}
@@ -78,7 +78,7 @@ public class IsValue extends TestShapeVisitor{
     return false;
   }
   public boolean validDecForPh(Dec dv) {
-    NormType nt=dv.getT().get().getNT();
+    NormType nt=dv.getT().get();
     if(validRightValue(dv.getInner())){return true;}
     if(nt.getMdf()==Mdf.Immutable && dv.getInner() instanceof Block){
       return dv.getInner().accept(this);

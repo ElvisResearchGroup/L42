@@ -81,9 +81,9 @@ public interface TypeSystem{
   //only check mdf subtyping
   public static boolean _methMdfTSubtype(MethodType mSub,MethodType mSuper){
     if (!Functions.isSubtype(mSuper.getMdf(),mSub.getMdf())){return false;}
-    if (!Functions.isSubtype(mSub.getReturnType().getNT().getMdf(),mSuper.getReturnType().getNT().getMdf())){return false;}
+    if (!Functions.isSubtype(mSub.getReturnType().getMdf(),mSuper.getReturnType().getMdf())){return false;}
     {int i=-1;for(NormType tSub:mSub.getTs()){i+=1;NormType tSuper=mSuper.getTs().get(i);
-      if (!Functions.isSubtype(tSuper.getNT().getMdf(),tSub.getNT().getMdf())){
+      if (!Functions.isSubtype(tSuper.getMdf(),tSub.getMdf())){
         return false;
         }    
       }}
@@ -91,23 +91,23 @@ public interface TypeSystem{
     }
   public static boolean methTSubtype(Program p,MethodType mSub,MethodType mSuper){
     if (!Functions.isSubtype(mSuper.getMdf(),mSub.getMdf())){return false;}
-    if (null!=subtype(p,mSub.getReturnType().getNT(),mSuper.getReturnType().getNT())){
+    if (null!=subtype(p,mSub.getReturnType(),mSuper.getReturnType())){
       return false;
     }
     if(mSub.getTs().size()!=mSuper.getTs().size()){return false;}
     {int i=-1;for(NormType tSub:mSub.getTs()){i+=1;NormType tSuper=mSuper.getTs().get(i);
-      if (null!=subtype(p,tSuper.getNT(),tSub.getNT())){
+      if (null!=subtype(p,tSuper,tSub)){
         return false;
         }    
       }}
     for(NormType ti:mSub.getExceptions()){
-      if(!exceptionSubtype(p,ti.getNT(), mSuper)){return false;}
+      if(!exceptionSubtype(p,ti, mSuper)){return false;}
       }
     return true;
     }
   public static boolean exceptionSubtype(Program p,NormType ti, MethodType mSuper) {
     for(NormType tj:mSuper.getExceptions()){
-      if(p.subtypeEq(ti.getPath(),tj.getNT().getPath())){
+      if(p.subtypeEq(ti.getPath(),tj.getPath())){
         return true;
         }
       }

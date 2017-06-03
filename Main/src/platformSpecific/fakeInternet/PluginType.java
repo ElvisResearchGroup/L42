@@ -82,7 +82,7 @@ public interface PluginType {
     assert ann!=null;
     ArrayList<Ast.NormType> ts=new ArrayList<>();
     for(ActionType.NormType path:ann.value()){
-      ts.add(path.type.getNT());
+      ts.add(path.type);
       }
     return ts;
     };

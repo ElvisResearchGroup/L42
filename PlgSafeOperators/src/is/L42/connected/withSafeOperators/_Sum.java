@@ -176,8 +176,8 @@ public class _Sum {
   }
 
   static MethodWithType sumMethod(MethodWithType ma, MethodWithType mb) {
-    Set<Path> pa = new HashSet<>(Map.of(t->t.getNT().getPath(),ma.getMt().getExceptions()));
-    Set<Path> pb = new HashSet<>(Map.of(t->t.getNT().getPath(),mb.getMt().getExceptions()));
+    Set<Path> pa = new HashSet<Path>(Map.of(t->t.getPath(),ma.getMt().getExceptions()));
+    Set<Path> pb = new HashSet<Path>(Map.of(t->t.getPath(),mb.getMt().getExceptions()));
     Set<Path> pc = new HashSet<>(pa);
     pc.retainAll(pb);
     Doc doc = ma.getDoc().sum(mb.getDoc());

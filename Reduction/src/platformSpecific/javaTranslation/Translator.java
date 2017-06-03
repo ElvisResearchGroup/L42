@@ -181,7 +181,7 @@ public class Translator {
       if(Functions.getIfInDom(ms,pmwt.getMwt().getMs()).isPresent()){continue;}
       ms.add(From.from(pmwt.getMwt(), p));
     }
-    List<Path> sup = tools.Map.of(ti->(Path)From.fromP(ti.getNT().getPath(),p),ct.getSupertypes());
+    List<Path> sup = tools.Map.of(ti->(Path)From.fromP(ti.getPath(),p),ct.getSupertypes());
     List<Path> supAll = sup;//tools.Map.of(pi->(Path)From.fromP(pi,p),ct.getStage().getInheritedPaths());
     ClassB res= ct.withMs(ms).withSupertypes(tools.Map.of(pi->pi.toImmNT(),sup));
     return res;

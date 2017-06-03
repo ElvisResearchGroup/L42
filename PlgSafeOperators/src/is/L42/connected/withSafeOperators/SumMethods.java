@@ -82,13 +82,13 @@ public class SumMethods {
     Mdf mdfU=mdfU(mt1.getMdf(),mt2.getMdf());
     if(mdfU==null){return null;}
     NormType removed=mt2.getTs().get(index);
-    boolean isRemovedPh=!Functions.isComplete(removed.getNT());
+    boolean isRemovedPh=!Functions.isComplete(removed);
     List<NormType> totTypes;
     if(isRemovedPh){
       totTypes=new ArrayList<>(mt1.getTs());
     }
     else{
-      totTypes=mt1.getTs().stream().map(t->TypeManipulation.noFwd(t.getNT())).collect(Collectors.toList());
+      totTypes=mt1.getTs().stream().map(t->TypeManipulation.noFwd(t)).collect(Collectors.toList());
     }
     totTypes.addAll(mt2.getTs());
     int toRemove=mt1.getTs().size()+index;

@@ -88,8 +88,8 @@ public class CloneVisitor implements Visitor<ExpCore>{
   }
   public ExpCore visit(Signal s) {
     return new Signal(s.getKind(),lift(s.getInner()),
-            s.getTypeOut()==null?null:liftT(s.getTypeOut()).getNT(),
-            s.getTypeIn()==null?null:liftT(s.getTypeIn()).getNT()
+            s.getTypeOut()==null?null:liftT(s.getTypeOut()),
+            s.getTypeIn()==null?null:liftT(s.getTypeIn())
             );
   }
   public ExpCore visit(MCall s) {

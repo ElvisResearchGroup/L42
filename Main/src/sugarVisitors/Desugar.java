@@ -808,7 +808,7 @@ public class Desugar extends CloneVisitor{
     result.add(generateSetter(pos, f, doc));
   }
   private static MethodWithType generateSetter(Expression.Position pos, ast.Ast.FieldDec f, Doc doc) {
-    NormType tt=TypeManipulation.noFwd(f.getT().getNT());
+    NormType tt=TypeManipulation.noFwd(f.getT());
     MethodType mti=new MethodType(false,Mdf.Mutable,Collections.singletonList(tt),NormType.immVoid,Collections.emptyList());
     MethodSelector msi=MethodSelector.of(f.getName(),Collections.singletonList("that"));
     MethodWithType mwt = new MethodWithType(doc, msi, mti, Optional.empty(),pos);
@@ -822,7 +822,7 @@ public class Desugar extends CloneVisitor{
     result.add(new MethodWithType(doc, msi, mti, Optional.empty(),pos));
   }*/
     private static MethodWithType generateExposer(Expression.Position pos, FieldDec f, Doc doc) {
-    NormType tt=TypeManipulation.noFwd(f.getT().getNT());
+    NormType tt=TypeManipulation.noFwd(f.getT());
     if(tt.getMdf()==Mdf.Capsule){tt=tt.withMdf(Mdf.Lent);}
     
     MethodType mti=new MethodType(false,Mdf.Mutable,Collections.emptyList(),tt,Collections.emptyList());

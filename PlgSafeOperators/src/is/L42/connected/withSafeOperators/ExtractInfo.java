@@ -249,8 +249,8 @@ public class ExtractInfo {
     return res;
   }
   static boolean isExceptionOk(MethodWithType mta, MethodWithType mtb) {
-    Set<Path> pa=new HashSet<>(Map.of(t->t.getNT().getPath(), mta.getMt().getExceptions()));
-    Set<Path> pb=new HashSet<>(Map.of(t->t.getNT().getPath(),mtb.getMt().getExceptions()));
+    Set<Path> pa=new HashSet<>(Map.of(t->t.getPath(), mta.getMt().getExceptions()));
+    Set<Path> pb=new HashSet<>(Map.of(t->t.getPath(),mtb.getMt().getExceptions()));
     Set<Path> pc=new HashSet<>(pa);
     pc.retainAll(pb);
     if(mta.get_inner().isPresent() && !pc.containsAll(pa)){

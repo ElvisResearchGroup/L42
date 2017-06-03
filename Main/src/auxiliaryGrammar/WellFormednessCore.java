@@ -29,11 +29,11 @@ public class WellFormednessCore {
   //if exists fwdImm _ in Ts then (return type).mdf in {mut, fwdMut, imm, fwdImm}
   //if exists fwdMut _ in Ts then (return type).mdf in {mut, fwdMut}
   for(NormType t:mt.getTs()){
-    Mdf m=t.getNT().getMdf();
+    Mdf m=t.getMdf();
     if(m==Mdf.ImmutableFwd){r1=true;}
     if(m==Mdf.MutableFwd){r2=true;}
     }
-  Mdf m=mt.getReturnType().getNT().getMdf();
+  Mdf m=mt.getReturnType().getMdf();
   if(r2){
    if(m!=Mdf.Mutable && m!=Mdf.MutableFwd && m!=Mdf.MutablePFwd){return false;}
   }
@@ -53,7 +53,7 @@ public class WellFormednessCore {
   public static void capsuleOnlyOnce(ExpCore.ClassB.MethodWithType mwt){
     List<String> res = countX(mwt.getInner());
     {int i=-1;for(NormType ti:mwt.getMt().getTs()){i++;
-      if(ti.getNT().getMdf()!=Mdf.Capsule){continue;}
+      if(ti.getMdf()!=Mdf.Capsule){continue;}
       String capsX=mwt.getMs().getNames().get(i);
       if(Collections.frequency(res,capsX)<=1){continue;}
       throw new ErrorMessage.CapsuleUsedMoreThenOne(null,capsX,mwt.getP());
@@ -89,7 +89,7 @@ public class WellFormednessCore {
       xsi.add(CX.of(s.getInner()));
       for(On o:s.getOns()){xsi.add(CX.of(o.getInner()));}
       for(Dec d:s.getDecs()){
-        if(d.getT().get().getNT().getMdf()!=Mdf.Capsule){continue;}
+        if(d.getT().get().getMdf()!=Mdf.Capsule){continue;}
         String xi=d.getX();
         //xi at most 1 in ys,xs0
         int howMany_xs0=Collections.frequency(xsi.get(0),xi);

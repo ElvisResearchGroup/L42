@@ -45,7 +45,7 @@ default TOut innerMVPRetype(TOk ri,NormType ti){
     if (mDec==null){
       return new TErr(in,"",null,ErrorKind.SelectorNotFound);
       }
-    NormType ret=mDec.getReturnType().getNT();
+    NormType ret=mDec.getReturnType();
     ErrorKind kind = TypeSystem.subtype(in.p, ret.getPath(),in.expected.getPath());
     if(kind!=null){return new TErr(in,"",ret,kind);}
     List<MethodType> mTypes = AlternativeMethodTypes.types(mDec);
@@ -65,7 +65,7 @@ default TOut innerMVPRetype(TOk ri,NormType ti){
     TOk res0=_res0.toOk();
     Mdf recMdf=_res0.toOk().computed.getMdf();
     {int i=-1;for(  ExpCore ei:s.getEs()){i+=1;
-      NormType ti=mType.getTs().get(i).getNT();
+      NormType ti=mType.getTs().get(i);
       TOut _resi=type(in.withE(ei,TypeManipulation.mutOnlyToLent(ti)));
       if(!_resi.isOk()){return _resi.toError();}
       resp.add(_resi.toOk());
@@ -76,7 +76,7 @@ default TOut innerMVPRetype(TOk ri,NormType ti){
   MethodType mTypeRev=AlternativeMethodTypes._bestMatchMtype(in.p,computedMt,mTypes);
   if (mTypeRev!=null){
     MCall resM=new MCall(res0.annotated,s.getS(),s.getDoc(),annotated,s.getP());
-    TOk res=new TOk(in,resM,mTypeRev.getReturnType().getNT());
+    TOk res=new TOk(in,resM,mTypeRev.getReturnType());
     // Trs[with r in resp (use[r.Tr])].collapse())
     res=res.trUnion(res0);
     for(TOk oki:resp){res=res.trUnion(oki);}
@@ -91,7 +91,7 @@ default TOut innerMVPRetype(TOk ri,NormType ti){
   for(TOk r: resp){
     Mdf m=r.computed.getMdf();
     if(m==Mdf.MutableFwd || m==Mdf.MutablePFwd){
-      return new TErr(in,"impossible to search for mvp since mdf "+m,mTypes.get(0).getReturnType().getNT(),ErrorKind.NotSubtypeClass);
+      return new TErr(in,"impossible to search for mvp since mdf "+m,mTypes.get(0).getReturnType(),ErrorKind.NotSubtypeClass);
       }
     NormType nt=TypeManipulation.mutToCapsule(r.computed);
     tsToCaps.add(nt);
@@ -99,14 +99,14 @@ default TOut innerMVPRetype(TOk ri,NormType ti){
   computedMt=computedMt.withTs(tsToCaps).withMdf(TypeManipulation.mutToCapsule(computedMt.getMdf()));
   MethodType mTypeMVP=AlternativeMethodTypes._bestMatchMtype(in.p, computedMt, mTypes);
   if (mTypeMVP==null){
-    return new TErr(in,"mvp candidate notfound",mTypes.get(0).getReturnType().getNT(),ErrorKind.NotSubtypeClass);
+    return new TErr(in,"mvp candidate notfound",mTypes.get(0).getReturnType(),ErrorKind.NotSubtypeClass);
     }
 //To be happy, we can retype the obtained mut parameters into expected capsule
   TOut _newRes0=innerMVPRetype(res0,t0.withMdf(mTypeMVP.getMdf()));
   if(!_newRes0.isOk()){return _newRes0;}
   TOk newRes0=_newRes0.toOk();
   List<TOk> newResp=new ArrayList<>();
-  {int i=-1;for(TOk ri :resp){i+=1;NormType ti=mTypeMVP.getTs().get(i).getNT();
+  {int i=-1;for(TOk ri :resp){i+=1;NormType ti=mTypeMVP.getTs().get(i);
     TOut outi=innerMVPRetype(ri,ti);
     if(!outi.isOk()){return outi.toError();}
     newResp.add(outi.toOk());
@@ -114,7 +114,7 @@ default TOut innerMVPRetype(TOk ri,NormType ti){
 //return res=makeMCallOK(TSIn,respMVP,mTypeMVP)
   MCall resM=new MCall(newRes0.annotated,s.getS(),s.getDoc(),
     Map.of(r->r.annotated,newResp),s.getP());
-  TOk res=new TOk(in,resM,mTypeMVP.getReturnType().getNT());
+  TOk res=new TOk(in,resM,mTypeMVP.getReturnType());
 // Trs[with r in resp (use[r.Tr])].collapse())
   res=res.trUnion(newRes0);
   for(TOk oki:newResp){res=res.trUnion(oki);}

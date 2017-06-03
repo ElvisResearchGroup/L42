@@ -73,7 +73,7 @@ public class Lib extends Location.LocationImpl<ExpCore.ClassB,Lib>{
   Cacher<List<Type.Implemented>> implementedsC=new Cacher<List<Type.Implemented>>(){public List<Type.Implemented> cache(){
   List<Type.Implemented> res=new ArrayList<>();
   {int i=-1; for(Ast.NormType ti:inner.getSupertypes()){i+=1; //starts from 0
-    res.add(new Type.Implemented(i,ti.getNT(),inner,Lib.this));
+    res.add(new Type.Implemented(i,ti,inner,Lib.this));
   }}
   return res;
   }};

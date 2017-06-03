@@ -35,9 +35,9 @@ public class AlternativeMethodTypes {
     return mBase(mt);
     }
   static MethodType mBase(MethodType mt){
-  NormType retT=mt.getReturnType().getNT();    
+  NormType retT=mt.getReturnType();    
     if (fwd_or_fwdP_in(mt.getTs())){
-      retT=fwdP(mt.getReturnType().getNT());
+      retT=fwdP(mt.getReturnType());
     }
     return mt.withReturnType(retT);
     }
@@ -45,8 +45,8 @@ public class AlternativeMethodTypes {
 //  Ts->T;Ps in methTypes(p,P,ms) 
 //(mNoFwd)-------------------------------------------------------------------
 //  noFwd Ts-> noFwd T;Ps in methTypes(p,P,ms)
-    List<NormType> ts = Map.of(t->noFwd(t.getNT()),mt.getTs());
-    NormType retT=noFwd(mt.getReturnType().getNT());
+    List<NormType> ts = Map.of(t->noFwd(t),mt.getTs());
+    NormType retT=noFwd(mt.getReturnType());
     return mt.withReturnType(retT).withTs(ts);
     }
 
@@ -54,10 +54,10 @@ public class AlternativeMethodTypes {
 //Ts->mut P0;Ps in methTypes(p,P,ms)
 //(mC)-------------------------------------------------------------------
 //mutToCapsule(Ts)->capsule P0;Ps in methTypes(p,P,ms)
-    NormType retT=mt.getReturnType().getNT();
+    NormType retT=mt.getReturnType();
     if(retT.getMdf()!=Mdf.Mutable){return null;}
     retT=retT.withMdf(Mdf.Capsule);
-    List<NormType> ts = Map.of(t->mutToCapsule(t.getNT()),mt.getTs());
+    List<NormType> ts = Map.of(t->mutToCapsule(t),mt.getTs());
     return mt.withReturnType(retT).withTs(ts).withMdf(mutToCapsule(mt.getMdf()));
     }
   static MethodType _mI(MethodType mt){
@@ -66,10 +66,10 @@ public class AlternativeMethodTypes {
 //toImmOrCapsule(Ts)->imm P0;Ps in methTypes(p,P,ms) 
 ////the behaviour of immorcapsule on fwd is not relevant since the method
 //// returns a read and will be not well formed if it had fwd parameters
-    NormType retT=mt.getReturnType().getNT();
+    NormType retT=mt.getReturnType();
     if(retT.getMdf()!=Mdf.Readable && retT.getMdf()!=Mdf.Lent){return null;}
     retT=retT.withMdf(Mdf.Immutable);
-    List<NormType> ts = Map.of(t->toImmOrCapsule(t.getNT()),mt.getTs());
+    List<NormType> ts = Map.of(t->toImmOrCapsule(t),mt.getTs());
     return mt.withReturnType(retT).withTs(ts).withMdf(toImmOrCapsule(mt.getMdf()));
     }
 
@@ -77,10 +77,10 @@ public class AlternativeMethodTypes {
     if(parNum>0){return _mVpNoRec(mt,parNum-1);}
     assert parNum==0;
     if(mt.getMdf()!=Mdf.Mutable){return null;}
-    NormType retT=mt.getReturnType().getNT();
+    NormType retT=mt.getReturnType();
     retT=_toLent(retT);
     if(retT==null){return null;}
-    List<NormType> ts = Map.of(t->mutToCapsule(t.getNT()),mt.getTs());
+    List<NormType> ts = Map.of(t->mutToCapsule(t),mt.getTs());
     MethodType res= mt.withReturnType(retT).withTs(ts).withMdf(Mdf.Lent);
     if(WellFormednessCore.methodTypeWellFormed(res)){return res;}
     return null;
@@ -90,12 +90,12 @@ public class AlternativeMethodTypes {
 //Ts'=mutToCapsule(Ts0) lent P mutToCapsule(Ts2) //this implies not fwd_or_fwd%_in Ts0,Ts2
 //(mVp)-------------------------------------------------------------------
 //Ts'->toLent(T);Ps in methTypes(p,P,ms)
-    NormType pN=mt.getTs().get(parNum).getNT();
+    NormType pN=mt.getTs().get(parNum);
     if (pN.getMdf()!=Mdf.Mutable){return null;}
-    NormType retT=mt.getReturnType().getNT();
+    NormType retT=mt.getReturnType();
     retT=_toLent(retT);
     if(retT==null){return null;}
-    List<NormType> ts = Map.of(t->mutToCapsule(t.getNT()),mt.getTs());
+    List<NormType> ts = Map.of(t->mutToCapsule(t),mt.getTs());
     ts.set(parNum, pN.withMdf(Mdf.Lent));
     MethodType res= mt.withReturnType(retT).withTs(ts).withMdf(mutToCapsule(mt.getMdf()));
     if(WellFormednessCore.methodTypeWellFormed(res)){return res;}
@@ -107,10 +107,10 @@ public class AlternativeMethodTypes {
 //(mImmFwd)-------------------------------------------------------------------
 //mutToCapsuleAndFwdMutToFwdImm(Ts)->fwd%Imm P0;Ps in methTypes(p,P,ms)
     if(!TypeManipulation.fwd_or_fwdP_in(mt.getTs())){return null;}
-    NormType retT=mt.getReturnType().getNT();
+    NormType retT=mt.getReturnType();
     if(retT.getMdf()!=Mdf.MutablePFwd){return null;}
     retT=retT.withMdf(Mdf.ImmutablePFwd);
-    List<NormType> ts = Map.of(t->mutToCapsuleAndFwdMutToFwdImm(t.getNT()),mt.getTs());
+    List<NormType> ts = Map.of(t->mutToCapsuleAndFwdMutToFwdImm(t),mt.getTs());
     MethodType res= mt.withReturnType(retT).withTs(ts).withMdf(mutToCapsuleAndFwdMutToFwdImm(mt.getMdf()));
     if(WellFormednessCore.methodTypeWellFormed(res)){return res;}
     return null;
@@ -121,10 +121,10 @@ public class AlternativeMethodTypes {
 //(mRead)-------------------------------------------------------------------
 //mutToCapsuleAndFwdToRead(Ts)->read P0;Ps in methTypes(p,P,ms)
     if(!TypeManipulation.fwd_or_fwdP_in(mt.getTs())){return null;}
-    NormType retT=mt.getReturnType().getNT();
+    NormType retT=mt.getReturnType();
     if(retT.getMdf()!=Mdf.MutablePFwd){return null;}
     retT=retT.withMdf(Mdf.Readable);
-    List<NormType> ts = Map.of(t->mutToCapsuleAndFwdToRead(t.getNT()),mt.getTs());
+    List<NormType> ts = Map.of(t->mutToCapsuleAndFwdToRead(t),mt.getTs());
     MethodType res=mt.withReturnType(retT).withTs(ts).withMdf(mutToCapsuleAndFwdToRead(mt.getMdf()));
     if(WellFormednessCore.methodTypeWellFormed(res)){return res;}
     return null;
@@ -159,19 +159,19 @@ public class AlternativeMethodTypes {
     if(mt.getMdf()==Mdf.Mutable){add(res,_mVp(base,0));}
     //later, 0 for mvp is the receiver so is ok to start from 1
     {int i=0;for(NormType ti:base.getTs()){i+=1;
-      if(ti.getNT().getMdf()!=Mdf.Mutable){continue;}
+      if(ti.getMdf()!=Mdf.Mutable){continue;}
       add(res,_mVp(base,i)); //1 mType for each mut parameter
       }}
     if(mt.getMdf()==Mdf.Mutable){add(res,_mVp(mNoFwd,0));}
     {int i=0;for(NormType ti:mNoFwd.getTs()){i+=1;
-    if(ti.getNT().getMdf()!=Mdf.Mutable){continue;}
+    if(ti.getMdf()!=Mdf.Mutable){continue;}
     add(res,_mVp(mNoFwd,i)); //1 mType for each mut parameter
     }}
     return res;
   }
   public static MethodType _firstMatchReturn(Program p,NormType nt,List<MethodType> mts){
   for(MethodType mt:mts){
-    if(null==TypeSystem.subtype(p, mt.getReturnType().getNT(), nt)){return mt;}
+    if(null==TypeSystem.subtype(p, mt.getReturnType(), nt)){return mt;}
     }
   return null;
   }
@@ -195,7 +195,7 @@ public static MethodType _bestMatchMtype(Program p,MethodType superMt,List<Metho
   Optional<MethodType> res1 = res.stream().filter(
     mt1->_res.stream().allMatch(
       mt2->Functions.isSubtype(
-        mt1.getReturnType().getNT().getMdf(),mt2.getReturnType().getNT().getMdf()
+        mt1.getReturnType().getMdf(),mt2.getReturnType().getMdf()
         ))).findAny();
     if(res1.isPresent()){return res1.get();}
     assert false:

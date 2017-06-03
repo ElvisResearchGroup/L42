@@ -135,7 +135,7 @@ class DesugarW extends CloneVisitor{
 
   private VarDecXE castT(Position pos,NormType t, String y, String x) {
     assert t instanceof NormType;
-    NormType nt=t.getNT();
+    NormType nt=t;
     String z=Functions.freshName("casted", usedVars);
 
     List<Catch> ks=new ArrayList<>();

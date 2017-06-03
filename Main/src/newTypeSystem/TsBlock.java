@@ -124,15 +124,15 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
       .anyMatch(x->ds.stream()
         .anyMatch(d->d.getX().equals(x)));    
     List<Dec> dsFiltered = ds0n.stream().filter(
-          d->{Mdf m=d.getT().get().getNT().getMdf(); return m==Mdf.Immutable||m==Mdf.Mutable;})
-          .map(d->d.withVar(false).withT(Optional.of(TypeManipulation.fwd(d.getT().get().getNT()))))
+          d->{Mdf m=d.getT().get().getMdf(); return m==Mdf.Immutable||m==Mdf.Mutable;})
+          .map(d->d.withVar(false).withT(Optional.of(TypeManipulation.fwd(d.getT().get()))))
           .collect(Collectors.toList());
     TIn in1=in.addGds(in.p,dsFiltered); //G1
     Tr trAcc=Tr.instance;
     List<Dec>ds1=new ArrayList<>();
     List<Dec>ds1FwdP=new ArrayList<>();
     for(Dec di:ds0n){
-      NormType nt=di.getT().get().getNT();
+      NormType nt=di.getT().get();
       NormType ntFwdP=TypeManipulation.fwdP(nt);
       TOut _out=type(in1.withE(di.getInner(),ntFwdP));
       if(!_out.isOk()){return _out.toError();}
@@ -208,7 +208,7 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
     if(mdf1==null){
     return new TErr(in,"Contrasting mdf expected for return",null,ErrorKind.NoMostGeneralMdf);
     }
-    NormType T1 = k.getT().getNT().withMdf(mdf1);
+    NormType T1 = k.getT().withMdf(mdf1);
     TOut _out=type(in.addG(k.getX(),false,T1).withE(k.getE(), in.expected));
     if(!_out.isOk()){return _out.toError();}
     TOk out=_out.toOk();

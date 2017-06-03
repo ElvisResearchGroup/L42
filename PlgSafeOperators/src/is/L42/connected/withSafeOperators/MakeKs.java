@@ -76,7 +76,7 @@ static private NormType mdfChange(NormType n,Mdf m1,Mdf m2){
     return nt;
   }
 static private NormType addFwd(NormType n){
-  return Functions.toPh(n.getNT());
+  return Functions.toPh(n);
   }
 static private MethodType fwdK(MethodType proto) {
   return proto.withTs(proto.getTs().stream()

@@ -502,7 +502,7 @@ mwts1 +mwts2=empty
   private static SumErr recomputeImplements(Program p,List<C> path,List<NormType> newTs) {
     p=p.navigate(path);
     try{
-      List<Path> res = programReduction.Methods.collect(p,Map.of(t->t.getNT().getPath(), newTs));
+      List<Path> res = programReduction.Methods.collect(p,Map.of(t->t.getPath(), newTs));
       newTs.clear();
       for(Path pi:res){newTs.add(pi.toImmNT());}
       return null;
@@ -514,7 +514,7 @@ mwts1 +mwts2=empty
   private static boolean implementsNeedRecomputing(List<NormType> ts,List<C> path) {
     int pSize=path.size();
     for(NormType t:ts){
-      if (t.getNT().getPath().outerNumber()<=pSize){return true;}
+      if (t.getPath().outerNumber()<=pSize){return true;}
       }
     return false;
     }
@@ -548,7 +548,7 @@ mwts1 +mwts2=empty
     //res={ti in mayStay | exists tj in other s.t. p|-ti<=tj }
     for(NormType ti:mayStay){
       for(NormType tj:other){
-        if(p.subtypeEq(ti.getNT().getPath(),tj.getNT().getPath())){
+        if(p.subtypeEq(ti.getPath(),tj.getNT().getPath())){
           res.add(ti);
           }
         }
@@ -561,8 +561,8 @@ public static SumOutM methodCompose(Program p,
     MethodWithType ma, MethodWithType mb,
     List<C> path) {
   List<NormType>excRes=excRes(p,ma.getMt().getExceptions(),mb.getMt().getExceptions());
-  NormType resA=ma.getMt().getReturnType().getNT();
-  NormType resB=mb.getMt().getReturnType().getNT();
+  NormType resA=ma.getMt().getReturnType();
+  NormType resB=mb.getMt().getReturnType();
   NormType res;
   if(null==TypeSystem.subtype(p,resB,resA)){
     res=resB;

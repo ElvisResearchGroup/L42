@@ -251,7 +251,7 @@ public class TranslateExpression implements coreVisitors.Visitor<Void>{
       produceThrow((ExpCore.Signal)d.getInner());
       return;
       }
-    if(d.getInner() instanceof ExpCore.Block && d.getT().get().getNT().getPath().equals(Path.Void())){
+    if(d.getInner() instanceof ExpCore.Block && d.getT().get().getPath().equals(Path.Void())){
       //speeds up compilation time
       /*boolean isThrow=*/produceNestedBlock((Block)d.getInner(),"P"+d.getX()+"[0]=");
       res.append("\n");

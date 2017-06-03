@@ -16,7 +16,7 @@ import ast.Ast.Position;
 import ast.ExpCore;
 import ast.Ast.MethodSelector;
 import ast.Ast.Path;
-import ast.Ast.Type;
+import ast.Ast.NormType;
 import ast.ExpCore.Block;
 import ast.ExpCore.ClassB;
 import ast.Util.PathMwt;
@@ -227,7 +227,7 @@ import coreVisitors.InjectionOnSugar;
     Expression ctx;
     String reason;
   }
-  //Type system
+  //NormType system
   //@ToString(callSuper=false, includeFieldNames=true)
   @Wither
   public static abstract class TypeError extends ErrorMessage implements ErrorMessage.PosImprove {
@@ -253,7 +253,7 @@ import coreVisitors.InjectionOnSugar;
 
 
   @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class NormImpossible extends ErrorMessage {
-    Type notNorm;
+    NormType notNorm;
     Throwable cause;
     List<ClassB> p;
   }
@@ -313,28 +313,28 @@ import coreVisitors.InjectionOnSugar;
 
   @Value @Wither @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class ConfusedResultingTypeForMultiCatch extends TypeError {
     List<ExpCore.Block.On> k;
-    HashSet<Type> options;
+    HashSet<NormType> options;
     Position pos;
   }
 
   @Value @Wither @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class ConfusedResultingTypeForCatchAndBlock extends TypeError {
     ExpCore.Block e;
-    Type te;
-    Type tk;
+    NormType te;
+    NormType tk;
     Position pos;
   }
 
   @Value @Wither @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class PathsNotSubtype extends TypeError {
-    Type tActual;
-    Type tExpected;
+    NormType tActual;
+    NormType tExpected;
     ExpCore e;
     List<ClassB> p;
     Position pos;
   }
 
   @Value @Wither @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class TypesNotSubtype extends TypeError {
-    Type tActual;
-    Type tExpected;
+    NormType tActual;
+    NormType tExpected;
     ExpCore e;
     Throwable promotionAttemptedBut;
     Position pos;
@@ -359,8 +359,8 @@ import coreVisitors.InjectionOnSugar;
     Position pos;
   }
   @Value @Wither @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class PromotionImpossible extends TypeError {
-    Type pFrom;
-    Type pTo;
+    NormType pFrom;
+    NormType pTo;
     Throwable sealCause;
     ExpCore inner;
     Position pos;
