@@ -1,21 +1,21 @@
-L42 source is in a rich syntax (not shown here), that is desugared into a core syntax.
+L42 source has a rich syntax (not shown here), that is desugared into a core syntax.
 The library literal L is the starting point for a set of transformations:
 A core Library literal L has the most liberal shape:
-  -transitivelly implemented interfaces can be omitted
+  -transitively implemented interfaces can be omitted
   -method types for implemented methods can be omitted
   -nested classes and method declaration can be mixed together
   -nested classes can be of form "C:e", where "e" represents
-   the computation needed to obtain the definition for "C".
+   the computation needed to obtain a more final form for "C".
 In addition, a compiled Library literal LC requires all the nested classes
   *everywhere* in its subtree to be of form C:LC 
 In addition, in a normalized Library literal LC
-  -all the transitivelly implemented interfaces are mentioned
-  -all methods have their type
-  -nested classes are ordered after method declarations
+  -all of the transitively implemented interfaces are mentioned
+  -all methods have all of their types mentioned
+  -method declarations are listed before nested classes
   -all L  *everywhere* in its subtree are normalized.
   -Normalized library literals are labeled (at least)"Norm" 
 In addition, in a typed Library literal, 
-  -some type annotation are added, to simplify the work of
+  -some type annotations are added, to simplify the work of
    translating 42 to other target languages.
   -all L  *everywhere* in its subtree are typed.
   -Typed library literals are labeled (at least)"Typed" 
@@ -37,9 +37,10 @@ T::= mdf P
 C::= <uppercaseIdentifier>n?
 m::=#?<lowercaseIdentifier>n?
 
-//we denote with m__n(xs) or C__n a C with unique number n,
-//C is then the name without the number,
-//C__n? is the name with optionally a number, and C__n?=C if n?=empty
+//we denote with m__n(xs) or C__n an ms or a C with unique number n,
+//m(xs) or C is then the name without the number,
+//m_n?(xs) or C__n? is the name with an optional number,
+//and m_n?(xs)=m(xs), C__n?=C if n?=empty
 
 _______
 #define core expressions
@@ -62,7 +63,7 @@ eC::= x|void|P|LC |throw[T1,T2] eC|loop eC|(dCs kCs eC[T])
  | eC.m[P]((x:eC)s)| use P check m((x:eC)s) eC | x:=eC
 kC::=catch T x eC
 dC::= T x=eC
-//notice how every LC is a special kind of L (math seams to have structural subtyping)
+//notice how every LC is a special kind of L (math seems to have structural subtyping)
 
 
 _______
@@ -76,7 +77,8 @@ ctxC::=[]
  | (ds var? T? x=ctxC dCs kCs eC[T])
  | (dCs ks catch T x ctxC kCs e[T])
  | (dCs kCs ctxC[T]) 
-.... // compilation context, e=ctxC[L] selects an L where all the former Ls are LC. The context do not enter in libraries
+.... // The compilation context, e=ctxC[L] selects an L where all of the former Ls are LC.
+     // The context does not enter into libraries
 ctxM::= C: ctxC |ms ctxC | refine? mh ctxC
 ctxL::= {interface? implements Ps Ms ctxM Ms' Phase}
 
@@ -95,8 +97,8 @@ _______
 Part 2: Well formedness
 -----------------------------------------------------------
 
-* C__n,m__n: if for a given L,  C__n in dom(L) or m__n(xs) in dom(L),
-  then for any other L' in the project C'__n notin dom(L) and m'__n(xs') notin dom(L)
+* C__n,m__n: if for a given L and non-empty n,  C__n in dom(L) or m__n(xs) in dom(L),
+  then for any other L' in the project C'__n notin dom(L') and m'__n(xs') notin dom(L')
 
 * d: var T x=e is valid only if T not capsule or fwd.
 
@@ -113,9 +115,9 @@ Part 2: Well formedness
     
 * L interface:
    methods in interfaces have no body
-   forall m__n(xs),  m__n(xs)notin dom(L0)//TODO: in code check interfaces has no unique named methods
+   forall m__n(xs),  m__n(xs) notin dom(L)//TODO: in code check interfaces has no unique named methods
 
-* (ds ks e[T]): unique x in ds, FV(ks) disjoint dom(ds) and 
+* (ds ks e[T]): unique x in dom(ds), FV(ks) disjoint dom(ds) and 
   forall k1,k2 in ks, k1.throw=k2.throw
   That is, all throw in a specific ks are the same (thus no "catch return T1 x1 e1 catch error T2 x2 e2")
 
@@ -143,47 +145,50 @@ cX(e)//count occurences of xs
   cX(x)=x         //FV can be defined from cX!!
   cX(void)=cX(P)=cX(L)=empty
   cX(throw[T1,T2] e)=cX(e)
-  cX(loop e)=cX(e),cX(e)  //two times, that is enough
+  cX(loop e)=cX(e),cX(e)  //representing each variable twice is enough to make capsule tests work
   cX(e0.m[T](x1:e1..xn:en) )=cX(e0),..,cX(en)
   cX(use P check m(x1:e1..xn:en) e0)=cX(e0),..,cX(en)
-  cX( (T1 x1=e1..Tn xn=en k1..km e0[T]) )=ys/x1..xn ,max( (xs0/x1..xn), xs1,..,xsm)
+  cX( (T1 x1=e1..Tn xn=en k1..km e0[T]) )=ys/x1..xn ,max( (xs0/x1..xn), xs1..xsm)
     where
     ys=cX(e1),..,cX(en)
     xsi=cX(ki)
     xs0=cX(e0) 
     if Ti=capsule _ then
-      xi at most 1 in ys,xs0
+      xi at most once in ys,xs0
 _______
-#define max(xs,ys)= zs //where there are as many repetition of each x as both in the xs and ys
+#define max(xs,ys)= zs // as many repetition of each x as in the most repetitive of xs and ys
   max(empty,ys)=ys
   max (x xs,ys)=x max(xs,ys) if x not in ys
-  max (x xs,ys)=x max(xs,removeOne(x,ys)) 
+  max (x xs,ys)=x max(xs,removeOne(x,ys))
+  
+#define max(xs, xss) 
+  max(xs, empty)=xs
   max(xs, xs0..xsn) = max(max(xs,xs0),xs1..xsn)
-  max(xs)=xs
 
 
 
 -----------------------------------------------------------
 Part 3: program
 -----------------------------------------------------------
-Programs peculiar grammar is needed to represent the position
-in the program tree we are reducing.
+Program-specific grammar is needed to represent the position
+in the program tree that we are reducing.
 For example, if our 42 project is
 { A:... B:This0.A.second({ method Library m(){C:This2.A.first({})} }) } 
 Then we first need to reduce "A.first({})"
 under the 3 part program
-p={C:A.first({})};{ method Library m()[]};{ A:... B:A.second([]) }
-Note how the first component is an L, while the others have a hole[],
+p={C:This2.A.first({})};{ method Library m()[]};{ A:... B:This0.A.second([]) }
+Note that the first component is an L, while the others have a hole, [],
 so they are of form ctxL.
 Note how the p.top() uses This2.A in order to skip two levels
 and refer to A in the outer most layer of our project.
 
 It is possible to see the program as a stack, with a top() and a pop() operation.
-Given a program is always possible to reconstruct the project by doing a set of pop.
+Given a program is always possible to reconstruct the library whose contents are being evaluated,
+by doing a series of pop operations.
 Since the top of the stack is of a different kind with respect to the other elements,
 pop replaces the [] with the stack top to forge an L 
-push, is the opposite of pop and extract a piece of the top to forge a new top.
-To do so, it takes in input the splitted form of the old head.
+push, the opposite of pop, extracts a piece of the top to forge a new top.
+To do so, it takes in input the split form of the old head.
 Finally, notice how in this model updating the top  can not be emulated with pop() + push()
 
 p::=L0;ctxLs //representing This0,...,Thisn // where This0.C refers to a class bound in L0, and (This1..ThisN).C to bindings in cxtL1..cxtLn respectively
@@ -227,7 +232,8 @@ program derived operations:
  with C_evil reserved C name.
  A well-formed project (top level L) can not have C_evil anywhere.  
 
- //Note: p.push(L)=p' not used in the code since it would be very slow and not expressive enough.
+ //Note: p.push(L)=p' (ie searching p.top() for a library that matches L) 
+ // is not used in the code since it would be very slow and not expressive enough.
  // p.push(L)=p.push(ctxL,L) with ctxL[L]=p.top()
  
  
@@ -243,8 +249,8 @@ transP(p)=p'.updateTop(transL(p'.top())
   //where p'=transP(p.pop()).push(????)//we use p to synthesize a push
   where p'=p.growFellow(transP(p.pop()))
   
-Notice how we call growFellow on a program that is one step
-shorter then p and p',and p'.pop()=transP(p.pop())
+Notice how we call growFellow() on a program that is one step
+shorter than p and p', and p'.pop()=transP(p.pop())
 The idea is that p.pop() is very similar to transP(p.pop()),
 so we can use information to find a way to grow transP(p.pop()).
 
