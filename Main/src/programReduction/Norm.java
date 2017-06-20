@@ -74,12 +74,11 @@ public class Norm {
     //modify here to decrese performance but reduce evilpushes, by doing push(C) in case e is L
   }
   protected MethodWithType normMwt(Program p,MethodWithType mwt){
-    MethodType mt=mwt.getMt();
     Optional<ExpCore> e=mwt.get_inner().map(e1->e1.accept(new CloneVisitor(){
       @Override public ExpCore visit(ClassB cb){
         return norm(p.evilPush(cb));
         }}));
-    return mwt.withMt(mt).with_inner(e);
+    return mwt.with_inner(e);
     }
       
 

@@ -11,8 +11,10 @@ import ast.ErrorMessage;
 import ast.ExpCore;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Phase;
+import auxiliaryGrammar.Functions;
 import coreVisitors.From;
 import facade.PData;
+import newTypeSystem.ErrorKind;
 import tools.Assertions;
 
 public interface Program {
@@ -41,6 +43,11 @@ public interface Program {
   List<ExpCore.ClassB.MethodWithType> methods(Ast.Path p);
   
   //program derived operations:
+  default boolean subtypeEq(Ast.Type tSub,Ast.Type tSuper){
+    if(!Functions.isSubtype(tSub.getMdf(),tSuper.getMdf())){return false;}
+    return this.subtypeEq(tSub.getPath(),tSuper.getPath());
+    }
+
   default boolean subtypeEq(Ast.Path p,Ast.Path p1){
     if(p1.equals(Path.Any())){return true;}
     if(equiv(p,p1)){return true;}

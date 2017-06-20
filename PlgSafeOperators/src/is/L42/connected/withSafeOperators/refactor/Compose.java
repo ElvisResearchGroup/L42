@@ -8,10 +8,6 @@ In a normalized LC,
 
 When run on well typed LCs, it will produce a well typed LC  or fail for locally explicable reasons. Note: sum of coherent LCs can produce a (well typed but) non-coherent LC
 
-Definition for sum: 
-p|-L1 sum L2=L //p is the program within which the sum is run. This1 in L1 and L2 is p.top().
-is a weakly associative and weakly commutative operation.
-
 
 #weak associativity
 sum is a partial function:
@@ -22,244 +18,25 @@ but is not guaranteed a+(b+c)=(a+b)+c
 a+b sim b+a
 sim allows differences in the order of implemented
 interfaces, declared methods and nested classes.  
-
-
-I'm now attempting an actual formalization:
-just a predicate to check if a sum looks as what we want,
-without attempting to forge an algorithm to produce the result
-_______
-#define
-p|-L1+L2=L0
-with p=p0.evilPush(L0) 
-if forall Cs, all of the following hold:
-    a1)L0(Cs) defined if L1(Cs) or L2(Cs) defined.
-    a2)L0(Cs) is interface if L1(Cs) is interface or L2(Cs) is interface //check there is check for when ok to sum interface+class
-    a3)if L1(Cs) defined, L0(Cs).Ps contains all collect(p.navigate(Cs),L1(Cs).Ps)
-       if L2(Cs) defined, L0(Cs).Ps contains all collect(p.navigate(Cs),L2(Cs).Ps)
-       L0(Cs).Ps=collect(p.navigate(Cs),L0(Cs).Ps)
-       Ps =L1(Cs).Ps, L2(Cs).Ps if defined, else either
-       Ps =L1(Cs).Ps or Ps= L2(Cs).Ps
-       L0(Cs).Ps=collect(p.navigate(Cs),Ps)
-    a4)if L0(Cs) defined, then forall ms, for all i in {1,2}, all of the following hold:
-      b1)if L1(Cs)(ms) and L2(Cs)(ms) both defined, then L1(Cs)(ms).e?=empty or L2(Cs)(ms).e?=empty
-      b2)L0(Cs)(ms) defined if L1(Cs)(ms) or L2(Cs)(ms) defined.
-      b3)L0(Cs)(ms) is refine if and only if exists P in L0(Cs).Ps such that ms in dom(p(P)) 
-      b4)L0(Cs)(ms).e?=e' if Li(Cs)(ms).e?=e,
-         e' sim e where sim ignore all L inside e/e'
-         L0(Cs)(ms).mh =Li(Cs)(ms).mh
-         validMwts(p.navigate(Cs), p0.evilPush(Li).navigate(Cs), e',e)
-      b5)if Li(Cs)(ms) defined, p|-L0(Cs)(ms).mh<<Li(Cs)(ms).mh
-      b6)if Li(Cs)(ms) defined, validMwt(p, p0.evilPush(Li), L0,Li,Cs,ms)
-      b7)if L0(Cs)(ms).e?=empty and Li(Cs)(ms)=mwt, then mwt.e?=empty    
-    a5) L0(Cs).mwts.mss=
-          (methods(p,This0).mss\L1(Cs).mwts.mss)\L2(Cs).mwts.mss, 
-          L1(Cs).mwts.mss\L2(Cs).mwts.mss,
-          L2(Cs).mwts.mss
-    a6) L0(Cs).ncs.Cs=
-          L1(Cs).ncs.Cs\L2(Cs).ncs.Cs,
-          L2(Cs).ncs.Cs
-Question:
-does p, L1 exists so that p|- L1+{}=L3  and  L3!=L1
-if norm(p.pop().evilPush(L1))=L1 then L3=L1 ??
-Opens:
--if a method pop up thanks to interface enrichment, we alreadt require its existence, we need to require its mh to be defined.
-If there are multiple? see last skype chat
-
-_______
-#define
-validMwt(p0, p, L0,L,Cs,ms)  //we need to add Froms when needed
-  with mh0=L0(Cs)(ms).mh and mh=L(Cs)(ms).mh
-  p0 |- mh0 << mh ?? repetition?
-  L0(Cs).Ps contains all collect(p0,L0(Cs).Ps)?? repetition?
-  mhs0={p0(P)(ms).mh |P in L0(Cs).Ps}
-  mhs={p(P)(ms).mh |P in L(Cs).Ps}//note,p0(P)(ms) would wrongly produce a larger set 
-  //mh0,mhs0 is winning config.
-  //mh,mhs is allowed config.
-  forall mhi in mhs0\mhs exists mhj in mh0,mhs //is this forall checking the right thing?
-    such that p0|-mhj<<mhi
-_______
-#define    
-validMwts(p0, p, e0,e)
-  forall L0 inside e0
-    ctxC0[L0]=e0, ctxC[L]=e, ctxC0 sim ctxC
-    forall Cs, ms such that L(Cs)(ms) is defined //L0(Cs)(ms) must be defined in the same cases
-      validMwt(p0, p, L0,L,Cs,ms)
-      if L(Cs)(ms).e?=e' then
-        L0(Cs)(ms).e?=e0'
-        validMwts(p0.evilPush(L0).navigate(Cs), p.evilPush(L).navigate(Cs), e0',e')  
-
-
-Notes: (the first 2 of? the points under also apply to classes with private state
-should a uniquely named non coherent class be well typed "typed"?
-should we require that after the sum all the formerly coherent uniquely named classes are still coherent?
-may be we should be stronger and require no new abstract method is added to uniquely named classes? to avoid allow static classes to become non static (only once)
-_______
-#define
-p|-L sum L'=L2
-  where
-  empty|-L sumPs L'=L1;Css
-  empty;0;p.evilPush(L1);L;L';Css|-L sumAll L'=L2
-
-
-_______
-#define
-Cs|-L1 sumPs L2= L;Css
-{interface?1 implements Ps1 mwts1 nc1..nck} sumPs {interface?2 implements Ps2 mwts2 ncs2}
-= { {interface?1,interface?2} implements Ps1,Ps2 mwts, ncs};Css
- where
- Cs|-nci sumPs nci[ncs2]= nci';Cssi
- mwts=mwts1,mwts2\dom(mwts1)
- ncs=nc1',..nck',ncs2\dom(nc1..nck)
- if {interface?1,interface?2}=interface
-   Css=Css1,..,Cssk,Cs
- else
-   Css=Css1,..,Cssk
-
-_______
-#define Cs|-nc1 sumPS nc2=nc;Css
-Cs|-C:L1 sumPS C:L2 = C: Cs.C|-L1 sumPS L2 
-Cs|-nc sumPS empty = nc;empty
-
-SArg::=Cs;n;p;LC1;LC2;Css  //sum arguments
-// Cs=path from top,
-//n=how many nested inside library literals inside method bodies
-//p= program including a approximate result as p.top()
-//LC1 and LC2= the top libraries
-//Css= paths from top of all interfaces composed by the sum 
-
-_______
-#define
-SArg|-L1 sumAll L2=L
-SArg|- {interface?1 implements Ps1 mwt1..mwtn nc1..nck} 
-    sumAll {interface?2 implements Ps2 mwts2 ncs2}
-    ={interface? implements Ps mwts ncs}
-  where
-  interface?=interface?1 mwts1 +interface?2 mwts2
-  Ps=collect(SArg.p,Ps1, Ps2)
-  mwti'=SArg.p|-mwti sumAll mwti[mwts2]
-  SArg'=SArg[with LC1=SArg.LC2][with LC2=SArg.LC1]
-  if mwti.e?=empty mwti''=SArg'|-Isum(mwti')
-  else mwti''=SArg|- Isum(mwti')
-  mwts=mwt1'',..,mwtn'',SArg'|-Isum(mwts2\dom(mwt1..mwtn))
-  SArg|-nci sumAll nci[ncs2]= nci'
-  ncs=nc1'..ncn' ncs2\dom(nc1..nck)
-
-
-_______
-#define SArg|-nc1 sumAll nc2=nc
-SArg|-C:L1 sumAll C:L2 = C: SArg'[with p=p.push(C)]|-L1 sumAll L2
-if SArg.n=0 SArg'=SArg[with Cs=SArg.Cs.C]
-else SArg'=SArg[with n=SArg.n+1]
-
-_______
-#define SArg|-Isum(mwt1..mwtn)=SArg|-Isum(mwt1),..,SArg|-Isum(mwtn)
-
-_______
-#define SArg|-Isum(mwt)
-come importo gli altri mwt in implemented interfaces
-sistema mwt,
-sistema all L in mwt.e
-
-dividere aggiungere mwt da controlla sottotipo << ?
-prima controlla, poi aggiungi?
-
-_______
-#define Icheck(SArg,Ps,mwt)
-  //check still 1 no refine
-  exists 0 or 1 Pi in Ps such that
-    p(Pi)(ms)=mh//no refine
-  //check for all refine method valid <=; keep in mind p.top() is not normalized
-  forall Pi in Ps where the folling holds:
-    This0.Csi=Pi[remove SArg.n outer][from This0.(SArg.Cs)]
-    mwt.ms in dom(p(Pi)) //over the ms under consideration
-    if n==0 //we are in the nested class SArg.Cs
-      if LC1(SArg.Cs)(mwt.ms).mh and LC2(Csi)(mwt.ms).mh are both defined
-        then p|-mwt.mh << LC2(Csi)(mwt.ms).mh must hold  
-        if LC2(SArg.Cs)(mwt.ms).mh and LC1(Csi)(mwt.ms).mh are both defined
-        then p|-mwt.mh << LC1(Csi)(mwt.ms).mh must hold
-      else //we are deep in a literal in a method body
-        //we may call it so that LC1 is always the source for such method
-        p|-mwt.mh << LC2(Csi)(mwt.ms).mh must hold
-
-
-_______
-#define Iadd(SArg,L)=L[with mwts=SArg|-IsumDeep(mwts)]
-  forall Pi in L.Ps, we name 
-    This0.Csi=Pi[remove SArg.n outer][from This0.(SArg.Cs)]//if the result is not This0, it implements an outer interface
-    mwtsi=[with mwtj in LC1(Csi).mwts
-      max(SArg.p,mwtj,mwtj[LC2(Csi).mwts])
-      ],LC2(Csi).mwts\dom(LC1(Csi).mwts)
-    //mwtsi could be cached
-    mwtsi'=mwtsi[from Pi]
-    //\dom(L.mwts) //this will be added
-  mwts0=mwts1'..mwtsn'//should have disjoint domains?? no??
-  mwts=[with mwti in L.mwts
-    SArg.p|-mwti sumAll addRefine(mwti[mwts0]))
-    ],mwts0\dom(L.mwts)  
-  
-_______
-#define SArg|-IsumDeep(L)= SArg|-L[with ncs=ncs][with mwts=mwts]
-  ncs= SArg|-IsumDeep(L.ncs)
-  mwts=Isum(L0.mwts)
-
-_______
-#define SArg|-IsumDeep(C:L)= C: L0
-SArg|-IsumDeep(C:L)= C: SArg'[with p=Sarg.p.push(C)]|-IsumDeep(L)
-if SArg.n=0 SArg'=SArg[with Cs=SArg.Cs.C]
-else SArg'=SArg[with n=SArg.n+1]
-
-_______
-#define SArg|-IsumDeep(refine? mh e?)= refine? mh e?'
-  e?'= explore the structure of e? and
-    replace every L with 
-    SArg[witn n=SArg.n+1][with p=SArg.p.push(L)]|-IsumDeep(L)
-
-  
-_______
-#define p|-mwt1 sumAll mwt2=mwt
-p|-mwt1 sumAll mwt2
-    ={mwt1.refine?,mwt2.refine?} p|-max(mwt1.mh,mwt2.mh) {mwt1.e?,mwt2.e?}
-  where
-  empty in {mwt1.e?,mwt2.e?}
-//This allows a non refine member to become refine
-
-  
-  
- ---------
- Example of difficoult case:
-    {A:{interface<B} B:{interface} C:{}}+{A:{interface} C:{<A}}
-    =must be
-    {A:{interface<B} B:{interface} C:{<A,B}}
-    indeed
-    {A:{interface<B} B:{interface} C:{<A}} +A,B,empty
-    =
-    {A:{interface<B} B:{interface} C:{<A,B}}
-  so it seams to work for this case...
-  
-  //what happens if
-   * {I:{interface} J:{interface} A:{<I,J}}+{{I:{interface method S m()} J:{interface method S m()}}
-
-  
-  
-  Notation
-A->B::=A1:B1.. An:Bn
-and define functional access, dom
-well formedness on single key,
-comma raw composition and a[b] update composition
-
-    
 */
+
+
 package is.L42.connected.withSafeOperators.refactor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import ast.Ast;
 import ast.Ast.C;
 import ast.Ast.Doc;
+import ast.Ast.Mdf;
+import ast.Ast.MethodType;
 import ast.Ast.Type;
+import ast.ErrorMessage;
 import ast.Ast.Path;
 import ast.Ast.Position;
 import ast.Ast.Type;
@@ -268,68 +45,52 @@ import ast.ExpCore.*;
 import ast.ExpCore.ClassB.NestedClass;
 import ast.ExpCore.ClassB.Phase;
 import auxiliaryGrammar.Functions;
+import coreVisitors.CloneVisitor;
+import coreVisitors.TestShapeVisitor;
 import facade.PData;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodWithType;
 import is.L42.connected.withSafeOperators.Errors42;
 import is.L42.connected.withSafeOperators.ExtractInfo;
 import is.L42.connected.withSafeOperators.location.Location;
+import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors;
+import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.ClassClash;
+import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.MethodClash;
+import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.SubtleSubtypeViolation;
 import newTypeSystem.TypeSystem;
+import programReduction.Methods;
 import programReduction.Program;
 import tools.Map;
 
-public class Compose {
 
-  //will be needed for other operations... may be sum need to cooperate? late checks are an issue...
-  /*public static boolean matchNested(Program p, ClassB top, List<Member> ms, List<Ast.C> current, NestedClass nc1, NestedClass nc2) {
-    NestedClass resNc=nc1.withDoc(nc1.getDoc().sum(nc2.getDoc()));
-    SumResN res = nestedCompose(p, top, top,(ClassB)nc1.getE(), (ClassB)nc2.getE(),current);
-    if(!res.isOk()){return false;}
-    SumOkN resOk=res.toOk();
-    resOk.
-  }
-  
-  
-  ----------------------------
+interface ComposeSpec{
+/**<pre>#define L1 ++p L2 = L0
+L1 ++p L2 = L0
+  with L0=L1 +p.evilPush(L0) L2
+  and norm(p.evilPush(L0))=L0 except for order of implemented interfaces and members
+  //note, we need to refresh the private names here
+</pre>*/void compose();
 
-
-
-
-
-
-_______
-#define L1 ++p L2 = L0
-L1 ++p L2 = L0=
-  with L0=L1 +p.evilPush(L0) L2 and norm(p.evilPush(L0))=L0 execpt for order of implemented interfaces and members 
-
-_______
-#define L1 +p L2 = L0
+/**<pre>#define L1 +p L2 = L0
 {interface?1 implements Ts mwts ncs} +p {interface?2 implements Ts' mwt1..mwtn nc1..nck}
    ={ (interface?1 mwts + interface?2 + mwt1..mwtn)
       implements (Ts\Ts',Ts')
-      (mwts\dom(mwt1..mwtn) mwt1[mwts] +p mwt1 .. mwtn[mwts] +p mwtn)
-      (ncs\dom(nc1..nck) nc1[ncs] +p nc1 .. nck[ncs] +p nck) }
+      (mwts\dom(mwt1..mwtn) mwt1[mwts] * mwt1 .. mwtn[mwts] * mwtn)
+      (ncs\dom(nc1..nck) nc1[ncs] * nc1 .. nck[ncs] * nck) }
+  with *=interface?1,_  +p  interface?2,_
+</pre>*/void innerCompose();
 
-_______
-#define M? + M1 = M2
-empty +p M = M //M is the metavariable for member, introduced in notation and grammar
-C:L1 +p C:L2 = C: L1 +p.push(C) L2
-refine? mh1 e?1 +p refine? mh2 e?2= refine? mh e?i //we chose that allowing refine+non refine sum was more evil than good
-  with {i,j}={1,2}, e?j=empty, p|-mhi<=mh1 and p|-mhi<=mh2
+/**<pre>#define interface?,M? +p interface?1,M1 = M2
+interface?,empty +p interface?1,M = M //M is the metavariable for member, introduced in notation and grammar
+interface?1,C:L1 +p interface?2,C:L2 = C: L1 +p.push(C) L2
+interface?1,refine? mh1 e?1 +p interface?2,refine? mh2 e?2= refine? mhi e?i //we chose that allowing refine+non refine sum was more evil than good
+  with {i,j}={1,2},p|-mhi<=mhj
+  and e?j=empty, if interface?j=interface then p|-mhj<=mhi//that is mhi equiv mhj  
+//interface can not loose, implemented can not loose.
+</pre>*/void sumMember();
 
-_______
-#define p|-mh1<=mh2  //remember that p.equiv( P,P) hold even if p( P) undefined
-p|-mh1<=mh2
-  where p|-mh1.T<=mh2.T and mh1[with T=mh2.T]=mh2   
-     
-_______
-#define M[Ms]=M?
-nc[nc1..ncn]=nci if nci.C=nc.C
-mwt[mwt1..mwtn]=mwti if mwti.ms=mwt.ms
-otherwise=empty
 
-_______
-#define interface?1 mwts1+interface?2 mwts2=interface?
+/**<pre>#define interface?1 mwts1+interface?2 mwts2=interface?
 interface?1 mwts1 + interface?2 mwts2 = interface?2 mwts2 + interface?1 mwts1
 interface mwts1+interface mwts2=interface
 mwts1 + interface mwts2=interface
@@ -340,65 +101,205 @@ mwts1 + interface mwts2=interface
 mwts1 +mwts2=empty
   with size({n| refine? mh in (mwts1,mwts2), mh.ms= m__n(xs)})<=1//note, since is not "mh e" we are asking for the abstract methods only
 
+</pre>*/void isSumResultInterface();
 
-  
-  
-  */
-  //public static boolean matchMwt(Program p, ClassB topA, ClassB topB, List<Member> ms, List<Ast.C> current, Member m, Member oms) {
+/**<pre>#define p|-mh1<=mh2  //remember that p.equiv( P,P) hold even if p( P) undefined
+p|-mh1<=mh2
+  where p|-mh1.T<=mh2.T and parameters and exceptions are equiv, and mdfs are equal
+  //similar to mh1[with T=mh2.T]=mh2   
+</pre>*/void methodTypeSubtype();
 
+/**<pre>#define M[Ms]=M?
+nc[nc1..ncn]=nci if nci.C=nc.C
+mwt[mwt1..mwtn]=mwti if mwti.ms=mwt.ms
+otherwise=empty
+</pre>*/void selectMember();
+}
+
+public class Compose {
+  /**{@link ComposeSpec#selectMember}*/
   public static MethodWithType _extractMwt(MethodWithType mwt,List<MethodWithType>mwts){
     for(MethodWithType mwti:mwts){if (mwti.getMs().equals(mwt.getMs())){return mwti;}}
     return null;
     }
+  /**{@link ComposeSpec#selectMember}*/
   public static NestedClass  _extractNc(NestedClass nc,List<NestedClass>ncs){
     for(NestedClass nci:ncs){if (nci.getName().equals(nc.getName())){return nci;}}
     return null;
     }
+
+/**{@link ComposeSpec#sumMember()}*/
+static ClassB.NestedClass sumNc(ClassB.NestedClass _nc1,Program p, ClassB.NestedClass nc2) throws MethodClash {
+  if (_nc1==null){return nc2;}
+  Program pi=p.push(nc2.getName());
+  ClassB l=innerCompose(pi,(ClassB)_nc1.getE(),(ClassB)nc2.getE());
+  return _nc1.withE(l).withDoc(_nc1.getDoc().sum(nc2.getDoc())).withP(_nc1.getP().sum(nc2.getP()));
+  }
   
-  public static ClassB compose(PData pData,ClassB a,ClassB b){
+  /**{@link ComposeSpec#compose}*/
+  public static ClassB compose(PData pData,ClassB a,ClassB b) throws MethodClash, SubtleSubtypeViolation{
     b=privateMangling.RefreshUniqueNames.refresh(b);
-    return alradyRefreshedCompose(pData,a,b);
+    ClassB forP=onlySubtypeCompose(a, b);
+    Program p=pData.p.evilPush(forP);
+    ClassB res=innerCompose(p,a,b);
+    RefactorErrors.SubtleSubtypeViolation err=_checkSubtleSubtypeViolation(pData.p.evilPush(res));
+    if(err!=null){throw err;}
+    return res;
     }
   
-  public static MethodWithType sumMwt(MethodWithType mwt1,MethodWithType mwt2){
-    if (mwt1==null){return mwt2;}
-    boolean refine=mwt1.getMt().isRefine() || mwt2.getMt().isRefine(); 
-    if(!mwt1.getMt().withRefine(false).equals(mwt2.getMt().withRefine(false))){
-      assert false;
+  private static RefactorErrors.SubtleSubtypeViolation _checkSubtleSubtypeViolation(Program p) {
+    ClassB l=p.top();
+    List<Path> ps1 = Methods.collect(p,l.getSuperPaths());
+    if(!l.getSuperPaths().containsAll(ps1)){return new RefactorErrors.SubtleSubtypeViolation();}
+    for(MethodWithType m :p.methods(Path.outer(0))){
+      //there must be equivalent in l
+      Member mi = l._getMember(m.getMs());
+      if(mi==null){return new RefactorErrors.SubtleSubtypeViolation();}
+      if(!m.get_inner().isPresent()){continue;}
+      //we trust the mt to be the same
+      assert m.getMt()==((MethodWithType)mi).getMt();
+      //we trust the e is the same except for nested L, where we use recursion
+      ExpCore body=m.getInner();
+      assert ((MethodWithType)mi).getInner()==body;
+      RefactorErrors.SubtleSubtypeViolation[]out={null};
+      body.accept(new TestShapeVisitor(){
+        @Override public Boolean visit(ClassB cb){
+          if(out[0]!=null){return false;}
+          out[0]=_checkSubtleSubtypeViolation(p.evilPush(cb));
+          return out[0]==null;
+        }});
+      if(out[0]!=null){return out[0];}
       }
-    Optional<ExpCore>body=mwt1.get_inner();
-    if(body.isPresent() && mwt2.get_inner().isPresent()){
-      assert false;
+    for(NestedClass nci:l.ns()){
+      RefactorErrors.SubtleSubtypeViolation out=_checkSubtleSubtypeViolation(p.push(nci.getName()));
+      if(out!=null){return out;}
       }
-    if(!body.isPresent()){body=mwt2.get_inner();}
-    MethodWithType mwt=mwt1.withMt(mwt1.getMt().withRefine(refine)).with_inner(body);
-    return mwt;
+    return null;
     }
-  public static ClassB alradyRefreshedCompose(PData p,ClassB a,ClassB b){
-    if(a.isInterface() || b.isInterface()){
-      assert false;
+
+/**{@link ComposeSpec#sumMember()}*/  
+public static MethodWithType sumMwtij(Program p,MethodWithType mwti,MethodWithType mwt1,MethodWithType mwt2){
+  return mwti.withDoc(mwt1.getDoc().sum(mwt2.getDoc())).withP(mwt1.getP().sum(mwt2.getP()));
+  }
+
+/**{@link ComposeSpec#sumMember()}*/  
+public static MethodWithType sumMwt(Program p,boolean interface1,MethodWithType mwt1,boolean interface2,MethodWithType mwt2) throws MethodClash{
+    if (mwt1==null){return mwt2;}
+    //assign to i,j: if one has body, is i. Else, we need to check for 
+    //if only one is interface, is i.
+    //if both interface, methods must be equiv
+    //if no interfaces, try mt1<=mt2, then try the other way
+    MethodType mt1=mwt1.getMt();
+    MethodType mt2=mwt2.getMt();
+    if(mt1.isRefine()!=mt2.isRefine()){
+      throw new RefactorErrors.MethodClash().msg("sum of refine and non refine methods:\n"+mwt1+"\n"+mwt2);
+      }    
+    if(mwt1.get_inner().isPresent()){
+      assert !mwt2.get_inner().isPresent();
+      assert !interface1 && !interface2;
+      checkMtGt(p,mt1,mt2);
+      return sumMwtij(p,mwt1,mwt1,mwt2);}
+    if(mwt2.get_inner().isPresent()){checkMtGt(p,mt2,mt1);return sumMwtij(p,mwt2,mwt1,mwt2);}
+    if(interface1 && !interface2){checkMtGt(p,mt1,mt2);return sumMwtij(p,mwt1,mwt1,mwt2);}    
+    if(interface2 && !interface1){checkMtGt(p,mt2,mt1);return sumMwtij(p,mwt2,mwt1,mwt2);}
+    if(interface1 && interface2){
+      checkMtEq(p,mt1,mt2);
+      return sumMwtij(p,mwt1,mwt1,mwt2);
       }
+    assert !interface1 && !interface2;
+    if(mtGT(p,mt1,mt2)){return sumMwtij(p,mwt1,mwt1,mwt2);}    
+    if(mtGT(p,mt2,mt1)){return sumMwtij(p,mwt2,mwt1,mwt2);}
+    throw new MethodClash();
+    }
+/**{@link ComposeSpec#methodTypeSubtype()}*/  
+private static boolean mtGT(Program p, MethodType mt1, MethodType mt2) {
+  if (!p.subtypeEq(mt1.getReturnType(), mt2.getReturnType())){return false;}
+  return mtEqRest(p,mt1,mt2);
+}
+/**{@link ComposeSpec#methodTypeSubtype()}*/
+private static void checkMtGt(Program p, MethodType mt1, MethodType mt2) throws MethodClash {
+  if(!mtGT(p,mt1,mt2)){throw new MethodClash();}
+  }
+/**{@link ComposeSpec#methodTypeSubtype()}*/
+private static void checkMtEq(Program p, MethodType mt1, MethodType mt2) throws MethodClash  {
+  if (!p.equiv(mt1.getReturnType(), mt2.getReturnType())){
+    throw new MethodClash();
+    }
+  if(!mtEqRest(p,mt1,mt2)){
+    throw new MethodClash();
+    }
+}
+/**{@link ComposeSpec#methodTypeSubtype()}*/
+private static boolean mtEqRest(Program p, MethodType mt1, MethodType mt2) {
+  if(mt1.getMdf()!=mt2.getMdf()){return false;}
+  assert mt1.getTs().size()==mt2.getTs().size();
+  for(int i=0;i<mt1.getTs().size();i++){
+    if(!p.equiv(mt1.getTs().get(i), mt2.getTs().get(i))){return false;}
+  }
+  assert mt1.getExceptions().size()==mt2.getExceptions().size();
+  for(int i=0;i<mt1.getExceptions().size();i++){
+    if(!p.equiv(mt1.getExceptions().get(i), mt2.getExceptions().get(i))){return false;}
+  }
+  return true;
+}
+
+public static ClassB onlySubtypeCompose(ClassB a,ClassB b){
     List<Type> impls=new ArrayList<>(a.getSupertypes());
     for(Type ti:b.getSupertypes()){impls.remove(ti);}
     impls.addAll(b.getSupertypes());
-    List<MethodWithType>mwts=new ArrayList<>(a.mwts());
-    for(MethodWithType mwti: b.mwts()){Functions._findAndRemove(mwts,mwti.getMs());}
-    for(MethodWithType mwti: b.mwts()){
-      mwts.add(sumMwt(_extractMwt(mwti,a.mwts()),mwti));
-      }
+    List<MethodWithType>mwts=Collections.emptyList();
     List<NestedClass>ncs=new ArrayList<>(a.ns());
     for(NestedClass nci: b.ns()){Functions._findAndRemove(ncs,nci.getName());}
     for(NestedClass nci: b.ns()){
       NestedClass ncj=_extractNc(nci,a.ns());
       if(ncj==null){ncs.add(nci);}
       else {
-        ClassB l=alradyRefreshedCompose(p,(ClassB)nci.getE(),(ClassB)ncj.getE());
-        ncs.add(nci.withE(l));}
+        ClassB l=onlySubtypeCompose((ClassB)nci.getE(),(ClassB)ncj.getE());
+        ncs.add(nci.withE(l));
+        }
       }
-    
-    return new ClassB(a.getDoc1().sum(b.getDoc1()),false,impls,mwts,ncs,a.getP().sum(b.getP()),Phase.Norm,p.p.getFreshId());
+    return new ClassB(Doc.empty(),false,impls,mwts,ncs,Position.noInfo,Phase.Norm,0);
+  }
+
+  
+  public static ClassB innerCompose(Program p,ClassB a,ClassB b) throws MethodClash{
+  if(a.isInterface() || b.isInterface()){
+    assert false;
+    }
+  List<Type> impls=p.top().getSupertypes();
+  List<MethodWithType>mwts=new ArrayList<>(a.mwts());
+  for(MethodWithType mwti: b.mwts()){Functions._findAndRemove(mwts,mwti.getMs());}
+  for(MethodWithType mwti: b.mwts()){
+    mwts.add(sumMwt(p,a.isInterface(),_extractMwt(mwti,a.mwts()),b.isInterface(),mwti));
+    }
+  List<NestedClass>ncs=new ArrayList<>(a.ns());
+  for(NestedClass nci: b.ns()){Functions._findAndRemove(ncs,nci.getName());}
+  for(NestedClass nci: b.ns()){
+    ncs.add(sumNc(_extractNc(nci,a.ns()),p,nci));
+    }
+  return new ClassB(a.getDoc1().sum(b.getDoc1()),false,impls,mwts,ncs,a.getP().sum(b.getP()),Phase.Norm,p.getFreshId());
   }
   
+//handles sum of two classes with private state and sum class/interface invalid
+  /**{@link ComposeSpec#isSumResultInterface}*/
+  public static boolean isSumResultInterface(ClassB currentA,ClassB currentB) throws ClassClash{
+    if(currentA.isInterface()&&currentB.isInterface()){return true;}    
+    if(!currentA.isInterface()&&!currentB.isInterface()){
+      boolean privateA=ExtractInfo.hasPrivateState(currentA);
+      boolean privateB=ExtractInfo.hasPrivateState(currentB);
+      if (privateA && privateB){throw new RefactorErrors.ClassClash();}
+      return false;
+      }    
+    if(currentA.isInterface()){
+      ClassB tmp=currentA; currentA=currentB;currentB=tmp;
+      }
+    assert !currentA.isInterface();
+    boolean implA=!ExtractInfo.isNoImplementation(currentA);
+    boolean privateA=ExtractInfo.hasPrivateState(currentA);
+    boolean classA=!currentA.mwts().stream().allMatch(mwt->mwt.getMt().getMdf()!=Mdf.Class);
+    if(implA ||privateA||classA){throw new RefactorErrors.ClassClash();}
+    return true;
+    }
 }
   /*
   public static ClassB alradyRefreshedCompose(Program pData,ClassB a,ClassB b){
@@ -518,44 +419,10 @@ mwts1 +mwts2=empty
       }
     return false;
     }
-//handles sum of two classes with private state and sum class/interface invalid
-  public static boolean isClassClash(
-          List<Ast.C>current,
-          ClassB topA,ClassB topB,
-          ClassB currentA,ClassB currentB){
-       boolean privateA=ExtractInfo.hasPrivateState(currentA);
-       boolean privateB=ExtractInfo.hasPrivateState(currentB);
-       boolean twoPrivateState=privateA &&privateB;
-       boolean isAllOk= !twoPrivateState && currentA.isInterface()==currentB.isInterface();
-       if (isAllOk){return false;}
-       ExtractInfo.ClassKind kindA=ExtractInfo.classKind(topA,current,currentA,null,privateA,null);
-       ExtractInfo.ClassKind kindB=ExtractInfo.classKind(topB,current,currentB,null,privateB,null);
-       boolean isClassInterfaceSumOk=currentA.isInterface()==currentB.isInterface();
-       if(!isClassInterfaceSumOk){
-         isClassInterfaceSumOk=kindA==ExtractInfo.ClassKind.FreeTemplate||kindB==ExtractInfo.ClassKind.FreeTemplate;
-         }
-       isAllOk= !twoPrivateState && isClassInterfaceSumOk;
-       if (isAllOk){return false;}
-       return true;
-      }
-  private static List<NormType> excRes(Program p, List<NormType>a,List<NormType>b){
-    List<NormType> res = excFilter(p,a,b);
-    res.addAll(excFilter(p,b,a));
-    return res;
-    }
-  private static List<NormType> excFilter(Program p, List<NormType>mayStay,List<NormType>other){
-    List<NormType>res=new ArrayList<>();
-    //res={ti in mayStay | exists tj in other s.t. p|-ti<=tj }
-    for(NormType ti:mayStay){
-      for(NormType tj:other){
-        if(p.subtypeEq(ti.getPath(),tj.getNT().getPath())){
-          res.add(ti);
-          }
-        }
-      }
-    return res;
-    }
+
+      */
   
+  /*
 public static SumOutM methodCompose(Program p,
     ClassB topA, ClassB topB,
     MethodWithType ma, MethodWithType mb,
@@ -572,7 +439,6 @@ public static SumOutM methodCompose(Program p,
     }
   else{ return new SumErr(ma,mb,path);}
    hgjhgkjgkjg
-// TODO Auto-generated method stub
 //a+b= c,(cs|-P1<=P2)s or error?
 return null;
 }

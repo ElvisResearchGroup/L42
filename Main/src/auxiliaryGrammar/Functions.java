@@ -135,6 +135,30 @@ public static boolean isSubtype(Mdf mdf1, Mdf m) {
     default: return false;
     }
   }
+
+/**exceptions of a method that is conceptually a subtype
+ * of both a methods containing exceptions a AND one containing exceptions b 
+ */
+public static List<Type> excRes(Program p, List<Type>a,List<Type>b){
+  List<Type> res = excFilter(p,a,b);
+  res.addAll(excFilter(p,b,a));
+  return res;
+  }
+private static List<Type> excFilter(Program p, List<Type>mayStay,List<Type>other){
+  List<Type>res=new ArrayList<>();
+  //res={ti in mayStay | exists tj in other s.t. p|-ti<=tj }
+  for(Type ti:mayStay){
+    for(Type tj:other){
+      if(p.subtypeEq(ti.getPath(),tj.getPath())){
+        res.add(ti);
+        }
+      }
+    }
+  return res;
+  }
+
+
+
 public static Type sharedAndLentToReadable(Type that){
   Mdf mdf=that.getMdf();
   if(mdf==Mdf.Mutable){mdf=Mdf.Readable;}

@@ -56,8 +56,8 @@ public class RefactorErrors{
     FluentSetter<IncoherentMapping>{}
   
   @SuppressWarnings("serial") public static class 
-  InducedCircularImplement extends MutMsgExc implements
-    FluentSetter<InducedCircularImplement>{}
+  SubtleSubtypeViolation extends MutMsgExc implements
+    FluentSetter<SubtleSubtypeViolation>{}
   
   @SuppressWarnings("serial") public static class 
   UnresolvedOverloading extends MutMsgExc implements
