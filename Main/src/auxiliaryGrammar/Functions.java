@@ -102,7 +102,7 @@ public static ClassB.NestedClass encapsulateIn(List<Ast.C> cBar,ClassB elem,Doc 
     //on the call side as in "redirectDefinition"
     assert !cBar.isEmpty();
     List<Ast.C> cBar2 = cBar.subList(1,cBar.size());
-    if(cBar2.isEmpty()){return new ClassB.NestedClass(doc,cBar.get(0),elem,null);}
+    if(cBar2.isEmpty()){return new ClassB.NestedClass(doc,cBar.get(0),elem,elem.getP());}
     List<Member> ms=new ArrayList<>();
     ms.add(encapsulateIn(cBar2,elem,doc));
     ClassB cb= ClassB.membersClass(ms,Position.noInfo,elem.getPhase());

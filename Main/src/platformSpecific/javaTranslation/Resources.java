@@ -147,7 +147,7 @@ public class Resources {
     public static ExpCore.ClassB multiPartStringClassB(String kind, Object... map) throws java.lang.Error {
       List<ExpCore.ClassB.Member> ms=new ArrayList<>();
       assert map.length%2==0;
-      ms.add(new ExpCore.ClassB.NestedClass(Doc.empty(),C.of("Kind"), EncodingHelper.wrapStringU(kind),null));
+      ms.add(new ExpCore.ClassB.NestedClass(Doc.empty(),C.of("Kind"), EncodingHelper.wrapStringU(kind),Position.noInfo));
       for(int i=0;i<map.length;i+=2){
         String cName=(String)map[i];
         ClassB inner;
@@ -160,7 +160,7 @@ public class Resources {
           throw new Error(map[i+1].toString());
           }
         if(!PathAux.isValidClassName(cName)){throw Assertions.codeNotReachable("Invalid name in multiPartStringError:"+cName);}
-        ms.add(new ExpCore.ClassB.NestedClass(Doc.empty(), C.of(cName), inner,null));
+        ms.add(new ExpCore.ClassB.NestedClass(Doc.empty(), C.of(cName), inner,inner.getP()));
       }
       ExpCore.ClassB cb=ClassB.membersClass(ms,Position.noInfo,Phase.Coherent);
       return cb;

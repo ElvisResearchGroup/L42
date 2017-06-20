@@ -50,7 +50,6 @@ This$Impl:{
     UnsafeRefactor.Compose.compose(left:This(), right:that)
  
   class method Library(){ implements This$
-    refine method This location()
     refine read method class This class()//to work with simple minded sum
     method
     Origin.List origins()
@@ -64,15 +63,15 @@ Doc:UnsafeRefactor.MiniData<><This$Impl<><...
 //###3 Lib 
 //------------------------------------
 //there is no Member since normalized classes have order: first nested, then methods
-  Lib:UnsafeRefactor.MiniData<><This$Impl<><...
+Lib:UnsafeRefactor.MiniData<><This$Impl<><...
   
 //###4 Method 
 //------------------------------------
-  Method:UnsafeRefactor.MiniData<><This$Impl<><...
+Method:UnsafeRefactor.MiniData<><This$Impl<><...
 
 //###5 Type and RefTo 
 //------------------------------------
-  Type:...
+Type:UnsafeRefactor.This$er<><...
 }
 
 //###6 Discussions 

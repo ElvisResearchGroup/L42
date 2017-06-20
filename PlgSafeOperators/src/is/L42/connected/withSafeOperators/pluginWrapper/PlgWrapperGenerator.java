@@ -359,7 +359,7 @@ public static boolean hasPluginUnresponsive(ClassB l){
     Doc d=lPointed.getDoc1();
     if(d._getParameterForPlugin()==null ||d._getParameterForPluginPart()==null){
     throw new RefactorErrors.ClassUnfit().msg(
-      "Class "+cBar+" doesnot have @pluginPart annotation");
+      "Class "+Path.outer(0,cBar)+" does not have @pluginPart annotation");
       }
     }
   private static void isOkAsParameter(Program p, Path csTop, Type ti) throws ClassUnfit, MethodUnfit {

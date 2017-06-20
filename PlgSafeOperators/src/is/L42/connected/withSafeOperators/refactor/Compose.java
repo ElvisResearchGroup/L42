@@ -168,10 +168,8 @@ static ClassB.NestedClass sumNc(ClassB.NestedClass _nc1,Program p, ClassB.Nested
       if(mi==null){return new RefactorErrors.SubtleSubtypeViolation();}
       if(!m.get_inner().isPresent()){continue;}
       //we trust the mt to be the same
-      assert m.getMt()==((MethodWithType)mi).getMt();
       //we trust the e is the same except for nested L, where we use recursion
       ExpCore body=m.getInner();
-      assert ((MethodWithType)mi).getInner()==body;
       RefactorErrors.SubtleSubtypeViolation[]out={null};
       body.accept(new TestShapeVisitor(){
         @Override public Boolean visit(ClassB cb){

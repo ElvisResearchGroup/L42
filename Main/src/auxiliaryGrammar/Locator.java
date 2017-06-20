@@ -97,7 +97,7 @@ public class Locator {
       this.cbs.set(size-1,LocatorSupport.dumbCb);
     }
     for (Ast.C s : cs) {
-      this.ms.add(new ClassB.NestedClass(ast.Ast.Doc.empty(), s, new ast.ExpCore.WalkBy(), null));
+      this.ms.add(new ClassB.NestedClass(ast.Ast.Doc.empty(), s, new ast.ExpCore.WalkBy(), Position.noInfo));
       this.indexes.add(1);
       this.cbs.add(LocatorSupport.dumbCb);
     }
