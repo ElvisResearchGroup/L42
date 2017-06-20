@@ -38,8 +38,8 @@ public class TestPop {//add more test for error cases
     +"ActualKind:{//@stringU\n//Template\n}}",true
 }});}
 @Test  public void test() {
-  ClassB cb1=getClassB(_cb1);
-  ClassB expected=getClassB(_expected);
+  ClassB cb1=getClassB(true,_cb1);
+  ClassB expected=getClassB(true,_expected);
   if(!isError){
     ClassB res=Pop.pop(cb1);
     TestHelper.assertEqualExp(expected,res);

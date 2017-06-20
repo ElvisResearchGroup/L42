@@ -877,6 +877,7 @@ public interface ExpCore {
         this.name = name;
         this.inner = inner;
         this.p = p;
+        assert p!=null;
       }
       
       @NonNull

@@ -47,12 +47,12 @@ public class TestAddComment {
   }});}
   @Test  public void test() {
     TestHelper.configureForTest();
-    ClassB cb1=getClassB(_cb1);
+    ClassB cb1=getClassB(false,_cb1);
     List<Ast.C> path=TestHelper.cs(_path);
     MethodSelector ms=MethodSelector.parse(_ms);
     Doc doc=Doc.factory(true,_doc);
     assert ms!=null;
-    ClassB expected=getClassB(_expected);
+    ClassB expected=getClassB(false,_expected);
     if(!isError){
       ClassB res=AddDocumentation.addDocumentationOnMethod(Program.emptyLibraryProgram(),cb1, path, ms,doc);
       TestHelper.assertEqualExp(expected,res);
@@ -82,10 +82,10 @@ public class TestAddComment {
   }});}
   @Test  public void test() {
     TestHelper.configureForTest();
-    ClassB cb1=getClassB(_cb1);
+    ClassB cb1=getClassB(false,_cb1);
     List<Ast.C> path=TestHelper.cs(_path);
     Doc doc=Doc.factory(true,_doc);
-    ClassB expected=getClassB(_expected);
+    ClassB expected=getClassB(false,_expected);
     if(!isError){
       ClassB res=AddDocumentation.addDocumentationOnNestedClass(Program.emptyLibraryProgram(),cb1, path,doc);
       TestHelper.assertEqualExp(expected,res);

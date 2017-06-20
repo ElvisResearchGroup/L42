@@ -105,7 +105,7 @@ public class CloneVisitor implements Visitor<Expression>{
       mt->visit(mt)
       );
   }
-  public NestedClass visit(NestedClass nc){return new NestedClass(liftDoc(nc.getDoc()),nc.getName(),lift(nc.getInner()),null);}
+  public NestedClass visit(NestedClass nc){return new NestedClass(liftDoc(nc.getDoc()),nc.getName(),lift(nc.getInner()),nc.getP());}
   public MethodImplemented visit(MethodImplemented mi){return new ClassB.MethodImplemented(liftDoc(mi.getDoc()), liftMs(mi.getS()), lift(mi.getInner()),null);}
   public MethodWithType visit(MethodWithType mt){
     return new ClassB.MethodWithType(liftDoc(mt.getDoc()),

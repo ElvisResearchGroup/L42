@@ -63,11 +63,11 @@ public static class TestAbstractMeth {//add more test for error cases
 	  true
 }});}
 @Test  public void test() {
-  ClassB cb1=getClassB(_cb1);
+  ClassB cb1=getClassB(false,_cb1);
   List<Ast.C> path=TestHelper.cs(_path);
   MethodSelector ms=MethodSelector.parse(_ms);
   assert ms!=null;
-  ClassB expected=getClassB(_expected);
+  ClassB expected=getClassB(false,_expected);
   if(!isError){
     //TODO: mettere tests per il caso con un selettore destinazione. In particolare testare interfacce
     ClassB res=Abstract.toAbstract(Program.emptyLibraryProgram(),cb1, path, ms,null);
@@ -130,13 +130,13 @@ public static class TestMoveMeth {//add more test for error cases
 }});}
 @Test  public void test() {
   TestHelper.configureForTest();
-  ClassB cb1=getClassB(_cb1);
+  ClassB cb1=getClassB(false,_cb1);
   List<Ast.C> path=TestHelper.cs(_path);
   MethodSelector ms1=MethodSelector.parse(_ms1);
   assert ms1!=null;
   MethodSelector ms2=MethodSelector.parse(_ms2);
   assert ms2!=null;
-  ClassB expected=getClassB(_expected);
+  ClassB expected=getClassB(false,_expected);
   if(!isError){
     //TODO: mettere tests per il caso con un selettore destinazione. In particolare testare interfacce
     ClassB res=Abstract.toAbstract(Program.emptyLibraryProgram(),cb1, path, ms1,ms2);
@@ -268,9 +268,9 @@ public static class TestAbstractClass {//add more test for error cases
 }});}
 @Test  public void test() {
   TestHelper.configureForTest();
-  ClassB cb1=getClassB(_cb1);
+  ClassB cb1=getClassB(false,_cb1);
   List<Ast.C> path=TestHelper.cs(_path);
-  ClassB expected=getClassB(_expected);
+  ClassB expected=getClassB(false,_expected);
   if(!isError){
     ClassB res=Abstract.toAbstract(cb1, path);
     TestHelper.assertEqualExp(expected,res);

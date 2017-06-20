@@ -38,8 +38,8 @@ public class TestRemoveCode {
   }});}
   @Test public void test() {
     TestHelper.configureForTest();
-    ClassB e1=getClassB(_e1);
-    ClassB expected=getClassB(_expected);
+    ClassB e1=getClassB(true,_e1);
+    ClassB expected=getClassB(true,_expected);
     ClassB res=RemoveCode.removeUnreachableCode(e1);
     TestHelper.assertEqualExp(res,expected);}}
 

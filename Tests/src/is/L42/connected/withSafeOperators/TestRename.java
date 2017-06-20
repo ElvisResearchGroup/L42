@@ -116,11 +116,11 @@ public class TestRename {
 
     @Test public void test() {
       TestHelper.configureForTest();
-      ClassB cb1 = getClassB(_cb1);
+      ClassB cb1 = getClassB(true,_cb1);
       List<Ast.C> path=TestHelper.cs(_path);
       MethodSelector ms1 = MethodSelector.parse(_ms1);
       MethodSelector ms2 = MethodSelector.parse(_ms2);
-      ClassB expected = getClassB(_expected);
+      ClassB expected = getClassB(true,_expected);
       if (!isError) {
         ClassB res = Rename.renameMethod(Program.emptyLibraryProgram(), cb1, path, ms1, ms2);
         TestHelper.assertEqualExp(expected, res);
@@ -162,7 +162,7 @@ public class TestRename {
 
     @Test public void test() {
       TestHelper.configureForTest();
-      ClassB cb1 = getClassB(_cb1);
+      ClassB cb1 = getClassB(true,_cb1);
       List<Ast.C> path=TestHelper.cs(_path);
       MethodSelector ms1 = MethodSelector.parse(_ms1);
       if (!isError) {
@@ -204,10 +204,10 @@ public class TestRename {
 
     @Test public void test() {
       TestHelper.configureForTest();
-      ClassB cb1 = getClassB(_cb1);
+      ClassB cb1 = getClassB(true,_cb1);
       List<Ast.C> path1=TestHelper.cs(_path1);
       List<Ast.C> path2=TestHelper.cs(_path2);
-      ClassB expected = getClassB(_expected);
+      ClassB expected = getClassB(true,_expected);
       if (!isError) {
         ClassB res = Rename.renameClassStrict(Program.emptyLibraryProgram(), cb1, path1,  path2);
         newTypeSystem.TypeSystem.instance().topTypeLib(Phase.Typed, Program.emptyLibraryProgram().updateTop(res));
@@ -370,10 +370,10 @@ public class TestRename {
 
     @Test public void test() {
       TestHelper.configureForTest();
-      ClassB cb1 = getClassB(_cb1);
+      ClassB cb1 = getClassB(true,_cb1);
       List<Ast.C> path1=TestHelper.cs(_path1);
       List<Ast.C> path2=TestHelper.cs(_path2);
-      ClassB expected = getClassB(_expected);
+      ClassB expected = getClassB(true,_expected);
       if (!isError) {
         ClassB res = Rename.renameClass(Program.emptyLibraryProgram(), cb1, path1, path2);
         TestHelper.assertEqualExp(expected, res);

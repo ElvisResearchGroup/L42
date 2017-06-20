@@ -77,8 +77,8 @@ public class TestAddKs{
 @Test  public void test() {
 
   TestHelper.configureForTest();
-  ClassB cb1=getClassB("cb1", _cb1);
-  ClassB expected=getClassB("expected", _expected);
+  ClassB cb1=getClassB(false,"cb1", _cb1);
+  ClassB expected=getClassB(false,"expected", _expected);
   if(!isError){
     ClassB res=MakeKs.makeKs(cb1, Collections.emptyList(),Arrays.asList(_fields), _mutK, _lentK, _readK, _immK, true);
     TestHelper.assertEqualExp(expected,res);

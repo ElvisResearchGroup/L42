@@ -756,10 +756,10 @@ public static class TestRedirect1 {//add more test for error cases
 
   TestHelper.configureForTest();
   Program p=TestHelper.getProgram(_p);
-  ClassB cb1=getClassB("cb1", _cb1);
+  ClassB cb1=getClassB(true,"cb1", _cb1);
   Path path1=Path.parse(_path1);
   Path path2=Path.parse(_path2);
-  ClassB expected=getClassB("expected", _expected);
+  ClassB expected=getClassB(true,"expected", _expected);
   if(!isError){
     ClassB res=Redirect.redirect(p, cb1,path1,path2);
     TestHelper.assertEqualExp(expected,res);

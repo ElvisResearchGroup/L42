@@ -28,6 +28,7 @@ import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.NestedClass;
 import ast.Expression;
 import auxiliaryGrammar.Functions;
+import programReduction.Norm;
 import programReduction.Program;
 import facade.Configuration;
 import facade.L42;
@@ -210,17 +211,20 @@ public class TestHelper {
     return e1;
     }
   
-  public static ClassB getClassB(String source, String e1) {
+  public static ClassB getClassB(boolean norm,String source, String e1) {
     Expression code1=Parser.parse("GeneratedByTestHelper_"+source,e1);
     auxiliaryGrammar.WellFormedness.checkAll(code1);
     Expression code2=Desugar.of(code1);
     assert auxiliaryGrammar.WellFormedness.checkAll(code2);
     ExpCore.ClassB code3=(ExpCore.ClassB)code2.accept(new InjectionOnCore());
     assert coreVisitors.CheckNoVarDeclaredTwice.of(code3);
+    if(norm){
+      code3=new Norm().norm(Program.emptyLibraryProgram().updateTop(code3));
+      }
     return code3;
   }
-  public static ClassB getClassB(String e1) {
-    return getClassB(null, e1);
+  public static ClassB getClassB(boolean norm,String e1) {
+    return getClassB(norm,null, e1);
   }
 
    public static Program getProgram(/*List<Path> paths,*/String[] code){

@@ -2321,6 +2321,7 @@ public interface Expression extends Ast {
         this.name = name;
         this.inner = inner;
         this.p = p;
+        assert p!=null;
       }
       
       @java.lang.SuppressWarnings("all")
