@@ -25,7 +25,7 @@ import ast.ExpCore.ClassB.NestedClass;
 public interface ExpCore {
   <T> T accept(coreVisitors.Visitor<T> v);
   default String toS(){return sugarVisitors.ToFormattedText.of(this);}
-  @Value @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") @Wither public static class MCall implements ExpCore,HasPos, WithInner<MCall>{
+  @Value @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") @Wither public static class MCall implements ExpCore,HasPos<MCall>, WithInner<MCall>{
     ExpCore inner;
     MethodSelector s;
     Doc doc;
@@ -41,7 +41,7 @@ public interface ExpCore {
     }
   }
 
-  @Value @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") @Wither public static class UpdateVar implements ExpCore,HasPos, WithInner<UpdateVar>{
+  @Value @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") @Wither public static class UpdateVar implements ExpCore,HasPos<UpdateVar>, WithInner<UpdateVar>{
   ExpCore inner;
   String var;
   Doc doc;
@@ -52,8 +52,8 @@ public interface ExpCore {
 }
 
   
-  @Value @EqualsAndHashCode(exclude = "p")
-  public static class X implements ExpCore, Ast.Atom, HasPos {
+  @Value @Wither @EqualsAndHashCode(exclude = "p")
+  public static class X implements ExpCore, Ast.Atom, HasPos<X> {
     Position p;
     String inner;
     public String toString() {
@@ -64,7 +64,7 @@ public interface ExpCore {
     }
   }
 
-  @Value @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") @Wither public static class Block implements ExpCore,HasPos,WithInner<Block> {
+  @Value @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") @Wither public static class Block implements ExpCore,HasPos<Block>,WithInner<Block> {
     Doc doc;
     List<Dec> decs;
     ExpCore inner;
@@ -99,7 +99,7 @@ public interface ExpCore {
       return dom;
     }
 
-    @Value @Wither @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") public static class On implements HasPos, WithInner<On>{
+    @Value @Wither @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") public static class On implements HasPos<On>, WithInner<On>{
       SignalKind kind;
       String x;
       Type t;
@@ -112,7 +112,7 @@ public interface ExpCore {
   }
    
 
-  @Value @Wither @EqualsAndHashCode(exclude = {"p","phase","uniqueId"})  /*@ToString(exclude ="p")*/ public static class ClassB implements ExpCore, Ast.Atom,HasPos {
+  @Value @Wither @EqualsAndHashCode(exclude = {"p","phase","uniqueId"})  /*@ToString(exclude ="p")*/ public static class ClassB implements ExpCore, Ast.Atom,HasPos<ClassB> {
     
     public ClassB(Doc doc1, boolean isInterface, List<Type> supertypes, List<Member> ms,Position p, Phase phase, int uniqueId) {
       this.doc1 = doc1;
@@ -174,7 +174,7 @@ public interface ExpCore {
       return this.ordinal()>=that.ordinal();
       }
     }
-    public interface Member extends HasPos, WithInner<Member> {
+    public interface Member extends HasPos<Member>, WithInner<Member> {
       <T> T match(Function<NestedClass, T> nc, Function<MethodImplemented, T> mi, Function<MethodWithType, T> mt);
       }
     @Value @Wither @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p")public static class NestedClass implements Member {
@@ -220,7 +220,7 @@ public interface ExpCore {
       }
     }
   @Value @Wither @EqualsAndHashCode(exclude = "p")
-  public static class EPath implements ExpCore,HasPos,Atom{
+  public static class EPath implements ExpCore,HasPos<EPath>,Atom{
     Position p;
     Ast.Path inner;
     public String toString(){return this.getInner().toString();}
@@ -411,6 +411,7 @@ class _Aux{
         String key = mwt.getMs().toString();
         assert !keys.contains(key);
         keys.add(key);
+        assert mwt.getMt().isRefine() || cb.getP().containsAll(mwt.getP());
         //assert mwt.getMt().getTDocs().size() == mwt.getMt().getTs().size();
         }
       if (m instanceof NestedClass) {
@@ -421,6 +422,7 @@ class _Aux{
         if (nc.getInner() instanceof ExpCore.WalkBy) {
           countWalkBy += 1;
           }
+        assert cb.getP().containsAll(nc.getP());
         }
       if (m instanceof MethodImplemented) {
         MethodImplemented mi = (MethodImplemented) m;

@@ -44,6 +44,18 @@ This$:{interface implements Concept.Base
   method Origin origin(Size that)
   method This location()
   }
+
+PUnresponsive:{
+  class method
+  Library<><(Library that)
+    UnsafeRefactor.Compose.compose(left:This(), right:that)
+  class method Library(){
+    class method
+    Library #pluginUnresponsive(Library binaryRepr)
+      binaryRepr
+  }
+}
+
 This$Impl:{
   class method
   Library<><(Library that)
@@ -56,18 +68,22 @@ This$Impl:{
       Origin.List[with i in 0Size.vals(upTo:this.originSize()) (use[this.origin(i)])]
     }
   }
-
+PlgClass:{
+  class method
+  Library<><(Library that)
+    PUnresponsive<><UnsafeRefactor.MiniData<><This$Impl<><that
+  }
 //###2 Doc 
 //------------------------------------
-Doc:UnsafeRefactor.MiniData<><This$Impl<><...
+Doc:PlgClass<><...
 //###3 Lib 
 //------------------------------------
 //there is no Member since normalized classes have order: first nested, then methods
-Lib:UnsafeRefactor.MiniData<><This$Impl<><...
+Lib:PlgClass<><...
   
 //###4 Method 
 //------------------------------------
-Method:UnsafeRefactor.MiniData<><This$Impl<><...
+Method:PlgClass<><...
 
 //###5 Type and RefTo 
 //------------------------------------

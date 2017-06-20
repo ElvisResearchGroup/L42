@@ -34,7 +34,7 @@ public interface Expression extends Ast {
     }
   }
 
-  @Value @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") @Wither public static class If implements Expression, HasPos {
+  @Value @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") @Wither public static class If implements Expression, HasPos<If> {
     Position p;
     Expression cond;
     Expression then;
@@ -44,7 +44,7 @@ public interface Expression extends Ast {
     }
   }
 
-  @Value @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") public static class While implements Expression, HasPos {
+  @Wither @Value @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") public static class While implements Expression, HasPos<While> {
     Position p;
     Expression cond;
     Expression then;
@@ -53,7 +53,7 @@ public interface Expression extends Ast {
     }
   }
 
-  @Value @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") @Wither public static class With implements Expression, HasPos {
+  @Value @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") @Wither public static class With implements Expression, HasPos<With> {
     Position p;
     List<String> xs;
     List<VarDecXE> is;
@@ -72,8 +72,8 @@ public interface Expression extends Ast {
 
   }
 
-  @Value @EqualsAndHashCode(exclude = "p")
-  public static class X implements Expression, Ast.Atom, HasPos{
+  @Wither @Value @EqualsAndHashCode(exclude = "p")
+  public static class X implements Expression, Ast.Atom, HasPos<X>{
     Position p;
     String inner;
     public String toString() {
@@ -94,7 +94,7 @@ public interface Expression extends Ast {
   }
 
 
-  @Value @EqualsAndHashCode(exclude = "p") /*@ToString(exclude = "p")*/ @Wither public static class BinOp implements Expression, HasPos {
+  @Wither @Value @EqualsAndHashCode(exclude = "p") /*@ToString(exclude = "p")*/ public static class BinOp implements Expression, HasPos<BinOp> {
     Position p;
     Expression left;
     Ast.Op op;
@@ -116,7 +116,7 @@ public interface Expression extends Ast {
     }
   }
 
-  @Value @EqualsAndHashCode(exclude = "p") /*@ToString(exclude = "p")*/ public static class UnOp implements Expression, HasPos {
+  @Wither @Value @EqualsAndHashCode(exclude = "p") /*@ToString(exclude = "p")*/ public static class UnOp implements Expression, HasPos<UnOp> {
     Position p;
     Ast.Op op;
     Expression inner;
@@ -128,7 +128,7 @@ public interface Expression extends Ast {
     }
   }
 
-  @Value @Wither @EqualsAndHashCode(exclude = {"p"}) @ToString(exclude = {"p"}) public static class MCall implements Expression, HasPos,HasReceiver {
+  @Value @Wither @EqualsAndHashCode(exclude = {"p"}) @ToString(exclude = {"p"}) public static class MCall implements Expression, HasReceiver {
     Expression receiver;
     String name;
     Doc doc;
@@ -139,7 +139,7 @@ public interface Expression extends Ast {
     }
   }
 
-  @Value @Wither @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") public static class FCall implements Expression, HasPos, HasReceiver {
+  @Value @Wither @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") public static class FCall implements Expression, HasReceiver {
     @NonNull Position p;
     Expression receiver;
     Doc doc;
@@ -149,7 +149,7 @@ public interface Expression extends Ast {
     }
   }
 
-  @Value @Wither @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") public static class SquareCall implements Expression, HasPos,HasReceiver {
+  @Value @Wither @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") public static class SquareCall implements Expression,HasReceiver {
     Position p;
     Expression receiver;
     Doc doc;
@@ -160,7 +160,7 @@ public interface Expression extends Ast {
     }
   }
 
-  @Value @Wither @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") public static class SquareWithCall implements Expression, HasPos,HasReceiver {
+  @Value @Wither @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") public static class SquareWithCall implements Expression, HasReceiver {
     Position p;
     Expression receiver;
     With with;
@@ -175,7 +175,7 @@ public interface Expression extends Ast {
     }
   }
 
-  public static interface Catch extends HasPos{
+  public static interface Catch extends HasPos<Catch>{
     <T> T match(Function<Catch1, T> k1,Function<CatchMany, T> kM,Function<CatchProp, T> kP);
     String getX();
     Expression getInner();
@@ -210,7 +210,7 @@ public interface Expression extends Ast {
     List<Catch> _catch;
   }
 
-  @Value @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") @Wither public static class RoundBlock implements Expression, HasPos {
+  @Wither @Value @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") public static class RoundBlock implements Expression, HasPos<RoundBlock> {
     Position p;
     Doc doc;
     Expression inner;
@@ -220,7 +220,7 @@ public interface Expression extends Ast {
     }
   }
 
-  @Value @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") public static class CurlyBlock implements Expression, HasPos {
+  @Wither @Value @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") public static class CurlyBlock implements Expression, HasPos<CurlyBlock> {
     Position p;
     Doc doc;
     List<BlockContent> contents;
@@ -250,7 +250,7 @@ public interface Expression extends Ast {
   }
 
   //TODO: for decent error messages, eventually we have to admit duplicated members in Expression, so that the well formedess function can have an input
-  @Value @Wither @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") public static class ClassB implements Expression, Ast.Atom, HasPos{
+  @Value @Wither @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") public static class ClassB implements Expression, Ast.Atom, HasPos<ClassB>{
     public ClassB(Doc doc1, Header h, List<Ast.FieldDec> fields, List<Type> supertypes, List<Member> ms,Position p) {
       this.doc1 = doc1;
       this.h = h;
@@ -296,7 +296,7 @@ public interface Expression extends Ast {
     //  return sugarVisitors.ToFormattedText.of(this);
     //}
 
-    public interface Member extends HasPos{
+    public interface Member extends HasPos<Member>{
       <T> T match(Function<NestedClass, T> nc, Function<MethodImplemented, T> mi, Function<MethodWithType, T> mt);
     }
     @Value @Wither @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p")public static class NestedClass implements Member {
@@ -343,7 +343,7 @@ public interface Expression extends Ast {
   }
 
   @Value @Wither @EqualsAndHashCode(exclude = "p")
-  public static class EPath implements Expression,HasPos,Atom{
+  public static class EPath implements Expression,HasPos<EPath>,Atom{
     Position p;
     Ast.Path inner;
     public String toString(){return this.getInner().toString();}
@@ -359,7 +359,7 @@ public interface Expression extends Ast {
     public static final _void instance=new _void();
   }
 
-  @Value @Wither @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") public static class Literal implements Expression, HasPos,HasReceiver {
+  @Value @Wither @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") public static class Literal implements Expression, HasReceiver {
     Position p;
     Expression receiver;
     String inner;

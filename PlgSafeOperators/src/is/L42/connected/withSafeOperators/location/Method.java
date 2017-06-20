@@ -17,13 +17,13 @@ public class Method extends Location.LocationImpl<ClassB.MethodWithType, Lib>{
   public Method(MethodWithType inner, Lib location) {
     super(inner, location);
     }
-  boolean isAbstract(){return !inner.get_inner().isPresent();}
-  boolean isRefine(){return inner.getMt().isRefine();}
-  String  selector(){return inner.getMs().toString();}
+  public boolean isAbstract(){return !inner.get_inner().isPresent();}
+  public boolean isRefine(){return inner.getMt().isRefine();}
+  public String  selector(){return inner.getMs().toString();}
   @Override public String toS() {return sugarVisitors.ToFormattedText.of(this.inner);}
   @Override public Doc doc() {return new Doc(inner.getDoc(),this);}
 
-  Type.Return returnType(){return new Type.Return(inner.getMt().getReturnType(),inner,this);}
+  public Type.Return returnType(){return new Type.Return(inner.getMt().getReturnType(),inner,this);}
     
   Cacher<List<Type.Parameter>> parametersC=new Cacher<List<Type.Parameter>>(){public List<Type.Parameter> cache(){
     MethodType mt = inner.getMt();

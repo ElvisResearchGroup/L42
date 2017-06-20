@@ -1,15 +1,10 @@
-{ implements This1.This$
-  //@plugin  toFix 
+{ //@plugin  toFix 
   //@pluginPart is.L42.connected.withSafeOperators.location.Lib
-  
+  implements This1.This$ 
   
   This$:UnsafeRefactor.MiniData.thisLib()
 
   List:Collections.vector(of:This$)
-
-  class method
-   Library #pluginUnresponsive(Library binaryRepr)
-     binaryRepr
 
   method
   List nesteds()
@@ -52,7 +47,7 @@
     Type.Implemented.List[with i in 0Size.vals(upTo:this.implementedSize()) (use[this.implemented(i)])]
     
   method Bool implements(class Any clazz){
-    if Refactor.equalsClassObj(Any, and:clazz) (
+    if Type.RefTo.Binded.equalsClassObj(Any, and:clazz) (
       return Bool.True()
       ) 
      with ti in this.implementeds().vals() (
@@ -84,9 +79,9 @@
   
     
   //methods imported from java
-  method
+  class method
   This newFromClass(class Any that)
-  method 
+  class method 
   This newFromLibrary(Library that)
   method
   Doc doc()

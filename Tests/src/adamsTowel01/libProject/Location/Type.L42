@@ -4,11 +4,17 @@
     RefTo:UnsafeRefactor.This$er<><{interface implements Concept.Base
       This$:{interface}
       //toS is the full path with Thisn.
-      Lib:UnsafeRefactor.MiniData<><This$Impl<><{ implements This1.This$
+      Lib:PUnresponsive<><UnsafeRefactor.MiniData<><{
+        //@plugin  toFix 
+        //@pluginPart is.L42.connected.withSafeOperators.location.TypeRefTo$Lib
+        implements This1.This$
         This$:UnsafeRefactor.MiniData.thisLib()
         method Lib referredLib()
         }
-      Unavailable:UnsafeRefactor.MiniData<><This$Impl<><{ implements This1.This$
+      Unavailable:PUnresponsive<><UnsafeRefactor.MiniData<><{ 
+        //@plugin  toFix 
+        //@pluginPart is.L42.connected.withSafeOperators.location.TypeRefTo$Unavailable
+        implements This1.This$
         This$:UnsafeRefactor.MiniData.thisLib()
         //cases:
         //  (1)
@@ -27,15 +33,26 @@
         //   // A is under compilation right now.
         
         }
-      Binded:UnsafeRefactor.MiniData<><This$Impl<><{ implements This1.This$ //includes primitives
+      Binded:PUnresponsive<><UnsafeRefactor.MiniData<><{
+        //@plugin  toFix 
+        //@pluginPart is.L42.connected.withSafeOperators.location.TypeRefTo$Binded
+        implements This1.This$ //includes primitives
         This$:UnsafeRefactor.MiniData.thisLib()
-        method class Any referredClassObj()
+        method
+        class Any referredClassObj()
+
+        class method
+        Bool equalsClassObj(class Any that, class Any and)
+
         //This class will also offer some static 
         //functionalities to work with classObjs: 
         //Refactor.navigateClassObj(classAny,Path)->classAny??
         //Lib do not offer a way to get back a classObj
         }
-      Missing:UnsafeRefactor.MiniData<><This$Impl<><{ implements This1.This$
+      Missing:PUnresponsive<><UnsafeRefactor.MiniData<><{
+        //@plugin  toFix 
+        //@pluginPart is.L42.connected.withSafeOperators.location.TypeRefTo$Missing
+        implements This1.This$
         This$:UnsafeRefactor.MiniData.thisLib()
         //mostly useful for docs, where we can use lowercase annotation
         //or we may want to preserve @P where we removed the P
@@ -44,25 +61,37 @@
       }
     method RefTo refTo()
     method Mdf mdf()//imm for exception/implemented    
-    Return:UnsafeRefactor.MiniData<><This$Impl<><{ implements This1.This$
+    Return:PlgClass<><{
+        //@plugin  toFix 
+        //@pluginPart is.L42.connected.withSafeOperators.location.Type$Return
+      implements This1.This$
       This$:UnsafeRefactor.MiniData.thisLib()
       refine method Method location()
       }
-    Parameter:UnsafeRefactor.MiniData<><This$Impl<><{ implements This1.This$
+    Parameter:PlgClass<><{
+        //@plugin  toFix 
+        //@pluginPart is.L42.connected.withSafeOperators.location.Type$Parameter     
+      implements This1.This$
       This$:UnsafeRefactor.MiniData.thisLib()
       List:Collections.vector(of:This$)
 
       refine method Method location()
       method Size pos()//0 for this
       }
-    Exception:UnsafeRefactor.MiniData<><This$Impl<><{ implements This1.This$
+    Exception:PlgClass<><{
+        //@plugin  toFix 
+        //@pluginPart is.L42.connected.withSafeOperators.location.Type$Exception
+      implements This1.This$
       This$:UnsafeRefactor.MiniData.thisLib()
       List:Collections.vector(of:This$)
 
       refine method Method location()
       method Size pos()//should start from 1 or 0?
       }
-    Implemented:UnsafeRefactor.MiniData<><This$Impl<><{ implements This1.This$
+    Implemented:PlgClass<><{
+        //@plugin  toFix 
+        //@pluginPart is.L42.connected.withSafeOperators.location.Type$Implemented
+      implements This1.This$
       This$:UnsafeRefactor.MiniData.thisLib()
       List:Collections.vector(of:This$)
 

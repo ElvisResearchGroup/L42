@@ -6,6 +6,7 @@ import ast.Ast;
 import ast.Ast.Path;
 
 public interface TypeRefTo {
+  boolean equalequal(Object that);
   String toS();//toS is the full path with Thisn.
   static class Lib implements TypeRefTo{
     public Lib(is.L42.connected.withSafeOperators.location.Lib root, Path path) {
@@ -18,10 +19,16 @@ public interface TypeRefTo {
       return root.navigate(path.getCBar());
       }    
     @Override public String toS() {return path.toString(); }
+    @Override public boolean equalequal(Object that) {
+      return this.equals(that);
+      }
     }
   static class Unavailable implements TypeRefTo{
     Ast.Path path;//pre frommed to be ok with PData
     @Override public String toS() {return path.toString(); }
+    @Override public boolean equalequal(Object that) {
+      return this.equals(that);
+      }
     }
   static class Binded implements TypeRefTo{//includes primitives
     public Binded(Path path) {
@@ -29,12 +36,21 @@ public interface TypeRefTo {
       }
     Ast.Path path;//pre frommed to be ok with PData
     public Ast.Path referredClassObj(){return path;}
+    public static boolean equalsClassObj(Ast.Path that,Ast.Path and){
+      return that.equals(and);
+      }
     @Override public String toS() {return path.toString(); }
+    @Override public boolean equalequal(Object that) {
+      return this.equals(that);
+      }
     }
   static class Missing implements TypeRefTo{
     String path;//if was Path, pre frommed to be ok with PData
     //in case of docs, can just be the doc @string
     @Override public String toS() {return path; }
+    @Override public boolean equalequal(Object that) {
+      return this.equals(that);
+      }
     //mostly useful for docs, where we can use lowercase annotation
     //or we may want to preserve @P where we removed the P
     //also, if an (nested) Uncompiled is resolved not existing..        

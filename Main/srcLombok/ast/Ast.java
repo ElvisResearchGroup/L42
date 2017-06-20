@@ -83,7 +83,7 @@ public interface Ast {
  @Wither
  @EqualsAndHashCode(exclude = "p")
  @ToString(exclude = "p")
- public class ConcreteHeader implements Header, Expression.HasPos {
+ public class ConcreteHeader implements Header, Expression.HasPos<ConcreteHeader> {
   Mdf mdf;
   String name;
   List<FieldDec> fs;
@@ -372,9 +372,9 @@ public interface Ast {
  }  
  //-----------------------------
  
- @Value
+ @Value @Wither
  @EqualsAndHashCode(exclude = "p") /*to string manually defined so @ToString(exclude = "p") not needed*/
- public static class Doc implements Expression.HasPos{
+ public static class Doc implements Expression.HasPos<Doc>{
   boolean multiline;
   String s;
   List<Object> annotations;
@@ -727,6 +727,20 @@ public interface Ast {
     if(this._next==null){return this.with_next(that);}
     return this.with_next(this._next.sum(that));
     }
+  public boolean containsAll(Position p){
+    if(p==null || p==Position.noInfo){return true;}
+    return containsAllAux(p) && containsAll(p._next);
+    }
+  private boolean containsAllAux(Position p){
+    if(this.insideTop(p)){return true;}
+    if(this._next==null || this._next==Position.noInfo){return false;}
+    return this._next.containsAllAux(p);
+    }
+  private boolean insideTop(Position p){
+    return this.file.equals(p.file) &&
+      this.line1<=p.line1 &&
+      this.line2>=p.line2;
+  }
   String file;
   int line1;
   int pos1;
@@ -757,10 +771,11 @@ public interface Ast {
   }
  }
 
- public static interface HasPos {
-  Position getP();
+ public static interface HasPos<T> {
+   T withP(Position that);
+   Position getP();
  }
- public static interface HasReceiver extends HasPos,Expression{
+ public static interface HasReceiver extends HasPos<Expression>,Expression{
   Expression getReceiver();
   Expression withReceiver(Expression receiver);
  }

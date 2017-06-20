@@ -2,6 +2,7 @@ package is.L42.connected.withSafeOperators.pluginWrapper;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -135,7 +136,8 @@ private static ExpCore parseAndDesugar(String s) {
     Class<?> c=pwp.pointed;
     Method[] jms=c.getMethods();
     Constructor<?>[] jcs=c.getDeclaredConstructors();
-    List<Member>msResult=new ArrayList<>(templateWrapper);            
+    List<Member>msResult=new ArrayList<>();
+    templateWrapper.forEach(m->msResult.add(m.withP(l.getP())));
     Path pTop=Path.outer(0, cs);
     for(Member m:l.getMs()){
       if (!(m instanceof MethodWithType)){
@@ -182,16 +184,19 @@ private static void addMwt(Program p, PlgInfo plgInfo, Method[] jms, Constructor
 
 
 private static UsingInfo usingMethod(PlgInfo plgInfo, Method[] jms, MethodWithType mwt, String name) throws UnresolvedOverloading {
+  boolean stat=mwt.getMt().getMdf()==Mdf.Class;
   List<Method>jms0=new ArrayList<>();
   for (Method mi:jms){
     if (!mi.getName().equals(name)){continue;}
     if (argLessPData(mi)!=mwt.getMs().getNames().size()){continue;}
+    if(stat!=Modifier.isStatic(mi.getModifiers())){continue;}
     jms0.add(mi);
     }
   if (jms0.size()!=1){
+    String nonS=stat?"":"non ";
     throw new RefactorErrors.UnresolvedOverloading().msg(
       "The referred java class "+plgInfo.plgClass.getName()+
-      " does not have exactly one method for "+name+" with right number of arguments.\n"+
+      " does not have exactly one "+nonS+"static method for "+name+" with right number of arguments.\n"+
       "List of candidate methods:"+jms0);
     }
   assert jms0.size()==1:
@@ -393,6 +398,7 @@ public static boolean hasPluginUnresponsive(ClassB l){
     Path pi=ti.getPath();
     if (pi.equals(Path.Void())){return;}
     if (pi.equals(Path.Library())){return;}//We will need to generate a simpler returning expression
+    if (pi.equals(Path.Any()) && ti.getMdf()==Mdf.Class){return;}
     Path op=_pathForOutside(csTop.getCBar().size(),pi);
     if(op==null){checkForInside(p.top(),csTop,pi); return;}
     ClassB l=p.extractClassB(op);

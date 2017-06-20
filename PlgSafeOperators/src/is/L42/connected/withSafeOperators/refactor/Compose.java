@@ -267,7 +267,7 @@ public static ClassB onlySubtypeCompose(ClassB a,ClassB b){
       ncs.add(nci.withE(l));
       }
     }
-  return new ClassB(Doc.empty(),false,impls,mwts,ncs,Position.noInfo,Phase.Norm,0);
+  return new ClassB(Doc.empty(),false,impls,mwts,ncs,a.getP().sum(b.getP()),Phase.Norm,0);
   }
 
 /**{@link ComposeSpec#innerCompose}*/  

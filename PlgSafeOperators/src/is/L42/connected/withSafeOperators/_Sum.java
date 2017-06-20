@@ -101,7 +101,7 @@ public class _Sum {
     boolean isInterface =a.isInterface() || b.isInterface();
     Phase accPhase = a.getPhase().acc(b.getPhase());
     ExpCore.ClassB res= new ClassB(doc1, isInterface, superT,
-            ms,CollapsePositions.accumulatePos(a.getP(), b.getP()),
+            ms,a.getP().sum(b.getP()),
             accPhase,accPhase==Phase.None?0:1);
     res=(ClassB) res.accept(new coreVisitors.CloneVisitor(){
       public ExpCore visit(ClassB s){

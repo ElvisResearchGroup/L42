@@ -78,8 +78,9 @@ public Type visit(WalkBy s) {
 }
 @Override
 public Type visit(Using s) {
-  throw Assertions.codeNotReachable();
-}
+  List<Type> lt = platformSpecific.fakeInternet.OnLineCode.pluginType(p, s);      
+  return lt.get(0);
+  }
 @Override
 public Type visit(Signal s) {
   throw Assertions.codeNotReachable();

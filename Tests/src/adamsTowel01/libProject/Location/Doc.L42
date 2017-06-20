@@ -1,12 +1,11 @@
-{  implements This1.This$
-  //user will need typecase to discover precise type, location() not refined
+{  //user will need typecase to discover precise type, location() not refined
   //@plugin  toFix 
   //@pluginPart is.L42.connected.withSafeOperators.location.Doc
-  class method Library #pluginUnresponsive(Library binaryRepr) binaryRepr
+ implements This1.This$ 
 
   method location(){
     libRes=(use This check location()
-      error This.#pluginUnresponsive(binaryRepr:void))
+      error This.#pluginUnresponsive(binaryRepr:{}))
     if (use Lib check instanceof(_this:libRes)
         error {/*interfacingWithJavaInstanceofNotWorking*/})
       (return Lib.#from(binaryRepr:libRes))

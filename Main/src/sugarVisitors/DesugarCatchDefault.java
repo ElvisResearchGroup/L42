@@ -33,6 +33,7 @@ public class DesugarCatchDefault extends CloneVisitor{
       return catch1.withT(t);
     }
     public Position getP() {return catch1.getP();}
+    public Catch withP(Position that) {return catch1.withP(that);}
   }
   Ast.Type lastReturn=null;
   public static ClassB of(ClassB s) {
