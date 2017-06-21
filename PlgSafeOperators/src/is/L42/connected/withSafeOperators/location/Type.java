@@ -43,7 +43,7 @@ public interface Type extends Location{
     }
   default Doc doc() {return new Doc(type().getDoc(),this);}
   default String toS() {return type().toString();}
-  default Mdf mdf() {return type().getMdf();}
+  default int mdfS() {return type().getMdf().ordinal();}
 
 
   static class Return extends Location.LocationImpl<ExpCore.ClassB.MethodWithType, Method> implements Type{

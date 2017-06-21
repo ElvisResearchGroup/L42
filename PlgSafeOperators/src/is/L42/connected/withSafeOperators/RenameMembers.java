@@ -10,7 +10,6 @@ import ast.Ast;
 import ast.ExpCore;
 import ast.Ast.Doc;
 import ast.Ast.MethodSelector;
-import ast.Ast.MethodSelectorX;
 import ast.Ast.Type;
 import ast.Ast.Path;
 import ast.Ast.Type;

@@ -105,8 +105,8 @@ public static ClassB.NestedClass encapsulateIn(List<Ast.C> cBar,ClassB elem,Doc 
     if(cBar2.isEmpty()){return new ClassB.NestedClass(doc,cBar.get(0),elem,elem.getP());}
     List<Member> ms=new ArrayList<>();
     ms.add(encapsulateIn(cBar2,elem,doc));
-    ClassB cb= ClassB.membersClass(ms,Position.noInfo,elem.getPhase());
-    return new ClassB.NestedClass(Doc.empty(),cBar.get(0),cb,null);
+    ClassB cb= ClassB.membersClass(ms,elem.getP(),elem.getPhase());
+    return new ClassB.NestedClass(Doc.empty(),cBar.get(0),cb,elem.getP());
   }
 public static Path originDecOf(Program p,MethodSelector ms,ClassB cb/*normalized*/){
   assert cb.getPhase().subtypeEq(Phase.Norm);

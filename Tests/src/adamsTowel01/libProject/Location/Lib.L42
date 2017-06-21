@@ -15,12 +15,12 @@
     List[with nc in this.nesteds().vals() (
       with nci in nc.allNesteds().vals() (use[nci])
     )]
-  method This nested(Path path) exception NotAvailable (
-    with ni in this.root().allNested().vals() (
+  method This nested(Path path) exception NotAvailable {
+    with ni in this.root().allNesteds().vals() (
       if ni.path()==path (return ni)
       )
     exception NotAvailable"Path "[path]"not present"
-    )
+    }
   method Bool has(Path path) (
     unused=this.nested(path:path)
     catch exception NotAvailable Bool.false()
@@ -29,14 +29,14 @@
         
   method
   Method.List methods()
-    Method.List[with i in 0Size.vals(upTo:this.methodsSize()) (use[this.method(i)])]
+    Method.List[with i in 0Size.vals(upTo:this.methodSize()) (use[this.method(i)])]
     
-  method Method method(Selector selector) exception NotAvailable (
-    with mi in this.methods() (
+  method Method method(Selector selector) exception NotAvailable {
+    with mi in this.methods().vals() (
       if mi.selector()==selector (return mi)
       )
     exception NotAvailable"Selector "[selector]"not present"
-    )
+    }
   method Bool has(Selector selector) (
     unused=this.method(selector:selector)
     catch exception NotAvailable Bool.false()
@@ -47,16 +47,16 @@
     Type.Implemented.List[with i in 0Size.vals(upTo:this.implementedSize()) (use[this.implemented(i)])]
     
   method Bool implements(class Any clazz){
-    if Type.RefTo.Binded.equalsClassObj(Any, and:clazz) (
-      return Bool.True()
+    if Type.$_RefTo.Binded.equalsClassObj(Any, and:clazz) (
+      return Bool.true()
       ) 
      with ti in this.implementeds().vals() (
        with ri=ti.refTo() (
-         on Type.RefTo.Binded (
+         on Type.$_RefTo.Binded (
            ci=ri.referredClassObj()
-           if Type.RefTo.Binded.equalsClassObj(ci, and:clazz) (
+           if Type.$_RefTo.Binded.equalsClassObj(ci, and:clazz) (
             //no need of supertypes since normalized classes has transitive implements already
-            return Bool.True()
+            return Bool.true()
             )
            )
          )
@@ -66,7 +66,7 @@
   method Bool implements(Path path) {
      with ti in this.implementeds().vals() (
        with ri=ti.refTo() (
-         on Type.RefTo.Lib (
+         on Type.$_RefTo.Lib (
            libi=ri.referredLib()
            if path==libi.path() (
              return Bool.true()
@@ -88,7 +88,7 @@
   method 
   Type.Implemented implemented(Size that)
   method
-  Size implementedsSize()
+  Size implementedSize()
   method
   Bool isBinded()
   method
@@ -108,7 +108,7 @@
   method
   This navigate(Path that)
   method
-  Bool nested(Size that)
+  This nested(Size that)
   method //empty doc if it is root
   Doc nestedDoc()
   method 

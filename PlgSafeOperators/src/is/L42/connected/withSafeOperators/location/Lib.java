@@ -77,7 +77,7 @@ public class Lib extends Location.LocationImpl<ExpCore.ClassB,Lib>{
   }}
   return res;
   }};
-  public int implementedsSize(){return implementedsC.get().size();}
+  public int implementedSize(){return implementedsC.get().size();}
   public Type.Implemented implemented(int that) throws NotAvailable{return Location.listAccess(implementedsC.get(), that);}
 
   @Override public Doc doc(){return new Doc(inner.getDoc1(),this);}

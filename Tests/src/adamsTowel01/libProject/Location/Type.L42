@@ -1,7 +1,12 @@
 { interface
-    This$:{interface implements This2.This$}
-    method Doc doc()
-    RefTo:UnsafeRefactor.This$er<><{interface implements Concept.Base
+    This$:{interface implements This2.This$
+      method RefTo refTo()
+      method Size mdfS()//cmpImm for exception/implemented
+      method Mdf mdf()    
+      }
+    method Doc doc()//to break a circle, ok since we do not refine nor implement it
+    RefTo:{interface}//to break a circle, we merge $_RefTo later
+    $_RefTo:UnsafeRefactor.This$er<><{interface implements Concept.Base
       This$:{interface}
       //toS is the full path with Thisn.
       Lib:PUnresponsive<><UnsafeRefactor.MiniData<><{
@@ -9,7 +14,7 @@
         //@pluginPart is.L42.connected.withSafeOperators.location.TypeRefTo$Lib
         implements This1.This$
         This$:UnsafeRefactor.MiniData.thisLib()
-        method Lib referredLib()
+        method This3.Lib referredLib()
         }
       Unavailable:PUnresponsive<><UnsafeRefactor.MiniData<><{ 
         //@plugin  toFix 
@@ -58,15 +63,29 @@
         //or we may want to preserve @P where we removed the P
         //also, if an (nested) Unavailable is resolved not existing..        
         }
+      } 
+    DispatchRefTo:{
+      class method RefTo(Library that){
+        use $_RefTo.Lib check instanceof(_this:that)
+          return $_RefTo.Lib.#from(binaryRepr:that)
+        use $_RefTo.Unavailable check instanceof(_this:that)
+          return $_RefTo.Unavailable.#from(binaryRepr:that)
+        use $_RefTo.Binded check instanceof(_this:that)
+          return $_RefTo.Binded.#from(binaryRepr:that)
+        use $_RefTo.Missing check instanceof(_this:that)
+          return $_RefTo.Missing.#from(binaryRepr:that)
+        error that
+        }
       }
-    method RefTo refTo()
-    method Mdf mdf()//imm for exception/implemented    
     Return:PlgClass<><{
         //@plugin  toFix 
         //@pluginPart is.L42.connected.withSafeOperators.location.Type$Return
       implements This1.This$
       This$:UnsafeRefactor.MiniData.thisLib()
       refine method Method location()
+      method refTo()DispatchRefTo(use This check #refTo()
+        error This.#pluginUnresponsive(binaryRepr:S"".#binaryRepr()))
+      method mdf()Mdf(inner:this.mdfS())
       }
     Parameter:PlgClass<><{
         //@plugin  toFix 
@@ -76,6 +95,9 @@
       List:Collections.vector(of:This$)
 
       refine method Method location()
+      method refTo()DispatchRefTo(use This check #refTo()
+        error This.#pluginUnresponsive(binaryRepr:S"".#binaryRepr()))
+      method mdf()Mdf(inner:this.mdfS())
       method Size pos()//0 for this
       }
     Exception:PlgClass<><{
@@ -86,6 +108,10 @@
       List:Collections.vector(of:This$)
 
       refine method Method location()
+      method refTo()DispatchRefTo(use This check #refTo()
+        error This.#pluginUnresponsive(binaryRepr:S"".#binaryRepr()))
+      method mdf()Mdf(inner:this.mdfS())
+
       method Size pos()//should start from 1 or 0?
       }
     Implemented:PlgClass<><{
@@ -96,6 +122,10 @@
       List:Collections.vector(of:This$)
 
       refine method Lib location()
+      method refTo()DispatchRefTo(use This check #refTo()
+        error This.#pluginUnresponsive(binaryRepr:S"".#binaryRepr()))
+      method mdf()Mdf(inner:this.mdfS())
+
       method Size pos()//should start from 1 or 0?
       }    
     }

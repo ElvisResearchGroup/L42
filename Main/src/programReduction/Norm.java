@@ -23,17 +23,6 @@ import ast.Ast.MethodType;
 import ast.Ast.Type;
 public class Norm {
 
-  static Type nextT(Ast.Path p,MethodWithType mwt,Ast.MethodSelectorX msx){
-    String x=msx.getX();
-    if(x.isEmpty()){return mwt.getMt().getReturnType();}
-    if(x.equals("this")){
-      return new Type(mwt.getMt().getMdf(),p,mwt.getDoc());
-      }
-    int i=mwt.getMs().getNames().indexOf(x);
-    assert i!=-1:
-      mwt.getMs()+" but searched for "+ x+" in "+p;
-    return mwt.getMt().getTs().get(i);
-    }
   static ExpCore.ClassB.MethodWithType select(Ast.MethodSelector ms, List<ExpCore.ClassB.MethodWithType> list){
     for(MethodWithType mwt:list){if(mwt.getMs().equals(ms)){return mwt;}}
     return null;

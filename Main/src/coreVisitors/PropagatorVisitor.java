@@ -10,7 +10,6 @@ import tools.Map;
 import ast.ExpCore;
 import ast.Ast.Doc;
 import ast.Ast.MethodSelector;
-import ast.Ast.MethodSelectorX;
 import ast.Ast.MethodType;
 import ast.Ast.Type;
 import ast.Ast.Path;
@@ -43,13 +42,6 @@ public class PropagatorVisitor implements Visitor<Void>{
   protected void liftT(Type t){
     liftDoc(t.getDoc());
     liftP(t.getPath());
-    }
-          
-  protected void liftSXs(List<MethodSelectorX> selectors) {
-    for(MethodSelectorX msx: selectors){liftSX(msx);}
-    }
-  protected void liftSX(MethodSelectorX selector) {
-    liftMs(selector.getMs());
     }
   protected void liftMs(MethodSelector ms){}//Do nothing on purpose, can be overridden
 

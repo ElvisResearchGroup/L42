@@ -141,7 +141,10 @@ public class InjectionOnCore implements Visitor<ExpCore> {
     if(newStuff.getMs().isEmpty()){return cb;}
     List<Member> ms = new ArrayList<Member>(cb.getMs());
     ms.addAll(newStuff.getMs());
-    return cb.withMs(ms);
+    return cb
+      .withP(cb.getP().sum(newStuff.getP()))
+      .withDoc1(cb.getDoc1().sum(newStuff.getDoc1()))
+      .withMs(ms);
     }
   @Override public ExpCore visit(ContextId s){throw Assertions.codeNotReachable();}
 }

@@ -186,11 +186,11 @@ Phase |p |G |Tr|-catch throw Any x (e0 throw x) ~> catch throw Any x (e0' throw 
 (catch precise any)//notice, needs to be Any, it can't be 
 //(exception A() exception B() catch exception C x useXAsB(x) ) 
 //because even if A unrelated B, C; B <C    may be somewhere far away:: D extends A, C
-Phase |p |G |Tr|-catch return Any x e ~> catch return T1 x e':_<=T1 | Tr'
+Phase |p |G |Tr|-catch return Any x e ~> catch return noFwd(T1) x e':_<=T1 | Tr' //TODO: discuss with James about Any or T1 or noFwd(T1) here in the annotated result
   where
   not catchRethrow(catch return Any x e)
-  forall T' in Tr.T p |-T<=T1
-  Phase |p |G+x:T1|- e ~> e':_<=T1| Tr'
+  forall T' in Tr.T p |-T<=noFwd(T1)
+  Phase |p |G+x:noFwd(T1)|- e ~> e':_<=noFwd(T1)| Tr'
 
 ------------
 D| Tr |- ks ~> k's:Ts <= T | Tr'

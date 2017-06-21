@@ -10,15 +10,15 @@
     method Selector selector()
     method Type.Return returnType()
     
-    method Size parameterTypesSize()
+    method Size parameterTypeSize()
     method Type.Parameter parameterType(Size that)
     method
     Type.Parameter.List parameterTypes()
-      Type.Parameter.List[with i in 0Size.vals(upTo:this.parameterTypesSize()) (use[this.parameterType(i)])]
+      Type.Parameter.List[with i in 0Size.vals(upTo:this.parameterTypeSize()) (use[this.parameterType(i)])]
       
-    method Size exceptionsSize()
+    method Size exceptionSize()
     method Type.Exception exception(Size that)
     method
     Type.Exception.List exceptions()
-      Type.Exception.List[with i in 0Size.vals(upTo:this.exceptionsSize()) (use[this.exceptions(i)])]
+      Type.Exception.List[with i in 0Size.vals(upTo:this.exceptionSize()) (use[this.exception(i)])]
     }

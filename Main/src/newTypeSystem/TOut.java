@@ -163,7 +163,6 @@ default TErr toError() {throw new Error();}
 
 class TOkDs implements TOutDs{
   public TOkDs(Tr trAcc, List<Dec> ds, G g) {
-    assert trAcc!=null;
     this.trAcc = trAcc;
     this.ds = ds;
     this.g = g;

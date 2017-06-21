@@ -101,6 +101,7 @@ public class InjectionOnSugar implements Visitor<ast.Expression> {
     List<Expression.Catch> ks=new ArrayList<>();
     for( ast.ExpCore.Block.On on:list){
       Expression inner = lift(on.getInner());
+      assert on.getT().getMdf()!=Mdf.MutablePFwd && on.getT().getMdf()!=Mdf.ImmutablePFwd;
       ks.add(new Expression.Catch1(on.getP(),on.getKind(),on.getT(),on.getX(),inner));
     }
     return ks;

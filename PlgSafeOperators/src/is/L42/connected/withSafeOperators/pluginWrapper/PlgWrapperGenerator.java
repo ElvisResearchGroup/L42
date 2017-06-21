@@ -66,7 +66,7 @@ public class PlgWrapperGenerator {
   private static MCall templateUsingExc=(MCall) ((ClassB)parseAndDesugar(
     " {class method This m()\n"+
     " This.#from(binaryRepr:(\n"+
-    "   Library res=use This0 check m(_:This.#binaryRepr())\n"+
+    "   res=use This0 check m(_:This.#binaryRepr())\n"+
     "     error This.#pluginUnresponsive(binaryRepr:void)\n"+
     "   catch error Library x (\n"+
     "     This.#exceptionIf(binaryRepr:x)\n"+
@@ -233,7 +233,7 @@ private static UsingInfo usingConstructor(PlgInfo plgInfo, Constructor<?>[] jcs,
     ExpCore.Using u=(Using) b.getDecs().get(0).getInner();
     ExpCore.MCall p0=(MCall) u.getEs().get(0);//parameter expressions
     
-    //e#mcall.inner<-mwt.retType.path
+    //e#mcall.inner<-mwt.retType.path1
     e=e.withInner(ExpCore.EPath.wrap(mt.getReturnType().getPath()));
     //u=u.withS(ui.usingMs);
     List<ExpCore> ues=new ArrayList<>();
@@ -282,9 +282,10 @@ private static UsingInfo usingConstructor(PlgInfo plgInfo, Constructor<?>[] jcs,
       //k0 add more on need
       //ki.inner#mcall.inner<-Pi
       }
-    
+    boolean wrapRes=!mt.getReturnType().equals(Type.classAny) &&
+            !mt.getReturnType().equals(Type.immLibrary);    
     if (ui.isVoid){b=b.withDecs(Collections.singletonList(b.getDecs().get(0).withT(Optional.of(Type.immVoid))));}
-    if(!ui.isVoid && !mwt.getMt().getReturnType().equals(Type.immLibrary)){
+    if(!ui.isVoid && wrapRes){
       e=e.withEs(Collections.singletonList(b));
       mwt=mwt.withInner(e);
       }

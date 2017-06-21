@@ -135,38 +135,8 @@ public interface Ast {
   public String toString() {
    return mdf.name() + "[" + this.path.toString()+"]";
   }
-
-  /*public <T> T match(Function<Type, T> normType, Function<HistoricType, T> hType) {
-   return normType.apply(this);
-  }*/
  }
 
- @Value
- @Wither
- public class MethodSelectorX {
-  MethodSelector ms;
-  String x;
- }
-
- /*@Value
- @Wither
- public class HistoricType implements Type {
-  Path path;
-  List<MethodSelectorX> selectors;
-  Doc doc;
-  public <T> T match(Function<Type, T> normType, Function<HistoricType, T> hType) {
-   return hType.apply(this);
-  }
- }*/
-
- /*@Value
- public class FreeType implements Type {
-  public <T> T match(Function<Type, T> normType, Function<HistoricType, T> hType) {
-   throw tools.Assertions.codeNotReachable();
-  }
-  public Doc getDoc(){return Doc.empty();}
-  public Type withDoc(Doc doc){return this;}
- }*/
 
  @Value
  @Wither

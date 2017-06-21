@@ -116,31 +116,32 @@ static PathsPaths usedPathsECatchErrors(Program p, ExpCore e){
 //- usedPathsL(L, Cs1..Csn)=usedInnerL(L(Cs1),Cs1) U ... U usedInnerL(L(Csn),Csn)
   static private Paths usedPathsL(Program pForError,ClassB l, List<List<Ast.C>> css,Phase phase0) {
     Paths result=Paths.empty();
-    for(List<Ast.C> csi : css){
-      assert !csi.isEmpty();
-      ClassB li;try{li=l.getClassB(csi);}
-      catch(ErrorMessage.PathMetaOrNonExistant pne){
-        /*Position p=FindPathUsage._locate(pForError,l,Path.outer(1,
-          csi));*/
-        throw pne.withListOfNodeNames(csi).withCb(l);//.withWherePathWasWritten(p);
-        }
-      ClassB liTop=li;
-      if (csi.size()!=0){liTop=l.getClassB(Collections.singletonList(csi.get(0)));}
-      assert IsCompiled.of(liTop);
-      //checked after for newPaths: when the offending value is produced, so we have more context for error message
-      //  throw new ErrorMessage.PathMetaOrNonExistant(true, Collections.singletonList(csi.get(0)), l, null,null);
-      
-      Paths newPaths=usedInnerL(li,csi,phase0);
-      try{newPaths.checkAllDefined(pForError);}
-      catch(ErrorMessage.PathMetaOrNonExistant pne){
-        Position p=FindPathUsage._locate(pForError,li,Path.outer(csi.size()+1/*TODO we need to fix this crap for real*/,
-                pne.getListOfNodeNames()));
-        throw pne.withWherePathWasWritten(p);
-        }
-      result=result.union(newPaths);
-      }
+    for(List<Ast.C> csi : css){result=result.union(usedPathLOnCsi(pForError,l,csi,phase0));}
     return result;
     }
+  static private Paths usedPathLOnCsi(Program pForError,ClassB l,List<Ast.C> csi,Phase phase0){
+  assert !csi.isEmpty();
+  ClassB li;try{li=l.getClassB(csi);}
+  catch(ErrorMessage.PathMetaOrNonExistant pne){
+    /*Position p=FindPathUsage._locate(pForError,l,Path.outer(1,
+      csi));*/
+    throw pne.withListOfNodeNames(csi).withCb(l);//.withWherePathWasWritten(p);
+    }
+  ClassB liTop=li;
+  if (csi.size()!=0){liTop=l.getClassB(Collections.singletonList(csi.get(0)));}
+  assert IsCompiled.of(liTop);
+  //checked after for newPaths: when the offending value is produced, so we have more context for error message
+  //  throw new ErrorMessage.PathMetaOrNonExistant(true, Collections.singletonList(csi.get(0)), l, null,null);
+  
+  Paths newPaths=usedInnerL(li,csi,phase0);
+  try{newPaths.checkAllDefined(pForError);}
+  catch(ErrorMessage.PathMetaOrNonExistant pne){
+    Position p=FindPathUsage._locate(pForError,li,Path.outer(csi.size()+1/*TODO we need to fix this crap for real*/,
+            pne.getListOfNodeNames()));
+    throw pne.withWherePathWasWritten(p);
+    }
+  return newPaths;
+  }
   
 //- usedInnerL(LC,Cs)=paths.prefix(Cs)
   static private Paths usedInnerL(ClassB lc, List<Ast.C> cs,Phase phase0) {

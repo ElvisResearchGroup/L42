@@ -11,26 +11,34 @@ Location:{
 */
 
 NotAvailable:Message.$<><{implements Guard}
-  
-//note: "class" is not a good name for an enum elem. Thus we use uppercase down
-//Mdf:Enumeration"imm, mut, read, lent, capsule, fwdImm, fwdMut"
-Mdf:Enum<><{class method Strings names()Strings[S"Immutable";S"Mutable";S"Read";S"Lent";S"Capsule";S"Class";S"FwdImmuable";S"FwdMutable"]
-  class method This _Immutable() This(inner:0Size)
-  method Bool isImmutable() this.inner()==0Size
-  class method This _Mutable() This(inner:1Size)
-  method Bool isMutable() this.inner()==1Size
-  class method This _Read() This(inner:2Size)
-  method Bool isRead() this.inner()==2Size
-  class method This _Lent() This(inner:3Size)
-  method Bool isLent() this.inner()==3Size
-  class method This _Capsule() This(inner:4Size)
-  method Bool isCapsule() this.inner()==4Size
-  class method This _Class() This(inner:5Size)
-  method Bool isClass() this.inner()==5Size
-  class method This _FwdImmutable() This(inner:6Size)
-  method Bool isFwdImmutable() this.inner()==6Size
-  class method This _FwdMutable() This(inner:7Size)
-  method Bool isFwdMutable() this.inner()==7Size 
+
+//note: "class" is not a good name for an enum elem.
+Mdf:Enum<><{class method Strings names()Strings[
+    S"cmpImm";
+    S"cmpMut";
+    S"cmpRead";
+    S"cmpLent";
+    S"cmpCapsule";
+    S"cmpClass";
+    S"fwdImm";
+    S"fwdMut";
+    ]
+  class method This cmpImm() This(inner:0Size)
+  method Bool isCmpImm() this.inner()==0Size
+  class method This cmpMut() This(inner:1Size)
+  method Bool isCmpMut() this.inner()==1Size
+  class method This cmpRead() This(inner:2Size)
+  method Bool isCmpRead() this.inner()==2Size
+  class method This cmpLent() This(inner:3Size)
+  method Bool isCmpLent() this.inner()==3Size
+  class method This cmpCapsule() This(inner:4Size)
+  method Bool isCmpCapsule() this.inner()==4Size
+  class method This cmpClass() This(inner:5Size)
+  method Bool isCmpClass() this.inner()==5Size
+  class method This fwdImm() This(inner:6Size)
+  method Bool isFwdImm() this.inner()==6Size
+  class method This fwdMut() This(inner:7Size)
+  method Bool isFwdMut() this.inner()==7Size 
   }
 
 //###1 Origin

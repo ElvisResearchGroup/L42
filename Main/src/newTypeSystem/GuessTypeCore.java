@@ -11,7 +11,6 @@ import ast.Ast;
 import ast.ExpCore;
 import ast.Ast.Doc;
 import ast.Ast.Mdf;
-import ast.Ast.MethodSelectorX;
 import ast.Ast.Type;
 import ast.Ast.Path;
 import ast.Ast.Type;
@@ -91,24 +90,25 @@ public Type visit(MCall s) {
   if(former==null){return null;}
   Path path=former.getPath();
   assert path!=null;
-  List<MethodSelectorX> msl=new ArrayList<>();
-  MethodSelectorX msx=new MethodSelectorX(s.getS(), "");
-  msl.add(msx); 
-  MethodWithType meth = (MethodWithType)p.extractClassB(path)._getMember(s.getS());
+  if (!path.isCore()){return null;} 
+  ClassB l=p.extractClassB(path);
+  MethodWithType meth = (MethodWithType)l._getMember(s.getS());
   if(meth==null){return null;}
   return (Type) From.fromT(meth.getMt().getReturnType(),path);
   
 }
 
-public static List<Dec> guessedDs(Program p, G in,List<Dec> toGuess){
+public static TOutDs guessedDs(Program p, TIn in,List<Dec> toGuess){
 List<Dec> res=new ArrayList<>();//G'
 for(Dec di:toGuess){
   if(di.getT().isPresent()){res.add(di);continue;}
   Type nti = _guessDecType(p,in, di);
-  assert nti!=null;
+  if (nti==null){
+    return new TErr(in.withE(di.getInner(), Path.Any().toImmNT()),"",null,ErrorKind.SelectorNotFound);
+    }
   res.add(di.withT(Optional.of(nti))); 
   }
-return res;
+return new TOkDs(null,res,null);
 }
 public static Type _guessDecType(Program p,G in, Dec di) {
   if(di.getT().isPresent()){return di.getT().get();}

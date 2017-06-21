@@ -9,7 +9,6 @@ import java.util.Optional;
 import tools.Assertions;
 import tools.Map;
 import ast.Ast;
-import ast.Ast.MethodSelectorX;
 import ast.ExpCore;
 import ast.Ast.MethodSelector;
 import ast.Ast.Type;

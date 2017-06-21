@@ -29,17 +29,6 @@ public class CloneVisitor implements Visitor<ExpCore>{
   protected Type liftT(Type t){
     return new Type(t.getMdf(),liftP(t.getPath()),liftDoc(t.getDoc()));
     }
-  protected List<MethodSelectorX> liftSXs(List<MethodSelectorX> selectors) {
-    return Map.of(this::liftSX,selectors);
-  }
-  protected MethodSelectorX liftSX(MethodSelectorX selector) {
-    MethodSelector ms1=selector.getMs();
-    MethodSelector ms2=liftMs(ms1);
-    if(selector.getX().isEmpty() || selector.getX().equals("this")){return selector.withMs(ms2);}
-    int pos=ms1.getNames().indexOf(selector.getX());
-    assert pos!=-1:selector;
-    return selector.withMs(ms2).withX(ms2.getNames().get(pos));
-    }
   protected MethodSelector liftMs(MethodSelector ms){return ms;}
 
   protected ExpCore.Block.On liftO(ExpCore.Block.On on){

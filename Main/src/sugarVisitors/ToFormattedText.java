@@ -17,7 +17,6 @@ import ast.Ast.ConcreteHeader;
 import ast.Ast.Doc;
 import ast.Ast.FieldDec;
 import ast.Ast.MethodSelector;
-import ast.Ast.MethodSelectorX;
 import ast.Ast.Parameters;
 import ast.Ast.Path;
 import ast.Ast.Position;

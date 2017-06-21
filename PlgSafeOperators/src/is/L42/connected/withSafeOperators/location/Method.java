@@ -36,7 +36,7 @@ public class Method extends Location.LocationImpl<ClassB.MethodWithType, Lib>{
     return res;
     }};
  
-  public int parameterTypesSize(){return parametersC.get().size();}
+  public int parameterTypeSize(){return parametersC.get().size();}
   public Type.Parameter parameterType(int that) throws NotAvailable{return Location.listAccess(parametersC.get(), that);}
   
 
@@ -48,7 +48,7 @@ public class Method extends Location.LocationImpl<ClassB.MethodWithType, Lib>{
   }}
   return res;
   }};
-  public int exceptionsSize(){return parametersC.get().size();}
+  public int exceptionSize(){return parametersC.get().size();}
   public Type.Exception exception(int that) throws NotAvailable{return Location.listAccess(exceptionsC.get(), that);}
   @Override public boolean equalequal(Object that) {
     return this.equals(that);

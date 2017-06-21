@@ -1,6 +1,19 @@
 {reuse L42.is/AdamTowel01
-
-Main:{
+/*
+Here we document and test The introspection/location library for 42
+This library is mostly a complex wrapper over plugin classes.
+The main different with respect of other introspection/reflection
+libraries is that we represent the code as is wrote *where* is wrote.
+That is, an occurence of a type and the class of such type are
+different objects: indeed the occurence of a type is wrote
+in a certain place in the source, and the corresponding class
+is declared in a completly different place.
+---------------
+Location.Origin
+---------------
+Origin is a Data class representing a point in the sourcecode. It fields are self explanatory
+*/
+OriginTest:{
   o=Location.Origin(fileName:S"foo",
     lineStart:0Size, lineEnd:10Size,
     columnStart:1Size, columnEnd:10Size
@@ -12,5 +25,33 @@ Main:{
  "lines 0 to 10; comums 1 to 10!!")
   return ExitCode.normal()
   }
+/*
+--------------------------------
+Location
+--------------------------------
+Location is the general interface of all things that have origins.
+Location.Lib, Location.Method, Location.Type and Location.Doc
+implements Location.
+All locations are Data classes and offer
+origins,location,doc
+----
+origins(): a list of Origin of this Location.
+An element can have many origins since metaprogramming can merge
+things from multiple sources.
+----
+location()
+The location object containing this Location
+----
+doc()
+The documentation associated with this Location
+
+--------------------------------
+Lib
+--------------------------------
+Lib reify library literals.
+To create a Lib object there are two main ways:
+
+
+*/
 
 }

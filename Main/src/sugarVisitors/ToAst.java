@@ -22,7 +22,6 @@ import ast.Ast.Header;
 import ast.Ast.InterfaceHeader;
 import ast.Ast.Mdf;
 import ast.Ast.MethodSelector;
-import ast.Ast.MethodSelectorX;
 import ast.Ast.Type;
 import ast.Expression.With.On;
 import auxiliaryGrammar.Functions;
@@ -290,21 +289,7 @@ public class ToAst extends AbstractVisitor<Expression>{
       if (tt.Ph()==null){return nt;}
       return Functions.toPh(nt);
     }
-    if(t.historicalT()!=null){
-       HistoricalTContext tt = t.historicalT();
-       Doc d=parseDoc(tt.docsOpt());
-       Path p=ast.Ast.Path.sugarParse(nameU(tt.Path()));
-       List<MethodSelectorX> mss=new ArrayList<MethodSelectorX>();
-       for(HistoricalSeqContext ms:tt.historicalSeq()){
-         mss.add(parseMethSelectorX(ms));
-       }
-       throw Assertions.codeNotReachable();//return new ast.Ast.HistoricType(p,mss,d);
-    }
     throw Assertions.codeNotReachable();
-  }
-  private MethodSelectorX parseMethSelectorX(HistoricalSeqContext ms) {
-    String x="";if(ms.x()!=null) x=nameL(ms.x());
-    return new MethodSelectorX(parseMethSelector(ms.methSelector()),x);
   }
   @Override public Expression visitNudeE(NudeEContext ctx) {
       return ctx.eTop().accept(this);}

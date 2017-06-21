@@ -22,7 +22,6 @@ import ast.Ast.FieldDec;
 import ast.Ast.Header;
 import ast.Ast.Mdf;
 import ast.Ast.MethodSelector;
-import ast.Ast.MethodSelectorX;
 import ast.Ast.MethodType;
 import ast.Ast.Type;
 import ast.Ast.Op;
@@ -645,16 +644,9 @@ public class Desugar extends CloneVisitor{
     mi=mi.withS(mi.getS().withName(mName));
     for(String name:mi.getS().getNames()){
       usedVars.add(name);
-      List<Ast.MethodSelectorX> msxsi=new ArrayList<>();
-      msxsi.add(new Ast.MethodSelectorX(mi.getS(),name));
       varEnv.put(name,null);
     }
     usedVars.add("this");
-    List<Ast.MethodSelectorX> msxsi=new ArrayList<>();
-    msxsi.add(new Ast.MethodSelectorX(mi.getS(),"this"));
-    //varEnv.put("this",new Ast.HistoricType(Path.outer(0),msxsi,Doc.empty()));
-    List<Ast.MethodSelectorX> msxs=new ArrayList<>();
-    msxs.add(new Ast.MethodSelectorX(mi.getS(),""));
     usedVars.addAll(CollectDeclaredVars.of(mi.getInner()));
     final MethodImplemented mi2=mi;//final restrictions
     return withExpectedType(null,

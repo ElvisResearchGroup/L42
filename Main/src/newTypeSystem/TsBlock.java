@@ -115,7 +115,9 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
     int i=splitDs(in,_ds);
     assert i+1<=_ds.size();
     List<Dec> ds=_ds.subList(i+1,_ds.size());
-    List<Dec> ds0n=GuessTypeCore.guessedDs(in.p,in,_ds.subList(0,i+1));//G'
+    TOutDs guessOut=GuessTypeCore.guessedDs(in.p,in,_ds.subList(0,i+1));//G'
+    if(!guessOut.isOk()){return guessOut;}
+    List<Dec> ds0n=guessOut.toOkDs().ds;
     List<String> fve0n=new ArrayList<>();
     for(Dec di:_ds.subList(0,i+1)){
       fve0n.addAll(FreeVariables.of(di.getInner()));
@@ -208,6 +210,7 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
     if(mdf1==null){
     return new TErr(in,"Contrasting mdf expected for return",null,ErrorKind.NoMostGeneralMdf);
     }
+    assert mdf1!=Mdf.MutablePFwd && mdf1!=Mdf.ImmutablePFwd; 
     Type T1 = k.getT().withMdf(mdf1);
     TOut _out=type(in.addG(k.getX(),false,T1).withE(k.getE(), in.expected));
     if(!_out.isOk()){return _out.toError();}
@@ -227,10 +230,11 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
     assert k.getKind()==SignalKind.Return;
     assert k.getT().equals(Path.Any().toImmNT());
     assert !TypeManipulation.catchRethrow(k);
-    TOut _out=type(in.addG(k.getX(),false,in.expected).withE(k.getE(), in.expected));
+    Type noFwdT1=TypeManipulation.noFwd(in.expected);
+    TOut _out=type(in.addG(k.getX(),false,noFwdT1).withE(k.getE(), noFwdT1));
     if(!_out.isOk()){return _out.toError();}
     TOk out=_out.toOk();
-    TOkK res=new TOkK(Tr.instance.trUnion(out),k.withE(out.annotated).withT(in.expected),out.computed);
+    TOkK res=new TOkK(Tr.instance.trUnion(out),k.withE(out.annotated).withT(noFwdT1),out.computed);
     return res;
     }
   default TOutK kTypeCatchAny(TIn in,Tr tr,On k){
