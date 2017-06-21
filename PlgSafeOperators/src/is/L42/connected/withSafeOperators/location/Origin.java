@@ -47,7 +47,7 @@ public class Origin {
     return "Origin:"+this.fileName+
             "\nlines " + lineStart +
             " to " + lineEnd +
-            "; comums " + columnStart +
+            "; colums " + columnStart +
             " to " + columnEnd;
     }
   String fileName;
