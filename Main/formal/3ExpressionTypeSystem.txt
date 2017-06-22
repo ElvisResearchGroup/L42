@@ -186,12 +186,11 @@ Phase |p |G |Tr|-catch throw Any x (e0 throw x) ~> catch throw Any x (e0' throw 
 (catch precise any)//notice, needs to be Any, it can't be 
 //(exception A() exception B() catch exception C x useXAsB(x) ) 
 //because even if A unrelated B, C; B <C    may be somewhere far away:: D extends A, C
-Phase |p |G |Tr|-catch return Any x e ~> catch return T1.P x e':_<=T1 | Tr' //TODO: update T1.P in code
+Phase |p |G |Tr|-catch return Any x e ~> catch return T1.P x e':T2<=T1 | Tr' //TODO: update T1.P in code
   where
   not catchRethrow(catch return Any x e)
   forall T' in Tr.T p |-T<=T1
-  Phase |p |G+x:T1|- e ~> e':_<=T1| Tr'
-
+  Phase| p| G| Tr |- catch throw T1.P x e ~> catch throw T1.P x e' :T2 <= T1 | Tr'
 ------------
 D| Tr |- ks ~> k's:Ts <= T | Tr'
   just types a set of catches.
