@@ -53,30 +53,66 @@ To create a Lib object there are two main ways:
 Lib({method Void hi()})//argument of type Library
 Lib(classAny:Void)//argument of type class Any
 Lib offers many methods, we will examin them now:
-
+--------------------------
+Accessing nested classes:
 method Lib.List nesteds() //direct nesteds
 method Lib.List allNesteds()//nesteds at any levels
 method Bool has(Path path) //check and retrive a nested with a Path
 method Lib nested(Path path) exception Location.NotAvailable
 */
 LibNestedTest:{
-  lib1=Location.Lib({method Void hi()})
-  Debug.test(lib1.nesteds().size() expected:0Size)
-  Debug.test(lib1.allNesteds().size() expected:0Size)
+  Location.Lib lib1=Location.Lib({method Void hi()})
+  Debug.test(lib1.nesteds().size() expected:0Size)//we have no nesteds
+  Debug.test(lib1.allNesteds().size() expected:1Size)//there is at least This
+  lib2=Location.Lib({A:{A1:{}} B:{B1:{} B2:{}} C:{C1:{} C2:{} C3:{}}})
+  Location.Lib.List libs=lib2.nesteds()
+  Debug.test(libs.val(0\).nesteds().size() expected:1Size)
+  Debug.test(libs.val(1\).nesteds().size() expected:2Size)
+  Debug.test(libs.val(2\).nesteds().size() expected:3Size)
+  Debug.test(lib2.allNesteds().size() expected:10Size)
+  Debug.test(lib2.has(path:\"A") expected:Bool.true())
+  Debug.test(lib2.has(path:\"A1") expected:Bool.false())
+  Debug.test(lib2.nested(path:\"B").has(path:\"B2") expected:Bool.true())
   return ExitCode.normal()
   }
-
 /*
+--------------------------
+Accessing methods:
+  method Method.List methods()
+  method Method method(Selector selector) exception NotAvailable
+  method Bool has(Selector selector)
+*/
+LibMethodsTest:{
+  Debug.test(Location.Lib({}).methods().size()
+    expected:0Size)
+  Debug.test(Location.Lib({var Any field}).methods().size()
+    expected:3Size)//getter, setter and exposer
+  Debug.test(Location.Lib({Any field}).methods().size()
+    expected:2Size)//getter and exposer
+  Debug.test(Location.Lib({Any field}).has(selector:\"field()") 
+    expected:Bool.true())
+  Debug.test(Location.Lib({Any field}).has(selector:\"foo()") 
+    expected:Bool.false())
+  return ExitCode.normal()
+  }
+/*
+--------------------------
+Accessing implements:
 
-
-  Method.List methods()
-  method Method method(Selector selector) exception NotAvailable {
-  method Bool has(Selector selector) (
   Type.Implemented.List implementeds()
-  method Bool implements(class Any clazz){
-  method Bool implements(Path path) {
-  This (class Any classAny)
-  This (Library that)
+  method Bool implements(class Any clazz)
+  method Bool implements(Path path)
+*/
+LibImplementsTest:{
+  a=Location.Lib({implements A, Concept.ToS A:{interface}})
+  Debug.test(a.implements().size()
+    expected:2Size)
+  b=Location.Lib({implements A, Concept.Base A:{interface} })
+  Debug.test(b.implements()
+    expected:S"")//normalization!
+  return ExitCode.normal()
+  }
+/*
   Doc doc()
   Bool isBinded()
   Bool isCloseState()

@@ -158,7 +158,7 @@ _______
  Ms'=methods(p,This0)\Ms.mss, [methods(p,This0)(M.ms)| M in Ms],[C:e| C:e in Ms]
  //TODO: former line now have well defined order (for the 2nd and 3rd part). Fix the order in the code 
 
--norm(p,refine? mh e?)= refine? resolve(p,mh) e'?
+-norm(p,refine? mh e?)= refine? mh e'?
   where e'?=empty if e?=empty
   otherwise e'?= e where we replace all Li inside e?
     with norm(p,Li) 

@@ -18,6 +18,7 @@ import ast.ExpCore.Signal;
 import ast.ExpCore.Using;
 import ast.ExpCore.X;
 import ast.ExpCore._void;
+import platformSpecific.fakeInternet.PluginWithPart.UsingInfo;
 import ast.ExpCore.UpdateVar;
 import tools.Assertions;
 
@@ -68,7 +69,10 @@ public interface TsOperations extends TypeSystem{
     if (s.getPath().isPrimitive()){     
       throw new ErrorMessage.InvalidURL("No plug-in url present for primitive path "+s.getPath(),null);     
       }       
-    List<Type> lt = platformSpecific.fakeInternet.OnLineCode.pluginType(in.p, s);      
+    List<Type> lt;try{lt = platformSpecific.fakeInternet.OnLineCode.pluginType(in.p, s);}
+    catch(UsingInfo.NonExistantMethod nem){
+      return new TErr(in,"PluginSelector missing",null,ErrorKind.SelectorNotFound);
+      }
     assert s.getEs().size()==lt.size()-1;
     ErrorKind k=TypeSystem.subtype(in.p,lt.get(0),in.expected);
     if(k!=null){return new TErr(in,"",lt.get(0),k);}

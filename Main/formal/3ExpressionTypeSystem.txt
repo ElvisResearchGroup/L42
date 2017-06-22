@@ -138,7 +138,7 @@ Phase| p| G |- var?0 T?0  x0=e0 ..var?n T?n  xn=en, ds ~>
   dom(ds) disjoint FV(e0..en)
   for i in 0..n
     either T?i =empty and Ti=guessType(G,ei) 
-    or Ti=resolve(p,T?i)
+    or Ti=T?i
   G'=x0:T0..xn:Tn
   G1= G[fwd(onlyMutOrImm(G')[with vars=empty])] //capturing error for next line if not onlyMutOrImm(G') is used and is errored by next line 
   for i in 0..n Phase| p| G1|-ei~>e'i: T'i <= fwd% Ti | Tri
@@ -163,16 +163,16 @@ D |Tr |- k ~> k':T <=T' |Tr'
   Tr' contains only the throws from the catch k itself.
   
 (catch)
-   // T0 is the declared caught type, which contributes only a path
+   // P0 is the declared caught path
    // T1 is the actual caught type, based on the types which can be thrown in context
    // T2 is the type of the expression, based on x being bound T1
-Phase| p| G| Tr' |- catch throw T0 x e ~> catch throw T1.P x e' :T2 <= T | Tr
+Phase| p| G| Tr' |- catch throw P0 x e ~> catch throw P0 x e' :T2 <= T | Tr
   where
   mdf1 = mostGeneralMdf(throw,Tr') //set of Mdfs admits no single most general mdf, or mdfs is empty
   //inconsistent set of thrown things, which do not share a most
   //general modifier [list of line numbers of the throws]
-  T1 = mdf1 resolve (p, T0).P //resolve can fail
-  not catchRethrow(catch throw T1 x e)
+  T1 = mdf1 P0 
+  not catchRethrow(catch throw P0 x e)
   Phase| p| G[x:T1]|- e ~> e' : T2 <= T | Tr
 
 (catch and rethrow any)// could be sugared as "on throw doAndPropagate e"  
@@ -186,11 +186,11 @@ Phase |p |G |Tr|-catch throw Any x (e0 throw x) ~> catch throw Any x (e0' throw 
 (catch precise any)//notice, needs to be Any, it can't be 
 //(exception A() exception B() catch exception C x useXAsB(x) ) 
 //because even if A unrelated B, C; B <C    may be somewhere far away:: D extends A, C
-Phase |p |G |Tr|-catch return Any x e ~> catch return noFwd(T1) x e':_<=T1 | Tr' //TODO: discuss with James about Any or T1 or noFwd(T1) here in the annotated result
+Phase |p |G |Tr|-catch return Any x e ~> catch return T1.P x e':_<=T1 | Tr' //TODO: update T1.P in code
   where
   not catchRethrow(catch return Any x e)
-  forall T' in Tr.T p |-T<=noFwd(T1)
-  Phase |p |G+x:noFwd(T1)|- e ~> e':_<=noFwd(T1)| Tr'
+  forall T' in Tr.T p |-T<=T1
+  Phase |p |G+x:T1|- e ~> e':_<=T1| Tr'
 
 ------------
 D| Tr |- ks ~> k's:Ts <= T | Tr'

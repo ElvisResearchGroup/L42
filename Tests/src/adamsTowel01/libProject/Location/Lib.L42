@@ -15,12 +15,14 @@
     List[with nc in this.nesteds().vals() (
       with nci in nc.allNesteds().vals() (use[nci])
     )]
+  method class Path #default#nested(Void path) Path
   method This nested(Path path) exception NotAvailable {
     with ni in this.root().allNesteds().vals() (
-      if ni.path()==path (return ni)
+      if ni.path()==this.path()++path (return ni)
       )
     exception NotAvailable"Path "[path]"not present"
     }
+  method class Path #default#has(Void path) Path
   method Bool has(Path path) (
     unused=this.nested(path:path)
     catch exception NotAvailable Bool.false()
@@ -30,13 +32,15 @@
   method
   Method.List methods()
     Method.List[with i in 0Size.vals(upTo:this.methodSize()) (use[this.method(i)])]
-    
+
+  method class Selector #default#method(Void selector) Selector    
   method Method method(Selector selector) exception NotAvailable {
     with mi in this.methods().vals() (
       if mi.selector()==selector (return mi)
       )
     exception NotAvailable"Selector "[selector]"not present"
     }
+  method class Selector #default#has(Void selector) Selector
   method Bool has(Selector selector) (
     unused=this.method(selector:selector)
     catch exception NotAvailable Bool.false()

@@ -4,7 +4,7 @@
  implements This1.This$ 
 
   method location(){
-    libRes=(use This check location()
+    libRes=(use This check location(_this:this.#binaryRepr())
       error This.#pluginUnresponsive(binaryRepr:{}))
     use Lib check instanceof(_this:libRes)
       return Lib.#from(binaryRepr:libRes)

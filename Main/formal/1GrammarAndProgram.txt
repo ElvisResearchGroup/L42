@@ -1,11 +1,12 @@
 L42 source has a rich syntax (not shown here), that is desugared into a core syntax.
-The library literal L is the starting point for a set of transformations:
-A core Library literal L has the most liberal shape:
+The library literal L is the starting point for a set of transformations.
+Each transformation produces terms of a more restrictive grammar:
+A core Library literal L has the least restrictive grammar:
   -transitively implemented interfaces can be omitted
   -method types for implemented methods can be omitted
   -nested classes and method declaration can be mixed together
   -nested classes can be of form "C:e", where "e" represents
-   the computation needed to obtain a more final form for "C".
+   the computation needed to obtain an explicit form for "C".
 In addition, a compiled Library literal LC requires all the nested classes
   *everywhere* in its subtree to be of form C:LC 
 In addition, in a normalized Library literal LC
@@ -16,7 +17,7 @@ In addition, in a normalized Library literal LC
   -Normalized library literals are labeled (at least)"Norm" 
 In addition, in a typed Library literal, 
   -some type annotations are added, to simplify the work of
-   translating 42 to other target languages.
+   translating 42 to target languages.
   -all L  *everywhere* in its subtree are typed.
   -Typed library literals are labeled (at least)"Typed" 
   
@@ -31,11 +32,11 @@ mdf::= imm|mut|lent|read|capsule|class | fwdImm | fwdMut | fwd%Imm | fwd%Mut
 Phase::=None|Norm|Typed|Coherent //TODO: add (fresh library)names that are put after norms//May be None should be renamed into "Desugared"
 ms::=m(xs) //method selector
 mh::= mdf method T m(T1 x1..Tn xn) exception Ps //mh.ms generates the corresponding ms  
-Ldom::=ms|C
+Ldom::=ms|Cs
 P::= Thisn.Cs | Any | Library | Void  //is pronounced "Path"
 T::= mdf P
-C::= <uppercaseIdentifier>n?
-m::=#?<lowercaseIdentifier>n?
+C::= <uppercaseIdentifier>n? //uppercase includes % and $
+m::=#?<lowercaseIdentifier>n? //lowercase includes _
 
 //we denote with m__n(xs) or C__n an ms or a C with unique number n,
 //m(xs) or C is then the name without the number,
@@ -49,7 +50,7 @@ L::={interface? implements Ps M1..Mn Phase}
 M::=refine? mh e?| ms e | C:e
 e::=L|void|x| P | chain.m[P]((x:e)s) 
   | throw[T1,T2] chain|loop e|(ds ks e[T]) | use P check m((x:e)s) e | x:=e
-k::=catch T x e
+k::=catch P x e
 d::=var? T x=e | var? x=chain
 chain::=x|P|chain.m( (x:e)s )|(ds chain)
 //TODO: update sugared language to require chain as meth receiver and thrown expressions
@@ -57,7 +58,7 @@ _______
 #define Compiled terms
 LC::={interface? implements Ps MC1..MCn Phase}  //library compiled
 MC::= mwt | ms eC |nc
-mwt::= refine? mh eC? //may still contains skeletal types
+mwt::= refine? mh eC?
 nc::= C:LC
 eC::= x|void|P|LC |throw[T1,T2] eC|loop eC|(dCs kCs eC[T])
  | eC.m[P]((x:eC)s)| use P check m((x:eC)s) eC | x:=eC
@@ -73,45 +74,47 @@ ctxC::=[]
  | eC.m( (x:eC)s x:ctxC, (x:e)s)
  | use P check m( (x:eC)s x:ctxC, (x:e)s) e 
  | use P check m((x:eC)s) ctxC 
- | throw ctxC | loop C | x:=ctxC
- | (ds var? T? x=ctxC dCs kCs eC[T])
- | (dCs ks catch T x ctxC kCs e[T])
+ | throw ctxC | loop ctxC | x:=ctxC
+ | (dCs var? T? x=ctxC ds ks e[T])
+ | (dCs kCs catch T x ctxC ks e[T])
  | (dCs kCs ctxC[T]) 
-.... // The compilation context, e=ctxC[L] selects an L where all of the former Ls are LC.
-     // The context does not enter into libraries
+// The compilation context, e=ctxC[L] selects an L where
+// all of the former Ls are LC.
+// The context does not enter into libraries
 ctxM::= C: ctxC |ms ctxC | refine? mh ctxC
 ctxL::= {interface? implements Ps Ms ctxM Ms' Phase}
 
 _______
-#define functional notation for L, ctxL and LC (over Ldom domain and Cs)
+#define functional notation for L, ctxL and LC (over the domain Ldom)
 
 _______
 #define eC' inside eC
 - eC' inside eC if eC=ctxC[eC']
 - P inside M holds iff P inside M.e 
  or M.mh= refine? T0 m(T1 x1..Tn xn) exception Ps
- and Ti= _ P or Ti= P::_ or P in Ps
+ and Ti= _ P or P in Ps
  
 
 -----------------------------------------------------------
 Part 2: Well formedness
 -----------------------------------------------------------
 
-* C__n,m__n: if for a given L and non-empty n,  C__n in dom(L) or m__n(xs) in dom(L),
-  then for any other L' in the project C'__n notin dom(L') and m'__n(xs') notin dom(L')
+* C__n,m__n: if for a given L and non-empty n,  C__n in dom(L) 
+  or m__n(xs) in dom(L), then for any other L' in the project
+  C'__n notin dom(L') and m'__n(xs') notin dom(L')
 
 * d: var T x=e is valid only if T not capsule or fwd.
 
 * ms: unique x in xs, 'this' notin xs
 
-* mh: mh.ms is well defined, Any notin Ps //Ps is thrown exceptions
+* mh: Any notin Ps //Ps is thrown exceptions
 
 * mdf: "%" not present in any term, will be used internally by the type system
 
 * C:e :  C not Any, Library, Void, This, Thisn
 
-* L: unique LDom in LDoms, Any notin Ps //Library and Void are not interfaces so you will get the normal error from implementing them
-    Exists 0 or 1 n such that exists m__n(xs) such that L(m__n(xs))=mwt, mwt.e? empty
+* L: unique LDom in dom(L), Any notin Ps //Library and Void are not interfaces so you will get the normal error from implementing them
+    Exists 0 or 1 n such that exists m__n(xs) where L(m__n(xs))=mwt, mwt.e? empty
     
 * L interface:
    methods in interfaces have no body
@@ -122,8 +125,6 @@ Part 2: Well formedness
   That is, all throw in a specific ks are the same (thus no "catch return T1 x1 e1 catch error T2 x2 e2")
 
 * use P check m((x:e)s) e: P not Any/Void/Library
-
-//Note: error/exception only imm is checked as type error, not well formedness
 
 //C:e :  FV(e)=empty subsumed by next check
 
@@ -156,14 +157,11 @@ cX(e)//count occurences of xs
     if Ti=capsule _ then
       xi at most once in ys,xs0
 _______
-#define max(xs,ys)= zs // as many repetition of each x as in the most repetitive of xs and ys
+#define max(xs1,..,xsn)= zs // as many repetition of each x as in the most repetitive of xs1..xsn
   max(empty,ys)=ys
   max (x xs,ys)=x max(xs,ys) if x not in ys
   max (x xs,ys)=x max(xs,removeOne(x,ys))
-  
-#define max(xs, xss) 
-  max(xs, empty)=xs
-  max(xs, xs0..xsn) = max(max(xs,xs0),xs1..xsn)
+  max(xs, xs0,..,xsn) = max(max(xs,xs0),xs1,..,xsn)
 
 
 

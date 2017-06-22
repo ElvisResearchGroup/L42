@@ -104,6 +104,7 @@ public class PluginWithPart implements PluginType{
     }
   }
   public static class UsingInfo{
+    public static class NonExistantMethod extends RuntimeException{}
     public boolean staticMethod=false;
     public List<String> names;// avoiding _this, just the parameter names, encoding java types
     public String jMethName=null;//can also be new for constructors and instanceof
@@ -152,8 +153,9 @@ public class PluginWithPart implements PluginType{
       usingMs=s.getS();
       plgInfo=new PlgInfo(p.extractClassB(s.getPath()).getDoc1());
       if(usingMs.nameToS().equals("instanceof")){
-        assert usingMs.getNames().size()==1 && usingMs.getNames().get(0).equals("_this");
-        //TODO: better error message?
+        if(!(usingMs.getNames().size()==1 && usingMs.getNames().get(0).equals("_this"))){
+          throw new NonExistantMethod();
+          }
         names=Collections.emptyList();
         jMethName="instanceof";
         isVoid=true;//expression executed if instanceOf is True
@@ -179,16 +181,21 @@ public class PluginWithPart implements PluginType{
         jts.add(0,PData.class);
         }
       if(jMethName.equals("new")){
-        assert this.staticMethod;
+        if(!this.staticMethod){throw new NonExistantMethod();}
         try{methOrKs=plgInfo.plgClass.getDeclaredConstructor(jts.toArray(new Class<?>[0]));}
         catch(NoSuchMethodException e){
-          throw new Error(e);
+          throw new NonExistantMethod();
           }
         }
       else{
         Method m;
         try{m=Class.forName(plgInfo.plgName).getMethod(jMethName, jts.toArray(new Class<?>[0]));}
-        catch(ClassNotFoundException|NoSuchMethodException|SecurityException e){throw Assertions.codeNotReachable();}
+        catch(ClassNotFoundException|NoSuchMethodException|SecurityException e){
+          throw new NonExistantMethod();
+          }
+        if(Modifier.isStatic(m.getModifiers())!=this.staticMethod){
+          throw new NonExistantMethod();
+          }
         isVoid=m.getReturnType().equals(Void.TYPE);
         methOrKs=m;
         }
@@ -225,7 +232,10 @@ public class PluginWithPart implements PluginType{
       }
     String opt="";
     if(ui.needPData){
-      opt="platformSpecific.javaTranslation.Resources.pData(),";
+      if(ui.ts.size()==0){
+        opt="platformSpecific.javaTranslation.Resources.pData() ";
+        }
+      else{opt="platformSpecific.javaTranslation.Resources.pData(),";}
       }
     StringBuilder res=new StringBuilder();
     //plgExecutor("`PathName`",p,(plgName)`parRec`,

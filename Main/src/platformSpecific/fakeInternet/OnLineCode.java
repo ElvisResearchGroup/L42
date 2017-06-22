@@ -78,13 +78,7 @@ public interface OnLineCode {
   public static List<Type> pluginType(Program p,ExpCore.Using u){
     return plugin(p,u).typeOf(p,u);
     }
-  //Unuseful variant, since program not availabe at desugaring time
-  public static List<Type> pluginType(Program p,Expression.Using u){
-    MethodSelector ms = MethodSelector.of(u.getName(),u.getPs().getXs());
-    ExpCore.Using uCore=new ExpCore.Using(u.getPath(),ms,Doc.empty(),Collections.emptyList(),new ExpCore._void()); 
-    return plugin(p,uCore).typeOf(p,uCore);
-    }
-}
+  }
 
 class OnLineCodeHelper{
   static PluginType getWellKnownPluginType(String url){

@@ -39,6 +39,7 @@ read method  mut This reverse() (
 read method Size size() this.inner().size()
 read method Bool isEmpty() this.size()==0Size
 read method  Elem val(Size that) Cast(this.inner().val(that) )
+read method class Size #default#val(Void that) Size
 read method  Elem left() Cast(this.inner().val(0Size) )
 read method  Elem right() Cast(this.inner().val(\size-1Size) )
 

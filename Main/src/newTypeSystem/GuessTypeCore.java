@@ -30,6 +30,7 @@ import ast.ExpCore.Block.On;
 import auxiliaryGrammar.Functions;
 import coreVisitors.From;
 import coreVisitors.Visitor;
+import platformSpecific.fakeInternet.PluginWithPart.UsingInfo;
 import programReduction.Program;
 import tools.Assertions;
 
@@ -77,8 +78,9 @@ public Type visit(WalkBy s) {
 }
 @Override
 public Type visit(Using s) {
-  List<Type> lt = platformSpecific.fakeInternet.OnLineCode.pluginType(p, s);      
-  return lt.get(0);
+  try{List<Type> lt = platformSpecific.fakeInternet.OnLineCode.pluginType(p, s);      
+  return lt.get(0);}
+  catch(UsingInfo.NonExistantMethod nem){return null;}
   }
 @Override
 public Type visit(Signal s) {

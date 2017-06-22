@@ -5275,6 +5275,8 @@ This3.Bool isEmpty() this.size().#equalequal(that:This3.Size.#from(builder:(
 read method 
 This0.Elem val(This3.Size that) This0.Cast.#apply(that:this.inner().val(that:that))
 read method 
+class This3.Size #default#val(Void that) This3.Size
+read method 
 This0.Elem left() This0.Cast.#apply(that:this.inner().val(that:This3.Size.#from(builder:(
   capsule This3.S.SBuilder b=This3.Size.#builder()
   Void unused=b.#0()
@@ -6853,6 +6855,8 @@ This1.Bool isEmpty() this.size().#equalequal(that:This1.Size.#from(builder:(
   Void unused=b.#0()
   b
   )))
+read method 
+class This1.Size #default#val(Void that) This1.Size
 read method 
 This1.S left() This0.Cast.#apply(that:this.inner().val(that:This1.Size.#from(builder:(
   capsule This1.S.SBuilder b=This1.Size.#builder()
@@ -10654,6 +10658,8 @@ This3.Bool isEmpty() this.size().#equalequal(that:This3.Size.#from(builder:(
   b
   )))
 read method 
+class This3.Size #default#val(Void that) This3.Size
+read method 
 This1.Top left() This0.Cast.#apply(that:this.inner().val(that:This3.Size.#from(builder:(
   capsule This3.S.SBuilder b=This3.Size.#builder()
   Void unused=b.#0()
@@ -13080,6 +13086,8 @@ This3.Bool isEmpty() this.size().#equalequal(that:This3.Size.#from(builder:(
   b
   )))
 read method 
+class This3.Size #default#val(Void that) This3.Size
+read method 
 This1 left() This0.Cast.#apply(that:this.inner().val(that:This3.Size.#from(builder:(
   capsule This3.S.SBuilder b=This3.Size.#builder()
   Void unused=b.#0()
@@ -14781,6 +14789,8 @@ This3.Bool isEmpty() this.size().#equalequal(that:This3.Size.#from(builder:(
   b
   )))
 read method 
+class This3.Size #default#val(Void that) This3.Size
+read method 
 This1 left() This0.Cast.#apply(that:this.inner().val(that:This3.Size.#from(builder:(
   capsule This3.S.SBuilder b=This3.Size.#builder()
   Void unused=b.#0()
@@ -16389,7 +16399,7 @@ This1.Origin.List origins() This1.Origin.List.#from(seqBuilder:(
 refine method 
 This1 location() (
   Void unused=(
-    Library libRes=use This0 check location() error This0.#pluginUnresponsive(binaryRepr: {})
+    Library libRes=use This0 check location(_this:this.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {})
     Void unused0=use This1.Lib check instanceof(_this:libRes) return This1.Lib.#from(binaryRepr:libRes)
     Void unused1=use This1.Method check instanceof(_this:libRes) return This1.Method.#from(binaryRepr:libRes)
     Void unused2=use This1.Type.Return check instanceof(_this:libRes) return This1.Type.Return.#from(binaryRepr:libRes)
@@ -16706,6 +16716,8 @@ This4.Bool isEmpty() this.size().#equalequal(that:This4.Size.#from(builder:(
   Void unused=b.#0()
   b
   )))
+read method 
+class This4.Size #default#val(Void that) This4.Size
 read method 
 This1 left() This0.Cast.#apply(that:this.inner().val(that:This4.Size.#from(builder:(
   capsule This4.S.SBuilder b=This4.Size.#builder()
@@ -18342,6 +18354,8 @@ This0.List allNesteds() This0.List.#from(seqBuilder:(
   b
   )))
 method 
+class This2.Path #default#nested(Void path) This2.Path
+method 
 This0 nested(This2.Path path) exception This1.NotAvailable (
   Void unused=(
     Void unused0=(
@@ -18362,7 +18376,7 @@ This0 nested(This2.Path path) exception This1.NotAvailable (
             )
           
           (
-            This2.Bool cond=ni.#inner().path().#equalequal(that:path)
+            This2.Bool cond=ni.#inner().path().#equalequal(that:this.path().#plusplus(that:path))
             (
               Void unused6=cond.#checkTrue()
               
@@ -18421,6 +18435,8 @@ CurlyBlock-Should be unreachable code
 */}
   )
 method 
+class This2.Path #default#has(Void path) This2.Path
+method 
 This2.Bool has(This2.Path path) (
   This0 unused=this.nested(path:path)
   
@@ -18465,6 +18481,8 @@ This1.Method.List methods() This1.Method.List.#from(seqBuilder:(
     )
   b
   ))
+method 
+class This2.Selector #default#method(Void selector) This2.Selector
 method 
 This1.Method method(This2.Selector selector) exception This1.NotAvailable (
   Void unused=(
@@ -18548,6 +18566,8 @@ This1.Method method(This2.Selector selector) exception This1.NotAvailable (
 CurlyBlock-Should be unreachable code
 */}
   )
+method 
+class This2.Selector #default#has(Void selector) This2.Selector
 method 
 This2.Bool has(This2.Selector selector) (
   This1.Method unused=this.method(selector:selector)
@@ -19029,6 +19049,8 @@ This3.Bool isEmpty() this.size().#equalequal(that:This3.Size.#from(builder:(
   Void unused=b.#0()
   b
   )))
+read method 
+class This3.Size #default#val(Void that) This3.Size
 read method 
 This1 left() This0.Cast.#apply(that:this.inner().val(that:This3.Size.#from(builder:(
   capsule This3.S.SBuilder b=This3.Size.#builder()
@@ -20841,6 +20863,8 @@ This3.Bool isEmpty() this.size().#equalequal(that:This3.Size.#from(builder:(
   Void unused=b.#0()
   b
   )))
+read method 
+class This3.Size #default#val(Void that) This3.Size
 read method 
 This1 left() This0.Cast.#apply(that:this.inner().val(that:This3.Size.#from(builder:(
   capsule This3.S.SBuilder b=This3.Size.#builder()
@@ -22841,7 +22865,7 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.locati
   res
   ))
 refine method 
-This1.RefTo refTo() This1.DispatchRefTo.#apply(that:use This0 check #refTo() error This0.#pluginUnresponsive(binaryRepr:This3.S.#from(builder:(
+This1.RefTo refTo() This1.DispatchRefTo.#apply(that:use This0 check #refTo(_this:this.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr:This3.S.#from(builder:(
   capsule This3.S.SBuilder b=This3.S.#builder()
   b
   )).#binaryRepr()))
@@ -23015,7 +23039,7 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.locati
   res
   ))
 refine method 
-This1.RefTo refTo() This1.DispatchRefTo.#apply(that:use This0 check #refTo() error This0.#pluginUnresponsive(binaryRepr:This3.S.#from(builder:(
+This1.RefTo refTo() This1.DispatchRefTo.#apply(that:use This0 check #refTo(_this:this.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr:This3.S.#from(builder:(
   capsule This3.S.SBuilder b=This3.S.#builder()
   b
   )).#binaryRepr()))
@@ -23180,6 +23204,8 @@ This4.Bool isEmpty() this.size().#equalequal(that:This4.Size.#from(builder:(
   Void unused=b.#0()
   b
   )))
+read method 
+class This4.Size #default#val(Void that) This4.Size
 read method 
 This1 left() This0.Cast.#apply(that:this.inner().val(that:This4.Size.#from(builder:(
   capsule This4.S.SBuilder b=This4.Size.#builder()
@@ -24725,7 +24751,7 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.locati
   res
   ))
 refine method 
-This1.RefTo refTo() This1.DispatchRefTo.#apply(that:use This0 check #refTo() error This0.#pluginUnresponsive(binaryRepr:This3.S.#from(builder:(
+This1.RefTo refTo() This1.DispatchRefTo.#apply(that:use This0 check #refTo(_this:this.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr:This3.S.#from(builder:(
   capsule This3.S.SBuilder b=This3.S.#builder()
   b
   )).#binaryRepr()))
@@ -24890,6 +24916,8 @@ This4.Bool isEmpty() this.size().#equalequal(that:This4.Size.#from(builder:(
   Void unused=b.#0()
   b
   )))
+read method 
+class This4.Size #default#val(Void that) This4.Size
 read method 
 This1 left() This0.Cast.#apply(that:this.inner().val(that:This4.Size.#from(builder:(
   capsule This4.S.SBuilder b=This4.Size.#builder()
@@ -26435,7 +26463,7 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.locati
   res
   ))
 refine method 
-This1.RefTo refTo() This1.DispatchRefTo.#apply(that:use This0 check #refTo() error This0.#pluginUnresponsive(binaryRepr:This3.S.#from(builder:(
+This1.RefTo refTo() This1.DispatchRefTo.#apply(that:use This0 check #refTo(_this:this.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr:This3.S.#from(builder:(
   capsule This3.S.SBuilder b=This3.S.#builder()
   b
   )).#binaryRepr()))
@@ -26600,6 +26628,8 @@ This4.Bool isEmpty() this.size().#equalequal(that:This4.Size.#from(builder:(
   Void unused=b.#0()
   b
   )))
+read method 
+class This4.Size #default#val(Void that) This4.Size
 read method 
 This1 left() This0.Cast.#apply(that:this.inner().val(that:This4.Size.#from(builder:(
   capsule This4.S.SBuilder b=This4.Size.#builder()

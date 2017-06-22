@@ -35,7 +35,7 @@ ASCII rendering of horizontal bar notation:
 * In latex we use two different fonts for "(" of the grammar and for
   "(" used for disambiguation and function call.  Here we just hope that it is clear :/
 
-* Generally, we use ,: and | to disambiguate grouping, thus
+* Generally, we use <space> , ; and | to disambiguate grouping, thus
   a b, c;d |e == ((((a b), c);d) |e)
 
 * When a term of the grammar can be accessed with functional notation,

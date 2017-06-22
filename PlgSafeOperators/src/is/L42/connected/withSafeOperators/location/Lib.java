@@ -120,7 +120,12 @@ public class Lib extends Location.LocationImpl<ExpCore.ClassB,Lib>{
     assert !this.isBinded;
     return new Lib(false,root,Collections.emptyList(),root);
     }
-  public String path(){return Path.outer(0,path).toString();}//last is its name, empty path for root
+  public String path(){
+    if(path.isEmpty()){return "This";}
+    String res=path.get(0).toString();
+    for(int i=1;i<path.size();i++){res+="."+path.get(i);}
+    return res;
+    }  
   public Doc nestedDoc(){
     if(this.path.isEmpty()){
       return new Doc(Ast.Doc.empty(),this);

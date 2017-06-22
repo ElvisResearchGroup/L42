@@ -83,7 +83,7 @@
       implements This1.This$
       This$:UnsafeRefactor.MiniData.thisLib()
       refine method Method location()
-      method refTo()DispatchRefTo(use This check #refTo()
+      method refTo()DispatchRefTo(use This check #refTo(_this:this.#binaryRepr())
         error This.#pluginUnresponsive(binaryRepr:S"".#binaryRepr()))
       method mdf()Mdf(inner:this.mdfS())
       }
@@ -95,7 +95,7 @@
       List:Collections.vector(of:This$)
 
       refine method Method location()
-      method refTo()DispatchRefTo(use This check #refTo()
+      method refTo()DispatchRefTo(use This check #refTo(_this:this.#binaryRepr())
         error This.#pluginUnresponsive(binaryRepr:S"".#binaryRepr()))
       method mdf()Mdf(inner:this.mdfS())
       method Size pos()//0 for this
@@ -108,7 +108,7 @@
       List:Collections.vector(of:This$)
 
       refine method Method location()
-      method refTo()DispatchRefTo(use This check #refTo()
+      method refTo()DispatchRefTo(use This check #refTo(_this:this.#binaryRepr())
         error This.#pluginUnresponsive(binaryRepr:S"".#binaryRepr()))
       method mdf()Mdf(inner:this.mdfS())
 
@@ -122,7 +122,7 @@
       List:Collections.vector(of:This$)
 
       refine method Lib location()
-      method refTo()DispatchRefTo(use This check #refTo()
+      method refTo()DispatchRefTo(use This check #refTo(_this:this.#binaryRepr())
         error This.#pluginUnresponsive(binaryRepr:S"".#binaryRepr()))
       method mdf()Mdf(inner:this.mdfS())
 
