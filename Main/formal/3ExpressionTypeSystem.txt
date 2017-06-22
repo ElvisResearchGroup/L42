@@ -178,11 +178,11 @@ Phase| p| G| Tr |- catch throw P x e ~> catch throw P x e' :T <= T' | Tr'
 (catch precise any)//notice, needs to be Any, it can't be 
 //(exception A() exception B() catch exception C x useXAsB(x) ) 
 //because even if A unrelated B, C; B <C    may be somewhere far away:: D extends A, C
-Phase |p |G |Tr|-catch return Any x e ~> catch return T1.P x e':T2<=T1 | Tr'
+Phase |p |G |Tr|-catch return Any x e ~> catch return T'.P x e':T<=T' | Tr'
   where//TODO: this whole role has changed and need to be updated in code
   not catchRethrow(catch return Any x e)
-  forall T' in Tr.T p |-T<=T1
-  Phase| p| G| Tr |- catch throw T1.P x e ~> catch throw T1.P x e' :T2 <= T1 | Tr'
+  forall T0 in Tr.Ts p |-T0<=T'
+  Phase| p| G| Tr |- catch return T'.P x e ~> catch return T'.P x e' :T <= T' | Tr'
 
 (catch and rethrow any)// could be sugared as "on throw doAndPropagate e"  
 Phase |p |G |Tr|-catch throw Any x (e0 throw x) ~> catch throw Any x (e0' throw x): T<=T | Tr
