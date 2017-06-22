@@ -143,6 +143,9 @@ Part 2: Well formedness
   FV(e)\ this,x1..xn= empty
   for i in 0..n if Ti=capsule _, xi in cX(e) 0 or 1 times
   //TODO: do in code when norm happens?
+
+  //Note: if we want mispelled/free variable to be perceived like
+  // a syntax error, we need to add  * ms e: FV(e)\this,ms.xs=empty
 _______
 #define
 cX(e)//count occurences of xs
@@ -152,16 +155,16 @@ cX(e)//count occurences of xs
   cX(loop e)=cX(e),cX(e)  //representing each variable twice is enough to make capsule tests work
   cX(e0.m[T](x1:e1..xn:en) )=cX(e0),..,cX(en)
   cX(use P check m(x1:e1..xn:en) e0)=cX(e0),..,cX(en)
-  cX( (T1 x1=e1..Tn xn=en k1..km e0[T]) )=ys/x1..xn ,max( (xs0/x1..xn), xs1..xsm)
+  cX( (T1 x1=e1..Tn xn=en k1..km e0[T]) )=ys/x1..xn ,max( (xs0/x1..xn), xs1,..,xsm)
     where
     ys=cX(e1),..,cX(en)
     xsi=cX(ki)
     xs0=cX(e0) 
     if Ti=capsule _ then
-      xi at most once in ys,xs0
+      xi 0 or 1 times in ys,xs0
 _______
 #define max(xs1,..,xsn)= zs // as many repetition of each x as in the most repetitive of xs1..xsn
-  max(empty,ys)=ys
+  max(ys)=max(empty,ys)=ys
   max (x xs,ys)=x max(xs,ys) if x not in ys
   max (x xs,ys)=x max(xs,removeOne(x,ys))
   max(xs, xs0,..,xsn) = max(max(xs,xs0),xs1,..,xsn)
