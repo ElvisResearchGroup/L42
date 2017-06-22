@@ -165,7 +165,7 @@ D |Tr |- k ~> k':T <=T' |Tr'
 (catch)
    // P is the declared caught path
    // T0 is the actual caught type, based on the types which can be thrown in context
-   // T is the type of the expression, based on x being bound T
+   // T is the type of the expression, based on x being bound T0
 Phase| p| G| Tr |- catch throw P x e ~> catch throw P x e' :T <= T' | Tr'
   where
   mdf = mostGeneralMdf(throw,Tr) //set of Mdfs admits no single most general mdf, or mdfs is empty
@@ -175,14 +175,6 @@ Phase| p| G| Tr |- catch throw P x e ~> catch throw P x e' :T <= T' | Tr'
   not catchRethrow(catch throw P x e)
   Phase| p| G[x:T0]|- e ~> e' : T <= T' | Tr'
 
-(catch and rethrow any)// could be sugared as "on throw doAndPropagate e"  
-Phase |p |G |Tr|-catch throw Any x (e0 throw x) ~> catch throw Any x (e0' throw x): T<=T | Tr
-  where //Note: e0, e, e0',e' are using the sugar imm Void x=e == e
-  e0=(e catch error Any z void void)
-  e0'=(e' catch error Any z void void)
-  Phase |p |G\x |- e ~> e':_ <=imm Void | empty
-  catchRethrow(catch throw Any x(e0 throw x)) 
-
 (catch precise any)//notice, needs to be Any, it can't be 
 //(exception A() exception B() catch exception C x useXAsB(x) ) 
 //because even if A unrelated B, C; B <C    may be somewhere far away:: D extends A, C
@@ -191,6 +183,15 @@ Phase |p |G |Tr|-catch return Any x e ~> catch return T1.P x e':T2<=T1 | Tr'
   not catchRethrow(catch return Any x e)
   forall T' in Tr.T p |-T<=T1
   Phase| p| G| Tr |- catch throw T1.P x e ~> catch throw T1.P x e' :T2 <= T1 | Tr'
+
+(catch and rethrow any)// could be sugared as "on throw doAndPropagate e"  
+Phase |p |G |Tr|-catch throw Any x (e0 throw x) ~> catch throw Any x (e0' throw x): T<=T | Tr
+  where //Note: e0, e, e0',e' are using the sugar imm Void x=e == e
+  e0=(e catch error Any z void void)
+  e0'=(e' catch error Any z void void)
+  Phase |p |G\x |- e ~> e':_ <=imm Void | empty
+  catchRethrow(catch throw Any x(e0 throw x)) 
+
 ------------
 D| Tr |- ks ~> k's:Ts <= T | Tr'
   just types a set of catches.
