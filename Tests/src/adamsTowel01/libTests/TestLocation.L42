@@ -99,37 +99,160 @@ LibMethodsTest:{
 --------------------------
 Accessing implements:
 
-  Type.Implemented.List implementeds()
-  method Bool implements(class Any clazz)
+  Type.Implemented.List implements()
+  method Bool implements(class Any classAny)
   method Bool implements(Path path)
 */
 LibImplementsTest:{
-  a=Location.Lib({implements A, Concept.ToS A:{interface}})
+  a=Location.Lib({implements A, Concept.ToS C:{D:{ implements A,B, Concept.ToS B:{interface}} } A:{interface}})
   Debug.test(a.implements().size()
     expected:2Size)
-  b=Location.Lib({implements A, Concept.Base A:{interface} })
+  b=Location.Lib({implements A, Concept.Base A:{interface} B:{interface}})
+  Debug.test(a.nested(path:\"C.D").implements() expected:S"[A; C.D.B; This0.Concept.ToS]")
   Debug.test(b.implements()
-    expected:S"")//normalization!
+    expected:S"[A; This0.Concept.Base;"[]
+    " This0.Concept.ToS; This0.Concept.Classable;"[]
+    " This0.Concept.Equals]")//normalization!
+  Debug.test(b.implements(path:\"A") expected:Bool.true())
+  Debug.test(b.implements(path:\"B") expected:Bool.false())
+  Debug.test(b.implements(path:\"C") expected:Bool.false())
+  Debug.test(b.implements(classAny:Concept.Equals) expected:Bool.true())
+  Debug.test(b.implements(classAny:Concept.Sizable) expected:Bool.false())
   return ExitCode.normal()
   }
 /*
-  Doc doc()
-  Bool isBinded()
-  Bool isCloseState()
-  method//as in EnsureCoherent<><
-  Bool isEnsuredCoherent()
-  Bool isInterface()
-  Bool isPotentialInterface()
-  Bool isRedirectable()
-  This navigate(Path that)
-  method //empty doc if it is root
-  Doc nestedDoc()
-  method//last is its name, empty path for root
-  Path path()
-  This root()
-  This location()
-  
+  Many boolean properties can be extracted from Lib objects:
+  ------
+  method Bool isCloseState()
+  True if the state is not public.
+  Two literals with closed state can not be summed together.
+  ------
+  method Bool isInterface()
+  True if the literal is an interface
+  ------
+  method Bool isPotentialInterface()
+  True if the literal is either an interface or it can be turned into an interface by the sum operator, or redirected onto 
+  an interface by the redirect operator.
+  This requires all the methods to be public, abstract and not class.
+  ------
+  method Bool isRedirectable()
+  True if this can be redirected to a compatible classAny.
+  This requires all methods to be public and abstract.
+  ------
+  method Bool isBinded()
+  True if this object represent an already binded literal.
+  ------
+  method Bool isEnsuredCoherent()
+  A coherent class can be....
+  Can I require coherence to have precise types? 
+  it is ok with interfaces since I can use refine!!
+as in EnsureCoherent<><
+*/
+LibIsMethodsTest:{
+  Debug(S"isCloseState()")
+  Debug.test(Location.Lib({}).isCloseState() expected:Bool.false())
+  Debug.test(Location.Lib(
+    {class method This m( S field) method S field()}
+    ).isCloseState() expected:Bool.false())
+  Debug.test(Location.Lib(
+    {class method This m_$_1( S field) method S field_$_1()}
+    ).isCloseState() expected:Bool.true())
+ 
+  Debug(S"isInterface()")
+  Debug.test(Location.Lib(
+    {interface A:{}}
+    ).nested(path:\"A").isInterface() expected:Bool.false())
+  Debug.test(Location.Lib(
+    {interface A:{}}
+    ).isInterface() expected:Bool.true())
 
+  Debug(S"isPotentialInterface()")
+  Debug.test(Location.Lib(
+    {A:{}}
+    ).nested(path:\"A").isPotentialInterface() expected:Bool.true())
+  Debug.test(Location.Lib(
+    {A:{method Void foo()}}
+    ).nested(path:\"A").isPotentialInterface() expected:Bool.true())
+  Debug.test(Location.Lib(
+    {A:{method Void foo()void}}
+    ).nested(path:\"A").isPotentialInterface() expected:Bool.false())
+  Debug.test(Location.Lib(
+    {A:{class method Void foo()void}}
+    ).nested(path:\"A").isPotentialInterface() expected:Bool.false())
+  Debug.test(Location.Lib(
+    {A:{class method Void foo()}}
+    ).nested(path:\"A").isPotentialInterface() expected:Bool.false())
+
+  Debug(S"isRedirectable()")
+  Debug.test(Location.Lib(
+    {A:{}}
+    ).nested(path:\"A").isRedirectable() expected:Bool.true())
+  Debug.test(Location.Lib(
+    {A:{method Void foo()}}
+    ).nested(path:\"A").isRedirectable() expected:Bool.true())
+  Debug.test(Location.Lib(
+    {A:{method Void foo()void}}
+    ).nested(path:\"A").isRedirectable() expected:Bool.false())
+  Debug.test(Location.Lib(
+    {A:{class method Void foo()void}}
+    ).nested(path:\"A").isRedirectable() expected:Bool.false())
+  Debug.test(Location.Lib(
+    {A:{class method Void foo()}}
+    ).nested(path:\"A").isRedirectable() expected:Bool.true())
+
+  Debug(S"isBinded()")
+  Debug.test(Location.Lib({}).isBinded() expected:Bool.false())
+  Debug.test(Location.Lib(classAny:Concept.Base).isBinded() expected:Bool.true())
+
+  Debug(S"isEnsuredCoherent()")
+  Debug.test(Location.Lib(
+    {class method This m( S field) method S field()}
+    ).isEnsuredCoherent() expected:Bool.true())
+  Debug.test(Location.Lib(
+    { method S field()}
+    ).isEnsuredCoherent() expected:Bool.false())
+  Debug.test(Location.Lib(
+    {class method This m( S field) method S field() method S anotherF()}
+    ).isEnsuredCoherent() expected:Bool.false())
+  Debug.test(Location.Lib(
+    {class method This m_$_1( S field) method S field_$_1()}
+    ).isEnsuredCoherent() expected:Bool.true())
+  return ExitCode.normal()
+  }
+/*
+  As we have seen, is possible to navigate 
+  inside of a Lib by using nested(path).
+  We can go out one level by using location()
+  or go directly to the root using root().
+  In any moment, path() is telling us where we are with
+  respect of the root, that is, the library literal used
+  to create the Lib object.
+  To get the library documentation we can use doc()
+  while nestedDoc() give us the documentation of the path() nested class.
+  The concept of root() and path() makes sense for free floating
+  library literals.
+  If the lib object represent a library already binded to a class name, then path() is always empty, and navigating with nested(path) will give us another root Lib from such binded literal.
+  More in details:
+  ------
+  method Path path()
+  Give use the path from root.
+  You can extract the last element from the path to get the name of the current nested class.
+  If this is the root Lib, path()==Path"This"
+  ------
+  method Location.Lib root()
+  return the root of this object. Note that binded Libs are their
+  own roots.
+  ------
+  method Location.Lib location()
+  give us the Lib where this Lib is wrote.
+  (Library literals could also be inside of a method, but those can not be access by this API)
+  ------
+  method Location.Doc nestedDoc()
+  The documentation of this nested class.
+  Empty doc if this is a non binded root
+  ------
+  method Location.Doc doc()
+  The documentation of this library literal.  
 */
 LibTest:{
   

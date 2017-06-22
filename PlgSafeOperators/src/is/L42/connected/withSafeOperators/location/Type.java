@@ -24,7 +24,8 @@ public interface Type extends Location{
     if (path.outerNumber()==0){
       return new TypeRefTo.Lib(locationLib().root(),path);
       }
-    Program p=pData.p.evilPush(locationLib().root().inner);
+    path=path.setNewOuter(path.outerNumber()-1);
+    Program p=pData.p;
     //will be evilPush
     try{
       ClassB cb=p.extractClassB(path);
@@ -42,7 +43,9 @@ public interface Type extends Location{
 
     }
   default Doc doc() {return new Doc(type().getDoc(),this);}
-  default String toS() {return type().toString();}
+  default String toS(PData p) {
+    return (type().getMdf().inner+" "+this.refTo(p).toS()).trim();
+    }
   default int mdfS() {return type().getMdf().ordinal();}
 
 

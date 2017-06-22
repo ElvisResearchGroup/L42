@@ -133,7 +133,7 @@ public interface Ast {
   public static final Type immAny=new Type(Mdf.Immutable,Path.Any(),Doc.empty());
   public static final Type classAny=new Type(Mdf.Class,Path.Any(),Doc.empty());
   public String toString() {
-   return mdf.name() + "[" + this.path.toString()+"]";
+   return (mdf.inner+" "+this.path.toString()).trim();
   }
  }
 
@@ -160,6 +160,7 @@ public interface Ast {
   public boolean invariant(){
     // not good enought, it can also be empty or operator
     // assert checkX(name,true);
+    assert !name.contains("_$_"):name;
     assert !name.contains("\t"):
       name;
     if(!( name.isEmpty() && this.uniqueNum==-1)){

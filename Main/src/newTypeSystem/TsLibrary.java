@@ -45,14 +45,6 @@ public interface TsLibrary extends TypeSystem{
       //exceptions from normalization all represents unsolvable
       //type errors. Same for cyclic resolve
     }
-    assert normP.getSupertypes().stream().allMatch(
-      t->{
-        ClassB cbt=in.p.extractClassB(t.getPath());
-        Phase phase=cbt.getPhase();
-        assert phase!=Phase.None:
-          t.getPath();
-        return phase!=Phase.None;}):
-      "";
     return normP;
     }
     

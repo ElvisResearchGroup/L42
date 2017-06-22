@@ -10,6 +10,12 @@ import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.NotAvailable;
 
 public interface Location {
+  static String as42Path(List<ast.Ast.C>path){
+    if(path.isEmpty()){return "This";}
+    String res=path.get(0).toString();
+    for(int i=1;i<path.size();i++){res+="."+path.get(i);}
+    return res;
+    }
   static <T> T listAccess(List<T> list, int that) throws NotAvailable{
     try{return list.get(that);}
     catch(IndexOutOfBoundsException e){throw new RefactorErrors.NotAvailable();}
@@ -17,7 +23,7 @@ public interface Location {
   Location location();
   Doc doc();
   boolean equalequal(Object that);
-  String toS();
+  //String toS();//complicated relation with toS of Type
   Cacher<List<Origin>> protectedOrigins();
   static abstract class LocationImpl<T extends Expression.HasPos, L extends Location> implements Location{
     protected Cacher<List<Origin>> protectedOrigins;

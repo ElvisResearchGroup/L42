@@ -18357,74 +18357,47 @@ method
 class This2.Path #default#nested(Void path) This2.Path
 method 
 This0 nested(This2.Path path) exception This1.NotAvailable (
-  Void unused=(
-    Void unused0=(
-      lent This0.List.IteratorVal ni=this.root().allNesteds().vals()
-      (
-        Void unused2=loop (
-          Void unused3=ni.#next()
-          
-          catch exception Void catched0 (
-            Void unused4=(
-              Void unused5=ni.#checkEnd()
-              
-              catch exception Void catched1 void
-              
-              void
-              )
-            exception void
-            )
-          
-          (
-            This2.Bool cond=ni.#inner().path().#equalequal(that:this.path().#plusplus(that:path))
-            (
-              Void unused6=cond.#checkTrue()
-              
-              catch exception Void catched4 void
-              
-              return ni.#inner()
-              )
-            )
-          )
-        
-        catch exception Void catched5 void
-        
-        void
-        )
+  Void unused=(/*with ni in this.root().allNesteds().vals() (
+      if ni.path()==this.path()++path (return ni)
       )
-    Void unused1=exception (
+    exception NotAvailable"Path "[path]"not present"
+    more performance using navigate*/
+    Void unused0=return this.navigate(that:path)
+    
+    catch error Library x exception (
       This1.NotAvailable.Continue rcv48=(
         This1.NotAvailable rcv49=This1.NotAvailable.#from(builder:(
           capsule This2.S.SBuilder b=This1.NotAvailable.#builder()
-          Void unused7=b.#P()
-          Void unused8=b.#a()
-          Void unused9=b.#t()
-          Void unused10=b.#h()
-          Void unused11=b.#space()
+          Void unused1=b.#P()
+          Void unused2=b.#a()
+          Void unused3=b.#t()
+          Void unused4=b.#h()
+          Void unused5=b.#space()
           b
           ))
         rcv49.#from(seqBuilder:(
           capsule This2.S.SConcat b0=rcv49.#seqBuilder()
-          Void unused12=b0.#add(that:path)
+          Void unused6=b0.#add(that:path)
           b0
           ))
         )
       rcv48.#from(builder:(
         capsule This2.S.SBuilder b1=rcv48.#builder()
-        Void unused13=b1.#n()
-        Void unused14=b1.#o()
-        Void unused15=b1.#t()
-        Void unused16=b1.#space()
-        Void unused17=b1.#p()
-        Void unused18=b1.#r()
-        Void unused19=b1.#e()
-        Void unused20=b1.#s()
-        Void unused21=b1.#e()
-        Void unused22=b1.#n()
-        Void unused23=b1.#t()
+        Void unused7=b1.#n()
+        Void unused8=b1.#o()
+        Void unused9=b1.#t()
+        Void unused10=b1.#space()
+        Void unused11=b1.#p()
+        Void unused12=b1.#r()
+        Void unused13=b1.#e()
+        Void unused14=b1.#s()
+        Void unused15=b1.#e()
+        Void unused16=b1.#n()
+        Void unused17=b1.#t()
         b1
         ))
       )
+    
     void
     )
   
@@ -18577,7 +18550,7 @@ This2.Bool has(This2.Selector selector) (
   This2.Bool.true()
   )
 method 
-This1.Type.Implemented.List implementeds() This1.Type.Implemented.List.#from(seqBuilder:(
+This1.Type.Implemented.List implements() This1.Type.Implemented.List.#from(seqBuilder:(
   capsule This1.Type.Implemented.List b=This1.Type.Implemented.List.#seqBuilder()
   Void unused=(
     capsule This2.Size.Iterator i=This2.Size.#from(builder:(
@@ -18614,10 +18587,10 @@ This1.Type.Implemented.List implementeds() This1.Type.Implemented.List.#from(seq
   b
   ))
 method 
-This2.Bool implements(class Any clazz) (
+This2.Bool implements(class Any classAny) (
   Void unused=(
     Void unused0=(
-      This2.Bool cond=This1.Type.RefTo.Binded.equalsClassObj(that:Any, and:clazz)
+      This2.Bool cond=This1.Type.RefTo.Binded.equalsClassObj(that:Any, and:classAny)
       (
         Void unused3=cond.#checkTrue()
         
@@ -18627,7 +18600,7 @@ This2.Bool implements(class Any clazz) (
         )
       )
     Void unused1=(
-      lent This1.Type.Implemented.List.IteratorVal ti=this.implementeds().vals()
+      lent This1.Type.Implemented.List.IteratorVal ti=this.implements().vals()
       (
         Void unused4=loop (
           Void unused5=ti.#next()
@@ -18664,7 +18637,7 @@ CastT-Should be unreachable code
                 Void unused9=(
                   class Any ci=ri0.referredClassObj()
                   (
-                    This2.Bool cond0=This1.Type.RefTo.Binded.equalsClassObj(that:ci, and:clazz)
+                    This2.Bool cond0=This1.Type.RefTo.Binded.equalsClassObj(that:ci, and:classAny)
                     (
                       Void unused10=cond0.#checkTrue()
                       
@@ -18696,10 +18669,12 @@ CurlyBlock-Should be unreachable code
 */}
   )
 method 
+class This2.Path #default#implements(Void path) This2.Path
+method 
 This2.Bool implements(This2.Path path) (
   Void unused=(
     Void unused0=(
-      lent This1.Type.Implemented.List.IteratorVal ti=this.implementeds().vals()
+      lent This1.Type.Implemented.List.IteratorVal ti=this.implements().vals()
       (
         Void unused2=loop (
           Void unused3=ti.#next()
@@ -18771,6 +18746,13 @@ class method
 This0 #apply(class Any classAny) This0.newFromClass(that:classAny)
 class method 
 This0 #apply(Library that) This0.newFromLibrary(that:that)
+method 
+This0 navigate(This2.Path that) This0.#from(binaryRepr:(
+  Library res=use This0 check navigate(_this:this.#binaryRepr(), _1_java%lang%String:that.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.location.Lib\u000amethod name: navigate(that)\u000ajava method: is.L42.connected.withSafeOperators.location.Lib.navigate(_this,_1_java%lang%String)\u000a
+*/})
+  res
+  ))
 class method 
 This0 newFromClass(class Any that) This0.#from(binaryRepr:(
   Library res=use This0 check #newFromClass(_1_ast%Ast$Path:that) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
@@ -18859,13 +18841,6 @@ method
 This2.Size methodSize() This2.Size.#from(binaryRepr:(
   Library res=use This0 check methodSize(_this:this.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
 plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.location.Lib\u000amethod name: methodSize()\u000ajava method: is.L42.connected.withSafeOperators.location.Lib.methodSize(_this)\u000a
-*/})
-  res
-  ))
-method 
-This0 navigate(This2.Path that) This0.#from(binaryRepr:(
-  Library res=use This0 check navigate(_this:this.#binaryRepr(), _1_java%lang%String:that.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
-plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.location.Lib\u000amethod name: navigate(that)\u000ajava method: is.L42.connected.withSafeOperators.location.Lib.navigate(_this,_1_java%lang%String)\u000a
 */})
   res
   ))
@@ -22894,8 +22869,8 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.locati
   ))
 refine read method 
 This3.S toS() This3.S.#from(binaryRepr:(
-  Library res=use This0 check toS(_this:this.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
-plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.location.Type$Return\u000amethod name: toS()\u000ajava method: is.L42.connected.withSafeOperators.location.Type$Return.toS(_this)\u000a
+  Library res=use This0 check #toS(_this:this.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.location.Type$Return\u000amethod name: toS()\u000ajava method: is.L42.connected.withSafeOperators.location.Type$Return.#toS(_this)\u000a
 */})
   res
   ))
@@ -23075,8 +23050,8 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.locati
   ))
 refine read method 
 This3.S toS() This3.S.#from(binaryRepr:(
-  Library res=use This0 check toS(_this:this.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
-plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.location.Type$Parameter\u000amethod name: toS()\u000ajava method: is.L42.connected.withSafeOperators.location.Type$Parameter.toS(_this)\u000a
+  Library res=use This0 check #toS(_this:this.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.location.Type$Parameter\u000amethod name: toS()\u000ajava method: is.L42.connected.withSafeOperators.location.Type$Parameter.#toS(_this)\u000a
 */})
   res
   ))
@@ -24787,8 +24762,8 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.locati
   ))
 refine read method 
 This3.S toS() This3.S.#from(binaryRepr:(
-  Library res=use This0 check toS(_this:this.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
-plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.location.Type$Exception\u000amethod name: toS()\u000ajava method: is.L42.connected.withSafeOperators.location.Type$Exception.toS(_this)\u000a
+  Library res=use This0 check #toS(_this:this.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.location.Type$Exception\u000amethod name: toS()\u000ajava method: is.L42.connected.withSafeOperators.location.Type$Exception.#toS(_this)\u000a
 */})
   res
   ))
@@ -26499,8 +26474,8 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.locati
   ))
 refine read method 
 This3.S toS() This3.S.#from(binaryRepr:(
-  Library res=use This0 check toS(_this:this.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
-plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.location.Type$Implemented\u000amethod name: toS()\u000ajava method: is.L42.connected.withSafeOperators.location.Type$Implemented.toS(_this)\u000a
+  Library res=use This0 check #toS(_this:this.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.location.Type$Implemented\u000amethod name: toS()\u000ajava method: is.L42.connected.withSafeOperators.location.Type$Implemented.#toS(_this)\u000a
 */})
   res
   ))

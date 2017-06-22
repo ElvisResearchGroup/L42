@@ -121,10 +121,7 @@ public class Lib extends Location.LocationImpl<ExpCore.ClassB,Lib>{
     return new Lib(false,root,Collections.emptyList(),root);
     }
   public String path(){
-    if(path.isEmpty()){return "This";}
-    String res=path.get(0).toString();
-    for(int i=1;i<path.size();i++){res+="."+path.get(i);}
-    return res;
+    return Location.as42Path(path);
     }  
   public Doc nestedDoc(){
     if(this.path.isEmpty()){
@@ -136,10 +133,11 @@ public class Lib extends Location.LocationImpl<ExpCore.ClassB,Lib>{
 //even if obtained with a classObj, no method to get it back
 //to get a nested classObj, Refactor.navigateClassObj(classAny,Path)->classAny??
   public String toS() {return sugarVisitors.ToFormattedText.of(inner);}
-  public Lib navigate(String cs){
+   public Lib navigate(String cs){
     return navigate(PathAux.parseValidCs(cs));
     }
-  Lib navigate(List<Ast.C> cs){
+  
+   Lib navigate(List<Ast.C> cs){
     if (cs.isEmpty()){return this;}
     if(this.isBinded){
       ClassB cb=this.inner.getClassB(cs);//TODO: need from?

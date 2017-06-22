@@ -226,7 +226,8 @@ Phase |- p ~> L'      //In implementation, if p.top().Phase>=Phase, L'=p.Top()
    Phase in {Typed,Coherent}
    L0={interface? implements Ps M1..Mn Phase'}=norm(p)
    L'={interface? implements Ps M1'..Mn' max(Phase',Phase)}
-   //assert forall P in Ps p(P).Phase>=Norm
+   //no:assert forall P in Ps p(P).Phase>=Norm
+   //for inner interfaces is false when typing Norm a class within an e in top
    forall i in 1..n
      Phase| p.updateTop(L0)| Ps |- Mi ~> Mi'
    if Phase=Coherent then coherent(p.udatateTop(L'))

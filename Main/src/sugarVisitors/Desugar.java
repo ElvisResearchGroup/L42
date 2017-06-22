@@ -600,7 +600,7 @@ public class Desugar extends CloneVisitor{
     return super.liftH(ch.withName(desugarName(ch.getName())));
   }
   protected MethodSelector liftMs(MethodSelector ms) {
-    return ms.withName(desugarName(ms.nameToS()));
+    return ms.withName(desugarName(ms.getName()));
   }
   private<T0,T> T withExpectedType(Type t,Supplier<T> f){
     if (t==null){t=Path.Any().toImmNT();}
@@ -656,7 +656,7 @@ public class Desugar extends CloneVisitor{
   public MethodWithType visit(MethodWithType mt){
     this.usedVars=new HashSet<String>();
     this.varEnv=new HashMap<String, Type>();
-    String mName=desugarName(mt.getMs().nameToS());
+    String mName=desugarName(mt.getMs().getName());
     mt=mt.withMs(mt.getMs().withName(mName));
     if(!mt.getInner().isPresent()){return super.visit(mt);}
     {int i=-1;for(String name:mt.getMs().getNames()){i+=1;

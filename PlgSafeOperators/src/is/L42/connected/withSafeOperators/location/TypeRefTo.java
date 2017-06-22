@@ -18,7 +18,9 @@ public interface TypeRefTo {
     public is.L42.connected.withSafeOperators.location.Lib referredLib(){
       return root.navigate(path.getCBar());
       }    
-    @Override public String toS() {return path.toString(); }
+    @Override public String toS() {
+      return Location.as42Path(path.getCBar());
+      }
     @Override public boolean equalequal(Object that) {
       return this.equals(that);
       }
@@ -35,7 +37,9 @@ public interface TypeRefTo {
       this.path = path;
       }
     Ast.Path path;//pre frommed to be ok with PData
-    public Ast.Path referredClassObj(){return path;}
+    public Ast.Path referredClassObj(){
+      return path;
+      }
     public static boolean equalsClassObj(Ast.Path that,Ast.Path and){
       return that.equals(and);
       }

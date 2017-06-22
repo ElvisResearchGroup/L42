@@ -56,7 +56,7 @@ public class Doc extends Location.LocationImpl<Ast.Doc,Location>{
       }
     
     }
-  @Override public String toS() {return inner.getS();}
+  public String toS() {return inner.getS();}
   @Override public Doc doc() {return this;}
   @Override public boolean equalequal(Object that) {
     return this.equals(that);

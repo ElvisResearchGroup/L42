@@ -17,10 +17,14 @@
     )]
   method class Path #default#nested(Void path) Path
   method This nested(Path path) exception NotAvailable {
-    with ni in this.root().allNesteds().vals() (
+    /*with ni in this.root().allNesteds().vals() (
       if ni.path()==this.path()++path (return ni)
       )
     exception NotAvailable"Path "[path]"not present"
+    more performance using navigate*/
+    return this.navigate(path)
+    catch error Library x
+      exception NotAvailable"Path "[path]"not present"
     }
   method class Path #default#has(Void path) Path
   method Bool has(Path path) (
@@ -47,18 +51,18 @@
     Bool.true()
     )      
   method
-  Type.Implemented.List implementeds()
+  Type.Implemented.List implements()
     Type.Implemented.List[with i in 0Size.vals(upTo:this.implementedSize()) (use[this.implemented(i)])]
     
-  method Bool implements(class Any clazz){
-    if Type.$_RefTo.Binded.equalsClassObj(Any, and:clazz) (
+  method Bool implements(class Any classAny){
+    if Type.$_RefTo.Binded.equalsClassObj(Any, and:classAny) (
       return Bool.true()
       ) 
-     with ti in this.implementeds().vals() (
+     with ti in this.implements().vals() (
        with ri=ti.refTo() (
          on Type.$_RefTo.Binded (
            ci=ri.referredClassObj()
-           if Type.$_RefTo.Binded.equalsClassObj(ci, and:clazz) (
+           if Type.$_RefTo.Binded.equalsClassObj(ci, and:classAny) (
             //no need of supertypes since normalized classes has transitive implements already
             return Bool.true()
             )
@@ -67,8 +71,10 @@
        )
      return Bool.false()
      }
+  
+  method class Path #default#implements(Void path) Path   
   method Bool implements(Path path) {
-     with ti in this.implementeds().vals() (
+     with ti in this.implements().vals() (
        with ri=ti.refTo() (
          on Type.$_RefTo.Lib (
            libi=ri.referredLib()
@@ -90,6 +96,8 @@
     This.newFromLibrary(that)
     
   //methods imported from java
+  method
+  Lib navigate(Path that)
   class method
   This newFromClass(class Any that)
   class method 
@@ -116,8 +124,6 @@
   Method method(Size that)
   method
   Size methodSize()
-  method
-  This navigate(Path that)
   method
   This nested(Size that)
   method //empty doc if it is root
