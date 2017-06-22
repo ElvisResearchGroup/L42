@@ -59,7 +59,7 @@ D |- loop e ~> loop e' : imm Void <= T | Tr
           // T2 is the modified type, taking into account kind of thrown
           // T3 is the type of the expression, including promotions
           // and T3 is the type of the value thrown, this allows to use alternative method typing
-D |- throw[_,_] e~> throw[T0,T3] e' : T0 <= T0 | Tr
+D |- throw e~> throw[T0,T3] e' : T0 <= T0 | Tr
   where
   T1 = guessType(D.p,D.G,e)// Note guessTypes can go in error, and need to become a type error here
   if throw=exception, T2= imm T1.P and Tr=Ts;Ps,P
@@ -68,7 +68,7 @@ D |- throw[_,_] e~> throw[T0,T3] e' : T0 <= T0 | Tr
   D|- e~>  e' :  T3 <=T2|Ts;Ps 
 
 (mcall)
-D |-  e0.m[_](x1:e1..Xn:en) ~> e'0.m[P0](x1:e'1..xn:e'n)  : T <= T'| Tr0 U..U Trn U (empty;Ps)
+D |-  e0.m(x1:e1..Xn:en) ~> e'0.m[P0](x1:e'1..xn:e'n)  : T <= T'| Tr0 U..U Trn U (empty;Ps)
   //e0 will be of form chain
   where
   guessType(D.p,D.G,e0)= _ P0 //assert T'0.P=P0 //again, can go in error guess
@@ -163,17 +163,17 @@ D |Tr |- k ~> k':T <=T' |Tr'
   Tr' contains only the throws from the catch k itself.
   
 (catch)
-   // P0 is the declared caught path
-   // T1 is the actual caught type, based on the types which can be thrown in context
-   // T2 is the type of the expression, based on x being bound T1
-Phase| p| G| Tr' |- catch throw P0 x e ~> catch throw P0 x e' :T2 <= T | Tr
+   // P is the declared caught path
+   // T0 is the actual caught type, based on the types which can be thrown in context
+   // T is the type of the expression, based on x being bound T
+Phase| p| G| Tr |- catch throw P x e ~> catch throw P x e' :T <= T' | Tr'
   where
-  mdf1 = mostGeneralMdf(throw,Tr') //set of Mdfs admits no single most general mdf, or mdfs is empty
+  mdf = mostGeneralMdf(throw,Tr) //set of Mdfs admits no single most general mdf, or mdfs is empty
   //inconsistent set of thrown things, which do not share a most
   //general modifier [list of line numbers of the throws]
-  T1 = mdf1 P0 
-  not catchRethrow(catch throw P0 x e)
-  Phase| p| G[x:T1]|- e ~> e' : T2 <= T | Tr
+  T0 = mdf P 
+  not catchRethrow(catch throw P x e)
+  Phase| p| G[x:T0]|- e ~> e' : T <= T' | Tr'
 
 (catch and rethrow any)// could be sugared as "on throw doAndPropagate e"  
 Phase |p |G |Tr|-catch throw Any x (e0 throw x) ~> catch throw Any x (e0' throw x): T<=T | Tr
@@ -186,8 +186,8 @@ Phase |p |G |Tr|-catch throw Any x (e0 throw x) ~> catch throw Any x (e0' throw 
 (catch precise any)//notice, needs to be Any, it can't be 
 //(exception A() exception B() catch exception C x useXAsB(x) ) 
 //because even if A unrelated B, C; B <C    may be somewhere far away:: D extends A, C
-Phase |p |G |Tr|-catch return Any x e ~> catch return T1.P x e':T2<=T1 | Tr' //TODO: update T1.P in code
-  where
+Phase |p |G |Tr|-catch return Any x e ~> catch return T1.P x e':T2<=T1 | Tr'
+  where//TODO: this whole role has changed and need to be updated in code
   not catchRethrow(catch return Any x e)
   forall T' in Tr.T p |-T<=T1
   Phase| p| G| Tr |- catch throw T1.P x e ~> catch throw T1.P x e' :T2 <= T1 | Tr'
