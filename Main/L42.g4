@@ -38,10 +38,10 @@ fragment NumNext:Digit|'-'Digit|'.'Digit;
 //fragment NumFirst:Digit|'-'Digit;
 
 
-S:
-    'return'|'error'|'exception';
-Mdf:
-    'class'|'mut'|'read'|'lent'|'capsule';
+SRE:'return';
+SEX:'exception';
+SER:'error';
+Mdf:'class'|'mut'|'read'|'lent'|'capsule';
 ORoundNoSpace:'(';
 ORoundSpace:'\t';
 CRound:')';
@@ -79,7 +79,6 @@ Stage:'##less'|'##meta'|'##plus'|'##star'|'##needable'|'##needed';
 Path://    Outer ('::'C)* |
   C(ClassSep C)*;//| 'Any' | 'Void' | 'Library';
 ClassSep: '.';
-ClassMethSep: '::';
 MX:Lowercase (Uppercase|Lowercase|Digit|'#')*'(';
 X:Lowercase (Uppercase|Lowercase|Digit|'#')*;
 HashX:'#'  (Uppercase|Lowercase|Digit|'#')*'(';
@@ -111,13 +110,12 @@ mDec:m
 path:Path;
 docs: Doc;
 docsOpt: Doc?;
-t:concreteT|historicalT;
-concreteT: Ph? Mdf? Path docsOpt;
-historicalSeq: ClassMethSep methSelector (ClassMethSep x)?;
-historicalT:Ph? Path docsOpt historicalSeq+;
+t: Ph? Mdf? Path docsOpt;
 methSelector: (mDec| ORoundNoSpace|ORoundSpace) x* CRound;
 
 x: X;
+sS: SRE|SEX|SER;
+sEx:   ')' SEX t+;
 xOp:X EqOp docsOpt eTop;
 //unOp:UnOp;
 //binOp:BinOp;
@@ -140,7 +138,7 @@ useSquare: Using square | Using squareW;
 ifExpr: If eTop block (Else eTop)?;
 using:Using Path Check mCall eTop;
 whileExpr: While eTop block;
-signalExpr: S eTop;
+signalExpr: sS eTop;
 loopExpr: Loop eTop;
 block: roundBlock|curlyBlock;
 roundBlockForMethod:ORoundNoSpace docsOpt bb* eTop CRound;
@@ -156,9 +154,9 @@ squareW:OSquare docsOpt w CSquare;
 mCall: m round;
 round: docsOpt ps CRound;
 ps:(eTop )?(X Colon  eTop )*;
-k1: Catch S t X  eTop;
-kMany:Catch S t+  eTop;
-kProp:S On t+  eTop;
+k1: Catch sS t X  eTop;
+kMany:Catch sS t+  eTop;
+kProp:sS On t+  eTop;
 k:k1|kMany|kProp;
 ks:k*;//other variations to come (k|kMany|kProp)*
 
@@ -168,11 +166,13 @@ nudeE: eTop EOF;
 classBExtra:Stage? Path* EndType;
 classBReuse: OCurly docsOpt  Url CCurly |OCurly docsOpt UrlNL docsOpt member+ CCurly;
 classB:OCurly docsOpt header impls? fieldDec* docsOpt member* CCurly classBExtra?;
-impls:Implements (Path docsOpt)+;
-mhs: Method docsOpt methSelector (EndType Path mht)?;
-mht: Refine? Mdf? Method docsOpt t (mDec |ORoundNoSpace|ORoundSpace) (t x docsOpt)* CRound (S Path+)?;
+impls:Implements t+;
+mhs: Method docsOpt methSelector;
+mht:
+  (Refine? Mdf? Method docsOpt t (mDec |ORoundNoSpace|ORoundSpace) (t x docsOpt)* sEx)
+ |(Refine? Mdf? Method docsOpt t (mDec |ORoundNoSpace|ORoundSpace) (t x docsOpt)* CRound docsOpt);
 member: methodWithType|methodImplemented|nestedClass;
-methodWithType: mht (EndType Path)? docsOpt eTopForMethod?| mht FieldSpecial;//was block?
+methodWithType: mht eTopForMethod?;//was block?
 methodImplemented: mhs eTopForMethod;
 nestedClass: Path Colon docsOpt eTop;
 header:| Interface; //|Mdf? (mDec |ORoundSpace|ORoundNoSpace) fieldDec* CRound;

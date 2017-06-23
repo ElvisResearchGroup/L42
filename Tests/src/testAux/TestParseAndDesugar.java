@@ -142,6 +142,15 @@ public class TestParseAndDesugar {
   //thus we use a classB literal however
   //},{lineNumber(), "{method foo() A[with x in \\a ( void )]}","would be super long"
 
+},{lineNumber(), "{/*hello*/implements Foo/*hi*/}",
+                 "{/*hello*/implements This0.Foo/*hi*/}"
+},{lineNumber(), "{method Void foo() exception Bar/*hi*/ Beer/*hello*/ void}",
+                 "{method Void foo() exception This0.Bar/*hi*/ This0.Beer/*hello*/ void}"
+},{lineNumber(), "{method Void foo() exception Bar/*hi*/ void}",
+                 "{method Void foo() exception This0.Bar/*hi*/ void}"
+},{lineNumber(), "{method Void foo() exception Bar (void)}",
+                 "{method Void foo() exception This0.Bar (void)}"
+
 },{lineNumber(), "A*b","This0.A.#times(that:b)"
 },{lineNumber(), "A(b)","This0.A.#apply(that:b)"
 },{lineNumber(), " ( Void a=void a(b))"," (Void a=void a.#apply(that:b))"

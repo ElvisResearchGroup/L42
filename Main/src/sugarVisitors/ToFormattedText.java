@@ -507,6 +507,7 @@ public class ToFormattedText implements Visitor<Void>{
       c(t.getMdf().inner);sp();
       }
     liftP(t.getPath());
+    formatDoc(t.getDoc());
     return null;
   }
   @Override

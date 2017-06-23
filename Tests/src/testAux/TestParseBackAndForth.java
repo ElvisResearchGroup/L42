@@ -43,6 +43,8 @@ public class TestParseBackAndForth {
 },{" {interface}"," {interface }"
 },{" { implements  A.B, C}"," {implements A.B, C}"
 
+},{" { implements  A.B/*foo*/, C/*bar*/}"," {implements A.B/*foo*/, C/*bar*/}"
+
 },{" a //bar\n ","a//bar\n"
 },{"!a","!a"
 },{"~(a+b)","~(a + b)"

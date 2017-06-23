@@ -708,10 +708,12 @@ public interface Ast {
     return this._next.containsAllAux(p);
     }
   private boolean insideTop(Position p){
-    return this.file.equals(p.file) &&
-      this.line1<=p.line1 &&
-      this.line2>=p.line2;
-  }
+    if(p==null){return false;}
+    if(!(this.line1<=p.line1 &&
+    this.line2>=p.line2)){return false;}
+    if(this.file==null){return p.file==null;}
+    return this.file.equals(p.file);
+    }
   String file;
   int line1;
   int pos1;

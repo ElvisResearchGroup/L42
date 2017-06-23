@@ -52,25 +52,21 @@ public interface Location {
     result = prime * result + ((location == null) ? 0 : location.hashCode());
     return result;
     }
-    @Override
+    @Override//Note, not just self generated
     public boolean equals(Object obj) {
-    if (this == obj)
-        return true;
-    if (obj == null)
-        return false;
-    if (getClass() != obj.getClass())
-        return false;
+    if (this == obj){return true;}
+    if (obj == null){return false;}
+    if (getClass() != obj.getClass()){return false;}
     LocationImpl<?, ?> other = (LocationImpl<?, ?>) obj;
     if (inner == null) {
-    if (other.inner != null)
-        return false;
-    } else if (!inner.equals(other.inner))
-        return false;
+      if (other.inner != null){return false;}
+    }
+    else if (!inner.equals(other.inner)){return false;}
     if (location == null) {
-    if (other.location != null)
-        return false;
-    } else if (!location.equals(other.location))
-        return false;
+      if (other.location != null){return false;}
+    }
+    else if(location==this && other.location==other){return true;}
+    else if (!location.equals(other.location)){return false;}
     return true;
     }
     

@@ -12,13 +12,6 @@ import org.antlr.v4.runtime.tree.ParseTreeVisitor;
  */
 public interface L42Visitor<T> extends ParseTreeVisitor<T> {
 	/**
-	 * Visit a parse tree produced by {@link L42Parser#concreteT}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitConcreteT(@NotNull L42Parser.ConcreteTContext ctx);
-
-	/**
 	 * Visit a parse tree produced by {@link L42Parser#ps}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -31,6 +24,13 @@ public interface L42Visitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitSquareW(@NotNull L42Parser.SquareWContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link L42Parser#sEx}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSEx(@NotNull L42Parser.SExContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link L42Parser#onPlus}.
@@ -222,18 +222,18 @@ public interface L42Visitor<T> extends ParseTreeVisitor<T> {
 	T visitStringParse(@NotNull L42Parser.StringParseContext ctx);
 
 	/**
+	 * Visit a parse tree produced by {@link L42Parser#sS}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSS(@NotNull L42Parser.SSContext ctx);
+
+	/**
 	 * Visit a parse tree produced by {@link L42Parser#bb}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitBb(@NotNull L42Parser.BbContext ctx);
-
-	/**
-	 * Visit a parse tree produced by {@link L42Parser#historicalSeq}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitHistoricalSeq(@NotNull L42Parser.HistoricalSeqContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link L42Parser#numParse}.
@@ -346,13 +346,6 @@ public interface L42Visitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitI(@NotNull L42Parser.IContext ctx);
-
-	/**
-	 * Visit a parse tree produced by {@link L42Parser#historicalT}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitHistoricalT(@NotNull L42Parser.HistoricalTContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link L42Parser#eTopForMethod}.

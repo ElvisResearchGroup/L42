@@ -20587,6 +20587,13 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.locati
   res
   ))
 method 
+This1.Doc doc() This1.Doc.#from(binaryRepr:(
+  Library res=use This0 check doc(_this:this.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.location.Method\u000amethod name: doc()\u000ajava method: is.L42.connected.withSafeOperators.location.Method.doc(_this)\u000a
+*/})
+  res
+  ))
+method 
 This2.Selector selector() This2.Selector.#from(binaryRepr:(
   Library res=use This0 check selector(_this:this.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
 plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.location.Method\u000amethod name: selector()\u000ajava method: is.L42.connected.withSafeOperators.location.Method.selector(_this)\u000a
@@ -20652,28 +20659,28 @@ This1.Type.Parameter.List parameterTypes() This1.Type.Parameter.List.#from(seqBu
   b
   ))
 method 
-This2.Size exceptionSize() This2.Size.#from(binaryRepr:(
-  Library res=use This0 check exceptionSize(_this:this.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
-plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.location.Method\u000amethod name: exceptionSize()\u000ajava method: is.L42.connected.withSafeOperators.location.Method.exceptionSize(_this)\u000a
+This2.Size exceptionTypeSize() This2.Size.#from(binaryRepr:(
+  Library res=use This0 check exceptionTypeSize(_this:this.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.location.Method\u000amethod name: exceptionTypeSize()\u000ajava method: is.L42.connected.withSafeOperators.location.Method.exceptionTypeSize(_this)\u000a
 */})
   res
   ))
 method 
-This1.Type.Exception exception(This2.Size that) This1.Type.Exception.#from(binaryRepr:(
-  Library res=use This0 check exception(_this:this.#binaryRepr(), _1_int:that.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
-plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.location.Method\u000amethod name: exception(that)\u000ajava method: is.L42.connected.withSafeOperators.location.Method.exception(_this,_1_int)\u000a
+This1.Type.Exception exceptionType(This2.Size that) This1.Type.Exception.#from(binaryRepr:(
+  Library res=use This0 check exceptionType(_this:this.#binaryRepr(), _1_int:that.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.location.Method\u000amethod name: exceptionType(that)\u000ajava method: is.L42.connected.withSafeOperators.location.Method.exceptionType(_this,_1_int)\u000a
 */})
   res
   ))
 method 
-This1.Type.Exception.List exceptions() This1.Type.Exception.List.#from(seqBuilder:(
+This1.Type.Exception.List exceptionTypes() This1.Type.Exception.List.#from(seqBuilder:(
   capsule This1.Type.Exception.List b=This1.Type.Exception.List.#seqBuilder()
   Void unused=(
     capsule This2.Size.Iterator i=This2.Size.#from(builder:(
       capsule This2.S.SBuilder b0=This2.Size.#builder()
       Void unused0=b0.#0()
       b0
-      )).vals(upTo:this.exceptionSize())
+      )).vals(upTo:this.exceptionTypeSize())
     (
       Void unused1=loop (
         Void unused2=i.#next()
@@ -20690,7 +20697,7 @@ This1.Type.Exception.List exceptions() This1.Type.Exception.List.#from(seqBuilde
           )
         
         (
-          Void unused5=b.#add(that:this.exception(that:i.#inner()))
+          Void unused5=b.#add(that:this.exceptionType(that:i.#inner()))
           void
           )
         )

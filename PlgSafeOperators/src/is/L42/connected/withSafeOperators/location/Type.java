@@ -21,15 +21,16 @@ public interface Type extends Location{
     Path path=type().getPath();
     Path whereP=Path.outer(0,locationLib().path);
     path=From.fromP(path,whereP);
+    if(path.isPrimitive()){
+      return new TypeRefTo.Binded(path);
+      }
     if (path.outerNumber()==0){
       return new TypeRefTo.Lib(locationLib().root(),path);
       }
     path=path.setNewOuter(path.outerNumber()-1);
     Program p=pData.p;
-    //will be evilPush
     try{
       ClassB cb=p.extractClassB(path);
-      //if(coreVisitors.IsCompiled.of(cb)){
       if(cb.getPhase()!=Phase.None){//norm,typed,coherent
         return new TypeRefTo.Binded(path);
         }

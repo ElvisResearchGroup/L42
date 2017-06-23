@@ -18,14 +18,6 @@ public class L42BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements L4
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitConcreteT(@NotNull L42Parser.ConcreteTContext ctx) { return visitChildren(ctx); }
-
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
 	@Override public T visitPs(@NotNull L42Parser.PsContext ctx) { return visitChildren(ctx); }
 
 	/**
@@ -35,6 +27,14 @@ public class L42BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements L4
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitSquareW(@NotNull L42Parser.SquareWContext ctx) { return visitChildren(ctx); }
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitSEx(@NotNull L42Parser.SExContext ctx) { return visitChildren(ctx); }
 
 	/**
 	 * {@inheritDoc}
@@ -258,7 +258,7 @@ public class L42BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements L4
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitBb(@NotNull L42Parser.BbContext ctx) { return visitChildren(ctx); }
+	@Override public T visitSS(@NotNull L42Parser.SSContext ctx) { return visitChildren(ctx); }
 
 	/**
 	 * {@inheritDoc}
@@ -266,7 +266,7 @@ public class L42BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements L4
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitHistoricalSeq(@NotNull L42Parser.HistoricalSeqContext ctx) { return visitChildren(ctx); }
+	@Override public T visitBb(@NotNull L42Parser.BbContext ctx) { return visitChildren(ctx); }
 
 	/**
 	 * {@inheritDoc}
@@ -395,14 +395,6 @@ public class L42BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements L4
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitI(@NotNull L42Parser.IContext ctx) { return visitChildren(ctx); }
-
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
-	@Override public T visitHistoricalT(@NotNull L42Parser.HistoricalTContext ctx) { return visitChildren(ctx); }
 
 	/**
 	 * {@inheritDoc}

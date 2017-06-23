@@ -17,19 +17,6 @@ public class L42BaseListener implements L42Listener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterConcreteT(@NotNull L42Parser.ConcreteTContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitConcreteT(@NotNull L42Parser.ConcreteTContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterPs(@NotNull L42Parser.PsContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -50,6 +37,19 @@ public class L42BaseListener implements L42Listener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitSquareW(@NotNull L42Parser.SquareWContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterSEx(@NotNull L42Parser.SExContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSEx(@NotNull L42Parser.SExContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
@@ -407,6 +407,19 @@ public class L42BaseListener implements L42Listener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterSS(@NotNull L42Parser.SSContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSS(@NotNull L42Parser.SSContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterBb(@NotNull L42Parser.BbContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -414,19 +427,6 @@ public class L42BaseListener implements L42Listener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitBb(@NotNull L42Parser.BbContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterHistoricalSeq(@NotNull L42Parser.HistoricalSeqContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitHistoricalSeq(@NotNull L42Parser.HistoricalSeqContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
@@ -635,19 +635,6 @@ public class L42BaseListener implements L42Listener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitI(@NotNull L42Parser.IContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterHistoricalT(@NotNull L42Parser.HistoricalTContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitHistoricalT(@NotNull L42Parser.HistoricalTContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

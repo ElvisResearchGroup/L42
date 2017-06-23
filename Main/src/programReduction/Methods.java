@@ -26,31 +26,35 @@ public abstract class Methods implements Program{
     for(Ast.Path pi:ps){res.add(From.fromP(pi,newThis));}
     return res;
     }
-  static private <T> List<T> mergeUnique(T p,List<T>before, List<T>after){
-    List<T>res=new ArrayList<T>();
+  static private  List<Ast.Type> mergeUnique(Ast.Type p,List<Ast.Type>before, List<Ast.Type>after){
+    List<Ast.Type>res=new ArrayList<>();
     if(!after.contains(p)){res.add(p);}
-    for(T e:before){if(!after.contains(e)){res.add(e);}}
+    for(Ast.Type e:before){
+      if(!after.contains(e)){res.add(e);}
+      }
     res.addAll(after);
+    //Note: we are not coping comment from "before".
+    //It would be very hard to do it and keep norm "stable"
     return res;
     }
-  public static List<Ast.Path> collect(Program p,List<Ast.Path> p0ps){
-    List<Path> res = collect(p,p0ps,new ArrayList<>());
+  public static List<Ast.Type> collect(Program p,List<Ast.Type> p0ps){
+    List<Ast.Type> res = collect(p,p0ps,new ArrayList<>());
     return res;
     //TODO: do we need somehow to remove duplicates?
     }
-  static List<Ast.Path>  collect(Program p,List<Ast.Path> p0ps,List<Ast.Path> visited){
+  static List<Ast.Type>  collect(Program p,List<Ast.Type> p0ps,List<Ast.Path> visited){
     if( p0ps.isEmpty()){return p0ps;}
-    Ast.Path p0=p0ps.get(0);
-    List<Ast.Path> ps=p0ps.subList(1,p0ps.size());
+    Ast.Type p0=p0ps.get(0);
+    List<Ast.Type> ps=p0ps.subList(1,p0ps.size());
     if (visited.contains(p0)){
-      throw new ast.ErrorMessage.CircularImplements(push(visited,p0));
+      throw new ast.ErrorMessage.CircularImplements(push(visited,p0.getPath()));
       }
-    if(p0.isPrimitive()){return collect(p,ps,visited);}
-    ClassB l=p.extractClassB(p0);
-    List<Path>superPaths=l.getSuperPaths();
-    List<Ast.Path> recP0=collect(p.navigate(p0),superPaths,push(visited,p0));
-    recP0=Map.of(pi->From.fromP(pi,p0),recP0);
-    List<Ast.Path> recPs=collect(p,ps,visited);
+    if(p0.getPath().isPrimitive()){return collect(p,ps,visited);}
+    ClassB l=p.extractClassB(p0.getPath());
+    List<Ast.Type>superPaths=l.getSupertypes();
+    List<Ast.Type> recP0=collect(p.navigate(p0.getPath()),superPaths,push(visited,p0.getPath()));
+    recP0=Map.of(pi->pi.withPath(From.fromP(pi.getPath(),p0.getPath())),recP0);
+    List<Ast.Type> recPs=collect(p,ps,visited);
     return mergeUnique(p0, recP0, recPs);    
     }
   
@@ -64,12 +68,12 @@ public abstract class Methods implements Program{
     if (p0.isPrimitive()){return Collections.emptyList();}
     Program p=this;
     ClassB cb0=p.extractClassB(p0);
-    List<Ast.Path> ps=cb0.getSuperPaths();
+    List<Ast.Type> ps=cb0.getSupertypes();
 //          P1..Pn=collect(p,Ps[from P0]), error unless forall i, p(Pi) is an interface
-    List<Ast.Path> p1n=collect(p,Map.of(pi->From.fromP(pi,p0), ps));
-    List<ClassB> cb1n=Map.of(pi->p.extractClassB(pi), p1n);
+    List<Ast.Type> p1n=collect(p,Map.of(pi->pi.withPath(From.fromP(pi.getPath(),p0)), ps));
+    List<ClassB> cb1n=Map.of(pi->p.extractClassB(pi.getPath()), p1n);
     {int i=-1;for(ClassB cbi:cb1n){i++;if (!cbi.isInterface()){
-      throw new ast.ErrorMessage.NonInterfaceImplements(p0,p1n.get(i));}
+      throw new ast.ErrorMessage.NonInterfaceImplements(p0,p1n.get(i).getPath());}
       }}
 //          ms1..msk={ms|p(Pi)(ms) is defined}
     HashMap<Ast.MethodSelector,List<ClassB.Member>> ms1k=new LinkedHashMap<>();
@@ -78,8 +82,8 @@ public abstract class Methods implements Program{
       mi->add(true,ms1k,mi.getS(),From.from(mij,p0)),
       mt->add(true,ms1k,mt.getMs(),From.from(mij,p0))
       );}
-    for(Ast.Path pi:p1n){//call the memoized methods
-      for(ClassB.Member mij:p.methods(pi)){mij.match(
+    for(Ast.Type pi:p1n){//call the memoized methods
+      for(ClassB.Member mij:p.methods(pi.getPath())){mij.match(
         nc->null,
         mi->add(false,ms1k,mi.getS(),mij),
         mt->add(false,ms1k,mt.getMs(),mij)

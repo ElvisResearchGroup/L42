@@ -9,17 +9,6 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
  */
 public interface L42Listener extends ParseTreeListener {
 	/**
-	 * Enter a parse tree produced by {@link L42Parser#concreteT}.
-	 * @param ctx the parse tree
-	 */
-	void enterConcreteT(@NotNull L42Parser.ConcreteTContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link L42Parser#concreteT}.
-	 * @param ctx the parse tree
-	 */
-	void exitConcreteT(@NotNull L42Parser.ConcreteTContext ctx);
-
-	/**
 	 * Enter a parse tree produced by {@link L42Parser#ps}.
 	 * @param ctx the parse tree
 	 */
@@ -40,6 +29,17 @@ public interface L42Listener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitSquareW(@NotNull L42Parser.SquareWContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link L42Parser#sEx}.
+	 * @param ctx the parse tree
+	 */
+	void enterSEx(@NotNull L42Parser.SExContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link L42Parser#sEx}.
+	 * @param ctx the parse tree
+	 */
+	void exitSEx(@NotNull L42Parser.SExContext ctx);
 
 	/**
 	 * Enter a parse tree produced by {@link L42Parser#onPlus}.
@@ -339,6 +339,17 @@ public interface L42Listener extends ParseTreeListener {
 	void exitStringParse(@NotNull L42Parser.StringParseContext ctx);
 
 	/**
+	 * Enter a parse tree produced by {@link L42Parser#sS}.
+	 * @param ctx the parse tree
+	 */
+	void enterSS(@NotNull L42Parser.SSContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link L42Parser#sS}.
+	 * @param ctx the parse tree
+	 */
+	void exitSS(@NotNull L42Parser.SSContext ctx);
+
+	/**
 	 * Enter a parse tree produced by {@link L42Parser#bb}.
 	 * @param ctx the parse tree
 	 */
@@ -348,17 +359,6 @@ public interface L42Listener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitBb(@NotNull L42Parser.BbContext ctx);
-
-	/**
-	 * Enter a parse tree produced by {@link L42Parser#historicalSeq}.
-	 * @param ctx the parse tree
-	 */
-	void enterHistoricalSeq(@NotNull L42Parser.HistoricalSeqContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link L42Parser#historicalSeq}.
-	 * @param ctx the parse tree
-	 */
-	void exitHistoricalSeq(@NotNull L42Parser.HistoricalSeqContext ctx);
 
 	/**
 	 * Enter a parse tree produced by {@link L42Parser#numParse}.
@@ -535,17 +535,6 @@ public interface L42Listener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitI(@NotNull L42Parser.IContext ctx);
-
-	/**
-	 * Enter a parse tree produced by {@link L42Parser#historicalT}.
-	 * @param ctx the parse tree
-	 */
-	void enterHistoricalT(@NotNull L42Parser.HistoricalTContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link L42Parser#historicalT}.
-	 * @param ctx the parse tree
-	 */
-	void exitHistoricalT(@NotNull L42Parser.HistoricalTContext ctx);
 
 	/**
 	 * Enter a parse tree produced by {@link L42Parser#eTopForMethod}.

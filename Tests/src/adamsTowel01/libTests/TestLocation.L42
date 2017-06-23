@@ -143,10 +143,13 @@ LibImplementsTest:{
   True if this object represent an already binded literal.
   ------
   method Bool isEnsuredCoherent()
-  A coherent class can be....
-  Can I require coherence to have precise types? 
-  it is ok with interfaces since I can use refine!!
-as in EnsureCoherent<><
+  Code of a coherent class can be run, is rougly equivalent
+  to a non-abstract class in Java.
+  From a library literal you can also use EnsureCoherent<><lib
+  to check for coherence.
+  Todo: should we make the language stricter and require
+  coherence to have precise types? 
+  it is ok now with interfaces since we can use refine!!
 */
 LibIsMethodsTest:{
   Debug(S"isCloseState()")
@@ -220,7 +223,7 @@ LibIsMethodsTest:{
   return ExitCode.normal()
   }
 /*
-  As we have seen, is possible to navigate 
+  As we have seen, it is possible to navigate 
   inside of a Lib by using nested(path).
   We can go out one level by using location()
   or go directly to the root using root().
@@ -253,17 +256,126 @@ LibIsMethodsTest:{
   ------
   method Location.Doc doc()
   The documentation of this library literal.  
+  ------
+  location() and doc() from Location,
+  == equals(that) class() readableName() is(subtype) toS() since Data
+
 */
-LibTest:{
+LibPathRootDocTest:{
+  a=Location.Lib({/*Top*/A:/*NA*/{/*A*/B:/*NB*/{/*B*/C:/*NC*/{/*C*/}}}})
+  Debug.test(a.path() expected: Path"This")
+  Debug.test(a.nested(path:\"A.B").path() expected: Path"A.B")
+  Debug.test(a.nested(path:\"A.B").root()==a expected: Bool.true())
+  Debug.test(a.nested(path:\"A.B").location()==a.nested(path:\"A") expected: Bool.true())
+  Debug.test(a.nested(path:\"A.B").location()==a expected: Bool.false())
+  Debug.test(a.nested(path:\"A.B").root()==a.nested(path:\"A") expected: Bool.false())
   
+  Debug.test(a.nestedDoc() expected:S"")
+  Debug.test(a.nested(path:\"A.B").nestedDoc() expected:S"NB")
+  Debug.test(a.doc() expected:S"Top")
+  Debug.test(a.nested(path:\"A.B").doc() expected:S"B")
+  return ExitCode.normal()
+  }
+
+/*
+--------------------------------
+Location.Method
+--------------------------------
+Method implements Location, is a Data class and reify 42 methods.
+Since only normalized literals can be introspected,
+all methods have their type information available.
+Method lists:
+------
+method Selector selector()
+To get the selector of this method.
+Note that you can use the Selector object to obtain the list of
+parameter names.
+------
+method Location.Type.Return returnType()
+method Location.Type.Exception.List exceptionTypes()
+method Location.Type.Parameter.List parameterTypes()
+The return type, exceptions and parameters types for this method.
+Note how types in different locations have different types, since we represent the Location of the code elements.
+parameterTypes().left() is the type for this.
+Thus, to recover the modifier for the method, 
+use the code m.parameterTypes().left().mdf()
+-----
+method Bool isAbstract()
+True if the method has no body
+------
+method Bool isRefine()
+True if the method has the refine keyword.
+This is true for all and only the methods that are implementing/refining an interface method.
+------
+location() and doc() from Location,
+== equals(that) class() readableName() is(subtype) toS() since Data
+*/
+
+MethodTest:{
+  Debug(S"methodTest()")
+  m=Location.Lib(
+    {class method /*hi*/ mut Any foo(This bar) exception Void}
+    ).methods().left()
+  Debug.test(m.selector() expected: Selector"foo(bar)")
+  Debug.test(m.returnType() expected: S"mut Any")
+  Debug.test(m.exceptionTypes() expected: S"[Void]")
+  Debug.test(m.parameterTypes() expected: S"[class This; This]")
+  Debug.test(m.isAbstract() expected: Bool.true())
+  Debug.test(m.isRefine() expected: Bool.false())
+  Debug.test(m.doc() expected: S"hi")
 
   return ExitCode.normal()
   }
 
-
+/*
+--------------------------------
+Location.Type
+--------------------------------
+Type implements Location and is an interface that reify types:
+There are 4 different points where types can appear, and each point have its own nested class:
+Return, Parameter, Exception and Implements.
+All the Types are Data classes.
+Except for Return, the others have a pos() method telling what what their exact position in their location.
+Applications where this information is not relevant can just use Type everywhere as the common supertype.
+Implements are located in library literals, so their location()
+method returns a Lib, while Return, Parameter and Exception
+are located in method headers, so their location() method returns a Method.
+Type offers the following methods:
+------
+method Location.Mdf mdf()
+Return the modifier of the type.
+Mdf is an enumeration with the following constants:
+cmpImm;cmpMut;cmpRead;cmpLent;cmpCapsule;cmpClass;fwdImm;fwdMut;
+Where "cmp" stand for complete, and "fwd" is for forward types.
+------
+method Size pos()
+The position of the type in the location.
+This method is not availabe in the Type.Return class.
+------
+method Type.RefTo refTo()
+This method, and the RefTo type, bridges Type (as the Location where a type is wrote) with the definition of its path.
+See the documentation of RefTo later.
+------
+location() and doc() from Location,
+== equals(that) class() readableName() is(subtype) toS() since Data
+*/
+TypeTest:{
+  Debug(S"typeTest()")
+  m=Location.Lib({implements Barrretta/*iDoc*/ 
+    Barrretta:{interface 
+      method /*hi*/ mut Any/*rDoc*/ foo(This/*pDoc*/ bar) exception Void/*eDoc*/
+      }
+    method foo(bar) void
+    }).methods().left()
+  Debug.test(m.location().implements().left().doc() expected:S"iDoc")
+  Debug.test(m.exceptionTypes().left().doc() expected:S"eDoc")
+  Debug.test(m.parameterTypes().left().doc() expected:S"")
+  Debug.test(m.parameterTypes().right().doc() expected:S"pDoc")
+  Debug.test(m.returnType().doc() expected:S"rDoc")
+  return ExitCode.normal()
+  }
 
 EmptyTest:{
   return ExitCode.normal()
   }
-
 }

@@ -70,9 +70,6 @@ public class TestFrom {
   },{"{ C:{ method () (This1.A.m())}}", "This2.B","{ C:{ method () (This1.A.m())}}"
   },{"{ C:{ method () (This1.A.m())}}", "This20.B","{ C:{ method () (This1.A.m())}}"
   },{"{ C:{ method () (This1.A.m())}}", "This0.B","{ C:{ method () (This1.A.m())}}"
-  },{"{interface method Void m()^## This10}","This1","{interface method Void m()^## This11}"
-  },{"{interface method Void m()^## This0}","This1","{interface method Void m()^## This0}"
-    //and would be different as members out of a class
   },{"{method This2.B #apply() }",
      "This1.C.A",
      "{method This2.C.B #apply() }"

@@ -7,18 +7,18 @@
     refine read method class This class()
     method Bool isAbstract()
     method Bool isRefine()
+    method Doc doc()
     method Selector selector()
     method Type.Return returnType()
-    
     method Size parameterTypeSize()
     method Type.Parameter parameterType(Size that)
     method
     Type.Parameter.List parameterTypes()
       Type.Parameter.List[with i in 0Size.vals(upTo:this.parameterTypeSize()) (use[this.parameterType(i)])]
       
-    method Size exceptionSize()
-    method Type.Exception exception(Size that)
+    method Size exceptionTypeSize()
+    method Type.Exception exceptionType(Size that)
     method
-    Type.Exception.List exceptions()
-      Type.Exception.List[with i in 0Size.vals(upTo:this.exceptionSize()) (use[this.exception(i)])]
+    Type.Exception.List exceptionTypes()
+      Type.Exception.List[with i in 0Size.vals(upTo:this.exceptionTypeSize()) (use[this.exceptionType(i)])]
     }

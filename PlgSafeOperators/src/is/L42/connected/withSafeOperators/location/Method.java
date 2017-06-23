@@ -43,13 +43,14 @@ public class Method extends Location.LocationImpl<ClassB.MethodWithType, Lib>{
   Cacher<List<Type.Exception>> exceptionsC=new Cacher<List<Type.Exception>>(){public List<Type.Exception> cache(){
   MethodType mt = inner.getMt();
   List<Type.Exception> res=new ArrayList<>();
-  {int i=-1; for(Ast.Type ti:mt.getTs()){i+=1; //starts from 0
+  {int i=-1; for(Ast.Type ti:mt.getExceptions()){i+=1; //starts from 0
     res.add(new Type.Exception(i,ti,inner,Method.this));
   }}
   return res;
   }};
-  public int exceptionSize(){return parametersC.get().size();}
-  public Type.Exception exception(int that) throws NotAvailable{return Location.listAccess(exceptionsC.get(), that);}
+  public int exceptionTypeSize(){return exceptionsC.get().size();}
+  public Type.Exception exceptionType(int that) throws NotAvailable{
+    return Location.listAccess(exceptionsC.get(), that);}
   @Override public boolean equalequal(Object that) {
     return this.equals(that);
     }

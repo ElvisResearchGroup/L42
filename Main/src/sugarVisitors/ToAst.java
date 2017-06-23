@@ -65,7 +65,10 @@ public class ToAst extends AbstractVisitor<Expression>{
       }
       MethodSelector s=MethodSelector.of(name, names);
       List<Type> exceptions=new ArrayList<>();
-      for(TerminalNode p:h.Path()){exceptions.add(Path.sugarParse(p.getText()).toImmNT());}
+      if(h.sEx()!=null){
+        for(TContext ti:h.sEx().t()){
+        exceptions.add(parseType(ti));
+        }}
       Optional<Expression> inner=Optional.empty();
       if(ctx.eTopForMethod()!=null){inner=Optional.of(ctx.eTopForMethod().accept(ToAst.this));}
       MethodType mt=new MethodType(h.Refine()!=null,mdf,ts,returnType,exceptions);
@@ -147,7 +150,7 @@ public class ToAst extends AbstractVisitor<Expression>{
   }
   public static Doc parseDoc(ParseTree s){
     if(s==null){return Doc.empty();}//as for empty comment string
-    return parseDoc(s.getText().replace('\t','('));
+    return parseDoc(s.getText().replace('\t','(').replace(',',' '));
   }
   public static Doc parseDoc(String c){
     if(c.isEmpty()){return Doc.empty();}
@@ -229,21 +232,21 @@ public class ToAst extends AbstractVisitor<Expression>{
   private Catch parseK(KContext k) {
     if(k.k1()!=null){
       return new Expression.Catch1(position(k),
-          SignalKind.fromString(nameK(k.k1().S())),
+          SignalKind.fromString(nameK(k.k1().sS().getText())),
           parseType(k.k1().t()),
           nameL(k.k1().X()),
           k.k1().eTop().accept(this));
     }
     if(k.kMany()!=null){
       return new Expression.CatchMany(position(k),
-          SignalKind.fromString(nameK(k.kMany().S())),
+          SignalKind.fromString(nameK(k.kMany().sS().getText())),
           k.kMany().t().stream().map(this::parseType).collect(Collectors.toList()),
           k.kMany().eTop().accept(this)
           );
     }
     if( k.kProp()!=null){
       return new Expression.CatchProp(position(k),
-          SignalKind.fromString(nameK(k.kProp().S())),
+          SignalKind.fromString(nameK(k.kProp().sS().getText())),
           k.kProp().t().stream().map(this::parseType).collect(Collectors.toList()),
           k.kProp().eTop().accept(this)
           );
@@ -280,17 +283,13 @@ public class ToAst extends AbstractVisitor<Expression>{
     return new Ast.VarDecXE(vd.Var()!=null,t,nameL(vd.x()),vd.eTop().accept(this));
     }
   private Type parseType(TContext t) {
-    if(t.concreteT()!=null){
-      ConcreteTContext tt = t.concreteT();
-      Doc d=parseDoc(tt.docsOpt());
+      Doc d=parseDoc(t.docsOpt());
       Ast.Type nt=new Ast.Type(
-        Mdf.fromString((tt.Mdf()==null)?"":nameK(tt.Mdf())),
-        Ast.Path.sugarParse(nameU(tt.Path())),d);
-      if (tt.Ph()==null){return nt;}
+        Mdf.fromString((t.Mdf()==null)?"":nameK(t.Mdf())),
+        Ast.Path.sugarParse(nameU(t.Path())),d);
+      if (t.Ph()==null){return nt;}
       return Functions.toPh(nt);
     }
-    throw Assertions.codeNotReachable();
-  }
   @Override public Expression visitNudeE(NudeEContext ctx) {
       return ctx.eTop().accept(this);}
   @Override public Expression visitX(XContext ctx) {
@@ -348,10 +347,10 @@ public class ToAst extends AbstractVisitor<Expression>{
     List<Type> supertypes= new ArrayList<>();
     ImplsContext impl = ctx.impls();
     if (impl!=null){
-      {int i=-1;for(TerminalNode p: impl.Path()){i+=1;
-        supertypes.add(Path.sugarParse(nameU(p)).toImmNT().withDoc(parseDoc(impl.docsOpt().get(0))));
+      for(TContext ti: impl.t()){
+        supertypes.add(parseType(ti));
         }
-      }}
+      }
     List<Member> ms=visitMembers(ctx.member());
     List<Ast.FieldDec> fs=new ArrayList<>();
     for( FieldDecContext f:ctx.fieldDec()){fs.add(parseFieldDec(f));}
@@ -379,7 +378,7 @@ public class ToAst extends AbstractVisitor<Expression>{
   }
   @Override public Expression visitSignalExpr(SignalExprContext ctx) {
     Expression inner=ctx.eTop().accept(this);
-    SignalKind kind=SignalKind.fromString(nameK(ctx.S()));
+    SignalKind kind=SignalKind.fromString(nameK(ctx.sS().getText()));
     return new Expression.Signal(kind, inner);
     }
   @Override public Expression visitLoopExpr(LoopExprContext ctx) {

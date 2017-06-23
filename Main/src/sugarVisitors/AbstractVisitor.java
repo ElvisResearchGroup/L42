@@ -11,7 +11,6 @@ import antlrGenerated.L42Parser.BlockContext;
 import antlrGenerated.L42Parser.ClassBContext;
 import antlrGenerated.L42Parser.ClassBExtraContext;
 import antlrGenerated.L42Parser.ClassBReuseContext;
-import antlrGenerated.L42Parser.ConcreteTContext;
 import antlrGenerated.L42Parser.ContextIdContext;
 import antlrGenerated.L42Parser.CurlyBlockContext;
 import antlrGenerated.L42Parser.DContext;
@@ -27,8 +26,6 @@ import antlrGenerated.L42Parser.ETopForMethodContext;
 import antlrGenerated.L42Parser.EUnOpContext;
 import antlrGenerated.L42Parser.FieldDecContext;
 import antlrGenerated.L42Parser.HeaderContext;
-import antlrGenerated.L42Parser.HistoricalSeqContext;
-import antlrGenerated.L42Parser.HistoricalTContext;
 import antlrGenerated.L42Parser.IContext;
 import antlrGenerated.L42Parser.IfExprContext;
 import antlrGenerated.L42Parser.ImplsContext;
@@ -58,6 +55,8 @@ import antlrGenerated.L42Parser.PsContext;
 import antlrGenerated.L42Parser.RoundBlockContext;
 import antlrGenerated.L42Parser.RoundBlockForMethodContext;
 import antlrGenerated.L42Parser.RoundContext;
+import antlrGenerated.L42Parser.SExContext;
+import antlrGenerated.L42Parser.SSContext;
 import antlrGenerated.L42Parser.SignalExprContext;
 import antlrGenerated.L42Parser.SquareContext;
 import antlrGenerated.L42Parser.SquareWContext;
@@ -132,11 +131,7 @@ public  class AbstractVisitor<T>  implements L42Visitor<T>{
 
   @Override public T visitRoundBlock(RoundBlockContext ctx) {throw Assertions.codeNotReachable();}
 
-  @Override public T visitConcreteT(ConcreteTContext ctx) {throw Assertions.codeNotReachable();}
-
   @Override public T visitMethSelector(MethSelectorContext ctx) {throw Assertions.codeNotReachable();}
-
-  @Override public T visitHistoricalT(HistoricalTContext ctx) {throw Assertions.codeNotReachable();}
 
   @Override public T visitSignalExpr(SignalExprContext ctx) {throw Assertions.codeNotReachable();}
 
@@ -201,9 +196,6 @@ public  class AbstractVisitor<T>  implements L42Visitor<T>{
   public T visitMDec(MDecContext ctx) {throw Assertions.codeNotReachable();}
 
   @Override
-  public T visitHistoricalSeq(HistoricalSeqContext ctx) {throw Assertions.codeNotReachable();}
-
-  @Override
   public T visitRoundBlockForMethod(RoundBlockForMethodContext ctx) {throw Assertions.codeNotReachable();}
 
   @Override
@@ -225,5 +217,8 @@ public  class AbstractVisitor<T>  implements L42Visitor<T>{
 
   @Override public T visitImpls(ImplsContext ctx) {throw Assertions.codeNotReachable();}
 
+  @Override public T visitSEx(SExContext ctx) {throw Assertions.codeNotReachable();}
+
+  @Override public T visitSS(SSContext ctx) {throw Assertions.codeNotReachable();}
 
 }

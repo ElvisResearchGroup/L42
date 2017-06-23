@@ -127,7 +127,7 @@ public class Lib extends Location.LocationImpl<ExpCore.ClassB,Lib>{
     if(this.path.isEmpty()){
       return new Doc(Ast.Doc.empty(),this);
       }
-    NestedClass nc = inner.getNested(path);
+    NestedClass nc = this.root.getNested(path);
     return new Doc(nc.getDoc(),this);
     }//empty doc if it is root
 //even if obtained with a classObj, no method to get it back

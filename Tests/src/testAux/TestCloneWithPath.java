@@ -63,8 +63,8 @@ public class TestCloneWithPath {
 
 @Test  public void test() {
   TestHelper.configureForTest();
-  ClassB cb1=getClassB(true,"cb1", _cb1);
-  ClassB expected=getClassB(true,"expected", _expected);
+  ClassB cb1=getClassB(false,"cb1", _cb1);
+  ClassB expected=getClassB(false,"expected", _expected);
   ClassB result = (ClassB) cb1.accept(new PathAnnotateClass());
   TestHelper.assertEqualExp(expected, result);
   }
