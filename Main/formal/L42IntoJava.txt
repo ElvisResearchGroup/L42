@@ -330,6 +330,7 @@ CT[TX x ex]=
   boolean fresh; fresh=y.inner() instanceof CT*TX;//boxed version
   if(fresh){//TODO:Need care for Library vs Any: Library will capture all objects that 
     //do not implement some root interface of all 42 objects, while Any will capture all.
+    //Also, IMPORTANT: when capturing a return class Any, if we allow it, we need to check for coherence!
     CT*TX x=(TX)y.inner();
     CT[ex]
     }

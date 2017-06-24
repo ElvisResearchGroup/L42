@@ -122,6 +122,7 @@ public interface Ast {
 
  @Value
  @Wither
+ @EqualsAndHashCode(exclude = "doc")
  public class Type{
   Mdf mdf;
   Path path;

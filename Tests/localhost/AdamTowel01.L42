@@ -18,7 +18,8 @@ class method
 Library failure()  {/*@exitStatus
 42000
 */}}
-Bool: {implements This1.Concept.Base, This1.Concept.ToS, This1.Concept.Classable, This1.Concept.Equals
+Bool: {implements This1.Concept.Base, This1.Concept.ToS, This1.Concept.Classable, This1.Concept.Equals/*class method This from(Base base)
+*/
 mut method 
 Library #_binaryRepr() 
 read method 
@@ -330,7 +331,8 @@ Any parseError(This1.S that) This1.S.#from(builder:(
   Void unused53=b.#2()
   b
   ))}
-Size: {implements This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Classable
+Size: {implements This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Classable/*@_private
+*/
 class method 
 mut This0 _private(Library _binaryRepr) 
 read method 
@@ -1025,7 +1027,9 @@ This1 #inner() this.start().#less(that:This2.Size.#from(builder:(
   )))
 read method 
 Void #close() void}}
-S: {implements This1.Concept.Base, This1.Concept.ToS, This1.Concept.Classable, This1.Concept.Equals
+S: {implements This1.Concept.Base/*  Concept.Equals //needed until we do (also refine) normalization
+*/, This1.Concept.ToS, This1.Concept.Classable, This1.Concept.Equals/*class method This from(Base base)
+*/
 class method 
 mut This0 _private(Library _binaryRepr) 
 read method 
@@ -1143,7 +1147,7 @@ This1.Size indexOfLeft(This1.S val) this.indexOfLeft(val:val, start:This1.Size.#
   )))
 method 
 This1.Size indexOfLeft(This1.S val, This1.Size start) (
-  Void unused=(/*val must be not empty, TODO: error here?
+  Void unused=(/*val must be not empty  TODO: error here?
 */
     var This1.Size current=start
     Void unused0=(
@@ -1192,7 +1196,7 @@ CurlyBlock-Should be unreachable code
   )
 method 
 This1.Size indexOfRight(This0 val) (
-  Void unused=(/*val must be not empty, TODO: error here?
+  Void unused=(/*val must be not empty  TODO: error here?
 */
     var This1.Size current=this.size().#less(that:val.size())
     Void unused0=(
@@ -1953,7 +1957,7 @@ Void #hat() this.acc(that: {/*@stringU
 */})
 mut method 
 Void #comma() this.acc(that: {/*@stringU
-,
+ 
 */})
 mut method 
 Void #semicolon() this.acc(that: {/*@stringU
@@ -2003,7 +2007,7 @@ Library #binaryRepr()
 class method 
 Void #exceptionIf(Library binaryRepr) exception This0 use This0 check instanceof(_this:binaryRepr) exception This0.#from(binaryRepr:binaryRepr)
 class method 
-Void #pluginUnresponsive(Library binaryRepr) error  {/*Compose(that,and)*/}
+Void #pluginUnresponsive(Library binaryRepr) error  {/*Compose(that and)*/}
 class method 
 Library compose(Library left, Library right) (
   Library res=use This0 check #compose(_1_ast%ExpCore$ClassB:left, _2_ast%ExpCore$ClassB:right) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
@@ -2023,7 +2027,7 @@ Library #binaryRepr()
 class method 
 Void #exceptionIf(Library binaryRepr) exception This0 use This0 check instanceof(_this:binaryRepr) exception This0.#from(binaryRepr:binaryRepr)
 class method 
-Void #pluginUnresponsive(Library binaryRepr) error  {/*renameClass(Library that,S nameSrc,S nameDest)*/}
+Void #pluginUnresponsive(Library binaryRepr) error  {/*renameClass(Library that S nameSrc S nameDest)*/}
 class method 
 Library renameClass(Library that, This2.S nameSrc, This2.S nameDest) (
   Library res=use This0 check #renameClass(_1_ast%ExpCore$ClassB:that, _2_java%lang%String:nameSrc.#binaryRepr(), _3_java%lang%String:nameDest.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
@@ -2041,7 +2045,7 @@ Library #binaryRepr()
 class method 
 Void #exceptionIf(Library binaryRepr) exception This0 use This0 check instanceof(_this:binaryRepr) exception This0.#from(binaryRepr:binaryRepr)
 class method 
-Void #pluginUnresponsive(Library binaryRepr) error  {/*redirect(Library that,S src,class Any dest)*/}
+Void #pluginUnresponsive(Library binaryRepr) error  {/*redirect(Library that S src class Any dest)*/}
 class method 
 Library redirect(Library that, This2.S src, class Any dest) (
   Library res=use This0 check #redirect(_1_ast%ExpCore$ClassB:that, _2_java%lang%String:src.#binaryRepr(), _3_ast%Ast$Path:dest) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
@@ -2069,7 +2073,8 @@ Library #leftrightleft(Library that) This1.RenameClass.renameClass(that:that, na
   )))}
 MiniDataTrait: {
 class method 
-Library #apply()  {implements This3.Concept.Base, This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals
+Library #apply()  {implements This3.Concept.Base, This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals/*class method This from(Base base)
+*/
 refine read method 
 class This0 class() This0
 refine class method 
@@ -2156,7 +2161,8 @@ This2.S classObjToS() This2.S.#from(builder:(
   b
   ))
 class method 
-Library thisLib()  {implements This3.Concept.Base, This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals
+Library thisLib()  {implements This3.Concept.Base, This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals/*class method This from(Base base)
+*/
 refine read method 
 class This0 class() 
 refine read method 
@@ -2535,7 +2541,8 @@ class method
 This2.S readableName() 
 class method 
 This2.Bool is(class Any subtype) }
-Base: {interface implements This1.ToS, This1.Classable, This1.Equals
+Base: {interface implements This1.ToS, This1.Classable, This1.Equals/*class method This from(Base base)
+*/
 refine read method 
 This2.S toS() 
 refine read method 
@@ -2572,7 +2579,7 @@ read method
 This2.Bool contains(read Any that) }
 Parsable: {interface }
 Invariant: {interface 
-read method /* can throw error or return false, as more opportune
+read method /* can throw error or return false  as more opportune
 */This2.Bool invariant() }
 RandomAccess: {interface 
 read method 
@@ -2778,7 +2785,7 @@ This2.Bool #apply(read This2.Message that, read This2.Message other) (
         (return This2.Bool.true())
         )
       ))
-    Void unused2=return (// this calls  equals in message,
+    Void unused2=return (// this calls  equals in message 
 //that check for equal class and then call EqualMessages
 that.responseOf().#get().equals(that:other.responseOf().#get()))
     void
@@ -2986,15 +2993,16 @@ method
 mut This4.S.SBuilder #builder() This4.S.SBuilder.empty()
 method 
 This1 #from(This4.S.SBuilder builder) This1.#apply(text:this.that().#plusplus(that:This4.S.#from(builder:builder)))}}}}
-Guard: {/* exception as Guard bureocracy, error as Guard detection
--is a check guarenteed to be performed, program logic can rely on this being enforced.
-  as exceptions, Guards objects are a way to report/guard complex operations,
+Guard: {/* exception as Guard bureocracy  error as Guard detection
+-is a check guarenteed to be performed  program logic can rely on this being enforced.
+  as exceptions  Guards objects are a way to report/guard complex operations 
  where checking the shape of the input can be unconvenient.
-as errors, they represent precondition violations.
+as errors  they represent precondition violations.
 Turning an exception Guard into an error Guard
- is equivalent of declaring that such misuse should not happen (blame on the caller),
- still, there is no bug in the program at this stage. Is legit for the caller to try and be blamed
-*/interface implements This1.Message, This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Classable
+ is equivalent of declaring that such misuse should not happen (blame on the caller) 
+ still  there is no bug in the program at this stage. Is legit for the caller to try and be blamed
+*/interface implements This1.Message/*all other guards should implement this one
+*/, This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Classable
 refine class method 
 This1.S kind() 
 refine read method 
@@ -3578,7 +3586,8 @@ method
 mut This3.S.SBuilder #builder() This3.S.SBuilder.empty()
 method 
 This1 #from(This3.S.SBuilder builder) This1.#apply(text:this.that().#plusplus(that:This3.S.#from(builder:builder)))}}
-ParseFail: {interface implements This1, This2.Message, This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable
+ParseFail: {interface implements This1, This2.Message/*all other guards should implement this one
+*/, This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable
 refine class method 
 This2.S kind() 
 refine read method 
@@ -3597,7 +3606,8 @@ refine class method
 This2.Bool is(class Any subtype) }}
 System: {
 Guard: {/* implements Outer.Guard soon (remove "interface" for a bad translation bug: This1_System_Guard is not abstract and does not override abstract method MtoS()
-*/interface implements This2.Guard, This2.Message, This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable
+*/interface implements This2.Guard, This2.Message/*all other guards should implement this one
+*/, This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable
 refine class method 
 This2.S kind() 
 refine read method 
@@ -4868,7 +4878,7 @@ This2.S toS() (
       b0
       ))
     var This0.Cell c=this.head()
-    Void unused0=loop (/*Debug(S"MutListAny.toS() loop pass with ret='"[ret]"', sep='"[sep]"'")
+    Void unused0=loop (/*Debug(S"MutListAny.toS() loop pass with ret='"[ret]"'  sep='"[sep]"'")
 */
       Void unused2=(
         This0.CellNext c0=(
@@ -8415,7 +8425,8 @@ class method /*will be fixed in adam2
   b
   ))}
 CTest: {}
-Path: {implements This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Classable
+Path: {implements This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Classable/*@_private
+*/
 class method 
 mut This0 _private(Library _binaryRepr) 
 read method 
@@ -8989,7 +9000,8 @@ This1.Path fresh(This1.Path path) (
 CurlyBlock-Should be unreachable code
 */}
   )}
-Selector: {implements This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Classable
+Selector: {implements This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Classable/*@_private
+*/
 class method 
 mut This0 _private(Library _binaryRepr) 
 read method 
@@ -9383,7 +9395,7 @@ This1.Strings names() (
       capsule This1.S.SBuilder b1=This1.Size.#builder()
       Void unused6=b1.#1()
       b1
-      )))).#plusplus(that:(// from foo(a,b,c) to a,b,c,
+      )))).#plusplus(that:(// from foo(a b c) to a b c 
 This1.S.#from(builder:(
       capsule This1.S.SBuilder b2=This1.S.#builder()
       Void unused7=b2.#comma()
@@ -9554,7 +9566,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 method 
-This0 with(This1.S prefix) (//we still need to add check validity, and fields name, list parameters, and ways to add/remove parameters
+This0 with(This1.S prefix) (//we still need to add check validity  and fields name  list parameters  and ways to add/remove parameters
 (
   Void unused=(
     This1.S newName=prefix.#plusplus(that:This0.leftAsASCIIUpperCase(that:this.name()))
@@ -9858,7 +9870,7 @@ Library moveImplementation(Library that, This1.Path path, This1.Selector src, Th
   ))
 class method 
 Library removeImplementation(Library that, This1.Path path, This1.Selector selector) use This0 check removeImplementation(that:that, path:path.#binaryRepr(), selector:selector.#binaryRepr()) error (/*class method
-  Library addDocumentation(Library that,Path path,Introspection.Doc doc)
+  Library addDocumentation(Library that Path path Introspection.Doc doc)
     use This
       check addDocumentation(that
         path:path.#binaryRepr()
@@ -9866,14 +9878,14 @@ Library removeImplementation(Library that, This1.Path path, This1.Selector selec
         )
       error System.Guard.PluginFailure"SafeOperators.addDocumentation(path)"
   class method
-  Library addDocumentation(Library that,Path path,Selector selector,Introspection.Doc doc)
+  Library addDocumentation(Library that Path path Selector selector Introspection.Doc doc)
     use This
       check addDocumentation(that
         path:path.#binaryRepr()
         selector:selector.#binaryRepr()
         doc:doc.#binaryRepr()
         )
-      error System.Guard.PluginFailure"SafeOperators.addDocumentation(path,selector)"
+      error System.Guard.PluginFailure"SafeOperators.addDocumentation(path selector)"
 */This1.System.Guard.PluginFailure.#from(builder:(
   capsule This1.S.SBuilder b=This1.System.Guard.PluginFailure.#builder()
   Void unused=b.#S()
@@ -10380,8 +10392,9 @@ method
 mut This4.S.SBuilder #builder() This4.S.SBuilder.empty()
 method 
 This1 #from(This4.S.SBuilder builder) This1.#apply(text:this.that().#plusplus(that:This4.S.#from(builder:builder)))}}
-Top: {/*Data is more than Solid, and Liquid, Gas, Plasma can be good methafores
-*/implements This3.Concept.Equals, This3.Concept.Classable, This3.Concept.ToS
+Top: {/*Data is more than Solid  and Liquid  Gas  Plasma can be good methafores
+*/implements This3.Concept.Equals, This3.Concept.Classable/*may be Parsable?
+*/, This3.Concept.ToS
 refine class method 
 This3.Bool is(class Any subtype) (
   Void unused=(
@@ -12150,8 +12163,9 @@ read method
 Void #close() void}}}
 SolidTrait: {
 class method 
-Library #apply()  {/*Data is more than Solid, and Liquid, Gas, Plasma can be good methafores
-*/implements This3.Concept.ToS, This3.Concept.Equals, This3.Concept.Classable
+Library #apply()  {/*Data is more than Solid  and Liquid  Gas  Plasma can be good methafores
+*/implements This3.Concept.ToS, This3.Concept.Equals, This3.Concept.Classable/*may be Parsable?
+*/
 refine class method 
 This3.Bool is(class Any subtype) (
   Void unused=(
@@ -12226,7 +12240,8 @@ read method
 This3.Bool #equalequal(read This0 that) 
 refine read method 
 This3.S toS() }}}
-Location: {interface implements This1.Concept.Base, This1.Concept.ToS, This1.Concept.Classable, This1.Concept.Equals
+Location: {interface implements This1.Concept.Base, This1.Concept.ToS, This1.Concept.Classable, This1.Concept.Equals/*class method This from(Base base)
+*/
 refine read method 
 This1.S toS() 
 refine read method 
@@ -12432,8 +12447,9 @@ method
 mut This3.S.SBuilder #builder() This3.S.SBuilder.empty()
 method 
 This1 #from(This3.S.SBuilder builder) This1.#apply(text:this.that().#plusplus(that:This3.S.#from(builder:builder)))}}
-Mdf: {/*Data is more than Solid, and Liquid, Gas, Plasma can be good methafores
-*/implements This2.Concept.Equals, This2.Concept.Classable, This2.Concept.ToS
+Mdf: {/*Data is more than Solid  and Liquid  Gas  Plasma can be good methafores
+*/implements This2.Concept.Equals, This2.Concept.Classable/*may be Parsable?
+*/, This2.Concept.ToS
 refine class method 
 This2.Bool is(class Any subtype) (
   Void unused=(
@@ -14571,7 +14587,8 @@ read method
 Void #close() void}}}
 Origin: {/*@plugin  toFix 
 @pluginPart is.L42.connected.withSafeOperators.location.Origin
-*/implements This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals
+*/implements This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
+*/
 class method 
 mut This0 #from(Library binaryRepr) 
 read method 
@@ -16283,7 +16300,8 @@ This$Impl: {
 class method 
 Library #leftrightleft(Library that) This2.UnsafeRefactor.Compose.compose(left:This0.#apply(), right:that)
 class method 
-Library #apply()  {implements This2, This3.Concept.Base, This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals
+Library #apply()  {implements This2, This3.Concept.Base, This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals/*class method This from(Base base)
+*/
 refine read method 
 class This0 class() 
 method 
@@ -16340,10 +16358,11 @@ This3.Bool equals(read Any that) }}
 PlgClass: {
 class method 
 Library #leftrightleft(Library that) This1.PUnresponsive.#leftrightleft(that:This2.UnsafeRefactor.MiniData.#leftrightleft(that:This1.This$Impl.#leftrightleft(that:that)))}
-Doc: {/*user will need typecase to discover precise type, location() not refined
+Doc: {/*user will need typecase to discover precise type  location() not refined
 @plugin  toFix 
 @pluginPart is.L42.connected.withSafeOperators.location.Doc
-*/implements This1, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals
+*/implements This1, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
+*/
 class method 
 mut This0 #from(Library binaryRepr) 
 read method 
@@ -16562,7 +16581,8 @@ CurlyBlock-Should be unreachable code
 Annotation: {/*@plugin  toFix 
 @pluginPart is.L42.connected.withSafeOperators.location.Doc$Annotation
 @todo:decomment later:Type.RefTo key
-*/implements This3.Concept.Base, This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals
+*/implements This3.Concept.Base, This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals/*class method This from(Base base)
+*/
 class method 
 mut This0 #from(Library binaryRepr) 
 read method 
@@ -18202,7 +18222,8 @@ read method
 Void #close() void}}}}
 Lib: {/*@plugin  toFix 
 @pluginPart is.L42.connected.withSafeOperators.location.Lib
-*/implements This1, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals
+*/implements This1, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
+*/
 class method 
 mut This0 #from(Library binaryRepr) 
 read method 
@@ -18587,10 +18608,10 @@ This1.Type.Implemented.List implements() This1.Type.Implemented.List.#from(seqBu
   b
   ))
 method 
-This2.Bool implements(class Any classAny) (
+This2.Bool implements(class Any classObj) (
   Void unused=(
     Void unused0=(
-      This2.Bool cond=This1.Type.RefTo.Binded.equalsClassObj(that:Any, and:classAny)
+      This2.Bool cond=This1.Type.RefTo.Binded.equalsClassObj(that:Any, and:classObj)
       (
         Void unused3=cond.#checkTrue()
         
@@ -18637,7 +18658,7 @@ CastT-Should be unreachable code
                 Void unused9=(
                   class Any ci=ri0.referredClassObj()
                   (
-                    This2.Bool cond0=This1.Type.RefTo.Binded.equalsClassObj(that:ci, and:classAny)
+                    This2.Bool cond0=This1.Type.RefTo.Binded.equalsClassObj(that:ci, and:classObj)
                     (
                       Void unused10=cond0.#checkTrue()
                       
@@ -18743,7 +18764,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 class method 
-This0 #apply(class Any classAny) This0.newFromClass(that:classAny)
+This0 #apply(class Any classObj) This0.newFromClass(that:classObj)
 class method 
 This0 #apply(Library that) This0.newFromLibrary(that:that)
 method 
@@ -18865,7 +18886,7 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.locati
 */})
   res
   ))
-method /*last is its name, empty path for root
+method /*last is its name  empty path for root
 */This2.Path path() This2.Path.#from(binaryRepr:(
   Library res=use This0 check path(_this:this.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
 plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.location.Lib\u000amethod name: path()\u000ajava method: is.L42.connected.withSafeOperators.location.Lib.path(_this)\u000a
@@ -20510,7 +20531,8 @@ read method
 Void #close() void}}}
 Method: {/*@plugin  toFix 
 @pluginPart is.L42.connected.withSafeOperators.location.Method
-*/implements This1, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals
+*/implements This1, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
+*/
 class method 
 mut This0 #from(Library binaryRepr) 
 read method 
@@ -22329,7 +22351,8 @@ CurlyBlock-Should be unreachable code
   )
 read method 
 Void #close() void}}}
-Type: {interface implements This1, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals
+Type: {interface implements This1, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
+*/
 method 
 This1.Doc doc() 
 method 
@@ -22354,7 +22377,8 @@ refine class method
 This2.Bool is(class Any subtype) 
 refine read method 
 This2.Bool equals(read Any that) 
-RefTo: {interface implements This3.Concept.Base, This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals
+RefTo: {interface implements This3.Concept.Base, This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals/*class method This from(Base base)
+*/
 refine read method 
 This3.S toS() 
 refine read method 
@@ -22367,7 +22391,8 @@ refine read method
 This3.Bool equals(read Any that) 
 Lib: {/*@plugin  toFix 
 @pluginPart is.L42.connected.withSafeOperators.location.TypeRefTo$Lib
-*/implements This1, This4.Concept.Base, This4.Concept.ToS, This4.Concept.Classable, This4.Concept.Equals
+*/implements This1, This4.Concept.Base, This4.Concept.ToS, This4.Concept.Classable, This4.Concept.Equals/*class method This from(Base base)
+*/
 class method 
 mut This0 #from(Library binaryRepr) 
 read method 
@@ -22469,7 +22494,8 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.locati
   ))}
 Unavailable: {/*@plugin  toFix 
 @pluginPart is.L42.connected.withSafeOperators.location.TypeRefTo$Unavailable
-*/implements This1, This4.Concept.Base, This4.Concept.ToS, This4.Concept.Classable, This4.Concept.Equals
+*/implements This1, This4.Concept.Base, This4.Concept.ToS, This4.Concept.Classable, This4.Concept.Equals/*class method This from(Base base)
+*/
 class method 
 mut This0 #from(Library binaryRepr) 
 read method 
@@ -22564,7 +22590,9 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.locati
   ))}
 Binded: {/*@plugin  toFix 
 @pluginPart is.L42.connected.withSafeOperators.location.TypeRefTo$Binded
-*/implements This1, This4.Concept.Base, This4.Concept.ToS, This4.Concept.Classable, This4.Concept.Equals
+*/implements This1/*includes primitives
+*/, This4.Concept.Base, This4.Concept.ToS, This4.Concept.Classable, This4.Concept.Equals/*class method This from(Base base)
+*/
 class method 
 mut This0 #from(Library binaryRepr) 
 read method 
@@ -22673,7 +22701,8 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.locati
   ))}
 Missing: {/*@plugin  toFix 
 @pluginPart is.L42.connected.withSafeOperators.location.TypeRefTo$Missing
-*/implements This1, This4.Concept.Base, This4.Concept.ToS, This4.Concept.Classable, This4.Concept.Equals
+*/implements This1, This4.Concept.Base, This4.Concept.ToS, This4.Concept.Classable, This4.Concept.Equals/*class method This from(Base base)
+*/
 class method 
 mut This0 #from(Library binaryRepr) 
 read method 
@@ -22786,7 +22815,8 @@ CurlyBlock-Should be unreachable code
   )}
 Return: {/*@plugin  toFix 
 @pluginPart is.L42.connected.withSafeOperators.location.Type$Return
-*/implements This1, This2, This3.Concept.Base, This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals
+*/implements This1, This2, This3.Concept.Base, This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals/*class method This from(Base base)
+*/
 class method 
 mut This0 #from(Library binaryRepr) 
 read method 
@@ -22960,7 +22990,8 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.locati
   ))}
 Parameter: {/*@plugin  toFix 
 @pluginPart is.L42.connected.withSafeOperators.location.Type$Parameter     
-*/implements This1, This2, This3.Concept.Base, This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals
+*/implements This1, This2, This3.Concept.Base, This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals/*class method This from(Base base)
+*/
 class method 
 mut This0 #from(Library binaryRepr) 
 read method 
@@ -24672,7 +24703,8 @@ read method
 Void #close() void}}}
 Exception: {/*@plugin  toFix 
 @pluginPart is.L42.connected.withSafeOperators.location.Type$Exception
-*/implements This1, This2, This3.Concept.Base, This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals
+*/implements This1, This2, This3.Concept.Base, This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals/*class method This from(Base base)
+*/
 class method 
 mut This0 #from(Library binaryRepr) 
 read method 
@@ -26384,7 +26416,8 @@ read method
 Void #close() void}}}
 Implemented: {/*@plugin  toFix 
 @pluginPart is.L42.connected.withSafeOperators.location.Type$Implemented
-*/implements This1, This2, This3.Concept.Base, This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals
+*/implements This1, This2, This3.Concept.Base, This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals/*class method This from(Base base)
+*/
 class method 
 mut This0 #from(Library binaryRepr) 
 read method 

@@ -24,7 +24,7 @@
         //cases:
         //  (1)
         //  A: .. Refactor.introspect(lib:{ method B(B.C that)})..
-        //  B:{..}//just not yet normalized in the program flow
+        //  B:{..}//just not yet typed in the program flow
         //  (2)
         //  A: .. Refactor.introspect(lib:{ method B()})..
         //  B:Foo<><{..}//B is not there yet.
@@ -51,7 +51,7 @@
 
         //This class will also offer some static 
         //functionalities to work with classObjs: 
-        //Refactor.navigateClassObj(classAny,Path)->classAny??
+        //Refactor.navigateClassObj(classObj,Path)->classObj??
         //Lib do not offer a way to get back a classObj
         }
       Missing:PUnresponsive<><UnsafeRefactor.MiniData<><{

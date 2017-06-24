@@ -26,11 +26,12 @@ public interface TypeRefTo {
       }
     }
   static class Unavailable implements TypeRefTo{
-    Ast.Path path;//pre frommed to be ok with PData
-    @Override public String toS() {return path.toString(); }
+    String repr;
+    @Override public String toS() {return repr; }
     @Override public boolean equalequal(Object that) {
       return this.equals(that);
       }
+    public Unavailable(String repr){this.repr=repr;}
     }
   static class Binded implements TypeRefTo{//includes primitives
     public Binded(Path path) {
@@ -49,9 +50,10 @@ public interface TypeRefTo {
       }
     }
   static class Missing implements TypeRefTo{
-    String path;//if was Path, pre frommed to be ok with PData
+    String repr;//if was Path, pre frommed to be ok with PData
     //in case of docs, can just be the doc @string
-    @Override public String toS() {return path; }
+    public Missing(String repr){this.repr=repr;}
+    @Override public String toS() {return repr; }
     @Override public boolean equalequal(Object that) {
       return this.equals(that);
       }

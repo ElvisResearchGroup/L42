@@ -51,7 +51,7 @@ Location.Lib
 Lib reify library literals.
 To create a Lib object there are two main ways:
 Lib({method Void hi()})//argument of type Library
-Lib(classAny:Void)//argument of type class Any
+Lib(classObj:Void)//argument of type class Any
 Lib offers many methods, we will examin them now:
 --------------------------
 Accessing nested classes:
@@ -100,7 +100,7 @@ LibMethodsTest:{
 Accessing implements:
 
   Type.Implemented.List implements()
-  method Bool implements(class Any classAny)
+  method Bool implements(class Any classObj)
   method Bool implements(Path path)
 */
 LibImplementsTest:{
@@ -116,8 +116,8 @@ LibImplementsTest:{
   Debug.test(b.implements(path:\"A") expected:Bool.true())
   Debug.test(b.implements(path:\"B") expected:Bool.false())
   Debug.test(b.implements(path:\"C") expected:Bool.false())
-  Debug.test(b.implements(classAny:Concept.Equals) expected:Bool.true())
-  Debug.test(b.implements(classAny:Concept.Sizable) expected:Bool.false())
+  Debug.test(b.implements(classObj:Concept.Equals) expected:Bool.true())
+  Debug.test(b.implements(classObj:Concept.Sizable) expected:Bool.false())
   return ExitCode.normal()
   }
 /*
@@ -136,7 +136,7 @@ LibImplementsTest:{
   This requires all the methods to be public, abstract and not class.
   ------
   method Bool isRedirectable()
-  True if this can be redirected to a compatible classAny.
+  True if this can be redirected to a compatible classObj.
   This requires all methods to be public and abstract.
   ------
   method Bool isBinded()
@@ -205,7 +205,7 @@ LibIsMethodsTest:{
 
   Debug(S"isBinded()")
   Debug.test(Location.Lib({}).isBinded() expected:Bool.false())
-  Debug.test(Location.Lib(classAny:Concept.Base).isBinded() expected:Bool.true())
+  Debug.test(Location.Lib(classObj:Concept.Base).isBinded() expected:Bool.true())
 
   Debug(S"isEnsuredCoherent()")
   Debug.test(Location.Lib(
@@ -372,6 +372,96 @@ TypeTest:{
   Debug.test(m.parameterTypes().left().doc() expected:S"")
   Debug.test(m.parameterTypes().right().doc() expected:S"pDoc")
   Debug.test(m.returnType().doc() expected:S"rDoc")
+  return ExitCode.normal()
+  }
+/*
+--------------------------------
+Location.Type.RefTo
+--------------------------------
+The very nested interface RefTo
+bridges Type objects with their referred code:
+In the contex of 42 and metaprogramming this is not 
+an obvious task, and there are many subcases.
+Code examing all the cases may look like:
+Location.Type t=someType
+with r=t.refTo() (
+  on Location.Type.RefTo.Binded (//binded to the program
+    class Any a=r.referredClassObj()
+    DoStuffLikeRedirect(a)
+    //note, this is always going to be the case while
+    //starting from Lib(classObj:..)
+    )
+  on Location.Type.RefTo.Lib (//declared inside the
+    Location.Lib l=r.referredLib()// examined code
+    DoStuffLikeRenameClass(l.path())
+    )
+  on Location.Type.RefTo.Unavailable (
+    //external code not typed yet, as in
+    //C:Data<><{..}//C and C.D still Unavailable
+    //C:{..}//C Unavailable if C was not needed yet
+    DoStuffDebug(r.toS())
+    )
+  on Location.Type.RefTo.Missing (
+    //this code will not be produced ever,as in
+    //C:{} //C.D will never exists 
+    DoStuffWithTextOfMissingPath(r.toS())
+    )
+  )
+*/
+DummyNotUsed:{}
+RefToTest:{
+  Debug(S"Test RefTo")
+  //test binded Void
+  t1=Location.Lib({method Void m()}).methods().left().returnType()  
+  with r=t1.refTo() (
+    on Location.Type.RefTo.Binded (
+      Debug.test(Location.Lib(classObj:r.referredClassObj())
+        expected:S"{/*PrimitivePath:Void*/}")
+      )
+    on Location.Type.RefTo error X""
+    )
+  //test binded Concept.Equals
+  t2=Location.Lib({method Concept.Equals m()}).methods().left().returnType()  
+  with r=t2.refTo() (
+    on Location.Type.RefTo.Binded (
+      Debug.test(
+        Location.Lib(classObj:r.referredClassObj()).toS()
+        >S"Bool equals("//contains equals
+        expected:Bool.true())
+      )
+    on Location.Type.RefTo error X""
+    )
+  //test Lib A
+  t3=Location.Lib({method A m()  A:{/*hi*/}}).methods().left().returnType()  
+  with r=t3.refTo() (
+    on Location.Type.RefTo.Lib (
+      Debug.test(r.referredLib()
+        expected:S" {/*hi*/}")
+      )
+    on Location.Type.RefTo error X""
+    )
+  //test Unavailable RefToTest
+  t4=Location.Lib({method RefToTest m()}).methods().left().returnType()  
+  with r=t4.refTo() (
+    on Location.Type.RefTo.Unavailable (
+      Debug.test(r expected:S"Unavailable path: This0.RefToTest; code not generated yet.")
+      )
+    on Location.Type.RefTo error X""
+    )
+  t5=Location.Lib({method DummyNotUsed m()}).methods().left().returnType()  
+  with r=t5.refTo() (
+    on Location.Type.RefTo.Unavailable (
+      Debug.test(r expected:S"Unavailable path: This0.DummyNotUsed; code not typed yet.")
+      )
+    on Location.Type.RefTo error X""
+    )
+  t6=Location.Lib({method DummyMispelled m()}).methods().left().returnType()  
+  with r=t6.refTo() (
+    on Location.Type.RefTo.Missing (
+      Debug.test(r expected:S"This0.DummyMispelled")
+      )
+    on Location.Type.RefTo error X""
+    )
   return ExitCode.normal()
   }
 

@@ -144,6 +144,9 @@ _______
 -----------------------------------------------------------
 Part 4: norm(p)=L, multiNorm 
 -----------------------------------------------------------
+//TODO: thinking if norm should check that all paths are not doomed
+//i.e. available somewhere or still pointing to meta
+
 _______
 #define norm(p,L)=norm(p.evilPush(L))
 

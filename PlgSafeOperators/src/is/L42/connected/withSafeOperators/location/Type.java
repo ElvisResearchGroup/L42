@@ -31,15 +31,15 @@ public interface Type extends Location{
     Program p=pData.p;
     try{
       ClassB cb=p.extractClassB(path);
-      if(cb.getPhase()!=Phase.None){//norm,typed,coherent
+      if(cb.getPhase().subtypeEq(Phase.Typed)){//typed,coherent
         return new TypeRefTo.Binded(path);
         }
-      //else, phase is none but cb available and not normalized
-      return new TypeRefTo.Unavailable();//TODO: borderline ok?
+      //else, phase is none but cb available and not typed yet
+      return new TypeRefTo.Unavailable("Unavailable path: "+path+"; code not typed yet.");
       }
     catch(ErrorMessage.PathMetaOrNonExistant pne){
-      if (pne.isMeta()){return new TypeRefTo.Unavailable();}
-      return new TypeRefTo.Missing();
+      if (pne.isMeta()){return new TypeRefTo.Unavailable("Unavailable path: "+path+"; code not generated yet.");}
+      return new TypeRefTo.Missing(path.toString());
       }
 
     }

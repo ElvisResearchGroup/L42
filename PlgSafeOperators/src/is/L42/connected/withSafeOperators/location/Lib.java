@@ -42,6 +42,7 @@ public class Lib extends Location.LocationImpl<ExpCore.ClassB,Lib>{
       this.location=this;
       }
   public static Lib newFromClass(PData pData,Path path){
+    if(path.isPrimitive()){return new LibPrimitive(path);}
     ClassB cb=pData.p.extractClassB(path);//TODO: need from??
     Lib lib=new Lib(true,cb,Collections.emptyList(),cb);
     return lib;

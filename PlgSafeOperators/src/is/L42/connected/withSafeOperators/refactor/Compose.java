@@ -160,8 +160,8 @@ static ClassB.NestedClass sumNc(ClassB.NestedClass _nc1,Program p, ClassB.Nested
     } 
   private static RefactorErrors.SubtleSubtypeViolation _checkSubtleSubtypeViolation(Program p) {
     ClassB l=p.top();
-    List<Path> ps1 = Methods.collect(p,l.getSuperPaths());
-    if(!l.getSuperPaths().containsAll(ps1)){return new RefactorErrors.SubtleSubtypeViolation();}
+    List<Ast.Type> ps1 = Methods.collect(p,l.getSupertypes());
+    if(!l.getSupertypes().containsAll(ps1)){return new RefactorErrors.SubtleSubtypeViolation();}
     for(MethodWithType m :p.methods(Path.outer(0))){
       //there must be equivalent in l
       Member mi = l._getMember(m.getMs());

@@ -54,15 +54,15 @@
   Type.Implemented.List implements()
     Type.Implemented.List[with i in 0Size.vals(upTo:this.implementedSize()) (use[this.implemented(i)])]
     
-  method Bool implements(class Any classAny){
-    if Type.$_RefTo.Binded.equalsClassObj(Any, and:classAny) (
+  method Bool implements(class Any classObj){
+    if Type.$_RefTo.Binded.equalsClassObj(Any, and:classObj) (
       return Bool.true()
       ) 
      with ti in this.implements().vals() (
        with ri=ti.refTo() (
          on Type.$_RefTo.Binded (
            ci=ri.referredClassObj()
-           if Type.$_RefTo.Binded.equalsClassObj(ci, and:classAny) (
+           if Type.$_RefTo.Binded.equalsClassObj(ci, and:classObj) (
             //no need of supertypes since normalized classes has transitive implements already
             return Bool.true()
             )
@@ -89,8 +89,8 @@
   
 
   class method
-  This (class Any classAny)
-    This.newFromClass(classAny)
+  This (class Any classObj)
+    This.newFromClass(classObj)
   class method 
   This (Library that)
     This.newFromLibrary(that)
