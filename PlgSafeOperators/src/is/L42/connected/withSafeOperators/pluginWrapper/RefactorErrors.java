@@ -1,5 +1,9 @@
 package is.L42.connected.withSafeOperators.pluginWrapper;
 
+import is.L42.connected.withSafeOperators.location.Lib;
+import is.L42.connected.withSafeOperators.location.Location;
+import is.L42.connected.withSafeOperators.location.Method;
+
 /* fluent setter for errors, a good idea to avoid duplicating constructors, but
  * the main issue is that we need to support enriching the message while try-catching  
  */
@@ -33,7 +37,12 @@ public class RefactorErrors{
   
   @SuppressWarnings("serial") public static class 
   MethodClash extends MutMsgExc implements
-    FluentSetter<MethodClash>{}
+    FluentSetter<MethodClash>{
+    Method left;Method right;
+    public MethodClash(Method left,Method right){this.left=left;this.right=right;}
+    public Method left(){return left;}
+    public Method right(){return right;}
+    }
   
   @SuppressWarnings("serial") public static class 
   MethodUnfit extends MutMsgExc implements
@@ -41,7 +50,12 @@ public class RefactorErrors{
   
   @SuppressWarnings("serial") public static class 
   ClassClash extends MutMsgExc implements
-    FluentSetter<ClassClash>{}
+    FluentSetter<ClassClash>{
+    Lib left; Lib right;
+    public ClassClash(Lib left,Lib right){this.left=left;this.right=right;}
+    public Lib left(){return left;}
+    public Lib right(){return right;}
+    }
   
   @SuppressWarnings("serial") public static class 
   ClassUnfit extends MutMsgExc implements

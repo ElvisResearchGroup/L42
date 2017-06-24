@@ -28126,4 +28126,662 @@ CurlyBlock-Should be unreachable code
 */}
   )
 read method 
-Void #close() void}}}}}}
+Void #close() void}}}}}
+Refactor2: {/*------------------------------
+Infrastructure
+------------------------------
+*/
+class method 
+Library compose(Library that, Library and) exception This0.MethodClash, This0.ClassClash, This0.SubtleSubtypeViolation This0.Compose.compose(left:that, right:and)
+Fail: {interface implements This2.Concept.ToS, This2.Concept.Classable/*not implement Guard  not a message  no cause/more then a msg?
+*/
+read method 
+This2.S text() 
+refine read method 
+This2.S toS() 
+refine read method 
+class This2.Concept.Classable class() 
+refine class method 
+This2.S readableName() 
+refine class method 
+This2.Bool is(class Any subtype) }
+ErrorW: {
+class method 
+Library trait()  {/*@plugin is.L42.connected.withSafeOperators
+*/implements This2.Fail, This3.Concept.ToS, This3.Concept.Classable/*not implement Guard  not a message  no cause/more then a msg?
+*/
+refine read method 
+This3.S toS() (
+  This3.S.Continue rcv52=(
+    This3.S rcv53=This0.readableName()
+    rcv53.#from(seqBuilder:(
+      capsule This3.S.SConcat b=rcv53.#seqBuilder()
+      Void unused=b.#add(that:This3.S.#from(builder:(
+        capsule This3.S.SBuilder b0=This3.S.#builder()
+        Void unused2=b0.#colon()
+        Void unused3=b0.#space()
+        b0
+        )))
+      Void unused0=b.#add(that:This3.S.nl())
+      Void unused1=b.#add(that:this.text().as42MultilineString())
+      b
+      ))
+    )
+  rcv52.#from(builder:(
+    capsule This3.S.SBuilder b1=rcv52.#builder()
+    b1
+    ))
+  )
+refine read method 
+class This0 class() This0
+refine class method 
+This3.S readableName() This3.GetMyName.#apply(that:This0)
+refine class method 
+This3.Bool is(class Any subtype) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error  {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This3.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This3.Bool.false()
+    void
+    )
+  
+  catch return This3.Bool result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+class method 
+Library #pluginUnresponsive(Library binaryRepr) binaryRepr
+refine read method 
+This3.S text() }
+class method 
+Library #leftrightleft(Library that) This2.UnsafeRefactor.Compose.compose(left:that, right:This0.trait())}
+UnresolvedOverloading: {/*@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$UnresolvedOverloading
+@plugin is.L42.connected.withSafeOperators
+*/implements This1.Fail, This2.Concept.ToS, This2.Concept.Classable/*not implement Guard  not a message  no cause/more then a msg?
+*/
+class method 
+mut This0 #from(Library binaryRepr) 
+read method 
+Library #binaryRepr() 
+class method 
+Void #exceptionIf(Library binaryRepr) exception This0 use This0 check instanceof(_this:binaryRepr) exception This0.#from(binaryRepr:binaryRepr)
+refine read method 
+This2.S toS() (
+  This2.S.Continue rcv52=(
+    This2.S rcv53=This0.readableName()
+    rcv53.#from(seqBuilder:(
+      capsule This2.S.SConcat b=rcv53.#seqBuilder()
+      Void unused=b.#add(that:This2.S.#from(builder:(
+        capsule This2.S.SBuilder b0=This2.S.#builder()
+        Void unused2=b0.#colon()
+        Void unused3=b0.#space()
+        b0
+        )))
+      Void unused0=b.#add(that:This2.S.nl())
+      Void unused1=b.#add(that:this.text().as42MultilineString())
+      b
+      ))
+    )
+  rcv52.#from(builder:(
+    capsule This2.S.SBuilder b1=rcv52.#builder()
+    b1
+    ))
+  )
+refine read method 
+class This0 class() This0
+refine class method 
+This2.S readableName() This2.GetMyName.#apply(that:This0)
+refine class method 
+This2.Bool is(class Any subtype) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error  {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This2.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This2.Bool.false()
+    void
+    )
+  
+  catch return This2.Bool result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+class method 
+Library #pluginUnresponsive(Library binaryRepr) binaryRepr
+refine read method 
+This2.S text() This2.S.#from(binaryRepr:(
+  Library res=use This0 check text(_this:this.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$UnresolvedOverloading\u000amethod name: text()\u000ajava method: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$UnresolvedOverloading.text(_this)\u000a
+*/})
+  res
+  ))}
+ClassUnfit: {/*@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$ClassUnfit
+@plugin is.L42.connected.withSafeOperators
+*/implements This1.Fail, This2.Concept.ToS, This2.Concept.Classable/*not implement Guard  not a message  no cause/more then a msg?
+*/
+class method 
+mut This0 #from(Library binaryRepr) 
+read method 
+Library #binaryRepr() 
+class method 
+Void #exceptionIf(Library binaryRepr) exception This0 use This0 check instanceof(_this:binaryRepr) exception This0.#from(binaryRepr:binaryRepr)
+refine read method 
+This2.S toS() (
+  This2.S.Continue rcv52=(
+    This2.S rcv53=This0.readableName()
+    rcv53.#from(seqBuilder:(
+      capsule This2.S.SConcat b=rcv53.#seqBuilder()
+      Void unused=b.#add(that:This2.S.#from(builder:(
+        capsule This2.S.SBuilder b0=This2.S.#builder()
+        Void unused2=b0.#colon()
+        Void unused3=b0.#space()
+        b0
+        )))
+      Void unused0=b.#add(that:This2.S.nl())
+      Void unused1=b.#add(that:this.text().as42MultilineString())
+      b
+      ))
+    )
+  rcv52.#from(builder:(
+    capsule This2.S.SBuilder b1=rcv52.#builder()
+    b1
+    ))
+  )
+refine read method 
+class This0 class() This0
+refine class method 
+This2.S readableName() This2.GetMyName.#apply(that:This0)
+refine class method 
+This2.Bool is(class Any subtype) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error  {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This2.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This2.Bool.false()
+    void
+    )
+  
+  catch return This2.Bool result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+class method 
+Library #pluginUnresponsive(Library binaryRepr) binaryRepr
+refine read method 
+This2.S text() This2.S.#from(binaryRepr:(
+  Library res=use This0 check text(_this:this.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$ClassUnfit\u000amethod name: text()\u000ajava method: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$ClassUnfit.text(_this)\u000a
+*/})
+  res
+  ))}
+MethodUnfit: {/*@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$MethodUnfit
+@plugin is.L42.connected.withSafeOperators
+*/implements This1.Fail, This2.Concept.ToS, This2.Concept.Classable/*not implement Guard  not a message  no cause/more then a msg?
+*/
+class method 
+mut This0 #from(Library binaryRepr) 
+read method 
+Library #binaryRepr() 
+class method 
+Void #exceptionIf(Library binaryRepr) exception This0 use This0 check instanceof(_this:binaryRepr) exception This0.#from(binaryRepr:binaryRepr)
+refine read method 
+This2.S toS() (
+  This2.S.Continue rcv52=(
+    This2.S rcv53=This0.readableName()
+    rcv53.#from(seqBuilder:(
+      capsule This2.S.SConcat b=rcv53.#seqBuilder()
+      Void unused=b.#add(that:This2.S.#from(builder:(
+        capsule This2.S.SBuilder b0=This2.S.#builder()
+        Void unused2=b0.#colon()
+        Void unused3=b0.#space()
+        b0
+        )))
+      Void unused0=b.#add(that:This2.S.nl())
+      Void unused1=b.#add(that:this.text().as42MultilineString())
+      b
+      ))
+    )
+  rcv52.#from(builder:(
+    capsule This2.S.SBuilder b1=rcv52.#builder()
+    b1
+    ))
+  )
+refine read method 
+class This0 class() This0
+refine class method 
+This2.S readableName() This2.GetMyName.#apply(that:This0)
+refine class method 
+This2.Bool is(class Any subtype) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error  {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This2.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This2.Bool.false()
+    void
+    )
+  
+  catch return This2.Bool result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+class method 
+Library #pluginUnresponsive(Library binaryRepr) binaryRepr
+refine read method 
+This2.S text() This2.S.#from(binaryRepr:(
+  Library res=use This0 check text(_this:this.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$MethodUnfit\u000amethod name: text()\u000ajava method: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$MethodUnfit.text(_this)\u000a
+*/})
+  res
+  ))}
+ClassClash: {/*@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$ClassClash
+@plugin is.L42.connected.withSafeOperators
+*/implements This1.Fail, This2.Concept.ToS, This2.Concept.Classable/*not implement Guard  not a message  no cause/more then a msg?
+*/
+class method 
+mut This0 #from(Library binaryRepr) 
+read method 
+Library #binaryRepr() 
+class method 
+Void #exceptionIf(Library binaryRepr) exception This0 use This0 check instanceof(_this:binaryRepr) exception This0.#from(binaryRepr:binaryRepr)
+method 
+This2.Location.Lib left() This2.Location.Lib.#from(binaryRepr:(
+  Library res=use This0 check left(_this:this.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$ClassClash\u000amethod name: left()\u000ajava method: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$ClassClash.left(_this)\u000a
+*/})
+  res
+  ))
+method 
+This2.Location.Lib right() This2.Location.Lib.#from(binaryRepr:(
+  Library res=use This0 check right(_this:this.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$ClassClash\u000amethod name: right()\u000ajava method: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$ClassClash.right(_this)\u000a
+*/})
+  res
+  ))
+refine read method 
+This2.S toS() (
+  This2.S.Continue rcv52=(
+    This2.S rcv53=This0.readableName()
+    rcv53.#from(seqBuilder:(
+      capsule This2.S.SConcat b=rcv53.#seqBuilder()
+      Void unused=b.#add(that:This2.S.#from(builder:(
+        capsule This2.S.SBuilder b0=This2.S.#builder()
+        Void unused2=b0.#colon()
+        Void unused3=b0.#space()
+        b0
+        )))
+      Void unused0=b.#add(that:This2.S.nl())
+      Void unused1=b.#add(that:this.text().as42MultilineString())
+      b
+      ))
+    )
+  rcv52.#from(builder:(
+    capsule This2.S.SBuilder b1=rcv52.#builder()
+    b1
+    ))
+  )
+refine read method 
+class This0 class() This0
+refine class method 
+This2.S readableName() This2.GetMyName.#apply(that:This0)
+refine class method 
+This2.Bool is(class Any subtype) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error  {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This2.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This2.Bool.false()
+    void
+    )
+  
+  catch return This2.Bool result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+class method 
+Library #pluginUnresponsive(Library binaryRepr) binaryRepr
+refine read method 
+This2.S text() This2.S.#from(binaryRepr:(
+  Library res=use This0 check text(_this:this.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$ClassClash\u000amethod name: text()\u000ajava method: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$ClassClash.text(_this)\u000a
+*/})
+  res
+  ))}
+MethodClash: {/*@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$MethodClash
+@plugin is.L42.connected.withSafeOperators
+*/implements This1.Fail, This2.Concept.ToS, This2.Concept.Classable/*not implement Guard  not a message  no cause/more then a msg?
+*/
+class method 
+mut This0 #from(Library binaryRepr) 
+read method 
+Library #binaryRepr() 
+class method 
+Void #exceptionIf(Library binaryRepr) exception This0 use This0 check instanceof(_this:binaryRepr) exception This0.#from(binaryRepr:binaryRepr)
+method 
+This2.Location.Method left() This2.Location.Method.#from(binaryRepr:(
+  Library res=use This0 check left(_this:this.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$MethodClash\u000amethod name: left()\u000ajava method: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$MethodClash.left(_this)\u000a
+*/})
+  res
+  ))
+method 
+This2.Location.Method right() This2.Location.Method.#from(binaryRepr:(
+  Library res=use This0 check right(_this:this.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$MethodClash\u000amethod name: right()\u000ajava method: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$MethodClash.right(_this)\u000a
+*/})
+  res
+  ))
+refine read method 
+This2.S toS() (
+  This2.S.Continue rcv52=(
+    This2.S rcv53=This0.readableName()
+    rcv53.#from(seqBuilder:(
+      capsule This2.S.SConcat b=rcv53.#seqBuilder()
+      Void unused=b.#add(that:This2.S.#from(builder:(
+        capsule This2.S.SBuilder b0=This2.S.#builder()
+        Void unused2=b0.#colon()
+        Void unused3=b0.#space()
+        b0
+        )))
+      Void unused0=b.#add(that:This2.S.nl())
+      Void unused1=b.#add(that:this.text().as42MultilineString())
+      b
+      ))
+    )
+  rcv52.#from(builder:(
+    capsule This2.S.SBuilder b1=rcv52.#builder()
+    b1
+    ))
+  )
+refine read method 
+class This0 class() This0
+refine class method 
+This2.S readableName() This2.GetMyName.#apply(that:This0)
+refine class method 
+This2.Bool is(class Any subtype) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error  {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This2.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This2.Bool.false()
+    void
+    )
+  
+  catch return This2.Bool result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+class method 
+Library #pluginUnresponsive(Library binaryRepr) binaryRepr
+refine read method 
+This2.S text() This2.S.#from(binaryRepr:(
+  Library res=use This0 check text(_this:this.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$MethodClash\u000amethod name: text()\u000ajava method: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$MethodClash.text(_this)\u000a
+*/})
+  res
+  ))}
+SubtleSubtypeViolation: {/*@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$SubtleSubtypeViolation
+@plugin is.L42.connected.withSafeOperators
+*/implements This1.Fail, This2.Concept.ToS, This2.Concept.Classable/*not implement Guard  not a message  no cause/more then a msg?
+*/
+class method 
+mut This0 #from(Library binaryRepr) 
+read method 
+Library #binaryRepr() 
+class method 
+Void #exceptionIf(Library binaryRepr) exception This0 use This0 check instanceof(_this:binaryRepr) exception This0.#from(binaryRepr:binaryRepr)
+refine read method 
+This2.S toS() (
+  This2.S.Continue rcv52=(
+    This2.S rcv53=This0.readableName()
+    rcv53.#from(seqBuilder:(
+      capsule This2.S.SConcat b=rcv53.#seqBuilder()
+      Void unused=b.#add(that:This2.S.#from(builder:(
+        capsule This2.S.SBuilder b0=This2.S.#builder()
+        Void unused2=b0.#colon()
+        Void unused3=b0.#space()
+        b0
+        )))
+      Void unused0=b.#add(that:This2.S.nl())
+      Void unused1=b.#add(that:this.text().as42MultilineString())
+      b
+      ))
+    )
+  rcv52.#from(builder:(
+    capsule This2.S.SBuilder b1=rcv52.#builder()
+    b1
+    ))
+  )
+refine read method 
+class This0 class() This0
+refine class method 
+This2.S readableName() This2.GetMyName.#apply(that:This0)
+refine class method 
+This2.Bool is(class Any subtype) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error  {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This2.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This2.Bool.false()
+    void
+    )
+  
+  catch return This2.Bool result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+class method 
+Library #pluginUnresponsive(Library binaryRepr) binaryRepr
+refine read method 
+This2.S text() This2.S.#from(binaryRepr:(
+  Library res=use This0 check text(_this:this.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$SubtleSubtypeViolation\u000amethod name: text()\u000ajava method: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$SubtleSubtypeViolation.text(_this)\u000a
+*/})
+  res
+  ))}
+JavaImport: {/*@plugin is.L42.connected.withSafeOperators
+@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.PlgWrapperGenerator
+*/
+class method 
+mut This0 #from(Library binaryRepr) 
+read method 
+Library #binaryRepr() 
+class method 
+Void #exceptionIf(Library binaryRepr) exception This0 use This0 check instanceof(_this:binaryRepr) exception This0.#from(binaryRepr:binaryRepr)
+class method 
+Library #pluginUnresponsive(Library binaryRepr) binaryRepr
+class method 
+Library #leftrightleft(Library that) exception This1.UnresolvedOverloading, This1.ClassUnfit, This1.MethodUnfit This0.main(that:that)
+class method 
+Library main(Library that) exception This1.UnresolvedOverloading, This1.ClassUnfit, This1.MethodUnfit (
+  Library res=use This0 check #main(_1_ast%ExpCore$ClassB:that) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.connected.withSafeOperators.pluginWrapper.PlgWrapperGenerator\u000amethod name: main(that)\u000ajava method: is.L42.connected.withSafeOperators.pluginWrapper.PlgWrapperGenerator.#main(_1_ast%ExpCore$ClassB)\u000a
+*/})
+  
+  catch error Library x (
+    Void unused0=This1.UnresolvedOverloading.#exceptionIf(binaryRepr:x)
+    Void unused1=This1.ClassUnfit.#exceptionIf(binaryRepr:x)
+    Void unused2=This1.MethodUnfit.#exceptionIf(binaryRepr:x)
+    error x
+    )
+  
+  res
+  )}
+Compose: {/*@plugin  toFix 
+@pluginPart is.L42.connected.withSafeOperators.refactor.Compose
+*/
+class method 
+mut This0 #from(Library binaryRepr) 
+read method 
+Library #binaryRepr() 
+class method 
+Void #exceptionIf(Library binaryRepr) exception This0 use This0 check instanceof(_this:binaryRepr) exception This0.#from(binaryRepr:binaryRepr)
+class method 
+Void #pluginUnresponsive(Library binaryRepr) error This2.X.#from(builder:(
+  capsule This2.S.SBuilder b=This2.X.#builder()
+  Void unused=b.#C()
+  Void unused0=b.#o()
+  Void unused1=b.#m()
+  Void unused2=b.#p()
+  Void unused3=b.#o()
+  Void unused4=b.#s()
+  Void unused5=b.#e()
+  Void unused6=b.#oRound()
+  Void unused7=b.#t()
+  Void unused8=b.#h()
+  Void unused9=b.#a()
+  Void unused10=b.#t()
+  Void unused11=b.#comma()
+  Void unused12=b.#a()
+  Void unused13=b.#n()
+  Void unused14=b.#d()
+  Void unused15=b.#cRound()
+  b
+  ))
+class method 
+Library compose(Library left, Library right) exception This1.MethodClash, This1.ClassClash, This1.SubtleSubtypeViolation (
+  Library res=use This0 check #compose(_1_ast%ExpCore$ClassB:left, _2_ast%ExpCore$ClassB:right) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.refactor.Compose\u000amethod name: compose(left,right)\u000ajava method: is.L42.connected.withSafeOperators.refactor.Compose.#compose(_1_ast%ExpCore$ClassB,_2_ast%ExpCore$ClassB)\u000a
+*/})
+  
+  catch error Library x (
+    Void unused0=This1.MethodClash.#exceptionIf(binaryRepr:x)
+    Void unused1=This1.ClassClash.#exceptionIf(binaryRepr:x)
+    Void unused2=This1.SubtleSubtypeViolation.#exceptionIf(binaryRepr:x)
+    error x
+    )
+  
+  res
+  )}}}

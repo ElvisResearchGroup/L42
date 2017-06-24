@@ -17,6 +17,9 @@ public class Method extends Location.LocationImpl<ClassB.MethodWithType, Lib>{
   public Method(MethodWithType inner, Lib location) {
     super(inner, location);
     }
+  public static Method of(MethodWithType inner,ClassB top,List<Ast.C>cs){
+    return new Method(inner,Lib.newFromLibrary(top).navigateCs(cs));
+    }
   public boolean isAbstract(){return !inner.get_inner().isPresent();}
   public boolean isRefine(){return inner.getMt().isRefine();}
   public String  selector(){return inner.getMs().toString();}

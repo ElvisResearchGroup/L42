@@ -52,7 +52,9 @@ import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodWithType;
 import is.L42.connected.withSafeOperators.Errors42;
 import is.L42.connected.withSafeOperators.ExtractInfo;
+import is.L42.connected.withSafeOperators.location.Lib;
 import is.L42.connected.withSafeOperators.location.Location;
+import is.L42.connected.withSafeOperators.location.Method;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.ClassClash;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.MethodClash;
@@ -117,6 +119,17 @@ otherwise=empty
 }
 
 public class Compose {
+  ClassB leftTop;
+  ClassB rightTop;
+  List<Ast.C> stackCs=new ArrayList<>(16);
+  private void popC(){
+    assert !stackCs.isEmpty();
+    stackCs.remove(stackCs.size()-1);
+    }
+  private void pushC(Ast.C c){
+    stackCs.add(c);
+    }
+  public Compose(ClassB left,ClassB right){this.leftTop=left;this.rightTop=right;}
   /**{@link ComposeSpec#selectMember}*/
   public static MethodWithType _extractMwt(MethodWithType mwt,List<MethodWithType>mwts){
     for(MethodWithType mwti:mwts){if (mwti.getMs().equals(mwt.getMs())){return mwti;}}
@@ -129,21 +142,24 @@ public class Compose {
     }
 
 /**{@link ComposeSpec#sumMember}*/
-static ClassB.NestedClass sumNc(ClassB.NestedClass _nc1,Program p, ClassB.NestedClass nc2) throws MethodClash, ClassClash {
+ ClassB.NestedClass sumNc(ClassB.NestedClass _nc1,Program p, ClassB.NestedClass nc2) throws MethodClash, ClassClash {
   if (_nc1==null){return nc2;}
   Program pi=p.push(nc2.getName());
-  ClassB l=innerCompose(pi,(ClassB)_nc1.getE(),(ClassB)nc2.getE());
-  return _nc1
-    .withE(l)
-    .withDoc(_nc1.getDoc().sum(nc2.getDoc()))
-    .withP(_nc1.getP().sum(nc2.getP()));
+  pushC(nc2.getName());
+  try{
+    ClassB l=innerCompose(pi,(ClassB)_nc1.getE(),(ClassB)nc2.getE());
+    return _nc1
+      .withE(l)
+      .withDoc(_nc1.getDoc().sum(nc2.getDoc()))
+      .withP(_nc1.getP().sum(nc2.getP()));
+    }
+  finally{popC();}
   }
-  
   /**{@link ComposeSpec#compose}*/
   public static ClassB compose(PData pData,ClassB a,ClassB b) throws MethodClash, SubtleSubtypeViolation, ClassClash{
-    return compose(pData.p,a,b);}
+    return new Compose(a,b).compose(pData.p,a,b);}
   /**{@link ComposeSpec#compose}*/
-  public static ClassB compose(Program pp,ClassB a,ClassB b) throws MethodClash, SubtleSubtypeViolation, ClassClash{
+  public ClassB compose(Program pp,ClassB a,ClassB b) throws MethodClash, SubtleSubtypeViolation, ClassClash{
     b=privateMangling.RefreshUniqueNames.refresh(b);
     ClassB forP=onlySubtypeCompose(a, b);
     Program p=pp.evilPush(forP);
@@ -151,7 +167,7 @@ static ClassB.NestedClass sumNc(ClassB.NestedClass _nc1,Program p, ClassB.Nested
     checkSubtleSubtypeViolation(pp.evilPush(res));
     return res;
     }
-  private static void checkSubtleSubtypeViolation(Program p) throws RefactorErrors.SubtleSubtypeViolation {
+  private  void checkSubtleSubtypeViolation(Program p) throws RefactorErrors.SubtleSubtypeViolation {
     try{
       RefactorErrors.SubtleSubtypeViolation err=_checkSubtleSubtypeViolation(p);
       if(err!=null){throw err;}
@@ -187,12 +203,12 @@ static ClassB.NestedClass sumNc(ClassB.NestedClass _nc1,Program p, ClassB.Nested
     }
 
 /**{@link ComposeSpec#sumMember}*/  
-public static MethodWithType sumMwtij(Program p,MethodWithType mwti,MethodWithType mwt1,MethodWithType mwt2){
+public  MethodWithType sumMwtij(Program p,MethodWithType mwti,MethodWithType mwt1,MethodWithType mwt2){
   return mwti.withDoc(mwt1.getDoc().sum(mwt2.getDoc())).withP(mwt1.getP().sum(mwt2.getP()));
   }
 
 /**{@link ComposeSpec#sumMember}*/  
-public static MethodWithType sumMwt(Program p,boolean interface1,MethodWithType mwt1,boolean interface2,MethodWithType mwt2) throws MethodClash{
+public  MethodWithType sumMwt(Program p,boolean interface1,MethodWithType mwt1,boolean interface2,MethodWithType mwt2) throws MethodClash{
     if (mwt1==null){return mwt2;}
     //assign to i,j: if one has body, is i. Else, we need to check for 
     //if only one is interface, is i.
@@ -201,45 +217,55 @@ public static MethodWithType sumMwt(Program p,boolean interface1,MethodWithType 
     MethodType mt1=mwt1.getMt();
     MethodType mt2=mwt2.getMt();
     if(mt1.isRefine()!=mt2.isRefine()){
-      throw new RefactorErrors.MethodClash().msg("sum of refine and non refine methods:\n"+mwt1+"\n"+mwt2);
+      throw makeMethodClash(mwt1, mwt2).msg("sum of refine and non refine methods:\n"+mwt1+"\n"+mwt2);
       }    
     if(mwt1.get_inner().isPresent()){
       assert !mwt2.get_inner().isPresent();
       assert !interface1 && !interface2;
-      checkMtGt(p,mt1,mt2);
+      checkMtGt(p,mwt1,mwt2,mt1,mt2);
       return sumMwtij(p,mwt1,mwt1,mwt2);}
-    if(mwt2.get_inner().isPresent()){checkMtGt(p,mt2,mt1);return sumMwtij(p,mwt2,mwt1,mwt2);}
-    if(interface1 && !interface2){checkMtGt(p,mt1,mt2);return sumMwtij(p,mwt1,mwt1,mwt2);}    
-    if(interface2 && !interface1){checkMtGt(p,mt2,mt1);return sumMwtij(p,mwt2,mwt1,mwt2);}
+    if(mwt2.get_inner().isPresent()){checkMtGt(p,mwt1,mwt2,mt2,mt1);return sumMwtij(p,mwt2,mwt1,mwt2);}
+    if(interface1 && !interface2){checkMtGt(p,mwt1,mwt2,mt1,mt2);return sumMwtij(p,mwt1,mwt1,mwt2);}    
+    if(interface2 && !interface1){checkMtGt(p,mwt1,mwt2,mt2,mt1);return sumMwtij(p,mwt2,mwt1,mwt2);}
     if(interface1 && interface2){
-      checkMtEq(p,mt1,mt2);
+      checkMtEq(p,mwt1,mwt2,mt1,mt2);
       return sumMwtij(p,mwt1,mwt1,mwt2);
       }
     assert !interface1 && !interface2;
     if(mtGT(p,mt1,mt2)){return sumMwtij(p,mwt1,mwt1,mwt2);}    
     if(mtGT(p,mt2,mt1)){return sumMwtij(p,mwt2,mwt1,mwt2);}
-    throw new MethodClash();
+    throw makeMethodClash(mwt1, mwt2).msg("Neither of the method is subtype of the other");
     }
+private MethodClash makeMethodClash(MethodWithType mwt1, MethodWithType mwt2) {
+  return new MethodClash(Method.of(mwt1,leftTop,stackCs),Method.of(mwt2,leftTop,stackCs));
+  }
+private ClassClash makeClassClash() {
+  return new ClassClash(
+    Lib.newFromLibrary(leftTop).navigateCs(stackCs),
+    Lib.newFromLibrary(rightTop).navigateCs(stackCs)
+    );
+}
+
 /**{@link ComposeSpec#methodTypeSubtype}*/  
-private static boolean mtGT(Program p, MethodType mt1, MethodType mt2) {
+private boolean mtGT(Program p, MethodType mt1, MethodType mt2) {
   if (!p.subtypeEq(mt1.getReturnType(), mt2.getReturnType())){return false;}
   return mtEqRest(p,mt1,mt2);
 }
 /**{@link ComposeSpec#methodTypeSubtype}*/
-private static void checkMtGt(Program p, MethodType mt1, MethodType mt2) throws MethodClash {
-  if(!mtGT(p,mt1,mt2)){throw new MethodClash();}
+private void checkMtGt(Program p, MethodWithType mwt1, MethodWithType mwt2,MethodType mt1, MethodType mt2) throws MethodClash {
+  if(!mtGT(p,mt1,mt2)){throw makeMethodClash(mwt1, mwt2);}
   }
 /**{@link ComposeSpec#methodTypeSubtype()}*/
-private static void checkMtEq(Program p, MethodType mt1, MethodType mt2) throws MethodClash  {
+private void checkMtEq(Program p, MethodWithType mwt1, MethodWithType mwt2,MethodType mt1, MethodType mt2) throws MethodClash  {
   if (!p.equiv(mt1.getReturnType(), mt2.getReturnType())){
-    throw new MethodClash();
+    throw makeMethodClash(mwt1, mwt2);
     }
-  if(!mtEqRest(p,mt1,mt2)){
-    throw new MethodClash();
+  if(!mtEqRest(p,mwt1.getMt(),mwt2.getMt())){
+    throw makeMethodClash(mwt1, mwt2);
     }
 }
 /**{@link ComposeSpec#methodTypeSubtype}*/
-private static boolean mtEqRest(Program p, MethodType mt1, MethodType mt2) {
+private boolean mtEqRest(Program p, MethodType mt1, MethodType mt2) {
   if(mt1.getMdf()!=mt2.getMdf()){return false;}
   assert mt1.getTs().size()==mt2.getTs().size();
   for(int i=0;i<mt1.getTs().size();i++){
@@ -252,7 +278,7 @@ private static boolean mtEqRest(Program p, MethodType mt1, MethodType mt2) {
   return true;
 }
 
-public static ClassB onlySubtypeCompose(ClassB a,ClassB b){
+public  ClassB onlySubtypeCompose(ClassB a,ClassB b){
   List<Type> impls=new ArrayList<>(a.getSupertypes());
   for(Type ti:b.getSupertypes()){impls.remove(ti);}
   impls.addAll(b.getSupertypes());
@@ -271,7 +297,7 @@ public static ClassB onlySubtypeCompose(ClassB a,ClassB b){
   }
 
 /**{@link ComposeSpec#innerCompose}*/  
-public static ClassB innerCompose(Program p,ClassB a,ClassB b) throws MethodClash, ClassClash{
+public ClassB innerCompose(Program p,ClassB a,ClassB b) throws MethodClash, ClassClash{
   boolean interf=isSumResultInterface(a, b);
   List<Type> impls=p.top().getSupertypes();
   List<MethodWithType>mwts=new ArrayList<>(a.mwts());
@@ -289,12 +315,12 @@ public static ClassB innerCompose(Program p,ClassB a,ClassB b) throws MethodClas
   
 //handles sum of two classes with private state and sum class/interface invalid
   /**{@link ComposeSpec#isSumResultInterface}*/
-  public static boolean isSumResultInterface(ClassB currentA,ClassB currentB) throws ClassClash{
+  public boolean isSumResultInterface(ClassB currentA,ClassB currentB) throws ClassClash{
     if(currentA.isInterface()&&currentB.isInterface()){return true;}    
     if(!currentA.isInterface()&&!currentB.isInterface()){
       boolean privateA=ExtractInfo.hasPrivateState(currentA);
       boolean privateB=ExtractInfo.hasPrivateState(currentB);
-      if (privateA && privateB){throw new RefactorErrors.ClassClash();}
+      if (privateA && privateB){throw makeClassClash();}
       return false;
       }    
     if(currentA.isInterface()){
@@ -304,7 +330,7 @@ public static ClassB innerCompose(Program p,ClassB a,ClassB b) throws MethodClas
     boolean implA=!ExtractInfo.isNoImplementation(currentA);
     boolean privateA=ExtractInfo.hasPrivateState(currentA);
     boolean classA=!currentA.mwts().stream().allMatch(mwt->mwt.getMt().getMdf()!=Mdf.Class);
-    if(implA ||privateA||classA){throw new RefactorErrors.ClassClash();}
+    if(implA ||privateA||classA){throw makeClassClash();}
     return true;
     }
 }

@@ -135,10 +135,10 @@ public class Lib extends Location.LocationImpl<ExpCore.ClassB,Lib>{
 //to get a nested classObj, Refactor.navigateClassObj(classAny,Path)->classAny??
   public String toS() {return sugarVisitors.ToFormattedText.of(inner);}
    public Lib navigate(String cs){
-    return navigate(PathAux.parseValidCs(cs));
+    return navigateCs(PathAux.parseValidCs(cs));
     }
   
-   Lib navigate(List<Ast.C> cs){
+   public Lib navigateCs(List<Ast.C> cs){
     if (cs.isEmpty()){return this;}
     if(this.isBinded){
       ClassB cb=this.inner.getClassB(cs);//TODO: need from?
@@ -147,7 +147,7 @@ public class Lib extends Location.LocationImpl<ExpCore.ClassB,Lib>{
     List<Ast.C> top = Collections.singletonList(cs.get(0));
     List<Ast.C> tail=cs.subList(1,cs.size());
     Lib nextStep=new Lib(false,root,Functions.push(path,cs.get(0)),inner.getClassB(top),this);
-    return nextStep.navigate(tail);
+    return nextStep.navigateCs(tail);
     }
   @Override public boolean equalequal(Object that) {
     return this.equals(that);

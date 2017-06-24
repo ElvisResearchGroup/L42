@@ -1,7 +1,11 @@
 {
+
+//------------------------------
+//Infrastructure
+//------------------------------
   Fail:{interface implements Concept.ToS, Concept.Classable
     //not implement Guard, not a message, no cause/more then a msg?
-    method S text()  
+    read method S text()  
     }
   ErrorW:{
     class method Library trait(){
@@ -30,6 +34,46 @@
         right:This.trait()
       )
     }
+
+
+//------------------------------
+//Kinds of Fails
+//------------------------------
+
+  UnresolvedOverloading:ErrorW<><{
+    //@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$UnresolvedOverloading
+    }
+  ClassUnfit:ErrorW<><{
+    //@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$ClassUnfit
+    }
+  MethodUnfit:ErrorW<><{
+    //@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$MethodUnfit
+    } 
+
+  ClassClash:ErrorW<><{
+    //@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$ClassClash
+    method Location.Lib left()
+    method Location.Lib right()
+    }
+  MethodClash:ErrorW<><{
+    //@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$MethodClash
+    method Location.Method left()
+    method Location.Method right()
+    } 
+
+//errors ready for other operations
+//IncoherentMapping
+//PathNotFound
+//PrivacyCoupuled
+//SelectorNotFound
+SubtleSubtypeViolation:ErrorW<><{
+    //@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$SubtleSubtypeViolation
+    } 
+
+//------------------------------
+//JavaImport
+//------------------------------
+
   JavaImport:{
     //@plugin is.L42.connected.withSafeOperators
     //@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.PlgWrapperGenerator
@@ -47,13 +91,26 @@
     exception UnresolvedOverloading, ClassUnfit, MethodUnfit
 
     }
-  UnresolvedOverloading:ErrorW<><{
-    //@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$UnresolvedOverloading
-    }
-  ClassUnfit:ErrorW<><{
-    //@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$ClassUnfit
-    }
-  MethodUnfit:ErrorW<><{
-    //@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$MethodUnfit
-    } 
+
+
+//------------------------------
+//Compose/Use
+//------------------------------
+Compose:{
+  //@plugin  toFix 
+  //@pluginPart is.L42.connected.withSafeOperators.refactor.Compose
+  
+  class method
+  Void #pluginUnresponsive(Library binaryRepr) 
+    error X"Compose(that,and)"
+
+  class method
+  Library compose(Library left,Library right)
+  exception MethodClash,ClassClash,SubtleSubtypeViolation
+  }
+class method
+Library compose(Library that,Library and)
+exception MethodClash,ClassClash,SubtleSubtypeViolation
+  Compose.compose(left:that,right:and)
+
   }

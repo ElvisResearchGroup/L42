@@ -16,7 +16,7 @@ public interface TypeRefTo {
     is.L42.connected.withSafeOperators.location.Lib root;//to make referredLib() cheaper, we may cache it, but it may not be a good idea...
     Ast.Path path; //referring inside the Lib
     public is.L42.connected.withSafeOperators.location.Lib referredLib(){
-      return root.navigate(path.getCBar());
+      return root.navigateCs(path.getCBar());
       }    
     @Override public String toS() {
       return Location.as42Path(path.getCBar());

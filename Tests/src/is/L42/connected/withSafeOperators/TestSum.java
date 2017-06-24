@@ -70,12 +70,12 @@ import programReduction.Program;
     ClassB cb1=getClassB(true,_cb1);
     ClassB cb2=getClassB(true,_cb2);
     if(!isError){
-      ClassB res=Compose.compose(Program.emptyLibraryProgram(),cb1,cb2);
+      ClassB res=new Compose(cb1,cb2).compose(Program.emptyLibraryProgram(),cb1,cb2);
       ClassB expected=getClassB(true,_expected);
       TestHelper.assertEqualExp(expected,res);
       }
     else{
-      try{Compose.compose(Program.emptyLibraryProgram(),cb1,cb2);fail("error expected");}
+      try{new Compose(cb1,cb2).compose(Program.emptyLibraryProgram(),cb1,cb2);fail("error expected");}
       catch(Exception err){
         assertEquals(err.getClass().getName(),_expected);
         }
