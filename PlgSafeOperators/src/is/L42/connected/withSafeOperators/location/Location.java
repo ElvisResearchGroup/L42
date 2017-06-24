@@ -10,7 +10,7 @@ import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.NotAvailable;
 
 public interface Location {
-  static String as42Path(List<ast.Ast.C>path){
+  static public String as42Path(List<ast.Ast.C>path){
     if(path.isEmpty()){return "This";}
     String res=path.get(0).toString();
     for(int i=1;i<path.size();i++){res+="."+path.get(i);}

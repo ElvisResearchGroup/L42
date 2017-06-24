@@ -88,15 +88,6 @@ public class Rename {
     newCb=ClassOperations.normalizePaths(newCb);
     //optionally sum renamed srcC in destC
     return _Sum.normalizedTopSum(p, clearCb, newCb);
-    /*
-      L0[DirectRename src->dest]p =L //with src=C._, dest=C'._ and C!=C'
-        L1=L0[PathRename src->dest]
-        L2=L1\src
-        L3=L1(src)
-        L4=L3[from This(dest.size()-1).src.removeLast()][push dest]
-        L=L2++p L4
-     
-     */
   }
   public static ClassB renameMethod(Program p,ClassB cb,List<Ast.C> path,MethodSelector src,MethodSelector dest){
       Member mem=Errors42.checkExistsPathMethod(cb, path, Optional.of(src));
@@ -147,7 +138,7 @@ public class Rename {
   }
 
 
-  private static ClassB redirectDefinition(List<Ast.C>src,List<Ast.C>dest, ClassB lprime) {
+  public static ClassB redirectDefinition(List<Ast.C>src,List<Ast.C>dest, ClassB lprime) {
     assert !src.isEmpty();
     assert !dest.isEmpty();
     NestedClass nsCb=lprime.getNested(src);

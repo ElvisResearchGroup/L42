@@ -47,10 +47,12 @@ Origin:UnsafeRefactor.MiniData<><...
 
 //###1.5 Meta support
 //------------------------------------  
+$_Doc:{}
 This$:{interface implements Concept.Base
   method Size originSize()//many since metaprogramming
   method Origin origin(Size that)
   method This location()
+  method $_Doc doc()
   }
 
 PUnresponsive:{

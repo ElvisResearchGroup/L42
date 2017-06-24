@@ -15,17 +15,16 @@ import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
 
 
-class Push {
+public class Push {
   //never wrong
-  //assumes s well formed class name
-  static ClassB pushOne(ClassB in,Ast.C s){
+  public static ClassB pushOne(ClassB in,Ast.C s){
     Path p=Path.outer(1);
     ClassB cb=(ClassB)FromInClass.of(in, p);
     List<Member> ms=Collections.singletonList(new ClassB.NestedClass(Doc.empty(),s,cb,cb.getP()));
     return ClassB.membersClass(ms,cb.getP(),cb.getPhase());
   }
   //could be more efficient if directly implemented
-  static ClassB pushMany(ClassB in,List<Ast.C>cs){
+  public static ClassB pushMany(ClassB in,List<Ast.C>cs){
     assert !cs.isEmpty();
     cs=new ArrayList<>(cs);
     Collections.reverse(cs);

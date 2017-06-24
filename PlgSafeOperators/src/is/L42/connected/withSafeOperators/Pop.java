@@ -14,7 +14,7 @@ import coreVisitors.FromInClass;
 import is.L42.connected.withSafeOperators.ExtractInfo.IsUsed;
 import platformSpecific.javaTranslation.Resources;
 
-class Pop {
+public class Pop {
   //error conditions:
   //This0 is not a box
   //there is  not exactly 1 member
@@ -25,7 +25,7 @@ class Pop {
     return directPop(cb);
   }
 
-  static ClassB directPop(ClassB cb) {
+  public static ClassB directPop(ClassB cb) {
     cb=(ClassB)new PopNFrom(1).visit(cb);
     ClassB.NestedClass nc = (ClassB.NestedClass)cb.getMs().get(0);
     ClassB res=(ClassB)nc.getInner();

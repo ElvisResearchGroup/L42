@@ -161,6 +161,10 @@ public class Compose {
   /**{@link ComposeSpec#compose}*/
   public ClassB compose(Program pp,ClassB a,ClassB b) throws MethodClash, SubtleSubtypeViolation, ClassClash{
     b=privateMangling.RefreshUniqueNames.refresh(b);
+    return composeRefreshed(pp,a,b);
+    }
+  /**{@link ComposeSpec#compose}*/
+  public ClassB composeRefreshed(Program pp,ClassB a,ClassB b) throws MethodClash, SubtleSubtypeViolation, ClassClash{
     ClassB forP=onlySubtypeCompose(a, b);
     Program p=pp.evilPush(forP);
     ClassB res=innerCompose(p,a,b);
@@ -177,7 +181,9 @@ public class Compose {
   private static RefactorErrors.SubtleSubtypeViolation _checkSubtleSubtypeViolation(Program p) {
     ClassB l=p.top();
     List<Ast.Type> ps1 = Methods.collect(p,l.getSupertypes());
-    if(!l.getSupertypes().containsAll(ps1)){return new RefactorErrors.SubtleSubtypeViolation();}
+    if(!l.getSupertypes().containsAll(ps1)){
+      return new RefactorErrors.SubtleSubtypeViolation();
+      }
     for(MethodWithType m :p.methods(Path.outer(0))){
       //there must be equivalent in l
       Member mi = l._getMember(m.getMs());

@@ -11,6 +11,7 @@ import ast.ErrorMessage;
 import ast.ExpCore;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Phase;
+import ast.PathAux;
 import auxiliaryGrammar.Functions;
 import coreVisitors.From;
 import facade.PData;
@@ -65,16 +66,29 @@ public interface Program {
     if (p.equals(p1)){return true;}
     if (p.isPrimitive() ||p1.isPrimitive()){return false;}
     if(p.outerNumber()==p1.outerNumber()){return false;}
-    if(p.outerNumber()<p1.outerNumber()){
-      Path aux=p1; p1=p; p=aux;//swap
-      }
-    assert p.outerNumber()>p1.outerNumber();
-    Path reduced=p;
+    boolean isP1=p.outerNumber()<p1.outerNumber();
     while(true){
-      reduced=this._reducePath(reduced);
-      if(reduced==null){return false;}
-      if(reduced.outerNumber()==p1.outerNumber()){
-        return reduced.equals(p1);
+      if(isP1){p1=this._reducePath(p1);}
+      else{p=this._reducePath(p);}
+      if(p==null || p1==null){return false;}
+      if(p.outerNumber()==p1.outerNumber()){
+        return p.equals(p1);
+        }
+      }
+    }
+  default List<Ast.C> _equivSubPath(Ast.Path p, Ast.Path pLong){
+    if (p.equals(pLong)){return Collections.emptyList();}
+    if (p.isPrimitive() ||pLong.isPrimitive()){return null;}
+    if(p.outerNumber()==pLong.outerNumber()){
+      return PathAux._subPath(p.getCBar(),pLong.getCBar());
+      }
+    boolean isP1=p.outerNumber()<pLong.outerNumber();
+    while(true){
+      if(isP1){pLong=this._reducePath(pLong);}
+      else{p=this._reducePath(p);}
+      if(p==null || pLong==null){return null;}
+      if(p.outerNumber()==pLong.outerNumber()){
+        return PathAux._subPath(p.getCBar(),pLong.getCBar());
         }
       }
     }
@@ -241,8 +255,15 @@ class EvilPushed extends Methods{
 
   public Program updateTop(ClassB l) {return new EvilPushed(l,former);}
 
-  public Path _reducePath(Path p) {return null;}
-
+  public Path _reducePath(Path p) {
+    if(p.outerNumber()>1){
+      Path p1=p.setNewOuter(p.outerNumber()-1);
+      Path p2=this.pop()._reducePath(p1);
+      if(p2==null){return null;}
+      return p2.setNewOuter(p2.outerNumber()+1);
+      }
+    return null;
+  }
   public Program growFellow(Program fellow) {throw Assertions.codeNotReachable();}
   
   public int getFreshId(){

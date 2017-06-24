@@ -14,8 +14,9 @@ import programReduction.Program;
 public class CloneVisitorWithProgram extends CloneVisitor{
   public CloneVisitorWithProgram(Program p) {this.p = p;}
   protected Program p;
-
+  protected int levels=-1;
   private Object lastCMs=null;
+  
   public Object getLastCMs(){return lastCMs;}
   public NestedClass visit(NestedClass s) {
     Object aux=lastCMs;
@@ -43,9 +44,10 @@ public class CloneVisitorWithProgram extends CloneVisitor{
     else{
       p=p.evilPush(s);
       }
+    levels+=1;
     Object auxO=lastCMs;
     lastCMs=null;
     try{return super.visit(s);}
-    finally{p=aux; lastCMs=auxO;}
+    finally{p=aux; lastCMs=auxO;levels-=1;}
   }
 }

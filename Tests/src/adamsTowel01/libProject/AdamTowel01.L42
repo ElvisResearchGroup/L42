@@ -43,9 +43,11 @@ SafeOperators:...
 //BinaryFlag32:...
 Enum:...
 
-Location:UnsafeRefactor.RenameClass.renameClass(
-  PrW<><UnsafeRefactor.This$er<><...,
-  nameSrc:S"Type.$_RefTo",nameDest:S"Type.RefTo")
+Location:PrW<><UnsafeRefactor.RenameClass.renameClass(
+  UnsafeRefactor.RenameClass.renameClass(
+    UnsafeRefactor.This$er<><...,
+    nameSrc:S"Type.$_RefTo",nameDest:S"Type.RefTo"),
+  nameSrc:S"$_Doc",nameDest:S"Doc")
 
 
 //I may need to insert new refactor2 here and reconsider the rest?? need to be before collections but after selector/path?

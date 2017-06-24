@@ -82,6 +82,13 @@ public class PathAux {
       || Character.isLowerCase(c)
       || Character.isDigit(c);
     }
+  public static List<Ast.C> _subPath(List<Ast.C> cs,List<Ast.C> csLong){
+    int shortSize=cs.size();
+    int longSize=csLong.size();
+    if(shortSize>longSize){return null;}
+    if(!cs.equals(csLong.subList(0,shortSize))){return null;}
+    return csLong.subList(shortSize,longSize);
+    }
   }  
 
 @Value @EqualsAndHashCode(callSuper=false)

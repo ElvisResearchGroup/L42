@@ -107,7 +107,7 @@ public class ToFormattedText implements Visitor<Void>{
   private Void sp(){result.append(" ");return null;}
   private Void separeFromChar(){
     char last=result.charAt(result.length()-1);
-    if(Character.isLetter(last) || Character.isDigit(last)){
+    if(Character.isLetter(last) || Character.isDigit(last) || last=='$' || last=='%'){
     result.append(" ");}return null;
     }
   private Void nl(){result.append("\n");result.append(currentIndent);return null;}

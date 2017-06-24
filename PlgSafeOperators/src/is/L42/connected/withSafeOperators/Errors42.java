@@ -90,6 +90,7 @@ public class Errors42 {
   }
   //"MemberUnavailable", caused by most operations referring to paths and methods
   static enum MemberUnavailable{PrivatePath,PrivateMethod,NonExistentPath,NonExistentMethod}
+  
   static Member checkExistsPathMethod(ClassB cb, List<Ast.C> path,Optional<MethodSelector>ms){
     try{
       Boolean[] isPrivateRef=new Boolean[]{false};//used in closures
@@ -103,7 +104,7 @@ public class Errors42 {
         if(meth.isPresent()){
           meth.get().match(
             nc->{throw Assertions.codeNotReachable();},
-            mi->{return null;},
+            mi->{throw Assertions.codeNotReachable();},
             mt->{if(mt.getMs().isUnique()){isPrivateMeth[0]=true;}return null;}
             );
           if(!isPrivateMeth[0]){return meth.get();}

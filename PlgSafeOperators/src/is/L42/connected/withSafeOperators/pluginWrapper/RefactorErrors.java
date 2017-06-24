@@ -33,7 +33,9 @@ public class RefactorErrors{
 
   @SuppressWarnings("serial") public static class 
   PathNotFound extends MutMsgExc implements
-    FluentSetter<PathNotFound>{}
+    FluentSetter<PathNotFound>{
+    String path;public PathNotFound(String path){this.path=path;}
+    }
   
   @SuppressWarnings("serial") public static class 
   MethodClash extends MutMsgExc implements

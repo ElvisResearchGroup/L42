@@ -277,17 +277,26 @@ public class TestRename {
         }, {lineNumber(),//
           "{A:{ method A ()} D:{C:{B:{method Void foo()}}}}","A","D.C.B",  "{D:{C:{B:{  method Void  foo()  method This0 ()}}}}"   ,false//
         }, {lineNumber(),//        ////
-          "{ A:{ class method This1.B () } B:{ }}","A","This0", "{ B:{ } class method This0.B ()  }"    ,false//
+          "{ A:{ class method This1.B () } B:{ }}",
+          "A","This0", "{ class method This0.B () B:{ } }"    ,false//
         }, {lineNumber(),//
           "{ A:{ class method This1.B () } B:{ }}" ,"A","C", "{ B:{ }  C:{class method This1.B () }}"    ,false//
         }, {lineNumber(),//
-          "{ A1:{ A2:{ class method B () }} B:{ }}","A1.A2","A1",   "{ A1:{ class method B () } B:{ }}"   ,false//
+          "{ A1:{ A2:{ class method B () }} B:{ }}",
+          "A1.A2","A1",
+          "{ A1:{ class method B () } B:{ }}"   ,false//
         }, {lineNumber(),//
-          "{ A1:{ A2:{ class method B () }} B:{ }}" ,"A1.A2","This0",  "{ A1:{ } B:{ } class method B () }"   ,false//
+          "{ A1:{ A2:{ class method B () }} B:{ }}" ,
+          "A1.A2","This0", 
+          "{ class method B () A1:{ } B:{ }}"   ,false//
         }, {lineNumber(),//
-          "{ A1:{ A2:{ class method B () } B:{ } }}","A1.A2","A1",  "{ A1:{B:{ } class method B () }}"   ,false//
+          "{ A1:{ A2:{ class method B () } B:{ } }}",
+          "A1.A2","A1",
+          "{ A1:{ class method B () B:{ } }}"   ,false//
         }, {lineNumber(),//
-          "{ A1:{ A2:{ class method This1.B () } B:{ } }}","A1.A2","This0",   "{ A1:{B:{ }} class method This0.A1.B () }"   ,false//
+          "{ A1:{ A2:{ class method This1.B () } B:{ } }}",
+          "A1.A2","This0",
+          "{ class method This0.A1.B () A1:{B:{ }} }"   ,false//
         }, {lineNumber(),//
           "{ A:{ D:{ class method This0 d() This0.d() } class method This1.B foo()This0.foo() } B:{ }}" ,
           "A","This0",
