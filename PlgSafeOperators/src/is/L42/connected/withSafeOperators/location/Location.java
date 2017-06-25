@@ -3,11 +3,19 @@ package is.L42.connected.withSafeOperators.location;
 import java.util.ArrayList;
 import java.util.List;
 
+import ast.ErrorMessage;
 import ast.ExpCore;
 import ast.Expression;
+import ast.Ast;
+import ast.Ast.Path;
 import ast.Ast.Position;
+import ast.ExpCore.ClassB;
+import ast.ExpCore.ClassB.Phase;
+import coreVisitors.From;
+import facade.PData;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.NotAvailable;
+import programReduction.Program;
 
 public interface Location {
   static public String as42Path(List<ast.Ast.C>path){
@@ -16,6 +24,31 @@ public interface Location {
     for(int i=1;i<path.size();i++){res+="."+path.get(i);}
     return res;
     }
+  static TypeRefTo refTo(Program p,Path path,List<Ast.C> location,Lib root) {
+  Path whereP=Path.outer(0,location);
+  path=From.fromP(path,whereP);
+  if(path.isPrimitive()){
+    return new TypeRefTo.Binded(path);
+    }
+  if (path.outerNumber()==0){
+    return new TypeRefTo.Lib(root,path);
+    }
+  path=path.setNewOuter(path.outerNumber()-1);
+  try{
+    ClassB cb=p.extractClassB(path);
+    if(cb.getPhase().subtypeEq(Phase.Typed)){//typed,coherent
+      return new TypeRefTo.Binded(path);
+      }
+    //else, phase is none but cb available and not typed yet
+    return new TypeRefTo.Unavailable("Unavailable path: "+path+"; code not typed yet.");
+    }
+  catch(ErrorMessage.PathMetaOrNonExistant pne){
+    if (pne.isMeta()){return new TypeRefTo.Unavailable("Unavailable path: "+path+"; code not generated yet.");}
+    return new TypeRefTo.Missing(path.toString());
+    }
+  }
+
+  
   static <T> T listAccess(List<T> list, int that) throws NotAvailable{
     try{return list.get(that);}
     catch(IndexOutOfBoundsException e){throw new RefactorErrors.NotAvailable();}

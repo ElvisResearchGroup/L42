@@ -2450,32 +2450,36 @@ Void test(read This1.Concept.ToS that, read This1.Concept.ToS expected, This1.S 
                   capsule This1.S.SBuilder b6=rcv8.#builder()
                   Void unused19=b6.#colon()
                   Void unused20=b6.#space()
+                  Void unused21=b6.#sQuote()
                   b6
                   ))
                 )
               rcv7.#from(seqBuilder:(
                 capsule This1.S.SConcat b7=rcv7.#seqBuilder()
-                Void unused21=b7.#add(that:given)
+                Void unused22=b7.#add(that:given)
                 b7
                 ))
               )
             rcv6.#from(builder:(
               capsule This1.S.SBuilder b8=rcv6.#builder()
-              Void unused22=b8.#space()
-              Void unused23=b8.#bang()
-              Void unused24=b8.#equal()
-              Void unused25=b8.#space()
+              Void unused23=b8.#sQuote()
+              Void unused24=b8.#space()
+              Void unused25=b8.#bang()
+              Void unused26=b8.#equal()
+              Void unused27=b8.#space()
+              Void unused28=b8.#sQuote()
               b8
               ))
             )
           rcv5.#from(seqBuilder:(
             capsule This1.S.SConcat b9=rcv5.#seqBuilder()
-            Void unused26=b9.#add(that:expected)
+            Void unused29=b9.#add(that:expected)
             b9
             ))
           )
         rcv4.#from(builder:(
           capsule This1.S.SBuilder b10=rcv4.#builder()
+          Void unused30=b10.#sQuote()
           b10
           ))
         )))
@@ -26354,8 +26358,8 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.locati
   ))
 method 
 This0.Annotation annotation(This2.Size that) This0.Annotation.#from(binaryRepr:(
-  Library res=use This0 check annotation(_this:this.#binaryRepr(), _1_int:that.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
-plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.location.Doc\u000amethod name: annotation(that)\u000ajava method: is.L42.connected.withSafeOperators.location.Doc.annotation(_this,_1_int)\u000a
+  Library res=use This0 check #annotation(_this:this.#binaryRepr(), _1_int:that.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.location.Doc\u000amethod name: annotation(that)\u000ajava method: is.L42.connected.withSafeOperators.location.Doc.#annotation(_this,_1_int)\u000a
 */})
   res
   ))
@@ -26496,7 +26500,6 @@ CurlyBlock-Should be unreachable code
   )
 Annotation: {/*@plugin  toFix 
 @pluginPart is.L42.connected.withSafeOperators.location.Doc$Annotation
-@todo:decomment later:Type.RefTo key
 */implements This3.Concept.Base, This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals/*class method This from(Base base)
 */
 class method 
@@ -26512,14 +26515,12 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.locati
 */})
   res
   ))
-mut method 
-This3.S #text() This3.S.#from(binaryRepr:(
-  Library res=use This0 check text(_this:this.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
-plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.location.Doc$Annotation\u000amethod name: #text()\u000ajava method: is.L42.connected.withSafeOperators.location.Doc$Annotation.text(_this)\u000a
-*/})
-  res
-  ))
-read method 
+method 
+This2.Type.RefTo title() This2.Type.DispatchRefTo.#apply(that:use This0 check title(_this:this.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr:This3.S.#from(builder:(
+  capsule This3.S.SBuilder b=This3.S.#builder()
+  b
+  )).#binaryRepr()))
+method 
 This3.S text() This3.S.#from(binaryRepr:(
   Library res=use This0 check text(_this:this.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
 plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.location.Doc$Annotation\u000amethod name: text()\u000ajava method: is.L42.connected.withSafeOperators.location.Doc$Annotation.text(_this)\u000a

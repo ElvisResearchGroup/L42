@@ -35,7 +35,7 @@
     sExpected=expected.toS()
     given=that.toS()
     if sExpected != given (
-      Debug(S"[FAIL] "[message]": "[given]" != "[expected]"")
+      Debug(S"[FAIL] "[message]": '"[given]"' != '"[expected]"'")
       )
     else (
       // message = given

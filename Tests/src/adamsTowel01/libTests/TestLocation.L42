@@ -407,6 +407,10 @@ with r=t.refTo() (
     DoStuffWithTextOfMissingPath(r.toS())
     )
   )
+
+------
+location() and doc() from Location,
+== equals(that) class() readableName() is(subtype) toS() since Data
 */
 DummyNotUsed:{}
 RefToTest:{
@@ -465,7 +469,61 @@ RefToTest:{
   return ExitCode.normal()
   }
 
-EmptyTest:{
+/*
+--------------------------------
+Location.Doc and Location.Doc.Annotation
+--------------------------------
+Doc reify documentation, that is, comments.
+Doc objects can be seen as strings, but have structure,
+that can be explored.
+In 42 the at simbol can be used, followed by a Path or a lowerCase
+identifier to inject meaning in comments. This is called an annotation title.
+The text after annotation, and before the next annotation or end of the comment, is the annotation text.
+To extract information from Doc use
+method Location.Doc.Annotation.List annotations()
+providin a list of Annotation.
+Every annotation offers a
+method Location.Type.RefTo title()
+and
+method S text()
+
+------
+location() and doc() from Location,
+== equals(that) class() readableName() is(subtype) toS() since Data
+*/
+DocTest:{
+  Debug(S"DocTest")
+  d=Location.Lib({/*
+  @hiThisIsALabel I'm actually a RefTo.Missing
+  @DocTest I'm instead a RefTo.Unresolved
+  @A Here I point to the inner nested class A as RefTo.Lib
+  @Concept.Equals Here I point to Concept as RefTo.Binded*/ A:{}}).doc()
+  as=d.annotations()
+  Debug.test(as.val(0\).title() expected:S"hiThisIsALabel")
+  Debug.test(as.val(0\).title().class().is(subtype:
+    Location.Type.RefTo.Missing) expected:Bool.true())
+  Debug.test(as.val(0\).text() expected:
+    S" I'm actually a RefTo.Missing"[S.nl()]"  ")//new line and 2 spaces of indentation
+
+  Debug.test(as.val(1\).title() expected:
+    S"Unavailable path: This0.DocTest; code not generated yet.")
+  Debug.test(as.val(1\).title().class().is(subtype:
+    Location.Type.RefTo.Unavailable) expected:Bool.true())
+  Debug.test(as.val(1\).text() expected:
+    S" I'm instead a RefTo.Unresolved"[S.nl()]"  ")
+  
+  Debug.test(as.val(2\).title() expected:S"A")
+  Debug.test(as.val(2\).title().class().is(subtype:
+    Location.Type.RefTo.Lib) expected:Bool.true())
+  Debug.test(as.val(2\).text() expected:
+    S" Here I point to the inner nested class A as RefTo.Lib"[S.nl()]"  ")
+
+  Debug.test(as.val(3\).title() expected:S"This0.Concept.Equals")
+  Debug.test(as.val(3\).title().class().is(subtype:
+    Location.Type.RefTo.Binded) expected:Bool.true())
+  Debug.test(as.val(3\).text() expected:
+    S" Here I point to Concept as RefTo.Binded")
+    //note, no new line in the string here
   return ExitCode.normal()
   }
 }

@@ -18,30 +18,7 @@ public interface Type extends Location{
   Ast.Type type();
   Lib locationLib();
   default TypeRefTo refTo(PData pData) {
-    Path path=type().getPath();
-    Path whereP=Path.outer(0,locationLib().path);
-    path=From.fromP(path,whereP);
-    if(path.isPrimitive()){
-      return new TypeRefTo.Binded(path);
-      }
-    if (path.outerNumber()==0){
-      return new TypeRefTo.Lib(locationLib().root(),path);
-      }
-    path=path.setNewOuter(path.outerNumber()-1);
-    Program p=pData.p;
-    try{
-      ClassB cb=p.extractClassB(path);
-      if(cb.getPhase().subtypeEq(Phase.Typed)){//typed,coherent
-        return new TypeRefTo.Binded(path);
-        }
-      //else, phase is none but cb available and not typed yet
-      return new TypeRefTo.Unavailable("Unavailable path: "+path+"; code not typed yet.");
-      }
-    catch(ErrorMessage.PathMetaOrNonExistant pne){
-      if (pne.isMeta()){return new TypeRefTo.Unavailable("Unavailable path: "+path+"; code not generated yet.");}
-      return new TypeRefTo.Missing(path.toString());
-      }
-
+    return Location.refTo(pData.p,type().getPath(), locationLib().path, locationLib().root());
     }
   default Doc doc() {return new Doc(type().getDoc(),this);}
   default String toS(PData p) {
