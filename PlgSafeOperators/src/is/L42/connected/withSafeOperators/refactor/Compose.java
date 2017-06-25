@@ -253,7 +253,7 @@ private ClassClash makeClassClash() {
 }
 
 /**{@link ComposeSpec#methodTypeSubtype}*/  
-private boolean mtGT(Program p, MethodType mt1, MethodType mt2) {
+public static boolean mtGT(Program p, MethodType mt1, MethodType mt2) {
   if (!p.subtypeEq(mt1.getReturnType(), mt2.getReturnType())){return false;}
   return mtEqRest(p,mt1,mt2);
 }
@@ -271,7 +271,7 @@ private void checkMtEq(Program p, MethodWithType mwt1, MethodWithType mwt2,Metho
     }
 }
 /**{@link ComposeSpec#methodTypeSubtype}*/
-private boolean mtEqRest(Program p, MethodType mt1, MethodType mt2) {
+private static boolean mtEqRest(Program p, MethodType mt1, MethodType mt2) {
   if(mt1.getMdf()!=mt2.getMdf()){return false;}
   assert mt1.getTs().size()==mt2.getTs().size();
   for(int i=0;i<mt1.getTs().size();i++){

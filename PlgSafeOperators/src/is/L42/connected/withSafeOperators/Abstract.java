@@ -57,36 +57,6 @@ public class Abstract {
     return cb.withMs(newMs);
   }
 
-  public static ClassB toAbstract(Program p,ClassB cb, List<Ast.C> path,MethodSelector sel,MethodSelector newSel){
-    Errors42.checkExistsPathMethod(cb, path, Optional.of(sel));
-    if(path.isEmpty()){return auxToAbstract(p,cb,path,sel,newSel);}
-    return cb.onClassNavigateToPathAndDo(path,cbi->auxToAbstract(p,cbi,path,sel,newSel));
-  }
-  private static ClassB auxToAbstract(Program p,ClassB cb,List<Ast.C> pathForError,MethodSelector sel,MethodSelector newSel) {
-    List<Member> newMs=new ArrayList<>(cb.getMs());
-    Member m=Functions.getIfInDom(newMs, sel).get();
-    //make m abstract
-    if(m instanceof MethodWithType){
-      MethodWithType mwt=(MethodWithType)m;
-      mwt=mwt.with_inner(Optional.empty());
-      Functions.replaceIfInDom(newMs,mwt);
-      }
-    else{//it is method implemented
-    Functions.removeIfInDom(newMs, sel);
-      }
-    //create new class
-    if(newSel==null){ return cb.withMs(newMs);  }
-    MethodWithType mwt1 = (MethodWithType) cb._getMember(sel);
-    assert mwt1!=null;
-    if(newSel!=null){Errors42.checkCompatibleMs(pathForError, mwt1, newSel);}
-    Optional<MethodWithType> mwt2 = Optional.ofNullable((MethodWithType)cb._getMember(newSel));
-    mwt1=mwt1.withMs(newSel).withDoc(Doc.empty()).withMt(mwt1.getMt().withRefine(false));//never refine, see under
-    if(mwt2.isPresent()){//Never there, so will never implement interfaces (on normalized classb)
-       throw Errors42.errorMethodClash(pathForError, mwt1,mwt2.get(), false, Collections.emptyList(), false,false,false); 
-       }   
-    newMs.add(mwt1);
-    return cb.withMs(newMs);  
-  }
 
   static void checkPrivacyCoupuled(ClassB cbFull,ClassB cbClear, List<Ast.C> path) {
   //start from a already cleared out of private states

@@ -50,3 +50,14 @@ mb(){return this.ma();} } works
 
 
 Criticism: it would be better to typecheck CODE LITERALS before flattening.
+
+
+A:{interface  method B m()}
+B:{implements A}
+works, but 
+
+A:{interface  method B m()}
+B:Data<><{implements A}
+Can not work, and that is ok.
+B is needed to be compiled for A to be typed and thus for {implements A} to be normalized.
+

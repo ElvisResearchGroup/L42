@@ -60,12 +60,18 @@
     method Location.Method left()
     method Location.Method right()
     } 
-
+  PathNotFound:ErrorW<><{
+    //@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$PathNotFound
+    method Path path()
+    } 
+  SelectorNotFound:ErrorW<><{
+    //@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$SelectorNotFound
+    method Path path()
+    method Selector selector()
+    } 
 //errors ready for other operations
 //IncoherentMapping
-//PathNotFound
 //PrivacyCoupuled
-//SelectorNotFound
 SubtleSubtypeViolation:ErrorW<><{
     //@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$SubtleSubtypeViolation
     } 
@@ -94,7 +100,7 @@ SubtleSubtypeViolation:ErrorW<><{
 
 
 //------------------------------
-//Compose/Use
+//Compose
 //------------------------------
 Compose:{
   //@plugin  toFix 
@@ -112,5 +118,116 @@ class method
 Library compose(Library that,Library and)
 exception MethodClash,ClassClash,SubtleSubtypeViolation
   Compose.compose(left:that,right:and)
+
+//------------------------------
+//Rename
+//------------------------------
+PlgRenameClass:{
+  //@plugin  toFix 
+  //@pluginPart is.L42.connected.withSafeOperators.refactor.Rename
+  class method Void #pluginUnresponsive(Library binaryRepr) 
+    error X"renameClass(Library that,Path src,Path dest)"
+
+  class method
+  Library renameClass(Library that,Path src,Path dest)
+  exception MethodClash,ClassClash,SubtleSubtypeViolation
+  }
+RenameClass:{
+  method Path src()
+  method Path dest()
+  class method This (Path src,Path dest)
+  method Library <><(Library that)
+  exception MethodClash,ClassClash,SubtleSubtypeViolation
+    PlgRenameClass.renameClass(
+      that,src:this.src(),dest:this.dest())
+  }
+//TODO: change sugar so that is #default1 or #default2, so that
+//we can have "into" as both selector and path
+class method
+class Path #default#rename(Void path) Path
+class method
+class Path #default#rename(Void into) Path
+class method
+RenameClass rename(Path path, Path into)
+  RenameClass(src:path,dest:into)
+
+//------------------------------
+//ToAbstract
+//------------------------------
+PlgToAbstract:{
+  //@plugin  toFix 
+  //@pluginPart is.L42.connected.withSafeOperators.refactor.ToAbstract
+  class method Void #pluginUnresponsive(Library binaryRepr) 
+    error X"toAbstractSelector"
+
+  class method
+  Library toAbstractPathDest(Library that,Path path,Selector src,Selector dest)
+  exception SelectorNotFound, PathNotFound, MethodClash
+  class method
+  Library toAbstractPath(Library that,Path path,Selector src)
+  exception SelectorNotFound, PathNotFound
+  class method
+  Library toAbstractDest(Library that,Selector src,Selector dest)
+  exception SelectorNotFound,  MethodClash
+  class method
+  Library toAbstract(Library that,Selector src)
+  exception SelectorNotFound
+  }
+//1
+ToAbstract:{
+  method Selector src()
+  class method This (Selector src)
+  method Library <><(Library that)
+  exception SelectorNotFound
+    PlgToAbstract.toAbstract(
+      that,src:this.src())
+  }
+class method
+ToAbstract toAbstract(Selector selector)
+  ToAbstract(src:selector)
+//2
+ToAbstractDest:{
+  method Selector src()   method Selector dest()
+  class method This (Selector src,Selector dest)
+  method Library <><(Library that)
+  exception SelectorNotFound,MethodClash
+    PlgToAbstract.toAbstractDest(
+      that,src:this.src() dest:this.dest())
+  }
+class method
+ToAbstractDest toAbstract(Selector selector,Selector into)
+  ToAbstractDest(src:selector,dest:into)
+//3
+ToAbstractPath:{
+  method Path path() method Selector src()
+  class method This (Path path,Selector src)
+  method Library <><(Library that)
+  exception SelectorNotFound, PathNotFound
+    PlgToAbstract.toAbstractPath(
+      that,path:this.path(),src:this.src())
+  }
+class method
+ToAbstractPath toAbstract(Selector selector Path of)
+  ToAbstractPath(path:of,src:selector)
+//4
+ToAbstractPathDest:{
+  method Path path() method Selector src() method Selector dest()
+  class method This (Path path,Selector src,Selector dest)
+  method Library <><(Library that)
+  exception SelectorNotFound, PathNotFound, MethodClash
+    PlgToAbstract.toAbstractPathDest(
+      that,path:this.path(),src:this.src(),dest:this.dest())
+  }
+class method
+ToAbstractPathDest toAbstract(Selector selector, Path of,Selector into)
+  ToAbstractPathDest(path:of,src:selector,dest:into)
+
+class method
+class Selector #default#toAbstract(Void selector) Selector
+class method
+class Selector #default#toAbstract(Void into) Selector
+class method
+class Path #default#toAbstract(Void of) Path
+
 
   }

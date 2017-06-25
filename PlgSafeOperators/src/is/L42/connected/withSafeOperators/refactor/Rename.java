@@ -92,7 +92,10 @@ public class Rename {
     //newCB=take srcC from top, and adjust paths to dest
     ClassB onlyDestL=is.L42.connected.withSafeOperators.Rename.redirectDefinition(src,dest,renamedFullL);
     //optionally sum renamed srcC in destC
+    
     ClassB res= new Compose(l,l).composeRefreshed(p, noSrcL, onlyDestL);
+    //TODO: it can be much more efficient in many cases, if we can check if the sum in not doing any heavy lifting, as in
+    //renaming on a non existent target
     //TODO:try catch methodclash and replace right method location with the "right one" 
     //additional step?ClassOperations.normalizePaths(res);
     //assert !res.toString().contains("This$"):

@@ -18,6 +18,7 @@ import ast.Ast.Mdf;
 import ast.Ast.MethodSelector;
 import ast.Ast.MethodType;
 import ast.Ast.Type;
+import ast.ErrorMessage.PathMetaOrNonExistant;
 import ast.Ast.Path;
 import ast.Ast.Type;
 import ast.ExpCore;
@@ -388,7 +389,15 @@ public static boolean hasPluginUnresponsive(ClassB l){
   private static void isOkAsException(Program p, Path csTop, Path pi) throws ClassUnfit, MethodUnfit {
     Path op=_pathForOutside(csTop.getCBar().size(),pi);
     if(op==null){checkForInside(p.top(),csTop,pi);return;}
-    ClassB l=p.extractClassB(op);
+    ClassB l;try{ l=p.extractClassB(op);}
+    catch(PathMetaOrNonExistant pne){
+      if(pne.isMeta()){
+        throw new RefactorErrors.ClassUnfit().msg(
+            "Class "+op+" is still not available");
+        }
+      throw new RefactorErrors.ClassUnfit().msg(
+            "Class "+op+" is missing/mispelled");
+    }
     if(!hasExceptionIf(l)){throw new RefactorErrors.ClassUnfit().msg(
       "Class "+op+" has no method #exceptionIf(binaryRepr)");
       }

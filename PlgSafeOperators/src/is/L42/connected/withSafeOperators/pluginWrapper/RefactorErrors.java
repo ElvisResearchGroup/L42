@@ -3,7 +3,7 @@ package is.L42.connected.withSafeOperators.pluginWrapper;
 import is.L42.connected.withSafeOperators.location.Lib;
 import is.L42.connected.withSafeOperators.location.Location;
 import is.L42.connected.withSafeOperators.location.Method;
-
+import ast.Ast.MethodSelector;
 /* fluent setter for errors, a good idea to avoid duplicating constructors, but
  * the main issue is that we need to support enriching the message while try-catching  
  */
@@ -19,7 +19,6 @@ interface FluentSetter<T>{
 
 @SuppressWarnings("serial")
 abstract class MutMsgExc extends Exception{
-  //TODO: add location/internalLocation?
   String mutMsg;//since java do not want setMessage  :(
   public @Override String getMessage(){return mutMsg;}
   public void setMessage(String msg){mutMsg=msg;}
@@ -29,12 +28,19 @@ abstract class MutMsgExc extends Exception{
 public class RefactorErrors{
   @SuppressWarnings("serial") public static class 
   SelectorNotFound extends MutMsgExc implements
-    FluentSetter<SelectorNotFound>{}
+    FluentSetter<SelectorNotFound>{
+    String path; MethodSelector sel;
+    public SelectorNotFound(String path, MethodSelector sel){this.path=path;this.sel=sel;}
+    public String path(){return path;}
+    public MethodSelector selector(){return sel;}
+    
+  }
 
   @SuppressWarnings("serial") public static class 
   PathNotFound extends MutMsgExc implements
     FluentSetter<PathNotFound>{
     String path;public PathNotFound(String path){this.path=path;}
+    public String path(){return path;}
     }
   
   @SuppressWarnings("serial") public static class 

@@ -28143,6 +28143,26 @@ Infrastructure
 */
 class method 
 Library compose(Library that, Library and) exception This0.MethodClash, This0.ClassClash, This0.SubtleSubtypeViolation This0.Compose.compose(left:that, right:and)
+class method 
+class This1.Path #default#rename(Void path) This1.Path
+class method 
+class This1.Path #default#rename(Void into) This1.Path
+class method 
+This0.RenameClass rename(This1.Path path, This1.Path into) This0.RenameClass.#apply(src:path, dest:into)
+class method 
+This0.ToAbstract toAbstract(This1.Selector selector) This0.ToAbstract.#apply(src:selector)
+class method 
+This0.ToAbstractDest toAbstract(This1.Selector selector, This1.Selector into) This0.ToAbstractDest.#apply(src:selector, dest:into)
+class method 
+This0.ToAbstractPath toAbstract(This1.Selector selector, This1.Path of) This0.ToAbstractPath.#apply(path:of, src:selector)
+class method 
+This0.ToAbstractPathDest toAbstract(This1.Selector selector, This1.Path of, This1.Selector into) This0.ToAbstractPathDest.#apply(path:of, src:selector, dest:into)
+class method 
+class This1.Selector #default#toAbstract(Void selector) This1.Selector
+class method 
+class This1.Selector #default#toAbstract(Void into) This1.Selector
+class method 
+class This1.Path #default#toAbstract(Void of) This1.Path
 Fail: {interface implements This2.Concept.ToS, This2.Concept.Classable/*not implement Guard  not a message  no cause/more then a msg?
 */
 read method 
@@ -28643,6 +28663,183 @@ plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.conne
 */})
   res
   ))}
+PathNotFound: {/*@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$PathNotFound
+@plugin is.L42.connected.withSafeOperators
+*/implements This1.Fail, This2.Concept.ToS, This2.Concept.Classable/*not implement Guard  not a message  no cause/more then a msg?
+*/
+class method 
+mut This0 #from(Library binaryRepr) 
+read method 
+Library #binaryRepr() 
+class method 
+Void #exceptionIf(Library binaryRepr) exception This0 use This0 check instanceof(_this:binaryRepr) exception This0.#from(binaryRepr:binaryRepr)
+method 
+This2.Path path() This2.Path.#from(binaryRepr:(
+  Library res=use This0 check path(_this:this.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$PathNotFound\u000amethod name: path()\u000ajava method: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$PathNotFound.path(_this)\u000a
+*/})
+  res
+  ))
+refine read method 
+This2.S toS() (
+  This2.S.Continue rcv52=(
+    This2.S rcv53=This0.readableName()
+    rcv53.#from(seqBuilder:(
+      capsule This2.S.SConcat b=rcv53.#seqBuilder()
+      Void unused=b.#add(that:This2.S.#from(builder:(
+        capsule This2.S.SBuilder b0=This2.S.#builder()
+        Void unused2=b0.#colon()
+        Void unused3=b0.#space()
+        b0
+        )))
+      Void unused0=b.#add(that:This2.S.nl())
+      Void unused1=b.#add(that:this.text().as42MultilineString())
+      b
+      ))
+    )
+  rcv52.#from(builder:(
+    capsule This2.S.SBuilder b1=rcv52.#builder()
+    b1
+    ))
+  )
+refine read method 
+class This0 class() This0
+refine class method 
+This2.S readableName() This2.GetMyName.#apply(that:This0)
+refine class method 
+This2.Bool is(class Any subtype) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error  {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This2.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This2.Bool.false()
+    void
+    )
+  
+  catch return This2.Bool result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+class method 
+Library #pluginUnresponsive(Library binaryRepr) binaryRepr
+refine read method 
+This2.S text() This2.S.#from(binaryRepr:(
+  Library res=use This0 check text(_this:this.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$PathNotFound\u000amethod name: text()\u000ajava method: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$PathNotFound.text(_this)\u000a
+*/})
+  res
+  ))}
+SelectorNotFound: {/*@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$SelectorNotFound
+@plugin is.L42.connected.withSafeOperators
+*/implements This1.Fail, This2.Concept.ToS, This2.Concept.Classable/*not implement Guard  not a message  no cause/more then a msg?
+*/
+class method 
+mut This0 #from(Library binaryRepr) 
+read method 
+Library #binaryRepr() 
+class method 
+Void #exceptionIf(Library binaryRepr) exception This0 use This0 check instanceof(_this:binaryRepr) exception This0.#from(binaryRepr:binaryRepr)
+method 
+This2.Path path() This2.Path.#from(binaryRepr:(
+  Library res=use This0 check path(_this:this.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$SelectorNotFound\u000amethod name: path()\u000ajava method: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$SelectorNotFound.path(_this)\u000a
+*/})
+  res
+  ))
+method 
+This2.Selector selector() This2.Selector.#from(binaryRepr:(
+  Library res=use This0 check selector(_this:this.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$SelectorNotFound\u000amethod name: selector()\u000ajava method: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$SelectorNotFound.selector(_this)\u000a
+*/})
+  res
+  ))
+refine read method 
+This2.S toS() (
+  This2.S.Continue rcv52=(
+    This2.S rcv53=This0.readableName()
+    rcv53.#from(seqBuilder:(
+      capsule This2.S.SConcat b=rcv53.#seqBuilder()
+      Void unused=b.#add(that:This2.S.#from(builder:(
+        capsule This2.S.SBuilder b0=This2.S.#builder()
+        Void unused2=b0.#colon()
+        Void unused3=b0.#space()
+        b0
+        )))
+      Void unused0=b.#add(that:This2.S.nl())
+      Void unused1=b.#add(that:this.text().as42MultilineString())
+      b
+      ))
+    )
+  rcv52.#from(builder:(
+    capsule This2.S.SBuilder b1=rcv52.#builder()
+    b1
+    ))
+  )
+refine read method 
+class This0 class() This0
+refine class method 
+This2.S readableName() This2.GetMyName.#apply(that:This0)
+refine class method 
+This2.Bool is(class Any subtype) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error  {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This2.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This2.Bool.false()
+    void
+    )
+  
+  catch return This2.Bool result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+class method 
+Library #pluginUnresponsive(Library binaryRepr) binaryRepr
+refine read method 
+This2.S text() This2.S.#from(binaryRepr:(
+  Library res=use This0 check text(_this:this.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$SelectorNotFound\u000amethod name: text()\u000ajava method: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$SelectorNotFound.text(_this)\u000a
+*/})
+  res
+  ))}
 SubtleSubtypeViolation: {/*@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$SubtleSubtypeViolation
 @plugin is.L42.connected.withSafeOperators
 */implements This1.Fail, This2.Concept.ToS, This2.Concept.Classable/*not implement Guard  not a message  no cause/more then a msg?
@@ -28794,4 +28991,210 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.refact
     )
   
   res
-  )}}}
+  )}
+PlgRenameClass: {/*@plugin  toFix 
+@pluginPart is.L42.connected.withSafeOperators.refactor.Rename
+*/
+class method 
+mut This0 #from(Library binaryRepr) 
+read method 
+Library #binaryRepr() 
+class method 
+Void #exceptionIf(Library binaryRepr) exception This0 use This0 check instanceof(_this:binaryRepr) exception This0.#from(binaryRepr:binaryRepr)
+class method 
+Void #pluginUnresponsive(Library binaryRepr) error This2.X.#from(builder:(
+  capsule This2.S.SBuilder b=This2.X.#builder()
+  Void unused=b.#r()
+  Void unused0=b.#e()
+  Void unused1=b.#n()
+  Void unused2=b.#a()
+  Void unused3=b.#m()
+  Void unused4=b.#e()
+  Void unused5=b.#C()
+  Void unused6=b.#l()
+  Void unused7=b.#a()
+  Void unused8=b.#s()
+  Void unused9=b.#s()
+  Void unused10=b.#oRound()
+  Void unused11=b.#L()
+  Void unused12=b.#i()
+  Void unused13=b.#b()
+  Void unused14=b.#r()
+  Void unused15=b.#a()
+  Void unused16=b.#r()
+  Void unused17=b.#y()
+  Void unused18=b.#space()
+  Void unused19=b.#t()
+  Void unused20=b.#h()
+  Void unused21=b.#a()
+  Void unused22=b.#t()
+  Void unused23=b.#comma()
+  Void unused24=b.#P()
+  Void unused25=b.#a()
+  Void unused26=b.#t()
+  Void unused27=b.#h()
+  Void unused28=b.#space()
+  Void unused29=b.#s()
+  Void unused30=b.#r()
+  Void unused31=b.#c()
+  Void unused32=b.#comma()
+  Void unused33=b.#P()
+  Void unused34=b.#a()
+  Void unused35=b.#t()
+  Void unused36=b.#h()
+  Void unused37=b.#space()
+  Void unused38=b.#d()
+  Void unused39=b.#e()
+  Void unused40=b.#s()
+  Void unused41=b.#t()
+  Void unused42=b.#cRound()
+  b
+  ))
+class method 
+Library renameClass(Library that, This2.Path src, This2.Path dest) exception This1.MethodClash, This1.ClassClash, This1.SubtleSubtypeViolation (
+  Library res=use This0 check #renameClass(_1_ast%ExpCore$ClassB:that, _2_java%lang%String:src.#binaryRepr(), _3_java%lang%String:dest.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.refactor.Rename\u000amethod name: renameClass(that,src,dest)\u000ajava method: is.L42.connected.withSafeOperators.refactor.Rename.#renameClass(_1_ast%ExpCore$ClassB,_2_java%lang%String,_3_java%lang%String)\u000a
+*/})
+  
+  catch error Library x (
+    Void unused0=This1.MethodClash.#exceptionIf(binaryRepr:x)
+    Void unused1=This1.ClassClash.#exceptionIf(binaryRepr:x)
+    Void unused2=This1.SubtleSubtypeViolation.#exceptionIf(binaryRepr:x)
+    error x
+    )
+  
+  res
+  )}
+RenameClass: {
+method 
+This2.Path src() 
+method 
+This2.Path dest() 
+class method 
+This0 #apply(This2.Path src, This2.Path dest) 
+method 
+Library #leftrightleft(Library that) exception This1.MethodClash, This1.ClassClash, This1.SubtleSubtypeViolation This1.PlgRenameClass.renameClass(that:that, src:this.src(), dest:this.dest())}
+PlgToAbstract: {/*@plugin  toFix 
+@pluginPart is.L42.connected.withSafeOperators.refactor.ToAbstract
+*/
+class method 
+mut This0 #from(Library binaryRepr) 
+read method 
+Library #binaryRepr() 
+class method 
+Void #exceptionIf(Library binaryRepr) exception This0 use This0 check instanceof(_this:binaryRepr) exception This0.#from(binaryRepr:binaryRepr)
+class method 
+Void #pluginUnresponsive(Library binaryRepr) error This2.X.#from(builder:(
+  capsule This2.S.SBuilder b=This2.X.#builder()
+  Void unused=b.#t()
+  Void unused0=b.#o()
+  Void unused1=b.#A()
+  Void unused2=b.#b()
+  Void unused3=b.#s()
+  Void unused4=b.#t()
+  Void unused5=b.#r()
+  Void unused6=b.#a()
+  Void unused7=b.#c()
+  Void unused8=b.#t()
+  Void unused9=b.#S()
+  Void unused10=b.#e()
+  Void unused11=b.#l()
+  Void unused12=b.#e()
+  Void unused13=b.#c()
+  Void unused14=b.#t()
+  Void unused15=b.#o()
+  Void unused16=b.#r()
+  b
+  ))
+class method 
+Library toAbstractPathDest(Library that, This2.Path path, This2.Selector src, This2.Selector dest) exception This1.SelectorNotFound, This1.PathNotFound, This1.MethodClash (
+  Library res=use This0 check #toAbstractPathDest(_1_ast%ExpCore$ClassB:that, _2_java%lang%String:path.#binaryRepr(), _3_java%lang%String:src.#binaryRepr(), _4_java%lang%String:dest.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.refactor.ToAbstract\u000amethod name: toAbstractPathDest(that,path,src,dest)\u000ajava method: is.L42.connected.withSafeOperators.refactor.ToAbstract.#toAbstractPathDest(_1_ast%ExpCore$ClassB,_2_java%lang%String,_3_java%lang%String,_4_java%lang%String)\u000a
+*/})
+  
+  catch error Library x (
+    Void unused0=This1.SelectorNotFound.#exceptionIf(binaryRepr:x)
+    Void unused1=This1.PathNotFound.#exceptionIf(binaryRepr:x)
+    Void unused2=This1.MethodClash.#exceptionIf(binaryRepr:x)
+    error x
+    )
+  
+  res
+  )
+class method 
+Library toAbstractPath(Library that, This2.Path path, This2.Selector src) exception This1.SelectorNotFound, This1.PathNotFound (
+  Library res=use This0 check #toAbstractPath(_1_ast%ExpCore$ClassB:that, _2_java%lang%String:path.#binaryRepr(), _3_java%lang%String:src.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.refactor.ToAbstract\u000amethod name: toAbstractPath(that,path,src)\u000ajava method: is.L42.connected.withSafeOperators.refactor.ToAbstract.#toAbstractPath(_1_ast%ExpCore$ClassB,_2_java%lang%String,_3_java%lang%String)\u000a
+*/})
+  
+  catch error Library x (
+    Void unused0=This1.SelectorNotFound.#exceptionIf(binaryRepr:x)
+    Void unused1=This1.PathNotFound.#exceptionIf(binaryRepr:x)
+    error x
+    )
+  
+  res
+  )
+class method 
+Library toAbstractDest(Library that, This2.Selector src, This2.Selector dest) exception This1.SelectorNotFound, This1.MethodClash (
+  Library res=use This0 check #toAbstractDest(_1_ast%ExpCore$ClassB:that, _2_java%lang%String:src.#binaryRepr(), _3_java%lang%String:dest.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.refactor.ToAbstract\u000amethod name: toAbstractDest(that,src,dest)\u000ajava method: is.L42.connected.withSafeOperators.refactor.ToAbstract.#toAbstractDest(_1_ast%ExpCore$ClassB,_2_java%lang%String,_3_java%lang%String)\u000a
+*/})
+  
+  catch error Library x (
+    Void unused0=This1.SelectorNotFound.#exceptionIf(binaryRepr:x)
+    Void unused1=This1.MethodClash.#exceptionIf(binaryRepr:x)
+    error x
+    )
+  
+  res
+  )
+class method 
+Library toAbstract(Library that, This2.Selector src) exception This1.SelectorNotFound (
+  Library res=use This0 check #toAbstract(_1_ast%ExpCore$ClassB:that, _2_java%lang%String:src.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.refactor.ToAbstract\u000amethod name: toAbstract(that,src)\u000ajava method: is.L42.connected.withSafeOperators.refactor.ToAbstract.#toAbstract(_1_ast%ExpCore$ClassB,_2_java%lang%String)\u000a
+*/})
+  
+  catch error Library x (
+    Void unused0=This1.SelectorNotFound.#exceptionIf(binaryRepr:x)
+    error x
+    )
+  
+  res
+  )}
+ToAbstract: {
+method 
+This2.Selector src() 
+class method 
+This0 #apply(This2.Selector src) 
+method 
+Library #leftrightleft(Library that) exception This1.SelectorNotFound This1.PlgToAbstract.toAbstract(that:that, src:this.src())}
+ToAbstractDest: {
+method 
+This2.Selector src() 
+method 
+This2.Selector dest() 
+class method 
+This0 #apply(This2.Selector src, This2.Selector dest) 
+method 
+Library #leftrightleft(Library that) exception This1.SelectorNotFound, This1.MethodClash This1.PlgToAbstract.toAbstractDest(that:that, src:this.src(), dest:this.dest())}
+ToAbstractPath: {
+method 
+This2.Path path() 
+method 
+This2.Selector src() 
+class method 
+This0 #apply(This2.Path path, This2.Selector src) 
+method 
+Library #leftrightleft(Library that) exception This1.SelectorNotFound, This1.PathNotFound This1.PlgToAbstract.toAbstractPath(that:that, path:this.path(), src:this.src())}
+ToAbstractPathDest: {
+method 
+This2.Path path() 
+method 
+This2.Selector src() 
+method 
+This2.Selector dest() 
+class method 
+This0 #apply(This2.Path path, This2.Selector src, This2.Selector dest) 
+method 
+Library #leftrightleft(Library that) exception This1.SelectorNotFound, This1.PathNotFound, This1.MethodClash This1.PlgToAbstract.toAbstractPathDest(that:that, path:this.path(), src:this.src(), dest:this.dest())}}}
