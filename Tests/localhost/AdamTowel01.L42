@@ -28150,6 +28150,10 @@ class This1.Path #default#rename(Void into) This1.Path
 class method 
 This0.RenameClass rename(This1.Path path, This1.Path into) This0.RenameClass.#apply(src:path, dest:into)
 class method 
+class This1.Path #default#hide(Void path) This1.Path
+class method 
+This0.HideClass hide(This1.Path path) This0.HideClass.#apply(src:path)
+class method 
 This0.ToAbstract toAbstract(This1.Selector selector) This0.ToAbstract.#apply(src:selector)
 class method 
 This0.ToAbstractDest toAbstract(This1.Selector selector, This1.Selector into) This0.ToAbstractDest.#apply(src:selector, dest:into)
@@ -29051,15 +29055,30 @@ Void #pluginUnresponsive(Library binaryRepr) error This2.X.#from(builder:(
   b
   ))
 class method 
-Library renameClass(Library that, This2.Path src, This2.Path dest) exception This1.MethodClash, This1.ClassClash, This1.SubtleSubtypeViolation (
+Library renameClass(Library that, This2.Path src, This2.Path dest) exception This1.PathNotFound, This1.MethodClash, This1.ClassClash, This1.SubtleSubtypeViolation (
   Library res=use This0 check #renameClass(_1_ast%ExpCore$ClassB:that, _2_java%lang%String:src.#binaryRepr(), _3_java%lang%String:dest.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
 plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.refactor.Rename\u000amethod name: renameClass(that,src,dest)\u000ajava method: is.L42.connected.withSafeOperators.refactor.Rename.#renameClass(_1_ast%ExpCore$ClassB,_2_java%lang%String,_3_java%lang%String)\u000a
 */})
   
   catch error Library x (
-    Void unused0=This1.MethodClash.#exceptionIf(binaryRepr:x)
-    Void unused1=This1.ClassClash.#exceptionIf(binaryRepr:x)
-    Void unused2=This1.SubtleSubtypeViolation.#exceptionIf(binaryRepr:x)
+    Void unused0=This1.PathNotFound.#exceptionIf(binaryRepr:x)
+    Void unused1=This1.MethodClash.#exceptionIf(binaryRepr:x)
+    Void unused2=This1.ClassClash.#exceptionIf(binaryRepr:x)
+    Void unused3=This1.SubtleSubtypeViolation.#exceptionIf(binaryRepr:x)
+    error x
+    )
+  
+  res
+  )
+class method 
+Library hideClass(Library that, This2.Path src) exception This1.PathNotFound, This1.ClassUnfit (
+  Library res=use This0 check #hideClass(_1_ast%ExpCore$ClassB:that, _2_java%lang%String:src.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.refactor.Rename\u000amethod name: hideClass(that,src)\u000ajava method: is.L42.connected.withSafeOperators.refactor.Rename.#hideClass(_1_ast%ExpCore$ClassB,_2_java%lang%String)\u000a
+*/})
+  
+  catch error Library x (
+    Void unused0=This1.PathNotFound.#exceptionIf(binaryRepr:x)
+    Void unused1=This1.ClassUnfit.#exceptionIf(binaryRepr:x)
     error x
     )
   
@@ -29073,7 +29092,14 @@ This2.Path dest()
 class method 
 This0 #apply(This2.Path src, This2.Path dest) 
 method 
-Library #leftrightleft(Library that) exception This1.MethodClash, This1.ClassClash, This1.SubtleSubtypeViolation This1.PlgRenameClass.renameClass(that:that, src:this.src(), dest:this.dest())}
+Library #leftrightleft(Library that) exception This1.PathNotFound, This1.MethodClash, This1.ClassClash, This1.SubtleSubtypeViolation This1.PlgRenameClass.renameClass(that:that, src:this.src(), dest:this.dest())}
+HideClass: {
+method 
+This2.Path src() 
+class method 
+This0 #apply(This2.Path src) 
+method 
+Library #leftrightleft(Library that) exception This1.PathNotFound, This1.ClassUnfit This1.PlgRenameClass.hideClass(that:that, src:this.src())}
 PlgToAbstract: {/*@plugin  toFix 
 @pluginPart is.L42.connected.withSafeOperators.refactor.ToAbstract
 */

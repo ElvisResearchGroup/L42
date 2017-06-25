@@ -130,14 +130,18 @@ PlgRenameClass:{
 
   class method
   Library renameClass(Library that,Path src,Path dest)
-  exception MethodClash,ClassClash,SubtleSubtypeViolation
+  exception  PathNotFound, MethodClash,ClassClash,SubtleSubtypeViolation
+
+  class method
+  Library hideClass(Library that,Path src)
+  exception  PathNotFound, ClassUnfit
   }
 RenameClass:{
   method Path src()
   method Path dest()
   class method This (Path src,Path dest)
   method Library <><(Library that)
-  exception MethodClash,ClassClash,SubtleSubtypeViolation
+  exception  PathNotFound, MethodClash,ClassClash,SubtleSubtypeViolation
     PlgRenameClass.renameClass(
       that,src:this.src(),dest:this.dest())
   }
@@ -150,6 +154,21 @@ class Path #default#rename(Void into) Path
 class method
 RenameClass rename(Path path, Path into)
   RenameClass(src:path,dest:into)
+
+HideClass:{
+  method Path src()
+  class method This (Path src)
+  method Library <><(Library that)
+  exception  PathNotFound, ClassUnfit
+    PlgRenameClass.hideClass(
+      that,src:this.src())
+  }
+class method
+class Path #default#hide(Void path) Path
+class method
+HideClass hide(Path path)
+  HideClass(src:path)
+
 
 //------------------------------
 //ToAbstract
@@ -229,5 +248,11 @@ class Selector #default#toAbstract(Void into) Selector
 class method
 class Path #default#toAbstract(Void of) Path
 
-
+/*
+rename method:
+  if path private, path not found
+  if src private, selector not found
+  if dest is private, check not abstract 
+    on fail??
+*/
   }

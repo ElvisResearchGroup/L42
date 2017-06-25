@@ -46,7 +46,16 @@ public static ClassB toAbstractDest(PData pData,ClassB cb, String sel,String new
    This make it safe on interfaces.
  If a new method is introduced, it is not refine.
  */
-  public static ClassB toAbstractAux(Program p,ClassB cb, List<Ast.C> path,MethodSelector sel,MethodSelector newSel) throws SelectorNotFound, PathNotFound, MethodClash{
+public static ClassB toAbstractAux(Program p,ClassB cb, List<Ast.C> path,MethodSelector sel,MethodSelector newSel) throws SelectorNotFound, PathNotFound, MethodClash{
+  if(MembersUtils.isPrivate(path)){
+    throw new RefactorErrors.PathNotFound(Location.as42Path(path)).msg("Private path");
+    }
+  if(MembersUtils.isPrivate(sel)){
+    throw new RefactorErrors.SelectorNotFound(Location.as42Path(path),sel).msg("Private selector");
+    }
+  if(newSel!=null && MembersUtils.isPrivate(newSel)){
+    throw new RefactorErrors.SelectorNotFound(Location.as42Path(path),newSel).msg("Private selector");
+    }
   try{
     ClassB nested=cb.getClassB(path);
     //interfaces are ok if(nested.isInterface()){throw new RefactorErrors.PathNotFound(Location.as42Path(path));}

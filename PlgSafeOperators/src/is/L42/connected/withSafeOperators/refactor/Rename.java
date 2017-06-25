@@ -1,11 +1,14 @@
 package is.L42.connected.withSafeOperators.refactor;
 
 import ast.Ast.C;
+import ast.Ast.Doc;
 import ast.Ast.MethodSelector;
 import ast.Ast.Path;
+import ast.Ast.VarDecCE;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.Phase;
+import ast.Expression.ClassB.NestedClass;
 import auxiliaryGrammar.Functions;
 
 import java.util.ArrayList;
@@ -27,6 +30,7 @@ import is.L42.connected.withSafeOperators.Push;
 import is.L42.connected.withSafeOperators.location.Location;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.ClassClash;
+import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.ClassUnfit;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.MethodClash;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.PathNotFound;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.SubtleSubtypeViolation;
@@ -104,8 +108,39 @@ public class Rename {
   }
 /**{@link RenameSpec#rename}*/   
 public static ClassB renameClass(PData p,ClassB cb,String src,String dest) throws MethodClash, SubtleSubtypeViolation, ClassClash, PathNotFound{
-  return renameClassAux(p.p,cb,PathAux.parseValidCs(src),PathAux.parseValidCs(dest));
+  List<Ast.C> srcL=PathAux.parseValidCs(src);
+  List<Ast.C> destL=PathAux.parseValidCs(dest);
+  if(MembersUtils.isPrivate(srcL)){
+    throw new RefactorErrors.PathNotFound(src).msg("private path");  
+    }
+  if(MembersUtils.isPrivate(destL)){
+    throw new RefactorErrors.PathNotFound(dest).msg("private path");  
+    }
+  return renameClassAux(p.p,cb,srcL,destL);
   }
+
+public static ClassB hideClass(PData p,ClassB cb,String src) throws MethodClash, SubtleSubtypeViolation, ClassClash, PathNotFound, ClassUnfit{
+  List<Ast.C> srcL=PathAux.parseValidCs(src);
+  if(MembersUtils.isPrivate(srcL)){
+    throw new RefactorErrors.PathNotFound(src).msg("private path");  
+    }  
+  if(!MembersUtils.isPathDefined(cb, srcL)){
+    throw new RefactorErrors.PathNotFound(src);
+    }
+  Program pp=p.p;
+  pp=pp.evilPush(cb);
+  pp=pp.navigate(srcL);
+  boolean coherent=newTypeSystem.TsLibrary.coherent(pp,false);
+  if(!coherent){throw new RefactorErrors.ClassUnfit();}
+  String nameC="Fresh";
+  
+  if(!srcL.isEmpty()){nameC=srcL.get(srcL.size()-1).getInner();}
+  nameC=Functions.freshName(nameC, L42.usedNames);
+  List<Ast.C> destL=Collections.singletonList(new Ast.C(nameC,L42.freshPrivate()));  
+  return directRename(p.p,cb,srcL,destL);
+  }
+
+
 /**{@link RenameSpec#rename}*/   
 public static ClassB renameClassAux(Program p,ClassB cb,List<Ast.C> src,List<Ast.C> dest) throws MethodClash, SubtleSubtypeViolation, ClassClash, PathNotFound{
   if(!MembersUtils.isPathDefined(cb, src)){
@@ -168,11 +203,12 @@ class PathRename extends CloneVisitorWithProgram{
 
 class MembersUtils{
 static boolean isPrivate(MethodSelector ms){
-  return ms.getUniqueNum()!=-1;
+  return ms.isUnique();
   }
-static boolean isPrivate(Path p){
-  for(Ast.C c:p.getCBar()){
-    if(c.getUniqueNum()!=-1){return true;}
+static boolean isPrivate(Path p){return isPrivate(p.getCBar());}
+static boolean isPrivate(List<Ast.C> p){
+  for(Ast.C c:p){
+    if(c.isUnique()){return true;}
     }
   return false;
   }
