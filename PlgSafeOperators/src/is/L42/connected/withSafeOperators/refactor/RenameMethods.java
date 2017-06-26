@@ -49,18 +49,24 @@ import tools.Map;
 import newTypeSystem.GuessTypeCore.G;
 public class RenameMethods{
   List<CsMxMx> renames;
-  RenameMethods(){renames=Collections.emptyList();}
-  RenameMethods(List<CsMxMx> renames){this.renames=renames;}
-  RenameMethods add(List<Ast.C> cs, MethodSelector ms1,MethodSelector ms2){
+  public RenameMethods(){renames=Collections.emptyList();}
+  public RenameMethods(List<CsMxMx> renames){this.renames=renames;}
+  public RenameMethods add(List<Ast.C> cs, MethodSelector ms1,MethodSelector ms2){
     return new RenameMethods(Functions.push(renames, new CsMxMx(cs,ms1,ms2)));
     }
-  ClassB renameMethods(PData pData,ClassB that) throws PathUnfit, SelectorUnfit,MethodClash{
+  public ClassB renameMethods(PData pData,ClassB that) throws PathUnfit, SelectorUnfit,MethodClash{
+    return renameMethodsP(pData.p,that);
+    }
+  public ClassB renameMethodsP(Program p,ClassB that) throws PathUnfit, SelectorUnfit,MethodClash{
     //check all paths/methods exists and are not private
     //check all methods are not refine!
+    //check all ms have same number of parameters
     for(CsMxMx r:this.renames){
       if(MembersUtils.isPrivate(r.getCs())){throw new RefactorErrors.PathUnfit(r.getCs()).msg("Path is private");}
       if(MembersUtils.isPrivate(r.getMs1())){throw new RefactorErrors.SelectorUnfit(r.getCs(),r.getMs1()).msg("Selector is private");}
       if(MembersUtils.isPrivate(r.getMs2())){throw new RefactorErrors.SelectorUnfit(r.getCs(),r.getMs2()).msg("Selector is private");}
+      if(r.getMs1().getNames().size()!=r.getMs2().getNames().size()){throw new RefactorErrors.SelectorUnfit(r.getCs(),r.getMs2()).msg("Selector have different number of arguments w.r.t "+r.getMs1());}
+
       try{
         Member m= that.getClassB(r.getCs())._getMember(r.getMs1());
         if(m==null){throw new RefactorErrors.SelectorUnfit(r.getCs(),r.getMs1()).msg("Selector not found");}
@@ -69,7 +75,7 @@ public class RenameMethods{
       catch(ast.ErrorMessage.PathMetaOrNonExistant unused){throw new RefactorErrors.PathUnfit(r.getCs()).msg("Path not found");}
     }
     //call aux
-    ClassB res=(ClassB)that.accept(new RenameMethodsAux(pData.p,renames,that));
+    ClassB res=(ClassB)that.accept(new RenameMethodsAux(p,renames,that));
     return res;
     //somehow throw exeptions,
     //why it seams java is happy with declaring an sneakly unthrow error?
@@ -99,7 +105,7 @@ class RenameMethodsAux extends coreVisitors.CloneVisitorWithProgram{
   public ClassB.MethodImplemented visit(ClassB.MethodImplemented mi){throw Assertions.codeNotReachable();}
   public ClassB.MethodWithType visit(ClassB.MethodWithType mwt){
     assert g==null;
-    g=TIn.freshGFromMt(p,mwt);
+    g=GuessTypeCore.freshGFromMt(p,mwt);
     ClassB.MethodWithType res;try{res=super.visit(mwt);}
     finally{g=null;}
     if(!res.get_inner().isPresent()){return res;}
@@ -141,7 +147,7 @@ class RenameMethodsAux extends coreVisitors.CloneVisitorWithProgram{
    Sneakily throw MethodClash
    */
   @Override public List<Member> liftMembers(List<Member> s) {
-    List<Member> res=new ArrayList<>(s);
+    List<Member> res=new ArrayList<>(super.liftMembers(s));
     for(int i=0;i<res.size();i++){//res may shrink during iteration
       Member resi=res.get(i);
       if(resi instanceof NestedClass){break;}//break since in the end is all nested

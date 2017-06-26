@@ -2,9 +2,14 @@ package is.L42.connected.withSafeOperators;
 
 import static helpers.TestHelper.getClassB;
 import static helpers.TestHelper.lineNumber;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
+
 import helpers.TestHelper;
 import is.L42.connected.withSafeOperators.Rename.UserForMethodResult;
+import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.MethodClash;
+import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.PathUnfit;
+import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.SelectorUnfit;
+import is.L42.connected.withSafeOperators.refactor.RenameMethods;
 
 import java.util.Arrays;
 import java.util.List;
@@ -32,105 +37,44 @@ import facade.Configuration;
 
 public class TestRename {
   @RunWith(Parameterized.class) public static class TestRenameMethod {//add more test for error cases
-    @Parameter(0) public String _cb1;
-    @Parameter(1) public String _path;
-    @Parameter(2) public String _ms1;
-    @Parameter(3) public String _ms2;
-    @Parameter(4) public String _expected;
-    @Parameter(5) public boolean isError;
+    @Parameter(0) public int _lineNumber;
+    @Parameter(1) public String _cb1;
+    @Parameter(2) public String _path;
+    @Parameter(3) public String _ms1;
+    @Parameter(4) public String _ms2;
+    @Parameter(5) public String _expected;
+    @Parameter(6) public boolean isError;
 
-    @Parameterized.Parameters public static List<Object[]> createData() {
+    @Parameters(name = "{index}: line {0}")
+    public static List<Object[]> createData() {
       return Arrays.asList(new Object[][] { { //
-          "{B:{ method Void m() void}}", "B", "m()", "k()", "{B:{ method Void k() void}}", false //
-          }, { //
+          lineNumber(),"{B:{ method Void m() void}}", "B", "m()", "k()", "{B:{ method Void k() void}}", false //
+          }, {lineNumber(), //
           "{ method Void m() void}", "This0", "m()", "k()", "{ method Void k() void}", false //
-          }, { //
-          "{ method Void m() void method This0::m() mm() void}", "This0", "m()", "k()", "{ method Void k() void method This0::k() mm() void}", false //
-          }, { //
-            "{ method Void m() void method//@private\n Void mm() void}",
-            "This0", "m()", "mm()",
-            "{method Void mm() void"
-            + " method //@private\n"
-            + "Void mm__0_0() void}", false //
-          }, { //
-         "{ class method //@private\n"
-            +" This0 a(Any n) \n"
-            +"   mut method //@private\n"
-            +"  Any #n() \n"
-            +"  read method //@private\n"
-            +"   Any n() \n"
-            +"  class method\n"
-            +"  This0 _1(This0 new)  new\n"
-            +"  class method \n"
-            +"  This0 a_1(Any n) This0._1(new:This0.a(n:n))}\n",
-            "This0", "a_1(n)", "a(n)",
-            "{class method //@private\n"
-            +"This0 a__0_0(Any n__0_0)\n"
-            +"mut method //@private\n"
-            +"Any #n__0_0()\n"
-            +"read method //@private\n"
-            +"Any n__0_0()\n"
-            +"class method\n"
-            +"This0 _1(This0 new) new\n"
-            +"class method\n"
-            +"This0 a(Any n) This0._1(new:This0.a__0_0(n__0_0:n))}",false
-
-          }, { //
+          }, {lineNumber(), //
           "{ method Void m() void}", "This0", "m()", "k(x)",
-"{ Kind:{//@stringU\n"+
-"//MethodClash\n"+
-"}\n"+
-"Path:{//@.\n"+
-"}\n"+
-"Left:{//@stringU\n"+
-"//method Void m() void\n"+
-"}\n"+
-"Right:{//@stringU\n"+
-"//method Void k(Void x) void\n"+
-"}\n"+
-"LeftKind:{//@stringU\n"+
-"//ImplementedMethod\n"+
-"}\n"+
-"RightKind:{//@stringU\n"+
-"//ImplementedMethod\n"+
-"}\n"+
-"DifferentParameters:{//@stringU\n"+
-"//[0]\n"+
-"}\n"+
-"DifferentReturnType:{//@stringU\n"+
-"//false\n"+
-"}\n"+
-"DifferentThisMdf:{//@stringU\n"+
-"//false\n"+
-"}\n"+
-"IncompatibleException:{//@stringU\n"+
-"//false\n"+
-"}}",
+          "is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$SelectorUnfit",
           true //
-
-
-
 
           } });
     }
 
-    @Test public void test() {
+    @Test public void test() throws PathUnfit, SelectorUnfit, MethodClash {
       TestHelper.configureForTest();
       ClassB cb1 = getClassB(true,_cb1);
       List<Ast.C> path=TestHelper.cs(_path);
       MethodSelector ms1 = MethodSelector.parse(_ms1);
       MethodSelector ms2 = MethodSelector.parse(_ms2);
-      ClassB expected = getClassB(true,_expected);
       if (!isError) {
-        ClassB res = Rename.renameMethod(Program.emptyLibraryProgram(), cb1, path, ms1, ms2);
+        ClassB expected = getClassB(true,_expected);
+        ClassB res = new RenameMethods().add(path, ms1, ms2).renameMethodsP(Program.emptyLibraryProgram(), cb1);
         TestHelper.assertEqualExp(expected, res);
       } else {
         try {
-          Rename.renameMethod(Program.emptyLibraryProgram(), cb1, path, ms1, ms2);
+          ClassB res = new RenameMethods().add(path, ms1, ms2).renameMethodsP(Program.emptyLibraryProgram(), cb1);
           fail("error expected");
-        } catch (Resources.Error err) {
-          ClassB res = (ClassB) err.unbox;
-          TestHelper.assertEqualExp(expected, res);
+        } catch (PathUnfit|SelectorUnfit|MethodClash err) {
+          assertEquals(_expected, err.getClass().getName());
         }
       }
     }

@@ -11,12 +11,14 @@ import ast.Ast;
 import ast.ExpCore;
 import ast.Ast.Doc;
 import ast.Ast.Mdf;
+import ast.Ast.MethodType;
 import ast.Ast.Type;
 import ast.Ast.Path;
 import ast.Ast.Type;
 import ast.ExpCore.Block;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.MethodWithType;
+import ast.ExpCore.ClassB.Phase;
 import ast.ExpCore.Loop;
 import ast.ExpCore.MCall;
 import ast.ExpCore.Signal;
@@ -99,6 +101,21 @@ public Type visit(MCall s) {
   return (Type) From.fromT(meth.getMt().getReturnType(),path);
   
 }
+
+public static G freshGFromMt(Program p,MethodWithType mwt){
+  Map<String,Type>newG=GuessTypeCore.mapForMwt(mwt);
+  return G.of(newG);
+  }
+public static Map<String,Type> mapForMwt(MethodWithType mwt){
+  MethodType mt=mwt.getMt();
+  Map<String, Type> res=new HashMap<>();
+  res.put("this",new Type(mt.getMdf(),Path.outer(0),Doc.empty()));
+  {int i=-1;for(String x:mwt.getMs().getNames()){i+=1;
+    Type ntx=mt.getTs().get(i);
+    res.put(x,ntx);
+    }}
+  return res;
+  }
 
 public static TOutDs guessedDs(Program p, TIn in,List<Dec> toGuess){
 List<Dec> res=new ArrayList<>();//G'
