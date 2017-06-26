@@ -97,12 +97,12 @@ import programReduction.Program;
    }});}
   @Test  public void test() {
     TestHelper.configureForTest();
-    ClassB cb=getClassB(true,_cb);
+    ClassB cb=getClassB(true,null,_cb);
     Path path=Path.parse(_path);
     MethodSelector ms1=MethodSelector.parse(_ms1);
     MethodSelector ms2=MethodSelector.parse(_ms2);
     MethodSelector ms3=MethodSelector.parse(_ms3);
-    ClassB expected=getClassB(true,_expected);
+    ClassB expected=getClassB(true,null,_expected);
     if(!isError){
       ClassB res=SumMethods.sumMethods(cb,path.getCBar(),ms1,ms2,ms3,name);
       TestHelper.assertEqualExp(expected,res);

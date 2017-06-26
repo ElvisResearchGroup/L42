@@ -31,8 +31,8 @@ public class TestPush {
   //test also the pushMany
 }});}
 @Test  public void test() {
-  ClassB cb1=getClassB(true,e1);
-  ClassB cb2=getClassB(true,e2);
+  ClassB cb1=getClassB(true,null,e1);
+  ClassB cb2=getClassB(true,null,e2);
   ClassB res=Push.pushOne(cb1,C.of(e3));
   TestHelper.assertEqualExp(res,cb2);
   }

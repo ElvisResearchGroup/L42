@@ -169,7 +169,8 @@ class FlatProgram extends Methods{
   ExpCore.ClassB l;
   FlatProgram(ExpCore.ClassB l){this.l=l;}
     
-  public Program pop() { throw new Program.EmptyProgram();}
+  public Program pop() {
+    throw new Program.EmptyProgram();}
   
   public Program push(CtxL ctx, ClassB l) {
     return new PushedProgram(l,ctx,this);

@@ -35,7 +35,7 @@ public class ExtractInfoTest {
     },{"{B:{(This0 a, This1.B b)}}","This0.B",1//ctx*3, getter*2,exposer*2
   }});}
   @Test  public void test() {
-    ClassB classInput=getClassB(false,_classInput);
+    ClassB classInput=getClassB(false,null,_classInput);
     Path path=Path.sugarParse(_path);
     if(!path.isCore()){
       path=Path.outer(0,path.sugarNames());//normalize, put This0 on top.

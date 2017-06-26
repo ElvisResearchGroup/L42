@@ -24,7 +24,7 @@ import programReduction.Program;
 public class TestRedirect{
 @RunWith(Parameterized.class)
 
-public static class TestRedirect1 {//add more test for error cases
+public static class TestRedirect1 {
 
   // TODO@James: consider making a git hook to block commits unless startLine=0 is enabled
 
@@ -105,7 +105,7 @@ public static class TestRedirect1 {//add more test for error cases
     "{M:{class method Library defA_maker() {class method This3.A beA_maker() This3.A.#apply()}}}",false
     },{lineNumber(), new String[]{      // redirecting a nested library, into a differently nested target
                                         // This0 vs explicit class
-                    "{X:{Y:{A:{()  class method A fun()}}}}" },
+                    "{X:{Y:{A:{class method This()  class method A fun()}}}}" },
         "{InnerZ:{InnerA:{  class method This0 fun()}}"
         + " M:{class method Library defA_maker() {class method InnerZ.InnerA beA_maker() InnerZ.InnerA()}}"
         + "}",
@@ -114,7 +114,7 @@ public static class TestRedirect1 {//add more test for error cases
         + "M:{class method Library defA_maker() {class method This3.X.Y.A beA_maker() This3.X.Y.A.#apply()}} "
         + "}",false
     },{lineNumber(), new String[]{      // same, but swapping the This0 on fun()
-                    "{X:{Y:{A:{()  class method This0 fun()}}}}" },
+                    "{X:{Y:{A:{class method This()  class method This0 fun()}}}}" },
         "{InnerZ:{InnerA:{  class method InnerA fun()}}"
         + " M:{class method Library defA_maker() {class method InnerZ.InnerA beA_maker() InnerZ.InnerA()}}"
         + "B:{C: {} }"  //  So this call to get a library value is imaginary, as shown below
@@ -124,7 +124,7 @@ public static class TestRedirect1 {//add more test for error cases
         + "M:{class method Library defA_maker() {class method This3.X.Y.A beA_maker() This3.X.Y.A.#apply()}} "
         + "B:{C:{}}}",false
     },{lineNumber(), new String[]{      // same, with two explicit classes on fun()
-                    "{X:{Y:{A:{()  class method A fun()}}}}" },
+                    "{X:{Y:{A:{class method This()  class method A fun()}}}}" },
         "{InnerZ:{InnerA:{  class method InnerA fun()}}"
         + " M:{class method Library defA_maker() {class method InnerZ.InnerA beA_maker() InnerZ.InnerA()}}"
         + "B:{C: {} }"
@@ -134,7 +134,7 @@ public static class TestRedirect1 {//add more test for error cases
         + "M:{class method Library defA_maker() {class method This3.X.Y.A beA_maker() This3.X.Y.A.#apply()}} "
         + "B:{C:{}}}",false
     },{lineNumber(), new String[]{      // same, with two outers on fun()
-                    "{X:{Y:{A:{()  class method This0 fun()}}}}" },
+                    "{X:{Y:{A:{class method This()  class method This0 fun()}}}}" },
         "{InnerZ:{InnerA:{  class method This0 fun()}}"
         + " M:{class method Library defA_maker() {class method InnerZ.InnerA beA_maker() InnerZ.InnerA()}}"
         + "B:{C: {} }"
@@ -144,7 +144,7 @@ public static class TestRedirect1 {//add more test for error cases
         + "M:{class method Library defA_maker() {class method This3.X.Y.A beA_maker() This3.X.Y.A.#apply()}} "
         + "B:{C:{}}}",false
     },{lineNumber(), new String[]{      // writing methods and class methods that presume the surrounding program
-                    "{X:{Y:{A:{()  class method This1 fun(This2 that)}}}}" },
+                    "{X:{Y:{A:{class method This()  class method This1 fun(This2 that)}}}}" },
         "{InnerZ:{InnerA:{  class method This3.X.Y fun(This3.X that)}}"
         + "InnerB:{class method Library makeLib() {class method InnerZ.InnerA fred(This3.X.Y that)}}"
         + "}",
@@ -190,7 +190,7 @@ public static class TestRedirect1 {//add more test for error cases
         // TODO@James: (NOW) when the test above passes, add some methods, and set up implementing classes for the inner interfaces that don//t each have enough methods for the outer interface
 
     },{lineNumber(), new String[]{   // Cascade redirect an interface, via a redirect-my-pile-of-stuff class
-                    "{I1:{interface method Void fun()}\n"
+            "{I1:{interface method Void fun()}\n"
                     + "I2:{interface method Void moreFun()}\n"
                     + "A:{ implements I1 I2 method fun() void method moreFun() void}"
                     + "%Redirect:{D_I1:{ implements I1} D_I2:{ implements I2} method A d_A()}"
@@ -228,14 +228,14 @@ public static class TestRedirect1 {//add more test for error cases
         + "%Redirect:{method InnerI2 _I2() method InnerA _A()}\n"
         + "TestB:{ implements InnerI2 method moreFun(that, other) void \n"
         + "       class method Library () {} }\n"
-        + "TestC:{method This1.%Redirect::_I2() notSoFun() {} }\n"
-        + "TestD:{method This1.%Redirect::_I2()::moreFun(that,other)::other mostFun() {} }\n"
+        + "TestC:{method InnerI2 notSoFun() {} }\n"
+        + "TestD:{method Void mostFun() {} }\n"
         + "}",
         "This0.%Redirect","This1.%Redirect",
         "{TestB:{ implements This2.I2 method moreFun(that, other) void\n"
         + "      class method Library () {}}\n"
-        + "TestC:{method This2.%Redirect::_I2() notSoFun() {}}\n"
-        + "TestD:{method This2.%Redirect::_I2()::moreFun(that,other)::other mostFun() {} }\n"
+        + "TestC:{method This2.I2 notSoFun() {}}\n"
+        + "TestD:{method Void mostFun() {} }\n"
         + "}",false
     },{lineNumber(), new String[]{   // Redirect, via a pile, using the things that will disappear as aliases
                     "{"
@@ -249,12 +249,12 @@ public static class TestRedirect1 {//add more test for error cases
         + "%Redirect:{method InnerI2 _I2() method InnerA _A()}\n"
         + "TestB:{ implements InnerI2 method moreFun(that, other) void \n"
         + "       class method Library () {} }\n"
-        + "TestC:{method This1.InnerI2::moreFun() notSoFun() {} }\n"
+        + "TestC:{method Void notSoFun() {} }\n"
         + "}",
         "This0.%Redirect","This1.%Redirect",
         "{TestB:{ implements This2.I2 method moreFun(that, other) void\n"
         + "      class method Library () {}}\n"
-        + "TestC:{method This2.I2::moreFun() notSoFun() {}}\n"
+        + "TestC:{method Void notSoFun() {}}\n"
         + "}",false
     },{lineNumber(), new String[]{   // Redirect, via aliases,
                                      // trying to exploit a rumour that
@@ -262,12 +262,12 @@ public static class TestRedirect1 {//add more test for error cases
                     "{"
                     + "X:{Y:{\n"
                     + "       FluffyA:{method This1 fun(Void that)}\n"
-                    + "       Aliases:{method FluffyA::fun(that) notSoFun()}\n"
+                    + "       Aliases:{method This1 notSoFun()}\n"
                     + "}}"
                     + "}"},
         "{Z:{\n"
         + "   FluffyA:{method This1 fun(Void that)} \n"
-        + "   Aliases:{method FluffyA::fun(that) notSoFun()}\n"
+        + "   Aliases:{method This1 notSoFun()}\n"
         + "}\n"
         + "TestA:{method Z.FluffyA fun()}"
         + "}",
@@ -303,27 +303,27 @@ public static class TestRedirect1 {//add more test for error cases
                                      // implemented interfaces and method errors unambiguous
                     "{Iab:{interface} Ibc:{interface} Ica:{interface}\n"
                     + "Eab:{} Ebc:{} Eca:{}\n"
-                    + "A:{ implements Ica Iab method Void fun() error Eca Eab}\n"
-                    + "B:{ implements Iab Ibc method Void fun() error Eab Ebc}\n"
-                    + "C:{ implements Ibc Ica method Void fun() error Ebc Eca}\n"
+                    + "A:{ implements Ica Iab method Void fun() exception Eca Eab}\n"
+                    + "B:{ implements Iab Ibc method Void fun() exception Eab Ebc}\n"
+                    + "C:{ implements Ibc Ica method Void fun() exception Ebc Eca}\n"
                     + "%Redirect:{method A _A() method B _B() method C _C() }\n"
                     + "}"},
         "{InnerIab:{interface} InnerIbc:{interface} InnerIca:{interface}\n"
         + "InnerEab:{} InnerEbc:{} InnerEca:{}\n"
         // same order, then interfaces swapped, then errors swapped, just in case it matters
-        + "InnerA:{ implements InnerIca InnerIab method Void fun() error InnerEca InnerEab}\n"
-        + "InnerB:{ implements InnerIbc InnerIab method Void fun() error InnerEab InnerEbc}\n"
-        + "InnerC:{ implements InnerIbc InnerIca method Void fun() error InnerEca InnerEbc}\n"
+        + "InnerA:{ implements InnerIca InnerIab method Void fun() exception InnerEca InnerEab}\n"
+        + "InnerB:{ implements InnerIbc InnerIab method Void fun() exception InnerEab InnerEbc}\n"
+        + "InnerC:{ implements InnerIbc InnerIca method Void fun() exception InnerEca InnerEbc}\n"
         + "%Redirect:{method InnerA _A() method InnerB _B() method InnerC _C()}\n"
-        + "TestX:{method InnerIab abFun() error InnerEab\n"
-        + "       method InnerIbc bcFun() error InnerEbc\n"
-        + "       method InnerIca caFun() error InnerEca}\n"
+        + "TestX:{method InnerIab abFun() exception InnerEab\n"
+        + "       method InnerIbc bcFun() exception InnerEbc\n"
+        + "       method InnerIca caFun() exception InnerEca}\n"
         + "}",
         "This0.%Redirect","This1.%Redirect",
         "{"
-        + "TestX:{method This2.Iab abFun() error This2.Eab\n"
-        + "       method This2.Ibc bcFun() error This2.Ebc\n"
-        + "       method This2.Ica caFun() error This2.Eca}\n"
+        + "TestX:{method This2.Iab abFun() exception This2.Eab\n"
+        + "       method This2.Ibc bcFun() exception This2.Ebc\n"
+        + "       method This2.Ica caFun() exception This2.Eca}\n"
         + "}",false
 
         // TODO@James do something with piles containing alias types that refer to the library return values of methods
@@ -419,8 +419,8 @@ public static class TestRedirect1 {//add more test for error cases
         + "D_Source:{method InnerI2 _I2() method InnerA _A()}\n"
         + "TestB:{ implements InnerI2 method moreFun(that, other) void \n"
         + "       class method Library () {} }\n"
-        + "TestC:{method This1.D_Source::_I2() notSoFun() {} }\n"
-        + "TestD:{method This1.D_Source::_I2()::moreFun(that,other)::other mostFun() {} }\n"
+        + "TestC:{method InnerI2 notSoFun() {} }\n"
+        + "TestD:{method Void mostFun() {} }\n"
         + "}",
         "This0.D_Source","This1.D_Target",
         ec
@@ -614,7 +614,7 @@ public static class TestRedirect1 {//add more test for error cases
         "{InnerI1:{interface method Void fun()}\n"
         + "InnerI2:{interface method Void moreFun()}\n"
         + "InnerA:{ implements InnerI1 InnerI2}"
-        + "TestB:{ implements InnerI1 InnerI2  method fun() void method Void moreFun() void}\n"
+        + "TestB:{ implements InnerI1 InnerI2  method fun() void method moreFun() void}\n"
         + "}",
         "This0.InnerA","This1.A",
         ec.set(
@@ -638,12 +638,12 @@ public static class TestRedirect1 {//add more test for error cases
                     "{"
                     + "X:{Y:{\n"
                     + "       FluffyA:{method Library fun(Void that)}\n"
-                    + "       Aliases:{method FluffyA::fun(that) notSoFun()}\n"
+                    + "       Aliases:{method Library notSoFun()}\n"
                     + "}}"
                     + "}"},
         "{Z:{\n"
         + "   FluffyA:{method Void fun(Void that)} \n"
-        + "   Aliases:{method FluffyA::fun(that) notSoFun()}\n"
+        + "   Aliases:{method Void notSoFun()}\n"
         + "}\n"
         + "TestA:{method Z.FluffyA fun()}"
         + "}",
@@ -662,12 +662,12 @@ public static class TestRedirect1 {//add more test for error cases
                     "{"
                     + "X:{Y:{\n"
                     + "       FluffyA:{method This1 fun(Void that)}\n"
-                    + "       Aliases:{method FluffyA::fun(that) notSoFun()}\n"
+                    + "       Aliases:{method This1 notSoFun()}\n"
                     + "}}"
                     + "}"},
         "{Z:{\n"
         + "   FluffyA:{method Void fun(Void that)} \n"
-        + "   Aliases:{method FluffyA::fun(that) notSoFun()}\n"
+        + "   Aliases:{method Void notSoFun()}\n"
         + "}\n"
         + "TestA:{method Z.FluffyA fun()}"
         + "}",
@@ -756,10 +756,10 @@ public static class TestRedirect1 {//add more test for error cases
 
   TestHelper.configureForTest();
   Program p=TestHelper.getProgram(_p);
-  ClassB cb1=getClassB(true,"cb1", _cb1);
+  ClassB cb1=getClassB(true,p,"cb1", _cb1);
   Path path1=Path.parse(_path1);
   Path path2=Path.parse(_path2);
-  ClassB expected=getClassB(true,"expected", _expected);
+  ClassB expected=getClassB(true,p,"expected", _expected);
   if(!isError){
     ClassB res=Redirect.redirect(p, cb1,path1,path2);
     TestHelper.assertEqualExp(expected,res);

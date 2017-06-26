@@ -211,7 +211,8 @@ public class TestHelper {
     return e1;
     }
   
-  public static ClassB getClassB(boolean norm,String source, String e1) {
+  public static ClassB getClassB(boolean norm,Program p,String source, String e1) {
+    if(p==null){p=Program.emptyLibraryProgram();}
     Expression code1=Parser.parse("GeneratedByTestHelper_"+source,e1);
     auxiliaryGrammar.WellFormedness.checkAll(code1);
     Expression code2=Desugar.of(code1);
@@ -219,21 +220,18 @@ public class TestHelper {
     ExpCore.ClassB code3=(ExpCore.ClassB)code2.accept(new InjectionOnCore());
     assert coreVisitors.CheckNoVarDeclaredTwice.of(code3);
     if(norm){
-      code3=new Norm().norm(Program.emptyLibraryProgram().updateTop(code3));
+      code3=new Norm().norm(p.evilPush(code3));
       }
     return code3;
   }
-  public static ClassB getClassB(boolean norm,String e1) {
-    return getClassB(norm,null, e1);
+  public static ClassB getClassB(boolean norm,Program p,String e1) {
+    return getClassB(norm,p,null, e1);
   }
 
    public static Program getProgram(/*List<Path> paths,*/String[] code){
     Program p0=Program.emptyLibraryProgram();
-    Integer outerCount = code.length;
     for(String s:code){
-      Expression e=Parser.parse("This"+outerCount,s);
-      --outerCount;
-      ClassB ec=(ClassB)Desugar.of(e).accept(new InjectionOnCore());
+      ClassB ec=(ClassB)TestHelper.getClassB(true,p0, s);
       p0=p0.evilPush(ec);
       }
     return p0;

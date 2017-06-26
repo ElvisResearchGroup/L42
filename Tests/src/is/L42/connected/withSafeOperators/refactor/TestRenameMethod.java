@@ -20,9 +20,9 @@ public static final RenameMethods rm=new RenameMethods();
 public static void check(RenameMethods rms,String in,String out) throws PathUnfit, SelectorUnfit, MethodClash, ClassUnfit{
   L42.resetFreshPrivate();
   L42.usedNames.clear();
-  ClassB cb=getClassB(true,in);
+  ClassB cb=getClassB(true,null,in);
   ClassB res=rms.actP(Program.emptyLibraryProgram(),cb);
-  ClassB expected=getClassB(true,out);
+  ClassB expected=getClassB(true,null,out);
   TestHelper.assertEqualExp(expected, res);
   }
 @Test public void test1() throws PathUnfit, SelectorUnfit, MethodClash, ClassUnfit{

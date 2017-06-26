@@ -56,12 +56,12 @@ public static class TestAbstractMeth {//add more test for error cases
 	  true
 }});}
 @Test  public void test() throws SelectorUnfit, PathUnfit, MethodClash {
-  ClassB cb1=getClassB(false,_cb1);
+  ClassB cb1=getClassB(false,null,_cb1);
   List<Ast.C> path=TestHelper.cs(_path);
   MethodSelector ms=MethodSelector.parse(_ms);
   assert ms!=null;
   if(!isError){
-    ClassB expected=getClassB(false,_expected);
+    ClassB expected=getClassB(false,null,_expected);
     //TODO: mettere tests per il caso con un selettore destinazione. In particolare testare interfacce
     ClassB res=ToAbstract.toAbstractAux(Program.emptyLibraryProgram(),cb1, path, ms,null);
     TestHelper.assertEqualExp(expected,res);
@@ -103,14 +103,14 @@ public static class TestMoveMeth {//add more test for error cases
 }});}
 @Test  public void test() throws SelectorUnfit, PathUnfit, MethodClash {
   TestHelper.configureForTest();
-  ClassB cb1=getClassB(false,_cb1);
+  ClassB cb1=getClassB(false,null,_cb1);
   List<Ast.C> path=TestHelper.cs(_path);
   MethodSelector ms1=MethodSelector.parse(_ms1);
   assert ms1!=null;
   MethodSelector ms2=MethodSelector.parse(_ms2);
   assert ms2!=null;
   if(!isError){
-  ClassB expected=getClassB(false,_expected);
+  ClassB expected=getClassB(false,null,_expected);
     ClassB res=ToAbstract.toAbstractAux(Program.emptyLibraryProgram(),cb1, path, ms1,ms2);
     TestHelper.assertEqualExp(expected,res);
     }
@@ -239,9 +239,9 @@ public static class TestAbstractClass {//add more test for error cases
 }});}
 @Test  public void test() {
   TestHelper.configureForTest();
-  ClassB cb1=getClassB(false,_cb1);
+  ClassB cb1=getClassB(false,null,_cb1);
   List<Ast.C> path=TestHelper.cs(_path);
-  ClassB expected=getClassB(false,_expected);
+  ClassB expected=getClassB(false,null,_expected);
   if(!isError){
     ClassB res=Abstract.toAbstract(cb1, path);
     TestHelper.assertEqualExp(expected,res);

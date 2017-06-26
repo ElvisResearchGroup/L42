@@ -67,11 +67,11 @@ import programReduction.Program;
   }});}
   @Test  public void test() throws MethodClash, SubtleSubtypeViolation, ClassClash {
     TestHelper.configureForTest();
-    ClassB cb1=getClassB(true,_cb1);
-    ClassB cb2=getClassB(true,_cb2);
+    ClassB cb1=getClassB(true,null,_cb1);
+    ClassB cb2=getClassB(true,null,_cb2);
     if(!isError){
       ClassB res=new Compose(cb1,cb2).compose(Program.emptyLibraryProgram(),cb1,cb2);
-      ClassB expected=getClassB(true,_expected);
+      ClassB expected=getClassB(true,null,_expected);
       TestHelper.assertEqualExp(expected,res);
       }
     else{
