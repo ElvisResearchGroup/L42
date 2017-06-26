@@ -18,12 +18,6 @@ import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.NotAvaila
 import programReduction.Program;
 
 public interface Location {
-  static public String as42Path(List<ast.Ast.C>path){
-    if(path.isEmpty()){return "This";}
-    String res=path.get(0).toString();
-    for(int i=1;i<path.size();i++){res+="."+path.get(i);}
-    return res;
-    }
   static TypeRefTo refTo(Program p,Path path,List<Ast.C> location,Lib root) {
   Path whereP=Path.outer(0,location);
   path=From.fromP(path,whereP);

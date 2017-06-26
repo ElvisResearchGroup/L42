@@ -40,20 +40,20 @@ public class Util {
       }
   }
   @Value @Wither public static class CsMx{
-    @NonNull java.util.List<String> cs;@NonNull MethodSelector ms;
+    @NonNull java.util.List<Ast.C> cs;
+    @NonNull MethodSelector ms;
     public String toString(){
-      String prefix="This0";
-      if(!cs.isEmpty()){prefix=String.join(".",cs);}
+      String prefix=PathAux.as42Path(cs);
       return prefix+"::"+ms;}
     }
   @Value @Wither public static class CsMxMx{
     @NonNull java.util.List<Ast.C> cs;
-    @NonNull MethodSelector ms1;
-    @NonNull MethodSelector ms2;
+    boolean flag;
+    MethodSelector ms1;
+    MethodSelector ms2;
     public String toString(){
-      String prefix="This0";
-      if(!cs.isEmpty()){prefix=String.join(".",cs.toString());}
-      return prefix+"::"+ms1+"->ms2";}
+      String prefix=PathAux.as42Path(cs);
+      return prefix+"["+flag+"]"+ms1+"->"+ms2;}
     }
   @Value @Wither public static class PathMx{
     @NonNull Path path;@NonNull MethodSelector ms;

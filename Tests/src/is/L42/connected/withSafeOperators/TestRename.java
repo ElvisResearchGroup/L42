@@ -6,6 +6,7 @@ import static org.junit.Assert.*;
 
 import helpers.TestHelper;
 import is.L42.connected.withSafeOperators.Rename.UserForMethodResult;
+import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.ClassUnfit;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.MethodClash;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.PathUnfit;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.SelectorUnfit;
@@ -48,18 +49,29 @@ public class TestRename {
     @Parameters(name = "{index}: line {0}")
     public static List<Object[]> createData() {
       return Arrays.asList(new Object[][] { { //
-          lineNumber(),"{B:{ method Void m() void}}", "B", "m()", "k()", "{B:{ method Void k() void}}", false //
+          lineNumber(),
+          "{B:{ method Void m() void}}", "B", "m()", "k()", "{B:{ method Void k() void}}", false //
           }, {lineNumber(), //
           "{ method Void m() void}", "This0", "m()", "k()", "{ method Void k() void}", false //
           }, {lineNumber(), //
           "{ method Void m() void}", "This0", "m()", "k(x)",
           "is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$SelectorUnfit",
           true //
+          }, {lineNumber(), //
+          "{interface  method Any m() B:{implements This1 refine method Void m()}}",
+          "This0", "m()", "k()",
+          "{interface  method Any k() B:{implements This1 refine method Void k()}}",
+          false //
+          }, {lineNumber(), //
+          "{interface  method Any m() B:{implements This1 refine method Void m()}}",
+          "B", "m()", "k()",
+          "is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$SelectorUnfit",
+          true //
 
           } });
     }
 
-    @Test public void test() throws PathUnfit, SelectorUnfit, MethodClash {
+    @Test public void test() throws PathUnfit, SelectorUnfit, MethodClash, ClassUnfit {
       TestHelper.configureForTest();
       ClassB cb1 = getClassB(true,_cb1);
       List<Ast.C> path=TestHelper.cs(_path);
@@ -67,13 +79,13 @@ public class TestRename {
       MethodSelector ms2 = MethodSelector.parse(_ms2);
       if (!isError) {
         ClassB expected = getClassB(true,_expected);
-        ClassB res = new RenameMethods().add(path, ms1, ms2).renameMethodsP(Program.emptyLibraryProgram(), cb1);
+        ClassB res = new RenameMethods().addRename(path, ms1, ms2).actP(Program.emptyLibraryProgram(), cb1);
         TestHelper.assertEqualExp(expected, res);
       } else {
         try {
-          ClassB res = new RenameMethods().add(path, ms1, ms2).renameMethodsP(Program.emptyLibraryProgram(), cb1);
+          new RenameMethods().addRename(path, ms1, ms2).actP(Program.emptyLibraryProgram(), cb1);
           fail("error expected");
-        } catch (PathUnfit|SelectorUnfit|MethodClash err) {
+        } catch (PathUnfit|SelectorUnfit|MethodClash|ClassUnfit err) {
           assertEquals(_expected, err.getClass().getName());
         }
       }

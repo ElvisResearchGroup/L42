@@ -37,7 +37,7 @@ public class LibPrimitive extends Lib{
   public boolean isCloseState(){return false;}
   public boolean isEnsuredCoherent(PData pData){return true;}
   public Lib root(){return this;}
-  public String path(){return Location.as42Path(Collections.emptyList());}
+  public String path(){return PathAux.as42Path(Collections.emptyList());}
   public Doc nestedDoc(){return new Doc(Ast.Doc.empty(),this);}
   public String toS() {return "{/*PrimitivePath:"+primitive+"*/}";}
   @Override public boolean equals(Object that) {

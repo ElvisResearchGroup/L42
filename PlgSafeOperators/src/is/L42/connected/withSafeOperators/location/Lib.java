@@ -122,7 +122,7 @@ public class Lib extends Location.LocationImpl<ExpCore.ClassB,Lib>{
     return new Lib(false,root,Collections.emptyList(),root);
     }
   public String path(){
-    return Location.as42Path(path);
+    return PathAux.as42Path(path);
     }  
   public Doc nestedDoc(){
     if(this.path.isEmpty()){

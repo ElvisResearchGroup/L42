@@ -52,6 +52,13 @@ public class PathAux {
     List<String> rowData = Arrays.asList(cs.split("\\."));
     return PathAux.sToC(rowData);
     }
+  static public String as42Path(List<ast.Ast.C>path){
+    if(path.isEmpty()){return "This";}
+    String res=path.get(0).toString();
+    for(int i=1;i<path.size();i++){res+="."+path.get(i);}
+    return res;
+    }
+
   
   public static boolean isValidPrimitiveName(String name){
     Path p=PathPrimitive._parsePrimitive(name);

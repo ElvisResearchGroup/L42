@@ -2,7 +2,6 @@ package is.L42.connected.withSafeOperators.refactor;
 
 import ast.Ast.C;
 import ast.Ast.Doc;
-import ast.Ast.MethodSelector;
 import ast.Ast.Path;
 import ast.Ast.VarDecCE;
 import ast.ExpCore.ClassB;
@@ -131,7 +130,7 @@ public static ClassB hideClass(PData p,ClassB cb,String src) throws MethodClash,
   pp=pp.evilPush(cb);
   pp=pp.navigate(srcL);
   boolean coherent=newTypeSystem.TsLibrary.coherent(pp,false);
-  if(!coherent){throw new RefactorErrors.ClassUnfit();}
+  if(!coherent){throw new RefactorErrors.ClassUnfit().msg("Incoherent class can not be hidden");}
   String nameC="Fresh";
   
   if(!srcL.isEmpty()){nameC=srcL.get(srcL.size()-1).getInner();}
@@ -199,26 +198,4 @@ class PathRename extends CloneVisitorWithProgram{
     Path destHere=Path.outer(levels,newCs);
     return destHere;
     }    
-}
-
-class MembersUtils{
-static boolean isPrivate(MethodSelector ms){
-  return ms.isUnique();
-  }
-static boolean isPrivate(Path p){return isPrivate(p.getCBar());}
-static boolean isPrivate(List<Ast.C> p){
-  for(Ast.C c:p){
-    if(c.isUnique()){return true;}
-    }
-  return false;
-  }
-static boolean isPathDefined(ClassB cb, List<Ast.C> path){
-  try{cb.getClassB(path);return true;}
-  catch(ast.ErrorMessage.PathMetaOrNonExistant unused){return false;}
-  }
-/**null for not even the path is defined*/
-static Boolean _isPathMsDefined(ClassB cb, List<Ast.C> path,MethodSelector ms){
-  try{return cb.getClassB(path)._getMember(ms)!=null;}
-  catch(ast.ErrorMessage.PathMetaOrNonExistant unused){return null;}
-  }
 }

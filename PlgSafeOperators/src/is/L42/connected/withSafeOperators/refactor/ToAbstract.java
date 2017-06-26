@@ -82,6 +82,11 @@ public static ClassB toAbstractAux(Program p,ClassB cb, List<Ast.C> path,MethodS
     if(mwt2==null){
       if(isSrcAbstract){ return cb;}
       mwt2=_mwt.withMs(newSel).withMt(_mwt.getMt().withRefine(false));
+      if(!newSel.getNames().equals(_mwt.getMs().getNames())){
+        mwt2=mwt2.withInner(MembersUtils.renameParNames(
+          _mwt.getMs().getNames(), newSel.getNames(),
+          mwt2.getInner()));
+        }
       newMs.add(0,mwt2);
       return cb.withMs(newMs);
       }

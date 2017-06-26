@@ -4,6 +4,7 @@ import java.util.List;
 
 import ast.Ast;
 import ast.Ast.Path;
+import ast.PathAux;
 
 public interface TypeRefTo {
   boolean equalequal(Object that);
@@ -19,7 +20,7 @@ public interface TypeRefTo {
       return root.navigateCs(path.getCBar());
       }    
     @Override public String toS() {
-      return Location.as42Path(path.getCBar());
+      return PathAux.as42Path(path.getCBar());
       }
     @Override public boolean equalequal(Object that) {
       return this.equals(that);
